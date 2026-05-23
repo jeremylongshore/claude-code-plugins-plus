@@ -39,6 +39,7 @@ Total: 16 official fields.
 ## Plugin Agent Restrictions
 
 Plugin agents (`plugins/*/agents/*.md`) do NOT support:
+
 - `hooks` — ignored when loading from plugin
 - `mcpServers` — ignored when loading from plugin
 - `permissionMode` — ignored when loading from plugin

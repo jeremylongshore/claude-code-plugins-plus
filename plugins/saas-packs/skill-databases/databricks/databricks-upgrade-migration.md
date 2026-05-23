@@ -10,6 +10,7 @@ databricks-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Databricks SDK upgrades
 **Workflow:** Part of the operations skill category for Databricks integration.
 **Relates to:** Other databricks skills in this pack.

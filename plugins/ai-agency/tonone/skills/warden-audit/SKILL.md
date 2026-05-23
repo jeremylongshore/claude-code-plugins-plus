@@ -30,7 +30,7 @@ If the stack is ambiguous, ask the user.
 Search the codebase for exposed secrets:
 
 - API keys, tokens, passwords in source files (not just `.env`)
-- Patterns: `sk-`, `AKIA`, `ghp_`, `Bearer `, base64-encoded credentials
+- Patterns: `sk-`, `AKIA`, `ghp_`, `Bearer`, base64-encoded credentials
 - Check `.env` files committed to git (should be in `.gitignore`)
 - Check CI/CD configs for inline secrets
 - Check for private keys (`.pem`, `.key` files)

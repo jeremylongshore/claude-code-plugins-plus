@@ -5,6 +5,7 @@
 When activated, I will:
 
 1. **Security Scan**
+
    ```bash
    # Run security checks
    grep -r "password\|secret\|api_key" plugins/plugin-name/
@@ -15,6 +16,7 @@ When activated, I will:
    ```
 
 2. **Structure Validation**
+
    ```bash
    # Check required files
    test -f .claude-plugin/plugin.json
@@ -26,6 +28,7 @@ When activated, I will:
    ```
 
 3. **Best Practices Check**
+
    ```bash
    # Check for TODO/FIXME
    grep -r "TODO\|FIXME" --exclude=README.md
@@ -38,6 +41,7 @@ When activated, I will:
    ```
 
 4. **Compliance Verification**
+
    ```bash
    # Check marketplace entry
    jq '.plugins[] | select(.name == "plugin-name")' .claude-plugin/marketplace.extended.json

@@ -10,6 +10,7 @@ brightdata-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Bright Data costs and usage
 **Workflow:** Part of the cicd skill category for Bright Data integration.
 **Relates to:** Other brightdata skills in this pack.

@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Deploy Integration
 
 ## Overview
+
 Deploy Instantly API v2 integrations — primarily webhook receivers and automation services — to cloud platforms. Instantly webhooks require a public HTTPS endpoint that responds within 30 seconds (3 retries on failure). This skill covers Vercel serverless functions, Google Cloud Run containers, and Fly.io deployments.
 
 ## Prerequisites
+
 - Completed `instantly-install-auth` setup
 - Working Instantly integration tested locally (see `instantly-local-dev-loop`)
 - Cloud platform account (Vercel, GCP, or Fly.io)
@@ -38,6 +40,7 @@ Deploy Instantly API v2 integrations — primarily webhook receivers and automat
 ## Instructions
 
 ### Option A: Vercel Serverless Functions
+
 ```typescript
 // api/webhooks/instantly.ts — Vercel serverless function
 import type { VercelRequest, VercelResponse } from "@vercel/node";
@@ -99,6 +102,7 @@ vercel deploy --prod
 ```
 
 ### Option B: Google Cloud Run
+
 ```dockerfile
 # Dockerfile
 FROM node:20-alpine AS builder
@@ -172,6 +176,7 @@ gcloud run deploy instantly-webhooks \
 ```
 
 ### Option C: Fly.io
+
 ```toml
 # fly.toml
 app = "instantly-webhooks"
@@ -199,6 +204,7 @@ fly deploy
 ```
 
 ### Step 2: Register Webhook After Deployment
+
 ```typescript
 async function registerProductionWebhook(deployedUrl: string) {
   const webhook = await instantly<{ id: string; name: string }>("/webhooks", {
@@ -222,6 +228,7 @@ async function registerProductionWebhook(deployedUrl: string) {
 ```
 
 ### Step 3: Post-Deploy Verification
+
 ```bash
 set -euo pipefail
 DEPLOY_URL="https://instantly-webhooks-abc123.run.app"
@@ -237,6 +244,7 @@ curl -X POST ${DEPLOY_URL}/webhooks/instantly \
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Webhook delivery fails | Endpoint returns non-2xx | Ensure 200 response before async processing |
@@ -245,9 +253,11 @@ curl -X POST ${DEPLOY_URL}/webhooks/instantly \
 | Webhook retries flooding | Processing takes >30s | Return 200 immediately, process async |
 
 ## Resources
+
 - [Instantly Webhooks API](https://developer.instantly.ai/api/v2/webhook)
 - [Cloud Run Docs](https://cloud.google.com/run/docs)
 - [Vercel Serverless Functions](https://vercel.com/docs/functions)
 
 ## Next Steps
+
 For webhook event handling patterns, see `instantly-webhooks-events`.

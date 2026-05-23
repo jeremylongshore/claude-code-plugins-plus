@@ -10,6 +10,7 @@ shopify-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Shopify rate limiting and backoff
 **Workflow:** Part of the operations skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

@@ -18,9 +18,11 @@ compatibility: Designed for Claude Code
 # Juicebox Webhooks & Events
 
 ## Overview
+
 Juicebox delivers webhook notifications for AI-powered people search and analysis workflows. Subscribe to events for completed analyses, updated datasets, ready exports, and quota warnings to build automated pipelines that react to Juicebox intelligence in real time without polling the API.
 
 ## Webhook Registration
+
 ```typescript
 const response = await fetch("https://api.juicebox.ai/v1/webhooks", {
   method: "POST",
@@ -37,6 +39,7 @@ const response = await fetch("https://api.juicebox.ai/v1/webhooks", {
 ```
 
 ## Signature Verification
+
 ```typescript
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
@@ -53,6 +56,7 @@ function verifyJuiceboxSignature(req: Request, res: Response, next: NextFunction
 ```
 
 ## Event Handler
+
 ```typescript
 import express from "express";
 const app = express();
@@ -75,6 +79,7 @@ app.post("/webhooks/juicebox", express.raw({ type: "application/json" }), verify
 ```
 
 ## Event Types
+
 | Event | Payload Fields | Use Case |
 |-------|---------------|----------|
 | `analysis.completed` | `analysis_id`, `result_count`, `query` | Fetch and process search results |
@@ -84,6 +89,7 @@ app.post("/webhooks/juicebox", express.raw({ type: "application/json" }), verify
 | `search.alert` | `alert_id`, `new_matches`, `criteria` | Notify on new candidate matches |
 
 ## Retry & Idempotency
+
 ```typescript
 const processed = new Set<string>();
 
@@ -99,6 +105,7 @@ async function handleIdempotent(event: { id: string; type: string; data: any }) 
 ```
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | Signature mismatch | Secret rotated without updating handler | Re-fetch secret from Juicebox dashboard |
@@ -107,7 +114,9 @@ async function handleIdempotent(event: { id: string; type: string; data: any }) 
 | Quota exceeded | API calls after limit hit | Implement backoff until `reset_date` |
 
 ## Resources
+
 - [Juicebox API Docs](https://docs.juicebox.ai)
 
 ## Next Steps
+
 See `juicebox-security-basics`.

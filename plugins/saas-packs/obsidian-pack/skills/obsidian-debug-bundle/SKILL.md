@@ -24,14 +24,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Obsidian Debug Bundle
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'N/A'`
 !`python3 --version 2>/dev/null || echo 'N/A'`
 !`uname -a`
 
 ## Overview
+
 Collect comprehensive diagnostics from an Obsidian vault: app version, installed plugins, active theme, vault stats, console errors, and CSS conflicts. Package everything into a markdown debug report.
 
 ## Prerequisites
+
 - Access to the Obsidian vault's filesystem (the vault directory)
 - Terminal access to run collection commands
 - Developer Console access in Obsidian (Ctrl+Shift+I / Cmd+Option+I)
@@ -234,6 +237,7 @@ echo "Debug report written to: $REPORT"
 ```
 
 ## Output
+
 - `debug-report-YYYYMMDD-HHMMSS.md` in the vault root containing:
   - Platform and Obsidian version
   - Complete plugin list with versions
@@ -243,6 +247,7 @@ echo "Debug report written to: $REPORT"
   - Empty section for pasting console errors after reproducing the issue
 
 ## Error Handling
+
 | Item | Privacy Risk | Action |
 |------|-------------|--------|
 | `app.json` | Contains vault path | Redact path before sharing |
@@ -261,10 +266,12 @@ echo "Debug report written to: $REPORT"
 **CSS debugging**: User reports broken styling. Run Step 7 to find `!important` overrides in snippets. Disable snippets one by one in Settings > Appearance > CSS snippets to isolate the conflict.
 
 ## Resources
+
 - [Obsidian Bug Reports Forum](https://forum.obsidian.md/c/bug-reports/7)
 - [Plugin Developer Help](https://forum.obsidian.md/c/developers/14)
 - [Obsidian Discord #plugin-dev](https://discord.gg/obsidianmd)
 - [Obsidian Developer Console](https://docs.obsidian.md/Plugins/Getting+started/Build+a+plugin#Debug+your+plugin)
 
 ## Next Steps
+
 For systematic incident response, see `obsidian-incident-runbook`. For rate limit issues, see `obsidian-rate-limits`.

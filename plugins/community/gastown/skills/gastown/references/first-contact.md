@@ -5,12 +5,14 @@
 When a user first mentions Gas Town without a clear directive, **welcome them and use AskUserQuestion**.
 
 **Unclear directives** (→ welcome + offer choices):
+
 - "I want to learn about gastown"
 - "What is gastown?"
 - "Tell me about gas town"
 - "gastown" (just the word)
 
 **Clear directives** (→ act on them directly):
+
 - "check on my polecats" → Operating mode
 - "sling this work" → Operating mode
 - "install gastown" → Setup mode
@@ -22,6 +24,7 @@ When a user first mentions Gas Town without a clear directive, **welcome them an
 2. **IMMEDIATELY CALL AskUserQuestion tool** (don't just show text options)
 
 **Step 1 - Output this welcome:**
+
 ```
 Welcome to Gas Town! ⛽
 
@@ -37,6 +40,7 @@ I'll run everything for you. You just tell me what you want.
 ```
 
 **Step 2 - CALL the AskUserQuestion tool with these parameters:**
+
 ```json
 {
   "questions": [{

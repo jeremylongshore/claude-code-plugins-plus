@@ -26,6 +26,7 @@ whether it's bots. When they see a drop, you ask whether tracking broke.
 ### Step 1: Load Baselines
 
 Read the site registry at `${CLAUDE_SKILL_DIR}/references/site-registry.md` for:
+
 - Baseline daily visitors per site
 - Alert thresholds per site
 - Seasonal adjustments (weekends, holidays, announcements)
@@ -38,6 +39,7 @@ framing standards.
 For each site, compare current period to baseline:
 
 **Deviation Classification:**
+
 | Deviation | Classification | Example |
 |-----------|---------------|---------|
 | <10% | Normal | Day-to-day variance |
@@ -47,6 +49,7 @@ For each site, compare current period to baseline:
 | >100% | Critical | Almost certainly actionable |
 
 **Adjust for known factors BEFORE classifying:**
+
 - Weekend → expect -30-50% (dev audience)
 - US Holiday → expect -40-60%
 - Monday/Tuesday → highest traffic days
@@ -57,18 +60,21 @@ For each site, compare current period to baseline:
 Check for each anomaly type:
 
 #### Traffic Spikes
+
 - Is it site-wide or one page? (one page = viral content; site-wide = external event)
 - Is it from one referrer? (single source = mention/feature; diverse = organic growth)
 - Does time-on-site change? (low time + high volume = bot; normal time = real)
 - Does bounce rate spike? (high bounce + spike = low-quality traffic)
 
 #### Traffic Drops
+
 - Is it site-wide or one page? (one page = ranking loss; site-wide = tracking issue)
 - Did comparison period have a known spike? (previous spike = artificial baseline)
 - Is Umami itself reporting data? (no data at all = tracking gap, not traffic drop)
 - Did deployment happen? (check if site was down or tracking script removed)
 
 #### Bot Activity Indicators
+
 - Sudden spike with 100% bounce rate
 - Traffic from unusual countries inconsistent with normal geo distribution
 - Pageviews with 0 time-on-page
@@ -76,6 +82,7 @@ Check for each anomaly type:
 - All traffic hitting one page with identical referrer
 
 #### Tracking Gaps
+
 - Zero data for a time period (complete gap = tracking failed)
 - Sudden drop across ALL metrics simultaneously (not gradual)
 - Active visitors showing 0 when site is known to be up
@@ -84,6 +91,7 @@ Check for each anomaly type:
 ### Step 4: Cross-Site Correlation
 
 If anomaly appears on multiple sites simultaneously:
+
 - **All sites down:** External factor (Umami server issue, network problem)
 - **All sites up:** Coincidence or broad trend (Google algorithm update)
 - **One site anomalous:** Site-specific issue

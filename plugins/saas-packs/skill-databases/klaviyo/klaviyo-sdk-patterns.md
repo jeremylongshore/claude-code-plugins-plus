@@ -10,6 +10,7 @@ klaviyo-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Klaviyo SDK patterns
 **Workflow:** Part of the onboarding skill category for Klaviyo integration.
 **Relates to:** Other klaviyo skills in this pack.

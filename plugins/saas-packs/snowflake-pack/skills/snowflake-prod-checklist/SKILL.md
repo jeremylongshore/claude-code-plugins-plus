@@ -39,6 +39,7 @@ Complete checklist for deploying Snowflake data pipelines and integrations to pr
 ## Pre-Deployment Checklist
 
 ### Authentication & Secrets
+
 - [ ] Service accounts use key pair auth (not password)
 - [ ] Private keys stored in secret manager (not files/env vars)
 - [ ] Key rotation procedure documented and tested
@@ -46,6 +47,7 @@ Complete checklist for deploying Snowflake data pipelines and integrations to pr
 - [ ] Connection parameters use production account identifier
 
 ### Warehouse Configuration
+
 - [ ] Production warehouses created with appropriate sizing
 - [ ] Auto-suspend configured (60-300s based on workload)
 - [ ] Auto-resume enabled
@@ -83,6 +85,7 @@ ALTER WAREHOUSE PROD_ANALYTICS_WH SET RESOURCE_MONITOR = prod_monitor;
 ```
 
 ### Data Pipeline Readiness
+
 - [ ] All tasks resumed and running on schedule
 - [ ] Streams not stale (check with `SHOW STREAMS`)
 - [ ] Snowpipe notifications configured and verified
@@ -90,6 +93,7 @@ ALTER WAREHOUSE PROD_ANALYTICS_WH SET RESOURCE_MONITOR = prod_monitor;
 - [ ] Data retention set appropriately (`DATA_RETENTION_TIME_IN_DAYS`)
 
 ### Query & Performance
+
 - [ ] Critical queries tested at production data volume
 - [ ] Clustering keys set on large tables (>1TB)
 - [ ] Statement timeout configured per warehouse
@@ -105,6 +109,7 @@ ALTER ACCOUNT SET USE_CACHED_RESULT = TRUE;
 ```
 
 ### Access Control
+
 - [ ] RBAC hierarchy follows Snowflake best practices
 - [ ] No users have ACCOUNTADMIN as default role
 - [ ] Service accounts have minimal required privileges
@@ -118,6 +123,7 @@ WHERE default_role = 'ACCOUNTADMIN' AND disabled = 'false';
 ```
 
 ### Monitoring & Alerting
+
 - [ ] Query failure alerts configured
 - [ ] Warehouse credit consumption dashboards
 - [ ] Task failure notifications
@@ -147,6 +153,7 @@ ALTER ALERT task_failure_alert RESUME;
 ```
 
 ### Disaster Recovery
+
 - [ ] Time Travel retention set (Enterprise: up to 90 days)
 - [ ] Database replication configured for critical databases
 - [ ] Failover tested to secondary account/region

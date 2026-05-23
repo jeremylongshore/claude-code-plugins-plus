@@ -111,15 +111,19 @@ Price is [above/below] key moving averages, indicating [bull/bear] market struct
 
 **Key Levels:**
 ```
+
 Resistance 3: $[X] (Major) ████░░░░░░░░
 Resistance 2: $[Y] (Strong) ██████░░░░░░
 Resistance 1: $[Z] (Weak)   ████████░░░░
 ---
+
 CURRENT: $[P]
 ---
+
 Support 1:    $[A] (Weak)   ████████░░░░
 Support 2:    $[B] (Strong) ██████░░░░░░
 Support 3:    $[C] (Major)  ████░░░░░░░░
+
 ```
 
 **Fibonacci Levels** (from recent swing):
@@ -215,6 +219,7 @@ This is technical analysis for educational purposes only, NOT financial advice.
 ## Indicator Interpretation Guide
 
 ### RSI (Relative Strength Index)
+
 - **> 70**: Overbought (potential reversal down)
 - **50-70**: Bullish momentum
 - **30-50**: Bearish momentum
@@ -222,17 +227,20 @@ This is technical analysis for educational purposes only, NOT financial advice.
 - **Divergence**: Price and RSI moving in opposite directions
 
 ### MACD (Moving Average Convergence Divergence)
+
 - **Bullish**: MACD line crosses above signal line
 - **Bearish**: MACD line crosses below signal line
 - **Histogram**: Growing = momentum increasing
 
 ### Bollinger Bands
+
 - **Price at upper band**: Overbought, potential reversal
 - **Price at lower band**: Oversold, potential reversal
 - **Squeeze**: Low volatility, breakout likely
 - **Expansion**: High volatility, trend in motion
 
 ### Moving Averages
+
 - **Golden Cross**: 50 SMA crosses above 200 SMA (bullish)
 - **Death Cross**: 50 SMA crosses below 200 SMA (bearish)
 - **Price above MA**: Bullish signal
@@ -241,6 +249,7 @@ This is technical analysis for educational purposes only, NOT financial advice.
 ## Signal Strength Criteria
 
 ### Strong Signal (3+ confirmations)
+
 - Multiple indicators align
 - Volume confirms direction
 - Multiple timeframes agree
@@ -248,11 +257,13 @@ This is technical analysis for educational purposes only, NOT financial advice.
 - Support/resistance nearby
 
 ### Medium Signal (2 confirmations)
+
 - Some indicators align
 - Mixed timeframe signals
 - Moderate volume
 
 ### Weak Signal (1 confirmation)
+
 - Single indicator signal
 - Conflicting timeframes
 - Low volume
@@ -261,6 +272,7 @@ This is technical analysis for educational purposes only, NOT financial advice.
 ## Example Queries
 
 Users might ask:
+
 - "Generate signal for BTC/USDT"
 - "Should I long or short ETH right now?"
 - "Give me scalping signals for SOL"

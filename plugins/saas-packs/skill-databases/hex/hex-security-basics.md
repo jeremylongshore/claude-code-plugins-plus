@@ -10,6 +10,7 @@ hex-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Hex security best practices
 **Workflow:** Part of the operations skill category for Hex integration.
 **Relates to:** Other hex skills in this pack.

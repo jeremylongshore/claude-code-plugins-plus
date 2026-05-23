@@ -3,6 +3,7 @@
 ## Using the Index
 
 ### @codebase Queries
+
 ```
 Find definitions:
 "@codebase where is the User class defined?"
@@ -18,6 +19,7 @@ Find usage:
 ```
 
 ### Effective Search Patterns
+
 ```
 Specific:
 "@codebase find the validateEmail function"

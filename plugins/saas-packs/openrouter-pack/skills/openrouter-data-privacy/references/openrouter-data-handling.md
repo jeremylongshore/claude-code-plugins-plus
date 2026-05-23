@@ -3,6 +3,7 @@
 ## OpenRouter Data Handling
 
 ### What OpenRouter Stores
+
 ```
 OpenRouter may store:
 - Request metadata (timestamps, models used)
@@ -15,6 +16,7 @@ OpenRouter privacy policy:
 ```
 
 ### Provider Data Policies
+
 ```
 Each model provider has different policies:
 

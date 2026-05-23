@@ -10,6 +10,7 @@ coreweave-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute CoreWeave SDK upgrades
 **Workflow:** Part of the operations skill category for CoreWeave integration.
 **Relates to:** Other coreweave skills in this pack.

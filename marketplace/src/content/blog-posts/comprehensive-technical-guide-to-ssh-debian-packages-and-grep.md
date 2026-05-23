@@ -60,4 +60,3 @@ featured: false
 <h2 id="introduction">
  Introduction
 <p><a class="anchor" href="#introduction">#</a></p></h2>
-

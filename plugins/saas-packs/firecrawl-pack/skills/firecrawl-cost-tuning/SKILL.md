@@ -27,6 +27,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Cost Tuning
 
 ## Overview
+
 Firecrawl charges credits per operation: 1 credit per scrape, 1 per crawled page, 1 per map call, and variable credits for extract (LLM usage). An unbounded crawl on a large site can consume thousands of credits in minutes. This skill covers concrete techniques to reduce credit consumption by 50-80%.
 
 ## Credit Cost Table
@@ -42,6 +43,7 @@ Firecrawl charges credits per operation: 1 credit per scrape, 1 per crawled page
 ## Instructions
 
 ### Step 1: Always Set Crawl Limits
+
 ```typescript
 import FirecrawlApp from "@mendable/firecrawl-js";
 
@@ -65,6 +67,7 @@ await firecrawl.crawlUrl("https://docs.large-project.org", {
 ```
 
 ### Step 2: Use Scrape for Known URLs Instead of Crawl
+
 ```typescript
 // If you know which pages you need, don't crawl — scrape them directly
 const targetUrls = [
@@ -82,6 +85,7 @@ const results = await firecrawl.batchScrapeUrls(targetUrls, {
 ```
 
 ### Step 3: Map First, Then Selective Scrape
+
 ```typescript
 // Map costs 1 credit and returns up to 30K URLs
 const map = await firecrawl.mapUrl("https://docs.example.com");
@@ -100,6 +104,7 @@ const results = await firecrawl.batchScrapeUrls(apiDocs.slice(0, 20), {
 ```
 
 ### Step 4: Cache to Prevent Re-Scraping
+
 ```typescript
 import { createHash } from "crypto";
 
@@ -124,6 +129,7 @@ async function cachedScrape(url: string): Promise<string> {
 ```
 
 ### Step 5: Monitor Credit Consumption
+
 ```bash
 set -euo pipefail
 # Check current credit balance
@@ -169,6 +175,7 @@ budget.record(50);
 ```
 
 ### Step 6: Choose Minimal Formats
+
 ```bash
 set -euo pipefail
 # Cheapest: markdown only (1 credit, fastest)
@@ -182,6 +189,7 @@ curl -X POST https://api.firecrawl.dev/v1/scrape \
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `402 Payment Required` | Credits exhausted | Check balance, upgrade plan, or wait for reset |
@@ -201,9 +209,11 @@ curl -X POST https://api.firecrawl.dev/v1/scrape \
 | Batch scrape vs individual | Same cost, less overhead |
 
 ## Resources
+
 - [Firecrawl Pricing](https://firecrawl.dev/pricing)
 - [Firecrawl Dashboard](https://firecrawl.dev/app)
 - [Rate Limits](https://docs.firecrawl.dev/rate-limits)
 
 ## Next Steps
+
 For reference architecture, see `firecrawl-reference-architecture`.

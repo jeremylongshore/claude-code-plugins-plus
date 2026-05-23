@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lokalise Cost Tuning
 
 ## Overview
+
 Optimize Lokalise localization spending across plan tiers, contributor seats, Translation Memory (TM) leverage, machine translation (MT) triage, and dead key cleanup. Lokalise pricing is per-seat subscription (Essential ~$120/user/month, Pro ~$290/user/month) with optional pay-per-use for MT and AI features.
 
 ## Prerequisites
+
 - Lokalise Admin role for billing and usage visibility
 - `LOKALISE_API_TOKEN` with read access to project statistics
 - Understanding of translation workflow (human, MT, or hybrid)
@@ -256,6 +258,7 @@ echo "  5. Translate similar projects sequentially to maximize TM"
 ```
 
 ## Output
+
 - Usage audit report: projects, keys, languages, contributor seat count
 - Inactive contributor identification for seat optimization
 - TM leverage strategy (sequential translation, automation-enabled uploads)
@@ -264,6 +267,7 @@ echo "  5. Translate similar projects sequentially to maximize TM"
 - Monthly cost estimate with reduction levers
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | High per-word costs | Human translating MT-suitable content | Apply MT to low-risk strings first |
@@ -283,6 +287,7 @@ echo "  5. Translate similar projects sequentially to maximize TM"
 **10,000-key project MT triage**: Tag keys by content type. Apply MT to `tooltip.*`, `help.*`, `log.*` prefixes (40% of keys). Route `legal.*`, `marketing.*`, `ui.cta.*` to humans. Saves ~$2,000 per target language.
 
 ## Resources
+
 - [Lokalise Pricing Plans](https://lokalise.com/pricing)
 - [Lokalise API: Project Statistics](https://developers.lokalise.com/reference/retrieve-a-project)
 - [Translation Memory in Lokalise](https://docs.lokalise.com/en/articles/1400533-translation-memory)
@@ -290,4 +295,5 @@ echo "  5. Translate similar projects sequentially to maximize TM"
 - [Keys API: List and Filter](https://developers.lokalise.com/reference/list-all-keys)
 
 ## Next Steps
+
 For monitoring translation pipeline health and costs over time, see `lokalise-observability`.

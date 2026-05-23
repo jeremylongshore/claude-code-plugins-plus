@@ -10,6 +10,7 @@ adobe-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Adobe CI/CD integration
 **Workflow:** Part of the cicd skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

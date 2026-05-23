@@ -3,6 +3,7 @@
 ## Error Handling in Streams
 
 ### Robust Streaming
+
 ```python
 from openai import APIError, RateLimitError
 
@@ -39,6 +40,7 @@ def robust_stream(prompt: str, model: str, retries: int = 3):
 ```
 
 ### Stream Timeout
+
 ```python
 import asyncio
 

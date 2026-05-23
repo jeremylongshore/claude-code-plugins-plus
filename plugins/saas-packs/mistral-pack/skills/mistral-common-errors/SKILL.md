@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral AI Common Errors
 
 ## Overview
+
 Quick reference for diagnosing and fixing Mistral AI API errors. Covers HTTP status codes, SDK-specific issues, streaming failures, and tool calling problems with real solutions.
 
 ## Prerequisites
+
 - Mistral AI SDK installed
 - `MISTRAL_API_KEY` configured
 - Access to application logs
@@ -52,6 +54,7 @@ echo "Key length: ${#MISTRAL_API_KEY}"
 ---
 
 #### 401 Unauthorized
+
 ```
 Error: Authentication failed. Invalid API key.
 ```
@@ -59,6 +62,7 @@ Error: Authentication failed. Invalid API key.
 **Causes:** Key missing, expired, revoked, or wrong workspace.
 
 **Fix:**
+
 ```typescript
 const apiKey = process.env.MISTRAL_API_KEY;
 if (!apiKey) throw new Error('MISTRAL_API_KEY is not set');
@@ -75,6 +79,7 @@ try {
 ```
 
 **Verify manually:**
+
 ```bash
 set -euo pipefail
 curl -H "Authorization: Bearer ${MISTRAL_API_KEY}" https://api.mistral.ai/v1/models
@@ -83,6 +88,7 @@ curl -H "Authorization: Bearer ${MISTRAL_API_KEY}" https://api.mistral.ai/v1/mod
 ---
 
 #### 429 Too Many Requests
+
 ```
 Error: Rate limit exceeded. Retry-After: 60
 ```
@@ -90,6 +96,7 @@ Error: Rate limit exceeded. Retry-After: 60
 **Causes:** Exceeded RPM (requests/min) or TPM (tokens/min) for your tier.
 
 **Fix:**
+
 ```typescript
 async function withBackoff<T>(fn: () => Promise<T>, maxRetries = 5): Promise<T> {
   for (let i = 0; i <= maxRetries; i++) {
@@ -111,11 +118,13 @@ async function withBackoff<T>(fn: () => Promise<T>, maxRetries = 5): Promise<T> 
 ---
 
 #### 400 Bad Request — Invalid Model
+
 ```
 {"message": "Unknown model: mistral-ultra"}
 ```
 
 **Fix:** Use valid model IDs:
+
 ```typescript
 const VALID_MODELS = [
   'mistral-large-latest',
@@ -128,6 +137,7 @@ const VALID_MODELS = [
 ```
 
 **List available models dynamically:**
+
 ```bash
 set -euo pipefail
 curl -H "Authorization: Bearer ${MISTRAL_API_KEY}" \
@@ -137,11 +147,13 @@ curl -H "Authorization: Bearer ${MISTRAL_API_KEY}" \
 ---
 
 #### 400 Bad Request — Invalid Messages
+
 ```
 {"message": "messages must be a non-empty array"}
 ```
 
 **Fix:** Validate message structure before sending:
+
 ```typescript
 function validateMessages(messages: any[]): void {
   if (!messages?.length) throw new Error('Messages array empty');
@@ -160,11 +172,13 @@ function validateMessages(messages: any[]): void {
 ---
 
 #### 400 Bad Request — Tool Call Errors
+
 ```
 {"message": "tool_call_id is required for tool messages"}
 ```
 
 **Fix:** Every tool result must include the matching `toolCallId`:
+
 ```typescript
 // After receiving tool_calls from the model
 for (const call of response.choices[0].message.toolCalls) {
@@ -181,11 +195,13 @@ for (const call of response.choices[0].message.toolCalls) {
 ---
 
 #### 413 / Context Length Exceeded
+
 ```
 Error: Maximum context length exceeded
 ```
 
 **Fix:** Trim conversation history, keeping system message:
+
 ```typescript
 function trimToFit(messages: any[], maxChars = 100_000): any[] {
   const system = messages.find(m => m.role === 'system');
@@ -207,6 +223,7 @@ function trimToFit(messages: any[], maxChars = 100_000): any[] {
 ---
 
 #### 500/503 Server Error
+
 ```
 Error: Internal server error
 ```
@@ -214,6 +231,7 @@ Error: Internal server error
 **Causes:** Mistral service issue (temporary).
 
 **Fix:**
+
 ```typescript
 class CircuitBreaker {
   private failures = 0;
@@ -246,6 +264,7 @@ class CircuitBreaker {
 ---
 
 #### ERR_REQUIRE_ESM (Node.js)
+
 ```
 Error [ERR_REQUIRE_ESM]: require() of ES Module not supported
 ```
@@ -253,6 +272,7 @@ Error [ERR_REQUIRE_ESM]: require() of ES Module not supported
 **Cause:** `@mistralai/mistralai` is ESM-only since v1.x.
 
 **Fix:** Either use `import` syntax (recommended) or dynamic import:
+
 ```typescript
 // Option 1: Convert to ESM
 // package.json: "type": "module"
@@ -265,11 +285,13 @@ const { Mistral } = await import('@mistralai/mistralai');
 ---
 
 #### Network Timeout
+
 ```
 Error: Request timeout after 30000ms
 ```
 
 **Fix:**
+
 ```typescript
 const client = new Mistral({
   apiKey: process.env.MISTRAL_API_KEY,
@@ -281,11 +303,13 @@ const client = new Mistral({
 ```
 
 ## Escalation Path
+
 1. Collect evidence with `mistral-debug-bundle`
 2. Check [status.mistral.ai](https://status.mistral.ai/)
 3. Contact support via [Discord](https://discord.gg/mistralai) or console.mistral.ai
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401` | Auth failure | Regenerate key at console.mistral.ai |
@@ -296,10 +320,12 @@ const client = new Mistral({
 | `ERR_REQUIRE_ESM` | CJS import | Use ESM `import` syntax |
 
 ## Resources
+
 - [Mistral API Reference](https://docs.mistral.ai/api/)
 - [Rate Limits & Tiers](https://docs.mistral.ai/deployment/ai-studio/tier/)
 - [Status Page](https://status.mistral.ai/)
 - [Discord Community](https://discord.gg/mistralai)
 
 ## Next Steps
+
 For comprehensive debugging, see `mistral-debug-bundle`.

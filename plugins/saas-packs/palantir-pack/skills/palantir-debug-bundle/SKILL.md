@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Debug Bundle
 
 ## Overview
+
 Collect all diagnostic information needed for Foundry support tickets: SDK version, auth status, API connectivity, build logs, and environment details. Secrets are automatically redacted.
 
 ## Prerequisites
+
 - `foundry-platform-sdk` installed
 - Access to application logs and Foundry build logs
 - Permission to collect environment info
@@ -36,6 +38,7 @@ Collect all diagnostic information needed for Foundry support tickets: SDK versi
 ## Instructions
 
 ### Step 1: Create Debug Bundle Script
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -60,6 +63,7 @@ echo "FOUNDRY_CLIENT_SECRET: ${FOUNDRY_CLIENT_SECRET:+[SET]}" >> "$BUNDLE_DIR/su
 ```
 
 ### Step 2: Test API Connectivity
+
 ```bash
 # API connectivity test
 echo -e "\n--- API Connectivity ---" >> "$BUNDLE_DIR/summary.txt"
@@ -74,6 +78,7 @@ fi
 ```
 
 ### Step 3: Collect Build Logs and Error Context
+
 ```bash
 # Collect recent Python errors
 echo -e "\n--- Recent Errors ---" >> "$BUNDLE_DIR/summary.txt"
@@ -86,6 +91,7 @@ fi
 ```
 
 ### Step 4: Package and Verify
+
 ```bash
 tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
 echo "Bundle: $BUNDLE_DIR.tar.gz ($(du -h "$BUNDLE_DIR.tar.gz" | cut -f1))"
@@ -93,6 +99,7 @@ rm -rf "$BUNDLE_DIR"
 ```
 
 ## Output
+
 - `foundry-debug-YYYYMMDD-HHMMSS.tar.gz` containing:
   - `summary.txt` — SDK versions, env vars (redacted), API status
   - `api-response.json` — raw API response for diagnosis
@@ -100,6 +107,7 @@ rm -rf "$BUNDLE_DIR"
   - `config-redacted.txt` — configuration with secrets masked
 
 ## Error Handling
+
 | Item | Purpose | Sensitive? |
 |------|---------|------------|
 | SDK versions | Compatibility check | No |
@@ -111,14 +119,17 @@ rm -rf "$BUNDLE_DIR"
 ## Examples
 
 ### Submit to Palantir Support
+
 1. Run: `bash foundry-debug-bundle.sh`
 2. Review the tarball for any leaked secrets
 3. Open a support ticket in Palantir's support portal
 4. Attach the bundle with a description of the issue
 
 ## Resources
+
 - [Foundry Documentation](https://www.palantir.com/docs/foundry)
 - [Foundry API Reference](https://www.palantir.com/docs/foundry/api/general/overview/introduction)
 
 ## Next Steps
+
 For rate limit issues, see `palantir-rate-limits`.

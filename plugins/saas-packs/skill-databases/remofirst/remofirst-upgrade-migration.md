@@ -10,6 +10,7 @@ remofirst-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute RemoFirst SDK upgrades
 **Workflow:** Part of the operations skill category for RemoFirst integration.
 **Relates to:** Other remofirst skills in this pack.

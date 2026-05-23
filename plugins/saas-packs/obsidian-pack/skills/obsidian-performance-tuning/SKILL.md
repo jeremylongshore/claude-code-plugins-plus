@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Obsidian Performance Tuning
 
 ## Overview
+
 Optimize Obsidian plugin performance for large vaults (10,000+ files): profile bottlenecks with DevTools, implement lazy initialization, process files in batches with UI yielding, use LRU caches with bounded memory, debounce event handlers, and optimize DOM rendering with virtual scrolling and DocumentFragment.
 
 ## Prerequisites
+
 - Working Obsidian plugin with at least one performance concern
 - Developer Console access (Ctrl+Shift+I / Cmd+Option+I)
 - Understanding of async JavaScript and the event loop
@@ -46,6 +48,7 @@ Optimize Obsidian plugin performance for large vaults (10,000+ files): profile b
 ## Instructions
 
 ### Step 1: Profile with DevTools Performance Tab
+
 ```typescript
 // Add timing instrumentation to identify bottlenecks
 export default class MyPlugin extends Plugin {
@@ -69,6 +72,7 @@ export default class MyPlugin extends Plugin {
 ```
 
 For deeper analysis, use the DevTools Performance tab:
+
 1. Open DevTools (Ctrl+Shift+I)
 2. Go to Performance tab
 3. Click Record
@@ -77,6 +81,7 @@ For deeper analysis, use the DevTools Performance tab:
 6. Look for long tasks (yellow bars > 50ms) in the flame chart
 
 ### Step 2: Lazy Initialization — Defer Expensive Work
+
 ```typescript
 // BAD: build index on load (blocks startup)
 async onload() {
@@ -127,6 +132,7 @@ export default class MyPlugin extends Plugin {
 ```
 
 ### Step 3: Batch File Processing with UI Yielding
+
 ```typescript
 import { TFile, Notice } from 'obsidian';
 
@@ -165,6 +171,7 @@ function sleep(ms: number): Promise<void> {
 ```
 
 ### Step 4: LRU Cache for Bounded Memory
+
 ```typescript
 // src/services/lru-cache.ts
 export class LRUCache<K, V> {
@@ -217,6 +224,7 @@ class FileProcessor {
 ```
 
 ### Step 5: Debounce and Throttle Event Handlers
+
 ```typescript
 import { Plugin, TFile, debounce } from 'obsidian';
 
@@ -263,6 +271,7 @@ export default class MyPlugin extends Plugin {
 ```
 
 ### Step 6: Optimize DOM Rendering
+
 ```typescript
 // BAD: updating DOM on every event
 this.registerEvent(this.app.vault.on('modify', () => {
@@ -331,6 +340,7 @@ private renderVirtualList(container: HTMLElement, items: string[], itemHeight = 
 ```
 
 ### Step 7: Memory Leak Prevention
+
 ```typescript
 // Common leak: WeakRef/WeakMap for file references
 // Files can be deleted — holding TFile references prevents GC
@@ -356,6 +366,7 @@ this.registerInterval(window.setInterval(() => this.sync(), 60000)); // auto-cle
 ```
 
 ## Output
+
 - Performance profiler identifying specific bottlenecks in `onload` and commands
 - Lazy initialization deferring index builds until first use
 - Batch file processing with `await sleep(0)` yielding to prevent UI freezes
@@ -365,6 +376,7 @@ this.registerInterval(window.setInterval(() => this.sync(), 60000)); // auto-cle
 - Memory leak prevention checklist with WeakMap, registerEvent, registerInterval
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Plugin slow to load | Heavy initialization in `onload` | Use lazy loading pattern (Step 2) |
@@ -378,6 +390,7 @@ this.registerInterval(window.setInterval(() => this.sync(), 60000)); // auto-cle
 ## Examples
 
 ### Pre-Release Performance Checklist
+
 - [ ] `onload` completes in < 100ms (check console timing)
 - [ ] No synchronous loops over all vault files in `onload`
 - [ ] File operations use `cachedRead` (not `read`) where possible
@@ -388,6 +401,7 @@ this.registerInterval(window.setInterval(() => this.sync(), 60000)); // auto-cle
 - [ ] No raw `addEventListener` / `setInterval` (use `register*` methods)
 
 ### Quick Memory Check
+
 ```javascript
 // Paste in Obsidian DevTools Console
 // Check before and after enabling your plugin
@@ -395,11 +409,13 @@ console.log('Heap:', Math.round(performance.memory.usedJSHeapSize / 1048576), 'M
 ```
 
 ## Resources
+
 - [Obsidian Performance Guide](https://docs.obsidian.md/Plugins/Guides/Performance)
 - [Chrome DevTools Performance](https://developer.chrome.com/docs/devtools/performance/)
 - [Obsidian API — debounce](https://docs.obsidian.md/Reference/TypeScript+API/debounce)
 - [requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame)
 
 ## Next Steps
+
 For resource cost optimization, see `obsidian-cost-tuning`.
 For rate limiting and throttling patterns, see `obsidian-rate-limits`.

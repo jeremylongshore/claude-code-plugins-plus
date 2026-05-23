@@ -10,6 +10,7 @@ framer-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Framer core feature integration
 **Workflow:** Part of the onboarding skill category for Framer integration.
 **Relates to:** Other framer skills in this pack.

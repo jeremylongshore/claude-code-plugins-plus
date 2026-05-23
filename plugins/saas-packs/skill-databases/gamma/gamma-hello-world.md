@@ -10,6 +10,7 @@ gamma-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Gamma example
 **Workflow:** Part of the onboarding skill category for Gamma integration.
 **Relates to:** Other gamma skills in this pack.

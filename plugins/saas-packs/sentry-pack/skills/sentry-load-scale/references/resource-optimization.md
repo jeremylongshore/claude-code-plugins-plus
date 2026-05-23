@@ -3,6 +3,7 @@
 ## Resource Optimization
 
 ### Minimal SDK Configuration
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -24,6 +25,7 @@ Sentry.init({
 ```
 
 ### Async Event Processing
+
 ```typescript
 // Don't block request handling
 async function handleRequest(req: Request, res: Response) {
@@ -40,6 +42,7 @@ async function handleRequest(req: Request, res: Response) {
 ```
 
 ### Background Flushing
+
 ```typescript
 // Flush on graceful shutdown
 process.on('SIGTERM', async () => {

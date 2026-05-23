@@ -3,6 +3,7 @@
 ## Audit Tools
 
 ### Automated Scanning
+
 ```bash
 # Scan for secrets in codebase
 git secrets --scan
@@ -15,6 +16,7 @@ git log --all --full-history -- "*.env"
 ```
 
 ### Configuration Verification
+
 ```bash
 # Verify .cursorignore covers sensitive files
 cat .cursorignore | grep -E "(env|secret|key|credential)"
@@ -28,6 +30,7 @@ find . -name "*.env*" -o -name "*.key" -o -name "*secret*" \
 ```
 
 ### Access Log Analysis
+
 ```
 Review in Admin Dashboard:
 - User login patterns

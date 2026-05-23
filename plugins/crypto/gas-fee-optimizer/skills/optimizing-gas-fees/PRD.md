@@ -1,6 +1,7 @@
 # PRD: Gas Fee Optimizer
 
 ## Summary
+
 **One-liner**: Predict optimal gas prices and timing to minimize blockchain transaction costs
 **Domain**: Cryptocurrency / Blockchain / Transaction Optimization
 **Users**: Traders, DeFi Users, NFT Collectors, Protocol Developers
@@ -8,12 +9,14 @@
 ## Problem Statement
 
 Blockchain transaction fees can vary dramatically based on:
+
 - Network congestion (pending transaction volume)
 - Time of day/week (weekends often cheaper)
 - Block space competition (NFT mints, token launches)
 - Base fee dynamics (EIP-1559 mechanisms)
 
 Users often overpay for gas or have transactions stuck due to poor fee estimation. Without proper tools, users either:
+
 - Pay excessive fees for fast confirmation
 - Set fees too low and wait hours/days
 - Miss optimal timing windows for cheap transactions

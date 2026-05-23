@@ -10,6 +10,7 @@ obsidian-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Obsidian example
 **Workflow:** Part of the onboarding skill category for Obsidian integration.
 **Relates to:** Other obsidian skills in this pack.

@@ -10,6 +10,7 @@ appfolio-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy AppFolio integrations to production
 **Workflow:** Part of the cicd skill category for AppFolio integration.
 **Relates to:** Other appfolio skills in this pack.

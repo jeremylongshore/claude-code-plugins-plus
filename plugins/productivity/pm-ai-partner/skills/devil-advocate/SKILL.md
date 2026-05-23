@@ -71,6 +71,7 @@ Structure critiques as:
 **Good Response:**
 
 **What's strong:**
+
 - Clear user value (discovery help)
 - Leverages existing AI capabilities
 - Low engineering lift if using existing models
@@ -109,6 +110,7 @@ What would you push back on?
 **Good Response:**
 
 **What's strong:**
+
 - Focus is good — spreading thin helps no one
 - Android has larger global market share
 - If there's a specific Android problem, concentrated effort makes sense

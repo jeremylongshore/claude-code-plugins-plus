@@ -95,4 +95,3 @@ After: every plugin has substantive documentation, the validator is actionable, 
 - [Verified Plugins Program: Building a Quality Signal for the Marketplace](/posts/verified-plugins-program-quality-signal-for-the-marketplace/) — The rubric and badge tier system that this week's automation builds on
 - [Scaling AI Batch Processing with Vertex AI Gemini](/posts/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/) — The batch infrastructure used to replace 130 stub files
 - [Production Release Engineering: Shipping v4.5.0](/posts/production-release-engineering-v450/) — Automated release workflows for the marketplace
-

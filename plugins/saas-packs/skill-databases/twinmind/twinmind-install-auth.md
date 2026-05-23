@@ -10,6 +10,7 @@ twinmind-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure TwinMind SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for TwinMind integration.
 **Relates to:** Other twinmind skills in this pack.

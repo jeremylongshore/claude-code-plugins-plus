@@ -3,6 +3,7 @@ Input query examples and FunctionRunResult shapes for each Shopify Function type
 ## Product Discount Input/Output
 
 ### Input Query
+
 ```graphql
 query Input {
   cart {
@@ -34,6 +35,7 @@ query Input {
 ```
 
 ### FunctionRunResult
+
 ```typescript
 interface FunctionRunResult {
   discountApplicationStrategy: "FIRST" | "MAXIMUM";
@@ -57,6 +59,7 @@ interface FunctionRunResult {
 ## Order Discount Input/Output
 
 ### FunctionRunResult
+
 ```typescript
 interface FunctionRunResult {
   discountApplicationStrategy: "FIRST" | "MAXIMUM";
@@ -76,6 +79,7 @@ interface FunctionRunResult {
 ## Payment Customization Input/Output
 
 ### Input Query
+
 ```graphql
 query Input {
   cart {
@@ -95,6 +99,7 @@ query Input {
 ```
 
 ### FunctionRunResult
+
 ```typescript
 interface FunctionRunResult {
   operations: Array<
@@ -108,6 +113,7 @@ interface FunctionRunResult {
 ## Delivery Customization Input/Output
 
 ### Input Query
+
 ```graphql
 query Input {
   cart {
@@ -130,6 +136,7 @@ query Input {
 ```
 
 ### FunctionRunResult
+
 ```typescript
 interface FunctionRunResult {
   operations: Array<
@@ -143,6 +150,7 @@ interface FunctionRunResult {
 ## Cart Transform Input/Output
 
 ### FunctionRunResult
+
 ```typescript
 interface FunctionRunResult {
   operations: Array<

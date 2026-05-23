@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Production Checklist
 
 ## Overview
+
 Comprehensive checklist for deploying Evernote integrations to production, covering API key activation, security hardening, rate limit handling, monitoring, and go-live verification.
 
 ## Prerequisites
+
 - Completed development and testing in sandbox
 - Production API key approved by Evernote (requires review process)
 - Production infrastructure provisioned
@@ -36,6 +38,7 @@ Comprehensive checklist for deploying Evernote integrations to production, cover
 ## Instructions
 
 ### API Key & Authentication
+
 - [ ] Production API key requested and approved by Evernote
 - [ ] `EVERNOTE_SANDBOX=false` in production config
 - [ ] Consumer key and secret stored in secrets manager (not env files)
@@ -44,6 +47,7 @@ Comprehensive checklist for deploying Evernote integrations to production, cover
 - [ ] Token refresh/re-auth flow tested end-to-end
 
 ### Security
+
 - [ ] Access tokens encrypted at rest (AES-256-GCM)
 - [ ] CSRF protection on OAuth flow
 - [ ] API credentials not in source control (`.env` in `.gitignore`)
@@ -52,6 +56,7 @@ Comprehensive checklist for deploying Evernote integrations to production, cover
 - [ ] Rate limit handling prevents API key suspension
 
 ### Rate Limits & Performance
+
 - [ ] Exponential backoff on `RATE_LIMIT_REACHED` errors
 - [ ] Minimum delay between API calls (100-200ms)
 - [ ] Response caching for `listNotebooks()` and `listTags()` (5-10 min TTL)
@@ -59,6 +64,7 @@ Comprehensive checklist for deploying Evernote integrations to production, cover
 - [ ] Batch operations use sequential processing with delays
 
 ### Monitoring & Alerting
+
 - [ ] Health check endpoint verifies Evernote API connectivity
 - [ ] Metrics tracked: API call count, latency, error rate, rate limits
 - [ ] Alerts configured for rate limits, auth failures, and high error rates
@@ -66,6 +72,7 @@ Comprehensive checklist for deploying Evernote integrations to production, cover
 - [ ] Quota usage monitoring with threshold alerts (75%, 90%)
 
 ### Data Integrity
+
 - [ ] ENML validation before every `createNote`/`updateNote` call
 - [ ] Note titles sanitized (max 255 chars, no newlines)
 - [ ] Tag names validated (max 100 chars, no commas)
@@ -73,6 +80,7 @@ Comprehensive checklist for deploying Evernote integrations to production, cover
 - [ ] Sync state (USN) tracked and persisted for incremental sync
 
 ### Deployment
+
 - [ ] Production Docker image built with multi-stage build
 - [ ] `NODE_ENV=production` set in container
 - [ ] Graceful shutdown handles in-flight API calls
@@ -105,12 +113,14 @@ echo "All checks passed."
 For the complete checklist details and verification scripts, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
+
 - Production readiness checklist (API keys, security, performance, monitoring)
 - Verification script for post-deployment testing
 - Security audit checklist for credential and token management
 - Monitoring setup verification
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `INVALID_AUTH` in production | Using sandbox token with production endpoint | Verify `EVERNOTE_SANDBOX=false` matches production key |
@@ -119,12 +129,14 @@ For the complete checklist details and verification scripts, see [Implementation
 | `PERMISSION_DENIED` | Production key missing permissions | Contact Evernote developer support |
 
 ## Resources
+
 - [Evernote Developer Portal](https://dev.evernote.com/)
 - [API Key Request](https://dev.evernote.com/support/)
 - [Rate Limits](https://dev.evernote.com/doc/articles/rate_limits.php)
 - [OAuth Documentation](https://dev.evernote.com/doc/articles/authentication.php)
 
 ## Next Steps
+
 For version upgrades, see `evernote-upgrade-migration`.
 
 ## Examples

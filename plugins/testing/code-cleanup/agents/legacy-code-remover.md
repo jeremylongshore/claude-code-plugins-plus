@@ -68,6 +68,7 @@ Record the minimum target — all modernization must be compatible with it.
 | `for (var i = 0; ...)` | `for (const x of ...)` / `.forEach` | ES2015 |
 
 **Unnecessary Polyfills:**
+
 ```bash
 # Check for polyfill packages
 rg "core-js|regenerator-runtime|@babel/polyfill|es6-promise|es6-shim|whatwg-fetch" package.json
@@ -101,13 +102,16 @@ Since legacy code removal changes behavior patterns (even if equivalent), batch 
 3. Group all polyfill removals
 
 For each batch:
+
 1. Show the changes
 2. Apply after user confirmation (or auto-apply HIGH confidence if build passes)
 3. Run build verification:
+
    ```bash
    npx tsc --noEmit 2>&1 | tail -20
    npm test 2>&1 | tail -30
    ```
+
 4. If verification fails → revert, flag as MEDIUM
 
 ## Quality Standards

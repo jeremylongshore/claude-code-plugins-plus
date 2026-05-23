@@ -10,6 +10,7 @@ algolia-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Algolia security best practices
 **Workflow:** Part of the operations skill category for Algolia integration.
 **Relates to:** Other algolia skills in this pack.

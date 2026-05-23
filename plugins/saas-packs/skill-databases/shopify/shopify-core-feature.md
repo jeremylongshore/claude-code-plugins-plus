@@ -10,6 +10,7 @@ shopify-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Shopify core feature integration
 **Workflow:** Part of the onboarding skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

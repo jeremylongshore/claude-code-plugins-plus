@@ -1,6 +1,7 @@
-# Examples
+## Examples
 
 ### Queue-Based Rate Limiting
+
 ```typescript
 import PQueue from 'p-queue';
 
@@ -16,6 +17,7 @@ async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
 ```
 
 ### Monitor Rate Limit Usage
+
 ```typescript
 class RateLimitMonitor {
   private remaining: number = 60;

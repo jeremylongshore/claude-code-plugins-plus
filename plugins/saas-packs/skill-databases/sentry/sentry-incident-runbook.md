@@ -10,6 +10,7 @@ sentry-incident-runbook/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Incident response procedures using Sentry for investigation, triage, and resolution with severity classification and postmortem templates.
 **Workflow:** Reference during incident response. Provides structured approach to investigating errors, communicating status, and conducting postmortems.
 **Relates to:** Works with `sentry-observability` for broader monitoring. Connects to `sentry-common-errors` for troubleshooting.

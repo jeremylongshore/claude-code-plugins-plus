@@ -2,8 +2,8 @@
 
 Metrics, A/B testing elements, funnel analysis, and CRM integration for scorecard marketing.
 
-
 ## Table of Contents
+
 1. [Key Metrics to Track](#key-metrics-to-track)
 2. [A/B Testing Elements](#ab-testing-elements)
 3. [Funnel Analysis Framework](#funnel-analysis-framework)
@@ -76,18 +76,21 @@ Metrics, A/B testing elements, funnel analysis, and CRM integration for scorecar
 ### Testing Priorities (ICE Framework)
 
 **Test first (high impact, easy):**
+
 - Headline copy
 - CTA button text
 - Lead form fields (less = more conversion)
 - Result page CTA
 
 **Test second (high impact, moderate effort):**
+
 - Number of questions
 - Question wording
 - Results page layout
 - Email subject lines
 
 **Test later (lower impact or harder):**
+
 - Visual design elements
 - Animation/transitions
 - Gamification elements
@@ -135,6 +138,7 @@ Q7: 65% →
 ```
 
 **Fix problem questions by:**
+
 - Simplifying wording
 - Changing from open text to multiple choice
 - Reordering (move difficult questions later)
@@ -144,6 +148,7 @@ Q7: 65% →
 ### Cohort Analysis
 
 Compare performance across:
+
 - Traffic sources
 - Time periods
 - Score segments
@@ -190,6 +195,7 @@ Insight: Strong marketing, weak operations—target operations content/services
 ### Data to Capture
 
 **Standard fields:**
+
 - Name, email, phone
 - Total score
 - Category scores
@@ -197,6 +203,7 @@ Insight: Strong marketing, weak operations—target operations content/services
 - Traffic source
 
 **Custom fields:**
+
 - Individual question responses (high-value questions)
 - Score tier (Low/Medium/High)
 - Key qualifying answers
@@ -296,6 +303,7 @@ Capture and store UTMs with lead data for attribution.
 ### Heatmap and Session Recording
 
 Use tools like Hotjar or FullStory to:
+
 - Watch real users complete the quiz
 - Identify confusion points
 - See where users hover/pause
@@ -328,6 +336,7 @@ Use tools like Hotjar or FullStory to:
 ### Actionable Alerts
 
 Set alerts for:
+
 - Completion rate drops >10%
 - Lead quality score drops
 - Significant traffic spikes (opportunity to capitalize)

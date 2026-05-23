@@ -1,4 +1,4 @@
-# Implementation Guide
+## Implementation Guide
 
 1. Triage the incident and scope affected systems/data.
 2. Preserve evidence (logs, snapshots, network captures) before making changes.
@@ -8,6 +8,7 @@
 ### 1. Incident Detection and Triage
 
 Classify the security incident:
+
 - Incident type (ransomware, data breach, DDoS, insider threat, phishing)
 - Severity level (Critical, High, Medium, Low)
 - Scope assessment (affected systems, data, users)
@@ -17,6 +18,7 @@ Classify the security incident:
 ### 2. Immediate Containment Actions
 
 Prevent further damage:
+
 - Isolate affected systems from network
 - Disable compromised user accounts
 - Block malicious IP addresses at firewall
@@ -29,6 +31,7 @@ Prevent further damage:
 Gather forensic data systematically:
 
 **System Evidence**:
+
 - Memory dumps from affected systems
 - Disk images for forensic analysis
 - Running process listings
@@ -36,6 +39,7 @@ Gather forensic data systematically:
 - Registry modifications (Windows)
 
 **Log Evidence**:
+
 - Authentication logs (successful/failed logins)
 - Application logs with error patterns
 - Network traffic logs (firewall, IDS/IPS)
@@ -43,6 +47,7 @@ Gather forensic data systematically:
 - Web server access/error logs
 
 **Network Evidence**:
+
 - Packet captures (PCAP files)
 - DNS query logs
 - Proxy server logs
@@ -51,6 +56,7 @@ Gather forensic data systematically:
 ### 4. Investigation and Analysis
 
 Reconstruct the attack timeline:
+
 - Identify initial access vector (how attackers got in)
 - Map lateral movement within network
 - Determine data exfiltration attempts
@@ -61,6 +67,7 @@ Reconstruct the attack timeline:
 ### 5. Eradication Phase
 
 Remove threat from environment:
+
 - Remove malware and backdoors
 - Close exploited vulnerabilities
 - Reset compromised credentials
@@ -71,6 +78,7 @@ Remove threat from environment:
 ### 6. Recovery and Restoration
 
 Restore normal operations:
+
 - Restore systems from clean backups
 - Rebuild compromised systems from scratch
 - Verify system integrity
@@ -81,6 +89,7 @@ Restore normal operations:
 ### 7. Post-Incident Documentation
 
 Create comprehensive incident report:
+
 - Executive summary
 - Detailed timeline
 - Root cause analysis

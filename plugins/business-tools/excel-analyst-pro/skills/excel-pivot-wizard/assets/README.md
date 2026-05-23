@@ -5,6 +5,7 @@ This directory contains static assets used by this skill.
 ## Purpose
 
 Assets can include:
+
 - Configuration files (JSON, YAML)
 - Data files
 - Templates

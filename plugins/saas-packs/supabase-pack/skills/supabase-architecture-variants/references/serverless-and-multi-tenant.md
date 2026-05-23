@@ -1,4 +1,4 @@
-# Serverless (Edge Functions) and Multi-Tenant Patterns
+## Serverless (Edge Functions) and Multi-Tenant Patterns
 
 ### Edge Functions with Per-Request Clients
 

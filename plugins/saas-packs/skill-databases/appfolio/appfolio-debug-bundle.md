@@ -10,6 +10,7 @@ appfolio-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect AppFolio debug evidence for support
 **Workflow:** Part of the operations skill category for AppFolio integration.
 **Relates to:** Other appfolio skills in this pack.

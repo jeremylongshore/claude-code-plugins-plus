@@ -60,12 +60,15 @@ function classifyOpenEvidenceError(status: number, body: string): OpenEvidenceEr
 ## Debugging Guide
 
 ### Authentication Errors
+
 OpenEvidence API keys are scoped per organization. A 401 means the key itself is invalid; a 403 means the key is valid but not authorized for the specified org ID. Verify both the `OPENEVIDENCE_API_KEY` and the `org_id` parameter match. Keys are rotated quarterly for compliance -- check expiration date.
 
 ### Rate Limit Errors
+
 Rate limits vary by plan tier. Standard plans allow 100 queries/hour; enterprise plans have higher limits. DeepConsult queries (longer analysis) consume 5x the rate limit quota of standard queries. Use `Retry-After` header and implement exponential backoff.
 
 ### Validation Errors
+
 Queries must be clinically relevant and specific. "What causes headaches?" is too broad -- narrow to "What is the first-line treatment for migraine with aura in adults?" Add population, intervention, or comparison to improve query specificity. Non-medical queries are rejected with 422. Citation references use DOI-based identifiers; retracted studies return 404 and should be re-queried for updated evidence.
 
 ## Error Handling

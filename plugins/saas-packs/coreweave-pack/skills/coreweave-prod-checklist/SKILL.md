@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code
 # CoreWeave Production Checklist
 
 ## Inference Services
+
 - [ ] GPU type and count validated for model size
 - [ ] Autoscaling configured (KServe or HPA)
 - [ ] Health and readiness probes set
@@ -34,22 +35,26 @@ compatibility: Designed for Claude Code
 - [ ] `minReplicas >= 1` for production (no cold starts)
 
 ## Storage
+
 - [ ] Model weights in PVC (not downloaded at startup)
 - [ ] Checkpoints saved to persistent storage
 - [ ] Storage class appropriate (SSD for inference, HDD for archival)
 
 ## Security
+
 - [ ] Secrets for model tokens and registry access
 - [ ] Network policies applied
 - [ ] Container images from trusted registries
 
 ## Monitoring
+
 - [ ] GPU utilization metrics collected
 - [ ] Inference latency and throughput tracked
 - [ ] Alert on pod restarts and OOM events
 - [ ] Log aggregation configured
 
 ## Rollback
+
 ```bash
 kubectl rollout undo deployment/my-inference
 kubectl rollout status deployment/my-inference

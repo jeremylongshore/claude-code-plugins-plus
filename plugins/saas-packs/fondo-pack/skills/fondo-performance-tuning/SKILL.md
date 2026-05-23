@@ -51,6 +51,7 @@ Examples:
 ### Batch CPA Communication
 
 Instead of replying to each question individually:
+
 1. Set aside 30 minutes weekly (e.g., Monday AM)
 2. Open Dashboard > Messages > Open Items
 3. Answer all outstanding questions in one session

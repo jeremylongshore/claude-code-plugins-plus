@@ -44,6 +44,7 @@ curl -s -X POST "https://api.navan.com/ta-auth/oauth/token" \
 ```
 
 **Rotation procedure:**
+
 1. Generate new credentials in Admin > Integrations (old ones remain valid)
 2. Deploy new credentials to secret manager
 3. Update application configuration to reference new secret version
@@ -120,6 +121,7 @@ curl -s -H "Authorization: Bearer $TOKEN" \
 ## Output
 
 A completed checklist with:
+
 - Pass/fail status for each domain
 - Verification command output proving each check
 - Identified gaps with remediation plan and owner

@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code
 # Figma CI Integration
 
 ## Overview
+
 Automate Figma API workflows in CI/CD: sync design tokens on schedule, export assets on PR, and validate design system consistency.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - `FIGMA_PAT` stored as GitHub secret
 - Design token extraction script (from `figma-core-workflow-a`)
@@ -33,6 +35,7 @@ Automate Figma API workflows in CI/CD: sync design tokens on schedule, export as
 ## Instructions
 
 ### Step 1: Scheduled Token Sync Workflow
+
 ```yaml
 # .github/workflows/figma-token-sync.yml
 name: Sync Figma Design Tokens
@@ -83,6 +86,7 @@ jobs:
 ```
 
 ### Step 2: Asset Export on PR
+
 ```yaml
 # .github/workflows/figma-asset-export.yml
 name: Export Figma Assets
@@ -120,6 +124,7 @@ jobs:
 ```
 
 ### Step 3: Design System Validation
+
 ```yaml
       - name: Validate design tokens
         run: |
@@ -143,6 +148,7 @@ jobs:
 ```
 
 ### Step 4: Store Figma Secrets
+
 ```bash
 # Add PAT as repository secret
 gh secret set FIGMA_PAT --body "figd_your-token-here"
@@ -154,12 +160,14 @@ gh variable set FIGMA_ICON_FRAME_ID --body "123:456"
 ```
 
 ## Output
+
 - Scheduled CI job syncing design tokens from Figma
 - Asset export triggered by config changes
 - Token validation preventing broken deployments
 - PR-based workflow for reviewing design changes
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | 403 in CI | PAT expired | Rotate secret: `gh secret set FIGMA_PAT` |
@@ -168,9 +176,11 @@ gh variable set FIGMA_ICON_FRAME_ID --body "123:456"
 | Stale cache | Node modules cached | Clear with `actions/cache` invalidation |
 
 ## Resources
+
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [GitHub Secrets](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions)
 - [Figma REST API](https://developers.figma.com/docs/rest-api/)
 
 ## Next Steps
+
 For deployment patterns, see `figma-deploy-integration`.

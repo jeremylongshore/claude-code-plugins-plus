@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Webhooks & Events
 
 ## Overview
+
 Integrate with Replit's event ecosystem: deployment lifecycle hooks, Replit Extensions API for workspace customization, and Agents & Automations for scheduled tasks and chatbots. Also covers external webhook endpoints hosted on Replit.
 
 ## Prerequisites
+
 - Replit account with Deployments enabled (Core or Teams)
 - For Extensions: familiarity with React and TypeScript
 - For Automations: Replit Agent access
@@ -37,6 +39,7 @@ Integrate with Replit's event ecosystem: deployment lifecycle hooks, Replit Exte
 ## Instructions
 
 ### Step 1: Deployment Lifecycle Monitoring
+
 Monitor deployment events by polling or building a status dashboard:
 
 ```typescript
@@ -95,6 +98,7 @@ function checkSecrets(): boolean {
 ```
 
 ### Step 2: External Webhook Receiver
+
 Host webhook endpoints on Replit to receive events from external services:
 
 ```typescript
@@ -164,6 +168,7 @@ export default router;
 ```
 
 ### Step 3: Replit Extensions
+
 Build custom IDE extensions that integrate into the Replit Workspace:
 
 ```typescript
@@ -202,6 +207,7 @@ Publishing an Extension:
 ```
 
 ### Step 4: Agents & Automations (Beta)
+
 Create automated workflows using natural language:
 
 ```markdown
@@ -228,6 +234,7 @@ Example automations:
 ```
 
 ### Step 5: Deployment Event Notifications
+
 Set up external monitoring for deployment status changes:
 
 ```typescript
@@ -262,6 +269,7 @@ process.on('SIGTERM', async () => {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Webhook not received | Repl sleeping | Use Deployments for always-on |
@@ -271,10 +279,12 @@ process.on('SIGTERM', async () => {
 | Webhook timeout | Processing too slow | Respond 200 immediately, process async |
 
 ## Resources
+
 - [Replit Extensions](https://docs.replit.com/extensions/)
 - [Replit Extensions API](https://docs.replit.com/extensions/extensions)
 - [Replit Deployments](https://docs.replit.com/hosting/deployments)
 - [Monitoring Deployments](https://docs.replit.com/cloud-services/deployments/monitoring-a-deployment)
 
 ## Next Steps
+
 For multi-environment setup, see `replit-multi-env-setup`.

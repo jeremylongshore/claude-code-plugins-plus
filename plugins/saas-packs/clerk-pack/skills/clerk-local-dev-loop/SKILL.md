@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Local Dev Loop
 
 ## Overview
+
 Configure an efficient local development workflow with Clerk authentication, including test users, hot reload, and mock auth for unit tests.
 
 ## Prerequisites
+
 - Clerk SDK installed (`clerk-install-auth` completed)
 - Development instance created in Clerk Dashboard
 - Node.js development environment
@@ -36,6 +38,7 @@ Configure an efficient local development workflow with Clerk authentication, inc
 ## Instructions
 
 ### Step 1: Configure Development Instance
+
 Create a separate Clerk development instance to isolate test data from production.
 
 ```bash
@@ -48,12 +51,14 @@ CLERK_DEBUG=true
 ```
 
 Clerk development instances provide:
+
 - No email verification required
 - Test phone numbers accepted
 - Relaxed rate limits
 - OAuth with test credentials
 
 ### Step 2: Set Up Test Users
+
 ```typescript
 // scripts/seed-test-users.ts
 import { createClerkClient } from '@clerk/backend'
@@ -84,11 +89,13 @@ seedTestUsers()
 ```
 
 Run with:
+
 ```bash
 npx tsx scripts/seed-test-users.ts
 ```
 
 ### Step 3: Configure Hot Reload
+
 ```typescript
 // next.config.ts — ensure Clerk works with hot reload
 const nextConfig = {
@@ -109,6 +116,7 @@ npx next dev --experimental-https
 ```
 
 ### Step 4: Development Scripts
+
 ```json
 // package.json scripts
 {
@@ -123,6 +131,7 @@ npx next dev --experimental-https
 ```
 
 ### Step 5: Mock Authentication for Tests
+
 ```typescript
 // test/helpers/clerk-mock.ts
 import { vi } from 'vitest'
@@ -168,12 +177,14 @@ describe('GET /api/data', () => {
 ```
 
 ## Output
+
 - Development instance with test keys configured
 - Test users seeded via script
 - HTTPS dev server running for Clerk compatibility
 - Vitest mock helpers for auth in unit tests
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Dev/prod key mismatch | Using `pk_live_` in dev | Switch to `pk_test_` / `sk_test_` keys |
@@ -184,6 +195,7 @@ describe('GET /api/data', () => {
 ## Examples
 
 ### Playwright Auth Fixture for E2E Tests
+
 ```typescript
 // e2e/fixtures/auth.ts
 import { test as base } from '@playwright/test'
@@ -202,9 +214,11 @@ export const test = base.extend({
 ```
 
 ## Resources
+
 - [Clerk Development Mode](https://clerk.com/docs/deployments/overview)
 - [Clerk Testing Guide](https://clerk.com/docs/testing/overview)
 - [Next.js HTTPS Dev](https://nextjs.org/docs/app/api-reference/cli/next#https-for-local-development)
 
 ## Next Steps
+
 Proceed to `clerk-sdk-patterns` for common SDK usage patterns.

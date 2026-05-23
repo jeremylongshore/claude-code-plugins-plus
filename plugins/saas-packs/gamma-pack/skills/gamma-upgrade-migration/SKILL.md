@@ -25,13 +25,16 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Gamma Upgrade & Migration
 
 ## Current State
+
 !`npm list 2>/dev/null | head -20`
 !`pip freeze 2>/dev/null | head -20`
 
 ## Overview
+
 Guide for upgrading Gamma SDK versions and migrating between API versions safely.
 
 ## Prerequisites
+
 - Existing Gamma integration
 - Version control (git)
 - Test environment available
@@ -39,6 +42,7 @@ Guide for upgrading Gamma SDK versions and migrating between API versions safely
 ## Instructions
 
 ### Step 1: Check Current Version
+
 ```bash
 set -euo pipefail
 # Node.js
@@ -52,6 +56,7 @@ npm outdated @gamma/sdk
 ```
 
 ### Step 2: Review Changelog
+
 ```bash
 set -euo pipefail
 # View changelog
@@ -62,6 +67,7 @@ npm info @gamma/sdk changelog
 ```
 
 ### Step 3: Upgrade SDK
+
 ```bash
 set -euo pipefail
 # Create upgrade branch
@@ -122,6 +128,7 @@ try {
 ```
 
 ### Step 5: Update Type Definitions
+
 ```typescript
 // Check for type changes
 // tsconfig.json - ensure strict mode catches issues
@@ -137,6 +144,7 @@ npx tsc --noEmit
 ```
 
 ### Step 6: Test Thoroughly
+
 ```bash
 set -euo pipefail
 # Run unit tests
@@ -154,6 +162,7 @@ g.ping().then(() => console.log('OK')).catch(console.error);
 ```
 
 ### Step 7: Deprecation Handling
+
 ```typescript
 // Enable deprecation warnings
 const gamma = new GammaClient({
@@ -170,6 +179,7 @@ await gamma.presentations.list();
 ```
 
 ## Migration Checklist
+
 - [ ] Current version documented
 - [ ] Changelog reviewed
 - [ ] Breaking changes identified
@@ -183,6 +193,7 @@ await gamma.presentations.list();
 - [ ] Production deployment planned
 
 ## Rollback Procedure
+
 ```bash
 set -euo pipefail
 # If issues occur after upgrade
@@ -194,6 +205,7 @@ npm install @gamma/sdk@1.x.x
 ```
 
 ## Resources
+
 - [Gamma Changelog](https://gamma.app/docs/changelog)
 - [Gamma Migration Guides](https://gamma.app/docs/migration)
 - [Gamma API Versioning](https://gamma.app/docs/versioning)

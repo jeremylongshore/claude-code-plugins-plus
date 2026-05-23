@@ -23,6 +23,7 @@ Split Recommendation:
 ```
 
 The optimization algorithm:
+
 1. Queries each venue for the full trade amount to measure price impact curves
 2. Uses gradient descent to find the allocation that minimizes total slippage
 3. Accounts for gas costs of multiple transactions (splitting adds ~$5-15 per venue)
@@ -31,27 +32,32 @@ The optimization algorithm:
 ## Output Mode Details
 
 **Quick Quote Mode:**
+
 - Best price across aggregators, output amount, effective rate, gas estimate, recommended venue
 
 **Comparison Mode (`--compare`):**
+
 - All venues ranked by effective rate (price minus gas)
 - Price impact percentage per venue
 - Gas costs compared in USD
 - Liquidity depth indicators (shallow/moderate/deep)
 
 **Route Analysis (`--routes`):**
+
 - Direct vs. multi-hop comparison
 - Hop-by-hop breakdown with intermediate tokens
 - Cumulative price impact at each hop
 - Gas cost per route type
 
 **Split Mode (`--split`):**
+
 - Optimal allocation percentages across venues
 - Per-venue output amounts
 - Total vs. single-venue comparison
 - Dollar savings estimate
 
 **MEV Assessment (`--mev-check`):**
+
 - Risk score: LOW/MEDIUM/HIGH
 - Estimated sandwich attack exposure in USD
 - Protection recommendations (Flashbots Protect, CoW Swap, private mempool)
@@ -60,12 +66,14 @@ The optimization algorithm:
 ## MEV Risk Scoring
 
 The MEV check analyzes:
+
 - **Token pair popularity**: High-volume pairs attract more MEV bots
 - **Trade size relative to pool**: Larger trades = more profitable to sandwich
 - **Current mempool activity**: Active searcher presence
 - **Slippage tolerance**: Higher tolerance = more extractable value
 
 Risk levels:
+
 - **LOW** (score 0-30): Safe to execute via public mempool
 - **MEDIUM** (score 31-70): Consider private transaction relay
 - **HIGH** (score 71-100): Use Flashbots Protect or CoW Swap batch auctions
@@ -73,6 +81,7 @@ Risk levels:
 ## API Configuration
 
 Edit `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
+
 ```yaml
 api_keys:
   oneinch: "your-1inch-api-key"    # Optional, increases rate limits

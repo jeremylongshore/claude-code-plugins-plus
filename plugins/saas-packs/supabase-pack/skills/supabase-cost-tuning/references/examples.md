@@ -1,6 +1,7 @@
-# Examples
+## Examples
 
 ### Quick Cost Check
+
 ```typescript
 // Estimate monthly cost for your usage
 const estimate = estimateSupabaseCost(yourMonthlyRequests);

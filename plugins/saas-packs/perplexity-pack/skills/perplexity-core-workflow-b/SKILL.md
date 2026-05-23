@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Core Workflow B: Multi-Query Research
 
 ## Overview
+
 Multi-turn research workflow using Perplexity Sonar API. Decomposes a broad topic into focused sub-queries, runs them with context continuity, deduplicates citations, and synthesizes a structured research document. Use `sonar` for fast passes and `sonar-pro` for deep dives.
 
 ## Prerequisites
+
 - Completed `perplexity-install-auth` setup
 - Familiarity with `perplexity-core-workflow-a`
 - `PERPLEXITY_API_KEY` set
@@ -34,6 +36,7 @@ Multi-turn research workflow using Perplexity Sonar API. Decomposes a broad topi
 ## Instructions
 
 ### Step 1: Conversational Research Session
+
 ```typescript
 import OpenAI from "openai";
 
@@ -89,6 +92,7 @@ class ResearchSession {
 ```
 
 ### Step 2: Batch Query Pipeline
+
 ```typescript
 interface ResearchPlan {
   topic: string;
@@ -137,6 +141,7 @@ async function conductResearch(plan: ResearchPlan): Promise<ResearchReport> {
 ```
 
 ### Step 3: Topic Decomposition
+
 ```typescript
 async function decomposeTopic(topic: string): Promise<string[]> {
   const response = await perplexity.chat.completions.create({
@@ -159,6 +164,7 @@ async function decomposeTopic(topic: string): Promise<string[]> {
 ```
 
 ### Step 4: Compile Research Report
+
 ```typescript
 function compileReport(report: ResearchReport): string {
   let md = `# Research: ${report.topic}\n\n`;
@@ -181,6 +187,7 @@ function compileReport(report: ResearchReport): string {
 ```
 
 ### Step 5: Full Pipeline
+
 ```typescript
 async function researchTopic(topic: string): Promise<string> {
   console.log(`Decomposing: ${topic}`);
@@ -199,6 +206,7 @@ console.log(markdown);
 ```
 
 ### Step 6: Python Multi-Query Research
+
 ```python
 import asyncio, os
 from openai import OpenAI
@@ -226,6 +234,7 @@ def research_topic(topic: str, questions: list[str]) -> dict:
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `429 Too Many Requests` | Batch queries too fast | Add 1-2s delay between queries |
@@ -234,14 +243,17 @@ def research_topic(topic: str, questions: list[str]) -> dict:
 | High cost | Using sonar-pro for all queries | Use sonar for decomposition, sonar-pro for deep dives |
 
 ## Output
+
 - Structured research document with multiple sections
 - Consolidated bibliography of all cited sources
 - Token usage for cost tracking
 - Conversation session with context continuity
 
 ## Resources
+
 - [Perplexity API Reference](https://docs.perplexity.ai/api-reference/chat-completions-post)
 - [Model Selection Guide](https://docs.perplexity.ai/getting-started/models)
 
 ## Next Steps
+
 For common errors, see `perplexity-common-errors`.

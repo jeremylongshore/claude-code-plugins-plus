@@ -20,6 +20,7 @@ Honeycomb ingests all `gen_ai.*` as first-class columns. Use the Query Builder
 or Honeycomb Query Language (triggered from API / Terraform).
 
 ### p95 latency per model
+
 ```
 VISUALIZE: P95(duration_ms)
 GROUP BY: gen_ai.request.model
@@ -27,6 +28,7 @@ WHERE: name = "LangGraph.invoke"
 ```
 
 ### Error rate
+
 ```
 VISUALIZE: RATE_MAX(error), COUNT
 GROUP BY: gen_ai.request.model, gen_ai.response.finish_reason
@@ -34,6 +36,7 @@ WHERE: name = "LangGraph.invoke"
 ```
 
 ### Cost per request (p50, p95)
+
 ```
 VISUALIZE: P50(gen_ai.usage.cost_usd), P95(gen_ai.usage.cost_usd)
 GROUP BY: gen_ai.request.model
@@ -41,6 +44,7 @@ WHERE: parent_id = "" (top-level spans only)
 ```
 
 ### TTFT (requires span event instrumentation — see genai-semantic-conventions.md)
+
 ```
 VISUALIZE: P95(meta.span_events["first_token"].time - start_time)
 GROUP BY: gen_ai.request.model
@@ -54,6 +58,7 @@ to traces via an `opentelemetry-exporter-prometheus` pipeline. Histogram metric
 `llm_request_duration_seconds` with labels `model`, `provider`, `status`:
 
 ### p95 latency per model (5-minute window)
+
 ```promql
 histogram_quantile(0.95,
   sum(rate(llm_request_duration_seconds_bucket[5m])) by (le, model)
@@ -61,6 +66,7 @@ histogram_quantile(0.95,
 ```
 
 ### p99 latency per model (5-minute window)
+
 ```promql
 histogram_quantile(0.99,
   sum(rate(llm_request_duration_seconds_bucket[5m])) by (le, model)
@@ -68,6 +74,7 @@ histogram_quantile(0.99,
 ```
 
 ### Error rate (5-minute rolling)
+
 ```promql
 sum(rate(llm_requests_total{status="error"}[5m])) by (model)
 /
@@ -75,11 +82,13 @@ sum(rate(llm_requests_total[5m])) by (model)
 ```
 
 ### Cost per minute (billing-accurate if cost attribute is set)
+
 ```promql
 sum(rate(llm_cost_usd_total[1m])) by (model, tenant_id) * 60
 ```
 
 ### TTFT p95 (requires separate `llm_ttft_seconds` histogram from callback)
+
 ```promql
 histogram_quantile(0.95,
   sum(rate(llm_ttft_seconds_bucket[5m])) by (le, model)
@@ -92,12 +101,14 @@ Datadog's LLM Observability product pre-computes these. If you are on APM only
 (no LLM add-on), query the raw spans:
 
 ### p95 latency
+
 ```
 @operation_name:LangGraph.invoke
 | measure @duration p95 by @gen_ai.request.model
 ```
 
 ### Error rate
+
 ```
 @operation_name:LangGraph.invoke @status:error
 /
@@ -105,6 +116,7 @@ Datadog's LLM Observability product pre-computes these. If you are on APM only
 ```
 
 ### Cost (requires custom metric from callback)
+
 ```
 avg:llm.cost{*} by {gen_ai.request.model}.as_count()
 ```
@@ -117,6 +129,7 @@ SRE. Example for a 99.5% latency SLO over a 30-day window (error budget = 0.5%,
 3.6 hours/month):
 
 ### Fast burn (page-worthy) — 14.4× burn, 1hr window
+
 ```promql
 (
   sum(rate(llm_request_duration_seconds_count{le="5"}[1h]))
@@ -124,9 +137,11 @@ SRE. Example for a 99.5% latency SLO over a 30-day window (error budget = 0.5%,
   sum(rate(llm_request_duration_seconds_count[1h]))
 ) < (1 - 14.4 * 0.005)
 ```
+
 Meaning: if we keep this p95-over-5s rate for a month, we burn 48% of budget.
 
 ### Slow burn (ticket-worthy) — 6× burn, 6hr window
+
 ```promql
 (
   sum(rate(llm_request_duration_seconds_count{le="5"}[6h]))
@@ -136,6 +151,7 @@ Meaning: if we keep this p95-over-5s rate for a month, we burn 48% of budget.
 ```
 
 ### Cost burn — fires when projected monthly cost exceeds budget
+
 ```promql
 sum(increase(llm_cost_usd_total[1d])) * 30 > 5000  # $5k/month budget
 ```

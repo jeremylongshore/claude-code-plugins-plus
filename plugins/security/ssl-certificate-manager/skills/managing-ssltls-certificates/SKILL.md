@@ -35,6 +35,7 @@ This skill empowers Claude to seamlessly interact with the ssl-certificate-manag
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Check the expiry date of an SSL/TLS certificate.
 - Renew an SSL/TLS certificate.
 - List all installed SSL/TLS certificates.
@@ -47,6 +48,7 @@ This skill activates when you need to:
 User request: "Check the expiry date of my SSL certificate for example.com"
 
 The skill will:
+
 1. Activate the ssl-certificate-manager plugin.
 2. Execute the command to check the expiry date for the specified domain.
 3. Display the expiry date to the user.
@@ -56,6 +58,7 @@ The skill will:
 User request: "Renew my SSL certificate for api.example.org"
 
 The skill will:
+
 1. Activate the ssl-certificate-manager plugin.
 2. Execute the command to renew the SSL certificate for the specified domain.
 3. Confirm the renewal process to the user.

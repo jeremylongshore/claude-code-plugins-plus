@@ -3,6 +3,7 @@
 ## Response Analysis
 
 ### Token Usage Tracking
+
 ```python
 class UsageTracker:
     def __init__(self):
@@ -43,6 +44,7 @@ tracker = UsageTracker()
 ```
 
 ### Latency Monitoring
+
 ```python
 import statistics
 

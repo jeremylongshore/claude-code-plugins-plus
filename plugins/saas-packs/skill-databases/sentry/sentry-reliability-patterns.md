@@ -10,6 +10,7 @@ sentry-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Build reliable Sentry integrations with graceful degradation, retry logic, circuit breaker patterns, and health checks to ensure monitoring uptime.
 **Workflow:** Implement during production hardening. Ensures the application continues functioning even if Sentry has issues.
 **Relates to:** Works with `sentry-load-scale` for high-volume. Connects to `sentry-advanced-troubleshooting` for diagnosis.

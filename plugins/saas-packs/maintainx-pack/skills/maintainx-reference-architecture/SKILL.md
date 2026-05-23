@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Reference Architecture
 
 ## Overview
+
 Production-grade architecture patterns for building scalable, maintainable integrations between MaintainX and enterprise systems (ERP, SCADA, data warehouses).
 
 ## Prerequisites
+
 - Understanding of distributed systems
 - Cloud platform experience (GCP, AWS, or Azure)
 - MaintainX API familiarity
@@ -286,12 +288,14 @@ function getClientForSite(siteId: string): MaintainXClient {
 ```
 
 ## Output
+
 - Event-driven architecture with Pub/Sub for decoupled processing
 - Bi-directional sync gateway with conflict resolution and audit trail
 - Analytics pipeline calculating maintenance KPIs (MTTR, PM compliance)
 - Multi-site architecture with per-site API key isolation
 
 ## Error Handling
+
 | Pattern | Failure Mode | Mitigation |
 |---------|-------------|------------|
 | Event-driven | Pub/Sub delivery failure | Dead letter queue, retry policy |
@@ -300,11 +304,13 @@ function getClientForSite(siteId: string): MaintainXClient {
 | Multi-site | One site API key expired | Independent health checks per site |
 
 ## Resources
+
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [Google Cloud Pub/Sub](https://cloud.google.com/pubsub/docs)
 - [Event-Driven Architecture](https://martinfowler.com/articles/event-driven.html)
 
 ## Next Steps
+
 For multi-environment setup, see `maintainx-multi-env-setup`.
 
 ## Examples

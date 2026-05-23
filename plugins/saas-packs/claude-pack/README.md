@@ -11,6 +11,7 @@
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `clade-install-auth` | Install and configure the Anthropic SDK for Claude API access |
@@ -27,6 +28,7 @@
 | `clade-upgrade-migration` | Migrate between SDK versions and API changes |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `clade-ci-integration` | CI/CD pipeline integration with Claude API |
@@ -37,6 +39,7 @@
 | `clade-reference-architecture` | Reference architectures for Claude-powered systems |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `clade-multi-env-setup` | Multi-environment configuration (dev/staging/prod) |
@@ -47,6 +50,7 @@
 | `clade-migration-deep-dive` | Complex migration scenarios and data transformation |
 
 ### Flagship+ Skills (X25-X30)
+
 | Skill | Description |
 |-------|-------------|
 | `clade-advanced-troubleshooting` | Advanced debugging for complex API issues |
@@ -57,6 +61,7 @@
 | `clade-known-pitfalls` | Known pitfalls and anti-patterns to avoid |
 
 ### Bonus Skills
+
 | Skill | Description |
 |-------|-------------|
 | `clade-core-workflow-a` | Core API workflow — messages, streaming, system prompts |

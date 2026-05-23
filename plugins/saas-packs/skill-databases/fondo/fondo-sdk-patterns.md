@@ -10,6 +10,7 @@ fondo-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Fondo SDK patterns
 **Workflow:** Part of the onboarding skill category for Fondo integration.
 **Relates to:** Other fondo skills in this pack.

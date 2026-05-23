@@ -19,9 +19,11 @@ compatibility: Designed for Claude Code
 # Anthropic Observability
 
 ## Overview
+
 Every `messages.create` call should be instrumented. Track tokens, latency, cost, model, and errors.
 
 ## Logging Wrapper
+
 ```typescript
 import Anthropic from '@claude-ai/sdk';
 
@@ -72,6 +74,7 @@ function estimateCost(model: string, usage: Anthropic.Usage): number {
 ```
 
 ## Key Metrics to Track
+
 | Metric | Source | Alert Threshold |
 |--------|--------|----------------|
 | Error rate | error logs | > 5% over 5 minutes |
@@ -82,32 +85,39 @@ function estimateCost(model: string, usage: Anthropic.Usage): number {
 | Token usage | input_tokens + output_tokens | > daily budget |
 
 ## Anthropic Console Monitoring
+
 - **Usage dashboard**: console.anthropic.com → Usage
 - **Spending limits**: console.anthropic.com → Settings → Limits
 - **API logs**: Not available via API — use your own logging
 
 ## Output
+
 - Every Claude API call logged with tokens, latency, cost estimate, and model
 - Error calls logged with request ID, status code, and error type
 - Metrics dashboarded: error rate, p95 latency, daily cost, 429/529 rates
 - Spending alerts configured in Anthropic console
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | API Error | Check error type and status code | See `clade-common-errors` |
 
 ## Examples
+
 See Logging Wrapper with `trackedCreate()`, `estimateCost()` function, Key Metrics table with alert thresholds, and Anthropic Console Monitoring section above.
 
 ## Resources
+
 - [Usage Dashboard](https://console.anthropic.com/settings/usage)
 - [Rate Limits](https://docs.anthropic.com/en/api/rate-limits)
 
 ## Next Steps
+
 See `clade-incident-runbook` for when things go wrong.
 
 ## Prerequisites
+
 - Completed `clade-install-auth`
 - Logging infrastructure (console, structured logs, or observability platform)
 - Production Claude integration to monitor
@@ -115,10 +125,13 @@ See `clade-incident-runbook` for when things go wrong.
 ## Instructions
 
 ### Step 1: Review the patterns below
+
 Each section contains production-ready code examples. Copy and adapt them to your use case.
 
 ### Step 2: Apply to your codebase
+
 Integrate the patterns that match your requirements. Test each change individually.
 
 ### Step 3: Verify
+
 Run your test suite to confirm the integration works correctly.

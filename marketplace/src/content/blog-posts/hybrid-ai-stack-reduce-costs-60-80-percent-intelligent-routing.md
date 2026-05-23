@@ -12,6 +12,7 @@ featured: false
 ## The Problem
 
 AI API costs add up fast:
+
 - Simple question: **$0.0009** per request
 - Medium explanation: **$0.0036** per request
 - Complex code generation: **$0.0159** per request
@@ -23,6 +24,7 @@ At **200,000 requests/month**, you're paying **$774/month** for cloud-only AI.
 ## The Solution: Hybrid AI Stack
 
 Intelligently route requests between:
+
 - **Local models** (CPU-based): TinyLlama, Phi-2, Mistral - $0.00 per request
 - **Cloud APIs**: Claude Sonnet - $0.003-0.015 per request
 
@@ -101,16 +103,19 @@ def select_model(complexity: float) -> str:
 ### Full Stack Components
 
 **Core Services:**
+
 - **API Gateway** (Flask + Gunicorn): HTTP entry point on port 8080
 - **Smart Router** (Python): Complexity estimation and routing logic
 - **Ollama** (Local LLM server): Runs TinyLlama, Phi-2, Mistral on CPU
 - **Redis**: Response caching for duplicate queries
 
 **Automation:**
+
 - **n8n** (Workflow engine): Orchestration, monitoring, batch processing
 - **PostgreSQL**: n8n workflow storage
 
 **Monitoring:**
+
 - **Prometheus**: Metrics collection and alerting
 - **Grafana**: Real-time dashboards for cost tracking
 - **Taskwarrior**: Task tracking for every routing decision
@@ -120,11 +125,13 @@ def select_model(complexity: float) -> str:
 ### Scenario 1: Established SaaS (50,000 requests/month)
 
 **Request Distribution:**
+
 - Simple (45%): 22,500 requests
 - Medium (35%): 17,500 requests
 - Complex (20%): 10,000 requests
 
 #### Cloud-Only Approach
+
 ```
 Simple:   22,500 × $0.0009 =  $20.25
 Medium:   17,500 × $0.0036 =  $63.00
@@ -134,6 +141,7 @@ Total:                       $173.25/month
 ```
 
 #### Hybrid Approach (Tier 2 VPS: $52/mo)
+
 ```
 VPS Cost:                       $52.00
 Simple → TinyLlama (22,500):    $0.00  (saved $20.25)
@@ -148,11 +156,13 @@ Savings: $31.25/month (18% reduction) ✅
 ### Scenario 2: High-Volume Enterprise (200,000 requests/month)
 
 **Request Distribution:**
+
 - Simple (40%): 80,000 requests @ $0.0009
 - Medium (35%): 70,000 requests @ $0.0036
 - Complex (25%): 50,000 requests @ $0.009
 
 #### Cloud-Only Approach
+
 ```
 Simple:   80,000 × $0.0009 =   $72.00
 Medium:   70,000 × $0.0036 =  $252.00
@@ -162,6 +172,7 @@ Total:                        $774.00/month
 ```
 
 #### Hybrid Approach (Tier 3 VPS: $120/mo)
+
 ```
 VPS Cost:                       $120.00
 Simple → TinyLlama:             $0.00  (saved $72.00)
@@ -188,6 +199,7 @@ Savings: $474.00/month (61% reduction) ✅✅✅
 ## 5-Minute Quick Start
 
 ### Prerequisites
+
 - Ubuntu 22.04+ (or compatible Linux)
 - 4GB+ RAM (15GB recommended)
 - Sudo access
@@ -258,6 +270,7 @@ REDIS_CACHE_TTL=86400  # 24 hours
 **Additional savings**: 10-30%
 
 **Example (50K requests/month):**
+
 ```
 Without caching: $142/month
 With 20% cache hit rate: $113.60/month
@@ -309,6 +322,7 @@ sum(rate(api_gateway_cost_total[1h])) * 730
 ### Grafana Dashboard
 
 Key panels:
+
 1. **Total Monthly Cost**: Real-time cost tracking
 2. **Cost by Model**: Pie chart showing routing distribution
 3. **Savings vs Cloud-Only**: Calculated panel showing actual savings
@@ -355,12 +369,14 @@ tw_cost_report
 ## Technology Stack
 
 ### Backend
+
 - **Python 3.11+**: Core language
 - **Flask 3.1**: Web framework
 - **Gunicorn**: WSGI server
 - **Anthropic SDK**: Claude API client
 
 ### Infrastructure
+
 - **Docker**: Containerization
 - **Docker Compose**: Orchestration
 - **Ollama**: Local LLM server
@@ -368,11 +384,13 @@ tw_cost_report
 - **PostgreSQL**: n8n database
 
 ### Monitoring
+
 - **Prometheus**: Metrics collection
 - **Grafana**: Visualization
 - **Taskwarrior**: Task tracking
 
 ### Models
+
 - **TinyLlama 1.1B**: Ultra-lightweight (700MB)
 - **Phi-2 2.7B**: Quality lightweight (1.6GB)
 - **Mistral 7B**: High-quality (4GB)
@@ -487,6 +505,7 @@ calculate_roi(50000, 0.45, 0.35, 0.2, tier=2)
 **Full source code**: [Hybrid-ai-stack-intent-solutions](https://github.com/jeremylongshore/Hybrid-ai-stack-intent-solutions)
 
 **Documentation**:
+
 - Architecture guide
 - Deployment instructions
 - Cost optimization strategies
@@ -501,9 +520,7 @@ calculate_roi(50000, 0.45, 0.35, 0.2, tier=2)
 4. **Enable caching** for additional 10-30% savings
 5. **Scale up** to Tier 3 when you exceed 100K requests/month
 
-
 **Questions or feedback**: [jeremy@intentsolutions.io](mailto:jeremy@intentsolutions.io)
 **GitHub**: [@jeremylongshore](https://github.com/jeremylongshore)
 
 *Open source project maintained by Intent Solutions as an educational resource for cost-effective AI infrastructure.*
-

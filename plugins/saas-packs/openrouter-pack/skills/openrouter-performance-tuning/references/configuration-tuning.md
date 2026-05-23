@@ -3,6 +3,7 @@
 ## Configuration Tuning
 
 ### Optimal Parameters
+
 ```python
 PERFORMANCE_CONFIGS = {
     "latency_optimized": {

@@ -21,13 +21,17 @@ User asks about framework-specific patterns, component architecture, or stack gu
 ## Workflow
 
 1. **Detect stack** from project files (package.json, imports, config files)
+
    ```bash
    grep -r "\"react\"\|\"vue\"\|\"svelte\"\|\"next\"\|\"nuxt\"\|\"astro\"" package.json 2>/dev/null | head -5
    ```
+
 2. **Search stack knowledge base:**
+
    ```bash
    python3 -m prism_agent.uiux search --domain stacks --query "{stack_name}" --limit 5
    ```
+
 3. **Cross-reference version** — confirm guidelines match the detected major version
 4. **Output** framework-specific guidelines with code examples
 

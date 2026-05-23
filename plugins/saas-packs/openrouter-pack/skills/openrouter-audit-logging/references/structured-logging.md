@@ -3,6 +3,7 @@
 ## Structured Logging
 
 ### JSON Lines Format
+
 ```python
 # audit_2024-01-15.jsonl example:
 {
@@ -25,6 +26,7 @@
 ```
 
 ### Cloud Logging Integration
+
 ```python
 # Google Cloud Logging
 from google.cloud import logging as cloud_logging

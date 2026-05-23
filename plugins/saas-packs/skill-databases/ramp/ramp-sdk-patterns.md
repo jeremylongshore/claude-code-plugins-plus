@@ -10,6 +10,7 @@ ramp-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Ramp SDK patterns
 **Workflow:** Part of the onboarding skill category for Ramp integration.
 **Relates to:** Other ramp skills in this pack.

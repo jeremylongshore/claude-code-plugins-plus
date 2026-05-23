@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Deploy Integration
 
 ## Overview
+
 Deploy Clerk-authenticated applications to Vercel, Netlify, Railway, and other hosting platforms. Covers environment variable configuration, domain setup, and webhook endpoint configuration.
 
 ## Prerequisites
+
 - Clerk production instance with `pk_live_` / `sk_live_` keys
 - Production domain configured
 - Hosting platform account
@@ -35,6 +37,7 @@ Deploy Clerk-authenticated applications to Vercel, Netlify, Railway, and other h
 ## Instructions
 
 ### Step 1: Vercel Deployment
+
 ```bash
 # Add Clerk env vars to Vercel
 vercel env add NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY production
@@ -50,6 +53,7 @@ vercel env add CLERK_SECRET_KEY preview
 ```
 
 Configure Clerk Dashboard for Vercel:
+
 1. Go to **Dashboard > Domains** and add your production domain
 2. Set **Home URL**: `https://myapp.com`
 3. Set **Sign-in URL**: `https://myapp.com/sign-in`
@@ -57,6 +61,7 @@ Configure Clerk Dashboard for Vercel:
 5. Set **After sign-in URL**: `https://myapp.com/dashboard`
 
 ### Step 2: Netlify Deployment
+
 ```bash
 # Add env vars via Netlify CLI
 netlify env:set NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY pk_live_...
@@ -64,6 +69,7 @@ netlify env:set CLERK_SECRET_KEY sk_live_...
 ```
 
 For Netlify Functions (serverless API routes):
+
 ```typescript
 // netlify/functions/clerk-auth.ts
 import { createClerkClient } from '@clerk/backend'
@@ -89,6 +95,7 @@ export async function handler(event: any) {
 ```
 
 ### Step 3: Railway Deployment
+
 ```bash
 # Set env vars via Railway CLI
 railway variables set NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_...
@@ -97,6 +104,7 @@ railway variables set CLERK_WEBHOOK_SECRET=whsec_...
 ```
 
 ### Step 4: Docker Deployment
+
 ```dockerfile
 # Dockerfile
 FROM node:20-alpine AS builder
@@ -136,6 +144,7 @@ services:
 ```
 
 ### Step 5: Post-Deployment Verification
+
 ```bash
 #!/bin/bash
 # scripts/verify-deployment.sh
@@ -162,6 +171,7 @@ echo "Webhook endpoint: HTTP $STATUS (400/405 expected without valid payload)"
 ```
 
 ## Output
+
 - Platform-specific environment variables configured
 - Clerk Dashboard domains and URLs set for production
 - Docker multi-stage build with proper secret handling
@@ -169,6 +179,7 @@ echo "Webhook endpoint: HTTP $STATUS (400/405 expected without valid payload)"
 - Webhook endpoint accessible at production URL
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 500 on sign-in page | Missing `CLERK_SECRET_KEY` | Add secret key to platform env vars |
@@ -180,6 +191,7 @@ echo "Webhook endpoint: HTTP $STATUS (400/405 expected without valid payload)"
 ## Examples
 
 ### Vercel Preview Deployment with Clerk
+
 ```bash
 # Configure Clerk for Vercel preview deployments
 # Use test keys for preview, live keys for production
@@ -190,9 +202,11 @@ vercel env add CLERK_SECRET_KEY production                   # sk_live_...
 ```
 
 ## Resources
+
 - [Deploy to Vercel](https://clerk.com/docs/deployments/deploy-to-vercel)
 - [Deploy to Netlify](https://clerk.com/docs/deployments/deploy-to-netlify)
 - [Clerk Domain Configuration](https://clerk.com/docs/deployments/set-up-your-domain)
 
 ## Next Steps
+
 Proceed to `clerk-webhooks-events` for webhook configuration.

@@ -17,6 +17,7 @@ Lindy AI is a no-code/low-code platform for building AI agents ("Lindies") that 
 ## Skills (24)
 
 ### Standard (S01-S12)
+
 | Skill | What It Covers |
 |-------|---------------|
 | `lindy-install-auth` | API keys, webhook secrets, SDK setup, plan tiers |
@@ -33,6 +34,7 @@ Lindy AI is a no-code/low-code platform for building AI agents ("Lindies") that 
 | `lindy-upgrade-migration` | Workspace migration, webhook reconfiguration, parallel runs |
 
 ### Pro (P13-P18)
+
 | Skill | What It Covers |
 |-------|---------------|
 | `lindy-ci-integration` | GitHub Actions, webhook handler tests, smoke tests |
@@ -43,6 +45,7 @@ Lindy AI is a no-code/low-code platform for building AI agents ("Lindies") that 
 | `lindy-reference-architecture` | Webhook integration, event pipelines, multi-agent, chat+KB, scheduled |
 
 ### Flagship (F19-F24)
+
 | Skill | What It Covers |
 |-------|---------------|
 | `lindy-multi-env-setup` | Workspace isolation, environment configs, secret management, CI/CD |

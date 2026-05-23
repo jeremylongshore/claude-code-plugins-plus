@@ -10,6 +10,7 @@ fathom-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Fathom common errors
 **Workflow:** Part of the operations skill category for Fathom integration.
 **Relates to:** Other fathom skills in this pack.

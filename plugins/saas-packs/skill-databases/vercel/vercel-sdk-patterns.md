@@ -10,6 +10,7 @@ vercel-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Vercel SDK patterns including singleton client, error handling, retry logic, and Zod validation.
 **Workflow:** Reference during code development and code review to ensure patterns meet production standards.
 **Relates to:** Builds on vercel-local-dev-loop; patterns are used in vercel-deploy-preview and vercel-edge-functions

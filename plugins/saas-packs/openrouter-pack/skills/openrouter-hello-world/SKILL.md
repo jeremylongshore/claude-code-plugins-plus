@@ -61,6 +61,7 @@ curl -s https://openrouter.ai/api/v1/chat/completions \
 ```
 
 Key fields:
+
 - `id` (`gen-...`) -- use this to query generation stats via `GET /api/v1/generation?id=gen-abc123xyz`
 - `model` -- confirms which model actually served the request
 - `usage` -- token counts for cost calculation

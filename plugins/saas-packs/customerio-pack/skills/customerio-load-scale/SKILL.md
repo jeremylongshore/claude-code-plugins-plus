@@ -127,6 +127,7 @@ export function teardown() {
 ```
 
 Run:
+
 ```bash
 k6 run --env CUSTOMERIO_SITE_ID="$CUSTOMERIO_SITE_ID" \
        --env CUSTOMERIO_TRACK_API_KEY="$CUSTOMERIO_TRACK_API_KEY" \

@@ -10,6 +10,7 @@ quicknode-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply QuickNode security best practices
 **Workflow:** Part of the operations skill category for QuickNode integration.
 **Relates to:** Other quicknode skills in this pack.

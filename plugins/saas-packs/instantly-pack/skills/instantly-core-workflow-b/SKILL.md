@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Core Workflow B: Warmup & Analytics Pipeline
 
 ## Overview
+
 Manage the email account warmup lifecycle and campaign analytics. Warmup builds sender reputation through controlled email exchanges across Instantly's 4.2M+ account network before you start cold outreach. This workflow covers enabling warmup, monitoring warmup health, pulling campaign analytics, and daily send tracking.
 
 ## Prerequisites
+
 - Completed `instantly-install-auth` setup
 - Email accounts connected in Instantly (IMAP/SMTP or Google/Microsoft OAuth)
 - API key with `accounts:update` and `campaigns:read` scopes
@@ -37,6 +39,7 @@ Manage the email account warmup lifecycle and campaign analytics. Warmup builds 
 ## Instructions
 
 ### Step 1: Enable Warmup on Email Accounts
+
 ```typescript
 import { instantly } from "./src/instantly";
 
@@ -76,6 +79,7 @@ await instantly("/accounts/warmup/enable", {
 ```
 
 ### Step 2: Configure Warmup Settings
+
 ```typescript
 // PATCH account to tune warmup parameters
 async function configureWarmup(email: string) {
@@ -104,6 +108,7 @@ async function configureWarmup(email: string) {
 ```
 
 ### Step 3: Monitor Warmup Health
+
 ```typescript
 interface WarmupAnalytics {
   email: string;
@@ -137,6 +142,7 @@ async function checkWarmupHealth(emails: string[]) {
 ```
 
 ### Step 4: Pull Campaign Analytics
+
 ```typescript
 // Aggregate analytics for one or more campaigns
 async function getCampaignAnalytics(campaignIds: string[]) {
@@ -187,6 +193,7 @@ async function getStepAnalytics(campaignId: string) {
 ```
 
 ### Step 5: Test Account Vitals
+
 ```typescript
 async function testAccountVitals(emails: string[]) {
   const vitals = await instantly<Array<{
@@ -204,6 +211,7 @@ async function testAccountVitals(emails: string[]) {
 ```
 
 ## Key API Endpoints Used
+
 | Method | Path | Purpose |
 |--------|------|---------|
 | `POST` | `/accounts/warmup/enable` | Start warmup (background job) |
@@ -218,6 +226,7 @@ async function testAccountVitals(emails: string[]) {
 | `GET` | `/background-jobs/{id}` | Poll async job status |
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Warmup not starting | SMTP/IMAP credentials invalid | Run vitals test, fix credentials |
@@ -227,9 +236,11 @@ async function testAccountVitals(emails: string[]) {
 | Background job `failed` | Invalid email in batch | Retry failed emails individually |
 
 ## Resources
+
 - [Instantly Email Warmup](https://instantly.ai/email-warmup)
 - [Account Endpoints](https://developer.instantly.ai/api/v2/account)
 - [Analytics Endpoints](https://developer.instantly.ai/api/v2/analytics)
 
 ## Next Steps
+
 For lead management and list operations, see `instantly-data-handling`.

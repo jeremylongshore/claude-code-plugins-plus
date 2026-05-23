@@ -190,6 +190,7 @@ Terraform tracks infrastructure state in a `.tfstate` file.
 ### Remote State (Production)
 
 **Google Cloud Storage:**
+
 ```hcl
 # backend.tf
 terraform {
@@ -201,6 +202,7 @@ terraform {
 ```
 
 **AWS S3:**
+
 ```hcl
 terraform {
   backend "s3" {
@@ -254,6 +256,7 @@ terraform/
 ### Creating a Module
 
 **modules/ml-training-vm/main.tf:**
+
 ```hcl
 resource "google_compute_instance" "training_vm" {
   name         = "${var.name_prefix}-training-vm"
@@ -280,6 +283,7 @@ resource "google_compute_instance" "training_vm" {
 ```
 
 **modules/ml-training-vm/variables.tf:**
+
 ```hcl
 variable "name_prefix" {
   description = "Prefix for resource names"
@@ -307,6 +311,7 @@ variable "environment" {
 ### Using a Module
 
 **environments/prod/main.tf:**
+
 ```hcl
 module "training_vm" {
   source = "../../modules/ml-training-vm"
@@ -460,6 +465,7 @@ terraform workspace show
 ```
 
 **Use in configuration:**
+
 ```hcl
 locals {
   environment = terraform.workspace
@@ -482,6 +488,7 @@ resource "google_compute_instance" "app" {
 ### 2. Dependencies
 
 **Implicit dependency (recommended):**
+
 ```hcl
 resource "google_storage_bucket" "ml_data" {
   name = "ml-training-data"
@@ -495,6 +502,7 @@ resource "google_storage_bucket_object" "dataset" {
 ```
 
 **Explicit dependency:**
+
 ```hcl
 resource "google_compute_instance" "training_vm" {
   name = "training-vm"
@@ -661,6 +669,7 @@ output "bigquery_dataset" {
 ```
 
 **variables.tf:**
+
 ```hcl
 variable "project_id" {
   description = "GCP Project ID"
@@ -702,6 +711,7 @@ variable "admin_email" {
 ```
 
 **terraform.tfvars:**
+
 ```hcl
 project_id       = "my-ai-project"
 region           = "us-central1"
@@ -718,6 +728,7 @@ admin_email      = "admin@example.com"
 **Problem**: Multiple team members modifying infrastructure simultaneously
 
 **Solution**: Use remote state with locking
+
 ```hcl
 terraform {
   backend "gcs" {
@@ -732,6 +743,7 @@ terraform {
 **Problem**: Credentials and secrets in code
 
 **Solution**: Use variables and secret management
+
 ```hcl
 # Bad
 resource "google_sql_database_instance" "db" {
@@ -749,6 +761,7 @@ resource "google_sql_database_instance" "db" {
 **Problem**: Provider updates break infrastructure
 
 **Solution**: Pin provider versions
+
 ```hcl
 terraform {
   required_providers {
@@ -800,15 +813,18 @@ terraform output
 ## Learning Resources
 
 ### Official Documentation
+
 - [Terraform Documentation](https://www.terraform.io/docs)
 - [Terraform Registry](https://registry.terraform.io/)
 - [Google Provider Docs](https://registry.terraform.io/providers/hashicorp/google/latest/docs)
 
 ### Best Practices
+
 - [Terraform Best Practices](https://www.terraform-best-practices.com/)
 - [Google Cloud Architecture Center](https://cloud.google.com/architecture)
 
 ### Tutorials
+
 - [HashiCorp Learn](https://learn.hashicorp.com/terraform)
 - [Google Cloud Terraform Tutorials](https://cloud.google.com/docs/terraform)
 
@@ -830,9 +846,7 @@ terraform output
 4. Add automated testing with `terraform validate` and `tflint`
 5. Explore advanced features like `for_each` and dynamic blocks
 
-
 **Questions or feedback**: [jeremy@intentsolutions.io](mailto:jeremy@intentsolutions.io)
 **GitHub**: [@jeremylongshore](https://github.com/jeremylongshore)
 
 *Educational resource from Intent Solutions for AI infrastructure and DevOps practitioners.*
-

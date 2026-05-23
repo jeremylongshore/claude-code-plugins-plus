@@ -3,6 +3,7 @@
 ## Cost Optimization Strategies
 
 ### 1. Model Selection
+
 ```python
 def select_cost_effective_model(
     required_quality: str,
@@ -39,6 +40,7 @@ def select_cost_effective_model(
 ```
 
 ### 2. Duration Optimization
+
 ```python
 def optimize_duration(content_type: str) -> int:
     """Get optimal duration for content type."""
@@ -60,6 +62,7 @@ def optimize_duration(content_type: str) -> int:
 ```
 
 ### 3. Resolution Strategy
+
 ```python
 def select_resolution(target_platform: str) -> str:
     """Select appropriate resolution for platform."""
@@ -78,6 +81,7 @@ def select_resolution(target_platform: str) -> str:
 ```
 
 ### 4. Batch Planning
+
 ```python
 def plan_batch_generation(
     videos: list[dict],

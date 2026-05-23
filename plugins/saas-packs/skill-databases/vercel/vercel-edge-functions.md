@@ -10,6 +10,7 @@ vercel-edge-functions/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Build and deploy Edge Functions for ultra-low latency API routes running close to users worldwide.
 **Workflow:** Secondary workflow after deploy-preview - used when APIs require minimal latency globally.
 **Relates to:** Complements vercel-deploy-preview; performance optimizations extend to vercel-performance-tuning

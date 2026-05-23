@@ -399,6 +399,7 @@ HubSpot has no bulk-delete API. Archive (soft-delete) is the only programmatic c
 ### Why the ID map is load-bearing
 
 Without the ID map, rollback requires:
+
 1. Exporting all contacts from HubSpot after the migration
 2. Filtering to records where `salesforce_id` matches the migration run
 3. Extracting HubSpot IDs from that export

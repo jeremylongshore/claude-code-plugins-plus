@@ -195,6 +195,7 @@ print("Lifecycle policies applied")
 ## Output
 
 Successful completion produces:
+
 - A versioned Object Storage bucket with no public access
 - Simple upload for small files and UploadManager for large files (automatic multipart)
 - PAR URLs with explicit expiry and audit/revocation workflow

@@ -31,6 +31,7 @@ This skill empowers Claude to leverage the computer-vision-processor plugin to a
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Analyze an image for specific objects or features.
 - Classify an image into predefined categories.
 - Segment an image to identify different regions or objects.
@@ -42,6 +43,7 @@ This skill activates when you need to:
 User request: "Analyze this image and identify all the cars and pedestrians."
 
 The skill will:
+
 1. Generate code to perform object detection on the provided image using the computer-vision-processor plugin.
 2. Return a list of bounding boxes and labels for each detected car and pedestrian.
 
@@ -50,6 +52,7 @@ The skill will:
 User request: "Classify this image. Is it a cat or a dog?"
 
 The skill will:
+
 1. Generate code to perform image classification on the provided image using the computer-vision-processor plugin.
 2. Return the classification result (e.g., "cat" or "dog") along with a confidence score.
 

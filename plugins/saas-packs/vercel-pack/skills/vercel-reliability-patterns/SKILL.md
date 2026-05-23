@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Reliability Patterns
 
 ## Overview
+
 Build fault-tolerant Vercel deployments with circuit breakers, retry logic, graceful degradation, and instant rollback integration. Addresses reliability at two levels: function-level resilience (protecting against dependency failures) and deployment-level resilience (protecting against bad deploys).
 
 ## Prerequisites
+
 - Vercel project deployed to production
 - Understanding of failure modes in serverless
 - External dependencies (databases, APIs) identified
@@ -37,6 +39,7 @@ Build fault-tolerant Vercel deployments with circuit breakers, retry logic, grac
 ## Instructions
 
 ### Step 1: Circuit Breaker for External Dependencies
+
 ```typescript
 // lib/circuit-breaker.ts
 type CircuitState = 'CLOSED' | 'OPEN' | 'HALF_OPEN';
@@ -104,6 +107,7 @@ export default async function handler(req, res) {
 **Important for serverless:** Circuit breaker state lives in a single function instance. Different instances have independent circuits. For global circuit state, use Vercel KV or Edge Config.
 
 ### Step 2: Retry with Exponential Backoff
+
 ```typescript
 // lib/retry.ts
 interface RetryOptions {
@@ -154,6 +158,7 @@ const data = await withRetry(
 ```
 
 ### Step 3: Graceful Degradation with Stale Cache
+
 ```typescript
 // api/products.ts — serve stale data when primary source is down
 import { get, set } from '@vercel/kv';
@@ -191,6 +196,7 @@ export default async function handler(req, res) {
 ```
 
 ### Step 4: Idempotency Keys for Mutations
+
 ```typescript
 // api/orders/route.ts — idempotent order creation
 import { NextRequest, NextResponse } from 'next/server';
@@ -233,6 +239,7 @@ export async function POST(request: NextRequest) {
 ```
 
 ### Step 5: Health Check with Dependency Status
+
 ```typescript
 // api/health/route.ts
 export const dynamic = 'force-dynamic';
@@ -289,6 +296,7 @@ export async function GET() {
 ```
 
 ### Step 6: Deployment-Level Resilience
+
 ```bash
 # Instant rollback on health check failure (CI integration)
 DEPLOY_URL=$(vercel --prod)
@@ -314,6 +322,7 @@ echo "Deployment healthy"
 | Instant rollback | Deployment regression | `vercel rollback` in CI |
 
 ## Output
+
 - Circuit breaker protecting all external dependency calls
 - Retry logic with exponential backoff for transient failures
 - Graceful degradation serving stale data when primary fails
@@ -321,6 +330,7 @@ echo "Deployment healthy"
 - Automated health check + rollback pipeline
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Circuit opens too aggressively | Threshold too low | Increase failure threshold (e.g., 5 → 10) |
@@ -330,10 +340,12 @@ echo "Deployment healthy"
 | Rollback reverts good deployment | Flaky health check | Add retry to health check before rollback |
 
 ## Resources
+
 - [Vercel Instant Rollback](https://vercel.com/docs/instant-rollback)
 - [Vercel KV](https://vercel.com/docs/storage/vercel-kv)
 - [Edge Config](https://vercel.com/docs/edge-config)
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
 
 ## Next Steps
+
 For policy guardrails, see `vercel-policy-guardrails`.

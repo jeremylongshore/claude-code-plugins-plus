@@ -10,6 +10,7 @@ juicebox-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Juicebox anti-patterns
 **Workflow:** Part of the enterprise skill category for Juicebox integration.
 **Relates to:** Other juicebox skills in this pack.

@@ -10,6 +10,7 @@ anthropic-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Anthropic core feature integration
 **Workflow:** Part of the onboarding skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

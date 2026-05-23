@@ -10,6 +10,7 @@ vercel-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute production deployment checklist including pre-flight checks, gradual rollout, and rollback procedures.
 **Workflow:** Used before every production deployment to ensure readiness and safe rollout.
 **Relates to:** Culmination of operations skills; leads to vercel-upgrade-migration for version changes

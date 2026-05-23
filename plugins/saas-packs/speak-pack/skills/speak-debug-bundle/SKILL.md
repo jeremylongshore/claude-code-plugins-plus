@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Speak Debug Bundle
 
 ## Overview
+
 Collect diagnostic information for Speak API issues: auth verification, audio format validation, session inspection, and network testing.
 
 ## Prerequisites
+
 - Completed `speak-install-auth` setup
 - Valid API credentials configured
 - ffmpeg installed for audio processing
@@ -33,10 +35,12 @@ Collect diagnostic information for Speak API issues: auth verification, audio fo
 ## Instructions
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'N/A'`
 !`ffmpeg -version 2>/dev/null | head -1 || echo 'ffmpeg not installed'`
 
 ### Step 1: Auth Diagnostic
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -56,6 +60,7 @@ echo "SPEAK_APP_ID set: $([ -n \"${SPEAK_APP_ID:-}\" ] && echo 'yes' || echo 'no
 ```
 
 ### Step 2: Audio Format Validator
+
 ```typescript
 import { execSync } from 'child_process';
 
@@ -83,6 +88,7 @@ function validateAudio(filePath: string): { valid: boolean; issues: string[] } {
 ```
 
 ### Step 3: Network Connectivity
+
 ```bash
 echo -e "\n--- Network ---"
 curl -s -o /dev/null -w "API: HTTP %{http_code} in %{time_total}s\n" \
@@ -95,11 +101,13 @@ curl -s -o /dev/null -w "OpenAI: HTTP %{http_code} in %{time_total}s\n" \
 ```
 
 ## Output
+
 - Bundle implementation complete
 - Speak API integration verified
 - Production-ready patterns applied
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY environment variable |
@@ -108,11 +116,13 @@ curl -s -o /dev/null -w "OpenAI: HTTP %{http_code} in %{time_total}s\n" \
 | Session expired | Timeout after 30 min | Start a new conversation session |
 
 ## Resources
+
 - [Speak Website](https://speak.com)
 - [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
 - [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
 
 ## Next Steps
+
 See `speak-prod-checklist` for production readiness.
 
 ## Examples

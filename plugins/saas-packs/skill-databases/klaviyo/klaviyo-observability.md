@@ -10,6 +10,7 @@ klaviyo-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Klaviyo monitoring and observability
 **Workflow:** Part of the enterprise skill category for Klaviyo integration.
 **Relates to:** Other klaviyo skills in this pack.

@@ -29,12 +29,14 @@ Go-live checklist for SalesLoft API integrations covering auth, error handling, 
 ## Pre-Launch Checklist
 
 ### Authentication & Secrets
+
 - [ ] Production OAuth app created (separate from dev/staging)
 - [ ] Tokens stored in secret manager (AWS Secrets Manager, GCP Secret Manager, Vault)
 - [ ] Token refresh logic tested (simulated expired token)
 - [ ] Webhook signing secret rotated from dev value
 
 ### Error Handling
+
 - [ ] 401 triggers automatic token refresh (not crash)
 - [ ] 429 handled with backoff using `Retry-After` header
 - [ ] 5xx retried with exponential backoff (max 3 attempts)
@@ -42,12 +44,14 @@ Go-live checklist for SalesLoft API integrations covering auth, error handling, 
 - [ ] Circuit breaker prevents cascade during SalesLoft outages
 
 ### Rate Limiting
+
 - [ ] Cost-based budget calculated for expected volume
 - [ ] Deep pagination avoided (page > 100 costs 3-30x)
 - [ ] Bulk operations use `p-queue` or similar throttle
 - [ ] Rate limit headers logged for capacity planning
 
 ### Monitoring & Alerting
+
 ```typescript
 // Health check endpoint
 app.get('/health', async (req, res) => {
@@ -71,6 +75,7 @@ app.get('/health', async (req, res) => {
 - [ ] Latency p99 tracked (baseline: 300ms reads, 500ms writes)
 
 ### Data Integrity
+
 - [ ] Idempotency keys on all create/update operations
 - [ ] Duplicate detection by email before person creation
 - [ ] Webhook events deduplicated by event ID

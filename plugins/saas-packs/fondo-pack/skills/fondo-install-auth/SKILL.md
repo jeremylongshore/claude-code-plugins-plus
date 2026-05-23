@@ -73,6 +73,7 @@ Fondo Dashboard > Integrations > Banking
 ### Step 5: Verify Connection
 
 After connecting, verify in Dashboard > Integrations:
+
 - Green check = connected and syncing
 - Yellow warning = needs re-authorization
 - Red X = connection failed, re-connect needed

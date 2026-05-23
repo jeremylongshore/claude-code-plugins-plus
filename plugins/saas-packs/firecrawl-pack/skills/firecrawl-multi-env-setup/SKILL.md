@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Multi-Environment Setup
 
 ## Overview
+
 Firecrawl's credit-based pricing makes environment separation critical. Development should use self-hosted Firecrawl or strict limits to avoid burning production credits during testing. This skill covers per-environment config, self-hosted Docker for dev, and credit budget enforcement.
 
 ## Environment Strategy
@@ -39,6 +40,7 @@ Firecrawl's credit-based pricing makes environment separation critical. Developm
 ## Instructions
 
 ### Step 1: Environment-Aware Configuration
+
 ```typescript
 // config/firecrawl.ts
 import FirecrawlApp from "@mendable/firecrawl-js";
@@ -94,6 +96,7 @@ export function getFirecrawl(): FirecrawlApp {
 ```
 
 ### Step 2: Self-Hosted Firecrawl for Development
+
 ```yaml
 # docker-compose.dev.yml
 services:
@@ -127,6 +130,7 @@ docker compose -f docker-compose.dev.yml up -d
 ```
 
 ### Step 3: Credit-Safe Scraping Wrapper
+
 ```typescript
 // lib/firecrawl-service.ts
 import { getFirecrawl, getConfig } from "../config/firecrawl";
@@ -155,6 +159,7 @@ export async function safeCrawl(url: string, customLimit?: number) {
 ```
 
 ### Step 4: Environment Variables
+
 ```bash
 # .env.local (development — uses self-hosted, zero credits)
 FIRECRAWL_API_KEY_DEV=fc-localdev
@@ -169,6 +174,7 @@ FIRECRAWL_API_KEY_PROD=fc-prod-xxx
 ```
 
 ### Step 5: CI/CD Pipeline
+
 ```yaml
 # .github/workflows/deploy.yml
 jobs:
@@ -191,6 +197,7 @@ jobs:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Dev credits drained | Using cloud API in dev | Point to self-hosted at localhost:3002 |
@@ -201,6 +208,7 @@ jobs:
 ## Examples
 
 ### Check Active Configuration
+
 ```typescript
 import { getConfig } from "./config/firecrawl";
 
@@ -211,9 +219,11 @@ console.log(`API: ${cfg.apiUrl || "https://api.firecrawl.dev"}`);
 ```
 
 ## Resources
+
 - [Firecrawl Self-Hosting](https://docs.firecrawl.dev/contributing/self-host)
 - [Firecrawl Pricing](https://firecrawl.dev/pricing)
 - [Docker Compose](https://github.com/mendableai/firecrawl/blob/main/docker-compose.yaml)
 
 ## Next Steps
+
 For deployment configuration, see `firecrawl-deploy-integration`.

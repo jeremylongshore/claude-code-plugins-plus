@@ -14,6 +14,7 @@ Real-time monitoring system for tracking large cryptocurrency transactions (whal
 ## When to Use This Command
 
 Use `/monitor-whales` when you need to:
+
 - Track large transactions that could impact market prices (typically >$1M USD)
 - Monitor whale wallet accumulation/distribution patterns
 - Receive real-time alerts for significant on-chain movements
@@ -24,6 +25,7 @@ Use `/monitor-whales` when you need to:
 - Detect unusual transaction patterns before price movements
 
 **DON'T use this command for:**
+
 - Small retail transactions (<$100K USD) - Creates noise
 - Historical analysis - Use `/analyze-chain` instead
 - Portfolio tracking - Use `/track-wallet` instead
@@ -36,18 +38,22 @@ Use `/monitor-whales` when you need to:
 Whales operate across multiple chains. Cross-chain tracking provides complete picture of institutional movements and arbitrage activities.
 
 **Why Real-Time vs Batch Processing?**
+
 - **Real-time chosen**: Market impact occurs within seconds of large transactions
 - **Batch rejected**: 15-minute delays make alerts useless for trading
 
 **Why Threshold-Based Filtering?**
+
 - **Threshold chosen**: Configurable minimums ($100K-$10M) reduce noise
 - **All transactions rejected**: Would generate 100,000+ alerts/day
 
 **Why Multi-Channel Alerting?**
+
 - **Multi-channel chosen**: Different traders prefer different platforms
 - **Email-only rejected**: Not suitable for time-sensitive trading alerts
 
 **Why Market Impact Scoring?**
+
 - **Scoring chosen**: Quantifies potential price movement (0-100 scale)
 - **Binary alerts rejected**: Traders need severity assessment
 
@@ -250,7 +256,9 @@ scrape_configs:
 The command generates 5 output files:
 
 ### 1. `whale_alerts_YYYYMMDD_HHMMSS.json`
+
 Real-time transaction alerts:
+
 ```json
 {
   "alert_id": "alert_1634567890_eth_0xabc123",
@@ -293,7 +301,9 @@ Real-time transaction alerts:
 ```
 
 ### 2. `whale_summary_YYYYMMDD.csv`
+
 Daily summary statistics:
+
 ```csv
 date,chain,total_transactions,total_volume_usd,avg_transaction_usd,max_transaction_usd,unique_wallets,exchange_deposits_usd,exchange_withdrawals_usd,net_exchange_flow_usd
 2025-10-11,ethereum,127,456789000.00,3598315.75,25000000.00,89,234500000.00,187600000.00,46900000.00
@@ -302,7 +312,9 @@ date,chain,total_transactions,total_volume_usd,avg_transaction_usd,max_transacti
 ```
 
 ### 3. `exchange_flows_YYYYMMDD.json`
+
 Net exchange flows (critical market indicator):
+
 ```json
 {
   "date": "2025-10-11",
@@ -330,7 +342,9 @@ Net exchange flows (critical market indicator):
 ```
 
 ### 4. `whale_wallets_discovered.json`
+
 Newly identified whale wallets:
+
 ```json
 {
   "discovered_at": "2025-10-11T14:23:45Z",
@@ -349,6 +363,7 @@ Newly identified whale wallets:
 ```
 
 ### 5. `metrics_dashboard.html`
+
 Interactive HTML dashboard with charts and real-time updates.
 
 ## Code Example 1: Core Whale Monitor (Python)
@@ -1075,6 +1090,7 @@ analytics:
 ## Best Practices
 
 ### DO:
+
 - ✅ Monitor multiple chains for comprehensive whale tracking
 - ✅ Use WebSocket connections for real-time updates (<1s latency)
 - ✅ Implement tiered alerting based on severity scores
@@ -1087,6 +1103,7 @@ analytics:
 - ✅ Include market context in alerts (volume %, price impact)
 
 ### DON'T:
+
 - ❌ Monitor without thresholds - generates 100K+ alerts/day
 - ❌ Use HTTP polling - 15s delays make alerts useless
 - ❌ Alert on every transaction - causes alert fatigue
@@ -1113,6 +1130,7 @@ analytics:
   - Medium (severity 40-59): <30s
 
 **Optimization Tips:**
+
 1. Use read replicas for historical queries (separate from real-time processing)
 2. Partition database by day for efficient pruning
 3. Implement connection pooling (10-20 connections)

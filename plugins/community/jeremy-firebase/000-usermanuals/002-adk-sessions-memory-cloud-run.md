@@ -10,17 +10,18 @@
 ## Overview
 
 This tutorial demonstrates how to build agents with **short-term and long-term memory** using ADK with:
+
 - **Vertex AI Agent Engine Sessions** service
 - **Vertex AI Agent Engine Memory Bank**
 - Deployment to **Cloud Run**
 
 ### What You'll Learn
 
-* Registering agents with Vertex AI Agent Engine
-* Storing ADK session data with Vertex AI Sessions
-* Generating memories with ADK and Agent Engine Memory Bank
-* Retrieving memories with ADK and Agent Engine Memory Bank
-* Deploying agents to Cloud Run
+- Registering agents with Vertex AI Agent Engine
+- Storing ADK session data with Vertex AI Sessions
+- Generating memories with ADK and Agent Engine Memory Bank
+- Retrieving memories with ADK and Agent Engine Memory Bank
+- Deploying agents to Cloud Run
 
 ---
 
@@ -75,6 +76,7 @@ client = vertexai.Client(project=PROJECT_ID, location=LOCATION)
 ### The Problem with In-Memory Sessions
 
 By default, ADK uses `InMemorySessionService`, which:
+
 - Stores session data in memory only
 - **Loses all data** when the runner shuts down
 - **Doesn't work** across multiple instances in production
@@ -89,6 +91,7 @@ ADK provides two production-ready session services:
 ### Session Structure
 
 Each session contains:
+
 - **Session ID**: Unique identifier
 - **User ID**: Associated user
 - **Event History**: Multi-turn conversation thread
@@ -375,6 +378,7 @@ gcloud run services describe {SERVICE_NAME} \
 ## Viewing Memories in Console
 
 Access agent memories at:
+
 ```
 https://console.cloud.google.com/vertex-ai/agents/locations/{LOCATION}/agent-engines/{agent_engine_id}/memories?project={PROJECT_ID}
 ```
@@ -402,18 +406,21 @@ if delete_resources:
 ## Key Concepts Summary
 
 ### Sessions (Short-Term Memory)
+
 - Multi-turn conversation history
 - Stored externally via `VertexAiSessionService`
 - Survives across agent restarts
 - Works with scaled, multi-instance deployments
 
 ### Memory Bank (Long-Term Memory)
+
 - Extracts meaningful information only
 - Condenses to self-contained memories
 - Searchable across sessions
 - Not all conversations generate memories
 
 ### Integration Points
+
 - **Session Service**: `VertexAiSessionService(agent_engine_id=...)`
 - **Memory Service**: `VertexAiMemoryBankService(agent_engine_id=...)`
 - **Runner**: Requires both services
@@ -452,12 +459,12 @@ This tutorial is relevant to:
 
 ## References
 
-* [Agent Development Kit documentation](https://google.github.io/adk-docs/)
-* [Vertex AI Agent Engine Memory Bank documentation](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/memory-bank/overview)
-* [Vertex AI Agent Engine Sessions documentation](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/sessions/overview)
-* [Cloud Run documentation](https://cloud.google.com/run/docs/overview/what-is-cloud-run)
-* [Host AI apps and agents on Cloud Run](https://cloud.google.com/run/docs/ai-agents)
-* [Deploying ADK agents to Cloud Run](https://google.github.io/adk-docs/deploy/cloud-run/)
+- [Agent Development Kit documentation](https://google.github.io/adk-docs/)
+- [Vertex AI Agent Engine Memory Bank documentation](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/memory-bank/overview)
+- [Vertex AI Agent Engine Sessions documentation](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/sessions/overview)
+- [Cloud Run documentation](https://cloud.google.com/run/docs/overview/what-is-cloud-run)
+- [Host AI apps and agents on Cloud Run](https://cloud.google.com/run/docs/ai-agents)
+- [Deploying ADK agents to Cloud Run](https://google.github.io/adk-docs/deploy/cloud-run/)
 
 ---
 

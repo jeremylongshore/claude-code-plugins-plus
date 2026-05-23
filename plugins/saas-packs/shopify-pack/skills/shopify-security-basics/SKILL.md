@@ -54,6 +54,7 @@ SHOPIFY_ACCESS_TOKEN=shpat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 **Token format reference:**
+
 | Token Type | Prefix | Length | Used For |
 |-----------|--------|--------|----------|
 | Admin API access token | `shpat_` | 38 chars | Server-side Admin API |

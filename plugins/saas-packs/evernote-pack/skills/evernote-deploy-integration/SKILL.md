@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Deploy Integration
 
 ## Overview
+
 Deploy Evernote integrations to production environments including Docker containers, AWS ECS/Lambda, Google Cloud Run, and Kubernetes, with proper secrets management and health checks.
 
 ## Prerequisites
+
 - CI/CD pipeline configured (see `evernote-ci-integration`)
 - Production API credentials approved by Evernote
 - Cloud platform account (AWS, GCP, or Azure)
@@ -83,6 +85,7 @@ After deployment, verify: health check endpoint returns `connected`, a test note
 For the full Dockerfile, Cloud Run config, Lambda handler, Kubernetes manifests, and deployment verification scripts, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
+
 - Multi-stage Dockerfile for production builds
 - Google Cloud Run deployment with Secret Manager integration
 - AWS Lambda handler for serverless webhook processing
@@ -90,6 +93,7 @@ For the full Dockerfile, Cloud Run config, Lambda handler, Kubernetes manifests,
 - Deployment verification checklist and script
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Invalid consumer key` in production | Using sandbox credentials | Verify `EVERNOTE_SANDBOX=false` and production key |
@@ -98,12 +102,14 @@ For the full Dockerfile, Cloud Run config, Lambda handler, Kubernetes manifests,
 | Cold start timeout | Lambda initialization too slow | Increase timeout, use provisioned concurrency |
 
 ## Resources
+
 - [Google Cloud Run](https://cloud.google.com/run/docs)
 - [AWS Lambda](https://docs.aws.amazon.com/lambda/)
 - [Kubernetes Documentation](https://kubernetes.io/docs/)
 - [Docker Multi-stage Builds](https://docs.docker.com/build/building/multi-stage/)
 
 ## Next Steps
+
 For webhook handling, see `evernote-webhooks-events`.
 
 ## Examples

@@ -10,6 +10,7 @@ stackblitz-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect StackBlitz debug evidence for support
 **Workflow:** Part of the operations skill category for StackBlitz integration.
 **Relates to:** Other stackblitz skills in this pack.

@@ -25,15 +25,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Hello World
 
 ## Overview
+
 Four minimal examples covering Firecrawl's core endpoints: **scrape** (single page), **crawl** (multi-page), **map** (URL discovery), and **extract** (LLM structured data). Each is a standalone snippet you can run immediately.
 
 ## Prerequisites
+
 - `@mendable/firecrawl-js` installed (`npm install @mendable/firecrawl-js`)
 - `FIRECRAWL_API_KEY` environment variable set
 
 ## Instructions
 
 ### Step 1: Single-Page Scrape
+
 ```typescript
 import FirecrawlApp from "@mendable/firecrawl-js";
 
@@ -51,6 +54,7 @@ console.log("Markdown:", result.markdown?.substring(0, 500));
 ```
 
 ### Step 2: Multi-Page Crawl
+
 ```typescript
 // Crawl a site recursively — follows links, respects robots.txt
 const crawlResult = await firecrawl.crawlUrl("https://docs.firecrawl.dev", {
@@ -67,6 +71,7 @@ for (const page of crawlResult.data || []) {
 ```
 
 ### Step 3: Map a Site (URL Discovery)
+
 ```typescript
 // Discover all URLs on a site in ~2-3 seconds (uses sitemap + SERP)
 const mapResult = await firecrawl.mapUrl("https://docs.firecrawl.dev");
@@ -76,6 +81,7 @@ mapResult.links?.slice(0, 10).forEach(url => console.log(`  ${url}`));
 ```
 
 ### Step 4: LLM Extract (Structured Data)
+
 ```typescript
 // Extract structured data from a page using an LLM + JSON schema
 const extracted = await firecrawl.scrapeUrl("https://firecrawl.dev/pricing", {
@@ -104,12 +110,14 @@ console.log("Pricing plans:", JSON.stringify(extracted.extract, null, 2));
 ```
 
 ## Output
+
 - Single-page markdown scraped from a live URL
 - Multi-page crawl results with titles and source URLs
 - Site map with all discovered URLs
 - Structured JSON extracted by LLM from page content
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Cannot find module` | SDK not installed | `npm install @mendable/firecrawl-js` |
@@ -121,6 +129,7 @@ console.log("Pricing plans:", JSON.stringify(extracted.extract, null, 2));
 ## Examples
 
 ### Python Hello World
+
 ```python
 from firecrawl import FirecrawlApp
 
@@ -138,6 +147,7 @@ print(f"Found {len(urls.get('links', []))} URLs")
 ```
 
 ### Batch Scrape Multiple URLs
+
 ```typescript
 // Scrape many URLs at once — more efficient than individual scrapes
 const batchResult = await firecrawl.batchScrapeUrls(
@@ -155,6 +165,7 @@ for (const page of batchResult.data || []) {
 ```
 
 ## Resources
+
 - [Firecrawl Quickstart](https://docs.firecrawl.dev/introduction)
 - [Scrape Endpoint](https://docs.firecrawl.dev/features/scrape)
 - [Crawl Endpoint](https://docs.firecrawl.dev/features/crawl)
@@ -162,4 +173,5 @@ for (const page of batchResult.data || []) {
 - [Extract (JSON Mode)](https://docs.firecrawl.dev/features/llm-extract)
 
 ## Next Steps
+
 Proceed to `firecrawl-local-dev-loop` for development workflow setup.

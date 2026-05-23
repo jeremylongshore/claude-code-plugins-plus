@@ -10,6 +10,7 @@ apple-notes-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Apple Notes advanced debugging
 **Workflow:** Part of the enterprise skill category for Apple Notes integration.
 **Relates to:** Other apple-notes skills in this pack.

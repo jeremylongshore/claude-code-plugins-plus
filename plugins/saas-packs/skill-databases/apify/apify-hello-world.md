@@ -10,6 +10,7 @@ apify-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Apify example
 **Workflow:** Part of the onboarding skill category for Apify integration.
 **Relates to:** Other apify skills in this pack.

@@ -448,6 +448,7 @@ curl -X POST http://localhost:3400/assistant-agent \
 ### Expected Output
 
 Weather query:
+
 ```json
 {
   "reply": "The weather in San Francisco is currently 62F and foggy with 78% humidity. You might want to bring a jacket!",
@@ -456,6 +457,7 @@ Weather query:
 ```
 
 Combined query:
+
 ```json
 {
   "reply": "I've scheduled your picnic for tomorrow at 2:00 PM (2 hours). The weather in Austin looks great - 85F, sunny, and 40% humidity. Perfect picnic weather!",

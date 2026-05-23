@@ -10,6 +10,7 @@ apollo-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Apollo advanced debugging
 **Workflow:** Part of the enterprise skill category for Apollo integration.
 **Relates to:** Other apollo skills in this pack.

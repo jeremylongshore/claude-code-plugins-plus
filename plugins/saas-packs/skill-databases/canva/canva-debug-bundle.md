@@ -10,6 +10,7 @@ canva-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Canva debug evidence for support
 **Workflow:** Part of the operations skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

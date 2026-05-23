@@ -7,6 +7,7 @@ Detailed implementation examples and code patterns.
 ### Step 1: Query Optimization
 
 **Minimize Field Selection:**
+
 ```typescript
 // BAD: Fetching unnecessary fields
 const issues = await client.issues();
@@ -29,6 +30,7 @@ const query = `
 ```
 
 **Avoid N+1 Queries:**
+
 ```typescript
 // BAD: N+1 queries
 const issues = await client.issues();
@@ -54,6 +56,7 @@ const query = `
 ```
 
 ### Step 2: Implement Caching Layer
+
 ```typescript
 // lib/cache.ts
 import Redis from "ioredis";
@@ -112,6 +115,7 @@ export const cache = new LinearCache({ ttlSeconds: 300 });
 ```
 
 ### Step 3: Cached Client Wrapper
+
 ```typescript
 // lib/cached-client.ts
 import { LinearClient } from "@linear/sdk";
@@ -181,6 +185,7 @@ export class CachedLinearClient {
 ```
 
 ### Step 4: Request Batching
+
 ```typescript
 // lib/batcher.ts
 interface BatchRequest<T> {
@@ -272,6 +277,7 @@ const [issue1, issue2, issue3] = await Promise.all([
 ```
 
 ### Step 5: Connection Pooling
+
 ```typescript
 // lib/client-pool.ts
 import { LinearClient } from "@linear/sdk";
@@ -299,6 +305,7 @@ export const clientPool = new ClientPool(process.env.LINEAR_API_KEY!);
 ```
 
 ### Step 6: Query Complexity Monitoring
+
 ```typescript
 // lib/complexity-monitor.ts
 interface QueryStats {

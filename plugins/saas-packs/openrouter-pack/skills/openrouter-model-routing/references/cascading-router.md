@@ -3,6 +3,7 @@
 ## Cascading Router
 
 ### Try Cheap, Fall Back to Premium
+
 ```python
 class CascadeRouter:
     """Try cheaper model first, escalate if needed."""

@@ -10,6 +10,7 @@ notion-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Notion advanced debugging
 **Workflow:** Part of the enterprise skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

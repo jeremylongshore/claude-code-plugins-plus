@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Incident Runbook
 
 ## Overview
+
 Procedures for responding to Clerk-related incidents in production. Covers triage, emergency auth bypass, recovery scripts, and post-incident review.
 
 ## Prerequisites
+
 - Access to Clerk Dashboard (dashboard.clerk.com)
 - Access to application logs and monitoring
 - Emergency contact list for on-call team
@@ -47,6 +49,7 @@ Procedures for responding to Clerk-related incidents in production. Covers triag
 | Webhook backlog | User sync falling behind | Low |
 
 Quick diagnostic:
+
 ```bash
 #!/bin/bash
 # scripts/clerk-triage.sh
@@ -74,6 +77,7 @@ curl -s http://localhost:3000/api/clerk-health 2>/dev/null | python3 -m json.too
 ```
 
 ### Step 2: Emergency Auth Bypass (Clerk Outage Only)
+
 ```typescript
 // middleware.ts — emergency bypass mode
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
@@ -99,6 +103,7 @@ export default clerkMiddleware(async (auth, req) => {
 ```
 
 Activate bypass:
+
 ```bash
 # Vercel: set env var and redeploy
 vercel env add CLERK_EMERGENCY_BYPASS production  # Set to "true"
@@ -110,6 +115,7 @@ vercel deploy --prod
 ```
 
 ### Step 3: Key Rotation (Compromised Secret Key)
+
 ```bash
 #!/bin/bash
 # scripts/rotate-clerk-keys.sh
@@ -132,6 +138,7 @@ echo "6. File incident report"
 ```
 
 ### Step 4: Session Recovery (Mass Logout Fix)
+
 ```typescript
 // app/api/admin/refresh-sessions/route.ts
 import { auth, clerkClient } from '@clerk/nextjs/server'
@@ -162,6 +169,7 @@ export async function POST() {
 ```
 
 ### Step 5: Webhook Replay (Missed Events)
+
 ```bash
 # Check for missed webhooks in Clerk Dashboard:
 # Dashboard > Webhooks > Select endpoint > Message Logs
@@ -173,6 +181,7 @@ echo "SELECT clerk_id FROM users WHERE created_at > NOW() - INTERVAL '1 hour'"
 ```
 
 ### Step 6: Post-Incident Review Template
+
 ```markdown
 ## Incident Report
 
@@ -203,6 +212,7 @@ echo "SELECT clerk_id FROM users WHERE created_at > NOW() - INTERVAL '1 hour'"
 ```
 
 ## Output
+
 - Triage script identifying incident category and severity
 - Emergency auth bypass middleware (activate via env var)
 - Key rotation procedure for compromised credentials
@@ -210,6 +220,7 @@ echo "SELECT clerk_id FROM users WHERE created_at > NOW() - INTERVAL '1 hour'"
 - Post-incident review template
 
 ## Error Handling
+
 | Scenario | Response |
 |----------|----------|
 | Clerk API completely down | Activate emergency bypass, monitor status.clerk.com |
@@ -221,14 +232,17 @@ echo "SELECT clerk_id FROM users WHERE created_at > NOW() - INTERVAL '1 hour'"
 ## Examples
 
 ### Quick Status Check One-Liner
+
 ```bash
 curl -s https://status.clerk.com/api/v2/status.json | python3 -c "import json,sys; print(json.load(sys.stdin)['status']['description'])"
 ```
 
 ## Resources
+
 - [Clerk Status Page](https://status.clerk.com)
 - [Clerk Support](https://clerk.com/support)
 - [Clerk Discord](https://clerk.com/discord)
 
 ## Next Steps
+
 After resolving incident, review `clerk-observability` for improved monitoring.

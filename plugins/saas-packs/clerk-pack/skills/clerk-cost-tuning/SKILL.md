@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Cost Tuning
 
 ## Overview
+
 Understand Clerk pricing and optimize costs. Clerk charges by Monthly Active Users (MAU). Covers pricing tiers, MAU reduction strategies, caching to reduce API calls, and usage monitoring.
 
 ## Prerequisites
+
 - Clerk account active
 - Understanding of MAU (Monthly Active Users)
 - Application usage patterns known
@@ -42,12 +44,14 @@ Understand Clerk pricing and optimize costs. Clerk charges by Monthly Active Use
 | Enterprise | Custom | Custom | Custom |
 
 Key pricing concepts:
+
 - **MAU** = unique user who authenticates at least once per month
 - Users who only visit public pages are not counted
 - Bot/crawler sessions are not counted
 - Test/development instances are free and unlimited
 
 ### Step 2: Reduce MAU Count
+
 ```typescript
 // Strategy 1: Defer authentication — don't force sign-in until necessary
 // middleware.ts
@@ -87,6 +91,7 @@ export default async function BlogPost({ params }: { params: { slug: string } })
 ```
 
 ### Step 3: Cache to Reduce API Calls
+
 ```typescript
 // lib/user-cache.ts
 import { cache } from 'react'
@@ -113,6 +118,7 @@ export const getUserMetadata = unstable_cache(
 ```
 
 ### Step 4: Monitor Usage
+
 ```typescript
 // app/api/admin/clerk-usage/route.ts
 import { auth, clerkClient } from '@clerk/nextjs/server'
@@ -136,6 +142,7 @@ export async function GET() {
 ```
 
 ### Step 5: Clean Up Inactive Users
+
 ```typescript
 // scripts/cleanup-inactive-users.ts
 import { createClerkClient } from '@clerk/backend'
@@ -160,6 +167,7 @@ findInactiveUsers()
 ```
 
 ## Output
+
 - Pricing model understood with MAU thresholds
 - Route-level auth to minimize unnecessary MAU counts
 - Request-level and cross-request caching reducing API calls
@@ -167,6 +175,7 @@ findInactiveUsers()
 - Inactive user identification script
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Unexpected bill increase | MAU spike from bot traffic | Add bot detection, restrict auth to needed routes |
@@ -177,6 +186,7 @@ findInactiveUsers()
 ## Examples
 
 ### Cost Estimation Script
+
 ```typescript
 function estimateMonthlyCost(mau: number): string {
   if (mau <= 10_000) return 'Free tier ($0/mo)'
@@ -190,9 +200,11 @@ console.log(estimateMonthlyCost(50_000))  // "Pro tier: $825.00/mo (40,000 extra
 ```
 
 ## Resources
+
 - [Clerk Pricing](https://clerk.com/pricing)
 - [Clerk Usage Dashboard](https://dashboard.clerk.com)
 - [Clerk Fair Use Policy](https://clerk.com/legal/fair-use-policy)
 
 ## Next Steps
+
 Proceed to `clerk-reference-architecture` for architecture patterns.

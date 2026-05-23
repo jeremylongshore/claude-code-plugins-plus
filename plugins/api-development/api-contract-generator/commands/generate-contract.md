@@ -26,6 +26,7 @@ Creates comprehensive API contracts for consumer-driven contract testing, enabli
 ## When to Use
 
 Use this command when:
+
 - Building microservices that need to evolve independently
 - Implementing consumer-driven contract testing (CDCT)
 - Preventing breaking changes between API versions
@@ -35,6 +36,7 @@ Use this command when:
 - Establishing service boundaries and contracts
 
 Do NOT use this command for:
+
 - Internal function testing (use unit tests instead)
 - UI testing (use end-to-end tests)
 - Performance testing (use load testing tools)
@@ -43,6 +45,7 @@ Do NOT use this command for:
 ## Prerequisites
 
 Before running this command, ensure:
+
 - [ ] API endpoints are defined (at least conceptually)
 - [ ] Consumer and provider services are identified
 - [ ] Testing framework is chosen (Pact, Spring Cloud Contract, etc.)
@@ -52,7 +55,9 @@ Before running this command, ensure:
 ## Process
 
 ### Step 1: Analyze API Requirements
+
 The command examines your API specifications to generate appropriate contracts:
+
 - Identifies HTTP methods and endpoints
 - Extracts request/response schemas
 - Determines required headers and parameters
@@ -60,7 +65,9 @@ The command examines your API specifications to generate appropriate contracts:
 - Notes authentication requirements
 
 ### Step 2: Generate Contract Definitions
+
 Based on the analysis, creates contract files that include:
+
 - Consumer expectations (what the consumer needs)
 - Provider capabilities (what the provider offers)
 - Interaction definitions (request/response pairs)
@@ -68,7 +75,9 @@ Based on the analysis, creates contract files that include:
 - Metadata for versioning and identification
 
 ### Step 3: Create Verification Tests
+
 Generates test code to verify contracts:
+
 - Consumer-side tests to ensure correct API usage
 - Provider-side tests to verify implementation
 - Mock server configurations for isolated testing
@@ -76,7 +85,9 @@ Generates test code to verify contracts:
 - Breaking change detection logic
 
 ### Step 4: Configure Contract Management
+
 Sets up infrastructure for contract lifecycle:
+
 - Contract versioning strategies
 - Pact Broker or contract repository configuration
 - CI/CD pipeline integration scripts
@@ -111,6 +122,7 @@ api-contracts/
 ```
 
 **Output Files Explained:**
+
 - `pacts/`: Pact contract files in JSON format
 - `contracts/`: Spring Cloud Contract definitions in Groovy/YAML
 - `tests/`: Generated test files for contract verification
@@ -125,11 +137,13 @@ api-contracts/
 **Scenario:** Generate contract for a user service with CRUD operations
 
 **User Input:**
+
 ```
 /generate-contract --service user-api --consumer mobile-app --framework pact
 ```
 
 **Generated Pact Contract:**
+
 ```json
 {
   "consumer": {
@@ -212,6 +226,7 @@ api-contracts/
 ```
 
 **Generated Consumer Test:**
+
 ```javascript
 // consumer-tests/user-api.test.js
 const { Pact } = require('@pact-foundation/pact');
@@ -277,11 +292,13 @@ describe('User API Consumer Tests', () => {
 **Scenario:** Generate contract for payment processing service
 
 **User Input:**
+
 ```
 /contract --service payment-service --consumer checkout-app --framework spring
 ```
 
 **Generated Spring Cloud Contract (Groovy):**
+
 ```groovy
 // contracts/payment/process-payment.groovy
 package contracts.payment
@@ -332,6 +349,7 @@ Contract.make {
 ```
 
 **Generated Provider Verification Test:**
+
 ```java
 // PaymentContractVerificationTest.java
 @RunWith(SpringRunner.class)
@@ -379,11 +397,13 @@ public class PaymentContractVerificationTest {
 **Scenario:** Generate OpenAPI contract with request/response validation
 
 **User Input:**
+
 ```
 /generate-contract --service product-catalog --format openapi --with-validation
 ```
 
 **Generated OpenAPI Specification:**
+
 ```yaml
 openapi: 3.0.3
 info:
@@ -474,9 +494,11 @@ components:
 ## Error Handling
 
 ### Error: Missing API Documentation
+
 **Symptoms:** No OpenAPI spec or API documentation available
 **Cause:** API not yet documented or in early development
 **Solution:**
+
 ```
 The command will guide you through interactive API definition:
 - Define endpoints and methods
@@ -484,12 +506,15 @@ The command will guide you through interactive API definition:
 - Add validation rules
 - Generate initial documentation
 ```
+
 **Prevention:** Document APIs as part of development process
 
 ### Error: Incompatible Contract Versions
+
 **Symptoms:** Consumer and provider contracts don't match
 **Cause:** Services evolved independently without coordination
 **Solution:**
+
 ```
 Contract Version Migration:
 1. Identify breaking changes
@@ -499,9 +524,11 @@ Contract Version Migration:
 ```
 
 ### Error: Contract Verification Failure
+
 **Symptoms:** Provider tests fail against consumer contracts
 **Cause:** Implementation doesn't match contract expectations
 **Solution:**
+
 ```
 Debug Contract Mismatches:
 1. Review failed interaction details
@@ -515,17 +542,20 @@ Debug Contract Mismatches:
 The contract generation can be customized with:
 
 ### Option: `--framework`
+
 - **Purpose:** Choose contract testing framework
 - **Values:** `pact`, `spring`, `openapi`, `postman`
 - **Default:** `pact`
 - **Example:** `/contract --framework spring`
 
 ### Option: `--strict`
+
 - **Purpose:** Enable strict validation rules
 - **Default:** false
 - **Example:** `/contract --strict`
 
 ### Option: `--version`
+
 - **Purpose:** Specify contract version
 - **Default:** Auto-incremented
 - **Example:** `/contract --version 2.0.0`
@@ -533,6 +563,7 @@ The contract generation can be customized with:
 ## Best Practices
 
 ✅ **DO:**
+
 - Version your contracts alongside API versions
 - Run contract tests in CI/CD pipeline
 - Use contract broker for centralized management
@@ -540,12 +571,14 @@ The contract generation can be customized with:
 - Test both happy path and error scenarios
 
 ❌ **DON'T:**
+
 - Modify generated contracts manually without updating source
 - Skip contract verification before deployment
 - Use contracts as replacement for all testing
 - Ignore contract test failures
 
 💡 **TIPS:**
+
 - Start with consumer-driven contracts for better API design
 - Use semantic versioning for contract versions
 - Implement backwards compatibility when possible
@@ -568,6 +601,7 @@ The contract generation can be customized with:
 ## Security Notes
 
 ⚠️ **Security Considerations:**
+
 - Never include real credentials in contracts
 - Use token placeholders for authentication
 - Sanitize sensitive data in examples
@@ -577,15 +611,19 @@ The contract generation can be customized with:
 ## Troubleshooting
 
 ### Issue: Contracts not being published
+
 **Solution:** Check broker credentials and network connectivity
 
 ### Issue: Mock server not starting
+
 **Solution:** Verify port availability and permissions
 
 ### Issue: Contract tests timing out
+
 **Solution:** Increase timeout values for slow services
 
 ### Getting Help
+
 - Pact documentation: https://docs.pact.io
 - Spring Cloud Contract: https://spring.io/projects/spring-cloud-contract
 - OpenAPI specification: https://swagger.io/specification/

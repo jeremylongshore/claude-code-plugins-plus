@@ -10,6 +10,7 @@ veeva-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Veeva advanced debugging
 **Workflow:** Part of the enterprise skill category for Veeva integration.
 **Relates to:** Other veeva skills in this pack.

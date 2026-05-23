@@ -10,6 +10,7 @@ cursor-advanced-composer/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Provides advanced Cursor Composer techniques for complex multi-file operations including orchestration, architecture migrations, and quality-controlled code generation.
 
 **Workflow:** This skill activates when developers need to perform complex multi-file operations beyond basic Composer usage. It covers orchestration patterns, complex refactoring, advanced patterns, strategies, and quality control.

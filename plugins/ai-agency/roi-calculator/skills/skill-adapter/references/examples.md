@@ -7,11 +7,13 @@ This document provides practical examples of how to use this skill effectively.
 ### Example 1: Simple Activation
 
 **User Request:**
+
 ```
 [Describe trigger phrase here]
 ```
 
 **Skill Response:**
+
 1. Analyzes the request
 2. Performs the required action
 3. Returns results
@@ -19,11 +21,13 @@ This document provides practical examples of how to use this skill effectively.
 ### Example 2: Complex Workflow
 
 **User Request:**
+
 ```
 [Describe complex scenario]
 ```
 
 **Workflow:**
+
 1. Step 1: Initial analysis
 2. Step 2: Data processing
 3. Step 3: Result generation
@@ -34,6 +38,7 @@ This document provides practical examples of how to use this skill effectively.
 ### Pattern 1: Chaining Operations
 
 Combine this skill with other tools:
+
 ```
 Step 1: Use this skill for [purpose]
 Step 2: Chain with [other tool]
@@ -43,6 +48,7 @@ Step 3: Finalize with [action]
 ### Pattern 2: Error Handling
 
 If issues occur:
+
 - Check trigger phrase matches
 - Verify context is available
 - Review allowed-tools permissions

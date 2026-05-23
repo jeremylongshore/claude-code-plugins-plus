@@ -10,6 +10,7 @@ replit-agent-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Use Replit Agent to build applications from natural language prompts with AI-powered code generation.
 **Workflow:** AI-first development skill - introduces Replit's flagship AI agent for rapid application building.
 **Relates to:** Foundation for replit-agent-advanced; integrates with replit-database-setup and replit-deployments.

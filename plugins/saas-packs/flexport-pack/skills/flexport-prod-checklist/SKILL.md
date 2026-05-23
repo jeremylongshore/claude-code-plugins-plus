@@ -28,12 +28,14 @@ Pre-deployment and go-live checklist for Flexport logistics integrations coverin
 ## Pre-Deployment
 
 ### Authentication & Secrets
+
 - [ ] Production API key stored in secret manager (not env files)
 - [ ] Webhook secret configured and verified
 - [ ] Key rotation procedure documented
 - [ ] No keys in git history (`git log -p | grep -i flexport_api`)
 
 ### API Integration
+
 - [ ] All endpoints tested against production API
 - [ ] Pagination implemented for list endpoints (`/shipments`, `/products`)
 - [ ] Rate limit handling with exponential backoff
@@ -42,6 +44,7 @@ Pre-deployment and go-live checklist for Flexport logistics integrations coverin
 - [ ] `Flexport-Version: 2` header on all requests
 
 ### Webhooks
+
 - [ ] HTTPS endpoint with valid TLS certificate
 - [ ] `X-Hub-Signature` verification implemented
 - [ ] Webhook endpoint responds within 5 seconds
@@ -49,6 +52,7 @@ Pre-deployment and go-live checklist for Flexport logistics integrations coverin
 - [ ] Idempotent webhook handlers (replay-safe)
 
 ### Data Integrity
+
 - [ ] HS codes validated against customs requirements
 - [ ] UN/LOCODE port codes verified
 - [ ] Commercial invoice totals cross-checked

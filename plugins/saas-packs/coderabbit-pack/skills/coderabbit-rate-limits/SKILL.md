@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Rate Limits
 
 ## Overview
+
 CodeRabbit rate limits apply at two levels: (1) CodeRabbit's own processing limits on how many reviews it can run concurrently, and (2) GitHub API rate limits when you build automation that queries CodeRabbit review data. This skill covers both and provides patterns for handling limits gracefully.
 
 ## Prerequisites
+
 - CodeRabbit installed on repository
 - GitHub CLI (`gh`) or API access for automation
 - Understanding of GitHub rate limit headers
@@ -36,6 +38,7 @@ CodeRabbit rate limits apply at two levels: (1) CodeRabbit's own processing limi
 ## Rate Limit Tiers
 
 ### CodeRabbit Review Processing
+
 | Factor | Limit | Notes |
 |--------|-------|-------|
 | Concurrent reviews per org | Varies by plan | Free: 1, Pro: 5, Enterprise: custom |
@@ -44,6 +47,7 @@ CodeRabbit rate limits apply at two levels: (1) CodeRabbit's own processing limi
 | Command rate | ~10/minute/repo | PR comment commands |
 
 ### GitHub API (Affects Automation Scripts)
+
 | Tier | Rate Limit | Reset Window |
 |------|-----------|--------------|
 | Unauthenticated | 60 req/hour | Rolling |
@@ -54,6 +58,7 @@ CodeRabbit rate limits apply at two levels: (1) CodeRabbit's own processing limi
 ## Instructions
 
 ### Step 1: Check Current GitHub API Rate Limit
+
 ```bash
 set -euo pipefail
 # Check your current rate limit status
@@ -72,6 +77,7 @@ gh api rate_limit --jq '{
 ```
 
 ### Step 2: Handle Rate Limits in Automation Scripts
+
 ```bash
 #!/bin/bash
 # rate-safe-query.sh - GitHub API queries with rate limit awareness
@@ -120,6 +126,7 @@ done
 ```
 
 ### Step 3: Handle CodeRabbit Command Rate Limits
+
 ```markdown
 # If you send too many @coderabbitai commands in quick succession,
 # CodeRabbit may not respond to all of them.
@@ -139,6 +146,7 @@ done
 ```
 
 ### Step 4: Efficient Bulk Queries with GraphQL
+
 ```bash
 set -euo pipefail
 ORG="${1:-your-org}"
@@ -174,6 +182,7 @@ query($owner: String!, $repo: String!) {
 ```
 
 ### Step 5: Cache CodeRabbit Metrics
+
 ```bash
 #!/bin/bash
 # cache-coderabbit-metrics.sh - Cache review data to avoid repeated API calls
@@ -222,6 +231,7 @@ echo "$METRICS" | tee "$CACHE_FILE"
 ```
 
 ## Output
+
 - GitHub API rate limit status checked
 - Automation scripts with rate limit awareness
 - CodeRabbit command rate limits documented
@@ -229,6 +239,7 @@ echo "$METRICS" | tee "$CACHE_FILE"
 - Caching strategy to reduce API calls
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `gh api` returns 403 | Rate limit exceeded | Wait for reset or use GraphQL |
@@ -238,9 +249,11 @@ echo "$METRICS" | tee "$CACHE_FILE"
 | Stale cached data | Cache TTL too long | Reduce TTL or force refresh |
 
 ## Resources
+
 - [GitHub Rate Limits](https://docs.github.com/en/rest/rate-limit)
 - [GitHub GraphQL API](https://docs.github.com/en/graphql)
 - [CodeRabbit Review Commands](https://docs.coderabbit.ai/reference/review-commands)
 
 ## Next Steps
+
 For security configuration, see `coderabbit-security-basics`.

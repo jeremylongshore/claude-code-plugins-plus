@@ -7,6 +7,7 @@ Tables are **not** text. A 5-row financial table rendered as text-chunked conten
 `PyPDFLoader` splits a PDF into one `Document` per page. A table that spans a page break (common in financial filings, product specs) is literally torn in half. Page 1 has the header and rows 1-3; page 2 has rows 4-5 with no header. The chunks that end up in the vector index look like:
 
 **Chunk from page 2 (no context):**
+
 ```
 Q3 2025 | 3,104 | 28.4% | 892
 Q4 2025 | 3,456 | 31.2% | 1,043
@@ -63,6 +64,7 @@ def extract_table_records(pdf_path: str) -> list[dict]:
 ```
 
 Each row becomes its own record with:
+
 - `page_content`: `"Quarter: Q3 2025 | Revenue: 3,104 | Margin: 28.4% | EBITDA: 892"`
 - `metadata`: preserves column values AND page number for citation
 
@@ -132,6 +134,7 @@ prose = [e for e in elements if e.metadata.get("category") != "Table"]
 ```
 
 Trade-offs:
+
 - **Pro**: no custom `fitz` code; handles scanned PDFs via OCR.
 - **Con**: `hi_res` strategy is slow (~2-5s per page); ~500 MB of dependencies.
 

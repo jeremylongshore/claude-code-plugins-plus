@@ -5,11 +5,13 @@
 ### pg_dump (Logical Backup)
 
 **Single Database Backup:**
+
 ```bash
 pg_dump -h localhost -U postgres -d mydb > mydb.sql
 ```
 
 **With Compression (Custom Format):**
+
 ```bash
 pg_dump -h localhost -U postgres -d mydb \
   --format=custom \
@@ -18,6 +20,7 @@ pg_dump -h localhost -U postgres -d mydb \
 ```
 
 **Plain SQL with Compression:**
+
 ```bash
 pg_dump -h localhost -U postgres -d mydb | gzip > mydb.sql.gz
 ```
@@ -76,11 +79,13 @@ pg_restore -h localhost -U postgres -d mydb_restored mydb.dump
 ```
 
 **Parallel Restore:**
+
 ```bash
 pg_restore -h localhost -U postgres -d mydb -j 4 mydb.dump
 ```
 
 **Restore Options:**
+
 ```bash
 pg_restore \
   --clean           # Drop objects before recreating
@@ -96,6 +101,7 @@ pg_restore \
 ### Setup WAL Archiving
 
 In `postgresql.conf`:
+
 ```conf
 wal_level = replica
 archive_mode = on
@@ -109,10 +115,12 @@ archive_command = 'cp %p /var/lib/postgresql/wal_archive/%f'
 3. Restore base backup
 4. Create `recovery.signal` file
 5. Configure `postgresql.conf`:
+
    ```conf
    restore_command = 'cp /var/lib/postgresql/wal_archive/%f %p'
    recovery_target_time = '2025-01-15 14:30:00'
    ```
+
 6. Start PostgreSQL
 
 ## Production Backup Script
@@ -173,6 +181,7 @@ log "Backup process completed"
 ## Selective Restore
 
 **Single Table:**
+
 ```bash
 pg_restore -h localhost -U postgres -d mydb \
   --table=users \
@@ -181,6 +190,7 @@ pg_restore -h localhost -U postgres -d mydb \
 ```
 
 **List Contents:**
+
 ```bash
 pg_restore --list mydb.dump > toc.txt
 # Edit toc.txt to select items

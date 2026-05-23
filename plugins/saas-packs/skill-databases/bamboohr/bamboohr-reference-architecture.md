@@ -10,6 +10,7 @@ bamboohr-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement BambooHR reference architecture
 **Workflow:** Part of the cicd skill category for BambooHR integration.
 **Relates to:** Other bamboohr skills in this pack.

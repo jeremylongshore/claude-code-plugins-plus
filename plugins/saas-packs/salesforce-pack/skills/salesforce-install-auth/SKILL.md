@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Salesforce Install & Auth
 
 ## Overview
+
 Set up Salesforce connectivity using jsforce (Node.js) or simple-salesforce (Python), and configure one of three OAuth 2.0 authentication flows.
 
 ## Prerequisites
+
 - Node.js 18+ or Python 3.10+
 - A Salesforce org (Developer Edition free at developer.salesforce.com)
 - Connected App configured in Setup > App Manager > New Connected App
@@ -164,12 +166,14 @@ print(f"Org: {result['records'][0]['Name']}")
 ```
 
 ## Output
+
 - jsforce or simple-salesforce installed
 - Authentication flow configured
 - Environment variables set (never hardcoded)
 - Connection verified with identity/org query
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `INVALID_LOGIN` | Wrong username/password/token | Verify credentials; reset security token in Setup > My Personal Information |
@@ -180,6 +184,7 @@ print(f"Org: {result['records'][0]['Name']}")
 | `REQUEST_LIMIT_EXCEEDED` | Daily API limit hit | Check Setup > Company Information for remaining calls |
 
 ## Resources
+
 - [jsforce Documentation](https://jsforce.github.io/document/)
 - [simple-salesforce PyPI](https://pypi.org/project/simple-salesforce/)
 - [Salesforce OAuth 2.0 Flows](https://help.salesforce.com/s/articleView?id=sf.remoteaccess_oauth_flows.htm)
@@ -187,4 +192,5 @@ print(f"Org: {result['records'][0]['Name']}")
 - [JWT Bearer Flow](https://help.salesforce.com/s/articleView?id=sf.remoteaccess_oauth_jwt_flow.htm)
 
 ## Next Steps
+
 After successful auth, proceed to `salesforce-hello-world` for your first SOQL query.

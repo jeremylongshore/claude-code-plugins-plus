@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Security Basics
 
 ## Overview
+
 Security best practices for Deepgram integration: scoped API keys, key rotation, Deepgram's built-in PII redaction feature, client-side temporary keys, SSRF prevention for audio URLs, and audit logging.
 
 ## Security Checklist
+
 - [ ] API keys in environment variables or secret manager (never in code)
 - [ ] Separate keys per environment (dev/staging/prod)
 - [ ] Keys scoped to minimum required permissions
@@ -242,6 +244,7 @@ async function transcribeWithAudit(userId: string, url: string, ip: string) {
 ```
 
 ## Output
+
 - Scoped API keys per service/environment
 - Built-in PII redaction via `redact` parameter
 - Temporary keys for client-side (browser/mobile)
@@ -250,6 +253,7 @@ async function transcribeWithAudit(userId: string, url: string, ip: string) {
 - Structured audit logging
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | 403 after scoping | Key missing required scope | Add scope in Console (e.g., `listen`) |
@@ -258,6 +262,7 @@ async function transcribeWithAudit(userId: string, url: string, ip: string) {
 | Redaction missed PII | Wrong redact option | Use `redact: ['pci', 'ssn', 'numbers']` |
 
 ## Resources
+
 - [API Key Management](https://developers.deepgram.com/docs/api-key-management)
 - [PII Redaction](https://developers.deepgram.com/docs/redaction)
 - [Deepgram Security](https://deepgram.com/security)

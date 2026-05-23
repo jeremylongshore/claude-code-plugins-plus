@@ -6,7 +6,6 @@ description: Scan containers for vulnerabilities using Trivy, Snyk, and other se
 
 Scan containers for vulnerabilities using Trivy, Snyk, and other security tools
 
-
 ## Key Features
 
 - Production-ready configurations

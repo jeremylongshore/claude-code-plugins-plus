@@ -80,6 +80,7 @@ roles:
 In Clay UI: **Settings > Members > Invite**
 
 Best practices:
+
 - Use company email addresses (not personal)
 - Start new members as Viewers until they complete Clay training
 - Audit member list quarterly -- remove departed employees immediately

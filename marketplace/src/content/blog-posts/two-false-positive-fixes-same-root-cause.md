@@ -29,6 +29,7 @@ Both failures traced to monitoring expressions that mixed structural health sign
 Healthchecks for the Braves containers ran every 10 seconds, invoking Node's global `fetch` (or `urllib.request` for the Python service) to make an HTTP round-trip to a local status endpoint. The logic was straightforward: open connection, validate response, exit on failure. The Docker healthcheck timeout was 5 seconds.
 
 Performance profile:
+
 - Light load (loadavg < 2): fetch completed in 5–20 ms.
 - Moderate load (loadavg 2–8): fetch completed in 100–500 ms.
 - High load (loadavg > 10): fetch sometimes failed to complete within 5 seconds.
@@ -49,6 +50,7 @@ This happened ~10 times per day, every single day.
 ### The assumption that bit
 
 Fetch-based healthchecks assume light load. They assume:
+
 - The event loop has microseconds to spare for I/O
 - The network isn't congested
 - The kernel isn't swapping
@@ -112,6 +114,7 @@ The first part is a liveness signal: the app is responding and healthy. The seco
 ### The failure cascade
 
 Most of the calendar is *between* games:
+
 - Off-season (November–March)
 - Post-game (after each game ends)
 - Pre-game (before first pitch, morning hours)
@@ -184,4 +187,3 @@ A healthcheck should answer: "Is this process alive?" A deployment validator sho
 ---
 
 **Also shipped:** hubspot-pack v2.0.0 landed the same day, consolidating 30 templated skills into 10 production-engineering skills following the guidewire v2 pattern. Also: porkbun-dnssec-caa.sh script pinning DNSSEC/CAA on intentsolutions.io as a Rekor predicate precondition.
-

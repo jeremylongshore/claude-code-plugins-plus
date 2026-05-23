@@ -12,6 +12,7 @@ This reference covers ethical scarcity patterns, cohort-based models, evergreen 
 | **Urgency** | Limited time (how long) | "Only until X date" | "Enrollment closes Friday at midnight" |
 
 Both create a reason to act now, but they operate through different psychological mechanisms:
+
 - **Scarcity** triggers competition ("I might lose this to someone else")
 - **Urgency** triggers loss aversion ("I'll miss this if I don't act by the deadline")
 
@@ -26,16 +27,19 @@ The most powerful offers use both together: limited spots that must be claimed b
 **Why it's ethical:** The capacity limit is real. You cannot serve 500 people with the same personal attention as 20. The start date is real. Everyone begins together.
 
 **Implementation:**
+
 - Determine the maximum number of customers you can serve excellently in one cohort
 - Set the cohort start date and enrollment close date
 - When spots fill, close enrollment regardless of demand
 - Maintain a waitlist for the next cohort
 
 **Example:**
+
 - "Cohort 7 begins March 15. Only 25 spots available. Enrollment closes March 10 or when spots fill, whichever comes first."
 - "We run 4 cohorts per year. The next available spot is in Q3. Join the waitlist to secure priority access."
 
 **Scarcity math:**
+
 - If you run 4 cohorts per year with 25 spots each, you serve 100 customers per year
 - A waitlist of 200 people means real scarcity and real demand
 - This is not manufactured -- it is the natural result of capacity constraints
@@ -47,12 +51,14 @@ The most powerful offers use both together: limited spots that must be claimed b
 **Why it's ethical:** Early customers take more risk (less social proof, less refined product). A lower price rewards that risk. As demand increases and the product improves, the price naturally increases.
 
 **Implementation:**
+
 - Set a specific number of founding member spots (e.g., 50)
 - Price the founding member tier 30-50% below the planned standard price
 - When founding member spots are filled, raise the price immediately
 - Founding members keep their price locked permanently ("grandfathered")
 
 **Example:**
+
 - "Founding Member Pricing: $997 (first 50 members). Standard price will be $1,997."
 - "We're offering launch pricing to our first 100 customers. After that, the price goes to $[higher price] permanently."
 
@@ -63,12 +69,14 @@ The most powerful offers use both together: limited spots that must be claimed b
 **Why it's ethical:** Bonus scarcity does not prevent anyone from buying -- it simply rewards speed. The core offer is always accessible; the extras are time-sensitive.
 
 **Implementation:**
+
 - Select 1-2 high-value bonuses to make scarce
 - Set a specific quantity or deadline for those bonuses
 - Track and display the remaining quantity in real time
 - Once depleted, remove the bonus from the offer page
 
 **Example:**
+
 - "The first 20 buyers also receive a complimentary 1-on-1 Strategy Call ($500 value)."
 - "Order by Friday and receive The Quick-Start Implementation Kit (not available after Friday)."
 
@@ -79,12 +87,14 @@ The most powerful offers use both together: limited spots that must be claimed b
 **Why it's ethical:** This is the reality of service businesses. A consultant who takes 30 clients delivers worse results than one who takes 5. Limiting capacity is quality control.
 
 **Implementation:**
+
 - Calculate your genuine maximum capacity based on delivery quality
 - Communicate the limit clearly on your sales page and in conversations
 - Maintain a real waitlist when capacity is reached
 - Update availability in real time
 
 **Example:**
+
 - "We accept 5 new clients per quarter to ensure every client receives dedicated attention."
 - "Currently: 2 of 5 Q2 spots remaining. When they're gone, the next available opening is Q3."
 
@@ -95,6 +105,7 @@ The most powerful offers use both together: limited spots that must be claimed b
 **Why it's ethical:** The event or season is real. The deadline is not arbitrary -- it is connected to an actual external factor.
 
 **Examples:**
+
 - "New Year, New Business: January Launch Special (ends January 31)"
 - "Get set up before Q4 so you're ready for holiday traffic"
 - "Pre-Black Friday Setup: Be ready before the biggest sales day of the year"
@@ -109,12 +120,14 @@ The most powerful offers use both together: limited spots that must be claimed b
 **Why it works:** Creates genuine urgency because the offer literally disappears. Prospects cannot procrastinate -- they buy now or wait for the next window.
 
 **Implementation:**
+
 - Open enrollment for a defined period (e.g., one week every quarter)
 - During the window, all marketing drives to enrollment
 - When the window closes, redirect the page to a waitlist
 - Between windows, nurture the waitlist with value content
 
 **Example:**
+
 - "Enrollment opens January 15-22. Next enrollment: April."
 - "Doors open twice a year: January and July. If you miss this window, the next opportunity is 6 months away."
 
@@ -125,6 +138,7 @@ The most powerful offers use both together: limited spots that must be claimed b
 **Why it works:** Reduces the sting of urgency (they can still buy later) while rewarding speed (but they'll miss the bonus).
 
 **Example:**
+
 - "Purchase by midnight Friday and receive The Implementation Sprint Bonus ($1,500 value). After Friday, the course is still available, but this bonus is not."
 - "Early bird registration (by March 1): includes VIP dinner with speakers. After March 1: standard registration only."
 
@@ -135,12 +149,14 @@ The most powerful offers use both together: limited spots that must be claimed b
 **Why it works:** Direct financial incentive to act now. Every day of delay costs money.
 
 **Implementation:**
+
 - Announce the current price and the future price clearly
 - Specify the exact date or trigger for the increase
 - Honor the increase without exception
 - Current customers are unaffected (grandfathered)
 
 **Example:**
+
 - "Current price: $997. On April 1, the price increases to $1,497. Lock in today's price now."
 - "Every 50 members, the price increases by $200. Current price: $1,200 (member #147 of 200)."
 
@@ -151,6 +167,7 @@ The most powerful offers use both together: limited spots that must be claimed b
 **Why it works for SaaS and service businesses:** Batch onboarding is operationally efficient and creates natural urgency.
 
 **Example:**
+
 - "Our next onboarding cohort starts February 1. Sign up by January 28 to join this group. Next cohort: March 1."
 - "We run guided setup sessions every two weeks. The next session is January 15. Sign up by January 13 to participate."
 
@@ -221,6 +238,7 @@ The most powerful offers use both together: limited spots that must be claimed b
 ### For Sales Conversations
 
 **Framework for introducing urgency on a call:**
+
 1. Present the offer fully first (value, bonuses, guarantee)
 2. Then: "I should mention -- we only have [X] spots in this round, and [Y] have already been taken."
 3. Or: "This pricing is available until [date]. After that, it goes to $[higher price]."

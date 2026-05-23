@@ -3,6 +3,7 @@
 ## Immediate Actions by Error Type
 
 ### 401/403 - Authentication
+
 ```bash
 set -euo pipefail
 # Verify API key is set
@@ -17,6 +18,7 @@ kubectl rollout restart deployment/retellai-integration
 ```
 
 ### 429 - Rate Limited
+
 ```bash
 set -euo pipefail
 # Check rate limit headers
@@ -29,6 +31,7 @@ kubectl set env deployment/retellai-integration RATE_LIMIT_MODE=queue
 ```
 
 ### 500/503 - Retell AI Errors
+
 ```bash
 set -euo pipefail
 # Enable graceful degradation
@@ -43,6 +46,7 @@ kubectl set env deployment/retellai-integration RETELLAI_FALLBACK=true
 ## Communication Templates
 
 ### Internal (Slack)
+
 ```
 🔴 P1 INCIDENT: Retell AI Integration
 Status: INVESTIGATING
@@ -53,6 +57,7 @@ Incident commander: @[name]
 ```
 
 ### External (Status Page)
+
 ```
 Retell AI Integration Issue
 
@@ -65,6 +70,7 @@ Last updated: [timestamp]
 ```
 
 ## Post-Incident Evidence Collection
+
 ```bash
 set -euo pipefail
 # Generate debug bundle
@@ -78,6 +84,7 @@ curl "localhost:9090/api/v1/query_range?query=retellai_errors_total&start=2h" > 
 ```
 
 ## Postmortem Template
+
 ```markdown
 ## Incident: Retell AI [Error Type]
 **Date:** YYYY-MM-DD

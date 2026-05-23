@@ -25,16 +25,19 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Migration Deep Dive
 
 ## Current State
+
 !`npm list @deepgram/sdk 2>/dev/null | grep deepgram || echo 'Not installed'`
 !`npm list @aws-sdk/client-transcribe 2>/dev/null | grep transcribe || echo 'AWS Transcribe SDK not found'`
 !`pip show google-cloud-speech 2>/dev/null | grep Version || echo 'Google STT not found'`
 
 ## Overview
+
 Migrate to Deepgram from AWS Transcribe, Google Cloud Speech-to-Text, Azure Cognitive Services, or OpenAI Whisper. Uses an adapter pattern with a unified interface, parallel running for quality validation, percentage-based traffic shifting, and automated rollback.
 
 ## Feature Mapping
 
 ### AWS Transcribe -> Deepgram
+
 | AWS Transcribe | Deepgram | Notes |
 |----------------|----------|-------|
 | `LanguageCode: 'en-US'` | `language: 'en'` | ISO 639-1 (2-letter) |
@@ -45,6 +48,7 @@ Migrate to Deepgram from AWS Transcribe, Google Cloud Speech-to-Text, Azure Cogn
 | Job polling model | Sync response or callback | No polling needed |
 
 ### Google Cloud STT -> Deepgram
+
 | Google STT | Deepgram | Notes |
 |------------|----------|-------|
 | `RecognitionConfig.encoding` | Auto-detected | Deepgram auto-detects format |
@@ -54,6 +58,7 @@ Migrate to Deepgram from AWS Transcribe, Google Cloud Speech-to-Text, Azure Cogn
 | `StreamingRecognize` | `listen.live()` | WebSocket vs gRPC |
 
 ### OpenAI Whisper -> Deepgram
+
 | Whisper | Deepgram | Notes |
 |---------|----------|-------|
 | Local GPU processing | API call | No GPU needed |
@@ -346,6 +351,7 @@ async function validateMigration(
 | **Cleanup** | Remove legacy adapter, update docs | 1 week |
 
 ## Output
+
 - Unified TranscriptionAdapter interface
 - Deepgram and legacy (AWS/Google) adapter implementations
 - Migration router with percentage-based traffic shifting
@@ -353,6 +359,7 @@ async function validateMigration(
 - Migration timeline and checklist
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Low similarity | Feature mapping incomplete | Check options mapping (language, diarize) |
@@ -361,6 +368,7 @@ async function validateMigration(
 | Rollback needed | Quality regression | `router.setDeepgramPercent(0)` immediately |
 
 ## Resources
+
 - [Deepgram Migration Guide](https://developers.deepgram.com/docs/migration)
 - [Feature Comparison](https://deepgram.com/product/speech-to-text)
 - [Pricing Calculator](https://deepgram.com/pricing)

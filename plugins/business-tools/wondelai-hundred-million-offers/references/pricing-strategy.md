@@ -33,6 +33,7 @@ This reference covers the value-based pricing framework, anchoring techniques, t
 If your offer delivers $100,000 in value, charge $10,000. The customer gets a 10x return and feels great about the investment. You get $10,000 in revenue and the margin to deliver excellence.
 
 **Why 10:1 and not 5:1 or 2:1?**
+
 - At 10:1, the purchase feels like a no-brainer. The ROI is so obvious that objections evaporate.
 - At 5:1, it is still compelling but requires more selling.
 - At 2:1, the customer hesitates because the downside risk is too close to the upside.
@@ -57,11 +58,13 @@ Anchoring is the psychological principle that the first number a person hears in
 Before revealing your price, quantify the cost of inaction.
 
 **Framework:**
+
 - "You mentioned you're losing [X] per [time period] because of [problem]."
 - "Over the next 12 months, that's [X x 12]."
 - "Our solution costs [price], which means your ROI is [multiple]x in the first year alone."
 
 **Example:**
+
 - Problem: Losing 3 deals per month worth $15,000 each
 - Annual cost of problem: $540,000
 - Your price: $25,000
@@ -72,11 +75,13 @@ Before revealing your price, quantify the cost of inaction.
 Show what it would cost to solve the problem without your offer.
 
 **Framework:**
+
 - "To get these results on your own, you'd need to [list all requirements]."
 - "That would cost approximately [sum of alternatives]."
 - "Our solution delivers the same results for [price]."
 
 **Example:**
+
 - Hire a marketing team: $180,000/year
 - Buy 5 separate tools: $24,000/year
 - Attend conferences and training: $10,000/year
@@ -88,12 +93,14 @@ Show what it would cost to solve the problem without your offer.
 Present the total value of all components before revealing the price.
 
 **Framework:**
+
 1. List each component with its standalone value
 2. Sum the total value
 3. Reveal the actual price
 4. The gap between total value and price is the "deal"
 
 **Example presentation:**
+
 | Component | Value |
 |-----------|-------|
 | Core Training Program | $5,000 |
@@ -109,6 +116,7 @@ Present the total value of all components before revealing the price.
 Make large prices feel small by breaking them down.
 
 **Examples:**
+
 - "$25,000 divided by 365 days = $68/day. Less than your morning coffee and lunch combined."
 - "$997 over 12 months = $2.73/day for a complete business transformation."
 - "$5,000 to acquire 50 customers = $100 per customer. If each customer is worth $2,000, that's a 20x return per customer."
@@ -144,6 +152,7 @@ Weak Testimonials → Less Demand → Charge Less → (business dies)
 ```
 
 **Warning signs you're in the death spiral:**
+
 - You compete primarily on price
 - Customers always negotiate down
 - You can't afford to hire help or buy tools
@@ -170,6 +179,7 @@ High prices create access barriers. Payment plans and financing remove the barri
 Charge more for payment plans, not less. The customer is getting a financing benefit, and financing has a cost.
 
 **Example:**
+
 - Pay in full: $4,997 (includes "fast-action discount")
 - 3 payments: $1,997 ($5,991 total)
 - 6 payments: $997 ($5,982 total)
@@ -188,6 +198,7 @@ The payment plan total is higher than pay-in-full. This incentivizes paying in f
 ### The Price Is Never the Problem
 
 When prospects say "it's too expensive," they mean one of two things:
+
 1. They genuinely cannot afford it (an access issue, not a value issue -- solve with payment plans)
 2. They do not perceive enough value (a communication issue -- solve with better value framing)
 

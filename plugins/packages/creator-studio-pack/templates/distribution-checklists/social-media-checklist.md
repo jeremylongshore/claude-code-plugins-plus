@@ -21,6 +21,7 @@
 - [ ] **Mentions**: Tag relevant people/tools/technologies
 
 ### Thread Structure Example
+
 ```
 Tweet 1: Hook + problem + 30s clip + video link
 Tweet 2: Key takeaway #1 + screenshot
@@ -65,6 +66,7 @@ Tweet 6: Call to action + video link
 - [ ] **Published as article** (not just link post)
 
 ### Article Structure
+
 ```
 Headline: [Professional, benefit-focused]
 
@@ -212,6 +214,7 @@ Hashtags: #WebDevelopment #CloudComputing #DevOps
 - [ ] **Flair** selected (if required)
 
 ### Post Format Example
+
 ```
 Title: [Clear, descriptive, honest]
 
@@ -405,26 +408,31 @@ Happy to answer questions!
 ### Platform-Specific Metrics
 
 **Twitter**:
+
 - Impressions, engagements, clicks
 - Best performing tweets
 - Profile visits from thread
 
 **LinkedIn**:
+
 - Views, reactions, comments, shares
 - Profile views from article
 - Connection requests
 
 **Instagram**:
+
 - Reach, saves, shares
 - Profile visits
 - Website clicks (if link available)
 
 **TikTok**:
+
 - Views, likes, shares, comments
 - Watch time percentage
 - Profile visits
 
 **Reddit**:
+
 - Upvotes, comments
 - Traffic to video
 - Quality of discussion
@@ -434,17 +442,20 @@ Happy to answer questions!
 ## Tools for Social Media Distribution
 
 **Scheduling**:
+
 - Buffer (multi-platform)
 - Hootsuite (enterprise)
 - Later (Instagram focus)
 - TweetDeck (Twitter)
 
 **Analytics**:
+
 - Native platform analytics
 - Google Analytics (website traffic)
 - Bitly (link tracking)
 
 **Content Creation**:
+
 - Canva (graphics)
 - Kapwing (video editing)
 - GIPHY (GIFs)

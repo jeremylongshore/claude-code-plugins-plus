@@ -10,6 +10,7 @@ apple-notes-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Apple Notes SDK upgrades
 **Workflow:** Part of the operations skill category for Apple Notes integration.
 **Relates to:** Other apple-notes skills in this pack.

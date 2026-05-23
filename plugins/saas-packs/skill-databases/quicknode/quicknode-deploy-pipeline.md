@@ -10,6 +10,7 @@ quicknode-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy QuickNode integrations to production
 **Workflow:** Part of the cicd skill category for QuickNode integration.
 **Relates to:** Other quicknode skills in this pack.

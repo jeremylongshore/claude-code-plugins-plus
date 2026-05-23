@@ -10,6 +10,7 @@ apple-notes-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Apple Notes local development workflow
 **Workflow:** Part of the onboarding skill category for Apple Notes integration.
 **Relates to:** Other apple-notes skills in this pack.

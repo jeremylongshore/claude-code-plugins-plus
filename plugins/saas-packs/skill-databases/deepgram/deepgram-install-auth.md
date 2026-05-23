@@ -10,6 +10,7 @@ deepgram-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Deepgram SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Deepgram integration.
 **Relates to:** Other deepgram skills in this pack.

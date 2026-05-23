@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code
 # Figma Rate Limits
 
 ## Overview
+
 Figma uses a leaky bucket algorithm for rate limiting. When the bucket is full, the API returns 429 with a `Retry-After` header. Limits vary by plan tier, seat type, and endpoint tier.
 
 ## Prerequisites
+
 - Figma REST API integration working
 - Understanding of async/await patterns
 
@@ -52,6 +54,7 @@ Figma uses a leaky bucket algorithm for rate limiting. When the bucket is full, 
 | `X-Figma-Upgrade-Link` | String | URL to upgrade for higher limits |
 
 ### Step 2: Implement Exponential Backoff
+
 ```typescript
 async function figmaFetchWithRetry(
   path: string,
@@ -96,6 +99,7 @@ async function figmaFetchWithRetry(
 ```
 
 ### Step 3: Request Queue with Concurrency Control
+
 ```typescript
 import PQueue from 'p-queue';
 
@@ -122,6 +126,7 @@ const [file, comments, images] = await Promise.all([
 ```
 
 ### Step 4: Rate Limit Monitor
+
 ```typescript
 class FigmaRateLimitMonitor {
   private requestLog: number[] = [];
@@ -160,6 +165,7 @@ async function monitoredFigmaFetch(path: string, token: string) {
 ```
 
 ### Step 5: Batch Node Requests
+
 ```typescript
 // Instead of N individual /v1/files/:key/nodes requests,
 // batch node IDs into fewer requests
@@ -186,12 +192,14 @@ async function batchFetchNodes(
 ```
 
 ## Output
+
 - Automatic retry with `Retry-After` header compliance
 - Request queue preventing burst overload
 - Rate limit monitoring with proactive throttling
 - Batch operations reducing total request count
 
 ## Error Handling
+
 | Scenario | Detection | Response |
 |----------|-----------|----------|
 | Single 429 | `Retry-After` header | Wait exactly that duration |
@@ -200,9 +208,11 @@ async function batchFetchNodes(
 | Batch too large | 400 Bad Request | Reduce batch size to 50 IDs |
 
 ## Resources
+
 - [Figma Rate Limits Documentation](https://developers.figma.com/docs/rest-api/rate-limits/)
 - [What if I'm rate-limited?](https://help.figma.com/hc/en-us/articles/34963238552855)
 - [p-queue Documentation](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For security configuration, see `figma-security-basics`.

@@ -4,13 +4,15 @@ A comprehensive collection of 25 DevOps infrastructure plugins for Claude Code, 
 
 ## Plugin Collection Overview
 
-###  Container Orchestration (4 plugins)
+### Container Orchestration (4 plugins)
+
 - **docker-compose-generator** - Generate Docker Compose configurations with best practices
 - **kubernetes-deployment-creator** - Create K8s deployments, services, and configurations
 - **helm-chart-generator** - Generate Helm charts for Kubernetes applications
 - **container-registry-manager** - Manage container registries (ECR, GCR, Harbor)
 
-###  CI/CD & Deployment (5 plugins)
+### CI/CD & Deployment (5 plugins)
+
 - **ci-cd-pipeline-builder** - Build pipelines for GitHub Actions, GitLab CI, Jenkins
 - **deployment-pipeline-orchestrator** - Orchestrate multi-stage deployment pipelines
 - **deployment-rollback-manager** - Manage deployment rollbacks with safety checks
@@ -18,30 +20,36 @@ A comprehensive collection of 25 DevOps infrastructure plugins for Claude Code, 
 - **infrastructure-drift-detector** - Detect infrastructure drift from desired state
 
 ### ️ Infrastructure as Code (3 plugins)
+
 - **infrastructure-as-code-generator** - Generate Terraform, CloudFormation, Pulumi code
 - **terraform-module-builder** - Build reusable Terraform modules
 - **ansible-playbook-creator** - Create Ansible playbooks for configuration management
 
-###  Security & Compliance (3 plugins)
+### Security & Compliance (3 plugins)
+
 - **container-security-scanner** - Scan containers with Trivy, Snyk
 - **compliance-checker** - Check SOC2, HIPAA, PCI-DSS compliance
 - **secrets-manager-integrator** - Integrate Vault, AWS Secrets Manager
 
 ### ️ Configuration & Scaling (4 plugins)
+
 - **environment-config-manager** - Manage environment configurations and secrets
 - **auto-scaling-configurator** - Configure HPA and auto-scaling policies
 - **load-balancer-configurator** - Configure ALB, NLB, Nginx, HAProxy
 - **network-policy-manager** - Manage K8s network policies and firewall rules
 
-###  Monitoring & Observability (2 plugins)
+### Monitoring & Observability (2 plugins)
+
 - **monitoring-stack-deployer** - Deploy Prometheus, Grafana, Datadog
 - **log-aggregation-setup** - Set up ELK, Loki, Splunk logging
 
-###  Service Management (2 plugins)
+### Service Management (2 plugins)
+
 - **service-mesh-configurator** - Configure Istio, Linkerd for microservices
 - **cloud-cost-optimizer** - Optimize cloud costs with FinOps practices
 
-###  Backup & Recovery (2 plugins)
+### Backup & Recovery (2 plugins)
+
 - **backup-strategy-implementor** - Implement database and application backups
 - **disaster-recovery-planner** - Plan and implement disaster recovery procedures
 
@@ -79,30 +87,35 @@ A comprehensive collection of 25 DevOps infrastructure plugins for Claude Code, 
 ## Usage Examples
 
 ### Docker Compose
+
 ```bash
 /docker-compose
 # Generates production-ready Docker Compose configurations
 ```
 
 ### Kubernetes
+
 ```bash
 /k8s-deploy
 # Creates complete K8s manifests with deployments, services, ingress
 ```
 
 ### CI/CD
+
 ```bash
 /ci-cd-build
 # Builds GitHub Actions, GitLab CI, or Jenkins pipelines
 ```
 
 ### Infrastructure as Code
+
 ```bash
 /iac-generate
 # Generates Terraform, CloudFormation, or Pulumi code
 ```
 
 ### Container Security
+
 ```bash
 /container-scan
 # Scans containers for vulnerabilities using Trivy
@@ -120,7 +133,9 @@ A comprehensive collection of 25 DevOps infrastructure plugins for Claude Code, 
 ## Plugin Categories
 
 ### Featured Plugins
+
 These plugins are marked as featured in the marketplace:
+
 - docker-compose-generator
 - kubernetes-deployment-creator
 - ci-cd-pipeline-builder
@@ -140,6 +155,7 @@ These plugins are marked as featured in the marketplace:
 ## Technologies Supported
 
 ### Container Platforms
+
 - Docker & Docker Compose
 - Kubernetes (K8s)
 - Amazon ECS/EKS
@@ -147,6 +163,7 @@ These plugins are marked as featured in the marketplace:
 - Azure AKS
 
 ### CI/CD Platforms
+
 - GitHub Actions
 - GitLab CI
 - Jenkins
@@ -154,6 +171,7 @@ These plugins are marked as featured in the marketplace:
 - Travis CI
 
 ### Infrastructure as Code
+
 - Terraform
 - CloudFormation
 - Pulumi
@@ -161,6 +179,7 @@ These plugins are marked as featured in the marketplace:
 - CDK (AWS/Terraform)
 
 ### Cloud Providers
+
 - Amazon Web Services (AWS)
 - Google Cloud Platform (GCP)
 - Microsoft Azure
@@ -168,6 +187,7 @@ These plugins are marked as featured in the marketplace:
 - On-premises/Hybrid
 
 ### Security Tools
+
 - Trivy
 - Snyk
 - Vault
@@ -175,6 +195,7 @@ These plugins are marked as featured in the marketplace:
 - SOPS
 
 ### Monitoring & Logging
+
 - Prometheus
 - Grafana
 - Datadog
@@ -183,11 +204,13 @@ These plugins are marked as featured in the marketplace:
 - Splunk
 
 ### Service Mesh
+
 - Istio
 - Linkerd
 - Consul
 
 ### GitOps Tools
+
 - ArgoCD
 - Flux
 - Jenkins X

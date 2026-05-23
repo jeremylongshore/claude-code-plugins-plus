@@ -3,12 +3,14 @@
 ## Drop-in Replacement
 
 ### The Key Insight
+
 ```
 OpenRouter is OpenAI API compatible.
 Change base URL and API key, keep everything else.
 ```
 
 ### Python Migration
+
 ```python
 # Before (OpenAI direct)
 from openai import OpenAI
@@ -33,6 +35,7 @@ response = client.chat.completions.create(
 ```
 
 ### TypeScript Migration
+
 ```typescript
 // Before (OpenAI direct)
 import OpenAI from 'openai';

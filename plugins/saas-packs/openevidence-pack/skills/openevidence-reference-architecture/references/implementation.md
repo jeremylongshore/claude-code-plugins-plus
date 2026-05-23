@@ -1,6 +1,7 @@
 # OpenEvidence Reference Architecture - Implementation Details
 
 ## Client Wrapper with Caching & Monitoring
+
 ```typescript
 export class OpenEvidenceService {
   async query(request: ClinicalQueryRequest, context: RequestContext): Promise<ClinicalQueryResponse> {
@@ -15,6 +16,7 @@ export class OpenEvidenceService {
 ```
 
 ## Service Facade
+
 ```typescript
 export class ClinicalEvidenceService {
   async queryClinicalEvidence(question: string, patientContext, context): Promise<FormattedClinicalAnswer> {
@@ -32,6 +34,7 @@ export class ClinicalEvidenceService {
 ```
 
 ## EHR Integration (FHIR CDS Hooks)
+
 ```typescript
 export class FHIRIntegration {
   async handleCDSHook(request: CDSHooksRequest): Promise<CDSHooksResponse> {
@@ -45,11 +48,13 @@ export class FHIRIntegration {
 ```
 
 ## Data Flow
+
 ```
 User/EHR Request → API Gateway (Auth, Rate) → PHI Sanitizer → Clinical Query Service → Cache Layer (Redis) → OpenEvidence API Client → OpenEvidence Cloud API
 ```
 
 ## Configuration Management (convict)
+
 Type-safe config with environment-specific JSON files, sensitive field handling, and strict validation.
 
 ---

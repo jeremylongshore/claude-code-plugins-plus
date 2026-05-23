@@ -10,6 +10,7 @@ attio-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Attio debug evidence for support
 **Workflow:** Part of the operations skill category for Attio integration.
 **Relates to:** Other attio skills in this pack.

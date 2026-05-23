@@ -200,7 +200,7 @@ A consumer of this skill holding a working `PodiumAuth` instance and a configure
 
 ## Testing Strategy
 
-- **Unit tests**: 
+- **Unit tests**:
   - `phone_normalize` for AU, US, UK, fully international (`+`-prefixed) inputs and explicit fail-closed cases
   - `upsert_contact_by_phone` for the 409-refetch branch (race-loser path)
   - `validate_location` for empty, valid, and unknown `location_uid`

@@ -10,6 +10,7 @@ adobe-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Adobe common errors
 **Workflow:** Part of the operations skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

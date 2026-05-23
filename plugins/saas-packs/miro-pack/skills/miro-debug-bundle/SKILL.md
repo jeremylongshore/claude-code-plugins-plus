@@ -154,12 +154,14 @@ echo "Review contents before sharing with Miro support."
 ## Sensitive Data Handling
 
 **ALWAYS redact before sharing:**
+
 - Access tokens and refresh tokens
 - Client secrets
 - User email addresses and names
 - Board content that may contain proprietary information
 
 **Safe to include:**
+
 - HTTP status codes and error messages
 - Rate limit header values
 - SDK and Node.js versions

@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Local Dev Loop
 
 ## Overview
+
 Set up a fast local development workflow for Deepgram: test fixtures with sample audio, mock responses for offline unit tests, Vitest integration tests against the real API, and a watch-mode transcription dev server.
 
 ## Prerequisites
+
 - `@deepgram/sdk` installed, `DEEPGRAM_API_KEY` configured
 - `npm install -D vitest tsx dotenv` for testing and dev server
 - Optional: `curl` for downloading test fixtures
@@ -231,6 +233,7 @@ describe('Deepgram Integration', () => {
 ```
 
 ## Output
+
 - Project structure with src, tests, fixtures directories
 - Mock response objects matching real Deepgram API shape
 - Unit tests with mocked SDK (no API calls)
@@ -238,6 +241,7 @@ describe('Deepgram Integration', () => {
 - Watch mode for rapid iteration
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Fixture 404 | Deepgram moved sample URL | Check latest URLs at developers.deepgram.com |
@@ -246,9 +250,11 @@ describe('Deepgram Integration', () => {
 | Mock shape mismatch | API response changed | Update mocks from real response capture |
 
 ## Resources
+
 - [Vitest Documentation](https://vitest.dev/)
 - [Deepgram Sample Audio](https://static.deepgram.com/examples/)
 - [SDK Testing Guide](https://developers.deepgram.com/docs/testing)
 
 ## Next Steps
+
 Proceed to `deepgram-sdk-patterns` for production-ready code patterns.

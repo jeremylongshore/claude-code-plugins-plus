@@ -1,6 +1,7 @@
-# Customer.io Deploy Pipeline - Implementation Guide
+## Customer.io Deploy Pipeline - Implementation Guide
 
 ### Step 1: Google Cloud Run Deployment
+
 ```yaml
 # .github/workflows/deploy-cloud-run.yml
 name: Deploy to Cloud Run
@@ -53,6 +54,7 @@ jobs:
 ```
 
 ### Step 2: Vercel Deployment
+
 ```json
 // vercel.json
 {
@@ -98,6 +100,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 ```
 
 ### Step 3: AWS Lambda Deployment
+
 ```yaml
 # serverless.yml
 service: customerio-integration
@@ -163,6 +166,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 ```
 
 ### Step 4: Kubernetes Deployment
+
 ```yaml
 # k8s/deployment.yaml
 apiVersion: apps/v1
@@ -231,6 +235,7 @@ spec:
 ```
 
 ### Step 5: Health Check Endpoint
+
 ```typescript
 // src/health.ts
 import { TrackClient, RegionUS } from '@customerio/track';
@@ -282,6 +287,7 @@ export async function healthCheck(): Promise<HealthStatus> {
 ```
 
 ### Step 6: Blue-Green Deployment
+
 ```bash
 #!/bin/bash
 # scripts/blue-green-deploy.sh

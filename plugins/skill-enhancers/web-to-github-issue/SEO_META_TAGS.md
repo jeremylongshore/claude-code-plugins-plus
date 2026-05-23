@@ -5,21 +5,25 @@
 ## Page: /plugins/web-to-github-issue
 
 ### Title Tag (58 chars)
+
 ```
 Web to GitHub Issue - Claude AI Research Automation Plugin
 ```
 
 ### Meta Description (158 chars)
+
 ```
 Free Claude Code plugin that converts AI research into formatted GitHub issues automatically. Save 95% time creating tickets with sources and action items.
 ```
 
 ### Canonical URL
+
 ```html
 <link rel="canonical" href="https://claudecodeplugins.io/plugins/web-to-github-issue" />
 ```
 
 ### Open Graph Tags
+
 ```html
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="article" />
@@ -41,6 +45,7 @@ Free Claude Code plugin that converts AI research into formatted GitHub issues a
 ```
 
 ### Twitter Card Tags
+
 ```html
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
@@ -54,6 +59,7 @@ Free Claude Code plugin that converts AI research into formatted GitHub issues a
 ```
 
 ### Additional Meta Tags
+
 ```html
 <!-- Additional SEO -->
 <meta name="keywords" content="Claude GitHub automation, AI research to GitHub, automated GitHub issues, Claude Code plugin, web search to ticket, research automation, developer productivity, GitHub issue creator" />
@@ -74,6 +80,7 @@ Free Claude Code plugin that converts AI research into formatted GitHub issues a
 ```
 
 ### Astro Frontmatter Format
+
 ```typescript
 ---
 import Layout from '../../../layouts/Layout.astro';
@@ -108,6 +115,7 @@ const plugin = {
 ## Schema.org JSON-LD Markup
 
 ### SoftwareApplication Schema
+
 ```json
 {
   "@context": "https://schema.org",
@@ -170,6 +178,7 @@ const plugin = {
 ```
 
 ### HowTo Schema (Installation Instructions)
+
 ```json
 {
   "@context": "https://schema.org",
@@ -245,6 +254,7 @@ const plugin = {
 ```
 
 ### FAQPage Schema (Troubleshooting)
+
 ```json
 {
   "@context": "https://schema.org",
@@ -311,6 +321,7 @@ const plugin = {
 ```
 
 ### Breadcrumb Schema
+
 ```json
 {
   "@context": "https://schema.org",
@@ -347,6 +358,7 @@ const plugin = {
 ## Primary Keywords
 
 **Target Keywords:**
+
 - Claude GitHub automation (Primary - Low competition)
 - AI research to GitHub issue (Primary - Very low competition)
 - Automated GitHub issue creator (Secondary - Medium competition)
@@ -354,6 +366,7 @@ const plugin = {
 - Web search to GitHub ticket (Tertiary - Very low competition)
 
 **Long-Tail Keywords:**
+
 - How to automate GitHub issues with Claude AI
 - Convert web research to GitHub tickets
 - Claude plugin for GitHub automation
@@ -361,6 +374,7 @@ const plugin = {
 - Research automation for developers
 
 **Semantic Keywords:**
+
 - Developer productivity tools
 - GitHub workflow automation
 - AI research assistant
@@ -371,11 +385,13 @@ const plugin = {
 ## Content Optimization Strategy
 
 ### H1 Tag (Primary Keyword)
+
 ```html
 <h1>Web to GitHub Issue: Automate Research with Claude AI</h1>
 ```
 
 ### H2 Headings (Keyword Distribution)
+
 ```html
 <h2>What It Does: Claude Research → GitHub Issues</h2>
 <h2>Real Use Cases for GitHub Automation</h2>
@@ -392,6 +408,7 @@ const plugin = {
 ```
 
 ### Optimized Introduction (First 150 words)
+
 ```markdown
 # Web to GitHub Issue: Automate Research with Claude AI
 
@@ -418,6 +435,7 @@ and competitive analysis. Free, open source, and takes 5 minutes to install.
 ```
 
 ### Before/After Comparison (SEO + Conversion)
+
 ```markdown
 ## Why Use This Plugin vs Manual Process
 
@@ -460,6 +478,7 @@ and competitive analysis. Free, open source, and takes 5 minutes to install.
 ## Call-to-Action Optimization
 
 ### Primary CTA (Above the fold)
+
 ```html
 <div class="cta-banner">
   <h3>Ready to Automate Your GitHub Workflow?</h3>
@@ -471,6 +490,7 @@ and competitive analysis. Free, open source, and takes 5 minutes to install.
 ```
 
 ### Secondary CTA (After use cases)
+
 ```html
 <div class="cta-inline">
   <p>See how it works? <a href="#how-it-works">Learn more about the automation</a> or <a href="#installation">install now</a>.</p>
@@ -478,6 +498,7 @@ and competitive analysis. Free, open source, and takes 5 minutes to install.
 ```
 
 ### Tertiary CTA (Bottom of page)
+
 ```html
 <div class="cta-footer">
   <h3>Explore More Skill Enhancers</h3>
@@ -494,6 +515,7 @@ and competitive analysis. Free, open source, and takes 5 minutes to install.
 ## Internal Linking Strategy
 
 ### Links FROM Plugin Page TO:
+
 1. `/categories/skill-enhancers` - "Part of Skill Enhancers collection"
 2. `/getting-started` - "New to Claude Code plugins?"
 3. `/sponsor` - "Support plugin development"
@@ -502,6 +524,7 @@ and competitive analysis. Free, open source, and takes 5 minutes to install.
 6. `/docs/creating-plugins` - "Build your own Skill Enhancer"
 
 ### Contextual Link Examples:
+
 ```markdown
 This plugin is part of the [Skill Enhancers](#) collection that extends
 Claude's AI capabilities with workflow automation.
@@ -514,6 +537,7 @@ New to Claude Code? Read our [getting started guide](#) first.
 ```
 
 ### Footer Links:
+
 - View on GitHub
 - Report an Issue
 - Request a Feature
@@ -523,24 +547,30 @@ New to Claude Code? Read our [getting started guide](#) first.
 ## Image Requirements
 
 ### Hero Image (1200x600px)
+
 **File:** `/public/images/plugins/web-to-github-issue-hero.png`
 **Content:**
+
 - Screenshot of Claude interface showing research command
 - Arrow pointing to
 - Screenshot of generated GitHub issue
 - Badge: "FREE • 95% Time Saved"
 
 ### OG Image (1200x630px)
+
 **File:** `/public/images/plugins/web-to-github-issue-og.png`
 **Content:**
+
 - Headline: "Web → GitHub Issue"
 - Subheadline: "Claude AI automation for developers"
 - Visual: Flow diagram (Research → Plugin → GitHub)
 - Stats: "FREE • 30 sec setup • 95% time saved"
 
 ### Demo GIF (800x500px)
+
 **File:** `/public/images/plugins/web-to-github-issue-demo.gif`
 **Content:**
+
 - Claude command entered
 - Web search results shown
 - GitHub issue being created
@@ -548,6 +578,7 @@ New to Claude Code? Read our [getting started guide](#) first.
 - Duration: 10 seconds, loops
 
 ### Screenshot Gallery (800x500px each)
+
 ```html
 <div class="screenshot-gallery">
   <img src="/images/web-to-github-issue-step1.png"
@@ -571,6 +602,7 @@ New to Claude Code? Read our [getting started guide](#) first.
 ## Performance Optimization
 
 ### Critical CSS (Inline)
+
 ```css
 .plugin-header { /* Above-the-fold styles */ }
 .cta-primary { /* Primary CTA button */ }
@@ -578,6 +610,7 @@ New to Claude Code? Read our [getting started guide](#) first.
 ```
 
 ### Lazy Loading
+
 ```html
 <img src="/images/web-to-github-issue-demo.gif"
      loading="lazy"
@@ -586,6 +619,7 @@ New to Claude Code? Read our [getting started guide](#) first.
 ```
 
 ### Preload Critical Assets
+
 ```html
 <link rel="preload" as="image" href="/images/web-to-github-issue-hero.png" />
 <link rel="preload" as="font" href="/fonts/inter-var.woff2" crossorigin />
@@ -594,9 +628,11 @@ New to Claude Code? Read our [getting started guide](#) first.
 ## Structured Data Testing
 
 ### Google Rich Results Test
+
 **URL to Test:** `https://claudecodeplugins.io/plugins/web-to-github-issue`
 
 **Expected Rich Results:**
+
 - ✅ SoftwareApplication card with price ($0)
 - ✅ Breadcrumb navigation
 - ✅ HowTo accordion (installation steps)
@@ -606,6 +642,7 @@ New to Claude Code? Read our [getting started guide](#) first.
 ## Mobile-Specific Optimizations
 
 ### Mobile Meta Tags
+
 ```html
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
 <meta name="mobile-web-app-capable" content="yes" />
@@ -613,6 +650,7 @@ New to Claude Code? Read our [getting started guide](#) first.
 ```
 
 ### Mobile CTA Positioning
+
 ```css
 @media (max-width: 768px) {
   .cta-primary {
@@ -628,6 +666,7 @@ New to Claude Code? Read our [getting started guide](#) first.
 ## Conversion Tracking
 
 ### Goals to Track:
+
 1. Install button clicks
 2. GitHub token documentation link clicks
 3. Time on page (target: 2:30+)
@@ -636,6 +675,7 @@ New to Claude Code? Read our [getting started guide](#) first.
 6. Sponsor page clicks from plugin page
 
 ### Event Tracking Code
+
 ```javascript
 // Track install button click
 document.querySelector('.install-button').addEventListener('click', () => {
@@ -650,6 +690,7 @@ document.querySelector('.install-button').addEventListener('click', () => {
 ---
 
 **Projected SEO Impact:**
+
 - Target ranking: Top 3 for "Claude GitHub automation"
 - Organic traffic: 150-200 visits/month
 - Install conversion rate: 35% (visitors who install)

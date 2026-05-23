@@ -10,6 +10,7 @@ klaviyo-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Klaviyo API performance
 **Workflow:** Part of the cicd skill category for Klaviyo integration.
 **Relates to:** Other klaviyo skills in this pack.

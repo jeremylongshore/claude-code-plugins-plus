@@ -48,6 +48,7 @@ pnpm typecheck     # Type check
 ## Commit Messages
 
 Use conventional commits:
+
 - `feat:` new feature
 - `fix:` bug fix
 - `test:` test changes

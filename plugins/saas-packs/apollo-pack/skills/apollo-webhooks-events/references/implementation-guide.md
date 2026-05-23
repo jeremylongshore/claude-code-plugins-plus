@@ -5,6 +5,7 @@
 # Apollo Webhooks Events
 
 ## Overview
+
 Implement webhook handlers for Apollo.io to receive real-time notifications about contact updates, sequence events, and engagement activities.
 
 ## Apollo Webhook Events
@@ -24,6 +25,7 @@ Implement webhook handlers for Apollo.io to receive real-time notifications abou
 ## Webhook Handler Implementation
 
 ### Express Handler
+
 ```typescript
 // src/routes/webhooks/apollo.ts
 import { Router } from 'express';
@@ -134,6 +136,7 @@ export default router;
 ```
 
 ### Event Handlers
+
 ```typescript
 // src/services/webhooks/handlers.ts
 import { prisma } from '../db';
@@ -406,6 +409,7 @@ ngrok http 3000
 ```
 
 ## Output
+
 - Webhook endpoint with signature verification
 - Event handlers for all Apollo event types
 - Database sync for contact and engagement data
@@ -413,6 +417,7 @@ ngrok http 3000
 - Test suite for webhook validation
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | Invalid signature | Check webhook secret |
@@ -421,9 +426,11 @@ ngrok http 3000
 | Duplicate events | Implement idempotency |
 
 ## Resources
+
 - [Apollo Webhooks Documentation](https://knowledge.apollo.io/hc/en-us/articles/4415154183053)
 - [Webhook Security Best Practices](https://hookdeck.com/webhooks/guides/webhook-security-best-practices)
 - [ngrok for Local Testing](https://ngrok.com/)
 
 ## Next Steps
+
 Proceed to `apollo-performance-tuning` for optimization.

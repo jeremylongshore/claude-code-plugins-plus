@@ -22,6 +22,7 @@ This isn't a success story. It's a progress report from someone who's learning i
 **Tech stack:** React 18 + TypeScript + Firebase + Firestore + Vertex AI
 
 **What it taught me:**
+
 - Migrate fast, validate faster. We moved from Supabase to Firebase in 4 days.
 - Cost structure matters. Vertex AI at $0.15 per diagnostic vs. OpenAI's pricing made this profitable on day one.
 - Data scale is real. Managing 226+ RSS feeds and multiple BigQuery datasets isn't theoretical—it's production infrastructure that breaks when you ignore it.
@@ -37,6 +38,7 @@ This isn't a success story. It's a progress report from someone who's learning i
 **Tech stack:** Next.js 15 with Turbopack, React 19, NextAuth v5, Cloud Run, Terraform
 
 **What it taught me:**
+
 - Legal compliance isn't optional. COPPA requirements for youth data forced me to become an expert in child privacy law.
 - Authentication at scale is hard. NextAuth v5 with JWT strategy, bcrypt hashing, password reset flows—all production-grade, all necessary.
 - Database schema design matters. Player profiles, game statistics, parent verification—designing Prisma schemas that scale requires thinking three steps ahead.
@@ -52,6 +54,7 @@ This isn't a success story. It's a progress report from someone who's learning i
 **Tech stack:** AWS infrastructure, PostgreSQL 16, pgBackRest, transparent operations
 
 **What it taught me:**
+
 - Radical transparency sells. Publishing exact cost breakdowns and internal documentation isn't risky—it's a competitive advantage.
 - Constraints create quality. Limiting to 5 clients/month keeps service personal and forces deliberate growth.
 - Pricing honesty works. $89/month vs AWS's $280/month for equivalent specs—68% savings creates evangelists, not just customers.
@@ -67,6 +70,7 @@ This isn't a success story. It's a progress report from someone who's learning i
 **Tech stack:** Next.js 15, React 19, Cloud Run, two-catalog architecture
 
 **What it taught me:**
+
 - Scale requires systems. 236 plugins need automation—manual management breaks at 50.
 - Documentation IS the product. CLAUDE.md files in every repo became more valuable than the code itself.
 - AI can build AI tools. Using Vertex AI Gemini to generate 159 plugin Skills at $0 cost proved LLMs can scale content creation with proper prompting.
@@ -82,6 +86,7 @@ This isn't a success story. It's a progress report from someone who's learning i
 **Tech stack:** Astro, Tailwind CSS 4, performance-optimized
 
 **What it taught me:**
+
 - Ship fast, iterate faster. From concept to production in 4 days. No overthinking.
 - SEO isn't magic. It's technical correctness, semantic HTML, and page speed.
 - Simple beats complex. Static site generation with Astro outperforms complex frameworks for landing pages.
@@ -91,6 +96,7 @@ This isn't a success story. It's a progress report from someone who's learning i
 ### N8N Workflow Automation (10+ Production Workflows)
 
 Running automated systems that actually work:
+
 - Daily news intelligence pipeline (12 RSS sources, GPT-4o-mini analysis)
 - Lead follow-up automation (B2B scoring, Airtable integration)
 - Content generation systems (Daily Energizer, disposable marketplace)
@@ -214,5 +220,3 @@ That's progress.
 **Portfolio:** Five production platforms detailed above
 
 **Last updated:** October 20, 2025
-
-

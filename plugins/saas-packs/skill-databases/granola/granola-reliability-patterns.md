@@ -10,6 +10,7 @@ granola-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Granola reliability patterns
 **Workflow:** Part of the enterprise skill category for Granola integration.
 **Relates to:** Other granola skills in this pack.

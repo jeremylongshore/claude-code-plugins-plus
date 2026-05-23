@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Webhooks & Events
 
 ## Overview
+
 Configure Langfuse webhooks to receive notifications on prompt version changes. Langfuse supports webhook events for prompt lifecycle: **Created**, **Updated** (labels/tags changed), and **Deleted**. Use webhooks to trigger CI/CD pipelines, sync prompts to external systems, or notify teams via Slack.
 
 ## Prerequisites
+
 - Langfuse Cloud or self-hosted instance
 - HTTPS endpoint to receive webhook POST requests
 - Webhook secret for HMAC signature verification
@@ -278,6 +280,7 @@ const worker = new Worker(
 | Webhook timeout | Slow handler | Enqueue and process async |
 
 ## Resources
+
 - [Langfuse Webhooks](https://langfuse.com/docs/prompt-management/features/webhooks-slack-integrations)
 - [Prompt Version Webhooks Changelog](https://langfuse.com/changelog/2025-07-11-prompt-version-webhooks)
 - [GitHub Integration](https://langfuse.com/docs/prompt-management/features/github-integration)

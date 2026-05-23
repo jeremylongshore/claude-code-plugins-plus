@@ -10,6 +10,7 @@ quicknode-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute QuickNode SDK upgrades
 **Workflow:** Part of the operations skill category for QuickNode integration.
 **Relates to:** Other quicknode skills in this pack.

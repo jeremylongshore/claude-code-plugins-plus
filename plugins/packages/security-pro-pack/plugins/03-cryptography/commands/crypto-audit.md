@@ -21,12 +21,13 @@ Automatically reviews cryptographic implementations in your codebase to identify
 ## What This Command Does
 
 **Automated Crypto Code Review:**
--  Detects weak or broken algorithms (MD5, SHA-1, DES, RC4)
--  Identifies insufficient key sizes (RSA <2048-bit, AES <128-bit)
--  Finds hardcoded keys and secrets
--  Checks for proper IV generation and usage
--  Verifies authenticated encryption usage
--  Validates TLS/SSL configurations
+
+- Detects weak or broken algorithms (MD5, SHA-1, DES, RC4)
+- Identifies insufficient key sizes (RSA <2048-bit, AES <128-bit)
+- Finds hardcoded keys and secrets
+- Checks for proper IV generation and usage
+- Verifies authenticated encryption usage
+- Validates TLS/SSL configurations
 
 **Output:** Crypto audit report with severity-rated findings and remediation steps
 
@@ -37,6 +38,7 @@ Automatically reviews cryptographic implementations in your codebase to identify
 ## When to Use This Command
 
 **Perfect For:**
+
 - Pre-commit crypto review
 - Security code review automation
 - Compliance requirement (crypto standards)
@@ -44,6 +46,7 @@ Automatically reviews cryptographic implementations in your codebase to identify
 - Regular security audits
 
 **Use This When:**
+
 - Implementing encryption or hashing
 - Reviewing third-party crypto code
 - Preparing for security audit
@@ -69,6 +72,7 @@ Automatically reviews cryptographic implementations in your codebase to identify
 ```
 
 **Shortcut:**
+
 ```bash
 /ca  # Quick crypto audit
 ```
@@ -80,6 +84,7 @@ Automatically reviews cryptographic implementations in your codebase to identify
 ### 1. Weak Algorithms (Critical)
 
 **Detects:**
+
 - MD5 hashing (completely broken)
 - SHA-1 hashing (collision attacks)
 - DES encryption (56-bit key, easily brute-forced)
@@ -87,6 +92,7 @@ Automatically reviews cryptographic implementations in your codebase to identify
 - ECB mode (pattern leakage)
 
 **Example Finding:**
+
 ```python
 #  CRITICAL: MD5 password hashing detected
 import hashlib
@@ -107,11 +113,13 @@ password_hash = argon2.hash(password)
 ### 2. Insufficient Key Sizes (High)
 
 **Checks:**
+
 - RSA key size (minimum 2048-bit, recommend 3072-bit)
 - AES key size (minimum 128-bit, recommend 256-bit)
 - Elliptic curve key size (minimum 256-bit)
 
 **Example Finding:**
+
 ```javascript
 // ️ HIGH: RSA key size insufficient
 const key = crypto.generateKeyPairSync('rsa', {
@@ -131,12 +139,14 @@ const key = crypto.generateKeyPairSync('rsa', {
 ### 3. Hardcoded Secrets (Critical)
 
 **Finds:**
+
 - Hardcoded encryption keys
 - Embedded API keys
 - Fixed salts or IVs
 - Hardcoded passwords
 
 **Example Finding:**
+
 ```javascript
 //  CRITICAL: Hardcoded encryption key
 const ENCRYPTION_KEY = "MySecretKey123456789012345678901"
@@ -155,12 +165,14 @@ if (!ENCRYPTION_KEY) throw new Error('Missing ENCRYPTION_KEY')
 ### 4. IV/Nonce Issues (High)
 
 **Detects:**
+
 - Reused initialization vectors
 - Predictable IVs
 - Missing IVs for CBC mode
 - Zero IVs
 
 **Example Finding:**
+
 ```python
 # ️ HIGH: Fixed IV reuse
 IV = b'1234567890123456'  # Same IV every time!
@@ -179,11 +191,13 @@ IV = os.urandom(16)
 ### 5. Unauthenticated Encryption (High)
 
 **Checks for:**
+
 - AES-CBC without HMAC
 - CTR mode without authentication
 - Missing auth tags
 
 **Example Finding:**
+
 ```javascript
 // ️ HIGH: Encryption without authentication
 const cipher = crypto.createCipheriv('aes-256-cbc', key, iv)
@@ -202,11 +216,13 @@ const cipher = crypto.createCipheriv('aes-256-gcm', key, iv)
 ### 6. Insecure Random (Critical)
 
 **Detects:**
+
 - Non-crypto random for security tokens
 - Predictable random number generators
 - Unseeded random
 
 **Example Finding:**
+
 ```python
 #  CRITICAL: Insecure random for crypto
 import random
@@ -226,12 +242,14 @@ token = secrets.token_urlsafe(32)
 ### 7. TLS/SSL Misconfigurations (Medium)
 
 **Checks:**
+
 - TLS version (minimum 1.2)
 - Weak cipher suites
 - Certificate validation disabled
 - Self-signed certificates in production
 
 **Example Finding:**
+
 ```javascript
 //  MEDIUM: Certificate validation disabled
 const https = require('https')
@@ -403,25 +421,29 @@ Report saved to: crypto-audit-2025-10-10.md
 
 ## Severity Levels
 
-** Critical (Fix Within 24 Hours)**
+**Critical (Fix Within 24 Hours)**
+
 - Hardcoded keys/secrets
 - Completely broken algorithms (MD5, DES, RC4)
 - No encryption where required (plaintext PHI, PCI)
 - Insecure random for crypto
 
-** High (Fix Within 1 Week)**
+**High (Fix Within 1 Week)**
+
 - Weak key sizes (RSA <2048, AES <128)
 - Unauthenticated encryption
 - IV reuse or predictable IVs
 - SHA-1 in security-critical contexts
 
-** Medium (Fix Within 1 Month)**
+**Medium (Fix Within 1 Month)**
+
 - Deprecated algorithms (TLS 1.0/1.1)
 - Missing certificate validation
 - SHA-1 in non-critical contexts
 - Weak cipher suites
 
-** Low (Improvement)**
+**Low (Improvement)**
+
 - AES-128 (upgrade to AES-256)
 - bcrypt cost factor <12
 - Missing crypto documentation
@@ -458,6 +480,7 @@ jobs:
 ## False Positives
 
 **Test Crypto:**
+
 ```python
 # Audit may flag test credentials
 TEST_KEY = "test_key_only"  # Used in tests only
@@ -468,6 +491,7 @@ TEST_KEY = "test_key_only"
 ```
 
 **Legacy Code:**
+
 ```javascript
 // Old code using MD5 for non-security purpose (checksums)
 const checksum = crypto.createHash('md5').update(data).digest('hex')
@@ -490,6 +514,7 @@ const checksum = crypto.createHash('md5').update(data).digest('hex')
 ## Support
 
 **Found crypto vulnerabilities?**
+
 1. Prioritize by severity (critical → high → medium)
 2. For remediation help: Ask Crypto Expert
 3. For complex issues: Email security team
@@ -500,4 +525,4 @@ const checksum = crypto.createHash('md5').update(data).digest('hex')
 **Time Investment:** 10-20 minutes per scan
 **Value:** Prevent crypto vulnerabilities that lead to data breaches
 
-**Audit crypto early. Fix vulnerabilities fast. Protect data properly.** 
+**Audit crypto early. Fix vulnerabilities fast. Protect data properly.**

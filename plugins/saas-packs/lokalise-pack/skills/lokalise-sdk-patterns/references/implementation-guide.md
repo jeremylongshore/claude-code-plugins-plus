@@ -5,6 +5,7 @@ Detailed implementation reference for the lokalise-sdk-patterns skill.
 ## Instructions
 
 ### Step 1: Implement Singleton Client Pattern
+
 ```typescript
 // src/lokalise/client.ts
 import { LokaliseApi } from "@lokalise/node-api";
@@ -33,6 +34,7 @@ export function resetLokaliseClient(): void {
 ```
 
 ### Step 2: Add Error Handling Wrapper
+
 ```typescript
 // src/lokalise/errors.ts
 import { ApiError } from "@lokalise/node-api";
@@ -79,6 +81,7 @@ function parseLokaliseError(err: unknown): LokaliseError {
 ```
 
 ### Step 3: Implement Rate-Limited Queue
+
 ```typescript
 // src/lokalise/queue.ts
 import PQueue from "p-queue";
@@ -108,6 +111,7 @@ export async function batchLokaliseOperations<T, R>(
 ```
 
 ### Step 4: Add Retry Logic
+
 ```typescript
 // src/lokalise/retry.ts
 export async function withRetry<T>(
@@ -138,6 +142,7 @@ export async function withRetry<T>(
 ```
 
 ### Step 5: Implement Cursor Pagination Helper
+
 ```typescript
 // src/lokalise/pagination.ts
 import { LokaliseApi, PaginatedResult } from "@lokalise/node-api";
@@ -179,10 +184,10 @@ async function getAllKeys(projectId: string) {
 }
 ```
 
-
 ## Detailed Examples
 
 ### Factory Pattern (Multi-Project)
+
 ```typescript
 const clients = new Map<string, LokaliseApi>();
 
@@ -199,6 +204,7 @@ export function getClientForProject(projectId: string): LokaliseApi {
 ```
 
 ### Typed Response Wrapper
+
 ```typescript
 import { Key, Translation, Project } from "@lokalise/node-api";
 
@@ -231,6 +237,7 @@ export const lokaliseService: LokaliseService = {
 ```
 
 ### Branch-Aware Client
+
 ```typescript
 export function getProjectWithBranch(projectId: string, branch?: string): string {
   // Lokalise branch syntax: projectId:branchName
@@ -241,4 +248,3 @@ export function getProjectWithBranch(projectId: string, branch?: string): string
 const projectId = getProjectWithBranch("123456.abcdef", "feature/new-ui");
 const keys = await client.keys().list({ project_id: projectId });
 ```
-

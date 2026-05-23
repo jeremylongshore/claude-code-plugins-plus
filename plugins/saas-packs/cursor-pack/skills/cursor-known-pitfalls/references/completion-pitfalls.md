@@ -3,6 +3,7 @@
 ## Completion Pitfalls
 
 ### Tab Key Confusion
+
 ```
 PITFALL:
 Tab accepts completion when you wanted indentation.
@@ -16,6 +17,7 @@ SOLUTION:
 ```
 
 ### Outdated Completions
+
 ```
 PITFALL:
 Completions based on old patterns in codebase.
@@ -29,6 +31,7 @@ SOLUTION:
 ```
 
 ### Language/Framework Mismatch
+
 ```
 PITFALL:
 AI suggests React patterns in Vue project.

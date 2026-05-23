@@ -18,18 +18,22 @@ External triggers are embedded with information that tells the user what to do n
 ### External Trigger Design Principles
 
 **1. Be specific about next action**
+
 - Bad: "Check out our app"
 - Good: "See 3 new matches" (specific action implied)
 
 **2. Create urgency without manipulation**
+
 - Bad: "Limited time only!" (generic)
 - Good: "Your weekly report is ready" (time-relevant)
 
 **3. Tie to internal trigger**
+
 - Bad: "We miss you!" (your need, not theirs)
 - Good: "5 friends posted while you were away" (FOMO trigger)
 
 **4. Respect attention**
+
 - Bad: Daily notifications for everything
 - Good: Triggered by meaningful events
 
@@ -134,16 +138,19 @@ Ask users (or observe):
 ## Transitioning Users to Internal Triggers
 
 ### Stage 1: External Trigger Dependency
+
 - User relies on notifications/reminders
 - Without prompt, doesn't think of product
 - **Action:** Consistent, valuable external triggers
 
 ### Stage 2: Forming Association
+
 - User begins to associate product with emotion
 - Still needs occasional external prompts
 - **Action:** Reinforce emotional connection in product
 
 ### Stage 3: Internal Trigger Established
+
 - User thinks of product automatically when emotion arises
 - External triggers become reminders, not initiators
 - **Action:** Reduce external triggers, focus on deepening habit

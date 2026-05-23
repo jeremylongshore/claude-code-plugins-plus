@@ -10,6 +10,7 @@ cursor-model-selection/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Guides configuration and selection of AI models in Cursor for optimal balance of speed, quality, and cost across different task types.
 
 **Workflow:** This skill activates when users need to choose or configure AI models. It covers built-in models, custom API key setup, task-based model selection, cost optimization, and troubleshooting model issues.

@@ -1,6 +1,7 @@
 # Deepgram Debug Bundle - Implementation Details
 
 ## Environment Information Script
+
 ```bash
 #!/bin/bash
 # debug-env.sh
@@ -18,6 +19,7 @@ pip show deepgram-sdk 2>/dev/null >> debug-bundle.txt
 ```
 
 ## API Connectivity Test
+
 ```bash
 #!/bin/bash
 # debug-connectivity.sh
@@ -39,6 +41,7 @@ curl -s -o /dev/null -w "%{http_code}" \
 ```
 
 ## Request Logger
+
 ```typescript
 // debug-logger.ts
 import { createClient } from '@deepgram/sdk';
@@ -150,6 +153,7 @@ export class DeepgramDebugger {
 ```
 
 ## Minimal Reproduction Script
+
 ```typescript
 // debug-repro.ts
 import { createClient } from '@deepgram/sdk';
@@ -181,6 +185,7 @@ reproduce();
 ```
 
 ## Audio Analysis Script
+
 ```bash
 #!/bin/bash
 # debug-audio.sh
@@ -198,6 +203,7 @@ fi
 ```
 
 ## Complete Debug Bundle Script
+
 ```bash
 #!/bin/bash
 # collect-debug-bundle.sh
@@ -244,6 +250,7 @@ echo "Debug bundle created: $BUNDLE_DIR.tar.gz"
 ```
 
 ## Support Ticket Template
+
 ```markdown
 ## Issue Summary
 [Brief description of the issue]

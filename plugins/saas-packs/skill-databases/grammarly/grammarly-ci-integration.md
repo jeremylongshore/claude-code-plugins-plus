@@ -10,6 +10,7 @@ grammarly-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Grammarly CI/CD integration
 **Workflow:** Part of the cicd skill category for Grammarly integration.
 **Relates to:** Other grammarly skills in this pack.

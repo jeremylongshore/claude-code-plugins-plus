@@ -26,8 +26,10 @@ compatibility: Designed for Claude Code
 ## Error Reference
 
 ### 401 Unauthorized
+
 **Cause:** Access token expired (tokens last ~1 hour).
 **Fix:** Refresh token via OAuth:
+
 ```bash
 curl -X POST https://platform.hootsuite.com/oauth2/token \
   -u "$HOOTSUITE_CLIENT_ID:$HOOTSUITE_CLIENT_SECRET" \
@@ -35,30 +37,37 @@ curl -X POST https://platform.hootsuite.com/oauth2/token \
 ```
 
 ### 403 Forbidden
+
 **Cause:** App lacks required permissions or user doesn't own the resource.
 **Fix:** Check app scopes in developer portal. Ensure user has access to the social profile.
 
 ### 422 Unprocessable Entity — scheduledSendTime
+
 **Cause:** Scheduled time is in the past or invalid ISO 8601 format.
 **Fix:** Always use future dates in ISO 8601: `new Date(Date.now() + 3600000).toISOString()`
 
 ### 422 — socialProfileIds
+
 **Cause:** Profile ID invalid or disconnected.
 **Fix:** List profiles first: `GET /v1/socialProfiles` and verify IDs.
 
 ### 429 Too Many Requests
+
 **Cause:** Rate limit exceeded.
 **Fix:** Implement exponential backoff. See `hootsuite-rate-limits`.
 
 ### Media Upload — State REJECTED
+
 **Cause:** File too large, wrong format, or exceeds platform limits.
 **Fix:** Check per-platform limits: Twitter images 5MB, Facebook 10MB, video varies.
 
 ### invalid_grant — Token Exchange
+
 **Cause:** Authorization code expired (30 second lifetime) or already used.
 **Fix:** Re-initiate OAuth flow — codes are single-use and expire in 30s.
 
 ### redirect_uri_mismatch
+
 **Cause:** Redirect URI doesn't exactly match app registration.
 **Fix:** Must match character-for-character, including trailing slash.
 

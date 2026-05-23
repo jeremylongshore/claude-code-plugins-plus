@@ -10,6 +10,7 @@ attio-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Attio example
 **Workflow:** Part of the onboarding skill category for Attio integration.
 **Relates to:** Other attio skills in this pack.

@@ -26,6 +26,7 @@ business impact of conversion changes.
 ### Step 1: Load Context
 
 Read the site registry at `${CLAUDE_SKILL_DIR}/references/site-registry.md` for:
+
 - Conversion events per site
 - Defined funnels per site
 - Business goals (what conversions matter most)
@@ -38,11 +39,13 @@ voice and framing.
 From the data-collector's event data, analyze:
 
 **Event Volume:**
+
 | Event | Count | Δ vs Prior | Trend |
 |-------|-------|-----------|-------|
 | {event_name} | {n} | {+/-n%} | {↑↓→} |
 
 **Event Rate (events / visitors):**
+
 - Calculate conversion rate: event count / unique visitors * 100
 - Compare to previous period
 - Flag significant changes (>20% shift)
@@ -52,6 +55,7 @@ From the data-collector's event data, analyze:
 For each site's defined funnel, calculate stage-by-stage progression:
 
 **tonsofskills.com Funnel:**
+
 ```
 Landing Page → Explore/Browse → Plugin Page → Install CTA → Cowork Download
    100%    →     {n%}       →    {n%}     →    {n%}    →      {n%}
@@ -59,6 +63,7 @@ Landing Page → Explore/Browse → Plugin Page → Install CTA → Cowork Downl
 ```
 
 **Funnel Health Indicators:**
+
 | Transition | Rate | Δ vs Prior | Status |
 |-----------|------|-----------|--------|
 | Landing → Browse | {n%} | {+/-n%} | Healthy / Degraded / Critical |
@@ -67,6 +72,7 @@ Landing Page → Explore/Browse → Plugin Page → Install CTA → Cowork Downl
 | Install → Download | {n%} | {+/-n%} | Healthy / Degraded / Critical |
 
 **Status definitions:**
+
 - **Healthy:** Within 10% of baseline rate
 - **Degraded:** 10-30% below baseline
 - **Critical:** >30% below baseline or trending down 3+ consecutive periods
@@ -76,20 +82,24 @@ Landing Page → Explore/Browse → Plugin Page → Install CTA → Cowork Downl
 Per site, track primary goals:
 
 **tonsofskills.com:**
+
 - Install clicks (primary KPI)
 - Cowork downloads (secondary KPI)
 - Search queries (engagement signal)
 
 **startaitools.com:**
+
 - Article reads (time-on-page > 60s proxy)
 - Syndication clicks (outbound to DEV.to/Hashnode)
 
 **jeremylongshore.com:**
+
 - Project clicks
 - Contact form submissions
 - Resume downloads
 
 **intentsolutions.io:**
+
 - Contact form submissions (highest value)
 - Service inquiry events
 - Case study views (mid-funnel)

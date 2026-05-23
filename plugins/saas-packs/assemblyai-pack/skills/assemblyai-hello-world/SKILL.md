@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # AssemblyAI Hello World
 
 ## Overview
+
 Minimal working examples demonstrating AssemblyAI's three core capabilities: async transcription, audio intelligence features, and LeMUR (LLM-powered analysis).
 
 ## Prerequisites
+
 - Completed `assemblyai-install-auth` setup
 - Valid API key configured in `ASSEMBLYAI_API_KEY`
 
@@ -133,6 +135,7 @@ async function lemurDemo() {
 ```
 
 ## Output
+
 - Working transcription from a remote URL or local file
 - Word-level timestamps with confidence scores
 - Speaker-labeled utterances (diarization)
@@ -140,6 +143,7 @@ async function lemurDemo() {
 - LeMUR-powered summarization and Q&A
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `transcript.status === 'error'` | Bad audio URL/format | Verify URL is publicly accessible, supported format |
@@ -148,10 +152,12 @@ async function lemurDemo() {
 | `Unsupported audio format` | Incompatible format | Use MP3, WAV, M4A, FLAC, OGG, or WebM |
 
 ## Resources
+
 - [Transcribe an Audio File](https://www.assemblyai.com/docs/getting-started/transcribe-an-audio-file)
 - [Audio Intelligence Models](https://www.assemblyai.com/docs/audio-intelligence)
 - [LeMUR Documentation](https://www.assemblyai.com/docs/lemur)
 - [Supported File Types](https://www.assemblyai.com/docs/concepts/faq#what-audio-and-video-formats-are-supported)
 
 ## Next Steps
+
 Proceed to `assemblyai-local-dev-loop` for development workflow setup.

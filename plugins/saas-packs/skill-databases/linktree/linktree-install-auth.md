@@ -10,6 +10,7 @@ linktree-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Linktree SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Linktree integration.
 **Relates to:** Other linktree skills in this pack.

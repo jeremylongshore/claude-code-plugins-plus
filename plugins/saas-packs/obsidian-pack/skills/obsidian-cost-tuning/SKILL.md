@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Obsidian Cost Tuning
 
 ## Overview
+
 Optimize costs across Obsidian's paid services and third-party plugin API usage. Covers Obsidian Sync storage management ($4-$10/mo), Publish hosting optimization ($8/mo per site), vault size reduction strategies, plugin API cost control with caching and quotas, and self-hosted alternatives for zero-cost sync.
 
 ## Prerequisites
+
 - Understanding of your Obsidian subscription tier
 - Terminal access to the vault directory
 - Knowledge of which community plugins make external API calls
@@ -49,6 +51,7 @@ Optimize costs across Obsidian's paid services and third-party plugin API usage.
 ## Instructions
 
 ### Step 1: Audit Vault Size and Storage Usage
+
 ```bash
 set -euo pipefail
 VAULT_PATH="${1:-$HOME/MyVault}"
@@ -78,6 +81,7 @@ done
 ```
 
 ### Step 2: Reduce Sync Storage — Exclusion Patterns
+
 Obsidian Sync respects `.obsidian/sync-exclude.json` for excluding paths:
 
 ```json
@@ -96,6 +100,7 @@ Obsidian Sync respects `.obsidian/sync-exclude.json` for excluding paths:
 ```
 
 For manual file-level control:
+
 ```bash
 # Find files over 5MB that consume sync bandwidth
 command find "$VAULT_PATH" -type f -size +5M -not -path '*/.obsidian/*' \
@@ -108,12 +113,14 @@ echo "Total attachments: $(du -sh "$VAULT_PATH/attachments" 2>/dev/null | cut -f
 ```
 
 Strategies to stay under the 1 GB Sync Standard tier:
+
 - Move PDFs to a local folder outside the vault, link with `file:///` URIs
 - Compress images before adding: `pngquant --quality=65-80 *.png` or ImageOptim
 - Use external image hosting (Cloudinary free tier: 25 credits/mo, ~25K transforms)
 - Exclude `.obsidian/plugins/*/data.json` — plugin caches regenerate on launch
 
 ### Step 3: Optimize Plugin API Costs
+
 Plugins that call external APIs (AI assistants, translation, image generation) can incur per-call costs. Implement caching in your plugin:
 
 ```typescript
@@ -179,6 +186,7 @@ async function getSummary(noteContent: string): Promise<string> {
 ```
 
 ### Step 4: Rate Limiting for External Calls
+
 ```typescript
 // Prevent runaway API costs with a quota counter
 class APIQuota {
@@ -220,6 +228,7 @@ async function callExternalAPI() {
 ```
 
 ### Step 5: Optimize Obsidian Publish Costs
+
 Publish at $8/mo per site. Minimize what you publish to reduce bandwidth:
 
 ```yaml
@@ -231,6 +240,7 @@ permalink: custom-url  # Custom URL path
 ```
 
 Cost reduction strategies:
+
 - Use `publish: true` frontmatter selectively instead of publishing entire folders
 - Compress images before embedding (target < 200KB per image)
 - Use lazy-loading for heavy media: `![alt](image.png)` with external hosting
@@ -238,6 +248,7 @@ Cost reduction strategies:
 - Use Obsidian's built-in image compression in Publish settings
 
 ### Step 6: Self-Hosted Sync Alternatives (Free)
+
 ```yaml
 # Decision matrix for $0/month sync
 obsidian_git:
@@ -270,6 +281,7 @@ remotely_save:
 ```
 
 ### Step 7: Ongoing Cost Monitoring Script
+
 ```bash
 #!/bin/bash
 # vault-cost-report.sh <vault-path>
@@ -308,6 +320,7 @@ done
 ```
 
 ## Output
+
 - Vault storage audit with file type breakdown and largest files
 - Sync exclusion patterns reducing bandwidth consumption
 - API response cache with TTL and bounded size
@@ -317,6 +330,7 @@ done
 - Monthly cost estimation script
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Sync storage full | Large binary attachments | Exclude PDFs/videos from sync, compress images |
@@ -329,6 +343,7 @@ done
 ## Examples
 
 ### Quick Storage Savings
+
 ```bash
 # Compress all PNG images in vault (requires pngquant)
 command find "$VAULT_PATH" -name '*.png' -exec pngquant --quality=65-80 --skip-if-larger --ext .png --force {} \;
@@ -339,6 +354,7 @@ command find "$VAULT_PATH" -name '*.pdf' -size +10M -exec mv {} ~/VaultArchive/ 
 ```
 
 ### Persistent API Cache Across Sessions
+
 ```typescript
 // Save cache to plugin data.json on unload, restore on load
 async onload() {
@@ -352,6 +368,7 @@ onunload() {
 ```
 
 ## Resources
+
 - [Obsidian Sync](https://help.obsidian.md/Obsidian+Sync) — official docs
 - [Obsidian Publish](https://help.obsidian.md/Obsidian+Publish) — official docs
 - [Obsidian Git Plugin](https://github.com/denolehov/obsidian-git)
@@ -360,5 +377,6 @@ onunload() {
 - [Cloudinary Free Tier](https://cloudinary.com/pricing) — image hosting
 
 ## Next Steps
+
 For performance optimization, see `obsidian-performance-tuning`.
 For data backup and recovery patterns, see `obsidian-data-handling`.

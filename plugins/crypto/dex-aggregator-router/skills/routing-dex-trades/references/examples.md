@@ -13,6 +13,7 @@ python dex_router.py ETH USDC 1.0
 ```
 
 Output:
+
 ```
 Fetching quotes for 1.0 ETH → USDC...
 
@@ -71,6 +72,7 @@ python dex_router.py ETH USDC 5.0 --compare
 ```
 
 Output:
+
 ```
 DEX Route Comparison
 ══════════════════════════════════════════════════════════════════════
@@ -115,6 +117,7 @@ python dex_router.py ETH USDC 50.0 --split
 ```
 
 Output:
+
 ```
 Split Order Recommendation
 ══════════════════════════════════════════════════════════════════════
@@ -142,6 +145,7 @@ python dex_router.py ETH USDC 0.5 --split
 ```
 
 Output:
+
 ```
 Single venue is optimal for this trade size.
 ```
@@ -159,6 +163,7 @@ python dex_router.py ETH USDC 20.0 --mev-check
 ```
 
 Output:
+
 ```
 ╭──────────────────── MEV Risk Level ────────────────────╮
 │ MEDIUM (Score: 52/100)                                 │
@@ -210,6 +215,7 @@ python dex_router.py ETH USDC 25.0 --full
 ```
 
 Output:
+
 ```
 ════════════════════════════════════════════════════════════════════════
 COMPLETE DEX ANALYSIS

@@ -10,6 +10,7 @@ algolia-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Algolia debug evidence for support
 **Workflow:** Part of the operations skill category for Algolia integration.
 **Relates to:** Other algolia skills in this pack.

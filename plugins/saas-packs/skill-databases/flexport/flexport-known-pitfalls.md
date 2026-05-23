@@ -10,6 +10,7 @@ flexport-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Flexport anti-patterns
 **Workflow:** Part of the enterprise skill category for Flexport integration.
 **Relates to:** Other flexport skills in this pack.

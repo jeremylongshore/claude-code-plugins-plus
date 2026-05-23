@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Gamma Incident Runbook
 
 ## Overview
+
 Systematic procedures for responding to and resolving Gamma integration incidents.
 
 ## Prerequisites
+
 - Access to monitoring dashboards
 - Access to application logs
 - On-call responsibilities defined
@@ -44,6 +46,7 @@ Systematic procedures for responding to and resolving Gamma integration incident
 ## Quick Diagnostics
 
 ### Step 1: Check Gamma Status
+
 ```bash
 set -euo pipefail
 # Check Gamma status page
@@ -59,6 +62,7 @@ curl -w "\nTime: %{time_total}s\n" \
 ```
 
 ### Step 2: Review Key Metrics
+
 ```bash
 set -euo pipefail
 # Check error rate (Prometheus)
@@ -72,6 +76,7 @@ curl -s 'http://prometheus:9090/api/v1/query?query=gamma_rate_limit_remaining' |
 ```
 
 ### Step 3: Review Recent Logs
+
 ```bash
 # Last 100 error logs
 grep -i "gamma.*error" /var/log/app/gamma-*.log | tail -100
@@ -88,11 +93,13 @@ grep -i "timeout" /var/log/app/gamma-*.log | tail -50
 ### Scenario 1: API Returning 5xx Errors
 
 **Symptoms:**
+
 - High error rate in monitoring
 - Users reporting failed presentations
 - 500/502/503 responses from Gamma
 
 **Actions:**
+
 1. Verify Gamma status: https://status.gamma.app
 2. If Gamma outage confirmed:
    - Enable degraded mode / show maintenance message
@@ -100,6 +107,7 @@ grep -i "timeout" /var/log/app/gamma-*.log | tail -50
    - No action needed on our side
 
 3. If Gamma is operational:
+
    ```bash
    # Check our request patterns
    grep "5[0-9][0-9]" /var/log/app/gamma-*.log | \
@@ -114,12 +122,15 @@ grep -i "timeout" /var/log/app/gamma-*.log | tail -50
 ### Scenario 2: Rate Limit Exceeded (429)
 
 **Symptoms:**
+
 - 429 responses in logs
 - Rate limit metrics at zero
 - Slow or queued requests
 
 **Actions:**
+
 1. Immediate mitigation:
+
    ```bash
    # Enable request throttling
    curl -X POST http://localhost:8080/admin/throttle \
@@ -127,6 +138,7 @@ grep -i "timeout" /var/log/app/gamma-*.log | tail -50
    ```
 
 2. Check for runaway processes:
+
    ```bash
    # Find high-volume clients
    grep "gamma" /var/log/app/*.log | \
@@ -134,6 +146,7 @@ grep -i "timeout" /var/log/app/gamma-*.log | tail -50
    ```
 
 3. Enable circuit breaker:
+
    ```bash
    curl -X POST http://localhost:8080/admin/circuit-breaker \
      -d '{"service": "gamma", "state": "open"}'
@@ -144,12 +157,15 @@ grep -i "timeout" /var/log/app/gamma-*.log | tail -50
 ### Scenario 3: High Latency
 
 **Symptoms:**
+
 - Slow presentation creation
 - Timeouts in logs
 - P95 latency > 10s
 
 **Actions:**
+
 1. Check Gamma latency vs our latency:
+
    ```bash
    # Direct Gamma latency
    for i in {1..5}; do
@@ -172,12 +188,15 @@ grep -i "timeout" /var/log/app/gamma-*.log | tail -50
 ### Scenario 4: Authentication Failures (401/403)
 
 **Symptoms:**
+
 - All requests failing with 401
 - "Invalid API key" errors
 - Sudden authentication failures
 
 **Actions:**
+
 1. Verify API key:
+
    ```bash
    # Test key directly
    curl -H "Authorization: Bearer $GAMMA_API_KEY" \
@@ -197,6 +216,7 @@ grep -i "timeout" /var/log/app/gamma-*.log | tail -50
 ## Communication Templates
 
 ### Internal Notification
+
 ```
 INCIDENT: Gamma Integration Issue
 
@@ -215,6 +235,7 @@ Next Update: [Time]
 ```
 
 ### User-Facing Message
+
 ```
 We're currently experiencing issues with presentation generation.
 Our team is actively working to resolve this.
@@ -235,10 +256,11 @@ ETA: [If known]
 - [ ] Post-mortem scheduled (for P1/P2)
 
 ## Resources
+
 - [Gamma Status](https://status.gamma.app)
 - [Gamma Support](https://gamma.app/support)
-- [Internal Runbook Wiki]()
-- [On-Call Schedule]()
+- Internal Runbook Wiki (fill in your org's URL)
+- On-Call Schedule (fill in your org's URL)
 
 ## Next Steps
 

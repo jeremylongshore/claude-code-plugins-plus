@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Rate Limits & Credits
 
 ## Overview
+
 Windsurf uses a credit-based system for AI features. Each prompt to Cascade consumes credits, with different models costing different amounts. Understanding the credit system prevents mid-session interruptions and optimizes your AI budget.
 
 ## Prerequisites
+
 - Windsurf account (Free, Pro, or Teams)
 - Access to account dashboard at windsurf.com/account
 
@@ -62,6 +64,7 @@ Different models consume different credit amounts per prompt:
 **In-IDE:** Click the Windsurf widget (status bar) > shows remaining credits
 
 **Dashboard:** windsurf.com/account > Usage tab shows:
+
 - Credits consumed today/this month
 - Credits remaining
 - Per-model breakdown
@@ -126,6 +129,7 @@ team_monitoring:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | "No credits remaining" | Monthly allocation exhausted | Switch to SWE-1 Lite or buy more |
@@ -136,12 +140,14 @@ team_monitoring:
 ## Examples
 
 ### Check Credits Quickly
+
 ```
 Click the Windsurf widget in the bottom-right status bar.
 It shows: model name, credits remaining, and authentication status.
 ```
 
 ### Cost-Effective Prompt Strategy
+
 ```
 Instead of:
 1. "What does this function do?" (1 credit)
@@ -156,8 +162,10 @@ Total: 1 credit
 ```
 
 ## Resources
+
 - [Windsurf Pricing](https://windsurf.com/pricing)
 - [Credit Documentation](https://docs.windsurf.com/windsurf/models)
 
 ## Next Steps
+
 For security configuration, see `windsurf-security-basics`.

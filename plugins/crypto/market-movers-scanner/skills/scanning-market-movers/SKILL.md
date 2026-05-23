@@ -37,33 +37,39 @@ Real-time detection of significant price movements and unusual volume patterns a
 ## Instructions
 
 1. **Run a default scan** for top gainers and losers (top 20 each by 24h change with volume confirmation):
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/scanner.py
    ```
 
 2. **Set custom thresholds** for minimum change and volume spike:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-change 10 --volume-spike 3
    python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-cap 100000000 --max-cap 1000000000  # 100000000 = $100M min cap, 1000000000 = $1B max cap
    ```
 
 3. **Filter by category** (defi, layer2, nft, gaming, meme):
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --category defi
    ```
 
 4. **Scan different timeframes** (1h, 24h, 7d):
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --timeframe 1h
    ```
 
 5. **Export results** to JSON or CSV:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format json --output movers.json
    python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format csv --output movers.csv
    ```
 
 6. **Use named presets** for predefined threshold sets:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --preset aggressive
    ```

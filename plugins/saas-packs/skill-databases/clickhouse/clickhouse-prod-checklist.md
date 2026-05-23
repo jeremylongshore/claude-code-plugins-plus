@@ -10,6 +10,7 @@ clickhouse-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute ClickHouse production deployment checklist
 **Workflow:** Part of the operations skill category for ClickHouse integration.
 **Relates to:** Other clickhouse skills in this pack.

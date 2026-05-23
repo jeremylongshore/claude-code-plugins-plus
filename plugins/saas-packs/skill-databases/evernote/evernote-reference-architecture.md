@@ -10,6 +10,7 @@ evernote-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Evernote reference architecture
 **Workflow:** Part of the cicd skill category for Evernote integration.
 **Relates to:** Other evernote skills in this pack.

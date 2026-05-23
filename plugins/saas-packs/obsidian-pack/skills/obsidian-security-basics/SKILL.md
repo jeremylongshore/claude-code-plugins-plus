@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Obsidian Security Basics
 
 ## Overview
+
 Security practices for Obsidian plugin development. Plugins run with full vault filesystem access and can make arbitrary network requests inside Electron. Responsible development requires protecting credentials, sanitizing external data, validating URI handlers, minimizing permissions, and following Obsidian's plugin guidelines to avoid community submission rejection.
 
 ## Prerequisites
+
 - Obsidian plugin development environment
 - Understanding that `.obsidian/plugins/<id>/data.json` is synced by cloud services
 - Awareness of [Obsidian Plugin Guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines)
@@ -310,6 +312,7 @@ fetch('https://analytics.example.com/track', { body: ... });  // No hidden telem
 ```
 
 ## Output
+
 - SecureStorage class using Electron's safeStorage for encrypted credential storage
 - HTML and markdown sanitization for all external content
 - URI handler with action whitelist and path validation
@@ -318,6 +321,7 @@ fetch('https://analytics.example.com/track', { body: ... });  // No hidden telem
 - Plugin review rejection checklist with approved alternatives
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | API key synced to cloud | Stored in `data.json` | Use `SecureStorage` with Electron `safeStorage` |
@@ -330,6 +334,7 @@ fetch('https://analytics.example.com/track', { body: ... });  // No hidden telem
 ## Examples
 
 ### Content Security for Custom Views
+
 ```typescript
 // When rendering external content in an ItemView
 async onOpen() {
@@ -349,6 +354,7 @@ async onOpen() {
 ```
 
 ### Audit Your Plugin for Security Issues
+
 ```bash
 # Quick security audit of plugin source code
 grep -rn 'eval(\|new Function(' src/ --include="*.ts" && echo "FAIL: dynamic code execution"
@@ -359,11 +365,13 @@ echo "Done."
 ```
 
 ## Resources
+
 - [Obsidian Plugin Guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines)
 - [Electron Security](https://www.electronjs.org/docs/latest/tutorial/security)
 - [OWASP XSS Prevention](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)
 - [Obsidian requestUrl API](https://docs.obsidian.md/Reference/TypeScript+API/requestUrl)
 
 ## Next Steps
+
 For production readiness checks, see `obsidian-prod-checklist`.
 For deployment and community submission, see `obsidian-deploy-integration`.

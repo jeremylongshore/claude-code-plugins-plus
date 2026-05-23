@@ -28,6 +28,7 @@ Microsoft Graph rate limits OneNote at **600 requests per 60 seconds per user** 
 This skill implements a token bucket rate limiter, queue-based request throttling, and proper `Retry-After` header parsing. For multi-user apps, it tracks per-user and per-tenant budgets independently.
 
 Key pain points addressed:
+
 - The `Retry-After` header value is in seconds (not milliseconds) — many implementations parse this wrong
 - The per-user limit (600/60s) is separate from the per-tenant limit (10,000/10min) — you can hit one without the other
 - Batch requests (`$batch`) count as one request toward the limit, regardless of how many operations are inside
@@ -51,6 +52,7 @@ Key pain points addressed:
 | Per-tenant | All users + all apps in the tenant | 10 minutes (rolling) | 10,000 requests |
 
 When either limit is hit:
+
 - Response status: `429 Too Many Requests`
 - Response header: `Retry-After: <seconds>` (integer, not milliseconds)
 - All subsequent OneNote requests for that scope are blocked until the window resets
@@ -377,6 +379,7 @@ class RateLimitMonitor {
 ## Output
 
 Rate limit handling produces:
+
 - Preemptive throttling via token bucket — requests are delayed before sending, not after 429
 - `Retry-After` compliance — exact server-specified delays honored
 - Batch consolidation — 20 operations per HTTP request for bulk workloads
@@ -394,6 +397,7 @@ Rate limit handling produces:
 ## Examples
 
 **Calculate request budget for polling + CRUD:**
+
 ```typescript
 const BUDGET_PER_MINUTE = 600;
 const SAFETY_MARGIN = 0.8; // Use 80% of limit
@@ -409,6 +413,7 @@ console.log(`Polling: ${pollRequestsPerMin}/min | CRUD: ${remainingForCrud}/min`
 ```
 
 **Production health check:**
+
 ```typescript
 const monitor = new RateLimitMonitor();
 // After each API call:

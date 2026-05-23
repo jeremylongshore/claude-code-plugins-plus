@@ -3,12 +3,14 @@
 ## Checking Model Status
 
 ### List All Available Models
+
 ```bash
 curl https://openrouter.ai/api/v1/models \
   -H "Authorization: Bearer $OPENROUTER_API_KEY"
 ```
 
 ### Python Model Checker
+
 ```python
 import requests
 
@@ -32,6 +34,7 @@ if is_model_available(api_key, "openai/gpt-4-turbo"):
 ```
 
 ### TypeScript Model Checker
+
 ```typescript
 interface ModelInfo {
   id: string;

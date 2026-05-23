@@ -10,6 +10,7 @@ snowflake-enterprise-rbac/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Snowflake enterprise access control
 **Workflow:** Part of the advanced skill category for Snowflake integration.
 **Relates to:** Other snowflake skills in this pack.

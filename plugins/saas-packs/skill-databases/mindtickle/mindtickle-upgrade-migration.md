@@ -10,6 +10,7 @@ mindtickle-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Mindtickle SDK upgrades
 **Workflow:** Part of the operations skill category for Mindtickle integration.
 **Relates to:** Other mindtickle skills in this pack.

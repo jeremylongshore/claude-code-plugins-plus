@@ -45,6 +45,7 @@ npm run test:coverage:ui
 ### Coverage Output
 
 Coverage reports are generated in the following formats:
+
 - **Terminal**: Text output in console
 - **HTML**: `coverage/index.html` (open in browser)
 - **JSON**: `coverage/coverage-final.json`
@@ -57,6 +58,7 @@ Coverage reports are generated in the following formats:
 Tests the GitHub API client wrapper that handles authentication and issue creation.
 
 **Test Categories:**
+
 - **Constructor (4 tests)**: Token validation
   - Missing token error
   - Empty string token error
@@ -83,11 +85,13 @@ Tests the GitHub API client wrapper that handles authentication and issue creati
   - Repo name parsing (hyphens, underscores)
 
 **Mocking Strategy:**
+
 - Mocks `@octokit/rest` using Vitest's `vi.mock()`
 - Simulates API responses and errors
 - Verifies correct parameters passed to Octokit methods
 
 **Edge Cases Covered:**
+
 - Invalid repo formats
 - Network failures
 - API rate limiting
@@ -99,6 +103,7 @@ Tests the GitHub API client wrapper that handles authentication and issue creati
 Tests the search results parser that extracts insights from web search data.
 
 **Test Categories:**
+
 - **Empty/Invalid Inputs (3 tests)**:
   - Null results
   - Undefined results
@@ -158,6 +163,7 @@ Tests the search results parser that extracts insights from web search data.
   - Whitespace-only content
 
 **Edge Cases Covered:**
+
 - Null/undefined/empty inputs
 - Missing required fields (title, snippet, URL)
 - Invalid URLs
@@ -171,6 +177,7 @@ Tests the search results parser that extracts insights from web search data.
 Tests the markdown formatter that creates formatted GitHub issue bodies.
 
 **Test Categories:**
+
 - **Basic Formatting (5 tests)**:
   - Topic in header
   - Generation date display
@@ -240,6 +247,7 @@ Tests the markdown formatter that creates formatted GitHub issue bodies.
   - Missing generatedAt
 
 **Edge Cases Covered:**
+
 - Empty/missing data structures
 - Very long text (topics, snippets)
 - Special characters and markdown escaping

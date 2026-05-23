@@ -60,12 +60,15 @@ function classifyMindTickleError(status: number, body: string): MindTickleError 
 ## Debugging Guide
 
 ### Authentication Errors
+
 MindTickle API keys are passed via `Authorization: Bearer` header. Keys are scoped to admin or read-only access levels. Most write operations require admin scope. Keys are automatically revoked when the issuing admin's account is deactivated -- re-issue from an active admin account.
 
 ### Rate Limit Errors
+
 The API enforces 60 requests/minute per key. User provisioning operations (SCIM) share the same limit as content APIs. Batch user creation using SCIM bulk endpoints instead of individual POST calls. Use `Retry-After` header and implement exponential backoff starting at 2 seconds. Analytics report generation is throttled more aggressively at 10 requests/minute.
 
 ### Validation Errors
+
 Course enrollment must precede content access -- a 403 on course content means the user is not enrolled, not that the API key is wrong. Quiz scoring errors occur when a quiz is updated after users have submitted attempts; re-publish the quiz and trigger re-grading. Module IDs differ between staging and production environments.
 
 ## Error Handling

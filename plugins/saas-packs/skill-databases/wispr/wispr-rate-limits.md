@@ -10,6 +10,7 @@ wispr-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Wispr rate limiting and backoff
 **Workflow:** Part of the operations skill category for Wispr integration.
 **Relates to:** Other wispr skills in this pack.

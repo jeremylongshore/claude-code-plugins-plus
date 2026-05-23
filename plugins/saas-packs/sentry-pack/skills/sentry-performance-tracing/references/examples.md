@@ -1,6 +1,7 @@
-# Examples
+## Examples
 
 ### Express Middleware
+
 ```typescript
 import * as Sentry from '@sentry/node';
 import express from 'express';
@@ -25,6 +26,7 @@ app.get('/api/users', async (req, res) => {
 ```
 
 ### Python with FastAPI
+
 ```python
 import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration

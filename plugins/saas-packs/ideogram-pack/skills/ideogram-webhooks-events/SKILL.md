@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Events & Async Patterns
 
 ## Overview
+
 Ideogram's API is synchronous -- each call blocks until the image is generated (5-15 seconds). For production applications, wrap it in async patterns: job queues for batch generation, callbacks for downstream processing, and pipelines for image post-processing. This skill covers BullMQ queue patterns, callback handlers, and asset processing pipelines.
 
 ## Prerequisites
+
 - `IDEOGRAM_API_KEY` configured
 - Redis for BullMQ job queue
 - Storage for generated images (S3, GCS, or R2)
@@ -37,6 +39,7 @@ Ideogram's API is synchronous -- each call blocks until the image is generated (
 ## Instructions
 
 ### Step 1: Job Queue for Async Generation
+
 ```typescript
 import { Queue, Worker } from "bullmq";
 import { writeFileSync, mkdirSync } from "fs";
@@ -133,6 +136,7 @@ worker.on("failed", (job, err) => {
 ```
 
 ### Step 2: Callback Handler
+
 ```typescript
 import express from "express";
 
@@ -157,6 +161,7 @@ app.post("/callbacks/ideogram", async (req, res) => {
 ```
 
 ### Step 3: Batch Marketing Asset Generation
+
 ```typescript
 async function generateMarketingCampaign(
   campaignName: string,
@@ -195,6 +200,7 @@ await generateMarketingCampaign("Q1 Launch", [
 ```
 
 ### Step 4: Image Post-Processing Pipeline
+
 ```typescript
 import sharp from "sharp";
 
@@ -217,6 +223,7 @@ async function processImage(filePath: string, metadata?: Record<string, string>)
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Rate limited | Too many concurrent jobs | Set worker concurrency to 5 |
@@ -226,15 +233,18 @@ async function processImage(filePath: string, metadata?: Record<string, string>)
 | Callback fails | Downstream service down | Fire-and-forget with retry queue |
 
 ## Output
+
 - BullMQ job queue for async generation
 - Callback handler for downstream processing
 - Batch generation for marketing campaigns
 - Post-processing pipeline with sharp
 
 ## Resources
+
 - [Ideogram API Reference](https://developer.ideogram.ai/api-reference)
 - [BullMQ Documentation](https://docs.bullmq.io/)
 - [sharp Image Processing](https://sharp.pixelplumbing.com/)
 
 ## Next Steps
+
 For performance optimization, see `ideogram-performance-tuning`.

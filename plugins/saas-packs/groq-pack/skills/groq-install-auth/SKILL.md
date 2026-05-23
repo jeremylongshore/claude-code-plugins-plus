@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq Install & Auth
 
 ## Overview
+
 Install the official Groq SDK and configure API key authentication. Groq provides ultra-fast LLM inference on custom LPU hardware through an OpenAI-compatible REST API at `api.groq.com/openai/v1/`.
 
 ## Prerequisites
+
 - Node.js 18+ or Python 3.8+
 - Package manager (npm, pnpm, or pip)
 - Groq account at [console.groq.com](https://console.groq.com)
@@ -36,6 +38,7 @@ Install the official Groq SDK and configure API key authentication. Groq provide
 ## Instructions
 
 ### Step 1: Install the SDK
+
 ```bash
 set -euo pipefail
 # TypeScript / JavaScript
@@ -46,12 +49,14 @@ pip install groq
 ```
 
 ### Step 2: Get Your API Key
+
 1. Go to [console.groq.com/keys](https://console.groq.com/keys)
 2. Click "Create API Key"
 3. Copy the key (starts with `gsk_`)
 4. Store it securely -- you cannot view it again
 
 ### Step 3: Configure Environment
+
 ```bash
 # Set environment variable (recommended)
 export GROQ_API_KEY="gsk_your_key_here"
@@ -61,6 +66,7 @@ echo 'GROQ_API_KEY=gsk_your_key_here' >> .env
 ```
 
 ### Step 4: Verify Connection (TypeScript)
+
 ```typescript
 import Groq from "groq-sdk";
 
@@ -80,6 +86,7 @@ verify().catch(console.error);
 ```
 
 ### Step 5: Verify Connection (Python)
+
 ```python
 import os
 from groq import Groq
@@ -93,6 +100,7 @@ for model in models.data:
 ```
 
 ## SDK Defaults
+
 The Groq SDK auto-reads `GROQ_API_KEY` from environment if no `apiKey` is passed to the constructor. Additional constructor options:
 
 ```typescript
@@ -105,6 +113,7 @@ const groq = new Groq({
 ```
 
 ## API Key Formats
+
 | Prefix | Type | Usage |
 |--------|------|-------|
 | `gsk_` | Standard API key | All API endpoints |
@@ -112,6 +121,7 @@ const groq = new Groq({
 Groq uses a single key type. There are no separate read/write scopes -- all keys have full API access. Restrict access through organizational controls in the console.
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401 Invalid API Key` | Key missing, revoked, or mistyped | Verify key at console.groq.com/keys |
@@ -120,6 +130,7 @@ Groq uses a single key type. There are no separate read/write scopes -- all keys
 | `ENOTFOUND api.groq.com` | Network/DNS issue | Check internet connectivity and firewall |
 
 ## .gitignore Template
+
 ```
 # Groq secrets
 .env
@@ -128,10 +139,12 @@ Groq uses a single key type. There are no separate read/write scopes -- all keys
 ```
 
 ## Resources
+
 - [Groq Quickstart](https://console.groq.com/docs/quickstart)
 - [Groq API Reference](https://console.groq.com/docs/api-reference)
 - [groq-sdk on npm](https://www.npmjs.com/package/groq-sdk)
 - [groq-typescript on GitHub](https://github.com/groq/groq-typescript)
 
 ## Next Steps
+
 After successful auth, proceed to `groq-hello-world` for your first chat completion.

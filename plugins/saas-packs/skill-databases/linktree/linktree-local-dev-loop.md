@@ -10,6 +10,7 @@ linktree-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Linktree local development workflow
 **Workflow:** Part of the onboarding skill category for Linktree integration.
 **Relates to:** Other linktree skills in this pack.

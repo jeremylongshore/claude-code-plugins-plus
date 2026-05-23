@@ -10,6 +10,7 @@ castai-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Cast AI SDK patterns
 **Workflow:** Part of the onboarding skill category for Cast AI integration.
 **Relates to:** Other castai skills in this pack.

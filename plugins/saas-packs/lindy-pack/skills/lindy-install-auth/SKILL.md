@@ -25,11 +25,13 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lindy Install & Auth
 
 ## Overview
+
 Lindy AI is a no-code/low-code AI agent platform. Agents ("Lindies") are built in the
 web dashboard at https://app.lindy.ai. External integration uses webhook endpoints,
 the HTTP Request action, and optional Node.js/Python SDKs for programmatic access.
 
 ## Prerequisites
+
 - Lindy account at https://app.lindy.ai (Free tier: 400 credits/month)
 - For SDK access: Node.js 18+ or Python 3.10+
 - For webhook receivers: HTTPS endpoint in your application
@@ -37,10 +39,12 @@ the HTTP Request action, and optional Node.js/Python SDKs for programmatic acces
 ## Instructions
 
 ### Step 1: Obtain API Key
+
 1. Log in at https://app.lindy.ai
 2. Navigate to **Settings > API Keys**
 3. Click **Generate New Key** — copy immediately (shown only once)
 4. Store securely:
+
 ```bash
 # Environment variable
 export LINDY_API_KEY="lnd_live_xxxxxxxxxxxxxxxxxxxx"
@@ -50,6 +54,7 @@ echo 'LINDY_API_KEY=lnd_live_xxxxxxxxxxxxxxxxxxxx' >> .env
 ```
 
 ### Step 2: Install SDK (Optional)
+
 ```bash
 # Node.js SDK
 npm install lindy-ai
@@ -59,6 +64,7 @@ pip install lindy-ai
 ```
 
 ### Step 3: Initialize Client
+
 ```typescript
 // Node.js
 import { Lindy } from 'lindy-ai';
@@ -85,6 +91,7 @@ print(f"Connected: {len(agents)} agents found")
 ```
 
 ### Step 4: Configure Webhook Authentication
+
 When creating a webhook trigger in the Lindy dashboard, generate a secret key.
 Callers must include this in every request:
 
@@ -93,11 +100,13 @@ Authorization: Bearer <your-webhook-secret>
 ```
 
 Your webhook endpoint URL follows the pattern:
+
 ```
 https://public.lindy.ai/api/v1/webhooks/<unique-id>
 ```
 
 ### Step 5: Verify Webhook Connectivity
+
 ```bash
 # Test your webhook trigger
 curl -X POST "https://public.lindy.ai/api/v1/webhooks/YOUR_WEBHOOK_ID" \
@@ -128,6 +137,7 @@ Credit consumption: 1-3 credits on basic models, ~10 on large models per task.
 | `ECONNREFUSED` | Lindy API unreachable | Check https://status.lindy.ai |
 
 ## Security Checklist
+
 - [ ] API key stored in env var or secret manager — never in source code
 - [ ] `.env` added to `.gitignore`
 - [ ] Webhook secret generated and stored securely
@@ -135,10 +145,12 @@ Credit consumption: 1-3 credits on basic models, ~10 on large models per task.
 - [ ] API key scoped to minimum required permissions
 
 ## Resources
+
 - [Lindy Documentation](https://docs.lindy.ai)
 - [Lindy Dashboard](https://app.lindy.ai)
 - [Lindy Academy](https://www.lindy.ai/academy-lessons/getting-started-101)
 - [Lindy Status](https://status.lindy.ai)
 
 ## Next Steps
+
 After successful auth, proceed to `lindy-hello-world` for your first AI agent.

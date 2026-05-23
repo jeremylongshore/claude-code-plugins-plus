@@ -5,6 +5,7 @@
 ## Detailed Instructions
 
 ### Step 1: Feature Engineering with Feature Store
+
 ```python
 from databricks.feature_engineering import FeatureEngineeringClient
 from pyspark.sql import SparkSession, DataFrame
@@ -56,6 +57,7 @@ def register_feature_table(
 ```
 
 ### Step 2: MLflow Experiment Tracking
+
 ```python
 import mlflow
 import mlflow.sklearn
@@ -143,6 +145,7 @@ def train_churn_model(
 ```
 
 ### Step 3: Model Registry and Versioning
+
 ```python
 from mlflow import MlflowClient
 from mlflow.entities.model_registry import ModelVersion
@@ -210,6 +213,7 @@ def compare_model_versions(model_name: str) -> pd.DataFrame:
 ```
 
 ### Step 4: Model Serving and Inference
+
 ```python
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.service.serving import (
@@ -289,10 +293,10 @@ def batch_inference(
         .saveAsTable(output_table)
 ```
 
-
 ## Complete Examples
 
 ### Complete ML Pipeline Job
+
 ```python
 from src.ml import features, training, registry
 

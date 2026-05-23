@@ -5,11 +5,13 @@
 # Apollo Upgrade Migration
 
 ## Overview
+
 Plan and execute safe upgrades for Apollo.io API integrations, handling breaking changes and deprecated endpoints.
 
 ## Pre-Upgrade Assessment
 
 ### Check Current API Usage
+
 ```bash
 # Find all Apollo API calls in codebase
 grep -r "api.apollo.io" --include="*.ts" --include="*.js" -l
@@ -22,6 +24,7 @@ grep -rn "deprecated\|legacy" --include="*.ts" src/lib/apollo/
 ```
 
 ### Audit Script
+
 ```typescript
 // scripts/apollo-audit.ts
 import { readFileSync, readdirSync } from 'fs';
@@ -110,6 +113,7 @@ console.log(`Total: ${results.length} issues found`);
 ## Migration Steps
 
 ### Step 1: Create Compatibility Layer
+
 ```typescript
 // src/lib/apollo/compat.ts
 import { apollo } from './client';
@@ -152,6 +156,7 @@ export const apolloCompat = {
 ```
 
 ### Step 2: Update Imports Gradually
+
 ```typescript
 // Before migration
 import { searchContacts } from '../lib/apollo/legacy';
@@ -166,6 +171,7 @@ const results = await apollo.searchPeople(params);
 ```
 
 ### Step 3: Feature Flag for New API
+
 ```typescript
 // src/lib/apollo/feature-flags.ts
 export const USE_NEW_APOLLO_API = process.env.APOLLO_USE_NEW_API === 'true';
@@ -192,6 +198,7 @@ export async function searchLeads(criteria: SearchCriteria) {
 ```
 
 ### Step 4: Parallel Testing
+
 ```typescript
 // scripts/compare-api-results.ts
 import { apollo } from '../src/lib/apollo/client';
@@ -236,6 +243,7 @@ compareResults().catch(console.error);
 ## Rollout Strategy
 
 ### Phase 1: Canary (1%)
+
 ```yaml
 # kubernetes/apollo-canary.yaml
 apiVersion: v1
@@ -249,6 +257,7 @@ data:
 ```
 
 ### Phase 2: Gradual Rollout
+
 ```typescript
 // Gradual rollout based on user ID
 function shouldUseNewApi(userId: string): boolean {
@@ -268,6 +277,7 @@ function hashCode(str: string): number {
 ```
 
 ### Phase 3: Full Migration
+
 ```bash
 # After successful canary
 export APOLLO_USE_NEW_API=true
@@ -304,6 +314,7 @@ kubectl rollout undo deployment/api-server
 ```
 
 ## Output
+
 - Pre-upgrade audit results
 - Compatibility layer for gradual migration
 - Feature flag controlled rollout
@@ -311,6 +322,7 @@ kubectl rollout undo deployment/api-server
 - Cleanup procedures
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | Audit finds errors | Fix before proceeding |
@@ -319,9 +331,11 @@ kubectl rollout undo deployment/api-server
 | Canary issues | Immediate rollback |
 
 ## Resources
+
 - [Apollo API Changelog](https://apolloio.github.io/apollo-api-docs/#changelog)
 - [Apollo Migration Guides](https://knowledge.apollo.io/)
 - [Feature Flag Best Practices](https://martinfowler.com/articles/feature-toggles.html)
 
 ## Next Steps
+
 Proceed to `apollo-ci-integration` for CI/CD setup.

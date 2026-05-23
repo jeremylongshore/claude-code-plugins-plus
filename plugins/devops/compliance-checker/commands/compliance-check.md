@@ -6,7 +6,6 @@ description: Check infrastructure compliance (SOC2, HIPAA, PCI-DSS)
 
 Check infrastructure compliance (SOC2, HIPAA, PCI-DSS)
 
-
 ## Key Features
 
 - Production-ready configurations

@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Incident Runbook
 
 ## Overview
+
 Rapid incident response for Databricks: triage script, decision tree, immediate actions by error type, communication templates, evidence collection, and postmortem template. Designed for on-call engineers to follow during live incidents.
 
 ## Severity Levels
@@ -39,6 +40,7 @@ Rapid incident response for Databricks: triage script, decision tree, immediate 
 ## Instructions
 
 ### Step 1: Quick Triage (Run First)
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -73,6 +75,7 @@ databricks clusters list --output json 2>/dev/null | \
 ```
 
 ### Step 2: Decision Tree
+
 ```
 Is the issue affecting production data pipelines?
 ├─ YES: Is it a single job or multiple?
@@ -94,6 +97,7 @@ Is the issue affecting production data pipelines?
 ```
 
 ### Step 3a: Cluster Failed to Start
+
 ```bash
 CLUSTER_ID="your-cluster-id"
 
@@ -115,6 +119,7 @@ databricks clusters start --cluster-id $CLUSTER_ID
 ```
 
 ### Step 3b: Code/Logic Error
+
 ```bash
 RUN_ID="your-run-id"
 
@@ -135,6 +140,7 @@ databricks runs repair --run-id $RUN_ID --rerun-tasks FAILED
 ```
 
 ### Step 3c: Data Quality Issue
+
 ```sql
 -- Quick data sanity check
 SELECT COUNT(*) AS total_rows,
@@ -153,6 +159,7 @@ RESTORE TABLE prod_catalog.silver.orders TO VERSION AS OF 5;
 ```
 
 ### Step 3d: Permission Error
+
 ```bash
 # Check current user
 databricks current-user me
@@ -172,6 +179,7 @@ databricks permissions update jobs --job-id $JOB_ID --json '{
 ### Step 4: Communication
 
 #### Internal (Slack)
+
 ```
 :red_circle: **P1 INCIDENT: [Brief Description]**
 
@@ -185,6 +193,7 @@ databricks permissions update jobs --job-id $JOB_ID --json '{
 ```
 
 #### External (Status Page)
+
 ```
 **Data Pipeline Delay**
 We are experiencing delays in data processing.
@@ -195,6 +204,7 @@ Next update: [Time] UTC
 ```
 
 ### Step 5: Evidence Collection
+
 ```bash
 #!/bin/bash
 INCIDENT_ID=$1
@@ -217,6 +227,7 @@ echo "Evidence: incident-$INCIDENT_ID.tar.gz"
 ```
 
 ### Step 6: Postmortem Template
+
 ```markdown
 ## Incident: [Title]
 
@@ -251,6 +262,7 @@ echo "Evidence: incident-$INCIDENT_ID.tar.gz"
 ```
 
 ## Output
+
 - Issue triaged and severity assigned
 - Root cause identified via decision tree
 - Immediate remediation applied
@@ -258,6 +270,7 @@ echo "Evidence: incident-$INCIDENT_ID.tar.gz"
 - Evidence collected for postmortem
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Can't reach API | Token expired or VPN down | Re-auth: `databricks auth login` |
@@ -268,6 +281,7 @@ echo "Evidence: incident-$INCIDENT_ID.tar.gz"
 ## Examples
 
 ### One-Line Health Checks
+
 ```bash
 # Last 5 runs for a job
 databricks runs list --job-id $JID --limit 5 | jq '.runs[] | "\(.state.result_state): \(.run_name)"'
@@ -281,9 +295,11 @@ databricks runs list --job-id $JID --active-only | jq -r '.runs[].run_id' | \
 ```
 
 ## Resources
+
 - [Databricks Status](https://status.databricks.com)
 - [Support Portal](https://help.databricks.com)
 - [Community Forum](https://community.databricks.com)
 
 ## Next Steps
+
 For data handling and compliance, see `databricks-data-handling`.

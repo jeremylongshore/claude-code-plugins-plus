@@ -3,6 +3,7 @@
 **Snapshot date: 2026-04-21.** Provider tiers change quarterly — **re-verify against the official console before shipping.** Treat this table as a starting point, never a source of truth.
 
 Official sources:
+
 - Anthropic: https://docs.anthropic.com/en/api/rate-limits
 - OpenAI: https://platform.openai.com/docs/guides/rate-limits
 - Google Gemini: https://ai.google.dev/gemini-api/docs/rate-limits
@@ -32,6 +33,7 @@ On Anthropic, **RPM counts all requests uniformly** — cached reads consume the
 | Scale (enterprise) | Custom | Custom | Custom | Sales contract |
 
 Notes:
+
 - Limits are **per workspace per model**. `claude-sonnet-4-6` and `claude-haiku-4-5` have separate counters — a fanout to both doubles your effective RPM.
 - **Prompt caching**: cache reads count toward RPM but use the **cache-read ITPM** budget (a separate line item on the dashboard). Cache writes count toward RPM and uncached ITPM.
 - `anthropic-beta: prompt-caching-2024-07-31` is GA in 2026; no opt-in needed but dashboard keeps legacy cached-read numbers in a separate metric.
@@ -49,6 +51,7 @@ Notes:
 | Tier 5 | 10000 | 30M | — | $1K paid + 30d |
 
 Notes:
+
 - Model-specific. `gpt-4o-mini` has higher RPM than `gpt-4o` at the same tier.
 - **Rate-limit headers**: `x-ratelimit-remaining-requests`, `x-ratelimit-remaining-tokens`, `x-ratelimit-reset-requests`, `x-ratelimit-reset-tokens`. OpenAI returns these on **every** response, not just 429s — cheap to read.
 - OpenAI's TPM counts **input + output** combined, unlike Anthropic's split ITPM/OTPM.
@@ -64,6 +67,7 @@ Notes:
 | Paid Tier 3 | 30000 | 20M | — | $1K spent |
 
 Notes:
+
 - Free tier TPM is high (1M) but RPM is brutal (15). Chatbots fit; bulk ETL does not.
 - Gemini 2.5 Flash has ~3x the RPM of Pro at each tier.
 - **Rate-limit headers**: Google uses `x-goog-quota-units-remaining` and `retry-after`. Less uniform than OpenAI/Anthropic.
@@ -96,6 +100,7 @@ requests_per_minute                              →  effective RPM usage
 ```
 
 Examples:
+
 - **Short chat replies** (~500 input / ~200 output): RPM binds first
 - **Long document Q&A** (~20K input / ~500 output): ITPM binds first on Anthropic Build 1 (40K ITPM / 20K = only 2 requests/min possible)
 - **Long completions** (~500 input / ~8K output): OTPM binds first on Anthropic Build 1 (8K OTPM / 8K = 1 request/min)

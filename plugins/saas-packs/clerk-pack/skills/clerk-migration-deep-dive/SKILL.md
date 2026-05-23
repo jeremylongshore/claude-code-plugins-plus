@@ -25,12 +25,15 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Migration Deep Dive
 
 ## Current State
+
 !`npm list @auth0/nextjs-auth0 next-auth @supabase/auth-helpers-nextjs firebase 2>/dev/null | grep -E "auth0|next-auth|supabase|firebase" || echo 'No auth providers detected'`
 
 ## Overview
+
 Comprehensive guide to migrating from Auth0, Firebase Auth, Supabase Auth, or NextAuth to Clerk. Covers user data export, bulk import, parallel running, and phased migration.
 
 ## Prerequisites
+
 - Current auth provider access with admin/export permissions
 - Clerk account with API keys
 - Git repository with clean working state
@@ -41,6 +44,7 @@ Comprehensive guide to migrating from Auth0, Firebase Auth, Supabase Auth, or Ne
 ### Step 1: Export Users from Current Provider
 
 **Auth0 Export:**
+
 ```bash
 # Export users via Auth0 Management API
 curl -s -H "Authorization: Bearer $AUTH0_TOKEN" \
@@ -50,6 +54,7 @@ curl -s -H "Authorization: Bearer $AUTH0_TOKEN" \
 ```
 
 **NextAuth (Prisma) Export:**
+
 ```typescript
 // scripts/export-nextauth-users.ts
 const users = await prisma.user.findMany({
@@ -66,6 +71,7 @@ await fs.writeFile('nextauth-users.json', JSON.stringify(exported, null, 2))
 ```
 
 ### Step 2: Import Users to Clerk
+
 ```typescript
 // scripts/import-to-clerk.ts
 import { createClerkClient } from '@clerk/backend'
@@ -121,6 +127,7 @@ importUsers().then((results) => {
 ```
 
 ### Step 3: Update Database References
+
 ```typescript
 // scripts/update-db-references.ts
 import { createClerkClient } from '@clerk/backend'
@@ -154,6 +161,7 @@ async function updateDatabaseReferences() {
 ```
 
 ### Step 4: Replace Auth Code (NextAuth to Clerk Example)
+
 ```typescript
 // BEFORE: NextAuth
 // import { getServerSession } from 'next-auth'
@@ -190,6 +198,7 @@ export default clerkMiddleware(async (auth, req) => {
 ```
 
 ### Step 5: Parallel Running (Optional Safety Net)
+
 ```typescript
 // lib/auth-bridge.ts — run both auth systems during transition
 import { auth as clerkAuth } from '@clerk/nextjs/server'
@@ -210,6 +219,7 @@ export async function getAuthUser() {
 ```
 
 ### Step 6: Cleanup After Migration
+
 ```bash
 # After migration is verified (2+ weeks in production):
 npm uninstall next-auth @auth0/nextjs-auth0  # Remove old auth packages
@@ -218,6 +228,7 @@ npm uninstall next-auth @auth0/nextjs-auth0  # Remove old auth packages
 ```
 
 ## Output
+
 - User export from current auth provider (Auth0, NextAuth, Firebase)
 - Bulk import script with rate limiting and error handling
 - Database reference mapping (old auth IDs to Clerk IDs)
@@ -226,6 +237,7 @@ npm uninstall next-auth @auth0/nextjs-auth0  # Remove old auth packages
 - Cleanup checklist for removing old auth code
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Duplicate email on import | User already exists in Clerk | Skip (status: 'exists') or merge |
@@ -237,6 +249,7 @@ npm uninstall next-auth @auth0/nextjs-auth0  # Remove old auth packages
 ## Examples
 
 ### Migration Verification Script
+
 ```typescript
 // scripts/verify-migration.ts
 async function verifyMigration() {
@@ -252,9 +265,11 @@ async function verifyMigration() {
 ```
 
 ## Resources
+
 - [Clerk Migration Overview](https://clerk.com/docs/deployments/migrate-overview)
 - [Migrate from Auth0](https://clerk.com/docs/deployments/migrate-from-auth0)
 - [Migrate from NextAuth](https://clerk.com/docs/deployments/migrate-from-nextauth)
 
 ## Next Steps
+
 After migration, review `clerk-prod-checklist` for production readiness.

@@ -24,10 +24,13 @@ The answer: **Build a complete toolkit that users can actually own and customize
 The first major challenge was technical: I needed to use Vertex AI Gemini 2.0 Flash for code generation, but **it was trained before the Model Context Protocol existed**.
 
 ### The Wrong Approach
+
 My initial attempt assumed the AI understood MCP. Result: Incomplete code, missing critical components, failed implementation.
 
 ### The Right Approach
+
 I created a 480-line context document explaining:
+
 - What MCP is and how it works
 - Complete JSON-RPC 2.0 protocol specification
 - TypeScript implementation patterns
@@ -63,17 +66,20 @@ This decision reduced dependencies from 5 packages to 3, eliminated database man
 Rather than one monolithic tool, I designed a modular system:
 
 ### Research Discovery (Tools 1-4)
+
 - Advanced search with filters
 - Article metadata retrieval
 - Full-text access (when available)
 - Medical subject heading taxonomy
 
 ### Network Expansion (Tools 5-7)
+
 - Citation network mapping
 - Multiple export formats (BibTeX/RIS/EndNote)
 - Publication trend analysis
 
 ### Analysis & Comparison (Tools 8-10)
+
 - Side-by-side study comparison
 - MeSH term extraction
 - Advanced Boolean queries
@@ -97,6 +103,7 @@ This wasn't about checking boxes - it was about **confidence in deployment**.
 ## Compliance & Best Practices
 
 NCBI E-utilities has strict rate limits:
+
 - 3 requests/second without API key
 - 10 requests/second with API key
 
@@ -170,18 +177,21 @@ I'm not claiming superiority out of ego. Here's the objective comparison:
 ## What This Demonstrates
 
 ### Technical Skills
+
 - TypeScript/Node.js development
 - API integration and rate limiting
 - Test-driven development
 - MCP protocol implementation
 
 ### Product Skills
+
 - User-centered design decisions
 - Feature prioritization (simplicity over complexity)
 - Competitive analysis and differentiation
 - Open-source business models
 
 ### Process Skills
+
 - Rapid prototyping under constraints
 - Iterative problem-solving
 - Quality assurance practices
@@ -201,6 +211,7 @@ Or just ask Claude: "Review the literature on CRISPR gene editing"
 ## The Source Code
 
 Everything is open source:
+
 - Repository: https://github.com/jeremylongshore/claude-code-plugins
 - Plugin directory: `/plugins/life-sciences/pubmed-research-master/`
 - Full test suite included
@@ -216,4 +227,3 @@ Fork it. Examine it. Learn from it.
 ---
 
 **Building better solutions means understanding user needs, making thoughtful trade-offs, and executing with quality. This project demonstrates all three.**
-

@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Speak Install & Auth
 
 ## Overview
+
 Set up the Speak language learning platform integration. Speak uses OpenAI's GPT-4o and Realtime API for AI tutoring with real-time pronunciation feedback. Supports 14+ languages including Korean, Spanish, Japanese, French, and Mandarin.
 
 ## Prerequisites
+
 - Node.js 18+ or Python 3.10+
 - Speak developer account with API access
 - Microphone for speech input testing
@@ -35,6 +37,7 @@ Set up the Speak language learning platform integration. Speak uses OpenAI's GPT
 ## Instructions
 
 ### Step 1: Install Dependencies
+
 ```bash
 set -euo pipefail
 # Core Speak SDK
@@ -47,6 +50,7 @@ npm install node-record-lpcm16  # Microphone capture
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Speak API credentials
 export SPEAK_API_KEY="your-speak-api-key"
@@ -64,6 +68,7 @@ EOF
 ```
 
 ### Step 3: Initialize the Client
+
 ```typescript
 // src/speak/client.ts
 import { SpeakClient } from '@speak/language-sdk';
@@ -86,6 +91,7 @@ verifySetup();
 ```
 
 ### Step 4: Configure Speech Recognition
+
 ```typescript
 // OpenAI Realtime API for speech-to-text (used by Speak)
 import OpenAI from 'openai';
@@ -103,6 +109,7 @@ async function transcribeAudio(audioPath: string): Promise<string> {
 ```
 
 ### Step 5: Supported Languages
+
 | Language | Code | Pronunciation | Conversation |
 |----------|------|--------------|-------------|
 | Korean | ko | Yes | Yes |
@@ -116,12 +123,14 @@ async function transcribeAudio(audioPath: string): Promise<string> {
 | Indonesian | id | Yes | Yes |
 
 ## Output
+
 - Speak SDK installed and configured
 - API key and OpenAI credentials set
 - Language support verified
 - Speech recognition pipeline ready
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Invalid API Key | Wrong or expired key | Verify at developer.speak.com dashboard |
@@ -131,12 +140,14 @@ async function transcribeAudio(audioPath: string): Promise<string> {
 | Language not supported | Invalid language code | Use codes from supported languages table |
 
 ## Resources
+
 - [Speak Website](https://speak.com)
 - [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
 - [OpenAI Whisper](https://platform.openai.com/docs/guides/speech-to-text)
 - [Speak Blog: GPT-4 Integration](https://speak.com/blog/speak-gpt-4)
 
 ## Next Steps
+
 After successful auth, proceed to `speak-hello-world` for your first lesson session.
 
 ## Examples

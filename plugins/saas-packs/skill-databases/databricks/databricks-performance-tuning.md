@@ -10,6 +10,7 @@ databricks-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Databricks API performance
 **Workflow:** Part of the cicd skill category for Databricks integration.
 **Relates to:** Other databricks skills in this pack.

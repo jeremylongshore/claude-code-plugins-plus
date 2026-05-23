@@ -6,12 +6,12 @@ Build multi-step Zapier automations with AI assistance - the easiest way to conn
 
 Zapier is the most popular automation platform:
 
--  **Easiest to Use** - No-code, visual interface
--  **5000+ Apps** - Largest integration ecosystem
--  **Quick Setup** - Get automations running in minutes
+- **Easiest to Use** - No-code, visual interface
+- **5000+ Apps** - Largest integration ecosystem
+- **Quick Setup** - Get automations running in minutes
 - ️ **Reliable** - Enterprise-grade uptime
--  **Mobile App** - Manage Zaps on the go
--  **Great Support** - Extensive docs and community
+- **Mobile App** - Manage Zaps on the go
+- **Great Support** - Extensive docs and community
 
 ## Installation
 
@@ -38,16 +38,19 @@ Zapier is the most popular automation platform:
 ## Example Zaps
 
 ### 1. AI Email Assistant ($0.80/mo for 100 emails)
+
 ```
 Gmail Trigger → OpenAI → Gmail Send → Sheets Log
 ```
 
 ### 2. Lead Qualification ($1.60/mo for 50 leads)
+
 ```
 Webhook → OpenAI Score → Slack Alert → HubSpot Deal
 ```
 
 ### 3. Social Media Automation ($0.60/mo for 20 posts)
+
 ```
 RSS → OpenAI Rewrite → Post to Twitter/LinkedIn/Facebook
 ```
@@ -71,6 +74,7 @@ RSS → OpenAI Rewrite → Post to Twitter/LinkedIn/Facebook
 ## When to Use Zapier
 
 **Best for:**
+
 - Quick prototypes
 - Non-technical users
 - Largest app selection

@@ -18,11 +18,13 @@ compatibility: Designed for Claude Code
 # Juicebox Hello World
 
 ## Overview
+
 Three examples: natural language people search, profile enrichment, and contact data from 800M+ profiles.
 
 ## Instructions
 
 ### Example 1: Natural Language Search
+
 ```typescript
 import { JuiceboxClient } from '@juicebox/sdk';
 const client = new JuiceboxClient({ apiKey: process.env.JUICEBOX_API_KEY });
@@ -38,6 +40,7 @@ results.profiles.forEach(p =>
 ```
 
 ### Example 2: Profile Enrichment
+
 ```typescript
 const enriched = await client.enrich({
   linkedin_url: 'https://linkedin.com/in/example',
@@ -50,6 +53,7 @@ if (enriched.tech_profile?.github) {
 ```
 
 ### Example 3: Contact Data (Python)
+
 ```python
 results = client.search(query='PM fintech NYC', limit=5, include_contact=True)
 for p in results.profiles:
@@ -58,14 +62,17 @@ for p in results.profiles:
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Empty results | Query too narrow | Broaden terms or remove filters |
 | Partial contact | Limited coverage | Not all profiles have contact data |
 
 ## Resources
+
 - [Search API](https://docs.juicebox.work/api/search)
 - [PeopleGPT](https://juicebox.ai/peoplegpt)
 
 ## Next Steps
+
 Explore `juicebox-sdk-patterns` for production code.

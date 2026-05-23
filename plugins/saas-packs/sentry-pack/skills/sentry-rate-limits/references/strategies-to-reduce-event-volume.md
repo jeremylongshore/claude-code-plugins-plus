@@ -3,6 +3,7 @@
 ## Strategies to Reduce Event Volume
 
 ### 1. Error Sampling
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -23,6 +24,7 @@ Sentry.init({
 ```
 
 ### 2. Transaction Sampling
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -47,6 +49,7 @@ Sentry.init({
 ```
 
 ### 3. Ignore Common Errors
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -76,6 +79,7 @@ Sentry.init({
 ```
 
 ### 4. Deduplication
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -95,6 +99,7 @@ Sentry.init({
 ```
 
 ### 5. Client-Side Filtering
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,

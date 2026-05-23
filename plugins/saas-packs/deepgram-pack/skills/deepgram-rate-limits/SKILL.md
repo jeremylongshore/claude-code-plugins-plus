@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Rate Limits
 
 ## Overview
+
 Implement rate limiting, exponential backoff, and circuit breaker patterns for Deepgram API. Deepgram limits by **concurrent connections** (not requests per second). Understanding this model is key to building reliable integrations.
 
 ## Deepgram Rate Limit Model
@@ -258,6 +259,7 @@ async function checkUsage(client: ReturnType<typeof createClient>, projectId: st
 ```
 
 ## Output
+
 - Concurrency-aware request queue with `p-limit`
 - Exponential backoff with jitter for 429/5xx errors
 - Circuit breaker (CLOSED -> OPEN -> HALF_OPEN)
@@ -265,6 +267,7 @@ async function checkUsage(client: ReturnType<typeof createClient>, projectId: st
 - Usage monitoring via Deepgram API
 
 ## Error Handling
+
 | Issue | Cause | Resolution |
 |-------|-------|------------|
 | 429 Too Many Requests | Concurrency limit exceeded | Lower `maxConcurrent`, implement backoff |
@@ -273,6 +276,7 @@ async function checkUsage(client: ReturnType<typeof createClient>, projectId: st
 | Usage API returns empty | Wrong project ID | Verify project ID from `getProjects()` |
 
 ## Resources
+
 - [Concurrency Rate Limits](https://developers.deepgram.com/docs/working-with-concurrency-rate-limits)
 - [API Rate Limits](https://developers.deepgram.com/reference/api-rate-limits)
 - [Backoff Strategies](https://deepgram.com/learn/api-back-off-strategies)

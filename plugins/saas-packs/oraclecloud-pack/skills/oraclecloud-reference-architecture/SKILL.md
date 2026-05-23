@@ -278,6 +278,7 @@ resource "oci_core_route_table" "private" {
 ## Output
 
 Successful completion produces:
+
 - A 3-tier VCN architecture with public (web), private (app), and private (db) subnets
 - Internet Gateway, NAT Gateway, and Service Gateway correctly routed to their respective subnets
 - Route tables with proper rules (public → IGW, private → NAT/SGW)

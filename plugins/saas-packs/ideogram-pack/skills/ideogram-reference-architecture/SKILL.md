@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Reference Architecture
 
 ## Overview
+
 Production architecture for AI image generation with Ideogram at scale. Covers prompt templating for brand consistency, generation pipelines using all six API endpoints, asset storage and CDN delivery, and metadata tracking for reproducibility.
 
 ## Architecture Diagram
@@ -61,6 +62,7 @@ Production architecture for AI image generation with Ideogram at scale. Covers p
 ## Instructions
 
 ### Step 1: Prompt Template System
+
 ```typescript
 interface PromptTemplate {
   name: string;
@@ -119,6 +121,7 @@ function buildPrompt(templateKey: string, vars: Record<string, string>): string 
 ```
 
 ### Step 2: Generation Service
+
 ```typescript
 import { writeFileSync, mkdirSync } from "fs";
 import { join } from "path";
@@ -170,6 +173,7 @@ async function generateFromTemplate(
 ```
 
 ### Step 3: Multi-Format Asset Pipeline
+
 ```typescript
 import sharp from "sharp";
 
@@ -207,6 +211,7 @@ async function generateBrandAssetSet(subject: string, title: string) {
 ```
 
 ### Step 4: Describe-then-Remix Pipeline
+
 ```typescript
 // Use Describe to analyze a reference image, then Remix to create variations
 async function referenceBasedGeneration(referenceImagePath: string, modifications: string) {
@@ -241,6 +246,7 @@ async function referenceBasedGeneration(referenceImagePath: string, modification
 ```
 
 ## Project Structure
+
 ```
 project/
 ├── src/
@@ -264,6 +270,7 @@ project/
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Inconsistent style | No template system | Use branded prompt templates |
@@ -272,6 +279,7 @@ project/
 | Wrong aspect ratio | Template mismatch | Map templates to target platforms |
 
 ## Output
+
 - Prompt template system for brand consistency
 - Generation service with auto-download
 - Multi-format asset pipeline (PNG + WebP)
@@ -279,9 +287,11 @@ project/
 - Asset manifest for tracking and reproducibility
 
 ## Resources
+
 - [Ideogram API Reference](https://developer.ideogram.ai/api-reference)
 - [Style Guide](https://docs.ideogram.ai/using-ideogram/generation-settings/style)
 - [Aspect Ratios](https://docs.ideogram.ai/using-ideogram/generation-settings/aspect-ratio-and-dimensions)
 
 ## Next Steps
+
 For multi-environment setup, see `ideogram-multi-env-setup`.

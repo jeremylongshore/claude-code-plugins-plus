@@ -26,6 +26,7 @@ This finding runs counter to the prevailing obsession with social media, viral v
 Because online WOM is easy to measure (likes, shares, retweets, comments), companies focus on optimizing it. Meanwhile, the much larger offline channel remains invisible and unoptimized. This creates a dangerous illusion: companies think they understand their WOM based on online metrics, but they're seeing only 7% of the picture.
 
 **What this means for strategy:**
+
 - Don't optimize exclusively for online sharing
 - Design products and messages that work in conversation, not just in feeds
 - Test whether your value proposition can be easily articulated in a casual, face-to-face conversation
@@ -108,6 +109,7 @@ A conversation trigger is something about your product, brand, or experience tha
 **Step 2: Create a talking point.** For each context, what could someone say about your product that would feel natural and interesting?
 
 **Step 3: Make it easy to articulate.** The talking point should be expressible in one sentence:
+
 - "I found this app that [remarkable benefit]"
 - "Did you know [surprising fact about the product]?"
 - "I tried [product] and [specific impressive result]"

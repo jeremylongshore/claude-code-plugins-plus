@@ -3,6 +3,7 @@
 ## Model-Specific Optimization
 
 ### Context Windows by Model
+
 ```python
 CONTEXT_WINDOWS = {
     "anthropic/claude-3-opus": 200000,

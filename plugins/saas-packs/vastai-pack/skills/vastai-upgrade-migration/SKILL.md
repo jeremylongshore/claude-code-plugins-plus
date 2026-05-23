@@ -25,13 +25,16 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Upgrade & Migration
 
 ## Current State
+
 !`vastai --version 2>/dev/null || echo 'vastai CLI not installed'`
 !`pip show vastai 2>/dev/null | grep -E "^(Name|Version)" || echo 'N/A'`
 
 ## Overview
+
 Upgrade the Vast.ai CLI and Python SDK, handle API changes, and migrate between GPU configurations. The CLI is distributed via PyPI as `vastai` and tracks the REST API at `cloud.vast.ai/api/v0`.
 
 ## Prerequisites
+
 - Current `vastai` CLI installed
 - Active instances inventory documented
 - Backup of any custom scripts using the API
@@ -121,6 +124,7 @@ echo "Upgrade verified."
 ```
 
 ## Output
+
 - CLI upgraded to latest version
 - Breaking changes identified
 - API endpoint compatibility verified
@@ -128,6 +132,7 @@ echo "Upgrade verified."
 - Post-upgrade verification passed
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | CLI command removed after upgrade | Breaking change in new version | Pin to previous version: `pip install vastai==0.2.8` |
@@ -135,11 +140,13 @@ echo "Upgrade verified."
 | CUDA mismatch after image update | Host CUDA older than image requires | Filter offers by `cuda_max_good>=VERSION` |
 
 ## Resources
+
 - [vastai PyPI](https://pypi.org/project/vastai/)
 - [vast-cli GitHub](https://github.com/vast-ai/vast-cli)
 - [Vast.ai Documentation](https://docs.vast.ai)
 
 ## Next Steps
+
 For CI/CD integration, see `vastai-ci-integration`.
 
 ## Examples

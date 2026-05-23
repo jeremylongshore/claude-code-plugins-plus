@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Speak SDK Patterns
 
 ## Overview
+
 Production patterns for Speak language learning API: conversation sessions, pronunciation assessment, audio preprocessing, and batch operations.
 
 ## Prerequisites
+
 - Completed `speak-install-auth` setup
 - Valid API credentials configured
 - ffmpeg installed for audio processing
@@ -33,6 +35,7 @@ Production patterns for Speak language learning API: conversation sessions, pron
 ## Instructions
 
 ### Pattern 1: Conversation Session Manager
+
 ```typescript
 class ConversationManager {
   private client: SpeakClient;
@@ -69,6 +72,7 @@ class ConversationManager {
 ```
 
 ### Pattern 2: Audio Preprocessor
+
 ```typescript
 import { execSync } from 'child_process';
 
@@ -84,6 +88,7 @@ function preprocessAudio(inputPath: string): string {
 ```
 
 ### Pattern 3: Retry with Backoff
+
 ```typescript
 async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
   for (let i = 0; i < maxRetries; i++) {
@@ -103,6 +108,7 @@ async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
 ```
 
 ### Pattern 4: Progress Tracker
+
 ```typescript
 class LearningProgress {
   private history: SessionSummary[] = [];
@@ -124,11 +130,13 @@ class LearningProgress {
 ```
 
 ## Output
+
 - Patterns implementation complete
 - Speak API integration verified
 - Production-ready patterns applied
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY environment variable |
@@ -137,11 +145,13 @@ class LearningProgress {
 | Session expired | Timeout after 30 min | Start a new conversation session |
 
 ## Resources
+
 - [Speak Website](https://speak.com)
 - [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
 - [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
 
 ## Next Steps
+
 See `speak-prod-checklist` for production readiness.
 
 ## Examples

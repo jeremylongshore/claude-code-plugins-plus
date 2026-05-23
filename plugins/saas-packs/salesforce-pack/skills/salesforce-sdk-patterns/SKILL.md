@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Salesforce SDK Patterns
 
 ## Overview
+
 Production-ready patterns for jsforce (Node.js) and simple-salesforce (Python) — singleton connections, typed queries, error handling, and token refresh.
 
 ## Prerequisites
+
 - Completed `salesforce-install-auth` setup
 - Familiarity with async/await and TypeScript generics
 - Understanding of Salesforce sObject model
@@ -265,6 +267,7 @@ export async function withRetry<T>(
 ```
 
 ## Output
+
 - Type-safe jsforce connection singleton with auto-refresh
 - Typed sObject interfaces for Account, Contact, Opportunity, Lead
 - SOQL query builders with parameterized filters
@@ -272,6 +275,7 @@ export async function withRetry<T>(
 - Retry logic for transient failures
 
 ## Error Handling
+
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
 | `safeSfCall()` wrapper | All API calls | Maps error codes to human messages |
@@ -280,9 +284,11 @@ export async function withRetry<T>(
 | Token refresh | Long-running processes | Prevents session expiration |
 
 ## Resources
+
 - [jsforce API Reference](https://jsforce.github.io/document/)
 - [Salesforce Error Codes](https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_calls_concepts_core_data_objects.htm)
 - [SOQL Reference](https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_soql.htm)
 
 ## Next Steps
+
 Apply patterns in `salesforce-core-workflow-a` for CRUD operations at scale.

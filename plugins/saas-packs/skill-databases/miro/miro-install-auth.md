@@ -10,6 +10,7 @@ miro-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Miro SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Miro integration.
 **Relates to:** Other miro skills in this pack.

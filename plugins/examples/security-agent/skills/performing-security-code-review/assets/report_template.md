@@ -65,9 +65,10 @@
 ## General Recommendations
 
 [Provide general recommendations for improving the overall security of the application. Examples:
-*   Implement a comprehensive security testing strategy.
-*   Keep all software and dependencies up to date.
-*   Follow secure coding practices.]
+
+* Implement a comprehensive security testing strategy.
+* Keep all software and dependencies up to date.
+* Follow secure coding practices.]
 
 ## Conclusion
 

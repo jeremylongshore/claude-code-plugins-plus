@@ -3,6 +3,7 @@
 ## Recommended Configurations
 
 ### .vscode/extensions.json
+
 ```json
 {
   "recommendations": [
@@ -20,6 +21,7 @@
 ```
 
 ### Per-Extension Settings
+
 ```json
 // settings.json
 {

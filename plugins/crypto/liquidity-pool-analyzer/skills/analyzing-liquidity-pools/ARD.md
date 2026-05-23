@@ -21,19 +21,23 @@
 ## Workflow
 
 ### Step 1: Fetch Pool Data
+
 Query subgraphs and APIs for pool information.
 
 ### Step 2: Normalize Metrics
+
 - Convert reserves to USD TVL
 - Calculate fee APR from volume
 - Standardize across protocols
 
 ### Step 3: Calculate IL/Returns
+
 - Impermanent loss for price changes
 - Fee income projections
 - Net APY estimates
 
 ### Step 4: Analyze and Output
+
 - Pool health metrics
 - Comparison tables
 - Risk warnings
@@ -91,6 +95,7 @@ plugins/crypto/liquidity-pool-analyzer/skills/analyzing-liquidity-pools/
 **Purpose**: Fetch pool data from subgraphs and APIs.
 
 **Data Sources**:
+
 | Source | Data | Rate Limit |
 |--------|------|------------|
 | The Graph | Pool reserves, swaps, ticks | 100/min |
@@ -98,6 +103,7 @@ plugins/crypto/liquidity-pool-analyzer/skills/analyzing-liquidity-pools/
 | CoinGecko | Token prices | 10-30/min |
 
 **Subgraph Queries**:
+
 ```graphql
 # Uniswap V3 Pool Query
 query Pool($id: ID!) {
@@ -115,6 +121,7 @@ query Pool($id: ID!) {
 ```
 
 **Caching Strategy**:
+
 - Memory cache: 30 seconds for hot pools
 - File cache: 5 minutes for historical data
 
@@ -123,6 +130,7 @@ query Pool($id: ID!) {
 **Purpose**: Calculate impermanent loss and breakeven metrics.
 
 **Core Formulas**:
+
 ```python
 # Impermanent Loss Formula
 # price_ratio = new_price / original_price
@@ -139,6 +147,7 @@ value_lp = value_held * (1 + IL)  # IL is negative
 ```
 
 **Output**:
+
 ```python
 {
     "entry_price": 2000,
@@ -157,6 +166,7 @@ value_lp = value_held * (1 + IL)  # IL is negative
 **Purpose**: Calculate derived metrics from raw pool data.
 
 **Calculations**:
+
 ```python
 # TVL from reserves
 tvl_usd = reserve0 * price0 + reserve1 * price1
@@ -173,6 +183,7 @@ weight_token0 = (reserve0 * price0) / tvl_usd
 ```
 
 **Health Indicators**:
+
 | Metric | Healthy | Warning | Critical |
 |--------|---------|---------|----------|
 | Volume/TVL | > 0.05 | 0.01-0.05 | < 0.01 |
@@ -184,6 +195,7 @@ weight_token0 = (reserve0 * price0) / tvl_usd
 **Purpose**: Format output for display.
 
 **Formats**:
+
 - Table: Pool metrics summary
 - JSON: Structured data for analysis
 - Report: Detailed pool analysis
@@ -193,6 +205,7 @@ weight_token0 = (reserve0 * price0) / tvl_usd
 ### The Graph (Primary)
 
 **Endpoints**:
+
 ```
 Uniswap V3 Ethereum: https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3
 Uniswap V3 Arbitrum: https://api.thegraph.com/subgraphs/name/ianlapham/uniswap-v3-arbitrum
@@ -201,6 +214,7 @@ Balancer V2:        https://api.thegraph.com/subgraphs/name/balancer-labs/balanc
 ```
 
 **Query Pattern**:
+
 ```python
 query = """
 {
@@ -217,6 +231,7 @@ query = """
 ### DeFiLlama Fallback
 
 **Endpoints**:
+
 ```
 GET /pools          # All DEX pools
 GET /pool/{poolId}  # Specific pool
@@ -267,16 +282,19 @@ Cache Layer:
 ## Testing Strategy
 
 ### Unit Tests
+
 - IL formula validation
 - Fee APR calculations
 - TVL from reserves
 
 ### Integration Tests
+
 - Subgraph query handling
 - Multi-protocol normalization
 - Error fallback scenarios
 
 ### Test Data
+
 ```json
 {
   "pool": {
@@ -293,21 +311,25 @@ Cache Layer:
 ## Dependencies
 
 **Required**:
+
 - `requests` - HTTP client for APIs
 - `json` - Data handling
 
 **Optional**:
+
 - `web3` - Direct RPC calls (fallback)
 
 ## Supported Protocols
 
 ### DEXs
+
 - Uniswap V2, V3
 - SushiSwap
 - Curve
 - Balancer V2
 
 ### Chains
+
 - Ethereum
 - Arbitrum
 - Polygon

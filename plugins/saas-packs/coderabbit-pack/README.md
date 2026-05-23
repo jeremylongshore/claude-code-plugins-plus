@@ -11,6 +11,7 @@
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `coderabbit-install-auth` | Install CodeRabbit GitHub/GitLab App, configure CLI, verify setup |
@@ -27,6 +28,7 @@
 | `coderabbit-upgrade-migration` | Adopt new CodeRabbit features, upgrade plans, update config schema |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `coderabbit-ci-integration` | CodeRabbit as a CI gate with GitHub Actions and branch protection |
@@ -37,6 +39,7 @@
 | `coderabbit-reference-architecture` | Production-grade reference .coderabbit.yaml with full path instructions |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `coderabbit-multi-env-setup` | Per-branch review config for dev, staging, and production |

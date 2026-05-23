@@ -5,14 +5,16 @@ Detailed implementation reference for the lokalise-common-errors skill.
 ## Instructions
 
 ### Step 1: Identify the Error
+
 Check error message, HTTP status code, and error code in logs or console.
 
 ### Step 2: Find Matching Error Below
+
 Match your error to one of the documented cases.
 
 ### Step 3: Apply Solution
-Follow the solution steps for your specific error.
 
+Follow the solution steps for your specific error.
 
 ## Quick Diagnostic Commands
 
@@ -32,17 +34,19 @@ curl -v -X GET "https://api.lokalise.com/api2/projects" \
   -H "X-Api-Token: $LOKALISE_API_TOKEN" 2>&1 | grep -i "x-ratelimit"
 ```
 
-
 ## Escalation Path
+
 1. Collect evidence with `lokalise-debug-bundle`
 2. Check [Lokalise Status Page](https://status.lokalise.com)
 3. Search [Lokalise Community](https://community.lokalise.com)
 4. Contact support via [support@lokalise.com](mailto:support@lokalise.com)
 
-
 ## Error Handling
+
 ### 401 Unauthorized - Invalid API Token
+
 **Error Message:**
+
 ```json
 {
   "error": {
@@ -55,6 +59,7 @@ curl -v -X GET "https://api.lokalise.com/api2/projects" \
 **Cause:** API token is missing, expired, revoked, or incorrect.
 
 **Solution:**
+
 ```bash
 # Verify token is set
 echo $LOKALISE_API_TOKEN | head -c 10
@@ -70,7 +75,9 @@ curl -X GET "https://api.lokalise.com/api2/projects" \
 ---
 
 ### 403 Forbidden - Insufficient Permissions
+
 **Error Message:**
+
 ```json
 {
   "error": {
@@ -83,6 +90,7 @@ curl -X GET "https://api.lokalise.com/api2/projects" \
 **Cause:** Token lacks required permissions for the operation.
 
 **Solution:**
+
 - Verify token has read-write access (not read-only)
 - Check project permissions in Team settings
 - Ensure you're a contributor with appropriate role
@@ -96,7 +104,9 @@ console.log("User roles:", user.items.map(u => u.role));
 ---
 
 ### 404 Not Found - Resource Missing
+
 **Error Message:**
+
 ```json
 {
   "error": {
@@ -109,6 +119,7 @@ console.log("User roles:", user.items.map(u => u.role));
 **Cause:** Project ID, key ID, or other resource doesn't exist.
 
 **Solution:**
+
 ```bash
 # List available projects
 lokalise2 --token "$LOKALISE_API_TOKEN" project list
@@ -129,7 +140,9 @@ projects.items.forEach(p => {
 ---
 
 ### 429 Too Many Requests - Rate Limited
+
 **Error Message:**
+
 ```json
 {
   "error": {
@@ -142,6 +155,7 @@ projects.items.forEach(p => {
 **Cause:** Exceeded 6 requests/second or 10 concurrent requests per project.
 
 **Solution:**
+
 ```typescript
 // Implement rate limiting
 import PQueue from "p-queue";
@@ -161,7 +175,9 @@ See `lokalise-rate-limits` for comprehensive handling.
 ---
 
 ### 400 Bad Request - Invalid Parameters
+
 **Error Message:**
+
 ```json
 {
   "error": {
@@ -174,6 +190,7 @@ See `lokalise-rate-limits` for comprehensive handling.
 **Cause:** Missing required fields or invalid parameter values.
 
 **Solution:**
+
 ```typescript
 // Check required fields for key creation
 const keys = await lokaliseApi.keys().create({
@@ -189,7 +206,9 @@ const keys = await lokaliseApi.keys().create({
 ---
 
 ### 400 Key Limit Exceeded
+
 **Error Message:**
+
 ```json
 {
   "error": {
@@ -202,6 +221,7 @@ const keys = await lokaliseApi.keys().create({
 **Cause:** Exceeded maximum keys per request (500 as of 2025).
 
 **Solution:**
+
 ```typescript
 // Batch keys in chunks of 500
 async function createKeysInBatches(projectId: string, allKeys: any[]) {
@@ -227,7 +247,9 @@ async function createKeysInBatches(projectId: string, allKeys: any[]) {
 ---
 
 ### 413 Payload Too Large
+
 **Error Message:**
+
 ```json
 {
   "error": {
@@ -240,6 +262,7 @@ async function createKeysInBatches(projectId: string, allKeys: any[]) {
 **Cause:** File upload exceeds size limit.
 
 **Solution:**
+
 - Split large files into smaller chunks
 - Compress file before upload
 - Use async upload with polling
@@ -258,7 +281,9 @@ ls -lh locales/en.json
 ---
 
 ### Upload Process Failed
+
 **Error Message:**
+
 ```json
 {
   "status": "failed",
@@ -269,6 +294,7 @@ ls -lh locales/en.json
 **Cause:** File format issues, invalid characters, or parsing errors.
 
 **Solution:**
+
 ```bash
 # Validate JSON
 cat locales/en.json | jq . > /dev/null

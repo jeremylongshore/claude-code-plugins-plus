@@ -7,6 +7,7 @@ Production readiness validator for **Vertex AI Agent Engine** deployments. Valid
 ## ⚠️ Important: What This Plugin Is For
 
 **✅ THIS PLUGIN IS FOR:**
+
 - **Vertex AI Agent Engine** deployment validation (fully-managed runtime)
 - **ADK agents** deployed to Agent Engine
 - **Pre-deployment validation** of agent code and configuration
@@ -14,6 +15,7 @@ Production readiness validator for **Vertex AI Agent Engine** deployments. Valid
 - Security, compliance, monitoring, and performance validation
 
 **❌ THIS PLUGIN IS NOT FOR:**
+
 - Cloud Run deployment validation (use Cloud Run-specific tools)
 - LangChain/LlamaIndex on other platforms
 - Self-hosted agent infrastructure validation
@@ -24,6 +26,7 @@ Production readiness validator for **Vertex AI Agent Engine** deployments. Valid
 This plugin performs comprehensive production readiness validation for ADK agents before deploying to Vertex AI Agent Engine. It checks security posture, compliance requirements, monitoring configuration, performance optimization, and best practices enforcement.
 
 **Validation Categories:**
+
 - Security: IAM, VPC-SC, encryption, Model Armor
 - Monitoring: Dashboards, alerts, SLOs, token tracking
 - Performance: Auto-scaling, caching, resource limits
@@ -41,6 +44,7 @@ This plugin performs comprehensive production readiness validation for ADK agent
 ### Required Google Cloud Setup
 
 **1. Google Cloud Project with APIs Enabled:**
+
 ```bash
 # Enable required APIs
 gcloud services enable aiplatform.googleapis.com \
@@ -53,6 +57,7 @@ gcloud services enable aiplatform.googleapis.com \
 ```
 
 **2. Authentication:**
+
 ```bash
 # Application Default Credentials
 gcloud auth application-default login
@@ -62,6 +67,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="/path/to/service-account-key.json"
 ```
 
 **3. Required IAM Permissions:**
+
 ```yaml
 # Minimum required roles for validation:
 - roles/aiplatform.user              # Query Agent Engine resources
@@ -75,6 +81,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="/path/to/service-account-key.json"
 ### Required Python Packages
 
 **Install via pip:**
+
 ```bash
 # Core Vertex AI SDK (with Agent Engine support)
 pip install google-cloud-aiplatform[agent_engines]>=1.120.0
@@ -98,6 +105,7 @@ pip install mypy>=1.8.0
 ```
 
 **All dependencies at once:**
+
 ```bash
 pip install --upgrade \
     'google-cloud-aiplatform[agent_engines]>=1.120.0' \
@@ -115,6 +123,7 @@ pip install --upgrade \
 ### Required gcloud CLI Tools
 
 **Install gcloud CLI:**
+
 ```bash
 # Install gcloud (if not already installed)
 curl https://sdk.cloud.google.com | bash
@@ -128,6 +137,7 @@ gcloud components install beta
 ```
 
 **Verify Installation:**
+
 ```bash
 gcloud --version
 # Should show: Google Cloud SDK 450.0.0+ (or higher)
@@ -152,6 +162,7 @@ gcloud scc findings list organizations/YOUR_ORG_ID --limit=1
 **This plugin validates agents deployed to Agent Engine via:**
 
 1. **ADK CLI Deployment:**
+
 ```bash
 adk deploy agent_engine \
     --project=YOUR_PROJECT_ID \
@@ -159,7 +170,8 @@ adk deploy agent_engine \
     agent_module
 ```
 
-2. **Python SDK Deployment:**
+1. **Python SDK Deployment:**
+
 ```python
 from google.adk.agents import Agent
 import vertexai
@@ -180,7 +192,8 @@ remote_agent = client.agent_engines.create(
 )
 ```
 
-3. **Terraform Deployment:**
+1. **Terraform Deployment:**
+
 ```hcl
 resource "google_vertex_ai_reasoning_engine" "agent" {
   display_name = "my-adk-agent"
@@ -213,6 +226,7 @@ resource "google_vertex_ai_reasoning_engine" "agent" {
 ## Components
 
 ### Skills (Auto-Activating)
+
 - **validator-expert**: Triggers on "validate deployment", "production readiness check", "security audit"
   - **Tool Permissions**: Read, Grep, Glob, Bash (read-only analysis)
   - **Version**: 1.0.0 (2026 schema compliant)
@@ -242,6 +256,7 @@ The validator performs checks across 5 categories:
 ### 1. Security Validation (30% weight)
 
 **IAM & Access Control:**
+
 - ✅ Service accounts follow least privilege principle
 - ✅ No overly permissive roles (Owner, Editor)
 - ✅ Workload Identity configured for multi-cloud
@@ -249,18 +264,21 @@ The validator performs checks across 5 categories:
 - ✅ No hardcoded credentials in code
 
 **Network Security:**
+
 - ✅ VPC Service Controls enabled for Agent Engine
 - ✅ Private IP addressing configured
 - ✅ Firewall rules follow allowlist approach
 - ✅ TLS 1.3 enforced for all connections
 
 **Data Protection:**
+
 - ✅ Encryption at rest with CMEK keys
 - ✅ Encryption in transit (TLS)
 - ✅ Model Armor enabled (prompt injection protection)
 - ✅ Sensitive data handling complies with policies
 
 **Example Validation:**
+
 ```python
 def validate_security(agent_config):
     """Run security validation checks."""
@@ -301,30 +319,35 @@ def validate_security(agent_config):
 ### 2. Monitoring Validation (20% weight)
 
 **Observability Dashboard:**
+
 - ✅ Agent Engine observability dashboard configured
 - ✅ Token usage tracking enabled
 - ✅ Error rate monitoring active
 - ✅ Latency metrics (p50, p90, p95, p99) tracked
 
 **Alerting:**
+
 - ✅ Alert policies configured for critical errors
 - ✅ Notification channels set up
 - ✅ Alert thresholds appropriate
 - ✅ Alert escalation policies defined
 
 **SLOs & SLIs:**
+
 - ✅ Service Level Objectives defined
 - ✅ Error budget configured
 - ✅ SLI metrics tracked
 - ✅ SLO compliance reporting enabled
 
 **Logging:**
+
 - ✅ Cloud Logging enabled for Agent Engine
 - ✅ Log retention policies configured (>90 days)
 - ✅ Structured logging format used
 - ✅ PII data properly redacted in logs
 
 **Example Validation:**
+
 ```python
 def validate_monitoring(agent_id, project_id):
     """Check monitoring configuration."""
@@ -360,30 +383,35 @@ def validate_monitoring(agent_id, project_id):
 ### 3. Performance Validation (25% weight)
 
 **Auto-Scaling:**
+
 - ✅ Auto-scaling enabled for Agent Engine
 - ✅ Min/max replicas configured appropriately
 - ✅ CPU/memory targets set
 - ✅ Scale-up/scale-down thresholds tuned
 
 **Caching:**
+
 - ✅ Memory Bank caching enabled
 - ✅ Cache hit rate >60%
 - ✅ Cache TTL configured
 - ✅ Response caching for frequent queries
 
 **Resource Limits:**
+
 - ✅ Memory limits appropriate for workload
 - ✅ CPU allocation sufficient
 - ✅ Timeout values configured
 - ✅ Concurrent request limits set
 
 **Code Execution Sandbox:**
+
 - ✅ Sandbox state persistence TTL configured (1-14 days)
 - ✅ Execution timeout appropriate
 - ✅ Artifact storage configured
 - ✅ Resource isolation enabled
 
 **Example Validation:**
+
 ```python
 def validate_performance(agent_config):
     """Check performance configuration."""
@@ -419,30 +447,35 @@ def validate_performance(agent_config):
 ### 4. Compliance Validation (15% weight)
 
 **Audit Logging:**
+
 - ✅ Cloud Audit Logs enabled
 - ✅ Admin activity logged
 - ✅ Data access logs enabled for sensitive operations
 - ✅ Log retention >1 year for compliance
 
 **Data Residency:**
+
 - ✅ Agent deployed in compliant region
 - ✅ Data storage in approved locations
 - ✅ Cross-border data transfer documented
 - ✅ Regional data processing requirements met
 
 **Privacy:**
+
 - ✅ PII handling policies implemented
 - ✅ User consent mechanisms in place
 - ✅ Data anonymization for non-prod
 - ✅ Right to deletion implemented
 
 **Backup & DR:**
+
 - ✅ Memory Bank backup configured
 - ✅ Disaster recovery plan documented
 - ✅ RTO/RPO objectives defined
 - ✅ Backup restoration tested
 
 **Example Validation:**
+
 ```python
 def validate_compliance(agent_config, project_id):
     """Check compliance requirements."""
@@ -477,30 +510,35 @@ def validate_compliance(agent_config, project_id):
 ### 5. Best Practices Validation (10% weight)
 
 **Agent Configuration:**
+
 - ✅ Model selection appropriate for use case
 - ✅ System instructions clear and specific
 - ✅ Tool definitions follow best practices
 - ✅ Error handling implemented
 
 **Memory Bank:**
+
 - ✅ Memory Bank enabled for stateful interactions
 - ✅ Retention policy configured
 - ✅ Indexing strategy optimized
 - ✅ Query performance acceptable
 
 **A2A Protocol:**
+
 - ✅ AgentCard published and accessible
 - ✅ Input/output schemas defined
 - ✅ Task API endpoints functional
 - ✅ Session management implemented
 
 **Code Quality:**
+
 - ✅ Linting passes (pylint/flake8)
 - ✅ Type checking passes (mypy)
 - ✅ No security vulnerabilities (bandit)
 - ✅ Test coverage >65%
 
 **Example Validation:**
+
 ```bash
 # Run code quality checks
 pylint agent_code/ --fail-under=8.0
@@ -636,44 +674,52 @@ NEXT STEPS
 ## Integration with Other Plugins
 
 ### jeremy-vertex-engine
+
 - Validator checks agent config → Engine inspector monitors runtime
 - Pre-deployment validation → Post-deployment inspection
 
 ### jeremy-adk-orchestrator
+
 - Validator checks agents → Orchestrator coordinates validated agents
 - Code validation → A2A protocol communication
 
 ### jeremy-adk-terraform
+
 - Validator reviews Terraform configs → Terraform provisions infrastructure
 - Pre-deployment validation → Infrastructure deployment
 
 ## Use Cases
 
 ### Pre-Deployment Validation
+
 ```
 "Validate this ADK agent before production deployment"
 "Run production readiness check on agent-xyz"
 ```
 
 ### Security Audits
+
 ```
 "Security audit for Vertex AI Agent Engine deployment"
 "Check IAM permissions and VPC-SC configuration"
 ```
 
 ### Compliance Verification
+
 ```
 "Check compliance for this agent configuration"
 "Validate audit logging and data residency requirements"
 ```
 
 ### Performance Review
+
 ```
 "Review performance configuration for agent"
 "Check auto-scaling and caching settings"
 ```
 
 ### Continuous Validation
+
 ```
 "Run weekly validation on production agents"
 "Monitor production readiness score over time"

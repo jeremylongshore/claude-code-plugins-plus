@@ -10,6 +10,7 @@ clari-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Clari costs and usage
 **Workflow:** Part of the cicd skill category for Clari integration.
 **Relates to:** Other clari skills in this pack.

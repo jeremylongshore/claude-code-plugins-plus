@@ -10,6 +10,7 @@ firecrawl-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement circuit breakers, retry policies, fallback strategies, and dead letter queues for fault-tolerant scraping.
 **Workflow:** Reliability engineering skill - ensures scraping pipelines gracefully handle failures.
 **Relates to:** Extends firecrawl-sdk-patterns; critical for firecrawl-incident-runbook

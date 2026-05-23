@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel SDK Patterns
 
 ## Overview
+
 Build a typed, production-ready wrapper around the Vercel REST API (`api.vercel.com`). Covers authentication, pagination, error handling, retry logic, and common endpoint patterns for deployments, projects, and environment variables.
 
 ## Prerequisites
+
 - Completed `vercel-install-auth` setup
 - TypeScript project with `strict` mode enabled
 - Vercel access token with appropriate scope
@@ -37,6 +39,7 @@ Build a typed, production-ready wrapper around the Vercel REST API (`api.vercel.
 ## Instructions
 
 ### Step 1: Create Typed API Client
+
 ```typescript
 // lib/vercel-client.ts
 interface VercelClientConfig {
@@ -142,6 +145,7 @@ class VercelClient {
 ```
 
 ### Step 2: Define Types
+
 ```typescript
 // lib/vercel-types.ts
 interface VercelProject {
@@ -194,6 +198,7 @@ interface VercelDomain {
 ```
 
 ### Step 3: Custom Error Class
+
 ```typescript
 // lib/vercel-errors.ts
 class VercelApiError extends Error {
@@ -213,6 +218,7 @@ class VercelApiError extends Error {
 ```
 
 ### Step 4: Retry with Exponential Backoff
+
 ```typescript
 // lib/vercel-retry.ts
 async function withRetry<T>(
@@ -241,6 +247,7 @@ async function withRetry<T>(
 ```
 
 ### Step 5: Paginated Fetching
+
 ```typescript
 // lib/vercel-pagination.ts
 async function* paginateDeployments(
@@ -285,12 +292,14 @@ async function* paginateDeployments(
 | List teams | GET | `/v2/teams` |
 
 ## Output
+
 - Type-safe Vercel API client with full TypeScript coverage
 - Custom error class with semantic helpers (isRateLimit, isNotFound)
 - Automatic retry with exponential backoff for 429 responses
 - Paginated data fetching for large result sets
 
 ## Error Handling
+
 | Error | Status | Solution |
 |-------|--------|----------|
 | `forbidden` | 403 | Token lacks scope — regenerate with correct permissions |
@@ -300,9 +309,11 @@ async function* paginateDeployments(
 | `bad_request` | 400 | Validate request body matches API schema |
 
 ## Resources
+
 - [Vercel REST API Reference](https://vercel.com/docs/rest-api)
 - [Vercel REST API Endpoints](https://vercel.com/docs/rest-api/reference)
 - [Authentication](https://vercel.com/docs/rest-api#creating-an-access-token)
 
 ## Next Steps
+
 Proceed to `vercel-deploy-preview` for preview deployment workflows.

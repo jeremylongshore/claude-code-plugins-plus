@@ -3,6 +3,7 @@
 ## Basic Pool Analysis
 
 ### Analyze Pool by Address
+
 ```bash
 python pool_analyzer.py --pool 0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640
 
@@ -26,6 +27,7 @@ python pool_analyzer.py --pool 0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640
 ```
 
 ### Search by Token Pair
+
 ```bash
 python pool_analyzer.py --pair ETH/USDC --protocol uniswap-v3
 
@@ -33,6 +35,7 @@ python pool_analyzer.py --pair ETH/USDC --protocol uniswap-v3
 ```
 
 ### Filter by Chain
+
 ```bash
 python pool_analyzer.py --pair ETH/USDC --chain arbitrum
 
@@ -42,6 +45,7 @@ python pool_analyzer.py --pair ETH/USDC --chain arbitrum
 ## Impermanent Loss Calculation
 
 ### Calculate IL for Price Change
+
 ```bash
 python pool_analyzer.py --il-calc --entry-price 2000 --current-price 3000
 
@@ -60,6 +64,7 @@ python pool_analyzer.py --il-calc --entry-price 2000 --current-price 3000
 ```
 
 ### IL with Position Value
+
 ```bash
 python pool_analyzer.py --il-calc --entry-price 2000 --current-price 3000 --position 10000
 
@@ -70,6 +75,7 @@ python pool_analyzer.py --il-calc --entry-price 2000 --current-price 3000 --posi
 ```
 
 ### IL Scenarios Table
+
 ```bash
 python pool_analyzer.py --il-scenarios
 
@@ -98,6 +104,7 @@ python pool_analyzer.py --il-scenarios
 ## Pool Comparison
 
 ### Compare Pools Across Protocols
+
 ```bash
 python pool_analyzer.py --compare --pair ETH/USDC --protocols uniswap-v3,curve,balancer
 
@@ -116,6 +123,7 @@ python pool_analyzer.py --compare --pair ETH/USDC --protocols uniswap-v3,curve,b
 ```
 
 ### Compare Fee Tiers
+
 ```bash
 python pool_analyzer.py --pair ETH/USDC --protocol uniswap-v3 --fee-tiers 0.01,0.05,0.30
 
@@ -125,6 +133,7 @@ python pool_analyzer.py --pair ETH/USDC --protocol uniswap-v3 --fee-tiers 0.01,0
 ## Position Analysis
 
 ### Project Returns for Position
+
 ```bash
 python pool_analyzer.py --pool 0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640 --position 10000
 
@@ -139,6 +148,7 @@ python pool_analyzer.py --pool 0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640 --posi
 ## Filtering Options
 
 ### Filter by Minimum TVL
+
 ```bash
 python pool_analyzer.py --protocol uniswap-v3 --min-tvl 10000000
 
@@ -146,6 +156,7 @@ python pool_analyzer.py --protocol uniswap-v3 --min-tvl 10000000
 ```
 
 ### Limit Results
+
 ```bash
 python pool_analyzer.py --protocol uniswap-v3 --top 5
 
@@ -155,6 +166,7 @@ python pool_analyzer.py --protocol uniswap-v3 --top 5
 ## Output Formats
 
 ### JSON Output
+
 ```bash
 python pool_analyzer.py --pool 0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640 --format json
 
@@ -179,6 +191,7 @@ python pool_analyzer.py --pool 0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640 --form
 ```
 
 ### CSV Output
+
 ```bash
 python pool_analyzer.py --protocol uniswap-v3 --top 10 --format csv --output pools.csv
 
@@ -187,6 +200,7 @@ python pool_analyzer.py --protocol uniswap-v3 --top 10 --format csv --output poo
 ```
 
 ### Save to File
+
 ```bash
 python pool_analyzer.py --pool 0x88e6... --format json --output analysis.json
 python pool_analyzer.py --pair ETH/USDC --format csv --output comparison.csv
@@ -195,6 +209,7 @@ python pool_analyzer.py --pair ETH/USDC --format csv --output comparison.csv
 ## Verbose Mode
 
 ### Debug Output
+
 ```bash
 python pool_analyzer.py --pair ETH/USDC --verbose
 
@@ -210,6 +225,7 @@ python pool_analyzer.py --pair ETH/USDC --verbose
 ## Real-World Workflows
 
 ### Find Best Pool for LP Position
+
 ```bash
 # 1. Search pools for your pair
 python pool_analyzer.py --pair ETH/USDC --protocol uniswap-v3 --min-tvl 1000000
@@ -222,6 +238,7 @@ python pool_analyzer.py --il-calc --entry-price 2000 --current-price 2500 --posi
 ```
 
 ### Monitor Position Profitability
+
 ```bash
 # Check current pool metrics
 python pool_analyzer.py --pool 0x88e6... --position 10000
@@ -231,6 +248,7 @@ python pool_analyzer.py --il-calc --entry-price 2000 --current-price 1600 --posi
 ```
 
 ### Research DeFi Yields
+
 ```bash
 # Compare pools across protocols
 python pool_analyzer.py --pair ETH/USDC --compare --protocols uniswap-v3,curve,balancer --format csv --output research.csv
@@ -242,11 +260,13 @@ python pool_analyzer.py --il-scenarios --format json --output il_table.json
 ## Integration Examples
 
 ### Pipe to jq
+
 ```bash
 python pool_analyzer.py --protocol uniswap-v3 --top 5 --format json | jq '.data[].metrics.fee_apr'
 ```
 
 ### Use in Shell Scripts
+
 ```bash
 #!/bin/bash
 # Get top APR pool

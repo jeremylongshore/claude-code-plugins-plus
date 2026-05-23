@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code
 Production architecture for AI inference, fine-tuning, and batch processing with Together AI's OpenAI-compatible API. Designed for teams routing requests across 100+ open-source models (Llama, Mixtral, Qwen, FLUX) with intelligent model selection, response caching, fine-tune pipeline management, and cost optimization via batch inference at 50% discount. Key design drivers: model routing for cost/quality tradeoffs, inference caching for repeated queries, fine-tune lifecycle management, and graceful degradation across model providers.
 
 ## Architecture Diagram
+
 ```
 Application ──→ Model Router ──→ Cache (Redis) ──→ Together API (v1)
                     ↓                                /chat/completions
@@ -37,6 +38,7 @@ Application ──→ Model Router ──→ Cache (Redis) ──→ Together AP
 ```
 
 ## Service Layer
+
 ```typescript
 class InferenceService {
   constructor(private together: TogetherClient, private cache: CacheLayer, private router: ModelRouter) {}
@@ -61,6 +63,7 @@ class InferenceService {
 ```
 
 ## Caching Strategy
+
 ```typescript
 const CACHE_CONFIG = {
   inference:   { ttl: 3600,  prefix: 'infer' },    // 1 hr — deterministic prompts (temp=0) cache well
@@ -73,6 +76,7 @@ const CACHE_CONFIG = {
 ```
 
 ## Event Pipeline
+
 ```typescript
 class InferencePipeline {
   private queue = new Bull('together-events', { redis: process.env.REDIS_URL });
@@ -98,6 +102,7 @@ class InferencePipeline {
 ```
 
 ## Data Model
+
 ```typescript
 interface InferenceRequest  { task: 'chat' | 'code' | 'embedding' | 'image'; messages: Message[]; prompt?: string; temperature?: number; priority: 'realtime' | 'standard' | 'batch'; allowCached?: boolean; }
 interface ModelRoute         { modelId: string; task: string; costPerToken: number; latencyP50Ms: number; qualityScore: number; }
@@ -106,6 +111,7 @@ interface CostRecord         { model: string; promptTokens: number; completionTo
 ```
 
 ## Scaling Considerations
+
 - Route low-priority requests to cheaper models (Llama 8B) and high-priority to larger models (Llama 70B, Mixtral)
 - Use batch API for non-interactive workloads — 50% cost savings with acceptable latency tradeoff
 - Cache embeddings aggressively — identical text produces identical vectors, high cache hit rate
@@ -113,6 +119,7 @@ interface CostRecord         { model: string; promptTokens: number; completionTo
 - Fine-tune pipeline should use a separate API key with isolated rate limits from production inference
 
 ## Error Handling
+
 | Component | Failure Mode | Recovery |
 |-----------|-------------|----------|
 | Inference request | Model overloaded (500) | Fallback to alternative model in same task category |
@@ -122,9 +129,11 @@ interface CostRecord         { model: string; promptTokens: number; completionTo
 | Model routing | Selected model deprecated | Auto-reroute to replacement model, alert team to update config |
 
 ## Resources
+
 - [Together AI Docs](https://docs.together.ai/)
 - [API Reference](https://docs.together.ai/reference/chat-completions-1)
 - [Model List](https://docs.together.ai/docs/inference-models)
 
 ## Next Steps
+
 See `together-deploy-integration`.

@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # TwinMind Core Workflow A: Meeting Transcription & Summary
 
 ## Contents
+
 - [Overview](#overview)
 - [Prerequisites](#prerequisites)
 - [Instructions](#instructions)
@@ -35,9 +36,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 - [Resources](#resources)
 
 ## Overview
+
 Primary workflow for capturing meetings, generating transcripts with speaker diarization, and creating AI summaries with action items.
 
 ## Prerequisites
+
 - Completed `twinmind-install-auth` setup
 - TwinMind Pro/Enterprise for API access
 - Valid API credentials configured
@@ -46,20 +49,25 @@ Primary workflow for capturing meetings, generating transcripts with speaker dia
 ## Instructions
 
 ### Step 1: Initialize Meeting Capture
+
 Build a `MeetingCapture` class with `startLiveCapture()` for real-time recording and `transcribeRecording()` for file-based transcription. Use Ear-3 model with auto language detection and speaker diarization.
 
 ### Step 2: Generate AI Summary
+
 Create a `SummaryGenerator` with `generateSummary()` (brief/detailed/bullet-points formats), `generateFollowUpEmail()`, and `generateMeetingNotes()` methods.
 
 ### Step 3: Handle Speaker Identification
+
 Build a `SpeakerManager` that extracts speakers from transcript segments, calculates speaking time per speaker, and optionally matches speakers to calendar attendees.
 
 ### Step 4: Orchestrate Complete Workflow
+
 Wire everything together in `processMeeting()`: transcribe audio, then generate summary and identify speakers in parallel, optionally produce follow-up email and meeting notes.
 
 See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for complete MeetingCapture, SummaryGenerator, SpeakerManager, and orchestration code.
 
 ## Output
+
 - Complete meeting transcript with timestamps
 - Speaker-labeled segments
 - AI-generated summary
@@ -79,7 +87,6 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 
 ## Examples
 
-
 **Basic usage**: Apply twinmind core workflow a to a standard project setup with default configuration options.
 
 **Advanced scenario**: Customize twinmind core workflow a for production environments with multiple constraints and team-specific requirements.
@@ -94,9 +101,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | WebM | Yes | Browser recordings |
 
 ## Resources
+
 - [TwinMind Transcription API](https://twinmind.com/docs/transcription)
 - [Ear-3 Model Details](https://twinmind.com/ear-3)
 - [Audio Format Guide](https://twinmind.com/docs/audio-formats)
 
 ## Next Steps
+
 For action item extraction and follow-up automation, see `twinmind-core-workflow-b`.

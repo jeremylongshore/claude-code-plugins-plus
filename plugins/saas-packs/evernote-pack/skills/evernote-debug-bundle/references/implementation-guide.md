@@ -612,7 +612,6 @@ runDiagnostics().catch(console.error);
 }
 ```
 
-
 ## Usage
 
 ```bash

@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Install & Auth
 
 ## Overview
+
 Set up Fireflies.ai GraphQL API authentication. Fireflies uses a single GraphQL endpoint at `https://api.fireflies.ai/graphql` with Bearer token auth. No SDK needed -- all interaction is via HTTP POST with GraphQL queries.
 
 ## Prerequisites
+
 - Fireflies.ai account (Pro or higher for API access)
 - API key from app.fireflies.ai > Integrations > Fireflies API
 - Node.js 18+ or Python 3.10+
@@ -36,12 +38,14 @@ Set up Fireflies.ai GraphQL API authentication. Fireflies uses a single GraphQL 
 ## Instructions
 
 ### Step 1: Get Your API Key
+
 1. Log in at [app.fireflies.ai](https://app.fireflies.ai)
 2. Navigate to **Integrations > Fireflies API**
 3. Copy your API key (starts with a long alphanumeric string)
 4. Store it securely -- this key grants access to all your meeting data
 
 ### Step 2: Configure Environment
+
 ```bash
 set -euo pipefail
 # Create .env file (NEVER commit to git)
@@ -53,6 +57,7 @@ echo '.env.local' >> .gitignore
 ```
 
 ### Step 3: Install GraphQL Client (Optional)
+
 ```bash
 set -euo pipefail
 # Node.js -- graphql-request is lightweight and typed
@@ -64,6 +69,7 @@ pip install requests
 ```
 
 ### Step 4: Verify Connection
+
 ```typescript
 // verify-fireflies.ts
 const FIREFLIES_API = "https://api.fireflies.ai/graphql";
@@ -96,6 +102,7 @@ verifyConnection().catch(console.error);
 ```
 
 ### Step 5: Verify with cURL
+
 ```bash
 set -euo pipefail
 curl -s -X POST https://api.fireflies.ai/graphql \
@@ -105,6 +112,7 @@ curl -s -X POST https://api.fireflies.ai/graphql \
 ```
 
 ### Python Verification
+
 ```python
 import os, requests
 
@@ -138,6 +146,7 @@ verify_connection()
 | Enterprise | 60 requests/min | Super Admin webhooks |
 
 ## Error Handling
+
 | Error | Code | Solution |
 |-------|------|----------|
 | `auth_failed` | 401 | Check API key is valid and not expired |
@@ -146,14 +155,17 @@ verify_connection()
 | Network timeout | - | Verify outbound HTTPS to api.fireflies.ai |
 
 ## Output
+
 - Environment variable configured with API key
 - GraphQL client verified against `https://api.fireflies.ai/graphql`
 - User identity confirmed via `user` query
 
 ## Resources
+
 - [Fireflies API Documentation](https://docs.fireflies.ai/)
 - [Fireflies Quickstart](https://docs.fireflies.ai/getting-started/quickstart)
 - [Fireflies API Key](https://app.fireflies.ai) (Integrations > Fireflies API)
 
 ## Next Steps
+
 After successful auth, proceed to `fireflies-hello-world` for your first transcript query.

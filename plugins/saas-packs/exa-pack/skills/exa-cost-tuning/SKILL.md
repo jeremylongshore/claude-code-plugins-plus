@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Cost Tuning
 
 ## Overview
+
 Reduce Exa API costs through strategic search type selection, result caching, query deduplication, and usage monitoring. Exa charges per search request with costs varying by search type and content retrieval options.
 
 ## Cost Drivers
@@ -41,6 +42,7 @@ Reduce Exa API costs through strategic search type selection, result caching, qu
 ## Instructions
 
 ### Step 1: Match Search Config to Use Case
+
 ```typescript
 import Exa from "exa-js";
 
@@ -83,6 +85,7 @@ async function costAwareSearch(
 ```
 
 ### Step 2: Query-Level Caching (40-60% Cost Reduction)
+
 ```typescript
 import { LRUCache } from "lru-cache";
 
@@ -104,6 +107,7 @@ async function cachedSearch(query: string, opts: any) {
 ```
 
 ### Step 3: Query Deduplication for Batch Jobs
+
 ```typescript
 function deduplicateQueries(queries: string[]): string[] {
   const seen = new Set<string>();
@@ -122,6 +126,7 @@ console.log(`Deduped: ${allQueries.length} → ${uniqueQueries.length} queries`)
 ```
 
 ### Step 4: Use Keyword Search When Appropriate
+
 ```typescript
 // Neural search: best for semantic/conceptual queries (more expensive)
 // Keyword search: best for specific terms/names (cheaper, faster)
@@ -139,6 +144,7 @@ function selectCostEffectiveType(query: string): "neural" | "keyword" | "auto" {
 ```
 
 ### Step 5: Monitor Usage and Set Budget Alerts
+
 ```bash
 set -euo pipefail
 # Check API key usage
@@ -182,6 +188,7 @@ class ExaBudgetTracker {
 ```
 
 ## Cost Optimization Checklist
+
 - [ ] Use `keyword` or `fast` for exact lookups instead of `neural`
 - [ ] Reduce `numResults` to 3-5 for most use cases (default is 10)
 - [ ] Use `highlights` instead of full `text` when snippets suffice
@@ -191,6 +198,7 @@ class ExaBudgetTracker {
 - [ ] Monitor daily/monthly usage against budget
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Monthly limit hit early | Uncached batch queries | Add caching (40%+ savings) |
@@ -199,9 +207,11 @@ class ExaBudgetTracker {
 | `402 NO_MORE_CREDITS` | Account balance exhausted | Top up at dashboard.exa.ai |
 
 ## Resources
+
 - [Exa Pricing](https://exa.ai/pricing)
 - [Exa API Usage](https://dashboard.exa.ai)
 - [Exa Search Types](https://docs.exa.ai/reference/search)
 
 ## Next Steps
+
 For performance optimization, see `exa-performance-tuning`. For reliability, see `exa-reliability-patterns`.

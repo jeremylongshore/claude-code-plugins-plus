@@ -35,6 +35,7 @@ Refine prompts for optimal LLM performance. It streamlines prompts to minimize t
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Reduce the cost of using an LLM.
 - Improve the speed of LLM responses.
 - Enhance the quality or clarity of LLM outputs by refining the prompt.
@@ -46,6 +47,7 @@ This skill activates when you need to:
 User request: "Optimize this prompt for cost and quality: 'I would like you to create a detailed product description for a new ergonomic office chair, highlighting its features, benefits, and target audience, and also include information about its warranty and return policy.'"
 
 The skill will:
+
 1. Analyze the prompt for redundancies and areas for simplification.
 2. Rewrite the prompt to be more concise: "Create a product description for an ergonomic office chair. Include features, benefits, target audience, warranty, and return policy."
 3. Provide the optimized prompt and explain the token reduction achieved.
@@ -55,6 +57,7 @@ The skill will:
 User request: "Optimize this prompt for better summarization: 'Please read the following document and provide a comprehensive summary of all the key points, main arguments, supporting evidence, and overall conclusion, ensuring that the summary is accurate, concise, and easy to understand.'"
 
 The skill will:
+
 1. Identify areas for improvement in the prompt's clarity and focus.
 2. Rewrite the prompt to be more direct: "Summarize this document, including key points, arguments, evidence, and the conclusion."
 3. Present the optimized prompt and explain how it enhances summarization performance.

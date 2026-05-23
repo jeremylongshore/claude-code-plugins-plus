@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Upgrade & Migration
 
 ## Overview
+
 Safely upgrade `foundry-platform-sdk` versions, handle breaking changes, and migrate between Foundry API versions. Includes a step-by-step upgrade checklist and rollback procedure.
 
 ## Prerequisites
+
 - Current `foundry-platform-sdk` installed
 - Git for version control
 - Test suite covering Foundry API calls
@@ -37,6 +39,7 @@ Safely upgrade `foundry-platform-sdk` versions, handle breaking changes, and mig
 ## Instructions
 
 ### Step 1: Check Current Version and Available Updates
+
 ```bash
 set -euo pipefail
 pip show foundry-platform-sdk | grep -E "^(Name|Version)"
@@ -46,6 +49,7 @@ npm list @osdk/client 2>/dev/null || echo "OSDK not installed"
 ```
 
 ### Step 2: Review Changelog
+
 ```bash
 # Check GitHub releases for breaking changes
 python -c "
@@ -62,6 +66,7 @@ for r in releases:
 ```
 
 ### Step 3: Create Upgrade Branch and Update
+
 ```bash
 set -euo pipefail
 git checkout -b upgrade/foundry-sdk-$(date +%Y%m%d)
@@ -70,6 +75,7 @@ pip show foundry-platform-sdk | grep Version
 ```
 
 ### Step 4: Run Tests and Fix Breaking Changes
+
 ```bash
 set -euo pipefail
 pytest tests/ -v --tb=short 2>&1 | tee upgrade-test-results.txt
@@ -78,6 +84,7 @@ grep -E "FAILED|ERROR" upgrade-test-results.txt
 ```
 
 Common breaking changes between versions:
+
 ```python
 # v0.x → v1.x: Client initialization changed
 # Before:
@@ -96,12 +103,14 @@ client.ontologies.OntologyObject.list(...)
 ```
 
 ### Step 5: Verify in Staging
+
 ```bash
 # Deploy to staging and run smoke tests
 FOUNDRY_HOSTNAME=$STAGING_HOSTNAME pytest tests/integration/ -v
 ```
 
 ### Step 6: Rollback Procedure
+
 ```bash
 # Pin previous version
 pip install foundry-platform-sdk==0.8.0
@@ -111,12 +120,14 @@ pip install -r requirements.txt
 ```
 
 ## Output
+
 - Updated SDK version with all tests passing
 - Breaking changes identified and fixed
 - Staging verification completed
 - Rollback procedure documented
 
 ## Error Handling
+
 | Change Type | Detection | Fix |
 |-------------|-----------|-----|
 | Renamed method | `AttributeError` in tests | Update method calls |
@@ -125,9 +136,11 @@ pip install -r requirements.txt
 | New required param | `ApiError: 400` | Add missing parameter |
 
 ## Resources
+
 - [foundry-platform-python Releases](https://github.com/palantir/foundry-platform-python/releases)
 - [PyPI Package](https://pypi.org/project/foundry-platform-sdk/)
 - [API Changelog](https://www.palantir.com/docs/foundry/api/general/overview/introduction)
 
 ## Next Steps
+
 For CI integration during upgrades, see `palantir-ci-integration`.

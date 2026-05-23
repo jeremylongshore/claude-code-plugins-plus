@@ -32,6 +32,7 @@ Every bonus in a Grand Slam Offer must serve one of these purposes:
 **Step 3: Choose the delivery vehicle.** Bonuses should be high value and low cost to deliver. The ideal bonus is a digital asset that you create once and deliver infinitely.
 
 **Ideal bonus delivery vehicles:**
+
 - PDF guides, checklists, and workbooks
 - Pre-built templates and swipe files
 - Recorded video trainings
@@ -42,6 +43,7 @@ Every bonus in a Grand Slam Offer must serve one of these purposes:
 - Assessment tools and scorecards
 
 **Delivery vehicles to avoid for bonuses (high cost, hard to scale):**
+
 - Unlimited 1-on-1 time
 - Custom physical products
 - Anything requiring per-customer labor at scale
@@ -102,6 +104,7 @@ Present the most valuable bonus first. This sets an anchor that makes subsequent
 **When to use:** When you have one standout bonus that is clearly more valuable than the others. The big number at the top sets the tone.
 
 **Example:**
+
 1. Bonus 1: Private Coaching Call Library (52 recordings) -- $4,997 value
 2. Bonus 2: Template Vault (100+ templates) -- $1,997 value
 3. Bonus 3: Quick-Start Implementation Kit -- $997 value
@@ -114,6 +117,7 @@ Start with smaller bonuses and build to the biggest one. This creates a sense of
 **When to use:** On sales calls, webinars, and live presentations where you control the pacing. The "and wait, there's more" effect builds excitement.
 
 **Example:**
+
 1. Bonus 1: Quick-Reference Cheat Sheet -- $97 value
 2. Bonus 2: Swipe File Collection -- $497 value
 3. Bonus 3: Monthly Group Coaching (12 months) -- $2,400 value
@@ -126,6 +130,7 @@ Order bonuses by the sequence in which objections arise in the buyer's mind. Add
 **When to use:** On sales pages where the reader processes information linearly. Each bonus neutralizes the next objection in the reader's mind.
 
 **Example:**
+
 1. Bonus 1 (addresses "I don't have time"): Quick-Start Templates -- $497 value
 2. Bonus 2 (addresses "I'm not technical"): Tech Setup Video Walkthroughs -- $997 value
 3. Bonus 3 (addresses "What if I get stuck?"): 90-Day Support Access -- $1,500 value
@@ -155,12 +160,14 @@ Partner bonuses allow you to add high-value components to your offer at zero cos
 ### Approaching Partners
 
 **The pitch framework:**
+
 - "I have [X] customers in [niche] who are a perfect fit for your product."
 - "I'd like to include [your product] as a bonus in my offer, which would introduce you to [X] qualified prospects."
 - "In return, I'll feature you prominently and your product will be positioned as a [$value] bonus."
 - "This is a win-win: my customers get more value, your product gets qualified exposure."
 
 **Tips:**
+
 - Approach partners whose product you genuinely recommend
 - Make it easy: provide the copy, graphics, and positioning you will use
 - Start with smaller partners who are eager for exposure
@@ -184,6 +191,7 @@ A named bonus feels more real, more valuable, and more proprietary than a generi
 ### Naming Dos and Don'ts
 
 **Do:**
+
 - Use specific numbers (47 templates, not "many templates")
 - Include the result in the name (what they get, not what it is)
 - Make it sound proprietary (use "The" as a definite article)
@@ -191,6 +199,7 @@ A named bonus feels more real, more valuable, and more proprietary than a generi
 - Test names with your audience
 
 **Don't:**
+
 - Use vague, generic names ("Resource Library," "Bonus Materials")
 - Make the name longer than the description
 - Use jargon the customer does not understand

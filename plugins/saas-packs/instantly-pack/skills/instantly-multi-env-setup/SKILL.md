@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Multi-Environment Setup
 
 ## Overview
+
 Configure Instantly API v2 integrations across development, staging, and production environments. Instantly uses workspace-level isolation — each workspace has its own accounts, campaigns, leads, and API keys. This skill covers workspace separation, environment-specific configuration, mock server for dev, and safe promotion workflows.
 
 ## Environment Strategy
@@ -38,6 +39,7 @@ Configure Instantly API v2 integrations across development, staging, and product
 ## Instructions
 
 ### Step 1: Environment Configuration
+
 ```typescript
 // src/config.ts
 import "dotenv/config";
@@ -97,6 +99,7 @@ export function getConfig(): InstantlyConfig {
 ```
 
 ### Step 2: Environment-Specific .env Files
+
 ```bash
 # .env.development
 NODE_ENV=development
@@ -118,6 +121,7 @@ INSTANTLY_WEBHOOK_SECRET_PROD=prod-secret-789
 ```
 
 ### Step 3: Safe Campaign Creation with Environment Guards
+
 ```typescript
 import { getConfig } from "./config";
 import { InstantlyClient } from "./instantly/client";
@@ -162,6 +166,7 @@ async function createCampaignSafe(name: string, sequences: any[]) {
 ```
 
 ### Step 4: Workspace Isolation Verification
+
 ```typescript
 async function verifyWorkspaceIsolation() {
   const config = getConfig();
@@ -198,6 +203,7 @@ async function verifyWorkspaceIsolation() {
 ```
 
 ### Step 5: Webhook Registration Per Environment
+
 ```typescript
 async function setupWebhooksForEnv() {
   const config = getConfig();
@@ -235,6 +241,7 @@ async function setupWebhooksForEnv() {
 ```
 
 ## Promotion Workflow
+
 ```
 Development (mock)  →  Staging (real API, test data)  →  Production (live)
     |                        |                               |
@@ -245,6 +252,7 @@ Development (mock)  →  Staging (real API, test data)  →  Production (live)
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Wrong workspace | API key mismatch | Run `verifyWorkspaceIsolation()` |
@@ -253,9 +261,11 @@ Development (mock)  →  Staging (real API, test data)  →  Production (live)
 | Staging data in production | Cross-env contamination | Use separate workspaces with separate API keys |
 
 ## Resources
+
 - [Instantly Workspaces](https://developer.instantly.ai/api/v2/schemas)
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
 - [Instantly Mock Server](https://developer.instantly.ai/_mock/api/v2/)
 
 ## Next Steps
+
 For observability and monitoring, see `instantly-observability`.

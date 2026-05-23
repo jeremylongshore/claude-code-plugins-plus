@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Salesforce Reference Architecture
 
 ## Overview
+
 Production-ready architecture patterns for Salesforce integrations, covering Node.js integration apps, SFDX metadata projects, and event-driven sync architectures.
 
 ## Prerequisites
+
 - Understanding of layered architecture
 - jsforce and Salesforce CLI experience
 - TypeScript project setup
@@ -37,6 +39,7 @@ Production-ready architecture patterns for Salesforce integrations, covering Nod
 ## Project Structure
 
 ### Node.js Integration App
+
 ```
 my-sf-integration/
 ├── src/
@@ -67,6 +70,7 @@ my-sf-integration/
 ```
 
 ### SFDX Metadata Project (Apex, LWC, Triggers)
+
 ```
 my-sf-app/
 ├── force-app/main/default/
@@ -92,6 +96,7 @@ my-sf-app/
 ## Integration Patterns
 
 ### Pattern A: Polling-Based Sync
+
 ```
 ┌─────────────┐     SOQL Query      ┌─────────────┐
 │   Your App  │ ──────────────────▶  │  Salesforce  │
@@ -106,6 +111,7 @@ Use: Small data volumes, non-real-time requirements
 ```
 
 ### Pattern B: Event-Driven Sync (Recommended)
+
 ```
 ┌─────────────┐                      ┌─────────────┐
 │   Your App  │ ◀─── CDC Events ───  │  Salesforce  │
@@ -121,6 +127,7 @@ Use: Real-time sync, high-volume changes
 ```
 
 ### Pattern C: Bi-Directional Sync (Heroku Connect)
+
 ```
 ┌─────────────┐     SQL Queries      ┌─────────────┐
 │   Your App  │ ──────────────────▶  │   Postgres   │
@@ -187,12 +194,14 @@ function toSalesforceContact(app: Partial<AppContact>): Record<string, any> {
 ```
 
 ## Output
+
 - Node.js integration project with layered architecture
 - SFDX metadata project structure
 - Integration pattern selected (polling, event-driven, or Heroku Connect)
 - Data mapping layer decoupling app from SF schema
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Tight coupling to SF schema | Direct field access | Add mapping layer |
@@ -201,10 +210,12 @@ function toSalesforceContact(app: Partial<AppContact>): Record<string, any> {
 | Event loss | No replay tracking | Persist last replayId |
 
 ## Resources
+
 - [Salesforce Integration Patterns](https://developer.salesforce.com/docs/atlas.en-us.integration_patterns_and_practices.meta/integration_patterns_and_practices/)
 - [Heroku Connect](https://devcenter.heroku.com/articles/heroku-connect)
 - [Change Data Capture](https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture/)
 - [jsforce Documentation](https://jsforce.github.io/document/)
 
 ## Next Steps
+
 For multi-environment setup, see `salesforce-multi-env-setup`.

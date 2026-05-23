@@ -3,6 +3,7 @@
 ## Incident Communication Template
 
 ### Initial Alert (5 minutes)
+
 ```
 🚨 INCIDENT: [Brief Description]
 Severity: P[0-3]
@@ -13,6 +14,7 @@ Lead: [Name]
 ```
 
 ### Update Template (every 30 min)
+
 ```
 📊 UPDATE: [Incident Name]
 Status: [Investigating/Mitigating/Resolved]
@@ -24,6 +26,7 @@ ETA: [If known]
 ```
 
 ### Resolution Template
+
 ```
 ✅ RESOLVED: [Incident Name]
 Duration: [Start] - [End]

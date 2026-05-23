@@ -10,6 +10,7 @@ replit-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Replit CLI authentication including API token setup, OAuth flow, and connection verification.
 **Workflow:** First skill in the onboarding sequence - establishes CLI access and authentication before any programmatic Replit operations.
 **Relates to:** Prerequisite for replit-hello-world and all other skills; integrates with replit-secrets-management for credential storage.

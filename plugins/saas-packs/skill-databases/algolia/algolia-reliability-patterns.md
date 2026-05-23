@@ -10,6 +10,7 @@ algolia-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Algolia reliability patterns
 **Workflow:** Part of the enterprise skill category for Algolia integration.
 **Relates to:** Other algolia skills in this pack.

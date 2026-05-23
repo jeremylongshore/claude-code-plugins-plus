@@ -1,4 +1,4 @@
-# Migration Review, Cost Alerts, and Security Audit
+## Migration Review, Cost Alerts, and Security Audit
 
 ### GitHub Actions Migration Guardrails
 

@@ -10,6 +10,7 @@ palantir-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Palantir reference architecture
 **Workflow:** Part of the cicd skill category for Palantir integration.
 **Relates to:** Other palantir skills in this pack.

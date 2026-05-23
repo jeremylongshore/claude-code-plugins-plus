@@ -9,6 +9,7 @@
 Transform Claude Code into a powerful investment research terminal using OpenBB's open-source financial data platform.
 
 **Features**:
+
 - 📈 **Equity Analysis** - Stocks, fundamentals, technicals, analyst ratings
 - 💰 **Crypto Analysis** - On-chain metrics, DeFi, whale tracking, sentiment
 - 🌍 **Macro Economics** - GDP, inflation, rates, employment data
@@ -84,6 +85,7 @@ pip install openbb[yfinance]  # Just Yahoo Finance
 ### Why Free Data Providers?
 
 **Benefits:**
+
 - **Zero Cost:** No subscription fees or API charges
 - **Professional Quality:** Same data hedge funds use
 - **No Rate Limits:** (with Yahoo Finance and FRED)
@@ -91,6 +93,7 @@ pip install openbb[yfinance]  # Just Yahoo Finance
 - **Global Coverage:** 50K+ stocks, 10K+ cryptos, 180+ countries
 
 **Free Provider Ecosystem:**
+
 - **Yahoo Finance** - Stocks, ETFs, indices, historical data
 - **Alpha Vantage** - Fundamentals, technicals, forex (500 calls/day free)
 - **FRED (Federal Reserve)** - 817K economic time series
@@ -168,6 +171,7 @@ options_chains = obb.derivatives.options.chains(
 #### Premium Approach (Paid)
 
 **Annual Subscriptions:**
+
 - Bloomberg Terminal: $24,000/year
 - Refinitiv Eikon: $12,000/year
 - FactSet: $12,000/year
@@ -178,6 +182,7 @@ options_chains = obb.derivatives.options.chains(
 #### Free Approach (This Plugin)
 
 **Annual Subscriptions:**
+
 - Yahoo Finance: $0
 - Alpha Vantage (free tier): $0
 - FRED: $0
@@ -283,22 +288,26 @@ unemployment = obb.economy.unemployment(country="US", provider="fred")
 ### Free Tier Limitations
 
 **Alpha Vantage Free Tier:**
+
 - 500 API calls/day (enough for most users)
 - 5 API calls/minute
 - Solution: Cache data locally
 
 **Yahoo Finance:**
+
 - No official rate limits (generous)
 - 15-minute delay on real-time data
 - Solution: Perfect for investors (not day traders)
 
 **CoinGecko:**
+
 - 10-50 calls/minute (free)
 - Solution: More than enough for crypto analysis
 
 ### When Free Data Is NOT Enough
 
 **Use paid providers if:**
+
 - You're a day trader (need real-time data)
 - You trade options actively (need instant chains)
 - You need proprietary alternative data
@@ -358,6 +367,7 @@ critical_data = obb.equity.price.historical(
 #### 1. Alpha Vantage (Fundamentals & Technicals)
 
 **FREE TIER REALITY:**
+
 - ❌ **NOT 500/day** (that's outdated info from 2018)
 - ✅ **Actually 25 API calls/day** (since 2022)
 - ✅ **5 calls/minute max**
@@ -365,12 +375,14 @@ critical_data = obb.equity.price.historical(
 - ✅ **Single IP per API key**
 
 **Registration Steps:**
+
 1. Go to: https://www.alphavantage.co/support/#api-key
 2. Enter email (no verification link, instant key)
 3. Copy API key (starts with uppercase letters)
 4. Add to OpenBB: `obb.user.credentials.alpha_vantage_api_key = "KEY"`
 
 **Agent Strategy for 25/day Limit:**
+
 ```python
 # Strategy 1: Cache aggressively (24-hour TTL)
 from functools import lru_cache
@@ -403,17 +415,20 @@ def get_stock_data(symbol):
 ```
 
 **When You Hit the Limit:**
+
 - Error: `"Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 25 calls per day."`
 - Wait time: 24 hours until reset (resets at midnight UTC)
 - Workaround: Use Yahoo Finance for price data, only use Alpha Vantage for fundamentals
 
 **Upgrade Path:**
+
 - $49.99/month: 75 calls/minute, 100K calls/month
 - Probably not worth it - use Yahoo Finance instead
 
 #### 2. Yahoo Finance (Stock Quotes & Historical Data)
 
 **FREE TIER REALITY:**
+
 - ✅ **~2,000 requests/hour** (undocumented soft limit)
 - ✅ **~100 requests/minute**
 - ✅ **No registration** (truly anonymous)
@@ -421,6 +436,7 @@ def get_stock_data(symbol):
 - ⚠️ **IP tracking** (can get soft-banned for aggressive scraping)
 
 **How It Actually Works:**
+
 ```python
 # Yahoo Finance doesn't have "official" API
 # Uses yfinance library which scrapes website
@@ -433,6 +449,7 @@ hist = ticker.history(period="1y")  # FREE, unlimited (sort of)
 ```
 
 **Agent Strategy for IP-Based Limits:**
+
 ```python
 # Strategy 1: Respect rate limits (self-impose)
 import time
@@ -482,6 +499,7 @@ def get_cached_data(symbol, cache_hours=6):
 ```
 
 **When You Get Soft-Banned:**
+
 - Symptom: Empty DataFrames or 404 errors
 - Duration: Usually 1 hour
 - Workaround: Use residential proxy or wait
@@ -490,6 +508,7 @@ def get_cached_data(symbol, cache_hours=6):
 #### 3. SEC EDGAR (Company Filings)
 
 **FREE TIER REALITY:**
+
 - ✅ **Unlimited requests** (government data, public domain)
 - ⚠️ **10 requests/second limit** (hard limit since 2021)
 - ⚠️ **User-Agent header REQUIRED** (must include email or get 403)
@@ -519,6 +538,7 @@ response = requests.get(
 ```
 
 **Agent Strategy for 10/sec Limit:**
+
 ```python
 import time
 from collections import deque
@@ -550,17 +570,20 @@ filings = edgar.make_request(
 #### 4. CoinGecko (Cryptocurrency Data)
 
 **FREE TIER REALITY:**
+
 - ✅ **Unlimited requests/day** (generous free tier)
 - ⚠️ **50 calls/minute** (soft limit)
 - ✅ **No registration** (optional for higher limits)
 - ✅ **No API key** (optional)
 
 **With Free API Key (Optional):**
+
 - 30-50 calls/minute (still free)
 - More stable rate limits
 - Get key at: https://www.coingecko.com/en/api
 
 **Agent Strategy:**
+
 ```python
 # CoinGecko is actually generous - just add small delay
 import time
@@ -668,6 +691,7 @@ Complete equity analysis with fundamentals, technicals, and AI insights.
 ```
 
 **Provides**:
+
 - Historical price data (OHLCV)
 - Company fundamentals (P/E, EPS, ROE, margins)
 - Analyst ratings and price targets
@@ -695,6 +719,7 @@ Comprehensive crypto market analysis with on-chain data.
 ```
 
 **Provides**:
+
 - Real-time price and volume data
 - On-chain metrics (active addresses, hash rate, holders)
 - DeFi analytics (TVL, staking, protocols)
@@ -720,6 +745,7 @@ Global economic indicators and market implications.
 ```
 
 **Provides**:
+
 - GDP growth rates and forecasts
 - Inflation metrics (CPI, PPI, PCE)
 - Interest rates and central bank policy
@@ -744,6 +770,7 @@ Performance tracking, risk analysis, and optimization.
 ```
 
 **Provides**:
+
 - Total return and performance metrics
 - Risk analysis (volatility, Sharpe, max drawdown)
 - Asset allocation breakdown
@@ -771,6 +798,7 @@ Options chains, Greeks, and strategy analysis.
 ```
 
 **Provides**:
+
 - Call/put options chains
 - Greeks (Delta, Gamma, Theta, Vega)
 - Implied volatility analysis
@@ -798,6 +826,7 @@ Comprehensive AI-powered research reports.
 ```
 
 **Generates**:
+
 - Executive summary
 - Investment thesis
 - Financial analysis
@@ -815,6 +844,7 @@ Comprehensive AI-powered research reports.
 Expert stock analyst specializing in fundamental and technical analysis.
 
 **Expertise**:
+
 - Financial statement analysis
 - DCF and relative valuation models
 - Technical indicators and chart patterns
@@ -830,6 +860,7 @@ Expert stock analyst specializing in fundamental and technical analysis.
 Cryptocurrency and digital asset specialist.
 
 **Expertise**:
+
 - On-chain analysis (network metrics, whale tracking)
 - Tokenomics evaluation
 - DeFi protocol assessment
@@ -845,6 +876,7 @@ Cryptocurrency and digital asset specialist.
 Portfolio construction and risk management expert.
 
 **Expertise**:
+
 - Asset allocation optimization
 - Risk-adjusted return maximization
 - Rebalancing strategies
@@ -860,6 +892,7 @@ Portfolio construction and risk management expert.
 Macroeconomic analysis and policy expert.
 
 **Expertise**:
+
 - Business cycle analysis
 - Central bank policy interpretation
 - Inflation and growth dynamics
@@ -971,6 +1004,7 @@ obb.user.save()
 ### Data Providers
 
 OpenBB supports 100+ data providers:
+
 - **Free**: Yahoo Finance, Alpha Vantage (limited)
 - **Freemium**: Polygon, FMP, Intrinio
 - **Premium**: Bloomberg, Refinitiv, FactSet
@@ -982,24 +1016,28 @@ See [OpenBB docs](https://docs.openbb.co/platform/reference) for full list.
 ## 📊 Data Coverage
 
 ### Equity Data
+
 - **Stocks**: 50,000+ global equities
 - **Indices**: S&P 500, Nasdaq, Dow, international indices
 - **ETFs**: 3,000+ ETFs and sector funds
 - **Historical**: Up to 20+ years of data
 
 ### Cryptocurrency
+
 - **Assets**: 10,000+ cryptocurrencies
 - **Exchanges**: Binance, Coinbase, Kraken, 20+ more
 - **DeFi**: 1,000+ protocols on Ethereum, BSC, Polygon
 - **On-Chain**: BTC, ETH, and major L1s
 
 ### Macroeconomic
+
 - **Countries**: 180+ countries
 - **Indicators**: 200+ economic data series
 - **Central Banks**: Fed, ECB, BOJ, BOE, PBOC
 - **Frequency**: Daily, monthly, quarterly
 
 ### Options
+
 - **Equities**: All optionable US stocks
 - **Indices**: SPX, NDX, RUT
 - **ETFs**: SPY, QQQ, IWM, sector ETFs
@@ -1010,24 +1048,28 @@ See [OpenBB docs](https://docs.openbb.co/platform/reference) for full list.
 ## 🎯 Use Cases
 
 ### For Individual Investors
+
 - **Stock Screening**: Find undervalued stocks with `/openbb-equity`
 - **Crypto Trading**: Track market sentiment with `/openbb-crypto`
 - **Portfolio Tracking**: Monitor performance with `/openbb-portfolio`
 - **Options Income**: Generate income with `/openbb-options`
 
 ### For Financial Analysts
+
 - **Research Reports**: Auto-generate with `/openbb-research`
 - **Earnings Analysis**: Deep-dive fundamentals
 - **Macro Forecasting**: Economic scenario planning
 - **Comp Analysis**: Compare valuation multiples
 
 ### For Quants
+
 - **Factor Analysis**: Extract data for backtests
 - **Risk Modeling**: Calculate portfolio VaR
 - **Algo Development**: API integration for strategies
 - **Performance Attribution**: Decompose returns
 
 ### For Portfolio Managers
+
 - **Asset Allocation**: Optimize with `/openbb-portfolio`
 - **Rebalancing**: Systematic rebalance triggers
 - **Risk Management**: Monitor drawdowns

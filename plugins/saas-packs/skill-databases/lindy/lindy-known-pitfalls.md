@@ -10,6 +10,7 @@ lindy-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Lindy anti-patterns
 **Workflow:** Part of the enterprise skill category for Lindy integration.
 **Relates to:** Other lindy skills in this pack.

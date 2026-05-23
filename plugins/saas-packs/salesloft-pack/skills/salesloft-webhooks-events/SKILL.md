@@ -32,6 +32,7 @@ Handle SalesLoft webhook notifications for real-time data sync. SalesLoft sends 
 ### Step 1: Register Webhook in SalesLoft
 
 Configure webhooks in SalesLoft Settings > Integrations > Webhooks:
+
 - URL: `https://your-app.com/webhooks/salesloft`
 - Events: Select specific events (person.updated, email.sent, etc.)
 - Copy the webhook signing secret

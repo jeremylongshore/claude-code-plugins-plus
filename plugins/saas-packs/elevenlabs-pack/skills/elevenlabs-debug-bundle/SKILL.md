@@ -219,11 +219,13 @@ console.log(JSON.stringify(report, null, 2));
 ## Sensitive Data Handling
 
 **Always redacted automatically:**
+
 - API keys (replaced with `***REDACTED***`)
 - Webhook secrets
 - Any value after `=` in .env files
 
 **Safe to include:**
+
 - Error messages and stack traces
 - SDK/runtime versions
 - Voice IDs and model IDs

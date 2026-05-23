@@ -1,6 +1,7 @@
-# Implementation Guide
+## Implementation Guide
 
 ### Step 1: Create GitHub Actions Workflow
+
 Create `.github/workflows/supabase-integration.yml`:
 
 ```yaml
@@ -32,11 +33,13 @@ jobs:
 ```
 
 ### Step 2: Configure Secrets
+
 ```bash
 gh secret set SUPABASE_API_KEY --body "sk_test_***"
 ```
 
 ### Step 3: Add Integration Tests
+
 ```typescript
 describe('Supabase Integration', () => {
   it.skipIf(!process.env.SUPABASE_API_KEY)('should connect', async () => {

@@ -10,6 +10,7 @@ salesforce-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Salesforce reliability patterns
 **Workflow:** Part of the enterprise skill category for Salesforce integration.
 **Relates to:** Other salesforce skills in this pack.

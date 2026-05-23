@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk SDK Patterns
 
 ## Overview
+
 Common patterns and best practices for using the Clerk SDK effectively across server components, client components, API routes, and middleware.
 
 ## Prerequisites
+
 - Clerk SDK installed and configured
 - Basic understanding of React/Next.js
 - ClerkProvider wrapping application
@@ -35,6 +37,7 @@ Common patterns and best practices for using the Clerk SDK effectively across se
 ## Instructions
 
 ### Pattern 1: Server-Side Authentication
+
 ```typescript
 // Server Component — use auth() for lightweight checks
 import { auth } from '@clerk/nextjs/server'
@@ -68,6 +71,7 @@ export default async function ProfilePage() {
 ```
 
 ### Pattern 2: Client-Side Hooks
+
 ```typescript
 'use client'
 import { useUser, useAuth, useClerk, useSignIn } from '@clerk/nextjs'
@@ -98,6 +102,7 @@ export function ClientAuthExample() {
 ```
 
 ### Pattern 3: Protected Routes with Middleware
+
 ```typescript
 // middleware.ts
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
@@ -118,6 +123,7 @@ export default clerkMiddleware(async (auth, req) => {
 ```
 
 ### Pattern 4: Organization-Aware Queries
+
 ```typescript
 // lib/db-helpers.ts
 import { auth } from '@clerk/nextjs/server'
@@ -136,6 +142,7 @@ export async function getOrgData() {
 ```
 
 ### Pattern 5: Custom JWT Templates for External Services
+
 ```typescript
 // Generate a Supabase-compatible JWT
 import { auth } from '@clerk/nextjs/server'
@@ -158,6 +165,7 @@ export async function getSupabaseClient() {
 ```
 
 Configure the JWT template in Clerk Dashboard > JWT Templates with claims:
+
 ```json
 {
   "sub": "{{user.id}}",
@@ -167,12 +175,14 @@ Configure the JWT template in Clerk Dashboard > JWT Templates with claims:
 ```
 
 ## Output
+
 - Server and client authentication patterns ready to use
 - Protected route middleware with public route exceptions
 - Organization-aware data queries
 - Custom JWT tokens for third-party integrations (Supabase, Hasura, etc.)
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `auth()` returns null userId | Not in server context | Use only in Server Components or API routes |
@@ -183,6 +193,7 @@ Configure the JWT template in Clerk Dashboard > JWT Templates with claims:
 ## Examples
 
 ### Server Action with Auth Check
+
 ```typescript
 'use server'
 import { auth } from '@clerk/nextjs/server'
@@ -198,9 +209,11 @@ export async function createPost(title: string, content: string) {
 ```
 
 ## Resources
+
 - [Clerk SDK Reference](https://clerk.com/docs/references/nextjs/overview)
 - [Auth Helper](https://clerk.com/docs/references/nextjs/auth)
 - [JWT Templates](https://clerk.com/docs/backend-requests/making/jwt-templates)
 
 ## Next Steps
+
 Proceed to `clerk-core-workflow-a` for user sign-up and sign-in flows.

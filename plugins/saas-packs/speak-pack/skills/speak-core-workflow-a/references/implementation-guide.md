@@ -5,6 +5,7 @@ Detailed implementation reference for the speak-core-workflow-a skill.
 ## Instructions
 
 ### Step 1: Initialize Conversation Session
+
 ```typescript
 // src/workflows/conversation-practice.ts
 import {
@@ -46,6 +47,7 @@ async function initializeConversation(
 ```
 
 ### Step 2: Implement Conversation Loop
+
 ```typescript
 interface ConversationExchange {
   tutorPrompt: {
@@ -113,6 +115,7 @@ async function runConversationLoop(
 ```
 
 ### Step 3: Handle Real-time Pronunciation Feedback
+
 ```typescript
 interface PronunciationFeedback {
   overall: number;
@@ -150,6 +153,7 @@ function displayFeedback(feedback: ConversationExchange['feedback']) {
 ```
 
 ### Step 4: Generate Session Summary
+
 ```typescript
 interface ConversationSummary {
   sessionId: string;
@@ -181,7 +185,6 @@ async function generateSessionSummary(
   };
 }
 ```
-
 
 ## Complete Workflow Example
 
@@ -230,8 +233,8 @@ async function conversationPracticeWorkflow() {
 }
 ```
 
-
 ## Topic Categories
+
 | Category | Example Topics |
 |----------|----------------|
 | Daily Life | greetings, shopping, directions |
@@ -239,4 +242,3 @@ async function conversationPracticeWorkflow() {
 | Work | meetings, presentations, negotiations |
 | Social | making_friends, parties, small_talk |
 | Culture | holidays, traditions, food |
-

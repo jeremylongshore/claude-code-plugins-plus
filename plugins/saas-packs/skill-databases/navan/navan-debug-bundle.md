@@ -10,6 +10,7 @@ navan-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Navan debug evidence for support
 **Workflow:** Part of the operations skill category for Navan integration.
 **Relates to:** Other navan skills in this pack.

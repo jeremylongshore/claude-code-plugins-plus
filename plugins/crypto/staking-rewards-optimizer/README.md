@@ -17,6 +17,7 @@ Optimize staking rewards across multiple protocols and blockchains to maximize y
 ```
 
 Or use the shortcut:
+
 ```bash
 /stake
 ```
@@ -74,6 +75,7 @@ Or use the shortcut:
 ## Data Sources
 
 Recommendations reference data from:
+
 - DefiLlama
 - StakingRewards.com
 - Protocol documentation

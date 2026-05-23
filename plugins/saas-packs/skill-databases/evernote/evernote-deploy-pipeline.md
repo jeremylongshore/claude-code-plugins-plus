@@ -10,6 +10,7 @@ evernote-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Evernote integrations to production
 **Workflow:** Part of the cicd skill category for Evernote integration.
 **Relates to:** Other evernote skills in this pack.

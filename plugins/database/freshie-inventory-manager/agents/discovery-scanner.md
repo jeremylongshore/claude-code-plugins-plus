@@ -10,16 +10,19 @@ claude-code-plugins repository and report what changed.
 ## Process
 
 1. **Show current state** before scanning:
+
 ```bash
 sqlite3 freshie/inventory.sqlite "SELECT id, run_date, total_plugins, total_skills, COALESCE(total_packs, 0) as total_packs FROM discovery_runs ORDER BY id DESC LIMIT 1;"
 ```
 
-2. **Run the scan**:
+1. **Run the scan**:
+
 ```bash
 python3 freshie/scripts/rebuild-inventory.py
 ```
 
-3. **Report the delta** — compare new run vs previous:
+1. **Report the delta** — compare new run vs previous:
+
 ```bash
 sqlite3 freshie/inventory.sqlite "
   SELECT

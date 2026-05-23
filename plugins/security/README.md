@@ -5,6 +5,7 @@ Comprehensive collection of 25 security and compliance plugins for Claude Code, 
 ## Plugin Categories
 
 ### Vulnerability Detection (6 plugins)
+
 1. **vulnerability-scanner** - Comprehensive SAST and dependency scanning
 2. **dependency-checker** - Check dependencies for known CVEs
 3. **secret-scanner** - Detect exposed secrets and API keys
@@ -13,35 +14,39 @@ Comprehensive collection of 25 security and compliance plugins for Claude Code, 
 6. **security-misconfiguration-finder** - Find security misconfigurations
 
 ### Penetration Testing (3 plugins)
-7. **penetration-tester** - Automated penetration testing suite
-8. **input-validation-scanner** - Input validation testing
-9. **csrf-protection-validator** - CSRF protection validation
+
+1. **penetration-tester** - Automated penetration testing suite
+2. **input-validation-scanner** - Input validation testing
+3. **csrf-protection-validator** - CSRF protection validation
 
 ### Compliance & Auditing (8 plugins)
-10. **owasp-compliance-checker** - OWASP Top 10 2021 compliance
-11. **gdpr-compliance-scanner** - GDPR compliance scanning
-12. **pci-dss-validator** - PCI DSS compliance validation
-13. **hipaa-compliance-checker** - HIPAA compliance checking
-14. **soc2-audit-helper** - SOC2 audit preparation
-15. **security-audit-reporter** - Comprehensive security audit reports
-16. **compliance-report-generator** - Multi-framework compliance reports
-17. **data-privacy-scanner** - Data privacy issue detection
+
+1. **owasp-compliance-checker** - OWASP Top 10 2021 compliance
+2. **gdpr-compliance-scanner** - GDPR compliance scanning
+3. **pci-dss-validator** - PCI DSS compliance validation
+4. **hipaa-compliance-checker** - HIPAA compliance checking
+5. **soc2-audit-helper** - SOC2 audit preparation
+6. **security-audit-reporter** - Comprehensive security audit reports
+7. **compliance-report-generator** - Multi-framework compliance reports
+8. **data-privacy-scanner** - Data privacy issue detection
 
 ### Security Controls (8 plugins)
-18. **authentication-validator** - Authentication implementation validation
-19. **session-security-checker** - Session security analysis
-20. **access-control-auditor** - Access control auditing
-21. **security-headers-analyzer** - HTTP security headers analysis
-22. **cors-policy-validator** - CORS policy validation
-23. **ssl-certificate-manager** - SSL/TLS certificate management
-24. **encryption-tool** - Encryption and decryption utilities
-25. **security-incident-responder** - Incident response assistance
+
+1. **authentication-validator** - Authentication implementation validation
+2. **session-security-checker** - Session security analysis
+3. **access-control-auditor** - Access control auditing
+4. **security-headers-analyzer** - HTTP security headers analysis
+5. **cors-policy-validator** - CORS policy validation
+6. **ssl-certificate-manager** - SSL/TLS certificate management
+7. **encryption-tool** - Encryption and decryption utilities
+8. **security-incident-responder** - Incident response assistance
 
 ## Quick Start
 
 ### Installation
 
 Install individual plugins:
+
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
 /plugin install vulnerability-scanner@claude-code-plugins-plus
@@ -49,6 +54,7 @@ Install individual plugins:
 ```
 
 Or install the entire security pack (coming soon):
+
 ```bash
 /plugin install security-pack@claude-code-plugins-plus
 ```
@@ -56,6 +62,7 @@ Or install the entire security pack (coming soon):
 ## Common Workflows
 
 ### Pre-Deployment Security Check
+
 ```bash
 /vuln                    # Full vulnerability scan
 /secrets                 # Check for exposed secrets
@@ -65,6 +72,7 @@ Or install the entire security pack (coming soon):
 ```
 
 ### Compliance Audit
+
 ```bash
 /auditreport             # Generate security audit report
 /gdpr                    # GDPR compliance check
@@ -74,6 +82,7 @@ Or install the entire security pack (coming soon):
 ```
 
 ### Vulnerability Deep Dive
+
 ```bash
 /sqli                    # SQL injection detection
 /xss                     # XSS vulnerability scanning
@@ -83,6 +92,7 @@ Or install the entire security pack (coming soon):
 ```
 
 ### Security Hardening
+
 ```bash
 /authcheck               # Authentication validation
 /session                 # Session security check
@@ -139,6 +149,7 @@ All plugins use consistent severity classification:
 ## Integration Examples
 
 ### Pre-Commit Hook
+
 ```bash
 #!/bin/bash
 # .git/hooks/pre-commit
@@ -155,6 +166,7 @@ echo "Security checks passed!"
 ```
 
 ### CI/CD Pipeline
+
 ```yaml
 # .github/workflows/security.yml
 name: Security Scan
@@ -174,6 +186,7 @@ jobs:
 ```
 
 ### Pre-Deployment Checklist
+
 ```bash
 # deploy-check.sh
 #!/bin/bash
@@ -201,19 +214,23 @@ echo "All security checks passed! Ready for deployment."
 ## Best Practices
 
 ### 1. Regular Scanning
+
 - **Daily**: Secret scanning, dependency checking
 - **Weekly**: Vulnerability scanning
 - **Monthly**: Full penetration testing
 - **Quarterly**: Compliance auditing
 
 ### 2. Prioritization
+
 Focus on:
+
 1. Critical vulnerabilities first
 2. Public-facing applications
 3. Systems handling sensitive data
 4. Compliance requirements
 
 ### 3. Remediation Workflow
+
 1. **Identify** - Run security scans
 2. **Prioritize** - By severity and impact
 3. **Fix** - Apply remediation
@@ -221,13 +238,16 @@ Focus on:
 5. **Document** - Update security docs
 
 ### 4. Team Training
+
 - Regular security awareness training
 - OWASP Top 10 education
 - Secure coding practices
 - Incident response drills
 
 ### 5. Defense in Depth
+
 Layer multiple security controls:
+
 - Input validation
 - Output encoding
 - Authentication
@@ -314,17 +334,20 @@ When vulnerabilities are found:
 ## Resources
 
 ### Documentation
+
 - [OWASP Top 10](https://owasp.org/Top10/)
 - [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/)
 - [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/)
 
 ### Tools
+
 - [Burp Suite](https://portswigger.net/burp)
 - [OWASP ZAP](https://www.zaproxy.org/)
 - [Nmap](https://nmap.org/)
 - [Metasploit](https://www.metasploit.com/)
 
 ### Training
+
 - [OWASP WebGoat](https://owasp.org/www-project-webgoat/)
 - [Hack The Box](https://www.hackthebox.com/)
 - [PortSwigger Web Security Academy](https://portswigger.net/web-security)

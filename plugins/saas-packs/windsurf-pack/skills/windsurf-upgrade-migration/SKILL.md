@@ -27,13 +27,16 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Upgrade & Migration
 
 ## Current State
+
 !`windsurf --version 2>/dev/null || echo 'Not installed'`
 !`code --version 2>/dev/null | head -1 || echo 'VS Code not installed'`
 
 ## Overview
+
 Guide for upgrading Windsurf to new versions and migrating from VS Code or Cursor. Covers settings transfer, extension compatibility, and Windsurf-specific configuration that doesn't exist in other editors.
 
 ## Prerequisites
+
 - Current editor installation accessible
 - Git for version controlling config files
 - Backup of existing settings
@@ -95,6 +98,7 @@ cursor_to_windsurf:
 ```
 
 **Migration script:**
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -164,6 +168,7 @@ echo "3. Press Cmd/Ctrl+I -- Command mode should activate"
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Extensions not loading | Incompatible with Windsurf | Check Windsurf marketplace for alternative |
@@ -175,6 +180,7 @@ echo "3. Press Cmd/Ctrl+I -- Command mode should activate"
 ## Examples
 
 ### Backup Before Upgrade
+
 ```bash
 # Backup current Windsurf config
 tar -czf windsurf-config-backup-$(date +%Y%m%d).tar.gz \
@@ -186,15 +192,18 @@ tar -czf windsurf-config-backup-$(date +%Y%m%d).tar.gz \
 ```
 
 ### Check Windsurf Changelog
+
 ```
 Visit: https://windsurf.com/changelog
 Look for: breaking changes, deprecated settings, new features
 ```
 
 ## Resources
+
 - [Windsurf Changelog](https://windsurf.com/changelog)
 - [Windsurf Download](https://windsurf.com/download)
 - [Migrating from Cursor](https://docs.windsurf.com)
 
 ## Next Steps
+
 For CI integration, see `windsurf-ci-integration`.

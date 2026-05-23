@@ -343,6 +343,7 @@ spec:
    - Add PodDisruptionBudget for availability
 
 4. **Validate and Apply**
+
    ```bash
    # Validate manifests
    kubectl apply -f manifests/ --dry-run=server

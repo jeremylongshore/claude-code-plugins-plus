@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse SDK Patterns
 
 ## Overview
+
 Production-quality patterns for the Langfuse SDK: singleton clients, the `observe` wrapper, `startActiveObservation` for nested traces, session tracking, graceful shutdown, and error-safe tracing.
 
 ## Prerequisites
+
 - Completed `langfuse-install-auth` setup
 - Understanding of async/await patterns
 - For v4+: `@langfuse/tracing`, `@langfuse/otel`, `@opentelemetry/sdk-node`
@@ -74,6 +76,7 @@ export function initTracing(): NodeSDK {
 ```
 
 **Legacy v3 singleton:**
+
 ```typescript
 import { Langfuse } from "langfuse";
 
@@ -260,10 +263,12 @@ try {
 | Hardcoding API keys | Security risk | Environment variables only |
 
 ## Resources
+
 - [TypeScript SDK Instrumentation](https://langfuse.com/docs/observability/sdk/typescript/instrumentation)
 - [Advanced SDK Configuration](https://langfuse.com/docs/observability/sdk/typescript/advanced-usage)
 - [Python Decorators](https://langfuse.com/docs/sdk/python/decorators)
 - [Event Queuing/Batching](https://langfuse.com/docs/observability/features/queuing-batching)
 
 ## Next Steps
+
 For OpenAI/LangChain tracing examples, see `langfuse-core-workflow-a`.

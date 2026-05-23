@@ -43,6 +43,7 @@ User runs `/reflect` to review and apply queued learnings to CLAUDE.md files.
 ## When to Remind Users
 
 Remind users about `/reflect` when:
+
 - They complete a feature or meaningful work unit
 - They make corrections you should remember for future sessions
 - They explicitly say "remember this" or similar
@@ -51,6 +52,7 @@ Remind users about `/reflect` when:
 ## Correction Detection Patterns
 
 High-confidence corrections:
+
 - Tool rejections (user stops an action with guidance)
 - "no, use X" / "don't use Y"
 - "actually..." / "I meant..."

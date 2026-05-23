@@ -10,6 +10,7 @@ abridge-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Abridge CI/CD integration
 **Workflow:** Part of the cicd skill category for Abridge integration.
 **Relates to:** Other abridge skills in this pack.

@@ -5,6 +5,7 @@ Detailed implementation reference for the lokalise-local-dev-loop skill.
 ## Instructions
 
 ### Step 1: Create Project Structure
+
 ```
 my-lokalise-project/
 ├── src/
@@ -25,6 +26,7 @@ my-lokalise-project/
 ```
 
 ### Step 2: Create Lokalise CLI Config
+
 ```json
 // lokalise.json
 {
@@ -48,6 +50,7 @@ my-lokalise-project/
 ```
 
 ### Step 3: Create Sync Scripts
+
 ```bash
 #!/bin/bash
 # scripts/lokalise-pull.sh - Download translations from Lokalise
@@ -98,6 +101,7 @@ echo "Source strings uploaded successfully!"
 ```
 
 ### Step 4: Configure package.json Scripts
+
 ```json
 {
   "scripts": {
@@ -113,6 +117,7 @@ echo "Source strings uploaded successfully!"
 ```
 
 ### Step 5: Set Up File Watcher (Optional)
+
 ```typescript
 // scripts/watch-translations.ts
 import chokidar from "chokidar";
@@ -138,10 +143,10 @@ watcher.on("change", (path) => {
 console.log("Watching for translation changes...");
 ```
 
-
 ## Detailed Examples
 
 ### Quick Pull/Push Commands
+
 ```bash
 # Pull all translations
 npm run i18n:pull
@@ -154,6 +159,7 @@ npm run i18n:sync
 ```
 
 ### Environment Setup
+
 ```bash
 # .env.local
 LOKALISE_API_TOKEN=your-api-token
@@ -161,6 +167,7 @@ LOKALISE_PROJECT_ID=123456789.abcdef
 ```
 
 ### React i18n Integration
+
 ```typescript
 // src/i18n/index.ts
 import i18n from "i18next";
@@ -185,9 +192,9 @@ export default i18n;
 ```
 
 ### Git Hooks with Husky
+
 ```bash
 # .husky/pre-commit
 #!/bin/sh
 npm run i18n:push
 ```
-

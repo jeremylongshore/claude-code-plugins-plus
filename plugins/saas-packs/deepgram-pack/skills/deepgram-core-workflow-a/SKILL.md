@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Core Workflow A: Pre-recorded Transcription
 
 ## Overview
+
 Production pre-recorded transcription service using Deepgram's REST API. Covers `transcribeUrl` and `transcribeFile`, speaker diarization, audio intelligence (summarization, topic detection, sentiment, intent), batch processing with concurrency control, and callback-based async transcription for large files.
 
 ## Prerequisites
+
 - `@deepgram/sdk` installed, `DEEPGRAM_API_KEY` configured
 - Audio files: WAV, MP3, FLAC, OGG, M4A, or WebM
 - For batch: `p-limit` package (`npm install p-limit`)
@@ -225,6 +227,7 @@ const result = await transcriber.transcribeUrl(audioUrl, {
 ```
 
 ## Output
+
 - `DeepgramTranscriber` class with URL and file transcription
 - Structured result extraction with word-level timing, speakers, and intelligence
 - Batch processing with configurable concurrency via `p-limit`
@@ -232,6 +235,7 @@ const result = await transcriber.transcribeUrl(audioUrl, {
 - Keyword boosting for domain vocabulary
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `400 Bad Request` | Invalid audio format | Verify file header bytes (WAV: `RIFF`, MP3: `0xFFF3/0xFFFB`) |
@@ -241,6 +245,7 @@ const result = await transcriber.transcribeUrl(audioUrl, {
 | Low confidence | Background noise | Preprocess: `ffmpeg -i input.wav -af "highpass=f=200,lowpass=f=3000" clean.wav` |
 
 ## Resources
+
 - [Pre-recorded API](https://developers.deepgram.com/docs/pre-recorded-audio)
 - [Speaker Diarization](https://developers.deepgram.com/docs/diarization)
 - [Audio Intelligence](https://deepgram.com/product/audio-intelligence)
@@ -248,4 +253,5 @@ const result = await transcriber.transcribeUrl(audioUrl, {
 - [Callback Feature](https://developers.deepgram.com/docs/callback)
 
 ## Next Steps
+
 Proceed to `deepgram-core-workflow-b` for real-time streaming transcription.

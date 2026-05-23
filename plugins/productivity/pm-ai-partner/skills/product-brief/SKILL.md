@@ -124,6 +124,7 @@ Users in messaging-heavy markets (Brazil, India, SEA) prefer voice over text —
 Add the ability to record and send voice messages within existing chat threads.
 
 Core functionality:
+
 - Record button in chat input
 - Playback controls for received messages
 - Visual waveform for recorded/played audio
@@ -145,12 +146,14 @@ Core functionality:
 ## Scope
 
 ### In Scope (v1)
+
 - Record up to 60 seconds
 - Send in 1:1 and group chats
 - Playback with speed control (1x, 1.5x, 2x)
 - iOS and Android
 
 ### Out of Scope
+
 - Transcription (v2)
 - Voice-to-text conversion (v2)
 - Desktop support (v2)
@@ -198,6 +201,7 @@ Users who see a push notification but aren't ready to act have no way to come ba
 Add a "Remind me" quick action to push notifications that reschedules the notification for a later time.
 
 Options presented to user:
+
 - "In 1 hour"
 - "Tonight" (8pm local)
 - "Tomorrow morning" (9am local)
@@ -219,11 +223,13 @@ Options presented to user:
 ## Scope
 
 ### In Scope
+
 - iOS and Android quick action
 - Three time options (1hr, tonight, tomorrow)
 - Works with all notification types
 
 ### Out of Scope
+
 - Custom time picker
 - Recurring reminders
 - Smart timing suggestions

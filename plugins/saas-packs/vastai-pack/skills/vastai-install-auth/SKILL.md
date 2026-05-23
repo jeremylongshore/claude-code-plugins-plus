@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Install & Auth
 
 ## Overview
+
 Set up the Vast.ai CLI and REST API access for renting GPU compute instances. Vast.ai is a marketplace where individual hosts and data centers list GPU machines at prices significantly below hyperscaler providers.
 
 ## Prerequisites
+
 - Python 3.8+
 - Vast.ai account at https://cloud.vast.ai
 - Credit card or credits loaded for GPU rental
@@ -35,6 +37,7 @@ Set up the Vast.ai CLI and REST API access for renting GPU compute instances. Va
 ## Instructions
 
 ### Step 1: Install the CLI
+
 ```bash
 set -euo pipefail
 pip install vastai
@@ -42,11 +45,13 @@ vastai --version
 ```
 
 ### Step 2: Get Your API Key
+
 1. Log in at https://cloud.vast.ai
 2. Navigate to **Account** > **API Keys** (or visit https://cloud.vast.ai/cli/)
 3. Copy your API key (a long hexadecimal string)
 
 ### Step 3: Configure Authentication
+
 ```bash
 # Save API key to ~/.vast_api_key
 vastai set api-key YOUR_API_KEY_HERE
@@ -56,12 +61,14 @@ vastai show user
 ```
 
 For programmatic use, set the environment variable:
+
 ```bash
 export VASTAI_API_KEY="your-api-key-here"
 echo 'VASTAI_API_KEY=your-api-key' >> .env
 ```
 
 ### Step 4: Verify with REST API
+
 ```bash
 # Direct REST API call — base URL is cloud.vast.ai/api/v0
 curl -s -H "Authorization: Bearer $VASTAI_API_KEY" \
@@ -69,6 +76,7 @@ curl -s -H "Authorization: Bearer $VASTAI_API_KEY" \
 ```
 
 ### Step 5: Python Client Setup
+
 ```python
 # vastai_client.py
 import os
@@ -124,6 +132,7 @@ if __name__ == "__main__":
 ```
 
 ### Step 6: Verify Connection
+
 ```bash
 # CLI verification
 vastai show user
@@ -134,12 +143,14 @@ python vastai_client.py
 ```
 
 ## Output
+
 - `vastai` CLI installed and authenticated
 - API key saved to `~/.vast_api_key` and/or environment variable
 - Python client wrapper with search, create, show, destroy methods
 - Successful authentication verification
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Invalid API key` | Wrong or expired key | Regenerate at cloud.vast.ai/cli/ |
@@ -149,12 +160,14 @@ python vastai_client.py
 | `~/.vast_api_key not found` | CLI not configured | Run `vastai set api-key YOUR_KEY` |
 
 ## Resources
+
 - [Vast.ai CLI Documentation](https://docs.vast.ai/cli/get-started)
 - [REST API Reference](https://vast.ai/developers/api)
 - [API Introduction](https://docs.vast.ai/api-reference/introduction)
 - [GitHub: vast-cli](https://github.com/vast-ai/vast-cli)
 
 ## Next Steps
+
 After successful auth, proceed to `vastai-hello-world` for your first GPU instance rental.
 
 ## Examples

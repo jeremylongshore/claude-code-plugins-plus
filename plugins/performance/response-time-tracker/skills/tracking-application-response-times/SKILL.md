@@ -32,6 +32,7 @@ This skill empowers Claude to proactively monitor and improve application perfor
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Identify performance bottlenecks in your application.
 - Monitor service level objectives (SLOs) related to response times.
 - Receive alerts about performance degradation.
@@ -43,6 +44,7 @@ This skill activates when you need to:
 User request: "Track response times for the user authentication API endpoint."
 
 The skill will:
+
 1. Activate the response-time-tracker plugin.
 2. Monitor the specified API endpoint and report response time metrics, highlighting potential bottlenecks.
 
@@ -51,6 +53,7 @@ The skill will:
 User request: "Monitor database query performance for the product catalog."
 
 The skill will:
+
 1. Activate the response-time-tracker plugin.
 2. Track the execution time of database queries related to the product catalog and provide performance insights.
 
@@ -91,6 +94,7 @@ This skill can be integrated with other monitoring and alerting tools to provide
 ## Error Handling
 
 If response time tracking fails:
+
 - Verify monitoring agent installation
 - Check instrumentation configuration
 - Validate metric export endpoints

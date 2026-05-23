@@ -9,6 +9,7 @@
 **Cause:** One or more unit tests failed during the pre-commit hook execution.
 
 **Resolution:**
+
 ```bash
 # Run tests manually to see failures
 npm test -- --verbose 2>&1 | head -50
@@ -25,6 +26,7 @@ npm test -- --detectOpenHandles --forceExit
 **Symptom:** Push rejected with "coverage below threshold."
 
 **Resolution:**
+
 ```bash
 # Check current coverage
 npm test -- --coverage --coverageReporters=text-summary
@@ -44,6 +46,7 @@ open coverage/index.html
 **Symptom:** Hook rejects commit because `src/feature.ts` exists without corresponding `tests/feature.spec.ts`.
 
 **Resolution:**
+
 ```bash
 # Create the test file with a basic structure
 cat > tests/feature.spec.ts << 'EOF'
@@ -67,6 +70,7 @@ EOF
 **Symptom:** "Test-to-code ratio is 0.3, minimum is 0.5."
 
 **Resolution:** Add more tests to cover untested paths. Focus on:
+
 - Error handling branches
 - Edge cases (empty input, null, boundary values)
 - Integration paths between modules
@@ -78,6 +82,7 @@ EOF
 **Symptom:** Overnight process exits with signal 9 (SIGKILL) or "JavaScript heap out of memory."
 
 **Resolution:**
+
 ```bash
 # Increase Node.js memory limit
 export NODE_OPTIONS="--max-old-space-size=4096"
@@ -91,6 +96,7 @@ node --expose-gc --trace-gc overnight-runner.js 2>gc.log &
 **Symptom:** "EACCES: permission denied" during file write operations.
 
 **Resolution:**
+
 ```bash
 # Check file ownership
 ls -la .git/hooks/
@@ -107,6 +113,7 @@ sudo chown -R $(whoami) .git/
 **Symptom:** "Another git process seems to be running" or stale lock files after crash.
 
 **Resolution:**
+
 ```bash
 # Remove stale lock
 rm -f .git/index.lock

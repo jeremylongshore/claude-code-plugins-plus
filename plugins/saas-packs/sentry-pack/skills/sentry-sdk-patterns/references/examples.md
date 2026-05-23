@@ -1,4 +1,4 @@
-# Examples
+## Examples
 
 **Example: Implement Centralized Error Handler**
 Request: "Create a reusable error handling module for our Node.js API"

@@ -73,24 +73,28 @@ curl -s -w "\nHTTP %{http_code}" \
 ### Step 4 — Incident-Specific Playbooks
 
 **Booking API Failure (P1/P2):**
+
 1. Confirm via API health check above — look for HTTP 500/503
 2. Check if the issue is flight-specific or hotel-specific by testing both trip types
 3. Direct travelers to Navan mobile app or phone support as fallback
 4. Queue failed booking requests for retry with exponential backoff
 
 **OAuth Token Failure (P1):**
+
 1. Test with `curl` against `/ta-auth/oauth/token` — expect HTTP 200 with `access_token` field
 2. If HTTP 401: credentials may be rotated; check Admin > Integrations
 3. If HTTP 403: API access may be revoked; contact Navan admin
 4. Re-request a token via `POST /ta-auth/oauth/token` with `grant_type=client_credentials`
 
 **Expense Sync Failure (P2/P3):**
+
 1. Check the Expense Transaction API status — this endpoint requires separate enablement
 2. Verify your Fivetran/Airbyte connector status if using a data pipeline
 3. Check TRANSACTION table freshness — incremental sync may be lagging
 4. Validate that expense categories map correctly to your ERP
 
 **Flight Cancellation / Disruption (P2):**
+
 1. Use Ava AI to check rebooking options — Ava handles most rebookings automatically
 2. Verify traveler's profile has correct loyalty program numbers
 3. Check `/v1/bookings` for the affected booking UUID

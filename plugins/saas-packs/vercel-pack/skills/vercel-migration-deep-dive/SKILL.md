@@ -26,13 +26,16 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Migration Deep Dive
 
 ## Overview
+
 Migrate applications to Vercel from Netlify, AWS (Lambda/CloudFront/S3), Cloudflare Workers, or traditional hosting. Covers configuration mapping, DNS cutover, feature parity validation, and incremental migration with the strangler fig pattern.
 
 ## Current State
+
 !`vercel --version 2>/dev/null || echo 'Vercel CLI not installed'`
 !`cat package.json 2>/dev/null | jq -r '.name // "no package.json"' 2>/dev/null || echo 'N/A'`
 
 ## Prerequisites
+
 - Access to current hosting platform
 - Git repository with application source
 - DNS management access for domain cutover
@@ -118,6 +121,7 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
 | `wrangler.toml` | `vercel.json` |
 
 ### Step 2: Migrate Functions
+
 ```bash
 # Create Vercel project
 vercel link
@@ -131,6 +135,7 @@ npm install --save-dev @vercel/node
 ```
 
 ### Step 3: Migrate Environment Variables
+
 ```bash
 # Export from current platform, add to Vercel
 # Netlify:
@@ -146,6 +151,7 @@ vercel env ls
 ```
 
 ### Step 4: Incremental Migration (Strangler Fig)
+
 Route traffic incrementally from old platform to Vercel:
 
 ```json
@@ -162,6 +168,7 @@ Route traffic incrementally from old platform to Vercel:
 ```
 
 ### Step 5: DNS Cutover
+
 ```bash
 # Add domain to Vercel
 vercel domains add example.com
@@ -188,6 +195,7 @@ dig example.com A +short
 ```
 
 ### Step 6: Validate Feature Parity
+
 ```bash
 # Compare old and new deployments
 # Test all routes
@@ -222,6 +230,7 @@ curl -sI https://my-app.vercel.app/old-page | grep Location
 | Old platform kept running during validation period | Recommended |
 
 ## Output
+
 - Configuration mapped from source platform to Vercel
 - Functions converted to Vercel serverless/edge format
 - Environment variables migrated with proper scoping
@@ -229,6 +238,7 @@ curl -sI https://my-app.vercel.app/old-page | grep Location
 - Feature parity validated
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Function format mismatch | AWS/Netlify handler signature | Convert to `(req, res)` or Web API format |
@@ -238,10 +248,12 @@ curl -sI https://my-app.vercel.app/old-page | grep Location
 | 404 on migrated routes | Different path conventions | Add rewrites in vercel.json |
 
 ## Resources
+
 - [Migrate to Vercel from Netlify](https://vercel.com/docs/getting-started/migration/netlify)
 - [Migrate to Vercel from Cloudflare](https://vercel.com/docs/getting-started/migration/cloudflare)
 - [Working with Domains](https://vercel.com/docs/domains/working-with-domains)
 - [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
 
 ## Next Steps
+
 For advanced troubleshooting, see `vercel-advanced-troubleshooting`.

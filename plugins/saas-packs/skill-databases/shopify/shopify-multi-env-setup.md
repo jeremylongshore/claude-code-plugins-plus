@@ -10,6 +10,7 @@ shopify-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Shopify multi-environment setup
 **Workflow:** Part of the enterprise skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

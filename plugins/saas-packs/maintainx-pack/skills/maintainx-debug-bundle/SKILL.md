@@ -25,14 +25,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Debug Bundle
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'N/A'`
 !`python3 --version 2>/dev/null || echo 'N/A'`
 !`echo "API key set: $([ -n "$MAINTAINX_API_KEY" ] && echo 'yes' || echo 'no')"`
 
 ## Overview
+
 Complete debugging toolkit for diagnosing and resolving MaintainX integration issues with diagnostic scripts, request logging, and health checks.
 
 ## Prerequisites
+
 - MaintainX API access configured
 - Node.js 18+ or curl
 - `MAINTAINX_API_KEY` environment variable set
@@ -241,6 +244,7 @@ async function generateSupportBundle(client: any) {
 ```
 
 ## Output
+
 - Environment diagnostic report (Node.js version, API key status, connectivity)
 - Request/response logging with timing for every API call
 - Health check results for all major MaintainX endpoints
@@ -248,6 +252,7 @@ async function generateSupportBundle(client: any) {
 - Support bundle JSON file for sharing with MaintainX support
 
 ## Error Handling
+
 | Issue | Diagnostic Step | Solution |
 |-------|----------------|----------|
 | 401 on all endpoints | Run Step 1 diagnostic script | Regenerate API key |
@@ -256,11 +261,13 @@ async function generateSupportBundle(client: any) {
 | Missing data | Run Step 4 data validator | Fix data quality issues, re-sync |
 
 ## Resources
+
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [MaintainX Status Page](https://status.getmaintainx.com)
 - [MaintainX Help Center](https://help.getmaintainx.com)
 
 ## Next Steps
+
 For rate limit handling, see `maintainx-rate-limits`.
 
 ## Examples

@@ -27,6 +27,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Architecture Variants
 
 ## Overview
+
 Three deployment architectures for Firecrawl at different scales: on-demand scraping for simple use cases, scheduled crawl pipelines for content monitoring, and real-time ingestion pipelines for AI/RAG applications. Choose based on volume, latency requirements, and cost budget.
 
 ## Decision Matrix
@@ -42,6 +43,7 @@ Three deployment architectures for Firecrawl at different scales: on-demand scra
 ## Instructions
 
 ### Architecture 1: On-Demand Scraping
+
 ```
 User Request → Backend API → firecrawl.scrapeUrl → Clean Content → Response
 ```
@@ -86,6 +88,7 @@ app.post("/api/extract", async (req, res) => {
 ```
 
 ### Architecture 2: Scheduled Crawl Pipeline
+
 ```
 Scheduler (cron) → Crawl Queue → firecrawl.asyncCrawlUrl → Result Store
                                                                   │
@@ -140,6 +143,7 @@ setInterval(processPendingCrawls, 30000);
 ```
 
 ### Architecture 3: Real-Time Content Pipeline
+
 ```
 URL Sources → Priority Queue → Firecrawl Workers → Content Validation
                                                           │
@@ -225,6 +229,7 @@ Need real-time, user-facing response?
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Slow on-demand response | JS-heavy target page | Add caching layer, reduce waitFor |
@@ -233,9 +238,11 @@ Need real-time, user-facing response?
 | Duplicate content | Re-crawling same pages | Deduplicate by content hash before indexing |
 
 ## Resources
+
 - [Firecrawl API Reference](https://docs.firecrawl.dev/api-reference/introduction)
 - [Batch Scrape](https://docs.firecrawl.dev/features/batch-scrape)
 - [Crawl Endpoint](https://docs.firecrawl.dev/features/crawl)
 
 ## Next Steps
+
 For common pitfalls, see `firecrawl-known-pitfalls`.

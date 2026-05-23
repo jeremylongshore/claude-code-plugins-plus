@@ -18,9 +18,11 @@ compatibility: Designed for Claude Code
 # Anthropic Debug Bundle
 
 ## Overview
+
 When you need to file a support ticket or debug a persistent issue, collect these items.
 
 ## Prerequisites
+
 - Anthropic SDK installed
 - An API error or issue to debug
 - Access to application logs
@@ -28,6 +30,7 @@ When you need to file a support ticket or debug a persistent issue, collect thes
 ## Instructions
 
 ### Step 1: Get the Request ID
+
 Every Anthropic API response includes a `request-id` header. This is the single most important thing for support tickets.
 
 ```typescript
@@ -45,6 +48,7 @@ try {
 ```
 
 ### Step 2: Log Full Error Details
+
 ```typescript
 function logAnthropicError(err: unknown) {
   if (err instanceof Anthropic.APIError) {
@@ -65,6 +69,7 @@ function logAnthropicError(err: unknown) {
 ```
 
 ### Step 3: Test with curl
+
 ```bash
 # Minimal reproduction — include this in support tickets
 curl -v https://api.anthropic.com/v1/messages \
@@ -79,6 +84,7 @@ curl -v https://api.anthropic.com/v1/messages \
 ```
 
 ### Step 4: Check Status
+
 ```bash
 # API status
 curl -s https://status.anthropic.com/api/v2/status.json | python3 -m json.tool
@@ -93,6 +99,7 @@ for inc in data['incidents'][:3]:
 ```
 
 ## What to Include in Support Tickets
+
 1. **Request ID** (from `request-id` header)
 2. **Timestamp** (UTC)
 3. **Model** used
@@ -101,6 +108,7 @@ for inc in data['incidents'][:3]:
 6. **SDK version** (`npm list @claude-ai/sdk` or `pip show anthropic`)
 
 ## Python Debug
+
 ```python
 try:
     message = client.messages.create(...)
@@ -111,23 +119,28 @@ except anthropic.APIStatusError as e:
 ```
 
 ## Output
+
 - Request ID extracted from error response headers
 - Full error bundle with timestamp, status, error type, and rate limit state
 - curl command for minimal reproduction (ready to paste into support ticket)
 - Anthropic API status and recent incidents checked
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | API Error | Check error type and status code | See `clade-common-errors` |
 
 ## Examples
+
 See Step 1 (request ID extraction), Step 2 (full error logging), Step 3 (curl reproduction), and Step 4 (status check) above.
 
 ## Resources
+
 - [Anthropic Status](https://status.anthropic.com)
 - [Error Types](https://docs.anthropic.com/en/api/errors)
 - [Support](https://support.anthropic.com)
 
 ## Next Steps
+
 See `clade-common-errors` for specific error solutions.

@@ -10,6 +10,7 @@ juicebox-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Juicebox primary workflow
 **Workflow:** Part of the onboarding skill category for Juicebox integration.
 **Relates to:** Other juicebox skills in this pack.

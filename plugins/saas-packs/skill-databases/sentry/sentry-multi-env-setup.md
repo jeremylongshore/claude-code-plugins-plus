@@ -10,6 +10,7 @@ sentry-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Sentry across multiple environments with proper isolation, environment-specific sample rates, and DSN management strategies.
 **Workflow:** Configure during initial setup or when adding new environments. Ensures proper separation between dev, staging, and production.
 **Relates to:** Works with `sentry-local-dev-loop` for development. Connects to `sentry-reference-architecture` for overall design.

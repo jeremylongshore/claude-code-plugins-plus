@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Incident Runbook
 
 ## Overview
+
 Step-by-step runbooks for handling production incidents with Linear integrations. Covers API authentication failures, rate limiting, webhook issues, and Linear platform outages.
 
 ## Incident Classification
@@ -39,6 +40,7 @@ Step-by-step runbooks for handling production incidents with Linear integrations
 ## Immediate Actions (All Incidents)
 
 ### Step 1: Confirm the Issue
+
 ```bash
 set -euo pipefail
 
@@ -62,6 +64,7 @@ curl -s https://yourapp.com/health/linear | jq .
 ```
 
 ### Step 2: Gather Diagnostic Info
+
 ```typescript
 // scripts/incident-diagnostic.ts
 import { LinearClient } from "@linear/sdk";
@@ -137,6 +140,7 @@ diagnose();
 **Symptoms:** All API calls returning 401/403, "Authentication required" errors
 
 **Diagnosis:**
+
 ```bash
 set -euo pipefail
 # Verify API key format
@@ -151,6 +155,7 @@ curl -s -X POST https://api.linear.app/graphql \
 ```
 
 **Resolution:**
+
 1. Verify key is loaded: `[ -n "$LINEAR_API_KEY" ] && echo "Set" || echo "NOT set"`
 2. Check if rotated: Linear Settings > Account > API > Personal API keys
 3. Generate new key if needed, update secret manager
@@ -162,6 +167,7 @@ curl -s -X POST https://api.linear.app/graphql \
 **Symptoms:** HTTP 429 responses, "Rate limit exceeded", degraded performance
 
 **Diagnosis:**
+
 ```bash
 set -euo pipefail
 curl -s -I -X POST https://api.linear.app/graphql \
@@ -171,7 +177,9 @@ curl -s -I -X POST https://api.linear.app/graphql \
 ```
 
 **Resolution:**
+
 1. **Emergency throttle** -- add 5s delay between all requests:
+
    ```typescript
    const EMERGENCY_DELAY_MS = 5000;
    async function emergencyThrottle<T>(fn: () => Promise<T>): Promise<T> {
@@ -179,6 +187,7 @@ curl -s -I -X POST https://api.linear.app/graphql \
      return fn();
    }
    ```
+
 2. Stop non-critical background jobs (polling, sync)
 3. Disable bulk operations
 4. Wait for bucket refill (Linear uses leaky bucket, refills continuously)
@@ -189,6 +198,7 @@ curl -s -I -X POST https://api.linear.app/graphql \
 **Symptoms:** Events not received, signature validation errors, processing timeouts
 
 **Diagnosis:**
+
 ```bash
 set -euo pipefail
 # Check endpoint is reachable
@@ -200,6 +210,7 @@ echo -n "$LINEAR_WEBHOOK_SECRET" | wc -c
 ```
 
 **Resolution:**
+
 1. **Endpoint unreachable:** Check DNS, SSL cert, firewall, load balancer health
 2. **Signature mismatch:** Verify `LINEAR_WEBHOOK_SECRET` matches webhook config in Linear Settings > API > Webhooks
 3. **Body parsing issue:** Ensure using `express.raw()` not `express.json()`
@@ -211,6 +222,7 @@ echo -n "$LINEAR_WEBHOOK_SECRET" | wc -c
 **Symptoms:** All API calls failing, status.linear.app reports issues
 
 **Resolution:**
+
 1. Confirm at https://status.linear.app
 2. Enable graceful degradation in your app
 3. Queue write operations for replay when API recovers
@@ -221,6 +233,7 @@ echo -n "$LINEAR_WEBHOOK_SECRET" | wc -c
 ## Communication Templates
 
 ### Initial Announcement
+
 ```
 INCIDENT: Linear Integration Issue
 Severity: SEVX
@@ -232,6 +245,7 @@ Investigating issues with Linear integration. Updates to follow.
 ```
 
 ### Resolution
+
 ```
 RESOLVED: Linear Integration Issue
 Duration: X hours Y minutes
@@ -242,6 +256,7 @@ Post-mortem within 48 hours.
 ```
 
 ## Post-Incident Checklist
+
 ```
 [ ] All systems verified healthy
 [ ] Stuck/queued jobs cleared
@@ -263,6 +278,7 @@ Post-mortem within 48 hours.
 | Platform outage | Linear infrastructure issue | Graceful degradation, serve cached data |
 
 ## Resources
+
 - [Linear Status Page](https://status.linear.app)
 - [Linear API Documentation](https://linear.app/developers)
 - [Rate Limiting](https://linear.app/developers/rate-limiting)

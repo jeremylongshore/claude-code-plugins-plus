@@ -7,6 +7,7 @@
 ## 🎯 Planned Features
 
 ### Example Usage
+
 ```bash
 claude: "prep for today's meetings"
 
@@ -19,6 +20,7 @@ claude: "prep for today's meetings"
 ```
 
 ### Capabilities
+
 - 📋 Meeting prep automation
 - 📝 Standup notes from yesterday's calendar
 - 🔔 Pre-meeting reminders with context
@@ -27,6 +29,7 @@ claude: "prep for today's meetings"
 - ⏰ Smart scheduling suggestions
 
 ### Workflow Triggers
+
 ```bash
 claude: "create standup notes from yesterday"
 
@@ -41,6 +44,7 @@ claude: "create standup notes from yesterday"
 This plugin will be available to Pro tier sponsors ($19/month):
 
 **Pro Benefits:**
+
 - ✅ All premium Skill Enhancers
 - ✅ Priority support (24-hour response)
 - ✅ Custom plugin requests (1/quarter)

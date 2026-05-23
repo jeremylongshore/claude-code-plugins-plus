@@ -3,6 +3,7 @@
 ## Reduce Transaction Volume
 
 ### Aggressive Sampling
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -24,6 +25,7 @@ Sentry.init({
 ```
 
 ### Skip Unimportant Transactions
+
 ```typescript
 tracesSampler: (ctx) => {
   const name = ctx.transactionContext.name;

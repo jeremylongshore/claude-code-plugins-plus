@@ -3,6 +3,7 @@
 ## Maintaining the Index
 
 ### Manual Operations
+
 ```
 Reindex entire codebase:
 Cmd+Shift+P > "Cursor: Reindex Codebase"
@@ -15,6 +16,7 @@ Cmd+Shift+P > "Cursor: Clear Index"
 ```
 
 ### Auto-Update Triggers
+
 ```
 Index updates automatically when:
 - Files are saved
@@ -24,6 +26,7 @@ Index updates automatically when:
 ```
 
 ### Index Health Check
+
 ```bash
 # Check index status
 Cursor status bar shows:

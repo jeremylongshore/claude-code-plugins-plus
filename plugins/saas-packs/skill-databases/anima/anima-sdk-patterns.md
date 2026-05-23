@@ -10,6 +10,7 @@ anima-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Anima SDK patterns
 **Workflow:** Part of the onboarding skill category for Anima integration.
 **Relates to:** Other anima skills in this pack.

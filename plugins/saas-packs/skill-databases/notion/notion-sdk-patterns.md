@@ -10,6 +10,7 @@ notion-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Notion SDK patterns
 **Workflow:** Part of the onboarding skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

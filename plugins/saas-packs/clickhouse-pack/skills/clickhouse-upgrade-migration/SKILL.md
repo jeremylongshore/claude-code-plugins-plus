@@ -72,6 +72,7 @@ open https://github.com/ClickHouse/ClickHouse/blob/master/CHANGELOG.md
 ```
 
 **Key breaking changes to watch for:**
+
 - Client API signature changes (`createClient` options)
 - Default setting changes (compression, timeouts)
 - New query result format behavior

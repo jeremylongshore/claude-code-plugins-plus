@@ -10,6 +10,7 @@ replit-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Replit application performance with caching, lazy loading, and resource optimization strategies.
 **Workflow:** Performance optimization skill - improves user experience and resource efficiency.
 **Relates to:** Complements replit-resource-limits; informs replit-cost-optimization.

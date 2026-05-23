@@ -3,6 +3,7 @@
 ## Status Dashboard
 
 ### Simple Status Output
+
 ```python
 def print_status_dashboard():
     """Print formatted status dashboard."""
@@ -33,6 +34,7 @@ print_status_dashboard()
 ```
 
 ### Model Comparison Table
+
 ```python
 def compare_models(model_ids: list):
     """Compare models side by side."""

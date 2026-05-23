@@ -96,6 +96,7 @@ const webflow = new WebflowClient({ accessToken: "your-access-token" });
 | List orders | `GET /sites/{site_id}/orders` | `GET /v2/sites/{site_id}/orders` |
 
 **Key v2 differences:**
+
 - Update uses `PATCH` (not `PUT`) — partial updates only
 - Items created as drafts by default (`isDraft: true`)
 - Bulk endpoints added (create/update/delete up to 100 items)

@@ -22,11 +22,11 @@ Creates production-ready docker-compose.yml files for multi-service applications
 
 ## When to Use This
 
--  Multi-service application (app + database + cache)
--  Microservices architecture
--  Local development environment setup
--  Full-stack applications (frontend + backend + DB)
--  Single container app (use `/dockerfile-generate` instead)
+- Multi-service application (app + database + cache)
+- Microservices architecture
+- Local development environment setup
+- Full-stack applications (frontend + backend + DB)
+- Single container app (use `/dockerfile-generate` instead)
 
 ## How It Works
 
@@ -86,19 +86,23 @@ docker-compose up -d
 ```
 
 ### View logs:
+
 ```bash
 docker-compose logs -f [service-name]
 ```
 
 ### Stop all services:
+
 ```bash
 docker-compose down
 ```
 
 ### Rebuild and restart:
+
 ```bash
 docker-compose up -d --build
 ```
+
 ```
 
 ## Examples
@@ -211,6 +215,7 @@ NODE_ENV=production
 **User:** `/dcc`
 
 **Services specified:**
+
 - React frontend (port 80)
 - Express backend (port 5000)
 - MongoDB database
@@ -307,6 +312,7 @@ REACT_APP_API_URL=http://localhost:5000
 **User:** `/dcc`
 
 **Services specified:**
+
 - Nginx API Gateway
 - User Service (port 3001)
 - Product Service (port 3002)
@@ -433,6 +439,7 @@ POSTGRES_PASSWORD=your_secure_password_here
 ## Common Service Configurations
 
 **PostgreSQL:**
+
 ```yaml
 db:
   image: postgres:15-alpine
@@ -450,6 +457,7 @@ db:
 ```
 
 **MySQL:**
+
 ```yaml
 db:
   image: mysql:8
@@ -466,6 +474,7 @@ db:
 ```
 
 **Redis:**
+
 ```yaml
 redis:
   image: redis:7-alpine

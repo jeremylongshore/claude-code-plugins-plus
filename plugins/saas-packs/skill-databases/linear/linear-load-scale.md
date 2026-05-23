@@ -10,6 +10,7 @@ linear-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Linear load testing and scaling
 **Workflow:** Part of the enterprise skill category for Linear integration.
 **Relates to:** Other linear skills in this pack.

@@ -10,6 +10,7 @@ adobe-architecture-variants/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Choose Adobe architecture blueprints
 **Workflow:** Part of the advanced skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

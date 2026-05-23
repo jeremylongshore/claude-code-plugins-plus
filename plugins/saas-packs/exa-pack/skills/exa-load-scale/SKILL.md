@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Load & Scale
 
 ## Overview
+
 Load testing and capacity planning for Exa integrations. Key constraint: Exa's default rate limit is 10 QPS. Scaling strategies focus on caching, request queuing, parallel processing within rate limits, and search type selection for latency budgets.
 
 ## Prerequisites
+
 - k6 load testing tool installed
 - Test environment Exa API key (separate from production)
 - Redis for result caching
@@ -48,6 +50,7 @@ Load testing and capacity planning for Exa integrations. Key constraint: Exa's d
 ## Instructions
 
 ### Step 1: k6 Load Test Against Your Wrapper
+
 ```javascript
 // exa-load-test.js
 import http from "k6/http";
@@ -103,6 +106,7 @@ k6 run --env APP_URL=http://localhost:3000 exa-load-test.js
 ```
 
 ### Step 2: Throughput Maximizer with Request Queue
+
 ```typescript
 import Exa from "exa-js";
 import PQueue from "p-queue";
@@ -143,6 +147,7 @@ console.timeEnd("batch");
 ```
 
 ### Step 3: Caching for Scale
+
 ```typescript
 import { LRUCache } from "lru-cache";
 
@@ -169,6 +174,7 @@ async function scalableSearch(query: string, opts: any) {
 ```
 
 ### Step 4: Capacity Planning Calculator
+
 ```typescript
 interface CapacityEstimate {
   dailySearches: number;
@@ -206,6 +212,7 @@ console.log(estimate);
 ```
 
 ## Benchmark Results Template
+
 ```markdown
 ## Exa Performance Benchmark
 **Date:** YYYY-MM-DD | **SDK:** exa-js X.Y.Z
@@ -222,6 +229,7 @@ console.log(estimate);
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | 429 errors in load test | Exceeding 10 QPS | Reduce concurrency, add cache |
@@ -230,9 +238,11 @@ console.log(estimate);
 | Cache miss rate high | Unique queries per request | Use a fixed query pool |
 
 ## Resources
+
 - [Exa Rate Limits](https://docs.exa.ai/reference/rate-limits)
 - [k6 Documentation](https://k6.io/docs/)
 - [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For reliability patterns, see `exa-reliability-patterns`.

@@ -65,6 +65,7 @@ Rate your marketing plan from 0 to 10 based on how completely and specifically y
 **Why it works:** When you narrow your focus, your message becomes more specific, your offer becomes more relevant, and your cost of acquisition drops. A specialist always commands higher fees and deeper trust than a generalist.
 
 **Key insights:**
+
 - Score potential niches on three dimensions: Personal fulfillment (do you enjoy serving them?), Value to marketplace (do they urgently need what you offer?), Profitability (can they pay and will they pay enough?)
 - Create a detailed ideal customer avatar — demographics, psychographics, pain points, desires, watering holes
 - Go narrow enough that your target market feels like you are speaking directly to them
@@ -81,6 +82,7 @@ Rate your marketing plan from 0 to 10 based on how completely and specifically y
 | E-commerce brand | Identify psychographic tribe | "Minimalist urban professionals" not "people who like bags" |
 
 **Copy patterns:**
+
 - "We work exclusively with [niche] who struggle with [specific problem]"
 - "The only [product/service] designed specifically for [target market]"
 - "Unlike generic solutions, this was built from the ground up for [niche]"
@@ -96,6 +98,7 @@ See: `references/target-market.md`
 **Why it works:** A clear USP gives prospects a reason to choose you, gives your marketing a consistent theme, and eliminates the need to compete on price. It transforms your business from "one of many" to "the only one."
 
 **Key insights:**
+
 - Your USP is not a slogan — it is a position in the market that you can defend and prove
 - Build your USP around one of: specialization, a unique mechanism, a bold guarantee, a proprietary process, or an underserved niche
 - Your elevator pitch should be completable in under 30 seconds: "You know how [target market] struggles with [problem]? What we do is [solution], so that [outcome]."
@@ -112,6 +115,7 @@ See: `references/target-market.md`
 | Professional service | Build authority positioning | "The tax firm that has saved mid-market retailers $47M since 2018" |
 
 **Copy patterns:**
+
 - "You know how [target] struggles with [pain]? We [solution] so they can [outcome]."
 - "The only [category] that [unique differentiator]"
 - "We guarantee [specific result] or [risk reversal]"
@@ -128,6 +132,7 @@ See: `references/craft-message.md`
 **Why it works:** Direct response marketing eliminates waste. Instead of hoping people remember your brand, you ask them to take a specific action right now, and you measure whether they did. This turns marketing from a cost center into a profit center.
 
 **Key insights:**
+
 - Apply the direct response trinity: trackable, measurable, calls to specific action
 - Select channels based on where your target market actually is, not what is trendy
 - Start with one channel, master it, then expand — do not spread thin across five platforms simultaneously
@@ -146,6 +151,7 @@ See: `references/craft-message.md`
 | Professional services | Podcast guesting + SEO | Authority-building through niche podcasts, capture via blog content |
 
 **Copy patterns:**
+
 - Every ad should have: a headline that calls out the target, a compelling offer, a clear call to action, a tracking mechanism
 - "Attention [target market]: [headline about their pain/desire]"
 - "Call [tracked number] / Visit [tracked URL] to claim your [specific offer]"
@@ -165,6 +171,7 @@ See: `references/advertising-media.md`
 **Why it works:** Only about 3% of any market is ready to buy right now. If your marketing only targets that 3%, you miss the other 97% who will buy later. Lead capture lets you stay in contact with the full market and sell to them when they are ready.
 
 **Key insights:**
+
 - A lead magnet offers something of genuine value in exchange for contact information
 - The best lead magnets solve a specific, immediate problem for your target market
 - Speed-to-lead is critical: respond within 5 minutes and your conversion rate skyrockets
@@ -182,6 +189,7 @@ See: `references/advertising-media.md`
 | Local service | Free estimate or inspection | "Free 15-point roof inspection — book online in 30 seconds" |
 
 **Copy patterns:**
+
 - "Download the free [resource] that shows you how to [desired result]"
 - "Take the free [quiz/assessment] and discover your [score/type/result]"
 - "Get instant access to [resource] — no credit card required"
@@ -197,6 +205,7 @@ See: `references/capture-leads.md`
 **Why it works:** People buy from those they know, like, and trust. Nurturing accelerates the know-like-trust cycle by positioning you as a helpful authority rather than a pushy salesperson. It keeps you top-of-mind so when the prospect is finally ready, you are the obvious choice.
 
 **Key insights:**
+
 - The welcome sequence is the most important: it sets expectations and builds the initial relationship
 - Follow a content cadence: educate, entertain, inspire, then offer (roughly 3:1 value-to-ask ratio)
 - Use multiple channels — email is the backbone, but reinforce with retargeting ads, social media, direct mail, SMS
@@ -214,6 +223,7 @@ See: `references/capture-leads.md`
 | Local service | Seasonal reminder emails + SMS | "Spring is here — time for your annual AC check-up" |
 
 **Copy patterns:**
+
 - "Here is the #1 mistake [target market] makes with [topic] — and how to fix it"
 - "How [client name] went from [before state] to [after state] in [time period]"
 - "I noticed you downloaded [lead magnet]. Here is the next step..."
@@ -229,6 +239,7 @@ See: `references/nurture-leads.md`
 **Why it works:** Even the best leads need a clear path to purchase. Pricing psychology, risk reversal, and structured sales processes dramatically increase conversion rates by addressing the real reasons people hesitate: fear of making a mistake, lack of trust, and confusion about the next step.
 
 **Key insights:**
+
 - Price communicates value — do not undercharge. Premium pricing attracts premium clients
 - Use risk reversal (guarantees, free trials, money-back promises) to shift risk from buyer to seller
 - The most common objections are predictable: address them proactively in your sales materials
@@ -247,6 +258,7 @@ See: `references/nurture-leads.md`
 | Local service | Estimate to booking process | Same-day estimate, instant online booking, "price lock" guarantee |
 
 **Copy patterns:**
+
 - "Try it free for [X] days. If you don't [specific result], you pay nothing."
 - "Join [number] [target market] who have already [achieved result]"
 - "Here is exactly what you get: [detailed value stack]"
@@ -267,6 +279,7 @@ See: `references/sales-conversion.md`
 **Why it works:** Customer experience is the ultimate competitive moat. Products can be copied, prices can be undercut, but a remarkable experience creates emotional loyalty that competitors cannot replicate. It also dramatically reduces churn and increases lifetime value.
 
 **Key insights:**
+
 - Map every touchpoint in the customer journey and identify "moments of truth" — the interactions that disproportionately shape perception
 - Build systems (checklists, SOPs, automation) so the experience is consistent regardless of who delivers it
 - Create a tribe — customers who feel part of a community have dramatically higher retention
@@ -284,6 +297,7 @@ See: `references/sales-conversion.md`
 | Local service | Service delivery ritual + follow-up | Uniformed team, floor mats at entry, same-day follow-up call asking "how did we do?" |
 
 **Copy patterns:**
+
 - "Welcome to the [brand] family. Here is what happens next..."
 - "We just completed [milestone]. Here is what we found and what is next."
 - "You have been a customer for [X months]. We wanted to say thank you with [surprise]."
@@ -299,6 +313,7 @@ See: `references/customer-experience.md`
 **Why it works:** Acquiring a new customer costs 5-25x more than retaining an existing one. Increasing customer retention by just 5% can increase profits by 25-95%. Your existing customers already know, like, and trust you — selling more to them is dramatically easier than finding new buyers.
 
 **Key insights:**
+
 - Design an ascension model: low-ticket entry offer, mid-ticket core offer, high-ticket premium offer, ultra-premium tier
 - Raising prices is the simplest path to higher LTV — most businesses are undercharging
 - Reactivation campaigns to lapsed customers are among the highest-ROI marketing activities
@@ -316,6 +331,7 @@ See: `references/customer-experience.md`
 | Local service | Annual plans + add-on services | Single service visit, annual maintenance plan, premium plan with priority scheduling |
 
 **Copy patterns:**
+
 - "Customers who add [upsell] typically see [X%] better results"
 - "Upgrade to [tier] and unlock [specific benefit they care about]"
 - "We noticed you haven't [used product/visited] in a while. Here is a special reason to come back."
@@ -332,6 +348,7 @@ See: `references/lifetime-value.md`
 **Why it works:** Referred customers have higher conversion rates, higher lifetime value, lower acquisition costs, and shorter sales cycles than any other source. A recommendation from a trusted friend or colleague is more persuasive than any ad you could ever run. Yet most businesses never proactively ask for referrals.
 
 **Key insights:**
+
 - The #1 reason customers do not refer is that they are never asked — not that they would not want to
 - Ask at the moment of peak satisfaction (right after a win, positive review, or compliment)
 - Make referring easy — provide exact language, shareable links, and simple mechanics
@@ -350,6 +367,7 @@ See: `references/lifetime-value.md`
 | Local service | Referral cards + review requests | Physical referral cards with QR code, automated post-service review request |
 
 **Copy patterns:**
+
 - "Know someone who could benefit from [specific result]? Share this and you both get [incentive]."
 - "You mentioned you are happy with [result]. Would you be open to sharing that experience with [specific person/type of person]?"
 - "As a thank you for your referral, here is [reward]."

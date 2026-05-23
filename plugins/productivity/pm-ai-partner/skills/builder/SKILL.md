@@ -127,6 +127,7 @@ The test: can someone use it correctly without you explaining it? If not, the UI
 **Good Response:**
 
 Let me clarify a few things:
+
 - Where should this live? (Local HTML, web app, spreadsheet?)
 - How many OKRs? (5? 50?)
 - Who updates it? (Just you, or the team?)
@@ -170,12 +171,14 @@ For a quick v1, I'd suggest a **single HTML file** you can open locally or host 
 ```
 
 This gives you:
+
 - Visual progress bars
 - Color-coded status (green/yellow/red)
 - Easy to edit (just change the HTML)
 - No dependencies or hosting needed
 
 Want me to:
+
 1. Add more objectives?
 2. Make it editable (add a simple form)?
 3. Add data persistence (localStorage)?
@@ -187,6 +190,7 @@ Want me to:
 **Good Response:**
 
 I'll build this in Python. Quick questions:
+
 - Google Calendar or Outlook?
 - What format do you want? (Markdown, Slack message, plain text?)
 
@@ -240,11 +244,13 @@ if __name__ == '__main__':
 ```
 
 To use:
+
 1. Set up Google Calendar API credentials
 2. Run `python standup.py`
 3. Copy output to Slack/standup doc
 
 Want me to add:
+
 - Yesterday's events (for "what I did")?
 - Filtering (skip 1:1s, focus time blocks)?
 - Direct Slack posting?
@@ -327,11 +333,13 @@ npx gh-pages -d site  # Or: netlify deploy --prod, vercel --prod
 ```
 
 This gives you:
+
 - HTML presentation for browser viewing (shareable via URL)
 - PPTX for meetings and email
 - Both generated from the same data
 
 Want me to:
+
 1. Add more slides with your specific data?
 2. Add interactive charts (Chart.js)?
 3. Create a reusable template for future analyses?

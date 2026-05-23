@@ -10,6 +10,7 @@ clerk-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Clerk integrations to production
 **Workflow:** Part of the cicd skill category for Clerk integration.
 **Relates to:** Other clerk skills in this pack.

@@ -26,6 +26,7 @@ Creates enterprise-grade API gateway infrastructure that serves as the single en
 ## When to Use
 
 Use this command when:
+
 - Managing multiple microservices behind a unified API
 - Implementing cross-cutting concerns (auth, logging, rate limiting)
 - Needing request/response transformation between clients and services
@@ -35,6 +36,7 @@ Use this command when:
 - Enforcing consistent security policies across services
 
 Do NOT use this command for:
+
 - Simple monolithic applications with single API
 - Internal service-to-service communication (use service mesh instead)
 - Applications with only one or two endpoints
@@ -43,6 +45,7 @@ Do NOT use this command for:
 ## Prerequisites
 
 Before running this command, ensure:
+
 - [ ] Microservice architecture is defined
 - [ ] Service discovery mechanism is available
 - [ ] Authentication strategy is determined
@@ -52,7 +55,9 @@ Before running this command, ensure:
 ## Process
 
 ### Step 1: Analyze Architecture Requirements
+
 The command examines your system architecture:
+
 - Maps all backend services and their endpoints
 - Identifies authentication and authorization needs
 - Determines rate limiting and throttling requirements
@@ -60,7 +65,9 @@ The command examines your system architecture:
 - Plans for high availability and failover
 
 ### Step 2: Generate Gateway Configuration
+
 Creates comprehensive gateway setup:
+
 - Route definitions with path matching
 - Authentication middleware integration
 - Rate limiting rules per client/endpoint
@@ -68,7 +75,9 @@ Creates comprehensive gateway setup:
 - Circuit breaker configurations
 
 ### Step 3: Implement Middleware Stack
+
 Builds layered middleware architecture:
+
 - CORS handling and preflight requests
 - JWT validation and OAuth2 integration
 - Request logging and metrics collection
@@ -76,7 +85,9 @@ Builds layered middleware architecture:
 - Error handling and formatting
 
 ### Step 4: Configure Load Balancing
+
 Sets up intelligent traffic distribution:
+
 - Round-robin, least connections, or weighted routing
 - Health checking and automatic failover
 - Sticky sessions when required
@@ -84,7 +95,9 @@ Sets up intelligent traffic distribution:
 - A/B testing and canary deployments
 
 ### Step 5: Deploy Monitoring & Analytics
+
 Integrates comprehensive observability:
+
 - Request/response logging
 - Performance metrics and tracing
 - Error rate monitoring
@@ -134,6 +147,7 @@ api-gateway/
 **Scenario:** Microservices gateway with JWT auth and rate limiting
 
 **Generated Express Gateway Implementation:**
+
 ```javascript
 // gateway/server.js
 import express from 'express';
@@ -337,6 +351,7 @@ class APIGateway {
 **Scenario:** Enterprise Kong gateway with plugins
 
 **Generated Kong Configuration:**
+
 ```yaml
 # kong.yml
 _format_version: "2.1"
@@ -431,6 +446,7 @@ plugins:
 **Scenario:** Gateway that combines multiple service responses
 
 **Generated API Composition:**
+
 ```javascript
 // gateway/api-composer.js
 class APIComposer {
@@ -488,9 +504,11 @@ class APIComposer {
 ## Error Handling
 
 ### Error: Service Unavailable
+
 **Symptoms:** 503 errors, timeouts
 **Cause:** Backend service down or overloaded
 **Solution:**
+
 ```javascript
 // Implement circuit breaker and fallback
 breaker.fallback(() => ({
@@ -499,14 +517,17 @@ breaker.fallback(() => ({
   message: 'Using cached data due to service unavailability'
 }));
 ```
+
 **Prevention:** Health checks, circuit breakers, graceful degradation
 
 ### Error: Authentication Failures
+
 **Symptoms:** High rate of 401/403 errors
 **Cause:** Token expiry, invalid credentials, or permission issues
 **Solution:** Implement token refresh mechanism and clear error messages
 
 ### Error: Rate Limit Exceeded
+
 **Symptoms:** 429 Too Many Requests
 **Cause:** Client exceeding configured limits
 **Solution:** Implement backoff strategy and provide rate limit headers
@@ -514,18 +535,21 @@ breaker.fallback(() => ({
 ## Configuration Options
 
 ### Option: `--framework`
+
 - **Purpose:** Choose gateway framework
 - **Values:** `kong`, `express-gateway`, `custom`, `aws-api-gateway`
 - **Default:** `custom`
 - **Example:** `/gateway --framework kong`
 
 ### Option: `--auth`
+
 - **Purpose:** Authentication method
 - **Values:** `jwt`, `oauth2`, `api-key`, `basic`, `none`
 - **Default:** `jwt`
 - **Example:** `/gateway --auth oauth2`
 
 ### Option: `--load-balancer`
+
 - **Purpose:** Load balancing algorithm
 - **Values:** `round-robin`, `least-connections`, `weighted`, `ip-hash`
 - **Default:** `round-robin`
@@ -534,6 +558,7 @@ breaker.fallback(() => ({
 ## Best Practices
 
 ✅ **DO:**
+
 - Implement circuit breakers for all backend services
 - Use correlation IDs for request tracing
 - Cache responses where appropriate
@@ -541,12 +566,14 @@ breaker.fallback(() => ({
 - Implement graceful degradation strategies
 
 ❌ **DON'T:**
+
 - Perform heavy business logic in the gateway
 - Store state in the gateway (keep it stateless)
 - Ignore security headers and CORS configuration
 - Mix internal and external APIs on same gateway
 
 💡 **TIPS:**
+
 - Use API composition sparingly to avoid gateway bottleneck
 - Implement request/response transformation close to services when possible
 - Consider GraphQL gateway for complex data aggregation needs
@@ -569,6 +596,7 @@ breaker.fallback(() => ({
 ## Security Notes
 
 ⚠️ **Security Considerations:**
+
 - Always use HTTPS/TLS for external traffic
 - Implement DDoS protection at gateway level
 - Validate and sanitize all incoming requests
@@ -578,15 +606,19 @@ breaker.fallback(() => ({
 ## Troubleshooting
 
 ### Issue: High gateway latency
+
 **Solution:** Check service response times, reduce middleware chain, enable caching
 
 ### Issue: Memory leaks
+
 **Solution:** Monitor event listeners, implement proper cleanup, limit request body size
 
 ### Issue: Inconsistent routing
+
 **Solution:** Review route precedence, check path matching patterns
 
 ### Getting Help
+
 - Kong documentation: https://docs.konghq.com
 - Express Gateway: https://www.express-gateway.io/docs
 - API Gateway patterns: https://microservices.io/patterns/apigateway.html

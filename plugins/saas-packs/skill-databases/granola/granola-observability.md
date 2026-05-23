@@ -10,6 +10,7 @@ granola-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Granola monitoring and observability
 **Workflow:** Part of the enterprise skill category for Granola integration.
 **Relates to:** Other granola skills in this pack.

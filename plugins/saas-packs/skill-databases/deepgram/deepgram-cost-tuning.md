@@ -10,6 +10,7 @@ deepgram-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Deepgram costs and usage
 **Workflow:** Part of the cicd skill category for Deepgram integration.
 **Relates to:** Other deepgram skills in this pack.

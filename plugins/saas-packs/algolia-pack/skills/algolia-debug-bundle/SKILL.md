@@ -157,11 +157,13 @@ async function collectDebugInfo() {
 ## Sensitive Data Handling
 
 **ALWAYS REDACT before sharing:**
+
 - Full API keys (only share last 4 chars)
 - User PII in query logs
 - Internal hostnames or IPs
 
 **Safe to include:**
+
 - App ID (it's in every frontend bundle)
 - Error codes and status codes
 - Index names and record counts

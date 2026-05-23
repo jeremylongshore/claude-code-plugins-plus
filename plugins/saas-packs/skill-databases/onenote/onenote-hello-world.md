@@ -10,6 +10,7 @@ onenote-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working OneNote example
 **Workflow:** Part of the onboarding skill category for OneNote integration.
 **Relates to:** Other onenote skills in this pack.

@@ -44,6 +44,7 @@ kubectl logs -n castai-agent deployment/castai-agent --tail=50
 ```
 
 **Causes and fixes:**
+
 - **Invalid API key**: Regenerate at console.cast.ai > API
 - **Wrong provider**: Set `--set provider=eks|gke|aks` correctly in Helm
 - **RBAC missing**: Apply the required ClusterRole and ClusterRoleBinding
@@ -87,6 +88,7 @@ curl -s -H "X-API-Key: ${CASTAI_API_KEY}" \
 ```
 
 **Causes:**
+
 - `unschedulablePods.enabled` is `false` -- enable it
 - Cluster limits reached -- increase `clusterLimits.cpu.maxCores`
 - No matching node template -- check constraints match pod requirements
@@ -101,6 +103,7 @@ curl -s -H "X-API-Key: ${CASTAI_API_KEY}" \
 ```
 
 **Causes:**
+
 - `nodeDownscaler.enabled` is `false`
 - Pods with `PodDisruptionBudget` blocking eviction
 - DaemonSet-only nodes with system pods preventing drain
@@ -126,6 +129,7 @@ kubectl get events --field-selector reason=Evicted -A --sort-by=.lastTimestamp |
 ```
 
 **Fix**: Increase evictor cycle interval or switch to non-aggressive mode:
+
 ```bash
 helm upgrade castai-evictor castai-helm/castai-evictor \
   -n castai-agent \
@@ -165,6 +169,7 @@ kubectl logs -n castai-agent deployment/castai-workload-autoscaler --tail=50
 ```
 
 **Causes:**
+
 - Insufficient metrics data (wait 24h)
 - Missing annotation `autoscaling.cast.ai/enabled: "true"`
 - Workload autoscaler pod not running

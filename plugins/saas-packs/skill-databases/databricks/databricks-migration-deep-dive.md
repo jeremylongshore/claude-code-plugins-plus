@@ -10,6 +10,7 @@ databricks-migration-deep-dive/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Databricks major migrations
 **Workflow:** Part of the advanced skill category for Databricks integration.
 **Relates to:** Other databricks skills in this pack.

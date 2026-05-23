@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Production Checklist
 
 ## Overview
+
 Complete pre-flight checklist for deploying Ideogram image generation to production. Covers API key management, timeout configuration, image persistence, error handling, monitoring, and rollback procedures.
 
 ## Prerequisites
+
 - Staging environment tested
 - Production API key created (separate from dev)
 - Image storage configured (S3, GCS, or R2)
@@ -36,12 +38,14 @@ Complete pre-flight checklist for deploying Ideogram image generation to product
 ## Pre-Deployment Checklist
 
 ### API Configuration
+
 - [ ] Production API key stored in secret manager (not `.env` file)
 - [ ] Key is separate from dev/staging keys
 - [ ] Auto top-up billing configured with appropriate limits
 - [ ] Base URL is `https://api.ideogram.ai` (no trailing slash)
 
 ### Request Handling
+
 - [ ] `Api-Key` header used (not `Authorization: Bearer`)
 - [ ] Request timeout set to 60s+ (generation takes 5-15s, complex prompts longer)
 - [ ] Retry logic with exponential backoff on 429 and 5xx
@@ -49,12 +53,14 @@ Complete pre-flight checklist for deploying Ideogram image generation to product
 - [ ] Prompt length validated (max 10,000 chars)
 
 ### Image Persistence
+
 - [ ] Images downloaded immediately after generation (URLs expire ~1 hour)
 - [ ] Downloaded to durable storage (S3/GCS/R2), not local filesystem
 - [ ] Filenames include seed for reproducibility tracking
 - [ ] Generation metadata (prompt, seed, model, style) stored in database
 
 ### Error Handling
+
 - [ ] 401 triggers key rotation alert
 - [ ] 422 (safety filter) logged with sanitized prompt for review
 - [ ] 429 handled with retry, not user-facing error
@@ -62,12 +68,14 @@ Complete pre-flight checklist for deploying Ideogram image generation to product
 - [ ] Circuit breaker prevents cascading failures
 
 ### Content Safety
+
 - [ ] Prompt sanitization removes PII before API call
 - [ ] User-submitted prompts validated server-side
 - [ ] `is_image_safe` response field checked before displaying to users
 - [ ] Content moderation layer for user-facing applications
 
 ## Production Health Check
+
 ```typescript
 async function ideogramHealthCheck(): Promise<{
   status: "healthy" | "degraded" | "down";
@@ -108,6 +116,7 @@ async function ideogramHealthCheck(): Promise<{
 ```
 
 ## Deployment Script
+
 ```bash
 set -euo pipefail
 echo "=== Ideogram Pre-Flight Checks ==="
@@ -150,6 +159,7 @@ echo "=== All pre-flight checks passed ==="
 | Safety Rejections | >10% of prompts rejected | P3 |
 
 ## Rollback Procedure
+
 ```bash
 set -euo pipefail
 # If Ideogram is down or producing bad results
@@ -166,6 +176,7 @@ kubectl rollout restart deployment/app
 ```
 
 ## Error Handling
+
 | Alert | Condition | Action |
 |-------|-----------|--------|
 | API Down | 5xx or timeout | Enable fallback, notify on-call |
@@ -174,14 +185,17 @@ kubectl rollout restart deployment/app
 | Rate Flood | 429 sustained | Reduce concurrency, queue jobs |
 
 ## Output
+
 - All checklist items verified
 - Health check endpoint configured
 - Alerting rules deployed
 - Rollback procedure tested
 
 ## Resources
+
 - [Ideogram API Overview](https://developer.ideogram.ai/ideogram-api/api-overview)
 - [API Setup](https://developer.ideogram.ai/ideogram-api/api-setup)
 
 ## Next Steps
+
 For version upgrades, see `ideogram-upgrade-migration`.

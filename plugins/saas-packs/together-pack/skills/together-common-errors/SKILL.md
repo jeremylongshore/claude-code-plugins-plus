@@ -63,12 +63,15 @@ function classifyTogetherError(status: number, body: string): TogetherError {
 ## Debugging Guide
 
 ### Authentication Errors
+
 Together uses Bearer token authentication. Pass `TOGETHER_API_KEY` via `Authorization: Bearer` header or set it in the client constructor. Keys do not expire but can be revoked. If using the OpenAI client library, set `base_url='https://api.together.xyz/v1'` and pass the Together key as `api_key`.
 
 ### Rate Limit Errors
+
 Rate limits vary by plan tier and are enforced per-key. Free tier allows 5 requests/second; paid tiers scale higher. Use the batch inference API (`/v1/batch`) for non-real-time workloads at 50% cost reduction. Check `X-RateLimit-Remaining` header to monitor quota.
 
 ### Validation Errors
+
 Model IDs must match exactly (e.g., `meta-llama/Meta-Llama-3.1-8B-Instruct`). Use `client.models.list()` to enumerate available models. Token limits vary per model -- Llama 3.1 supports 128K context while older models may support only 4K. Fine-tune datasets must be JSONL with each line containing a `messages` array in chat format. Empty `messages` arrays or missing `role` fields cause silent validation failures. Validate each JSONL line independently before uploading.
 
 ## Error Handling

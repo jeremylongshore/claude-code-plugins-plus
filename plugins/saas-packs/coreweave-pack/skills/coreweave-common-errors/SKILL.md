@@ -28,20 +28,26 @@ compatibility: Designed for Claude Code
 ## Error Reference
 
 ### 1. Pod Stuck Pending -- No GPU Available
+
 ```bash
 kubectl describe pod <pod-name> | grep -A5 Events
 # "0/N nodes are available: insufficient nvidia.com/gpu"
 ```
+
 **Fix**: Check GPU availability: `kubectl get nodes -l gpu.nvidia.com/class=A100_PCIE_80GB`. Try a different GPU type or region.
 
 ### 2. CUDA Out of Memory
+
 ```
 torch.cuda.OutOfMemoryError: CUDA out of memory
 ```
+
 **Fix**: Reduce batch size, enable gradient checkpointing, or use a larger GPU (A100-80GB instead of 40GB).
 
 ### 3. Image Pull BackOff
+
 **Fix**: Create an imagePullSecret:
+
 ```bash
 kubectl create secret docker-registry regcred \
   --docker-server=ghcr.io \
@@ -50,22 +56,29 @@ kubectl create secret docker-registry regcred \
 ```
 
 ### 4. NCCL Timeout (Multi-GPU)
+
 ```
 NCCL error: unhandled system error
 ```
+
 **Fix**: Ensure all GPUs are on the same node (NVLink). For multi-node, use InfiniBand-connected nodes.
 
 ### 5. PVC Not Mounting
+
 **Fix**: Check storage class availability: `kubectl get sc`. Use CoreWeave storage classes like `shared-hdd-ord1` or `shared-ssd-ord1`.
 
 ### 6. Node Affinity Mismatch
+
 **Fix**: List valid GPU class labels:
+
 ```bash
 kubectl get nodes -o json | jq -r '.items[].metadata.labels["gpu.nvidia.com/class"]' | sort -u
 ```
 
 ### 7. Service Not Reachable
+
 **Fix**: Check Service and Endpoints:
+
 ```bash
 kubectl get svc,endpoints <service-name>
 ```

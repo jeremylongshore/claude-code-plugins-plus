@@ -22,12 +22,12 @@ Analyzes `terraform plan` output to identify risks (resource recreation, data lo
 
 ## When to Use This
 
--  Before applying Terraform changes
--  Reviewing large plan outputs
--  Need cost impact analysis
--  Want to catch risky changes (deletions, recreations)
--  CI/CD pipeline plan review
--  Plan is empty (no changes)
+- Before applying Terraform changes
+- Reviewing large plan outputs
+- Need cost impact analysis
+- Want to catch risky changes (deletions, recreations)
+- CI/CD pipeline plan review
+- Plan is empty (no changes)
 
 ## How It Works
 
@@ -35,6 +35,7 @@ You are a Terraform plan analysis expert. When user runs `/terraform-plan-analyz
 
 1. **Analyze plan output:**
    Ask user to provide `terraform plan` output or run:
+
    ```bash
    terraform plan -out=tfplan
    terraform show -json tfplan
@@ -47,10 +48,10 @@ You are a Terraform plan analysis expert. When user runs `/terraform-plan-analyz
    - **Delete** (-): Resource removal
 
 3. **Identify risks:**
-   - ** Critical**: Data loss (RDS deletion, S3 bucket)
-   - ** High**: Downtime (recreation of production resources)
-   - ** Medium**: Configuration changes requiring attention
-   - ** Low**: Safe additions or updates
+   - **Critical**: Data loss (RDS deletion, S3 bucket)
+   - **High**: Downtime (recreation of production resources)
+   - **Medium**: Configuration changes requiring attention
+   - **Low**: Safe additions or updates
 
 4. **Estimate cost impact:**
    - New resources cost (based on resource type/size)
@@ -58,10 +59,10 @@ You are a Terraform plan analysis expert. When user runs `/terraform-plan-analyz
    - Net change estimate
 
 5. **Provide recommendation:**
-   -  APPROVE: Low risk, proceed with apply
+   - APPROVE: Low risk, proceed with apply
    - ️ REVIEW: Medium risk, review changes carefully
-   -  BLOCK: High risk, requires manual approval
-   -  DANGER: Critical risk, do not apply without backup
+   - BLOCK: High risk, requires manual approval
+   - DANGER: Critical risk, do not apply without backup
 
 ## Output Format
 
@@ -106,6 +107,7 @@ You are a Terraform plan analysis expert. When user runs `/terraform-plan-analyz
 **User:** `/tpa`
 
 **Plan Output:**
+
 ```
 Terraform will perform the following actions:
 
@@ -158,19 +160,20 @@ Plan: 1 to add, 1 to change, 1 to destroy.
      --db-snapshot-identifier mydb-pre-upgrade-$(date +%Y%m%d-%H%M%S)
    ```
 
-2. **Alternative: Blue/Green Deployment**
+1. **Alternative: Blue/Green Deployment**
    - Create new RDS instance with new version
    - Migrate data manually
    - Update app to point to new instance
    - Delete old instance after verification
 
-3. **Alternative: In-Place Upgrade (if supported)**
+2. **Alternative: In-Place Upgrade (if supported)**
    - Check if 14.7 → 15.4 supports in-place upgrade
    - Use AWS Console or CLI for safer upgrade path
 
-###  SAFE CHANGES (1)
+### SAFE CHANGES (1)
 
 **aws_ecs_service.app - UPDATE**
+
 - **Change:** Scaling from 3 → 5 tasks
 - **Risk:** Low (gradual scale-out)
 - **Impact:** Increased costs (~$50/month for 2 additional tasks)
@@ -178,6 +181,7 @@ Plan: 1 to add, 1 to change, 1 to destroy.
 ## Cost Impact
 
 **Estimated Monthly Change:**
+
 - RDS replacement: $0 (same instance type)
 - ECS scaling (3→5): +$50/month
 - **Total: +$50/month**
@@ -187,15 +191,17 @@ Plan: 1 to add, 1 to change, 1 to destroy.
  **DANGER - DO NOT APPLY WITHOUT BACKUP**
 
 **Required Actions Before Apply:**
-1.  Take RDS snapshot (backup)
-2.  Verify snapshot completed successfully
-3.  Test snapshot restore process
-4.  Notify team of planned downtime window
-5.  Have rollback plan ready
+
+1. Take RDS snapshot (backup)
+2. Verify snapshot completed successfully
+3. Test snapshot restore process
+4. Notify team of planned downtime window
+5. Have rollback plan ready
 
 **Alternative:** Consider blue/green deployment to avoid data loss risk.
 
 **DO NOT run `terraform apply` until backup is verified.**
+
 ```
 
 ### Example 2: Safe Plan (Adding Resources)
@@ -204,21 +210,25 @@ Plan: 1 to add, 1 to change, 1 to destroy.
 
 **Plan Output:**
 ```
+
 Terraform will perform the following actions:
 
-  # aws_s3_bucket.assets will be created
-  + resource "aws_s3_bucket" "assets" {
-      + bucket = "myapp-assets"
-      + region = "us-east-1"
+# aws_s3_bucket.assets will be created
+
+- resource "aws_s3_bucket" "assets" {
+  - bucket = "myapp-assets"
+  - region = "us-east-1"
     }
 
-  # aws_cloudfront_distribution.cdn will be created
-  + resource "aws_cloudfront_distribution" "cdn" {
-      + enabled = true
-      + price_class = "PriceClass_100"
+# aws_cloudfront_distribution.cdn will be created
+
+- resource "aws_cloudfront_distribution" "cdn" {
+  - enabled = true
+  - price_class = "PriceClass_100"
     }
 
 Plan: 2 to add, 0 to change, 0 to destroy.
+
 ```
 
 **Analysis Output:**
@@ -266,6 +276,7 @@ Plan: 2 to add, 0 to change, 0 to destroy.
 ```bash
 terraform apply tfplan
 ```
+
 ```
 
 ### Example 3: Medium Risk (Resource Updates)
@@ -274,9 +285,11 @@ terraform apply tfplan
 
 **Plan Output:**
 ```
+
 Terraform will perform the following actions:
 
-  # aws_security_group.app will be updated in-place
+# aws_security_group.app will be updated in-place
+
   ~ resource "aws_security_group" "app" {
       ~ ingress = [
           - {
@@ -294,12 +307,14 @@ Terraform will perform the following actions:
         ]
     }
 
-  # aws_instance.app will be updated in-place
+# aws_instance.app will be updated in-place
+
   ~ resource "aws_instance" "app" {
       ~ instance_type = "t3.medium" -> "t3.large"
     }
 
 Plan: 0 to add, 2 to change, 0 to destroy.
+
 ```
 
 **Analysis Output:**
@@ -334,16 +349,18 @@ curl ifconfig.me
 ```
 
 **aws_instance.app - UPDATE**
+
 - **Change:** Instance resize (t3.medium → t3.large)
 - **Risk:** Requires instance stop/start
 - **Impact:**
-  -  ~2-3 minutes downtime during resize
-  -  Cost increase: ~$30/month (from $31 to $61)
+  - ~2-3 minutes downtime during resize
+  - Cost increase: ~$30/month (from $31 to $61)
   - ℹ️ Elastic IP/private IP retained
 
 ## Cost Impact
 
 **Estimated Monthly Change:**
+
 - t3.medium → t3.large: +$30/month
 - Security group update: $0
 - **Total: +$30/month**
@@ -353,16 +370,19 @@ curl ifconfig.me
 ️ **REVIEW - REQUIRES ATTENTION**
 
 **Before Applying:**
-1.  Verify you can still SSH after security group change
-2.  Schedule maintenance window for instance resize (3 min downtime)
-3.  Notify users of brief downtime
-4.  Confirm cost increase is approved
+
+1. Verify you can still SSH after security group change
+2. Schedule maintenance window for instance resize (3 min downtime)
+3. Notify users of brief downtime
+4. Confirm cost increase is approved
 
 **Proceed with:**
+
 ```bash
 # Schedule during low-traffic period
 terraform apply tfplan
 ```
+
 ```
 
 ## Pro Tips

@@ -10,6 +10,7 @@ customerio-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Customer.io core feature integration
 **Workflow:** Part of the onboarding skill category for Customer.io integration.
 **Relates to:** Other customerio skills in this pack.

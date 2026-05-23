@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code
 # Figma Incident Runbook
 
 ## Overview
+
 Rapid incident response procedures for Figma REST API integration failures. Covers triage, mitigation, and postmortem for the most common failure modes.
 
 ## Prerequisites
+
 - Access to application logs and metrics
 - Figma PAT for health checks
 - Communication channel (Slack, PagerDuty)
@@ -33,6 +35,7 @@ Rapid incident response procedures for Figma REST API integration failures. Cove
 ## Instructions
 
 ### Step 1: Quick Triage (First 5 Minutes)
+
 ```bash
 #!/bin/bash
 echo "=== Figma Incident Triage ==="
@@ -64,6 +67,7 @@ curl -s -D - -o /dev/null \
 ```
 
 ### Step 2: Decision Tree
+
 ```
 API returning errors?
 ├── 403 Forbidden
@@ -95,6 +99,7 @@ API returning errors?
 ### Step 3: Immediate Mitigation
 
 **For 403 (Token Expired):**
+
 ```bash
 # Generate new PAT in Figma Settings > Personal access tokens
 # Then update your deployment:
@@ -111,6 +116,7 @@ fly secrets set FIGMA_PAT=figd_new-token
 ```
 
 **For 429 (Rate Limited):**
+
 ```typescript
 // Emergency: disable non-critical Figma calls
 const EMERGENCY_MODE = process.env.FIGMA_EMERGENCY === 'true';
@@ -128,6 +134,7 @@ async function safeFigmaCall<T>(
 ```
 
 **For 500/503 (Figma Down):**
+
 ```typescript
 // Serve cached data when Figma is unavailable
 async function getTokensWithFallback() {
@@ -143,6 +150,7 @@ async function getTokensWithFallback() {
 ```
 
 ### Step 4: Communication
+
 ```markdown
 ## Internal Notification (Slack)
 **Figma Integration Alert**
@@ -158,6 +166,7 @@ with our Figma integration. Cached data is being served.
 ```
 
 ### Step 5: Postmortem Template
+
 ```markdown
 ## Figma Incident Postmortem
 **Date:** YYYY-MM-DD
@@ -184,6 +193,7 @@ with our Figma integration. Cached data is being served.
 ```
 
 ## Output
+
 - Issue identified via triage script
 - Root cause determined from decision tree
 - Mitigation applied (token rotation, fallback mode, etc.)
@@ -191,6 +201,7 @@ with our Figma integration. Cached data is being served.
 - Postmortem documented
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Can't reach status.figma.com | Network issue | Try from different network or mobile |
@@ -199,9 +210,11 @@ with our Figma integration. Cached data is being served.
 | Alert not firing | Missing metrics | Verify Prometheus scrape config |
 
 ## Resources
+
 - [Figma Status Page](https://status.figma.com)
 - [Figma Support](https://help.figma.com/hc/en-us/requests/new)
 - [Figma Developer Forum](https://forum.figma.com/)
 
 ## Next Steps
+
 For data handling, see `figma-data-handling`.

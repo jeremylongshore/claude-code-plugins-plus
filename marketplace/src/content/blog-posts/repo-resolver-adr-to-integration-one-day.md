@@ -109,4 +109,3 @@ The "one day" part is the artifact of preparation, not a claim about throughput.
 - [Twelve PRs, a Security Sprint, and a Pregame Overhaul](/posts/twelve-prs-security-sprint-pregame-overhaul/) — the Braves dashboard shipping arc.
 - [Zero to CI: Full-Stack Dashboard, One Session](/posts/zero-to-ci-full-stack-dashboard-one-session/) — what the qmd daemon looked like earlier in its life.
 - [The Wild Ecosystem Deep Dive #3: Observability](/posts/wild-deep-dive-3-observability/) — the wild-ecosystem shared-GCP pattern that CI #34 joined.
-

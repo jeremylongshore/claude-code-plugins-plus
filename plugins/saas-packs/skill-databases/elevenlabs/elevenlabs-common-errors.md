@@ -10,6 +10,7 @@ elevenlabs-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix ElevenLabs common errors
 **Workflow:** Part of the operations skill category for ElevenLabs integration.
 **Relates to:** Other elevenlabs skills in this pack.

@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Security Basics
 
 ## Overview
+
 Implement security best practices for Clerk authentication: environment variable protection, middleware hardening, API route defense, webhook verification, and session security.
 
 ## Prerequisites
+
 - Clerk SDK installed and configured
 - Understanding of OWASP authentication best practices
 - Production deployment planned or active
@@ -35,6 +37,7 @@ Implement security best practices for Clerk authentication: environment variable
 ## Instructions
 
 ### Step 1: Secure Environment Variables
+
 ```bash
 # .env.local — never commit this file
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_...  # Safe to expose (public)
@@ -50,6 +53,7 @@ CLERK_WEBHOOK_SECRET=whsec_...                  # Server-only
 ```
 
 Validate at startup that secret keys are not leaked:
+
 ```typescript
 // lib/security-check.ts
 export function assertServerOnly() {
@@ -63,6 +67,7 @@ export function assertServerOnly() {
 ```
 
 ### Step 2: Hardened Middleware Configuration
+
 ```typescript
 // middleware.ts
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
@@ -95,6 +100,7 @@ export default clerkMiddleware(async (auth, req) => {
 ```
 
 ### Step 3: Secure API Routes
+
 ```typescript
 // app/api/admin/route.ts
 import { auth } from '@clerk/nextjs/server'
@@ -127,6 +133,7 @@ export async function POST(req: NextRequest) {
 ```
 
 ### Step 4: Secure Webhook Verification
+
 ```typescript
 // app/api/webhooks/clerk/route.ts
 import { Webhook } from 'svix'
@@ -167,6 +174,7 @@ export async function POST(req: Request) {
 ```
 
 ### Step 5: Session Security Best Practices
+
 ```typescript
 // Enforce session checks in sensitive operations
 import { auth } from '@clerk/nextjs/server'
@@ -190,11 +198,13 @@ export async function dangerousAction() {
 ```
 
 Configure session settings in Clerk Dashboard:
+
 - **Session lifetime**: 7 days (default) — reduce for sensitive apps
 - **Inactivity timeout**: Enable for compliance requirements
 - **Multi-session mode**: Disable unless explicitly needed
 
 ## Output
+
 - Environment variables secured with leak prevention
 - Middleware with security headers (CSP, X-Frame-Options, etc.)
 - API routes with auth + authz + input validation
@@ -202,6 +212,7 @@ Configure session settings in Clerk Dashboard:
 - Session freshness checks for sensitive operations
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Secret key exposed client-side | Imported in client component | Move to server-only module, add `assertServerOnly()` |
@@ -212,6 +223,7 @@ Configure session settings in Clerk Dashboard:
 ## Examples
 
 ### Rate Limiting Sensitive Endpoints
+
 ```typescript
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
@@ -234,9 +246,11 @@ export async function POST() {
 ```
 
 ## Resources
+
 - [Clerk Security Overview](https://clerk.com/docs/security/overview)
 - [OWASP Authentication Cheatsheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
 - [Webhook Verification](https://clerk.com/docs/integrations/webhooks/overview)
 
 ## Next Steps
+
 Proceed to `clerk-prod-checklist` for production readiness review.

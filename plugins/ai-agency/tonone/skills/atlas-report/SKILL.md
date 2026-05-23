@@ -295,7 +295,7 @@ pre code {
 
 - **Self-contained HTML** — the report must work offline (except Mermaid CDN for diagrams)
 - **Never truncate findings** in the HTML report — this is where full detail lives; the CLI summary is the compressed version
-- **Severity colors match output kit** — `■` red, `▲` amber, `● ` blue, consistent across CLI and HTML
+- **Severity colors match output kit** — `■` red, `▲` amber, `●` blue, consistent across CLI and HTML
 - **Graceful Mermaid degradation** — if CDN is unreachable, diagrams fall back to styled code blocks
 - **Omit empty sections** — do not render sections that have no content
 - **No Tonone branding** — no footer attribution, no "powered by", no agent author credit in the rendered HTML. The report belongs to the repo, not the tool

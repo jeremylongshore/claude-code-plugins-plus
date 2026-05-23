@@ -159,4 +159,3 @@ If I'd built the planner tightly coupled to Gemini, I'd have needed API keys jus
 The validator turned out to be more important than the planner itself. LLMs occasionally propose nonsensical operations — moving entities to NaN coordinates, editing text on protected layers. The validator catches all of it before the edit engine touches the drawing.
 
 And the three MVP bugs found by loading Tony's real structural DXFs? None of them would have surfaced with synthetic test fixtures. Dimension entities with missing attributes, hatch entities with degenerate boundary paths, multileader text extraction — these are things you only discover when you test with production files.
-

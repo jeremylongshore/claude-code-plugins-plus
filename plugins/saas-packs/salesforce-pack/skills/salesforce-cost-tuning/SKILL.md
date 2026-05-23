@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Salesforce Cost Tuning
 
 ## Overview
+
 Optimize Salesforce costs by reducing API call consumption, choosing the right edition, and monitoring API usage budgets. Salesforce charges per-user licenses (not per-API-call), but API limits are tied to edition + license count.
 
 ## Prerequisites
+
 - Access to Salesforce Setup > Company Information
 - Understanding of current API usage patterns
 - Access to contract/license details
@@ -160,12 +162,14 @@ If you need just data sync:
 ```
 
 ## Output
+
 - Current API usage analyzed
 - Cost reduction strategies applied (batching, caching, Bulk API)
 - API call budget tracking implemented
 - Edition recommendation based on usage
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Unexpected API call spike | Unoptimized loop/query | Use Collections or Bulk API |
@@ -174,9 +178,11 @@ If you need just data sync:
 | License overspend | Unused integration licenses | Audit active users quarterly |
 
 ## Resources
+
 - [Salesforce Editions & Pricing](https://www.salesforce.com/editions-pricing/overview/)
 - [API Request Limits by Edition](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm)
 - [Limits REST Resource](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_limits.htm)
 
 ## Next Steps
+
 For architecture patterns, see `salesforce-reference-architecture`.

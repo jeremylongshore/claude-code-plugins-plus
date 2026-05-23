@@ -19,6 +19,7 @@ Generate visual progress tracking graphics from your git history and metrics.
 ## Purpose
 
 Create shareable progress visuals:
+
 - Before/after comparisons
 - Time-series charts
 - Metric dashboards
@@ -30,6 +31,7 @@ Create shareable progress visuals:
 When user runs `/progress [metric]`:
 
 1. **Analyze Git History**
+
    ```bash
    # Extract commits with metric data
    git log --all --since="30 days ago" --grep="metric" --pretty=format:"%ai|%s"
@@ -42,6 +44,7 @@ When user runs `/progress [metric]`:
    - Extract user counts, response times, etc.
 
 3. **Generate Visualization**
+
    ```
    API RESPONSE TIME - 30 DAY TREND
 
@@ -64,6 +67,7 @@ When user runs `/progress [metric]`:
 ## Chart Types
 
 ### Speed/Performance
+
 ```
 /progress speed
 
@@ -75,6 +79,7 @@ Output:
 ```
 
 ### User Growth
+
 ```
 /progress users
 
@@ -86,6 +91,7 @@ Output:
 ```
 
 ### Code Quality
+
 ```
 /progress coverage
 
@@ -97,6 +103,7 @@ Output:
 ```
 
 ### Build Activity
+
 ```
 /progress commits
 
@@ -110,18 +117,21 @@ Output:
 ## Visual Styles
 
 ### Minimal (Default)
+
 - Clean lines
 - Limited color (1-2 accent colors)
 - Large text
 - High contrast
 
 ### Thumbnail
+
 - Bold text
 - Bright colors
 - Large numbers
 - Emoji indicators
 
 ### Dashboard
+
 - Multiple metrics
 - Grid layout
 - Consistent styling
@@ -130,6 +140,7 @@ Output:
 ## Example Outputs
 
 ### API Speed Chart
+
 ```
 ┌─────────────────────────────────────────┐
 │  API RESPONSE TIME - 3 WEEK PROGRESS   │
@@ -152,6 +163,7 @@ Saved to: ~/project/visuals/api-speed-progress.png
 ```
 
 ### User Growth
+
 ```
 ┌─────────────────────────────────────────┐
 │      USER GROWTH - LAST 30 DAYS        │
@@ -178,6 +190,7 @@ Saved to: ~/project/visuals/user-growth.png
 ## Integration
 
 Works with:
+
 - **build-logger-agent**: Gets metrics from build logs
 - **demo-video-generator**: Provides visuals for demos
 - **thumbnail-designer**: Supplies charts for thumbnails

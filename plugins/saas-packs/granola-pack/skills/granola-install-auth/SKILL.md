@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola Install & Auth
 
 ## Overview
+
 Install Granola, the AI notepad that captures meeting audio directly from your device (no bot joins the call), transcribes with GPT-4o/Claude, and produces structured notes with action items. Supports Zoom, Google Meet, Teams, Slack Huddles, and WebEx.
 
 ## Prerequisites
+
 - macOS 12+ or Windows 10+ (iOS/Android for mobile)
 - Google Calendar or Microsoft Outlook account
 - Active internet connection for initial auth
@@ -54,6 +56,7 @@ Windows: download the installer from `granola.ai/download` and run the `.exe`.
 ### Step 3 — Grant System Permissions
 
 **macOS (critical — both required):**
+
 ```
 System Settings > Privacy & Security > Microphone
   → Enable Granola
@@ -61,10 +64,12 @@ System Settings > Privacy & Security > Microphone
 System Settings > Privacy & Security > Screen & System Audio Recording
   → Enable Granola
 ```
+
 The Screen Recording permission is required because macOS bundles system audio capture under that category — Granola does **not** record your screen.
 
 **Windows:**
 Microphone permissions are granted automatically. Confirm at:
+
 ```
 Settings > Privacy & Security > Microphone → Granola enabled
 ```
@@ -98,6 +103,7 @@ Join or start any meeting (Zoom, Meet, Teams). Granola shows a floating notepad 
 | Auto-update | Preferences > General | On |
 
 ## Output
+
 - Granola installed and running on login
 - Calendar connected with meeting auto-detection
 - System audio + microphone permissions granted
@@ -114,6 +120,7 @@ Join or start any meeting (Zoom, Meet, Teams). Granola shows a floating notepad 
 | Bluetooth audio drops | BT device causes transcription stops | Switch to built-in mic or wired headset |
 
 ## Granola Architecture (How It Works)
+
 ```
 Your Device Audio ──→ Granola Desktop App ──→ Granola Cloud (transcription)
                            │                        │
@@ -125,15 +132,18 @@ Your Device Audio ──→ Granola Desktop App ──→ Granola Cloud (transcr
                           Structured meeting notes
                           with action items
 ```
+
 - Audio is transcribed server-side; Granola does **not** store raw audio after processing
 - Your typed notes are merged with the transcript for context-aware summaries
 - No bot joins your meeting — capture happens via system audio
 
 ## Resources
+
 - [Download Granola](https://www.granola.ai/download)
 - [Setup Guide](https://docs.granola.ai/help-center/getting-started/setting-up-granola-for-the-first-time)
 - [Transcription Troubleshooting](https://docs.granola.ai/help-center/troubleshooting/transcription-issues)
 - [Security Standards](https://docs.granola.ai/help-center/consent-security-privacy/our-security-standards)
 
 ## Next Steps
+
 After installation, proceed to `granola-hello-world` for your first meeting capture.

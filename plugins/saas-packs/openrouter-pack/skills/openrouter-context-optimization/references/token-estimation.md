@@ -3,6 +3,7 @@
 ## Token Estimation
 
 ### Basic Token Counter
+
 ```python
 def estimate_tokens(text: str) -> int:
     """Rough token estimate (4 chars = 1 token for English)."""
@@ -24,6 +25,7 @@ def estimate_message_tokens(messages: list) -> int:
 ```
 
 ### Tiktoken for Accuracy
+
 ```python
 import tiktoken
 

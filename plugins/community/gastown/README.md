@@ -41,6 +41,7 @@ gt peek Toast
 ## Usage
 
 Simply describe what you need - Gas Town activates when you mention:
+
 - gastown, gas town, gt commands, bd commands
 - convoys, polecats, crew, rigs
 - slinging work, multi-agent coordination

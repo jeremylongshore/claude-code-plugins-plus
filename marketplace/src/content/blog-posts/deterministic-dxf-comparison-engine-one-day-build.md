@@ -206,7 +206,7 @@ The comparison engine is the foundation for everything cad-dxf-agent does next: 
 ---
 
 *Related posts:*
+
 - [The Silent Killer: How Bare catch {} Blocks Hide Failures](/posts/silent-killer-bare-catch-blocks-hide-failures/) — the previous cad-dxf-agent deep-dive on debugging invisible frontend failures
 - [Production Release Engineering: Shipping v4.5.0](/posts/production-release-engineering-v450/) — automated release workflows and safety gates at scale
 - [Python Class Identity Mismatch: The CI Bug That Broke 9 PRs](/posts/python-class-identity-mismatch-ci-debugging-guide/) — another case where identity semantics caused subtle breakage
-

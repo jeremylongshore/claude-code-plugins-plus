@@ -10,6 +10,7 @@ framer-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Framer common errors
 **Workflow:** Part of the operations skill category for Framer integration.
 **Relates to:** Other framer skills in this pack.

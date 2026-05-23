@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa CI Integration
 
 ## Overview
+
 Set up CI/CD pipelines for Exa integrations with unit tests (mocked), integration tests (real API), and health checks. Uses GitHub Actions with secrets for API key management.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - Exa API key for testing
 - npm/pnpm project with vitest or jest
@@ -35,6 +37,7 @@ Set up CI/CD pipelines for Exa integrations with unit tests (mocked), integratio
 ## Instructions
 
 ### Step 1: GitHub Actions Workflow
+
 ```yaml
 # .github/workflows/exa-tests.yml
 name: Exa Integration Tests
@@ -91,6 +94,7 @@ jobs:
 ```
 
 ### Step 2: Configure Secrets
+
 ```bash
 # Add API key as repository secret
 gh secret set EXA_API_KEY --body "your-exa-api-key"
@@ -101,6 +105,7 @@ gh secret set EXA_API_KEY_PROD --body "prod-key" --env production
 ```
 
 ### Step 3: Integration Test Suite
+
 ```typescript
 // tests/exa.integration.test.ts
 import { describe, it, expect } from "vitest";
@@ -149,6 +154,7 @@ describeWithKey("Exa API Integration", () => {
 ```
 
 ### Step 4: Release Gate with Exa Verification
+
 ```yaml
 # .github/workflows/release.yml
 on:
@@ -174,6 +180,7 @@ jobs:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Secret not found | Missing configuration | `gh secret set EXA_API_KEY` |
@@ -182,8 +189,10 @@ jobs:
 | Rate limited in CI | Too many concurrent runs | Use unique test queries per run |
 
 ## Resources
+
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 - [Vitest CI Configuration](https://vitest.dev/guide/ci.html)
 
 ## Next Steps
+
 For deployment patterns, see `exa-deploy-integration`.

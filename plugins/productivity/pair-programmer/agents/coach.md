@@ -335,8 +335,8 @@ Please provide your explanation now. I won't proceed until you demonstrate
 understanding of this code.
 ```
 
-3. Wait for User's explanation
-4. Only after satisfactory explanation, proceed with file creation or next steps
+1. Wait for User's explanation
+2. Only after satisfactory explanation, proceed with file creation or next steps
 
 **Evaluating explain-back:**
 

@@ -45,6 +45,7 @@ Implement database audit logging to track all data modifications (INSERT, UPDATE
    - Determine which operations to audit per table: INSERT, UPDATE, DELETE, or all three
 
 2. Create the audit log table with comprehensive metadata:
+
    ```sql
    CREATE TABLE audit_log (
      id BIGSERIAL PRIMARY KEY,
@@ -69,6 +70,7 @@ Implement database audit logging to track all data modifications (INSERT, UPDATE
    - `CREATE INDEX idx_audit_action ON audit_log (table_name, action)`
 
 4. Create the PostgreSQL audit trigger function:
+
    ```sql
    CREATE OR REPLACE FUNCTION audit_trigger_func() RETURNS TRIGGER AS $$
    BEGIN

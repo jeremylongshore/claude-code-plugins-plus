@@ -333,6 +333,7 @@ function extractGraphError(error: any): GraphError {
 ## Output
 
 After applying these patterns you will have:
+
 - Automatic retry with Retry-After header parsing (not hardcoded delays)
 - Proactive rate limit tracking that pauses before hitting limits
 - Batch requests reducing API round trips by up to 20x
@@ -353,6 +354,7 @@ After applying these patterns you will have:
 ## Examples
 
 **Complete production client setup:**
+
 ```typescript
 const tracker = new RateLimitTracker();
 const tokenMiddleware = new TokenRefreshMiddleware(credential);

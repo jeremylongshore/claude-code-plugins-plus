@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Load & Scale
 
 ## Overview
+
 Strategies for deploying Windsurf AI IDE across large organizations (50-1000+ developers). Covers workspace partitioning for monorepos, configuration distribution, credit budgeting, and performance at scale.
 
 ## Prerequisites
+
 - Windsurf Teams or Enterprise plan
 - Admin dashboard access
 - Understanding of team structure and repository layout
@@ -109,6 +111,7 @@ windsurf-config/
 ```
 
 **Sync script:**
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -232,17 +235,19 @@ echo "3. Verify .windsurfrules exists in your service directory"
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Indexing slow across team | Large workspaces | Partition into sub-workspaces per service |
 | Config drift between services | No central templates | Implement sync-config.sh script |
 | Credit overspend | No budgeting | Implement tier allocation, quarterly review |
-| Network blocking Windsurf | Firewall rules | Whitelist *.codeium.com and *.windsurf.com |
+| Network blocking Windsurf | Firewall rules | Whitelist *.codeium.com and*.windsurf.com |
 | Inconsistent AI suggestions | Different .windsurfrules | Use central template repository |
 
 ## Examples
 
 ### Quick Team Health Dashboard
+
 ```bash
 echo "=== Team Windsurf Health ==="
 echo "Services with .windsurfrules:"
@@ -257,8 +262,10 @@ done
 ```
 
 ## Resources
+
 - [Windsurf Enterprise](https://windsurf.com/enterprise)
 - [Windsurf Admin Guide](https://docs.windsurf.com/windsurf/guide-for-admins)
 
 ## Next Steps
+
 For reliability patterns, see `windsurf-reliability-patterns`.

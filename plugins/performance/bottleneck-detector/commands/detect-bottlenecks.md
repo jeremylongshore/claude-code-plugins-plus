@@ -26,6 +26,7 @@ Identify and resolve performance bottlenecks across the application stack.
 ## Output
 
 Provide comprehensive report with:
+
 - Identified bottlenecks with severity ratings
 - Root cause analysis for each bottleneck
 - Impact assessment on overall performance

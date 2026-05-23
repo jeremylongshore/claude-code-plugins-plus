@@ -10,6 +10,7 @@ mistral-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Mistral AI primary workflow
 **Workflow:** Part of the onboarding skill category for Mistral AI integration.
 **Relates to:** Other mistral skills in this pack.

@@ -1,6 +1,7 @@
 # Deepgram Hello World Extended Examples
 
 ## TypeScript - Transcribe Local File
+
 ```typescript
 import { createClient } from '@deepgram/sdk';
 import { readFileSync } from 'fs';
@@ -23,6 +24,7 @@ transcribeFile('./audio.wav');
 ```
 
 ## Python Example
+
 ```python
 from deepgram import DeepgramClient, PrerecordedOptions
 import os
@@ -41,6 +43,7 @@ print(response.results.channels[0].alternatives[0].transcript)
 ```
 
 ## Customization Options
+
 - Change `model` to `nova`, `enhanced`, or `base` for different accuracy/speed trade-offs
 - Set `language` to process non-English audio (e.g., `es`, `fr`, `de`)
 - Enable `diarize: true` to identify different speakers

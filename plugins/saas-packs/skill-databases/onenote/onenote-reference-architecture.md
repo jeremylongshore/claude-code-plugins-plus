@@ -10,6 +10,7 @@ onenote-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement OneNote reference architecture
 **Workflow:** Part of the cicd skill category for OneNote integration.
 **Relates to:** Other onenote skills in this pack.

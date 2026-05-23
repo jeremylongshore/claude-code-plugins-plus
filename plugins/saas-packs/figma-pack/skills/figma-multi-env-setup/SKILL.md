@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code
 # Figma Multi-Environment Setup
 
 ## Overview
+
 Configure separate Figma API credentials and file targets per environment. Use different PATs with minimal scopes, point to different Figma files, and prevent accidental production operations from dev.
 
 ## Prerequisites
+
 - Separate Figma PATs for each environment
 - Secret management solution
 - Environment detection in application
@@ -41,6 +43,7 @@ Configure separate Figma API credentials and file targets per environment. Use d
 | Production | `file_content:read`, `webhooks:write` | Production design file | 300s |
 
 ### Step 2: Configuration by Environment
+
 ```typescript
 // src/config/figma.ts
 interface FigmaEnvConfig {
@@ -85,6 +88,7 @@ function getFigmaConfig(): FigmaEnvConfig {
 ```
 
 ### Step 3: Environment Files
+
 ```bash
 # .env.development
 FIGMA_PAT_DEV="figd_dev-token-read-only"
@@ -105,6 +109,7 @@ FIGMA_FILE_KEY_DEV=
 ```
 
 ### Step 4: Secret Management
+
 ```bash
 # GitHub Actions -- use environment-scoped secrets
 gh secret set FIGMA_PAT_PROD --env production --body "figd_..."
@@ -120,6 +125,7 @@ gcloud run deploy my-service \
 ```
 
 ### Step 5: Environment Guards
+
 ```typescript
 // Prevent production-specific operations in non-production
 function requireProduction(operation: string) {
@@ -151,12 +157,14 @@ async function deleteAllCachedData() {
 ```
 
 ## Output
+
 - Per-environment Figma configuration
 - Secrets stored in appropriate secret managers
 - Environment guards preventing cross-env mistakes
 - Template env files for team onboarding
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Wrong file in dev | Using prod file key | Verify FIGMA_FILE_KEY_DEV |
@@ -165,9 +173,11 @@ async function deleteAllCachedData() {
 | Config not loading | Missing NODE_ENV | Set NODE_ENV in deployment config |
 
 ## Resources
+
 - [Figma Authentication](https://developers.figma.com/docs/rest-api/authentication/)
 - [12-Factor App Config](https://12factor.net/config)
 - [GitHub Environments](https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-deployments/managing-environments-for-deployment)
 
 ## Next Steps
+
 For observability setup, see `figma-observability`.

@@ -10,6 +10,7 @@ mindtickle-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Mindtickle common errors
 **Workflow:** Part of the operations skill category for Mindtickle integration.
 **Relates to:** Other mindtickle skills in this pack.

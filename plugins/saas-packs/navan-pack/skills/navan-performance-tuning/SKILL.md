@@ -210,6 +210,7 @@ const response = await fetch('https://api.navan.com/v1/bookings', {
 ## Output
 
 Optimized Navan API integration with:
+
 - **60-80% fewer API calls** through intelligent caching
 - **5-10x faster sync jobs** via parallel execution
 - **Zero missed records** with robust cursor pagination

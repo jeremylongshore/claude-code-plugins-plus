@@ -84,6 +84,7 @@ Execute controlled chaos engineering experiments to test system resilience, faul
 ## Examples
 
 **toxiproxy network latency injection:**
+
 ```bash
 set -euo pipefail
 # Create a proxy for the database connection
@@ -100,6 +101,7 @@ toxiproxy-cli toxic remove postgres_proxy -n latency_downstream
 ```
 
 **Kubernetes pod kill experiment (Litmus Chaos):**
+
 ```yaml
 apiVersion: litmuschaos.io/v1alpha1
 kind: ChaosEngine
@@ -124,6 +126,7 @@ spec:
 ```
 
 **Custom chaos script (process kill and verify recovery):**
+
 ```bash
 #!/bin/bash
 set -euo pipefail

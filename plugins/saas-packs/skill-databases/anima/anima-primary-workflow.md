@@ -10,6 +10,7 @@ anima-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Anima primary workflow
 **Workflow:** Part of the onboarding skill category for Anima integration.
 **Relates to:** Other anima skills in this pack.

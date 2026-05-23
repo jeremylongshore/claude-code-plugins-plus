@@ -10,6 +10,7 @@ notion-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Notion local development workflow
 **Workflow:** Part of the onboarding skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

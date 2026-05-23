@@ -10,6 +10,7 @@ clickup-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement ClickUp load testing and scaling
 **Workflow:** Part of the enterprise skill category for ClickUp integration.
 **Relates to:** Other clickup skills in this pack.

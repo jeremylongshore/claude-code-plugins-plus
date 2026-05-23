@@ -170,6 +170,7 @@ connectionConfiguration:
 ```
 
 Airbyte setup steps:
+
 1. In Airbyte, add source > search "Navan"
 2. Enter client_id and client_secret
 3. Select "bookings" stream
@@ -220,6 +221,7 @@ function normalizeBooking(raw: any): NormalizedBooking {
 ## Output
 
 Successful execution produces:
+
 - Paginated trip and transaction records extracted via REST API
 - Deduplicated records keyed by UUID for the BOOKING table
 - Configured Fivetran or Airbyte connectors for automated extraction

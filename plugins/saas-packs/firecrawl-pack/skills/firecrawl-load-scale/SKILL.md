@@ -27,6 +27,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Load & Scale
 
 ## Overview
+
 Load test and scale Firecrawl scraping pipelines. Firecrawl's rate limits are per-plan (RPM and concurrent connections), so scaling means maximizing throughput within those limits using batch scraping, async crawls, and queue-based request management.
 
 ## Rate Limits by Plan
@@ -42,6 +43,7 @@ Load test and scale Firecrawl scraping pipelines. Firecrawl's rate limits are pe
 ## Instructions
 
 ### Step 1: Measure Baseline Throughput
+
 ```typescript
 import FirecrawlApp from "@mendable/firecrawl-js";
 
@@ -85,6 +87,7 @@ async function measureThroughput(urls: string[], concurrency: number) {
 ```
 
 ### Step 2: Use Batch Scrape for Maximum Efficiency
+
 ```typescript
 // batchScrapeUrls is the most efficient way to scrape multiple known URLs
 async function scaledBatchScrape(urls: string[], batchSize = 50) {
@@ -108,6 +111,7 @@ async function scaledBatchScrape(urls: string[], batchSize = 50) {
 ```
 
 ### Step 3: Queue-Based Scraping with p-queue
+
 ```typescript
 import PQueue from "p-queue";
 
@@ -146,6 +150,7 @@ console.log(`Queue: ${queue.pending} pending, ${queue.size} queued`);
 ```
 
 ### Step 4: Scale Async Crawls
+
 ```typescript
 // For large-scale content ingestion, run multiple async crawls
 async function parallelCrawls(targets: Array<{ url: string; limit: number }>) {
@@ -188,6 +193,7 @@ async function parallelCrawls(targets: Array<{ url: string; limit: number }>) {
 ```
 
 ### Step 5: Capacity Planning
+
 ```typescript
 function estimateCapacity(plan: {
   rpm: number;
@@ -211,6 +217,7 @@ estimateCapacity({ rpm: 50, concurrentCrawls: 5, credits: 50000 });
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | 429 errors under load | Exceeding RPM limit | Reduce concurrency, use p-queue |
@@ -221,6 +228,7 @@ estimateCapacity({ rpm: 50, concurrentCrawls: 5, credits: 50000 });
 ## Examples
 
 ### Quick Load Test
+
 ```typescript
 const testUrls = Array.from({ length: 20 }, (_, i) =>
   `https://docs.firecrawl.dev/features/${["scrape", "crawl", "map", "extract"][i % 4]}`
@@ -229,9 +237,11 @@ await measureThroughput(testUrls, 5);
 ```
 
 ## Resources
+
 - [Firecrawl Rate Limits](https://docs.firecrawl.dev/rate-limits)
 - [Batch Scrape](https://docs.firecrawl.dev/features/batch-scrape)
 - [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For reliability patterns, see `firecrawl-reliability-patterns`.

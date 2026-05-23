@@ -10,6 +10,7 @@ assemblyai-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement AssemblyAI webhook handling
 **Workflow:** Part of the cicd skill category for AssemblyAI integration.
 **Relates to:** Other assemblyai skills in this pack.

@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Obsidian Reference Architecture
 
 ## Overview
+
 Architecture patterns for complex Obsidian plugins: modular project structure with separate files for views, commands, settings, and services; state management; a service layer for vault operations; command registry; view manager; and CSS scoping.
 
 ## Prerequisites
+
 - TypeScript and Obsidian API familiarity
 - Working build pipeline (esbuild recommended)
 - Plugin scaffolding complete (`manifest.json`, `package.json`, `tsconfig.json`)
@@ -35,6 +37,7 @@ Architecture patterns for complex Obsidian plugins: modular project structure wi
 ## Instructions
 
 ### Step 1: Project Structure
+
 ```
 my-plugin/
 ├── src/
@@ -65,6 +68,7 @@ my-plugin/
 ```
 
 ### Step 2: Thin Main Entry Point
+
 ```typescript
 // src/main.ts — orchestrates, does not implement
 import { Plugin } from 'obsidian';
@@ -103,6 +107,7 @@ export default class MyPlugin extends Plugin {
 ```
 
 ### Step 3: Command Registry Pattern
+
 ```typescript
 // src/commands/index.ts
 import type MyPlugin from '../main';
@@ -136,6 +141,7 @@ export function insertTemplate(plugin: MyPlugin, editor: Editor, view: MarkdownV
 ```
 
 ### Step 4: View Manager
+
 ```typescript
 // src/views/index.ts
 import type MyPlugin from '../main';
@@ -217,6 +223,7 @@ export class SidebarView extends ItemView {
 ```
 
 ### Step 5: Service Layer for Vault Operations
+
 ```typescript
 // src/services/vault-service.ts
 import { App, TFile, TFolder, CachedMetadata } from 'obsidian';
@@ -270,6 +277,7 @@ export class VaultService {
 ```
 
 ### Step 6: Settings Architecture
+
 ```typescript
 // src/settings/settings.ts
 export interface MyPluginSettings {
@@ -340,6 +348,7 @@ export class MySettingTab extends PluginSettingTab {
 ```
 
 ### Step 7: CSS Architecture with Plugin-Scoped Classes
+
 ```css
 /* styles.css — all classes prefixed with plugin id */
 
@@ -396,12 +405,14 @@ export class MySettingTab extends PluginSettingTab {
 ```
 
 Key CSS rules:
+
 - Prefix every class with your plugin id to avoid collisions
 - Use Obsidian CSS variables (`--text-normal`, `--background-modifier-hover`, etc.) for theme compatibility
 - Use `.is-mobile` for mobile-specific overrides
 - Never use `!important` — it breaks theme compatibility
 
 ### Step 8: State Management Pattern
+
 For plugins with complex state (multiple views, background sync, shared data):
 
 ```typescript
@@ -436,6 +447,7 @@ export class StateService extends Events {
 ```
 
 ## Output
+
 - Modular `src/` directory with separate folders for commands, views, settings, and services
 - Thin `main.ts` that wires components together without implementing business logic
 - Command registry that scales to dozens of commands without cluttering main.ts
@@ -445,6 +457,7 @@ export class StateService extends Events {
 - Plugin-scoped CSS using Obsidian's CSS variable system
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Circular dependencies | Services importing main, main importing services | Use `type` imports or interface segregation |
@@ -458,6 +471,7 @@ export class StateService extends Events {
 ## Examples
 
 ### Adding a New Command
+
 ```typescript
 // 1. Create src/commands/export-notes.ts
 import type MyPlugin from '../main';
@@ -479,6 +493,7 @@ plugin.addCommand({
 ```
 
 ### Adding a New Service
+
 ```typescript
 // src/services/search-service.ts
 import { App, TFile, PreparedQuery, prepareQuery, fuzzySearch } from 'obsidian';
@@ -500,9 +515,11 @@ export class SearchService {
 ```
 
 ## Resources
+
 - [Obsidian Plugin API](https://docs.obsidian.md/Reference/TypeScript+API)
 - [Plugin Guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines)
 - [Obsidian Sample Plugin](https://github.com/obsidianmd/obsidian-sample-plugin)
 
 ## Next Steps
+
 SDK patterns: `obsidian-sdk-patterns`. Production readiness: `obsidian-prod-checklist`.

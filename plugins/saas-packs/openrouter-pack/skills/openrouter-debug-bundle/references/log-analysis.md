@@ -3,6 +3,7 @@
 ## Log Analysis
 
 ### Parse Debug Log
+
 ```python
 def analyze_debug_log(log_file: str):
     """Analyze debug log file."""

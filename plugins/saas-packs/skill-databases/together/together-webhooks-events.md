@@ -10,6 +10,7 @@ together-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Together AI webhook handling
 **Workflow:** Part of the cicd skill category for Together AI integration.
 **Relates to:** Other together skills in this pack.

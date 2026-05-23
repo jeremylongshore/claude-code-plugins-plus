@@ -2,7 +2,6 @@
 
 > Full implementation details for the parent SKILL.md.
 
-
 ## Architecture Patterns
 
 ### Pattern 1: Basic Integration
@@ -20,6 +19,7 @@
 ```
 
 **Use when:**
+
 - Small user base (<1000)
 - Simple CRUD operations
 - Low API call volume
@@ -41,6 +41,7 @@
 ```
 
 **Key components:**
+
 - Redis for API response caching
 - CDN for static content (note images)
 - Database for token storage
@@ -67,6 +68,7 @@
 ```
 
 **Use when:**
+
 - Real-time sync required
 - Multiple downstream consumers
 - High reliability needed
@@ -117,7 +119,6 @@
 │   └────────────────────────────────────────────────────────────────┘  │
 └────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ## Component Details
 
@@ -336,7 +337,6 @@ class SearchService {
 }
 ```
 
-
 ## Database Schema
 
 ```sql
@@ -386,7 +386,6 @@ CREATE TABLE notes_cache (
 );
 ```
 
-
 ## Infrastructure as Code
 
 ```yaml
@@ -431,7 +430,6 @@ resources:
       visibility_timeout_seconds: 300
       message_retention_seconds: 1209600
 ```
-
 
 ## Scaling Considerations
 

@@ -3,6 +3,7 @@
 ## Alerting Architecture
 
 ### Alert Hierarchy
+
 ```
 Critical (Page immediately)
 ├── Error rate > 10% (5 min)
@@ -21,6 +22,7 @@ Info (Daily digest)
 ```
 
 ### Issue Routing
+
 ```yaml
 # Alert rules by team
 backend-team:

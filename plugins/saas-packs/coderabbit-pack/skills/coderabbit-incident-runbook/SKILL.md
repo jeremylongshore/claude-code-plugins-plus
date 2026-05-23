@@ -27,6 +27,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Incident Runbook
 
 ## Overview
+
 Rapid incident response procedures when CodeRabbit stops reviewing PRs, blocks merges, or behaves incorrectly. Since CodeRabbit is a managed SaaS service, incidents fall into two categories: (1) CodeRabbit service outage (check their status page), or (2) local configuration/permission issues (fix on your side).
 
 ## Severity Levels
@@ -41,6 +42,7 @@ Rapid incident response procedures when CodeRabbit stops reviewing PRs, blocks m
 ## Instructions
 
 ### Step 1: Quick Triage (2 Minutes)
+
 ```bash
 set -euo pipefail
 echo "=== CodeRabbit Quick Triage ==="
@@ -61,6 +63,7 @@ echo "  → Local issue. Check installation, config, permissions."
 ```
 
 ### Step 2: P1 Emergency -- PRs Blocked
+
 ```bash
 set -euo pipefail
 OWNER="${1:-your-org}"
@@ -87,6 +90,7 @@ echo "Wait 5 minutes. If no response, use Option A or B."
 ```
 
 ### Step 3: P2 -- Reviews Not Posting
+
 ```bash
 set -euo pipefail
 OWNER="${1:-your-org}"
@@ -133,6 +137,7 @@ fi
 ```
 
 ### Step 4: P3 -- Reviews Delayed
+
 ```markdown
 # Reviews typically take:
 # - Small PRs (< 200 lines): 2-3 minutes
@@ -153,6 +158,7 @@ fi
 ```
 
 ### Step 5: P4 -- Incorrect or Noisy Reviews
+
 ```yaml
 # If CodeRabbit is posting irrelevant or incorrect reviews:
 
@@ -173,6 +179,7 @@ reviews:
 ```
 
 ### Step 6: Communication Template
+
 ```markdown
 # Internal Slack/Teams message:
 
@@ -190,6 +197,7 @@ reviews:
 ```
 
 ### Step 7: Post-Incident Recovery
+
 ```bash
 set -euo pipefail
 OWNER="${1:-your-org}"
@@ -222,6 +230,7 @@ echo "Create a test PR or post '@coderabbitai full review' on an open PR."
 ```
 
 ## Output
+
 - Incident severity classified and appropriate response executed
 - Emergency bypass applied if PRs are blocked
 - Root cause identified (service outage vs local issue)
@@ -230,6 +239,7 @@ echo "Create a test PR or post '@coderabbitai full review' on an open PR."
 - Post-incident review of PRs merged without review
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Cannot remove branch protection | Not an org admin | Escalate to org admin |
@@ -238,10 +248,12 @@ echo "Create a test PR or post '@coderabbitai full review' on an open PR."
 | Branch protection restore fails | API permissions | Use GitHub UI instead |
 
 ## Resources
+
 - [CodeRabbit Status Page](https://status.coderabbit.ai)
 - [CodeRabbit Discord](https://discord.gg/coderabbit)
 - [CodeRabbit Support](mailto:support@coderabbit.ai)
 - [GitHub Branch Protection API](https://docs.github.com/en/rest/branches/branch-protection)
 
 ## Next Steps
+
 For data handling, see `coderabbit-data-handling`.

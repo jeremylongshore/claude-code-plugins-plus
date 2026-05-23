@@ -10,6 +10,7 @@ miro-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Miro local development workflow
 **Workflow:** Part of the onboarding skill category for Miro integration.
 **Relates to:** Other miro skills in this pack.

@@ -10,6 +10,7 @@ snowflake-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Snowflake API performance
 **Workflow:** Part of the cicd skill category for Snowflake integration.
 **Relates to:** Other snowflake skills in this pack.

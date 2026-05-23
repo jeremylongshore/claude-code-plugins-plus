@@ -222,6 +222,7 @@ INTO OUTFILE '/tmp/incident-metrics.tsv';
 ## Communication Templates
 
 **Internal (Slack):**
+
 ```
 [P1] INCIDENT: ClickHouse [Issue Type]
 Status: INVESTIGATING / MITIGATING / RESOLVED
@@ -233,6 +234,7 @@ Commander: @[name]
 ```
 
 **Postmortem Template:**
+
 ```markdown
 ## ClickHouse Incident: [Title]
 - Date: YYYY-MM-DD

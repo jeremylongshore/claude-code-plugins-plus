@@ -10,6 +10,7 @@ maintainx-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute MaintainX primary workflow
 **Workflow:** Part of the onboarding skill category for MaintainX integration.
 **Relates to:** Other maintainx skills in this pack.

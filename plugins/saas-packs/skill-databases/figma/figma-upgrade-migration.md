@@ -10,6 +10,7 @@ figma-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Figma SDK upgrades
 **Workflow:** Part of the operations skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

@@ -98,6 +98,7 @@ This skill operates within the Firebase ecosystem on Google Cloud Platform. The 
 **Rationale**: Environment variables in `.env` files risk being committed to version control. Firebase's `defineSecret()` integration provisions secrets in Secret Manager and injects them at runtime without filesystem exposure.
 
 **Example**:
+
 ```typescript
 import { defineSecret } from "firebase-functions/params";
 const vertexKey = defineSecret("VERTEX_API_KEY");
@@ -114,6 +115,7 @@ export const chat = onCall({ secrets: [vertexKey] }, async (req) => {
 **Rationale**: Firebase Emulator Suite replicates Auth, Firestore, Functions, and Hosting locally. Testing against emulators avoids production data corruption, eliminates billing during development, and provides sub-second feedback. The `firebase.json` emulators block is generated with fixed ports to avoid conflicts.
 
 **Configuration**:
+
 ```json
 {
   "emulators": {
@@ -171,6 +173,7 @@ functions/
 ### Security Rules Architecture
 
 Rules use a layered approach:
+
 1. **Global helpers**: `isAuthenticated()`, `isOwner(uid)`, `hasRole(role)`
 2. **Collection rules**: Each collection match block references helpers
 3. **Field validation**: `request.resource.data` checks enforce schema at the rules layer
@@ -186,6 +189,7 @@ Rules use a layered approach:
 | prod | myapp-prod | us-central1 | Production traffic |
 
 Project aliases managed via `.firebaserc`:
+
 ```json
 {
   "projects": {

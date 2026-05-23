@@ -10,6 +10,7 @@ maintainx-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute MaintainX SDK upgrades
 **Workflow:** Part of the operations skill category for MaintainX integration.
 **Relates to:** Other maintainx skills in this pack.

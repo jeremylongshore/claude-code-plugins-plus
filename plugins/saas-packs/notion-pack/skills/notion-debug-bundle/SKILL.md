@@ -241,6 +241,7 @@ async function collectNotionDiagnostics(databaseId?: string) {
 ## Examples
 
 ### Token Format Validation
+
 ```bash
 # Valid formats (all start with ntn_):
 # ntn_abc123...  (internal integration token)
@@ -249,6 +250,7 @@ echo "Token prefix: ${NOTION_TOKEN:0:4}"
 ```
 
 ### Page ID Normalization
+
 ```typescript
 // Notion accepts both formats — but URLs use dashless form
 const withDashes    = '12345678-1234-1234-1234-123456789abc';

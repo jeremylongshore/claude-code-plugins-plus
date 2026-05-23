@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram CI Integration
 
 ## Overview
+
 Set up CI/CD pipelines for Deepgram integrations with GitHub Actions. Includes unit tests with mocked SDK, integration tests against the real API, smoke tests, automated key rotation, and deployment gates.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - `DEEPGRAM_API_KEY` stored as repository secret
 - `@deepgram/sdk` and `vitest` installed
@@ -300,6 +302,7 @@ jobs:
 ```
 
 ## Output
+
 - GitHub Actions workflow (unit -> integration -> smoke)
 - Integration test suite covering STT, diarization, TTS
 - Smoke test script with pass/fail exit codes
@@ -307,6 +310,7 @@ jobs:
 - Quarterly key rotation workflow
 
 ## Error Handling
+
 | Issue | Cause | Resolution |
 |-------|-------|------------|
 | Integration tests 401 | Secret not set or expired | Rotate `DEEPGRAM_API_KEY` secret |
@@ -315,6 +319,7 @@ jobs:
 | Fork PRs can't access secrets | GitHub security | Skip integration tests on fork PRs |
 
 ## Resources
+
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 - [Vitest CI Configuration](https://vitest.dev/guide/ci.html)
 - [Deepgram SDK Testing](https://developers.deepgram.com/docs/testing)

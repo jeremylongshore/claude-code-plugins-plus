@@ -10,6 +10,7 @@ obsidian-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Obsidian webhook handling
 **Workflow:** Part of the cicd skill category for Obsidian integration.
 **Relates to:** Other obsidian skills in this pack.

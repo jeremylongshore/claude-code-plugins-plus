@@ -3,6 +3,7 @@
 ## Basic Function Calling
 
 ### Define Tools
+
 ```python
 from openai import OpenAI
 
@@ -45,6 +46,7 @@ response = client.chat.completions.create(
 ```
 
 ### Handle Tool Calls
+
 ```python
 import json
 
@@ -85,6 +87,7 @@ def get_weather(location: str, unit: str = "celsius") -> dict:
 ```
 
 ### Complete Conversation Loop
+
 ```python
 def chat_with_tools(prompt: str, tools: list) -> str:
     """Complete conversation with tool execution."""

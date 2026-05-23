@@ -12,6 +12,7 @@ Monitor database transaction performance, detect long-running transactions, iden
 ## When to Use This Command
 
 Use `/txn-monitor` when you need to:
+
 - Detect and kill long-running transactions blocking other queries
 - Monitor lock wait times and identify deadlock patterns
 - Track transaction rollback rates for error analysis
@@ -20,6 +21,7 @@ Use `/txn-monitor` when you need to:
 - Investigate application connection leak issues
 
 DON'T use this when:
+
 - Database has minimal transaction load (<100 TPS)
 - All transactions complete within milliseconds
 - Looking for query optimization (use query optimizer instead)
@@ -28,6 +30,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **real-time transaction monitoring with automated alerting** because:
+
 - Long-running transactions (>30s) block other queries and cause performance degradation
 - Lock contention detection prevents cascade failures
 - Rollback rate monitoring identifies application bugs early
@@ -35,12 +38,14 @@ This command implements **real-time transaction monitoring with automated alerti
 - Historical trend analysis enables capacity planning
 
 **Alternative considered: Periodic manual checks**
+
 - No automated alerting on issues
 - Relies on humans checking dashboards
 - Slower incident response
 - Recommended only for development environments
 
 **Alternative considered: Database log parsing**
+
 - Post-mortem analysis only
 - No real-time alerts
 - Requires custom log parsing logic
@@ -49,6 +54,7 @@ This command implements **real-time transaction monitoring with automated alerti
 ## Prerequisites
 
 Before running this command:
+
 1. Database monitoring permissions (pg_monitor role or PROCESS privilege)
 2. Access to pg_stat_activity (PostgreSQL) or performance_schema (MySQL)
 3. Alerting infrastructure (Slack, PagerDuty, email)
@@ -58,23 +64,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Enable Transaction Monitoring
+
 Configure database to track transaction statistics.
 
 ### Step 2: Build Real-Time Monitor
+
 Create monitoring script that polls transaction statistics every 5-10 seconds.
 
 ### Step 3: Define Alert Thresholds
+
 Set thresholds for long-running transactions, lock waits, and rollback rates.
 
 ### Step 4: Implement Automated Actions
+
 Auto-kill transactions exceeding thresholds or alert operators.
 
 ### Step 5: Create Dashboards
+
 Build Grafana dashboards for transaction metrics visualization.
 
 ## Output Format
 
 The command generates:
+
 - `monitoring/transaction_monitor.py` - Real-time transaction monitoring daemon
 - `queries/transaction_analysis.sql` - Transaction health diagnostic queries
 - `alerts/transaction_alerts.yml` - Prometheus alerting rules
@@ -520,16 +532,19 @@ ORDER BY waiting_count DESC;
 ## Configuration Options
 
 **Monitoring Intervals**
+
 - `check_interval`: 5-10 seconds for real-time alerting
 - `long_transaction_threshold`: 30-60 seconds (production), 300s (analytics)
 - `idle_in_transaction_timeout`: 600 seconds (10 minutes)
 
 **Auto-Kill Thresholds**
+
 - Long-running OLTP: 60-300 seconds
 - Long-running analytics: 3600 seconds (1 hour)
 - Idle in transaction: 600 seconds (10 minutes)
 
 **Alert Thresholds**
+
 - Rollback rate: >5% warning, >10% critical
 - Blocked transactions: >10 warning, >50 critical
 - Active connections: >80% of max_connections
@@ -537,6 +552,7 @@ ORDER BY waiting_count DESC;
 ## Best Practices
 
 DO:
+
 - Set statement_timeout in application connection strings
 - Use connection pooling to limit total connections
 - Implement transaction timeout in application code
@@ -545,6 +561,7 @@ DO:
 - Track rollback reasons in application logs
 
 DON'T:
+
 - Leave transactions open while waiting for user input
 - Hold locks during expensive operations (file I/O, network calls)
 - Use long-running transactions in OLTP workloads

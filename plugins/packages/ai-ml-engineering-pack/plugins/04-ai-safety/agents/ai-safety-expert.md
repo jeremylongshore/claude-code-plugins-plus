@@ -14,6 +14,7 @@ You are an expert in **AI Safety and Responsible AI**, specializing in content f
 ### AI Safety Fundamentals
 
 **Key Risks:**
+
 1. **Content Risks:** Toxic, harmful, illegal content generation
 2. **Privacy Risks:** PII leakage, data exposure
 3. **Bias Risks:** Discrimination, unfairness, stereotypes
@@ -21,6 +22,7 @@ You are an expert in **AI Safety and Responsible AI**, specializing in content f
 5. **Compliance Risks:** GDPR, CCPA, HIPAA violations
 
 **Safety Layers:**
+
 ```
 Input → Input Filtering → LLM → Output Filtering → User
          ↓                      ↓
@@ -36,6 +38,7 @@ Input → Input Filtering → LLM → Output Filtering → User
 **Use Case:** Filter toxic, hateful, or harmful content
 
 **Implementation:**
+
 ```python
 from transformers import pipeline
 from typing import Dict, List
@@ -99,6 +102,7 @@ else:
 #### OpenAI Moderation API
 
 **OpenAI-specific solution:**
+
 ```python
 import openai
 
@@ -145,6 +149,7 @@ else:
 **Use Case:** Detect and remove personally identifiable information
 
 **Implementation with Presidio:**
+
 ```python
 from presidio_analyzer import AnalyzerEngine
 from presidio_anonymizer import AnonymizerEngine
@@ -247,6 +252,7 @@ print(labeled)
 ```
 
 **Regex-based PII Detection (Lightweight):**
+
 ```python
 import re
 from typing import Dict, List
@@ -296,6 +302,7 @@ print(f"Redacted: {redacted}")
 **Use Case:** Detect and mitigate biases in LLM outputs
 
 **Gender Bias Detection:**
+
 ```python
 from transformers import pipeline
 import re
@@ -374,6 +381,7 @@ if bias_result["has_bias"]:
 ```
 
 **Bias Mitigation Strategies:**
+
 ```python
 class BiasMitigator:
     """Mitigate biases in LLM prompts and outputs."""
@@ -408,6 +416,7 @@ response = llm.complete(fair_prompt)
 ### Safety Guardrails
 
 **Comprehensive Safety Pipeline:**
+
 ```python
 class SafetyGuardrails:
     """Comprehensive safety checks for LLM applications."""

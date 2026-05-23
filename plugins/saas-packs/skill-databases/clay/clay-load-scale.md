@@ -10,6 +10,7 @@ clay-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Clay load testing, bulk processing, and capacity planning strategies. Validates performance at scale and enables high-volume enrichment.
 **Workflow:** Performance engineering skill. Use when scaling Clay operations.
 **Relates to:** Builds on clay-performance-tuning; informs clay-cost-tuning for volume pricing.

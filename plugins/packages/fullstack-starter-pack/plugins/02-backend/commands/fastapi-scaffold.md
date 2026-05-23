@@ -14,15 +14,16 @@ Generates a complete FastAPI REST API boilerplate with async support, authentica
 ## What This Command Does
 
 **Generated Project:**
--  FastAPI with Python 3.10+
--  Async/await throughout
--  JWT authentication
--  Database integration (SQLAlchemy async)
--  Pydantic models & validation
--  Automatic OpenAPI docs
--  Testing setup (Pytest + httpx)
--  Docker configuration
--  Example CRUD endpoints
+
+- FastAPI with Python 3.10+
+- Async/await throughout
+- JWT authentication
+- Database integration (SQLAlchemy async)
+- Pydantic models & validation
+- Automatic OpenAPI docs
+- Testing setup (Pytest + httpx)
+- Docker configuration
+- Example CRUD endpoints
 
 **Output:** Complete API project ready for development
 
@@ -51,11 +52,13 @@ Generates a complete FastAPI REST API boilerplate with async support, authentica
 ## Example Output
 
 **Input:**
+
 ```
 /fas "Task Management API" --database postgresql
 ```
 
 **Generated Project Structure:**
+
 ```
 task-api/
 ├── app/
@@ -601,28 +604,33 @@ mypy==1.8.0
 ## Features
 
 **Performance:**
+
 - Async/await for high concurrency
 - Background tasks support
 - WebSocket support (optional)
 - Automatic Pydantic validation
 
 **Documentation:**
+
 - Auto-generated OpenAPI (Swagger)
 - ReDoc documentation
 - Type hints throughout
 
 **Database:**
+
 - SQLAlchemy ORM with async support
 - Alembic migrations
 - Connection pooling
 
 **Security:**
+
 - JWT authentication
 - Password hashing (bcrypt)
 - CORS middleware
 - Trusted host middleware
 
 **Testing:**
+
 - Pytest with async support
 - Test fixtures
 - Coverage reporting
@@ -632,31 +640,37 @@ mypy==1.8.0
 ## Getting Started
 
 **1. Install dependencies:**
+
 ```bash
 pip install -r requirements.txt
 ```
 
 **2. Configure environment:**
+
 ```bash
 cp .env.example .env
 # Edit .env with your database URL and secrets
 ```
 
 **3. Run database migrations:**
+
 ```bash
 alembic upgrade head
 ```
 
 **4. Start development server:**
+
 ```bash
 uvicorn app.main:app --reload
 ```
 
 **5. View API docs:**
+
 - Swagger UI: http://localhost:8000/api/v1/docs
 - ReDoc: http://localhost:8000/api/v1/redoc
 
 **6. Run tests:**
+
 ```bash
 pytest
 ```
@@ -671,4 +685,4 @@ pytest
 
 ---
 
-**Build high-performance APIs. Scale effortlessly. Deploy confidently.** 
+**Build high-performance APIs. Scale effortlessly. Deploy confidently.**

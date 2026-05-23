@@ -12,6 +12,7 @@ When your sponsor page looks like it belongs to a different website than your ho
 The Claude Code Plugins marketplace had evolved organically. The homepage used Anthropic's warm, professional brand colors (orange, green, earthy tones). The sponsor page? Still using generic blue CTAs and inconsistent grays from an earlier design phase.
 
 **Initial state:**
+
 - Homepage: Anthropic orange (#d97757), green (#788c5d), sophisticated grays
 - Sponsor page: Generic blue (#0066CC), basic grays, no brand alignment
 - Result: Users clicking from homepage to sponsor page felt like they'd left the site
@@ -23,6 +24,7 @@ This wasn't just aesthetic—it undermined the professional positioning we were 
 My first instinct? Global find-replace. Search for `#0066CC`, replace with `#d97757`. Ship it.
 
 **Why this failed:**
+
 ```css
 /* This approach creates maintenance hell */
 .cta-primary {
@@ -96,6 +98,7 @@ Now all colors reference the system:
 Rather than 100+ individual color changes, I focused on component-level migrations:
 
 ### 1. Hero Section (Immediate Brand Impact)
+
 ```css
 .sponsor-hero {
   background: var(--brand-light);  /* Was #FFFFFF */
@@ -114,6 +117,7 @@ Rather than 100+ individual color changes, I focused on component-level migratio
 **Impact:** Users immediately see brand alignment when landing on sponsor page.
 
 ### 2. CTA Buttons (Conversion Elements)
+
 ```css
 .cta-primary {
   color: var(--brand-light);
@@ -139,6 +143,7 @@ Rather than 100+ individual color changes, I focused on component-level migratio
 **Impact:** All CTAs now use consistent brand orange instead of generic blue.
 
 ### 3. Pricing Cards (Trust Elements)
+
 ```css
 .pricing-card {
   background: var(--brand-light);
@@ -163,6 +168,7 @@ Rather than 100+ individual color changes, I focused on component-level migratio
 **Why green for checkmarks?** In the Anthropic brand palette, green (#788c5d) signals trust and approval. Blue felt too corporate, orange too attention-grabbing. Green was perfect for "yes, this feature is included."
 
 ### 4. Tables and Data Display
+
 ```css
 .comparison-table {
   background: var(--brand-light);
@@ -180,6 +186,7 @@ Rather than 100+ individual color changes, I focused on component-level migratio
 ```
 
 ### 5. Roadmap and Success Cards
+
 ```css
 .roadmap-tier {
   background: rgba(217, 119, 87, 0.1);  /* 10% opacity orange */
@@ -199,6 +206,7 @@ Rather than 100+ individual color changes, I focused on component-level migratio
 **Pattern learned:** Use brand-orange at 10% opacity for subtle backgrounds, full color for borders and accents.
 
 ### 6. Final CTA Section
+
 ```css
 .final-cta {
   background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
@@ -216,6 +224,7 @@ Rather than 100+ individual color changes, I focused on component-level migratio
 While testing the color changes on mobile, I noticed horizontal scrolling. The colors looked great, but the page was broken.
 
 **Root cause:**
+
 ```css
 /* Footer had excessive padding */
 footer {
@@ -232,6 +241,7 @@ footer {
 On iPhone screens (390px), the padding alone consumed 128px (64px × 2), leaving only 262px for content. Links with text like "Enterprise GitHub Sponsors" broke the layout.
 
 **Fix:**
+
 ```css
 footer {
   padding: 4rem 2rem;  /* Reduced from 4rem all sides */
@@ -266,6 +276,7 @@ git commit -m "fix(sponsor): update sponsor page to match Anthropic brand colors
 ```
 
 **Why separate commits?**
+
 - **Messaging** could be reverted without affecting design
 - **Mobile fix** was a critical bug that needed quick rollback capability
 - **Brand colors** was a safe, large-scale visual change
@@ -293,6 +304,7 @@ curl -I https://claudecodeplugins.io/sponsor/
 ## Lessons: Design System Migration
 
 ### What Worked
+
 1. **CSS variables prevent ripple effects** - Change `--brand-orange` once, update 50+ usages automatically
 2. **Component-level thinking** - Migrate hero section, then CTAs, then cards—each self-contained
 3. **Test on real devices** - Desktop looked fine, mobile revealed the overflow bug
@@ -300,16 +312,19 @@ curl -I https://claudecodeplugins.io/sponsor/
 5. **Deploy in stages** - Homepage first, sponsor page second, verify consistency
 
 ### What I'd Do Differently
+
 1. **Audit mobile first** - I found the overflow issue late because I was focused on colors
 2. **Document color semantics** - Why is green for checkmarks? Why orange for CTAs? Write it down
 3. **Create design token documentation** - `--brand-orange` is obvious, but what about `--brand-light-gray` vs `--brand-mid-gray`?
 
 ### The Real Win
+
 Before this migration, changing the brand colors would have required touching hundreds of lines of CSS across multiple files. With CSS variables, I can now rebrand the entire site by updating 10 variables in one place.
 
 That's the power of design systems: not making things look good once, but making it easy to keep them looking good forever.
 
 ## Technical Specs
+
 - **Framework:** Astro 5.15.6
 - **Styling:** Custom CSS with design tokens
 - **Typography:** Lora (serif) for body, Poppins (sans-serif) for headings
@@ -317,8 +332,7 @@ That's the power of design systems: not making things look good once, but making
 - **Cache:** CloudFlare CDN, 10-minute cache
 - **Lines changed:** 123 insertions, 95 deletions (net +28 lines)
 
-
 **Related posts:**
+
 - [Automating Developer Workflows with Custom AI Commands](https://startaitools.com/posts/automating-developer-workflows-custom-ai-commands/)
 - [AI-Assisted Technical Writing Automation Workflows](https://startaitools.com/posts/ai-assisted-technical-writing-automation-workflows/)
-

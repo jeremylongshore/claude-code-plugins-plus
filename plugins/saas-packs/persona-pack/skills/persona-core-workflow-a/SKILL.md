@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Persona Core Workflow A — KYC Inquiry Flow
 
 ## Overview
+
 Build a complete KYC onboarding flow: create an inquiry from a template, embed the Persona verification UI in your web app, handle completion callbacks, and store verification results.
 
 ## Prerequisites
+
 - Completed `persona-install-auth` setup
 - Inquiry Template configured in Persona Dashboard
 - Web application with a frontend (React, HTML, etc.)
@@ -37,6 +39,7 @@ Build a complete KYC onboarding flow: create an inquiry from a template, embed t
 ## Instructions
 
 ### Step 1: Backend — Create Inquiry Endpoint
+
 ```typescript
 // server.ts — Express endpoint to create inquiries
 import express from 'express';
@@ -76,6 +79,7 @@ app.post('/api/verify', async (req, res) => {
 ```
 
 ### Step 2: Frontend — Embed Persona Flow
+
 ```html
 <!-- Include Persona's JavaScript SDK -->
 <script src="https://cdn.withpersona.com/dist/persona-v5.0.0.js"></script>
@@ -115,6 +119,7 @@ document.getElementById('verify-btn').addEventListener('click', async () => {
 ```
 
 ### Step 3: Backend — Handle Completion
+
 ```typescript
 app.post('/api/verify/:inquiryId/complete', async (req, res) => {
   const { inquiryId } = req.params;
@@ -143,6 +148,7 @@ app.post('/api/verify/:inquiryId/complete', async (req, res) => {
 ```
 
 ### Step 4: Resume Incomplete Inquiries
+
 ```typescript
 app.get('/api/verify/resume/:userId', async (req, res) => {
   // Find existing incomplete inquiry for this user
@@ -169,12 +175,14 @@ app.get('/api/verify/resume/:userId', async (req, res) => {
 ```
 
 ## Output
+
 - Backend endpoint creating inquiries from templates
 - Embedded Persona verification UI in web app
 - Completion callback storing verification results
 - Resume flow for incomplete verifications
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `422 Invalid template` | Wrong template ID | Verify `itmpl_*` in Dashboard |
@@ -183,10 +191,12 @@ app.get('/api/verify/resume/:userId', async (req, res) => {
 | Stale session token | Token expired | Create new inquiry or resume |
 
 ## Resources
+
 - [Inquiries Overview](https://docs.withpersona.com/inquiries)
 - [Embedded Flow Integration](https://docs.withpersona.com/api-quickstart-tutorial)
 - [Resume Inquiry](https://docs.withpersona.com/accessing-inquiry-status)
 
 ## Next Steps
+
 - Add verification checks: `persona-core-workflow-b`
 - Set up webhooks: `persona-webhooks-events`

@@ -22,6 +22,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 NFT rarity analysis skill that:
+
 - Fetches collection metadata from OpenSea API
 - Parses and normalizes trait attributes
 - Calculates rarity using multiple algorithms
@@ -43,6 +44,7 @@ cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py collection boredape
 ```
 
 Options:
+
 1. `--limit 500`: Fetch more tokens for analysis
 2. `--top 50`: Show top 50 tokens
 3. `--traits`: Include trait distribution
@@ -70,11 +72,13 @@ cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py traits doodles
 ### 5. Export Rankings
 
 JSON:
+
 ```bash
 cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py export coolcats > rankings.json
 ```
 
 CSV:
+
 ```bash
 cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py export coolcats --format csv > rankings.csv
 ```
@@ -105,6 +109,7 @@ cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py cache --clear
 ## Supported Collections
 
 Works with any ERC-721/ERC-1155 collection that has:
+
 - OpenSea listing
 - Standard attributes array format
 - Accessible metadata
@@ -112,6 +117,7 @@ Works with any ERC-721/ERC-1155 collection that has:
 ## Error Handling
 
 See `${CLAUDE_SKILL_DIR}/references/errors.md` for:
+
 - API rate limiting
 - IPFS gateway issues
 - Collection not found
@@ -120,6 +126,7 @@ See `${CLAUDE_SKILL_DIR}/references/errors.md` for:
 ## Examples
 
 See `${CLAUDE_SKILL_DIR}/references/examples.md` for:
+
 - Collection analysis workflows
 - Token comparison
 - Export and caching

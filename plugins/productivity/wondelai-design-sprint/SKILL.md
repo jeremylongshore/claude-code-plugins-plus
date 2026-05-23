@@ -29,6 +29,7 @@ Monday → Tuesday → Wednesday → Thursday → Friday
 ```
 
 **Prerequisites:**
+
 - **Big challenge:** Important problem worth a week's focus
 - **Right team:** Decision maker + 4-7 people with diverse expertise
 - **Time commitment:** 5 full days (10am-5pm), no interruptions
@@ -43,10 +44,12 @@ Monday → Tuesday → Wednesday → Thursday → Friday
 ### Morning: Start at the End
 
 **Exercise: Long-term goal**
+
 - Write the sprint question: "What do we want to be true in 2 years?"
 - Example: "Customers use our product daily" or "We've captured 20% market share"
 
 **Exercise: Sprint questions**
+
 - List obstacles and unknowns as questions
 - Example: "Will customers trust us with payment info?" or "Can first-time users figure out the interface?"
 
@@ -55,18 +58,21 @@ Monday → Tuesday → Wednesday → Thursday → Friday
 ### Afternoon: Map the Challenge
 
 **Exercise: Map the customer journey**
+
 1. List actors (different types of customers/users)
 2. Draw the journey from start to finish (left to right on whiteboard)
 3. Keep it simple: 5-15 steps max
 4. Example: "Hears about product → Visits site → Signs up → First use → Becomes regular user"
 
 **Exercise: Ask the Experts**
+
 - Interview team members with specialized knowledge
 - CEO, designer, engineer, customer support, sales
 - Take detailed notes on whiteboard
 - Capture "How Might We" notes (HMW)
 
 **Exercise: How Might We (HMW) notes**
+
 - Rephrase problems as opportunities
 - "Customers don't understand pricing" → HMW make pricing immediately clear?
 - Write each HMW on a sticky note
@@ -75,6 +81,7 @@ Monday → Tuesday → Wednesday → Thursday → Friday
 ### End of Day: Pick a Target
 
 **Exercise: Choose the target**
+
 - Which part of the map (customer journey) will you focus on?
 - Where's the biggest risk or opportunity?
 - Example: "We'll focus on the first 10 minutes after signup"
@@ -82,6 +89,7 @@ Monday → Tuesday → Wednesday → Thursday → Friday
 **Decider:** The person with authority makes the final call.
 
 **Monday output:**
+
 - Long-term goal
 - Sprint questions
 - Customer journey map
@@ -98,12 +106,14 @@ See: [references/monday.md](references/monday.md) for detailed Monday exercises 
 ### Morning: Lightning Demos
 
 **Exercise: Find inspiration**
+
 - Look at competitors and analogous products
 - 3-minute demos: "Here's what I found, here's why it's interesting"
 - Capture good ideas on whiteboard
 - Don't limit to your industry—borrow from anywhere
 
 **Exercise: Divide or swarm**
+
 - Divide: If map has multiple parts, different people tackle different sections
 - Swarm: If one critical problem, everyone tackles the same thing
 - Most sprints = swarm
@@ -113,21 +123,25 @@ See: [references/monday.md](references/monday.md) for detailed Monday exercises 
 **Goal:** Everyone individually sketches a detailed solution (not as a group!)
 
 **Step 1: Notes (20 minutes)**
+
 - Walk around room, review map, HMWs, inspiration
 - Take notes silently
 
 **Step 2: Ideas (20 minutes)**
+
 - Rough doodles, mind maps, stick figures
 - Quantity over quality
 - Still working alone
 
 **Step 3: Crazy 8s (8 minutes)**
+
 - Fold paper into 8 sections
 - Sketch 8 variations in 8 minutes (1 minute each)
 - Forces you past first idea
 - Can be 8 variations on one idea or 8 different ideas
 
 **Step 4: Solution Sketch (30-90 minutes)**
+
 - 3-panel storyboard showing customer experience
 - Step 1 → Step 2 → Step 3 (beginning, middle, end)
 - Make it self-explanatory (someone should understand without you explaining)
@@ -138,6 +152,7 @@ See: [references/monday.md](references/monday.md) for detailed Monday exercises 
 **Critical:** No group brainstorming. Individual work produces better, more diverse ideas.
 
 **Tuesday output:**
+
 - Each person has a detailed solution sketch
 - Sketches are anonymous and self-explanatory
 
@@ -150,12 +165,14 @@ See: [references/tuesday.md](references/tuesday.md) for sketching templates and 
 ### Morning: Sticky Decision
 
 **Exercise: Art museum**
+
 - Tape solution sketches to wall
 - Give everyone dot stickers
 - Silently review sketches (no talking!)
 - Put dots next to interesting parts
 
 **Exercise: Heat map review**
+
 - Discuss each sketch for 3 minutes
 - Facilitator narrates: "Here they see X, then click Y..."
 - Sketcher stays silent (don't reveal yourself yet)
@@ -163,6 +180,7 @@ See: [references/tuesday.md](references/tuesday.md) for sketching templates and 
 - Scribe captures standout ideas on whiteboard
 
 **Exercise: Straw poll**
+
 - Each person votes for one solution (put one large dot)
 - Explain your vote in 1 sentence
 - This is non-binding, just to see preferences
@@ -172,12 +190,14 @@ See: [references/tuesday.md](references/tuesday.md) for sketching templates and 
 ### Afternoon: Rumble or All-in-One
 
 **If multiple winners:**
+
 - **Rumble:** Competing prototypes (test different approaches)
 - **All-in-One:** Combine best ideas into one prototype
 
 **Most sprints:** All-in-one (simpler to prototype and test)
 
 **Exercise: Storyboard**
+
 - Draw 10-15 panel storyboard (comic book style)
 - Each panel = one screen or step
 - Opening scene: How customer discovers you
@@ -186,6 +206,7 @@ See: [references/tuesday.md](references/tuesday.md) for sketching templates and 
 - Include just enough detail for Friday's prototype
 
 **Storyboard rules:**
+
 - Keep it simple
 - Use stick figures
 - Words and arrows okay
@@ -193,6 +214,7 @@ See: [references/tuesday.md](references/tuesday.md) for sketching templates and 
 - 10-15 panels max
 
 **Wednesday output:**
+
 - Winning solution(s) chosen
 - Detailed storyboard ready to prototype
 
@@ -203,12 +225,14 @@ See: [references/wednesday.md](references/wednesday.md) for decision exercises a
 **Goal:** Build a realistic facade. You need something to test on Friday.
 
 **Prototype mindset:**
+
 - Fake it
 - Prototype only what you'll test
 - Goldilocks quality: not too high, not too low (realistic enough to get honest reactions)
 - One day only
 
 **Prototype fidelity:**
+
 - **Too low:** Sketches, wireframes (customers can't react realistically)
 - **Too high:** Working code, pixel-perfect design (wastes time)
 - **Just right:** Looks real, doesn't work real (facades, click-through, video)
@@ -216,48 +240,58 @@ See: [references/wednesday.md](references/wednesday.md) for decision exercises a
 ### Assign Roles
 
 **Makers** (2+ people):
+
 - Designer, writer, asset collector (images, icons)
 - Build the prototype
 
 **Stitcher** (1 person):
+
 - Combines pieces into final prototype
 - Usually in Keynote, Figma, or prototyping tool
 
 **Writer** (1 person):
+
 - Writes all copy
 - Headlines, button labels, descriptions
 
 **Collector** (1-2 people):
+
 - Gathers assets (photos, icons, competitor screenshots)
 - Provides raw materials
 
 **Interviewer** (1 person):
+
 - Writes interview script for Friday
 - Practices interviewing
 
 **Sprint Master:**
+
 - Helps where needed
 - Keeps energy up
 
 ### Build the Prototype
 
 **Tools:**
+
 - **Web/App:** Figma, Keynote, PowerPoint (linked slides)
 - **Physical Product:** Video walkthrough, 3D-printed mockup
 - **Service:** Role-play video, scripted interaction
 
 **Thursday morning:**
+
 - Divide storyboard into scenes
 - Assign scenes to makers
 - Start building
 
 **Thursday afternoon:**
+
 - Stitch together
 - Review as team (does it match storyboard?)
 - Rehearse for Friday (run through entire flow)
 - Trial run (test with someone not on sprint team)
 
 **Prototype checklist:**
+
 - [ ] Follows storyboard exactly
 - [ ] Looks real enough to get honest reactions
 - [ ] Can walk through in 5-15 minutes
@@ -265,6 +299,7 @@ See: [references/wednesday.md](references/wednesday.md) for decision exercises a
 - [ ] Trial run completed
 
 **Thursday output:**
+
 - Realistic prototype ready to test
 - Interview script written
 - Interview room prepared
@@ -278,39 +313,46 @@ See: [references/thursday.md](references/thursday.md) for prototyping tools and 
 ### Setup
 
 **Interview room:**
+
 - Quiet space with table, 2 chairs
 - Laptop with prototype
 - Camera recording screen and customer face
 
 **Observation room:**
+
 - Separate room with live video feed
 - Team watches together
 - Whiteboard for notes
 
 **Roles:**
+
 - **Interviewer:** Conducts all 5 interviews
 - **Team:** Watches, takes notes
 
 ### The Five-Act Interview
 
 **Act 1: Friendly Welcome (5 min)**
+
 - Greet warmly
 - Explain you're testing prototype, not them
 - Ask permission to record
 - Encourage thinking aloud
 
 **Act 2: Context Questions (5 min)**
+
 - Ask about their background
 - Example: "Tell me about how you currently handle [problem]"
 - Goal: Understand their mindset and current behavior
 
 **Act 3: Introduce the Prototype (5 min)**
+
 - Show landing page or entry point
 - "What's this? What do you think it's for?"
 - Don't explain—let them interpret
 - Note: Do they get it?
 
 **Act 4: Tasks and Nudges (15 min)**
+
 - Give open-ended task: "Go ahead and explore"
 - Follow with specific tasks from storyboard: "Try to [complete action]"
 - Use nudges when stuck: "What would you do next?" or "What's going through your mind?"
@@ -318,6 +360,7 @@ See: [references/thursday.md](references/thursday.md) for prototyping tools and 
 - Encourage thinking aloud
 
 **Act 5: Debrief (5 min)**
+
 - "What did you think overall?"
 - "Who is this for?"
 - "What worked? What was confusing?"
@@ -326,6 +369,7 @@ See: [references/thursday.md](references/thursday.md) for prototyping tools and 
 **Interview length:** ~30 minutes per customer
 
 **Between interviews:**
+
 - 30-minute break
 - Team discusses observations
 - Update questions if needed
@@ -333,11 +377,13 @@ See: [references/thursday.md](references/thursday.md) for prototyping tools and 
 ### Five Is the Magic Number
 
 **Why 5 customers?**
+
 - Patterns emerge after 3-5 people
 - Diminishing returns after 5
 - Doable in one day (5 × 1 hour = 5 hours with breaks)
 
 **Who to recruit:**
+
 - Target customers (match your personas)
 - Screener survey to qualify
 - Incentive ($100-$200 for B2B, $50-$100 for B2C)
@@ -352,11 +398,13 @@ See: [references/thursday.md](references/thursday.md) for prototyping tools and 
 | Customer 1 notes | Customer 2 notes | Customer 3 notes | Customer 4 notes | Customer 5 notes |
 
 **Mark with ✓, ✗, or ~:**
+
 - ✓ Positive reaction, success
 - ✗ Negative reaction, failure
 - ~ Neutral or mixed
 
 **After all 5 interviews:**
+
 - Look for patterns (did all 5 struggle with the same thing?)
 - Count ✓ ✗ ~ per row
 - Identify what worked and what failed
@@ -366,25 +414,30 @@ See: [references/thursday.md](references/thursday.md) for prototyping tools and 
 **Organize findings:**
 
 **✓ What worked:**
+
 - Features/flows that all customers understood
 - Messaging that resonated
 - Design that felt intuitive
 
 **✗ What failed:**
+
 - Confusing terminology
 - Missing steps
 - Wrong assumptions
 
 **~ Mixed results:**
+
 - Some got it, some didn't
 - Unclear if it matters
 
 **Next steps:**
+
 - **If core concept validated:** Build it (or next sprint on details)
 - **If major issues:** Pivot or next sprint to solve problems
 - **If totally failed:** Back to drawing board (but you saved months!)
 
 **Friday output:**
+
 - Interview videos
 - Pattern notes
 - Clear list of what works, what doesn't
@@ -395,6 +448,7 @@ See: [references/friday.md](references/friday.md) for interview scripts and note
 ## When to Run a Design Sprint
 
 **Run a sprint when:**
+
 - High-stakes decision
 - Not enough time to build and test normally
 - Team is stuck in endless debate
@@ -403,6 +457,7 @@ See: [references/friday.md](references/friday.md) for interview scripts and note
 - Need to de-risk before investing
 
 **Don't run a sprint when:**
+
 - Problem is clear and solution is obvious
 - You just need to execute
 - Team isn't bought in
@@ -411,17 +466,20 @@ See: [references/friday.md](references/friday.md) for interview scripts and note
 ## Variations
 
 **4-Day Sprint:**
+
 - Day 1: Map + Sketch (compressed)
 - Day 2: Decide
 - Day 3: Prototype
 - Day 4: Test
 
 **Remote Sprint:**
+
 - Use Miro/FigJam for whiteboarding
 - Zoom for meetings
 - Same schedule, digital tools
 
 **Multi-Sprint:**
+
 - Sprint 1: Broad problem, choose direction
 - Sprint 2: Deep dive on chosen solution
 - Sprint 3: Refine details

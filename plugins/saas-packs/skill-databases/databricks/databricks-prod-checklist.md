@@ -10,6 +10,7 @@ databricks-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Databricks production deployment checklist
 **Workflow:** Part of the operations skill category for Databricks integration.
 **Relates to:** Other databricks skills in this pack.

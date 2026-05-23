@@ -41,6 +41,7 @@ Track cryptocurrency holdings with real-time CoinGecko valuations, allocation an
    - Export: JSON or CSV for external tools
 
 2. **Run the portfolio tracker** with appropriate options:
+
    ```bash
    # Quick portfolio summary
    python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json
@@ -53,6 +54,7 @@ Track cryptocurrency holdings with real-time CoinGecko valuations, allocation an
    ```
 
 3. **Export results** for analysis tools or tax reporting:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --format json --output portfolio_export.json
    python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --format csv --output portfolio.csv

@@ -3,6 +3,7 @@
 ## Key Metrics
 
 ### Completion Metrics
+
 ```
 Completion Acceptance Rate:
 = Accepted completions / Total completions × 100
@@ -17,6 +18,7 @@ Compare across teams
 ```
 
 ### Chat Metrics
+
 ```
 Chat Sessions per Day:
 - Average messages per session
@@ -30,6 +32,7 @@ Useful queries:
 ```
 
 ### Composer Metrics
+
 ```
 Composer Usage:
 - Operations per week

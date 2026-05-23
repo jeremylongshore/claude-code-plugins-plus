@@ -52,6 +52,7 @@ vercel --prod
 ```
 
 **API Route (Next.js / Vercel):**
+
 ```typescript
 // app/api/tts/route.ts
 import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
@@ -100,6 +101,7 @@ export async function POST(req: Request) {
 ```
 
 **vercel.json:**
+
 ```json
 {
   "env": {
@@ -118,6 +120,7 @@ export async function POST(req: Request) {
 Better for long-running TTS, WebSocket streaming, and high concurrency.
 
 **fly.toml:**
+
 ```toml
 app = "my-tts-service"
 primary_region = "iad"
@@ -158,6 +161,7 @@ fly logs
 ```
 
 **Express server with streaming:**
+
 ```typescript
 // server.ts
 import express from "express";
@@ -232,6 +236,7 @@ echo -n "sk_your_prod_key" | gcloud secrets create elevenlabs-api-key --data-fil
 ```
 
 **Dockerfile:**
+
 ```dockerfile
 FROM node:20-slim
 WORKDIR /app

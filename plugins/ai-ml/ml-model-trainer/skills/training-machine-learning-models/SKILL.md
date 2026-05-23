@@ -33,6 +33,7 @@ This skill empowers Claude to automatically train and evaluate machine learning 
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Train a machine learning model on a given dataset.
 - Evaluate the performance of a machine learning model.
 - Automate the machine learning model training process.
@@ -44,6 +45,7 @@ This skill activates when you need to:
 User request: "Train a classification model on this dataset of customer churn data."
 
 The skill will:
+
 1. Analyze the customer churn data, identify the churn status as the target variable, and determine that a classification model is appropriate.
 2. Select a suitable classification algorithm (e.g., Logistic Regression, Random Forest), train the model using cross-validation, and generate performance metrics such as accuracy, precision, and recall.
 
@@ -52,6 +54,7 @@ The skill will:
 User request: "Train a regression model to predict house prices based on features like size, location, and number of bedrooms."
 
 The skill will:
+
 1. Analyze the house price data, identify the price as the target variable, and determine that a regression model is appropriate.
 2. Select a suitable regression algorithm (e.g., Linear Regression, Support Vector Regression), train the model using cross-validation, and generate performance metrics such as Mean Squared Error (MSE) and R-squared.
 

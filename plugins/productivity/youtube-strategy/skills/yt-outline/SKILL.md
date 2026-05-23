@@ -39,6 +39,7 @@ You need:
 ### Step 1: Research the Topic in Depth
 
 Before writing the outline, deeply understand the feature/tool being demonstrated:
+
 - Verify all steps work as expected (use WebSearch to check documentation)
 - Identify potential gotchas or failure points
 - Note any prerequisites the viewer needs
@@ -49,6 +50,7 @@ Before writing the outline, deeply understand the feature/tool being demonstrate
 Based on the content type from the brief, choose the appropriate structure:
 
 **For Feature Tutorials (15-30 min):**
+
 1. Hook (30-60 sec) - What they'll be able to do by the end
 2. Context (1-2 min) - Why this matters, brief overview
 3. Core demonstration (10-20 min) - Step-by-step walkthrough
@@ -56,6 +58,7 @@ Based on the content type from the brief, choose the appropriate structure:
 5. CTA + wrap (1-2 min) - Asset giveaway, community mention
 
 **For Update Videos (10-20 min):**
+
 1. Hook (30 sec) - What just changed
 2. Overview (1-2 min) - What the update includes
 3. Walkthrough (8-15 min) - Demo each new feature
@@ -63,6 +66,7 @@ Based on the content type from the brief, choose the appropriate structure:
 5. CTA + wrap (1 min) - Asset giveaway
 
 **For Use Case Videos (15-30 min):**
+
 1. Hook (30-60 sec) - The impressive outcome
 2. Problem (1-2 min) - What manual process this replaces
 3. Solution overview (1-2 min) - High-level workflow
@@ -71,6 +75,7 @@ Based on the content type from the brief, choose the appropriate structure:
 6. CTA + wrap (1-2 min) - Asset giveaway
 
 **For Full Tutorials (30-90+ min):**
+
 1. Hook (1-2 min) - What they'll know by the end
 2. Overview/roadmap (2-3 min) - What the tutorial covers
 3. Setup (5-10 min) - Getting started from scratch
@@ -84,27 +89,32 @@ Based on the content type from the brief, choose the appropriate structure:
 For each section, specify:
 
 **Talking points:**
+
 - Key message for this section (not a script - bullet points)
 - Transition from previous section
 - Any specific phrases or analogies to use
 
 **What's on screen:**
+
 - Screen-share of what tool/feature
 - Specific actions to perform (click here, type this, navigate there)
 - Any diagrams, slides, or supporting visuals
 
 **Demo sequence:**
+
 - Exact steps to demonstrate
 - Expected outcome the viewer should see
 - What to do if something goes wrong (backup plan)
 
 **Timing:**
+
 - Target duration for this section
 - Running total to stay within target video length
 
 ### Step 4: Create Demo Prep Checklist
 
 For each demo in the outline, specify what the team needs to prepare:
+
 - Accounts and tools to have logged in
 - Sample data or projects to have ready
 - Environment settings (clean workspace, no notifications, etc.)
@@ -131,6 +141,7 @@ Also present the demo prep checklist separately:
 ```
 
 "Here's the outline and demo prep list. The team can start preparing."
+
 - Approve and start prep
 - Adjust section order
 - Add/remove sections
@@ -140,6 +151,7 @@ Also present the demo prep checklist separately:
 ### Step 6: Save
 
 Save two files:
+
 - `video-outline-yt-outline.md` - The full outline
 - `demo-prep-checklist-yt-outline.md` - The team's preparation checklist
 

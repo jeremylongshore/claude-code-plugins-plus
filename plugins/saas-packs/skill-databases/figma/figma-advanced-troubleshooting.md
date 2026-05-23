@@ -10,6 +10,7 @@ figma-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Figma advanced debugging
 **Workflow:** Part of the enterprise skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

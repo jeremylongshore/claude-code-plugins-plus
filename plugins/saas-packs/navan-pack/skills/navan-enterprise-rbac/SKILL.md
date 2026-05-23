@@ -22,9 +22,11 @@ compatibility: Designed for Claude Code
 # Navan Enterprise RBAC
 
 ## Overview
+
 Navan's enterprise tier provides granular role-based access control, configurable travel policies, and multi-tier approval workflows. The platform enforces in-policy vs out-of-policy bookings at the point of purchase — travelers see policy-compliant options highlighted and must justify out-of-policy selections through approval chains. This skill covers the admin role hierarchy, policy rule configuration, department-scoped access, and API-driven policy management.
 
 ## Prerequisites
+
 - Navan enterprise account with Global Admin or Travel Admin access
 - OAuth 2.0 credentials with admin-scoped permissions (see `navan-install-auth`)
 - Organizational hierarchy defined (departments, cost centers, reporting lines)
@@ -33,6 +35,7 @@ Navan's enterprise tier provides granular role-based access control, configurabl
 ## Instructions
 
 ### Step 1: Understand the Navan Role Hierarchy
+
 ```
 Global Admin
 ├── Travel Admin         — Manage travel policies, view all bookings
@@ -54,6 +57,7 @@ Global Admin
 | Traveler | Self | No | Own Only | No | No |
 
 ### Step 2: Configure Travel Policy Rules via API
+
 ```typescript
 const accessToken = process.env.NAVAN_ACCESS_TOKEN!;
 
@@ -102,6 +106,7 @@ const newPolicy = await fetch('https://api.navan.com/v1/travel-policies', {
 ```
 
 ### Step 3: Set Up Approval Workflows
+
 ```typescript
 // Configure multi-tier approval chain
 const approvalWorkflow = await fetch('https://api.navan.com/v1/approval-workflows', {
@@ -146,6 +151,7 @@ const approvalWorkflow = await fetch('https://api.navan.com/v1/approval-workflow
 ```
 
 ### Step 4: Assign Users to Departments and Roles
+
 ```typescript
 // Bulk role assignment for department onboarding
 async function assignDepartmentRoles(
@@ -184,6 +190,7 @@ await assignDepartmentRoles('dept-eng-001', [
 ```
 
 ### Step 5: Audit Role Assignments
+
 ```bash
 # List all users with admin roles
 curl -s -H "Authorization: Bearer $NAVAN_ACCESS_TOKEN" \
@@ -196,9 +203,11 @@ curl -s -H "Authorization: Bearer $NAVAN_ACCESS_TOKEN" \
 ```
 
 ## Output
+
 A fully configured RBAC system with department-scoped travel policies, multi-tier approval workflows, and role assignments for the organizational hierarchy. Travelers see policy-compliant options at booking time, out-of-policy requests route through the approval chain, and admins have audit visibility into policy violations.
 
 ## Error Handling
+
 | Error | Code | Solution |
 |-------|------|----------|
 | Insufficient admin permissions | 403 | Requesting user needs Global Admin or Travel Admin role |
@@ -210,6 +219,7 @@ A fully configured RBAC system with department-scoped travel policies, multi-tie
 ## Examples
 
 **Check a user's effective policy:**
+
 ```bash
 curl -s -H "Authorization: Bearer $NAVAN_ACCESS_TOKEN" \
   'https://api.navan.com/v1/users/user@company.com/effective-policy' \
@@ -217,6 +227,7 @@ curl -s -H "Authorization: Bearer $NAVAN_ACCESS_TOKEN" \
 ```
 
 **Export policy compliance summary:**
+
 ```bash
 curl -s -H "Authorization: Bearer $NAVAN_ACCESS_TOKEN" \
   'https://api.navan.com/v1/reports/policy-compliance?period=monthly' \
@@ -224,9 +235,11 @@ curl -s -H "Authorization: Bearer $NAVAN_ACCESS_TOKEN" \
 ```
 
 ## Resources
+
 - [Navan Help Center](https://app.navan.com/app/helpcenter) — Admin role configuration and policy setup guides
 - [Navan Security](https://navan.com/security) — SOC 2, ISO 27001, PCI DSS compliance documentation
 - [Navan Integrations](https://navan.com/integrations) — SCIM and directory sync for automated role management
 
 ## Next Steps
+
 After configuring RBAC, see `navan-security-basics` for SSO/SAML enforcement and credential hardening, or `navan-observability` for monitoring policy compliance and booking patterns.

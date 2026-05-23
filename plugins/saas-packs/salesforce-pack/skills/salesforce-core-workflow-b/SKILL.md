@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Salesforce Core Workflow B — Bulk & Composite API
 
 ## Overview
+
 High-volume data operations using Bulk API 2.0 (millions of records) and Composite API (multi-step transactions in a single call).
 
 ## Prerequisites
+
 - Completed `salesforce-install-auth` setup
 - Understanding of `salesforce-core-workflow-a` (standard CRUD)
 - jsforce installed with connection configured
@@ -236,6 +238,7 @@ const graphResult = await conn.request({
 | < 200 records CRUD | sObject Collections | Simpler, synchronous, from workflow-a |
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `PROCESSING_HALTED` | Bulk job aborted | Check `failedResults` for row-level errors |
@@ -245,10 +248,12 @@ const graphResult = await conn.request({
 | `EXCEEDED_ID_LIMIT` | Too many records in single bulk job | Split into multiple jobs (max 150M records/job) |
 
 ## Resources
+
 - [Bulk API 2.0 Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/bulk_api_2_0.htm)
 - [Composite Resources](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_composite.htm)
 - [Composite Graph](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_composite_graph_introduction.htm)
 - [sObject Collections](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_composite_sobjects_collections.htm)
 
 ## Next Steps
+
 For common errors and debugging, see `salesforce-common-errors`.

@@ -10,6 +10,7 @@ workhuman-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Workhuman costs and usage
 **Workflow:** Part of the cicd skill category for Workhuman integration.
 **Relates to:** Other workhuman skills in this pack.

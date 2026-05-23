@@ -104,6 +104,7 @@ export async function GET(request: Request) {
 ```
 
 **Vercel gotchas:**
+
 - Serverless function timeout: 30s (Pro) / 10s (Hobby)
 - Each invocation may create a new connection — set `max_open_connections` low
 - Use Edge Runtime only with HTTP-based clients (ClickHouse client works fine)

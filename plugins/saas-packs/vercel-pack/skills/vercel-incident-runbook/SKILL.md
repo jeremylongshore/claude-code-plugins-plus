@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Incident Runbook
 
 ## Overview
+
 Step-by-step incident response for Vercel deployment failures, function errors, and platform outages. Covers rapid triage, instant rollback, communication templates, and postmortem procedures.
 
 ## Prerequisites
+
 - Access to Vercel dashboard and CLI
 - Access to Vercel status page (vercel-status.com)
 - Communication channels (Slack, PagerDuty) configured
@@ -37,6 +39,7 @@ Step-by-step incident response for Vercel deployment failures, function errors, 
 ## Instructions
 
 ### Step 1: Rapid Triage (First 5 Minutes)
+
 ```bash
 # 1. Check if it's a Vercel platform issue
 curl -s "https://www.vercel-status.com/api/v2/summary.json" \
@@ -56,6 +59,7 @@ vercel logs $(vercel ls --prod --json | jq -r '.[0].url') --level=error --limit=
 ```
 
 ### Step 2: Decision Tree
+
 ```
 Is vercel-status.com showing an incident?
 ├── YES → Vercel platform issue
@@ -78,6 +82,7 @@ Is vercel-status.com showing an incident?
 ```
 
 ### Step 3: Instant Rollback (< 30 Seconds)
+
 ```bash
 # Option A: Rollback to previous production deployment (fastest)
 vercel rollback
@@ -98,6 +103,7 @@ curl -s https://yourdomain.com/api/health | jq .
 ```
 
 ### Step 4: Investigate Root Cause
+
 ```bash
 # Collect evidence while it's fresh
 mkdir incident-$(date +%Y%m%d)
@@ -120,6 +126,7 @@ git diff dpl_good_commit..dpl_broken_commit -- api/ src/
 ```
 
 ### Step 5: Enable Maintenance Page (If Needed)
+
 ```json
 // vercel.json — temporary maintenance mode via rewrite
 {
@@ -147,6 +154,7 @@ git diff dpl_good_commit..dpl_broken_commit -- api/ src/
 ### Step 6: Communication Templates
 
 **Internal — Slack (Incident Start)**
+
 ```
 :rotating_light: INCIDENT: [Project Name] production issue detected
 Status: Investigating
@@ -157,6 +165,7 @@ Thread: replies here
 ```
 
 **Internal — Slack (Mitigation)**
+
 ```
 :white_check_mark: MITIGATED: [Project Name]
 Action: Rolled back to deployment dpl_xxx
@@ -166,6 +175,7 @@ Postmortem: [link] scheduled for [date]
 ```
 
 **External — Status Page**
+
 ```
 Title: Degraded performance on [service]
 Body: We are investigating reports of [issue]. Some users may experience
@@ -174,6 +184,7 @@ Update: The issue has been resolved. [Brief root cause].
 ```
 
 ### Step 7: Postmortem Template
+
 ```markdown
 # Incident Postmortem: [Title]
 
@@ -212,12 +223,14 @@ Update: The issue has been resolved. [Brief root cause].
 | P4 | Cosmetic or non-urgent | Next business day | No |
 
 ## Output
+
 - Incident categorized and triaged within 5 minutes
 - Instant rollback executed if deployment regression detected
 - Communication sent to internal and external stakeholders
 - Postmortem scheduled with action items
 
 ## Error Handling
+
 | Scenario | Action |
 |----------|--------|
 | Vercel status page shows incident | Monitor, communicate, no deployment changes |
@@ -227,10 +240,12 @@ Update: The issue has been resolved. [Brief root cause].
 | Log retention expired | Check external log drain provider |
 
 ## Resources
+
 - [Vercel Status Page](https://www.vercel-status.com)
 - [Instant Rollback](https://vercel.com/docs/instant-rollback)
 - [Vercel Support](https://vercel.com/support)
 - [Vercel Logs CLI](https://vercel.com/docs/cli/logs)
 
 ## Next Steps
+
 For data handling and compliance, see `vercel-data-handling`.

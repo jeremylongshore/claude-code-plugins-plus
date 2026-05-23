@@ -10,6 +10,7 @@ techsmith-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy TechSmith integrations to production
 **Workflow:** Part of the cicd skill category for TechSmith integration.
 **Relates to:** Other techsmith skills in this pack.

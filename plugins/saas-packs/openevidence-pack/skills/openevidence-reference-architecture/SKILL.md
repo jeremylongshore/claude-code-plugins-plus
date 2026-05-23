@@ -22,6 +22,7 @@ compatibility: Designed for Claude Code
 Production architecture for clinical decision support integrations with OpenEvidence. Designed for healthcare platforms needing evidence-based query processing, citation-backed clinical answers, and full audit logging for regulatory compliance. Key design drivers: HIPAA-compliant data handling, deterministic citation pipelines for clinical accuracy, query audit trails for malpractice risk mitigation, and sub-second response times for point-of-care workflows where clinicians need answers during patient encounters.
 
 ## Architecture Diagram
+
 ```
 Clinician UI ──→ API Gateway (auth + HIPAA) ──→ Query Service ──→ OpenEvidence API
                         ↓                            ↓             /query
@@ -31,6 +32,7 @@ Clinician UI ──→ API Gateway (auth + HIPAA) ──→ Query Service ──
 ```
 
 ## Service Layer
+
 ```typescript
 class ClinicalQueryService {
   constructor(private oe: OpenEvidenceClient, private cache: CacheLayer, private audit: AuditLogger) {}
@@ -54,6 +56,7 @@ class ClinicalQueryService {
 ```
 
 ## Caching Strategy
+
 ```typescript
 const CACHE_CONFIG = {
   evidence:   { ttl: 86400, prefix: 'evidence' },  // 24 hr — clinical evidence changes slowly
@@ -66,6 +69,7 @@ const CACHE_CONFIG = {
 ```
 
 ## Event Pipeline
+
 ```typescript
 class ClinicalEventPipeline {
   private queue = new Bull('clinical-events', { redis: process.env.REDIS_URL });
@@ -83,6 +87,7 @@ class ClinicalEventPipeline {
 ```
 
 ## Data Model
+
 ```typescript
 interface ClinicalQuery    { clinicianId: string; text: string; specialty: string; patientContext?: string; urgency: 'routine' | 'urgent'; }
 interface EvidenceResponse { answer: string; confidence: number; citations: Citation[]; specialty: string; responseTimeMs: number; }
@@ -91,6 +96,7 @@ interface AuditEntry       { id: string; type: string; clinicianId: string; time
 ```
 
 ## Scaling Considerations
+
 - Separate audit write path from query path — audit logging must never slow clinical responses
 - Cache evidence responses aggressively — same clinical questions recur across clinicians
 - Partition audit DB by month for compliance retention windows and query performance
@@ -98,6 +104,7 @@ interface AuditEntry       { id: string; type: string; clinicianId: string; time
 - Rate-limit per clinician to prevent abuse while ensuring genuine clinical queries are never blocked
 
 ## Error Handling
+
 | Component | Failure Mode | Recovery |
 |-----------|-------------|----------|
 | Evidence query | OpenEvidence API timeout | Serve cached response if available, degrade to "consult specialist" message |
@@ -107,8 +114,10 @@ interface AuditEntry       { id: string; type: string; clinicianId: string; time
 | HIPAA compliance | Unauthorized access attempt | Immediate block, audit log, alert security team, preserve evidence |
 
 ## Resources
+
 - [OpenEvidence Platform](https://www.openevidence.com)
 - [OpenEvidence for Clinicians](https://www.openevidence.com/about)
 
 ## Next Steps
+
 See `openevidence-deploy-integration`.

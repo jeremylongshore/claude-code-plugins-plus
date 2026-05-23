@@ -1,4 +1,4 @@
-# Vitest Shopify API Mock Setup
+## Vitest Shopify API Mock Setup
 
 Test setup with mocked Shopify API client for unit testing without hitting the real API.
 

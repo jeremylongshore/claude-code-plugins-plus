@@ -115,4 +115,3 @@ Testing infrastructure IS the feature. The golden harness catches regressions au
 - [Building a Deterministic DXF Comparison Engine in One Day](/posts/deterministic-dxf-comparison-engine-one-day-build/)
 - [The Silent Killer: Bare Catch Blocks Hide Failures](/posts/silent-killer-bare-catch-blocks-hide-failures/)
 - [Python Class Identity Mismatch: A CI Debugging Guide](/posts/python-class-identity-mismatch-ci-debugging-guide/)
-

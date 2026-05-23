@@ -8,6 +8,7 @@ featured: false
 ## The Problem: Static Forks Go Stale
 
 We got a PR from [Numman Ali](https://github.com/numman-ali) adding two plugins to our Claude Code marketplace:
+
 - **gastown**: Multi-agent orchestrator for Claude Code
 - **zai-cli**: Vision, search, reader, and GitHub exploration
 
@@ -20,6 +21,7 @@ He was absolutely right. Copying plugins creates stale forks. His plugins evolve
 ## The n-skills Pattern: Daily Automated Sync
 
 Numman's n-skills marketplace solves this with external sync:
+
 1. **sources.yaml** - Manifest listing external repos
 2. **GitHub Actions cron** - Runs daily at midnight UTC
 3. **sync script** - Pulls latest from upstream repos via GitHub API
@@ -43,6 +45,7 @@ $ node scripts/validate-plugin.js plugins/community/gastown/
 ```
 
 The 2025 Claude Code skills schema requires:
+
 ```yaml
 name: skill-name
 description: |
@@ -86,6 +89,7 @@ async function fetchFromGitHub(repo, filePath, branch = 'main') {
 ```
 
 **Key features:**
+
 - GitHub API with auth token support
 - Recursive directory fetching
 - Glob pattern include/exclude filtering
@@ -96,6 +100,7 @@ async function fetchFromGitHub(repo, filePath, branch = 'main') {
 **The js-yaml dependency issue:**
 
 When testing locally, we hit:
+
 ```
 Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'js-yaml'
 ```
@@ -210,6 +215,7 @@ jobs:
 ```
 
 **Workflow features:**
+
 - Daily cron at midnight UTC
 - Manual dispatch with options (force, source filter, dry-run)
 - Auto-PR creation with peter-evans/create-pull-request
@@ -226,6 +232,7 @@ $ gh workflow run sync-external.yml \
 ```
 
 Results:
+
 ```
 📦 Syncing: gastown
    Found 6 files in source
@@ -251,12 +258,14 @@ Perfect! The sync discovered Numman's reference documentation that we didn't hav
 ### Why GitHub API Instead of Git Submodules?
 
 **Submodules are brittle:**
+
 - Require recursive clones
 - Break easily when upstream changes
 - Complicated for contributors
 - Hard to manage at scale (258 plugins)
 
 **GitHub API is clean:**
+
 - Simple HTTP requests
 - No git state to manage
 - Easy error handling
@@ -265,6 +274,7 @@ Perfect! The sync discovered Numman's reference documentation that we didn't hav
 ### Why Auto-PR Instead of Direct Commit?
 
 **Safety and transparency:**
+
 - Review changes before merging
 - Catch breaking updates
 - Audit trail for all syncs
@@ -273,12 +283,14 @@ Perfect! The sync discovered Numman's reference documentation that we didn't hav
 ### Why .source.json for Attribution?
 
 **Legal and ethical:**
+
 - Clear provenance tracking
 - License compliance
 - Author attribution
 - Upstream repo visibility
 
 Each synced plugin gets `.source.json`:
+
 ```json
 {
   "synced_from": {
@@ -313,6 +325,7 @@ The js-yaml dependency worked fine in CI but failed locally. We spent time tryin
 ### 3. Documentation Is Infrastructure
 
 Adding the "External Plugin Sync" section to README.md wasn't just documentation - it's the **contributor onboarding flow**. Authors need to know:
+
 - How to request sync
 - What fields are required
 - How often sync runs
@@ -323,6 +336,7 @@ Adding the "External Plugin Sync" section to README.md wasn't just documentation
 ### 4. Author Ownership > Marketplace Control
 
 The best part of this pattern: **authors own their code**. We mirror it, but they control:
+
 - Release timing
 - Feature development
 - Documentation updates
@@ -333,16 +347,19 @@ The best part of this pattern: **authors own their code**. We mirror it, but the
 ## Results and Impact
 
 **Immediate:**
+
 - 2 plugins (gastown, zai-cli) now sync daily
 - 8 files will update on first real sync (tonight at midnight UTC)
 - Reference docs from n-skills will appear in our marketplace
 
 **Future:**
+
 - Open path for more community authors
 - Marketplace stays fresh without manual PRs
 - Authors can develop at their own pace
 
 **Infrastructure:**
+
 - 585 lines added (sources.yaml, sync script, workflow, README)
 - 100% automated after initial setup
 - Zero maintenance for plugin authors
@@ -361,6 +378,7 @@ If you maintain Claude Code plugins in your own repo and want us to sync them:
 3. **Daily sync begins automatically**
 
 **Requirements:**
+
 - Must follow 2025 skills schema (we'll help you validate)
 - Open source license (MIT, Apache-2.0, etc.)
 - Stable repo structure
@@ -380,6 +398,4 @@ We handle the sync, you keep coding.
 - **Numman's n-skills**: https://github.com/numman-ali/n-skills
 - **Request Sync**: [Open an issue](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues)
 
-
 *Built with Claude Code. The entire sync infrastructure - from problem identification to production deployment - happened in a single session.*
-

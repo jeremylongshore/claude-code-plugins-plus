@@ -8,8 +8,8 @@ Clearly identify the API endpoint being deprecated. Provide the full URL, the HT
 
 **Example:**
 
-*   **Endpoint:** `GET /users/{user_id}`
-*   **Description:** Retrieves user information by ID.
+* **Endpoint:** `GET /users/{user_id}`
+* **Description:** Retrieves user information by ID.
 
 ## 2. Deprecation Date
 
@@ -17,7 +17,7 @@ Specify the exact date when the endpoint will be officially deprecated. This dat
 
 **Example:**
 
-*   **Deprecation Date:** 2024-12-31
+* **Deprecation Date:** 2024-12-31
 
 ## 3. Sunset Date (Removal Date)
 
@@ -25,7 +25,7 @@ State the date when the deprecated endpoint will be completely removed and no lo
 
 **Example:**
 
-*   **Sunset Date:** 2025-06-30
+* **Sunset Date:** 2025-06-30
 
 ## 4. Reason for Deprecation
 
@@ -33,9 +33,9 @@ Explain the reason behind the deprecation. Be transparent and provide context. T
 
 **Examples:**
 
-*   "This endpoint is being deprecated in favor of the new `GET /v2/users/{user_id}` endpoint, which offers improved performance and security."
-*   "This endpoint relies on outdated technology and is being replaced with a more modern and scalable solution."
-*   "This endpoint is being deprecated due to low usage and maintenance costs."
+* "This endpoint is being deprecated in favor of the new `GET /v2/users/{user_id}` endpoint, which offers improved performance and security."
+* "This endpoint relies on outdated technology and is being replaced with a more modern and scalable solution."
+* "This endpoint is being deprecated due to low usage and maintenance costs."
 
 ## 5. Recommended Alternative
 
@@ -43,8 +43,8 @@ Provide a clear and specific alternative to the deprecated endpoint. Include the
 
 **Example:**
 
-*   **Alternative Endpoint:** `GET /v2/users/{user_id}`
-*   **Description:** Retrieves user information by ID using a more efficient data structure.
+* **Alternative Endpoint:** `GET /v2/users/{user_id}`
+* **Description:** Retrieves user information by ID using a more efficient data structure.
 
 ## 6. Migration Guide
 
@@ -54,11 +54,11 @@ Provide detailed instructions on how to migrate from the deprecated endpoint to 
 
 To migrate to the new endpoint, please follow these steps:
 
-1.  Replace all instances of `GET /users/{user_id}` with `GET /v2/users/{user_id}`.
-2.  The response format for the new endpoint is slightly different.  The `name` field has been split into `firstName` and `lastName` fields.  Update your code accordingly.
-    *   **Old:** `{"id": 123, "name": "John Doe"}`
-    *   **New:** `{"id": 123, "firstName": "John", "lastName": "Doe"}`
-3.  Ensure you are handling any potential errors returned by the new endpoint.
+1. Replace all instances of `GET /users/{user_id}` with `GET /v2/users/{user_id}`.
+2. The response format for the new endpoint is slightly different.  The `name` field has been split into `firstName` and `lastName` fields.  Update your code accordingly.
+    * **Old:** `{"id": 123, "name": "John Doe"}`
+    * **New:** `{"id": 123, "firstName": "John", "lastName": "Doe"}`
+3. Ensure you are handling any potential errors returned by the new endpoint.
 
 ## 7. Impact of Deprecation
 
@@ -66,8 +66,8 @@ Explain the potential impact of the deprecation on users who continue to use the
 
 **Examples:**
 
-*   "After the deprecation date, this endpoint will continue to function but will no longer receive updates or bug fixes."
-*   "After the sunset date, this endpoint will return a `410 Gone` error."
+* "After the deprecation date, this endpoint will continue to function but will no longer receive updates or bug fixes."
+* "After the sunset date, this endpoint will return a `410 Gone` error."
 
 ## 8. Support and Contact Information
 
@@ -83,7 +83,7 @@ If your API uses versioning, include information about the API version being dep
 
 **Example:**
 
-*   **Affected API Version(s):** v1
+* **Affected API Version(s):** v1
 
 ## Example Complete Notice
 

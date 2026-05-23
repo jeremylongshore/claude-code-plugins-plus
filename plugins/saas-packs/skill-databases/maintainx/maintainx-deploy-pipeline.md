@@ -10,6 +10,7 @@ maintainx-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy MaintainX integrations to production
 **Workflow:** Part of the cicd skill category for MaintainX integration.
 **Relates to:** Other maintainx skills in this pack.

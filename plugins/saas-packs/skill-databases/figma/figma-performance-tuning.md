@@ -10,6 +10,7 @@ figma-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Figma API performance
 **Workflow:** Part of the cicd skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

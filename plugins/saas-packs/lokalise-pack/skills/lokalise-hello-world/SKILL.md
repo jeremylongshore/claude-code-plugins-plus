@@ -54,7 +54,7 @@ set -euo pipefail
 lokalise2 --token "$LOKALISE_API_TOKEN" project list
 ```
 
-2. Create a test project with three languages.
+1. Create a test project with three languages.
 
 ```typescript
 const project = await client.projects().create({
@@ -72,7 +72,7 @@ const PROJECT_ID = project.project_id;
 console.log(`Created project: ${PROJECT_ID}`);
 ```
 
-3. Add translation keys with their English (base language) translations in a single call.
+1. Add translation keys with their English (base language) translations in a single call.
 
 ```typescript
 const keys = await client.keys().create({
@@ -99,7 +99,7 @@ const keys = await client.keys().create({
 console.log(`Created ${keys.items.length} keys`);
 ```
 
-4. Set translations for French and German by retrieving key IDs and updating each translation.
+1. Set translations for French and German by retrieving key IDs and updating each translation.
 
 ```typescript
 const allKeys = await client.keys().list({
@@ -134,7 +134,7 @@ for (const key of allKeys.items) {
 console.log("Translations set for fr and de");
 ```
 
-5. Retrieve and display all translations grouped by key.
+1. Retrieve and display all translations grouped by key.
 
 ```typescript
 const result = await client.translations().list({
@@ -159,7 +159,7 @@ for (const [, entry] of grouped) {
 }
 ```
 
-6. Verify via CLI by listing keys and exporting translations.
+1. Verify via CLI by listing keys and exporting translations.
 
 ```bash
 set -euo pipefail

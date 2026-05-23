@@ -10,6 +10,7 @@ Generate the SKILL.md using the template from `${CLAUDE_SKILL_DIR}/templates/ski
 **Frontmatter rules** (see `${CLAUDE_SKILL_DIR}/references/frontmatter-spec.md`):
 
 Required fields:
+
 ```yaml
 name: {skill-name}          # Must match directory name
 description: |               # Third person, what + when + keywords
@@ -18,10 +19,12 @@ description: |               # Third person, what + when + keywords
 ```
 
 **Frontmatter constraints (Anthropic spec):**
+
 - `name`: No XML tags (`<`, `>` characters prohibited). No reserved words (`anthropic`, `claude`) in isolation.
 - `description`: No XML tags. Description is injected into Claude's system prompt — third person prevents discovery issues where Claude speaks as the skill author.
 
 Identity fields (top-level — marketplace validator scores these here):
+
 ```yaml
 version: 1.0.0
 author: {name} <{email}>
@@ -32,12 +35,14 @@ license: MIT
 Do NOT nest them under `metadata:`. The marketplace 100-point validator checks them at top-level.
 
 Recommended fields:
+
 ```yaml
 allowed-tools: "{scoped tools}"
 model: inherit
 ```
 
 Optional Claude Code extensions:
+
 ```yaml
 argument-hint: "[arg]"              # If accepts $ARGUMENTS
 context: fork                       # If needs isolated execution
@@ -71,6 +76,7 @@ Pattern (enterprise): "Use when [scenario]" (+3 pts) + "Trigger with [phrases]" 
 **Body content guidelines — section recommendations:**
 
 Anthropic's spec places no format restrictions on body content. The sections below are enterprise-tier quality recommendations scored by the Intent Solutions marketplace rubric. At standard tier, these are not required but are still good practice:
+
 ```
 ## Overview       (>50 chars content: +4 pts enterprise)
 ## Prerequisites  (+2 pts enterprise)
@@ -83,6 +89,7 @@ Anthropic's spec places no format restrictions on body content. The sections bel
 ```
 
 Additional guidelines:
+
 - Keep under 500 lines (offload to `references/` if longer)
 - Concise — Claude is smart, don't over-explain
 - Concrete examples over abstract descriptions
@@ -100,6 +107,7 @@ Additional guidelines:
 - **No surprise behavior**: Skills must not contain malware, exploit code, or content that could compromise security. A skill's behavior should not surprise the user if described honestly
 
 **String substitutions available:**
+
 - `$ARGUMENTS` / `$0`, `$1` - user-provided arguments (pair with `argument-hint` frontmatter)
 - `${CLAUDE_SESSION_ID}` - current session ID
 - `` !`command` `` syntax — dynamic context injection (Anthropic spec feature):
@@ -111,6 +119,7 @@ Additional guidelines:
 ## Step 5: Create Supporting Files
 
 **Scripts** (`scripts/`):
+
 - Scripts should solve problems, not punt to Claude
 - Explicit error handling
 - No voodoo constants (document all magic values)
@@ -118,16 +127,19 @@ Additional guidelines:
 - Make executable: `chmod +x scripts/*.py`
 
 **References** (`references/`):
+
 - Heavy documentation that doesn't need to load at activation
 - Use clear section headers for navigability
 - For reference files >100 lines, include a TOC at the top so Claude can see full scope even with partial reads
 - One-level-deep references only (no `references/sub/dir/`)
 
 **Templates** (`templates/`):
+
 - Boilerplate files used for generation
 - Use clear placeholder syntax (`{{PLACEHOLDER}}`)
 
 **Assets** (`assets/`):
+
 - Static resources (images, configs, data files)
 
 ## Step 6: Validate
@@ -142,6 +154,7 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/validate-skill.py --grade {skill-dir}/SKILL.
 Standard tier is the default (no required fields, broad compatibility). Use `--enterprise` for full 100-point marketplace grading.
 
 **Validation checks:**
+
 - Frontmatter: required fields, types, constraints
 - Description: third person, what + when, keywords, length
 - Body: under 500 lines, no absolute paths, has instructions + examples
@@ -151,6 +164,7 @@ Standard tier is the default (no required fields, broad compatibility). Use `--e
 - Progressive disclosure: appropriate use of references/
 
 **If validation fails:** fix issues and re-run. Common fixes:
+
 - Scope Bash tools: `Bash(git:*)` not `Bash`
 - Remove absolute paths, use `${CLAUDE_SKILL_DIR}/`
 - Split long SKILL.md into references
@@ -172,6 +186,7 @@ Create `evals/evals.json` with minimum 3 scenarios: happy path, edge case, negat
 Run parallel evaluation: Claude A with skill installed vs Claude B without. Compare outputs against assertions — the skill should produce meaningfully better results for its target use cases.
 
 **Additional testing practices:**
+
 - **Team feedback**: If applicable, share the skill with teammates and observe usage patterns
 - **Observe Claude navigation**: Watch how Claude reads and navigates the skill — look for unexpected exploration paths, missed references, or overreliance on certain sections
 
@@ -197,6 +212,7 @@ Tips: front-load distinctive keywords, include specific file types/tools/domains
 ## Step 10: Report
 
 Show the user:
+
 ```
 SKILL CREATED
 ====================================
@@ -235,6 +251,7 @@ When the user wants to validate, grade, or audit an existing skill:
 ### Step V1: Locate the Skill
 
 Ask for the SKILL.md path or detect from context. Common locations:
+
 - `~/.claude/skills/{name}/SKILL.md` (global)
 - `.claude/skills/{name}/SKILL.md` (project)
 
@@ -268,6 +285,7 @@ Present the grade report with specific fix recommendations. Prioritize fixes by 
 ### Step V5: Auto-Fix (if requested)
 
 If the user says "fix it" or "auto-fix", apply the suggested improvements:
+
 1. Add missing sections (Overview, Prerequisites, Output)
 2. Add "Use when" / "Trigger with" to description
 3. Move author/version from metadata to top-level
@@ -301,5 +319,6 @@ For A/B testing between skill versions, read `${CLAUDE_SKILL_DIR}/agents/compara
 ## Platform-Specific Notes
 
 See `${CLAUDE_SKILL_DIR}/references/advanced-eval-workflow.md` (section "Platform-Specific Notes").
+
 - **Claude.ai**: No subagents — run tests yourself, skip benchmarking/description optimization.
 - **Cowork**: Full subagent workflow. Use `--static` for eval viewer. Generate viewer BEFORE self-evaluation.

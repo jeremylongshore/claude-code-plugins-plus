@@ -33,6 +33,7 @@ This skill empowers Claude to automate the creation and execution of load tests,
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Create load tests for a web application or API.
 - Validate the performance of an application under different load conditions.
 - Identify performance bottlenecks and breaking points.
@@ -44,6 +45,7 @@ This skill activates when you need to:
 User request: "Create a stress test for the /api/users endpoint to simulate 1000 concurrent users."
 
 The skill will:
+
 1. Analyze the request and identify the need for a stress test on the /api/users endpoint.
 2. Generate a k6 script that simulates 1000 concurrent users hitting the /api/users endpoint.
 
@@ -52,6 +54,7 @@ The skill will:
 User request: "Validate the performance of the application after the recent code changes with a baseline load test."
 
 The skill will:
+
 1. Identify the need for a baseline load test to validate performance.
 2. Generate a JMeter script that simulates normal traffic patterns for the application.
 
@@ -92,6 +95,7 @@ This skill can be integrated with CI/CD pipelines to automate performance testin
 ## Error Handling
 
 If load test execution fails:
+
 - Verify tool installation and configuration
 - Check network connectivity to target endpoints
 - Validate authentication and authorization

@@ -9,6 +9,7 @@ This testing suite provides complete test automation coverage from unit tests to
 ## Plugin Collection
 
 ### 1. Unit Test Generator
+
 **Generate comprehensive unit tests from source code**
 
 - Multi-framework support (Jest, pytest, JUnit, etc.)
@@ -21,6 +22,7 @@ This testing suite provides complete test automation coverage from unit tests to
 ---
 
 ### 2. Integration Test Runner
+
 **Run integration test suites with automated setup and teardown**
 
 - Database preparation and seeding
@@ -34,6 +36,7 @@ This testing suite provides complete test automation coverage from unit tests to
 ---
 
 ### 3. API Test Automation
+
 **Automated REST and GraphQL API endpoint testing**
 
 - REST API testing (CRUD operations)
@@ -47,6 +50,7 @@ This testing suite provides complete test automation coverage from unit tests to
 ---
 
 ### 4. Performance Test Suite
+
 **Load testing, stress testing, and performance benchmarking**
 
 - Load testing (gradual ramp-up)
@@ -62,6 +66,7 @@ This testing suite provides complete test automation coverage from unit tests to
 ---
 
 ### 5. Security Test Scanner
+
 **OWASP Top 10 and security vulnerability testing**
 
 - SQL injection, XSS, CSRF testing
@@ -76,6 +81,7 @@ This testing suite provides complete test automation coverage from unit tests to
 ---
 
 ### 6. E2E Test Framework
+
 **Browser-based end-to-end test automation**
 
 - Playwright, Cypress, Selenium support
@@ -90,6 +96,7 @@ This testing suite provides complete test automation coverage from unit tests to
 ---
 
 ### 7. Test Coverage Analyzer
+
 **Analyze code coverage and identify untested code**
 
 - Line, branch, function, statement coverage
@@ -104,6 +111,7 @@ This testing suite provides complete test automation coverage from unit tests to
 ---
 
 ### 8. Mutation Test Runner
+
 **Validate test quality through mutation testing**
 
 - Code mutation generation
@@ -118,6 +126,7 @@ This testing suite provides complete test automation coverage from unit tests to
 ---
 
 ### 9. Regression Test Tracker
+
 **Track and run regression tests for stability**
 
 - Critical test tracking
@@ -132,6 +141,7 @@ This testing suite provides complete test automation coverage from unit tests to
 ---
 
 ### 10. Test Data Generator
+
 **Generate realistic test data for comprehensive testing**
 
 - User data (names, emails, addresses)
@@ -181,6 +191,7 @@ Install individual plugins:
 ## Testing Workflow
 
 ### 1. Development Phase
+
 ```bash
 # Generate unit tests
 /gut src/utils/validator.js
@@ -193,6 +204,7 @@ Install individual plugins:
 ```
 
 ### 2. Integration Phase
+
 ```bash
 # Run integration tests
 /rit
@@ -202,6 +214,7 @@ Install individual plugins:
 ```
 
 ### 3. Pre-deployment Phase
+
 ```bash
 # Run regression suite
 /reg
@@ -214,6 +227,7 @@ Install individual plugins:
 ```
 
 ### 4. Quality Assurance
+
 ```bash
 # E2E tests
 /e2e
@@ -228,6 +242,7 @@ Install individual plugins:
 ## Framework Support
 
 ### JavaScript/TypeScript
+
 - **Unit**: Jest, Mocha, Vitest, Jasmine
 - **E2E**: Playwright, Cypress, Selenium
 - **Performance**: k6, Artillery
@@ -235,6 +250,7 @@ Install individual plugins:
 - **Mutation**: Stryker
 
 ### Python
+
 - **Unit**: pytest, unittest
 - **Integration**: pytest with fixtures
 - **Performance**: Locust
@@ -242,6 +258,7 @@ Install individual plugins:
 - **Mutation**: mutmut, cosmic-ray
 
 ### Java
+
 - **Unit**: JUnit 5, TestNG
 - **Integration**: Spring Test, Testcontainers
 - **Performance**: Gatling, JMeter
@@ -249,6 +266,7 @@ Install individual plugins:
 - **Mutation**: PITest
 
 ### Other Languages
+
 - **Go**: testing package, Testify
 - **Ruby**: RSpec, Minitest
 - **C#**: xUnit, NUnit, MSTest
@@ -257,17 +275,20 @@ Install individual plugins:
 ## Best Practices
 
 ### Test Pyramid
+
 1. **Unit tests** (70%) - Fast, isolated, focused
 2. **Integration tests** (20%) - API and service interactions
 3. **E2E tests** (10%) - Critical user workflows
 
 ### Quality Metrics
+
 - **Code coverage**: 80%+ (but quality > quantity)
 - **Mutation score**: 80%+ (validates test effectiveness)
 - **Performance**: P95 < 300ms, P99 < 500ms
 - **Security**: Zero critical vulnerabilities
 
 ### CI/CD Integration
+
 ```yaml
 # Example GitHub Actions workflow
 test:

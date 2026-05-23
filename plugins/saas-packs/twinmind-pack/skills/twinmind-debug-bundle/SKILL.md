@@ -24,14 +24,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # TwinMind Debug Bundle
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'N/A'`
 !`python3 --version 2>/dev/null || echo 'N/A'`
 !`uname -a`
 
 ## Overview
+
 Collect comprehensive diagnostic data to troubleshoot TwinMind issues.
 
 ## Prerequisites
+
 - TwinMind extension or API configured
 - Access to browser developer tools
 - Command-line access (for API debugging)
@@ -355,6 +358,7 @@ generateFullReport();
 ```
 
 ## Output
+
 - JSON debug bundle file
 - Environment information
 - API connectivity status
@@ -363,6 +367,7 @@ generateFullReport();
 - Debug report template
 
 Example output:
+
 ```json
 {
   "timestamp": "2025-01-15T10:30:00Z",  # 2025 year
@@ -402,6 +407,7 @@ Example output:
 ## Security Notes
 
 The debug bundle intentionally excludes:
+
 - Full API keys (only prefix shown)
 - Audio content
 - Transcript content
@@ -411,11 +417,13 @@ The debug bundle intentionally excludes:
 Always review the bundle before sharing with support.
 
 ## Resources
+
 - [TwinMind Support](https://twinmind.com/support)
 - [TwinMind Status](https://status.twinmind.com)
 - [Community Forum](https://community.twinmind.com)
 
 ## Next Steps
+
 For rate limiting strategies, see `twinmind-rate-limits`.
 
 ## Examples

@@ -3,6 +3,7 @@
 ## Advanced Techniques
 
 ### Breadcrumb Trail
+
 ```typescript
 // Automatic breadcrumbs (enabled by default)
 // Manual breadcrumbs for custom events
@@ -23,6 +24,7 @@ Sentry.addBreadcrumb({
 ```
 
 ### Attachments
+
 ```typescript
 Sentry.captureException(error, (scope) => {
   scope.addAttachment({
@@ -35,6 +37,7 @@ Sentry.captureException(error, (scope) => {
 ```
 
 ### Event Filtering
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,

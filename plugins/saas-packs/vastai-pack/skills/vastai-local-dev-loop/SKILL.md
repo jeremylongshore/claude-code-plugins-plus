@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Local Dev Loop
 
 ## Overview
+
 Set up a fast, reproducible local development workflow for Vast.ai GPU workloads. Test Docker images locally, mock API responses for CI, and minimize cloud GPU costs during development.
 
 ## Prerequisites
+
 - Completed `vastai-install-auth` setup
 - Docker installed locally
 - Python 3.8+ with pytest
@@ -120,12 +122,14 @@ vastai show instances && vastai destroy instance INSTANCE_ID
 ```
 
 ## Output
+
 - Project structure with client, tests, and Docker setup
 - Mocked Vast.ai client for unit tests (no API calls)
 - Local Docker testing workflow (CPU mode)
 - Connection verification script
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Docker build fails | Missing CUDA locally | Use CPU-compatible base image for local testing |
@@ -134,10 +138,12 @@ vastai show instances && vastai destroy instance INSTANCE_ID
 | Image push rejected | Registry auth missing | Run `docker login ghcr.io` first |
 
 ## Resources
+
 - [Vast.ai CLI](https://docs.vast.ai/cli/get-started)
 - [vast-cli GitHub](https://github.com/vast-ai/vast-cli)
 
 ## Next Steps
+
 Proceed to `vastai-sdk-patterns` for production-ready API patterns.
 
 ## Examples

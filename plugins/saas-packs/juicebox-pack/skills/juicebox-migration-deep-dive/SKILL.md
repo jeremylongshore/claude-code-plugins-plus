@@ -18,6 +18,7 @@ compatibility: Designed for Claude Code
 # Juicebox Migration Deep Dive
 
 ## Comparison
+
 | Feature | LinkedIn Recruiter | Juicebox |
 |---------|-------------------|----------|
 | Search | Boolean only | Natural language (PeopleGPT) |
@@ -26,6 +27,7 @@ compatibility: Designed for Claude Code
 | AI features | Basic | AI Skills Map, research profiles |
 
 ## Migration Steps
+
 1. Export saved searches from current tool
 2. Translate boolean queries to natural language
 3. Re-create talent pools in Juicebox
@@ -33,13 +35,16 @@ compatibility: Designed for Claude Code
 5. Set up outreach sequences
 
 ## Query Translation
+
 ```
 # Boolean: ("software engineer" OR "SWE") AND "Python" AND "San Francisco"
 # PeopleGPT: software engineer with Python experience in San Francisco
 ```
 
 ## Resources
+
 - [PeopleGPT Guide](https://docs.juicebox.work/peoplegpt)
 
 ## Next Steps
+
 Start with `juicebox-install-auth`.

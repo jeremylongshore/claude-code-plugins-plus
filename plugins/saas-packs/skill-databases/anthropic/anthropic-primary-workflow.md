@@ -10,6 +10,7 @@ anthropic-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Anthropic primary workflow
 **Workflow:** Part of the onboarding skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

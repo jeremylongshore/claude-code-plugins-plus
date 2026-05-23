@@ -3,6 +3,7 @@
 ## Credit-Aware Load Balancing
 
 ### Balance-Based Routing
+
 ```python
 import requests
 import time
@@ -53,6 +54,7 @@ credit_balancer = CreditAwareBalancer(keys)
 ```
 
 ### Threshold-Based Switching
+
 ```python
 class ThresholdBalancer:
     def __init__(self, api_keys: list, threshold: float = 10.0):

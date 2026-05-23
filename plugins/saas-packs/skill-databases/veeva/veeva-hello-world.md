@@ -10,6 +10,7 @@ veeva-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Veeva example
 **Workflow:** Part of the onboarding skill category for Veeva integration.
 **Relates to:** Other veeva skills in this pack.

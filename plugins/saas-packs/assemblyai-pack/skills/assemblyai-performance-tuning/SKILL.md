@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code
 # AssemblyAI Performance Tuning
 
 ## Overview
+
 Optimize AssemblyAI transcription performance through model selection, parallel processing, caching, and webhook-based architectures.
 
 ## Prerequisites
+
 - `assemblyai` package installed
 - Understanding of async patterns
 - Redis or in-memory cache available (optional)
@@ -38,6 +40,7 @@ Optimize AssemblyAI transcription performance through model selection, parallel 
 ## Latency Benchmarks (Actual)
 
 ### Async Transcription
+
 | Audio Duration | Approx. Processing Time | Notes |
 |----------------|------------------------|-------|
 | 30 seconds | ~10-15 seconds | Includes queue time |
@@ -46,6 +49,7 @@ Optimize AssemblyAI transcription performance through model selection, parallel 
 | 10 hours | ~15-30 minutes | Max async duration |
 
 ### Streaming
+
 | Metric | Value |
 |--------|-------|
 | First partial transcript | ~300ms (P50) |
@@ -53,6 +57,7 @@ Optimize AssemblyAI transcription performance through model selection, parallel 
 | End-of-turn detection | Automatic with endpointing |
 
 ### Model Speed vs. Accuracy
+
 | Model | Speed | Accuracy | Price/hr |
 |-------|-------|----------|----------|
 | `nano` | Fastest | Good | $0.12 |
@@ -226,6 +231,7 @@ async function timedTranscribe(audioUrl: string, options: Record<string, any> = 
 ```
 
 ## Output
+
 - Optimal model selection based on speed/accuracy/cost trade-offs
 - Parallel batch processing with concurrency control
 - Webhook-based architecture (eliminates polling overhead)
@@ -233,6 +239,7 @@ async function timedTranscribe(audioUrl: string, options: Record<string, any> = 
 - Performance monitoring with processing time ratios
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Slow transcription | Large file + best model | Use `nano` model or split audio |
@@ -241,10 +248,12 @@ async function timedTranscribe(audioUrl: string, options: Record<string, any> = 
 | Polling overhead | Using `transcribe()` for many files | Switch to `submit()` + webhooks |
 
 ## Resources
+
 - [AssemblyAI Speech Models](https://www.assemblyai.com/docs/speech-to-text/speech-recognition)
 - [AssemblyAI Processing FAQ](https://www.assemblyai.com/docs/concepts/faq)
 - [LRU Cache](https://github.com/isaacs/node-lru-cache)
 - [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For cost optimization, see `assemblyai-cost-tuning`.

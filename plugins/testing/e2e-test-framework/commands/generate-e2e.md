@@ -10,6 +10,7 @@ Generate comprehensive browser-based E2E tests for complete user workflows using
 ## Purpose
 
 Create automated tests that simulate real user interactions:
+
 - Complete user journeys (signup → login → purchase)
 - Multi-page workflows
 - Form interactions and validations
@@ -20,6 +21,7 @@ Create automated tests that simulate real user interactions:
 ## Supported Frameworks
 
 **Playwright** (Recommended)
+
 - Multi-browser support (Chromium, Firefox, WebKit)
 - Auto-wait for elements
 - Network interception
@@ -27,6 +29,7 @@ Create automated tests that simulate real user interactions:
 - Parallel execution
 
 **Cypress**
+
 - Time-travel debugging
 - Real-time reloads
 - Automatic waiting
@@ -34,6 +37,7 @@ Create automated tests that simulate real user interactions:
 - Screenshot/video capture
 
 **Selenium WebDriver**
+
 - Mature ecosystem
 - Cross-browser support
 - Remote execution (Selenium Grid)

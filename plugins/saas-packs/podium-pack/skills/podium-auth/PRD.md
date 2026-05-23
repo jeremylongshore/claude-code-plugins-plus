@@ -17,18 +17,21 @@ The off-the-shelf Podium SDKs do not address any of these failure modes. Custome
 ## Target Users
 
 ### Persona 1: Integration Engineer (Ravi)
+
 - **Role**: Builds and operates a Podium-integrated webhook handler that ingests call transcripts, webchat messages, and review events for a single SMB.
 - **Goals**: Zero auth-induced incidents; the integration is invisible operationally; the on-call playbook for rotating a leaked secret is one page long.
 - **Pain Points**: Refresh token died over the long weekend; a previous engineer pasted the client_secret into a `.env.example`; the integration silently dropped 4 days of webhooks while the access token loop spun on 401.
 - **Technical Level**: High (OAuth2 fluent, comfortable with async Python / Node, has run production systems before).
 
 ### Persona 2: Agency Operator (Mei)
+
 - **Role**: Manages Podium for 50+ client organizations from a single platform service.
 - **Goals**: Per-org credential isolation; one client's credential failure does not affect any other; bulk onboarding of a new org takes 5 minutes, not 5 hours; audit trail of which credential was used for which write.
 - **Pain Points**: A single `PODIUM_TOKEN` env var means a wrong-org request silently writes to the wrong location's contacts; rotating one client's credential brings the whole service down.
 - **Technical Level**: Medium-High (ops-engineer profile; reads code, prefers playbooks).
 
 ### Persona 3: Site Reliability Engineer (Jordan)
+
 - **Role**: On-call for a Podium-integrated service. Does not own the integration code but must respond when it pages at 2am.
 - **Goals**: A runbook short enough to execute under stress; clear page severity (warn vs page vs hard-fail); a verifiable health check after every rotation.
 - **Pain Points**: Previous rotations took the service down because the old secret was revoked before the new one was deployed.
@@ -37,62 +40,74 @@ The off-the-shelf Podium SDKs do not address any of these failure modes. Custome
 ## User Stories
 
 ### US-1: Proactive token refresh (P0)
+
 **As** an integration engineer,
 **I want** the access token to be refreshed at 80% of TTL behind a single-flight lock,
 **So that** burst traffic does not stampede the token endpoint and the integration never serves a 401 from an expired token.
 
 **Acceptance Criteria:**
+
 - Refresh fires when token age ≥ 80% of `expires_in`
 - Concurrent callers serialize on one `_refresh()` call (no thundering herd)
 - Token endpoint receives at most 1 refresh request per (org, TTL window)
 - On refresh failure, the cached token is retained until expiry — fail-open on transient errors
 
 ### US-2: Refresh-token rotation persistence (P0)
+
 **As** an integration engineer,
 **I want** the new refresh token persisted to the secret store atomically inside the refresh call,
 **So that** a process crash mid-refresh never leaves the system with a dead refresh token.
 
 **Acceptance Criteria:**
+
 - New refresh token is written via temp-file-then-rename (atomic on POSIX)
 - Persistence happens before `_cached` is updated — if persist fails, the refresh is aborted
 - Old refresh token remains valid only until the next successful refresh completes
 
 ### US-3: 90-day decay monitoring (P0)
+
 **As** an SRE,
 **I want** to be paged before the refresh token decays,
 **So that** I can trigger user re-authorization during business hours, not at 3am.
 
 **Acceptance Criteria:**
+
 - Warn log at age ≥ 60 days
 - Page on-call at age ≥ 75 days
 - Hard-fail (raise) at age ≥ 85 days with explicit re-auth instructions in the error message
 
 ### US-4: Scope drift detection (P1)
+
 **As** an integration engineer,
 **I want** scopes validated on every refresh,
 **So that** an admin re-grant with reduced scopes fails loudly at refresh time, not silently on the next 403.
 
 **Acceptance Criteria:**
+
 - A `REQUIRED_SCOPES` set is defined at module init
 - Refresh response is parsed for `scope` field, split on whitespace
 - Any missing required scope raises `PodiumAuthError` with the explicit missing-scopes list
 
 ### US-5: Multi-tenant credential router (P1)
+
 **As** an agency operator,
 **I want** per-organization `PodiumAuth` instances with isolated caches,
 **So that** one client's auth failure cannot affect another client's traffic and the router can verify the org slug before issuing a token.
 
 **Acceptance Criteria:**
+
 - `PodiumOrgRouter` keyed by org slug
 - Each org has independent token cache, single-flight lock, and decay state
 - Unknown org slug raises `KeyError` immediately — no fallback to a default credential
 
 ### US-6: Dual-credential rotation (P1)
+
 **As** an SRE,
 **I want** a runbook that overlaps old and new credentials,
 **So that** in-flight webhook handlers complete on the old credential while new requests start using the new one.
 
 **Acceptance Criteria:**
+
 - Runbook is committed to the repo (not a wiki link)
 - Rotation requires a verified health-check call before the old credential is revoked
 - Rollback path documented if health check fails

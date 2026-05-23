@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Webhooks & Callbacks
 
 ## Overview
+
 Implement async transcription with Deepgram's callback feature. When you pass a `callback` URL, Deepgram returns a `request_id` immediately, processes audio in the background, and POSTs results to your endpoint. Supports HTTP and WebSocket callbacks with automatic retry (10 attempts, 30s intervals).
 
 ## Deepgram Callback Flow
+
 ```
 1. Client -> POST /v1/listen?callback=https://you.com/webhook  (with audio)
 2. Deepgram -> 200 { request_id: "..." }                       (immediate)
@@ -290,6 +292,7 @@ app.post('/webhooks/deepgram', async (req, res) => {
 ```
 
 ## Output
+
 - Async transcription submission with callback URL
 - Callback server with signature verification
 - Redis-backed job tracking with pub/sub notifications
@@ -298,6 +301,7 @@ app.post('/webhooks/deepgram', async (req, res) => {
 - Local testing setup with ngrok
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Callback not received | Endpoint unreachable | Check HTTPS, firewall, use ngrok for local |
@@ -307,6 +311,7 @@ app.post('/webhooks/deepgram', async (req, res) => {
 | Large payload | Long audio transcript | Increase `express.raw` limit |
 
 ## Resources
+
 - [Callback Feature](https://developers.deepgram.com/docs/callback)
 - [Callback Not Received](https://developers.deepgram.com/docs/payload-too-large)
 - [STT Callback API](https://developers.deepgram.com/docs/using-callbacks-to-return-transcripts-to-your-server)

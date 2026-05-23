@@ -80,6 +80,7 @@ rg "def (get|post|put|delete|patch)\(" -A 20 --type py | rg "(open\(|requests\.|
 ```
 
 **Context matters:**
+
 - `readFileSync` at module top level (startup) → LOW impact, usually fine
 - `readFileSync` inside a request handler → HIGH impact, blocks the event loop
 - `readFileSync` in a build script → NO impact, expected behavior
@@ -130,6 +131,7 @@ rg "\.(filter|map|reduce|sort)\(" --type tsx -n  # Check if inside render body w
 ```
 
 **Impact assessment:**
+
 - Component renders on every parent render + has expensive children → HIGH
 - Component renders frequently but is a leaf node → LOW
 - Inline style on a static component → LOW (React optimizes this)

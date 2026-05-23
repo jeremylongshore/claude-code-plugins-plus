@@ -14,15 +14,16 @@ Generates a complete Express.js REST API boilerplate with TypeScript, authentica
 ## What This Command Does
 
 **Generated Project:**
--  Express.js with TypeScript
--  JWT authentication
--  Database integration (Prisma or TypeORM)
--  Input validation (Zod)
--  Error handling middleware
--  Rate limiting & security (Helmet, CORS)
--  Testing setup (Jest + Supertest)
--  Docker configuration
--  Example CRUD endpoints
+
+- Express.js with TypeScript
+- JWT authentication
+- Database integration (Prisma or TypeORM)
+- Input validation (Zod)
+- Error handling middleware
+- Rate limiting & security (Helmet, CORS)
+- Testing setup (Jest + Supertest)
+- Docker configuration
+- Example CRUD endpoints
 
 **Output:** Complete API project ready for development
 
@@ -51,11 +52,13 @@ Generates a complete Express.js REST API boilerplate with TypeScript, authentica
 ## Example Output
 
 **Input:**
+
 ```
 /eas "Task Management API" --database postgresql
 ```
 
 **Generated Project Structure:**
+
 ```
 task-api/
 ├── src/
@@ -585,6 +588,7 @@ describe('Task API', () => {
 ## Features
 
 **Security:**
+
 - Helmet.js for HTTP headers
 - CORS with configurable origins
 - Rate limiting (100 req/15min)
@@ -593,24 +597,28 @@ describe('Task API', () => {
 - Input validation (Zod)
 
 **Database:**
+
 - Prisma ORM with TypeScript
 - Automatic migrations
 - Type-safe queries
 - Supports PostgreSQL, MySQL, SQLite
 
 **Testing:**
+
 - Jest + Supertest
 - Integration tests
 - Coverage reporting
 - Test database isolation
 
 **Development:**
+
 - Hot reload (ts-node-dev)
 - TypeScript with strict mode
 - ESLint + Prettier
 - Environment variables
 
 **Production:**
+
 - Docker support
 - Health check endpoint
 - Error logging
@@ -621,27 +629,32 @@ describe('Task API', () => {
 ## Getting Started
 
 **1. Install dependencies:**
+
 ```bash
 npm install
 ```
 
 **2. Configure environment:**
+
 ```bash
 cp .env.example .env
 # Edit .env with your database URL and secrets
 ```
 
 **3. Run database migrations:**
+
 ```bash
 npm run db:migrate
 ```
 
 **4. Start development server:**
+
 ```bash
 npm run dev
 ```
 
 **5. Run tests:**
+
 ```bash
 npm test
 ```
@@ -656,4 +669,4 @@ npm test
 
 ---
 
-**Build production-ready APIs. Ship faster. Scale confidently.** 
+**Build production-ready APIs. Ship faster. Scale confidently.**

@@ -18,9 +18,11 @@ compatibility: Designed for Claude Code
 # OpenEvidence SDK Patterns
 
 ## Overview
+
 Production-ready patterns for the OpenEvidence clinical evidence API. OpenEvidence provides REST endpoints for querying medical literature, retrieving clinical guidelines, and generating evidence-based recommendations. The API authenticates via `OPENEVIDENCE_API_KEY` and returns structured clinical data with citation provenance. A singleton client enforces consistent auth, handles healthcare-specific errors, and preserves citation chains for audit compliance.
 
 ## Singleton Client
+
 ```typescript
 const OE_BASE = 'https://api.openevidence.com/v1';
 let _client: OpenEvidenceClient | null = null;
@@ -48,6 +50,7 @@ class OpenEvidenceClient {
 ```
 
 ## Error Wrapper
+
 ```typescript
 export class OEError extends Error {
   constructor(public status: number, message: string) { super(message); this.name = 'OEError'; }
@@ -64,6 +67,7 @@ export async function safeCall<T>(operation: string, fn: () => Promise<T>): Prom
 ```
 
 ## Request Builder
+
 ```typescript
 class OEQueryBuilder {
   private body: Record<string, any> = {};
@@ -78,6 +82,7 @@ class OEQueryBuilder {
 ```
 
 ## Response Types
+
 ```typescript
 interface EvidenceResponse {
   answer: string; confidence: number; citations: Citation[]; specialty: string;
@@ -97,6 +102,7 @@ interface DrugInteraction {
 ```
 
 ## Testing Utilities
+
 ```typescript
 export function mockCitation(overrides: Partial<Citation> = {}): Citation {
   return { id: 'cite-001', title: 'Statin Therapy in Older Adults', authors: ['Smith J', 'Doe A'],
@@ -111,6 +117,7 @@ export function mockEvidenceResponse(citationCount = 3): EvidenceResponse {
 ```
 
 ## Error Handling
+
 | Pattern | When to Use | Example |
 |---------|-------------|---------|
 | `safeCall` wrapper | All API calls | Structured error with clinical operation context |
@@ -119,7 +126,9 @@ export function mockEvidenceResponse(citationCount = 3): EvidenceResponse {
 | Citation chain audit | Compliance reporting | Preserve full provenance from response |
 
 ## Resources
+
 - [OpenEvidence](https://www.openevidence.com)
 
 ## Next Steps
+
 Apply patterns in `openevidence-core-workflow-a`.

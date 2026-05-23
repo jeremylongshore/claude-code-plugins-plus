@@ -3,6 +3,7 @@
 ## System Resource Management
 
 ### Memory Optimization
+
 ```bash
 # Monitor Cursor memory
 # macOS
@@ -18,6 +19,7 @@ ps aux | grep Cursor
 ```
 
 ### CPU Optimization
+
 ```
 Reduce CPU usage:
 
@@ -29,6 +31,7 @@ Reduce CPU usage:
 ```
 
 ### Disk I/O
+
 ```
 Improve disk performance:
 

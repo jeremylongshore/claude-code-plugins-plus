@@ -3,12 +3,14 @@
 ## Sources & Uses
 
 ### Sources
+
 - Senior Debt
 - Mezzanine Debt
 - Sponsor Equity
 - Rollover Equity
 
 ### Uses
+
 - Purchase Price (Enterprise Value)
 - Transaction Fees
 - Financing Fees
@@ -33,6 +35,7 @@ Interest Expense = Opening Balance × Interest Rate
 ```
 
 ### Cash Flow Series
+
 - Year 0: -Equity_Contribution
 - Year 1-N: Dividends (if any)
 - Exit Year: Exit_Equity_Value

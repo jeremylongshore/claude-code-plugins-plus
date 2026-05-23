@@ -10,6 +10,7 @@ apple-notes-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Apple Notes SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Apple Notes integration.
 **Relates to:** Other apple-notes skills in this pack.

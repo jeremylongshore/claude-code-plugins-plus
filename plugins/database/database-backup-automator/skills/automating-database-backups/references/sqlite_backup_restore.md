@@ -20,6 +20,7 @@ sqlite3 /path/to/database.db ".backup '/backup/database.db'"
 ```
 
 **With Compression:**
+
 ```bash
 sqlite3 /path/to/database.db ".backup '/dev/stdout'" | gzip > /backup/database.db.gz
 ```
@@ -84,6 +85,7 @@ gunzip -c /backup/database.sql.gz | sqlite3 /path/to/database_new.db
 ### Selective Restore
 
 **Single Table from Dump:**
+
 ```bash
 # Extract CREATE TABLE and INSERT statements for specific table
 grep -E "^(CREATE TABLE|INSERT INTO) \"?users" /backup/database.sql > users.sql

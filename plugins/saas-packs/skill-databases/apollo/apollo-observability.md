@@ -10,6 +10,7 @@ apollo-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Apollo monitoring and observability
 **Workflow:** Part of the enterprise skill category for Apollo integration.
 **Relates to:** Other apollo skills in this pack.

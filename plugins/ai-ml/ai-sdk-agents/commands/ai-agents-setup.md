@@ -6,7 +6,9 @@ model: sonnet
 You are an expert in multi-agent system architecture and AI SDK v5 orchestration.
 
 # Mission
+
 Set up a complete multi-agent orchestration project using @ai-sdk-tools/agents, including:
+
 - Project directory structure
 - Multiple specialized agents (coordinator, researcher, coder, reviewer)
 - Orchestration configuration
@@ -16,7 +18,9 @@ Set up a complete multi-agent orchestration project using @ai-sdk-tools/agents, 
 # Setup Process
 
 ## 1. Check Dependencies
+
 First, verify the user has Node.js 18+ installed:
+
 ```bash
 node --version
 ```
@@ -24,6 +28,7 @@ node --version
 If not installed, guide them to install Node.js from https://nodejs.org/
 
 ## 2. Create Project Structure
+
 ```bash
 mkdir -p ai-agents-project
 cd ai-agents-project
@@ -41,6 +46,7 @@ npm install @ai-sdk/google     # For Gemini
 ```
 
 ## 3. Create Directory Structure
+
 ```bash
 mkdir -p agents
 mkdir -p examples
@@ -50,6 +56,7 @@ mkdir -p config
 ## 4. Create Agent Files
 
 ### agents/coordinator.ts
+
 ```typescript
 import { createAgent } from '@ai-sdk-tools/agents';
 import { anthropic } from '@ai-sdk/anthropic';
@@ -80,6 +87,7 @@ When you receive a request:
 ```
 
 ### agents/researcher.ts
+
 ```typescript
 import { createAgent } from '@ai-sdk-tools/agents';
 import { anthropic } from '@ai-sdk/anthropic';
@@ -119,6 +127,7 @@ Always provide sources and reasoning for your findings.`,
 ```
 
 ### agents/coder.ts
+
 ```typescript
 import { createAgent } from '@ai-sdk-tools/agents';
 import { anthropic } from '@ai-sdk/anthropic';
@@ -140,6 +149,7 @@ When you complete implementation, hand off to reviewer for quality check.`,
 ```
 
 ### agents/reviewer.ts
+
 ```typescript
 import { createAgent } from '@ai-sdk-tools/agents';
 import { anthropic } from '@ai-sdk/anthropic';
@@ -165,6 +175,7 @@ Provide a comprehensive review with:
 ## 5. Create Orchestration Setup
 
 ### index.ts
+
 ```typescript
 import { orchestrate } from '@ai-sdk-tools/agents';
 import { coordinator } from './agents/coordinator';
@@ -219,6 +230,7 @@ if (require.main === module) {
 ## 6. Create Environment Setup
 
 ### .env.example
+
 ```bash
 # Choose your AI provider(s) and add the appropriate API keys
 
@@ -233,6 +245,7 @@ GOOGLE_API_KEY=your_google_key_here
 ```
 
 ### .gitignore
+
 ```
 node_modules/
 .env
@@ -243,6 +256,7 @@ dist/
 ## 7. Create Example Scripts
 
 ### examples/code-generation.ts
+
 ```typescript
 import { runMultiAgentTask } from '../index';
 
@@ -258,6 +272,7 @@ example();
 ```
 
 ### examples/research-pipeline.ts
+
 ```typescript
 import { runMultiAgentTask } from '../index';
 
@@ -275,6 +290,7 @@ example();
 ## 8. Update package.json
 
 Add scripts to package.json:
+
 ```json
 {
   "scripts": {
@@ -295,6 +311,7 @@ Add scripts to package.json:
 ## 9. Create TypeScript Config
 
 ### tsconfig.json
+
 ```json
 {
   "compilerOptions": {
@@ -320,6 +337,7 @@ Add scripts to package.json:
 ## 10. Create README
 
 ### README.md
+
 ```markdown
 # Multi-Agent Orchestration Project
 
@@ -332,13 +350,15 @@ Built with AI SDK v5 and @ai-sdk-tools/agents
    npm install
    ```
 
-2. Configure API keys:
+1. Configure API keys:
+
    ```bash
    cp .env.example .env
    # Edit .env with your API keys
    ```
 
-3. Run examples:
+2. Run examples:
+
    ```bash
    npm run example:code
    npm run example:research
@@ -363,10 +383,12 @@ console.log(result.output);
 ## Architecture
 
 The system uses agent handoffs to coordinate complex tasks:
+
 1. Coordinator receives request
 2. Routes to appropriate specialist
 3. Specialists hand off to each other as needed
 4. Final result aggregated by coordinator
+
 ```
 
 # Completion Steps
@@ -378,18 +400,21 @@ After creating all files:
    npm install -D typescript ts-node @types/node
    ```
 
-2. **Create .env from example**:
+1. **Create .env from example**:
+
    ```bash
    cp .env.example .env
    echo "⚠️  Please edit .env and add your API keys"
    ```
 
-3. **Test the setup**:
+2. **Test the setup**:
+
    ```bash
    npm run dev "Build a simple TODO API"
    ```
 
-4. **Inform user**:
+3. **Inform user**:
+
    ```
    ✅ Multi-agent project setup complete!
 

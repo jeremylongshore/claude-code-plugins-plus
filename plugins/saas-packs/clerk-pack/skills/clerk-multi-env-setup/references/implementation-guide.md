@@ -7,6 +7,7 @@ Detailed implementation examples and code patterns.
 ### Step 1: Create Clerk Instances
 
 Create separate Clerk instances for each environment in the Clerk Dashboard:
+
 - `myapp-dev` - Development
 - `myapp-staging` - Staging
 - `myapp-prod` - Production
@@ -31,6 +32,7 @@ NEXT_PUBLIC_APP_ENV=production
 ```
 
 ### Step 3: Environment-Aware Configuration
+
 ```typescript
 // lib/clerk-config.ts
 type Environment = 'development' | 'staging' | 'production'
@@ -88,6 +90,7 @@ export function validateClerkEnvironment() {
 ```
 
 ### Step 4: ClerkProvider Configuration
+
 ```typescript
 // app/layout.tsx
 import { ClerkProvider } from '@clerk/nextjs'
@@ -135,6 +138,7 @@ function EnvironmentBanner() {
 ```
 
 ### Step 5: Webhook Configuration Per Environment
+
 ```typescript
 // app/api/webhooks/clerk/route.ts
 import { headers } from 'next/headers'
@@ -159,6 +163,7 @@ export async function POST(req: Request) {
 ```
 
 ### Step 6: CI/CD Environment Promotion
+
 ```yaml
 # .github/workflows/deploy.yml
 name: Deploy
@@ -199,6 +204,7 @@ jobs:
 ```
 
 ### Step 7: User Data Isolation
+
 ```typescript
 // lib/user-sync.ts
 // Ensure user data doesn't leak between environments

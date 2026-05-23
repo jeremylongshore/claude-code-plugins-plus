@@ -10,6 +10,7 @@ speak-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Speak SDK patterns
 **Workflow:** Part of the onboarding skill category for Speak integration.
 **Relates to:** Other speak skills in this pack.

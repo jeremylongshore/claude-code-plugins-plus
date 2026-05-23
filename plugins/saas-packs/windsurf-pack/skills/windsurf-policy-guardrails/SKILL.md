@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Policy Guardrails
 
 ## Overview
+
 Policy guardrails for team Windsurf usage: controlling what Cascade can do, enforcing code review for AI output, configuring terminal safety controls, and preventing common AI coding mistakes.
 
 ## Prerequisites
+
 - Windsurf configured for team use
 - Git workflow established
 - CI/CD pipeline in place
@@ -219,6 +221,7 @@ description: Pre-flight checks before Cascade work
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Cascade modifies secrets | Files not in .codeiumignore | Add to .codeiumignore, rotate exposed secret |
@@ -230,6 +233,7 @@ description: Pre-flight checks before Cascade work
 ## Examples
 
 ### Quick Policy Verification
+
 ```bash
 set -euo pipefail
 echo "=== Policy Compliance Check ==="
@@ -240,9 +244,11 @@ echo "Extension control: $([ -f .vscode/extensions.json ] && echo 'EXISTS' || ec
 ```
 
 ## Resources
+
 - [Windsurf Terminal Docs](https://docs.windsurf.com/windsurf/terminal)
 - [Windsurf Rules](https://docs.windsurf.com/windsurf/cascade/memories)
 - [Windsurf Admin Guide](https://docs.windsurf.com/windsurf/guide-for-admins)
 
 ## Next Steps
+
 For architecture strategies, see `windsurf-architecture-variants`.

@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Observability
 
 ## Overview
+
 Monitor Ideogram AI image generation for latency, cost, error rates, and content safety rejections. Key metrics: generation duration (5-25s depending on model), credit burn rate, safety filter rejection rate, and API availability. Ideogram's API is synchronous, so all observability is request-level instrumentation.
 
 ## Key Metrics
@@ -40,6 +41,7 @@ Monitor Ideogram AI image generation for latency, cost, error rates, and content
 ## Instructions
 
 ### Step 1: Instrumented Generation Wrapper
+
 ```typescript
 import { performance } from "perf_hooks";
 
@@ -119,6 +121,7 @@ function recordMetric(metric: GenerationMetrics) {
 ```
 
 ### Step 2: Cost Estimation Metrics
+
 ```typescript
 const MODEL_COST_USD: Record<string, number> = {
   V_2_TURBO: 0.05, V_2: 0.08, V_2A: 0.04, V_2A_TURBO: 0.025,
@@ -145,6 +148,7 @@ function costReport(metrics: GenerationMetrics[]) {
 ```
 
 ### Step 3: Prometheus Metrics (Optional)
+
 ```typescript
 import { Counter, Histogram, register } from "prom-client";
 
@@ -175,6 +179,7 @@ app.get("/metrics", async (req, res) => {
 ```
 
 ### Step 4: Alerting Rules
+
 ```yaml
 # prometheus-rules.yml
 groups:
@@ -204,6 +209,7 @@ groups:
 ```
 
 ### Step 5: Dashboard Panel Queries
+
 ```
 # Grafana dashboard panels:
 # 1. Generation volume:     sum(rate(ideogram_generations_total[5m])) by (model)
@@ -214,6 +220,7 @@ groups:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Generation timeout | Complex prompt or QUALITY speed | Alert at P95 > 25s, suggest TURBO |
@@ -222,15 +229,18 @@ groups:
 | 429 sustained | Concurrency too high | Reduce queue concurrency, alert ops |
 
 ## Output
+
 - Instrumented generation wrapper with metrics collection
 - Cost estimation and reporting
 - Prometheus metrics with alerting rules
 - Grafana dashboard query templates
 
 ## Resources
+
 - [Ideogram API Overview](https://developer.ideogram.ai/ideogram-api/api-overview)
 - [Prometheus Client](https://github.com/siimon/prom-client)
 - [Grafana Dashboards](https://grafana.com/docs/grafana/latest/dashboards/)
 
 ## Next Steps
+
 For incident response, see `ideogram-incident-runbook`.

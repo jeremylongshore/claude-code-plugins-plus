@@ -1,6 +1,7 @@
-# Customer.io CI Integration - Implementation Guide
+## Customer.io CI Integration - Implementation Guide
 
 ### Step 1: GitHub Actions Workflow
+
 ```yaml
 # .github/workflows/customerio-integration.yml
 name: Customer.io Integration Tests
@@ -76,6 +77,7 @@ jobs:
 ```
 
 ### Step 2: Test Fixtures
+
 ```typescript
 // tests/fixtures/customerio.ts
 import { TrackClient, RegionUS } from '@customerio/track';
@@ -111,6 +113,7 @@ export async function cleanupTestUser(
 ```
 
 ### Step 3: Integration Test Suite
+
 ```typescript
 // tests/integration/customerio.test.ts
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
@@ -176,6 +179,7 @@ describe('Customer.io Integration', () => {
 ```
 
 ### Step 4: GitLab CI Configuration
+
 ```yaml
 # .gitlab-ci.yml
 stages:
@@ -236,6 +240,7 @@ deploy:production:
 ```
 
 ### Step 5: Pre-commit Hooks
+
 ```yaml
 # .pre-commit-config.yaml
 repos:
@@ -257,6 +262,7 @@ repos:
 ```
 
 ### Step 6: Environment Management
+
 ```typescript
 // scripts/setup-ci-environment.ts
 import { execSync } from 'child_process';

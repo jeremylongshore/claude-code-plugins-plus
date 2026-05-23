@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code
 # Figma Local Dev Loop
 
 ## Overview
+
 Set up fast local development for two workflows: building Figma plugins that run inside the Figma editor, and building external apps that consume the Figma REST API.
 
 ## Prerequisites
+
 - Node.js 18+ with npm/pnpm
 - `FIGMA_PAT` configured (see `figma-install-auth`)
 - Figma desktop app (for plugin development)
@@ -33,6 +35,7 @@ Set up fast local development for two workflows: building Figma plugins that run
 ## Instructions
 
 ### Step 1: REST API Project Structure
+
 ```
 figma-integration/
 ├── src/
@@ -50,6 +53,7 @@ figma-integration/
 ```
 
 ### Step 2: Figma Plugin Project Structure
+
 ```
 my-figma-plugin/
 ├── manifest.json             # Plugin manifest (required by Figma)
@@ -60,6 +64,7 @@ my-figma-plugin/
 ```
 
 **manifest.json** (required):
+
 ```json
 {
   "name": "My Plugin",
@@ -73,6 +78,7 @@ my-figma-plugin/
 ```
 
 ### Step 3: Plugin Development with Watch Mode
+
 ```json
 {
   "scripts": {
@@ -90,11 +96,13 @@ my-figma-plugin/
 ```
 
 Load the plugin in Figma:
+
 1. Figma desktop > Plugins > Development > Import plugin from manifest
 2. Select your `manifest.json`
 3. Run with `npm run watch` -- changes auto-reload
 
 ### Step 4: REST API Dev Loop with Testing
+
 ```json
 {
   "scripts": {
@@ -133,6 +141,7 @@ describe('Figma token extraction', () => {
 ```
 
 ### Step 5: Save API Fixtures for Offline Dev
+
 ```bash
 # Snapshot a Figma file for offline testing
 curl -s -H "X-Figma-Token: ${FIGMA_PAT}" \
@@ -146,12 +155,14 @@ curl -s -H "X-Figma-Token: ${FIGMA_PAT}" \
 ```
 
 ## Output
+
 - Working dev environment with hot reload
 - Test suite with mocked Figma API responses
 - Saved fixtures for offline development
 - Plugin manifest configured for Figma desktop loading
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Plugin not appearing in Figma | Wrong manifest path | Re-import from correct `manifest.json` |
@@ -162,6 +173,7 @@ curl -s -H "X-Figma-Token: ${FIGMA_PAT}" \
 ## Examples
 
 ### Quick Plugin Skeleton
+
 ```typescript
 // code.ts -- minimal Figma plugin
 figma.showUI(__html__, { width: 300, height: 200 });
@@ -180,10 +192,12 @@ figma.ui.onmessage = (msg: { type: string; count: number }) => {
 ```
 
 ## Resources
+
 - [Figma Plugin Development Guide](https://developers.figma.com/docs/plugins/)
 - [Plugin API Reference](https://developers.figma.com/docs/plugins/api/api-reference/)
 - [@figma/plugin-typings](https://www.npmjs.com/package/@figma/plugin-typings)
 - [Vitest Documentation](https://vitest.dev/)
 
 ## Next Steps
+
 See `figma-sdk-patterns` for production-ready code patterns.

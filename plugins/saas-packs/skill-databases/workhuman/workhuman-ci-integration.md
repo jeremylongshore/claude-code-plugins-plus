@@ -10,6 +10,7 @@ workhuman-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Workhuman CI/CD integration
 **Workflow:** Part of the cicd skill category for Workhuman integration.
 **Relates to:** Other workhuman skills in this pack.

@@ -10,6 +10,7 @@ sentry-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up local development workflow with Sentry including debug mode, environment-based configuration, and development-specific settings.
 **Workflow:** Configure after initial setup to optimize the development experience. Enables debug logging, separate DSNs, and appropriate sample rates for development.
 **Relates to:** Follows `sentry-hello-world` verification. Leads into `sentry-sdk-patterns` for best practices.

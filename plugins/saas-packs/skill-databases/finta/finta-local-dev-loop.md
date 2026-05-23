@@ -10,6 +10,7 @@ finta-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Finta local development workflow
 **Workflow:** Part of the onboarding skill category for Finta integration.
 **Relates to:** Other finta skills in this pack.

@@ -24,12 +24,14 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lindy Data Handling
 
 ## Overview
+
 Lindy agents process data through triggers, LLM calls, actions, knowledge bases,
 and memory. Data flows through Lindy's managed infrastructure with AES-256
 encryption at rest and in transit. This skill covers data classification, PII
 handling, prompt-level data controls, and regulatory compliance.
 
 ## Prerequisites
+
 - Understanding of data types processed by your agents
 - Knowledge of applicable regulations (GDPR, CCPA, HIPAA)
 - For HIPAA: Business Associate Agreement (BAA) with Lindy (Enterprise plan)
@@ -48,6 +50,7 @@ handling, prompt-level data controls, and regulatory compliance.
 ## Instructions
 
 ### Step 1: Classify Data in Agent Workflows
+
 Map what data each agent processes:
 
 | Data Category | Examples | Handling |
@@ -58,7 +61,9 @@ Map what data each agent processes:
 | **Restricted** | PII, PHI, payment data | Minimize exposure + compliance |
 
 ### Step 2: PII Controls in Agent Prompts
+
 Add data handling instructions directly to agent prompts:
+
 ```
 ## Data Handling Rules
 - Never include full email addresses in summaries — use "[name]@[domain]"
@@ -69,15 +74,18 @@ Add data handling instructions directly to agent prompts:
 ```
 
 ### Step 3: Knowledge Base Data Safety
+
 Knowledge base files are searchable by the agent. Control what goes in:
 
 **DO upload**:
+
 - Product documentation
 - FAQ articles
 - Policy documents
 - Public knowledge articles
 
 **DO NOT upload**:
+
 - Customer databases with PII
 - Credentials or API keys
 - Internal HR documents (unless agent specifically needs them)
@@ -87,7 +95,9 @@ Knowledge base files are searchable by the agent. Control what goes in:
 sensitive content by mistake, remove it AND trigger a manual Resync.
 
 ### Step 4: Secure Memory Usage
+
 Agent memories persist across all future tasks. Be deliberate:
+
 ```
 Safe memory: "Customer prefers email communication over phone"
 Safe memory: "Billing questions should escalate to finance@company.com"
@@ -97,6 +107,7 @@ Risky memory: "API key for Stripe: sk_live_xxxx"  ← NEVER store secrets
 ```
 
 Add to agent prompt:
+
 ```
 ## Memory Rules
 - Never store personally identifiable information (PII) in memory
@@ -105,13 +116,16 @@ Add to agent prompt:
 ```
 
 ### Step 5: Computer Use Data Isolation
+
 If using Computer Use (browser automation):
+
 - Sessions persist for 30 days with saved credentials
 - Enable **Incognito mode** for sessions handling sensitive data
 - Use **dedicated** (not shared) computer assignments for sensitive agents
 - Review screenshots captured during execution for data exposure
 
 ### Step 6: Integration Account Isolation
+
 - Authorize dedicated service accounts per agent (not personal accounts)
 - Use Gmail with a team alias, not an individual inbox
 - Create read-only database credentials where possible
@@ -120,6 +134,7 @@ If using Computer Use (browser automation):
 ### Step 7: Regulatory Compliance
 
 **GDPR (EU Data Protection)**:
+
 - [ ] Document what personal data each agent processes
 - [ ] Ensure agents only process data with valid legal basis
 - [ ] Implement data subject access/deletion capabilities
@@ -127,11 +142,13 @@ If using Computer Use (browser automation):
 - [ ] Review Lindy's data processing agreement
 
 **CCPA (California Consumer Privacy)**:
+
 - [ ] Identify agents processing California resident data
 - [ ] Ensure opt-out mechanisms exist for data processing
 - [ ] Agent prompt prevents selling/sharing personal information
 
 **HIPAA (Healthcare)**:
+
 - [ ] Enterprise plan with BAA in place
 - [ ] Agents only access minimum necessary PHI
 - [ ] No PHI in agent memory or knowledge base
@@ -139,6 +156,7 @@ If using Computer Use (browser automation):
 - [ ] Agent prompt includes PHI handling restrictions
 
 ### Step 8: Data Retention Management
+
 ```
 Agent Prompt Addition:
 ## Data Retention
@@ -149,6 +167,7 @@ Agent Prompt Addition:
 ```
 
 ## Data Handling Checklist
+
 - [ ] Each agent's data classification documented
 - [ ] PII handling rules in every agent prompt
 - [ ] Knowledge base audited for sensitive content
@@ -169,10 +188,12 @@ Agent Prompt Addition:
 | Audit finding | Agent accessing unnecessary data | Remove unused integrations from agent |
 
 ## Resources
+
 - [Lindy Security](https://www.lindy.ai/security)
 - [Lindy Privacy Policy](https://www.lindy.ai/privacy)
 - [GDPR Official](https://gdpr.eu/)
 - [Lindy Documentation](https://docs.lindy.ai)
 
 ## Next Steps
+
 Proceed to `lindy-enterprise-rbac` for access control.

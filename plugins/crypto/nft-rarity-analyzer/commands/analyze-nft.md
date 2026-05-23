@@ -106,22 +106,26 @@ Structure your analysis as:
 ## Rarity Calculation Methods
 
 ### Statistical Rarity
+
 ```
 Trait Rarity = 1 / (Trait Count / Total Supply)
 Total Rarity = Sum of all trait rarities
 ```
 
 ### Trait Normalization
+
 ```
 Normalized Score = Trait Rarity / Number of Traits
 ```
 
 ### OpenRarity Score
+
 Uses information content and arithmetic mean of trait rarities.
 
 ## Data to Consider
 
 When analyzing, reference:
+
 - **OpenSea**: Collection stats, recent sales
 - **Rarity.tools**: Rarity rankings
 - **LooksRare**: Alternative marketplace data
@@ -131,6 +135,7 @@ When analyzing, reference:
 ## Example Queries
 
 Users might ask:
+
 - "Analyze Bored Ape #1234"
 - "What's the rarity of CryptoPunk #5678?"
 - "Compare rarity: Azuki #100 vs #200"
@@ -149,6 +154,7 @@ Users might ask:
 ## When You Need More Information
 
 Ask users for:
+
 - Collection name and token ID
 - Which marketplace they're viewing it on
 - Their investment timeline

@@ -10,6 +10,7 @@ together-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Together AI core feature integration
 **Workflow:** Part of the onboarding skill category for Together AI integration.
 **Relates to:** Other together skills in this pack.

@@ -10,6 +10,7 @@ flexport-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Flexport primary workflow
 **Workflow:** Part of the onboarding skill category for Flexport integration.
 **Relates to:** Other flexport skills in this pack.

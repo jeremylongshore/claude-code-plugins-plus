@@ -10,6 +10,7 @@ coreweave-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize CoreWeave costs and usage
 **Workflow:** Part of the cicd skill category for CoreWeave integration.
 **Relates to:** Other coreweave skills in this pack.

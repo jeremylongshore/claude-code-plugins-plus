@@ -10,6 +10,7 @@ brightdata-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Bright Data production deployment checklist
 **Workflow:** Part of the operations skill category for Bright Data integration.
 **Relates to:** Other brightdata skills in this pack.

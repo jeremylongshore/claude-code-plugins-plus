@@ -3,6 +3,7 @@
 ## Switching Between Providers
 
 ### Runtime Switching
+
 ```python
 import os
 
@@ -30,6 +31,7 @@ client = LLMClient(provider=os.environ.get("LLM_PROVIDER", "openrouter"))
 ```
 
 ### Configuration-Based
+
 ```python
 # config.py
 import os

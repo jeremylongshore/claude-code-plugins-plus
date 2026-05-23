@@ -10,6 +10,7 @@ lucidchart-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Lucidchart SDK patterns
 **Workflow:** Part of the onboarding skill category for Lucidchart integration.
 **Relates to:** Other lucidchart skills in this pack.

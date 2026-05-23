@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf CI Integration
 
 ## Overview
+
 Integrate Windsurf configuration validation and AI code quality gates into CI/CD pipelines. Covers validating `.windsurfrules`, enforcing team policies for AI-generated code, and automating Windsurf config distribution.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - Windsurf configuration files in repository
 - Team agreement on AI code review policy
@@ -197,6 +199,7 @@ Enforce commit message conventions for AI-generated code:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | .windsurfrules over limit | Too many rules | Split into workspace rules in `.windsurf/rules/` |
@@ -207,6 +210,7 @@ Enforce commit message conventions for AI-generated code:
 ## Examples
 
 ### Branch Protection Rules
+
 ```yaml
 # Recommended for teams using Windsurf Cascade
 required_status_checks:
@@ -216,6 +220,7 @@ required_status_checks:
 ```
 
 ### Pre-Commit Hook for .windsurfrules
+
 ```bash
 #!/bin/bash
 # .git/hooks/pre-commit
@@ -227,8 +232,10 @@ fi
 ```
 
 ## Resources
+
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Windsurf Admin Guide](https://docs.windsurf.com/windsurf/guide-for-admins)
 
 ## Next Steps
+
 For deployment patterns, see `windsurf-deploy-integration`.

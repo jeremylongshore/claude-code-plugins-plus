@@ -28,6 +28,7 @@ curl -X GET "https://api.getmaintainx.com/v1/workorders?limit=5" \
 ```
 
 Expected response:
+
 ```json
 {
   "workOrders": [
@@ -190,6 +191,7 @@ if __name__ == "__main__":
 - Working code file with MaintainX client usage
 - Successfully created work order in your MaintainX account
 - Console output showing:
+
 ```
 Work order created successfully!
 ID: wo_789012
@@ -209,12 +211,14 @@ Status: OPEN
 ## Common Field Values
 
 ### Work Order Priority
+
 - `NONE` - No priority set
 - `LOW` - Low priority
 - `MEDIUM` - Medium priority
 - `HIGH` - High priority
 
 ### Work Order Status
+
 - `OPEN` - New, not started
 - `IN_PROGRESS` - Work underway
 - `ON_HOLD` - Paused/waiting

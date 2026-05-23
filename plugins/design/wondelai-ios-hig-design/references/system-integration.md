@@ -2,8 +2,8 @@
 
 Siri, Shortcuts, Handoff, drag and drop, and other system-level integrations.
 
-
 ## Table of Contents
+
 1. [Siri Integration](#siri-integration)
 2. [Shortcuts App Integration](#shortcuts-app-integration)
 3. [Handoff](#handoff)
@@ -38,12 +38,14 @@ Your app can integrate with Siri through predefined domains:
 ### Designing for Voice
 
 **Confirmation dialogs:**
+
 ```
 Siri: "Send $50 to Sarah for dinner?"
 User: "Yes" / "Change amount" / "Cancel"
 ```
 
 **Guidelines:**
+
 - Confirm significant actions
 - Allow easy correction
 - Provide visual feedback alongside voice
@@ -60,6 +62,7 @@ Parameters: coffeeType, size, location
 ```
 
 **Best practices:**
+
 - Use descriptive parameter names
 - Provide good examples
 - Support synonyms
@@ -81,6 +84,7 @@ view.userActivity = activity
 ```
 
 **Guidelines:**
+
 - Donate shortcuts for repeated actions
 - Suggest clear invocation phrases
 - Provide relevant parameters
@@ -115,12 +119,14 @@ struct MyAppShortcuts: AppShortcutsProvider {
 Expose app functionality as Shortcuts actions:
 
 **Good candidates:**
+
 - Actions users repeat frequently
 - Actions that can run without UI
 - Data that can be passed to other apps
 - Automatable workflows
 
 **Design considerations:**
+
 - Clear action names (verb + object)
 - Meaningful parameters with defaults
 - Useful outputs for chaining
@@ -147,12 +153,14 @@ userActivity = activity
 ### Handoff Guidelines
 
 **Do:**
+
 - Continue at exactly where user left off
 - Restore scroll position, form state, etc.
 - Support universal links as fallback
 - Update activity as context changes
 
 **Don't:**
+
 - Require re-authentication
 - Lose user's work
 - Show significantly different content
@@ -160,6 +168,7 @@ userActivity = activity
 ### Web Fallback
 
 If app isn't installed on receiving device:
+
 ```swift
 activity.webpageURL = URL(string: "https://myapp.com/activity/\(id)")
 ```
@@ -189,16 +198,19 @@ activity.webpageURL = URL(string: "https://myapp.com/activity/\(id)")
 ### Drag and Drop Guidelines
 
 **Visual feedback:**
+
 - Show clear drag preview
 - Indicate valid drop targets
 - Animate transitions smoothly
 
 **Multi-item:**
+
 - Support selecting multiple items
 - Stack preview for multiple items
 - Handle batch operations
 
 **Cross-app:**
+
 - Export standard data types (images, text, URLs)
 - Accept common formats
 - Maintain quality during transfer
@@ -218,6 +230,7 @@ activity.webpageURL = URL(string: "https://myapp.com/activity/\(id)")
 ### Setting Up
 
 1. Configure `apple-app-site-association` on your server:
+
 ```json
 {
   "applinks": {
@@ -230,7 +243,8 @@ activity.webpageURL = URL(string: "https://myapp.com/activity/\(id)")
 }
 ```
 
-2. Add Associated Domains capability:
+1. Add Associated Domains capability:
+
 ```
 applinks:example.com
 ```
@@ -280,11 +294,13 @@ CSSearchableIndex.default().indexSearchableItems([searchableItem])
 ### What to Index
 
 **Good candidates:**
+
 - User content (notes, documents)
 - Saved items (favorites, history)
 - Frequently accessed items
 
 **Avoid:**
+
 - Sensitive data
 - Transient content
 - Every possible item (be selective)
@@ -292,6 +308,7 @@ CSSearchableIndex.default().indexSearchableItems([searchableItem])
 ### Search Result Design
 
 Results appear in Spotlight:
+
 ```
 ┌─────────────────────────────────────────┐
 │ 🔲 My Note Title                        │
@@ -301,6 +318,7 @@ Results appear in Spotlight:
 ```
 
 **Include:**
+
 - Clear title
 - Helpful description
 - Thumbnail if visual
@@ -333,6 +351,7 @@ content.interruptionLevel = .timeSensitive
 ```
 
 **Use only when:**
+
 - Immediate action required
 - User explicitly opted in
 - Content is genuinely time-sensitive
@@ -367,11 +386,13 @@ Text(content)
 ### SharePlay Guidelines
 
 **Sync state:**
+
 - Keep all participants in sync
 - Handle network latency gracefully
 - Provide individual controls where appropriate
 
 **Visual design:**
+
 - Show who's in the session
 - Indicate when others interact
 - Provide easy leave option

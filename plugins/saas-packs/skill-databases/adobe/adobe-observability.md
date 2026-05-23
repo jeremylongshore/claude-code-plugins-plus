@@ -10,6 +10,7 @@ adobe-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Adobe monitoring and observability
 **Workflow:** Part of the enterprise skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

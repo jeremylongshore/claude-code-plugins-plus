@@ -24,8 +24,8 @@ Comprehensive update to all Google AI plugins to clarify deployment targets, add
 
 ### 🔄 PENDING (2/5)
 
-4. **jeremy-vertex-terraform** - Agent Engine infrastructure as code
-5. **jeremy-adk-terraform** - ADK agent Terraform deployment
+1. **jeremy-vertex-terraform** - Agent Engine infrastructure as code
+2. **jeremy-adk-terraform** - ADK agent Terraform deployment
 
 ---
 
@@ -54,6 +54,7 @@ Comprehensive update to all Google AI plugins to clarify deployment targets, add
 ```
 
 **Why This Matters:**
+
 - Users were confused about Cloud Run vs Agent Engine
 - Prevents incorrect plugin usage
 - Clarifies deployment architecture upfront
@@ -63,6 +64,7 @@ Comprehensive update to all Google AI plugins to clarify deployment targets, add
 **Added comprehensive sections to ALL plugins:**
 
 #### Google Cloud Setup
+
 ```bash
 # Enable required APIs
 gcloud services enable aiplatform.googleapis.com \
@@ -74,6 +76,7 @@ gcloud services enable aiplatform.googleapis.com \
 ```
 
 #### Authentication
+
 ```bash
 # Application Default Credentials
 gcloud auth application-default login
@@ -83,12 +86,15 @@ export GOOGLE_APPLICATION_CREDENTIALS="/path/to/service-account-key.json"
 ```
 
 #### IAM Permissions
+
 - Documented minimum required roles for each plugin
 - Least privilege principle enforced
 - Specific role names provided
 
 #### Python Packages
+
 **All dependencies with minimum versions:**
+
 ```bash
 pip install --upgrade \
     'google-cloud-aiplatform[agent_engines]>=1.120.0' \
@@ -100,6 +106,7 @@ pip install --upgrade \
 ```
 
 #### gcloud CLI Tools
+
 ```bash
 # Install alpha commands (for Agent Engine)
 gcloud components install alpha
@@ -113,12 +120,14 @@ gcloud alpha ai agent-engines list --location=us-central1 --project=YOUR_PROJECT
 **New Google Cloud features documented:**
 
 #### Agent Engine Observability Dashboard
+
 ```bash
 # Access dashboard
 https://console.cloud.google.com/vertex-ai/agent-engines/[AGENT_ENGINE_ID]/observability?project=[PROJECT_ID]
 ```
 
 **Key Metrics:**
+
 - Request volume
 - Latency distribution (p50, p90, p95, p99)
 - Error rates
@@ -127,6 +136,7 @@ https://console.cloud.google.com/vertex-ai/agent-engines/[AGENT_ENGINE_ID]/obser
 - Code Execution Sandbox stats
 
 #### Cloud Trace Integration
+
 ```python
 from opentelemetry import trace
 from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
@@ -142,6 +152,7 @@ with tracer.start_as_current_span("agent_query") as span:
 ```
 
 #### Cloud Logging Queries
+
 ```bash
 # View all agent errors
 gcloud logging read "resource.type=aiplatform.googleapis.com/Agent AND severity>=ERROR" \
@@ -155,6 +166,7 @@ gcloud logging read "jsonPayload.component=memory_bank" \
 ```
 
 #### Custom Metrics & Alerting
+
 ```python
 from google.cloud import monitoring_v3
 
@@ -187,6 +199,7 @@ connector_config = {
 ```
 
 **Analytics Queries:**
+
 ```sql
 -- Agent query volume and latency trends
 SELECT
@@ -202,6 +215,7 @@ GROUP BY query_date;
 ```
 
 **Cloud Storage Integration:**
+
 ```python
 # Configure Code Execution Sandbox to save artifacts
 sandbox_config = {
@@ -233,6 +247,7 @@ sandbox_config = {
 **After:** Comprehensive 760-line README
 
 **New Sections:**
+
 1. Prerequisites & Dependencies (144 lines)
    - Google Cloud setup
    - Python packages with versions
@@ -265,6 +280,7 @@ sandbox_config = {
 **After:** Comprehensive 695-line README created from scratch
 
 **New Content:**
+
 1. A2A Protocol Architecture (complete)
    - AgentCard discovery
    - Task submission
@@ -337,6 +353,7 @@ sandbox_config = {
    - Continuous validation
 
 **Added Tools:**
+
 - pylint (>=3.0.0)
 - flake8 (>=7.0.0)
 - mypy (>=1.8.0)
@@ -422,6 +439,7 @@ sandbox_config = {
 ### Total Code Examples Across 3 Plugins: 40+
 
 **jeremy-vertex-engine:**
+
 - Observability Dashboard access
 - Cloud Trace instrumentation (15 lines)
 - Cloud Logging queries (3 examples)
@@ -434,6 +452,7 @@ sandbox_config = {
 - Compliance export function (35 lines)
 
 **jeremy-adk-orchestrator:**
+
 - AgentCard discovery (25 lines)
 - Task submission (30 lines)
 - Status polling (25 lines)
@@ -444,6 +463,7 @@ sandbox_config = {
 - BigQuery export setup (25 lines)
 
 **jeremy-vertex-validator:**
+
 - Security validation function (30 lines)
 - Monitoring check (25 lines)
 - Performance validation (25 lines)
@@ -458,6 +478,7 @@ sandbox_config = {
 **NONE** - These are documentation-only updates.
 
 All plugin functionality remains the same. We only:
+
 - Clarified deployment targets
 - Added comprehensive documentation
 - Documented existing features more thoroughly
@@ -502,15 +523,18 @@ Before release, verify:
 ## Release Timeline
 
 **Phase 1: Completed Plugins (Immediate Release)**
+
 - jeremy-vertex-engine v1.0.1
 - jeremy-adk-orchestrator v1.0.1 (critical - was missing README)
 - jeremy-vertex-validator v1.0.1
 
 **Phase 2: Pending Plugins (Next 24 hours)**
+
 - jeremy-vertex-terraform v1.0.1
 - jeremy-adk-terraform v1.0.1
 
 **Phase 3: Validation (Next 48 hours)**
+
 - User testing
 - Feedback incorporation
 - Documentation fixes
@@ -524,6 +548,7 @@ Before release, verify:
 **Title:** "Google AI Plugins Major Documentation Update - Agent Engine Clarity + 2025 Features"
 
 **Key Points:**
+
 1. All plugins now clearly state they're for Vertex AI Agent Engine (NOT Cloud Run)
 2. Complete dependency documentation with versions
 3. New 2025 observability features (Dashboard, Trace, Logging)
@@ -532,6 +557,7 @@ Before release, verify:
 6. jeremy-adk-orchestrator now has comprehensive A2A protocol guide
 
 **Target Channels:**
+
 - GitHub Discussions
 - claudecodeplugins.io blog
 - Plugin marketplace release notes
@@ -617,30 +643,35 @@ Post-release, monitor:
 **Post-Release Enhancements:**
 
 1. **Interactive Setup Script**
+
    ```bash
    # Auto-install all dependencies
    ./setup-agent-engine.sh
    ```
 
 2. **Validation CLI**
+
    ```bash
    # Check prerequisites before deployment
    adk-validator check-prereqs
    ```
 
 3. **Cost Calculator**
+
    ```bash
    # Estimate monthly costs
    adk-calculator estimate --queries=10000 --tokens=500000
    ```
 
 4. **Migration Script**
+
    ```bash
    # Migrate from Cloud Run to Agent Engine
    ./migrate-to-agent-engine.sh
    ```
 
 5. **Observability Quickstart**
+
    ```bash
    # One-command observability setup
    ./setup-observability.sh --project=PROJECT_ID --agent=AGENT_ID
@@ -651,24 +682,28 @@ Post-release, monitor:
 ## Appendix: Line Count Changes
 
 ### jeremy-vertex-engine
+
 - **Before:** ~357 lines
 - **After:** 760 lines
 - **Increase:** +403 lines (113% growth)
 - **New sections:** 2 major (Observability, Storage)
 
 ### jeremy-adk-orchestrator
+
 - **Before:** 0 lines (NO README)
 - **After:** 695 lines
 - **Increase:** +695 lines (∞% growth - created from scratch)
 - **Critical:** Fixed missing documentation
 
 ### jeremy-vertex-validator
+
 - **Before:** 33 lines
 - **After:** 695 lines
 - **Increase:** +662 lines (2006% growth)
 - **New sections:** 5 (validation categories)
 
 ### Total Documentation Added
+
 - **Total lines:** 2,150 lines of production-grade documentation
 - **Code examples:** 40+ working examples
 - **SQL queries:** 6 analytics queries
@@ -729,6 +764,7 @@ Google Cloud SDK 450.0.0+
 ### Required Google Cloud APIs
 
 All plugins require:
+
 ```bash
 aiplatform.googleapis.com          # Vertex AI Agent Engine
 discoveryengine.googleapis.com     # Memory Bank, Agent configs
@@ -738,6 +774,7 @@ cloudtrace.googleapis.com          # Cloud Trace
 ```
 
 Validator plugin additionally requires:
+
 ```bash
 securitycenter.googleapis.com      # Security Command Center
 ```
@@ -749,6 +786,7 @@ securitycenter.googleapis.com      # Security Command Center
 ### Minimum Roles Required
 
 **Inspector/Orchestrator:**
+
 - `roles/aiplatform.user`
 - `roles/discoveryengine.viewer`
 - `roles/logging.viewer`
@@ -756,9 +794,11 @@ securitycenter.googleapis.com      # Security Command Center
 - `roles/cloudtrace.user`
 
 **Validator (additional):**
+
 - `roles/iam.securityReviewer`
 
 **Deployer (Terraform plugins):**
+
 - `roles/aiplatform.admin`
 - `roles/iam.serviceAccountUser`
 

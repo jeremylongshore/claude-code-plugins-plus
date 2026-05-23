@@ -35,6 +35,7 @@ I'll check your code formatting by:
 ## Output Examples
 
 ### All Files Formatted
+
 ```
 Checking formatting...
 ✓ src/app.js
@@ -45,6 +46,7 @@ Checking formatting...
 ```
 
 ### Files Need Formatting
+
 ```
 Checking formatting...
 ✓ src/app.js

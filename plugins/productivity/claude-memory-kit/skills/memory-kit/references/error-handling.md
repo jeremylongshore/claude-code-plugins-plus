@@ -17,6 +17,7 @@
 ## Recovery
 
 If MEMORY.md becomes corrupted (malformed markdown):
+
 1. Check git log for the last good version: `git log --oneline MEMORY.md`
 2. Restore: `git checkout HEAD~1 -- MEMORY.md`
 3. Re-run `/memory-save` to capture current state fresh

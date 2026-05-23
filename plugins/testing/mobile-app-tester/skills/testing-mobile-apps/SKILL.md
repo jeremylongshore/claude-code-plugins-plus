@@ -83,6 +83,7 @@ Execute automated mobile application testing on iOS simulators and Android emula
 ## Examples
 
 **Detox test for React Native login flow:**
+
 ```javascript
 describe('Login Flow', () => {
   beforeAll(async () => { await device.launchApp(); });
@@ -98,6 +99,7 @@ describe('Login Flow', () => {
 ```
 
 **Maestro flow file:**
+
 ```yaml
 appId: com.example.myapp
 ---

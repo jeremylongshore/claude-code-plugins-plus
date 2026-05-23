@@ -10,6 +10,7 @@ grammarly-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Grammarly API performance
 **Workflow:** Part of the cicd skill category for Grammarly integration.
 **Relates to:** Other grammarly skills in this pack.

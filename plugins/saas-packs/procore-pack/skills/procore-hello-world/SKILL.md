@@ -17,14 +17,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Procore Hello World
 
 ## Overview
+
 List companies and projects, then create your first RFI using the Procore REST API.
 
 ## Prerequisites
+
 - Completed `procore-install-auth` with valid access token
 
 ## Instructions
 
 ### Step 1: List Projects
+
 ```python
 company_id = 12345  # From install-auth step
 projects = requests.get(
@@ -36,6 +39,7 @@ for p in projects.json():
 ```
 
 ### Step 2: Create an RFI
+
 ```python
 project_id = 67890
 rfi = requests.post(
@@ -54,6 +58,7 @@ print(f"RFI created: #{rfi.json()['number']} — {rfi.json()['subject']}")
 ```
 
 ### Step 3: List Submittals
+
 ```python
 submittals = requests.get(
     f"https://api.procore.com/rest/v1.0/projects/{project_id}/submittals",
@@ -64,11 +69,13 @@ for s in submittals.json():
 ```
 
 ## Output
+
 - Listed companies and projects
 - Created an RFI with subject and assignee
 - Listed submittals with status
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `404 Project not found` | Wrong project_id | List projects first |
@@ -76,8 +83,10 @@ for s in submittals.json():
 | `403 Forbidden` | No project access | Check user permissions |
 
 ## Resources
+
 - [Procore REST API](https://developers.procore.com/reference/rest)
 - [RFIs API](https://developers.procore.com/reference/rest/rfis)
 
 ## Next Steps
+
 Full RFI workflow: `procore-core-workflow-a`

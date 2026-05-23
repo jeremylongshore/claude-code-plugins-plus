@@ -16,6 +16,7 @@ This is the story of implementing production-grade testing infrastructure in a s
 ### Core Infrastructure
 
 **Playwright Testing Framework** with:
+
 - Comprehensive test suite with 8 E2E tests
 - Multi-browser support (Chromium, Firefox, Safari, Mobile Chrome, Mobile Safari)
 - Automated screenshot/video capture on failure
@@ -23,12 +24,14 @@ This is the story of implementing production-grade testing infrastructure in a s
 - Integration with Netlify Forms API for end-to-end verification
 
 **GitHub Actions CI/CD Pipeline** with:
+
 - Automated test runs on every push
 - 8-phase release pipeline with quality gates
 - Auto-deployment to Netlify on merge
 - Artifact archival and release announcement automation
 
 **Documentation Suite** including:
+
 - Testing quick-start guide
 - Pre-launch manual checklist
 - Comprehensive troubleshooting documentation
@@ -39,12 +42,14 @@ This is the story of implementing production-grade testing infrastructure in a s
 ### 1. Playwright Configuration for Production
 
 The testing framework needed to handle:
+
 - Eventually consistent Netlify Forms API (1-3 second submission delay)
 - Multi-device/browser compatibility verification
 - Non-destructive test execution (no race conditions)
 - Comprehensive failure evidence capture
 
 **Solution** (`playwright.config.js`):
+
 ```javascript
 module.exports = defineConfig({
   testDir: './tests',
@@ -76,6 +81,7 @@ module.exports = defineConfig({
 Netlify Forms are eventually consistent - submissions take 1-3 seconds to appear in the API. This required custom polling logic:
 
 **Test helper implementation** (`tests/helpers.cjs`):
+
 ```javascript
 async function waitForSubmission(siteId, authToken, email, maxWaitTime = 30000) {
   const startTime = Date.now();
@@ -99,6 +105,7 @@ async function waitForSubmission(siteId, authToken, email, maxWaitTime = 30000) 
 ```
 
 **Why this pattern?**
+
 - Handles API eventual consistency gracefully
 - Provides configurable timeout (default 30s)
 - Returns null instead of throwing (allows graceful degradation)
@@ -107,6 +114,7 @@ async function waitForSubmission(siteId, authToken, email, maxWaitTime = 30000) 
 ### 3. End-to-End Test Architecture
 
 **Complete submission verification**:
+
 ```javascript
 test('Submit valid form and verify submission', async ({ page }) => {
   const testEmail = generateTestEmail('e2e-test');
@@ -134,6 +142,7 @@ test('Submit valid form and verify submission', async ({ page }) => {
 ```
 
 **Coverage includes**:
+
 - Form rendering and attributes
 - Field validation (email format, phone format, required fields)
 - Submission flow and redirect
@@ -145,6 +154,7 @@ test('Submit valid form and verify submission', async ({ page }) => {
 **Three-workflow automation**:
 
 #### Workflow 1: Continuous Testing
+
 ```yaml
 name: Test Suite
 
@@ -180,6 +190,7 @@ jobs:
 **Result**: Zero manual test execution. Every push and PR automatically verified.
 
 #### Workflow 2: Automated Release Pipeline
+
 ```yaml
 name: Release Pipeline
 
@@ -217,6 +228,7 @@ jobs:
 ```
 
 **8-phase automated release**:
+
 1. ✅ Run full test suite (tests must pass before proceeding)
 2. 📦 Bump version in package.json
 3. 📝 Generate changelog from git commits
@@ -229,6 +241,7 @@ jobs:
 **Impact**: One-click releases with zero manual steps. Quality gates prevent broken releases.
 
 #### Workflow 3: Automatic Deployment
+
 ```yaml
 name: Deploy to Netlify
 
@@ -261,6 +274,7 @@ jobs:
 ### Issue 1: Module System Incompatibility
 
 **Error encountered**:
+
 ```
 ReferenceError: require is not defined in ES module scope
 ```
@@ -268,11 +282,13 @@ ReferenceError: require is not defined in ES module scope
 **Root cause**: Package.json specified `"type": "module"` (ES modules) but Playwright tests used `require()` (CommonJS).
 
 **Investigation process**:
+
 1. Identified package.json module type setting
 2. Researched Playwright CommonJS support
 3. Discovered `.cjs` extension override pattern
 
 **Solution**: Rename test files from `.js` to `.cjs`:
+
 ```bash
 mv tests/helpers.js tests/helpers.cjs
 mv tests/form-submission.spec.js tests/e2e/netlify-form-submission.spec.cjs
@@ -283,6 +299,7 @@ mv tests/form-submission.spec.js tests/e2e/netlify-form-submission.spec.cjs
 ### Issue 2: Survey Consent Flow Redirect
 
 **Error encountered**:
+
 ```
 expect(locator).toBeVisible() failed
 Locator: locator('form[data-netlify="true"]')
@@ -291,12 +308,14 @@ Error: element(s) not found
 ```
 
 **Investigation process**:
+
 1. Verified URL navigation (`/survey/15` loaded correctly)
 2. Checked HTML response (showed consent page, not form page)
 3. Analyzed client-side JavaScript for redirect logic
 4. Discovered sessionStorage consent requirement
 
 **Root cause discovered**:
+
 ```javascript
 // From survey/1.astro
 if (!sessionStorage.getItem('survey_consent')) {
@@ -309,20 +328,22 @@ Survey uses **client-side sessionStorage** to track consent. Tests that jump dir
 **Three solutions identified**:
 
 1. **Handle consent flow in tests** (recommended):
+
 ```javascript
 await page.goto('/survey/1');
 await page.evaluate(() => sessionStorage.setItem('survey_consent', 'yes'));
 await page.goto('/survey/15');
 ```
 
-2. **Mock sessionStorage before navigation**:
+1. **Mock sessionStorage before navigation**:
+
 ```javascript
 await page.addInitScript(() => {
   sessionStorage.setItem('survey_consent', 'yes');
 });
 ```
 
-3. **Test alternative form** (landing page contact form).
+1. **Test alternative form** (landing page contact form).
 
 **Decision**: Document all solutions, implement consent flow handler, provide manual checklist as immediate fallback.
 
@@ -331,6 +352,7 @@ await page.addInitScript(() => {
 ### Issue 3: Test Output Directory Conflicts
 
 **Error encountered**:
+
 ```
 HTML reporter output folder clashes with the tests output folder
 ```
@@ -338,6 +360,7 @@ HTML reporter output folder clashes with the tests output folder
 **Root cause**: Multiple Playwright configurations pointing to same output directory.
 
 **Solution**: Create separate configuration for Netlify-specific tests:
+
 ```javascript
 // playwright-netlify.config.cjs
 module.exports = defineConfig({
@@ -387,6 +410,7 @@ While automated tests need consent flow adjustments, I created a comprehensive *
 ```
 
 **Why this approach?**
+
 - Provides 100% confidence for immediate launch
 - Automated tests can be perfected iteratively
 - Manual verification documents edge cases
@@ -395,24 +419,28 @@ While automated tests need consent flow adjustments, I created a comprehensive *
 ## Metrics: Quantifiable Impact
 
 **Test Coverage Achieved**:
+
 - 2 test suite files with 8 comprehensive E2E tests
 - Netlify API integration tests
 - 5 browser/device configurations (Chrome, Firefox, Safari, Mobile Chrome, Mobile Safari)
 - ~95% critical functionality coverage
 
 **Automation Infrastructure**:
+
 - 3 GitHub Actions workflows (test, release, deploy)
 - 100% automated quality gates
 - Zero manual deployment steps
 - Automatic release artifact archival
 
 **Documentation Deliverables**:
+
 - 4 comprehensive testing documents
 - Complete troubleshooting guide
 - Manual verification checklist
 - Test evidence collection protocols
 
 **Time Investment vs ROI**:
+
 - Testing suite implementation: 2 hours
 - GitHub Actions setup: 30 minutes
 - Documentation creation: 45 minutes
@@ -420,6 +448,7 @@ While automated tests need consent flow adjustments, I created a comprehensive *
 - **Total: 4.5 hours**
 
 **ROI calculation**:
+
 - Manual verification per deploy: 1 hour saved
 - Bug prevention in production: 2-4 hours saved per bug
 - Deployment confidence: Priceless
@@ -431,6 +460,7 @@ While automated tests need consent flow adjustments, I created a comprehensive *
 ### 1. Test Infrastructure Is Development Infrastructure
 
 Don't treat testing as an afterthought. Test infrastructure is **development infrastructure**:
+
 - Reveals architectural issues during implementation
 - Provides instant feedback on changes
 - Enables confident refactoring
@@ -441,6 +471,7 @@ Don't treat testing as an afterthought. Test infrastructure is **development inf
 ### 2. Module System Compatibility Matters
 
 ES modules vs CommonJS isn't academic - it's a **blocker** for test frameworks:
+
 - Always check package.json `"type"` field
 - Understand framework module requirements
 - Use extension overrides (`.cjs`, `.mjs`) when needed
@@ -449,6 +480,7 @@ ES modules vs CommonJS isn't academic - it's a **blocker** for test frameworks:
 ### 3. Eventually Consistent Systems Need Custom Helpers
 
 Modern serverless architectures (Netlify, Vercel, AWS Lambda) are often eventually consistent:
+
 - Don't assume immediate availability
 - Implement polling with configurable timeout
 - Use exponential backoff for efficiency
@@ -457,6 +489,7 @@ Modern serverless architectures (Netlify, Vercel, AWS Lambda) are often eventual
 ### 4. Manual Checklists Are Valid Quality Gates
 
 Automated tests are ideal, but **manual verification is better than no verification**:
+
 - Document every critical user path
 - Include evidence collection (IDs, screenshots, timestamps)
 - Provide clear pass/fail criteria
@@ -467,6 +500,7 @@ Automated tests are ideal, but **manual verification is better than no verificat
 ### 5. GitHub Actions Make CI/CD Accessible
 
 You don't need Jenkins or CircleCI for production-grade CI/CD:
+
 - Three YAML files = complete automation
 - Built-in secret management
 - Artifact storage and retention
@@ -477,12 +511,14 @@ You don't need Jenkins or CircleCI for production-grade CI/CD:
 ### For Stakeholders
 
 **Before testing infrastructure**:
+
 - Manual verification: 1 hour per deployment
 - Production bugs: 2-4 hours to fix + reputation damage
 - Deployment anxiety: High
 - Confidence level: 60-70%
 
 **After testing infrastructure**:
+
 - Automated verification: 3 minutes per deployment
 - Production bugs: Caught before deployment
 - Deployment confidence: 100%
@@ -491,12 +527,14 @@ You don't need Jenkins or CircleCI for production-grade CI/CD:
 ### For Development Teams
 
 **Velocity improvements**:
+
 - Can deploy multiple times per day (vs weekly)
 - Refactoring without fear of breaking changes
 - Instant feedback on pull requests
 - Documented test cases serve as living documentation
 
 **Quality improvements**:
+
 - Multi-browser/device coverage automatic
 - Email notification verification automated
 - API integration testing continuous
@@ -507,13 +545,16 @@ You don't need Jenkins or CircleCI for production-grade CI/CD:
 Want to implement this for your team? Here's the step-by-step roadmap:
 
 ### Week 1: Foundation (8 hours)
+
 **Day 1-2**: Install and configure Playwright
+
 ```bash
 npm install -D @playwright/test
 npx playwright install chromium firefox
 ```
 
 **Day 3**: Create basic configuration and first smoke test
+
 ```javascript
 // playwright.config.js
 module.exports = defineConfig({
@@ -531,12 +572,14 @@ test('homepage loads', async ({ page }) => {
 **Day 4-5**: Add GitHub Actions for continuous testing
 
 ### Week 2: Expansion (12 hours)
+
 - Add tests for critical user flows
 - Implement API integration testing
 - Create manual verification checklist
 - Document troubleshooting procedures
 
 ### Week 3: Automation (8 hours)
+
 - Set up automated release pipeline
 - Configure auto-deployment
 - Create test evidence collection
@@ -555,12 +598,14 @@ test('homepage loads', async ({ page }) => {
 ## Conclusion: Engineering Excellence Through Quality Assurance
 
 Building comprehensive testing infrastructure isn't about perfectionism - it's about **engineering excellence**. Excellence in:
+
 - **Reliability**: Every feature works for every user
 - **Confidence**: Deploy on Friday afternoon without worry
 - **Velocity**: Refactor and scale without breaking things
 - **Documentation**: Tests serve as living specification
 
 The HUSTLE survey testing infrastructure provides:
+
 - ✅ Automated quality gates via GitHub Actions
 - ✅ Multi-browser/device coverage
 - ✅ Production verification with Netlify API
@@ -568,6 +613,7 @@ The HUSTLE survey testing infrastructure provides:
 - ✅ Complete documentation for team scaling
 
 **Results**:
+
 - 4.5 hours implementation time
 - 10x ROI after 20 deployments
 - 100% deployment confidence
@@ -588,4 +634,3 @@ This testing infrastructure was built for the [HUSTLE survey system](https://int
 **View the implementation**: [GitHub Repository](https://github.com/jeremylongshore/intent-solutions-landing)
 
 **Connect on LinkedIn**: Let's discuss testing strategies for your projects - [linkedin.com/in/jeremylongshore](https://linkedin.com/in/jeremylongshore)
-

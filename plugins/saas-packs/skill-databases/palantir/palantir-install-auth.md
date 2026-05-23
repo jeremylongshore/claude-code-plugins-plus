@@ -10,6 +10,7 @@ palantir-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Palantir SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Palantir integration.
 **Relates to:** Other palantir skills in this pack.

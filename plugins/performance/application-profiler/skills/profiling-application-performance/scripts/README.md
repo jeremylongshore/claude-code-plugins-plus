@@ -6,6 +6,6 @@ Bundled resources for application-profiler skill
 - [x] analyze_results.py: Script to analyze the collected performance data and identify bottlenecks.
 - [x] generate_report.py: Script to generate a human-readable performance report.
 
-
 ## Auto-Generated
+
 Scripts generated on 2025-12-10 03:48:17

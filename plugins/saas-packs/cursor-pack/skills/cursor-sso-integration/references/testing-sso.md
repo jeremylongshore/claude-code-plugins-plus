@@ -3,6 +3,7 @@
 ## Testing SSO
 
 ### Pre-Launch Testing
+
 ```
 1. Test with admin account first
 2. Verify attribute mapping
@@ -21,6 +22,7 @@ Test checklist:
 ### Troubleshooting
 
 #### "SAML Response Invalid"
+
 ```
 Check:
 - Certificate hasn't expired
@@ -30,6 +32,7 @@ Check:
 ```
 
 #### "User Not Authorized"
+
 ```
 Check:
 - User assigned to app in IdP
@@ -39,6 +42,7 @@ Check:
 ```
 
 #### "Session Timeout Issues"
+
 ```
 Check:
 - IdP session length

@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Multi-Environment Setup
 
 ## Overview
+
 Configure Ideogram API access across development, staging, and production with isolated API keys, environment-specific model/speed settings, and proper secret management. Each environment gets its own key and configuration to prevent cross-environment issues.
 
 ## Environment Strategy
@@ -38,6 +39,7 @@ Configure Ideogram API access across development, staging, and production with i
 ## Instructions
 
 ### Step 1: Configuration Structure
+
 ```typescript
 // config/ideogram.ts
 type Environment = "development" | "staging" | "production";
@@ -113,6 +115,7 @@ function getApiKeyForEnv(env: Environment): string {
 ```
 
 ### Step 2: Environment Files
+
 ```bash
 # .env.local (development -- git-ignored)
 IDEOGRAM_API_KEY_DEV=your-dev-key
@@ -126,6 +129,7 @@ NODE_ENV=staging
 ```
 
 ### Step 3: Secret Management by Platform
+
 ```bash
 set -euo pipefail
 # --- GitHub Actions ---
@@ -147,6 +151,7 @@ echo -n "your-production-key" | gcloud secrets create ideogram-api-key-prod --da
 ```
 
 ### Step 4: GitHub Actions with Environment Secrets
+
 ```yaml
 # .github/workflows/deploy.yml
 jobs:
@@ -173,6 +178,7 @@ jobs:
 ```
 
 ### Step 5: Startup Validation
+
 ```typescript
 import { z } from "zod";
 
@@ -194,6 +200,7 @@ try {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Wrong environment detected | Missing `NODE_ENV` | Set in deployment platform |
@@ -202,14 +209,17 @@ try {
 | Staging using prod key | No env isolation | Validate key identity at startup |
 
 ## Output
+
 - Environment-aware configuration with separate API keys
 - Secret management for GitHub Actions, AWS, and GCP
 - Startup validation preventing misconfiguration
 - CI/CD pipeline with environment gates
 
 ## Resources
+
 - [Ideogram API Setup](https://developer.ideogram.ai/ideogram-api/api-setup)
 - [GitHub Environments](https://docs.github.com/en/actions/deployment/targeting-different-environments)
 
 ## Next Steps
+
 For deployment patterns, see `ideogram-deploy-integration`.

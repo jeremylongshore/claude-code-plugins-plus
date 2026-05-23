@@ -14,16 +14,19 @@ Axiom has been successfully submitted to the major Claude Code plugin marketplac
 ## Submitted To
 
 ### 1. jeremylongshore/claude-code-plugins-plus
+
 - **Issue:** https://github.com/jeremylongshore/claude-code-plugins-plus/issues/121
 - **Status:** 🔄 Awaiting review
 - **Notes:** Most popular Claude Code marketplace with 240+ plugins
 
 ### 2. ananddtyagi/claude-code-marketplace
+
 - **Issue:** https://github.com/ananddtyagi/claude-code-marketplace/issues/15
 - **Status:** 🔄 Awaiting review
 - **Notes:** Community-maintained marketplace
 
 ### 3. EveryInc/every-marketplace
+
 - **Issue:** https://github.com/EveryInc/compounding-engineering-plugin/issues/33
 - **Status:** 🔄 Awaiting review
 - **Notes:** Community marketplace with focus on engineering tools
@@ -48,12 +51,14 @@ claude-code plugin add CharlesWiltgen/Axiom
 ## What's Included
 
 **13 Production-Ready Skills:**
+
 - 5 Debugging & Troubleshooting skills
 - 1 Concurrency & Async skill
 - 4 UI & Design skills
 - 4 Persistence skills
 
 **Quality Assurance:**
+
 - ✅ TDD-tested core skills
 - ✅ WWDC 2025 validated
 - ✅ Pressure-tested under real scenarios
@@ -61,6 +66,7 @@ claude-code plugin add CharlesWiltgen/Axiom
 - ✅ Comprehensive documentation and examples
 
 **Documentation:**
+
 - GitHub README with installation instructions
 - Full VitePress website: https://charleswiltgen.github.io/Axiom/
 - 13 skill documentation pages with example prompts

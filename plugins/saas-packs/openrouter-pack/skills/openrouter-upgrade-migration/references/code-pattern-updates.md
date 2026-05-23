@@ -3,6 +3,7 @@
 ## Code Pattern Updates
 
 ### Sync to Async Migration
+
 ```python
 # Before: Synchronous
 from openai import OpenAI
@@ -36,6 +37,7 @@ async def chat_async(prompt: str) -> str:
 ```
 
 ### Adding Streaming Support
+
 ```python
 # Before: Non-streaming
 def chat(prompt: str) -> str:

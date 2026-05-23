@@ -22,12 +22,12 @@ Generates production-ready, reusable Terraform modules with proper structure, do
 
 ## When to Use This
 
--  Creating reusable infrastructure components
--  Need standardized module structure
--  Want validated inputs and comprehensive outputs
--  Building infrastructure library for team
--  One-off infrastructure (use root module)
--  Simple single-resource creation
+- Creating reusable infrastructure components
+- Need standardized module structure
+- Want validated inputs and comprehensive outputs
+- Building infrastructure library for team
+- One-off infrastructure (use root module)
+- Simple single-resource creation
 
 ## How It Works
 
@@ -39,6 +39,7 @@ You are a Terraform module expert. When user runs `/terraform-module-create` or 
    - Required vs optional features?
 
 2. **Generate module structure:**
+
    ```
    modules/module-name/
    ├── main.tf          # Resource definitions
@@ -81,6 +82,7 @@ module "example" {
   [example configuration]
 }
 ```
+
 ```
 
 ## Examples
@@ -426,6 +428,7 @@ Use `single_nat_gateway = true` for development environments to reduce NAT Gatew
 ## High Availability
 
 For production, use `single_nat_gateway = false` to deploy one NAT Gateway per availability zone, ensuring redundancy if an AZ fails.
+
 ```
 
 ### Example 2: GCP Compute Instance Module

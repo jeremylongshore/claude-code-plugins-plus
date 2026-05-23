@@ -10,6 +10,7 @@ clay-enterprise-rbac/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Clay enterprise team access, role-based permissions, and organization management. Implements enterprise-grade access control.
 **Workflow:** Enterprise security skill. Use when setting up Clay for enterprise teams.
 **Relates to:** Builds on clay-multi-env-setup; integrates with clay-data-handling for data access control.

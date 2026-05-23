@@ -10,6 +10,7 @@ grammarly-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Grammarly monitoring and observability
 **Workflow:** Part of the enterprise skill category for Grammarly integration.
 **Relates to:** Other grammarly skills in this pack.

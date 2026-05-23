@@ -22,6 +22,7 @@
   "password": "SecurePass123"
 }
 ```
+
 ```
 
 ### Document All States
@@ -42,6 +43,7 @@ Reference shared types instead of duplicating:
 ### No Implementation Details
 
 The contract defines WHAT, not HOW:
+
 - Don't mention database columns
 - Don't specify frameworks
 - Don't include file paths

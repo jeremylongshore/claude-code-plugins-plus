@@ -10,6 +10,7 @@ figma-data-handling/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Figma data compliance
 **Workflow:** Part of the advanced skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

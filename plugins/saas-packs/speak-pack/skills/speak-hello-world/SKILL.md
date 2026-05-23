@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Speak Hello World
 
 ## Overview
+
 Create your first AI tutoring session with Speak. Demonstrates conversation practice, pronunciation assessment, and real-time feedback using GPT-4o-powered tutoring.
 
 ## Prerequisites
+
 - Completed `speak-install-auth` setup
 - Valid API credentials configured
 - Microphone access (optional for testing)
@@ -35,6 +37,7 @@ Create your first AI tutoring session with Speak. Demonstrates conversation prac
 ## Instructions
 
 ### Step 1: Start a Conversation Session
+
 ```typescript
 import { SpeakClient } from '@speak/language-sdk';
 
@@ -59,6 +62,7 @@ console.log('Audio URL:', session.firstPrompt.audioUrl);
 ```
 
 ### Step 2: Send a Student Response
+
 ```typescript
 // Submit text response (or audio file for pronunciation scoring)
 const turn = await client.sendTurn(session.id, {
@@ -74,6 +78,7 @@ console.log('Vocabulary notes:', turn.vocabularyNotes);
 ```
 
 ### Step 3: Pronunciation Assessment
+
 ```typescript
 // Assess pronunciation of a specific phrase
 const assessment = await client.assessPronunciation({
@@ -95,6 +100,7 @@ for (const word of assessment.words) {
 ```
 
 ### Step 4: End Session and Review
+
 ```typescript
 const summary = await client.endSession(session.id);
 console.log('Session Summary:');
@@ -106,12 +112,14 @@ console.log(`  New vocabulary: ${summary.newWords.join(', ')}`);
 ```
 
 ## Output
+
 - Working conversation session with AI tutor
 - Pronunciation assessment with phoneme-level feedback
 - Session summary with learning metrics
 - Console output showing scores and corrections
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Session timeout | Exceeded max duration | Start a new session |
@@ -121,11 +129,13 @@ console.log(`  New vocabulary: ${summary.newWords.join(', ')}`);
 | Rate limit exceeded | Too many requests | Wait and retry with backoff |
 
 ## Resources
+
 - [Speak Website](https://speak.com)
 - [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
 - [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
 
 ## Next Steps
+
 Proceed to `speak-local-dev-loop` for development workflow setup.
 
 ## Examples

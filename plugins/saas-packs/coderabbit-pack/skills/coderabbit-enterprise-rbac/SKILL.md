@@ -28,15 +28,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Enterprise RBAC
 
 ## Overview
+
 Manage CodeRabbit AI code review access across an enterprise organization. CodeRabbit inherits repository permissions from your Git provider -- if a developer has write access to a repo and opens a PR, CodeRabbit reviews it. Enterprise controls focus on seat management, repository scoping, organization-level configuration, and review policy enforcement.
 
 ## Prerequisites
+
 - CodeRabbit Pro or Enterprise plan
 - GitHub Organization admin or GitLab Group owner role
 - CodeRabbit GitHub App installed on the organization
 - Access to CodeRabbit dashboard at app.coderabbit.ai
 
 ## Access Control Model
+
 ```
 GitHub/GitLab Org Permissions
          │
@@ -66,6 +69,7 @@ GitHub/GitLab Org Permissions
 ## Instructions
 
 ### Step 1: Control Repository Access
+
 ```markdown
 # In GitHub > Organization > Settings > Installed Apps > CodeRabbit:
 
@@ -84,6 +88,7 @@ Option B: "Only select repositories" (targeted)
 ```
 
 ### Step 2: Configure Seat Management
+
 ```markdown
 # In CodeRabbit Dashboard > Organization > Subscription:
 
@@ -106,6 +111,7 @@ Option B: "Only select repositories" (targeted)
 ```
 
 ### Step 3: Set Organization-Level Defaults
+
 ```yaml
 # .github/.coderabbit.yaml (in the .github repo)
 # Applied to ALL repos unless overridden by repo-level config
@@ -148,6 +154,7 @@ chat:
 ```
 
 ### Step 4: Team-Specific Repository Overrides
+
 ```yaml
 # .coderabbit.yaml in a specific repo (overrides org defaults)
 reviews:
@@ -181,6 +188,7 @@ reviews:
 ```
 
 ### Step 5: Audit Review Activity
+
 ```bash
 set -euo pipefail
 ORG="${1:-your-org}"
@@ -205,6 +213,7 @@ done
 ```
 
 ### Step 6: Enterprise SSO and Compliance
+
 ```markdown
 # CodeRabbit Enterprise plan includes:
 
@@ -229,6 +238,7 @@ done
 ```
 
 ## Output
+
 - Repository access scoped to appropriate repos
 - Seat management configured with bot exclusions
 - Organization-level defaults deployed
@@ -236,6 +246,7 @@ done
 - Audit script for review activity monitoring
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | CodeRabbit not reviewing PRs | App not installed on repo | Add repo in GitHub App settings |
@@ -245,10 +256,12 @@ done
 | Bot consuming seats | Bot opens PRs | Exclude bot usernames in seat management |
 
 ## Resources
+
 - [CodeRabbit Enterprise](https://coderabbit.ai/pricing)
 - [Organization Config](https://docs.coderabbit.ai/guides/organization-level-config)
 - [Seat Management](https://docs.coderabbit.ai/guides/seat-management)
 - [SOC 2 Compliance](https://coderabbit.ai/security)
 
 ## Next Steps
+
 For cost optimization, see `coderabbit-cost-tuning`.

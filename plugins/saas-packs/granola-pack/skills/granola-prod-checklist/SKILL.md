@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola Production Checklist
 
 ## Overview
+
 Comprehensive pre-launch checklist for deploying Granola to a team or organization. Covers plan selection, security hardening, integration setup, pilot program, and go-live execution.
 
 ## Prerequisites
+
 - Budget approved for Granola licenses
 - Team size and meeting volume estimated
 - IT/security review completed or in progress
@@ -86,8 +88,8 @@ Comprehensive pre-launch checklist for deploying Granola to a team or organizati
 | Support tickets | <2 per user | Track via Slack/email |
 | Time saved per meeting | >10 min | Before/after survey |
 
-3. **Collect daily feedback** for the first 3 days, then weekly
-4. **Fix issues immediately** — common pilot issues:
+1. **Collect daily feedback** for the first 3 days, then weekly
+2. **Fix issues immediately** — common pilot issues:
    - Audio permission not granted (macOS Screen & System Audio)
    - Calendar not connected to the right account
    - Templates not matching meeting types
@@ -96,6 +98,7 @@ Comprehensive pre-launch checklist for deploying Granola to a team or organizati
 ### Phase 6 — Go-Live
 
 **Launch day checklist:**
+
 - [ ] Welcome email sent with setup instructions and support contact
 - [ ] Slack channel created: #granola-support
 - [ ] Quick-start guide shared (link to `granola-install-auth` + `granola-hello-world`)
@@ -104,6 +107,7 @@ Comprehensive pre-launch checklist for deploying Granola to a team or organizati
 - [ ] IT support team briefed on common troubleshooting steps
 
 **First week monitoring:**
+
 - [ ] Daily adoption check: % of users who captured a meeting
 - [ ] Support ticket volume and resolution time
 - [ ] Integration health: Slack/Notion/CRM syncs working
@@ -118,6 +122,7 @@ Comprehensive pre-launch checklist for deploying Granola to a team or organizati
 - [ ] Schedule first quarterly access review
 
 ## Output
+
 - All security controls configured and verified
 - Integrations connected, tested, and documented
 - Pilot completed with metrics meeting targets
@@ -134,10 +139,12 @@ Comprehensive pre-launch checklist for deploying Granola to a team or organizati
 | Audio issues across team | macOS permission prompt dismissed | Send instructions to re-grant Screen & System Audio permission |
 
 ## Resources
+
 - [Setup Guide](https://docs.granola.ai/help-center/getting-started/setting-up-granola-for-the-first-time)
 - [Enterprise API](https://docs.granola.ai/help-center/sharing/integrations/enterprise-api)
 - [Security Standards](https://docs.granola.ai/help-center/consent-security-privacy/our-security-standards)
 - [Granola Updates](https://www.granola.ai/updates)
 
 ## Next Steps
+
 Proceed to `granola-upgrade-migration` for version upgrade and plan migration guidance.

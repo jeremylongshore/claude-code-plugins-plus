@@ -10,6 +10,7 @@ stackblitz-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready StackBlitz SDK patterns
 **Workflow:** Part of the onboarding skill category for StackBlitz integration.
 **Relates to:** Other stackblitz skills in this pack.

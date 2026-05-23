@@ -10,6 +10,7 @@ adobe-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Adobe advanced debugging
 **Workflow:** Part of the enterprise skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

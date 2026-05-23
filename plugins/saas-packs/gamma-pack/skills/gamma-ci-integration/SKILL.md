@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Gamma CI Integration
 
 ## Overview
+
 Set up continuous integration for Gamma-powered applications with automated testing and deployment.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - Gamma test API key
 - npm/pnpm project configured
@@ -35,6 +37,7 @@ Set up continuous integration for Gamma-powered applications with automated test
 ## Instructions
 
 ### Step 1: Create GitHub Actions Workflow
+
 ```yaml
 # .github/workflows/gamma-ci.yml
 name: Gamma CI
@@ -79,6 +82,7 @@ jobs:
 ```
 
 ### Step 2: Create Test Scripts
+
 ```json
 // package.json
 {
@@ -91,6 +95,7 @@ jobs:
 ```
 
 ### Step 3: Gamma Test Configuration
+
 ```typescript
 // vitest.gamma.config.ts
 import { defineConfig } from 'vitest/config';
@@ -106,6 +111,7 @@ export default defineConfig({
 ```
 
 ### Step 4: Test Setup with Mocking
+
 ```typescript
 // tests/gamma/setup.ts
 import { beforeAll } from 'vitest';
@@ -141,6 +147,7 @@ function createMockGammaClient() {
 ```
 
 ### Step 5: Integration Test Example
+
 ```typescript
 // tests/gamma/generation.test.ts
 import { describe, it, expect } from 'vitest';
@@ -164,6 +171,7 @@ describe('Gamma Generation', () => {
 ```
 
 ### Step 6: Add Secrets to GitHub
+
 ```bash
 # Using GitHub CLI
 gh secret set GAMMA_API_KEY --body "your-test-api-key"
@@ -173,12 +181,14 @@ gh secret list
 ```
 
 ## Output
+
 - Automated test pipeline running on push/PR
 - Mock mode for PR checks (no API calls)
 - Live integration tests on main branch
 - Coverage reports uploaded
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Secret not found | Missing GitHub secret | Add GAMMA_API_KEY secret |
@@ -187,6 +197,7 @@ gh secret list
 | Rate limit in CI | Too many test runs | Use mock mode for PRs |
 
 ## Resources
+
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Vitest Documentation](https://vitest.dev/)
 - [Gamma Testing Guide](https://gamma.app/docs/testing)

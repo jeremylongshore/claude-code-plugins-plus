@@ -195,6 +195,7 @@ Generate a single Markdown file named `{TYPE}-AGREEMENT-{PartyA}-{PartyB}-{YYYY-
 Request: "Create a freelancer agreement for a web developer building our new marketing site"
 
 Result: `FREELANCER-AGREEMENT-AcmeCorp-JaneDev-2026-04-02.md` with:
+
 - Detailed scope of work with milestone deliverables
 - IP assignment to company upon payment (work-for-hire with assignment backup)
 - Independent contractor status affirmation
@@ -207,6 +208,7 @@ Result: `FREELANCER-AGREEMENT-AcmeCorp-JaneDev-2026-04-02.md` with:
 Request: "Generate an MSA between our consulting firm and a new enterprise client"
 
 Result: `MSA-AGREEMENT-ConsultingCo-EnterpriseCorp-2026-04-02.md` with:
+
 - Framework agreement with SOW attachment template
 - Service level commitments (response times, availability)
 - Rate card structure with annual escalation cap
@@ -219,6 +221,7 @@ Result: `MSA-AGREEMENT-ConsultingCo-EnterpriseCorp-2026-04-02.md` with:
 Request: "Create a referral agreement — we'll pay 10% commission for qualified leads"
 
 Result: `REFERRAL-AGREEMENT-CompanyA-PartnerB-2026-04-02.md` with:
+
 - Qualified referral definition (signed contract within 90 days)
 - 10% commission on first-year revenue
 - 30-day payment after client payment received

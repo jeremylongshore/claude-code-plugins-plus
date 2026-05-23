@@ -10,6 +10,7 @@ vercel-architecture-variants/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Choose and implement validated architecture blueprints for monolith, service layer, or microservice scales.
 **Workflow:** Used during initial project planning and when evaluating architecture evolution.
 **Relates to:** Follows vercel-policy-guardrails; leads to vercel-known-pitfalls for anti-patterns

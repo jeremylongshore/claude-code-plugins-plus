@@ -5,12 +5,14 @@ Detailed implementation examples and code patterns.
 ## Linear Rate Limit Structure
 
 ### Current Limits
+
 | Tier | Requests/min | Complexity/min | Notes |
 |------|-------------|----------------|-------|
 | Standard | 1,500 | 250,000 | Most integrations |
 | Enterprise | Higher | Higher | Contact Linear |
 
 ### Headers Returned
+
 ```
 X-RateLimit-Limit: 1500
 X-RateLimit-Remaining: 1499
@@ -23,6 +25,7 @@ X-Complexity-Remaining: 249950
 ## Instructions
 
 ### Step 1: Basic Rate Limit Handler
+
 ```typescript
 // lib/rate-limiter.ts
 interface RateLimitState {
@@ -70,6 +73,7 @@ export const rateLimiter = new LinearRateLimiter();
 ```
 
 ### Step 2: Exponential Backoff
+
 ```typescript
 // lib/backoff.ts
 interface BackoffOptions {
@@ -135,6 +139,7 @@ export async function withBackoff<T>(
 ```
 
 ### Step 3: Request Queue
+
 ```typescript
 // lib/queue.ts
 type QueuedRequest<T> = {
@@ -187,6 +192,7 @@ export const requestQueue = new RequestQueue();
 ```
 
 ### Step 4: Batch Operations
+
 ```typescript
 // lib/batch.ts
 import { LinearClient } from "@linear/sdk";
@@ -240,6 +246,7 @@ async function updateManyIssues(
 ```
 
 ### Step 5: Query Optimization
+
 ```typescript
 // Reduce complexity by limiting fields
 const optimizedQuery = `

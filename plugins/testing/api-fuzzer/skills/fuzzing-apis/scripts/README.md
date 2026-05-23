@@ -6,6 +6,6 @@ Bundled resources for api-fuzzer skill
 - [x] generate_payloads.py: Script to generate various types of payloads (malformed, boundary, random) for fuzzing.
 - [x] report_generator.py: Script to generate a detailed report of the fuzzing results, including vulnerabilities found.
 
-
 ## Auto-Generated
+
 Scripts generated on 2025-12-10 03:48:17

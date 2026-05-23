@@ -10,6 +10,7 @@ quicknode-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement QuickNode core feature integration
 **Workflow:** Part of the onboarding skill category for QuickNode integration.
 **Relates to:** Other quicknode skills in this pack.

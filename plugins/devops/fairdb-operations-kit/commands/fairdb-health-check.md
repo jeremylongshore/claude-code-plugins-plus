@@ -428,6 +428,7 @@ echo -e "\nFull report saved to: $REPORT_FILE"
 ## Actions Based on Results
 
 ### If Critical Issues Found:
+
 1. Check PostgreSQL service status
 2. Review disk space availability
 3. Verify backup integrity
@@ -435,6 +436,7 @@ echo -e "\nFull report saved to: $REPORT_FILE"
 5. Review security vulnerabilities
 
 ### If Warnings Found:
+
 1. Schedule maintenance window
 2. Plan capacity upgrades
 3. Review query performance
@@ -442,6 +444,7 @@ echo -e "\nFull report saved to: $REPORT_FILE"
 5. Document issues for trending
 
 ### Regular Maintenance Tasks:
+
 1. Run VACUUM ANALYZE on large tables
 2. Update table statistics
 3. Review and optimize slow queries

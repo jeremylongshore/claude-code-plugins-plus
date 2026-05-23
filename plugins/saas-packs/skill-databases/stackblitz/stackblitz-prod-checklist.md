@@ -10,6 +10,7 @@ stackblitz-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute StackBlitz production deployment checklist
 **Workflow:** Part of the operations skill category for StackBlitz integration.
 **Relates to:** Other stackblitz skills in this pack.

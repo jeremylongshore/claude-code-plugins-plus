@@ -17,6 +17,7 @@ Palantir Foundry is an enterprise data platform with an Ontology layer that mode
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `palantir-install-auth` | Install `foundry-platform-sdk` or `@osdk/client`, configure OAuth2 or bearer token auth |
@@ -33,6 +34,7 @@ Palantir Foundry is an enterprise data platform with an Ontology layer that mode
 | `palantir-upgrade-migration` | Upgrade `foundry-platform-sdk` versions, handle breaking changes |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `palantir-ci-integration` | GitHub Actions with PySpark tests, Foundry linting, integration smoke tests |
@@ -43,6 +45,7 @@ Palantir Foundry is an enterprise data platform with an Ontology layer that mode
 | `palantir-reference-architecture` | 3-layer pipeline (raw/clean/model), Ontology design, security layers |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `palantir-multi-env-setup` | Dev/staging/prod with separate hostnames, credentials, and scopes |

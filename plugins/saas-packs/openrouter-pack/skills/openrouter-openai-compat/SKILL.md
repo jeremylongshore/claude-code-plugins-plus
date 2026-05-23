@@ -27,6 +27,7 @@ OpenRouter implements the OpenAI Chat Completions API specification (`/v1/chat/c
 ## The Two-Line Migration
 
 ### Python (Before)
+
 ```python
 from openai import OpenAI
 
@@ -38,6 +39,7 @@ response = client.chat.completions.create(
 ```
 
 ### Python (After)
+
 ```python
 from openai import OpenAI
 
@@ -56,6 +58,7 @@ response = client.chat.completions.create(
 ```
 
 ### TypeScript (After)
+
 ```typescript
 import OpenAI from "openai";
 
@@ -82,6 +85,7 @@ const res = await client.chat.completions.create({
 | `o1-mini` | `openai/o1-mini` |
 
 You also gain access to non-OpenAI models through the same SDK:
+
 ```python
 # Same client, any provider
 response = client.chat.completions.create(

@@ -1,6 +1,7 @@
 # OpenEvidence Data Handling - Implementation Details
 
 ## PHI Detection and Removal
+
 ```typescript
 const PHI_PATTERNS = {
   ssn: /\b\d{3}[-\s]?\d{2}[-\s]?\d{4}\b/g,
@@ -21,9 +22,11 @@ export function sanitizeForOpenEvidence(text: string): string {
 ```
 
 ## Patient Context De-identification
+
 Maps exact ages to age ranges (infant, toddler, child, adolescent, young-adult, adult, middle-aged, elderly), specific conditions to categories (cardiovascular, metabolic, respiratory, mental-health), and drug names to drug classes.
 
 ## Encrypted Storage (AES-256-GCM)
+
 ```typescript
 export class EncryptionService {
   encrypt(plaintext: string): string { /* IV + AuthTag + Encrypted */ }
@@ -37,6 +40,7 @@ export class EncryptedCacheStore {
 ```
 
 ## Data Retention Policies
+
 ```typescript
 const HIPAA_RETENTION_POLICIES = [
   { dataType: 'audit_logs', retentionDays: 2190, archiveAfterDays: 365, encryptionRequired: true },
@@ -47,6 +51,7 @@ const HIPAA_RETENTION_POLICIES = [
 ```
 
 ## Audit Trail for PHI Access
+
 Encrypted audit logging with userId, userRole, action, resourceType, ipAddress fields. IP addresses and user agents encrypted at rest. 6-year retention per HIPAA.
 
 ---

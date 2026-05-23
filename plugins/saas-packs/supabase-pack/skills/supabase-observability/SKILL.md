@@ -29,9 +29,11 @@ compatibility: Designed for Claude Code
 # Supabase Observability
 
 ## Overview
+
 Monitor Supabase projects end-to-end: Dashboard reports for API/database/auth metrics, `supabase inspect db` CLI for deep Postgres diagnostics, `pg_stat_statements` for query analytics, log drains for external aggregation, Edge Functions for custom metrics, and alerting on quota thresholds.
 
 ## Prerequisites
+
 - Supabase CLI installed (`npx supabase --version`)
 - Supabase project linked (`supabase link --project-ref <ref>`)
 - Pro plan or higher for log drain support and extended log retention
@@ -288,6 +290,7 @@ channel
 ```
 
 ## Output
+
 - Dashboard reports configured for API, database, and auth monitoring
 - CLI inspect commands available for Postgres diagnostics (table sizes, index usage, cache hits, sequential scans, long-running queries)
 - `pg_stat_statements` enabled with slow-query and high-frequency-query views
@@ -311,6 +314,7 @@ channel
 ## Examples
 
 ### Quick Diagnostic Script
+
 ```bash
 #!/bin/bash
 # supabase-health-check.sh — run all inspect commands at once
@@ -331,6 +335,7 @@ npx supabase inspect db index-usage --linked
 ```
 
 ### Metrics Table Schema
+
 ```sql
 create table if not exists app_metrics (
   id bigint generated always as identity primary key,
@@ -353,6 +358,7 @@ $$ language sql;
 ```
 
 ## Resources
+
 - [Supabase Logs & Analytics](https://supabase.com/docs/guides/platform/logs)
 - [Database Inspect Commands](https://supabase.com/docs/guides/database/inspect)
 - [Log Drains](https://supabase.com/docs/guides/platform/log-drains)
@@ -361,5 +367,6 @@ $$ language sql;
 - [Supabase JS Client](https://supabase.com/docs/reference/javascript/introduction)
 
 ## Next Steps
+
 For incident response procedures, see `supabase-incident-runbook`.
 For performance optimization, see `supabase-performance-tuning`.

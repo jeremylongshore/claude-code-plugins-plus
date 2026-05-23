@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Local Dev Loop
 
 ## Overview
+
 Set up an efficient local development workflow for building Linear integrations. Covers project scaffolding, environment config, test utilities, webhook tunneling with ngrok, and integration testing with vitest.
 
 ## Prerequisites
+
 - Node.js 18+ with TypeScript
 - `@linear/sdk` package
 - Separate Linear workspace or team for development (recommended)
@@ -36,6 +38,7 @@ Set up an efficient local development workflow for building Linear integrations.
 ## Instructions
 
 ### Step 1: Project Scaffolding
+
 ```bash
 set -euo pipefail
 mkdir linear-integration && cd linear-integration
@@ -48,6 +51,7 @@ npx tsc --init --target ES2022 --module NodeNext --moduleResolution NodeNext --s
 ```
 
 ### Step 2: Environment Configuration
+
 ```bash
 # .env (never commit)
 cat > .env << 'EOF'
@@ -69,6 +73,7 @@ echo -e ".env\n.env.local\n.env.*.local" >> .gitignore
 ```
 
 ### Step 3: Client Module with Connection Verification
+
 ```typescript
 // src/client.ts
 import { LinearClient } from "@linear/sdk";
@@ -95,6 +100,7 @@ export async function verifyConnection(): Promise<void> {
 ```
 
 ### Step 4: Test Data Utilities
+
 ```typescript
 // src/test-utils.ts
 import { getClient } from "./client";
@@ -143,6 +149,7 @@ export async function cleanupTestIssues() {
 ```
 
 ### Step 5: Integration Tests with Vitest
+
 ```typescript
 // tests/linear.integration.test.ts
 import { describe, it, expect, afterAll } from "vitest";
@@ -184,6 +191,7 @@ describe("Linear Integration", () => {
 ```
 
 ### Step 6: Package Scripts
+
 ```json
 {
   "scripts": {
@@ -197,6 +205,7 @@ describe("Linear Integration", () => {
 ```
 
 ### Step 7: Webhook Local Development with ngrok
+
 ```bash
 # Terminal 1: Start your webhook server
 npm run dev
@@ -212,6 +221,7 @@ ngrok http 3000
 ```
 
 Minimal webhook receiver for local testing:
+
 ```typescript
 // src/webhook-dev.ts
 import express from "express";
@@ -251,6 +261,7 @@ app.listen(3000, () => console.log("Webhook server on http://localhost:3000"));
 ## Examples
 
 ### Quick Connection Test Script
+
 ```typescript
 // src/verify-connection.ts
 import { verifyConnection } from "./client";
@@ -260,6 +271,7 @@ verifyConnection()
 ```
 
 ## Resources
+
 - [Linear SDK Documentation](https://linear.app/developers/sdk)
 - [Linear Webhooks](https://linear.app/developers/webhooks)
 - [Vitest Documentation](https://vitest.dev)

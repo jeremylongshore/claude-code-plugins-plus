@@ -616,7 +616,6 @@ async function main() {
 main().catch(console.error);
 ```
 
-
 ## Performance Tips
 
 | Optimization | Impact | When to Use |

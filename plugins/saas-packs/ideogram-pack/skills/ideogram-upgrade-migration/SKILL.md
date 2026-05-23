@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Upgrade & Migration
 
 ## Current State
+
 !`npm list 2>/dev/null | head -10`
 
 ## Overview
+
 Guide for migrating between Ideogram API versions. The primary migration path is from the legacy `/generate` endpoint (JSON body, V_1/V_2 models) to the V3 endpoints (multipart form data, new parameters). This covers breaking changes in request format, model names, aspect ratio syntax, style types, and new capabilities.
 
 ## Breaking Changes: Legacy to V3
@@ -47,6 +49,7 @@ Guide for migrating between Ideogram API versions. The primary migration path is
 ## Instructions
 
 ### Step 1: Audit Current API Usage
+
 ```bash
 set -euo pipefail
 # Find all Ideogram API calls in your codebase
@@ -57,6 +60,7 @@ grep -rn "magic_prompt_option" --include="*.ts" --include="*.js" .
 ```
 
 ### Step 2: Create Adapter for Both Versions
+
 ```typescript
 // src/ideogram/adapter.ts
 interface GenerateOptions {
@@ -120,6 +124,7 @@ async function generateV3(options: GenerateOptions) {
 ```
 
 ### Step 3: Map Legacy Enums to V3
+
 ```typescript
 function mapAspectRatioToV3(legacy: string): string {
   const map: Record<string, string> = {
@@ -145,6 +150,7 @@ function mapStyleToV3(legacy: string): string {
 ```
 
 ### Step 4: Feature Flag Rollout
+
 ```typescript
 // Gradual migration with feature flag
 function shouldUseV3(userId?: string): boolean {
@@ -163,6 +169,7 @@ function shouldUseV3(userId?: string): boolean {
 ```
 
 ### Step 5: Validate Migration
+
 ```typescript
 // Run both endpoints and compare results
 async function validateMigration(prompt: string) {
@@ -178,7 +185,9 @@ async function validateMigration(prompt: string) {
 ```
 
 ## V3 Exclusive Features
+
 After migration, you gain access to:
+
 - **Rendering speed**: `FLASH`, `TURBO`, `DEFAULT`, `QUALITY`
 - **50+ style presets**: `OIL_PAINTING`, `WATERCOLOR`, `POP_ART`, `JAPANDI_FUSION`, etc.
 - **Style codes**: 8-char hex codes for precise style matching
@@ -187,6 +196,7 @@ After migration, you gain access to:
 - **Color palettes with weights**: Fine-grained color control
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `RENDER_3D` fails in V3 | Removed from V3 style types | Map to `GENERAL` |
@@ -196,15 +206,18 @@ After migration, you gain access to:
 | `model` field in V3 | V3 has no model field | Remove from V3 requests |
 
 ## Output
+
 - Adapter supporting both legacy and V3 endpoints
 - Enum mapping functions for breaking changes
 - Feature flag for gradual rollout
 - Validation script comparing both endpoints
 
 ## Resources
+
 - [Legacy Generate API](https://developer.ideogram.ai/api-reference/api-reference/generate)
 - [V3 Generate API](https://developer.ideogram.ai/api-reference/api-reference/generate-v3)
 - [Ideogram 3.0 Features](https://ideogram.ai/features/3.0)
 
 ## Next Steps
+
 For CI integration during upgrades, see `ideogram-ci-integration`.

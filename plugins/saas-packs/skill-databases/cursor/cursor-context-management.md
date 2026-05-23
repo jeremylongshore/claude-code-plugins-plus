@@ -10,6 +10,7 @@ cursor-context-management/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimizes context window usage in Cursor for better AI responses, covering context sources, optimization strategies, and conversation management.
 
 **Workflow:** This skill activates when users want to improve AI response quality or are hitting context limits. It covers understanding context, sources (automatic and manual), optimization strategies, conversation management, and advanced techniques.

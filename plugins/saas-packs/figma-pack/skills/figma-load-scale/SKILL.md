@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code
 # Figma Load & Scale
 
 ## Overview
+
 Test and plan for the throughput limits of your Figma API integration. Figma's rate limits use a leaky bucket algorithm -- this skill helps you find the bucket size for your plan tier and design your integration to stay within it.
 
 ## Prerequisites
+
 - k6 load testing tool (`brew install k6` or `apt install k6`)
 - Figma test PAT (do not load test with production token)
 - A test Figma file (not your production design system)
@@ -33,6 +35,7 @@ Test and plan for the throughput limits of your Figma API integration. Figma's r
 ## Instructions
 
 ### Step 1: k6 Load Test Script
+
 ```javascript
 // figma-load-test.js
 import http from 'k6/http';
@@ -96,6 +99,7 @@ export default function () {
 ```
 
 ### Step 2: Run Load Tests
+
 ```bash
 # Probe rate limits
 k6 run \
@@ -112,6 +116,7 @@ k6 run \
 ```
 
 ### Step 3: Capacity Planning
+
 ```typescript
 interface FigmaCapacityPlan {
   planTier: string;
@@ -148,6 +153,7 @@ function planCapacity(
 ```
 
 ### Step 4: Scaling Strategies
+
 ```typescript
 // Strategy 1: Request coalescing
 // Multiple callers requesting the same file get a single API call
@@ -188,6 +194,7 @@ const figmaQueue = new PQueue({
 ```
 
 ### Step 5: Benchmark Report Template
+
 ```markdown
 ## Figma API Benchmark Report
 **Date:** YYYY-MM-DD
@@ -216,12 +223,14 @@ const figmaQueue = new PQueue({
 ```
 
 ## Output
+
 - k6 load test measuring actual rate limits
 - Capacity plan with headroom analysis
 - Scaling strategies implemented
 - Benchmark report documented
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | All requests 429'd | Rate too aggressive | Start lower, ramp gradually |
@@ -230,9 +239,11 @@ const figmaQueue = new PQueue({
 | Results vary between runs | Leaky bucket state | Wait 5min between test runs |
 
 ## Resources
+
 - [k6 Documentation](https://grafana.com/docs/k6/)
 - [Figma Rate Limits](https://developers.figma.com/docs/rest-api/rate-limits/)
 - [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For reliability patterns, see `figma-reliability-patterns`.

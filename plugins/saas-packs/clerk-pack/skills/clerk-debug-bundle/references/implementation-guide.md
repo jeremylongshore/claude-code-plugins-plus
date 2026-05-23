@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Environment Debug Script
+
 ```typescript
 // scripts/clerk-debug.ts
 import { clerkClient } from '@clerk/nextjs/server'
@@ -46,6 +47,7 @@ collectDebugInfo()
 ```
 
 ### Step 2: Runtime Health Check
+
 ```typescript
 // app/api/clerk-health/route.ts
 import { auth, currentUser, clerkClient } from '@clerk/nextjs/server'
@@ -105,6 +107,7 @@ export async function GET() {
 ```
 
 ### Step 3: Client-Side Debug Component
+
 ```typescript
 'use client'
 import { useUser, useAuth, useSession, useClerk } from '@clerk/nextjs'
@@ -175,6 +178,7 @@ export function ClerkDebugPanel() {
 ```
 
 ### Step 4: Request Debug Middleware
+
 ```typescript
 // middleware.ts (add debug logging)
 import { clerkMiddleware } from '@clerk/nextjs/server'
@@ -198,6 +202,7 @@ export default clerkMiddleware(async (auth, request) => {
 ```
 
 ### Step 5: Generate Support Bundle
+
 ```bash
 #!/bin/bash
 # scripts/clerk-support-bundle.sh

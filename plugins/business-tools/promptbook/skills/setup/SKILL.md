@@ -110,6 +110,7 @@ curl -sL -X POST "https://promptbook.gg/api/auth/verify-setup" \
 ### 7. Confirm completion
 
 Tell the user:
+
 - "You're all set! Tracking starts on your **next** Claude Code session."
 - "By completing setup, you've opted in to Promptbook tracking for this plugin install."
 - "After the session ends, a short background task may continue briefly to submit stats and generate your title/summary."
@@ -147,6 +148,7 @@ Tell the user: "Found <count> session files. History import started in the backg
 ## Output
 
 On success, display:
+
 - Confirmation that tracking is active
 - Link to the user's promptbook.gg profile
 - Note that the current session is not tracked — start a new one

@@ -3,6 +3,7 @@
 ## SAML 2.0 Configuration
 
 ### Cursor SAML Details
+
 ```
 For your IdP configuration:
 
@@ -24,6 +25,7 @@ Required Attributes:
 ### IdP Configuration
 
 #### Okta
+
 ```
 1. Admin Console > Applications > Create App Integration
 2. Select SAML 2.0
@@ -41,6 +43,7 @@ Required Attributes:
 ```
 
 #### Azure AD (Entra ID)
+
 ```
 1. Azure Portal > Enterprise Applications > New
 2. Create your own application
@@ -58,6 +61,7 @@ Required Attributes:
 ```
 
 #### Google Workspace
+
 ```
 1. Admin Console > Apps > Web and mobile apps
 2. Add App > Search for or Add Custom SAML App
@@ -74,6 +78,7 @@ Required Attributes:
 ```
 
 ### Completing Setup in Cursor
+
 ```
 1. Cursor Admin > Settings > SSO
 2. Upload IdP metadata XML

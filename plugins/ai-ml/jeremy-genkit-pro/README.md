@@ -56,6 +56,7 @@ Firebase Genkit Pro is a comprehensive Claude Code plugin providing expert guida
 ```
 
 Then follow the prompts to:
+
 1. Select your language (Node.js/Python/Go)
 2. Configure project structure
 3. Set up environment variables
@@ -127,6 +128,7 @@ const ragFlow = ai.defineFlow(async (query) => {
 ### Works with ADK Plugin
 
 For complex multi-agent orchestration:
+
 - Use Genkit for specialized AI flows
 - Use ADK for orchestrating multiple flows
 - Communication via A2A protocol
@@ -134,6 +136,7 @@ For complex multi-agent orchestration:
 ### Works with Vertex AI Validator
 
 For production deployment:
+
 - Genkit implements the flows
 - Validator ensures production readiness
 - Validates monitoring and security
@@ -158,6 +161,7 @@ npm run genkit:dev
 ```
 
 View production monitoring in Firebase Console:
+
 - Token consumption
 - Latency metrics
 - Error rates

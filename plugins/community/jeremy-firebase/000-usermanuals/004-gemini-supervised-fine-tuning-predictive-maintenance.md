@@ -767,10 +767,10 @@ This tutorial is relevant to:
 
 ## References
 
-* [Vertex AI Gemini Fine-tuning Documentation](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini-tuning)
-* [Google GenAI SDK Documentation](https://googleapis.github.io/python-genai/)
-* [Supervised Fine-Tuning Guide](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini-supervised-tuning)
-* [JSONL Format Requirements](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini-tuning-format)
+- [Vertex AI Gemini Fine-tuning Documentation](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini-tuning)
+- [Google GenAI SDK Documentation](https://googleapis.github.io/python-genai/)
+- [Supervised Fine-Tuning Guide](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini-supervised-tuning)
+- [JSONL Format Requirements](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini-tuning-format)
 
 ---
 

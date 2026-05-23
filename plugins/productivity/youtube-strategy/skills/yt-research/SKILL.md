@@ -41,6 +41,7 @@ If the user provided context already, confirm your understanding and proceed.
 ### Step 1: Scope the Research
 
 Define the research boundaries:
+
 - Which channels to scrape (user-provided + discovered competitors)
 - Which topics/keywords to search for
 - Time horizon (recent 30 days, 90 days, or all-time)
@@ -50,6 +51,7 @@ Tell the user the plan: "I'll analyze [N] channels and search for [keywords]. Th
 ### Step 2: Collect Channel Data
 
 Use web research to collect:
+
 - Channel metadata (subscribers, total videos, posting frequency)
 - Recent videos (last 30-50 per channel): titles, views, likes, comments, publish dates
 - Video tags and categories where available
@@ -59,6 +61,7 @@ If Apify MCP is available, spawn `yt-scraper` sub-agent for bulk data collection
 ### Step 3: Analyze Channels
 
 For each channel, analyze:
+
 - Engagement pattern analysis (what gets views vs what doesn't)
 - Content type distribution (tutorials, reviews, updates, opinions)
 - Title pattern analysis (what structures and words correlate with views)
@@ -72,16 +75,19 @@ If analyzing 4+ channels, spawn `channel-analyzer` sub-agents (3 channels per ag
 Using the analysis results, identify:
 
 **Content Gaps:**
+
 - Topics the audience searches for but competitors cover poorly
 - Topics that are developer-focused everywhere but could be made accessible
 - Recent tool updates/features with no quality coverage yet
 
 **Trending Signals:**
+
 - Tools/features getting increasing search interest
 - Topics with recent outlier videos (sudden view spikes)
 - Community discussions (Reddit, forums) indicating unmet demand
 
 **Strategic Fit:**
+
 - Which opportunities align with the creator's content pillars?
 - Which serve the target audience?
 - Which have the best effort-to-impact ratio?
@@ -100,9 +106,11 @@ Generate two outputs:
 Present the report to the user:
 
 "Here's the research report. Key findings:"
+
 - [Top 3 findings]
 
 "What would you like to do?"
+
 - Move to ideation with these insights
 - Research additional channels
 - Dig deeper into a specific finding

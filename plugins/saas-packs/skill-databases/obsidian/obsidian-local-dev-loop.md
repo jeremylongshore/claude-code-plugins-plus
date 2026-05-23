@@ -10,6 +10,7 @@ obsidian-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Obsidian local development workflow
 **Workflow:** Part of the onboarding skill category for Obsidian integration.
 **Relates to:** Other obsidian skills in this pack.

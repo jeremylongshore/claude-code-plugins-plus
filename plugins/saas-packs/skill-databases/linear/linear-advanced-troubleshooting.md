@@ -10,6 +10,7 @@ linear-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Linear advanced debugging
 **Workflow:** Part of the enterprise skill category for Linear integration.
 **Relates to:** Other linear skills in this pack.

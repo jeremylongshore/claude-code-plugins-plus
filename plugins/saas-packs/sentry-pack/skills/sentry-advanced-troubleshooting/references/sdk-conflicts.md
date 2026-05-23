@@ -3,6 +3,7 @@
 ## SDK Conflicts
 
 ### Multiple SDK Instances
+
 ```typescript
 // Problem: Multiple init() calls
 // Solution: Check for existing client
@@ -12,6 +13,7 @@ if (!Sentry.getCurrentHub().getClient()) {
 ```
 
 ### Version Mismatches
+
 ```bash
 # Check all Sentry package versions
 npm list | grep sentry
@@ -22,6 +24,7 @@ npm list | grep sentry
 ```
 
 ### Framework Integration Conflicts
+
 ```typescript
 // Example: Next.js conflicts
 // Use framework-specific SDK

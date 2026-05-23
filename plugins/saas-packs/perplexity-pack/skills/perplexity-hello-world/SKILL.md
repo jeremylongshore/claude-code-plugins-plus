@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Hello World
 
 ## Overview
+
 Minimal working example demonstrating Perplexity's core value: web-grounded answers with citations. Unlike standard LLMs, Perplexity searches the web for every query and returns cited sources.
 
 ## Prerequisites
+
 - Completed `perplexity-install-auth` setup
 - `openai` package installed
 - `PERPLEXITY_API_KEY` environment variable set
@@ -35,6 +37,7 @@ Minimal working example demonstrating Perplexity's core value: web-grounded answ
 ## Instructions
 
 ### Step 1: Basic Search with Citations (TypeScript)
+
 ```typescript
 import OpenAI from "openai";
 
@@ -80,6 +83,7 @@ main().catch(console.error);
 ```
 
 ### Step 2: Basic Search with Citations (Python)
+
 ```python
 import os
 from openai import OpenAI
@@ -111,6 +115,7 @@ print(f"\nTokens: {response.usage.total_tokens}")
 ```
 
 ### Step 3: Search with Domain Filter
+
 ```typescript
 // Restrict search to specific domains
 const response = await client.chat.completions.create({
@@ -125,6 +130,7 @@ const response = await client.chat.completions.create({
 ```
 
 ### Step 4: Streaming Search
+
 ```typescript
 const stream = await client.chat.completions.create({
   model: "sonar",
@@ -146,11 +152,13 @@ for await (const chunk of stream) {
 ```
 
 ## Output
+
 - Working search query returning a web-grounded answer
 - Parsed citation URLs from the response
 - Token usage stats confirming billing
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401 Unauthorized` | Invalid API key | Verify key at perplexity.ai/settings/api |
@@ -159,9 +167,11 @@ for await (const chunk of stream) {
 | Timeout | Complex search query | Use `sonar` instead of `sonar-pro` |
 
 ## Resources
+
 - [Perplexity API Reference](https://docs.perplexity.ai/api-reference/chat-completions-post)
 - [Search Parameters](https://docs.perplexity.ai/docs/sonar/quickstart)
 - [Model Cards](https://docs.perplexity.ai/getting-started/models)
 
 ## Next Steps
+
 Proceed to `perplexity-local-dev-loop` for development workflow setup.

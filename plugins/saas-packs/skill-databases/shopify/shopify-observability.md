@@ -10,6 +10,7 @@ shopify-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Shopify monitoring and observability
 **Workflow:** Part of the enterprise skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

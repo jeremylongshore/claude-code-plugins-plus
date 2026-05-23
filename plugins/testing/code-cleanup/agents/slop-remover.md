@@ -37,6 +37,7 @@ Scan for these slop categories:
 **Category 1 — Restating Comments (highest signal)**
 
 Comments that describe the *what* of the next line:
+
 ```
 // Set the name        ← SLOP (next line is: this.name = name)
 // Get the user        ← SLOP (next line is: const user = getUser(id))
@@ -51,6 +52,7 @@ Detection heuristic: if the comment can be derived by reading the next 1-2 lines
 **Category 2 — Obvious JSDoc**
 
 Parameter docs that only restate the type or name:
+
 ```typescript
 /** 
  * @param name - The name           ← SLOP (adds nothing beyond type sig)
@@ -61,6 +63,7 @@ Parameter docs that only restate the type or name:
 ```
 
 Contrast with valuable JSDoc:
+
 ```typescript
 /**
  * @param name - Display name shown in the header. Truncated at 50 chars.  ← KEEP
@@ -72,6 +75,7 @@ Contrast with valuable JSDoc:
 **Category 3 — Filler Section Markers**
 
 Decorative dividers with no navigation or organizational value:
+
 ```
 // ========================
 // --- Helper Functions ---
@@ -91,6 +95,7 @@ Exception: section markers in very long files (>500 lines) may have navigation v
 **Category 4 — "This function/method/class" Preambles**
 
 Boilerplate descriptions of what something is:
+
 ```
 // This function calculates the total price      ← SLOP
 // This method handles the form submission        ← SLOP
@@ -111,22 +116,30 @@ return null; // return null                            ← SLOP
 Before marking any comment as slop, verify it does NOT:
 
 1. **Explain WHY** — business logic, architectural decisions, constraints
+
    ```
    // Use MD5 here because the legacy API requires it (not for security)  ← KEEP
    ```
+
 2. **Document a workaround** — bug references, platform quirks
+
    ```
    // Safari doesn't support this API, fall back to polyfill  ← KEEP
    ```
+
 3. **Contain a TODO/FIXME with context** — actionable items
+
    ```
    // TODO(#123): Replace with batch API once it ships in Q3  ← KEEP
    ```
+
 4. **Serve as public API documentation** — JSDoc on exported functions with non-obvious behavior
 5. **Explain non-obvious code** — regex patterns, bitwise operations, complex algorithms
+
    ```
    // Bitwise OR with 0 truncates to 32-bit integer (faster than Math.floor)  ← KEEP
    ```
+
 6. **Provide legal/license context** — copyright headers, license markers
 7. **Mark intentional decisions** — `// Intentionally empty`, `// No-op by design`
 

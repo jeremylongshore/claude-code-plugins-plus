@@ -60,33 +60,43 @@ The DEX aggregator router follows a **fan-out/fan-in aggregation pattern** where
 ## Progressive Disclosure Strategy
 
 ### Level 1: Quick Quote (Default)
+
 ```bash
 python dex_router.py ETH USDC 1.0
 ```
+
 Output: Best price across aggregators with single recommended route.
 
 ### Level 2: Detailed Comparison
+
 ```bash
 python dex_router.py ETH USDC 1.0 --compare
 ```
+
 Output: All venues compared with price, gas, and effective rate.
 
 ### Level 3: Route Analysis
+
 ```bash
 python dex_router.py ETH USDC 10.0 --routes
 ```
+
 Output: Direct vs. multi-hop routes with hop-by-hop breakdown.
 
 ### Level 4: Split Optimization
+
 ```bash
 python dex_router.py ETH USDC 100.0 --split
 ```
+
 Output: Optimal split across DEXs with allocation percentages.
 
 ### Level 5: Full Analysis
+
 ```bash
 python dex_router.py ETH USDC 50.0 --full --mev-check
 ```
+
 Output: Complete analysis with MEV risk, gas optimization, all routes.
 
 ## Tool Permission Strategy
@@ -96,11 +106,13 @@ allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:dex-*)
 ```
 
 ### Rationale
+
 - **Read/Write/Edit**: Configuration and output file management
 - **Grep/Glob**: Search for token addresses and contract data
 - **Bash(crypto:dex-*)**: Scoped to DEX-related scripts only
 
 ### Prohibited
+
 - No unrestricted Bash (prevents arbitrary code execution)
 - No network tools outside defined API clients
 - No wallet/private key access
@@ -373,17 +385,20 @@ async def fetch_with_rate_limit(self, aggregators: List[str]):
 ## Testing Strategy
 
 ### Unit Tests
+
 - Quote normalization for each aggregator format
 - Route ranking algorithm correctness
 - Split calculation math verification
 - Gas cost calculations
 
 ### Integration Tests
+
 - Live API connectivity (mocked in CI)
 - Multi-aggregator response handling
 - Error recovery scenarios
 
 ### Acceptance Tests
+
 - Quote within 1% of manual check
 - Route recommendations match expert analysis
 - Split suggestions reduce simulated slippage
@@ -391,17 +406,20 @@ async def fetch_with_rate_limit(self, aggregators: List[str]):
 ## Security & Compliance
 
 ### Data Handling
+
 - No private keys or wallet access
 - No transaction signing
 - Read-only quote fetching
 - API keys stored in environment variables
 
 ### Rate Limit Compliance
+
 - Respect per-aggregator limits
 - Implement exponential backoff
 - Track usage across sessions
 
 ### Privacy
+
 - No user tracking
 - No trade logging beyond session
 - No third-party data sharing
@@ -409,6 +427,7 @@ async def fetch_with_rate_limit(self, aggregators: List[str]):
 ## Dependencies
 
 ### Python Packages
+
 ```
 httpx>=0.24.0          # Async HTTP client
 pydantic>=2.0          # Data validation
@@ -417,6 +436,7 @@ asyncio                # Async/await support
 ```
 
 ### External Services
+
 - 1inch API (optional API key)
 - Paraswap API (no auth)
 - 0x API (optional API key)

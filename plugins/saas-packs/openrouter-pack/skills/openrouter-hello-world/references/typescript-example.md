@@ -3,6 +3,7 @@
 ## TypeScript Example
 
 ### Basic Request
+
 ```typescript
 import OpenAI from 'openai';
 
@@ -26,6 +27,7 @@ main();
 ```
 
 ### With Streaming
+
 ```typescript
 const stream = await client.chat.completions.create({
   model: 'openai/gpt-4-turbo',

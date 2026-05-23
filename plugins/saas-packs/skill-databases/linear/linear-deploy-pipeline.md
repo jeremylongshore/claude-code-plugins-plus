@@ -10,6 +10,7 @@ linear-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Linear integrations to production
 **Workflow:** Part of the cicd skill category for Linear integration.
 **Relates to:** Other linear skills in this pack.

@@ -106,4 +106,3 @@ Both are architecture decisions. One adds a layer. The other subtracts one. Both
 - [Verified Plugins Program: Building a Quality Signal for the Marketplace](/posts/verified-plugins-program-quality-signal-for-the-marketplace/)
 - [From Tool to Platform: IntentCAD Ships Five EPICs in One Day](/posts/from-tool-to-platform-intentcad-five-epics-one-day/)
 - [Marketplace Quality Blitz: 130 Stub Files, 4300 Warnings, Zero Excuses](/posts/marketplace-quality-blitz-130-stubs-4300-warnings/)
-

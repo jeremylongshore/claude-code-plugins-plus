@@ -3,6 +3,7 @@
 **User says:** "Create a new security plugin called 'owasp-scanner' with commands"
 
 **I automatically:**
+
 1. Create directory: `plugins/security/owasp-scanner/`
 2. Generate plugin.json, README, LICENSE
 3. Create `commands/` with example
@@ -14,6 +15,7 @@
 **User says:** "Scaffold a Skills plugin for code review"
 
 **I automatically:**
+
 1. Create directory with `skills/` subdirectories
 2. Generate SKILL.md templates
 3. Add trigger keywords for code review

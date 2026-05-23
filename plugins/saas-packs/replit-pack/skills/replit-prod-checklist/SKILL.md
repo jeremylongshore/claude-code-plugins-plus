@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Production Checklist
 
 ## Overview
+
 Complete checklist for deploying Replit apps to production using Autoscale or Reserved VM deployments. Covers configuration, secrets, health checks, custom domains, rollback procedures, and monitoring.
 
 ## Prerequisites
+
 - Replit Core, Pro, or Teams plan (deployment access)
 - App tested and working in Workspace
 - PostgreSQL database provisioned (if needed)
@@ -37,22 +39,27 @@ Complete checklist for deploying Replit apps to production using Autoscale or Re
 ## Production Deployment Checklist
 
 ### Phase 1: Configuration
+
 - [ ] `.replit` deployment section configured:
+
 ```toml
 [deployment]
 run = ["sh", "-c", "npm start"]
 build = ["sh", "-c", "npm ci --production && npm run build"]
 deploymentTarget = "autoscale"  # or "cloudrun" for Reserved VM
 ```
+
 - [ ] `replit.nix` includes only required system packages (trim dev-only deps)
 - [ ] `NODE_ENV` set to `"production"` in `.replit` env section
 - [ ] Port reads from `process.env.PORT`
 
 ### Phase 2: Secrets
+
 - [ ] All secrets configured in Replit Secrets tab
 - [ ] Secrets sync enabled (Workspace <-> Deployment)
 - [ ] No hardcoded credentials in source code
 - [ ] Startup validates all required secrets:
+
 ```typescript
 const REQUIRED = ['DATABASE_URL', 'JWT_SECRET'];
 const missing = REQUIRED.filter(k => !process.env[k]);
@@ -63,7 +70,9 @@ if (missing.length) {
 ```
 
 ### Phase 3: Health Check
+
 - [ ] `/health` endpoint exists and checks dependencies:
+
 ```typescript
 app.get('/health', async (req, res) => {
   const checks = {
@@ -81,11 +90,14 @@ app.get('/health', async (req, res) => {
   res.status(status).json({ status: status === 200 ? 'healthy' : 'degraded', ...checks });
 });
 ```
+
 - [ ] Health endpoint does NOT expose secrets or internal paths
 - [ ] Health endpoint responds within 5 seconds
 
 ### Phase 4: Error Handling
+
 - [ ] Global error handler catches uncaught exceptions:
+
 ```typescript
 // Never expose stack traces in production
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
@@ -106,12 +118,14 @@ process.on('unhandledRejection', (reason) => {
   console.error('Unhandled rejection:', reason);
 });
 ```
+
 - [ ] Rate limiting on public endpoints
 - [ ] Input validation on all user data (Zod, Joi, or manual)
 
 ### Phase 5: Deploy
 
 **Via Replit UI:**
+
 1. Click "Deploy" button in top bar
 2. Choose type:
    - **Static**: Frontend-only (HTML/CSS/JS), free
@@ -121,6 +135,7 @@ process.on('unhandledRejection', (reason) => {
 4. Click "Deploy"
 
 **Via `.replit` config (automatic on push):**
+
 ```toml
 [deployment]
 run = ["sh", "-c", "node dist/index.js"]
@@ -129,6 +144,7 @@ deploymentTarget = "autoscale"
 ```
 
 ### Phase 6: Custom Domain
+
 ```markdown
 1. Deployment Settings > Custom Domain
 2. Enter domain: app.example.com
@@ -137,9 +153,11 @@ deploymentTarget = "autoscale"
 4. Wait 1-5 minutes for SSL auto-provisioning
 5. Verify: curl -I https://app.example.com
 ```
+
 For Replit-purchased domains: manage DNS directly in Replit dashboard.
 
 ### Phase 7: Post-Deploy Verification
+
 ```bash
 set -euo pipefail
 DEPLOY_URL="https://your-app.replit.app"
@@ -155,13 +173,16 @@ curl -sI "$DEPLOY_URL" | grep -iE "(server|content-type|x-)"
 ```
 
 ### Phase 8: Rollback Plan
+
 Replit Deployments support one-click rollback to any previous successful deployment:
+
 1. Go to Deployment Settings > History
 2. Find the last known-good deployment
 3. Click "Rollback to this version"
 4. Verify health endpoint after rollback
 
 ## Monitoring Recommendations
+
 | Signal | Warning | Critical |
 |--------|---------|----------|
 | Health check | 1 failure | 3 consecutive failures |
@@ -171,6 +192,7 @@ Replit Deployments support one-click rollback to any previous successful deploym
 | Cold start (Autoscale) | > 5s | > 15s |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Deploy fails at build | Missing dependency | Check build logs, ensure `npm ci` works |
@@ -179,10 +201,12 @@ Replit Deployments support one-click rollback to any previous successful deploym
 | Custom domain not working | DNS not propagated | Wait or verify CNAME record |
 
 ## Resources
+
 - [Replit Deployments](https://docs.replit.com/hosting/deployments)
 - [Deployment Rollbacks](https://blog.replit.com/introducing-deployment-rollbacks)
 - [Custom Domains](https://docs.replit.com/hosting/custom-domains)
 - [Replit Status](https://status.replit.com)
 
 ## Next Steps
+
 For version upgrades, see `replit-upgrade-migration`.

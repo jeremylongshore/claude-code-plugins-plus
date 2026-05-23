@@ -25,15 +25,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Cost Tuning
 
 ## Overview
+
 Optimize Apollo.io API costs through credit-aware enrichment. Key cost model: **search is free, enrichment costs credits.** Apollo charges per unique contact/company lookup. Credits do not roll over. Strategies: deduplicate before enriching, score leads before spending credits, and track daily budget.
 
 ## Prerequisites
+
 - Valid Apollo API key
 - Node.js 18+
 
 ## Instructions
 
 ### Step 1: Understand Apollo's Credit Model
+
 ```
 Action                      | Credits | Notes
 ----------------------------+---------+-----------------------------------
@@ -47,12 +50,14 @@ Reveal Phone Number         | +1      | reveal_phone_number param
 ```
 
 Plans (approximate):
+
 - **Free**: 50 credits/month
 - **Basic**: 1,200 credits/month (~$0.04/credit)
 - **Professional**: 6,000 credits/month
 - **Organization**: 12,000+ credits/month
 
 ### Step 2: Track Credit Usage
+
 ```typescript
 // src/cost/credit-tracker.ts
 class CreditTracker {
@@ -89,6 +94,7 @@ export const creditTracker = new CreditTracker(
 ```
 
 ### Step 3: Deduplicate Before Enriching
+
 ```typescript
 // src/cost/dedup.ts
 import { LRUCache } from 'lru-cache';
@@ -117,6 +123,7 @@ export function markEnriched(key: string) {
 ```
 
 ### Step 4: Score Leads Before Enriching
+
 Only spend credits on leads worth contacting.
 
 ```typescript
@@ -153,6 +160,7 @@ export function shouldEnrich(signals: LeadSignals, threshold: number = 40): bool
 ```
 
 ### Step 5: Budget-Aware API Client
+
 ```typescript
 // src/cost/budget-client.ts
 import axios from 'axios';
@@ -195,6 +203,7 @@ export { client as budgetClient };
 ```
 
 ### Step 6: Cost-Optimized Pipeline
+
 ```typescript
 import { budgetClient } from './cost/budget-client';
 import { shouldEnrich } from './cost/lead-scorer';
@@ -235,6 +244,7 @@ async function enrichHighValueLeads(people: any[]) {
 ```
 
 ## Output
+
 - Credit model reference table (free vs paid operations)
 - `CreditTracker` with daily budget enforcement
 - LRU deduplication preventing double-enrichment charges
@@ -243,6 +253,7 @@ async function enrichHighValueLeads(people: any[]) {
 - Cost-optimized pipeline combining all strategies
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | Budget exceeded | Increase `APOLLO_DAILY_CREDIT_BUDGET` or wait until tomorrow |
@@ -251,9 +262,11 @@ async function enrichHighValueLeads(people: any[]) {
 | Month-end credit crunch | Spread enrichment evenly with daily budgets |
 
 ## Resources
+
 - [Apollo API Pricing](https://docs.apollo.io/docs/api-pricing)
 - [Apollo Plans](https://www.apollo.io/pricing)
 - [View API Usage Stats](https://docs.apollo.io/reference/view-api-usage-stats)
 
 ## Next Steps
+
 Proceed to `apollo-reference-architecture` for architecture patterns.

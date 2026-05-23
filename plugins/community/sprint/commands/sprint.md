@@ -24,6 +24,7 @@ PHASE 5 - Finalization
 ## Step 1: Locate Sprint and Determine State
 
 Find the highest sprint index in the current project:
+
 ```bash
 ls -d .claude/sprint/*/ 2>/dev/null | sort -V | tail -1
 ```
@@ -31,6 +32,7 @@ ls -d .claude/sprint/*/ 2>/dev/null | sort -V | tail -1
 The result should be something like `.claude/sprint/3/` - this is your **sprint directory**.
 
 Check what files exist:
+
 ```bash
 test -f .claude/sprint/[N]/specs.md && echo "SPECS_EXISTS"
 test -f .claude/sprint/[N]/status.md && echo "STATUS_EXISTS"
@@ -40,9 +42,11 @@ test -f .claude/sprint/[N]/manual-test-report.md && echo "MANUAL_REPORT_EXISTS"
 ### Case A: No sprint directory exists
 
 Tell the user:
+
 ```
 No sprint found. Create one first with /sprint:new
 ```
+
 Stop here.
 
 ### Case B: specs.md exists but no status.md (Fresh sprint)
@@ -56,6 +60,7 @@ Read the status.md to understand current state. Then **ask the user what they wa
 **If status.md indicates sprint is COMPLETE/DONE:**
 
 Use AskUserQuestion tool:
+
 ```
 Sprint [N] appears to be complete.
 
@@ -72,6 +77,7 @@ Options:
 **If status.md indicates sprint is IN PROGRESS:**
 
 Check for manual-test-report.md:
+
 - If exists: Proceed to Step 2 (will use the report to inform architect)
 - If not exists: Ask user:
 
@@ -95,6 +101,7 @@ ls .claude/sprint/[N]/*-report*.md 2>/dev/null
 ```
 
 This includes:
+
 - `manual-test-report.md` - From `/sprint:test` command (user observations)
 - `backend-report-*.md` - From previous implementation iterations
 - `frontend-report-*.md` - From previous implementation iterations
@@ -165,11 +172,13 @@ Initialize:
     stage = "architecture"
 
 Repeat the sprint cycle until:
+
 - Architect completes Phase 5
 
 You can now proceed to Phase 1 - Architect Planning
 
 # PHASE 1 - Architect Planning
+
 (stage = "architecture")
 
 Increment iteration counter by 1.
@@ -193,17 +202,19 @@ Wait for the architect response.
     stage = "implementation"
 - Move to PHASE 2.
 
-2. If the architect requests `qa-test-agent` or `ui-test-agent`:
+1. If the architect requests `qa-test-agent` or `ui-test-agent`:
+
 - This means the architect believes implementation is ready for testing.
 - Set:
     stage = "qa"
 - Move to PHASE 3.
 
 1. If the architect says FINALIZE
+
 - Jump to PHASE 5 - Finalization.
 
-
 # PHASE 2 - Implementation (Parallel agent implementers)
+
 (stage = "implementation")
 
 1. **Spawn requested agents in parallel**
@@ -214,6 +225,7 @@ Wait for the architect response.
    Example prompts:
 
      **For python-dev:**
+
      ```
      Execute your standard sprint workflow for sprint [N].
 
@@ -225,6 +237,7 @@ Wait for the architect response.
      ```
 
      **For nextjs-dev**
+
      ```
     Execute your standard sprint workflow for sprint [N].
 
@@ -234,9 +247,10 @@ Wait for the architect response.
 
     Perform your workflow and report using your mandatory output format.
      ```
+
 (Apply similar templates for other implementation agents)
 
-2. **Collect reports**
+1. **Collect reports**
    - Wait for all agents to complete
    - Gather each agent's final report
 
@@ -261,6 +275,7 @@ After you collect an agent report, you MUST:
   `.claude/sprint/[index]/[slug]-report-[iteration].md`
 
 Examples:
+
 - `.claude/sprint/3/backend-report-1.md`
 - `.claude/sprint/3/frontend-report-1.md`
 - `.claude/sprint/3/qa-report-2.md`
@@ -269,6 +284,7 @@ Examples:
 - `.claude/sprint/3/cicd-report-1.md`
 
 Then, when you call `project-architect` again, you:
+
 - Include the report contents in your message (as you already do).
 - Optionally mention which `[slug]-report-[iteration].md` files were created.
 
@@ -276,14 +292,15 @@ Agents never manage `[iteration]` or filenames. Only the orchestrator (you) does
 
 1. **Return reports to architect**
    - Spawn project-architect again (resume mode) with:
+
      ```
      Here are the reports from the agents you requested:
     [all reports]
 
      Analyze these reports and decide next steps.
+
      ```
 2. Loop back to phase 1.
-
 
 # PHASE 3 - QA & UI Testing
 
@@ -312,6 +329,7 @@ If `ui-test-agent` was requested:
 ### Determine testing mode
 
 Check specs.md for `UI Testing Mode`:
+
 - If `UI Testing Mode: manual` -> set `testing_mode = "MANUAL"`
 - Otherwise -> set `testing_mode = "AUTOMATED"`
 
@@ -367,9 +385,10 @@ If spawning multiple testing agents (ui-test + diagnostics), spawn them in the *
 ## Step 3: Collect and Save Reports
 
 After all testing agents complete, save reports as:
-  - `.claude/sprint/[N]/qa-report-[iteration].md` (if qa-test-agent ran)
-  - `.claude/sprint/[N]/ui-test-report-[iteration].md` (if ui-test-agent ran)
-  - `.claude/sprint/[N]/nextjs-diagnostics-report-[iteration].md` (if nextjs-diagnostics-agent ran)
+
+- `.claude/sprint/[N]/qa-report-[iteration].md` (if qa-test-agent ran)
+- `.claude/sprint/[N]/ui-test-report-[iteration].md` (if ui-test-agent ran)
+- `.claude/sprint/[N]/nextjs-diagnostics-report-[iteration].md` (if nextjs-diagnostics-agent ran)
 
 ## Step 4: Send to Architect
 
@@ -389,7 +408,6 @@ Decide next steps based on these test results.
 ```
 
 Set `stage = "architecture"` and loop back to PHASE 1.
-
 
 # PHASE 4 - Architect Review & Iteration Control
 
@@ -422,9 +440,9 @@ Then:
     Implementation or tests are still not passing.
 
     Review .claude/sprint/[N]/ and provide guidance:
-    - Should we continue iterating?
-    - Should we adjust the specifications?
-    - Are there manual fixes required?
+  - Should we continue iterating?
+  - Should we adjust the specifications?
+  - Are there manual fixes required?
 
 - Stop until the user provides new instructions.
 
@@ -447,6 +465,7 @@ When the architect signals that Phase 5 is complete:
 2) **Clean up ephemeral reports:**
 
    Delete manual test reports - they're no longer relevant after the sprint completes:
+
    ```bash
    rm -f .claude/sprint/[N]/manual-test-report*.md
    ```
@@ -458,7 +477,6 @@ When the architect signals that Phase 5 is complete:
     [contents of status.md]
 
 Terminate the sprint.
-
 
 # KEY RULES
 

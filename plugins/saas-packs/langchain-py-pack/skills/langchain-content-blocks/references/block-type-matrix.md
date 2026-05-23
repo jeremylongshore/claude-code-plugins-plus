@@ -38,11 +38,13 @@ safe extractor. Here we go deeper on each block type.
 ## When to iterate blocks manually vs. use helpers
 
 Use the helper when:
+
 - You only want text. Use `msg.text()`.
 - You want tool calls. Use `msg.tool_calls`.
 - You want usage. Use `msg.usage_metadata`.
 
 Iterate blocks manually when:
+
 - You need to preserve order (e.g., rendering `thinking → text → tool_use` in a transcript UI).
 - You are round-tripping a Claude assistant message back into the next turn and must keep `thinking` blocks intact (see `thinking-blocks.md`).
 - You are extracting Claude citations (see `tool-use-iteration.md#citations` and below).

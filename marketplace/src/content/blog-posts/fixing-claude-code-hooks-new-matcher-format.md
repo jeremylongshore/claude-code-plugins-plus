@@ -54,6 +54,7 @@ The new format requires a nested `hooks` array with explicit `type`:
 ```
 
 Key changes:
+
 1. **`matcher`** - Must be a valid regex (`".*"` matches everything, empty string doesn't work)
 2. **`hooks`** - Now an array inside the matcher object
 3. **`type`** - Required field, set to `"command"` for shell commands
@@ -73,4 +74,3 @@ Then update each one to the new format.
 
 - [Fixing Claude Code EACCES Multi-User Linux Permissions](/posts/fixing-claude-code-eacces-multi-user-linux-permissions/)
 - [Debugging Claude Code Slash Commands](/posts/debugging-claude-code-slash-commands-silent-deployment-failures/)
-

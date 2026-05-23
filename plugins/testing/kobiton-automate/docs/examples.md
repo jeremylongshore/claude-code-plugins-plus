@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD028 -->
+
 # Kobiton MCP Tools — Examples
 
 A guide to every tool available in the Kobiton MCP server, organized by domain. Each tool includes a description and natural-language prompt examples you can use directly in Claude Code.
@@ -190,5 +192,3 @@ Test this app <PATH_TO_APP> by my script <PATH_TO_SCRIPT> on Kobiton <PLATFORM> 
 > "Test this app resources/apps/LeaderboardApp.ipa by my script tests/ios_test.py on Kobiton iOS device iPhone 15"
 
 > "Test this app resources/apps/TurboTest.apk by my script tests/smoke_test.js on Kobiton Android device Pixel 6"
-
-

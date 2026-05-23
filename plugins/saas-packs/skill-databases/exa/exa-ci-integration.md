@@ -10,6 +10,7 @@ exa-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Exa CI/CD integration with GitHub Actions, automated testing, and quality gates for search functionality.
 **Workflow:** CI/CD foundation skill - automates testing and deployment of Exa integrations.
 **Relates to:** Follows exa-sdk-patterns; integrates with exa-search-quality

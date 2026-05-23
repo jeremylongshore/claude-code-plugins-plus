@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Data Handling
 
 ## Overview
+
 Implement reliable data synchronization, backup, and consistency for Linear integrations. Covers full sync, incremental webhook sync, JSON/CSV export, consistency checks, and conflict resolution.
 
 ## Prerequisites
+
 - `@linear/sdk` with API key configured
 - Database for local storage (any ORM — Drizzle, Prisma, Knex)
 - Understanding of eventual consistency
@@ -34,6 +36,7 @@ Implement reliable data synchronization, backup, and consistency for Linear inte
 ## Instructions
 
 ### Step 1: Data Model Schema
+
 ```typescript
 // src/models/linear-entities.ts
 import { z } from "zod";
@@ -66,6 +69,7 @@ export type LinearIssue = z.infer<typeof LinearIssueSchema>;
 ```
 
 ### Step 2: Full Sync
+
 Paginate through all issues, resolve relations, and upsert locally.
 
 ```typescript
@@ -178,6 +182,7 @@ async function fullSync(client: LinearClient, teamKey: string): Promise<SyncStat
 ```
 
 ### Step 3: Incremental Sync via Webhooks
+
 ```typescript
 async function processWebhookSync(event: {
   action: "create" | "update" | "remove";
@@ -230,6 +235,7 @@ async function processWebhookSync(event: {
 ```
 
 ### Step 4: Data Export / Backup
+
 ```typescript
 async function exportToJson(client: LinearClient, outputDir: string) {
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
@@ -285,6 +291,7 @@ async function exportToJson(client: LinearClient, outputDir: string) {
 ```
 
 ### Step 5: Consistency Check
+
 ```typescript
 async function checkConsistency(client: LinearClient, teamKey: string): Promise<{
   missing: string[];
@@ -335,6 +342,7 @@ async function checkConsistency(client: LinearClient, teamKey: string): Promise<
 ```
 
 ### Step 6: Conflict Resolution
+
 ```typescript
 type ConflictStrategy = "remote-wins" | "local-wins" | "merge" | "manual";
 
@@ -387,6 +395,7 @@ function resolveConflict(
 | Duplicate entries | Webhook retry without dedup | Deduplicate by `Linear-Delivery` header |
 
 ## Resources
+
 - [Linear GraphQL API](https://linear.app/developers/graphql)
 - [Linear Pagination](https://linear.app/developers/pagination)
 - [Linear Filtering](https://linear.app/developers/filtering)

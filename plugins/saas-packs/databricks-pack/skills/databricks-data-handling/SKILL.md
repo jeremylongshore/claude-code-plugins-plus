@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Data Handling
 
 ## Overview
+
 Implement GDPR compliance, PII masking, data retention, and row-level security in Delta Lake with Unity Catalog. Covers data classification tagging, right-to-deletion workflows, automated retention enforcement, column-level masking functions, and subject access request (SAR) reporting.
 
 ## Prerequisites
+
 - Unity Catalog enabled
 - Understanding of data classification requirements (GDPR, CCPA, HIPAA)
 - Admin access for tags and masking functions
@@ -35,6 +37,7 @@ Implement GDPR compliance, PII masking, data retention, and row-level security i
 ## Instructions
 
 ### Step 1: Classify and Tag Data
+
 Use Unity Catalog tags to classify tables and columns for automated compliance enforcement.
 
 ```sql
@@ -60,6 +63,7 @@ ALTER COLUMN full_name SET TAGS ('pii_type' = 'name');
 ```
 
 ### Step 2: GDPR Right-to-Deletion
+
 Delete all user data across PII-tagged tables with audit logging.
 
 ```python
@@ -133,6 +137,7 @@ for t in report["tables_processed"]:
 ```
 
 ### Step 3: Automated Data Retention
+
 ```python
 class RetentionEnforcer:
     """Delete data older than retention policy set via table tags."""
@@ -189,6 +194,7 @@ for r in enforcer.enforce(dry_run=True):
 ```
 
 ### Step 4: Column-Level PII Masking
+
 ```sql
 -- Create masking functions for different PII types
 CREATE OR REPLACE FUNCTION prod_catalog.compliance.mask_email(val STRING)
@@ -220,6 +226,7 @@ ALTER TABLE prod_catalog.silver.customers
 ```
 
 ### Step 5: Row-Level Security
+
 ```sql
 -- Restrict data access by department/region
 CREATE OR REPLACE FUNCTION prod_catalog.compliance.region_filter(region STRING)
@@ -235,6 +242,7 @@ ALTER TABLE prod_catalog.gold.sales
 ```
 
 ### Step 6: Subject Access Request (SAR)
+
 ```python
 def generate_sar_report(catalog: str, user_id: str) -> dict:
     """Generate a GDPR Subject Access Request report."""
@@ -261,6 +269,7 @@ print(f"Found data in {len(sar['data'])} tables")
 ```
 
 ## Output
+
 - Data classification tags on tables and PII columns
 - GDPR deletion workflow with dry-run and audit logging
 - Automated retention enforcement via tagged policies
@@ -269,6 +278,7 @@ print(f"Found data in {len(sar['data'])} tables")
 - SAR report generation for compliance requests
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `VACUUM` fails | Retention below 7 days | Set minimum `RETAIN 168 HOURS` |
@@ -280,6 +290,7 @@ print(f"Found data in {len(sar['data'])} tables")
 ## Examples
 
 ### Quick Compliance Check
+
 ```sql
 -- Find all PII-tagged tables and their masking status
 SELECT t.table_name, t.tag_value AS classification,
@@ -292,10 +303,12 @@ GROUP BY t.table_name, t.tag_value;
 ```
 
 ## Resources
+
 - [Row and Column Filters](https://docs.databricks.com/aws/en/data-governance/unity-catalog/row-and-column-filters)
 - [Unity Catalog Tags](https://docs.databricks.com/aws/en/data-governance/unity-catalog/tags)
 - [Delta Lake DELETE](https://docs.databricks.com/aws/en/delta/delta-update)
 - [VACUUM](https://docs.databricks.com/aws/en/sql/language-manual/delta-vacuum)
 
 ## Next Steps
+
 For enterprise RBAC, see `databricks-enterprise-rbac`.

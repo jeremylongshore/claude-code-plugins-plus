@@ -10,6 +10,7 @@ gamma-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Gamma costs and usage
 **Workflow:** Part of the cicd skill category for Gamma integration.
 **Relates to:** Other gamma skills in this pack.

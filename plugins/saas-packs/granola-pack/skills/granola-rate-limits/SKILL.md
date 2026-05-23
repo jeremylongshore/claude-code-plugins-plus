@@ -25,11 +25,13 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola Rate Limits & Plan Quotas
 
 ## Overview
+
 Granola has three plan tiers with different feature access and limits. There are no per-meeting minute caps or monthly meeting count limits on paid plans. Limits primarily apply to the free tier and the Enterprise API.
 
 ## Plan Comparison (Current as of March 2026)
 
 ### Basic (Free) — $0
+
 | Feature | Limit |
 |---------|-------|
 | Meetings | 25 lifetime (not monthly) |
@@ -44,6 +46,7 @@ Granola has three plan tiers with different feature access and limits. There are
 > The free plan is essentially a trial — 25 meetings total, ever. After that, you must upgrade.
 
 ### Business — $14/user/month
+
 | Feature | Availability |
 |---------|-------------|
 | Meetings | Unlimited |
@@ -63,6 +66,7 @@ Granola has three plan tiers with different feature access and limits. There are
 | Public API access | Included |
 
 ### Enterprise — $35+/user/month
+
 | Feature | Availability |
 |---------|-------------|
 | Everything in Business | Included |
@@ -79,12 +83,14 @@ Granola has three plan tiers with different feature access and limits. There are
 ## API Rate Limits
 
 ### Enterprise API
+
 - Rate limits are applied **per workspace** (not per user)
 - When exceeded: HTTP `429 Too Many Requests` response
 - Retry behavior: respect the `Retry-After` header
 - No published rate numbers — contact Granola for workspace-specific limits
 
 ### Zapier Integration
+
 - Zapier task limits are governed by your **Zapier plan**, not Granola
 - Granola does not throttle outbound Zapier triggers
 - For high-volume workspaces, add delay steps between Zap actions to avoid overwhelming downstream apps
@@ -92,11 +98,13 @@ Granola has three plan tiers with different feature access and limits. There are
 ## Usage Monitoring
 
 ### Check Usage in Granola
+
 1. Click your avatar (bottom-left) > **Settings**
 2. Navigate to **Account** or **Subscription**
 3. View: current plan, meeting count, team seats, connected integrations
 
 ### Free Plan Usage Tracking
+
 ```
 Meetings Used: 18 / 25 lifetime
 History Visible: Last 14 days
@@ -104,7 +112,9 @@ Upgrade Required: After 25 meetings
 ```
 
 ### API Usage (Enterprise)
+
 Monitor API usage through response headers:
+
 ```bash
 # Check rate limit headers in API response
 curl -s -I "https://api.granola.ai/v0/notes" \
@@ -134,6 +144,7 @@ curl -s -I "https://api.granola.ai/v0/notes" \
 | API access for custom workflows | Business (basic) or Enterprise (full) |
 
 ## Billing Details
+
 - **Annual billing:** Save 10-15% vs monthly
 - **Prorated upgrades:** Upgrade mid-cycle, pay difference
 - **Seat management:** Add/remove seats in Settings > Team
@@ -149,10 +160,12 @@ curl -s -I "https://api.granola.ai/v0/notes" \
 | "Feature not available" | Feature requires higher plan | Check plan comparison above and upgrade |
 
 ## Resources
+
 - [Granola Pricing](https://www.granola.ai/pricing)
 - [Pricing Blog (ROI Calculator)](https://www.granola.ai/blog/granola-pricing-plans-features-roi)
 - [Enterprise API Docs](https://docs.granola.ai/help-center/sharing/integrations/enterprise-api)
 - [API Changelog](https://docs.granola.ai/api-reference/changelog)
 
 ## Next Steps
+
 Proceed to `granola-security-basics` for security and compliance configuration.

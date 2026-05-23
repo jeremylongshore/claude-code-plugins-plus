@@ -175,11 +175,13 @@ for (const r of results) {
 ## Sensitive Data Handling
 
 **ALWAYS REDACT before sharing:**
+
 - Access tokens and refresh tokens
 - Client secrets
 - User IDs (if privacy-sensitive)
 
 **Safe to include:**
+
 - HTTP status codes and error messages
 - Response headers (rate limit info)
 - Latency measurements

@@ -10,6 +10,7 @@ wispr-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Wispr debug evidence for support
 **Workflow:** Part of the operations skill category for Wispr integration.
 **Relates to:** Other wispr skills in this pack.

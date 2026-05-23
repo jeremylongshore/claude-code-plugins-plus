@@ -53,6 +53,7 @@ curl -s -H "Authorization: Bearer $GLEAN_API_TOKEN" \
 ## Incident Playbooks
 
 ### API Outage
+
 1. Confirm outage with diagnostic curl above and check Glean status page
 2. Verify your Glean instance URL resolves and TLS cert is valid
 3. Test from multiple networks to rule out local DNS or firewall issues
@@ -60,6 +61,7 @@ curl -s -H "Authorization: Bearer $GLEAN_API_TOKEN" \
 5. Contact Glean support with instance name, timestamps, and error codes
 
 ### Authentication Failure
+
 1. Verify API token is set: `echo $GLEAN_API_TOKEN | wc -c`
 2. Check token expiry — Glean tokens may have a TTL configured by your admin
 3. Test with a minimal search request (see diagnostics above)
@@ -67,6 +69,7 @@ curl -s -H "Authorization: Bearer $GLEAN_API_TOKEN" \
 5. If 403: verify token scopes include search and indexing permissions
 
 ### Data Sync Failure
+
 1. Identify which connector failed via `getdatasourceconfig` for each source
 2. Check connector credentials — OAuth tokens for Google/Slack/Confluence may have expired
 3. Review connector error logs in Glean admin under Datasource Management

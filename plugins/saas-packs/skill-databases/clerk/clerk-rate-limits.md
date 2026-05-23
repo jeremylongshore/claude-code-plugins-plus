@@ -10,6 +10,7 @@ clerk-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Clerk rate limiting and backoff
 **Workflow:** Part of the operations skill category for Clerk integration.
 **Relates to:** Other clerk skills in this pack.

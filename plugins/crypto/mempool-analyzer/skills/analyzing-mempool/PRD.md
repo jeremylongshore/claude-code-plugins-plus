@@ -1,6 +1,7 @@
 # PRD: Mempool Analyzer
 
 ## Summary
+
 **One-liner**: Monitor blockchain mempools for pending transactions, gas analysis, and MEV opportunity detection
 **Domain**: Cryptocurrency / Blockchain / Trading Infrastructure
 **Users**: Traders, MEV Searchers, Protocol Developers, Researchers
@@ -8,6 +9,7 @@
 ## Problem Statement
 
 Blockchain mempools contain pending transactions waiting to be included in blocks. Understanding mempool activity is critical for:
+
 - Optimizing gas prices for transaction inclusion
 - Detecting large pending trades before execution
 - Identifying MEV (Maximal Extractable Value) opportunities

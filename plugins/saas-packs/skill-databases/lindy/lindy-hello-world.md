@@ -10,6 +10,7 @@ lindy-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Lindy example
 **Workflow:** Part of the onboarding skill category for Lindy integration.
 **Relates to:** Other lindy skills in this pack.

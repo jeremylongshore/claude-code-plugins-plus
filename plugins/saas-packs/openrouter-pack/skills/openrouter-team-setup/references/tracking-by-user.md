@@ -3,6 +3,7 @@
 ## Tracking by User
 
 ### User Attribution
+
 ```python
 class TrackedTeamClient:
     def __init__(self, api_key: str):
@@ -64,6 +65,7 @@ class TrackedTeamClient:
 ```
 
 ### HTTP Headers for Tracking
+
 ```python
 def create_team_client(user_email: str, team_name: str):
     """Create client with tracking headers."""

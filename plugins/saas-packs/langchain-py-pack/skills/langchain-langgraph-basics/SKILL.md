@@ -37,7 +37,7 @@ Two more gotchas this skill defuses:
 - P55 — `GraphRecursionError: Recursion limit of 25 reached` fires on graphs
   that never loop, because `recursion_limit` counts **supersteps** (one step
   per synchronous batch of node executions), not loop iterations. A planner
-  + executor + validator + summarizer can hit 25 without any cycle.
+  - executor + validator + summarizer can hit 25 without any cycle.
 - P20 — Upgrading `langgraph` silently reads old `PostgresSaver` checkpoints
   as empty state. Checkpoint schemas evolve; `PostgresSaver.setup()` must be
   rerun after every version bump before production traffic.

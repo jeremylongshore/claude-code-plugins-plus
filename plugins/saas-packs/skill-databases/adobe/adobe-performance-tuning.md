@@ -10,6 +10,7 @@ adobe-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Adobe API performance
 **Workflow:** Part of the cicd skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

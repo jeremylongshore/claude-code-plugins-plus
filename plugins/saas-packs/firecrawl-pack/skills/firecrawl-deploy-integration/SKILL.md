@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Deploy Integration
 
 ## Overview
+
 Deploy applications using Firecrawl's web scraping API to production. Covers Vercel serverless, Cloud Run containers, self-hosted Firecrawl via Docker, and webhook endpoint deployment for async crawl results.
 
 ## Prerequisites
+
 - Firecrawl API key (`FIRECRAWL_API_KEY`)
 - Application using `@mendable/firecrawl-js`
 - Platform CLI (vercel, docker, or gcloud)
@@ -34,6 +36,7 @@ Deploy applications using Firecrawl's web scraping API to production. Covers Ver
 ## Instructions
 
 ### Step 1: Configure Platform Secrets
+
 ```bash
 set -euo pipefail
 # Vercel
@@ -47,6 +50,7 @@ echo -n "$FIRECRAWL_API_KEY" | gcloud secrets create firecrawl-api-key --data-fi
 ```
 
 ### Step 2: Vercel Serverless API Route
+
 ```typescript
 // app/api/scrape/route.ts (Next.js App Router)
 import FirecrawlApp from "@mendable/firecrawl-js";
@@ -86,6 +90,7 @@ export async function POST(req: NextRequest) {
 ```
 
 ### Step 3: Self-Hosted Firecrawl (Docker Compose)
+
 ```yaml
 # docker-compose.yml
 services:
@@ -134,6 +139,7 @@ const firecrawl = new FirecrawlApp({
 ```
 
 ### Step 4: Cloud Run Deployment
+
 ```bash
 set -euo pipefail
 # Build and deploy
@@ -147,6 +153,7 @@ gcloud run deploy firecrawl-app \
 ```
 
 ### Step 5: Webhook Endpoint for Async Crawls
+
 ```typescript
 // app/api/webhooks/firecrawl/route.ts
 import crypto from "crypto";
@@ -187,6 +194,7 @@ export async function POST(req: NextRequest) {
 ```
 
 ### Step 6: Health Check
+
 ```typescript
 export async function GET() {
   try {
@@ -203,6 +211,7 @@ export async function GET() {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Vercel timeout | Scrape takes > 10s | Use background functions or async crawl |
@@ -211,9 +220,11 @@ export async function GET() {
 | Webhook not received | URL not publicly accessible | Use ngrok in dev, verify HTTPS in prod |
 
 ## Resources
+
 - [Firecrawl Self-Hosting](https://docs.firecrawl.dev/contributing/self-host)
 - [Firecrawl Webhooks](https://docs.firecrawl.dev/webhooks/overview)
 - [Firecrawl Node SDK](https://docs.firecrawl.dev/sdks/node)
 
 ## Next Steps
+
 For webhook handling, see `firecrawl-webhooks-events`.

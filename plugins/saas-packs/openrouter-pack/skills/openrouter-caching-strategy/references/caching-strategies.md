@@ -3,6 +3,7 @@
 ## Caching Strategies
 
 ### Cache by Intent
+
 ```python
 from enum import Enum
 
@@ -54,6 +55,7 @@ def smart_cached_chat(prompt: str, model: str = "openai/gpt-4-turbo") -> str:
 ```
 
 ### Multi-Level Caching
+
 ```python
 class MultiLevelCache:
     def __init__(self):

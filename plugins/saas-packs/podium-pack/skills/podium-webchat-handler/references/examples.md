@@ -34,6 +34,7 @@ python3 scripts/phone_normalize.py --phone "0412 345 678" --default-country AU -
 ```
 
 Output:
+
 ```json
 {
   "input": "0412 345 678",
@@ -288,6 +289,7 @@ python3 scripts/session_timeout_monitor.py \
 ```
 
 Output:
+
 ```json
 {
   "scanned": 247,
@@ -305,6 +307,7 @@ python3 scripts/optout_audit.py --phone "+61412345678"
 ```
 
 Output:
+
 ```json
 {
   "phone": "+61412345678",

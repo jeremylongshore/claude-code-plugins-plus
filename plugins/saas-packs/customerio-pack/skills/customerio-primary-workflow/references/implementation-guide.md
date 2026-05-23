@@ -3,9 +3,11 @@
 # Customer.io Primary Workflow
 
 ## Overview
+
 Implement Customer.io's primary messaging workflow: identify users, track events, and trigger automated campaigns.
 
 ## Prerequisites
+
 - Customer.io SDK configured
 - Campaign/workflow created in Customer.io dashboard
 - Understanding of your user lifecycle events
@@ -13,6 +15,7 @@ Implement Customer.io's primary messaging workflow: identify users, track events
 ## Instructions
 
 ### Step 1: Define User Lifecycle Events
+
 ```typescript
 // events/user-events.ts
 export const USER_EVENTS = {
@@ -43,6 +46,7 @@ export type UserEvent = typeof USER_EVENTS[keyof typeof USER_EVENTS];
 ```
 
 ### Step 2: Implement Event Tracking Service
+
 ```typescript
 // services/customerio-service.ts
 import { TrackClient, RegionUS } from '@customerio/track';
@@ -123,6 +127,7 @@ export const cioService = new CustomerIOService();
 ```
 
 ### Step 3: Integrate with Application
+
 ```typescript
 // routes/auth.ts
 import { cioService } from '../services/customerio-service';
@@ -152,7 +157,9 @@ app.post('/verify-email', async (req, res) => {
 ```
 
 ### Step 4: Create Dashboard Campaign
+
 In Customer.io Dashboard:
+
 1. Go to Campaigns > Create Campaign
 2. Select trigger: Event "signed_up"
 3. Add workflow steps:
@@ -163,12 +170,14 @@ In Customer.io Dashboard:
    - Continue nurture sequence
 
 ## Output
+
 - User lifecycle event definitions
 - Customer.io service integration
 - Application route integration
 - Campaign workflow triggering
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Event not triggering | Wrong event name | Match exact event name in dashboard |
@@ -176,8 +185,10 @@ In Customer.io Dashboard:
 | Duplicate sends | Multiple event fires | Deduplicate or use idempotency |
 
 ## Resources
+
 - [Customer.io Campaigns](https://customer.io/docs/campaigns/)
 - [Trigger Events](https://customer.io/docs/events/)
 
 ## Next Steps
+
 After implementing primary workflow, proceed to `customerio-core-feature` for advanced features.

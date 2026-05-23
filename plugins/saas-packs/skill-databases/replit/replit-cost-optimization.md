@@ -10,6 +10,7 @@ replit-cost-optimization/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Replit costs through tier selection, resource rightsizing, and usage monitoring with alerts.
 **Workflow:** FinOps skill - manages platform spending effectively.
 **Relates to:** Informed by replit-resource-limits and replit-performance-tuning; supports replit-upgrade-migration decisions.

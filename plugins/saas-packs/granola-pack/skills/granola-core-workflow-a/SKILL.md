@@ -19,9 +19,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola Core Workflow A: Meeting Preparation & Templates
 
 ## Overview
+
 Configure Granola templates (which structure the enhanced output) and recipes (repeatable Chat prompts) for consistent, high-quality meeting notes. Granola ships with 29 built-in templates and supports custom templates per workspace.
 
 ## Prerequisites
+
 - Granola installed and authenticated
 - Calendar synced with upcoming meetings
 - At least one meeting captured (to understand the enhancement flow)
@@ -29,6 +31,7 @@ Configure Granola templates (which structure the enhanced output) and recipes (r
 ## Instructions
 
 ### Step 1 — Choose a Built-in Template
+
 Click the **Change template** icon at the bottom of your notes before or during a meeting:
 
 | Template | Best For | Sections Generated |
@@ -46,6 +49,7 @@ Click the **Change template** icon at the bottom of your notes before or during 
 Templates tell the AI how to structure the enhanced output — a sales call produces different sections than a standup.
 
 ### Step 2 — Create a Custom Template
+
 1. Open Granola Settings > **Templates**
 2. Click **Create New Template**
 3. Define the structure using section headers:
@@ -72,11 +76,12 @@ Templates tell the AI how to structure the enhanced output — a sales call prod
 [What we promised the customer and by when]
 ```
 
-4. Name it and optionally set auto-trigger conditions:
+1. Name it and optionally set auto-trigger conditions:
    - Calendar event title contains specific keywords (e.g., "feedback", "customer")
    - Attendee email domains (e.g., `@customer.com`)
 
 ### Step 3 — Create Recipes for Granola Chat
+
 Recipes are saved prompts invoked with `/` in Granola Chat:
 
 | Recipe | Prompt | Use Case |
@@ -91,6 +96,7 @@ Recipes are saved prompts invoked with `/` in Granola Chat:
 Create custom recipes at Settings > **Recipes** or directly in Chat.
 
 ### Step 4 — Pre-Meeting Preparation
+
 Before important meetings, type context into the Granola notepad **before** the call starts:
 
 ```markdown
@@ -102,6 +108,7 @@ Before important meetings, type context into the Granola notepad **before** the 
 ```
 
 When you click **Enhance Notes** after the meeting, Granola combines:
+
 1. Your pre-meeting context
 2. Your live notes during the meeting
 3. The full audio transcript
@@ -109,6 +116,7 @@ When you click **Enhance Notes** after the meeting, Granola combines:
 This produces output that is aware of your goals and prior context.
 
 ### Step 5 — Set Template Defaults per Workspace
+
 For team deployments, set default templates per shared folder:
 
 | Folder | Default Template | Auto-Apply |
@@ -119,6 +127,7 @@ For team deployments, set default templates per shared folder:
 | `#interviews` | Interview Debrief | Events titled "interview" |
 
 ## Output
+
 - Templates configured for each meeting type
 - Custom recipes created for post-meeting workflows
 - Pre-meeting context workflow established
@@ -134,6 +143,7 @@ For team deployments, set default templates per shared folder:
 | Pre-meeting notes lost | Typed in wrong app | Ensure you type in the Granola notepad, not a separate editor |
 
 ## Template Design Best Practices
+
 1. **Use clear section headers** — Granola's AI parses headers to organize content
 2. **Include bracketed hints** — `[Owner, task, due date]` guides the AI output format
 3. **Keep templates under 10 sections** — too many sections dilute content
@@ -141,9 +151,11 @@ For team deployments, set default templates per shared folder:
 5. **End with "Action Items" and "Next Steps"** — the AI reliably fills these
 
 ## Resources
+
 - [Customize Notes with Templates](https://docs.granola.ai/help-center/taking-notes/customise-notes-with-templates)
 - [Introducing Recipes](https://www.granola.ai/blog/say-hello-to-recipes)
 - [Get the Best from Granola](https://www.granola.ai/blog/get-the-best-from-granola)
 
 ## Next Steps
+
 Proceed to `granola-core-workflow-b` for post-meeting processing and sharing workflows.

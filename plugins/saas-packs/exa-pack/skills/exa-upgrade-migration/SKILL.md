@@ -26,15 +26,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Upgrade & Migration
 
 ## Current State
+
 !`npm list exa-js 2>/dev/null | grep exa-js || echo 'exa-js not installed'`
 !`npm view exa-js version 2>/dev/null || echo 'cannot check latest'`
 
 ## Overview
+
 Guide for upgrading the `exa-js` SDK. The SDK import is `import Exa from "exa-js"` and the client is instantiated with `new Exa(apiKey)`. This skill covers checking for updates, handling breaking changes, and validating after upgrade.
 
 ## Instructions
 
 ### Step 1: Check Current vs Latest Version
+
 ```bash
 set -euo pipefail
 echo "Current version:"
@@ -50,6 +53,7 @@ npm view exa-js repository.url
 ```
 
 ### Step 2: Create Upgrade Branch
+
 ```bash
 set -euo pipefail
 git checkout -b upgrade/exa-js-latest
@@ -58,6 +62,7 @@ npm test
 ```
 
 ### Step 3: Verify API Compatibility
+
 ```typescript
 import Exa from "exa-js";
 
@@ -134,6 +139,7 @@ const exa = new Exa("api-key");
 ```
 
 ### Step 5: Rollback Procedure
+
 ```bash
 set -euo pipefail
 # If tests fail, rollback
@@ -143,6 +149,7 @@ npm test  # verify rollback works
 ```
 
 ## Upgrade Checklist
+
 - [ ] Create branch: `upgrade/exa-js-latest`
 - [ ] Run `npm install exa-js@latest`
 - [ ] Run full test suite: `npm test`
@@ -153,6 +160,7 @@ npm test  # verify rollback works
 - [ ] Merge after all checks pass
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Import error after upgrade | API change | Check `import Exa from "exa-js"` still works |
@@ -161,9 +169,11 @@ npm test  # verify rollback works
 | Tests fail | Breaking change | Review changelog, update code |
 
 ## Resources
+
 - [exa-js on npm](https://www.npmjs.com/package/exa-js)
 - [exa-js GitHub](https://github.com/exa-labs/exa-js)
 - [Exa Changelog](https://docs.exa.ai/changelog)
 
 ## Next Steps
+
 For CI integration during upgrades, see `exa-ci-integration`.

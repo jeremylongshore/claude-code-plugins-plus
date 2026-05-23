@@ -3,6 +3,7 @@
 ## API Token Management
 
 ### Create Organization Token
+
 ```bash
 # Create token with specific scopes
 curl -X POST \
@@ -16,6 +17,7 @@ curl -X POST \
 ```
 
 ### Token Scopes
+
 ```
 project:read       - Read project data
 project:write      - Modify projects

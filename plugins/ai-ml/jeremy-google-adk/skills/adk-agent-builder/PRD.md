@@ -37,6 +37,7 @@ The ADK Agent Builder skill eliminates this friction by generating production-re
 ### FR-1: Scope Confirmation
 
 Before generating anything, the skill confirms:
+
 - Local-only agent vs. Vertex AI Agent Engine deployment
 - Single-agent (ReAct) vs. multi-agent orchestration
 - Tool surface (built-in ADK tools + custom tools)
@@ -86,6 +87,7 @@ project-name/
 ### FR-6: Deployment Support (Optional)
 
 When deployment scope is confirmed:
+
 - Generate `adk deploy cloud_run` or `adk deploy agent_engine` command
 - Include post-deploy validation checklist:
   - Agent endpoint responds to health check
@@ -97,6 +99,7 @@ When deployment scope is confirmed:
 ### FR-7: Error Recovery Guidance
 
 For every known failure mode, the skill provides:
+
 - Specific error message or symptom
 - Root cause
 - Fix command or configuration change
@@ -105,23 +108,28 @@ For every known failure mode, the skill provides:
 ## Non-Functional Requirements
 
 ### NFR-1: API Accuracy
+
 All generated code must reference real ADK APIs. No fabricated class names or import paths. Core imports: `google.adk.agents`, `google.adk.tools`, `google.adk.runners`, `google.adk.sessions`.
 
 ### NFR-2: Security
+
 - No credentials in generated files (use `.env.example` with empty values)
 - Service account keys referenced via `GOOGLE_APPLICATION_CREDENTIALS` environment variable
 - Recommend Workload Identity Federation over exported keys
 
 ### NFR-3: Portability
+
 - Generated projects work on Python 3.10+ (ADK minimum requirement)
 - No OS-specific dependencies
 - Container-ready by default (Dockerfile optional but available)
 
 ### NFR-4: Idempotency
+
 - Running the skill twice with the same inputs produces the same output
 - Skill does not overwrite existing files unless explicitly confirmed
 
 ### NFR-5: Minimal Dependencies
+
 - Core: `google-adk`, `google-cloud-aiplatform`, `pytest`
 - No unnecessary framework dependencies (no LangChain, no CrewAI unless requested)
 

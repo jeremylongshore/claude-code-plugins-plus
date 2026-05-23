@@ -16,6 +16,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Create Webhook Endpoint
+
 ```typescript
 // api/webhooks/linear.ts (Vercel/Next.js style)
 import crypto from "crypto";
@@ -71,6 +72,7 @@ export default async function handler(
 ```
 
 ### Step 2: Event Processing Router
+
 ```typescript
 // lib/webhook-handlers.ts
 interface LinearWebhookPayload {
@@ -154,6 +156,7 @@ async function handleCycleEvent(data: Record<string, unknown>, action: string) {
 ```
 
 ### Step 3: Business Logic Handlers
+
 ```typescript
 // lib/linear-handlers.ts
 import { sendSlackNotification } from "./slack";
@@ -192,6 +195,7 @@ async function celebrateCompletion(issue: any) {
 ```
 
 ### Step 4: Register Webhook in Linear
+
 ```bash
 # Using Linear UI:
 # 1. Go to Settings > API > Webhooks
@@ -226,6 +230,7 @@ async function createWebhook() {
 ```
 
 ### Step 5: Local Development with ngrok
+
 ```bash
 # Start your local server
 npm run dev  # Runs on localhost:3000
@@ -238,6 +243,7 @@ ngrok http 3000
 ```
 
 ### Step 6: Idempotent Event Processing
+
 ```typescript
 // lib/idempotency.ts
 import Redis from "ioredis";

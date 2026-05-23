@@ -155,4 +155,3 @@ Every one of these is the same move: take something that was working by conventi
   "keywords": "typescript, architecture, monorepo, claude-code, ai-agents, automation, repo-resolver"
 }
 </script>
-

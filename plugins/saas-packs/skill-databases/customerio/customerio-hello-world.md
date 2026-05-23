@@ -10,6 +10,7 @@ customerio-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Customer.io example
 **Workflow:** Part of the onboarding skill category for Customer.io integration.
 **Relates to:** Other customerio skills in this pack.

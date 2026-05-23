@@ -10,6 +10,7 @@ replit-database-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Replit Database (key-value store) or connect external databases like PostgreSQL and MongoDB.
 **Workflow:** Data persistence skill - enables stateful applications beyond simple scripts.
 **Relates to:** Builds on replit-secrets-management; foundation for replit-agent-advanced and production apps.

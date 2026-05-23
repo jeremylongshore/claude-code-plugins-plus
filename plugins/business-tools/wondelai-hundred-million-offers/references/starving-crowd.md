@@ -11,6 +11,7 @@ This reference covers market selection criteria, demand validation techniques, t
 The ideal market is in pain. Not mild discomfort -- genuine, urgent, keep-them-up-at-night pain. Pain motivates action far more than desire for pleasure. People will pay almost anything to make acute pain stop.
 
 **Signals of massive pain:**
+
 - They are actively searching for solutions (high search volume, active communities)
 - They have tried and failed with other solutions (frustrated, desperate, skeptical but hopeful)
 - The problem is costing them money, time, relationships, health, or reputation right now
@@ -28,6 +29,7 @@ The ideal market is in pain. Not mild discomfort -- genuine, urgent, keep-them-u
 | 9-10 | Existential threat | "My business will fail if I don't fix this in 30 days" | Maximum -- price is barely a factor |
 
 **How to find massive pain:**
+
 - Read the top 50 posts in relevant subreddits and Facebook groups
 - Search "[your niche] problems" and "[your niche] frustrations" on social media
 - Review 1-star and 2-star reviews of competitors (these reveal unmet needs)
@@ -39,6 +41,7 @@ The ideal market is in pain. Not mild discomfort -- genuine, urgent, keep-them-u
 Pain alone is not enough. The market must be able to pay. A broke college student in pain is not a good market for a $10,000 offer. A well-funded startup CEO with the same pain is.
 
 **Signals of purchasing power:**
+
 - The market already spends money on solutions in this category
 - Average income or revenue of the market supports your price point
 - They are used to investing in self-improvement, tools, or professional development
@@ -56,6 +59,7 @@ Pain alone is not enough. The market must be able to pay. A broke college studen
 | **Enterprise** | $50,000-$1M+ | $100,000-$10M+ | Enterprise solutions, custom |
 
 **How to validate purchasing power:**
+
 - Research what competitors charge and what the market pays
 - Survey prospects: "What have you already spent trying to solve this?"
 - Look for markets where people buy premium (luxury, professional development)
@@ -67,6 +71,7 @@ Pain alone is not enough. The market must be able to pay. A broke college studen
 You need to be able to find and reach your market efficiently. The best market in the world is worthless if you cannot get your message in front of them.
 
 **Signals of easy targeting:**
+
 - They self-identify with a label (title, profession, hobby, affiliation)
 - They congregate in specific places (conferences, associations, online communities, platforms)
 - They subscribe to specific publications, podcasts, or influencers
@@ -84,6 +89,7 @@ You need to be able to find and reach your market efficiently. The best market i
 | **Very hard** | Vague, no aggregation | "People who are kind of unhappy at work" | Broad awareness campaigns (expensive) |
 
 **How to validate ease of targeting:**
+
 - Can you name 3 specific places where 1,000+ of these people gather?
 - Can you buy a list, run a targeted ad, or join a community of these people?
 - Can you describe them in one sentence that they would recognize as themselves?
@@ -94,6 +100,7 @@ You need to be able to find and reach your market efficiently. The best market i
 A growing market provides tailwinds. A shrinking market means you are fighting the current. All else being equal, choose the growing market.
 
 **Signals of a growing market:**
+
 - Google Trends shows upward trajectory for relevant search terms
 - Industry reports project growth over the next 3-5 years
 - New entrants are entering the market (competitors and customers)
@@ -125,6 +132,7 @@ Rate potential markets on each criterion to identify the strongest opportunity.
 | **TOTAL** | ___ / 40 | |
 
 **Interpretation:**
+
 - 32-40: Excellent market. Build your offer here.
 - 24-31: Good market. One or two criteria may need creative solutions.
 - 16-23: Marginal market. Significant risk. Consider alternatives.
@@ -149,6 +157,7 @@ Before committing to a market, validate that real demand exists.
 ### Technique 1: The "Pre-Sell" Test
 
 Describe your offer to 10-20 people in the target market. Ask: "If this existed at $[price], would you buy it?" Track responses:
+
 - "Yes, take my money" = strong demand (5+ of these and you have validation)
 - "Sounds interesting" = weak signal (polite, noncommittal)
 - "Not for me" = honest feedback (learn why)
@@ -158,6 +167,7 @@ Describe your offer to 10-20 people in the target market. Ask: "If this existed 
 ### Technique 2: The Competitor Audit
 
 If competitors exist and are thriving, demand is validated. Research:
+
 - How many competitors are in the space?
 - What are they charging?
 - Do they have customer reviews and testimonials?
@@ -169,6 +179,7 @@ A market with zero competitors is usually a market with zero demand.
 ### Technique 3: The Community Probe
 
 Join 3-5 communities where your target market gathers. Post a question about the pain point you plan to solve. Measure:
+
 - Number of responses (engagement)
 - Emotional intensity of responses (pain level)
 - Whether people ask for a solution (demand signal)
@@ -177,6 +188,7 @@ Join 3-5 communities where your target market gathers. Post a question about the
 ### Technique 4: Search Volume Analysis
 
 Use Google Keyword Planner, Ahrefs, or similar tools to check:
+
 - Monthly search volume for "[problem] solution" and "[problem] help"
 - Trend direction (up, down, flat)
 - Cost per click for related ads (high CPC = high commercial intent)
@@ -185,6 +197,7 @@ Use Google Keyword Planner, Ahrefs, or similar tools to check:
 ### Technique 5: The "Wallet Open" Test
 
 Look for evidence that the market is already spending money:
+
 - Existing paid products (courses, software, services) in the space
 - Ads running consistently on Google and Facebook (advertisers only keep running profitable ads)
 - Conferences and events people pay to attend
@@ -217,13 +230,17 @@ Start broad and narrow until you feel uncomfortable:
 ## Exercises
 
 ### Exercise 1: Market Brainstorm
+
 List 10 markets you could potentially serve. For each, write one sentence about the pain, the purchasing power, where to find them, and whether the market is growing. Score each on the Niche Scorecard.
 
 ### Exercise 2: Pain Intensity Interviews
+
 Interview 5 people in your top market. Ask: "What is the single biggest challenge you face with [topic]? On a scale of 1-10, how urgent is solving it? What have you already tried? How much have you spent?"
 
 ### Exercise 3: Competitor Landscape Map
+
 Identify 10 competitors in your top market. Document their price, offer structure, years in business, and customer reviews. If 10 competitors are thriving, demand is proven.
 
 ### Exercise 4: Niche Down Challenge
+
 Take your current market and narrow it three levels. For each level, describe how your messaging and offer would change. Notice how specificity makes everything easier.

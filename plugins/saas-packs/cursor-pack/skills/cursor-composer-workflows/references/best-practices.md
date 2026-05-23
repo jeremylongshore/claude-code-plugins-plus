@@ -3,6 +3,7 @@
 ## Best Practices
 
 ### Clear Specifications
+
 ```
 Good prompt structure:
 1. What to create/modify
@@ -24,6 +25,7 @@ REFERENCE: Stripe best practices"
 ```
 
 ### Review Before Apply
+
 ```
 Composer shows preview:
 1. Review each file change
@@ -34,6 +36,7 @@ Composer shows preview:
 ```
 
 ### Iterative Workflow
+
 ```
 Don't try to do everything at once:
 

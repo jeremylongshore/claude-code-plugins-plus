@@ -10,6 +10,7 @@ gamma-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Gamma primary workflow
 **Workflow:** Part of the onboarding skill category for Gamma integration.
 **Relates to:** Other gamma skills in this pack.

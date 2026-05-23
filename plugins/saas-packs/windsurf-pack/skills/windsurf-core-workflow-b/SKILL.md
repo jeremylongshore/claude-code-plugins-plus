@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Core Workflow B — Workflows & Memories
 
 ## Overview
+
 Windsurf Workflows are reusable, multi-step automation sequences saved as markdown files and invoked via slash commands in Cascade. Memories are persistent facts that survive across sessions. Together they eliminate repetitive prompting and maintain project context.
 
 ## Prerequisites
+
 - Windsurf with Cascade enabled
 - Understanding of `windsurf-core-workflow-a` (Write mode)
 - `.windsurfrules` configured
@@ -105,6 +107,7 @@ npm run typecheck
 ```
 
 Or auto-run all commands in the workflow:
+
 ```markdown
 // turbo-all
 ```
@@ -116,6 +119,7 @@ Turbo annotations respect allow/deny lists configured in settings.
 Memories persist facts across sessions. They are auto-generated or manually created.
 
 **Create a memory manually:**
+
 ```
 Cascade prompt: "Remember that our API uses snake_case for JSON
 field names but camelCase for TypeScript interfaces. We transform
@@ -123,6 +127,7 @@ with a middleware layer in src/middleware/transform.ts."
 ```
 
 **View and manage memories:**
+
 - Click Customizations icon (top-right of Cascade panel)
 - Navigate to Memories tab
 - Delete outdated memories
@@ -158,6 +163,7 @@ description: Full release workflow
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Slash command not found | File not in `.windsurf/workflows/` | Check file location and name |
@@ -169,6 +175,7 @@ description: Full release workflow
 ## Examples
 
 ### PR Review Workflow
+
 ```markdown
 <!-- .windsurf/workflows/review-pr.md -->
 ---
@@ -185,6 +192,7 @@ description: Review current PR changes
 ```
 
 ### Code Quality Workflow
+
 ```markdown
 <!-- .windsurf/workflows/quality-check.md -->
 ---
@@ -199,9 +207,11 @@ description: Run full code quality suite
 ```
 
 ## Resources
+
 - [Windsurf Workflows](https://docs.windsurf.com/windsurf/cascade/workflows)
 - [Cascade Memories](https://docs.windsurf.com/windsurf/cascade/memories)
 - [Workflow Samples](https://github.com/Windsurf-Samples/cascade-customizations-catalog)
 
 ## Next Steps
+
 For common errors, see `windsurf-common-errors`.

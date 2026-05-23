@@ -10,6 +10,7 @@ clerk-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Clerk common errors
 **Workflow:** Part of the operations skill category for Clerk integration.
 **Relates to:** Other clerk skills in this pack.

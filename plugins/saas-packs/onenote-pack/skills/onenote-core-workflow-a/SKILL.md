@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code
 OneNote's hierarchy — Notebook, Section Group, Section, Page — maps cleanly to Graph API endpoints, but the implementation has sharp edges. Section groups created via API sometimes don't render in the desktop client. Page content must be strict XHTML with self-closing tags, and the HTML you send in differs from the HTML you get back. This skill covers the full create/read/update/delete lifecycle with production-safe patterns for every level of the hierarchy.
 
 Key pain points addressed:
+
 - Page content requires XHTML (all tags must close, UTF-8 encoded, no `rowspan`/`colspan`)
 - Section groups support API nesting depths that the desktop app cannot render beyond two levels
 - Output HTML from `GET /pages/{id}/content` contains Graph-injected `data-id` attributes and rewritten image URLs that differ from your input HTML
@@ -43,6 +44,7 @@ Key pain points addressed:
 ### Step 1 — Authenticate with Delegated Credentials
 
 **TypeScript:**
+
 ```typescript
 import { Client } from "@microsoft/microsoft-graph-client";
 import { TokenCredentialAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/azureTokenCredentials";
@@ -58,6 +60,7 @@ const client = Client.initWithMiddleware({ authProvider });
 ```
 
 **Python:**
+
 ```python
 from azure.identity import DeviceCodeCredential
 from msgraph import GraphServiceClient
@@ -138,6 +141,7 @@ console.log(`Page created: ${page.id} — "${page.title}"`);
 ```
 
 **XHTML rules that cause silent failures if violated:**
+
 - All tags must self-close or have closing tags (`<br />`, not `<br>`)
 - No `rowspan` or `colspan` on `<td>` — use separate rows instead
 - `<img>` tags must include `alt` attribute
@@ -202,6 +206,7 @@ await client.api(`/me/onenote/pages/${page.id}`).delete();
 ## Output
 
 Successful CRUD operations return:
+
 - **Create notebook/section/page:** `201 Created` with resource JSON (includes `id`, `self`, `createdDateTime`)
 - **Get content:** `200 OK` with XHTML stream
 - **Patch:** `204 No Content` on success
@@ -220,6 +225,7 @@ Successful CRUD operations return:
 ## Examples
 
 **Python — Create notebook and page:**
+
 ```python
 notebook = await client.me.onenote.notebooks.post(
     {"displayName": "Python Notebook"}
@@ -238,6 +244,7 @@ page = await client.me.onenote.sections.by_onenote_section_id(
 ```
 
 **TypeScript — Multipart page with embedded image:**
+
 ```typescript
 const boundary = "MyPartBoundary";
 const body = [

@@ -959,3 +959,23 @@ jobs:
       # Run `ruff format plugins/ scripts/` locally to fix before pushing.
       - name: Check ruff formatting
         run: ruff format --check plugins/ scripts/
+
+  markdownlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      # REPORT-ONLY-UNTIL: 2026-06-21 (markdownlint — bead claude-* PR C cleanup wave 2)
+      - name: Run markdownlint-cli2
+        # REPORT-ONLY: baseline reduced from 60k → 80 errors in PR #767.
+        # Remaining 80 are real-bug-level (broken anchors, table column
+        # mismatches, missing alt text, heading-increment edge cases) that
+        # need targeted manual fixes. The deadline-enforcer flips this to
+        # blocking on 2026-06-21 — cleanup beads track the residual work.
+        run: |
+          npx -y markdownlint-cli2 || true

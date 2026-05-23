@@ -86,12 +86,14 @@ Error: Field "productSet" doesn't exist on type "Mutation".
 ### 2024-10: Product Input Split
 
 Before 2024-10:
+
 ```graphql
 mutation productCreate($input: ProductInput!) { ... }
 mutation productUpdate($input: ProductInput!) { ... }
 ```
 
 After 2024-10:
+
 ```graphql
 mutation productCreate($input: ProductCreateInput!) { ... }
 mutation productUpdate($input: ProductUpdateInput!) { ... }
@@ -102,6 +104,7 @@ The fields differ between create and update. For example, `handle` is only setta
 ### 2023-10: Inventory Adjustments
 
 Before:
+
 ```graphql
 mutation inventoryBulkAdjustQuantityAtLocation(
   $inventoryItemAdjustments: [InventoryAdjustItemInput!]!,
@@ -110,6 +113,7 @@ mutation inventoryBulkAdjustQuantityAtLocation(
 ```
 
 After:
+
 ```graphql
 mutation inventoryAdjustQuantities(
   $input: InventoryAdjustQuantitiesInput!

@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Production Checklist
 
 ## Overview
+
 Comprehensive go-live checklist for Deepgram integrations. Covers singleton client, health checks, Prometheus metrics, alert rules, error handling, and a phased go-live timeline.
 
 ## Production Readiness Matrix
@@ -255,6 +256,7 @@ async function safeTranscribe(url: string, options: Record<string, any> = {}) {
 | D+7 | 1 week after | Full traffic, tune alert thresholds based on baselines |
 
 ## Output
+
 - Singleton client with reset capability
 - Health check endpoint with latency reporting
 - Prometheus metrics (requests, latency, audio, connections)
@@ -263,6 +265,7 @@ async function safeTranscribe(url: string, options: Record<string, any> = {}) {
 - Phased go-live timeline
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Health check 503 | API key expired | Rotate key, check secret manager |
@@ -271,6 +274,7 @@ async function safeTranscribe(url: string, options: Record<string, any> = {}) {
 | Timeout on large files | Sync mode too slow | Switch to `callback` URL pattern |
 
 ## Resources
+
 - [Deepgram Production Guide](https://developers.deepgram.com/docs/production-guide)
 - [Prometheus Best Practices](https://prometheus.io/docs/practices/)
 - [Deepgram SLA](https://deepgram.com/sla)

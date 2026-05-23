@@ -26,14 +26,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Core Workflow A: Delta Lake ETL
 
 ## Overview
+
 Build production Delta Lake ETL pipelines using the medallion architecture (Bronze > Silver > Gold). Uses Auto Loader (`cloudFiles`) for incremental ingestion, `MERGE INTO` for upserts, and Delta Live Tables for declarative pipelines.
 
 ## Prerequisites
+
 - Completed `databricks-install-auth` setup
 - Unity Catalog enabled with catalogs/schemas created
 - Access to cloud storage for raw data (S3, ADLS, GCS)
 
 ## Architecture
+
 ```
 Raw Sources (S3/ADLS/GCS)
     │  Auto Loader (cloudFiles)
@@ -50,6 +53,7 @@ Gold (analytics-ready)
 ## Instructions
 
 ### Step 1: Bronze Layer — Raw Ingestion with Auto Loader
+
 Auto Loader (`cloudFiles` format) incrementally processes new files as they arrive. It handles schema inference, evolution, and scales to millions of files.
 
 ```python
@@ -87,6 +91,7 @@ bronze_with_meta = (
 ```
 
 ### Step 2: Silver Layer — Cleansing and Deduplication
+
 Read from Bronze, apply business logic, and MERGE INTO Silver with upsert semantics.
 
 ```python
@@ -121,6 +126,7 @@ else:
 ```
 
 ### Step 3: Gold Layer — Business Aggregations
+
 Aggregate Silver data into analytics-ready tables. Use partition-level overwrites for efficient updates.
 
 ```python
@@ -147,6 +153,7 @@ gold_metrics = (
 ```
 
 ### Step 4: Delta Table Maintenance
+
 ```sql
 -- Compact small files (bin-packing)
 OPTIMIZE prod_catalog.silver.orders;
@@ -166,6 +173,7 @@ ANALYZE TABLE prod_catalog.silver.orders COMPUTE STATISTICS;
 ```
 
 ### Step 5: Delta Live Tables (Declarative Pipeline)
+
 DLT manages orchestration, data quality, lineage, and error handling automatically.
 
 ```python
@@ -205,6 +213,7 @@ def gold_daily_revenue():
 ```
 
 ### Step 6: Schedule the Pipeline
+
 ```python
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.service.jobs import (
@@ -241,6 +250,7 @@ print(f"Created job: {job.job_id}")
 ```
 
 ## Output
+
 - Bronze layer with raw data, Auto Loader schema evolution, and ingestion metadata
 - Silver layer with cleansed, deduplicated, type-cast data via MERGE upserts
 - Gold layer with business-ready aggregations
@@ -248,6 +258,7 @@ print(f"Created job: {job.job_id}")
 - Optional DLT pipeline with built-in data quality expectations
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `AnalysisException: mergeSchema` | Source schema changed | Auto Loader handles this; for batch add `.option("mergeSchema", "true")` |
@@ -259,6 +270,7 @@ print(f"Created job: {job.job_id}")
 ## Examples
 
 ### Quick Pipeline Validation
+
 ```sql
 -- Verify row counts flow through medallion layers
 SELECT 'bronze' AS layer, COUNT(*) AS rows FROM prod_catalog.bronze.raw_orders
@@ -267,10 +279,12 @@ UNION ALL SELECT 'gold', COUNT(*) FROM prod_catalog.gold.daily_order_metrics;
 ```
 
 ## Resources
+
 - [Auto Loader](https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/)
 - [Delta Lake MERGE INTO](https://docs.databricks.com/aws/en/delta/merge)
 - [OPTIMIZE](https://docs.databricks.com/aws/en/sql/language-manual/delta-optimize)
 - [Delta Live Tables](https://docs.databricks.com/aws/en/delta-live-tables/)
 
 ## Next Steps
+
 For ML workflows, see `databricks-core-workflow-b`.

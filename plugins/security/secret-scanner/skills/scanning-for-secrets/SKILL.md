@@ -30,6 +30,7 @@ scan your codebase for exposed secrets, API keys, passwords, and other sensitive
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Scan your codebase for exposed API keys (e.g., AWS, Google, Azure).
 - Check for hardcoded passwords in configuration files.
 - Identify potential private keys (SSH, PGP) accidentally committed to the repository.
@@ -42,6 +43,7 @@ This skill activates when you need to:
 User request: "Scan for AWS keys in the codebase"
 
 The skill will:
+
 1. Activate the `secret-scanner` plugin.
 2. Scan the codebase for patterns matching AWS Access Keys (AKIA[0-9A-Z]{16}).
 3. Generate a report listing any found keys, their file locations, and remediation steps (e.g., revoking the key).
@@ -51,6 +53,7 @@ The skill will:
 User request: "Check for exposed credentials in config files"
 
 The skill will:
+
 1. Activate the `secret-scanner` plugin.
 2. Scan configuration files (e.g., `database.yml`, `.env`) for password patterns.
 3. Generate a report detailing any found passwords and suggesting the use of environment variables.
@@ -92,6 +95,7 @@ This skill can be integrated with other security tools, such as vulnerability sc
 ## Error Handling
 
 If security scanning fails:
+
 - Verify tool installation and configuration
 - Check file and directory permissions
 - Validate scan target paths

@@ -11,7 +11,6 @@ Detailed implementation reference for the speak-incident-runbook skill.
 | P3 | Minor impact | < 4 hours | Specific language unavailable, slow scoring |
 | P4 | No user impact | Next business day | Monitoring gaps, minor bugs |
 
-
 ## Quick Triage
 
 ```bash
@@ -52,7 +51,6 @@ echo "6. Recent Errors:"
 kubectl logs -l app=speak-integration --since=5m 2>/dev/null | grep -i error | tail -10
 ```
 
-
 ## Decision Tree
 
 ```
@@ -67,10 +65,10 @@ Speak API returning errors?
     └─ NO → Our service issue. Check pods, memory, database.
 ```
 
-
 ## Immediate Actions by Error Type
 
 ### 401/403 - Authentication Failures
+
 ```bash
 # Verify API credentials are set
 kubectl get secret speak-secrets -o jsonpath='{.data.api-key}' | base64 -d | head -c 10
@@ -89,6 +87,7 @@ kubectl rollout restart deployment/speak-integration
 ```
 
 ### 429 - Rate Limited
+
 ```bash
 # Check current rate limit status
 curl -v https://api.speak.com/v1/health \
@@ -101,6 +100,7 @@ kubectl set env deployment/speak-integration SPEAK_RATE_LIMIT_MODE=queue
 ```
 
 ### 500/503 - Speak Server Errors
+
 ```bash
 # Enable graceful degradation (offline lessons if available)
 kubectl set env deployment/speak-integration SPEAK_FALLBACK_MODE=true
@@ -113,6 +113,7 @@ kubectl set env deployment/speak-integration SPEAK_CACHE_ONLY=true
 ```
 
 ### Speech Recognition Failures
+
 ```bash
 # Check audio processing service
 kubectl get pods -l component=audio-processor
@@ -127,10 +128,10 @@ kubectl scale deployment/audio-processor --replicas=5
 gsutil ls gs://your-audio-bucket/
 ```
 
-
 ## Communication Templates
 
 ### Internal (Slack)
+
 ```
 🔴 P1 INCIDENT: Speak Language Learning
 Status: INVESTIGATING
@@ -143,6 +144,7 @@ War room: #speak-incident-[date]
 ```
 
 ### External (Status Page)
+
 ```
 Language Learning Service Disruption
 
@@ -159,6 +161,7 @@ Last updated: [timestamp]
 ```
 
 ### User Notification (In-App)
+
 ```
 We're experiencing technical difficulties with live lessons.
 While we work on a fix, you can:
@@ -169,10 +172,10 @@ While we work on a fix, you can:
 We'll notify you when full service is restored.
 ```
 
-
 ## Fallback Modes
 
 ### Enable Offline Mode
+
 ```typescript
 // Fallback when Speak API is unavailable
 async function getLesson(config: LessonConfig): Promise<Lesson> {
@@ -193,6 +196,7 @@ async function getLesson(config: LessonConfig): Promise<Lesson> {
 ```
 
 ### Cached Responses
+
 ```typescript
 // Serve cached content when API is slow/unavailable
 async function getTutorPrompt(sessionId: string): Promise<TutorPrompt> {
@@ -218,10 +222,10 @@ async function getTutorPrompt(sessionId: string): Promise<TutorPrompt> {
 }
 ```
 
-
 ## Post-Incident
 
 ### Evidence Collection
+
 ```bash
 #!/bin/bash
 # collect-speak-incident-evidence.sh
@@ -249,6 +253,7 @@ echo "Evidence collected in $INCIDENT_DIR"
 ```
 
 ### Postmortem Template
+
 ```markdown
 ## Incident: Speak [Error Type]
 **Date:** YYYY-MM-DD
@@ -289,4 +294,3 @@ echo "Evidence collected in $INCIDENT_DIR"
 - What went well: [list]
 - What could be improved: [list]
 ```
-

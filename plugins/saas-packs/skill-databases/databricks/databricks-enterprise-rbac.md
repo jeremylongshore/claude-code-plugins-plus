@@ -10,6 +10,7 @@ databricks-enterprise-rbac/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Databricks enterprise access control
 **Workflow:** Part of the advanced skill category for Databricks integration.
 **Relates to:** Other databricks skills in this pack.

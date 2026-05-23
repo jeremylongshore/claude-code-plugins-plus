@@ -33,6 +33,7 @@ Diagnostic reference for common Framer plugin, component, and Server API errors 
 **Cause:** Dev server not running or plugin not registered.
 
 **Fix:**
+
 ```bash
 npm run dev  # Start Vite dev server
 # Then in Framer: Plugins > Development > select your plugin
@@ -58,6 +59,7 @@ npm run dev  # Start Vite dev server
 **Cause:** Runtime error in component code (swallowed by Framer).
 
 **Fix:** Open Framer's browser console (right-click > Inspect) and check for errors. Common causes:
+
 - Missing `export default` on component
 - Undefined props without defaults
 - Fetch errors from blocked CORS requests
@@ -69,6 +71,7 @@ npm run dev  # Start Vite dev server
 **Cause:** Called on wrong component or wrong import.
 
 **Fix:**
+
 ```tsx
 // Must import from 'framer', not 'framer-plugin'
 import { addPropertyControls, ControlType } from 'framer';
@@ -85,6 +88,7 @@ addPropertyControls(MyComponent, { /* ... */ });
 **Cause:** Override function not returning correct shape.
 
 **Fix:** Overrides must return an `Override` type object (Framer Motion props):
+
 ```tsx
 import { Override } from 'framer';
 
@@ -103,6 +107,7 @@ export function MyOverride(): Override {
 **Cause:** Invalid API key, wrong site ID, or network blocking WSS.
 
 **Fix:**
+
 ```bash
 # Verify API key is valid
 echo $FRAMER_API_KEY | head -c 20  # Should start with 'framer_sk_'

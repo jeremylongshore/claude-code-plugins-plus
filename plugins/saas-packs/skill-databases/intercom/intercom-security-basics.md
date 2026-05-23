@@ -10,6 +10,7 @@ intercom-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Intercom security best practices
 **Workflow:** Part of the operations skill category for Intercom integration.
 **Relates to:** Other intercom skills in this pack.

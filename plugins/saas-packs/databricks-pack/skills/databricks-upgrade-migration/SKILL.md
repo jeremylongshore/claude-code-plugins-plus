@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Upgrade & Migration
 
 ## Overview
+
 Upgrade Databricks Runtime versions and migrate from Hive Metastore to Unity Catalog. Covers version compatibility, deprecated config removal, table migration via SYNC/CTAS, API endpoint updates, and Delta protocol upgrades.
 
 ## Prerequisites
+
 - Admin access to workspace
 - Test environment (dev/staging) for validation before prod
 - Inventory of current workloads and dependencies
@@ -36,6 +38,7 @@ Upgrade Databricks Runtime versions and migrate from Hive Metastore to Unity Cat
 ### Step 1: Runtime Version Upgrade
 
 #### Version Compatibility Matrix
+
 | Current DBR | Target DBR | Key Changes | Effort |
 |-------------|------------|-------------|--------|
 | 12.x LTS | 13.3 LTS | Spark 3.4, Python 3.10 default | Low |
@@ -43,6 +46,7 @@ Upgrade Databricks Runtime versions and migrate from Hive Metastore to Unity Cat
 | 14.x | 15.x LTS | Unity Catalog mandatory, legacy DBFS deprecated | High |
 
 #### Automated Upgrade Script
+
 ```python
 from databricks.sdk import WorkspaceClient
 
@@ -113,6 +117,7 @@ for cluster in w.clusters.list():
 ### Step 2: Unity Catalog Migration (Hive Metastore)
 
 #### Inventory Current Tables
+
 ```sql
 -- List all Hive Metastore tables to migrate
 SHOW DATABASES IN hive_metastore;
@@ -127,6 +132,7 @@ ORDER BY data_length DESC;
 ```
 
 #### Migrate Tables
+
 ```sql
 -- Create Unity Catalog destination
 CREATE CATALOG IF NOT EXISTS analytics;
@@ -163,6 +169,7 @@ GRANT SELECT ON SCHEMA analytics.migrated TO `data-team`;
 ```
 
 ### Step 3: API Endpoint Migration
+
 ```python
 # Jobs API 2.0 → 2.1 changes
 # Old: POST /api/2.0/jobs/create with flat task definition
@@ -198,6 +205,7 @@ job = w.jobs.create(
 ```
 
 ### Step 4: Delta Protocol Upgrade
+
 ```sql
 -- Check current protocol version
 DESCRIBE DETAIL analytics.silver.orders;
@@ -219,12 +227,14 @@ ALTER TABLE analytics.silver.orders CLUSTER BY (order_date, region);
 ```
 
 ## Output
+
 - DBR version upgraded with deprecated configs removed
 - Hive Metastore tables migrated to Unity Catalog (SYNC/CTAS/DEEP CLONE)
 - API calls updated to latest SDK patterns
 - Delta protocol upgraded for Deletion Vectors and Liquid Clustering
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Library incompatible with new DBR | Python/Java version change | Pin library versions in `requirements.txt`, test in staging |
@@ -236,6 +246,7 @@ ALTER TABLE analytics.silver.orders CLUSTER BY (order_date, region);
 ## Examples
 
 ### Quick Upgrade Check
+
 ```bash
 # Current state
 echo "CLI: $(databricks --version)"
@@ -247,6 +258,7 @@ pip install --upgrade databricks-sdk
 ```
 
 ### Bulk Table Migration Script
+
 ```python
 # Migrate all tables in a Hive Metastore database
 source_db = "hive_metastore.legacy_data"
@@ -268,10 +280,12 @@ for t in tables:
 ```
 
 ## Resources
+
 - [Runtime Release Notes](https://docs.databricks.com/aws/en/release-notes/runtime/)
 - [Unity Catalog Migration](https://docs.databricks.com/aws/en/data-governance/unity-catalog/get-started)
 - [Delta Protocol Versions](https://docs.databricks.com/aws/en/delta/versioning)
 - [Jobs API 2.1 Updates](https://docs.databricks.com/aws/en/reference/jobs-api-2-1-updates)
 
 ## Next Steps
+
 For CI/CD integration, see `databricks-ci-integration`.

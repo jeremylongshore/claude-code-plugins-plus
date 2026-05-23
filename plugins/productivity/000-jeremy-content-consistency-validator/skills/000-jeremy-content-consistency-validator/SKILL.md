@@ -37,20 +37,26 @@ Checks content for tone, terminology, formatting, and structural consistency acr
 ## Instructions
 
 1. **Discover sources** — scan for build directories (`dist/`, `build/`, `public/`, `out/`, `_site/`), GitHub README/CONTRIBUTING files, and local doc folders:
+
    ```bash
    find . -maxdepth 3 -name "README*" -o -name "CONTRIBUTING*" | head -20
    ls -d docs/ claudes-docs/ internal/ 2>/dev/null
    ```
+
 2. **Extract structured data** from each source: version numbers, feature claims, product names, taglines, contact info, URLs, and technical requirements:
+
    ```bash
    grep -rn 'v[0-9]\+\.[0-9]\+' docs/ README.md
    grep -rn -i 'features\|capabilities' docs/ README.md
    ```
+
 3. **Verify extraction** — confirm at least 3 data points per source. If a source returns empty, check the Error Handling table before continuing.
 4. **Build comparison matrix** pairing each source against every other (website vs GitHub, website vs local docs, GitHub vs local docs):
+
    ```bash
    diff <(grep -i 'version' README.md) <(grep -i 'version' docs/overview.md)
    ```
+
 5. **Classify discrepancies** by severity:
    - **Critical**: conflicting version numbers, contradictory feature lists, mismatched contact info, broken cross-references
    - **Warning**: inconsistent terminology (e.g., "plugin" vs "extension"), missing information in one source, outdated dates
@@ -85,6 +91,7 @@ Checks content for tone, terminology, formatting, and structural consistency acr
 ## Output
 
 The skill produces a timestamped Markdown report saved to `consistency-reports/YYYY-MM-DD-HH-MM-SS.md` containing:
+
 - **Executive summary**: Severity counts (Critical/Warning/Info) at a glance
 - **Pair comparison tables**: Field-by-field comparison between each source pair with severity classification
 - **Terminology matrix**: Cross-source consistency check for product names, versions, and key terms

@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Deploy Integration
 
 ## Overview
+
 Deploy applications using Exa's neural search API to production. Covers API endpoint creation, secret management per platform, caching for production traffic, and health check endpoints.
 
 ## Prerequisites
+
 - Exa API key stored in `EXA_API_KEY` environment variable
 - Application using `exa-js` SDK
 - Platform CLI installed (vercel, docker, or gcloud)
@@ -36,6 +38,7 @@ Deploy applications using Exa's neural search API to production. Covers API endp
 ## Instructions
 
 ### Step 1: Vercel Edge Function
+
 ```typescript
 // api/search.ts — Vercel API route
 import Exa from "exa-js";
@@ -88,6 +91,7 @@ vercel --prod
 ```
 
 ### Step 2: Docker Deployment
+
 ```dockerfile
 FROM node:20-slim
 WORKDIR /app
@@ -136,6 +140,7 @@ app.listen(3000, () => console.log("Listening on :3000"));
 ```
 
 ### Step 3: Google Cloud Run
+
 ```bash
 set -euo pipefail
 # Store API key in Secret Manager
@@ -150,6 +155,7 @@ gcloud run deploy exa-search-api \
 ```
 
 ### Step 4: Production Search with Redis Cache
+
 ```typescript
 import Exa from "exa-js";
 import { Redis } from "ioredis";
@@ -176,6 +182,7 @@ async function cachedSearch(query: string, opts: any = {}, ttl = 3600) {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | 401 in production | API key not set | Verify env var in deployment platform |
@@ -185,9 +192,11 @@ async function cachedSearch(query: string, opts: any = {}, ttl = 3600) {
 | Cold start latency | Serverless cold start | Keep Exa client initialization outside handler |
 
 ## Resources
+
 - [Exa API Documentation](https://docs.exa.ai)
 - [exa-js SDK](https://github.com/exa-labs/exa-js)
 - [Vercel Edge Functions](https://vercel.com/docs/functions/edge-functions)
 
 ## Next Steps
+
 For multi-environment setup, see `exa-multi-env-setup`. For production checklist, see `exa-prod-checklist`.

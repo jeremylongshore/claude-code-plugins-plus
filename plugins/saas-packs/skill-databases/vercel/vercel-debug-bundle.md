@@ -10,6 +10,7 @@ vercel-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect comprehensive diagnostic information for Vercel support tickets including environment info, redacted logs, and network tests.
 **Workflow:** Used when preparing support tickets or investigating persistent issues requiring external help.
 **Relates to:** Escalation path from vercel-common-errors; provides evidence for vercel-incident-runbook postmortems

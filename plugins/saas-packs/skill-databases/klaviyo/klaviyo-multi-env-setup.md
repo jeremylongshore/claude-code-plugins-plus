@@ -10,6 +10,7 @@ klaviyo-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Klaviyo multi-environment setup
 **Workflow:** Part of the enterprise skill category for Klaviyo integration.
 **Relates to:** Other klaviyo skills in this pack.

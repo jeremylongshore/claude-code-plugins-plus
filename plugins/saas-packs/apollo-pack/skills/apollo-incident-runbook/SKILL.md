@@ -25,15 +25,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Incident Runbook
 
 ## Overview
+
 Structured incident response for Apollo.io API failures. Covers severity classification, quick diagnosis, circuit breaker implementation, graceful degradation, and post-incident review. Apollo's public status page is at [status.apollo.io](https://status.apollo.io).
 
 ## Prerequisites
+
 - Valid Apollo API key
 - Access to monitoring dashboards
 
 ## Instructions
 
 ### Step 1: Classify Severity
+
 ```
 Severity | Criteria                                    | Response Time
 ---------+---------------------------------------------+--------------
@@ -47,6 +50,7 @@ P4       | Cosmetic issues, minor data inconsistencies  | Next sprint
 ```
 
 ### Step 2: Quick Diagnosis Script
+
 ```bash
 #!/bin/bash
 # scripts/apollo-diagnosis.sh
@@ -85,6 +89,7 @@ dig +short api.apollo.io 2>/dev/null || nslookup api.apollo.io 2>/dev/null || ec
 ```
 
 ### Step 3: Circuit Breaker
+
 ```typescript
 // src/resilience/circuit-breaker.ts
 type State = 'closed' | 'open' | 'half-open';
@@ -138,6 +143,7 @@ export class CircuitBreaker {
 ```
 
 ### Step 4: Graceful Degradation by Severity
+
 ```typescript
 import { CircuitBreaker } from './circuit-breaker';
 
@@ -170,6 +176,7 @@ async function handleP3() {
 ```
 
 ### Step 5: Post-Incident Review Template
+
 ```markdown
 ## Post-Incident Review: Apollo Integration
 
@@ -204,6 +211,7 @@ async function handleP3() {
 ```
 
 ## Output
+
 - Severity classification matrix (P1-P4) with response times
 - Bash diagnostic script (status page, auth, search, rate limits, DNS)
 - Circuit breaker with closed/open/half-open states
@@ -211,6 +219,7 @@ async function handleP3() {
 - Post-incident review template
 
 ## Error Handling
+
 | Issue | Escalation |
 |-------|------------|
 | P1 > 15 min | Page on-call, open Apollo support ticket |
@@ -219,9 +228,11 @@ async function handleP3() {
 | Apollo outage | Verify at [status.apollo.io](https://status.apollo.io), enable cache fallback |
 
 ## Resources
+
 - [Apollo Status Page](https://status.apollo.io)
 - [Apollo Support](https://support.apollo.io)
 - [API Usage Stats](https://docs.apollo.io/reference/view-api-usage-stats)
 
 ## Next Steps
+
 Proceed to `apollo-data-handling` for data management.

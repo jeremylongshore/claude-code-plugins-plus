@@ -10,6 +10,7 @@ clickup-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure ClickUp SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for ClickUp integration.
 **Relates to:** Other clickup skills in this pack.

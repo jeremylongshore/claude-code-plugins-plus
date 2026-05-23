@@ -30,12 +30,14 @@ Let's say you just implemented Redis caching that made your API 10x faster. Perf
 ### Minutes 0-5: Capture Your Work
 
 1. **Enable Build Logging**
+
    ```bash
    # Talk to build-logger-agent
    "Start documenting my Redis caching work"
    ```
 
 2. **Commit Your Code**
+
    ```bash
    git add .
    git commit -m "feat: add Redis caching layer - 10x performance improvement"
@@ -43,6 +45,7 @@ Let's say you just implemented Redis caching that made your API 10x faster. Perf
    ```
 
 3. **Build Logger Analyzes**
+
    ```
    BUILD LOG - Day 15
 
@@ -61,31 +64,36 @@ Let's say you just implemented Redis caching that made your API 10x faster. Perf
 
 ### Minutes 5-15: Record & Script
 
-4. **Start Recording**
+1. **Start Recording**
+
    ```bash
    /record start redis-tutorial
    ```
+
    ```
    🔴 Screen recording started
    Recording to: ~/Videos/redis-tutorial/raw/2025-10-11-14-30-redis-tutorial.mp4
    ```
 
-5. **Show Your Work (10 minutes)**
+2. **Show Your Work (10 minutes)**
    - Open your code in VS Code
    - Show the slow API (before)
    - Walk through your Redis implementation
    - Show the fast API (after)
    - Mark key moments:
+
      ```bash
      /record mark "Before: 2000ms response time"
      /record mark "Redis integration code"
      /record mark "After: 180ms response time - 11x faster!"
      ```
 
-6. **Stop Recording**
+3. **Stop Recording**
+
    ```bash
    /record stop
    ```
+
    ```
    ✅ Recording saved: ~/Videos/redis-tutorial/raw/2025-10-11-14-30-redis-tutorial.mp4
    Duration: 10:23
@@ -93,7 +101,8 @@ Let's say you just implemented Redis caching that made your API 10x faster. Perf
    Ready for editing
    ```
 
-7. **Generate Video Script (concurrent with recording)**
+4. **Generate Video Script (concurrent with recording)**
+
    ```bash
    # Talk to code-explainer-video agent while you record
    "Create a video script for my Redis caching implementation.
@@ -102,6 +111,7 @@ Let's say you just implemented Redis caching that made your API 10x faster. Perf
    ```
 
    **Agent Output:**
+
    ```markdown
    VIDEO SCRIPT: "I Made My API 10x Faster in 1 Hour"
 
@@ -117,7 +127,8 @@ Let's say you just implemented Redis caching that made your API 10x faster. Perf
 
 ### Minutes 15-25: Automated Editing
 
-8. **Edit Video with AI**
+1. **Edit Video with AI**
+
    ```bash
    # Talk to video-editor-ai agent
    "Edit my redis-tutorial recording:
@@ -128,6 +139,7 @@ Let's say you just implemented Redis caching that made your API 10x faster. Perf
    ```
 
    **Agent Processing:**
+
    ```
    ✅ Analyzing footage... (10 seconds analyzed)
    ✅ Removed 47 seconds of silence
@@ -141,12 +153,14 @@ Let's say you just implemented Redis caching that made your API 10x faster. Perf
    File size: 412 MB
    ```
 
-9. **Create Thumbnail**
+2. **Create Thumbnail**
+
    ```bash
    /thumbnail "I Made My API 10x Faster in 1 Hour"
    ```
 
    **Generated 3 variations:**
+
    ```
    1. Before/After comparison (2000ms → 180ms)
    2. Bold text "10x FASTER" with code background
@@ -156,12 +170,14 @@ Let's say you just implemented Redis caching that made your API 10x faster. Perf
    Predicted CTR: 8-12% (Variation 1 recommended)
    ```
 
-10. **Optimize Title**
+3. **Optimize Title**
+
     ```bash
     /optimize-title "I Made My API 10x Faster in 1 Hour"
     ```
 
     **Output:**
+
     ```
     OPTIMIZED TITLE:
     "I Made My API 10x Faster in 1 Hour (Redis Tutorial)"
@@ -170,12 +186,14 @@ Let's say you just implemented Redis caching that made your API 10x faster. Perf
     Why: Specific result + time frame + keyword
     ```
 
-11. **Generate SEO Metadata**
+4. **Generate SEO Metadata**
+
     ```bash
     /metadata "I Made My API 10x Faster in 1 Hour (Redis Tutorial)"
     ```
 
     **Output:**
+
     ```yaml
     Description: |
       My API was painfully slow. Every request took 2 seconds...
@@ -190,7 +208,8 @@ Let's say you just implemented Redis caching that made your API 10x faster. Perf
 
 ### Minutes 25-30: Publish Everywhere
 
-12. **Distribute Automatically**
+1. **Distribute Automatically**
+
     ```bash
     # Talk to distribution-automator agent
     "Publish my redis-tutorial video to all platforms.
@@ -200,6 +219,7 @@ Let's say you just implemented Redis caching that made your API 10x faster. Perf
     ```
 
     **Agent Processing:**
+
     ```
     ✅ Uploading to YouTube... (3 minutes)
        Title: "I Made My API 10x Faster in 1 Hour (Redis Tutorial)"
@@ -255,18 +275,21 @@ In 30 minutes, you:
 **Add these for higher quality:**
 
 1. **Webcam overlay** (5 extra minutes)
+
    ```bash
    /record start redis-tutorial --webcam
    # Shows your face picture-in-picture
    ```
 
 2. **Voiceover narration** (10 extra minutes)
+
    ```bash
    /teleprompter ~/Videos/redis-tutorial/script.md
    # Read your script with auto-scroll teleprompter
    ```
 
 3. **Progress visuals** (2 extra minutes)
+
    ```bash
    /progress speed
    # Generates before/after performance charts
@@ -283,6 +306,7 @@ I have 7 video ideas from this week's commits."
 ```
 
 **Agent Output:**
+
 ```
 BATCH RECORDING SESSION - 3.5 HOURS
 
@@ -308,6 +332,7 @@ Total: 5 hours → 7 published videos
 ## Common Workflows
 
 ### Daily: Build Log
+
 ```bash
 # Automatic - just commit your code
 git commit -m "feat: meaningful message"
@@ -315,6 +340,7 @@ git commit -m "feat: meaningful message"
 ```
 
 ### Weekly: Content Creation
+
 ```bash
 # 1. Review what you built
 "Build logger, what video ideas do I have from this week?"
@@ -332,6 +358,7 @@ git commit -m "feat: meaningful message"
 ```
 
 ### Monthly: Strategy Review
+
 ```bash
 /analytics 30
 # See what's working
@@ -354,18 +381,21 @@ git commit -m "feat: meaningful message"
 ## Troubleshooting
 
 **Q: My video is too long after editing**
+
 ```bash
 # Talk to video-editor-ai
 "Re-edit my video to under 10 minutes. Be more aggressive with cuts."
 ```
 
 **Q: Thumbnail CTR is low**
+
 ```bash
 /thumbnail "My Video Title" --style mr-beast
 # Try more aggressive style
 ```
 
 **Q: Video isn't getting views**
+
 ```bash
 /optimize-title "My Current Title"
 # Get better title suggestions
@@ -375,6 +405,7 @@ git commit -m "feat: meaningful message"
 ```
 
 **Q: I don't have time for video**
+
 ```bash
 # Talk to batch-recording-scheduler
 "I have 2 hours next Saturday. Plan max content output."
@@ -393,6 +424,7 @@ git commit -m "feat: meaningful message"
 **Day 7**: Review analytics, plan next week
 
 **By the end of week 1:**
+
 - ✅ 3 videos published
 - ✅ Presence on 6+ platforms
 - ✅ Comfortable with the workflow
@@ -403,18 +435,21 @@ git commit -m "feat: meaningful message"
 ## The Compound Effect
 
 **After 3 months** (1 video/week):
+
 - 12 videos published
 - 10-50K total views
 - 100-500 new subscribers
 - Content library that keeps growing
 
 **After 6 months** (2 videos/week):
+
 - 50+ videos published
 - 100-500K total views
 - 1K-5K subscribers
 - Established creator presence
 
 **After 1 year**:
+
 - 100+ videos published
 - 500K-2M total views
 - 5K-20K subscribers
@@ -425,6 +460,7 @@ git commit -m "feat: meaningful message"
 ## Next: Advanced Workflows
 
 Ready for more? See:
+
 - [Complete Workflows](WORKFLOWS.md) - Advanced production flows
 - [50+ Examples](EXAMPLES.md) - Real-world use cases
 - [Integration Guide](INTEGRATION.md) - DaVinci, YouTube, Twitter APIs

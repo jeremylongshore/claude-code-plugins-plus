@@ -10,6 +10,7 @@ hootsuite-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Hootsuite costs and usage
 **Workflow:** Part of the cicd skill category for Hootsuite integration.
 **Relates to:** Other hootsuite skills in this pack.

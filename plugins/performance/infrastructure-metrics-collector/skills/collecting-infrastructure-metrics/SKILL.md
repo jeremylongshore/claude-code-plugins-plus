@@ -34,6 +34,7 @@ This skill automates the process of setting up infrastructure metrics collection
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Monitor the performance of your infrastructure.
 - Identify bottlenecks in your system.
 - Set up dashboards for real-time monitoring.
@@ -45,6 +46,7 @@ This skill activates when you need to:
 User request: "Collect infrastructure metrics for my web server."
 
 The skill will:
+
 1. Identify compute, storage, and network layers relevant to the web server.
 2. Configure Prometheus to collect CPU, memory, disk I/O, and network bandwidth metrics.
 
@@ -53,6 +55,7 @@ The skill will:
 User request: "I'm seeing slow database queries. Can you help me monitor the database performance?"
 
 The skill will:
+
 1. Identify the database layer and relevant metrics such as connection pool usage, replication lag, and cache hit rates.
 2. Configure Datadog to collect these metrics and create a dashboard to visualize performance trends.
 
@@ -93,6 +96,7 @@ This skill can be integrated with other plugins for deployment, configuration ma
 ## Error Handling
 
 If metrics collection fails:
+
 - Verify agent installation and permissions
 - Check network connectivity to targets
 - Validate authentication credentials

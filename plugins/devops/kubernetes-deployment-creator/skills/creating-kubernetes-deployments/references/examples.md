@@ -9,6 +9,7 @@ Detailed walkthroughs for common deployment scenarios.
 **Request:** "Deploy my Python FastAPI app with auto-scaling and health checks"
 
 ### Requirements Gathered
+
 - Application: FastAPI REST API
 - Image: `my-registry.io/api:v1.2.0`
 - Port: 8000
@@ -109,6 +110,7 @@ spec:
 ```
 
 ### Deployment Steps
+
 ```bash
 kubectl apply -f api-deployment.yaml
 kubectl rollout status deployment/fastapi-app
@@ -116,6 +118,7 @@ kubectl get hpa fastapi-app-hpa
 ```
 
 ### Verification
+
 ```bash
 # Check pods running
 kubectl get pods -l app=fastapi-app
@@ -135,6 +138,7 @@ kubectl get hpa -w
 **Request:** "Deploy React frontend with HTTPS at app.example.com"
 
 ### Requirements Gathered
+
 - Application: React SPA served by nginx
 - Image: `my-registry.io/frontend:v2.0.0`
 - Domain: `app.example.com`
@@ -225,6 +229,7 @@ spec:
 ```
 
 ### Deployment Steps
+
 ```bash
 # Ensure cert-manager is installed
 kubectl get pods -n cert-manager
@@ -237,6 +242,7 @@ kubectl get certificate frontend-tls
 ```
 
 ### Verification
+
 ```bash
 # Check ingress
 kubectl describe ingress frontend-ingress
@@ -256,6 +262,7 @@ curl -v https://app.example.com/
 **Request:** "Deploy background worker that processes queue messages"
 
 ### Requirements Gathered
+
 - Application: Python Celery worker
 - Image: `my-registry.io/worker:v1.0.0`
 - No external ports (internal worker)
@@ -330,12 +337,14 @@ spec:
 ```
 
 ### Deployment Steps
+
 ```bash
 kubectl apply -f worker-config.yaml
 kubectl rollout status deployment/celery-worker
 ```
 
 ### Verification
+
 ```bash
 # Check workers
 kubectl get pods -l app=celery-worker
@@ -354,6 +363,7 @@ kubectl scale deployment/celery-worker --replicas=10
 **Request:** "Deploy PostgreSQL with persistent storage"
 
 ### Requirements Gathered
+
 - Application: PostgreSQL 15
 - Storage: 100Gi persistent volume
 - Single instance (not clustered)
@@ -446,12 +456,14 @@ spec:
 ```
 
 ### Deployment Steps
+
 ```bash
 kubectl apply -f postgres-statefulset.yaml
 kubectl rollout status statefulset/postgres
 ```
 
 ### Verification
+
 ```bash
 # Check PVC
 kubectl get pvc
@@ -471,6 +483,7 @@ kubectl get pod postgres-0 -w
 **Request:** "Deploy API and database with network isolation"
 
 ### Requirements Gathered
+
 - API can talk to database
 - Database only accepts connections from API
 - External traffic only to API
@@ -534,6 +547,7 @@ spec:
 ```
 
 ### Deployment Steps
+
 ```bash
 kubectl apply -f network-policy.yaml
 
@@ -542,6 +556,7 @@ kubectl label pods -l app=backend app=api --overwrite
 ```
 
 ### Verification
+
 ```bash
 # Test connectivity from API to DB
 kubectl exec -it deploy/api -- nc -zv database 5432
@@ -558,6 +573,7 @@ kubectl run test --rm -it --image=busybox -- nc -zv database 5432
 **Request:** "Deploy new version with instant rollback capability"
 
 ### Requirements Gathered
+
 - Current version: v1.0.0 (blue)
 - New version: v2.0.0 (green)
 - Zero downtime switch
@@ -633,6 +649,7 @@ spec:
 ```
 
 ### Switch to Green
+
 ```bash
 # Verify green is ready
 kubectl get pods -l version=green
@@ -645,6 +662,7 @@ kubectl get endpoints myapp
 ```
 
 ### Rollback to Blue
+
 ```bash
 kubectl patch svc myapp -p '{"spec":{"selector":{"version":"blue"}}}'
 ```
@@ -709,6 +727,7 @@ spec:
 ```
 
 ### Verification
+
 ```bash
 # Check cronjob
 kubectl get cronjob db-cleanup

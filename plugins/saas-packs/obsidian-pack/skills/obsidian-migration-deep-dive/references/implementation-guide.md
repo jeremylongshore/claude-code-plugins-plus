@@ -5,6 +5,7 @@
 ## Detailed Instructions
 
 ### Step 1: Pre-Migration Assessment
+
 ```typescript
 // scripts/migration-assessment.ts
 interface MigrationAssessment {
@@ -63,6 +64,7 @@ MIGRATION_DRY_RUN=true npx ts-node scripts/migrate.ts
 ```
 
 ### Post-Migration Checklist
+
 ```markdown
 
 
@@ -98,6 +100,7 @@ ${assessment.issues.length === 0 ? '- No issues found, proceed with migration' :
 ```
 
 ### Step 2: Format Converters
+
 ```typescript
 // scripts/converters/evernote.ts
 import * as fs from 'fs';
@@ -253,6 +256,7 @@ function convertRoamSyntax(text: string): string {
 ```
 
 ### Step 3: Link Migration
+
 ```typescript
 // scripts/migrate-links.ts
 import * as fs from 'fs';
@@ -368,6 +372,7 @@ ${this.orphanedLinks.map(link => `- [[${link}]]`).join('\n')}
 ```
 
 ### Step 4: Batch Migration Script
+
 ```typescript
 // scripts/migrate.ts
 import * as fs from 'fs';
@@ -506,7 +511,6 @@ ${Object.entries(result).map(([key, value]) => `- ${key}: ${value}`).join('\n')}
 - [ ] Delete _migration folder
 - [ ] Update any external integrations
 ```
-
 
 ## Flagship+ Skills
 

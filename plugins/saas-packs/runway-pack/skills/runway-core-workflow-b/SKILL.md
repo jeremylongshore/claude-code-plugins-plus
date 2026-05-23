@@ -19,14 +19,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Runway Core Workflow B
 
 ## Overview
+
 Image-to-video and video-to-video generation: animate still images and transform existing videos.
 
 ## Prerequisites
+
 - Completed `runway-core-workflow-a`
 
 ## Instructions
 
 ### Step 1: Image-to-Video
+
 ```python
 from runwayml import RunwayML
 client = RunwayML()
@@ -43,6 +46,7 @@ print(f"Animated video: {result.output[0]}")
 ```
 
 ### Step 2: Image-to-Video with Data URI
+
 ```python
 import base64
 
@@ -60,6 +64,7 @@ task = client.image_to_video.create(
 ```
 
 ### Step 3: Video-to-Video (Style Transfer)
+
 ```python
 # Transform an existing video with a new style
 task = client.video_to_video.create(
@@ -72,6 +77,7 @@ print(f"Styled video: {result.output[0]}")
 ```
 
 ### Step 4: Image Specifications
+
 ```text
 Supported formats: JPEG, PNG, WebP
 Supported resolutions:
@@ -81,12 +87,14 @@ Max file size: 16MB (URL), varies for data URI
 ```
 
 ## Output
+
 - Still images animated with motion prompts
 - Local images encoded as data URIs
 - Videos restyled with text prompts
 - Proper image format handling
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `400 Invalid image` | Unsupported format | Use JPEG, PNG, or WebP |
@@ -95,9 +103,11 @@ Max file size: 16MB (URL), varies for data URI
 | Style transfer too subtle | Weak prompt | Be more specific about target style |
 
 ## Resources
+
 - [Runway API Reference](https://docs.dev.runwayml.com/api/)
 - [Input Parameters](https://docs.dev.runwayml.com/assets/inputs/)
 - [SDKs](https://docs.dev.runwayml.com/api-details/sdks/)
 
 ## Next Steps
+
 Error handling: `runway-common-errors`

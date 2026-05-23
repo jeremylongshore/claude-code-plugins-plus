@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Incident Runbook
 
 ## Overview
+
 Step-by-step procedures for responding to MaintainX integration incidents, from detection through resolution and post-mortem.
 
 ## Prerequisites
+
 - Access to monitoring dashboards
 - MaintainX admin API credentials
 - On-call contact list
@@ -82,6 +84,7 @@ echo -e "\n--- Recent Errors (last 10 min) ---"
 ### Step 3: Apply Mitigation
 
 **API Key Expired (SEV-1)**:
+
 ```bash
 # Generate new key: MaintainX > Settings > Integrations > New Key
 # Update in production:
@@ -92,6 +95,7 @@ gcloud run services update maintainx-integration --region us-central1 --no-traff
 ```
 
 **Rate Limited (SEV-2)**:
+
 ```typescript
 // Immediately reduce request volume
 // 1. Enable emergency rate limiting
@@ -102,6 +106,7 @@ await disableScheduledJobs(['asset-sync', 'report-generator']);
 ```
 
 **MaintainX Platform Outage (SEV-1)**:
+
 ```typescript
 // Switch to queue-based processing
 // Buffer all outgoing requests for replay after recovery
@@ -168,6 +173,7 @@ cat .maintainx-sync-state.json 2>/dev/null || echo "No sync state file found"
 ```
 
 ## Output
+
 - Incident triaged and severity classified
 - Root cause identified using diagnostic steps
 - Mitigation applied (key rotation, rate reduction, or request buffering)
@@ -175,6 +181,7 @@ cat .maintainx-sync-state.json 2>/dev/null || echo "No sync state file found"
 - Post-incident report documented
 
 ## Error Handling
+
 | Scenario | Immediate Action |
 |----------|-----------------|
 | Total API failure | Buffer requests, check status page, escalate |
@@ -183,11 +190,13 @@ cat .maintainx-sync-state.json 2>/dev/null || echo "No sync state file found"
 | Webhook delivery failure | Fall back to polling, queue missed events |
 
 ## Resources
+
 - [MaintainX Status Page](https://status.getmaintainx.com)
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [MaintainX Help Center](https://help.getmaintainx.com)
 
 ## Next Steps
+
 For data handling patterns, see `maintainx-data-handling`.
 
 ## Examples

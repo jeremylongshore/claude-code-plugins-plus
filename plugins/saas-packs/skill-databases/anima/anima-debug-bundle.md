@@ -10,6 +10,7 @@ anima-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Anima debug evidence for support
 **Workflow:** Part of the operations skill category for Anima integration.
 **Relates to:** Other anima skills in this pack.

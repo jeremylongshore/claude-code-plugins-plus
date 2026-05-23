@@ -10,6 +10,7 @@ gamma-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Gamma SDK patterns
 **Workflow:** Part of the onboarding skill category for Gamma integration.
 **Relates to:** Other gamma skills in this pack.

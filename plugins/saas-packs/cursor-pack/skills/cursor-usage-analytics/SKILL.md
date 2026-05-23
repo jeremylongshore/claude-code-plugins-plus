@@ -85,6 +85,7 @@ Access: [cursor.com/settings](https://cursor.com/settings) > Team > Usage (Busin
 Each team member gets ~500 fast requests per month (varies by plan). Fast requests are consumed when using premium models (Claude Sonnet/Opus, GPT-4o, o1, etc.).
 
 When quota is exceeded:
+
 - Requests are queued as "slow" (may take 30-60 seconds instead of 5-10)
 - Tab completion is unaffected
 - cursor-small model remains fast

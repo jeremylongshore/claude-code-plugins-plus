@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Local Dev Loop
 
 ## Overview
+
 Set up an efficient local development workflow for Apollo.io integrations. Includes sandbox API key support, MSW mock server for offline testing, request logging, and npm scripts for daily development. Apollo provides a **sandbox API token** that returns dummy data without consuming credits.
 
 ## Prerequisites
+
 - Completed `apollo-install-auth` setup
 - Node.js 18+
 - Git repository initialized
@@ -36,6 +38,7 @@ Set up an efficient local development workflow for Apollo.io integrations. Inclu
 ## Instructions
 
 ### Step 1: Set Up Environment Files
+
 Apollo offers a sandbox token for testing. Generate one at Settings > Integrations > API Keys > Sandbox.
 
 ```bash
@@ -51,6 +54,7 @@ echo '.env.local' >> .gitignore
 ```
 
 ### Step 2: Create a Dev Client with Request Logging
+
 ```typescript
 // src/apollo/dev-client.ts
 import axios from 'axios';
@@ -92,6 +96,7 @@ devClient.interceptors.response.use(
 ```
 
 ### Step 3: Set Up MSW Mock Server for Offline Testing
+
 ```typescript
 // src/mocks/apollo-handlers.ts
 import { http, HttpResponse } from 'msw';
@@ -158,6 +163,7 @@ export const mockServer = setupServer(...apolloHandlers);
 ```
 
 ### Step 4: Configure Vitest
+
 ```typescript
 // vitest.config.ts
 import { defineConfig } from 'vitest/config';
@@ -191,6 +197,7 @@ describe('Apollo People Search', () => {
 ```
 
 ### Step 5: Add Development Scripts
+
 ```json
 {
   "scripts": {
@@ -206,6 +213,7 @@ describe('Apollo People Search', () => {
 ```
 
 ## Output
+
 - `.env.example` template with sandbox key support
 - Dev client with request/response logging and rate-limit display
 - MSW mock handlers for people search, enrichment, org enrichment, and sequences
@@ -213,6 +221,7 @@ describe('Apollo People Search', () => {
 - npm scripts for dev, test, sandbox testing, and credential checks
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Missing API Key | `.env` not loaded | Run `cp .env.example .env` and add your key |
@@ -221,9 +230,11 @@ describe('Apollo People Search', () => {
 | Stale Credentials | Key rotated in dashboard | Run `npm run apollo:check` to verify |
 
 ## Resources
+
 - [Apollo Sandbox Testing](https://docs.apollo.io/docs/test-api-key)
 - [MSW (Mock Service Worker)](https://mswjs.io/)
 - [Vitest Testing Framework](https://vitest.dev/)
 
 ## Next Steps
+
 Proceed to `apollo-sdk-patterns` for production-ready code patterns.

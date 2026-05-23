@@ -257,6 +257,7 @@ python3 scripts/phone_normalize.py --phone "0412 345 678" --region AU --output j
 ```
 
 Output:
+
 ```json
 {
   "valid": true,

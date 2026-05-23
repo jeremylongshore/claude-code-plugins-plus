@@ -27,6 +27,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Cost Tuning
 
 ## Overview
+
 Reduce Perplexity Sonar API costs. Perplexity charges per-token (input + output) plus a per-request fee that varies by search context size. The biggest cost lever is model selection: `sonar-pro` costs 3-15x more than `sonar` per request.
 
 ## Pricing Reference
@@ -41,6 +42,7 @@ Reduce Perplexity Sonar API costs. Perplexity charges per-token (input + output)
 Search context size (Low/Medium/High) affects the request fee. More context = higher fee.
 
 ## Prerequisites
+
 - Perplexity API account with usage dashboard
 - Understanding of query patterns in your application
 - Cache infrastructure for search results
@@ -48,6 +50,7 @@ Search context size (Low/Medium/High) affects the request fee. More context = hi
 ## Instructions
 
 ### Step 1: Route Queries to the Right Model
+
 ```typescript
 // 60-70% of queries can use sonar, saving 3-15x per query
 function selectModel(query: string): "sonar" | "sonar-pro" {
@@ -68,6 +71,7 @@ function selectModel(query: string): "sonar" | "sonar-pro" {
 ```
 
 ### Step 2: Limit Output Tokens
+
 ```bash
 set -euo pipefail
 # Factual queries need ~100 tokens, not 4096
@@ -95,6 +99,7 @@ curl -X POST https://api.perplexity.ai/chat/completions \
 ```
 
 ### Step 3: Cache to Eliminate Duplicate Queries
+
 ```typescript
 import { LRUCache } from "lru-cache";
 import { createHash } from "crypto";
@@ -130,6 +135,7 @@ function cacheStats() {
 ```
 
 ### Step 4: Use Domain Filters to Reduce Search Cost
+
 ```bash
 set -euo pipefail
 # Restricting search domains = less content to process = lower request fee
@@ -145,6 +151,7 @@ curl -X POST https://api.perplexity.ai/chat/completions \
 ```
 
 ### Step 5: Track and Budget
+
 ```typescript
 class CostTracker {
   private costs: Array<{ model: string; tokens: number; timestamp: Date }> = [];
@@ -175,6 +182,7 @@ class CostTracker {
 ```
 
 ## Cost Optimization Checklist
+
 - [ ] Default model is `sonar` (not `sonar-pro`)
 - [ ] `max_tokens` set on every request
 - [ ] Caching enabled for repeated queries
@@ -184,6 +192,7 @@ class CostTracker {
 - [ ] Cost tracking in production monitoring
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | High cost per query | Using sonar-pro for everything | Route simple queries to sonar |
@@ -192,14 +201,17 @@ class CostTracker {
 | Unexpectedly high bill | No max_tokens limits | Set max_tokens on all requests |
 
 ## Output
+
 - Model routing saving 60-70% on simple queries
 - Token limiting reducing output costs
 - Caching eliminating duplicate query costs
 - Cost tracking for budget monitoring
 
 ## Resources
+
 - [Perplexity Pricing](https://docs.perplexity.ai/docs/getting-started/pricing)
 - [Model Cards](https://docs.perplexity.ai/getting-started/models)
 
 ## Next Steps
+
 For architecture patterns, see `perplexity-reference-architecture`.

@@ -3,6 +3,7 @@
 ## Best Practices
 
 ### Guide the AI
+
 ```python
 # Be explicit about what you want
 # TODO: implement binary search on sorted array
@@ -11,12 +12,14 @@ def binary_search(arr, target):
 ```
 
 ### Use Type Hints
+
 ```python
 def process(data: pd.DataFrame) -> pd.DataFrame:
     │ ← AI knows pandas methods to suggest
 ```
 
 ### Maintain Code Style
+
 ```javascript
 // If your codebase uses certain patterns,
 // AI learns and continues them
@@ -26,6 +29,7 @@ const Component = ({ props }) => {
 ```
 
 ### Review Before Accepting
+
 ```
 Always review ghost text:
 - Check logic correctness

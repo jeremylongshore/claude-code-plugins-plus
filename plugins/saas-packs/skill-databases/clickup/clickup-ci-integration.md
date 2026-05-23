@@ -10,6 +10,7 @@ clickup-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure ClickUp CI/CD integration
 **Workflow:** Part of the cicd skill category for ClickUp integration.
 **Relates to:** Other clickup skills in this pack.

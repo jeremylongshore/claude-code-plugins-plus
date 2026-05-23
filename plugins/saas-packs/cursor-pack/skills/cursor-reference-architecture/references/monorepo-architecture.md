@@ -3,6 +3,7 @@
 ## Monorepo Architecture
 
 ### Turborepo Structure
+
 ```
 monorepo/
 ├── .cursorrules              # Root rules (inherited)
@@ -24,6 +25,7 @@ monorepo/
 ```
 
 ### Workspace .cursorrules
+
 ```yaml
 # Root .cursorrules for monorepo
 

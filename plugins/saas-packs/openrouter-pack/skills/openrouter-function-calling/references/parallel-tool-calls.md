@@ -3,6 +3,7 @@
 ## Parallel Tool Calls
 
 ### Handle Multiple Calls
+
 ```python
 async def execute_tools_parallel(tool_calls: list) -> list:
     """Execute multiple tool calls in parallel."""

@@ -28,6 +28,7 @@ compatibility: Designed for Claude Code
 ## Pre-Launch Checklist
 
 ### API & Infrastructure
+
 - [ ] API key restricted to production domains in Alchemy Dashboard
 - [ ] Separate Alchemy apps for dev/staging/prod environments
 - [ ] Rate limit headroom verified (< 70% of CU/sec budget)
@@ -36,6 +37,7 @@ compatibility: Designed for Claude Code
 - [ ] Webhook endpoints HTTPS-only with signature verification
 
 ### Security
+
 - [ ] API key NOT in frontend code — proxied through backend
 - [ ] Private keys in secret manager (not env files)
 - [ ] All user-supplied addresses validated and checksummed
@@ -43,12 +45,14 @@ compatibility: Designed for Claude Code
 - [ ] npm audit clean — no critical vulnerabilities
 
 ### Smart Contracts (if applicable)
+
 - [ ] Contracts audited by reputable firm
 - [ ] Deployed and verified on Etherscan/Polygonscan
 - [ ] Admin keys secured in multi-sig wallet
 - [ ] Emergency pause function tested
 
 ### Performance
+
 - [ ] Response caching for frequently-queried data (balances, metadata)
 - [ ] Connection pooling for provider instances
 - [ ] Batch requests where possible (NFT metadata, balances)

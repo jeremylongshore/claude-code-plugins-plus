@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Hello World
 
 ## Overview
+
 Generate your first AI image with Ideogram. Demonstrates the legacy `/generate` endpoint (JSON body) and the V3 `/v1/ideogram-v3/generate` endpoint (multipart form). Both return temporary image URLs that must be downloaded promptly.
 
 ## Prerequisites
+
 - Completed `ideogram-install-auth` setup
 - `IDEOGRAM_API_KEY` environment variable set
 - Node.js 18+ or Python 3.10+
@@ -36,6 +38,7 @@ Generate your first AI image with Ideogram. Demonstrates the legacy `/generate` 
 ## Instructions
 
 ### Step 1: Quick Test with curl
+
 ```bash
 set -euo pipefail
 # Legacy endpoint (V_2 model, JSON body)
@@ -54,6 +57,7 @@ curl -s -X POST https://api.ideogram.ai/generate \
 ```
 
 ### Step 2: TypeScript -- Generate and Download
+
 ```typescript
 // hello-ideogram.ts
 import { writeFileSync } from "fs";
@@ -103,6 +107,7 @@ helloIdeogram().catch(console.error);
 ```
 
 ### Step 3: Python -- Generate and Download
+
 ```python
 # hello_ideogram.py
 import os, requests
@@ -147,6 +152,7 @@ print("Saved to hello-ideogram.png")
 | `num_images` | 1-4 | 1 |
 
 ## Response Shape
+
 ```json
 {
   "created": "2025-01-15T10:30:00Z",
@@ -164,6 +170,7 @@ print("Saved to hello-ideogram.png")
 ```
 
 ## Error Handling
+
 | Error | HTTP Status | Cause | Solution |
 |-------|-------------|-------|----------|
 | Auth error | 401 | Missing or invalid `Api-Key` header | Check `IDEOGRAM_API_KEY` env var |
@@ -172,14 +179,17 @@ print("Saved to hello-ideogram.png")
 | Bad request | 400 | Invalid parameter values | Check enum values match exactly |
 
 ## Output
+
 - Generated image file downloaded locally
 - Console output with URL, seed, resolution, and safety status
 - Seed value for reproducible regeneration
 
 ## Resources
+
 - [Legacy Generate Endpoint](https://developer.ideogram.ai/api-reference/api-reference/generate)
 - [V3 Generate Endpoint](https://developer.ideogram.ai/api-reference/api-reference/generate-v3)
 - [Ideogram Prompt Tips](https://docs.ideogram.ai/using-ideogram/generation-settings/style)
 
 ## Next Steps
+
 Proceed to `ideogram-local-dev-loop` for development workflow setup.

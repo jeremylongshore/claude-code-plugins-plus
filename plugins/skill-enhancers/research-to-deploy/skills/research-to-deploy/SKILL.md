@@ -81,6 +81,7 @@ The skill produces a structured set of deployment artifacts:
 **User:** "Research Cloud Run best practices and create a deployment for my Express API."
 
 The skill will:
+
 1. Search for current Cloud Run documentation on container sizing, concurrency settings, min/max instances, and VPC connector patterns.
 2. Generate a `Dockerfile` optimized for Cloud Run (multi-stage build, non-root user, health check endpoint).
 3. Create `main.tf` with Cloud Run service, IAM bindings, custom domain mapping, and Cloud SQL connection.
@@ -92,6 +93,7 @@ The skill will:
 **User:** "Deploy a Python microservice to ECS Fargate, keep costs minimal."
 
 The skill will:
+
 1. Research Fargate Spot pricing, right-sizing strategies, and ALB vs API Gateway trade-offs.
 2. Generate Terraform modules for VPC, ECS cluster, Fargate service, ALB, and ECR repository.
 3. Configure auto-scaling based on CPU utilization with conservative thresholds for cost optimization.
@@ -102,6 +104,7 @@ The skill will:
 **User:** "Set up a production AKS cluster with monitoring and RBAC."
 
 The skill will:
+
 1. Research AKS best practices for node pool sizing, network policies, and Azure AD integration.
 2. Generate Terraform for the AKS cluster, node pools, Azure Monitor workspace, and RBAC role assignments.
 3. Create Kubernetes manifests for ingress controller, cert-manager, and Prometheus stack.

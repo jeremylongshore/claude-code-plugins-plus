@@ -1,11 +1,13 @@
 # PRD: On-Chain Analytics
 
 ## Summary
+
 **One-liner**: Analyze blockchain metrics including TVL, protocol revenues, user activity, and network health across DeFi protocols.
 **Domain**: Cryptocurrency / On-Chain Intelligence
 **Users**: Analysts, Researchers, Traders, Protocol Teams
 
 ## Problem Statement
+
 On-chain data is scattered across multiple sources (DeFiLlama, Dune, Flipside) with different formats and query methods. Users need unified analytics to understand protocol health, compare DeFi metrics, and identify trends without writing complex SQL queries.
 
 ## User Stories

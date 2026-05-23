@@ -15,6 +15,7 @@ Every skill contains real, copy-paste-ready code. No placeholder `// Step 1 impl
 ## Skills (30)
 
 ### Getting Started (S01-S06)
+
 | Skill | What It Does |
 |-------|-------------|
 | `supabase-install-auth` | Install `@supabase/supabase-js`, CLI, configure keys, generate TypeScript types |
@@ -25,6 +26,7 @@ Every skill contains real, copy-paste-ready code. No placeholder `// Step 1 impl
 | `supabase-auth-storage-realtime-core` | Auth (signup, OAuth, MFA), Storage (upload, signed URLs, bucket RLS), Realtime (Postgres changes, broadcast, presence) |
 
 ### Operations (S07-S12)
+
 | Skill | What It Does |
 |-------|-------------|
 | `supabase-common-errors` | PGRST error codes, PostgreSQL errors, Auth/Storage/Realtime diagnostics, RLS debugging |
@@ -35,6 +37,7 @@ Every skill contains real, copy-paste-ready code. No placeholder `// Step 1 impl
 | `supabase-upgrade-migration` | v1-to-v2 breaking changes, auth method renames, code migration steps |
 
 ### DevOps (P13-P18)
+
 | Skill | What It Does |
 |-------|-------------|
 | `supabase-ci-integration` | GitHub Actions: local Supabase in CI, migration deploy, pgTAP tests, type drift |
@@ -45,6 +48,7 @@ Every skill contains real, copy-paste-ready code. No placeholder `// Step 1 impl
 | `supabase-reference-architecture` | Layered project structure: client layer, service layer, hooks, error handling, health check |
 
 ### Enterprise (F19-F24)
+
 | Skill | What It Does |
 |-------|-------------|
 | `supabase-multi-env-setup` | Dev/staging/prod with separate Supabase projects, migration promotion, env guards |
@@ -55,6 +59,7 @@ Every skill contains real, copy-paste-ready code. No placeholder `// Step 1 impl
 | `supabase-migration-deep-dive` | Firebase/MongoDB to Supabase, strangler fig pattern, data migration scripts, auth migration |
 
 ### Advanced (X25-X30)
+
 | Skill | What It Does |
 |-------|-------------|
 | `supabase-advanced-troubleshooting` | `EXPLAIN ANALYZE`, RLS step-by-step debug, connection leaks, lock contention, Realtime debug |

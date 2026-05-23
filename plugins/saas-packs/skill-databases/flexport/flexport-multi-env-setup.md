@@ -10,6 +10,7 @@ flexport-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Flexport multi-environment setup
 **Workflow:** Part of the enterprise skill category for Flexport integration.
 **Relates to:** Other flexport skills in this pack.

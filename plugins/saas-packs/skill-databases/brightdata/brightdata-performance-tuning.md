@@ -10,6 +10,7 @@ brightdata-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Bright Data API performance
 **Workflow:** Part of the cicd skill category for Bright Data integration.
 **Relates to:** Other brightdata skills in this pack.

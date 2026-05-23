@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Optimize Middleware
+
 ```typescript
 // middleware.ts - Optimized configuration
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
@@ -40,6 +41,7 @@ export default clerkMiddleware(async (auth, request) => {
 ```
 
 ### Step 2: Implement User Data Caching
+
 ```typescript
 // lib/cached-user.ts
 import { unstable_cache } from 'next/cache'
@@ -85,6 +87,7 @@ export function invalidateUserCache(userId: string) {
 ```
 
 ### Step 3: Optimize Token Handling
+
 ```typescript
 // lib/optimized-auth.ts
 'use client'
@@ -147,6 +150,7 @@ export function useAuthFetch() {
 ```
 
 ### Step 4: Lazy Load Auth Components
+
 ```typescript
 // components/lazy-auth.tsx
 'use client'
@@ -180,6 +184,7 @@ export function LazyUserButton() {
 ```
 
 ### Step 5: Optimize Server Components
+
 ```typescript
 // app/dashboard/page.tsx
 import { auth } from '@clerk/nextjs/server'
@@ -223,6 +228,7 @@ async function UserData() {
 ```
 
 ### Step 6: Edge Runtime Optimization
+
 ```typescript
 // app/api/fast-auth/route.ts
 import { auth } from '@clerk/nextjs/server'

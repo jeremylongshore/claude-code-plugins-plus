@@ -3,6 +3,7 @@
 ## GDPR Compliance
 
 ### Right to Erasure (Delete User Data)
+
 ```bash
 # Delete all events for a user
 curl -X DELETE \
@@ -11,6 +12,7 @@ curl -X DELETE \
 ```
 
 ### Programmatic User Data Deletion
+
 ```typescript
 async function deleteUserData(userId: string) {
   const response = await fetch(
@@ -27,6 +29,7 @@ async function deleteUserData(userId: string) {
 ```
 
 ### User Consent Handling
+
 ```typescript
 function initSentryWithConsent(hasConsent: boolean) {
   Sentry.init({

@@ -5,6 +5,7 @@
 ### Authentication Errors
 
 #### Error: 401 Unauthorized
+
 ```json
 {
   "meta": {
@@ -12,11 +13,14 @@
   }
 }
 ```
+
 **Cause**: Invalid Site ID or API Key
 **Solution**:
+
 1. Verify credentials in Customer.io Settings > API Credentials
 2. Check you're using Track API key (not App API key) for identify/track
 3. Ensure environment variables are loaded correctly
+
 ```bash
 # Verify environment variables
 echo "Site ID: ${CUSTOMERIO_SITE_ID:0:8}..."
@@ -24,12 +28,14 @@ echo "API Key: ${CUSTOMERIO_API_KEY:0:8}..."
 ```
 
 #### Error: 403 Forbidden
+
 **Cause**: API key doesn't have required permissions
 **Solution**: Generate new API key with correct scope (Track vs App API)
 
 ### Request Errors
 
 #### Error: 400 Bad Request - Invalid identifier
+
 ```json
 {
   "meta": {
@@ -37,8 +43,10 @@ echo "API Key: ${CUSTOMERIO_API_KEY:0:8}..."
   }
 }
 ```
+
 **Cause**: Missing or empty user ID
 **Solution**:
+
 ```typescript
 // Wrong
 await client.identify('', { email: 'user@example.com' });
@@ -48,6 +56,7 @@ await client.identify('user-123', { email: 'user@example.com' });
 ```
 
 #### Error: 400 Bad Request - Invalid timestamp
+
 ```json
 {
   "meta": {
@@ -55,8 +64,10 @@ await client.identify('user-123', { email: 'user@example.com' });
   }
 }
 ```
+
 **Cause**: Using milliseconds instead of seconds
 **Solution**:
+
 ```typescript
 // Wrong
 { created_at: Date.now() } // 1704067200000
@@ -66,8 +77,10 @@ await client.identify('user-123', { email: 'user@example.com' });
 ```
 
 #### Error: 400 Bad Request - Invalid email
+
 **Cause**: Malformed email address
 **Solution**:
+
 ```typescript
 // Validate email before sending
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -79,6 +92,7 @@ if (!emailRegex.test(email)) {
 ### Rate Limiting
 
 #### Error: 429 Too Many Requests
+
 ```json
 {
   "meta": {
@@ -86,8 +100,10 @@ if (!emailRegex.test(email)) {
   }
 }
 ```
+
 **Cause**: Exceeded API rate limits
 **Solution**:
+
 ```typescript
 // Implement exponential backoff
 async function withBackoff(fn: () => Promise<any>, maxRetries = 3) {
@@ -109,7 +125,9 @@ async function withBackoff(fn: () => Promise<any>, maxRetries = 3) {
 ### Delivery Issues
 
 #### Issue: Email not delivered
+
 **Diagnostic steps**:
+
 1. Check People > User > Activity for event receipt
 2. Verify campaign is active and user matches segment
 3. Check Deliverability > Suppression list
@@ -122,8 +140,10 @@ curl -X GET "https://track.customer.io/api/v1/customers/user-123" \
 ```
 
 #### Issue: Event not triggering campaign
+
 **Cause**: Event name mismatch or missing attributes
 **Solution**:
+
 ```typescript
 // Check exact event name in dashboard
 // Event names are case-sensitive
@@ -134,8 +154,10 @@ await client.track(userId, {
 ```
 
 #### Issue: User not in segment
+
 **Cause**: Missing or incorrect attributes
 **Solution**:
+
 1. Check segment conditions in dashboard
 2. Verify user has required attributes
 3. Check attribute types match (string vs number)
@@ -143,6 +165,7 @@ await client.track(userId, {
 ### SDK-Specific Errors
 
 #### Node.js: TypeError - Cannot read property
+
 ```typescript
 // Wrong - SDK not initialized
 const client = new TrackClient(undefined, undefined);
@@ -154,6 +177,7 @@ if (!process.env.CUSTOMERIO_SITE_ID) {
 ```
 
 #### Python: ConnectionError
+
 ```python
 # Handle network errors
 import customerio
@@ -170,6 +194,7 @@ except ConnectionError as e:
 ## Diagnostic Commands
 
 ### Check API Connectivity
+
 ```bash
 curl -X POST "https://track.customer.io/api/v1/customers/test-user" \
   -u "$CUSTOMERIO_SITE_ID:$CUSTOMERIO_API_KEY" \
@@ -179,6 +204,7 @@ curl -X POST "https://track.customer.io/api/v1/customers/test-user" \
 ```
 
 ### Verify Event Delivery
+
 ```bash
 curl -X POST "https://track.customer.io/api/v1/customers/test-user/events" \
   -u "$CUSTOMERIO_SITE_ID:$CUSTOMERIO_API_KEY" \
@@ -187,6 +213,7 @@ curl -X POST "https://track.customer.io/api/v1/customers/test-user/events" \
 ```
 
 ## Error Handling
+
 | Error Code | Meaning | Action |
 |------------|---------|--------|
 | 400 | Bad Request | Check request format and data |

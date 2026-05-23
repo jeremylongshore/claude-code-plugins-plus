@@ -21,9 +21,11 @@ compatibility: Designed for Claude Code
 # Glean Webhooks & Events
 
 ## Overview
+
 Glean uses an event-driven indexing model where source system webhooks trigger incremental updates to the Glean Indexing API. Instead of emitting its own webhooks, Glean receives document changes from platforms like GitHub, Confluence, and Notion. You can also monitor internal Glean events such as document indexing completion, permission changes, connector sync status, and search anomalies through the admin API.
 
 ## Webhook Registration
+
 ```typescript
 // Register a source system webhook that pushes to Glean Indexing API
 const response = await fetch("https://yourapp.com/admin/webhooks", {
@@ -38,6 +40,7 @@ const response = await fetch("https://yourapp.com/admin/webhooks", {
 ```
 
 ## Signature Verification
+
 ```typescript
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
@@ -54,6 +57,7 @@ function verifyGleanSignature(req: Request, res: Response, next: NextFunction) {
 ```
 
 ## Event Handler
+
 ```typescript
 import express from "express";
 const app = express();
@@ -76,6 +80,7 @@ app.post("/webhooks/glean-indexer", express.raw({ type: "application/json" }), v
 ```
 
 ## Event Types
+
 | Event | Payload Fields | Use Case |
 |-------|---------------|----------|
 | `document.indexed` | `datasource`, `doc_id`, `index_time_ms` | Confirm content is searchable |
@@ -85,6 +90,7 @@ app.post("/webhooks/glean-indexer", express.raw({ type: "application/json" }), v
 | `document.deleted` | `datasource`, `doc_id`, `deleted_by` | Audit content removal |
 
 ## Retry & Idempotency
+
 ```typescript
 const processed = new Set<string>();
 
@@ -100,6 +106,7 @@ async function handleIdempotent(event: { id: string; type: string; data: any }) 
 ```
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | Index rejected | Document exceeds size limit | Chunk large documents before indexing |
@@ -108,7 +115,9 @@ async function handleIdempotent(event: { id: string; type: string; data: any }) 
 | Connector timeout | Source API rate limited | Implement exponential backoff in connector |
 
 ## Resources
+
 - [Glean Indexing API](https://developers.glean.com/api/indexing-api/index-documents)
 
 ## Next Steps
+
 See `glean-security-basics`.

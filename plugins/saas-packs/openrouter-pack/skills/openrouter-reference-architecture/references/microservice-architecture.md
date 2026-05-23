@@ -31,6 +31,7 @@
 ```
 
 ### Worker Service
+
 ```python
 # worker.py
 from celery import Celery
@@ -64,6 +65,7 @@ def process_batch(prompts: list, model: str = None):
 ```
 
 ### API Gateway
+
 ```python
 # api.py
 from fastapi import FastAPI, BackgroundTasks, HTTPException

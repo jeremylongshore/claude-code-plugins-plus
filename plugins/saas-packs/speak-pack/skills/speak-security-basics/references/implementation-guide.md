@@ -5,6 +5,7 @@ Detailed implementation reference for the speak-security-basics skill.
 ## Instructions
 
 ### Step 1: Configure Environment Variables
+
 ```bash
 # .env (NEVER commit to git)
 SPEAK_API_KEY=sk_live_***
@@ -21,6 +22,7 @@ recordings/
 ```
 
 ### Step 2: Implement Secret Rotation
+
 ```bash
 # 1. Generate new key in Speak developer dashboard
 # https://developer.speak.com/dashboard/api-keys
@@ -37,6 +39,7 @@ curl -X POST https://api.speak.com/v1/health \
 ```
 
 ### Step 3: Apply Least Privilege Access
+
 | Environment | Recommended Scopes |
 |-------------|-------------------|
 | Development | `lessons:read`, `speech:analyze` |
@@ -248,10 +251,10 @@ class UserDataManager {
 }
 ```
 
-
 ## Security Checklist
 
 ### API Security
+
 - [ ] API keys in environment variables
 - [ ] `.env` files in `.gitignore`
 - [ ] Different keys for dev/staging/prod
@@ -260,6 +263,7 @@ class UserDataManager {
 - [ ] Key rotation schedule documented
 
 ### Audio Security
+
 - [ ] Audio encrypted at rest
 - [ ] Audio encrypted in transit (HTTPS)
 - [ ] Clear retention policy
@@ -267,16 +271,17 @@ class UserDataManager {
 - [ ] Deletion mechanism implemented
 
 ### User Data
+
 - [ ] GDPR export implemented
 - [ ] CCPA compliance verified
 - [ ] Audit logging enabled
 - [ ] Data minimization practiced
 - [ ] Privacy policy updated
 
-
 ## Detailed Examples
 
 ### Service Account Pattern
+
 ```typescript
 const clients = {
   lessons: new SpeakClient({
@@ -291,6 +296,7 @@ const clients = {
 ```
 
 ### Audit Logging
+
 ```typescript
 interface AuditEntry {
   timestamp: Date;
@@ -311,4 +317,3 @@ async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
   console.log('[AUDIT]', JSON.stringify(log));
 }
 ```
-

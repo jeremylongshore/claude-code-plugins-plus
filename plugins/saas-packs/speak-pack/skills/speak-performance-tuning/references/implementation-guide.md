@@ -12,10 +12,10 @@ Detailed implementation reference for the speak-performance-tuning skill.
 | Audio Recognition | 500ms | 1500ms | 3000ms |
 | Pronunciation Scoring | 800ms | 2000ms | 4000ms |
 
-
 ## Audio Optimization
 
 ### Pre-processing Audio Before Upload
+
 ```typescript
 class AudioOptimizer {
   // Optimize audio for Speak's speech recognition
@@ -103,6 +103,7 @@ class AudioOptimizer {
 ```
 
 ### Streaming Audio for Real-time Recognition
+
 ```typescript
 class StreamingRecognizer {
   private chunks: ArrayBuffer[] = [];
@@ -138,10 +139,10 @@ class StreamingRecognizer {
 }
 ```
 
-
 ## Caching Strategy
 
 ### Response Caching for Static Content
+
 ```typescript
 import { LRUCache } from 'lru-cache';
 
@@ -173,6 +174,7 @@ async function getCachedVocabulary(
 ```
 
 ### Redis Caching for Distributed Systems
+
 ```typescript
 import Redis from 'ioredis';
 
@@ -204,6 +206,7 @@ async function getUserProgress(userId: string): Promise<UserProgress> {
 ```
 
 ### Audio Asset Caching
+
 ```typescript
 // Pre-fetch and cache audio assets
 class AudioAssetCache {
@@ -241,7 +244,6 @@ class AudioAssetCache {
 }
 ```
 
-
 ## Connection Optimization
 
 ```typescript
@@ -262,7 +264,6 @@ const client = new SpeakClient({
   timeout: 30000,
 });
 ```
-
 
 ## Request Batching
 
@@ -289,7 +290,6 @@ const [word1, word2, word3] = await Promise.all([
   vocabularyLoader.load('días'),
 ]);
 ```
-
 
 ## Performance Monitoring
 
@@ -349,4 +349,3 @@ const result = await measuredSpeakCall(
   { audioSize: audioBuffer.byteLength }
 );
 ```
-

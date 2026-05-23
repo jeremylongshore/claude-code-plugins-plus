@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Common Errors
 
 ## Overview
+
 Quick reference for the most common Windsurf IDE errors and their solutions. Covers Cascade failures, Supercomplete issues, indexing problems, and extension conflicts.
 
 ## Prerequisites
+
 - Windsurf installed and previously working
 - Access to Windsurf settings and logs
 
@@ -38,6 +40,7 @@ Quick reference for the most common Windsurf IDE errors and their solutions. Cov
 **Symptoms:** Cascade panel shows spinner indefinitely, no response to prompts.
 
 **Solutions:**
+
 1. Check internet connection -- Cascade requires cloud access
 2. Check Windsurf status: https://status.windsurf.com
 3. Check credit balance: Windsurf widget (status bar) > Account
@@ -49,6 +52,7 @@ Quick reference for the most common Windsurf IDE errors and their solutions. Cov
 **Symptoms:** No ghost text appears while typing.
 
 **Solutions:**
+
 1. Check if disabled: Click Windsurf widget (status bar) > verify autocomplete is ON
 2. Check file type: Supercomplete may be disabled for certain languages
 3. Check `.codeiumignore`: Current file might be excluded from indexing
@@ -67,8 +71,10 @@ Quick reference for the most common Windsurf IDE errors and their solutions. Cov
 **Symptoms:** Status bar shows "Indexing..." for extended periods, Cascade lacks context.
 
 **Solutions:**
+
 1. Check workspace size: Windsurf struggles with 100K+ files without ignore rules
 2. Create or update `.codeiumignore`:
+
 ```gitignore
 node_modules/
 .git/
@@ -82,14 +88,16 @@ __pycache__/
 *.bundle.js
 *.map
 ```
-3. Open a subdirectory instead of monorepo root
-4. Command Palette > "Codeium: Reset Indexing"
+
+1. Open a subdirectory instead of monorepo root
+2. Command Palette > "Codeium: Reset Indexing"
 
 ### Error 4: Extension Conflicts
 
 **Symptoms:** Duplicate suggestions, slow editor, features not working.
 
 **Known conflicts:**
+
 ```
 GitHub Copilot — conflicts with Supercomplete (disable one)
 TabNine — conflicts with Supercomplete
@@ -98,6 +106,7 @@ IntelliCode — may interfere with completions
 ```
 
 **Fix:** Disable conflicting extensions:
+
 ```
 Extensions sidebar > Search "copilot" > Disable
 ```
@@ -107,6 +116,7 @@ Extensions sidebar > Search "copilot" > Disable
 **Symptoms:** Cascade modifies files you didn't intend.
 
 **Solutions:**
+
 1. Be specific in prompts: name exact file paths
 2. Add constraints: "Don't modify any files except src/services/auth.ts"
 3. Use `.windsurfignore` to protect sensitive directories
@@ -118,6 +128,7 @@ Extensions sidebar > Search "copilot" > Disable
 **Symptoms:** "You've used all your credits" or specific model unavailable.
 
 **Solutions:**
+
 - Free plan: 25 credits/month. Switch to SWE-1 Lite (unlimited)
 - Pro plan: 500 credits/month. Buy additional credits at windsurf.com/account
 - Switch model: Use the model dropdown in Cascade to select a different model
@@ -128,6 +139,7 @@ Extensions sidebar > Search "copilot" > Disable
 **Symptoms:** MCP tools not appearing in Cascade, "server disconnected" errors.
 
 **Solutions:**
+
 1. Verify MCP is enabled: Settings > Cascade > MCP > Enable
 2. Check config file: `~/.codeium/windsurf/mcp_config.json`
 3. Verify command exists: Run the MCP command manually in terminal
@@ -139,6 +151,7 @@ Extensions sidebar > Search "copilot" > Disable
 **Symptoms:** Cascade forgets what it was doing, makes contradictory changes.
 
 **Solutions:**
+
 1. Keep conversations focused: one task per Cascade session
 2. Start a new conversation for new tasks (Cmd/Ctrl+L, then + icon)
 3. Use @ mentions to re-inject context: `@src/services/auth.ts`
@@ -146,6 +159,7 @@ Extensions sidebar > Search "copilot" > Disable
 5. For long tasks, use Workflows instead of multi-turn conversations
 
 ## Error Handling
+
 | Issue | Quick Fix | Root Cause |
 |-------|-----------|------------|
 | No AI features | Check auth in status bar | Token expired, re-sign-in |
@@ -157,6 +171,7 @@ Extensions sidebar > Search "copilot" > Disable
 ## Examples
 
 ### Quick Health Check
+
 ```bash
 # Check if Windsurf is installed
 windsurf --version
@@ -166,6 +181,7 @@ ls ~/.codeium/
 ```
 
 ### Reset Everything
+
 ```
 Command Palette (Cmd/Ctrl+Shift+P):
 1. "Codeium: Reset Indexing"
@@ -174,9 +190,11 @@ Command Palette (Cmd/Ctrl+Shift+P):
 ```
 
 ## Resources
+
 - [Windsurf Status Page](https://status.windsurf.com)
 - [Windsurf GitHub Issues](https://github.com/Exafunction/codeium/issues)
 - [Windsurf Documentation](https://docs.windsurf.com)
 
 ## Next Steps
+
 For comprehensive debugging, see `windsurf-debug-bundle`.

@@ -3,6 +3,7 @@
 ## Redis Caching
 
 ### Redis Implementation
+
 ```python
 import redis
 import json
@@ -51,6 +52,7 @@ def chat_with_redis(prompt: str, model: str = "openai/gpt-4-turbo") -> str:
 ```
 
 ### Async Redis
+
 ```python
 import aioredis
 

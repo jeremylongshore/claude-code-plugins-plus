@@ -31,16 +31,19 @@ ollama run llama3.2
 ## Available Models
 
 ### Code Generation
+
 - **CodeLlama 34B** - Best for code generation
 - **Qwen2.5-Coder 32B** - Excellent coding assistant
 - **DeepSeek-Coder 33B** - Strong code understanding
 
 ### General Purpose
+
 - **Llama 3.2 70B** - Meta's flagship model
 - **Mistral 7B** - Fast and efficient
 - **Mixtral 8x7B** - High quality reasoning
 
 ### Specialized
+
 - **Phi-3 14B** - Microsoft's efficient model
 - **Gemma 27B** - Google's open model
 - **Command-R 35B** - Cohere's command model
@@ -48,6 +51,7 @@ ollama run llama3.2
 ## Replace Paid APIs
 
 ### OpenAI GPT-4 → Llama 3.2 70B
+
 ```python
 # Before (Paid - $0.03/1K tokens)
 from openai import OpenAI
@@ -66,6 +70,7 @@ response = ollama.chat(
 ```
 
 ### Anthropic Claude → Mistral
+
 ```python
 # Before (Paid - $0.015/1K tokens)
 from anthropic import Anthropic
@@ -86,11 +91,13 @@ response = ollama.chat(
 ## System Requirements
 
 **Minimum:**
+
 - 8GB RAM for 7B models
 - 16GB RAM for 13B models
 - 32GB RAM for 33B+ models
 
 **Recommended:**
+
 - NVIDIA GPU with 8GB+ VRAM (10x faster)
 - Apple Silicon (M1/M2/M3) works great
 - AMD GPUs supported
@@ -122,6 +129,7 @@ Unlike API services, Ollama's constraints are **hardware-based**, not usage-base
 | 70B models | 64GB+ | 1 agent | Best quality, needs GPU |
 
 **Multiple Agents on Same Machine:**
+
 ```python
 # With 32GB RAM, you can run:
 # - 3-4 agents using 7B models (8GB each)
@@ -161,6 +169,7 @@ results = await asyncio.gather(*tasks)
 | Mixtral 8x7B | 26 GB | ~30 GB |
 
 **Multi-Model Strategy:**
+
 ```bash
 # Storage planning for 3 agents
 ollama pull llama3.2      # 4.7 GB (general purpose)
@@ -179,6 +188,7 @@ ollama pull mistral       # 4.1 GB (fast responses)
 | **NVIDIA RTX 4090** | 80-120 tok/s | 10-15 | High-end GPU |
 
 **Agent Best Practice - Queue Management:**
+
 ```python
 # Smart request queuing for single GPU
 from queue import Queue
@@ -252,6 +262,7 @@ agents = [Agent(id=i, pool=pool) for i in range(10)]
 ```
 
 **Strategy 2: Specialized model per task type**
+
 ```python
 # Allocate different models for different agent types
 config = {
@@ -272,6 +283,7 @@ config = {
 ```
 
 **Strategy 3: Request batching**
+
 ```python
 # Batch multiple agent requests into one inference call
 def batch_agent_requests(agent_prompts):
@@ -311,6 +323,7 @@ results = batch_agent_requests([
 | Enterprise scale | Self-host on server cluster | $2000-5000 hardware |
 
 **Still cheaper than cloud APIs:**
+
 - OpenAI GPT-4: $30-60/month ongoing
 - Anthropic Claude: $15-30/month ongoing
 - Local hardware: One-time cost, infinite usage
@@ -318,20 +331,24 @@ results = batch_agent_requests([
 ## Installation
 
 ### macOS
+
 ```bash
 brew install ollama
 ollama serve
 ```
 
 ### Linux
+
 ```bash
 curl -fsSL https://ollama.com/install.sh | sh
 ```
 
 ### Windows
+
 Download from https://ollama.com/download/windows
 
 ### Docker
+
 ```bash
 docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
 ```
@@ -339,12 +356,14 @@ docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
 ## Usage Examples
 
 ### Chat Interface
+
 ```bash
 ollama run llama3.2
 >>> Write a Python function to sort a list
 ```
 
 ### API Server
+
 ```python
 import requests
 
@@ -357,6 +376,7 @@ print(response.json()['response'])
 ```
 
 ### Streaming
+
 ```python
 import ollama
 
@@ -382,11 +402,13 @@ for chunk in ollama.chat(
 ## Cost Savings
 
 **Replacing OpenAI GPT-4:**
+
 - Current cost: $0.03/1K input tokens, $0.06/1K output
 - 1M tokens/month = $30-60/month
 - **Ollama cost: $0** ✓
 
 **Replacing Anthropic Claude:**
+
 - Current cost: $0.015/1K input tokens, $0.075/1K output
 - 1M tokens/month = $15-75/month
 - **Ollama cost: $0** ✓
@@ -394,6 +416,7 @@ for chunk in ollama.chat(
 ## Advanced Configuration
 
 ### Custom Models
+
 ```bash
 # Create Modelfile
 FROM llama3.2
@@ -405,6 +428,7 @@ ollama create my-assistant -f Modelfile
 ```
 
 ### API Integration
+
 ```javascript
 // Node.js
 const ollama = require('ollama')
@@ -416,6 +440,7 @@ const response = await ollama.chat({
 ```
 
 ### Multiple Models
+
 ```bash
 # Pull multiple models
 ollama pull llama3.2
@@ -429,12 +454,14 @@ ollama list
 ## Troubleshooting
 
 ### Model Too Large
+
 ```bash
 # Use smaller quantized version
 ollama pull llama3.2:7b-q4  # 4-bit quantization (4GB)
 ```
 
 ### Slow Performance
+
 ```bash
 # Check GPU usage
 nvidia-smi  # NVIDIA
@@ -445,6 +472,7 @@ ollama pull mistral:7b
 ```
 
 ### Memory Issues
+
 ```bash
 # Clear old models
 ollama rm unused-model

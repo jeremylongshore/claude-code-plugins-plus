@@ -24,6 +24,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Rate Limits
 
 ## Overview
+
 Linear uses the **leaky bucket algorithm** with two rate limiting dimensions. Understanding both is critical for reliable integrations:
 
 | Budget | Limit | Refill Rate |
@@ -35,6 +36,7 @@ Linear uses the **leaky bucket algorithm** with two rate limiting dimensions. Un
 **Complexity scoring:** Each property = 0.1 pt, each object = 1 pt, connections multiply children by `first` arg (default 50), then round up.
 
 ## Prerequisites
+
 - `@linear/sdk` installed
 - Understanding of HTTP response headers
 - Familiarity with async/await patterns
@@ -42,6 +44,7 @@ Linear uses the **leaky bucket algorithm** with two rate limiting dimensions. Un
 ## Instructions
 
 ### Step 1: Read Rate Limit Headers
+
 Linear returns rate limit info on every response.
 
 ```typescript
@@ -70,6 +73,7 @@ console.log(`This query cost: ${headers.queryComplexity} points`);
 ```
 
 ### Step 2: Exponential Backoff with Jitter
+
 ```typescript
 import { LinearClient } from "@linear/sdk";
 
@@ -105,6 +109,7 @@ class RateLimitedClient {
 ```
 
 ### Step 3: Request Queue with Token Bucket
+
 Prevent bursts by spacing requests evenly.
 
 ```typescript
@@ -151,6 +156,7 @@ const teamResults = await Promise.all(
 ```
 
 ### Step 4: Reduce Query Complexity
+
 ```typescript
 // HIGH COMPLEXITY (~12,500 pts):
 // 250 issues * (1 issue + 50 labels * 0.1 per field) = expensive
@@ -177,6 +183,7 @@ const fresh = await client.issues({
 ```
 
 ### Step 5: Batch Mutations
+
 Combine multiple mutations into one GraphQL request.
 
 ```typescript
@@ -209,6 +216,7 @@ async function batchArchive(client: LinearClient, issueIds: string[]) {
 ```
 
 ### Step 6: Rate Limit Monitor
+
 ```typescript
 class RateLimitMonitor {
   private remaining = { requests: 5000, complexity: 250000 };
@@ -246,6 +254,7 @@ class RateLimitMonitor {
 ## Examples
 
 ### Rate Limit Status Check
+
 ```bash
 curl -s -I -X POST https://api.linear.app/graphql \
   -H "Authorization: $LINEAR_API_KEY" \
@@ -254,6 +263,7 @@ curl -s -I -X POST https://api.linear.app/graphql \
 ```
 
 ### Safe Bulk Import
+
 ```typescript
 const rlClient = new RateLimitedClient(process.env.LINEAR_API_KEY!);
 const items = [/* issues to import */];
@@ -267,6 +277,7 @@ for (let i = 0; i < items.length; i++) {
 ```
 
 ## Resources
+
 - [Linear Rate Limiting](https://linear.app/developers/rate-limiting)
 - [Query Complexity](https://linear.app/developers/rate-limiting)
 - [Best Practices](https://linear.app/developers/graphql)

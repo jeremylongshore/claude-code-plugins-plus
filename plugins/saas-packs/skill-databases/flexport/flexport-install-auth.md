@@ -10,6 +10,7 @@ flexport-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Flexport SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Flexport integration.
 **Relates to:** Other flexport skills in this pack.

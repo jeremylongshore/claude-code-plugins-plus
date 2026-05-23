@@ -10,6 +10,7 @@ techsmith-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute TechSmith production deployment checklist
 **Workflow:** Part of the operations skill category for TechSmith integration.
 **Relates to:** Other techsmith skills in this pack.

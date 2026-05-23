@@ -44,6 +44,7 @@ The `.mcp.json` points to the Kobiton MCP server. Authentication is handled via 
   }
 }
 ```
+
 After installation and authentication, verify the plugin loaded by asking Claude: *"List my Kobiton devices"*. If tools aren't recognized, see [Troubleshooting](#troubleshooting).
 
 ### API Key Authentication (Alternative)
@@ -104,7 +105,6 @@ export KOBITON_AUTH="Basic $(echo -n 'username:apikey' | base64)"
 ## Skills
 
 - **run-automation-suite** -- Guided workflow that walks you through app upload, device selection, local Appium script execution (Node.js, Python, .NET, Java), and result collection.
-
 
 ## Running Automation Tests
 
@@ -179,6 +179,7 @@ Claude Code is not installed or not in your PATH.
   ```
 
   Then open a new terminal window and try `claude` again.
+
 </details>
 
 <details>
@@ -190,6 +191,7 @@ The plugin installed but tools don't appear or Claude doesn't recognize Kobiton 
 2. Try asking: *"List my Kobiton devices"*
 3. If still not working, quit Claude Code entirely and start a fresh session
 4. Verify `.mcp.json` exists in the plugin directory — it tells Claude where the Kobiton MCP server lives
+
 </details>
 
 <details>

@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code
 Production architecture for CRM integrations with the Attio REST API (`https://api.attio.com/v2`). Designed for contact enrichment pipelines, deal tracking across custom lists, bi-directional activity sync with external systems, and workspace isolation for multi-tenant deployments. Key design drivers: webhook-driven data freshness, idempotent upserts via PUT assertions, schema-aware caching, and layered separation between API client, business logic, and infrastructure.
 
 ## Architecture Diagram
+
 ```
 Your App ──→ Service Layer ──→ Cache (Redis) ──→ Attio REST API v2
                   ↓                               /objects/people/records
@@ -37,6 +38,7 @@ Your App ──→ Service Layer ──→ Cache (Redis) ──→ Attio REST AP
 ```
 
 ## Service Layer
+
 ```typescript
 class ContactService {
   constructor(private client: AttioClient, private cache: CacheLayer) {}
@@ -63,6 +65,7 @@ class ContactService {
 ```
 
 ## Caching Strategy
+
 ```typescript
 const CACHE_CONFIG = {
   schema:  { ttl: 1800, prefix: 'schema' },   // 30 min — object/attribute definitions change rarely
@@ -74,6 +77,7 @@ const CACHE_CONFIG = {
 ```
 
 ## Event Pipeline
+
 ```typescript
 class AttioEventPipeline {
   private queue = new Bull('attio-events', { redis: process.env.REDIS_URL });
@@ -95,6 +99,7 @@ class AttioEventPipeline {
 ```
 
 ## Data Model
+
 ```typescript
 interface AttioRecord       { id: { record_id: string; object_id: string }; values: Record<string, AttioValue[]>; created_at: string; }
 interface AttioValue        { attribute_type: string; [key: string]: unknown; }
@@ -103,6 +108,7 @@ interface SyncState         { objectSlug: string; lastSyncOffset: number; lastFu
 ```
 
 ## Scaling Considerations
+
 - Partition sync workers by Attio object type (people, companies, deals) to isolate rate limits
 - Use webhook-driven invalidation rather than polling — Attio delivers events within seconds
 - Batch record queries with `/records/query` pagination (500 per page) for full sync
@@ -110,6 +116,7 @@ interface SyncState         { objectSlug: string; lastSyncOffset: number; lastFu
 - Rate-limit outbound writes with p-queue to stay within Attio's per-workspace concurrency limits
 
 ## Error Handling
+
 | Component | Failure Mode | Recovery |
 |-----------|-------------|----------|
 | Contact upsert | Attio 429 rate limit | p-queue backoff with jitter, per-object circuit breaker |
@@ -119,10 +126,12 @@ interface SyncState         { objectSlug: string; lastSyncOffset: number; lastFu
 | External CRM sync | HubSpot API timeout | Queue retry with dead-letter, manual reconciliation flag |
 
 ## Resources
+
 - [Attio REST API Overview](https://docs.attio.com/rest-api/overview)
 - [Attio Objects and Lists](https://docs.attio.com/docs/objects-and-lists)
 - [Attio Webhooks Guide](https://docs.attio.com/rest-api/guides/webhooks)
 - [Attio Developer Platform](https://attio.com/platform/developers)
 
 ## Next Steps
+
 See `attio-deploy-integration`.

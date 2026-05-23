@@ -200,12 +200,14 @@ export async function collectKlaviyoDebugInfo(): Promise<KlaviyoDebugInfo> {
 ## Redaction Rules
 
 **ALWAYS redacted:**
+
 - API keys (`pk_***`)
 - Email addresses
 - Phone numbers
 - Webhook secrets
 
 **Safe to include:**
+
 - Error codes and HTTP status codes
 - SDK and runtime versions
 - Stack traces (with PII redacted)

@@ -10,6 +10,7 @@ maintainx-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure MaintainX CI/CD integration
 **Workflow:** Part of the cicd skill category for MaintainX integration.
 **Relates to:** Other maintainx skills in this pack.

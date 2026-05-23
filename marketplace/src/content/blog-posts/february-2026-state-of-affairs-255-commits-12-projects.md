@@ -118,4 +118,3 @@ Specific commitments:
 ---
 
 *Next month: less infrastructure, more product. And posts within 48 hours of shipping, not 18 days later.*
-

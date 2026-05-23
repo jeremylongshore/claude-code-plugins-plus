@@ -41,6 +41,7 @@ Aggregate cryptocurrency news from 50+ authoritative sources via RSS feeds with 
    - Time-specific: extract window (1h, 4h, 24h, 7d)
 
 2. **Run the aggregator** with appropriate filters:
+
    ```bash
    # Default scan (top 20, past 24h, relevance sorted)
    python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py
@@ -56,6 +57,7 @@ Aggregate cryptocurrency news from 50+ authoritative sources via RSS feeds with 
    ```
 
 3. **Export results** for downstream processing:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py --format json --output news.json
    ```

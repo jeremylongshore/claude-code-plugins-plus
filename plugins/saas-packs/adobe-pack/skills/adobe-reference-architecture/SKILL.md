@@ -98,6 +98,7 @@ my-adobe-project/
 ```
 
 **Rules:**
+
 - API layer never calls Adobe APIs directly — always through Service layer
 - Service layer orchestrates multiple Adobe clients (e.g., Firefly + Photoshop)
 - Adobe Client layer handles auth, retry, error classification

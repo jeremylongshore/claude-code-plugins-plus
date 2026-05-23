@@ -21,6 +21,7 @@ Analyze application performance including CPU usage, memory consumption, executi
 ## Output Format
 
 Provide a markdown report with:
+
 - Executive summary of performance characteristics
 - CPU hotspots with file locations
 - Memory usage patterns

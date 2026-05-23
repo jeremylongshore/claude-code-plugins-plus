@@ -10,6 +10,7 @@ customerio-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Customer.io monitoring and observability
 **Workflow:** Part of the enterprise skill category for Customer.io integration.
 **Relates to:** Other customerio skills in this pack.

@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Observability
 
 ## Overview
+
 Configure comprehensive observability for Vercel deployments using built-in analytics, runtime logs, log drains to external providers, OpenTelemetry integration, and custom instrumentation. Covers the full observability stack from function-level metrics to end-user experience monitoring.
 
 ## Prerequisites
+
 - Vercel Pro or Enterprise plan (for log drains and extended retention)
 - External logging provider (Datadog, Axiom, Sentry) — optional
 - OpenTelemetry SDK — optional
@@ -37,7 +39,9 @@ Configure comprehensive observability for Vercel deployments using built-in anal
 ## Instructions
 
 ### Step 1: Enable Vercel Analytics
+
 In the Vercel dashboard:
+
 1. Go to **Analytics** tab
 2. Enable **Web Analytics** (Core Web Vitals, page views)
 3. Enable **Speed Insights** (real user performance data)
@@ -64,6 +68,7 @@ export default function RootLayout({ children }) {
 Install: `npm install @vercel/analytics @vercel/speed-insights`
 
 ### Step 2: Runtime Logs
+
 ```bash
 # View runtime logs via CLI
 vercel logs https://my-app.vercel.app --follow
@@ -78,12 +83,14 @@ curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
 ```
 
 Runtime logs include:
+
 - Function invocation start/end with duration
 - `console.log/warn/error` output from functions
 - Edge Middleware execution logs
 - HTTP request/response metadata
 
 ### Step 3: Structured Logging in Functions
+
 ```typescript
 // lib/logger.ts — structured JSON logging
 interface LogEntry {
@@ -127,11 +134,13 @@ export async function GET(request: Request) {
 ```
 
 ### Step 4: Log Drains (External Providers)
+
 Configure log drains to send all Vercel logs to your logging provider:
 
 In dashboard: **Settings > Log Drains > Add**
 
 Supported providers:
+
 | Provider | Type | Setup |
 |----------|------|-------|
 | Datadog | HTTP | API key + site URL |
@@ -141,6 +150,7 @@ Supported providers:
 | Grafana Loki | HTTP | Push URL + auth |
 
 Log drain delivers:
+
 - **Runtime logs**: function invocations, console output
 - **Build logs**: build step output, warnings, errors
 - **Static logs**: CDN access logs (edge)
@@ -161,6 +171,7 @@ curl -X POST "https://api.vercel.com/v2/integrations/log-drains" \
 ```
 
 ### Step 5: OpenTelemetry Integration
+
 ```typescript
 // instrumentation.ts (Next.js 13.4+)
 import { NodeSDK } from '@opentelemetry/sdk-node';
@@ -189,6 +200,7 @@ module.exports = {
 ```
 
 ### Step 6: Error Tracking with Sentry
+
 ```bash
 npx @sentry/wizard@latest -i nextjs
 ```
@@ -217,6 +229,7 @@ Sentry.init({
 | Edge cache hit rate | Static logs | < 80% |
 
 ## Output
+
 - Vercel Analytics and Speed Insights enabled
 - Structured JSON logging in all functions
 - Log drains configured to external provider
@@ -224,6 +237,7 @@ Sentry.init({
 - OpenTelemetry tracing for distributed systems
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Logs missing | Log retention expired (1hr free, 30d with Plus) | Enable log drains for persistence |
@@ -233,6 +247,7 @@ Sentry.init({
 | OTEL traces missing | instrumentation.ts not loaded | Enable `instrumentationHook` in next.config.js |
 
 ## Resources
+
 - [Vercel Observability](https://vercel.com/docs/observability)
 - [Runtime Logs](https://vercel.com/docs/logs/runtime)
 - [Vercel Analytics](https://vercel.com/docs/analytics)
@@ -241,4 +256,5 @@ Sentry.init({
 - [OpenTelemetry + Next.js](https://nextjs.org/docs/app/building-your-application/optimizing/open-telemetry)
 
 ## Next Steps
+
 For incident response, see `vercel-incident-runbook`.

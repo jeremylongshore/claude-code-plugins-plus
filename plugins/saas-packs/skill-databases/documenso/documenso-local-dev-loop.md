@@ -10,6 +10,7 @@ documenso-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Documenso local development workflow
 **Workflow:** Part of the onboarding skill category for Documenso integration.
 **Relates to:** Other documenso skills in this pack.

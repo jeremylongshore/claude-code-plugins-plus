@@ -3,6 +3,7 @@
 ## Context Truncation
 
 ### Smart Truncation
+
 ```python
 class ContextManager:
     """Manage context window efficiently."""

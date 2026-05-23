@@ -3,6 +3,7 @@
 ## Request Optimization
 
 ### Minimize Token Usage
+
 ```python
 def optimize_request(
     prompt: str,
@@ -45,6 +46,7 @@ def fast_chat(prompt: str, model: str = "anthropic/claude-3-haiku"):
 ```
 
 ### Streaming for Perceived Speed
+
 ```python
 def stream_response(prompt: str, model: str = "anthropic/claude-3-haiku"):
     """Stream response for faster time-to-first-token."""

@@ -14,6 +14,7 @@ Comprehensive cryptocurrency tax calculation system with support for multiple ac
 When calculating cryptocurrency taxes, implement comprehensive tax calculation across all taxable events:
 
 ### Required Parameters
+
 - **Tax Year**: Year for tax calculation (2024, 2023, etc.)
 - **Jurisdiction**: US, UK, EU, AU, CA, or custom
 - **Accounting Method**: FIFO, LIFO, HIFO, Specific Identification
@@ -21,6 +22,7 @@ When calculating cryptocurrency taxes, implement comprehensive tax calculation a
 - **Income Types**: Trading, staking, mining, airdrops, DeFi
 
 ### Supported Transaction Types
+
 1. **Trading**: Buy, sell, swap, conversions
 2. **DeFi**: Staking rewards, liquidity pool fees, yield farming
 3. **Mining**: Block rewards, mining pool payouts
@@ -1169,6 +1171,7 @@ if __name__ == "__main__":
 ### United States (IRS)
 
 **Key Requirements:**
+
 - Report all crypto transactions on Form 8949 and Schedule D
 - Report ordinary income (staking, mining, airdrops) on Schedule 1
 - De minimis exception: Personal transactions under $200 may be exempt
@@ -1176,11 +1179,13 @@ if __name__ == "__main__":
 - FinCEN Form 114: Required for foreign exchange accounts over $10k
 
 **Tax Rates (2024):**
+
 - Short-term capital gains: Ordinary income rates (10%-37%)
 - Long-term capital gains: 0%, 15%, or 20% based on income
 - Net Investment Income Tax: Additional 3.8% for high earners
 
 **Common Pitfalls:**
+
 - Failing to report crypto-to-crypto trades
 - Not tracking cost basis properly
 - Misclassifying staking rewards as capital gains
@@ -1189,6 +1194,7 @@ if __name__ == "__main__":
 ### United Kingdom (HMRC)
 
 **Key Requirements:**
+
 - Report on Self Assessment tax return (SA108)
 - Same-day rule: Acquisitions on same day as disposal
 - Bed and breakfast rule: 30-day lookback for repurchases
@@ -1196,18 +1202,21 @@ if __name__ == "__main__":
 - Pooling: UK uses share pool accounting for most crypto
 
 **Tax Rates:**
+
 - Capital Gains Tax: 10% or 20% depending on income band
 - Income Tax on crypto earnings: 20%-45%
 
 ### European Union (DAC8)
 
 **Key Requirements:**
+
 - Mandatory reporting for crypto service providers
 - Cross-border information exchange
 - MiFID II compliance for some crypto assets
 - AMLD5 anti-money laundering requirements
 
 **Member State Variations:**
+
 - Germany: Tax-free after 1 year holding
 - France: Flat 30% tax on gains
 - Portugal: Generally tax-free for individuals
@@ -1215,6 +1224,7 @@ if __name__ == "__main__":
 ### Australia (ATO)
 
 **Key Requirements:**
+
 - Report on myTax CGT schedule
 - 50% CGT discount for assets held >12 months
 - Personal use asset exemption: Under $10,000 for personal spending
@@ -1222,6 +1232,7 @@ if __name__ == "__main__":
 ### Canada (CRA)
 
 **Key Requirements:**
+
 - Report on Schedule 3
 - 50% capital gains inclusion rate
 - Superficial loss rules: 30-day restriction
@@ -1238,6 +1249,7 @@ While wash sales don't currently apply to cryptocurrency in the US, best practic
 ## Audit Trail Requirements
 
 Maintain records for at least 7 years:
+
 - Complete transaction history from all exchanges
 - Wallet addresses and blockchain transaction IDs
 - Historical price data and valuation methods

@@ -228,11 +228,13 @@ npx tsx webflow-diagnostics.ts
 ## Sensitive Data Handling
 
 **ALWAYS REDACT before sharing:**
+
 - API tokens and OAuth secrets
 - Customer emails and PII from form submissions
 - Webhook secrets
 
 **Safe to include:**
+
 - HTTP status codes and error messages
 - SDK/Node.js versions
 - Site IDs and collection IDs (not sensitive)

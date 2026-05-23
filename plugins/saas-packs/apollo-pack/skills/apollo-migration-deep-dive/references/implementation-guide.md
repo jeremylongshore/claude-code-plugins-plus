@@ -5,6 +5,7 @@
 # Apollo Migration Deep Dive
 
 ## Overview
+
 Comprehensive guide for migrating to Apollo.io from other CRMs and data sources, including data mapping, validation, and rollback strategies.
 
 ## Migration Planning
@@ -533,6 +534,7 @@ router.post('/migration/rollback/:phase', async (req, res) => {
 ```
 
 ## Output
+
 - Pre-migration assessment framework
 - Field mapping configurations
 - Phased migration strategy
@@ -541,6 +543,7 @@ router.post('/migration/rollback/:phase', async (req, res) => {
 - Rollback procedures
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | Field mapping error | Review and fix mapping |
@@ -549,9 +552,11 @@ router.post('/migration/rollback/:phase', async (req, res) => {
 | Rollback needed | Execute phase rollback |
 
 ## Resources
+
 - [Apollo Import Documentation](https://knowledge.apollo.io/hc/en-us/articles/4415154183053)
 - [Salesforce Export Guide](https://help.salesforce.com/s/articleView?id=sf.exporting_data.htm)
 - [HubSpot Export Guide](https://knowledge.hubspot.com/crm-setup/export-contacts-companies-deals-or-tickets)
 
 ## Completion
+
 This completes the Apollo skill pack. All 24 skills are now available for Claude Code users integrating with Apollo.io.

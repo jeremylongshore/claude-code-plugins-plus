@@ -9,6 +9,7 @@ Build, manage, and optimize Firebase/Firestore databases with AI-powered agents 
 ## Features
 
 ### Core Capabilities
+
 - **CRUD Operations** - Create, read, update, delete with batch support
 - **Security Rules** - Generate, validate, and deploy Firestore security rules
 - **Data Migration** - Migrate data between collections, projects, or environments
@@ -19,12 +20,14 @@ Build, manage, and optimize Firebase/Firestore databases with AI-powered agents 
 - **Collection Management** - Schema validation, indexing, and organization
 
 ### AI Agents
+
 - **firebase-operations-agent** - CRUD, queries, batch operations
 - **firestore-security-agent** - Security rules generation and validation
 - **firestore-migration-agent** - Data migration and transformation
 - **firestore-optimizer-agent** - Performance and cost optimization
 
 ### Commands
+
 - `/firestore-setup` - Initialize Firebase SDK and credentials
 - `/firestore-query` - Interactive query builder
 - `/firestore-migrate` - Guided migration workflow
@@ -119,6 +122,7 @@ Agent:
 ```
 
 Agent generates:
+
 ```javascript
 rules_version = '2';
 service cloud.firestore {
@@ -147,6 +151,7 @@ service cloud.firestore {
 ```
 
 Agent workflow:
+
 1. **Connects to staging** - Reads source collection
 2. **Transforms data** - Anonymizes PII fields
 3. **Validates** - Checks schema compatibility
@@ -162,6 +167,7 @@ Agent workflow:
 ```
 
 Agent executes:
+
 - Queries in batches of 500 documents
 - Uses batch writes for efficiency (reduces costs 10x)
 - Handles rate limits automatically
@@ -176,6 +182,7 @@ Agent executes:
 ```
 
 Agent analyzes:
+
 - **Missing indexes** - Identifies composite indexes needed
 - **Query patterns** - Finds inefficient queries
 - **Collection structure** - Suggests denormalization opportunities
@@ -191,18 +198,21 @@ Agent analyzes:
 **Purpose:** Handle all Firestore CRUD operations, queries, and batch processing
 
 **Use when:**
+
 - Creating, reading, updating, or deleting documents
 - Running complex queries with filters and ordering
 - Batch operations on multiple documents
 - Collection management
 
 **Trigger phrases:**
+
 - "create a document in..."
 - "query the users collection..."
 - "batch update all documents where..."
 - "delete documents matching..."
 
 **Example:**
+
 ```
 User: "Get the 10 most recent orders for user123"
 
@@ -218,18 +228,21 @@ Agent:
 **Purpose:** Generate, validate, and deploy Firestore security rules
 
 **Use when:**
+
 - Creating new security rules
 - Validating existing rules
 - Troubleshooting permission errors
 - Implementing authentication patterns
 
 **Trigger phrases:**
+
 - "create security rules for..."
 - "validate my firestore rules..."
 - "fix permission denied error..."
 - "implement role-based access..."
 
 **Example:**
+
 ```
 User: "Create rules for a chat app with public rooms and private messages"
 
@@ -248,18 +261,21 @@ Agent:
 **Purpose:** Migrate data between collections, projects, or environments
 
 **Use when:**
+
 - Moving data between environments (staging → production)
 - Restructuring collections
 - Backfilling data
 - Importing/exporting data
 
 **Trigger phrases:**
+
 - "migrate data from..."
 - "copy collection to..."
 - "restructure the users collection..."
 - "backfill missing fields..."
 
 **Example:**
+
 ```
 User: "Migrate users collection to a new structure with nested addresses"
 
@@ -276,18 +292,21 @@ Agent:
 **Purpose:** Optimize Firestore performance and reduce costs
 
 **Use when:**
+
 - Slow queries need optimization
 - Monthly costs are too high
 - Need index recommendations
 - Want to analyze usage patterns
 
 **Trigger phrases:**
+
 - "optimize my firestore performance..."
 - "reduce firebase costs..."
 - "why is this query slow..."
 - "analyze my firestore usage..."
 
 **Example:**
+
 ```
 User: "Why is my users query so slow?"
 
@@ -349,24 +368,28 @@ module.exports = {
 ## Best Practices
 
 ### Security Rules
+
 - **Never allow open access** - Always require authentication
 - **Validate all writes** - Check field types and values
 - **Limit read scope** - Only allow reading necessary data
 - **Test rules thoroughly** - Use Firebase Emulator Suite
 
 ### Performance
+
 - **Use indexes** - Create composite indexes for complex queries
 - **Batch operations** - Use batch writes for multiple documents
 - **Denormalize data** - Duplicate data to avoid joins
 - **Paginate results** - Use cursor-based pagination for large datasets
 
 ### Cost Optimization
+
 - **Cache frequently read data** - Use in-memory caching
 - **Minimize document reads** - Use `select()` to read specific fields
 - **Archive old data** - Move historical data to Cloud Storage
 - **Monitor usage** - Set up billing alerts
 
 ### Data Modeling
+
 - **Keep documents small** - Max 1MB per document
 - **Use subcollections** - For nested data hierarchies
 - **Plan for scale** - Design for millions of documents
@@ -587,16 +610,19 @@ exports.onUserCreate = functions.firestore
 ## Resources
 
 ### Firebase Documentation
+
 - [Firestore Documentation](https://firebase.google.com/docs/firestore)
 - [Security Rules](https://firebase.google.com/docs/firestore/security/get-started)
 - [Best Practices](https://firebase.google.com/docs/firestore/best-practices)
 
 ### Plugin Resources
+
 - [GitHub Repository](https://github.com/jeremylongshore/claude-code-plugins)
 - [Issue Tracker](https://github.com/jeremylongshore/claude-code-plugins/issues)
 - [Marketplace](https://claudecodeplugins.io/)
 
 ### Community
+
 - [Discord](https://discord.com/invite/6PPFFzqPDZ) (#claude-code channel)
 - [GitHub Discussions](https://github.com/jeremylongshore/claude-code-plugins/discussions)
 

@@ -3,6 +3,7 @@
 ## Health-Based Routing
 
 ### Health-Aware Balancer
+
 ```python
 class HealthyBalancer:
     def __init__(self, api_keys: list):

@@ -26,11 +26,13 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Known Pitfalls
 
 ## Overview
+
 Real gotchas when building on Replit. Each pitfall includes what goes wrong, why, and the correct pattern. Based on common failures in Replit's ephemeral container model, Nix-based environment, and cloud hosting platform.
 
 ## Pitfall Reference
 
 ### 1. Writing to Local Filesystem for Persistence
+
 **What happens:** Data is lost when the container restarts, deploys, or sleeps.
 
 ```python
@@ -53,6 +55,7 @@ storage.upload_from_text("user_data.json", json.dumps(data))
 ---
 
 ### 2. Hardcoding Secrets in Source Code
+
 **What happens:** Secrets are visible to anyone who views your Repl (public by default on free plans). Replit's Secret Scanner catches some cases but not all.
 
 ```python
@@ -69,6 +72,7 @@ DATABASE_URL = os.environ["DATABASE_URL"]
 ---
 
 ### 3. Binding to localhost Instead of 0.0.0.0
+
 **What happens:** App starts but Webview is blank. Replit's proxy can't reach the app.
 
 ```typescript
@@ -87,6 +91,7 @@ app.listen(PORT, '0.0.0.0');
 ---
 
 ### 4. Ignoring Nix System Dependencies
+
 **What happens:** Python packages with C extensions (Pillow, psycopg2, cryptography) fail to build with cryptic errors.
 
 ```nix
@@ -114,6 +119,7 @@ app.listen(PORT, '0.0.0.0');
 ---
 
 ### 5. Using Replit KV Database for Large Data
+
 **What happens:** Writes fail silently or throw errors after hitting the 50 MiB limit.
 
 ```python
@@ -137,6 +143,7 @@ pool.query("INSERT INTO images (url, metadata) VALUES ($1, $2)", [url, meta])
 ---
 
 ### 6. Expecting Auth Headers in Development
+
 **What happens:** `X-Replit-User-Id` is always undefined in Workspace Webview.
 
 ```typescript
@@ -165,6 +172,7 @@ app.get('/api/me', (req, res) => {
 ---
 
 ### 7. Using "Always On" Instead of Deployments
+
 **What happens:** Legacy "Always On" feature is more expensive and less reliable than modern Deployments.
 
 ```markdown
@@ -185,6 +193,7 @@ GOOD (modern):
 ---
 
 ### 8. Forgetting to Close Database Connections
+
 **What happens:** Connection pool exhaustion. New requests fail with timeout errors.
 
 ```python
@@ -220,6 +229,7 @@ atexit.register(db.close)  # Clean termination
 ---
 
 ### 9. Not Handling SIGTERM
+
 **What happens:** Container stops mid-request. In-progress work is lost.
 
 ```typescript
@@ -239,6 +249,7 @@ process.on('SIGTERM', async () => {
 ---
 
 ### 10. Mixing npm and System Packages
+
 **What happens:** Confusion between Nix system packages and npm/pip language packages.
 
 ```markdown
@@ -262,6 +273,7 @@ Common mistake:
 ```
 
 ## Quick Audit Script
+
 ```bash
 #!/bin/bash
 echo "=== Replit Pitfall Audit ==="
@@ -288,6 +300,7 @@ grep -rn "SIGTERM" --include="*.py" --include="*.ts" --include="*.js" . 2>/dev/n
 ```
 
 ## Resources
+
 - [Replit Docs](https://docs.replit.com)
 - [Nix on Replit](https://docs.replit.com/programming-ide/nix-on-replit)
 - [Replit Database](https://docs.replit.com/cloud-services/storage-and-databases/replit-database)
@@ -295,4 +308,5 @@ grep -rn "SIGTERM" --include="*.py" --include="*.ts" --include="*.js" . 2>/dev/n
 - [Secure Vibe Coding](https://blog.replit.com/16-ways-to-vibe-code-securely)
 
 ## Next Steps
+
 For production readiness, see `replit-prod-checklist`.

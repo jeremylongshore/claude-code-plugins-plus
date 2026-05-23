@@ -32,6 +32,7 @@ claude plugin update claudebase@rohithzr
 claude plugin uninstall claudebase@rohithzr
 claude plugin marketplace remove rohithzr
 ```
+
 </details>
 
 ## Quick Start
@@ -117,6 +118,7 @@ Desktop:  /sync-pull && /sync-push --force
 CI Box:   /sync-pull && /sync-push --force
 Laptop:   /sync-pull              # Gets everything
 ```
+
 </details>
 
 ## What Gets Synced
@@ -180,6 +182,7 @@ Push is blocked if a different machine pushed since your last sync — pull firs
 ```
 
 Claudebase also registers two lifecycle hooks:
+
 - **SessionStart** — quiet diff check (tells you if config is out of sync)
 - **SessionEnd** — auto-pushes if `auto_push` is enabled
 
@@ -193,12 +196,14 @@ Claudebase uses `gh` for all GitHub operations — no tokens to manage, no OAuth
 <summary>Platform-specific install instructions</summary>
 
 **macOS**
+
 ```bash
 brew install gh jq git
 gh auth login
 ```
 
 **Linux (Debian/Ubuntu)**
+
 ```bash
 # GitHub CLI (https://github.com/cli/cli/blob/trunk/docs/install_linux.md)
 (type -p wget >/dev/null || sudo apt-get install wget -y) \
@@ -215,11 +220,13 @@ gh auth login
 ```
 
 **Windows** — Install [Git for Windows](https://git-scm.com/download/win) (includes Git Bash), then:
+
 ```powershell
 winget install GitHub.cli
 winget install jqlang.jq
 gh auth login
 ```
+
 </details>
 
 ## Contributing

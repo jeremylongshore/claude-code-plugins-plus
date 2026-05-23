@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Security Basics
 
 ## Overview
+
 Security best practices for Exa API integrations. Exa authenticates via the `x-api-key` header. Key security concerns include API key protection, content moderation for search results, domain filtering to prevent exposure to malicious sources, and query sanitization.
 
 ## Prerequisites
+
 - Exa API key from dashboard.exa.ai
 - Understanding of environment variable management
 - `.gitignore` configured for secrets
@@ -36,6 +38,7 @@ Security best practices for Exa API integrations. Exa authenticates via the `x-a
 ## Instructions
 
 ### Step 1: API Key Management
+
 ```bash
 # .env (NEVER commit to git)
 EXA_API_KEY=your-api-key-here
@@ -63,6 +66,7 @@ function createSecureClient(): Exa {
 ```
 
 ### Step 2: Enable Content Moderation
+
 ```typescript
 const exa = new Exa(process.env.EXA_API_KEY);
 
@@ -78,6 +82,7 @@ const results = await exa.searchAndContents(
 ```
 
 ### Step 3: Domain Filtering for Safety
+
 ```typescript
 // Restrict results to trusted domains for sensitive use cases
 const TRUSTED_DOMAINS = [
@@ -107,6 +112,7 @@ async function searchWithBlocklist(query: string) {
 ```
 
 ### Step 4: Query Sanitization
+
 ```typescript
 // Sanitize user-provided queries before sending to Exa
 function sanitizeQuery(input: string): string {
@@ -132,6 +138,7 @@ const results = await exa.search(userQuery, {
 ```
 
 ### Step 5: Per-Environment Key Isolation
+
 ```typescript
 // Use separate API keys per environment
 const KEY_MAP: Record<string, string> = {
@@ -149,6 +156,7 @@ function getExaForEnv(): Exa {
 ```
 
 ## Security Checklist
+
 - [ ] API key stored in environment variables (never hardcoded)
 - [ ] `.env` files in `.gitignore`
 - [ ] Separate API keys for dev/staging/production
@@ -159,6 +167,7 @@ function getExaForEnv(): Exa {
 - [ ] Git history scanned for accidentally committed keys
 
 ## Error Handling
+
 | Security Issue | Detection | Mitigation |
 |----------------|-----------|------------|
 | Exposed API key | `git log -p` search | Rotate key immediately at dashboard.exa.ai |
@@ -169,6 +178,7 @@ function getExaForEnv(): Exa {
 ## Examples
 
 ### Scan Git History for Leaked Keys
+
 ```bash
 set -euo pipefail
 # Check if API key was ever committed
@@ -176,6 +186,7 @@ git log -p --all -S "EXA_API_KEY" -- "*.ts" "*.js" "*.py" "*.env" | head -20
 ```
 
 ### Key Rotation Procedure
+
 ```bash
 set -euo pipefail
 # 1. Generate new key in dashboard.exa.ai
@@ -191,8 +202,10 @@ curl -s -o /dev/null -w "%{http_code}" \
 ```
 
 ## Resources
+
 - [Exa API Authentication](https://docs.exa.ai/reference/getting-started)
 - [Exa Error Codes](https://docs.exa.ai/reference/error-codes)
 
 ## Next Steps
+
 For production deployment, see `exa-prod-checklist`.

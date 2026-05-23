@@ -19,14 +19,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Retell AI Core Workflow A
 
 ## Overview
+
 Build and configure voice agents with custom prompts, function calling, and call flow logic.
 
 ## Prerequisites
+
 - Completed `retellai-hello-world`
 
 ## Instructions
 
 ### Step 1: Agent with Function Calling
+
 ```typescript
 const llm = await retell.llm.create({
   model: 'gpt-4o',
@@ -57,6 +60,7 @@ const llm = await retell.llm.create({
 ```
 
 ### Step 2: Configure Voice and Behavior
+
 ```typescript
 const agent = await retell.agent.create({
   response_engine: { type: 'retell-llm', llm_id: llm.llm_id },
@@ -72,6 +76,7 @@ const agent = await retell.agent.create({
 ```
 
 ### Step 3: Update Agent Configuration
+
 ```typescript
 await retell.agent.update(agent.agent_id, {
   voice_id: '11labs-Dorothy',  // Change voice
@@ -80,11 +85,13 @@ await retell.agent.update(agent.agent_id, {
 ```
 
 ## Output
+
 - Agent with custom LLM prompt and function calling
 - Voice and behavior configuration
 - Real-time function execution during calls
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Function not triggering | Prompt doesn't guide to function | Include function use in prompt |
@@ -92,8 +99,10 @@ await retell.agent.update(agent.agent_id, {
 | Call ending too early | Short silence timeout | Increase `end_call_after_silence_ms` |
 
 ## Resources
+
 - [Retell AI Documentation](https://docs.retellai.com)
 - [retell-sdk npm](https://www.npmjs.com/package/retell-sdk)
 
 ## Next Steps
+
 Phone call management: `retellai-core-workflow-b`

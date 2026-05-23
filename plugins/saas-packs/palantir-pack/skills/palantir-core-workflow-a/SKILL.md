@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Core Workflow A — Data Pipelines with Transforms
 
 ## Overview
+
 Build Foundry data pipelines using the `transforms-python` library. Covers the `@transform` and `@transform_df` decorators, input/output dataset wiring, incremental transforms, and `@configure` for Spark tuning. This is the primary workflow for all data processing in Foundry.
 
 ## Prerequisites
+
 - Completed `palantir-install-auth` setup
 - A Foundry Code Repository (Python Transforms type)
 - Understanding of PySpark DataFrames (Foundry runs Spark under the hood)
@@ -37,6 +39,7 @@ Build Foundry data pipelines using the `transforms-python` library. Covers the `
 ## Instructions
 
 ### Step 1: Project Structure
+
 ```
 my-transforms-repo/
 ├── src/
@@ -51,6 +54,7 @@ my-transforms-repo/
 ```
 
 ### Step 2: Basic Transform with @transform_df
+
 ```python
 # src/myproject/pipeline.py
 from transforms.api import transform_df, Input, Output
@@ -74,6 +78,7 @@ def clean_orders(orders):
 ```
 
 ### Step 3: Multi-Input Join Transform
+
 ```python
 @transform_df(
     Output("/Company/datasets/order_enriched"),
@@ -100,6 +105,7 @@ def enrich_orders(orders, customers):
 ```
 
 ### Step 4: Low-Level @transform for File I/O
+
 ```python
 from transforms.api import transform, Input, Output
 
@@ -124,6 +130,7 @@ def generate_summary(orders, output):
 ```
 
 ### Step 5: Incremental Transforms
+
 ```python
 from transforms.api import transform_df, Input, Output, incremental
 
@@ -140,6 +147,7 @@ def process_events_incrementally(events):
 ```
 
 ### Step 6: Configure Spark Resources
+
 ```python
 from transforms.api import transform_df, Input, Output, configure
 
@@ -160,12 +168,14 @@ def heavy_compute(data):
 ```
 
 ## Output
+
 - Dataset-to-dataset transforms wired with `@transform_df`
 - Multi-input joins connecting datasets across projects
 - Incremental processing for append-only sources
 - Spark resource tuning with `@configure`
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `DatasetNotFound` | Wrong path string | Check dataset path in Foundry UI (right-click > Copy path) |
@@ -177,6 +187,7 @@ def heavy_compute(data):
 ## Examples
 
 ### Polars Transform (Lightweight)
+
 ```python
 from transforms.api import transform_polars, Input, Output
 
@@ -191,12 +202,14 @@ def fast_polars(data):
 ```
 
 ## Resources
+
 - [Python Transforms Guide](https://www.palantir.com/docs/foundry/transforms-python/transforms)
 - [Transforms API Reference](https://www.palantir.com/docs/foundry/transforms-python/transforms-python-api)
 - [@configure Reference](https://www.palantir.com/docs/foundry/api-reference/transforms-python-library/api-configure)
 - [Incremental Transforms](https://www.palantir.com/docs/foundry/transforms-python/transforms-pipelines)
 
 ## Next Steps
+
 - Query Ontology objects and actions: `palantir-core-workflow-b`
 - Optimize pipeline performance: `palantir-performance-tuning`
 - Deploy across environments: `palantir-multi-env-setup`

@@ -10,6 +10,7 @@ replit-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement reliability patterns including graceful degradation, health checks, and disaster recovery for Replit apps.
 **Workflow:** Production resilience skill - ensures applications handle failures gracefully.
 **Relates to:** Builds on replit-observability; complements replit-deployments for production.

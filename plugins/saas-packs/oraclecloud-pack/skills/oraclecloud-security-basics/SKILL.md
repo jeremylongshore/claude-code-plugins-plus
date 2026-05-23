@@ -58,11 +58,13 @@ Allow <subject> to <verb> <resource-type> in <location> [where <conditions>]
 ```
 
 **Subject types:**
+
 - `group <group-name>` — IAM user group
 - `dynamic-group <dg-name>` — resource principals (instances, functions)
 - `any-user` — every authenticated user (use with extreme caution)
 
 **Location types:**
+
 - `tenancy` — entire tenancy (root-level policy only)
 - `compartment <name>` — specific compartment
 - `compartment id <ocid>` — by OCID (for automation)
@@ -209,6 +211,7 @@ print(f"Authenticated as: {user.name} ({user.email})")
 ## Output
 
 Successful completion produces:
+
 - IAM policies granting appropriate access levels per group/role
 - An API key pair with the public key uploaded to OCI Console
 - A validated `~/.oci/config` file with correct user, fingerprint, tenancy, region, and key_file

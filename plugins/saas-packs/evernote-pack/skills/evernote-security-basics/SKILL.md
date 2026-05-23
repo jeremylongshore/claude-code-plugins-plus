@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Security Basics
 
 ## Overview
+
 Security best practices for Evernote API integrations, covering credential management, OAuth hardening, token storage, data protection, and secure logging patterns.
 
 ## Prerequisites
+
 - Evernote SDK setup
 - Understanding of OAuth 1.0a
 - Basic cryptography concepts (AES encryption, hashing)
@@ -87,6 +89,7 @@ Track token expiration (`edam_expires`), implement proactive refresh before expi
 For the complete security implementation including encrypted storage, CSRF-protected OAuth, input validation, and audit logging, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
+
 - Environment-based credential management with validation
 - CSRF-protected OAuth 1.0a flow
 - AES-256-GCM encrypted token storage
@@ -95,6 +98,7 @@ For the complete security implementation including encrypted storage, CSRF-prote
 - Token expiration tracking and refresh
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `INVALID_AUTH` | Token revoked or invalid | Re-authenticate via OAuth; check token not corrupted during encryption |
@@ -103,12 +107,14 @@ For the complete security implementation including encrypted storage, CSRF-prote
 | CSRF mismatch | Session expired or attack attempt | Regenerate CSRF token and restart OAuth flow |
 
 ## Resources
+
 - [OAuth Documentation](https://dev.evernote.com/doc/articles/authentication.php)
 - [API Key Permissions](https://dev.evernote.com/doc/articles/permissions.php)
 - [OWASP Security Guidelines](https://owasp.org/www-project-web-security-testing-guide/)
 - [Node.js Crypto (AES)](https://nodejs.org/api/crypto.html)
 
 ## Next Steps
+
 For production deployment checklist, see `evernote-prod-checklist`.
 
 ## Examples

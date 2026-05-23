@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq Core Workflow A: Chat, Tools & Structured Output
 
 ## Overview
+
 Primary integration patterns for Groq: chat completions, tool/function calling, JSON mode, and structured outputs. Groq's LPU delivers sub-200ms time-to-first-token, making these patterns viable for real-time user-facing features.
 
 ## Prerequisites
+
 - `groq-sdk` installed, `GROQ_API_KEY` set
 - Understanding of Groq model capabilities
 
@@ -43,6 +45,7 @@ Primary integration patterns for Groq: chat completions, tool/function calling, 
 ## Instructions
 
 ### Step 1: Chat Completion with System Prompt
+
 ```typescript
 import Groq from "groq-sdk";
 
@@ -70,6 +73,7 @@ async function chat(userMessage: string, history: any[] = []) {
 ```
 
 ### Step 2: Tool Use / Function Calling
+
 ```typescript
 // Define tools with JSON Schema
 const tools: Groq.Chat.ChatCompletionTool[] = [
@@ -161,6 +165,7 @@ async function executeFunction(name: string, args: any): Promise<any> {
 ```
 
 ### Step 3: JSON Mode
+
 ```typescript
 // Force model to return valid JSON
 async function extractJSON(text: string) {
@@ -182,6 +187,7 @@ async function extractJSON(text: string) {
 ```
 
 ### Step 4: Structured Outputs (Strict Schema)
+
 ```typescript
 // Guaranteed schema compliance -- no validation needed
 async function extractStructured(text: string) {
@@ -219,6 +225,7 @@ async function extractStructured(text: string) {
 **Limitation**: Streaming and tool use are not supported with Structured Outputs. Use non-streaming mode when using `response_format` with `json_schema`.
 
 ### Step 5: Multi-Turn Conversation
+
 ```typescript
 class GroqConversation {
   private messages: Groq.Chat.ChatCompletionMessageParam[] = [];
@@ -244,6 +251,7 @@ class GroqConversation {
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `tool_calls` with malformed JSON | Model hallucinated arguments | Wrap `JSON.parse` in try/catch, retry with lower temperature |
@@ -252,9 +260,11 @@ class GroqConversation {
 | Tool call loop | Model keeps calling tools | Set `tool_choice: "none"` on final completion |
 
 ## Resources
+
 - [Groq Tool Use Docs](https://console.groq.com/docs/tool-use)
 - [Groq Structured Outputs](https://console.groq.com/docs/structured-outputs)
 - [Groq Text Generation](https://console.groq.com/docs/text-chat)
 
 ## Next Steps
+
 For audio, vision, and speech workflows, see `groq-core-workflow-b`.

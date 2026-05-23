@@ -10,6 +10,7 @@ miro-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Miro common errors
 **Workflow:** Part of the operations skill category for Miro integration.
 **Relates to:** Other miro skills in this pack.

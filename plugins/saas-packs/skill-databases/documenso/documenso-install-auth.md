@@ -10,6 +10,7 @@ documenso-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Documenso SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Documenso integration.
 **Relates to:** Other documenso skills in this pack.

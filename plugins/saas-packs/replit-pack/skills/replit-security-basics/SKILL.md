@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Security Basics
 
 ## Overview
+
 Security best practices for Replit: Secrets (AES-256 encrypted env vars), REPL_IDENTITY token verification, Auth header trust model, public Repl exposure risks, and Secret Scanner protection.
 
 ## Prerequisites
+
 - Replit account with Workspace access
 - Understanding of environment variables
 - Deployed app (for Auth security)
@@ -37,6 +39,7 @@ Security best practices for Replit: Secrets (AES-256 encrypted env vars), REPL_I
 ## Instructions
 
 ### Step 1: Secrets Management
+
 Replit Secrets are AES-256 encrypted at rest with TLS in transit. Keys rotate regularly. Two scopes:
 
 ```markdown
@@ -58,6 +61,7 @@ if (missing.length) {
 **Secret Scanner**: Replit detects when you paste API keys into code files and warns you to store them as Secrets instead. Never dismiss this warning.
 
 ### Step 2: Public Repl Safety
+
 Replit Repls are **public by default** on free plans. Your source code is visible to anyone.
 
 ```python
@@ -79,6 +83,7 @@ API_KEY = os.environ.get("API_KEY")
 ```
 
 ### Step 3: REPL_IDENTITY Token Verification
+
 Every Repl gets a `REPL_IDENTITY` environment variable — a PASETO token signed by Replit infrastructure. Use it for service-to-service authentication between Repls.
 
 ```typescript
@@ -108,6 +113,7 @@ app.post('/internal/api', (req, res) => {
 ```
 
 ### Step 4: Auth Header Trust Model
+
 Replit Auth headers (`X-Replit-User-*`) are injected by Replit's proxy. They can be trusted on deployed apps but NOT on external networks.
 
 ```typescript
@@ -131,6 +137,7 @@ function isSecureContext(): boolean {
 ```
 
 ### Step 5: Database Security
+
 ```typescript
 // PostgreSQL: connection string is secure by default on newer Replit databases
 // Even if DATABASE_URL is leaked, it cannot be used outside your Repl
@@ -147,6 +154,7 @@ const result = await pool.query('SELECT * FROM users WHERE name = $1', [name]);
 ```
 
 ### Step 6: Security Checklist
+
 ```markdown
 ## Replit Security Audit Checklist
 
@@ -176,6 +184,7 @@ const result = await pool.query('SELECT * FROM users WHERE name = $1', [name]);
 ```
 
 ## Error Handling
+
 | Security Issue | Detection | Mitigation |
 |----------------|-----------|------------|
 | Secret in source code | Secret Scanner alert | Move to Secrets tab immediately |
@@ -185,10 +194,12 @@ const result = await pool.query('SELECT * FROM users WHERE name = $1', [name]);
 | Stack trace exposure | Error handler review | Catch all errors, return safe messages |
 
 ## Resources
+
 - [Replit Secrets](https://docs.replit.com/replit-workspace/workspace-features/secrets)
 - [Replit Security](https://replit.com/products/security)
 - [Repl Identity (PASETO)](https://blog.replit.com/repl-identity)
 - [Secure Vibe Coding](https://blog.replit.com/16-ways-to-vibe-code-securely)
 
 ## Next Steps
+
 For production deployment, see `replit-prod-checklist`.

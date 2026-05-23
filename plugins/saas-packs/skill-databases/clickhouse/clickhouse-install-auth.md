@@ -10,6 +10,7 @@ clickhouse-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure ClickHouse SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for ClickHouse integration.
 **Relates to:** Other clickhouse skills in this pack.

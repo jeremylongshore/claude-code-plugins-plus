@@ -10,6 +10,7 @@ apple-notes-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Apple Notes debug evidence for support
 **Workflow:** Part of the operations skill category for Apple Notes integration.
 **Relates to:** Other apple-notes skills in this pack.

@@ -20,14 +20,17 @@
 ## 4 Included Agent Skills
 
 ### 1. 🛠️ Plugin Creator
+
 **Automatically scaffolds new plugins from scratch**
 
 **Activates when you say:**
+
 - "Create a new plugin"
 - "Scaffold a plugin for [purpose]"
 - "Add new plugin to marketplace"
 
 **What it does:**
+
 - Creates complete directory structure
 - Generates plugin.json with proper schema
 - Creates README, LICENSE, component files
@@ -40,14 +43,17 @@
 ---
 
 ### 2. ✅ Plugin Validator
+
 **Automatically validates plugin structure and compliance**
 
 **Activates when you say:**
+
 - "Validate this plugin"
 - "Check plugin for errors"
 - "Is my plugin ready to commit?"
 
 **What it does:**
+
 - Validates plugin.json schema
 - Checks required files exist
 - Validates markdown frontmatter
@@ -60,14 +66,17 @@
 ---
 
 ### 3. 🔍 Plugin Auditor
+
 **Automatically audits plugins for security and quality**
 
 **Activates when you say:**
+
 - "Audit this plugin"
 - "Security review"
 - "Check best practices"
 
 **What it does:**
+
 - Scans for security vulnerabilities
 - Checks hardcoded secrets
 - Validates best practices
@@ -80,14 +89,17 @@
 ---
 
 ### 4. 🔢 Version Bumper
+
 **Automatically handles semantic version updates**
 
 **Activates when you say:**
+
 - "Bump version to patch/minor/major"
 - "Release version [x.y.z]"
 - "Update plugin version"
 
 **What it does:**
+
 - Calculates new semantic version
 - Updates plugin.json
 - Updates marketplace catalog
@@ -102,19 +114,23 @@
 ## Who Is This For?
 
 ### For Repository Maintainers
+
 - Create new plugins quickly with proper structure
 - Validate plugins before merging PRs
 - Audit plugins for quality and security
 - Manage marketplace catalog efficiently
 
 ### For Plugin Contributors
+
 - Ensure your plugin meets all standards
 - Validate before submitting PR
 - Check compliance with CLAUDE.md
 - Get quality recommendations
 
 ### For This Repository Specifically
+
 This plugin is **optimized for claude-code-plugins** workflow:
+
 - Knows the two-catalog system (extended vs CLI)
 - Understands repository structure
 - Follows CLAUDE.md standards
@@ -144,6 +160,7 @@ This plugin is **optimized for claude-code-plugins** workflow:
 ### Example Workflows
 
 **Workflow 1: Create New Plugin**
+
 ```
 You: "I need to create a new DevOps plugin called 'docker-optimizer' with commands"
 
@@ -158,6 +175,7 @@ Skills Powerkit automatically:
 ```
 
 **Workflow 2: Validate Before Commit**
+
 ```
 You: "Is my owasp-scanner plugin ready to commit?"
 
@@ -171,6 +189,7 @@ Skills Powerkit automatically:
 ```
 
 **Workflow 3: Security Audit**
+
 ```
 You: "Security audit on the new password-manager plugin"
 
@@ -184,6 +203,7 @@ Skills Powerkit automatically:
 ```
 
 **Workflow 4: Release Management**
+
 ```
 You: "Bump docker-optimizer to minor version and update marketplace"
 
@@ -202,12 +222,14 @@ Skills Powerkit automatically:
 ## Why Is This Powerful?
 
 ### Auto-Invoked Intelligence
+
 - **You don't run commands** - Skills activate based on what you say
 - **Context-aware** - Knows you're working in claude-code-plugins
 - **Workflow understanding** - Knows the two-catalog system
 - **Repository-specific** - Follows CLAUDE.md standards
 
 ### Complete Automation
+
 - Creates plugins in seconds
 - Validates before you forget
 - Audits for security automatically
@@ -215,6 +237,7 @@ Skills Powerkit automatically:
 - Handles versioning correctly
 
 ### Quality Assurance
+
 - Ensures CLAUDE.md compliance
 - Validates against CI standards
 - Checks marketplace integrity
@@ -254,6 +277,7 @@ All skills use appropriate tool access:
 ### Repository Knowledge
 
 Skills Powerkit understands:
+
 - **Two-catalog system**: marketplace.extended.json (source) → marketplace.json (generated)
 - **Directory structure**: plugins/[category]/[plugin-name]/
 - **Required files**: plugin.json, README.md, LICENSE
@@ -271,12 +295,14 @@ Skills Powerkit understands:
 **You:** "I want to create a new testing plugin for Jest test generation"
 
 **Skills Powerkit:**
+
 1. Activates Plugin Creator skill
 2. "I'll create a testing plugin called 'jest-test-generator'. What should it include - commands, agents, or both?"
 
 **You:** "Both commands and agents"
 
 **Skills Powerkit:**
+
 ```
 ✅ Created plugin: jest-test-generator
 📁 Location: plugins/testing/jest-test-generator/
@@ -296,6 +322,7 @@ Skills Powerkit understands:
 **You:** "Check if my jest-test-generator plugin is valid"
 
 **Skills Powerkit:**
+
 ```
 🔍 PLUGIN VALIDATION REPORT
 Plugin: jest-test-generator
@@ -321,6 +348,7 @@ OVERALL: PASSED with warnings
 ### Works With Existing Tools
 
 Skills Powerkit **enhances** existing tools:
+
 - Uses `./scripts/validate-all.sh` under the hood
 - Calls `npm run sync-marketplace` automatically
 - Validates with `jq` and `python3 scripts/check-frontmatter.py`
@@ -329,6 +357,7 @@ Skills Powerkit **enhances** existing tools:
 ### CI/CD Compatibility
 
 Skills run the **same checks as GitHub Actions**:
+
 - `.github/workflows/validate-plugins.yml` checks
 - Security scans match CI patterns
 - Validation matches CI requirements
@@ -349,18 +378,22 @@ Skills run the **same checks as GitHub Actions**:
 ## Pro Tips
 
 ### 💡 Tip 1: Chain Skills
+
 Say: "Create a security plugin, validate it, and add to marketplace"
 → All 3 skills activate automatically in sequence
 
 ### 💡 Tip 2: Pre-Commit Check
+
 Say: "Is everything ready to commit?"
 → Validator runs comprehensive check
 
 ### 💡 Tip 3: Quality Assurance
+
 Say: "Full audit for featured plugin status"
 → Auditor runs with higher quality thresholds
 
 ### 💡 Tip 4: Version Releases
+
 Say: "Bump to minor and update marketplace"
 → Version Bumper + Marketplace Manager work together
 
@@ -369,16 +402,19 @@ Say: "Bump to minor and update marketplace"
 ## Troubleshooting
 
 ### "Skills not activating"
+
 - Ensure you're in claude-code-plugins repository
 - Check you said trigger keywords ("create plugin", "validate", etc.)
 - Verify Skills Powerkit is installed: `/plugin list`
 
 ### "Marketplace sync fails"
+
 - Run manually: `npm run sync-marketplace`
 - Check marketplace.extended.json syntax with `jq`
 - Verify no duplicate plugin names
 
 ### "Validation fails"
+
 - Check error message for specific issue
 - Run: `./scripts/validate-all.sh plugins/your-plugin/`
 - Fix reported issues
@@ -412,6 +448,7 @@ MIT License - See [LICENSE](LICENSE) file
 ## Changelog
 
 ### v1.0.0 (2025-10-16)
+
 - Initial release
 - 5 repository-specific Agent Skills
 - Plugin Creator, Validator, Marketplace Manager, Auditor, Version Bumper

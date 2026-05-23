@@ -10,6 +10,7 @@ clay-crm-sync-core/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement the core Clay workflow: CRM synchronization with bidirectional data flow. Connects Clay to Salesforce, HubSpot, or other CRMs with enrichment triggers and automated updates.
 **Workflow:** Integration workflow skill. Use when setting up Clay as the enrichment layer for CRM data.
 **Relates to:** Builds on clay-enrichment-patterns; integrates with clay-webhooks-events for real-time updates.

@@ -10,6 +10,7 @@ clay-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Clay webhook signature validation and event handling for enrichment completions. Enables real-time processing of Clay enrichment results.
 **Workflow:** Integration skill. Use when building event-driven architectures with Clay.
 **Relates to:** Integrates with clay-crm-sync-core for real-time updates; supports clay-reliability-patterns for fault tolerance.

@@ -17,6 +17,7 @@ Analyze NFT rarity scores, trait distributions, and valuations to make informed 
 ```
 
 Or use the shortcut:
+
 ```bash
 /nft
 ```
@@ -70,17 +71,21 @@ Or use the shortcut:
 ## Rarity Methodologies
 
 ### Statistical Rarity
+
 Based on trait frequency in the collection.
 
 ### Trait Normalization
+
 Adjusts for number of traits to prevent bias.
 
 ### OpenRarity Standard
+
 Industry-standard calculation using information content.
 
 ## Data Sources
 
 Analysis references:
+
 - OpenSea (primary marketplace data)
 - Rarity.tools (rarity rankings)
 - LooksRare (alternative pricing)

@@ -5,20 +5,25 @@
 **CRITICAL: Partial functionality ≠ working.** Never declare Gas Town "ready" until the FULL flow is verified.
 
 ### After Installation
+
 Run BOTH diagnostics:
+
 ```bash
 gt doctor                    # Gas Town health
 bd doctor                    # Beads health
 ```
 
 **BLOCKERS** (must fix before proceeding):
+
 - [ ] No prefix mismatch errors
 - [ ] No missing routes.jsonl entries
 - [ ] Beads daemon responding
 - [ ] No critical errors in either doctor output
 
 ### After Rig Creation
+
 Every new rig needs verification:
+
 ```bash
 gt rig list                  # Rig appears
 gt doctor                    # No new errors
@@ -26,6 +31,7 @@ bd list --prefix <rig-prefix>  # Beads exist for this rig
 ```
 
 **BLOCKERS:**
+
 - [ ] Patrol molecules exist (Deacon, Witness, Refinery patrols)
 - [ ] Prefix routing configured in routes.jsonl
 - [ ] Refinery started: `gt refinery start`
@@ -33,6 +39,7 @@ bd list --prefix <rig-prefix>  # Beads exist for this rig
 If patrols don't exist: `gt doctor --fix`
 
 ### Before Slinging Work
+
 ```bash
 gt up                        # Engine running
 gt status                    # All systems green
@@ -40,11 +47,13 @@ gt refinery status           # Refinery active
 ```
 
 **BLOCKERS:**
+
 - [ ] Engine is up
 - [ ] No prefix mismatch warnings
 - [ ] Patrol cycles active (not just templates)
 
 ### Full Flow Verification
+
 **Before declaring the system working, test the COMPLETE flow:**
 
 ```

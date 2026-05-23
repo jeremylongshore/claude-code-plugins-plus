@@ -5,6 +5,7 @@
 **Request:** "Upgrade our Express API from Sentry v7.114 to v8"
 
 **Before (v7):**
+
 ```typescript
 // app.ts — everything in one file
 import * as Sentry from '@sentry/node';
@@ -41,6 +42,7 @@ app.listen(3000);
 ```
 
 **After (v8):**
+
 ```typescript
 // instrument.mjs — separate file, loaded first
 import * as Sentry from '@sentry/node';
@@ -87,6 +89,7 @@ app.listen(3000);
 **Request:** "Migrate our React app's Sentry from v7 to v8"
 
 **Before (v7):**
+
 ```typescript
 import * as Sentry from '@sentry/react';
 import { BrowserTracing } from '@sentry/tracing';
@@ -108,6 +111,7 @@ Sentry.init({
 ```
 
 **After (v8):**
+
 ```typescript
 import * as Sentry from '@sentry/react';
 
@@ -133,6 +137,7 @@ Sentry.init({
 **Request:** "Upgrade sentry-sdk from 1.40 to 2.x"
 
 **Before (v1):**
+
 ```python
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
@@ -155,6 +160,7 @@ with sentry_sdk.push_scope() as scope:
 ```
 
 **After (v2):**
+
 ```python
 import sentry_sdk
 

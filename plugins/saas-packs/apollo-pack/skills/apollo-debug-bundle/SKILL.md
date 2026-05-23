@@ -24,20 +24,24 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Debug Bundle
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'N/A'`
 !`python3 --version 2>/dev/null || echo 'N/A'`
 !`uname -a`
 
 ## Overview
+
 Collect comprehensive debug information for Apollo.io API issues. Generates a JSON diagnostic bundle with environment info, connectivity tests, rate limit status, key type verification, and sanitized request/response logs.
 
 ## Prerequisites
+
 - `APOLLO_API_KEY` environment variable set
 - Node.js 18+ or Python 3.10+
 
 ## Instructions
 
 ### Step 1: Create the Debug Bundle Collector
+
 ```typescript
 // src/scripts/debug-bundle.ts
 import axios from 'axios';
@@ -83,6 +87,7 @@ async function collectDebugBundle(): Promise<DebugBundle> {
 ```
 
 ### Step 2: Test Connectivity and Key Type
+
 ```typescript
 async function testConnectivity(bundle: DebugBundle) {
   const headers = { 'Content-Type': 'application/json', 'x-api-key': process.env.APOLLO_API_KEY! };
@@ -109,6 +114,7 @@ async function testConnectivity(bundle: DebugBundle) {
 ```
 
 ### Step 3: Test Key Endpoints
+
 ```typescript
 async function testEndpoints(bundle: DebugBundle) {
   const headers = { 'Content-Type': 'application/json', 'x-api-key': process.env.APOLLO_API_KEY! };
@@ -148,6 +154,7 @@ async function testEndpoints(bundle: DebugBundle) {
 ```
 
 ### Step 4: Generate and Output
+
 ```typescript
 async function main() {
   console.log('Collecting Apollo debug bundle...\n');
@@ -184,6 +191,7 @@ main().catch(console.error);
 ```
 
 ## Output
+
 - JSON debug bundle with environment, connectivity, key type, rate limits, and endpoint results
 - Key type detection (master vs standard vs invalid)
 - Endpoint-by-endpoint health check (auth, search, enrichment, contacts, sequences)
@@ -191,6 +199,7 @@ main().catch(console.error);
 - Ready-to-attach file for Apollo support tickets
 
 ## Error Handling
+
 | Issue | Debug Step |
 |-------|------------|
 | Connection timeout | Check network/firewall, verify DNS for `api.apollo.io` |
@@ -201,6 +210,7 @@ main().catch(console.error);
 ## Examples
 
 ### Quick CLI Diagnostic
+
 ```bash
 # One-liner: test auth + connectivity
 curl -s -w "\nHTTP %{http_code} in %{time_total}s\n" \
@@ -215,9 +225,11 @@ curl -s -D - -o /dev/null \
 ```
 
 ## Resources
+
 - [Apollo Status Page](https://status.apollo.io)
 - [API Usage Stats](https://docs.apollo.io/reference/view-api-usage-stats)
 - [Apollo Support](https://support.apollo.io)
 
 ## Next Steps
+
 Proceed to `apollo-rate-limits` for rate limiting implementation.

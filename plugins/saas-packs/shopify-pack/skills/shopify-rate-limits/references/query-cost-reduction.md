@@ -1,4 +1,4 @@
-# Query Cost Reduction Examples
+## Query Cost Reduction Examples
 
 Before-and-after examples showing how to reduce GraphQL query cost through field pruning and page size limits.
 

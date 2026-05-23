@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Cohere Rate Limits
 
 ## Overview
+
 Handle Cohere rate limits with exponential backoff, request queuing, and proactive throttling. Real rate limits from Cohere's documentation.
 
 ## Prerequisites
+
 - `cohere-ai` SDK installed
 - Understanding of async/await patterns
 
@@ -255,12 +257,14 @@ class TokenBudget {
 ```
 
 ## Output
+
 - Automatic retry with exponential backoff + jitter
 - Concurrency-limited request queue matching Cohere rate limits
 - Proactive throttling before hitting limits
 - Batch-optimized embedding to minimize API calls
 
 ## Error Handling
+
 | Scenario | Detection | Action |
 |----------|-----------|--------|
 | 429 from trial key | `CohereError.statusCode === 429` | Wait 60s, retry |
@@ -269,9 +273,11 @@ class TokenBudget {
 | Burst of requests | Queue depth > threshold | Add backpressure |
 
 ## Resources
+
 - [Cohere Rate Limits](https://docs.cohere.com/docs/rate-limits)
 - [Cohere API Keys](https://dashboard.cohere.com/api-keys)
 - [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For security configuration, see `cohere-security-basics`.

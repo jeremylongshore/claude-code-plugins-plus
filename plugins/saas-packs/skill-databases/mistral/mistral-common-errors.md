@@ -10,6 +10,7 @@ mistral-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Mistral AI common errors
 **Workflow:** Part of the operations skill category for Mistral AI integration.
 **Relates to:** Other mistral skills in this pack.

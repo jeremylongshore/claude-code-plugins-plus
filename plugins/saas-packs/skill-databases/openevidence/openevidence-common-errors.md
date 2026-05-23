@@ -10,6 +10,7 @@ openevidence-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix OpenEvidence common errors
 **Workflow:** Part of the operations skill category for OpenEvidence integration.
 **Relates to:** Other openevidence skills in this pack.

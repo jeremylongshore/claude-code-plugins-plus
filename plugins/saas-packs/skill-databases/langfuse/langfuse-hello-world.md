@@ -10,6 +10,7 @@ langfuse-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Langfuse example
 **Workflow:** Part of the onboarding skill category for Langfuse integration.
 **Relates to:** Other langfuse skills in this pack.

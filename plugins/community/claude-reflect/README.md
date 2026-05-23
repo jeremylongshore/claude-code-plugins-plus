@@ -72,16 +72,19 @@ Run `/reflect` to review and apply queued learnings to CLAUDE.md.
 The capture hook detects corrections AND positive feedback:
 
 **Corrections** (what went wrong):
+
 - `"no, use X"` / `"don't use Y"`
 - `"actually..."` / `"I meant..."`
 - `"use X not Y"` / `"that's wrong"`
 
 **Positive patterns** (what works):
+
 - `"Perfect!"` / `"Exactly right"`
 - `"That's what I wanted"` / `"Great approach"`
 - `"Keep doing this"` / `"Nailed it"`
 
 **Explicit markers**:
+
 - `"remember:"` — highest confidence
 
 Each captured learning has a **confidence score** (0.60-0.95) based on pattern strength. Higher confidence = more likely to be a real learning.
@@ -104,6 +107,7 @@ LEARNINGS SUMMARY — 5 items found
 ```
 
 You choose:
+
 - **Apply all** - Accept recommended changes
 - **Select which** - Pick specific learnings
 - **Review details** - See full context before deciding
@@ -111,6 +115,7 @@ You choose:
 ### Multi-Target Sync
 
 Approved learnings are synced to:
+
 - `~/.claude/CLAUDE.md` (global - applies to all projects)
 - `./CLAUDE.md` (project-specific)
 - `AGENTS.md` (if exists - works with Codex, Cursor, Aider, Jules, Zed, Factory)
@@ -159,6 +164,7 @@ This scans all your past sessions for corrections you made, so you don't lose le
 ### Smart Filtering
 
 Claude filters out:
+
 - Questions (not corrections)
 - One-time task instructions
 - Context-specific requests
@@ -169,6 +175,7 @@ Only reusable learnings are kept.
 ### Duplicate Detection
 
 Before adding a learning, existing CLAUDE.md content is checked. If similar content exists, you can:
+
 - Merge with existing entry
 - Replace the old entry
 - Skip the duplicate
@@ -176,11 +183,13 @@ Before adding a learning, existing CLAUDE.md content is checked. If similar cont
 ### Semantic Deduplication
 
 Over time, CLAUDE.md can accumulate similar entries. Run `/reflect --dedupe` to:
+
 - Find semantically similar entries (even with different wording)
 - Propose consolidated versions
 - Clean up redundant learnings
 
 Example:
+
 ```
 Before:
   - Use gpt-5.1 for complex tasks
@@ -194,6 +203,7 @@ After:
 ## Tips
 
 1. **Use explicit markers** for important learnings:
+
    ```
    remember: always use venv for Python projects
    ```
@@ -201,6 +211,7 @@ After:
 2. **Run /reflect after git commits** - The hook reminds you, but make it a habit
 
 3. **Historical scan on new machines** - When setting up a new dev environment:
+
    ```
    /reflect --scan-history --days 90
    ```

@@ -60,6 +60,7 @@ forwarding to the send node.
 **Human sees:** state *after* the node's mutation — the draft is now in state.
 
 **Resume with edits:**
+
 ```python
 graph.invoke(
     Command(update={"draft": {**state["draft"], "subject": edited}}, resume="approved"),
@@ -97,6 +98,7 @@ def validate_purchase(state: AgentState) -> AgentState:
 ```
 
 **Use when:**
+
 - The prompt payload varies by runtime state (a purchase needs price, a
   deploy needs a diff, an escalation needs a risk score).
 - You want multiple interrupt points inside one node.

@@ -185,6 +185,7 @@ ALTER TASK transform_orders SUSPEND;
 ## Communication Templates
 
 **Internal (Slack):**
+
 ```
 P1 INCIDENT: Snowflake [Category]
 Status: INVESTIGATING
@@ -195,6 +196,7 @@ Incident commander: @[name]
 ```
 
 **Postmortem Template:**
+
 ```markdown
 ## Incident: [Title]
 **Date:** YYYY-MM-DD | **Duration:** X hours | **Severity:** P[1-4]

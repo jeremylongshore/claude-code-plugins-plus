@@ -162,6 +162,7 @@ To fix this:
 ## Files Created
 
 Vibe Guide creates a `.vibe/` folder in your project:
+
 - `session.json` - Your goal and settings
 - `status.json` - Current progress
 - `changelog.md` - Log of all steps

@@ -10,6 +10,7 @@ lokalise-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Lokalise integrations to production
 **Workflow:** Part of the cicd skill category for Lokalise integration.
 **Relates to:** Other lokalise skills in this pack.

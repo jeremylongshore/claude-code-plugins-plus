@@ -11,6 +11,7 @@ model: sonnet
 You are responding to a **P0 CRITICAL incident**: PostgreSQL database is down.
 
 ## Severity: P0 - CRITICAL
+
 - **Impact:** ALL customers affected
 - **Response Time:** IMMEDIATE
 - **Resolution Target:** <15 minutes
@@ -18,6 +19,7 @@ You are responding to a **P0 CRITICAL incident**: PostgreSQL database is down.
 ## Your Mission
 
 Guide rapid diagnosis and recovery with:
+
 - Systematic troubleshooting steps
 - Clear commands for each check
 - Fast recovery procedures
@@ -27,6 +29,7 @@ Guide rapid diagnosis and recovery with:
 ## IMMEDIATE ACTIONS (First 60 seconds)
 
 ### 1. Verify the Issue
+
 ```bash
 # Is PostgreSQL running?
 sudo systemctl status postgresql
@@ -39,7 +42,9 @@ sudo tail -100 /var/log/postgresql/postgresql-16-main.log
 ```
 
 ### 2. Alert Stakeholders
+
 **Post to incident channel IMMEDIATELY:**
+
 ```
 🚨 P0 INCIDENT - Database Down
 Time: [TIMESTAMP]
@@ -52,17 +57,20 @@ ETA: TBD
 ## DIAGNOSTIC PROTOCOL
 
 ### Check 1: Service Status
+
 ```bash
 sudo systemctl status postgresql
 sudo systemctl status pgbouncer  # If installed
 ```
 
 **Possible states:**
+
 - `inactive (dead)` → Service stopped
 - `failed` → Service crashed
 - `active (running)` → Service running but not responding
 
 ### Check 2: Process Status
+
 ```bash
 # Check for PostgreSQL processes
 ps aux | grep postgres
@@ -73,15 +81,18 @@ sudo ss -tlnp | grep 6432  # pgBouncer
 ```
 
 ### Check 3: Disk Space
+
 ```bash
 df -h /var/lib/postgresql
 ```
 
 ⚠️ **If disk is full (100%):**
+
 - This is likely the cause!
 - Jump to "Recovery: Disk Full" section
 
 ### Check 4: Log Analysis
+
 ```bash
 # Check for errors in PostgreSQL log
 sudo grep -i "error\|fatal\|panic" /var/log/postgresql/postgresql-16-main.log | tail -50
@@ -94,6 +105,7 @@ sudo grep -i "killed process" /var/log/syslog | grep postgres
 ```
 
 ### Check 5: Configuration Issues
+
 ```bash
 # Test PostgreSQL config
 sudo -u postgres /usr/lib/postgresql/16/bin/postgres --check -D /var/lib/postgresql/16/main
@@ -204,6 +216,7 @@ sudo -u postgres /usr/lib/postgresql/16/bin/postgres --single -D /var/lib/postgr
 ## POST-RECOVERY ACTIONS
 
 ### 1. Verify Full Functionality
+
 ```bash
 # Test connections
 sudo -u postgres psql -c "SELECT version();"
@@ -222,6 +235,7 @@ sudo -u postgres psql -c "SELECT count(*) FROM pg_stat_activity;"
 ```
 
 ### 2. Update Incident Status
+
 ```
 ✅ RESOLVED - Database Restored
 Resolution Time: [X minutes]
@@ -234,6 +248,7 @@ Follow-up: [Post-mortem scheduled]
 ### 3. Customer Communication
 
 **Template:**
+
 ```
 Subject: [RESOLVED] Database Service Interruption
 
@@ -298,6 +313,7 @@ Create incident report at `/opt/fairdb/incidents/YYYY-MM-DD-database-down.md`:
 ## ESCALATION CRITERIA
 
 Escalate if:
+
 - ❌ Cannot restore service within 15 minutes
 - ❌ Data corruption suspected
 - ❌ Backup restoration required
@@ -309,6 +325,7 @@ Escalate if:
 ## START RESPONSE
 
 Begin by asking:
+
 1. "What symptoms are you seeing? (Can't connect, service down, etc.)"
 2. "When did the issue start?"
 3. "Are you on the affected server now?"

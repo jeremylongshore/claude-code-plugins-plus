@@ -10,6 +10,7 @@ finta-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Finta debug evidence for support
 **Workflow:** Part of the operations skill category for Finta integration.
 **Relates to:** Other finta skills in this pack.

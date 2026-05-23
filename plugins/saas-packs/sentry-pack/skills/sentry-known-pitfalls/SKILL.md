@@ -245,6 +245,7 @@ import * as Sentry from '@sentry/aws-serverless';  // AWS Lambda
 When quota is exceeded, Sentry returns 429 and the SDK silently drops events. You lose data during peak traffic — exactly when you need it most.
 
 **Prevention:**
+
 1. Enable **Spike Protection** in Sentry Organization Settings
 2. Set **per-key rate limits** in Project Settings > Client Keys
 3. Monitor client reports: Project Settings > Client Keys > Stats

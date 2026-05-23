@@ -3,6 +3,7 @@
 ## Smart Fallback Configuration
 
 ### Fallback Manager Class
+
 ```python
 import time
 from dataclasses import dataclass

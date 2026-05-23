@@ -19,6 +19,7 @@ Retrieves and analyzes macroeconomic indicators to understand economic trends an
 ## Key Features
 
 ### Economic Indicators
+
 - **GDP**: Growth rates, forecasts, components
 - **Inflation**: CPI, PPI, PCE, core inflation
 - **Interest Rates**: Federal funds, treasury yields, central bank rates

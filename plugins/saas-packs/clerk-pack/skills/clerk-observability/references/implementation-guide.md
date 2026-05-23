@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Authentication Event Logging
+
 ```typescript
 // lib/auth-logger.ts
 import { auth, currentUser } from '@clerk/nextjs/server'
@@ -76,6 +77,7 @@ export const authLogger = new AuthLogger()
 ```
 
 ### Step 2: Middleware Monitoring
+
 ```typescript
 // middleware.ts
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
@@ -118,6 +120,7 @@ function recordMetric(name: string, value: number) {
 ```
 
 ### Step 3: Session Analytics
+
 ```typescript
 // lib/session-analytics.ts
 import { clerkClient } from '@clerk/nextjs/server'
@@ -166,6 +169,7 @@ function parseDeviceType(userAgent: string): string {
 ```
 
 ### Step 4: Webhook Event Tracking
+
 ```typescript
 // app/api/webhooks/clerk/route.ts
 import { Webhook } from 'svix'
@@ -229,6 +233,7 @@ export async function GET() {
 ```
 
 ### Step 5: Error Tracking with Sentry
+
 ```typescript
 // lib/sentry-clerk.ts
 import * as Sentry from '@sentry/nextjs'
@@ -277,6 +282,7 @@ const user = await withAuthErrorTracking(
 ```
 
 ### Step 6: Health Check Endpoint
+
 ```typescript
 // app/api/health/clerk/route.ts
 import { auth, clerkClient } from '@clerk/nextjs/server'
@@ -342,6 +348,7 @@ export async function GET() {
 ## Dashboard Metrics
 
 Track these key metrics:
+
 - Authentication success/failure rate
 - Auth latency (p50, p95, p99)
 - Active sessions over time

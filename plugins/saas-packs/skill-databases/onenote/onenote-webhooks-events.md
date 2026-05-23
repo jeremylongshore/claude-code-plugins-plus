@@ -10,6 +10,7 @@ onenote-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement OneNote webhook handling
 **Workflow:** Part of the cicd skill category for OneNote integration.
 **Relates to:** Other onenote skills in this pack.

@@ -6,7 +6,6 @@ description: Deploy monitoring stacks (Prometheus, Grafana, Datadog)
 
 Deploy monitoring stacks (Prometheus, Grafana, Datadog)
 
-
 ## Key Features
 
 - Production-ready configurations

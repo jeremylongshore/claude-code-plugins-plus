@@ -10,6 +10,7 @@ glean-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Glean CI/CD integration
 **Workflow:** Part of the cicd skill category for Glean integration.
 **Relates to:** Other glean skills in this pack.

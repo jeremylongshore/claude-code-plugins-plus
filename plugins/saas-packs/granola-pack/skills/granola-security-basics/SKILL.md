@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola Security Basics
 
 ## Overview
+
 Granola achieved SOC 2 Type 2 certification in July 2025. It encrypts data with AES-256 at rest and TLS 1.3 in transit. Audio is transcribed server-side and not stored after processing. This skill covers security configuration, compliance posture, and organizational controls.
 
 ## Prerequisites
+
 - Granola Business or Enterprise plan (for admin/security controls)
 - Understanding of your organization's compliance requirements
 - Admin access for workspace-level settings
@@ -60,6 +62,7 @@ Your Device (local cache: cache-v3.json)
 ```
 
 **Key security properties:**
+
 - No bot joins your meeting — audio is captured locally via system audio
 - Raw audio is **never stored** after transcription
 - Granola does **not** allow OpenAI or Anthropic to train on customer data
@@ -79,6 +82,7 @@ Your Device (local cache: cache-v3.json)
 ### Step 3 — Configure Data Controls
 
 **Sharing defaults:**
+
 ```
 Settings > Privacy:
   Default sharing: Private (recommended)
@@ -89,6 +93,7 @@ Settings > Privacy:
 ```
 
 **Data retention:**
+
 ```
 Settings > Data Retention:
   Meeting notes: Organization policy (1-2 years typical)
@@ -97,10 +102,12 @@ Settings > Data Retention:
 ```
 
 **AI training opt-out:**
+
 ```
 Settings > Privacy > AI Training:
   Organization-wide opt-out: Enabled (Enterprise: enforced by default)
 ```
+
 This ensures your meeting data is never used to train foundational models.
 
 ### Step 4 — Meeting Recording Consent
@@ -108,11 +115,13 @@ This ensures your meeting data is never used to train foundational models.
 Granola records audio from your device. You are responsible for informing meeting participants:
 
 **Legal requirements by jurisdiction:**
+
 - **One-party consent** (US federal, most US states, UK): You can record if you are a participant
 - **Two-party/all-party consent** (California, Illinois, EU GDPR): All participants must be informed
 - **Always recommended:** Announce recording at meeting start or include notice in calendar invites
 
 **Calendar invite consent notice:**
+
 ```
 Note: This meeting will be recorded using Granola AI for note-taking
 purposes. By joining, you consent to the recording and AI processing
@@ -130,6 +139,7 @@ of the discussion. Contact [your-email] to opt out.
 | ISO 27001 | Not certified | Covered by SOC 2 controls |
 
 **GDPR requirements you must implement:**
+
 - Right of Access: Export user's data via Settings > Data > Export
 - Right to Erasure: Delete user's notes and request account deletion
 - Data Processing Agreement: Request DPA from Granola (required for EU data)
@@ -146,6 +156,7 @@ For confidential meetings (board discussions, HR, legal, M&A):
 5. **Retention:** Apply shorter retention (30 days) for sensitive workspaces
 
 ## Output
+
 - Account secured with SSO and appropriate authentication
 - Sharing defaults configured per organizational policy
 - Data retention policies set per data type
@@ -162,16 +173,20 @@ For confidential meetings (board discussions, HR, legal, M&A):
 | Consent notice ignored | Not in calendar template | Add to organization's default calendar template |
 
 ## Local Cache Security
+
 The local cache file (`~/Library/Application Support/Granola/cache-v3.json`) contains meeting data in plaintext. For sensitive environments:
+
 - Enable FileVault (macOS) or BitLocker (Windows) for disk encryption
 - Restrict file permissions: `chmod 600 "$HOME/Library/Application Support/Granola/cache-v3.json"`
 - Be aware that MCP servers and local scripts can read this file
 
 ## Resources
+
 - [Granola Security Page](https://www.granola.ai/security)
 - [Security Standards (Docs)](https://docs.granola.ai/help-center/consent-security-privacy/our-security-standards)
 - [Privacy & Data FAQs](https://docs.granola.ai/help-center/consent-security-privacy/security-privacy-data-faqs)
 - [Data Processing Addendum](https://help.granola.ai/article/data-processing-addendum)
 
 ## Next Steps
+
 Proceed to `granola-prod-checklist` for production rollout preparation.

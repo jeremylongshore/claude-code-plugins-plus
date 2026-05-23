@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Salesforce Data Handling
 
 ## Overview
+
 Handle sensitive data correctly when integrating with Salesforce: PII classification, GDPR/CCPA compliance with Salesforce's Individual object, data retention, and field-level encryption.
 
 ## Prerequisites
+
 - Understanding of GDPR/CCPA requirements
 - Salesforce org with data classification enabled (Setup > Data Classification)
 - For encryption: Salesforce Shield license (Platform Encryption)
@@ -205,6 +207,7 @@ Limitations of encrypted fields:
 ```
 
 ## Output
+
 - Data classification for PII fields documented
 - GDPR consent tracking via Individual object
 - DSAR export function for data subject access
@@ -212,6 +215,7 @@ Limitations of encrypted fields:
 - Log redaction preventing PII exposure
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `FIELD_NOT_FOUND: Individual` | Individual object not enabled | Setup > Data Protection > Enable Individual |
@@ -220,10 +224,12 @@ Limitations of encrypted fields:
 | PII in logs | Missing redaction | Wrap all SF logging with redactSfRecord |
 
 ## Resources
+
 - [Salesforce Data Protection & Privacy](https://help.salesforce.com/s/articleView?id=sf.data_protection_and_privacy.htm)
 - [Individual Object](https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_individual.htm)
 - [Shield Platform Encryption](https://help.salesforce.com/s/articleView?id=sf.security_pe_overview.htm)
 - [GDPR Compliance in Salesforce](https://www.salesforce.com/company/privacy/)
 
 ## Next Steps
+
 For enterprise access control, see `salesforce-enterprise-rbac`.

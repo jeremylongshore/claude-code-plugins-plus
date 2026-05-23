@@ -10,6 +10,7 @@ speak-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Speak CI/CD integration
 **Workflow:** Part of the cicd skill category for Speak integration.
 **Relates to:** Other speak skills in this pack.

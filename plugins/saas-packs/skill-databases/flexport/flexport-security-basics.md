@@ -10,6 +10,7 @@ flexport-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Flexport security best practices
 **Workflow:** Part of the operations skill category for Flexport integration.
 **Relates to:** Other flexport skills in this pack.

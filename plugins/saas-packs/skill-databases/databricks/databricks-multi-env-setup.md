@@ -10,6 +10,7 @@ databricks-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Databricks multi-environment setup
 **Workflow:** Part of the enterprise skill category for Databricks integration.
 **Relates to:** Other databricks skills in this pack.

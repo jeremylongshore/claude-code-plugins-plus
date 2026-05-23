@@ -156,6 +156,7 @@ attorney.
 > reputation — even if they knew these losses were possible.
 
 **Flags:**
+
 - :warning: **WATCH OUT** — This means if their software deletes your data,
   they owe you nothing for the data itself or the business impact. Only direct
   damages (like a refund of fees paid) would apply.
@@ -176,6 +177,7 @@ attorney.
 > to your custom work too.
 
 **Flags:**
+
 - :lock: **HIDDEN OBLIGATION** — This definition makes your custom work subject
   to the vendor's terms about "Services" throughout the contract.
 - :boom: **CONTRADICTS EXPECTATIONS** — Most people would expect "Services" to

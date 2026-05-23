@@ -34,6 +34,7 @@ The Slack channel uses `~/.claude/channels/slack/access.json` to control who can
 ## Fields
 
 ### `dmPolicy`
+
 Controls how DMs from unknown users are handled.
 
 | Value | Behavior |
@@ -61,9 +62,11 @@ Controls how DMs from unknown users are handled.
 > then switch it back to `allowlist` afterwards.
 
 ### `allowFrom`
+
 Array of Slack user IDs (e.g., `U12345678`) allowed to send DMs. Managed via `/slack-channel:access add/remove`.
 
 ### `channels`
+
 Map of channel IDs to policies. Only channels listed here are monitored.
 
 - `requireMention`: If true, only messages that @mention the bot are delivered
@@ -128,6 +131,7 @@ Example:
 > **PII warning for `'full'` mode:** tool `input_preview` is a string representation of the first ~200 chars of whatever Claude passed the tool. For `Read`/`Write`/`Bash` calls this usually includes file paths or command fragments; for text-generation tools it can include arbitrary user-authored content. The 30-A redaction layer scrubs known token patterns (API keys, GitHub tokens, etc.) but cannot catch unstructured PII. Only enable `'full'` in channels where the expected content is acceptable for the audience of that channel.
 
 ### `pending`
+
 Active pairing codes. Auto-pruned on every gate check.
 
 - Max 3 pending codes at once
@@ -135,12 +139,15 @@ Active pairing codes. Auto-pruned on every gate check.
 - Max 2 replies per code (initial + 1 reminder)
 
 ### `ackReaction`
+
 Emoji name (without colons) to react with when a message is delivered. Set to `""` or omit to disable.
 
 ### `textChunkLimit`
+
 Maximum characters per outbound message. Default: 4000 (Slack's limit).
 
 ### `chunkMode`
+
 How to split long messages: `"newline"` (paragraph-aware, default) or `"length"` (fixed character count).
 
 ## Security

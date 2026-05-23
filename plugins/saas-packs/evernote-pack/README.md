@@ -13,6 +13,7 @@
 [Evernote](https://evernote.com) is a note-taking and knowledge management platform with a Thrift-based Cloud API. The API provides access to notes, notebooks, tags, resources (attachments), and search via the NoteStore and UserStore services. Notes use ENML (Evernote Markup Language), a restricted XHTML subset.
 
 **Key facts:**
+
 - Thrift-based API with SDKs for JavaScript, Python, Java, iOS, Android
 - Authentication: OAuth 1.0a (developer tokens for sandbox)
 - Content format: ENML (XML with DOCTYPE, restricted elements)
@@ -23,6 +24,7 @@
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `evernote-install-auth` | OAuth 1.0a setup, SDK installation, developer tokens |
@@ -39,6 +41,7 @@
 | `evernote-upgrade-migration` | SDK version upgrades and breaking changes |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `evernote-ci-integration` | GitHub Actions, mocked NoteStore tests |
@@ -49,6 +52,7 @@
 | `evernote-reference-architecture` | Production architecture with sync pipeline |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `evernote-multi-env-setup` | Dev/staging/prod with sandbox and production keys |

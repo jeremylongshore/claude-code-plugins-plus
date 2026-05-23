@@ -38,6 +38,7 @@ Content-Type: application/json
 ```
 
 **Notes:**
+
 - `id` is the HubSpot internal numeric contact ID, not email.
 - All property values must be strings — even numeric types. HubSpot coerces on ingest.
 - Max 100 objects per call. Caller is responsible for chunking.
@@ -134,6 +135,7 @@ Content-Type: application/json
 ```
 
 **Notes:**
+
 - `idProperty` can be `email` or any unique custom property defined as a unique identifier on the contact object.
 - If the contact does not exist, it is created. If it exists, it is updated.
 - This is the correct endpoint when syncing from a product event stream where you know email but not HubSpot ID.
@@ -262,6 +264,7 @@ Content-Type: application/json
 ```
 
 **Notes:**
+
 - `eventName` format is `pe{portalId}_{event_slug}` — the portal ID prefix is added when you create the event definition.
 - Event definitions must be created in the HubSpot UI or via `POST /events/v3/event-definitions` before events can be sent.
 - Properties must match the schema defined for the event.

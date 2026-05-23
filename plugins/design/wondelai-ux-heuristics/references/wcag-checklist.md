@@ -2,8 +2,8 @@
 
 Complete checklist for WCAG 2.1 Level AA compliance with testing guidance.
 
-
 ## Table of Contents
+
 1. [Perceivable](#perceivable)
 2. [Operable](#operable)
 3. [Understandable](#understandable)
@@ -25,6 +25,7 @@ Content must be presentable in ways users can perceive.
 | 1.1.1 Non-text Content | All images, icons, and visual content have text alternatives | Inspect alt attributes; use screen reader |
 
 **Pass criteria:**
+
 - [ ] Informative images have descriptive alt text
 - [ ] Decorative images have empty alt (`alt=""`)
 - [ ] Complex images (charts, diagrams) have extended descriptions
@@ -41,6 +42,7 @@ Content must be presentable in ways users can perceive.
 | 1.2.5 Audio Description (AA) | Audio description for all video | Verify AD available |
 
 **Pass criteria:**
+
 - [ ] Videos have synchronized captions
 - [ ] Captions are accurate and complete
 - [ ] Audio descriptions available for important visual content
@@ -57,6 +59,7 @@ Content must be presentable in ways users can perceive.
 | 1.3.5 Identify Input Purpose (AA) | Input fields have autocomplete | Check `autocomplete` attributes |
 
 **Pass criteria:**
+
 - [ ] Headings use proper h1-h6 hierarchy
 - [ ] Lists use `<ul>`, `<ol>`, `<dl>` elements
 - [ ] Forms have proper labels associated with inputs
@@ -80,6 +83,7 @@ Content must be presentable in ways users can perceive.
 | 1.4.13 Content on Hover/Focus (AA) | Hoverable, dismissible, persistent | Test tooltips, menus |
 
 **Pass criteria:**
+
 - [ ] Normal text has 4.5:1 contrast ratio minimum
 - [ ] Large text (18pt+) has 3:1 contrast ratio minimum
 - [ ] UI components have 3:1 contrast
@@ -103,6 +107,7 @@ Users must be able to operate the interface.
 | 2.1.4 Character Key Shortcuts (AA) | Single-key shortcuts can be disabled | Check for shortcut conflicts |
 
 **Pass criteria:**
+
 - [ ] All interactive elements are focusable
 - [ ] All actions can be performed via keyboard
 - [ ] Focus is never trapped
@@ -117,6 +122,7 @@ Users must be able to operate the interface.
 | 2.2.2 Pause, Stop, Hide | Auto-updating content can be controlled | Check carousels, animations |
 
 **Pass criteria:**
+
 - [ ] Session timeouts have 20-second warning
 - [ ] Users can extend time limits
 - [ ] Auto-playing content has pause control
@@ -129,6 +135,7 @@ Users must be able to operate the interface.
 | 2.3.1 Three Flashes | No content flashes >3 times/second | Measure flash rate |
 
 **Pass criteria:**
+
 - [ ] No flashing content above threshold
 - [ ] Animations don't cause seizure risk
 
@@ -145,6 +152,7 @@ Users must be able to operate the interface.
 | 2.4.7 Focus Visible (AA) | Focus indicator is visible | Tab through interface |
 
 **Pass criteria:**
+
 - [ ] Skip link present at top of page
 - [ ] Page titles are unique and descriptive
 - [ ] Tab order follows visual order
@@ -163,6 +171,7 @@ Users must be able to operate the interface.
 | 2.5.4 Motion Actuation (AA) | Motion-based actions have alternatives | Check for non-motion options |
 
 **Pass criteria:**
+
 - [ ] Pinch, swipe have tap alternatives
 - [ ] Click actions happen on release (up-event)
 - [ ] Dragging outside target cancels action
@@ -183,6 +192,7 @@ Content must be understandable to users.
 | 3.1.2 Language of Parts (AA) | Foreign text marked with lang | Check multilingual content |
 
 **Pass criteria:**
+
 - [ ] HTML has lang attribute
 - [ ] Foreign language passages have lang attribute
 
@@ -196,6 +206,7 @@ Content must be understandable to users.
 | 3.2.4 Consistent Identification (AA) | Same functions have same labels | Compare repeated elements |
 
 **Pass criteria:**
+
 - [ ] Focus doesn't trigger context changes
 - [ ] Selecting options doesn't submit forms
 - [ ] Navigation is in same location on all pages
@@ -211,6 +222,7 @@ Content must be understandable to users.
 | 3.3.4 Error Prevention (AA) | Confirmation for legal/financial actions | Test critical submissions |
 
 **Pass criteria:**
+
 - [ ] Errors are clearly described in text
 - [ ] Error messages explain how to fix
 - [ ] All inputs have visible labels
@@ -232,6 +244,7 @@ Content must work with assistive technologies.
 | 4.1.3 Status Messages (AA) | Status updates announced | Test with screen reader |
 
 **Pass criteria:**
+
 - [ ] HTML is valid (no duplicate IDs, proper nesting)
 - [ ] Custom controls have appropriate roles
 - [ ] States (expanded, selected) are programmatically set
@@ -263,11 +276,13 @@ Content must work with assistive technologies.
 ### Screen Reader Testing
 
 **VoiceOver (Mac):**
+
 1. Enable: Cmd + F5
 2. Navigate: VO (Ctrl + Opt) + arrows
 3. Rotor: VO + U (headings, links, forms)
 
 **NVDA (Windows):**
+
 1. Download free from nvaccess.org
 2. Navigate: Arrow keys, Tab
 3. Elements list: NVDA + F7
@@ -296,22 +311,26 @@ Content must work with assistive technologies.
 Before launch, verify:
 
 **Automated scan:**
+
 - [ ] axe DevTools shows 0 issues
 - [ ] Lighthouse accessibility score >90
 
 **Keyboard:**
+
 - [ ] All functionality works with keyboard
 - [ ] Focus visible on all elements
 - [ ] No keyboard traps
 - [ ] Skip link works
 
 **Screen reader:**
+
 - [ ] All content announced correctly
 - [ ] Form fields have labels
 - [ ] Images have alt text
 - [ ] Headings create logical outline
 
 **Visual:**
+
 - [ ] All text meets contrast requirements
 - [ ] Works at 200% zoom
 - [ ] Works at 320px width (mobile)

@@ -10,6 +10,7 @@ replit-github-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure GitHub integration for two-way sync, PR previews, and automated deployments from repositories.
 **Workflow:** Version control skill - connects Replit to professional Git workflows.
 **Relates to:** Foundation for replit-testing-workflow; enables team collaboration via replit-team-management.

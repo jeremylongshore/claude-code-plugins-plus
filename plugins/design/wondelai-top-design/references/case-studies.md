@@ -1,6 +1,7 @@
 # Case Studies: Agency Technique Analysis
 
 ## Table of Contents
+
 1. Locomotive (Montreal)
 2. Studio Freight (New York)
 3. AREA 17 (Paris/NYC)
@@ -18,6 +19,7 @@
 **Signature: Smooth, refined, editorial precision**
 
 ### Technical Fingerprint
+
 ```
 STACK
 ├── Custom scroll (Locomotive Scroll - they created it)
@@ -35,6 +37,7 @@ SIGNATURE TECHNIQUES
 ```
 
 ### Design Patterns
+
 ```css
 /* Locomotive-style color palette */
 :root {
@@ -58,6 +61,7 @@ SIGNATURE TECHNIQUES
 ```
 
 ### Animation Style
+
 ```javascript
 // Locomotive-style page reveal
 gsap.timeline()
@@ -82,6 +86,7 @@ gsap.timeline()
 **Signature: Bold, typographic, tech-forward**
 
 ### Technical Fingerprint
+
 ```
 STACK
 ├── Lenis (they created it)
@@ -99,6 +104,7 @@ SIGNATURE TECHNIQUES
 ```
 
 ### Design Patterns
+
 ```css
 /* Studio Freight aesthetic */
 :root {
@@ -135,6 +141,7 @@ SIGNATURE TECHNIQUES
 ```
 
 ### Their Project Card Style
+
 ```css
 .sf-project-card {
   display: grid;
@@ -165,6 +172,7 @@ SIGNATURE TECHNIQUES
 **Signature: Sophisticated, institutional, systematic**
 
 ### Technical Fingerprint
+
 ```
 STACK
 ├── Twill (their CMS)
@@ -182,6 +190,7 @@ SIGNATURE TECHNIQUES
 ```
 
 ### Design Patterns
+
 ```css
 /* AREA 17 systematic approach */
 :root {
@@ -219,6 +228,7 @@ SIGNATURE TECHNIQUES
 ```
 
 ### Animation Philosophy
+
 ```javascript
 // AREA 17 - restrained, purposeful
 // They rarely use flashy effects
@@ -247,6 +257,7 @@ gsap.utils.toArray('[data-reveal]').forEach(el => {
 **Signature: Playful, inventive, technically ambitious**
 
 ### Technical Fingerprint
+
 ```
 STACK
 ├── React/Next.js
@@ -264,6 +275,7 @@ SIGNATURE TECHNIQUES
 ```
 
 ### Design Philosophy
+
 ```css
 /* Hello Monday embraces bold experiments */
 .hm-experimental {
@@ -287,6 +299,7 @@ SIGNATURE TECHNIQUES
 ```
 
 ### Interactive Pattern
+
 ```javascript
 // Hello Monday-style interactive element
 class InteractiveScene {
@@ -322,6 +335,7 @@ class InteractiveScene {
 **Signature: Emotional, immersive, story-driven**
 
 ### Technical Fingerprint
+
 ```
 STACK
 ├── Custom solutions
@@ -339,6 +353,7 @@ SIGNATURE TECHNIQUES
 ```
 
 ### Design Patterns
+
 ```css
 /* Dogstudio immersive approach */
 .ds-immersive-section {
@@ -391,6 +406,7 @@ SIGNATURE TECHNIQUES
 **Signature: Startup-focused, fast, modern**
 
 ### Technical Fingerprint
+
 ```
 STACK
 ├── Webflow / Framer (no-code speed)
@@ -408,6 +424,7 @@ SIGNATURE TECHNIQUES
 ```
 
 ### Design Patterns
+
 ```css
 /* Tonik startup aesthetic */
 :root {
@@ -459,6 +476,7 @@ SIGNATURE TECHNIQUES
 **Signature: Brand-centric, polished, scalable**
 
 ### Technical Fingerprint
+
 ```
 STACK
 ├── Enterprise frameworks
@@ -476,6 +494,7 @@ SIGNATURE TECHNIQUES
 ```
 
 ### Design Philosophy
+
 ```css
 /* Instrument systematic approach */
 :root {
@@ -518,6 +537,7 @@ SIGNATURE TECHNIQUES
 **Signature: Technical excellence, immersive WebGL**
 
 ### Technical Fingerprint
+
 ```
 STACK
 ├── Custom WebGL frameworks
@@ -539,6 +559,7 @@ SIGNATURE TECHNIQUES
 ## 9. Common Patterns Across Elite Agencies
 
 ### Universal Techniques
+
 ```
 TYPOGRAPHY
 ├── Custom/premium fonts (never system fonts)
@@ -584,6 +605,7 @@ PERFORMANCE
 ```
 
 ### What They ALL Avoid
+
 ```
 NEVER SEEN ON ELITE SITES
 ✗ Stock photography (unedited)

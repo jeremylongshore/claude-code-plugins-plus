@@ -5,6 +5,7 @@
 # Apollo Incident Runbook
 
 ## Overview
+
 Structured incident response procedures for Apollo.io integration issues with diagnosis steps, mitigation actions, and recovery procedures.
 
 ## Incident Classification
@@ -46,6 +47,7 @@ curl -s http://localhost:3000/metrics | grep apollo_
 ### P1: Complete API Failure
 
 **Symptoms:**
+
 - All Apollo requests returning 5xx errors
 - Health check endpoint failing
 - Alerts firing on error rate
@@ -123,6 +125,7 @@ async function getFallbackContacts(criteria: any) {
 ```
 
 **Recovery Steps:**
+
 ```bash
 # 1. Monitor Apollo status page for resolution
 watch -n 30 'curl -s https://status.apollo.io/api/v2/status.json | jq'
@@ -147,6 +150,7 @@ kubectl scale deployment/apollo-service --replicas=3
 ### P1: API Key Compromised
 
 **Symptoms:**
+
 - Unexpected 401 errors
 - Unusual usage patterns
 - Alert from Apollo about suspicious activity
@@ -171,6 +175,7 @@ kubectl logs -l app=apollo-service --since=24h | grep "apollo_request"
 ```
 
 **Post-Incident:**
+
 - Review access controls
 - Enable IP allowlisting if available
 - Implement key rotation schedule
@@ -180,6 +185,7 @@ kubectl logs -l app=apollo-service --since=24h | grep "apollo_request"
 ### P2: High Error Rate
 
 **Symptoms:**
+
 - Error rate > 5%
 - Mix of successful and failed requests
 - Alerts on `apollo_errors_total`
@@ -224,6 +230,7 @@ kubectl scale deployment/apollo-service --replicas=1
 ### P2: Rate Limit Exceeded
 
 **Symptoms:**
+
 - 429 responses
 - `apollo_rate_limit_hits_total` increasing
 - Requests queuing
@@ -253,6 +260,7 @@ kubectl set env deployment/apollo-service \
 ```
 
 **Prevention:**
+
 ```typescript
 // Implement request budgeting
 class RequestBudget {
@@ -294,6 +302,7 @@ class RequestBudget {
 ### P3: Slow Responses
 
 **Symptoms:**
+
 - P95 latency > 5 seconds
 - Timeouts occurring
 - User complaints about slow search
@@ -366,6 +375,7 @@ kubectl set env deployment/apollo-service APOLLO_DEFAULT_PER_PAGE=25
 ```
 
 ## Output
+
 - Incident classification matrix
 - Quick diagnosis commands
 - Response procedures by severity
@@ -373,6 +383,7 @@ kubectl set env deployment/apollo-service APOLLO_DEFAULT_PER_PAGE=25
 - Post-incident template
 
 ## Error Handling
+
 | Issue | Escalation |
 |-------|------------|
 | P1 > 30 min | Page on-call lead |
@@ -381,9 +392,11 @@ kubectl set env deployment/apollo-service APOLLO_DEFAULT_PER_PAGE=25
 | Apollo outage | Open support ticket |
 
 ## Resources
+
 - [Apollo Status Page](https://status.apollo.io)
 - [Apollo Support](https://support.apollo.io)
 - [On-Call Runbook Template](https://sre.google/workbook/on-call/)
 
 ## Next Steps
+
 Proceed to `apollo-data-handling` for data management.

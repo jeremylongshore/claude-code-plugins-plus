@@ -3,6 +3,7 @@
 ## Best Practices
 
 ### Do's
+
 ```
 DO:
 - Be specific about requirements
@@ -14,6 +15,7 @@ DO:
 ```
 
 ### Don'ts
+
 ```
 DON'T:
 - Be vague ("make it better")
@@ -25,6 +27,7 @@ DON'T:
 ```
 
 ### Iteration
+
 ```
 Prompt refinement cycle:
 

@@ -10,6 +10,7 @@ supabase-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Supabase costs through tier selection, request sampling, batching, compression, and usage monitoring with budget alerts.
 **Workflow:** Cost optimization skill. Used for billing analysis and cost reduction initiatives.
 **Relates to:** Follows supabase-performance-tuning; informs supabase-reference-architecture decisions.

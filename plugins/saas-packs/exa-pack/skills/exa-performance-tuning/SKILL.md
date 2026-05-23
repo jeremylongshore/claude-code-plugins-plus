@@ -27,6 +27,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Performance Tuning
 
 ## Overview
+
 Optimize Exa search API response times for production workloads. Key levers: search type selection (instant < fast < auto < neural < deep), result count reduction, content scope control, result caching, and parallel query execution.
 
 ## Latency by Search Type
@@ -43,6 +44,7 @@ Optimize Exa search API response times for production workloads. Key levers: sea
 ## Instructions
 
 ### Step 1: Match Search Type to Latency Budget
+
 ```typescript
 import Exa from "exa-js";
 
@@ -65,6 +67,7 @@ async function optimizedSearch(query: string, latencyBudgetMs: number) {
 ```
 
 ### Step 2: Minimize Content Retrieval
+
 ```typescript
 // Each content option adds latency. Only request what you need.
 
@@ -86,6 +89,7 @@ const withText = await exa.searchAndContents("query", {
 ```
 
 ### Step 3: Cache Search Results
+
 ```typescript
 import { LRUCache } from "lru-cache";
 
@@ -106,6 +110,7 @@ async function cachedSearch(query: string, opts: any) {
 ```
 
 ### Step 4: Parallelize Independent Searches
+
 ```typescript
 // Run independent queries concurrently instead of sequentially
 async function parallelSearch(queries: string[]) {
@@ -119,6 +124,7 @@ async function parallelSearch(queries: string[]) {
 ```
 
 ### Step 5: Two-Phase Search Pattern
+
 ```typescript
 // Phase 1: Fast search for URLs only
 // Phase 2: Selective content retrieval for top results only
@@ -139,6 +145,7 @@ async function twoPhaseSearch(query: string) {
 ```
 
 ### Step 6: Query Normalization for Cache Hits
+
 ```typescript
 function normalizeQuery(query: string): string {
   return query
@@ -166,6 +173,7 @@ async function normalizedSearch(query: string, opts: any) {
 | Two-phase search | ~30-50% for large result sets | ~15 lines |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Search taking 3s+ | Neural search on complex query | Switch to `fast` or `auto` type |
@@ -174,8 +182,10 @@ async function normalizedSearch(query: string, opts: any) {
 | Rate limit (429) | Too many concurrent searches | Add request queue with concurrency limit |
 
 ## Resources
+
 - [Exa Search Types](https://docs.exa.ai/reference/search)
 - [Exa Contents Retrieval](https://docs.exa.ai/reference/contents-retrieval)
 
 ## Next Steps
+
 For cost optimization, see `exa-cost-tuning`. For reliability, see `exa-reliability-patterns`.

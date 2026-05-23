@@ -3,6 +3,7 @@
 ## Pre-Deployment Checklist
 
 ### 1. Configuration
+
 - [ ] Production DSN configured (separate from dev/staging)
 - [ ] Environment set to "production"
 - [ ] Release version configured
@@ -19,6 +20,7 @@ Sentry.init({
 ```
 
 ### 2. Source Maps
+
 - [ ] Source maps generated during build
 - [ ] Source maps uploaded to Sentry
 - [ ] Release created and finalized
@@ -39,6 +41,7 @@ sentry-cli releases finalize $VERSION
 ```
 
 ### 3. Security
+
 - [ ] DSN in environment variables (not hardcoded)
 - [ ] `sendDefaultPii: false` in production
 - [ ] Data scrubbing configured
@@ -53,6 +56,7 @@ Sentry.init({
 ```
 
 ### 4. Performance
+
 - [ ] Performance monitoring enabled
 - [ ] Appropriate sample rates set
 - [ ] Key transactions identified
@@ -71,12 +75,14 @@ Sentry.init({
 ```
 
 ### 5. Alerting
+
 - [ ] Alert rules configured
 - [ ] Team notifications set up
 - [ ] On-call integration (PagerDuty/Slack)
 - [ ] Issue assignment rules defined
 
 ### 6. Integrations
+
 - [ ] Source control (GitHub/GitLab) connected
 - [ ] CI/CD integration configured
 - [ ] Slack/Teams notifications

@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral AI Performance Tuning
 
 ## Overview
+
 Optimize Mistral AI API response times and throughput. Key levers: model selection (Mistral Small ~200ms TTFT vs Large ~500ms), prompt length (fewer tokens = faster), streaming (perceived speed), caching (zero-latency repeats), and concurrent request management.
 
 ## Prerequisites
+
 - Mistral API integration in production
 - Understanding of RPM/TPM limits for your tier
 - Application architecture supporting streaming
@@ -201,6 +203,7 @@ const response = await client.fim.complete({
 | FIM vs chat for code | 2-3x fewer tokens |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `429 rate_limit_exceeded` | RPM/TPM cap hit | Use PQueue with interval cap |
@@ -209,12 +212,14 @@ const response = await client.fim.complete({
 | Cache thrashing | High cardinality prompts | Increase cache size or reduce TTL |
 
 ## Resources
+
 - [Models Overview](https://docs.mistral.ai/getting-started/models/)
 - [Batch Inference](https://docs.mistral.ai/capabilities/batch/)
 - [FIM/Code Generation](https://docs.mistral.ai/capabilities/code_generation/)
 - [Pricing](https://docs.mistral.ai/deployment/laplateforme/pricing/)
 
 ## Output
+
 - Model selection optimized for latency requirements
 - Streaming endpoints for perceived speed
 - LRU response cache for deterministic requests

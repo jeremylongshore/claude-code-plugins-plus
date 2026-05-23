@@ -10,6 +10,7 @@ clerk-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Clerk webhook handling
 **Workflow:** Part of the cicd skill category for Clerk integration.
 **Relates to:** Other clerk skills in this pack.

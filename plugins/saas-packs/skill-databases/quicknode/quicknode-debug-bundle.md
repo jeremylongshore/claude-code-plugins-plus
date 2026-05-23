@@ -10,6 +10,7 @@ quicknode-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect QuickNode debug evidence for support
 **Workflow:** Part of the operations skill category for QuickNode integration.
 **Relates to:** Other quicknode skills in this pack.

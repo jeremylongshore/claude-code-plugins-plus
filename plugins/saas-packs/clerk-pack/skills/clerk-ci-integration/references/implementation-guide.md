@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: GitHub Actions Workflow
+
 ```yaml
 # .github/workflows/test.yml
 name: Test
@@ -51,6 +52,7 @@ jobs:
 ```
 
 ### Step 2: E2E Testing with Playwright
+
 ```yaml
 # .github/workflows/e2e.yml
 name: E2E Tests
@@ -102,6 +104,7 @@ jobs:
 ```
 
 ### Step 3: Test User Setup
+
 ```typescript
 // scripts/setup-test-user.ts
 import { clerkClient } from '@clerk/nextjs/server'
@@ -132,6 +135,7 @@ setupTestUser()
 ```
 
 ### Step 4: Playwright Test Configuration
+
 ```typescript
 // playwright.config.ts
 import { defineConfig, devices } from '@playwright/test'
@@ -165,6 +169,7 @@ export default defineConfig({
 ```
 
 ### Step 5: Authentication Test Helpers
+
 ```typescript
 // e2e/helpers/auth.ts
 import { Page } from '@playwright/test'
@@ -190,6 +195,7 @@ export async function signOut(page: Page) {
 ```
 
 ### Step 6: Sample E2E Tests
+
 ```typescript
 // e2e/auth.spec.ts
 import { test, expect } from '@playwright/test'

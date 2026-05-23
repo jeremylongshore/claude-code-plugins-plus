@@ -10,6 +10,7 @@ speak-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Speak webhook handling
 **Workflow:** Part of the cicd skill category for Speak integration.
 **Relates to:** Other speak skills in this pack.

@@ -35,6 +35,7 @@ This skill empowers Claude to perform thorough evaluations of machine learning m
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Assess the performance of a machine learning model.
 - Compare the performance of multiple models.
 - Identify areas where a model can be improved.
@@ -47,6 +48,7 @@ This skill activates when you need to:
 User request: "Evaluate the accuracy of my image classification model."
 
 The skill will:
+
 1. Invoke the `/eval-model` command.
 2. Analyze the model's performance on a held-out dataset.
 3. Report the accuracy score and other relevant metrics.
@@ -56,6 +58,7 @@ The skill will:
 User request: "Compare the F1-score of model A and model B."
 
 The skill will:
+
 1. Invoke the `/eval-model` command for both models.
 2. Extract the F1-score from the evaluation results.
 3. Present a comparison of the F1-scores for model A and model B.

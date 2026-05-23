@@ -10,6 +10,7 @@ sentry-performance-tracing/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up performance monitoring and distributed tracing with Sentry for tracking application performance and request flows across services.
 **Workflow:** Enable after basic error tracking is working. Configure sample rates, create transactions and spans, and set up distributed tracing.
 **Relates to:** Builds on `sentry-error-capture` context. Works with `sentry-performance-tuning` for optimization.

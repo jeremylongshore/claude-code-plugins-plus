@@ -9,6 +9,7 @@ Traditional accounting measures revenue, profit, and ROI. These metrics are mean
 Before you can improve, you need to know where you stand. Use an MVP to establish real data on where the company is right now.
 
 **What to measure:**
+
 - Current conversion rates at each stage of the funnel
 - Current retention rates (daily, weekly, monthly)
 - Current revenue per customer (even if near zero)
@@ -16,6 +17,7 @@ Before you can improve, you need to know where you stand. Use an MVP to establis
 - Customer engagement metrics (frequency, depth of use)
 
 **How to establish the baseline:**
+
 1. Launch the MVP to a small group of target customers
 2. Measure actual behavior (not projected or estimated)
 3. Record every metric honestly, even when numbers are discouraging
@@ -39,6 +41,7 @@ Before you can improve, you need to know where you stand. Use an MVP to establis
 With a baseline established, the startup works to improve the numbers from the baseline toward the ideal. Each experiment attempts to move one or more key metrics.
 
 **The tuning process:**
+
 1. Identify the metric most constraining growth
 2. Form a hypothesis about what will improve it
 3. Run an experiment (product change, marketing test, pricing change)
@@ -63,6 +66,7 @@ With a baseline established, the startup works to improve the numbers from the b
 After multiple tuning attempts, the startup reaches a decision point. Are the metrics moving toward the target, or are they flat despite significant effort?
 
 **Pivot indicators:**
+
 - Key metrics are flat or declining despite multiple experiments
 - The rate of improvement is too slow to reach targets before runway ends
 - Customer feedback consistently points to a different problem or solution
@@ -70,6 +74,7 @@ After multiple tuning attempts, the startup reaches a decision point. Are the me
 - The team is running out of ideas for improving current metrics
 
 **Persevere indicators:**
+
 - Key metrics show consistent upward trend
 - Each experiment teaches something actionable
 - Customer feedback aligns with the product direction
@@ -182,22 +187,27 @@ Traditional board decks do not work for innovation. Use this structure:
 ### Innovation Board Report Template
 
 **1. Hypotheses Tested This Period**
+
 - List each hypothesis, the experiment run, and the result
 - Clearly state what was learned
 
 **2. Key Metric Progress**
+
 - Show the innovation dashboard with cohort trends
 - Highlight which metrics improved and which did not
 
 **3. Decision Points**
+
 - State any pivot or persevere decisions made
 - Explain the reasoning
 
 **4. Next Period Plan**
+
 - List the hypotheses to test next
 - State the resources needed
 
 **5. Runway and Funding**
+
 - Current burn rate and runway
 - Metered funding milestones (see below)
 

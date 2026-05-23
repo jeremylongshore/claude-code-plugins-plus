@@ -10,6 +10,7 @@ mindtickle-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Mindtickle core feature integration
 **Workflow:** Part of the onboarding skill category for Mindtickle integration.
 **Relates to:** Other mindtickle skills in this pack.

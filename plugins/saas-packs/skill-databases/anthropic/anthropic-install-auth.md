@@ -10,6 +10,7 @@ anthropic-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Anthropic SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

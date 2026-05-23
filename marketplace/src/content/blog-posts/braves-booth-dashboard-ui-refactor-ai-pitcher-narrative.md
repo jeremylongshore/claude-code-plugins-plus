@@ -119,4 +119,3 @@ The pattern is the same one that keeps showing up on this project: broadcast too
 - [Building a Production Multi-Agent AI System](/posts/building-production-multi-agent-ai-brightstream-vertex-ai/) — multi-agent architecture patterns relevant to the AI narrative pipeline
 - [Building an AI-Friendly Codebase](/posts/building-ai-friendly-codebase-documentation-real-time-claude-md-creation-journey/) — the CLAUDE.md-driven development approach used across this project
 - [Building Production-Grade Testing Infrastructure](/posts/building-production-grade-testing-infrastructure-playwright-case-study/) — testing patterns that apply to dashboard components
-

@@ -10,6 +10,7 @@ shopify-migration-deep-dive/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Shopify major migrations
 **Workflow:** Part of the advanced skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

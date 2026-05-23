@@ -1,6 +1,7 @@
-# Examples
+## Examples
 
 ### Mock Vercel Responses
+
 ```typescript
 vi.mock('vercel', () => ({
   VercelClient: vi.fn().mockImplementation(() => ({
@@ -10,6 +11,7 @@ vi.mock('vercel', () => ({
 ```
 
 ### Debug Mode
+
 ```bash
 # Enable verbose logging
 DEBUG=VERCEL=* npm run dev

@@ -18,11 +18,13 @@ compatibility: Designed for Claude Code
 # Lucidchart Hello World
 
 ## Overview
+
 Minimal working examples demonstrating core Lucidchart API functionality.
 
 ## Instructions
 
 ### Step 1: Create a Document
+
 ```typescript
 const doc = await client.documents.create({
   title: 'API Architecture Diagram',
@@ -33,6 +35,7 @@ console.log(`Edit URL: ${doc.editUrl}`);
 ```
 
 ### Step 2: Add Shapes via Standard Import
+
 ```typescript
 // Lucid Standard Import uses .lucid file format
 const importData = {
@@ -55,6 +58,7 @@ await client.documents.import(doc.documentId, importData);
 ```
 
 ### Step 3: Export Document
+
 ```typescript
 const png = await client.documents.export(doc.documentId, {
   format: 'png', pageIndex: 0, scale: 2
@@ -63,6 +67,7 @@ fs.writeFileSync('diagram.png', png);
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Auth error | Invalid credentials | Check LUCID_API_KEY |
@@ -70,7 +75,9 @@ fs.writeFileSync('diagram.png', png);
 | Rate limit | Too many requests | Implement backoff |
 
 ## Resources
+
 - [Lucidchart API Docs](https://developer.lucid.co/reference/overview)
 
 ## Next Steps
+
 See `lucidchart-local-dev-loop`.

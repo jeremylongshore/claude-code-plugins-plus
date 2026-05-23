@@ -10,6 +10,7 @@ juicebox-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Juicebox SDK patterns
 **Workflow:** Part of the onboarding skill category for Juicebox integration.
 **Relates to:** Other juicebox skills in this pack.

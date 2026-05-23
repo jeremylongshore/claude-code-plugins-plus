@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Notion Content Management
 
 ## Overview
+
 Complete guide to creating, updating, archiving, and composing Notion pages and block content using the `@notionhq/client` SDK. Covers page lifecycle, all common block types, rich text formatting, and bulk content operations.
 
 ## Prerequisites
+
 - Completed `notion-install-auth` setup
 - `NOTION_TOKEN` environment variable set
 - Target database or page shared with your integration (via Connections menu)
@@ -361,6 +363,7 @@ async function getBlock(blockId: string) {
 ```
 
 ## Output
+
 - Created pages with typed properties, icons, covers, and initial block content
 - Updated page properties and metadata
 - Archived and restored pages
@@ -368,6 +371,7 @@ async function getBlock(blockId: string) {
 - Retrieved, updated, and deleted individual blocks
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `validation_error` (400) | Wrong property type or name | Retrieve database schema with `databases.retrieve()` to confirm property names and types |
@@ -380,6 +384,7 @@ async function getBlock(blockId: string) {
 ## Examples
 
 ### Complete Page Builder
+
 ```typescript
 import { Client } from '@notionhq/client';
 
@@ -424,6 +429,7 @@ async function buildMeetingNotes(databaseId: string) {
 ```
 
 ### Python Example
+
 ```python
 import os
 from notion_client import Client
@@ -483,6 +489,7 @@ notion.pages.update(page_id=page["id"], archived=True)
 ```
 
 ### Batch Block Append (Chunked for >100 Blocks)
+
 ```typescript
 async function appendBlocksChunked(
   pageId: string,
@@ -504,6 +511,7 @@ async function appendBlocksChunked(
 ```
 
 ## Resources
+
 - [Working with Page Content](https://developers.notion.com/docs/working-with-page-content)
 - [Create a Page](https://developers.notion.com/reference/post-page)
 - [Update Page Properties](https://developers.notion.com/reference/patch-page)
@@ -514,4 +522,5 @@ async function appendBlocksChunked(
 - [notion-sdk-py GitHub](https://github.com/ramnes/notion-sdk-py)
 
 ## Next Steps
+
 Proceed to `notion-data-handling` for database queries, filtering, sorting, and pagination patterns.

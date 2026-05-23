@@ -9,14 +9,17 @@ Battle-tested Claude Code skills for modern xOS (iOS, iPadOS, watchOS, tvOS) dev
 ## What's New Recently
 
 ✨ **New Skills with Examples:**
+
 - **SwiftUI Debugging** - View updates, preview crashes, layout issues with diagnostic decision trees. Includes 3 real-world examples (list updates, preview crashes, binding issues)
 - **Performance Profiling** - Instruments decision trees for CPU, memory, battery profiling. Includes 3 real-world examples (N+1 queries, UI lag diagnosis, memory vs leak)
 
 ✨ **Previously New Skills:**
+
 - **Liquid Glass** - Apple's new material design system (iOS 26+) with comprehensive design principles, API patterns, and expert review checklist for validating implementations
 - **SwiftUI Performance** - Master the new SwiftUI Instrument in Instruments 26, identify long view body updates, eliminate unnecessary updates with the Cause & Effect Graph
 
 🔄 **Updated Skills:**
+
 - **UI Testing** - Now includes Recording UI Automation (Xcode 26) for recording interactions, replaying across devices/languages, and reviewing video recordings of test runs. Original condition-based waiting patterns preserved and enhanced.
 
 ## Structure
@@ -97,9 +100,11 @@ Skills are automatically suggested by Claude Code based on context, or invoke th
 ### 🎨 UI & Design
 
 #### `liquid-glass`
+
 Apple's new material design system for iOS 26+. Comprehensive coverage of Liquid Glass visual properties, implementation patterns, and design principles.
 
 **Key Features:**
+
 - **Expert Review Checklist** - 7-section validation checklist for reviewing Liquid Glass implementations (material appropriateness, variant selection, legibility, layering, accessibility, performance)
 - Regular vs Clear variant decision criteria
 - Layered system architecture (highlights, shadows, glow, tinting)
@@ -114,9 +119,11 @@ Apple's new material design system for iOS 26+. Comprehensive coverage of Liquid
 ---
 
 #### `swiftui-performance`
+
 Master SwiftUI performance optimization using the new SwiftUI Instrument in Instruments 26.
 
 **Key Features:**
+
 - New SwiftUI Instrument walkthrough (4 track lanes, color-coding, integration with Time Profiler)
 - **Cause & Effect Graph** - Visualize data flow and dependencies to eliminate unnecessary updates
 - Problem 1: Long View Body Updates (formatter caching, expensive operations)
@@ -131,9 +138,11 @@ Master SwiftUI performance optimization using the new SwiftUI Instrument in Inst
 ---
 
 #### `ui-testing`
+
 Reliable UI testing with condition-based waiting patterns and new Recording UI Automation features from Xcode 26.
 
 **Key Features:**
+
 - **Recording UI Automation** - Record interactions as Swift code, replay across devices/languages/configurations, review video recordings
 - Three phases: Record → Replay → Review
 - Condition-based waiting (eliminates flaky tests from sleep() timeouts)
@@ -148,9 +157,11 @@ Reliable UI testing with condition-based waiting patterns and new Recording UI A
 ---
 
 #### `swiftui-debugging`
+
 Diagnostic decision trees for SwiftUI view updates, preview crashes, and layout issues. Includes 3 real-world examples.
 
 **Key Features:**
+
 - **View Not Updating Decision Tree** - Diagnose struct mutation, binding identity, view recreation, missing observers
 - **Preview Crashes Decision Tree** - Identify missing dependencies, state init failures, cache corruption
 - **Layout Issues Quick Reference** - ZStack ordering, GeometryReader sizing, SafeArea, frame/fixedSize
@@ -164,9 +175,11 @@ Diagnostic decision trees for SwiftUI view updates, preview crashes, and layout 
 ---
 
 #### `performance-profiling`
+
 Instruments decision trees and profiling workflows for CPU, memory, and battery optimization. Includes 3 real-world examples.
 
 **Key Features:**
+
 - **Performance Decision Tree** - Choose the right tool (Time Profiler, Allocations, Core Data, Energy Impact)
 - **Time Profiler Deep Dive** - CPU analysis, hot spots, Self Time vs Total Time distinction
 - **Allocations Deep Dive** - Memory growth diagnosis, object counts, leak vs caching
@@ -183,6 +196,7 @@ Instruments decision trees and profiling workflows for CPU, memory, and battery 
 ### 🐛 Debugging & Performance
 
 #### `xcode-debugging`
+
 Environment-first diagnostics for mysterious Xcode issues. Prevents 30+ minute rabbit holes by checking build environment before debugging code.
 
 **When to use:** BUILD FAILED, test crashes, simulator hangs, stale builds, zombie xcodebuild processes, "Unable to boot simulator", "No such module" after SPM changes
@@ -190,6 +204,7 @@ Environment-first diagnostics for mysterious Xcode issues. Prevents 30+ minute r
 ---
 
 #### `memory-debugging`
+
 Systematic memory leak diagnosis with Instruments. 5 leak patterns covering 90% of real-world issues.
 
 **When to use:** App memory grows over time, seeing multiple instances of same class, crashes with memory limit exceeded, Instruments shows retain cycles
@@ -197,6 +212,7 @@ Systematic memory leak diagnosis with Instruments. 5 leak patterns covering 90% 
 ---
 
 #### `build-troubleshooting`
+
 Dependency resolution for CocoaPods and Swift Package Manager conflicts.
 
 **When to use:** Dependency conflicts, CocoaPods/SPM resolution failures, "Multiple commands produce" errors, framework version mismatches
@@ -206,6 +222,7 @@ Dependency resolution for CocoaPods and Swift Package Manager conflicts.
 ### ⚡ Concurrency & Async
 
 #### `swift-concurrency`
+
 Swift 6 strict concurrency patterns - async/await, MainActor, Sendable, actor isolation, and data race prevention.
 
 **When to use:** Debugging Swift 6 concurrency errors, implementing @MainActor classes, converting delegate callbacks to async-safe patterns
@@ -215,6 +232,7 @@ Swift 6 strict concurrency patterns - async/await, MainActor, Sendable, actor is
 ### 💾 Data & Persistence
 
 #### `database-migration`
+
 Safe database schema evolution for SQLite/GRDB/SwiftData. Prevents data loss with additive migrations and testing workflows.
 
 **When to use:** Adding/modifying database columns, encountering "FOREIGN KEY constraint failed", "no such column", "cannot add NOT NULL column" errors
@@ -222,6 +240,7 @@ Safe database schema evolution for SQLite/GRDB/SwiftData. Prevents data loss wit
 ---
 
 #### `sqlitedata`
+
 SQLiteData (Point-Free) patterns, critical gotchas, batch performance, and CloudKit sync.
 
 **When to use:** Working with SQLiteData @Table models, @FetchAll/@FetchOne queries, StructuredQueries crashes, batch imports
@@ -229,6 +248,7 @@ SQLiteData (Point-Free) patterns, critical gotchas, batch performance, and Cloud
 ---
 
 #### `grdb`
+
 Raw GRDB for complex queries, ValueObservation, DatabaseMigrator patterns.
 
 **When to use:** Writing raw SQL queries, complex joins, ValueObservation for reactive queries, dropping down from SQLiteData for performance
@@ -236,6 +256,7 @@ Raw GRDB for complex queries, ValueObservation, DatabaseMigrator patterns.
 ---
 
 #### `swiftdata`
+
 SwiftData with iOS 26+ features, @Model definitions, @Query patterns, Swift 6 concurrency with @MainActor.
 
 **When to use:** Working with SwiftData @Model definitions, @Query in SwiftUI, @Relationship macros, ModelContext patterns, CloudKit integration

@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Architecture Patterns
 
 ### Pattern 1: Simple Integration
+
 ```
 ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
 │   Client    │────▶│   Backend   │────▶│  Juicebox   │
@@ -15,6 +16,7 @@ Detailed implementation examples and code patterns.
 **Best for:** Small applications, MVPs, single-tenant systems
 
 ### Pattern 2: Cached Architecture
+
 ```
 ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
 │   Client    │────▶│   Backend   │────▶│   Redis     │
@@ -30,6 +32,7 @@ Detailed implementation examples and code patterns.
 **Best for:** Medium applications, cost optimization
 
 ### Pattern 3: Enterprise Architecture
+
 ```
                     ┌─────────────────────────────────────────┐
                     │             Load Balancer               │
@@ -68,6 +71,7 @@ Detailed implementation examples and code patterns.
 ### Core Components
 
 #### 1. API Gateway
+
 ```typescript
 // gateway/index.ts
 import express from 'express';
@@ -93,6 +97,7 @@ app.use('/api/v1/profiles', [
 ```
 
 #### 2. Service Layer
+
 ```typescript
 // services/people-search.service.ts
 export class PeopleSearchService {
@@ -151,6 +156,7 @@ export class PeopleSearchService {
 ```
 
 #### 3. Worker Pool
+
 ```typescript
 // workers/enrichment.worker.ts
 import { Worker } from 'bullmq';
@@ -174,6 +180,7 @@ const worker = new Worker('enrich-profiles', async (job) => {
 ```
 
 #### 4. Database Schema
+
 ```sql
 -- PostgreSQL schema
 CREATE TABLE profiles (

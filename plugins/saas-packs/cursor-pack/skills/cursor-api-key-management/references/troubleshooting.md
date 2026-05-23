@@ -3,6 +3,7 @@
 ## Troubleshooting
 
 ### "Invalid API Key"
+
 ```
 Checklist:
 [ ] Key is correctly copied (no extra spaces)
@@ -17,6 +18,7 @@ curl https://api.openai.com/v1/models \
 ```
 
 ### "Rate Limited"
+
 ```
 Solutions:
 1. Check rate limits for your tier
@@ -26,6 +28,7 @@ Solutions:
 ```
 
 ### "Model Not Available"
+
 ```
 Causes:
 - Model requires waitlist access
@@ -39,6 +42,7 @@ Verify:
 ```
 
 ### "Insufficient Quota"
+
 ```
 Solutions:
 1. Add billing to API account

@@ -1,6 +1,7 @@
 # Mistral AI Migration Deep Dive - Implementation Details
 
 ## Provider-Agnostic Adapter Interface
+
 ```typescript
 export interface AIAdapter {
   chat(messages: Message[], options?: ChatOptions): Promise<ChatResponse>;
@@ -10,6 +11,7 @@ export interface AIAdapter {
 ```
 
 ## OpenAI Adapter (Current)
+
 ```typescript
 export class OpenAIAdapter implements AIAdapter {
   async chat(messages, options) {
@@ -20,6 +22,7 @@ export class OpenAIAdapter implements AIAdapter {
 ```
 
 ## Mistral Adapter (Target)
+
 ```typescript
 export class MistralAdapter implements AIAdapter {
   async chat(messages, options) {
@@ -30,6 +33,7 @@ export class MistralAdapter implements AIAdapter {
 ```
 
 ## Feature Flag Controlled Migration
+
 ```typescript
 export function createAIAdapter(): AIAdapter {
   const mistralPercentage = parseInt(process.env.MISTRAL_ROLLOUT_PERCENT || '0');
@@ -38,6 +42,7 @@ export function createAIAdapter(): AIAdapter {
 ```
 
 ## Model Mapping
+
 ```typescript
 const MODEL_MAPPINGS = [
   { openai: 'gpt-3.5-turbo', mistral: 'mistral-small-latest', notes: 'Fast, cost-effective' },
@@ -47,6 +52,7 @@ const MODEL_MAPPINGS = [
 ```
 
 ## Gradual Rollout
+
 ```bash
 Phase 1: MISTRAL_ROLLOUT_PERCENT=0   # Validation
 Phase 2: MISTRAL_ROLLOUT_PERCENT=5   # Canary
@@ -56,6 +62,7 @@ Phase 5: MISTRAL_ROLLOUT_PERCENT=100 # Full migration
 ```
 
 ## Validation & Testing
+
 ```typescript
 describe('Migration Validation', () => {
   for (const testCase of testCases) {
@@ -72,6 +79,7 @@ describe('Migration Validation', () => {
 ```
 
 ## Rollback
+
 ```bash
 kubectl set env deployment/ai-service MISTRAL_ROLLOUT_PERCENT=0
 kubectl rollout status deployment/ai-service

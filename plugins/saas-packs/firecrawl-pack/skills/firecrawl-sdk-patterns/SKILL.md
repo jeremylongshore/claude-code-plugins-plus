@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl SDK Patterns
 
 ## Overview
+
 Production-ready patterns for Firecrawl SDK (`@mendable/firecrawl-js` / `firecrawl-py`). Covers singleton client, typed wrappers, retry with backoff, response validation, and reusable scraping service patterns.
 
 ## Prerequisites
+
 - `@mendable/firecrawl-js` installed
 - Understanding of async/await patterns
 - TypeScript strict mode recommended
@@ -35,6 +37,7 @@ Production-ready patterns for Firecrawl SDK (`@mendable/firecrawl-js` / `firecra
 ## Instructions
 
 ### Step 1: Singleton Client with Configuration
+
 ```typescript
 // src/firecrawl/client.ts
 import FirecrawlApp from "@mendable/firecrawl-js";
@@ -58,6 +61,7 @@ export function getFirecrawl(): FirecrawlApp {
 ```
 
 ### Step 2: Typed Scrape Wrapper
+
 ```typescript
 // src/firecrawl/scrape.ts
 import { getFirecrawl } from "./client";
@@ -99,6 +103,7 @@ export async function scrapePage(
 ```
 
 ### Step 3: Retry with Exponential Backoff
+
 ```typescript
 // src/firecrawl/retry.ts
 export async function withRetry<T>(
@@ -130,6 +135,7 @@ export async function withRetry<T>(
 ```
 
 ### Step 4: Scraping Service with Queue
+
 ```typescript
 // src/firecrawl/service.ts
 import PQueue from "p-queue";
@@ -162,6 +168,7 @@ export class FirecrawlService {
 ```
 
 ### Step 5: Response Validation with Zod
+
 ```typescript
 import { z } from "zod";
 
@@ -186,6 +193,7 @@ export function validateScrapeResponse(result: unknown) {
 ```
 
 ### Step 6: Python Patterns
+
 ```python
 # firecrawl_service.py
 import os
@@ -215,6 +223,7 @@ def scrape_with_retry(url: str, max_retries: int = 3) -> dict:
 ```
 
 ## Output
+
 - Singleton client with env-based configuration
 - Typed wrappers returning clean domain objects
 - Automatic retry with exponential backoff + jitter
@@ -222,6 +231,7 @@ def scrape_with_retry(url: str, max_retries: int = 3) -> dict:
 - Zod validation for response safety
 
 ## Error Handling
+
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
 | Singleton client | All SDK usage | One instance, consistent config |
@@ -233,6 +243,7 @@ def scrape_with_retry(url: str, max_retries: int = 3) -> dict:
 ## Examples
 
 ### Factory Pattern (Multi-Tenant)
+
 ```typescript
 const clients = new Map<string, FirecrawlApp>();
 
@@ -246,10 +257,12 @@ export function getClientForTenant(tenantId: string): FirecrawlApp {
 ```
 
 ## Resources
+
 - [Node SDK](https://docs.firecrawl.dev/sdks/node)
 - [Python SDK](https://docs.firecrawl.dev/sdks/python)
 - [p-queue](https://github.com/sindresorhus/p-queue)
 - [Zod](https://zod.dev/)
 
 ## Next Steps
+
 Apply patterns in `firecrawl-core-workflow-a` for real-world usage.

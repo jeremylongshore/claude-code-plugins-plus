@@ -19,6 +19,7 @@ Type-safe SQLite persistence using [SQLiteData](https://pointfreeco.github.io/sq
 ## When to Use SQLiteData
 
 **Choose SQLiteData when you need:**
+
 - ✅ Type-safe SQLite with compiler-checked queries
 - ✅ CloudKit sync with record sharing
 - ✅ Large datasets (50k+ records) with fast performance
@@ -26,11 +27,13 @@ Type-safe SQLite persistence using [SQLiteData](https://pointfreeco.github.io/sq
 - ✅ Swift 6 strict concurrency support
 
 **Use SwiftData instead when:**
+
 - Simple CRUD with native Apple integration
 - Prefer `@Model` classes over structs
 - Don't need CloudKit record sharing
 
 **Use raw GRDB when:**
+
 - Complex SQL joins across multiple tables
 - Custom migration logic
 - Performance-critical batch operations
@@ -78,6 +81,7 @@ struct Track: Identifiable, Sendable {
 ```
 
 **Key patterns:**
+
 - Use `struct`, not `class` (value types)
 - Conform to `Sendable` for Swift 6 concurrency
 - Use `@Attribute(.primaryKey)` for primary key
@@ -254,6 +258,7 @@ func importTracks(_ tracks: [Track]) async throws {
 ```
 
 **Performance:**
+
 - 50,000 records in ~30-45 seconds
 - Batching reduces 50k transactions to 100 transactions (500 records each)
 - Each `database.write { }` block is ONE transaction
@@ -288,6 +293,7 @@ func testMigration() async throws {
 ```
 
 **Error:**
+
 ```
 Exception Type:    EXC_BAD_ACCESS (SIGSEGV)
 Exception Codes:   KERN_INVALID_ADDRESS at 0xfffffffffffffff8
@@ -339,6 +345,7 @@ func testRockTracks() async throws {
 ```
 
 **Error:**
+
 ```
 Exception Type:    EXC_BAD_ACCESS (SIGSEGV)
 Address:           0xfffffffffffffff8 (-8)
@@ -547,15 +554,18 @@ let count = try await Track.fetchCount(database)
 ## External Resources
 
 **SQLiteData:**
+
 - [Documentation](https://pointfreeco.github.io/sqlite-data/)
 - [GitHub](https://github.com/pointfreeco/sqlite-data)
 - [Point-Free Episodes](https://www.pointfree.co) (video tutorials, subscription)
 
 **Dependencies:**
+
 - [swift-dependencies](https://github.com/pointfreeco/swift-dependencies) - Dependency injection (pairs well with SQLiteData)
 - [GRDB](https://github.com/groue/GRDB.swift) - Underlying database engine
 
 **Related Axiom Skills:**
+
 - `database-migration` - Safe schema evolution patterns
 - `grdb` - Raw SQL and advanced GRDB features
 - `swiftdata` - Apple's native persistence framework
@@ -567,10 +577,12 @@ let count = try await Track.fetchCount(database)
 **Scenario**: Users updating to iOS 26 build crash on launch. Error: `EXC_BAD_ACCESS KERN_INVALID_ADDRESS at 0xfffffffffffffff8`
 
 **Under pressure:**
+
 - Temptation: Delete old schema and recreate (fast, destructive)
 - Better: Search this skill for "StructuredQueries" and follow safe path
 
 **The problem** (lines 250-274):
+
 ```
 Migration → GRDB schema updated
 → SQLiteData StructuredQueries cache becomes stale
@@ -579,6 +591,7 @@ Migration → GRDB schema updated
 ```
 
 **The fix** (lines 276-291):
+
 ```swift
 // Close and reopen to refresh cache
 try await migrator.migrate(database)
@@ -590,12 +603,14 @@ let tracks = try await Track.where { $0.genre == "Rock" }.fetchAll(database)
 ```
 
 **Time cost:**
+
 - Understanding problem: 5 min (search skill for "StructuredQueries")
 - Implementing fix: 30 min
 - Testing: 15 min
 - **Total: 50 minutes**, zero data loss
 
 **Alternative if close/reopen doesn't work** (lines 294-300):
+
 ```swift
 // Bypass StructuredQueries, use raw GRDB
 let tracks = try Track.filter(Column("genre") == "Rock").fetchAll(db)
@@ -606,16 +621,19 @@ let tracks = try Track.filter(Column("genre") == "Rock").fetchAll(db)
 When migration causes crashes:
 
 **DO NOT:**
+
 - ❌ Delete schema and recreate (data loss)
 - ❌ Ship guess-fixes without testing (worsens crash)
 - ❌ Ignore this skill section (solution is here)
 
 **DO:**
+
 - ✅ Search this skill for error keyword (e.g., "KERN_INVALID_ADDRESS", "StructuredQueries")
 - ✅ Implement documented fix (close/reopen or raw GRDB)
 - ✅ Test in simulator before App Store submission
 
 **Time budget:**
+
 - Search + understand: 5-10 min
 - Implement: 30 min
 - Test: 15 min
@@ -624,6 +642,7 @@ When migration causes crashes:
 ### If You Must Ship Emergency Mitigation
 
 **Temporary fix while proper solution is tested:**
+
 ```swift
 // Disable StructuredQueries globally during migration
 database.disableStructuredQueries = true
@@ -632,6 +651,7 @@ database.disableStructuredQueries = false
 ```
 
 **This buys time:**
+
 - Unblocks app update (users can install)
 - Preserves user data (no deletion)
 - Proper fix queued for next release
@@ -639,17 +659,20 @@ database.disableStructuredQueries = false
 ### Honest Pressure Points (When Panic Tempts Nuclear Option)
 
 **If you're tempted to delete schema under pressure:**
+
 1. **Stop.** Search this skill for the error keyword first
 2. **Document.** The fact that you found this section proves safe path exists
 3. **Ship safe mitigation.** 50 minutes for proper fix < 24 hours to recover from data loss
 
 **Why nuclear option backfires:**
+
 - Users lose all local data (playlists, favorites)
 - App reviews tank (4.5 stars → 2 stars typical)
 - Support tickets explode
 - Recovery takes weeks of backfills and apologies
 
 **Why proper fix wins:**
+
 - Users keep all data
 - Trust preserved
 - Clean recovery
@@ -660,30 +683,38 @@ database.disableStructuredQueries = false
 ## Common Mistakes
 
 ### ❌ Using instance methods
+
 ```swift
 try track.insert(database)  // Won't compile
 ```
+
 **Fix:** Use static methods: `try Track.insert { track }.execute(database)`
 
 ### ❌ Querying immediately after migration
+
 ```swift
 try migrator.migrate(database)
 let tracks = try Track.where { ... }.fetchAll(database)  // CRASH
 ```
+
 **Fix:** Close/reopen database or use raw GRDB filter
 
 ### ❌ Static queries in tests
+
 ```swift
 static let rockTracks = Track.where { $0.genre == "Rock" }  // CRASH
 ```
+
 **Fix:** Use computed properties or functions
 
 ### ❌ Single-record inserts for large datasets
+
 ```swift
 for track in 50000Tracks {
     try Track.insert { track }.execute(database)  // 4 hours!
 }
 ```
+
 **Fix:** Batch in groups of 500 per transaction
 
 ---

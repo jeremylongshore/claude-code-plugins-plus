@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram CI Integration
 
 ## Overview
+
 Set up CI/CD pipelines for Ideogram integrations. Since Ideogram has no free tier for API testing, CI strategies focus on: mocked unit tests (free), optional integration tests gated behind secrets, and prompt validation without API calls.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - Ideogram API key for integration tests (optional)
 - npm/pnpm project with vitest
@@ -35,6 +37,7 @@ Set up CI/CD pipelines for Ideogram integrations. Since Ideogram has no free tie
 ## Instructions
 
 ### Step 1: GitHub Actions Workflow
+
 ```yaml
 # .github/workflows/ideogram-ci.yml
 name: Ideogram Integration CI
@@ -78,6 +81,7 @@ jobs:
 ```
 
 ### Step 2: Configure Secrets
+
 ```bash
 set -euo pipefail
 # Store Ideogram API key in GitHub repository secrets
@@ -88,6 +92,7 @@ gh secret list
 ```
 
 ### Step 3: Unit Tests with Mocked API
+
 ```typescript
 // tests/ideogram-generate.test.ts
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
@@ -157,6 +162,7 @@ describe("Ideogram Generate", () => {
 ```
 
 ### Step 4: Prompt Validation in CI (No API Key Required)
+
 ```typescript
 // tests/prompt-validation.test.ts
 import { describe, it, expect } from "vitest";
@@ -206,6 +212,7 @@ describe("Prompt Validation", () => {
 ```
 
 ### Step 5: Integration Test (API Key Required)
+
 ```typescript
 // tests/integration/ideogram-live.test.ts
 import { describe, it, expect } from "vitest";
@@ -237,6 +244,7 @@ describe.skipIf(!process.env.IDEOGRAM_API_KEY)("Ideogram Live API", () => {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Secret not found | Missing in GitHub settings | `gh secret set IDEOGRAM_API_KEY` |
@@ -245,15 +253,18 @@ describe.skipIf(!process.env.IDEOGRAM_API_KEY)("Ideogram Live API", () => {
 | Credits burned in CI | Too many integration tests | Mock in PRs, live tests on main only |
 
 ## Output
+
 - GitHub Actions workflow with unit + integration jobs
 - Mocked unit tests that run without API key
 - Prompt validation tests (zero API calls)
 - Gated integration tests for main branch only
 
 ## Resources
+
 - [GitHub Actions Docs](https://docs.github.com/en/actions)
 - [Vitest Docs](https://vitest.dev/)
 - [Ideogram API Reference](https://developer.ideogram.ai/api-reference)
 
 ## Next Steps
+
 For deployment patterns, see `ideogram-deploy-integration`.

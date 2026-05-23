@@ -3,6 +3,7 @@
 ## Budget Alerts
 
 ### Alert System
+
 ```python
 class BudgetAlertSystem:
     def __init__(self, daily_limit: float, monthly_limit: float):
@@ -56,6 +57,7 @@ alerts = BudgetAlertSystem(daily_limit=50.0, monthly_limit=500.0)
 ```
 
 ### Slack Alert Integration
+
 ```python
 import requests
 

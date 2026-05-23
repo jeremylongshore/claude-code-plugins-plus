@@ -10,6 +10,7 @@ clay-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Clay reliability patterns including circuit breakers, idempotency, and graceful degradation. Enables fault-tolerant enrichment operations.
 **Workflow:** Reliability engineering skill. Use when building production-grade Clay integrations.
 **Relates to:** Builds on clay-rate-limits; essential for clay-enterprise-rbac deployments.

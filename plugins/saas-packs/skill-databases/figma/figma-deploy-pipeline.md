@@ -10,6 +10,7 @@ figma-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Figma integrations to production
 **Workflow:** Part of the cicd skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

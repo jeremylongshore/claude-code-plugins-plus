@@ -34,33 +34,40 @@ Analyze DEX liquidity pools across Uniswap, Curve, and Balancer to evaluate TVL,
 ## Instructions
 
 1. **Analyze a specific pool** by address or token pair:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool 0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640
    python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pair ETH/USDC --protocol uniswap-v3
    ```
 
 2. **Calculate impermanent loss** for a price change:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --il-calc --entry-price 2000 --current-price 3000  # 2000/3000 = ETH price at entry/now in USD
    ```
+
    Project IL for various scenarios:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --il-scenarios --token-pair ETH/USDC
    ```
 
 3. **Estimate LP returns** with fee APR and position projections:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool [address] --detailed
    python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool [address] --position 10000  # 10000 = LP position size in USD
    ```
 
 4. **Compare pools** across protocols or fee tiers:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --compare --pair ETH/USDC --protocols uniswap-v3,curve,balancer
    python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --compare --pair ETH/USDC --fee-tiers 0.05,0.30,1.00
    ```
 
 5. **Export results** to JSON or CSV:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool [address] --format json --output pool_analysis.json
    python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --compare --pair ETH/USDC --format csv --output pools.csv
@@ -83,21 +90,25 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed output forma
 ## Examples
 
 **Analyze top ETH/USDC pool** - Full TVL, volume, and fee breakdown on Uniswap V3:
+
 ```bash
 python pool_analyzer.py --pair ETH/USDC --protocol uniswap-v3 --chain ethereum
 ```
 
 **Calculate IL for 2x price increase** - See dollar impact vs holding:
+
 ```bash
 python pool_analyzer.py --il-calc --entry-price 100 --current-price 200  # 100/200 = token price at entry/now in USD
 ```
 
 **Compare Uniswap fee tiers** - Find optimal fee tier for ETH/USDC:
+
 ```bash
 python pool_analyzer.py --compare --pair ETH/USDC --fee-tiers 0.05,0.30,1.00
 ```
 
 **Export all ETH pairs** - Dump pool data for further analysis:
+
 ```bash
 python pool_analyzer.py --token ETH --format json --output eth_pools.json
 ```

@@ -11,6 +11,7 @@ Design, implement, and manage table partitioning strategies for massive datasets
 ## When to Use This Command
 
 Use `/partition` when you need to:
+
 - Manage tables exceeding 100GB with slow query performance
 - Implement time-series data archival strategies (IoT, logs, metrics)
 - Optimize queries that filter by date ranges or specific values
@@ -19,6 +20,7 @@ Use `/partition` when you need to:
 - Improve parallel query performance across multiple partitions
 
 DON'T use this when:
+
 - Tables are small (<10GB) and perform well
 - Queries don't filter by partition key (causes partition pruning failure)
 - Application can't be updated to handle partition-aware queries
@@ -27,6 +29,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **declarative partitioning** because:
+
 - Native database support provides optimal query performance
 - Automatic partition pruning reduces query execution time by 90%+
 - Constraint exclusion ensures only relevant partitions are scanned
@@ -34,12 +37,14 @@ This command implements **declarative partitioning** because:
 - Automated partition management reduces operational overhead
 
 **Alternative considered: Application-level sharding**
+
 - Full control over data distribution
 - Requires application code changes
 - No automatic query optimization
 - Recommended for multi-tenant applications with tenant-based isolation
 
 **Alternative considered: Inheritance-based partitioning (legacy)**
+
 - Available in older PostgreSQL versions (<10)
 - Manual trigger maintenance required
 - No automatic partition pruning
@@ -48,6 +53,7 @@ This command implements **declarative partitioning** because:
 ## Prerequisites
 
 Before running this command:
+
 1. Identify partition key (typically timestamp or category column)
 2. Analyze query patterns to ensure they filter by partition key
 3. Estimate partition size (target: 10-50GB per partition)
@@ -57,23 +63,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Analyze Table and Query Patterns
+
 Review table size, query patterns, and identify optimal partition strategy.
 
 ### Step 2: Design Partition Schema
+
 Choose partitioning method (range, list, hash) and partition key based on access patterns.
 
 ### Step 3: Create Partitioned Table
+
 Convert existing table to partitioned table with minimal downtime using pg_partman or manual migration.
 
 ### Step 4: Implement Automated Partition Maintenance
+
 Set up automated partition creation, archival, and cleanup processes.
 
 ### Step 5: Optimize Queries for Partition Pruning
+
 Ensure queries include partition key in WHERE clauses for automatic pruning.
 
 ## Output Format
 
 The command generates:
+
 - `schema/partitioned_table.sql` - Partitioned table definition
 - `maintenance/partition_manager.sql` - Automated partition management functions
 - `scripts/partition_maintenance.sh` - Cron job for partition operations
@@ -657,12 +669,14 @@ if __name__ == "__main__":
 ## Configuration Options
 
 **Partition Planning**
+
 - `partition_type`: RANGE (dates), LIST (categories), HASH (distribution)
 - `partition_interval`: DAILY, WEEKLY, MONTHLY, YEARLY
 - `retention_policy`: How long to keep old partitions
 - `partition_size_target`: Target 10-50GB per partition
 
 **Query Optimization**
+
 - `enable_partition_pruning = on`: Enable automatic partition elimination
 - `constraint_exclusion = partition`: Enable constraint-based pruning
 - `enable_partitionwise_join = on`: Join matching partitions directly
@@ -671,6 +685,7 @@ if __name__ == "__main__":
 ## Best Practices
 
 DO:
+
 - Always include partition key in WHERE clauses for pruning
 - Target 10-50GB per partition (not too large, not too small)
 - Use RANGE partitioning for time-series data
@@ -680,6 +695,7 @@ DO:
 - Monitor partition sizes and adjust strategy if needed
 
 DON'T:
+
 - Create thousands of tiny partitions (overhead > benefit)
 - Partition tables < 10GB (overhead not justified)
 - Use partition key that changes over time

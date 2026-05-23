@@ -19,6 +19,7 @@ Direct SQLite access using [GRDB.swift](https://github.com/groue/GRDB.swift) - a
 ## When to Use GRDB
 
 **Use raw GRDB when you need:**
+
 - ✅ Complex SQL joins across multiple tables
 - ✅ Custom aggregation queries (GROUP BY, HAVING)
 - ✅ Reactive queries with ValueObservation
@@ -26,11 +27,13 @@ Direct SQLite access using [GRDB.swift](https://github.com/groue/GRDB.swift) - a
 - ✅ Advanced migration logic
 
 **Use SQLiteData instead when:**
+
 - Type-safe `@Table` models are sufficient
 - CloudKit sync needed
 - Prefer declarative queries over SQL
 
 **Use SwiftData when:**
+
 - Simple CRUD with native Apple integration
 - Don't need raw SQL control
 
@@ -474,6 +477,7 @@ try await database.database.write { db in
 ```
 
 **Common scenarios:**
+
 - Complex JOIN queries
 - Custom migrations
 - Bulk SQL operations
@@ -507,6 +511,7 @@ ValueObservation.tracking { db in
 ## External Resources
 
 **GRDB:**
+
 - [GitHub](https://github.com/groue/GRDB.swift)
 - [Documentation](https://swiftpackageindex.com/groue/GRDB.swift/documentation/grdb)
 - [SQL
@@ -514,9 +519,11 @@ ValueObservation.tracking { db in
 ite Documentation](https://www.sqlite.org/docs.html)
 
 **SwiftUI Integration:**
+
 - [GRDBQuery](https://github.com/groue/GRDBQuery) - SwiftUI reactive bindings
 
 **Related Axiom Skills:**
+
 - `database-migration` - Safe schema evolution
 - `sqlitedata` - Type-safe @Table models with CloudKit
 - `swiftdata` - Apple's native persistence
@@ -526,16 +533,19 @@ ite Documentation](https://www.sqlite.org/docs.html)
 ### Red Flags - When GRDB Queries Slow Down
 
 If you see ANY of these symptoms:
+
 - ❌ Complex JOIN query takes 10+ seconds
 - ❌ ValueObservation runs on every single change (battery drain)
 - ❌ Can't explain why migration ran twice on old version
 
 **DO NOT:**
+
 1. Blindly add indexes (don't know which columns help)
 2. Move logic to Swift (premature escape from database)
 3. Over-engineer migrations (distrust the system)
 
 **DO:**
+
 1. Profile with `database.trace`
 2. Use `EXPLAIN QUERY PLAN` to understand execution
 3. Trust GRDB's migration versioning system
@@ -573,6 +583,7 @@ try database.write { db in
 ```
 
 **Time cost:**
+
 - Profile: 10 min (enable trace, run query, read output)
 - Understand: 5 min (interpret EXPLAIN QUERY PLAN)
 - Fix: 5 min (add index)
@@ -603,6 +614,7 @@ ValueObservation.tracking { db in
 ```
 
 **Decision framework:**
+
 - Small datasets (<1000 records): Use plain `.tracking`
 - Medium datasets (1-10k records): Add `.removeDuplicates()` + `.debounce()`
 - Large datasets (10k+ records): Use explicit table dependencies or predicates
@@ -630,6 +642,7 @@ try migrator.migrate(dbQueue)
 ```
 
 **You don't need defensive SQL (IF NOT EXISTS):**
+
 - GRDB tracks which migrations have run
 - Running `migrate()` twice only executes new ones
 - Over-engineering adds complexity without benefit
@@ -641,32 +654,40 @@ try migrator.migrate(dbQueue)
 ## Common Mistakes
 
 ### ❌ Not using transactions for batch writes
+
 ```swift
 for track in 50000Tracks {
     try dbQueue.write { db in try track.insert(db) }  // 50k transactions!
 }
 ```
+
 **Fix:** Single transaction with batches
 
 ### ❌ Synchronous database access on main thread
+
 ```swift
 let tracks = try dbQueue.read { db in try Track.fetchAll(db) }  // Blocks UI
 ```
+
 **Fix:** Use async/await or dispatch to background queue
 
 ### ❌ Forgetting to add indexes
+
 ```swift
 // Slow query without index
 try Track.filter(Column("genre") == "Rock").fetchAll(db)
 ```
+
 **Fix:** Create indexes on frequently queried columns
 
 ### ❌ N+1 queries
+
 ```swift
 for track in tracks {
     let album = try Album.fetchOne(db, key: track.albumId)  // N queries!
 }
 ```
+
 **Fix:** Use JOIN or batch fetch
 
 ---

@@ -10,6 +10,7 @@ linear-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Linear anti-patterns
 **Workflow:** Part of the enterprise skill category for Linear integration.
 **Relates to:** Other linear skills in this pack.

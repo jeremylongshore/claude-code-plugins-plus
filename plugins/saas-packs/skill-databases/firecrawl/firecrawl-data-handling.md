@@ -10,6 +10,7 @@ firecrawl-data-handling/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement PII detection, content filtering, and data retention policies for scraped content in compliance with regulations.
 **Workflow:** Compliance skill - ensures scraped data is handled according to privacy regulations and ethical standards.
 **Relates to:** Extends firecrawl-security-basics; supports firecrawl-enterprise-rbac for access control

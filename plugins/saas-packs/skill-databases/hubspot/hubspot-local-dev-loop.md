@@ -10,6 +10,7 @@ hubspot-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure HubSpot local development workflow
 **Workflow:** Part of the onboarding skill category for HubSpot integration.
 **Relates to:** Other hubspot skills in this pack.

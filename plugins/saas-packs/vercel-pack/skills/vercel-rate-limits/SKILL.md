@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Rate Limits
 
 ## Overview
+
 Handle Vercel REST API rate limits with proper retry logic, and configure Vercel's WAF rate limiting SDK to protect your deployed API endpoints from abuse. Covers both consuming the Vercel API (outbound) and protecting your own functions (inbound).
 
 ## Prerequisites
+
 - Vercel CLI installed and authenticated
 - Understanding of HTTP 429 status codes
 - For WAF rate limiting: Vercel Pro or Enterprise plan
@@ -37,6 +39,7 @@ Handle Vercel REST API rate limits with proper retry logic, and configure Vercel
 ## Instructions
 
 ### Step 1: Vercel REST API Rate Limits
+
 The Vercel REST API enforces rate limits per endpoint. When exceeded, the API returns HTTP 429 with rate limit headers:
 
 ```
@@ -61,6 +64,7 @@ Retry-After: 60
 | General API | 120 requests/min (default) |
 
 ### Step 2: Implement Retry with Backoff for Vercel API
+
 ```typescript
 // lib/rate-limit-handler.ts
 interface RateLimitInfo {
@@ -105,6 +109,7 @@ async function vercelFetchWithRetry(
 ```
 
 ### Step 3: Proactive Rate Limit Avoidance
+
 ```typescript
 // lib/rate-limiter.ts
 // Track remaining quota and slow down before hitting the wall
@@ -129,6 +134,7 @@ class VercelRateLimiter {
 ```
 
 ### Step 4: Protect Your Own Endpoints — Vercel WAF Rate Limiting
+
 Vercel's WAF provides built-in rate limiting for your deployed functions:
 
 ```typescript
@@ -162,6 +168,7 @@ export const config = {
 Install: `npm install @vercel/firewall @vercel/functions`
 
 ### Step 5: Custom Rate Limiting with Edge Config
+
 ```typescript
 // api/rate-limited-endpoint.ts
 import { get } from '@vercel/edge-config';
@@ -201,12 +208,14 @@ export default async function handler(request: Request): Promise<Response> {
 | Enterprise | 100,000 | Custom |
 
 ## Output
+
 - Vercel API calls wrapped with automatic retry and backoff
 - Rate limit headers parsed and monitored proactively
 - WAF rate limiting protecting deployed API endpoints
 - Custom per-IP rate limiting for fine-grained control
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `429 Too Many Requests` | API rate limit exceeded | Use `vercelFetchWithRetry()` wrapper |
@@ -215,6 +224,7 @@ export default async function handler(request: Request): Promise<Response> {
 | In-memory rate limit resets | Edge function isolate recycled | Use Redis or Vercel KV for persistent state |
 
 ## Resources
+
 - [Vercel Limits](https://vercel.com/docs/limits)
 - [WAF Rate Limiting](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting)
 - [Rate Limiting SDK](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting-sdk)
@@ -222,4 +232,5 @@ export default async function handler(request: Request): Promise<Response> {
 - [Concurrency Scaling](https://vercel.com/docs/functions/concurrency-scaling)
 
 ## Next Steps
+
 For security best practices, see `vercel-security-basics`.

@@ -42,6 +42,7 @@ def tool_name(param1: str, param2: int = 10) -> str:
 ```
 
 Tools are registered in the Agent constructor:
+
 ```python
 agent = Agent(
     name="agent-name",
@@ -64,6 +65,7 @@ ADK provides three built-in orchestration patterns:
 | `LoopAgent` | Iterative refinement | Agent runs repeatedly until exit condition met |
 
 Custom orchestrators combine these:
+
 ```python
 pipeline = SequentialAgent(
     name="research-pipeline",
@@ -114,6 +116,7 @@ manual smoke test        automated eval suite     alerting + logging
 ## Configuration Reference
 
 **Environment Variables**:
+
 | Variable | Required | Purpose |
 |----------|----------|---------|
 | `GOOGLE_CLOUD_PROJECT` | For deployment | GCP project ID |
@@ -121,6 +124,7 @@ manual smoke test        automated eval suite     alerting + logging
 | `GOOGLE_APPLICATION_CREDENTIALS` | For local dev | Path to service account key |
 
 **pyproject.toml**:
+
 ```toml
 [project]
 name = "my-agent"

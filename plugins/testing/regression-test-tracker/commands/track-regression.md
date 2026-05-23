@@ -10,6 +10,7 @@ Track critical tests and ensure new changes don't break existing functionality.
 ## Purpose
 
 Maintain stability by:
+
 - **Tracking critical tests** - Mark tests for regression suite
 - **Automated execution** - Run before deployments
 - **Change impact analysis** - Which tests affected by changes

@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Reliability Patterns
 
 ## Overview
+
 Production reliability patterns for Perplexity Sonar API. Perplexity performs live web searches per request, making response times inherently variable. The key reliability challenges: search can stall, citations can break, and model tiers have different availability.
 
 ## Prerequisites
+
 - Perplexity API key configured
 - Cache layer (Redis or in-memory)
 - Understanding of search latency variability
@@ -33,6 +35,7 @@ Production reliability patterns for Perplexity Sonar API. Perplexity performs li
 ## Instructions
 
 ### Step 1: Model Tier Fallback
+
 ```typescript
 import OpenAI from "openai";
 
@@ -78,6 +81,7 @@ async function resilientSearch(
 ```
 
 ### Step 2: Circuit Breaker
+
 ```typescript
 class CircuitBreaker {
   private failures = 0;
@@ -133,6 +137,7 @@ const result = await breaker.execute(
 ```
 
 ### Step 3: Streaming with Timeout Protection
+
 ```typescript
 async function* streamWithTimeout(
   query: string,
@@ -172,6 +177,7 @@ for await (const event of streamWithTimeout("explain quantum computing", "sonar-
 ```
 
 ### Step 4: Cache as Reliability Layer
+
 ```typescript
 import { LRUCache } from "lru-cache";
 import { createHash } from "crypto";
@@ -202,6 +208,7 @@ async function searchWithCacheFallback(query: string, model = "sonar") {
 ```
 
 ### Step 5: Citation URL Validation
+
 ```typescript
 async function validateCitations(
   citations: string[],
@@ -233,6 +240,7 @@ async function validateCitations(
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | sonar-pro timeout >15s | Complex multi-source search | Fall back to sonar |
@@ -241,6 +249,7 @@ async function validateCitations(
 | All models failing | Perplexity outage | Serve stale cache, circuit breaker |
 
 ## Output
+
 - Model tier fallback chain
 - Circuit breaker preventing cascade failures
 - Streaming with stall detection
@@ -248,8 +257,10 @@ async function validateCitations(
 - Citation URL validation
 
 ## Resources
+
 - [Perplexity API Documentation](https://docs.perplexity.ai)
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
 
 ## Next Steps
+
 For policy enforcement, see `perplexity-policy-guardrails`.

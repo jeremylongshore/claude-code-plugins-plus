@@ -10,6 +10,7 @@ replit-custom-domain/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure custom domains for Replit deployments with SSL certificates and DNS management.
 **Workflow:** Branding and production skill - replaces default .replit.dev URLs with professional custom domains.
 **Relates to:** Follows replit-deployments; enhances replit-always-on-config for production.

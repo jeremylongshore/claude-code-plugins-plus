@@ -24,16 +24,19 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Debug Bundle
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'N/A'`
 !`npm list exa-js 2>/dev/null | grep exa-js || echo 'exa-js not installed'`
 !`echo "EXA_API_KEY: ${EXA_API_KEY:+SET (${#EXA_API_KEY} chars)}"`
 
 ## Overview
+
 Collect all necessary diagnostic information for Exa support tickets. Exa error responses include a `requestId` field — always include it when contacting support at hello@exa.ai.
 
 ## Instructions
 
 ### Step 1: Quick Connectivity Test
+
 ```bash
 set -euo pipefail
 
@@ -60,6 +63,7 @@ fi
 ```
 
 ### Step 2: Capture Request/Response Details
+
 ```typescript
 import Exa from "exa-js";
 
@@ -97,6 +101,7 @@ async function debugSearch(query: string) {
 ```
 
 ### Step 3: Create Debug Bundle Script
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -140,23 +145,28 @@ echo "Include the requestId from any error responses when contacting hello@exa.a
 ```
 
 ## Output
+
 - `exa-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
   - `summary.txt` — environment, SDK version, API connectivity
   - `api-response.json` — raw API response from test query
 
 ## Sensitive Data Handling
+
 **Always redact before sharing:**
+
 - API keys and tokens
 - Query content containing PII
 - Internal URLs or domain names
 
 **Safe to include:**
+
 - HTTP status codes and error tags
 - `requestId` from error responses
 - SDK and runtime versions
 - Latency measurements
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `curl: command not found` | curl not installed | Install curl or use node script |
@@ -165,8 +175,10 @@ echo "Include the requestId from any error responses when contacting hello@exa.a
 | Bundle script fails | Missing permissions | Run with `bash` not `sh` |
 
 ## Resources
+
 - [Exa Error Codes](https://docs.exa.ai/reference/error-codes)
 - [Exa Support](mailto:hello@exa.ai)
 
 ## Next Steps
+
 For rate limit issues, see `exa-rate-limits`. For common error solutions, see `exa-common-errors`.

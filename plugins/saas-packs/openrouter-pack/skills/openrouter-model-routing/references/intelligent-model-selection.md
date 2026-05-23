@@ -3,6 +3,7 @@
 ## Intelligent Model Selection
 
 ### Multi-Criteria Router
+
 ```python
 from dataclasses import dataclass
 from typing import Callable, Optional
@@ -136,6 +137,7 @@ router = IntelligentRouter()
 ```
 
 ### Task Detection
+
 ```python
 def detect_task_type(prompt: str) -> str:
     """Analyze prompt to determine task type."""

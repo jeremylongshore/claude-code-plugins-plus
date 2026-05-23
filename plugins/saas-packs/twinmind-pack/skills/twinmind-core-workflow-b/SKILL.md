@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # TwinMind Core Workflow B: Action Items & Follow-ups
 
 ## Contents
+
 - [Overview](#overview)
 - [Prerequisites](#prerequisites)
 - [Instructions](#instructions)
@@ -34,9 +35,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 - [Resources](#resources)
 
 ## Overview
+
 Secondary workflow for extracting action items with priority/assignee inference, automating follow-up emails, and syncing tasks to project management tools (Asana, Linear, Jira).
 
 ## Prerequisites
+
 - Completed `twinmind-core-workflow-a` (transcription)
 - Valid transcript or summary available
 - Integration tokens for external services (optional)
@@ -44,20 +47,25 @@ Secondary workflow for extracting action items with priority/assignee inference,
 ## Instructions
 
 ### Step 1: Extract Action Items
+
 Build `ActionItemExtractor` that calls TwinMind's `/extract/action-items` endpoint with options for context inclusion, speaker-based assignment, and due date inference. Auto-classify priority (high/medium/low) from keywords and categorize items (Review, Development, Communication, Meetings, Documentation).
 
 ### Step 2: Automate Follow-up Emails
+
 Create `FollowUpAutomation` with `generateFollowUp()` (AI-generated email with summary + action items), `sendFollowUp()` (immediate send), and `scheduleFollowUp()` (delayed send).
 
 ### Step 3: Integrate with Task Management
+
 Implement a `TaskIntegration` interface with `createTask()` and `updateTask()`. Build concrete integrations for Asana (REST API) and Linear (GraphQL) with priority mapping. Use factory pattern via `getTaskIntegration()`.
 
 ### Step 4: Orchestrate Complete Follow-up
+
 Wire everything in `runFollowUpWorkflow()`: extract action items, create tasks in external system, then send or schedule follow-up email to attendees.
 
 See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for complete ActionItemExtractor, FollowUpAutomation, task integrations, and orchestration code.
 
 ## Output
+
 - Extracted action items with assignees and due dates
 - Tasks created in project management tool
 - Follow-up email sent or scheduled
@@ -74,7 +82,6 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 
 ## Examples
 
-
 **Basic usage**: Apply twinmind core workflow b to a standard project setup with default configuration options.
 
 **Advanced scenario**: Customize twinmind core workflow b for production environments with multiple constraints and team-specific requirements.
@@ -89,9 +96,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Notion | Yes | Yes | Yes | No |
 
 ## Resources
+
 - [TwinMind Action Items API](https://twinmind.com/docs/action-items)
 - [Asana API](https://developers.asana.com)
 - [Linear API](https://developers.linear.app)
 
 ## Next Steps
+
 For troubleshooting issues, see `twinmind-common-errors`.

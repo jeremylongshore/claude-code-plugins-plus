@@ -5,6 +5,7 @@ Detailed implementation reference for the lokalise-upgrade-migration skill.
 ## Instructions
 
 ### Step 1: Check Current Version
+
 ```bash
 # Check installed version
 npm list @lokalise/node-api
@@ -20,6 +21,7 @@ lokalise2 --version
 ```
 
 ### Step 2: Review Changelog
+
 ```bash
 # View changelog
 open https://github.com/lokalise/node-lokalise-api/releases
@@ -38,6 +40,7 @@ npm view @lokalise/node-api repository.url
 | v6.x | TypeScript strict mode |
 
 ### Step 3: Create Upgrade Branch
+
 ```bash
 # Create branch for upgrade
 git checkout -b upgrade/lokalise-sdk-v9
@@ -50,6 +53,7 @@ npm test
 ```
 
 ### Step 4: Handle v8 to v9 Migration (ESM)
+
 ```typescript
 // BEFORE (v8 - CommonJS)
 const { LokaliseApi } = require("@lokalise/node-api");
@@ -65,6 +69,7 @@ async function getClient() {
 ```
 
 ### Step 5: Update package.json for ESM
+
 ```json
 {
   "type": "module",
@@ -75,6 +80,7 @@ async function getClient() {
 ```
 
 ### Step 6: Update TypeScript Configuration
+
 ```json
 // tsconfig.json for ESM
 {
@@ -87,10 +93,10 @@ async function getClient() {
 }
 ```
 
-
 ## Detailed Examples
 
 ### Deprecation Detection
+
 ```typescript
 // Monitor for deprecation warnings during development
 if (process.env.NODE_ENV === "development") {
@@ -110,6 +116,7 @@ if (process.env.NODE_ENV === "development") {
 ```
 
 ### Version-Safe Import
+
 ```typescript
 // utils/lokalise.ts - Works with both v8 and v9
 let LokaliseApiClass: any;
@@ -133,6 +140,7 @@ async function getLokaliseApi() {
 ```
 
 ### Pagination Migration (v6 to v7+)
+
 ```typescript
 // BEFORE (v6 - offset pagination only)
 const keys = await client.keys().list({
@@ -164,6 +172,7 @@ do {
 ```
 
 ### Rollback Procedure
+
 ```bash
 # If upgrade causes issues, rollback immediately
 npm install @lokalise/node-api@8.x.x --save-exact
@@ -176,6 +185,7 @@ npm test
 ```
 
 ### Upgrade Validation Script
+
 ```typescript
 async function validateUpgrade(): Promise<{
   success: boolean;
@@ -218,6 +228,7 @@ async function validateUpgrade(): Promise<{
 ```
 
 ### CLI Upgrade
+
 ```bash
 # macOS
 brew upgrade lokalise2
@@ -228,4 +239,3 @@ curl -sL https://github.com/lokalise/lokalise-cli-2-go/releases/latest/download/
 # Verify
 lokalise2 --version
 ```
-

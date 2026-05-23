@@ -3,6 +3,7 @@
 ## Log Analysis
 
 ### Query Audit Logs
+
 ```python
 def query_logs(
     log_dir: str,
@@ -48,6 +49,7 @@ error_logs = query_logs("audit_logs", status="error")
 ```
 
 ### Generate Audit Report
+
 ```python
 def generate_audit_report(log_dir: str, days: int = 7) -> dict:
     """Generate audit report for compliance."""

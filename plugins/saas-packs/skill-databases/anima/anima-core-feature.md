@@ -10,6 +10,7 @@ anima-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Anima core feature integration
 **Workflow:** Part of the onboarding skill category for Anima integration.
 **Relates to:** Other anima skills in this pack.

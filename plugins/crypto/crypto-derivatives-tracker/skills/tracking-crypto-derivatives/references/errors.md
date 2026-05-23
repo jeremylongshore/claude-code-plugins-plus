@@ -5,6 +5,7 @@
 ### Authentication Failures
 
 **API Key Invalid**
+
 - Error: `Invalid API key` or `Signature mismatch`
 - Causes: Expired key, wrong permissions, clock drift
 - Solution:
@@ -14,12 +15,14 @@
   4. Check key has futures/derivatives permissions
 
 **IP Whitelist Rejected**
+
 - Error: `IP not in whitelist`
 - Solution: Add current IP to exchange API settings or remove whitelist restriction
 
 ### Rate Limiting
 
 **Too Many Requests**
+
 - Error: `429 Too Many Requests` or `Rate limit exceeded`
 - Threshold varies by exchange:
   - Binance: 1200 requests/minute (weighted)
@@ -33,6 +36,7 @@
   4. Batch requests where possible
 
 **Weight Exceeded**
+
 - Error: `Request weight exceeded`
 - Solution: Some endpoints cost more weight; use lightweight endpoints or wait
 
@@ -41,6 +45,7 @@
 ### Missing or Stale Data
 
 **No Data Available**
+
 - Error: `No funding data available for {symbol}`
 - Causes: Symbol not listed, exchange down, maintenance
 - Solution:
@@ -50,6 +55,7 @@
   4. Use mock data for testing
 
 **Stale Timestamp**
+
 - Error: Data timestamp older than expected
 - Solution:
   1. Check WebSocket connection alive
@@ -60,10 +66,12 @@
 ### Invalid Values
 
 **Negative Funding Rate**
+
 - Not an error - negative funding is valid (shorts pay longs)
 - Just ensure your calculations handle negative correctly
 
 **Zero Open Interest**
+
 - May indicate:
   - New symbol with no positions
   - Data not yet populated
@@ -71,6 +79,7 @@
 - Solution: Filter out or flag as incomplete
 
 **Implausible Values**
+
 - Funding rate > 10% per 8h → likely data error
 - IV > 500% → verify or exclude
 - Solution: Implement sanity checks and outlier filtering
@@ -80,9 +89,11 @@
 ### Division by Zero
 
 **Empty Exchange List**
+
 - Error: `Division by zero` in weighted average
 - Cause: No exchanges returned data
 - Solution:
+
 ```python
 if not exchanges:
     raise ValueError("No exchange data available")
@@ -94,8 +105,10 @@ if total == 0:
 ### Decimal Precision
 
 **Precision Loss**
+
 - Error: Incorrect basis calculations due to floating point
 - Solution: Use `Decimal` for all price/rate calculations
+
 ```python
 from decimal import Decimal, ROUND_HALF_UP
 basis = (futures - spot) / spot
@@ -105,9 +118,11 @@ basis_pct = float(basis.quantize(Decimal('0.0001')))
 ### Date Handling
 
 **Invalid Expiry Format**
+
 - Error: `strptime` fails on expiry string
 - Cause: Different exchange formats (YYYYMMDD vs YYYY-MM-DD)
 - Solution:
+
 ```python
 formats = ['%Y-%m-%d', '%Y%m%d', '%d%b%y']
 for fmt in formats:
@@ -119,6 +134,7 @@ raise ValueError(f"Unknown expiry format: {expiry}")
 ```
 
 **Expiry Already Passed**
+
 - Warning: Analyzing expired contract
 - Solution: Filter to active expiries only
 
@@ -127,6 +143,7 @@ raise ValueError(f"Unknown expiry format: {expiry}")
 ### Connection Failures
 
 **Connection Timeout**
+
 - Error: `Connection timed out`
 - Solution:
   1. Increase timeout: `timeout=30`
@@ -135,6 +152,7 @@ raise ValueError(f"Unknown expiry format: {expiry}")
   4. Check network connectivity
 
 **SSL Certificate Error**
+
 - Error: `SSL: CERTIFICATE_VERIFY_FAILED`
 - Solution:
   1. Update CA certificates
@@ -143,6 +161,7 @@ raise ValueError(f"Unknown expiry format: {expiry}")
 ### WebSocket Issues
 
 **Disconnected**
+
 - Error: WebSocket connection closed unexpectedly
 - Solution:
   1. Implement reconnection logic
@@ -201,22 +220,27 @@ def record_failure(exchange):
 ## Common Issues by Exchange
 
 ### Binance
+
 - Issue: Weight limits are complex (different endpoints cost different)
 - Solution: Track weight counter from response headers
 
 ### Bybit
+
 - Issue: V5 API has different structure than V3
 - Solution: Use unified V5 endpoints consistently
 
 ### OKX
+
 - Issue: Requires specific headers for authentication
 - Solution: Include `OK-ACCESS-*` headers correctly
 
 ### Deribit
+
 - Issue: Options data requires authentication
 - Solution: Use API key even for read-only data
 
 ### BitMEX
+
 - Issue: Rate limits are very strict
 - Solution: Aggressive caching, minimal polling
 

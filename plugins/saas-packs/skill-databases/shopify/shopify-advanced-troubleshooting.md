@@ -10,6 +10,7 @@ shopify-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Shopify advanced debugging
 **Workflow:** Part of the enterprise skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

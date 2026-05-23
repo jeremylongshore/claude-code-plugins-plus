@@ -10,6 +10,7 @@ lokalise-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Lokalise CI/CD integration
 **Workflow:** Part of the cicd skill category for Lokalise integration.
 **Relates to:** Other lokalise skills in this pack.

@@ -10,6 +10,7 @@ techsmith-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement TechSmith webhook handling
 **Workflow:** Part of the cicd skill category for TechSmith integration.
 **Relates to:** Other techsmith skills in this pack.

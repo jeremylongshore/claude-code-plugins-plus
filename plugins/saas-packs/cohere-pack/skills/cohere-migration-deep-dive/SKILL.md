@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Cohere Migration Deep Dive
 
 ## Overview
+
 Comprehensive guide for migrating to Cohere from OpenAI, Anthropic, or other LLM providers, including embedding re-vectorization, prompt adaptation, and gradual traffic shifting.
 
 ## Prerequisites
+
 - Current LLM integration documented
 - Cohere API key and SDK installed
 - Feature flag infrastructure
@@ -301,6 +303,7 @@ curl -X POST https://flagservice/flags/cohere_migration_pct -d '{"value": 0}'
 ```
 
 ## Output
+
 - Adapter layer abstracting LLM provider
 - Embedding migration with batch processing
 - A/B comparison for output quality validation
@@ -308,6 +311,7 @@ curl -X POST https://flagservice/flags/cohere_migration_pct -d '{"value": 0}'
 - Rollback via feature flag (instant, no deploy)
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Embedding dimension mismatch | Mixed providers in same DB | Separate collections per provider |
@@ -316,9 +320,11 @@ curl -X POST https://flagservice/flags/cohere_migration_pct -d '{"value": 0}'
 | Quality difference | Different model strengths | Tune system prompts per provider |
 
 ## Resources
+
 - [Cohere OpenAI Compatibility](https://docs.cohere.com/docs/compatibility-api)
 - [Cohere Models Overview](https://docs.cohere.com/docs/models)
 - [API v2 Reference](https://docs.cohere.com/reference/about)
 
 ## Next Steps
+
 For Cohere-specific architecture patterns, see `cohere-reference-architecture`.

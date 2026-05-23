@@ -10,6 +10,7 @@ appfolio-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement AppFolio webhook handling
 **Workflow:** Part of the cicd skill category for AppFolio integration.
 **Relates to:** Other appfolio skills in this pack.

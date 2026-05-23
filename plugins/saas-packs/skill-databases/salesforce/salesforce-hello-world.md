@@ -10,6 +10,7 @@ salesforce-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Salesforce example
 **Workflow:** Part of the onboarding skill category for Salesforce integration.
 **Relates to:** Other salesforce skills in this pack.

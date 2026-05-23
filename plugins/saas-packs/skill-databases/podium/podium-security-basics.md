@@ -10,6 +10,7 @@ podium-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Podium security best practices
 **Workflow:** Part of the operations skill category for Podium integration.
 **Relates to:** Other podium skills in this pack.

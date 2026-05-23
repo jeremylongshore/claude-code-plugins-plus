@@ -198,6 +198,7 @@ const mtWebhookLatency = new Histogram({
 ## Output
 
 After applying these optimizations, expect:
+
 - Course catalog queries under 50ms (cached) vs 300ms+ (uncached)
 - Team progress batch fetches completing in seconds instead of minutes
 - Webhook processing sustained at 100+ completions/second without backpressure

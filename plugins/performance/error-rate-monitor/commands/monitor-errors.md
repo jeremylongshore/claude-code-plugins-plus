@@ -27,6 +27,7 @@ Set up comprehensive error rate monitoring and alerting.
 ## Output
 
 Provide:
+
 - Error monitoring setup (Sentry, Rollbar, CloudWatch, etc.)
 - Error categorization and tagging strategy
 - Alert rule definitions with thresholds

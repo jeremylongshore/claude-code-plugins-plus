@@ -10,6 +10,7 @@ juicebox-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Juicebox debug evidence for support
 **Workflow:** Part of the operations skill category for Juicebox integration.
 **Relates to:** Other juicebox skills in this pack.

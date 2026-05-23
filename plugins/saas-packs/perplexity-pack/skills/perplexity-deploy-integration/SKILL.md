@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Deploy Integration
 
 ## Overview
+
 Deploy applications using Perplexity Sonar API to edge and server platforms. Perplexity's OpenAI-compatible endpoint at `https://api.perplexity.ai/chat/completions` works from any platform that can make HTTPS requests.
 
 ## Prerequisites
+
 - Perplexity API key stored in `PERPLEXITY_API_KEY`
 - Platform CLI installed (vercel, gcloud, or docker)
 - Application tested locally
@@ -34,6 +36,7 @@ Deploy applications using Perplexity Sonar API to edge and server platforms. Per
 ## Instructions
 
 ### Step 1: Vercel Edge Function
+
 ```typescript
 // api/search.ts
 import OpenAI from "openai";
@@ -83,6 +86,7 @@ vercel deploy --prod
 ```
 
 ### Step 2: Cloud Run with Redis Cache
+
 ```typescript
 // server.ts
 import express from "express";
@@ -144,6 +148,7 @@ gcloud run deploy perplexity-search \
 ```
 
 ### Step 3: Docker
+
 ```dockerfile
 FROM node:20-alpine
 WORKDIR /app
@@ -158,6 +163,7 @@ CMD ["node", "dist/server.js"]
 ```
 
 ### Step 4: Vercel Configuration
+
 ```json
 {
   "functions": {
@@ -169,6 +175,7 @@ CMD ["node", "dist/server.js"]
 ```
 
 ### Step 5: Health Check
+
 ```typescript
 app.get("/health", async (req, res) => {
   const start = Date.now();
@@ -186,6 +193,7 @@ app.get("/health", async (req, res) => {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Edge function timeout | sonar-pro takes >30s | Use sonar or increase maxDuration |
@@ -194,15 +202,18 @@ app.get("/health", async (req, res) => {
 | Stream interrupted | Client disconnect | Handle abort signal gracefully |
 
 ## Output
+
 - Deployed API endpoint serving Perplexity search
 - Cached responses with configurable TTL
 - Health check endpoint
 - Platform-specific secret management
 
 ## Resources
+
 - [Perplexity API Documentation](https://docs.perplexity.ai)
 - [Vercel Edge Functions](https://vercel.com/docs/functions/edge-functions)
 - [Cloud Run Docs](https://cloud.google.com/run/docs)
 
 ## Next Steps
+
 For multi-environment setup, see `perplexity-multi-env-setup`.

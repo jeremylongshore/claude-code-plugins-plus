@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Core Workflow B: Email Sequences & Outreach
 
 ## Overview
+
 Build Apollo.io email sequencing and outreach automation via the REST API. Sequences in Apollo are called "emailer_campaigns" in the API. This covers listing, searching, adding contacts, tracking engagement, and managing sequence lifecycle. All endpoints require a **master API key**.
 
 ## Prerequisites
+
 - Completed `apollo-core-workflow-a` (lead search)
 - Apollo account with Sequences feature enabled
 - Connected email account in Apollo (Settings > Channels > Email)
@@ -35,6 +37,7 @@ Build Apollo.io email sequencing and outreach automation via the REST API. Seque
 ## Instructions
 
 ### Step 1: Search for Existing Sequences
+
 ```typescript
 // src/workflows/sequences.ts
 import axios from 'axios';
@@ -69,6 +72,7 @@ export async function searchSequences(query?: string) {
 ```
 
 ### Step 2: Get Email Accounts for Sending
+
 Before adding contacts to a sequence, you need the email account ID that will send the messages.
 
 ```typescript
@@ -86,6 +90,7 @@ export async function getEmailAccounts() {
 ```
 
 ### Step 3: Add Contacts to a Sequence
+
 The `add_contact_ids` endpoint enrolls contacts into an existing sequence. You must specify which email account sends the messages.
 
 ```typescript
@@ -113,6 +118,7 @@ export async function addContactsToSequence(
 ```
 
 ### Step 4: Update Contact Status in a Sequence
+
 ```typescript
 // Mark contacts as finished or remove them from a sequence
 export async function removeContactsFromSequence(
@@ -133,6 +139,7 @@ export async function removeContactsFromSequence(
 ```
 
 ### Step 5: Create and Manage Contacts for Sequences
+
 Contacts must exist in your Apollo CRM before adding to sequences. Use the Contacts API to create them.
 
 ```typescript
@@ -180,6 +187,7 @@ export async function searchCrmContacts(query: string) {
 ```
 
 ### Step 6: Full Outreach Pipeline
+
 ```typescript
 async function launchOutreach(
   sequenceId: string,
@@ -218,6 +226,7 @@ async function launchOutreach(
 ```
 
 ## Output
+
 - Sequence search via `POST /emailer_campaigns/search`
 - Email account listing via `GET /email_accounts`
 - Contact enrollment via `POST /emailer_campaigns/{id}/add_contact_ids`
@@ -226,6 +235,7 @@ async function launchOutreach(
 - Full outreach pipeline: create contacts, find sender, enroll in sequence
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 403 Forbidden | Standard API key used | Sequence endpoints require a master API key |
@@ -234,6 +244,7 @@ async function launchOutreach(
 | Contact not found | ID does not exist in CRM | Create via `POST /contacts` first |
 
 ## Resources
+
 - [Search for Sequences](https://docs.apollo.io/reference/search-for-sequences)
 - [Add Contacts to Sequence](https://docs.apollo.io/reference/add-contacts-to-sequence)
 - [Update Contact Status](https://docs.apollo.io/reference/update-contact-status-sequence)
@@ -242,4 +253,5 @@ async function launchOutreach(
 - [Search for Contacts](https://docs.apollo.io/reference/search-for-contacts)
 
 ## Next Steps
+
 Proceed to `apollo-common-errors` for error handling patterns.

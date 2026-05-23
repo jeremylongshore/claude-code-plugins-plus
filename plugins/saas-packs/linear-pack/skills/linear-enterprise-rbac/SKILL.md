@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Enterprise RBAC
 
 ## Overview
+
 Implement role-based access control for Linear integrations. Linear provides built-in organization roles (Owner, Admin, Member, Guest), team-level access control, and fine-grained OAuth scopes. Enterprise plans add SAML 2.0 SSO and SCIM user provisioning.
 
 ## Prerequisites
+
 - Linear Business or Enterprise plan (for SSO/SCIM)
 - Organization admin access
 - SSO provider (Okta, Azure AD, Google Workspace) for SAML
@@ -46,6 +48,7 @@ Implement role-based access control for Linear integrations. Linear provides bui
 These roles are fixed in Linear. Your application can layer additional permissions on top.
 
 ### Step 2: Map Application Roles to OAuth Scopes
+
 ```typescript
 // src/auth/permissions.ts
 
@@ -70,6 +73,7 @@ const TEAM_ACCESS: Record<string, "member" | "guest" | "none"> = {
 ```
 
 ### Step 3: Permission Guard
+
 ```typescript
 import { LinearClient } from "@linear/sdk";
 
@@ -131,6 +135,7 @@ app.get("/api/issues", requireRole("admin", "manager", "developer", "viewer"), l
 ```
 
 ### Step 4: Scoped Client Factory
+
 ```typescript
 // Create Linear clients with appropriate access per user
 async function getClientForUser(userId: string): Promise<LinearClient> {
@@ -154,6 +159,7 @@ async function getUserTeamIds(client: LinearClient): Promise<string[]> {
 ```
 
 ### Step 5: SAML SSO Configuration (Enterprise)
+
 ```typescript
 // Linear Enterprise supports SAML 2.0 SSO
 // Configuration: Linear Settings > Security > SAML
@@ -186,6 +192,7 @@ function mapLinearRoleToAppRole(viewer: any): string {
 ```
 
 ### Step 6: SCIM Provisioning (Enterprise)
+
 ```typescript
 // SCIM auto-syncs users and groups from your IdP to Linear
 // Configuration: Linear Settings > Security > SCIM provisioning
@@ -213,6 +220,7 @@ async function syncSCIMUsers(client: LinearClient) {
 ```
 
 ### Step 7: Audit Logging
+
 ```typescript
 interface AuditEntry {
   timestamp: string;
@@ -285,6 +293,7 @@ async function auditedUpdateIssue(
 ## Examples
 
 ### List Organization Members by Role
+
 ```typescript
 const client = new LinearClient({ apiKey: process.env.LINEAR_API_KEY! });
 const org = await client.organization;
@@ -297,6 +306,7 @@ for (const user of members.nodes) {
 ```
 
 ## Resources
+
 - [Linear OAuth Scopes](https://linear.app/developers/oauth-2-0-authentication)
 - [Linear SSO Guide](https://linear.app/docs/sso)
 - [SCIM Provisioning](https://linear.app/docs/scim)

@@ -219,6 +219,7 @@ aws s3 sync s3://source-bucket/ s3://migrated-data/ \
 ## Output
 
 Successful completion produces:
+
 - AWS-to-OCI and Azure-to-OCI concept mapping tables for architecture translation
 - Custom image imported from VMDK into OCI compute (ready to launch instances)
 - IAM policies translated from AWS JSON format to OCI policy statements

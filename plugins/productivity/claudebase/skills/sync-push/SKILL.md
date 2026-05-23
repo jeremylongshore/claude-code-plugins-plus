@@ -16,6 +16,7 @@ Push your current local Claude Code configuration to the GitHub backup repo.
 ## What gets pushed
 
 All syncable files from the current project and global config:
+
 - `.mcp.json`, `.claude/settings.json`
 - `.claude/agents/`, `.claude/commands/`, `.claude/skills/`
 - `.claude/hooks/` (scripts, config, sounds)
@@ -34,6 +35,7 @@ bash "${CLAUDE_PLUGIN_ROOT}/scripts/sync-push.sh" [OPTIONS]
 ```
 
 **Options:**
+
 - `--profile NAME` — Push to a specific profile (default: active profile)
 - `--force` — Skip multi-machine safety check and secret warnings
 - `--dry-run` — Show what would be pushed without actually pushing

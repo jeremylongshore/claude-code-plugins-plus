@@ -10,6 +10,7 @@ cursor-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Provides comprehensive guidance for installing Cursor IDE on macOS, Linux, and Windows, and configuring authentication methods including GitHub, Google, and email sign-in.
 
 **Workflow:** This skill activates when users need to install Cursor or set up authentication. It covers installation methods (Homebrew, AppImage, winget), authentication flows, license tiers (Free/Pro/Business), and API key configuration for using custom AI providers.

@@ -3,11 +3,13 @@
 ## Transaction Queries
 
 ### Basic Transaction Lookup
+
 ```bash
 python blockchain_explorer.py tx 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
 ```
 
 Output:
+
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
 ║  Transaction Details                                                  ║
@@ -29,6 +31,7 @@ Output:
 ```
 
 ### Transaction with Decoded Data
+
 ```bash
 python blockchain_explorer.py tx 0x... --detailed
 ```
@@ -36,6 +39,7 @@ python blockchain_explorer.py tx 0x... --detailed
 Shows decoded function name and protocol identification.
 
 ### Cross-Chain Transaction
+
 ```bash
 # Query on Polygon
 python blockchain_explorer.py tx 0x... --chain polygon
@@ -50,11 +54,13 @@ python blockchain_explorer.py tx 0x... --chain bsc
 ## Address Queries
 
 ### Check Wallet Balance
+
 ```bash
 python blockchain_explorer.py address 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
 ```
 
 Output:
+
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
 ║  Address Details                                                      ║
@@ -70,16 +76,19 @@ Output:
 ```
 
 ### Address with Transaction History
+
 ```bash
 python blockchain_explorer.py address 0x... --history --limit 10
 ```
 
 ### Address with Token Transfers
+
 ```bash
 python blockchain_explorer.py address 0x... --tokens
 ```
 
 ### Full Address Analysis
+
 ```bash
 python blockchain_explorer.py address 0x... --history --tokens --limit 50
 ```
@@ -87,16 +96,19 @@ python blockchain_explorer.py address 0x... --history --tokens --limit 50
 ## Block Queries
 
 ### Latest Block
+
 ```bash
 python blockchain_explorer.py block latest
 ```
 
 ### Specific Block
+
 ```bash
 python blockchain_explorer.py block 18500000
 ```
 
 ### Block on Different Chain
+
 ```bash
 python blockchain_explorer.py block latest --chain polygon
 ```
@@ -104,12 +116,14 @@ python blockchain_explorer.py block latest --chain polygon
 ## Token Queries
 
 ### Check Token Balance
+
 ```bash
 # Check USDC balance
 python blockchain_explorer.py token 0xYourWallet 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
 ```
 
 Output:
+
 ```
 Token Balance
 ============================================================
@@ -134,11 +148,13 @@ Value:    $1,000.00
 ## Output Formats
 
 ### JSON Output
+
 ```bash
 python blockchain_explorer.py tx 0x... --format json
 ```
 
 Output:
+
 ```json
 {
   "hash": "0x1234...",
@@ -154,11 +170,13 @@ Output:
 ```
 
 ### CSV Output
+
 ```bash
 python blockchain_explorer.py history 0x... --format csv > transactions.csv
 ```
 
 ### Redirect to File
+
 ```bash
 python blockchain_explorer.py address 0x... --history --format json > wallet_analysis.json
 ```
@@ -166,6 +184,7 @@ python blockchain_explorer.py address 0x... --history --format json > wallet_ana
 ## Programmatic Usage
 
 ### Python Script
+
 ```python
 from chain_client import ChainClient
 from token_resolver import TokenResolver
@@ -190,6 +209,7 @@ print(f"Price: ${token.price_usd}")
 ```
 
 ### Multi-Chain Query
+
 ```python
 from chain_client import ChainClient, CHAINS
 
@@ -204,6 +224,7 @@ for chain in ["ethereum", "polygon", "arbitrum"]:
 ## Whale Watching Examples
 
 ### Track Large Holder
+
 ```bash
 # Vitalik's address transaction history
 python blockchain_explorer.py history 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --limit 100
@@ -213,6 +234,7 @@ python blockchain_explorer.py transfers 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA960
 ```
 
 ### DEX Transaction Analysis
+
 ```bash
 # Query Uniswap swap transaction
 python blockchain_explorer.py tx 0x... --detailed
@@ -223,6 +245,7 @@ Shows decoded swap parameters: `swapExactTokensForTokens`, amounts, path.
 ## Debugging Tips
 
 ### Verbose Mode
+
 ```bash
 python blockchain_explorer.py tx 0x... --verbose
 ```
@@ -230,6 +253,7 @@ python blockchain_explorer.py tx 0x... --verbose
 Shows API calls, timing, and cache status.
 
 ### Test RPC Connection
+
 ```bash
 python blockchain_explorer.py block latest --verbose --chain ethereum
 ```
@@ -237,6 +261,7 @@ python blockchain_explorer.py block latest --verbose --chain ethereum
 Verifies RPC endpoint is working.
 
 ### Check API Key
+
 ```bash
 export ETHERSCAN_API_KEY=your_key
 python blockchain_explorer.py address 0x... --verbose

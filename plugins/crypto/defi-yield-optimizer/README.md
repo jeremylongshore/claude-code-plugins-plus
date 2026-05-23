@@ -4,14 +4,16 @@ Optimize DeFi yield farming strategies across multiple protocols and chains with
 
 ## Features
 
-###  Multi-Protocol Support
+### Multi-Protocol Support
+
 - **Lending**: Aave, Compound, Venus, Benqi
 - **DEXs**: Uniswap, Sushiswap, PancakeSwap, QuickSwap
 - **Stableswaps**: Curve, Ellipsis
 - **Yield Aggregators**: Yearn, Beefy, Harvest
 - **Leveraged Farming**: Alpaca, Tarot
 
-###  Chain Coverage
+### Chain Coverage
+
 - **Ethereum**: Main DeFi hub
 - **BSC**: High APY opportunities
 - **Polygon**: Low gas costs
@@ -19,14 +21,16 @@ Optimize DeFi yield farming strategies across multiple protocols and chains with
 - **Avalanche**: Fast finality
 - **Fantom**: High yields
 
-###  Optimization Features
+### Optimization Features
+
 - **Risk-Adjusted Returns**: Balance APY with risk
 - **Portfolio Allocation**: Optimal diversification
 - **Auto-Compound Analysis**: Frequency optimization
 - **Impermanent Loss Calculation**: LP risk assessment
 - **Gas Cost Optimization**: Net APY calculations
 
-###  Risk Assessment
+### Risk Assessment
+
 - **Protocol Risk**: Age, audits, TVL analysis
 - **Smart Contract Risk**: Complexity scoring
 - **Liquidity Risk**: Exit strategy evaluation
@@ -63,6 +67,7 @@ Optimize DeFi yield farming strategies across multiple protocols and chains with
 **What:** Aggregated DeFi TVL, APY, and protocol data for 1,000+ protocols
 
 **Rate Limits:**
+
 - **Requests/minute:** Unlimited (no documented hard limit)
 - **Daily requests:** Unlimited
 - **Registration:** ❌ Not required
@@ -70,6 +75,7 @@ Optimize DeFi yield farming strategies across multiple protocols and chains with
 - **IP tracking:** ⚠️ Soft limits (avoid >100 req/sec)
 
 **API Endpoints (All FREE):**
+
 ```bash
 # Get all protocols with TVL
 https://api.llama.fi/protocols
@@ -85,6 +91,7 @@ https://api.llama.fi/v2/chains
 ```
 
 **Setup:**
+
 ```json
 {
   "dataSources": {
@@ -111,6 +118,7 @@ https://api.llama.fi/v2/chains
 **What:** Free public RPC endpoints for 15+ blockchain networks
 
 **Rate Limits:**
+
 - **Ethereum:** 30 requests/second per IP
 - **Polygon:** 30 requests/second per IP
 - **BSC:** 30 requests/second per IP
@@ -122,6 +130,7 @@ https://api.llama.fi/v2/chains
 - **Archive data:** ✅ Available (historical states)
 
 **Supported Chains:**
+
 ```bash
 # Ethereum Mainnet
 https://rpc.ankr.com/eth
@@ -143,6 +152,7 @@ https://rpc.ankr.com/fantom
 ```
 
 **Setup:**
+
 ```json
 {
   "chains": {
@@ -169,6 +179,7 @@ https://rpc.ankr.com/fantom
 **What:** Real-time cryptocurrency prices for 10,000+ tokens
 
 **Free Tier Rate Limits:**
+
 - **Requests/minute:** 10-50 (depends on IP, undocumented exact limit)
 - **Daily requests:** Unlimited
 - **Registration:** ❌ Not required for public API
@@ -176,6 +187,7 @@ https://rpc.ankr.com/fantom
 - **IP tracking:** ⚠️ Yes (soft ban after ~50 req/min)
 
 **Key Endpoints:**
+
 ```bash
 # Simple price (multiple tokens)
 https://api.coingecko.com/api/v3/simple/price?ids=ethereum,bitcoin&vs_currencies=usd
@@ -188,6 +200,7 @@ https://api.coingecko.com/api/v3/coins/{id}/market_chart?vs_currency=usd&days=30
 ```
 
 **Setup:**
+
 ```json
 {
   "dataSources": {
@@ -216,12 +229,14 @@ https://api.coingecko.com/api/v3/coins/{id}/market_chart?vs_currency=usd&days=30
 #### Infura Free Tier
 
 **Rate Limits:**
+
 - **Requests/day:** 100,000
 - **Requests/second:** 10
 - **Registration:** ✅ Required (free, no card)
 - **API key:** ✅ Required
 
 **Setup:**
+
 1. Sign up at [infura.io](https://infura.io/register)
 2. Create project (free tier)
 3. Copy API key
@@ -234,12 +249,14 @@ https://api.coingecko.com/api/v3/coins/{id}/market_chart?vs_currency=usd&days=30
 #### QuickNode Free Trial
 
 **Rate Limits:**
+
 - **Requests/month:** 3 million (free trial)
 - **Requests/second:** 25
 - **Registration:** ✅ Required
 - **API key:** ✅ Required
 
 **Setup:**
+
 1. Sign up at [quicknode.com](https://www.quicknode.com/)
 2. Start free trial (no card for trial)
 3. Create endpoint
@@ -503,6 +520,7 @@ tvl_2 = cache.get_cached('aave_tvl', lambda: ...)
 ```
 
 **Caching Strategy:**
+
 - **Protocol TVL:** 5-minute cache (TVL changes slowly)
 - **Token prices:** 1-minute cache (prices change faster)
 - **APY data:** 10-minute cache (yields update hourly)
@@ -517,6 +535,7 @@ tvl_2 = cache.get_cached('aave_tvl', lambda: ...)
 ### Paid Approach (Premium Subscriptions)
 
 **Annual Costs:**
+
 - **Zapper Pro** (yield aggregation): $99/mo → $1,188/year
 - **DeFi Pulse Pro** (analytics): $50/mo → $600/year
 - **Chainlink Pro** (price feeds): $149/mo → $1,788/year
@@ -528,6 +547,7 @@ tvl_2 = cache.get_cached('aave_tvl', lambda: ...)
 ### Free Approach (This Plugin)
 
 **Annual Costs:**
+
 - **DefiLlama API:** $0
 - **Ankr Public RPC:** $0
 - **CoinGecko API:** $0
@@ -697,18 +717,21 @@ Create a `.defi-yield.json` configuration file:
 ## Strategy Types
 
 ### Stable Strategy
+
 - Focus on stablecoin pairs
 - Minimal impermanent loss
 - Lower APY but consistent
 - Risk score: 1-3
 
 ### Balanced Strategy
+
 - Mix of stable and volatile
 - Moderate risk/reward
 - Diversified allocation
 - Risk score: 4-6
 
 ### Aggressive Strategy
+
 - High APY targets
 - Leveraged positions allowed
 - Concentrated bets
@@ -717,6 +740,7 @@ Create a `.defi-yield.json` configuration file:
 ## Risk Scoring System
 
 ### Risk Components
+
 ```
 Total Risk = Protocol Risk + Asset Risk + Strategy Risk + Time Risk
 
@@ -746,6 +770,7 @@ Time Risk (0-1):
 ## APY Calculations
 
 ### Net APY Formula
+
 ```
 Net APY = Base APY + Reward APY - Fees - Gas Impact
 
@@ -757,6 +782,7 @@ Where:
 ```
 
 ### Impermanent Loss
+
 ```
 IL = 2 * sqrt(price_ratio) / (1 + price_ratio) - 1
 
@@ -770,18 +796,21 @@ Example:
 ## Portfolio Optimization
 
 ### Modern Portfolio Theory
+
 - Maximize Sharpe ratio
 - Efficient frontier calculation
 - Correlation analysis
 - Risk-return optimization
 
 ### Diversification Metrics
+
 - Protocol diversification
 - Chain diversification
 - Asset diversification
 - Strategy diversification
 
 ### Rebalancing Triggers
+
 - Allocation drift > 10%
 - Risk score change
 - APY degradation > 20%
@@ -790,6 +819,7 @@ Example:
 ## Auto-Compound Optimization
 
 ### Optimal Frequency
+
 ```javascript
 function optimalFrequency(principal, apy, gasCost) {
   // Find frequency that maximizes net return
@@ -806,18 +836,21 @@ function optimalFrequency(principal, apy, gasCost) {
 ## Safety Features
 
 ### Protocol Validation
+
 - Check audit status
 - Verify TVL thresholds
 - Monitor exploit history
 - Track governance changes
 
 ### Position Limits
+
 - Max allocation per protocol
 - Minimum liquidity requirements
 - Concentration warnings
 - Correlation limits
 
 ### Exit Strategies
+
 - Liquidity depth analysis
 - Slippage estimation
 - Emergency exit paths
@@ -826,6 +859,7 @@ function optimalFrequency(principal, apy, gasCost) {
 ## Common Strategies
 
 ### Stablecoin Farming
+
 ```
 USDC/USDT on Curve
 - APY: 5-15%
@@ -834,6 +868,7 @@ USDC/USDT on Curve
 ```
 
 ### Blue Chip LPs
+
 ```
 ETH/USDC on Uniswap V3
 - APY: 20-40%
@@ -842,6 +877,7 @@ ETH/USDC on Uniswap V3
 ```
 
 ### Leveraged Yield
+
 ```
 3x Leveraged on Alpaca
 - APY: 50-100%+
@@ -850,6 +886,7 @@ ETH/USDC on Uniswap V3
 ```
 
 ### Delta Neutral
+
 ```
 Long spot + Short perp
 - APY: 20-30%
@@ -860,18 +897,21 @@ Long spot + Short perp
 ## Troubleshooting
 
 ### Low APY Results
+
 - Increase risk tolerance
 - Include more chains
 - Lower minimum TVL
 - Check gas settings
 
 ### High Risk Warnings
+
 - Review protocol age
 - Check audit status
 - Reduce leverage
 - Increase diversification
 
 ### Gas Optimization
+
 - Use L2 chains
 - Batch transactions
 - Optimize compound frequency
@@ -888,18 +928,21 @@ Long spot + Short perp
 ## Best Practices
 
 ### For Beginners
+
 - Start with stable strategy
 - Use established protocols
 - Small test amounts first
 - Monitor daily
 
 ### For Advanced Users
+
 - Leverage monitoring tools
 - Custom risk parameters
 - Cross-chain strategies
 - Active rebalancing
 
 ### Risk Management
+
 - Never invest more than you can lose
 - Diversify across protocols
 - Keep emergency funds liquid
@@ -927,6 +970,7 @@ MIT License - See LICENSE file
 ## Changelog
 
 ### v1.0.0 (2024-10-11)
+
 - Initial release
 - Multi-protocol support
 - Portfolio optimization

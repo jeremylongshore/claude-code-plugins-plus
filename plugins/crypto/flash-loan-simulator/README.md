@@ -35,12 +35,14 @@ Simulate and analyze flash loan strategies including arbitrage, liquidations, an
 ### Why Free RPCs Work for Flash Loan Simulations
 
 **Simulation Requirements:**
+
 - Read blockchain state (getBlock, getTransaction, call)
 - Query DeFi protocol data (Aave, Uniswap, Balancer)
 - Gas estimation (estimateGas)
 - Historical data for backtesting
 
 **Free RPCs provide:**
+
 - 25-100 requests/second (more than enough for simulations)
 - Archive node access (historical data)
 - Multi-chain support (Ethereum, Polygon, Arbitrum)
@@ -55,11 +57,13 @@ Simulate and analyze flash loan strategies including arbitrage, liquidations, an
 **What:** Public RPC endpoints for 15+ chains
 
 **Limits:**
+
 - Ethereum: 30 requests/second
 - No rate limits on queries
 - Archive data available
 
 **Setup:**
+
 ```json
 {
   "rpcEndpoint": "https://rpc.ankr.com/eth"
@@ -75,11 +79,13 @@ Simulate and analyze flash loan strategies including arbitrage, liquidations, an
 **What:** Free tier with 100K requests/day
 
 **Limits:**
+
 - 100,000 requests/day (sufficient for development)
 - 10 requests/second
 - Requires free account (no credit card)
 
 **Setup:**
+
 ```json
 {
   "rpcEndpoint": "https://mainnet.infura.io/v3/YOUR_FREE_KEY"
@@ -95,11 +101,13 @@ Simulate and analyze flash loan strategies including arbitrage, liquidations, an
 **What:** 3M requests/month free
 
 **Limits:**
+
 - 3,000,000 requests/month
 - 25 requests/second
 - Free account (no card)
 
 **Setup:**
+
 ```json
 {
   "rpcEndpoint": "https://nd-XXX-XXX-XXX.p2pify.com/YOUR_FREE_KEY"
@@ -115,11 +123,13 @@ Simulate and analyze flash loan strategies including arbitrage, liquidations, an
 **What:** Community-run public endpoints
 
 **Limits:**
+
 - Variable rate limits
 - May be slower during peak times
 - No signup required
 
 **Setup:**
+
 ```json
 {
   "rpcEndpoint": "https://eth.llamarpc.com"
@@ -129,6 +139,7 @@ Simulate and analyze flash loan strategies including arbitrage, liquidations, an
 **Cost:** $0 (completely free)
 
 **Alternatives:**
+
 - `https://ethereum.publicnode.com`
 - `https://cloudflare-eth.com`
 - `https://rpc.flashbots.net` (MEV-protected)
@@ -164,6 +175,7 @@ Simulate and analyze flash loan strategies including arbitrage, liquidations, an
 ```
 
 **Setup Steps:**
+
 1. Sign up at [infura.io](https://infura.io) (free, no card)
 2. Create project
 3. Copy API key
@@ -191,10 +203,12 @@ Simulate and analyze flash loan strategies including arbitrage, liquidations, an
 #### Paid Approach (Alchemy)
 
 **Annual Subscriptions:**
+
 - Alchemy Growth: $49/mo → $588/year
 - Alchemy Scale: $199/mo → $2,388/year (if high usage)
 
 **Advantages:**
+
 - 660 requests/second
 - Advanced analytics dashboard
 - Dedicated support
@@ -202,12 +216,14 @@ Simulate and analyze flash loan strategies including arbitrage, liquidations, an
 #### Free Approach (Public RPCs)
 
 **Annual Subscriptions:**
+
 - Ankr: $0
 - Infura free tier: $0
 - Public RPCs: $0
 - **Total: $0/year**
 
 **Advantages:**
+
 - 25-100 requests/second (sufficient for simulations)
 - Archive data for backtesting
 - No rate limit concerns for development
@@ -274,6 +290,7 @@ if (healthFactor < 1e18) {
 ### When Free RPCs Are NOT Enough
 
 **Use paid Alchemy if:**
+
 - You're deploying live flash loan bots (need <50ms latency)
 - You need >100 requests/second
 - You require webhooks for mempool monitoring
@@ -312,6 +329,7 @@ const provider = new ethers.providers.JsonRpcProvider(
 ## Usage
 
 The flash loan agent automatically activates when you discuss:
+
 - Flash loan strategies and simulations
 - DeFi arbitrage opportunities
 - Liquidation strategies
@@ -382,6 +400,7 @@ Create a `.flashloan-config.json` file:
 ## Risk Warnings
 
 ️ **Critical Considerations**:
+
 - Smart contract code must be thoroughly audited
 - Gas costs can eliminate profitability
 - Front-running by MEV bots is common

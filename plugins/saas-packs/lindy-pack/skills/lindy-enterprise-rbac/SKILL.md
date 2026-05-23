@@ -25,12 +25,14 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lindy Enterprise RBAC
 
 ## Overview
+
 Lindy organizes access around **workspaces** where agents live. Team members
 are assigned roles that control who can create, modify, run, or observe agents
 and their execution history. Enterprise features add SSO, SCIM, audit logs,
 and granular permission controls.
 
 ## Prerequisites
+
 - Lindy Team ($49.99/mo + $19.99/seat) or Enterprise plan
 - Workspace owner privileges
 - Team members invited to the workspace
@@ -46,6 +48,7 @@ and granular permission controls.
 ## Instructions
 
 ### Step 1: Map Organizational Roles to Lindy Roles
+
 | Org Role | Lindy Role | Rationale |
 |---------|-----------|-----------|
 | Engineering Lead | Owner | Full workspace control |
@@ -55,6 +58,7 @@ and granular permission controls.
 | Stakeholder | Viewer | Read-only access to results |
 
 ### Step 2: Invite Team Members
+
 1. Go to **Settings > Team** in the Lindy dashboard
 2. Click **Invite Member**
 3. Enter email address
@@ -65,7 +69,9 @@ and granular permission controls.
 **Enterprise plan**: Custom pricing with bulk seat discounts
 
 ### Step 3: Organize Agents with Folders
+
 Use folders to organize agents by team, function, or environment:
+
 ```
 Workspace: Acme Corp Production
 ├── Support/
@@ -89,6 +95,7 @@ Workspace: Acme Corp Production
 visibility. Agents in private folders are only visible to the folder owner.
 
 ### Step 4: Agent Sharing Controls
+
 Each agent can be shared independently:
 
 | Sharing Level | Who Gets It | What They Can Do |
@@ -98,12 +105,15 @@ Each agent can be shared independently:
 | **Template** | Anyone with link | Make a copy (no access to original) |
 
 ### Step 5: Connection Sharing
+
 Control which team members can use shared integration connections:
+
 - **Private connections**: Only the connection creator can use them
 - **Shared connections**: Any team member can use them in their agents
 - **Recommendation**: Keep sensitive connections (payment gateways, databases) private
 
 ### Step 6: API Key Isolation
+
 Create separate API keys per integration purpose:
 
 | API Key | Purpose | Scope | Rotation |
@@ -117,30 +127,36 @@ Revoke keys immediately when a team member with access leaves the organization.
 ### Step 7: Enterprise Security Features
 
 **SSO (Single Sign-On)**:
+
 - SAML-based authentication
 - Configure in Enterprise settings
 - Users authenticate through your identity provider
 - Automatic session management
 
 **SCIM (User Provisioning)**:
+
 - Automated user creation and deactivation
 - Sync with your identity provider (Okta, Azure AD, etc.)
 - When an employee leaves, SCIM automatically revokes Lindy access
 - Group mappings to Lindy roles
 
 **Audit Logs**:
+
 - Complete activity trail for compliance
 - Track who created, modified, or deleted agents
 - Track who accessed task data
 - Export for security review
 
 **Encryption**:
+
 - AES-256 encryption at rest
 - TLS encryption in transit
 - No data sharing between workspaces
 
 ### Step 8: Offboarding Procedure
+
 When a team member leaves:
+
 1. SCIM auto-deactivates their account (Enterprise) or manually remove
 2. Revoke any API keys they had access to
 3. Transfer ownership of agents they created
@@ -148,6 +164,7 @@ When a team member leaves:
 5. Audit recent task history for their agents
 
 ## Access Control Checklist
+
 - [ ] Team roles mapped to Lindy roles
 - [ ] All team members invited with appropriate role
 - [ ] Agents organized in folders by team/function
@@ -172,9 +189,11 @@ When a team member leaves:
 | SCIM not syncing | Endpoint URL wrong | Check SCIM endpoint in IdP config |
 
 ## Resources
+
 - [Lindy Documentation](https://docs.lindy.ai)
 - [Lindy Security](https://www.lindy.ai/security)
 - [Lindy Pricing](https://www.lindy.ai/pricing)
 
 ## Next Steps
+
 Proceed to `lindy-migration-deep-dive` for platform migration strategies.

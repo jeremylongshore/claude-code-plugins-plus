@@ -25,14 +25,17 @@ This plugin ensures secure, production-ready CI/CD pipelines for Vertex AI Agent
 ## Components
 
 ### Agent
+
 - **gh-actions-gcp-expert**: Expert in GitHub Actions for Vertex AI / GCP deployments
 
 ### Skills (Auto-Activating)
+
 - **gh-actions-validator**: Validates and enforces GitHub Actions best practices
   - **Tool Permissions**: Read, Write, Edit, Grep, Glob, Bash
   - **Version**: 1.0.0 (2026 schema compliant)
 
 ### Hooks
+
 - **PreToolUse**: Validates workflow files before writing/editing
   - Triggers on: `.github/workflows/*.yml`, `.github/workflows/*.yaml`
   - Runs: `scripts/validate-workflow.sh`
@@ -58,6 +61,7 @@ The skill auto-activates and enforces best practices.
 ### 1. Workload Identity Federation (WIF) Mandatory
 
 ❌ **NEVER ALLOWED - JSON Service Account Keys**:
+
 ```yaml
 # ❌ FORBIDDEN
 - uses: google-github-actions/auth@v2
@@ -66,6 +70,7 @@ The skill auto-activates and enforces best practices.
 ```
 
 ✅ **REQUIRED - WIF with OIDC**:
+
 ```yaml
 # ✅ ENFORCED
 permissions:
@@ -89,10 +94,12 @@ permissions:
 ### 3. IAM Least Privilege
 
 ❌ **Overly Permissive Roles Blocked**:
+
 - `roles/owner` - ❌ Blocked
 - `roles/editor` - ❌ Blocked
 
 ✅ **Least Privilege Roles Required**:
+
 - `roles/run.admin` - Cloud Run deployments
 - `roles/iam.serviceAccountUser` - Service account impersonation
 - `roles/aiplatform.user` - Vertex AI operations
@@ -100,6 +107,7 @@ permissions:
 ### 4. Post-Deployment Validation
 
 For Vertex AI deployments, validation is **REQUIRED**:
+
 ```yaml
 - name: Post-Deployment Validation
   run: |
@@ -108,6 +116,7 @@ For Vertex AI deployments, validation is **REQUIRED**:
 ```
 
 **Validation Checklist**:
+
 - ✅ Agent state is RUNNING
 - ✅ Code Execution Sandbox enabled (7-14 day TTL)
 - ✅ Memory Bank configured
@@ -120,6 +129,7 @@ For Vertex AI deployments, validation is **REQUIRED**:
 ### 5. Security Scanning
 
 **Recommended** (warnings if missing):
+
 ```yaml
 - name: Scan for secrets
   uses: trufflesecurity/trufflehog@main
@@ -300,6 +310,7 @@ scripts/validate-workflow.sh <workflow-file>
 **Problem**: Using insecure JSON service account keys in workflows
 
 **Solution**: Plugin enforces WIF and blocks JSON keys
+
 ```
 User: "Create deployment workflow for Vertex AI"
 
@@ -315,6 +326,7 @@ Plugin provides:
 **Problem**: Need production-ready CI/CD for ADK agents
 
 **Solution**: Comprehensive deployment pipeline with validation
+
 ```
 User: "Deploy my ADK agent to Vertex AI Engine"
 
@@ -332,6 +344,7 @@ Plugin provides:
 **Problem**: Workflows missing security scanning or using weak IAM
 
 **Solution**: Hook validation + skill enforcement
+
 ```
 User: "Update my deployment workflow"
 
@@ -346,24 +359,29 @@ Plugin validates:
 ## Integration with Other Plugins
 
 ### jeremy-adk-orchestrator
+
 - Provides CI/CD for ADK agent deployments
 - Automates A2A protocol validation
 
 ### jeremy-vertex-validator
+
 - GitHub Actions calls validator for post-deployment checks
 - Production readiness scoring
 
 ### jeremy-vertex-engine
+
 - CI/CD triggers vertex-engine-inspector
 - Continuous health monitoring
 
 ### jeremy-adk-terraform
+
 - GitHub Actions deploys Terraform infrastructure
 - Automated provisioning
 
 ## Best Practices Summary
 
 ### Security (ENFORCED)
+
 ✅ Workload Identity Federation (WIF) - no JSON keys
 ✅ OIDC permissions (`id-token: write`)
 ✅ IAM least privilege (no owner/editor)
@@ -373,6 +391,7 @@ Plugin validates:
 ✅ Vulnerability scanning (Trivy)
 
 ### Vertex AI Specific (ENFORCED)
+
 ✅ Code Execution Sandbox (7-14 day TTL)
 ✅ Memory Bank enabled
 ✅ A2A Protocol compliance
@@ -382,6 +401,7 @@ Plugin validates:
 ✅ Alerting policies
 
 ### CI/CD (RECOMMENDED)
+
 ✅ Conditional job execution
 ✅ Dependency caching
 ✅ Concurrent jobs

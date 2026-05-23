@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Create Client Wrapper
+
 ```typescript
 // lib/juicebox-client.ts
 import { JuiceboxClient, JuiceboxError } from '@juicebox/sdk';
@@ -56,6 +57,7 @@ export class JuiceboxService {
 ```
 
 ### Step 2: Implement Retry Logic
+
 ```typescript
 // lib/retry.ts
 export async function withRetry<T>(
@@ -78,6 +80,7 @@ export async function withRetry<T>(
 ```
 
 ### Step 3: Add Observability
+
 ```typescript
 // lib/instrumented-client.ts
 export class InstrumentedJuiceboxService extends JuiceboxService {
@@ -113,6 +116,7 @@ export class InstrumentedJuiceboxService extends JuiceboxService {
 ## Examples
 
 ### Singleton Pattern
+
 ```typescript
 // Ensure single client instance
 let instance: JuiceboxService | null = null;

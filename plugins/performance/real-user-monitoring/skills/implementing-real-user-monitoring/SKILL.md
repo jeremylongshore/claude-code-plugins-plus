@@ -31,6 +31,7 @@ This skill streamlines the process of setting up Real User Monitoring (RUM) for 
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Implement Real User Monitoring on a website or web application.
 - Track Core Web Vitals (LCP, FID, CLS) to improve user experience.
 - Monitor page load times (FCP, TTI, TTFB) for performance optimization.
@@ -42,6 +43,7 @@ This skill activates when you need to:
 User request: "setup RUM for my new website"
 
 The skill will:
+
 1. Guide the user through selecting a RUM platform.
 2. Provide code snippets for implementing basic tracking.
 
@@ -50,6 +52,7 @@ The skill will:
 User request: "I want to track how long it takes users to complete a purchase"
 
 The skill will:
+
 1. Help define a custom performance metric for purchase completion time.
 2. Generate JavaScript code to track the metric.
 
@@ -90,6 +93,7 @@ This skill can be used in conjunction with other monitoring and analytics tools 
 ## Error Handling
 
 If RUM implementation fails:
+
 - Verify platform API credentials
 - Check JavaScript bundle integration
 - Validate metric collection permissions

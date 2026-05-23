@@ -5,6 +5,7 @@
 # Apollo Common Errors
 
 ## Overview
+
 Comprehensive guide to diagnosing and fixing common Apollo.io API errors with specific solutions and prevention strategies.
 
 ## Error Reference
@@ -12,6 +13,7 @@ Comprehensive guide to diagnosing and fixing common Apollo.io API errors with sp
 ### 401 Unauthorized
 
 **Symptoms:**
+
 ```json
 {
   "error": "Unauthorized",
@@ -20,12 +22,14 @@ Comprehensive guide to diagnosing and fixing common Apollo.io API errors with sp
 ```
 
 **Causes:**
+
 1. Missing API key in request
 2. Invalid or expired API key
 3. API key revoked by admin
 4. Wrong API key (sandbox vs production)
 
 **Solutions:**
+
 ```bash
 # Verify API key is set
 echo $APOLLO_API_KEY | head -c 10
@@ -38,6 +42,7 @@ curl -s "https://api.apollo.io/v1/auth/health?api_key=$APOLLO_API_KEY" | jq
 ```
 
 **Prevention:**
+
 ```typescript
 // Validate API key on startup
 async function validateApiKey() {
@@ -56,6 +61,7 @@ async function validateApiKey() {
 ### 403 Forbidden
 
 **Symptoms:**
+
 ```json
 {
   "error": "Forbidden",
@@ -64,12 +70,14 @@ async function validateApiKey() {
 ```
 
 **Causes:**
+
 1. API feature not available in plan
 2. User role doesn't have access
 3. IP restriction blocking request
 4. Attempting to access another account's data
 
 **Solutions:**
+
 ```typescript
 // Check plan features before calling
 const PLAN_FEATURES = {
@@ -88,6 +96,7 @@ function checkFeatureAccess(feature: string, plan: string): boolean {
 ### 422 Unprocessable Entity
 
 **Symptoms:**
+
 ```json
 {
   "error": "Unprocessable Entity",
@@ -96,6 +105,7 @@ function checkFeatureAccess(feature: string, plan: string): boolean {
 ```
 
 **Causes:**
+
 1. Invalid request body format
 2. Missing required fields
 3. Wrong data types
@@ -118,6 +128,7 @@ const correct2 = { per_page: 25 };
 ```
 
 **Validation Helper:**
+
 ```typescript
 import { z } from 'zod';
 
@@ -138,6 +149,7 @@ function validateSearchParams(params: unknown) {
 ### 429 Too Many Requests (Rate Limited)
 
 **Symptoms:**
+
 ```json
 {
   "error": "Too Many Requests",
@@ -146,6 +158,7 @@ function validateSearchParams(params: unknown) {
 ```
 
 **Rate Limits:**
+
 | Endpoint | Limit | Window |
 |----------|-------|--------|
 | People Search | 100 req/min | 1 minute |
@@ -154,6 +167,7 @@ function validateSearchParams(params: unknown) {
 | Bulk Operations | 10 req/min | 1 minute |
 
 **Solution - Exponential Backoff:**
+
 ```typescript
 class RateLimitHandler {
   private retryAfter = 0;
@@ -200,6 +214,7 @@ class RateLimitHandler {
 ### 500 Internal Server Error
 
 **Symptoms:**
+
 ```json
 {
   "error": "Internal Server Error",
@@ -208,11 +223,13 @@ class RateLimitHandler {
 ```
 
 **Causes:**
+
 1. Apollo service outage
 2. Malformed request causing server error
 3. Timeout on complex queries
 
 **Solutions:**
+
 ```bash
 # Check Apollo status
 curl -s https://status.apollo.io/api/v2/status.json | jq '.status.description'
@@ -228,6 +245,7 @@ curl -X POST "https://api.apollo.io/v1/people/search" \
 ### Empty Results
 
 **Symptoms:**
+
 ```json
 {
   "people": [],
@@ -236,11 +254,13 @@ curl -X POST "https://api.apollo.io/v1/people/search" \
 ```
 
 **Causes:**
+
 1. Too restrictive filters
 2. Invalid domain or company name
 3. No matching data in Apollo database
 
 **Diagnostic Steps:**
+
 ```typescript
 async function diagnoseEmptyResults(criteria: any) {
   // Test each filter individually
@@ -309,9 +329,11 @@ export class ApolloErrorHandler {
 ```
 
 ## Resources
+
 - [Apollo API Error Codes](https://apolloio.github.io/apollo-api-docs/#errors)
 - [Apollo Status Page](https://status.apollo.io)
 - [Apollo Support](https://support.apollo.io)
 
 ## Next Steps
+
 Proceed to `apollo-debug-bundle` for collecting debug evidence.

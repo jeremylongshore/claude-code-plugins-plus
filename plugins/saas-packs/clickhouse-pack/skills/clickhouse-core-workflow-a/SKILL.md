@@ -54,11 +54,13 @@ partitioning, and codec choices for analytical workloads.
 ### Step 2: Design the ORDER BY (Sort Key)
 
 The `ORDER BY` clause is the single most important schema decision. It defines:
+
 - **Primary index** — sparse index over sort-key granules (8192 rows default)
 - **Data layout on disk** — rows sorted physically by these columns
 - **Query speed** — queries filtering on ORDER BY prefix columns hit fewer granules
 
 **Rules of thumb:**
+
 1. Put low-cardinality filter columns first (`event_type`, `status`)
 2. Then high-cardinality columns you filter on (`user_id`, `tenant_id`)
 3. End with a time column if you use range filters (`created_at`)

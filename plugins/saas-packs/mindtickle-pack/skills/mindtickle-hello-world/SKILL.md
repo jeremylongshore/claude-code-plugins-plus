@@ -18,11 +18,13 @@ compatibility: Designed for Claude Code
 # MindTickle Hello World
 
 ## Overview
+
 Minimal working examples demonstrating core MindTickle API functionality.
 
 ## Instructions
 
 ### Step 1: Create Training Module
+
 ```typescript
 const module = await client.modules.create({
   title: 'Q1 Product Update Training',
@@ -41,6 +43,7 @@ console.log(`Module created: ${module.id}`);
 ```
 
 ### Step 2: Assign to Sales Reps
+
 ```typescript
 await client.assignments.create({
   module_id: module.id,
@@ -51,6 +54,7 @@ await client.assignments.create({
 ```
 
 ### Step 3: Track Completion
+
 ```typescript
 const progress = await client.analytics.moduleProgress(module.id);
 progress.users.forEach(u =>
@@ -60,6 +64,7 @@ console.log(`Overall: ${progress.completion_rate}% complete`);
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Auth error | Invalid credentials | Check MINDTICKLE_API_KEY |
@@ -67,7 +72,9 @@ console.log(`Overall: ${progress.completion_rate}% complete`);
 | Rate limit | Too many requests | Implement backoff |
 
 ## Resources
+
 - [MindTickle API Docs](https://www.mindtickle.com/platform/integrations/)
 
 ## Next Steps
+
 See `mindtickle-local-dev-loop`.

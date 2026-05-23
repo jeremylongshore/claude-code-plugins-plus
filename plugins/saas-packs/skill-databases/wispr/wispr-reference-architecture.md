@@ -10,6 +10,7 @@ wispr-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Wispr reference architecture
 **Workflow:** Part of the cicd skill category for Wispr integration.
 **Relates to:** Other wispr skills in this pack.

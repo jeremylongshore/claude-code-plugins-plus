@@ -1,6 +1,7 @@
 # Mistral AI Production Checklist - Implementation Details
 
 ## Health Check Endpoint
+
 ```typescript
 app.get('/health', async (req, res) => {
   const mistralHealth = await checkMistralHealth();
@@ -19,6 +20,7 @@ async function checkMistralHealth() {
 ```
 
 ## Circuit Breaker
+
 ```typescript
 class MistralCircuitBreaker {
   private failures = 0;
@@ -43,6 +45,7 @@ class MistralCircuitBreaker {
 ```
 
 ## Pre-Deployment Verification
+
 ```bash
 # Test production key
 curl -H "Authorization: Bearer ${MISTRAL_API_KEY_PROD}" https://api.mistral.ai/v1/models | jq '.data[].id'
@@ -55,6 +58,7 @@ npm test && npm run typecheck && npm run lint
 ```
 
 ## Gradual Rollout
+
 ```bash
 # Deploy canary (10%), monitor 10 min, check errors, expand to 50%, then 100%
 kubectl set image deployment/mistral-app app=image:new --record
@@ -64,6 +68,7 @@ kubectl rollout resume deployment/mistral-app
 ```
 
 ## Rollback Procedure
+
 ```bash
 kubectl rollout undo deployment/mistral-app
 kubectl rollout status deployment/mistral-app

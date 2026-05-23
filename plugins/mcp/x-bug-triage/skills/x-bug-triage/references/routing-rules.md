@@ -10,6 +10,7 @@
 6. **Fallback mapping** — static config (confidence: 0.3)
 
 ## Rules
+
 - Weaker sources never silently overrule stronger
 - Staleness: >30 days flagged, reduced confidence
 - All fail → "Routing: uncertain — no routing signals available. Manual assignment required."

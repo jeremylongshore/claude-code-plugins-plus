@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Enterprise RBAC
 
 ## Overview
+
 Control access to Vast.ai GPU instances and spending through API key management, team-level budgets, and GPU allocation policies. Vast.ai uses a marketplace model with per-GPU-hour pricing (RTX 4090 ~$0.20/hr, A100 ~$1.50/hr, H100 ~$3.00/hr).
 
 ## Prerequisites
+
 - Vast.ai account(s) with API keys
 - Understanding of team GPU usage patterns
 - Budget allocation per team/project
@@ -152,12 +154,14 @@ def team_spending_report(audit_file="vast_audit.jsonl"):
 ```
 
 ## Output
+
 - Team-specific API key configuration
 - Policy enforcement layer (GPU whitelist, instance limits, budget caps)
 - Audit logging for all provisioning and destruction events
 - Spending reports per team
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Policy violation on provision | GPU not in whitelist or limit reached | Request policy change or destroy idle instances |
@@ -166,10 +170,12 @@ def team_spending_report(audit_file="vast_audit.jsonl"):
 | Audit log missing entries | Logger not wired into all operations | Audit the code paths for missing log calls |
 
 ## Resources
+
 - [Vast.ai Account](https://cloud.vast.ai)
 - [REST API](https://vast.ai/developers/api)
 
 ## Next Steps
+
 For migration strategies, see `vastai-migration-deep-dive`.
 
 ## Examples

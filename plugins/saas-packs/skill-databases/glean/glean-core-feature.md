@@ -10,6 +10,7 @@ glean-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Glean core feature integration
 **Workflow:** Part of the onboarding skill category for Glean integration.
 **Relates to:** Other glean skills in this pack.

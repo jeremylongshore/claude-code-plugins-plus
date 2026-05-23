@@ -10,11 +10,13 @@
 
 **Total Plugins Audited:** 11 Google AI-related plugins
 **Critical Gaps Identified:**
+
 - ⚠️ 10/11 plugins missing **observability and telemetry** documentation
 - ⚠️ 11/11 plugins missing **Vertex AI storage integration** details
 - ⚠️ 2/11 plugins **missing README files** entirely
 
 **New Google Features (2025) Not Yet Documented:**
+
 1. **Agent Engine Observability Dashboard** (token usage, latency, error rates)
 2. **Cloud Trace Integration** with OpenTelemetry support
 3. **Evaluation Layer** for simulating user interactions
@@ -58,10 +60,12 @@
 ### 🔴 CRITICAL: Missing README Files
 
 #### jeremy-adk-orchestrator
+
 **Location:** `plugins/ai-ml/jeremy-adk-orchestrator/`
 **Status:** Has plugin.json but **NO README**
 
 **Required Content:**
+
 - What is ADK Orchestrator and why use it
 - Supervisory orchestration patterns
 - A2A protocol management
@@ -76,11 +80,13 @@
 ---
 
 #### jeremy-firebase
+
 **Location:** `plugins/community/jeremy-firebase/`
 **Status:** Has plugin.json but **NO README**
 **Note:** Has extensive user manuals (001-008) in `000-usermanuals/` directory
 
 **Required Content:**
+
 - Firebase platform operations overview
 - Vertex AI Gemini integration
 - Cloud Functions deployment
@@ -98,11 +104,13 @@
 ### 🟡 NEEDS UPDATE: Existing Plugins Missing New Features
 
 #### jeremy-vertex-engine
+
 **Location:** `plugins/ai-ml/jeremy-vertex-engine/`
 **Current README:** 195 lines
 **Purpose:** Agent Engine inspection and orchestration
 
 **Missing Features:**
+
 1. **Observability Dashboard** (November 2025 release)
    - Token usage tracking
    - Latency metrics
@@ -125,6 +133,7 @@
    - Session data persistence options
 
 **Recommended Additions:**
+
 ```markdown
 ## Observability & Monitoring
 
@@ -169,11 +178,13 @@ client.agent_engines.create_bigquery_connector(
 ---
 
 #### jeremy-genkit-pro
+
 **Location:** `plugins/ai-ml/jeremy-genkit-pro/`
 **Current README:** 204 lines
 **Purpose:** Firebase Genkit production workflows
 
 **Missing Features:**
+
 1. **Observability for Genkit Flows**
    - Flow execution tracing
    - Step-level performance metrics
@@ -190,6 +201,7 @@ client.agent_engines.create_bigquery_connector(
    - Historical trend analysis
 
 **Recommended Additions:**
+
 ```markdown
 ## Genkit Flow Observability
 
@@ -250,11 +262,13 @@ export const myFlow = defineFlow(async (input) => {
 ---
 
 #### jeremy-vertex-validator
+
 **Location:** `plugins/ai-ml/jeremy-vertex-validator/`
 **Current README:** 32 lines (very short!)
 **Purpose:** Production readiness validation
 
 **Missing Features:**
+
 1. **Observability Validation Checks**
    - Verify Cloud Trace is configured
    - Check Cloud Logging integration
@@ -267,6 +281,7 @@ export const myFlow = defineFlow(async (input) => {
    - Validate data export configurations
 
 **Recommended Additions:**
+
 ```markdown
 ## Observability Validation
 
@@ -316,11 +331,13 @@ except Exception:
 ---
 
 #### jeremy-gcp-starter-examples
+
 **Location:** `plugins/ai-ml/jeremy-gcp-starter-examples/`
 **Current README:** 295 lines
 **Observability Mentions:** 1 (minimal)
 
 **Missing Features:**
+
 1. **Observability Examples**
    - Example dashboard configurations
    - Sample Cloud Trace queries
@@ -332,6 +349,7 @@ except Exception:
    - Data pipeline templates
 
 **Recommended Additions:**
+
 - Add "observability" section with code examples
 - Include BigQuery connector setup examples
 - Provide Cloud Trace configuration samples
@@ -339,10 +357,12 @@ except Exception:
 ---
 
 #### jeremy-firestore
+
 **Location:** `plugins/community/jeremy-firestore/`
 **Current README:** 615 lines (most comprehensive)
 
 **Missing Features:**
+
 1. **Firestore → BigQuery Export**
    - Automatic data export for analytics
    - Incremental sync configuration
@@ -354,6 +374,7 @@ except Exception:
    - Query performance tracking
 
 **Recommended Additions:**
+
 ```markdown
 ## BigQuery Export Integration
 
@@ -400,10 +421,12 @@ metric.resource.type = "firestore_instance"
 ---
 
 #### Terraform Plugins (4 plugins)
+
 **Plugins:** jeremy-adk-terraform, jeremy-genkit-terraform, jeremy-vertex-terraform, jeremy-github-actions-gcp
 **Average README Size:** 34-410 lines
 
 **Missing Features (All):**
+
 1. **Observability Terraform Resources**
    - `google_monitoring_dashboard` for agent metrics
    - `google_logging_metric` for custom metrics
@@ -415,6 +438,7 @@ metric.resource.type = "firestore_instance"
    - BigQuery connector Terraform modules
 
 **Recommended Additions:**
+
 ```hcl
 # Observability Resources
 
@@ -508,17 +532,20 @@ resource "google_storage_bucket" "agent_artifacts" {
 **Documentation:** https://cloud.google.com/blog/products/ai-machine-learning/more-ways-to-build-and-scale-ai-agents-with-vertex-ai-agent-builder
 
 **Key Features:**
+
 - **Token Usage Tracking:** Monitor tokens consumed per agent, session, and time period
 - **Latency Metrics:** Track first-token latency and end-to-end response time
 - **Error Rate Monitoring:** Identify failing requests and error patterns
 - **Tool Call Analytics:** Analyze which tools are used most frequently
 
 **Access:**
+
 ```
 Google Cloud Console → Vertex AI → Agent Builder → Agent Engine → [Your Agent] → Observability
 ```
 
 **Metrics Available:**
+
 - `agent_engine/token_count` - Total tokens processed
 - `agent_engine/latency` - Response latency percentiles (p50, p95, p99)
 - `agent_engine/error_rate` - Percentage of failed requests
@@ -531,6 +558,7 @@ Google Cloud Console → Vertex AI → Agent Builder → Agent Engine → [Your 
 **Feature:** Distributed tracing for agent workflows
 
 **Setup:**
+
 ```python
 from opentelemetry import trace
 from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
@@ -552,6 +580,7 @@ with tracer.start_as_current_span("agent_query"):
 ```
 
 **View Traces:**
+
 ```
 Google Cloud Console → Trace → Trace Explorer
 Filter by resource.type="vertex_ai_agent_engine"
@@ -564,11 +593,13 @@ Filter by resource.type="vertex_ai_agent_engine"
 **Feature:** Simulate user interactions to test agent reliability
 
 **Use Cases:**
+
 - Regression testing before deployments
 - A/B testing different agent configurations
 - Load testing for capacity planning
 
 **Implementation:**
+
 ```python
 from google.cloud import aiplatform
 
@@ -596,6 +627,7 @@ print(f"Avg Latency: {evaluation_result.avg_latency_ms}ms")
 **Feature:** Automatic export of agent interactions to BigQuery
 
 **Configuration:**
+
 ```python
 from google.cloud import discoveryengine_v1
 
@@ -619,6 +651,7 @@ client.data_connectors.create(
 ```
 
 **Query Agent Data:**
+
 ```sql
 -- Analyze agent performance
 SELECT
@@ -640,6 +673,7 @@ ORDER BY date DESC;
 **Feature:** Sync data from Cloud Storage to Vertex AI Search with incremental updates
 
 **Setup:**
+
 ```python
 from google.cloud import discoveryengine_v1
 
@@ -684,35 +718,35 @@ operation = client.documents.import_documents(import_request)
 
 ### 🟡 HIGH PRIORITY (Complete Within Sprint)
 
-3. **Update jeremy-vertex-engine** (195 lines → target 400+ lines)
+1. **Update jeremy-vertex-engine** (195 lines → target 400+ lines)
    - Add "Observability & Monitoring" section (100 lines)
    - Add "Storage Integration" section (80 lines)
    - Include evaluation layer examples (20 lines)
 
-4. **Update jeremy-genkit-pro** (204 lines → target 350+ lines)
+2. **Update jeremy-genkit-pro** (204 lines → target 350+ lines)
    - Add Genkit flow tracing documentation
    - Include Cloud Storage integration patterns
    - Add BigQuery export configuration
 
-5. **Update jeremy-vertex-validator** (32 lines → target 150+ lines)
+3. **Update jeremy-vertex-validator** (32 lines → target 150+ lines)
    - Add observability validation checks
    - Include storage integration validation
    - Expand with production readiness checklists
 
 ### 🟢 MEDIUM PRIORITY (Complete Within Quarter)
 
-6. **Update all Terraform plugins** (4 plugins)
+1. **Update all Terraform plugins** (4 plugins)
    - Add `google_monitoring_dashboard` resources
    - Add `google_monitoring_alert_policy` resources
    - Add `google_bigquery_data_transfer_config` resources
    - Include example agent observability dashboards
 
-7. **Update jeremy-gcp-starter-examples**
+2. **Update jeremy-gcp-starter-examples**
    - Add observability examples section
    - Include BigQuery connector samples
    - Provide Cloud Trace setup examples
 
-8. **Update jeremy-firestore**
+3. **Update jeremy-firestore**
    - Add Firestore → BigQuery export section
    - Include Cloud Monitoring integration
    - Document performance tracking
@@ -812,11 +846,13 @@ For each plugin, add these sections (if missing):
 ## Audit Completion Metrics
 
 **Documentation Coverage:**
+
 - Observability: 1/11 plugins (9.1%) → Target: 11/11 (100%)
 - Storage Integration: 0/11 plugins (0%) → Target: 11/11 (100%)
 - README Files: 9/11 plugins (81.8%) → Target: 11/11 (100%)
 
 **Estimated Effort:**
+
 - Critical updates: 40 hours
 - High priority updates: 60 hours
 - Medium priority updates: 40 hours

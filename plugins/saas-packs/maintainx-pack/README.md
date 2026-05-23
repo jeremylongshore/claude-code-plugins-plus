@@ -13,6 +13,7 @@
 [MaintainX](https://getmaintainx.com) is a cloud-based Computerized Maintenance Management System (CMMS) used by industrial teams to manage maintenance operations. The REST API at `api.getmaintainx.com/v1` provides programmatic access to work orders, assets, locations, procedures, meters, parts inventory, and team management.
 
 **Key facts:**
+
 - REST API v1 at `https://api.getmaintainx.com/v1/`
 - Bearer token authentication (API key from Settings > Integrations)
 - Cursor-based pagination with `cursor` and `limit` parameters
@@ -22,6 +23,7 @@
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `maintainx-install-auth` | REST API client setup with TypeScript and Python wrappers |
@@ -38,6 +40,7 @@
 | `maintainx-upgrade-migration` | API version migration and breaking changes |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `maintainx-ci-integration` | CI/CD pipeline with API testing |
@@ -48,6 +51,7 @@
 | `maintainx-reference-architecture` | Production architecture with sync patterns |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `maintainx-multi-env-setup` | Dev/staging/prod with org-level isolation |

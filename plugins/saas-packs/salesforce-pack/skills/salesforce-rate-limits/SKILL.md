@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code
 # Salesforce Rate Limits
 
 ## Overview
+
 Handle Salesforce API limits gracefully. Salesforce uses a 24-hour rolling limit (not per-minute), plus concurrent request limits and Bulk API quotas.
 
 ## Prerequisites
+
 - jsforce connection configured
 - Understanding of your org's edition and license count
 - Access to Setup > Company Information
@@ -185,12 +187,14 @@ while (!result.done) {
 ```
 
 ## Output
+
 - API limit monitoring with threshold alerts
 - Automatic retry with exponential backoff for limit errors
 - Pre-flight quota checks before batch operations
 - Strategies to reduce API call consumption
 
 ## Error Handling
+
 | Error Code | HTTP Status | Meaning | Action |
 |-----------|-------------|---------|--------|
 | `REQUEST_LIMIT_EXCEEDED` | 403 | Daily API limit exceeded | Wait for 24hr window to reset |
@@ -199,9 +203,11 @@ while (!result.done) {
 | `UNABLE_TO_LOCK_ROW` | 409-equivalent | Record contention | Retry with backoff |
 
 ## Resources
+
 - [API Request Limits](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm)
 - [Limits REST Resource](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_limits.htm)
 - [Apex Governor Limits](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm)
 
 ## Next Steps
+
 For security configuration, see `salesforce-security-basics`.

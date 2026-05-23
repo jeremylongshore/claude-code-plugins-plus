@@ -10,6 +10,7 @@ databricks-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Databricks costs and usage
 **Workflow:** Part of the cicd skill category for Databricks integration.
 **Relates to:** Other databricks skills in this pack.

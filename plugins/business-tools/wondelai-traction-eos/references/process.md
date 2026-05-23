@@ -7,6 +7,7 @@ Most companies have processes. Few have them documented. Even fewer have them fo
 You do not need to document every procedure in your company. That leads to thousand-page manuals nobody reads. Instead, document the 20% of your processes that drive 80% of your results.
 
 **What this means in practice:**
+
 - Identify 5-7 core processes (not 50)
 - Document each process in 5-20 major steps (not 200)
 - Add just enough detail so someone competent can follow it (not a manual for someone with zero context)
@@ -38,6 +39,7 @@ Every company, regardless of industry, has a set of core processes that define h
 ### Discovery Exercise
 
 Ask your leadership team:
+
 1. "What are the major processes that run our business?"
 2. "If a new leadership team took over tomorrow, what processes would they need to understand to run the company?"
 3. "Where does inconsistency cause the most problems for customers or employees?"
@@ -75,6 +77,7 @@ Steps:
 Give each process a memorable, branded name. This makes it easier for the team to reference and creates a sense of identity around how you work.
 
 **Examples:**
+
 - Sales Process: "The Closer" or "The Revenue Engine"
 - Onboarding Process: "The Welcome Track" or "First 30 Days"
 - Support Process: "The Resolution Path" or "Care Loop"
@@ -169,16 +172,19 @@ Document → Train → Measure → Update → Repeat
 **Step 1: Document** (covered above)
 
 **Step 2: Train**
+
 - Every employee involved in a process receives training on the documented steps
 - Training is not a 2-hour lecture. It is hands-on practice with feedback.
 - New hires are trained on relevant processes in their first two weeks
 
 **Step 3: Measure**
+
 - Spot-check compliance monthly (review 5-10 random instances of the process)
 - Track process-related quality metrics on the Scorecard
 - Ask: "Is the process being followed? If not, why?"
 
 **Step 4: Update**
+
 - Processes should be reviewed quarterly
 - If the team consistently deviates from a step, either enforce it or update it
 - The person who owns the process owns the updates
@@ -224,6 +230,7 @@ Use swimlanes when multiple people or departments are involved:
 For processes with many parallel tasks (like onboarding), a checklist works better than a flowchart:
 
 **New Employee Onboarding Checklist**
+
 - [ ] Equipment ordered (IT, day -7)
 - [ ] Accounts created (IT, day -3)
 - [ ] Welcome email sent (HR, day -1)

@@ -24,12 +24,15 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Upgrade & Migration
 
 ## Current State
+
 !`npm list @clerk/nextjs @clerk/clerk-react @clerk/express 2>/dev/null | grep clerk || echo 'No Clerk packages found'`
 
 ## Overview
+
 Safely upgrade Clerk SDK versions and handle breaking changes. Covers version checking, upgrade procedures, common migration patterns, and rollback planning.
 
 ## Prerequisites
+
 - Current Clerk integration working
 - Git repository with clean working state
 - Test environment available for validation
@@ -37,6 +40,7 @@ Safely upgrade Clerk SDK versions and handle breaking changes. Covers version ch
 ## Instructions
 
 ### Step 1: Check Current Version and Available Updates
+
 ```bash
 # Check installed version
 npm list @clerk/nextjs
@@ -49,6 +53,7 @@ npm outdated | grep clerk
 ```
 
 ### Step 2: Review Breaking Changes
+
 ```bash
 # View changelog for the target version
 npx open-cli https://clerk.com/changelog
@@ -58,11 +63,13 @@ npx open-cli https://github.com/clerk/javascript/releases
 ```
 
 Key version milestones to watch for:
+
 - **v5 to v6**: `auth()` became async (must `await auth()`)
 - **v5 to v6**: `authMiddleware` renamed to `clerkMiddleware`
 - **v5 to v6**: Import paths changed to `@clerk/nextjs/server`
 
 ### Step 3: Upgrade Process
+
 ```bash
 # Create upgrade branch
 git checkout -b chore/upgrade-clerk
@@ -80,6 +87,7 @@ npm list | grep clerk
 ### Step 4: Handle Common Migration Patterns
 
 **v5 to v6: `auth()` is now async**
+
 ```typescript
 // BEFORE (v5): auth() was synchronous
 // const { userId } = auth()
@@ -89,12 +97,14 @@ const { userId } = await auth()
 ```
 
 Find all affected files:
+
 ```bash
 # Search for synchronous auth() calls that need await
 grep -rn "const.*= auth()" --include="*.ts" --include="*.tsx" | grep -v "await"
 ```
 
 **v5 to v6: Middleware migration**
+
 ```typescript
 // BEFORE (v5):
 // import { authMiddleware } from '@clerk/nextjs'
@@ -113,6 +123,7 @@ export default clerkMiddleware(async (auth, req) => {
 ```
 
 **v5 to v6: Import path changes**
+
 ```typescript
 // BEFORE:
 // import { auth, currentUser } from '@clerk/nextjs'
@@ -122,12 +133,14 @@ import { auth, currentUser } from '@clerk/nextjs/server'
 ```
 
 Fix import paths across codebase:
+
 ```bash
 # Find files using old import path
 grep -rn "from '@clerk/nextjs'" --include="*.ts" --include="*.tsx" | grep -v "node_modules" | grep -v "/server"
 ```
 
 ### Step 5: Update Type Definitions
+
 ```typescript
 // If using custom type extensions, update them
 // BEFORE:
@@ -147,6 +160,7 @@ declare module '@clerk/nextjs/server' {
 ```
 
 ### Step 6: Test Upgrade
+
 ```bash
 # Build to catch type errors
 npm run build
@@ -167,6 +181,7 @@ npm run dev
 ```
 
 ### Step 7: Rollback Plan
+
 ```bash
 # If upgrade fails, rollback to previous version
 git stash  # Save any manual changes
@@ -183,6 +198,7 @@ npm run build && npm test
 ```
 
 ## Output
+
 - Clerk SDK upgraded to latest version
 - Breaking changes migrated (async auth, new middleware, import paths)
 - Type definitions updated
@@ -190,6 +206,7 @@ npm run build && npm test
 - Rollback procedure documented
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Type errors after upgrade | API signature changes | Add `await` to `auth()`, update imports |
@@ -201,6 +218,7 @@ npm run build && npm test
 ## Examples
 
 ### Automated Migration Script
+
 ```bash
 #!/bin/bash
 # scripts/migrate-clerk-v6.sh
@@ -228,9 +246,11 @@ echo "Done. Run 'npm run build' to check for remaining issues."
 ```
 
 ## Resources
+
 - [Clerk Changelog](https://clerk.com/changelog)
 - [Clerk Upgrade Guides](https://clerk.com/docs/upgrade-guides)
 - [GitHub Releases](https://github.com/clerk/javascript/releases)
 
 ## Next Steps
+
 After upgrade, review `clerk-ci-integration` for CI/CD updates.

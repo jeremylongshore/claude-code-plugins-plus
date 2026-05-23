@@ -37,17 +37,21 @@ NFT collectors need to quickly assess rarity to make informed buying decisions. 
 ## Rarity Algorithms
 
 ### Rarity Score / Statistical Rarity
+
 `Score = sum(1 / trait_frequency) for each trait`
 
 Both `statistical` and `rarity_score` use this formula - they are equivalent in the implementation.
 
 ### Average Rarity
+
 `Score = sum(trait_rarities) / trait_count`
 
 ### Information Content
+
 `Score = sum(-log2(trait_frequency))` (higher = rarer)
 
 ### Score Normalization (Post-processing)
+
 After calculating scores, they can be normalized to 0-100 scale:
 `normalized = (score - min_score) / (max_score - min_score) * 100`
 

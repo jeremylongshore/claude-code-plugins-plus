@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Debug Bundle
 
 ## Overview
+
 Collect all diagnostic information needed to troubleshoot CodeRabbit issues or file a support request. Since CodeRabbit is a GitHub/GitLab App (not an SDK), debugging focuses on: App installation status, `.coderabbit.yaml` configuration validity, PR review history, and GitHub webhook delivery logs.
 
 ## Prerequisites
+
 - GitHub CLI (`gh`) authenticated
 - Repository admin access (for webhook logs)
 - Access to the GitHub repository where CodeRabbit is installed
@@ -35,6 +37,7 @@ Collect all diagnostic information needed to troubleshoot CodeRabbit issues or f
 ## Instructions
 
 ### Step 1: Check CodeRabbit Installation Status
+
 ```bash
 set -euo pipefail
 OWNER="${1:-your-org}"
@@ -57,6 +60,7 @@ fi
 ```
 
 ### Step 2: Validate Configuration
+
 ```bash
 set -euo pipefail
 echo ""
@@ -107,6 +111,7 @@ fi
 ```
 
 ### Step 3: Check Recent PR Review History
+
 ```bash
 set -euo pipefail
 OWNER="${1:-your-org}"
@@ -133,6 +138,7 @@ done
 ```
 
 ### Step 4: Check Active Configuration via PR Comment
+
 ```markdown
 # On any open PR, post this comment:
 @coderabbitai configuration
@@ -146,6 +152,7 @@ done
 ```
 
 ### Step 5: Check GitHub Webhook Deliveries
+
 ```markdown
 # In GitHub UI:
 1. Go to repo > Settings > Webhooks
@@ -163,6 +170,7 @@ done
 ```
 
 ### Step 6: Compile Support Bundle
+
 ```bash
 set -euo pipefail
 OWNER="${1:-your-org}"
@@ -199,6 +207,7 @@ echo "Review for sensitive data before sharing with support."
 ```
 
 ## Output
+
 - Installation status verified
 - Configuration validated for syntax and completeness
 - PR review history showing CodeRabbit activity
@@ -206,6 +215,7 @@ echo "Review for sensitive data before sharing with support."
 - Debug bundle file ready for support ticket
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `gh api` returns 404 | Wrong org/repo or no access | Verify repo name and `gh auth status` |
@@ -214,10 +224,12 @@ echo "Review for sensitive data before sharing with support."
 | Webhook deliveries empty | App was uninstalled/reinstalled | Check webhook exists in repo settings |
 
 ## Resources
+
 - [CodeRabbit FAQ](https://docs.coderabbit.ai/faq)
 - [CodeRabbit Status Page](https://status.coderabbit.ai)
 - [CodeRabbit Discord](https://discord.gg/coderabbit)
 - [CodeRabbit Support Email](mailto:support@coderabbit.ai)
 
 ## Next Steps
+
 For common error patterns and fixes, see `coderabbit-common-errors`.

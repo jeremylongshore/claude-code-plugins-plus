@@ -488,7 +488,6 @@ async function checkEvernoteConnectivity() {
 }
 ```
 
-
 ## Environment Strategy
 
 | Environment | Evernote Mode | Purpose | Users |
@@ -496,7 +495,6 @@ async function checkEvernoteConnectivity() {
 | Development | Sandbox | Local development | Developers |
 | Staging | Sandbox | Integration testing | QA team |
 | Production | Production | Live users | Customers |
-
 
 ## Environment Checklist
 

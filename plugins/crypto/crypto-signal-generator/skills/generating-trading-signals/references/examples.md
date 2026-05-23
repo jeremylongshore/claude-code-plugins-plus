@@ -9,6 +9,7 @@ python scripts/scanner.py --watchlist crypto_top10
 ```
 
 **Expected Output:**
+
 ```
 Scanning BTC-USD... BUY (62%)
 Scanning ETH-USD... NEUTRAL (45%)
@@ -42,6 +43,7 @@ python scripts/scanner.py --symbols BTC-USD --detail
 ```
 
 **Expected Output:**
+
 ```
 ======================================================================
   BTC-USD - BUY
@@ -79,6 +81,7 @@ python scripts/scanner.py \
 ```
 
 **Expected Output:**
+
 ```
 ================================================================================
   SIGNAL SCANNER RESULTS
@@ -112,6 +115,7 @@ python scripts/scanner.py \
 ```
 
 **Output file (signals_20240115.json):**
+
 ```json
 {
   "generated_at": "2024-01-15T14:30:00",
@@ -151,6 +155,7 @@ python scripts/scanner.py \
 ```
 
 Then modify `config/settings.yaml`:
+
 ```yaml
 indicators:
   rsi:
@@ -208,6 +213,7 @@ python scripts/scanner.py --list-watchlists
 ```
 
 **Output:**
+
 ```
 Available watchlists:
   crypto_top10: BTC-USD, ETH-USD, BNB-USD... (10 symbols)

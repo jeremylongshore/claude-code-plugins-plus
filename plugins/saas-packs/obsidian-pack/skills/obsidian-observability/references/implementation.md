@@ -146,6 +146,7 @@ export class DebugView extends ItemView {
 ```
 
 ## Debug View Styles
+
 ```css
 .plugin-debug-view { padding: 16px; }
 .debug-section { margin-bottom: 24px; padding: 12px; background: var(--background-secondary); border-radius: 4px; }

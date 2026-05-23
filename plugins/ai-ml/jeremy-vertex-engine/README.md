@@ -7,12 +7,14 @@ Expert inspector and orchestrator for **Vertex AI Agent Engine** - Google Cloud'
 ## ⚠️ Important: What This Plugin Is For
 
 **✅ THIS PLUGIN IS FOR:**
+
 - **Vertex AI Agent Engine** deployments (fully-managed runtime)
 - **ADK (Agent Development Kit)** agents deployed to Agent Engine
 - **Reasoning Engine API** resources (`google_vertex_ai_reasoning_engine`)
 - Agent Engine features: Memory Bank, Code Execution Sandbox, Sessions, A2A Protocol
 
 **❌ THIS PLUGIN IS NOT FOR:**
+
 - Cloud Run deployments (use `jeremy-genkit-terraform` or `jeremy-adk-terraform` with `--cloud-run` flag)
 - LangChain/LlamaIndex on other platforms
 - Self-hosted agent infrastructure
@@ -33,6 +35,7 @@ This plugin provides comprehensive inspection and validation capabilities for ag
 ### Required Google Cloud Setup
 
 **1. Google Cloud Project with APIs Enabled:**
+
 ```bash
 # Enable required APIs
 gcloud services enable aiplatform.googleapis.com \
@@ -44,6 +47,7 @@ gcloud services enable aiplatform.googleapis.com \
 ```
 
 **2. Authentication:**
+
 ```bash
 # Application Default Credentials
 gcloud auth application-default login
@@ -53,6 +57,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="/path/to/service-account-key.json"
 ```
 
 **3. Required IAM Permissions:**
+
 ```yaml
 # Minimum required roles for inspection:
 - roles/aiplatform.user              # Query Agent Engine resources
@@ -65,6 +70,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="/path/to/service-account-key.json"
 ### Required Python Packages
 
 **Install via pip:**
+
 ```bash
 # Core Vertex AI SDK (with Agent Engine support)
 pip install google-cloud-aiplatform[agent_engines]>=1.120.0
@@ -82,6 +88,7 @@ pip install a2a-sdk>=0.3.4
 ```
 
 **All dependencies at once:**
+
 ```bash
 pip install --upgrade \
     'google-cloud-aiplatform[agent_engines]>=1.120.0' \
@@ -97,6 +104,7 @@ pip install --upgrade \
 The `gcloud` CLI is used for IAM policy queries, Cloud Monitoring, and Cloud Logging -- **not** for Agent Engine CRUD operations. There is no `gcloud ai agents`, `gcloud ai reasoning-engines`, or `gcloud alpha ai agent-engines` CLI surface. All Agent Engine operations use the Python SDK.
 
 **Install gcloud CLI:**
+
 ```bash
 # Install gcloud (if not already installed)
 curl https://sdk.cloud.google.com | bash
@@ -107,6 +115,7 @@ gcloud components update
 ```
 
 **Verify Installation:**
+
 ```bash
 gcloud --version
 # Should show: Google Cloud SDK 450.0.0+ (or higher)
@@ -125,6 +134,7 @@ for engine in client.agent_engines.list():
 **This plugin works with agents deployed via:**
 
 1. **ADK Deployment to Agent Engine:**
+
 ```python
 import vertexai
 from google.adk.agents import Agent
@@ -141,7 +151,8 @@ agent_engine = client.agent_engines.create(
 )
 ```
 
-2. **Terraform Deployment:**
+1. **Terraform Deployment:**
+
 ```hcl
 resource "google_vertex_ai_reasoning_engine" "agent" {
   display_name = "my-agent"
@@ -160,7 +171,8 @@ resource "google_vertex_ai_reasoning_engine" "agent" {
 }
 ```
 
-3. **Direct SDK Deployment:**
+1. **Direct SDK Deployment:**
+
 ```python
 # Custom agent template (NOT LangChain)
 from vertexai.preview.reasoning_engines import ReasoningEngine
@@ -193,9 +205,11 @@ agent = ReasoningEngine.create(
 ## Components
 
 ### Agent
+
 - **vertex-engine-inspector**: Comprehensive agent inspector with validation logic
 
 ### Skills (Auto-Activating)
+
 - **vertex-engine-inspector**: Triggers on "inspect agent engine", "validate deployment"
   - **Tool Permissions**: Read, Grep, Glob, Bash (read-only)
   - **Version**: 2.1.0 (2026 schema compliant)
@@ -279,45 +293,58 @@ The plugin generates a production readiness score based on:
 ## Integration with Other Plugins
 
 ### jeremy-adk-orchestrator
+
 - Orchestrator deploys → Inspector validates
 - Continuous feedback loop
 
 ### jeremy-vertex-validator
+
 - Validator checks code → Inspector checks runtime
 - Pre/post deployment validation
 
 ### jeremy-adk-terraform
+
 - Terraform provisions → Inspector validates
 - Infrastructure verification
 
 ## Use Cases
 
 ### Pre-Production Validation
+
 Before deploying to production:
+
 ```
 "Run production readiness check on staging agent"
 ```
 
 ### Post-Deployment Verification
+
 After deployment:
+
 ```
 "Validate agent-xyz deployment was successful"
 ```
 
 ### Ongoing Health Monitoring
+
 Regular health checks:
+
 ```
 "Monitor agent health for the last 7 days"
 ```
 
 ### Security Audits
+
 Compliance validation:
+
 ```
 "Perform security audit on production agents"
 ```
 
 ### Troubleshooting
+
 When issues occur:
+
 ```
 "Why is my agent responding slowly?"
 "Investigate high error rate on agent-abc"
@@ -348,12 +375,14 @@ Status: 🟢 PRODUCTION READY (87%)
 **New in 2025**: Vertex AI Agent Engine provides a built-in observability dashboard for monitoring agent performance.
 
 **Access the Dashboard:**
+
 ```bash
 # Navigate to Cloud Console
 https://console.cloud.google.com/vertex-ai/agent-engines/[AGENT_ENGINE_ID]/observability?project=[PROJECT_ID]
 ```
 
 **Key Metrics Available:**
+
 - **Request Volume**: Total queries processed over time
 - **Latency Distribution**: p50, p90, p95, p99 response times
 - **Error Rates**: Failed requests, timeout errors, model errors
@@ -393,6 +422,7 @@ with tracer.start_as_current_span("agent_query") as span:
 ```
 
 **View traces in Cloud Console:**
+
 ```bash
 # Navigate to Trace Explorer
 https://console.cloud.google.com/traces/list?project=[PROJECT_ID]
@@ -510,6 +540,7 @@ policy = policy_client.create_alert_policy(
 ```
 
 **Common alert conditions:**
+
 - Error rate exceeds 5% for 5 minutes
 - p95 latency exceeds 10 seconds
 - Memory Bank cache hit rate drops below 60%

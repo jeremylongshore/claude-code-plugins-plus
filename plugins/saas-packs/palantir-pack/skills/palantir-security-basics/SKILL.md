@@ -27,15 +27,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Security Basics
 
 ## Overview
+
 Security best practices for Foundry API tokens, OAuth2 credentials, scope management, and secret rotation. Covers both personal access tokens (dev) and service user credentials (production).
 
 ## Prerequisites
+
 - Foundry Developer Console access
 - Understanding of OAuth2 scopes
 
 ## Instructions
 
 ### Step 1: Secure Credential Storage
+
 ```bash
 # .env — NEVER commit to git
 FOUNDRY_HOSTNAME=mycompany.palantirfoundry.com
@@ -49,6 +52,7 @@ echo '.env.*.local' >> .gitignore
 ```
 
 For production, use a secrets manager:
+
 ```bash
 # AWS Secrets Manager
 aws secretsmanager create-secret --name foundry/prod \
@@ -62,6 +66,7 @@ vault kv put secret/foundry client_id=xxx client_secret=yyy
 ```
 
 ### Step 2: Apply Least Privilege Scopes
+
 | Environment | Recommended Scopes | Rationale |
 |-------------|-------------------|-----------|
 | Development | `api:read-data` | Read-only prevents accidental mutations |
@@ -79,6 +84,7 @@ auth = foundry.ConfidentialClientAuth(
 ```
 
 ### Step 3: Rotate Credentials
+
 ```bash
 # 1. Generate new credentials in Developer Console
 # 2. Deploy new credentials alongside old ones
@@ -99,6 +105,7 @@ print('New credentials verified')
 ```
 
 ### Step 4: Validate Tokens Are Not Exposed
+
 ```bash
 # Scan for leaked credentials in git history
 git log --all -p | grep -i "foundry_token\|foundry_client_secret" | head -5
@@ -112,6 +119,7 @@ git log --all -p | grep -i "foundry_token\|foundry_client_secret" | head -5
 ```
 
 ### Step 5: Security Checklist
+
 - [ ] Credentials in environment variables or secrets manager (never in code)
 - [ ] `.env` files listed in `.gitignore`
 - [ ] Separate credentials per environment (dev/staging/prod)
@@ -122,12 +130,14 @@ git log --all -p | grep -i "foundry_token\|foundry_client_secret" | head -5
 - [ ] Pre-commit hooks to detect leaked secrets
 
 ## Output
+
 - Securely stored credentials using secrets manager
 - Least-privilege scopes per environment
 - Rotation procedure documented and tested
 - Pre-commit hooks preventing secret commits
 
 ## Error Handling
+
 | Security Issue | Detection | Mitigation |
 |----------------|-----------|------------|
 | Exposed token in git | `detect-secrets` scan | Rotate immediately, scrub history |
@@ -136,9 +146,11 @@ git log --all -p | grep -i "foundry_token\|foundry_client_secret" | head -5
 | Shared credentials | Multiple users same token | Create per-user service users |
 
 ## Resources
+
 - [Foundry Authentication](https://www.palantir.com/docs/foundry/api/general/overview/authentication)
 - [Developer Console](https://www.palantir.com/docs/foundry/ontology-sdk/create-a-new-osdk)
 - [detect-secrets](https://github.com/Yelp/detect-secrets)
 
 ## Next Steps
+
 For production deployment, see `palantir-prod-checklist`.

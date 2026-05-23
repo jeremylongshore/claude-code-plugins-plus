@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Data Handling
 
 ## Overview
+
 Patterns for synchronizing, transforming, and exporting data between MaintainX and external systems (databases, data warehouses, ERPs).
 
 ## Prerequisites
+
 - MaintainX API access configured
 - Node.js 18+ with `axios`
 - Target database or data warehouse available
@@ -209,12 +211,14 @@ async function reconcile(client: MaintainXClient, localDb: any) {
 ```
 
 ## Output
+
 - Incremental sync with persistent cursor state
 - CSV export of work orders with proper quoting
 - BigQuery streaming insert pipeline
 - Data reconciliation report (missing, stale, orphaned records)
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | 429 Rate Limited | Too many requests during sync | Add delays between pages, use `p-queue` |
@@ -223,11 +227,13 @@ async function reconcile(client: MaintainXClient, localDb: any) {
 | Stale local data | Missed webhook or sync gap | Run full reconciliation, then incremental |
 
 ## Resources
+
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [BigQuery Node.js Client](https://cloud.google.com/bigquery/docs/reference/libraries)
 - [csv-parse](https://csv.js.org/parse/) -- CSV parsing for imports
 
 ## Next Steps
+
 For enterprise access control, see `maintainx-enterprise-rbac`.
 
 ## Examples

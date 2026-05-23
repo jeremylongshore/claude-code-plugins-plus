@@ -10,6 +10,7 @@ anima-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Anima CI/CD integration
 **Workflow:** Part of the cicd skill category for Anima integration.
 **Relates to:** Other anima skills in this pack.

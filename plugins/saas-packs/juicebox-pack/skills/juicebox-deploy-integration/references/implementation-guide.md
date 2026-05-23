@@ -7,6 +7,7 @@ Detailed implementation examples and code patterns.
 ### Step 1: Configure Secret Management
 
 #### AWS Secrets Manager
+
 ```bash
 # Store API key
 aws secretsmanager create-secret \
@@ -28,6 +29,7 @@ export async function getJuiceboxApiKey(): Promise<string> {
 ```
 
 #### Google Secret Manager
+
 ```bash
 # Store API key
 echo -n "jb_prod_xxxx" | gcloud secrets create juicebox-api-key --data-file=-
@@ -49,6 +51,7 @@ export async function getJuiceboxApiKey(): Promise<string> {
 ### Step 2: Create Deployment Configuration
 
 #### Docker Deployment
+
 ```dockerfile
 # Dockerfile
 FROM node:20-alpine
@@ -81,6 +84,7 @@ secrets:
 ```
 
 #### Kubernetes Deployment
+
 ```yaml
 # k8s/deployment.yaml
 apiVersion: apps/v1
@@ -113,6 +117,7 @@ spec:
 ```
 
 ### Step 3: Configure Health Checks
+
 ```typescript
 // routes/health.ts
 import { Router } from 'express';
@@ -140,6 +145,7 @@ export default router;
 ```
 
 ### Step 4: Deployment Script
+
 ```bash
 #!/bin/bash
 # scripts/deploy.sh

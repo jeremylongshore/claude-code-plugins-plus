@@ -191,6 +191,7 @@ Use when a private-app token has been leaked (found in git history, logs, or err
 **Time to complete:** ~5 minutes. No downtime with staged rotation.
 
 1. **Assess blast radius**
+
    ```bash
    # Find all systems using this token
    grep -r "pat-na1-" ~/.env* || true
@@ -204,6 +205,7 @@ Use when a private-app token has been leaked (found in git history, logs, or err
    - Copy the new token
 
 3. **Update secret store** (before any process restarts)
+
    ```bash
    # AWS
    aws secretsmanager put-secret-value --secret-id hubspot/access-token --secret-string "pat-na1-NEW..."
@@ -214,6 +216,7 @@ Use when a private-app token has been leaked (found in git history, logs, or err
    ```
 
 4. **Invalidate in-process cache** (trigger hot reload or restart)
+
    ```bash
    # If SIGHUP is wired to reload secrets:
    kill -HUP $(pgrep -f your-service)
@@ -222,6 +225,7 @@ Use when a private-app token has been leaked (found in git history, logs, or err
    ```
 
 5. **Verify new token**
+
    ```bash
    curl -s "https://api.hubapi.com/crm/v3/objects/contacts?limit=1" \
      -H "Authorization: Bearer pat-na1-NEW..." | jq '.results | length'
@@ -229,6 +233,7 @@ Use when a private-app token has been leaked (found in git history, logs, or err
    ```
 
 6. **Remove leaked token from git history** (if applicable)
+
    ```bash
    git filter-branch --force --index-filter \
      "git rm --cached --ignore-unmatch .env" \

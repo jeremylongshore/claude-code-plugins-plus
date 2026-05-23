@@ -75,6 +75,7 @@ class CacheManager:
 ```
 
 Enable Delta Cache in cluster config:
+
 ```
 "spark.databricks.io.cache.enabled": "true"
 "spark.databricks.io.cache.maxDiskUsage": "50g"

@@ -24,6 +24,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq Multi-Environment Setup
 
 ## Overview
+
 Configure Groq API access across development, staging, and production with the right model, rate limit strategy, and secret management per environment. Key insight: use `llama-3.1-8b-instant` in development (cheapest, fastest), match production model in staging, and harden production with retries and fallbacks.
 
 ## Environment Strategy
@@ -37,6 +38,7 @@ Configure Groq API access across development, staging, and production with the r
 ## Instructions
 
 ### Step 1: Configuration Module
+
 ```typescript
 // config/groq.ts
 import Groq from "groq-sdk";
@@ -117,6 +119,7 @@ export function getGroqClient(): Groq {
 ```
 
 ### Step 2: Environment-Aware Service
+
 ```typescript
 // services/groq-service.ts
 import { getGroqClient, getGroqConfig } from "../config/groq";
@@ -160,6 +163,7 @@ export async function complete(
 ```
 
 ### Step 3: Secret Management by Platform
+
 ```bash
 set -euo pipefail
 
@@ -187,6 +191,7 @@ vault kv put secret/groq/prod api_key="gsk_prod_key"
 ```
 
 ### Step 4: Docker Compose Multi-Env
+
 ```yaml
 # docker-compose.yml
 services:
@@ -218,6 +223,7 @@ secrets:
 ```
 
 ### Step 5: Verify Environment Config
+
 ```typescript
 // scripts/verify-groq-env.ts
 import { getGroqConfig, getGroqClient } from "../config/groq";
@@ -249,6 +255,7 @@ verify().catch((err) => {
 ```
 
 ### Step 6: Rate Limit Awareness by Environment
+
 ```bash
 set -euo pipefail
 # Check current rate limits for your key
@@ -260,6 +267,7 @@ curl -si https://api.groq.com/openai/v1/chat/completions \
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `GROQ_API_KEY not set` | Missing env var | Check .env.local (dev) or secret manager (prod) |
@@ -268,10 +276,12 @@ curl -si https://api.groq.com/openai/v1/chat/completions \
 | Staging/prod key in dev | Key leak risk | Use separate Groq organizations per environment |
 
 ## Resources
+
 - [Groq Console](https://console.groq.com)
 - [Groq API Keys](https://console.groq.com/keys)
 - [Groq Rate Limits](https://console.groq.com/docs/rate-limits)
 - [Groq Spend Limits](https://console.groq.com/docs/spend-limits)
 
 ## Next Steps
+
 For deployment configuration, see `groq-deploy-integration`.

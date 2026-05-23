@@ -24,6 +24,7 @@ Documenso is the open-source DocuSign alternative, providing:
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `documenso-install-auth` | Configure SDK, generate API keys, verify connection (TS + Python) |
@@ -40,6 +41,7 @@ Documenso is the open-source DocuSign alternative, providing:
 | `documenso-upgrade-migration` | v1 to v2 API migration, SDK upgrades, self-hosted container upgrades |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `documenso-ci-integration` | GitHub Actions, unit tests with mocks, integration tests against staging |
@@ -50,6 +52,7 @@ Documenso is the open-source DocuSign alternative, providing:
 | `documenso-reference-architecture` | Project layout, layered services, data flow diagrams, setup script |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `documenso-multi-env-setup` | Dev/staging/prod configs, client factory, mock client, env guards |

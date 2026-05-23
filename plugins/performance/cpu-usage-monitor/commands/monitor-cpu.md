@@ -27,6 +27,7 @@ Analyze code for CPU-intensive operations and optimize processor utilization.
 ## Output
 
 Provide:
+
 - CPU hotspot identification with file locations
 - Complexity analysis for key algorithms
 - Before/after code examples for optimizations

@@ -10,6 +10,7 @@ evernote-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Evernote primary workflow
 **Workflow:** Part of the onboarding skill category for Evernote integration.
 **Relates to:** Other evernote skills in this pack.

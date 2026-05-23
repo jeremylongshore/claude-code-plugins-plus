@@ -10,6 +10,7 @@ oraclecloud-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Oracle Cloud reliability patterns
 **Workflow:** Part of the enterprise skill category for Oracle Cloud integration.
 **Relates to:** Other oraclecloud skills in this pack.

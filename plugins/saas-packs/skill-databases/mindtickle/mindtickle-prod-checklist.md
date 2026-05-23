@@ -10,6 +10,7 @@ mindtickle-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Mindtickle production deployment checklist
 **Workflow:** Part of the operations skill category for Mindtickle integration.
 **Relates to:** Other mindtickle skills in this pack.

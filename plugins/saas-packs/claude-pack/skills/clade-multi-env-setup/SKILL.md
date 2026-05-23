@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Anthropic Multi-Environment Setup
 
 ## Overview
+
 Use different API keys, models, and limits across dev/staging/prod.
 
 ## Environment Configuration
+
 ```typescript
 // config/anthropic.ts
 interface AnthropicConfig {
@@ -63,7 +65,9 @@ export const config = configs[process.env.NODE_ENV || 'development'];
 ```
 
 ## Separate API Keys Per Environment
+
 Use different Anthropic API keys for each environment:
+
 - **Dev key**: Low tier, spending alerts at $10
 - **Staging key**: Medium tier, spending alerts at $50
 - **Prod key**: Highest tier, spending alerts at usage baseline + 50%
@@ -80,6 +84,7 @@ ANTHROPIC_API_KEY=sk-ant-prod-...
 ```
 
 ## Model Selection Strategy
+
 | Environment | Model | Why |
 |-------------|-------|-----|
 | Development | Haiku | Fast iteration, cheap |
@@ -88,26 +93,32 @@ ANTHROPIC_API_KEY=sk-ant-prod-...
 | Production (complex) | Opus | Complex reasoning tasks |
 
 ## Output
+
 - Environment-specific Anthropic configuration (model, maxTokens, maxRetries)
 - Separate API keys per environment with appropriate tier limits
 - Spending alerts configured per environment
 - Dev using Haiku (cheap), staging matching prod (Sonnet), prod using Sonnet/Opus
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | API Error | Check error type and status code | See `clade-common-errors` |
 
 ## Examples
+
 See Environment Configuration TypeScript pattern, API key separation strategy, and Model Selection Strategy table above.
 
 ## Resources
+
 - [API Key Management](https://console.anthropic.com/settings/keys)
 
 ## Next Steps
+
 See `clade-observability` for monitoring across environments.
 
 ## Prerequisites
+
 - Completed `clade-install-auth`
 - Multiple environments (dev/staging/prod) configured
 - Separate Anthropic API keys created per environment
@@ -115,10 +126,13 @@ See `clade-observability` for monitoring across environments.
 ## Instructions
 
 ### Step 1: Review the patterns below
+
 Each section contains production-ready code examples. Copy and adapt them to your use case.
 
 ### Step 2: Apply to your codebase
+
 Integrate the patterns that match your requirements. Test each change individually.
 
 ### Step 3: Verify
+
 Run your test suite to confirm the integration works correctly.

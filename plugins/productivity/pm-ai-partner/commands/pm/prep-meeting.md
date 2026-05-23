@@ -49,6 +49,6 @@ How to set the tone and agenda.
 - [ ] [How you'll know it went well]
 ```
 
-4. **Offer to role-play** — I can play the other person so you can practice difficult conversations.
+1. **Offer to role-play** — I can play the other person so you can practice difficult conversations.
 
 Ask me about the meeting before generating the prep document.

@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai SDK Patterns
 
 ## Overview
+
 Production-ready patterns for the Vast.ai CLI, Python SDK, and REST API at `cloud.vast.ai/api/v0`. Covers typed search queries, instance lifecycle management, offer scoring, and error handling.
 
 ## Prerequisites
+
 - Completed `vastai-install-auth` setup
 - Python 3.8+ with `requests`
 - Familiarity with the Vast.ai marketplace model
@@ -129,6 +131,7 @@ def ssh_exec(host, port, cmd, timeout=300):
 ```
 
 ## Output
+
 - Typed `GPUQuery` builder for search filters
 - Context-managed instance lifecycle with auto-destroy
 - Offer scoring algorithm (cost, reliability, performance)
@@ -136,6 +139,7 @@ def ssh_exec(host, port, cmd, timeout=300):
 - SSH command executor for remote jobs
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Offer unavailable | Already rented | Re-search and pick next best |
@@ -144,11 +148,13 @@ def ssh_exec(host, port, cmd, timeout=300):
 | API timeout | Network or server issue | Apply retry decorator |
 
 ## Resources
+
 - [REST API Reference](https://vast.ai/developers/api)
 - [Search Filtering](https://docs.vast.ai/search-and-filter-gpu-offers)
 - [vast-cli GitHub](https://github.com/vast-ai/vast-cli)
 
 ## Next Steps
+
 See `vastai-core-workflow-a` for the complete provisioning workflow.
 
 ## Examples

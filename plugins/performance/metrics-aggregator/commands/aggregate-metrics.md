@@ -27,6 +27,7 @@ Implement centralized metrics aggregation for comprehensive performance visibili
 ## Output
 
 Provide:
+
 - Metrics instrumentation code
 - Metric naming and tagging standards
 - Collection configuration (Prometheus, etc.)

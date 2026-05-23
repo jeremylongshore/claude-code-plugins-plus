@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Gamma Reference Architecture
 
 ## Overview
+
 Reference architecture patterns for building scalable, maintainable Gamma integrations.
 
 ## Prerequisites
+
 - Understanding of microservices
 - Familiarity with cloud architecture
 - Knowledge of event-driven systems
@@ -34,6 +36,7 @@ Reference architecture patterns for building scalable, maintainable Gamma integr
 ## Architecture Patterns
 
 ### Pattern 1: Basic Integration
+
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    Your Application                      │
@@ -53,6 +56,7 @@ Reference architecture patterns for building scalable, maintainable Gamma integr
 **Use Case:** Simple applications, prototypes, small teams.
 
 ### Pattern 2: Service Layer Architecture
+
 ```
 set -euo pipefail
 ┌────────────────────────────────────────────────────────────────┐
@@ -88,6 +92,7 @@ set -euo pipefail
 **Use Case:** Multi-platform products, medium-scale applications.
 
 ### Pattern 3: Event-Driven Architecture
+
 ```
 set -euo pipefail
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -129,6 +134,7 @@ set -euo pipefail
 ## Implementation
 
 ### Service Layer Example
+
 ```typescript
 // services/presentation-service.ts
 import { GammaClient } from '@gamma/sdk';
@@ -176,6 +182,7 @@ export class PresentationService {
 ```
 
 ### Event Handler Example
+
 ```typescript
 // workers/gamma-worker.ts
 import { Worker } from 'bullmq';
@@ -217,6 +224,7 @@ const worker = new Worker('presentations', async (job) => {
 | Webhooks | Real-time event handling |
 
 ## Resources
+
 - [Gamma Architecture Guide](https://gamma.app/docs/architecture)
 - [12-Factor App](https://12factor.net/)
 - [Microservices Patterns](https://microservices.io/)

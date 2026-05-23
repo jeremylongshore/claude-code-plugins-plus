@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Incident Runbook
 
 ## Overview
+
 Rapid incident response procedures for Vast.ai GPU instance failures. Covers triage, mitigation, recovery, and postmortem for common incident types: spot preemption, instance crashes, GPU failures, and billing issues.
 
 ## Prerequisites
+
 - Vast.ai CLI access
 - SSH access to instances (if still running)
 - Checkpoint storage accessible (S3/GCS)
@@ -150,12 +152,14 @@ for inst in json.load(sys.stdin):
 ```
 
 ## Output
+
 - Triage script with instant status assessment
 - Recovery procedures for 4 incident types
 - Emergency billing stop command
 - Postmortem template
 
 ## Error Handling
+
 | Incident | MTTR Target | Recovery |
 |----------|-------------|----------|
 | Spot preemption | < 10 min | Auto-provision replacement, resume from checkpoint |
@@ -164,10 +168,12 @@ for inst in json.load(sys.stdin):
 | Billing emergency | < 1 min | Destroy all instances immediately |
 
 ## Resources
+
 - [Vast.ai Status](https://status.vast.ai)
 - [Vast.ai CLI](https://docs.vast.ai/cli/get-started)
 
 ## Next Steps
+
 For data handling and security, see `vastai-data-handling`.
 
 ## Examples

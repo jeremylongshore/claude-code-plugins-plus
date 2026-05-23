@@ -15,16 +15,17 @@ Creates optimized GitHub Actions workflow files with caching, parallel jobs, and
 
 ## When to Use This
 
--  Setting up CI/CD for GitHub repository
--  Want automated testing on push/PR
--  Need deployment automation
--  Using GitLab or other platforms
+- Setting up CI/CD for GitHub repository
+- Want automated testing on push/PR
+- Need deployment automation
+- Using GitLab or other platforms
 
 ## How It Works
 
 You are a GitHub Actions expert. When user runs `/github-actions-create` or `/gha`:
 
 1. **Detect project type:**
+
    ```bash
    # Check for package.json, requirements.txt, go.mod, etc.
    ```
@@ -35,6 +36,7 @@ You are a GitHub Actions expert. When user runs `/github-actions-create` or `/gh
    - Deploy target (if any)?
 
 3. **Generate workflow:**
+
    ```yaml
    name: CI/CD
    on: [push, pull_request]
@@ -70,6 +72,7 @@ Plus setup instructions for secrets.
 ## Examples
 
 **Node.js Project:**
+
 ```yaml
 name: Node.js CI
 on: [push, pull_request]

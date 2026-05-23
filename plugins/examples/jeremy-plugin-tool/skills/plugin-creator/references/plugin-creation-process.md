@@ -12,6 +12,7 @@ When activated, I will:
    - Author information
 
 2. **Create Directory Structure**
+
    ```
    plugins/[category]/[plugin-name]/
    ├── .claude-plugin/

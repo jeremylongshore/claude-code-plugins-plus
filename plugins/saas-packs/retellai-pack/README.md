@@ -17,6 +17,7 @@ Retell AI is a platform for building AI voice agents that handle phone calls. Th
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `retellai-install-auth` | Install `retell-sdk`, configure API key |
@@ -33,6 +34,7 @@ Retell AI is a platform for building AI voice agents that handle phone calls. Th
 | `retellai-upgrade-migration` | SDK version upgrades |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `retellai-ci-integration` | CI pipeline with agent configuration tests |
@@ -43,6 +45,7 @@ Retell AI is a platform for building AI voice agents that handle phone calls. Th
 | `retellai-reference-architecture` | Voice agent service architecture |
 
 ### Flagship Skills (F19-F30)
+
 | Skill | Description |
 |-------|-------------|
 | `retellai-multi-env-setup` | Dev/staging/prod agent configurations |

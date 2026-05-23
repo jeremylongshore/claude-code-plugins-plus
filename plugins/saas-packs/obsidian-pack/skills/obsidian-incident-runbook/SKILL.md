@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Obsidian Incident Runbook
 
 ## Overview
+
 Systematic procedures for diagnosing and resolving Obsidian failures: plugin crashes, vault corruption, sync conflicts, performance degradation, and broken CSS/themes. Each section is a self-contained runbook -- jump to the relevant one.
 
 ## Prerequisites
+
 - Access to the affected Obsidian vault directory
 - Developer Console access (Ctrl+Shift+I / Cmd+Option+I)
 - Terminal access for filesystem operations
@@ -230,6 +232,7 @@ grep -rl '<<<<<<< ' "$VAULT_PATH"/*.md 2>/dev/null
 **Prevent future conflicts**
 
 In `.obsidian/sync.json` or your Git workflow:
+
 - Exclude `workspace.json` and `workspace-mobile.json` from sync (per-device files)
 - Avoid editing the same note on two devices simultaneously
 - For Git: commit and push frequently; pull before editing
@@ -287,6 +290,7 @@ for p in plugins:
 ```
 
 Then for each suspect:
+
 1. Remove it from `community-plugins.json`
 2. Restart Obsidian
 3. Test performance
@@ -294,6 +298,7 @@ Then for each suspect:
 5. If unchanged, restore it and try the next
 
 **Common performance fixes**
+
 - Vault with 10,000+ files: disable Dataview's automatic refresh, use lazy loading
 - Many backlinks: disable backlinks panel or set it to collapsed by default
 - Large files (1MB+): split into smaller notes using note refactoring
@@ -369,12 +374,14 @@ vars.forEach(v => console.log(`${v}: ${root.getPropertyValue(v)}`));
 ```
 
 ## Output
+
 - Identified root cause of the incident
 - Applied fix (plugin disabled, file recovered, conflict resolved, CSS reset)
 - Documented what happened for future reference
 - Preventive measures configured (backups, sync exclusions, performance monitoring)
 
 ## Error Handling
+
 | Issue | Cause | Quick Fix |
 |-------|-------|-----------|
 | Console won't open (Obsidian crashes immediately) | Plugin error in `onload()` | Disable all plugins via filesystem (Step 2) |
@@ -393,6 +400,7 @@ vars.forEach(v => console.log(`${v}: ${root.getPropertyValue(v)}`));
 **Slow vault with 8,000 notes**: Obsidian takes 15 seconds to open and typing lags. Developer Console shows `metadataCache` taking 4 seconds. Disabling Dataview drops it to 1 second. Solution: configure Dataview to use manual refresh instead of auto-refresh, and add `dv.pages` limits to expensive queries.
 
 ## Resources
+
 - [Obsidian Forum - Bug Reports](https://forum.obsidian.md/c/bug-reports/7)
 - [Obsidian Discord - Help](https://discord.gg/obsidianmd)
 - [Plugin Developer Documentation](https://docs.obsidian.md/Plugins)
@@ -400,4 +408,5 @@ vars.forEach(v => console.log(`${v}: ${root.getPropertyValue(v)}`));
 - [Obsidian Sync Troubleshooting](https://help.obsidian.md/Obsidian+Sync/Troubleshoot+Obsidian+Sync)
 
 ## Next Steps
+
 For collecting detailed diagnostics to share with plugin developers, see `obsidian-debug-bundle`. For data backup and recovery strategies, see `obsidian-data-handling`.

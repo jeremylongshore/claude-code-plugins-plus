@@ -82,6 +82,7 @@ print(f"Section created: {section.display_name} ({section.id})")
 This is where most integrations break. OneNote requires XHTML — every tag must close, the document must be UTF-8, and several HTML features are silently dropped.
 
 **VALID XHTML (this works):**
+
 ```html
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -123,6 +124,7 @@ This is where most integrations break. OneNote requires XHTML — every tag must
 ```
 
 **INVALID HTML (common mistakes that cause silent failures):**
+
 ```html
 <!-- WRONG: unclosed tags — content after <br> may be lost -->
 <p>Line one<br>Line two</p>
@@ -150,6 +152,7 @@ This is where most integrations break. OneNote requires XHTML — every tag must
 ```
 
 **Send the page:**
+
 ```typescript
 // TypeScript — create page with XHTML content
 const xhtml = `<!DOCTYPE html>
@@ -250,6 +253,7 @@ print("Output HTML (first 500 chars):", resp.text[:500])
 ## Output
 
 After completing these steps you will have:
+
 - A new OneNote notebook with a section and page
 - A page with correctly formatted XHTML content including checklists
 - Understanding of input vs output HTML differences
@@ -269,6 +273,7 @@ After completing these steps you will have:
 ## Examples
 
 **Minimal valid page (smallest possible):**
+
 ```html
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -278,6 +283,7 @@ After completing these steps you will have:
 ```
 
 **Page with image from URL:**
+
 ```html
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">

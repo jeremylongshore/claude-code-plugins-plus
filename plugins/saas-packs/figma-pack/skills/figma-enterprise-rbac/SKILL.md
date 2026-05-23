@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code
 # Figma Enterprise RBAC
 
 ## Overview
+
 Figma Enterprise features accessible via the REST API: OAuth 2.0 for user-facing apps, team/project management, and the Variables API (Enterprise-only). This skill covers building OAuth integrations and managing organizational access.
 
 ## Prerequisites
+
 - Figma Enterprise or Organization plan
 - OAuth app registered in Figma developer dashboard
 - Understanding of OAuth 2.0 authorization code flow
@@ -34,6 +36,7 @@ Figma Enterprise features accessible via the REST API: OAuth 2.0 for user-facing
 ## Instructions
 
 ### Step 1: OAuth 2.0 App Setup
+
 ```typescript
 // Figma OAuth 2.0 Authorization Code Flow
 
@@ -97,6 +100,7 @@ async function refreshAccessToken(refreshToken: string): Promise<{
 ```
 
 ### Step 2: OAuth Callback Handler
+
 ```typescript
 // Express callback handler
 app.get('/auth/figma/callback', async (req, res) => {
@@ -133,6 +137,7 @@ app.get('/auth/figma/callback', async (req, res) => {
 ```
 
 ### Step 3: Team and Project Management
+
 ```typescript
 // GET /v1/teams/:team_id/projects -- list team projects
 async function getTeamProjects(teamId: string, token: string) {
@@ -174,6 +179,7 @@ async function getTeamStyles(teamId: string, token: string) {
 ```
 
 ### Step 4: Variables API (Enterprise Only)
+
 ```typescript
 // GET /v1/files/:key/variables/local -- Tier 2, requires file_variables:read
 async function getLocalVariables(fileKey: string, token: string) {
@@ -220,6 +226,7 @@ async function updateVariables(
 ```
 
 ### Step 5: Access Control Middleware
+
 ```typescript
 // Middleware that checks if user has Figma access to a resource
 async function requireFigmaAccess(fileKey: string) {
@@ -245,12 +252,14 @@ async function requireFigmaAccess(fileKey: string) {
 ```
 
 ## Output
+
 - OAuth 2.0 flow with authorization, token exchange, and refresh
 - Team/project/file listing via API
 - Variables API access (Enterprise)
 - Access control middleware for file-level permissions
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | OAuth code expired | Exchange took >30s | Exchange immediately on callback |
@@ -259,9 +268,11 @@ async function requireFigmaAccess(fileKey: string) {
 | Team components empty | No published components | Publish components in Figma first |
 
 ## Resources
+
 - [Figma OAuth 2.0](https://developers.figma.com/docs/rest-api/authentication/)
 - [Figma Variables API](https://developers.figma.com/docs/rest-api/variables-endpoints/)
 - [Component Endpoints](https://developers.figma.com/docs/rest-api/component-endpoints/)
 
 ## Next Steps
+
 For major migrations, see `figma-migration-deep-dive`.

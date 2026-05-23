@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola Multi-Environment Setup
 
 ## Overview
+
 Configure Granola for multi-workspace enterprise deployments with SSO-based user provisioning, per-workspace integration configuration, and compliance controls. Each workspace operates as an isolated unit with its own folders, integrations, sharing rules, and retention policies.
 
 ## Prerequisites
+
 - Granola Enterprise plan ($35+/user/month)
 - Organization admin access in Granola
 - Identity provider configured (Okta, Azure AD, or Google Workspace)
@@ -63,6 +65,7 @@ Map your organization to Granola workspaces:
 ### Step 3 — Configure SSO and User Provisioning
 
 **SSO Setup (Okta example):**
+
 1. Organization Settings > **Security** > **SSO**
 2. Choose SAML 2.0 or OIDC
 3. Configure in your IdP:
@@ -72,6 +75,7 @@ Map your organization to Granola workspaces:
 4. Test with a pilot user before enforcing org-wide
 
 **SCIM Provisioning:**
+
 1. Organization Settings > **Security** > **SCIM**
 2. Generate SCIM token
 3. Configure in your IdP:
@@ -116,6 +120,7 @@ Configure in each workspace: Settings > Integrations. Each workspace's integrati
 | Executive | **Custom (legal hold)** | **30 days** | **Prohibited** | On |
 
 **Sensitive workspace hardening (HR, Executive):**
+
 ```
 Workspace Settings > Security:
   External sharing: Disabled
@@ -141,6 +146,7 @@ Workspace Settings > Security:
 ### Step 7 — Validate and Monitor
 
 **Validation checklist:**
+
 - [ ] All workspaces created with correct owners
 - [ ] SSO login tested with users from each IdP group
 - [ ] SCIM sync verified (user added to IdP group → appears in workspace)
@@ -150,11 +156,13 @@ Workspace Settings > Security:
 - [ ] Audit logs capturing expected events
 
 **Ongoing monitoring:**
+
 - Monthly: Review workspace membership, deactivate departed users
 - Quarterly: Access review across all workspaces (principle of least privilege)
 - Annual: Re-certify compliance settings, update retention policies
 
 ## Output
+
 - Multi-workspace topology deployed and configured
 - SSO and SCIM provisioning operational
 - Per-workspace integrations connected and tested
@@ -172,10 +180,12 @@ Workspace Settings > Security:
 | JIT provisioning creates duplicate users | Multiple IdP groups | Consolidate groups, ensure one user maps to one account |
 
 ## Resources
+
 - [Granola Enterprise](https://www.granola.ai/security)
 - [Signing In and Calendar Connection](https://docs.granola.ai/help-center/signing-in-and-connecting-your-calendar)
 - [Sign In with Microsoft](https://docs.granola.ai/help-center/sign-in-with-microsoft)
 - [Security Standards](https://docs.granola.ai/help-center/consent-security-privacy/our-security-standards)
 
 ## Next Steps
+
 Proceed to `granola-observability` for meeting analytics and monitoring.

@@ -10,6 +10,7 @@ apollo-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Apollo reliability patterns
 **Workflow:** Part of the enterprise skill category for Apollo integration.
 **Relates to:** Other apollo skills in this pack.

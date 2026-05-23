@@ -3,9 +3,11 @@
 # Lindy Incident Runbook
 
 ## Overview
+
 Incident response procedures for Lindy AI integration issues.
 
 ## Prerequisites
+
 - Access to Lindy dashboard
 - Monitoring dashboards available
 - Escalation contacts known
@@ -23,6 +25,7 @@ Incident response procedures for Lindy AI integration issues.
 ## Quick Diagnostics
 
 ### Step 1: Check Lindy Status
+
 ```bash
 # Check Lindy status page
 curl -s https://status.lindy.ai/api/v1/status | jq '.status'
@@ -34,6 +37,7 @@ curl -s -o /dev/null -w "%{http_code}" \
 ```
 
 ### Step 2: Verify Authentication
+
 ```bash
 # Test API key
 curl -s -H "Authorization: Bearer $LINDY_API_KEY" \
@@ -41,6 +45,7 @@ curl -s -H "Authorization: Bearer $LINDY_API_KEY" \
 ```
 
 ### Step 3: Check Rate Limits
+
 ```bash
 # Check rate limit headers
 curl -sI -H "Authorization: Bearer $LINDY_API_KEY" \
@@ -52,10 +57,12 @@ curl -sI -H "Authorization: Bearer $LINDY_API_KEY" \
 ### Incident: Complete API Outage
 
 **Symptoms:**
+
 - All API calls failing
 - 5xx errors from Lindy
 
 **Runbook:**
+
 ```markdown
 1. [ ] Check https://status.lindy.ai
 2. [ ] Verify it's not a local network issue
@@ -67,6 +74,7 @@ curl -sI -H "Authorization: Bearer $LINDY_API_KEY" \
 ```
 
 **Fallback Code:**
+
 ```typescript
 async function runWithFallback(agentId: string, input: string) {
   try {
@@ -87,10 +95,12 @@ async function runWithFallback(agentId: string, input: string) {
 ### Incident: Rate Limiting
 
 **Symptoms:**
+
 - 429 errors
 - "Rate limit exceeded" messages
 
 **Runbook:**
+
 ```markdown
 1. [ ] Check current usage in dashboard
 2. [ ] Identify spike source (which agent/automation)
@@ -100,6 +110,7 @@ async function runWithFallback(agentId: string, input: string) {
 ```
 
 **Throttling Code:**
+
 ```typescript
 const queue = new PQueue({ concurrency: 5, interval: 1000, intervalCap: 10 });
 
@@ -111,11 +122,13 @@ async function throttledRun(agentId: string, input: string) {
 ### Incident: Agent Failures
 
 **Symptoms:**
+
 - Specific agent not responding
 - Unexpected outputs
 - Timeout errors
 
 **Runbook:**
+
 ```markdown
 1. [ ] Identify affected agent(s)
 2. [ ] Check agent configuration hasn't changed
@@ -126,6 +139,7 @@ async function throttledRun(agentId: string, input: string) {
 ```
 
 **Diagnostic Script:**
+
 ```typescript
 async function diagnoseAgent(agentId: string) {
   const lindy = new Lindy({ apiKey: process.env.LINDY_API_KEY });
@@ -154,10 +168,12 @@ async function diagnoseAgent(agentId: string) {
 ### Incident: High Latency
 
 **Symptoms:**
+
 - Response times > 10 seconds
 - Timeouts increasing
 
 **Runbook:**
+
 ```markdown
 1. [ ] Check Lindy status page for degradation
 2. [ ] Review latency metrics by agent
@@ -179,6 +195,7 @@ async function diagnoseAgent(agentId: string) {
 ## Post-Incident
 
 ### Incident Report Template
+
 ```markdown
 ## Incident Report: [Title]
 
@@ -206,6 +223,7 @@ async function diagnoseAgent(agentId: string) {
 ```
 
 ## Output
+
 - Quick diagnostic commands
 - Common incident runbooks
 - Fallback code patterns
@@ -213,9 +231,11 @@ async function diagnoseAgent(agentId: string) {
 - Post-incident template
 
 ## Resources
+
 - [Lindy Status](https://status.lindy.ai)
 - [Lindy Support](https://support.lindy.ai)
 - [API Reference](https://docs.lindy.ai/api)
 
 ## Next Steps
+
 Proceed to `lindy-data-handling` for data management.

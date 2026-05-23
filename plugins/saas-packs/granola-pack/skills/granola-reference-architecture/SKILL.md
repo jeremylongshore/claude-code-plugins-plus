@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola Reference Architecture
 
 ## Overview
+
 Enterprise reference architecture for deploying Granola as the meeting intelligence platform across an organization. Covers the core capture pipeline, Zapier middleware routing, multi-workspace topology, security layers, and integration patterns for Slack, Notion, CRM, and task management.
 
 ## Prerequisites
+
 - Granola Enterprise plan ($35+/user/month)
 - Zapier Professional or higher (for multi-step Zaps and Paths)
 - Destination systems provisioned (Slack, Notion, CRM, Linear/Jira)
@@ -156,6 +158,7 @@ Compliance:
 ### Step 5 — Integration Data Flow Patterns
 
 **Pattern A: Standard Meeting (Parallel)**
+
 ```
 Note enhanced → Folder trigger fires
   ├─→ Slack notification (immediate)
@@ -164,6 +167,7 @@ Note enhanced → Folder trigger fires
 ```
 
 **Pattern B: Sales Meeting (Sequential)**
+
 ```
 Note enhanced → "Sales / Discovery" folder
   │
@@ -178,6 +182,7 @@ Note enhanced → "Sales / Discovery" folder
 ```
 
 **Pattern C: Executive Meeting (Restricted)**
+
 ```
 Note enhanced → "Board" folder (no auto-trigger)
   │
@@ -201,6 +206,7 @@ Recovery Procedures:
 ```
 
 ## Output
+
 - Complete meeting ecosystem architecture documented
 - Folder-based routing configured per department
 - Multi-workspace topology deployed with appropriate isolation
@@ -218,10 +224,12 @@ Recovery Procedures:
 | Audit log gaps | Logging not enabled on workspace | Enable in Workspace Settings > Security |
 
 ## Resources
+
 - [Granola Enterprise](https://www.granola.ai/security)
 - [Integrations Overview](https://docs.granola.ai/help-center/sharing/integrations/integrations-with-granola)
 - [Enterprise API](https://docs.granola.ai/help-center/sharing/integrations/enterprise-api)
 - [Security Standards](https://docs.granola.ai/help-center/consent-security-privacy/our-security-standards)
 
 ## Next Steps
+
 Proceed to `granola-multi-env-setup` for workspace creation and configuration.

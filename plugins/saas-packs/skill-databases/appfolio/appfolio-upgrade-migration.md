@@ -10,6 +10,7 @@ appfolio-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute AppFolio SDK upgrades
 **Workflow:** Part of the operations skill category for AppFolio integration.
 **Relates to:** Other appfolio skills in this pack.

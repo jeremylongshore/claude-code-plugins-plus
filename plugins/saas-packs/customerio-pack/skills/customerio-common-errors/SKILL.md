@@ -97,6 +97,7 @@ await cio.track("user-1", { name: "signed_up", data: {} });
 ```
 
 **Checklist:**
+
 1. Event name is case-sensitive — must match dashboard trigger exactly
 2. User must be identified before tracking (call `identify()` first)
 3. Campaign must be **Active** (not Draft or Paused)
@@ -172,6 +173,7 @@ const cio = new TrackClient(siteId, apiKey, { region: RegionEU });
 ### Error 7: User Not Receiving Email
 
 **Diagnostic checklist:**
+
 1. Does the user have an `email` attribute? (Check People > user profile)
 2. Is the user suppressed? (Check suppression list)
 3. Has the email bounced before? (Check user Activity tab)

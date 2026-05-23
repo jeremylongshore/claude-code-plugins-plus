@@ -55,7 +55,7 @@ Research {{Company Name}} ({{domain}}) and find:
 Return results as structured data. If information is not found, return "Not found" for that field.
 ```
 
-4. Enable **Auto-run on new rows**
+1. Enable **Auto-run on new rows**
 
 ### Step 2: Configure Multi-Output Claygent (Neon Model)
 

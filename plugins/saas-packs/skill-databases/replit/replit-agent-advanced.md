@@ -10,6 +10,7 @@ replit-agent-advanced/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Use advanced Replit Agent features including multi-step projects, database integration, and deployment automation.
 **Workflow:** Power user AI skill - maximizes productivity with Replit's AI agent for complex applications.
 **Relates to:** Extends replit-agent-basics; integrates replit-database-setup and replit-deployments.

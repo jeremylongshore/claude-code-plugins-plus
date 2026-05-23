@@ -12,11 +12,13 @@ missing function-level access control, CORS misconfiguration, and privilege
 escalation.
 
 **Scanner detection:**
+
 - `security_scanner.py` -- checks CORS policy for wildcard origins, reflected
   origins, and credentials with wildcard
 - `code_security_scanner.py` -- flags missing authorization decorators (regex)
 
 **Remediation (Python/Flask):**
+
 ```python
 # BAD: No authorization check
 @app.route("/api/users/<user_id>")
@@ -33,6 +35,7 @@ def get_user(user_id):
 ```
 
 **Remediation (Node.js/Express):**
+
 ```javascript
 // Middleware: verify resource ownership
 function authorizeUser(req, res, next) {
@@ -51,11 +54,13 @@ function authorizeUser(req, res, next) {
 plaintext transmission, weak hashing algorithms, and improper key management.
 
 **Scanner detection:**
+
 - `security_scanner.py` -- checks SSL/TLS certificate validity, protocol version,
   HSTS header presence and max-age
 - `code_security_scanner.py` -- flags MD5/SHA1 usage, insecure URLs (http://)
 
 **Remediation:**
+
 ```python
 # BAD: Weak hashing
 import hashlib
@@ -75,11 +80,13 @@ hashed = ph.hash(password)
 Includes SQL injection, NoSQL injection, OS command injection, and LDAP injection.
 
 **Scanner detection:**
+
 - `code_security_scanner.py` -- bandit flags (B608 SQL injection, B602 subprocess
   shell=True, B307 eval); regex patterns for string concatenation in queries,
   os.system calls, eval/exec usage
 
 **Remediation (SQL - Python):**
+
 ```python
 # BAD: String concatenation
 cursor.execute("SELECT * FROM users WHERE name = '" + name + "'")
@@ -89,6 +96,7 @@ cursor.execute("SELECT * FROM users WHERE name = %s", (name,))
 ```
 
 **Remediation (Command - Python):**
+
 ```python
 # BAD: Shell injection
 os.system("ping " + user_input)
@@ -105,11 +113,13 @@ subprocess.run(["ping", "-c", "1", validated_host], shell=False)
 implementation bugs. Missing threat modeling, insecure business logic.
 
 **Scanner detection:**
+
 - Not directly detectable by automated tools
 - `code_security_scanner.py` can flag patterns that suggest design issues (e.g.,
   no rate limiting, missing input validation at boundaries)
 
 **Mitigation:**
+
 - Use threat modeling (STRIDE, DREAD) during design
 - Implement defense in depth
 - Apply principle of least privilege
@@ -123,11 +133,13 @@ implementation bugs. Missing threat modeling, insecure business logic.
 features enabled, verbose error messages, misconfigured permissions.
 
 **Scanner detection:**
+
 - `security_scanner.py` -- checks all security headers, server version disclosure,
   exposed admin endpoints, directory listing, dangerous HTTP methods enabled
 - `dependency_auditor.py` -- flags outdated packages with known vulnerabilities
 
 **Remediation:**
+
 - Remove default accounts and passwords
 - Disable directory listing
 - Remove server version headers
@@ -143,10 +155,12 @@ features enabled, verbose error messages, misconfigured permissions.
 known vulnerabilities.
 
 **Scanner detection:**
+
 - `dependency_auditor.py` -- runs npm audit and pip-audit to find CVEs in
   installed packages, reports severity and available fix versions
 
 **Remediation:**
+
 ```bash
 # Check npm vulnerabilities
 npm audit
@@ -169,11 +183,13 @@ pip install --upgrade package-name
 session fixation, missing MFA.
 
 **Scanner detection:**
+
 - `security_scanner.py` -- checks for session cookie security attributes
   (Secure, HttpOnly, SameSite)
 - `code_security_scanner.py` -- flags hardcoded passwords and tokens
 
 **Remediation:**
+
 - Implement MFA
 - Never ship default credentials
 - Implement account lockout / rate limiting
@@ -189,10 +205,12 @@ violations. Includes insecure deserialization, unsigned updates, untrusted CI/CD
 pipelines.
 
 **Scanner detection:**
+
 - `code_security_scanner.py` -- bandit flags B301 (pickle), B506 (yaml.load
   without SafeLoader); regex patterns for marshal.loads, insecure deserialization
 
 **Remediation (Python):**
+
 ```python
 # BAD: Insecure deserialization
 import pickle
@@ -218,11 +236,13 @@ data = yaml.safe_load(content)
 inability to detect active breaches.
 
 **Scanner detection:**
+
 - Not directly detectable by automated scanning
 - Code review can identify missing logging in authentication and authorization
   paths
 
 **Mitigation:**
+
 - Log all authentication events (success and failure)
 - Log access control failures
 - Log input validation failures
@@ -238,10 +258,12 @@ inability to detect active breaches.
 without validating the destination, allowing attackers to reach internal services.
 
 **Scanner detection:**
+
 - `code_security_scanner.py` -- regex patterns for URL fetching with user input
   (requests.get with unvalidated variables)
 
 **Remediation (Python):**
+
 ```python
 # BAD: Fetch user-supplied URL directly
 response = requests.get(user_url)

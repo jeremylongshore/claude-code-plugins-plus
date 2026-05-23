@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code
 # CoreWeave Security Basics
 
 ## Overview
+
 CoreWeave provides bare-metal GPU cloud on Kubernetes. Security concerns center on compute credential management (kubeconfig, deploy tokens), network isolation between inference workloads, secrets for model registry access (HuggingFace, container registries), and protecting sensitive training data on persistent volumes. A compromised namespace can expose GPU resources, model weights, and customer inference data.
 
 ## API Key Management
+
 ```typescript
 import { KubeConfig, CoreV1Api } from "@kubernetes/client-node";
 
@@ -48,6 +50,7 @@ function createCoreWeaveClient(): CoreV1Api {
 ```
 
 ## Webhook Signature Verification
+
 ```typescript
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
@@ -65,6 +68,7 @@ function verifyCoreWeaveWebhook(req: Request, res: Response, next: NextFunction)
 ```
 
 ## Input Validation
+
 ```typescript
 import { z } from "zod";
 
@@ -82,6 +86,7 @@ function validateWorkloadRequest(data: unknown) {
 ```
 
 ## Data Protection
+
 ```typescript
 const CW_SENSITIVE_FIELDS = ["kubeconfig", "hf_token", "registry_password", "api_key", "model_weights_url"];
 
@@ -95,6 +100,7 @@ function redactCoreWeaveLog(record: Record<string, unknown>): Record<string, unk
 ```
 
 ## Security Checklist
+
 - [ ] Kubeconfig stored in secrets manager, never in repos
 - [ ] Kubernetes Secrets used for model tokens (not env vars in YAML)
 - [ ] Network policies restrict inference endpoint access
@@ -105,6 +111,7 @@ function redactCoreWeaveLog(record: Record<string, unknown>): Record<string, unk
 - [ ] Deploy tokens scoped per-namespace, not cluster-wide
 
 ## Error Handling
+
 | Vulnerability | Risk | Mitigation |
 |---|---|---|
 | Leaked kubeconfig | Full cluster access, GPU resource theft | Secrets manager + RBAC scoping |
@@ -112,9 +119,12 @@ function redactCoreWeaveLog(record: Record<string, unknown>): Record<string, unk
 | Unscanned container images | CVE exploitation in GPU pods | CI image scanning before deploy |
 | Overly broad RBAC | Cross-namespace data leakage | Per-team namespace RBAC bindings |
 | Unencrypted PVCs | Training data exposure | Encrypted storage classes |
+
 ## Resources
+
 - [CoreWeave CKS Security](https://docs.coreweave.com/docs/products/cks)
 - [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
 
 ## Next Steps
+
 See `coreweave-prod-checklist`.

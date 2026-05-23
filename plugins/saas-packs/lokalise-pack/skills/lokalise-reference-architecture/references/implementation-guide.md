@@ -48,7 +48,6 @@ my-app/
 └── package.json
 ```
 
-
 ## Layer Architecture
 
 ```
@@ -70,10 +69,10 @@ my-app/
 └─────────────────────────────────────────┘
 ```
 
-
 ## Key Components
 
 ### Step 1: Lokalise Client Wrapper
+
 ```typescript
 // src/services/lokalise/client.ts
 import { LokaliseApi } from "@lokalise/node-api";
@@ -107,6 +106,7 @@ export function resetClient(): void {
 ```
 
 ### Step 2: Translation Service Facade
+
 ```typescript
 // src/services/lokalise/index.ts
 import { getLokaliseClient, getProjectId } from "./client";
@@ -154,6 +154,7 @@ export const translationService: TranslationService = {
 ```
 
 ### Step 3: Translation Loader Pattern
+
 ```typescript
 // src/i18n/loaders/static.ts
 // For bundled translations (build-time)
@@ -188,6 +189,7 @@ export async function loadDynamicTranslations(
 ```
 
 ### Step 4: i18n Library Integration
+
 ```typescript
 // src/i18n/index.ts
 import i18n from "i18next";
@@ -236,7 +238,6 @@ export async function loadLocale(locale: string) {
 }
 ```
 
-
 ## Data Flow Diagram
 
 ```
@@ -271,7 +272,6 @@ Developer adds string
 └───────────────┘
 ```
 
-
 ## Configuration Management
 
 ```typescript
@@ -301,21 +301,24 @@ export function getLokaliseEnvConfig(): LokaliseEnvConfig {
 }
 ```
 
-
 ## Instructions
 
 ### Step 1: Create Directory Structure
+
 Set up the project layout following the reference structure.
 
 ### Step 2: Implement Client Wrapper
+
 Create the singleton client with caching support.
 
 ### Step 3: Build Translation Service
+
 Implement the facade pattern for translation operations.
 
 ### Step 4: Integrate i18n Library
+
 Connect Lokalise translations to your UI framework.
 
-
 ## Flagship Skills
+
 For multi-environment setup, see `lokalise-multi-env-setup`.

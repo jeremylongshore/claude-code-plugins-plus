@@ -78,10 +78,10 @@ Execute this checklist within the first 15 minutes of a P0/P1 alert.
 
 **Deep investigation (stack trace and breadcrumbs):**
 
-8. Read the full stack trace — identify the failing function and line number
-9. Expand the breadcrumbs panel — trace the sequence of events leading to the error (HTTP requests, console logs, navigation, UI clicks)
-10. Check the user context panel for device, browser, OS, and custom user tags
-11. Review the "Tags" panel for patterns (specific release, region, browser)
+1. Read the full stack trace — identify the failing function and line number
+2. Expand the breadcrumbs panel — trace the sequence of events leading to the error (HTTP requests, console logs, navigation, UI clicks)
+3. Check the user context panel for device, browser, OS, and custom user tags
+4. Review the "Tags" panel for patterns (specific release, region, browser)
 
 **API-based investigation:**
 

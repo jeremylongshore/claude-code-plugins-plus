@@ -11,10 +11,12 @@ Help me plan my week as a Product Manager.
 Before generating a plan, pull context from all available sources:
 
 ### From the workspace
+
 - Review CLAUDE.md, sandbox/, and product-catalog/ for current priorities and in-flight work
 - Check recent git history (`git log --oneline -20`) for what shipped recently
 
 ### From MCP servers (if configured)
+
 - **GitHub**: Pull open PRs and issues assigned to the user — `gh pr list --author @me`, `gh issue list --assignee @me`
 - **Linear**: Check current sprint items, upcoming deadlines, and blocked issues
 - **Slack**: Scan recent DMs or channels for pending requests or decisions

@@ -3,6 +3,7 @@
 ## Batch Processing
 
 ### Efficient Batching
+
 ```python
 async def efficient_batch(
     prompts: list,

@@ -10,6 +10,7 @@ serpapi-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize SerpApi API performance
 **Workflow:** Part of the cicd skill category for SerpApi integration.
 **Relates to:** Other serpapi skills in this pack.

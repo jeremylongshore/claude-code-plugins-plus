@@ -3,6 +3,7 @@
 ## Core Capabilities
 
 ### 🎥 Video Processing (Gemini 2.0/2.5)
+
 - **Video Understanding**: Process videos up to 6 hours at low resolution or 2 hours at default resolution
 - **2M Context Window**: Gemini 2.5 Pro handles massive video content
 - **Audio Track Processing**: Automatic audio transcription from video
@@ -16,6 +17,7 @@
   - Identify brand mentions and product placements
 
 ### 🎵 Audio Generation & Processing
+
 - **Lyria Model (2025)**: Native audio and music generation
 - **Speech-to-Text**: Transcribe audio with speaker diarization
 - **Text-to-Speech**: Generate natural voiceovers
@@ -29,6 +31,7 @@
   - Generate multilingual voiceovers
 
 ### 🖼️ Image Generation (Imagen 4 & Gemini 2.5 Flash Image)
+
 - **Imagen 4**: Highest quality text-to-image generation
 - **Gemini 2.5 Flash Image**: Interleaved image generation with text
 - **Style Transfer**: Apply brand styles to generated images
@@ -42,6 +45,7 @@
   - Create branded campaign visuals
 
 ### 📢 Marketing Campaign Automation
+
 - **ViGenAiR**: Convert long-form video ads to short formats automatically
 - **Adios**: Generate personalized ad images tailored to audience context
 - **Campaign Asset Generation**: Photos, soundtracks, voiceovers from prompts
@@ -57,6 +61,7 @@
 ### 🔧 Technical Implementation
 
 **API Integration:**
+
 ```python
 from google.cloud import aiplatform
 from vertexai.preview.generative_models import GenerativeModel
@@ -83,6 +88,7 @@ images = imagen.generate_images(
 ```
 
 **Gemini 2.5 Flash Image (Interleaved Generation):**
+
 ```python
 # Generate images within text responses
 model = GenerativeModel("gemini-2.5-flash-image")
@@ -93,6 +99,7 @@ response = model.generate_content([
 ```
 
 **Audio Generation (Lyria):**
+
 ```python
 from vertexai.preview.audio_models import AudioGenerationModel
 lyria = AudioGenerationModel.from_pretrained("lyria")
@@ -105,6 +112,7 @@ audio = lyria.generate_audio(
 ### 📊 Marketing Workflow Automation
 
 **1. Multi-Channel Campaign Creation:**
+
 ```python
 # Single prompt generates all assets
 campaign = model.generate_content([
@@ -119,6 +127,7 @@ campaign = model.generate_content([
 ```
 
 **2. Video Repurposing Pipeline:**
+
 ```python
 # Long-form to short-form conversion (ViGenAiR approach)
 long_video = "gs://bucket/original-ad-60s.mp4"
@@ -130,6 +139,7 @@ response = model.generate_content([
 ```
 
 **3. Personalized Ad Generation:**
+
 ```python
 # Context-aware image generation (Adios approach)
 for audience in audiences:
@@ -142,6 +152,7 @@ for audience in audiences:
 ### 🎯 Best Practices for Jeremy
 
 **1. Project Setup:**
+
 ```bash
 # Set environment variables
 export GOOGLE_CLOUD_PROJECT="your-project-id"
@@ -152,17 +163,20 @@ pip install google-cloud-aiplatform[vision,audio] google-generativeai
 ```
 
 **2. Rate Limits & Quotas:**
+
 - Gemini 2.5 Pro: 2M tokens/min (video processing)
 - Imagen 4: 100 images/min
 - Monitor usage in Cloud Console
 
 **3. Cost Optimization:**
+
 - Use Gemini 2.5 Flash for faster, cheaper operations
 - Batch image generation requests
 - Cache video embeddings for repeated analysis
 - Use low-resolution video setting when appropriate
 
 **4. Security & Compliance:**
+
 - Keep API keys in Secret Manager, never in code
 - Use service accounts with minimal permissions
 - Enable VPC Service Controls for data residency
@@ -171,6 +185,7 @@ pip install google-cloud-aiplatform[vision,audio] google-generativeai
 ### 🚀 Advanced Marketing Use Cases
 
 **1. Campaign Performance Analysis:**
+
 ```python
 # Analyze competitor campaigns
 competitor_videos = ["gs://bucket/competitor1.mp4", "gs://bucket/competitor2.mp4"]
@@ -181,6 +196,7 @@ analysis = model.generate_content([
 ```
 
 **2. Content Localization:**
+
 ```python
 # Generate multilingual campaigns
 for lang in ["en", "es", "fr", "de", "ja"]:
@@ -192,6 +208,7 @@ for lang in ["en", "es", "fr", "de", "ja"]:
 ```
 
 **3. A/B Test Generation:**
+
 ```python
 # Generate variations automatically
 variations = []
@@ -206,17 +223,20 @@ for style in ["minimalist", "bold", "luxury", "playful"]:
 ### 📚 Reference Documentation
 
 **Official Documentation:**
+
 - Vertex AI Multimodal: https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/overview
 - Gemini 2.5 Pro: https://cloud.google.com/vertex-ai/generative-ai/docs/models
 - Imagen 4: https://cloud.google.com/vertex-ai/generative-ai/docs/image/overview
 - Video Understanding: https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/video-understanding
 
 **Marketing Solutions:**
+
 - GenAI for Marketing: https://github.com/GoogleCloudPlatform/genai-for-marketing
 - ViGenAiR (video repurposing)
 - Adios (personalized ad images)
 
 **Pricing:**
+
 - Gemini 2.5 Pro: $3.50/1M input tokens, $10.50/1M output tokens
 - Imagen 4: $0.04/image
 - Video processing: Included in Gemini token pricing

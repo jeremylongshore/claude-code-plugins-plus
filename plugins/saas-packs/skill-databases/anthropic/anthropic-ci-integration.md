@@ -10,6 +10,7 @@ anthropic-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Anthropic CI/CD integration
 **Workflow:** Part of the cicd skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

@@ -10,6 +10,7 @@ langfuse-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Langfuse CI/CD integration
 **Workflow:** Part of the cicd skill category for Langfuse integration.
 **Relates to:** Other langfuse skills in this pack.

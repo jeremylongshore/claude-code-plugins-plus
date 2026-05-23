@@ -198,6 +198,7 @@ const lucidRateLimits = new Counter({
 ## Output
 
 After applying these optimizations, expect:
+
 - Document metadata reads under 100ms (cached) vs 400ms+ (uncached)
 - Shape batch updates completing 5x faster than sequential calls
 - Export operations handled gracefully with async polling instead of timeout failures

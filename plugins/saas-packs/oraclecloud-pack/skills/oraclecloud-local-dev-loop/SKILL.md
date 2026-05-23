@@ -285,6 +285,7 @@ my-oci-project/
 ## Output
 
 Successful setup produces:
+
 - OCI CLI installed and verified with `oci iam region list`
 - Multi-profile `~/.oci/config` for dev/staging/prod switching
 - Shell aliases for common OCI operations (instances, buckets, health)

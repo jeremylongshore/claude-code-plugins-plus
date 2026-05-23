@@ -64,16 +64,19 @@ Multimodal media operations on Google Cloud Vertex AI covering video understandi
 ## Examples
 
 **Example 1: Analyze a competitor video ad**
+
 - Input: A 60-second competitor video uploaded to `gs://bucket/competitor-ad.mp4`.
 - Action: Send to Gemini 2.5 Pro with the prompt "Extract messaging themes, calls to action, visual style, and production techniques."
 - Output: Structured analysis with timestamps for key scenes, identified CTAs, and a competitive positioning summary.
 
 **Example 2: Generate campaign assets from a product brief**
+
 - Input: Text brief describing a new product launch with target audience and brand guidelines.
 - Action: Use Imagen 4 to generate 4 hero image variations, Lyria for a 30-second background track, and Gemini 2.5 Pro for ad copy in 3 languages.
 - Output: Directory containing hero images, audio file, and a campaign-copy document organized by language.
 
 **Example 3: Repurpose a long-form video into short-form clips**
+
 - Input: A 10-minute product demo video.
 - Action: Gemini 2.5 Pro identifies the three most engaging 15-second segments with scene-boundary timestamps.
 - Output: Timestamp list with suggested captions for TikTok/Reels, plus a storyboard summary for each clip.

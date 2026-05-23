@@ -51,31 +51,37 @@ App performance problem?
 ## Core Profiling Tools
 
 ### Time Profiler
+
 Measures CPU time spent in each function. Identifies hot spots and main thread blocking.
 
 **When to use**: App stalls, UI lag, CPU usage high
 
 **Key metrics**:
+
 - **Self Time** = Time spent IN that function
 - **Total Time** = Time in that function + everything it calls
 - If Self Time is low but Total Time is high → something it calls is slow
 
 ### Allocations
+
 Measures memory growth and object creation. Identifies memory leaks vs normal caching.
 
 **When to use**: Memory grows, want to check for leaks, memory pressure issues
 
 **Key metrics**:
+
 - Growing count + growing memory = possible leak
 - Memory drops under pressure = normal caching
 - Memory stays high indefinitely = leak
 
 ### Core Data Instrument
+
 Analyzes SQLite queries and Core Data performance.
 
 **When to use**: Using Core Data, data loading is slow, queries look expensive
 
 **Setup**:
+
 ```bash
 # Edit Scheme → Run → Arguments Passed On Launch
 -com.apple.CoreData.SQLDebug 1
@@ -99,6 +105,7 @@ for item in items {
 ```
 
 ### Energy Impact
+
 Measures power consumption by CPU, GPU, network, location, and other subsystems.
 
 **When to use**: Battery drains fast, device gets hot
@@ -108,6 +115,7 @@ Measures power consumption by CPU, GPU, network, location, and other subsystems.
 **Measure before optimizing.** Guessing about performance wastes more time than profiling.
 
 The cost of misdiagnosis:
+
 - Blindly threading code: 2+ hours guessing wrong functions
 - Wrong optimization: 4+ hours fixing something that wasn't the bottleneck
 - Systematic diagnosis: 15-20 minutes to find the real issue

@@ -15,6 +15,7 @@ These targets allow merchants to place the extension anywhere in the checkout ed
 These render at a specific, fixed location in the checkout flow.
 
 ### Information Step
+
 | Target | Location |
 |--------|----------|
 | `purchase.checkout.header.render-after` | After the checkout header |
@@ -22,6 +23,7 @@ These render at a specific, fixed location in the checkout flow.
 | `purchase.checkout.contact.render-after` | After email/phone fields |
 
 ### Shipping Step
+
 | Target | Location |
 |--------|----------|
 | `purchase.checkout.delivery-address.render-before` | Before the shipping address form |
@@ -35,12 +37,14 @@ These render at a specific, fixed location in the checkout flow.
 | `purchase.checkout.pickup-location-list.render-after` | After local pickup locations |
 
 ### Payment Step
+
 | Target | Location |
 |--------|----------|
 | `purchase.checkout.payment-method-list.render-before` | Before payment methods |
 | `purchase.checkout.payment-method-list.render-after` | After payment methods |
 
 ### Review & Completion
+
 | Target | Location |
 |--------|----------|
 | `purchase.checkout.reductions.render-before` | Before discount code field |
@@ -51,6 +55,7 @@ These render at a specific, fixed location in the checkout flow.
 | `purchase.checkout.actions.render-before` | Before the "Pay now" / "Complete order" button |
 
 ### Thank You Page
+
 | Target | Location |
 |--------|----------|
 | `purchase.thank-you.header.render-after` | After thank you page header |
@@ -62,16 +67,21 @@ These render at a specific, fixed location in the checkout flow.
 ## Choosing the Right Target
 
 **For custom input fields** (delivery notes, gift messages):
+
 - `purchase.checkout.delivery-address.render-after` or `purchase.checkout.block.render`
 
 **For upsells/cross-sells**:
+
 - `purchase.checkout.cart-line-list.render-after` or `purchase.checkout.actions.render-before`
 
 **For trust badges/guarantees**:
+
 - `purchase.checkout.payment-method-list.render-after` or `purchase.checkout.footer.render-after`
 
 **For delivery date pickers**:
+
 - `purchase.checkout.shipping-option-list.render-after`
 
 **For post-purchase engagement**:
+
 - `purchase.thank-you.block.render`

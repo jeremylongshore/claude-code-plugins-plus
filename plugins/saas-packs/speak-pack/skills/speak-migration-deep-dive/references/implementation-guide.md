@@ -11,10 +11,10 @@ Detailed implementation reference for the speak-migration-deep-dive skill.
 | SDK major version upgrade | Medium | Weeks | Medium |
 | Full language platform migration | High | Months | High |
 
-
 ## Pre-Migration Assessment
 
 ### Step 1: Current State Analysis
+
 ```bash
 # Document current language learning implementation
 find . -name "*.ts" -o -name "*.py" | xargs grep -l "language\|lesson\|speech" > learning-files.txt
@@ -31,6 +31,7 @@ grep -r "interface.*Lesson\|type.*Lesson" src/ --include="*.ts"
 ```
 
 ### Step 2: Data Inventory
+
 ```typescript
 interface MigrationInventory {
   // User data
@@ -79,6 +80,7 @@ async function assessMigration(): Promise<MigrationInventory> {
 ```
 
 ### Step 3: Language Support Mapping
+
 ```typescript
 // Map your current languages to Speak's supported languages
 const LANGUAGE_MAPPING: Record<string, string> = {
@@ -118,7 +120,6 @@ function validateLanguageSupport(
 }
 ```
 
-
 ## Migration Strategy: Strangler Fig Pattern
 
 ```
@@ -149,10 +150,10 @@ Phase 4: Complete
 └─────────────────┘     └─────────────┘
 ```
 
-
 ## Implementation Plan
 
 ### Phase 1: Setup (Week 1-2)
+
 ```bash
 # Install Speak SDK
 npm install @speak/language-sdk
@@ -173,6 +174,7 @@ client.health.check().then(console.log);
 ```
 
 ### Phase 2: Adapter Layer (Week 3-4)
+
 ```typescript
 // src/adapters/language-service.ts
 interface LanguageServiceAdapter {
@@ -232,6 +234,7 @@ class SpeakLanguageAdapter implements LanguageServiceAdapter {
 ```
 
 ### Phase 3: Data Migration (Week 5-8)
+
 ```typescript
 interface MigrationBatch {
   users: UserMigration[];
@@ -302,6 +305,7 @@ async function migrateUser(user: LegacyUser): Promise<void> {
 ```
 
 ### Phase 4: Traffic Shift (Week 9-12)
+
 ```typescript
 // Feature flag controlled adapter selection
 function getLanguageAdapter(userId: string): LanguageServiceAdapter {
@@ -335,7 +339,6 @@ async function adjustMigrationPercentage(): Promise<void> {
 }
 ```
 
-
 ## Audio Migration
 
 ```typescript
@@ -365,7 +368,6 @@ async function migrateAudioRecordings(userId: string): Promise<void> {
 }
 ```
 
-
 ## Rollback Plan
 
 ```bash
@@ -390,7 +392,6 @@ curl -f https://api.yourapp.com/health | jq '.services.language'
 # 5. Notify team
 echo "Rollback complete. Legacy language service active."
 ```
-
 
 ## Post-Migration Validation
 
@@ -437,6 +438,6 @@ async function notifyMigratedUsers(userIds: string[]): Promise<void> {
 }
 ```
 
-
 ## Post-Migration
+
 After completing migration, refer back to the standard skills for ongoing operations.

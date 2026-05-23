@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Common Errors
 
 ## Overview
+
 Quick-reference diagnostic guide for the most common Firecrawl API errors. Covers HTTP status codes, SDK exceptions, empty content, and crawl job failures with concrete fixes.
 
 ## Prerequisites
+
 - Firecrawl SDK installed (`@mendable/firecrawl-js`)
 - `FIRECRAWL_API_KEY` environment variable set
 - Access to error logs or console output
@@ -34,10 +36,13 @@ Quick-reference diagnostic guide for the most common Firecrawl API errors. Cover
 ## Error Reference
 
 ### 401 Unauthorized — Invalid API Key
+
 ```
 Error: Unauthorized. Invalid API key.
 ```
+
 **Cause:** API key is missing, malformed, or revoked.
+
 ```bash
 set -euo pipefail
 # Verify key is set and starts with fc-
@@ -49,30 +54,38 @@ curl -s https://api.firecrawl.dev/v1/scrape \
   -H "Content-Type: application/json" \
   -d '{"url":"https://example.com","formats":["markdown"]}' | jq .success
 ```
+
 **Fix:** Regenerate key at [firecrawl.dev/app](https://firecrawl.dev/app). Ensure it starts with `fc-`.
 
 ---
 
 ### 402 Payment Required — Credits Exhausted
+
 ```
 Error: Payment required. You have exceeded your credit limit.
 ```
+
 **Cause:** Monthly or plan credits are used up.
+
 ```bash
 set -euo pipefail
 # Check remaining credits
 curl -s https://api.firecrawl.dev/v1/team/credits \
   -H "Authorization: Bearer $FIRECRAWL_API_KEY" | jq .
 ```
+
 **Fix:** Upgrade plan or wait for monthly credit reset. Failed requests do not consume credits.
 
 ---
 
 ### 429 Too Many Requests — Rate Limited
+
 ```
 Error: Rate limit exceeded. Retry after X seconds.
 ```
+
 **Cause:** Too many concurrent requests or requests per minute.
+
 ```typescript
 // Fix: implement exponential backoff
 async function scrapeWithBackoff(url: string, retries = 3) {
@@ -88,16 +101,20 @@ async function scrapeWithBackoff(url: string, retries = 3) {
   }
 }
 ```
+
 **Fix:** Respect `Retry-After` header. Queue requests with p-queue.
 
 ---
 
 ### Empty Markdown — JS Content Not Rendered
+
 ```typescript
 const result = await firecrawl.scrapeUrl("https://spa-app.com");
 console.log(result.markdown); // "" or just nav text
 ```
+
 **Cause:** Single-page app or JS-heavy site needs time to render.
+
 ```typescript
 // Fix: add waitFor and use actions for dynamic content
 const result = await firecrawl.scrapeUrl("https://spa-app.com", {
@@ -110,13 +127,16 @@ const result = await firecrawl.scrapeUrl("https://spa-app.com", {
 ---
 
 ### Crawl Returns Zero Pages
+
 ```typescript
 const crawl = await firecrawl.crawlUrl("https://example.com/docs", {
   includePaths: ["/api/*"],
 });
 // crawl.data is empty
 ```
+
 **Cause:** Start URL does not match `includePaths` pattern, or paths are too restrictive.
+
 ```typescript
 // Fix: ensure start URL matches include patterns
 const crawl = await firecrawl.crawlUrl("https://example.com", {
@@ -128,11 +148,14 @@ const crawl = await firecrawl.crawlUrl("https://example.com", {
 ---
 
 ### Crawl Stuck at "scraping" Status
+
 ```typescript
 const status = await firecrawl.checkCrawlStatus(jobId);
 // status.status === "scraping" for >10 minutes
 ```
+
 **Cause:** Large site, slow JS rendering, or Firecrawl queue backup.
+
 ```typescript
 // Fix: set timeout and fall back to individual scrapes
 const TIMEOUT_MS = 600000; // 10 minutes
@@ -150,18 +173,23 @@ throw new Error("Crawl timed out — try reducing limit or using scrapeUrl");
 ---
 
 ### MODULE_NOT_FOUND — Wrong Package Name
+
 ```
 Error: Cannot find module '@firecrawl/sdk'
 ```
+
 **Cause:** Using wrong npm package name.
+
 ```bash
 set -euo pipefail
 # The correct package is @mendable/firecrawl-js
 npm install @mendable/firecrawl-js
 ```
+
 **Import:** `import FirecrawlApp from "@mendable/firecrawl-js"`
 
 ## Quick Diagnostic
+
 ```bash
 set -euo pipefail
 # 1. Check Firecrawl API health
@@ -178,6 +206,7 @@ env | grep FIRECRAWL
 ```
 
 ## Error Handling
+
 | Status | Meaning | Retryable | Action |
 |--------|---------|-----------|--------|
 | 200 | Success | N/A | Process result |
@@ -191,6 +220,7 @@ env | grep FIRECRAWL
 ## Examples
 
 ### Comprehensive Error Handler
+
 ```typescript
 async function safeScrape(url: string) {
   try {
@@ -207,9 +237,11 @@ async function safeScrape(url: string) {
 ```
 
 ## Resources
+
 - [Firecrawl API Reference](https://docs.firecrawl.dev/api-reference/introduction)
 - [Rate Limits](https://docs.firecrawl.dev/rate-limits)
 - [Firecrawl Dashboard](https://firecrawl.dev/app)
 
 ## Next Steps
+
 For comprehensive debugging, see `firecrawl-debug-bundle`.

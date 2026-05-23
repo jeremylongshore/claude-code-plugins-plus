@@ -160,6 +160,7 @@ function extractTraceContext(request: Request): TraceContext | null {
 ## Architecture Diagrams
 
 ### Basic Cloud Architecture
+
 ```
 Application Layer (API, Workers, Cron)
   → Langfuse SDK (Singleton)
@@ -167,6 +168,7 @@ Application Layer (API, Workers, Cron)
 ```
 
 ### High-Scale with Buffer
+
 ```
 Regional Application Clusters
   → Langfuse SDK (Batched)

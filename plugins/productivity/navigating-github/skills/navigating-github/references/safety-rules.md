@@ -9,12 +9,14 @@ Non-negotiable safety rules for all git and GitHub operations. These apply at ev
 **Why:** The main branch is the source of truth. Direct pushes bypass code review, skip CI checks, and risk breaking the project for everyone.
 
 **What to do instead:**
+
 1. Create a feature branch: `git checkout -b feature/description`
 2. Make changes and commit on the feature branch
 3. Push the feature branch: `git push -u origin feature/description`
 4. Create a pull request for review
 
 **If the user says "just push to main":**
+
 - Explain why branching is safer (calibrated to their level)
 - Create a branch anyway
 - Advanced users get the explanation once; beginners get it reinforced
@@ -28,10 +30,12 @@ Non-negotiable safety rules for all git and GitHub operations. These apply at ev
 **Why:** Force push overwrites remote history. If anyone else has pulled from the branch, their work becomes incompatible. Data can be permanently lost.
 
 **What to do instead:**
+
 - Pull and merge/rebase before pushing
 - If push is rejected, resolve the divergence properly
 
 **If force push is truly needed (rare):**
+
 1. Explain exactly what will happen
 2. Confirm the branch is not shared with others
 3. Prefer `--force-with-lease` over `--force` (checks for upstream changes)
@@ -42,6 +46,7 @@ Non-negotiable safety rules for all git and GitHub operations. These apply at ev
 ### Rule: ALWAYS run `git status` before any destructive operation
 
 Destructive operations include:
+
 - `git reset --hard`
 - `git checkout -- <file>` (discards changes)
 - `git clean -fd`
@@ -49,6 +54,7 @@ Destructive operations include:
 - `git branch -D`
 
 **Before any of these:**
+
 1. Run `git status` to show the user what will be affected
 2. Explain what will be lost (calibrated to level)
 3. Ask for explicit confirmation
@@ -69,6 +75,7 @@ Destructive operations include:
 ### Rule: NEVER commit files that contain secrets
 
 **Check before staging:**
+
 - `.env` and `.env.*` files
 - Files named `credentials`, `secrets`, `tokens`, `keys`
 - Files containing strings that look like API keys, passwords, or tokens
@@ -77,6 +84,7 @@ Destructive operations include:
 - Service account JSON files
 
 **What to do:**
+
 1. Add these patterns to `.gitignore` BEFORE committing
 2. If accidentally committed, help the user remove from history and rotate the secret
 3. Warn the user that once pushed, a secret should be considered compromised
@@ -84,6 +92,7 @@ Destructive operations include:
 **Important:** Adding a file to `.gitignore` does NOT untrack already-tracked files. To stop tracking a file already committed, run `git rm --cached FILE` first.
 
 **Auto-generate `.gitignore` patterns:**
+
 ```
 # Secrets and credentials
 .env
@@ -103,6 +112,7 @@ tokens.*
 ### Rule: Never blindly `git add .` or `git add -A`
 
 **Why:** These commands stage EVERYTHING, including:
+
 - Files the user doesn't realize exist
 - Temporary files, build artifacts
 - Secrets and credentials
@@ -110,6 +120,7 @@ tokens.*
 - OS-specific files (`.DS_Store`, `Thumbs.db`)
 
 **What to do instead:**
+
 1. Run `git status` to review changes
 2. Stage specific files: `git add <file1> <file2>`
 3. Or use `git add -p` for partial staging (intermediate+)
@@ -120,6 +131,7 @@ tokens.*
 ### Rule: NEVER rewrite history that has been pushed
 
 **Operations that rewrite history:**
+
 - `git rebase` (on pushed branches)
 - `git commit --amend` (on pushed commits)
 - `git reset` (past pushed commits)
@@ -140,6 +152,7 @@ For any operation that could cause data loss:
 5. **Verify success** after completing
 
 This applies at all skill levels, but the depth of explanation adapts:
+
 - Beginner: Full explanation with analogies
 - Intermediate: Clear statement of impact
 - Advanced: Brief heads-up

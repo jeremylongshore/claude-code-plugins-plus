@@ -10,6 +10,7 @@ algolia-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Algolia costs and usage
 **Workflow:** Part of the cicd skill category for Algolia integration.
 **Relates to:** Other algolia skills in this pack.

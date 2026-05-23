@@ -10,6 +10,7 @@ juicebox-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Juicebox production deployment checklist
 **Workflow:** Part of the operations skill category for Juicebox integration.
 **Relates to:** Other juicebox skills in this pack.

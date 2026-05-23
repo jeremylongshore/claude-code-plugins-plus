@@ -16,6 +16,7 @@ This is the story of how I diagnosed and fixed a silent failure in automated con
 ## The Initial Clue: "Both Sites Are Working"
 
 I started with a simple assumption: one of my blogs was broken. I had two Hugo sites:
+
 - **jeremylongshore.com** - Personal portfolio (working fine)
 - **startaitools.com** - Technical blog (seemingly broken)
 
@@ -47,6 +48,7 @@ An **uncommitted blog post** from October 2nd. The slash command had created the
 Here's where it gets interesting. Let me show you what the broken slash command looked like:
 
 **BEFORE (Broken):**
+
 ```markdown
 5. **Publish (After Approval)**
    - Create file: `/home/jeremy/projects/blog/startaitools/content/posts/[slug].md`
@@ -60,6 +62,7 @@ Here's where it gets interesting. Let me show you what the broken slash command 
 See the problem? These are **text instructions** in markdown. Claude Code was reading them as documentation, not executable commands.
 
 The AI would:
+
 1. ✅ Create the file (explicit Write tool call in earlier steps)
 2. ✅ Build with Hugo (explicit Bash tool call)
 3. ❌ **Ignore the git instructions** (just markdown text)
@@ -70,6 +73,7 @@ The AI would:
 Claude Code requires **explicit tool calls**. Here's the corrected version:
 
 **AFTER (Fixed):**
+
 ```markdown
 5. **Publish (After Approval)**
    - Create file using Write tool: `/home/jeremy/projects/blog/startaitools/content/posts/[slug].md`
@@ -90,6 +94,7 @@ Claude Code requires **explicit tool calls**. Here's the corrected version:
 ```
 
 The key differences:
+
 1. **Explicit tool references** ("using Bash tool")
 2. **CRITICAL warning** to prevent AI from skipping
 3. **Verification steps** (check for "main -> main" in output)
@@ -148,13 +153,17 @@ Run it anytime I modify slash commands to ensure proper tool invocation.
 ## What I Learned
 
 ### 1. AI Confidence ≠ Truth
+
 Claude Code confidently reported "both sites working" because it was checking the wrong thing. Always verify the *specific* behavior you care about, not general health checks.
 
 ### 2. Explicit > Implicit
+
 Claude Code follows **tool invocation patterns**, not natural language instructions. If you want a bash command executed, you need an explicit Bash tool call, not markdown documentation.
 
 ### 3. Silent Failures Are the Worst
+
 This failure mode was particularly insidious because:
+
 - No error messages
 - Positive confirmation messages
 - Files created successfully
@@ -162,9 +171,11 @@ This failure mode was particularly insidious because:
 - Only deployment silently failed
 
 ### 4. TaskWarrior for Complex Debugging
+
 Using TaskWarrior to track the 10-step fix process kept me organized and prevented scope creep. The dependency chains ensured I didn't skip critical steps.
 
 ### 5. Validation Prevents Regression
+
 The validation script takes 2 seconds to run and catches this exact class of error. Worth the 10 minutes to write it.
 
 ## The Numbers
@@ -206,6 +217,7 @@ Silent failures in automation are debugging nightmares, but they're also learnin
 Key takeaway: **Claude Code follows tools, not text**. If you want something executed, invoke a tool explicitly. Markdown code blocks are documentation, not execution commands.
 
 Now my slash commands work correctly:
+
 1. Create blog post ✅
 2. Build Hugo site ✅
 3. **Commit to Git** ✅ (was failing)
@@ -214,6 +226,4 @@ Now my slash commands work correctly:
 
 And I have a validation script to prevent regression. Win-win.
 
-
 *This post was generated using the fixed `/blog-startaitools` command. Meta, right?*
-

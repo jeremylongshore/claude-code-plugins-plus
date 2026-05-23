@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Webhooks & Events
 
 ## Overview
+
 Handle Foundry webhook events for Ontology changes, dataset updates, and build completions. Covers webhook registration via the Foundry API, signature verification, event routing, and idempotent processing.
 
 ## Prerequisites
+
 - Foundry enrollment with webhook support enabled
 - HTTPS endpoint accessible from Foundry's network
 - `foundry-platform-sdk` installed
@@ -36,6 +38,7 @@ Handle Foundry webhook events for Ontology changes, dataset updates, and build c
 ## Instructions
 
 ### Step 1: Register a Webhook via API
+
 ```python
 import os, foundry
 
@@ -59,6 +62,7 @@ print(f"Webhook registered: {webhook.rid}")
 ```
 
 ### Step 2: Webhook Endpoint with Signature Verification
+
 ```python
 from flask import Flask, request, jsonify
 import hmac, hashlib
@@ -91,6 +95,7 @@ def handle_foundry_webhook():
 ```
 
 ### Step 3: Event Router
+
 ```python
 def handle_event(event: dict):
     event_type = event.get("type", "")
@@ -130,6 +135,7 @@ def on_build_completed(data: dict):
 ```
 
 ### Step 4: Idempotent Processing
+
 ```python
 import redis
 
@@ -146,12 +152,14 @@ def idempotent_handle(event: dict):
 ```
 
 ## Output
+
 - Webhook registered with Foundry for Ontology/dataset events
 - Signature verification with replay protection
 - Event router dispatching to typed handlers
 - Idempotent processing preventing duplicate handling
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Invalid signature | Wrong webhook secret | Verify secret matches registration |
@@ -160,8 +168,10 @@ def idempotent_handle(event: dict):
 | Handler timeout | Slow processing | Offload to background queue |
 
 ## Resources
+
 - [Foundry API Reference](https://www.palantir.com/docs/foundry/api/general/overview/introduction)
 - [Foundry Documentation](https://www.palantir.com/docs/foundry)
 
 ## Next Steps
+
 For performance optimization, see `palantir-performance-tuning`.

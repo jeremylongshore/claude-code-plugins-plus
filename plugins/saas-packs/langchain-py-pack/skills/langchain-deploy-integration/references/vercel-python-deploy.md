@@ -134,16 +134,19 @@ Alternative: commit `requirements.txt` and gate it in CI to match `uv.lock`.
 Two ways to pass secrets:
 
 **Environment variables** (`vercel env add`):
+
 ```bash
 vercel env add ANTHROPIC_API_KEY production
 # enter value when prompted
 ```
+
 Stored encrypted at rest, exposed as `os.environ["ANTHROPIC_API_KEY"]` at runtime.
 
 **Vercel Secrets** (legacy, deprecated for new projects):
 Older alias system. Use env vars for new projects — simpler and equivalent.
 
 Never commit `.env` and add `.env*` to `.vercelignore`:
+
 ```
 .env
 .env.*

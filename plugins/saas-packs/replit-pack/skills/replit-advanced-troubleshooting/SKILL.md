@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Advanced Troubleshooting
 
 ## Overview
+
 Deep debugging techniques for complex Replit issues that resist standard troubleshooting. Covers container lifecycle problems, Nix environment failures, deployment crash loops, memory leaks in constrained containers, and isolating Replit platform vs application issues.
 
 ## Prerequisites
+
 - Shell access in Replit Workspace
 - Understanding of Replit container lifecycle
 - Ability to read deployment logs
@@ -37,6 +39,7 @@ Deep debugging techniques for complex Replit issues that resist standard trouble
 ## Instructions
 
 ### Step 1: Systematic Issue Isolation
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -97,6 +100,7 @@ fi
 ```
 
 ### Step 2: Nix Build Failure Debugging
+
 ```bash
 # When replit.nix changes cause build failures:
 
@@ -124,6 +128,7 @@ rm -rf .config/nixpkgs 2>/dev/null
 ```
 
 ### Step 3: Container Crash Loop Debugging
+
 ```markdown
 When deployment keeps crashing and restarting:
 
@@ -168,6 +173,7 @@ app.listen(PORT, '0.0.0.0', () => {
 ```
 
 ### Step 4: Memory Leak Detection
+
 ```typescript
 // Replit containers have fixed memory limits. Detect leaks early.
 
@@ -212,6 +218,7 @@ app.get('/debug/memory', (req, res) => {
 ```
 
 ### Step 5: Deployment vs Workspace Differences
+
 ```markdown
 Common issues where code works in Workspace but fails in Deployment:
 
@@ -232,6 +239,7 @@ Debugging steps:
 ```
 
 ### Step 6: Intermittent Failure Investigation
+
 ```typescript
 // Track request patterns to find intermittent issues
 const requestLog: Array<{
@@ -281,6 +289,7 @@ app.get('/debug/errors', (req, res) => {
 ```
 
 ## Support Escalation
+
 ```markdown
 When you need Replit support:
 
@@ -298,6 +307,7 @@ Include:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Works locally, fails deployed | Missing build step or secret | Check build command and secrets |
@@ -307,10 +317,12 @@ Include:
 | Container won't start | Crash on import | Add crash guards, check dependency versions |
 
 ## Resources
+
 - [Replit Support](https://replit.com/support)
 - [Replit Status](https://status.replit.com)
 - [Replit Community](https://ask.replit.com)
 - [Nix on Replit](https://docs.replit.com/programming-ide/nix-on-replit)
 
 ## Next Steps
+
 For load testing, see `replit-load-scale`.

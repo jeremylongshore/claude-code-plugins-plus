@@ -18,6 +18,7 @@ Apple's native persistence framework using `@Model` classes and declarative quer
 ## When to Use SwiftData
 
 **Choose SwiftData when you need:**
+
 - ✅ Native Apple integration with SwiftUI
 - ✅ Simple CRUD operations
 - ✅ Automatic UI updates with `@Query`
@@ -25,11 +26,13 @@ Apple's native persistence framework using `@Model` classes and declarative quer
 - ✅ Reference types (classes) with relationships
 
 **Use SQLiteData instead when:**
+
 - Need value types (structs)
 - CloudKit record sharing (not just sync)
 - Large datasets (50k+ records) with specific performance needs
 
 **Use GRDB when:**
+
 - Complex raw SQL required
 - Fine-grained migration control needed
 
@@ -82,6 +85,7 @@ final class Track {
 ```
 
 **Key patterns:**
+
 - Use `final class`, not `struct`
 - Use `@Attribute(.unique)` for primary key-like behavior
 - Provide explicit `init` (SwiftData doesn't synthesize)
@@ -147,6 +151,7 @@ final class User {
 **CRITICAL: SwiftData automatically manages BOTH sides when you modify ONE side.**
 
 ✅ **Correct - Only modify ONE side:**
+
 ```swift
 // user1 follows user2 (modifying ONE side)
 user1.following.append(user2)
@@ -157,12 +162,14 @@ try modelContext.save()
 ```
 
 ❌ **Wrong - Don't manually update both sides:**
+
 ```swift
 user1.following.append(user2)
 user2.followers.append(user1)  // Redundant! Creates duplicates in CloudKit sync
 ```
 
 **Unfollowing (remove from ONE side only):**
+
 ```swift
 user1.following.removeAll { $0.id == user2.id }
 try modelContext.save()
@@ -170,6 +177,7 @@ try modelContext.save()
 ```
 
 **Verifying relationship integrity (for debugging):**
+
 ```swift
 // Check if relationship is truly bidirectional
 let user1FollowsUser2 = user1.following.contains { $0.id == user2.id }
@@ -180,6 +188,7 @@ assert(user1FollowsUser2 == user2FollowedByUser1, "Relationship corrupted!")
 ```
 
 **CloudKit Sync Recovery (if relationships become corrupted):**
+
 ```swift
 // If CloudKit sync creates duplicate/orphaned relationships:
 
@@ -204,6 +213,7 @@ try modelContext.save()
 ```
 
 **Delete rules:**
+
 - `.cascade` - Delete related objects
 - `.nullify` - Set relationship to nil
 - `.deny` - Prevent deletion if relationship exists
@@ -739,11 +749,13 @@ try modelContext.save()
 ## External Resources
 
 **SwiftData:**
+
 - [Apple Documentation](https://developer.apple.com/documentation/swiftdata)
 - [WWDC Sessions](https://developer.apple.com/videos/swiftdata)
 - [SwiftData by Example](https://www.hackingwithswift.com/quick-start/swiftdata)
 
 **Related Axiom Skills:**
+
 - `database-migration` - Safe schema evolution
 - `sqlitedata` - Value types with CloudKit sharing
 - `grdb` - Raw SQL when needed
@@ -752,6 +764,7 @@ try modelContext.save()
 ## Common Mistakes
 
 ### ❌ Forgetting explicit init
+
 ```swift
 @Model
 final class Track {
@@ -760,16 +773,20 @@ final class Track {
     // No init - won't compile
 }
 ```
+
 **Fix:** Always provide `init` for `@Model` classes
 
 ### ❌ Using structs
+
 ```swift
 @Model
 struct Track { }  // Won't work - must be class
 ```
+
 **Fix:** Use `final class` not `struct`
 
 ### ❌ Background operations on main context
+
 ```swift
 @Environment(\.modelContext) var context  // Main actor only
 
@@ -778,13 +795,16 @@ Task {
     context.insert(track)
 }
 ```
+
 **Fix:** Use `ModelContext(modelContainer)` for background work
 
 ### ❌ Not saving when needed
+
 ```swift
 modelContext.insert(track)
 // Might not persist immediately
 ```
+
 **Fix:** Call `try modelContext.save()` for immediate persistence
 
 ---

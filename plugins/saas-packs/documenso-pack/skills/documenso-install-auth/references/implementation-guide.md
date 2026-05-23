@@ -3,9 +3,11 @@
 # Documenso Install & Auth
 
 ## Overview
+
 Set up Documenso SDK and configure API authentication for document signing integration.
 
 ## Prerequisites
+
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, yarn, pip, or uv)
 - Documenso account (cloud or self-hosted)
@@ -16,6 +18,7 @@ Set up Documenso SDK and configure API authentication for document signing integ
 ### Step 1: Install SDK
 
 **TypeScript/Node.js:**
+
 ```bash
 # npm
 npm add @documenso/sdk-typescript
@@ -31,6 +34,7 @@ bun add @documenso/sdk-typescript
 ```
 
 **Python:**
+
 ```bash
 # pip
 pip install documenso_sdk
@@ -64,6 +68,7 @@ echo 'DOCUMENSO_API_KEY=your-api-key' >> .env
 ### Step 4: Verify Connection
 
 **TypeScript:**
+
 ```typescript
 import { Documenso } from "@documenso/sdk-typescript";
 
@@ -88,6 +93,7 @@ verifyConnection();
 ```
 
 **Python:**
+
 ```python
 import os
 from documenso_sdk import Documenso
@@ -105,11 +111,13 @@ except Exception as e:
 ```
 
 ## Output
+
 - Installed SDK package in node_modules or site-packages
 - Environment variable or .env file with API key
 - Successful connection verification output
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Invalid API Key | Incorrect or expired key | Generate new key in dashboard |
@@ -136,10 +144,12 @@ const documenso = new Documenso({
 ```
 
 ## Resources
+
 - [Documenso API Documentation](https://docs.documenso.com/developers/public-api)
 - [TypeScript SDK](https://github.com/documenso/sdk-typescript)
 - [Python SDK](https://github.com/documenso/sdk-python)
 - [API Reference](https://openapi.documenso.com/)
 
 ## Next Steps
+
 After successful auth, proceed to `documenso-hello-world` for your first document.

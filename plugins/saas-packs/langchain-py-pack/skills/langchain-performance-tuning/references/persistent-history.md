@@ -31,7 +31,7 @@ Operational notes:
 
 - `ttl` is mandatory. Without it, abandoned sessions pile up forever.
 - Pin the Redis namespace per tenant (`session_id` prefix) to avoid collision and to support per-tenant purge.
-- Size the Redis instance for worst-case turn count. 10k active users * 20 turns * 1KB ≈ 200MB — small, but monitor it.
+- Size the Redis instance for worst-case turn count. 10k active users *20 turns* 1KB ≈ 200MB — small, but monitor it.
 - `RedisChatMessageHistory` uses `rpush` + `lrange`. Read/write is O(1) / O(n) respectively; truncate long histories before persisting (see trim policy below).
 
 ## Postgres-Backed History

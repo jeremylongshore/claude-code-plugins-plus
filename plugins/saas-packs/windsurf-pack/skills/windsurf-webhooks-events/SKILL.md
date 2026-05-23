@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Extension Development & Events
 
 ## Overview
+
 Windsurf is built on VS Code and supports the full VS Code Extension API. Build custom extensions to track workspace events, integrate with external tools, and extend Cascade's capabilities. This skill covers extension development specific to the Windsurf environment.
 
 ## Prerequisites
+
 - Node.js 18+ and npm
 - VS Code Extension API familiarity
 - `yo` and `generator-code` for scaffolding
@@ -211,6 +213,7 @@ npx vsce publish
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Extension not activating | Wrong `activationEvents` | Use `onStartupFinished` for always-on |
@@ -222,6 +225,7 @@ npx vsce publish
 ## Examples
 
 ### Team Analytics Extension
+
 ```typescript
 // Track AI acceptance rate per developer
 vscode.languages.registerInlineCompletionItemProvider(
@@ -237,6 +241,7 @@ vscode.languages.registerInlineCompletionItemProvider(
 ```
 
 ### Quick Test Webhook
+
 ```bash
 # Start a test webhook receiver
 npx -y webhook-relay -p 3456
@@ -244,9 +249,11 @@ npx -y webhook-relay -p 3456
 ```
 
 ## Resources
+
 - [VS Code Extension API](https://code.visualstudio.com/api)
 - [VS Code Extension Publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)
 - [Windsurf Marketplace](https://marketplace.windsurf.com)
 
 ## Next Steps
+
 For multi-environment setup, see `windsurf-multi-env-setup`.

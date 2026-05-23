@@ -10,6 +10,7 @@ clerk-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Clerk security best practices
 **Workflow:** Part of the operations skill category for Clerk integration.
 **Relates to:** Other clerk skills in this pack.

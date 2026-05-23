@@ -17,6 +17,7 @@ Generate trading signals from technical indicators, chart patterns, and multi-ti
 ```
 
 Or use the shortcut:
+
 ```bash
 /signal
 ```
@@ -68,18 +69,21 @@ Or use the shortcut:
 ## Output Includes
 
 ### Signal Summary
+
 - Direction (Long/Short/Neutral)
 - Strength (Strong/Medium/Weak)
 - Timeframe (Scalp/Day/Swing/Position)
 - Confidence percentage
 
 ### Technical Analysis
+
 - Comprehensive indicator table
 - Trend, momentum, volatility assessment
 - Chart patterns identified
 - Volume confirmation
 
 ### Trading Plan
+
 - Aggressive and conservative entry prices
 - Multiple take-profit targets
 - Stop-loss placement
@@ -87,6 +91,7 @@ Or use the shortcut:
 - Position sizing calculation
 
 ### Risk Management
+
 - Multi-timeframe confluence score
 - Risk factors to consider
 - Signal confirmation checklist
@@ -95,6 +100,7 @@ Or use the shortcut:
 ## Signal Strength Criteria
 
 ### Strong Signal (80-95% confidence)
+
 - 3+ indicators align
 - Volume confirms
 - Multiple timeframes agree
@@ -102,12 +108,14 @@ Or use the shortcut:
 - Near support/resistance
 
 ### Medium Signal (60-80% confidence)
+
 - 2 indicators align
 - Mixed timeframe signals
 - Moderate volume
 - Some confirmation
 
 ### Weak Signal (40-60% confidence)
+
 - Single indicator
 - Conflicting timeframes
 - Low volume
@@ -116,24 +124,28 @@ Or use the shortcut:
 ## Trading Timeframes
 
 ### Scalping (15m - 1H)
+
 - Quick in and out trades
 - High frequency, small gains
 - Tight stop losses
 - High attention required
 
 ### Day Trading (1H - 4H)
+
 - Intraday positions
 - Close before end of day
 - Medium stops
 - Active monitoring
 
 ### Swing Trading (4H - Daily)
+
 - Multi-day positions
 - Capture larger moves
 - Wider stops
 - Periodic checking
 
 ### Position Trading (Daily - Weekly)
+
 - Long-term holds
 - Major trend following
 - Wide stops
@@ -142,36 +154,45 @@ Or use the shortcut:
 ## Key Indicators Explained
 
 ### RSI (Relative Strength Index)
+
 Measures momentum. >70 overbought, <30 oversold.
 
 ### MACD (Moving Average Convergence Divergence)
+
 Trend and momentum indicator. Crossovers signal entries.
 
 ### Bollinger Bands
+
 Volatility bands. Price at extremes suggests reversal.
 
 ### Moving Averages
+
 Trend direction. Golden/Death crosses signal major moves.
 
 ### ATR (Average True Range)
+
 Volatility measure. Used for stop-loss placement.
 
 ## Risk Management Rules
 
 ### Position Sizing
+
 Risk only 1-2% of account per trade.
 
 ### Stop-Loss Placement
+
 - Support/resistance levels
 - ATR-based (1.5x - 2x ATR)
 - Percentage-based (2-5%)
 
 ### Take-Profit Targets
+
 - Scale out at multiple levels
 - Trail stop after TP1
 - Lock in profits systematically
 
 ### Risk/Reward Ratio
+
 Minimum 1:2 (risk $1 to make $2)
 Ideal 1:3 or better
 
@@ -189,6 +210,7 @@ Ideal 1:3 or better
 ## Data Sources
 
 Analysis references:
+
 - Technical indicator calculations (standard formulas)
 - Chart pattern recognition principles
 - Support/resistance identification

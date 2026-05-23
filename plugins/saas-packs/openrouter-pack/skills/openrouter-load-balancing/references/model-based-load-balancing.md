@@ -3,6 +3,7 @@
 ## Model-Based Load Balancing
 
 ### Route by Model
+
 ```python
 class ModelBalancer:
     def __init__(self, model_key_map: dict):

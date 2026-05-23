@@ -91,6 +91,7 @@ curl -s -w "connect: %{time_connect}s | ttfb: %{time_starttransfer}s | total: %{
 ```
 
 **Key decisions:**
+
 - **Rate limiter**: Token bucket at 80% of Navan's observed rate limit to provide buffer
 - **Circuit breaker**: Open after 5 consecutive 5xx responses; half-open after 60 seconds
 - **Request log**: Structured JSON with correlation ID, endpoint, response code, and latency
@@ -111,6 +112,7 @@ echo "Token acquired, expires in: ${EXPIRES}s"
 ```
 
 **Design principles:**
+
 - Cache tokens in Redis or KMS-encrypted storage — never in application memory across restarts
 - Refresh tokens proactively 5 minutes before expiry
 - Support multi-tenant scenarios with per-tenant credential isolation
@@ -135,6 +137,7 @@ Navan has no push/webhook mechanism — all data sync is poll-based.
 | TRANSACTION | Incremental (by date range) | Daily/hourly | Fivetran, Airbyte, or custom |
 
 **Connector selection:**
+
 - **Fivetran**: Managed, pre-built Navan connector, minimal configuration
 - **Airbyte**: Open-source, self-hosted option, custom connector support
 - **Estuary**: Real-time CDC where available, hybrid approach

@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Install & Auth
 
 ## Overview
+
 Install the Vercel CLI, create a scoped access token, and link your local project to a Vercel project. This skill covers both interactive login and headless CI token authentication via the REST API.
 
 ## Prerequisites
+
 - Node.js 18+ installed
 - npm, pnpm, or yarn available
 - A Vercel account (hobby, pro, or enterprise)
@@ -36,6 +38,7 @@ Install the Vercel CLI, create a scoped access token, and link your local projec
 ## Instructions
 
 ### Step 1: Install Vercel CLI
+
 ```bash
 set -euo pipefail
 # Global install (recommended)
@@ -49,6 +52,7 @@ vercel --version
 ```
 
 ### Step 2: Authenticate — Interactive Login
+
 ```bash
 # Opens browser for OAuth login, stores token in ~/.config/com.vercel.cli
 vercel login
@@ -64,6 +68,7 @@ vercel login --gitlab
 ```
 
 ### Step 3: Authenticate — Headless Token (CI/CD)
+
 Create a token in the Vercel dashboard at **Settings > Tokens** or via the API:
 
 ```bash
@@ -80,6 +85,7 @@ export VERCEL_PROJECT_ID="prj_xxxxxxxxxxxx"
 ```
 
 ### Step 4: Link Local Project
+
 ```bash
 # Interactive — walks you through project selection
 vercel link
@@ -93,6 +99,7 @@ cat .vercel/project.json
 ```
 
 ### Step 5: Verify Connection via REST API
+
 ```bash
 # Test token against the REST API directly
 curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
@@ -104,6 +111,7 @@ curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
 ```
 
 ### Step 6: Pull Environment Variables
+
 ```bash
 # Pull remote env vars to local .env.development.local
 vercel env pull .env.development.local
@@ -123,12 +131,14 @@ vercel env pull --environment=preview
 Tokens support optional expiration dates. Set short-lived tokens (90 days) for CI and rotate them on a schedule.
 
 ## Output
+
 - Vercel CLI installed and on PATH
 - Authentication token stored or environment variable set
 - Local project linked to Vercel project via `.vercel/project.json`
 - Environment variables pulled to local `.env.development.local`
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Error: No token found` | Not logged in, no VERCEL_TOKEN | Run `vercel login` or export VERCEL_TOKEN |
@@ -138,6 +148,7 @@ Tokens support optional expiration dates. Set short-lived tokens (90 days) for C
 | `fetch failed` | Network or proxy issue | Check `HTTPS_PROXY` env var, ensure port 443 outbound |
 
 ## `.gitignore` Setup
+
 ```gitignore
 # Vercel
 .vercel/
@@ -145,10 +156,12 @@ Tokens support optional expiration dates. Set short-lived tokens (90 days) for C
 ```
 
 ## Resources
+
 - [Vercel CLI Overview](https://vercel.com/docs/cli)
 - [Access Tokens](https://vercel.com/docs/rest-api#creating-an-access-token)
 - [CLI Project Linking](https://vercel.com/docs/cli/project-linking)
 - [Vercel REST API Reference](https://vercel.com/docs/rest-api)
 
 ## Next Steps
+
 After successful auth, proceed to `vercel-hello-world` for your first deployment.

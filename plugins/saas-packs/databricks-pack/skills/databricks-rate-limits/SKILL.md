@@ -24,15 +24,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Rate Limits
 
 ## Overview
+
 Handle Databricks API rate limits with exponential backoff, token-bucket queuing, and idempotent job submissions. The API returns HTTP 429 with a `Retry-After` header when limits are exceeded. The SDK has built-in retries for transient errors, but custom logic is needed for bulk operations.
 
 ## Prerequisites
+
 - `databricks-sdk` installed
 - Understanding of async patterns for batch operations
 
 ## Instructions
 
 ### Step 1: Understand Rate Limit Tiers
+
 Databricks enforces per-endpoint, per-workspace rate limits.
 
 | API Category | Approx. Limit | Notes |
@@ -58,6 +61,7 @@ except ResourceConflict as e:
 ```
 
 ### Step 2: Exponential Backoff with Jitter
+
 ```python
 import time
 import random
@@ -96,6 +100,7 @@ def get_job_status(w, job_id):
 ```
 
 ### Step 3: Token-Bucket Rate Limiter for Bulk Operations
+
 Prevent bursts when iterating over hundreds of resources.
 
 ```python
@@ -132,6 +137,7 @@ def list_all_job_runs(w, job_ids: list[int]) -> dict:
 ```
 
 ### Step 4: Concurrent Batch Processing with Throttle
+
 ```python
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -161,6 +167,7 @@ def batch_run_jobs(w, job_ids: list[int], max_concurrent: int = 5) -> dict:
 ```
 
 ### Step 5: Idempotent Job Submissions
+
 Prevent duplicate runs when retrying failed submissions using `idempotency_token`.
 
 ```python
@@ -187,12 +194,14 @@ assert run1 == run2  # No duplicate run created
 ```
 
 ## Output
+
 - Retry-safe API calls handling 429 and 503 with exponential backoff
 - Token-bucket rate limiter for bulk resource enumeration
 - Thread-pool batch runner with configurable concurrency
 - Idempotent job submissions preventing duplicate runs
 
 ## Error Handling
+
 | Error | HTTP | Solution |
 |-------|------|----------|
 | `TooManyRequests` | 429 | Use `Retry-After` header, fall back to exponential backoff |
@@ -204,6 +213,7 @@ assert run1 == run2  # No duplicate run created
 ## Examples
 
 ### Monitor Rate Limit Headers (Raw HTTP)
+
 ```python
 import requests
 
@@ -216,6 +226,7 @@ print(f"Retry-After: {resp.headers.get('Retry-After', 'N/A')}")
 ```
 
 ### Bulk Cluster Cleanup with Rate Limiting
+
 ```python
 limiter = RateLimiter(requests_per_second=5)
 terminated = 0
@@ -228,9 +239,11 @@ print(f"Cleaned up {terminated} dev clusters")
 ```
 
 ## Resources
+
 - [Resource Limits](https://docs.databricks.com/aws/en/resources/limits)
 - [Model Serving Limits](https://docs.databricks.com/aws/en/machine-learning/model-serving/model-serving-limits)
 - [Status Page](https://status.databricks.com)
 
 ## Next Steps
+
 For security configuration, see `databricks-security-basics`.

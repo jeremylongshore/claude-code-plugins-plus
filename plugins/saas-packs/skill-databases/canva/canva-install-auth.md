@@ -10,6 +10,7 @@ canva-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Canva SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

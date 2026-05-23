@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Rate Limits
 
 ## Overview
+
 Handle Instantly API v2 rate limits. The API returns `429 Too Many Requests` when limits are exceeded. Most endpoints follow standard limits. The email listing endpoint has a stricter constraint of **20 requests per minute**. Failed webhook deliveries are retried up to **3 times within 30 seconds**.
 
 ## Prerequisites
+
 - Completed `instantly-install-auth` setup
 - Understanding of exponential backoff patterns
 
@@ -44,6 +46,7 @@ Handle Instantly API v2 rate limits. The API returns `429 Too Many Requests` whe
 ## Instructions
 
 ### Step 1: Exponential Backoff with Jitter
+
 ```typescript
 import { InstantlyApiError } from "./src/instantly/client";
 
@@ -94,6 +97,7 @@ async function withBackoff<T>(
 ```
 
 ### Step 2: Request Queue with Concurrency Control
+
 ```typescript
 class RequestQueue {
   private queue: Array<() => Promise<void>> = [];
@@ -149,6 +153,7 @@ for (const lead of leads) {
 ```
 
 ### Step 3: Rate-Limited Email Listing
+
 ```typescript
 // The /emails endpoint has a 20 req/min limit
 // Use a dedicated throttled fetcher
@@ -192,6 +197,7 @@ class ThrottledEmailFetcher {
 ```
 
 ### Step 4: Batch Operations Pattern
+
 ```typescript
 // Instead of creating leads one-by-one, batch where possible
 async function addLeadsBatched(
@@ -237,6 +243,7 @@ async function addLeadsBatched(
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `429` on lead import | Too many sequential POSTs | Use batch pattern with delays |
@@ -246,8 +253,10 @@ async function addLeadsBatched(
 | Queue memory growing | Too many queued operations | Set max queue size, reject overflow |
 
 ## Resources
+
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
 - [Instantly Blog: API Rate Limits](https://instantly.ai/blog/api-webhooks-custom-integrations-for-outreach/)
 
 ## Next Steps
+
 For security patterns, see `instantly-security-basics`.

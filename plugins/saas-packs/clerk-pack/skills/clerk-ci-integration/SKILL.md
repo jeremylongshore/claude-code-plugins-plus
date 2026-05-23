@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk CI Integration
 
 ## Overview
+
 Set up CI/CD pipelines with Clerk authentication testing. Covers GitHub Actions workflows, Playwright E2E tests with Clerk auth, test user management, and CI secrets configuration.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - Clerk test API keys (`pk_test_` / `sk_test_`)
 - npm/pnpm project configured
@@ -35,6 +37,7 @@ Set up CI/CD pipelines with Clerk authentication testing. Covers GitHub Actions 
 ## Instructions
 
 ### Step 1: GitHub Actions Workflow
+
 ```yaml
 # .github/workflows/test.yml
 name: Test with Clerk Auth
@@ -74,6 +77,7 @@ jobs:
 ```
 
 ### Step 2: Configure GitHub Secrets
+
 Add these secrets in GitHub repo > Settings > Secrets:
 
 | Secret | Value |
@@ -85,6 +89,7 @@ Add these secrets in GitHub repo > Settings > Secrets:
 | `CLERK_TEST_USER_PASSWORD` | Strong test password |
 
 ### Step 3: Playwright Auth Setup
+
 ```typescript
 // e2e/auth.setup.ts
 import { test as setup, expect } from '@playwright/test'
@@ -111,6 +116,7 @@ setup('authenticate', async ({ page }) => {
 ```
 
 ### Step 4: Playwright Config with Auth State
+
 ```typescript
 // playwright.config.ts
 import { defineConfig } from '@playwright/test'
@@ -137,6 +143,7 @@ export default defineConfig({
 ```
 
 ### Step 5: E2E Test Examples
+
 ```typescript
 // e2e/dashboard.spec.ts
 import { test, expect } from '@playwright/test'
@@ -167,6 +174,7 @@ test('protected API returns data', async ({ page }) => {
 ```
 
 ### Step 6: Test User Seed Script for CI
+
 ```typescript
 // scripts/seed-ci-user.ts
 import { createClerkClient } from '@clerk/backend'
@@ -196,6 +204,7 @@ ensureTestUser()
 ```
 
 ## Output
+
 - GitHub Actions workflow with Clerk env vars from secrets
 - Playwright auth setup saving session state for reuse
 - E2E tests covering authenticated and unauthenticated flows
@@ -203,6 +212,7 @@ ensureTestUser()
 - Protected API endpoint test
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Secret not found in CI | Missing GitHub secret | Add in repo Settings > Secrets and variables > Actions |
@@ -213,6 +223,7 @@ ensureTestUser()
 ## Examples
 
 ### Vitest Unit Test with Mocked Clerk
+
 ```typescript
 // __tests__/api.test.ts
 import { describe, it, expect, vi } from 'vitest'
@@ -231,9 +242,11 @@ describe('Protected API', () => {
 ```
 
 ## Resources
+
 - [Clerk Testing Guide](https://clerk.com/docs/testing/overview)
 - [Playwright Authentication](https://playwright.dev/docs/auth)
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 
 ## Next Steps
+
 Proceed to `clerk-deploy-integration` for deployment platform setup.

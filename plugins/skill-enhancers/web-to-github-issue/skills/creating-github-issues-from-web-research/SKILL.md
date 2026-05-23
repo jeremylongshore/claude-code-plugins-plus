@@ -33,6 +33,7 @@ Streamline the research-to-implementation workflow. By integrating web search wi
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Investigate a technical topic and create an implementation ticket.
 - Track security vulnerabilities and generate a security issue with remediation steps.
 - Research competitor features and create a feature request ticket.
@@ -44,6 +45,7 @@ This skill activates when you need to:
 User request: "research Docker security best practices and create a ticket in myorg/backend"
 
 The skill will:
+
 1. Search the web for Docker security best practices.
 2. Extract key recommendations, security vulnerabilities, and mitigation strategies.
 3. Create a GitHub issue in the specified repository with a summary of the findings, a checklist of best practices, and links to relevant resources.
@@ -53,6 +55,7 @@ The skill will:
 User request: "find articles about API rate limiting, create issue with label performance"
 
 The skill will:
+
 1. Search the web for articles and documentation on API rate limiting.
 2. Extract different rate limiting techniques, their pros and cons, and implementation examples.
 3. Create a GitHub issue with the "performance" label, summarizing the findings and providing links to the source articles.

@@ -10,6 +10,7 @@ guidewire-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Guidewire SDK patterns
 **Workflow:** Part of the onboarding skill category for Guidewire integration.
 **Relates to:** Other guidewire skills in this pack.

@@ -10,6 +10,7 @@ notion-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Notion reliability patterns
 **Workflow:** Part of the enterprise skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

@@ -10,6 +10,7 @@ serpapi-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize SerpApi costs and usage
 **Workflow:** Part of the cicd skill category for SerpApi integration.
 **Relates to:** Other serpapi skills in this pack.

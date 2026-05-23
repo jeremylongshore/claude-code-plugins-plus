@@ -1,6 +1,7 @@
-# Implementation Guide
+## Implementation Guide
 
 ### Step 1: Implement Singleton Pattern (Recommended)
+
 ```typescript
 // src/vercel/client.ts
 import { VercelClient } from 'vercel';
@@ -19,6 +20,7 @@ export function getVercelClient(): VercelClient {
 ```
 
 ### Step 2: Add Error Handling Wrapper
+
 ```typescript
 import { VercelError } from 'vercel';
 
@@ -41,6 +43,7 @@ async function safeVercelCall<T>(
 ```
 
 ### Step 3: Implement Retry Logic
+
 ```typescript
 async function withRetry<T>(
   operation: () => Promise<T>,

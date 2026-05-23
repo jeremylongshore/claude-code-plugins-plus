@@ -131,10 +131,10 @@ class MyCustomView extends ItemView {
 }
 ```
 
-
 ## Complete Examples
 
 ### Frontmatter Parsing
+
 ```typescript
 function getFrontmatter(app: App, file: TFile): any {
   const cache = app.metadataCache.getFileCache(file);

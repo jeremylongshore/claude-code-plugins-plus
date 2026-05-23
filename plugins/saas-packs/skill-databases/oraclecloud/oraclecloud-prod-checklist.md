@@ -10,6 +10,7 @@ oraclecloud-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Oracle Cloud production deployment checklist
 **Workflow:** Part of the operations skill category for Oracle Cloud integration.
 **Relates to:** Other oraclecloud skills in this pack.

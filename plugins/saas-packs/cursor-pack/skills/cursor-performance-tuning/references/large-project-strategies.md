@@ -3,6 +3,7 @@
 ## Large Project Strategies
 
 ### Monorepo Performance
+
 ```json
 {
   // Only watch active package
@@ -18,6 +19,7 @@
 ```
 
 ### Workspace Folders
+
 ```
 Instead of opening entire monorepo:
 
@@ -33,6 +35,7 @@ Option 2: Use workspace file
 ```
 
 ### Remote Development
+
 ```
 For very large projects:
 1. Use Remote-SSH extension

@@ -10,6 +10,7 @@ framer-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Framer CI/CD integration
 **Workflow:** Part of the cicd skill category for Framer integration.
 **Relates to:** Other framer skills in this pack.

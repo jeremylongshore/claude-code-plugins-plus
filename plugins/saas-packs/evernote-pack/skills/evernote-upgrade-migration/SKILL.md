@@ -25,12 +25,15 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Upgrade & Migration
 
 ## Current State
+
 !`npm list evernote 2>/dev/null || echo 'evernote SDK not installed'`
 
 ## Overview
+
 Guide for upgrading Evernote SDK versions, converting callback-based code to Promises, handling breaking changes, and maintaining backward compatibility during gradual migration.
 
 ## Prerequisites
+
 - Existing Evernote integration to upgrade
 - Test environment for validation
 - Understanding of current implementation patterns
@@ -55,6 +58,7 @@ npm view evernote repository.url
 ### Step 2: Review Breaking Changes
 
 Common breaking changes across Evernote SDK versions:
+
 - **Constructor changes**: `new Evernote.Note()` became `new Evernote.Types.Note()`
 - **Callback to Promise**: Older versions used callbacks, newer versions return Promises
 - **Import path changes**: Module structure may change between major versions
@@ -114,6 +118,7 @@ Add deprecation warnings to old patterns so team members know to use new pattern
 For the full migration script, compatibility layer, test suite updates, and deprecation system, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
+
 - SDK version comparison and changelog review
 - Callback-to-Promise conversion patterns
 - `EvernoteCompat` compatibility layer for gradual migration
@@ -121,6 +126,7 @@ For the full migration script, compatibility layer, test suite updates, and depr
 - Deprecation warning system for old patterns
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `Evernote.Note is not a constructor` | Old import style after upgrade | Use `Evernote.Types.Note` |
@@ -129,12 +135,14 @@ For the full migration script, compatibility layer, test suite updates, and depr
 | Type mismatch | Thrift serialization change | Re-generate types from updated Thrift definitions |
 
 ## Resources
+
 - [Evernote SDK JS](https://github.com/Evernote/evernote-sdk-js)
 - [SDK Releases](https://github.com/Evernote/evernote-sdk-js/releases)
 - [Python SDK](https://github.com/Evernote/evernote-sdk-python)
 - [API Reference](https://dev.evernote.com/doc/reference/)
 
 ## Next Steps
+
 For CI/CD integration, see `evernote-ci-integration`.
 
 ## Examples

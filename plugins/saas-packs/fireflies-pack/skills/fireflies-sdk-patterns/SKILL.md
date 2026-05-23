@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Client Patterns
 
 ## Overview
+
 Production-ready patterns for the Fireflies.ai GraphQL API. Fireflies has no official SDK -- all interaction is via HTTP POST to `https://api.fireflies.ai/graphql`. These patterns provide typed wrappers, error handling, caching, and multi-tenant support.
 
 ## Prerequisites
+
 - `FIREFLIES_API_KEY` environment variable set
 - TypeScript 5+ or Python 3.10+
 - Optional: `graphql-request` for typed queries
@@ -36,6 +38,7 @@ Production-ready patterns for the Fireflies.ai GraphQL API. Fireflies has no off
 ## Instructions
 
 ### Step 1: Typed GraphQL Client (TypeScript)
+
 ```typescript
 // lib/fireflies-client.ts
 const FIREFLIES_API = "https://api.fireflies.ai/graphql";
@@ -120,6 +123,7 @@ export class FirefliesClient {
 ```
 
 ### Step 2: Singleton Pattern
+
 ```typescript
 // lib/fireflies.ts
 let instance: FirefliesClient | null = null;
@@ -133,6 +137,7 @@ export function getFirefliesClient(): FirefliesClient {
 ```
 
 ### Step 3: Multi-Tenant Factory
+
 ```typescript
 const tenantClients = new Map<string, FirefliesClient>();
 
@@ -146,6 +151,7 @@ export function getClientForTenant(tenantId: string): FirefliesClient {
 ```
 
 ### Step 4: Response Validation with Zod
+
 ```typescript
 import { z } from "zod";
 
@@ -172,6 +178,7 @@ async function getValidatedTranscript(id: string): Promise<Transcript> {
 ```
 
 ### Step 5: Python Client
+
 ```python
 import os
 from typing import Any
@@ -228,6 +235,7 @@ for t in client.get_transcripts(5):
 ```
 
 ## Error Handling
+
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
 | Typed client class | All API calls | Centralized auth and error handling |
@@ -236,15 +244,18 @@ for t in client.get_transcripts(5):
 | Zod validation | API responses | Runtime type safety, catches schema drift |
 
 ## Output
+
 - Type-safe GraphQL client with error codes
 - Singleton and factory patterns for different deployment models
 - Zod schemas for runtime response validation
 - Python client with identical API surface
 
 ## Resources
+
 - [Fireflies API Docs](https://docs.fireflies.ai/)
 - [Fireflies GraphQL Introspection](https://docs.fireflies.ai/fundamentals/introspection)
 - [Zod Documentation](https://zod.dev/)
 
 ## Next Steps
+
 Apply patterns in `fireflies-core-workflow-a` for real-world usage.

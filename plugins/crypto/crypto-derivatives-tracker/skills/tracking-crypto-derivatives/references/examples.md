@@ -5,11 +5,13 @@
 ### Funding Rate Analysis
 
 **Basic funding rate check:**
+
 ```bash
 python derivatives_tracker.py funding BTC
 ```
 
 Output:
+
 ```
 ======================================================================
                      BTC FUNDING RATE ANALYSIS
@@ -32,6 +34,7 @@ Sentiment: 🟢 Moderate Bullish
 ```
 
 **JSON export:**
+
 ```bash
 python derivatives_tracker.py funding BTC --format json
 ```
@@ -39,11 +42,13 @@ python derivatives_tracker.py funding BTC --format json
 ### Open Interest Analysis
 
 **Basic OI check:**
+
 ```bash
 python derivatives_tracker.py oi BTC
 ```
 
 Output:
+
 ```
 ======================================================================
                     BTC OPEN INTEREST ANALYSIS
@@ -68,11 +73,13 @@ Dominant Exchange: Binance (41.3%)
 ```
 
 **With divergence analysis:**
+
 ```bash
 python derivatives_tracker.py oi BTC --price-change 3.5
 ```
 
 Output includes:
+
 ```
 ────────────────────────────────────────────────────────────────────────
 DIVERGENCE ANALYSIS
@@ -89,11 +96,13 @@ DIVERGENCE ANALYSIS
 ### Liquidation Monitoring
 
 **Basic liquidation summary:**
+
 ```bash
 python derivatives_tracker.py liquidations BTC
 ```
 
 Output:
+
 ```
 ======================================================================
                      BTC LIQUIDATION MONITOR
@@ -127,11 +136,13 @@ SHORT LIQUIDATIONS (above $67,500):
 ```
 
 **With large liquidation history:**
+
 ```bash
 python derivatives_tracker.py liquidations BTC --large
 ```
 
 Adds:
+
 ```
 ────────────────────────────────────────────────────────────────────────
 RECENT LARGE LIQUIDATIONS (>$1M)
@@ -147,11 +158,13 @@ OKX        short  $68,100       $2.9M        2h ago
 ### Options Analysis
 
 **Basic options summary:**
+
 ```bash
 python derivatives_tracker.py options BTC
 ```
 
 Output:
+
 ```
 ======================================================================
                       BTC OPTIONS ANALYSIS
@@ -183,6 +196,7 @@ Expiry Pressure: LOW
 ```
 
 **With max pain levels and options flow:**
+
 ```bash
 python derivatives_tracker.py options BTC --max-pain --flow
 ```
@@ -190,11 +204,13 @@ python derivatives_tracker.py options BTC --max-pain --flow
 ### Basis Analysis
 
 **Basic basis/spread check:**
+
 ```bash
 python derivatives_tracker.py basis BTC
 ```
 
 Output:
+
 ```
 ======================================================================
                        BTC BASIS ANALYSIS
@@ -226,6 +242,7 @@ TERM STRUCTURE
 ```
 
 **With carry trade scanner:**
+
 ```bash
 python derivatives_tracker.py basis BTC --carry
 ```
@@ -233,11 +250,13 @@ python derivatives_tracker.py basis BTC --carry
 ### Multi-Asset Dashboard
 
 **Quick market overview:**
+
 ```bash
 python derivatives_tracker.py dashboard BTC ETH SOL
 ```
 
 Output:
+
 ```
 ======================================================================
                     CRYPTO DERIVATIVES DASHBOARD

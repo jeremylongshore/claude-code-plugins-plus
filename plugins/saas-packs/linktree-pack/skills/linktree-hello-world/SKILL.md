@@ -18,11 +18,13 @@ compatibility: Designed for Claude Code
 # Linktree Hello World
 
 ## Overview
+
 Minimal working examples demonstrating core Linktree API functionality.
 
 ## Instructions
 
 ### Step 1: Get Profile
+
 ```typescript
 const profile = await client.profiles.get('myprofile');
 console.log(`Bio: ${profile.bio}`);
@@ -30,6 +32,7 @@ console.log(`Links: ${profile.links.length}`);
 ```
 
 ### Step 2: Create a Link
+
 ```typescript
 const link = await client.links.create({
   profile_id: profile.id,
@@ -42,6 +45,7 @@ console.log(`Created link: ${link.id}`);
 ```
 
 ### Step 3: Update Link
+
 ```typescript
 await client.links.update(link.id, {
   title: 'Updated Title',
@@ -50,12 +54,14 @@ await client.links.update(link.id, {
 ```
 
 ### Step 4: List All Links
+
 ```typescript
 const links = await client.links.list({ profile_id: profile.id });
 links.forEach(l => console.log(`${l.position}: ${l.title} → ${l.url}`));
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Auth error | Invalid credentials | Check LINKTREE_API_KEY |
@@ -63,7 +69,9 @@ links.forEach(l => console.log(`${l.position}: ${l.title} → ${l.url}`));
 | Rate limit | Too many requests | Implement backoff |
 
 ## Resources
+
 - [Linktree API Docs](https://linktr.ee/marketplace/developer)
 
 ## Next Steps
+
 See `linktree-local-dev-loop`.

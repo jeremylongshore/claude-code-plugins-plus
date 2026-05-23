@@ -10,6 +10,7 @@ stackblitz-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy StackBlitz integrations to production
 **Workflow:** Part of the cicd skill category for StackBlitz integration.
 **Relates to:** Other stackblitz skills in this pack.

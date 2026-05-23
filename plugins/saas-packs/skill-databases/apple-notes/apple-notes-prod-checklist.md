@@ -10,6 +10,7 @@ apple-notes-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Apple Notes production deployment checklist
 **Workflow:** Part of the operations skill category for Apple Notes integration.
 **Relates to:** Other apple-notes skills in this pack.

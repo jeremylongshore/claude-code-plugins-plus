@@ -10,6 +10,7 @@ fondo-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Fondo SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Fondo integration.
 **Relates to:** Other fondo skills in this pack.

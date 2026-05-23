@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Gamma Production Checklist
 
 ## Overview
+
 Comprehensive checklist to ensure your Gamma integration is production-ready.
 
 ## Prerequisites
+
 - Completed development and testing
 - Staging environment validated
 - Monitoring infrastructure ready
@@ -36,6 +38,7 @@ Comprehensive checklist to ensure your Gamma integration is production-ready.
 ## Production Checklist
 
 ### 1. Authentication & Security
+
 - [ ] Production API key obtained (not development key)
 - [ ] API key stored in secret manager (not env file)
 - [ ] Key rotation procedure documented and tested
@@ -52,6 +55,7 @@ const gamma = new GammaClient({
 ```
 
 ### 2. Error Handling
+
 - [ ] All API calls wrapped in try/catch
 - [ ] Exponential backoff for rate limits
 - [ ] Graceful degradation for API outages
@@ -72,6 +76,7 @@ try {
 ```
 
 ### 3. Performance
+
 - [ ] Client instance reused (singleton pattern)
 - [ ] Connection pooling enabled
 - [ ] Appropriate timeouts configured
@@ -79,6 +84,7 @@ try {
 - [ ] Async operations for long tasks
 
 ### 4. Monitoring & Logging
+
 - [ ] Request/response logging (sanitized)
 - [ ] Latency metrics collection
 - [ ] Error rate alerting
@@ -98,6 +104,7 @@ app.get('/health/gamma', async (req, res) => {
 ```
 
 ### 5. Rate Limiting
+
 - [ ] Rate limit tier confirmed with Gamma
 - [ ] Request queuing implemented
 - [ ] Backoff strategy in place
@@ -105,6 +112,7 @@ app.get('/health/gamma', async (req, res) => {
 - [ ] Burst protection enabled
 
 ### 6. Data Handling
+
 - [ ] PII handling compliant with policies
 - [ ] Data retention policies documented
 - [ ] Export data properly secured
@@ -112,6 +120,7 @@ app.get('/health/gamma', async (req, res) => {
 - [ ] GDPR/CCPA compliance verified
 
 ### 7. Disaster Recovery
+
 - [ ] Fallback behavior defined
 - [ ] Circuit breaker implemented
 - [ ] Recovery procedures documented
@@ -137,6 +146,7 @@ breaker.fallback(() => ({
 ```
 
 ### 8. Testing
+
 - [ ] Integration tests passing
 - [ ] Load testing completed
 - [ ] Failure scenario testing done
@@ -144,6 +154,7 @@ breaker.fallback(() => ({
 - [ ] Staging environment validated
 
 ### 9. Documentation
+
 - [ ] API integration documented
 - [ ] Runbooks for common issues
 - [ ] Architecture diagrams updated
@@ -151,6 +162,7 @@ breaker.fallback(() => ({
 - [ ] Team trained on Gamma features
 
 ## Final Verification Script
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -175,6 +187,7 @@ echo "Verification complete"
 ```
 
 ## Resources
+
 - [Gamma Production Guide](https://gamma.app/docs/production)
 - [Gamma SLA](https://gamma.app/sla)
 - [Gamma Status Page](https://status.gamma.app)

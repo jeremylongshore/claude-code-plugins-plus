@@ -10,6 +10,7 @@ lucidchart-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Lucidchart API performance
 **Workflow:** Part of the cicd skill category for Lucidchart integration.
 **Relates to:** Other lucidchart skills in this pack.

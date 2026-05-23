@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Salesforce Hello World
 
 ## Overview
+
 Minimal working example: connect to Salesforce, run a SOQL query, and perform basic CRUD on standard sObjects (Account, Contact, Lead).
 
 ## Prerequisites
+
 - Completed `salesforce-install-auth` setup
 - jsforce installed (`npm install jsforce`)
 - Valid credentials in environment variables
@@ -136,11 +138,13 @@ sf.Account.delete(new_account['id'])
 ```
 
 ## Output
+
 - Successful SOQL query returning Account records
 - Created, read, updated, and deleted an Account sObject
 - Console output confirming each operation
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `INVALID_FIELD` | Field name wrong in SOQL | Check field API names in Setup > Object Manager |
@@ -150,9 +154,11 @@ sf.Account.delete(new_account['id'])
 | `ENTITY_IS_DELETED` | Record already deleted | Query with `isDeleted = true` to find in Recycle Bin |
 
 ## Resources
+
 - [SOQL Reference](https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_soql.htm)
 - [sObject CRUD (REST API)](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_sobject_retrieve.htm)
 - [Standard Objects Reference](https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_list.htm)
 
 ## Next Steps
+
 Proceed to `salesforce-local-dev-loop` for development workflow setup.

@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Production Checklist
 
 ## Overview
+
 Complete checklist for deploying Databricks jobs and pipelines to production. Covers security hardening, infrastructure validation, code quality gates, job configuration, deployment commands, monitoring setup, and rollback procedures.
 
 ## Prerequisites
+
 - Staging environment tested and verified
 - Production workspace access with service principal
 - Unity Catalog configured with prod catalogs
@@ -35,6 +37,7 @@ Complete checklist for deploying Databricks jobs and pipelines to production. Co
 ## Instructions
 
 ### Step 1: Pre-Deployment Security
+
 - [ ] Service principal configured for automated runs (not personal PAT)
 - [ ] Secrets in Databricks Secret Scopes (not env vars or hardcoded)
 - [ ] Token expiration set (max 90 days)
@@ -44,6 +47,7 @@ Complete checklist for deploying Databricks jobs and pipelines to production. Co
 - [ ] Audit logging verified via `system.access.audit`
 
 ### Step 2: Infrastructure Validation
+
 - [ ] Instance pool created for fast cluster startup
 - [ ] Node types validated for workload (compute-optimized for streaming, memory-optimized for ML)
 - [ ] Autoscaling configured with sensible min/max workers
@@ -57,6 +61,7 @@ databricks instance-pools list --output json | jq '.[] | {id: .instance_pool_id,
 ```
 
 ### Step 3: Code Quality Gates
+
 - [ ] Unit tests passing locally (`pytest tests/unit/`)
 - [ ] Integration tests passing on staging data
 - [ ] No `.collect()` on large datasets
@@ -72,6 +77,7 @@ databricks bundle validate -t prod
 ```
 
 ### Step 4: Job Configuration
+
 ```yaml
 # resources/prod_etl.yml
 resources:
@@ -135,6 +141,7 @@ resources:
 ```
 
 ### Step 5: Deploy
+
 ```bash
 # Pre-flight checks
 echo "=== Pre-flight ==="
@@ -159,6 +166,7 @@ databricks runs get --run-id $RUN_ID --output json | jq '.state'
 ```
 
 ### Step 6: Post-Deploy Monitoring
+
 ```python
 from databricks.sdk import WorkspaceClient
 from datetime import datetime
@@ -190,6 +198,7 @@ def check_job_health(job_id: int) -> dict:
 ```
 
 ### Step 7: Rollback Procedure
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -225,6 +234,7 @@ echo "=== ROLLBACK COMPLETE ==="
 ```
 
 ## Output
+
 - Pre-deployment checklist verified
 - Production job deployed via Asset Bundles
 - Verification run completed successfully
@@ -232,6 +242,7 @@ echo "=== ROLLBACK COMPLETE ==="
 - Rollback procedure documented and tested
 
 ## Error Handling
+
 | Alert | Condition | Severity | Action |
 |-------|-----------|----------|--------|
 | Job Failed | `result_state = FAILED` | P1 | Page oncall, check `get_run_output` |
@@ -242,6 +253,7 @@ echo "=== ROLLBACK COMPLETE ==="
 ## Examples
 
 ### Production Health Dashboard
+
 ```sql
 SELECT job_id, job_name,
        COUNT(*) AS total_runs,
@@ -255,9 +267,11 @@ ORDER BY total_runs DESC;
 ```
 
 ## Resources
+
 - [Deployment Modes](https://docs.databricks.com/aws/en/dev-tools/bundles/deployment-modes)
 - [Job Configuration](https://docs.databricks.com/aws/en/jobs/)
 - [Cluster Best Practices](https://docs.databricks.com/aws/en/compute/configure)
 
 ## Next Steps
+
 For version upgrades, see `databricks-upgrade-migration`.

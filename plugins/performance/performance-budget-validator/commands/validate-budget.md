@@ -25,6 +25,7 @@ Create and validate performance budgets to prevent performance regressions.
 ## Output
 
 Provide:
+
 - Performance budget configuration file
 - Validation scripts (Lighthouse CI, webpack-bundle-analyzer, etc.)
 - CI/CD pipeline integration guide

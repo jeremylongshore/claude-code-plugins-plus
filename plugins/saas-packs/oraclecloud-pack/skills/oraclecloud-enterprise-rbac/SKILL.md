@@ -167,6 +167,7 @@ dg_policy = identity.create_policy(
 ```
 
 **Dynamic group matching rules** support these predicates:
+
 - `instance.compartment.id = '<ocid>'` — all instances in a compartment
 - `instance.id = '<ocid>'` — specific instance
 - `tag.<namespace>.<key>.value = '<value>'` — tag-based matching
@@ -233,6 +234,7 @@ tag_policy = identity.create_policy(
 ## Output
 
 Successful completion produces:
+
 - A compartment hierarchy separating environments (dev/staging/prod) and concerns (compute/data/security)
 - IAM policies attached at the correct level with least-privilege access per group
 - Dynamic groups enabling Instance Principal auth for compute instances and functions

@@ -3,6 +3,7 @@
 ## Web Framework Integration
 
 ### FastAPI Streaming
+
 ```python
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
@@ -30,6 +31,7 @@ async def chat_stream(prompt: str, model: str = "openai/gpt-4-turbo"):
 ```
 
 ### Flask SSE Streaming
+
 ```python
 from flask import Flask, Response, request
 
@@ -61,6 +63,7 @@ def chat_stream():
 ```
 
 ### Express.js SSE
+
 ```typescript
 import express from 'express';
 

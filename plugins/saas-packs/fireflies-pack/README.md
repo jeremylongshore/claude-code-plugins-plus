@@ -19,6 +19,7 @@ Every skill uses **real Fireflies.ai GraphQL queries and mutations** -- no fake 
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | What It Does |
 |-------|-------------|
 | `fireflies-install-auth` | Configure GraphQL API auth, verify connectivity with `user` query |
@@ -35,6 +36,7 @@ Every skill uses **real Fireflies.ai GraphQL queries and mutations** -- no fake 
 | `fireflies-upgrade-migration` | Deprecated field scanner, schema introspection, query pattern updates |
 
 ### Pro Skills (P13-P18)
+
 | Skill | What It Does |
 |-------|-------------|
 | `fireflies-ci-integration` | GitHub Actions workflow, mock-based unit tests, live API integration tests |
@@ -45,6 +47,7 @@ Every skill uses **real Fireflies.ai GraphQL queries and mutations** -- no fake 
 | `fireflies-reference-architecture` | Event-driven pipeline: webhook -> transcript store -> action items -> CRM -> analytics |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | What It Does |
 |-------|-------------|
 | `fireflies-multi-env-setup` | Per-environment config (dev/staging/prod), GCP Secret Manager, Zod startup validation |

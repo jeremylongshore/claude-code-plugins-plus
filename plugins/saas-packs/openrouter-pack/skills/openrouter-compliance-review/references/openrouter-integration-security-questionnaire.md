@@ -3,6 +3,7 @@
 ## OpenRouter Integration Security Questionnaire
 
 ### Data Handling
+
 Q: How is data transmitted to OpenRouter?
 A: All data transmitted via TLS 1.2+ encrypted HTTPS connections.
 
@@ -15,6 +16,7 @@ A: Major providers (OpenAI, Anthropic) do not use API data for training.
    Review each provider's current policy for confirmation.
 
 ### Access Control
+
 Q: How are API keys secured?
 A: Keys stored in [secrets manager/environment variables].
    Per-key spending limits configured.
@@ -25,6 +27,7 @@ A: Access controlled via [mechanism].
    [N] users with access, documented in [location].
 
 ### Audit & Compliance
+
 Q: Is request/response logging implemented?
 A: Yes, audit logging captures metadata and content hashes.
    Full content not logged for privacy.
@@ -32,6 +35,7 @@ A: Yes, audit logging captures metadata and content hashes.
 Q: What is the data retention period?
 A: Logs retained for [N] days per retention policy.
    Automatic archival after [N] days.
+
 ```
 
 ### Compliance Report Template

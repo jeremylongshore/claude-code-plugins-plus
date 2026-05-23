@@ -3,6 +3,7 @@
 ## Basic Routing Strategies
 
 ### Content-Based Routing
+
 ```python
 def route_by_content(prompt: str) -> str:
     """Route to appropriate model based on content analysis."""
@@ -33,6 +34,7 @@ def chat_routed(prompt: str, **kwargs):
 ```
 
 ### Token-Length Routing
+
 ```python
 def estimate_tokens(text: str) -> int:
     """Rough token estimate (4 chars = 1 token)."""

@@ -17,6 +17,7 @@ Command-line blockchain explorer for analyzing transactions, addresses, smart co
 ```
 
 Or use the shortcut:
+
 ```bash
 /explore
 ```
@@ -60,6 +61,7 @@ Or use the shortcut:
 ## What It Analyzes
 
 ### Addresses
+
 1. **Balances** - Native tokens and ERC-20s
 2. **NFT Portfolio** - All NFT holdings
 3. **Transaction History** - Sent and received
@@ -67,6 +69,7 @@ Or use the shortcut:
 5. **Activity Patterns** - Trader/investor/bot classification
 
 ### Transactions
+
 1. **Status & Confirmations** - Success/failure state
 2. **Transfer Details** - From, to, value
 3. **Gas & Fees** - Cost breakdown
@@ -75,6 +78,7 @@ Or use the shortcut:
 6. **Event Logs** - Contract events emitted
 
 ### Smart Contracts
+
 1. **Verification Status** - Source code availability
 2. **Contract Functions** - Public methods and signatures
 3. **Security Analysis** - Proxy patterns, upgradeability, admin keys
@@ -82,12 +86,14 @@ Or use the shortcut:
 5. **Usage Metrics** - Transaction count, unique users
 
 ### Blocks
+
 1. **Block Details** - Number, hash, timestamp
 2. **Producer Info** - Miner/validator, rewards
 3. **Transaction List** - All txs in block
 4. **Gas Statistics** - Usage and base fee
 
 ### Tokens
+
 1. **Supply Metrics** - Total, circulating, max supply
 2. **Holder Distribution** - Top holders, concentration
 3. **Market Data** - Price, market cap, volume
@@ -103,22 +109,26 @@ Or use the shortcut:
 ## Output Formats
 
 ### Comprehensive Tables
+
 - Balance breakdowns
 - Token holdings
 - Transaction history
 - Top holders
 
 ### Decoded Data
+
 - Function parameters
 - Event logs
 - Input data
 
 ### Visual Indicators
--  Success /  Failed
--  Verified / ️ Unverified
--  Charts and percentages
+
+- Success /  Failed
+- Verified / ️ Unverified
+- Charts and percentages
 
 ### Security Warnings
+
 - Unverified contracts
 - High-risk patterns
 - Suspicious activity
@@ -126,17 +136,20 @@ Or use the shortcut:
 ## Data Interpretation
 
 ### Transaction Status
+
 - **Success**: Executed correctly
 - **Failed**: Reverted (check reason)
 - **Pending**: Awaiting confirmation
 
 ### Address Types
+
 - **EOA**: User wallet (can initiate transactions)
 - **Contract**: Smart contract (code at address)
 - **Token**: ERC standard implementation
 - **Proxy**: Upgradeable contract
 
 ### Gas Efficiency
+
 - **Low (<50%)**: Efficient operation
 - **Medium (50-90%)**: Normal complexity
 - **High (>90%)**: Very complex or near limit
@@ -144,21 +157,27 @@ Or use the shortcut:
 ## Common Use Cases
 
 ### Portfolio Tracking
+
 Check wallet balances and token holdings.
 
 ### Transaction Verification
+
 Confirm transaction success and details.
 
 ### Contract Research
+
 Understand what a smart contract does.
 
 ### Security Analysis
+
 Check for contract verification and known issues.
 
 ### Token Discovery
+
 Research new tokens before trading.
 
 ### On-Chain Forensics
+
 Trace transaction flows and connections.
 
 ## Important Notes
@@ -174,6 +193,7 @@ Trace transaction flows and connections.
 ## Data Sources
 
 Analysis uses blockchain explorers APIs:
+
 - Etherscan (Ethereum)
 - Polygonscan (Polygon)
 - Arbiscan (Arbitrum)

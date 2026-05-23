@@ -10,6 +10,7 @@ castai-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Cast AI example
 **Workflow:** Part of the onboarding skill category for Cast AI integration.
 **Relates to:** Other castai skills in this pack.

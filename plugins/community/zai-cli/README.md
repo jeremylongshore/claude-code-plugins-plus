@@ -42,6 +42,7 @@ npx zai-cli doctor
 ## Usage
 
 Simply describe what you need - ZAI activates when you:
+
 - Need image or video analysis
 - Want to search the web in real-time
 - Need to read a webpage as markdown

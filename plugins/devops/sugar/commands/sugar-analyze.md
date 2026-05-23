@@ -13,22 +13,26 @@ You are a Sugar codebase analysis specialist. Your role is to help users discove
 ## Analysis Modes
 
 ### 1. Comprehensive Analysis (Default)
+
 ```bash
 /sugar-analyze
 ```
 
 Runs all discovery sources:
+
 - Error log monitoring
 - Code quality analysis
 - Test coverage analysis
 - GitHub issues (if configured)
 
 ### 2. Error Log Analysis
+
 ```bash
 /sugar-analyze --errors
 ```
 
 Scans configured error log directories:
+
 - Recent error files (last 24 hours)
 - Crash reports
 - Exception logs
@@ -37,11 +41,13 @@ Scans configured error log directories:
 **Output**: List of errors with frequency and severity
 
 ### 3. Code Quality Analysis
+
 ```bash
 /sugar-analyze --quality
 ```
 
 Analyzes source code for:
+
 - Code complexity issues
 - Duplicate code
 - Security vulnerabilities
@@ -51,11 +57,13 @@ Analyzes source code for:
 **Output**: Prioritized list of code quality improvements
 
 ### 4. Test Coverage Analysis
+
 ```bash
 /sugar-analyze --tests
 ```
 
 Identifies untested code:
+
 - Source files without tests
 - Low coverage modules
 - Missing test cases
@@ -64,11 +72,13 @@ Identifies untested code:
 **Output**: Files and modules needing tests
 
 ### 5. GitHub Analysis
+
 ```bash
 /sugar-analyze --github
 ```
 
 Scans GitHub repository:
+
 - Open issues without tasks
 - Pull requests needing review
 - Stale issues
@@ -81,11 +91,13 @@ Scans GitHub repository:
 ### Step 1: Configuration Check
 
 Verify Sugar's discovery configuration:
+
 ```bash
 cat .sugar/config.yaml | grep -A 20 "discovery:"
 ```
 
 Check:
+
 - Error log paths exist
 - Code quality settings appropriate
 - Test directories configured
@@ -94,12 +106,14 @@ Check:
 ### Step 2: Run Analysis
 
 Execute discovery based on user request:
+
 ```bash
 # This would normally be internal to Sugar
 # For demonstration, we'll use manual checks
 ```
 
 Gather insights from:
+
 - File system scans
 - Log file parsing
 - Code parsing and analysis
@@ -187,6 +201,7 @@ Offer user choices:
 ### Error Log Analysis
 
 Scans files matching configured patterns:
+
 ```yaml
 discovery:
   error_logs:
@@ -196,6 +211,7 @@ discovery:
 ```
 
 Extracts:
+
 - Error type and message
 - Stack traces
 - Frequency counts
@@ -203,6 +219,7 @@ Extracts:
 - Affected components
 
 Groups related errors and prioritizes by:
+
 - Frequency (high occurrence = higher priority)
 - Severity (crashes > warnings)
 - Recency (new errors = higher priority)
@@ -211,6 +228,7 @@ Groups related errors and prioritizes by:
 ### Code Quality Analysis
 
 Scans source files:
+
 ```yaml
 discovery:
   code_quality:
@@ -220,6 +238,7 @@ discovery:
 ```
 
 Checks for:
+
 - **Complexity**: Cyclomatic complexity, nesting depth
 - **Duplication**: Copy-pasted code blocks
 - **Security**: Common vulnerability patterns
@@ -227,6 +246,7 @@ Checks for:
 - **Documentation**: Missing docstrings/comments
 
 Prioritizes by:
+
 - Security issues (highest)
 - Critical path code
 - High complexity
@@ -235,6 +255,7 @@ Prioritizes by:
 ### Test Coverage Analysis
 
 Maps source to test files:
+
 ```yaml
 discovery:
   test_coverage:
@@ -243,12 +264,14 @@ discovery:
 ```
 
 Identifies:
+
 - Source files without corresponding tests
 - Functions/classes without test coverage
 - Edge cases not tested
 - Critical paths undertested
 
 Prioritizes by:
+
 - Public API surfaces
 - Business logic components
 - Frequently changed files
@@ -257,6 +280,7 @@ Prioritizes by:
 ### GitHub Integration
 
 Queries GitHub API:
+
 ```yaml
 discovery:
   github:
@@ -266,12 +290,14 @@ discovery:
 ```
 
 Fetches:
+
 - Open issues
 - Pull requests awaiting review
 - Issue comments and activity
 - Priority labels
 
 Filters and prioritizes by:
+
 - Issue labels (bug, critical, enhancement)
 - Age (stale issues = lower priority)
 - Activity (recent comments = higher priority)
@@ -305,27 +331,35 @@ sugar add "Fix NullPointerException in auth module" --json --description '{
 Recommend regular analysis:
 
 ### Daily Analysis
+
 ```bash
 /sugar-analyze --errors
 ```
+
 Quick check for new errors
 
 ### Weekly Analysis
+
 ```bash
 /sugar-analyze
 ```
+
 Comprehensive review of all sources
 
 ### Pre-Sprint Analysis
+
 ```bash
 /sugar-analyze --quality --tests
 ```
+
 Identify improvement opportunities
 
 ### On-Demand
+
 ```bash
 /sugar-analyze --github
 ```
+
 Sync with external task sources
 
 ## Analysis Reports
@@ -338,6 +372,7 @@ sugar analyze > .sugar/analysis-report-$(date +%Y%m%d).txt
 ```
 
 Report includes:
+
 - Executive summary
 - Detailed findings by category
 - Recommended tasks with priorities
@@ -347,13 +382,16 @@ Report includes:
 ## Integration Tips
 
 ### After Analysis
+
 1. Review findings with team
 2. Create high-priority tasks immediately
 3. Schedule medium-priority work
 4. Archive report for future reference
 
 ### Automation
+
 Add to daily workflow:
+
 ```bash
 # Morning routine
 sugar analyze --errors
@@ -361,6 +399,7 @@ sugar run --once
 ```
 
 ### CI/CD Integration
+
 ```bash
 # In CI pipeline
 sugar analyze --quality --tests > analysis.txt
@@ -370,18 +409,21 @@ sugar analyze --quality --tests > analysis.txt
 ## Troubleshooting
 
 ### "No issues found"
+
 - Check configuration paths
 - Verify log files exist
 - Ensure recent errors (check max_age_hours)
 - Confirm GitHub credentials
 
 ### "Too many results"
+
 - Adjust thresholds in config
 - Filter by priority: `--priority 4`
 - Focus on specific types: `--errors only`
 - Increase minimum severity
 
 ### "Analysis slow"
+
 - Reduce `max_files_per_scan`
 - Exclude large directories
 - Run specific analyses only
@@ -390,14 +432,17 @@ sugar analyze --quality --tests > analysis.txt
 ## Example Interactions
 
 ### Example 1: Quick Error Check
+
 User: "/sugar-analyze --errors"
 Response: Finds 3 recent errors, suggests creating urgent tasks, shows error context
 
 ### Example 2: Sprint Planning
+
 User: "/sugar-analyze"
 Response: Comprehensive analysis, 28 findings, groups by priority, offers batch task creation
 
 ### Example 3: Test Debt
+
 User: "/sugar-analyze --tests"
 Response: Identifies 15 untested files, prioritizes critical paths, creates test tasks
 

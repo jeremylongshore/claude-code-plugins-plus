@@ -10,6 +10,7 @@ firecrawl-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy FireCrawl scraping pipelines to cloud functions, containers, and scheduled jobs on major cloud platforms.
 **Workflow:** Deployment skill - packages and deploys scraping pipelines to production infrastructure.
 **Relates to:** Follows firecrawl-ci-integration; integrates with firecrawl-multi-env-setup for environment management

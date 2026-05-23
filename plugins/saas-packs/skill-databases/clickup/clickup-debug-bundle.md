@@ -10,6 +10,7 @@ clickup-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect ClickUp debug evidence for support
 **Workflow:** Part of the operations skill category for ClickUp integration.
 **Relates to:** Other clickup skills in this pack.

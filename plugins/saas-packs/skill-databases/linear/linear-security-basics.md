@@ -10,6 +10,7 @@ linear-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Linear security best practices
 **Workflow:** Part of the operations skill category for Linear integration.
 **Relates to:** Other linear skills in this pack.

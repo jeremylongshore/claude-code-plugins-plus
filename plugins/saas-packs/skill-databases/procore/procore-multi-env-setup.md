@@ -10,6 +10,7 @@ procore-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Procore multi-environment setup
 **Workflow:** Part of the enterprise skill category for Procore integration.
 **Relates to:** Other procore skills in this pack.

@@ -82,16 +82,19 @@ Automate security vulnerability detection covering OWASP Top 10 categories inclu
 ## Examples
 
 **Semgrep scan for OWASP Top 10:**
+
 ```bash
 semgrep --config=p/owasp-top-ten --json --output=security-results.json .
 ```
 
 **Checking for hardcoded secrets:**
+
 ```bash
 gitleaks detect --source=. --report-format=json --report-path=secrets-report.json
 ```
 
 **Security regression test (Jest):**
+
 ```typescript
 describe('Security: XSS Prevention', () => {
   it('escapes HTML entities in user-generated content', () => {

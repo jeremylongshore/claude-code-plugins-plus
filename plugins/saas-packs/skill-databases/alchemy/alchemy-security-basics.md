@@ -10,6 +10,7 @@ alchemy-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Alchemy security best practices
 **Workflow:** Part of the operations skill category for Alchemy integration.
 **Relates to:** Other alchemy skills in this pack.

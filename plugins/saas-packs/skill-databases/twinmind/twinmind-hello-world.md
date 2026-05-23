@@ -10,6 +10,7 @@ twinmind-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working TwinMind example
 **Workflow:** Part of the onboarding skill category for TwinMind integration.
 **Relates to:** Other twinmind skills in this pack.

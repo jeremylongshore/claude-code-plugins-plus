@@ -10,6 +10,7 @@ cohere-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Cohere local development workflow
 **Workflow:** Part of the onboarding skill category for Cohere integration.
 **Relates to:** Other cohere skills in this pack.

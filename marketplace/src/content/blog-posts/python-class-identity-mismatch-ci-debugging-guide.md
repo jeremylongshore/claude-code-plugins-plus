@@ -44,6 +44,7 @@ The tests failed with the same error as CI.
 ### Step 2: Trace the Import Paths
 
 Looking at the error message closely:
+
 - Expected: `<class 'agents.shared_contracts.PipelineResult'>`
 - Got: `PipelineResult(...)` (from a different module path)
 
@@ -98,6 +99,7 @@ The import fix revealed cascading issues:
 ## Results
 
 After the fixes:
+
 - ✅ 197 unit tests passing
 - ✅ All ARV department checks green
 - ✅ CI pipeline fully operational
@@ -108,6 +110,7 @@ After the fixes:
 ### 1. Be Ruthless About Import Consistency
 
 Pick ONE import style for your project and enforce it everywhere:
+
 - Either always use absolute imports (`from mypackage.module import Class`)
 - Or always use relative imports (`from .module import Class`)
 
@@ -135,6 +138,7 @@ has_logging_import = (
 ## Architecture Context
 
 This fix was part of the Bob's Brain v1.0.0 release - a production-grade ADK agent department with:
+
 - 10 agents (1 orchestrator + 1 foreman + 8 specialists)
 - 233+ documents following the 6767 filing system
 - 197 tests with full coverage
@@ -149,6 +153,4 @@ The class identity issue was blocking the final release PR.
 - ARV check: `scripts/check_arv_minimum.py`
 - CI workflow: `.github/workflows/ci.yml`
 
-
 *When isinstance() lies to you, check your import paths first.*
-

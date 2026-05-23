@@ -112,6 +112,7 @@ for (let i = 0; i < docs.length; i += BATCH_SIZE) {
 **Rationale**: A migration processing 100,000 documents takes 200 batch commits. If the script crashes at batch 150, without checkpoints it must restart from document 0 (re-reading 75,000 already-processed documents). With checkpoints, it reads the last checkpoint and resumes from document 75,001.
 
 **Checkpoint document schema**:
+
 ```typescript
 interface MigrationCheckpoint {
   migrationId: string;
@@ -193,6 +194,7 @@ IndexManager
 ### Migration Logging
 
 Every batch commit logs:
+
 ```
 [migration:backfill-status-field] Batch 150/200 committed. Processed: 75000, Skipped: 12, Failed: 0. Elapsed: 4m32s.
 ```
@@ -200,6 +202,7 @@ Every batch commit logs:
 ### Cost Estimation
 
 Before executing large operations, estimate cost:
+
 ```
 Operation: backfill 100,000 documents
   Reads:   100,000 × $0.06/100k = $0.06

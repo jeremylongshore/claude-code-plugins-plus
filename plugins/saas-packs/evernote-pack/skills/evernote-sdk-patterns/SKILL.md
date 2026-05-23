@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote SDK Patterns
 
 ## Overview
+
 Production-ready patterns for working with the Evernote SDK, including search with NoteFilter, pagination, attachments, tags, error handling wrappers, and batch operations with rate limit handling.
 
 ## Prerequisites
+
 - Completed `evernote-install-auth` and `evernote-hello-world`
 - Understanding of Evernote data model (Notes, Notebooks, Tags, Resources)
 - Familiarity with async/await and Promises
@@ -85,6 +87,7 @@ Implement `getOrCreateTag()` and `getOrCreateNotebook()` for idempotent operatio
 For all nine patterns with complete implementations, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
+
 - Search patterns using `NoteFilter` and `NotesMetadataResultSpec`
 - Async generator for paginated note retrieval
 - Attachment creation with MD5 hash and MIME type
@@ -93,6 +96,7 @@ For all nine patterns with complete implementations, see [Implementation Guide](
 - Batch processor with rate limit retry and progress tracking
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `RATE_LIMIT_REACHED` | Too many API calls | Use `rateLimitDuration`, add delays between batch items |
@@ -101,12 +105,14 @@ For all nine patterns with complete implementations, see [Implementation Guide](
 | `QUOTA_REACHED` | Account storage full | Check remaining quota via `user.accounting` |
 
 ## Resources
+
 - [API Reference](https://dev.evernote.com/doc/reference/)
 - [Search Grammar](https://dev.evernote.com/doc/articles/search_grammar.php)
 - [Core Concepts](https://dev.evernote.com/doc/articles/core_concepts.php)
 - [JavaScript SDK](https://github.com/Evernote/evernote-sdk-js)
 
 ## Next Steps
+
 See `evernote-core-workflow-a` for note creation and management workflows.
 
 ## Examples

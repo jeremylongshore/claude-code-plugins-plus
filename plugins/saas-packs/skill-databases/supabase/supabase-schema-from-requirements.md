@@ -10,6 +10,7 @@ supabase-schema-from-requirements/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Supabase primary workflow: generate database schema from natural language requirements. This is the main workflow for starting new Supabase projects.
 **Workflow:** Primary workflow skill. Used when starting a new project with defined data requirements.
 **Relates to:** Core skill for project initialization; complemented by supabase-auth-storage-realtime-core.

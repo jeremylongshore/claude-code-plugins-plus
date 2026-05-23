@@ -60,33 +60,43 @@ The flash loan simulator uses a **strategy-protocol abstraction pattern** where 
 ## Progressive Disclosure Strategy
 
 ### Level 1: Quick Profitability Check (Default)
+
 ```bash
 python flash_simulator.py arbitrage ETH USDC 100 --provider aave
 ```
+
 Output: Simple profit/loss with recommendation.
 
 ### Level 2: Detailed Breakdown
+
 ```bash
 python flash_simulator.py arbitrage ETH USDC 100 --breakdown
 ```
+
 Output: Step-by-step costs and revenues.
 
 ### Level 3: Multi-Provider Comparison
+
 ```bash
 python flash_simulator.py arbitrage ETH USDC 100 --compare-providers
 ```
+
 Output: Aave vs dYdX vs Balancer comparison.
 
 ### Level 4: Risk Analysis
+
 ```bash
 python flash_simulator.py arbitrage ETH USDC 100 --risk-analysis
 ```
+
 Output: MEV competition, execution risk, protocol risk scores.
 
 ### Level 5: Full Simulation
+
 ```bash
 python flash_simulator.py arbitrage ETH USDC 100 --full --output json
 ```
+
 Output: Complete analysis with all details.
 
 ## Tool Permission Strategy
@@ -96,11 +106,13 @@ allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:flashloan-*)
 ```
 
 ### Rationale
+
 - **Read/Write/Edit**: Configuration and output management
 - **Grep/Glob**: Search for contract addresses and ABIs
 - **Bash(crypto:flashloan-*)**: Scoped to flash loan simulation scripts
 
 ### Prohibited
+
 - No unrestricted Bash execution
 - No private key or wallet access
 - No actual transaction signing
@@ -404,17 +416,20 @@ python flash_simulator.py --opportunities opportunities.json --simulate-all
 ## Testing Strategy
 
 ### Unit Tests
+
 - Protocol adapter fee calculations
 - Profit calculation math
 - Risk scoring algorithms
 - Gas estimation accuracy
 
 ### Integration Tests
+
 - RPC connectivity (mocked)
 - Multi-provider comparison
 - Strategy composition
 
 ### Acceptance Tests
+
 - Simulation matches historical actual profits (±10%)
 - All strategy types complete without error
 - Free RPC tier sufficient for basic usage
@@ -422,12 +437,14 @@ python flash_simulator.py --opportunities opportunities.json --simulate-all
 ## Security & Compliance
 
 ### Safety Measures
+
 - **No execution**: Simulation only, never signs transactions
 - **No private keys**: Tool cannot access wallets
 - **Read-only RPC**: Only view functions, no state changes
 - **Educational disclaimer**: Clear warnings about real risks
 
 ### Data Handling
+
 - No sensitive data storage
 - API keys in environment variables only
 - No transaction broadcasting
@@ -435,6 +452,7 @@ python flash_simulator.py --opportunities opportunities.json --simulate-all
 ## Dependencies
 
 ### Python Packages
+
 ```
 web3>=6.0.0            # Ethereum interaction
 httpx>=0.24.0          # Async HTTP client
@@ -443,11 +461,13 @@ rich>=13.0             # Terminal formatting
 ```
 
 ### External Services
+
 - Free RPC endpoints (Ankr, Chainstack free tier, Infura free tier)
 - DeFiLlama API (protocol TVL)
 - Etherscan API (gas oracle)
 
 ### Protocol Contracts (Read-Only)
+
 - Aave V3 Pool
 - dYdX Solo Margin
 - Balancer Vault

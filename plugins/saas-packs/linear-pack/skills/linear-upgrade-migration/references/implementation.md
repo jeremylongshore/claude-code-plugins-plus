@@ -3,6 +3,7 @@
 ## Migration Patterns
 
 ### Pattern A: Renamed Fields
+
 ```typescript
 // Before (deprecated)
 const issue = await client.issue("ABC-123");
@@ -15,6 +16,7 @@ console.log(state?.name);
 ```
 
 ### Pattern B: Changed Return Types
+
 ```typescript
 // Before: Direct object return
 const teams = await client.teams();
@@ -26,6 +28,7 @@ teams.nodes.forEach(team => console.log(team.name));
 ```
 
 ### Pattern C: New Required Parameters
+
 ```typescript
 // Before
 await client.createIssue({ title: "Issue" });
@@ -35,6 +38,7 @@ await client.createIssue({ title: "Issue", teamId: team.id });
 ```
 
 ### Pattern D: Removed Methods
+
 ```typescript
 if (typeof client.deprecatedMethod === "function") {
   await client.deprecatedMethod();
@@ -75,6 +79,7 @@ export class LinearCompatClient {
 ## SDK Version Changes
 
 ### SDK 1.x to 2.x
+
 ```typescript
 // 1.x: CommonJS
 const { LinearClient } = require("@linear/sdk");
@@ -86,6 +91,7 @@ import { LinearClient } from "@linear/sdk";
 ```
 
 ### SDK 2.x to 3.x
+
 ```typescript
 // 2.x: Loose types
 const issue: any = await client.issue("ABC-123");

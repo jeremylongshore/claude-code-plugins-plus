@@ -5,6 +5,7 @@ Detailed implementation reference for the lokalise-hello-world skill.
 ## Instructions
 
 ### Step 1: Create Entry File
+
 ```bash
 # Create project directory
 mkdir lokalise-demo && cd lokalise-demo
@@ -16,6 +17,7 @@ touch index.mjs
 ```
 
 ### Step 2: Initialize Client and List Projects
+
 ```typescript
 // index.mjs
 import "dotenv/config";
@@ -38,6 +40,7 @@ main().catch(console.error);
 ```
 
 ### Step 3: Create a Project
+
 ```typescript
 async function createProject() {
   const project = await lokaliseApi.projects().create({
@@ -58,6 +61,7 @@ async function createProject() {
 ```
 
 ### Step 4: Add Translation Keys
+
 ```typescript
 async function addKeys(projectId: string) {
   const keys = await lokaliseApi.keys().create({
@@ -88,6 +92,7 @@ async function addKeys(projectId: string) {
 ```
 
 ### Step 5: Retrieve Translations
+
 ```typescript
 async function getTranslations(projectId: string) {
   const translations = await lokaliseApi.translations().list({
@@ -102,10 +107,10 @@ async function getTranslations(projectId: string) {
 }
 ```
 
-
 ## Detailed Examples
 
 ### Complete Hello World Script
+
 ```typescript
 import "dotenv/config";
 import { LokaliseApi } from "@lokalise/node-api";
@@ -160,6 +165,7 @@ helloLokalise().catch(console.error);
 ```
 
 ### Using CLI for Quick Test
+
 ```bash
 # List projects
 lokalise2 --token $LOKALISE_API_TOKEN project list
@@ -170,4 +176,3 @@ lokalise2 --token $LOKALISE_API_TOKEN project --project-id YOUR_PROJECT_ID
 # List keys in a project
 lokalise2 --token $LOKALISE_API_TOKEN key list --project-id YOUR_PROJECT_ID
 ```
-

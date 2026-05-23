@@ -62,4 +62,3 @@ With 343+ plugins in the marketplace, the asset bundle was approaching the old p
 - [OKLCH: Why Your CSS Color System Is Lying to You](/posts/oklch-color-system-marketplace-facelift/)
 - [Verified Plugins Program: Building a Quality Signal for the Marketplace](/posts/verified-plugins-program-quality-signal-for-the-marketplace/)
 - [Marketplace Quality Blitz: 130 Stubs, 4300 Warnings](/posts/marketplace-quality-blitz-130-stubs-4300-warnings/)
-

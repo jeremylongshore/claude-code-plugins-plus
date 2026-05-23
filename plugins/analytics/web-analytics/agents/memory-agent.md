@@ -28,6 +28,7 @@ Analytics memory is stored in the skill's data directory:
 `${CLAUDE_SKILL_DIR}/data/`
 
 **Files:**
+
 | File | Purpose | Updated |
 |------|---------|---------|
 | `baselines.md` | Rolling 90-day baseline metrics per site | After every full report |
@@ -59,6 +60,7 @@ When the orchestrator invokes you before a report, return:
 ```
 
 If no prior data exists (first run), return:
+
 ```
 ## Analytics Context — {current_date}
 **Status:** First run — no historical baselines available.
@@ -115,6 +117,7 @@ If the current report reveals a new pattern, append to `patterns.md`:
 ```
 
 Example patterns:
+
 - "Monday traffic spike on tonsofskills — consistently 20-30% above weekly average"
 - "Blog posts on startaitools get 80% of lifetime traffic in first 48h"
 - "AI referral traffic to tonsofskills doubles after each Anthropic release announcement"

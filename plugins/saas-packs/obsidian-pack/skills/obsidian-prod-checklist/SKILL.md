@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Obsidian Prod Checklist
 
 ## Overview
+
 Pre-release verification for Obsidian plugins covering manifest validation, production build quality, mobile compatibility, memory leak prevention, settings migration, and community plugin submission readiness.
 
 ## Prerequisites
+
 - Completed plugin development with all features working
 - Tested in at least one vault manually
 - GitHub repository with source code committed
@@ -35,6 +37,7 @@ Pre-release verification for Obsidian plugins covering manifest validation, prod
 ## Instructions
 
 ### Step 1: Validate manifest.json
+
 ```javascript
 // Run: node -e '<paste this>'
 const m = require('./manifest.json');
@@ -62,6 +65,7 @@ console.log('manifest.json OK:', m.id, 'v' + m.version, '(requires Obsidian >=' 
 ```
 
 ### Step 2: Validate versions.json
+
 ```javascript
 // Run: node -e '<paste this>'
 const manifest = require('./manifest.json');
@@ -91,6 +95,7 @@ console.log('versions.json OK: all versions consistent');
 ```
 
 ### Step 3: Production Build Checks
+
 ```bash
 set -euo pipefail
 # Clean build
@@ -123,6 +128,7 @@ fi
 ```
 
 ### Step 4: Code Quality — No console.log in Production
+
 ```bash
 set -euo pipefail
 # Obsidian reviewers reject plugins with console.log in production code
@@ -146,6 +152,7 @@ fi
 ```
 
 ### Step 5: Memory Leak Check — Proper onunload Cleanup
+
 Review your `main.ts` for proper resource cleanup:
 
 ```typescript
@@ -178,6 +185,7 @@ export default class MyPlugin extends Plugin {
 ```
 
 Common leak sources to audit:
+
 - `setInterval` / `setTimeout` not using `this.registerInterval`
 - `addEventListener` without matching `removeEventListener`
 - `MutationObserver` or `ResizeObserver` without `disconnect()`
@@ -185,6 +193,7 @@ Common leak sources to audit:
 - Detached DOM nodes held in class properties
 
 ### Step 6: Mobile Compatibility
+
 ```typescript
 // Check if running on mobile
 import { Platform } from 'obsidian';
@@ -201,12 +210,14 @@ if (Platform.isMobile) {
 ```
 
 Test on mobile:
+
 1. Build and release (even a beta via BRAT)
 2. Install on iOS/Android Obsidian
 3. Verify: settings tab renders, commands work, no crashes on open/close
 4. Check touch targets are large enough (44px minimum)
 
 ### Step 7: Settings Migration
+
 ```typescript
 // Handle upgrades from older settings versions
 interface MyPluginSettings {
@@ -237,7 +248,9 @@ async loadSettings() {
 ```
 
 ### Step 8: README and Documentation
+
 Verify your README includes:
+
 - Clear description of what the plugin does
 - Installation instructions (community plugins search + manual)
 - Screenshots or GIFs of the plugin in action
@@ -260,6 +273,7 @@ echo "README.md: $(wc -l < README.md) lines"
 ```
 
 ## Output
+
 - Validated `manifest.json` with all required fields and correct formatting
 - Consistent versions across `manifest.json`, `package.json`, and `versions.json`
 - Production `main.js` without sourcemaps or debug artifacts
@@ -270,6 +284,7 @@ echo "README.md: $(wc -l < README.md) lines"
 - README with screenshots and installation instructions
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | PR rejected: missing fields | Incomplete manifest.json | Run Step 1 validation |
@@ -283,6 +298,7 @@ echo "README.md: $(wc -l < README.md) lines"
 ## Examples
 
 ### Quick Pre-Release Validation Script
+
 ```bash
 set -euo pipefail
 echo "=== Obsidian Plugin Pre-Release Check ==="
@@ -313,7 +329,9 @@ echo "=== Done ==="
 ```
 
 ### Checklist Summary Format
+
 After running all checks, produce a summary:
+
 ```
 Pre-Release Report: my-plugin v1.2.0
   [x] manifest.json — all fields present, id=my-plugin
@@ -327,11 +345,13 @@ Pre-Release Report: my-plugin v1.2.0
 ```
 
 ## Resources
+
 - [Plugin Submission Guidelines](https://docs.obsidian.md/Plugins/Releasing/Submit+your+plugin)
 - [Plugin Guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines)
 - [Community Plugins Repo](https://github.com/obsidianmd/obsidian-releases)
 - [Obsidian API Reference](https://docs.obsidian.md/Reference/TypeScript+API)
 
 ## Next Steps
+
 For version upgrades and breaking changes, see `obsidian-upgrade-migration`.
 For CI/CD automation, see `obsidian-ci-integration`.

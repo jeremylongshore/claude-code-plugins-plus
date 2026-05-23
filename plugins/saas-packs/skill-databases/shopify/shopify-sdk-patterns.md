@@ -10,6 +10,7 @@ shopify-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Shopify SDK patterns
 **Workflow:** Part of the onboarding skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

@@ -74,7 +74,7 @@ export async function loadLocale(locale: Locale): Promise<TranslationKeys> {
 }
 ```
 
-2. Create CLI push/pull scripts for the upload-translate-download cycle.
+1. Create CLI push/pull scripts for the upload-translate-download cycle.
 
 **Push script (`scripts/i18n-push.sh`):**
 
@@ -151,7 +151,7 @@ npm run i18n:pull
 npm run i18n:sync
 ```
 
-3. Set up watch mode to auto-upload source strings when `en.json` changes during development.
+1. Set up watch mode to auto-upload source strings when `en.json` changes during development.
 
 ```typescript
 // scripts/i18n-watch.ts — run with: npx tsx scripts/i18n-watch.ts
@@ -190,7 +190,7 @@ Add to package.json:
 }
 ```
 
-4. Generate mock translations for offline development and layout testing.
+1. Generate mock translations for offline development and layout testing.
 
 ```typescript
 // scripts/i18n-mock.ts
@@ -240,7 +240,7 @@ const devLocales = process.env.NODE_ENV === "development"
   : {};
 ```
 
-5. Integrate with React i18next (or skip to step 6 for Vue i18n).
+1. Integrate with React i18next (or skip to step 6 for Vue i18n).
 
 ```typescript
 // src/i18n.ts
@@ -269,7 +269,7 @@ export async function changeLanguage(lng: string) {
 export default i18n;
 ```
 
-6. Integrate with Vue i18n (alternative to step 5).
+1. Integrate with Vue i18n (alternative to step 5).
 
 ```typescript
 // src/i18n.ts
@@ -297,7 +297,7 @@ export async function loadLocaleMessages(locale: string) {
 export default i18n;
 ```
 
-7. Add a pre-commit hook to prevent committing stale translations.
+1. Add a pre-commit hook to prevent committing stale translations.
 
 ```bash
 #!/usr/bin/env bash

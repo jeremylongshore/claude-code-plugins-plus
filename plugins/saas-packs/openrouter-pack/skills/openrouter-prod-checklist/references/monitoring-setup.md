@@ -3,6 +3,7 @@
 ## Monitoring Setup
 
 ### Basic Metrics
+
 ```python
 import time
 from dataclasses import dataclass
@@ -65,6 +66,7 @@ def monitored_chat(prompt: str, model: str):
 ```
 
 ### Health Check Endpoint
+
 ```python
 from flask import Flask, jsonify
 

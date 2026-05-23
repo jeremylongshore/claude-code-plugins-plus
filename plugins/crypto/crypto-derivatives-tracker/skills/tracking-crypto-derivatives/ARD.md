@@ -47,27 +47,34 @@ This skill aggregates derivatives data from multiple exchanges, normalizes forma
 ## Workflow
 
 ### Step 1: Exchange Client Initialization
+
 Configure API connections for each supported exchange with rate limiting.
 
 ### Step 2: Data Fetching
+
 Parallel fetch from all exchanges for:
+
 - Funding rates (perpetuals)
 - Open interest (futures + perps)
 - Recent liquidations
 - Options data (Deribit primarily)
 
 ### Step 3: Data Normalization
+
 Standardize formats across exchanges:
+
 - Convert funding to 8-hour basis
 - Normalize OI to USD equivalent
 - Unify liquidation formats
 
 ### Step 4: Analysis & Aggregation
+
 - Calculate weighted averages
 - Detect divergences
 - Generate signals
 
 ### Step 5: Output
+
 Present in requested format (console/JSON).
 
 ---
@@ -97,13 +104,17 @@ Exchange APIs          Normalization           Analysis              Output
 ## Progressive Disclosure Strategy
 
 ### Level 1: Quick Summary
+
 Single-line current funding rate or OI.
+
 ```
 BTC Funding: +0.015% (Binance) | OI: $18.5B (+2.3% 24h)
 ```
 
 ### Level 2: Standard Report
+
 Tabular view across exchanges with key metrics.
+
 ```
 BTC FUNDING RATES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -115,6 +126,7 @@ Bybit       +0.0180%   +0.0140%   +19.71%
 ```
 
 ### Level 3: Deep Analysis
+
 Full derivatives dashboard with all metrics, signals, and risk assessment.
 
 ---
@@ -204,6 +216,7 @@ RATE_LIMITS = {
 ## Data Models
 
 ### FundingRate
+
 ```python
 @dataclass
 class FundingRate:
@@ -216,6 +229,7 @@ class FundingRate:
 ```
 
 ### OpenInterest
+
 ```python
 @dataclass
 class OpenInterest:
@@ -229,6 +243,7 @@ class OpenInterest:
 ```
 
 ### Liquidation
+
 ```python
 @dataclass
 class Liquidation:
@@ -242,6 +257,7 @@ class Liquidation:
 ```
 
 ### OptionsSnapshot
+
 ```python
 @dataclass
 class OptionsSnapshot:
@@ -327,17 +343,20 @@ async def fetch_all_funding(symbols: List[str]) -> Dict[str, FundingRate]:
 ## Testing Strategy
 
 ### Unit Tests
+
 - Funding rate calculations
 - OI normalization
 - Liquidation aggregation
 - Basis calculations
 
 ### Integration Tests
+
 - Exchange API connectivity
 - Rate limit handling
 - Error recovery
 
 ### Mock Data
+
 - Simulated exchange responses
 - Historical liquidation data
 - Options chain snapshots
@@ -347,11 +366,13 @@ async def fetch_all_funding(symbols: List[str]) -> Dict[str, FundingRate]:
 ## Security & Compliance
 
 ### API Key Handling
+
 - Keys stored in environment variables or config
 - Read-only permissions only (no trading)
 - No key logging in outputs
 
 ### Data Privacy
+
 - No personal data collected
 - No trading history stored
 - Analysis only, no execution
@@ -371,6 +392,7 @@ alerts:
 ```
 
 ### Alert Outputs
+
 - Console warnings with emoji indicators
 - JSON alerts for webhook integration
 - Summary at end of report

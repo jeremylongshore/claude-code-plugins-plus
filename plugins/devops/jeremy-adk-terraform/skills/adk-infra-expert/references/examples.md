@@ -37,6 +37,7 @@ output "agent_endpoint" {
 ```
 
 **Validation commands:**
+
 ```bash
 terraform plan -var="project_id=my-project"
 terraform apply -var="project_id=my-project" -auto-approve
@@ -129,6 +130,7 @@ module "vpc_sc" {
 ```
 
 **Validation commands:**
+
 ```bash
 # Verify agent is reachable
 gcloud ai agent-engines describe prod-agent-v1 \

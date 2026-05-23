@@ -3,6 +3,7 @@
 ## Pre-Migration Assessment
 
 ### Current State Analysis
+
 ```bash
 set -euo pipefail
 # Document current implementation
@@ -17,6 +18,7 @@ pip freeze | grep retellai
 ```
 
 ### Data Inventory
+
 ```typescript
 interface MigrationInventory {
   dataTypes: string[];
@@ -63,6 +65,7 @@ Phase 3: Complete
 ## Phase-by-Phase Implementation
 
 ### Phase 1: Setup (Week 1-2)
+
 ```bash
 set -euo pipefail
 # Install Retell AI SDK
@@ -77,6 +80,7 @@ node -e "require('@retellai/sdk').ping()"
 ```
 
 ### Phase 2: Adapter Layer (Week 3-4)
+
 ```typescript
 // src/adapters/retellai.ts
 interface ServiceAdapter {
@@ -99,6 +103,7 @@ class RetellAIAdapter implements ServiceAdapter {
 ```
 
 ### Phase 3: Data Migration (Week 5-6)
+
 ```typescript
 async function migrateRetellAIData(): Promise<MigrationResult> {
   const batchSize = 100;
@@ -123,6 +128,7 @@ async function migrateRetellAIData(): Promise<MigrationResult> {
 ```
 
 ### Phase 4: Traffic Shift (Week 7-8)
+
 ```typescript
 // Feature flag controlled traffic split
 function getServiceAdapter(): ServiceAdapter {

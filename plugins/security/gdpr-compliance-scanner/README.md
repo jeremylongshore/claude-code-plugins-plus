@@ -28,6 +28,7 @@ Scan applications and data systems for GDPR compliance with comprehensive checks
 ## GDPR Compliance Areas
 
 ### 1. Lawful Basis for Processing (Article 6)
+
 - Consent obtained properly
 - Contract necessity documented
 - Legitimate interests balanced
@@ -36,6 +37,7 @@ Scan applications and data systems for GDPR compliance with comprehensive checks
 - Public task authority
 
 ### 2. Data Subject Rights (Articles 12-23)
+
 - Right to be informed
 - Right of access
 - Right to rectification
@@ -46,6 +48,7 @@ Scan applications and data systems for GDPR compliance with comprehensive checks
 - Rights related to automated decision making
 
 ### 3. Data Protection by Design (Article 25)
+
 - Privacy by default settings
 - Data minimization
 - Purpose limitation
@@ -53,6 +56,7 @@ Scan applications and data systems for GDPR compliance with comprehensive checks
 - Integrity and confidentiality
 
 ### 4. Security Measures (Article 32)
+
 - Encryption of personal data
 - Pseudonymization where possible
 - Regular security testing
@@ -61,12 +65,14 @@ Scan applications and data systems for GDPR compliance with comprehensive checks
 - Data backup and recovery
 
 ### 5. Data Protection Impact Assessment (Article 35)
+
 - High-risk processing identified
 - DPIA conducted for high-risk activities
 - Consultation with DPO
 - Mitigation measures implemented
 
 ### 6. International Data Transfers (Chapter V)
+
 - Adequacy decisions verified
 - Standard contractual clauses in place
 - Binding corporate rules (if applicable)
@@ -162,18 +168,21 @@ Priority 3 (Medium-term - 3-6 months):
 ## Compliance Checklist
 
 ### Lawful Processing
+
 - [ ] Lawful basis identified for each processing activity
 - [ ] Consent mechanisms implemented where required
 - [ ] Consent withdrawal easy and accessible
 - [ ] Processing records maintained (Article 30)
 
 ### Transparency
+
 - [ ] Privacy policy clear and accessible
 - [ ] Data collection purposes explained
 - [ ] Third-party data sharing disclosed
 - [ ] Retention periods specified
 
 ### Data Subject Rights
+
 - [ ] Access request process documented
 - [ ] Data portability export functionality
 - [ ] Deletion request mechanism
@@ -181,6 +190,7 @@ Priority 3 (Medium-term - 3-6 months):
 - [ ] Response within 30 days guaranteed
 
 ### Security
+
 - [ ] Personal data encrypted at rest
 - [ ] Personal data encrypted in transit
 - [ ] Access controls implemented
@@ -188,6 +198,7 @@ Priority 3 (Medium-term - 3-6 months):
 - [ ] Breach notification procedures (72 hours)
 
 ### Accountability
+
 - [ ] Data Protection Officer appointed (if required)
 - [ ] Processing records maintained
 - [ ] DPIAs conducted for high-risk processing
@@ -197,6 +208,7 @@ Priority 3 (Medium-term - 3-6 months):
 ## Penalties for Non-Compliance
 
 GDPR violations can result in:
+
 - Up to €20 million or 4% of global annual revenue (whichever is higher)
 - Reputational damage
 - Loss of customer trust

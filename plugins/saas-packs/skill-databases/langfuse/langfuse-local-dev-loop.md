@@ -10,6 +10,7 @@ langfuse-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Langfuse local development workflow
 **Workflow:** Part of the onboarding skill category for Langfuse integration.
 **Relates to:** Other langfuse skills in this pack.

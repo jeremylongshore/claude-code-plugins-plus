@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral Data Handling
 
 ## Overview
+
 Manage data flows through Mistral AI APIs with PII redaction, audit logging, fine-tuning dataset sanitization, and conversation retention policies. Mistral's data policy: API requests on La Plateforme are **not** used for training by default. Self-deployed models give full data sovereignty.
 
 ## Prerequisites
+
 - Mistral API key configured
 - Understanding of data classification (PII, PHI, PCI)
 - Logging infrastructure for audit trails
@@ -218,6 +220,7 @@ function logAudit(entry: AuditEntry): void {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | PII leak to API | Regex missed pattern | Add domain-specific rules (e.g., patient IDs) |
@@ -228,6 +231,7 @@ function logAudit(entry: AuditEntry): void {
 ## Examples
 
 ### Safe Embedding Generation
+
 ```typescript
 async function safeEmbed(texts: string[]) {
   const cleaned = texts.map(t => redactPII(t).cleaned);
@@ -239,6 +243,7 @@ async function safeEmbed(texts: string[]) {
 ```
 
 ### Batch API with PII Redaction
+
 ```python
 import json
 
@@ -253,12 +258,14 @@ def sanitize_batch_file(input_path: str, output_path: str):
 ```
 
 ## Resources
+
 - [Mistral Data Policy](https://docs.mistral.ai/deployment/ai-studio/)
 - [Fine-Tuning Guide](https://docs.mistral.ai/capabilities/finetuning/)
 - [Batch Inference](https://docs.mistral.ai/capabilities/batch/)
 - [GDPR Compliance](https://mistral.ai/privacy/)
 
 ## Output
+
 - PII redaction layer for all API calls
 - Safe chat wrapper with audit logging
 - Fine-tuning dataset sanitization pipeline

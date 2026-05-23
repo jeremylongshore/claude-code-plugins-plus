@@ -10,6 +10,7 @@ clerk-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Clerk monitoring and observability
 **Workflow:** Part of the enterprise skill category for Clerk integration.
 **Relates to:** Other clerk skills in this pack.

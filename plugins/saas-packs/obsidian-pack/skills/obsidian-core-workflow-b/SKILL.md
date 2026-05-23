@@ -432,6 +432,7 @@ async addTagToFolder(folder: string, tag: string): Promise<number> {
 ## Output
 
 After applying these patterns your plugin gains:
+
 - A sidebar panel (ItemView) with live vault statistics
 - Confirmation and text-input modal dialogs
 - A fuzzy-search note picker
@@ -455,12 +456,14 @@ After applying these patterns your plugin gains:
 ## Examples
 
 **Open a view in a new tab instead of sidebar:**
+
 ```typescript
 const leaf = this.app.workspace.getLeaf("tab");
 await leaf.setViewState({ type: STATS_VIEW_TYPE, active: true });
 ```
 
 **Promise-based confirm modal:**
+
 ```typescript
 function confirm(app: App, msg: string): Promise<boolean> {
   return new Promise((resolve) => {

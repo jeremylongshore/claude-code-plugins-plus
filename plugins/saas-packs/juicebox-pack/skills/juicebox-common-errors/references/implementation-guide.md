@@ -7,17 +7,20 @@ Detailed implementation examples and code patterns.
 ### Authentication Errors
 
 #### 401 Unauthorized
+
 ```
 Error: Invalid or expired API key
 Code: AUTHENTICATION_FAILED
 ```
 
 **Causes:**
+
 - API key is incorrect
 - API key has been revoked
 - Environment variable not set
 
 **Solutions:**
+
 ```bash
 # Verify API key is set
 echo $JUICEBOX_API_KEY
@@ -28,17 +31,20 @@ curl -H "Authorization: Bearer $JUICEBOX_API_KEY" \
 ```
 
 #### 403 Forbidden
+
 ```
 Error: Insufficient permissions for this operation
 Code: PERMISSION_DENIED
 ```
 
 **Causes:**
+
 - API key lacks required scope
 - Account tier limitation
 - Feature not available in plan
 
 **Solutions:**
+
 - Check API key permissions in dashboard
 - Upgrade account tier if needed
 - Contact support for access
@@ -46,6 +52,7 @@ Code: PERMISSION_DENIED
 ### Rate Limiting Errors
 
 #### 429 Too Many Requests
+
 ```
 Error: Rate limit exceeded
 Code: RATE_LIMITED
@@ -53,11 +60,13 @@ Retry-After: 60
 ```
 
 **Causes:**
+
 - Exceeded requests per minute
 - Exceeded daily quota
 - Burst limit hit
 
 **Solutions:**
+
 ```typescript
 // Implement exponential backoff
 async function withBackoff(fn: () => Promise<any>, maxRetries = 3) {
@@ -79,6 +88,7 @@ async function withBackoff(fn: () => Promise<any>, maxRetries = 3) {
 ### Search Errors
 
 #### 400 Bad Request - Invalid Query
+
 ```
 Error: Invalid search query syntax
 Code: INVALID_QUERY
@@ -86,11 +96,13 @@ Details: Unexpected token at position 15
 ```
 
 **Causes:**
+
 - Malformed query syntax
 - Invalid field name
 - Unclosed quotes
 
 **Solutions:**
+
 ```typescript
 // Validate query before sending
 function validateQuery(query: string): boolean {
@@ -106,17 +118,20 @@ function validateQuery(query: string): boolean {
 ```
 
 #### 404 Profile Not Found
+
 ```
 Error: Profile with ID 'xxx' not found
 Code: NOT_FOUND
 ```
 
 **Causes:**
+
 - Profile ID is invalid
 - Profile has been removed
 - Stale cache reference
 
 **Solutions:**
+
 - Verify profile ID format
 - Handle not found gracefully
 - Implement cache invalidation
@@ -124,12 +139,14 @@ Code: NOT_FOUND
 ### Network Errors
 
 #### ETIMEDOUT
+
 ```
 Error: Request timed out
 Code: TIMEOUT
 ```
 
 **Solutions:**
+
 ```typescript
 // Increase timeout for large searches
 const client = new JuiceboxClient({

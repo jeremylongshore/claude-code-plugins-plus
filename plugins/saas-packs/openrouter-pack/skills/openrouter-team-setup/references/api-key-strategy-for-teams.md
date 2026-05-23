@@ -3,6 +3,7 @@
 ## API Key Strategy for Teams
 
 ### Separate Keys Per Environment
+
 ```
 Development:
   Key: sk-or-dev-xxx
@@ -21,6 +22,7 @@ Production:
 ```
 
 ### Keys Per Team/Service
+
 ```
 Frontend Team:
   Key: sk-or-frontend-xxx

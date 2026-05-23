@@ -3,6 +3,7 @@
 ## Retry Strategies
 
 ### Exponential Backoff
+
 ```python
 import time
 import random
@@ -29,6 +30,7 @@ def chat_with_backoff(prompt: str, model: str, max_retries: int = 5):
 ```
 
 ### With Retry-After Header
+
 ```python
 def get_retry_after(error) -> float:
     """Extract Retry-After from error response."""

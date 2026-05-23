@@ -6,7 +6,6 @@ description: Optimize cloud costs and generate cost reports
 
 Optimize cloud costs and generate cost reports
 
-
 ## Key Features
 
 - Production-ready configurations

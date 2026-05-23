@@ -54,6 +54,7 @@ curl -s -D - -o /dev/null \
 ## Incident Playbooks
 
 ### API Outage
+
 1. Confirm via status.flexport.com and diagnostic script above
 2. Enable circuit breaker to serve cached shipment data
 3. Notify downstream consumers that tracking data is stale
@@ -61,6 +62,7 @@ curl -s -D - -o /dev/null \
 5. Monitor status page for Flexport resolution updates
 
 ### Authentication Failure
+
 1. Verify API key is set and not expired: check `$FLEXPORT_API_KEY`
 2. Test with a minimal authenticated request (see diagnostics)
 3. If 401: rotate API key in Flexport portal, deploy new key
@@ -68,6 +70,7 @@ curl -s -D - -o /dev/null \
 5. Revoke compromised keys after new key is confirmed working
 
 ### Data Sync Failure
+
 1. Check webhook endpoint health — is your receiver returning 200?
 2. Query `/webhooks` to verify subscription is active
 3. Identify missed events by comparing last processed timestamp

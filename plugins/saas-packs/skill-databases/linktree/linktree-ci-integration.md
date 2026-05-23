@@ -10,6 +10,7 @@ linktree-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Linktree CI/CD integration
 **Workflow:** Part of the cicd skill category for Linktree integration.
 **Relates to:** Other linktree skills in this pack.

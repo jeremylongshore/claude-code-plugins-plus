@@ -229,6 +229,7 @@ router.post("/verify-email", async (req, res) => {
 In Customer.io dashboard, create campaigns triggered by these events:
 
 **Onboarding Campaign:**
+
 1. **Trigger:** Event `signed_up`
 2. **Wait** 5 minutes
 3. **Send** welcome email (use `{{ customer.first_name }}` and `{{ event.method }}` Liquid)
@@ -244,6 +245,7 @@ In Customer.io dashboard, create campaigns triggered by these events:
    - Yes → End (move to engagement campaign)
 
 **Cancellation Win-back Campaign:**
+
 1. **Trigger:** Event `subscription_cancelled`
 2. **Wait** 3 days
 3. **Send** "We miss you" email with `{{ event.reason }}` Liquid variable

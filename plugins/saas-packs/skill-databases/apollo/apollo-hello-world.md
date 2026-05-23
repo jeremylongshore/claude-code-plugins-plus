@@ -10,6 +10,7 @@ apollo-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Apollo example
 **Workflow:** Part of the onboarding skill category for Apollo integration.
 **Relates to:** Other apollo skills in this pack.

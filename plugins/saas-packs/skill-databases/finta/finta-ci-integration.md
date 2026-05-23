@@ -10,6 +10,7 @@ finta-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Finta CI/CD integration
 **Workflow:** Part of the cicd skill category for Finta integration.
 **Relates to:** Other finta skills in this pack.

@@ -190,6 +190,7 @@ async function auditIntegrationAccess(notion: Client): Promise<void> {
 ```
 
 **Page sharing hierarchy rules:**
+
 - Sharing a parent page grants access to all child pages and databases
 - Sharing a child page alone does NOT grant access to its parent
 - Removing integration access from a parent cascades to all children
@@ -345,6 +346,7 @@ app.post('/webhooks/notion', express.json(), async (req, res) => {
 ## Output
 
 After applying this skill:
+
 - Integration tokens stored in environment variables, never in source code
 - `.gitignore` configured to exclude all `.env` variants
 - Git secret scanning workflow catches accidental token commits

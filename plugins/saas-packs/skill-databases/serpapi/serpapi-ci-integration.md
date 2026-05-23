@@ -10,6 +10,7 @@ serpapi-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure SerpApi CI/CD integration
 **Workflow:** Part of the cicd skill category for SerpApi integration.
 **Relates to:** Other serpapi skills in this pack.

@@ -5,9 +5,11 @@
 ## Architectural Overview
 
 ### Pattern
+
 Script Automation with Multi-Provider Fallback
 
 ### Architecture Diagram
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                     User Request                                 │
@@ -43,6 +45,7 @@ Script Automation with Multi-Provider Fallback
 ```
 
 ### Workflow
+
 1. Parse user query (tx hash, address, block number, contract call)
 2. Detect chain from address/hash prefix or explicit parameter
 3. Route to appropriate chain client
@@ -85,6 +88,7 @@ skills/exploring-blockchain-data/
 ## API Integration Architecture
 
 ### Primary: Explorer APIs (Etherscan family)
+
 ```python
 # Transaction details with internal txs
 GET /api?module=account&action=txlist&address={addr}
@@ -97,6 +101,7 @@ GET /api?module=account&action=tokentx&address={addr}
 ```
 
 ### Secondary: RPC (provider-agnostic JSON-RPC calls)
+
 ```python
 # Real-time balance
 eth_getBalance(address, 'latest')

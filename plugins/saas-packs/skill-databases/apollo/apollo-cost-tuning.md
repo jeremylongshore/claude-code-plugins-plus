@@ -10,6 +10,7 @@ apollo-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Apollo costs and usage
 **Workflow:** Part of the cicd skill category for Apollo integration.
 **Relates to:** Other apollo skills in this pack.

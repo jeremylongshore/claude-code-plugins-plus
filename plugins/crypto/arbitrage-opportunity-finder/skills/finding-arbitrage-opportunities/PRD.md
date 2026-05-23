@@ -22,18 +22,21 @@ Traders need automated tools to scan markets, identify profitable opportunities,
 ## Target Users
 
 ### Persona 1: Arbitrage Trader (Alex)
+
 - **Role**: Professional crypto trader specializing in arbitrage strategies
 - **Goals**: Find consistent low-risk profits from market inefficiencies
 - **Pain Points**: Missing opportunities due to manual monitoring; executing unprofitable trades due to hidden costs
 - **Technical Level**: High (understands order books, APIs, gas costs)
 
 ### Persona 2: Quantitative Researcher (Quinn)
+
 - **Role**: Researcher analyzing market microstructure and efficiency
 - **Goals**: Study arbitrage dynamics, measure market integration, backtest strategies
 - **Pain Points**: Lack of historical spread data; difficulty aggregating prices across venues
 - **Technical Level**: Very High (builds custom models and systems)
 
 ### Persona 3: DeFi Bot Developer (Dana)
+
 - **Role**: Developer building automated trading bots and MEV strategies
 - **Goals**: Integrate opportunity detection into automated execution systems
 - **Pain Points**: Need reliable APIs and data formats; require accurate profit calculations
@@ -42,66 +45,78 @@ Traders need automated tools to scan markets, identify profitable opportunities,
 ## User Stories
 
 ### US-1: CEX Spread Scanning (Critical)
+
 **As** an arbitrage trader,
 **I want** to scan price spreads across centralized exchanges for a token pair,
 **So that** I can identify exchange-to-exchange arbitrage opportunities.
 
 **Acceptance Criteria:**
+
 - Fetch bid/ask prices from at least 5 major CEXs
 - Calculate spread after trading fees (maker/taker)
 - Display opportunities above a configurable profit threshold
 - Show estimated profit in USD and percentage
 
 ### US-2: DEX Price Comparison (Critical)
+
 **As** a DeFi developer,
 **I want** to compare token prices across decentralized exchanges,
 **So that** I can find DEX-to-DEX arbitrage without CEX dependency.
 
 **Acceptance Criteria:**
+
 - Query prices from Uniswap, SushiSwap, Curve, Balancer
 - Account for DEX swap fees (0.01% - 1%)
 - Estimate gas costs for swap transactions
 - Support multiple chains (Ethereum, Polygon, Arbitrum)
 
 ### US-3: Triangular Arbitrage Detection (High)
+
 **As** a quantitative researcher,
 **I want** to discover triangular arbitrage paths within a single exchange,
 **So that** I can exploit multi-hop inefficiencies.
 
 **Acceptance Criteria:**
+
 - Build price graph from available trading pairs
 - Find profitable circular paths (A→B→C→A)
 - Calculate net profit after all hop fees
 - Rank paths by profit and execution complexity
 
 ### US-4: Cross-Chain Opportunities (Medium)
+
 **As** a DeFi bot developer,
 **I want** to identify cross-chain price differences,
 **So that** I can build bridge arbitrage strategies.
 
 **Acceptance Criteria:**
+
 - Compare same-token prices across L1/L2 chains
 - Factor in bridge fees and transfer times
 - Estimate total gas costs (both chains)
 - Flag opportunities with acceptable delay risk
 
 ### US-5: Real-Time Monitoring (High)
+
 **As** an arbitrage trader,
 **I want** to continuously monitor spreads with alerts,
 **So that** I don't miss time-sensitive opportunities.
 
 **Acceptance Criteria:**
+
 - Configurable polling interval (default: 5 seconds)
 - Alert when spread exceeds threshold
 - Rate-limit handling for API calls
 - Graceful degradation if exchange is unavailable
 
 ### US-6: Profit Calculator (Critical)
+
 **As** any user,
 **I want** accurate profit calculations after all costs,
 **So that** I only pursue genuinely profitable opportunities.
 
 **Acceptance Criteria:**
+
 - Include exchange trading fees (maker/taker)
 - Include DEX swap fees
 - Include network gas costs
@@ -148,11 +163,13 @@ Traders need automated tools to scan markets, identify profitable opportunities,
 ## Constraints & Assumptions
 
 **Constraints:**
+
 - Free API tiers have rate limits (e.g., CoinGecko: 10-30 calls/min)
 - DEX prices require blockchain queries (latency ~1-3s)
 - Cross-chain bridge times vary (minutes to hours)
 
 **Assumptions:**
+
 - Users have basic understanding of arbitrage concepts
 - Users can obtain exchange API keys if needed
 - Network connectivity is stable
@@ -171,6 +188,7 @@ Traders need automated tools to scan markets, identify profitable opportunities,
 **FOR EDUCATIONAL PURPOSES ONLY**
 
 Arbitrage trading involves significant risks:
+
 - Opportunities may disappear before execution
 - Price data may be delayed or inaccurate
 - Transaction fees can exceed expected profits

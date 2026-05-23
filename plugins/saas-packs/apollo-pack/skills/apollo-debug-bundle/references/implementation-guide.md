@@ -5,6 +5,7 @@
 # Apollo Debug Bundle
 
 ## Overview
+
 Collect comprehensive debug information for Apollo.io API issues to expedite support resolution.
 
 ## Debug Collection Script
@@ -192,24 +193,28 @@ curl -I -s -X POST "https://api.apollo.io/v1/people/search" \
 ## Debug Checklist
 
 ### 1. Environment Verification
+
 - [ ] APOLLO_API_KEY environment variable is set
 - [ ] API key is correct length (typically 20+ characters)
 - [ ] No extra whitespace in API key
 - [ ] Using correct environment (production vs sandbox)
 
 ### 2. Network Verification
+
 - [ ] Can reach api.apollo.io via HTTPS
 - [ ] No proxy/firewall blocking requests
 - [ ] DNS resolving correctly
 - [ ] SSL/TLS working properly
 
 ### 3. Request Verification
+
 - [ ] Content-Type header is `application/json`
 - [ ] Request body is valid JSON
 - [ ] Required fields are present
 - [ ] Array fields are arrays (not strings)
 
 ### 4. Rate Limit Verification
+
 - [ ] Not exceeding 100 requests/minute
 - [ ] Implementing proper backoff
 - [ ] Respecting Retry-After headers
@@ -240,6 +245,7 @@ curl -I -s -X POST "https://api.apollo.io/v1/people/search" \
 ```
 
 ### Response
+
 ```json
 {
   "status": "[status code]",
@@ -248,18 +254,23 @@ curl -I -s -X POST "https://api.apollo.io/v1/people/search" \
 ```
 
 ### Steps to Reproduce
+
 1. [Step 1]
 2. [Step 2]
 3. [Step 3]
 
 ### Expected Behavior
+
 [What should happen]
 
 ### Actual Behavior
+
 [What actually happened]
 
 ### Debug Bundle
+
 [Attach apollo-debug-*.json file]
+
 ```
 
 ## Output

@@ -43,22 +43,28 @@ Foundation skill providing real-time and historical cryptocurrency price data fo
 ## Instructions
 
 1. Check current prices for one or more symbols:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC
    python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbols BTC,ETH,SOL
    ```
+
 2. Use watchlists to scan predefined groups (available: `top10`, `defi`, `layer2`, `stablecoins`, `memecoins`):
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist top10     # Top 10 by market cap
    python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist defi      # DeFi tokens
    python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist layer2    # Layer 2 tokens
    ```
+
 3. Fetch historical data by period or custom date range:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --period 30d
    python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --period 90d --output csv
    python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol ETH --start 2024-01-01 --end 2024-12-31  # 2024 full year
    ```
+
 4. Configure settings by editing `${CLAUDE_SKILL_DIR}/config/settings.yaml` to customize cache TTLs, default currency, and custom watchlists. See `references/implementation.md` for the full configuration reference.
 
 ## Output
@@ -83,17 +89,20 @@ The skill auto-manages rate limits: cache first, exponential backoff, yfinance f
 ## Examples
 
 **Quick price check:**
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC
 # Output: BTC (Bitcoin) $97,234.56 USD +2.34% (24h) | Vol: $28.5B | MCap: $1.92T
 ```
 
 **Watchlist scan:**
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist top10
 ```
 
 **Historical export:**
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol ETH --period 90d --output csv
 # Creates: ${CLAUDE_SKILL_DIR}/data/ETH_90d_[date].csv

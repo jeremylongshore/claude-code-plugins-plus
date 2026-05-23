@@ -510,7 +510,7 @@ const tagger = new CostTagger();
 
 <p>private groupByDate(costs: any[]): Record<string, any[]> {</p>
 <p>return costs.reduce((acc, cost) => {</p>
-<p>const date = new Date(cost.timestamp).toISOString().split('T')[0];</p>
+<p>const date = new Date(cost.timestamp).toISOString().split['T'](0);</p>
 <p>if (!acc[date]) acc[date] = [];</p>
 <p>acc[date].push(cost);</p>
 <p>return acc;</p>

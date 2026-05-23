@@ -18,6 +18,7 @@ This command supports multiple load testing tools to accommodate different testi
 - **Gatling**: Included for enterprise-grade reporting and Scala DSL power users
 
 Alternative approaches considered:
+
 - **JMeter**: Excluded due to GUI-heavy approach and XML configuration complexity
 - **Locust**: Considered but not included to limit Python dependencies
 - **Custom solutions**: Avoided to leverage battle-tested tools with proven metrics accuracy
@@ -25,6 +26,7 @@ Alternative approaches considered:
 ## When to Use This Command
 
 **USE WHEN:**
+
 - Validating API performance before production deployment
 - Establishing baseline performance metrics for SLAs
 - Testing autoscaling behavior under load
@@ -33,6 +35,7 @@ Alternative approaches considered:
 - Simulating Black Friday or high-traffic events
 
 **DON'T USE WHEN:**
+
 - Testing production APIs without permission (use staging environments)
 - You need functional correctness testing (use integration tests instead)
 - Testing third-party APIs you don't control
@@ -41,17 +44,20 @@ Alternative approaches considered:
 ## Prerequisites
 
 **Required:**
+
 - Node.js 18+ (for k6 and Artillery)
 - Java 11+ (for Gatling)
 - Target API endpoint accessible from your machine
 - API authentication credentials (if required)
 
 **Recommended:**
+
 - Monitoring tools configured (Prometheus, Grafana, DataDog)
 - Baseline metrics from previous test runs
 - Staging environment that mirrors production capacity
 
 **Install Tools:**
+
 ```bash
 # k6 (recommended for most use cases)
 brew install k6  # macOS
@@ -68,21 +74,26 @@ unzip gatling-charts-highcharts-bundle-3.9.5.zip
 ## Detailed Process
 
 ### Step 1: Define Test Objectives
+
 Establish clear performance targets before running tests:
+
 - **Response time**: p95 < 200ms, p99 < 500ms
 - **Throughput**: 1000 requests/second sustained
 - **Error rate**: < 0.1% under normal load
 - **Concurrent users**: Support 500 simultaneous users
 
 Document expected behavior under different load levels:
+
 - Normal load: 100-500 RPS
 - Peak load: 1000-2000 RPS
 - Stress test: 3000+ RPS until failure
 
 ### Step 2: Configure Test Scenario
+
 Create test scripts matching realistic user behavior patterns:
 
 **k6 test script** (`load-test.js`):
+
 ```javascript
 import http from 'k6/http';
 import { check, sleep } from 'k6';
@@ -112,6 +123,7 @@ export default function () {
 ```
 
 **Artillery config** (`artillery.yml`):
+
 ```yaml
 config:
   target: 'https://api.example.com'
@@ -140,6 +152,7 @@ scenarios:
 ```
 
 ### Step 3: Execute Load Test
+
 Run tests with appropriate parameters and monitor system resources:
 
 ```bash
@@ -160,15 +173,18 @@ artillery run artillery.yml \
 ```
 
 Monitor system metrics during execution:
+
 - CPU utilization (should stay below 80%)
 - Memory consumption (watch for leaks)
 - Network I/O (bandwidth saturation)
 - Database connections (connection pool exhaustion)
 
 ### Step 4: Analyze Results
+
 Review metrics to identify performance bottlenecks:
 
 **Response Time Analysis:**
+
 ```bash
 # k6 summary shows percentile distribution
   http_req_duration..............: avg=156ms  p(95)=289ms p(99)=456ms
@@ -178,6 +194,7 @@ Review metrics to identify performance bottlenecks:
 ```
 
 Key metrics to examine:
+
 - **p50 (median)**: Typical user experience
 - **p95**: Worst case for 95% of users
 - **p99**: Tail latency affecting 1% of requests
@@ -185,9 +202,11 @@ Key metrics to examine:
 - **Throughput**: Successful requests per second
 
 ### Step 5: Generate Reports and Recommendations
+
 Create actionable reports with findings and optimization suggestions:
 
 **Performance Report Structure:**
+
 ```markdown
 # Load Test Results - 2025-10-11
 
@@ -219,6 +238,7 @@ Create actionable reports with findings and optimization suggestions:
 The command generates structured performance reports:
 
 **Console Output:**
+
 ```
 Running load test with k6...
 
@@ -246,6 +266,7 @@ Running load test with k6...
 ```
 
 **JSON Report:**
+
 ```json
 {
   "metrics": {
@@ -347,6 +368,7 @@ export function teardown(data) {
 ```
 
 **Run command:**
+
 ```bash
 # Set API token and execute
 export API_TOKEN="your-token-here"
@@ -487,6 +509,7 @@ scenarios:
 ```
 
 **Run with custom processor:**
+
 ```javascript
 // flows.js - Custom logic for Artillery
 module.exports = {
@@ -515,6 +538,7 @@ module.exports = {
 ```
 
 **Execute stress test:**
+
 ```bash
 # Run with environment variable
 API_TOKEN="your-token" artillery run stress-test.yml \
@@ -679,6 +703,7 @@ class ApiLoadSimulation extends Simulation {
 **Supporting data files:**
 
 `users.csv`:
+
 ```csv
 userId,accessToken
 user-001,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -687,6 +712,7 @@ user-003,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 `products.csv`:
+
 ```csv
 productId,category
 prod-001,electronics
@@ -695,6 +721,7 @@ prod-003,books
 ```
 
 **Run Gatling simulation:**
+
 ```bash
 # Using Gatling Maven plugin
 mvn gatling:test -Dgatling.simulationClass=com.example.loadtest.ApiLoadSimulation
@@ -708,6 +735,7 @@ mvn gatling:test -Dgatling.simulationClass=com.example.loadtest.ApiLoadSimulatio
 ```
 
 **Gatling configuration** (`gatling.conf`):
+
 ```hocon
 gatling {
   core {
@@ -747,39 +775,51 @@ gatling {
 Common errors and solutions:
 
 **Connection Refused:**
+
 ```
 Error: connect ECONNREFUSED 127.0.0.1:8080
 ```
+
 Solution: Verify API is running and accessible. Check network connectivity and firewall rules.
 
 **Timeout Errors:**
+
 ```
 http_req_failed: 45.2% (4520 failures / 10000 requests)
 ```
+
 Solution: Increase timeout values or reduce concurrent users. API may be overwhelmed.
 
 **SSL/TLS Errors:**
+
 ```
 Error: x509: certificate signed by unknown authority
 ```
+
 Solution: Add `insecureSkipTLSVerify: true` or configure proper CA certificates.
 
 **Rate Limiting:**
+
 ```
 HTTP 429 Too Many Requests
 ```
+
 Solution: Reduce request rate or increase rate limits on API server. Add backoff logic.
 
 **Memory Exhaustion:**
+
 ```
 JavaScript heap out of memory
 ```
+
 Solution: Increase Node.js memory limit: `NODE_OPTIONS=--max-old-space-size=4096 k6 run test.js`
 
 **Authentication Failures:**
+
 ```
 HTTP 401 Unauthorized
 ```
+
 Solution: Verify API tokens are valid and not expired. Check authorization headers.
 
 ## Configuration Options
@@ -832,6 +872,7 @@ Solution: Verify API tokens are valid and not expired. Check authorization heade
 ## Best Practices
 
 ### DO:
+
 - Start with baseline test (low load) to verify test scripts work correctly
 - Ramp up load gradually to identify inflection points
 - Monitor backend resources (CPU, memory, database) during tests
@@ -844,6 +885,7 @@ Solution: Verify API tokens are valid and not expired. Check authorization heade
 - Clean up test data after runs (especially for write-heavy tests)
 
 ### DON'T:
+
 - Don't load test production without explicit permission and monitoring
 - Don't ignore warmup period (JIT compilation, cache warming)
 - Don't test from same datacenter as API (unrealistic latency)
@@ -856,6 +898,7 @@ Solution: Verify API tokens are valid and not expired. Check authorization heade
 - Don't test third-party APIs without permission
 
 ### TIPS:
+
 - Use distributed load generation for tests > 1000 VUs
 - Export metrics to monitoring systems (Prometheus, DataDog) for correlation
 - Create custom dashboards showing load test progress in real-time
@@ -879,6 +922,7 @@ Solution: Verify API tokens are valid and not expired. Check authorization heade
 ## Performance Considerations
 
 ### Test Environment Sizing
+
 - **Client machine**: 1 VU ≈ 1-10 MB RAM, 0.01-0.1 CPU cores
 - **Network bandwidth**: 1000 VUs ≈ 10-100 Mbps depending on payload size
 - **k6 limits**: Single instance handles 30,000-40,000 VUs (depends on script complexity)
@@ -886,12 +930,14 @@ Solution: Verify API tokens are valid and not expired. Check authorization heade
 - **Gatling limits**: Single instance handles 50,000+ VUs (JVM-based)
 
 ### Backend Resource Planning
+
 - **Database connections**: Plan for peak concurrent users + connection pool overhead
 - **CPU utilization**: Keep below 80% under sustained load (leave headroom for spikes)
 - **Memory**: Monitor for leaks (heap should stabilize after warmup)
 - **Network I/O**: Ensure network bandwidth exceeds expected throughput by 50%
 
 ### Optimization Strategies
+
 - **HTTP keep-alive**: Reduces connection overhead by 50-80%
 - **Response compression**: Reduces bandwidth by 60-80% for text responses
 - **CDN caching**: Offloads 70-90% of static asset requests
@@ -901,12 +947,14 @@ Solution: Verify API tokens are valid and not expired. Check authorization heade
 ## Security Notes
 
 ### Testing Permissions
+
 - Obtain written approval before load testing any environment
 - Verify testing is allowed by API terms of service
 - Use dedicated test accounts with limited privileges
 - Test in isolated environments to prevent data corruption
 
 ### Credential Management
+
 - Never hardcode API keys or passwords in test scripts
 - Use environment variables: `export API_TOKEN=$(vault read -field=token secret/api)`
 - Rotate test credentials regularly
@@ -914,12 +962,14 @@ Solution: Verify API tokens are valid and not expired. Check authorization heade
 - Store sensitive data in secrets managers (Vault, AWS Secrets Manager)
 
 ### Data Privacy
+
 - Use synthetic test data (never real customer PII)
 - Anonymize logs and results before sharing
 - Clean up test data immediately after test completion
 - Encrypt results files containing sensitive information
 
 ### Network Security
+
 - Run tests from trusted networks (avoid public WiFi)
 - Use VPN when testing internal APIs
 - Implement IP whitelisting for test traffic
@@ -928,8 +978,10 @@ Solution: Verify API tokens are valid and not expired. Check authorization heade
 ## Troubleshooting Guide
 
 ### Issue: Inconsistent Results Between Runs
+
 **Symptoms:** Response times vary by > 50% between identical test runs
 **Diagnosis:**
+
 - Check for background jobs or cron tasks running during test
 - Verify database wasn't backed up during test
 - Ensure no other load tests running concurrently
@@ -939,8 +991,10 @@ Solution: Verify API tokens are valid and not expired. Check authorization heade
 - Run multiple iterations and take median results
 
 ### Issue: Low Throughput Despite Low CPU/Memory
+
 **Symptoms:** API handling only 100 RPS despite 20% CPU usage
 **Diagnosis:**
+
 - Check network bandwidth utilization
 - Examine database connection pool exhaustion
 - Look for synchronous I/O blocking (file system, external API calls)
@@ -950,8 +1004,10 @@ Solution: Verify API tokens are valid and not expired. Check authorization heade
 - Add caching layer (Redis) for frequently accessed data
 
 ### Issue: Error Rate Increases Under Load
+
 **Symptoms:** 0.1% errors at 100 RPS, 5% errors at 500 RPS
 **Diagnosis:**
+
 - Database deadlocks or lock contention
 - Race conditions in concurrent code paths
 - Resource exhaustion (file descriptors, sockets)
@@ -961,8 +1017,10 @@ Solution: Verify API tokens are valid and not expired. Check authorization heade
 - Increase file descriptor limits: `ulimit -n 65536`
 
 ### Issue: Memory Leak Detected
+
 **Symptoms:** Memory usage grows continuously without stabilizing
 **Diagnosis:**
+
 - Heap dump analysis shows growing object count
 - GC frequency increases over time
 - API becomes unresponsive after extended load
@@ -972,8 +1030,10 @@ Solution: Verify API tokens are valid and not expired. Check authorization heade
 - Review event listener registration (potential memory leak source)
 
 ### Issue: Test Client Crashes
+
 **Symptoms:** k6/Artillery process terminated with OOM error
 **Diagnosis:**
+
 - Too many VUs for available client memory
 - Large response bodies consuming memory
 - Results export causing memory pressure

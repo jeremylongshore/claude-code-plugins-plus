@@ -26,11 +26,13 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Reliability Patterns
 
 ## Overview
+
 Production reliability patterns for Exa neural search. Exa-specific failure modes include: empty result sets (query too narrow), content retrieval failures (sites block crawling), variable latency by search type, and 429 rate limits at 10 QPS default.
 
 ## Instructions
 
 ### Step 1: Query Fallback Chain
+
 ```typescript
 import Exa from "exa-js";
 
@@ -82,6 +84,7 @@ async function resilientSearch(
 ```
 
 ### Step 2: Retry with Exponential Backoff
+
 ```typescript
 async function searchWithRetry(
   query: string,
@@ -108,6 +111,7 @@ async function searchWithRetry(
 ```
 
 ### Step 3: Circuit Breaker
+
 ```typescript
 class ExaCircuitBreaker {
   private failures = 0;
@@ -164,6 +168,7 @@ const result = await circuitBreaker.execute(
 ```
 
 ### Step 4: Graceful Degradation
+
 ```typescript
 interface SearchResultWithMeta {
   results: any[];
@@ -209,6 +214,7 @@ async function degradableSearch(
 ```
 
 ### Step 5: Result Quality Monitoring
+
 ```typescript
 class SearchQualityMonitor {
   private stats = { total: 0, empty: 0, lowScore: 0 };
@@ -238,6 +244,7 @@ class SearchQualityMonitor {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Empty results | Query too specific | Use fallback chain with broader query |
@@ -247,9 +254,11 @@ class SearchQualityMonitor {
 | Quality degradation | Query drift | Monitor empty/low-score rates |
 
 ## Resources
+
 - [Exa API Reference](https://docs.exa.ai/reference/search)
 - [Exa Error Codes](https://docs.exa.ai/reference/error-codes)
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
 
 ## Next Steps
+
 For policy guardrails, see `exa-policy-guardrails`. For architecture variants, see `exa-architecture-variants`.

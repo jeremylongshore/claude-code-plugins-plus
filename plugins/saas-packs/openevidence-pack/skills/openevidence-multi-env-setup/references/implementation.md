@@ -1,6 +1,7 @@
 # OpenEvidence Multi-Environment Setup - Implementation Details
 
 ## Environment Configuration Files
+
 ```typescript
 // config/environments/development.ts
 export const developmentConfig = {
@@ -22,6 +23,7 @@ export const productionConfig = {
 ```
 
 ## Configuration Loader
+
 ```typescript
 export function loadConfig(env?: Environment) {
   const environment = env || (process.env.NODE_ENV as Environment) || 'development';
@@ -38,6 +40,7 @@ export function loadConfig(env?: Environment) {
 ```
 
 ## Environment-Aware Client Factory
+
 ```typescript
 export class OpenEvidenceClientFactory {
   private static instances: Map<string, OpenEvidenceClient> = new Map();
@@ -53,6 +56,7 @@ export class OpenEvidenceClientFactory {
 ```
 
 ## Secret Management Per Environment
+
 ```typescript
 const SECRET_PATHS: Record<string, SecretPaths> = {
   development: { apiKey: 'local', orgId: 'local' },
@@ -62,9 +66,11 @@ const SECRET_PATHS: Record<string, SecretPaths> = {
 ```
 
 ## Environment Promotion Workflow
+
 See the GitHub Actions workflow for gradual traffic shifting (10% -> 50% -> 100%) with smoke tests between stages.
 
 ## Environment Health Checks
+
 ```typescript
 export async function checkEnvironmentHealth(): Promise<EnvironmentHealth> {
   const checks = { openevidence: { status: 'unknown' }, cache: { status: 'unknown' }, database: { status: 'unknown' } };

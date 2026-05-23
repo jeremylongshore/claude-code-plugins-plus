@@ -32,6 +32,7 @@ This skill allows Claude to analyze system performance and identify areas for th
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Analyze system throughput to identify performance bottlenecks.
 - Optimize system performance for increased capacity.
 - Evaluate scaling strategies to improve throughput.
@@ -43,6 +44,7 @@ This skill activates when you need to:
 User request: "Analyze the throughput of my web server and identify any bottlenecks."
 
 The skill will:
+
 1. Activate the `throughput-analyzer` plugin.
 2. Analyze request throughput, data throughput, and resource saturation of the web server.
 3. Provide a report identifying potential bottlenecks and optimization opportunities.
@@ -52,6 +54,7 @@ The skill will:
 User request: "Optimize the throughput of my data processing pipeline."
 
 The skill will:
+
 1. Activate the `throughput-analyzer` plugin.
 2. Analyze data throughput, queue processing, and concurrency limits of the data processing pipeline.
 3. Suggest improvements to increase data processing rates and overall throughput.
@@ -93,6 +96,7 @@ This skill can be used in conjunction with other monitoring and performance anal
 ## Error Handling
 
 If throughput analysis fails:
+
 - Verify metrics collection infrastructure
 - Check system monitoring tool access
 - Validate historical baseline data

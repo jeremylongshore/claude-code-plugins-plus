@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code
 # AssemblyAI CI Integration
 
 ## Overview
+
 Set up CI/CD pipelines for AssemblyAI transcription projects with unit tests (mocked), integration tests (live API), and cost-controlled test strategies.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - AssemblyAI API key for testing
 - npm/pnpm project configured
@@ -227,12 +229,14 @@ describe.skipIf(skipIfNoKey)('AssemblyAI Integration', () => {
 ```
 
 ## Output
+
 - Unit test pipeline (mocked, runs on every PR)
 - Integration test pipeline (live API, runs on main only)
 - GitHub Secrets configured for API key
 - Cost-controlled test strategy
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Secret not found | Missing GitHub secret | `gh secret set ASSEMBLYAI_API_KEY` |
@@ -241,9 +245,11 @@ describe.skipIf(skipIfNoKey)('AssemblyAI Integration', () => {
 | High test costs | Long audio files | Use 30-second sample audio |
 
 ## Resources
+
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Vitest Documentation](https://vitest.dev/)
 - [AssemblyAI Node SDK](https://github.com/AssemblyAI/assemblyai-node-sdk)
 
 ## Next Steps
+
 For deployment patterns, see `assemblyai-deploy-integration`.

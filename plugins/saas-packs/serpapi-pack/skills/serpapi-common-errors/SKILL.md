@@ -28,27 +28,35 @@ Quick reference for SerpApi errors. Check `search_metadata.status` first -- it w
 ## Error Reference
 
 ### Invalid API Key
+
 ```json
 { "error": "Invalid API key. Your API key should be here: https://serpapi.com/manage-api-key" }
 ```
+
 **Fix:** Verify key at serpapi.com/manage-api-key. Check env var is loaded.
 
 ### Account Disabled / Searches Exhausted
+
 ```json
 { "error": "Your searches for the month have run out. You can upgrade your plan at https://serpapi.com/pricing" }
 ```
+
 **Fix:** Check usage: `curl "https://serpapi.com/account.json?api_key=$SERPAPI_API_KEY"`. Upgrade plan or wait for monthly reset.
 
 ### Missing Required Parameter
+
 ```json
 { "error": "Missing parameter: q. Please provide a search query." }
 ```
+
 **Fix:** Each engine has different query params. Google/Bing use `q`, YouTube uses `search_query`.
 
 ### Google CAPTCHA / Blocked
+
 ```json
 { "search_metadata": { "status": "Error" }, "error": "Google hasn't returned any results for this query." }
 ```
+
 **Fix:** SerpApi handles CAPTCHAs automatically, but unusual queries or very high volume may trigger blocks. Try different `location` or wait.
 
 ### Empty Organic Results (Not an Error)

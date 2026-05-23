@@ -5,6 +5,7 @@
 ## Detailed Instructions
 
 ### Step 1: Check Current Compatibility
+
 ```bash
 cat manifest.json | jq '.minAppVersion'
 
@@ -13,6 +14,7 @@ npm update obsidian
 ```
 
 ### Step 2: Common Migration: CodeMirror 5 to 6
+
 ```typescript
 // OLD: CodeMirror 5 (Obsidian < 0.13)
 // This API is deprecated
@@ -33,6 +35,7 @@ const cm6: EditorView = view.editor.cm;
 ```
 
 ### Step 3: Settings Migration
+
 ```typescript
 // Handle settings migration between plugin versions
 interface PluginSettingsV1 {
@@ -81,6 +84,7 @@ migrateSettingsV1toV2(v1Settings: PluginSettingsV1): PluginSettingsV2 {
 ```
 
 ### Step 4: Event API Migration
+
 ```typescript
 // OLD: Direct event binding (memory leak risk)
 this.app.workspace.on('file-open', callback);
@@ -108,6 +112,7 @@ this.registerDomEvent(document, 'click', handler);
 ```
 
 ### Step 5: Vault API Changes
+
 ```typescript
 // OLD: Reading files (callback style)
 this.app.vault.read(file, (content) => {
@@ -134,6 +139,7 @@ const frontmatter = cache?.frontmatter;
 ```
 
 ### Step 6: Editor API Migration
+
 ```typescript
 // OLD: MarkdownSourceView access
 const sourceView = view.sourceMode;
@@ -169,6 +175,7 @@ editor.setCursor({ line, ch });
 ```
 
 ### Step 7: Update Dependencies
+
 ```bash
 npm install obsidian@latest --save-dev
 
@@ -186,10 +193,10 @@ npx tsc --noEmit 2>&1 | grep -i deprecat
 }
 ```
 
-
 ## Complete Examples
 
 ### Version-Specific Code
+
 ```typescript
 // Check Obsidian version at runtime
 function supportsNewFeature(): boolean {
@@ -212,6 +219,7 @@ if (supportsNewFeature()) {
 ```
 
 ### Gradual Deprecation
+
 ```typescript
 // Support both old and new patterns during transition
 function getEditor(view: MarkdownView): Editor {
@@ -232,10 +240,10 @@ function getEditor(view: MarkdownView): Editor {
 }
 ```
 
-
 ## Common Migration Scenarios
 
 ### API Version Changes
+
 | From | To | Common Changes |
 |------|-----|----------------|
 | 0.x | 1.0 | Event API, Settings API |

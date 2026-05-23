@@ -3,9 +3,11 @@
 # Lindy Cost Tuning
 
 ## Overview
+
 Optimize Lindy AI costs by managing active agent count, consolidating automations, and monitoring per-agent execution frequency. Lindy uses per-agent pricing where each active agent incurs a monthly cost regardless of how often it runs. The key cost lever is reducing the number of active agents -- consolidate similar agents, deactivate underused ones, and design multi-purpose agents rather than single-task agents.
 
 ## Prerequisites
+
 - Lindy Team or Enterprise workspace
 - Admin access to agent management and billing
 - Understanding of current agent portfolio
@@ -13,6 +15,7 @@ Optimize Lindy AI costs by managing active agent count, consolidating automation
 ## Instructions
 
 ### Step 1: Audit Agent Utilization
+
 ```bash
 # List all agents with their run counts in the last 30 days
 curl "https://api.lindy.ai/v1/agents" \
@@ -23,6 +26,7 @@ curl "https://api.lindy.ai/v1/agents" \
 ```
 
 ### Step 2: Consolidate Similar Agents
+
 ```yaml
 # Before: 5 separate agents (5x agent cost)
 agents_before:
@@ -41,6 +45,7 @@ agents_after:
 ```
 
 ### Step 3: Deactivate Underused Agents
+
 ```bash
 # Pause agents with <5 runs in the last 30 days
 curl -s "https://api.lindy.ai/v1/agents" \
@@ -52,12 +57,15 @@ curl -s "https://api.lindy.ai/v1/agents" \
 ```
 
 ### Step 4: Optimize Agent Step Efficiency
+
 Reduce per-run costs by minimizing the number of tool calls in each agent:
+
 - Combine multiple LLM calls into a single prompt with structured output
 - Cache frequently accessed data (e.g., company directory) as agent context
 - Use conditional branching to skip unnecessary steps
 
 ### Step 5: Monitor Monthly Spend
+
 ```bash
 # Check current billing and projected costs
 curl "https://api.lindy.ai/v1/workspace/billing" \
@@ -71,6 +79,7 @@ curl "https://api.lindy.ai/v1/workspace/billing" \
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Agent deactivated but still billed | Billing cycle overlap | Check billing date, deactivate before cycle end |
@@ -79,6 +88,7 @@ curl "https://api.lindy.ai/v1/workspace/billing" \
 | Cannot reduce below N agents | Business dependency | Document which agents are critical, optimize the rest |
 
 ## Examples
+
 ```bash
 # Quick ROI check: cost per agent run
 curl -s "https://api.lindy.ai/v1/workspace/billing" \

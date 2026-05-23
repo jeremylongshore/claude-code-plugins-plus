@@ -25,15 +25,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Debug Bundle
 
 ## Overview
+
 Collect a comprehensive debug bundle from your Instantly workspace: campaign state, account health, warmup metrics, lead stats, webhook delivery status, and recent errors. Output is a JSON report suitable for support tickets or internal audits.
 
 ## Prerequisites
+
 - Completed `instantly-install-auth` setup
 - API key with `all:read` scope (or individual read scopes for each resource)
 
 ## Instructions
 
 ### Step 1: Collect Full Debug Bundle
+
 ```typescript
 import { instantly } from "./src/instantly";
 import { writeFileSync } from "fs";
@@ -137,6 +140,7 @@ async function collectDebugBundle(): Promise<DebugBundle> {
 ```
 
 ### Step 2: Save and Analyze
+
 ```typescript
 async function main() {
   console.log("Collecting Instantly debug bundle...\n");
@@ -172,6 +176,7 @@ main().catch(console.error);
 ```
 
 ### Step 3: Account Vitals Deep Dive
+
 ```typescript
 async function accountVitalsDiagnostic() {
   const accounts = await instantly<Array<{ email: string }>>(
@@ -195,6 +200,7 @@ async function accountVitalsDiagnostic() {
 ```
 
 ### Step 4: Curl-Based Quick Diagnostic
+
 ```bash
 set -euo pipefail
 echo "=== Instantly Quick Diagnostic ==="
@@ -226,12 +232,14 @@ curl -s https://api.instantly.ai/api/v2/background-jobs?limit=5 \
 ```
 
 ## Output
+
 - `instantly-debug-{timestamp}.json` — full debug bundle
 - Console summary with campaign/account/webhook counts
 - Broken account identification with SMTP/IMAP status
 - Errors collected during diagnostic
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `403` on workspace endpoint | Key missing workspace scope | Add `all:read` scope to API key |
@@ -240,9 +248,11 @@ curl -s https://api.instantly.ai/api/v2/background-jobs?limit=5 \
 | Large bundle (>10MB) | 100+ campaigns and accounts | Reduce limits or collect per-campaign |
 
 ## Resources
+
 - [Instantly Help Center](https://help.instantly.ai)
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
 - [Background Jobs API](https://developer.instantly.ai/api/v2/backgroundjob)
 
 ## Next Steps
+
 For error resolution patterns, see `instantly-common-errors`.

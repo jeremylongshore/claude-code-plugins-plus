@@ -45,6 +45,7 @@ User Prompt → [Your App] → [Kling AI API] → [Kling GPU Cluster]
 ## Security Checklist
 
 ### Credential Security
+
 - [ ] AK/SK stored in secrets manager (not env files, not code)
 - [ ] Keys rotated quarterly
 - [ ] Separate keys per environment
@@ -58,18 +59,21 @@ def safe_log_key(access_key: str) -> str:
 ```
 
 ### Network Security
+
 - [ ] All API calls over HTTPS (enforced by base URL)
 - [ ] Webhook endpoints use HTTPS with valid TLS cert
 - [ ] Network egress rules allow `api.klingai.com:443`
 - [ ] No API keys in query strings (Bearer token in header only)
 
 ### Input Validation
+
 - [ ] Prompt length validated (<= 2500 chars)
 - [ ] Image URLs validated before sending
 - [ ] User input sanitized against injection
 - [ ] Content policy pre-filtering active
 
 ### Output Handling
+
 - [ ] Kling CDN URLs treated as temporary
 - [ ] Videos downloaded and stored on your infrastructure
 - [ ] Generated content scanned before serving to end users

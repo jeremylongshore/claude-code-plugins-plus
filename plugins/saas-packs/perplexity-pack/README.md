@@ -20,6 +20,7 @@ Gives Claude Code deep knowledge of the Perplexity Sonar API: the OpenAI-compati
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | What It Does |
 |-------|-------------|
 | `perplexity-install-auth` | Configure OpenAI client with Perplexity base URL and API key |
@@ -36,6 +37,7 @@ Gives Claude Code deep knowledge of the Perplexity Sonar API: the OpenAI-compati
 | `perplexity-upgrade-migration` | Legacy model migration map (pplx-7b -> sonar) |
 
 ### Pro Skills (P13-P18)
+
 | Skill | What It Does |
 |-------|-------------|
 | `perplexity-ci-integration` | GitHub Actions with mocked unit tests and gated live tests |
@@ -46,6 +48,7 @@ Gives Claude Code deep knowledge of the Perplexity Sonar API: the OpenAI-compati
 | `perplexity-reference-architecture` | Search service + citation pipeline + research orchestrator |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | What It Does |
 |-------|-------------|
 | `perplexity-multi-env-setup` | Dev/staging/prod configs with per-env model and key management |
@@ -56,6 +59,7 @@ Gives Claude Code deep knowledge of the Perplexity Sonar API: the OpenAI-compati
 | `perplexity-migration-deep-dive` | Migrate from Google CSE/Bing to Perplexity with adapter pattern |
 
 ### Flagship+ Skills (X25-X30)
+
 | Skill | What It Does |
 |-------|-------------|
 | `perplexity-advanced-troubleshooting` | Layer diagnostics, citation stability, latency profiling |

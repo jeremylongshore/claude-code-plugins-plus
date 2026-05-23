@@ -10,6 +10,7 @@ webflow-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Webflow SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Webflow integration.
 **Relates to:** Other webflow skills in this pack.

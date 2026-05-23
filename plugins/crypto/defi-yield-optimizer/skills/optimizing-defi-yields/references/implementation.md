@@ -18,17 +18,20 @@ The DeFi Yield Optimizer follows a data aggregation pipeline pattern:
 **Purpose**: Aggregate yield data from DeFiLlama API.
 
 **Key Methods**:
+
 - `fetch_yields()` - Get all pool data
 - `fetch_protocol_info()` - Get protocol details
 - `_load_cache()` / `_save_cache()` - Cache management
 
 **API Integration**:
+
 ```python
 DEFILLAMA_YIELDS_URL = "https://yields.llama.fi/pools"
 # Returns ~10,000+ pools across all chains
 ```
 
 **Caching Strategy**:
+
 - File cache at `~/.defi_yield_cache.json`
 - TTL: 5 minutes for yield data
 - Stale fallback on API failure
@@ -39,12 +42,14 @@ DEFILLAMA_YIELDS_URL = "https://yields.llama.fi/pools"
 **Purpose**: Normalize and calculate yield metrics.
 
 **Key Methods**:
+
 - `calculate()` - Add calculated fields to pool
 - `apr_to_apy()` / `apy_to_apr()` - Rate conversion
 - `calculate_earnings()` - Project returns
 - `calculate_il()` - Impermanent loss estimation
 
 **APY Calculation**:
+
 ```python
 # APR to APY (daily compounding)
 APY = (1 + APR/365)^365 - 1
@@ -54,6 +59,7 @@ total_apy = base_apy + reward_apy
 ```
 
 **Impermanent Loss Formula**:
+
 ```python
 IL = 2 * sqrt(price_ratio) / (1 + price_ratio) - 1
 ```
@@ -63,6 +69,7 @@ IL = 2 * sqrt(price_ratio) / (1 + price_ratio) - 1
 **Purpose**: Score protocol and pool risks.
 
 **Risk Factors**:
+
 | Factor | Weight | Source |
 |--------|--------|--------|
 | Audit Status | 30% | Internal database |
@@ -72,6 +79,7 @@ IL = 2 * sqrt(price_ratio) / (1 + price_ratio) - 1
 | Concentration | 15% | Estimated |
 
 **Scoring Logic**:
+
 ```python
 score = sum(factor_score * weight for all factors)
 # Score 8-10: Low risk
@@ -85,11 +93,13 @@ score = sum(factor_score * weight for all factors)
 **Purpose**: Format output for display.
 
 **Supported Formats**:
+
 - `table` - ASCII table for terminal
 - `json` - Structured data for analysis
 - `csv` - Spreadsheet-compatible
 
 **Table Columns**:
+
 ```
 Protocol | Pool | Chain | TVL | APY | Risk | Score
 ```
@@ -97,11 +107,13 @@ Protocol | Pool | Chain | TVL | APY | Risk | Score
 ## Data Flow
 
 ### Input Processing
+
 ```
 User Args → argparse → Filter Config
 ```
 
 ### API Fetch
+
 ```
 Filter Config → ProtocolFetcher → Raw Pool Data
                       ↓
@@ -109,6 +121,7 @@ Filter Config → ProtocolFetcher → Raw Pool Data
 ```
 
 ### Data Enhancement
+
 ```
 Raw Pool Data → YieldCalculator → Calculated Fields
                      ↓
@@ -116,6 +129,7 @@ Raw Pool Data → YieldCalculator → Calculated Fields
 ```
 
 ### Output Generation
+
 ```
 Enhanced Data → Filter/Sort → Top N → Formatter → Output
 ```
@@ -160,6 +174,7 @@ Enhanced Data → Filter/Sort → Top N → Formatter → Output
 ## Testing
 
 ### Unit Tests
+
 ```python
 # Test yield calculations
 calc = YieldCalculator()
@@ -173,6 +188,7 @@ assert pool["risk_score"] >= 8.0
 ```
 
 ### Integration Tests
+
 ```bash
 # Test API connectivity
 python protocol_fetcher.py

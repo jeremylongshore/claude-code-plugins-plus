@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Deploy Integration
 
 ## Overview
+
 Deploy Langfuse LLM observability alongside your application. Covers integrating the SDK for serverless (Vercel/Lambda), Docker, Cloud Run, and self-hosting the Langfuse server itself.
 
 ## Prerequisites
+
 - Langfuse API keys (cloud or self-hosted)
 - Application using Langfuse SDK
 - Target platform CLI installed
@@ -235,6 +237,7 @@ export async function GET() {
 | High latency in prod | Small batch size | Increase `flushAt` / `maxExportBatchSize` |
 
 ## Resources
+
 - [Self-Hosting Docker Compose](https://langfuse.com/self-hosting/deployment/docker-compose)
 - [Self-Hosting Configuration](https://langfuse.com/self-hosting/configuration)
 - [TypeScript SDK Setup](https://langfuse.com/docs/observability/sdk/typescript/setup)

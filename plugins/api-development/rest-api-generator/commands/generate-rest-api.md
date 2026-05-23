@@ -10,6 +10,7 @@ Automatically generate comprehensive RESTful API implementations from schema def
 ## When to Use This Command
 
 Use `/generate-rest-api` when you need to:
+
 - Build CRUD APIs quickly with consistent patterns
 - Create microservices with RESTful interfaces
 - Generate APIs from database schemas or models
@@ -18,6 +19,7 @@ Use `/generate-rest-api` when you need to:
 - Build public APIs with comprehensive documentation
 
 DON'T use this when:
+
 - Building real-time applications (consider WebSocket/gRPC)
 - Internal services need maximum performance (consider gRPC)
 - Complex event-driven architectures (consider event streaming)
@@ -26,6 +28,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **OpenAPI-first design** as the primary approach because:
+
 - Contract-first development ensures consistency
 - Auto-generates server stubs and client SDKs
 - Provides interactive API documentation
@@ -34,12 +37,14 @@ This command implements **OpenAPI-first design** as the primary approach because
 - Industry-standard specification format
 
 **Alternative considered: Code-first with annotations**
+
 - Faster initial development
 - Tighter coupling to implementation
 - Less portable across frameworks
 - Recommended for rapid prototyping
 
 **Alternative considered: GraphQL**
+
 - More flexible client queries
 - Reduced over/under-fetching
 - Higher complexity
@@ -48,6 +53,7 @@ This command implements **OpenAPI-first design** as the primary approach because
 ## Prerequisites
 
 Before running this command:
+
 1. Define your data models and relationships
 2. Choose target framework (Express, FastAPI, NestJS, etc.)
 3. Select database technology
@@ -57,23 +63,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Define OpenAPI Specification
+
 Create comprehensive API contracts with schemas, endpoints, and examples.
 
 ### Step 2: Generate Server Stubs
+
 Build framework-specific implementations from OpenAPI specs.
 
 ### Step 3: Implement Business Logic
+
 Add controllers, services, and data access layers.
 
 ### Step 4: Add Middleware
+
 Configure authentication, validation, rate limiting, and CORS.
 
 ### Step 5: Generate Documentation
+
 Create interactive docs, client SDKs, and Postman collections.
 
 ## Output Format
 
 The command generates:
+
 - `openapi.yaml` - Complete API specification
 - `src/controllers/` - Request handlers with business logic
 - `src/routes/` - RESTful endpoint definitions
@@ -1173,6 +1185,7 @@ describe('Products API', () => {
 ## Configuration Options
 
 **Framework Options**
+
 - `Express.js`: Node.js, middleware ecosystem
 - `FastAPI`: Python, automatic OpenAPI docs
 - `NestJS`: TypeScript, enterprise patterns
@@ -1180,6 +1193,7 @@ describe('Products API', () => {
 - `Spring Boot`: Java, enterprise features
 
 **Database Options**
+
 - `PostgreSQL`: Relational, ACID compliance
 - `MongoDB`: Document store, flexible schema
 - `MySQL`: Relational, wide support
@@ -1188,6 +1202,7 @@ describe('Products API', () => {
 ## Best Practices
 
 DO:
+
 - Use proper HTTP status codes consistently
 - Implement comprehensive input validation
 - Version your APIs from the start
@@ -1196,6 +1211,7 @@ DO:
 - Add request/response logging
 
 DON'T:
+
 - Mix authentication schemes
 - Return sensitive data in errors
 - Use GET for state-changing operations

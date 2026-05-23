@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code
 # Figma Cost Tuning
 
 ## Overview
+
 Optimize Figma API usage costs. Figma's REST API rate limits are determined by plan tier and seat type. Reducing unnecessary requests keeps you within limits and avoids upgrading prematurely.
 
 ## Prerequisites
+
 - Working Figma integration with request logging
 - Understanding of your current API call volume
 - Access to Figma admin settings (for plan details)
@@ -33,6 +35,7 @@ Optimize Figma API usage costs. Figma's REST API rate limits are determined by p
 ## Instructions
 
 ### Step 1: Understand Plan-Based Rate Limits
+
 Figma rate limits vary by plan tier and seat type:
 
 | Plan | Seat Types | Rate Limit Tier | Variables API |
@@ -43,12 +46,14 @@ Figma rate limits vary by plan tier and seat type:
 | Enterprise | Full, Collab, Viewer | Highest | Yes |
 
 Key facts:
+
 - Rate limits are per-user, per-minute
 - View and Collab seats have lower limits than Full seats
 - The Variables API (`/v1/files/:key/variables/*`) requires Enterprise
 - Endpoint tiers (1/2/3) have different quotas within each plan
 
 ### Step 2: Track API Usage
+
 ```typescript
 // Instrument all Figma API calls to track volume
 class FigmaUsageTracker {
@@ -87,6 +92,7 @@ const tracker = new FigmaUsageTracker();
 ```
 
 ### Step 3: Reduce API Calls
+
 ```typescript
 // 1. Use depth parameter to avoid fetching full file trees
 // Saves bandwidth and processing time
@@ -130,6 +136,7 @@ async function fetchFileIfChanged(
 ```
 
 ### Step 4: Cost-Saving Architecture
+
 ```
 Polling Architecture (expensive):
   App → GET /v1/files/:key every 30s → 2,880 calls/day/file
@@ -142,6 +149,7 @@ Savings: 95%+ fewer API calls
 ```
 
 ### Step 5: Usage Dashboard Query
+
 ```typescript
 // Log API calls to a database for analysis
 interface ApiCallLog {
@@ -175,12 +183,14 @@ function getMonthlyReport(logs: ApiCallLog[]) {
 ```
 
 ## Output
+
 - API usage tracked by endpoint and file
 - Unnecessary calls eliminated with caching and webhooks
 - Bandwidth reduced with `depth` parameter
 - Monthly usage reports for capacity planning
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Hitting rate limits often | No caching or batching | Implement caching + batch requests |
@@ -189,9 +199,11 @@ function getMonthlyReport(logs: ApiCallLog[]) {
 | Polling waste | No webhooks configured | Set up FILE_UPDATE webhook |
 
 ## Resources
+
 - [Figma Pricing Plans](https://www.figma.com/pricing/)
 - [Figma Rate Limits](https://developers.figma.com/docs/rest-api/rate-limits/)
 - [Figma Webhooks V2](https://developers.figma.com/docs/rest-api/webhooks/)
 
 ## Next Steps
+
 For architecture patterns, see `figma-reference-architecture`.

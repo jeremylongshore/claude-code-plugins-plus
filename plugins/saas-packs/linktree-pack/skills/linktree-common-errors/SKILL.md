@@ -60,12 +60,15 @@ function classifyLinktreeError(status: number, body: string): LinktreeError {
 ## Debugging Guide
 
 ### Authentication Errors
+
 Linktree API keys are passed via `Authorization: Bearer` header. Keys are scoped per account, not per profile. A 403 may indicate a plan-level restriction rather than a credentials issue -- verify the endpoint is available on your current plan tier before regenerating the key. Free-tier keys cannot access analytics or appearance customization endpoints.
 
 ### Rate Limit Errors
+
 The API enforces 100 requests/minute per key. Batch link creation using array endpoints when available. Analytics endpoints have stricter limits (30/min). Use the `Retry-After` header value and implement exponential backoff starting at 1 second.
 
 ### Validation Errors
+
 Link URLs must include the `https://` or `http://` scheme. Custom schemes (e.g., `mailto:`, `tel:`) are not supported via API. Titles are capped at 100 characters. Thumbnail URLs must resolve to valid image formats (PNG, JPG, GIF). Profile appearance updates fail silently if the theme ID does not exist -- validate theme availability first.
 
 ## Error Handling

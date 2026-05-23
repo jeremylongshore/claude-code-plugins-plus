@@ -10,6 +10,7 @@ ramp-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Ramp example
 **Workflow:** Part of the onboarding skill category for Ramp integration.
 **Relates to:** Other ramp skills in this pack.

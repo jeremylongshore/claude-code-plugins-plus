@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Hello World
 
 ## Overview
+
 Deploy a minimal project to Vercel with a static page and a serverless API route. Confirms your CLI auth, project structure, and deployment pipeline work end to end.
 
 ## Prerequisites
+
 - Completed `vercel-install-auth` setup
 - Vercel CLI installed and authenticated
 - Node.js 18+
@@ -36,6 +38,7 @@ Deploy a minimal project to Vercel with a static page and a serverless API route
 ## Instructions
 
 ### Step 1: Create Project Structure
+
 ```bash
 mkdir my-vercel-app && cd my-vercel-app
 npm init -y
@@ -61,6 +64,7 @@ Create the static landing page:
 ```
 
 ### Step 2: Create Serverless API Route
+
 ```typescript
 // api/hello.ts
 import type { VercelRequest, VercelResponse } from '@vercel/node';
@@ -75,11 +79,13 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
 ```
 
 Install the types:
+
 ```bash
 npm install --save-dev @vercel/node typescript
 ```
 
 ### Step 3: Add vercel.json Configuration
+
 ```json
 {
   "rewrites": [
@@ -97,6 +103,7 @@ npm install --save-dev @vercel/node typescript
 ```
 
 ### Step 4: Deploy Preview
+
 ```bash
 # Deploy to a preview URL (not production)
 vercel
@@ -109,6 +116,7 @@ vercel
 ```
 
 ### Step 5: Test the Deployment
+
 ```bash
 # Test static page
 curl -s https://my-vercel-app-xxx.vercel.app/ | head -5
@@ -123,6 +131,7 @@ curl -s https://my-vercel-app-xxx.vercel.app/api/hello | jq .
 ```
 
 ### Step 6: Promote to Production
+
 ```bash
 # Deploy directly to production
 vercel --prod
@@ -145,12 +154,14 @@ These are available in every function at runtime:
 | `VERCEL_GIT_COMMIT_MESSAGE` | Git commit message |
 
 ## Output
+
 - Static page served from Vercel CDN
 - Serverless API route returning JSON at `/api/hello`
 - Preview URL for testing before production
 - Production deployment live on your domain
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `404 NOT_FOUND` on `/api/hello` | File not in `api/` directory | Move file to project root `api/` folder |
@@ -160,10 +171,12 @@ These are available in every function at runtime:
 | `FUNCTION_PAYLOAD_TOO_LARGE` | Response body > 4.5 MB | Paginate or stream the response |
 
 ## Resources
+
 - [Vercel Serverless Functions](https://vercel.com/docs/functions)
 - [Vercel Project Configuration](https://vercel.com/docs/project-configuration)
 - [Vercel CLI Deploy](https://vercel.com/docs/cli/deploy)
 - [@vercel/node Runtime](https://vercel.com/docs/functions/runtimes/node-js)
 
 ## Next Steps
+
 Proceed to `vercel-local-dev-loop` for development workflow setup.

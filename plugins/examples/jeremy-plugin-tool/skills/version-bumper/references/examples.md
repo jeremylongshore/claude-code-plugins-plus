@@ -3,6 +3,7 @@
 **User says:** "Bump the security-scanner plugin to patch version"
 
 **I automatically:**
+
 1. Read current version: 1.2.3
 2. Calculate patch bump: 1.2.4
 3. Update plugin.json
@@ -14,6 +15,7 @@
 **User says:** "Release version 2.0.0 of plugin-name"
 
 **I automatically:**
+
 1. Recognize major version (breaking change)
 2. Update all version files
 3. Update CHANGELOG.md with major release notes
@@ -24,6 +26,7 @@
 **User says:** "Increment version for new feature"
 
 **I automatically:**
+
 1. Detect this is a minor bump
 2. Calculate new version (1.2.3 → 1.3.0)
 3. Update all files

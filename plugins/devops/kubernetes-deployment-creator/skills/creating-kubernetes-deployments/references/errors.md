@@ -7,22 +7,26 @@ Comprehensive guide to troubleshooting common Kubernetes deployment errors.
 ### ImagePullBackOff / ErrImagePull
 
 **Symptoms:**
+
 - Pod stuck in `ImagePullBackOff` or `ErrImagePull` status
 - Events show "Failed to pull image"
 
 **Causes:**
+
 - Image name or tag typo
 - Image doesn't exist in registry
 - Missing or invalid registry credentials
 - Private registry without imagePullSecrets
 
 **Diagnosis:**
+
 ```bash
 kubectl describe pod <pod-name> | grep -A 10 Events
 kubectl get events --field-selector reason=Failed
 ```
 
 **Solutions:**
+
 ```yaml
 # 1. Verify image exists
 docker pull <image-name>:<tag>
@@ -47,11 +51,13 @@ kubectl create secret docker-registry registry-credentials \
 ### CrashLoopBackOff
 
 **Symptoms:**
+
 - Pod repeatedly crashes and restarts
 - Status cycles between `Running` and `CrashLoopBackOff`
 - Restart count keeps increasing
 
 **Causes:**
+
 - Application crashes on startup
 - Missing environment variables or config
 - Failing health checks
@@ -59,6 +65,7 @@ kubectl create secret docker-registry registry-credentials \
 - Permission issues
 
 **Diagnosis:**
+
 ```bash
 # Check pod logs
 kubectl logs <pod-name> --previous
@@ -71,6 +78,7 @@ kubectl get pod <pod-name> -o jsonpath='{.status.containerStatuses[0].lastState.
 ```
 
 **Solutions:**
+
 ```bash
 # 1. Fix application errors shown in logs
 kubectl logs <pod-name> --previous
@@ -93,21 +101,25 @@ startupProbe:
 ### OOMKilled
 
 **Symptoms:**
+
 - Pod killed with reason `OOMKilled`
 - Exit code 137
 
 **Causes:**
+
 - Application uses more memory than `limits.memory`
 - Memory leak in application
 - Limits set too low
 
 **Diagnosis:**
+
 ```bash
 kubectl describe pod <pod-name> | grep -A 5 "Last State"
 kubectl top pod <pod-name>
 ```
 
 **Solutions:**
+
 ```yaml
 # Increase memory limits
 resources:
@@ -124,16 +136,19 @@ resources:
 ### Pending (Unschedulable)
 
 **Symptoms:**
+
 - Pod stuck in `Pending` status
 - Events show "Insufficient cpu" or "Insufficient memory"
 
 **Causes:**
+
 - Insufficient cluster resources
 - Node selector/affinity not satisfied
 - Taints and tolerations mismatch
 - PersistentVolumeClaim not bound
 
 **Diagnosis:**
+
 ```bash
 kubectl describe pod <pod-name> | grep -A 10 Events
 kubectl get nodes -o wide
@@ -141,6 +156,7 @@ kubectl describe nodes | grep -A 5 "Allocated resources"
 ```
 
 **Solutions:**
+
 ```yaml
 # 1. Reduce resource requests
 resources:
@@ -172,15 +188,18 @@ tolerations:
 ### CreateContainerConfigError
 
 **Symptoms:**
+
 - Pod in `CreateContainerConfigError` status
 - Events show "Error: configmap/secret not found"
 
 **Causes:**
+
 - Referenced ConfigMap doesn't exist
 - Referenced Secret doesn't exist
 - Incorrect ConfigMap/Secret name
 
 **Diagnosis:**
+
 ```bash
 kubectl describe pod <pod-name>
 kubectl get configmap
@@ -188,6 +207,7 @@ kubectl get secret
 ```
 
 **Solutions:**
+
 ```bash
 # 1. Verify ConfigMap exists
 kubectl get configmap <name>
@@ -209,15 +229,18 @@ kubectl create secret generic my-secret --from-literal=PASSWORD=secret
 ### Service Has No Endpoints
 
 **Symptoms:**
+
 - Service returns connection refused or timeout
 - `kubectl get endpoints` shows no addresses
 
 **Causes:**
+
 - No pods match the Service selector
 - Pods not ready (failing readiness probe)
 - Selector label mismatch
 
 **Diagnosis:**
+
 ```bash
 kubectl get endpoints <service-name>
 kubectl get pods -l <selector-labels>
@@ -225,6 +248,7 @@ kubectl describe service <service-name>
 ```
 
 **Solutions:**
+
 ```yaml
 # 1. Verify selector matches pod labels
 # Service:
@@ -249,17 +273,20 @@ readinessProbe:
 ### Ingress 404 / 502 / 503 Errors
 
 **Symptoms:**
+
 - 404: Ingress rule not matching
 - 502: Backend service not responding
 - 503: No available backends
 
 **Causes:**
+
 - Incorrect Ingress path or host
 - Service not available
 - Backend pods not ready
 - Ingress controller not installed
 
 **Diagnosis:**
+
 ```bash
 kubectl describe ingress <ingress-name>
 kubectl get pods -n ingress-nginx
@@ -267,6 +294,7 @@ kubectl logs -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx
 ```
 
 **Solutions:**
+
 ```yaml
 # 1. Verify Ingress class is correct
 spec:
@@ -295,17 +323,20 @@ rules:
 ### TLS Certificate Errors
 
 **Symptoms:**
+
 - "certificate signed by unknown authority"
 - "certificate has expired"
 - Browser shows certificate warning
 
 **Causes:**
+
 - Self-signed certificate
 - Expired certificate
 - Wrong certificate for domain
 - Secret doesn't contain valid TLS data
 
 **Diagnosis:**
+
 ```bash
 kubectl get secret <tls-secret> -o yaml
 openssl x509 -in <cert-file> -text -noout
@@ -313,6 +344,7 @@ kubectl describe certificate <cert-name>  # If using cert-manager
 ```
 
 **Solutions:**
+
 ```bash
 # 1. Create valid TLS secret
 kubectl create secret tls my-tls \
@@ -347,14 +379,17 @@ spec:
 ### Forbidden: Exceeded Quota
 
 **Symptoms:**
+
 - Deployment fails with "forbidden: exceeded quota"
 - Cannot create new pods or services
 
 **Causes:**
+
 - Namespace resource quota exceeded
 - Limit range constraints
 
 **Diagnosis:**
+
 ```bash
 kubectl describe resourcequota -n <namespace>
 kubectl describe limitrange -n <namespace>
@@ -362,6 +397,7 @@ kubectl get quota -n <namespace>
 ```
 
 **Solutions:**
+
 ```bash
 # 1. Check current quota usage
 kubectl describe resourcequota -n my-namespace
@@ -383,16 +419,19 @@ resources:
 ### PVC Pending (Unbound)
 
 **Symptoms:**
+
 - PersistentVolumeClaim stuck in `Pending`
 - Events show "no persistent volumes available"
 
 **Causes:**
+
 - No matching PersistentVolume
 - Storage class doesn't exist
 - Insufficient storage capacity
 - Access mode mismatch
 
 **Diagnosis:**
+
 ```bash
 kubectl describe pvc <pvc-name>
 kubectl get pv
@@ -400,6 +439,7 @@ kubectl get storageclass
 ```
 
 **Solutions:**
+
 ```yaml
 # 1. Verify StorageClass exists
 kubectl get storageclass
@@ -434,21 +474,25 @@ parameters:
 ### Forbidden: User Cannot Get/List/Create
 
 **Symptoms:**
+
 - "Error from server (Forbidden)"
 - "User cannot get/list/create resource"
 
 **Causes:**
+
 - Missing RBAC permissions
 - Wrong ServiceAccount
 - ClusterRole/Role not bound
 
 **Diagnosis:**
+
 ```bash
 kubectl auth can-i <verb> <resource> --as=system:serviceaccount:<ns>:<sa>
 kubectl get rolebinding,clusterrolebinding -A | grep <service-account>
 ```
 
 **Solutions:**
+
 ```yaml
 # 1. Create ServiceAccount
 apiVersion: v1
@@ -491,15 +535,18 @@ roleRef:
 ### Deployment Rollout Stuck
 
 **Symptoms:**
+
 - `kubectl rollout status` hangs
 - Deployment shows fewer ready replicas than desired
 
 **Causes:**
+
 - New pods failing health checks
 - Resource constraints
 - Image pull issues
 
 **Diagnosis:**
+
 ```bash
 kubectl rollout status deployment/<name>
 kubectl get pods -l app=<name>
@@ -507,6 +554,7 @@ kubectl describe deployment <name>
 ```
 
 **Solutions:**
+
 ```bash
 # 1. Check rollout status
 kubectl rollout status deployment/my-app
@@ -533,22 +581,26 @@ spec:
 ### NodeNotReady
 
 **Symptoms:**
+
 - Node in `NotReady` status
 - Pods evicted or stuck in `Terminating`
 
 **Causes:**
+
 - Node resource exhaustion
 - Kubelet crashed
 - Network connectivity issues
 - Disk pressure
 
 **Diagnosis:**
+
 ```bash
 kubectl describe node <node-name>
 kubectl get events --field-selector involvedObject.kind=Node
 ```
 
 **Solutions:**
+
 ```bash
 # 1. Check node conditions
 kubectl describe node <node-name> | grep -A 10 Conditions

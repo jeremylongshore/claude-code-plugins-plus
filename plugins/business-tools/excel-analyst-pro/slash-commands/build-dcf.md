@@ -5,6 +5,7 @@ Build a discounted cash flow (DCF) valuation model in Excel with professional fo
 ## What This Command Does
 
 Creates a complete 4-sheet DCF model:
+
 1. **Assumptions** - Revenue growth, margins, WACC, terminal growth
 2. **FCF Projections** - 5-year free cash flow forecast
 3. **Valuation** - Present value calculations and enterprise value
@@ -17,6 +18,7 @@ When the user types `/build-dcf`, follow these steps:
 ### 1. Gather Inputs
 
 Ask the user for:
+
 - Company name and ticker
 - Base year revenue (most recent fiscal year)
 - Revenue growth rates for Years 1-5
@@ -27,6 +29,7 @@ Ask the user for:
 ### 2. Validate Inputs
 
 Ensure:
+
 - Revenue growth rates are reasonable (0-30%)
 - EBITDA margin is positive
 - Tax rate is 0-40%
@@ -35,6 +38,7 @@ Ensure:
 ### 3. Build Model
 
 Use Excel MCP server to:
+
 1. Create new workbook
 2. Create 4 sheets
 3. Populate assumptions
@@ -46,6 +50,7 @@ Use Excel MCP server to:
 ### 4. Return Results
 
 Provide:
+
 - Enterprise value
 - Equity value (if net debt provided)
 - Key assumptions used

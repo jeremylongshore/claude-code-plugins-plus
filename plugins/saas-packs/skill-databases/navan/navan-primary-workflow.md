@@ -10,6 +10,7 @@ navan-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Navan primary workflow
 **Workflow:** Part of the onboarding skill category for Navan integration.
 **Relates to:** Other navan skills in this pack.

@@ -1,6 +1,7 @@
-# Examples
+## Examples
 
 ### Release Workflow
+
 ```yaml
 on:
   push:
@@ -24,6 +25,7 @@ jobs:
 ```
 
 ### Branch Protection
+
 ```yaml
 required_status_checks:
   - "test"

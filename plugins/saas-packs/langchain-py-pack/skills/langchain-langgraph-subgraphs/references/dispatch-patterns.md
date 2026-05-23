@@ -104,6 +104,7 @@ per-tenant subgraphs.
 At 100+ consider a queue-based worker pool instead.
 
 **Gotchas:**
+
 - Each `Send` state is evaluated independently — **no shared scratch across
   siblings**. If two parallel specialists need to see each other's output,
   use two sequential subgraph-as-node calls instead.
@@ -139,6 +140,7 @@ subgraph's teardown. A fatal child error that must bubble up with context. A
 fast-path where invoking the full subgraph is wasted work.
 
 **Gotchas:**
+
 - `goto` names a **parent** node — not a subgraph node. Omitting `goto` returns
   control to the point the subgraph was invoked, which is usually what you
   want.

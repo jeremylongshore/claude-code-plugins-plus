@@ -82,6 +82,7 @@ Validate load balancer behavior including traffic distribution algorithms, healt
 ## Examples
 
 **Traffic distribution test with curl:**
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -98,6 +99,7 @@ done
 ```
 
 **Failover test sequence:**
+
 ```bash
 set -euo pipefail
 # 1. Verify both backends serve traffic
@@ -119,6 +121,7 @@ curl -s http://lb.test.com/health  # Should see Backend A again
 ```
 
 **k6 load test against load balancer:**
+
 ```javascript
 import http from 'k6/http';
 import { check } from 'k6';

@@ -646,6 +646,7 @@ checkpointing is the replacement.
 **Why:** Legacy agent factories removed in 1.0.
 
 **Fix headline:**
+
 ```python
 from langgraph.prebuilt import create_react_agent
 agent = create_react_agent(model=llm, tools=tools, checkpointer=MemorySaver())

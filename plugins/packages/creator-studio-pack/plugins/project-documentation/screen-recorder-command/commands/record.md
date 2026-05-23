@@ -20,6 +20,7 @@ Start and stop screen recordings with automatic organization and metadata tracki
 ## Purpose
 
 Quick screen recording with:
+
 - One-command start/stop
 - Automatic file organization by project
 - Timestamp-based naming
@@ -39,6 +40,7 @@ When user runs `/record start [project-name]`:
    - Default to 1920x1080, 30fps, H.264
 
 2. **Create Directory Structure**
+
    ```
    ~/Videos/[project-name]/
    ├── raw/                    # Raw recordings
@@ -47,12 +49,14 @@ When user runs `/record start [project-name]`:
    ```
 
 3. **Generate Filename**
+
    ```
    Format: YYYY-MM-DD-HH-MM-[project-name].mp4
    Example: 2025-01-15-11-47-redis-caching.mp4
    ```
 
 4. **Create Metadata File**
+
    ```json
    {
      "project": "redis-caching",
@@ -67,6 +71,7 @@ When user runs `/record start [project-name]`:
    ```
 
 5. **Display Status**
+
    ```
    🔴 Screen recording started
    Project: redis-caching
@@ -87,6 +92,7 @@ When user runs `/record mark [description]`:
    - Format as HH:MM:SS
 
 2. **Save Marker**
+
    ```json
    {
      "markers": [
@@ -100,6 +106,7 @@ When user runs `/record mark [description]`:
    ```
 
 3. **Confirm**
+
    ```
    📍 Marker added at 00:14:23
    "Redis integration working!"
@@ -118,6 +125,7 @@ When user runs `/record stop`:
    - Update metadata
 
 3. **Update Metadata**
+
    ```json
    {
      "project": "redis-caching",
@@ -142,6 +150,7 @@ When user runs `/record stop`:
    ```
 
 4. **Display Summary**
+
    ```
    ✅ Recording saved: ~/Videos/redis-caching/raw/2025-01-15-11-47-redis-caching.mp4
 
@@ -159,6 +168,7 @@ When user runs `/record stop`:
 ## Platform-Specific Recording
 
 ### macOS
+
 ```bash
 # Using ffmpeg (install with: brew install ffmpeg)
 ffmpeg -f avfoundation -framerate 30 -video_size 1920x1080 \
@@ -167,6 +177,7 @@ ffmpeg -f avfoundation -framerate 30 -video_size 1920x1080 \
 ```
 
 ### Linux
+
 ```bash
 # Using ffmpeg with X11
 ffmpeg -f x11grab -framerate 30 -video_size 1920x1080 \
@@ -175,6 +186,7 @@ ffmpeg -f x11grab -framerate 30 -video_size 1920x1080 \
 ```
 
 ### Windows
+
 ```powershell
 # Using PowerShell and Windows.Graphics.Capture
 # Requires Windows 10 1809+
@@ -190,6 +202,7 @@ $recording = Start-ScreenRecording -Path "C:\Videos\[project]\raw\[filename].mp4
 ```
 
 Captures:
+
 - System audio (application sounds)
 - Microphone input (narration)
 - Separate audio tracks for mixing
@@ -201,6 +214,7 @@ Captures:
 ```
 
 Interactive region selector:
+
 - Click and drag to select screen area
 - Record only selected region
 - Useful for focused tutorials
@@ -212,6 +226,7 @@ Interactive region selector:
 ```
 
 Composite recording:
+
 - Screen capture (main)
 - Webcam feed (picture-in-picture)
 - Configurable position and size
@@ -275,6 +290,7 @@ Claude: 🔴 Recording tutorial-3-testing...
 ## Error Handling
 
 ### Storage Space Check
+
 ```
 ⚠️ Warning: Low disk space (5 GB remaining)
 Estimated recording size: ~1.5 GB per hour
@@ -282,6 +298,7 @@ Continue? (y/n)
 ```
 
 ### Already Recording
+
 ```
 ❌ Error: Recording already in progress
 Current recording: redis-tutorial (14:23 elapsed)
@@ -289,6 +306,7 @@ Stop current recording with /record stop
 ```
 
 ### Missing Dependencies
+
 ```
 ❌ Error: ffmpeg not found
 Install ffmpeg:
@@ -325,16 +343,19 @@ Store preferences in `~/.creator-studio/record-config.json`:
 ## Troubleshooting
 
 ### Recording is choppy
+
 - Reduce resolution: `--resolution 1280x720`
 - Lower framerate: `--fps 24`
 - Use faster compression: `--preset ultrafast`
 
 ### Audio is out of sync
+
 - Record audio separately
 - Use a lower video bitrate
 - Sync in post-production with video-editor-ai
 
 ### File is too large
+
 - Use a more aggressive compression preset
 - Record at lower resolution
 - Split into shorter segments

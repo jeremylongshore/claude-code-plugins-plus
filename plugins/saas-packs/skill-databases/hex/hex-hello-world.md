@@ -10,6 +10,7 @@ hex-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Hex example
 **Workflow:** Part of the onboarding skill category for Hex integration.
 **Relates to:** Other hex skills in this pack.

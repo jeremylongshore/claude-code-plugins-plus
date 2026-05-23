@@ -3,6 +3,7 @@
 ## Verification Steps
 
 ### Test Error Capture
+
 ```typescript
 // Test script to verify production setup
 async function verifySentry() {
@@ -17,6 +18,7 @@ async function verifySentry() {
 ```
 
 ### Verify Source Maps
+
 ```bash
 # After deploying, verify source maps work
 sentry-cli releases list
@@ -27,6 +29,7 @@ sentry-cli releases files $VERSION list
 ```
 
 ### Check Connectivity
+
 ```bash
 # Verify Sentry is reachable from production
 curl -I https://sentry.io/api/0/

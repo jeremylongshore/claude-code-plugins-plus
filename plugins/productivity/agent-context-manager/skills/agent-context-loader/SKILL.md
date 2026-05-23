@@ -58,14 +58,17 @@ Automatic discovery and loading of `AGENTS.md` files across project hierarchies 
 ## Examples
 
 **Example 1: Monorepo with per-package agent instructions**
+
 - Structure: Root `AGENTS.md` sets global conventions; `packages/api/AGENTS.md` adds API-specific tooling rules.
 - Result: Both files loaded in order. The API-specific rules supplement the global context without conflict.
 
 **Example 2: Nested workspace with conflicting commit policies**
+
 - Structure: Root `AGENTS.md` says "always sign commits"; `services/legacy/AGENTS.md` says "skip commit signing."
 - Result: Conflict detected and reported. The deeper (legacy) directive is applied with a warning noting the override.
 
 **Example 3: First-time setup with no agent files**
+
 - Structure: A freshly cloned repository with no `AGENTS.md` anywhere.
 - Result: Scan completes with zero files found. Output includes a suggestion to create `AGENTS.md` at the repository root with a minimal template.
 

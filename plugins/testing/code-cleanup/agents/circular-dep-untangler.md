@@ -34,6 +34,7 @@ npx madge --image /tmp/deps.svg src/ 2>&1
 ```
 
 If tools are unavailable, use pattern-based detection:
+
 ```bash
 # Find all import statements and build manual graph
 rg "^import .+ from ['\"]\.\.?\/" --type ts -n
@@ -45,16 +46,19 @@ rg "export \* from" --type ts -n  # Barrel re-exports
 For each detected cycle:
 
 **Runtime cycles (CRITICAL):**
+
 - Module A's top-level code calls a function from Module B, and B does the same to A
 - Causes: `undefined` at import time, initialization crashes, race conditions
 - Indicator: non-type imports in the cycle
 
 **Type-only cycles (LOW):**
+
 - Cycle exists only in `import type { ... }` statements
 - TypeScript erases these at compile time — zero runtime impact
 - Indicator: all imports in the cycle use `import type`
 
 **Mixed cycles (HIGH):**
+
 - Some edges are runtime, some are type-only
 - May or may not cause runtime issues depending on initialization order
 
@@ -118,7 +122,9 @@ For each proposed resolution:
 
 #### Cycle 1 (CRITICAL — runtime)
 ```
+
 src/auth.ts → src/user.ts → src/auth.ts
+
 ```
 **Root cause:** auth.ts imports getUserRole from user.ts, user.ts imports validateToken from auth.ts
 **Recommended fix:** Extract shared auth types to src/types/auth-types.ts
@@ -127,7 +133,9 @@ src/auth.ts → src/user.ts → src/auth.ts
 
 #### Cycle 2 (LOW — type-only)
 ```
+
 src/api/types.ts → src/db/models.ts → src/api/types.ts
+
 ```
 **Root cause:** Type-only imports using `import type`
 **Action:** No runtime impact — can defer or fix for code hygiene

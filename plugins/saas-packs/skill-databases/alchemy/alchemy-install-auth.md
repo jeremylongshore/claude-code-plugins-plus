@@ -10,6 +10,7 @@ alchemy-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Alchemy SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Alchemy integration.
 **Relates to:** Other alchemy skills in this pack.

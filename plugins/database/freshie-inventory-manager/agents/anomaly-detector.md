@@ -108,6 +108,7 @@ Total: {n} findings across {categories} categories
 ```
 
 Categorize by severity:
+
 - **CRITICAL**: Plugins with no skills, D/F grades, missing DB tables
 - **WARNING**: Stubs, high template density, score outliers
 - **INFO**: Duplicates, minor data quality notes

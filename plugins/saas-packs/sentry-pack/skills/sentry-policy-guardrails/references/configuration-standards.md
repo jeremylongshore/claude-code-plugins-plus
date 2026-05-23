@@ -3,6 +3,7 @@
 ## Configuration Standards
 
 ### Shared Configuration Package
+
 ```typescript
 // packages/sentry-config/index.ts
 import * as Sentry from '@sentry/node';
@@ -74,6 +75,7 @@ function enforcedBeforeSend(
 ```
 
 ### Usage in Services
+
 ```typescript
 // services/user-service/src/index.ts
 import { initSentryWithPolicy } from '@mycompany/sentry-config';

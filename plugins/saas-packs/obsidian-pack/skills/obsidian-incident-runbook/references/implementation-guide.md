@@ -5,6 +5,7 @@
 ## Detailed Instructions
 
 ### Step 1: Quick Triage
+
 ```markdown
 
 
@@ -30,7 +31,6 @@
 })();
 ```
 
-
 ## Severity Levels
 
 | Level | Definition | Response Time | Examples |
@@ -39,7 +39,6 @@
 | P2 | Plugin unusable | < 1 hour | Crash on load, all features broken |
 | P3 | Feature degraded | < 4 hours | One feature not working |
 | P4 | Minor issue | Next release | UI glitch, minor inconvenience |
-
 
 ## Initial Assessment
 
@@ -58,6 +57,7 @@
    - [ ] Can you reproduce it?
    - [ ] Is it consistent or intermittent?
    - [ ] Does it happen in a new vault?
+
 ```
 
 ### Step 2: Gather Diagnostic Information
@@ -79,13 +79,15 @@
    app.plugins.getPlugin('my-plugin-id')
    ```
 
-3. **Check settings:**
+1. **Check settings:**
+
    ```javascript
    // View plugin settings
    app.plugins.getPlugin('my-plugin-id').settings
    ```
 
-4. **Check loaded status:**
+2. **Check loaded status:**
+
    ```javascript
    // Is plugin loaded?
    app.plugins.enabledPlugins.has('my-plugin-id')
@@ -101,10 +103,12 @@ cat /path/to/vault/.obsidian/plugins/my-plugin/data.json | jq .
 
 ls -la /path/to/vault/.obsidian/plugins/my-plugin/*
 ```
+
 ```
 
 ### Step 3: Decision Tree
 ```
+
 Plugin not loading?
 ├─ Error in console?
 │   ├─ "Cannot find module" → Missing dependency, rebuild plugin
@@ -124,6 +128,7 @@ Data corruption suspected?
 ├─ Notes corrupted → Check recent vault backups
 ├─ Links broken → Run link consistency check
 └─ Frontmatter corrupted → Parse and fix YAML
+
 ```
 
 ### Step 4: Common Fixes by Error Type
@@ -139,6 +144,7 @@ rm -rf /path/to/vault/.obsidian/plugins/my-plugin
 ```
 
 #### Settings Corrupted
+
 ```javascript
 // In console - reset to defaults
 const plugin = app.plugins.getPlugin('my-plugin-id');
@@ -148,6 +154,7 @@ await plugin.saveSettings();
 ```
 
 #### Crash on Specific File
+
 ```javascript
 // Identify problematic file
 // Check recent file-open events in console
@@ -161,6 +168,7 @@ const content = await app.vault.read(file);
 ### Step 5: Emergency Procedures
 
 #### P1: Data Loss Prevention
+
 ```bash
 #!/bin/bash
 
@@ -175,6 +183,7 @@ echo "All plugins disabled. Restart Obsidian."
 ```
 
 #### P1: Vault Corruption Recovery
+
 ```markdown
 
 
@@ -189,11 +198,12 @@ echo "All plugins disabled. Restart Obsidian."
    cp -r /path/to/vault /path/to/vault-corrupted-backup
    ```
 
-3. **Check for Obsidian sync backup**
+1. **Check for Obsidian sync backup**
    - Obsidian Sync: Settings > Sync > View version history
    - Manual: Check your backup solution
 
-4. **Restore from backup**
+2. **Restore from backup**
+
    ```bash
    # If using git
    cd /path/to/vault
@@ -201,9 +211,10 @@ echo "All plugins disabled. Restart Obsidian."
    git checkout <commit>
    ```
 
-5. **Disable plugins**
+3. **Disable plugins**
    - Start Obsidian in safe mode (hold Shift on startup)
    - Or manually: `echo '[]' > .obsidian/community-plugins.json`
+
 ```
 
 ### Step 6: Communication Templates
@@ -237,6 +248,7 @@ I'll investigate this as a priority and provide an update within [timeframe].
 ```
 
 #### GitHub Issue Template
+
 ```markdown
 
 
@@ -262,7 +274,9 @@ I'll investigate this as a priority and provide an update within [timeframe].
 
 ### Console Errors
 ```
+
 [Paste errors]
+
 ```
 
 ### Additional Context
@@ -274,6 +288,7 @@ I'll investigate this as a priority and provide an update within [timeframe].
 ### Step 7: Post-Incident Actions
 
 #### Root Cause Analysis Template
+
 ```markdown
 
 

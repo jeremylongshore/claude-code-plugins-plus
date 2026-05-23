@@ -10,6 +10,7 @@ oraclecloud-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Oracle Cloud SDK upgrades
 **Workflow:** Part of the operations skill category for Oracle Cloud integration.
 **Relates to:** Other oraclecloud skills in this pack.

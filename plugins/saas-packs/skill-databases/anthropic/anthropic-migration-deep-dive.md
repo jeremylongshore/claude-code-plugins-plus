@@ -10,6 +10,7 @@ anthropic-migration-deep-dive/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Anthropic major migrations
 **Workflow:** Part of the advanced skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

@@ -10,6 +10,7 @@ procore-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Procore SDK patterns
 **Workflow:** Part of the onboarding skill category for Procore integration.
 **Relates to:** Other procore skills in this pack.

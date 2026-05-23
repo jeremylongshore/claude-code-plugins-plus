@@ -10,6 +10,7 @@ flexport-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Flexport advanced debugging
 **Workflow:** Part of the enterprise skill category for Flexport integration.
 **Relates to:** Other flexport skills in this pack.

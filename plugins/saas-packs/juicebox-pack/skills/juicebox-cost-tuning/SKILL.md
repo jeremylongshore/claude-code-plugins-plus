@@ -18,6 +18,7 @@ compatibility: Designed for Claude Code
 # Juicebox Cost Tuning
 
 ## Cost Factors
+
 | Feature | Cost Driver |
 |---------|-------------|
 | Search | Per query |
@@ -26,12 +27,14 @@ compatibility: Designed for Claude Code
 | Outreach | Per message |
 
 ## Reduction Strategies
+
 1. Cache search results (avoid duplicate queries)
 2. Use filters (fewer wasted enrichments)
 3. Only enrich top-scored candidates
 4. Only get contacts for final candidates
 
 ## Quota Monitoring
+
 ```typescript
 const quota = await client.account.getQuota();
 console.log(`Searches: ${quota.searches.used}/${quota.searches.limit}`);
@@ -39,7 +42,9 @@ if (quota.searches.used > quota.searches.limit * 0.8) console.warn('80% quota us
 ```
 
 ## Resources
+
 - [Pricing](https://juicebox.ai/pricing)
 
 ## Next Steps
+
 See `juicebox-reference-architecture`.

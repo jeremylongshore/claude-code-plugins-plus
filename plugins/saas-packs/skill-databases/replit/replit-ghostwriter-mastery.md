@@ -10,6 +10,7 @@ replit-ghostwriter-mastery/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Master Replit Ghostwriter AI for code completion, generation, explanation, and transformation.
 **Workflow:** AI productivity skill - maximizes coding speed with inline AI assistance.
 **Relates to:** Complements replit-agent-advanced; enhances all development skills.

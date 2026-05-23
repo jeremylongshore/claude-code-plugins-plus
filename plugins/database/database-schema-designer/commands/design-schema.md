@@ -135,18 +135,21 @@ erDiagram
 ## Common Patterns
 
 ### Audit Trail
+
 ```sql
 ALTER TABLE table_name ADD COLUMN created_by INTEGER REFERENCES users(id);
 ALTER TABLE table_name ADD COLUMN updated_by INTEGER REFERENCES users(id);
 ```
 
 ### Soft Delete
+
 ```sql
 ALTER TABLE table_name ADD COLUMN deleted_at TIMESTAMP NULL;
 CREATE INDEX idx_table_deleted_at ON table_name(deleted_at);
 ```
 
 ### Versioning
+
 ```sql
 ALTER TABLE table_name ADD COLUMN version INTEGER DEFAULT 1;
 ```
@@ -154,6 +157,7 @@ ALTER TABLE table_name ADD COLUMN version INTEGER DEFAULT 1;
 ## Output Format
 
 Provide:
+
 1. SQL CREATE TABLE statements
 2. Relationship diagram (mermaid ERD)
 3. Index recommendations

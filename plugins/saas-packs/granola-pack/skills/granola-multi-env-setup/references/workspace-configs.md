@@ -1,6 +1,7 @@
 # Granola Workspace Configuration Reference
 
 ## Workspace Hierarchy Example
+
 ```
 Organization (acme-corp)
 ├── Corporate Workspace
@@ -26,6 +27,7 @@ Organization (acme-corp)
 ```
 
 ## Per-Workspace Settings Template
+
 ```yaml
 Workspace: Engineering
 
@@ -60,24 +62,28 @@ Permissions:
 ## User Provisioning Methods
 
 ### Manual Provisioning
+
 1. Settings > Members
 2. Invite by email
 3. Assign to workspace(s)
 4. Set role
 
 ### SSO/SCIM Provisioning
+
 1. Configure SSO provider
 2. Enable SCIM provisioning
 3. Map groups to workspaces
 4. Roles assigned by group
 
 ### JIT (Just-in-Time) Provisioning
+
 1. Enable JIT provisioning
 2. User signs in via SSO
 3. Auto-added to default workspace
 4. Upgrade as needed
 
 ## SSO Group Mapping
+
 ```yaml
 SSO Groups:
   engineering-team:
@@ -95,6 +101,7 @@ SSO Groups:
 ```
 
 ## Environment-Specific Integration Config
+
 ```yaml
 # Production Environment
 Workspaces:
@@ -125,6 +132,7 @@ Workspaces:
 ```
 
 ## Compliance Configuration (HR Workspace)
+
 ```yaml
 Workspace: HR
 
@@ -144,6 +152,7 @@ Compliance Settings:
 ```
 
 ## Audit Configuration
+
 Events Logged: user sign-in/out, note created/edited/deleted, sharing changes, export requests, admin actions
 
 Retention: 2 years | Export: Daily to SIEM | Format: JSON | Destination: Splunk/Datadog
@@ -151,17 +160,20 @@ Retention: 2 years | Export: Daily to SIEM | Format: JSON | Destination: Splunk/
 ## Cross-Workspace Features
 
 ### Shared Templates
+
 - Organization-wide templates (Org admins only)
 - Workspace-specific templates (Workspace admins)
 - Personal templates (Individual users)
 
 ### Cross-Workspace Search
+
 1. Settings > Search > Cross-workspace search
 2. Select participating workspaces
 3. Configure access levels
 4. Respects workspace permissions, excludes confidential workspaces
 
 ## Environment Promotion: Staging to Production
+
 1. Test in staging workspace with sample data
 2. Document configuration (export settings as JSON)
 3. Create production workspace and apply documented settings

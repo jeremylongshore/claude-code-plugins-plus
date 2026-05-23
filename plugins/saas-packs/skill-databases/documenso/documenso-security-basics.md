@@ -10,6 +10,7 @@ documenso-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Documenso security best practices
 **Workflow:** Part of the operations skill category for Documenso integration.
 **Relates to:** Other documenso skills in this pack.

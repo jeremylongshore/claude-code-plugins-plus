@@ -3,6 +3,7 @@
 ## Advanced Composer Techniques
 
 ### Context Injection
+
 ```
 Use @-mentions to give context:
 
@@ -14,6 +15,7 @@ Create a rate-limiting middleware that:
 ```
 
 ### File Structure Control
+
 ```
 Be explicit about structure:
 
@@ -34,6 +36,7 @@ src/
 ```
 
 ### Incremental Refinement
+
 ```
 Initial: "Create a user dashboard"
 Refine: "Add a sidebar navigation"

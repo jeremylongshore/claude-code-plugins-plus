@@ -10,6 +10,7 @@ hubspot-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up HubSpot monitoring and observability
 **Workflow:** Part of the enterprise skill category for HubSpot integration.
 **Relates to:** Other hubspot skills in this pack.

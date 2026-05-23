@@ -1,6 +1,7 @@
 # Examples
 
 **Example: Tabular classification with a 1-hour budget**
+
 ```json
 {
   "task_type": "classification",

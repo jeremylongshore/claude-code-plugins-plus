@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Hello World
 
 ## Overview
+
 Minimal working examples demonstrating core Fireflies.ai GraphQL queries: list users, fetch transcripts, and read a meeting summary.
 
 ## Prerequisites
+
 - Completed `fireflies-install-auth` setup
 - `FIREFLIES_API_KEY` environment variable set
 - At least one meeting recorded in Fireflies
@@ -35,6 +37,7 @@ Minimal working examples demonstrating core Fireflies.ai GraphQL queries: list u
 ## Instructions
 
 ### Step 1: List Workspace Users
+
 ```bash
 set -euo pipefail
 curl -s -X POST https://api.fireflies.ai/graphql \
@@ -44,6 +47,7 @@ curl -s -X POST https://api.fireflies.ai/graphql \
 ```
 
 ### Step 2: Fetch Recent Transcripts
+
 ```typescript
 const FIREFLIES_API = "https://api.fireflies.ai/graphql";
 
@@ -83,6 +87,7 @@ for (const t of data.transcripts) {
 ```
 
 ### Step 3: Read a Single Transcript with Summary
+
 ```typescript
 async function getTranscriptSummary(id: string) {
   return firefliesQuery(`
@@ -113,6 +118,7 @@ console.log(`Keywords: ${transcript.summary.keywords?.join(", ")}`);
 ```
 
 ### Step 4: Python Hello World
+
 ```python
 import os, requests
 
@@ -145,6 +151,7 @@ for m in meetings["transcripts"]:
 | `transcript(id: "...")` | Single meeting | `sentences`, `summary`, `speakers` |
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `auth_failed` | Missing or invalid API key | Verify `FIREFLIES_API_KEY` is set |
@@ -153,13 +160,16 @@ for m in meetings["transcripts"]:
 | Network timeout | API unreachable | Check internet connectivity |
 
 ## Output
+
 - Working GraphQL queries against `https://api.fireflies.ai/graphql`
 - Transcript listing with metadata
 - Meeting summary with action items and keywords
 
 ## Resources
+
 - [Fireflies API Docs](https://docs.fireflies.ai/)
 - [Transcript Query Reference](https://docs.fireflies.ai/graphql-api/query/transcript)
 
 ## Next Steps
+
 Proceed to `fireflies-core-workflow-a` for transcript retrieval and processing.

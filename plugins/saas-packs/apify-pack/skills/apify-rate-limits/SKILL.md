@@ -40,6 +40,7 @@ The Apify API enforces rate limits per resource. The `apify-client` library auto
 **"Per resource" means:** calls to dataset A and dataset B each get 60 req/sec independently.
 
 Rate limit headers returned:
+
 - `X-RateLimit-Limit` — max requests per interval
 - `X-RateLimit-Remaining` — remaining requests
 - `X-RateLimit-Reset` — epoch seconds when limit resets

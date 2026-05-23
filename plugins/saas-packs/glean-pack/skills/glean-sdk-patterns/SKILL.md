@@ -19,9 +19,11 @@ compatibility: Designed for Claude Code
 # Glean SDK Patterns
 
 ## Overview
+
 Production-ready patterns for the Glean enterprise search platform. Glean uses POST-based REST endpoints for both search and indexing. Search queries go to the Client API while document ingestion uses the Indexing API. A structured client centralizes token management, enforces batch pagination for bulk indexing, and provides typed responses for search results.
 
 ## Singleton Client
+
 ```typescript
 let _client: GleanClient | null = null;
 export function getClient(): GleanClient {
@@ -57,6 +59,7 @@ class GleanClient {
 ```
 
 ## Error Wrapper
+
 ```typescript
 export class GleanError extends Error {
   constructor(public status: number, message: string) { super(message); this.name = 'GleanError'; }
@@ -72,6 +75,7 @@ export async function safeCall<T>(operation: string, fn: () => Promise<T>): Prom
 ```
 
 ## Request Builder
+
 ```typescript
 class GleanSearchBuilder {
   private body: Record<string, any> = {};
@@ -86,6 +90,7 @@ class GleanSearchBuilder {
 ```
 
 ## Response Types
+
 ```typescript
 interface GleanDocument {
   id: string; title: string; url: string;
@@ -100,6 +105,7 @@ interface GleanDatasource { name: string; displayName: string; documentCount: nu
 ```
 
 ## Testing Utilities
+
 ```typescript
 export function mockDocument(o: Partial<GleanDocument> = {}): GleanDocument {
   return { id: 'doc-001', title: 'Onboarding Guide', url: 'https://wiki.example.com/onboarding',
@@ -113,6 +119,7 @@ export function mockSearchResponse(n = 3): GleanSearchResponse {
 ```
 
 ## Error Handling
+
 | Pattern | When to Use | Example |
 |---------|-------------|---------|
 | `safeCall` wrapper | All search and index calls | Structured error with operation context |
@@ -121,7 +128,9 @@ export function mockSearchResponse(n = 3): GleanSearchResponse {
 | Auth validation | Client init | Fail fast on missing `GLEAN_API_KEY` |
 
 ## Resources
+
 - [Glean Developer Portal](https://developers.glean.com/)
 
 ## Next Steps
+
 Apply patterns in `glean-core-workflow-a`.

@@ -10,6 +10,7 @@ clickhouse-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement ClickHouse core feature integration
 **Workflow:** Part of the onboarding skill category for ClickHouse integration.
 **Relates to:** Other clickhouse skills in this pack.

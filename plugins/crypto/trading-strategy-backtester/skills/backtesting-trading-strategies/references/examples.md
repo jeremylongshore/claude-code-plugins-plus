@@ -14,6 +14,7 @@ python scripts/backtest.py \
 ```
 
 **Expected Output:**
+
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
 ║            BACKTEST RESULTS: SMA_CROSSOVER                           ║
@@ -66,6 +67,7 @@ python scripts/optimize.py \
 ```
 
 **Expected Output:**
+
 ```
 ================================================================================
 PARAMETER OPTIMIZATION RESULTS
@@ -126,6 +128,7 @@ python scripts/backtest.py --list
 ```
 
 **Output:**
+
 ```
 Available strategies:
   sma_crossover: Simple Moving Average Crossover Strategy.

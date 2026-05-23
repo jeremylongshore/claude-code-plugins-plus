@@ -13,6 +13,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py
 ```
 
 **Output:**
+
 ```
 ==============================================================================
   CRYPTO NEWS AGGREGATOR                            Updated: 2026-01-14 15:30
@@ -134,6 +135,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py --format json --output cry
 ```
 
 **Output (crypto_news.json):**
+
 ```json
 {
   "articles": [
@@ -173,6 +175,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py --format csv --output cryp
 ```
 
 **Output (crypto_news.csv):**
+
 ```csv
 rank,title,url,source,published,age,category,relevance_score,coins_mentioned
 1,Bitcoin Breaks $100K Sets New ATH,https://coindesk.com/...,CoinDesk,2026-01-14T13:30:00,2h ago,market,95.0,BTC
@@ -282,6 +285,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py --verbose
 ```
 
 **Output:**
+
 ```
 Loaded 12 sources
 Fetching feeds...

@@ -3,6 +3,7 @@
 ## Model Errors (400)
 
 ### Model Not Found
+
 ```
 Error: 400 Bad Request
 {
@@ -14,6 +15,7 @@ Error: 400 Bad Request
 ```
 
 **Fixes:**
+
 ```python
 # Check exact model ID format
 # Wrong
@@ -31,6 +33,7 @@ valid_models = [m["id"] for m in response.json()["data"]]
 ```
 
 ### Model Temporarily Unavailable
+
 ```
 Error: 503 Service Unavailable
 {
@@ -42,6 +45,7 @@ Error: 503 Service Unavailable
 ```
 
 **Handling:**
+
 ```python
 FALLBACK_MODELS = [
     "anthropic/claude-3.5-sonnet",

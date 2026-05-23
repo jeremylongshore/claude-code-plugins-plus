@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai CI Integration
 
 ## Overview
+
 Set up CI/CD pipelines for Fireflies.ai integrations: GraphQL query validation, mock-based unit tests, and optional live API integration tests with rate limit awareness.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - Fireflies.ai test API key (for integration tests)
 - Vitest test suite configured
@@ -36,6 +38,7 @@ Set up CI/CD pipelines for Fireflies.ai integrations: GraphQL query validation, 
 ## Instructions
 
 ### Step 1: GitHub Actions Workflow
+
 ```yaml
 # .github/workflows/fireflies-tests.yml
 name: Fireflies Integration Tests
@@ -83,6 +86,7 @@ jobs:
 ```
 
 ### Step 2: Store Secrets
+
 ```bash
 set -euo pipefail
 # Store test API key as GitHub secret
@@ -94,6 +98,7 @@ gh secret set FIREFLIES_WEBHOOK_SECRET --env production --body "your-webhook-sec
 ```
 
 ### Step 3: Unit Tests with Mocks
+
 ```typescript
 // tests/fireflies-client.test.ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -161,6 +166,7 @@ describe("Fireflies GraphQL Client", () => {
 ```
 
 ### Step 4: Integration Tests (Live API)
+
 ```typescript
 // tests/integration/fireflies.integration.test.ts
 import { describe, it, expect } from "vitest";
@@ -201,6 +207,7 @@ describe.skipIf(!hasApiKey)("Fireflies Live API", () => {
 ```
 
 ### Step 5: Test Scripts
+
 ```json
 {
   "scripts": {
@@ -213,11 +220,13 @@ describe.skipIf(!hasApiKey)("Fireflies Live API", () => {
 ```
 
 ## Rate Limit Considerations in CI
+
 - Free/Pro plans: 50 requests/day -- limit integration tests to main branch only
 - Business plans: 60 requests/min -- safe for PR-level tests
 - Cache API responses as fixtures for unit tests (see `fireflies-local-dev-loop`)
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Secret not found | Missing GitHub secret | Add via `gh secret set` |
@@ -226,15 +235,18 @@ describe.skipIf(!hasApiKey)("Fireflies Live API", () => {
 | Auth failure in CI | Expired test key | Rotate key in GitHub secrets |
 
 ## Output
+
 - GitHub Actions workflow with unit + integration test jobs
 - Mock-based unit tests for offline validation
 - Live API integration tests gated to main branch
 - Coverage reporting
 
 ## Resources
+
 - [GitHub Actions Docs](https://docs.github.com/en/actions)
 - [Vitest Documentation](https://vitest.dev/)
 - [Fireflies API Docs](https://docs.fireflies.ai/)
 
 ## Next Steps
+
 For deployment patterns, see `fireflies-deploy-integration`.

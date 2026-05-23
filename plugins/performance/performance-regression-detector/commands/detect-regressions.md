@@ -32,6 +32,7 @@ Detect performance regressions early in the development cycle through automated 
 ## Output
 
 Provide:
+
 - Performance test suite setup
 - Baseline performance data collection
 - CI/CD integration configuration

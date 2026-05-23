@@ -101,6 +101,7 @@ steps.
 ## Step B — Retry amplification (P30)
 
 `max_retries=6` on `ChatOpenAI` means **7** requests per logical call (initial
+
 + 6 retries). Under a rate-limit regime, each 429 triggers retries, which each
 hit 429, which each retry — cost multiplies 7x for no successful output.
 
@@ -157,11 +158,11 @@ changed to encourage longer responses, or the model was swapped (e.g. Sonnet
 
 ### Mitigations
 
-- **`max_tokens` cap:** set explicitly on every model factory; do not leave
++ **`max_tokens` cap:** set explicitly on every model factory; do not leave
   unset. 1024 is a sane default for chat; 4096 for structured generation.
-- **Retriever `k`:** audit every retriever for hardcoded `k` vs config-driven;
++ **Retriever `k`:** audit every retriever for hardcoded `k` vs config-driven;
   a change from `k=4` to `k=10` doubles input cost for RAG chains.
-- **Paste detection:** if users paste >10k-char bodies, route to a file-upload
++ **Paste detection:** if users paste >10k-char bodies, route to a file-upload
   path that does chunking + retrieval, not a direct prompt inclusion.
 
 ## Per-tenant budget enforcement
@@ -193,10 +194,10 @@ Tag runs with the tenant id: `chain.with_config({"tags": [f"tenant:{tid}"]})`.
 
 ## Alert thresholds
 
-- **Page:** cost-per-req p95 > 4x baseline for 15min
-- **Page:** absolute spend/hour > 2x forecast for 1h
-- **Ticket:** token-use-per-req up 20% over 7-day baseline (gradual regression)
-- **Ticket:** retry rate > 5% of total requests (P30 warning signal)
++ **Page:** cost-per-req p95 > 4x baseline for 15min
++ **Page:** absolute spend/hour > 2x forecast for 1h
++ **Ticket:** token-use-per-req up 20% over 7-day baseline (gradual regression)
++ **Ticket:** retry rate > 5% of total requests (P30 warning signal)
 
 ## Post-mitigation check
 

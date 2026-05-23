@@ -10,6 +10,7 @@ lokalise-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Lokalise SDK upgrades
 **Workflow:** Part of the operations skill category for Lokalise integration.
 **Relates to:** Other lokalise skills in this pack.

@@ -284,21 +284,25 @@ print(f"Support:    ${support_1:,.2f} ({((support_1/current_price - 1) * 100):+.
 ## Examples
 
 ### Basic crypto analysis
+
 ```bash
 /openbb-crypto BTC
 ```
 
 ### Ethereum DeFi metrics
+
 ```bash
 /openbb-crypto ETH --metrics=defi
 ```
 
 ### Altcoin vs BTC
+
 ```bash
 /openbb-crypto LINK --vs=BTC --period=90d
 ```
 
 ### Social sentiment check
+
 ```bash
 /openbb-crypto DOGE --metrics=social
 ```

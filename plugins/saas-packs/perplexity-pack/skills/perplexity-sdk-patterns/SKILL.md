@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity SDK Patterns
 
 ## Overview
+
 Production-ready patterns for Perplexity Sonar API. Since Perplexity uses the OpenAI wire format, you build wrappers around the `openai` client library with Perplexity-specific response handling (citations, search results, related questions).
 
 ## Prerequisites
+
 - `openai` package installed (`npm install openai` or `pip install openai`)
 - API key configured in `PERPLEXITY_API_KEY`
 - Understanding of OpenAI chat completions format
@@ -36,6 +38,7 @@ Production-ready patterns for Perplexity Sonar API. Since Perplexity uses the Op
 ## Instructions
 
 ### Step 1: Typed Client Singleton (TypeScript)
+
 ```typescript
 // src/perplexity/client.ts
 import OpenAI from "openai";
@@ -74,6 +77,7 @@ export function getClient(): OpenAI {
 ```
 
 ### Step 2: Search with Full Response Parsing
+
 ```typescript
 // src/perplexity/search.ts
 import { getClient, PerplexityChatCompletion } from "./client";
@@ -145,6 +149,7 @@ export async function search(
 ```
 
 ### Step 3: Retry with Exponential Backoff
+
 ```typescript
 // src/perplexity/retry.ts
 export async function withRetry<T>(
@@ -178,6 +183,7 @@ const result = await withRetry(() =>
 ```
 
 ### Step 4: Python Patterns
+
 ```python
 # perplexity_client.py
 import os, hashlib, json
@@ -229,6 +235,7 @@ def search(
 ```
 
 ### Step 5: Citation Formatter
+
 ```typescript
 // src/perplexity/citations.ts
 export function formatCitationsAsMarkdown(
@@ -256,6 +263,7 @@ export function formatCitationsAsFootnotes(
 ```
 
 ## Error Handling
+
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
 | Typed response wrapper | All API calls | Access citations without `any` casts |
@@ -264,15 +272,18 @@ export function formatCitationsAsFootnotes(
 | Python `@lru_cache` | Client reuse | Single client instance across calls |
 
 ## Output
+
 - Type-safe Perplexity client with full response typing
 - Search function with all Perplexity-specific parameters
 - Automatic retry with exponential backoff and jitter
 - Citation formatting utilities
 
 ## Resources
+
 - [Perplexity API Reference](https://docs.perplexity.ai/api-reference/chat-completions-post)
 - [OpenAI Compatibility](https://docs.perplexity.ai/guides/chat-completions-guide)
 - [Sonar Model Guide](https://docs.perplexity.ai/getting-started/models)
 
 ## Next Steps
+
 Apply patterns in `perplexity-core-workflow-a` for real-world usage.

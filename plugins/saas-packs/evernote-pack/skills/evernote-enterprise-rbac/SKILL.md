@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Enterprise RBAC
 
 ## Overview
+
 Implement role-based access control for Evernote integrations, including Evernote Business account handling, shared notebook permissions, multi-tenant architecture, and authorization middleware.
 
 ## Prerequisites
+
 - Understanding of Evernote Business accounts and shared notebooks
 - Multi-tenant application architecture
 - Authentication/authorization infrastructure
@@ -82,6 +84,7 @@ Isolate tenant data by scoping all Evernote operations to the tenant's access to
 For the full RBAC service, middleware, Business account integration, and multi-tenant architecture, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
+
 - Evernote permission model mapped to application roles
 - `RBACService` class with permission checking
 - Express authorization middleware for protected routes
@@ -89,6 +92,7 @@ For the full RBAC service, middleware, Business account integration, and multi-t
 - Multi-tenant token isolation and scoping
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `PERMISSION_DENIED` | User lacks required notebook permission | Verify shared notebook privileges |
@@ -97,12 +101,14 @@ For the full RBAC service, middleware, Business account integration, and multi-t
 | `LIMIT_REACHED` on sharing | Too many shared notebooks | Clean up unused shares (500 max per notebook) |
 
 ## Resources
+
 - [Sharing and Permissions](https://dev.evernote.com/doc/articles/sharing.php)
 - [API Key Permissions](https://dev.evernote.com/doc/articles/permissions.php)
 - [Evernote Business](https://evernote.com/business)
 - [API Reference - SharedNotebook](https://dev.evernote.com/doc/reference/)
 
 ## Next Steps
+
 For migration strategies, see `evernote-migration-deep-dive`.
 
 ## Examples

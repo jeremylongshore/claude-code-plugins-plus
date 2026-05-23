@@ -3,6 +3,7 @@
 ## Transaction Optimization
 
 ### Meaningful Transaction Names
+
 ```typescript
 // Bad: Creates too many unique transactions
 app.get('/users/:id', (req, res) => {
@@ -19,6 +20,7 @@ app.get('/users/:id', (req, res) => {
 ```
 
 ### Skip Unnecessary Spans
+
 ```typescript
 // Only create spans for meaningful operations
 function processData(data: Data[]) {

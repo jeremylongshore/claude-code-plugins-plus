@@ -10,6 +10,7 @@ coreweave-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid CoreWeave anti-patterns
 **Workflow:** Part of the enterprise skill category for CoreWeave integration.
 **Relates to:** Other coreweave skills in this pack.

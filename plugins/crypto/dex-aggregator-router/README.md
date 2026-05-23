@@ -17,6 +17,7 @@ Find optimal routing for token swaps across multiple decentralized exchanges to 
 ```
 
 Or use the shortcut:
+
 ```bash
 /route
 ```
@@ -74,6 +75,7 @@ Or use the shortcut:
 ## Supported DEXs
 
 ### Ethereum Mainnet
+
 - **Uniswap V2/V3** - Most liquid, standard pairs
 - **SushiSwap** - Alternative with good liquidity
 - **Curve** - Best for stablecoins
@@ -83,27 +85,32 @@ Or use the shortcut:
 - **CoW Swap** - MEV-protected batch auctions
 
 ### Layer 2s
+
 - Arbitrum, Optimism, Base, Polygon support
 - Network-specific liquidity considerations
 
 ## Trade Size Recommendations
 
 ### Small Trades (< $1,000)
+
 - Prioritize low gas costs
 - Use simple direct routes
 - Uniswap V2 often best
 
 ### Medium Trades ($1,000 - $10,000)
+
 - Balance price impact and gas
 - Consider multi-hop if beneficial
 - Aggregators provide value
 
 ### Large Trades ($10,000 - $100,000)
+
 - Split routing often optimal
 - Use MEV protection
 - Higher slippage tolerance needed
 
 ### Whale Trades (> $100,000)
+
 - Consider OTC desks
 - TWAP (time-weighted) execution
 - Professional market makers
@@ -111,26 +118,33 @@ Or use the shortcut:
 ## Key Metrics Explained
 
 ### Price Impact
+
 Percentage difference between expected and execution price due to trade size affecting pool balance.
 
 ### Slippage Tolerance
+
 Maximum acceptable price movement before transaction reverts.
 
 ### Effective Rate
+
 Final exchange rate after all fees, impacts, and costs.
 
 ### Total Cost
+
 Combined cost of price impact, DEX fees, and gas.
 
 ## Optimization Strategies
 
 ### Route Splitting
+
 Divide trade across multiple DEXs to reduce per-pool impact.
 
 ### Multi-Hop Routing
+
 Route through intermediate tokens when direct pairs have poor liquidity.
 
 ### Gas vs Impact Trade-off
+
 Sometimes higher gas cost route has lower price impact, better for large trades.
 
 ## Important Notes
@@ -146,6 +160,7 @@ Sometimes higher gas cost route has lower price impact, better for large trades.
 ## Data Sources
 
 Analysis references:
+
 - DEX liquidity pools (on-chain data)
 - 1inch API (aggregator routing)
 - Paraswap API (comparative pricing)

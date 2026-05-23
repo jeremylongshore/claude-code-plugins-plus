@@ -30,6 +30,7 @@ A proven 4-step system for generating qualified leads through interactive assess
 **Why it works:** A concept hook taps into a dormant desire the visitor didn't know they had. By framing the assessment around a score, you trigger the primal drive to measure, rank, and improve oneself. The combination of curiosity and low commitment ("takes 3 minutes") removes friction.
 
 **Key insights:**
+
 - The concept hook is the single most important element; it defines what visitors score themselves on
 - "Moving toward" hooks ("Are you ready to [goal]?") outperform fear-based hooks
 - The 3 Cs (Clarity, Credibility, Connection) must all be present on the page
@@ -47,6 +48,7 @@ A proven 4-step system for generating qualified leads through interactive assess
 | **Category discovery** | Identity/type hook | "What type of entrepreneur are you?" |
 
 **Copy patterns:**
+
 - "[HEADLINE: Concept hook + promise] Are you ready to [desired outcome]?"
 - "Answer [X] quick questions to discover [specific insight] and get personalized recommendations"
 - "3 bullet benefits: Find out where you're strong / Identify areas holding you back / Get actionable next steps tailored to you"
@@ -64,6 +66,7 @@ See: [references/industry-examples.md](references/industry-examples.md) for 50+ 
 **Why it works:** People enjoy answering questions about themselves (self-referential encoding). By capturing the email before questions begin, you retain the lead even if they abandon. Scored categories create a structured framework that makes results feel scientific and credible, increasing trust in the recommendations that follow.
 
 **Key insights:**
+
 - Lead capture form goes first (name, email, optional phone) so you have data even on abandonment
 - Question count scales with funnel stage: 8-15 for cold-to-warm, 20-50 for warm-to-sales, 30-150 for client-to-fan
 - Group questions into 2-7 measurable categories (e.g., Marketing, Operations, Leadership)
@@ -82,6 +85,7 @@ See: [references/industry-examples.md](references/industry-examples.md) for 50+ 
 | **Open text** | Rare, slows completion | "What has stopped you in the past?" |
 
 **Copy patterns:**
+
 - Questions should feel like a conversation, not an interrogation
 - Use "you" language: "How confident are you in your..." not "Rate your confidence level in..."
 - Category names should be meaningful to the respondent, not internal jargon
@@ -99,6 +103,7 @@ See: [references/psychology.md](references/psychology.md) for the psychological 
 **Why it works:** Personalized results trigger reciprocity (you gave them insight, they feel open to conversation), self-qualification (they told you their problems), and gamification (the primal drive to improve a score). Research shows 83% of consumers will share data for a personalized experience, and scored results feel more valuable than generic advice.
 
 **Key insights:**
+
 - Show overall score plus category breakdown to highlight strengths and weaknesses
 - Dynamic content per tier ensures every respondent gets relevant advice, not generic filler
 - Default tiers are Low / Medium / High; custom tiers (e.g., "Startup / Scaleup / Performer / Unicorn") increase engagement
@@ -117,6 +122,7 @@ See: [references/psychology.md](references/psychology.md) for the psychological 
 | **PDF report** | Personalized downloadable document | Cover with name, detailed category analysis, recommendations |
 
 **Copy patterns:**
+
 - "Your [Topic] Score is [X]/[Total]. Here's what that means..."
 - "Your strongest area is [category]. Your biggest opportunity is [category]."
 - Low tier: "This area needs attention. Here are easy first steps... Our team specializes in helping people at your stage."
@@ -134,6 +140,7 @@ See: [references/technical-implementation.md](references/technical-implementatio
 **Why it works:** Unlike cold outreach, scorecard-generated leads arrive with rich self-reported data: their pain points, qualification signals, and score. Sales conversations shift from discovery to recommendation because you already know their scores before the call. Automated segmentation means every lead gets relevant follow-up without manual sorting.
 
 **Key insights:**
+
 - Promotion channels include LinkedIn polls, Facebook/Google ads, email to existing lists, podcast CTAs, and book QR codes
 - Automated email with results + PDF fires immediately after completion
 - Abandon emails recover leads who started but did not finish
@@ -152,6 +159,7 @@ See: [references/technical-implementation.md](references/technical-implementatio
 | **Sales call** | Data-informed conversation | Rep opens with "I see you scored 4/10 on Operations..." |
 
 **Copy patterns:**
+
 - "Take the [Topic] Scorecard" as a universal CTA across all channels
 - Abandon email: "You started the quiz but didn't finish. Pick up where you left off."
 - Results email: "Your [Topic] Score is ready. Here's what we recommend based on your results."
@@ -165,17 +173,20 @@ See: [references/analytics-optimization.md](references/analytics-optimization.md
 ## Scorecard Naming Strategy
 
 **Effective names combine:**
+
 - Topic clarity (what it measures)
 - Outcome promise (why take it)
 - Brevity (memorable)
 
 **Formulas:**
+
 - "The [Topic] Scorecard"
 - "[Outcome] Readiness Assessment"
 - "What's Your [Topic] Score?"
 - "The [Adjective] [Topic] Quiz"
 
 **Examples:**
+
 - "The Business Growth Scorecard"
 - "Leadership Readiness Assessment"
 - "What's Your Marketing Score?"

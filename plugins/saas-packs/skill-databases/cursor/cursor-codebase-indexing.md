@@ -10,6 +10,7 @@ cursor-codebase-indexing/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Sets up and optimizes Cursor codebase indexing for semantic search and AI context, covering configuration, maintenance, and optimization strategies.
 
 **Workflow:** This skill activates when setting up indexing for a new project or optimizing search performance. It covers what gets indexed, configuration, settings, using the index effectively, maintenance, and large project strategies.

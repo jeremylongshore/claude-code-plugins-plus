@@ -3,6 +3,7 @@
 ## Data Minimization
 
 ### Prompt Cleaning
+
 ```python
 def clean_prompt(prompt: str) -> str:
     """Remove unnecessary data from prompts."""
@@ -22,6 +23,7 @@ def clean_prompt(prompt: str) -> str:
 ```
 
 ### Minimal Context
+
 ```python
 def create_minimal_prompt(
     question: str,

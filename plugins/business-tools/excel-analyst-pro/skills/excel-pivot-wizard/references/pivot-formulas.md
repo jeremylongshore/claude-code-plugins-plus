@@ -11,16 +11,19 @@
 ## Common Calculated Fields
 
 ### Profit Margin
+
 ```
 = 'Gross Profit' / 'Revenue'
 ```
 
 ### YoY Growth
+
 ```
 = ('Current Year' - 'Prior Year') / 'Prior Year'
 ```
 
 ### Per Unit Metrics
+
 ```
 = 'Total Value' / 'Quantity'
 ```
@@ -37,6 +40,7 @@
 ## Date Grouping
 
 Right-click date field → Group:
+
 - Days
 - Months
 - Quarters

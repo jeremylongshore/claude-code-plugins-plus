@@ -96,6 +96,7 @@ resource "google_cloud_run_v2_service_iam_member" "public" {
 ```
 
 **Smoke test:**
+
 ```bash
 SERVICE_URL=$(gcloud run services describe genkit-api \
   --region=us-central1 --format='value(status.url)')

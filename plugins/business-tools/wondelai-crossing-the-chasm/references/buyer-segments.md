@@ -11,18 +11,21 @@ This reference provides deep psychographic profiles for each buyer type, practic
 Innovators pursue new technology as a central interest in their lives, regardless of its immediate practical application. They are the gatekeepers to the rest of the lifecycle: if they reject your product, it never gets to anyone else.
 
 **Core motivations:**
+
 - Fascination with technology for its own sake
 - Desire to explore new capabilities before anyone else
 - Identity tied to being on the bleeding edge
 - Joy in tinkering, breaking, and rebuilding
 
 **How they discover products:**
+
 - Hacker News, Reddit, niche forums, GitHub
 - Technical conferences and meetups
 - Direct outreach from founders (they love early access)
 - Open source communities and Discord servers
 
 **Decision process:**
+
 - Evaluate based on technical architecture, not business value
 - Will tolerate bugs, missing features, and poor documentation
 - Buy quickly -- often within hours of discovery
@@ -54,24 +57,28 @@ Innovators pursue new technology as a central interest in their lives, regardles
 Early adopters are strategic buyers who see technology as a means to achieve a dramatic competitive advantage. They are not technologists -- they are business leaders with imagination and willingness to take calculated risks.
 
 **Core motivations:**
+
 - Desire for order-of-magnitude improvement (10x, not 10%)
 - Vision of transforming their organization or industry
 - Willingness to bet on unproven solutions for strategic gain
 - Personal career ambition tied to being a change agent
 
 **Typical titles:**
+
 - VP or C-level with a transformation mandate
 - Founder/CEO of a fast-growing company
 - Head of Innovation or Digital Transformation
 - Business unit leaders under pressure to reinvent
 
 **How they buy:**
+
 - Top-down decision: executive sponsors the project
 - Fast procurement cycles (weeks, not months)
 - Willing to fund custom development and pilots
 - Budget comes from strategic/innovation funds, not operational budgets
 
 **Decision process:**
+
 - Evaluate based on vision alignment and potential impact
 - Tolerate incomplete products if the vision is compelling
 - Want direct access to company founders and leadership
@@ -120,12 +127,14 @@ The gap between early adopters and early majority is not just a marketing proble
 Pragmatists are the largest segment and the key to market dominance. They are practical, risk-averse, and make decisions by consensus. They want proven solutions that make their existing processes better without disruption.
 
 **Core motivations:**
+
 - Improve productivity and efficiency incrementally
 - Reduce risk in their operations
 - Follow proven best practices
 - Stay competitive without taking unnecessary chances
 
 **How they buy:**
+
 - Committee-based decisions with multiple stakeholders
 - Long evaluation cycles (months, sometimes quarters)
 - Heavy reliance on peer references and analyst reports
@@ -133,6 +142,7 @@ Pragmatists are the largest segment and the key to market dominance. They are pr
 - Require proof of ROI before purchase
 
 **What they need before buying:**
+
 - References from companies similar to theirs (same size, same industry)
 - A complete solution, not a toolkit requiring assembly
 - Clear implementation plan with defined milestones
@@ -156,6 +166,7 @@ Pragmatists are the largest segment and the key to market dominance. They are pr
 ### Identifying Pragmatists in Your Pipeline
 
 Checklist of pragmatist behaviors:
+
 - [ ] Asks "Who else in our industry uses this?"
 - [ ] Wants to speak with reference customers
 - [ ] Involves multiple stakeholders in evaluation
@@ -172,12 +183,14 @@ Checklist of pragmatist behaviors:
 Conservatives buy technology only when it becomes an established standard. They are uncomfortable with technology and want it to be invisible -- embedded in a solution they already understand.
 
 **Core motivations:**
+
 - Avoid being disadvantaged by not adopting
 - Minimize cost and complexity
 - Stick with trusted vendors and known brands
 - Avoid change unless absolutely necessary
 
 **How they buy:**
+
 - Buy from established vendors they already work with
 - Choose the market leader by default
 - Prefer bundled solutions over point products
@@ -203,6 +216,7 @@ Conservatives buy technology only when it becomes an established standard. They 
 Laggards actively resist technology adoption. They buy only when the old way is no longer available or when regulatory requirements force adoption. They are not a target market -- they are a compliance segment.
 
 **How they end up buying:**
+
 - Regulation mandates the technology
 - Their existing solution is discontinued
 - Business processes make non-adoption impossible
@@ -261,12 +275,14 @@ Ask yourself these questions about your current customer base:
 ### Warning Signs You're Selling to the Wrong Segment
 
 **Signs you're stuck with innovators when you need early adopters:**
+
 - Lots of free/trial users, very few paid
 - Users love the tech but can't articulate business value
 - Engagement is deep but revenue is shallow
 - Community is active but enterprise deals stall
 
 **Signs you're stuck with early adopters when you need early majority:**
+
 - A few large deals but can't replicate them
 - Every customer wants something different
 - Revenue is lumpy and unpredictable
@@ -274,6 +290,7 @@ Ask yourself these questions about your current customer base:
 - High NPS from existing customers but low conversion of pragmatist prospects
 
 **Signs you're accidentally selling to late majority when you should be targeting early majority:**
+
 - Extreme price pressure on every deal
 - Customers want zero risk and zero change
 - Competitors are well-established in accounts

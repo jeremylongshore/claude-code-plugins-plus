@@ -25,6 +25,7 @@ grounded in actual traffic data, not guesswork.
 ### Step 1: Load Context
 
 Read the site registry at `${CLAUDE_SKILL_DIR}/references/site-registry.md` for:
+
 - Key pages per site (what matters most)
 - Business goals (what content should drive)
 - Conversion events (content → action mapping)
@@ -37,17 +38,20 @@ voice and framing.
 From the data-collector's URL metrics, analyze:
 
 **Top Pages Ranking:**
+
 | Page | Views | % of Total | Δ vs Prior | Classification |
 |------|-------|-----------|-----------|---------------|
 | {url} | {n} | {n%} | {+/-n%} | Rising / Stable / Declining / New |
 
 **Classification Criteria:**
+
 - **Rising:** >20% increase vs previous period
 - **Stable:** <20% change either direction
 - **Declining:** >20% decrease vs previous period
 - **New:** Not in previous period's top pages
 
 **Engagement Signals (when available):**
+
 - Average time on page (from aggregate time / pageviews)
 - Bounce rate by page (if metrics support it)
 - Pages per session following this page (exit rate proxy)
@@ -57,6 +61,7 @@ From the data-collector's URL metrics, analyze:
 Group pages to identify patterns:
 
 **By Content Type (for tonsofskills.com):**
+
 | Type | Pages | Avg Views | Trend |
 |------|-------|-----------|-------|
 | Plugin pages (`/plugins/*`) | {n} | {n} | {↑↓→} |
@@ -66,6 +71,7 @@ Group pages to identify patterns:
 | Explore / Browse | {n} | {n} | {↑↓→} |
 
 **By Content Type (for startaitools.com):**
+
 | Type | Pages | Avg Views | Trend |
 |------|-------|-----------|-------|
 | Blog posts (`/blog/*`) | {n} | {n} | {↑↓→} |
@@ -74,6 +80,7 @@ Group pages to identify patterns:
 ### Step 4: Content Gap Detection
 
 Identify gaps by cross-referencing:
+
 - **High-traffic pages with no follow-up** — visitors arrive but have nowhere to go next
 - **Categories with low representation** — plugin categories with traffic but few pages
 - **Search queries landing on wrong pages** — if referrer data shows search terms
@@ -82,6 +89,7 @@ Identify gaps by cross-referencing:
 ### Step 5: Referrer → Content Attribution
 
 Connect traffic sources to content:
+
 - Which pages do organic search visitors land on? (SEO strength indicators)
 - Which pages do AI referrals land on? (what AI chatbots recommend)
 - Which pages do GitHub visitors land on? (developer funnel entry points)

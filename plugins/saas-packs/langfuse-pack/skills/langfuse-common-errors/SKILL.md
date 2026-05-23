@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Common Errors
 
 ## Overview
+
 Diagnostic reference for the 10 most common Langfuse integration errors, with real error messages, root causes, and tested solutions.
 
 ## Prerequisites
+
 - Langfuse SDK installed
 - API credentials configured
 - Access to application logs or console output
@@ -36,6 +38,7 @@ Diagnostic reference for the 10 most common Langfuse integration errors, with re
 ### 1. Authentication Failed (401)
 
 **Error:**
+
 ```
 Langfuse: Unauthorized - Invalid API key
 Error: 401 Unauthorized
@@ -44,6 +47,7 @@ Error: 401 Unauthorized
 **Cause:** API key missing, expired, revoked, or keys from wrong project.
 
 **Fix:**
+
 ```bash
 set -euo pipefail
 # Verify env vars are set
@@ -66,11 +70,13 @@ curl -s -o /dev/null -w "HTTP %{http_code}" \
 **Symptom:** Code runs without errors but no traces show in UI.
 
 **Root causes (in order of likelihood):**
+
 1. Data not flushed before process exits
 2. Wrong project keys (traces going to different project)
 3. Dashboard filter hiding traces
 
 **Fix:**
+
 ```typescript
 // v4+: Ensure OTel SDK is shut down properly
 const sdk = new NodeSDK({ spanProcessors: [new LangfuseSpanProcessor()] });
@@ -90,12 +96,14 @@ process.on("beforeExit", async () => {
 ### 3. Network / Connection Errors
 
 **Error:**
+
 ```
 FetchError: request to https://cloud.langfuse.com failed
 ECONNREFUSED / ETIMEDOUT
 ```
 
 **Fix:**
+
 ```bash
 set -euo pipefail
 # Test connectivity
@@ -120,6 +128,7 @@ const langfuse = new Langfuse({ requestTimeout: 30000 });
 **Symptom:** Generations appear but token counts show zero.
 
 **Fix:**
+
 ```typescript
 // For OpenAI streaming -- enable usage reporting
 const stream = await openai.chat.completions.create({
@@ -150,6 +159,7 @@ updateActiveObservation({
 **Symptom:** Spans show as in-progress indefinitely in the dashboard.
 
 **Fix:**
+
 ```typescript
 // Always end spans in try/finally
 const span = trace.span({ name: "operation" });
@@ -174,6 +184,7 @@ await startActiveObservation("operation", async () => {
 **Symptom:** Same operation creates multiple traces.
 
 **Fix:**
+
 ```typescript
 // Use singleton pattern -- NEVER create Langfuse per request
 // BAD:
@@ -191,12 +202,14 @@ app.get("/api", async (req, res) => {
 ### 7. SDK Import Errors
 
 **Error:**
+
 ```
 TypeError: langfuse.trace is not a function
 Cannot find module '@langfuse/tracing'
 ```
 
 **Fix:**
+
 ```bash
 set -euo pipefail
 # Check installed version
@@ -216,11 +229,13 @@ npm install @langfuse/client@latest @langfuse/tracing@latest @langfuse/otel@late
 ### 8. Environment Variable Not Loaded
 
 **Error:**
+
 ```
 Langfuse: Missing required configuration - publicKey
 ```
 
 **Fix:**
+
 ```typescript
 // Load .env at the very top of your entry file
 import "dotenv/config";
@@ -238,12 +253,14 @@ if (!process.env.LANGFUSE_PUBLIC_KEY) {
 ### 9. Self-Hosted Connection Issues
 
 **Error:**
+
 ```
 Failed to connect to localhost:3000
 Certificate verification failed
 ```
 
 **Fix:**
+
 ```bash
 set -euo pipefail
 # Check if Langfuse container is running
@@ -260,12 +277,14 @@ curl http://localhost:3000/api/public/health
 ### 10. Rate Limiting (429)
 
 **Error:**
+
 ```
 Error: 429 Too Many Requests
 Retry-After: 60
 ```
 
 **Fix:**
+
 ```typescript
 // v3: Increase batch size to reduce API calls
 const langfuse = new Langfuse({
@@ -315,6 +334,7 @@ echo "Health: $(curl -s -o /dev/null -w '%{http_code}' $HOST/api/public/health)"
 5. Ask in [Discord](https://langfuse.com/discord)
 
 ## Resources
+
 - [Langfuse Troubleshooting](https://langfuse.com/docs/observability/get-started)
 - [GitHub Issues](https://github.com/langfuse/langfuse/issues)
 - [Langfuse Discord](https://langfuse.com/discord)

@@ -10,6 +10,7 @@ supabase-data-handling/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Supabase PII handling, data classification, redaction, retention policies, and GDPR/CCPA compliance patterns.
 **Workflow:** Compliance skill for data handling. Essential for applications processing personal data.
 **Relates to:** Complements supabase-security-basics; prerequisite for supabase-enterprise-rbac compliance requirements.

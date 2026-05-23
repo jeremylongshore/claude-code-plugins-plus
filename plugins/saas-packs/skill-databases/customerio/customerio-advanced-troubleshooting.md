@@ -10,6 +10,7 @@ customerio-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Customer.io advanced debugging
 **Workflow:** Part of the enterprise skill category for Customer.io integration.
 **Relates to:** Other customerio skills in this pack.

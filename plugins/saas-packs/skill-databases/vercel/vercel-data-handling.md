@@ -10,6 +10,7 @@ vercel-data-handling/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement PII detection, data redaction, retention policies, and GDPR/CCPA compliance patterns.
 **Workflow:** Applied during integration development; audited during compliance reviews.
 **Relates to:** Follows vercel-incident-runbook; leads to vercel-enterprise-rbac for access control

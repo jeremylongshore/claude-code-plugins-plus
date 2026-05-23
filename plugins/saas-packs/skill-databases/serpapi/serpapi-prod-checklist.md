@@ -10,6 +10,7 @@ serpapi-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute SerpApi production deployment checklist
 **Workflow:** Part of the operations skill category for SerpApi integration.
 **Relates to:** Other serpapi skills in this pack.

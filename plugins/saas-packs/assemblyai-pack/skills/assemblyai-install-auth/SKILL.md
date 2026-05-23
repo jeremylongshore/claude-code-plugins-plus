@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # AssemblyAI Install & Auth
 
 ## Overview
+
 Install the `assemblyai` npm package and configure API key authentication for transcription, LeMUR, and streaming APIs.
 
 ## Prerequisites
+
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, yarn, or pip)
 - AssemblyAI account — sign up at https://www.assemblyai.com/dashboard/signup
@@ -57,6 +59,7 @@ echo 'ASSEMBLYAI_API_KEY=your-api-key-here' >> .env
 ```
 
 Add to `.gitignore`:
+
 ```
 .env
 .env.local
@@ -123,11 +126,13 @@ print(transcript.text)
 ```
 
 ## Output
+
 - Installed `assemblyai` package in node_modules or site-packages
 - API key stored in environment variable or `.env` file
 - Client initialized and connection verified with a test transcription
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Authentication error` | Invalid or missing API key | Verify key at https://www.assemblyai.com/app/account |
@@ -136,10 +141,12 @@ print(transcript.text)
 | `ENOTFOUND api.assemblyai.com` | Network/firewall issue | Ensure outbound HTTPS to api.assemblyai.com is allowed |
 
 ## Resources
+
 - [AssemblyAI Getting Started](https://www.assemblyai.com/docs/getting-started/transcribe-an-audio-file)
 - [AssemblyAI Node SDK](https://github.com/AssemblyAI/assemblyai-node-sdk)
 - [AssemblyAI Python SDK](https://github.com/AssemblyAI/assemblyai-python-sdk)
 - [API Key Dashboard](https://www.assemblyai.com/app/account)
 
 ## Next Steps
+
 After successful auth, proceed to `assemblyai-hello-world` for your first transcription.

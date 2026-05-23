@@ -10,6 +10,7 @@ snowflake-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Snowflake monitoring and observability
 **Workflow:** Part of the enterprise skill category for Snowflake integration.
 **Relates to:** Other snowflake skills in this pack.

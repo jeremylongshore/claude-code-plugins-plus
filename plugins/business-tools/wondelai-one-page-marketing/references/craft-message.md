@@ -116,6 +116,7 @@ The most powerful differentiation test is whether you can truthfully complete th
 **"We are the only [category] that [unique differentiator] for [specific target market]."**
 
 Examples:
+
 - "We are the only accounting firm that guarantees your taxes will be filed within 5 business days for e-commerce sellers doing $1-10M."
 - "We are the only project management tool that integrates natively with Adobe Creative Suite for creative agencies."
 - "We are the only personal trainer who specializes in postpartum fitness for working mothers returning to exercise."

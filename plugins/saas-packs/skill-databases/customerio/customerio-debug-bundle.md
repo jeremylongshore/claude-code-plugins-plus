@@ -10,6 +10,7 @@ customerio-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Customer.io debug evidence for support
 **Workflow:** Part of the operations skill category for Customer.io integration.
 **Relates to:** Other customerio skills in this pack.

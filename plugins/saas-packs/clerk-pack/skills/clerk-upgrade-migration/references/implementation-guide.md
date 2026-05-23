@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Check Current Version and Available Updates
+
 ```bash
 # Check current version
 npm list @clerk/nextjs
@@ -17,6 +18,7 @@ npm view @clerk/nextjs versions --json | tail -20
 ```
 
 ### Step 2: Review Breaking Changes
+
 ```typescript
 // Common breaking changes by major version:
 
@@ -41,6 +43,7 @@ export default clerkMiddleware(async (auth, req) => {
 ```
 
 ### Step 3: Upgrade Process
+
 ```bash
 # 1. Create upgrade branch
 git checkout -b upgrade-clerk-sdk
@@ -61,6 +64,7 @@ npm test
 ### Step 4: Handle Common Migration Patterns
 
 #### Middleware Migration (v5 to v6)
+
 ```typescript
 // OLD: authMiddleware (deprecated)
 import { authMiddleware } from '@clerk/nextjs'
@@ -87,6 +91,7 @@ export default clerkMiddleware(async (auth, request) => {
 ```
 
 #### Async Auth Migration
+
 ```typescript
 // OLD: Synchronous auth
 import { auth } from '@clerk/nextjs'
@@ -106,6 +111,7 @@ export async function GET() {
 ```
 
 #### Hook Updates
+
 ```typescript
 // OLD: useAuth() changes
 const { isSignedIn, isLoaded } = useAuth()
@@ -123,6 +129,7 @@ const { organization, membership } = useOrganization()
 ```
 
 ### Step 5: Update Import Paths
+
 ```typescript
 // Server imports (Next.js App Router)
 import { auth, currentUser, clerkClient } from '@clerk/nextjs/server'
@@ -142,6 +149,7 @@ import {
 ```
 
 ### Step 6: Test Upgrade
+
 ```typescript
 // tests/clerk-upgrade.test.ts
 import { describe, it, expect } from 'vitest'
@@ -162,6 +170,7 @@ describe('Clerk Upgrade Validation', () => {
 ```
 
 ### Step 7: Rollback Plan
+
 ```bash
 # If upgrade fails, rollback:
 git checkout main -- package.json package-lock.json

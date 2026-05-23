@@ -212,6 +212,7 @@ for s in subnets:
 ## Output
 
 Successful completion produces:
+
 - A VCN with a /16 CIDR block and DNS resolution enabled
 - Internet gateway (public traffic) and NAT gateway (private outbound)
 - Separate route tables for public and private subnets

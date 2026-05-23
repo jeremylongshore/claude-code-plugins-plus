@@ -10,6 +10,7 @@ oraclecloud-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Oracle Cloud integrations to production
 **Workflow:** Part of the cicd skill category for Oracle Cloud integration.
 **Relates to:** Other oraclecloud skills in this pack.

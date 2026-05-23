@@ -3,6 +3,7 @@
 ## Request Errors
 
 ### Invalid JSON
+
 ```
 Error: 400 Bad Request
 {
@@ -13,6 +14,7 @@ Error: 400 Bad Request
 ```
 
 **Check:**
+
 ```python
 import json
 
@@ -24,6 +26,7 @@ except TypeError as e:
 ```
 
 ### Invalid Messages Format
+
 ```python
 # Wrong - missing role
 messages = [{"content": "Hello"}]
@@ -42,6 +45,7 @@ messages = [
 ```
 
 ### Context Length Exceeded
+
 ```
 Error: 400 Bad Request
 {
@@ -52,6 +56,7 @@ Error: 400 Bad Request
 ```
 
 **Solutions:**
+
 ```python
 # 1. Truncate input
 def truncate_messages(messages, max_tokens=100000):

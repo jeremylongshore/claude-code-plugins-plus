@@ -3,6 +3,7 @@
 ## Context Optimization Strategies
 
 ### Prioritize Relevant Code
+
 ```
 Most effective:
 1. Select exactly the code you're asking about
@@ -16,6 +17,7 @@ Less effective:
 ```
 
 ### Minimize Context Waste
+
 ```
 Do:
 - Select specific functions, not entire files
@@ -31,6 +33,7 @@ Don't:
 ```
 
 ### Context-Efficient Prompts
+
 ```
 Inefficient:
 "I have this code and it's not working and I need help

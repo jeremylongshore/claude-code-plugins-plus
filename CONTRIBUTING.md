@@ -38,9 +38,11 @@ At Intent Solutions we ship the full-fledged capability. We don't publish half-i
 - Your plugin needs a `README.md`, a `LICENSE`, a valid `plugin.json` (allowed fields only), and an entry in `.claude-plugin/marketplace.extended.json`.
 - Your code and config can't trip the security scanner — no `rm -rf`, no `eval`, no base64 obfuscation, no hardcoded secrets, no URL shorteners, HTTPS only.
 - Your skill needs to score at or above the marketplace threshold on our 100-point rubric (full rubric in the [spec doc](000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md)). Run the same validator CI runs:
+
   ```bash
   python3 scripts/validate-skills-schema.py --marketplace --verbose plugins/<category>/<name>/
   ```
+
 - If any of this fails in CI, the **PR Pre-screen workflow** ([runbook](000-docs/265-DR-GUID-pr-prescreen-system.md)) will post a structured review on your PR with the exact validator findings + a short Groq-generated summary. A human maintainer follows up after that.
 
 ### "But I just want to submit a small skill"
@@ -74,9 +76,11 @@ Read the rest of this doc, then run `./scripts/quick-test.sh` locally before you
 
 1. Pick a category from `plugins/` (e.g., `devops`, `productivity`, `api-development`) or propose a new one in your PR.
 2. Copy a template:
+
    ```bash
    cp -r templates/command-plugin plugins/[category]/my-plugin
    ```
+
 3. Edit `.claude-plugin/plugin.json` with the required fields: `name`, `version`, `description`, `author`.
 4. Add a `README.md` and optionally a `LICENSE` file (MIT recommended).
 5. Add `commands/`, `agents/`, or `skills/` directories as needed.

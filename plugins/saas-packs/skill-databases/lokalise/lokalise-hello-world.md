@@ -10,6 +10,7 @@ lokalise-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Lokalise example
 **Workflow:** Part of the onboarding skill category for Lokalise integration.
 **Relates to:** Other lokalise skills in this pack.

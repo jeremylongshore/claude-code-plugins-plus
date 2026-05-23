@@ -10,6 +10,7 @@ shopify-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Shopify API performance
 **Workflow:** Part of the cicd skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

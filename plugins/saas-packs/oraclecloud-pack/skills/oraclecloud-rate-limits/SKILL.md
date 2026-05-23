@@ -218,6 +218,7 @@ def batch_with_throttle(items, operation, requests_per_second=5):
 ## Output
 
 Successful implementation produces:
+
 - A retry wrapper function that handles 429 responses with exponential backoff and jitter
 - SDK-level retry configuration applied to all OCI client calls
 - A circuit breaker that prevents cascading failures during bulk operations

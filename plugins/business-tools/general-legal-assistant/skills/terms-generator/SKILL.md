@@ -175,6 +175,7 @@ Generate a single Markdown file named `TERMS-OF-SERVICE-{company}-{YYYY-MM-DD}.m
 Request: "Create terms of service for https://example-saas.com — we're a project management tool"
 
 Result: `TERMS-OF-SERVICE-ExampleSaaS-2026-04-02.md` with:
+
 - 16 sections with SaaS-specific provisions
 - Payment terms for subscription model (detected via Stripe integration)
 - GDPR provisions (EU users detected via multi-language support)
@@ -187,6 +188,7 @@ Result: `TERMS-OF-SERVICE-ExampleSaaS-2026-04-02.md` with:
 Request: "Generate ToS for my Shopify store selling handmade jewelry"
 
 Result: `TERMS-OF-SERVICE-HandmadeJewels-2026-04-02.md` with:
+
 - E-commerce focused provisions (returns, shipping, product descriptions)
 - Payment terms referencing Shopify Payments / PayPal
 - No user-generated content section (simplified)

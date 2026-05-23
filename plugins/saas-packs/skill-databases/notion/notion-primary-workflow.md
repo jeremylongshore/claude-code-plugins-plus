@@ -10,6 +10,7 @@ notion-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Notion primary workflow
 **Workflow:** Part of the onboarding skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

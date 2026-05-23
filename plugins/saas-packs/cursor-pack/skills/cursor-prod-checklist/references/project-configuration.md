@@ -3,6 +3,7 @@
 ## Project Configuration
 
 ### .cursorrules Setup
+
 ```
 [ ] .cursorrules file created
 [ ] Coding standards defined
@@ -12,6 +13,7 @@
 ```
 
 ### Sample .cursorrules
+
 ```yaml
 # .cursorrules
 project: my-app
@@ -47,6 +49,7 @@ testing:
 ```
 
 ### Indexing Configuration
+
 ```
 [ ] .cursorignore configured
 [ ] Large directories excluded

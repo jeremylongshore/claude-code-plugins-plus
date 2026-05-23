@@ -6,7 +6,6 @@ description: Integrate with secrets managers (Vault, AWS Secrets Manager, etc)
 
 Integrate with secrets managers (Vault, AWS Secrets Manager, etc)
 
-
 ## Key Features
 
 - Production-ready configurations

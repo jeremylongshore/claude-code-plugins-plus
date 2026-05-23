@@ -11,6 +11,7 @@ Version 1.0.0 | 10 Plugins | Security & Compliance Focus
 The **Security Pro Pack** is a comprehensive collection of security-focused plugins for Claude Code, providing automated vulnerability scanning, compliance checking, cryptography review, and infrastructure security analysis.
 
 **Perfect for:**
+
 - Security engineers and DevSecOps teams
 - Developers building secure applications
 - Companies preparing for compliance audits (HIPAA, PCI DSS, GDPR, SOC 2)
@@ -136,24 +137,28 @@ claude plugin install security-pro-pack
 ## Who Should Use This
 
 ### Security Engineers
+
 - Automate security reviews
 - Scale security across teams
 - Implement security gates in CI/CD
 - Perform threat modeling efficiently
 
 ### Development Teams
+
 - Shift security left (find issues early)
 - Learn security best practices
 - Meet compliance requirements
 - Ship secure code faster
 
 ### Compliance Officers
+
 - Generate audit-ready documentation
 - Track compliance gaps
 - Prepare for regulatory audits
 - Maintain compliance posture
 
 ### DevOps Teams
+
 - Secure container deployments
 - Harden Kubernetes configurations
 - Automate security scanning in pipelines
@@ -198,6 +203,7 @@ Security Pro Pack is licensed for personal and commercial use. See LICENSE file 
 ## Version History
 
 **v1.0.0** (October 10, 2025)
+
 - Initial release
 - 10 plugins (5 agents, 5 commands)
 - Full OWASP Top 10 coverage
@@ -206,6 +212,6 @@ Security Pro Pack is licensed for personal and commercial use. See LICENSE file 
 
 ---
 
-**Built with security in mind. Ship secure code with confidence.** 
+**Built with security in mind. Ship secure code with confidence.**
 
 **Security Pro Pack Team**

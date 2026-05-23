@@ -28,6 +28,7 @@ Complete checklist for deploying ClickUp API v2 integrations to production.
 ## Pre-Launch Checklist
 
 ### Authentication & Secrets
+
 - [ ] Production API token stored in secrets manager (not env files)
 - [ ] Token uses a service account, not a personal user account
 - [ ] `.env` files in `.gitignore`; pre-commit hook catches `pk_*` patterns
@@ -35,6 +36,7 @@ Complete checklist for deploying ClickUp API v2 integrations to production.
 - [ ] OAuth client secret server-side only (never in client bundle)
 
 ### Error Handling
+
 - [ ] All API calls handle 401 (re-auth), 429 (backoff), 500 (retry)
 - [ ] Exponential backoff with jitter on rate limits
 - [ ] ClickUp-specific error codes parsed (`ECODE` field in responses)
@@ -42,6 +44,7 @@ Complete checklist for deploying ClickUp API v2 integrations to production.
 - [ ] Graceful degradation when ClickUp API is down
 
 ### Rate Limits
+
 - [ ] Know your plan's limit (100/1K/10K req/min)
 - [ ] Rate limit headers monitored (`X-RateLimit-Remaining`)
 - [ ] Request queuing prevents burst overruns
@@ -49,6 +52,7 @@ Complete checklist for deploying ClickUp API v2 integrations to production.
 - [ ] Webhooks replace polling where possible
 
 ### Monitoring
+
 - [ ] Health check endpoint verifies ClickUp connectivity
 - [ ] API latency tracked per endpoint
 - [ ] Error rate alerting (>5% triggers P2)
@@ -56,6 +60,7 @@ Complete checklist for deploying ClickUp API v2 integrations to production.
 - [ ] Structured logging with request/response metadata
 
 ### Webhooks (if applicable)
+
 - [ ] Endpoint uses HTTPS
 - [ ] Responds with 200 within 30 seconds
 - [ ] Idempotent processing (tracks `history_items[].id`)

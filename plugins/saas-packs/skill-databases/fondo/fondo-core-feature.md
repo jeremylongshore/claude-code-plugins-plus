@@ -10,6 +10,7 @@ fondo-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Fondo core feature integration
 **Workflow:** Part of the onboarding skill category for Fondo integration.
 **Relates to:** Other fondo skills in this pack.

@@ -26,10 +26,12 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Migration Deep Dive
 
 ## Current State
+
 !`npm list exa-js 2>/dev/null | grep exa-js || echo 'exa-js not installed'`
 !`npm list 2>/dev/null | grep -E '(google|bing|tavily|serper|serpapi)' || echo 'No competing search SDK found'`
 
 ## Overview
+
 Migrate from traditional search APIs (Google Custom Search, Bing Web Search, Tavily, Serper) to Exa's neural search API. Key differences: Exa uses semantic/neural search instead of keyword matching, returns content (text/highlights/summary) in a single API call, and supports similarity search from a seed URL.
 
 ## API Comparison
@@ -47,6 +49,7 @@ Migrate from traditional search APIs (Google Custom Search, Bing Web Search, Tav
 ## Instructions
 
 ### Step 1: Install Exa SDK
+
 ```bash
 set -euo pipefail
 npm install exa-js
@@ -55,6 +58,7 @@ npm install exa-js
 ```
 
 ### Step 2: Create Adapter Layer
+
 ```typescript
 // src/search/adapter.ts
 import Exa from "exa-js";
@@ -123,6 +127,7 @@ class ExaSearchAdapter {
 ```
 
 ### Step 3: Feature Flag Traffic Shift
+
 ```typescript
 // src/search/router.ts
 function getSearchProvider(): "legacy" | "exa" {
@@ -144,6 +149,7 @@ async function search(query: string, numResults = 10): Promise<SearchResponse> {
 ```
 
 ### Step 4: Query Translation
+
 ```typescript
 // Exa neural search works best with natural language, not keyword syntax
 function translateQuery(legacyQuery: string): string {
@@ -171,6 +177,7 @@ function extractDomainFilter(query: string): string[] {
 ```
 
 ### Step 5: Validation and Comparison
+
 ```typescript
 async function compareResults(query: string) {
   const [legacyResults, exaResults] = await Promise.all([
@@ -192,6 +199,7 @@ async function compareResults(query: string) {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Lower result count | Exa filters more aggressively | Increase `numResults` |
@@ -200,9 +208,11 @@ async function compareResults(query: string) {
 | Missing `site:` filter | Different API parameter | Use `includeDomains` parameter |
 
 ## Resources
+
 - [Exa vs Tavily Comparison](https://exa.ai/versus/tavily)
 - [Exa Search Reference](https://docs.exa.ai/reference/search)
 - [exa-js SDK](https://github.com/exa-labs/exa-js)
 
 ## Next Steps
+
 For advanced troubleshooting, see `exa-advanced-troubleshooting`.

@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code
 # Figma Core Workflow A -- Design Token Extraction
 
 ## Overview
+
 The primary workflow for Figma API integrations: extracting design tokens (colors, typography, spacing) from a Figma file and converting them to CSS custom properties, JSON tokens, or Tailwind config.
 
 ## Prerequisites
+
 - Completed `figma-install-auth` setup
 - A Figma file with published styles or variables
 - `FIGMA_PAT` and `FIGMA_FILE_KEY` env vars set
@@ -34,6 +36,7 @@ The primary workflow for Figma API integrations: extracting design tokens (color
 ## Instructions
 
 ### Step 1: Fetch Styles from a File
+
 ```typescript
 import { FigmaClient } from './figma-client';
 
@@ -57,6 +60,7 @@ console.log(`Found ${colorStyles.length} color styles, ${textStyles.length} text
 ```
 
 ### Step 2: Resolve Style Values from Nodes
+
 ```typescript
 // Fetch the actual nodes to get fill colors and text properties
 const styleNodeIds = colorStyles.map(s => s.nodeId);
@@ -93,6 +97,7 @@ for (const [nodeId, nodeData] of Object.entries(nodesResponse.nodes)) {
 ```
 
 ### Step 3: Extract Typography Tokens
+
 ```typescript
 // Fetch text style nodes
 const textNodeIds = textStyles.map(s => s.nodeId);
@@ -123,6 +128,7 @@ for (const [nodeId, nodeData] of Object.entries(textNodes.nodes)) {
 ```
 
 ### Step 4: Generate CSS Custom Properties
+
 ```typescript
 function tokensToCss(tokens: DesignToken[]): string {
   const lines = [':root {'];
@@ -147,6 +153,7 @@ console.log(`Generated ${tokens.length} tokens to src/styles/tokens.css`);
 ```
 
 ### Step 5: Use Variables API (Enterprise)
+
 ```typescript
 // GET /v1/files/:key/variables/local (Tier 2, requires file_variables:read)
 const vars = await client.getLocalVariables(fileKey);
@@ -167,12 +174,14 @@ for (const [id, variable] of Object.entries(vars.meta.variables)) {
 ```
 
 ## Output
+
 - Design tokens extracted from Figma styles or variables
 - CSS custom properties file generated
 - Color values converted from Figma's 0-1 float format to hex/rgba
 - Typography properties mapped to CSS-compatible values
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Empty `styles` map | File has no published styles | Publish styles in Figma first |
@@ -181,9 +190,11 @@ for (const [id, variable] of Object.entries(vars.meta.variables)) {
 | Color looks wrong | Forgot 0-1 to 0-255 conversion | Multiply by 255 before hex |
 
 ## Resources
+
 - [Figma File Endpoints](https://developers.figma.com/docs/rest-api/file-endpoints/)
 - [Figma Variables API](https://developers.figma.com/docs/rest-api/variables-endpoints/)
 - [Design Tokens Format](https://design-tokens.github.io/community-group/format/)
 
 ## Next Steps
+
 For asset export, see `figma-core-workflow-b`.

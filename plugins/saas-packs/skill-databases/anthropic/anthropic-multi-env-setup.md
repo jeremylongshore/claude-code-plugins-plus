@@ -10,6 +10,7 @@ anthropic-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Anthropic multi-environment setup
 **Workflow:** Part of the enterprise skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

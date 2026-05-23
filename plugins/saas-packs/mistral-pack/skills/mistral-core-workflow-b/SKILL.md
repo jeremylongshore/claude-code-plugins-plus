@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral AI Core Workflow B: Embeddings & Function Calling
 
 ## Overview
+
 Secondary workflows for Mistral AI: text/code embeddings with `mistral-embed` (1024 dimensions), function calling (tool use) with any chat model, and RAG pipeline combining both. Mistral supports `auto`, `any`, and `none` tool choice modes.
 
 ## Prerequisites
+
 - Completed `mistral-install-auth` setup
 - `MISTRAL_API_KEY` environment variable set
 - Familiarity with `mistral-core-workflow-a`
@@ -258,12 +260,14 @@ async function ragChat(
 ```
 
 ## Output
+
 - Text embeddings with `mistral-embed` (1024 dimensions)
 - Semantic search with cosine similarity ranking
 - Function calling with tool execution loop
 - RAG pipeline combining retrieval and generation
 
 ## Error Handling
+
 | Issue | Cause | Resolution |
 |-------|-------|------------|
 | Empty embeddings | Invalid input text | Validate non-empty strings before API call |
@@ -273,10 +277,12 @@ async function ragChat(
 | `400 Bad Request` | Missing `toolCallId` | Each tool result must include the matching `toolCallId` |
 
 ## Resources
+
 - [Embeddings API](https://docs.mistral.ai/capabilities/embeddings/)
 - [Function Calling](https://docs.mistral.ai/capabilities/function_calling/)
 - [RAG Guide](https://docs.mistral.ai/guides/rag/)
 - [Code Embeddings](https://docs.mistral.ai/capabilities/embeddings/code_embeddings/)
 
 ## Next Steps
+
 For SDK patterns, see `mistral-sdk-patterns`. For agents, see `mistral-webhooks-events`.

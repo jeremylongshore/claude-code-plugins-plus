@@ -27,6 +27,7 @@ Analyze and optimize caching strategies for maximum performance.
 ## Output
 
 Provide report with:
+
 - Cache inventory and configuration analysis
 - Hit rate improvement opportunities
 - Key design recommendations

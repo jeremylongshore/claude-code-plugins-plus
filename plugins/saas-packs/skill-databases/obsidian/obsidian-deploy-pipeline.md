@@ -10,6 +10,7 @@ obsidian-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Obsidian integrations to production
 **Workflow:** Part of the cicd skill category for Obsidian integration.
 **Relates to:** Other obsidian skills in this pack.

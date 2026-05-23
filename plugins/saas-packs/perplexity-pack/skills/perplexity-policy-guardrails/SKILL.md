@@ -23,6 +23,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Policy Guardrails
 
 ## Overview
+
 Policy enforcement for Perplexity Sonar API. Since Perplexity performs live web searches, guardrails must address: query content moderation (what users can search for), citation reliability (filtering low-quality sources), cost control (model selection + token limits), and responsible AI usage.
 
 ## Policy Pipeline
@@ -53,6 +54,7 @@ Response to User
 ```
 
 ## Prerequisites
+
 - Perplexity API configured
 - Content moderation policy defined
 - User tier system in place
@@ -61,6 +63,7 @@ Response to User
 ## Instructions
 
 ### Step 1: Query Content Moderation
+
 ```typescript
 const BLOCKED_PATTERNS = [
   /\b(write|generate|create)\s+(malware|virus|exploit|ransomware)\b/i,
@@ -94,6 +97,7 @@ function moderateQuery(query: string): string {
 ```
 
 ### Step 2: Model Selection Policy
+
 ```typescript
 interface ModelPolicy {
   model: string;
@@ -125,6 +129,7 @@ function enforceModelPolicy(
 ```
 
 ### Step 3: Per-User Usage Quotas
+
 ```typescript
 class UsageQuota {
   private usage: Map<string, { count: number; resetAt: number }> = new Map();
@@ -174,6 +179,7 @@ class UsageQuota {
 ```
 
 ### Step 4: Citation Quality Scoring
+
 ```typescript
 const TRUSTED_TLDS = new Set(["gov", "edu", "org"]);
 const HIGH_QUALITY_DOMAINS = new Set([
@@ -217,6 +223,7 @@ function scoreCitations(citations: string[]): {
 ```
 
 ### Step 5: Full Policy Pipeline
+
 ```typescript
 const quota = new UsageQuota();
 
@@ -260,6 +267,7 @@ async function policiedSearch(
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Query blocked | Content moderation triggered | Review patterns, adjust if false positive |
@@ -268,6 +276,7 @@ async function policiedSearch(
 | Low citation quality | All sources from forums | Add `search_domain_filter` for trusted sources |
 
 ## Output
+
 - Query content moderation with blocked patterns
 - Model selection enforced by user tier
 - Per-user daily quotas
@@ -275,8 +284,10 @@ async function policiedSearch(
 - Full policy pipeline combining all layers
 
 ## Resources
+
 - [Perplexity API Documentation](https://docs.perplexity.ai)
 - [Perplexity Responsible Use](https://www.perplexity.ai/hub)
 
 ## Next Steps
+
 For architecture patterns, see `perplexity-architecture-variants`.

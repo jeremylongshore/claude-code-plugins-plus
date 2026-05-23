@@ -12,6 +12,7 @@ xcode_version: Xcode 26+
 ## When to Use This Skill
 
 Use when:
+
 - App feels less responsive (hitches, hangs, delayed scrolling)
 - Animations pause or jump during execution
 - Scrolling performance is poor
@@ -46,12 +47,14 @@ These are real questions developers ask that this skill is designed to answer:
 **Core Principle**: Ensure your view bodies update quickly and only when needed to achieve great SwiftUI performance.
 
 **NEW in WWDC 2025**: Next-generation SwiftUI instrument in Instruments 26 provides comprehensive performance analysis with:
+
 - Visual timeline of long updates (color-coded orange/red by severity)
 - Cause & Effect Graph showing data flow through your app
 - Integration with Time Profiler for CPU analysis
 - Hangs and Hitches tracking
 
 **Key Performance Problems**:
+
 1. **Long View Body Updates** - View bodies taking too long to run
 2. **Unnecessary View Updates** - Views updating when data hasn't actually changed
 
@@ -62,11 +65,13 @@ These are real questions developers ask that this skill is designed to answer:
 ### Getting Started
 
 **Requirements**:
+
 - Install Xcode 26
 - Update devices to latest OS releases (support for recording SwiftUI traces)
 - Build app in Release mode for accurate profiling
 
 **Launch**:
+
 1. Open project in Xcode
 2. Press **Command-I** to profile
 3. Choose **SwiftUI template** from template chooser
@@ -83,18 +88,22 @@ The SwiftUI template includes three instruments:
 ### SwiftUI Instrument Track Lanes
 
 #### Lane 1: Update Groups
+
 - Shows when SwiftUI is actively doing work
 - **Empty during CPU spikes?** → Problem likely outside SwiftUI
 
 #### Lane 2: Long View Body Updates
+
 - Highlights when `body` property takes too long
 - **Most common performance issue** - start here
 
 #### Lane 3: Long Representable Updates
+
 - Identifies slow UIViewRepresentable/NSViewRepresentable updates
 - UIKit/AppKit integration performance
 
 #### Lane 4: Other Long Updates
+
 - All other types of long SwiftUI work
 
 ### Color-Coding System
@@ -171,6 +180,7 @@ Frame 1:
 **Key Insight**: View body runtime matters because missing frame deadlines causes hitches, making animations less fluid.
 
 **Reference**:
+
 - [Understanding hitches in your app](https://developer.apple.com/documentation/xcode/understanding-hitches-in-your-app)
 - Tech Talk on render loop and fixing hitches
 
@@ -190,17 +200,20 @@ Frame 1:
 ### Analyzing with Time Profiler
 
 **Workflow**:
+
 1. Find long update in Long View Body Updates summary
 2. Hover over view name → Click arrow → "Show Updates"
 3. Right-click on long update → "Set Inspection Range and Zoom"
 4. **Switch to Time Profiler instrument track**
 
 **What you see**:
+
 - Call stacks for samples recorded during view body execution
 - Time spent in each frame (leftmost column)
 - Your view body nested in deep SwiftUI call stack
 
 **Finding the bottleneck**:
+
 1. Option-click to expand main thread call stack
 2. Command-F to search for your view name (e.g., "LandmarkListItemView")
 3. Identify expensive operations in time column
@@ -210,6 +223,7 @@ Frame 1:
 #### Formatter Creation (Very Expensive)
 
 **❌ WRONG - Creating formatters in view body**:
+
 ```swift
 struct LandmarkListItemView: View {
     let landmark: Landmark
@@ -238,12 +252,14 @@ struct LandmarkListItemView: View {
 ```
 
 **Why it's slow**:
+
 - Formatters are expensive to create (milliseconds each)
 - Created every time view body runs
 - Runs on main thread → app waits before continuing UI updates
 - Multiple views → time adds up quickly
 
 **✅ CORRECT - Cache formatters centrally**:
+
 ```swift
 @Observable
 class LocationFinder {
@@ -298,6 +314,7 @@ struct LandmarkListItemView: View {
 ```
 
 **Benefits**:
+
 - Formatters created once, reused for all landmarks
 - Strings pre-calculated when location changes
 - View body just reads cached value (instant)
@@ -306,6 +323,7 @@ struct LandmarkListItemView: View {
 #### Other Expensive Operations
 
 **Complex Calculations**:
+
 ```swift
 // ❌ Don't calculate in view body
 var body: some View {
@@ -325,6 +343,7 @@ class ViewModel {
 ```
 
 **Network/File I/O**:
+
 ```swift
 // ❌ NEVER do I/O in view body
 var body: some View {
@@ -344,6 +363,7 @@ var body: some View {
 ```
 
 **Image Processing**:
+
 ```swift
 // ❌ Don't process images in view body
 var body: some View {
@@ -389,6 +409,7 @@ Even if individual updates are fast, **too many updates add up**:
 **Actual**: All visible items update.
 
 **How to find**:
+
 1. Record trace with user interaction in mind
 2. Highlight relevant portion of timeline
 3. Expand hierarchy in detail pane
@@ -411,6 +432,7 @@ struct OnOffView: View {
 ```
 
 **What SwiftUI creates**:
+
 1. **View attribute** - Stores view struct (recreated frequently)
 2. **State storage** - Keeps `isOn` value (persists entire view lifetime)
 3. **Signal attribute** - Tracks when state changes
@@ -418,6 +440,7 @@ struct OnOffView: View {
 5. **Text attributes** - Depend on view body
 
 **When state changes**:
+
 1. Create transaction (scheduled change for next frame)
 2. Mark signal attribute as outdated
 3. Walk dependency chain, marking dependent attributes as outdated (just set flag - fast)
@@ -431,6 +454,7 @@ struct OnOffView: View {
 **Purpose**: Visualize **what marked your view body as outdated**.
 
 **Example graph**:
+
 ```
 [Gesture] → [State Change] → [View Body Update]
                ↓
@@ -438,16 +462,19 @@ struct OnOffView: View {
 ```
 
 **Node types**:
+
 - **Blue nodes** - Your code or actions (gestures, state changes, view bodies)
 - **System nodes** - SwiftUI/system work
 - **Arrows labeled "update"** - Caused update
 - **Arrows labeled "creation"** - Caused view to appear
 
 **Selecting nodes**:
+
 - Click **State change node** → See backtrace of where value was updated
 - Click **View body node** → See which views updated and why
 
 **Accessing graph**:
+
 1. Detail pane → Expand hierarchy to find view
 2. Hover over view name → Click arrow
 3. Choose **"Show Cause & Effect Graph"**
@@ -455,6 +482,7 @@ struct OnOffView: View {
 ### Example: Favorites List Problem
 
 **Problem**:
+
 ```swift
 @Observable
 class ModelData {
@@ -483,6 +511,7 @@ struct LandmarkListItemView: View {
 ```
 
 **What happens**:
+
 1. Each view calls `isFavorite()`, accessing `favoritesCollection.landmarks` array
 2. `@Observable` creates dependency: **Each view depends on entire array**
 3. Tapping button calls `toggleFavorite()`, modifying array
@@ -490,11 +519,13 @@ struct LandmarkListItemView: View {
 5. **All view bodies run** (even though only one changed)
 
 **Cause & Effect Graph shows**:
+
 ```
 [Gesture] → [favoritesCollection.landmarks array change] → [All LandmarkListItemViews update]
 ```
 
 **✅ Solution - Granular Dependencies**:
+
 ```swift
 @Observable
 class LandmarkViewModel {
@@ -540,11 +571,13 @@ struct LandmarkListItemView: View {
 ```
 
 **Result**:
+
 - Each view depends **only on its own view model**
 - Tapping button updates **only that view model**
 - **Only one view body runs**
 
 **Cause & Effect Graph shows**:
+
 ```
 [Gesture] → [Single LandmarkViewModel change] → [Single LandmarkListItemView update]
 ```
@@ -584,6 +617,7 @@ Two types:
 2. **EnvironmentWriter** - Changes inside SwiftUI via `.environment()` modifier
 
 **Example**:
+
 ```
 View1 reads colorScheme:
 [External Environment] → [View1 body runs] ✅
@@ -616,11 +650,13 @@ struct ContentView: View {
 ```
 
 **Why it's bad**:
+
 - Environment change triggers checks in **all child views**
 - Scrolling = 60+ updates/second
 - Massive performance hit
 
 **✅ Better approach**:
+
 ```swift
 // Pass via parameter or @Observable model
 struct ContentView: View {
@@ -635,6 +671,7 @@ struct ContentView: View {
 ```
 
 **Environment is great for**:
+
 - Color scheme
 - Locale
 - Accessibility settings
@@ -645,12 +682,14 @@ struct ContentView: View {
 ## Performance Optimization Checklist
 
 ### Before Profiling
+
 - [ ] Build in Release mode (Debug mode has overhead)
 - [ ] Test on real devices (Simulator performance ≠ real device)
 - [ ] Update device to latest OS (SwiftUI trace support)
 - [ ] Identify specific slow interactions to profile
 
 ### During Profiling
+
 - [ ] Use SwiftUI template in Instruments 26
 - [ ] Focus on Long View Body Updates lane first
 - [ ] Check Update Groups lane (empty = problem outside SwiftUI)
@@ -658,6 +697,7 @@ struct ContentView: View {
 - [ ] Keep profiling sessions short (easier to analyze)
 
 ### Analyzing Long View Body Updates
+
 - [ ] Filter detail pane to "Long View Body Updates"
 - [ ] Start with red updates, then orange
 - [ ] Use Time Profiler to find expensive operations
@@ -665,6 +705,7 @@ struct ContentView: View {
 - [ ] Check if work can be moved to model layer
 
 ### Analyzing Unnecessary Updates
+
 - [ ] Count view body updates - more than expected?
 - [ ] Use Cause & Effect Graph to trace data flow
 - [ ] Check for whole array/collection dependencies
@@ -672,6 +713,7 @@ struct ContentView: View {
 - [ ] Avoid frequently-changing environment values
 
 ### After Optimization
+
 - [ ] Record new trace to verify improvements
 - [ ] Compare before/after Long View Body Updates counts
 - [ ] Test on slowest supported device
@@ -685,6 +727,7 @@ struct ContentView: View {
 ### The Problem
 
 When performance issues appear in production, you face competing pressures:
+
 - **Engineering manager**: "Fix it ASAP"
 - **VP of Product**: "Users have been complaining for hours"
 - **Deployment window**: 6 hours before next App Store review window
@@ -707,6 +750,7 @@ If you hear ANY of these under deadline pressure, **STOP and use SwiftUI Instrum
 Under production pressure, one good diagnostic recording beats random fixes:
 
 **Time Budget**:
+
 - Build in Release mode: 5 min
 - Launch and interact to trigger sluggishness: 3 min
 - Record SwiftUI Instrument trace: 5 min
@@ -717,6 +761,7 @@ Under production pressure, one good diagnostic recording beats random fixes:
 **Total**: 25 minutes to know EXACTLY what's slow
 
 **Then**:
+
 - Apply targeted fix (15-30 min)
 - Test in Instruments again (5 min)
 - Ship with confidence
@@ -726,6 +771,7 @@ Under production pressure, one good diagnostic recording beats random fixes:
 ### Comparing Time Costs
 
 **Option A: Guess and Pray**
+
 - Time to implement: 30 min
 - Time to deploy: 20 min
 - Time to learn it failed: 24 hours (next App Store review)
@@ -733,6 +779,7 @@ Under production pressure, one good diagnostic recording beats random fixes:
 - User suffering: Continues through deployment window
 
 **Option B: One SwiftUI Instrument Recording**
+
 - Time to diagnose: 25 min
 - Time to apply targeted fix: 20 min
 - Time to verify: 5 min
@@ -741,18 +788,21 @@ Under production pressure, one good diagnostic recording beats random fixes:
 - User suffering: Stopped after 2 hours instead of 26+ hours
 
 **Time cost of being wrong**:
+
 - A: 24-hour delay + reputational damage + users suffering
 - B: 1.5 hours + you know the actual problem + confidence in the fix
 
 ### Real-World Example: Tab Transition Sluggishness
 
 **Pressure scenario**:
+
 - iOS 26 build shipped
 - Users report "sluggish tab transitions"
 - VP asking for updates every hour
 - 6 hours until deployment window closes
 
 **Bad approach** (Option A):
+
 ```
 Junior suggests: "Add .compositingGroup() to TabView"
 You: "Sure, let's try it"
@@ -763,6 +813,7 @@ VP update: "Users still complaining"
 ```
 
 **Good approach** (Option B):
+
 ```
 "Running one SwiftUI Instrument recording of tab transition"
 [25 minutes later]
@@ -784,6 +835,7 @@ Sometimes managers are right to push for speed. Accept the pressure IF:
 - [ ] You're shipping WITH profiling data, not hoping it works
 
 **Document your decision**:
+
 ```
 Slack to VP + team:
 
@@ -794,6 +846,7 @@ Deploying now."
 ```
 
 This shows:
+
 - You diagnosed (not guessed)
 - You solved the right problem
 - You verified the fix
@@ -802,6 +855,7 @@ This shows:
 ### If You Still Get It Wrong After Profiling
 
 **Honest admission**:
+
 ```
 "SwiftUI Instrument showed ProductGridView was the bottleneck.
 Applied view identity fix, but performance didn't improve as expected.
@@ -811,6 +865,7 @@ Proper fix queued for next release cycle."
 ```
 
 This is different from guessing:
+
 - You have **evidence** of the root cause
 - You **understand** why the quick fix didn't work
 - You're **buying time** with a known mitigation
@@ -944,10 +999,12 @@ ChildView(scrollPosition: scrollPosition)
 **Automatic improvements** when building with Xcode 26 (no code changes needed):
 
 ### Lists
+
 - Update up to **16× faster**
 - Large lists on macOS load **6× faster**
 
 ### SwiftUI Instrument
+
 - Next-generation performance analysis
 - Captures detailed cause-and-effect information
 - Makes it easier than ever to understand when and why views update
@@ -974,6 +1031,7 @@ ChildView(scrollPosition: scrollPosition)
 **Update Groups lane empty during performance issue?**
 
 Problem likely elsewhere:
+
 - Network requests
 - Background processing
 - Image loading
@@ -981,6 +1039,7 @@ Problem likely elsewhere:
 - Third-party frameworks
 
 **Next steps**:
+
 - [Analyze hangs with Instruments](https://developer.apple.com/documentation/xcode/analyzing-hangs-in-your-app)
 - [Optimize CPU performance with Instruments](https://developer.apple.com/documentation/xcode/optimizing-your-app-s-performance)
 
@@ -991,16 +1050,19 @@ Problem likely elsewhere:
 **Example: Landmarks App (from WWDC 2025)**
 
 **Before optimization**:
+
 - Every favorite button tap updated ALL visible landmark views
 - Each view recreated formatters for distance calculation
 - Scrolling felt janky
 
 **After optimization**:
+
 - Only tapped view updates (granular view models)
 - Formatters created once, strings cached
 - Smooth 60fps scrolling
 
 **Improvements**:
+
 - 100+ unnecessary view updates → 1 update per action
 - Milliseconds saved per view × dozens of views = significant improvement
 - Eliminated long view body updates entirely
@@ -1010,15 +1072,18 @@ Problem likely elsewhere:
 ## Reference
 
 **WWDC 2025 Sessions**:
+
 - [Optimize SwiftUI performance with Instruments - WWDC25 Session 306](https://developer.apple.com/videos/play/wwdc2025/306/)
   - New SwiftUI instrument, long view bodies, unnecessary updates, Cause & Effect Graph
 
 **Related Documentation**:
+
 - [Understanding hitches in your app](https://developer.apple.com/documentation/xcode/understanding-hitches-in-your-app)
 - [Analyzing hangs with Instruments](https://developer.apple.com/documentation/xcode/analyzing-hangs-in-your-app)
 - [Optimizing CPU performance with Instruments](https://developer.apple.com/documentation/xcode/optimizing-your-app-s-performance)
 
 **Other Skills**:
+
 - For memory issues: See `memory-debugging` skill
 - For Xcode environment issues: See `xcode-debugging` skill
 

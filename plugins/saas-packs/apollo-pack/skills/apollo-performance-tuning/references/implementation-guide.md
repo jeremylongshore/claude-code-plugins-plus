@@ -5,6 +5,7 @@
 # Apollo Performance Tuning
 
 ## Overview
+
 Optimize Apollo.io API performance through caching, connection pooling, request optimization, and efficient data handling.
 
 ## Performance Benchmarks
@@ -155,6 +156,7 @@ export async function apolloRequest<T>(
 ## 3. Request Optimization
 
 ### Minimize Payload Size
+
 ```typescript
 // Request only needed fields
 const optimizedSearch = await apollo.searchPeople({
@@ -175,6 +177,7 @@ const contacts = response.people.map(p => ({
 ```
 
 ### Parallel Requests with Concurrency Limit
+
 ```typescript
 // src/lib/apollo/parallel.ts
 import pLimit from 'p-limit';
@@ -193,6 +196,7 @@ export async function parallelEnrich(domains: string[]): Promise<Organization[]>
 ```
 
 ### Batch Processing
+
 ```typescript
 // src/lib/apollo/batch.ts
 export async function batchSearch(
@@ -224,6 +228,7 @@ export async function batchSearch(
 ## 4. Query Optimization
 
 ### Use Specific Filters
+
 ```typescript
 // BAD: Broad search, then filter client-side
 const allPeople = await apollo.searchPeople({
@@ -243,6 +248,7 @@ const engineers = await apollo.searchPeople({
 ```
 
 ### Pagination Strategy
+
 ```typescript
 // src/lib/apollo/pagination.ts
 export async function efficientPagination(
@@ -328,6 +334,7 @@ export function instrumentedRequest<T>(
 ```
 
 ### Performance Dashboard Query
+
 ```typescript
 // Example Grafana queries
 const grafanaQueries = {
@@ -351,6 +358,7 @@ const grafanaQueries = {
 - [ ] Performance baseline established
 
 ## Output
+
 - Connection pooling configuration
 - LRU cache with TTL per endpoint
 - Parallel request patterns
@@ -358,6 +366,7 @@ const grafanaQueries = {
 - Performance monitoring setup
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | High latency | Check network, enable caching |
@@ -366,9 +375,11 @@ const grafanaQueries = {
 | Memory issues | Limit cache size, stream results |
 
 ## Resources
+
 - [Node.js HTTP Agent](https://nodejs.org/api/http.html#class-httpagent)
 - [LRU Cache](https://github.com/isaacs/node-lru-cache)
 - [Prometheus Metrics](https://prometheus.io/docs/concepts/metric_types/)
 
 ## Next Steps
+
 Proceed to `apollo-cost-tuning` for cost optimization.

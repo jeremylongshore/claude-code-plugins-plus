@@ -10,6 +10,7 @@ stackblitz-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix StackBlitz common errors
 **Workflow:** Part of the operations skill category for StackBlitz integration.
 **Relates to:** Other stackblitz skills in this pack.

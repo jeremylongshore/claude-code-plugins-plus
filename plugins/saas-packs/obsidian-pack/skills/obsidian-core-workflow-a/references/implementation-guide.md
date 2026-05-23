@@ -5,6 +5,7 @@
 ## Detailed Instructions
 
 ### Step 1: Working with Files (TFile)
+
 ```typescript
 import { TFile, TFolder, TAbstractFile, Vault } from 'obsidian';
 
@@ -72,6 +73,7 @@ export class FileOperations {
 ```
 
 ### Step 2: Frontmatter Operations
+
 ```typescript
 import { App, TFile, parseYaml, stringifyYaml } from 'obsidian';
 
@@ -140,6 +142,7 @@ export class FrontmatterService {
 ```
 
 ### Step 3: Link and Tag Operations
+
 ```typescript
 import { App, TFile, CachedMetadata } from 'obsidian';
 
@@ -236,6 +239,7 @@ export class LinkService {
 ```
 
 ### Step 4: Search and Query
+
 ```typescript
 import { App, TFile, prepareFuzzySearch, prepareSimpleSearch } from 'obsidian';
 
@@ -330,10 +334,10 @@ export class SearchService {
 }
 ```
 
-
 ## Complete Examples
 
 ### Complete Note Template
+
 ```typescript
 async function createNoteFromTemplate(
   app: App,

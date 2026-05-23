@@ -10,6 +10,7 @@ adobe-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Adobe multi-environment setup
 **Workflow:** Part of the enterprise skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

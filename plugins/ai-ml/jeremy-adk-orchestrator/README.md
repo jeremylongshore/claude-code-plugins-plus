@@ -7,6 +7,7 @@ Expert Agent-to-Agent (A2A) protocol manager for communicating with **Vertex AI 
 ## ⚠️ Important: What This Plugin Is For
 
 **✅ THIS PLUGIN IS FOR:**
+
 - **ADK agents** deployed to **Vertex AI Agent Engine** (fully-managed runtime)
 - **A2A Protocol** communication between Claude Code and ADK agents
 - **Multi-agent orchestration** with ADK supervisory agents
@@ -14,6 +15,7 @@ Expert Agent-to-Agent (A2A) protocol manager for communicating with **Vertex AI 
 - Agent Engine features: Code Execution Sandbox, Memory Bank, Sessions
 
 **❌ THIS PLUGIN IS NOT FOR:**
+
 - LangChain agents (use LangSmith)
 - LlamaIndex agents (not ADK compatible)
 - Cloud Run deployments (use `jeremy-genkit-terraform` with `--cloud-run`)
@@ -25,6 +27,7 @@ Expert Agent-to-Agent (A2A) protocol manager for communicating with **Vertex AI 
 This plugin enables Claude Code to communicate with ADK agents deployed on Vertex AI Agent Engine using the standardized A2A (Agent-to-Agent) Protocol. It handles task submission, status checking, session management, and AgentCard discovery for building multi-agent systems.
 
 **Key Capabilities:**
+
 - AgentCard discovery and capability inspection
 - Task submission with structured inputs
 - Session management for Memory Bank persistence
@@ -43,6 +46,7 @@ This plugin enables Claude Code to communicate with ADK agents deployed on Verte
 ### Required Google Cloud Setup
 
 **1. Google Cloud Project with APIs Enabled:**
+
 ```bash
 # Enable required APIs
 gcloud services enable aiplatform.googleapis.com \
@@ -54,6 +58,7 @@ gcloud services enable aiplatform.googleapis.com \
 ```
 
 **2. Authentication:**
+
 ```bash
 # Application Default Credentials
 gcloud auth application-default login
@@ -63,6 +68,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="/path/to/service-account-key.json"
 ```
 
 **3. Required IAM Permissions:**
+
 ```yaml
 # Minimum required roles:
 - roles/aiplatform.user              # Query Agent Engine resources
@@ -74,6 +80,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="/path/to/service-account-key.json"
 ### Required Python Packages
 
 **Install via pip:**
+
 ```bash
 # Core ADK SDK (required for agent development)
 pip install google-adk>=1.15.1
@@ -94,6 +101,7 @@ pip install google-cloud-trace>=1.13.0
 ```
 
 **All dependencies at once:**
+
 ```bash
 pip install --upgrade \
     'google-adk>=1.15.1' \
@@ -128,6 +136,7 @@ agent = client.agent_engines.get(
 ```
 
 **Verify SDK Installation:**
+
 ```bash
 python3 -c "import vertexai; print('Vertex AI SDK ready')"
 python3 -c "import google.adk; print(f'ADK SDK version: {google.adk.__version__}')"
@@ -138,6 +147,7 @@ python3 -c "import google.adk; print(f'ADK SDK version: {google.adk.__version__}
 **This plugin works with ADK agents deployed via:**
 
 1. **ADK CLI Deployment:**
+
 ```bash
 # Install ADK CLI
 pip install google-adk
@@ -147,7 +157,8 @@ adk deploy cloud_run  # Deploy to Cloud Run
 # Or deploy via the Python SDK (see method 2 below) for Agent Engine
 ```
 
-2. **Python SDK Deployment:**
+1. **Python SDK Deployment:**
+
 ```python
 from google.adk.agents import Agent
 import vertexai
@@ -171,7 +182,8 @@ remote_agent = client.agent_engines.create(
 print(f"Agent deployed: {remote_agent.resource_name}")
 ```
 
-3. **Terraform Deployment:**
+1. **Terraform Deployment:**
+
 ```hcl
 resource "google_vertex_ai_reasoning_engine" "adk_agent" {
   display_name = "my-adk-agent"
@@ -222,9 +234,11 @@ resource "google_vertex_ai_reasoning_engine" "adk_agent" {
 ## Components
 
 ### Agent
+
 - **a2a-protocol-manager**: A2A protocol expert with task orchestration capabilities
 
 ### Skills (Auto-Activating)
+
 - **a2a-protocol-manager**: Triggers on "communicate with ADK agent", "orchestrate agents", "send task to agent"
   - **Tool Permissions**: Read, Bash, Write, Grep (for agent communication)
   - **Version**: 1.0.0 (2026 schema compliant)
@@ -709,30 +723,35 @@ ORDER BY total_latency DESC;
 ## Use Cases
 
 ### Single Agent Communication
+
 ```
 "Communicate with the sentiment-analysis ADK agent at [endpoint]"
 "Send customer reviews to the analysis agent"
 ```
 
 ### Multi-Agent Workflows
+
 ```
 "Orchestrate data extraction, analysis, and synthesis agents"
 "Run a multi-step workflow across these ADK agents: [list]"
 ```
 
 ### Session Management
+
 ```
 "Continue the conversation with session ID abc-123"
 "Create a new session with Memory Bank persistence"
 ```
 
 ### Status Monitoring
+
 ```
 "Check status of task ID xyz-456"
 "Monitor the long-running analysis task"
 ```
 
 ### Capability Discovery
+
 ```
 "Discover capabilities of the agent at [endpoint]"
 "What tools does this ADK agent support?"
@@ -741,14 +760,17 @@ ORDER BY total_latency DESC;
 ## Integration with Other Plugins
 
 ### jeremy-vertex-engine
+
 - Orchestrator invokes agents → Inspector validates health
 - A2A protocol calls → Performance monitoring
 
 ### jeremy-vertex-validator
+
 - Validator checks agent code → Orchestrator deploys and tests
 - Pre-deployment validation → Runtime orchestration
 
 ### jeremy-adk-terraform
+
 - Terraform provisions agents → Orchestrator manages communication
 - Infrastructure deployment → Runtime coordination
 

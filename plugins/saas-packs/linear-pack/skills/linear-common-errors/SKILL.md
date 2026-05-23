@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Common Errors
 
 ## Overview
+
 Quick reference for diagnosing and resolving common Linear API and SDK errors. Linear's GraphQL API returns errors in `response.errors[]` with `extensions.type` and `extensions.userPresentableMessage` fields. HTTP 200 responses can still contain partial errors -- always check the `errors` array.
 
 ## Prerequisites
+
 - Linear SDK or raw API access configured
 - Access to application logs
 - Understanding of GraphQL error response format
@@ -36,6 +38,7 @@ Quick reference for diagnosing and resolving common Linear API and SDK errors. L
 ## Instructions
 
 ### Error Response Structure
+
 ```typescript
 // Linear GraphQL error shape
 interface LinearGraphQLResponse {
@@ -57,6 +60,7 @@ import { LinearError, InvalidInputLinearError } from "@linear/sdk";
 ```
 
 ### Error 1: Authentication Failures
+
 ```typescript
 // extensions.type: "authentication_error"
 // HTTP 401 or error in response.errors
@@ -78,6 +82,7 @@ async function testAuth(): Promise<void> {
 ```
 
 **Quick curl diagnostic:**
+
 ```bash
 curl -s -X POST https://api.linear.app/graphql \
   -H "Authorization: $LINEAR_API_KEY" \
@@ -86,7 +91,9 @@ curl -s -X POST https://api.linear.app/graphql \
 ```
 
 ### Error 2: Rate Limiting (HTTP 429)
+
 Linear uses the **leaky bucket algorithm** with two budgets:
+
 - **Request limit**: 5,000 requests/hour per API key
 - **Complexity limit**: 250,000 complexity points/hour per API key
 - **Max single query complexity**: 10,000 points
@@ -115,6 +122,7 @@ async function withRetry<T>(fn: () => Promise<T>, maxRetries = 5): Promise<T> {
 ```
 
 **Check rate limit status via headers:**
+
 ```typescript
 const resp = await fetch("https://api.linear.app/graphql", {
   method: "POST",
@@ -132,6 +140,7 @@ console.log("Complexity:", resp.headers.get("x-complexity"));
 ```
 
 ### Error 3: Query Complexity Too High
+
 Each property = 0.1 pt, each object = 1 pt, connections multiply children by the `first` argument (default 50). Max 10,000 pts per query.
 
 ```typescript
@@ -143,6 +152,7 @@ const light = await client.issues({ first: 50 });
 ```
 
 ### Error 4: Entity Not Found
+
 ```typescript
 // extensions.type: "not_found"
 // Cause: deleted, archived, wrong workspace, or insufficient permissions
@@ -158,6 +168,7 @@ try {
 ```
 
 ### Error 5: Invalid Input on Mutations
+
 ```typescript
 import { InvalidInputLinearError } from "@linear/sdk";
 
@@ -175,6 +186,7 @@ try {
 ```
 
 ### Error 6: Null Reference on Relations
+
 ```typescript
 // SDK models lazy-load relations -- they can be null
 const issue = await client.issue("uuid");
@@ -188,6 +200,7 @@ const projectName = (await issue.project)?.name ?? "No project";
 ```
 
 ### Error 7: Webhook Signature Mismatch
+
 ```typescript
 // Happens when LINEAR_WEBHOOK_SECRET doesn't match the webhook config
 import crypto from "crypto";
@@ -217,6 +230,7 @@ function verifyWebhook(payload: string, signature: string, secret: string): bool
 ## Examples
 
 ### Catch-All Error Handler
+
 ```typescript
 import { LinearError, InvalidInputLinearError } from "@linear/sdk";
 
@@ -240,6 +254,7 @@ async function handleLinearOp<T>(fn: () => Promise<T>): Promise<T> {
 ```
 
 ## Resources
+
 - [SDK Error Handling](https://linear.app/developers/sdk-errors)
 - [Rate Limiting](https://linear.app/developers/rate-limiting)
 - [GraphQL API](https://linear.app/developers/graphql)

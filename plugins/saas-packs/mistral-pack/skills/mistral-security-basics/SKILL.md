@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral Security Basics
 
 ## Overview
+
 Security practices for Mistral AI integrations: API key management, prompt injection defense, output sanitization, content moderation with `mistral-moderation-latest`, request logging without secrets, and key rotation.
 
 ## Prerequisites
+
 - Mistral API key provisioned
 - Understanding of OWASP LLM Top 10 risks
 - Secret management infrastructure
@@ -226,6 +228,7 @@ def audit_mistral_security():
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Key in logs | Logging full request | Log metadata only |
@@ -235,11 +238,13 @@ def audit_mistral_security():
 | XSS via output | Model generating HTML/JS | Strip script tags before rendering |
 
 ## Resources
+
 - [Mistral Guardrails](https://docs.mistral.ai/capabilities/guardrailing/)
 - [Mistral Moderation API](https://docs.mistral.ai/api/endpoint/moderations/)
 - [OWASP LLM Top 10](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
 
 ## Output
+
 - API key management via secret managers
 - Prompt injection defense layer
 - Content moderation with `mistral-moderation-latest`

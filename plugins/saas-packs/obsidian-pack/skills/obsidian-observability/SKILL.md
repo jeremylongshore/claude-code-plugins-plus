@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Obsidian Observability
 
 ## Overview
+
 Implement production observability for Obsidian plugins: a structured logger with levels and ring buffer history, a metrics collector with counters/gauges/timers, an error tracker with deduplication, and a debug sidebar panel that displays all of it in real time. Every component is copy-pasteable and uses only Obsidian's built-in APIs.
 
 ## Prerequisites
+
 - Working Obsidian plugin (see `obsidian-core-workflow-a`)
 - TypeScript strict mode enabled
 - Familiarity with `ItemView` for the debug panel
@@ -36,6 +38,7 @@ Implement production observability for Obsidian plugins: a structured logger wit
 ## Instructions
 
 ### Step 1: Structured Logger with Levels and History
+
 ```typescript
 // src/services/logger.ts
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
@@ -112,6 +115,7 @@ export class Logger {
 ```
 
 ### Step 2: Metrics Collector with Counters, Gauges, and Timers
+
 ```typescript
 // src/services/metrics.ts
 interface TimerStats {
@@ -199,6 +203,7 @@ export class MetricsCollector {
 ```
 
 ### Step 3: Error Tracker with Deduplication
+
 ```typescript
 // src/services/error-tracker.ts
 interface TrackedError {
@@ -259,6 +264,7 @@ export class ErrorTracker {
 ```
 
 ### Step 4: Debug Sidebar Panel
+
 ```typescript
 // src/views/debug-view.ts
 import { ItemView, WorkspaceLeaf } from 'obsidian';
@@ -351,6 +357,7 @@ export class DebugView extends ItemView {
 ```
 
 ### Step 5: Wire Everything into the Plugin
+
 ```typescript
 // src/main.ts
 import { Plugin } from 'obsidian';
@@ -429,6 +436,7 @@ export default class MyPlugin extends Plugin {
 ```
 
 ### Step 6: CSS for the Debug Panel
+
 ```css
 /* styles.css — add these rules */
 .plugin-debug-view { padding: 8px 12px; font-size: var(--font-ui-small); }
@@ -447,6 +455,7 @@ export default class MyPlugin extends Plugin {
 ```
 
 ## Output
+
 - Structured logger with debug/info/warn/error levels and ring buffer history (200 entries)
 - Metrics collector: counters (monotonic), gauges (point-in-time), timers (with p95)
 - Error tracker with deduplication by name+message, occurrence count, and timestamps
@@ -455,6 +464,7 @@ export default class MyPlugin extends Plugin {
 - Memory and vault stats tracked as gauges every 10 seconds
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Too much logging output | Debug level in production | Set level to `'error'` or `'warn'` for release builds |
@@ -467,6 +477,7 @@ export default class MyPlugin extends Plugin {
 ## Examples
 
 ### Quick Timing Check
+
 ```typescript
 const endTimer = logger.time('vault-scan');
 const files = app.vault.getMarkdownFiles();
@@ -475,6 +486,7 @@ endTimer(); // Logs: [plugin-id] vault-scan (245.32ms)
 ```
 
 ### Metrics-Wrapped Command
+
 ```typescript
 this.addCommand({
   id: 'search-notes',
@@ -488,10 +500,12 @@ this.addCommand({
 ```
 
 ## Resources
+
 - [Chrome DevTools Performance](https://developer.chrome.com/docs/devtools/performance/)
 - [Obsidian Developer Tools](https://docs.obsidian.md/Plugins/Getting+started/Development+workflow)
 - [ItemView API](https://docs.obsidian.md/Reference/TypeScript+API/ItemView)
 
 ## Next Steps
+
 For incident response using debug bundles, see `obsidian-incident-runbook`.
 For performance optimization, see `obsidian-performance-tuning`.

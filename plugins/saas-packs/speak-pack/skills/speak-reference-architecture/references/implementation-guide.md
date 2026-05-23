@@ -59,7 +59,6 @@ my-speak-app/
         └── RUNBOOK.md
 ```
 
-
 ## Layer Architecture
 
 ```
@@ -81,10 +80,10 @@ my-speak-app/
 └─────────────────────────────────────────┘
 ```
 
-
 ## Key Components
 
 ### Step 1: Client Wrapper
+
 ```typescript
 // src/speak/client.ts
 import { SpeakClient as SDKClient } from '@speak/language-sdk';
@@ -141,6 +140,7 @@ export class SpeakService {
 ```
 
 ### Step 2: Error Boundary
+
 ```typescript
 // src/speak/errors.ts
 export class SpeakServiceError extends Error {
@@ -189,6 +189,7 @@ export class SpeakServiceError extends Error {
 ```
 
 ### Step 3: Lesson Session Manager
+
 ```typescript
 // src/lessons/session.ts
 interface ActiveSession {
@@ -262,6 +263,7 @@ export class LessonSessionManager {
 ```
 
 ### Step 4: Health Check
+
 ```typescript
 // src/speak/health.ts
 interface SpeakHealthStatus {
@@ -304,7 +306,6 @@ export async function checkSpeakHealth(): Promise<SpeakHealthStatus> {
 }
 ```
 
-
 ## Data Flow Diagram
 
 ```
@@ -340,7 +341,6 @@ User Interaction
 │   API       │
 └─────────────┘
 ```
-
 
 ## Configuration Management
 
@@ -378,6 +378,6 @@ export function loadSpeakConfig(): SpeakConfig {
 }
 ```
 
-
 ## Flagship Skills
+
 For multi-environment setup, see `speak-multi-env-setup`.

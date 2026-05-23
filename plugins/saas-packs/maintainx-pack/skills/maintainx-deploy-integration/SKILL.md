@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Deploy Integration
 
 ## Overview
+
 Deploy MaintainX integrations to production using Docker, Google Cloud Run, and Kubernetes with proper health checks and secret management.
 
 ## Prerequisites
+
 - MaintainX integration tested and passing CI
 - Docker installed
 - Cloud platform account (GCP recommended)
@@ -223,6 +225,7 @@ kubectl rollout status deployment/maintainx-integration
 ```
 
 ## Output
+
 - Multi-stage Dockerfile with non-root user and health check
 - `/health` and `/ready` endpoints for container orchestration
 - Google Cloud Run deployment with Secret Manager integration
@@ -230,6 +233,7 @@ kubectl rollout status deployment/maintainx-integration
 - Kubernetes manifests with probes, secrets, and resource limits
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Container crashes on start | Missing `MAINTAINX_API_KEY` | Verify secret is mounted correctly |
@@ -238,12 +242,14 @@ kubectl rollout status deployment/maintainx-integration
 | Cold start latency | Cloud Run scaling from zero | Set `min-instances: 1` |
 
 ## Resources
+
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [Google Cloud Run Docs](https://cloud.google.com/run/docs)
 - [Kubernetes Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
 - [Docker Best Practices](https://docs.docker.com/build/building/best-practices/)
 
 ## Next Steps
+
 For webhook integration, see `maintainx-webhooks-events`.
 
 ## Examples

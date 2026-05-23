@@ -58,6 +58,7 @@ that drives the subagent — it does NOT receive the full Claude Code system pro
 ### Mode Detection
 
 Determine user intent from their prompt:
+
 - **Create mode**: "create an agent", "build a subagent", "new agent" -> Step 1
 - **Validate mode**: "validate agent", "check agent", "grade agent" -> Validation Workflow
 
@@ -66,21 +67,25 @@ Determine user intent from their prompt:
 Ask the user with AskUserQuestion:
 
 **Agent Identity:**
+
 - Name (kebab-case, 1-64 chars, e.g., `risk-assessor`, `clause-analyzer`)
 - Specialty description (20-200 chars — shown in agent selection UI)
 
 **Execution Context:**
+
 - Plugin agent (`plugins/*/agents/`) or standalone (`~/.claude/agents/`)?
 - Will it be spawned by an orchestrator skill via `Task` tool?
 - Does it need to preload specific skills? (`skills: [skill-name]`)
 
 **Behavioral Controls:**
+
 - Model override? (`sonnet` for speed, `opus` for quality, `inherit` for default)
 - Reasoning effort? (`low` for simple, `medium` default, `high` for complex analysis)
 - Max iterations? (`maxTurns` — how many tool-use loops before stopping)
 - Tools to deny? (`disallowedTools` — denylist approach, opposite of skills)
 
 **Plugin Restrictions (if plugin agent):**
+
 - `hooks` — NOT supported in plugin agents (use plugin-level hooks)
 - `mcpServers` — NOT supported in plugin agents
 - `permissionMode` — standalone only, NOT plugin agents
@@ -91,6 +96,7 @@ Before writing, determine:
 
 **Agent Role Clarity:**
 The agent body must make three things unambiguous:
+
 1. **What it IS responsible for** — its specific domain/methodology
 2. **What it is NOT responsible for** — boundaries with other agents
 3. **How it communicates results** — output format and structure
@@ -112,6 +118,7 @@ All production agents should follow this body structure:
 | `## Examples` | Concrete interaction examples | For complex agents |
 
 **Output Structure Decision:**
+
 - If the agent feeds into an orchestrator: use **JSON output** (machine-parseable)
 - If the agent is user-facing: use **markdown output** (human-readable)
 - If the agent produces both: JSON primary with markdown summary
@@ -126,12 +133,14 @@ Generate the agent .md using the template from
 See [Anthropic Agent Spec](references/anthropic-agent-spec.md) for the full official reference.
 
 Required fields:
+
 ```yaml
 name: {agent-name}         # Lowercase letters and hyphens, unique identifier
 description: "{specialty}"  # When Claude should delegate to this subagent
 ```
 
 Optional fields (include only what's needed):
+
 ```yaml
 tools: "Read, Glob, Grep"  # Allowlist — inherits all tools if omitted
 disallowedTools: "Write"   # Denylist — removed from inherited/specified list
@@ -150,12 +159,14 @@ mcpServers: {}             # Standalone only, NOT plugin agents
 ```
 
 **Tool access:**
+
 - `tools` = allowlist (like skills' `allowed-tools`)
 - `disallowedTools` = denylist (remove specific tools)
 - If both set: disallowed applied first, then tools resolved
 - If neither set: inherits all tools from parent conversation
 
 **Invalid fields (ERROR — never use these):**
+
 - `capabilities` — looks valid but flagged by validator
 - `expertise_level` — invented, not in Anthropic spec
 - `activation_priority` — invented, not in Anthropic spec
@@ -204,6 +215,7 @@ Run validation against the Anthropic 16-field schema:
 | Body under 300 lines | Offload to references if longer (prevents context bloat) |
 
 **Automated validation:**
+
 ```bash
 python3 ${CLAUDE_SKILL_DIR}/../skill-creator/scripts/validate-skill.py --agents-only {plugin-dir}/
 ```
@@ -222,6 +234,7 @@ Test the agent by spawning it via the `Task` tool or the `Agent` tool:
 ### Step 6: Report
 
 Provide a summary:
+
 - Agent name and file path
 - Frontmatter field count (of 14 possible)
 - Body line count

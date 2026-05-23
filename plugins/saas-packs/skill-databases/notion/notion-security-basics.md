@@ -10,6 +10,7 @@ notion-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Notion security best practices
 **Workflow:** Part of the operations skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

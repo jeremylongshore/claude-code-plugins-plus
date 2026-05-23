@@ -30,6 +30,7 @@ This skill streamlines PCI DSS compliance checks by automatically analyzing code
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Evaluate a new application or system for PCI DSS compliance before deployment.
 - Periodically assess existing systems to maintain PCI DSS compliance.
 - Investigate potential security vulnerabilities related to PCI DSS.
@@ -41,6 +42,7 @@ This skill activates when you need to:
 User request: "Validate PCI compliance for my e-commerce web application."
 
 The skill will:
+
 1. Identify the source code repository for the web application.
 2. Run the pci-dss-validator plugin against the codebase.
 3. Generate a report highlighting any PCI DSS violations found in the code.
@@ -50,6 +52,7 @@ The skill will:
 User request: "Check PCI DSS compliance of my AWS infrastructure."
 
 The skill will:
+
 1. Access the AWS configuration files (e.g., Terraform, CloudFormation).
 2. Execute the pci-dss-validator plugin against the infrastructure configuration.
 3. Produce a report outlining any non-compliant configurations in the AWS environment.
@@ -91,6 +94,7 @@ This skill can be integrated with other security tools and plugins to provide a 
 ## Error Handling
 
 If security scanning fails:
+
 - Verify tool installation and configuration
 - Check file and directory permissions
 - Validate scan target paths

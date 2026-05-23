@@ -10,6 +10,7 @@ cursor-multi-repo/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Enables working with multiple repositories in Cursor including workspace configurations, monorepo patterns, and cross-project operations.
 
 **Workflow:** This skill activates when developers work across multiple repositories or within monorepos. It covers strategy options, single repo per window, multi-root workspaces, monorepo patterns, indexing, cross-project operations, and troubleshooting.

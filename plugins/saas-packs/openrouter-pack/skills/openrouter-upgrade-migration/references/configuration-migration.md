@@ -3,6 +3,7 @@
 ## Configuration Migration
 
 ### Environment Variables
+
 ```bash
 # Old format (single key)
 OPENROUTER_API_KEY=sk-or-v1-xxx
@@ -15,6 +16,7 @@ OPENROUTER_MAX_RETRIES=3
 ```
 
 ### Config File Migration
+
 ```python
 # Old config format
 OLD_CONFIG = {

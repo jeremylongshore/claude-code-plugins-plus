@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code
 # AssemblyAI Reference Architecture
 
 ## Overview
+
 Production-ready architecture for AssemblyAI-powered transcription services with layered design, webhook-driven processing, and LeMUR analysis pipelines.
 
 ## Prerequisites
+
 - Understanding of layered architecture
 - `assemblyai` npm package
 - TypeScript project setup
@@ -346,6 +348,7 @@ export const config = {
 ```
 
 ## Output
+
 - Layered architecture with clear separation of concerns
 - Transcription service with webhook-based async processing
 - LeMUR analysis pipeline auto-triggered on completion
@@ -353,6 +356,7 @@ export const config = {
 - Batch processing with concurrency control
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Circular dependencies | Wrong layer boundaries | Services depend on SDK layer, never on API layer |
@@ -361,10 +365,12 @@ export const config = {
 | Streaming disconnect | Network interruption | Implement reconnection in StreamingService |
 
 ## Resources
+
 - [AssemblyAI Documentation](https://www.assemblyai.com/docs)
 - [AssemblyAI Node SDK](https://github.com/AssemblyAI/assemblyai-node-sdk)
 - [AssemblyAI API Reference](https://www.assemblyai.com/docs/api-reference/overview)
 - [AssemblyAI Blog — Best Practices](https://www.assemblyai.com/blog)
 
 ## Next Steps
+
 For getting started quickly, see `assemblyai-hello-world`.

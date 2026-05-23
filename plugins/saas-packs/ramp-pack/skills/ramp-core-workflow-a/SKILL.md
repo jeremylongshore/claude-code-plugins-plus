@@ -19,14 +19,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ramp Core Workflow A
 
 ## Overview
+
 Issue and manage virtual cards with spending limits, policies, and lifecycle management.
 
 ## Prerequisites
+
 - Completed `ramp-hello-world`
 
 ## Instructions
 
 ### Step 1: Issue a Virtual Card
+
 ```python
 card = requests.post(f"{BASE}/cards", headers={**headers, "Content-Type": "application/json"}, json={
     "holder_name": "Jane Smith",
@@ -43,6 +46,7 @@ print(f"Virtual card issued: {card_id}")
 ```
 
 ### Step 2: Update Card Limit
+
 ```python
 requests.patch(f"{BASE}/cards/{card_id}", headers={**headers, "Content-Type": "application/json"}, json={
     "spending_restrictions": {
@@ -53,23 +57,27 @@ requests.patch(f"{BASE}/cards/{card_id}", headers={**headers, "Content-Type": "a
 ```
 
 ### Step 3: Suspend Card
+
 ```python
 requests.post(f"{BASE}/cards/{card_id}/suspend", headers=headers)
 print(f"Card {card_id} suspended")
 ```
 
 ### Step 4: Terminate Card
+
 ```python
 requests.post(f"{BASE}/cards/{card_id}/terminate", headers=headers)
 print(f"Card {card_id} terminated")
 ```
 
 ## Output
+
 - Virtual card issued with spending limits
 - Card limits updated
 - Card suspended/terminated
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `422 Invalid holder` | User not found | Verify holder is a Ramp user |
@@ -77,8 +85,10 @@ print(f"Card {card_id} terminated")
 | Card already terminated | Cannot modify | Check card state first |
 
 ## Resources
+
 - [Virtual Cards API](https://docs.ramp.com/developer-api/v1/virtual-cards)
 - [Cards and Funds](https://docs.ramp.com/developer-api/v1/cards-and-funds)
 
 ## Next Steps
+
 Transaction management: `ramp-core-workflow-b`

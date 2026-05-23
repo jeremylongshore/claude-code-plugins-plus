@@ -10,6 +10,7 @@ documenso-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Documenso primary workflow
 **Workflow:** Part of the onboarding skill category for Documenso integration.
 **Relates to:** Other documenso skills in this pack.

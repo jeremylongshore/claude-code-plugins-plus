@@ -10,6 +10,7 @@ clay-incident-runbook/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Clay incident response procedures with triage, mitigation, and postmortem workflows. Enables rapid incident resolution with consistent procedures.
 **Workflow:** Incident response skill. Use during Clay-related incidents or outages.
 **Relates to:** Builds on clay-observability for detection; uses clay-debug-bundle for evidence collection.

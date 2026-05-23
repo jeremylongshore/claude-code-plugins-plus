@@ -11,9 +11,11 @@ Apollo.io is a B2B sales intelligence and engagement platform with 275M+ contact
 ## One-Pager
 
 ### The Problem
+
 Apollo.io has no official SDK. The REST API uses non-obvious conventions — `x-api-key` headers (not query params), separate search endpoints that changed names (`/mixed_people/api_search`), a master vs standard key distinction, and a credit model where search is free but enrichment costs money. Teams waste days learning these details.
 
 ### The Solution
+
 24 skills covering the full Apollo integration lifecycle with correct endpoints, real code, and production patterns. Every skill uses the actual API (`https://api.apollo.io/api/v1/`), real authentication (`x-api-key` header), and real response shapes from Apollo's documentation.
 
 | What | Detail |
@@ -33,6 +35,7 @@ Apollo.io has no official SDK. The REST API uses non-obvious conventions — `x-
 | Infra | GCP Cloud Run, Vercel, Kubernetes |
 
 ### Key Differentiators
+
 - **Correct endpoints**: Uses `/mixed_people/api_search` (not the deprecated `/people/search`), `/people/bulk_match`, `/emailer_campaigns/search`
 - **Credit-aware**: Every skill notes which operations cost credits and which are free
 - **Master vs standard keys**: Skills flag which endpoints require master API keys
@@ -49,6 +52,7 @@ Apollo.io has no official SDK. The REST API uses non-obvious conventions — `x-
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `apollo-install-auth` | Configure `x-api-key` header auth, verify with `/auth/health` |
@@ -65,6 +69,7 @@ Apollo.io has no official SDK. The REST API uses non-obvious conventions — `x-
 | `apollo-upgrade-migration` | Audit deprecated patterns, feature-flagged endpoint migration |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `apollo-ci-integration` | GitHub Actions with MSW tests, sandbox staging, secret scanning |
@@ -75,6 +80,7 @@ Apollo.io has no official SDK. The REST API uses non-obvious conventions — `x-
 | `apollo-reference-architecture` | Layered architecture with deals API, BullMQ jobs, CRM sync |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `apollo-multi-env-setup` | Dev/staging/prod configs, sandbox tokens, feature gating, K8s secrets |

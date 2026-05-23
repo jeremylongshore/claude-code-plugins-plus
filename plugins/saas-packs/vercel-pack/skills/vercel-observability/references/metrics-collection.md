@@ -3,6 +3,7 @@
 ## Metrics Collection
 
 ### Key Metrics
+
 | Metric | Type | Description |
 |--------|------|-------------|
 | `vercel_requests_total` | Counter | Total API requests |

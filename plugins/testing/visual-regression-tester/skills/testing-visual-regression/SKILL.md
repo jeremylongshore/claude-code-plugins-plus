@@ -77,6 +77,7 @@ Detect unintended visual changes in UI components by capturing screenshots and c
 ## Examples
 
 **Playwright visual regression test:**
+
 ```typescript
 import { test, expect } from '@playwright/test';
 
@@ -92,6 +93,7 @@ test('homepage matches baseline', async ({ page }) => {
 ```
 
 **BackstopJS scenario configuration:**
+
 ```json
 {
   "label": "Login Page",

@@ -112,6 +112,7 @@ watchlists:
 ## Rate Limit Handling
 
 The skill automatically manages rate limits through a multi-tier fallback:
+
 1. Uses cached data when available (spot: 30s TTL, historical: 1h TTL)
 2. Applies exponential backoff on rate limits (1s, 2s, 4s, max 3 retries)
 3. Falls back to yfinance if CoinGecko fails
@@ -122,6 +123,7 @@ The skill automatically manages rate limits through a multi-tier fallback:
 This skill provides the price data foundation for 10+ other crypto skills.
 
 **Direct Import** (recommended for Python skills):
+
 ```python
 from price_tracker import get_current_prices, get_historical_prices
 
@@ -130,6 +132,7 @@ prices = get_current_prices(["BTC", "ETH", "SOL"])
 ```
 
 **CLI Subprocess** (for non-Python or isolation):
+
 ```bash
 PRICES=$(python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbols BTC,ETH --format json)
 ```

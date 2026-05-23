@@ -449,6 +449,7 @@ captureFixtures().catch(console.error);
 ## Output
 
 After completing this setup you will have:
+
 - Mock Graph API server that intercepts all OneNote requests without Azure credentials
 - Realistic fixture data matching actual Graph API response format (including output HTML)
 - Environment variable toggle between mock and live Graph API
@@ -468,6 +469,7 @@ After completing this setup you will have:
 ## Examples
 
 **Quick start — run tests without any Azure setup:**
+
 ```bash
 echo "GRAPH_MODE=mock" > .env
 npm install
@@ -476,6 +478,7 @@ npm test
 ```
 
 **Switch to live for integration testing:**
+
 ```bash
 echo "GRAPH_MODE=live" > .env
 echo "AZURE_CLIENT_ID=your-id" >> .env

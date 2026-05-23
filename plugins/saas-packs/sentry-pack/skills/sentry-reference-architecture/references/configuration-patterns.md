@@ -3,6 +3,7 @@
 ## Configuration Patterns
 
 ### Centralized Config Module
+
 ```typescript
 // lib/sentry.ts
 import * as Sentry from '@sentry/node';
@@ -49,6 +50,7 @@ export { Sentry };
 ```
 
 ### Usage Across Services
+
 ```typescript
 // user-service/src/index.ts
 import { initSentry, Sentry } from '@mycompany/shared/sentry';

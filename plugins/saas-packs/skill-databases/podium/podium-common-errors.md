@@ -10,6 +10,7 @@ podium-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Podium common errors
 **Workflow:** Part of the operations skill category for Podium integration.
 **Relates to:** Other podium skills in this pack.

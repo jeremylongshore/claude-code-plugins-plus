@@ -6,7 +6,6 @@ description: Generate Helm charts for Kubernetes applications
 
 Generate Helm charts for Kubernetes applications
 
-
 ## Key Features
 
 - Production-ready configurations

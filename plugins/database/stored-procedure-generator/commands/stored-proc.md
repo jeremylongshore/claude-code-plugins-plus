@@ -11,6 +11,7 @@ Generate production-ready stored procedures, functions, triggers, and custom dat
 ## When to Use This Command
 
 Use `/stored-proc` when you need to:
+
 - Implement complex business logic close to the data
 - Enforce data integrity constraints beyond foreign keys
 - Optimize performance by reducing network round trips
@@ -19,6 +20,7 @@ Use `/stored-proc` when you need to:
 - Build database triggers for audit logging and data synchronization
 
 DON'T use this when:
+
 - Business logic frequently changes (better in application layer)
 - Logic requires external API calls or file I/O
 - Team lacks database development expertise
@@ -28,6 +30,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **comprehensive stored procedure generation** because:
+
 - Encapsulates business logic at database level for data integrity
 - Reduces network latency by executing multiple queries in single call
 - Provides transaction safety for complex multi-step operations
@@ -35,12 +38,14 @@ This command implements **comprehensive stored procedure generation** because:
 - Leverages database-specific optimizations (compiled execution plans)
 
 **Alternative considered: Application-layer logic**
+
 - More portable across database systems
 - Easier to test and debug
 - Better for frequently changing logic
 - Recommended for API-heavy applications
 
 **Alternative considered: Database views**
+
 - Read-only, no data modification
 - Cannot contain procedural logic
 - Better query optimizer hints
@@ -49,6 +54,7 @@ This command implements **comprehensive stored procedure generation** because:
 ## Prerequisites
 
 Before running this command:
+
 1. Understanding of target database's procedural language (PL/pgSQL, MySQL, T-SQL)
 2. Knowledge of business logic requirements and edge cases
 3. Database permissions to create procedures/functions
@@ -58,23 +64,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Analyze Business Logic Requirements
+
 Define inputs, outputs, error conditions, and transaction boundaries.
 
 ### Step 2: Choose Procedure Type
+
 Select function (returns value), procedure (performs action), or trigger (automated).
 
 ### Step 3: Implement Core Logic
+
 Write procedural code with proper error handling and transaction management.
 
 ### Step 4: Add Validation and Security
+
 Implement input validation, SQL injection prevention, and permission checks.
 
 ### Step 5: Test and Optimize
+
 Test edge cases, measure performance, and optimize execution plans.
 
 ## Output Format
 
 The command generates:
+
 - `procedures/business_logic.sql` - Production-ready stored procedures
 - `functions/calculations.sql` - Reusable database functions
 - `triggers/audit_triggers.sql` - Automated data tracking triggers
@@ -458,23 +470,27 @@ CREATE TRIGGER transactions_audit_trigger
 ## Configuration Options
 
 **Function Types**
+
 - **RETURNS TABLE**: Multi-row result sets
 - **RETURNS SETOF**: Dynamic result sets
 - **RETURNS VOID**: No return value (procedures)
 - **RETURNS TRIGGER**: Trigger functions
 
 **Volatility Categories**
+
 - `IMMUTABLE`: Pure function, same inputs = same outputs
 - `STABLE`: Results consistent within transaction
 - `VOLATILE`: May change even with same inputs (default)
 
 **Security Options**
+
 - `SECURITY DEFINER`: Runs with creator's permissions
 - `SECURITY INVOKER`: Runs with caller's permissions (default)
 
 ## Best Practices
 
 DO:
+
 - Use explicit parameter names (p_customer_id, not just id)
 - Handle all possible error conditions with meaningful messages
 - Use transactions for multi-step operations
@@ -483,6 +499,7 @@ DO:
 - Document parameters and return values
 
 DON'T:
+
 - Use `SELECT *` in production functions (specify columns)
 - Perform network I/O or file operations in functions
 - Create overly complex logic (split into multiple functions)

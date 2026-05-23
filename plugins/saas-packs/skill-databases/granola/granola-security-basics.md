@@ -10,6 +10,7 @@ granola-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Granola security best practices
 **Workflow:** Part of the operations skill category for Granola integration.
 **Relates to:** Other granola skills in this pack.

@@ -102,6 +102,7 @@ export async function getUserProfile(userId: string) {
 ```
 
 Cross-project access rules:
+
 - Always use `service_role` key (it bypasses RLS)
 - Never expose `service_role` keys to client-side code
 - Limit cross-project calls to read-only where possible

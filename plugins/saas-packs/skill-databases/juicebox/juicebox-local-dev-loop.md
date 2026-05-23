@@ -10,6 +10,7 @@ juicebox-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Juicebox local development workflow
 **Workflow:** Part of the onboarding skill category for Juicebox integration.
 **Relates to:** Other juicebox skills in this pack.

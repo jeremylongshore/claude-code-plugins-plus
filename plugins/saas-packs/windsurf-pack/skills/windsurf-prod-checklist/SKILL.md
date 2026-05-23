@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Production Checklist
 
 ## Overview
+
 Complete checklist for rolling out Windsurf to production teams. Covers workspace configuration, security hardening, team onboarding, and monitoring.
 
 ## Prerequisites
+
 - Windsurf plan selected (Pro, Teams, or Enterprise)
 - Admin access to Windsurf dashboard
 - Git repositories identified for rollout
@@ -40,12 +42,14 @@ Complete checklist for rolling out Windsurf to production teams. Covers workspac
 ### Phase 1: Pre-Deployment Configuration
 
 **Workspace Config (per repository):**
+
 - [ ] `.windsurfrules` created with project stack, patterns, and constraints
 - [ ] `.codeiumignore` excludes secrets, build artifacts, and large binaries
 - [ ] `.windsurf/rules/` contains glob-triggered rules for file-type-specific patterns
 - [ ] Workspace settings committed to `.windsurf/settings.json`
 
 **Security:**
+
 - [ ] Telemetry configured per company policy
 - [ ] `.codeiumignore` covers all secret file patterns
 - [ ] Autocomplete disabled for secret-containing file types (.env, .key)
@@ -53,6 +57,7 @@ Complete checklist for rolling out Windsurf to production teams. Covers workspac
 - [ ] Enterprise: zero-data-retention verified with Codeium
 
 **Team Policy:**
+
 - [ ] AI usage policy document created and shared
 - [ ] Commit convention for AI-generated code established (e.g., `[cascade]` prefix)
 - [ ] Code review requirements for AI-generated changes defined
@@ -61,6 +66,7 @@ Complete checklist for rolling out Windsurf to production teams. Covers workspac
 ### Phase 2: Team Onboarding
 
 **Per-Developer Setup:**
+
 ```bash
 #!/bin/bash
 # scripts/setup-windsurf.sh — run on each developer machine
@@ -85,6 +91,7 @@ echo "Setup complete. Open project folder (not monorepo root) for best AI contex
 ```
 
 **Training Checklist:**
+
 - [ ] Demo: Supercomplete (Tab) vs Cascade (Cmd+L) vs Command (Cmd+I)
 - [ ] Demo: Write mode vs Chat mode
 - [ ] Demo: @ mentions for file context
@@ -97,6 +104,7 @@ echo "Setup complete. Open project folder (not monorepo root) for best AI contex
 ### Phase 3: Monitoring and Optimization
 
 **Admin Dashboard Monitoring:**
+
 ```yaml
 # Metrics to track weekly (Admin Dashboard > Analytics)
 metrics:
@@ -112,6 +120,7 @@ metrics:
 ```
 
 **Quarterly Review:**
+
 - [ ] Audit seat utilization -- downgrade inactive seats
 - [ ] Review `.windsurfrules` -- update with new patterns
 - [ ] Check for new Windsurf features in changelog
@@ -121,6 +130,7 @@ metrics:
 ### Phase 4: Rollback Procedure
 
 If Windsurf causes issues:
+
 ```
 1. Disable Cascade for team: Admin Dashboard > Features > Cascade > Off
 2. Developers can still use Supercomplete (non-agentic)
@@ -130,6 +140,7 @@ If Windsurf causes issues:
 ```
 
 ## Error Handling
+
 | Issue | Severity | Mitigation |
 |-------|----------|------------|
 | Cascade generates broken code | Medium | Enforce tests-pass-before-merge policy |
@@ -140,6 +151,7 @@ If Windsurf causes issues:
 ## Examples
 
 ### Recommended Extension Set
+
 ```json
 // .vscode/extensions.json (also works in Windsurf)
 {
@@ -156,6 +168,7 @@ If Windsurf causes issues:
 ```
 
 ### Quick Compliance Check
+
 ```bash
 set -euo pipefail
 echo "Config: $([ -f .windsurfrules ] && echo 'OK' || echo 'MISSING')"
@@ -164,9 +177,11 @@ echo "Rules:  $([ -d .windsurf/rules ] && echo 'OK' || echo 'MISSING')"
 ```
 
 ## Resources
+
 - [Windsurf Admin Guide](https://docs.windsurf.com/windsurf/guide-for-admins)
 - [Windsurf Enterprise](https://windsurf.com/enterprise)
 - [Windsurf Security](https://windsurf.com/security)
 
 ## Next Steps
+
 For version upgrades, see `windsurf-upgrade-migration`.

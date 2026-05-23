@@ -3,6 +3,7 @@
 ## Best Practices
 
 ### Daily Workflow
+
 ```
 Morning:
 1. git pull (sync with remote)
@@ -21,6 +22,7 @@ End of day:
 ```
 
 ### Commit Message Quality
+
 ```
 AI prompt for good messages:
 "Generate a commit message following conventional commits:
@@ -32,6 +34,7 @@ AI prompt for good messages:
 ```
 
 ### Branch Hygiene
+
 ```
 Keep branches clean:
 - Delete merged branches

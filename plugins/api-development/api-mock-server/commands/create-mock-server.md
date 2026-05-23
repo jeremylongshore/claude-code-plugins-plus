@@ -17,6 +17,7 @@ This command generates mock servers using Express.js with faker-js for realistic
 4. **Network Realism**: Built-in latency simulation and error injection mimic production API behavior
 
 **Alternatives Considered:**
+
 - JSON Server (limited to simple CRUD, no OpenAPI support)
 - Mockoon (GUI-based, not scriptable)
 - WireMock (Java-based, heavier dependency)
@@ -25,6 +26,7 @@ This command generates mock servers using Express.js with faker-js for realistic
 ## When to Use This Command
 
 **USE WHEN:**
+
 - Developing frontend features before backend APIs are ready
 - Testing error handling and edge cases without affecting production
 - Creating reproducible test scenarios for QA and CI/CD
@@ -33,6 +35,7 @@ This command generates mock servers using Express.js with faker-js for realistic
 - Load testing frontend without backend infrastructure
 
 **DON'T USE WHEN:**
+
 - You need real business logic or database interactions
 - Testing actual backend performance (use staging environment)
 - Security testing (mocks bypass authentication layers)
@@ -42,17 +45,20 @@ This command generates mock servers using Express.js with faker-js for realistic
 ## Prerequisites
 
 **Required:**
+
 - Node.js 18+ installed
 - OpenAPI 3.0+ specification file (YAML or JSON)
 - Basic understanding of RESTful API concepts
 - Port availability (default: 3000)
 
 **Optional:**
+
 - Docker for containerized deployment
 - Postman/Insomnia for API testing
 - curl or httpie for command-line testing
 
 **Install Dependencies:**
+
 ```bash
 npm install express @faker-js/faker swagger-parser cors
 npm install --save-dev nodemon @types/express
@@ -61,35 +67,45 @@ npm install --save-dev nodemon @types/express
 ## Step-by-Step Process
 
 ### Step 1: Prepare OpenAPI Specification
+
 Ensure your OpenAPI spec is valid and contains response schemas with examples:
+
 ```bash
 # Validate OpenAPI spec
 npx swagger-cli validate openapi.yaml
 ```
 
 ### Step 2: Generate Mock Server Structure
+
 Command analyzes the OpenAPI spec and generates:
+
 - Express route handlers for each endpoint
 - Response schemas with faker.js mappings
 - Middleware for CORS, logging, error handling
 - Optional stateful storage layer
 
 ### Step 3: Configure Mock Behavior
+
 Customize mock server with:
+
 - Response delay ranges (simulate network latency)
 - Error injection rates (test error handling)
 - Stateful mode (enable in-memory persistence)
 - Custom scenario rules (conditional responses)
 
 ### Step 4: Start Mock Server
+
 Launch the generated server with hot-reload:
+
 ```bash
 npm run dev  # Development mode with nodemon
 npm start    # Production mode
 ```
 
 ### Step 5: Test and Iterate
+
 Verify mock endpoints match OpenAPI contract:
+
 ```bash
 # Test generated endpoints
 curl http://localhost:3000/api/users
@@ -128,6 +144,7 @@ mock-server/
 ### Example 1: OpenAPI Spec-Based Mock Generation
 
 **Input OpenAPI Spec (openapi.yaml):**
+
 ```yaml
 openapi: 3.0.0
 info:
@@ -216,6 +233,7 @@ components:
 ```
 
 **Command Usage:**
+
 ```bash
 # Generate mock server from OpenAPI spec
 /create-mock-server \
@@ -226,6 +244,7 @@ components:
 ```
 
 **Generated routes/users.js:**
+
 ```javascript
 import express from 'express';
 import { faker } from '@faker-js/faker';
@@ -308,6 +327,7 @@ export default router;
 ```
 
 **Generated server.js:**
+
 ```javascript
 import express from 'express';
 import cors from 'cors';
@@ -345,6 +365,7 @@ app.listen(PORT, () => {
 ### Example 2: Stateful Mock Server with CRUD Operations
 
 **Command Usage:**
+
 ```bash
 # Generate stateful mock server with persistent data
 /create-mock-server \
@@ -356,6 +377,7 @@ app.listen(PORT, () => {
 ```
 
 **Generated data/store.js (In-Memory Database):**
+
 ```javascript
 import { faker } from '@faker-js/faker';
 
@@ -443,6 +465,7 @@ export const store = new MockStore();
 ```
 
 **Generated data/seed.js:**
+
 ```javascript
 import { faker } from '@faker-js/faker';
 import { store } from './store.js';
@@ -506,6 +529,7 @@ export function seedDatabase() {
 ```
 
 **Stateful routes/users.js:**
+
 ```javascript
 import express from 'express';
 import { store } from '../data/store.js';
@@ -635,6 +659,7 @@ export default router;
 ### Example 3: Dynamic Response Scenarios with Conditional Logic
 
 **Command Usage:**
+
 ```bash
 # Generate mock server with custom scenarios
 /create-mock-server \
@@ -646,6 +671,7 @@ export default router;
 ```
 
 **Generated scenarios/conditionalLogic.js:**
+
 ```javascript
 /**
  * Scenario-based response logic for realistic API behavior
@@ -883,6 +909,7 @@ export function applyScenarios(req, res, next) {
 ```
 
 **Using scenarios in routes/payments.js:**
+
 ```javascript
 import express from 'express';
 import { scenarios } from '../scenarios/conditionalLogic.js';
@@ -1029,12 +1056,15 @@ REQUIRE_AUTH=false
 ### Common Errors and Solutions
 
 **1. OpenAPI Spec Validation Failed**
+
 ```
 Error: Invalid OpenAPI specification
   - Missing required field: info.version
   - Invalid path parameter syntax
 ```
+
 **Solution:**
+
 ```bash
 # Validate spec first
 npx swagger-cli validate openapi.yaml
@@ -1046,10 +1076,13 @@ npx swagger-cli validate openapi.yaml
 ```
 
 **2. Port Already in Use**
+
 ```
 Error: listen EADDRINUSE: address already in use :::3000
 ```
+
 **Solution:**
+
 ```bash
 # Find process using port
 lsof -i :3000
@@ -1059,12 +1092,16 @@ lsof -i :3000
 ```
 
 **3. Faker.js Schema Mapping Failed**
+
 ```
 Warning: Could not map schema type 'customType' to faker method
 ```
+
 **Solution:**
+
 - Add custom mapping in generated `config/faker-mappings.js`
 - Or use default faker method as fallback
+
 ```javascript
 // Custom mapping example
 const customMappings = {
@@ -1075,10 +1112,13 @@ const customMappings = {
 ```
 
 **4. Stateful Store Memory Limit**
+
 ```
 Error: JavaScript heap out of memory
 ```
+
 **Solution:**
+
 ```bash
 # Increase Node.js heap size
 NODE_OPTIONS="--max-old-space-size=4096" npm start
@@ -1088,10 +1128,13 @@ NODE_OPTIONS="--max-old-space-size=4096" npm start
 ```
 
 **5. CORS Issues in Browser**
+
 ```
 Access to fetch at 'http://localhost:3000' has been blocked by CORS policy
 ```
+
 **Solution:**
+
 ```javascript
 // Generated CORS config already permissive, but can customize:
 // middleware/cors.js
@@ -1106,6 +1149,7 @@ export const corsOptions = {
 ## Best Practices
 
 ### DO:
+
 1. Always validate OpenAPI spec before generating mock server
 2. Use stateful mode for testing complex CRUD workflows
 3. Set realistic delay ranges (100-300ms) to catch race conditions
@@ -1118,6 +1162,7 @@ export const corsOptions = {
 10. Use Docker for consistent mock server deployment
 
 ### DON'T:
+
 1. Don't rely on mocks for performance testing (no real database)
 2. Don't commit generated node_modules to version control
 3. Don't expose mock servers to public internet (development only)
@@ -1128,6 +1173,7 @@ export const corsOptions = {
 8. Don't use mocks as production API substitutes
 
 ### TIPS:
+
 - Use `--seed` generously for realistic datasets
 - Combine `--delay` with `--error-rate` for chaos testing
 - Create separate mock configs for different test scenarios
@@ -1148,17 +1194,20 @@ export const corsOptions = {
 ## Performance Considerations
 
 ### Mock Server Performance
+
 - **Stateless Mode**: Handles 1000+ req/sec on modest hardware
 - **Stateful Mode**: 500-800 req/sec with in-memory store (10k records)
 - **With Delay Simulation**: Throughput = 1000 / avg_delay_ms requests/sec
 - **Memory Usage**: ~50MB base, +5MB per 10k seeded records
 
 ### Optimization Tips
+
 1. Use stateless mode for high-concurrency tests
 2. Reduce seed count if memory is constrained
 3. Disable logging in production mode (`LOG_LEVEL=error`)
 4. Use Redis for stateful storage beyond 100k records
 5. Enable clustering for multi-core utilization:
+
 ```javascript
 // server.js with clustering
 import cluster from 'cluster';
@@ -1176,6 +1225,7 @@ if (cluster.isPrimary) {
 ```
 
 ### Monitoring Mock Performance
+
 ```bash
 # Request latency
 curl -w "@curl-format.txt" http://localhost:3000/api/users
@@ -1191,6 +1241,7 @@ NODE_ENV=production node --inspect server.js
 ## Security Notes for Mock Data
 
 ### Important Security Warnings
+
 1. **Never use production data** - Mocks should use synthetic data only
 2. **No real credentials** - All passwords, API keys, tokens should be fake
 3. **No PII leakage** - Use faker.js to generate realistic but fake personal data
@@ -1198,6 +1249,7 @@ NODE_ENV=production node --inspect server.js
 5. **Network isolation** - Bind to localhost or use Docker networks
 
 ### Secure Mock Configuration
+
 ```javascript
 // config/security.js
 export const securityConfig = {
@@ -1230,6 +1282,7 @@ if (securityConfig.apiKey) {
 ```
 
 ### Data Sanitization
+
 ```javascript
 // Ensure no real data leaks
 import { faker } from '@faker-js/faker';
@@ -1251,8 +1304,10 @@ function sanitizeForMock(data) {
 ## Troubleshooting Guide
 
 ### Issue: Mock server not starting
+
 **Symptoms:** Port binding errors, module not found
 **Diagnosis:**
+
 ```bash
 # Check port availability
 netstat -an | grep 3000
@@ -1263,14 +1318,18 @@ node --version  # Should be 18+
 # Check dependencies
 npm list
 ```
+
 **Resolution:**
+
 - Kill process on port: `kill -9 $(lsof -t -i:3000)`
 - Reinstall dependencies: `rm -rf node_modules && npm install`
 - Use different port: `PORT=3001 npm start`
 
 ### Issue: OpenAPI spec not generating routes
+
 **Symptoms:** No routes registered, empty routes folder
 **Diagnosis:**
+
 ```bash
 # Validate OpenAPI spec
 npx swagger-cli validate openapi.yaml
@@ -1278,15 +1337,19 @@ npx swagger-cli validate openapi.yaml
 # Check for required fields
 jq '.paths' openapi.yaml
 ```
+
 **Resolution:**
+
 - Ensure `paths` section exists with at least one endpoint
 - Check `$ref` references are valid
 - Verify schema components are defined
 
 ### Issue: Faker.js generating same data
+
 **Symptoms:** Identical data on each request
 **Diagnosis:** Seed is set globally
 **Resolution:**
+
 ```javascript
 // Remove global seed or set per-request
 // Bad:
@@ -1300,9 +1363,11 @@ function generateUser() {
 ```
 
 ### Issue: Stateful store losing data
+
 **Symptoms:** Data disappears on server restart
 **Diagnosis:** In-memory store is ephemeral
 **Resolution:**
+
 ```javascript
 // Add persistence to disk
 import fs from 'fs';
@@ -1340,9 +1405,11 @@ router.post('/users', (req, res) => {
 ```
 
 ### Issue: CORS errors in production
+
 **Symptoms:** Browser blocks requests
 **Diagnosis:** CORS origin mismatch
 **Resolution:**
+
 ```javascript
 // Whitelist specific origins
 const corsOptions = {
@@ -1365,6 +1432,7 @@ app.use(cors(corsOptions));
 ## Version History
 
 ### v1.2.0 (Current)
+
 - Added scenario-based conditional responses
 - Implemented rate limiting simulation
 - Enhanced error injection with configurable rates
@@ -1372,12 +1440,14 @@ app.use(cors(corsOptions));
 - Improved OpenAPI 3.1 support
 
 ### v1.1.0
+
 - Added stateful mode with in-memory CRUD operations
 - Implemented data seeding with faker.js
 - Added pagination and filtering support
 - Enhanced delay simulation with configurable ranges
 
 ### v1.0.0
+
 - Initial release with OpenAPI 3.0 support
 - Basic stateless mock generation
 - Faker.js integration for realistic data
@@ -1385,6 +1455,7 @@ app.use(cors(corsOptions));
 - CORS and logging middleware
 
 ### Planned Features (v1.3.0)
+
 - WebSocket mock support
 - GraphQL mock generation
 - Redis-backed stateful storage

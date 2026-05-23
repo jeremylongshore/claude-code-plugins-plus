@@ -14,6 +14,7 @@ Advanced trend analysis system using technical indicators, chart patterns, and m
 When the user wants to analyze market trends, implement comprehensive technical analysis with these components:
 
 ### Required Parameters
+
 - **Symbol**: Asset to analyze
 - **Timeframe**: 1m, 5m, 15m, 1h, 4h, 1d, 1w
 - **Period**: How far back to analyze (e.g., "30 days", "6 months")

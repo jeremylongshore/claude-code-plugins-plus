@@ -3,6 +3,7 @@
 ## Efficient Message Patterns
 
 ### Minimal Messages
+
 ```python
 def create_minimal_request(
     prompt: str,
@@ -31,6 +32,7 @@ def create_minimal_request(
 ```
 
 ### Batch Similar Requests
+
 ```python
 def batch_prompts(prompts: list, max_batch_tokens: int = 4000) -> list:
     """Batch multiple prompts into single requests."""

@@ -24,11 +24,13 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lindy Performance Tuning
 
 ## Overview
+
 Lindy agents execute as multi-step workflows where each step (LLM call, action
 execution, API call, condition evaluation) adds latency and credit cost. Optimization
 targets: fewer steps, smaller models, faster actions, tighter prompts.
 
 ## Prerequisites
+
 - Lindy workspace with active agents
 - Access to agent Tasks tab (view step-by-step execution history)
 - Understanding of agent workflow structure
@@ -36,13 +38,16 @@ targets: fewer steps, smaller models, faster actions, tighter prompts.
 ## Instructions
 
 ### Step 1: Profile Agent Execution
+
 In the Tasks tab, open a completed task and review:
+
 - **Total task duration**: Baseline for improvement
 - **Per-step timing**: Identify the slowest steps
 - **Credit consumption**: Which steps cost the most
 - **Step count**: Total actions executed per task
 
 Common bottlenecks:
+
 | Bottleneck | Symptom | Fix |
 |-----------|---------|-----|
 | Large model on simple task | High credit cost, slow | Switch to Gemini Flash |
@@ -52,6 +57,7 @@ Common bottlenecks:
 | Sequential when parallel possible | Unnecessary waiting | Use loop with Max Concurrent > 1 |
 
 ### Step 2: Right-Size Model Selection
+
 The single biggest performance lever. Match model to task complexity:
 
 | Task | Recommended Model | Speed | Credits |
@@ -67,7 +73,9 @@ The single biggest performance lever. Match model to task complexity:
 is insufficient. Most classification and routing tasks work fine with Gemini Flash.
 
 ### Step 3: Consolidate LLM Steps
+
 Before (3 LLM calls, ~9 credits):
+
 ```
 Step 1: Classify email (LLM)
 Step 2: Extract key entities (LLM)
@@ -75,11 +83,13 @@ Step 3: Generate response (LLM)
 ```
 
 After (1 LLM call, ~3 credits):
+
 ```
 Step 1: Classify, extract entities, and generate response (single LLM prompt)
 ```
 
 Consolidated prompt:
+
 ```
 Analyze this email and return JSON with:
 1. "classification": one of [billing, technical, general]
@@ -90,6 +100,7 @@ Email: {{email_received.body}}
 ```
 
 ### Step 4: Use Deterministic Actions Where Possible
+
 Replace AI-powered fields with **Set Manually** mode when values are predictable:
 
 | Field | Instead of AI Prompt | Use Set Manually |
@@ -101,17 +112,22 @@ Replace AI-powered fields with **Set Manually** mode when values are predictable
 Each Set Manually field saves one LLM inference (~1 credit).
 
 ### Step 5: Optimize Knowledge Base Queries
+
 - **Max Results**: Set to the minimum needed (default 4, max 10)
 - **Search Fuzziness**: Keep at 100 (semantic) unless precision matching needed
 - **Query mode**: Use AI Prompt with specific instructions:
+
   ```
   Search for the customer's specific product issue.
   Focus on: {{extracted_entities.product}} {{extracted_entities.issue_type}}
   ```
+
   Not: "Search for relevant information" (too vague, wastes results)
 
 ### Step 6: Optimize Trigger Filters
+
 Prevent wasted runs with precise trigger filters:
+
 ```
 Before: Email Received (all emails) → 200 runs/day → 600 credits
 After:  Email Received (label: "support" AND NOT from: "noreply@")
@@ -119,6 +135,7 @@ After:  Email Received (label: "support" AND NOT from: "noreply@")
 ```
 
 ### Step 7: Use Agent Steps Judiciously
+
 Agent Steps (autonomous mode) are powerful but expensive — the agent may take
 unpredictable paths and use more actions than a deterministic workflow.
 
@@ -128,13 +145,16 @@ multi-source investigation, adaptive problem-solving)
 **Use deterministic actions when**: Steps are predictable (classify -> route -> respond)
 
 **When using Agent Steps**:
+
 - Limit available skills to 2-4
 - Set clear, measurable exit conditions
 - Include a fallback exit condition to prevent infinite loops
 - Monitor credit consumption of first 10 runs to establish baseline
 
 ### Step 8: Loop Optimization
+
 For batch processing, configure loops for efficiency:
+
 - **Max Concurrent**: Increase for independent items (parallel execution)
 - **Max Cycles**: Always set a cap to prevent runaway processing
 - Only pass essential data as loop output (not full context)
@@ -160,9 +180,11 @@ For batch processing, configure loops for efficiency:
 | Loop runs too long | High max cycles, low concurrency | Increase Max Concurrent, lower Max Cycles |
 
 ## Resources
+
 - [Lindy Prompt Guide](https://docs.lindy.ai/fundamentals/lindy-101/prompt-guide)
 - [Agent Steps](https://docs.lindy.ai/fundamentals/lindy-101/ai-agents)
 - [Lindy Documentation](https://docs.lindy.ai)
 
 ## Next Steps
+
 Proceed to `lindy-cost-tuning` for budget optimization.

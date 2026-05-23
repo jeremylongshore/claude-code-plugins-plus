@@ -16,6 +16,7 @@ ccpi install framecraft
 ```
 
 Or via npm skills registry:
+
 ```bash
 npx skills add vaddisrinivas/framecraft
 ```
@@ -29,6 +30,7 @@ npx skills add vaddisrinivas/framecraft
 ## Permissions
 
 This skill requests scoped Bash access to:
+
 - `Bash(uv:*)` — Run Python environment via uv package manager
 - `Bash(ffmpeg:*)` — Run FFmpeg for video compositing and audio mixing
 - `Bash(python:*)` — Execute Python scripts for pipeline orchestration

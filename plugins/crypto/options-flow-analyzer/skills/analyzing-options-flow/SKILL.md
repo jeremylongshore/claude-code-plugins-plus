@@ -72,24 +72,30 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementati
 ## Examples
 
 ### BTC Options Sentiment Snapshot
+
 ```bash
 # Pull current BTC options chain and compute put/call ratios
 python options_flow.py btc --summary
 ```
+
 Returns the aggregate put/call ratio, top 5 strikes by open interest, max pain for the nearest expiry, and the current implied volatility at-the-money. A put/call ratio of 0.65 with heavy call OI at the $120K strike suggests bullish institutional positioning.
 
 ### Detect Institutional Block Trades
+
 ```bash
 # Filter for block trades above $1M notional in the last 24 hours
 python options_flow.py btc --blocks --min-notional 1000000 --period 24h  # 1000000 = 1M limit
 ```
+
 Lists all block trades exceeding the threshold with direction inference (aggressor side), strike, expiry, premium paid, and IV at execution. Useful for spotting large directional bets before they move the underlying.
 
 ### ETH Implied Volatility Term Structure
+
 ```bash
 # Generate IV term structure for ETH across all active expiries
 python options_flow.py eth --iv-curve --format json > eth_iv_term.json
 ```
+
 Exports the IV term structure as JSON. Flat or inverted term structures (near-term IV higher than far-term) often precede sharp directional moves, while steep upward-sloping curves indicate calm near-term expectations.
 
 ## Resources

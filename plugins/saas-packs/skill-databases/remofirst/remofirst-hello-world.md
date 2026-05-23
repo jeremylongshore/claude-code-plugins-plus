@@ -10,6 +10,7 @@ remofirst-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working RemoFirst example
 **Workflow:** Part of the onboarding skill category for RemoFirst integration.
 **Relates to:** Other remofirst skills in this pack.

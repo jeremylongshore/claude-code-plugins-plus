@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Multi-Env Setup
 
 ## Overview
+
 Configure Vercel's three built-in environments (Development, Preview, Production) with scoped environment variables, branch-specific preview URLs, and custom environments for staging. Uses Vercel's native environment system and the REST API for automation.
 
 ## Prerequisites
+
 - Vercel project linked and deployed
 - Separate database instances per environment (recommended)
 - Access to Vercel dashboard or VERCEL_TOKEN for API
@@ -38,6 +40,7 @@ Configure Vercel's three built-in environments (Development, Preview, Production
 ## Instructions
 
 ### Step 1: Understand Vercel's Environment Model
+
 Vercel provides three built-in environments:
 
 | Environment | Trigger | URL Pattern | Use Case |
@@ -47,6 +50,7 @@ Vercel provides three built-in environments:
 | Development | `vercel dev` locally | `localhost:3000` | Local dev |
 
 ### Step 2: Scope Environment Variables
+
 ```bash
 # Add a variable scoped to Production only
 vercel env add DATABASE_URL production
@@ -69,6 +73,7 @@ vercel env ls
 ```
 
 ### Step 3: Via REST API (Automation)
+
 ```bash
 # Create env vars with specific scoping
 curl -X POST "https://api.vercel.com/v9/projects/my-app/env" \
@@ -99,6 +104,7 @@ curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
 ```
 
 ### Step 4: Custom Environments (Beyond Dev/Preview/Prod)
+
 Vercel supports custom environments for staging, QA, etc.:
 
 ```bash
@@ -116,11 +122,13 @@ curl -X POST "https://api.vercel.com/v1/projects/my-app/custom-environments" \
 Or in the dashboard: **Settings > Environments > Create Environment**
 
 Custom environments let you:
+
 - Link a specific Git branch to the environment
 - Scope environment variables to it
 - Assign a custom domain (e.g., `staging.yourdomain.com`)
 
 ### Step 5: Branch-Specific Preview Domains
+
 ```bash
 # Assign a custom domain to a specific branch
 # In dashboard: Settings > Domains > Add
@@ -138,6 +146,7 @@ curl -X POST "https://api.vercel.com/v9/projects/my-app/domains" \
 ```
 
 ### Step 6: Environment Detection in Code
+
 ```typescript
 // src/lib/env.ts — detect environment at runtime
 export function getEnvironment(): 'production' | 'preview' | 'development' {
@@ -165,6 +174,7 @@ export function assertNotProduction(operation: string): void {
 ```
 
 ### Step 7: Pull Env Vars for Local Development
+
 ```bash
 # Pull Development-scoped vars to local file
 vercel env pull .env.development.local
@@ -186,12 +196,14 @@ echo '.env*.local' >> .gitignore
 | `system` | Auto-set by Vercel | Visible | `VERCEL_ENV`, `VERCEL_URL` |
 
 ## Output
+
 - Environment variables scoped per environment (dev/preview/prod)
 - Custom staging environment with dedicated branch and domain
 - Environment detection logic for runtime behavior switching
 - Local development env vars pulled from Vercel
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Env var undefined in preview | Not scoped to Preview target | Re-add with Preview in target array |
@@ -201,6 +213,7 @@ echo '.env*.local' >> .gitignore
 | Sensitive var can't be read | type=sensitive hides value | Re-add the var if value is lost |
 
 ## Resources
+
 - [Environment Variables](https://vercel.com/docs/environment-variables)
 - [Environments](https://vercel.com/docs/deployments/environments)
 - [System Environment Variables](https://vercel.com/docs/environment-variables/system-environment-variables)
@@ -208,4 +221,5 @@ echo '.env*.local' >> .gitignore
 - [REST API: Environment Variables](https://vercel.com/docs/rest-api/sdk/examples/environment-variables)
 
 ## Next Steps
+
 For observability and monitoring, see `vercel-observability`.

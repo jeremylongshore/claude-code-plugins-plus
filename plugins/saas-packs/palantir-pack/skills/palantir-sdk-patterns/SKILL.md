@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir SDK Patterns
 
 ## Overview
+
 Production-ready patterns for Foundry Platform SDK and OSDK usage. Covers client singletons, typed error handling, pagination helpers, retry logic, and multi-tenant client factories.
 
 ## Prerequisites
+
 - Completed `palantir-install-auth` setup
 - Familiarity with async/await patterns
 - `foundry-platform-sdk` or `@osdk/client` installed
@@ -38,6 +40,7 @@ Production-ready patterns for Foundry Platform SDK and OSDK usage. Covers client
 ## Instructions
 
 ### Step 1: Singleton Client (Python)
+
 ```python
 # src/foundry_client.py
 import os
@@ -58,6 +61,7 @@ def get_client() -> foundry.FoundryClient:
 ```
 
 ### Step 2: Typed Error Handling
+
 ```python
 import foundry
 from dataclasses import dataclass
@@ -92,6 +96,7 @@ else:
 ```
 
 ### Step 3: Pagination Helper
+
 ```python
 def paginate_objects(client, ontology: str, object_type: str, page_size: int = 100):
     """Iterate through all objects with automatic pagination."""
@@ -114,6 +119,7 @@ for emp in paginate_objects(get_client(), "my-company", "Employee"):
 ```
 
 ### Step 4: Retry with Exponential Backoff
+
 ```python
 import time
 import random
@@ -132,6 +138,7 @@ def retry_with_backoff(fn, max_retries=3, base_delay=1.0):
 ```
 
 ### Step 5: TypeScript OSDK Patterns
+
 ```typescript
 import { createClient, type Client } from "@osdk/client";
 import { createConfidentialOauthClient } from "@osdk/oauth";
@@ -157,12 +164,14 @@ export function getOsdkClient(): Client {
 ```
 
 ## Output
+
 - Thread-safe singleton client with cached auth
 - Structured Result type for error handling
 - Automatic pagination for large object sets
 - Retry logic with jittered backoff
 
 ## Error Handling
+
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
 | Singleton | All API calls | One auth flow, reused connection |
@@ -173,6 +182,7 @@ export function getOsdkClient(): Client {
 ## Examples
 
 ### Multi-Tenant Client Factory
+
 ```python
 _clients: dict[str, foundry.FoundryClient] = {}
 
@@ -188,9 +198,11 @@ def get_client_for_tenant(tenant_id: str) -> foundry.FoundryClient:
 ```
 
 ## Resources
+
 - [Foundry Platform SDK](https://github.com/palantir/foundry-platform-python)
 - [SDK Reference](https://www.palantir.com/docs/foundry/api/general/overview/sdks)
 - [OSDK Overview](https://www.palantir.com/docs/foundry/ontology-sdk/overview)
 
 ## Next Steps
+
 Apply patterns in `palantir-core-workflow-a` for real pipeline usage.

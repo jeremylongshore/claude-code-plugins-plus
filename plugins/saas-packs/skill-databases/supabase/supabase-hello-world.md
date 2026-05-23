@@ -10,6 +10,7 @@ supabase-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Supabase example demonstrating core functionality including client initialization and basic API calls.
 **Workflow:** Second skill after supabase-install-auth. Validates that the setup is working correctly before moving to more complex integrations.
 **Relates to:** Follows supabase-install-auth; precedes supabase-local-dev-loop.

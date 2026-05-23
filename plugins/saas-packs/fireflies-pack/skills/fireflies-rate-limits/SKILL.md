@@ -24,11 +24,13 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Rate Limits
 
 ## Overview
+
 Handle Fireflies.ai GraphQL API rate limits with exponential backoff and request queuing. Fireflies enforces per-plan limits and per-operation limits.
 
 ## Rate Limit Reference
 
 ### Per-Plan Limits
+
 | Plan | Limit | Scope |
 |------|-------|-------|
 | Free | 50 requests/day | Per API key |
@@ -37,6 +39,7 @@ Handle Fireflies.ai GraphQL API rate limits with exponential backoff and request
 | Enterprise | 60 requests/min | Per API key |
 
 ### Per-Operation Limits
+
 | Operation | Limit | Error Code |
 |-----------|-------|------------|
 | `addToLiveMeeting` | 3 per 20 minutes | `too_many_requests` |
@@ -47,6 +50,7 @@ Handle Fireflies.ai GraphQL API rate limits with exponential backoff and request
 ## Instructions
 
 ### Step 1: Detect Rate Limits in Responses
+
 ```typescript
 interface FirefliesError {
   message: string;
@@ -64,6 +68,7 @@ function isRateLimited(response: any): boolean {
 ```
 
 ### Step 2: Exponential Backoff with Jitter
+
 ```typescript
 async function firefliesQueryWithRetry<T>(
   query: string,
@@ -107,6 +112,7 @@ async function firefliesQueryWithRetry<T>(
 ```
 
 ### Step 3: Request Queue for Batch Operations
+
 ```typescript
 import PQueue from "p-queue";
 
@@ -140,6 +146,7 @@ async function batchFetchTranscripts(ids: string[]) {
 ```
 
 ### Step 4: Free/Pro Plan Daily Budget Tracker
+
 ```typescript
 class DailyBudgetTracker {
   private count = 0;
@@ -181,6 +188,7 @@ if (!budget.canRequest()) {
 ```
 
 ## Error Handling
+
 | Scenario | Detection | Action |
 |----------|-----------|--------|
 | 429 response | `code: "too_many_requests"` | Exponential backoff |
@@ -189,13 +197,16 @@ if (!budget.canRequest()) {
 | Burst of webhook events | Many transcripts at once | Queue transcript fetches |
 
 ## Output
+
 - Rate-limit-aware GraphQL client with automatic retry
 - Request queue preventing burst-induced throttling
 - Daily budget tracker for Free/Pro plans
 
 ## Resources
+
 - [Fireflies API Rate Limits](https://docs.fireflies.ai/fundamentals/concepts)
 - [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For security configuration, see `fireflies-security-basics`.

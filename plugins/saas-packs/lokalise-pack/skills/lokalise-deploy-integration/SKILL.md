@@ -351,6 +351,7 @@ TAG_JSON=$(echo "$TAGS" | jq -R 'split(",")' )
 ```
 
 This lets you maintain separate translation sets:
+
 - **production** — fully reviewed, stable translations
 - **staging** — includes new translations under review
 - **beta** — experimental copy for A/B testing

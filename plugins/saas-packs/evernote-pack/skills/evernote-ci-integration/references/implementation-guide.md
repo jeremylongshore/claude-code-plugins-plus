@@ -505,7 +505,6 @@ jobs:
 }
 ```
 
-
 ## Best Practices
 
 | Practice | Reason |

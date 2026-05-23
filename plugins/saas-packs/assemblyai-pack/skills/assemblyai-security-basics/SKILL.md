@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code
 # AssemblyAI Security Basics
 
 ## Overview
+
 Security best practices for AssemblyAI: API key management, temporary tokens for browser clients, PII redaction, and data retention policies.
 
 ## Prerequisites
+
 - `assemblyai` package installed
 - Understanding of environment variables
 - AssemblyAI dashboard access
@@ -178,6 +180,7 @@ for (const [category, severity] of Object.entries(summary)) {
 - [ ] CI/CD secrets stored in platform secrets manager (not env files)
 
 ## Output
+
 - Secure API key storage pattern
 - Temporary token endpoint for browser streaming
 - PII redaction with configurable policies
@@ -185,6 +188,7 @@ for (const [category, severity] of Object.entries(summary)) {
 - Content safety detection
 
 ## Error Handling
+
 | Security Issue | Detection | Mitigation |
 |----------------|-----------|------------|
 | API key in source code | Git scanning / secrets detection | Rotate key immediately at dashboard |
@@ -193,10 +197,12 @@ for (const [category, severity] of Object.entries(summary)) {
 | Old transcripts retained | Audit transcript list | Automate deletion schedule |
 
 ## Resources
+
 - [PII Redaction Guide](https://www.assemblyai.com/docs/audio-intelligence/pii-redaction)
 - [Content Safety Detection](https://www.assemblyai.com/docs/audio-intelligence/content-moderation)
 - [Streaming Temporary Tokens](https://www.assemblyai.com/docs/getting-started/transcribe-streaming-audio)
 - [API Key Dashboard](https://www.assemblyai.com/app/account)
 
 ## Next Steps
+
 For production deployment, see `assemblyai-prod-checklist`.

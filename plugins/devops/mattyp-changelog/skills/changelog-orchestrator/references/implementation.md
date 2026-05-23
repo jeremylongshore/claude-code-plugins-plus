@@ -1,4 +1,4 @@
-# Implementation Guide
+## Implementation Guide
 
 ### Phase 1: Initialize & Load Config
 
@@ -11,6 +11,7 @@
 ### Phase 2: Fetch Changelog Inputs
 
 Collect items from configured sources:
+
 - GitHub: merged PRs + closed issues in date range (labels filtering if configured)
 - Slack (optional): messages from configured channels
 - Git: commit log summary (conventional commits if enabled)
@@ -20,6 +21,7 @@ If a live API isn’t available, still proceed with Git-only changes and record 
 ### Phase 3: AI Synthesis (Narrative Draft)
 
 Create a first draft that:
+
 - Groups changes into **Highlights**, **Features**, **Fixes**, **Breaking Changes**, **Internal/Infra**
 - Uses a user-facing tone (clear outcomes, minimal jargon)
 - Links back to PRs/issues when URLs are present

@@ -5,6 +5,7 @@ Detailed implementation reference for the lokalise-ci-integration skill.
 ## Instructions
 
 ### Step 1: Push Source Strings on Merge
+
 ```yaml
 # .github/workflows/lokalise-push.yml
 name: Push Source Strings to Lokalise
@@ -44,6 +45,7 @@ jobs:
 ```
 
 ### Step 2: Pull Translations Before Build
+
 ```yaml
 # .github/workflows/build-with-translations.yml
 name: Build with Latest Translations
@@ -87,6 +89,7 @@ jobs:
 ```
 
 ### Step 3: Translation Completeness Check on PR
+
 ```yaml
 # .github/workflows/translation-check.yml
 name: Translation Completeness
@@ -135,6 +138,7 @@ jobs:
 ```
 
 ### Step 4: Webhook-Triggered Deploy
+
 ```yaml
 # .github/workflows/lokalise-webhook.yml
 name: Deploy on Translation Update
@@ -168,4 +172,3 @@ jobs:
           git diff --staged --quiet || git commit -m "chore: update translations from Lokalise"
           git push
 ```
-

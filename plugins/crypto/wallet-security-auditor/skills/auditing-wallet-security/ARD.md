@@ -52,16 +52,19 @@ skills/auditing-wallet-security/
 ## API Integration
 
 ### ERC20 Approval Detection
+
 - **Method**: eth_getLogs with Approval event topic
 - **Topic**: `0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925`
 - **Data**: Owner, spender, amount
 
 ### Block Explorer APIs
+
 - **Etherscan**: `https://api.etherscan.io/api`
 - **BSCScan**: `https://api.bscscan.com/api`
 - **PolygonScan**: `https://api.polygonscan.com/api`
 
 ### Security Data APIs
+
 - **GoPlus**: `https://api.gopluslabs.io/api/v1/`
 - **Token Sniffer**: Token risk data
 - **Revoke.cash**: Known scam contracts
@@ -69,6 +72,7 @@ skills/auditing-wallet-security/
 ## Component Design
 
 ### wallet_auditor.py
+
 ```python
 # Main CLI with commands:
 # - approvals: List token approvals
@@ -80,6 +84,7 @@ skills/auditing-wallet-security/
 ```
 
 ### approval_scanner.py
+
 ```python
 class ApprovalScanner:
     def get_all_approvals(address: str) -> List[TokenApproval]
@@ -89,6 +94,7 @@ class ApprovalScanner:
 ```
 
 ### tx_analyzer.py
+
 ```python
 class TxAnalyzer:
     def get_recent_transactions(address: str, days: int) -> List[Transaction]
@@ -98,6 +104,7 @@ class TxAnalyzer:
 ```
 
 ### risk_scorer.py
+
 ```python
 class RiskScorer:
     def calculate_approval_risk() -> int
@@ -110,6 +117,7 @@ class RiskScorer:
 ## Data Structures
 
 ### TokenApproval
+
 ```python
 @dataclass
 class TokenApproval:
@@ -126,6 +134,7 @@ class TokenApproval:
 ```
 
 ### SecurityScore
+
 ```python
 @dataclass
 class SecurityScore:
@@ -138,6 +147,7 @@ class SecurityScore:
 ```
 
 ### RiskFactor
+
 ```python
 @dataclass
 class RiskFactor:
@@ -151,6 +161,7 @@ class RiskFactor:
 ## Risk Scoring System
 
 ### Categories and Weights
+
 | Category | Weight | Factors |
 |----------|--------|---------|
 | Approvals | 40% | Unlimited, risky spenders, stale |
@@ -159,6 +170,7 @@ class RiskFactor:
 | Age | 10% | Wallet age, activity history |
 
 ### Risk Factors
+
 | Factor | Severity | Score Impact |
 |--------|----------|--------------|
 | Unlimited approval to unknown | Critical | -30 |

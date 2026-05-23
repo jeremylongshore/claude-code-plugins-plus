@@ -24,11 +24,13 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lindy Webhooks & Events
 
 ## Overview
+
 Lindy supports webhooks in two directions: **Inbound** (Webhook Received trigger
 wakes an agent) and **Outbound** (HTTP Request action calls your API). This skill
 covers both patterns, plus the callback pattern for async two-way communication.
 
 ## Prerequisites
+
 - Lindy account with active agents
 - HTTPS endpoint for receiving callbacks (if using outbound/callback patterns)
 - Completed `lindy-install-auth` setup
@@ -59,12 +61,15 @@ CALLBACK (two-way async):
 ## Instructions
 
 ### Step 1: Create Webhook Received Trigger
+
 1. In your agent, click the trigger node
 2. Select **Webhook Received**
 3. Lindy generates a unique URL:
+
    ```
    https://public.lindy.ai/api/v1/webhooks/<unique-id>
    ```
+
 4. Click **Generate Secret** — copy immediately (shown only once)
 5. Configure follow-up processing mode:
    - **Process in workflow**: Handle in current workflow
@@ -72,6 +77,7 @@ CALLBACK (two-way async):
    - **Discard follow-ups**: Ignore subsequent requests while processing
 
 ### Step 2: Access Webhook Data in Workflow
+
 Reference incoming webhook data in any subsequent action field:
 
 | Variable | Description | Example |
@@ -82,6 +88,7 @@ Reference incoming webhook data in any subsequent action field:
 | `{{webhook_received.request.query}}` | URL query params | `{"source": "stripe"}` |
 
 ### Step 3: Implement Webhook Sender
+
 ```typescript
 // webhook-sender.ts — Trigger Lindy agents from your application
 interface LindyWebhookPayload {
@@ -120,6 +127,7 @@ await triggerLindy({
 ```
 
 ### Step 4: Implement Callback Receiver
+
 When you include a `callbackUrl` in your webhook payload, the agent can respond
 using the **Send POST Request to Callback** action:
 
@@ -160,6 +168,7 @@ async function handleCallback(data: any) {
 ```
 
 ### Step 5: Configure HTTP Request Action (Outbound)
+
 For Lindy agents that call your API as an action step:
 
 1. Add action: **HTTP Request**
@@ -167,11 +176,14 @@ For Lindy agents that call your API as an action step:
    - **Method**: POST (or GET, PUT, DELETE)
    - **URL**: `https://api.yourapp.com/endpoint`
    - **Headers** (Set Manually):
+
      ```
      Content-Type: application/json
      Authorization: Bearer {{your_api_key}}
      ```
+
    - **Body** (AI Prompt mode):
+
      ```
      Send the analysis result as JSON with fields:
      classification, sentiment, summary
@@ -179,7 +191,9 @@ For Lindy agents that call your API as an action step:
      ```
 
 ### Step 6: Add Trigger Filters
+
 Prevent unnecessary agent triggers:
+
 ```
 Filter: body.event equals "order.created"
   AND body.data.amount greater_than 100
@@ -190,6 +204,7 @@ This ensures the agent only processes high-value orders, saving credits.
 ## Event Patterns
 
 ### Pattern: Webhook + Slack Notification
+
 ```
 Webhook Received → Condition (classify event type)
   → "billing" → Search KB → Draft Reply → Send Email + Slack Alert
@@ -198,12 +213,14 @@ Webhook Received → Condition (classify event type)
 ```
 
 ### Pattern: Webhook + Callback
+
 ```
 Webhook Received (with callbackUrl) → Process Data → Run Code
   → Send POST Request to Callback (returns results to caller)
 ```
 
 ### Pattern: Webhook + Multi-Agent
+
 ```
 Webhook Received → Agent Send Message (to Research Lindy)
   → Research Lindy completes → Agent Send Message (to Writer Lindy)
@@ -211,7 +228,9 @@ Webhook Received → Agent Send Message (to Research Lindy)
 ```
 
 ## Monitoring Triggers
+
 Lindy provides built-in monitoring triggers:
+
 - **Task Completed**: Fires when an agent completes a task
 - Use this to build observability pipelines: Agent completes → log to sheet → alert on failures
 
@@ -226,6 +245,7 @@ Lindy provides built-in monitoring triggers:
 | Payload too large | Body exceeds limit | Reduce payload size, send references not data |
 
 ## Security
+
 - Always use HTTPS for webhook URLs
 - Generate and verify webhook secrets on every request
 - Rotate secrets every 90 days
@@ -233,9 +253,11 @@ Lindy provides built-in monitoring triggers:
 - Rate limit your webhook sender to prevent flooding
 
 ## Resources
+
 - [Webhooks Documentation](https://docs.lindy.ai/skills/by-lindy/webhooks)
 - [Webhook Triggers Academy](https://www.lindy.ai/academy-lessons/webhook-triggers)
 - [Calling Any API](https://www.lindy.ai/academy-lessons/calling-any-api)
 
 ## Next Steps
+
 Proceed to `lindy-performance-tuning` for agent optimization.

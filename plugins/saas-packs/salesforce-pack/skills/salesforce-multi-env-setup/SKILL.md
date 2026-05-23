@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Salesforce Multi-Environment Setup
 
 ## Overview
+
 Configure Salesforce integrations across Developer, Sandbox, and Production orgs with environment-specific credentials, login URLs, and deployment promotion flows.
 
 ## Prerequisites
+
 - Production Salesforce org (Enterprise+ for Full sandbox)
 - Salesforce CLI authenticated to all environments
 - Secret management solution (Vault, AWS/GCP Secrets Manager)
@@ -187,6 +189,7 @@ function validateEnvironment(): void {
 ```
 
 ## Output
+
 - Multi-environment Salesforce configuration
 - Sandbox types selected for each environment
 - Credentials stored in platform-appropriate secrets manager
@@ -194,6 +197,7 @@ function validateEnvironment(): void {
 - Environment guards preventing accidental destructive operations
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `INVALID_LOGIN` in sandbox | Wrong login URL | Use `test.salesforce.com` for ALL sandboxes |
@@ -202,10 +206,12 @@ function validateEnvironment(): void {
 | Production guard triggered | Destructive operation | Use sandbox for testing |
 
 ## Resources
+
 - [Sandbox Types](https://help.salesforce.com/s/articleView?id=sf.deploy_sandboxes_intro.htm)
 - [Sandbox Limitations](https://help.salesforce.com/s/articleView?id=sf.data_sandbox_environments.htm)
 - [Change Sets](https://help.salesforce.com/s/articleView?id=sf.changesets.htm)
 - [SFDX CLI Org Commands](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_org_commands_unified.htm)
 
 ## Next Steps
+
 For observability setup, see `salesforce-observability`.

@@ -10,6 +10,7 @@ exa-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up comprehensive observability with metrics, tracing, and alerting for Exa search operations.
 **Workflow:** Production monitoring skill - enables proactive incident detection.
 **Relates to:** Follows exa-prod-checklist; integrates with exa-incident-runbook

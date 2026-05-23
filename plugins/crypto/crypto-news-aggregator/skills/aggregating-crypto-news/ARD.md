@@ -93,27 +93,35 @@ This skill implements a parallel fetching, aggregation, and filtering pipeline f
 ## Progressive Disclosure Strategy
 
 ### Level 1: Simple Scan (Default)
+
 ```bash
 python news_aggregator.py
 ```
+
 Returns top 20 news from past 24h, relevance sorted.
 
 ### Level 2: Filtered Scan
+
 ```bash
 python news_aggregator.py --coin BTC --period 4h --top 10
 ```
+
 Adds coin and time filtering.
 
 ### Level 3: Category + Export
+
 ```bash
 python news_aggregator.py --category defi --format json --output news.json
 ```
+
 Full filtering with export.
 
 ### Level 4: Advanced Configuration
+
 ```bash
 python news_aggregator.py --sources coindesk,theblock --min-score 50 --verbose
 ```
+
 Source selection and score thresholds.
 
 ---
@@ -121,6 +129,7 @@ Source selection and score thresholds.
 ## Tool Permission Strategy
 
 ### Allowed Tools (Scoped)
+
 ```yaml
 allowed-tools: Read, Bash(crypto:news-*)
 ```
@@ -166,6 +175,7 @@ plugins/crypto/crypto-news-aggregator/
 ## Data Flow Architecture
 
 ### Input
+
 - User request with optional filters (--coin, --period, --category)
 - RSS feed URLs from source registry
 
@@ -277,16 +287,20 @@ Complete Failure
 ## Composability & Stacking
 
 ### As a Standalone Skill
+
 - Fully functional for news aggregation
 - No dependencies on other skills
 
 ### As Data Provider
+
 Skills that can consume news data:
+
 - **market-sentiment-analyzer**: Feed articles for sentiment scoring
 - **crypto-signal-generator**: Use news as signal input
 - **whale-alert-monitor**: Correlate whale activity with news
 
 ### Integration Pattern
+
 ```python
 # In another skill's script:
 from pathlib import Path

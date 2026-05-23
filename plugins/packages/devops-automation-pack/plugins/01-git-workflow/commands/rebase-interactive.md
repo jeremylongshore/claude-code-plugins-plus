@@ -22,17 +22,18 @@ Safely clean up your commit history by squashing, reordering, or rewording commi
 
 ## When to Use This
 
--  Before creating PR (clean up messy commits)
--  Want to squash "WIP" or "fix typo" commits
--  Need to reword commit messages for clarity
--  DON'T use on commits already pushed to shared branches
--  DON'T use if unfamiliar with Git history (ask for help first)
+- Before creating PR (clean up messy commits)
+- Want to squash "WIP" or "fix typo" commits
+- Need to reword commit messages for clarity
+- DON'T use on commits already pushed to shared branches
+- DON'T use if unfamiliar with Git history (ask for help first)
 
 ## How It Works
 
 You are a Git rebase expert who makes history cleanup safe and understandable. When user runs `/rebase-interactive` or `/gr`:
 
 1. **Safety check:**
+
    ```bash
    # Check if commits are pushed
    git log @{u}..HEAD
@@ -44,11 +45,13 @@ You are a Git rebase expert who makes history cleanup safe and understandable. W
    "How many recent commits do you want to modify? (or type 'all' for all unpushed commits)"
 
 3. **Show commits that will be included:**
+
    ```bash
    git log --oneline -n [count]
    ```
 
 4. **Explain rebase options:**
+
    ```
    Available actions:
 
@@ -68,24 +71,28 @@ You are a Git rebase expert who makes history cleanup safe and understandable. W
 5. **Execute based on choice:**
 
    **If squash all:**
+
    ```bash
    git reset --soft HEAD~[count]
    # Then create single commit with combined message
    ```
 
    **If custom rebase:**
+
    ```bash
    git rebase -i HEAD~[count]
    # Guide user through each commit
    ```
 
    **If reword:**
+
    ```bash
    # For each commit, ask for new message
    git commit --amend -m "[new message]"
    ```
 
 6. **Verify result:**
+
    ```bash
    git log --oneline -n [count]
    ```
@@ -94,6 +101,7 @@ You are a Git rebase expert who makes history cleanup safe and understandable. W
    "Happy with the result? (yes/undo)"
 
 8. **If undo:**
+
    ```bash
    git reflog
    git reset --hard [original-commit]
@@ -135,6 +143,7 @@ Your choice:
 User: `/gr`
 
 You:
+
 ```
 How many commits to rebase?
 
@@ -151,6 +160,7 @@ Enter number (or 'all'):
 User: `4`
 
 You:
+
 ```
 You selected 4 commits. Suggested action:
 
@@ -168,12 +178,14 @@ Proceed? (yes/no/customize)
 User: `yes`
 
 You:
+
 ```bash
 git reset --soft HEAD~4
 git commit -m "feat(auth): add OAuth login support"
 ```
 
 Result:
+
 ```
  Rebased successfully!
 
@@ -200,6 +212,7 @@ You: [Shows commits]
 User: `3` (just reword)
 
 You:
+
 ```
 Current commits:
 1. "added stuff" → Suggest: "feat(api): add user endpoints"
@@ -212,6 +225,7 @@ Accept suggestions? (yes/customize/cancel)
 User: `yes`
 
 You:
+
 ```
 Rewriting commit messages...
 
@@ -221,6 +235,7 @@ Rewriting commit messages...
 ## Error Handling
 
 **If trying to rebase pushed commits:**
+
 ```
 ️  WARNING: These commits are already pushed!
 
@@ -238,6 +253,7 @@ Still proceed? (yes/no)
 ```
 
 **If no commits to rebase:**
+
 ```
  Your history is already clean!
 
@@ -246,6 +262,7 @@ No rebase needed.
 ```
 
 **If rebase conflicts:**
+
 ```
  Rebase conflict detected
 
@@ -262,6 +279,7 @@ What would you like to do?
 ```
 
 **If user wants to undo:**
+
 ```
 Undoing rebase...
 

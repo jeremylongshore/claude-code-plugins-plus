@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Install & Auth
 
 ## Overview
+
 Windsurf is an AI-powered code editor by Codeium (now Cognition AI), built on VS Code. It features Cascade (agentic AI assistant), Supercomplete (intent-aware autocomplete), and deep codebase indexing. Authentication is handled through Codeium accounts, not raw API keys.
 
 ## Prerequisites
+
 - macOS, Windows, or Linux (64-bit)
 - 8GB RAM minimum (16GB recommended for large codebases)
 - Internet connection for AI features
@@ -38,11 +40,13 @@ Windsurf is an AI-powered code editor by Codeium (now Cognition AI), built on VS
 ### Step 1: Install Windsurf
 
 **macOS:**
+
 ```bash
 brew install --cask windsurf
 ```
 
 **Linux (Debian/Ubuntu):**
+
 ```bash
 curl -fsSL https://windsurf.com/install.sh | bash
 # Or download .deb from https://windsurf.com/download
@@ -60,6 +64,7 @@ On first launch, Windsurf prompts for Codeium authentication:
 4. Authorization token is stored locally at `~/.codeium/`
 
 **Verify authentication:**
+
 - Check the Windsurf widget in the status bar -- it should show a checkmark
 - Open Cascade (Cmd/Ctrl+L) and send a test message
 
@@ -77,6 +82,7 @@ For team deployments with centralized auth:
 ```
 
 Enterprise API key (headless / CI environments):
+
 ```bash
 # Set via environment variable for non-interactive use
 export CODEIUM_API_KEY="your-enterprise-api-key"
@@ -106,6 +112,7 @@ Cascade supports multiple models. Configure via the model selector dropdown in t
 | Gemini Pro | Pro | Large context tasks |
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | "Sign in required" | Auth token expired | Click Windsurf widget > Sign In |
@@ -117,6 +124,7 @@ Cascade supports multiple models. Configure via the model selector dropdown in t
 ## Examples
 
 ### Migrate Settings from VS Code
+
 ```bash
 # Windsurf inherits VS Code extensions and settings
 # Import on first launch or manually:
@@ -124,6 +132,7 @@ Cascade supports multiple models. Configure via the model selector dropdown in t
 ```
 
 ### Verify Installation
+
 ```bash
 # Check Windsurf CLI is available
 windsurf --version
@@ -133,10 +142,12 @@ windsurf /path/to/project
 ```
 
 ## Resources
+
 - [Windsurf Download](https://windsurf.com/download)
 - [Windsurf Documentation](https://docs.windsurf.com)
 - [Codeium Account Portal](https://windsurf.com/account)
 - [Windsurf Pricing](https://windsurf.com/pricing)
 
 ## Next Steps
+
 After authentication, proceed to `windsurf-hello-world` for your first Cascade interaction.

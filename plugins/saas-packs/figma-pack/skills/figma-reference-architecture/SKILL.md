@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code
 # Figma Reference Architecture
 
 ## Overview
+
 Production-ready architecture for Figma REST API integrations. Covers the three most common use cases: design token pipelines, asset export systems, and webhook-driven automation.
 
 ## Prerequisites
+
 - Understanding of Figma REST API endpoints
 - TypeScript project setup
 - Decision on deployment platform
@@ -33,6 +35,7 @@ Production-ready architecture for Figma REST API integrations. Covers the three 
 ## Instructions
 
 ### Step 1: Project Structure
+
 ```
 figma-integration/
 ├── src/
@@ -75,6 +78,7 @@ figma-integration/
 ```
 
 ### Step 2: Data Flow Architecture
+
 ```
 ┌────────────────────────────────────────────────┐
 │                  Figma Cloud                    │
@@ -103,6 +107,7 @@ figma-integration/
 ### Step 3: Key Components
 
 **Figma Client** (see `figma-sdk-patterns`):
+
 ```typescript
 // Singleton with retry, rate limit handling, and caching
 const client = new FigmaClient(process.env.FIGMA_PAT!);
@@ -116,6 +121,7 @@ const vars = await client.getLocalVariables(fileKey);  // GET /v1/files/:key/var
 ```
 
 **Token Extraction Pipeline** (see `figma-core-workflow-a`):
+
 ```typescript
 // file → styles → nodes → CSS/JSON tokens
 export async function extractTokens(fileKey: string): Promise<DesignToken[]> {
@@ -126,6 +132,7 @@ export async function extractTokens(fileKey: string): Promise<DesignToken[]> {
 ```
 
 **Asset Export Pipeline** (see `figma-core-workflow-b`):
+
 ```typescript
 // file → find components → render images → download
 export async function exportIcons(fileKey: string, frameId: string) {
@@ -137,6 +144,7 @@ export async function exportIcons(fileKey: string, frameId: string) {
 ```
 
 **Webhook Handler** (see `figma-webhooks-events`):
+
 ```typescript
 // Verify passcode → route event → process async
 export function webhookRouter(event: FigmaWebhookEvent) {
@@ -149,6 +157,7 @@ export function webhookRouter(event: FigmaWebhookEvent) {
 ```
 
 ### Step 4: Configuration
+
 ```typescript
 // src/config.ts
 export const config = {
@@ -171,12 +180,14 @@ export const config = {
 ```
 
 ## Output
+
 - Structured project layout with clear separation
 - Data flow from Figma API to local artifacts
 - Reusable client, cache, and pipeline components
 - Configuration management for all environments
 
 ## Error Handling
+
 | Layer | Error | Recovery |
 |-------|-------|----------|
 | Client | 429 Rate Limited | Retry with `Retry-After` header |
@@ -186,9 +197,11 @@ export const config = {
 | Export | Image render null | Skip node, log warning |
 
 ## Resources
+
 - [Figma REST API](https://developers.figma.com/docs/rest-api/)
 - [Figma REST API OpenAPI Spec](https://github.com/figma/rest-api-spec)
 - [Figma Webhooks V2](https://developers.figma.com/docs/rest-api/webhooks/)
 
 ## Next Steps
+
 For multi-environment setup, see `figma-multi-env-setup`.

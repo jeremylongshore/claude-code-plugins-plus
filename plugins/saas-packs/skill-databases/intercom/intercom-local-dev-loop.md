@@ -10,6 +10,7 @@ intercom-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Intercom local development workflow
 **Workflow:** Part of the onboarding skill category for Intercom integration.
 **Relates to:** Other intercom skills in this pack.

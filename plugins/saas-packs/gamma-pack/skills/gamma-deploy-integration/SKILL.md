@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Gamma Deploy Integration
 
 ## Overview
+
 Deploy Gamma-integrated applications to various cloud platforms with proper configuration and secret management.
 
 ## Prerequisites
+
 - Completed CI integration
 - Cloud platform account (Vercel, AWS, or GCP)
 - Production Gamma API key
@@ -36,6 +38,7 @@ Deploy Gamma-integrated applications to various cloud platforms with proper conf
 ### Vercel Deployment
 
 #### Step 1: Configure Vercel Project
+
 ```bash
 set -euo pipefail
 # Install Vercel CLI
@@ -49,6 +52,7 @@ vercel env add GAMMA_API_KEY production
 ```
 
 #### Step 2: Create vercel.json
+
 ```json
 {
   "framework": "nextjs",
@@ -65,6 +69,7 @@ vercel env add GAMMA_API_KEY production
 ```
 
 #### Step 3: Deploy
+
 ```bash
 # Preview deployment
 vercel
@@ -76,6 +81,7 @@ vercel --prod
 ### AWS Lambda Deployment
 
 #### Step 1: Store Secret in AWS Secrets Manager
+
 ```bash
 aws secretsmanager create-secret \
   --name gamma/api-key \
@@ -83,6 +89,7 @@ aws secretsmanager create-secret \
 ```
 
 #### Step 2: Lambda Configuration
+
 ```typescript
 // lambda/gamma-handler.ts
 import { SecretsManager } from '@aws-sdk/client-secrets-manager';
@@ -113,6 +120,7 @@ export async function handler(event: any) {
 ```
 
 #### Step 3: SAM Template
+
 ```yaml
 # template.yaml
 AWSTemplateFormatVersion: '2010-09-09'  # 2010 = configured value
@@ -136,12 +144,14 @@ Resources:
 ### Google Cloud Run Deployment
 
 #### Step 1: Store Secret
+
 ```bash
 echo -n "your-gamma-api-key" | \
   gcloud secrets create gamma-api-key --data-file=-
 ```
 
 #### Step 2: Dockerfile
+
 ```dockerfile
 FROM node:20-alpine
 WORKDIR /app
@@ -152,6 +162,7 @@ CMD ["node", "dist/server.js"]
 ```
 
 #### Step 3: Deploy
+
 ```bash
 set -euo pipefail
 gcloud run deploy gamma-service \
@@ -163,6 +174,7 @@ gcloud run deploy gamma-service \
 ```
 
 ### GitHub Actions Deployment
+
 ```yaml
 # .github/workflows/deploy.yml
 name: Deploy
@@ -190,12 +202,14 @@ jobs:
 ```
 
 ## Output
+
 - Production deployment on chosen platform
 - Secrets securely stored
 - Environment variables configured
 - Automated deployment pipeline
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Secret not found | Missing secret | Create secret in platform |
@@ -204,6 +218,7 @@ jobs:
 | Permission denied | IAM misconfigured | Update IAM policies |
 
 ## Resources
+
 - [Vercel Documentation](https://vercel.com/docs)
 - [AWS Lambda Documentation](https://docs.aws.amazon.com/lambda/)
 - [Google Cloud Run](https://cloud.google.com/run/docs)

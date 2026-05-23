@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Observability
 
 ## Overview
+
 Monitor Databricks jobs, clusters, SQL warehouses, and costs using system tables in the `system` catalog. System tables provide queryable observability data: `system.lakeflow` (job runs), `system.billing` (costs), `system.query` (SQL history), `system.access` (audit logs), and `system.compute` (cluster metrics). Data updates throughout the day, not real-time.
 
 ## Prerequisites
+
 - Databricks Premium or Enterprise with Unity Catalog enabled
 - Access to `system.billing`, `system.lakeflow`, `system.query`, and `system.access` schemas
 - SQL warehouse for running monitoring queries
@@ -38,6 +40,7 @@ Monitor Databricks jobs, clusters, SQL warehouses, and costs using system tables
 ## Instructions
 
 ### Step 1: Job Health Monitoring
+
 ```sql
 -- Job success/failure over last 24 hours
 SELECT
@@ -60,6 +63,7 @@ ORDER BY start_time DESC;
 ```
 
 ### Step 2: Cluster Utilization and Costs
+
 ```sql
 -- DBU consumption by cluster (last 7 days)
 SELECT usage_metadata.cluster_id,
@@ -76,6 +80,7 @@ LIMIT 20;
 ```
 
 ### Step 3: SQL Warehouse Performance
+
 ```sql
 -- Slow queries (>30s) on SQL warehouses
 SELECT warehouse_id, statement_id, executed_by,
@@ -100,6 +105,7 @@ GROUP BY warehouse_id, warehouse_name;
 ```
 
 ### Step 4: Cost-per-Job Analysis
+
 ```sql
 SELECT j.name AS job_name,
        COUNT(DISTINCT r.run_id) AS run_count,
@@ -118,6 +124,7 @@ LIMIT 15;
 ```
 
 ### Step 5: SQL Alerts for Automated Notifications
+
 ```sql
 -- Create as SQL Alert: trigger when failure_count > 3
 -- Schedule: every 15 minutes
@@ -144,6 +151,7 @@ alert = w.alerts.create(
 ```
 
 ### Step 6: Export Metrics to External Systems
+
 ```python
 from databricks.sdk import WorkspaceClient
 
@@ -163,6 +171,7 @@ print(f"databricks_job_success_rate {success / len(runs):.2f}")
 ```
 
 ### Step 7: Audit Log Monitoring
+
 ```sql
 -- Security: who accessed what in the last 7 days
 SELECT event_time, user_identity.email, action_name,
@@ -176,6 +185,7 @@ LIMIT 100;
 ```
 
 ## Output
+
 - Job health dashboard (success rate, duration, failures)
 - Cluster cost breakdown by team and SKU
 - SQL warehouse performance report (slow queries, queue times)
@@ -184,6 +194,7 @@ LIMIT 100;
 - External metric export for Prometheus/Grafana
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | System tables empty | Unity Catalog not enabled | Enable in Account Console > Settings |
@@ -194,6 +205,7 @@ LIMIT 100;
 ## Examples
 
 ### Daily Standup Dashboard
+
 ```sql
 -- Single query for daily pipeline health
 SELECT
@@ -207,6 +219,7 @@ WHERE start_time > current_timestamp() - INTERVAL 24 HOURS;
 ```
 
 ## Resources
+
 - [System Tables](https://docs.databricks.com/aws/en/admin/system-tables/)
 - [Audit Logs](https://docs.databricks.com/aws/en/admin/system-tables/audit-logs)
 - [Observability Best Practices](https://docs.databricks.com/aws/en/data-engineering/observability-best-practices)

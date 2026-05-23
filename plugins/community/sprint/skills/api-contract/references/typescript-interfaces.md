@@ -35,6 +35,7 @@ interface ApiError {
   details?: Record<string, string[]>;
 }
 ```
+
 ```
 
 ### Type Guidelines

@@ -18,6 +18,7 @@
 ### Error: 401 Unauthorized
 
 **Symptoms:**
+
 ```
 SDKError: Unauthorized
 Status: 401
@@ -49,6 +50,7 @@ const client = new Documenso({
 ### Error: 403 Forbidden
 
 **Symptoms:**
+
 ```
 SDKError: Forbidden
 Status: 403
@@ -77,6 +79,7 @@ if (doc.status === "COMPLETED" || doc.status === "CANCELLED") {
 ### Error: 404 Not Found
 
 **Symptoms:**
+
 ```
 SDKError: Not Found
 Status: 404
@@ -111,6 +114,7 @@ async function safeGetDocument(documentId: string) {
 ### Error: 409 Conflict
 
 **Symptoms:**
+
 ```
 SDKError: Conflict
 Status: 409
@@ -157,6 +161,7 @@ async function addOrUpdateRecipient(
 ### Error: 422 Unprocessable Entity
 
 **Symptoms:**
+
 ```
 SDKError: Unprocessable Entity
 Status: 422
@@ -200,6 +205,7 @@ const recipient = await client.documentsRecipients.createV0({
 ### Error: 429 Rate Limited
 
 **Symptoms:**
+
 ```
 SDKError: Too Many Requests
 Status: 429
@@ -251,6 +257,7 @@ async function queuedCreate(data: any) {
 ### Error: 500 Internal Server Error
 
 **Symptoms:**
+
 ```
 SDKError: Internal Server Error
 Status: 500
@@ -334,18 +341,21 @@ function verifyWebhookSignature(
 ## Debugging Checklist
 
 1. **Check API Key:**
+
    ```bash
    echo $DOCUMENSO_API_KEY | head -c 10
    # Should show: dcs_xxx...
    ```
 
 2. **Verify Endpoint:**
+
    ```bash
    curl -H "Authorization: Bearer $DOCUMENSO_API_KEY" \
      https://app.documenso.com/api/v2/documents
    ```
 
 3. **Enable Debug Logging:**
+
    ```typescript
    const client = new Documenso({
      apiKey: process.env.DOCUMENSO_API_KEY,
@@ -354,6 +364,7 @@ function verifyWebhookSignature(
    ```
 
 4. **Check Document Status:**
+
    ```typescript
    const doc = await client.documents.getV0({ documentId });
    console.log(`Status: ${doc.status}`);

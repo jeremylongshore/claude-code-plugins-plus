@@ -30,6 +30,7 @@ People don't make decisions rationally. They use mental shortcuts (heuristics) t
 **Why it works:** Humans are wired to avoid being indebted. The obligation to repay is so strong that it can overpower other factors like personal preference or fairness.
 
 **Key insights:**
+
 - The gift must come first (before the request)
 - Personalization increases power
 - Unexpected gifts are more powerful than expected ones
@@ -47,6 +48,7 @@ People don't make decisions rationally. They use mental shortcuts (heuristics) t
 | **SaaS** | Provide unexpected value or support | Personalized setup call for new users |
 
 **Copy patterns:**
+
 - "Here's a gift for you..." (before asking)
 - "We've upgraded your account..."
 - "As a thank you for signing up..."
@@ -63,6 +65,7 @@ See: [references/reciprocity.md](references/reciprocity.md) for reciprocity tech
 **Why it works:** Inconsistency is psychologically uncomfortable. Once we've made a choice or taken a stand, we encounter personal and interpersonal pressure to behave consistently with that commitment.
 
 **Key insights:**
+
 - Small initial commitments lead to larger ones (foot-in-the-door)
 - Public commitments are stronger than private ones
 - Written commitments are stronger than verbal ones
@@ -80,12 +83,14 @@ See: [references/reciprocity.md](references/reciprocity.md) for reciprocity tech
 | **Habit formation** | Track streak publicly | Snapchat streaks, GitHub contributions |
 
 **Copy patterns:**
+
 - "What's your biggest challenge with X?" (commitment to a problem)
 - "How much would you like to save per month?" (numerical commitment)
 - "Would you like to join X people who've already...?"
 - "You said you wanted to achieve X. Let's start with..."
 
 **Onboarding sequence:**
+
 1. Get micro-commitment ("What brings you here?")
 2. Small action (click, choice, input)
 3. Public or written commitment (goal, preference)
@@ -102,6 +107,7 @@ See: [references/commitment-consistency.md](references/commitment-consistency.md
 **Why it works:** When uncertain, we look to others' behavior as a guide. "If everyone's doing it, it must be right."
 
 **Key insights:**
+
 - Most powerful when observers are uncertain
 - Similar others = stronger proof (age, location, goals)
 - Negative social proof can backfire ("9 out of 10 don't...")
@@ -130,6 +136,7 @@ See: [references/commitment-consistency.md](references/commitment-consistency.md
 | **Reviews** | Ratings, testimonials, case studies | G2 badges, video testimonials |
 
 **Copy patterns:**
+
 - "[X number] of [similar people] are already..."
 - "[Name/Company] increased [metric] by [%]"
 - "Don't take our word for it. Here's what [users] say..."
@@ -146,6 +153,7 @@ See: [references/social-proof.md](references/social-proof.md) for social proof t
 **Why it works:** Obedience to authority is deeply ingrained. Following experts is an efficient shortcut when we lack expertise ourselves.
 
 **Key insights:**
+
 - Titles, credentials, uniforms trigger automatic compliance
 - Authority is conferred (doctors, professors) and assumed (confident tone)
 - Admitting a weakness paradoxically increases authority (trustworthiness)
@@ -174,12 +182,14 @@ See: [references/social-proof.md](references/social-proof.md) for social proof t
 | **Partnerships** | Integration badges, security certs | "SOC 2 Type II", "GDPR compliant" |
 
 **Copy patterns:**
+
 - "Trusted by [authority figure/company]"
 - "Certified by [credible third party]"
 - "Research shows that [cite source]..."
 - "Our team includes [credentials]"
 
 **Ethical use:**
+
 - Admit weaknesses before strengths (increases trust)
 - Be transparent about what you're not good at
 - Cite real sources and data
@@ -217,6 +227,7 @@ See: [references/authority.md](references/authority.md) for authority-building s
 | **Community** | Facilitate connections among similar users | User groups, Slack communities |
 
 **Copy patterns:**
+
 - "We're [similar trait] just like you"
 - "Great choice! You clearly value [shared value]"
 - "We built this because we were frustrated with..."
@@ -233,6 +244,7 @@ See: [references/liking.md](references/liking.md) for liking techniques and tone
 **Why it works:** Loss aversion is stronger than gain seeking. The fear of missing out (FOMO) triggers urgency and desire.
 
 **Key insights:**
+
 - Scarcity of time > scarcity of quantity
 - Newly scarce > always scarce (loss framing)
 - Competition increases value (if others want it, I want it)
@@ -260,22 +272,26 @@ See: [references/liking.md](references/liking.md) for liking techniques and tone
 | **Urgency** | Countdown timers | Real-time countdown to deadline |
 
 **Copy patterns:**
+
 - "Limited to the first [X] customers"
 - "Offer expires [specific date]"
 - "Join the waitlist" (implies exclusivity)
 - "[X] people are viewing this right now"
 
 **Ethical boundaries:**
+
 - **Never fake scarcity.** If there's no real limit, don't imply one.
 - **Avoid dark patterns:** Reset timers, fake countdown clocks are manipulative.
 - **Allow rational decisions:** Scarcity shouldn't prevent informed choice.
 
 **When scarcity is ethical:**
+
 - Real limited inventory (truthful stock counts)
 - Genuine deadlines (actual event dates, seasonal offers)
 - Legitimate exclusivity (beta capacity limits, cohort sizes)
 
 **When scarcity is unethical:**
+
 - Artificial scarcity (no real limit)
 - Evergreen countdown timers that reset
 - "Only 2 left!" repeated every day
@@ -290,6 +306,7 @@ See: [references/scarcity.md](references/scarcity.md) for scarcity tactics and e
 **Why it works:** Tribal identity is fundamental. We make sacrifices for in-group members we wouldn't make for strangers.
 
 **Unity vs. Liking:**
+
 - **Liking:** "This person is like me" (similarity)
 - **Unity:** "This person is me" (shared identity)
 
@@ -314,6 +331,7 @@ See: [references/scarcity.md](references/scarcity.md) for scarcity tactics and e
 | **Social features** | Enable unity signals | Profile badges, group membership |
 
 **Copy patterns:**
+
 - "For [identity group]" ("For designers", "For bootstrappers")
 - "Join [X] others who believe..."
 - "We're building this together"
@@ -328,6 +346,7 @@ See: [references/unity.md](references/unity.md) for unity-building strategies.
 The most powerful persuasion uses multiple principles together.
 
 **Example: SaaS landing page**
+
 - **Authority:** "Built by ex-Stripe engineers" (credentials)
 - **Social proof:** "Trusted by 5,000+ companies" (wisdom of crowds)
 - **Liking:** Friendly, warm copy and design
@@ -336,6 +355,7 @@ The most powerful persuasion uses multiple principles together.
 - **Unity:** "For founders who move fast"
 
 **Example: Referral program**
+
 - **Reciprocity:** Give reward to both parties
 - **Social proof:** "X friends already joined"
 - **Unity:** "Invite your team"
@@ -354,6 +374,7 @@ Before deploying influence tactics:
 - [ ] **Are you targeting vulnerable groups?** Extra caution with children, elderly, desperate
 
 **The line between persuasion and manipulation:**
+
 - **Persuasion:** Helping people see value they'd appreciate anyway
 - **Manipulation:** Tricking people into choices against their interests
 

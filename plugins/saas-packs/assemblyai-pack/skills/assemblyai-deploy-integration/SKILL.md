@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code
 # AssemblyAI Deploy Integration
 
 ## Overview
+
 Deploy AssemblyAI-powered transcription services to Vercel (serverless), Google Cloud Run (containers), and Fly.io with proper secrets management and webhook configuration.
 
 ## Prerequisites
+
 - AssemblyAI API key for production
 - Platform CLI installed (`vercel`, `gcloud`, or `fly`)
 - Application with working AssemblyAI integration
@@ -48,6 +50,7 @@ vercel --prod
 ```
 
 **API Route for Transcription:**
+
 ```typescript
 // app/api/transcribe/route.ts (Next.js App Router)
 import { AssemblyAI } from 'assemblyai';
@@ -82,6 +85,7 @@ export async function POST(req: NextRequest) {
 ```
 
 **Webhook Handler:**
+
 ```typescript
 // app/api/webhooks/assemblyai/route.ts
 import { AssemblyAI } from 'assemblyai';
@@ -113,6 +117,7 @@ export async function POST(req: NextRequest) {
 ```
 
 **Vercel config:**
+
 ```json
 {
   "functions": {
@@ -226,12 +231,14 @@ export async function GET() {
 ```
 
 ## Output
+
 - Application deployed with AssemblyAI secrets securely configured
 - Webhook endpoint for async transcription notifications
 - Streaming token endpoint for browser clients
 - Health check endpoint monitoring AssemblyAI connectivity
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Secret not available at runtime | Wrong env name or missing secret | Verify with platform CLI |
@@ -240,10 +247,12 @@ export async function GET() {
 | Cold start latency | Serverless spin-up | Set minimum instances or use `submit()` |
 
 ## Resources
+
 - [Vercel Environment Variables](https://vercel.com/docs/environment-variables)
 - [Cloud Run Secrets](https://cloud.google.com/run/docs/configuring/secrets)
 - [Fly.io Secrets](https://fly.io/docs/reference/secrets/)
 - [AssemblyAI Webhooks](https://www.assemblyai.com/docs/getting-started/webhooks)
 
 ## Next Steps
+
 For webhook handling, see `assemblyai-webhooks-events`.

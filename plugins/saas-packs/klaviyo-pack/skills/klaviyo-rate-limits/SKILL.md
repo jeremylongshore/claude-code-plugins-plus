@@ -47,6 +47,7 @@ Both windows apply simultaneously. Exceeding either triggers a `429 Too Many Req
 ### Rate Limit Headers
 
 **On successful requests:**
+
 | Header | Description |
 |--------|-------------|
 | `RateLimit-Limit` | Max requests for the window |
@@ -54,6 +55,7 @@ Both windows apply simultaneously. Exceeding either triggers a `429 Too Many Req
 | `RateLimit-Reset` | Seconds until window resets |
 
 **On 429 responses (different headers!):**
+
 | Header | Description |
 |--------|-------------|
 | `Retry-After` | Integer seconds to wait before retrying |

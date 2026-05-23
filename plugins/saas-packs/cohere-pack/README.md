@@ -15,6 +15,7 @@ Every skill uses **real Cohere API v2 code**: `CohereClientV2` from `cohere-ai`,
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | What It Does |
 |-------|-------------|
 | `cohere-install-auth` | Install `cohere-ai` SDK, configure `CO_API_KEY`, verify connection |
@@ -31,6 +32,7 @@ Every skill uses **real Cohere API v2 code**: `CohereClientV2` from `cohere-ai`,
 | `cohere-upgrade-migration` | API v1 to v2 migration: every breaking change with before/after code |
 
 ### Pro Skills (P13-P18)
+
 | Skill | What It Does |
 |-------|-------------|
 | `cohere-ci-integration` | GitHub Actions with mocked unit tests + gated integration tests |
@@ -41,6 +43,7 @@ Every skill uses **real Cohere API v2 code**: `CohereClientV2` from `cohere-ai`,
 | `cohere-reference-architecture` | Layered project layout with RAG service, agent service, tool registry |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | What It Does |
 |-------|-------------|
 | `cohere-multi-env-setup` | Per-env model selection, secret management (AWS/GCP/Vault), env guards |

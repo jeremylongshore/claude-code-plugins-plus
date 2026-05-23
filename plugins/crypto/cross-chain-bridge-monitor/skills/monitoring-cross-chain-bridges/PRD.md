@@ -1,11 +1,13 @@
 # PRD: Cross-Chain Bridge Monitor
 
 ## Summary
+
 **One-liner**: Monitor cross-chain bridge activity, liquidity, and security status
 **Domain**: Cryptocurrency / Bridge Infrastructure
 **Users**: DeFi users, Developers, Security researchers
 
 ## Problem Statement
+
 Cross-chain bridges are critical infrastructure but also high-risk targets. Users need real-time visibility into bridge health, liquidity, transaction status, and security incidents to make informed bridging decisions.
 
 ## User Stories

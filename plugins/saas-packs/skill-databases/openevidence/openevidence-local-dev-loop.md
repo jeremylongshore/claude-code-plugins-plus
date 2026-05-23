@@ -10,6 +10,7 @@ openevidence-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure OpenEvidence local development workflow
 **Workflow:** Part of the onboarding skill category for OpenEvidence integration.
 **Relates to:** Other openevidence skills in this pack.

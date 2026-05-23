@@ -10,6 +10,7 @@ brightdata-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Bright Data common errors
 **Workflow:** Part of the operations skill category for Bright Data integration.
 **Relates to:** Other brightdata skills in this pack.

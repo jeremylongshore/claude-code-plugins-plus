@@ -50,6 +50,7 @@ Why will users care? What's the measurable benefit?
 ## Quality Checklist
 
 Before finalizing, verify:
+
 - [ ] Problem is specific (not "improve engagement")
 - [ ] Solution describes "what" not "how"
 - [ ] Metrics are measurable with current instrumentation

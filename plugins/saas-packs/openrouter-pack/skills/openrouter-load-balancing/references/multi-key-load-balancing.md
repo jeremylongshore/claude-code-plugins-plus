@@ -3,6 +3,7 @@
 ## Multi-Key Load Balancing
 
 ### Round Robin
+
 ```python
 from openai import OpenAI
 import itertools
@@ -41,6 +42,7 @@ response = lb_client.chat(
 ```
 
 ### Weighted Round Robin
+
 ```python
 class WeightedClient:
     def __init__(self, api_keys: list, weights: list):

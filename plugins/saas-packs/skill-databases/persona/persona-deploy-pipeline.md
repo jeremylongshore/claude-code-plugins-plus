@@ -10,6 +10,7 @@ persona-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Persona integrations to production
 **Workflow:** Part of the cicd skill category for Persona integration.
 **Relates to:** Other persona skills in this pack.

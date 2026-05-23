@@ -10,6 +10,7 @@ granola-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Granola SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Granola integration.
 **Relates to:** Other granola skills in this pack.

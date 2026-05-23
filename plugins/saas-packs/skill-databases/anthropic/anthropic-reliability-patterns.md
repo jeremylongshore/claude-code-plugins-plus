@@ -10,6 +10,7 @@ anthropic-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Anthropic reliability patterns
 **Workflow:** Part of the enterprise skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

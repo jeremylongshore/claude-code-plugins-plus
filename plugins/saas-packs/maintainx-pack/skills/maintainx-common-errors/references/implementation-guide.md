@@ -28,6 +28,7 @@ Quick reference guide for diagnosing and resolving common MaintainX API errors.
 ```
 
 **Causes:**
+
 1. Missing API key in request
 2. Invalid or expired API key
 3. Incorrect Authorization header format
@@ -93,6 +94,7 @@ fi
 ```
 
 **Causes:**
+
 1. API key doesn't have required permissions
 2. Plan tier doesn't include this feature
 3. Organization restrictions
@@ -310,6 +312,7 @@ async function withRetry(operation, options = {}) {
 #### 503 Service Unavailable
 
 **Solutions:**
+
 1. Check MaintainX status page
 2. Wait and retry
 3. Implement circuit breaker pattern

@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Deploy Integration
 
 ## Overview
+
 Deploy applications on Replit's hosting platform. Three deployment types: Static (free, frontend-only), Autoscale (scales to zero, pay per request), and Reserved VM (always-on, fixed cost). Includes custom domain setup, health checks, rollbacks, and deployment monitoring.
 
 ## Prerequisites
+
 - Replit Core, Pro, or Teams plan (deployment access)
 - Application working in Workspace ("Run" button)
 - Custom domain (optional) with DNS access
@@ -45,6 +47,7 @@ Deploy applications on Replit's hosting platform. Three deployment types: Static
 ## Instructions
 
 ### Step 1: Configure `.replit` for Deployment
+
 ```toml
 # .replit — Autoscale deployment (most common)
 entrypoint = "src/index.ts"
@@ -63,6 +66,7 @@ deploymentTarget = "autoscale"
 ```
 
 **Reserved VM:**
+
 ```toml
 [deployment]
 run = ["sh", "-c", "node dist/index.js"]
@@ -71,6 +75,7 @@ deploymentTarget = "cloudrun"
 ```
 
 **Static:**
+
 ```toml
 [deployment]
 deploymentTarget = "static"
@@ -79,6 +84,7 @@ build = ["sh", "-c", "npm ci && npm run build"]
 ```
 
 ### Step 2: Configure Secrets for Production
+
 ```markdown
 Workspace Secrets auto-sync to Deployments (2025+).
 
@@ -90,6 +96,7 @@ Workspace Secrets auto-sync to Deployments (2025+).
 ```
 
 ### Step 3: Add Health Check Endpoint
+
 Replit monitors your deployment via health checks. Always include one:
 
 ```typescript
@@ -129,6 +136,7 @@ export default router;
 ```
 
 ### Step 4: Deploy
+
 ```markdown
 Via Replit UI:
 1. Click "Deploy" button in the top bar
@@ -146,6 +154,7 @@ Via Replit UI:
 ```
 
 ### Step 5: Custom Domain Setup
+
 ```markdown
 1. Go to Deployment Settings > Custom Domain
 2. Enter your domain: app.example.com
@@ -156,6 +165,7 @@ Via Replit UI:
 4. Wait for SSL auto-provisioning (1-5 minutes)
 5. Verify:
 ```
+
 ```bash
 # Verify DNS
 dig app.example.com CNAME
@@ -168,11 +178,13 @@ curl -sf https://app.example.com/health | jq .
 ```
 
 For Replit-purchased domains:
+
 - DNS managed in Replit dashboard
 - MX records supported for custom email
 - SSL auto-provisioned
 
 ### Step 6: Deployment Rollback
+
 Replit supports one-click rollback to any previous successful deployment.
 
 ```markdown
@@ -184,6 +196,7 @@ Replit supports one-click rollback to any previous successful deployment.
 ```
 
 ### Step 7: Post-Deploy Verification
+
 ```bash
 set -euo pipefail
 DEPLOY_URL="https://your-app.replit.app"
@@ -207,6 +220,7 @@ echo "Cold start test: wait 10 min, then curl again"
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Deploy fails at build | Dependency error | Test `npm ci && npm run build` locally first |
@@ -217,6 +231,7 @@ echo "Cold start test: wait 10 min, then curl again"
 | SSL not provisioning | Wrong DNS record | Must be CNAME to `.replit.app` |
 
 ## Resources
+
 - [Autoscale Deployments](https://blog.replit.com/autoscale)
 - [Reserved VM Deployments](https://docs.replit.com/cloud-services/deployments/reserved-vm-deployments)
 - [Static Deployments](https://docs.replit.com/cloud-services/deployments/static-deployments)
@@ -225,4 +240,5 @@ echo "Cold start test: wait 10 min, then curl again"
 - [Monitoring Deployments](https://docs.replit.com/cloud-services/deployments/monitoring-a-deployment)
 
 ## Next Steps
+
 For multi-environment setup, see `replit-multi-env-setup`.

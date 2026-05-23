@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Architecture Variants
 
 ## Overview
+
 Three validated architectures for Perplexity Sonar API at different scales. Each builds on the previous, adding caching and orchestration as volume grows.
 
 ## Decision Matrix
@@ -185,6 +186,7 @@ class ResearchPipeline {
 ```
 
 ### Python Variant (Direct Widget)
+
 ```python
 from flask import Flask, request, jsonify
 from openai import OpenAI
@@ -221,6 +223,7 @@ How many queries per day?
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Slow in UI | No caching | Add Variant 2 cache layer |
@@ -229,14 +232,17 @@ How many queries per day?
 | Stale answers | Long cache TTL | Reduce TTL for time-sensitive queries |
 
 ## Output
+
 - Selected architecture variant matching your scale
 - Implementation code for chosen variant
 - Cache strategy if applicable
 - Queue configuration if applicable
 
 ## Resources
+
 - [Perplexity API Documentation](https://docs.perplexity.ai)
 - [Perplexity Model Pricing](https://docs.perplexity.ai/docs/getting-started/pricing)
 
 ## Next Steps
+
 For common pitfalls, see `perplexity-known-pitfalls`.

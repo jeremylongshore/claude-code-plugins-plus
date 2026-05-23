@@ -10,6 +10,7 @@ sentry-migration-deep-dive/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Migrate to Sentry from other error tracking tools like Rollbar, Bugsnag, Raygun, or NewRelic with SDK replacement guides and feature mapping.
 **Workflow:** Use when switching from another error tracking tool. Provides complete migration path with parallel running and validation.
 **Relates to:** Works with `sentry-install-auth` for new setup. Connects to `sentry-common-errors` for post-migration issues.

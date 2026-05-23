@@ -18,9 +18,11 @@ compatibility: Designed for Claude Code
 # MindTickle Reference Architecture
 
 ## Overview
+
 Design a multi-tenant integration layer for the MindTickle sales enablement platform. Strict tenant data isolation is the primary driver, enforced at the database, cache, and queue levels so training data, quiz scores, and readiness analytics never cross organizational boundaries.
 
 ## Instructions
+
 1. Provision the prerequisites below with Row-Level Security enabled in PostgreSQL.
 2. Configure SCIM 2.0 webhook endpoints to receive HR system user events.
 3. Deploy the enablement service with tenant-scoped database connections.
@@ -28,11 +30,13 @@ Design a multi-tenant integration layer for the MindTickle sales enablement plat
 5. Validate tenant isolation by running cross-tenant query tests against RLS policies.
 
 ## Prerequisites
+
 - Node.js 18+, TypeScript 5, PostgreSQL 15 with RLS, Redis 7, RabbitMQ or SQS
 - MindTickle API key with `users:read`, `courses:read`, `analytics:read` scopes
 - SCIM 2.0 endpoint credentials for user provisioning
 
 ## Architecture Diagram
+
 ```
 HR System --> SCIM Webhook Ingester --> User Sync Service --> MindTickle API
                                              |
@@ -42,6 +46,7 @@ Client --> API Gateway --> EnablementService --+--> Analytics Aggregator
 ```
 
 ## Service Layer
+
 ```typescript
 class EnablementService {
   constructor(
@@ -68,6 +73,7 @@ class EnablementService {
 ```
 
 ## Caching Strategy
+
 ```typescript
 class TenantCache {
   constructor(private redis: RedisClient) {}
@@ -94,6 +100,7 @@ class TenantCache {
 ```
 
 ## Event Pipeline
+
 ```typescript
 class ScimWebhookConsumer {
   constructor(private queue: MessageQueue, private db: TenantScopedStore) {}
@@ -119,6 +126,7 @@ class AnalyticsAggregator {
 ```
 
 ## Data Model
+
 ```typescript
 interface User {
   id: string; tenantId: string; email: string;
@@ -141,15 +149,18 @@ interface ReadinessReport {
 ```
 
 ## Output
+
 Running this architecture produces tenant-isolated user rosters synced via SCIM, a course progress tracker with quiz scoring, and aggregated team readiness reports partitioned by organization.
 
 ## Scaling Considerations
+
 - Enforce Row-Level Security in PostgreSQL so every query is tenant-scoped by default
 - Partition Redis keyspace by tenant prefix to enable per-tenant eviction policies
 - Route SCIM webhooks to tenant-specific queue channels to prevent noisy-neighbor stalls
 - Use connection pooling per tenant to respect MindTickle per-org rate limits (60 req/min)
 
 ## Error Handling
+
 | Component | Failure Mode | Recovery |
 |-----------|-------------|----------|
 | MindTickle API | 429 rate limit | Per-tenant backoff, queue surplus for next window |
@@ -159,6 +170,7 @@ Running this architecture produces tenant-isolated user rosters synced via SCIM,
 | Event Queue | Tenant channel backup | Spill to overflow queue, process FIFO on recovery |
 
 ## Examples
+
 ```bash
 # Sync course progress for a specific user in a tenant
 curl http://localhost:3000/api/tenants/acme/users/u123/sync-progress
@@ -167,7 +179,9 @@ curl -X POST http://localhost:3000/api/tenants/acme/readiness/aggregate
 ```
 
 ## Resources
+
 - [MindTickle Platform Integrations](https://www.mindtickle.com/platform/integrations/)
 
 ## Next Steps
+
 See `mindtickle-deploy-integration`.

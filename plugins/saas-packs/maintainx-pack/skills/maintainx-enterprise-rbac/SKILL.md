@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Enterprise RBAC
 
 ## Overview
+
 Configure enterprise role-based access control for MaintainX integrations with role definitions, location-scoped permissions, and audit logging.
 
 ## Prerequisites
+
 - MaintainX Enterprise plan
 - Understanding of RBAC concepts
 - Node.js 18+
@@ -218,6 +220,7 @@ function logAccess(auth: AuthContext, resource: string, action: string, result: 
 ```
 
 ## Output
+
 - Role definitions mapping roles to resource permissions and scopes
 - Express middleware enforcing RBAC on all API proxy routes
 - Location-scoped and assignee-scoped query filtering
@@ -225,6 +228,7 @@ function logAccess(auth: AuthContext, resource: string, action: string, result: 
 - Audit logging for all access control decisions
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | 403 on valid user | Missing permission for action | Check `ROLE_PERMISSIONS` mapping |
@@ -233,11 +237,13 @@ function logAccess(auth: AuthContext, resource: string, action: string, result: 
 | Audit log gaps | Middleware not applied to route | Ensure `authorize()` is on all routes |
 
 ## Resources
+
 - [MaintainX Enterprise](https://www.getmaintainx.com/enterprise)
 - [OWASP Access Control Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Access_Control_Cheat_Sheet.html)
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 
 ## Next Steps
+
 For complete platform migration, see `maintainx-migration-deep-dive`.
 
 ## Examples

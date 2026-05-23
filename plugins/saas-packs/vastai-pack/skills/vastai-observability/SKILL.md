@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Observability
 
 ## Overview
+
 Monitor Vast.ai GPU instance health, utilization, and costs. Key metrics: GPU utilization (idle GPUs waste $0.20-$4.00/hr), instance uptime, training progress, cost accumulation, and spot preemption events.
 
 ## Prerequisites
+
 - Vast.ai account with active instances
 - `vastai` CLI installed
 - Optional: Prometheus, Grafana, or Datadog for dashboarding
@@ -139,12 +141,14 @@ start_http_server(9090)  # Prometheus scrape target
 ```
 
 ## Output
+
 - Metrics collector with JSONL output
 - Alert conditions (idle GPU, high temp, budget)
 - Remote GPU monitoring via SSH + nvidia-smi
 - Optional Prometheus exporter for Grafana dashboards
 
 ## Error Handling
+
 | Alert | Threshold | Response |
 |-------|-----------|----------|
 | Idle GPU | util < 10% for > 10 min | Investigate or destroy instance |
@@ -153,10 +157,12 @@ start_http_server(9090)  # Prometheus scrape target
 | Instance offline | Status changed from running | Trigger auto-recovery |
 
 ## Resources
+
 - [Vast.ai CLI](https://docs.vast.ai/cli/get-started)
 - [NVIDIA nvidia-smi](https://developer.nvidia.com/nvidia-system-management-interface)
 
 ## Next Steps
+
 For incident response procedures, see `vastai-incident-runbook`.
 
 ## Examples

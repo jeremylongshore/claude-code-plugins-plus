@@ -20,15 +20,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # QuickNode Core Workflow A
 
 ## Overview
+
 Build EVM transaction workflows: send ETH, interact with contracts, listen for events, and handle gas estimation.
 
 ## Prerequisites
+
 - Completed `quicknode-hello-world`
 - A funded wallet (use testnet for development)
 
 ## Instructions
 
 ### Step 1: Send ETH Transaction
+
 ```typescript
 import { ethers } from 'ethers';
 
@@ -45,6 +48,7 @@ console.log(`Confirmed in block ${receipt!.blockNumber}, gas used: ${receipt!.ga
 ```
 
 ### Step 2: Call Contract Write Function
+
 ```typescript
 const contractAddress = '0xYourContract';
 const abi = ['function transfer(address to, uint256 amount) returns (bool)'];
@@ -56,6 +60,7 @@ console.log(`Transfer confirmed: ${receipt!.hash}`);
 ```
 
 ### Step 3: Listen for Events (WebSocket)
+
 ```typescript
 const wsProvider = new ethers.WebSocketProvider(process.env.QUICKNODE_WSS);
 const contract = new ethers.Contract(contractAddress, ['event Transfer(address indexed from, address indexed to, uint256 value)'], wsProvider);
@@ -66,6 +71,7 @@ contract.on('Transfer', (from, to, value, event) => {
 ```
 
 ### Step 4: Gas Estimation
+
 ```typescript
 const gasEstimate = await contract.transfer.estimateGas('0xRecipient', ethers.parseUnits('100', 18));
 const feeData = await provider.getFeeData();
@@ -74,12 +80,14 @@ console.log(`Estimated gas: ${gasEstimate}, cost: ${ethers.formatEther(totalCost
 ```
 
 ## Output
+
 - ETH transfer with receipt confirmation
 - Smart contract interaction
 - Real-time event listening via WebSocket
 - Gas estimation before transactions
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `insufficient funds` | Wallet balance too low | Fund wallet or reduce amount |
@@ -87,8 +95,10 @@ console.log(`Estimated gas: ${gasEstimate}, cost: ${ethers.formatEther(totalCost
 | `gas required exceeds allowance` | Contract revert | Check contract requirements |
 
 ## Resources
+
 - [QuickNode Ethereum API](https://www.quicknode.com/docs/ethereum)
 - [ethers.js Documentation](https://docs.ethers.org/)
 
 ## Next Steps
+
 NFT and token APIs: `quicknode-core-workflow-b`

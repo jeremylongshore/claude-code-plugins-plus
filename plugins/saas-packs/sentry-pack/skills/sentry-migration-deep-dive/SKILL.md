@@ -114,6 +114,7 @@ export function setUserContext(user: { id: string; email?: string }) {
    - Rate-based alerts use Sentry Metric Alerts; occurrence-based alerts use Sentry Issue Alerts.
 
 2. **Validate parity** during the parallel run window:
+
    ```bash
    # Compare error counts -- Sentry API
    curl -s -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
@@ -123,15 +124,19 @@ export function setUserContext(user: { id: string; email?: string }) {
    curl -s -H "X-Rollbar-Access-Token: $ROLLBAR_TOKEN" \
      "https://api.rollbar.com/api/1/reports/top_recent_items" | jq '.result | length'
    ```
+
    - Error count should be within 10% between tools.
    - Stack traces must resolve correctly (verify source maps uploaded to Sentry).
    - Breadcrumbs, user context, and tags must appear in Sentry event detail.
 
 3. **Remove the old SDK** after parity is confirmed:
+
    ```bash
    npm uninstall rollbar @bugsnag/node @bugsnag/plugin-express newrelic || echo "Some packages not found (expected if only one tool was installed)"
    ```
+
    Search for leftover references and remove them:
+
    ```bash
    grep -rn "rollbar\|bugsnag\|newrelic\|raygun\|airbrake" \
      --include="*.ts" --include="*.js" --include="*.env*" \
@@ -165,6 +170,7 @@ export function setUserContext(user: { id: string; email?: string }) {
 ## Examples
 
 **Migrate Express app from Rollbar to Sentry:**
+
 ```typescript
 // BEFORE: rollbar error handler middleware
 import Rollbar from 'rollbar';
@@ -178,6 +184,7 @@ Sentry.setupExpressErrorHandler(app);
 ```
 
 **Migrate React error boundary from Bugsnag to Sentry:**
+
 ```typescript
 // BEFORE: Bugsnag React initialization + error boundary
 import Bugsnag from '@bugsnag/js';
@@ -194,6 +201,7 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
 ```
 
 **Post-migration verification script:**
+
 ```typescript
 import * as Sentry from '@sentry/node';
 

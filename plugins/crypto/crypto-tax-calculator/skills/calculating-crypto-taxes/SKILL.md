@@ -37,6 +37,7 @@ Calculate cryptocurrency tax obligations from transaction history. Supports FIFO
 ## Instructions
 
 1. **Prepare transaction data** by exporting CSV from each exchange:
+
    | Exchange | Export Location |
    |----------|-----------------|
    | Coinbase | Reports > Tax documents > Transaction history CSV |
@@ -45,27 +46,33 @@ Calculate cryptocurrency tax obligations from transaction history. Supports FIFO
    | Generic | See `${CLAUDE_SKILL_DIR}/references/exchange_formats.md` for column mapping |
 
 2. **Run basic tax calculation** using FIFO (IRS default):
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions your_trades.csv --year 2025  # 2025 = tax year
    ```
 
 3. **Compare cost basis methods** to understand tax implications:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions trades.csv --compare-methods
    ```
+
    Methods: `--method fifo` (IRS default), `--method lifo` (Last In First Out), `--method hifo` (minimize gains)
 
 4. **Generate Form 8949 report** as CSV:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions trades.csv --method fifo --year 2025 --output form_8949.csv --format csv  # 2025 = tax year
    ```
 
 5. **Handle income events** (staking, airdrops, mining, DeFi yield):
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions all_events.csv --income-report
    ```
 
 6. **Consolidate multi-exchange data** into a unified report:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions coinbase.csv binance.csv kraken.csv --year 2025  # 2025 = tax year
    ```
@@ -87,21 +94,25 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed output forma
 ## Examples
 
 **Basic FIFO tax calculation** - Standard IRS-default method for a single exchange:
+
 ```bash
 python tax_calculator.py --transactions trades.csv --year 2025  # 2025 = tax year
 ```
 
 **HIFO to minimize gains** - Highest-cost lots disposed first to reduce taxable gain:
+
 ```bash
 python tax_calculator.py --transactions trades.csv --method hifo --year 2025  # 2025 = tax year
 ```
 
 **JSON output for processing** - Machine-readable export for tax software integration:
+
 ```bash
 python tax_calculator.py --transactions trades.csv --format json --output tax_data.json
 ```
 
 **Verbose with lot details** - See which specific lots were matched to each disposal:
+
 ```bash
 python tax_calculator.py --transactions trades.csv --verbose --show-lots
 ```

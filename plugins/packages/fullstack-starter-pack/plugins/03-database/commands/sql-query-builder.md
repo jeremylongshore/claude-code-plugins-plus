@@ -14,12 +14,13 @@ Generates optimized SQL queries from natural language descriptions, supporting S
 ## What This Command Does
 
 **Generated Queries:**
--  SELECT queries with JOINs
--  INSERT, UPDATE, DELETE operations
--  Aggregations and GROUP BY
--  Subqueries and CTEs
--  Indexes and optimization tips
--  PostgreSQL, MySQL, SQLite syntax
+
+- SELECT queries with JOINs
+- INSERT, UPDATE, DELETE operations
+- Aggregations and GROUP BY
+- Subqueries and CTEs
+- Indexes and optimization tips
+- PostgreSQL, MySQL, SQLite syntax
 
 **Output:** Production-ready SQL queries
 
@@ -48,6 +49,7 @@ Generates optimized SQL queries from natural language descriptions, supporting S
 ## Example Output
 
 **Input:**
+
 ```
 /sqb "Get all blog posts with author info and comment count, ordered by recent"
 ```
@@ -341,6 +343,7 @@ WHERE active = false
 **Request:** "Search blog posts by keyword"
 
 **PostgreSQL:**
+
 ```sql
 -- Create text search index
 CREATE INDEX idx_posts_search ON posts
@@ -364,6 +367,7 @@ LIMIT 20;
 ```
 
 **MySQL:**
+
 ```sql
 -- Create fulltext index
 CREATE FULLTEXT INDEX idx_posts_search ON posts(title, content);
@@ -386,6 +390,7 @@ LIMIT 20;
 ## Optimization Tips
 
 **1. Use Indexes Wisely:**
+
 ```sql
 --  GOOD: Index foreign keys
 CREATE INDEX idx_posts_author_id ON posts(author_id);
@@ -398,6 +403,7 @@ CREATE INDEX idx_active_users ON users(email) WHERE active = true;
 ```
 
 **2. Avoid SELECT *:**
+
 ```sql
 --  BAD
 SELECT * FROM users;
@@ -407,6 +413,7 @@ SELECT id, email, name FROM users;
 ```
 
 **3. Use LIMIT:**
+
 ```sql
 --  BAD (fetches all rows)
 SELECT * FROM posts ORDER BY created_at DESC;
@@ -416,6 +423,7 @@ SELECT * FROM posts ORDER BY created_at DESC LIMIT 20 OFFSET 0;
 ```
 
 **4. Optimize JOINs:**
+
 ```sql
 -- Use INNER JOIN when possible (faster than LEFT JOIN)
 -- Use EXISTS instead of IN for large datasets
@@ -434,17 +442,20 @@ SELECT u.* FROM users u WHERE EXISTS (
 ## Database-Specific Syntax
 
 **PostgreSQL:**
+
 - `gen_random_uuid()` for UUIDs
 - `INTERVAL` for date math
 - `RETURNING` clause
 - Full-text search with `tsvector`
 
 **MySQL:**
+
 - `UUID()` for UUIDs
 - `DATE_SUB()` for date math
 - FULLTEXT indexes for search
 
 **SQLite:**
+
 - `hex(randomblob(16))` for UUIDs
 - `datetime()` for dates
 - Limited JOIN types
@@ -458,4 +469,4 @@ SELECT u.* FROM users u WHERE EXISTS (
 
 ---
 
-**Query smarter. Optimize faster. Scale confidently.** 
+**Query smarter. Optimize faster. Scale confidently.**

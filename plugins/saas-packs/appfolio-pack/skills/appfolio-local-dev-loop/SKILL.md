@@ -19,9 +19,11 @@ compatibility: Designed for Claude Code
 # AppFolio Local Dev Loop
 
 ## Overview
+
 Local development workflow for AppFolio property management API integration. Provides a fast feedback loop with mock property, tenant, and lease endpoints so you can build and test integrations without consuming live API quota. Toggle between mock mode for rapid iteration and sandbox mode for pre-deployment validation against the real AppFolio Stack API.
 
 ## Environment Setup
+
 ```bash
 cp .env.example .env
 # Set your credentials:
@@ -33,6 +35,7 @@ npm install -D vitest supertest @types/express
 ```
 
 ## Dev Server
+
 ```typescript
 // src/dev/server.ts
 import express from "express";
@@ -54,6 +57,7 @@ app.listen(3001, () => console.log(`AppFolio dev server on :3001 [mock=${MOCK}]`
 ```
 
 ## Mock Mode
+
 ```typescript
 // src/dev/mocks.ts — realistic property management responses
 export function mountMockRoutes(app: any) {
@@ -72,6 +76,7 @@ export function mountMockRoutes(app: any) {
 ```
 
 ## Testing Workflow
+
 ```bash
 npm run dev:mock &                    # Start mock server in background
 npm run test                          # Unit tests with vitest
@@ -80,6 +85,7 @@ MOCK_MODE=false npm run test:integration  # Integration test against real API
 ```
 
 ## Debug Tips
+
 - Set `DEBUG=express:*` to trace all route matching and middleware execution
 - Use `curl -v http://localhost:3001/api/v1/properties` to inspect raw responses
 - Check `X-RateLimit-Remaining` header when testing against the live API
@@ -87,6 +93,7 @@ MOCK_MODE=false npm run test:integration  # Integration test against real API
 - Enable `axios` interceptors to log request/response pairs during development
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | `401 Unauthorized` | Invalid or expired API key | Regenerate at AppFolio Stack portal |
@@ -96,8 +103,10 @@ MOCK_MODE=false npm run test:integration  # Integration test against real API
 | `ECONNREFUSED :3001` | Dev server not running | Run `npm run dev:mock` first |
 
 ## Resources
+
 - [AppFolio Stack APIs](https://www.appfolio.com/stack/partners/api)
 - [AppFolio Engineering Blog](https://engineering.appfolio.com)
 
 ## Next Steps
+
 See `appfolio-debug-bundle`.

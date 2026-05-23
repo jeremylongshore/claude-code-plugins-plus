@@ -10,6 +10,7 @@ vercel-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply advanced debugging for hard-to-diagnose issues including race conditions, memory leaks, and intermittent failures.
 **Workflow:** Used when standard troubleshooting fails and issues require deep investigation.
 **Relates to:** Follows vercel-migration-deep-dive; extends vercel-debug-bundle with advanced techniques

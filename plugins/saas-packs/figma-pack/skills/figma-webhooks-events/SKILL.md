@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code
 # Figma Webhooks & Events
 
 ## Overview
+
 Figma Webhooks V2 push real-time notifications when files change, comments are posted, or libraries are published. Webhooks can be scoped to teams, projects, or individual files. Authentication uses a passcode echoed back in each payload.
 
 ## Prerequisites
+
 - HTTPS endpoint accessible from the internet
 - `FIGMA_PAT` with `webhooks:write` scope
 - Team ID (from Figma URL: `figma.com/files/team/<TEAM_ID>/...`)
@@ -34,6 +36,7 @@ Figma Webhooks V2 push real-time notifications when files change, comments are p
 ## Instructions
 
 ### Step 1: Create a Webhook
+
 ```bash
 # POST /v2/webhooks -- requires webhooks:write scope
 curl -X POST https://api.figma.com/v2/webhooks \
@@ -62,6 +65,7 @@ curl -X POST https://api.figma.com/v2/webhooks \
 | `LIBRARY_PUBLISH` | Library published | `file_key`, `description`, variables |
 
 ### Step 2: Handle Webhook Events
+
 ```typescript
 import express from 'express';
 import crypto from 'crypto';
@@ -145,6 +149,7 @@ async function processEvent(event: FigmaWebhookEvent) {
 ```
 
 ### Step 3: Manage Webhooks
+
 ```typescript
 const FIGMA_API = 'https://api.figma.com';
 
@@ -179,6 +184,7 @@ async function updateWebhook(webhookId: string, updates: Record<string, any>) {
 ```
 
 ### Step 4: Idempotency for Duplicate Events
+
 ```typescript
 // Figma may deliver the same event multiple times
 const processedEvents = new Set<string>();
@@ -200,12 +206,14 @@ function deduplicateEvent(event: FigmaWebhookEvent): boolean {
 ```
 
 ## Output
+
 - Webhook created and receiving Figma events
 - Passcode verification on every incoming request
 - Event handlers for FILE_UPDATE, FILE_COMMENT, LIBRARY_PUBLISH
 - Idempotency preventing duplicate processing
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Webhook not firing | Endpoint not HTTPS | Figma requires TLS |
@@ -216,6 +224,7 @@ function deduplicateEvent(event: FigmaWebhookEvent): boolean {
 ## Examples
 
 ### Test Webhook Locally
+
 ```bash
 # Use ngrok to expose local server
 ngrok http 3000
@@ -233,9 +242,11 @@ curl -X POST https://api.figma.com/v2/webhooks \
 ```
 
 ## Resources
+
 - [Figma Webhooks V2](https://developers.figma.com/docs/rest-api/webhooks/)
 - [Webhook Event Types](https://developers.figma.com/docs/rest-api/webhooks-types/)
 - [Webhook Endpoints](https://developers.figma.com/docs/rest-api/webhooks-endpoints/)
 
 ## Next Steps
+
 For performance optimization, see `figma-performance-tuning`.

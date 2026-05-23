@@ -10,6 +10,7 @@ clerk-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Clerk SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Clerk integration.
 **Relates to:** Other clerk skills in this pack.

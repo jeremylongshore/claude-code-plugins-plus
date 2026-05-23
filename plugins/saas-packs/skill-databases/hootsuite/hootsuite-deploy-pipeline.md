@@ -10,6 +10,7 @@ hootsuite-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Hootsuite integrations to production
 **Workflow:** Part of the cicd skill category for Hootsuite integration.
 **Relates to:** Other hootsuite skills in this pack.

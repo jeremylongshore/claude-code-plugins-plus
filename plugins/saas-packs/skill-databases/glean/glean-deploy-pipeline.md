@@ -10,6 +10,7 @@ glean-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Glean integrations to production
 **Workflow:** Part of the cicd skill category for Glean integration.
 **Relates to:** Other glean skills in this pack.

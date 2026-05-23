@@ -26,11 +26,12 @@ Run a fast automated security scan of your codebase to identify common vulnerabi
 ## What This Command Does
 
 **Quick Security Analysis** in under 5 minutes:
--  Scans for hardcoded secrets and credentials
--  Checks dependencies for known CVEs
--  Identifies insecure configurations
--  Detects common vulnerability patterns
--  Provides severity-rated findings with fixes
+
+- Scans for hardcoded secrets and credentials
+- Checks dependencies for known CVEs
+- Identifies insecure configurations
+- Detects common vulnerability patterns
+- Provides severity-rated findings with fixes
 
 **Output:** Security scan report with actionable remediation steps
 
@@ -41,6 +42,7 @@ Run a fast automated security scan of your codebase to identify common vulnerabi
 ## When to Use This Command
 
 **Perfect For:**
+
 - Quick security check before committing code
 - Pre-deployment security verification
 - Regular security hygiene (weekly scans)
@@ -48,6 +50,7 @@ Run a fast automated security scan of your codebase to identify common vulnerabi
 - Compliance requirement (quick audit trail)
 
 **Use This When:**
+
 - You want fast security feedback
 - Before deploying to production
 - After adding new dependencies
@@ -73,6 +76,7 @@ Run a fast automated security scan of your codebase to identify common vulnerabi
 ```
 
 **Shortcut:**
+
 ```bash
 /ss  # Quick scan current directory
 ```
@@ -84,6 +88,7 @@ Run a fast automated security scan of your codebase to identify common vulnerabi
 ### 1. Secret Detection (Critical Priority)
 
 **Scans For:**
+
 - API keys and tokens
 - Database credentials
 - Private keys (RSA, SSH)
@@ -93,6 +98,7 @@ Run a fast automated security scan of your codebase to identify common vulnerabi
 - Encryption keys
 
 **Example Findings:**
+
 ```javascript
 //  CRITICAL: Hardcoded AWS credentials
 const AWS_ACCESS_KEY = "AKIAIOSFODNN7EXAMPLE"
@@ -106,6 +112,7 @@ const AWS_SECRET_KEY = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 ### 2. Dependency Vulnerabilities (High Priority)
 
 **Checks:**
+
 - npm packages (Node.js)
 - pip packages (Python)
 - gem packages (Ruby)
@@ -113,6 +120,7 @@ const AWS_SECRET_KEY = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 - NuGet packages (.NET)
 
 **Example Findings:**
+
 ```
  Critical Vulnerability in lodash@4.17.15
 
@@ -130,6 +138,7 @@ Fix: npm install lodash@^4.17.19
 ### 3. Security Misconfigurations (Medium Priority)
 
 **Scans For:**
+
 - Debug mode enabled in production
 - Insecure CORS configurations
 - Missing security headers
@@ -139,6 +148,7 @@ Fix: npm install lodash@^4.17.19
 - Exposed admin panels
 
 **Example Findings:**
+
 ```javascript
 // ️  HIGH: Debug mode enabled
 app.set('debug', true)  // Should be false in production
@@ -153,6 +163,7 @@ app.use(cors({ origin: '*' }))  // Allows all origins
 ### 4. Common Vulnerability Patterns (Medium Priority)
 
 **Code Pattern Detection:**
+
 - SQL injection vulnerabilities
 - XSS (Cross-Site Scripting) risks
 - Path traversal possibilities
@@ -161,6 +172,7 @@ app.use(cors({ origin: '*' }))  // Allows all origins
 - Weak cryptography usage
 
 **Example Findings:**
+
 ```python
 # ️  HIGH: SQL Injection risk
 query = f"SELECT * FROM users WHERE id = {user_id}"  # String interpolation
@@ -348,7 +360,8 @@ Report saved to: security-scan-report-2025-10-10.md
 
 ### Severity Levels
 
-** Critical (Fix Immediately - Within 24 Hours)**
+**Critical (Fix Immediately - Within 24 Hours)**
+
 - Hardcoded secrets/credentials
 - Known critical CVEs (CVSS 9.0+)
 - Authentication bypasses
@@ -356,7 +369,8 @@ Report saved to: security-scan-report-2025-10-10.md
 
 **Risk:** Active exploitation possible, immediate data breach
 
-** High (Fix Before Production - Within 1 Week)**
+**High (Fix Before Production - Within 1 Week)**
+
 - High-severity CVEs (CVSS 7.0-8.9)
 - Authorization flaws
 - Missing security controls
@@ -364,7 +378,8 @@ Report saved to: security-scan-report-2025-10-10.md
 
 **Risk:** Significant security impact, exploitation likely
 
-** Medium (Improve Security Posture - Within 1 Month)**
+**Medium (Improve Security Posture - Within 1 Month)**
+
 - Security misconfigurations
 - Missing security headers
 - Outdated dependencies (no known exploits)
@@ -372,7 +387,8 @@ Report saved to: security-scan-report-2025-10-10.md
 
 **Risk:** Increases attack surface, defense in depth
 
-** Low (Best Practices - Backlog)**
+**Low (Best Practices - Backlog)**
+
 - Code quality improvements
 - Documentation gaps
 - Non-security technical debt
@@ -393,12 +409,14 @@ Report saved to: security-scan-report-2025-10-10.md
 | **Reporting** | Brief summary | Comprehensive report |
 
 **Use Quick Scan For:**
+
 - Regular security hygiene
 - Quick feedback loop
 - CI/CD integration
 - First-time security assessment
 
 **Use Full Audit For:**
+
 - Pre-production security review
 - Compliance requirements
 - After major changes
@@ -461,18 +479,21 @@ security_scan:
 ### Common False Positives
 
 **1. Test Credentials**
+
 ```javascript
 // Flagged as hardcoded secret, but it's a test credential
 const TEST_API_KEY = "test_key_123"  // Used only in tests
 ```
 
 **Solution:** Add comment to clarify
+
 ```javascript
 // SECURITY_SCAN_IGNORE: Test credential, not used in production
 const TEST_API_KEY = "test_key_123"
 ```
 
 **2. Public API Keys**
+
 ```javascript
 // Flagged, but it's a public key (safe to commit)
 const STRIPE_PUBLISHABLE_KEY = "pk_test_123"  // Public key, safe
@@ -483,6 +504,7 @@ const STRIPE_PUBLISHABLE_KEY = "pk_test_123"  // Public key, safe
 ### What Quick Scan Can't Detect
 
 **Business Logic Flaws:**
+
 - Race conditions
 - Privilege escalation via workflow abuse
 - Payment bypass logic
@@ -491,6 +513,7 @@ const STRIPE_PUBLISHABLE_KEY = "pk_test_123"  // Public key, safe
 **Solution:** Use full security audit (`/security-audit`) for business logic review
 
 **Runtime Vulnerabilities:**
+
 - Memory leaks
 - Performance issues
 - Runtime injection attacks
@@ -504,6 +527,7 @@ const STRIPE_PUBLISHABLE_KEY = "pk_test_123"  // Public key, safe
 ### Run Scans Regularly
 
 **Daily:** Quick scan before pushing code
+
 ```bash
 git add .
 /ss  # Quick security check
@@ -511,6 +535,7 @@ git commit -m "feat: add new feature"
 ```
 
 **Weekly:** Full security audit
+
 ```bash
 /security-audit
 ```
@@ -520,12 +545,14 @@ git commit -m "feat: add new feature"
 ### Fix Prioritization
 
 **Order of Operations:**
+
 1. **Critical** (hardcoded secrets) → Fix immediately (< 1 hour)
 2. **High** (SQL injection, known CVEs) → Fix within 24 hours
 3. **Medium** (misconfigurations) → Fix within 1 week
 4. **Low** (best practices) → Backlog
 
 **Don't Get Overwhelmed:**
+
 - Start with critical issues only
 - One fix at a time
 - Re-scan after each fix to verify
@@ -534,12 +561,14 @@ git commit -m "feat: add new feature"
 ### Security Culture
 
 **Make Security Easy:**
+
 - Pre-commit hooks (auto-scan before commit)
 - CI/CD integration (auto-scan on PR)
 - Regular team reviews (weekly security check-ins)
 - Security champions (team security advocates)
 
 **Share Findings:**
+
 - Security scan reports in team chat
 - Celebrate zero-critical milestone
 - Learn from findings (don't blame)
@@ -553,6 +582,7 @@ git commit -m "feat: add new feature"
 **Cause:** Large codebase or many dependencies
 
 **Solution:**
+
 ```bash
 # Scan specific directories only
 /ss src/  # Scan source code only
@@ -569,6 +599,7 @@ git commit -m "feat: add new feature"
 **Problem:** Scan flags test credentials or public keys
 
 **Solution:**
+
 ```javascript
 // Add ignore comment
 // SECURITY_SCAN_IGNORE: Test credential
@@ -578,6 +609,7 @@ const TEST_KEY = "test_123"
 ### No Issues Found (Suspicious?)
 
 **Verify:**
+
 - Scan completed successfully (check for errors)
 - Scanned correct directory (`/ss /path/to/project`)
 - Dependencies were scanned (`--skip-deps` not used)
@@ -598,12 +630,14 @@ const TEST_KEY = "test_123"
 ## Support
 
 **Found a security issue?**
+
 1. Fix critical issues immediately
 2. For help: Ask Security Auditor Expert
 3. For remediation guidance: Include scan output in question
 4. For urgent issues: Email support with scan report
 
 **Scan not working?**
+
 - Check you're in project root directory
 - Verify dependencies installed (`npm install`, `pip install`, etc.)
 - Try verbose mode: `/ss --verbose`

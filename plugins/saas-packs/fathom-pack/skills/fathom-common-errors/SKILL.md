@@ -26,22 +26,28 @@ compatibility: Designed for Claude Code
 ## Error Reference
 
 ### 1. 401 Unauthorized
+
 **Fix**: Regenerate API key at Settings > Integrations > API Access.
 
 ### 2. 429 Rate Limited
+
 Limit: 60 calls per minute across all API keys.
 **Fix**: Implement exponential backoff. Batch requests.
 
 ### 3. Empty Transcript
+
 **Causes**: Meeting still processing, recording too short, or audio quality issues.
 **Fix**: Wait 5-10 minutes after recording. Check recording in Fathom UI.
 
 ### 4. Missing Summary
+
 **Cause**: AI processing not complete.
 **Fix**: Poll the recording endpoint until summary is available.
 
 ### 5. Webhook Not Firing
+
 **Fix**: Verify webhook URL in Settings > Integrations > Webhooks. Test with:
+
 ```bash
 curl -X POST https://your-url.com/webhooks/fathom \
   -H "Content-Type: application/json" \
@@ -49,6 +55,7 @@ curl -X POST https://your-url.com/webhooks/fathom \
 ```
 
 ### 6. OAuth Token Expired
+
 **Fix**: Refresh the access token using your refresh token.
 
 ## Quick Diagnostics

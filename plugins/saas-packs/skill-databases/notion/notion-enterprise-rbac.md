@@ -10,6 +10,7 @@ notion-enterprise-rbac/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Notion enterprise access control
 **Workflow:** Part of the advanced skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

@@ -10,6 +10,7 @@ figma-policy-guardrails/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Figma policy enforcement
 **Workflow:** Part of the advanced skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

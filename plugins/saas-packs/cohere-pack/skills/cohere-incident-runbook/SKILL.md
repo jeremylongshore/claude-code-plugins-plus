@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Cohere Incident Runbook
 
 ## Overview
+
 Rapid incident response procedures for Cohere API v2 outages. Covers triage, mitigation, communication, and postmortem for Chat, Embed, Rerank, and Classify endpoints.
 
 ## Prerequisites
+
 - Access to [status.cohere.com](https://status.cohere.com)
 - kubectl access to production cluster
 - Prometheus/Grafana access
@@ -184,6 +186,7 @@ async function resilientChat(message: string): Promise<string> {
 ## Communication Templates
 
 ### Internal (Slack)
+
 ```
 P[1-4] INCIDENT: Cohere Integration
 Status: INVESTIGATING / MITIGATED / RESOLVED
@@ -194,6 +197,7 @@ Next update: [time]
 ```
 
 ### External (Status Page)
+
 ```
 Cohere Integration — Degraded Performance
 
@@ -247,15 +251,18 @@ curl -s https://status.cohere.com/api/v2/incidents.json | jq '.incidents[:3]'
 ```
 
 ## Output
+
 - Triage completed with endpoint-level diagnosis
 - Immediate mitigation applied (fallback, key rotation, etc.)
 - Stakeholders notified via templates
 - Evidence collected for postmortem
 
 ## Resources
+
 - [Cohere Status Page](https://status.cohere.com)
 - [Cohere Error Codes](https://docs.cohere.com/reference/errors)
 - [Cohere Support](https://support.cohere.com)
 
 ## Next Steps
+
 For data handling, see `cohere-data-handling`.

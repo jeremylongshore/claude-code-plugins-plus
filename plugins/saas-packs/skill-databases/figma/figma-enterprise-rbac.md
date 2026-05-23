@@ -10,6 +10,7 @@ figma-enterprise-rbac/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Figma enterprise access control
 **Workflow:** Part of the advanced skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

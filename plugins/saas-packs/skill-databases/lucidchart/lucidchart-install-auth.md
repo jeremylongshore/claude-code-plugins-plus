@@ -10,6 +10,7 @@ lucidchart-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Lucidchart SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Lucidchart integration.
 **Relates to:** Other lucidchart skills in this pack.

@@ -35,6 +35,7 @@ When you run this command, you'll receive:
 **Vector Databases:** `pinecone`, `qdrant`, `chromadb`, `weaviate`
 
 **Examples:**
+
 - `/rpg pinecone` - Generate RAG pipeline with Pinecone
 - `/rpg qdrant` - Generate RAG pipeline with Qdrant Cloud
 - `/rpg chromadb` - Generate RAG pipeline with ChromaDB (local development)
@@ -44,6 +45,7 @@ When you run this command, you'll receive:
 ### Example: Pinecone RAG Pipeline
 
 **Input:**
+
 ```
 /rpg pinecone
 ```
@@ -680,6 +682,7 @@ print(f"Tokens: {result['usage']}")
 ```
 
 **Response:**
+
 ```json
 {
   "answer": "Quantum computing is a type of computing that uses quantum-mechanical phenomena...",
@@ -697,28 +700,31 @@ print(f"Tokens: {result['usage']}")
 ## Features Included
 
 **Production-Ready:**
--  Document ingestion (PDF, text, web)
--  Intelligent chunking strategies
--  Batch embedding generation
--  Vector database integration
--  Retrieval with reranking
--  LLM answer generation
--  FastAPI REST API
--  Docker deployment
--  Error handling and retries
--  Source citation
+
+- Document ingestion (PDF, text, web)
+- Intelligent chunking strategies
+- Batch embedding generation
+- Vector database integration
+- Retrieval with reranking
+- LLM answer generation
+- FastAPI REST API
+- Docker deployment
+- Error handling and retries
+- Source citation
 
 **Advanced Features:**
--  Hybrid search (multiple strategies)
--  Metadata filtering
--  Namespace support (multi-tenancy)
--  Reranking for better relevance
--  Token usage tracking
--  Health check endpoints
+
+- Hybrid search (multiple strategies)
+- Metadata filtering
+- Namespace support (multi-tenancy)
+- Reranking for better relevance
+- Token usage tracking
+- Health check endpoints
 
 ## Time Savings
 
 **Manual implementation:** 16-24 hours
+
 - Document loading and chunking
 - Embedding generation
 - Vector DB setup and integration
@@ -729,6 +735,7 @@ print(f"Tokens: {result['usage']}")
 - Testing
 
 **With this command:** 5-10 minutes
+
 - Run command
 - Add API keys
 - Deploy to production
@@ -738,6 +745,7 @@ print(f"Tokens: {result['usage']}")
 ---
 
 **Next Steps:**
+
 1. Run `/rpg pinecone` or `/rpg qdrant` or `/rpg chromadb`
 2. Copy generated code to your project
 3. Install dependencies: `pip install -r requirements.txt`
@@ -747,6 +755,7 @@ print(f"Tokens: {result['usage']}")
 7. Deploy: `docker-compose up -d`
 
 **Production checklist:**
+
 - [ ] Set up monitoring (Prometheus, Grafana)
 - [ ] Implement rate limiting
 - [ ] Add authentication (JWT)

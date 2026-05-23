@@ -10,6 +10,7 @@ obsidian-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Obsidian CI/CD integration
 **Workflow:** Part of the cicd skill category for Obsidian integration.
 **Relates to:** Other obsidian skills in this pack.

@@ -34,6 +34,7 @@ cat pyproject.toml | grep -A5 "mypy\|pyright"  # Type checker config
 ### Phase 2: Scan for Weak Types
 
 **TypeScript/JavaScript:**
+
 ```bash
 # Explicit any
 rg ": any\b" --type ts -n
@@ -48,6 +49,7 @@ rg ": object\b|: Object\b|: \{\}" --type ts -n
 ```
 
 **Python:**
+
 ```bash
 rg "from typing import.*\bAny\b" --type py -n
 rg ":\s*Any\b" --type py -n
@@ -65,6 +67,7 @@ For each weak type, infer the correct replacement:
 5. **Check existing related types** — is there already an interface that fits?
 
 Decision tree:
+
 - Usage accesses `.foo`, `.bar` → create or find matching interface
 - Passed to `Array<T>` method → type is `T`
 - Used in conditional → narrow to union
@@ -85,9 +88,11 @@ For HIGH confidence replacements:
 
 1. Apply the type change using Edit tool
 2. Run type checker:
+
    ```bash
    npx tsc --noEmit 2>&1 | tail -20
    ```
+
 3. If clean → confirmed, move to next
 4. If errors → revert (`git checkout -- <file>`), re-examine, try alternative type or downgrade to flagged
 

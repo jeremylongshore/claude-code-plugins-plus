@@ -1,4 +1,4 @@
-# Bulk Operations for Large Exports
+## Bulk Operations for Large Exports
 
 Shopify bulk operations bypass rate limits and are designed for exporting large datasets asynchronously.
 

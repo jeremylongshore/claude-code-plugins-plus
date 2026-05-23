@@ -9,6 +9,7 @@
 Analyzes your code changes and generates professional commit messages following conventional commit standards. No more staring at `git commit -m "..."` wondering what to write.
 
 **Before** (manual):
+
 ```bash
 git add .
 git status  # what did I change again?
@@ -17,6 +18,7 @@ git commit -m "updated stuff"  # 😞
 ```
 
 **After** (with AI):
+
 ```bash
 git add .
 /commit
@@ -29,11 +31,13 @@ git add .
 ## 🚀 Quick Start
 
 ### Installation
+
 ```bash
 /plugin install ai-commit-gen@claude-code-plugins-plus
 ```
 
 ### Usage
+
 ```bash
 # Make your changes
 git add .
@@ -49,18 +53,22 @@ git add .
 ## 💡 Features
 
 ### Instant Analysis
+
 - Analyzes git diff automatically
 - Identifies type of changes (feat/fix/docs/etc)
 - Determines scope and impact
 - Suggests breaking change warnings
 
 ### 3 Generated Options
+
 1. **Concise**: Subject line only (for quick commits)
 2. **Detailed**: Subject + body explaining changes
 3. **Comprehensive**: Subject + body + footer (with issue refs)
 
 ### Conventional Commits
+
 All messages follow [Conventional Commits](https://www.conventionalcommits.org/) standard:
+
 ```
 <type>(<scope>): <subject>
 
@@ -70,6 +78,7 @@ All messages follow [Conventional Commits](https://www.conventionalcommits.org/)
 ```
 
 ### Types Supported
+
 - `feat`: New features
 - `fix`: Bug fixes
 - `docs`: Documentation changes
@@ -86,9 +95,11 @@ All messages follow [Conventional Commits](https://www.conventionalcommits.org/)
 ## 📚 Examples
 
 ### Example 1: New Feature
+
 **Your changes**: Added user authentication
 
 **AI generates**:
+
 ```
 Option 1: feat(auth): add user authentication
 
@@ -106,9 +117,11 @@ Closes #42
 ```
 
 ### Example 2: Bug Fix
+
 **Your changes**: Fixed null pointer error
 
 **AI generates**:
+
 ```
 Option 1: fix(auth): handle null user in validation
 
@@ -126,9 +139,11 @@ Fixes #89
 ```
 
 ### Example 3: Documentation
+
 **Your changes**: Updated README
 
 **AI generates**:
+
 ```
 Option 1: docs(readme): add installation instructions
 
@@ -165,27 +180,35 @@ Commits immediately with your message (no analysis).
 ## 🔧 Advanced Usage
 
 ### Amend Last Commit
+
 ```bash
 /commit --amend
 ```
+
 Regenerates message for the last commit.
 
 ### Breaking Changes
+
 AI automatically detects breaking changes and adds:
+
 ```
 BREAKING CHANGE: API response format changed.
 All clients must update to use response.data field.
 ```
 
 ### Issue References
+
 AI includes issue references when mentioned in code:
+
 ```
 Closes #42
 Fixes #89
 ```
 
 ### Multiple Files
+
 If changes span multiple areas, AI suggests splitting into separate commits:
+
 ```
 ⚠️  Changes affect multiple areas:
   - Authentication (src/auth/)
@@ -213,12 +236,14 @@ The AI follows these commit message best practices:
 ## 💭 Why This Plugin?
 
 **Problem**: Writing good commit messages is tedious and inconsistent
+
 - Takes mental energy after coding
 - Easy to write lazy messages like "fix stuff"
 - Hard to remember conventional commit format
 - Boring to explain obvious changes
 
 **Solution**: AI analyzes changes and generates professional messages
+
 - Instant generation (no thinking required)
 - Always follows best practices
 - Identifies scope and type automatically
@@ -259,6 +284,7 @@ git add .
 ## 🤝 Related Plugins
 
 Works great with:
+
 - **git-commit-smart** - Advanced git workflows
 - **devops-automation-pack** - Complete DevOps suite
 - **overnight-dev** - Autonomous coding with auto-commits

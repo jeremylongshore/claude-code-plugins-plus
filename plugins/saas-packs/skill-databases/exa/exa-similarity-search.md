@@ -10,6 +10,7 @@ exa-similarity-search/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement similarity search using Exa's find_similar endpoint for content discovery, recommendations, and related content features.
 **Workflow:** Content discovery skill - enables "more like this" functionality.
 **Relates to:** Follows exa-filters-domains; complementary to exa-embedding-integration

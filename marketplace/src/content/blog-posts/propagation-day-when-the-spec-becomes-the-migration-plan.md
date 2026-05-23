@@ -300,4 +300,3 @@ The next entry in `~/.claude/CLAUDE.md` that needs this treatment is already lin
 - [The Rubric Sits On Top Of The Spec: A Schema Validator Postmortem](/posts/schema-debacle-rubric-on-spec-postmortem/) — what happens when the spec layering breaks down, three days before this post's marketplace migration shipped.
 - [Forty-Four Minutes Before First Pitch: An LLM Fallback Chain and a Live Probability Gauge in One Session](/posts/broadcast-day-llm-fallback-jchads-challenge/) — the same braves-booth dashboard, two days earlier, in incident-response mode.
 - [audit-harness v0.10: Enforcement Travels With the Code](/posts/audit-harness-v010-enforcement-travels-with-code/) — the prior expression of the same mental model, applied to test enforcement infrastructure.
-

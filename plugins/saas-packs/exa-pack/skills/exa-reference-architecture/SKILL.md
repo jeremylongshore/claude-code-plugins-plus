@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Reference Architecture
 
 ## Overview
+
 Production architecture for Exa neural search integration. Covers search service design, content extraction pipeline, RAG integration, domain-scoped search profiles, and caching strategy.
 
 ## Architecture Diagram
@@ -64,6 +65,7 @@ Production architecture for Exa neural search integration. Covers search service
 ## Instructions
 
 ### Step 1: Search Service Layer
+
 ```typescript
 // src/exa/service.ts
 import Exa from "exa-js";
@@ -113,6 +115,7 @@ export async function findRelated(url: string, numResults = 5) {
 ```
 
 ### Step 2: Research Pipeline
+
 ```typescript
 // src/exa/research.ts
 export async function researchTopic(topic: string) {
@@ -151,6 +154,7 @@ export async function researchTopic(topic: string) {
 ```
 
 ### Step 3: RAG Integration Pattern
+
 ```typescript
 // src/exa/rag.ts
 export async function ragSearch(userQuery: string, contextWindow = 5) {
@@ -183,6 +187,7 @@ export async function ragSearch(userQuery: string, contextWindow = 5) {
 ```
 
 ### Step 4: Domain-Specific Search Profiles
+
 ```typescript
 const SEARCH_PROFILES = {
   technical: {
@@ -214,6 +219,7 @@ export async function profiledSearch(
 ```
 
 ### Step 5: Competitor Discovery
+
 ```typescript
 export async function discoverCompetitors(companyUrl: string) {
   const similar = await exa.findSimilarAndContents(companyUrl, {
@@ -233,6 +239,7 @@ export async function discoverCompetitors(companyUrl: string) {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | No results | Query too specific | Broaden query, switch to neural search |
@@ -241,9 +248,11 @@ export async function discoverCompetitors(companyUrl: string) {
 | Rate limit | Too many concurrent requests | Add request queue with 8-10 concurrency |
 
 ## Resources
+
 - [Exa API Documentation](https://docs.exa.ai)
 - [Exa Search Types](https://docs.exa.ai/reference/search)
 - [Exa Contents Retrieval](https://docs.exa.ai/reference/contents-retrieval)
 
 ## Next Steps
+
 For architecture variants at different scales, see `exa-architecture-variants`.

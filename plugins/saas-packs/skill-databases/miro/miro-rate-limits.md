@@ -10,6 +10,7 @@ miro-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Miro rate limiting and backoff
 **Workflow:** Part of the operations skill category for Miro integration.
 **Relates to:** Other miro skills in this pack.

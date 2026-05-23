@@ -10,6 +10,7 @@ webflow-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Webflow CI/CD integration
 **Workflow:** Part of the cicd skill category for Webflow integration.
 **Relates to:** Other webflow skills in this pack.

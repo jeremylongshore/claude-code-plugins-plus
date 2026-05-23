@@ -10,6 +10,7 @@ clerk-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Clerk example
 **Workflow:** Part of the onboarding skill category for Clerk integration.
 **Relates to:** Other clerk skills in this pack.

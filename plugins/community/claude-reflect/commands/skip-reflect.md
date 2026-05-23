@@ -5,6 +5,7 @@ allowed-tools: Bash
 ---
 
 ## Context
+
 - Queue count: !`jq 'length' ~/.claude/learnings-queue.json 2>/dev/null || echo 0`
 
 ## Your Task
@@ -20,14 +21,17 @@ allowed-tools: Bash
 
 3. If user confirms (y/yes):
    - Clear the queue:
+
    ```bash
    echo "[]" > ~/.claude/learnings-queue.json
    ```
+
    - Output: "Discarded [count] learnings. Queue cleared."
 
 4. If user declines (n/no):
    - Output: "Aborted. Run /reflect to process learnings instead."
 
 ## Note
+
 This is an escape hatch for when auto-detection captures false positives
 or learnings aren't worth saving. Use sparingly.

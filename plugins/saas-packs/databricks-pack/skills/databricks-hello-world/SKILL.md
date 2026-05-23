@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Hello World
 
 ## Overview
+
 Create your first Databricks cluster and notebook via the REST API and Python SDK. Covers single-node dev clusters, SQL warehouses, notebook upload, one-time job runs, and Delta Lake smoke tests.
 
 ## Prerequisites
+
 - Completed `databricks-install-auth` setup
 - Workspace access with cluster creation permissions
 - Valid API credentials in env vars or `~/.databrickscfg`
@@ -34,6 +36,7 @@ Create your first Databricks cluster and notebook via the REST API and Python SD
 ## Instructions
 
 ### Step 1: Create a Single-Node Dev Cluster
+
 ```bash
 # POST /api/2.0/clusters/create
 databricks clusters create --json '{
@@ -54,6 +57,7 @@ databricks clusters create --json '{
 ```
 
 Or via Python SDK:
+
 ```python
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.service.compute import AutoScale
@@ -76,6 +80,7 @@ print(f"Cluster ready: {cluster.cluster_id} ({cluster.state})")
 ```
 
 ### Step 2: Create and Upload a Notebook
+
 ```python
 import base64
 from databricks.sdk import WorkspaceClient
@@ -120,6 +125,7 @@ print(f"Notebook created at: {notebook_path}")
 ```
 
 ### Step 3: Run the Notebook as a One-Time Job
+
 ```python
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.service.jobs import SubmitTask, NotebookTask
@@ -145,6 +151,7 @@ print(f"Run {run.run_id}: {run.state.result_state}")
 ```
 
 ### Step 4: Create a Serverless SQL Warehouse
+
 ```python
 from databricks.sdk import WorkspaceClient
 
@@ -169,6 +176,7 @@ print(result.result.data_array)
 ```
 
 ### Step 5: Verify Everything via CLI
+
 ```bash
 # List clusters
 databricks clusters list --output json | jq '.[] | {id: .cluster_id, name: .cluster_name, state: .state}'
@@ -184,6 +192,7 @@ databricks clusters delete --cluster-id 0123-456789-abcde123
 ```
 
 ## Output
+
 - Single-node development cluster created and running
 - Hello world notebook uploaded to workspace
 - Successful notebook execution via runs/submit API
@@ -191,6 +200,7 @@ databricks clusters delete --cluster-id 0123-456789-abcde123
 - Delta table `default.hello_world` created
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `QUOTA_EXCEEDED` | Workspace cluster limit reached | Terminate unused clusters or request quota increase |
@@ -202,6 +212,7 @@ databricks clusters delete --cluster-id 0123-456789-abcde123
 ## Examples
 
 ### Quick Node Type Discovery
+
 ```python
 w = WorkspaceClient()
 # Find cheapest general-purpose instance types
@@ -211,6 +222,7 @@ for nt in sorted(node_types.node_types, key=lambda x: x.memory_mb)[:5]:
 ```
 
 ### List Available Spark Versions
+
 ```python
 w = WorkspaceClient()
 for v in w.clusters.spark_versions().versions:
@@ -219,10 +231,12 @@ for v in w.clusters.spark_versions().versions:
 ```
 
 ## Resources
+
 - [Clusters API](https://docs.databricks.com/api/workspace/clusters)
 - [Jobs API — Submit Run](https://docs.databricks.com/api/workspace/jobs/submit)
 - [Workspace API](https://docs.databricks.com/api/workspace/workspace)
 - [SQL Statement Execution API](https://docs.databricks.com/api/workspace/statementexecution)
 
 ## Next Steps
+
 Proceed to `databricks-local-dev-loop` for local development setup.

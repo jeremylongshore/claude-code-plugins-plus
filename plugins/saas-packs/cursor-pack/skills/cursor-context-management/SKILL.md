@@ -64,30 +64,38 @@ Active context appears as pills at the top of the Chat/Composer panel:
 ## @-Mention Strategy by Task
 
 ### Code Understanding
+
 ```
 @src/auth/middleware.ts @src/types/user.ts
 Explain how the JWT validation works and what happens when a token expires.
 ```
+
 Use `@Files` for specific files. Avoid `@Folders` unless you need the full directory -- it consumes a lot of context.
 
 ### Bug Investigation
+
 ```
 @src/hooks/useCart.ts @Lint Errors @Recent Changes
 The cart total is NaN after the latest changes. What broke?
 ```
+
 `@Recent Changes` + `@Lint Errors` gives the model forensic context.
 
 ### Architecture Questions
+
 ```
 @Codebase where are database queries made?
 ```
+
 `@Codebase` triggers semantic search across the indexed codebase. Good for discovery when you do not know which files are relevant. Costs more context than targeted `@Files` mentions.
 
 ### Using External Knowledge
+
 ```
 @Docs Prisma @Web prisma client extensions 2025
 How do I add soft-delete as a Prisma Client extension?
 ```
+
 `@Docs` uses pre-indexed documentation. `@Web` does a live search. Combine both for comprehensive answers about third-party tools.
 
 ## Context Budget Management

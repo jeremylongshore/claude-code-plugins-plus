@@ -7,6 +7,7 @@
 ## 🎯 What This Plugin Does
 
 Transform travel planning from hours of research into minutes of AI-powered assistance:
+
 - 🌡️ **Real-time weather** - 7-14 day forecasts with packing recommendations
 - 💱 **Currency conversion** - Live exchange rates with budget breakdowns
 - 🗺️ **Smart itineraries** - Personalized day-by-day plans
@@ -19,11 +20,13 @@ Transform travel planning from hours of research into minutes of AI-powered assi
 ## 🚀 Quick Start
 
 ### Installation
+
 ```bash
 /plugin install travel-assistant@claude-code-plugins-plus
 ```
 
 ### Basic Usage
+
 ```bash
 # Complete travel plan
 /travel "Tokyo, Japan" --days 7 --budget 3000
@@ -49,6 +52,7 @@ Transform travel planning from hours of research into minutes of AI-powered assi
 ## 💡 Core Features
 
 ### 1. Complete Travel Planning (`/travel`)
+
 One command for comprehensive trip planning:
 
 ```bash
@@ -56,6 +60,7 @@ One command for comprehensive trip planning:
 ```
 
 **Includes**:
+
 - ✅ 7-14 day weather forecast
 - ✅ Complete budget breakdown
 - ✅ Day-by-day itinerary
@@ -65,11 +70,13 @@ One command for comprehensive trip planning:
 - ✅ Transportation guide
 
 **Multi-city support**:
+
 ```bash
 /travel "Rome → Florence → Venice" --days 12
 ```
 
 ### 2. Weather Intelligence (`/weather`)
+
 Real-time weather with travel insights:
 
 ```bash
@@ -77,6 +84,7 @@ Real-time weather with travel insights:
 ```
 
 **Provides**:
+
 - Current conditions + feels like
 - 7-14 day detailed forecast
 - Best days for outdoor activities
@@ -85,11 +93,13 @@ Real-time weather with travel insights:
 - UV index & air quality
 
 **Compare destinations**:
+
 ```bash
 /weather "Barcelona vs Lisbon vs Athens"
 ```
 
 ### 3. Currency Mastery (`/currency`)
+
 Smart currency conversion and budgeting:
 
 ```bash
@@ -97,6 +107,7 @@ Smart currency conversion and budgeting:
 ```
 
 **Features**:
+
 - Real-time exchange rates
 - 30-day historical trends
 - Budget breakdowns by category
@@ -105,12 +116,14 @@ Smart currency conversion and budgeting:
 - Purchasing power comparison
 
 **Budget planning**:
+
 ```bash
 /currency 3000 USD JPY --budget
 # Shows: per-day spending, category splits, optimization tips
 ```
 
 ### 4. AI Itinerary Generator (`/itinerary`)
+
 Personalized day-by-day travel plans:
 
 ```bash
@@ -118,6 +131,7 @@ Personalized day-by-day travel plans:
 ```
 
 **Optimization**:
+
 - Geographic clustering (minimize travel time)
 - Weather-based scheduling
 - Energy management (intense → relaxed rotation)
@@ -126,11 +140,13 @@ Personalized day-by-day travel plans:
 - Booking requirements noted
 
 **Customization options**:
+
 - `--interests`: food, culture, adventure, nature, art, nightlife
 - `--pace`: relaxed, moderate, packed
 - `--budget`: budget, mid-range, luxury
 
 ### 5. Smart Packing (`/pack`)
+
 Never forget essentials again:
 
 ```bash
@@ -138,6 +154,7 @@ Never forget essentials again:
 ```
 
 **Generates lists based on**:
+
 - Weather forecast (temperature, rain, wind)
 - Planned activities
 - Trip duration
@@ -145,6 +162,7 @@ Never forget essentials again:
 - Season and destination
 
 **Categories**:
+
 - Clothing (weather-appropriate)
 - Electronics & adapters
 - Documents & money
@@ -152,6 +170,7 @@ Never forget essentials again:
 - Activity-specific gear
 
 ### 6. Timezone Coordination (`/timezone`)
+
 Time zone mastery for global travelers:
 
 ```bash
@@ -159,6 +178,7 @@ Time zone mastery for global travelers:
 ```
 
 **Features**:
+
 - Current time in any location
 - UTC offsets & DST status
 - Meeting scheduler
@@ -174,26 +194,34 @@ Time zone mastery for global travelers:
 ## 🤖 AI Agents
 
 ### travel-planner
+
 **Master orchestrator** coordinating all travel aspects
+
 - Synthesizes weather, budget, itinerary
 - Optimizes scheduling
 - Ensures comprehensive planning
 
 ### weather-analyst
+
 **Meteorological expert** for travel timing
+
 - Forecast interpretation
 - Activity-weather matching
 - Seasonal pattern analysis
 
 ### local-expert
+
 **Cultural guide** for authentic experiences
+
 - Customs & etiquette
 - Hidden gems & local favorites
 - Safety tips & scam awareness
 - Language essentials
 
 ### budget-calculator
+
 **Financial planner** for cost optimization
+
 - Accurate cost estimation
 - Budget breakdown by category
 - Money-saving strategies
@@ -204,6 +232,7 @@ Time zone mastery for global travelers:
 ## 🔗 Command Combinations
 
 ### Scenario 1: Planning a Trip
+
 ```bash
 # Step 1: Get complete plan
 /travel "Tokyo" --days 7 --budget 3000
@@ -219,6 +248,7 @@ Time zone mastery for global travelers:
 ```
 
 ### Scenario 2: Budget Optimization
+
 ```bash
 # Check budget
 /currency 2000 USD JPY --budget
@@ -231,6 +261,7 @@ Time zone mastery for global travelers:
 ```
 
 ### Scenario 3: Multi-City Europe Trip
+
 ```bash
 # Plan route
 /travel "Paris → Amsterdam → Berlin" --days 15
@@ -252,6 +283,7 @@ Time zone mastery for global travelers:
 ## ⚙️ Configuration
 
 ### API Keys (Optional)
+
 For real-time data, set up free API keys:
 
 ```bash
@@ -263,6 +295,7 @@ export EXCHANGERATE_API_KEY="your_key_here"
 ```
 
 **Get free keys**:
+
 - Weather: https://openweathermap.org/api (1000 calls/day free)
 - Currency: https://www.exchangerate-api.com (1500 calls/month free)
 - Timezone: WorldTimeAPI (no key needed, unlimited)
@@ -274,6 +307,7 @@ export EXCHANGERATE_API_KEY="your_key_here"
 ## 📊 Real-World Examples
 
 ### Example 1: Solo Backpacker
+
 ```bash
 /travel "Thailand" --days 21 --budget 1500 --interests "beaches,temples,food"
 
@@ -286,6 +320,7 @@ Output:
 ```
 
 ### Example 2: Luxury Couple's Trip
+
 ```bash
 /travel "Maldives" --days 10 --budget 15000 --pace relaxed
 
@@ -299,6 +334,7 @@ Output:
 ```
 
 ### Example 3: Family Vacation
+
 ```bash
 /travel "Orlando, Florida" --days 7 --group "2 adults, 2 kids (ages 6,9)"
 
@@ -311,6 +347,7 @@ Output:
 ```
 
 ### Example 4: Digital Nomad
+
 ```bash
 /travel "Lisbon" --days 30 --work-remote
 
@@ -327,12 +364,14 @@ Output:
 ## 🎯 Pro Tips
 
 ### Maximize Value
+
 1. **Use context**: `/travel Tokyo` then `/weather` auto-uses Tokyo
 2. **Compare destinations**: Find the best weather/budget combo
 3. **Flexible dates**: Get better prices and weather
 4. **Local insights**: Hidden gems beat tourist traps
 
 ### Save Money
+
 - Book flights 6-8 weeks in advance
 - Stay outside tourist centers
 - Eat where locals eat (ask agents!)
@@ -340,6 +379,7 @@ Output:
 - City passes for multiple attractions
 
 ### Pack Smart
+
 - Roll clothes (saves 30% space)
 - Wear bulkiest items on plane
 - Leave 20% space for souvenirs
@@ -351,15 +391,18 @@ Output:
 ## 🔧 Troubleshooting
 
 ### Weather not showing?
+
 - Set `OPENWEATHER_API_KEY` environment variable
 - Or plugin will use seasonal averages
 
 ### Currency not converting?
+
 - Check internet connection
 - Verify currency codes (USD, EUR, GBP, etc.)
 - Plugin falls back to last known rates
 
 ### Itinerary too packed?
+
 - Add `--pace relaxed` flag
 - Reduce daily activities
 - Include rest days for longer trips
@@ -369,11 +412,13 @@ Output:
 ## 📈 Performance
 
 **Time Savings**:
+
 - Manual planning: 4-6 hours
 - With Travel Assistant: 5-10 minutes
 - **Saves**: ~5 hours per trip
 
 **Cost Optimization**:
+
 - Budget recommendations: Save 20-30%
 - Currency tips: Save 5-10% on exchange
 - Hidden gems: Authentic + cheaper experiences
@@ -383,6 +428,7 @@ Output:
 ## 🤝 Integration
 
 Works great with:
+
 - **overnight-dev**: Plan trips while Claude codes overnight
 - **ai-commit-gen**: Commit travel plans to git
 - **devops-automation-pack**: Automate trip documentation
@@ -405,6 +451,7 @@ Works great with:
 ## 🌟 Why Travel Assistant?
 
 **Before**: Hours of research across multiple sites
+
 - Weather.com for forecast
 - XE.com for currency
 - TripAdvisor for attractions
@@ -412,6 +459,7 @@ Works great with:
 - Manual itinerary planning
 
 **After**: One plugin, complete planning
+
 - All data in one place
 - AI-optimized itineraries
 - Context-aware recommendations

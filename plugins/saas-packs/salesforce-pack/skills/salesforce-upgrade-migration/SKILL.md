@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Salesforce Upgrade & Migration
 
 ## Overview
+
 Guide for upgrading Salesforce API versions (v55.0 to v59.0+), migrating between jsforce major versions, and handling Salesforce seasonal release changes.
 
 ## Prerequisites
+
 - Current jsforce or simple-salesforce installed
 - Git for version control
 - Test suite with Salesforce integration tests
@@ -36,6 +38,7 @@ Guide for upgrading Salesforce API versions (v55.0 to v59.0+), migrating between
 ## Instructions
 
 ### Step 1: Check Current Versions
+
 ```bash
 # jsforce version
 npm list jsforce
@@ -91,6 +94,7 @@ const results = await conn.bulk2.loadAndWaitForResults({
 ```
 
 ### Step 4: Update API Version in Code
+
 ```typescript
 // Pin API version explicitly (recommended for stability)
 const conn = new jsforce.Connection({
@@ -106,6 +110,7 @@ const conn = new jsforce.Connection({
 ```
 
 ### Step 5: Create Upgrade Branch and Test
+
 ```bash
 # Create upgrade branch
 git checkout -b upgrade/jsforce-v3
@@ -123,6 +128,7 @@ npm test 2>&1 | grep -i "deprecat"
 ```
 
 ### Step 6: Handle Seasonal Release Breaking Changes
+
 ```typescript
 // Salesforce releases 3 times/year (Spring, Summer, Winter)
 // Check release notes for:
@@ -138,6 +144,7 @@ console.log('Supported versions:', versions.map((v: any) => v.version));
 ```
 
 ## Output
+
 - Updated jsforce/simple-salesforce to latest
 - API version pinned to current stable release
 - Breaking changes identified and resolved
@@ -145,6 +152,7 @@ console.log('Supported versions:', versions.map((v: any) => v.version));
 - Rollback procedure documented
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `UNSUPPORTED_API_VERSION` | API version retired | Upgrade version string in Connection |
@@ -153,10 +161,12 @@ console.log('Supported versions:', versions.map((v: any) => v.version));
 | Bulk API errors | v1 vs v2 API mismatch | Migrate to `conn.bulk2` methods |
 
 ## Resources
+
 - [Salesforce Release Notes](https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm)
 - [jsforce Changelog](https://github.com/jsforce/jsforce/releases)
 - [API Version Lifecycle](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/intro_api_versioning.htm)
 - [Minimum API Version Retirement](https://help.salesforce.com/s/articleView?id=000381744)
 
 ## Next Steps
+
 For CI integration during upgrades, see `salesforce-ci-integration`.

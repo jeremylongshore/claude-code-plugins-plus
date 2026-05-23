@@ -5,6 +5,7 @@ Detailed implementation reference for the speak-ci-integration skill.
 ## Instructions
 
 ### Step 1: API Validation Workflow
+
 ```yaml
 # .github/workflows/speak-tests.yml
 name: Speak API Tests
@@ -35,6 +36,7 @@ jobs:
 ```
 
 ### Step 2: API Response Regression Tests
+
 ```typescript
 // tests/speak/api-regression.test.ts
 import { describe, it, expect } from 'vitest';
@@ -101,6 +103,7 @@ describe('Speak API Regression', () => {
 ```
 
 ### Step 3: Lesson Content Validation Script
+
 ```typescript
 // scripts/validate-lessons.ts
 import { readdirSync, readFileSync } from 'fs';
@@ -144,6 +147,7 @@ if (errors > 0) {
 ```
 
 ### Step 4: Audio Test Fixture Management
+
 ```yaml
 # .github/workflows/speak-fixtures.yml
 name: Validate Test Fixtures
@@ -173,4 +177,3 @@ jobs:
             echo "OK: $file ($size bytes)"
           done
 ```
-

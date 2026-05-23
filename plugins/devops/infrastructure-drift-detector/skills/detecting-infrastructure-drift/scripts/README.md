@@ -5,6 +5,7 @@ This directory contains optional helper scripts that support this skill's functi
 ## Purpose
 
 Scripts here can be:
+
 - Referenced by the skill for automation
 - Used as examples for users
 - Executed during skill activation

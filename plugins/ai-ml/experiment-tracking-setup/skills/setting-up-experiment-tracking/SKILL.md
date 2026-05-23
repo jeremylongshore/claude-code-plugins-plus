@@ -34,6 +34,7 @@ This skill streamlines the process of setting up experiment tracking for machine
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Start tracking machine learning experiments in a new project.
 - Integrate experiment tracking into an existing ML project.
 - Quickly set up MLflow or Weights & Biases for experiment management.
@@ -46,6 +47,7 @@ This skill activates when you need to:
 User request: "track experiments using mlflow"
 
 The skill will:
+
 1. Install the `mlflow` Python package.
 2. Generate example code for logging parameters, metrics, and artifacts to an MLflow server.
 
@@ -54,6 +56,7 @@ The skill will:
 User request: "setup experiment tracking with wandb"
 
 The skill will:
+
 1. Install the `wandb` Python package.
 2. Generate example code for initializing W&B and logging experiment data.
 

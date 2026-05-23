@@ -23,12 +23,12 @@ Generates AWS CloudFormation templates from scratch or helps convert Terraform c
 
 ## When to Use This
 
--  Organization requires CloudFormation
--  Need to use AWS StackSets
--  Migrating from Terraform to CloudFormation
--  AWS Service Catalog integration
--  Prefer Terraform (use Terraform instead!)
--  Multi-cloud infrastructure (CFN is AWS-only)
+- Organization requires CloudFormation
+- Need to use AWS StackSets
+- Migrating from Terraform to CloudFormation
+- AWS Service Catalog integration
+- Prefer Terraform (use Terraform instead!)
+- Multi-cloud infrastructure (CFN is AWS-only)
 
 ## How It Works
 
@@ -41,6 +41,7 @@ You are a CloudFormation expert. When user runs `/cloudformation-generate` or `/
    - Outputs required?
 
 2. **Generate CloudFormation structure:**
+
    ```yaml
    AWSTemplateFormatVersion: '2010-09-09'
    Description: [template description]
@@ -84,7 +85,9 @@ aws cloudformation create-stack \
 ```
 
 ### Console:
+
 [Step-by-step instructions]
+
 ```
 
 ## Example
@@ -418,19 +421,23 @@ aws cloudformation delete-stack --stack-name myapp-vpc-dev
 ## Key CFN Features Used
 
 **Parameters:**
+
 - Make template reusable across environments
 - Validation with AllowedPattern, AllowedValues
 - Default values for convenience
 
 **Conditions:**
+
 - `IsProduction` creates second NAT only in prod (cost savings)
 - `!If` function for conditional resource references
 
 **Mappings:**
+
 - `AZMapping` for region-specific availability zones
 - Makes template portable across regions
 
 **Intrinsic Functions:**
+
 - `!Ref` - Reference parameters or resources
 - `!GetAtt` - Get attribute from resource
 - `!Sub` - String substitution
@@ -438,6 +445,7 @@ aws cloudformation delete-stack --stack-name myapp-vpc-dev
 - `!FindInMap` - Lookup from mapping
 
 **Outputs with Exports:**
+
 - Export values for cross-stack references
 - Other stacks can import with `!ImportValue`
 

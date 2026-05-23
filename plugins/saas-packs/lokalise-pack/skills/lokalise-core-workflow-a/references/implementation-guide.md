@@ -5,6 +5,7 @@ Detailed implementation reference for the lokalise-core-workflow-a skill.
 ## Instructions
 
 ### Step 1: Upload Source File via CLI
+
 ```bash
 # Basic file upload
 lokalise2 \
@@ -32,6 +33,7 @@ lokalise2 \
 ```
 
 ### Step 2: Upload via SDK (Async Process)
+
 ```typescript
 import { LokaliseApi } from "@lokalise/node-api";
 import fs from "fs";
@@ -92,6 +94,7 @@ async function pollUploadProcess(projectId: string, processId: string) {
 ```
 
 ### Step 3: Create Keys Programmatically
+
 ```typescript
 async function createKeys(projectId: string) {
   const keys = await lokaliseApi.keys().create({
@@ -135,6 +138,7 @@ async function createKeys(projectId: string) {
 ```
 
 ### Step 4: Update Existing Keys
+
 ```typescript
 async function updateKey(projectId: string, keyId: number) {
   const updated = await lokaliseApi.keys().update(keyId, {
@@ -163,6 +167,7 @@ async function bulkUpdateKeys(projectId: string, keyIds: number[], updates: obje
 ```
 
 ### Step 5: Manage Key Tags
+
 ```typescript
 async function tagKeys(projectId: string, keyIds: number[], tags: string[]) {
   // Add tags to keys
@@ -188,10 +193,10 @@ async function getKeysByTag(projectId: string, tag: string) {
 }
 ```
 
-
 ## Detailed Examples
 
 ### Supported File Formats
+
 ```typescript
 // Lokalise supports many formats
 const supportedFormats = [
@@ -210,6 +215,7 @@ const supportedFormats = [
 ```
 
 ### Upload with Cleanup Options
+
 ```bash
 lokalise2 file upload \
   --token "$LOKALISE_API_TOKEN" \
@@ -223,6 +229,7 @@ lokalise2 file upload \
 ```
 
 ### Batch File Upload
+
 ```typescript
 async function uploadAllLocales(projectId: string, localesDir: string) {
   const files = fs.readdirSync(localesDir)
@@ -240,4 +247,3 @@ async function uploadAllLocales(projectId: string, localesDir: string) {
   }
 }
 ```
-

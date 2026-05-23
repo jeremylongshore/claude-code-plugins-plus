@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Local Dev Loop
 
 ## Overview
+
 Run Vercel serverless functions and API routes locally using `vercel dev`. Covers environment variable management, hot reload, local testing patterns, and framework-specific dev servers.
 
 ## Prerequisites
+
 - Completed `vercel-install-auth` setup
 - Project linked via `vercel link`
 - Node.js 18+ with npm/pnpm
@@ -37,6 +39,7 @@ Run Vercel serverless functions and API routes locally using `vercel dev`. Cover
 ## Instructions
 
 ### Step 1: Pull Environment Variables
+
 ```bash
 # Pull env vars from Vercel to local .env files
 vercel env pull .env.development.local
@@ -49,6 +52,7 @@ vercel env pull .env.development.local
 ```
 
 ### Step 2: Start Local Dev Server
+
 ```bash
 # vercel dev starts a local server that emulates the Vercel platform
 vercel dev
@@ -65,6 +69,7 @@ vercel dev --debug
 ```
 
 `vercel dev` provides:
+
 - Serverless function emulation at `/api/*` routes
 - Automatic TypeScript compilation
 - `vercel.json` rewrites, redirects, and headers applied locally
@@ -72,6 +77,7 @@ vercel dev --debug
 - Framework detection (Next.js, Nuxt, SvelteKit, etc.)
 
 ### Step 3: Test Serverless Functions Locally
+
 ```bash
 # Test your API route
 curl http://localhost:3000/api/hello
@@ -87,6 +93,7 @@ curl "http://localhost:3000/api/search?q=vercel&limit=10"
 ```
 
 ### Step 4: Framework-Specific Dev Servers
+
 For frameworks with their own dev server, use those instead of `vercel dev`:
 
 ```bash
@@ -107,6 +114,7 @@ npx astro dev
 The framework dev servers handle API routes natively. Use `vercel dev` only for plain serverless function projects without a framework.
 
 ### Step 5: Local Environment Variable Management
+
 ```bash
 # Add a new env var for development only
 vercel env add MY_VAR development
@@ -123,6 +131,7 @@ vercel env pull .env.development.local
 ```
 
 ### Step 6: Testing with Vitest
+
 ```typescript
 // api/__tests__/hello.test.ts
 import { describe, it, expect, vi } from 'vitest';
@@ -157,6 +166,7 @@ describe('GET /api/hello', () => {
 ```
 
 ## `.env` File Hierarchy
+
 Vercel loads environment files in this order (later files override earlier):
 
 | File | Environment | Git |
@@ -167,12 +177,14 @@ Vercel loads environment files in this order (later files override earlier):
 | `.env.development.local` | Development (local only) | Ignore |
 
 ## Output
+
 - Local dev server running with serverless function emulation
 - Environment variables synced from Vercel to local `.env` files
 - Hot reload on file changes
 - Test suite for serverless function handlers
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `vercel dev` hangs on start | Port already in use | Kill the process on port 3000 or use `--listen 8080` |
@@ -182,10 +194,12 @@ Vercel loads environment files in this order (later files override earlier):
 | TypeScript errors in `api/` | Missing `@vercel/node` types | `npm install --save-dev @vercel/node` |
 
 ## Resources
+
 - [Vercel Dev Command](https://vercel.com/docs/cli/dev)
 - [Environment Variables](https://vercel.com/docs/environment-variables)
 - [Vercel Functions](https://vercel.com/docs/functions)
 - [Vitest Documentation](https://vitest.dev/)
 
 ## Next Steps
+
 Proceed to `vercel-sdk-patterns` for production-ready REST API integration patterns.

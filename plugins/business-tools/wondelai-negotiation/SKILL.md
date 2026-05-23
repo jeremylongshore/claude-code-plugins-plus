@@ -30,6 +30,7 @@ Tactical empathy-based negotiation framework from FBI hostage negotiator Chris V
 **Why it works:** When people feel understood, brain chemistry shifts toward trust and cooperation. Empathy short-circuits defensive reactions and opens the door to genuine dialogue. It is not agreement -- you can understand their position while advocating for your own.
 
 **Key insights:**
+
 - Before responding, ask: "What is their world like right now?"
 - Articulate their situation, pressures, and fears before stating your position
 - Empathy must be genuine, not performed -- people detect fakeness instantly
@@ -48,6 +49,7 @@ Tactical empathy-based negotiation framework from FBI hostage negotiator Chris V
 | **Contract renewals** | Recognize changing needs | "It seems like your priorities have shifted since we last spoke" |
 
 **Copy patterns:**
+
 - "I understand you're dealing with..."
 - "It seems like this is creating pressure for your team..."
 - "I can see why this feels risky..."
@@ -64,6 +66,7 @@ See: [references/techniques.md](references/techniques.md)
 **Why it works:** Mirroring creates familiarity and rapport by signaling deep listening. It prompts elaboration without direct questions, making people feel heard while revealing more information than they intended to share.
 
 **Key insights:**
+
 - Listen for the key phrase or emotion-laden words
 - Repeat them back as a gentle question with upward inflection
 - Wait silently (4+ seconds) for them to expand
@@ -82,6 +85,7 @@ See: [references/techniques.md](references/techniques.md)
 | **Feedback sessions** | Encourage elaboration on vague feedback | "Not quite what you expected?" |
 
 **Copy patterns:**
+
 - "[Key phrase they used]?" (with question mark)
 - "You mentioned [their exact words]..."
 - "When you say [mirror], what does that look like?"
@@ -98,6 +102,7 @@ See: [references/techniques.md](references/techniques.md)
 **Why it works:** Naming emotions validates them and diffuses their power. Labeling negative emotions reduces their intensity; labeling positive emotions reinforces them. The tentative phrasing ("It seems like...") gives them room to correct you, which deepens the conversation either way.
 
 **Key insights:**
+
 - Always use third-person phrasing ("It seems like..."), never "I think you..."
 - After labeling, be silent -- let them respond
 - Labeling negative emotions diffuses them; labeling positive emotions amplifies them
@@ -116,6 +121,7 @@ See: [references/techniques.md](references/techniques.md)
 | **Churn prevention** | Identify the real reason for leaving | "It sounds like something changed since you first signed up" |
 
 **Copy patterns:**
+
 - "It seems like..."
 - "It sounds like you're feeling..."
 - "It looks like this is creating..."
@@ -132,6 +138,7 @@ See: [references/techniques.md](references/techniques.md)
 **Why it works:** Calibrated questions engage the counterpart's problem-solving mind, making them feel in charge while you steer the dialogue. They avoid defensiveness that "Why?" creates (which sounds accusatory) and force the other side to consider your position without you stating it directly.
 
 **Key insights:**
+
 - Start with "How" or "What" -- avoid "Why" (sounds accusatory)
 - "How am I supposed to do that?" is the most powerful pushback without saying no
 - Questions should be genuinely collaborative, not sarcastic
@@ -150,6 +157,7 @@ See: [references/techniques.md](references/techniques.md)
 | **Feature requests** | Redirect to real needs | "What's the biggest challenge you're trying to solve?" |
 
 **Copy patterns:**
+
 - "How am I supposed to do that?"
 - "What's the biggest challenge you're facing?"
 - "How can we make this work for both of us?"
@@ -167,6 +175,7 @@ See: [references/techniques.md](references/techniques.md)
 **Why it works:** Naming fears and criticisms before the other side does removes their power. It often triggers reassurance ("Oh, I don't think that...") or at minimum neutralizes objections. By addressing elephants in the room first, you demonstrate self-awareness and build trust.
 
 **Key insights:**
+
 - Brainstorm every negative they might think about you or your position before the meeting
 - Deliver the audit early in the conversation, not after they've raised objections
 - The list should feel slightly worse than what they actually think -- it overshoots on purpose
@@ -185,6 +194,7 @@ See: [references/techniques.md](references/techniques.md)
 | **Service failure recovery** | Own the failure fully | "You're probably furious, and you have every right to be..." |
 
 **Copy patterns:**
+
 - "You probably think..."
 - "You may feel like..."
 - "I know this might seem like..."
@@ -201,6 +211,7 @@ See: [references/techniques.md](references/techniques.md)
 **Why it works:** "That's right" signals that the person feels completely understood. It creates genuine rapport and shifts their mindset from adversarial to collaborative. It is fundamentally different from "You're right" (which often means they're dismissing you).
 
 **Key insights:**
+
 - "That's right" is the two most powerful words in negotiation
 - "You're right" is dangerous -- it usually means "go away, I don't want to talk anymore"
 - Listen deeply throughout the conversation before attempting a summary
@@ -220,6 +231,7 @@ See: [references/techniques.md](references/techniques.md)
 | **Negotiation closure** | Confirm understanding before terms | "Let me make sure I understand: you need [X], by [date], and [constraint]..." |
 
 **Copy patterns:**
+
 - "Let me make sure I understand..."
 - "So what you're saying is..."
 - "If I'm hearing you correctly..."
@@ -236,6 +248,7 @@ See: [references/techniques.md](references/techniques.md)
 **Why it works:** Decreasing increments signal that you're approaching your limit. Precise, non-round numbers ($47,235 vs $47,000) feel calculated and final -- as if you've truly pushed to your absolute maximum. The final non-monetary gift signals generosity at the limit, making it psychologically harder for them to ask for more.
 
 **Key insights:**
+
 - Set your target price first (what you actually want to pay/receive)
 - Open at 65% of target to create room for concessions
 - Raise in decreasing increments: 85% -> 95% -> 100%
@@ -255,6 +268,7 @@ See: [references/techniques.md](references/techniques.md)
 | **Freelance rates** | Project-based negotiation | Anchor with lower scope, expand incrementally with precise totals |
 
 **Copy patterns:**
+
 - "Based on our analysis, we can offer $[precise number]..."
 - "We've stretched as far as we can -- $[precise number], and we'll include [non-monetary bonus]"
 - "I've gone back to my team and the absolute best we can do is $[precise number]"
@@ -271,6 +285,7 @@ See: [references/techniques.md](references/techniques.md)
 **Why it works:** Negotiations stall or fail when critical information remains hidden. Black Swans are the unknown unknowns -- secret constraints, hidden motivations, or unknown context -- that explain seemingly irrational behavior. Discovering even one can turn a stalemate into a breakthrough.
 
 **Key insights:**
+
 - Every negotiation has approximately 3 Black Swans lurking
 - Types: secret constraints (boss said no more than X), hidden motivations (need this deal to save their job), unknown context (competitor just made a move)
 - Stay curious; ask calibrated questions to surface them
@@ -290,6 +305,7 @@ See: [references/techniques.md](references/techniques.md)
 | **Competitive situations** | Reveal information about competing offers | "It sounds like you're weighing other options -- what would help you decide?" |
 
 **Copy patterns:**
+
 - "What's the biggest thing I'm missing here?"
 - "What would change everything about this situation?"
 - "Help me understand -- what's really driving this?"
@@ -302,15 +318,19 @@ See: [references/techniques.md](references/techniques.md)
 ## Handling Common Situations
 
 **They say "That's not fair":**
+
 - Stop immediately: "I want to be fair. Have I done something unfair? Let's discuss it."
 
 **They anchor with an extreme number:**
+
 - Don't counter immediately; use calibrated questions: "How did you arrive at that figure?"
 
 **They stop responding:**
+
 - Send: "Have you given up on [the project]?" -- triggers "No" response
 
 **They seem irrational:**
+
 - Diagnose: Are they (1) ill-informed, (2) constrained, or (3) hiding something?
 - Use calibrated questions to uncover which
 

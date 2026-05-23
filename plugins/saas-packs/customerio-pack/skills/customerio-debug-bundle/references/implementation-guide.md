@@ -3,9 +3,11 @@
 # Customer.io Debug Bundle
 
 ## Overview
+
 Collect comprehensive debug information for Customer.io support tickets and troubleshooting.
 
 ## Prerequisites
+
 - Customer.io API credentials
 - Access to application logs
 - User ID or email of affected user
@@ -13,6 +15,7 @@ Collect comprehensive debug information for Customer.io support tickets and trou
 ## Instructions
 
 ### Step 1: Create Debug Script
+
 ```bash
 #!/bin/bash
 # debug-customerio.sh
@@ -49,6 +52,7 @@ echo "Debug bundle created: $OUTPUT_DIR"
 ```
 
 ### Step 2: Collect User-Specific Data
+
 ```typescript
 // scripts/debug-user.ts
 import { TrackClient, RegionUS } from '@customerio/track';
@@ -102,6 +106,7 @@ debugUser(process.argv[2] || 'debug-user');
 ```
 
 ### Step 3: Collect Application Logs
+
 ```typescript
 // lib/customerio-logger.ts
 import { createWriteStream } from 'fs';
@@ -157,6 +162,7 @@ class CustomerIOLogger {
 ```
 
 ### Step 4: Generate Support Report
+
 ```typescript
 // scripts/generate-support-report.ts
 interface SupportReport {
@@ -213,6 +219,7 @@ function generateReport(): SupportReport {
 ```
 
 ### Step 5: Bundle and Submit
+
 ```bash
 #!/bin/bash
 # Create debug bundle archive
@@ -234,6 +241,7 @@ echo "Submit to: support@customer.io"
 ```
 
 ## Output
+
 - Debug script for API testing
 - User-specific diagnostic data
 - Application log collection
@@ -241,6 +249,7 @@ echo "Submit to: support@customer.io"
 - Compressed debug bundle
 
 ## Error Handling
+
 | Issue | Solution |
 |-------|----------|
 | Logs too large | Use `tail -n 1000` to limit |
@@ -248,8 +257,10 @@ echo "Submit to: support@customer.io"
 | Missing permissions | Check file read access |
 
 ## Resources
+
 - [Customer.io Support](https://customer.io/contact/)
 - [API Status](https://status.customer.io/)
 
 ## Next Steps
+
 After creating debug bundle, proceed to `customerio-rate-limits` to understand API limits.

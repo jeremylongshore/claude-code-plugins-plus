@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Local Dev Loop
 
 ## Overview
+
 Configure an efficient local development environment for Evernote API integration with sandbox testing, hot reload, ENML helpers, and a local Express server for OAuth testing.
 
 ## Prerequisites
+
 - Completed `evernote-install-auth` setup
 - Node.js 18+ or Python 3.10+
 - Evernote sandbox account at https://sandbox.evernote.com
@@ -99,6 +101,7 @@ Create a `scripts/test-connection.js` that verifies SDK setup by calling `userSt
 For the full project setup, Express server, ENML utilities, and test scripts, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
+
 - Project structure with services, utils, and middleware directories
 - Environment configuration for sandbox and production
 - Client factory with Developer Token and OAuth support
@@ -107,6 +110,7 @@ For the full project setup, Express server, ENML utilities, and test scripts, se
 - Connection test script for quick verification
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `EVERNOTE_DEV_TOKEN not set` | Missing dev token | Get from `sandbox.evernote.com/api/DeveloperToken.action` |
@@ -115,11 +119,13 @@ For the full project setup, Express server, ENML utilities, and test scripts, se
 | Port already in use | Another process on port 3000 | Change `PORT` in `.env` or kill the process |
 
 ## Resources
+
 - [Sandbox Environment](https://sandbox.evernote.com)
 - [Developer Tokens](https://dev.evernote.com/doc/articles/dev_tokens.php)
 - [OAuth Guide](https://dev.evernote.com/doc/articles/authentication.php)
 
 ## Next Steps
+
 Proceed to `evernote-sdk-patterns` for advanced SDK usage patterns.
 
 ## Examples

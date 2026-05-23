@@ -127,6 +127,7 @@ make_repro({
 The debugging workflow produces:
 
 ### From explain_failure:
+
 - **Severity**: critical | high | medium | low
 - **Possible Causes**: List of likely root causes
 - **Suggested Fixes**: Actionable remediation steps
@@ -134,6 +135,7 @@ The debugging workflow produces:
 - **Details**: Request/response bodies for inspection
 
 ### From make_repro:
+
 - **cURL Command**: Copy-paste ready command
 - **HTTPie Alternative**: Shorter syntax for quick tests
 - **JavaScript fetch**: For integration into automated tests

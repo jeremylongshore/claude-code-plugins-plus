@@ -10,6 +10,7 @@ elevenlabs-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure ElevenLabs SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for ElevenLabs integration.
 **Relates to:** Other elevenlabs skills in this pack.

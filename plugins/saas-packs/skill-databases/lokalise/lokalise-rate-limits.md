@@ -10,6 +10,7 @@ lokalise-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Lokalise rate limiting and backoff
 **Workflow:** Part of the operations skill category for Lokalise integration.
 **Relates to:** Other lokalise skills in this pack.

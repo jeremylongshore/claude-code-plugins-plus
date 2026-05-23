@@ -106,38 +106,45 @@ This skill follows a pipeline pattern where market data flows through sequential
 ### Level 1: Quick Scan (Beginner)
 
 **Command:**
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/scanner.py
 ```
 
 **What happens:**
+
 - Uses default thresholds (5% change, 2x volume, $10M+ market cap)
 - Returns top 20 gainers and top 20 losers
 - Table output with essential columns
 
 **User learns:**
+
 - Basic scanner invocation
 - Default output format
 
 ### Level 2: Custom Thresholds (Intermediate)
 
 **Command:**
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-change 10 --volume-spike 3x --top 50
 ```
 
 **What happens:**
+
 - User customizes thresholds
 - More selective filtering
 - Larger result set
 
 **User learns:**
+
 - Threshold configuration
 - Result set control
 
 ### Level 3: Full Configuration (Advanced)
 
 **Command:**
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/scanner.py \
   --preset aggressive \
@@ -148,12 +155,14 @@ python ${CLAUDE_SKILL_DIR}/scripts/scanner.py \
 ```
 
 **What happens:**
+
 - Named preset for common configurations
 - Category filtering for sector focus
 - Custom sort criteria
 - Export to file
 
 **User learns:**
+
 - Preset system
 - Category filtering
 - Export workflows

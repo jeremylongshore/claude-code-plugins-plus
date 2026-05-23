@@ -17,6 +17,7 @@ An overview of the code review ecosystem for GitHub. Depth of explanation adapts
 **What it does:** AI-powered code review that posts detailed, contextual inline comments on PRs. Understands the full context of changes, not just syntax.
 
 **Key features:**
+
 - Inline PR comments with explanations and fix suggestions
 - Understands project context and patterns
 - Configurable review depth and focus areas
@@ -33,6 +34,7 @@ An overview of the code review ecosystem for GitHub. Depth of explanation adapts
 **What it does:** GitHub's built-in AI review, integrated directly into the PR interface. Powered by the same models behind GitHub Copilot.
 
 **Key features:**
+
 - Native GitHub integration — no extra app to install
 - Suggests code improvements inline
 - Available with GitHub Copilot subscription
@@ -46,6 +48,7 @@ An overview of the code review ecosystem for GitHub. Depth of explanation adapts
 **What it does:** AI code review that builds a deep understanding of your codebase. Goes beyond single-file review to understand architectural patterns and cross-file dependencies.
 
 **Key features:**
+
 - Codebase-aware review (understands how files relate)
 - Catches architectural issues, not just syntax
 - Natural language explanations
@@ -59,6 +62,7 @@ An overview of the code review ecosystem for GitHub. Depth of explanation adapts
 **What it does:** Static analysis that finds security vulnerabilities and bugs by treating code as data. Queries the code structure to find patterns that match known vulnerability classes.
 
 **Key features:**
+
 - Security-focused: finds SQL injection, XSS, auth bypass, etc.
 - Runs as GitHub Actions workflow
 - Free for public repositories
@@ -75,6 +79,7 @@ An overview of the code review ecosystem for GitHub. Depth of explanation adapts
 **What it does:** AI-powered test generation and code review. Focuses on suggesting tests for your changes and finding edge cases.
 
 **Key features:**
+
 - Auto-generates test suggestions for PRs
 - Identifies untested edge cases
 - Reviews code for potential bugs

@@ -10,6 +10,7 @@ klaviyo-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Klaviyo example
 **Workflow:** Part of the onboarding skill category for Klaviyo integration.
 **Relates to:** Other klaviyo skills in this pack.

@@ -8,6 +8,6 @@ Bundled resources for resource-usage-tracker skill
 - [x] right_sizing_recommendation.py: Script to provide right-sizing recommendations based on historical resource usage data.
 - [x] cost_optimization.py: Script to provide cost optimization insights based on resource usage and cloud pricing models.
 
-
 ## Auto-Generated
+
 Scripts generated on 2025-12-10 03:48:17

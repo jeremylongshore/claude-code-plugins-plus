@@ -10,6 +10,7 @@ exa-search-quality/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement search quality measurement with relevance scoring, A/B testing, and quality dashboards for continuous improvement.
 **Workflow:** Search quality engineering skill - enables data-driven search optimization.
 **Relates to:** Follows exa-search-modes; integrates with exa-ci-integration

@@ -10,6 +10,7 @@ miro-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Miro advanced debugging
 **Workflow:** Part of the enterprise skill category for Miro integration.
 **Relates to:** Other miro skills in this pack.

@@ -5,6 +5,7 @@
 ## Detailed Instructions
 
 ### Step 1: Configure Development Vault
+
 ```bash
 mkdir -p ~/ObsidianDev/.obsidian/plugins
 mkdir -p ~/ObsidianDev/Test\ Notes
@@ -40,6 +41,7 @@ if (process.env.NODE_ENV !== 'production') {
 ```
 
 ### Debug Logging Utility
+
 ```typescript
 // src/debug.ts
 const DEBUG = process.env.NODE_ENV !== 'production';
@@ -59,6 +61,7 @@ export function debugTime(label: string) {
 ```
 
 ### VSCode Tasks
+
 ```json
 // .vscode/tasks.json
 {
@@ -88,16 +91,15 @@ export function debugTime(label: string) {
 }
 ```
 
-
 ## Section 1
 
 Some content here.
-
 
 ## Section 2
 
 More content with [[links]] and #tags.
 EOF
+
 ```
 
 ### Step 2: Link Plugin for Development
@@ -110,6 +112,7 @@ ls -la ~/ObsidianDev/.obsidian/plugins/
 ```
 
 ### Step 3: Configure Hot-Reload with BRAT
+
 ```markdown
 1. In Obsidian, go to Settings > Community plugins
 2. Browse and install "BRAT" (Beta Reviewers Auto-update Tester)
@@ -119,6 +122,7 @@ ls -la ~/ObsidianDev/.obsidian/plugins/
 ```
 
 ### Step 4: Configure esbuild for Watch Mode
+
 ```javascript
 // esbuild.config.mjs
 import esbuild from "esbuild";
@@ -147,6 +151,7 @@ if (prod) {
 ```
 
 ### Step 5: Add npm Scripts
+
 ```json
 {
   "scripts": {
@@ -160,6 +165,7 @@ if (prod) {
 ```
 
 ### Step 6: Start Development
+
 ```bash
 npm run dev
 

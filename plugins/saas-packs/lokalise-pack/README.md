@@ -15,6 +15,7 @@ Provides production-grade guidance for `@lokalise/node-api` SDK (ESM v9+), `loka
 ## Skills
 
 ### Getting Started (S01-S04)
+
 | Skill | What It Does |
 |-------|-------------|
 | `lokalise-install-auth` | Install SDK/CLI, generate API tokens, verify connection |
@@ -23,6 +24,7 @@ Provides production-grade guidance for `@lokalise/node-api` SDK (ESM v9+), `loka
 | `lokalise-sdk-patterns` | Client singleton, cursor pagination, typed errors, batch ops, retry/rate-limit |
 
 ### Core Workflows (S05-S08)
+
 | Skill | What It Does |
 |-------|-------------|
 | `lokalise-core-workflow-a` | Upload source files, create/update keys, tag and bulk operations |
@@ -31,6 +33,7 @@ Provides production-grade guidance for `@lokalise/node-api` SDK (ESM v9+), `loka
 | `lokalise-debug-bundle` | Collect env info, API connectivity, project stats, redacted logs into tar.gz |
 
 ### Reliability (S09-S12)
+
 | Skill | What It Does |
 |-------|-------------|
 | `lokalise-rate-limits` | Request queue (170ms spacing), exponential backoff, quota monitoring |
@@ -39,6 +42,7 @@ Provides production-grade guidance for `@lokalise/node-api` SDK (ESM v9+), `loka
 | `lokalise-upgrade-migration` | SDK v8 CJS to v9 ESM migration, pagination changes, breaking change detection |
 
 ### Pro (P13-P18)
+
 | Skill | What It Does |
 |-------|-------------|
 | `lokalise-ci-integration` | GitHub Actions upload/download, PR translation checks, branch-based workflows |
@@ -49,6 +53,7 @@ Provides production-grade guidance for `@lokalise/node-api` SDK (ESM v9+), `loka
 | `lokalise-reference-architecture` | Architecture diagram, project structure, OTA vs build-time, TypeScript types |
 
 ### Flagship (F19-F24)
+
 | Skill | What It Does |
 |-------|-------------|
 | `lokalise-multi-env-setup` | Dev/staging/prod isolation, secret management, promotion workflow |

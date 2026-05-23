@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral AI Events, Agents & Async Patterns
 
 ## Overview
+
 Async and event-driven patterns for Mistral AI: the Agents API for stateful multi-turn workflows, Batch API for cost-effective bulk inference (50% cheaper), SSE streaming endpoints, background job queues, and Python async processing. Mistral does not have native webhooks — this skill covers the patterns that replace them.
 
 ## Prerequisites
+
 - `@mistralai/mistralai` SDK installed
 - `MISTRAL_API_KEY` configured
 - For agents: La Plateforme access to create agents
@@ -282,6 +284,7 @@ results = asyncio.run(process_batch([
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Batch job stuck | Processing queue full | Check status, resubmit if FAILED |
@@ -290,12 +293,14 @@ results = asyncio.run(process_batch([
 | SSE disconnected | Client/network timeout | Implement reconnection logic |
 
 ## Resources
+
 - [Agents API](https://docs.mistral.ai/agents/agents/)
 - [Batch Inference](https://docs.mistral.ai/capabilities/batch/)
 - [Streaming](https://docs.mistral.ai/capabilities/completion/)
 - [BullMQ Docs](https://docs.bullmq.io/)
 
 ## Output
+
 - Agents API integration for stateful workflows
 - Batch API for 50%-cheaper bulk processing
 - Event-driven streaming architecture

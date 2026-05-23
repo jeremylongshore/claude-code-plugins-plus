@@ -27,6 +27,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq Cost Tuning
 
 ## Overview
+
 Optimize Groq inference costs through smart model routing, token minimization, and caching. Groq pricing is already extremely competitive, but at high volume the savings from routing classification to 8B vs 70B are 12x per request.
 
 ## Groq Pricing (per million tokens)
@@ -44,6 +45,7 @@ Check current pricing at [groq.com/pricing](https://groq.com/pricing).
 ## Instructions
 
 ### Step 1: Smart Model Routing
+
 ```typescript
 import Groq from "groq-sdk";
 
@@ -74,6 +76,7 @@ function getModel(useCase: string): string {
 ```
 
 ### Step 2: Minimize Tokens Per Request
+
 ```typescript
 // COST SAVINGS: Reduce system prompt tokens
 // Groq charges for BOTH input and output tokens
@@ -100,6 +103,7 @@ async function cheapClassify(text: string): Promise<string> {
 ```
 
 ### Step 3: Batch to Reduce Overhead
+
 ```typescript
 // Batch 10 items in one request instead of 10 separate requests
 // Saves on per-request overhead and reduces RPM usage
@@ -130,6 +134,7 @@ async function batchClassify(items: string[]): Promise<string[]> {
 ```
 
 ### Step 4: Cache Deterministic Requests
+
 ```typescript
 import { createHash } from "crypto";
 
@@ -162,6 +167,7 @@ async function cachedCompletion(
 ```
 
 ### Step 5: Usage Tracking
+
 ```typescript
 interface UsageRecord {
   timestamp: string;
@@ -204,7 +210,9 @@ function dailyCostReport(): { totalCost: string; byModel: Record<string, string>
 ```
 
 ### Step 6: Spending Limits in Console
+
 In Groq Console > Organization > Billing:
+
 1. Set monthly spending cap (e.g., $100/month)
 2. Enable alerts at 50% ($50) and 80% ($80)
 3. Configure auto-pause when cap is reached
@@ -213,6 +221,7 @@ In Groq Console > Organization > Billing:
 Check your limits at [console.groq.com/settings/limits](https://console.groq.com/settings/limits).
 
 ## Cost Comparison Example
+
 Processing 100,000 customer messages:
 
 | Strategy | Model | Est. Cost |
@@ -223,6 +232,7 @@ Processing 100,000 customer messages:
 | + Batching (10 per request) | 8b-instant | ~$2.00 |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Costs higher than expected | 70B for simple tasks | Route classification/extraction to 8B |
@@ -231,9 +241,11 @@ Processing 100,000 customer messages:
 | Rate limits causing retries | RPM cap hit | Batch requests, spread across time |
 
 ## Resources
+
 - [Groq Pricing](https://groq.com/pricing)
 - [Groq Spend Limits](https://console.groq.com/docs/spend-limits)
 - [Groq Usage Dashboard](https://console.groq.com/settings/usage)
 
 ## Next Steps
+
 For architecture patterns, see `groq-reference-architecture`.

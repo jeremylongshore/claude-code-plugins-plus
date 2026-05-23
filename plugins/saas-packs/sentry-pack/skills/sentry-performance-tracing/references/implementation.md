@@ -1,6 +1,7 @@
-# Implementation Guide
+## Implementation Guide
 
 ### Step 1: Enable Performance Monitoring
+
 ```typescript
 import * as Sentry from '@sentry/node';
 
@@ -24,6 +25,7 @@ Sentry.init({
 ```
 
 ### Step 2: Create Transactions
+
 ```typescript
 // Automatic transactions for HTTP (enabled by default)
 // Manual transactions for custom operations
@@ -42,6 +44,7 @@ try {
 ```
 
 ### Step 3: Add Spans
+
 ```typescript
 const transaction = Sentry.getCurrentHub().getScope()?.getTransaction();
 
@@ -61,6 +64,7 @@ if (transaction) {
 ```
 
 ### Step 4: Distributed Tracing
+
 ```typescript
 // Client side - include trace headers
 const transaction = Sentry.getCurrentHub().getScope()?.getTransaction();

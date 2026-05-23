@@ -19,9 +19,11 @@ compatibility: Designed for Claude Code
 # AppFolio SDK Patterns
 
 ## Overview
+
 Production-ready patterns for the AppFolio property management REST API. AppFolio uses HTTP Basic Auth with client credentials and returns JSON responses for properties, tenants, leases, and work orders. A structured singleton client prevents credential sprawl, enforces consistent error handling, and centralizes pagination logic across all property management endpoints.
 
 ## Singleton Client
+
 ```typescript
 import axios, { AxiosInstance } from 'axios';
 let _client: AxiosInstance | null = null;
@@ -38,6 +40,7 @@ export function getClient(): AxiosInstance {
 ```
 
 ## Error Wrapper
+
 ```typescript
 export class AppFolioError extends Error {
   constructor(public status: number, public code: string, message: string) { super(message); }
@@ -54,6 +57,7 @@ export async function safeCall<T>(operation: string, fn: () => Promise<T>): Prom
 ```
 
 ## Request Builder
+
 ```typescript
 class AppFolioQuery {
   private params: Record<string, string> = {};
@@ -68,6 +72,7 @@ class AppFolioQuery {
 ```
 
 ## Response Types
+
 ```typescript
 interface Property {
   id: string; name: string; property_type: 'residential' | 'commercial' | 'mixed';
@@ -90,6 +95,7 @@ interface WorkOrder {
 ```
 
 ## Testing Utilities
+
 ```typescript
 export function mockProperty(overrides: Partial<Property> = {}): Property {
   return { id: 'prop-001', name: 'Maple Ridge Apts', property_type: 'residential',
@@ -103,6 +109,7 @@ export function mockLease(overrides: Partial<Lease> = {}): Lease {
 ```
 
 ## Error Handling
+
 | Pattern | When to Use | Example |
 |---------|-------------|---------|
 | `safeCall` wrapper | All API calls | Prevents uncaught 4xx/5xx from crashing flows |
@@ -111,7 +118,9 @@ export function mockLease(overrides: Partial<Lease> = {}): Lease {
 | Pagination loop | Listing properties/tenants | Increment `page` until empty response |
 
 ## Resources
+
 - [AppFolio Stack APIs](https://www.appfolio.com/stack/partners/api)
 
 ## Next Steps
+
 Apply patterns in `appfolio-core-workflow-a`.

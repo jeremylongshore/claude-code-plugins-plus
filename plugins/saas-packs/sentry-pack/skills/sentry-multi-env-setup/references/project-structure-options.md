@@ -3,6 +3,7 @@
 ## Project Structure Options
 
 ### Option 1: Single Project, Multiple Environments
+
 ```
 Organization: mycompany
 └── Project: myapp
@@ -15,6 +16,7 @@ Organization: mycompany
 **Cons:** Noisy in development, shared quotas
 
 ### Option 2: Separate Projects Per Environment
+
 ```
 Organization: mycompany
 ├── Project: myapp-development
@@ -26,6 +28,7 @@ Organization: mycompany
 **Cons:** Multiple DSNs to manage
 
 ### Option 3: Hybrid (Recommended)
+
 ```
 Organization: mycompany
 ├── Project: myapp-production    # Production only

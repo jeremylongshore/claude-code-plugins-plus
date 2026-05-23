@@ -10,6 +10,7 @@ exa-filters-domains/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement domain filtering, date ranges, and category filters for precise search targeting and result quality.
 **Workflow:** Precision search skill - essential for focused research and curated content retrieval.
 **Relates to:** Follows exa-search-modes; enhances exa-content-extraction and exa-similarity-search

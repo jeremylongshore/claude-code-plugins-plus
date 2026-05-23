@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Performance Tuning
 
 ## Overview
+
 Optimize Foundry API performance: efficient pagination, client-side caching, batch object retrieval, and Spark transform tuning with `@configure` profiles.
 
 ## Prerequisites
+
 - Completed `palantir-install-auth` setup
 - Working Foundry integration to optimize
 - Access to Foundry build metrics (for transform tuning)
@@ -37,6 +39,7 @@ Optimize Foundry API performance: efficient pagination, client-side caching, bat
 ## Instructions
 
 ### Step 1: Efficient Pagination
+
 ```python
 from functools import lru_cache
 
@@ -59,6 +62,7 @@ def fetch_all_objects(client, ontology: str, object_type: str, page_size: int = 
 ```
 
 ### Step 2: Client-Side Caching
+
 ```python
 from cachetools import TTLCache
 import hashlib, json
@@ -82,6 +86,7 @@ def invalidate_cache(ontology, object_type, primary_key):
 ```
 
 ### Step 3: Batch Object Retrieval
+
 ```python
 def batch_get_objects(client, ontology, object_type, primary_keys, batch_size=50):
     """Retrieve multiple objects using search filter instead of individual GETs."""
@@ -105,6 +110,7 @@ def batch_get_objects(client, ontology, object_type, primary_keys, batch_size=50
 ```
 
 ### Step 4: Transform Build Performance
+
 ```python
 from transforms.api import transform_df, Input, Output, configure, incremental
 
@@ -132,6 +138,7 @@ def daily_summary(data):
 ```
 
 ### Step 5: Connection Pooling
+
 ```python
 import requests
 from requests.adapters import HTTPAdapter
@@ -147,12 +154,14 @@ session.mount("https://", adapter)
 ```
 
 ## Output
+
 - Maximum page size pagination reducing API call count
 - TTL-based caching for repeated object reads
 - Batch search replacing individual GET calls
 - Optimized Spark transforms with `@configure` and `@incremental`
 
 ## Error Handling
+
 | Performance Issue | Diagnosis | Fix |
 |-------------------|-----------|-----|
 | Slow pagination | Small page_size | Increase to 500 (max) |
@@ -162,9 +171,11 @@ session.mount("https://", adapter)
 | Full rebuild on append data | Not incremental | Add `@incremental()` decorator |
 
 ## Resources
+
 - [Transforms @configure](https://www.palantir.com/docs/foundry/api-reference/transforms-python-library/api-configure)
 - [Incremental Transforms](https://www.palantir.com/docs/foundry/transforms-python/transforms-pipelines)
 - [cachetools](https://cachetools.readthedocs.io/)
 
 ## Next Steps
+
 For cost optimization, see `palantir-cost-tuning`.

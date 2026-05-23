@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq Performance Tuning
 
 ## Overview
+
 Maximize Groq's LPU inference speed advantage. Groq already delivers extreme throughput (280-560 tok/s) and low latency (<200ms TTFT), but client-side optimization -- model selection, prompt size, streaming, caching, and parallelism -- determines whether your application fully exploits that speed.
 
 ## Groq Speed Benchmarks
@@ -42,6 +43,7 @@ TTFT = Time to First Token. Actual values depend on prompt size and server load.
 ## Instructions
 
 ### Step 1: Choose the Right Model for Speed
+
 ```typescript
 import Groq from "groq-sdk";
 
@@ -70,6 +72,7 @@ async function tieredCompletion(prompt: string, tier: SpeedTier = "instant") {
 ```
 
 ### Step 2: Minimize Token Count
+
 ```typescript
 // Groq charges per token AND rate limits on TPM
 // Smaller prompts = faster responses + less quota usage
@@ -88,6 +91,7 @@ const efficient = { max_tokens: 5 };   // "positive" is 1 token
 ```
 
 ### Step 3: Streaming for Perceived Performance
+
 ```typescript
 async function streamWithMetrics(
   messages: any[],
@@ -126,6 +130,7 @@ async function streamWithMetrics(
 ```
 
 ### Step 4: Semantic Prompt Cache
+
 ```typescript
 import { LRUCache } from "lru-cache";
 import { createHash } from "crypto";
@@ -162,6 +167,7 @@ async function cachedCompletion(
 ```
 
 ### Step 5: Parallel Request Orchestration
+
 ```typescript
 import PQueue from "p-queue";
 
@@ -191,6 +197,7 @@ async function parallelCompletions(
 ```
 
 ### Step 6: Latency Benchmarking
+
 ```typescript
 async function benchmarkModels(prompt: string, iterations = 3) {
   const models = [
@@ -237,6 +244,7 @@ async function benchmarkModels(prompt: string, iterations = 3) {
 | Bulk processing | 8b-instant | 256 | No | Yes |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | High TTFT | Using 70b for simple tasks | Switch to `llama-3.1-8b-instant` |
@@ -246,9 +254,11 @@ async function benchmarkModels(prompt: string, iterations = 3) {
 | Cache miss rate high | Unique prompts | Normalize prompts, use template patterns |
 
 ## Resources
+
 - [Groq Models & Speed](https://console.groq.com/docs/models)
 - [Groq Rate Limits](https://console.groq.com/docs/rate-limits)
 - [lru-cache on npm](https://www.npmjs.com/package/lru-cache)
 
 ## Next Steps
+
 For cost optimization, see `groq-cost-tuning`.

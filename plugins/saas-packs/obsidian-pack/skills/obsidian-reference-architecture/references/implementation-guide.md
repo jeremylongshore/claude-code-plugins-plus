@@ -2,10 +2,10 @@
 
 > Full implementation details for the parent SKILL.md.
 
-
 ## Complete Examples
 
 ### Quick Setup Script
+
 ```bash
 #!/bin/bash
 
@@ -23,7 +23,6 @@ touch src/utils/{debounce,async-queue,cache,logger}.ts
 
 echo "Plugin structure created!"
 ```
-
 
 ## Project Structure
 
@@ -93,7 +92,6 @@ my-obsidian-plugin/
 └── .gitignore
 ```
 
-
 ## Layer Architecture
 
 ```
@@ -112,10 +110,10 @@ my-obsidian-plugin/
 └─────────────────────────────────────────┘
 ```
 
-
 ## Key Components
 
 ### Step 1: Main Plugin Entry Point
+
 ```typescript
 // src/main.ts
 import { Plugin } from 'obsidian';
@@ -179,6 +177,7 @@ export default class MyPlugin extends Plugin {
 ```
 
 ### Step 2: Service Layer Pattern
+
 ```typescript
 // src/services/vault-service.ts
 import { App, TFile, TFolder, Vault, CachedMetadata } from 'obsidian';
@@ -241,6 +240,7 @@ export class VaultService {
 ```
 
 ### Step 3: Command Registration Pattern
+
 ```typescript
 // src/commands/index.ts
 import { Plugin } from 'obsidian';
@@ -293,6 +293,7 @@ export function registerNoteCommands(plugin: Plugin): void {
 ```
 
 ### Step 4: Event Manager Pattern
+
 ```typescript
 // src/events/event-manager.ts
 import { Plugin, TFile, TAbstractFile } from 'obsidian';
@@ -374,6 +375,7 @@ export class EventManager {
 ```
 
 ### Step 5: Settings Pattern
+
 ```typescript
 // src/settings/settings.ts
 export interface MyPluginSettings {
@@ -435,7 +437,6 @@ export class MyPluginSettingsTab extends PluginSettingTab {
 }
 ```
 
-
 ## Data Flow Diagram
 
 ```
@@ -465,7 +466,6 @@ User Action (Command/Event)
 │ (Vault/Cache)   │
 └─────────────────┘
 ```
-
 
 ## Flagship Skills
 

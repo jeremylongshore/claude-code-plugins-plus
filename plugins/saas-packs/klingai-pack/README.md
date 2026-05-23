@@ -50,6 +50,7 @@ Kling AI's API uses JWT authentication (not simple API keys), has async task-bas
 ## Skill Index
 
 ### Onboarding & Foundations
+
 | Skill | What It Does |
 |-------|-------------|
 | `klingai-install-auth` | JWT authentication setup with AK/SK, auto-refresh token manager |
@@ -60,6 +61,7 @@ Kling AI's API uses JWT authentication (not simple API keys), has async task-bas
 | `klingai-pricing-basics` | Credit costs, subscription plans, API packs, cost estimation |
 
 ### Operations & Debugging
+
 | Skill | What It Does |
 |-------|-------------|
 | `klingai-common-errors` | HTTP + task-level error reference with tested fixes |
@@ -70,6 +72,7 @@ Kling AI's API uses JWT authentication (not simple API keys), has async task-bas
 | `klingai-upgrade-migration` | Version history, breaking changes, A/B comparison, rollback |
 
 ### CI/CD & Deployment
+
 | Skill | What It Does |
 |-------|-------------|
 | `klingai-webhook-config` | Callback URL setup, Flask/Express receivers, reliability fallback |
@@ -80,6 +83,7 @@ Kling AI's API uses JWT authentication (not simple API keys), has async task-bas
 | `klingai-reference-architecture` | API gateway, worker pool, queue, storage, Docker Compose |
 
 ### Enterprise & Compliance
+
 | Skill | What It Does |
 |-------|-------------|
 | `klingai-team-setup` | Per-project keys, role-based quotas, secrets manager integration |
@@ -90,6 +94,7 @@ Kling AI's API uses JWT authentication (not simple API keys), has async task-bas
 | `klingai-compliance-review` | Security checklist, GDPR handler, automated compliance check |
 
 ### Advanced Patterns
+
 | Skill | What It Does |
 |-------|-------------|
 | `klingai-image-to-video` | I2V with motion brush, static masks, start-to-end transitions |

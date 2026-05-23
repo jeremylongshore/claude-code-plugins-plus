@@ -327,12 +327,14 @@ Spike protection is auto-enabled on Team and Business plans. It detects sudden e
 Configure at **Organization Settings > Spike Protection**.
 
 When spike protection triggers:
+
 1. Sentry detects volume exceeding 10x normal baseline
 2. Events are temporarily dropped (429 returned to SDK)
 3. An email notification is sent to organization owners
 4. Protection auto-disables after the spike subsides
 
 For programmatic spike alerts, set up a Sentry alert rule:
+
 - **Condition:** Number of events in project exceeds threshold
 - **Action:** Send notification to Slack/PagerDuty/email
 - **Frequency:** Alert once per hour

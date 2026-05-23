@@ -10,6 +10,7 @@ salesforce-enterprise-rbac/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Salesforce enterprise access control
 **Workflow:** Part of the advanced skill category for Salesforce integration.
 **Relates to:** Other salesforce skills in this pack.

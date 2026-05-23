@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Reference Architecture
 
 ## Overview
+
 Production architecture for web scraping and content ingestion with Firecrawl. Covers three tiers: on-demand scraping, scheduled crawl pipelines, and real-time RAG ingestion. Uses all four Firecrawl endpoints: scrape, crawl, map, and extract.
 
 ## Architecture Diagram
@@ -54,6 +55,7 @@ Production architecture for web scraping and content ingestion with Firecrawl. C
 ## Instructions
 
 ### Step 1: Firecrawl Service Layer
+
 ```typescript
 // src/firecrawl/service.ts
 import FirecrawlApp from "@mendable/firecrawl-js";
@@ -102,6 +104,7 @@ export async function extractData(url: string, schema: object) {
 ```
 
 ### Step 2: Content Processing Pipeline
+
 ```typescript
 // src/pipeline/processor.ts
 import { createHash } from "crypto";
@@ -156,6 +159,7 @@ function chunkMarkdown(md: string, maxWords: number): string[] {
 ```
 
 ### Step 3: Map + Selective Scrape Pipeline
+
 ```typescript
 // src/pipeline/intelligent-scrape.ts
 export async function intelligentScrape(siteUrl: string, opts: {
@@ -190,6 +194,7 @@ export async function intelligentScrape(siteUrl: string, opts: {
 ```
 
 ### Step 4: Async Crawl with Storage
+
 ```typescript
 // src/pipeline/crawl-pipeline.ts
 import { writeFileSync, mkdirSync } from "fs";
@@ -218,6 +223,7 @@ export async function crawlAndStore(baseUrl: string, outputDir: string) {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Timeout on scrape | JS-heavy page | Increase `waitFor` or use `actions` |
@@ -229,6 +235,7 @@ export async function crawlAndStore(baseUrl: string, outputDir: string) {
 ## Examples
 
 ### Documentation Scraper
+
 ```typescript
 const docs = await intelligentScrape("https://docs.firecrawl.dev", {
   pathFilter: "/features/",
@@ -238,6 +245,7 @@ console.log(`Scraped ${docs.processed} unique pages from ${docs.total} discovere
 ```
 
 ### RAG Knowledge Base Builder
+
 ```typescript
 const pages = await crawlAndStore("https://docs.example.com", "./knowledge-base");
 // Feed chunks to vector store for RAG
@@ -247,10 +255,12 @@ for (const page of pages) {
 ```
 
 ## Resources
+
 - [Firecrawl API Reference](https://docs.firecrawl.dev/api-reference/introduction)
 - [Scrape Endpoint](https://docs.firecrawl.dev/features/scrape)
 - [Crawl Endpoint](https://docs.firecrawl.dev/features/crawl)
 - [Map Endpoint](https://docs.firecrawl.dev/features/map)
 
 ## Next Steps
+
 For multi-environment setup, see `firecrawl-multi-env-setup`.

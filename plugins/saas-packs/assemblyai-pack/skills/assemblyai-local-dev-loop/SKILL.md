@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # AssemblyAI Local Dev Loop
 
 ## Overview
+
 Set up a fast, reproducible local development workflow for AssemblyAI transcription and LeMUR projects with mocking, caching, and hot reload.
 
 ## Prerequisites
+
 - Completed `assemblyai-install-auth` setup
 - Node.js 18+ with npm/pnpm
 - TypeScript project with `tsx` or `ts-node`
@@ -196,12 +198,14 @@ describe('Transcription', () => {
 ```
 
 ## Output
+
 - Hot-reloading dev server with `tsx watch`
 - Cached transcription results to avoid repeated API calls during dev
 - Mocked test suite that runs without API credentials
 - Environment variable management with `.env.local`
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `ASSEMBLYAI_API_KEY not set` | Missing env file | Copy `.env.example` to `.env.local` |
@@ -210,9 +214,11 @@ describe('Transcription', () => {
 | Test timeout | Slow mock setup | Ensure mocks resolve synchronously |
 
 ## Resources
+
 - [AssemblyAI Node SDK](https://github.com/AssemblyAI/assemblyai-node-sdk)
 - [Vitest Documentation](https://vitest.dev/)
 - [tsx Documentation](https://github.com/privatenumber/tsx)
 
 ## Next Steps
+
 See `assemblyai-sdk-patterns` for production-ready code patterns.

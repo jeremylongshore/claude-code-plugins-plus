@@ -3,6 +3,7 @@
 ## Project Structure Patterns
 
 ### Feature-Based Architecture
+
 ```
 project/
 ├── .cursorrules              # AI behavior configuration
@@ -30,6 +31,7 @@ project/
 ```
 
 ### Layer-Based Architecture
+
 ```
 project/
 ├── .cursorrules

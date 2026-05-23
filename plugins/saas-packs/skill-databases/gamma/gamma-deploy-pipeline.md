@@ -10,6 +10,7 @@ gamma-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Gamma integrations to production
 **Workflow:** Part of the cicd skill category for Gamma integration.
 **Relates to:** Other gamma skills in this pack.

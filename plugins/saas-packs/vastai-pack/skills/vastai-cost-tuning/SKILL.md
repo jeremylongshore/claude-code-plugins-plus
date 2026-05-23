@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Cost Tuning
 
 ## Overview
+
 Minimize Vast.ai GPU cloud costs by choosing the right GPU for your workload, leveraging interruptible (spot) instances, eliminating idle compute, and implementing auto-destroy safeguards. Vast.ai pricing is dynamic and varies significantly: RTX 4090 ($0.15-0.30/hr), A100 80GB ($1.00-2.00/hr), H100 SXM ($2.50-4.00/hr).
 
 ## Prerequisites
+
 - Vast.ai account with billing history
 - Understanding of your workload's GPU requirements
 - `vastai` CLI installed
@@ -132,6 +134,7 @@ def daily_cost_report():
 - [ ] Pre-install dependencies in Docker images (avoid paying for pip install)
 
 ## Output
+
 - GPU cost-efficiency analysis by model
 - Spot vs on-demand comparison
 - Auto-destroy watchdog for cost protection
@@ -139,6 +142,7 @@ def daily_cost_report():
 - Daily cost burn rate report
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Unexpected $50+ bill | Forgot to destroy instances | Implement auto-destroy watchdog |
@@ -146,10 +150,12 @@ def daily_cost_report():
 | Spot preemption mid-job | Cheapest instance reclaimed | Checkpoint frequently; auto-recover |
 
 ## Resources
+
 - [Vast.ai Pricing](https://vast.ai/)
 - [Search & Filter](https://docs.vast.ai/search-and-filter-gpu-offers)
 
 ## Next Steps
+
 For reference architecture, see `vastai-reference-architecture`.
 
 ## Examples

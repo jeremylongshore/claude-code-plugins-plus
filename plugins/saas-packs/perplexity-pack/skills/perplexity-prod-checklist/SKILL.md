@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Production Checklist
 
 ## Overview
+
 Complete checklist for deploying Perplexity Sonar API integrations to production. Perplexity-specific concerns: every API call performs a live web search (variable latency), citations link to third-party sites (must validate), and costs scale per-request plus per-token.
 
 ## Prerequisites
+
 - Staging environment tested
 - Production API key generated (separate from dev/staging)
 - Monitoring configured
@@ -35,6 +37,7 @@ Complete checklist for deploying Perplexity Sonar API integrations to production
 ## Production Readiness Checklist
 
 ### API Configuration
+
 - [ ] Production `PERPLEXITY_API_KEY` in secret manager (not env file)
 - [ ] Key starts with `pplx-` and has credits loaded
 - [ ] Separate API keys for dev/staging/prod
@@ -42,6 +45,7 @@ Complete checklist for deploying Perplexity Sonar API integrations to production
 - [ ] Model selection configured: `sonar` for fast, `sonar-pro` for deep
 
 ### Code Quality
+
 - [ ] All search calls wrapped in retry with exponential backoff
 - [ ] Rate limiting implemented (50 RPM default)
 - [ ] Query sanitization strips PII before sending to Perplexity
@@ -52,6 +56,7 @@ Complete checklist for deploying Perplexity Sonar API integrations to production
 - [ ] No hardcoded API keys in source code
 
 ### Performance
+
 - [ ] Result caching implemented for repeated queries
 - [ ] Cache TTL appropriate: 30min for news, 4hrs for research, 24hrs for facts
 - [ ] Streaming enabled for user-facing search (reduces perceived latency)
@@ -59,6 +64,7 @@ Complete checklist for deploying Perplexity Sonar API integrations to production
 - [ ] `search_domain_filter` used where appropriate (reduces search time)
 
 ### Monitoring
+
 - [ ] Latency tracked per model (sonar ~2s, sonar-pro ~5s, deep-research ~30s)
 - [ ] Error rate monitored (alert on >5% failure rate)
 - [ ] Token usage tracked for cost projection
@@ -66,6 +72,7 @@ Complete checklist for deploying Perplexity Sonar API integrations to production
 - [ ] 429 rate limit errors tracked with alert
 
 ### Cost Controls
+
 - [ ] Monthly budget cap set on API key
 - [ ] Model routing: simple queries to `sonar`, complex to `sonar-pro`
 - [ ] `max_tokens` capped per endpoint
@@ -73,6 +80,7 @@ Complete checklist for deploying Perplexity Sonar API integrations to production
 - [ ] Cost per query tracked by model
 
 ### Graceful Degradation
+
 ```typescript
 async function searchWithFallback(query: string) {
   try {
@@ -97,6 +105,7 @@ async function searchWithFallback(query: string) {
 ```
 
 ### Health Check Endpoint
+
 ```typescript
 app.get("/health/perplexity", async (req, res) => {
   const start = Date.now();
@@ -132,6 +141,7 @@ app.get("/health/perplexity", async (req, res) => {
 | Auth Failure | Any 401/402 error | P1 |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Variable latency | Web search per request | Set appropriate timeouts per model |
@@ -140,14 +150,17 @@ app.get("/health/perplexity", async (req, res) => {
 | Rate limit spikes | Burst traffic | Queue requests with p-queue |
 
 ## Output
+
 - Production-ready Perplexity integration with all checks passing
 - Health check endpoint for monitoring
 - Graceful degradation from sonar-pro to sonar
 - Alerting rules configured
 
 ## Resources
+
 - [Perplexity API Documentation](https://docs.perplexity.ai)
 - [Model Pricing](https://docs.perplexity.ai/docs/getting-started/pricing)
 
 ## Next Steps
+
 For version upgrades, see `perplexity-upgrade-migration`.

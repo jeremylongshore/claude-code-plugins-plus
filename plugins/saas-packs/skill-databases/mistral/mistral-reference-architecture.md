@@ -10,6 +10,7 @@ mistral-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Mistral AI reference architecture
 **Workflow:** Part of the cicd skill category for Mistral AI integration.
 **Relates to:** Other mistral skills in this pack.

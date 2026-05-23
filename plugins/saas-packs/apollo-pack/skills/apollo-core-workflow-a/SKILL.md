@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Core Workflow A: Lead Search & Enrichment
 
 ## Overview
+
 Build the core Apollo.io prospecting pipeline: search for people and organizations, then enrich the best leads. Key distinction — **search is free** (no credits), **enrichment costs credits**. This skill uses the correct endpoints and `x-api-key` header authentication.
 
 ## Prerequisites
+
 - Completed `apollo-install-auth` setup
 - Valid Apollo API key with search + enrichment permissions
 - Understanding of your Ideal Customer Profile (ICP)
@@ -34,6 +36,7 @@ Build the core Apollo.io prospecting pipeline: search for people and organizatio
 ## Instructions
 
 ### Step 1: Search for People (Free — No Credits)
+
 The People API Search endpoint (`POST /mixed_people/api_search`) searches Apollo's 275M+ database. It does **not** return emails or phone numbers — use enrichment for that.
 
 ```typescript
@@ -75,6 +78,7 @@ export async function searchPeople(params: PersonSearchParams) {
 ```
 
 ### Step 2: Search for Organizations (Free)
+
 ```typescript
 // src/workflows/org-search.ts
 interface OrgSearchParams {
@@ -110,6 +114,7 @@ export async function searchOrganizations(params: OrgSearchParams) {
 ```
 
 ### Step 3: Enrich a Single Person (1 Credit)
+
 ```typescript
 // src/workflows/enrich.ts
 export async function enrichPerson(params: {
@@ -149,6 +154,7 @@ export async function enrichPerson(params: {
 ```
 
 ### Step 4: Bulk Enrich People (Up to 10 per Call)
+
 ```typescript
 export async function bulkEnrichPeople(details: Array<{
   email?: string;
@@ -174,6 +180,7 @@ export async function bulkEnrichPeople(details: Array<{
 ```
 
 ### Step 5: Build a Combined Lead Pipeline
+
 ```typescript
 export async function buildLeadPipeline(targetDomains: string[]) {
   const leads: any[] = [];
@@ -217,6 +224,7 @@ function scoreLead(person: any): number {
 ```
 
 ## Output
+
 - People search via `POST /mixed_people/api_search` (free, no credits)
 - Organization search via `POST /mixed_companies/search` (free)
 - Single person enrichment via `POST /people/match` (1 credit)
@@ -224,6 +232,7 @@ function scoreLead(person: any): number {
 - Lead scoring to minimize credit spend before enriching
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Empty `people` array | Too narrow criteria | Broaden seniority levels, add `include_similar_titles: true` |
@@ -234,6 +243,7 @@ function scoreLead(person: any): number {
 ## Examples
 
 ### Quick ICP Search
+
 ```typescript
 // Find Series B SaaS companies with 50-500 employees
 const companies = await searchOrganizations({
@@ -253,6 +263,7 @@ for (const company of companies.slice(0, 10)) {
 ```
 
 ## Resources
+
 - [People API Search](https://docs.apollo.io/reference/people-api-search)
 - [Organization Search](https://docs.apollo.io/reference/organization-search)
 - [People Enrichment](https://docs.apollo.io/reference/people-enrichment)
@@ -260,4 +271,5 @@ for (const company of companies.slice(0, 10)) {
 - [Find People Using Filters](https://docs.apollo.io/docs/find-people-using-filters)
 
 ## Next Steps
+
 Proceed to `apollo-core-workflow-b` for email sequences and outreach.

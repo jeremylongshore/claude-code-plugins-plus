@@ -13,9 +13,11 @@ Detailed implementation examples and code patterns.
 | Enterprise | Custom | Custom | SSO, SLA, dedicated support |
 
 ### Per-User Pricing (after included MAU)
+
 - Pro: ~$0.02 per MAU above 10,000
 
 ### What Counts as MAU?
+
 - Any user who signs in during the month
 - Active session = counted
 - Multiple sign-ins = counted once
@@ -23,6 +25,7 @@ Detailed implementation examples and code patterns.
 ## Cost Optimization Strategies
 
 ### Strategy 1: Reduce Unnecessary Sessions
+
 ```typescript
 // lib/session-optimization.ts
 import { auth } from '@clerk/nextjs/server'
@@ -46,6 +49,7 @@ export async function getOrCreateSession() {
 ```
 
 ### Strategy 2: Implement Guest Users
+
 ```typescript
 // lib/guest-users.ts
 // Use guest mode for non-essential features to reduce MAU
@@ -87,6 +91,7 @@ export async function savePreference(key: string, value: any) {
 ```
 
 ### Strategy 3: Defer Authentication
+
 ```typescript
 // Delay requiring sign-in until necessary
 'use client'
@@ -135,6 +140,7 @@ function App() {
 ```
 
 ### Strategy 4: Reduce API Calls
+
 ```typescript
 // lib/batched-clerk.ts
 import { clerkClient } from '@clerk/nextjs/server'
@@ -171,6 +177,7 @@ export async function getOrganization(orgId: string) {
 ```
 
 ### Strategy 5: Monitor and Alert
+
 ```typescript
 // lib/cost-monitoring.ts
 import { clerkClient } from '@clerk/nextjs/server'

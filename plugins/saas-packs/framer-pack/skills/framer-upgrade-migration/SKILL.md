@@ -42,6 +42,7 @@ npm view framer-api version
 Visit https://www.framer.com/developers/changelog for breaking changes.
 
 Key migrations:
+
 - **Plugin API 3.x**: Introduced Managed Collections, Code File APIs
 - **Server API beta**: WebSocket-based programmatic access
 - **Code Components v2**: Updated property control types

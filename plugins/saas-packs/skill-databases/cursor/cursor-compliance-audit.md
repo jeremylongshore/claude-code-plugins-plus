@@ -10,6 +10,7 @@ cursor-compliance-audit/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Provides compliance and security auditing procedures for Cursor usage including SOC 2, GDPR, and HIPAA frameworks with checklists and remediation guidance.
 
 **Workflow:** This skill activates when security or compliance teams need to audit Cursor deployments. It covers compliance overview, security checklists, framework-specific considerations, audit procedures, tools, remediation, and reporting.

@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Deploy Integration
 
 ## Overview
+
 Deploy Deepgram transcription services to Docker, Kubernetes, AWS Lambda, and Google Cloud Run. Includes production Dockerfile, K8s manifests with secret management, serverless handlers for event-driven transcription, and health check patterns.
 
 ## Prerequisites
+
 - Working Deepgram integration (tested locally)
 - Production API key in secret manager
 - Container registry access (Docker Hub, ECR, GCR)
@@ -357,6 +359,7 @@ echo "Deploy successful."
 ```
 
 ## Output
+
 - Production Dockerfile (multi-stage, non-root, health check)
 - Docker Compose with Redis for caching
 - Kubernetes manifests (Deployment, Service, HPA, Secret)
@@ -365,6 +368,7 @@ echo "Deploy successful."
 - Environment-aware deploy script
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Container OOM | Memory limit too low | Increase to 512Mi+ |
@@ -374,6 +378,7 @@ echo "Deploy successful."
 | Secret not found | K8s secret missing | Create secret before deploying |
 
 ## Resources
+
 - [Docker Best Practices](https://docs.docker.com/develop/dev-best-practices/)
 - [Kubernetes Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
 - [AWS Lambda Node.js](https://docs.aws.amazon.com/lambda/latest/dg/lambda-nodejs.html)

@@ -3,6 +3,7 @@
 ## Environment Setup
 
 ### Environment Variables
+
 ```bash
 # .env file
 KLINGAI_API_KEY=your-api-key-here
@@ -13,6 +14,7 @@ export KLINGAI_API_KEY="your-api-key-here"
 ```
 
 ### Python Setup
+
 ```python
 import os
 import requests
@@ -35,6 +37,7 @@ def create_video(prompt: str, duration: int = 5):
 ```
 
 ### TypeScript/Node Setup
+
 ```typescript
 import axios from 'axios';
 

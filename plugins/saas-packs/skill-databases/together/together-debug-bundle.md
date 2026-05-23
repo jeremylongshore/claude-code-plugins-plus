@@ -10,6 +10,7 @@ together-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Together AI debug evidence for support
 **Workflow:** Part of the operations skill category for Together AI integration.
 **Relates to:** Other together skills in this pack.

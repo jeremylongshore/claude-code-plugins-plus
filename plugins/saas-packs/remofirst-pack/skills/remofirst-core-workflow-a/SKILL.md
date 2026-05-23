@@ -20,14 +20,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # RemoFirst Core Workflow A
 
 ## Overview
+
 Employee onboarding workflow: create employee records, manage documents, handle country-specific compliance requirements.
 
 ## Prerequisites
+
 - Completed `remofirst-install-auth`
 
 ## Instructions
 
 ### Step 1: Create Employee Record
+
 ```python
 employee = client.post("/employees", {
     "first_name": "Alice",
@@ -47,6 +50,7 @@ print(f"Employee created: {employee['id']}")
 ```
 
 ### Step 2: Check Country Requirements
+
 ```python
 # Get country-specific onboarding requirements
 requirements = client.get(f"/countries/GB/requirements")
@@ -56,6 +60,7 @@ for req in requirements["documents"]:
 ```
 
 ### Step 3: Submit Onboarding Documents
+
 ```python
 # Upload required documents
 client.post(f"/employees/{employee['id']}/documents", {
@@ -66,6 +71,7 @@ client.post(f"/employees/{employee['id']}/documents", {
 ```
 
 ### Step 4: Track Onboarding Status
+
 ```python
 status = client.get(f"/employees/{employee['id']}/onboarding")
 print(f"Onboarding status: {status['status']}")  # pending, in_progress, completed
@@ -74,12 +80,14 @@ for step in status["steps"]:
 ```
 
 ## Output
+
 - Employee record created with salary and country
 - Country-specific requirements checked
 - Documents uploaded for compliance
 - Onboarding progress tracked
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `422 Invalid country` | Unsupported country code | Check supported countries list |
@@ -87,8 +95,10 @@ for step in status["steps"]:
 | Onboarding stuck | Missing documents | Upload all required documents |
 
 ## Resources
+
 - [RemoFirst](https://www.remofirst.com)
 - [Global Employment](https://www.remofirst.com/solutions/human-resources)
 
 ## Next Steps
+
 Payroll workflow: `remofirst-core-workflow-b`

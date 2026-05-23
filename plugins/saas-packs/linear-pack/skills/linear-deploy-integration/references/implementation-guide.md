@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Vercel Deployment
+
 ```bash
 # Install Vercel CLI
 npm install -g vercel
@@ -33,6 +34,7 @@ vercel --prod
 ```
 
 ### Step 2: Google Cloud Run Deployment
+
 ```bash
 # Build and push container
 gcloud builds submit --tag gcr.io/PROJECT_ID/linear-integration
@@ -66,6 +68,7 @@ steps:
 ```
 
 ### Step 3: Railway Deployment
+
 ```bash
 # Install Railway CLI
 npm install -g @railway/cli
@@ -83,6 +86,7 @@ railway up
 ```
 
 ### Step 4: Deployment Tracking in Linear
+
 ```typescript
 // scripts/notify-linear-deploy.ts
 import { LinearClient } from "@linear/sdk";
@@ -144,6 +148,7 @@ notifyLinearDeploy({
 ```
 
 ### Step 5: GitHub Actions Deployment Workflow
+
 ```yaml
 # .github/workflows/deploy.yml
 name: Deploy
@@ -187,6 +192,7 @@ jobs:
 ```
 
 ### Step 6: Rollback Tracking
+
 ```typescript
 // scripts/notify-linear-rollback.ts
 import { LinearClient } from "@linear/sdk";

@@ -16,6 +16,7 @@ Use AskUserQuestion to ask:
 **Question:** "What type of plugin do you want to create?"
 
 **Options:**
+
 1. **Commands Only** - Slash commands (like /deploy, /test)
    - Description: Creates a plugin with custom slash commands for repeatable workflows
 
@@ -35,6 +36,7 @@ Use AskUserQuestion to ask:
 **Question:** "Describe what your plugin should do"
 
 **Guide user to provide:**
+
 - Purpose (what problem it solves)
 - Trigger phrases (how users will invoke it)
 - Key features (what it should include)
@@ -46,6 +48,7 @@ Use AskUserQuestion with categories:
 **Question:** "Which category best fits your plugin?"
 
 **Options:**
+
 - productivity
 - security
 - devops
@@ -64,6 +67,7 @@ Use AskUserQuestion with categories:
 Based on answers, create:
 
 ### Directory Structure
+
 ```
 plugins/[category]/[plugin-name]/
 ├── .claude-plugin/
@@ -160,17 +164,21 @@ license: MIT
 ### Example 1: [Scenario]
 
 ```
+
 User: [example input]
 
 Skill: [what it does]
 
 Result: [expected output]
+
 ```
 
 ### Example 2: [Another scenario]
 
 ```
+
 [Another example]
+
 ```
 
 ## Resources
@@ -188,6 +196,7 @@ python3 ${CLAUDE_SKILL_DIR}/skills/plugin-validator/scripts/validate_plugin_nixt
 ```
 
 **Requirements for passing validation:**
+
 - ✅ Description includes "Use when..." phrase
 - ✅ Description includes "Trigger with..." phrase
 - ✅ Third-person voice only (no "I can" or "You should")
@@ -208,6 +217,7 @@ python3 ${CLAUDE_SKILL_DIR}/skills/plugin-validator/scripts/validate_plugin_nixt
 ## Step 7: Report Results
 
 Show user:
+
 ```
 ✅ Plugin created successfully!
 
@@ -233,6 +243,7 @@ Next steps:
 ### Validation Failures
 
 If nixtla validation fails:
+
 1. Show specific errors
 2. Offer to fix automatically
 3. Re-run validation after fixes
@@ -240,6 +251,7 @@ If nixtla validation fails:
 ### Duplicate Plugin Names
 
 If plugin name exists:
+
 1. Suggest alternative names
 2. Ask user to choose different name
 3. Retry creation
@@ -256,6 +268,7 @@ If plugin name exists:
 ## Success Criteria
 
 Plugin creation succeeds when:
+
 - ✅ All files generated correctly
 - ✅ Nixtla validation passes (100% compliance)
 - ✅ Marketplace entry added
@@ -264,6 +277,7 @@ Plugin creation succeeds when:
 ---
 
 **This command implements Jeremy's workflow:**
+
 1. Ask user what kind of plugin
 2. User describes purpose
 3. Generate with nixtla-grade validation

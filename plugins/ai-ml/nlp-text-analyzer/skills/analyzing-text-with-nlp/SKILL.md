@@ -33,6 +33,7 @@ This skill empowers Claude to analyze text using the nlp-text-analyzer plugin, e
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Perform sentiment analysis on a piece of text.
 - Extract keywords from a document.
 - Identify the main topics discussed in a text.
@@ -44,6 +45,7 @@ This skill activates when you need to:
 User request: "Analyze the sentiment of this product review: 'I loved the product! It exceeded my expectations.'"
 
 The skill will:
+
 1. Process the review text using the nlp-text-analyzer plugin.
 2. Determine the sentiment as positive and provide a confidence score.
 
@@ -52,6 +54,7 @@ The skill will:
 User request: "Extract the keywords from this news article about the latest AI advancements."
 
 The skill will:
+
 1. Process the article text using the nlp-text-analyzer plugin.
 2. Identify and return a list of relevant keywords, such as "AI", "advancements", "machine learning", and "neural networks".
 

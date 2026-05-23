@@ -10,6 +10,7 @@ intercom-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Intercom example
 **Workflow:** Part of the onboarding skill category for Intercom integration.
 **Relates to:** Other intercom skills in this pack.

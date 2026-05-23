@@ -218,6 +218,7 @@ compute = oci.core.ComputeClient(
 ## Output
 
 After working through this diagnostic guide you will have:
+
 - Identified the exact root cause of your OCI error from the error code and message
 - A runnable diagnostic script for 401 auth errors that checks all six failure modes
 - IAM policy statements to resolve 404 authorization errors

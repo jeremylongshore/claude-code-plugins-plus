@@ -2,8 +2,8 @@
 
 Eight detailed case studies of companies that created blue oceans, analyzed through the lens of the Four Actions Framework (ERRC). Each case illustrates how the company escaped head-to-head competition and unlocked new demand rather than fighting for existing market share.
 
-
 ## Table of Contents
+
 1. [Cirque du Soleil: Reinventing the Circus](#cirque-du-soleil-reinventing-the-circus)
 2. [Yellow Tail: Wine for Everyone](#yellow-tail-wine-for-everyone)
 3. [Nintendo Wii: Gaming for the Whole Family](#nintendo-wii-gaming-for-the-whole-family)

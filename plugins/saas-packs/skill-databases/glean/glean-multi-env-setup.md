@@ -10,6 +10,7 @@ glean-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Glean multi-environment setup
 **Workflow:** Part of the enterprise skill category for Glean integration.
 **Relates to:** Other glean skills in this pack.

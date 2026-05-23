@@ -132,6 +132,7 @@ async function generateContracts(
 Direct links let anyone sign without receiving an email — perfect for public forms, walk-in signers, or embedded flows.
 
 **Setup in Dashboard:**
+
 1. Open a template.
 2. Click **Direct Link** in template settings.
 3. Choose which recipient role the direct link signer fills.

@@ -4,7 +4,8 @@ Comprehensive backtesting framework for trading strategies with historical data 
 
 ## Features
 
-###  Strategy Library
+### Strategy Library
+
 - Moving Average Crossover
 - RSI Overbought/Oversold
 - MACD Signal Line
@@ -14,7 +15,8 @@ Comprehensive backtesting framework for trading strategies with historical data 
 - Pairs Trading
 - Grid Trading
 
-###  Performance Metrics
+### Performance Metrics
+
 - Total Return & Win Rate
 - Sharpe & Sortino Ratios
 - Maximum Drawdown
@@ -22,7 +24,8 @@ Comprehensive backtesting framework for trading strategies with historical data 
 - Calmar Ratio
 - Recovery Factor
 
-###  Risk Analysis
+### Risk Analysis
+
 - Value at Risk (VaR)
 - Conditional VaR
 - Consecutive Losses
@@ -59,16 +62,19 @@ Testing moving average strategy:
 ## Strategies
 
 ### Moving Average
+
 - Golden/Death Cross signals
 - Customizable periods
 - Multiple MA types
 
 ### RSI Strategy
+
 - Oversold/Overbought levels
 - Divergence detection
 - Dynamic thresholds
 
 ### MACD Strategy
+
 - Signal line crossovers
 - Histogram analysis
 - Zero-line crosses

@@ -3,6 +3,7 @@
 ## Team Workflows
 
 ### Code Review with Cursor
+
 ```
 Team workflow:
 1. Developer creates PR
@@ -21,6 +22,7 @@ Review this PR for:
 ```
 
 ### Pair Programming
+
 ```
 With Cursor, less need for real-time pairing:
 

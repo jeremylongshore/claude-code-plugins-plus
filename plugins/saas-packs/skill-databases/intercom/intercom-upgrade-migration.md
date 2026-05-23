@@ -10,6 +10,7 @@ intercom-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Intercom SDK upgrades
 **Workflow:** Part of the operations skill category for Intercom integration.
 **Relates to:** Other intercom skills in this pack.

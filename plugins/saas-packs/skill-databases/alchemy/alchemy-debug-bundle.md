@@ -10,6 +10,7 @@ alchemy-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Alchemy debug evidence for support
 **Workflow:** Part of the operations skill category for Alchemy integration.
 **Relates to:** Other alchemy skills in this pack.

@@ -1,6 +1,7 @@
-# Implementation Guide
+## Implementation Guide
 
 ### Step 1: Create Debug Bundle Script
+
 ```bash
 #!/bin/bash
 # vercel-debug-bundle.sh
@@ -13,6 +14,7 @@ echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
 ```
 
 ### Step 2: Collect Environment Info
+
 ```bash
 # Environment info
 echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
@@ -22,6 +24,7 @@ echo "VERCEL_API_KEY: ${VERCEL_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
 ```
 
 ### Step 3: Gather SDK and Logs
+
 ```bash
 # SDK version
 npm list vercel 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
@@ -41,6 +44,7 @@ echo "" >> "$BUNDLE_DIR/summary.txt"
 ```
 
 ### Step 4: Package Bundle
+
 ```bash
 tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
 echo "Bundle created: $BUNDLE_DIR.tar.gz"

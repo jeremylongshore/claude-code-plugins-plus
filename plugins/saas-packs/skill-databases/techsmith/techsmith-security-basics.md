@@ -10,6 +10,7 @@ techsmith-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply TechSmith security best practices
 **Workflow:** Part of the operations skill category for TechSmith integration.
 **Relates to:** Other techsmith skills in this pack.

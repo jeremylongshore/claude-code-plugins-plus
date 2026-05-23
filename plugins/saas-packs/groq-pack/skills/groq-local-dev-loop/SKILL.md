@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq Local Dev Loop
 
 ## Overview
+
 Set up a fast, reproducible local development workflow for Groq. Groq's sub-second response times make it uniquely suited for tight dev loops -- you get LLM responses fast enough to iterate without context-switching.
 
 ## Prerequisites
+
 - `groq-sdk` installed
 - `GROQ_API_KEY` set (free tier is fine for development)
 - Node.js 18+ with tsx for TypeScript execution
@@ -36,6 +38,7 @@ Set up a fast, reproducible local development workflow for Groq. Groq's sub-seco
 ## Instructions
 
 ### Step 1: Project Structure
+
 ```
 my-groq-project/
 ├── src/
@@ -53,6 +56,7 @@ my-groq-project/
 ```
 
 ### Step 2: Package Setup
+
 ```json
 {
   "scripts": {
@@ -72,6 +76,7 @@ my-groq-project/
 ```
 
 ### Step 3: Singleton Client
+
 ```typescript
 // src/groq/client.ts
 import Groq from "groq-sdk";
@@ -99,6 +104,7 @@ export function resetClient(): void {
 ```
 
 ### Step 4: Model Constants
+
 ```typescript
 // src/groq/models.ts
 export const MODELS = {
@@ -112,6 +118,7 @@ export const DEV_MODEL = MODELS.FAST;  // Use 8B for dev to save quota
 ```
 
 ### Step 5: Unit Tests with Mocking
+
 ```typescript
 // tests/groq.test.ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -148,6 +155,7 @@ describe("Groq Completions", () => {
 ```
 
 ### Step 6: Integration Tests (Live API)
+
 ```typescript
 // tests/groq.integration.ts
 import { describe, it, expect } from "vitest";
@@ -178,6 +186,7 @@ describe.skipIf(!shouldRun)("Groq Integration", () => {
 ```
 
 ### Step 7: Environment Template
+
 ```bash
 # .env.example
 # Get your key at https://console.groq.com/keys
@@ -188,12 +197,14 @@ GROQ_MODEL=llama-3.1-8b-instant
 ```
 
 ## Dev Tips
+
 - Use `llama-3.1-8b-instant` during development (lowest quota usage, fastest)
 - Set `temperature: 0` for deterministic outputs during debugging
 - Set `max_tokens` conservatively to avoid burning through free tier
 - Groq free tier: 30 RPM for 70B models, 30 RPM for 8B -- plan your dev loops accordingly
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `GROQ_API_KEY not set` | Missing .env.local | Copy from .env.example |
@@ -202,9 +213,11 @@ GROQ_MODEL=llama-3.1-8b-instant
 | Port already in use | Another tsx watch running | Kill process or change port |
 
 ## Resources
+
 - [groq-sdk npm](https://www.npmjs.com/package/groq-sdk)
 - [Vitest Documentation](https://vitest.dev/)
 - [tsx Documentation](https://github.com/privatenumber/tsx)
 
 ## Next Steps
+
 See `groq-sdk-patterns` for production-ready code patterns.

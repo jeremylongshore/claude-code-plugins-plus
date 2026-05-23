@@ -7,6 +7,7 @@ Detailed implementation examples and code patterns.
 ### 1. Auth0 to Clerk
 
 #### Step 1: Export Users from Auth0
+
 ```bash
 # Using Auth0 Management API
 curl -X GET "https://YOUR_DOMAIN.auth0.com/api/v2/users" \
@@ -16,6 +17,7 @@ curl -X GET "https://YOUR_DOMAIN.auth0.com/api/v2/users" \
 ```
 
 #### Step 2: Transform User Data
+
 ```typescript
 // scripts/transform-auth0-users.ts
 interface Auth0User {
@@ -63,6 +65,7 @@ function transformAuth0ToClerk(auth0User: Auth0User): ClerkImportUser {
 ```
 
 #### Step 3: Import to Clerk
+
 ```typescript
 // scripts/import-to-clerk.ts
 import { clerkClient } from '@clerk/nextjs/server'
@@ -98,6 +101,7 @@ async function importUsers(users: ClerkImportUser[]) {
 ### 2. Firebase Auth to Clerk
 
 #### Step 1: Export from Firebase
+
 ```typescript
 // scripts/export-firebase-users.ts
 import * as admin from 'firebase-admin'
@@ -121,6 +125,7 @@ async function exportFirebaseUsers() {
 ```
 
 #### Step 2: Transform and Import
+
 ```typescript
 // scripts/migrate-firebase-to-clerk.ts
 import { clerkClient } from '@clerk/nextjs/server'
@@ -172,6 +177,7 @@ async function migrateFirebaseUsers(firebaseUsers: FirebaseUser[]) {
 ### 3. NextAuth.js to Clerk
 
 #### Step 1: Database Migration
+
 ```typescript
 // scripts/migrate-nextauth-db.ts
 // Assuming Prisma with NextAuth schema
@@ -215,6 +221,7 @@ async function migrateNextAuthUsers() {
 ```
 
 #### Step 2: Update Application Code
+
 ```typescript
 // BEFORE: NextAuth
 import { getSession } from 'next-auth/react'
@@ -243,6 +250,7 @@ export async function getServerSideProps() {
 ### 4. Supabase Auth to Clerk
 
 #### Step 1: Export Supabase Users
+
 ```typescript
 // scripts/export-supabase-users.ts
 import { createClient } from '@supabase/supabase-js'
@@ -262,6 +270,7 @@ async function exportSupabaseUsers() {
 ```
 
 #### Step 2: Migrate to Clerk
+
 ```typescript
 // scripts/migrate-supabase-to-clerk.ts
 async function migrateSupabaseUsers() {
@@ -291,6 +300,7 @@ async function migrateSupabaseUsers() {
 ## Migration Strategy
 
 ### Phase 1: Preparation
+
 ```markdown
 - [ ] Audit current user base
 - [ ] Document all authentication flows
@@ -301,6 +311,7 @@ async function migrateSupabaseUsers() {
 ```
 
 ### Phase 2: Parallel Running
+
 ```typescript
 // middleware.ts - Support both auth systems during migration
 import { clerkMiddleware } from '@clerk/nextjs/server'
@@ -326,6 +337,7 @@ export default async function middleware(request: NextRequest) {
 ```
 
 ### Phase 3: User Migration
+
 ```typescript
 // Migrate users on first Clerk login
 export async function POST(request: Request) {
@@ -363,6 +375,7 @@ export async function POST(request: Request) {
 ```
 
 ### Phase 4: Cutover
+
 ```markdown
 - [ ] Disable new registrations on legacy system
 - [ ] Migrate remaining users

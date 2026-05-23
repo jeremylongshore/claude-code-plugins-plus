@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Enterprise RBAC
 
 ## Overview
+
 Implement team-based access control for Ideogram's API. Since Ideogram uses a single API key per account with no built-in roles or scopes, enterprise access control must be implemented at the application layer: separate API keys per team, proxy-based content filtering, per-team budget limits, and usage tracking.
 
 ## Architecture
@@ -49,6 +50,7 @@ Implement team-based access control for Ideogram's API. Since Ideogram uses a si
 ## Instructions
 
 ### Step 1: Team Configuration
+
 ```typescript
 interface TeamConfig {
   name: string;
@@ -92,6 +94,7 @@ const TEAM_CONFIGS: Record<string, TeamConfig> = {
 ```
 
 ### Step 2: Content Policy Enforcement
+
 ```typescript
 interface ContentCheck {
   allowed: boolean;
@@ -125,6 +128,7 @@ function checkContentPolicy(prompt: string, policy: "strict" | "moderate" | "per
 ```
 
 ### Step 3: Budget Enforcer
+
 ```typescript
 const dailySpend = new Map<string, number>();
 
@@ -158,6 +162,7 @@ setInterval(() => {
 ```
 
 ### Step 4: Team-Scoped Proxy
+
 ```typescript
 async function teamGenerate(
   teamId: string,
@@ -219,6 +224,7 @@ async function teamGenerate(
 ```
 
 ### Step 5: Usage Dashboard Data
+
 ```typescript
 function teamUsageReport() {
   const report = [];
@@ -238,6 +244,7 @@ function teamUsageReport() {
 ```
 
 ### Step 6: Key Rotation Schedule
+
 ```
 Quarterly key rotation process:
 1. Create new API key in Ideogram dashboard for each team
@@ -249,6 +256,7 @@ Quarterly key rotation process:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Budget exceeded | Daily limit hit | Wait for reset or increase limit |
@@ -257,6 +265,7 @@ Quarterly key rotation process:
 | Key not set | Missing env variable | Check team-specific key config |
 
 ## Output
+
 - Per-team API key isolation
 - Content policy enforcement (strict/moderate/permissive)
 - Daily budget tracking with automatic enforcement
@@ -264,9 +273,11 @@ Quarterly key rotation process:
 - Usage dashboard data for reporting
 
 ## Resources
+
 - [Ideogram API Setup](https://developer.ideogram.ai/ideogram-api/api-setup)
 - [API Pricing](https://ideogram.ai/features/api-pricing)
 - Enterprise: `partnership@ideogram.ai`
 
 ## Next Steps
+
 For migration strategies, see `ideogram-migration-deep-dive`.

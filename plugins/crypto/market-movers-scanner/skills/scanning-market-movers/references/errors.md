@@ -13,11 +13,13 @@ Comprehensive guide to errors, causes, and solutions for the scanning-market-mov
 **Cause:** The market-price-tracker plugin with tracking-crypto-prices skill is not installed or not found at the expected path.
 
 **Solution:**
+
 1. Ensure market-price-tracker plugin is installed
 2. Verify the plugin is in the same plugins/crypto/ directory
 3. Check the path structure matches expected layout
 
 **Expected Path:**
+
 ```
 plugins/crypto/
 ├── market-movers-scanner/
@@ -35,6 +37,7 @@ plugins/crypto/
 **Cause:** The dependency exists but required modules are missing or have errors.
 
 **Solution:**
+
 1. Check that tracking-crypto-prices has all required files
 2. Ensure Python dependencies are installed: `pip install requests pandas`
 3. Run dependency's tests to verify it works independently
@@ -50,11 +53,13 @@ plugins/crypto/
 **Cause:** CoinGecko API rate limit reached.
 
 **Solution:**
+
 1. Wait for rate limit reset (typically 60 seconds)
 2. Partial results may still be returned
 3. Use cached data when available
 
 **Prevention:**
+
 - Use tracking-crypto-prices caching
 - Limit scan scope with filters
 - Consider CoinGecko API key for higher limits
@@ -68,6 +73,7 @@ plugins/crypto/
 **Cause:** No internet connection or API unreachable.
 
 **Solution:**
+
 1. Check internet connectivity
 2. Verify CoinGecko API is accessible
 3. Cached data will be used as fallback
@@ -83,14 +89,19 @@ plugins/crypto/
 **Cause:** Filter thresholds are too strict for current market conditions.
 
 **Solution:**
+
 1. Relax thresholds:
+
    ```bash
    python scanner.py --min-change 3 --volume-spike 1.5
    ```
+
 2. Expand market cap range:
+
    ```bash
    python scanner.py --min-cap 1000000  # Lower to $1M
    ```
+
 3. Remove category filter to scan all assets
 
 **Suggested Adjustments:**
@@ -105,6 +116,7 @@ The scanner suggests relaxed parameters when zero results are found.
 **Cause:** Threshold value is out of acceptable range.
 
 **Solution:**
+
 - min-change: Must be >= 0
 - volume-spike: Must be >= 1.0
 - min-cap: Must be >= 0
@@ -120,11 +132,15 @@ The scanner suggests relaxed parameters when zero results are found.
 **Cause:** Named preset file doesn't exist in config/presets/.
 
 **Solution:**
+
 1. Check available presets:
+
    ```bash
    ls config/presets/
    ```
+
 2. Create the preset:
+
    ```yaml
    # config/presets/xyz.yaml
    min_change: 10
@@ -140,6 +156,7 @@ The scanner suggests relaxed parameters when zero results are found.
 **Cause:** Malformed settings.yaml file.
 
 **Solution:**
+
 1. Validate YAML syntax
 2. Use spaces, not tabs
 3. Delete settings.yaml to use defaults
@@ -155,6 +172,7 @@ The scanner suggests relaxed parameters when zero results are found.
 **Cause:** Cannot write to specified path.
 
 **Solution:**
+
 1. Check directory exists
 2. Check file permissions
 3. Ensure disk space available
@@ -195,6 +213,7 @@ python scanner.py --verbose
 ```
 
 Shows:
+
 - Dependency loading status
 - API calls and responses
 - Filter statistics
@@ -230,6 +249,7 @@ python ../market-price-tracker/skills/tracking-crypto-prices/scripts/price_track
 When reporting issues, include:
 
 1. **Command executed:**
+
    ```bash
    python scanner.py --verbose [your options]
    ```
@@ -237,12 +257,14 @@ When reporting issues, include:
 2. **Full error output** (with `--verbose`)
 
 3. **Environment:**
+
    ```bash
    python --version
    pip list | grep -E "requests|pandas"
    ```
 
 4. **Dependency check:**
+
    ```bash
    ls ../market-price-tracker/skills/tracking-crypto-prices/
    ```

@@ -154,4 +154,3 @@ This mirrors what Moat, Perception, and git-with-intent all moved to in the same
 **Port conflicts are documentation problems.** The ports themselves are trivial to remap. The real fix is documenting the conflict in `.env.example` so the next developer doesn't spend 30 minutes figuring out why Hasura won't start.
 
 **Split CI by test type, not by language.** Fuzz tests with 10,000 runs don't belong in the same job as unit tests with 256 runs. Different test types have different performance profiles and different failure modes. Parallel jobs with focused scopes give faster feedback and clearer signal.
-

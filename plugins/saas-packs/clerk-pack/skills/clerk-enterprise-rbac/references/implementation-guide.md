@@ -7,6 +7,7 @@ Detailed implementation examples and code patterns.
 ### Step 1: Configure SAML SSO
 
 #### In Clerk Dashboard
+
 1. Go to Configure > SSO Connections
 2. Add SAML Connection
 3. Configure IdP settings:
@@ -15,6 +16,7 @@ Detailed implementation examples and code patterns.
    - Download SP metadata
 
 #### IdP Configuration (Example: Okta)
+
 ```xml
 <!-- SAML Attributes to map -->
 <saml:Attribute Name="email">
@@ -32,6 +34,7 @@ Detailed implementation examples and code patterns.
 ```
 
 ### Step 2: Define Roles and Permissions
+
 ```typescript
 // lib/permissions.ts
 
@@ -77,6 +80,7 @@ export type Role = keyof typeof ROLES
 ```
 
 ### Step 3: Permission Checking
+
 ```typescript
 // lib/auth-permissions.ts
 import { auth } from '@clerk/nextjs/server'
@@ -125,6 +129,7 @@ export function withPermission(permission: Permission) {
 ```
 
 ### Step 4: Protected Routes with RBAC
+
 ```typescript
 // middleware.ts
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
@@ -164,6 +169,7 @@ export default clerkMiddleware(async (auth, request) => {
 ```
 
 ### Step 5: Organization Management
+
 ```typescript
 // lib/organization.ts
 import { clerkClient, auth } from '@clerk/nextjs/server'
@@ -224,6 +230,7 @@ export async function getOrganizationMembers(orgId: string) {
 ```
 
 ### Step 6: React Components with RBAC
+
 ```typescript
 // components/permission-gate.tsx
 'use client'
@@ -281,6 +288,7 @@ function AdminPanel() {
 ```
 
 ### Step 7: API Route Protection
+
 ```typescript
 // app/api/admin/users/route.ts
 import { auth } from '@clerk/nextjs/server'

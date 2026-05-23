@@ -10,6 +10,7 @@ salesloft-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Salesloft rate limiting and backoff
 **Workflow:** Part of the operations skill category for Salesloft integration.
 **Relates to:** Other salesloft skills in this pack.

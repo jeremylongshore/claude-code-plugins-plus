@@ -10,6 +10,7 @@ customerio-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Customer.io SDK patterns
 **Workflow:** Part of the onboarding skill category for Customer.io integration.
 **Relates to:** Other customerio skills in this pack.

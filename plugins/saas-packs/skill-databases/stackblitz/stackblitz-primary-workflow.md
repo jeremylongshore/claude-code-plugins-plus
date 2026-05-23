@@ -10,6 +10,7 @@ stackblitz-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute StackBlitz primary workflow
 **Workflow:** Part of the onboarding skill category for StackBlitz integration.
 **Relates to:** Other stackblitz skills in this pack.

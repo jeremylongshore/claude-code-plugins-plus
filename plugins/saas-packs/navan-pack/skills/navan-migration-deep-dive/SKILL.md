@@ -49,12 +49,14 @@ End-to-end migration playbook for moving from SAP Concur or legacy travel manage
 ### Phase 2 — User Provisioning (Weeks 2-3)
 
 **Option A — SCIM provisioning (recommended):**
+
 1. Configure SCIM connector in your IdP (Okta, Azure AD)
 2. Map IdP groups to Navan roles: traveler, travel arranger, approver, admin
 3. Enable provisioning — users are created in Navan automatically
 4. Test with a pilot group (10-20 users) before full rollout
 
 **Option B — CSV bulk upload:**
+
 1. Export user directory from source system
 2. Format per Navan's CSV template (available in Admin > User Management)
 3. Upload via Navan admin console
@@ -85,6 +87,7 @@ Recreate travel policies in Navan admin console. Key policy areas:
 5. **Traveler profiles**: Default seat preferences, meal requirements, loyalty numbers, passport info
 
 **SAP Concur policy mapping pitfalls:**
+
 - Concur's "travel rules" do not map 1:1 to Navan's policy engine — expect manual translation
 - Concur custom fields require mapping to Navan's cost center / department / project structure
 - Concur delegation rules differ from Navan's travel arranger model
@@ -108,6 +111,7 @@ curl -s -H "Authorization: Bearer $TOKEN" \
 ```
 
 **Reconciliation checks:**
+
 - Compare booking counts between systems weekly
 - Validate expense report totals match between systems
 - Verify approval chains produce consistent outcomes
@@ -130,6 +134,7 @@ curl -s -H "Authorization: Bearer $TOKEN" \
 - [ ] Source system read-only access preserved for historical lookups
 
 **Cutover steps:**
+
 1. Send company-wide communication (24 hours before)
 2. Disable new bookings in source system
 3. Enable Navan SSO for all users

@@ -13,6 +13,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/scanner.py
 ```
 
 **Output:**
+
 ```
 ================================================================================
   MARKET MOVERS                                    Updated: 2025-01-14 15:30:00
@@ -50,6 +51,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --volume-spike 5 --min-volume 1000
 ```
 
 This finds assets with:
+
 - Volume at least 5x normal
 - Minimum $1M daily volume
 
@@ -160,6 +162,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format json --output movers.json
 ```
 
 **Output (movers.json):**
+
 ```json
 {
   "gainers": [
@@ -197,6 +200,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format csv --output movers.csv
 ```
 
 **Output (movers.csv):**
+
 ```csv
 type,rank,symbol,name,price,change,volume_ratio,market_cap,significance_score
 gainer,1,ABC,ABC Token,1.234,45.67,5.2,123400000,89.3
@@ -211,6 +215,7 @@ loser,1,JKL,JKL Finance,3.456,-28.90,4.1,89100000,72.1
 ### Example 14: Create Custom Preset
 
 Create `config/presets/momentum.yaml`:
+
 ```yaml
 min_change: 8
 volume_spike: 2.5
@@ -219,6 +224,7 @@ top_n: 30
 ```
 
 Use it:
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --preset momentum
 ```
@@ -226,6 +232,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --preset momentum
 ### Example 15: Aggressive Day Trading
 
 Create `config/presets/daytrader.yaml`:
+
 ```yaml
 min_change: 3
 volume_spike: 2
@@ -235,6 +242,7 @@ top_n: 50
 ```
 
 Use it:
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --preset daytrader --timeframe 1h
 ```

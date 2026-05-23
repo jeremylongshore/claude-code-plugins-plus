@@ -10,6 +10,7 @@ vercel-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement production-ready reference architecture with layered structure, client wrapper, error boundary, and health checks.
 **Workflow:** Used when starting new Vercel projects or refactoring existing ones to follow best practices.
 **Relates to:** Synthesizes all CI/CD skills; flagship leads to vercel-multi-env-setup

@@ -10,6 +10,7 @@ Create a production-ready GraphQL server with type-safe schemas, optimized resol
 ## When to Use This Command
 
 Use `/build-graphql-server` when you need to:
+
 - Build flexible APIs with client-specified queries
 - Implement real-time features with subscriptions
 - Reduce over-fetching and under-fetching of data
@@ -18,6 +19,7 @@ Use `/build-graphql-server` when you need to:
 - Build microservices with federation support
 
 DON'T use this when:
+
 - Building simple CRUD APIs (REST may be simpler)
 - Clients have limited GraphQL knowledge (learning curve)
 - Caching is critical and simple (REST caching is more straightforward)
@@ -25,6 +27,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **Apollo Server with DataLoader** as the primary approach because:
+
 - Most mature GraphQL server implementation
 - Excellent TypeScript support
 - Built-in performance optimizations
@@ -33,12 +36,14 @@ This command implements **Apollo Server with DataLoader** as the primary approac
 - Comprehensive monitoring with Apollo Studio
 
 **Alternative considered: GraphQL Yoga**
+
 - More lightweight and modular
 - Better for serverless deployments
 - Newer with smaller ecosystem
 - Recommended for edge computing
 
 **Alternative considered: Mercurius (Fastify)**
+
 - Fastest GraphQL server
 - Better for high-performance requirements
 - Less mature ecosystem
@@ -47,6 +52,7 @@ This command implements **Apollo Server with DataLoader** as the primary approac
 ## Prerequisites
 
 Before running this command:
+
 1. Define your domain models and relationships
 2. Choose database and ORM/ODM
 3. Plan authentication strategy
@@ -56,23 +62,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Design GraphQL Schema
+
 Create comprehensive type definitions with proper nullability and relationships.
 
 ### Step 2: Implement Resolvers
+
 Build efficient resolvers with DataLoader for batching and caching.
 
 ### Step 3: Add Authentication & Authorization
+
 Implement context-based auth with field-level permissions.
 
 ### Step 4: Set Up Subscriptions
+
 Configure WebSocket server for real-time updates.
 
 ### Step 5: Optimize Performance
+
 Add query complexity analysis, depth limiting, and caching.
 
 ## Output Format
 
 The command generates:
+
 - `schema/` - GraphQL schema definitions
 - `resolvers/` - Resolver implementations
 - `dataloaders/` - DataLoader configurations
@@ -1055,6 +1067,7 @@ module.exports = { authDirective, rateLimitDirective, GraphQLCache };
 ## Configuration Options
 
 **Server Options**
+
 - `introspection`: Enable schema introspection (disable in production)
 - `playground`: Enable GraphQL Playground
 - `cors`: CORS configuration
@@ -1062,6 +1075,7 @@ module.exports = { authDirective, rateLimitDirective, GraphQLCache };
 - `subscriptions`: WebSocket configuration
 
 **Performance Options**
+
 - `depthLimit`: Maximum query depth (default: 10)
 - `costAnalysis`: Query cost limits
 - `dataLoader`: Batching configuration
@@ -1071,6 +1085,7 @@ module.exports = { authDirective, rateLimitDirective, GraphQLCache };
 ## Best Practices
 
 DO:
+
 - Use DataLoader for all database queries
 - Implement proper error handling
 - Add field-level authorization
@@ -1079,6 +1094,7 @@ DO:
 - Cache expensive queries
 
 DON'T:
+
 - Expose internal errors to clients
 - Allow unlimited query depth
 - Ignore N+1 query problems

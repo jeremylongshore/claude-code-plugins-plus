@@ -139,6 +139,7 @@ my-adk-project/
 ## Integration
 
 Works with:
+
 - [jeremy-gcp-starter-examples](../jeremy-gcp-starter-examples/) -- ADK sample code from google/adk-samples
 - [jeremy-vertex-validator](../jeremy-vertex-validator/) -- Validate agents before deployment
 - [jeremy-vertex-engine](../jeremy-vertex-engine/) -- Inspect deployed agents

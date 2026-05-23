@@ -10,6 +10,7 @@ navan-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Navan SDK upgrades
 **Workflow:** Part of the operations skill category for Navan integration.
 **Relates to:** Other navan skills in this pack.

@@ -10,6 +10,7 @@ salesforce-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Salesforce CI/CD integration
 **Workflow:** Part of the cicd skill category for Salesforce integration.
 **Relates to:** Other salesforce skills in this pack.

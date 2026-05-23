@@ -65,6 +65,7 @@ When revenue drops, you can trace back through the chain to find where the break
 ### The Ownership Rule
 
 Each metric on the Scorecard is assigned to one person. That person:
+
 - Reports the number weekly in the Level 10 meeting
 - Explains when the number is off track
 - Owns the plan to get it back on track
@@ -87,6 +88,7 @@ Each metric on the Scorecard is assigned to one person. That person:
 ### Setting Goals
 
 Goals should be based on:
+
 - **Historical performance:** What have you averaged over the past 13 weeks?
 - **Growth targets:** What does the 1-Year Plan require?
 - **Capacity:** What is realistically achievable with current resources?
@@ -111,6 +113,7 @@ Each week, every metric is marked as green (on track) or red (off track):
 - **Red:** Number misses the goal
 
 When a number is red, the owner has two options:
+
 1. **Explain and fix:** The issue is understood and a correction is underway
 2. **Drop to IDS:** The issue needs the team's input to solve
 
@@ -190,12 +193,14 @@ When a number is red, the owner has two options:
 ### When to Use Each
 
 **Activity-based metrics** are best when:
+
 - You need early warning signals
 - You want to influence behavior
 - The sales cycle is long (weeks or months)
 - You are building new processes
 
 **Results-based metrics** are best when:
+
 - You need to confirm the activities are producing outcomes
 - You are reporting to a board or investors
 - The metric is a business health vital sign (cash, churn, revenue)

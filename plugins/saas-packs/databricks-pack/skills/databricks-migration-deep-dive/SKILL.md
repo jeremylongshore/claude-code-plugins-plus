@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Migration Deep Dive
 
 ## Overview
+
 Comprehensive migration strategies for moving to Databricks from Hadoop, Snowflake, Redshift, Synapse, or legacy data warehouses. Covers discovery and assessment, schema conversion, data migration with batching and validation, ETL/pipeline conversion, and cutover planning with rollback procedures.
 
 ## Prerequisites
+
 - Access to source and target systems
 - Databricks workspace with Unity Catalog enabled
 - Understanding of current data architecture and dependencies
@@ -46,6 +48,7 @@ Comprehensive migration strategies for moving to Databricks from Hadoop, Snowfla
 ## Instructions
 
 ### Step 1: Discovery and Assessment
+
 Inventory all source tables with metadata for migration planning.
 
 ```python
@@ -105,6 +108,7 @@ for t in tables[:10]:
 ```
 
 ### Step 2: Schema Migration
+
 ```python
 # Schema conversion for common type mismatches
 TYPE_MAP = {
@@ -142,6 +146,7 @@ TBLPROPERTIES (
 ```
 
 ### Step 3: Data Migration with Validation
+
 ```python
 def migrate_table(
     source_table: str,
@@ -207,6 +212,7 @@ print(f"{result['source']} -> {result['target']}: "
 ```
 
 ### Step 4: Snowflake / Redshift Migration
+
 ```python
 # Snowflake: Use Lakehouse Federation or Unload + Auto Loader
 # Option A: Lakehouse Federation (query in place, no copy)
@@ -248,6 +254,7 @@ df.write.format("delta").saveAsTable("analytics.migrated.customers")
 ```
 
 ### Step 5: ETL Pipeline Conversion
+
 ```python
 # Convert Oozie/Airflow jobs to Databricks Asset Bundles
 # Before (Oozie/spark-submit):
@@ -277,6 +284,7 @@ resources:
 ```
 
 ### Step 6: Cutover Planning
+
 ```python
 cutover_steps = [
     {"step": 1, "action": "Final validation", "rollback": "No action needed"},
@@ -296,6 +304,7 @@ SELECT 'target', COUNT(*) FROM target_table
 ```
 
 ## Output
+
 - Migration assessment with table inventory (sizes, formats, dependencies)
 - Schema conversion with type mapping and DDL generation
 - Data migration with row-count validation per table
@@ -303,6 +312,7 @@ SELECT 'target', COUNT(*) FROM target_table
 - Cutover plan with step-by-step rollback procedures
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Schema incompatibility | Unsupported types (VARIANT, SUPER) | Convert to STRING, parse in Silver layer |
@@ -314,6 +324,7 @@ SELECT 'target', COUNT(*) FROM target_table
 ## Examples
 
 ### Quick Validation After Migration
+
 ```sql
 -- Compare source and target counts
 SELECT 'hive_metastore' AS source, COUNT(*) AS rows
@@ -324,6 +335,7 @@ FROM analytics.migrated.customers;
 ```
 
 ### Bulk Migration Script
+
 ```python
 migration_plan = [
     ("hive_metastore.legacy.customers", "analytics.migrated.customers", "ctas"),
@@ -343,6 +355,7 @@ print(f"\nCompleted: {len(results) - len(failed)}/{len(results)} OK")
 ```
 
 ## Resources
+
 - [Unity Catalog Migration](https://docs.databricks.com/aws/en/data-governance/unity-catalog/get-started)
 - [Lakehouse Federation](https://docs.databricks.com/aws/en/query-federation/)
 - [Auto Loader](https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/)

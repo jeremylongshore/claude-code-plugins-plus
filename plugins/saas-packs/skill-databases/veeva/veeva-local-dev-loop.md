@@ -10,6 +10,7 @@ veeva-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Veeva local development workflow
 **Workflow:** Part of the onboarding skill category for Veeva integration.
 **Relates to:** Other veeva skills in this pack.

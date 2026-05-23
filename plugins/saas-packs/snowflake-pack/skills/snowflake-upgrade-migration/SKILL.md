@@ -83,6 +83,7 @@ pytest
 ### Step 4: Handle Common Breaking Changes
 
 **Node.js Driver Changes (1.x to 2.x+):**
+
 ```typescript
 // Old: Synchronous configure
 // snowflake.configure({ logLevel: 'DEBUG' });
@@ -104,6 +105,7 @@ await new Promise((resolve, reject) => {
 ```
 
 **Python Connector Changes:**
+
 ```python
 # v3.x: fetch_pandas_all() requires pandas extra
 # pip install "snowflake-connector-python[pandas]"
@@ -124,6 +126,7 @@ conn = snowflake.connector.connect(
 ```
 
 **Snowflake Platform BCR (Behavior Change Releases):**
+
 ```sql
 -- Check which BCR bundles are enabled
 SELECT SYSTEM$SHOW_ACTIVE_BEHAVIOR_CHANGE_BUNDLES();

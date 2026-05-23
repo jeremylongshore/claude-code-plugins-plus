@@ -10,6 +10,7 @@ techsmith-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure TechSmith local development workflow
 **Workflow:** Part of the onboarding skill category for TechSmith integration.
 **Relates to:** Other techsmith skills in this pack.

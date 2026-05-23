@@ -272,6 +272,7 @@ print(f"Instance running: {response.data.id}")
 ## Output
 
 After applying these patterns you have:
+
 - A thread-safe singleton client that avoids the Instance Principal memory leak
 - Explicit timeout configuration for each service client (connect + read)
 - Exponential backoff retry handling 429, 500, and timeout errors

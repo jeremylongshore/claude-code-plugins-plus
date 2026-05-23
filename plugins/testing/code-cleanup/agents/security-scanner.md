@@ -42,6 +42,7 @@ If tools are unavailable, proceed to Phase 2 with pattern-based scanning.
 ### Phase 2: Pattern-Based Scan
 
 **Hardcoded Secrets:**
+
 ```bash
 # API keys and tokens
 rg "(api[_-]?key|secret|password|token|auth)\s*[:=]\s*['\"][^'\"]{8,}" -i -n
@@ -53,6 +54,7 @@ rg "xox[bpors]-[a-zA-Z0-9-]+"  # Slack tokens
 ```
 
 **SQL Injection:**
+
 ```bash
 # String interpolation in SQL
 rg "(query|exec|execute)\s*\(\s*[`'\"].*\$\{" --type ts -n
@@ -62,6 +64,7 @@ rg "fmt\.Sprintf.*SELECT" --type go -n
 ```
 
 **Command Injection:**
+
 ```bash
 rg "(exec|execSync|spawn|spawnSync)\s*\(" --type ts -n
 rg "(subprocess\.call|os\.system|os\.popen)\s*\(" --type py -n
@@ -69,6 +72,7 @@ rg "\beval\s*\(" -n  # eval in any language
 ```
 
 **Weak Cryptography:**
+
 ```bash
 rg "(md5|sha1)\s*\(" -i -n
 rg "Math\.random\(\)" --type ts -n  # Insecure random for tokens
@@ -77,6 +81,7 @@ rg "hashlib\.(md5|sha1)\(" --type py -n
 ```
 
 **Insecure Defaults:**
+
 ```bash
 rg "rejectUnauthorized:\s*false" --type ts -n
 rg "verify\s*=\s*False" --type py -n  # Disabled SSL verify
@@ -86,6 +91,7 @@ rg "http://" --type ts -n  # Plain HTTP (check if intentional)
 ```
 
 **Path Traversal:**
+
 ```bash
 rg "path\.(join|resolve)\(.*req\." --type ts -n  # User input in path
 rg "\.\.\/" -n  # Literal ../ in path operations (context-dependent)

@@ -31,6 +31,7 @@ This skill empowers Claude to efficiently build and deploy classification models
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Build a classification model from a given dataset.
 - Train a classifier to predict categorical outcomes.
 - Evaluate the performance of a classification model.
@@ -42,6 +43,7 @@ This skill activates when you need to:
 User request: "Build a classifier to detect spam emails using this dataset."
 
 The skill will:
+
 1. Analyze the provided email dataset to identify features and the target variable (spam/not spam).
 2. Generate Python code using the classification-model-builder plugin to train a spam classification model, including data cleaning, feature extraction, and model selection.
 
@@ -50,6 +52,7 @@ The skill will:
 User request: "Create a classification model to predict customer churn using customer data."
 
 The skill will:
+
 1. Analyze the customer data to identify relevant features and the churn status.
 2. Generate code to build a classification model for churn prediction, including data validation, model training, and performance reporting.
 

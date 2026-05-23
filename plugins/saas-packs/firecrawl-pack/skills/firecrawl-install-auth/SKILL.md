@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Install & Auth
 
 ## Overview
+
 Install the Firecrawl SDK and configure API key authentication. Firecrawl turns any website into LLM-ready markdown or structured data. The SDK is published as `@mendable/firecrawl-js` on npm and `firecrawl-py` on PyPI.
 
 ## Prerequisites
+
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, yarn, or pip)
 - Firecrawl API key from [firecrawl.dev/app](https://firecrawl.dev/app) (free tier available)
@@ -35,6 +37,7 @@ Install the Firecrawl SDK and configure API key authentication. Firecrawl turns 
 ## Instructions
 
 ### Step 1: Install the SDK
+
 ```bash
 set -euo pipefail
 # Node.js (official npm package)
@@ -45,6 +48,7 @@ pip install firecrawl-py
 ```
 
 ### Step 2: Configure Your API Key
+
 ```bash
 # Set the environment variable (SDK reads FIRECRAWL_API_KEY automatically)
 export FIRECRAWL_API_KEY="fc-YOUR_API_KEY"
@@ -56,6 +60,7 @@ echo 'FIRECRAWL_API_KEY=fc-YOUR_API_KEY' >> .env
 All Firecrawl API keys start with `fc-`. Get yours at [firecrawl.dev/app](https://firecrawl.dev/app).
 
 ### Step 3: Verify Connection — TypeScript
+
 ```typescript
 import FirecrawlApp from "@mendable/firecrawl-js";
 
@@ -77,6 +82,7 @@ if (result.success) {
 ```
 
 ### Step 4: Verify Connection — Python
+
 ```python
 from firecrawl import FirecrawlApp
 
@@ -92,6 +98,7 @@ print(f"Content: {len(result.get('markdown', ''))} chars")
 ```
 
 ### Step 5: Self-Hosted Setup (Optional)
+
 ```typescript
 // Point to your own Firecrawl instance instead of api.firecrawl.dev
 const firecrawl = new FirecrawlApp({
@@ -101,11 +108,13 @@ const firecrawl = new FirecrawlApp({
 ```
 
 ## Output
+
 - `@mendable/firecrawl-js` installed in `node_modules/`
 - `FIRECRAWL_API_KEY` environment variable configured
 - Successful scrape confirming API connectivity
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401 Unauthorized` | Invalid or missing API key | Verify key starts with `fc-` and is set in env |
@@ -117,6 +126,7 @@ const firecrawl = new FirecrawlApp({
 ## Examples
 
 ### TypeScript with dotenv
+
 ```typescript
 import "dotenv/config";
 import FirecrawlApp from "@mendable/firecrawl-js";
@@ -127,6 +137,7 @@ const firecrawl = new FirecrawlApp({
 ```
 
 ### Python with Environment Variable
+
 ```python
 import os
 from firecrawl import FirecrawlApp
@@ -135,6 +146,7 @@ firecrawl = FirecrawlApp(api_key=os.environ["FIRECRAWL_API_KEY"])
 ```
 
 ### Verify .gitignore Protects Secrets
+
 ```bash
 set -euo pipefail
 # Ensure .env files are gitignored
@@ -142,10 +154,12 @@ grep -q "^\.env" .gitignore 2>/dev/null || echo -e "\n.env\n.env.local\n.env.*.l
 ```
 
 ## Resources
+
 - [Firecrawl Quickstart](https://docs.firecrawl.dev/introduction)
 - [Firecrawl Dashboard](https://firecrawl.dev/app)
 - [Node SDK on npm](https://www.npmjs.com/package/@mendable/firecrawl-js)
 - [Python SDK on PyPI](https://pypi.org/project/firecrawl-py/)
 
 ## Next Steps
+
 After successful auth, proceed to `firecrawl-hello-world` for your first real scrape.

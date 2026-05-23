@@ -10,6 +10,7 @@ linktree-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Linktree common errors
 **Workflow:** Part of the operations skill category for Linktree integration.
 **Relates to:** Other linktree skills in this pack.

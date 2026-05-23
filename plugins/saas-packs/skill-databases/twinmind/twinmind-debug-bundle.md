@@ -10,6 +10,7 @@ twinmind-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect TwinMind debug evidence for support
 **Workflow:** Part of the operations skill category for TwinMind integration.
 **Relates to:** Other twinmind skills in this pack.

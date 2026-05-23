@@ -10,6 +10,7 @@ supabase-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Supabase reference architecture with best-practice project layout, layered architecture, client wrapper, error boundary, and health checks.
 **Workflow:** Architecture skill. Used when designing new Supabase integrations or reviewing project structure.
 **Relates to:** Foundational for supabase-multi-env-setup; informs supabase-architecture-variants decisions.

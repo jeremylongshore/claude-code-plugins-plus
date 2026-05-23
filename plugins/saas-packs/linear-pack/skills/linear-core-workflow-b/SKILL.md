@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Core Workflow B: Projects & Cycles
 
 ## Overview
+
 Manage projects, cycles (sprints), milestones, and roadmaps using the Linear API. Projects group issues across teams with states (`planned`, `started`, `paused`, `completed`, `canceled`), target dates, and progress tracking. Cycles are time-boxed iterations (sprints) owned by a single team. Initiatives group projects at the organizational level.
 
 ## Prerequisites
+
 - Linear SDK configured with API key or OAuth token
 - Understanding of Linear's hierarchy: Organization > Team > Cycle/Project > Issue
 - Team access with project create permissions
@@ -34,6 +36,7 @@ Manage projects, cycles (sprints), milestones, and roadmaps using the Linear API
 ## Instructions
 
 ### Step 1: Project CRUD
+
 ```typescript
 import { LinearClient } from "@linear/sdk";
 
@@ -81,6 +84,7 @@ const found = await client.projects({
 ```
 
 ### Step 2: Project Milestones
+
 ```typescript
 // Create milestones for a project
 await client.createProjectMilestone({
@@ -103,6 +107,7 @@ for (const ms of milestones.nodes) {
 ```
 
 ### Step 3: Assign Issues to Projects
+
 ```typescript
 // Create issue directly in a project
 await client.createIssue({
@@ -126,6 +131,7 @@ for (const issue of projectIssues.nodes) {
 ```
 
 ### Step 4: Cycle (Sprint) Management
+
 ```typescript
 // Get current and upcoming cycles for a team
 const now = new Date().toISOString();
@@ -161,6 +167,7 @@ for (const issueId of issueIds) {
 ```
 
 ### Step 5: Cycle Metrics
+
 ```typescript
 async function getCycleMetrics(cycleId: string) {
   const cycle = await client.cycle(cycleId);
@@ -195,6 +202,7 @@ console.log(`Sprint progress: ${metrics.burndown}% (${metrics.completedPoints}/$
 ```
 
 ### Step 6: Sprint Rollover
+
 ```typescript
 async function rolloverCycle(fromCycleId: string, toCycleId: string) {
   const fromCycle = await client.cycle(fromCycleId);
@@ -214,6 +222,7 @@ async function rolloverCycle(fromCycleId: string, toCycleId: string) {
 ```
 
 ### Step 7: Team Velocity
+
 ```typescript
 async function calculateVelocity(teamKey: string, sprintCount = 3) {
   const teams = await client.teams({ filter: { key: { eq: teamKey } } });
@@ -244,6 +253,7 @@ console.log(`Average velocity: ${velocity.average} pts/sprint`);
 ```
 
 ### Step 8: Roadmap View
+
 ```typescript
 async function getRoadmap(monthsAhead = 6) {
   const futureDate = new Date();
@@ -282,6 +292,7 @@ console.table(roadmap);
 ## Examples
 
 ### Sprint Planning Flow
+
 ```typescript
 async function planSprint(teamKey: string, durationDays: number, issueIds: string[]) {
   const teams = await client.teams({ filter: { key: { eq: teamKey } } });
@@ -309,6 +320,7 @@ async function planSprint(teamKey: string, durationDays: number, issueIds: strin
 ```
 
 ## Resources
+
 - [Project Model Schema](https://studio.apollographql.com/public/Linear-API/variant/current/schema/reference/objects/Project)
 - [Cycle Model Schema](https://studio.apollographql.com/public/Linear-API/variant/current/schema/reference/objects/Cycle)
 - [Linear Roadmaps Documentation](https://linear.app/docs/roadmaps)

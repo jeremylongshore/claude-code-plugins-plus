@@ -38,6 +38,7 @@ and concrete solutions. Covers every HTTP status code the API returns.
 ```
 
 **Common causes:**
+
 - Missing required field (`name` and `slug` are always required for CMS items)
 - Wrong field type (sending string for a Number field)
 - Invalid slug format (must be lowercase, hyphens only, no spaces)
@@ -66,6 +67,7 @@ function isValidSlug(slug: string): boolean {
 ```
 
 **Common causes:**
+
 - Token revoked or expired
 - Token copied with extra whitespace
 - Using v1 API key format with v2 endpoints
@@ -107,6 +109,7 @@ async function verifyToken(): Promise<boolean> {
 ```
 
 **Common causes:**
+
 - Token missing required scope (e.g., calling CMS write with only `cms:read`)
 - Site token used for a different site
 - OAuth app not authorized for the scope
@@ -140,6 +143,7 @@ Generate a new token with the correct scopes at `https://developers.webflow.com`
 ```
 
 **Common causes:**
+
 - Wrong `site_id`, `collection_id`, or `item_id`
 - Resource deleted
 - Using staging ID against live endpoint (or vice versa)
@@ -171,6 +175,7 @@ async function discoverResources() {
 ```
 
 **Common causes:**
+
 - CMS item with same slug already exists in collection
 - Trying to create a resource that already exists
 
@@ -199,6 +204,7 @@ Retry-After: 60
 ```
 
 **Common causes:**
+
 - Exceeded per-key rate limit
 - Site publish called more than once per minute
 - Rapid-fire requests without throttling

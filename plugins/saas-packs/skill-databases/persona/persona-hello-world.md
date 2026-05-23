@@ -10,6 +10,7 @@ persona-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Persona example
 **Workflow:** Part of the onboarding skill category for Persona integration.
 **Relates to:** Other persona skills in this pack.

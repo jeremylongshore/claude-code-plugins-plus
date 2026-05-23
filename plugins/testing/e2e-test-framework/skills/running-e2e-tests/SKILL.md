@@ -22,6 +22,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # E2E Test Framework
 
 ## Current State
+
 !`cat package.json 2>/dev/null | grep -oE 'playwright|cypress|selenium' || echo 'No E2E framework detected'`
 
 ## Overview
@@ -88,6 +89,7 @@ Execute end-to-end tests that simulate real user workflows across the full appli
 ## Examples
 
 **Playwright test for user registration flow:**
+
 ```typescript
 import { test, expect } from '@playwright/test';
 
@@ -104,6 +106,7 @@ test('new user can register and see dashboard', async ({ page }) => {
 ```
 
 **Page object model:**
+
 ```typescript
 export class LoginPage {
   constructor(private page: Page) {}
@@ -118,6 +121,7 @@ export class LoginPage {
 ```
 
 **Playwright config with multi-browser projects:**
+
 ```typescript
 export default defineConfig({
   projects: [

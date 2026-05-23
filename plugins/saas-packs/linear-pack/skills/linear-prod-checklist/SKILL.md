@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Production Checklist
 
 ## Overview
+
 Comprehensive checklist and implementation patterns for deploying Linear integrations to production. Covers authentication, error handling, rate limiting, monitoring, data handling, and deployment verification.
 
 ## Prerequisites
+
 - Working development integration passing all tests
 - Production Linear workspace (or production API key)
 - Deployment infrastructure (Vercel, Cloud Run, etc.)
@@ -36,6 +38,7 @@ Comprehensive checklist and implementation patterns for deploying Linear integra
 ## Pre-Production Checklist
 
 ### 1. Authentication & Security
+
 ```
 [ ] Production API key generated (separate from dev)
 [ ] API key stored in secret manager (Vault, AWS SM, GCP SM)
@@ -49,6 +52,7 @@ Comprehensive checklist and implementation patterns for deploying Linear integra
 ```
 
 ### 2. Error Handling & Resilience
+
 ```
 [ ] All Linear API calls wrapped in try/catch
 [ ] Rate limit retry with exponential backoff (max 5 retries)
@@ -60,6 +64,7 @@ Comprehensive checklist and implementation patterns for deploying Linear integra
 ```
 
 ### 3. Performance & Rate Limits
+
 ```
 [ ] Pagination with first:50 for all list queries
 [ ] Caching for static data (teams, states, labels) — 10-30 min TTL
@@ -71,6 +76,7 @@ Comprehensive checklist and implementation patterns for deploying Linear integra
 ```
 
 ### 4. Monitoring & Observability
+
 ```
 [ ] Health check endpoint hitting Linear API
 [ ] API latency metrics collected per operation
@@ -81,6 +87,7 @@ Comprehensive checklist and implementation patterns for deploying Linear integra
 ```
 
 ### 5. Data Handling
+
 ```
 [ ] No PII logged or stored unnecessarily
 [ ] Webhook event idempotency (deduplicate by Linear-Delivery)
@@ -254,6 +261,7 @@ const ALERT_THRESHOLDS = {
 | Deploy verification fails | Missing env vars | Run verification locally first |
 
 ## Resources
+
 - [Linear API Status](https://status.linear.app)
 - [Linear Security](https://linear.app/security)
 - [API Changelog](https://linear.app/changelog)

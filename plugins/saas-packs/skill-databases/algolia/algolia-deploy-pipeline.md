@@ -10,6 +10,7 @@ algolia-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Algolia integrations to production
 **Workflow:** Part of the cicd skill category for Algolia integration.
 **Relates to:** Other algolia skills in this pack.

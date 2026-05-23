@@ -34,6 +34,7 @@ This skill empowers Claude to analyze current resource utilization, predict futu
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Analyze current infrastructure capacity and identify potential bottlenecks.
 - Forecast future resource requirements based on projected growth.
 - Develop a capacity roadmap to ensure optimal performance and availability.
@@ -45,6 +46,7 @@ This skill activates when you need to:
 User request: "Analyze database capacity and plan for future growth."
 
 The skill will:
+
 1. Analyze current database storage utilization and growth rate.
 2. Forecast future storage requirements based on historical trends.
 3. Recommend scaling options, such as adding storage or migrating to a larger instance.
@@ -54,6 +56,7 @@ The skill will:
 User request: "Analyze CPU utilization and identify potential bottlenecks."
 
 The skill will:
+
 1. Analyze CPU utilization trends across different servers and applications.
 2. Identify periods of high CPU usage and potential bottlenecks.
 3. Recommend scaling options, such as adding more CPU cores or optimizing application code.

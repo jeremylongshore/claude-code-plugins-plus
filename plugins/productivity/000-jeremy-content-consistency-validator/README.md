@@ -23,6 +23,7 @@ This plugin helps you maintain consistent messaging by:
 ## Use Cases
 
 ### Use Case 1: Pre-Update Validation
+
 **Before updating internal docs, check what changed on the website:**
 
 ```bash
@@ -35,6 +36,7 @@ Or naturally:
 **Result:** Report showing exactly what needs updating in your docs to match website.
 
 ### Use Case 2: Post-Website Update
+
 **After updating website, check what's now inconsistent:**
 
 > "I just updated the pricing page. Check if GitHub and docs are out of sync."
@@ -42,11 +44,13 @@ Or naturally:
 **Result:** List of files that need updating to match new website content.
 
 ### Use Case 3: Version Consistency Audit
+
 **Ensure all platforms mention the same version:**
 
 > "Check if all documentation mentions v1.2.1"
 
 **Result:**
+
 ```
 Version Analysis:
 - Website: v1.2.1 ✅
@@ -88,7 +92,9 @@ Run explicit validation:
 ## What Gets Validated
 
 ### 1. Website Content (ALL HTML-Based Sites)
+
 **Automatically detects and validates:**
+
 - Static HTML sites (index.html, about.html)
 - Hugo/Astro static site generators
 - Jekyll/GitHub Pages sites
@@ -101,6 +107,7 @@ Run explicit validation:
 - Any other HTML-based website
 
 **Content validated:**
+
 - Marketing pages
 - Product descriptions
 - Feature lists
@@ -109,6 +116,7 @@ Run explicit validation:
 - Version numbers
 
 ### 2. GitHub Repositories
+
 - README.md
 - CONTRIBUTING.md
 - Documentation files
@@ -116,6 +124,7 @@ Run explicit validation:
 - Release notes
 
 ### 3. Local Documentation
+
 - Internal SOPs
 - Training materials
 - Technical specifications
@@ -125,6 +134,7 @@ Run explicit validation:
 ## Report Format
 
 ### Executive Summary
+
 ```markdown
 # Content Consistency Validation Report
 Generated: 2025-10-23 10:45:23
@@ -137,6 +147,7 @@ Generated: 2025-10-23 10:45:23
 ```
 
 ### Critical Discrepancies 🔴
+
 Issues that MUST be fixed:
 
 ```markdown
@@ -156,6 +167,7 @@ Issues that MUST be fixed:
 ```
 
 ### Warnings 🟡
+
 Issues that SHOULD be reviewed:
 
 ```markdown
@@ -169,6 +181,7 @@ Issues that SHOULD be reviewed:
 ```
 
 ### Action Items
+
 Prioritized fix list:
 
 ```markdown
@@ -184,11 +197,13 @@ Prioritized fix list:
 ## Report Location
 
 Reports are saved to:
+
 ```
 consistency-reports/YYYY-MM-DD-HH-MM-SS-full-audit.md
 ```
 
 Example:
+
 ```
 consistency-reports/
 ├── 2025-10-23-10-45-23-full-audit.md
@@ -199,30 +214,35 @@ consistency-reports/
 ## What It Checks
 
 ### Version Numbers
+
 - Software versions (v1.2.0)
 - Release dates
 - Copyright years
 - API versions
 
 ### Feature Claims
+
 - "Supports X plugins"
 - "Includes Y features"
 - Technical capabilities
 - Performance claims
 
 ### Contact Information
+
 - Email addresses
 - Support URLs
 - Social media links
 - Physical addresses
 
 ### Technical Specifications
+
 - System requirements
 - Dependencies
 - Installation steps
 - Configuration options
 
 ### Terminology
+
 - Product names
 - Technical terms
 - Acronyms
@@ -245,6 +265,7 @@ When conflicts exist, trust this order:
 **You:** "Before I update our sales training, check if website pricing changed."
 
 **Plugin Actions:**
+
 1. Reads current website pricing page
 2. Reads existing training materials
 3. Compares pricing information
@@ -258,6 +279,7 @@ When conflicts exist, trust this order:
 **You:** "I redesigned the website. What's now inconsistent with GitHub?"
 
 **Plugin Actions:**
+
 1. Reads new website content
 2. Reads GitHub documentation
 3. Identifies content that diverged
@@ -270,6 +292,7 @@ When conflicts exist, trust this order:
 **You:** "Just released v2.0.0. Validate consistency everywhere."
 
 **Plugin Actions:**
+
 1. Searches all sources for version mentions
 2. Identifies sources still showing old version
 3. Provides update checklist
@@ -281,12 +304,14 @@ When conflicts exist, trust this order:
 This plugin uses ONLY read-only operations:
 
 ✅ **Allowed:**
+
 - `Read` - Read local files
 - `Glob` - Find files by pattern
 - `Grep` - Search file contents
 - `Bash` (read-only): `cat`, `grep`, `find`, `wc`
 
 ❌ **Never Used:**
+
 - `Write` - NO file modifications
 - `Edit` - NO file edits
 - `git commit` - NO version control changes
@@ -299,6 +324,7 @@ This plugin uses ONLY read-only operations:
 ### Sources Discovered Automatically
 
 **Website (ALL HTML-based sites):**
+
 - **Static HTML:** `**/*.html`
 - **Hugo:** `content/**/*.md`, `themes/**/*.html`, `layouts/**/*.html`
 - **Astro:** `src/pages/**/*.{astro,md}`
@@ -311,11 +337,13 @@ This plugin uses ONLY read-only operations:
 - **Docusaurus:** `docs/**/*.{md,mdx}`, `blog/**/*.{md,mdx}`, `build/**/*.html`
 
 **GitHub:**
+
 - `README.md`
 - `CONTRIBUTING.md`
 - `docs/**/*.md`
 
 **Local Docs:**
+
 - `claudes-docs/**/*.md`
 - `000-docs/**/*.md`
 - `docs/**/*.md`
@@ -337,13 +365,16 @@ This plugin uses ONLY read-only operations:
 ## Troubleshooting
 
 ### "No sources found"
+
 **Solution:** Ensure you're in project root directory with website/docs/GitHub files.
 
 ### "Report too large"
+
 **Solution:** Use focused validation:
 > "Only check version consistency"
 
 ### "Can't find website"
+
 **Solution:** Specify location:
 > "Check consistency, website is in ~/startaitools/"
 

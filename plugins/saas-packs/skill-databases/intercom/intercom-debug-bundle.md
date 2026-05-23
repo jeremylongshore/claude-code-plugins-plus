@@ -10,6 +10,7 @@ intercom-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Intercom debug evidence for support
 **Workflow:** Part of the operations skill category for Intercom integration.
 **Relates to:** Other intercom skills in this pack.

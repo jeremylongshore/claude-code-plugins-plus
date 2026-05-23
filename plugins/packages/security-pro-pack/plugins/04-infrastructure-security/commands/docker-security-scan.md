@@ -26,12 +26,13 @@ Comprehensively scans Docker containers and images for vulnerabilities, misconfi
 ## What This Command Does
 
 **Complete Container Security Analysis:**
--  Scans images for known CVEs (vulnerabilities in OS packages and dependencies)
--  Detects insecure Dockerfile configurations
--  Identifies exposed secrets (API keys, passwords, tokens)
--  Checks for privileged containers and excessive permissions
--  Validates security best practices (non-root user, minimal base image)
--  Analyzes running containers for runtime security issues
+
+- Scans images for known CVEs (vulnerabilities in OS packages and dependencies)
+- Detects insecure Dockerfile configurations
+- Identifies exposed secrets (API keys, passwords, tokens)
+- Checks for privileged containers and excessive permissions
+- Validates security best practices (non-root user, minimal base image)
+- Analyzes running containers for runtime security issues
 
 **Output:** Detailed security report with severity-rated findings and remediation steps
 
@@ -42,6 +43,7 @@ Comprehensively scans Docker containers and images for vulnerabilities, misconfi
 ## When to Use This Command
 
 **Perfect For:**
+
 - Pre-deployment container security validation
 - CI/CD pipeline security gates
 - Production container audits
@@ -49,6 +51,7 @@ Comprehensively scans Docker containers and images for vulnerabilities, misconfi
 - Docker Compose security assessment
 
 **Use This When:**
+
 - Building new container images
 - Before deploying to production
 - After updating base images
@@ -77,6 +80,7 @@ Comprehensively scans Docker containers and images for vulnerabilities, misconfi
 ```
 
 **Shortcut:**
+
 ```bash
 /dss myapp:latest  # Quick scan
 ```
@@ -88,12 +92,14 @@ Comprehensively scans Docker containers and images for vulnerabilities, misconfi
 ### 1. Image Vulnerabilities (CVEs)
 
 **Scans For:**
+
 - Operating system package vulnerabilities
 - Application dependency vulnerabilities
 - Known exploits in installed software
 - Outdated packages with security patches available
 
 **Example Findings:**
+
 ```
  CRITICAL: CVE-2024-12345 in openssl
 Package: openssl 1.1.1k
@@ -107,6 +113,7 @@ RUN apt-get update && apt-get upgrade -y openssl
 ```
 
 **Example Output:**
+
 ```
 Image: myapp:latest
 Base: node:16 (debian:bullseye)
@@ -126,6 +133,7 @@ Top Critical CVEs:
 ### 2. Dockerfile Security Issues
 
 **Checks:**
+
 - Running as root user
 - Hardcoded secrets in layers
 - Exposed sensitive ports
@@ -134,6 +142,7 @@ Top Critical CVEs:
 - Outdated base images
 
 **Example Findings:**
+
 ```dockerfile
 #  BAD: Running as root
 FROM node:16
@@ -184,6 +193,7 @@ RUN apk add --no-cache curl  # Only necessary packages
 ### 3. Container Runtime Configuration
 
 **Scans For:**
+
 - Privileged containers (`--privileged`)
 - Dangerous capabilities (CAP_SYS_ADMIN, CAP_NET_ADMIN)
 - Host network mode
@@ -191,6 +201,7 @@ RUN apk add --no-cache curl  # Only necessary packages
 - No resource limits (CPU, memory)
 
 **Example Findings:**
+
 ```bash
 #  CRITICAL: Privileged container
 docker run --privileged myapp:latest
@@ -221,6 +232,7 @@ docker run -v /app/data:/data:ro myapp:latest
 ### 4. Exposed Secrets
 
 **Detects:**
+
 - API keys in environment variables
 - Passwords in image layers
 - Private keys in container filesystem
@@ -228,6 +240,7 @@ docker run -v /app/data:/data:ro myapp:latest
 - OAuth tokens
 
 **Example Findings:**
+
 ```bash
 #  CRITICAL: Secrets in environment variables (visible in docker inspect)
 docker run -e AWS_SECRET_KEY="wJalrXUtnFEMI/K7MDENG/..." myapp:latest
@@ -240,11 +253,13 @@ docker run --env-file /secure/secrets.env myapp:latest
 ### 5. Network Exposure
 
 **Checks:**
+
 - Exposed ports (especially dangerous: 22 SSH, 3306 MySQL, 6379 Redis)
 - Port mapping to 0.0.0.0 (all interfaces)
 - Missing network segmentation
 
 **Example Findings:**
+
 ```bash
 # ️ HIGH: Database exposed to internet
 docker run -p 0.0.0.0:5432:5432 postgres:latest
@@ -261,11 +276,13 @@ docker run --network=app-network postgres:latest
 ### 6. Resource Limits
 
 **Checks for:**
+
 - Missing memory limits (risk of OOM killing host)
 - Missing CPU limits (risk of resource starvation)
 - No restart policy (availability)
 
 **Example Findings:**
+
 ```bash
 # ️ MEDIUM: No resource limits
 docker run myapp:latest
@@ -594,6 +611,7 @@ jobs:
 ## Support
 
 **Found container vulnerabilities?**
+
 1. Fix critical issues immediately (root user, secrets, CVEs)
 2. For remediation help: Ask Security Auditor Expert
 3. For Docker best practices: Consult Docker security documentation
@@ -604,4 +622,4 @@ jobs:
 **Time Investment:** 5-10 minutes per scan
 **Value:** Prevent container escape, data breaches, and production compromises
 
-**Scan containers early. Fix vulnerabilities fast. Deploy securely.** 
+**Scan containers early. Fix vulnerabilities fast. Deploy securely.**

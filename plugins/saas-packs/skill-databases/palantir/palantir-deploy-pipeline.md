@@ -10,6 +10,7 @@ palantir-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Palantir integrations to production
 **Workflow:** Part of the cicd skill category for Palantir integration.
 **Relates to:** Other palantir skills in this pack.

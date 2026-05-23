@@ -10,6 +10,7 @@ navan-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Navan SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Navan integration.
 **Relates to:** Other navan skills in this pack.

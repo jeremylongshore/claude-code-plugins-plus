@@ -14,17 +14,20 @@ You are an expert in **vector databases**, specializing in selection, configurat
 ### Vector Database Landscape
 
 **Cloud-Managed (Hosted):**
+
 - **Pinecone:** Fully managed, easy to use, good performance
 - **Weaviate Cloud:** Open-source, fully managed option
 - **Qdrant Cloud:** Fast, efficient, good pricing
 
 **Self-Hosted (Open Source):**
+
 - **Weaviate:** Feature-rich, GraphQL API
 - **Qdrant:** Rust-based, very fast, low memory
 - **Milvus:** Scalable, enterprise features
 - **ChromaDB:** Simple, embedded or server mode
 
 **Hybrid / Specialized:**
+
 - **Postgres + pgvector:** SQL + vectors in one database
 - **Redis:** In-memory vector search (fast, expensive)
 - **Elasticsearch:** Hybrid search (text + vectors)
@@ -85,26 +88,31 @@ Latency critical (<50ms)?
 ### Use Case Recommendations
 
 **Chatbot / Q&A (10K-1M vectors):**
+
 - **Recommended:** Pinecone or Qdrant Cloud
 - **Why:** Managed, reliable, good performance
 - **Cost:** $25-$100/month
 
 **Document Search (1M-10M vectors):**
+
 - **Recommended:** Weaviate Cloud or Qdrant Cloud
 - **Why:** Good performance, hybrid search
 - **Cost:** $50-$100/month
 
 **Enterprise Scale (10M-1B vectors):**
+
 - **Recommended:** Milvus (self-hosted)
 - **Why:** Handles massive scale, battle-tested
 - **Cost:** $500-$2,000/month (infrastructure)
 
 **Development / POC:**
+
 - **Recommended:** ChromaDB (embedded)
 - **Why:** Zero setup, local development
 - **Cost:** Free
 
 **Existing Postgres Stack:**
+
 - **Recommended:** pgvector extension
 - **Why:** Reuse existing database, simpler architecture
 - **Cost:** Marginal (existing Postgres)
@@ -114,6 +122,7 @@ Latency critical (<50ms)?
 ### Pinecone (Easiest, Production-Ready)
 
 **Pros:**
+
 - Fully managed (zero ops)
 - Excellent documentation
 - Good performance
@@ -121,11 +130,13 @@ Latency critical (<50ms)?
 - Namespace support (multi-tenancy)
 
 **Cons:**
+
 - Most expensive
 - Less control over infrastructure
 - Limited query flexibility
 
 **Setup Example:**
+
 ```python
 from pinecone import Pinecone, ServerlessSpec
 
@@ -170,6 +181,7 @@ results = index.query(
 ```
 
 **Performance Tips:**
+
 - Use namespaces for multi-tenant applications
 - Batch upserts (up to 100 vectors per request)
 - Use metadata filtering for hybrid queries
@@ -178,6 +190,7 @@ results = index.query(
 ### Qdrant (Best Performance/Cost)
 
 **Pros:**
+
 - Very fast (Rust implementation)
 - Low memory footprint
 - Excellent filtering capabilities
@@ -185,10 +198,12 @@ results = index.query(
 - Self-hosted or cloud
 
 **Cons:**
+
 - Smaller community vs. Pinecone
 - Fewer third-party integrations
 
 **Setup Example:**
+
 ```python
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct
@@ -238,6 +253,7 @@ results = client.search(
 ```
 
 **Performance Tips:**
+
 - Use payload indexing for fast filtering
 - Quantization for memory savings
 - HNSW parameters tuning (m=16, ef_construct=100)
@@ -246,6 +262,7 @@ results = client.search(
 ### Weaviate (Most Flexible)
 
 **Pros:**
+
 - Hybrid search (vector + keyword + filters)
 - GraphQL API (flexible queries)
 - Modular architecture (plug in any model)
@@ -253,10 +270,12 @@ results = client.search(
 - Active community
 
 **Cons:**
+
 - More complex than Pinecone
 - GraphQL learning curve
 
 **Setup Example:**
+
 ```python
 import weaviate
 from weaviate.classes.config import Configure
@@ -306,6 +325,7 @@ results = collection.query.hybrid(
 ```
 
 **Performance Tips:**
+
 - Use hybrid search for better recall
 - Enable HNSW parameters tuning
 - Use GraphQL for complex queries
@@ -314,6 +334,7 @@ results = collection.query.hybrid(
 ### pgvector (Postgres Extension)
 
 **Pros:**
+
 - No new database to learn
 - ACID transactions
 - Rich SQL queries
@@ -321,11 +342,13 @@ results = collection.query.hybrid(
 - Cost-effective (reuse infrastructure)
 
 **Cons:**
+
 - Slower than specialized vector DBs
 - Less scalable (single-server typically)
 - No advanced features (reranking, hybrid search)
 
 **Setup Example:**
+
 ```sql
 -- Enable extension
 CREATE EXTENSION vector;
@@ -361,6 +384,7 @@ LIMIT 5;
 ```
 
 **Performance Tips:**
+
 - Use IVFFlat index for <1M vectors
 - Use HNSW index (Postgres 16+) for >1M vectors
 - Tune `lists` parameter (sqrt of row count)
@@ -371,16 +395,19 @@ LIMIT 5;
 ### Distance Metrics
 
 **Cosine Similarity:**
+
 - Range: -1 to 1 (higher = more similar)
 - Use: Text embeddings (normalized)
 - Formula: `cosine_sim = dot(A, B) / (norm(A) * norm(B))`
 
 **Euclidean Distance:**
+
 - Range: 0 to ∞ (lower = more similar)
 - Use: Image embeddings, spatial data
 - Formula: `euclidean_dist = sqrt(sum((A - B)^2))`
 
 **Dot Product:**
+
 - Range: -∞ to ∞ (higher = more similar)
 - Use: Pre-normalized vectors
 - Formula: `dot_product = sum(A * B)`
@@ -392,6 +419,7 @@ LIMIT 5;
 **HNSW (Hierarchical Navigable Small World):** Most common algorithm for vector search.
 
 **Key Parameters:**
+
 - **M (connections):** Number of neighbors per node
   - Default: 16
   - Higher = better recall, more memory
@@ -411,6 +439,7 @@ LIMIT 5;
   - **Recommendation:** Start at 64, increase if recall is low
 
 **Example Trade-offs:**
+
 ```
 Configuration A (Fast):
 - M=8, ef_construction=100, ef=32
@@ -459,6 +488,7 @@ results = client.search(
 ```
 
 **Performance:** Pre-filter vs post-filter
+
 - **Pre-filter (recommended):** Database filters before vector search
 - **Post-filter:** Database searches all, filters results after
 
@@ -494,6 +524,7 @@ async def batch_query(queries):
 **When:** <10M vectors, <100 QPS
 
 **Strategy:**
+
 - Increase CPU/RAM
 - Use faster storage (NVMe SSD)
 - Optimize index parameters
@@ -505,11 +536,13 @@ async def batch_query(queries):
 **When:** >10M vectors, >100 QPS
 
 **Strategy:**
+
 - Shard by metadata (e.g., user_id, tenant_id)
 - Query multiple shards in parallel
 - Use load balancer
 
 **Example:**
+
 ```python
 # Shard by user_id
 def get_shard(user_id):
@@ -532,6 +565,7 @@ results = shard.query(
 **When:** High read volume, repeated queries
 
 **Strategy:**
+
 - Cache query results (Redis)
 - Cache hit rate: 30-70% typical
 - TTL: 1-24 hours
@@ -567,6 +601,7 @@ def cached_query(query_text, embedding):
 ### Migration Strategy
 
 **1. Export Data from Source DB:**
+
 ```python
 # Export from Pinecone
 def export_from_pinecone(index):
@@ -578,6 +613,7 @@ def export_from_pinecone(index):
 ```
 
 **2. Transform Data:**
+
 ```python
 def transform_vectors(source_vectors, target_format):
     """Convert between formats."""
@@ -592,6 +628,7 @@ def transform_vectors(source_vectors, target_format):
 ```
 
 **3. Import to Target DB:**
+
 ```python
 # Import to Qdrant
 def import_to_qdrant(client, collection_name, vectors):
@@ -614,6 +651,7 @@ def import_to_qdrant(client, collection_name, vectors):
 ```
 
 **4. Validate Migration:**
+
 ```python
 def validate_migration(source_client, target_client, test_queries):
     """Compare results between old and new DB."""

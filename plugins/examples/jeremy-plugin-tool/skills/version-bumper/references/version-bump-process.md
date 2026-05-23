@@ -5,6 +5,7 @@
 When activated, I will:
 
 1. **Identify Current Version**
+
    ```bash
    # Read plugin version
    current=$(jq -r '.version' .claude-plugin/plugin.json)
@@ -17,6 +18,7 @@ When activated, I will:
    - Or ask user which type
 
 3. **Calculate New Version**
+
    ```bash
    # Example for patch bump: 1.2.3 → 1.2.4
    IFS='.' read -r major minor patch <<< "$current"
@@ -34,6 +36,7 @@ When activated, I will:
    - Validate semver format
 
 6. **Create Git Tag (Optional)**
+
    ```bash
    git tag -a "v$new_version" -m "Release v$new_version"
    ```

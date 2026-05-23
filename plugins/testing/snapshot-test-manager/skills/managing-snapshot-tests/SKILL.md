@@ -83,6 +83,7 @@ Create, update, and maintain snapshot tests for UI components and data structure
 ## Examples
 
 **React component snapshot test (Jest):**
+
 ```tsx
 import { render } from '@testing-library/react';
 import { Alert } from './Alert';
@@ -109,6 +110,7 @@ describe('Alert', () => {
 ```
 
 **Custom serializer to exclude dynamic IDs:**
+
 ```typescript
 // jest.config.ts
 export default {

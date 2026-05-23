@@ -51,6 +51,7 @@ The plugin automatically formats files after you edit them:
 ### Manual Commands
 
 **Format files:**
+
 ```bash
 # Format all files in project
 /format
@@ -66,6 +67,7 @@ The plugin automatically formats files after you edit them:
 ```
 
 **Check formatting:**
+
 ```bash
 # Check all files
 /format-check
@@ -80,6 +82,7 @@ The plugin automatically formats files after you edit them:
 ### Agent Skills
 
 The plugin's Agent Skill activates when you mention:
+
 - "format my code"
 - "fix formatting"
 - "apply code style"
@@ -88,6 +91,7 @@ The plugin's Agent Skill activates when you mention:
 - "clean up code"
 
 Example:
+
 ```
 User: "Please format my JavaScript files"
 Claude: [Activates code-formatter skill and formats all JS files]
@@ -145,12 +149,14 @@ To disable automatic formatting, edit the hooks.json and set `"enabled": false`.
 The plugin includes two main scripts:
 
 ### format.sh
+
 - Main formatting script
 - Handles file detection and Prettier execution
 - Supports multiple file types
 - Includes error handling and logging
 
 ### validate-format.sh (NEW)
+
 - Validates formatting without changes
 - Perfect for pre-commit checks
 - Returns exit codes for CI/CD
@@ -243,11 +249,13 @@ which npx
 ## 🔄 Updates
 
 ### v2.0.1 (2025-12-13)
+
 - 🐛 Fixed duplicate hooks loading error (Issue #149)
 - 🔧 Removed redundant hooks reference from plugin.json
 - ✅ Claude Code now auto-discovers hooks/hooks.json
 
 ### v2.0.0 (2025-12-12)
+
 - ✅ Fixed missing validate-format.sh script (Issue #147)
 - ✨ Added comprehensive Agent Skills
 - 📝 Enhanced plugin description with trigger phrases
@@ -256,6 +264,7 @@ which npx
 - 🔧 Improved error handling and logging
 
 ### v1.0.0 (2025-10-11)
+
 - Initial release with basic formatting hooks
 
 ## 👨‍💻 Contributing

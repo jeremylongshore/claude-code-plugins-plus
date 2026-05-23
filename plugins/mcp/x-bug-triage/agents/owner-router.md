@@ -48,6 +48,7 @@ Return to the orchestrator per cluster:
 ```
 
 When uncertain:
+
 ```json
 {
   "cluster_id": "c2",

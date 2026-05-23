@@ -10,6 +10,7 @@ adobe-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Adobe debug evidence for support
 **Workflow:** Part of the operations skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

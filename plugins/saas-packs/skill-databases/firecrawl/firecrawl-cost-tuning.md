@@ -10,6 +10,7 @@ firecrawl-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize FireCrawl costs through caching, request deduplication, usage monitoring, and budget alerts.
 **Workflow:** FinOps skill - reduces API costs while maintaining scraping effectiveness.
 **Relates to:** Complements firecrawl-local-dev-loop for development costs; supports firecrawl-batch-processing efficiency

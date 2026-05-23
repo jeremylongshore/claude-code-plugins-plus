@@ -10,6 +10,7 @@ juicebox-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Juicebox rate limiting and backoff
 **Workflow:** Part of the operations skill category for Juicebox integration.
 **Relates to:** Other juicebox skills in this pack.

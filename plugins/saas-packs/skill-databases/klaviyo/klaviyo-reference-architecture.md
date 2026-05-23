@@ -10,6 +10,7 @@ klaviyo-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Klaviyo reference architecture
 **Workflow:** Part of the cicd skill category for Klaviyo integration.
 **Relates to:** Other klaviyo skills in this pack.

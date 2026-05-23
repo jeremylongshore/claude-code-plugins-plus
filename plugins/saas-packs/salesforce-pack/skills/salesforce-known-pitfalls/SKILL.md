@@ -25,11 +25,13 @@ compatibility: Designed for Claude Code
 # Salesforce Known Pitfalls
 
 ## Overview
+
 The 10 most common and costly mistakes when integrating with Salesforce, with real error messages and correct patterns.
 
 ## Pitfall #1: SOQL N+1 Query Pattern (Most Common)
 
 ### Anti-Pattern
+
 ```typescript
 // Query accounts, then query contacts for each = N+1 API calls
 const accounts = await conn.query('SELECT Id, Name FROM Account LIMIT 100');
@@ -43,6 +45,7 @@ for (const account of accounts.records) {
 ```
 
 ### Correct Pattern
+
 ```typescript
 // Single relationship query — 1 API call
 const accounts = await conn.query(`
@@ -59,6 +62,7 @@ const accounts = await conn.query(`
 ## Pitfall #2: Ignoring API Limits (Org-Wide Shared Pool)
 
 ### Anti-Pattern
+
 ```typescript
 // This integration uses 80,000 API calls/day
 // Sales team uses 60,000/day
@@ -66,6 +70,7 @@ const accounts = await conn.query(`
 ```
 
 ### Correct Pattern
+
 ```typescript
 // 1. Check limits before batch operations
 const limits = await conn.request('/services/data/v59.0/limits/');
@@ -85,6 +90,7 @@ await conn.bulk2.loadAndWaitForResults({ object: 'Contact', operation: 'insert',
 ## Pitfall #3: SOQL Injection
 
 ### Anti-Pattern
+
 ```typescript
 // User input directly in SOQL — injectable
 const name = req.query.name; // Could be: "'; SELECT Id FROM User; --"
@@ -92,6 +98,7 @@ await conn.query(`SELECT Id FROM Account WHERE Name = '${name}'`);
 ```
 
 ### Correct Pattern
+
 ```typescript
 function escapeSoql(value: string): string {
   return value.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
@@ -104,12 +111,14 @@ await conn.query(`SELECT Id FROM Account WHERE Name = '${escapeSoql(name)}'`);
 ## Pitfall #4: SELECT FIELDS(ALL) (Performance Killer)
 
 ### Anti-Pattern
+
 ```typescript
 // Fetches ALL fields — 200+ columns on Account, massive payload
 const result = await conn.query('SELECT FIELDS(ALL) FROM Account LIMIT 100');
 ```
 
 ### Correct Pattern
+
 ```typescript
 // Select only what you need — 5-10x faster, much less data transfer
 const result = await conn.query('SELECT Id, Name, Industry, AnnualRevenue FROM Account LIMIT 100');
@@ -120,6 +129,7 @@ const result = await conn.query('SELECT Id, Name, Industry, AnnualRevenue FROM A
 ## Pitfall #5: Hardcoded Salesforce Record IDs
 
 ### Anti-Pattern
+
 ```typescript
 // IDs are different across sandbox and production!
 const adminProfileId = '00e5f000001abc';     // Works in sandbox...
@@ -128,6 +138,7 @@ await conn.sobject('Case').create({ OwnerId: queueId, ProfileId: adminProfileId 
 ```
 
 ### Correct Pattern
+
 ```typescript
 // Look up by name, not by ID
 const queue = await conn.query("SELECT Id FROM Group WHERE Name = 'Support Queue' AND Type = 'Queue'");
@@ -142,12 +153,14 @@ const profileId = profile.records[0].Id;
 ## Pitfall #6: Not Handling Partial Success in Bulk Operations
 
 ### Anti-Pattern
+
 ```typescript
 const results = await conn.sobject('Contact').create(contacts);
 console.log('Done!'); // Ignoring that some records may have failed
 ```
 
 ### Correct Pattern
+
 ```typescript
 const results = await conn.sobject('Contact').create(contacts);
 const failures = results.filter(r => !r.success);
@@ -164,6 +177,7 @@ if (failures.length > 0) {
 ## Pitfall #7: Using test.salesforce.com for Production
 
 ### Anti-Pattern
+
 ```typescript
 // Sandbox login URL used for production — silently connects to sandbox
 const conn = new jsforce.Connection({
@@ -172,6 +186,7 @@ const conn = new jsforce.Connection({
 ```
 
 ### Correct Pattern
+
 ```typescript
 const conn = new jsforce.Connection({
   loginUrl: process.env.SF_LOGIN_URL, // 'https://login.salesforce.com' for prod
@@ -185,6 +200,7 @@ const conn = new jsforce.Connection({
 ## Pitfall #8: Not Using External IDs for Upsert
 
 ### Anti-Pattern
+
 ```typescript
 // Without External ID: create duplicates on every sync run
 await conn.sobject('Account').create({ Name: 'Acme Corp', Industry: 'Tech' });
@@ -192,6 +208,7 @@ await conn.sobject('Account').create({ Name: 'Acme Corp', Industry: 'Tech' });
 ```
 
 ### Correct Pattern
+
 ```typescript
 // With External ID: upsert is idempotent — safe to retry
 await conn.sobject('Account').upsert({
@@ -207,6 +224,7 @@ await conn.sobject('Account').upsert({
 ## Pitfall #9: Missing Error Handling for UNABLE_TO_LOCK_ROW
 
 ### Anti-Pattern
+
 ```typescript
 // Record locking is COMMON in Salesforce — this crashes on contention
 await conn.sobject('Account').update({ Id: accountId, Name: 'New Name' });
@@ -214,6 +232,7 @@ await conn.sobject('Account').update({ Id: accountId, Name: 'New Name' });
 ```
 
 ### Correct Pattern
+
 ```typescript
 async function updateWithRetry(objectType: string, data: any, maxRetries = 3) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -235,6 +254,7 @@ async function updateWithRetry(objectType: string, data: any, maxRetries = 3) {
 ## Pitfall #10: Polling When CDC Is Available
 
 ### Anti-Pattern
+
 ```typescript
 // Poll every 5 minutes — wastes 288 API calls/day even when nothing changed
 cron.schedule('*/5 * * * *', async () => {
@@ -246,6 +266,7 @@ cron.schedule('*/5 * * * *', async () => {
 ```
 
 ### Correct Pattern
+
 ```typescript
 // CDC — only fires when data actually changes, zero wasted API calls
 conn.streaming.topic('/data/AccountChangeEvent').subscribe((event) => {
@@ -272,6 +293,7 @@ conn.streaming.topic('/data/AccountChangeEvent').subscribe((event) => {
 | Polling over CDC | Wasted API calls | Use Change Data Capture |
 
 ## Resources
+
 - [Salesforce Best Practices](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_dev_guide.htm)
 - [SOQL Injection Prevention](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/pages_security_tips_soql_injection.htm)
 - [Governor Limits](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm)

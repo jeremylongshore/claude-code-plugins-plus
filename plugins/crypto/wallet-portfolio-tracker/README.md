@@ -4,21 +4,24 @@ Track crypto wallets across multiple blockchains with comprehensive portfolio an
 
 ## Features
 
-###  Multi-Chain Support
+### Multi-Chain Support
+
 - Ethereum, BSC, Polygon, Arbitrum, Avalanche
 - Automatic chain detection
 - Cross-chain portfolio aggregation
 - Native & token balances
 - NFT collection tracking
 
-###  DeFi Integration
+### DeFi Integration
+
 - Lending protocol positions
 - Liquidity pool holdings
 - Yield farming rewards
 - Staking positions
 - Protocol interactions
 
-###  Real-Time Monitoring
+### Real-Time Monitoring
+
 - Live balance updates
 - Transaction notifications
 - Gas usage tracking
@@ -55,18 +58,21 @@ Scanning wallet across all chains:
 ## Portfolio Metrics
 
 ### Asset Distribution
+
 - Token allocation percentages
 - Chain distribution
 - Stablecoin ratio
 - Blue chip holdings
 
 ### DeFi Analytics
+
 - Total value locked
 - Yield farming APY
 - Impermanent loss tracking
 - Protocol exposure
 
 ### Risk Assessment
+
 - Concentration risk
 - Protocol risk score
 - Smart contract exposure
@@ -75,18 +81,22 @@ Scanning wallet across all chains:
 ## Supported Protocols
 
 ### Lending
+
 - Aave, Compound, MakerDAO
 - Venus, Benqi, Banker Joe
 
 ### DEXs
+
 - Uniswap, SushiSwap, PancakeSwap
 - QuickSwap, TraderJoe, SpookySwap
 
 ### Yield Aggregators
+
 - Yearn, Beefy, Harvest
 - Convex, Alpaca, Autofarm
 
 ## Transaction Analysis
+
 - Gas optimization suggestions
 - Transaction categorization
 - Fee tracking

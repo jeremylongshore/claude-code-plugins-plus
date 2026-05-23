@@ -25,6 +25,7 @@
 **Visual**: [Show the final result first]
 
 **Script**:
+
 ```
 [Open with the working result - show don't tell]
 
@@ -38,11 +39,13 @@
 ```
 
 **On-Screen Text**:
+
 - Result preview (5 seconds)
 - Your name/channel
 - Tutorial title
 
 **Example**:
+
 ```
 [Screen shows: Fast API responding in 180ms]
 
@@ -60,6 +63,7 @@
 **Visual**: [Your face OR split screen (you + code)]
 
 **Script**:
+
 ```
 "Hey everyone, [your name] here.
 
@@ -78,11 +82,13 @@ Let's dive in."
 ```
 
 **On-Screen Text**:
+
 - Chapter markers (preview)
 - GitHub repo link (if available)
 - Prerequisites
 
 **Example**:
+
 ```
 "Hey everyone, Jeremy here.
 
@@ -105,6 +111,7 @@ Let's dive in."
 **Visual**: [Screen recording - terminal + code editor]
 
 **Script**:
+
 ```
 "First, let's set up our environment.
 
@@ -130,6 +137,7 @@ Great, we're ready to start building."
 ```
 
 **On-Screen Text**:
+
 - Setup commands (show terminal clearly)
 - Links to documentation
 - GitHub repo link
@@ -143,6 +151,7 @@ Great, we're ready to start building."
 **Visual**: [Screen recording - code editor focus]
 
 **Script**:
+
 ```
 "Now let's implement [first major component].
 
@@ -169,12 +178,14 @@ Perfect, [first component] is working."
 ```
 
 **On-Screen Text**:
+
 - Code annotations (highlight important lines)
 - Key concepts (definitions)
 - Timestamps to GitHub code
 - Error warnings
 
 **Editing Note**:
+
 - Zoom in on critical code sections
 - Fast-forward through typing boilerplate
 - Show terminal output clearly
@@ -187,6 +198,7 @@ Perfect, [first component] is working."
 **Visual**: [Screen recording - code editor + browser/Postman]
 
 **Script**:
+
 ```
 "Now that we have [Part 1] working, let's add [Part 2].
 
@@ -213,6 +225,7 @@ Awesome, everything is connected."
 ```
 
 **On-Screen Text**:
+
 - Architecture diagram (if helpful)
 - Code flow arrows
 - Test results
@@ -225,6 +238,7 @@ Awesome, everything is connected."
 **Visual**: [Screen recording - full demonstration]
 
 **Script**:
+
 ```
 "Finally, let's add [finishing touches/optimization/error handling].
 
@@ -250,6 +264,7 @@ And now... [Show after state]'
 ```
 
 **On-Screen Text**:
+
 - Before/after comparison
 - Performance metrics
 - Best practices checklist
@@ -261,6 +276,7 @@ And now... [Show after state]'
 **Visual**: [Your face OR split screen]
 
 **Script**:
+
 ```
 "Let's quickly recap what we built:
 
@@ -281,6 +297,7 @@ I've also included helpful resources below."
 ```
 
 **On-Screen Text**:
+
 - Chapter markers (review)
 - GitHub repo link
 - Resource links
@@ -292,6 +309,7 @@ I've also included helpful resources below."
 **Visual**: [Your face]
 
 **Script**:
+
 ```
 "Here's what you can do next:
 
@@ -313,6 +331,7 @@ Thanks for watching, and I'll see you in the next one!"
 ```
 
 **On-Screen Text**:
+
 - Challenge ideas
 - Next video preview
 - Subscribe button
@@ -324,11 +343,13 @@ Thanks for watching, and I'll see you in the next one!"
 **Visual**: [End screen with elements]
 
 **Script**:
+
 ```
 [No speaking - end screen music]
 ```
 
 **On-Screen Elements**:
+
 - Next video (clickable)
 - Subscribe button (clickable)
 - Playlist/related content
@@ -339,6 +360,7 @@ Thanks for watching, and I'll see you in the next one!"
 ## B-Roll Suggestions
 
 **Throughout the video, include:**
+
 - Close-ups of code (important lines)
 - Terminal commands executing
 - Test results/console output
@@ -351,6 +373,7 @@ Thanks for watching, and I'll see you in the next one!"
 ## On-Screen Text Templates
 
 **Chapter Marker Format**:
+
 ```
 ⏱️ 1:00 - Setup
 ⏱️ 2:30 - Implementation Part 1
@@ -360,6 +383,7 @@ Thanks for watching, and I'll see you in the next one!"
 ```
 
 **Code Annotation Format**:
+
 ```
 [Arrow pointing to line]
 "This creates the cache connection"
@@ -372,6 +396,7 @@ Thanks for watching, and I'll see you in the next one!"
 ```
 
 **Warning/Tip Format**:
+
 ```
 ⚠️ WATCH OUT
 Common mistake: [description]
@@ -496,6 +521,7 @@ Newsletter: [link]
 ## Success Metrics
 
 **Good tutorial indicators**:
+
 - 50%+ average view duration
 - High like ratio (>5%)
 - Many "thank you" comments
@@ -504,6 +530,7 @@ Newsletter: [link]
 - GitHub repo stars
 
 **Red flags**:
+
 - <30% view duration (too long or not engaging)
 - Comments asking "but how do you..."
 - Confusion about prerequisites
@@ -514,17 +541,20 @@ Newsletter: [link]
 ## Variations
 
 ### Quick Tutorial (5-7 minutes)
+
 - Faster pace
 - Less explanation
 - For viewers who want to implement quickly
 
 ### Deep Dive Tutorial (20-30 minutes)
+
 - Slower pace
 - More explanation of concepts
 - Multiple examples
 - Error handling and edge cases
 
 ### Series Tutorial (5-10 videos)
+
 - Break into smaller parts
 - Each video builds on previous
 - Consistent intro/outro

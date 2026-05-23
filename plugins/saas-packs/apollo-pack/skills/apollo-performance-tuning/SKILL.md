@@ -25,15 +25,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Performance Tuning
 
 ## Overview
+
 Optimize Apollo.io API performance through response caching, connection pooling, bulk operations, parallel fetching, and result slimming. Key insight: **search is free but slow (~500ms), enrichment costs credits** — cache aggressively and batch enrichment calls.
 
 ## Prerequisites
+
 - Valid Apollo API key
 - Node.js 18+
 
 ## Instructions
 
 ### Step 1: Connection Pooling
+
 Reuse TCP connections to avoid TLS handshake overhead on every request.
 
 ```typescript
@@ -57,6 +60,7 @@ export const optimizedClient = axios.create({
 ```
 
 ### Step 2: Response Caching with Per-Endpoint TTLs
+
 ```typescript
 // src/apollo/cache.ts
 import { LRUCache } from 'lru-cache';
@@ -102,6 +106,7 @@ export function getCacheStats() {
 ```
 
 ### Step 3: Use Bulk Endpoints Over Single Calls
+
 Apollo's bulk enrichment endpoint handles 10 records per call vs 1. Massive performance gain.
 
 ```typescript
@@ -136,6 +141,7 @@ export async function batchEnrich(
 ```
 
 ### Step 4: Parallel Search with Concurrency Control
+
 ```typescript
 export async function parallelSearch(
   domains: string[],
@@ -164,6 +170,7 @@ export async function parallelSearch(
 ```
 
 ### Step 5: Slim Response Payloads
+
 Apollo returns large person objects (~2KB each). Extract only needed fields to reduce memory.
 
 ```typescript
@@ -193,6 +200,7 @@ const slim = data.people.map(slimPerson);  // ~200 bytes each instead of ~2KB
 ```
 
 ### Step 6: Benchmark Your Endpoints
+
 ```typescript
 async function benchmark() {
   const endpoints = [
@@ -218,6 +226,7 @@ async function benchmark() {
 ```
 
 ## Output
+
 - Connection pooling with `keepAlive` and configurable `maxSockets`
 - LRU cache with per-endpoint TTLs (24h org, 4h contact, 15m search)
 - Bulk enrichment via `/people/bulk_match` (10x fewer requests)
@@ -226,6 +235,7 @@ async function benchmark() {
 - Benchmarking script measuring avg and p95 latency
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | High latency | Enable connection pooling, check for stale cache |
@@ -234,10 +244,12 @@ async function benchmark() {
 | Memory growth | Lower LRU max entries, slim response payloads |
 
 ## Resources
+
 - [Bulk People Enrichment](https://docs.apollo.io/reference/bulk-people-enrichment)
 - [Node.js HTTPS Agent](https://nodejs.org/api/https.html#class-httpsagent)
 - [LRU Cache](https://github.com/isaacs/node-lru-cache)
 - [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 Proceed to `apollo-cost-tuning` for cost optimization.

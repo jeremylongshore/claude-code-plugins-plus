@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Deploy Integration
 
 ## Overview
+
 Deploy Databricks jobs, DLT pipelines, and ML models using Declarative Automation Bundles (DABs, formerly Asset Bundles). Bundles provide infrastructure-as-code with `databricks.yml` defining resources, targets (dev/staging/prod), variables, and permissions. The CLI handles validation, deployment, and lifecycle management.
 
 ## Prerequisites
+
 - Databricks CLI v0.200+ (`databricks --version`)
 - Workspace access with service principal for automated deploys
 - `databricks.yml` bundle configuration at project root
@@ -34,6 +36,7 @@ Deploy Databricks jobs, DLT pipelines, and ML models using Declarative Automatio
 ## Instructions
 
 ### Step 1: Initialize a Bundle
+
 ```bash
 # Create from a template
 databricks bundle init
@@ -45,6 +48,7 @@ databricks bundle init
 ```
 
 ### Step 2: Configure `databricks.yml`
+
 ```yaml
 # databricks.yml — single source of truth for project deployment
 bundle:
@@ -95,6 +99,7 @@ targets:
 ```
 
 ### Step 3: Define Resources
+
 ```yaml
 # resources/jobs.yml
 resources:
@@ -160,6 +165,7 @@ resources:
 ```
 
 ### Step 4: Deploy Lifecycle Commands
+
 ```bash
 # Validate — checks YAML syntax, variable resolution, permissions
 databricks bundle validate -t staging
@@ -184,6 +190,7 @@ databricks bundle destroy -t dev --auto-approve
 ```
 
 ### Step 5: Promote Staging to Production
+
 ```bash
 # 1. Validate staging is clean
 databricks bundle validate -t staging
@@ -204,6 +211,7 @@ databricks jobs list --output json | \
 ```
 
 ### Step 6: Permissions in Bundles
+
 ```yaml
 # resources/jobs.yml — add permissions block
 resources:
@@ -220,6 +228,7 @@ resources:
 ```
 
 ## Output
+
 - `databricks.yml` with multi-target deployment (dev/staging/prod)
 - Job and pipeline resources defined as code
 - Environment-specific variables (catalog, alerts, sizing)
@@ -227,6 +236,7 @@ resources:
 - Permissions managed declaratively in bundle config
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `bundle validate` fails | Invalid YAML or unresolved variable | Check variable definitions and target config |
@@ -238,22 +248,26 @@ resources:
 ## Examples
 
 ### Override Variables per Target
+
 ```bash
 # Override a variable at deploy time
 databricks bundle deploy -t prod --var="warehouse_size=Large"
 ```
 
 ### Clean Slate Redeploy (Dev Only)
+
 ```bash
 databricks bundle destroy -t dev --auto-approve
 databricks bundle deploy -t dev
 ```
 
 ## Resources
+
 - [Declarative Automation Bundles](https://docs.databricks.com/aws/en/dev-tools/bundles/)
 - [Bundle Configuration Reference](https://docs.databricks.com/aws/en/dev-tools/bundles/reference)
 - [Bundle Resources](https://docs.databricks.com/aws/en/dev-tools/bundles/resources)
 - [Deployment Modes](https://docs.databricks.com/aws/en/dev-tools/bundles/deployment-modes)
 
 ## Next Steps
+
 For multi-environment setup, see `databricks-multi-env-setup`.

@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Obsidian Enterprise RBAC
 
 ## Overview
+
 Vault-level access control patterns for Obsidian in team environments. Covers folder-based permissions via `.obsidian-permissions` files, read-only enforcement for shared vaults, plugin allowlisting, and configuration lockdown through restricted mode.
 
 ## Prerequisites
+
 - Obsidian desktop app with a shared/synced vault
 - Understanding of Obsidian's `.obsidian/` configuration directory
 - A sync mechanism in place (Git, Obsidian Sync, or shared filesystem)
@@ -244,6 +246,7 @@ private async hash(content: string): Promise<string> {
 Run `verifyConfigs()` on plugin load and periodically. Alert admins if violations are detected.
 
 ## Output
+
 - `.obsidian-permissions` file defining roles, folder access, and user mappings
 - RBAC plugin that intercepts create/modify/delete operations
 - Read-only enforcement for non-editor roles
@@ -251,6 +254,7 @@ Run `verifyConfigs()` on plugin load and periodically. Alert admins if violation
 - Configuration lockdown with hash verification for critical `.obsidian/` files
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Permission denied on all files | User email not set in plugin settings | Open RBAC plugin settings, enter your email |
@@ -268,10 +272,12 @@ Run `verifyConfigs()` on plugin load and periodically. Alert admins if violation
 **Plugin governance**: Maintain an allowlist of 5 approved plugins in `community-plugins.json`. The RBAC plugin reverts any unauthorized additions. New plugin requests go through admin approval.
 
 ## Resources
+
 - [Obsidian Plugin API - Vault Events](https://docs.obsidian.md/Reference/TypeScript+API/Vault)
 - [Obsidian Sync for Teams](https://obsidian.md/sync)
 - [RBAC Concepts](https://en.wikipedia.org/wiki/Role-based_access_control)
 - [Obsidian Git Plugin](https://github.com/denolehov/obsidian-git) -- version control for shared vaults
 
 ## Next Steps
+
 For data backup and sync patterns, see `obsidian-data-handling`. For multi-environment testing of RBAC rules, see `obsidian-multi-env-setup`.

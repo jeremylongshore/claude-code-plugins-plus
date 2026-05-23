@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Reference Architecture
 
 ## Overview
+
 Production architecture for meeting intelligence using Fireflies.ai. Event-driven pipeline: meetings are recorded by the Fireflies bot, transcripts arrive via webhook, then are processed for action items, analytics, and CRM sync.
 
 ## Architecture
@@ -62,6 +63,7 @@ Production architecture for meeting intelligence using Fireflies.ai. Event-drive
 ## Core Components
 
 ### 1. GraphQL Client Layer
+
 ```typescript
 // lib/fireflies.ts
 const FIREFLIES_API = "https://api.fireflies.ai/graphql";
@@ -82,6 +84,7 @@ export async function firefliesQuery(query: string, variables?: any) {
 ```
 
 ### 2. Webhook Processor
+
 ```typescript
 // services/webhook-processor.ts
 import crypto from "crypto";
@@ -126,6 +129,7 @@ export async function processWebhookEvent(event: TranscriptEvent) {
 ```
 
 ### 3. Transcript Storage
+
 ```typescript
 // services/transcript-store.ts
 interface StoredMeeting {
@@ -164,6 +168,7 @@ async function storeTranscript(transcript: any): Promise<StoredMeeting> {
 ```
 
 ### 4. Action Item Sync
+
 ```typescript
 // services/action-items.ts
 async function syncActionItems(transcript: any) {
@@ -187,6 +192,7 @@ async function syncActionItems(transcript: any) {
 ```
 
 ### 5. Meeting Analytics
+
 ```typescript
 // services/analytics.ts
 async function buildWeeklyReport() {
@@ -228,6 +234,7 @@ function aggregateKeywords(meetings: any[]): [string, number][] {
 ```
 
 ### 6. Audio Upload Pipeline
+
 ```typescript
 // services/upload.ts
 async function uploadRecording(fileUrl: string, title: string, attendees?: any[]) {
@@ -252,6 +259,7 @@ async function uploadRecording(fileUrl: string, title: string, attendees?: any[]
 ```
 
 ## Project Layout
+
 ```
 meeting-intelligence/
   src/
@@ -272,6 +280,7 @@ meeting-intelligence/
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Missing transcript | `meetingId` invalid | Log and skip, alert on repeated failures |
@@ -280,15 +289,18 @@ meeting-intelligence/
 | Rate limit on batch | Many transcripts at once | Queue with PQueue (1 req/sec) |
 
 ## Output
+
 - Event-driven architecture with webhook-triggered processing
 - Transcript storage with search-ready schema
 - Action item extraction and CRM sync pipeline
 - Meeting analytics aggregation engine
 
 ## Resources
+
 - [Fireflies API Docs](https://docs.fireflies.ai/)
 - [Fireflies Webhooks](https://docs.fireflies.ai/graphql-api/webhooks)
 - [Transcript Query](https://docs.fireflies.ai/graphql-api/query/transcript)
 
 ## Next Steps
+
 For multi-environment deployment, see `fireflies-multi-env-setup`.

@@ -10,6 +10,7 @@ salesforce-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Salesforce primary workflow
 **Workflow:** Part of the onboarding skill category for Salesforce integration.
 **Relates to:** Other salesforce skills in this pack.

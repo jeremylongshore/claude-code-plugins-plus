@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral AI Observability
 
 ## Overview
+
 Monitor Mistral AI API usage, latency, token consumption, error rates, and costs. Covers instrumented client wrapper, Prometheus metrics, Grafana dashboard panels, alerting rules, and structured logging.
 
 ## Prerequisites
+
 - Mistral API integration in production
 - Prometheus or OpenTelemetry-compatible metrics backend
 - Alerting system (Alertmanager, PagerDuty, or similar)
@@ -234,6 +236,7 @@ function logMistralRequest(entry: MistralLogEntry): void {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Missing token counts | Streaming not aggregated | Sum tokens from stream chunks |
@@ -242,11 +245,13 @@ function logMistralRequest(entry: MistralLogEntry): void {
 | High cardinality | Per-request labels | Never label by request ID or user ID |
 
 ## Resources
+
 - [OpenLIT Mistral Monitoring](https://docs.mistral.ai/cookbooks/third_party-openlit-cookbook_mistral_opentelemetry/)
 - [Prometheus Client](https://github.com/siimon/prom-client)
 - [Grafana Dashboards](https://grafana.com/dashboards/)
 
 ## Output
+
 - Instrumented client wrapper with timing and cost tracking
 - Prometheus metrics (requests, duration, tokens, cost, errors)
 - Alerting rules for error rate, latency, rate limits, cost, auth

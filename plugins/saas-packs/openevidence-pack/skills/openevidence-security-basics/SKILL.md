@@ -18,9 +18,11 @@ compatibility: Designed for Claude Code
 # OpenEvidence Security Basics
 
 ## Overview
+
 OpenEvidence provides AI-powered clinical evidence synthesis that processes protected health information (PHI), patient queries, and medical literature references. Integrations must comply with HIPAA requirements for PHI handling, audit logging, and access controls. A breach exposes patient health questions, clinical recommendations, and potentially identifiable medical conditions. Every API interaction must be treated as a HIPAA-regulated transaction.
 
 ## API Key Management
+
 ```typescript
 function createOpenEvidenceClient(): { apiKey: string; baseUrl: string } {
   const apiKey = process.env.OPENEVIDENCE_API_KEY;
@@ -34,6 +36,7 @@ function createOpenEvidenceClient(): { apiKey: string; baseUrl: string } {
 ```
 
 ## Webhook Signature Verification
+
 ```typescript
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
@@ -51,6 +54,7 @@ function verifyOpenEvidenceWebhook(req: Request, res: Response, next: NextFuncti
 ```
 
 ## Input Validation
+
 ```typescript
 import { z } from "zod";
 
@@ -68,6 +72,7 @@ function validateClinicalQuery(data: unknown) {
 ```
 
 ## Data Protection
+
 ```typescript
 const OPENEVIDENCE_PHI_FIELDS = ["patient_name", "date_of_birth", "mrn", "clinical_question", "diagnosis", "medication_list"];
 
@@ -81,6 +86,7 @@ function redactOpenEvidenceLog(record: Record<string, unknown>): Record<string, 
 ```
 
 ## Security Checklist
+
 - [ ] API keys stored in HIPAA-compliant secrets manager
 - [ ] Separate keys per environment (dev/staging/prod)
 - [ ] Key rotation scheduled quarterly
@@ -91,6 +97,7 @@ function redactOpenEvidenceLog(record: Record<string, unknown>): Record<string, 
 - [ ] Access controls enforce minimum necessary PHI exposure
 
 ## Error Handling
+
 | Vulnerability | Risk | Mitigation |
 |---|---|---|
 | Leaked API key | Unauthorized access to clinical evidence queries | HIPAA-compliant secrets manager + rotation |
@@ -100,8 +107,10 @@ function redactOpenEvidenceLog(record: Record<string, unknown>): Record<string, 
 | Missing audit trail | HIPAA audit failure | Immutable audit logs for all API interactions |
 
 ## Resources
+
 - [OpenEvidence](https://www.openevidence.com)
 - [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
 
 ## Next Steps
+
 See `openevidence-prod-checklist`.

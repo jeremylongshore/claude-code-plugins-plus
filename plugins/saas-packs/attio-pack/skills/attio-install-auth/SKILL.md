@@ -53,7 +53,7 @@ Configure authentication for the Attio REST API (`https://api.attio.com/v2`). At
 | `user_management:read` | Read workspace members |
 | `webhook:read-write` | Manage webhooks |
 
-4. Copy the token -- it starts with `sk_` and **never expires** (but can be revoked)
+1. Copy the token -- it starts with `sk_` and **never expires** (but can be revoked)
 
 ### Step 2: Configure Environment
 

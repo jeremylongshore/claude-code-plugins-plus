@@ -19,9 +19,11 @@ compatibility: Designed for Claude Code
 # AppFolio Security Basics
 
 ## Overview
+
 AppFolio manages property portfolios containing tenant PII (SSNs, bank accounts, lease terms), owner financial data, and maintenance vendor records. A breach exposes rent rolls, payment histories, and personally identifiable tenant information across every managed property. Secure every integration point: API credentials, webhook endpoints, and any pipeline that touches tenant or owner financial records.
 
 ## API Key Management
+
 ```typescript
 import https from "https";
 import axios, { AxiosInstance } from "axios";
@@ -42,6 +44,7 @@ function createAppFolioClient(): AxiosInstance {
 ```
 
 ## Webhook Signature Verification
+
 ```typescript
 import crypto from "crypto";
 
@@ -58,6 +61,7 @@ function verifyAppFolioWebhook(req: Request, res: Response, next: NextFunction):
 ```
 
 ## Input Validation
+
 ```typescript
 import { z } from "zod";
 const TenantSchema = z.object({
@@ -76,6 +80,7 @@ function validateTenantPayload(data: unknown) {
 ```
 
 ## Data Protection
+
 ```typescript
 const APPFOLIO_PII_FIELDS = ["ssn", "bank_account", "routing_number", "date_of_birth", "drivers_license"];
 
@@ -89,6 +94,7 @@ function redactAppFolioLog(record: Record<string, unknown>): Record<string, unkn
 ```
 
 ## Security Checklist
+
 - [ ] API credentials stored in secrets manager, not `.env` in production
 - [ ] HTTPS enforced with TLS 1.2+ for all API calls
 - [ ] Tenant SSN and bank account numbers never logged
@@ -99,6 +105,7 @@ function redactAppFolioLog(record: Record<string, unknown>): Record<string, unkn
 - [ ] Audit trail enabled for tenant record access
 
 ## Error Handling
+
 | Vulnerability | Risk | Mitigation |
 |---|---|---|
 | Leaked API credentials | Full property portfolio exposure | Secrets manager + rotation |
@@ -108,8 +115,10 @@ function redactAppFolioLog(record: Record<string, unknown>): Record<string, unkn
 | Unencrypted payment data | Financial data breach | TLS 1.2+ in transit, AES at rest |
 
 ## Resources
+
 - [AppFolio Stack APIs](https://www.appfolio.com/stack/partners/api)
 - [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
 
 ## Next Steps
+
 See `appfolio-prod-checklist`.

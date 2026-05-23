@@ -5,6 +5,7 @@ Detailed implementation reference for the speak-core-workflow-b skill.
 ## Instructions
 
 ### Step 1: Initialize Pronunciation Session
+
 ```typescript
 // src/workflows/pronunciation-training.ts
 import {
@@ -43,6 +44,7 @@ async function initializePronunciationTraining(
 ```
 
 ### Step 2: Implement Drill Session
+
 ```typescript
 interface DrillItem {
   id: string;
@@ -120,6 +122,7 @@ async function runPronunciationDrill(
 ```
 
 ### Step 3: Phoneme-Level Analysis
+
 ```typescript
 interface PhonemeResult {
   phoneme: string;
@@ -164,6 +167,7 @@ function displayPronunciationFeedback(result: DrillResult) {
 ```
 
 ### Step 4: Adaptive Practice Generation
+
 ```typescript
 interface WeaknessAnalysis {
   phoneme: string;
@@ -225,7 +229,6 @@ function analyzeWeaknesses(results: DrillResult[]): WeaknessAnalysis[] {
 }
 ```
 
-
 ## Complete Workflow Example
 
 ```typescript
@@ -275,7 +278,6 @@ async function pronunciationTrainingWorkflow() {
 }
 ```
 
-
 ## Workflow Comparison
 
 | Aspect | Workflow A (Conversation) | Workflow B (Pronunciation) |
@@ -285,4 +287,3 @@ async function pronunciationTrainingWorkflow() {
 | Session Style | Free-form dialogue | Structured drills |
 | Pacing | User-driven | System-driven |
 | Best For | Fluency building | Accent reduction |
-

@@ -19,9 +19,11 @@ compatibility: Designed for Claude Code
 # Finta Security Basics
 
 ## Overview
+
 Finta manages fundraising pipelines containing investor contact information, term sheet details, valuation data, cap table snapshots, and deal room documents. A breach exposes confidential fundraising strategy, investor relationships, and financial terms that could damage competitive positioning. Protect API credentials, deal room access controls, and any integration that syncs investor data to external CRMs or spreadsheets.
 
 ## API Key Management
+
 ```typescript
 function createFintaClient(): { apiKey: string; baseUrl: string } {
   const apiKey = process.env.FINTA_API_KEY;
@@ -35,6 +37,7 @@ function createFintaClient(): { apiKey: string; baseUrl: string } {
 ```
 
 ## Webhook Signature Verification
+
 ```typescript
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
@@ -52,6 +55,7 @@ function verifyFintaWebhook(req: Request, res: Response, next: NextFunction): vo
 ```
 
 ## Input Validation
+
 ```typescript
 import { z } from "zod";
 
@@ -70,6 +74,7 @@ function validateInvestorData(data: unknown) {
 ```
 
 ## Data Protection
+
 ```typescript
 const FINTA_SENSITIVE_FIELDS = ["valuation_cap", "check_size", "term_sheet_url", "cap_table", "investor_email", "phone"];
 
@@ -83,6 +88,7 @@ function redactFintaLog(record: Record<string, unknown>): Record<string, unknown
 ```
 
 ## Security Checklist
+
 - [ ] API keys stored in secrets manager, not in code
 - [ ] Strong password + 2FA enabled on Finta account
 - [ ] Deal room access permissions reviewed after each round
@@ -93,6 +99,7 @@ function redactFintaLog(record: Record<string, unknown>): Record<string, unknown
 - [ ] Pipeline exports encrypted and never committed to git
 
 ## Error Handling
+
 | Vulnerability | Risk | Mitigation |
 |---|---|---|
 | Leaked API key | Full access to investor pipeline and deal terms | Secrets manager + rotation |
@@ -102,8 +109,10 @@ function redactFintaLog(record: Record<string, unknown>): Record<string, unknown
 | CRM sync without redaction | Valuation data leaks to third-party CRM | Field-level redaction before sync |
 
 ## Resources
+
 - [Finta Website](https://www.trustfinta.com)
 - [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
 
 ## Next Steps
+
 See `finta-prod-checklist`.

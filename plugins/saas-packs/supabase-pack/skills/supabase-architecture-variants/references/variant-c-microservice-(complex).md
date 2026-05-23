@@ -39,6 +39,7 @@ other-services/
 ```
 
 ### Key Characteristics
+
 - Dedicated Supabase microservice
 - gRPC for internal communication
 - Event-driven architecture
@@ -48,6 +49,7 @@ other-services/
 - Circuit breaker per service
 
 ### Code Pattern
+
 ```typescript
 // Event-driven with domain isolation
 class SupabaseAggregate {

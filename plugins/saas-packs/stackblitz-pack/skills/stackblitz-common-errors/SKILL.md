@@ -26,15 +26,20 @@ compatibility: Designed for Claude Code
 ## Error Reference
 
 ### SharedArrayBuffer is not defined
+
 **Cause:** Missing cross-origin isolation headers.
+
 ```
 Cross-Origin-Embedder-Policy: require-corp
 Cross-Origin-Opener-Policy: same-origin
 ```
+
 **Fix:** Add both headers to your server. In Vite: `server.headers` config.
 
 ### Failed to boot WebContainer
+
 **Cause:** Only one WebContainer instance allowed per page.
+
 ```typescript
 // BAD: Multiple boot calls
 const wc1 = await WebContainer.boot();
@@ -49,7 +54,9 @@ async function getWC() {
 ```
 
 ### npm install hangs or fails
+
 **Cause:** Large dependency tree or network issue in WebContainer.
+
 ```typescript
 // Use --prefer-offline and minimal deps
 const proc = await wc.spawn('npm', ['install', '--prefer-offline']);
@@ -62,7 +69,9 @@ if (code !== 0) {
 ```
 
 ### server-ready event never fires
+
 **Cause:** Application not listening on a port.
+
 ```typescript
 // Ensure your app calls listen()
 // app.listen(3000) -- required for server-ready event
@@ -71,7 +80,9 @@ wc.on('error', (err) => console.error('WC error:', err));
 ```
 
 ### File operations fail with ENOENT
+
 **Cause:** Parent directory doesn't exist.
+
 ```typescript
 // Create parent directories first
 await wc.fs.mkdir('/src/components', { recursive: true });

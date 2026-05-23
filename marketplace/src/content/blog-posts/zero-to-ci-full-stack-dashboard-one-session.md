@@ -215,4 +215,3 @@ Speed comes from not deliberating. Pick your tools, commit to them, build forwar
 - [Building a Deterministic DXF Comparison Engine in One Day](/posts/deterministic-dxf-comparison-engine-one-day-build/) — the same cad-dxf-agent project, earlier in its lifecycle
 - [Building a Complete React Native Mobile App in One Session](/posts/react-native-mobile-app-one-session/) — another zero-to-done build with opinionated stack choices
 - [Production Release Engineering: Shipping v4.5.0](/posts/production-release-engineering-v450/) — what CI looks like at scale with 38 commits and 739 skills
-

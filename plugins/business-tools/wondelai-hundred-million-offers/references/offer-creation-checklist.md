@@ -1,9 +1,11 @@
+<!-- markdownlint-disable MD035 -->
+
 # Offer Creation Checklist: Step-by-Step Worksheet
 
 This is your working document for building a Grand Slam Offer from scratch. Work through each section in order. Fill in the prompts, score your offer on each element, and use the templates to assemble your final offer. By the end of this checklist, you will have a complete, ready-to-sell Grand Slam Offer.
 
-
 ## Table of Contents
+
 1. [Step 1: Identify Your Starving Crowd](#step-1-identify-your-starving-crowd)
 2. [Step 2: Define the Dream Outcome](#step-2-define-the-dream-outcome)
 3. [Step 3: List Every Obstacle](#step-3-list-every-obstacle)
@@ -84,6 +86,7 @@ Fill in: "Go from _______________ to _______________ and become _______________.
 List every problem, fear, objection, and friction point between the prospect and the Dream Outcome:
 
 **Before purchase (reasons they hesitate to buy):**
+
 1. _______________
 2. _______________
 3. _______________
@@ -91,6 +94,7 @@ List every problem, fear, objection, and friction point between the prospect and
 5. _______________
 
 **During experience (what makes the process hard):**
+
 1. _______________
 2. _______________
 3. _______________
@@ -98,16 +102,19 @@ List every problem, fear, objection, and friction point between the prospect and
 5. _______________
 
 **After result (what threatens the result or creates new problems):**
+
 1. _______________
 2. _______________
 3. _______________
 
 **Internal blockers (self-doubt, limiting beliefs):**
+
 1. _______________
 2. _______________
 3. _______________
 
 **External blockers (outside forces):**
+
 1. _______________
 2. _______________
 
@@ -133,6 +140,7 @@ For each obstacle, create a solution and assign a delivery vehicle:
 Categorize each solution from Step 4:
 
 **STACK (High Value / Low Cost to Deliver) -- Include and highlight:**
+
 1. _______________
 2. _______________
 3. _______________
@@ -140,14 +148,17 @@ Categorize each solution from Step 4:
 5. _______________
 
 **PREMIUM (High Value / High Cost) -- Include in highest tier only:**
+
 1. _______________
 2. _______________
 
 **CONSIDER (Low Value / Low Cost) -- Include as minor extras:**
+
 1. _______________
 2. _______________
 
 **TRIM (Low Value / High Cost) -- Remove:**
+
 1. _______________
 2. _______________
 
@@ -184,31 +195,36 @@ Categorize each solution from Step 4:
 
 ### Bonus Stack Template
 
-**Bonus 1: "_______________" -- $_______  value**
+**Bonus 1: "_____________**" -- $**_____  value**
+
 - Objection it addresses: _______________
 - What it includes: _______________
 - Delivery vehicle: _______________
 - Dollar value justification: _______________
 
-**Bonus 2: "_______________" -- $_______ value**
+**Bonus 2: "_____________**" -- $**_____ value**
+
 - Objection it addresses: _______________
 - What it includes: _______________
 - Delivery vehicle: _______________
 - Dollar value justification: _______________
 
-**Bonus 3: "_______________" -- $_______ value**
+**Bonus 3: "_____________**" -- $**_____ value**
+
 - Objection it addresses: _______________
 - What it includes: _______________
 - Delivery vehicle: _______________
 - Dollar value justification: _______________
 
-**Bonus 4: "_______________" -- $_______ value**
+**Bonus 4: "_____________**" -- $**_____ value**
+
 - Objection it addresses: _______________
 - What it includes: _______________
 - Delivery vehicle: _______________
 - Dollar value justification: _______________
 
-**Bonus 5 (Partner Bonus): "_______________" -- $_______ value**
+**Bonus 5 (Partner Bonus): "_____________**" -- $**_____ value**
+
 - Partner: _______________
 - What they provide: _______________
 - Value to customer: _______________
@@ -238,6 +254,7 @@ Categorize each solution from Step 4:
 **Guarantee name:** "The _______________ Guarantee"
 
 **Guarantee terms:**
+
 - Duration: _______________
 - Conditions (if conditional): _______________
 - Specific outcome (if performance-based): _______________
@@ -251,6 +268,7 @@ Categorize each solution from Step 4:
 > _______________________________________________________________"
 
 **Financial modeling:**
+
 - Estimated refund rate: ___%
 - Revenue impact of refunds (monthly): $_______
 - Estimated conversion lift from guarantee: ___%

@@ -22,15 +22,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # persona performance tuning | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview
+
 Batch inquiry creation, cache verification results, parallel polling.
 
 ## Prerequisites
+
 - Completed `persona-install-auth` setup
 - Valid Persona API key (sandbox or production)
 
 ## Instructions
 
 ### Step 1: Implementation
+
 ```python
 import os, requests
 
@@ -49,9 +52,11 @@ for inq in inquiries:
 ```
 
 ## Output
+
 - Batch inquiry creation, cache verification results, parallel polling.
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Invalid API key | Check PERSONA_API_KEY |
@@ -59,8 +64,10 @@ for inq in inquiries:
 | 404 Not Found | Wrong resource ID | Verify ID format |
 
 ## Resources
+
 - [Persona API Reference](https://docs.withpersona.com/reference/introduction)
 - [Persona Documentation](https://docs.withpersona.com)
 
 ## Next Steps
+
 See related Persona skills for more workflows.

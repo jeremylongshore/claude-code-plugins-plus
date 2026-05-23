@@ -3,6 +3,7 @@
 ## Your First Request
 
 ### cURL
+
 ```bash
 curl https://openrouter.ai/api/v1/chat/completions \
   -H "Authorization: Bearer $OPENROUTER_API_KEY" \
@@ -16,6 +17,7 @@ curl https://openrouter.ai/api/v1/chat/completions \
 ```
 
 ### Response
+
 ```json
 {
   "id": "gen-abc123",

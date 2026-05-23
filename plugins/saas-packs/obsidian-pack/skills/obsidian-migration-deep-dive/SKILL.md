@@ -24,12 +24,16 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Obsidian Migration Deep Dive
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'N/A'`
 !`ls *.enex *.json *.zip 2>/dev/null | head -10 || echo 'No export files in cwd'`
+
 ## Overview
+
 Migrate notes from Notion, Evernote, Roam Research, Bear, and Apple Notes into Obsidian -- handling attachment relocation, internal link conversion to `[[wikilinks]]`, tag migration, and frontmatter generation.
 
 ## Prerequisites
+
 - Exported data from the source application (see each section for format)
 - A target Obsidian vault created and opened at least once
 - Node.js 18+ for running migration scripts
@@ -179,6 +183,7 @@ migrate().catch(console.error);
 ```
 
 Run it:
+
 ```bash
 unzip Notion-Export-*.zip -d notion-export
 node notion-to-obsidian.mjs notion-export ~/my-vault
@@ -284,6 +289,7 @@ migrate().catch(console.error);
 ```
 
 Run it:
+
 ```bash
 npm install xml2js turndown
 node evernote-to-obsidian.mjs My-Notes.enex ~/my-vault
@@ -477,11 +483,13 @@ echo "Unique tags: $(grep -roh '#[a-zA-Z][a-zA-Z0-9/_-]*' "$VAULT"/*.md 2>/dev/n
 ```
 
 ## Output
+
 - Markdown notes with `[[wikilink]]` syntax and frontmatter (`title`, `source`, `migrated`, tags)
 - Attachments relocated to `attachments/` with `![[embed]]` references
 - Validation report listing broken links, orphaned attachments, and encoding issues
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Encoding errors (`\ufffd` characters) | Source notes not UTF-8 | Detect encoding with `file` command, convert with `iconv -f LATIN1 -t UTF-8` |
@@ -500,9 +508,11 @@ echo "Unique tags: $(grep -roh '#[a-zA-Z][a-zA-Z0-9/_-]*' "$VAULT"/*.md 2>/dev/n
 **Roam Research**: Wikilinks already compatible. Main work is converting `(())` block refs and `{{TODO}}`/`{{DONE}}` syntax.
 
 ## Resources
+
 - [Obsidian Importer Plugin](https://help.obsidian.md/import) — official import tool
 - [Notion Export](https://www.notion.so/help/export-your-content)
 - [Evernote ENEX Format](https://evernote.com/blog/how-evernotes-xml-export-format-works)
 
 ## Next Steps
+
 Fix broken links from validation. For ongoing sync, see `obsidian-data-handling`.

@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Salesforce Local Dev Loop
 
 ## Overview
+
 Set up a fast, reproducible local development workflow using Salesforce CLI (sf), scratch orgs, and jsforce with hot reload.
 
 ## Prerequisites
+
 - Completed `salesforce-install-auth` setup
 - Salesforce CLI installed (`npm install -g @salesforce/cli`)
 - Dev Hub enabled in your production org (Setup > Dev Hub)
@@ -36,6 +38,7 @@ Set up a fast, reproducible local development workflow using Salesforce CLI (sf)
 ## Instructions
 
 ### Step 1: Create SFDX Project Structure
+
 ```bash
 # Initialize a new SFDX project
 sf project generate --name my-sf-project --template standard
@@ -53,6 +56,7 @@ sf project generate --name my-sf-project --template standard
 ```
 
 ### Step 2: Create a Scratch Org
+
 ```bash
 # Authenticate to your Dev Hub first
 sf org login web --set-default-dev-hub --alias DevHub
@@ -69,6 +73,7 @@ sf org open --target-org my-scratch
 ```
 
 ### Step 3: Configure scratch-def for development
+
 ```json
 {
   "orgName": "My Dev Org",
@@ -88,6 +93,7 @@ sf org open --target-org my-scratch
 ```
 
 ### Step 4: Node.js Integration Dev Loop
+
 ```
 my-integration/
 ├── src/
@@ -108,6 +114,7 @@ my-integration/
 ```
 
 ### Step 5: Configure Hot Reload
+
 ```json
 {
   "scripts": {
@@ -122,6 +129,7 @@ my-integration/
 ```
 
 ### Step 6: Configure Testing with Mocked Connections
+
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
 
@@ -155,6 +163,7 @@ describe('Account Service', () => {
 ```
 
 ## Output
+
 - SFDX project with scratch org configured
 - Hot reload development server running
 - Unit tests with mocked jsforce connections
@@ -162,6 +171,7 @@ describe('Account Service', () => {
 - Fast iteration cycle: edit, auto-reload, test
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `ERROR: No default dev hub` | Dev Hub not set | Run `sf org login web --set-default-dev-hub` |
@@ -171,10 +181,12 @@ describe('Account Service', () => {
 | `sf: command not found` | CLI not installed | Run `npm install -g @salesforce/cli` |
 
 ## Resources
+
 - [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/)
 - [Scratch Org Definition File](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file.htm)
 - [jsforce Documentation](https://jsforce.github.io/document/)
 - [Vitest Documentation](https://vitest.dev/)
 
 ## Next Steps
+
 See `salesforce-sdk-patterns` for production-ready code patterns.

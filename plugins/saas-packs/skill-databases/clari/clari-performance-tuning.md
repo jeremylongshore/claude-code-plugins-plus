@@ -10,6 +10,7 @@ clari-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Clari API performance
 **Workflow:** Part of the cicd skill category for Clari integration.
 **Relates to:** Other clari skills in this pack.

@@ -34,6 +34,7 @@ Analyze current capacity and plan for future growth requirements.
 ## Output
 
 Provide:
+
 - Current capacity utilization report
 - Growth trend analysis with visualizations
 - Capacity forecast for 6-12 months

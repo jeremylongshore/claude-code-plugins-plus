@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Performance Tuning
 
 ## Overview
+
 Optimize Evernote API integration performance through response caching, efficient data retrieval, request batching, connection management, and performance monitoring.
 
 ## Prerequisites
+
 - Working Evernote integration
 - Understanding of API rate limits
 - Caching infrastructure (Redis recommended, in-memory for simpler setups)
@@ -93,6 +95,7 @@ Track API call counts, response times (p50, p95, p99), cache hit rates, and rate
 For the complete caching layer, batching strategies, monitoring setup, and benchmark examples, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
+
 - Redis-based response caching with TTL management
 - Metadata-only query patterns (avoid unnecessary content transfer)
 - Sync chunk batching for bulk operations
@@ -100,6 +103,7 @@ For the complete caching layer, batching strategies, monitoring setup, and bench
 - Performance monitoring with latency percentiles and cache hit rates
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `RATE_LIMIT_REACHED` | Too many API calls | Increase cache TTL, batch operations |
@@ -108,12 +112,14 @@ For the complete caching layer, batching strategies, monitoring setup, and bench
 | Slow responses | Large note content in response | Use `findNotesMetadata()` for listings |
 
 ## Resources
+
 - [Rate Limits](https://dev.evernote.com/doc/articles/rate_limits.php)
 - [Synchronization (bulk fetch)](https://dev.evernote.com/doc/articles/synchronization.php)
 - [API Reference](https://dev.evernote.com/doc/reference/)
 - [Redis Documentation](https://redis.io/documentation)
 
 ## Next Steps
+
 For cost optimization, see `evernote-cost-tuning`.
 
 ## Examples

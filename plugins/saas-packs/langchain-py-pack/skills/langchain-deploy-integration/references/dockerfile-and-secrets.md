@@ -134,6 +134,7 @@ gcloud run deploy langchain-api \
 ```
 
 In the app:
+
 ```python
 import os
 os.environ.setdefault("GOOGLE_APPLICATION_CREDENTIALS", "/var/secrets/gcp-key")

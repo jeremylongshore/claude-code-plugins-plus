@@ -2,8 +2,8 @@
 
 The Six Paths Framework provides six systematic ways to look beyond the conventional boundaries of an industry and discover blue ocean opportunities. Most companies define their competitive landscape narrowly: same industry, same strategic group, same buyer, same scope of product, same appeal, same point in time. Each path challenges one of these boundaries. This reference provides detailed exercises and real-world examples for each path.
 
-
 ## Table of Contents
+
 1. [Overview of the Six Paths](#overview-of-the-six-paths)
 2. [Path 1: Look Across Alternative Industries](#path-1-look-across-alternative-industries)
 3. [Path 2: Look Across Strategic Groups](#path-2-look-across-strategic-groups)
@@ -311,12 +311,14 @@ Our industry competes primarily on:
 **Step 3:** Explore the opposite dimension.
 
 If your industry is functional, ask:
+
 - What emotional elements could we add that would differentiate us?
 - How do buyers feel when using our product? What would they prefer to feel?
 - What identity or status could our offering confer?
 - What experience could we create around the functional product?
 
 If your industry is emotional, ask:
+
 - What functional benefits are hidden under the emotional branding?
 - What would happen if we stripped away the emotional premium and offered pure function at lower cost?
 - Which emotional factors drive cost but not purchase decisions?
@@ -421,6 +423,7 @@ We can fill this gap by: _______________________________________
 This workshop systematically explores all six paths with a cross-functional team.
 
 **Preparation:**
+
 - Completed strategy canvas (current state)
 - Customer and non-customer interview data
 - Industry trend reports
@@ -443,6 +446,7 @@ This workshop systematically explores all six paths with a cross-functional team
 | 5:30-6:00 | Prioritize top 3 opportunities, assign next steps | All |
 
 **Facilitation tips:**
+
 - Spend no more than 40 minutes per path (10 min intro, 15 min exercise, 15 min discussion)
 - Use a "parking lot" for ideas that come up outside the current path
 - Have participants vote on the most promising insight from each path before moving on
@@ -454,6 +458,7 @@ This workshop systematically explores all six paths with a cross-functional team
 If time is limited, focus on the three paths most likely to yield results for your specific situation.
 
 **How to choose which three paths:**
+
 - If you are in a commodity market: Paths 1, 5, 4
 - If you are in a complex B2B market: Paths 3, 4, 6
 - If you are in a consumer market: Paths 1, 2, 5

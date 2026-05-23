@@ -3,6 +3,7 @@
 ## Troubleshooting
 
 ### Extension Not Working
+
 ```
 Steps:
 1. Check compatibility (VS Code version)
@@ -14,6 +15,7 @@ Steps:
 ```
 
 ### Extension Causing Issues
+
 ```
 Isolate the problem:
 1. Disable all extensions
@@ -25,6 +27,7 @@ Isolate the problem:
 ```
 
 ### Extension Settings Reset
+
 ```bash
 # Reset extension data
 rm -rf ~/.cursor/extensions/[extension-name]/

@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Load & Scale
 
 ## Overview
+
 Load testing, scaling strategies, and capacity planning for Replit deployments. Covers Autoscale behavior tuning, Reserved VM right-sizing, cold start optimization, database connection scaling, and capacity benchmarking.
 
 ## Prerequisites
+
 - Replit app deployed (Autoscale or Reserved VM)
 - Load testing tool: k6, autocannon, or curl
 - Health endpoint implemented
@@ -45,6 +47,7 @@ Load testing, scaling strategies, and capacity planning for Replit deployments. 
 ## Instructions
 
 ### Step 1: Baseline Benchmark
+
 ```bash
 # Quick benchmark with autocannon (built into Node.js ecosystem)
 npx autocannon -c 10 -d 30 https://your-app.replit.app/health
@@ -59,6 +62,7 @@ npx autocannon -c 10 -d 30 https://your-app.replit.app/health
 ```
 
 ### Step 2: Load Test with k6
+
 ```javascript
 // load-test.js — comprehensive Replit load test
 import http from 'k6/http';
@@ -116,6 +120,7 @@ k6 run --out json=results.json load-test.js
 ```
 
 ### Step 3: Cold Start Optimization (Autoscale)
+
 ```markdown
 Autoscale cold starts happen when:
 - First request after period of no traffic
@@ -146,6 +151,7 @@ deploymentTarget = "autoscale"
 ```
 
 ### Step 4: Reserved VM Sizing
+
 ```markdown
 Choose VM size based on load test results:
 
@@ -166,6 +172,7 @@ To change:
 ```
 
 ### Step 5: Database Connection Scaling
+
 ```typescript
 // Tune PostgreSQL pool for Replit container limits
 import { Pool } from 'pg';
@@ -210,6 +217,7 @@ function createOptimalPool(): Pool {
 ```
 
 ### Step 6: Capacity Planning Template
+
 ```markdown
 ## Capacity Assessment
 
@@ -243,6 +251,7 @@ function createOptimalPool(): Pool {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Cold start > 15s | Heavy startup | Pre-compile, lazy imports |
@@ -251,10 +260,12 @@ function createOptimalPool(): Pool {
 | Inconsistent results | Autoscale scaling up | Warm up before measuring |
 
 ## Resources
+
 - [Autoscale Deployments](https://blog.replit.com/autoscale)
 - [Reserved VM Deployments](https://docs.replit.com/cloud-services/deployments/reserved-vm-deployments)
 - [k6 Documentation](https://k6.io/docs/)
 - [autocannon](https://github.com/mcollina/autocannon)
 
 ## Next Steps
+
 For reliability patterns, see `replit-reliability-patterns`.

@@ -10,6 +10,7 @@ hubspot-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid HubSpot anti-patterns
 **Workflow:** Part of the enterprise skill category for HubSpot integration.
 **Relates to:** Other hubspot skills in this pack.

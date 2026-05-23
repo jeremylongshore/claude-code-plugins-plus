@@ -27,6 +27,7 @@ Provision production-grade Vertex AI ADK infrastructure with Terraform: secure n
 ## Prerequisites
 
 Before using this skill, ensure:
+
 - Google Cloud project with billing enabled
 - Terraform 1.0+ installed
 - gcloud CLI authenticated with appropriate permissions
@@ -46,7 +47,6 @@ Before using this skill, ensure:
 8. **Validate Deployment**: Test agent endpoint and verify all components
 
 ## Output
-
 
 - Configuration files or code changes applied to the project
 - Validation report confirming correct implementation

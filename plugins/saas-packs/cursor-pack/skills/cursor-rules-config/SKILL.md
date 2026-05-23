@@ -42,6 +42,7 @@ alwaysApply: false
 ```
 
 **Frontmatter fields:**
+
 | Field | Type | Purpose |
 |-------|------|---------|
 | `description` | string | Concise rule purpose (shown in Cursor UI) |
@@ -75,6 +76,7 @@ Create new rules via: `Cmd+Shift+P` > `New Cursor Rule`
 ### Complete Project Rules Example
 
 **`.cursor/rules/project-context.mdc`** (always-on):
+
 ```yaml
 ---
 description: "Core project context and conventions"
@@ -95,6 +97,7 @@ Package manager: pnpm. Monorepo with turborepo.
 ```
 
 **`.cursor/rules/react-patterns.mdc`** (glob-scoped):
+
 ```yaml
 ---
 description: "React component standards for TSX files"
@@ -125,6 +128,7 @@ export function Button({ variant, children, onClick }: ButtonProps) {
   );
 }
 ```
+
 ```
 
 **`.cursor/rules/api-routes.mdc`** (glob-scoped):
@@ -172,6 +176,7 @@ export async function POST(req: NextRequest) {
   }
 }
 ```
+
 ```
 
 ## Legacy .cursorrules Format

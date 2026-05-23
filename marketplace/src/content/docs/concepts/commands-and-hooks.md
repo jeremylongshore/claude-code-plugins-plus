@@ -184,6 +184,7 @@ npm run deploy:production
 ```
 
 After deployment:
+
 1. Check https://example.com/health
 2. Verify the deployed version matches the current git SHA
 3. Monitor error rates for 2 minutes using `npm run monitor`
@@ -191,10 +192,12 @@ After deployment:
 ## Post-Deploy
 
 Report the deployment status:
+
 - Environment deployed to
 - Git SHA deployed
 - Health check result
 - Any warnings from the build or deploy process
+
 ```
 
 ### Command Design Patterns
@@ -501,9 +504,9 @@ When plugins include shell scripts referenced by hooks or commands, follow these
 command: "${CLAUDE_PLUGIN_ROOT}/scripts/my-hook.sh"
 ```
 
-3. **Include shebangs.** Every script should start with `#!/bin/bash` or `#!/usr/bin/env bash`.
+1. **Include shebangs.** Every script should start with `#!/bin/bash` or `#!/usr/bin/env bash`.
 
-4. **Handle missing dependencies.** Scripts should check for required tools and fail gracefully:
+2. **Handle missing dependencies.** Scripts should check for required tools and fail gracefully:
 
 ```bash
 #!/bin/bash

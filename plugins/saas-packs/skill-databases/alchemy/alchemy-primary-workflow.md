@@ -10,6 +10,7 @@ alchemy-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Alchemy primary workflow
 **Workflow:** Part of the onboarding skill category for Alchemy integration.
 **Relates to:** Other alchemy skills in this pack.

@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Known Pitfalls
 
 ## Overview
+
 Real gotchas when integrating Exa's neural search API. Exa uses embeddings-based search rather than keyword matching, which creates a different class of failure modes than traditional search APIs. This skill covers the top pitfalls with wrong/right examples.
 
 ## Pitfall 1: Keyword-Style Queries
@@ -205,6 +206,7 @@ try {
 ```
 
 ## Quick Review Checklist
+
 - [ ] Queries are natural language, not keyword/boolean syntax
 - [ ] Search type matches the query intent (neural vs keyword)
 - [ ] Using `searchAndContents` when page content is needed
@@ -216,9 +218,11 @@ try {
 - [ ] Error handling captures `requestId`
 
 ## Resources
+
 - [Exa Search Reference](https://docs.exa.ai/reference/search)
 - [Exa Error Codes](https://docs.exa.ai/reference/error-codes)
 - [Exa Contents Retrieval](https://docs.exa.ai/reference/contents-retrieval)
 
 ## Next Steps
+
 For SDK patterns, see `exa-sdk-patterns`. For common errors, see `exa-common-errors`.

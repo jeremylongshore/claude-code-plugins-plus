@@ -10,6 +10,7 @@ clay-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Clay advanced debugging techniques for hard-to-diagnose enrichment and integration issues. Covers complex failure modes and systematic debugging.
 **Workflow:** Advanced troubleshooting skill. Use when standard troubleshooting fails.
 **Relates to:** Escalation from clay-common-errors; uses clay-debug-bundle for evidence collection.

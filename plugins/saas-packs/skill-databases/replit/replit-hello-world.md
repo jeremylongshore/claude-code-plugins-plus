@@ -10,6 +10,7 @@ replit-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Replit project demonstrating core platform patterns and instant deployment.
 **Workflow:** First hands-on skill after authentication - demonstrates Replit's core value proposition of instant coding and deployment.
 **Relates to:** Follows replit-install-auth; foundation for replit-agent-basics and replit-deployments.

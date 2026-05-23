@@ -10,6 +10,7 @@ When the user runs `/search-exp [query]`, search through all AI experiments and 
 ## Search Behavior
 
 Search across these fields:
+
 - AI tool name
 - Prompt text
 - Result text
@@ -75,11 +76,13 @@ Most common tag: code-generation (12 experiments)
 ## Advanced Filters
 
 Support combined filters:
+
 ```bash
 /search-exp tool:ChatGPT rating:5 tag:python
 ```
 
 Parse and apply each filter:
+
 - `tool:X` → Filter by AI tool
 - `rating:X` → Filter by rating (1-5)
 - `tag:X` → Filter by tag
@@ -106,6 +109,7 @@ Try:
 ## Sorting Options
 
 Support sorting with suffix:
+
 ```bash
 /search-exp code :date        # Sort by date (newest first)
 /search-exp code :rating      # Sort by rating (highest first)
@@ -115,6 +119,7 @@ Support sorting with suffix:
 ## Limit Results
 
 Default to showing 10 results, with pagination hint:
+
 ```
 Showing 10 of 45 results. Use filters to narrow down.
 ```
@@ -122,6 +127,7 @@ Showing 10 of 45 results. Use filters to narrow down.
 ## Implementation
 
 Use the `list_experiments` MCP tool with appropriate filters:
+
 - `searchQuery` for text search
 - `aiTool` for tool filter
 - `rating` for rating filter

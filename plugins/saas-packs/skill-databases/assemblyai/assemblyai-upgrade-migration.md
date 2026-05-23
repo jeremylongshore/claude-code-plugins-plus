@@ -10,6 +10,7 @@ assemblyai-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute AssemblyAI SDK upgrades
 **Workflow:** Part of the operations skill category for AssemblyAI integration.
 **Relates to:** Other assemblyai skills in this pack.

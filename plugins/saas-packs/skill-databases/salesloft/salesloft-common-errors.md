@@ -10,6 +10,7 @@ salesloft-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Salesloft common errors
 **Workflow:** Part of the operations skill category for Salesloft integration.
 **Relates to:** Other salesloft skills in this pack.

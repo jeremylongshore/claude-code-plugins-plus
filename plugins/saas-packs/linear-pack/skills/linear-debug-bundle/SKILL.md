@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Debug Bundle
 
 ## Overview
+
 Production-ready debugging tools for Linear API integrations: instrumented client with request/response logging, request tracer with performance metrics, health check endpoint, environment validator, and interactive debug console.
 
 ## Prerequisites
+
 - `@linear/sdk` installed and configured
 - Node.js 18+
 - Optional: pino or winston for structured logging
@@ -36,6 +38,7 @@ Production-ready debugging tools for Linear API integrations: instrumented clien
 ## Instructions
 
 ### Tool 1: Debug Client Wrapper
+
 Intercept all API calls with timing, logging, and error capture by wrapping the SDK's underlying fetch.
 
 ```typescript
@@ -88,6 +91,7 @@ const issues = await debugQuery("issues(first:50)", () => client.issues({ first:
 ```
 
 ### Tool 2: Request Tracer
+
 Track all API calls with timing, success/failure, and aggregate stats.
 
 ```typescript
@@ -165,6 +169,7 @@ console.log("Slow traces:", tracer.getSlowTraces(1000));
 ```
 
 ### Tool 3: Health Check Utility
+
 ```typescript
 interface HealthResult {
   status: "healthy" | "degraded" | "unhealthy";
@@ -202,6 +207,7 @@ app.get("/health/linear", async (req, res) => {
 ```
 
 ### Tool 4: Environment Validator
+
 ```typescript
 function validateLinearEnv(): { valid: boolean; issues: string[] } {
   const issues: string[] = [];
@@ -236,6 +242,7 @@ if (!envCheck.valid) {
 ```
 
 ### Tool 5: Interactive Debug Console
+
 ```typescript
 import readline from "readline";
 import { LinearClient } from "@linear/sdk";
@@ -294,6 +301,7 @@ async function debugConsole(client: LinearClient): Promise<void> {
 ## Examples
 
 ### Quick Diagnostic Script
+
 ```bash
 # One-liner to test API connectivity and print auth info
 curl -s -X POST https://api.linear.app/graphql \
@@ -303,6 +311,7 @@ curl -s -X POST https://api.linear.app/graphql \
 ```
 
 ### Benchmark API Calls
+
 ```typescript
 async function benchmark(label: string, fn: () => Promise<any>) {
   const runs = 5;
@@ -323,6 +332,7 @@ await benchmark("issues(50)", () => client.issues({ first: 50 }));
 ```
 
 ## Resources
+
 - [Linear SDK Source](https://github.com/linear/linear)
 - [Linear API Status](https://status.linear.app)
 - [Node.js Performance Hooks](https://nodejs.org/api/perf_hooks.html)

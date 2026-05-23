@@ -10,6 +10,7 @@ bamboohr-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure BambooHR local development workflow
 **Workflow:** Part of the onboarding skill category for BambooHR integration.
 **Relates to:** Other bamboohr skills in this pack.

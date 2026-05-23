@@ -10,6 +10,7 @@ fondo-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Fondo local development workflow
 **Workflow:** Part of the onboarding skill category for Fondo integration.
 **Relates to:** Other fondo skills in this pack.

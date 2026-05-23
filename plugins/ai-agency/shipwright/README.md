@@ -10,7 +10,8 @@ Describe your app in plain English — Shipwright builds, tests, and deploys it 
 pip install product-agent
 ```
 
-2. Use the skills:
+1. Use the skills:
+
 - `/shipwright-build` — Build a new app from a plain-English description
 - `/shipwright-enhance` — Add features to an existing Shipwright project
 - `/shipwright-stacks` — List supported tech stacks

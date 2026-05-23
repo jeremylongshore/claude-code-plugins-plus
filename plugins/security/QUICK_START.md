@@ -30,12 +30,14 @@ Get started with the Claude Code Security & Compliance Plugin Pack in 5 minutes.
 ## Common Security Workflows
 
 ### Pre-Commit Security Check (2 minutes)
+
 ```bash
 /secrets          # Check for exposed API keys
 /depcheck         # Check dependency CVEs
 ```
 
 ### Pre-Deployment Check (5 minutes)
+
 ```bash
 /vuln             # Full vulnerability scan
 /secrets          # Secret scanning
@@ -45,6 +47,7 @@ Get started with the Claude Code Security & Compliance Plugin Pack in 5 minutes.
 ```
 
 ### Compliance Audit (10 minutes)
+
 ```bash
 /auditreport      # Generate security audit
 /gdpr             # GDPR compliance
@@ -53,6 +56,7 @@ Get started with the Claude Code Security & Compliance Plugin Pack in 5 minutes.
 ```
 
 ### Deep Security Testing (30 minutes)
+
 ```bash
 /sqli             # SQL injection detection
 /xss              # XSS vulnerability scanning
@@ -65,6 +69,7 @@ Get started with the Claude Code Security & Compliance Plugin Pack in 5 minutes.
 ## Most Important Plugins (Start Here)
 
 ### 1. Secret Scanner
+
 ```bash
 /secrets
 # Prevents committing API keys, passwords, tokens
@@ -72,6 +77,7 @@ Get started with the Claude Code Security & Compliance Plugin Pack in 5 minutes.
 ```
 
 ### 2. Vulnerability Scanner
+
 ```bash
 /vuln
 # Comprehensive security scan
@@ -79,6 +85,7 @@ Get started with the Claude Code Security & Compliance Plugin Pack in 5 minutes.
 ```
 
 ### 3. Dependency Checker
+
 ```bash
 /depcheck
 # Finds vulnerable npm/pip/composer packages
@@ -86,6 +93,7 @@ Get started with the Claude Code Security & Compliance Plugin Pack in 5 minutes.
 ```
 
 ### 4. OWASP Compliance
+
 ```bash
 /owasp
 # Checks OWASP Top 10 compliance
@@ -93,6 +101,7 @@ Get started with the Claude Code Security & Compliance Plugin Pack in 5 minutes.
 ```
 
 ### 5. SQL Injection Detector
+
 ```bash
 /sqli
 # Finds SQL injection vulnerabilities
@@ -116,6 +125,7 @@ Get started with the Claude Code Security & Compliance Plugin Pack in 5 minutes.
 ## Understanding Security Reports
 
 ### Severity Levels
+
 - **CRITICAL (9.0-10.0)** - Fix immediately (hours)
   - Example: SQL injection, remote code execution
 - **HIGH (7.0-8.9)** - Fix within 7 days
@@ -126,6 +136,7 @@ Get started with the Claude Code Security & Compliance Plugin Pack in 5 minutes.
   - Example: Informational findings
 
 ### Reading a Report
+
 ```
 VULNERABILITY SCAN REPORT
 =========================
@@ -144,6 +155,7 @@ Low: 12        <-- BACKLOG
 ## Common Security Issues & Fixes
 
 ### 1. Exposed Secrets
+
 ```bash
 Problem: API key in code
 Fix: Use environment variables
@@ -151,6 +163,7 @@ Command: /secrets
 ```
 
 ### 2. SQL Injection
+
 ```bash
 Problem: String concatenation in queries
 Fix: Use parameterized queries
@@ -158,6 +171,7 @@ Command: /sqli
 ```
 
 ### 3. Vulnerable Dependencies
+
 ```bash
 Problem: Outdated packages with CVEs
 Fix: Update dependencies
@@ -165,6 +179,7 @@ Command: /depcheck
 ```
 
 ### 4. Missing Security Headers
+
 ```bash
 Problem: No Content-Security-Policy
 Fix: Add security headers
@@ -172,6 +187,7 @@ Command: /headers
 ```
 
 ### 5. Weak Authentication
+
 ```bash
 Problem: No password requirements
 Fix: Implement strong password policy
@@ -181,6 +197,7 @@ Command: /authcheck
 ## Integration Examples
 
 ### Git Pre-Commit Hook
+
 ```bash
 # .git/hooks/pre-commit
 #!/bin/bash
@@ -189,6 +206,7 @@ echo " Security check passed"
 ```
 
 ### CI/CD Pipeline
+
 ```yaml
 # .github/workflows/security.yml
 - name: Security Scan
@@ -201,26 +219,31 @@ echo " Security check passed"
 ## Best Practices
 
 ### Daily
--  Run `/secrets` before committing
--  Review security logs
+
+- Run `/secrets` before committing
+- Review security logs
 
 ### Weekly
--  Run `/depcheck` for dependency updates
--  Review vulnerability backlog
+
+- Run `/depcheck` for dependency updates
+- Review vulnerability backlog
 
 ### Before Deployment
--  Run `/vuln` for full scan
--  Run `/owasp` for compliance
--  Verify all CRITICAL and HIGH issues fixed
+
+- Run `/vuln` for full scan
+- Run `/owasp` for compliance
+- Verify all CRITICAL and HIGH issues fixed
 
 ### Quarterly
--  Run `/auditreport` for comprehensive audit
--  Run `/pentest` for penetration testing
--  Review compliance (`/gdpr`, `/pci`, `/soc2`)
+
+- Run `/auditreport` for comprehensive audit
+- Run `/pentest` for penetration testing
+- Review compliance (`/gdpr`, `/pci`, `/soc2`)
 
 ## Get Help
 
 Each plugin has detailed documentation:
+
 ```bash
 # View plugin documentation
 cd /path/to/plugin
@@ -229,17 +252,18 @@ cat README.md
 
 ## Next Steps
 
-1.  Install your first 3 plugins (secrets, vuln, depcheck)
-2.  Run your first security scan
-3.  Fix CRITICAL issues
-4.  Set up pre-commit hook
-5.  Add to CI/CD pipeline
-6.  Schedule weekly dependency checks
-7.  Plan quarterly security audits
+1. Install your first 3 plugins (secrets, vuln, depcheck)
+2. Run your first security scan
+3. Fix CRITICAL issues
+4. Set up pre-commit hook
+5. Add to CI/CD pipeline
+6. Schedule weekly dependency checks
+7. Plan quarterly security audits
 
 ## Troubleshooting
 
 ### Plugin not found?
+
 ```bash
 # Check marketplace is added
 /plugin marketplace list
@@ -249,6 +273,7 @@ cat README.md
 ```
 
 ### False positives?
+
 ```bash
 # Review finding carefully
 # Document why it's not a real issue
@@ -256,6 +281,7 @@ cat README.md
 ```
 
 ### Too many findings?
+
 ```bash
 # Prioritize by severity
 # Fix CRITICAL first
@@ -275,4 +301,4 @@ cat README.md
 
 Start with: `/secrets` → `/depcheck` → `/vuln`
 
-Happy securing! 
+Happy securing!

@@ -10,6 +10,7 @@ supabase-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Supabase CI/CD integration with GitHub Actions including automated testing, secret management, and release workflows.
 **Workflow:** First CI/CD skill. Establishes automated testing and deployment foundation.
 **Relates to:** Enables supabase-deploy-integration; supports supabase-upgrade-migration with automated testing.

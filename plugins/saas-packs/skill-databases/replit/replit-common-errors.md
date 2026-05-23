@@ -10,6 +10,7 @@ replit-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix top 10 most common Replit errors including package installation, port binding, and resource limits.
 **Workflow:** First-line troubleshooting skill - resolves issues developers encounter most frequently.
 **Relates to:** Foundation for replit-debug-bundle; complements replit-resource-limits.

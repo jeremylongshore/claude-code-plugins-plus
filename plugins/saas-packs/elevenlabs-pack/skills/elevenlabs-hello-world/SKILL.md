@@ -40,6 +40,7 @@ Generate speech from text using the ElevenLabs TTS API. This skill covers the co
 ### Step 1: Text-to-Speech with the SDK
 
 **TypeScript (recommended):**
+
 ```typescript
 import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
 import { createWriteStream } from "fs";
@@ -75,6 +76,7 @@ generateSpeech().catch(console.error);
 ```
 
 **Python:**
+
 ```python
 from elevenlabs.client import ElevenLabsClient
 
@@ -160,6 +162,7 @@ async function streamSpeech() {
 ## Output Formats
 
 Specified as `codec_sampleRate_bitrate`:
+
 - `mp3_44100_128` (default, high quality)
 - `mp3_22050_32` (smaller file, streaming)
 - `pcm_16000` (raw PCM for processing)

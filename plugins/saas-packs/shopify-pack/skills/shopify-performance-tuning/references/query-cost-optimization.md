@@ -1,4 +1,4 @@
-# Query Cost Optimization
+## Query Cost Optimization
 
 Before-and-after examples of GraphQL query cost reduction through field selection and page size tuning.
 

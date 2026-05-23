@@ -10,6 +10,7 @@ vercel-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Analyze, plan, and execute Vercel SDK upgrades with breaking change detection and rollback procedures.
 **Workflow:** Used during SDK version upgrades - typically quarterly or when new features are needed.
 **Relates to:** Follows vercel-prod-checklist for deployment; CI integration via vercel-ci-integration

@@ -1,6 +1,7 @@
 # OpenEvidence Deploy Integration - Implementation Details
 
 ## Multi-Environment Configuration
+
 ```typescript
 export const environments: Record<string, OpenEvidenceEnvConfig> = {
   development: { baseUrl: 'https://api.sandbox.openevidence.com', timeout: 60000, retries: 1, secretPath: 'local' },
@@ -10,9 +11,11 @@ export const environments: Record<string, OpenEvidenceEnvConfig> = {
 ```
 
 ## GitHub Actions Deploy Workflow
+
 Full CI/CD pipeline with test, build, deploy-staging, and deploy-production jobs including canary rollout (10% traffic, monitor 5 min, then full rollout).
 
 ## Kubernetes Deployment
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -42,6 +45,7 @@ spec:
 ```
 
 ## Health Check Endpoint
+
 ```typescript
 router.get('/health/openevidence', async (req, res) => {
   const startTime = Date.now();
@@ -56,6 +60,7 @@ router.get('/health/openevidence', async (req, res) => {
 ```
 
 ## Rollback Procedure
+
 ```bash
 #!/bin/bash
 set -e

@@ -10,6 +10,7 @@ vercel-migration-deep-dive/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute major re-architecture using strangler fig pattern with data migration and gradual traffic shifting.
 **Workflow:** Used for major platform migrations - typically a multi-week project with careful planning.
 **Relates to:** Follows vercel-enterprise-rbac; flagship+ leads to vercel-advanced-troubleshooting

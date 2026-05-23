@@ -28,14 +28,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Security Basics
 
 ## Overview
+
 Configure CodeRabbit to catch security vulnerabilities, hardcoded secrets, and insecure patterns in pull requests. CodeRabbit's AI review can detect security issues that static analysis tools miss because it understands code context and intent. This skill covers security-focused configuration, secret detection instructions, and compliance-oriented review policies.
 
 ## Prerequisites
+
 - CodeRabbit installed on repository
 - `.coderabbit.yaml` in repository root
 - Understanding of security requirements for your codebase
 
 ## Security Coverage
+
 | Category | CodeRabbit Detection | Complementary Tool |
 |----------|--------------------|--------------------|
 | Hardcoded secrets | Path instructions + AI detection | GitHub Secret Scanning, GitLeaks |
@@ -48,6 +51,7 @@ Configure CodeRabbit to catch security vulnerabilities, hardcoded secrets, and i
 ## Instructions
 
 ### Step 1: Configure Security-Focused Review
+
 ```yaml
 # .coderabbit.yaml - Security-hardened configuration
 language: "en-US"
@@ -160,6 +164,7 @@ chat:
 ```
 
 ### Step 2: Secret Detection with GitHub Integration
+
 ```yaml
 # .github/workflows/security-review.yml
 name: Security Review
@@ -204,6 +209,7 @@ jobs:
 ```
 
 ### Step 3: Security Review Learnings
+
 ```markdown
 # Train CodeRabbit to catch your team's specific security patterns:
 
@@ -220,6 +226,7 @@ Direct SQL strings are a security violation."
 ```
 
 ### Step 4: Security Audit Script
+
 ```bash
 set -euo pipefail
 echo "=== CodeRabbit Security Configuration Audit ==="
@@ -261,6 +268,7 @@ fi
 ```
 
 ## Output
+
 - Security-focused `.coderabbit.yaml` with path instructions for critical code areas
 - Secret detection patterns in CI pipeline
 - CodeRabbit learnings trained for team-specific security rules
@@ -268,6 +276,7 @@ fi
 - Merge blocking enabled for security findings
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Secrets not flagged | No security path_instructions | Add global `**` instruction for secret patterns |
@@ -277,10 +286,12 @@ fi
 | Secret in reviewed diff | File not in exclusion list | Add pattern to path_filters |
 
 ## Resources
+
 - [CodeRabbit Configuration](https://docs.coderabbit.ai/reference/configuration)
 - [CodeRabbit Path Instructions](https://docs.coderabbit.ai/guides/review-instructions)
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [GitHub Secret Scanning](https://docs.github.com/en/code-security/secret-scanning)
 
 ## Next Steps
+
 For production deployment, see `coderabbit-prod-checklist`.

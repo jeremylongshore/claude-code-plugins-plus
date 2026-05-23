@@ -18,11 +18,13 @@ compatibility: Designed for Claude Code
 # OpenEvidence Hello World
 
 ## Overview
+
 Minimal working examples demonstrating core OpenEvidence API functionality.
 
 ## Instructions
 
 ### Step 1: Clinical Query
+
 ```typescript
 const result = await client.query({
   question: 'What is the recommended treatment for acute migraine in adults?',
@@ -39,6 +41,7 @@ result.citations.forEach(c =>
 ```
 
 ### Step 2: Drug Interaction Check
+
 ```typescript
 const interactions = await client.interactions.check({
   medications: ['metformin', 'lisinopril', 'atorvastatin'],
@@ -51,6 +54,7 @@ interactions.forEach(i =>
 ```
 
 ### Step 3: Guideline Lookup
+
 ```typescript
 const guidelines = await client.guidelines.search({
   condition: 'hypertension',
@@ -63,6 +67,7 @@ guidelines.forEach(g =>
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Auth error | Invalid credentials | Check OPENEVIDENCE_API_KEY |
@@ -70,7 +75,9 @@ guidelines.forEach(g =>
 | Rate limit | Too many requests | Implement backoff |
 
 ## Resources
+
 - [OpenEvidence API Docs](https://www.openevidence.com)
 
 ## Next Steps
+
 See `openevidence-local-dev-loop`.

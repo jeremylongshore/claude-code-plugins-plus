@@ -3,6 +3,7 @@
 ## Inspection Workflow
 
 ### Phase 1: Configuration Analysis
+
 ```
 1. Connect to Agent Engine
 2. Retrieve agent metadata
@@ -13,6 +14,7 @@
 ```
 
 ### Phase 2: Protocol Validation
+
 ```
 1. Test AgentCard endpoint
 2. Validate AgentCard structure
@@ -22,6 +24,7 @@
 ```
 
 ### Phase 3: Security Audit
+
 ```
 1. Review IAM roles and permissions
 2. Check VPC Service Controls
@@ -32,6 +35,7 @@
 ```
 
 ### Phase 4: Performance Analysis
+
 ```
 1. Query Cloud Monitoring metrics
 2. Calculate error rate (last 24h)
@@ -42,6 +46,7 @@
 ```
 
 ### Phase 5: Production Readiness
+
 ```
 1. Run all checklist items (28 checks)
 2. Calculate category scores

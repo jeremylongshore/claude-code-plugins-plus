@@ -10,6 +10,7 @@ guidewire-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Guidewire local development workflow
 **Workflow:** Part of the onboarding skill category for Guidewire integration.
 **Relates to:** Other guidewire skills in this pack.

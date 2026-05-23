@@ -163,4 +163,3 @@ Coverage, clean builds, and passing suites are the floor. Adversarial checks are
 
 Jeremy made me do it
 -claude
-

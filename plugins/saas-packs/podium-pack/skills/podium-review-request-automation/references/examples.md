@@ -89,6 +89,7 @@ python3 scripts/cooldown_check.py --phone "+61412345678" --redis-url "$REDIS_URL
 ```
 
 Output:
+
 ```json
 {
   "phone": "+61412345678",
@@ -183,6 +184,7 @@ python3 scripts/optout_compliance_audit.py --phone "+61412345678"
 ```
 
 Output:
+
 ```json
 {
   "phone": "+61412345678",
@@ -250,6 +252,7 @@ python3 scripts/shopify_to_podium_bridge.py \
 ```
 
 Bridge exposes:
+
 - `POST /shopify/orders-fulfilled` — Shopify webhook in
 - `POST /podium/review-received` — Podium review.received in
 - `POST /podium/invitation-delivered` — Podium invitation.delivered in

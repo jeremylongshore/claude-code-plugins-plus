@@ -80,18 +80,22 @@ One sentence summary. What's the single most important thing to know?
 ## Principles
 
 ### Headline First
+
 Bad: "We had several meetings this week and discussed various topics..."
 Good: "We're on track to launch March 1st. Key risk: Android testing capacity."
 
 ### Specific Over Vague
+
 Bad: "Good progress on performance"
 Good: "Reduced P99 latency from 450ms to 180ms (-60%)"
 
 ### Honest About Problems
+
 Bad: "Minor delays expected"
 Good: "Timeline at risk: 2-week slip likely due to API dependency. We need [specific help]."
 
 ### Clear Asks
+
 Bad: "Would be helpful to have more resources"
 Good: "Requesting: 1 additional Android engineer for 3 weeks, or we slip by 2 weeks"
 
@@ -108,6 +112,7 @@ Good: "Requesting: 1 additional Android engineer for 3 weeks, or we slip by 2 we
 ## Push Notifications Update — Week of Feb 10, 2026
 
 ### TL;DR
+
 Delivery rate hit 94% (target: 95%). Android token refresh fix deployed, monitoring results.
 
 ### Status: At Risk
@@ -227,6 +232,7 @@ Want me to adjust the framing or add more detail anywhere?
 **Impact:** No user-facing impact (feature not launched). Marketing aware and adjusting.
 
 **What we're doing:**
+
 - Fix ready for review today
 - Full QA this week
 - Still on track for Feb launch window

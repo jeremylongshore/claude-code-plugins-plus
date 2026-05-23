@@ -3,9 +3,11 @@
 # Customer.io Hello World
 
 ## Overview
+
 Create a minimal working Customer.io example that identifies a user and triggers an event.
 
 ## Prerequisites
+
 - Completed `customerio-install-auth` skill
 - Customer.io SDK installed
 - Valid Site ID and API Key configured
@@ -13,6 +15,7 @@ Create a minimal working Customer.io example that identifies a user and triggers
 ## Instructions
 
 ### Step 1: Create Basic Integration
+
 ```typescript
 // hello-customerio.ts
 import { TrackClient, RegionUS } from '@customerio/track';
@@ -47,11 +50,13 @@ main().catch(console.error);
 ```
 
 ### Step 2: Run the Example
+
 ```bash
 npx ts-node hello-customerio.ts
 ```
 
 ### Step 3: Verify in Dashboard
+
 1. Go to Customer.io dashboard
 2. Navigate to People section
 3. Search for "user-123" or "hello@example.com"
@@ -59,11 +64,13 @@ npx ts-node hello-customerio.ts
 5. Check Activity tab for "hello_world" event
 
 ## Output
+
 - User created/updated in Customer.io
 - Event recorded in user's activity log
 - Console output confirming success
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Invalid credentials | Verify Site ID and API Key |
@@ -74,6 +81,7 @@ npx ts-node hello-customerio.ts
 ## Examples
 
 ### Python Hello World
+
 ```python
 import os
 from customerio import CustomerIO
@@ -93,6 +101,7 @@ print('Event tracked')
 ```
 
 ### With Anonymous User
+
 ```typescript
 // Track anonymous user with device ID
 await client.identify('device-abc123', {
@@ -102,8 +111,10 @@ await client.identify('device-abc123', {
 ```
 
 ## Resources
+
 - [Identify API](https://customer.io/docs/api/track/#operation/identify)
 - [Track API](https://customer.io/docs/api/track/#operation/track)
 
 ## Next Steps
+
 After verifying hello world works, proceed to `customerio-local-dev-loop` to set up your development workflow.

@@ -34,6 +34,7 @@ Standard usage examples reference for all marketplace skills. Every references/e
 ```
 
 Rules:
+
 - Minimum 3 examples, maximum 6
 - Each example has: scenario title, user request, what's produced, code/config
 - Code must be real and runnable — no pseudocode, no "add your logic here"

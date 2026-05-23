@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Upgrade & Migration
 
 ## Overview
+
 CodeRabbit is a managed SaaS service -- there is no SDK to upgrade. Configuration changes happen by updating `.coderabbit.yaml` in your repository. This skill covers adopting new CodeRabbit features, upgrading between plans, migrating configuration formats, and staying current with CodeRabbit capabilities.
 
 ## Prerequisites
+
 - CodeRabbit installed on repository
 - `.coderabbit.yaml` in repository root
 - Access to CodeRabbit dashboard at app.coderabbit.ai
@@ -45,6 +47,7 @@ CodeRabbit is a managed SaaS service -- there is no SDK to upgrade. Configuratio
 ## Instructions
 
 ### Step 1: Check Current Configuration vs Latest Schema
+
 ```markdown
 # On any open PR, post this comment:
 @coderabbitai configuration
@@ -57,6 +60,7 @@ CodeRabbit is a managed SaaS service -- there is no SDK to upgrade. Configuratio
 ```
 
 ### Step 2: Upgrade Free to Pro Plan
+
 ```markdown
 # What you gain with Pro:
 1. Private repository support (Free = public only)
@@ -75,6 +79,7 @@ CodeRabbit is a managed SaaS service -- there is no SDK to upgrade. Configuratio
 ```
 
 ### Step 3: Adopt New Configuration Features
+
 ```yaml
 # .coderabbit.yaml - Modern configuration with latest features
 
@@ -146,6 +151,7 @@ chat:
 ```
 
 ### Step 4: Enable Finishing Touch Recipes
+
 ```yaml
 # .coderabbit.yaml - Custom finishing touch recipes (Pro+)
 finishing_touches:
@@ -182,6 +188,7 @@ finishing_touches:
 ```
 
 ### Step 5: Enable Early Access Features
+
 ```yaml
 # .coderabbit.yaml - Opt into beta features
 early_access: true    # Enables experimental features as they ship
@@ -197,6 +204,7 @@ early_access: true    # Enables experimental features as they ship
 ```
 
 ### Step 6: Validate After Upgrade
+
 ```bash
 set -euo pipefail
 
@@ -230,6 +238,7 @@ echo "the new configuration is active."
 ```
 
 ### Step 7: Migration Checklist
+
 ```markdown
 # When updating configuration:
 - [ ] YAML syntax validated before committing
@@ -241,6 +250,7 @@ echo "the new configuration is active."
 ```
 
 ## Output
+
 - Configuration updated to latest CodeRabbit schema
 - New features (finishing touches, tool integrations, tone) enabled
 - Plan upgrade completed (if applicable)
@@ -248,6 +258,7 @@ echo "the new configuration is active."
 - Migration checklist completed
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | New field ignored | Not on Pro/Enterprise plan | Upgrade plan for full feature access |
@@ -257,6 +268,7 @@ echo "the new configuration is active."
 | Finishing touches not working | Not on Pro plan | Upgrade to Pro for finishing touches |
 
 ## Resources
+
 - [CodeRabbit Changelog](https://docs.coderabbit.ai/changelog)
 - [CodeRabbit Configuration Reference](https://docs.coderabbit.ai/reference/configuration)
 - [CodeRabbit Pricing](https://coderabbit.ai/pricing)
@@ -264,4 +276,5 @@ echo "the new configuration is active."
 - [Finishing Touches](https://docs.coderabbit.ai/finishing-touches)
 
 ## Next Steps
+
 For CI integration after upgrade, see `coderabbit-ci-integration`.

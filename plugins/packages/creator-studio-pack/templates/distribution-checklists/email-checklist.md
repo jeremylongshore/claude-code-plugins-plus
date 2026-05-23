@@ -39,6 +39,7 @@
 ### Subject Line Formulas
 
 **Direct Benefit**:
+
 ```
 "How to [achieve benefit] in [timeframe]"
 "[Number] ways to [solve problem]"
@@ -46,6 +47,7 @@
 ```
 
 **Curiosity-Driven**:
+
 ```
 "This [X] trick saved me [Y]"
 "I just discovered [surprising thing]"
@@ -53,6 +55,7 @@
 ```
 
 **Personalized**:
+
 ```
 "[Name], here's what I built this week"
 "[Name], you asked about [topic]..."
@@ -60,6 +63,7 @@
 ```
 
 **Question-Based**:
+
 ```
 "Still struggling with [problem]?"
 "Want to learn [skill]?"
@@ -87,15 +91,18 @@
 ### Opening (First 100 Words)
 
 **Greeting**:
+
 - [ ] **Personal**: "Hey [Name]," or "Hi everyone,"
 - [ ] **Consistent**: Match your brand voice
 
 **Hook**:
+
 - [ ] **Attention-grabbing**: First 2 sentences are critical
 - [ ] **Value preview**: What they'll get from this email
 - [ ] **Personal story** (optional): Quick anecdote or context
 
 **Example Opening**:
+
 ```
 Hey [Name],
 
@@ -126,6 +133,7 @@ Let's dive in.
 - [ ] **CTA button**: "Watch Now" OR "Learn More"
 
 **Example Video Section**:
+
 ```
 [Large video thumbnail image - linked]
 
@@ -151,12 +159,14 @@ strategies, this tutorial has you covered.
 ### Secondary Content (Optional)
 
 **Additional Value**:
+
 - [ ] **Quick tip**: 1-2 paragraph actionable advice
 - [ ] **Code snippet**: Useful one-liner or pattern
 - [ ] **Resource**: Tool, article, or documentation link
 - [ ] **Reader highlight**: Feature community member (if applicable)
 
 **Example Secondary Section**:
+
 ```
 ---
 
@@ -188,11 +198,13 @@ My rule: Redis for 90% of use cases.
 ### Closing
 
 **P.S. Section** (Highly Effective):
+
 - [ ] **Additional value**: Bonus tip, teaser, or personal note
 - [ ] **Conversational**: More informal than main body
 - [ ] **Engagement ask**: "Reply with your experience"
 
 **Example P.S.**:
+
 ```
 P.S. Next week I'm covering database indexing strategies.
 Have a specific question? Just hit reply - I read every email.
@@ -263,18 +275,21 @@ Have a specific question? Just hit reply - I read every email.
 ### Deliverability
 
 **Domain Authentication**:
+
 - [ ] **SPF record**: Configured for your domain
 - [ ] **DKIM**: DomainKeys Identified Mail enabled
 - [ ] **DMARC**: Domain-based Message Authentication enabled
 - [ ] **Custom domain**: Sending from @yourdomain.com (not @gmail.com)
 
 **Email List Hygiene**:
+
 - [ ] **Double opt-in**: Confirmed subscriptions only
 - [ ] **Bounce handling**: Remove hard bounces
 - [ ] **Unengaged cleanup**: Archive subscribers who haven't opened in 6+ months
 - [ ] **Spam complaints**: Remove immediately
 
 **Content Checks**:
+
 - [ ] **Spam score**: Test with Mail Tester (aim for 8+/10)
 - [ ] **Text-to-image ratio**: At least 60% text (40% images max)
 - [ ] **Links**: All working, not broken
@@ -307,16 +322,19 @@ Have a specific question? Just hit reply - I read every email.
 ### Segmentation Options
 
 **By Engagement**:
+
 - [ ] **Highly engaged**: Opened 80%+ of emails (give advanced content)
 - [ ] **Moderately engaged**: Opened 40-80% (standard content)
 - [ ] **Low engagement**: Opened <40% (re-engagement campaign)
 
 **By Interest**:
+
 - [ ] **Topic preference**: Frontend vs backend, language-specific
 - [ ] **Experience level**: Beginner vs advanced content
 - [ ] **Content type**: Videos vs articles vs tools
 
 **By Behavior**:
+
 - [ ] **Video watchers**: Clicked video links consistently
 - [ ] **Blog readers**: Clicked blog links consistently
 - [ ] **Course buyers**: Purchased product (upsell opportunity)
@@ -361,21 +379,25 @@ Have a specific question? Just hit reply - I read every email.
 ### Frequency Best Practices
 
 **Weekly Newsletter**:
+
 - Same day every week (consistency)
 - Same time (2-4pm EST typically best)
 - Subscribers know when to expect it
 
 **Bi-Weekly Newsletter**:
+
 - Every other Tuesday/Thursday
 - More breathing room
 - Each email can have more content
 
 **New Video Alerts**:
+
 - Send whenever you publish (1-3x per week)
 - Focused on single piece of content
 - Shorter, more action-oriented
 
 **Monthly Roundup**:
+
 - First or last week of month
 - Summary of all content that month
 - Great for re-engagement
@@ -426,17 +448,20 @@ Have a specific question? Just hit reply - I read every email.
 ### Key Metrics
 
 **Delivery Metrics**:
+
 - **Delivered**: Successfully reached inbox
 - **Bounce rate**: <2% is good
 - **Spam complaints**: <0.1% is acceptable
 
 **Engagement Metrics**:
+
 - **Open rate**: 15-25% is typical (varies by industry)
 - **Click-through rate (CTR)**: 2-5% is typical
 - **Click-to-open rate (CTOR)**: 10-20% is good
 - **Reply rate**: Higher = better engagement
 
 **Business Metrics**:
+
 - **Website traffic**: From email (UTM tracking)
 - **Video views**: From email referrals
 - **Conversions**: Sales, signups, etc. (if applicable)
@@ -445,23 +470,27 @@ Have a specific question? Just hit reply - I read every email.
 ### What to Test (A/B Testing)
 
 **Subject Lines**:
+
 - Benefit-focused vs curiosity-driven
 - With vs without emoji
 - With vs without personalization
 - Short vs long
 
 **Send Time**:
+
 - Morning vs afternoon
 - Weekday vs weekend
 - Different days of week
 
 **Content**:
+
 - Video thumbnail size
 - CTA button text
 - Email length (short vs long)
 - Single vs multiple CTAs
 
 **Design**:
+
 - Plain text vs HTML
 - Image-heavy vs text-heavy
 - Button vs text link
@@ -473,18 +502,21 @@ Have a specific question? Just hit reply - I read every email.
 ### Recommended ESPs (Email Service Providers)
 
 **For Creators/Small Lists (<10K)**:
+
 - ConvertKit (creator-focused)
 - Mailchimp (free tier available)
 - Buttondown (simple, affordable)
 - Substack (if building newsletter business)
 
 **For Growth (<100K)**:
+
 - ConvertKit (best for creators)
 - ActiveCampaign (powerful automation)
 - Mailchimp (full-featured)
 - SendGrid (developer-friendly)
 
 **For Large Lists (100K+)**:
+
 - SendGrid (high deliverability)
 - Mailgun (developer-focused)
 - Amazon SES (cheapest)
@@ -522,21 +554,25 @@ Have a specific question? Just hit reply - I read every email.
 ## Tools & Resources
 
 **Email Design**:
+
 - Canva (thumbnail/header design)
 - Figma (email templates)
 - BEE Free (email builder)
 
 **Testing**:
+
 - Mail Tester (spam score)
 - Litmus (multi-client preview)
 - Email on Acid (testing suite)
 
 **Analytics**:
+
 - Google Analytics (traffic tracking)
 - ESP native analytics
 - Fathom/Plausible (privacy-focused)
 
 **List Building**:
+
 - OptinMonster (popups)
 - ConvertBox (targeted opt-ins)
 - Sumo (free list building tools)

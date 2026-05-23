@@ -46,15 +46,19 @@ gcloud run deploy langchain-api \
 Two ways to consume Secret Manager secrets:
 
 **Environment variables** (simplest, recommended for API keys):
+
 ```bash
 --set-secrets=ANTHROPIC_API_KEY=anthropic-key:latest
 ```
+
 Secret is read once at container start; not hot-reloaded on rotation.
 
 **Mounted as files** (required for multi-line secrets like certs or JSON creds):
+
 ```bash
 --set-secrets=/var/secrets/gcp-credentials=gcp-sa-key:latest
 ```
+
 File appears at the mount path; set `GOOGLE_APPLICATION_CREDENTIALS=/var/secrets/gcp-credentials`.
 
 Rotation note: Cloud Run does not auto-redeploy on Secret Manager version

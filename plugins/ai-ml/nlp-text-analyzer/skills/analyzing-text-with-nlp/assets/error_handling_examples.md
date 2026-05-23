@@ -8,7 +8,7 @@ API rate limits are a common occurrence, especially when using external NLP serv
 
 **Handling Strategy:**
 
-*   **Retry Mechanism:** Implement an exponential backoff retry mechanism. This involves waiting for an increasing amount of time before retrying the request.
+* **Retry Mechanism:** Implement an exponential backoff retry mechanism. This involves waiting for an increasing amount of time before retrying the request.
 
 **Example:**
 
@@ -44,9 +44,9 @@ def analyze_text_with_retry(text, max_retries=5, initial_delay=1):
 
 **Instructions:**
 
-1.  Replace the placeholder comments with your actual code.
-2.  Adjust `max_retries` and `initial_delay` based on the API's recommendations.
-3.  Ensure the error check specifically targets rate-limiting errors.  Different APIs have different error messages and codes.
+1. Replace the placeholder comments with your actual code.
+2. Adjust `max_retries` and `initial_delay` based on the API's recommendations.
+3. Ensure the error check specifically targets rate-limiting errors.  Different APIs have different error messages and codes.
 
 ## 2. Invalid Input
 
@@ -54,8 +54,8 @@ Invalid input can range from malformed text to unsupported languages.
 
 **Handling Strategy:**
 
-*   **Input Validation:** Validate the input text before sending it to the NLP API.
-*   **Error Messages:** Provide informative error messages to the user.
+* **Input Validation:** Validate the input text before sending it to the NLP API.
+* **Error Messages:** Provide informative error messages to the user.
 
 **Example:**
 
@@ -97,10 +97,10 @@ def analyze_text(text, language="en"):
 
 **Instructions:**
 
-1.  Replace the placeholder comments with your actual code.
-2.  Implement input validation checks relevant to your specific NLP task (e.g., maximum text length, allowed characters).
-3.  Catch specific API errors related to invalid input and provide helpful error messages.
-4.  Consider adding language detection to automatically determine the input language and handle unsupported languages gracefully.
+1. Replace the placeholder comments with your actual code.
+2. Implement input validation checks relevant to your specific NLP task (e.g., maximum text length, allowed characters).
+3. Catch specific API errors related to invalid input and provide helpful error messages.
+4. Consider adding language detection to automatically determine the input language and handle unsupported languages gracefully.
 
 ## 3. Network Errors
 
@@ -108,8 +108,8 @@ Network errors can occur due to connectivity issues or server problems.
 
 **Handling Strategy:**
 
-*   **Retry Mechanism:** Similar to API rate limits, implement a retry mechanism with exponential backoff.
-*   **Timeout:** Set a timeout for API requests to prevent the application from hanging indefinitely.
+* **Retry Mechanism:** Similar to API rate limits, implement a retry mechanism with exponential backoff.
+* **Timeout:** Set a timeout for API requests to prevent the application from hanging indefinitely.
 
 **Example:**
 
@@ -149,10 +149,10 @@ def analyze_text_with_retry(text, max_retries=3, initial_delay=1, timeout=10):
 
 **Instructions:**
 
-1.  Replace the placeholder comments with your actual code, including the API endpoint, authentication details, and request parameters.
-2.  Adjust `max_retries`, `initial_delay`, and `timeout` based on your network conditions and API requirements.
-3.  Use the `requests` library (or your preferred HTTP client) to make API requests.
-4.  Handle `requests.exceptions.RequestException` to catch various network-related errors.
+1. Replace the placeholder comments with your actual code, including the API endpoint, authentication details, and request parameters.
+2. Adjust `max_retries`, `initial_delay`, and `timeout` based on your network conditions and API requirements.
+3. Use the `requests` library (or your preferred HTTP client) to make API requests.
+4. Handle `requests.exceptions.RequestException` to catch various network-related errors.
 
 ## 4. Server-Side Errors
 
@@ -160,9 +160,9 @@ Server-side errors (e.g., 500 Internal Server Error) indicate problems on the NL
 
 **Handling Strategy:**
 
-*   **Retry Mechanism:** Implement a retry mechanism with exponential backoff, as these errors can be temporary.
-*   **Logging:** Log the error details for debugging purposes.
-*   **User Notification:** Inform the user that there is a problem with the service and that they should try again later.
+* **Retry Mechanism:** Implement a retry mechanism with exponential backoff, as these errors can be temporary.
+* **Logging:** Log the error details for debugging purposes.
+* **User Notification:** Inform the user that there is a problem with the service and that they should try again later.
 
 **Example:**
 
@@ -208,9 +208,9 @@ def analyze_text_with_retry(text, max_retries=3, initial_delay=1, timeout=10):
 
 **Instructions:**
 
-1.  Replace the placeholder comments with your actual code, including the API endpoint, authentication details, and request parameters.
-2.  Adjust `max_retries`, `initial_delay`, and `timeout` based on your network conditions and API requirements.
-3.  Implement logging to record error details for debugging.
-4.  Provide a user-friendly message to inform the user about the server-side error.
+1. Replace the placeholder comments with your actual code, including the API endpoint, authentication details, and request parameters.
+2. Adjust `max_retries`, `initial_delay`, and `timeout` based on your network conditions and API requirements.
+3. Implement logging to record error details for debugging.
+4. Provide a user-friendly message to inform the user about the server-side error.
 
 By implementing these error handling strategies, you can create more robust and reliable NLP applications. Remember to tailor these examples to your specific use case and the requirements of the NLP APIs you are using.

@@ -149,6 +149,7 @@ if (bookings.ok) {
 ## Output
 
 Successful completion produces:
+
 - OAuth 2.0 `client_id` and `client_secret` stored in `.env`
 - A `getNavanToken()` function (TypeScript or Python) returning a bearer token
 - A verified connection to the Navan API confirmed by a successful GET request

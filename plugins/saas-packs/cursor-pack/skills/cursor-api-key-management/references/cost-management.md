@@ -3,6 +3,7 @@
 ## Cost Management
 
 ### Monitoring Usage
+
 ```
 OpenAI Dashboard:
 - platform.openai.com/usage
@@ -17,6 +18,7 @@ Anthropic Console:
 ```
 
 ### Setting Limits
+
 ```
 OpenAI:
 - Set monthly budget cap
@@ -30,6 +32,7 @@ Azure:
 ```
 
 ### Cost Optimization
+
 ```
 Strategies:
 1. Use appropriate model for task

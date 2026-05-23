@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Cost Tuning
 
 ## Overview
+
 Optimize Vercel costs by understanding the Fluid Compute pricing model, reducing function execution time, leveraging edge caching to avoid function invocations, and configuring spend management. Covers plan comparison, cost drivers, and monitoring.
 
 ## Prerequisites
+
 - Access to Vercel billing dashboard
 - Understanding of current deployment architecture
 - Access to Vercel Analytics for usage patterns
@@ -37,6 +39,7 @@ Optimize Vercel costs by understanding the Fluid Compute pricing model, reducing
 ## Instructions
 
 ### Step 1: Understand the Pricing Model
+
 Vercel uses **Fluid Compute** pricing (for new projects):
 
 | Resource | Hobby (Free) | Pro ($20/member/mo) | Enterprise |
@@ -50,11 +53,13 @@ Vercel uses **Fluid Compute** pricing (for new projects):
 | Concurrent builds | 1 | 1 (more available) | Custom |
 
 **Fluid Compute billing breakdown:**
+
 - **Active CPU time**: charged per ms of actual CPU usage
 - **Provisioned memory**: charged per GB-second of allocated memory
 - Benefit: you pay for actual work, not idle waiting (e.g., waiting for a database response)
 
 ### Step 2: Identify Cost Drivers
+
 ```bash
 # Check usage via API
 curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
@@ -69,6 +74,7 @@ curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
 ```
 
 ### Step 3: Reduce Function Execution Costs
+
 ```typescript
 // 1. Right-size function memory — don't over-allocate
 // vercel.json
@@ -96,6 +102,7 @@ export default function handler(req, res) {
 ```
 
 ### Step 4: Reduce Bandwidth Costs
+
 ```json
 // vercel.json — compress and cache aggressively
 {
@@ -116,12 +123,14 @@ export default function handler(req, res) {
 ```
 
 Key bandwidth reducers:
+
 - Use Vercel's image optimization (auto WebP/AVIF conversion)
 - Set aggressive cache headers on static assets
 - Use ISR to serve static HTML instead of SSR
 - Compress API responses (Vercel auto-compresses with Brotli)
 
 ### Step 5: Optimize Middleware Costs
+
 Middleware runs on **every matched request**. Minimize its scope:
 
 ```typescript
@@ -144,6 +153,7 @@ export function middleware(request) {
 ```
 
 ### Step 6: Configure Spend Management
+
 In the Vercel dashboard under **Settings > Billing > Spend Management**:
 
 ```
@@ -175,6 +185,7 @@ curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
 | Set spend management alerts | Safety — prevents surprise bills | Low |
 
 ## Output
+
 - Function memory right-sized per endpoint
 - Edge caching reducing function invocations
 - Middleware scoped to minimize invocations
@@ -182,6 +193,7 @@ curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
 - Usage monitoring via API
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Unexpected bill spike | Uncached high-traffic endpoint | Add `s-maxage` to the response |
@@ -190,6 +202,7 @@ curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
 | Build minutes exceeded | Slow builds or too many deploys | Use `ignoreCommand` to skip non-code changes |
 
 ## Resources
+
 - [Vercel Pricing](https://vercel.com/pricing)
 - [Fluid Compute Pricing](https://vercel.com/docs/functions/usage-and-pricing)
 - [Spend Management](https://vercel.com/docs/pricing#spend-management)
@@ -197,4 +210,5 @@ curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
 - [Usage API](https://vercel.com/docs/rest-api)
 
 ## Next Steps
+
 For reference architecture, see `vercel-reference-architecture`.

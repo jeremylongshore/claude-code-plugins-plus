@@ -3,6 +3,7 @@
 ## Team Configuration
 
 ### Shared Settings
+
 ```json
 // Recommended team settings (share via repo)
 
@@ -22,6 +23,7 @@
 ```
 
 ### Team .cursorrules
+
 ```yaml
 # .cursorrules (committed to repo)
 

@@ -17,18 +17,21 @@ The off-the-shelf Podium SDKs and the embedded widget defaults do not address an
 ## Target Users
 
 ### Persona 1: Integration Engineer (Ravi)
+
 - **Role**: Builds and operates the webhook handler that ingests Podium webchat events into a multi-location SMB's CRM mirror.
 - **Goals**: Zero duplicate contacts; zero silent SMS-reply failures; zero compliance violations from stale opt-out state; an audit log that survives a privacy-regulator request.
 - **Pain Points**: Discovered three months of "duplicate contact" support tickets traced to a TOCTOU race on the contact-creation path. Got paged on a Saturday because a customer's STOP propagated to SMS but not webchat, then a webchat reply trip-wired the compliance dashboard.
 - **Technical Level**: High (async Python / Node fluent; has built webhook handlers before; reads HTTP traces under stress).
 
 ### Persona 2: Frontend Engineer (Sam)
+
 - **Role**: Owns the embeddable chat widget on the SMB's public website(s). Multi-location org with two storefronts (Sydney and Burleigh Heads).
 - **Goals**: A widget that "just works" across both stores; immediate phone-validation feedback (red field on a malformed number, not a server-side rejection 800ms later); attachment-size feedback before the upload starts.
 - **Pain Points**: Has been bitten by widget code that calls the API with the customer's locally-formatted phone and a hardcoded `location_uid`. The Sydney widget routed Brisbane traffic for two weeks before anyone noticed.
 - **Technical Level**: Medium-High (TypeScript/React fluent, less comfortable with the server-side dedup mechanics).
 
 ### Persona 3: Small-Business Owner (Mark archetype)
+
 - **Role**: Owner-operator of a multi-location campervan/RV rental business (the Kombi/RV pattern). Does not write code. Pays a contractor to build and maintain the integration.
 - **Goals**: When a customer reaches out via the website chat widget, the right store gets the message. Returning customers are recognized, not re-created. Customers who opt out stay opted out. Compliance audits show clean records.
 - **Pain Points**: Lost a customer who got routed to the wrong store and was told "sorry, that's the other location, can you call them?" Got a written complaint from a customer who STOP'd via SMS and still received a webchat-triggered SMS the next week. Discovered duplicate contact records when the rebooking flow showed two histories.
@@ -37,65 +40,77 @@ The off-the-shelf Podium SDKs and the embedded widget defaults do not address an
 ## User Stories
 
 ### US-1: E.164 phone normalization at the widget (P0)
+
 **As** a frontend engineer,
 **I want** every phone collected by the widget to be normalized to E.164 with a country default appropriate to the location,
 **So that** no later SMS reply attempt can fail because of a locally-formatted number.
 
 **Acceptance Criteria:**
+
 - `normalize_phone(raw, default_country)` returns E.164 form or raises `PhoneValidationError`
 - The widget passes `default_country` from the location context, never hardcodes
 - A raw phone that cannot be parsed for the supplied country fails closed — the widget refuses to accept the submission and surfaces the error inline
 - Australian and US local formats are tested explicitly (`0412 345 678` → `+61412345678`, `(415) 555-1234` → `+14155551234`)
 
 ### US-2: Race-tolerant contact upsert (P0)
+
 **As** an integration engineer,
 **I want** the contact-creation path to be idempotent under simultaneous arrivals from the same phone,
 **So that** no human ever ends up as two contact records.
 
 **Acceptance Criteria:**
+
 - The handler does lookup-by-phone, then create-on-miss, then refetch-on-409
 - Local contact mirror enforces a unique index on the E.164 phone column
 - Two simultaneous handler runs with the same phone produce exactly one contact record (verified by concurrent test)
 - A 409 from Podium is treated as a successful upsert (the racing creator won; we return their record)
 
 ### US-3: Session-timeout monitoring with partial-state buffering (P0)
+
 **As** an integration engineer,
 **I want** in-flight sessions monitored on a ~60s scan,
 **So that** customers who walk away mid-answer can resume without restating the conversation.
 
 **Acceptance Criteria:**
+
 - A session idle > 20 min triggers a keepalive prompt to the customer
 - A session idle > 28 min is closed cleanly with its `partial_state` persisted
 - On the next message from the same `phone_e164 + location_uid` pair, the persisted `partial_state` is hydrated and made available to the agent
 - The 28 min close threshold is strictly below Podium's documented server-side expiry — we never let Podium silently expire a session
 
 ### US-4: Client-side attachment validation (P1)
+
 **As** a frontend engineer,
 **I want** an explicit size check before any upload begins,
 **So that** the customer is told immediately that their attachment is too large, not after a 30-second progress bar.
 
 **Acceptance Criteria:**
+
 - `validate_attachment_size(size_bytes)` raises `AttachmentTooLargeError` at `> 25 MiB`
 - The widget wires this to the file-input `change` event
 - The server-side handler also validates `Content-Length` and returns 413 before forwarding to Podium
 
 ### US-5: Multi-location routing with no default fallback (P1)
+
 **As** a small-business owner running multiple storefronts,
 **I want** every webchat message routed to the correct location's queue,
 **So that** customers are not handed off to a store they were not asking about.
 
 **Acceptance Criteria:**
+
 - `validate_location(location_uid)` raises if `location_uid` is missing or unknown
 - The valid-location set is loaded from Podium `/v4/locations` at startup (and refreshed periodically)
 - The handler has NO default-location fallback — missing `location_uid` is a hard error surfaced to the widget operator
 - Each store has its own widget embed snippet carrying its own `location_uid`
 
 ### US-6: Unified opt-out propagation (P1)
+
 **As** an SMB owner subject to messaging-compliance rules,
 **I want** a STOP keyword in either channel (SMS or webchat) to suppress outbound traffic in both,
 **So that** I do not trip a compliance violation when a customer has clearly opted out.
 
 **Acceptance Criteria:**
+
 - A single opt-out store keyed on `phone_e164`, consulted by both the SMS handler and the webchat handler
 - STOP keywords (`STOP`, `UNSUBSCRIBE`, `QUIT`, `END`, `CANCEL`, `OPTOUT`) trigger an opt-out write on inbound
 - Outbound attempts on either channel check the opt-out store before sending

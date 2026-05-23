@@ -250,6 +250,7 @@ monorepo/
 ```
 
 **Key rule for monorepos:**
+
 ```yaml
 # .cursor/rules/monorepo.mdc
 ---

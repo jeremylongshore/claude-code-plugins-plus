@@ -3,6 +3,7 @@
 ## Server-Side Data Scrubbing
 
 ### Sentry Dashboard Settings
+
 1. Project Settings → Security & Privacy
 2. Enable "Data Scrubber"
 3. Configure scrubbing rules:
@@ -11,6 +12,7 @@
    - IP address anonymization
 
 ### Advanced Data Scrubbing Rules
+
 ```json
 {
   "applications": {

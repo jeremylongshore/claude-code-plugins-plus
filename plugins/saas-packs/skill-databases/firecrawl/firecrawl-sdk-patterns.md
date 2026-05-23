@@ -10,6 +10,7 @@ firecrawl-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready FireCrawl SDK patterns including singleton client, error handling, retry logic, and response validation.
 **Workflow:** Advanced onboarding skill - establishes enterprise-grade patterns for all FireCrawl interactions.
 **Relates to:** Builds on firecrawl-hello-world; foundational for firecrawl-reliability-patterns

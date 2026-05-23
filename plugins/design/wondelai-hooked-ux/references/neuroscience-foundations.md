@@ -9,6 +9,7 @@ The brain science behind habit formation, dopamine, and variable reinforcement s
 **Dopamine is released in anticipation of reward, not upon receiving it.**
 
 This is the central insight that makes variable rewards powerful:
+
 - The brain craves the pursuit, not the prize
 - Unpredictability heightens dopamine response
 - Certainty reduces dopamine (habituation)
@@ -22,10 +23,12 @@ Trigger → Anticipation (dopamine spike) → Action → Reward → New baseline
 ```
 
 When reward is predictable:
+
 - Dopamine spike happens at trigger
 - Spike diminishes over time (habituation)
 
 When reward is variable:
+
 - Dopamine spike maintained through action
 - Never fully habituates
 
@@ -49,11 +52,13 @@ B.F. Skinner identified four primary reinforcement schedules:
 **Most powerful schedule for sustained behavior.**
 
 Why it works:
+
 - Each action might be "the one"
 - No predictable pause point
 - Resistant to extinction (keeps trying even without reward)
 
 **Product examples:**
+
 - Slot machines (literal)
 - Social media likes (unknown timing/quantity)
 - Email inbox (unknown what's there)
@@ -64,6 +69,7 @@ Why it works:
 Rewards come at unpredictable times regardless of action frequency.
 
 **Product examples:**
+
 - Email (messages arrive unpredictably)
 - Social feeds (content updates at unknown times)
 - News apps (breaking news unpredictable)
@@ -84,11 +90,13 @@ Rewards come at unpredictable times regardless of action frequency.
 ### Basal Ganglia and Habit Formation
 
 Habits form through repeated cycles:
+
 1. **Cue** → Triggers routine (basal ganglia activation)
 2. **Routine** → The behavior itself
 3. **Reward** → Reinforces the loop
 
 Over time:
+
 - Behavior becomes automatic
 - Requires less prefrontal cortex (conscious thought)
 - Cue directly triggers routine (bypassing deliberation)
@@ -132,6 +140,7 @@ The brain uses emotions as internal cues:
 ### Creating Emotional Associations
 
 When product consistently resolves negative emotion:
+
 1. Brain associates emotional state with product
 2. Emotion becomes internal trigger
 3. Product use becomes automatic response
@@ -143,6 +152,7 @@ When product consistently resolves negative emotion:
 ### Hedonic Adaptation
 
 The brain adapts to repeated stimuli:
+
 - Same reward produces diminishing dopamine response
 - More intense stimulation needed for same effect
 - "Tolerance" develops
@@ -150,6 +160,7 @@ The brain adapts to repeated stimuli:
 **Product risk:** Users need more to feel the same satisfaction.
 
 **Ethical design:**
+
 - Vary reward types (not just intensity)
 - Connect to genuine value (not just dopamine)
 - Build in natural limits
@@ -170,11 +181,13 @@ The brain adapts to repeated stimuli:
 ### Information Gap Theory
 
 The brain is driven to close information gaps:
+
 - Uncertainty creates tension
 - Resolution provides relief/satisfaction
 - Curiosity is intrinsically motivating
 
 **Product examples:**
+
 - Notification badges (what's there?)
 - Feed refresh (what's new?)
 - Mystery boxes/rewards (what will I get?)
@@ -194,6 +207,7 @@ Optimal uncertainty → Engaging → Sustained interest
 ### Social Validation and the Brain
 
 Social rewards activate same brain regions as physical rewards:
+
 - Likes and comments trigger dopamine
 - Social rejection activates pain centers
 - Belonging is a fundamental drive
@@ -201,10 +215,12 @@ Social rewards activate same brain regions as physical rewards:
 ### Status and Hierarchy
 
 The brain monitors social status constantly:
+
 - Status gains → Dopamine, serotonin increase
 - Status threats → Cortisol, stress response
 
 **Product examples:**
+
 - Follower counts
 - Leaderboards
 - Badges and achievements
@@ -217,11 +233,13 @@ The brain monitors social status constantly:
 ### Working With the Brain, Not Exploiting It
 
 **Understand, don't manipulate:**
+
 - Use dopamine understanding to deliver genuine value
 - Create anticipation for valuable outcomes
 - Resolve emotional needs sustainably
 
 **Align rewards with goals:**
+
 - Dopamine should reinforce goal-aligned behavior
 - Not just engagement for engagement's sake
 - User should feel good after, not regretful
@@ -242,16 +260,19 @@ The brain monitors social status constantly:
 ### Designing Variable Rewards
 
 **Content feeds:**
+
 - Vary content types and quality
 - Personalize but maintain surprise
 - New content appears at variable times
 
 **Notifications:**
+
 - Not every action triggers notification
 - Meaningful > frequent
 - Vary timing and content
 
 **Achievement systems:**
+
 - Unexpected bonuses
 - Varying difficulty
 - Mystery rewards
@@ -259,16 +280,19 @@ The brain monitors social status constantly:
 ### Building Sustainable Habits
 
 **Week 1-3: External triggers**
+
 - Reminders and notifications
 - High ease, high motivation needed
 - Immediate, consistent rewards
 
 **Week 3-8: Building association**
+
 - Connect to internal states
 - Reduce external trigger frequency
 - Deepen reward value
 
 **Week 8+: Maintenance**
+
 - Internal triggers dominate
 - Variable rewards maintain interest
 - Investment increases switching cost
@@ -278,12 +302,14 @@ The brain monitors social status constantly:
 ## Further Reading Connections
 
 The neuroscience of habit is covered extensively in:
+
 - *"Hooked"* by Nir Eyal (product application)
 - *"The Power of Habit"* by Charles Duhigg (habit science)
 - *"Influence"* by Robert Cialdini (persuasion psychology)
 - *"Thinking, Fast and Slow"* by Daniel Kahneman (cognitive systems)
 
 **Research foundations:**
+
 - Wolfram Schultz's work on dopamine prediction errors
 - B.F. Skinner's reinforcement schedules
 - Ann Graybiel's research on basal ganglia and habits

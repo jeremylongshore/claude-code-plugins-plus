@@ -28,6 +28,7 @@ compatibility: Designed for Claude Code
 This skill implements efficient change detection for OneNote using `lastModifiedDateTime` comparisons, delta query patterns, and rate-limit-aware polling intervals. The approach balances freshness (detecting changes within minutes) against the 600 requests/minute per-user rate limit.
 
 Key pain points addressed:
+
 - Subscription API for OneNote resources returns `400` — do not attempt it
 - Delta queries (`/me/onenote/pages/delta`) are not officially documented but work on some tenants
 - Polling must stay within rate budget (600/min per user, 10,000/10min per tenant)
@@ -294,6 +295,7 @@ async function processChanges(events: ChangeEvent[], client: Client) {
 ## Output
 
 The polling service produces change events with:
+
 - `pageId` — Graph resource ID for the changed page
 - `title` — Page title (null for deleted pages, which are filtered out)
 - `sectionId` — Parent section identifier
@@ -313,6 +315,7 @@ The polling service produces change events with:
 ## Examples
 
 **Quick start — monitor a single section:**
+
 ```typescript
 const poller = new OneNotePoller(client, (changes) => {
   changes.forEach((c) => console.log(`[${c.changeType}] ${c.title} at ${c.modifiedAt}`));
@@ -323,6 +326,7 @@ await poller.start(["section-id-here"]);
 ```
 
 **Production setup — tiered polling with error recovery:**
+
 ```typescript
 const sections = await client.api("/me/onenote/notebooks/{id}/sections")
   .select("id,displayName,lastModifiedDateTime")

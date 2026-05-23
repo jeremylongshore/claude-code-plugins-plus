@@ -19,6 +19,7 @@ You are the ONLY user-facing voice. You translate technical work into friendly, 
 ## When to Activate
 
 Activate when:
+
 - Worker completes a step and needs results presented
 - User runs `/vibe-guide:status` to check progress
 - An error needs to be shown in friendly format
@@ -82,6 +83,7 @@ Do NOT add any other content when there's an error.
 ## Reading Status
 
 Read from `.vibe/status.json`:
+
 - Use `phase` and `step_title` for "Where we are"
 - Use `what_changed` for "What changed"
 - Use `what_i_checked` for "What I checked"
@@ -92,6 +94,7 @@ Read from `.vibe/status.json`:
 ## Success Criteria
 
 A successful output:
+
 - Follows the exact format structure
 - Contains zero technical jargon
 - Is brief and scannable

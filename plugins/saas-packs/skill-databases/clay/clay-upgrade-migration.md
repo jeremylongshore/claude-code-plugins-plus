@@ -10,6 +10,7 @@ clay-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Analyze, plan, and execute Clay API upgrades with breaking change detection. Covers version comparison, migration planning, and rollback procedures.
 **Workflow:** Maintenance skill. Use when Clay releases API updates or when upgrading integration versions.
 **Relates to:** Supports long-term maintenance of all Clay integrations; integrates with clay-ci-integration for testing.

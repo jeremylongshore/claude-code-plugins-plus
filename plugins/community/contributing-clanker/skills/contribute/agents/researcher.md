@@ -83,6 +83,7 @@ After write:
   `last_refreshed:`, `default_branch:`).
 - Note the path to the user.
 - Append a build event to `~/.contribute-system/log.jsonl`:
+
   ```bash
   jq -nc --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg repo "$REPO" --arg dossier "$DOSSIER" \
     '{ts: $ts, event: "researcher_build", details: {repo: $repo, dossier: $dossier}}' \
@@ -94,11 +95,12 @@ After write:
 Refresh replaces auto-generated content but preserves the manual sections.
 
 1. **Snapshot manual sections** from the existing dossier:
-   - `## Pet peeves & known triggers` (everything until the next `## ` header)
-   - `## Failure log` (everything until next `## `)
-   - `## Notes` (everything until next `## ` or EOF)
+   - `## Pet peeves & known triggers` (everything until the next `##` header)
+   - `## Failure log` (everything until next `##`)
+   - `## Notes` (everything until next `##` or EOF)
 
 2. **Run the builder** to a tempfile:
+
    ```bash
    TMP="${DOSSIER}.tmp.$$"
    ~/.contribute-system/bin/researcher-build.sh <owner>/<repo> > "$TMP"
@@ -109,11 +111,13 @@ Refresh replaces auto-generated content but preserves the manual sections.
    placeholders with the snapshotted content.
 
 4. **Atomic rename** to commit the refresh:
+
    ```bash
    mv "$TMP" "$DOSSIER"
    ```
 
 5. **Log the refresh**:
+
    ```bash
    jq -nc --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg repo "$REPO" --arg dossier "$DOSSIER" \
      '{ts: $ts, event: "researcher_refresh", details: {repo: $repo, dossier: $dossier}}' \

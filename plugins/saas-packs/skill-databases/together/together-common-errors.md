@@ -10,6 +10,7 @@ together-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Together AI common errors
 **Workflow:** Part of the operations skill category for Together AI integration.
 **Relates to:** Other together skills in this pack.

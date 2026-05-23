@@ -3,6 +3,7 @@
 ## Available Models
 
 ### Kling 1.0 (Standard)
+
 ```
 Model ID: kling-v1
 Type: Text-to-Video, Image-to-Video
@@ -23,6 +24,7 @@ Pricing: ~$0.05 per second
 ```
 
 ### Kling 1.5 (Enhanced)
+
 ```
 Model ID: kling-v1.5
 Type: Text-to-Video, Image-to-Video
@@ -44,6 +46,7 @@ Pricing: ~$0.10 per second
 ```
 
 ### Kling Pro (Premium)
+
 ```
 Model ID: kling-pro
 Type: Text-to-Video, Image-to-Video, Video Extension

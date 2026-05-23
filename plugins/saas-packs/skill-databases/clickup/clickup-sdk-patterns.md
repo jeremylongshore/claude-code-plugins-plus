@@ -10,6 +10,7 @@ clickup-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready ClickUp SDK patterns
 **Workflow:** Part of the onboarding skill category for ClickUp integration.
 **Relates to:** Other clickup skills in this pack.

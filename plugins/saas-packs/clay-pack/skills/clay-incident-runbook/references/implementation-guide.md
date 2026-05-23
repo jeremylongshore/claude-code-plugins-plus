@@ -61,6 +61,7 @@ kubectl set env deployment/clay-integration CLAY_FALLBACK=true
 ## Communication Templates
 
 ### Internal (Slack)
+
 ```
 P1 INCIDENT: Clay Integration
 Status: INVESTIGATING
@@ -71,6 +72,7 @@ Incident commander: @[name]
 ```
 
 ### External (Status Page)
+
 ```
 Clay Integration Issue
 

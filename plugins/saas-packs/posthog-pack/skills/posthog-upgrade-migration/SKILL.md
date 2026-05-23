@@ -62,6 +62,7 @@ npm view posthog-node version 2>/dev/null
 ### Step 2: Review Breaking Changes
 
 **posthog-node v5.x Breaking Changes:**
+
 ```typescript
 // BREAKING: sendFeatureFlags no longer automatic with local evaluation
 // Before v5.5.0: feature flags auto-sent with events when using local evaluation
@@ -83,6 +84,7 @@ posthog.capture({
 ```
 
 **posthog-js Recent Changes:**
+
 ```typescript
 // Autocapture configuration moved to object format
 // Before:

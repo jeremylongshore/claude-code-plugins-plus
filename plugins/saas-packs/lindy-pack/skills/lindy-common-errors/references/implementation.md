@@ -5,6 +5,7 @@
 ### Authentication Errors (401)
 
 **Diagnosis checklist:**
+
 1. Verify `LINDY_API_KEY` is set in your environment
 2. Check the key hasn't been rotated in Lindy dashboard under Settings > API Keys
 3. Confirm the Authorization header format: `Authorization: Bearer <key>`
@@ -26,6 +27,7 @@ def validate_lindy_key() -> str:
 ### Webhook Delivery Failures
 
 **Common causes:**
+
 - Endpoint URL unreachable from public internet
 - SSL certificate invalid or self-signed
 - Endpoint takes longer than 30 seconds to respond
@@ -57,6 +59,7 @@ def handle_lindy_webhook():
 ### Agent Run Failures
 
 **Diagnosis steps:**
+
 1. Retrieve run logs via API or the dashboard Runs tab
 2. Check for missing required input fields
 3. Verify third-party integrations have valid credentials

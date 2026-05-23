@@ -10,6 +10,7 @@ apple-notes-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Apple Notes rate limiting and backoff
 **Workflow:** Part of the operations skill category for Apple Notes integration.
 **Relates to:** Other apple-notes skills in this pack.

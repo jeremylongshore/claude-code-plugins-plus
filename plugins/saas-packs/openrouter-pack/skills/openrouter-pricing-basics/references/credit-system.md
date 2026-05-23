@@ -3,6 +3,7 @@
 ## Credit System
 
 ### Adding Credits
+
 ```
 1. Go to openrouter.ai/credits
 2. Choose amount:
@@ -15,6 +16,7 @@
 ```
 
 ### Credit Limits per Key
+
 ```python
 # Set per-key limits to control spending
 # In dashboard: openrouter.ai/keys
@@ -30,6 +32,7 @@ Limit: $1.00
 ```
 
 ### Checking Balance
+
 ```bash
 curl https://openrouter.ai/api/v1/auth/key \
   -H "Authorization: Bearer $OPENROUTER_API_KEY"

@@ -10,6 +10,7 @@ evernote-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Evernote debug evidence for support
 **Workflow:** Part of the operations skill category for Evernote integration.
 **Relates to:** Other evernote skills in this pack.

@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Observability
 
 ## Overview
+
 Monitor CodeRabbit AI code review effectiveness, review latency, and team adoption. Key metrics include time-to-first-review (how fast CodeRabbit posts after PR creation), comment acceptance rate (comments resolved vs dismissed), review coverage (percentage of PRs reviewed), and per-repository review volume.
 
 ## Prerequisites
+
 - CodeRabbit installed on GitHub/GitLab organization
 - GitHub CLI (`gh`) authenticated with org access
 - Access to CodeRabbit dashboard at app.coderabbit.ai
@@ -48,6 +50,7 @@ Monitor CodeRabbit AI code review effectiveness, review latency, and team adopti
 ## Instructions
 
 ### Step 1: Measure Review Coverage
+
 ```bash
 #!/bin/bash
 # coderabbit-coverage.sh - Review coverage for a repo
@@ -95,6 +98,7 @@ fi
 ```
 
 ### Step 2: Track Comment Volume and Acceptance
+
 ```bash
 set -euo pipefail
 ORG="${1:-your-org}"
@@ -129,6 +133,7 @@ fi
 ```
 
 ### Step 3: Build a GitHub Actions Dashboard
+
 ```yaml
 # .github/workflows/coderabbit-metrics.yml
 name: CodeRabbit Weekly Metrics
@@ -194,6 +199,7 @@ jobs:
 ```
 
 ### Step 4: Set Up Alerts for Review Gaps
+
 ```yaml
 # .github/workflows/coderabbit-alert.yml
 name: CodeRabbit Review Alert
@@ -230,6 +236,7 @@ jobs:
 ```
 
 ### Step 5: CodeRabbit Dashboard Summary
+
 ```markdown
 # Build a summary dashboard with these data points:
 
@@ -252,6 +259,7 @@ jobs:
 ```
 
 ## Output
+
 - Review coverage metrics calculated per repository
 - Comment volume and acceptance rate tracked
 - Weekly metrics GitHub Action workflow
@@ -259,6 +267,7 @@ jobs:
 - Dashboard template for team reporting
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Coverage below 90% | Some PRs not reviewed | Check `base_branches` and `ignore_title_keywords` |
@@ -267,9 +276,11 @@ jobs:
 | API rate limited | Too many `gh api` calls | Add pagination and caching |
 
 ## Resources
+
 - [CodeRabbit Dashboard](https://app.coderabbit.ai)
 - [GitHub REST API - Pulls](https://docs.github.com/en/rest/pulls)
 - [GitHub Actions Job Summaries](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#adding-a-job-summary)
 
 ## Next Steps
+
 For incident response, see `coderabbit-incident-runbook`.

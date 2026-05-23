@@ -200,7 +200,9 @@ Tags: "creative-writing", "technical-writing", "code-review", "research"
 If you're building integrations, the web server provides REST endpoints:
 
 ### POST /api/experiments
+
 Create a new experiment
+
 ```json
 {
   "aiTool": "ChatGPT",
@@ -212,25 +214,32 @@ Create a new experiment
 ```
 
 ### GET /api/experiments
+
 List experiments with optional query params:
+
 - `searchQuery` - Full-text search
 - `aiTool` - Filter by tool name
 - `rating` - Filter by rating (1-5)
 - `dateFrom` / `dateTo` - Date range filter
 
 ### GET /api/experiments/:id
+
 Get specific experiment
 
 ### PUT /api/experiments/:id
+
 Update experiment (send partial data)
 
 ### DELETE /api/experiments/:id
+
 Delete experiment
 
 ### GET /api/statistics
+
 Get comprehensive statistics
 
 ### GET /api/export
+
 Download CSV export
 
 ## Configuration
@@ -248,6 +257,7 @@ DATA_DIR=/custom/path/to/data
 ### Customization
 
 You can modify the source code to:
+
 - Add custom fields to experiments
 - Create new statistics visualizations
 - Implement additional filtering options
@@ -320,6 +330,7 @@ pnpm web
 ### Contributing
 
 Contributions welcome! Please:
+
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes with tests

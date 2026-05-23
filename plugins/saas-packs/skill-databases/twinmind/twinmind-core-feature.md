@@ -10,6 +10,7 @@ twinmind-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement TwinMind core feature integration
 **Workflow:** Part of the onboarding skill category for TwinMind integration.
 **Relates to:** Other twinmind skills in this pack.

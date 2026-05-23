@@ -10,6 +10,7 @@ firecrawl-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix top 10 most common FireCrawl errors including timeouts, blocked requests, parsing failures, and rate limit errors.
 **Workflow:** Troubleshooting skill - first response for common issues encountered during scraping operations.
 **Relates to:** Complements firecrawl-debug-bundle; builds toward firecrawl-advanced-troubleshooting

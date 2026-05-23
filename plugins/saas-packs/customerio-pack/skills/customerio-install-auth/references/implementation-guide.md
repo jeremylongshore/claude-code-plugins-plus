@@ -3,9 +3,11 @@
 # Customer.io Install & Auth
 
 ## Overview
+
 Set up Customer.io SDK and configure authentication credentials for email, push, SMS, and in-app messaging automation.
 
 ## Prerequisites
+
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Customer.io account with API access
@@ -14,6 +16,7 @@ Set up Customer.io SDK and configure authentication credentials for email, push,
 ## Instructions
 
 ### Step 1: Install SDK
+
 ```bash
 # Node.js (Track API)
 npm install customerio-node
@@ -26,6 +29,7 @@ pip install customerio
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variables
 export CUSTOMERIO_SITE_ID="your-site-id"
@@ -39,6 +43,7 @@ EOF
 ```
 
 ### Step 3: Verify Connection
+
 ```typescript
 import { TrackClient, RegionUS } from '@customerio/track';
 
@@ -54,11 +59,13 @@ console.log('Customer.io connection successful');
 ```
 
 ## Output
+
 - Installed SDK package in node_modules or site-packages
 - Environment variables or .env file with Site ID and API Key
 - Successful connection verification output
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Invalid API Key | Incorrect or expired key | Verify key in Customer.io Settings > API Credentials |
@@ -70,6 +77,7 @@ console.log('Customer.io connection successful');
 ## Examples
 
 ### TypeScript Setup
+
 ```typescript
 import { TrackClient, RegionUS, RegionEU } from '@customerio/track';
 
@@ -89,6 +97,7 @@ const euClient = new TrackClient(
 ```
 
 ### Python Setup
+
 ```python
 import os
 from customerio import CustomerIO
@@ -100,9 +109,11 @@ cio = CustomerIO(
 ```
 
 ## Resources
+
 - [Customer.io Documentation](https://customer.io/docs/)
 - [Track API Reference](https://customer.io/docs/api/track/)
 - [Customer.io Status](https://status.customer.io/)
 
 ## Next Steps
+
 After successful auth, proceed to `customerio-hello-world` for your first API call.

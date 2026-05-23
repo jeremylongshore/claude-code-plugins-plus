@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Hello World
 
 ## Overview
+
 Build a working Replit app that demonstrates core platform services: Express/Flask server, Replit Database (key-value store), Object Storage (file uploads), Auth (user login), and PostgreSQL. Produces a running app you can deploy.
 
 ## Prerequisites
+
 - Replit App created (template or blank)
 - `.replit` and `replit.nix` configured (see `replit-install-auth`)
 - Node.js 18+ or Python 3.10+
@@ -37,6 +39,7 @@ Build a working Replit app that demonstrates core platform services: Express/Fla
 ## Instructions
 
 ### Step 1: Node.js — Express + Replit Database
+
 ```typescript
 // index.ts
 import express from 'express';
@@ -89,6 +92,7 @@ app.listen(PORT, () => {
 ```
 
 **package.json dependencies:**
+
 ```json
 {
   "dependencies": {
@@ -103,6 +107,7 @@ app.listen(PORT, () => {
 ```
 
 ### Step 2: Python — Flask + Replit Database
+
 ```python
 # main.py
 from flask import Flask, request, jsonify
@@ -149,6 +154,7 @@ if __name__ == '__main__':
 ```
 
 ### Step 3: Add Object Storage (File Uploads)
+
 ```typescript
 // storage.ts — Replit Object Storage (App Storage)
 import { Client } from '@replit/object-storage';
@@ -185,6 +191,7 @@ await storage.delete('notes/hello.txt');
 ```
 
 **Python Object Storage:**
+
 ```python
 from replit.object_storage import Client
 
@@ -207,6 +214,7 @@ exists = storage.exists('notes/hello.txt')
 ```
 
 ### Step 4: Add Auth-Protected Route
+
 ```typescript
 // Add to index.ts
 app.get('/api/me', (req, res) => {
@@ -224,6 +232,7 @@ app.get('/api/me', (req, res) => {
 ```
 
 ### Step 5: `.replit` for This App
+
 ```toml
 entrypoint = "index.ts"
 run = "npx tsx index.ts"
@@ -242,13 +251,16 @@ deploymentTarget = "autoscale"
 ```
 
 ## Output
+
 After running, verify at these endpoints:
+
 - `GET /health` — returns Repl metadata
 - `POST /api/items` — stores key-value data
 - `GET /api/items?prefix=` — lists keys
 - `GET /api/me` — returns authenticated user (when deployed)
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Cannot find module '@replit/database'` | Not installed | `npm install @replit/database` |
@@ -258,10 +270,12 @@ After running, verify at these endpoints:
 | Auth headers empty | Running in dev | Auth works only on deployed `.replit.app` |
 
 ## Resources
+
 - [Replit Database](https://docs.replit.com/cloud-services/storage-and-databases/replit-database)
 - [Object Storage Overview](https://docs.replit.com/cloud-services/storage-and-databases/object-storage/overview)
 - [Object Storage TypeScript SDK](https://docs.replit.com/cloud-services/storage-and-databases/object-storage/typescript-api-reference)
 - [Replit Auth](https://docs.replit.com/replit-workspace/replit-auth)
 
 ## Next Steps
+
 Deploy with `replit-deploy-integration` or add PostgreSQL with `replit-data-handling`.

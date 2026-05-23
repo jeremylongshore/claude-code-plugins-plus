@@ -209,11 +209,11 @@ Use this template to plan your lead type strategy for the next quarter.
 |----------|--------|
 | Current ARR | |
 | Average deal size | |
-| Current lead type mix (% of pipeline from each) | Seeds: __ % Nets: __ % Spears: __ % |
+| Current lead type mix (% of pipeline from each) | Seeds: **% Nets:** % Spears: __ % |
 | Which type converts best? | |
 | Which type is most expensive? | |
 | Which type has the shortest cycle? | |
-| What is your target mix based on stage? | Seeds: __ % Nets: __ % Spears: __ % |
+| What is your target mix based on stage? | Seeds: **% Nets:** % Spears: __ % |
 
 ### Gap Analysis
 
@@ -226,18 +226,21 @@ Use this template to plan your lead type strategy for the next quarter.
 ### 90-Day Action Plan
 
 **Seeds:**
+
 - [ ] Launch or improve customer referral program
 - [ ] Identify top 10 customers most likely to refer
 - [ ] Build NPS follow-up workflow
 - [ ] Schedule QBRs with referral asks
 
 **Nets:**
+
 - [ ] Audit channel ROI — double down on top 2 channels
 - [ ] Kill or reduce spend on lowest-performing channel
 - [ ] Ensure MDR is qualifying inbound effectively
 - [ ] Set up lead scoring to route high-intent leads faster
 
 **Spears:**
+
 - [ ] Define or refine ICP
 - [ ] Build target account list (200-500 per SDR)
 - [ ] Hire or allocate SDR capacity to match pipeline math

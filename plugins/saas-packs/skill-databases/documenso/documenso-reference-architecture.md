@@ -10,6 +10,7 @@ documenso-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Documenso reference architecture
 **Workflow:** Part of the cicd skill category for Documenso integration.
 **Relates to:** Other documenso skills in this pack.

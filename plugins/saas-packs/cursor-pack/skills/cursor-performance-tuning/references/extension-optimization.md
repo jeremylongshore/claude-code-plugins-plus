@@ -3,6 +3,7 @@
 ## Extension Optimization
 
 ### Audit Extensions
+
 ```
 1. List all extensions:
    cursor --list-extensions
@@ -18,6 +19,7 @@
 ```
 
 ### Workspace-Specific Extensions
+
 ```json
 // Only enable project-relevant extensions
 // .vscode/settings.json
@@ -30,6 +32,7 @@
 ```
 
 ### Extension Load Optimization
+
 ```json
 {
   // Delay extension activation

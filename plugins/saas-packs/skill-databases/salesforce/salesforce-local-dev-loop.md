@@ -10,6 +10,7 @@ salesforce-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Salesforce local development workflow
 **Workflow:** Part of the onboarding skill category for Salesforce integration.
 **Relates to:** Other salesforce skills in this pack.

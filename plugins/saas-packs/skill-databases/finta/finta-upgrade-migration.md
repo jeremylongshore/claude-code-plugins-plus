@@ -10,6 +10,7 @@ finta-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Finta SDK upgrades
 **Workflow:** Part of the operations skill category for Finta integration.
 **Relates to:** Other finta skills in this pack.

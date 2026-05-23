@@ -17,9 +17,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Procore Install Auth
 
 ## Overview
+
 Set up Procore API authentication using OAuth2 client credentials flow. Procore uses OAuth2 with separate endpoints for production and sandbox.
 
 ## Prerequisites
+
 - Procore Developer account at developers.procore.com
 - App credentials (client_id, client_secret)
 - A Procore company to authorize against
@@ -27,6 +29,7 @@ Set up Procore API authentication using OAuth2 client credentials flow. Procore 
 ## Instructions
 
 ### Step 1: Register Application
+
 ```text
 1. Go to developers.procore.com > My Apps > Create App
 2. Set redirect URI: http://localhost:3000/callback
@@ -34,6 +37,7 @@ Set up Procore API authentication using OAuth2 client credentials flow. Procore 
 ```
 
 ### Step 2: Configure Environment
+
 ```bash
 # .env
 PROCORE_CLIENT_ID=your_client_id
@@ -43,6 +47,7 @@ PROCORE_BASE_URL=https://api.procore.com
 ```
 
 ### Step 3: Client Credentials Flow
+
 ```python
 import os, requests
 
@@ -63,10 +68,12 @@ for co in companies.json():
 ```
 
 ## Output
+
 - OAuth2 tokens obtained via client credentials
 - API connectivity verified with company listing
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `invalid_client` | Wrong credentials | Verify in developer portal |
@@ -74,8 +81,10 @@ for co in companies.json():
 | Sandbox vs production | Wrong base URL | Use login-sandbox-monthly.procore.com for sandbox |
 
 ## Resources
+
 - [Procore OAuth Endpoints](https://developers.procore.com/documentation/oauth-endpoints)
 - [Client Credentials](https://developers.procore.com/documentation/oauth-client-credentials)
 
 ## Next Steps
+
 First API call: `procore-hello-world`

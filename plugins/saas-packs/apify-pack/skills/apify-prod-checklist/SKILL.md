@@ -37,6 +37,7 @@ Complete checklist for deploying Actors to the Apify platform and integrating th
 ## Pre-Deployment Checklist
 
 ### Actor Configuration
+
 - [ ] `.actor/actor.json` has correct `name`, `title`, `description`
 - [ ] `INPUT_SCHEMA.json` validates all required inputs
 - [ ] `Dockerfile` uses pinned base image version (`apify/actor-node:20`, not `latest`)
@@ -45,6 +46,7 @@ Complete checklist for deploying Actors to the Apify platform and integrating th
 - [ ] Timeout set with buffer (2x expected runtime)
 
 ### Code Quality
+
 - [ ] `Actor.main()` wraps entry point (handles init/exit/errors)
 - [ ] `failedRequestHandler` logs failures without crashing Actor
 - [ ] Input validation at Actor start (`if (!input?.startUrls) throw ...`)
@@ -53,6 +55,7 @@ Complete checklist for deploying Actors to the Apify platform and integrating th
 - [ ] `maxRequestsPerCrawl` set to prevent runaway costs
 
 ### Data Output
+
 - [ ] Dataset schema documented (consistent field names)
 - [ ] `SUMMARY` key-value store record saved with run stats
 - [ ] Large payloads chunked (9MB dataset push limit)

@@ -10,6 +10,7 @@ onenote-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy OneNote integrations to production
 **Workflow:** Part of the cicd skill category for OneNote integration.
 **Relates to:** Other onenote skills in this pack.

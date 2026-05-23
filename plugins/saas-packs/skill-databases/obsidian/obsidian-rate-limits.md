@@ -10,6 +10,7 @@ obsidian-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Obsidian rate limiting and backoff
 **Workflow:** Part of the operations skill category for Obsidian integration.
 **Relates to:** Other obsidian skills in this pack.

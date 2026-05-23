@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Incident Runbook
 
 ## Overview
+
 Standardized incident response for Deepgram-related production issues. Includes automated triage script, severity classification (SEV1-SEV4), immediate mitigation actions, fallback activation, and post-incident review template.
 
 ## Quick Reference
@@ -300,6 +301,7 @@ function configureSev4Mitigation(brokenFeature: string) {
 | L4 | Engineering director | SEV1 > 1 hour |
 
 ## Output
+
 - Automated triage script (bash, runs in <30s)
 - SEV1 fallback service with request queue and replay
 - SEV2 model/feature diagnosis and auto-fallback
@@ -307,6 +309,7 @@ function configureSev4Mitigation(brokenFeature: string) {
 - Post-incident review template
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Triage script can't reach Deepgram | Network or DNS | Check outbound HTTPS to api.deepgram.com |
@@ -315,6 +318,7 @@ function configureSev4Mitigation(brokenFeature: string) {
 | Status page shows green but API fails | Partial outage not yet reflected | Report to Deepgram support immediately |
 
 ## Resources
+
 - [Status Page](https://status.deepgram.com)
 - [Support Portal](https://developers.deepgram.com/support)
 - [Deepgram Community](https://github.com/orgs/deepgram/discussions)

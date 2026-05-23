@@ -44,17 +44,20 @@ kubectl exec -it $(kubectl get pod -l app=inference -o name | head -1) -- nvidia
 ## Common Incidents
 
 ### Inference Service Down
+
 1. Check pod status and events
 2. If OOMKilled: reduce batch size or upgrade GPU
 3. If ImagePullBackOff: check registry credentials
 4. If Pending: check GPU quota and availability
 
 ### GPU Node Failure
+
 1. Pods will be rescheduled automatically
 2. If no capacity: scale down non-critical workloads
 3. Contact CoreWeave support for extended outages
 
 ### Model Loading Failure
+
 1. Check HuggingFace token secret exists
 2. Verify model name spelling
 3. Check PVC has sufficient storage

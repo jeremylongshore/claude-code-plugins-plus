@@ -10,9 +10,11 @@
 **Source Notebook:** `agents/agent_engine/tutorial_a2a_on_agent_engine.ipynb`
 
 ### Primary Reference
+
 - **GitHub Repository:** https://github.com/GoogleCloudPlatform/generative-ai/blob/main/agents/agent_engine/tutorial_a2a_on_agent_engine.ipynb
 
 ### Related Documentation
+
 - Agent Engine Overview (referenced but URL not fully specified in manual)
 - A2A Protocol Specification (referenced but URL not fully specified in manual)
 
@@ -23,9 +25,11 @@
 **Source Notebook:** `agents/cloud_run/agents_with_memory/get_started_with_memory_for_adk_in_cloud_run.ipynb`
 
 ### Primary Reference
+
 - **GitHub Repository:** https://github.com/GoogleCloudPlatform/generative-ai/blob/main/agents/cloud_run/agents_with_memory/get_started_with_memory_for_adk_in_cloud_run.ipynb
 
 ### Official Documentation
+
 - **Agent Development Kit Documentation:** https://google.github.io/adk-docs/
 - **Vertex AI Agent Engine Memory Bank:** https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/memory-bank/overview
 - **Vertex AI Agent Engine Sessions:** https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/sessions/overview
@@ -35,6 +39,7 @@
 - **ADK REST API endpoint:** https://google.github.io/adk-docs/get-started/testing/#api-endpoints (partially extracted)
 
 ### Console Links
+
 - **Agent Memories Console:** https://console.cloud.google.com/vertex-ai/agents/locations/{LOCATION}/agent-engines/{agent_engine_id}/memories?project={PROJECT_ID}
 
 ---
@@ -44,9 +49,11 @@
 **Source Notebook:** `agents/agent_engine/tutorial_get_started_with_agent_engine_terraform_deployment.ipynb`
 
 ### Primary Reference
+
 - **GitHub Repository:** https://github.com/GoogleCloudPlatform/generative-ai/blob/main/agents/agent_engine/tutorial_get_started_with_agent_engine_terraform_deployment.ipynb
 
 ### Official Documentation
+
 - **Vertex AI Reasoning Engine Terraform Resource:** https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/vertex_ai_reasoning_engine
 - **Vertex AI Agent Engine Documentation:** https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview
 - **Agent Development Kit (ADK) Documentation:** https://google.github.io/adk-docs/
@@ -55,6 +62,7 @@
 - **Terraform Downloads:** https://www.terraform.io/downloads (partially extracted)
 
 ### External APIs
+
 - **Frankfurter API (Currency Exchange):** https://api.frankfurter.app/
 - **Frankfurter API Date Query:** https://api.frankfurter.app/{currency_date}
 
@@ -65,9 +73,11 @@
 **Source Notebook:** `gemini/tuning/sft_gemini_predictive_maintenance.ipynb`
 
 ### Primary Reference
+
 - **GitHub Repository:** https://github.com/GoogleCloudPlatform/generative-ai/blob/main/gemini/tuning/sft_gemini_predictive_maintenance.ipynb
 
 ### Official Documentation
+
 - **Vertex AI Gemini Fine-tuning:** https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini-tuning
 - **Google GenAI SDK Documentation:** https://googleapis.github.io/python-genai/ (partially extracted)
 - **Supervised Fine-Tuning Guide:** https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini-supervised-tuning (referenced but not fully extracted)
@@ -78,19 +88,23 @@
 ## Summary by Documentation Category
 
 ### Google Cloud Platform Services
+
 - **Vertex AI Agent Engine:** 6 references across manuals 001-003
 - **Cloud Run:** 3 references in manual 002
 - **Vertex AI Gemini:** 2 references in manual 004
 
 ### Developer Tools & SDKs
+
 - **Agent Development Kit (ADK):** 5 references across manuals 002-003
 - **Terraform:** 3 references in manual 003
 - **Google GenAI SDK:** 1 reference in manual 004
 
 ### GitHub Repositories
+
 - **GoogleCloudPlatform/generative-ai:** 4 primary source notebooks
 
 ### External APIs
+
 - **Frankfurter Currency Exchange API:** 2 references in manual 003
 
 ---

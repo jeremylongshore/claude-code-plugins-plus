@@ -10,6 +10,7 @@ lucidchart-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Lucidchart example
 **Workflow:** Part of the onboarding skill category for Lucidchart integration.
 **Relates to:** Other lucidchart skills in this pack.

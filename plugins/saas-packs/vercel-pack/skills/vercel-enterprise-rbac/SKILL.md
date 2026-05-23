@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Enterprise RBAC
 
 ## Overview
+
 Configure Vercel's role-based access control (RBAC) with team roles, project-level access groups, SSO/SAML integration, and audit logging. Covers the two access control planes: team-level (who can deploy) and application-level (who can access deployed content).
 
 ## Prerequisites
+
 - Vercel Pro or Enterprise plan
 - Identity Provider (IdP) with SAML 2.0 support (for SSO)
 - Understanding of your organization's access requirements
@@ -50,6 +52,7 @@ Configure Vercel's role-based access control (RBAC) with team roles, project-lev
 
 **Extended Permissions (Enterprise):**
 Layer on top of base roles for granular control:
+
 - Deploy to production
 - Manage environment variables
 - Manage domains
@@ -57,6 +60,7 @@ Layer on top of base roles for granular control:
 - Manage integrations
 
 ### Step 2: Configure Team Members via API
+
 ```bash
 # Invite a team member
 curl -X POST "https://api.vercel.com/v1/teams/team_xxx/members" \
@@ -84,6 +88,7 @@ curl -X DELETE "https://api.vercel.com/v1/teams/team_xxx/members/user_xxx" \
 ```
 
 ### Step 3: Access Groups (Project-Level Permissions)
+
 Access Groups assign teams of people to specific projects with specific roles:
 
 1. Go to **Team Settings > Access Groups**
@@ -100,6 +105,7 @@ Example Access Group Setup:
 ```
 
 ### Step 4: SSO / SAML Configuration
+
 In the Vercel dashboard: **Team Settings > Authentication > SAML Single Sign-On**
 
 1. Enable SAML SSO
@@ -122,6 +128,7 @@ SAML Attribute Mapping:
 Once enabled, toggle "Require SAML for login" — all members must authenticate through SSO.
 
 ### Step 5: Application-Level Auth with Middleware
+
 ```typescript
 // middleware.ts — enforce auth on deployed application routes
 import { NextRequest, NextResponse } from 'next/server';
@@ -167,9 +174,11 @@ export const config = {
 ```
 
 ### Step 6: Audit Logging
+
 Vercel Enterprise includes audit logs in **Team Settings > Audit Log**.
 
 Events tracked:
+
 - Team member added/removed/role changed
 - Project created/deleted
 - Deployment to production
@@ -198,6 +207,7 @@ curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
 | Off-boarding removes Vercel access via IdP | Required |
 
 ## Output
+
 - Team roles configured with least-privilege access
 - Access Groups scoping members to specific projects
 - SSO/SAML enforced for all team authentication
@@ -205,6 +215,7 @@ curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
 - Audit logs exported for compliance
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Member can't deploy to prod | Developer role (preview only) | Change to Member or Owner role |
@@ -214,6 +225,7 @@ curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
 | Off-boarded user still has access | SSO not enforced | Enable "Require SAML for login" |
 
 ## Resources
+
 - [Vercel RBAC](https://vercel.com/docs/rbac)
 - [Access Roles](https://vercel.com/docs/rbac/access-roles)
 - [Access Groups](https://vercel.com/docs/rbac/access-groups)
@@ -221,4 +233,5 @@ curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
 - [Managing Team Members](https://vercel.com/docs/rbac/managing-team-members)
 
 ## Next Steps
+
 For migration strategies, see `vercel-migration-deep-dive`.

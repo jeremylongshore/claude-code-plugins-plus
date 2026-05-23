@@ -40,6 +40,7 @@ Complete pre-launch checklist for deploying BambooHR integrations to production,
 ### Pre-Deployment Checklist
 
 #### Authentication & Secrets
+
 - [ ] Production API key created under a service account (not personal account)
 - [ ] API key stored in secrets manager (AWS Secrets Manager / GCP Secret Manager / Vault)
 - [ ] `BAMBOOHR_COMPANY_DOMAIN` set correctly for production
@@ -48,6 +49,7 @@ Complete pre-launch checklist for deploying BambooHR integrations to production,
 - [ ] Old staging/test keys will not be deployed to production
 
 #### API Integration Quality
+
 - [ ] All API calls use `Accept: application/json` header
 - [ ] Error handling covers all BambooHR HTTP statuses (400, 401, 403, 404, 503)
 - [ ] `X-BambooHR-Error-Message` header parsed for error details
@@ -57,6 +59,7 @@ Complete pre-launch checklist for deploying BambooHR integrations to production,
 - [ ] No hardcoded employee IDs, company domains, or API keys
 
 #### Data Integrity
+
 - [ ] Custom reports validated against expected field schema
 - [ ] Employee directory sync handles new, updated, and terminated employees
 - [ ] Date fields parsed consistently (`YYYY-MM-DD` format)
@@ -65,6 +68,7 @@ Complete pre-launch checklist for deploying BambooHR integrations to production,
 - [ ] Large directory tested (500+ employees)
 
 #### Security & Compliance
+
 - [ ] PII fields redacted from application logs
 - [ ] Webhook signatures verified with HMAC-SHA256
 - [ ] Only necessary BambooHR fields requested (least data principle)

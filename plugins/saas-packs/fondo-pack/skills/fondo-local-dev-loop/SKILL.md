@@ -20,9 +20,11 @@ compatibility: Designed for Claude Code
 # Fondo Local Dev Loop
 
 ## Overview
+
 Local development workflow for Fondo startup tax and bookkeeping integration. Provides a fast feedback loop using CSV exports and mock financial data so you can build dashboards, R&D credit calculators, and burn-rate tools without waiting on live Fondo reports. Toggle between mock mode for rapid iteration and real export parsing for production validation.
 
 ## Environment Setup
+
 ```bash
 cp .env.example .env
 # Set your credentials:
@@ -35,6 +37,7 @@ mkdir -p exports
 ```
 
 ## Dev Server
+
 ```typescript
 // src/dev/server.ts
 import express from "express";
@@ -52,6 +55,7 @@ app.listen(3002, () => console.log(`Fondo dev server on :3002 [mock=${MOCK}]`));
 ```
 
 ## Mock Mode
+
 ```typescript
 // src/dev/mocks.ts — realistic startup financial data
 export function mountMockRoutes(app: any) {
@@ -70,6 +74,7 @@ export function mountMockRoutes(app: any) {
 ```
 
 ## Testing Workflow
+
 ```bash
 npm run dev:mock &                    # Start mock server in background
 npm run test                          # Unit tests with vitest
@@ -78,12 +83,14 @@ MOCK_MODE=false npm run test:integration  # Test against real Fondo CSV exports
 ```
 
 ## Debug Tips
+
 - Place sample CSVs in `exports/` to test parsing without Fondo dashboard access
 - Validate CSV column headers match Fondo's export format (Date, Description, Amount, Category, Account, R&D Qualified)
 - Use `--verbose` flag with the parser to log skipped rows and type coercion warnings
 - Check for locale-specific number formats (`$1,234.56` vs `1234.56`) in Amount column
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | `CSV parse error` | Malformed export file | Re-export from Fondo with UTF-8 encoding |
@@ -93,8 +100,10 @@ MOCK_MODE=false npm run test:integration  # Test against real Fondo CSV exports
 | `Empty dataset` | Date range has no transactions | Widen the date range in Fondo dashboard |
 
 ## Resources
+
 - [Fondo Dashboard](https://app.fondo.com)
 - [csv-parse docs](https://csv.js.org/parse/)
 
 ## Next Steps
+
 See `fondo-debug-bundle`.

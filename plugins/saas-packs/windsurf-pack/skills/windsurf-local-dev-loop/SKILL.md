@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Local Dev Loop
 
 ## Overview
+
 Set up a fast, AI-augmented local development workflow using Windsurf's Cascade, Turbo mode, Previews, and terminal integration. The goal is a tight loop: edit with Cascade, preview in-IDE, iterate, test, commit.
 
 ## Prerequisites
+
 - Windsurf authenticated and project open
 - Node.js 18+ or Python 3.10+
 - Git initialized in project
@@ -86,6 +88,7 @@ Turbo mode lets Cascade auto-execute terminal commands without asking permission
 **Enable:** Windsurf Settings > Cascade > Terminal Execution Level > Turbo
 
 **Configure safety lists:**
+
 ```json
 // Settings (JSON) — search "cascadeCommands"
 {
@@ -104,11 +107,13 @@ Turbo mode lets Cascade auto-execute terminal commands without asking permission
 ### Step 4: Use Previews for UI Development
 
 Ask Cascade to preview your web app:
+
 ```
 "Start the dev server and preview the app"
 ```
 
 Cascade starts the server and opens an in-IDE Preview tab. From the Preview:
+
 - Click **"Send element"** (bottom-right) to select a UI element and send it to Cascade
 - Console errors are automatically forwarded to Cascade for debugging
 - Iterate by describing changes: "Make the header sticky and add a dark mode toggle"
@@ -129,6 +134,7 @@ Cascade starts the server and opens an in-IDE Preview tab. From the Preview:
 ### Step 6: Terminal Integration
 
 Use Cmd/Ctrl+I in the terminal for natural language commands:
+
 ```
 Type: "find all files importing the Button component"
 Windsurf generates: grep -rl "import.*Button" src/
@@ -140,6 +146,7 @@ Windsurf generates: npx vitest run src/auth/
 Highlight terminal errors and press Cmd/Ctrl+L to send to Cascade for diagnosis.
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Cascade not seeing project context | No `.windsurfrules` | Create rules file at project root |
@@ -151,6 +158,7 @@ Highlight terminal errors and press Cmd/Ctrl+L to send to Cascade for diagnosis.
 ## Examples
 
 ### Quick Project Bootstrap
+
 ```
 Cascade prompt: "Initialize a new Next.js 14 project with TypeScript,
 Tailwind CSS, and Vitest. Set up the folder structure matching
@@ -158,6 +166,7 @@ our .windsurfrules conventions."
 ```
 
 ### Debug-Fix Loop
+
 ```
 1. See error in terminal or Preview console
 2. Highlight error text → Cmd/Ctrl+L → "Fix this error"
@@ -166,9 +175,11 @@ our .windsurfrules conventions."
 ```
 
 ## Resources
+
 - [Windsurf Terminal Docs](https://docs.windsurf.com/windsurf/terminal)
 - [Windsurf Previews](https://docs.windsurf.com/windsurf/previews)
 - [Cascade Overview](https://docs.windsurf.com/windsurf/cascade/cascade)
 
 ## Next Steps
+
 See `windsurf-sdk-patterns` for workspace configuration patterns.

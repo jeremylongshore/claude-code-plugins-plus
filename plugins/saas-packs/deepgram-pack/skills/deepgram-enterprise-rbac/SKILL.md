@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Enterprise RBAC
 
 ## Overview
+
 Role-based access control for enterprise Deepgram deployments. Maps five application roles to Deepgram API key scopes, implements scoped key provisioning via the Deepgram Management API, Express permission middleware, team management with auto-provisioned keys, and automated key rotation.
 
 ## Deepgram Scope Reference
@@ -338,6 +339,7 @@ async function rotateExpiringKeys(
 | Create projects | Yes | No | No | No | No |
 
 ## Output
+
 - Five-role permission model with Deepgram scope mapping
 - Scoped API key provisioning via Management API
 - Express middleware (role-based and scope-based)
@@ -345,6 +347,7 @@ async function rotateExpiringKeys(
 - Automated key rotation for expiring keys
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | 403 Forbidden | Key lacks scope | Create new key with correct scopes |
@@ -353,6 +356,7 @@ async function rotateExpiringKeys(
 | Team member can't transcribe | Wrong role assigned | Change role to `developer` or `service` |
 
 ## Resources
+
 - [API Key Management](https://developers.deepgram.com/docs/api-key-management)
 - [Project Management](https://developers.deepgram.com/docs/projects)
 - [Deepgram Enterprise](https://deepgram.com/enterprise)

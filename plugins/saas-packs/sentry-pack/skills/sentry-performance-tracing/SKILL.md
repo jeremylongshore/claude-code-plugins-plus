@@ -95,6 +95,7 @@ sentry_sdk.init(
 ```
 
 **Key decisions:**
+
 - Start at `tracesSampleRate: 0.2` and adjust based on volume and budget
 - `tracesSampler` takes priority when defined — `tracesSampleRate` becomes the fallback
 - `profilesSampleRate` is relative to sampled transactions (0.1 means 10% of the 20% that are sampled)

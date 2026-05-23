@@ -10,6 +10,7 @@ anima-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Anima rate limiting and backoff
 **Workflow:** Part of the operations skill category for Anima integration.
 **Relates to:** Other anima skills in this pack.

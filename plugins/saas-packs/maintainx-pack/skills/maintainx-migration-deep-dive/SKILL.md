@@ -24,12 +24,15 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Migration Deep Dive
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'N/A'`
 
 ## Overview
+
 Comprehensive guide for migrating to MaintainX from legacy CMMS systems (Maximo, UpKeep, Fiix), spreadsheets, or custom databases.
 
 ## Prerequisites
+
 - MaintainX account with API access
 - Access to source system data (CSV export, API, or database)
 - Node.js 18+
@@ -303,6 +306,7 @@ curl -s "https://api.getmaintainx.com/v1/workorders?limit=100" \
 ```
 
 ## Output
+
 - Source system assessment report (record counts, data quality issues)
 - Schema mapping configuration (legacy fields to MaintainX fields)
 - ETL migration with rate-limited batch imports
@@ -310,6 +314,7 @@ curl -s "https://api.getmaintainx.com/v1/workorders?limit=100" \
 - Rollback script for emergency reversal
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | 400 Bad Request on import | Invalid field value after mapping | Fix transform function, re-run failed records |
@@ -318,11 +323,13 @@ curl -s "https://api.getmaintainx.com/v1/workorders?limit=100" \
 | Missing relationships | Assets migrated after work orders | Migrate in order: Locations -> Assets -> Work Orders |
 
 ## Resources
+
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [MaintainX Import Guide](https://help.getmaintainx.com)
 - [csv-parse](https://csv.js.org/parse/) -- CSV parsing for Node.js
 
 ## Next Steps
+
 You have completed the MaintainX skill pack. For additional support, see the [MaintainX Help Center](https://help.getmaintainx.com).
 
 ## Examples

@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Multi-Environment Setup
 
 ## Overview
+
 Exa charges per search request at `api.exa.ai`. Multi-environment setup focuses on API key isolation per environment, request limits and caching to control costs in staging, and appropriate `numResults`/content settings per tier.
 
 ## Prerequisites
+
 - Exa API key(s) from dashboard.exa.ai
 - `exa-js` installed (`npm install exa-js`)
 - Optional: Redis for search result caching in staging/production
@@ -44,6 +46,7 @@ Exa charges per search request at `api.exa.ai`. Multi-environment setup focuses 
 ## Instructions
 
 ### Step 1: Environment-Aware Configuration
+
 ```typescript
 // config/exa.ts
 import Exa from "exa-js";
@@ -102,6 +105,7 @@ export function getExaClient(): Exa {
 ```
 
 ### Step 2: Search Service with Config-Driven Defaults
+
 ```typescript
 // lib/exa-search.ts
 import { getExaClient, getExaConfig } from "../config/exa";
@@ -120,6 +124,7 @@ export async function search(query: string, numResults?: number) {
 ```
 
 ### Step 3: Redis Cache Layer (Staging/Production)
+
 ```typescript
 // lib/exa-cache.ts
 import { Redis } from "ioredis";
@@ -156,6 +161,7 @@ export async function cachedSearch(query: string, numResults?: number) {
 ```
 
 ### Step 4: Environment Variables
+
 ```bash
 # .env.local (development)
 EXA_API_KEY=exa-dev-key-here
@@ -170,6 +176,7 @@ REDIS_URL=redis://prod-redis:6379
 ```
 
 ### Step 5: CI/CD Secret Configuration
+
 ```yaml
 # .github/workflows/deploy.yml
 jobs:
@@ -191,6 +198,7 @@ jobs:
 ```
 
 ### Step 6: Health Check Per Environment
+
 ```typescript
 export async function checkExaHealth(): Promise<{
   status: string;
@@ -217,6 +225,7 @@ export async function checkExaHealth(): Promise<{
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `401 Unauthorized` | Wrong API key for environment | Verify correct env var name |
@@ -225,9 +234,11 @@ export async function checkExaHealth(): Promise<{
 | Empty results in dev | numResults too low | Increase from 3 to 5 |
 
 ## Resources
+
 - [Exa API Documentation](https://docs.exa.ai)
 - [Exa Pricing](https://exa.ai/pricing)
 - [exa-js SDK](https://github.com/exa-labs/exa-js)
 
 ## Next Steps
+
 For deployment configuration, see `exa-deploy-integration`.

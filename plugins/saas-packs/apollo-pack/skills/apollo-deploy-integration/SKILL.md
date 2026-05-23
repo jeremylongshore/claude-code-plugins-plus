@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Deploy Integration
 
 ## Overview
+
 Deploy Apollo.io integrations to production with configurations for Vercel, GCP Cloud Run, and Kubernetes. All configurations use `x-api-key` header auth, health check endpoints verifying Apollo connectivity, and secret management best practices.
 
 ## Prerequisites
+
 - Valid Apollo master API key
 - Node.js 18+
 - Target platform CLI installed (vercel, gcloud, or kubectl)
@@ -34,6 +36,7 @@ Deploy Apollo.io integrations to production with configurations for Vercel, GCP 
 ## Instructions
 
 ### Step 1: Health Check Endpoint
+
 Every deployment needs a health endpoint that verifies Apollo API connectivity.
 
 ```typescript
@@ -66,6 +69,7 @@ healthRouter.get('/health', async (req, res) => {
 ```
 
 ### Step 2: Deploy to GCP Cloud Run
+
 ```dockerfile
 FROM node:20-slim AS build
 WORKDIR /app
@@ -98,6 +102,7 @@ gcloud run deploy apollo-integration \
 ```
 
 ### Step 3: Deploy to Vercel
+
 ```json
 {
   "name": "apollo-integration",
@@ -113,6 +118,7 @@ vercel --prod
 ```
 
 ### Step 4: Deploy to Kubernetes
+
 ```yaml
 # k8s/deployment.yaml
 apiVersion: apps/v1
@@ -157,6 +163,7 @@ stringData:
 ```
 
 ### Step 5: Pre-Deploy Validation
+
 ```typescript
 // src/scripts/pre-deploy.ts
 async function preDeployCheck() {
@@ -189,6 +196,7 @@ preDeployCheck();
 ```
 
 ## Output
+
 - Express health check endpoint verifying Apollo connectivity
 - GCP Cloud Run deployment with Secret Manager integration
 - Vercel deployment with encrypted secrets
@@ -196,6 +204,7 @@ preDeployCheck();
 - Pre-deploy validation script
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | Health check 503 | Check APOLLO_API_KEY secret is mounted correctly |
@@ -204,9 +213,11 @@ preDeployCheck();
 | Secret rotation | Update secret, redeploy — health check confirms new key works |
 
 ## Resources
+
 - [GCP Secret Manager](https://cloud.google.com/secret-manager/docs)
 - [Vercel Environment Variables](https://vercel.com/docs/concepts/projects/environment-variables)
 - [Kubernetes Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
 
 ## Next Steps
+
 Proceed to `apollo-webhooks-events` for webhook implementation.

@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # TwinMind Local Dev Loop
 
 ## Overview
+
 Configure a productive local development environment for TwinMind API integration.
 
 ## Prerequisites
+
 - TwinMind Pro or Enterprise account (API access)
 - Node.js 18+ or Python 3.10+
 - API key from TwinMind dashboard
@@ -280,6 +282,7 @@ DEBUG=twinmind:* npm run dev
 ```
 
 ## Output
+
 - Project structure with TypeScript configuration
 - TwinMind client with type-safe schemas
 - Environment configuration
@@ -319,11 +322,13 @@ twinmind-integration/
 ```
 
 ## Resources
+
 - [TwinMind API Documentation](https://twinmind.com/docs/api)
 - [Ear-3 Model Specification](https://twinmind.com/ear-3)
 - [Zod Documentation](https://zod.dev/)
 
 ## Next Steps
+
 Apply patterns in `twinmind-sdk-patterns` for production-ready code.
 
 ## Examples

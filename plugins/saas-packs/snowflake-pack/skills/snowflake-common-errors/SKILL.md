@@ -39,6 +39,7 @@ SQL compilation error: Object 'MY_DB.MY_SCHEMA.USERS' does not exist or not auth
 **Causes:** Table doesn't exist, wrong database/schema context, or role lacks privileges.
 
 **Solutions:**
+
 ```sql
 -- Check current context
 SELECT CURRENT_DATABASE(), CURRENT_SCHEMA(), CURRENT_ROLE();
@@ -60,6 +61,7 @@ SQL execution error: No active warehouse selected in the current session.
 ```
 
 **Solutions:**
+
 ```sql
 -- Set warehouse for session
 USE WAREHOUSE COMPUTE_WH;
@@ -79,6 +81,7 @@ Incorrect username or password was specified.
 ```
 
 **Solutions:**
+
 ```bash
 # Verify credentials are set
 echo $SNOWFLAKE_ACCOUNT  # Should be 'orgname-accountname'
@@ -99,6 +102,7 @@ JWT token is invalid.
 ```
 
 **Solutions:**
+
 ```bash
 # Verify public key is assigned
 # Run in Snowflake:
@@ -120,6 +124,7 @@ SQL compilation error: syntax error line X at position Y unexpected 'TOKEN'.
 ```
 
 **Common causes:**
+
 ```sql
 -- Missing semicolons in multi-statement mode
 -- Wrong: SELECT 1 SELECT 2
@@ -141,6 +146,7 @@ Statement reached its statement or warehouse timeout of X second(s).
 ```
 
 **Solutions:**
+
 ```sql
 -- Increase statement timeout (seconds)
 ALTER SESSION SET STATEMENT_TIMEOUT_IN_SECONDS = 3600;
@@ -163,6 +169,7 @@ Results exceed the allowed data size.
 ```
 
 **Solutions:**
+
 ```typescript
 // Use streaming in Node.js instead of fetching all rows
 connection.execute({
@@ -175,6 +182,7 @@ connection.execute({
   },
 });
 ```
+
 ```python
 # Use fetchmany() in Python
 cursor.execute("SELECT * FROM large_table")
@@ -193,6 +201,7 @@ Error: getaddrinfo ENOTFOUND
 ```
 
 **Solutions:**
+
 ```typescript
 // Wrong account identifier format
 // Wrong: 'myaccount.us-east-1.snowflakecomputing.com'

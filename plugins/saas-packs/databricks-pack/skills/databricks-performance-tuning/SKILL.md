@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Performance Tuning
 
 ## Overview
+
 Optimize Databricks cluster sizing, Spark configuration, and Delta Lake query performance. Covers workload-specific Spark configs, Adaptive Query Execution (AQE), Liquid Clustering, Z-ordering, OPTIMIZE/VACUUM maintenance, query plan analysis, and caching strategies.
 
 ## Prerequisites
+
 - Access to cluster configuration (admin or cluster owner)
 - Understanding of workload type (ETL batch, ML training, streaming, interactive)
 - Query history access for identifying slow queries
@@ -63,6 +65,7 @@ def recommend_cluster(data_size_gb: float, workload: str) -> dict:
 ```
 
 ### Step 2: Spark Configuration by Workload
+
 ```python
 spark_configs = {
     "etl_batch": {
@@ -98,6 +101,7 @@ spark_configs = {
 ### Step 3: Delta Lake Optimization
 
 #### OPTIMIZE with Z-Ordering
+
 ```sql
 -- Compact small files and co-locate data by frequently filtered columns
 OPTIMIZE prod_catalog.silver.orders ZORDER BY (order_date, customer_id);
@@ -108,6 +112,7 @@ DESCRIBE DETAIL prod_catalog.silver.orders;
 ```
 
 #### Liquid Clustering (DBR 13.3+ — Replaces Partitioning + Z-Order)
+
 ```sql
 -- Enable Liquid Clustering — Databricks auto-optimizes data layout
 ALTER TABLE prod_catalog.silver.orders CLUSTER BY (order_date, region);
@@ -122,6 +127,7 @@ OPTIMIZE prod_catalog.silver.orders;
 ```
 
 #### Predictive Optimization
+
 ```sql
 -- Let Databricks auto-schedule OPTIMIZE and VACUUM
 ALTER TABLE prod_catalog.silver.orders
@@ -133,12 +139,14 @@ SET DBPROPERTIES ('delta.enablePredictiveOptimization' = 'true');
 ```
 
 #### Compute Statistics
+
 ```sql
 ANALYZE TABLE prod_catalog.silver.orders COMPUTE STATISTICS;
 ANALYZE TABLE prod_catalog.silver.orders COMPUTE STATISTICS FOR COLUMNS order_date, amount, region;
 ```
 
 ### Step 4: Query Performance Analysis
+
 ```sql
 -- Find slow queries (SQL warehouse query history)
 SELECT statement_id, executed_by,
@@ -161,6 +169,7 @@ df.explain(mode="formatted")
 ```
 
 ### Step 5: Join Optimization
+
 ```python
 from pyspark.sql.functions import broadcast
 
@@ -177,6 +186,7 @@ spark.conf.set("spark.sql.adaptive.skewJoin.skewedPartitionThresholdInBytes", "2
 ```
 
 ### Step 6: Caching Strategy
+
 ```python
 # Cache a frequently-accessed table
 spark.table("prod_catalog.gold.daily_metrics").cache()
@@ -191,6 +201,7 @@ spark.table("prod_catalog.gold.daily_metrics").cache()
 ```
 
 ### Step 7: VACUUM and Table Maintenance Schedule
+
 ```sql
 -- Clean up old file versions (default retention: 7 days)
 VACUUM prod_catalog.silver.orders RETAIN 168 HOURS;
@@ -200,6 +211,7 @@ VACUUM prod_catalog.silver.orders RETAIN 168 HOURS;
 ```
 
 ## Output
+
 - Cluster sized appropriately for workload type
 - Spark configs tuned per workload (ETL, ML, streaming, interactive)
 - Delta tables optimized with Z-ordering or Liquid Clustering
@@ -207,6 +219,7 @@ VACUUM prod_catalog.silver.orders RETAIN 168 HOURS;
 - Join and caching strategies applied
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | OOM during shuffle | Skewed partition | Enable AQE skew join or salt the join key |
@@ -218,6 +231,7 @@ VACUUM prod_catalog.silver.orders RETAIN 168 HOURS;
 ## Examples
 
 ### Quick Table Tune-Up
+
 ```sql
 OPTIMIZE prod_catalog.silver.orders ZORDER BY (order_date, customer_id);
 ANALYZE TABLE prod_catalog.silver.orders COMPUTE STATISTICS;
@@ -225,6 +239,7 @@ VACUUM prod_catalog.silver.orders RETAIN 168 HOURS;
 ```
 
 ### Before/After Comparison
+
 ```python
 import time
 table = "prod_catalog.silver.orders"
@@ -246,10 +261,12 @@ print(f"Before: {before:.1f}s, After: {after:.1f}s, Speedup: {before/after:.1f}x
 ```
 
 ## Resources
+
 - [Performance Guide](https://docs.databricks.com/aws/en/delta/best-practices)
 - [Liquid Clustering](https://docs.databricks.com/aws/en/delta/clustering)
 - [OPTIMIZE](https://docs.databricks.com/aws/en/sql/language-manual/delta-optimize)
 - [AQE](https://docs.databricks.com/aws/en/sql/language-manual/sql-ref-syntax-qry-select-adaptive)
 
 ## Next Steps
+
 For cost optimization, see `databricks-cost-tuning`.

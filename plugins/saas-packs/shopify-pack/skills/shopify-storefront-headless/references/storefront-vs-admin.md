@@ -39,6 +39,7 @@ Detailed comparison of Shopify Storefront API vs Admin API capabilities and acce
 ## When to Use Each
 
 ### Use Storefront API When:
+
 - Building a customer-facing storefront or mobile app
 - Running code in the browser (public token is safe)
 - Managing shopping cart and checkout flow
@@ -46,6 +47,7 @@ Detailed comparison of Shopify Storefront API vs Admin API capabilities and acce
 - Handling customer authentication (login, register, addresses)
 
 ### Use Admin API When:
+
 - Managing products, inventory, or orders (back-office)
 - Processing webhooks on your server
 - Syncing data with external systems (ERP, warehouse)
@@ -54,6 +56,7 @@ Detailed comparison of Shopify Storefront API vs Admin API capabilities and acce
 - Creating draft orders programmatically
 
 ### Use Both When:
+
 - Full headless storefront: Storefront API for the frontend, Admin API for backend order processing
 - Custom checkout: Storefront API for cart, Admin API for post-purchase fulfillment
 - Loyalty programs: Storefront API for customer-facing UI, Admin API for managing customer metafields

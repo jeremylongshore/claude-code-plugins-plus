@@ -11,6 +11,7 @@ Build sophisticated multi-agent systems with automatic handoffs, intelligent rou
 ## 🎯 What This Plugin Does
 
 Transform complex workflows into multi-agent systems where specialized agents:
+
 - **Hand off tasks** to each other automatically
 - **Route requests** to the best-suited agent
 - **Coordinate** complex workflows across multiple LLMs
@@ -68,6 +69,7 @@ npm install @ai-sdk-tools/agents ai zod
 ### Rate Limits by Provider
 
 #### OpenAI (Paid)
+
 - **GPT-4:** 10,000 requests/day (Tier 1), 500 RPM
 - **GPT-4 Turbo:** 30,000 requests/day (Tier 2), 3,000 RPM
 - **Registration:** ✅ Email + payment required
@@ -76,6 +78,7 @@ npm install @ai-sdk-tools/agents ai zod
 **Multi-Agent Impact:** 5 agents × 500 RPM limit = effective 100 RPM per agent
 
 #### Anthropic (Paid)
+
 - **Claude Sonnet:** 50,000 requests/day (Tier 1), 1,000 RPM
 - **Claude Opus:** 50,000 requests/day (Tier 1), 1,000 RPM
 - **Registration:** ✅ Email + payment required
@@ -84,6 +87,7 @@ npm install @ai-sdk-tools/agents ai zod
 **Multi-Agent Impact:** 5 agents × 1,000 RPM limit = effective 200 RPM per agent
 
 #### Google Gemini (Paid/Free Tier)
+
 - **Gemini 1.5 Flash (Free):** 15 RPM, 1M tokens/day
 - **Gemini 1.5 Pro (Free):** 2 RPM, 32K tokens/day
 - **Gemini (Paid):** 1,000 RPM, unlimited tokens
@@ -93,6 +97,7 @@ npm install @ai-sdk-tools/agents ai zod
 **Multi-Agent Impact:** Free tier 15 RPM = 3 RPM per agent (5 agents) → Very restrictive
 
 #### Ollama (FREE - Self-Hosted)
+
 - **Requests:** ∞ Unlimited (hardware-limited only)
 - **Models:** Llama 3.2, Mistral, CodeLlama, etc.
 - **Registration:** ❌ Not required
@@ -133,6 +138,7 @@ const agents = {
 ```
 
 **Hardware Requirements:**
+
 - **4 agents × Llama 3.2 7B:** 32GB RAM minimum
 - **Concurrent requests:** Limited by CPU cores
 - **See:** [ollama-local-ai plugin](../ollama-local-ai/README.md#multi-agent-rate-limit-strategies) for detailed hardware sizing
@@ -214,6 +220,7 @@ await rateLimiter.executeAgentTask('coordinator', async () => {
 ### When to Use Paid APIs vs Ollama
 
 **Use Ollama (FREE) when:**
+
 - ✅ Development and testing multi-agent systems
 - ✅ Running 1,000+ workflows/month (saves $360-3,600/year)
 - ✅ Data privacy is critical (stays on your infrastructure)
@@ -221,6 +228,7 @@ await rateLimiter.executeAgentTask('coordinator', async () => {
 - ✅ Latency <2sec acceptable (not real-time)
 
 **Use Paid APIs when:**
+
 - ❌ Need <500ms latency for production
 - ❌ Managing 10+ agents (hardware becomes expensive)
 - ❌ Require enterprise SLA/support
@@ -296,6 +304,7 @@ const result = await orchestrate([
 ### 1. Code Generation Pipeline
 
 **Agents**:
+
 - **Architect**: Designs system structure
 - **Coder**: Implements features
 - **Tester**: Writes tests
@@ -303,6 +312,7 @@ const result = await orchestrate([
 - **Documenter**: Writes docs
 
 **Flow**:
+
 ```
 User Request → Architect (design) → Coder (implement)
            → Tester (test) → Reviewer (review)
@@ -314,12 +324,14 @@ User Request → Architect (design) → Coder (implement)
 ### 2. Research & Analysis
 
 **Agents**:
+
 - **Searcher**: Finds information
 - **Analyzer**: Analyzes data
 - **Synthesizer**: Combines insights
 - **Reporter**: Creates reports
 
 **Flow**:
+
 ```
 Question → Searcher (gather sources) → Analyzer (extract insights)
         → Synthesizer (combine) → Reporter (format) → Answer
@@ -330,6 +342,7 @@ Question → Searcher (gather sources) → Analyzer (extract insights)
 ### 3. Content Creation
 
 **Agents**:
+
 - **Researcher**: Gathers information
 - **Writer**: Writes content
 - **Editor**: Edits for quality
@@ -337,6 +350,7 @@ Question → Searcher (gather sources) → Analyzer (extract insights)
 - **Publisher**: Formats and publishes
 
 **Flow**:
+
 ```
 Topic → Researcher → Writer → Editor → SEO → Publisher → Published Content
 ```
@@ -346,12 +360,14 @@ Topic → Researcher → Writer → Editor → SEO → Publisher → Published C
 ### 4. Customer Support
 
 **Agents**:
+
 - **Triager**: Categorizes issues
 - **FAQ Bot**: Handles common questions
 - **Technical**: Solves technical issues
 - **Escalator**: Escalates to humans when needed
 
 **Flow**:
+
 ```
 Customer Query → Triager → Route to (FAQ Bot | Technical | Escalator)
                         → Resolve or escalate
@@ -362,12 +378,14 @@ Customer Query → Triager → Route to (FAQ Bot | Technical | Escalator)
 ### 5. DevOps Automation
 
 **Agents**:
+
 - **Monitor**: Watches system health
 - **Diagnoser**: Diagnoses issues
 - **Fixer**: Attempts automated fixes
 - **Notifier**: Alerts humans when needed
 
 **Flow**:
+
 ```
 Alert → Monitor (analyze) → Diagnoser (identify cause)
       → Fixer (attempt fix) → Success OR Notifier (escalate)
@@ -384,6 +402,7 @@ Alert → Monitor (analyze) → Diagnoser (identify cause)
 **Purpose**: Initialize multi-agent project structure
 
 **Creates**:
+
 ```
 project/
 ├── agents/
@@ -397,6 +416,7 @@ project/
 ```
 
 **Usage**:
+
 ```bash
 /ai-agents-setup
 
@@ -411,6 +431,7 @@ project/
 **Purpose**: Create a new specialized agent
 
 **Usage**:
+
 ```bash
 /ai-agent-create [name] [specialization]
 
@@ -421,6 +442,7 @@ project/
 ```
 
 **Generates**:
+
 ```typescript
 // agents/security-auditor.ts
 import { createAgent } from '@ai-sdk-tools/agents';
@@ -445,6 +467,7 @@ export const securityAuditor = createAgent({
 **Purpose**: Test your multi-agent system
 
 **Usage**:
+
 ```bash
 /ai-agents-test "User query to test"
 
@@ -453,6 +476,7 @@ export const securityAuditor = createAgent({
 ```
 
 **Output**:
+
 ```
 Testing multi-agent system...
 
@@ -490,6 +514,7 @@ Agents involved: 5 (coordinator, architect, coder, tester, reviewer)
 **Purpose**: Coordinate complex multi-agent workflows
 
 **Specialization**:
+
 - Analyze incoming requests
 - Route to appropriate specialized agent
 - Manage handoffs between agents
@@ -740,6 +765,7 @@ const result = await orchestrate({
 ## 🔗 Integration with Other Plugins
 
 **Works well with**:
+
 - **ai-ml-engineering-pack**: RAG systems, prompt optimization
 - **overnight-dev**: Autonomous multi-agent coding overnight
 - **devops-automation-pack**: CI/CD with agent coordination
@@ -818,20 +844,24 @@ const agents = [
 ### Best Models for Multi-Agent Systems
 
 **Code Generation**:
+
 - `codellama` (34B) - Best for coding agents
 - `qwen2.5-coder` (32B) - Strong code understanding
 
 **General Purpose**:
+
 - `llama3.2` (70B) - Meta's flagship
 - `mistral` (7B) - Fast and efficient
 
 **Specialized**:
+
 - `phi3` (14B) - Microsoft's efficient model
 - `gemma` (27B) - Google's open model
 
 ### Migration Guide: Paid → Free
 
 **Before (OpenAI - Paid)**:
+
 ```typescript
 import { createOpenAI } from '@ai-sdk/openai';
 
@@ -845,6 +875,7 @@ const agent = createAgent({
 ```
 
 **After (Ollama - Free)**:
+
 ```typescript
 import ollama from 'ollama';
 
@@ -913,12 +944,14 @@ Result: Production-ready API in minutes
 ## 📊 Performance
 
 **vs Single Agent**:
+
 - ✅ 10x better task decomposition
 - ✅ 5x higher quality output
 - ✅ 3x faster completion (parallel agent work)
 - ✅ Better error handling (agents catch each other's mistakes)
 
 **Real-world metrics**:
+
 - Complex code generation: 3-5 min (vs 15-20 min single agent)
 - Research reports: 2 min (vs 10 min single agent)
 - Customer support: <30 sec (vs 2-3 min single agent)
@@ -928,6 +961,7 @@ Result: Production-ready API in minutes
 ## 🎯 When to Use Multi-Agent
 
 **Use multi-agent when**:
+
 - ✅ Task requires multiple specializations
 - ✅ Need quality checks/reviews
 - ✅ Complex workflow with clear stages
@@ -935,6 +969,7 @@ Result: Production-ready API in minutes
 - ✅ Need scalable, maintainable AI systems
 
 **Use single agent when**:
+
 - Simple, focused tasks
 - Speed is critical (handoffs add latency)
 - Budget constraints (multiple API calls)

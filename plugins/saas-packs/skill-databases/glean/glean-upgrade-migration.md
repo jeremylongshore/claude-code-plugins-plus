@@ -10,6 +10,7 @@ glean-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Glean SDK upgrades
 **Workflow:** Part of the operations skill category for Glean integration.
 **Relates to:** Other glean skills in this pack.

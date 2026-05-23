@@ -3,6 +3,7 @@
 ## Advanced Configuration
 
 ### Context Section
+
 ```yaml
 context:
   # Key architectural decisions
@@ -27,6 +28,7 @@ context:
 ```
 
 ### Examples Section
+
 ```yaml
 examples:
   component: |
@@ -77,6 +79,7 @@ examples:
 ```
 
 ### Testing Section
+
 ```yaml
 testing:
   framework: vitest

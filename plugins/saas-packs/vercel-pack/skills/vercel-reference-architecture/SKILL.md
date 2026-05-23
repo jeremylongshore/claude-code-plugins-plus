@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Reference Architecture
 
 ## Overview
+
 Implement a production-ready Vercel project architecture with clear separation across edge, server, and client layers. Covers directory structure, middleware patterns, API route organization, shared utilities, and configuration management.
 
 ## Prerequisites
+
 - Understanding of Vercel's deployment model (edge, serverless, static)
 - TypeScript project setup
 - Next.js 14+ (recommended) or other Vercel-supported framework
@@ -36,6 +38,7 @@ Implement a production-ready Vercel project architecture with clear separation a
 ## Instructions
 
 ### Step 1: Directory Structure
+
 ```
 my-vercel-app/
 ├── public/                    # Static assets (served from CDN)
@@ -73,6 +76,7 @@ my-vercel-app/
 ```
 
 ### Step 2: Typed Environment Variables
+
 ```typescript
 // src/lib/env.ts — validate env vars at import time
 import { z } from 'zod';
@@ -93,6 +97,7 @@ export const env = envSchema.parse(process.env);
 ```
 
 ### Step 3: Database Client (Lazy Singleton)
+
 ```typescript
 // src/lib/db.ts — lazy init to minimize cold starts
 import { PrismaClient } from '@prisma/client';
@@ -110,6 +115,7 @@ if (process.env.VERCEL_ENV !== 'production') {
 ```
 
 ### Step 4: API Route Pattern
+
 ```typescript
 // src/app/api/users/route.ts
 import { NextRequest, NextResponse } from 'next/server';
@@ -150,6 +156,7 @@ export async function POST(request: NextRequest) {
 ```
 
 ### Step 5: Edge Middleware for Auth
+
 ```typescript
 // src/middleware.ts
 import { NextRequest, NextResponse } from 'next/server';
@@ -182,6 +189,7 @@ export const config = {
 ```
 
 ### Step 6: Health Check Endpoint
+
 ```typescript
 // src/app/api/health/route.ts
 import { db } from '@/lib/db';
@@ -214,6 +222,7 @@ export async function GET() {
 ```
 
 ### Step 7: Vercel Configuration
+
 ```json
 // vercel.json
 {
@@ -247,6 +256,7 @@ export async function GET() {
 | Client (components) | Browser | Interactivity, client state |
 
 ## Output
+
 - Layered project structure with clear separation of concerns
 - Typed environment variables validated at startup
 - Lazy-initialized database client minimizing cold starts
@@ -254,6 +264,7 @@ export async function GET() {
 - Health check endpoint for deployment verification
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Env validation fails on deploy | Missing required variable | Add to Vercel dashboard for target environment |
@@ -262,10 +273,12 @@ export async function GET() {
 | API route not found | Wrong directory structure | Must be in `src/app/api/` with `route.ts` filename |
 
 ## Resources
+
 - [Next.js Project Structure](https://nextjs.org/docs/getting-started/project-structure)
 - [Vercel Project Configuration](https://vercel.com/docs/project-configuration)
 - [Middleware Documentation](https://vercel.com/docs/functions/edge-middleware)
 - [API Routes (App Router)](https://nextjs.org/docs/app/building-your-application/routing/route-handlers)
 
 ## Next Steps
+
 For multi-environment setup, see `vercel-multi-env-setup`.

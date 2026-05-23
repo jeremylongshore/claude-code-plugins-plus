@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Webhooks & Events
 
 ## Overview
+
 Build event-driven workflows around Vast.ai GPU instance lifecycle. Vast.ai does not provide traditional webhooks, so event detection relies on polling the REST API at `cloud.vast.ai/api/v0` and reacting to instance status transitions (loading, running, exited, error, offline).
 
 ## Prerequisites
+
 - Vast.ai CLI authenticated
 - Understanding of instance lifecycle states
 - Python 3.8+ for event loop implementation
@@ -144,12 +146,14 @@ def track_costs(instance, old_status, new_status):
 ```
 
 ## Output
+
 - Polling-based event detection for instance status changes
 - Event handlers for running, exited, preempted states
 - Auto-recovery on spot preemption
 - Cost tracking event logger
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Missed status transition | Poll interval too long | Reduce to 15-30s for critical instances |
@@ -158,10 +162,12 @@ def track_costs(instance, old_status, new_status):
 | API timeout during poll | Network or rate limiting | Retry with backoff; continue polling |
 
 ## Resources
+
 - [Vast.ai REST API](https://vast.ai/developers/api)
 - [Instance Management](https://docs.vast.ai/api-reference/instances/create-instance)
 
 ## Next Steps
+
 For performance optimization, see `vastai-performance-tuning`.
 
 ## Examples

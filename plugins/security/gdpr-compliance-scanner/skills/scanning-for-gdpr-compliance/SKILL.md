@@ -31,6 +31,7 @@ This skill allows Claude to automatically assess an application's GDPR complianc
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Assess an application's GDPR compliance.
 - Identify potential GDPR violations.
 - Generate a report outlining compliance gaps and recommendations.
@@ -43,6 +44,7 @@ This skill activates when you need to:
 User request: "Scan my web application for GDPR compliance."
 
 The skill will:
+
 1. Activate the `gdpr-compliance-scanner` plugin.
 2. Scan the web application for GDPR compliance issues related to data collection, storage, and processing.
 3. Generate a report highlighting compliance scores, critical gaps such as missing cookie consent mechanisms, and actionable recommendations like implementing a cookie consent banner.
@@ -52,6 +54,7 @@ The skill will:
 User request: "Check our data processing activities for GDPR compliance."
 
 The skill will:
+
 1. Activate the `gdpr-compliance-scanner` plugin.
 2. Analyze data processing activities, including data collection methods, storage practices, and security measures.
 3. Generate a report identifying potential violations, such as inadequate data encryption or missing data processing agreements, along with recommendations for remediation.
@@ -93,6 +96,7 @@ This skill can be integrated with other security and compliance tools to provide
 ## Error Handling
 
 If security scanning fails:
+
 - Verify tool installation and configuration
 - Check file and directory permissions
 - Validate scan target paths

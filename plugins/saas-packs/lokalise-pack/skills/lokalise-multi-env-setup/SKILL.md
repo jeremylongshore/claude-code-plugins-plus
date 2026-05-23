@@ -318,6 +318,7 @@ echo "=== Promotion to ${TARGET_ENV} complete ==="
 ## Output
 
 After applying this skill, the project will have:
+
 - Environment-aware Lokalise configuration module (`src/config/lokalise.ts`)
 - Per-environment API tokens stored in the chosen secret manager
 - GitHub Actions workflows with environment-specific secrets

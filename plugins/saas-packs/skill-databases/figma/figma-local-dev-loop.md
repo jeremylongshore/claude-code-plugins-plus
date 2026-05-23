@@ -10,6 +10,7 @@ figma-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Figma local development workflow
 **Workflow:** Part of the onboarding skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

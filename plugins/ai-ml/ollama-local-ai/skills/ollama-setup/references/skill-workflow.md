@@ -5,6 +5,7 @@
 ### 1. Detect Need for Local AI
 
 When user mentions:
+
 - High API costs
 - Privacy concerns
 - Offline requirements
@@ -31,21 +32,25 @@ system_profiler SPDisplaysDataType  # macOS
 ### 3. Recommend Appropriate Models
 
 **8GB RAM:**
+
 - llama3.2:7b (4GB)
 - mistral:7b (4GB)
 - phi3:14b (8GB)
 
 **16GB RAM:**
+
 - codellama:13b (7GB)
 - mixtral:8x7b (26GB quantized)
 
 **32GB+ RAM:**
+
 - llama3.2:70b (40GB)
 - codellama:34b (20GB)
 
 ### 4. Installation Process
 
 **macOS:**
+
 ```bash
 brew install ollama
 brew services start ollama
@@ -53,6 +58,7 @@ ollama pull llama3.2
 ```
 
 **Linux:**
+
 ```bash
 curl -fsSL https://ollama.com/install.sh | sh
 sudo systemctl start ollama
@@ -60,6 +66,7 @@ ollama pull llama3.2
 ```
 
 **Docker:**
+
 ```bash
 docker run -d \\
   -v ollama:/root/.ollama \\
@@ -81,6 +88,7 @@ curl http://localhost:11434/api/tags
 ### 6. Integration Examples
 
 **Python:**
+
 ```python
 import ollama
 
@@ -92,6 +100,7 @@ print(response['message']['content'])
 ```
 
 **Node.js:**
+
 ```javascript
 const ollama = require('ollama')
 
@@ -102,6 +111,7 @@ const response = await ollama.chat({
 ```
 
 **cURL:**
+
 ```bash
 curl http://localhost:11434/api/generate -d '{
   "model": "llama3.2",

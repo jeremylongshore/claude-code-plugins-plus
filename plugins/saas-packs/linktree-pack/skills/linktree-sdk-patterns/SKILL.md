@@ -18,14 +18,17 @@ compatibility: Designed for Claude Code
 # Linktree SDK Patterns
 
 ## Overview
+
 Linktree's REST API exposes profile management, link CRUD, click analytics, and appearance theming through bearer-token authentication. A structured SDK client matters here because Linktree enforces strict per-minute rate limits on analytics endpoints and returns nested profile objects that benefit from strong typing. These patterns provide a thread-safe singleton, typed error classification, fluent request building for paginated link lists, and test utilities for mocking profile and analytics responses.
 
 ## Prerequisites
+
 - Node.js 18+, TypeScript 5+
 - `LINKTREE_API_KEY` environment variable (generated in Linktree admin > Settings > Developer)
 - `axios` or `node-fetch` for HTTP transport
 
 ## Singleton Client
+
 ```typescript
 interface LinktreeConfig {
   apiKey: string;
@@ -51,6 +54,7 @@ export function getLinktreeClient(overrides?: Partial<LinktreeConfig>): Linktree
 ```
 
 ## Error Wrapper
+
 ```typescript
 interface LinktreeError { status: number; code: string; detail: string; }
 
@@ -74,6 +78,7 @@ async function safeLinktree<T>(fn: () => Promise<T>): Promise<T> {
 ```
 
 ## Request Builder
+
 ```typescript
 class LinkQueryBuilder {
   private params: Record<string, string> = {};
@@ -86,6 +91,7 @@ class LinkQueryBuilder {
 ```
 
 ## Response Types
+
 ```typescript
 interface LinktreeProfile { id: string; username: string; tier: 'free' | 'pro' | 'premium'; created_at: string; }
 interface LinktreeLink { id: string; title: string; url: string; position: number; is_active: boolean; thumbnail_url?: string; }
@@ -94,6 +100,7 @@ interface PaginatedLinks { data: LinktreeLink[]; cursor?: string; has_more: bool
 ```
 
 ## Middleware Pattern
+
 ```typescript
 type Middleware = (req: RequestInit, next: () => Promise<Response>) => Promise<Response>;
 
@@ -110,6 +117,7 @@ const loggingMiddleware: Middleware = async (req, next) => {
 ```
 
 ## Testing Utilities
+
 ```typescript
 function mockProfile(overrides?: Partial<LinktreeProfile>): LinktreeProfile {
   return { id: 'prof_test_123', username: 'testuser', tier: 'pro', created_at: '2025-01-01T00:00:00Z', ...overrides };
@@ -123,6 +131,7 @@ function mockAnalytics(linkId: string): LinkAnalytics {
 ```
 
 ## Error Handling
+
 | Pattern | When to Use | Example |
 |---------|-------------|---------|
 | Retry with backoff | 429 rate limit on analytics endpoints | Parse `Retry-After` header, wait, retry once |
@@ -132,7 +141,9 @@ function mockAnalytics(linkId: string): LinkAnalytics {
 | Idempotency check | Duplicate link creation | Query existing links by URL before POST |
 
 ## Resources
+
 - [Linktree API Reference](https://linktr.ee/marketplace/developer)
 
 ## Next Steps
+
 Apply in `linktree-core-workflow-a`.

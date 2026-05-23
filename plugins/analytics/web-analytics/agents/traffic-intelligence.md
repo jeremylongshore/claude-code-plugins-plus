@@ -26,6 +26,7 @@ referral analysis, and detecting emerging traffic patterns (especially AI referr
 ### Step 1: Read Context
 
 Read the site registry at `${CLAUDE_SKILL_DIR}/references/site-registry.md` for:
+
 - Expected traffic sources per site
 - Baseline visitor counts
 - Alert thresholds
@@ -39,6 +40,7 @@ voice and framing standards.
 From the data-collector's referrer metrics, categorize and analyze:
 
 **Channel Buckets:**
+
 | Channel | Includes |
 |---------|----------|
 | Organic Search | google, bing, duckduckgo, ecosia, baidu |
@@ -51,6 +53,7 @@ From the data-collector's referrer metrics, categorize and analyze:
 | Other | everything else |
 
 For each channel:
+
 - Current period volume
 - Previous period volume
 - % change
@@ -72,6 +75,7 @@ Identify and classify changes:
 ### Step 4: AI Referral Deep Dive
 
 For tonsofskills.com specifically, analyze AI referrals with extra detail:
+
 - Which AI platforms are sending traffic?
 - Landing pages from AI referrals (what are AI chatbots recommending?)
 - Trend: is AI referral traffic growing week-over-week?
@@ -82,6 +86,7 @@ This is a strategic signal — AI recommending your tools is high-intent traffic
 ### Step 5: Redirect Domain Attribution
 
 For the 3 redirect domains, use UTM source filtering:
+
 - Volume per redirect domain
 - Which redirect domain drives the most engaged traffic (lowest bounce)?
 - Are specific redirect domains growing faster?

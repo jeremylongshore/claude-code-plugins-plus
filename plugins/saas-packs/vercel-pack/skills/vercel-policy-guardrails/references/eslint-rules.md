@@ -3,6 +3,7 @@
 ## ESLint Rules
 
 ### Custom Vercel Plugin
+
 ```javascript
 // eslint-plugin-vercel/rules/no-hardcoded-keys.js
 module.exports = {
@@ -31,6 +32,7 @@ module.exports = {
 ```
 
 ### ESLint Configuration
+
 ```javascript
 // .eslintrc.js
 module.exports = {

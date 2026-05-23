@@ -17,6 +17,7 @@ Admin
 ## Instructions
 
 ### Step 1: Define Roles and Permissions
+
 ```typescript
 // lib/rbac/permissions.ts
 export enum Permission {
@@ -106,6 +107,7 @@ export const rolePermissions: Record<Role, Permission[]> = {
 ```
 
 ### Step 2: Implement Permission Checker
+
 ```typescript
 // lib/rbac/permission-checker.ts
 export class PermissionChecker {
@@ -155,6 +157,7 @@ export class PermissionChecker {
 ```
 
 ### Step 3: Authorization Middleware
+
 ```typescript
 // middleware/authorization.ts
 import { Permission } from '../lib/rbac/permissions';
@@ -222,6 +225,7 @@ app.get('/api/profiles/:id/contact',
 ```
 
 ### Step 4: Team-Based Access Control
+
 ```typescript
 // lib/rbac/team-access.ts
 export class TeamAccessControl {
@@ -258,6 +262,7 @@ export class TeamAccessControl {
 ```
 
 ### Step 5: Audit Trail
+
 ```typescript
 // lib/rbac/audit.ts
 export class RBACauditLog {

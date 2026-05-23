@@ -10,6 +10,7 @@ attio-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Attio core feature integration
 **Workflow:** Part of the onboarding skill category for Attio integration.
 **Relates to:** Other attio skills in this pack.

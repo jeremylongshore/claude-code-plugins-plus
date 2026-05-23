@@ -23,6 +23,7 @@ concatenation. The earlier planner persona dominates — it's longer, more
 specific, and first. The subagent replies as the planner.
 
 Observable symptoms:
+
 - Research subagent returns `"I'll decompose this into subtasks: ..."` instead of facts
 - Code-writer subagent asks clarifying questions instead of emitting code
 - Critic subagent produces generic plans instead of defect lists

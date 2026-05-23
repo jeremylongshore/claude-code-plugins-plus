@@ -15,6 +15,7 @@ Real Intercom API code covering contacts, conversations, messages, Help Center a
 ## Skills
 
 ### Getting Started (S01-S04)
+
 | Skill | What It Does |
 |-------|-------------|
 | `intercom-install-auth` | Install `intercom-client`, configure access tokens and OAuth |
@@ -23,6 +24,7 @@ Real Intercom API code covering contacts, conversations, messages, Help Center a
 | `intercom-sdk-patterns` | Pagination, error handling, retry logic, search operators, multi-tenant |
 
 ### Core Workflows (S05-S08)
+
 | Skill | What It Does |
 |-------|-------------|
 | `intercom-core-workflow-a` | Contact management: create, search, update, merge leads into users |
@@ -31,6 +33,7 @@ Real Intercom API code covering contacts, conversations, messages, Help Center a
 | `intercom-debug-bundle` | Diagnostic script: auth check, rate limits, status page, latency test |
 
 ### Operations (S09-S12)
+
 | Skill | What It Does |
 |-------|-------------|
 | `intercom-rate-limits` | 429 handling, X-RateLimit headers, queue-based throttling, p-queue |
@@ -39,6 +42,7 @@ Real Intercom API code covering contacts, conversations, messages, Help Center a
 | `intercom-upgrade-migration` | SDK v5 to v6 migration guide with method mapping table |
 
 ### Pro Skills (P13-P18)
+
 | Skill | What It Does |
 |-------|-------------|
 | `intercom-ci-integration` | GitHub Actions CI with mocked unit tests and integration tests |
@@ -49,6 +53,7 @@ Real Intercom API code covering contacts, conversations, messages, Help Center a
 | `intercom-reference-architecture` | Layered architecture: client, services, webhooks, articles, sync |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | What It Does |
 |-------|-------------|
 | `intercom-multi-env-setup` | Dev/staging/prod workspace isolation with safety guards |

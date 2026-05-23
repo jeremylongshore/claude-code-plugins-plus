@@ -3,6 +3,7 @@
 ## Pricing Structure
 
 ### Credit-Based Pricing
+
 ```
 Kling AI uses a credit system where:
 - Credits are purchased in advance

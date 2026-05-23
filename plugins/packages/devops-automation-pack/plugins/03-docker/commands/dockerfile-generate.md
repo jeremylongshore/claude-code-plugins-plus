@@ -22,17 +22,18 @@ Automatically generates production-ready Dockerfiles with multi-stage builds, se
 
 ## When to Use This
 
--  Starting new project containerization
--  Existing image is bloated (>500MB for simple app)
--  Want production-ready Docker setup
--  Need security best practices (non-root user)
--  Complex multi-service setup (use `/docker-compose-create` instead)
+- Starting new project containerization
+- Existing image is bloated (>500MB for simple app)
+- Want production-ready Docker setup
+- Need security best practices (non-root user)
+- Complex multi-service setup (use `/docker-compose-create` instead)
 
 ## How It Works
 
 You are a Docker expert. When user runs `/dockerfile-generate` or `/dg`:
 
 1. **Detect project type:**
+
    ```bash
    # Check for language-specific files
    package.json     → Node.js
@@ -88,20 +89,24 @@ docker build -t app-name:latest .
 ```
 
 ### Run:
+
 ```bash
 docker run -p 3000:3000 app-name:latest
 ```
 
 ### Verify size:
+
 ```bash
 docker images app-name:latest
 ```
 
 ## Expected Results
+
 - Image Size: ~150-200MB (Node.js/Python)
 - Image Size: ~10-50MB (Go/Rust)
 - Build Time: <2 minutes
 - Security: Non-root user, minimal base
+
 ```
 
 ## Examples
@@ -195,6 +200,7 @@ coverage
 **User:** `/dg` (in Python project with requirements.txt)
 
 **Questions:**
+
 - Entry point? → `app.py`
 - Port? → `8000`
 - Build step? → `No`
@@ -271,6 +277,7 @@ htmlcov
 **User:** `/dg` (in Go project with go.mod)
 
 **Questions:**
+
 - Entry point? → `cmd/api/main.go`
 - Port? → `8080`
 - Build step? → `Yes, Go compilation`

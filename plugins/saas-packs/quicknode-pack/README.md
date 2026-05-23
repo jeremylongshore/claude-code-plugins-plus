@@ -17,6 +17,7 @@ QuickNode provides blockchain infrastructure with RPC endpoints for 77+ chains. 
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `quicknode-install-auth` | Set up QuickNode endpoint, install `@quicknode/sdk` or ethers.js |
@@ -33,6 +34,7 @@ QuickNode provides blockchain infrastructure with RPC endpoints for 77+ chains. 
 | `quicknode-upgrade-migration` | SDK version upgrades, chain migration |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `quicknode-ci-integration` | CI pipeline with Hardhat tests against QuickNode endpoints |

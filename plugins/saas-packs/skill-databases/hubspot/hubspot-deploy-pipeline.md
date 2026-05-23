@@ -10,6 +10,7 @@ hubspot-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy HubSpot integrations to production
 **Workflow:** Part of the cicd skill category for HubSpot integration.
 **Relates to:** Other hubspot skills in this pack.

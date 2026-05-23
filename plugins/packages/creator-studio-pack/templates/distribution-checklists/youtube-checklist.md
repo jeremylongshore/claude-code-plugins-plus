@@ -37,6 +37,7 @@
 - [ ] **Capitalization**: Consistent style
 
 **Title Formula Examples**:
+
 - "[How to] [Accomplish X] in [Timeframe]"
 - "[Number] [Topic] Tips That [Benefit]"
 - "I Built [Project] in [Timeframe] ([Key Feature])"
@@ -55,6 +56,7 @@
 - [ ] **Keywords**: Naturally included for SEO
 
 **Description Template**:
+
 ```
 [Hook - what you'll learn/see]
 
@@ -96,33 +98,39 @@ Discord: [link]
 ### Advanced Settings
 
 **Category**:
+
 - [ ] **Category selected**: Science & Technology (for coding), Education, etc.
 
 **Tags**:
+
 - [ ] **Primary keywords** (5-10 tags)
 - [ ] **Related terms** (5-10 tags)
 - [ ] **Your brand** tags (channel name, series name)
 - [ ] **Total tags**: 15-25 (don't spam)
 
 **Language & Captions**:
+
 - [ ] **Video language** selected
 - [ ] **Subtitles uploaded** (SRT or VTT file)
 - [ ] **Auto-generated captions** reviewed and corrected
 - [ ] **Multiple languages** (if applicable)
 
 **Recording Date & Location**:
+
 - [ ] **Recording date** added (optional)
 - [ ] **Location** added (optional, for local content)
 
 ### Visibility
 
 **Publishing Options**:
+
 - [ ] **Public**: Immediately visible to everyone
 - [ ] **Unlisted**: Only people with link can view
 - [ ] **Private**: Only you and selected users
 - [ ] **Scheduled**: Set date and time for auto-publish
 
 **Premiere** (optional):
+
 - [ ] **Premiere enabled** if desired
 - [ ] **Premiere time** scheduled
 - [ ] **Trailer added** (30-60 seconds)
@@ -188,6 +196,7 @@ Discord: [link]
 ### Social Media
 
 **Twitter/X**:
+
 - [ ] **Thread created** (5-7 tweets)
 - [ ] **Video link** in first tweet
 - [ ] **Key clips** (30 seconds) attached to tweets
@@ -196,6 +205,7 @@ Discord: [link]
 - [ ] **Timing**: Posted at optimal time for your audience
 
 **LinkedIn**:
+
 - [ ] **Article written** (500-1000 words)
 - [ ] **Video embedded** (first 2 minutes OR full video)
 - [ ] **Professional angle** emphasized
@@ -203,6 +213,7 @@ Discord: [link]
 - [ ] **Posted as article** (not just link post)
 
 **Reddit**:
+
 - [ ] **Relevant subreddits** identified (r/webdev, r/programming, etc.)
 - [ ] **Context provided** (not just link dump)
 - [ ] **Timing**: Best time for each subreddit
@@ -210,6 +221,7 @@ Discord: [link]
 - [ ] **Not spamming**: Follow 10:1 rule (1 self-promo per 10 contributions)
 
 **Discord/Slack Communities**:
+
 - [ ] **Posted in appropriate channels**
 - [ ] **Context given**: Why it's relevant
 - [ ] **Not spamming**: Follow community rules
@@ -277,15 +289,18 @@ Discord: [link]
 ### Performance Tweaks
 
 **If CTR is low (<4%)**:
+
 - [ ] **Change thumbnail** to A/B test variation
 - [ ] **Adjust title** (test different hook)
 
 **If retention is low (<40%)**:
+
 - [ ] **Analyze drop-off points** in analytics
 - [ ] **Trim intro** on future videos
 - [ ] **Improve pacing** on future videos
 
 **If views are low**:
+
 - [ ] **Promote more** on social media
 - [ ] **Add to playlist** for discoverability
 - [ ] **Cross-promote** in newer videos
@@ -326,26 +341,31 @@ Discord: [link]
 ## Metrics to Track
 
 ### Watch Time
+
 - **Goal**: High watch time = algorithm boost
 - **Target**: >50% average view duration
 - **Action**: Analyze retention graph, improve pacing
 
 ### Click-Through Rate (CTR)
+
 - **Goal**: Compelling thumbnail + title
 - **Target**: 5-10% CTR (varies by niche)
 - **Action**: A/B test thumbnails and titles
 
 ### Engagement Rate
+
 - **Goal**: Likes, comments, shares, saves
 - **Target**: >3% engagement rate
 - **Action**: Ask questions, encourage discussion
 
 ### Traffic Sources
+
 - **Monitor**: Where viewers are coming from
 - **Double down**: On best performing sources
 - **Improve**: Weak sources (e.g., suggested videos)
 
 ### Subscriber Growth
+
 - **Goal**: Net new subscribers from video
 - **Target**: 1-5% conversion (views to subscribers)
 - **Action**: Strong CTAs, consistent value
@@ -399,16 +419,19 @@ After upload, double-check in YouTube Studio:
 ## Tools & Resources
 
 **Title/Thumbnail Testing**:
+
 - TubeBuddy (browser extension)
 - VidIQ (browser extension)
 - Canva (thumbnail design)
 
 **Analytics**:
+
 - YouTube Studio (native analytics)
 - Google Search Console (search traffic)
 - Social Blade (channel growth tracking)
 
 **SEO**:
+
 - Google Trends (keyword research)
 - Ahrefs YouTube Keyword Tool
 - YT Buddy (tag suggestions)

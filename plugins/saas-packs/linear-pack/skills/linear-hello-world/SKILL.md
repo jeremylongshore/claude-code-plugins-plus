@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Hello World
 
 ## Overview
+
 Create your first issue, query teams, and explore the Linear data model using the `@linear/sdk`. Linear's API is GraphQL-based -- the SDK wraps it with typed models, lazy-loaded relations, and pagination helpers.
 
 ## Prerequisites
+
 - `@linear/sdk` installed (`npm install @linear/sdk`)
 - `LINEAR_API_KEY` environment variable set (starts with `lin_api_`)
 - Access to at least one Linear team
@@ -36,6 +38,7 @@ Create your first issue, query teams, and explore the Linear data model using th
 ## Instructions
 
 ### Step 1: Connect and Identify
+
 ```typescript
 import { LinearClient } from "@linear/sdk";
 
@@ -51,6 +54,7 @@ console.log(`Workspace: ${org.name}`);
 ```
 
 ### Step 2: List Teams
+
 Every issue in Linear belongs to a team. Teams have a short key (e.g., "ENG") used in identifiers like `ENG-123`.
 
 ```typescript
@@ -62,6 +66,7 @@ for (const team of teams.nodes) {
 ```
 
 ### Step 3: Create Your First Issue
+
 ```typescript
 const team = teams.nodes[0];
 
@@ -80,6 +85,7 @@ if (result.success) {
 ```
 
 ### Step 4: Query Issues
+
 ```typescript
 // Get recent issues from a team
 const issues = await client.issues({
@@ -98,6 +104,7 @@ for (const issue of issues.nodes) {
 ```
 
 ### Step 5: Explore Workflow States
+
 Each team has customizable workflow states organized by type: `triage`, `backlog`, `unstarted`, `started`, `completed`, `canceled`.
 
 ```typescript
@@ -109,6 +116,7 @@ for (const state of states.nodes) {
 ```
 
 ### Step 6: Fetch a Single Issue by Identifier
+
 ```typescript
 // Search for a specific issue by its human-readable identifier
 const searchResults = await client.issueSearch("ENG-1");
@@ -124,6 +132,7 @@ if (found) {
 ```
 
 ### Step 7: Raw GraphQL Query
+
 The SDK exposes the underlying GraphQL client for custom queries.
 
 ```typescript
@@ -162,6 +171,7 @@ console.log(JSON.stringify(response.data, null, 2));
 ## Examples
 
 ### Complete Hello World Script
+
 ```typescript
 import { LinearClient } from "@linear/sdk";
 
@@ -200,6 +210,7 @@ main().catch(console.error);
 ```
 
 ## Resources
+
 - [Linear SDK Documentation](https://linear.app/developers/sdk)
 - [SDK Data Fetching](https://linear.app/developers/sdk-fetching-and-modifying-data)
 - [GraphQL Schema Explorer](https://studio.apollographql.com/public/Linear-API/variant/current/schema/reference)

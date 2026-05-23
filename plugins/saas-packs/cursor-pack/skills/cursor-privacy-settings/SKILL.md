@@ -42,6 +42,7 @@ Configure Cursor's privacy controls to protect your code and data. Covers Privac
 Admin Dashboard > Privacy > "Enforce Privacy Mode for all members"
 
 When team-enforced:
+
 - Individual users cannot disable Privacy Mode
 - Client pings server every 5 minutes to verify enforcement
 - New members automatically have Privacy Mode enabled
@@ -131,6 +132,7 @@ Layer 5: BYOK + Azure      → Route through your own infrastructure
 ### What Cursor Collects
 
 With Privacy Mode ON, telemetry is limited to:
+
 - Feature usage counts (how often Chat/Composer/Tab used)
 - Error reports (crashes, not code content)
 - Performance metrics (response times)
@@ -201,6 +203,7 @@ All Cursor API communication uses TLS 1.2+. Certificate pinning is not supported
 ### HIPAA
 
 Cursor does not have a BAA (Business Associate Agreement) as of early 2026. For HIPAA-regulated code:
+
 - Enable Privacy Mode
 - Use `.cursorignore` for PHI-containing files
 - Consider BYOK through Azure with BAA

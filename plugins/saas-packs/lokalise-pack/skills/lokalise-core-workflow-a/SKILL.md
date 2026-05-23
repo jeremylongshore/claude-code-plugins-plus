@@ -109,7 +109,7 @@ lokalise2 --token "$LOKALISE_API_TOKEN" file upload \
   --poll                     # Waits for process to finish
 ```
 
-2. Create keys programmatically when keys come from code scanning, CMS exports, or CI pipelines rather than file uploads.
+1. Create keys programmatically when keys come from code scanning, CMS exports, or CI pipelines rather than file uploads.
 
 **SDK — Create keys with initial translations:**
 
@@ -165,7 +165,7 @@ const updatedKey = await client.keys().update(KEY_ID, {
 });
 ```
 
-3. Tag keys for organization. Tags let you filter keys in the Lokalise UI and API — useful for release tracking, feature flags, and workflow status.
+1. Tag keys for organization. Tags let you filter keys in the Lokalise UI and API — useful for release tracking, feature flags, and workflow status.
 
 **SDK — Add tags to existing keys (bulk):**
 
@@ -209,7 +209,7 @@ for (const k of errorKeys.items) {
 }
 ```
 
-4. Perform bulk key operations for large-scale changes.
+1. Perform bulk key operations for large-scale changes.
 
 **SDK — Bulk delete keys:**
 

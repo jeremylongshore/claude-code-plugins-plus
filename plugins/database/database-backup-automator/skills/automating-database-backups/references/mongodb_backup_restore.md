@@ -5,17 +5,20 @@
 ### mongodump (Logical Backup)
 
 **Single Database:**
+
 ```bash
 mongodump --uri="mongodb://localhost:27017" --db=mydb --out=/backup/
 ```
 
 **With Authentication:**
+
 ```bash
 mongodump --uri="mongodb://user:password@localhost:27017/mydb?authSource=admin" \
   --out=/backup/
 ```
 
 **With Compression:**
+
 ```bash
 mongodump --uri="mongodb://localhost:27017" \
   --db=mydb \
@@ -24,6 +27,7 @@ mongodump --uri="mongodb://localhost:27017" \
 ```
 
 **Single Collection:**
+
 ```bash
 mongodump --uri="mongodb://localhost:27017" \
   --db=mydb \
@@ -32,6 +36,7 @@ mongodump --uri="mongodb://localhost:27017" \
 ```
 
 **Archive Format (Single File):**
+
 ```bash
 mongodump --uri="mongodb://localhost:27017" \
   --db=mydb \
@@ -75,11 +80,13 @@ mongodump --uri="mongodb://mongos1.example.com:27017" \
 ### mongorestore
 
 **From Directory:**
+
 ```bash
 mongorestore --uri="mongodb://localhost:27017" /backup/mydb/
 ```
 
 **To Different Database:**
+
 ```bash
 mongorestore --uri="mongodb://localhost:27017" \
   --nsFrom="mydb.*" \
@@ -88,6 +95,7 @@ mongorestore --uri="mongodb://localhost:27017" \
 ```
 
 **From Archive:**
+
 ```bash
 mongorestore --uri="mongodb://localhost:27017" \
   --archive=/backup/mydb.archive \
@@ -95,6 +103,7 @@ mongorestore --uri="mongodb://localhost:27017" \
 ```
 
 **Drop Collections First:**
+
 ```bash
 mongorestore --uri="mongodb://localhost:27017" \
   --drop \
@@ -102,6 +111,7 @@ mongorestore --uri="mongodb://localhost:27017" \
 ```
 
 **Single Collection:**
+
 ```bash
 mongorestore --uri="mongodb://localhost:27017" \
   --db=mydb \
@@ -125,6 +135,7 @@ mongorestore --uri="mongodb://localhost:27017" \
 ### With Oplog
 
 **Backup with oplog:**
+
 ```bash
 mongodump --uri="mongodb://localhost:27017" \
   --oplog \
@@ -132,6 +143,7 @@ mongodump --uri="mongodb://localhost:27017" \
 ```
 
 **Restore to specific time:**
+
 ```bash
 mongorestore --uri="mongodb://localhost:27017" \
   --oplogReplay \
@@ -236,6 +248,7 @@ db.createUser({
 ## Selective Backup/Restore
 
 **Query-based backup:**
+
 ```bash
 mongodump --uri="mongodb://localhost:27017" \
   --db=mydb \
@@ -244,6 +257,7 @@ mongodump --uri="mongodb://localhost:27017" \
 ```
 
 **Exclude collections:**
+
 ```bash
 mongodump --uri="mongodb://localhost:27017" \
   --db=mydb \

@@ -36,6 +36,7 @@ Two MCP tools are available via the hosted server at `xquik.com/mcp` (not bundle
 
 - An API key from [xquik.com](https://xquik.com) (starts with `xq_`)
 - Set `XQUIK_API_KEY` environment variable or configure via OpenClaw:
+
   ```bash
   openclaw config set plugins.entries.tweetclaw.config.apiKey "$XQUIK_API_KEY"
   ```

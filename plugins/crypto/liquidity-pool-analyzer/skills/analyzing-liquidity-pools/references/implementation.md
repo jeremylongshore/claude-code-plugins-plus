@@ -3,6 +3,7 @@
 ## Detailed Output Formats
 
 ### Pool Analysis Summary
+
 ```
 ==============================================================================
   LIQUIDITY POOL ANALYZER                           2026-01-15 15:30 UTC
@@ -30,6 +31,7 @@
 ```
 
 ### Impermanent Loss Report
+
 ```
   IMPERMANENT LOSS CALCULATION
 ------------------------------------------------------------------------------
@@ -63,14 +65,18 @@ Settings in `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
 ## Advanced Comparisons
 
 ### Cross-Protocol Comparison
+
 When comparing pools across protocols, the analyzer normalizes:
+
 - Fee structures (fixed vs dynamic)
 - TVL denominated in USD
 - Volume-weighted fee APR
 - Gas costs per trade
 
 ### Fee Tier Analysis
+
 For Uniswap V3, compare fee tiers for the same pair:
+
 - 0.01% - Stablecoin pairs
 - 0.05% - Major pairs (ETH/USDC)
 - 0.30% - Standard pairs

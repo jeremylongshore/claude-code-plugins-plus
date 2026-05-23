@@ -5,6 +5,7 @@ Detailed implementation reference for the speak-debug-bundle skill.
 ## Instructions
 
 ### Step 1: Create Debug Bundle Script
+
 ```bash
 #!/bin/bash
 # speak-debug-bundle.sh
@@ -18,6 +19,7 @@ echo "Hostname: $(hostname)" >> "$BUNDLE_DIR/summary.txt"
 ```
 
 ### Step 2: Collect Environment Info
+
 ```bash
 # Environment info
 echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
@@ -37,6 +39,7 @@ echo "SPEAK_TARGET_LANGUAGE: ${SPEAK_TARGET_LANGUAGE:-[NOT SET]}" >> "$BUNDLE_DI
 ```
 
 ### Step 3: Gather SDK and Session Info
+
 ```bash
 # SDK version
 echo "--- SDK Version ---" >> "$BUNDLE_DIR/summary.txt"
@@ -63,6 +66,7 @@ grep -h "session" logs/*.log 2>/dev/null | \
 ```
 
 ### Step 4: Network Diagnostics
+
 ```bash
 # Network connectivity test
 echo "--- Network Tests ---" >> "$BUNDLE_DIR/summary.txt"
@@ -88,6 +92,7 @@ echo "" >> "$BUNDLE_DIR/summary.txt"
 ```
 
 ### Step 5: Collect Audio Diagnostics (if applicable)
+
 ```bash
 # Audio system info
 echo "--- Audio System ---" >> "$BUNDLE_DIR/summary.txt"
@@ -108,6 +113,7 @@ fi
 ```
 
 ### Step 6: Configuration Snapshot
+
 ```bash
 # Configuration (redacted - secrets masked)
 echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
@@ -126,6 +132,7 @@ fi
 ```
 
 ### Step 7: Package Bundle
+
 ```bash
 # Create final archive
 tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
@@ -142,7 +149,6 @@ echo "Size: $(du -h "$BUNDLE_DIR.tar.gz" | cut -f1)"
 echo ""
 echo "IMPORTANT: Review bundle before sharing to ensure no sensitive data leaked"
 ```
-
 
 ## Complete Script
 
@@ -201,8 +207,8 @@ rm -rf "$BUNDLE_DIR"
 echo "Bundle created: $BUNDLE_DIR.tar.gz"
 ```
 
-
 ## Sensitive Data Handling
+
 | Category | Handling |
 |----------|----------|
 | API Keys | NEVER include |
@@ -214,17 +220,18 @@ echo "Bundle created: $BUNDLE_DIR.tar.gz"
 | SDK versions | Safe to include |
 
 **ALWAYS REDACT:**
+
 - API keys and tokens
 - Passwords and secrets
 - PII (emails, names, IDs)
 - Audio containing speech
 
 **Safe to Include:**
+
 - Error messages and codes
 - Stack traces (with paths redacted)
 - SDK/runtime versions
 - Network response codes
-
 
 ## Submit to Support
 
@@ -236,4 +243,3 @@ echo "Bundle created: $BUNDLE_DIR.tar.gz"
    - Steps to reproduce
    - Expected vs actual behavior
    - Request ID (if available)
-

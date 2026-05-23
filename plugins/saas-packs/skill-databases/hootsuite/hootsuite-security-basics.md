@@ -10,6 +10,7 @@ hootsuite-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Hootsuite security best practices
 **Workflow:** Part of the operations skill category for Hootsuite integration.
 **Relates to:** Other hootsuite skills in this pack.

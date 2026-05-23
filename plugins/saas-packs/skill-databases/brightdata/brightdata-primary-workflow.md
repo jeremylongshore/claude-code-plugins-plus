@@ -10,6 +10,7 @@ brightdata-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Bright Data primary workflow
 **Workflow:** Part of the onboarding skill category for Bright Data integration.
 **Relates to:** Other brightdata skills in this pack.

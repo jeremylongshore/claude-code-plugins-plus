@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Data Handling
 
 ## Overview
+
 Manage the Langfuse data lifecycle: export traces and scores via the API, configure retention policies, handle GDPR data subject requests, anonymize data for analytics, and maintain audit trails.
 
 ## Prerequisites
+
 - `@langfuse/client` installed
 - Langfuse API keys with appropriate permissions
 - Understanding of your compliance requirements (GDPR, SOC2, HIPAA)
@@ -131,6 +133,7 @@ async function exportScores(fromDate: string, outputFile: string) {
 ### Step 3: Data Retention Configuration
 
 **Self-hosted: Set retention via environment variable:**
+
 ```yaml
 # docker-compose.yml
 services:
@@ -140,6 +143,7 @@ services:
 ```
 
 **Cloud: Programmatic cleanup of old data:**
+
 ```typescript
 async function enforceRetention(maxAgeDays: number) {
   const cutoff = new Date(Date.now() - maxAgeDays * 86400000).toISOString();
@@ -259,6 +263,7 @@ async function exportAnonymized(fromDate: string, outputFile: string) {
 | Rate limited during export | Too many API calls | Add 200ms delay between pages |
 
 ## Resources
+
 - [Langfuse Data Security](https://langfuse.com/docs/data-security-privacy)
 - [Public API Reference](https://langfuse.com/docs/api)
 - [API Reference (OpenAPI)](https://api.reference.langfuse.com/)

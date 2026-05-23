@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Install & Auth
 
 ## Overview
+
 Install the official Exa SDK and configure API key authentication. Exa is a neural search API at `api.exa.ai` that retrieves web content using semantic similarity. Authentication uses the `x-api-key` header. The SDK is `exa-js` on npm or `exa-py` on PyPI.
 
 ## Prerequisites
+
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, yarn, or pip)
 - Exa account at [dashboard.exa.ai](https://dashboard.exa.ai)
@@ -39,6 +41,7 @@ Install the official Exa SDK and configure API key authentication. Exa is a neur
 ### Step 1: Install the SDK
 
 **Node.js (exa-js)**
+
 ```bash
 set -euo pipefail
 npm install exa-js
@@ -47,6 +50,7 @@ pnpm add exa-js
 ```
 
 **Python (exa-py)**
+
 ```bash
 pip install exa-py
 ```
@@ -62,6 +66,7 @@ echo 'EXA_API_KEY=your-api-key-here' >> .env
 ```
 
 Add to `.gitignore`:
+
 ```
 .env
 .env.local
@@ -71,6 +76,7 @@ Add to `.gitignore`:
 ### Step 3: Initialize the Client
 
 **TypeScript**
+
 ```typescript
 import Exa from "exa-js";
 
@@ -78,6 +84,7 @@ const exa = new Exa(process.env.EXA_API_KEY);
 ```
 
 **Python**
+
 ```python
 from exa_py import Exa
 import os
@@ -86,6 +93,7 @@ exa = Exa(api_key=os.environ["EXA_API_KEY"])
 ```
 
 ### Step 4: Verify Connection
+
 ```typescript
 import Exa from "exa-js";
 
@@ -111,12 +119,14 @@ verifyConnection();
 ```
 
 ## Output
+
 - `exa-js` or `exa-py` installed in project dependencies
 - `EXA_API_KEY` environment variable configured
 - `.env` added to `.gitignore`
 - Successful search result confirming connectivity
 
 ## Error Handling
+
 | Error | HTTP Code | Cause | Solution |
 |-------|-----------|-------|----------|
 | `INVALID_API_KEY` | 401 | Missing or invalid API key | Verify key at dashboard.exa.ai |
@@ -128,6 +138,7 @@ verifyConnection();
 ## Examples
 
 ### With dotenv (Node.js)
+
 ```typescript
 import "dotenv/config";
 import Exa from "exa-js";
@@ -136,6 +147,7 @@ const exa = new Exa(process.env.EXA_API_KEY);
 ```
 
 ### With Validation
+
 ```typescript
 function createExaClient(): Exa {
   const apiKey = process.env.EXA_API_KEY;
@@ -149,10 +161,12 @@ function createExaClient(): Exa {
 ```
 
 ## Resources
+
 - [Exa Dashboard](https://dashboard.exa.ai)
 - [Exa Getting Started](https://docs.exa.ai/reference/getting-started)
 - [exa-js on npm](https://www.npmjs.com/package/exa-js)
 - [exa-py on PyPI](https://pypi.org/project/exa-py/)
 
 ## Next Steps
+
 After successful auth, proceed to `exa-hello-world` for your first search.

@@ -5,6 +5,7 @@ Detailed implementation reference for the lokalise-prod-checklist skill.
 ## Instructions
 
 ### Step 1: Pre-Deployment Configuration
+
 - [ ] Production API token stored in secure vault
 - [ ] Token has appropriate permissions (read-only if possible for downloads)
 - [ ] Environment variables set in deployment platform
@@ -12,6 +13,7 @@ Detailed implementation reference for the lokalise-prod-checklist skill.
 - [ ] Webhook secrets stored securely
 
 ### Step 2: Code Quality Verification
+
 - [ ] All tests passing (`npm test`)
 - [ ] No hardcoded API tokens or secrets
 - [ ] Error handling covers all Lokalise error types (401, 403, 404, 429, 5xx)
@@ -20,6 +22,7 @@ Detailed implementation reference for the lokalise-prod-checklist skill.
 - [ ] TypeScript types are up to date
 
 ### Step 3: Translation Quality
+
 - [ ] All base language strings present
 - [ ] Critical languages fully translated
 - [ ] No missing translations for essential UI
@@ -27,6 +30,7 @@ Detailed implementation reference for the lokalise-prod-checklist skill.
 - [ ] No HTML/script injection in translations
 
 ### Step 4: Infrastructure Setup
+
 - [ ] Health check endpoint includes Lokalise connectivity
 - [ ] Monitoring/alerting configured for API errors
 - [ ] Circuit breaker pattern implemented
@@ -34,12 +38,14 @@ Detailed implementation reference for the lokalise-prod-checklist skill.
 - [ ] CDN caching for downloaded translations (if applicable)
 
 ### Step 5: Documentation Requirements
+
 - [ ] Incident runbook created
 - [ ] Token rotation procedure documented
 - [ ] Rollback procedure documented
 - [ ] On-call escalation path defined
 
 ### Step 6: Deploy with Verification
+
 ```bash
 #!/bin/bash
 # deploy-with-verification.sh
@@ -87,10 +93,10 @@ fi
 echo "=== Deployment Complete ==="
 ```
 
-
 ## Detailed Examples
 
 ### Health Check Implementation
+
 ```typescript
 interface HealthStatus {
   status: "healthy" | "degraded" | "unhealthy";
@@ -140,6 +146,7 @@ app.get("/health", async (req, res) => {
 ```
 
 ### Graceful Degradation
+
 ```typescript
 import en from "./locales/en.json";  // Bundled fallback
 
@@ -157,6 +164,7 @@ async function getTranslations(locale: string): Promise<Record<string, string>> 
 ```
 
 ### Rollback Procedure
+
 ```bash
 #!/bin/bash
 # rollback-translations.sh
@@ -179,6 +187,7 @@ npm run deploy
 ```
 
 ### Pre-Production Validation Script
+
 ```typescript
 async function validateProductionReadiness(): Promise<{
   ready: boolean;
@@ -228,4 +237,3 @@ async function validateProductionReadiness(): Promise<{
   };
 }
 ```
-

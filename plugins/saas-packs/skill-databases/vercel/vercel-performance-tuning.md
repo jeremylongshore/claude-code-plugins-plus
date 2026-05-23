@@ -10,6 +10,7 @@ vercel-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Vercel API performance with caching, batching, connection pooling, and pagination strategies.
 **Workflow:** Applied after basic integration works to optimize for production scale.
 **Relates to:** Follows vercel-webhooks-events; complements vercel-cost-tuning for cost optimization

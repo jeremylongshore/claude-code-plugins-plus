@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code
 # Figma Hello World
 
 ## Overview
+
 Make your first Figma REST API call. Fetch a file's metadata and document tree, then inspect the node structure that represents every layer and object in a Figma design.
 
 ## Prerequisites
+
 - Completed `figma-install-auth` setup
 - A Figma file key (from the URL: `figma.com/design/<FILE_KEY>/...`)
 - `FIGMA_PAT` environment variable set
@@ -34,6 +36,7 @@ Make your first Figma REST API call. Fetch a file's metadata and document tree, 
 ## Instructions
 
 ### Step 1: Fetch a File
+
 ```bash
 # Get the full document JSON for a file
 curl -s -H "X-Figma-Token: ${FIGMA_PAT}" \
@@ -46,6 +49,7 @@ curl -s -H "X-Figma-Token: ${FIGMA_PAT}" \
 ```
 
 Expected output:
+
 ```json
 {
   "name": "My Design File",
@@ -56,6 +60,7 @@ Expected output:
 ```
 
 ### Step 2: Understand the Node Tree
+
 Every Figma file is a tree of typed nodes:
 
 ```
@@ -74,6 +79,7 @@ DOCUMENT (root)
 Key node types: `DOCUMENT`, `CANVAS`, `FRAME`, `GROUP`, `RECTANGLE`, `ELLIPSE`, `TEXT`, `VECTOR`, `COMPONENT`, `COMPONENT_SET`, `INSTANCE`, `LINE`, `SECTION`, `BOOLEAN_OPERATION`.
 
 ### Step 3: TypeScript Hello World
+
 ```typescript
 // hello-figma.ts
 const PAT = process.env.FIGMA_PAT!;
@@ -126,6 +132,7 @@ main().catch(console.error);
 ```
 
 ### Step 4: Fetch Specific Nodes
+
 ```typescript
 // Fetch only specific nodes by ID (faster for large files)
 async function fetchNodes(fileKey: string, nodeIds: string[]) {
@@ -144,12 +151,14 @@ const nodes = await fetchNodes(FILE_KEY, ['0:1', '2:3']);
 ```
 
 ## Output
+
 - File metadata (name, version, last modified)
 - Page names listed from the document tree
 - Top-level frames with node IDs and types
 - Component and style counts
 
 ## Error Handling
+
 | Error | Status | Cause | Solution |
 |-------|--------|-------|----------|
 | `Not found` | 404 | Invalid file key | Verify the key from the Figma URL |
@@ -160,6 +169,7 @@ const nodes = await fetchNodes(FILE_KEY, ['0:1', '2:3']);
 ## Examples
 
 ### Quick Node Counter
+
 ```bash
 # Count total nodes in a file
 curl -s -H "X-Figma-Token: ${FIGMA_PAT}" \
@@ -168,6 +178,7 @@ curl -s -H "X-Figma-Token: ${FIGMA_PAT}" \
 ```
 
 ### Get File Thumbnail
+
 ```bash
 curl -s -H "X-Figma-Token: ${FIGMA_PAT}" \
   "https://api.figma.com/v1/files/${FIGMA_FILE_KEY}" \
@@ -175,9 +186,11 @@ curl -s -H "X-Figma-Token: ${FIGMA_PAT}" \
 ```
 
 ## Resources
+
 - [Figma REST API Introduction](https://developers.figma.com/docs/rest-api/)
 - [File Endpoints Reference](https://developers.figma.com/docs/rest-api/file-endpoints/)
 - [Node Types Reference](https://developers.figma.com/docs/plugins/api/nodes/)
 
 ## Next Steps
+
 Proceed to `figma-local-dev-loop` for setting up a development workflow.

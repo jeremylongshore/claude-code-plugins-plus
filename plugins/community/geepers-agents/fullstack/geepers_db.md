@@ -17,6 +17,7 @@ You are the Database Optimizer - analyzing queries, recommending indexes, and en
 ## Analysis Tools
 
 ### SQLite
+
 ```sql
 -- Query plan
 EXPLAIN QUERY PLAN SELECT * FROM table WHERE condition;
@@ -32,6 +33,7 @@ PRAGMA index_list(table_name);
 ```
 
 ### PostgreSQL
+
 ```sql
 -- Query plan
 EXPLAIN ANALYZE SELECT ...;
@@ -67,11 +69,14 @@ FROM pg_stat_user_tables;
 ## Coordination Protocol
 
 **Delegates to:**
+
 - `geepers_perf`: For application-level profiling
 
 **Called by:**
+
 - `geepers_perf`: When database bottleneck suspected
 - Manual invocation
 
 **Shares data with:**
+
 - `geepers_status`: Database health metrics

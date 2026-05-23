@@ -19,8 +19,8 @@ compatibility: Designed for Claude Code
 # Migrate from OpenAI to Anthropic
 
 ## Overview
-Migrate from OpenAI/GPT to Anthropic/Claude. Covers the complete API mapping (endpoints, models, response shapes), SDK swap with before/after code, five key differences (max_tokens required, system as top-level param, alternating messages, response path, streaming events), and tool use migration.
 
+Migrate from OpenAI/GPT to Anthropic/Claude. Covers the complete API mapping (endpoints, models, response shapes), SDK swap with before/after code, five key differences (max_tokens required, system as top-level param, alternating messages, response path, streaming events), and tool use migration.
 
 ## API Mapping
 
@@ -39,6 +39,7 @@ Migrate from OpenAI/GPT to Anthropic/Claude. Covers the complete API mapping (en
 ## Instructions
 
 ### Step 1: Before (OpenAI)
+
 ```typescript
 import OpenAI from 'openai';
 const openai = new OpenAI();
@@ -54,6 +55,7 @@ console.log(response.choices[0].message.content);
 ```
 
 ### Step 2: After (Anthropic)
+
 ```typescript
 import Anthropic from '@claude-ai/sdk';
 const anthropic = new Anthropic();
@@ -70,6 +72,7 @@ console.log(response.content[0].text);
 ```
 
 ## Key Differences
+
 1. **`max_tokens` is required** — OpenAI defaults it, Anthropic requires it
 2. **`system` is a top-level param** — not a message in the array
 3. **First message must be `user`** — can't start with assistant
@@ -78,6 +81,7 @@ console.log(response.content[0].text);
 6. **Streaming events** — different event types and structure
 
 ## Tool Use Migration
+
 ```typescript
 // OpenAI tool definition
 { type: 'function', function: { name: 'get_weather', parameters: { ... } } }
@@ -87,6 +91,7 @@ console.log(response.content[0].text);
 ```
 
 ## Grep & Replace
+
 ```bash
 # Find all OpenAI imports
 grep -rn "from 'openai'" --include="*.ts" .
@@ -98,6 +103,7 @@ grep -rn "message.content" --include="*.ts" .  # May need updating
 ```
 
 ## Output
+
 - All `openai` imports replaced with `@claude-ai/sdk`
 - Response access patterns updated (`choices[0].message.content` → `content[0].text`)
 - System prompts moved from messages array to top-level `system` parameter
@@ -105,21 +111,26 @@ grep -rn "message.content" --include="*.ts" .  # May need updating
 - Tool definitions restructured to Anthropic format
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | API Error | Check error type and status code | See `clade-common-errors` |
 
 ## Examples
+
 See API Mapping table, Before/After SDK code, Key Differences list, Tool Use Migration, and Grep & Replace commands above.
 
 ## Resources
+
 - [Anthropic Messages API](https://docs.anthropic.com/en/api/messages)
 - [Migration Guide](https://docs.anthropic.com/en/docs/about-claude/models)
 
 ## Next Steps
+
 See `clade-sdk-patterns` for production Anthropic SDK patterns.
 
 ## Prerequisites
+
 - Existing OpenAI integration to migrate
 - Access to codebase with search capability
 - Test suite for comparing outputs between providers

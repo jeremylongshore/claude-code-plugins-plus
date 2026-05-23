@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # CoreWeave Webhooks & Events
 
 ## Overview
+
 CoreWeave emits Kubernetes-native events and custom status callbacks for GPU workload lifecycle management. Monitor instance readiness, job completion, volume attachment, and node health to build automated scaling, alerting, and recovery pipelines for GPU-accelerated inference and training workloads.
 
 ## Webhook Registration
+
 ```typescript
 const response = await fetch("https://api.coreweave.com/v1/webhooks", {
   method: "POST",
@@ -45,6 +47,7 @@ const response = await fetch("https://api.coreweave.com/v1/webhooks", {
 ```
 
 ## Signature Verification
+
 ```typescript
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
@@ -63,6 +66,7 @@ function verifyCoreWeaveSignature(req: Request, res: Response, next: NextFunctio
 ```
 
 ## Event Handler
+
 ```typescript
 import express from "express";
 const app = express();
@@ -85,6 +89,7 @@ app.post("/webhooks/coreweave", express.raw({ type: "application/json" }), verif
 ```
 
 ## Event Types
+
 | Event | Payload Fields | Use Case |
 |-------|---------------|----------|
 | `instance.ready` | `instance_id`, `gpu_type`, `ip_address` | Register inference endpoint |
@@ -94,6 +99,7 @@ app.post("/webhooks/coreweave", express.raw({ type: "application/json" }), verif
 | `instance.terminated` | `instance_id`, `exit_code`, `gpu_type` | Clean up resources and alert |
 
 ## Retry & Idempotency
+
 ```typescript
 const processed = new Set<string>();
 
@@ -109,6 +115,7 @@ async function handleIdempotent(event: { id: string; type: string; data: any }) 
 ```
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | Signature mismatch | Clock skew between clusters | Validate timestamp within 5-minute window |
@@ -117,7 +124,9 @@ async function handleIdempotent(event: { id: string; type: string; data: any }) 
 | Missing `output_path` | Job failed before writing | Check `exit_code` before collecting artifacts |
 
 ## Resources
+
 - [CoreWeave Kubernetes Docs](https://docs.coreweave.com/coreweave-kubernetes/)
 
 ## Next Steps
+
 See `coreweave-security-basics`.

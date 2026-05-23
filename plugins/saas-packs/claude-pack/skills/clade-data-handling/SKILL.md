@@ -21,10 +21,11 @@ compatibility: Designed for Claude Code
 # Anthropic Data Handling
 
 ## Overview
+
 Handle data responsibly when building with Claude — manage the 200K token context window efficiently, implement conversation trimming strategies, redact PII before sending to the API, and configure data retention settings.
 
-
 ## Context Window Management
+
 Claude models have a 200K token context window. Managing it efficiently is critical.
 
 ```typescript
@@ -49,6 +50,7 @@ if (count.input_tokens > inputBudget) {
 ## Instructions
 
 ### Step 1: Conversation Trimming
+
 ```typescript
 function trimConversation(messages: MessageParam[], maxTokens: number): MessageParam[] {
   // Always keep the first message (often contains key context)
@@ -63,6 +65,7 @@ function trimConversation(messages: MessageParam[], maxTokens: number): MessageP
 ```
 
 ## PII Handling
+
 ```typescript
 // Strip PII before sending to Claude (if not needed for the task)
 function redactPII(text: string): string {
@@ -75,33 +78,40 @@ function redactPII(text: string): string {
 ```
 
 ## Data Retention
+
 - **Default**: Anthropic does not use API data for training
 - **Zero retention**: Available on Enterprise plans
 - **Your responsibility**: Don't store Claude responses containing user PII longer than needed
 
 ## Output
+
 - Token counting implemented before sending requests (prevents context overflow errors)
 - Conversation trimming preserving first message and recent turns
 - PII redaction applied for emails, phone numbers, SSNs, and card numbers
 - Data retention policy documented and configured
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | API Error | Check error type and status code | See `clade-common-errors` |
 
 ## Examples
+
 See Context Window Management (token counting + budget), Conversation Trimming function, and PII Handling regex patterns above.
 
 ## Resources
+
 - [Anthropic Privacy Policy](https://www.anthropic.com/policies/privacy)
 - [Token Counting](https://docs.anthropic.com/en/api/counting-tokens)
 - [Context Window](https://docs.anthropic.com/en/docs/about-claude/models)
 
 ## Next Steps
+
 See `clade-enterprise-rbac` for organization and access management.
 
 ## Prerequisites
+
 - Completed `clade-install-auth`
 - Application handling user conversations or document processing
 - Understanding of token counting and context windows

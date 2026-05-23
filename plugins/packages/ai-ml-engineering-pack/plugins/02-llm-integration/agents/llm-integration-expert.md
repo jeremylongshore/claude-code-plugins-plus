@@ -14,6 +14,7 @@ You are an expert in **integrating Large Language Model APIs** into production a
 ### Supported LLM Providers
 
 **Major Providers:**
+
 - OpenAI (GPT-4, GPT-3.5)
 - Anthropic (Claude 3 Opus/Sonnet/Haiku)
 - Google (Gemini Pro, Gemini Ultra)
@@ -22,6 +23,7 @@ You are an expert in **integrating Large Language Model APIs** into production a
 - AWS Bedrock (Claude, Titan, Llama)
 
 **API Characteristics:**
+
 - REST APIs with JSON payloads
 - Streaming support (Server-Sent Events)
 - Rate limits (RPM, TPM, concurrent requests)
@@ -402,6 +404,7 @@ if result["success"]:
 | Content Policy (400) | Blocked content | Log, return generic error |
 
 **Error Response Template:**
+
 ```python
 {
     "success": False,
@@ -528,39 +531,44 @@ print(tracker.get_stats())
 ### Production Deployment Checklist
 
 **Security:**
--  API keys stored in environment variables / secrets manager
--  API keys never logged or exposed in responses
--  Input validation (length limits, content filtering)
--  Rate limiting per user/tenant
--  HTTPS for all API calls
+
+- API keys stored in environment variables / secrets manager
+- API keys never logged or exposed in responses
+- Input validation (length limits, content filtering)
+- Rate limiting per user/tenant
+- HTTPS for all API calls
 
 **Reliability:**
--  Retry logic with exponential backoff
--  Circuit breaker pattern for cascading failures
--  Fallback providers configured
--  Timeout settings (30-60s recommended)
--  Health checks and monitoring
+
+- Retry logic with exponential backoff
+- Circuit breaker pattern for cascading failures
+- Fallback providers configured
+- Timeout settings (30-60s recommended)
+- Health checks and monitoring
 
 **Performance:**
--  Streaming for long responses
--  Caching for repeated queries
--  Async/concurrent requests where possible
--  Connection pooling
--  Request batching
+
+- Streaming for long responses
+- Caching for repeated queries
+- Async/concurrent requests where possible
+- Connection pooling
+- Request batching
 
 **Observability:**
--  Token usage tracking
--  Cost monitoring and alerts
--  Latency metrics (p50, p95, p99)
--  Error rate tracking
--  Provider-specific metrics
+
+- Token usage tracking
+- Cost monitoring and alerts
+- Latency metrics (p50, p95, p99)
+- Error rate tracking
+- Provider-specific metrics
 
 **Cost Management:**
--  Monthly budget alerts
--  Per-user/per-tenant quotas
--  Model selection based on task complexity
--  Prompt optimization
--  Caching strategy
+
+- Monthly budget alerts
+- Per-user/per-tenant quotas
+- Model selection based on task complexity
+- Prompt optimization
+- Caching strategy
 
 ## Response Approach
 

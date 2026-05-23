@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Obsidian Common Errors
 
 ## Overview
+
 Diagnostic guide for the six most frequent Obsidian plugin development errors, with root causes and copy-paste fixes.
 
 ## Prerequisites
+
 - Obsidian plugin development environment set up
 - Access to Developer Console (Ctrl/Cmd+Shift+I)
 - Plugin source code access
@@ -57,6 +59,7 @@ async onload() {
 ```
 
 For commands that need workspace access later (not at load time), guard with a null check:
+
 ```typescript
 this.addCommand({
   id: 'my-command',
@@ -80,6 +83,7 @@ this.addCommand({
 This error appears in the console when Obsidian cannot parse your built `main.js` or your `manifest.json` is invalid.
 
 **Check 1: Build output exists and compiles cleanly**
+
 ```bash
 set -euo pipefail
 npm run build 2>&1
@@ -88,6 +92,7 @@ ls -la main.js  # Must exist in plugin root
 ```
 
 **Check 2: manifest.json has all required fields**
+
 ```json
 {
   "id": "my-plugin",
@@ -103,6 +108,7 @@ ls -la main.js  # Must exist in plugin root
 Missing `id`, `name`, `version`, or `minAppVersion` causes a silent load failure. The `id` must match the folder name under `.obsidian/plugins/`.
 
 **Check 3: Default export**
+
 ```typescript
 // BROKEN: named export
 export class MyPlugin extends Plugin { ... }
@@ -122,6 +128,7 @@ ls -la styles.css manifest.json main.js
 ```
 
 If you use a CSS preprocessor, ensure the build outputs to `./styles.css`:
+
 ```json
 {
   "scripts": {
@@ -163,6 +170,7 @@ async onload() {
 ```
 
 If a command should only be available when a markdown file is open, use `editorCallback` instead of `callback` — Obsidian automatically hides it when no editor is active:
+
 ```typescript
 this.addCommand({
   id: 'editor-only',
@@ -203,6 +211,7 @@ async readConfig(): Promise<MyConfig> {
 ```
 
 For vault files (TFile objects), use `getAbstractFileByPath`:
+
 ```typescript
 const file = this.app.vault.getAbstractFileByPath('notes/target.md');
 if (file instanceof TFile) {
@@ -228,6 +237,7 @@ await this.saveData(this.settings);
 ```
 
 In settings tabs, save on every change:
+
 ```typescript
 new Setting(containerEl)
   .setName('Theme')
@@ -242,6 +252,7 @@ new Setting(containerEl)
 ```
 
 Load settings with defaults to prevent undefined fields after plugin updates:
+
 ```typescript
 async loadSettings() {
   // loadData() returns null on first run — Object.assign handles this safely
@@ -252,11 +263,13 @@ async loadSettings() {
 `Object.assign` merges saved data over defaults, so new fields added in later versions get their default value instead of `undefined`.
 
 ## Output
+
 - Identified error matched to one of the six categories
 - Root cause explanation
 - Working code fix applied to plugin source
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `TypeError: Cannot read properties of null` | Workspace not ready | Use `onLayoutReady` or null-check |
@@ -269,7 +282,9 @@ async loadSettings() {
 ## Examples
 
 ### Quick Diagnostic Checklist
+
 When a plugin fails to load, check these in order:
+
 1. Open Developer Console (Ctrl/Cmd+Shift+I) and look for red errors
 2. Verify `main.js`, `manifest.json`, and `styles.css` exist in plugin folder
 3. Confirm `manifest.json` has `id`, `name`, `version`, `minAppVersion`
@@ -277,6 +292,7 @@ When a plugin fails to load, check these in order:
 5. Rebuild with `npm run build` and reload Obsidian (Ctrl/Cmd+R)
 
 ### Debug Logging Pattern
+
 ```typescript
 // Add to your plugin class for temporary debugging
 private debug(msg: string, ...args: any[]) {
@@ -287,9 +303,11 @@ private debug(msg: string, ...args: any[]) {
 ```
 
 ## Resources
+
 - [Obsidian Developer Docs](https://docs.obsidian.md/Plugins)
 - [Obsidian Forum - Developers](https://forum.obsidian.md/c/developers/14)
 - [Obsidian Plugin Guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines)
 
 ## Next Steps
+
 For comprehensive debugging workflows, see `obsidian-debug-bundle`.

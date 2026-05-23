@@ -10,6 +10,7 @@ hubspot-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect HubSpot debug evidence for support
 **Workflow:** Part of the operations skill category for HubSpot integration.
 **Relates to:** Other hubspot skills in this pack.

@@ -10,6 +10,7 @@ figma-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Figma security best practices
 **Workflow:** Part of the operations skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

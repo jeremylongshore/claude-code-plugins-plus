@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Cost Tuning
 
 ## Overview
+
 Optimize Foundry compute and API costs through incremental transforms, right-sized Spark profiles, efficient pagination, and usage monitoring.
 
 ## Prerequisites
+
 - Active Foundry enrollment with build history
 - Access to Foundry resource usage metrics
 - Understanding of transform build patterns
@@ -37,6 +39,7 @@ Optimize Foundry compute and API costs through incremental transforms, right-siz
 ## Instructions
 
 ### Step 1: Cost Drivers in Foundry
+
 | Cost Category | Driver | Optimization |
 |---------------|--------|-------------|
 | Compute | Full rebuilds of large transforms | Use `@incremental()` |
@@ -46,6 +49,7 @@ Optimize Foundry compute and API costs through incremental transforms, right-siz
 | API | Small page sizes | Use max page_size (500) |
 
 ### Step 2: Convert Full Rebuilds to Incremental
+
 ```python
 from transforms.api import transform_df, Input, Output, incremental
 
@@ -62,6 +66,7 @@ def cheap(data):
 ```
 
 ### Step 3: Right-Size Spark Profiles
+
 ```python
 from transforms.api import configure
 
@@ -87,6 +92,7 @@ def large_job(data):
 ```
 
 ### Step 4: Replace Polling with Webhooks
+
 ```python
 # EXPENSIVE: Polling every 30 seconds
 import time
@@ -103,6 +109,7 @@ while True:
 ```
 
 ### Step 5: Monitor Usage
+
 ```python
 def log_api_usage(response):
     """Log rate limit headers to track usage patterns."""
@@ -112,12 +119,14 @@ def log_api_usage(response):
 ```
 
 ## Output
+
 - Incremental transforms reducing rebuild compute by 90%+
 - Right-sized Spark profiles matching actual data volumes
 - Webhook-driven architecture eliminating polling costs
 - Usage monitoring for ongoing optimization
 
 ## Error Handling
+
 | Optimization | Risk | Mitigation |
 |-------------|------|------------|
 | Incremental | Missed data on schema change | Schedule periodic full rebuild |
@@ -126,9 +135,11 @@ def log_api_usage(response):
 | Webhook-only | Missed events | Periodic reconciliation job |
 
 ## Resources
+
 - [Incremental Transforms](https://www.palantir.com/docs/foundry/transforms-python/transforms-pipelines)
 - [Transform Polars](https://www.palantir.com/docs/foundry/transforms-python/lightweight-api-evolution)
 - [@configure Profiles](https://www.palantir.com/docs/foundry/api-reference/transforms-python-library/api-configure)
 
 ## Next Steps
+
 For reference architecture, see `palantir-reference-architecture`.

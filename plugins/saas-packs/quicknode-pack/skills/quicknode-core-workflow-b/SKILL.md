@@ -25,15 +25,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # QuickNode Core Workflow B — NFT & Token APIs
 
 ## Overview
+
 Use QuickNode's NFT and Token APIs to fetch metadata, check balances, and track transfer history. These are QuickNode-specific add-on APIs beyond standard EVM RPC.
 
 ## Prerequisites
+
 - Completed `quicknode-core-workflow-a`
 - Token and NFT add-ons enabled on your QuickNode endpoint
 
 ## Instructions
 
 ### Step 1: Get Token Balances (QuickNode SDK)
+
 ```typescript
 import { Core } from '@quicknode/sdk';
 
@@ -50,6 +53,7 @@ for (const token of balances.result) {
 ```
 
 ### Step 2: Get NFT Metadata
+
 ```typescript
 const nfts = await core.client.request({
   method: 'qn_fetchNFTs',
@@ -67,6 +71,7 @@ for (const nft of nfts.result.assets) {
 ```
 
 ### Step 3: Track ERC-20 Transfers
+
 ```typescript
 const transfers = await core.client.request({
   method: 'qn_getWalletTokenTransactions',
@@ -83,6 +88,7 @@ for (const tx of transfers.result.transfers) {
 ```
 
 ### Step 4: Standard ERC-20 Balance (No Add-on Required)
+
 ```typescript
 import { ethers } from 'ethers';
 
@@ -99,12 +105,14 @@ console.log(`${symbol} balance: ${ethers.formatUnits(balance, decimals)}`);
 ```
 
 ## Output
+
 - ERC-20 token balances for any wallet
 - NFT metadata with images and attributes
 - Transfer history for token tracking
 - Direct contract reads for standard operations
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Method not found: qn_*` | Add-on not enabled | Enable in QuickNode Dashboard |
@@ -112,9 +120,11 @@ console.log(`${symbol} balance: ${ethers.formatUnits(balance, decimals)}`);
 | `call revert` on balanceOf | Wrong contract address | Verify ERC-20 contract |
 
 ## Resources
+
 - [QuickNode Token API](https://www.quicknode.com/docs/ethereum)
 - [QuickNode NFT API](https://www.quicknode.com/docs/ethereum)
 - [ERC-20 Token Guide](https://www.quicknode.com/guides/ethereum-development/transactions/how-to-send-erc20-tokens-using-qn-sdk)
 
 ## Next Steps
+
 Handle errors: `quicknode-common-errors`

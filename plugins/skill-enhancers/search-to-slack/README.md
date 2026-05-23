@@ -7,6 +7,7 @@
 ## 🎯 Planned Features
 
 ### Example Usage
+
 ```bash
 claude: "research AI news this week and post to #engineering"
 
@@ -16,6 +17,7 @@ claude: "research AI news this week and post to #engineering"
 ```
 
 ### Capabilities
+
 - 📝 Formatted digest with key findings
 - 🔗 Source links preserved
 - 📊 Summary statistics
@@ -28,6 +30,7 @@ claude: "research AI news this week and post to #engineering"
 This plugin will be available to Pro tier sponsors ($19/month):
 
 **Pro Benefits:**
+
 - ✅ Early access to all Skill Enhancers
 - ✅ Priority support (24-hour response)
 - ✅ Feature request priority

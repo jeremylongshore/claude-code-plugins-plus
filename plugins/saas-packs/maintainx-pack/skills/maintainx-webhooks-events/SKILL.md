@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Webhooks & Events
 
 ## Overview
+
 Build real-time integrations with MaintainX using webhooks for work order updates, asset changes, and maintenance notifications. MaintainX fires webhook events when key resources change.
 
 ## Prerequisites
+
 - MaintainX account with API access
 - HTTPS endpoint accessible from the internet (ngrok for local dev)
 - `MAINTAINX_API_KEY` environment variable configured
@@ -203,6 +205,7 @@ curl -X DELETE https://api.getmaintainx.com/v1/webhooks/456 \
 ```
 
 ## Output
+
 - Webhook endpoint with HMAC signature verification
 - Event router dispatching to type-specific handlers
 - Idempotency guard preventing duplicate processing
@@ -210,6 +213,7 @@ curl -X DELETE https://api.getmaintainx.com/v1/webhooks/456 \
 - Webhook registration and management via REST API
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | 401 on webhook registration | Invalid API key | Verify `MAINTAINX_API_KEY` |
@@ -218,11 +222,13 @@ curl -X DELETE https://api.getmaintainx.com/v1/webhooks/456 \
 | Signature mismatch | Wrong secret or body mutation | Verify raw body is used for HMAC, check secret value |
 
 ## Resources
+
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [ngrok Documentation](https://ngrok.com/docs)
 - [Webhook Security Best Practices](https://hookdeck.com/webhooks/guides/webhook-security-vulnerabilities-guide)
 
 ## Next Steps
+
 For performance optimization, see `maintainx-performance-tuning`.
 
 ## Examples

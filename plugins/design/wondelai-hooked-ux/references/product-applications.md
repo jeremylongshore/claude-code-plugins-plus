@@ -2,8 +2,8 @@
 
 Applying the Hook Model to specific product types with appropriate customization.
 
-
 ## Table of Contents
+
 1. [B2B SaaS Applications](#b2b-saas-applications)
 2. [E-commerce Applications](#e-commerce-applications)
 3. [Health & Fitness Applications](#health-fitness-applications)
@@ -20,6 +20,7 @@ Applying the Hook Model to specific product types with appropriate customization
 ### Unique Characteristics
 
 B2B products differ from consumer apps:
+
 - Users may be required to use the product (boss decided)
 - Habits must form at team level, not just individual
 - Value is often productivity/efficiency, not entertainment
@@ -28,20 +29,24 @@ B2B products differ from consumer apps:
 ### Adapting the Hook
 
 **Trigger:**
+
 - External: Task assignments, mentions, due dates, integrations
 - Internal: Fear of missing information, desire to stay organized, need to appear productive
 
 **Action:**
+
 - Must fit into existing workflow (low friction)
 - Often: Check notifications, update status, respond to requests
 - Key: Make the core action completable in seconds
 
 **Variable Reward:**
+
 - Self: Progress tracking, completion satisfaction, productivity metrics
 - Tribe: Team recognition, visibility of contributions
 - Hunt: Finding needed information quickly
 
 **Investment:**
+
 - Data: Accumulated history, preferences, customization
 - Integration: Connected to other tools
 - Team: Colleagues also use it (social switching cost)
@@ -50,6 +55,7 @@ B2B products differ from consumer apps:
 ### B2B Hook Patterns
 
 **Slack pattern:**
+
 ```
 Trigger: Notification of new message
 Action: Read and respond
@@ -58,6 +64,7 @@ Investment: More conversations, more value in history
 ```
 
 **Notion pattern:**
+
 ```
 Trigger: Need to capture/find information
 Action: Create/search page
@@ -66,6 +73,7 @@ Investment: More content, more structure, more utility
 ```
 
 **Salesforce pattern:**
+
 ```
 Trigger: New lead, scheduled task, manager expectation
 Action: Log activity, update record
@@ -80,6 +88,7 @@ Investment: Data completeness, reporting value
 ### Unique Characteristics
 
 E-commerce hook isn't about daily use—it's about:
+
 - Being first choice when purchase intent arises
 - Building browsing habits that lead to discovery
 - Creating loyalty that overcomes friction
@@ -87,20 +96,24 @@ E-commerce hook isn't about daily use—it's about:
 ### Adapting the Hook
 
 **Trigger:**
+
 - External: Email, retargeting ads, push notifications, seasonal events
 - Internal: "I wonder if..." curiosity, need arising, boredom browse
 
 **Action:**
+
 - Browse/search products
 - Add to cart/wishlist
 - Check prices/availability
 
 **Variable Reward:**
+
 - Hunt: Finding deals, discovering new products
 - Self: Satisfaction of smart purchase
 - Tribe: Reviews from community, social sharing
 
 **Investment:**
+
 - Saved preferences, wishlists, payment info
 - Order history (reordering ease)
 - Loyalty points, status tiers
@@ -109,6 +122,7 @@ E-commerce hook isn't about daily use—it's about:
 ### E-commerce Hook Patterns
 
 **Amazon pattern:**
+
 ```
 Trigger: "I need X" → Think of Amazon first
 Action: One-click search/order
@@ -117,6 +131,7 @@ Investment: Prime membership, purchase history, reviews
 ```
 
 **Pinterest → Commerce pattern:**
+
 ```
 Trigger: Inspiration seeking (internal)
 Action: Browse, pin, save
@@ -131,6 +146,7 @@ Investment: Boards that connect to purchase intent
 ### Unique Characteristics
 
 Health apps face special challenges:
+
 - Motivation fluctuates with energy/mood
 - Results take time (delayed gratification)
 - Competition with deeply ingrained habits
@@ -139,20 +155,24 @@ Health apps face special challenges:
 ### Adapting the Hook
 
 **Trigger:**
+
 - External: Daily reminders, streak notifications, friend activity
 - Internal: Guilt, aspiration, energy levels, appearance concerns
 
 **Action:**
+
 - Log food/exercise
 - Complete workout
 - Track progress
 
 **Variable Reward:**
+
 - Self: Progress visualization, achievement unlocks, personal bests
 - Tribe: Community encouragement, accountability partners
 - Hunt: Discovering what works for your body
 
 **Investment:**
+
 - Historical data (trends become meaningful)
 - Streaks and achievements
 - Personalized recommendations
@@ -161,6 +181,7 @@ Health apps face special challenges:
 ### Health App Hook Patterns
 
 **Peloton pattern:**
+
 ```
 Trigger: Scheduled class, instructor relationship, leaderboard
 Action: Take a class
@@ -169,6 +190,7 @@ Investment: Equipment, favorites, friends, historical data
 ```
 
 **MyFitnessPal pattern:**
+
 ```
 Trigger: Meal time, habit
 Action: Log food
@@ -185,6 +207,7 @@ Investment: Food database customization, history
 ### Unique Characteristics
 
 Learning products must:
+
 - Make difficult things feel achievable
 - Create intrinsic motivation for effortful activities
 - Balance engagement with actual learning
@@ -193,20 +216,24 @@ Learning products must:
 ### Adapting the Hook
 
 **Trigger:**
+
 - External: Daily reminders, streak warnings, new content
 - Internal: Curiosity, career anxiety, guilt about not learning
 
 **Action:**
+
 - Complete a lesson (must be short!)
 - Practice a skill
 - Consume content
 
 **Variable Reward:**
+
 - Self: Mastery, progress, skill acquisition
 - Hunt: Discovering new knowledge
 - Tribe: Community learning, comparing progress
 
 **Investment:**
+
 - Accumulated progress
 - Skill certifications
 - Learning path customization
@@ -215,6 +242,7 @@ Learning products must:
 ### Learning Hook Patterns
 
 **Duolingo pattern:**
+
 ```
 Trigger: Daily reminder, streak anxiety
 Action: 5-minute lesson
@@ -223,6 +251,7 @@ Investment: Streak, progress, language ability
 ```
 
 **Masterclass pattern:**
+
 ```
 Trigger: Curiosity, aspiration, new release
 Action: Watch lesson
@@ -231,6 +260,7 @@ Investment: Saved lessons, notes, completed classes
 ```
 
 **Coursera/Udemy pattern:**
+
 ```
 Trigger: Career goals, learning intent
 Action: Take course section
@@ -245,6 +275,7 @@ Investment: Course completion, credentials
 ### Unique Characteristics
 
 Productivity apps should:
+
 - Reduce cognitive load, not add to it
 - Integrate seamlessly with workflow
 - Make organization feel good, not like work
@@ -253,19 +284,23 @@ Productivity apps should:
 ### Adapting the Hook
 
 **Trigger:**
+
 - External: Due dates, scheduled reviews, integrations
 - Internal: Overwhelm, need for control, planning satisfaction
 
 **Action:**
+
 - Capture task/note quickly
 - Review and organize
 - Complete and check off
 
 **Variable Reward:**
+
 - Self: Completion satisfaction, sense of control
 - Hunt: Finding the right system, optimizing workflow
 
 **Investment:**
+
 - Accumulated tasks/notes
 - Customized systems
 - Integrated workflows
@@ -274,6 +309,7 @@ Productivity apps should:
 ### Productivity Hook Patterns
 
 **Todoist pattern:**
+
 ```
 Trigger: Thought of task, Karma reminder
 Action: Quick add task
@@ -282,6 +318,7 @@ Investment: Task history, project structure, karma score
 ```
 
 **Obsidian pattern:**
+
 ```
 Trigger: Information to capture, thought to develop
 Action: Create/link note
@@ -296,6 +333,7 @@ Investment: Accumulated knowledge, custom setup
 ### Unique Characteristics
 
 Social products:
+
 - Network effects drive value
 - Content is user-generated (variable by nature)
 - Social dynamics are powerful and risky
@@ -304,20 +342,24 @@ Social products:
 ### Adapting the Hook
 
 **Trigger:**
+
 - External: Notifications, tags, messages
 - Internal: Loneliness, boredom, FOMO, validation seeking
 
 **Action:**
+
 - Scroll/consume
 - Post/share
 - Engage (like, comment, share)
 
 **Variable Reward:**
+
 - Tribe: Social validation, connection, belonging
 - Hunt: Content discovery, information
 - Self: Content creation satisfaction, follower growth
 
 **Investment:**
+
 - Follower/following network
 - Content created
 - Reputation/status
@@ -326,6 +368,7 @@ Social products:
 ### Social Hook Patterns
 
 **Instagram pattern:**
+
 ```
 Trigger: Boredom, FOMO, notification
 Action: Open app, scroll
@@ -334,6 +377,7 @@ Investment: Followers, content, aesthetic
 ```
 
 **Discord pattern:**
+
 ```
 Trigger: Notification, community FOMO
 Action: Check messages, participate

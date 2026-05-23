@@ -10,6 +10,7 @@ adobe-enterprise-rbac/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Adobe enterprise access control
 **Workflow:** Part of the advanced skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

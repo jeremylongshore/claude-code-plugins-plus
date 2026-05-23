@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir CI Integration
 
 ## Overview
+
 Set up GitHub Actions CI pipelines for Foundry integrations. Covers running transform unit tests with PySpark, SDK integration tests with mocked APIs, and linting Foundry-specific patterns.
 
 ## Prerequisites
+
 - GitHub repository with Foundry integration code
 - `foundry-platform-sdk` in requirements
 - pytest test suite
@@ -37,6 +39,7 @@ Set up GitHub Actions CI pipelines for Foundry integrations. Covers running tran
 ## Instructions
 
 ### Step 1: GitHub Actions Workflow
+
 ```yaml
 # .github/workflows/foundry-ci.yml
 name: Foundry CI
@@ -105,6 +108,7 @@ jobs:
 ```
 
 ### Step 2: Secret Configuration
+
 ```bash
 # Add secrets to GitHub repository
 gh secret set FOUNDRY_HOSTNAME --body "mycompany.palantirfoundry.com"
@@ -113,6 +117,7 @@ gh secret set FOUNDRY_CLIENT_SECRET --body "your-client-secret"
 ```
 
 ### Step 3: Custom Linting Rules for Foundry
+
 ```python
 # scripts/lint_foundry.py — catch common Foundry mistakes
 import ast, sys
@@ -132,12 +137,14 @@ for path in sys.argv[1:]:
 ```
 
 ## Output
+
 - GitHub Actions workflow with unit tests, linting, and integration tests
 - PySpark tests running in CI with JDK setup
 - Secrets configured securely in GitHub
 - Custom linting for Foundry-specific patterns
 
 ## Error Handling
+
 | CI Issue | Cause | Fix |
 |----------|-------|-----|
 | PySpark tests fail | No JDK | Add `setup-java` step |
@@ -146,8 +153,10 @@ for path in sys.argv[1:]:
 | Import errors | Missing deps | Pin all deps in requirements.txt |
 
 ## Resources
+
 - [GitHub Actions](https://docs.github.com/en/actions)
 - [PySpark Testing](https://spark.apache.org/docs/latest/api/python/getting_started/testing_pyspark.html)
 
 ## Next Steps
+
 For deployment pipelines, see `palantir-deploy-integration`.

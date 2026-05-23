@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Rate Limits
 
 ## Overview
+
 Evernote enforces rate limits per API key, per user. When exceeded, the API throws `EDAMSystemException` with `errorCode: RATE_LIMIT_REACHED` and `rateLimitDuration` (seconds to wait). Production integrations must handle this gracefully.
 
 ## Prerequisites
+
 - Evernote SDK setup
 - Understanding of async/await patterns
 - Error handling implementation
@@ -93,6 +95,7 @@ Track request counts, rate limit hits, average response times, and wait times. L
 For the complete rate limiter, batch processor, monitoring dashboard, and optimization examples, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
+
 - Automatic retry with exponential backoff on rate limit errors
 - Request queue with configurable minimum delay between calls
 - Batch processor with progress tracking and failure collection
@@ -100,6 +103,7 @@ For the complete rate limiter, batch processor, monitoring dashboard, and optimi
 - API call optimization strategies (caching, metadata-only queries)
 
 ## Error Handling
+
 | Scenario | Response |
 |----------|----------|
 | First rate limit hit | Wait `rateLimitDuration` seconds, retry |
@@ -108,11 +112,13 @@ For the complete rate limiter, batch processor, monitoring dashboard, and optimi
 | Rate limit on initial setup | Request rate limit boost from Evernote support |
 
 ## Resources
+
 - [Rate Limits Overview](https://dev.evernote.com/doc/articles/rate_limits.php)
 - [API Best Practices](https://dev.evernote.com/doc/articles/rate_limits.php)
 - [Webhooks (reduce polling)](https://dev.evernote.com/doc/articles/webhooks.php)
 
 ## Next Steps
+
 For security considerations, see `evernote-security-basics`.
 
 ## Examples

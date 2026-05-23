@@ -10,6 +10,7 @@ algolia-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Algolia production deployment checklist
 **Workflow:** Part of the operations skill category for Algolia integration.
 **Relates to:** Other algolia skills in this pack.

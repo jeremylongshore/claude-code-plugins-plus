@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral AI Incident Runbook
 
 ## Overview
+
 Rapid incident response procedures for Mistral AI integration failures. Covers severity classification, quick triage script, decision tree, per-error mitigations, communication templates, and postmortem process.
 
 ## Severity Levels
@@ -154,6 +155,7 @@ kubectl set env deployment/app MISTRAL_TIMEOUT_MS=120000
 ## Communication Templates
 
 ### Internal (Slack)
+
 ```
 :red_circle: P[1-4] INCIDENT: Mistral AI Integration
 **Status**: INVESTIGATING | MITIGATING | RESOLVED
@@ -164,6 +166,7 @@ kubectl set env deployment/app MISTRAL_TIMEOUT_MS=120000
 ```
 
 ### External (Status Page)
+
 ```
 AI Feature Degradation
 
@@ -229,6 +232,7 @@ echo "Evidence: $DIR.tar.gz"
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | kubectl auth expired | Token expired | Re-authenticate with cloud provider |
@@ -237,11 +241,13 @@ echo "Evidence: $DIR.tar.gz"
 | Fallback not working | Not implemented | Return cached responses or error page |
 
 ## Resources
+
 - [Mistral AI Status](https://status.mistral.ai/)
 - [Mistral Console](https://console.mistral.ai/)
 - [Discord Community](https://discord.gg/mistralai)
 
 ## Output
+
 - Issue identified and severity classified
 - Mitigation applied per error type
 - Stakeholders notified with status updates

@@ -10,6 +10,7 @@ cursor-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Establishes an optimal daily development workflow using Cursor, covering morning startup routines, feature development cycles, and efficient keyboard-driven patterns.
 
 **Workflow:** This skill activates when developers want to optimize their productivity with Cursor. It provides structured workflows for morning startup, feature development (define, scaffold, implement, debug, refactor), context management, git integration, and testing patterns.

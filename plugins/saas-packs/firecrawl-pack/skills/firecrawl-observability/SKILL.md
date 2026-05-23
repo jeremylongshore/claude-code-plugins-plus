@@ -27,6 +27,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Observability
 
 ## Overview
+
 Monitor Firecrawl web scraping pipelines for success rates, credit consumption, content quality, and latency. Key signals: scrape success rate, crawl job completion, credit burn velocity, extraction quality (did markdown actually contain useful content vs error pages), and webhook delivery health.
 
 ## Key Metrics
@@ -42,6 +43,7 @@ Monitor Firecrawl web scraping pipelines for success rates, credit consumption, 
 ## Instructions
 
 ### Step 1: Instrumented Firecrawl Wrapper
+
 ```typescript
 import FirecrawlApp from "@mendable/firecrawl-js";
 
@@ -91,6 +93,7 @@ function evaluateQuality(result: any): string {
 ```
 
 ### Step 2: Credit Consumption Monitor
+
 ```typescript
 async function checkCreditHealth() {
   const response = await fetch("https://api.firecrawl.dev/v1/team/credits", {
@@ -116,6 +119,7 @@ setInterval(checkCreditHealth, 3600000);
 ```
 
 ### Step 3: Crawl Job Tracking
+
 ```typescript
 export async function monitoredCrawl(url: string, limit: number) {
   const start = Date.now();
@@ -146,6 +150,7 @@ export async function monitoredCrawl(url: string, limit: number) {
 ```
 
 ### Step 4: Prometheus Alert Rules
+
 ```yaml
 groups:
   - name: firecrawl
@@ -172,7 +177,9 @@ groups:
 ```
 
 ### Step 5: Dashboard Panels
+
 Track these in Grafana/Datadog:
+
 - **Scrape volume**: `sum(rate(firecrawl_scrapes_total[5m]))` by status
 - **Credit burn rate**: `sum(rate(firecrawl_credits_used[1h]))` — credits/hour
 - **Latency p50/p95**: `histogram_quantile(0.5, firecrawl_scrape_duration_ms)`
@@ -180,6 +187,7 @@ Track these in Grafana/Datadog:
 - **Credits remaining**: Single stat with thresholds (green > 1000, yellow > 100, red < 100)
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | High failure rate | Target sites blocking | Enable `waitFor`, rotate target URLs |
@@ -188,9 +196,11 @@ Track these in Grafana/Datadog:
 | Missing metrics | Wrapper not used | Ensure all scrape calls go through instrumented wrapper |
 
 ## Resources
+
 - [Firecrawl API Reference](https://docs.firecrawl.dev/api-reference/introduction)
 - [prom-client (Prometheus for Node.js)](https://github.com/siimon/prom-client)
 - [Grafana Dashboards](https://grafana.com/docs/grafana/latest/dashboards/)
 
 ## Next Steps
+
 For incident response, see `firecrawl-incident-runbook`.

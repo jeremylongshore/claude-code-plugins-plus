@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Production Readiness Checklist
 
 ### 1. API Configuration
+
 ```markdown
 - [ ] Production API key obtained and configured
 - [ ] API key stored in secret manager (not env vars)
@@ -14,6 +15,7 @@ Detailed implementation examples and code patterns.
 ```
 
 ### 2. Error Handling
+
 ```markdown
 - [ ] All error codes handled gracefully
 - [ ] Retry logic with exponential backoff
@@ -23,6 +25,7 @@ Detailed implementation examples and code patterns.
 ```
 
 ### 3. Performance
+
 ```markdown
 - [ ] Response time SLAs defined
 - [ ] Caching layer implemented
@@ -32,6 +35,7 @@ Detailed implementation examples and code patterns.
 ```
 
 ### 4. Security
+
 ```markdown
 - [ ] API key not exposed in client-side code
 - [ ] HTTPS enforced for all communications
@@ -41,6 +45,7 @@ Detailed implementation examples and code patterns.
 ```
 
 ### 5. Monitoring
+
 ```markdown
 - [ ] Health check endpoint configured
 - [ ] Metrics collection enabled
@@ -50,6 +55,7 @@ Detailed implementation examples and code patterns.
 ```
 
 ### 6. Documentation
+
 ```markdown
 - [ ] Integration architecture documented
 - [ ] API usage documented for team
@@ -61,6 +67,7 @@ Detailed implementation examples and code patterns.
 ## Validation Scripts
 
 ### API Connectivity Check
+
 ```bash
 #!/bin/bash
 # validate-juicebox-prod.sh
@@ -107,6 +114,7 @@ echo "=== All production checks passed ==="
 ```
 
 ### Integration Test Suite
+
 ```typescript
 // tests/production-readiness.test.ts
 import { describe, it, expect } from 'vitest';

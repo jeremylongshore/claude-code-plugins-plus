@@ -16,6 +16,7 @@ OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT  (unset or "false")
 ```
 
 Trace attributes present:
+
 - `gen_ai.system`, `gen_ai.request.model`, `gen_ai.response.id`
 - `gen_ai.usage.input_tokens`, `gen_ai.usage.output_tokens`
 - Request params (temperature, max_tokens, stop_sequences)
@@ -23,6 +24,7 @@ Trace attributes present:
 - Tool names (but not arguments)
 
 Trace attributes **missing**:
+
 - `gen_ai.prompt.<n>.content`
 - `gen_ai.completion.<n>.content`
 - `gen_ai.tool.arguments`

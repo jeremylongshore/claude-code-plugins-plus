@@ -10,6 +10,7 @@ stackblitz-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure StackBlitz CI/CD integration
 **Workflow:** Part of the cicd skill category for StackBlitz integration.
 **Relates to:** Other stackblitz skills in this pack.

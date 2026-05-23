@@ -3,6 +3,7 @@
 ## Basic Streaming
 
 ### Python Streaming
+
 ```python
 from openai import OpenAI
 
@@ -34,6 +35,7 @@ response = stream_chat("Explain quantum computing")
 ```
 
 ### TypeScript Streaming
+
 ```typescript
 import OpenAI from 'openai';
 

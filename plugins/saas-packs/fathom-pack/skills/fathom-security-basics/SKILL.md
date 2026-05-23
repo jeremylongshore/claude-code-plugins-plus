@@ -19,9 +19,11 @@ compatibility: Designed for Claude Code
 # Fathom Security Basics
 
 ## Overview
+
 Fathom records and transcribes meetings, producing transcripts and action items that contain participant PII (names, emails, spoken content), confidential business decisions, and potentially sensitive negotiations. API keys are per-user and grant access to all meetings the user recorded or that were shared to their team. Protect recording consent workflows, transcript storage, and any analytics pipeline touching meeting content.
 
 ## API Key Management
+
 ```typescript
 function createFathomClient(): { apiKey: string; baseUrl: string } {
   const apiKey = process.env.FATHOM_API_KEY;
@@ -35,6 +37,7 @@ function createFathomClient(): { apiKey: string; baseUrl: string } {
 ```
 
 ## Webhook Signature Verification
+
 ```typescript
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
@@ -52,6 +55,7 @@ function verifyFathomWebhook(req: Request, res: Response, next: NextFunction): v
 ```
 
 ## Input Validation
+
 ```typescript
 import { z } from "zod";
 
@@ -69,6 +73,7 @@ function validateMeetingQuery(data: unknown) {
 ```
 
 ## Data Protection
+
 ```typescript
 const FATHOM_PII_FIELDS = ["participant_email", "participant_name", "phone_number", "transcript_text"];
 
@@ -86,6 +91,7 @@ function redactFathomLog(record: Record<string, unknown>): Record<string, unknow
 ```
 
 ## Security Checklist
+
 - [ ] API key stored in secrets manager, never in code
 - [ ] Meeting recordings and transcripts encrypted at rest
 - [ ] PII redacted in non-production environments
@@ -96,6 +102,7 @@ function redactFathomLog(record: Record<string, unknown>): Record<string, unknow
 - [ ] Action items containing confidential terms scrubbed before export
 
 ## Error Handling
+
 | Vulnerability | Risk | Mitigation |
 |---|---|---|
 | Leaked API key | Access to all user meetings and transcripts | Secrets manager + key regeneration |
@@ -105,8 +112,10 @@ function redactFathomLog(record: Record<string, unknown>): Record<string, unknow
 | Overly broad meeting sharing | Confidential content exposed to wrong teams | Per-meeting permission scoping |
 
 ## Resources
+
 - [Fathom API Documentation](https://fathom.video)
 - [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
 
 ## Next Steps
+
 See `fathom-prod-checklist`.

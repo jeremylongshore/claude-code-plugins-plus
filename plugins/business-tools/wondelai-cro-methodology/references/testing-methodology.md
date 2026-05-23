@@ -2,8 +2,8 @@
 
 Deep-dive into experiment design, statistical rigor, and test prioritization from the CRE Methodology.
 
-
 ## Table of Contents
+
 1. [The Philosophy of Bold Testing](#the-philosophy-of-bold-testing)
 2. [A/B Testing vs. Multivariate Testing](#ab-testing-vs-multivariate-testing)
 3. [Statistical Significance](#statistical-significance)
@@ -50,6 +50,7 @@ Compare two (or more) complete versions against each other.
 | **Limitation** | Doesn't show which elements contributed |
 
 **When to use:**
+
 - You have a hypothesis about a major change
 - Traffic is limited
 - You're comparing conceptual approaches
@@ -66,6 +67,7 @@ Test multiple elements simultaneously to find optimal combination.
 | **Limitation** | Requires significant traffic |
 
 **When to use:**
+
 - You have a winning page to optimize further
 - High traffic (100k+ monthly visitors)
 - Clear, isolated elements to test
@@ -73,12 +75,14 @@ Test multiple elements simultaneously to find optimal combination.
 ### Traffic Requirements
 
 **A/B Test:**
+
 ```
 Minimum sample per variant = 250-500 conversions
 For 2 variants with 5% conversion: 10,000-20,000 visitors needed
 ```
 
 **Multivariate Test:**
+
 ```
 Combinations = (Options for Element 1) × (Options for Element 2) × ...
 Example: 3 headlines × 3 images × 2 CTAs = 18 combinations
@@ -86,6 +90,7 @@ Each combination needs 250+ conversions = 90,000+ conversions total
 ```
 
 **Recommendation:** Start with A/B tests. Only move to MVT when you have:
+
 - Proven winning page concept
 - 100k+ monthly visitors
 - Mature testing program
@@ -99,6 +104,7 @@ Each combination needs 250+ conversions = 90,000+ conversions total
 Statistical significance tells you: "How likely is this result due to chance vs. a real effect?"
 
 **Industry standard:** 95% confidence (p-value < 0.05)
+
 - 95% confident the difference is real
 - 5% chance it's random noise
 
@@ -132,12 +138,14 @@ Testing 20 variants? One will show "significance" by chance alone.
 Before testing, calculate required sample size:
 
 **Inputs needed:**
+
 - Baseline conversion rate
 - Minimum detectable effect (MDE) you care about
 - Statistical power (typically 80%)
 - Significance level (typically 95%)
 
 **Rule of thumb:**
+
 ```
 For 5% baseline, 20% relative lift detection:
 ~25,000 visitors per variant needed
@@ -151,11 +159,13 @@ For 5% baseline, 50% relative lift detection:
 ### Test Duration
 
 **Minimum test duration:**
+
 - At least 1 full business cycle (typically 1-2 weeks)
 - Include weekdays AND weekends
 - Account for seasonality
 
 **Why?**
+
 - Visitor behavior differs by day of week
 - Friday buyers differ from Monday researchers
 - Monthly cycles affect B2B especially
@@ -167,6 +177,7 @@ For 5% baseline, 50% relative lift detection:
 Prioritize test ideas using ICE scores:
 
 ### Impact (1-10)
+
 "If this wins, how big would the impact be?"
 
 | Score | Impact Level |
@@ -177,6 +188,7 @@ Prioritize test ideas using ICE scores:
 | 1-3 | Minor improvement (<10%) |
 
 ### Confidence (1-10)
+
 "How confident are we this will work?"
 
 | Score | Confidence Level |
@@ -187,6 +199,7 @@ Prioritize test ideas using ICE scores:
 | 1-3 | Gut feeling, unvalidated |
 
 ### Ease (1-10)
+
 "How easy is this to implement and test?"
 
 | Score | Ease Level |
@@ -203,6 +216,7 @@ ICE Score = (Impact + Confidence + Ease) / 3
 ```
 
 Or weighted:
+
 ```
 ICE Score = (Impact × 2 + Confidence × 1.5 + Ease × 1) / 4.5
 ```
@@ -223,6 +237,7 @@ ICE Score = (Impact × 2 + Confidence × 1.5 + Ease × 1) / 4.5
 ### Before the Test
 
 Document:
+
 1. **Hypothesis:** "If we [change X], then [metric Y] will improve because [reason based on research]"
 2. **Primary metric:** One metric that determines winner
 3. **Secondary metrics:** Additional metrics to monitor
@@ -234,6 +249,7 @@ Document:
 ### After the Test
 
 Document:
+
 1. **Results:** Raw numbers, conversion rates, confidence interval
 2. **Statistical significance:** p-value, confidence level
 3. **Practical significance:** Is the lift worth implementing?
@@ -256,16 +272,19 @@ Every test should add to organizational knowledge:
 ### Types of "Failure"
 
 **1. No winner (inconclusive)**
+
 - Sample size too small
 - Effect size too small to detect
 - Test needed to run longer
 
 **2. Control wins**
+
 - New version is worse
 - Hypothesis was wrong
 - Still a learning!
 
 **3. Technical problems**
+
 - Tracking broke
 - Experience differed from plan
 - Sample contamination
@@ -305,6 +324,7 @@ Every test should add to organizational knowledge:
 | "The CEO wants X" | "Let's test to validate the idea" |
 
 **Building credibility:**
+
 1. Start with quick wins (high-traffic pages, obvious problems)
 2. Document and share learnings widely
 3. Quantify impact in revenue terms

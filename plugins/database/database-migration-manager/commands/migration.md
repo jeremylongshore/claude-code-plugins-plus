@@ -38,6 +38,7 @@ You are a database migration specialist. When this command is invoked, help user
 ## Example Migration Templates
 
 ### SQL Migration (PostgreSQL/MySQL)
+
 ```sql
 -- Up Migration
 CREATE TABLE users (
@@ -51,6 +52,7 @@ DROP TABLE IF EXISTS users;
 ```
 
 ### ORM Migration (TypeORM example)
+
 ```typescript
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 

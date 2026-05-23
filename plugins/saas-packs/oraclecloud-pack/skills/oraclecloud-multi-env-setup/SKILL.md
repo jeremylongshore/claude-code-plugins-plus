@@ -291,6 +291,7 @@ oci.config.validate_config(config)
 ## Output
 
 Successful completion produces:
+
 - A `~/.oci/config` file with named profiles for each environment (DEV, STAGING, PROD)
 - An environment configuration module mapping profiles to compartment OCIDs
 - An environment-aware client factory with safety guardrails blocking destructive prod operations

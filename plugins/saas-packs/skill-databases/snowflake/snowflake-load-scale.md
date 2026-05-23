@@ -10,6 +10,7 @@ snowflake-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Snowflake load testing and scaling
 **Workflow:** Part of the enterprise skill category for Snowflake integration.
 **Relates to:** Other snowflake skills in this pack.

@@ -10,6 +10,7 @@ canva-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Canva local development workflow
 **Workflow:** Part of the onboarding skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

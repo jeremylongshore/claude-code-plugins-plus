@@ -146,4 +146,3 @@ Export gating needs integration tests against real git targets. The unit tests p
 - [Knowledge Base from Zero to API: Lifecycle State Machines and Policy Engines](/posts/knowledge-base-zero-to-api-lifecycle-state-machine/) — The day before: building the foundation that today's releases built on
 - [Building Post-Compaction Recovery with Beads](/posts/building-post-compaction-recovery-beads/) — Another system where memory governance and staleness matter
 - [External Plugin Sync: Keeping Community Plugins Fresh](/posts/external-plugin-sync-keeping-community-plugins-fresh/) — The freshness problem applied to plugin marketplaces instead of knowledge bases
-

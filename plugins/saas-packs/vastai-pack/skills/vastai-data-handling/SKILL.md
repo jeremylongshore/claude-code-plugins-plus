@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Data Handling
 
 ## Overview
+
 Manage training data and model artifacts securely on Vast.ai GPU instances. Covers data transfer, encryption, checkpoint management, and cleanup. Critical consideration: Vast.ai instances run on shared hardware operated by third-party hosts.
 
 ## Prerequisites
+
 - Vast.ai instance with SSH access
 - Cloud storage (S3, GCS) for persistent artifacts
 - Understanding of data sensitivity classification
@@ -147,6 +149,7 @@ vastai destroy instance $INSTANCE_ID
 | Temp files | /tmp | Auto-deleted on destroy | None |
 
 ## Output
+
 - Data transfer patterns (SCP, compressed, cloud-staged)
 - Encrypted transfer for sensitive datasets
 - Cloud checkpoint manager with S3 integration
@@ -154,6 +157,7 @@ vastai destroy instance $INSTANCE_ID
 - Data lifecycle policy
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | SCP timeout | Large file or slow network | Use compressed transfer or cloud staging |
@@ -162,10 +166,12 @@ vastai destroy instance $INSTANCE_ID
 | Data left after destroy | Skipped cleanup | Always run cleanup script before `vastai destroy` |
 
 ## Resources
+
 - [Vast.ai Instance Management](https://docs.vast.ai/api-reference/instances/create-instance)
 - [AWS S3 CLI](https://docs.aws.amazon.com/cli/latest/reference/s3/)
 
 ## Next Steps
+
 For enterprise access control, see `vastai-enterprise-rbac`.
 
 ## Examples

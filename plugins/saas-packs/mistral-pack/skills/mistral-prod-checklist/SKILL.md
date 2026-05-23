@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral AI Production Checklist
 
 ## Overview
+
 Complete checklist for deploying Mistral AI integrations to production. Covers credential management, code quality gates, health endpoints, circuit breaker resilience, gradual rollout, and rollback procedures.
 
 ## Prerequisites
+
 - Staging environment tested and verified
 - Production API keys from La Plateforme
 - Deployment pipeline (CI/CD) configured
@@ -37,12 +39,14 @@ Complete checklist for deploying Mistral AI integrations to production. Covers c
 ### Step 1: Pre-Deployment Verification
 
 **Credentials**
+
 - [ ] Production API key stored in secret manager (never in env files or code)
 - [ ] Key tested with `curl -H "Authorization: Bearer $KEY" https://api.mistral.ai/v1/models`
 - [ ] Key has appropriate model access scope
 - [ ] Fallback key available for rotation
 
 **Code Quality**
+
 - [ ] `npm run typecheck` passes
 - [ ] `npm test` passes (unit + integration)
 - [ ] No hardcoded keys: `grep -r "MISTRAL_API_KEY\|sk-" src/ --include="*.ts"`
@@ -51,6 +55,7 @@ Complete checklist for deploying Mistral AI integrations to production. Covers c
 - [ ] Logging excludes message content and API keys
 
 **Model Configuration**
+
 - [ ] Using versioned model IDs or `-latest` aliases intentionally
 - [ ] `maxTokens` set to prevent runaway costs
 - [ ] `temperature` set appropriately (0 for deterministic, 0.7 for creative)
@@ -201,6 +206,7 @@ curl -sf https://yourapp.com/health | jq '.'
 | Cost Spike | Spend > $10/hour | P3 |
 
 ## Documentation Requirements
+
 - [ ] Incident runbook created (see `mistral-incident-runbook`)
 - [ ] Key rotation procedure documented
 - [ ] Rollback procedure tested
@@ -208,6 +214,7 @@ curl -sf https://yourapp.com/health | jq '.'
 - [ ] API usage limits documented
 
 ## Output
+
 - Production deployment with verified credentials
 - Health check endpoint with latency monitoring
 - Circuit breaker for graceful degradation
@@ -215,6 +222,7 @@ curl -sf https://yourapp.com/health | jq '.'
 - Emergency rollback tested
 
 ## Error Handling
+
 | Issue | Detection | Resolution |
 |-------|-----------|------------|
 | Deploy failure | `kubectl rollout status` | `kubectl rollout undo` |
@@ -223,6 +231,7 @@ curl -sf https://yourapp.com/health | jq '.'
 | High error rate | Monitoring alert | Check logs, consider rollback |
 
 ## Resources
+
 - [Mistral AI Status](https://status.mistral.ai/)
 - [Mistral AI Console](https://console.mistral.ai/)
 - [Rate Limits](https://docs.mistral.ai/deployment/ai-studio/tier/)

@@ -10,6 +10,7 @@ clay-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Clay debug evidence for support tickets and complex troubleshooting. Creates a comprehensive bundle with API logs, configuration (redacted), and network diagnostics.
 **Workflow:** Support escalation skill. Use when issues require Clay support team involvement.
 **Relates to:** Follows clay-common-errors when self-service troubleshooting fails; accelerates support resolution.

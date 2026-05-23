@@ -31,6 +31,7 @@ All skills cover both SDK versions:
 ## Skills (24)
 
 ### Getting Started (S01-S04)
+
 | Skill | What It Does |
 |-------|-------------|
 | `langfuse-install-auth` | Install SDK (v3 or v4+), configure API keys, verify connection |
@@ -39,12 +40,14 @@ All skills cover both SDK versions:
 | `langfuse-sdk-patterns` | Singleton client, `observe` wrapper, `startActiveObservation`, error-safe tracing |
 
 ### Core Workflows (S05-S06)
+
 | Skill | What It Does |
 |-------|-------------|
 | `langfuse-core-workflow-a` | Trace LLM calls: OpenAI drop-in wrapper, RAG pipelines, streaming, Anthropic, LangChain |
 | `langfuse-core-workflow-b` | Evaluation: scores (numeric/categorical/boolean), prompt management, datasets, experiment runner, LLM-as-a-Judge |
 
 ### Troubleshooting (S07-S10)
+
 | Skill | What It Does |
 |-------|-------------|
 | `langfuse-common-errors` | Top 10 errors (401, missing traces, 429, import errors) with tested solutions |
@@ -53,12 +56,14 @@ All skills cover both SDK versions:
 | `langfuse-security-basics` | Credential validation, PII scrubbing, self-hosted hardening, secret scanning |
 
 ### Production (S11-S12)
+
 | Skill | What It Does |
 |-------|-------------|
 | `langfuse-prod-checklist` | Production config, shutdown handlers, pre-deploy verification script, full checklist |
 | `langfuse-upgrade-migration` | v3 to v4 migration: import changes, tracing API, env vars, prompt API, codemods |
 
 ### Pro Skills (P13-P18)
+
 | Skill | What It Does |
 |-------|-------------|
 | `langfuse-ci-integration` | GitHub Actions, prompt regression tests, experiment quality gates, prompt deployment |
@@ -69,6 +74,7 @@ All skills cover both SDK versions:
 | `langfuse-reference-architecture` | Singleton + OTel, context propagation, cross-service tracing, multi-env, circuit breaker |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | What It Does |
 |-------|-------------|
 | `langfuse-multi-env-setup` | Dev/staging/prod config, secret management (AWS/GCP/Vault), CI/CD integration, Zod validation |

@@ -270,6 +270,7 @@ export async function detectAndConfigurePlanTier(): Promise<PlanTier> {
 | `5xx` | `INTERNAL_ERROR` | HubSpot transient error | Retry with exponential backoff; typically resolves within 60s |
 
 **Diagnose daily vs burst 429:**
+
 ```bash
 curl -sv "https://api.hubapi.com/crm/v3/objects/contacts?limit=1" \
   -H "Authorization: Bearer $HUBSPOT_ACCESS_TOKEN" 2>&1 \

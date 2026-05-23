@@ -3,6 +3,7 @@
 ## Optimal Development Workflow
 
 ### Morning Startup
+
 ```bash
 # 1. Open project
 cursor /path/to/project

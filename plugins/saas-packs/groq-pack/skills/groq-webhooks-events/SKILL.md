@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq Events & Async Patterns
 
 ## Overview
+
 Build event-driven architectures around Groq's inference API. Groq does not provide native webhooks, but its sub-second latency enables unique patterns: real-time SSE streaming, batch processing with callbacks, queue-based pipelines, and event processors that use Groq as an LLM classification/extraction engine.
 
 ## Prerequisites
+
 - `groq-sdk` installed, `GROQ_API_KEY` set
 - Queue system for batch patterns (BullMQ, Redis, SQS)
 - Understanding of Server-Sent Events (SSE) for streaming
@@ -35,6 +37,7 @@ Build event-driven architectures around Groq's inference API. Groq does not prov
 ## Instructions
 
 ### Step 1: SSE Streaming Endpoint
+
 ```typescript
 import Groq from "groq-sdk";
 import express from "express";
@@ -78,6 +81,7 @@ app.post("/api/chat/stream", async (req, res) => {
 ```
 
 ### Step 2: Batch Processing with BullMQ
+
 ```typescript
 import { Queue, Worker } from "bullmq";
 import Groq from "groq-sdk";
@@ -148,6 +152,7 @@ const worker = new Worker("groq-batch", async (job) => {
 ```
 
 ### Step 3: Webhook Event Processor
+
 ```typescript
 // Use Groq as an LLM engine to process incoming webhook events
 async function processWebhookEvent(event: any) {
@@ -189,6 +194,7 @@ app.post("/webhook", async (req, res) => {
 ```
 
 ### Step 4: Scheduled Health Monitor
+
 ```typescript
 // Periodic Groq API health check with latency tracking
 async function monitorGroqHealth() {
@@ -225,6 +231,7 @@ setInterval(() => monitorGroqHealth().then(console.log), 5 * 60_000);
 ```
 
 ### Step 5: Python Async Batch Processing
+
 ```python
 import asyncio
 from groq import AsyncGroq
@@ -264,6 +271,7 @@ async def process_batch(prompts: list[str], model: str = "llama-3.1-8b-instant")
 | Health monitor | `llama-3.1-8b-instant` | ~80ms TTFT | Uptime tracking |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | SSE disconnect | Client timeout or network | Implement reconnection with last-event-id |
@@ -272,9 +280,11 @@ async def process_batch(prompts: list[str], model: str = "llama-3.1-8b-instant")
 | Health check 429 | Monitoring consuming quota | Reduce check frequency, use smallest model |
 
 ## Resources
+
 - [Groq API Reference](https://console.groq.com/docs/api-reference)
 - [Groq Text Generation (streaming)](https://console.groq.com/docs/text-chat)
 - [BullMQ Documentation](https://docs.bullmq.io/)
 
 ## Next Steps
+
 For performance optimization, see `groq-performance-tuning`.

@@ -3,6 +3,7 @@
 ## Batch Processing with Rate Limits
 
 ### Controlled Batch Processing
+
 ```python
 import asyncio
 from typing import List
@@ -44,6 +45,7 @@ async def process_batch(
 ```
 
 ### Concurrent with Semaphore
+
 ```python
 async def process_batch_concurrent(
     prompts: List[str],

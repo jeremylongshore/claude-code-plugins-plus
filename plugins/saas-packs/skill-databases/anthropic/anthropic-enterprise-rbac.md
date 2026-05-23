@@ -10,6 +10,7 @@ anthropic-enterprise-rbac/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Anthropic enterprise access control
 **Workflow:** Part of the advanced skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

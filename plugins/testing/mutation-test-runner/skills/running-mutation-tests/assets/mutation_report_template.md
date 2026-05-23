@@ -143,11 +143,11 @@ def is_valid_email(email):
 
 **Example Recommendations:**
 
-*   **Increase Test Coverage:** Focus on adding tests to cover the areas identified by the surviving mutants and no coverage mutants.
-*   **Strengthen Assertions:** Review existing test assertions to ensure they are robust enough to detect subtle changes in behavior.
-*   **Test Edge Cases:**  Pay particular attention to testing edge cases and boundary conditions.
-*   **Refactor Code:** In some cases, the surviving mutants may indicate areas of code that are overly complex or difficult to test. Consider refactoring these areas to improve testability.
-*   **Improve Test Data:**  Ensure the test data used is diverse and representative of real-world scenarios.
+* **Increase Test Coverage:** Focus on adding tests to cover the areas identified by the surviving mutants and no coverage mutants.
+* **Strengthen Assertions:** Review existing test assertions to ensure they are robust enough to detect subtle changes in behavior.
+* **Test Edge Cases:**  Pay particular attention to testing edge cases and boundary conditions.
+* **Refactor Code:** In some cases, the surviving mutants may indicate areas of code that are overly complex or difficult to test. Consider refactoring these areas to improve testability.
+* **Improve Test Data:**  Ensure the test data used is diverse and representative of real-world scenarios.
 
 ## Conclusion
 

@@ -10,6 +10,7 @@ webflow-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Webflow anti-patterns
 **Workflow:** Part of the enterprise skill category for Webflow integration.
 **Relates to:** Other webflow skills in this pack.

@@ -3,6 +3,7 @@
 ## Rate Limiting Mistakes
 
 ### No Backoff Strategy
+
 ```python
 # ❌ Wrong: Keep hammering on rate limit
 while True:
@@ -23,6 +24,7 @@ for attempt in range(5):
 ```
 
 ### Ignoring Rate Limit Headers
+
 ```python
 # ✓ Better: Respect rate limit headers
 def make_request_with_headers(prompt: str):

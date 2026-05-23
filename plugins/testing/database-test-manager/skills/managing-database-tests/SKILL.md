@@ -88,6 +88,7 @@ Manage database testing including fixture loading, transaction-based test isolat
 ## Examples
 
 **Jest with Prisma transaction rollback:**
+
 ```typescript
 import { PrismaClient } from '@prisma/client';
 
@@ -113,6 +114,7 @@ describe('UserRepository', () => {
 ```
 
 **pytest with database fixture and rollback:**
+
 ```python
 import pytest
 from sqlalchemy import create_engine
@@ -140,6 +142,7 @@ def test_insert_and_query_user(db_session):
 ```
 
 **Migration validation test:**
+
 ```typescript
 describe('Database Migrations', () => {
   it('applies all migrations to empty database', async () => {

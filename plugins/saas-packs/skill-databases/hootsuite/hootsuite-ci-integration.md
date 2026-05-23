@@ -10,6 +10,7 @@ hootsuite-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Hootsuite CI/CD integration
 **Workflow:** Part of the cicd skill category for Hootsuite integration.
 **Relates to:** Other hootsuite skills in this pack.

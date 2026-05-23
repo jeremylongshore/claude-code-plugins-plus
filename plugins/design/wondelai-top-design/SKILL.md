@@ -35,6 +35,7 @@ Create websites and applications at the level of world-class digital agencies. T
 ### Category Scoring (Each 0-10)
 
 **TYPOGRAPHY (Weight: 25%)**
+
 | Score | Criteria |
 |-------|----------|
 | 0-3 | System fonts, uniform scale, default tracking |
@@ -43,6 +44,7 @@ Create websites and applications at the level of world-class digital agencies. T
 | 9-10 | Typography IS the design -- gasping moments, custom/variable fonts, type as architecture |
 
 **VISUAL COMPOSITION (Weight: 25%)**
+
 | Score | Criteria |
 |-------|----------|
 | 0-3 | Centered everything, equal spacing, rigid grid, no tension |
@@ -51,6 +53,7 @@ Create websites and applications at the level of world-class digital agencies. T
 | 9-10 | Magnetic compositions, unexpected scale shifts, elements that breathe and surprise |
 
 **MOTION & INTERACTION (Weight: 20%)**
+
 | Score | Criteria |
 |-------|----------|
 | 0-3 | No animation or default/linear motion |
@@ -59,6 +62,7 @@ Create websites and applications at the level of world-class digital agencies. T
 | 9-10 | Motion that tells stories, perfectly timed choreography, scroll feels invented |
 
 **COLOR & ATMOSPHERE (Weight: 15%)**
+
 | Score | Criteria |
 |-------|----------|
 | 0-3 | Random colors, pure black/white, no mood |
@@ -67,6 +71,7 @@ Create websites and applications at the level of world-class digital agencies. T
 | 9-10 | Colors feel invented for this project, atmosphere you can feel |
 
 **DETAILS & CRAFT (Weight: 15%)**
+
 | Score | Criteria |
 |-------|----------|
 | 0-3 | Default cursors, no hover states, generic everything |
@@ -75,6 +80,7 @@ Create websites and applications at the level of world-class digital agencies. T
 | 9-10 | Every micro-detail considered -- focus states, loading, empty states, scroll indicators |
 
 ### Quick Score Formula
+
 ```
 Total = (Typography x 0.25) + (Composition x 0.25) + (Motion x 0.20) + (Color x 0.15) + (Details x 0.15)
 ```
@@ -88,6 +94,7 @@ Total = (Typography x 0.25) + (Composition x 0.25) + (Motion x 0.20) + (Color x 
 **Why it works:** Dramatic scale contrast creates immediate visual hierarchy that communicates even when content is blurred or viewed from across the room. Large display type with tight tracking commands attention like architecture commands a skyline, while intimate body text draws readers into the content. This tension between monumental and personal is what makes people stop scrolling.
 
 **Key insights:**
+
 - **Massive scale contrast is non-negotiable** -- the ratio between display and body should be at minimum 10:1 (e.g., 180px headline / 14px body), with viewport-filling type at the extreme end making body text feel intimate
 - **Negative tracking on large type** (-0.02em to -0.05em) tightens display text into cohesive visual units, while generous line-height for body (1.5-1.7) ensures readability
 - **Font selection defines tier** -- display fonts should come from premium foundries (Pangram Pangram, Dinamo, Grilli Type, Klim, Commercial Type) or quality Google alternatives (Space Grotesk, Instrument Serif, Fraunces); never Inter, Roboto, Arial, or system-ui for hero experiences
@@ -107,6 +114,7 @@ Total = (Typography x 0.25) + (Composition x 0.25) + (Motion x 0.20) + (Color x 
 | Tech startup | Premium geometric sans at architectural scale | Stripe typography system |
 
 **Copy patterns:**
+
 - Display: single powerful statement, 3-7 words maximum
 - Subhead: one sentence that contextualizes the display type
 - Body: 16-18px minimum, generous line-height, moderate measure (45-75 characters)
@@ -123,6 +131,7 @@ See: [references/typography.md](references/typography.md) for font pairing strat
 **Why it works:** White space is not empty space -- it is active design material that creates tension, controls pacing, and makes viewers lean in. Asymmetric layouts generate visual energy that centered, symmetrical compositions cannot achieve. When elements overlap, bleed, or extend beyond their containers with intention, the design feels alive and confident rather than constrained.
 
 **Key insights:**
+
 - **White space as a weapon** -- amateurs fill every gap with content, professionals use padding liberally, 10/10 designers use white space to create tension that controls the reader's eye
 - **Asymmetric balance creates interest** -- offset elements from center (e.g., one column offset in a 12-column grid), let images bleed and extend beyond containers
 - **Unexpected scale shifts create rhythm** -- the alternation between massive and intimate, dense and sparse, creates a narrative pacing that prevents monotony
@@ -142,6 +151,7 @@ See: [references/typography.md](references/typography.md) for font pairing strat
 | Navigation | Asymmetric mega-menus with dramatic scale | Hello Monday navigation systems |
 
 **Copy patterns:**
+
 - Hero: position text off-center with intentional alignment to grid
 - Sections: alternate between full-width immersion and contained reading
 - Cards: vary sizes within grids -- not everything needs to be the same dimensions
@@ -158,6 +168,7 @@ See: [references/layout-systems.md](references/layout-systems.md) for grid frame
 **Why it works:** Choreographed motion creates a cinematic experience that guides attention, communicates hierarchy, and creates emotional resonance. When elements animate in relationship to each other rather than independently, the result feels cohesive and intentional. Custom easing curves (exponential, quartic) give movement a physical quality that default browser easing cannot achieve.
 
 **Key insights:**
+
 - **Custom easing is mandatory** -- `ease`, `ease-in`, `ease-out`, and `linear` are banned; use `cubic-bezier(0.16, 1, 0.3, 1)` (expo out), `cubic-bezier(0.25, 1, 0.5, 1)` (quart out), `cubic-bezier(0.87, 0, 0.13, 1)` (expo in-out)
 - **Page load choreography follows a strict timeline** -- background/structure (0-200ms), hero title words staggered (200-600ms, 80ms stagger), subtitle (400-800ms), navigation cascade (600-900ms), supporting elements (800-1200ms)
 - **Scroll-triggered sequences reveal elements as they enter viewport** -- not all at once; parallax used sparingly and only on non-essential elements
@@ -177,6 +188,7 @@ See: [references/layout-systems.md](references/layout-systems.md) for grid frame
 | Micro-interactions | Hover weight shifts, button magnetic effects | Dogstudio interactive details |
 
 **Copy patterns:**
+
 - Reveal: text lines slide up individually with stagger (not fade in as a block)
 - Hover: elements respond with custom cursor, scale shift, or color transition
 - Scroll: content reveals progressively, never all at once
@@ -193,6 +205,7 @@ See: [references/animation-patterns.md](references/animation-patterns.md) for sc
 **Why it works:** Color creates atmosphere before a single word is read. When colors feel owned by a specific project, they become part of the brand's identity. Pure black (#000000) and pure white (#ffffff) feel digital and lifeless; slightly warm variants (#0a0a0a, #fafaf9) feel physical and considered. The restrained use of a single accent color creates moments of surprise that draw the eye exactly where intended.
 
 **Key insights:**
+
 - **Never use pure black or pure white** -- warm variants create a physical quality that pure digital colors lack
 - **The functional color hierarchy** -- text-primary, text-secondary (60% opacity), text-tertiary (40% opacity), surface, border (10% opacity) -- creates consistent depth across all components
 - **Accent color creates moments of surprise** -- a single strong accent (#ff4d00 or similar) used sparingly has more impact than a complex multi-color palette
@@ -212,6 +225,7 @@ See: [references/animation-patterns.md](references/animation-patterns.md) for sc
 | Tech product | Minimal neutral with functional accent | Linear: grayscale + signature blue |
 
 **Copy patterns:**
+
 - Define CSS custom properties for your full color system: `--color-dark`, `--color-light`, `--color-accent`
 - Build functional tokens on top: `--color-text-primary`, `--color-text-secondary`, `--color-surface`
 - Use opacity-based variants (`rgba(10, 10, 10, 0.6)`) for consistent secondary/tertiary text
@@ -228,6 +242,7 @@ See: [references/case-studies.md](references/case-studies.md) for agency techniq
 **Why it works:** Default browser scroll is mechanical and uniform, treating all content as equally important. Custom scroll behavior (via Lenis or Locomotive Scroll) creates a smooth, weighted feel that mirrors physical objects. When scroll position drives animations, reveals, and transitions, the user's movement through content becomes an active, participatory experience rather than passive consumption.
 
 **Key insights:**
+
 - **Smooth scroll is the foundation** -- implement Lenis or Locomotive Scroll for the weighted, physical scroll feel that every award-winning site uses
 - **Parallax must be purposeful** -- used sparingly and only on non-essential decorative elements; never on text or critical content
 - **Pinned sections create storytelling beats** -- locking a section in place while content transforms within it creates cinematic moments
@@ -247,6 +262,7 @@ See: [references/case-studies.md](references/case-studies.md) for agency techniq
 | Feature tour | Step-by-step reveals pinned to scroll progress | Stripe feature presentations |
 
 **Copy patterns:**
+
 - Use `data-scroll`, `data-scroll-speed`, and `data-scroll-direction` attributes for declarative scroll behavior
 - Implement intersection observers for lightweight scroll-triggered class toggling
 - Reserve GSAP ScrollTrigger for complex, multi-step scroll-driven animations
@@ -263,6 +279,7 @@ See: [references/animation-patterns.md](references/animation-patterns.md) for sc
 **Why it works:** Users perceive performance as quality. A site that loads instantly and scrolls fluidly feels premium, regardless of visual complexity. Conversely, a visually stunning site that stutters or delays feels broken. The best agencies achieve both visual ambition and technical performance by making performance a first-class design decision: choosing GPU-accelerated properties, subsetting fonts, optimizing images, and testing on real devices.
 
 **Key insights:**
+
 - **Fonts must be subset and preloaded** -- only include the glyphs you need, use `font-display: swap` or `optional`, and preload critical font files
 - **Images must be optimized** -- use WebP/AVIF with fallbacks, implement responsive `srcset`, and lazy-load below-the-fold images
 - **Animations must be GPU-accelerated** -- only animate `transform` and `opacity`; never animate `width`, `height`, `top`, `left`, or `margin`
@@ -282,6 +299,7 @@ See: [references/animation-patterns.md](references/animation-patterns.md) for sc
 | Bundle optimization | Code-split, tree-shake, defer non-critical JS | Dynamic imports for below-fold interactivity |
 
 **Copy patterns:**
+
 - Audit with Lighthouse, targeting 90+ on all metrics
 - Test on real devices, not just simulators -- simulators lie about performance and feel
 - Implement `loading="lazy"` on all images below the fold
@@ -301,6 +319,7 @@ See: [references/technical-stack.md](references/technical-stack.md) for librarie
 **Why it works:** Micro-interactions create a sense that every pixel was considered. When a cursor changes on hover, when text selection has a branded color, when a button has a subtle magnetic pull, and when focus states are beautiful AND accessible, users feel the care embedded in the experience. These details compound -- individually subtle, collectively transformative.
 
 **Key insights:**
+
 - **Custom cursor reflects brand personality (opt-in only -- ask user before implementing)** -- cursor changes on interactive elements, with optional magnetic effect on buttons
 - **Selection colors are branded** -- custom `::selection` color that works well on all backgrounds
 - **Every link has a considered hover state** -- images have scale or overlay treatment, cards transform meaningfully
@@ -320,6 +339,7 @@ See: [references/technical-stack.md](references/technical-stack.md) for librarie
 | Error states | Designed 404 and error pages | Memorable, on-brand error experiences |
 
 **Copy patterns:**
+
 - `::selection { background: var(--color-accent); color: var(--color-light); }`
 - `cursor: none;` on body with custom cursor div following mouse position (only if user confirms they want a custom cursor)
 - Magnetic effect: calculate distance between cursor and button center, apply proportional transform (only if user confirms they want a custom cursor)
@@ -334,6 +354,7 @@ See: [references/case-studies.md](references/case-studies.md) for agency techniq
 ### 1. Concept First, Code Second
 
 Before any code, define:
+
 ```
 BRAND ESSENCE: What single word captures the soul?
 VISUAL TENSION: What opposing forces create interest?
@@ -346,6 +367,7 @@ TECHNICAL AMBITION: What pushes the browser's limits?
 Do not start with the header. Start with the thing that defines the experience. The header can be solved later. Every 10/10 project has at least one moment that makes people stop and share: a hero animation never seen before, typography so bold it becomes the visual, an interaction that delights unexpectedly, a scroll sequence that tells a story, or a transition that feels like magic.
 
 **Questions to identify your signature:**
+
 1. What will people screenshot?
 2. What will they describe to colleagues?
 3. What will they try to reverse-engineer?

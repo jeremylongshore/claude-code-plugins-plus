@@ -77,27 +77,35 @@ This skill implements a data aggregation pattern with real-time price enrichment
 ## Progressive Disclosure Strategy
 
 ### Level 1: Portfolio Summary (Default)
+
 ```bash
 python portfolio_tracker.py --portfolio holdings.json
 ```
+
 Returns total value, 24h change, top 5 holdings.
 
 ### Level 2: Full Holdings List
+
 ```bash
 python portfolio_tracker.py --portfolio holdings.json --holdings
 ```
+
 Lists all holdings with prices and allocations.
 
 ### Level 3: Detailed Analysis
+
 ```bash
 python portfolio_tracker.py --portfolio holdings.json --detailed
 ```
+
 Full breakdown with P&L, risk flags, category allocation.
 
 ### Level 4: Export
+
 ```bash
 python portfolio_tracker.py --portfolio holdings.json --format json --output portfolio.json
 ```
+
 Machine-readable export for integration.
 
 ---
@@ -105,6 +113,7 @@ Machine-readable export for integration.
 ## Tool Permission Strategy
 
 ### Allowed Tools (Scoped)
+
 ```yaml
 allowed-tools: Read, Write, Bash(crypto:portfolio-*)
 ```
@@ -289,6 +298,7 @@ def fetch_prices(coin_ids: List[str]) -> Dict[str, Dict]:
 ## Portfolio File Schema
 
 ### Minimal Format
+
 ```json
 {
   "holdings": [
@@ -299,6 +309,7 @@ def fetch_prices(coin_ids: List[str]) -> Dict[str, Dict]:
 ```
 
 ### Full Format
+
 ```json
 {
   "name": "Main Portfolio",

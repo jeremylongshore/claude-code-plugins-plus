@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Known Pitfalls
 
 ## Overview
+
 Real gotchas when using Windsurf IDE. Cascade, Supercomplete, workspace indexing, and the rules system each have behaviors that catch developers off guard. Learn from these before they catch you.
 
 ## Prerequisites
+
 - Windsurf installed and configured
 - Understanding of Cascade vs Supercomplete
 - Awareness of workspace indexing behavior
@@ -202,6 +204,7 @@ Settings > cascadeCommandsDenyList > add destructive commands
 ```
 
 ## Error Handling
+
 | Pitfall | Symptom | Prevention |
 |---------|---------|------------|
 | Wrong tool for task | Slow response for simple task | Tab for completions, Cmd+L for complex |
@@ -218,6 +221,7 @@ Settings > cascadeCommandsDenyList > add destructive commands
 ## Examples
 
 ### Pre-Cascade Checklist
+
 ```bash
 set -euo pipefail
 echo "=== Pre-Cascade Checklist ==="
@@ -228,6 +232,7 @@ echo "Conflicting exts: $(windsurf --list-extensions 2>/dev/null | grep -ci 'cop
 ```
 
 ### Common Prompt Templates
+
 ```
 Feature: "In [file], add [feature] that [behavior]. Follow the pattern
 in @[reference-file]. Include error handling for [edge cases]. Don't
@@ -241,9 +246,11 @@ imports. Run tests after. Don't change public API signatures."
 ```
 
 ## Resources
+
 - [Windsurf Documentation](https://docs.windsurf.com)
 - [Cascade Best Practices](https://docs.windsurf.com/windsurf/cascade/cascade)
 - [Windsurf Rules Directory](https://windsurf.com/editor/directory)
 
 ## Next Steps
+
 Start with `windsurf-install-auth` if you're new, or `windsurf-reference-architecture` for team setup.

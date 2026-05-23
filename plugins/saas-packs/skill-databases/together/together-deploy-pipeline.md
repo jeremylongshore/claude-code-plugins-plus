@@ -10,6 +10,7 @@ together-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Together AI integrations to production
 **Workflow:** Part of the cicd skill category for Together AI integration.
 **Relates to:** Other together skills in this pack.

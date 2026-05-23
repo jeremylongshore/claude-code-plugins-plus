@@ -17,6 +17,7 @@ Store a session from CASS to Cascade with redaction, encryption, and indexing.
 ```
 
 **Response:**
+
 ```json
 {
   "ok": true,
@@ -85,6 +86,7 @@ Search the local FTS index for memories. **NEVER queries Cascade directly.**
 ```
 
 **Response:**
+
 ```json
 {
   "ok": true,
@@ -112,6 +114,7 @@ Search the local FTS index for memories. **NEVER queries Cascade directly.**
 ```
 
 **Simple query (minimal params):**
+
 ```json
 {
   "query": "api deployment"
@@ -132,6 +135,7 @@ Fetch and decrypt a session from Cascade using its URI.
 ```
 
 **Response:**
+
 ```json
 {
   "ok": true,
@@ -196,6 +200,7 @@ Estimate Cascade storage costs for a given data size.
 ```
 
 **Response:**
+
 ```json
 {
   "ok": true,
@@ -214,6 +219,7 @@ Estimate Cascade storage costs for a given data size.
 ```
 
 **Minimal params:**
+
 ```json
 {
   "bytes": 10000
@@ -227,6 +233,7 @@ Estimate Cascade storage costs for a given data size.
 All tools return `{"ok": false, "error": "..."}` on failure.
 
 ### Example: Critical pattern detected
+
 ```json
 {
   "ok": false,
@@ -235,6 +242,7 @@ All tools return `{"ok": false, "error": "..."}` on failure.
 ```
 
 ### Example: Live mode not configured
+
 ```json
 {
   "ok": false,
@@ -243,6 +251,7 @@ All tools return `{"ok": false, "error": "..."}` on failure.
 ```
 
 ### Example: URI not found
+
 ```json
 {
   "ok": false,

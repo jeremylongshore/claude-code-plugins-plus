@@ -125,6 +125,7 @@ Surprises should not be random — they should be triggered by specific events o
 Customers who experience a problem that is resolved excellently often become more loyal than customers who never had a problem at all. This is the service recovery paradox. It means that how you handle failures is more important than avoiding all failures.
 
 **Service recovery framework:**
+
 1. **Acknowledge** the problem immediately and sincerely
 2. **Apologize** without excuses or blame-shifting
 3. **Act** — fix the problem faster than the customer expects

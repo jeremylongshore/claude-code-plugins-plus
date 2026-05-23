@@ -18,9 +18,11 @@ compatibility: Designed for Claude Code
 # Lucidchart Local Dev Loop
 
 ## Overview
+
 Local development workflow for Lucidchart diagramming API integration. Provides a fast feedback loop with mock document, page, and shape data so you can build diagram automation tools without needing a live Lucid account. Toggle between mock mode for rapid iteration and sandbox mode for validating diagram CRUD operations against the real Lucid API.
 
 ## Environment Setup
+
 ```bash
 cp .env.example .env
 # Set your credentials:
@@ -32,6 +34,7 @@ npm install -D vitest supertest @types/express
 ```
 
 ## Dev Server
+
 ```typescript
 // src/dev/server.ts
 import express from "express";
@@ -53,6 +56,7 @@ app.listen(3006, () => console.log(`Lucidchart dev server on :3006 [mock=${MOCK}
 ```
 
 ## Mock Mode
+
 ```typescript
 // src/dev/mocks.ts — realistic diagramming document and shape responses
 export function mountMockRoutes(app: any) {
@@ -73,6 +77,7 @@ export function mountMockRoutes(app: any) {
 ```
 
 ## Testing Workflow
+
 ```bash
 npm run dev:mock &                    # Start mock server in background
 npm run test                          # Unit tests with vitest
@@ -81,6 +86,7 @@ MOCK_MODE=false npm run test:integration  # Integration test against real Lucid 
 ```
 
 ## Debug Tips
+
 - Lucid uses `Lucid-Api-Key` header (not `Authorization: Bearer`) for API authentication
 - Shape coordinates use absolute pixel positioning — verify x/y values when programmatically placing shapes
 - Document IDs are opaque strings — never hardcode them across environments
@@ -88,6 +94,7 @@ MOCK_MODE=false npm run test:integration  # Integration test against real Lucid 
 - Check OAuth scopes if document list returns empty despite having documents
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | `401 Unauthorized` | Invalid API key | Regenerate at developer.lucid.co |
@@ -97,7 +104,9 @@ MOCK_MODE=false npm run test:integration  # Integration test against real Lucid 
 | `ECONNREFUSED :3006` | Dev server not running | Run `npm run dev:mock` first |
 
 ## Resources
+
 - [Lucid Developer Docs](https://developer.lucid.co/reference/overview)
 
 ## Next Steps
+
 See `lucidchart-debug-bundle`.

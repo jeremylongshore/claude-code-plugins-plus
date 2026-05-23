@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Salesforce Security Basics
 
 ## Overview
+
 Security best practices for Salesforce integrations: Connected App configuration, OAuth scope management, field-level security, and credential rotation.
 
 ## Prerequisites
+
 - Salesforce org with System Administrator access
 - Connected App created in Setup > App Manager
 - Understanding of Salesforce security model (Profile, Permission Set, OWD)
@@ -35,6 +37,7 @@ Security best practices for Salesforce integrations: Connected App configuration
 ## Instructions
 
 ### Step 1: Secure Connected App Configuration
+
 ```
 Setup > App Manager > New Connected App:
 
@@ -71,6 +74,7 @@ server.key    # JWT private key
 ```
 
 ### Step 3: Use a Dedicated Integration User
+
 ```
 Create a dedicated Salesforce user for API access:
 
@@ -146,6 +150,7 @@ for (const entry of auditTrail.records) {
 ```
 
 ### Security Checklist
+
 - [ ] Connected App uses minimum OAuth scopes (not `full`)
 - [ ] Dedicated integration user (not admin)
 - [ ] IP restrictions on Connected App and user profile
@@ -157,6 +162,7 @@ for (const entry of auditTrail.records) {
 - [ ] PKCE enabled for public clients
 
 ## Error Handling
+
 | Security Issue | Detection | Mitigation |
 |----------------|-----------|------------|
 | Exposed credentials in git | `git log -p --all -S 'SF_PASSWORD'` | Rotate immediately, use git-secrets |
@@ -165,10 +171,12 @@ for (const entry of auditTrail.records) {
 | IP not whitelisted | `LOGIN_MUST_USE_SECURITY_TOKEN` | Add IP to login IP ranges |
 
 ## Resources
+
 - [Salesforce Security Guide](https://developer.salesforce.com/docs/atlas.en-us.securityImplGuide.meta/securityImplGuide/)
 - [Connected Apps](https://help.salesforce.com/s/articleView?id=sf.connected_app_overview.htm)
 - [Field-Level Security](https://help.salesforce.com/s/articleView?id=sf.admin_fls.htm)
 - [Setup Audit Trail](https://help.salesforce.com/s/articleView?id=sf.admin_monitorsetup.htm)
 
 ## Next Steps
+
 For production deployment, see `salesforce-prod-checklist`.

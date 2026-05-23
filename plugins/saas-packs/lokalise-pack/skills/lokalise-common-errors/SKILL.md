@@ -60,6 +60,7 @@ The `code` field mirrors the HTTP status code. The `message` field provides spec
 ```
 
 **Causes:**
+
 - Token is incorrect, expired, or revoked
 - `X-Api-Token` header missing from request
 - Token copied with leading/trailing whitespace
@@ -89,6 +90,7 @@ echo -n "$LOKALISE_API_TOKEN" | xxd | head -2
 ```
 
 **Common 400 causes:**
+
 - Invalid `project_id` format (must be `{number}.{alphanumeric}`)
 - Missing required fields in POST/PUT body
 - Invalid language ISO code
@@ -115,6 +117,7 @@ curl -s -H "X-Api-Token: ${LOKALISE_API_TOKEN}" \
 ```
 
 **Causes:**
+
 - Project ID is wrong or project was deleted
 - Key, translation, or webhook ID does not exist
 - Token lacks access to the specified project (appears as 404, not 403)
@@ -163,11 +166,13 @@ curl -s -D - -o /dev/null \
 ```
 
 **Causes:**
+
 - File upload exceeds 50 MB
 - Bulk key creation with too many keys in one request (max 500)
 - Translation value exceeds character limit
 
 **Fix:**
+
 - Split bulk operations into batches of 500 items
 - Compress files before upload or split into smaller files
 - For large translation values, check if the content truly belongs in a translation key

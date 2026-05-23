@@ -2,7 +2,6 @@
 
 > Full implementation details for the parent SKILL.md.
 
-
 ## Credential Security
 
 ### Step 1: Environment Variables
@@ -130,7 +129,6 @@ class SecureTokenStore {
 
 module.exports = SecureTokenStore;
 ```
-
 
 ## OAuth Security
 
@@ -260,7 +258,6 @@ module.exports = session({
   }
 });
 ```
-
 
 ## Input Validation
 
@@ -447,7 +444,6 @@ class SecureLogger {
 module.exports = new SecureLogger();
 ```
 
-
 ## Token Lifecycle
 
 ### Step 8: Token Expiration Handling
@@ -506,7 +502,6 @@ class TokenManager {
 
 module.exports = TokenManager;
 ```
-
 
 ## Security Checklist
 

@@ -10,6 +10,7 @@ glean-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Glean reliability patterns
 **Workflow:** Part of the enterprise skill category for Glean integration.
 **Relates to:** Other glean skills in this pack.

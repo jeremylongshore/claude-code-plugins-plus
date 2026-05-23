@@ -10,6 +10,7 @@ deepgram-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Deepgram local development workflow
 **Workflow:** Part of the onboarding skill category for Deepgram integration.
 **Relates to:** Other deepgram skills in this pack.

@@ -4,12 +4,12 @@
 
 ## Features
 
--  **AI-Powered Analysis**: Understands your code changes and generates contextual messages
--  **Conventional Commits**: Follows the conventional commits standard automatically
--  **Fast Workflow**: Generate commits in seconds with `/gc` shortcut
--  **Smart Categorization**: Automatically determines commit type (feat, fix, docs, etc.)
--  **Breaking Change Detection**: Identifies and documents breaking changes
--  **Interactive Confirmation**: Review and edit before committing
+- **AI-Powered Analysis**: Understands your code changes and generates contextual messages
+- **Conventional Commits**: Follows the conventional commits standard automatically
+- **Fast Workflow**: Generate commits in seconds with `/gc` shortcut
+- **Smart Categorization**: Automatically determines commit type (feat, fix, docs, etc.)
+- **Breaking Change Detection**: Identifies and documents breaking changes
+- **Interactive Confirmation**: Review and edit before committing
 
 ## Installation
 
@@ -26,18 +26,20 @@
 ### Basic Usage
 
 1. Stage your changes:
+
 ```bash
 git add .
 ```
 
-2. Generate commit message:
+1. Generate commit message:
+
 ```bash
 /commit-smart
 # or use the shortcut:
 /gc
 ```
 
-3. Review the generated message and confirm
+1. Review the generated message and confirm
 
 ### Example Session
 
@@ -88,6 +90,7 @@ No configuration needed! The plugin works out of the box.
 ### Optional Context
 
 You can provide additional context:
+
 ```bash
 /gc - emphasize that this fixes a security vulnerability
 ```
@@ -113,17 +116,21 @@ You can provide additional context:
 ## Troubleshooting
 
 ### "No changes staged for commit"
+
 **Solution**: Run `git add <files>` first to stage your changes
 
 ### "Merge in progress detected"
+
 **Solution**: For merge commits, use `git commit --no-edit` instead
 
 ### Commit message too generic
+
 **Solution**: Add more context when calling the command: `/gc - this fixes the login bug`
 
 ## Examples
 
 ### Bug Fix
+
 ```
 fix(api): correct typo in email normalization
 
@@ -132,6 +139,7 @@ when processing user emails.
 ```
 
 ### New Feature
+
 ```
 feat(search): add global search functionality
 
@@ -142,6 +150,7 @@ Closes #45
 ```
 
 ### Breaking Change
+
 ```
 refactor(auth)!: change login to use email instead of username
 

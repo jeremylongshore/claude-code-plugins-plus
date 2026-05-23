@@ -24,13 +24,16 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Debug Bundle
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'N/A'`
 !`npm list @clerk/nextjs @clerk/clerk-react @clerk/express 2>/dev/null | grep clerk || echo 'No Clerk packages found'`
 
 ## Overview
+
 Collect all necessary debug information for Clerk troubleshooting and support tickets. Generates an environment report, runtime health check, client-side debug panel, and support bundle.
 
 ## Prerequisites
+
 - Clerk SDK installed
 - Access to application logs
 - Browser with developer tools
@@ -38,6 +41,7 @@ Collect all necessary debug information for Clerk troubleshooting and support ti
 ## Instructions
 
 ### Step 1: Environment Debug Script
+
 ```typescript
 // scripts/clerk-debug.ts
 import { createClerkClient } from '@clerk/backend'
@@ -82,11 +86,13 @@ collectDebugInfo()
 ```
 
 Run with:
+
 ```bash
 npx tsx scripts/clerk-debug.ts
 ```
 
 ### Step 2: Runtime Health Check Endpoint
+
 ```typescript
 // app/api/clerk-health/route.ts
 import { auth, clerkClient } from '@clerk/nextjs/server'
@@ -126,6 +132,7 @@ export async function GET() {
 ```
 
 ### Step 3: Client-Side Debug Component
+
 ```typescript
 'use client'
 import { useAuth, useUser, useSession } from '@clerk/nextjs'
@@ -167,6 +174,7 @@ export function ClerkDebugPanel() {
 ```
 
 ### Step 4: Request Debug Middleware
+
 ```typescript
 // middleware.ts — add debug logging (development only)
 import { clerkMiddleware } from '@clerk/nextjs/server'
@@ -184,6 +192,7 @@ export default clerkMiddleware(async (auth, req) => {
 ```
 
 ### Step 5: Generate Support Bundle
+
 ```bash
 #!/bin/bash
 # scripts/clerk-support-bundle.sh
@@ -214,6 +223,7 @@ echo "Support bundle: ${BUNDLE_DIR}.tar.gz"
 ```
 
 ## Output
+
 - Environment debug script showing SDK versions and API connectivity
 - `/api/clerk-health` endpoint for runtime health checks
 - Client-side debug panel (dev-only) showing auth state and JWT contents
@@ -221,6 +231,7 @@ echo "Support bundle: ${BUNDLE_DIR}.tar.gz"
 - Support bundle script for filing Clerk support tickets
 
 ## Error Handling
+
 | Issue | Debug Action |
 |-------|--------------|
 | Auth not working | Hit `/api/clerk-health`, check `backendApi` status |
@@ -231,6 +242,7 @@ echo "Support bundle: ${BUNDLE_DIR}.tar.gz"
 ## Examples
 
 ### Quick One-Liner Debug Check
+
 ```bash
 # Verify Clerk API connectivity from CLI
 curl -s -H "Authorization: Bearer $CLERK_SECRET_KEY" \
@@ -238,9 +250,11 @@ curl -s -H "Authorization: Bearer $CLERK_SECRET_KEY" \
 ```
 
 ## Resources
+
 - [Clerk Support Portal](https://clerk.com/support)
 - [Clerk Discord Community](https://clerk.com/discord)
 - [Clerk GitHub Issues](https://github.com/clerk/javascript/issues)
 
 ## Next Steps
+
 Proceed to `clerk-rate-limits` for understanding Clerk rate limits.

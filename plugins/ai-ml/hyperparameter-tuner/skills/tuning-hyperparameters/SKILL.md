@@ -34,6 +34,7 @@ This skill empowers Claude to fine-tune machine learning models by automatically
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Optimize the performance of a machine learning model.
 - Automatically search for the best hyperparameter settings.
 - Compare different hyperparameter search strategies.
@@ -46,6 +47,7 @@ This skill activates when you need to:
 User request: "Tune hyperparameters of a Random Forest model using grid search to maximize accuracy on the iris dataset. Consider n_estimators and max_depth."
 
 The skill will:
+
 1. Generate code to perform a grid search over the specified hyperparameters (n_estimators, max_depth) of a Random Forest model using the iris dataset.
 2. Execute the grid search and report the best hyperparameter combination and the corresponding accuracy score.
 
@@ -54,6 +56,7 @@ The skill will:
 User request: "Optimize a Gradient Boosting model using Bayesian optimization with Optuna to minimize the root mean squared error on the Boston housing dataset."
 
 The skill will:
+
 1. Generate code to perform Bayesian optimization using Optuna to find the best hyperparameters for a Gradient Boosting model on the Boston housing dataset.
 2. Execute the optimization and report the best hyperparameter combination and the corresponding RMSE.
 

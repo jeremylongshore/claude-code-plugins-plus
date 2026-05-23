@@ -10,6 +10,7 @@ anthropic-data-handling/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Anthropic data compliance
 **Workflow:** Part of the advanced skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

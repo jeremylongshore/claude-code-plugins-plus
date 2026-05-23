@@ -194,6 +194,7 @@ console.log(result.content, `\n${result.model} | ${result.latencyMs}ms`);
 ## Retry Strategy
 
 The OpenAI SDK has built-in retries with exponential backoff for:
+
 - 429 (rate limit) -- respects `Retry-After` header
 - 5xx (server errors) -- retries with backoff
 - Connection errors -- retries on network failures

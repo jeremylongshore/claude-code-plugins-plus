@@ -10,6 +10,7 @@ ramp-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Ramp reliability patterns
 **Workflow:** Part of the enterprise skill category for Ramp integration.
 **Relates to:** Other ramp skills in this pack.

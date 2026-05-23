@@ -20,9 +20,11 @@ compatibility: Designed for Claude Code
 # Linktree Install & Auth
 
 ## Overview
+
 Set up Linktree API for programmatic link-in-bio management with 25M+ creators.
 
 ## Prerequisites
+
 - Linktree account and API access
 - API key/credentials from Linktree dashboard
 - Node.js 18+ or Python 3.8+
@@ -30,18 +32,21 @@ Set up Linktree API for programmatic link-in-bio management with 25M+ creators.
 ## Instructions
 
 ### Step 1: Install SDK
+
 ```bash
 npm install @linktree/sdk
 # or: pip install linktree-sdk
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 export LINKTREE_API_KEY="your-api-key-here"
 echo 'LINKTREE_API_KEY=your-api-key' >> .env
 ```
 
 ### Step 3: Verify Connection (TypeScript)
+
 ```typescript
 import { LinktreeClient } from '@linktree/sdk';
 const client = new LinktreeClient({ apiKey: process.env.LINKTREE_API_KEY });
@@ -50,6 +55,7 @@ console.log(`Profile: ${profile.username} — ${profile.links.length} links`);
 ```
 
 ### Step 4: Verify Connection (Python)
+
 ```python
 import linktree
 client = linktree.Client(api_key=os.environ['LINKTREE_API_KEY'])
@@ -58,6 +64,7 @@ print(f'Profile: {profile.username} — {len(profile.links)} links')
 ```
 
 ## Error Handling
+
 | Error | Code | Solution |
 |-------|------|----------|
 | Invalid API key | 401 | Verify credentials in dashboard |
@@ -65,7 +72,9 @@ print(f'Profile: {profile.username} — {len(profile.links)} links')
 | Rate limited | 429 | Implement backoff |
 
 ## Resources
+
 - [Linktree Documentation](https://linktr.ee/marketplace/developer)
 
 ## Next Steps
+
 After auth, proceed to `linktree-hello-world`.

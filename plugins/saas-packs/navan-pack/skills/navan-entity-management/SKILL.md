@@ -112,6 +112,7 @@ SCIM 2.0 enables automated user lifecycle management. Configure in the Navan adm
 3. Copy the SCIM endpoint URL and bearer token
 
 In Okta:
+
 1. Add the Navan application from the OIN catalog
 2. Configure provisioning with the SCIM endpoint URL
 3. Enable: Create Users, Update User Attributes, Deactivate Users
@@ -200,6 +201,7 @@ function routeForApproval(dept: string, amount: number): string {
 ## Output
 
 Successful execution produces:
+
 - Complete user roster with roles, departments, cost centers, and policy assignments
 - Access audit report identifying users with incomplete configuration
 - SCIM provisioning configuration for Okta or Entra ID

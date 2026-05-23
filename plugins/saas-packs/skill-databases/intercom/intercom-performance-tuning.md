@@ -10,6 +10,7 @@ intercom-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Intercom API performance
 **Workflow:** Part of the cicd skill category for Intercom integration.
 **Relates to:** Other intercom skills in this pack.

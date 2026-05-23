@@ -3,6 +3,7 @@
 ## Update Locations
 
 ### 1. Plugin JSON
+
 ```json
 // .claude-plugin/plugin.json
 {
@@ -13,6 +14,7 @@
 ```
 
 ### 2. Marketplace Extended
+
 ```json
 // .claude-plugin/marketplace.extended.json
 {
@@ -27,6 +29,7 @@
 ```
 
 ### 3. Sync CLI Catalog
+
 ```bash
 npm run sync-marketplace
 # Regenerates marketplace.json with new version

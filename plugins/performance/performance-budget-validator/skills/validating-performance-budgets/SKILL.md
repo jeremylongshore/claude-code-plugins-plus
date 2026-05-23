@@ -32,6 +32,7 @@ This skill allows Claude to automatically validate your application's performanc
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Validate performance against predefined budgets.
 - Identify performance regressions in your application.
 - Integrate performance budget validation into your CI/CD pipeline.
@@ -43,6 +44,7 @@ This skill activates when you need to:
 User request: "Validate performance budget for the homepage."
 
 The skill will:
+
 1. Analyze the homepage's performance metrics (load time, bundle size).
 2. Compare these metrics against the defined budget.
 3. Report any violations, such as exceeding the load time budget.
@@ -52,6 +54,7 @@ The skill will:
 User request: "Run performance budget validation as part of the build process."
 
 The skill will:
+
 1. Execute the performance budget validation command.
 2. Check all defined performance metrics against their budgets.
 3. Report any violations that would cause the build to fail.
@@ -93,6 +96,7 @@ This skill can be integrated with other plugins that provide performance metrics
 ## Error Handling
 
 If budget validation fails:
+
 - Verify budget configuration file exists
 - Check performance testing tool availability
 - Validate metric collection permissions

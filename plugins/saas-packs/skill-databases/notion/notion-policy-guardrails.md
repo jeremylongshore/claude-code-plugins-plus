@@ -10,6 +10,7 @@ notion-policy-guardrails/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Notion policy enforcement
 **Workflow:** Part of the advanced skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

@@ -10,6 +10,7 @@ mistral-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Mistral AI security best practices
 **Workflow:** Part of the operations skill category for Mistral AI integration.
 **Relates to:** Other mistral skills in this pack.

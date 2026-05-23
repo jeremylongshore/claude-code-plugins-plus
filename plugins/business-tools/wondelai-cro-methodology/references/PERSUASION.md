@@ -5,6 +5,7 @@ Your website should be a "proof magnet." Identify, acquire, and display persuasi
 ## Persuasion Assets Audit
 
 ### Credentials & Authority
+
 - [ ] Industry awards
 - [ ] Certifications
 - [ ] Media mentions (logo bar)
@@ -16,6 +17,7 @@ Your website should be a "proof magnet." Identify, acquire, and display persuasi
 - [ ] Patents or proprietary technology
 
 ### Social Proof
+
 - [ ] Customer testimonials (with photos, names, results)
 - [ ] Video testimonials
 - [ ] Case studies (problem → solution → results)
@@ -26,6 +28,7 @@ Your website should be a "proof magnet." Identify, acquire, and display persuasi
 - [ ] Community size
 
 ### Risk Reversal
+
 - [ ] Money-back guarantee
 - [ ] Free trial
 - [ ] Free samples/demos
@@ -35,6 +38,7 @@ Your website should be a "proof magnet." Identify, acquire, and display persuasi
 - [ ] No credit card required
 
 ### Data & Specificity
+
 - [ ] Specific results achieved
 - [ ] ROI calculations
 - [ ] Before/after comparisons
@@ -43,6 +47,7 @@ Your website should be a "proof magnet." Identify, acquire, and display persuasi
 - [ ] Research/survey data
 
 ### Process & Methodology
+
 - [ ] Named methodology/system
 - [ ] Step-by-step process visualization
 - [ ] Behind-the-scenes transparency
@@ -63,6 +68,7 @@ If you don't have an asset, plan to acquire it:
 ## Psychological Triggers
 
 ### Scarcity (Use Ethically)
+
 - Limited time offers (genuine deadlines)
 - Limited quantity
 - Exclusive access
@@ -71,30 +77,35 @@ If you don't have an asset, plan to acquire it:
 **Warning**: Fake scarcity destroys trust. Only use real limitations.
 
 ### Social Proof
+
 - "Join 50,000+ marketers"
 - Real-time activity ("John from NYC just signed up")
 - Testimonials at decision points
 - Expert endorsements
 
 ### Authority
+
 - Expert positioning
 - Media logos
 - Certifications visible
 - Specific credentials
 
 ### Reciprocity
+
 - Free valuable content upfront
 - Free tools/calculators
 - Generous trial periods
 - Helpful support
 
 ### Commitment/Consistency
+
 - Micro-commitments (email before credit card)
 - Progress indicators
 - "You're almost there" messaging
 - Previous choices displayed
 
 ### Loss Aversion
+
 - Cost of inaction
 - "What you're missing"
 - Comparison with competitors' customers
@@ -116,21 +127,25 @@ Example:
 ## Placement Principles
 
 ### Above the fold
+
 - Main value proposition
 - Primary social proof (logo bar, rating)
 - Clear CTA
 
 ### Throughout the page
+
 - Testimonials at objection points
 - Data supporting each claim
 - Visual proof (screenshots, photos)
 
 ### Decision points
+
 - Guarantees near payment
 - Trust badges near forms
 - Testimonials near CTAs
 
 ### Bottom of page
+
 - Comprehensive FAQ
 - Trust indicators
 - Alternative contact options
@@ -138,21 +153,25 @@ Example:
 ## Asset Display Best Practices
 
 ### Logo bars
+
 - 5-7 recognizable logos
 - Similar visual treatment
 - Relevant to target audience
 
 ### Testimonials
+
 - Photo + Name + Company + Title
 - Specific results > vague praise
 - Match testimonial to objection
 
 ### Statistics
+
 - Round numbers seem less credible
 - "47,832 customers" > "About 50,000"
 - Source your data
 
 ### Guarantees
+
 - Make them prominent, not hidden
 - Explain what happens if claimed
 - Reduce perceived risk of claiming

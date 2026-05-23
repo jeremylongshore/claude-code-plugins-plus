@@ -1,6 +1,7 @@
-# Examples
+## Examples
 
 ### Next.js Configuration
+
 ```typescript
 // sentry.client.config.ts
 import * as Sentry from '@sentry/nextjs';
@@ -14,6 +15,7 @@ Sentry.init({
 ```
 
 ### Python Flask Configuration
+
 ```python
 import sentry_sdk
 from flask import Flask

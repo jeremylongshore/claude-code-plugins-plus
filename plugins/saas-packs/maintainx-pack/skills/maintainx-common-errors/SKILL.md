@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Common Errors
 
 ## Overview
+
 Quick reference for diagnosing and resolving common MaintainX API errors with concrete solutions and diagnostic commands.
 
 ## Prerequisites
+
 - `MAINTAINX_API_KEY` environment variable configured
 - `curl` and `jq` available
 - Access to application logs
@@ -72,6 +74,7 @@ curl -X POST https://api.getmaintainx.com/v1/workorders \
 ```
 
 **Common fixes**:
+
 - Work orders require at minimum a `title` field
 - Priority must be one of: `NONE`, `LOW`, `MEDIUM`, `HIGH`
 - Status must be one of: `OPEN`, `IN_PROGRESS`, `ON_HOLD`, `COMPLETED`, `CLOSED`
@@ -101,6 +104,7 @@ async function diagAuth() {
 ```
 
 **Fixes**:
+
 - Regenerate key in MaintainX: Settings > Integrations > Generate Key
 - Check for whitespace: `echo "'$MAINTAINX_API_KEY'" | cat -A`
 - Ensure `Bearer` prefix (not `Basic` or `Token`)
@@ -110,6 +114,7 @@ async function diagAuth() {
 **Cause**: Valid key but insufficient permissions or wrong plan tier.
 
 **Fixes**:
+
 - Verify your plan supports API access (Professional or Enterprise)
 - Check user role has permission for the requested operation
 - For org-specific endpoints, include `X-Organization-Id` header
@@ -125,6 +130,7 @@ curl -s "https://api.getmaintainx.com/v1/workorders/99999" \
 ```
 
 **Fixes**:
+
 - Confirm the ID exists (GET the resource first)
 - Use `api.getmaintainx.com/v1` (not `/v2` or missing version)
 - Check for typos in endpoint path (`/workorders` not `/work-orders`)
@@ -134,6 +140,7 @@ curl -s "https://api.getmaintainx.com/v1/workorders/99999" \
 **Cause**: Request is syntactically valid but semantically incorrect.
 
 **Common triggers**:
+
 - Invalid status transition (e.g., `CLOSED` to `IN_PROGRESS`)
 - Referencing a non-existent `assetId` or `locationId`
 - Invalid enum values for priority or category fields
@@ -162,6 +169,7 @@ async function safeRequest(fn: () => Promise<any>, retries = 3) {
 ```
 
 **Fixes**:
+
 - Honor the `Retry-After` response header
 - Implement exponential backoff (see `maintainx-rate-limits`)
 - Reduce polling frequency; use webhooks instead
@@ -171,21 +179,25 @@ async function safeRequest(fn: () => Promise<any>, retries = 3) {
 **Cause**: MaintainX server-side issue.
 
 **Fixes**:
+
 - Check [MaintainX Status Page](https://status.getmaintainx.com)
 - Retry with exponential backoff (transient errors resolve themselves)
 - If persistent, contact MaintainX support with request details
 
 ## Output
+
 - Identified error root cause from HTTP status code and response body
 - Applied the appropriate fix from the reference above
 - Verified resolution with the diagnostic quick check commands
 
 ## Resources
+
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [MaintainX Status Page](https://status.getmaintainx.com)
 - [MaintainX Help Center](https://help.getmaintainx.com)
 
 ## Next Steps
+
 For comprehensive debugging, see `maintainx-debug-bundle`.
 
 ## Examples

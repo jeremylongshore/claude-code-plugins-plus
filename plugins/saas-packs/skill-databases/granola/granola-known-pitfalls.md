@@ -10,6 +10,7 @@ granola-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Granola anti-patterns
 **Workflow:** Part of the enterprise skill category for Granola integration.
 **Relates to:** Other granola skills in this pack.

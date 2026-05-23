@@ -136,7 +136,7 @@ The common thread across all of today's work: removing the gap between "this tec
 ---
 
 **Related Posts:**
+
 - [X Bug Triage Plugin: Zero to v0.4.3 in One Day](/posts/x-bug-triage-plugin-zero-to-v043-one-day/) — the bootstrap sprint this work builds on
 - [PDF Extraction Bugs, Broadcast Persistence, and a 42-Commit Sweep Day](/posts/pdf-extraction-sweep-day-42-commits/) — another heavy multi-repo day with CAD debugging
 - [Building a Deterministic DXF Comparison Engine in One Day](/posts/deterministic-dxf-comparison-engine-one-day-build/) — the original diff engine that today's MODIFIED/MOVED fix corrects
-

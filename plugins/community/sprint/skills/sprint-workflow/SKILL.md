@@ -61,6 +61,7 @@ Sprint Workflow describes the convergent diffusion execution model used by the S
 ## Examples
 
 **Starting a new sprint:**
+
 ```bash
 /sprint:new       # Creates .claude/sprint/1/specs.md
 # Edit specs.md with requirements
@@ -68,6 +69,7 @@ Sprint Workflow describes the convergent diffusion execution model used by the S
 ```
 
 **Resuming after iteration pause:**
+
 ```bash
 # Review .claude/sprint/1/status.md for blockers
 # Adjust specs.md to narrow scope or fix conflicts
@@ -75,6 +77,7 @@ Sprint Workflow describes the convergent diffusion execution model used by the S
 ```
 
 **Typical convergence flow:**
+
 ```
 Iteration 1: Architect plans → 3 agents implement → tests find 2 failures
 Iteration 2: Architect narrows specs to 2 fixes → agents patch → tests pass

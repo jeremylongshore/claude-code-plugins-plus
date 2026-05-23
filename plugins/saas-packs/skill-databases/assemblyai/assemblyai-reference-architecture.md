@@ -10,6 +10,7 @@ assemblyai-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement AssemblyAI reference architecture
 **Workflow:** Part of the cicd skill category for AssemblyAI integration.
 **Relates to:** Other assemblyai skills in this pack.

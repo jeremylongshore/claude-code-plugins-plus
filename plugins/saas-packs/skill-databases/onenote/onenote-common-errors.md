@@ -10,6 +10,7 @@ onenote-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix OneNote common errors
 **Workflow:** Part of the operations skill category for OneNote integration.
 **Relates to:** Other onenote skills in this pack.

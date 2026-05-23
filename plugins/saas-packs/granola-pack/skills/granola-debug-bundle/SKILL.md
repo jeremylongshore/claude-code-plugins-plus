@@ -27,13 +27,16 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola Debug Bundle
 
 ## Current State
+
 !`sw_vers 2>/dev/null || uname -a`
 !`defaults read /Applications/Granola.app/Contents/Info.plist CFBundleShortVersionString 2>/dev/null || echo 'Granola version: check Menu > About'`
 
 ## Overview
+
 Collect diagnostic information for Granola support. Produces a zip bundle with system info, audio configuration, network connectivity, and app state — without exposing meeting content, transcripts, or API keys.
 
 ## Prerequisites
+
 - Terminal access (macOS Terminal or Windows PowerShell)
 - Granola installed (even if malfunctioning)
 - Internet access for network diagnostics
@@ -41,6 +44,7 @@ Collect diagnostic information for Granola support. Produces a zip bundle with s
 ## Instructions
 
 ### Step 1 — Create Debug Directory
+
 ```bash
 set -euo pipefail
 DEBUG_DIR="$HOME/Desktop/granola-debug-$(date +%Y%m%d-%H%M%S)"
@@ -51,6 +55,7 @@ echo "Debug directory: $DEBUG_DIR"
 ### Step 2 — Collect System Information
 
 **macOS:**
+
 ```bash
 set -euo pipefail
 cd "$DEBUG_DIR"
@@ -71,6 +76,7 @@ system_profiler SPAudioDataType > audio-config.txt 2>/dev/null
 ```
 
 **Windows (PowerShell):**
+
 ```powershell
 $dir = "$env:USERPROFILE\Desktop\granola-debug-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
 New-Item -ItemType Directory -Path $dir
@@ -164,6 +170,7 @@ echo "Submit to: help@granola.ai or via in-app support"
 ```
 
 ## Self-Diagnosis Checklist
+
 Run through this before contacting support:
 
 - [ ] Granola is updated to the latest version (Check for updates in menu)
@@ -177,6 +184,7 @@ Run through this before contacting support:
 - [ ] [status.granola.ai](https://status.granola.ai) shows no active incidents
 
 ## Privacy: What the Bundle Does NOT Include
+
 - Meeting transcripts or notes content
 - Personal calendar event details
 - API keys or authentication tokens
@@ -184,6 +192,7 @@ Run through this before contacting support:
 - Contact/attendee information
 
 ## Output
+
 - Zip file on Desktop containing system, audio, network, and app diagnostics
 - Ready for submission to Granola support at help@granola.ai
 - Self-diagnosis checklist completed before escalation
@@ -198,9 +207,11 @@ Run through this before contacting support:
 | Cache parse error | Different Granola version | Report the error — it helps support identify the version issue |
 
 ## Resources
+
 - [Granola Support](https://help.granola.ai)
 - [Status Page](https://status.granola.ai)
 - [Transcription Troubleshooting](https://docs.granola.ai/help-center/troubleshooting/transcription-issues)
 
 ## Next Steps
+
 Proceed to `granola-rate-limits` to understand usage limits and plan differences.

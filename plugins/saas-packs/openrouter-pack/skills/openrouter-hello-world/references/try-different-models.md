@@ -3,6 +3,7 @@
 ## Try Different Models
 
 ### OpenAI Models
+
 ```python
 # GPT-4 Turbo
 response = client.chat.completions.create(
@@ -18,6 +19,7 @@ response = client.chat.completions.create(
 ```
 
 ### Anthropic Models
+
 ```python
 # Claude 3.5 Sonnet
 response = client.chat.completions.create(
@@ -33,6 +35,7 @@ response = client.chat.completions.create(
 ```
 
 ### Open Source Models
+
 ```python
 # Llama 3.1 70B
 response = client.chat.completions.create(

@@ -5,21 +5,25 @@
 ### mysqldump (Logical Backup)
 
 **Single Database:**
+
 ```bash
 mysqldump -h localhost -u root -p mydb > mydb.sql
 ```
 
 **With Compression:**
+
 ```bash
 mysqldump -h localhost -u root -p mydb | gzip > mydb.sql.gz
 ```
 
 **All Databases:**
+
 ```bash
 mysqldump -h localhost -u root -p --all-databases > all_databases.sql
 ```
 
 **Multiple Specific Databases:**
+
 ```bash
 mysqldump -h localhost -u root -p --databases db1 db2 db3 > multi_db.sql
 ```
@@ -119,6 +123,7 @@ systemctl start mysql
 ### Enable Binary Logging
 
 In `my.cnf`:
+
 ```ini
 [mysqld]
 log_bin = /var/log/mysql/mysql-bin
@@ -200,6 +205,7 @@ log "Backup process completed"
 ## Selective Restore
 
 **Single Table:**
+
 ```bash
 # Extract table from dump
 sed -n '/^-- Table structure for table `users`/,/^-- Table structure for table/p' mydb.sql > users.sql
@@ -209,6 +215,7 @@ mysql -u root -p mydb -e "DROP TABLE IF EXISTS users; SOURCE users.sql;"
 ```
 
 **Using mysqlpump for Selective Dump:**
+
 ```bash
 mysqlpump -u root -p --include-tables=users,orders mydb > partial.sql
 ```

@@ -10,6 +10,7 @@ supabase-enterprise-rbac/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Supabase enterprise SSO with SAML/OIDC, role-based access control with permission middleware, organization management, and audit trails.
 **Workflow:** Enterprise security skill. Essential for enterprise-grade deployments with SSO requirements.
 **Relates to:** Builds on supabase-security-basics and supabase-data-handling; enables supabase-migration-deep-dive for enterprise migrations.

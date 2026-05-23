@@ -10,6 +10,7 @@ framer-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Framer primary workflow
 **Workflow:** Part of the onboarding skill category for Framer integration.
 **Relates to:** Other framer skills in this pack.

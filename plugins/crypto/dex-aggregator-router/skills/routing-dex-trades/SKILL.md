@@ -41,26 +41,37 @@ Optimal trade routing across decentralized exchanges by aggregating quotes from 
 ## Instructions
 
 1. Get a quick quote for the single best price with gas cost and effective rate:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 1.0
    ```
+
 2. Compare all DEXs to see quotes ranked by effective rate (after gas):
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 5.0 --compare
    ```
+
 3. Analyze multi-hop routes to compare direct vs. multi-hop (2-3 pools) with hop-by-hop breakdown:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 10.0 --routes
    ```
+
 4. Split large orders ($10K+) across multiple DEXs to minimize total price impact:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 100.0 --split
    ```
+
 5. Assess MEV risk (sandwich attack risk score: LOW/MEDIUM/HIGH) before executing:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 50.0 --mev-check
    ```
+
 6. Run full analysis combining all features for comprehensive output:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 25.0 --full --output json
    ```
@@ -89,16 +100,19 @@ See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 ## Examples
 
 **Compare prices for a 5 ETH swap:**
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 5.0 --compare
 ```
 
 **Find optimal split for a large order:**
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 100.0 --split
 ```
 
 **Check MEV risk before executing:**
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 50.0 --mev-check
 ```

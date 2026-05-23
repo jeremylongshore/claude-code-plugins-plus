@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq Hello World
 
 ## Overview
+
 Build a minimal chat completion with Groq's LPU inference API. Groq uses an OpenAI-compatible endpoint, so the API shape is familiar -- but responses arrive 10-50x faster than GPU-based providers.
 
 ## Prerequisites
+
 - `groq-sdk` installed (`npm install groq-sdk`)
 - `GROQ_API_KEY` environment variable set
 - Completed `groq-install-auth` setup
@@ -35,6 +37,7 @@ Build a minimal chat completion with Groq's LPU inference API. Groq uses an Open
 ## Instructions
 
 ### Step 1: Basic Chat Completion (TypeScript)
+
 ```typescript
 import Groq from "groq-sdk";
 
@@ -57,6 +60,7 @@ main().catch(console.error);
 ```
 
 ### Step 2: Streaming Response
+
 ```typescript
 async function streamExample() {
   const stream = await groq.chat.completions.create({
@@ -76,6 +80,7 @@ async function streamExample() {
 ```
 
 ### Step 3: Python Equivalent
+
 ```python
 from groq import Groq
 
@@ -94,6 +99,7 @@ print(f"Tokens: {completion.usage.total_tokens}")
 ```
 
 ### Step 4: Try Different Models
+
 ```typescript
 // Speed tier -- fastest responses (~560 tok/s)
 const fast = await groq.chat.completions.create({
@@ -131,6 +137,7 @@ const vision = await groq.chat.completions.create({
 | `meta-llama/llama-4-maverick-17b-128e-instruct` | 17Bx128E | 128K | — | Best multimodal quality |
 
 ## Response Structure
+
 ```typescript
 interface ChatCompletion {
   id: string;                    // "chatcmpl-xxx"
@@ -155,6 +162,7 @@ interface ChatCompletion {
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401 Invalid API Key` | Key not set or invalid | Check `GROQ_API_KEY` env var |
@@ -163,9 +171,11 @@ interface ChatCompletion {
 | `context_length_exceeded` | Prompt + max_tokens > model context | Reduce prompt size or set lower `max_tokens` |
 
 ## Resources
+
 - [Groq Text Generation Docs](https://console.groq.com/docs/text-chat)
 - [Groq Models Reference](https://console.groq.com/docs/models)
 - [Groq API Reference](https://console.groq.com/docs/api-reference)
 
 ## Next Steps
+
 Proceed to `groq-local-dev-loop` for development workflow setup.

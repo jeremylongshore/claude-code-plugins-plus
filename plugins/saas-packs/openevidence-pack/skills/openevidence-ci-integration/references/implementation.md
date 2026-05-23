@@ -1,9 +1,11 @@
 # OpenEvidence CI Integration - Implementation Details
 
 ## GitHub Actions Workflow
+
 Full CI pipeline with lint-and-typecheck, unit-tests (with coverage), integration-tests (sandbox API), and clinical-validation jobs.
 
 ## Test Configuration
+
 ```typescript
 // vitest.config.integration.ts
 export default mergeConfig(baseConfig, defineConfig({
@@ -17,6 +19,7 @@ export default mergeConfig(baseConfig, defineConfig({
 ```
 
 ## Unit Tests with Mocks
+
 ```typescript
 vi.mock('@openevidence/sdk', () => ({
   OpenEvidenceClient: vi.fn().mockImplementation(() => ({
@@ -31,6 +34,7 @@ vi.mock('@openevidence/sdk', () => ({
 ```
 
 ## Integration Tests
+
 ```typescript
 describe('OpenEvidence API Integration', () => {
   beforeAll(() => {
@@ -48,9 +52,11 @@ describe('OpenEvidence API Integration', () => {
 ```
 
 ## Clinical Validation Tests
+
 Known-answer test cases with expectedKeywords and mustNotContain patterns, generating JSON validation reports for compliance review.
 
 ## Package.json Scripts
+
 ```json
 {
   "scripts": {

@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Obsidian Webhooks & Events
 
 ## Overview
+
 Complete guide to Obsidian's event system: vault events (create, modify, delete, rename), workspace events (layout, leaf changes, editor state), metadataCache events, DOM events, custom EventRef patterns, and periodic tasks. Every event registration uses `this.registerEvent()` for automatic cleanup on plugin unload.
 
 ## Prerequisites
+
 - Working Obsidian plugin with `onload()` / `onunload()` lifecycle
 - Understanding of TypeScript event handler signatures
 - Familiarity with Obsidian's TFile, TFolder, and WorkspaceLeaf types
@@ -323,6 +325,7 @@ class MyPlugin extends Plugin {
 Obsidian's `Events` class is the same base class used by `Vault`, `Workspace`, and `MetadataCache`. Using it for your own bus gives you a consistent pattern with `on/off/trigger`.
 
 ## Output
+
 - Vault event handlers for file create, modify, delete, rename
 - Workspace event handlers for active leaf, file open, editor changes, layout
 - MetadataCache handlers for content parsing and full-vault resolution
@@ -331,6 +334,7 @@ Obsidian's `Events` class is the same base class used by `Vault`, `Workspace`, a
 - Custom event bus for internal plugin communication
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Memory leak | Using `addEventListener` directly | Always use `registerDomEvent` or `registerEvent` |
@@ -343,6 +347,7 @@ Obsidian's `Events` class is the same base class used by `Vault`, `Workspace`, a
 ## Examples
 
 ### File Change Logger
+
 ```typescript
 // Log all file operations to a daily note
 async onload() {
@@ -360,6 +365,7 @@ async onload() {
 ```
 
 ### Tag Watcher — React to Frontmatter Tag Changes
+
 ```typescript
 private tagCache = new Map<string, string[]>();
 
@@ -383,10 +389,12 @@ async onload() {
 ```
 
 ## Resources
+
 - [Obsidian Events API](https://docs.obsidian.md/Reference/TypeScript+API/Events)
 - [Workspace Events](https://docs.obsidian.md/Reference/TypeScript+API/Workspace)
 - [Vault Events](https://docs.obsidian.md/Reference/TypeScript+API/Vault)
 - [MetadataCache API](https://docs.obsidian.md/Reference/TypeScript+API/MetadataCache)
 
 ## Next Steps
+
 For throttling and debouncing these events under load, see `obsidian-rate-limits`. For production readiness, see `obsidian-prod-checklist`.

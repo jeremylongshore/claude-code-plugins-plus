@@ -5,6 +5,7 @@ Get started with the AI/ML Engineering Pack in 10 minutes. This guide walks you 
 ## What You'll Build
 
 In this guide, you'll create:
+
 1. **Optimized product description generator** (Prompt Engineering)
 2. **Production LLM API** with error handling (LLM Integration)
 3. **Document Q&A system** with RAG (RAG Systems)
@@ -31,6 +32,7 @@ claude
 ```
 
 Inside Claude:
+
 ```
 Optimize this prompt for cost and clarity:
 
@@ -44,12 +46,14 @@ Features: Voice control, 50+ device compatibility, energy monitoring
 ```
 
 Claude will use the **prompt-optimizer** agent to:
+
 - Reduce token count by 60-80%
 - Maintain quality and clarity
 - Show before/after token comparison
 - Calculate cost savings
 
 **Expected output:**
+
 ```
 Optimized Prompt (15 tokens, 71% reduction):
 "Create an engaging tech product description highlighting key benefits:
@@ -72,6 +76,7 @@ Requirements:
 ```
 
 Claude generates a complete `ProductDescriptionGenerator` class with:
+
 - Pydantic models for type safety
 - Template with variable substitution
 - Cost estimation
@@ -99,6 +104,7 @@ Requirements:
 ```
 
 Claude generates complete project structure:
+
 ```
 llm-api/
 ├── main.py              # FastAPI application with streaming
@@ -123,6 +129,7 @@ uvicorn main:app --reload
 ```
 
 Test streaming endpoint:
+
 ```bash
 curl -X POST http://localhost:8000/v1/completions \
   -H "Content-Type: application/json" \
@@ -130,6 +137,7 @@ curl -X POST http://localhost:8000/v1/completions \
 ```
 
 **Features included:**
+
 - Exponential backoff retry (3 attempts)
 - Rate limiting (100 requests/min)
 - Response caching (5 min TTL)
@@ -158,6 +166,7 @@ Requirements:
 ```
 
 Claude generates:
+
 ```
 rag-system/
 ├── document_loader.py      # PDF/DOCX/TXT loader
@@ -189,6 +198,7 @@ python pipeline.py query "What is our return policy?"
 ```
 
 **Example output:**
+
 ```
 Answer: Our return policy allows 30-day returns for unused items...
 
@@ -200,6 +210,7 @@ Retrieved in 0.34s
 ```
 
 **Features included:**
+
 - Recursive chunking (512 tokens, 50 overlap)
 - Semantic search with cosine similarity
 - Cohere reranking for better relevance
@@ -282,6 +293,7 @@ print(result)
 ```
 
 **Features included:**
+
 - PII detection (10+ entity types)
 - Toxicity classification (toxic, severe_toxic, obscene, etc.)
 - Prompt injection pattern matching
@@ -307,6 +319,7 @@ User Input → Safety Check → RAG Retrieval → LLM Generation → Safety Chec
 ### Implementation
 
 Ask Claude:
+
 ```
 Build complete AI customer support bot with:
 - RAG for knowledge base (company docs)
@@ -321,12 +334,14 @@ Use OpenAI GPT-4 and Qdrant.
 ```
 
 Claude orchestrates all 4 categories:
+
 1. **Prompt Engineering** - Generates support response templates
 2. **LLM Integration** - Creates production API with retries
 3. **RAG Systems** - Builds knowledge base retrieval
 4. **AI Safety** - Adds comprehensive guardrails
 
 **Generated in ~5 minutes:**
+
 ```
 customer-support-bot/
 ├── main.py                    # FastAPI application
@@ -374,6 +389,7 @@ curl -X POST http://localhost:8000/v1/chat \
 ```
 
 **Response:**
+
 ```json
 {
   "response": "To reset your password:\n1. Go to Settings > Account\n2. Click 'Reset Password'\n3. Check your email for reset link\n\nSources: user-guide.pdf (p.12)",
@@ -386,16 +402,17 @@ curl -X POST http://localhost:8000/v1/chat \
 ```
 
 **Features:**
--  RAG retrieval from knowledge base (0.34s)
--  Optimized prompts (60% cost reduction)
--  PII detection and redaction
--  Toxicity filtering
--  Prompt injection defense
--  Cost tracking ($0.0037 per query)
--  Source citations
--  Streaming support
--  Error handling with retries
--  Prometheus metrics
+
+- RAG retrieval from knowledge base (0.34s)
+- Optimized prompts (60% cost reduction)
+- PII detection and redaction
+- Toxicity filtering
+- Prompt injection defense
+- Cost tracking ($0.0037 per query)
+- Source citations
+- Streaming support
+- Error handling with retries
+- Prometheus metrics
 
 **Total time to build:** ~10 minutes with AI/ML Engineering Pack
 **Time to build manually:** ~16 hours
@@ -415,6 +432,7 @@ Requirements:
 ```
 
 Claude generates complete monitoring setup:
+
 - Prometheus metrics collection
 - Grafana dashboard JSON
 - Cost tracking with budget alerts
@@ -422,6 +440,7 @@ Claude generates complete monitoring setup:
 - Alert rules (high latency, error rate, budget)
 
 **View dashboards:**
+
 ```bash
 docker-compose -f monitoring/docker-compose.yml up -d
 # Grafana: http://localhost:3000
@@ -432,33 +451,37 @@ docker-compose -f monitoring/docker-compose.yml up -d
 
 In 40 minutes, you've:
 
-1.  Optimized prompts for 60-80% cost reduction
-2.  Generated production-ready LLM API code
-3.  Built complete RAG system with vector search
-4.  Implemented comprehensive AI safety
-5.  Deployed full-stack AI application
-6.  Set up monitoring and cost tracking
+1. Optimized prompts for 60-80% cost reduction
+2. Generated production-ready LLM API code
+3. Built complete RAG system with vector search
+4. Implemented comprehensive AI safety
+5. Deployed full-stack AI application
+6. Set up monitoring and cost tracking
 
 ## Next Steps
 
 ### Explore Advanced Features
 
 **Prompt Engineering:**
+
 - Chain-of-Thought reasoning
 - Meta-prompting for self-improvement
 - Multi-modal prompts (text + images)
 
 **LLM Integration:**
+
 - Multi-provider fallback systems
 - Model cascading (cheap → expensive)
 - Fine-tuning integration
 
 **RAG Systems:**
+
 - Hybrid search (vector + keyword)
 - Query expansion techniques
 - Multi-index retrieval
 
 **AI Safety:**
+
 - Bias mitigation strategies
 - Red teaming for vulnerabilities
 - Compliance auditing (GDPR, HIPAA)
@@ -466,6 +489,7 @@ In 40 minutes, you've:
 ### Real-World Use Cases
 
 See [USE_CASES.md](./USE_CASES.md) for:
+
 - E-commerce product recommendations ($50K savings)
 - Legal document analysis (10x faster)
 - Customer support automation (60% ticket reduction)
@@ -474,6 +498,7 @@ See [USE_CASES.md](./USE_CASES.md) for:
 ### Troubleshooting
 
 Having issues? See [TROUBLESHOOTING.md](./000-docs/157-DR-FAQS-troubleshooting.md) for:
+
 - API key configuration
 - Rate limiting errors
 - Vector database connection issues
@@ -488,4 +513,4 @@ Having issues? See [TROUBLESHOOTING.md](./000-docs/157-DR-FAQS-troubleshooting.m
 
 ---
 
-** Congratulations!** You've built your first production AI/ML system in 40 minutes. Explore [USE_CASES.md](./USE_CASES.md) for real-world applications with ROI.
+**Congratulations!** You've built your first production AI/ML system in 40 minutes. Explore [USE_CASES.md](./USE_CASES.md) for real-world applications with ROI.

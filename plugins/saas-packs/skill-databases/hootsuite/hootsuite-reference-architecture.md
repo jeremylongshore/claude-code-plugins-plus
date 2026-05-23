@@ -10,6 +10,7 @@ hootsuite-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Hootsuite reference architecture
 **Workflow:** Part of the cicd skill category for Hootsuite integration.
 **Relates to:** Other hootsuite skills in this pack.

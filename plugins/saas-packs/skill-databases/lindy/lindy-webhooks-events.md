@@ -10,6 +10,7 @@ lindy-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Lindy webhook handling
 **Workflow:** Part of the cicd skill category for Lindy integration.
 **Relates to:** Other lindy skills in this pack.

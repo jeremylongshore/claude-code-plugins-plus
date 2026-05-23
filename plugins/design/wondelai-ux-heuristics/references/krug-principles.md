@@ -7,11 +7,13 @@ Full methodology from "Don't Make Me Think" for creating intuitive, usable inter
 ### Fact 1: We Don't Read, We Scan
 
 **Why users scan:**
+
 - They're on a mission (have a goal)
 - They know they don't need to read everything
 - They're good at scanning from years of practice
 
 **Design implications:**
+
 - Create visual hierarchy (important things bigger, bolder)
 - Use headings and subheadings liberally
 - Keep paragraphs short
@@ -25,12 +27,14 @@ Full methodology from "Don't Make Me Think" for creating intuitive, usable inter
 Users click the first reasonable option, not the best option.
 
 **Why satisficing:**
+
 - Optimizing is hard and takes time
 - The penalty for guessing wrong is low (back button)
 - Weighing options doesn't improve results much
 - Guessing is more fun
 
 **Design implications:**
+
 - Make the right choice obvious
 - Don't rely on users reading all options
 - Make consequences clear before clicking
@@ -40,11 +44,13 @@ Users click the first reasonable option, not the best option.
 Users don't read instructions. They try things until something works.
 
 **Why muddling through:**
+
 - It's not important to them to know how it works
 - If they find something that works, they stick with it
 - It rarely matters if they don't use something optimally
 
 **Design implications:**
+
 - Make things obvious so "figuring out" isn't needed
 - Expect users to use things "wrong"
 - Design for recovery from mistakes
@@ -70,6 +76,7 @@ Signs that your page makes users think:
 Users have a finite reservoir of goodwill:
 
 **Things that diminish goodwill:**
+
 - Hiding info they need (phone numbers, prices)
 - Punishing them for not doing things your way
 - Asking for unnecessary information
@@ -79,6 +86,7 @@ Users have a finite reservoir of goodwill:
 - Amateur errors (broken links, typos)
 
 **Things that increase goodwill:**
+
 - Know what questions they have and answer them
 - Minimize steps
 - Put effort into UI quality
@@ -126,11 +134,13 @@ Can users answer these on any random page?
 ### Breadcrumbs
 
 **Good breadcrumbs:**
+
 ```
 Home > Products > Shoes > Running > Men's Trail Runners
 ```
 
 **Rules:**
+
 - Put them at the top
 - Use ">" between levels
 - Make the current page name visible but not a link
@@ -154,12 +164,14 @@ The homepage has to do too many things:
 ### Homepage Priorities
 
 **Must do:**
+
 - Tell me what this site is
 - Tell me what I can do here
 - Tell me why I should be here (and not somewhere else)
 - Start me on my way
 
 **Should do:**
+
 - Show me what I'm looking for
 - Show me where to start
 - Establish credibility and trust
@@ -167,6 +179,7 @@ The homepage has to do too many things:
 ### The Big Bang Theory of Web Design
 
 **You have 3-4 seconds to answer:**
+
 1. What is this?
 2. What can I do here?
 3. Why should I be here?
@@ -181,6 +194,7 @@ The homepage has to do too many things:
 | Instantly understandable | Requires thought |
 
 Examples:
+
 - Good: "Find anything from thousands of stores"
 - Bad: "Welcome to the future of shopping"
 
@@ -191,6 +205,7 @@ Examples:
 ### Mobile Considerations
 
 **Constraints:**
+
 - Smaller viewport
 - Fat fingers (need bigger targets)
 - Single-column layout
@@ -210,12 +225,14 @@ Examples:
 ### Mobile Trade-offs
 
 **What to prioritize:**
+
 - Primary tasks front and center
 - Essential content visible
 - Fast load times
 - Easy to tap, hard to mis-tap
 
 **What to hide/remove:**
+
 - Secondary navigation
 - Non-essential images
 - Decorative elements
@@ -241,16 +258,19 @@ Testing with more users has diminishing returns. Better to test with 3, fix issu
 ### Test Protocol
 
 **Before:**
+
 - "I'm testing the site, not you"
 - "Think out loud as you go"
 - "There are no wrong answers"
 
 **During:**
+
 - Don't help. Don't explain. Just watch.
 - Note hesitations and confusions
 - Write down what they say
 
 **After:**
+
 - Ask what was confusing
 - Ask what they expected
 - Ask how they'd describe the site

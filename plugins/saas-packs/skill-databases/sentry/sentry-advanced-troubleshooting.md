@@ -10,6 +10,7 @@ sentry-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Advanced Sentry troubleshooting techniques for complex issues including SDK initialization, network problems, source maps, and SDK conflicts.
 **Workflow:** Use when standard troubleshooting does not resolve issues. Provides deep diagnostic techniques and comprehensive debugging.
 **Relates to:** Follows `sentry-common-errors` for basic issues. Works with `sentry-debug-bundle` for support preparation.

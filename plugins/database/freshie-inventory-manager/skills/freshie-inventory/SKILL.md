@@ -42,6 +42,7 @@ then delegates heavy operations to specialized subagents.
 **Database location:** `freshie/inventory.sqlite` (50 tables, versioned by `run_id`)
 
 **Key scripts:**
+
 - `freshie/scripts/rebuild-inventory.py` — full repo scan, creates new discovery run
 - `freshie/scripts/batch-remediate.py` — auto-fix compliance issues
 - `scripts/validate-skills-schema.py` — enterprise validation with DB population
@@ -103,6 +104,7 @@ sqlite3 freshie/inventory.sqlite "SELECT CASE WHEN path LIKE '%saas-packs%' THEN
 ```
 
 Present as:
+
 ```
 FRESHIE INVENTORY DASHBOARD
 ============================
@@ -158,13 +160,15 @@ The subagent runs the full validation pipeline and returns a structured summary.
 **CRITICAL: Always dry-run first, then confirm before executing.**
 
 1. Run dry-run:
+
 ```bash
 python3 freshie/scripts/batch-remediate.py --dry-run
 ```
 
-2. Present the changes that would be made.
+1. Present the changes that would be made.
 
-3. Use AskUserQuestion:
+2. Use AskUserQuestion:
+
 ```
 REMEDIATION PREVIEW
 ================================================================
@@ -175,12 +179,13 @@ Proceed?
   - Cancel  — Abort, no changes made
 ```
 
-4. Only if user selects "Execute":
+1. Only if user selects "Execute":
+
 ```bash
 python3 freshie/scripts/batch-remediate.py --all --execute
 ```
 
-5. After execution, run Workflow C (Compliance Check) to measure improvement.
+1. After execution, run Workflow C (Compliance Check) to measure improvement.
 
 ---
 
@@ -205,6 +210,7 @@ query against the freshie schema using these key tables:
 Always filter to latest run: `WHERE run_id = (SELECT MAX(id) FROM discovery_runs)`
 
 After showing results, use AskUserQuestion to offer follow-up:
+
 ```
 Results shown. What next?
   - Refine query  — Modify or drill deeper
@@ -224,6 +230,7 @@ If more than 2 runs exist, use AskUserQuestion to let user pick which two to com
 Default to the two most recent.
 
 Use the "Historical Trends" queries from [common-queries.md](references/common-queries.md) for:
+
 - Grade distribution comparison between runs
 - Skills that changed grade (upgrades/downgrades with score delta)
 - New skills added since previous run
@@ -238,6 +245,7 @@ mkdir -p freshie/exports
 ```
 
 Use AskUserQuestion to let user pick what to export:
+
 ```
 EXPORT OPTIONS
 ================================================================
@@ -251,6 +259,7 @@ What should I export?
 ```
 
 Then run the appropriate export:
+
 ```bash
 sqlite3 -header -csv freshie/inventory.sqlite "{query}" > freshie/exports/{filename}.csv
 ```
@@ -354,10 +363,12 @@ If the user wants a report:
 
 1. **Generate markdown report** — write the workflow results to `/tmp/freshie-report-{date}.md`
 2. **Convert to PDF** using the email skill's converter:
+
 ```bash
 python3 ~/.claude/skills/email/scripts/md-to-pdf.py /tmp/freshie-report-{date}.md /tmp/freshie-report-{date}.pdf --style professional
 ```
-3. **Send via /email skill** — invoke the Skill tool with `skill: "email"` and args describing:
+
+1. **Send via /email skill** — invoke the Skill tool with `skill: "email"` and args describing:
    - To: recipient (default: jeremy@intentsolutions.io)
    - Subject: "Freshie Ecosystem Report — {date}"
    - Body: brief summary
@@ -384,6 +395,7 @@ Query results use table format. Deltas show +/- indicators. CSV exports write to
 ## Examples
 
 See [examples.md](references/examples.md) for detailed input/output examples covering all workflows:
+
 - Quick status check (direct intent, skips menu)
 - Full audit with email PDF report (parallel subagents)
 - Ad-hoc query with CSV export follow-up

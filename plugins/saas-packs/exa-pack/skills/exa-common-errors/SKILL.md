@@ -25,11 +25,13 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Common Errors
 
 ## Overview
+
 Quick reference for Exa API errors by HTTP status code and error tag. All error responses include a `requestId` field — include it when contacting Exa support at hello@exa.ai.
 
 ## Error Reference
 
 ### 400 — Bad Request
+
 | Error Tag | Cause | Solution |
 |-----------|-------|----------|
 | `INVALID_REQUEST_BODY` | Malformed JSON or missing required fields | Validate JSON structure and required `query` field |
@@ -41,6 +43,7 @@ Quick reference for Exa API errors by HTTP status code and error tag. All error 
 | `NO_CONTENT_FOUND` | No content at provided URLs | Verify URLs are accessible |
 
 ### 401 — Unauthorized
+
 ```bash
 # Verify your API key is set and valid
 echo "Key set: ${EXA_API_KEY:+yes}"
@@ -56,12 +59,14 @@ curl -s -o /dev/null -w "%{http_code}" \
 **Fix:** Regenerate API key at [dashboard.exa.ai](https://dashboard.exa.ai).
 
 ### 402 — Payment Required
+
 | Error Tag | Cause | Solution |
 |-----------|-------|----------|
 | `NO_MORE_CREDITS` | Account balance exhausted | Top up at dashboard.exa.ai |
 | `API_KEY_BUDGET_EXCEEDED` | Spending limit reached | Increase budget in API key settings |
 
 ### 403 — Forbidden
+
 | Error Tag | Cause | Solution |
 |-----------|-------|----------|
 | `ACCESS_DENIED` | Feature not available on plan | Upgrade plan or contact Exa |
@@ -70,6 +75,7 @@ curl -s -o /dev/null -w "%{http_code}" \
 | `PROHIBITED_CONTENT` | Content blocked by moderation | Review query for policy violations |
 
 ### 429 — Rate Limited
+
 ```typescript
 // Default rate limit: 10 QPS (queries per second)
 // Error response format: { "error": "rate limit exceeded" }
@@ -91,11 +97,13 @@ async function searchWithBackoff(exa: Exa, query: string, opts: any) {
 ```
 
 ### 422 — Unprocessable Entity
+
 | Error Tag | Cause | Solution |
 |-----------|-------|----------|
 | `FETCH_DOCUMENT_ERROR` | URL could not be crawled | Verify URL is accessible and not paywalled |
 
 ### 5xx — Server Errors
+
 | Code | Tag | Action |
 |------|-----|--------|
 | 500 | `DEFAULT_ERROR` / `INTERNAL_ERROR` | Retry after 1-2 seconds |
@@ -104,6 +112,7 @@ async function searchWithBackoff(exa: Exa, query: string, opts: any) {
 | 503 | Service Unavailable | Check status page, retry later |
 
 ### Content Fetch Errors (per-URL status in getContents)
+
 | Tag | Cause | Resolution |
 |-----|-------|-----------|
 | `CRAWL_NOT_FOUND` | Content unavailable at URL | Verify URL correctness |
@@ -113,6 +122,7 @@ async function searchWithBackoff(exa: Exa, query: string, opts: any) {
 | `UNSUPPORTED_URL` | Non-HTTP URL scheme | Use standard HTTPS URLs |
 
 ## Quick Diagnostic Script
+
 ```bash
 set -euo pipefail
 
@@ -135,15 +145,18 @@ fi
 ```
 
 ## Instructions
+
 1. Check the HTTP status code from the error response
 2. Match the error tag to the tables above
 3. Apply the documented solution
 4. Include `requestId` from error responses when contacting support
 
 ## Resources
+
 - [Exa Error Codes](https://docs.exa.ai/reference/error-codes)
 - [Exa Rate Limits](https://docs.exa.ai/reference/rate-limits)
 - [Exa Status Page](https://status.exa.ai)
 
 ## Next Steps
+
 For comprehensive debugging, see `exa-debug-bundle`. For rate limit patterns, see `exa-rate-limits`.

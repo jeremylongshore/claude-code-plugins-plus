@@ -10,6 +10,7 @@ lucidchart-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Lucidchart rate limiting and backoff
 **Workflow:** Part of the operations skill category for Lucidchart integration.
 **Relates to:** Other lucidchart skills in this pack.

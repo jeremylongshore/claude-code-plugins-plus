@@ -10,6 +10,7 @@ Implement comprehensive schema validation using modern validation libraries like
 ## When to Use This Command
 
 Use `/validate-schemas` when you need to:
+
 - Enforce strict data types and formats in API requests and responses
 - Create reusable validation schemas across multiple endpoints
 - Generate TypeScript types from validation schemas
@@ -18,6 +19,7 @@ Use `/validate-schemas` when you need to:
 - Ensure data consistency before database operations
 
 DON'T use this when:
+
 - Working with unstructured or highly dynamic data (use runtime checks instead)
 - Building quick prototypes without formal contracts (premature optimization)
 - Validation logic is trivial (simple type checks may suffice)
@@ -25,6 +27,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **Zod** as the primary approach because:
+
 - TypeScript-first with automatic type inference
 - Composable schemas with chaining syntax
 - Zero runtime dependencies
@@ -33,12 +36,14 @@ This command implements **Zod** as the primary approach because:
 - Works seamlessly with modern frameworks
 
 **Alternative considered: Joi**
+
 - More mature with extensive ecosystem
 - Better for JavaScript-only projects
 - More verbose API
 - Recommended for legacy Node.js applications
 
 **Alternative considered: JSON Schema**
+
 - Language-agnostic standard
 - Better for cross-platform validation
 - More complex to write and maintain
@@ -47,6 +52,7 @@ This command implements **Zod** as the primary approach because:
 ## Prerequisites
 
 Before running this command:
+
 1. Choose validation library based on your tech stack
 2. Define validation requirements for each endpoint
 3. Plan error response format
@@ -56,23 +62,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Define Base Schemas
+
 Create reusable schema primitives for common data types and patterns.
 
 ### Step 2: Compose Endpoint Schemas
+
 Build complex schemas by composing base schemas with business rules.
 
 ### Step 3: Integrate with Middleware
+
 Set up validation middleware to automatically validate requests and responses.
 
 ### Step 4: Generate Types
+
 Generate TypeScript types from schemas for compile-time safety.
 
 ### Step 5: Implement Error Handling
+
 Create consistent error formatting and reporting mechanisms.
 
 ## Output Format
 
 The command generates:
+
 - `schemas/` - Schema definitions organized by domain
 - `validators/` - Compiled validation functions
 - `types/` - Generated TypeScript types from schemas
@@ -543,11 +555,13 @@ async def validate_order(order: CreateOrderSchema):
 ## Configuration Options
 
 **Validation Strategies**
+
 - `fail-fast`: Stop at first error (faster)
 - `collect-all`: Gather all errors (better UX)
 - `partial`: Allow partial validation for updates
 
 **Type Coercion**
+
 - `strict`: No type conversion
 - `loose`: Attempt type conversion
 - `smart`: Context-aware conversion
@@ -555,6 +569,7 @@ async def validate_order(order: CreateOrderSchema):
 ## Best Practices
 
 DO:
+
 - Create reusable base schemas for common patterns
 - Use descriptive error messages for custom validators
 - Generate TypeScript types from schemas
@@ -563,6 +578,7 @@ DO:
 - Test edge cases and boundary conditions
 
 DON'T:
+
 - Duplicate validation logic across layers
 - Use overly complex nested schemas
 - Ignore performance impact of complex validations

@@ -101,6 +101,7 @@ describe('Button', () => {
 - Event handlers must be tested with user interaction simulation
 - Error states and loading states must be covered
 - Accessibility: test with `screen.getByRole` over `getByTestId`
+
 ```
 
 ## Frontmatter Fields

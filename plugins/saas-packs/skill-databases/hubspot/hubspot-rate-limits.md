@@ -10,6 +10,7 @@ hubspot-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement HubSpot rate limiting and backoff
 **Workflow:** Part of the operations skill category for HubSpot integration.
 **Relates to:** Other hubspot skills in this pack.

@@ -1,6 +1,7 @@
 # Mistral AI Core Workflow B - Implementation Details
 
 ## Text Embeddings
+
 ```typescript
 async function getEmbedding(text: string): Promise<number[]> {
   const response = await client.embeddings.create({ model: 'mistral-embed', inputs: [text] });
@@ -14,6 +15,7 @@ async function getBatchEmbeddings(texts: string[]): Promise<number[][]> {
 ```
 
 ## Semantic Search
+
 ```typescript
 class SemanticSearch {
   async indexDocuments(docs) {
@@ -32,6 +34,7 @@ class SemanticSearch {
 ```
 
 ## Function Calling
+
 ```typescript
 const tools = [
   { type: 'function', function: { name: 'get_weather', description: 'Get weather for a location', parameters: { type: 'object', properties: { location: { type: 'string' } }, required: ['location'] } } },
@@ -54,6 +57,7 @@ async function chatWithTools(userMessage: string): Promise<string> {
 ```
 
 ## RAG (Retrieval-Augmented Generation)
+
 ```typescript
 class RAGChat {
   async chat(userQuery: string): Promise<string> {
@@ -72,6 +76,7 @@ class RAGChat {
 ```
 
 ## Python Embeddings
+
 ```python
 def get_embeddings(texts: list[str]) -> list[list[float]]:
     response = client.embeddings.create(model="mistral-embed", inputs=texts)
@@ -79,6 +84,7 @@ def get_embeddings(texts: list[str]) -> list[list[float]]:
 ```
 
 ## Python Function Calling
+
 ```python
 response = client.chat.complete(
     model="mistral-large-latest",

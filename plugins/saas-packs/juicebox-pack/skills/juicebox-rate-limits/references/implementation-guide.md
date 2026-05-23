@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Understand Rate Limit Headers
+
 ```typescript
 // Juicebox returns these headers with every response
 interface RateLimitHeaders {
@@ -25,6 +26,7 @@ function parseRateLimitHeaders(headers: Headers) {
 ```
 
 ### Step 2: Implement Rate Limiter
+
 ```typescript
 // lib/rate-limiter.ts
 export class RateLimiter {
@@ -77,6 +79,7 @@ export class RateLimiter {
 ```
 
 ### Step 3: Add Exponential Backoff
+
 ```typescript
 // lib/backoff.ts
 export async function withExponentialBackoff<T>(
@@ -119,6 +122,7 @@ export async function withExponentialBackoff<T>(
 ```
 
 ### Step 4: Implement Quota Tracking
+
 ```typescript
 // lib/quota-tracker.ts
 export class QuotaTracker {

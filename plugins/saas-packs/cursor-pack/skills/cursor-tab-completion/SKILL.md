@@ -132,6 +132,7 @@ Remap if needed: `Cmd+K Cmd+S` > search `acceptCursorTabSuggestion` > assign new
 ## Measuring Tab Effectiveness
 
 Tab gets better with usage. The model learns from:
+
 - **Accepts** (Tab): Reinforces the pattern
 - **Rejects** (Esc): Discourages similar suggestions
 - **Partial accepts** (Cmd+→): Signals which parts were useful

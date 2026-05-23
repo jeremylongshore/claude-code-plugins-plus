@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Hello World
 
 ## Overview
+
 Create your first Langfuse trace with real SDK calls. Demonstrates the trace/span/generation hierarchy, the `observe` wrapper, and the OpenAI drop-in integration.
 
 ## Prerequisites
+
 - Completed `langfuse-install-auth` setup
 - Valid API credentials in environment variables
 - OpenAI API key (for the OpenAI integration example)
@@ -223,10 +225,12 @@ Trace: hello-world
 | No auto-nesting | Missing OTel setup | Register `LangfuseSpanProcessor` with `NodeSDK` |
 
 ## Resources
+
 - [Langfuse JS/TS SDK Cookbook](https://langfuse.com/guides/cookbook/js_langfuse_sdk)
 - [TypeScript SDK Instrumentation](https://langfuse.com/docs/observability/sdk/typescript/instrumentation)
 - [Python Decorators Guide](https://langfuse.com/docs/sdk/python/decorators)
 - [Observation Types](https://langfuse.com/docs/observability/features/observation-types)
 
 ## Next Steps
+
 Proceed to `langfuse-core-workflow-a` for real OpenAI/Anthropic tracing, or `langfuse-local-dev-loop` for development workflow setup.

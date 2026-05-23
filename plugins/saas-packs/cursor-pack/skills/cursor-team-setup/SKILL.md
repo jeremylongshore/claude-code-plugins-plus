@@ -90,6 +90,7 @@ For Business and Enterprise plans:
 4. Verification: each client pings server every 5 minutes to check enforcement
 
 Privacy Mode guarantees:
+
 - Zero data retention at model providers (OpenAI, Anthropic)
 - No code used for model training
 - No plaintext code stored on Cursor servers
@@ -138,6 +139,7 @@ Commit these to git. Every team member gets the same AI behavior.
 ### Machine-Local Settings
 
 These are NOT shared via git:
+
 - `settings.json` (editor preferences -- personal choice)
 - `keybindings.json` (keyboard shortcuts -- personal choice)
 - API keys (stored in Cursor's local settings database)
@@ -177,6 +179,7 @@ These are NOT shared via git:
 ### Buddy System
 
 Pair new team members with experienced Cursor users for their first week. Focus areas:
+
 - When to use Chat vs Composer vs Inline Edit
 - How to write effective prompts with `@` context
 - Common pitfalls (context overflow, blind apply)

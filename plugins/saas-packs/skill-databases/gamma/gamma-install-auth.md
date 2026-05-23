@@ -10,6 +10,7 @@ gamma-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Gamma SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Gamma integration.
 **Relates to:** Other gamma skills in this pack.

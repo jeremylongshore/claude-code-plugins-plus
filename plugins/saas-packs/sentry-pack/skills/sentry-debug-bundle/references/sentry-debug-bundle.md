@@ -8,6 +8,7 @@
 **Platform:** linux
 
 ### Configuration
+
 - DSN: SET (verified format)
 - Environment: production
 - Release: v1.2.3
@@ -15,23 +16,29 @@
 - Traces Sample Rate: 0.1
 
 ### Test Results
+
 - Connectivity: OK
 - Event Capture: OK (event_id: abc123)
 - Source Maps: Uploaded
 
 ### Issue Description
+
 [Describe the issue here]
 
 ### Steps to Reproduce
+
 1. Step one
 2. Step two
 
 ### Expected vs Actual Behavior
+
 Expected: ...
 Actual: ...
 
 ### Relevant Logs
+
 ```
 [Paste logs here]
 ```
+
 ```

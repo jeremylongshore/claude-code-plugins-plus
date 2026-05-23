@@ -34,10 +34,12 @@ Use web research and optional sub-agents for parallel execution:
 ### 1.2 Merge and Report
 
 After all research completes, merge results into:
+
 - `niche-analysis.json` - structured data
 - `niche-report.md` - human-readable summary
 
 Report to user:
+
 ```
 Research complete.
 - Channels analyzed: [N]
@@ -48,6 +50,7 @@ Research complete.
 
 Present the niche report and ask:
 "Here's what I found. Ready to move to ideation, or want to research more channels?"
+
 - Move to ideation
 - Research additional channels
 - Dig deeper into a specific channel
@@ -60,6 +63,7 @@ Present the niche report and ask:
 ### 2.1 Generate Ideas
 
 Using research findings, generate 15-20 video ideas. Each idea must include:
+
 - **Title concept** (working title)
 - **Content tier** (Tier 1 or Tier 2)
 - **Content type** (Full Tutorial, Feature Tutorial, Update Video, Use Case Video, etc.)
@@ -83,6 +87,7 @@ Here are the validated ideas, ranked by opportunity score:
 
 Which ideas do you want to develop into briefs?
 ```
+
 - Pick 1-3 ideas
 - Generate more ideas
 - Adjust the focus area
@@ -100,6 +105,7 @@ For each idea the user selects:
 4. Present to user for review
 
 "Here's the brief for '{idea title}'. Review and approve?"
+
 - Approve and move to packaging
 - Adjust the angle
 - Change key points
@@ -116,6 +122,7 @@ For each approved brief:
 3. Output: `packaging-{slug}.md`
 
 "Here are the title and thumbnail options. Pick your favorites."
+
 - Pick title + thumbnail direction
 - Request more options
 - Adjust the angle

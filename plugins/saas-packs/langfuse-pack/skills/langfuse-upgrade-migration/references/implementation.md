@@ -15,12 +15,14 @@ pip index versions langfuse
 ## Breaking Changes by Version
 
 ### v2.x -> v3.x (TypeScript)
+
 - `Langfuse.trace()` returns `Trace` instead of `Promise<Trace>`
 - `flushAsync()` replaces `flush()` (now async)
 - `observeOpenAI()` moved to main package export
 - Generation `completionTokens` -> `completionTokens` (was `completion_tokens`)
 
 ### v1.x -> v2.x (Python)
+
 - `langfuse.trace()` now returns synchronously
 - Decorator `@observe()` replaces `@langfuse.observe()`
 - `flush()` is now synchronous, use `shutdown()` for cleanup

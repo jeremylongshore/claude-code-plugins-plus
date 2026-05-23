@@ -10,6 +10,7 @@ customerio-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Customer.io common errors
 **Workflow:** Part of the operations skill category for Customer.io integration.
 **Relates to:** Other customerio skills in this pack.

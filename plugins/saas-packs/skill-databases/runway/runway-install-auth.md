@@ -10,6 +10,7 @@ runway-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Runway SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Runway integration.
 **Relates to:** Other runway skills in this pack.

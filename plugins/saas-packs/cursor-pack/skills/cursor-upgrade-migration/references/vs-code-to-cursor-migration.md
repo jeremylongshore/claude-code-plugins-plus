@@ -3,6 +3,7 @@
 ## VS Code to Cursor Migration
 
 ### Automatic Import
+
 ```
 First launch of Cursor:
 - Detects VS Code installation
@@ -11,6 +12,7 @@ First launch of Cursor:
 ```
 
 ### Manual Import
+
 ```bash
 # VS Code settings location
 macOS: ~/Library/Application Support/Code/User/
@@ -23,6 +25,7 @@ cp ~/Library/Application\ Support/Code/User/settings.json \
 ```
 
 ### Extension Compatibility
+
 ```
 Most VS Code extensions work in Cursor:
 - Language extensions ✓

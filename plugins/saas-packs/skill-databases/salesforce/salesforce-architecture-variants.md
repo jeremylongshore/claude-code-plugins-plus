@@ -10,6 +10,7 @@ salesforce-architecture-variants/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Choose Salesforce architecture blueprints
 **Workflow:** Part of the advanced skill category for Salesforce integration.
 **Relates to:** Other salesforce skills in this pack.

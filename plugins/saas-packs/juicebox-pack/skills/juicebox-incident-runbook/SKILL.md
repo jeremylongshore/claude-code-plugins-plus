@@ -53,6 +53,7 @@ curl -s -w "\nHTTP %{http_code}\n" \
 ## Incident Playbooks
 
 ### API Outage
+
 1. Confirm via health endpoint and status.juicebox.ai
 2. Activate fallback mode — serve cached search results to active users
 3. Pause any automated sourcing pipelines to avoid wasting quota on retries
@@ -60,6 +61,7 @@ curl -s -w "\nHTTP %{http_code}\n" \
 5. Monitor status page and resume operations once health check passes
 
 ### Authentication Failure
+
 1. Verify API key is set: `echo $JUICEBOX_API_KEY | wc -c`
 2. Test with health endpoint (see diagnostics above)
 3. If 401: API key may be revoked — regenerate in Juicebox dashboard
@@ -67,6 +69,7 @@ curl -s -w "\nHTTP %{http_code}\n" \
 5. Deploy new key and verify search requests succeed
 
 ### Data Sync Failure
+
 1. Check if recent analysis results are returning stale or incomplete data
 2. Verify export endpoints are responding — test a small CSV export
 3. If exports fail: check if the analysis job completed successfully first

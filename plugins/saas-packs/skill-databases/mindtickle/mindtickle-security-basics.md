@@ -10,6 +10,7 @@ mindtickle-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Mindtickle security best practices
 **Workflow:** Part of the operations skill category for Mindtickle integration.
 **Relates to:** Other mindtickle skills in this pack.

@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Policy Guardrails
 
 ## Overview
+
 Protect against common Vercel failure modes with automated guardrails: ESLint rules preventing secret exposure in client bundles, pre-commit hooks scanning for credentials, CI checks validating vercel.json and edge runtime compatibility, and runtime middleware enforcing auth on protected routes.
 
 ## Prerequisites
+
 - ESLint configured in project
 - Git hooks infrastructure (husky or lefthook)
 - CI/CD pipeline (GitHub Actions or similar)
@@ -38,6 +40,7 @@ Protect against common Vercel failure modes with automated guardrails: ESLint ru
 ## Instructions
 
 ### Step 1: ESLint Rules — Prevent Secret Exposure
+
 ```javascript
 // .eslintrc.js — custom rules for Vercel projects
 module.exports = {
@@ -75,6 +78,7 @@ module.exports = {
 ```
 
 ### Step 2: Pre-Commit Hook — Credential Scanning
+
 ```bash
 # Install husky
 npm install --save-dev husky
@@ -117,6 +121,7 @@ fi
 ```
 
 ### Step 3: CI Policy Check — vercel.json Validation
+
 ```yaml
 # .github/workflows/vercel-policy.yml
 name: Vercel Policy Checks
@@ -190,6 +195,7 @@ jobs:
 ```
 
 ### Step 4: Env Var Documentation Guard
+
 ```bash
 #!/usr/bin/env bash
 # scripts/check-env-docs.sh — ensure .env.example stays in sync
@@ -221,6 +227,7 @@ echo "All environment variables documented"
 ```
 
 ### Step 5: Runtime Auth Middleware Guard
+
 ```typescript
 // middleware.ts — enforce that protected routes always require auth
 import { NextRequest, NextResponse } from 'next/server';
@@ -267,6 +274,7 @@ export const config = {
 ```
 
 ### Step 6: Deployment Freeze Guard
+
 ```bash
 #!/usr/bin/env bash
 # scripts/check-deploy-freeze.sh — prevent production deploys during freeze windows
@@ -304,6 +312,7 @@ echo "Deploy allowed"
 | Deploy freeze | CI | Weekend/late deploys |
 
 ## Output
+
 - ESLint rules preventing secret exposure and edge runtime violations
 - Pre-commit hooks blocking credentials from entering git
 - CI policy checks validating configuration and compatibility
@@ -311,6 +320,7 @@ echo "Deploy allowed"
 - Deployment freeze windows preventing risky deploys
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | ESLint rule false positive | Variable name matches pattern | Add `// eslint-disable-next-line` with justification |
@@ -319,10 +329,12 @@ echo "Deploy allowed"
 | Deploy freeze too restrictive | Urgent hotfix needed | Use `--force` flag with team approval |
 
 ## Resources
+
 - [ESLint Custom Rules](https://eslint.org/docs/latest/extend/plugins)
 - [Husky Documentation](https://typicode.github.io/husky/)
 - [Vercel Project Configuration](https://vercel.com/docs/project-configuration)
 - [Edge Runtime API](https://vercel.com/docs/functions/runtimes/edge)
 
 ## Next Steps
+
 For architecture variants, see `vercel-architecture-variants`.

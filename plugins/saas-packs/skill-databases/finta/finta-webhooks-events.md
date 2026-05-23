@@ -10,6 +10,7 @@ finta-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Finta webhook handling
 **Workflow:** Part of the cicd skill category for Finta integration.
 **Relates to:** Other finta skills in this pack.

@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Production Checklist
 
 ## Overview
+
 Complete checklist for running production GPU workloads on Vast.ai, covering account setup, instance selection, data safety, monitoring, and cost controls.
 
 ## Prerequisites
+
 - Vast.ai account with sufficient credits
 - Docker images tested and published to registry
 - Checkpoint-based training pipeline
@@ -34,12 +36,14 @@ Complete checklist for running production GPU workloads on Vast.ai, covering acc
 ## Instructions
 
 ### Account & Authentication
+
 - [ ] API key stored in secrets manager (not in code or env files)
 - [ ] Dedicated SSH key pair for Vast.ai (not shared with other services)
 - [ ] Account balance sufficient for planned workload duration + 50% buffer
 - [ ] Billing alerts configured at cloud.vast.ai
 
 ### Instance Selection
+
 - [ ] GPU type validated for workload (VRAM, compute capability)
 - [ ] Reliability filter set to `>= 0.98` for production jobs
 - [ ] Internet speed filter set to `inet_down >= 200` for data transfer
@@ -47,6 +51,7 @@ Complete checklist for running production GPU workloads on Vast.ai, covering acc
 - [ ] CUDA version on host matches Docker image requirements
 
 ### Data Safety
+
 - [ ] Training data encrypted before upload to instances
 - [ ] Checkpoint saving every N steps (not just per epoch)
 - [ ] Checkpoints uploaded to persistent storage (S3/GCS) periodically
@@ -54,12 +59,14 @@ Complete checklist for running production GPU workloads on Vast.ai, covering acc
 - [ ] No sensitive data (API keys, PII) embedded in Docker images
 
 ### Spot Instance Protection
+
 - [ ] Spot preemption handler implemented (save checkpoint on SIGTERM)
 - [ ] Auto-recovery: detect destroyed instance, provision replacement, resume
 - [ ] On-demand fallback configured for critical final training stages
 - [ ] Checkpoint integrity verification after recovery
 
 ### Monitoring & Alerting
+
 - [ ] GPU utilization monitoring (alert if < 50% for > 10 min)
 - [ ] Instance health polling every 60 seconds
 - [ ] Cost accumulation tracking with budget threshold alerts
@@ -67,6 +74,7 @@ Complete checklist for running production GPU workloads on Vast.ai, covering acc
 - [ ] Dead instance detection (auto-destroy stuck instances)
 
 ### Cost Controls
+
 - [ ] Maximum `dph_total` set in search queries
 - [ ] Auto-destroy timeout for all instances (e.g., 24h max)
 - [ ] Daily spending limit configured
@@ -98,12 +106,14 @@ echo "Pre-flight checks complete."
 ```
 
 ## Output
+
 - Production readiness checklist verified
 - Verification script passes all checks
 - Cost controls and monitoring configured
 - Data safety measures in place
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Insufficient balance | Credits depleted mid-job | Set up auto-top-up or balance alerts |
@@ -112,10 +122,12 @@ echo "Pre-flight checks complete."
 | GPU utilization drops to 0% | Data pipeline bottleneck | Profile data loading; increase disk I/O |
 
 ## Resources
+
 - [Vast.ai Documentation](https://docs.vast.ai)
 - [Instance Types](https://docs.vast.ai/api-reference/instances/create-instance)
 
 ## Next Steps
+
 For version upgrades, see `vastai-upgrade-migration`.
 
 ## Examples

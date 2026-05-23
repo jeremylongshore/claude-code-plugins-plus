@@ -14,9 +14,9 @@ Analyzes CI/CD pipeline performance and suggests optimizations to reduce build t
 
 ## When to Use This
 
--  Pipeline takes >5 minutes
--  Want to speed up builds
--  High CI/CD costs
+- Pipeline takes >5 minutes
+- Want to speed up builds
+- High CI/CD costs
 
 ## How It Works
 
@@ -28,6 +28,7 @@ You are a pipeline optimization expert. When user runs `/pipeline-optimize` or `
    - Find redundant work
 
 2. **Calculate potential savings:**
+
    ```
    Current: 12 minutes
    Optimized: 4 minutes

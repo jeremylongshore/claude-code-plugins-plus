@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code
 # AssemblyAI Production Checklist
 
 ## Overview
+
 Complete checklist for deploying AssemblyAI-powered transcription services to production with health checks, monitoring, and rollback procedures.
 
 ## Prerequisites
+
 - Staging environment tested and verified
 - Production API key from https://www.assemblyai.com/app/account
 - Deployment pipeline configured
@@ -40,12 +42,14 @@ Complete checklist for deploying AssemblyAI-powered transcription services to pr
 ### Pre-Deployment Checklist
 
 #### API Key & Auth
+
 - [ ] Production API key stored in secrets manager (not env files)
 - [ ] Key is separate from dev/staging keys
 - [ ] Temporary token endpoint configured for browser streaming
 - [ ] API key rotation procedure documented
 
 #### Code Quality
+
 - [ ] All `transcript.status === 'error'` cases handled
 - [ ] Rate limit retry with exponential backoff implemented
 - [ ] No hardcoded API keys or audio URLs
@@ -54,6 +58,7 @@ Complete checklist for deploying AssemblyAI-powered transcription services to pr
 - [ ] Audio file upload size validated before submission
 
 #### Error Handling
+
 - [ ] 429 (rate limit) triggers retry with backoff
 - [ ] 5xx (server error) triggers retry with backoff
 - [ ] 401 (auth error) triggers alert, no retry
@@ -62,6 +67,7 @@ Complete checklist for deploying AssemblyAI-powered transcription services to pr
 - [ ] LeMUR errors handled (invalid transcript ID, context too long)
 
 #### Performance
+
 - [ ] Transcript results cached where appropriate
 - [ ] Concurrent transcription jobs limited via queue (p-queue or similar)
 - [ ] Webhook processing is async (don't block the response)
@@ -163,12 +169,14 @@ curl -s https://status.assemblyai.com/api/v2/status.json | jq '.status.descripti
 ```
 
 ## Output
+
 - Production-ready deployment with health checks
 - Webhook-based transcription processing
 - Monitoring and alerting configuration
 - Gradual rollout strategy
 
 ## Error Handling
+
 | Issue | Detection | Response |
 |-------|-----------|----------|
 | API key invalid in prod | 401 on first call | Rotate key immediately |
@@ -177,9 +185,11 @@ curl -s https://status.assemblyai.com/api/v2/status.json | jq '.status.descripti
 | Audio upload timeout | Large file failures | Increase timeout, validate file size |
 
 ## Resources
+
 - [AssemblyAI Webhooks Guide](https://www.assemblyai.com/docs/getting-started/webhooks)
 - [AssemblyAI Status Page](https://status.assemblyai.com)
 - [AssemblyAI Account Management](https://www.assemblyai.com/docs/deployment/account-management)
 
 ## Next Steps
+
 For version upgrades, see `assemblyai-upgrade-migration`.

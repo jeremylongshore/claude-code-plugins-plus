@@ -3,6 +3,7 @@
 ## Capacity Planning
 
 ### Metrics to Monitor
+
 | Metric | Warning | Critical |
 |--------|---------|----------|
 | CPU Utilization | > 70% | > 85% |
@@ -12,6 +13,7 @@
 | P95 Latency | > 500ms | > 2000ms |
 
 ### Capacity Calculation
+
 ```typescript
 interface CapacityEstimate {
   currentRPS: number;

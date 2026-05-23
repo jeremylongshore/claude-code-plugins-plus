@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Core Workflow A: Sign-Up & Sign-In
 
 ## Overview
+
 Implement authentication flows with Clerk: pre-built components for rapid setup, custom forms for full UI control, OAuth social login, email/phone verification, and multi-factor authentication.
 
 ## Prerequisites
+
 - Clerk SDK installed and configured (`clerk-install-auth` completed)
 - OAuth providers enabled in Dashboard > User & Authentication > Social Connections
 - Sign-in/sign-up environment variables set
@@ -34,6 +36,7 @@ Implement authentication flows with Clerk: pre-built components for rapid setup,
 ## Instructions
 
 ### Step 1: Pre-Built Components (Quick Start)
+
 ```typescript
 // app/sign-in/[[...sign-in]]/page.tsx
 import { SignIn } from '@clerk/nextjs'
@@ -81,6 +84,7 @@ NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/onboarding
 ```
 
 ### Step 2: Custom Sign-In Form (Full UI Control)
+
 ```typescript
 'use client'
 import { useSignIn } from '@clerk/nextjs'
@@ -162,6 +166,7 @@ export function CustomSignIn() {
 ```
 
 ### Step 3: OAuth Social Login
+
 ```typescript
 'use client'
 import { useSignIn } from '@clerk/nextjs'
@@ -205,6 +210,7 @@ export default function SSOCallback() {
 ```
 
 ### Step 4: Custom Sign-Up with Email Verification
+
 ```typescript
 'use client'
 import { useSignUp } from '@clerk/nextjs'
@@ -273,6 +279,7 @@ export function CustomSignUp() {
 ```
 
 ### Step 5: Multi-Factor Authentication (TOTP)
+
 ```typescript
 'use client'
 import { useSignIn } from '@clerk/nextjs'
@@ -318,6 +325,7 @@ export function MFAVerification() {
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `form_identifier_not_found` | Email not registered | Show sign-up link or check Clerk instance |
@@ -328,6 +336,7 @@ export function MFAVerification() {
 | `identifier_already_signed_in` | Multi-session not enabled | Enable multi-session or redirect to dashboard |
 
 ## Enterprise Considerations
+
 - Customize component appearance with Clerk's `appearance` prop or custom CSS -- matches your design system without building from scratch
 - For Enterprise SSO (SAML/OIDC), users authenticate through their IdP; the `<SignIn>` component handles the redirect automatically
 - Phone number verification uses `phone_code` strategy instead of `email_code`
@@ -336,10 +345,12 @@ export function MFAVerification() {
 - MFA enrollment is managed via `<UserProfile />` component or `user.createTOTP()` API
 
 ## Resources
+
 - [Sign-In Component](https://clerk.com/docs/components/authentication/sign-in)
 - [Custom Sign-In Flow](https://clerk.com/docs/custom-flows/email-password)
 - [OAuth Configuration](https://clerk.com/docs/authentication/social-connections/overview)
 - [MFA Guide](https://clerk.com/docs/authentication/configuration/sign-up-sign-in-options#multi-factor-authentication)
 
 ## Next Steps
+
 Proceed to `clerk-core-workflow-b` for session management and middleware.

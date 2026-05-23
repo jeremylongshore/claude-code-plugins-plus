@@ -3,6 +3,7 @@
 ## Environment Configuration
 
 ### Basic Setup
+
 ```typescript
 import * as Sentry from '@sentry/node';
 
@@ -19,6 +20,7 @@ Sentry.init({
 ```
 
 ### Environment-Specific Sample Rates
+
 ```typescript
 const sampleRates: Record<string, { errors: number; traces: number }> = {
   development: { errors: 1.0, traces: 1.0 },

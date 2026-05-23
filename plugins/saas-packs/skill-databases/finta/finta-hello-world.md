@@ -10,6 +10,7 @@ finta-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Finta example
 **Workflow:** Part of the onboarding skill category for Finta integration.
 **Relates to:** Other finta skills in this pack.

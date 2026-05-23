@@ -6,6 +6,7 @@ When a new session begins, the memory skill reads the stored memory file and app
 remembered preferences silently.
 
 **Memory file** (`.claude/memories/project_memory.json`):
+
 ```json
 {
   "memories": [
@@ -38,6 +39,7 @@ remembered preferences silently.
 ```
 
 **Session behavior**:
+
 ```
 Session start →
   Read .claude/memories/project_memory.json
@@ -70,6 +72,7 @@ The `/remember` command writes a new timestamped entry to the memory file.
 ```
 
 **Resulting memory file update**:
+
 ```json
 {
   "id": "m-005",
@@ -80,6 +83,7 @@ The `/remember` command writes a new timestamped entry to the memory file.
 ```
 
 **Verification**:
+
 ```bash
 /memories
 # Output:
@@ -106,6 +110,7 @@ Agent:
 ```
 
 **Another implicit capture**:
+
 ```
 User: "Create a new component"
 Agent: Creates a class-based component
@@ -139,6 +144,7 @@ Agent behavior:
 When the memory file exceeds 10 entries, low-value entries are removed.
 
 **Before cleanup** (12 entries):
+
 ```json
 {
   "memories": [
@@ -159,6 +165,7 @@ When the memory file exceeds 10 entries, low-value entries are removed.
 ```
 
 **After cleanup** (noise removed, high-value kept):
+
 ```json
 {
   "memories": [

@@ -16,6 +16,7 @@ User Request -> Analyze:
 ### Phase 2: ADK Agent Implementation
 
 **Simple Agent (Python)**:
+
 ```python
 from google.adk.agents import Agent
 
@@ -33,6 +34,7 @@ Help users deploy resources securely.
 ```
 
 **Multi-Agent Orchestrator (Python)**:
+
 ```python
 from google.adk.agents import Agent, SequentialAgent
 
@@ -67,6 +69,7 @@ orchestrator = SequentialAgent(
 ### Phase 3: Code Execution Integration
 
 The Code Execution tool provides:
+
 - **Security**: Isolated sandbox environment, no access to your system
 - **State Persistence**: Stateful within a session
 - **Stateful Sessions**: Builds on previous executions

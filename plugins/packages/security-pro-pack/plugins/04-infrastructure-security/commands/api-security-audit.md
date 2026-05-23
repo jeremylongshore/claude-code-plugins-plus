@@ -25,13 +25,14 @@ Performs comprehensive security audit of REST and GraphQL APIs, checking for OWA
 ## What This Command Does
 
 **Complete API Security Assessment:**
--  Tests for OWASP API Security Top 10 vulnerabilities
--  Validates authentication and authorization mechanisms
--  Checks for injection vulnerabilities (SQL, NoSQL, command)
--  Identifies excessive data exposure and mass assignment
--  Tests rate limiting and resource consumption controls
--  Analyzes GraphQL-specific security issues (deep queries, introspection)
--  Reviews API documentation for security misconfigurations
+
+- Tests for OWASP API Security Top 10 vulnerabilities
+- Validates authentication and authorization mechanisms
+- Checks for injection vulnerabilities (SQL, NoSQL, command)
+- Identifies excessive data exposure and mass assignment
+- Tests rate limiting and resource consumption controls
+- Analyzes GraphQL-specific security issues (deep queries, introspection)
+- Reviews API documentation for security misconfigurations
 
 **Output:** Detailed security audit report with exploitability ratings and remediation guidance
 
@@ -42,6 +43,7 @@ Performs comprehensive security audit of REST and GraphQL APIs, checking for OWA
 ## When to Use This Command
 
 **Perfect For:**
+
 - Pre-production API security validation
 - External API security assessments
 - Compliance requirements (PCI DSS, HIPAA)
@@ -49,6 +51,7 @@ Performs comprehensive security audit of REST and GraphQL APIs, checking for OWA
 - Regular security audits (quarterly)
 
 **Use This When:**
+
 - Building new API endpoints
 - Before public API launch
 - After authentication/authorization changes
@@ -77,6 +80,7 @@ Performs comprehensive security audit of REST and GraphQL APIs, checking for OWA
 ```
 
 **Shortcut:**
+
 ```bash
 /asa https://api.example.com  # Quick audit
 ```
@@ -90,6 +94,7 @@ Performs comprehensive security audit of REST and GraphQL APIs, checking for OWA
 **Vulnerability:** Users can access objects belonging to other users
 
 **Example Attack:**
+
 ```bash
 # User 123 accesses their own order
 GET /api/orders/456
@@ -103,6 +108,7 @@ Authorization: Bearer USER_123_TOKEN
 ```
 
 **Detection Method:**
+
 ```bash
 # Test IDOR vulnerability
 1. Create two test users (User A, User B)
@@ -112,6 +118,7 @@ Authorization: Bearer USER_123_TOKEN
 ```
 
 **Remediation:**
+
 ```javascript
 //  VULNERABLE: No authorization check
 app.get('/api/orders/:id', authenticate, async (req, res) => {
@@ -142,6 +149,7 @@ app.get('/api/orders/:id', authenticate, async (req, res) => {
 **Vulnerability:** Weak authentication allowing unauthorized access
 
 **Common Issues:**
+
 - No authentication required
 - Weak password requirements
 - No rate limiting on login
@@ -150,6 +158,7 @@ app.get('/api/orders/:id', authenticate, async (req, res) => {
 - No token expiration
 
 **Example Attack:**
+
 ```bash
 # Brute force login (no rate limiting)
 for password in $(cat passwords.txt); do
@@ -159,6 +168,7 @@ done
 ```
 
 **Remediation:**
+
 ```javascript
 //  SECURE: Rate limiting on login
 const rateLimit = require('express-rate-limit')
@@ -184,6 +194,7 @@ app.post('/login', loginLimiter, async (req, res) => {
 **Vulnerability:** Users can modify properties they shouldn't access
 
 **Example Attack (Mass Assignment):**
+
 ```bash
 # Normal user update
 PATCH /api/users/123
@@ -202,6 +213,7 @@ PATCH /api/users/123
 ```
 
 **Remediation:**
+
 ```javascript
 //  VULNERABLE: Mass assignment
 app.patch('/api/users/:id', async (req, res) => {
@@ -230,6 +242,7 @@ app.patch('/api/users/:id', async (req, res) => {
 **Vulnerability:** No limits on API usage, leading to DoS or cost overruns
 
 **Example Attack:**
+
 ```bash
 # Exhaust API resources
 while true; do
@@ -239,6 +252,7 @@ done
 ```
 
 **Remediation:**
+
 ```javascript
 //  SECURE: Rate limiting + pagination + timeouts
 const rateLimit = require('express-rate-limit')
@@ -273,6 +287,7 @@ app.use((req, res, next) => {
 **Vulnerability:** Regular users can access admin functions
 
 **Example Attack:**
+
 ```bash
 # Regular user token
 curl -H "Authorization: Bearer USER_TOKEN" \
@@ -281,6 +296,7 @@ curl -H "Authorization: Bearer USER_TOKEN" \
 ```
 
 **Remediation:**
+
 ```javascript
 //  VULNERABLE: No role check
 app.delete('/admin/delete-user/:id', authenticate, async (req, res) => {
@@ -308,6 +324,7 @@ app.delete('/admin/delete-user/:id', authenticate, requireAdmin, async (req, res
 **Vulnerability:** No rate limiting on critical business operations
 
 **Example Attack:**
+
 ```bash
 # Purchase limited item repeatedly (no rate limit)
 for i in {1..1000}; do
@@ -318,6 +335,7 @@ done
 ```
 
 **Remediation:**
+
 ```javascript
 //  SECURE: Business logic rate limiting
 const Redis = require('ioredis')
@@ -352,6 +370,7 @@ app.post('/purchase', authenticate, async (req, res) => {
 **Vulnerability:** API fetches user-supplied URLs, exposing internal resources
 
 **Example Attack:**
+
 ```bash
 # Intended use: Fetch profile picture from URL
 POST /api/upload-from-url
@@ -368,6 +387,7 @@ POST /api/upload-from-url
 ```
 
 **Remediation:**
+
 ```javascript
 //  SECURE: URL validation and allowlist
 const validator = require('validator')
@@ -411,6 +431,7 @@ app.post('/api/upload-from-url', async (req, res) => {
 ### API8:2023 - Security Misconfiguration
 
 **Common Issues:**
+
 - Debug mode enabled in production
 - Verbose error messages (stack traces)
 - Default credentials
@@ -418,6 +439,7 @@ app.post('/api/upload-from-url', async (req, res) => {
 - CORS misconfiguration
 
 **Remediation:**
+
 ```javascript
 //  SECURE: Security headers and configuration
 const helmet = require('helmet')
@@ -449,12 +471,14 @@ app.use((err, req, res, next) => {
 ### API9:2023 - Improper Inventory Management
 
 **Issues:**
+
 - Undocumented endpoints
 - Deprecated endpoints not removed
 - Multiple API versions (confusion)
 - No API documentation
 
 **Remediation:**
+
 - Maintain API inventory (all endpoints documented)
 - Remove deprecated endpoints
 - Version API properly (`/api/v1/`, `/api/v2/`)
@@ -467,6 +491,7 @@ app.use((err, req, res, next) => {
 **Vulnerability:** Blindly trusting third-party API responses
 
 **Example Attack:**
+
 ```javascript
 //  VULNERABLE: Trust external API response
 app.get('/user-profile', async (req, res) => {
@@ -503,6 +528,7 @@ app.get('/user-profile', async (req, res) => {
 ### 1. Deep Query Attack (Query Depth DoS)
 
 **Attack:**
+
 ```graphql
 # Malicious deep query
 query {
@@ -523,6 +549,7 @@ query {
 ```
 
 **Remediation:**
+
 ```javascript
 // Limit query depth
 const depthLimit = require('graphql-depth-limit')
@@ -538,6 +565,7 @@ const server = new ApolloServer({
 **Risk:** Attackers can discover full API schema
 
 **Remediation:**
+
 ```javascript
 // Disable introspection in production
 const server = new ApolloServer({
@@ -551,6 +579,7 @@ const server = new ApolloServer({
 **Attack:** Expensive queries exhaust resources
 
 **Remediation:**
+
 ```javascript
 const { createComplexityLimitRule } = require('graphql-validation-complexity')
 
@@ -721,6 +750,7 @@ Report saved to: api-security-audit-2025-10-10.md
 ## Support
 
 **Found API vulnerabilities?**
+
 1. Prioritize critical issues (BOLA, authentication bypass, injection)
 2. For remediation help: Ask Security Auditor Expert or Penetration Tester
 3. For complex issues: Consult OWASP API Security Project documentation
@@ -731,4 +761,4 @@ Report saved to: api-security-audit-2025-10-10.md
 **Time Investment:** 15-30 minutes per audit
 **Value:** Prevent data breaches, unauthorized access, and API abuse
 
-**Audit APIs thoroughly. Fix vulnerabilities early. Deploy securely.** 
+**Audit APIs thoroughly. Fix vulnerabilities early. Deploy securely.**

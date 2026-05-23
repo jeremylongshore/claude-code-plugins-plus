@@ -76,27 +76,35 @@ This skill implements a multi-source data aggregation pattern with weighted comp
 ## Progressive Disclosure Strategy
 
 ### Level 1: Quick Sentiment Check (Default)
+
 ```bash
 python sentiment_analyzer.py
 ```
+
 Returns overall sentiment score and classification.
 
 ### Level 2: Coin-Specific Analysis
+
 ```bash
 python sentiment_analyzer.py --coin BTC
 ```
+
 Adds coin-specific sentiment breakdown.
 
 ### Level 3: Detailed Analysis
+
 ```bash
 python sentiment_analyzer.py --detailed --period 24h
 ```
+
 Full breakdown with news article scores.
 
 ### Level 4: Export with Custom Weights
+
 ```bash
 python sentiment_analyzer.py --format json --weights "news:0.5,fng:0.3,momentum:0.2"
 ```
+
 Custom weighting and JSON export.
 
 ---
@@ -104,6 +112,7 @@ Custom weighting and JSON export.
 ## Tool Permission Strategy
 
 ### Allowed Tools (Scoped)
+
 ```yaml
 allowed-tools: Read, Bash(crypto:sentiment-*)
 ```
@@ -148,6 +157,7 @@ plugins/crypto/market-sentiment-analyzer/
 ## Data Flow Architecture
 
 ### Input
+
 - User request with optional filters (--coin, --period, --detailed)
 - External API data (Fear & Greed, news, market)
 
@@ -351,16 +361,20 @@ Minimal Analysis (only Fear & Greed)
 ## Composability & Stacking
 
 ### Optional Dependencies
+
 - **crypto-news-aggregator**: Enhanced news analysis
   - If available: Uses aggregator's scored news
   - If unavailable: Falls back to direct RSS fetch
 
 ### As Data Provider
+
 Skills that can consume sentiment data:
+
 - **crypto-signal-generator**: Sentiment as signal input
 - **trading-strategy-backtester**: Historical sentiment data
 
 ### Integration Pattern
+
 ```python
 # Check for news aggregator
 NEWS_AGGREGATOR = None

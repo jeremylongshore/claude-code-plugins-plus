@@ -12,6 +12,7 @@ When Claude Code compacts (summarizes) conversations, you lose critical context 
 Claude Code has unlimited context through automatic summarization. When your conversation gets long, it "compacts" by summarizing earlier parts. This is great for memory efficiency, but creates a critical problem:
 
 **When you start a fresh session, you've lost:**
+
 - What task you were working on
 - What state things were in
 - What the next step was
@@ -30,6 +31,7 @@ Here's what the universal `/beads` command does:
 ```
 
 **Auto-detects and executes:**
+
 1. First time? → Full setup (init, hooks, sync branch)
 2. Maintenance needed? → Update configuration
 3. Already set up? → Recover your context
@@ -118,21 +120,25 @@ Import complete: 0 created, 0 updated, 245 unchanged
 The beads system uses a clever multi-layer architecture:
 
 **1. Local SQLite Database**
+
 - Fast local operations
 - Full query capabilities
 - Location: `.beads/beads.db`
 
 **2. JSONL Export**
+
 - Human-readable task format
 - Git-friendly (line-based diffs)
 - Location: `.beads/issues.jsonl`
 
 **3. Git Sync Branch**
+
 - Separate branch for task state (`beads-sync`)
 - Independent from code changes
 - Automatic sync via git hooks
 
 **4. Git Hooks**
+
 - `pre-commit`: Flush pending changes before commit
 - `post-merge`: Import updates after pulls
 - `pre-push`: Export database before pushing
@@ -163,6 +169,7 @@ bd list --status in_progress
 ```
 
 **Output:**
+
 ```
 Active Work:
 claude-code-plugins-7c0 [P1] Phase 1: Gemini Integration
@@ -200,16 +207,19 @@ This ensures beads handles JSONL conflicts intelligently, preserving both local 
 After implementing this system in the claude-code-plugins project:
 
 **Task Statistics:**
+
 - 245 total tasks tracked
 - 207 completed (84% success rate)
 - 38 currently open
 - 0 tasks lost to compaction
 
 **Recovery Time:**
+
 - Before: 5-10 minutes reconstructing context
 - After: < 30 seconds with `/beads` command
 
 **False Start Prevention:**
+
 - Before: Repeated failed attempts (already tried that!)
 - After: Full task history shows what was already attempted
 
@@ -284,12 +294,14 @@ One command for all states reduces cognitive load
 ## What's Next
 
 The `/beads` command now handles:
+
 - ✅ First-time setup
 - ✅ Configuration maintenance
 - ✅ Context recovery
 - ✅ Task verification
 
 **Future enhancements:**
+
 - Automatic task prioritization based on deadlines
 - Integration with GitHub issues for cross-team visibility
 - Analytics on task completion patterns
@@ -298,4 +310,3 @@ The `/beads` command now handles:
 Want to implement this in your workflow? The beads repository is at [github.com/steveyegge/beads](https://github.com/steveyegge/beads).
 
 **The core lesson:** When AI agents lose context through compaction, persist your state in git. It's the one thing that survives everything.
-

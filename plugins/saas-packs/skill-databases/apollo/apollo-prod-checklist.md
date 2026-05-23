@@ -10,6 +10,7 @@ apollo-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Apollo production deployment checklist
 **Workflow:** Part of the operations skill category for Apollo integration.
 **Relates to:** Other apollo skills in this pack.

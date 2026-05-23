@@ -20,6 +20,7 @@ Advanced mempool analysis for MEV opportunities, pending transaction monitoring,
 ## Usage
 
 The mempool agent automatically activates when you discuss:
+
 - Mempool analysis and pending transactions
 - MEV opportunities and extraction strategies
 - Gas price optimization
@@ -77,6 +78,7 @@ Create a `.mempool-config.json` file:
 ## Risk Warnings
 
 ️ **Important Considerations**:
+
 - MEV extraction is highly competitive with sophisticated bots
 - Gas wars can eliminate profits quickly
 - Smart contract interactions carry inherent risks

@@ -5,6 +5,7 @@ Endpoint catalog, request/response shapes, deal property reference, search filte
 ## Authentication
 
 All endpoints require:
+
 ```
 Authorization: Bearer {private_app_token_or_oauth_access_token}
 Content-Type: application/json   (for POST/PATCH)
@@ -277,6 +278,7 @@ POST /crm/v3/objects/deals/search
 ```
 
 Convert a date to epoch ms in Python:
+
 ```python
 import datetime
 dt = datetime.datetime(2024, 1, 1, tzinfo=datetime.timezone.utc)

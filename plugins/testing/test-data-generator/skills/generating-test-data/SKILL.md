@@ -80,6 +80,7 @@ Generate realistic, type-safe test data including fixtures, factory functions, s
 ## Examples
 
 **TypeScript factory with Fishery:**
+
 ```typescript
 import { Factory } from 'fishery';
 import { faker } from '@faker-js/faker';
@@ -107,6 +108,7 @@ const users = userFactory.buildList(10);
 ```
 
 **pytest fixture factory:**
+
 ```python
 import pytest
 from faker import Faker
@@ -131,6 +133,7 @@ def test_user_validation(make_user):
 ```
 
 **Edge case data collection:**
+
 ```typescript
 export const edgeCases = {
   strings: ['', ' ', '\t\n', 'a'.repeat(10000), '<script>alert(1)</script>',  # 10000: 10 seconds in ms

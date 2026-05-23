@@ -35,6 +35,7 @@ Add email/password authentication with JWT tokens and refresh token rotation.
 ```
 
 **Why this works:**
+
 - Goal is one sentence describing the deliverable
 - In Scope lists every endpoint with its behavior
 - Out of Scope prevents agent drift toward OAuth or email flows
@@ -74,6 +75,7 @@ Add dark mode with system preference detection and manual toggle.
 ```
 
 **Why manual testing is appropriate here:**
+
 - Visual correctness (contrast, readability) requires human eyes
 - Theme transitions need subjective quality assessment
 - System preference detection needs OS-level interaction
@@ -121,6 +123,7 @@ Full-text product search with type-ahead suggestions and faceted filtering.
 ```
 
 **Why this works:**
+
 - Scope is partitioned by domain (Backend / Frontend / Shared)
 - Each agent gets a clear boundary
 - Shared types are called out so both agents reference the same contract
@@ -132,6 +135,7 @@ A spec that has been narrowed based on iteration 1 results. Completed items
 are removed and only remaining work and fixes are listed.
 
 **Original specs.md (before sprint):**
+
 ```markdown
 # Sprint 2: User Dashboard
 
@@ -157,6 +161,7 @@ Build a user dashboard showing recent activity, notifications, and account setti
 ```
 
 **Updated specs.md (after iteration 1, 2 items remaining):**
+
 ```markdown
 # Sprint 2: User Dashboard (Iteration 2)
 
@@ -186,6 +191,7 @@ Fix remaining issues from iteration 1.
 ```
 
 **Why iterative narrowing matters:**
+
 - Removes completed work so agents do not re-implement it
 - Explicitly describes the two bugs with expected vs actual behavior
 - "Completed" section tells agents what NOT to touch
@@ -266,6 +272,7 @@ Real-time chat for project collaboration with channel support and presence track
 ```
 
 **Why constraints are valuable:**
+
 - Prevents agents from choosing a different WebSocket library
 - Ensures new code integrates with existing database stack
 - Manual UI testing because real-time interactions are hard to automate reliably

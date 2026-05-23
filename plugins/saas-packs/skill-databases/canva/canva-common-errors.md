@@ -10,6 +10,7 @@ canva-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Canva common errors
 **Workflow:** Part of the operations skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

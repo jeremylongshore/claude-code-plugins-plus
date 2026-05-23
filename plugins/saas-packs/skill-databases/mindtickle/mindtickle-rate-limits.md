@@ -10,6 +10,7 @@ mindtickle-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Mindtickle rate limiting and backoff
 **Workflow:** Part of the operations skill category for Mindtickle integration.
 **Relates to:** Other mindtickle skills in this pack.

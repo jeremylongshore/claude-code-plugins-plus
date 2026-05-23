@@ -13,6 +13,7 @@ Medical AI API for clinical decision support, evidence-based queries, and DeepCo
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `openevidence-common-errors` | Common Errors |
@@ -29,6 +30,7 @@ Medical AI API for clinical decision support, evidence-based queries, and DeepCo
 | `openevidence-upgrade-migration` | Upgrade Migration |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `openevidence-ci-integration` | Ci Integration |
@@ -39,6 +41,7 @@ Medical AI API for clinical decision support, evidence-based queries, and DeepCo
 | `openevidence-webhooks-events` | Webhooks Events |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `openevidence-data-handling` | Data Handling |

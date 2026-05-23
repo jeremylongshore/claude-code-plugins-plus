@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Core Patterns
 
 ### Pattern 1: Client Singleton
+
 ```typescript
 // lib/linear.ts
 import { LinearClient } from "@linear/sdk";
@@ -25,6 +26,7 @@ export function getLinearClient(): LinearClient {
 ```
 
 ### Pattern 2: Pagination Handling
+
 ```typescript
 import { LinearClient, Issue, IssueConnection } from "@linear/sdk";
 
@@ -58,6 +60,7 @@ for await (const issue of getAllIssues(client, { state: { name: { eq: "Todo" } }
 ```
 
 ### Pattern 3: Error Handling Wrapper
+
 ```typescript
 import { LinearClient, LinearError } from "@linear/sdk";
 
@@ -112,6 +115,7 @@ if (result.success) {
 ```
 
 ### Pattern 4: Batch Operations
+
 ```typescript
 async function batchUpdateIssues(
   client: LinearClient,
@@ -130,6 +134,7 @@ async function batchUpdateIssues(
 ```
 
 ### Pattern 5: Caching Layer
+
 ```typescript
 interface CacheEntry<T> {
   data: T;
@@ -168,6 +173,7 @@ const teams = await cache.get("teams", () => client.teams());
 ```
 
 ### Pattern 6: Type-Safe Filters
+
 ```typescript
 import { IssueFilter } from "@linear/sdk";
 

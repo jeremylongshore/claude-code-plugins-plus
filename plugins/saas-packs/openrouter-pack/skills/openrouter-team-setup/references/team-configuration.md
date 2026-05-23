@@ -3,6 +3,7 @@
 ## Team Configuration
 
 ### Shared Configuration
+
 ```python
 # team_config.py
 from dataclasses import dataclass
@@ -45,6 +46,7 @@ TEAM_CONFIG = TeamConfig(
 ```
 
 ### Role-Based Access
+
 ```python
 class TeamOpenRouter:
     def __init__(self, team_config: TeamConfig):

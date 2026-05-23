@@ -10,6 +10,7 @@ miro-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Miro multi-environment setup
 **Workflow:** Part of the enterprise skill category for Miro integration.
 **Relates to:** Other miro skills in this pack.

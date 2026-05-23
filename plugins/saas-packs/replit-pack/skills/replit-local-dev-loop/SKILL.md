@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Local Dev Loop
 
 ## Overview
+
 Configure the Replit Workspace development cycle: run commands, hot reloading, port configuration, Webview preview, dev/production database separation, and Replit Agent for AI-assisted building.
 
 ## Prerequisites
+
 - Replit App with `.replit` configured
 - Node.js or Python project initialized
 - Familiarity with Replit Workspace UI
@@ -37,6 +39,7 @@ Configure the Replit Workspace development cycle: run commands, hot reloading, p
 ## Instructions
 
 ### Step 1: Configure Run Commands
+
 ```toml
 # .replit — run determines what happens when you click "Run"
 
@@ -53,6 +56,7 @@ entrypoint = "index.ts"
 ```
 
 **Compiled languages** need a compile step:
+
 ```toml
 # TypeScript
 compile = "npx tsc -b"
@@ -66,6 +70,7 @@ run = "./main"
 ### Step 2: Hot Reload Setup
 
 **Node.js with tsx watch:**
+
 ```toml
 # .replit
 run = "npx tsx watch src/index.ts"
@@ -82,6 +87,7 @@ run = "npx tsx watch src/index.ts"
 ```
 
 **Python with Flask auto-reload:**
+
 ```toml
 run = "python main.py"
 
@@ -96,6 +102,7 @@ if __name__ == '__main__':
 ```
 
 **Vite/Next.js dev server:**
+
 ```toml
 run = "npm run dev"
 
@@ -104,6 +111,7 @@ PORT = "3000"
 ```
 
 ### Step 3: Port Configuration
+
 Replit routes external traffic to your app's port. Your app must listen on `0.0.0.0`:
 
 ```typescript
@@ -125,6 +133,7 @@ ignorePorts = [3001, 5555]
 Use the Networking tool in the sidebar to view active port mappings.
 
 ### Step 4: Dev vs Production Database
+
 Replit provides separate development and production databases:
 
 ```typescript
@@ -141,10 +150,12 @@ const pool = new Pool({
 ```
 
 View database settings in the PostgreSQL pane:
+
 - **Development tab**: data for workspace testing
 - **Production tab**: live customer data (only after deployment)
 
 ### Step 5: Using Replit Agent
+
 Replit Agent (v4) builds apps from natural language prompts. It creates files, installs packages, runs tests, and can work up to 200 minutes autonomously.
 
 ```markdown
@@ -161,6 +172,7 @@ Agent 4 features:
 ```
 
 ### Step 6: Testing in Workspace
+
 ```toml
 # .replit
 [unitTest]
@@ -180,6 +192,7 @@ describe('Health Check', () => {
 ```
 
 ### Development Workflow Summary
+
 ```
 1. Edit code in Workspace editor
 2. Click "Run" -> dev server starts with hot reload
@@ -192,6 +205,7 @@ describe('Health Check', () => {
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Webview blank | App not on 0.0.0.0 | Bind to `0.0.0.0`, not `localhost` |
@@ -201,9 +215,11 @@ describe('Health Check', () => {
 | Agent stalls | Complex prompt | Break into smaller requests |
 
 ## Resources
+
 - [Configuring Your Repl](https://docs.replit.com/replit-workspace/configuring-repl)
 - [Replit Agent](https://docs.replit.com/replitai/agent)
 - [Database FAQ](https://docs.replit.com/hosting/database-faq)
 
 ## Next Steps
+
 See `replit-sdk-patterns` for production code patterns or `replit-deploy-integration` to deploy.

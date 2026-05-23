@@ -10,6 +10,7 @@ cohere-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Cohere common errors
 **Workflow:** Part of the operations skill category for Cohere integration.
 **Relates to:** Other cohere skills in this pack.

@@ -14,6 +14,7 @@ Comprehensive market scanner identifying top gainers, losers, volume leaders, an
 When the user wants to scan for market movers, implement a real-time scanning system with these capabilities:
 
 ### Scan Parameters
+
 - **Markets**: crypto, stocks, forex, all
 - **Timeframe**: 1h, 4h, 24h, 7d, 30d
 - **Categories**: gainers, losers, volume, volatility, unusual

@@ -60,12 +60,15 @@ function classifyLucidchartError(status: number, body: string): LucidchartError 
 ## Debugging Guide
 
 ### Authentication Errors
+
 Lucidchart uses OAuth2 with access and refresh tokens. Access tokens expire after 60 minutes. Always implement token refresh logic. A 403 typically means missing OAuth scopes rather than invalid credentials -- check the `scopes` parameter in your authorization URL against the API endpoints you are calling.
 
 ### Rate Limit Errors
+
 The API enforces 100 requests/minute per OAuth token. Shape creation in bulk should use batch endpoints. Export operations (PDF, PNG) count against the same limit. Use `Retry-After` header and implement exponential backoff starting at 1 second.
 
 ### Validation Errors
+
 Shape creation requires valid `x`, `y`, `width`, and `height` values (all positive integers). Zero or negative values return 422. Connections require both source and target shape IDs to exist on the same page -- cross-page connections are not supported. Page references must use valid page IDs from the document; list pages first before creating shapes.
 
 ## Error Handling

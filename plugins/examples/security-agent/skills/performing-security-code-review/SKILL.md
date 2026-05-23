@@ -56,6 +56,7 @@ Conducts security-focused code reviews by scanning source files for common vulne
 ## Output
 
 A structured security review report containing:
+
 - Summary with total findings count by severity level
 - Per-finding entries with: file path, line number, vulnerability type, severity, code snippet, explanation, and recommended fix
 - Dependency audit results with CVE identifiers where applicable

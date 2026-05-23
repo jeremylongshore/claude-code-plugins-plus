@@ -140,6 +140,7 @@ Cursor uses **Open VSX Registry** instead of Microsoft's VS Code Marketplace:
 ### Running VS Code and Cursor Side-by-Side
 
 Both can be installed simultaneously. They use separate:
+
 - Settings directories
 - Extension directories
 - Configuration files
@@ -204,6 +205,7 @@ If upgrading from a Cursor version that used `.cursorrules`:
 ### Cursor 2.0 Changes
 
 Cursor 2.0 introduced:
+
 - Agent-first architecture (Composer defaults to Agent mode)
 - New Composer model (faster generation)
 - Parallel agents (up to 8 simultaneous)

@@ -27,15 +27,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Persona Hello World
 
 ## Overview
+
 Create a Persona inquiry, generate an embed URL for the verification flow, and poll for the inquiry status. Uses the real Persona REST API with sandbox credentials.
 
 ## Prerequisites
+
 - Completed `persona-install-auth` setup
 - An Inquiry Template ID from the Persona Dashboard (format: `itmpl_*`)
 
 ## Instructions
 
 ### Step 1: Create an Inquiry
+
 ```python
 import os, requests
 
@@ -64,6 +67,7 @@ print(f"Inquiry created: {inquiry_id} (status: {status})")
 ```
 
 ### Step 2: Get the Verification URL
+
 ```python
 # The inquiry includes a session token for the embedded flow
 session_token = inquiry["attributes"].get("session-token")
@@ -77,6 +81,7 @@ if session_token:
 ```
 
 ### Step 3: Poll for Completion
+
 ```python
 import time
 
@@ -98,6 +103,7 @@ if status == "completed":
 ```
 
 ### Step 4: Retrieve Verification Results
+
 ```python
 # Get detailed verification result
 verification_id = verifications[0]["id"]
@@ -109,12 +115,14 @@ print(f"  Name: {v_data.get('name-first', 'N/A')} {v_data.get('name-last', 'N/A'
 ```
 
 ## Output
+
 - Inquiry created with unique ID
 - Hosted or embedded verification URL generated
 - Inquiry status polled until completion
 - Verification results retrieved
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `422 Unprocessable` | Invalid template ID | Verify template ID in Dashboard |
@@ -123,10 +131,12 @@ print(f"  Name: {v_data.get('name-first', 'N/A')} {v_data.get('name-last', 'N/A'
 | `404 Not Found` | Wrong inquiry ID | Check ID format: `inq_*` |
 
 ## Resources
+
 - [Inquiries Overview](https://docs.withpersona.com/inquiries)
 - [Accessing Inquiry Status](https://docs.withpersona.com/accessing-inquiry-status)
 - [API Quickstart Tutorial](https://docs.withpersona.com/api-quickstart-tutorial)
 
 ## Next Steps
+
 - Build full KYC flow: `persona-core-workflow-a`
 - Handle webhook events: `persona-webhooks-events`

@@ -3,6 +3,7 @@
 ## GitHub Actions
 
 ### Complete Workflow
+
 ```yaml
 # .github/workflows/release.yml
 name: Release with Sentry
@@ -49,6 +50,7 @@ jobs:
 ```
 
 ### Source Maps Only
+
 ```yaml
 - name: Upload Source Maps
   run: |

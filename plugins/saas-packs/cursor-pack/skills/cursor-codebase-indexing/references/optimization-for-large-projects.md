@@ -3,6 +3,7 @@
 ## Optimization for Large Projects
 
 ### Monorepo Strategy
+
 ```
 Option 1: Open specific package
 cd monorepo/packages/my-package
@@ -18,6 +19,7 @@ packages/*/dist/
 ```
 
 ### Performance Tuning
+
 ```json
 {
   // Reduce workers for slower machines
@@ -32,6 +34,7 @@ packages/*/dist/
 ```
 
 ### Incremental Indexing
+
 ```
 For very large codebases:
 1. Start with essential directories only

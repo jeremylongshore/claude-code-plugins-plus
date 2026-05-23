@@ -5,6 +5,7 @@
 ### SOC 2 Considerations
 
 #### Trust Service Criteria
+
 ```
 Security:
 [ ] Access controls documented
@@ -29,6 +30,7 @@ Privacy:
 ```
 
 #### Evidence Collection
+
 ```
 Document for auditors:
 
@@ -51,6 +53,7 @@ Policies:
 ### GDPR Considerations
 
 #### Data Processing
+
 ```
 Document:
 - What data is processed
@@ -65,6 +68,7 @@ Cursor processes:
 ```
 
 #### Data Subject Rights
+
 ```
 Ensure capability to:
 
@@ -86,6 +90,7 @@ Right to Portability:
 ```
 
 #### Documentation Requirements
+
 ```
 Maintain:
 - Records of processing activities
@@ -98,6 +103,7 @@ Maintain:
 ### HIPAA Considerations
 
 #### For Healthcare Organizations
+
 ```
 If processing PHI:
 
@@ -119,6 +125,7 @@ Physical Safeguards:
 ```
 
 #### Recommended Configuration
+
 ```yaml
 # .cursorrules for HIPAA
 hipaa-compliance: true

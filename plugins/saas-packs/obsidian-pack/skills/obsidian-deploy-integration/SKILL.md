@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Obsidian Plugin Deploy Integration
 
 ## Overview
+
 Release and distribute Obsidian plugins through multiple channels: the official community plugin directory, GitHub releases, BRAT beta testing, and manual installation. Covers the full lifecycle from building release assets to submitting your PR to the `obsidian-releases` repo.
 
 ## Prerequisites
+
 - Obsidian plugin with `main.ts`, `manifest.json`, and `styles.css` (if applicable)
 - GitHub repository for your plugin (public)
 - `gh` CLI authenticated (`gh auth status`)
@@ -35,6 +37,7 @@ Release and distribute Obsidian plugins through multiple channels: the official 
 ## Instructions
 
 ### Step 1: Build Release Assets
+
 ```bash
 set -euo pipefail
 # Clean build for production
@@ -52,6 +55,7 @@ echo "Release assets ready"
 ```
 
 ### Step 2: Version Bump with version-bump.mjs
+
 ```javascript
 // version-bump.mjs
 import { readFileSync, writeFileSync } from 'fs';
@@ -73,6 +77,7 @@ console.log(`Bumped to ${targetVersion} (requires Obsidian >= ${minAppVersion})`
 ```
 
 Wire it into package.json so `npm version` triggers it automatically:
+
 ```json
 {
   "scripts": {
@@ -82,6 +87,7 @@ Wire it into package.json so `npm version` triggers it automatically:
 ```
 
 ### Step 3: Create GitHub Release
+
 ```bash
 set -euo pipefail
 # Bump version, commit, and tag
@@ -96,11 +102,13 @@ gh release create "$(node -p 'require("./manifest.json").version')" \
 ```
 
 The release must include these files at the root level (not nested in folders):
+
 - `main.js` — compiled plugin code
 - `manifest.json` — plugin metadata
 - `styles.css` — only if your plugin has custom styles
 
 ### Step 4: Submit to Community Plugins
+
 First-time submission requires a PR to the [obsidian-releases](https://github.com/obsidianmd/obsidian-releases) repo:
 
 ```bash
@@ -142,6 +150,7 @@ gh pr create --repo obsidianmd/obsidian-releases \
 ```
 
 Review requirements the Obsidian team checks:
+
 - `manifest.json` has all required fields (`id`, `name`, `version`, `minAppVersion`, `description`, `author`)
 - `id` in manifest matches the `id` in your community-plugins.json entry
 - No `console.log` in production code
@@ -150,6 +159,7 @@ Review requirements the Obsidian team checks:
 - Plugin works on mobile if `isDesktopOnly` is not set
 
 ### Step 5: BRAT for Beta Testing
+
 Before submitting to community plugins, test your distribution via [BRAT](https://github.com/TfTHacker/obsidian42-brat):
 
 1. Users install BRAT from community plugins
@@ -158,6 +168,7 @@ Before submitting to community plugins, test your distribution via [BRAT](https:
 4. BRAT installs the latest release (including pre-releases)
 
 To push a beta:
+
 ```bash
 set -euo pipefail
 npm version prerelease --preid=beta
@@ -169,6 +180,7 @@ gh release create "$(node -p 'require("./manifest.json").version')" \
 ```
 
 ### Step 6: Manual Installation
+
 For users who prefer manual install or for testing outside BRAT:
 
 ```bash
@@ -186,6 +198,7 @@ echo "Installed to $DEST — restart Obsidian and enable in Settings > Community
 ```
 
 ## Output
+
 - Production `main.js`, `manifest.json`, and `styles.css` as GitHub release assets
 - `version-bump.mjs` script for consistent versioning across all config files
 - PR to `obsidianmd/obsidian-releases` for community plugin listing
@@ -193,6 +206,7 @@ echo "Installed to $DEST — restart Obsidian and enable in Settings > Community
 - Manual install path for direct distribution
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Plugin not loading after install | `id` in manifest doesn't match directory name | Ensure the plugin folder name matches `manifest.json` `id` |
@@ -206,16 +220,20 @@ echo "Installed to $DEST — restart Obsidian and enable in Settings > Community
 ## Examples
 
 ### Update an Existing Community Plugin
+
 Already listed? Just create a new release — Obsidian auto-detects new versions:
+
 ```bash
 set -euo pipefail
 npm version patch
 git push origin main --tags
 # Release workflow creates the GitHub release automatically
 ```
+
 Users see the update in Settings > Community Plugins > Check for updates.
 
 ### Check Your Submission Status
+
 ```bash
 set -euo pipefail
 # See if your plugin is already in the directory
@@ -223,6 +241,7 @@ gh pr list --repo obsidianmd/obsidian-releases --search "your-plugin-id" --state
 ```
 
 ## Resources
+
 - [Obsidian Plugin Submission Guide](https://docs.obsidian.md/Plugins/Releasing/Submit+your+plugin)
 - [Plugin Guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines)
 - [Community Plugins Repo](https://github.com/obsidianmd/obsidian-releases)
@@ -230,5 +249,6 @@ gh pr list --repo obsidianmd/obsidian-releases --search "your-plugin-id" --state
 - [Sample Plugin Template](https://github.com/obsidianmd/obsidian-sample-plugin)
 
 ## Next Steps
+
 For event handling patterns, see `obsidian-webhooks-events`.
 For pre-release quality validation, see `obsidian-prod-checklist`.

@@ -8,6 +8,6 @@ Bundled resources for ml-model-trainer skill
 - [x] save_model.py: Saves the trained model artifact to a specified location.
 - [x] load_model.py: Loads a previously trained model artifact from a specified location.
 
-
 ## Auto-Generated
+
 Scripts generated on 2025-12-10 03:48:17

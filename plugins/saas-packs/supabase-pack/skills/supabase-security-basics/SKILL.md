@@ -176,6 +176,7 @@ CREATE POLICY "Org members can read projects"
 ```
 
 **Key distinction — USING vs WITH CHECK:**
+
 - `USING (expr)` — filters which existing rows the user can see (SELECT, UPDATE, DELETE)
 - `WITH CHECK (expr)` — validates new/modified row data (INSERT, UPDATE)
 - For UPDATE, you need both: USING controls which rows can be targeted, WITH CHECK controls what the new values can be

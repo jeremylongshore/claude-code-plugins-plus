@@ -27,6 +27,7 @@ my-app/
 ```
 
 ### Key Characteristics
+
 - Separation of concerns
 - Background job processing
 - Redis caching
@@ -34,6 +35,7 @@ my-app/
 - Structured error handling
 
 ### Code Pattern
+
 ```typescript
 // Service layer abstraction
 class SupabaseService {

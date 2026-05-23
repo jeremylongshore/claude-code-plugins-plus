@@ -10,6 +10,7 @@ vercel-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid 10 common anti-patterns including sync calls in request path, rate limit ignoring, and key leakage.
 **Workflow:** Reference during code development and code review to catch common mistakes.
 **Relates to:** Final skill in advanced track; synthesizes learnings from all other skills

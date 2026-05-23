@@ -10,6 +10,7 @@ anthropic-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Anthropic SDK upgrades
 **Workflow:** Part of the operations skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

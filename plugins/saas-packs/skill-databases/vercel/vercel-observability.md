@@ -10,6 +10,7 @@ vercel-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up comprehensive observability with Prometheus metrics, OpenTelemetry traces, structured logging, and alerting rules.
 **Workflow:** Implemented during production setup; dashboards and alerts monitored continuously.
 **Relates to:** Builds on vercel-multi-env-setup; integrates with vercel-incident-runbook for response

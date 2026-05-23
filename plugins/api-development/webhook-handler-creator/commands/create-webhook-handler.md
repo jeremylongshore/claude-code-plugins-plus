@@ -11,6 +11,7 @@ Automatically generate production-ready webhook endpoints with signature verific
 ## When to Use This Command
 
 Use `/create-webhook-handler` when you need to:
+
 - Receive real-time events from external services (Stripe, GitHub, Slack)
 - Build event-driven architectures with external triggers
 - Implement payment processing notifications
@@ -19,6 +20,7 @@ Use `/create-webhook-handler` when you need to:
 - Create serverless event receivers
 
 DON'T use this when:
+
 - Building internal service communication (use message queues)
 - Need guaranteed ordering (webhooks are best-effort)
 - Handling large payloads (>10MB typically)
@@ -27,6 +29,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **signature-based verification** as the primary approach because:
+
 - Industry-standard security practice (HMAC-SHA256)
 - Prevents replay attacks with timestamp validation
 - Ensures message integrity and authenticity
@@ -35,12 +38,14 @@ This command implements **signature-based verification** as the primary approach
 - Minimal overhead for validation
 
 **Alternative considered: OAuth token validation**
+
 - More complex setup required
 - Additional network calls for validation
 - Higher latency
 - Recommended for user-authenticated webhooks
 
 **Alternative considered: mTLS (mutual TLS)**
+
 - Strongest security option
 - Complex certificate management
 - Not widely supported
@@ -49,6 +54,7 @@ This command implements **signature-based verification** as the primary approach
 ## Prerequisites
 
 Before running this command:
+
 1. Webhook URL endpoint defined
 2. Shared secret or signing key from provider
 3. Event types to handle documented
@@ -58,23 +64,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Create Webhook Endpoint
+
 Define secure POST endpoint with proper routing and middleware.
 
 ### Step 2: Implement Signature Verification
+
 Validate webhook authenticity using HMAC signatures.
 
 ### Step 3: Add Idempotency Handling
+
 Prevent duplicate processing of retried events.
 
 ### Step 4: Route Events to Handlers
+
 Dispatch events to appropriate processing functions.
 
 ### Step 5: Configure Monitoring
+
 Set up logging, metrics, and alerting for webhook health.
 
 ## Output Format
 
 The command generates:
+
 - `webhooks/handlers/` - Event-specific handler functions
 - `webhooks/middleware/` - Signature verification, rate limiting
 - `webhooks/routes.js` - Webhook endpoint definitions
@@ -1043,12 +1055,14 @@ describe('Webhook Handler Tests', () => {
 ## Configuration Options
 
 **Security Options**
+
 - `signatureAlgorithm`: HMAC-SHA256, HMAC-SHA512
 - `timestampTolerance`: Maximum age of webhook (seconds)
 - `ipAllowlist`: Restrict to provider IPs
 - `rateLimits`: Per-provider rate limiting
 
 **Processing Options**
+
 - `asyncProcessing`: Queue events for background processing
 - `retryAttempts`: Number of processing retries
 - `deadLetterQueue`: Failed event storage
@@ -1057,6 +1071,7 @@ describe('Webhook Handler Tests', () => {
 ## Best Practices
 
 DO:
+
 - Always verify signatures before processing
 - Respond quickly (< 5 seconds) to webhook
 - Implement idempotency for all handlers
@@ -1065,6 +1080,7 @@ DO:
 - Monitor webhook health and success rates
 
 DON'T:
+
 - Process webhooks synchronously if slow
 - Trust webhook data without validation
 - Ignore timestamp verification

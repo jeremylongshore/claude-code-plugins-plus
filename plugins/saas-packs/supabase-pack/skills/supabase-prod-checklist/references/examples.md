@@ -1,4 +1,4 @@
-# Examples
+## Examples
 
 ### Next.js Production Client Setup
 

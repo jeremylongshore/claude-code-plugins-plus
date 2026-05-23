@@ -10,6 +10,7 @@ notion-architecture-variants/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Choose Notion architecture blueprints
 **Workflow:** Part of the advanced skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

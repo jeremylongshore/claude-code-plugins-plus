@@ -10,6 +10,7 @@ Implement comprehensive API versioning strategies with backward compatibility, s
 ## When to Use This Command
 
 Use `/manage-api-versions` when you need to:
+
 - Introduce breaking changes without disrupting existing clients
 - Support multiple API versions simultaneously
 - Provide smooth migration paths for API consumers
@@ -18,6 +19,7 @@ Use `/manage-api-versions` when you need to:
 - Comply with enterprise SLA requirements
 
 DON'T use this when:
+
 - Building internal-only APIs with controlled clients (coordinate directly)
 - API is in early beta with no production users (iterate freely)
 - Changes are purely additive and backward compatible (versioning unnecessary)
@@ -25,6 +27,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **URL Path Versioning + Accept Header** as the primary approach because:
+
 - Most intuitive for developers (visible in URL)
 - Easy to route and cache at infrastructure level
 - Clear version separation in code organization
@@ -33,12 +36,14 @@ This command implements **URL Path Versioning + Accept Header** as the primary a
 - Industry standard for REST APIs
 
 **Alternative considered: Header-Only Versioning**
+
 - Cleaner URLs
 - More RESTful approach
 - Harder to test and debug
 - Recommended for purist REST APIs
 
 **Alternative considered: Query Parameter Versioning**
+
 - Easy to implement
 - Optional versioning support
 - Can pollute URL structure
@@ -47,6 +52,7 @@ This command implements **URL Path Versioning + Accept Header** as the primary a
 ## Prerequisites
 
 Before running this command:
+
 1. Define versioning strategy and policy
 2. Identify breaking vs. non-breaking changes
 3. Plan deprecation timeline (typically 6-12 months)
@@ -56,23 +62,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Choose Versioning Strategy
+
 Select and implement the appropriate versioning mechanism for your API architecture.
 
 ### Step 2: Create Version Infrastructure
+
 Set up routing, middleware, and transformers for multi-version support.
 
 ### Step 3: Implement Compatibility Layer
+
 Build backward compatibility adapters and response transformers.
 
 ### Step 4: Add Deprecation Workflow
+
 Implement deprecation notices, sunset headers, and migration tools.
 
 ### Step 5: Set Up Version Testing
+
 Create comprehensive test suites covering all supported versions.
 
 ## Output Format
 
 The command generates:
+
 - `api/v1/` - Version 1 implementation
 - `api/v2/` - Version 2 implementation
 - `middleware/version-router.js` - Version routing logic
@@ -834,12 +846,14 @@ tester.runCompatibilityTests()
 ## Configuration Options
 
 **Versioning Strategies**
+
 - `url-path`: Version in URL path (/v1/)
 - `header`: Version in Accept header
 - `query`: Version in query parameter
 - `subdomain`: Version in subdomain (v1.api.example.com)
 
 **Deprecation Policies**
+
 - `aggressive`: 3-month deprecation cycle
 - `standard`: 6-month deprecation cycle
 - `conservative`: 12-month deprecation cycle
@@ -848,6 +862,7 @@ tester.runCompatibilityTests()
 ## Best Practices
 
 DO:
+
 - Support at least 2 major versions simultaneously
 - Provide clear deprecation timelines
 - Version your database schemas
@@ -856,6 +871,7 @@ DO:
 - Monitor version usage analytics
 
 DON'T:
+
 - Remove versions without notice
 - Make breaking changes in minor versions
 - Ignore backward compatibility

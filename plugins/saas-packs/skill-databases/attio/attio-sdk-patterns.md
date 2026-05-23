@@ -10,6 +10,7 @@ attio-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Attio SDK patterns
 **Workflow:** Part of the onboarding skill category for Attio integration.
 **Relates to:** Other attio skills in this pack.

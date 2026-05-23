@@ -163,6 +163,7 @@ Detailed output contracts in [mode-playbooks.md](references/mode-playbooks.md).
 ### Example 1 — Generate architecture view from a monorepo
 
 **Input:**
+
 ```
 /design:generate
 ```
@@ -170,6 +171,7 @@ Detailed output contracts in [mode-playbooks.md](references/mode-playbooks.md).
 **Behavior:** DCI auto-loads `docker-compose.yml` services (`web`, `api`, `db`, `cache`), classifies roles (frontend/backend/db/db), reads `web/src/lib/api-client.ts` for the HTTP edge to `api`, reads `docker-compose.yml` `depends_on` for api→db and api→cache edges. Fills `templates/base.html`, writes `~/.arch/generate-2026-04-19T12-00.html`, writes fingerprint with 4 nodes + 3 edges.
 
 **Output excerpt (Mermaid block):**
+
 ```
 flowchart TB
   web["Web Frontend"]:::frontend --> api["API Service"]:::backend
@@ -180,6 +182,7 @@ flowchart TB
 ### Example 2 — PR delta on a branch that adds Redis
 
 **Input:**
+
 ```
 /design:diff
 ```
@@ -189,6 +192,7 @@ flowchart TB
 ### Example 3 — Sequence diagram from a Sentry event
 
 **Input:**
+
 ```
 /design:trace ./incidents/sentry-2026-04-18-payment-timeout.json
 ```
@@ -198,11 +202,13 @@ flowchart TB
 ### Example 4 — Drift watch after a quiet sprint
 
 **Input:**
+
 ```
 /design:watch
 ```
 
 **Behavior:** Loads prior fingerprint, re-runs DCI, diffs. Output:
+
 ```
 ## Drift report — 2026-04-19 vs 2026-04-12
 

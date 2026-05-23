@@ -10,6 +10,7 @@ fondo-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Fondo SDK upgrades
 **Workflow:** Part of the operations skill category for Fondo integration.
 **Relates to:** Other fondo skills in this pack.

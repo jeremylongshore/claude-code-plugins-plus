@@ -24,10 +24,13 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Common Errors
 
 ## Overview
+
 Quick reference for all Fireflies.ai GraphQL API error codes with root causes and fixes.
 
 ## Error Response Format
+
 All Fireflies errors follow this GraphQL error structure:
+
 ```json
 {
   "errors": [{
@@ -45,7 +48,9 @@ All Fireflies errors follow this GraphQL error structure:
 ## Error Code Reference
 
 ### `auth_failed` (401)
+
 **Message:** Invalid or missing API key.
+
 ```bash
 # Verify API key is set and valid
 echo "Key set: ${FIREFLIES_API_KEY:+YES}"
@@ -57,11 +62,13 @@ curl -s -X POST https://api.fireflies.ai/graphql \
   -H "Content-Type: application/json" \
   -d '{"query": "{ user { email } }"}' | jq .
 ```
+
 **Fix:** Regenerate API key at app.fireflies.ai > Integrations > Fireflies API.
 
 ---
 
 ### `too_many_requests` (429)
+
 **Message:** Rate limit exceeded.
 
 | Plan | Limit |
@@ -74,32 +81,38 @@ curl -s -X POST https://api.fireflies.ai/graphql \
 ---
 
 ### `require_ai_credits` (402)
+
 **Message:** AskFred operations require AI credits.
 **Fix:** Visit Fireflies dashboard > Upgrade section to purchase AI credits. Budget for `createAskFredThread` and `continueAskFredThread` calls.
 
 ---
 
 ### `account_cancelled` (403)
+
 **Message:** Subscription inactive.
 **Fix:** Renew your Fireflies subscription or switch to a different API key.
 
 ---
 
 ### `invalid_language_code` (400)
+
 **Message:** Unsupported language code in `uploadAudio` or `addToLiveMeeting`.
 **Fix:** Use ISO 639-1 codes (e.g., `en`, `es`, `de`, `fr`, `ja`). Max 5 characters.
 
 ---
 
 ### `unsupported_platform` (400)
+
 **Message:** Meeting platform not recognized by `addToLiveMeeting`.
 **Fix:** Fireflies supports Google Meet, Zoom, and Microsoft Teams. Verify the `meeting_link` is a valid URL for one of these platforms.
 
 ---
 
 ### `payload_too_small` (400)
+
 **Message:** Uploaded audio file is below 50KB minimum.
 **Fix:** Set `bypass_size_check: true` in `AudioUploadInput` for short clips:
+
 ```typescript
 await firefliesQuery(`
   mutation($input: AudioUploadInput) {
@@ -116,7 +129,9 @@ await firefliesQuery(`
 ---
 
 ### GraphQL Validation Errors (400)
+
 **Message:** Field or argument not found in schema.
+
 ```bash
 # Introspect the schema to discover available fields
 set -euo pipefail
@@ -129,6 +144,7 @@ curl -s -X POST https://api.fireflies.ai/graphql \
 ---
 
 ### Network / Connection Errors
+
 | Symptom | Cause | Fix |
 |---------|-------|-----|
 | `ECONNREFUSED` | Firewall blocking | Allow outbound HTTPS to `api.fireflies.ai` |
@@ -136,6 +152,7 @@ curl -s -X POST https://api.fireflies.ai/graphql \
 | `ENOTFOUND` | DNS failure | Verify DNS, try `8.8.8.8` resolver |
 
 ## Quick Diagnostic Script
+
 ```bash
 set -euo pipefail
 echo "=== Fireflies.ai Diagnostics ==="
@@ -160,7 +177,9 @@ curl -s -X POST https://api.fireflies.ai/graphql \
 ```
 
 ## Deprecated Fields
+
 These fields still work but will be removed:
+
 | Deprecated | Replacement |
 |-----------|-------------|
 | `transcript.host_email` | `transcript.organizer_email` |
@@ -170,14 +189,17 @@ These fields still work but will be removed:
 | `transcripts(participant_email: ...)` | `transcripts(participants: [...])` |
 
 ## Output
+
 - Error code identified with root cause
 - Fix applied and verified
 - Deprecated field warnings resolved
 
 ## Resources
+
 - [Fireflies API Docs](https://docs.fireflies.ai/)
 - [Fireflies Introspection](https://docs.fireflies.ai/fundamentals/introspection)
 - [Fireflies API Concepts](https://docs.fireflies.ai/fundamentals/concepts)
 
 ## Next Steps
+
 For comprehensive debugging, see `fireflies-debug-bundle`.

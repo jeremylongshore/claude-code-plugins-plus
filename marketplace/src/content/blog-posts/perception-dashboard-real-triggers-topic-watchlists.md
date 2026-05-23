@@ -112,4 +112,3 @@ After four years, it converts to Apache 2.0 automatically. No renewal, no decisi
 **Fire-and-forget with visibility.** The auto-ingestion hook doesn't wait for completion. It fires the trigger and the IngestionButton shows progress independently. This pattern works because the user doesn't need to wait — they can browse existing articles while fresh ones load.
 
 **Session guards prevent duplicate work.** Without the `sessionStorage` guard, every React re-render would fire another ingestion trigger. The guard ensures one trigger per browser session, and the server-side idempotency guard (409 Conflict) catches anything the client misses.
-

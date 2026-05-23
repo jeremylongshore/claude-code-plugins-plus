@@ -3,6 +3,7 @@
 ## Handling Model Unavailability
 
 ### Fallback Chain
+
 ```python
 class ModelFallback:
     def __init__(self, models: list):
@@ -56,6 +57,7 @@ fallback = ModelFallback([
 ```
 
 ### Model Groups
+
 ```python
 MODEL_GROUPS = {
     "coding": [

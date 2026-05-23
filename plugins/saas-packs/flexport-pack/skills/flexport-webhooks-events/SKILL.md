@@ -43,6 +43,7 @@ Flexport sends webhook notifications for shipment milestones, booking confirmati
 ### Step 1: Create Webhook Endpoint in Flexport
 
 Navigate to Portal > Settings > Webhooks > Add Endpoint:
+
 - URL: `https://your-app.com/webhooks/flexport`
 - Secret: Generate a strong random string
 - Events: Select event types to subscribe to

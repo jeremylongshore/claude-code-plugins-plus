@@ -35,6 +35,7 @@ This skill automates the creation of comprehensive alerting rules, reducing the 
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Implement performance monitoring for a new service.
 - Refine existing alerting rules to reduce false positives.
 - Create alerts for specific performance metrics, such as latency or error rate.
@@ -46,6 +47,7 @@ This skill activates when you need to:
 User request: "create latency alerts for the payment service"
 
 The skill will:
+
 1. Prompt for latency thresholds (e.g., warning and critical).
 2. Configure alerts to trigger when latency exceeds defined thresholds.
 
@@ -54,6 +56,7 @@ The skill will:
 User request: "set up alerting for error rate increases in the API gateway"
 
 The skill will:
+
 1. Request the baseline error rate and acceptable deviation.
 2. Configure alerts to trigger when the error rate exceeds the defined deviation from the baseline.
 

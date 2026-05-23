@@ -9,6 +9,7 @@ Comprehensive automation for Firebase services including Authentication, Cloud S
 ## Features
 
 ### Core Firebase Services
+
 - **Firebase Authentication** - User management, custom claims, OAuth providers
 - **Cloud Firestore** - Document CRUD, queries, security rules, indexes
 - **Cloud Storage** - File uploads, security rules, signed URLs
@@ -17,6 +18,7 @@ Comprehensive automation for Firebase services including Authentication, Cloud S
 - **Firebase Analytics** - Event logging, user properties, conversion tracking
 
 ### AI Integration (Vertex AI Gemini)
+
 - **Embeddings Generation** - Text-to-vector for semantic search
 - **Content Analysis** - Gemini API for content moderation, classification
 - **Chat Integration** - Conversational AI with Firebase data context
@@ -24,6 +26,7 @@ Comprehensive automation for Firebase services including Authentication, Cloud S
 - **RAG Implementation** - Retrieval-Augmented Generation with Firestore vector search
 
 ### DevOps & Operations
+
 - **Firebase CLI Automation** - Project init, deployment, emulator control
 - **Environment Management** - Multiple Firebase projects (dev, staging, prod)
 - **Security Rules Testing** - Automated testing of Firestore and Storage rules
@@ -92,9 +95,11 @@ See `/firebase-help` for complete command list.
 This plugin includes Agent Skills that automatically activate based on trigger phrases:
 
 ### firebase-vertex-ai
+
 **Triggers:** "integrate vertex ai", "add gemini to firebase", "generate embeddings"
 
 Automatically sets up Vertex AI Gemini integration with Firebase, including:
+
 - Content moderation for user-generated content
 - Semantic search with embeddings
 - Conversational AI chatbots
@@ -225,21 +230,25 @@ service firebase.storage {
 ### Common Issues
 
 **Issue:** Firebase CLI not found
+
 ```bash
 npm install -g firebase-tools
 ```
 
 **Issue:** Authentication failed
+
 ```bash
 firebase login --reauth
 ```
 
 **Issue:** Vertex AI quota exceeded
+
 - Check quotas in GCP Console
 - Implement rate limiting in Cloud Functions
 - Use caching to reduce API calls
 
 **Issue:** Firestore permissions denied
+
 - Check security rules in Firebase Console
 - Verify user is authenticated
 - Review IAM permissions
@@ -270,6 +279,7 @@ firebase login --reauth
 ## Documentation
 
 For detailed plugin documentation and Firebase integration guides, see:
+
 - Plugin documentation: `000-usermanuals/`
 - Firebase docs: https://firebase.google.com/docs
 - Vertex AI docs: https://cloud.google.com/vertex-ai/docs
@@ -281,6 +291,7 @@ MIT License - See LICENSE file
 ## Author
 
 Jeremy Longshore
+
 - GitHub: https://github.com/jeremylongshore
 - Plugin Marketplace: https://claudecodeplugins.io
 

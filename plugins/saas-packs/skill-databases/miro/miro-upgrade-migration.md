@@ -10,6 +10,7 @@ miro-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Miro SDK upgrades
 **Workflow:** Part of the operations skill category for Miro integration.
 **Relates to:** Other miro skills in this pack.

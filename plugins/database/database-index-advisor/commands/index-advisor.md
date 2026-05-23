@@ -11,6 +11,7 @@ Analyze query workloads, identify missing indexes, detect unused indexes, and re
 ## When to Use This Command
 
 Use `/index-advisor` when you need to:
+
 - Optimize slow queries with proper indexing strategies
 - Analyze database workload for missing index opportunities
 - Identify and remove unused indexes consuming storage and write performance
@@ -19,6 +20,7 @@ Use `/index-advisor` when you need to:
 - Monitor index bloat and schedule maintenance (REINDEX, VACUUM)
 
 DON'T use this when:
+
 - Database is small (<1GB) with minimal query load
 - All queries are simple primary key lookups
 - You're looking for application-level query issues (use query optimizer instead)
@@ -27,6 +29,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **workload-based index analysis** because:
+
 - Real query patterns reveal actual index opportunities
 - EXPLAIN ANALYZE provides accurate index impact estimates
 - Unused index detection prevents unnecessary write overhead
@@ -34,12 +37,14 @@ This command implements **workload-based index analysis** because:
 - Covering indexes eliminate expensive table lookups (3-10x speedup)
 
 **Alternative considered: Static schema analysis**
+
 - Only analyzes table structure, not query patterns
 - Can't estimate real-world performance impact
 - May recommend indexes that won't be used
 - Recommended only for initial schema design
 
 **Alternative considered: Manual EXPLAIN analysis**
+
 - Requires deep SQL expertise for every query
 - Time-consuming and error-prone
 - No systematic unused index detection
@@ -48,6 +53,7 @@ This command implements **workload-based index analysis** because:
 ## Prerequisites
 
 Before running this command:
+
 1. Access to database query logs or slow query log
 2. Permission to run EXPLAIN ANALYZE on queries
 3. Monitoring of database storage and I/O metrics
@@ -57,23 +63,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Collect Query Workload Data
+
 Capture real production queries from logs or pg_stat_statements.
 
 ### Step 2: Analyze Query Execution Plans
+
 Run EXPLAIN ANALYZE to identify sequential scans and suboptimal query plans.
 
 ### Step 3: Generate Index Recommendations
+
 Identify missing indexes, composite index opportunities, and covering indexes.
 
 ### Step 4: Simulate Index Impact
+
 Estimate query performance improvements with hypothetical indexes.
 
 ### Step 5: Implement and Monitor Indexes
+
 Create recommended indexes and track query performance improvements.
 
 ## Output Format
 
 The command generates:
+
 - `analysis/missing_indexes.sql` - CREATE INDEX statements for missing indexes
 - `analysis/unused_indexes.sql` - DROP INDEX statements for unused indexes
 - `reports/index_impact_report.html` - Visual impact analysis with before/after metrics
@@ -621,12 +633,14 @@ class MySQLIndexAdvisor {
 ## Configuration Options
 
 **Index Types**
+
 - **B-Tree**: Default, good for equality and range queries
 - **Hash**: Fast equality lookups (PostgreSQL 10+)
 - **GIN/GiST**: Full-text search and JSON queries
 - **BRIN**: Block range indexes for very large sequential tables
 
 **Index Options**
+
 - `CONCURRENTLY`: Create without blocking writes (PostgreSQL)
 - `ALGORITHM=INPLACE`: Online index creation (MySQL)
 - `INCLUDE` columns: Covering index (PostgreSQL 11+)
@@ -635,6 +649,7 @@ class MySQLIndexAdvisor {
 ## Best Practices
 
 DO:
+
 - Create indexes on foreign key columns
 - Use composite indexes for multi-column WHERE clauses
 - Order composite index columns by selectivity (most selective first)
@@ -643,6 +658,7 @@ DO:
 - Monitor index usage with pg_stat_user_indexes
 
 DON'T:
+
 - Create indexes on every column "just in case"
 - Index low-cardinality columns (boolean, enum with few values)
 - Use functions in WHERE clauses on indexed columns

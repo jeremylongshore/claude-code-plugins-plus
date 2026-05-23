@@ -12,6 +12,7 @@ featured: false
 Over the past few hours, I architected and deployed BrightStream - a production-grade positive news platform powered by 10 independent AI agents orchestrated through Google's Vertex AI Agent Engine. This case study demonstrates systematic technical decision-making, cost optimization, and infrastructure automation.
 
 **Project Scope:**
+
 - 10 ADK-compliant agent configurations
 - Complete GCP infrastructure automation
 - Docker-based development environment
@@ -23,6 +24,7 @@ Over the past few hours, I architected and deployed BrightStream - a production-
 The initial approach was workflow-based (n8n) - visual, accessible, easy to demonstrate. But this created a fundamental mismatch between the tool and the problem.
 
 **The Core Issue:** AI agents aren't stateless API endpoints. They:
+
 - Maintain conversational context
 - Make adaptive decisions
 - Handle errors intelligently
@@ -46,6 +48,7 @@ This wasn't just a technology choice - it was recognizing that the right tool fu
 Yes, each agent runs in its own container with its own endpoint. But Vertex AI builds those containers automatically from configuration files.
 
 **The Solution:**
+
 - **Production:** YAML configs + Python tools → Vertex AI generates everything
 - **Development:** Docker Compose for local testing
 - **Result:** Best of both worlds - simple production deployment, flexible local development
@@ -55,10 +58,12 @@ This is pattern recognition: understanding when to let managed services handle c
 ## Cost Optimization Through Deep Analysis
 
 **Initial Estimate:** $1,548/month
+
 - Assumption: Paid LLM tier required
 - No optimization applied
 
 **Corrected Analysis:**
+
 - Gemini 2.0 Flash free tier: 4,080 articles/month FREE
 - Lyria Audio: $60/month (100 articles/day)
 - Imagen Image: $60/month (100 articles/day)
@@ -68,6 +73,7 @@ This is pattern recognition: understanding when to let managed services handle c
 **Key Decision:** Removed Agent 6 (Veo video generation) - saved $1,500/month while maintaining core functionality.
 
 This demonstrates the ability to:
+
 1. Challenge assumptions (free tier vs. paid)
 2. Quantify trade-offs (video vs. cost)
 3. Make data-driven architectural decisions
@@ -75,34 +81,41 @@ This demonstrates the ability to:
 ## Technical Leadership: The 10-Agent Architecture
 
 ### Agent 0: Root Orchestrator
+
 **Role:** Workflow coordination and rate limiting
 **Resources:** 4 CPU, 4Gi RAM, always-on (min 1 instance)
 **Responsibility:** Manage Gemini free tier limits (15 RPM enforcement)
 
 ### Agent 1: News Aggregator
+
 **Innovation:** Adaptive timeout management
 **Approach:** P95 latency × 1.5 safety margin, feed health scoring, automatic deprioritization of unreliable sources
 
 ### Agent 2: Story Scorer
+
 **Innovation:** Multi-agent debate with consensus algorithm
 **Approach:** 3 parallel scorers (optimistic, balanced, conservative), confidence-weighted voting, structured debate rounds with hard timeouts (max 60s)
 
 ### Agents 4 & 5: Parallel Media Generation
+
 **Innovation:** Simultaneous execution for speed
 **Approach:** Agent 3 triggers both agents concurrently, continues with partial success if one fails
 
 ### Agent 7: QA Verification
+
 **Innovation:** 4-layer anti-hallucination verification
 **Approach:** Date filtering → Source verification → Prompt injection detection → Temperature-zero fact-checking
 **Veto Power:** If ANY layer fails, content does NOT publish
 
 ### Agent 8: Publishing
+
 **Innovation:** Multi-channel with exponential backoff
 **Approach:** Email (HTML newsletter), X/Twitter (280 chars), Web (SEO-optimized)
 **Retry Logic:** 1s → 2s → 4s → 8s with jitter
 **Safety:** `require_confirmation: true` (human approval required)
 
 ### Agent 9: Analytics
+
 **Innovation:** Dynamic parameter updates with validation
 **Approach:** Weekly reflection pattern, confidence-based application (high = auto-apply, medium = human review)
 **Critical:** Always validates weight sums, ranges, safe bounds before applying changes
@@ -161,26 +174,31 @@ The entire build followed a systematic approach:
 ## Key Technical Decisions
 
 ### 1. Vertex AI Agent Engine Over Cloud Run
+
 **Rationale:** Managed container generation, built-in sessions/memory, native A2A communication
 **Trade-off:** Less control, vendor lock-in
 **Decision:** Benefits outweigh costs for rapid deployment
 
 ### 2. Docker Compose for Local Development
+
 **Rationale:** Test multi-agent interactions before cloud deployment
 **Implementation:** 10 services, shared network, individual endpoints
 **Outcome:** Catch integration issues early
 
 ### 3. Parallel Execution for Media Generation
+
 **Rationale:** 40-50% time savings (Agents 4 & 5 run simultaneously)
 **Risk:** Partial failure handling required
 **Mitigation:** Continue with partial success, log failures
 
 ### 4. Multi-Agent Debate for Scoring
+
 **Rationale:** Reduce single-model bias, improve decision quality
 **Implementation:** 3 scorers with structured debate protocol
 **Constraint:** Hard timeout (max 60s) prevents infinite loops
 
 ### 5. Dynamic Parameters with Validation
+
 **Rationale:** System improves over time based on performance data
 **Risk:** Invalid parameters could break the system
 **Mitigation:** Always validate weight sums, ranges, safe bounds before applying
@@ -245,8 +263,6 @@ This project reinforced several key principles:
 4. **Validate dynamic changes** (parameter updates)
 5. **Document the journey, not just the destination** (troubleshooting context)
 
-
 **Skills Demonstrated:** Google Cloud Platform, Vertex AI, Docker, Python, Infrastructure Automation, Cost Optimization, Multi-Agent Systems, Technical Writing
 
 **Repository:** https://github.com/jeremylongshore/brightstream
-

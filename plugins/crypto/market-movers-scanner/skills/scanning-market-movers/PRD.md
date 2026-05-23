@@ -21,6 +21,7 @@
 The scanning-market-movers skill provides real-time detection and analysis of significant price movements and unusual volume patterns across cryptocurrency markets. By continuously monitoring thousands of assets, this skill identifies emerging opportunities (gainers, losers, volume spikes) before they become widely recognized, giving traders a time advantage in fast-moving markets.
 
 **Key Value Proposition:**
+
 - Detect market moves as they happen, not after
 - Filter noise with configurable thresholds
 - Correlate price action with volume confirmation
@@ -44,6 +45,7 @@ This skill depends on the `tracking-crypto-prices` skill from `market-price-trac
 ### Desired State
 
 Traders receive timely, filtered notifications of significant market moves with:
+
 - Configurable thresholds (% change, volume multiplier, market cap filters)
 - Volume-confirmed price action
 - Ranked results by significance score
@@ -56,18 +58,21 @@ Traders receive timely, filtered notifications of significant market moves with:
 ### Persona 1: Day Trader (Primary)
 
 **Profile:**
+
 - Trades daily, often multiple times per day
 - Focuses on momentum and volatility plays
 - Needs real-time or near-real-time data
 - Makes decisions in minutes, not hours
 
 **Goals:**
+
 - Find assets breaking out before the crowd
 - Identify dip-buying opportunities
 - Avoid low-liquidity traps
 - Time entries and exits precisely
 
 **Pain Points:**
+
 - Misses moves while analyzing other assets
 - Gets caught in pump-and-dumps
 - Spends too much time switching between tools
@@ -75,18 +80,21 @@ Traders receive timely, filtered notifications of significant market moves with:
 ### Persona 2: Swing Trader
 
 **Profile:**
+
 - Holds positions for days to weeks
 - Focuses on trend shifts and reversals
 - Values comprehensive analysis over speed
 - Monitors broader market context
 
 **Goals:**
+
 - Identify trend changes early
 - Find oversold assets with recovery potential
 - Avoid catching falling knives
 - Build positions during accumulation phases
 
 **Pain Points:**
+
 - Entry timing in volatile markets
 - Distinguishing dead cat bounces from real reversals
 - Managing watchlist of hundreds of assets
@@ -94,18 +102,21 @@ Traders receive timely, filtered notifications of significant market moves with:
 ### Persona 3: Market Analyst
 
 **Profile:**
+
 - Researches market structure and dynamics
 - Produces reports and insights for others
 - Values historical patterns and context
 - Requires exportable data for further analysis
 
 **Goals:**
+
 - Identify sector rotations and themes
 - Track whale and institutional activity
 - Generate data-driven market summaries
 - Backtest scanner effectiveness
 
 **Pain Points:**
+
 - Manual data collection is time-consuming
 - Difficulty correlating moves across assets
 - Need to process large datasets efficiently
@@ -123,6 +134,7 @@ Traders receive timely, filtered notifications of significant market moves with:
 **So that** I can identify trading opportunities quickly
 
 **Acceptance Criteria:**
+
 - Scan returns top 20 gainers and top 20 losers by 24h change
 - Results include: symbol, price, 24h change %, volume, market cap
 - Scan completes within 5 seconds
@@ -135,6 +147,7 @@ Traders receive timely, filtered notifications of significant market moves with:
 **So that** I can find price moves with strong conviction
 
 **Acceptance Criteria:**
+
 - Identify assets where current volume > 2x average daily volume
 - Filter by minimum volume threshold (e.g., > $1M/day)
 - Show volume ratio (current vs average)
@@ -147,6 +160,7 @@ Traders receive timely, filtered notifications of significant market moves with:
 **So that** I only see moves that match my trading style
 
 **Acceptance Criteria:**
+
 - Configure minimum % change threshold (e.g., 5%, 10%, 20%)
 - Configure volume multiplier threshold (e.g., 2x, 5x, 10x)
 - Configure market cap filters (e.g., > $100M, $1B-$10B)
@@ -161,6 +175,7 @@ Traders receive timely, filtered notifications of significant market moves with:
 **So that** I can identify sector-specific themes
 
 **Acceptance Criteria:**
+
 - Filter by predefined categories (DeFi, Layer 2, NFT, Gaming, etc.)
 - Show sector aggregate statistics (avg change, total volume)
 - Identify sector leaders and laggards
@@ -172,6 +187,7 @@ Traders receive timely, filtered notifications of significant market moves with:
 **So that** I can identify moves at different scales
 
 **Acceptance Criteria:**
+
 - Support 1h, 4h, 24h, 7d timeframes
 - Show change and volume metrics for selected timeframe
 - Allow multiple timeframe comparison
@@ -183,6 +199,7 @@ Traders receive timely, filtered notifications of significant market moves with:
 **So that** I can analyze data in external tools
 
 **Acceptance Criteria:**
+
 - Export to JSON with full metadata
 - Export to CSV for spreadsheet analysis
 - Include timestamp and scan parameters
@@ -196,6 +213,7 @@ Traders receive timely, filtered notifications of significant market moves with:
 **So that** I can prioritize the most important moves
 
 **Acceptance Criteria:**
+
 - Composite score based on % change, volume ratio, market cap
 - Configurable scoring weights
 - Explanation of why a move scored highly
@@ -207,6 +225,7 @@ Traders receive timely, filtered notifications of significant market moves with:
 **So that** I don't have to constantly watch the scanner
 
 **Acceptance Criteria:**
+
 - Threshold-based alerting
 - Output suitable for piping to notification systems
 - Rate limiting to prevent alert spam
@@ -220,6 +239,7 @@ Traders receive timely, filtered notifications of significant market moves with:
 **Description:** Scan cryptocurrency markets for price and volume movements
 
 **Specifications:**
+
 - Fetch current prices and 24h changes for all tracked assets
 - Calculate volume ratios vs historical averages
 - Support filtering by market cap, volume, and category
@@ -230,6 +250,7 @@ Traders receive timely, filtered notifications of significant market moves with:
 **Description:** Apply user-defined thresholds to identify significant moves
 
 **Specifications:**
+
 - Price change thresholds: absolute % change cutoffs
 - Volume thresholds: multiplier vs average, absolute minimums
 - Market cap thresholds: min/max filters
@@ -240,6 +261,7 @@ Traders receive timely, filtered notifications of significant market moves with:
 **Description:** Calculate composite significance score for ranking
 
 **Specifications:**
+
 - Score = weighted combination of change%, volume ratio, and market cap
 - Default weights: change (40%), volume (40%), market cap (20%)
 - Configurable weights via settings
@@ -250,6 +272,7 @@ Traders receive timely, filtered notifications of significant market moves with:
 **Description:** Present results in human-readable and machine-readable formats
 
 **Specifications:**
+
 - Table format: aligned columns with headers
 - JSON format: structured data with metadata
 - CSV format: spreadsheet-compatible export
@@ -260,6 +283,7 @@ Traders receive timely, filtered notifications of significant market moves with:
 **Description:** Filter movers by asset category
 
 **Specifications:**
+
 - Predefined categories: DeFi, Layer2, NFT, Gaming, Meme, Stablecoins
 - Custom category support via configuration
 - Aggregate category statistics
@@ -269,6 +293,7 @@ Traders receive timely, filtered notifications of significant market moves with:
 ## Non-Goals
 
 This skill does NOT:
+
 - Execute trades or manage positions
 - Provide trading signals or recommendations
 - Store historical scan results (ephemeral by design)

@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # TwinMind Install & Auth
 
 ## Overview
+
 Set up TwinMind meeting AI across Chrome extension, mobile apps, and API integration.
 
 ## Prerequisites
+
 - Chrome browser (latest version) for extension
 - iOS 15+ or Android 10+ for mobile apps
 - Google account for calendar integration
@@ -40,13 +42,14 @@ Set up TwinMind meeting AI across Chrome extension, mobile apps, and API integra
 ### Step 1: Install Chrome Extension
 
 1. Visit Chrome Web Store:
+
 ```
 https://chromewebstore.google.com/detail/twinmind-chat-with-tabs-m/agpbjhhcmoanaljagpoheldgjhclepdj
 ```
 
-2. Click "Add to Chrome" and confirm permissions
+1. Click "Add to Chrome" and confirm permissions
 
-3. Pin the extension to your toolbar for quick access
+2. Pin the extension to your toolbar for quick access
 
 ### Step 2: Create Account & Authenticate
 
@@ -67,6 +70,7 @@ https://chromewebstore.google.com/detail/twinmind-chat-with-tabs-m/agpbjhhcmoana
 ```
 
 Authorize calendars in Settings > Integrations:
+
 - Google Calendar (recommended)
 - Microsoft Outlook
 - Apple Calendar
@@ -74,6 +78,7 @@ Authorize calendars in Settings > Integrations:
 ### Step 4: Configure Audio Permissions
 
 Grant microphone access when prompted:
+
 - Chrome: Settings > Privacy > Microphone
 - macOS: System Preferences > Security > Microphone
 - Windows: Settings > Privacy > Microphone
@@ -81,11 +86,13 @@ Grant microphone access when prompted:
 ### Step 5: Install Mobile App (Optional)
 
 **iOS:**
+
 ```
 https://apps.apple.com/us/app/twinmind-ai-notes-memory/id6504585781
 ```
 
 **Android:**
+
 ```
 https://play.google.com/store/apps/details?id=ai.twinmind.android
 ```
@@ -117,6 +124,7 @@ curl -H "Authorization: Bearer $TWINMIND_API_KEY" \
 ```
 
 ## Output
+
 - Chrome extension installed and authenticated
 - Calendar integration configured
 - Mobile apps installed (optional)
@@ -136,16 +144,19 @@ curl -H "Authorization: Bearer $TWINMIND_API_KEY" \
 ## Platform-Specific Notes
 
 ### macOS
+
 ```bash
 # Check microphone permissions
 tccutil list com.google.Chrome
 ```
 
 ### Windows
+
 - Ensure "Allow apps to access microphone" is enabled
 - Add Chrome to allowed apps list
 
 ### Linux
+
 ```bash
 # Check PulseAudio is running
 pulseaudio --check
@@ -164,12 +175,14 @@ pactl list sources | grep -i "name:"
 | On-premise | No | No | Yes |
 
 ## Resources
+
 - [TwinMind Website](https://twinmind.com)
 - [Chrome Extension Tutorial](https://twinmind.com/ce-tutorial)
 - [iOS App Store](https://apps.apple.com/us/app/twinmind-ai-notes-memory/id6504585781)
 - [Android Play Store](https://play.google.com/store/apps/details?id=ai.twinmind.android)
 
 ## Next Steps
+
 After successful setup, proceed to `twinmind-hello-world` for your first meeting transcription.
 
 ## Examples

@@ -45,10 +45,12 @@ Create your first fundraise pipeline in Finta: add target investors, configure d
 ### Step 2: Add Target Investors
 
 **Manual Entry:**
+
 - Click **Add Investor** in pipeline view
 - Enter: investor name, firm, email, check size range, thesis tags
 
 **CSV Import:**
+
 ```csv
 Name,Firm,Email,Check Size,Stage,Notes
 Jane Smith,Sequoia Capital,jane@sequoia.com,"$500K-$2M",Researching,Met at TechCrunch
@@ -56,6 +58,7 @@ Bob Jones,a16z,bob@a16z.com,"$1M-$5M",Reaching Out,Intro from advisor
 ```
 
 **Aurora AI Prospecting:**
+
 1. Go to **Investors** > **Discover**
 2. Aurora ranks investors by thesis fit, check size match, and warm intro availability
 3. Add promising matches to your pipeline with one click
@@ -63,6 +66,7 @@ Bob Jones,a16z,bob@a16z.com,"$1M-$5M",Reaching Out,Intro from advisor
 ### Step 3: Track Pipeline Progress
 
 Finta automatically moves investors through stages based on:
+
 - **Email replies**: Investor responds --> auto-advance to next stage
 - **Calendar meetings**: Meeting scheduled --> advance to Intro Meeting
 - **Manual updates**: Drag-and-drop in pipeline Kanban view

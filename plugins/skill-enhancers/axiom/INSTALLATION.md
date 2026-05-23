@@ -73,6 +73,7 @@ Try this example:
 ## Troubleshooting
 
 ### Plugin not found
+
 ```bash
 # Check plugin path is correct
 ls -la /Users/Charles/Projects/Axiom/plugins/axiom/
@@ -81,6 +82,7 @@ ls -la /Users/Charles/Projects/Axiom/plugins/axiom/
 ```
 
 ### Skills not loading
+
 ```bash
 # Restart Claude Code
 # /restart
@@ -90,6 +92,7 @@ claude-code plugin list
 ```
 
 ### Need to update
+
 ```bash
 # If you make changes to skills, reload the plugin
 claude-code plugin reload axiom
@@ -133,6 +136,7 @@ git push origin v0.1.0
 ## Support
 
 For issues or questions:
+
 - Check `SKILLS-SUMMARY.md` for detailed documentation
 - Review individual skill files in `plugins/axiom/skills/`
 - File issues on GitHub (when repository is published)

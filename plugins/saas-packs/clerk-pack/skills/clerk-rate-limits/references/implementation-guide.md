@@ -7,6 +7,7 @@ Detailed implementation examples and code patterns.
 ### Step 1: Understand Rate Limits
 
 #### Clerk API Rate Limits (as of 2024)
+
 | Endpoint Category | Free Tier | Pro Tier | Enterprise |
 |------------------|-----------|----------|------------|
 | Authentication | 100/min | 500/min | Custom |
@@ -15,11 +16,13 @@ Detailed implementation examples and code patterns.
 | Webhooks | Unlimited | Unlimited | Unlimited |
 
 #### Client-Side Limits
+
 - SDK requests are automatically throttled
 - Browser session: 10 requests/second
 - Token refresh: 1 per 50 seconds (automatic)
 
 ### Step 2: Implement Rate Limit Handling
+
 ```typescript
 // lib/clerk-client.ts
 import { clerkClient } from '@clerk/nextjs/server'
@@ -65,6 +68,7 @@ export async function getUser(userId: string) {
 ```
 
 ### Step 3: Batch Operations
+
 ```typescript
 // lib/clerk-batch.ts
 import { clerkClient } from '@clerk/nextjs/server'
@@ -108,6 +112,7 @@ async function getAllUsers(batchSize = 100, delayMs = 100) {
 ```
 
 ### Step 4: Caching Strategy
+
 ```typescript
 // lib/clerk-cache.ts
 import { unstable_cache } from 'next/cache'
@@ -145,6 +150,7 @@ export async function getUserWithCache(userId: string) {
 ```
 
 ### Step 5: Monitor Rate Limit Usage
+
 ```typescript
 // lib/clerk-monitor.ts
 interface RateLimitMetrics {

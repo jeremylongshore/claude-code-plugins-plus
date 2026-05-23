@@ -22,9 +22,11 @@ User asks about interaction patterns, best practices, form design, navigation, o
 
 1. **Identify pattern category** from user request (forms, navigation, loading, empty states, modals, etc.)
 2. **Search UX knowledge base:**
+
    ```bash
    python3 -m draft_agent.uiux search --domain ux --query "{pattern_category}" --limit 5
    ```
+
 3. **Cross-reference severity ratings** from results — surface Critical and High first
 4. **Output** structured do/don't table with code examples and severity
 

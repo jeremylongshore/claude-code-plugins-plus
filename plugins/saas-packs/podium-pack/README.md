@@ -17,6 +17,7 @@ Podium is a business communication platform for messaging, reviews, and payments
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `podium-install-auth` | OAuth2 setup with client_id/secret, authorization code flow |
@@ -33,6 +34,7 @@ Podium is a business communication platform for messaging, reviews, and payments
 | `podium-upgrade-migration` | API version changes and OAuth scope updates |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `podium-ci-integration` | CI pipeline with mocked Podium API tests |

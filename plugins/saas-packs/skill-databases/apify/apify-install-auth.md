@@ -10,6 +10,7 @@ apify-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Apify SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Apify integration.
 **Relates to:** Other apify skills in this pack.

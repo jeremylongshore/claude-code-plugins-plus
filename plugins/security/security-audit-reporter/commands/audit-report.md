@@ -50,6 +50,7 @@ Generate comprehensive security audit reports covering vulnerabilities, complian
 ## Audit Scope
 
 The audit covers:
+
 - Application security
 - Infrastructure security
 - Network security

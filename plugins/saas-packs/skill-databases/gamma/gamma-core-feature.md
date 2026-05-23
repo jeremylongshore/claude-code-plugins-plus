@@ -10,6 +10,7 @@ gamma-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Gamma core feature integration
 **Workflow:** Part of the onboarding skill category for Gamma integration.
 **Relates to:** Other gamma skills in this pack.

@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Webhooks & Events
 
 ## Overview
+
 Implement Evernote webhook notifications for real-time change detection. Evernote webhooks notify your endpoint that changes occurred, but you must use the sync API to retrieve the actual changed data.
 
 ## Prerequisites
+
 - Evernote API key with webhook permissions
 - HTTPS endpoint accessible from the internet
 - Understanding of Evernote sync API
@@ -80,6 +82,7 @@ Implement a polling fallback for environments where webhooks are unavailable. Po
 For the full webhook server, sync manager, event handlers, and polling implementations, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
+
 - Express webhook endpoint with async processing
 - Sync state manager with USN tracking
 - Event router for create, update, and delete operations
@@ -87,6 +90,7 @@ For the full webhook server, sync manager, event handlers, and polling implement
 - Polling fallback for non-webhook environments
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Webhook not received | URL not reachable from Evernote servers | Verify HTTPS endpoint is publicly accessible |
@@ -95,11 +99,13 @@ For the full webhook server, sync manager, event handlers, and polling implement
 | Sync timeout | Large change set in chunk | Reduce `maxEntries` per chunk, paginate |
 
 ## Resources
+
 - [Webhooks Overview](https://dev.evernote.com/doc/articles/webhooks.php)
 - [Synchronization](https://dev.evernote.com/doc/articles/synchronization.php)
 - [Developer Portal](https://dev.evernote.com/)
 
 ## Next Steps
+
 For performance optimization, see `evernote-performance-tuning`.
 
 ## Examples

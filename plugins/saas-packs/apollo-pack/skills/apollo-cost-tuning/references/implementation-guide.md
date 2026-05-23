@@ -5,6 +5,7 @@
 # Apollo Cost Tuning
 
 ## Overview
+
 Optimize Apollo.io costs through efficient credit usage, smart caching, deduplication, and usage monitoring.
 
 ## Apollo Pricing Model
@@ -364,6 +365,7 @@ export const budgetClient = new BudgetAwareApolloClient();
 - [ ] Team-level budget allocation
 
 ## Output
+
 - Cost-aware caching strategy
 - Deduplication service
 - Smart search scoring
@@ -371,6 +373,7 @@ export const budgetClient = new BudgetAwareApolloClient();
 - Budget-aware API client
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | Budget exceeded | Pause operations, alert team |
@@ -379,9 +382,11 @@ export const budgetClient = new BudgetAwareApolloClient();
 | Unexpected costs | Review usage reports |
 
 ## Resources
+
 - [Apollo Pricing](https://www.apollo.io/pricing)
 - [Apollo Credit System](https://knowledge.apollo.io/hc/en-us/articles/4415144183053)
 - [Usage Dashboard](https://app.apollo.io/settings/billing)
 
 ## Next Steps
+
 Proceed to `apollo-reference-architecture` for architecture patterns.

@@ -65,6 +65,7 @@ python3 scripts/verify_location.py \
 ```
 
 Output:
+
 ```json
 {
   "location_uid": "loc_placeholder_001",
@@ -141,12 +142,14 @@ python3 scripts/audit_log_query.py \
 ```
 
 Output (one record per line):
+
 ```json
 {"ts": 1715515200.5, "location_uid": "loc_placeholder_001", "org_slug": "kombilife", "endpoint": "/v4/contacts", "method": "POST", "status": 200, "request_id": "abc123def456", "latency_ms": 142.3}
 {"ts": 1715515210.7, "location_uid": "loc_placeholder_001", "org_slug": "kombilife", "endpoint": "/v4/conversations", "method": "GET", "status": 200, "request_id": "def789ghi012", "latency_ms": 87.1}
 ```
 
 Pipe to `jq` for further slicing:
+
 ```bash
 python3 scripts/audit_log_query.py --location-uid loc_placeholder_001 --since 2026-05-01 --output json \
   | jq -s 'group_by(.status) | map({status: .[0].status, count: length})'
@@ -201,6 +204,7 @@ python3 scripts/verify_location.py --location-uid loc_placeholder_001 --credenti
 ```
 
 Output:
+
 ```
 ERR_LOC_002 location_not_in_scope — uid=loc_placeholder_001 not in scope.
 Token sees 4 locations; this UID is not one of them.

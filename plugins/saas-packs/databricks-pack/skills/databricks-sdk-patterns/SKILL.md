@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks SDK Patterns
 
 ## Overview
+
 Production-ready patterns for the Databricks Python SDK (`databricks-sdk`). Covers singleton client initialization, typed error handling, cluster lifecycle management, type-safe job construction, and pagination. Uses real SDK exception classes and API shapes.
 
 ## Prerequisites
+
 - `databricks-sdk>=0.20.0` installed
 - Authentication configured (see `databricks-install-auth`)
 - Python 3.10+
@@ -35,6 +37,7 @@ Production-ready patterns for the Databricks Python SDK (`databricks-sdk`). Cove
 ## Instructions
 
 ### Step 1: Singleton Client with Profile Support
+
 Each `WorkspaceClient` holds an HTTP session and re-authenticates. Cache instances.
 
 ```python
@@ -60,6 +63,7 @@ w_prod = get_client("production")
 ```
 
 ### Step 2: Structured Error Handling
+
 The SDK raises typed exceptions from `databricks.sdk.errors`. Distinguish transient (retryable) from permanent failures.
 
 ```python
@@ -117,6 +121,7 @@ else:
 ```
 
 ### Step 3: Cluster Lifecycle Context Manager
+
 Ensure ephemeral clusters are terminated even on exceptions.
 
 ```python
@@ -154,6 +159,7 @@ with managed_cluster(w,
 ```
 
 ### Step 4: Type-Safe Job Builder
+
 Use SDK dataclasses instead of raw dicts for compile-time safety.
 
 ```python
@@ -210,6 +216,7 @@ print(f"Job created: {created.job_id}")
 ```
 
 ### Step 5: Paginated Collection with Progress
+
 The SDK auto-paginates via iterators. Wrap for progress tracking and filtering.
 
 ```python
@@ -233,6 +240,7 @@ print(f"Running: {len(running)}/{len(all_clusters)} clusters")
 ```
 
 ## Output
+
 - Singleton `WorkspaceClient` with profile-based caching
 - `Result[T]` wrapper for typed, structured error handling
 - Context manager for ephemeral cluster lifecycle
@@ -240,6 +248,7 @@ print(f"Running: {len(running)}/{len(all_clusters)} clusters")
 - Pagination helper with progress logging
 
 ## Error Handling
+
 | SDK Exception | HTTP Code | Retryable | Typical Cause |
 |--------------|-----------|-----------|---------------|
 | `NotFound` | 404 | No | Resource deleted or wrong ID |
@@ -253,6 +262,7 @@ print(f"Running: {len(running)}/{len(all_clusters)} clusters")
 ## Examples
 
 ### Health Check Script
+
 ```python
 w = get_client()
 me = w.current_user.me()
@@ -264,6 +274,7 @@ print(f"Jobs defined: {sum(1 for _ in w.jobs.list())}")
 ```
 
 ### Multi-Workspace Inventory
+
 ```python
 acct = get_account_client()
 for ws in acct.workspaces.list():
@@ -274,9 +285,11 @@ for ws in acct.workspaces.list():
 ```
 
 ## Resources
+
 - [Databricks SDK for Python](https://docs.databricks.com/aws/en/dev-tools/sdk-python)
 - [SDK Error Classes](https://databricks-sdk-py.readthedocs.io/en/latest/errors.html)
 - [SDK GitHub](https://github.com/databricks/databricks-sdk-py)
 
 ## Next Steps
+
 Apply patterns in `databricks-core-workflow-a` for Delta Lake ETL.

@@ -1,6 +1,7 @@
-# Implementation Guide
+## Implementation Guide
 
 ### Step 1: Basic Error Capture
+
 ```typescript
 import * as Sentry from '@sentry/node';
 
@@ -13,6 +14,7 @@ try {
 ```
 
 ### Step 2: Add User Context
+
 ```typescript
 // Set user for all subsequent errors
 Sentry.setUser({
@@ -27,6 +29,7 @@ Sentry.setUser(null);
 ```
 
 ### Step 3: Add Tags and Extra Data
+
 ```typescript
 // Tags for filtering
 Sentry.setTag('feature', 'checkout');
@@ -38,6 +41,7 @@ Sentry.setExtra('total_amount', cart.total);
 ```
 
 ### Step 4: Contextual Capture
+
 ```typescript
 Sentry.captureException(error, {
   level: 'error',
@@ -58,6 +62,7 @@ Sentry.captureException(error, {
 ```
 
 ### Step 5: Custom Fingerprinting
+
 ```typescript
 Sentry.captureException(error, {
   fingerprint: [

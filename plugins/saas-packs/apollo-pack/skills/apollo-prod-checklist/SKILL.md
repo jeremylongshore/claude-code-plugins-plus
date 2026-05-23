@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Production Checklist
 
 ## Overview
+
 Comprehensive pre-production checklist for Apollo.io integrations with automated validation scripts. Covers authentication, resilience, observability, compliance, and credit management.
 
 ## Prerequisites
+
 - Valid Apollo.io API credentials
 - Node.js 18+
 - Completed `apollo-install-auth` setup
@@ -35,6 +37,7 @@ Comprehensive pre-production checklist for Apollo.io integrations with automated
 ## Instructions
 
 ### Step 1: Authentication & Key Management
+
 ```typescript
 // src/scripts/prod-checklist.ts
 import axios from 'axios';
@@ -71,6 +74,7 @@ results.push({ category: 'Auth', name: '.env gitignored', pass: gitIgnored !== '
 ```
 
 ### Step 2: Resilience & Error Handling
+
 ```typescript
 async function fileContains(dir: string, pattern: string): Promise<boolean> {
   try { execSync(`grep -r "${pattern}" ${dir} --include="*.ts" -l`, { stdio: 'pipe' }); return true; }
@@ -95,6 +99,7 @@ results.push({ category: 'Resilience', name: 'Timeout configured',
 ```
 
 ### Step 3: Observability
+
 ```typescript
 results.push({ category: 'Observability', name: 'PII redaction',
   pass: await fileContains('src/', 'redact'),
@@ -110,6 +115,7 @@ results.push({ category: 'Observability', name: 'Health endpoint',
 ```
 
 ### Step 4: Credit & Cost Controls
+
 ```typescript
 results.push({ category: 'Credits', name: 'Credit tracking',
   pass: await fileContains('src/', 'credit\\|CreditTracker'),
@@ -125,6 +131,7 @@ results.push({ category: 'Credits', name: 'Budget controls',
 ```
 
 ### Step 5: Generate Report
+
 ```typescript
 function generateReport(results: Check[]) {
   const categories = [...new Set(results.map((r) => r.category))];
@@ -151,6 +158,7 @@ generateReport(results);
 ```
 
 ## Output
+
 - Authentication checks (key source, header auth, validity, gitignore)
 - Resilience checks (rate limiting, retry, error typing, timeouts)
 - Observability checks (PII redaction, logging, health endpoint)
@@ -158,6 +166,7 @@ generateReport(results);
 - Formatted report with pass/fail score and exit code
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | Auth checks fail | Verify `APOLLO_API_KEY` env var, switch to `x-api-key` header |
@@ -168,17 +177,21 @@ generateReport(results);
 ## Examples
 
 ### Run as CI Gate
+
 ```json
 { "scripts": { "prod:checklist": "tsx src/scripts/prod-checklist.ts" } }
 ```
+
 ```bash
 npm run prod:checklist && npm run deploy
 ```
 
 ## Resources
+
 - [Apollo Status Page](https://status.apollo.io)
 - [Apollo API Pricing](https://docs.apollo.io/docs/api-pricing)
 - [Create API Keys](https://docs.apollo.io/docs/create-api-key)
 
 ## Next Steps
+
 Proceed to `apollo-upgrade-migration` for API upgrade procedures.

@@ -88,6 +88,7 @@ Extract from `$ARGUMENTS` or conversation context:
 | Compare | auto | Previous equivalent period |
 
 Examples:
+
 - `/analytics` → mini tier, all sites, 7d, console
 - `/analytics medium --site=tonsofskills` → medium tier, one site, 7d, console
 - `/analytics full --period=30d --email` → full tier, all sites, 30d, email delivery
@@ -136,6 +137,7 @@ Keep it under 15 lines. No analysis, just the numbers and one signal.
 Launch these agents using the Agent tool with subagent_type:
 
 **Phase A — Data Collection:**
+
 1. Spawn `data-collector` agent with instructions:
    - Sites: {sites from request}
    - Period: {calculated time range}
@@ -150,40 +152,46 @@ Launch these agents using the Agent tool with subagent_type:
 
 **Phase C — Compilation:**
 5. Spawn `reporting-narrative` agent with all specialist outputs
-   - Tier: medium
-   - Delivery format: {console/email/slack}
+
+- Tier: medium
+- Delivery format: {console/email/slack}
 
 #### Full Tier (all agents)
 
 **Phase A — Data Collection:**
+
 1. Spawn `data-collector` agent — request ALL data types including events, tech, geo
 
 **Phase B — Parallel Analysis:**
 2. Spawn ALL specialist agents in parallel:
-   - `traffic-intelligence` — channel/source analysis
-   - `content-seo` — page performance
-   - `anomaly-detector` — spike/drop detection
-   - `conversion-funnel` — event/goal analysis
-   - `audience-segmentation` — cohort/geo analysis
+
+- `traffic-intelligence` — channel/source analysis
+- `content-seo` — page performance
+- `anomaly-detector` — spike/drop detection
+- `conversion-funnel` — event/goal analysis
+- `audience-segmentation` — cohort/geo analysis
 
 **Phase C — Verification:**
 3. Spawn `verification-agent` with all specialist outputs — adversarial quality check
 
 **Phase D — Compilation:**
 4. Spawn `reporting-narrative` agent with all outputs + verification notes
-   - Tier: full
-   - Delivery format: {console/email/slack}
+
+- Tier: full
+- Delivery format: {console/email/slack}
 
 ### Step 4: Deliver
 
 **Console (default):** Display the narrative report directly.
 
 **Email (`--email`):** Invoke the `/email` skill with:
+
 - To: jeremy@intentsolutions.io
 - Subject: "Analytics {Tier} — {date} — {headline}"
 - Body: Report content (formatted for email)
 
 **Slack (`--slack`):** Invoke the `/slack` skill with:
+
 - Channel: #operation-hired
 - Message: Report content (formatted for Slack, respect 3000-char limit)
 
@@ -192,6 +200,7 @@ Launch these agents using the Agent tool with subagent_type:
 ### Step 5: Memory Update (Full Tier Only)
 
 For full-tier reports, spawn the `memory-agent` to:
+
 - Record this period's baselines for future comparison
 - Note any new referral sources or traffic patterns
 - Update seasonal adjustment data if applicable

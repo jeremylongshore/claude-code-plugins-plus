@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Cohere Streaming Events & Connectors
 
 ## Overview
+
 Handle Cohere's streaming chat events (SSE), tool-call events, citation events, and register data connectors for RAG. Cohere does not use traditional webhooks — its event model is streaming-based.
 
 ## Prerequisites
+
 - `cohere-ai` SDK v7+
 - Understanding of Server-Sent Events (SSE)
 - For connectors: HTTPS endpoint accessible from internet
@@ -277,6 +279,7 @@ console.log('Registered connectors:', connectors.connectors.length);
 | `message-end` | Stream ends | Finish reason, usage |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Stream drops mid-response | Network timeout | Set higher timeout, add reconnect |
@@ -285,10 +288,12 @@ console.log('Registered connectors:', connectors.connectors.length);
 | Connector returns empty | Bad search endpoint | Test endpoint with `curl` |
 
 ## Resources
+
 - [Cohere Streaming Guide](https://docs.cohere.com/docs/streaming)
 - [RAG Streaming](https://docs.cohere.com/docs/rag-streaming)
 - [Tool Use Streaming](https://docs.cohere.com/docs/tool-use-streaming)
 - [Connectors API](https://docs.cohere.com/reference/create-connector)
 
 ## Next Steps
+
 For performance optimization, see `cohere-performance-tuning`.

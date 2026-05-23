@@ -22,6 +22,7 @@ This wasn't a "minor bug"—this was a production-breaking issue that made the i
 Before we even got to Slack, we had tunnel stability issues:
 
 **localhost.run** kept changing URLs:
+
 - `cf011aadb6f85d.lhr.life`
 - `0ca4fddc58e906.lhr.life`
 - `7aa0d045663613.lhr.life`
@@ -29,6 +30,7 @@ Before we even got to Slack, we had tunnel stability issues:
 Every URL change required updating Slack Event Subscriptions. Not sustainable.
 
 **Solution:** Switched to **Cloudflare Tunnel** (`cloudflared`)
+
 - Free, no account required for testing
 - Stable URL: `https://editor-steering-width-innovation.trycloudflare.com`
 - Persists as long as the process runs
@@ -61,6 +63,7 @@ Settings.chunk_size = 512
 **Why this mattered:** Bob integrates three knowledge sources (653MB Knowledge DB, Analytics DB, Research index). The deprecation was blocking clean initialization.
 
 **Result after fix:**
+
 ```
 ✅ Knowledge orchestrator initialized successfully
 ```
@@ -70,12 +73,14 @@ Settings.chunk_size = 512
 Slack verified the webhook URL successfully. Bob started responding to messages. But every message triggered **6 duplicate responses**.
 
 **Initial code flow:**
+
 1. Slack sends webhook event
 2. Bob processes entire LLM query (10-60 seconds)
 3. Bob sends Slack message
 4. Bob returns HTTP 200
 
 **Slack's behavior:**
+
 - Waits 3 seconds for HTTP 200
 - No response? **Retry the event**
 - Keeps retrying until it gets acknowledgment
@@ -84,15 +89,18 @@ Slack verified the webhook URL successfully. Bob started responding to messages.
 ### The Debugging Process
 
 **First attempt:** "Maybe it's the tunnel?"
+
 - Checked tunnel logs: Connection stable
 - Tested endpoint locally: `curl http://localhost:8080/slack/events` → Works fine
 
 **Second attempt:** "Maybe it's LLM response time?"
+
 - Ollama (local): 5-15 seconds
 - Groq (cloud): 2-8 seconds
 - Even fastest responses exceeded Slack's 3-second window
 
 **Root cause identified:**
+
 ```python
 @app.post("/slack/events")
 def slack_events():
@@ -208,11 +216,13 @@ def slack_events():
 ### Why This Works
 
 **Before:**
+
 - Slack → Webhook → Process (10-60s) → HTTP 200
 - Slack timeout → Retry → Process again → HTTP 200
 - Result: 6 responses
 
 **After:**
+
 - Slack → Webhook → HTTP 200 (< 100ms)
 - Background: Process → Send Slack message
 - Deduplication: Retries ignored via `event_id` cache
@@ -221,11 +231,13 @@ def slack_events():
 ## Results
 
 **Performance:**
+
 - HTTP 200 acknowledgment: < 100ms (was 10-60 seconds)
 - No more Cloudflare timeout errors
 - One message in → One response out
 
 **Testing:**
+
 ```bash
 # Before fix
 User: "Hey Bob"
@@ -278,10 +290,8 @@ Bob's Circle of Life learning system processes this knowledge and makes it avail
 - **Ollama** (local), Groq, Google Gemini (cloud LLMs)
 - **Redis** for caching and conversation memory
 
-
 **Author:** Jeremy Longshore
 **Email:** jeremy@intentsolutions.io
 **GitHub:** [@jeremylongshore](https://github.com/jeremylongshore)
 
 *Building production-grade AI agents with real-world integration lessons learned the hard way.*
-

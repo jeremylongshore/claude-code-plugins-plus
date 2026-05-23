@@ -10,6 +10,7 @@ shopify-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Shopify example
 **Workflow:** Part of the onboarding skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

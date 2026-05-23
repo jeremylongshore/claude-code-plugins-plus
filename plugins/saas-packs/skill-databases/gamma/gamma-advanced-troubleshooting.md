@@ -10,6 +10,7 @@ gamma-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Gamma advanced debugging
 **Workflow:** Part of the enterprise skill category for Gamma integration.
 **Relates to:** Other gamma skills in this pack.

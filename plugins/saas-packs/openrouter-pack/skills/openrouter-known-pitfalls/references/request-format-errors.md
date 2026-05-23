@@ -3,6 +3,7 @@
 ## Request Format Errors
 
 ### Invalid Message Structure
+
 ```python
 # ❌ Wrong: Missing role
 messages = [{"content": "Hello"}]
@@ -21,6 +22,7 @@ messages = [
 ```
 
 ### Alternating Roles Violation
+
 ```python
 # ❌ Wrong: Two user messages in a row
 messages = [

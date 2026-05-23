@@ -5,6 +5,7 @@
 Building Firebase applications with Vertex AI integration requires coordinating multiple services (Auth, Firestore, Functions, Hosting) while managing secrets, IAM roles, security rules, and deployment pipelines. Developers face a steep learning curve assembling these pieces correctly, and mistakes in secrets management or IAM configuration lead to security vulnerabilities or production outages.
 
 Common failure modes without this skill:
+
 - API keys leaked into client-side code or version control
 - Overly permissive Firestore/Storage security rules deployed to production
 - Vertex AI calls made from client-side code instead of secure Cloud Functions
@@ -54,29 +55,37 @@ Common failure modes without this skill:
 ## Functional Requirements
 
 ### FR-1: Project Initialization
+
 The skill must detect whether a Firebase project exists (presence of `firebase.json`) and either initialize a new project or validate the existing one. Initialization selects Functions (Node.js 20, TypeScript), Firestore, Hosting, and Emulators.
 
 ### FR-2: Vertex AI Backend Function
+
 The skill must generate a Cloud Function that:
+
 - Imports `@google-cloud/vertexai`
 - Reads the GCP project ID from environment configuration
 - Calls a Gemini model (defaulting to `gemini-2.5-flash`)
 - Validates input, returns structured JSON, and handles errors with appropriate HTTP status codes
 
 ### FR-3: Security Configuration
+
 The skill must produce:
+
 - `firestore.rules` with helper functions (`isAuthenticated`, `isOwner`, `hasRole`)
 - `firestore.indexes.json` with any composite indexes required by generated queries
 - `storage.rules` with file-type and size constraints
 - Auth provider setup guidance (Email/Password at minimum)
 
 ### FR-4: Secrets Management
+
 The skill must use Firebase Functions secrets (backed by Secret Manager) for any API keys. No secrets may appear in `firebase.json`, source code literals, or `.env` files committed to version control.
 
 ### FR-5: Emulator Testing
+
 The skill must produce emulator configuration in `firebase.json` and provide commands to start emulators and run smoke tests against local endpoints.
 
 ### FR-6: Deployment
+
 The skill must generate a deployment command targeting the correct Firebase project alias (dev/staging/prod) and deploying only the changed services.
 
 ## Non-Functional Requirements

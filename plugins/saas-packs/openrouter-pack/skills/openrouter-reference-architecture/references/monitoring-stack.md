@@ -3,6 +3,7 @@
 ## Monitoring Stack
 
 ### Prometheus Metrics
+
 ```python
 from prometheus_client import Counter, Histogram, Gauge, start_http_server
 
@@ -53,6 +54,7 @@ start_http_server(9090)
 ```
 
 ### Grafana Dashboard JSON
+
 ```json
 {
   "title": "OpenRouter Service",

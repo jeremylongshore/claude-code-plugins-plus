@@ -9,6 +9,7 @@ Generate realistic test data including users, products, orders, and custom schem
 ## Data Types
 
 ### User Data
+
 - Names (realistic, locale-aware)
 - Email addresses
 - Passwords (hashed if needed)
@@ -19,6 +20,7 @@ Generate realistic test data including users, products, orders, and custom schem
 - Profile info
 
 ### Business Data
+
 - Products (name, description, price, SKU)
 - Orders (items, totals, status)
 - Invoices
@@ -27,6 +29,7 @@ Generate realistic test data including users, products, orders, and custom schem
 - Categories
 
 ### Technical Data
+
 - UUIDs
 - Timestamps
 - IP addresses
@@ -36,6 +39,7 @@ Generate realistic test data including users, products, orders, and custom schem
 - Tokens
 
 ### Custom Schemas
+
 - JSON Schema support
 - Database schema import
 - TypeScript types

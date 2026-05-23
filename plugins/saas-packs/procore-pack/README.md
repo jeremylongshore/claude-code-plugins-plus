@@ -17,6 +17,7 @@ Procore is a construction management platform. This pack covers the **Procore RE
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `procore-install-auth` | OAuth2 setup (client credentials or authorization code flow) |
@@ -33,6 +34,7 @@ Procore is a construction management platform. This pack covers the **Procore RE
 | `procore-upgrade-migration` | API version migration (v1.0 to v1.1) |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `procore-ci-integration` | CI pipeline with sandbox Procore API tests |
@@ -43,6 +45,7 @@ Procore is a construction management platform. This pack covers the **Procore RE
 | `procore-reference-architecture` | Construction integration architecture |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `procore-multi-env-setup` | Sandbox/production environment configuration |

@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Performance Tuning
 
 ## Overview
+
 Optimize Fireflies.ai GraphQL API performance. The biggest wins: request only needed fields (transcripts with sentences can be very large), cache immutable transcripts, and batch operations within rate limits.
 
 ## Prerequisites
+
 - `FIREFLIES_API_KEY` configured
 - Understanding of your access pattern (list vs detail, frequency)
 - Optional: Redis or LRU cache library
@@ -36,6 +38,7 @@ Optimize Fireflies.ai GraphQL API performance. The biggest wins: request only ne
 ## Instructions
 
 ### Step 1: Field Selection -- The Biggest Win
+
 Transcript responses with `sentences` can be enormous. Always request the minimum fields needed.
 
 ```typescript
@@ -60,6 +63,7 @@ const DETAIL = `query($id: String!) { transcript(id: $id) {
 ```
 
 ### Step 2: Cache Transcripts (They Are Immutable)
+
 Once a transcript is processed, its content never changes. Cache aggressively.
 
 ```typescript
@@ -91,6 +95,7 @@ async function getCachedTranscript(id: string) {
 ```
 
 ### Step 3: Redis Cache for Multi-Instance Deployments
+
 ```typescript
 import Redis from "ioredis";
 
@@ -122,6 +127,7 @@ async function getTranscriptCached(id: string) {
 ```
 
 ### Step 4: Batch Processing with Rate Limit Awareness
+
 ```typescript
 import PQueue from "p-queue";
 
@@ -146,6 +152,7 @@ async function batchFetchTranscripts(ids: string[]) {
 ```
 
 ### Step 5: Warm Cache on Webhook Events
+
 ```typescript
 // When a transcript completes, pre-cache it immediately
 async function onWebhookEvent(event: { meetingId: string; eventType: string }) {
@@ -158,6 +165,7 @@ async function onWebhookEvent(event: { meetingId: string; eventType: string }) {
 ```
 
 ### Step 6: Pagination for Large Result Sets
+
 ```typescript
 async function getAllTranscripts(batchSize = 50) {
   const allTranscripts: any[] = [];
@@ -198,6 +206,7 @@ async function getAllTranscripts(batchSize = 50) {
 | Webhook pre-cache | Cold fetch on user visit | Instant from cache | UX improvement |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Slow list queries | Requesting sentences in list | Use light query without `sentences` |
@@ -206,15 +215,18 @@ async function getAllTranscripts(batchSize = 50) {
 | Stale cache | (Not a real issue -- transcripts are immutable) | N/A |
 
 ## Output
+
 - Field-optimized GraphQL queries (light list, full detail)
 - LRU and Redis caching for immutable transcripts
 - Rate-limited batch processor
 - Webhook-driven cache warming
 
 ## Resources
+
 - [Fireflies API Docs](https://docs.fireflies.ai/)
 - [lru-cache](https://github.com/isaacs/node-lru-cache)
 - [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For cost optimization, see `fireflies-cost-tuning`.

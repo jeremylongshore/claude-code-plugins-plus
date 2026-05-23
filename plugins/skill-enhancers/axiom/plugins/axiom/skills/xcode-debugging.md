@@ -33,6 +33,7 @@ These are real questions developers ask that this skill is designed to answer:
 ## Red Flags - Check Environment First
 
 If you see ANY of these, suspect environment not code:
+
 - "It works on my machine but not CI"
 - "Tests passed yesterday, failing today with no code changes"
 - "Build succeeds but old code executes"
@@ -56,11 +57,13 @@ xcrun simctl list devices | grep -E "Booted|Booting|Shutting Down"
 ```
 
 **What these tell you:**
+
 - **0 processes + small Derived Data + no booted sims** → Environment clean, investigate code
 - **10+ processes OR >10GB Derived Data OR simulators stuck** → Environment problem, clean first
 - **Stale code executing OR intermittent failures** → Clean Derived Data regardless of size
 
 **Why environment first:**
+
 - Environment cleanup: 2-5 minutes → problem solved
 - Code debugging for environment issues: 30-120 minutes → wasted time
 
@@ -69,12 +72,14 @@ xcrun simctl list devices | grep -E "Booted|Booting|Shutting Down"
 ### Finding Your Scheme Name
 
 If you don't know your scheme name:
+
 ```bash
 # List available schemes
 xcodebuild -list
 ```
 
 ### For Stale Builds / "No such module" Errors
+
 ```bash
 # Clean everything
 xcodebuild clean -scheme YourScheme
@@ -87,6 +92,7 @@ xcodebuild build -scheme YourScheme \
 ```
 
 ### For Simulator Issues
+
 ```bash
 # Shutdown all simulators
 xcrun simctl shutdown all
@@ -103,6 +109,7 @@ killall -9 Simulator
 ```
 
 ### For Zombie Processes
+
 ```bash
 # Kill all xcodebuild (use cautiously)
 killall -9 xcodebuild
@@ -112,6 +119,7 @@ ps aux | grep xcodebuild | grep -v grep
 ```
 
 ### For Test Failures
+
 ```bash
 # Isolate failing test
 xcodebuild test -scheme YourScheme \

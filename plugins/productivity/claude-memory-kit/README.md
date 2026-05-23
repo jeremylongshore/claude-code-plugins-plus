@@ -11,18 +11,23 @@ Sold at https://builtbyzac.com/memory-kit.html for $19.
 ## Skills
 
 ### memory-save
+
 Saves current session context to a MEMORY.md file before compaction. Captures active tasks, decisions made, patterns discovered, and next steps.
 
 ### memory-load
+
 Restores context from MEMORY.md at session start. Reads the file and primes Claude with the saved state so work continues without re-explanation.
 
 ### memory-update
+
 Logs decisions and patterns mid-session. Appends structured entries to MEMORY.md so nothing important gets lost between major saves.
 
 ### memory-share
+
 Syncs memory to git for team use. Commits MEMORY.md so teammates and other Claude instances can pick up where you left off.
 
 ### memory-audit
+
 Audits and prunes stale memory entries. Reviews MEMORY.md for outdated decisions, completed tasks, and obsolete context, then cleans it up.
 
 ## Usage

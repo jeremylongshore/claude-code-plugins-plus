@@ -3,6 +3,7 @@
 ## 1. Authentication & Setup Pitfalls
 
 ### Using App API key for Track API
+
 ```typescript
 // WRONG: Using App API key for tracking
 const client = new TrackClient(siteId, appApiKey); // Will fail!
@@ -15,6 +16,7 @@ const apiClient = new APIClient(appApiKey);
 ```
 
 ### Millisecond timestamps
+
 ```typescript
 // WRONG: JavaScript milliseconds
 { created_at: Date.now() } // 1704067200000 - will be rejected!
@@ -24,6 +26,7 @@ const apiClient = new APIClient(appApiKey);
 ```
 
 ### Hardcoded credentials
+
 ```typescript
 // WRONG: Credentials in code
 const client = new TrackClient('abc123', 'secret-key'); // Security risk!
@@ -38,6 +41,7 @@ const client = new TrackClient(
 ## 2. User Identification Pitfalls
 
 ### Tracking events before identify
+
 ```typescript
 // WRONG: Track before identify
 await client.track(userId, { name: 'signup' }); // User doesn't exist!
@@ -49,6 +53,7 @@ await client.track(userId, { name: 'signup' });
 ```
 
 ### Changing user IDs
+
 ```typescript
 // WRONG: User ID changes when email changes
 const userId = user.email; // Changing email = new user!
@@ -58,6 +63,7 @@ const userId = user.databaseId; // UUIDs or auto-increment IDs
 ```
 
 ### Anonymous ID not merged
+
 ```typescript
 // WRONG: No anonymous_id linking
 await client.identify(newUserId, { email: 'user@example.com' });
@@ -73,6 +79,7 @@ await client.identify(newUserId, {
 ## 3. Event Tracking Pitfalls
 
 ### Inconsistent event names
+
 ```typescript
 // WRONG: Inconsistent casing and naming
 await client.track(userId, { name: 'UserSignedUp' });
@@ -84,6 +91,7 @@ await client.track(userId, { name: 'user_signed_up' });
 ```
 
 ### Too many unique events
+
 ```typescript
 // WRONG: Dynamic event names create clutter
 await client.track(userId, { name: `viewed_product_${productId}` });
@@ -97,6 +105,7 @@ await client.track(userId, {
 ```
 
 ### Blocking on analytics
+
 ```typescript
 // WRONG: Waiting for analytics in request path
 app.post('/signup', async (req, res) => {
@@ -117,6 +126,7 @@ app.post('/signup', async (req, res) => {
 ## 4. Data Quality Pitfalls
 
 ### Missing required attributes
+
 ```typescript
 // WRONG: No email attribute
 await client.identify(userId, { name: 'John' });
@@ -130,6 +140,7 @@ await client.identify(userId, {
 ```
 
 ### Inconsistent attribute types
+
 ```typescript
 // WRONG: Sometimes string, sometimes number
 await client.identify(userId1, { plan: 'premium' });
@@ -140,6 +151,7 @@ await client.identify(userId, { plan: 'premium' });
 ```
 
 ### PII in segment names or event names
+
 ```typescript
 // WRONG: PII exposed
 await client.track(userId, { name: `email_${user.email}` });
@@ -154,6 +166,7 @@ await client.track(userId, {
 ## 5. Campaign Configuration Pitfalls
 
 ### No unsubscribe handling
+
 ```markdown
 ## WRONG: No unsubscribe link
 Email template without {{{ unsubscribe_url }}}
@@ -163,6 +176,7 @@ Email template without {{{ unsubscribe_url }}}
 ```
 
 ### Trigger on every attribute update
+
 ```yaml
 # WRONG: Trigger fires on every identify
 trigger:
@@ -176,6 +190,7 @@ trigger:
 ## 6. Delivery Issue Pitfalls
 
 ### Ignoring bounces
+
 ```typescript
 // WRONG: No bounce handling
 webhooks.on('email_bounced', () => {
@@ -189,6 +204,7 @@ webhooks.on('email_bounced', async (event) => {
 ```
 
 ### Not monitoring complaint rate
+
 ```typescript
 // CORRECT: Alert on complaints
 webhooks.on('email_complained', async (event) => {
@@ -200,6 +216,7 @@ webhooks.on('email_complained', async (event) => {
 ## 7. Performance Issue Pitfalls
 
 ### No connection pooling
+
 ```typescript
 // WRONG: New client per request
 app.get('/api', async (req, res) => {
@@ -215,6 +232,7 @@ app.get('/api', async (req, res) => {
 ```
 
 ### No rate limiting
+
 ```typescript
 // WRONG: Uncontrolled burst
 for (const user of users) {

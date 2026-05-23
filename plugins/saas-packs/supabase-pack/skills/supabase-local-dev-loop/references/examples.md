@@ -1,6 +1,7 @@
-# Examples
+## Examples
 
 ### Mock Supabase Responses
+
 ```typescript
 vi.mock('@supabase/supabase-js', () => ({
   SupabaseClient: vi.fn().mockImplementation(() => ({
@@ -10,6 +11,7 @@ vi.mock('@supabase/supabase-js', () => ({
 ```
 
 ### Debug Mode
+
 ```bash
 # Enable verbose logging
 DEBUG=SUPABASE=* npm run dev

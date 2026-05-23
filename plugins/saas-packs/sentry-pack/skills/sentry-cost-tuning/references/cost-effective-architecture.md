@@ -3,6 +3,7 @@
 ## Cost-Effective Architecture
 
 ### Tiered Environments
+
 ```typescript
 const config = {
   development: {
@@ -29,6 +30,7 @@ Sentry.init({
 ```
 
 ### Per-Project Budgets
+
 - Allocate quota per project
 - Set rate limits per project
 - Monitor high-volume projects

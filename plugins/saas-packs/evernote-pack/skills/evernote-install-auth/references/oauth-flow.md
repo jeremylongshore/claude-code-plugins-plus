@@ -3,6 +3,7 @@
 ## Step-by-Step OAuth 1.0a Flow
 
 ### Get Request Token and Redirect
+
 ```javascript
 const callbackUrl = 'http://localhost:3000/oauth/callback';
 
@@ -23,6 +24,7 @@ client.getRequestToken(callbackUrl, (error, oauthToken, oauthTokenSecret) => {
 ```
 
 ### Handle OAuth Callback
+
 ```javascript
 app.get('/oauth/callback', (req, res) => {
   const oauthVerifier = req.query.oauth_verifier;
@@ -50,6 +52,7 @@ app.get('/oauth/callback', (req, res) => {
 ```
 
 ### Verify Authenticated Connection
+
 ```javascript
 const authenticatedClient = new Evernote.Client({
   token: req.session.accessToken,

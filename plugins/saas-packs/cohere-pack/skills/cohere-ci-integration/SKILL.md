@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Cohere CI Integration
 
 ## Overview
+
 Set up CI/CD pipelines with automated unit tests (mocked) and integration tests (real API) for Cohere API v2 applications.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - Cohere trial or production API key
 - `cohere-ai` package installed
@@ -208,6 +210,7 @@ describe.skipIf(!hasApiKey)('Cohere Integration', () => {
 - Use trial key for CI if under 1000 monthly calls
 
 ## Error Handling
+
 | CI Issue | Cause | Solution |
 |----------|-------|----------|
 | Secret not found | Missing GitHub secret | `gh secret set CO_API_KEY` |
@@ -216,9 +219,11 @@ describe.skipIf(!hasApiKey)('Cohere Integration', () => {
 | Flaky tests | API latency variance | Add retry in test setup |
 
 ## Resources
+
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 - [Vitest Configuration](https://vitest.dev/config/)
 - [Cohere Rate Limits](https://docs.cohere.com/docs/rate-limits)
 
 ## Next Steps
+
 For deployment patterns, see `cohere-deploy-integration`.

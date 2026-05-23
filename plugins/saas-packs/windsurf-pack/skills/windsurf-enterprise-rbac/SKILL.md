@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Enterprise RBAC
 
 ## Overview
+
 Manage enterprise Windsurf deployment: SSO/SAML configuration, role-based seat management, organization-wide AI policies, and admin portal controls. Covers Teams and Enterprise plan features.
 
 ## Prerequisites
+
 - Windsurf Teams ($30/user/mo) or Enterprise (custom pricing) plan
 - Organization admin access at windsurf.com/dashboard
 - Identity provider for SSO (Enterprise only): Okta, Entra ID, Google Workspace
@@ -199,6 +201,7 @@ service_keys:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | SSO login fails | SAML certificate expired | Update certificate in IdP and Windsurf |
@@ -210,6 +213,7 @@ service_keys:
 ## Examples
 
 ### Quick Admin Dashboard Tasks
+
 ```
 Add user: Admin Dashboard > Members > Invite > email@company.com
 Remove user: Members > Select > Remove from organization
@@ -218,6 +222,7 @@ View usage: Analytics > Overview (or per-member view)
 ```
 
 ### Team Structure Example
+
 ```yaml
 engineering_org:
   platform_team:
@@ -241,9 +246,11 @@ engineering_org:
 ```
 
 ## Resources
+
 - [Windsurf Admin Guide](https://docs.windsurf.com/windsurf/guide-for-admins)
 - [Windsurf Enterprise](https://windsurf.com/enterprise)
 - [Windsurf Security](https://windsurf.com/security)
 
 ## Next Steps
+
 For migration strategies, see `windsurf-migration-deep-dive`.

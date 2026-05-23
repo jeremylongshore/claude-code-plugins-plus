@@ -10,6 +10,7 @@ salesloft-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Salesloft example
 **Workflow:** Part of the onboarding skill category for Salesloft integration.
 **Relates to:** Other salesloft skills in this pack.

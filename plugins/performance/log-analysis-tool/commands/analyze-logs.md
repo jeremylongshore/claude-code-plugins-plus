@@ -27,6 +27,7 @@ Analyze application logs to identify performance issues and optimization opportu
 ## Output
 
 Provide:
+
 - Structured logging implementation guide
 - Log aggregation setup (ELK, Loki, CloudWatch, etc.)
 - Performance analysis queries

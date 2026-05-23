@@ -10,6 +10,7 @@ clickhouse-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working ClickHouse example
 **Workflow:** Part of the onboarding skill category for ClickHouse integration.
 **Relates to:** Other clickhouse skills in this pack.

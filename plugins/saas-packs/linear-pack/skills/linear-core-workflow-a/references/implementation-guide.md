@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Create Issues
+
 ```typescript
 import { LinearClient } from "@linear/sdk";
 
@@ -43,6 +44,7 @@ async function createIssue(options: {
 ```
 
 ### Step 2: Update Issues
+
 ```typescript
 async function updateIssue(
   issueId: string,
@@ -72,6 +74,7 @@ async function updateByIdentifier(identifier: string, updates: Record<string, un
 ```
 
 ### Step 3: State Transitions
+
 ```typescript
 async function getWorkflowStates(teamKey: string) {
   const teams = await client.teams({ filter: { key: { eq: teamKey } } });
@@ -108,6 +111,7 @@ async function markDone(issueId: string) {
 ```
 
 ### Step 4: Issue Relationships
+
 ```typescript
 // Create sub-issue
 async function createSubIssue(parentId: string, title: string) {
@@ -139,6 +143,7 @@ async function getSubIssues(parentId: string) {
 ```
 
 ### Step 5: Comments and Activity
+
 ```typescript
 async function addComment(issueId: string, body: string) {
   return client.createComment({
@@ -175,6 +180,7 @@ async function getComments(issueId: string) {
 ## Examples
 
 ### Complete Issue Creation Flow
+
 ```typescript
 async function createFeatureIssue(options: {
   teamKey: string;

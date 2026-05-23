@@ -19,6 +19,7 @@ iOS app performance problems fall into distinct categories, each with a specific
 ## When to Use Performance Profiling
 
 **Use this skill when:**
+
 - ✅ App feels slow (UI lags, loads take 5+ seconds)
 - ✅ Memory grows over time (Xcode shows increasing memory usage)
 - ✅ Battery drains fast (device gets hot, battery depletes in hours)
@@ -27,10 +28,12 @@ iOS app performance problems fall into distinct categories, each with a specific
 - ✅ Profiling results are confusing or contradictory
 
 **Use `memory-debugging` instead when:**
+
 - Investigating specific memory leaks with retain cycles
 - Using Instruments Allocations in detail mode
 
 **Use `swiftui-performance` instead when:**
+
 - Analyzing SwiftUI view body updates
 - Using SwiftUI Instrument specifically
 
@@ -58,6 +61,7 @@ App performance problem?
 **YES** – Use Instruments to measure it (profiling is most accurate)
 
 **NO** – Use profiling proactively
+
 - Enable Core Data SQL debugging to catch N+1 queries
 - Profile app during normal use (scrolling, loading, navigation)
 - Establish baseline metrics before changes
@@ -80,6 +84,7 @@ Use Time Profiler when your app feels slow or laggy. It measures CPU time spent 
 ### Workflow: Record and Analyze
 
 **Step 1: Launch Instruments**
+
 ```bash
 open -a Instruments
 ```
@@ -87,6 +92,7 @@ open -a Instruments
 Select "Time Profiler" template.
 
 **Step 2: Attach to Running App**
+
 1. Start your app in simulator or device
 2. In Instruments, select your app from the target dropdown
 3. Click Record (red circle)
@@ -96,6 +102,7 @@ Select "Time Profiler" template.
 **Step 3: Read the Call Stack**
 
 The top panel shows a timeline of CPU usage over time. Look for:
+
 - **Tall spikes** – Brief CPU-intensive operations
 - **Sustained high usage** – Continuous expensive work
 - **Main thread blocking** – UI thread doing work (causes UI lag)
@@ -164,6 +171,7 @@ MyViewController.viewDidLoad() – 500ms (40% of total)
 **The temptation**: "I must optimize function X!"
 
 **The reality**: Function X might be:
+
 - **Calling expensive code** (optimize the called function, not X)
 - **Running on main thread** (move to background, it's already optimized)
 - **Necessary work that looks slow** (baseline is acceptable, user won't notice)
@@ -201,6 +209,7 @@ Use Allocations when memory grows over time or you suspect memory pressure issue
 ### Workflow: Record and Analyze
 
 **Step 1: Launch Instruments**
+
 ```bash
 open -a Instruments
 ```
@@ -208,6 +217,7 @@ open -a Instruments
 Select "Allocations" template.
 
 **Step 2: Attach and Record**
+
 1. Start your app
 2. In Instruments, select your app
 3. Click Record
@@ -217,6 +227,7 @@ Select "Allocations" template.
 **Step 3: Find Memory Growth**
 
 Look at the main chart:
+
 - **Blue line** = Total allocations
 - **Sharp climb** = Memory being allocated
 - **Flat line** = Memory stable (good)
@@ -225,8 +236,10 @@ Look at the main chart:
 **Step 4: Identify Persistent Objects**
 
 Under "Statistics":
+
 - Sort by "Persistent" (objects still alive)
 - Look for surprisingly large object counts:
+
   ```
   UIImage: 500 instances (300MB) – Should be <50 for normal app
   NSString: 50000 instances – Should be <1000
@@ -286,6 +299,7 @@ Under "Statistics":
 **The temptation**: "Delete caching, reduce object creation, optimize data structures"
 
 **The reality**: Is 500MB actually large?
+
 - iPhone 14 Pro has 6GB RAM
 - Instagram uses 400-600MB on load
 - Photos app uses 500MB+ when browsing large library
@@ -294,6 +308,7 @@ Under "Statistics":
 **What to do instead**:
 
 1. **Establish baseline on real device**
+
    ```bash
    # On device, open Memory view in Xcode
    Xcode → Debug → Memory Debugger → Check "Real Memory" at app launch
@@ -449,6 +464,7 @@ let allTracks = try context.fetch(request)  // Just references
 **The temptation**: "The schema is wrong, I need to restructure everything"
 
 **The reality**: 99% of "slow Core Data" is due to:
+
 - ❌ Missing indexes
 - ❌ N+1 query problem
 - ❌ Fetching too much data at once
@@ -492,12 +508,14 @@ Redesigning the schema is the LAST thing to try.
 **When to use**: App drains battery fast, device gets hot
 
 **Workflow**:
+
 1. Launch Instruments → Energy Impact template
 2. Run app normally for 5+ minutes
 3. Look for red/orange sustained usage (bad)
 4. Drill down to see which subsystems drain battery
 
 **Key metrics**:
+
 - **Sustained Power** – Ongoing energy use (should be minimal)
 - **Peaks** – Brief high usage (acceptable)
 - **CPU** – Process CPU time
@@ -506,6 +524,7 @@ Redesigning the schema is the LAST thing to try.
 - **Location** – GPS usage
 
 **Common issues**:
+
 - Continuous location updates with 1m accuracy (should be 100m)
 - Running timers that wake the device repeatedly
 - Excessive network calls (batch requests instead)
@@ -516,6 +535,7 @@ Redesigning the schema is the LAST thing to try.
 **When to use**: App seems slow on 4G, want to test without traveling
 
 **Setup**:
+
 1. Download Additional Tools for Xcode
 2. Install Network Link Conditioner
 3. Open System Preferences → Network Link Conditioner
@@ -524,6 +544,7 @@ Redesigning the schema is the LAST thing to try.
 6. Run app to test
 
 **Key profiles**:
+
 - **3G** – 1.6Mbps down, 768Kbps up, 150ms latency
 - **LTE** – 10Mbps down, 5Mbps up, 20ms latency
 - **WiFi Slow** – 10Mbps, 100ms latency
@@ -538,12 +559,14 @@ Redesigning the schema is the LAST thing to try.
 **Common cause**: Main thread blocked by background task waiting on lock
 
 **Workflow**:
+
 1. Launch Instruments → System Trace template
 2. Record while reproducing issue
 3. Look for main thread gaps (blocked, not running)
 4. Drill down to see what's blocking it
 
 **Key metrics**:
+
 - **Main thread gaps** – Empty spaces = main thread idle/blocked
 - **Core scheduling** – Which threads run when
 - **Lock contention** – Threads waiting for locks
@@ -557,11 +580,13 @@ Redesigning the schema is the LAST thing to try.
 **The problem**: You run Time Profiler 3 times, get 200ms, 150ms, 280ms. Which is correct?
 
 **Red flags you might think**:
+
 - "Results are unreliable, profiling isn't accurate"
 - "Let me just average them"
 - "This is too variable, I can't optimize"
 
 **The reality**: Variance is NORMAL. Different runs hit different:
+
 - Cache states (cold cache = slower)
 - System load (other apps running)
 - CPU frequency (boost/throttle)
@@ -640,6 +665,7 @@ Action: Optimize JSON decoding (not memory)
 **The situation**: Manager says "We ship in 2 hours. Is performance acceptable?"
 
 **Red flags you might think**:
+
 - "Profiling takes too long, let me just ask users"
 - "I don't have time to profile properly, ship as-is"
 - "One quick run will tell me if it's fine"
@@ -722,12 +748,14 @@ Performance problem?
 **Scenario**: Your app loads a list of albums with artist names. It's slow (5+ seconds for 100 albums). You suspect Core Data.
 
 **Setup**: Enable SQL logging first
+
 ```bash
 # Edit Scheme → Run → Arguments Passed On Launch
 -com.apple.CoreData.SQLDebug 1
 ```
 
 **What you see in console**:
+
 ```
 CoreData: sql: SELECT ... FROM albums WHERE ... (time: 0.050s)
 CoreData: sql: SELECT ... FROM artists WHERE id = 1 (time: 0.003s)
@@ -737,9 +765,11 @@ Total: 0.050s + (100 × 0.003s) = 0.350s
 ```
 
 **Diagnosis using the skill**:
+
 - Fetching 100 albums, then individual query for each album's artist = **N+1 query problem** (Core Data Deep Dive, lines 302-325)
 
 **Fix**:
+
 ```swift
 // ❌ WRONG: Each album access triggers separate artist query
 let request = Album.fetchRequest()
@@ -769,12 +799,14 @@ for album in albums {
 **Workflow using the skill** (Time Profiler Deep Dive, lines 82-118):
 
 1. **Open Instruments**:
+
 ```bash
 open -a Instruments
 # Select "Time Profiler"
 ```
 
-2. **Record the stall**:
+1. **Record the stall**:
+
 ```
 App launches
 Time Profiler records
@@ -783,7 +815,8 @@ Stall happens (observe the spike in Time Profiler)
 Stop recording
 ```
 
-3. **Examine results**:
+1. **Examine results**:
+
 ```
 Call Stack shows:
 
@@ -794,7 +827,8 @@ viewDidLoad() – 1500ms
   └─ layoutUI() – 100ms
 ```
 
-4. **Apply the skill** (lines 173-175):
+1. **Apply the skill** (lines 173-175):
+
 ```
 loadJSON() has Self Time: 50ms, Total Time: 1200ms
 → loadJSON() isn't slow, something it CALLS is slow
@@ -802,7 +836,8 @@ loadJSON() has Self Time: 50ms, Total Time: 1200ms
 → loadImages() is the actual bottleneck
 ```
 
-5. **Fix the right thing**:
+1. **Fix the right thing**:
+
 ```swift
 // ❌ WRONG: Thread everything
 DispatchQueue.global().async { loadJSON() }
@@ -836,6 +871,7 @@ func loadJSON() {
 1. **Launch Allocations in Instruments**
 
 2. **Record normal app usage for 3 minutes**:
+
 ```
 User loads data → memory grows to 400MB
 User navigates around → memory stays at 400MB
@@ -843,7 +879,8 @@ User goes to Settings → memory at 400MB
 User comes back → memory at 400MB
 ```
 
-3. **Check Allocations Statistics**:
+1. **Check Allocations Statistics**:
+
 ```
 Persistent Objects:
 - UIImage: 1200 instances (300MB) ← Large count
@@ -851,19 +888,22 @@ Persistent Objects:
 - CustomDataModel: 800 instances (15MB)
 ```
 
-4. **Ask the skill questions** (lines 220-240):
+1. **Ask the skill questions** (lines 220-240):
+
 - Are 1200 images legitimately loaded? (User loaded photo library with 1000 photos) → YES
 - Does memory drop if you trigger memory warning? (Simulate with Xcode) → YES, drops to 180MB
 - Is this caching working as designed? → YES
 
 **Diagnosis**: NOT a leak. This is **normal caching** (lines 235-248)
+
 ```
 Memory growing = apps using data users asked for
 Memory dropping under pressure = cache working correctly
 Memory staying high indefinitely = possible leak
 ```
 
-5. **Conclusion**:
+1. **Conclusion**:
+
 ```swift
 // ✅ This is working correctly
 let imageCache = NSCache<NSString, UIImage>()
@@ -879,11 +919,13 @@ let imageCache = NSCache<NSString, UIImage>()
 ## External Resources
 
 **Apple Documentation:**
+
 - [Instruments User Guide](https://help.apple.com/instruments/)
 - [Core Data Performance Tuning](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/CoreDataPerformance/)
 - [Energy Impact Instrument](https://developer.apple.com/library/archive/technotes/tn2224/)
 
 **Related Axiom Skills:**
+
 - `memory-debugging` – Deep memory leak diagnosis
 - `swiftui-performance` – SwiftUI view profiling with Instruments 26
 - `swift-concurrency` – MainActor and thread safety patterns

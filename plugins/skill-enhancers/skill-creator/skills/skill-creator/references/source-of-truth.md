@@ -3,6 +3,7 @@
 Canonical reference from [Anthropic docs](https://code.claude.com/docs/en/skills). Last synced: 2026-03-21.
 
 Additional references:
+
 - **Claude Code Extensions** — platform-specific fields ([changelog](https://code.claude.com/docs/en/changelog))
 - **Anthropic Engineering Blog** — progressive disclosure, degrees of freedom
 - **anthropics/skills** — [github.com/anthropics/skills](https://github.com/anthropics/skills) (official skill-creator reference implementation)
@@ -100,6 +101,7 @@ tags: [devops, automation]
 MCP tools use `ServerName:tool_name` format.
 
 Bash scoping patterns:
+
 ```yaml
 Bash(git:*)       # All git commands
 Bash(npm:*)       # All npm commands
@@ -141,6 +143,7 @@ Agents live in `agents/*.md` and use a different frontmatter schema than skills.
 ### Plugin Agent Restrictions
 
 When agents are distributed inside plugins, these fields are NOT supported:
+
 - `hooks`
 - `mcpServers`
 - `permissionMode`
@@ -222,17 +225,20 @@ skill-name/
 Skills use progressive disclosure to minimize context window usage.
 
 ### Level 1: Metadata (~100 tokens)
+
 - Frontmatter `name` and `description` only
 - Always loaded at startup for all installed skills
 - Aggregated into skill list in Claude's system prompt
 - **Budget**: ~2% of context window (configurable via `SLASH_COMMAND_TOOL_CHAR_BUDGET`)
 
 ### Level 2: SKILL.md Body (<5000 tokens / <500 lines)
+
 - Full instruction body loaded when skill activates
 - Contains workflow steps, examples, edge cases
 - Keep concise — Claude is already capable
 
 ### Level 3: Bundled Resources (unlimited)
+
 - `references/`, `scripts/`, `templates/`, `assets/`
 - Loaded only when explicitly needed during execution
 - Use clear section headers for navigability
@@ -307,7 +313,9 @@ description: "A helpful tool for documents"
 ## 6. Core Principles (Anthropic Official)
 
 ### Concise is Key
+
 Claude is already smart. Don't over-explain. Provide:
+
 - Clear workflow steps
 - Concrete examples
 - Edge cases that matter
@@ -343,6 +351,7 @@ Choose the right level. Over-constraining wastes tokens and fights Claude's capa
 ### Checklist Workflow Pattern
 
 For complex skills, structure the body as a checklist that Claude works through sequentially. Each item should be:
+
 - A concrete action (not a vague instruction)
 - Independently verifiable (Claude can confirm it's done)
 - Ordered by dependency (prerequisites first)
@@ -352,6 +361,7 @@ This pattern reduces skipped steps and improves consistency across models (Haiku
 ### Observation of Claude Navigation
 
 Claude navigates SKILL.md and references differently than humans:
+
 - **Reads top-down on first activation** — front-load the most important instructions
 - **Searches by heading** when returning to a section — use descriptive H2/H3 headers
 - **Follows markdown links eagerly** — a `[reference](./references/foo.md)` link will trigger a Read tool call
@@ -361,6 +371,7 @@ Claude navigates SKILL.md and references differently than humans:
 ### Team Feedback
 
 When multiple authors maintain skills in a shared plugin:
+
 - Establish a shared glossary of terms used in descriptions (prevents synonym drift)
 - Use PR review checklists that include trigger-eval accuracy checks
 - Rotate skill ownership periodically to catch assumptions baked into instructions
@@ -369,16 +380,19 @@ When multiple authors maintain skills in a shared plugin:
 ### Description Optimization ("Pushy" Pattern)
 
 Skills frequently undertrigger because descriptions are too passive. Use aggressive claiming language:
+
 - "Make sure to use this skill whenever..." + specific scenarios
 - Front-load distinctive keywords
 - Include trigger phrases: "Use when...", "Activates for..."
 - Token budget: all descriptions load at startup (~15,000 char total via `SLASH_COMMAND_TOOL_CHAR_BUDGET`)
 
 ### No Time-Sensitive Information
+
 - Don't include dates, versions, or URLs that change
 - Reference tools by name, not version
 
 ### Consistent Terminology
+
 - Pick terms and stick with them throughout
 - Don't alternate between synonyms
 - Match terminology to the domain
@@ -488,59 +502,83 @@ Session tracking: ${CLAUDE_SESSION_ID}
 ## 9. Skill Patterns
 
 ### Script Automation
+
 Deterministic scripts that solve specific problems.
+
 ```
 skill activates -> runs script -> returns result
 ```
+
 Best for: file conversion, data transformation, API calls.
 
 ### Read-Process-Write
+
 Format conversion and transformation pipeline.
+
 ```
 read input -> process/transform -> write output
 ```
+
 Best for: document conversion, code generation, data formatting.
 
 ### Search-Analyze-Report
+
 Codebase analysis and reporting.
+
 ```
 search codebase -> analyze findings -> generate report
 ```
+
 Best for: code review, security audit, dependency analysis.
 
 ### Template-Based Generation
+
 Generate output from templates with variable substitution.
+
 ```
 load template -> fill variables -> validate -> output
 ```
+
 Best for: boilerplate generation, project scaffolding, config files.
 
 ### Wizard-Style Workflow
+
 Interactive multi-step gathering with AskUserQuestion.
+
 ```
 ask question -> gather input -> ask more -> generate result
 ```
+
 Best for: complex configuration, multi-option setup.
 
 ### Conditional Workflow
+
 Branch based on input or context.
+
 ```
 analyze input -> choose path -> execute branch -> output
 ```
+
 Best for: skills that handle multiple related tasks.
 
 ### Plan-Validate-Execute
+
 Verifiable intermediates with feedback loops.
+
 ```
 plan steps -> validate plan -> execute -> verify each step -> report
 ```
+
 Best for: deployment, migration, refactoring tasks.
 
 ### Visual Output Generation
+
 Generate HTML or visual artifacts.
+
 ```
 gather data -> generate HTML -> render preview
 ```
+
 Best for: dashboards, reports, documentation sites.
 
 ---

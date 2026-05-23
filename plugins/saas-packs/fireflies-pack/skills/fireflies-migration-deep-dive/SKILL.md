@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Migration Deep Dive
 
 ## Current State
+
 !`npm list graphql graphql-request 2>/dev/null || echo 'No graphql packages'`
 
 ## Overview
+
 Migrate to Fireflies.ai from other transcription platforms or custom recording systems. Covers historical recording import via `uploadAudio`, adapter pattern for gradual cutover, and data validation post-migration.
 
 ## Migration Types
@@ -42,6 +44,7 @@ Migrate to Fireflies.ai from other transcription platforms or custom recording s
 ## Instructions
 
 ### Step 1: Pre-Migration Assessment
+
 ```typescript
 // Inventory your current meeting data
 interface MigrationInventory {
@@ -59,6 +62,7 @@ interface MigrationInventory {
 ```
 
 ### Step 2: Batch Upload Historical Recordings
+
 ```typescript
 const FIREFLIES_API = "https://api.fireflies.ai/graphql";
 
@@ -119,7 +123,9 @@ async function batchUpload(jobs: UploadJob[]) {
 ```
 
 ### Step 3: Upload with Authenticated URLs
+
 If your recordings are behind auth (S3, GCS):
+
 ```typescript
 // Bearer token auth (e.g., pre-signed URLs with auth headers)
 const upload = {
@@ -145,7 +151,9 @@ const uploadBasicAuth = {
 ```
 
 ### Step 4: Direct File Upload (No Public URL)
+
 For files that can't be made publicly accessible:
+
 ```typescript
 // Step 1: Get a pre-signed upload URL from Fireflies
 const { createUploadUrl } = await firefliesQuery(`
@@ -174,6 +182,7 @@ await firefliesQuery(`
 ```
 
 ### Step 5: Track Migration Progress via Webhooks
+
 ```typescript
 // Webhook handler tracks which uploads have completed
 const migrationTracker = new Map<string, { status: string; meetingId?: string }>();
@@ -194,6 +203,7 @@ async function handleMigrationWebhook(event: any) {
 ```
 
 ### Step 6: Validate Migration
+
 ```typescript
 async function validateMigration(expectedIds: string[]) {
   const results = {
@@ -239,6 +249,7 @@ async function validateMigration(expectedIds: string[]) {
 ```
 
 ### Step 7: Adapter Pattern for Gradual Cutover
+
 ```typescript
 interface TranscriptionService {
   getTranscript(id: string): Promise<any>;
@@ -280,6 +291,7 @@ function getTranscriptionService(): TranscriptionService {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `payload_too_small` | File < 50KB | Set `bypass_size_check: true` |
@@ -289,6 +301,7 @@ function getTranscriptionService(): TranscriptionService {
 | Duplicate uploads | Re-running batch | Use `client_reference_id` for dedup |
 
 ## Output
+
 - Pre-migration inventory assessed
 - Historical recordings uploaded via `uploadAudio` mutation
 - Migration progress tracked via webhooks and `clientReferenceId`
@@ -296,8 +309,10 @@ function getTranscriptionService(): TranscriptionService {
 - Adapter layer enabling gradual platform cutover
 
 ## Resources
+
 - [Upload Audio Mutation](https://docs.fireflies.ai/graphql-api/mutation/upload-audio)
 - [Fireflies API Docs](https://docs.fireflies.ai/)
 
 ## Next Steps
+
 For monitoring the migrated system, see `fireflies-observability`.

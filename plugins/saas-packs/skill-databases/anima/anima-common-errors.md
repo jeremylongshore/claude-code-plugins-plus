@@ -10,6 +10,7 @@ anima-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Anima common errors
 **Workflow:** Part of the operations skill category for Anima integration.
 **Relates to:** Other anima skills in this pack.

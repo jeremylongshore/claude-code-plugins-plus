@@ -3,6 +3,7 @@
 ## Dashboard Views
 
 ### Executive Summary
+
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  CURSOR USAGE - EXECUTIVE SUMMARY                       │
@@ -19,6 +20,7 @@
 ```
 
 ### Team Breakdown
+
 ```
 Team Analytics View:
 
@@ -42,6 +44,7 @@ Data Science:
 ```
 
 ### Individual User Metrics
+
 ```
 User Detail View:
 

@@ -75,16 +75,19 @@ Use your own API keys to bypass Cursor's quota system. You pay the provider dire
 `Cursor Settings` > `Models` > enable `Use own API key`:
 
 **OpenAI:**
+
 ```
 API Key: sk-proj-xxxxxxxxxxxxxxxxxxxx
 ```
 
 **Anthropic:**
+
 ```
 API Key: sk-ant-xxxxxxxxxxxxxxxxxxxx
 ```
 
 **Google (Gemini):**
+
 ```
 API Key: AIzaSyxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
@@ -185,6 +188,7 @@ def process_order(order: Order) -> ProcessedOrder:
 ### Reasoning Models (o1, o3)
 
 These models "think" before responding. They are slower but significantly better at:
+
 - Multi-step logic problems
 - Finding subtle bugs in complex code
 - Mathematical or algorithmic optimization

@@ -22,13 +22,17 @@ Product needs a color palette. Industry or product type is known or discoverable
 
 1. **Identify product type** from user request or project context
 2. **Search product reasoning:**
+
    ```bash
    python3 -m form_agent.uiux search --domain product --query "{product_type}" --limit 3
    ```
+
 3. **Search color conventions:**
+
    ```bash
    python3 -m form_agent.uiux search --domain color --query "{product_type}" --limit 3
    ```
+
 4. **Output** a full shadcn-compatible token set using the format below
 
 ## Output format

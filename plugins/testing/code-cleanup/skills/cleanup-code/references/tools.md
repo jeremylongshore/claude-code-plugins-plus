@@ -8,6 +8,7 @@ Language-specific tools for each cleanup dimension. Always fall back to grep pat
 ## JavaScript / TypeScript
 
 ### Dead Code
+
 ```bash
 # knip — finds unused files, exports, dependencies, and types
 npx knip                          # Full report
@@ -18,6 +19,7 @@ npx knip --include dependencies   # Unused dependencies only
 ```
 
 ### Circular Dependencies
+
 ```bash
 # madge — dependency graph and circular detection
 npx madge --circular src/         # Find circular deps
@@ -30,6 +32,7 @@ npx depcruise --output-type dot src/ | dot -T svg > deps.svg  # Visual
 ```
 
 ### Duplication
+
 ```bash
 # jscpd — copy/paste detector
 npx jscpd src/ --min-lines 10 --min-tokens 50
@@ -38,6 +41,7 @@ npx jscpd src/ --output report/   # HTML report
 ```
 
 ### Type Safety
+
 ```bash
 # TypeScript strict checks
 npx tsc --noEmit --strict         # Full strict mode
@@ -45,6 +49,7 @@ npx tsc --noEmit 2>&1 | grep "any"  # Find any-related issues
 ```
 
 ### Security
+
 ```bash
 # npm audit for dependency vulnerabilities
 npm audit --json | head -50
@@ -55,6 +60,7 @@ npx eslint --rule '{"no-eval": "error", "no-implied-eval": "error"}' src/
 ```
 
 ### Performance
+
 ```bash
 # Bundle analysis
 npx webpack-bundle-analyzer stats.json    # Webpack
@@ -70,6 +76,7 @@ npx import-cost src/index.ts
 ## Python
 
 ### Dead Code
+
 ```bash
 # vulture — find unused code
 vulture src/ --min-confidence 80
@@ -81,6 +88,7 @@ autoflake --in-place --remove-all-unused-imports -r src/  # Apply
 ```
 
 ### Code Quality
+
 ```bash
 # ruff — fast linter and formatter (replaces flake8, isort, pyupgrade)
 ruff check src/                   # Lint
@@ -93,6 +101,7 @@ pylint src/ --disable=all --enable=W0611,W0612,W0613  # Unused imports/vars/args
 ```
 
 ### Security
+
 ```bash
 # bandit — security linter
 bandit -r src/ -ll               # Medium+ severity
@@ -104,6 +113,7 @@ safety check --json
 ```
 
 ### Duplication
+
 ```bash
 # pylint duplicate detection
 pylint src/ --disable=all --enable=R0801  # Duplicate code
@@ -117,6 +127,7 @@ npx jscpd src/ --format python --min-lines 10
 ## Go
 
 ### Dead Code
+
 ```bash
 # deadcode — find unreachable functions
 go install golang.org/x/tools/cmd/deadcode@latest
@@ -128,6 +139,7 @@ staticcheck -checks U1000 ./...   # Unused code specifically
 ```
 
 ### Code Quality
+
 ```bash
 # golangci-lint — meta-linter
 golangci-lint run
@@ -140,6 +152,7 @@ golangci-lint run --enable unused,deadcode,ineffassign
 ## Rust
 
 ### Dead Code
+
 ```bash
 # Compiler warnings
 cargo build 2>&1 | grep "dead_code\|unused"
@@ -151,6 +164,7 @@ cargo udeps
 ```
 
 ### Code Quality
+
 ```bash
 # clippy — comprehensive linting
 cargo clippy -- -W clippy::all
@@ -162,12 +176,14 @@ cargo clippy --fix               # Auto-fix
 ## Universal Tools
 
 ### Duplication (Any Language)
+
 ```bash
 npx jscpd . --min-lines 10 --min-tokens 50 \
   --format "typescript,javascript,python,go,rust,java"
 ```
 
 ### Secret Scanning
+
 ```bash
 # gitleaks — scan for hardcoded secrets
 gitleaks detect --source . --verbose
@@ -178,6 +194,7 @@ trufflehog filesystem . --only-verified
 ```
 
 ### Dependency Analysis
+
 ```bash
 # depcheck (Node.js) — unused dependencies
 npx depcheck

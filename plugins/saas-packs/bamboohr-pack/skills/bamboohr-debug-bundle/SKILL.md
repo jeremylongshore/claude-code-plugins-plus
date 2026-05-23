@@ -208,12 +208,14 @@ async function collectDiagnostics(client: BambooHRClient): Promise<DiagnosticRes
 ## Sensitive Data Handling
 
 **Always redact before sharing:**
+
 - API keys and tokens
 - Employee emails, phone numbers, SSNs
 - Home addresses and personal info
 - Salary and compensation data
 
 **Safe to include:**
+
 - HTTP status codes and error messages
 - Response latencies and sizes
 - `X-BambooHR-Error-Message` header values

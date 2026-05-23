@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola Local Dev Loop
 
 ## Overview
+
 Access Granola meeting data programmatically using three methods: the local cache file (zero-auth, offline), the MCP server (AI agent integration), or the Enterprise API (workspace-wide access). Build developer workflows that turn meeting outcomes into code tasks, documentation, and project artifacts.
 
 ## Prerequisites
+
 - Granola installed with meetings captured
 - Node.js 18+ or Python 3.10+ for scripts
 - For MCP: Claude Code, Cursor, or another MCP-compatible client
@@ -96,12 +98,14 @@ Granola's official MCP integration connects meeting context to AI tools:
 ```
 
 With MCP connected, Claude Code and Cursor can:
+
 - Search across all your meetings by topic or person
 - Pull context from specific meetings into coding sessions
 - Create tickets based on discussed bugs or features
 - Scaffold code based on architectural decisions from meetings
 
 Community MCP servers with additional features:
+
 - `pedramamini/GranolaMCP` — CLI + programmatic + MCP access, reads local cache
 - `mishkinf/granola-mcp` — semantic search with LanceDB vector embeddings
 - `proofgeist/granola-mcp-server` — lightweight local cache reader
@@ -183,6 +187,7 @@ if cache_path.exists():
 ```
 
 ### Step 5 — Git Integration Pattern
+
 Reference Granola meetings in commits and PRs:
 
 ```bash
@@ -198,6 +203,7 @@ Action items from Granola note: [link]"
 ```
 
 ## Output
+
 - Local cache accessible for offline meeting data reads
 - MCP server connected for AI-assisted meeting context
 - Action item extraction pipeline ready
@@ -214,10 +220,12 @@ Action items from Granola note: [link]"
 | Stale cache data | Cache not refreshed | Restart Granola to force cache update |
 
 ## Resources
+
 - [Granola MCP Announcement](https://www.granola.ai/blog/granola-mcp)
 - [GranolaMCP (cache-based)](https://github.com/pedramamini/GranolaMCP)
 - [Reverse-Engineered API Docs](https://github.com/getprobo/reverse-engineering-granola-api)
 - [Granola Enterprise API](https://docs.granola.ai/introduction)
 
 ## Next Steps
+
 Proceed to `granola-sdk-patterns` for Zapier automation workflows.

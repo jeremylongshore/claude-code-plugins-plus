@@ -101,6 +101,7 @@ jq '
 ```
 
 **Key defensive principles:**
+
 - Always provide fallback field names (Navan may rename without notice)
 - Log unknown fields rather than ignoring them — they signal upcoming changes
 - Never hard-code array lengths or object depth assumptions
@@ -146,6 +147,7 @@ fi
 ```
 
 **Rollout procedure:**
+
 1. Deploy new parsing logic behind a feature flag (flag = off)
 2. Enable for 5% of traffic — compare outputs between old and new parsers
 3. If outputs match or new parser handles additional fields, increase to 25%

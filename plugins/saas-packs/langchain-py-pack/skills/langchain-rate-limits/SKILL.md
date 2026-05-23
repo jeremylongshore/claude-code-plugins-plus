@@ -367,7 +367,8 @@ async def invoke_bounded(inp):
 
 Cluster behavior: every worker's limiter call hits the same Redis key. At 35
 RPM cluster-wide, individual workers see fair-share throughput. `max_retries=2`
-+ narrow fallback tuple means transient 429s surface quickly and hand off to
+
+- narrow fallback tuple means transient 429s surface quickly and hand off to
 GPT-4o instead of amplifying cost.
 
 ### Multi-tenant SaaS with per-tenant isolation

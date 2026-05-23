@@ -132,4 +132,3 @@ On top of that, 47 lint errors needed fixing: merging multiple `endswith()` call
 **Monorepo test isolation is genuinely hard.** Six commits for what amounts to an import path problem. Python's namespace package behavior interacts badly with pytest's collection strategy when multiple services share the same directory structure. The `sys.path` solution isn't elegant, but it's explicit and it works.
 
 **Write the tests before fixing CI.** I had 117 tests written and passing locally before any of the CI drama. That meant every CI fix attempt was validated against a real test suite — I could distinguish "CI is broken" from "tests are broken" immediately.
-

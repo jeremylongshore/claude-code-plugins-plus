@@ -31,6 +31,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 Install the Supabase SDK, CLI, and project credentials from scratch — covering package install, environment configuration, client initialization, and connection verification for both TypeScript (`@supabase/supabase-js`) and Python (`supabase`).
 
 **Key facts:**
+
 - **npm package:** `@supabase/supabase-js`
 - **Python package:** `supabase` (via pip)
 - **Client factory:** `createClient()` — never `new SupabaseClient()`
@@ -99,6 +100,7 @@ Add env files to `.gitignore` immediately:
 ```
 
 **Security rules:**
+
 - The **anon key** (`SUPABASE_KEY`) is safe for client-side code. It respects Row Level Security (RLS) policies.
 - The **service role key** (`SUPABASE_SERVICE_ROLE_KEY`) bypasses RLS entirely. Use only on the server. Never bundle into client code or expose in browser.
 
@@ -218,6 +220,7 @@ Full TypeScript and Python examples with auth sign-up, sign-in, session manageme
 ## Next Steps
 
 After successful setup, continue with:
+
 - **supabase-hello-world** — run your first database query
 - **supabase-rls-policies** — secure your tables with Row Level Security
 - **supabase-email-auth** — set up email/password authentication flows

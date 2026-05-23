@@ -10,6 +10,7 @@ documenso-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Documenso core feature integration
 **Workflow:** Part of the onboarding skill category for Documenso integration.
 **Relates to:** Other documenso skills in this pack.

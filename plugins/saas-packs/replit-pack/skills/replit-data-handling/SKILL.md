@@ -28,14 +28,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Data Handling
 
 ## Overview
+
 Manage application data securely across Replit's three storage systems: PostgreSQL (relational), Key-Value Database (simple cache/state), and Object Storage (files/blobs). Covers connection patterns, security, data validation, and choosing the right storage for each use case.
 
 ## Prerequisites
+
 - Replit account with Workspace access
 - PostgreSQL provisioned in Database pane (for SQL use cases)
 - Understanding of Replit Secrets for credentials
 
 ## Storage Decision Matrix
+
 | Need | Storage | API | Limits |
 |------|---------|-----|--------|
 | Structured data, queries | PostgreSQL | `pg` npm / `psycopg2` | Plan-dependent |
@@ -45,6 +48,7 @@ Manage application data securely across Replit's three storage systems: PostgreS
 ## Instructions
 
 ### Step 1: PostgreSQL — Secure Connection
+
 ```typescript
 // src/services/database.ts
 import { Pool, PoolConfig } from 'pg';
@@ -90,6 +94,7 @@ export async function findUser(userId: string) {
 ```
 
 **Dev vs Production databases:**
+
 ```markdown
 Replit auto-provisions separate databases:
 - Development: used when running in Workspace ("Run" button)
@@ -105,6 +110,7 @@ Both use the same DATABASE_URL — Replit routes automatically.
 ### Step 2: Key-Value Database — Session & Cache
 
 **Node.js:**
+
 ```typescript
 // src/services/cache.ts
 import Database from '@replit/database';
@@ -158,6 +164,7 @@ export async function cleanSessions(): Promise<number> {
 ```
 
 **Python:**
+
 ```python
 from replit import db
 import json, time
@@ -189,6 +196,7 @@ def cache_get(key: str):
 ### Step 3: Object Storage — File Uploads
 
 **Node.js:**
+
 ```typescript
 // src/services/files.ts
 import { Client } from '@replit/object-storage';
@@ -232,6 +240,7 @@ export default router;
 ```
 
 **Python:**
+
 ```python
 from replit.object_storage import Client
 
@@ -251,6 +260,7 @@ if storage.exists("reports/daily.json"):
 ```
 
 ### Step 4: Data Sanitization
+
 ```typescript
 // src/middleware/sanitize.ts
 import { z } from 'zod';
@@ -292,6 +302,7 @@ export function safeLog(message: string, data?: any) {
 ```
 
 ### Step 5: Error Response Safety
+
 ```typescript
 // Never expose internal details in production
 app.use((err: Error, req: any, res: any, next: any) => {
@@ -306,6 +317,7 @@ app.use((err: Error, req: any, res: any, next: any) => {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | DATABASE_URL undefined | PostgreSQL not created | Provision in Database pane |
@@ -315,10 +327,12 @@ app.use((err: Error, req: any, res: any, next: any) => {
 | PII in logs | Full object logging | Use safeLog() with field redaction |
 
 ## Resources
+
 - [PostgreSQL on Replit](https://docs.replit.com/cloud-services/storage-and-databases/postgresql-on-replit)
 - [Replit KV Database](https://docs.replit.com/cloud-services/storage-and-databases/replit-database)
 - [Object Storage](https://docs.replit.com/cloud-services/storage-and-databases/object-storage/overview)
 - [Replit Secrets](https://docs.replit.com/replit-workspace/workspace-features/secrets)
 
 ## Next Steps
+
 For team access control, see `replit-enterprise-rbac`.

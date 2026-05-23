@@ -76,6 +76,7 @@ Apple made a deliberate decision to flip the logo. The current design shows the 
 **The user already knows they have a Mac.** They don't need the logo to face them. But every observer who sees the glowing Apple logo is a potential customer being influenced by social proof.
 
 **The calculation:**
+
 - User sees the logo: 1 person influenced (who is already a customer)
 - Observers see the logo: 10-50 people influenced per day (who may be potential customers)
 
@@ -175,6 +176,7 @@ A systematic approach to designing products and features for public visibility.
 Every product interaction has at least two audiences: the user and the observer. Design elements that communicate to the observer.
 
 **The bystander checklist:**
+
 - [ ] When someone uses your product in public, what does a bystander see?
 - [ ] Can the bystander identify the product from what they observe?
 - [ ] Does the observation create curiosity ("What's that?" / "How do I get that?")?
@@ -203,6 +205,7 @@ For products with inherently private usage, find ethical ways to create public s
 | Therapy/Counseling | Community awareness campaigns | "I believe in mental health" shareable frames |
 
 **Ethical boundaries:**
+
 - Never make private health, financial, or personal data public without explicit consent
 - Default privacy for sensitive information, default visibility for achievements
 - Let users control exactly what is visible and to whom
@@ -225,6 +228,7 @@ Use this audit to evaluate how visible your product is to non-users.
 | **Share packaging** | Are achievements and outputs pre-packaged for easy sharing? | |
 
 **Scoring:**
+
 - **0-20:** Invisible product. Growth relies entirely on direct marketing. Major opportunity.
 - **21-40:** Partially visible. Some organic exposure but significant gaps.
 - **41-55:** Highly visible. Strong organic growth through observation and imitation.

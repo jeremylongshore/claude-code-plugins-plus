@@ -10,6 +10,7 @@ klaviyo-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Klaviyo SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Klaviyo integration.
 **Relates to:** Other klaviyo skills in this pack.

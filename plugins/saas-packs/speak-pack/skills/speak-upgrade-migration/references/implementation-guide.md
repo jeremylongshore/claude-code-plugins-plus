@@ -5,6 +5,7 @@ Detailed implementation reference for the speak-upgrade-migration skill.
 ## Instructions
 
 ### Step 1: Check Current Version
+
 ```bash
 # Check installed version
 npm list @speak/language-sdk
@@ -17,6 +18,7 @@ npm outdated @speak/language-sdk
 ```
 
 ### Step 2: Review Changelog
+
 ```bash
 # Open changelog
 open https://github.com/speak/language-sdk/releases
@@ -26,6 +28,7 @@ cat node_modules/@speak/language-sdk/CHANGELOG.md
 ```
 
 ### Step 3: Create Upgrade Branch
+
 ```bash
 git checkout -b upgrade/speak-sdk-vX.Y.Z
 
@@ -39,6 +42,7 @@ npm test
 ### Step 4: Handle Common Breaking Changes
 
 #### SDK Version History
+
 | SDK Version | API Version | Node.js | Key Changes |
 |-------------|-------------|---------|-------------|
 | 3.x | 2025-01 | 20+ | Real-time API, new speech engine |
@@ -46,6 +50,7 @@ npm test
 | 1.x | 2023-01 | 16+ | Initial release |
 
 #### Import Changes (v1 to v2)
+
 ```typescript
 // Before (v1.x)
 import { Client, Lesson } from 'speak-sdk';
@@ -60,6 +65,7 @@ const client = new SpeakClient({
 ```
 
 #### Session API Changes (v2 to v3)
+
 ```typescript
 // Before (v2.x) - Promise-based
 const session = await tutor.startLesson({ topic: 'greetings' });
@@ -73,6 +79,7 @@ await session.send({ text: 'Hola', audio: audioBuffer });
 ```
 
 #### Speech Recognition Changes
+
 ```typescript
 // Before (v2.x)
 const result = await client.speech.recognize(audioBuffer);
@@ -190,7 +197,6 @@ class SessionAdapter {
 }
 ```
 
-
 ## Deprecation Handling
 
 ```typescript
@@ -226,7 +232,6 @@ async function getLesson(config: LessonConfig) {
 }
 ```
 
-
 ## Rollback Procedure
 
 ```bash
@@ -237,7 +242,6 @@ npm install @speak/language-sdk@2.x.x --save-exact
 npm list @speak/language-sdk
 npm test
 ```
-
 
 ## Testing Upgrade in Staging
 
@@ -259,4 +263,3 @@ npm run test:e2e
 # - Error rates
 # - Latency metrics
 ```
-

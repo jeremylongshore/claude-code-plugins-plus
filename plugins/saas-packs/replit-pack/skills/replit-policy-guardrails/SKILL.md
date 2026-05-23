@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Policy Guardrails
 
 ## Overview
+
 Policy enforcement for Replit-hosted applications. Replit's public-by-default Repls, shared hosting, and resource limits require specific guardrails around secrets exposure, resource consumption, deployment security, and endpoint protection.
 
 ## Prerequisites
+
 - Replit account with Deployment access
 - Understanding of Replit's security model
 - Awareness of Replit's Terms of Service
@@ -38,6 +40,7 @@ Policy enforcement for Replit-hosted applications. Replit's public-by-default Re
 ## Instructions
 
 ### Step 1: Secrets Exposure Prevention
+
 Replit Repls are **public by default** on free plans. Source code is visible to anyone.
 
 ```python
@@ -62,6 +65,7 @@ if missing:
 ```
 
 **Automated secret detection:**
+
 ```typescript
 // Pre-deploy check script: scripts/check-secrets.ts
 import { readFileSync, readdirSync, statSync } from 'fs';
@@ -115,6 +119,7 @@ console.log('Secret scan passed: no hardcoded secrets found.');
 ```
 
 ### Step 2: Resource Usage Guards
+
 Replit containers have CPU and memory limits. Guard against runaway processes.
 
 ```python
@@ -162,6 +167,7 @@ setInterval(() => {
 ```
 
 ### Step 3: Endpoint Protection
+
 ```typescript
 // Protect all data endpoints with authentication
 import { Request, Response, NextFunction } from 'express';
@@ -192,6 +198,7 @@ app.use('/admin', requireAuth, requireAdmin);
 ```
 
 ### Step 4: Deployment Visibility Controls
+
 ```typescript
 // Validate deployment configuration at startup
 function validateDeploymentSecurity() {
@@ -227,6 +234,7 @@ if (!security.secure) {
 ```
 
 ### Step 5: Security Audit Checklist
+
 ```markdown
 ## Replit Security Audit
 
@@ -262,6 +270,7 @@ if (!security.secure) {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Secret leaked in code | Not using Secrets tab | Rotate key, move to Secrets |
@@ -270,10 +279,12 @@ if (!security.secure) {
 | Debug info in production | Debug mode not disabled | Check NODE_ENV and DEBUG env vars |
 
 ## Resources
+
 - [Replit Secrets](https://docs.replit.com/replit-workspace/workspace-features/secrets)
 - [Replit Security](https://replit.com/products/security)
 - [Secure Vibe Coding](https://blog.replit.com/16-ways-to-vibe-code-securely)
 - [Secret Scanner](https://blog.replit.com/secret-scanner)
 
 ## Next Steps
+
 For architecture patterns, see `replit-architecture-variants`.

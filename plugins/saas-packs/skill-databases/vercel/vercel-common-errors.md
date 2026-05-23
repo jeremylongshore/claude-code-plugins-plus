@@ -10,6 +10,7 @@ vercel-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix top 10 most common Vercel errors including build failures, function timeouts, and domain verification issues.
 **Workflow:** On-demand troubleshooting - consult when encountering errors during development or production.
 **Relates to:** Entry point to vercel-debug-bundle for complex issues; integrates with vercel-incident-runbook for production outages

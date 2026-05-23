@@ -10,6 +10,7 @@ fathom-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Fathom example
 **Workflow:** Part of the onboarding skill category for Fathom integration.
 **Relates to:** Other fathom skills in this pack.

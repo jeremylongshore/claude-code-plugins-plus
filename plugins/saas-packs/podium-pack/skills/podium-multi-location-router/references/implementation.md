@@ -148,6 +148,7 @@ def index_audit_log(jsonl_path: Path, db_path: Path) -> None:
 ```
 
 Query examples:
+
 ```sql
 -- All writes to a specific location in a date range
 SELECT * FROM audit

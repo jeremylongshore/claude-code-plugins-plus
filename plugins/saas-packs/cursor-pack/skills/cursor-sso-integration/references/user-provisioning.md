@@ -3,6 +3,7 @@
 ## User Provisioning
 
 ### Just-In-Time (JIT) Provisioning
+
 ```
 How it works:
 1. User attempts Cursor login
@@ -19,6 +20,7 @@ Benefits:
 ```
 
 ### SCIM Provisioning
+
 ```
 For Enterprise plans:
 

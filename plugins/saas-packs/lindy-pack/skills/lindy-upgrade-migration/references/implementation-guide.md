@@ -3,9 +3,11 @@
 # Lindy Upgrade & Migration
 
 ## Overview
+
 Guide for safely upgrading Lindy SDK versions and migrating configurations.
 
 ## Prerequisites
+
 - Current SDK version identified
 - Changelog reviewed for target version
 - Backup of current configuration
@@ -14,6 +16,7 @@ Guide for safely upgrading Lindy SDK versions and migrating configurations.
 ## Instructions
 
 ### Step 1: Check Current Version
+
 ```bash
 # Check installed version
 npm list @lindy-ai/sdk
@@ -26,6 +29,7 @@ npm view @lindy-ai/sdk changelog
 ```
 
 ### Step 2: Review Breaking Changes
+
 ```typescript
 // Common breaking changes by version
 
@@ -44,6 +48,7 @@ npm view @lindy-ai/sdk changelog
 ```
 
 ### Step 3: Update Dependencies
+
 ```bash
 # Update to latest
 npm install @lindy-ai/sdk@latest
@@ -56,6 +61,7 @@ npm ls @lindy-ai/sdk
 ```
 
 ### Step 4: Update Code
+
 ```typescript
 // Migration script for v1 -> v2
 
@@ -71,6 +77,7 @@ const result = await client.agents.run('agt_123', { input: 'Hello' });
 ```
 
 ### Step 5: Run Migration Tests
+
 ```typescript
 // tests/migration.test.ts
 import { Lindy } from '@lindy-ai/sdk';
@@ -98,6 +105,7 @@ describe('SDK Migration', () => {
 ```
 
 ## Migration Checklist
+
 ```markdown
 [ ] Backup current configuration
 [ ] Review changelog for breaking changes
@@ -113,12 +121,14 @@ describe('SDK Migration', () => {
 ```
 
 ## Output
+
 - Updated SDK to target version
 - Migrated code patterns
 - Passing test suite
 - Documented changes
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Import error | Named exports changed | Check new import syntax |
@@ -128,6 +138,7 @@ describe('SDK Migration', () => {
 ## Examples
 
 ### Automated Migration Script
+
 ```bash
 #!/bin/bash
 # migrate-lindy.sh
@@ -157,9 +168,11 @@ fi
 ```
 
 ## Resources
+
 - [Lindy Changelog](https://docs.lindy.ai/changelog)
 - [Migration Guide](https://docs.lindy.ai/migration)
 - [SDK Reference](https://docs.lindy.ai/sdk)
 
 ## Next Steps
+
 Proceed to Pro tier skills for advanced features.

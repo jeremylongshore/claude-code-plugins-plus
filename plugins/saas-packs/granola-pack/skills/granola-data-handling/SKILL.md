@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola Data Handling
 
 ## Overview
+
 Manage data lifecycle for Granola meeting data: export, retention policies, GDPR/CCPA compliance, and long-term archival. Covers individual data rights, organizational policies, and automated archival workflows.
 
 ## Prerequisites
+
 - Granola admin access (for retention policies)
 - Understanding of applicable regulations (GDPR, CCPA, SOC 2)
 - Export destination prepared (cloud storage, Notion, local)
@@ -48,17 +50,20 @@ Manage data lifecycle for Granola meeting data: export, retention policies, GDPR
 ### Step 2 — Export Meeting Data
 
 **Individual note export:**
+
 1. Open the meeting note in Granola
 2. Click the **...** menu > **Copy** (copies as Markdown)
 3. Paste into your target: Notion, Google Doc, text editor
 
 **Important limitation:** Granola does **not** currently support bulk export, PDF export, or structured file download (JSON/CSV). The available options are:
+
 - Copy individual notes as text/Markdown
 - Share to Notion (one note at a time via native integration)
 - Share to Slack (one note at a time)
 - Enterprise API (read-only access to workspace notes)
 
 **Workaround for bulk access — local cache:**
+
 ```python
 #!/usr/bin/env python3
 """Export Granola meetings from local cache to Markdown files."""
@@ -106,6 +111,7 @@ export_from_cache()
 ```
 
 **Enterprise API export:**
+
 ```bash
 # List all accessible notes (Enterprise plan required)
 curl -s "https://api.granola.ai/v0/notes" \
@@ -131,6 +137,7 @@ Settings > **Data Retention** (Business/Enterprise):
 | Attendee info | Retained with notes | Needed for People & Companies CRM |
 
 **Per-workspace overrides (Enterprise):**
+
 - HR workspace: 90-day notes, 30-day transcripts
 - Executive workspace: Custom (legal hold capable)
 - Sales workspace: 1-year notes, 90-day transcripts
@@ -149,6 +156,7 @@ Settings > **Data Retention** (Business/Enterprise):
 | Lawful Basis | Consent (recording notice) or Legitimate Interest (employer's business ops) |
 
 **Subject Access Request (SAR) handling:**
+
 ```markdown
 ## SAR Response Procedure
 
@@ -164,6 +172,7 @@ Settings > **Data Retention** (Business/Enterprise):
 ```
 
 **Data Processing Agreement:**
+
 - Request DPA from Granola at security@granola.ai or via Settings
 - Required for any organization processing EU personal data
 - DPA covers Granola as a Data Processor
@@ -171,6 +180,7 @@ Settings > **Data Retention** (Business/Enterprise):
 ### Step 5 — CCPA Compliance
 
 For California consumer data:
+
 - **Disclosure:** Update your privacy policy to mention Granola as a meeting recording tool
 - **Opt-out:** Provide mechanism for meeting participants to opt out of recording
 - **Deletion:** Honor deletion requests by removing notes containing the individual
@@ -197,6 +207,7 @@ Step 4 — Slack: Notify admin
 ```
 
 **Alternative: local cache backup**
+
 ```bash
 # Backup local cache monthly
 BACKUP_DIR="$HOME/backups/granola"
@@ -207,6 +218,7 @@ echo "Granola cache backed up"
 ```
 
 ## Output
+
 - Data export procedures documented and tested
 - Retention policies configured per workspace and data type
 - GDPR/CCPA compliance controls implemented
@@ -224,10 +236,12 @@ echo "Granola cache backed up"
 | Deletion incomplete | Backup retention period | Allow 30 days for Granola to purge from all backups |
 
 ## Resources
+
 - [Privacy & Data FAQs](https://docs.granola.ai/help-center/consent-security-privacy/security-privacy-data-faqs)
 - [Data Processing Addendum](https://help.granola.ai/article/data-processing-addendum)
 - [Security Standards](https://docs.granola.ai/help-center/consent-security-privacy/our-security-standards)
 - [Granola Privacy Policy](https://www.granola.ai/privacy)
 
 ## Next Steps
+
 Proceed to `granola-enterprise-rbac` for role-based access control configuration.

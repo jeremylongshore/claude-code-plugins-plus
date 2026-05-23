@@ -117,6 +117,7 @@ db.save(video_url=permanent_url)
 **Symptom:** `400 Bad Request` on image-to-video with multiple features.
 
 These are **mutually exclusive** for image-to-video:
+
 - `camera_control`
 - `dynamic_masks` / `static_mask`
 - `image_tail`
@@ -161,6 +162,7 @@ elif result["task_status"] == "failed":
 **Symptom:** Credits depleted 5x faster than expected.
 
 Native audio (v2.6, `motion_has_audio: true`) multiplies credit cost by 5x:
+
 - 5s standard without audio: 10 credits
 - 5s standard WITH audio: 50 credits
 

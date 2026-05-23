@@ -23,6 +23,7 @@ compatibility: Designed for Claude Code
 Fathom's meeting intelligence API serves transcript downloads, bulk meeting sync, and action item aggregation. Transcript payloads are large (50-500KB each), making bulk sync of historical meetings a major latency bottleneck. The 60 req/min rate limit requires careful batching. Caching immutable transcripts aggressively while keeping action item data fresh reduces download latency by 70% and prevents rate limit errors during bulk operations.
 
 ## Caching Strategy
+
 ```typescript
 const cache = new Map<string, { data: any; expiry: number }>();
 const TTL = { transcript: 3_600_000, actionItems: 120_000, meetings: 300_000 };
@@ -38,6 +39,7 @@ async function cached(key: string, ttlKey: keyof typeof TTL, fn: () => Promise<a
 ```
 
 ## Batch Operations
+
 ```typescript
 async function syncMeetingsBatch(client: any, ids: string[], batchSize = 50) {
   const results = [];
@@ -52,6 +54,7 @@ async function syncMeetingsBatch(client: any, ids: string[], batchSize = 50) {
 ```
 
 ## Connection Pooling
+
 ```typescript
 import { Agent } from 'https';
 const agent = new Agent({ keepAlive: true, maxSockets: 6, maxFreeSockets: 3, timeout: 45_000 });
@@ -59,6 +62,7 @@ const agent = new Agent({ keepAlive: true, maxSockets: 6, maxFreeSockets: 3, tim
 ```
 
 ## Rate Limit Management
+
 ```typescript
 async function withFathomRateLimit(fn: () => Promise<any>): Promise<any> {
   try { return await fn(); }
@@ -74,6 +78,7 @@ async function withFathomRateLimit(fn: () => Promise<any>): Promise<any> {
 ```
 
 ## Monitoring
+
 ```typescript
 const metrics = { downloads: 0, cacheHits: 0, rateLimits: 0, avgLatencyMs: 0 };
 function trackDownload(startMs: number, cached: boolean, rateLimited: boolean) {
@@ -84,6 +89,7 @@ function trackDownload(startMs: number, cached: boolean, rateLimited: boolean) {
 ```
 
 ## Performance Checklist
+
 - [ ] Cache transcripts with 1-hour TTL (immutable after generation)
 - [ ] Use webhooks instead of polling for new meeting notifications
 - [ ] Batch transcript downloads in groups of 50 with 60s pauses
@@ -94,6 +100,7 @@ function trackDownload(startMs: number, cached: boolean, rateLimited: boolean) {
 - [ ] Aggregate action items client-side to reduce API round-trips
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | 429 Rate Limited | Exceeded 60 req/min | Parse Retry-After, batch with 61s delay between groups |
@@ -103,7 +110,9 @@ function trackDownload(startMs: number, cached: boolean, rateLimited: boolean) {
 | Partial sync failure | Network interruption mid-batch | Track progress, resume from last successful ID |
 
 ## Resources
+
 - [Fathom API Docs](https://fathom.video/developers)
 
 ## Next Steps
+
 See `fathom-reference-architecture`.

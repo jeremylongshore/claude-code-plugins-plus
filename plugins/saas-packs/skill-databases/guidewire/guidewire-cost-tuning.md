@@ -10,6 +10,7 @@ guidewire-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Guidewire costs and usage
 **Workflow:** Part of the cicd skill category for Guidewire integration.
 **Relates to:** Other guidewire skills in this pack.

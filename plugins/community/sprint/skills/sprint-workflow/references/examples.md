@@ -6,12 +6,14 @@ A complete sprint building a user management API with CRUD endpoints, database
 integration, and automated testing.
 
 **Step 1 — Create the sprint and write specs:**
+
 ```bash
 /sprint:new
 # Creates .claude/sprint/1/specs.md
 ```
 
 **Step 2 — Edit specs.md:**
+
 ```markdown
 # Sprint 1: User Management API
 
@@ -41,11 +43,13 @@ Build a REST API for user management with CRUD operations and role-based access.
 ```
 
 **Step 3 — Execute the sprint:**
+
 ```bash
 /sprint
 ```
 
 **Phase 0 — Load Specifications:**
+
 ```
 Orchestrator reads .claude/sprint/1/specs.md
   → Goal: User Management API (5 endpoints)
@@ -55,6 +59,7 @@ Orchestrator reads .claude/sprint/1/specs.md
 ```
 
 **Phase 1 — Architectural Planning:**
+
 ```
 project-architect reads:
   → .claude/project-map.md (existing codebase structure)
@@ -73,6 +78,7 @@ Architect returns SPAWN REQUEST blocks:
 ```
 
 **Phase 2 — Implementation (Iteration 1):**
+
 ```
 python-dev agent:
   → Reads backend-specs.md and api-contract.md
@@ -90,6 +96,7 @@ Conformity: All 5 endpoints implemented per contract
 ```
 
 **Phase 3 — Testing (Iteration 1):**
+
 ```
 qa-test-agent runs:
   → pytest tests/test_users.py
@@ -107,6 +114,7 @@ Failures:
 ```
 
 **Phase 4 — Review (Iteration 1):**
+
 ```
 Architect reviews QA report:
   → 2 failures identified
@@ -119,6 +127,7 @@ Architect reviews QA report:
 ```
 
 **Iteration 2 — Fix and Re-test:**
+
 ```
 python-dev agent:
   → Reads narrowed backend-specs.md (only 2 fixes)
@@ -136,6 +145,7 @@ Architect reviews:
 ```
 
 **Phase 5 — Finalization:**
+
 ```
 Orchestrator writes final status.md:
   Sprint 1: COMPLETE
@@ -152,6 +162,7 @@ FINALIZE
 A sprint that hit the 5-iteration limit and requires manual intervention.
 
 **status.md after 5 iterations:**
+
 ```markdown
 # Sprint 2 Status
 
@@ -172,6 +183,7 @@ of in-memory state. This is an architectural change beyond the current specs.
 ```
 
 **Manual intervention:**
+
 ```bash
 # Review the status
 cat .claude/sprint/2/status.md
@@ -196,6 +208,7 @@ A sprint focused on UI changes where automated E2E tests are impractical
 and manual visual verification is needed.
 
 **specs.md:**
+
 ```markdown
 # Sprint 3: Dashboard Redesign
 
@@ -221,6 +234,7 @@ Redesign the admin dashboard with responsive layout and dark mode support.
 ```
 
 **Sprint execution:**
+
 ```
 Phase 1: Architect produces frontend-specs.md only (no backend)
 Phase 2: nextjs-dev agent implements layout, dark mode, drag-and-drop
@@ -248,6 +262,7 @@ A sprint where backend and frontend agents work simultaneously on the same featu
 coordinated through a shared API contract.
 
 **specs.md:**
+
 ```markdown
 # Sprint 4: Product Search
 
@@ -274,6 +289,7 @@ Full-text search for products with type-ahead suggestions and faceted filtering.
 ```
 
 **Phase 2 — Parallel agent spawns:**
+
 ```
 SPAWN REQUEST
 Agent: python-dev
@@ -301,6 +317,7 @@ No file path overlap → safe for parallel execution
 ```
 
 **Phase 3 — Sequential testing:**
+
 ```
 1. qa-test-agent runs first:
    → Tests search API returns correct results

@@ -173,4 +173,3 @@ The nuclear option works when you've been accumulating the knowledge of what nee
 - [Content Quality War: 7-Check Audit Across 340 Plugins](/posts/content-quality-war-7-check-audit-across-340-plugins/) — The audit tooling that made compliance remediation possible at scale
 - [Verified Plugins Program: Building a Quality Signal for the Marketplace](/posts/verified-plugins-program-quality-signal-for-the-marketplace/) — The rubric and badge tier system that the v5.0 validator now enforces
 - [Design Tokens and Validator Parity: Marketplace Foundations](/posts/design-tokens-and-validator-parity-marketplace-foundations/) — The previous validator alignment work that revealed the need for a full rewrite
-

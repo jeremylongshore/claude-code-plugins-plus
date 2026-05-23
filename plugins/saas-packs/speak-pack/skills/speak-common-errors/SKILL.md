@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Speak Common Errors
 
 ## Overview
+
 Diagnose and fix common Speak API errors: authentication failures, audio format issues, rate limits, and session management problems.
 
 ## Prerequisites
+
 - Completed `speak-install-auth` setup
 - Valid API credentials configured
 - ffmpeg installed for audio processing
@@ -48,6 +50,7 @@ Diagnose and fix common Speak API errors: authentication failures, audio format 
 | 429 | `rate_limit_exceeded` | Too many requests | Wait `Retry-After` seconds |
 
 ### Quick Diagnostic
+
 ```bash
 # Check API key validity
 curl -s -o /dev/null -w "%{http_code}" \
@@ -62,6 +65,7 @@ ffprobe -v quiet -print_format json -show_streams recording.wav \
 ```
 
 ### Error Recovery Pattern
+
 ```typescript
 async function resilientSpeakCall<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
   for (let i = 0; i < maxRetries; i++) {
@@ -89,11 +93,13 @@ async function resilientSpeakCall<T>(fn: () => Promise<T>, maxRetries = 3): Prom
 ```
 
 ## Output
+
 - Errors implementation complete
 - Speak API integration verified
 - Error recovery tested
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY environment variable |
@@ -102,11 +108,13 @@ async function resilientSpeakCall<T>(fn: () => Promise<T>, maxRetries = 3): Prom
 | Session expired | Timeout after 30 min | Start a new conversation session |
 
 ## Resources
+
 - [Speak Website](https://speak.com)
 - [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
 - [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
 
 ## Next Steps
+
 See `speak-debug-bundle` for diagnostic tools.
 
 ## Examples

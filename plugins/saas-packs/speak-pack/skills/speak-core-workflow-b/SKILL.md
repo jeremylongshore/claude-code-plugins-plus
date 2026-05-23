@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Speak Core Workflow B: Pronunciation Training
 
 ## Overview
+
 Secondary workflow for Speak: detailed pronunciation training with phoneme-level analysis and adaptive practice. Uses OpenAI's speech recognition with Speak's proprietary proficiency graph to identify and drill weak phonemes.
 
 ## Prerequisites
+
 - Completed `speak-core-workflow-a`
 - Audio recording capability (WAV 16kHz mono)
 - ffmpeg installed for audio preprocessing
@@ -161,6 +163,7 @@ async function generateTargetedPractice(
 ```
 
 ### Workflow Comparison
+
 | Aspect | Workflow A (Conversation) | Workflow B (Pronunciation) |
 |--------|--------------------------|---------------------------|
 | Focus | Natural dialogue | Phoneme accuracy |
@@ -170,6 +173,7 @@ async function generateTargetedPractice(
 | Use case | Communication practice | Accent reduction |
 
 ## Output
+
 - Phoneme-level pronunciation scores
 - Adaptive drill loop with retry on weak phrases
 - Weakness report showing problematic phonemes
@@ -177,6 +181,7 @@ async function generateTargetedPractice(
 - Progress tracking over multiple sessions
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Audio too short | Recording < 0.5s | Minimum 0.5s audio required |
@@ -185,11 +190,13 @@ async function generateTargetedPractice(
 | Score always low | Microphone quality | Test with known-good audio first |
 
 ## Resources
+
 - [Speak Website](https://speak.com)
 - [OpenAI Whisper](https://platform.openai.com/docs/guides/speech-to-text)
 - [IPA Phoneme Chart](https://www.internationalphoneticassociation.org/content/ipa-chart)
 
 ## Next Steps
+
 For common errors, see `speak-common-errors`.
 
 ## Examples

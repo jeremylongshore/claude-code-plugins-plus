@@ -10,6 +10,7 @@ procore-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Procore CI/CD integration
 **Workflow:** Part of the cicd skill category for Procore integration.
 **Relates to:** Other procore skills in this pack.

@@ -25,11 +25,13 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Advanced Troubleshooting
 
 ## Overview
+
 Deep debugging for complex Exa issues: latency spikes, intermittent failures, result quality degradation, and content retrieval failures. All Exa error responses include a `requestId` — always capture it.
 
 ## Instructions
 
 ### Step 1: Layer-by-Layer Diagnostics
+
 ```typescript
 import Exa from "exa-js";
 
@@ -163,6 +165,7 @@ for (const r of results) {
 ```
 
 ### Step 2: Latency Profiling
+
 ```typescript
 async function profileLatency(query: string, iterations = 5) {
   const exa = new Exa(process.env.EXA_API_KEY);
@@ -198,6 +201,7 @@ async function profileLatency(query: string, iterations = 5) {
 ```
 
 ### Step 3: Content Retrieval Debugging
+
 ```typescript
 // When getContents or searchAndContents returns empty text
 async function debugContentRetrieval(url: string) {
@@ -224,6 +228,7 @@ async function debugContentRetrieval(url: string) {
 ```
 
 ### Step 4: Support Escalation Template
+
 ```markdown
 ## Exa Support Escalation
 
@@ -254,6 +259,7 @@ async function debugContentRetrieval(url: string) {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Intermittent 5xx | Exa transient failure | Retry with backoff, capture requestId |
@@ -263,9 +269,11 @@ async function debugContentRetrieval(url: string) {
 | findSimilar returns nothing | Seed URL not indexed | Try a more popular seed URL |
 
 ## Resources
+
 - [Exa Error Codes](https://docs.exa.ai/reference/error-codes)
 - [Exa Support](mailto:hello@exa.ai)
 - [Exa Rate Limits](https://docs.exa.ai/reference/rate-limits)
 
 ## Next Steps
+
 For load testing, see `exa-load-scale`.

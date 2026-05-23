@@ -3,6 +3,7 @@
 ## Analytics API
 
 ### API Access
+
 ```bash
 # Get usage summary
 curl -X GET "https://api.cursor.com/v1/analytics/summary" \
@@ -15,6 +16,7 @@ curl -X GET "https://api.cursor.com/v1/analytics/summary" \
 ```
 
 ### Available Endpoints
+
 ```
 GET /analytics/summary
 - Overall usage metrics
@@ -33,6 +35,7 @@ GET /analytics/costs
 ```
 
 ### Integration Examples
+
 ```python
 # Python integration
 import requests

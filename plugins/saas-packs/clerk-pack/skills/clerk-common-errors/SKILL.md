@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Common Errors
 
 ## Overview
+
 Diagnose and resolve common Clerk authentication errors. Organized by error category with root cause analysis and fix code.
 
 ## Prerequisites
+
 - Clerk SDK installed
 - Access to Clerk Dashboard for configuration verification
 - Browser developer tools for client-side debugging
@@ -36,6 +38,7 @@ Diagnose and resolve common Clerk authentication errors. Organized by error cate
 ### Error Category 1: Configuration Errors
 
 **`Clerk: Missing publishableKey`**
+
 ```typescript
 // Cause: ClerkProvider not receiving key
 // Fix: Ensure env var is set and accessible
@@ -47,6 +50,7 @@ console.log('PK:', process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) // Should not 
 ```
 
 **`ClerkProvider must wrap your application`**
+
 ```typescript
 // Cause: Clerk hook used outside provider
 // Fix: Wrap root layout with ClerkProvider
@@ -65,6 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 ### Error Category 2: Authentication Errors
 
 **`form_identifier_not_found`**
+
 ```typescript
 // Cause: Email not registered in Clerk instance
 // Fix: Check correct Clerk instance (dev vs prod) and user exists
@@ -76,6 +81,7 @@ console.log('User found:', users.totalCount > 0)
 ```
 
 **`form_password_incorrect`**
+
 ```typescript
 // Cause: Wrong password or user set up with OAuth only
 // Fix: Check auth strategy in Clerk Dashboard
@@ -84,6 +90,7 @@ console.log('User found:', users.totalCount > 0)
 ```
 
 **`session_exists` (Error during sign-in)**
+
 ```typescript
 // Cause: User already has active session
 // Fix: Sign out first or redirect
@@ -101,6 +108,7 @@ export default function SignInPage() {
 ### Error Category 3: Middleware Errors
 
 **Infinite redirect loop**
+
 ```typescript
 // Cause: Sign-in page not in public routes
 // Fix: Add auth pages to public route matcher
@@ -119,6 +127,7 @@ export default clerkMiddleware(async (auth, req) => {
 ```
 
 **`auth() was called but Clerk middleware was not detected`**
+
 ```typescript
 // Cause: middleware.ts not in correct location or matcher not matching
 // Fix: Ensure middleware.ts is at project root (not inside app/ or src/)
@@ -135,6 +144,7 @@ export const config = {
 ### Error Category 4: Server/Client Component Errors
 
 **`useUser()` in Server Component**
+
 ```typescript
 // Error: Hooks can only be called inside a Client Component
 // Fix: Use auth()/currentUser() server-side, useUser() client-side
@@ -156,6 +166,7 @@ export function Profile() {
 ```
 
 **Hydration mismatch with auth state**
+
 ```typescript
 // Cause: Server renders unauthenticated, client has session
 // Fix: Use ClerkLoaded or check isLoaded before rendering auth-dependent UI
@@ -172,6 +183,7 @@ export function SafeAuthUI() {
 ### Error Category 5: Webhook Errors
 
 **`Invalid signature` on webhook endpoint**
+
 ```typescript
 // Cause: CLERK_WEBHOOK_SECRET mismatch or body parsing issue
 // Fix 1: Verify secret matches Dashboard > Webhooks > Signing Secret
@@ -190,11 +202,13 @@ app.post('/webhooks', express.raw({ type: 'application/json' }), handler)
 ```
 
 ## Output
+
 - Identified error category and root cause
 - Working fix code for each common error
 - Diagnostic steps for verification
 
 ## Error Handling
+
 | Error | Cause | Quick Fix |
 |-------|-------|-----------|
 | `Missing publishableKey` | Env var not set | Add `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` to `.env.local` |
@@ -206,6 +220,7 @@ app.post('/webhooks', express.raw({ type: 'application/json' }), handler)
 ## Examples
 
 ### Quick Diagnostic Checklist
+
 ```bash
 # 1. Check Clerk packages are installed
 npm list @clerk/nextjs 2>/dev/null
@@ -221,9 +236,11 @@ ls middleware.ts 2>/dev/null && echo "Found" || echo "Missing - create middlewar
 ```
 
 ## Resources
+
 - [Clerk Error Reference](https://clerk.com/docs/errors/overview)
 - [Clerk Debugging Guide](https://clerk.com/docs/troubleshooting/overview)
 - [Clerk Discord Community](https://clerk.com/discord)
 
 ## Next Steps
+
 Proceed to `clerk-debug-bundle` for comprehensive debugging tools.

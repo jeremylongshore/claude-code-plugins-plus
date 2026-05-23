@@ -10,6 +10,7 @@ glean-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Glean reference architecture
 **Workflow:** Part of the cicd skill category for Glean integration.
 **Relates to:** Other glean skills in this pack.

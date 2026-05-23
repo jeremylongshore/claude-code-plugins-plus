@@ -148,6 +148,7 @@ Is the segment large enough to build a business but small enough to dominate?
 | *[Your segment]* | | | | | | | |
 
 **Interpretation:**
+
 - 35-45: Strong beachhead candidate -- investigate further
 - 25-34: Possible but has significant weaknesses to address
 - Below 25: Likely not a viable beachhead

@@ -30,6 +30,7 @@ Diagnostic and resolution guide for the most frequent Cursor IDE issues. Organiz
 **Symptoms:** Browser opens for auth, redirects back, Cursor still shows "Sign In".
 
 **Fix:**
+
 1. Clear browser cookies for `cursor.com` and `auth.cursor.com`
 2. Try incognito/private window for the OAuth flow
 3. Check if browser is blocking popups from cursor.com
@@ -40,6 +41,7 @@ Diagnostic and resolution guide for the most frequent Cursor IDE issues. Organiz
 **Symptoms:** Signed in but AI features are disabled.
 
 **Fix:**
+
 1. Verify subscription at [cursor.com/settings](https://cursor.com/settings)
 2. Confirm the email address matches your Cursor account
 3. Sign out (`Cmd+Shift+P` > `Sign Out`) then sign back in
@@ -72,6 +74,7 @@ Diagnostic and resolution guide for the most frequent Cursor IDE issues. Organiz
 **Symptoms:** Chat or Composer returns an error instead of a response.
 
 **Fix:**
+
 1. Check [status.cursor.com](https://status.cursor.com) for outages
 2. Switch to a different model (model dropdown in Chat/Composer)
 3. If using BYOK, verify API key is valid and has credits
@@ -82,6 +85,7 @@ Diagnostic and resolution guide for the most frequent Cursor IDE issues. Organiz
 **Symptoms:** AI generates irrelevant, outdated, or incorrect code.
 
 **Fix:**
+
 1. Add context: use `@Files` to reference relevant code
 2. Add project rules: create `.cursor/rules/*.mdc` with your patterns
 3. Switch model: try Claude Opus or GPT-5 for complex tasks
@@ -95,14 +99,17 @@ Diagnostic and resolution guide for the most frequent Cursor IDE issues. Organiz
 **Symptoms:** Status bar shows "Indexing..." indefinitely.
 
 **Fix:**
+
 1. Check `.cursorignore` -- exclude `node_modules/`, `dist/`, large data files
 2. `Cmd+Shift+P` > `Cursor: Resync Index`
 3. Close and reopen the workspace
 4. Delete index cache:
+
    ```
    macOS: rm -rf ~/Library/Application\ Support/Cursor/Cache/
    Linux: rm -rf ~/.config/Cursor/Cache/
    ```
+
 5. Restart Cursor
 
 ### "@Codebase returns no results"
@@ -110,6 +117,7 @@ Diagnostic and resolution guide for the most frequent Cursor IDE issues. Organiz
 **Symptoms:** Codebase search finds nothing, even for known code.
 
 **Fix:**
+
 1. Wait for indexing to complete (check status bar)
 2. Verify the file is not in `.cursorignore` or `.gitignore`
 3. Resync the index
@@ -159,6 +167,7 @@ Step 5: Increase memory limit
 **Cause:** Cursor uses Open VSX Registry, not Microsoft's marketplace.
 
 **Fix:**
+
 1. Search the extension on [open-vsx.org](https://open-vsx.org)
 2. If not on Open VSX, download `.vsix` from VS Code Marketplace website
 3. `Cmd+Shift+P` > `Extensions: Install from VSIX...`
@@ -181,15 +190,18 @@ Step 5: Increase memory limit
 **Symptoms:** AI features fail but editor works fine.
 
 **Fix:**
+
 1. Check internet connectivity
 2. Check if corporate firewall/proxy blocks `*.cursor.com`
 3. Required domains to allowlist:
+
    ```
    api.cursor.com
    api2.cursor.com
    auth.cursor.com
    *.turbopuffer.com (for indexing)
    ```
+
 4. If using VPN, try disconnecting temporarily
 
 ## Crash Recovery
@@ -213,6 +225,7 @@ rm -rf ~/Library/Application\ Support/Cursor/CachedData
 ### Recovering Unsaved Work
 
 Cursor auto-saves by default. Check:
+
 - `File` > `Open Recent` for recent files
 - Hot exit preserves unsaved buffers between sessions
 - Git reflog if changes were staged: `git reflog`
@@ -221,9 +234,11 @@ Cursor auto-saves by default. Check:
 
 - **Centralized troubleshooting**: Document common errors and fixes in team wiki
 - **Proxy configuration**: Enterprise proxy settings via `settings.json`:
+
   ```json
   { "http.proxy": "http://proxy.corp.com:8080" }
   ```
+
 - **Support escalation**: Business/Enterprise plans include priority support via Cursor dashboard
 - **Telemetry for diagnostics**: Anonymous telemetry helps Cursor diagnose widespread issues (can be disabled)
 

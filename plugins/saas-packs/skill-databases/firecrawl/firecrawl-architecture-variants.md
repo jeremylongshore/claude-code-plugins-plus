@@ -10,6 +10,7 @@ firecrawl-architecture-variants/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Choose and implement validated architecture blueprints for single-site, multi-site, or enterprise-scale scraping operations.
 **Workflow:** Architecture decision skill - matches scraping architecture to project requirements and scale.
 **Relates to:** Extends firecrawl-reference-architecture; synthesis of all advanced patterns

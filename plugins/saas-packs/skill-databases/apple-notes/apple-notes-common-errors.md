@@ -10,6 +10,7 @@ apple-notes-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Apple Notes common errors
 **Workflow:** Part of the operations skill category for Apple Notes integration.
 **Relates to:** Other apple-notes skills in this pack.

@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Reliability Patterns
 
 ## Overview
+
 Reliability patterns for safe Cascade usage: Git checkpointing, incremental task scoping, validation gates, and rollback strategies. Cascade's multi-file editing is powerful but requires discipline to avoid breaking your codebase.
 
 ## Prerequisites
+
 - Windsurf with Cascade enabled
 - Git repository initialized
 - Test suite available
@@ -178,6 +180,7 @@ Safety constraints:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Cascade broke the build | Accepted without testing | Git revert, add post-Cascade validation |
@@ -189,6 +192,7 @@ Safety constraints:
 ## Examples
 
 ### Safe Cascade Workflow (Complete)
+
 ```bash
 set -euo pipefail
 # 1. Branch
@@ -212,6 +216,7 @@ git branch -d cascade/feature-name
 ```
 
 ### Recover from Bad Cascade Edit
+
 ```bash
 # Option 1: Revert all changes since checkpoint
 git checkout -- .
@@ -228,8 +233,10 @@ git cherry-pick <good-commit-hash>
 ```
 
 ## Resources
+
 - [Windsurf Cascade](https://docs.windsurf.com/windsurf/cascade/cascade)
 - [Git Workflows](https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows)
 
 ## Next Steps
+
 For policy guardrails, see `windsurf-policy-guardrails`.

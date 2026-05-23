@@ -25,10 +25,12 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Upgrade & Migration
 
 ## Current State
+
 !`npm list openai 2>/dev/null | grep openai || echo 'openai not installed'`
 !`pip show openai 2>/dev/null | grep Version || echo 'N/A'`
 
 ## Overview
+
 Guide for migrating between Perplexity model generations and API changes. Perplexity has evolved from pplx-api with third-party models to the Sonar family with built-in web search.
 
 ## Model Evolution
@@ -131,6 +133,7 @@ const PERPLEXITY_BASE_URL = "https://api.perplexity.ai";
 ```
 
 ### Step 5: Upgrade OpenAI SDK
+
 ```bash
 set -euo pipefail
 # Create upgrade branch
@@ -155,6 +158,7 @@ c.chat.completions.create({model:'sonar', messages:[{role:'user',content:'test'}
 ```
 
 ## Rollback
+
 ```bash
 set -euo pipefail
 # If the upgrade breaks things, revert
@@ -163,6 +167,7 @@ npm install
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `Invalid model` error | Using deprecated model name | Apply model migration map |
@@ -171,15 +176,18 @@ npm install
 | Parameter rejected | Using old parameter names | Check current parameter list |
 
 ## Output
+
 - Updated model names to current Sonar family
 - Corrected base URL to `api.perplexity.ai`
 - Updated parameters to current API spec
 - Passing test suite
 
 ## Resources
+
 - [Perplexity Model Cards](https://docs.perplexity.ai/getting-started/models)
 - [API Changelog](https://docs.perplexity.ai)
 - [Meet New Sonar (Blog)](https://www.perplexity.ai/hub/blog/meet-new-sonar)
 
 ## Next Steps
+
 For CI integration during upgrades, see `perplexity-ci-integration`.

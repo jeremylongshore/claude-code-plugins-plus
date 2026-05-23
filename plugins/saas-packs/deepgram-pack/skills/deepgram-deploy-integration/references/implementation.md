@@ -3,6 +3,7 @@
 See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for the complete deployment configurations.
 
 ## Dockerfile
+
 ```dockerfile
 FROM node:20-slim AS builder
 WORKDIR /app
@@ -27,6 +28,7 @@ CMD ["node", "dist/index.js"]
 ```
 
 ## Docker Compose
+
 ```yaml
 version: '3.8'
 services:
@@ -62,6 +64,7 @@ volumes:
 ```
 
 ## Kubernetes Deployment
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -129,6 +132,7 @@ spec:
 ```
 
 ## AWS Lambda (Serverless)
+
 ```yaml
 service: deepgram-transcription
 provider:
@@ -154,6 +158,7 @@ functions:
 ```
 
 ## Lambda Handler
+
 ```typescript
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { SecretsManager } from '@aws-sdk/client-secrets-manager';
@@ -200,9 +205,11 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 ```
 
 ## Google Cloud Run & Vercel Deployment
+
 See the Google Cloud Build and Vercel edge function configurations in the full deployment guide.
 
 ## Deploy Script
+
 ```bash
 #!/bin/bash
 set -e

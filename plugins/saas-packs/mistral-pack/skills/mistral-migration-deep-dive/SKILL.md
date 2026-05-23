@@ -24,12 +24,15 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral AI Migration Deep Dive
 
 ## Current State
+
 !`npm list openai @anthropic-ai/sdk @mistralai/mistralai 2>/dev/null | grep -E "openai|anthropic|mistral" || echo 'No AI SDKs found'`
 
 ## Overview
+
 Comprehensive migration guide from OpenAI or Anthropic to Mistral AI using the adapter pattern with feature-flag controlled rollout. Covers model mapping, API differences, prompt adjustments, validation testing, and rollback procedures.
 
 ## Prerequisites
+
 - Current AI integration documented
 - Mistral AI SDK installed (`@mistralai/mistralai`)
 - Feature flag infrastructure (env vars or LaunchDarkly)
@@ -234,6 +237,7 @@ async function validateMigration(adapter1: AIAdapter, adapter2: AIAdapter) {
 | Vision | Base64 in content array | Same approach with `pixtral` models |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Different output quality | Model differences | Adjust prompts, tune temperature |
@@ -242,11 +246,13 @@ async function validateMigration(adapter1: AIAdapter, adapter2: AIAdapter) {
 | Cost increase | Token counting differs | Monitor and optimize prompts |
 
 ## Resources
+
 - [Mistral AI Documentation](https://docs.mistral.ai/)
 - [Mistral vs OpenAI Comparison](https://docs.mistral.ai/getting-started/models/)
 - [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
 
 ## Output
+
 - Integration assessment with effort estimation
 - Provider-agnostic adapter interface
 - Mistral adapter implementation

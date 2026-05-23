@@ -1,6 +1,7 @@
 # Granola Data Handling - Implementation Details
 
 ## Data Locations
+
 ```
 Granola Data Storage
 ├── Cloud Storage (Primary): Notes, Summaries, Transcripts, Metadata
@@ -11,6 +12,7 @@ Granola Data Storage
 ## Export Formats
 
 ### Markdown Export
+
 ```markdown
 # Meeting Title
 **Date:** January 6, 2025
@@ -28,6 +30,7 @@ Granola Data Storage
 ```
 
 ### JSON Export
+
 ```json
 {
   "export_version": "1.0",
@@ -44,6 +47,7 @@ Granola Data Storage
 ```
 
 ## Retention Policy Template
+
 ```yaml
 Default:
   notes: 365 days
@@ -57,6 +61,7 @@ By Workspace:
 ```
 
 ## GDPR Rights Implementation
+
 | Right | Implementation | Process |
 |-------|---------------|---------|
 | Access | Data export | Self-service export |
@@ -66,6 +71,7 @@ By Workspace:
 | Objection | Opt-out | Don't record specific meetings |
 
 ## Subject Access Request (SAR) Process
+
 1. Receive request, verify identity, log with timestamp
 2. Search by email across all workspaces including shared notes
 3. Export user's data (JSON) with metadata and third-party sharing documentation
@@ -73,25 +79,30 @@ By Workspace:
 5. Log response date and store proof of delivery
 
 ## Data Deletion Request (Right to Be Forgotten)
+
 1. Verify identity with email confirmation
 2. Scope: all personal data, shared notes (mark deleted, retain structure), integration data
 3. Execute: delete from primary, delete from backups within 30 days, revoke integrations
 4. Confirm with requestor, provide confirmation ID
 
 ## DPA Checklist
+
 Granola provides: Standard DPA template, SCCs, sub-processor list, security documentation, breach notification procedures.
 Company must: Sign DPA, update privacy policy, obtain consent for recording, train staff.
 
 ## CCPA Compliance
+
 Meeting recording notice for invites: "This meeting may be recorded using Granola AI for note-taking purposes. By attending, you consent to recording."
 
 ## Data Security
+
 | State | Method | Standard |
 |-------|--------|----------|
 | At Rest | AES-256 | Industry standard |
 | In Transit | TLS 1.3 | Latest protocol |
 
 ## Access Controls
+
 | Role | Notes | Transcripts | Audio | Admin |
 |------|-------|-------------|-------|-------|
 | Owner | RWD | RWD | RD | Full |
@@ -100,6 +111,7 @@ Meeting recording notice for invites: "This meeting may be recorded using Granol
 | Viewer | R | - | - | None |
 
 ## Archival Strategy
+
 Monthly: Export notes > 6 months old (JSON), store in company archive (GCS/S3 Glacier), verify integrity, delete from Granola, update archive index. Retention: 7 years.
 
 ---

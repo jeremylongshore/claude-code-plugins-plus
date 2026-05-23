@@ -34,6 +34,7 @@ This skill empowers Claude to analyze application performance, pinpoint bottlene
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Analyze application performance for bottlenecks.
 - Identify CPU-intensive operations and memory leaks.
 - Optimize application execution time.
@@ -45,6 +46,7 @@ This skill activates when you need to:
 User request: "Analyze my Node.js application for memory leaks."
 
 The skill will:
+
 1. Activate the application-profiler plugin.
 2. Analyze the application's memory allocation patterns.
 3. Generate a profile highlighting potential memory leaks.
@@ -54,6 +56,7 @@ The skill will:
 User request: "Profile my Python script and find the most CPU-intensive functions."
 
 The skill will:
+
 1. Activate the application-profiler plugin.
 2. Analyze the script's CPU usage.
 3. Generate a profile identifying the functions consuming the most CPU time.

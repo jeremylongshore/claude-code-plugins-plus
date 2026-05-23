@@ -54,6 +54,7 @@ body["model_name"] = "kling-v2-master"
 ```
 
 **Breaking changes:**
+
 - `kling-v2-1` is I2V-only (no text-to-video support)
 - Camera control intensities produce different results at same values
 - Generation times differ (v2.x generally slower, higher quality)

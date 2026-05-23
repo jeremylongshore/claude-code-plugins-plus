@@ -10,6 +10,7 @@ serpapi-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement SerpApi rate limiting and backoff
 **Workflow:** Part of the operations skill category for SerpApi integration.
 **Relates to:** Other serpapi skills in this pack.

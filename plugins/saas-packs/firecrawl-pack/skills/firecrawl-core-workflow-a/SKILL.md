@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Core Workflow A — Scrape & Crawl
 
 ## Overview
+
 Primary workflow for Firecrawl: convert websites into clean LLM-ready markdown. Covers single-page scraping with `scrapeUrl`, multi-page crawling with `crawlUrl`, async crawl jobs with polling, and content processing pipelines.
 
 ## Prerequisites
+
 - `@mendable/firecrawl-js` installed
 - `FIRECRAWL_API_KEY` environment variable set
 - Target URL(s) identified
@@ -35,6 +37,7 @@ Primary workflow for Firecrawl: convert websites into clean LLM-ready markdown. 
 ## Instructions
 
 ### Step 1: Single-Page Scrape
+
 ```typescript
 import FirecrawlApp from "@mendable/firecrawl-js";
 
@@ -57,6 +60,7 @@ if (result.success) {
 ```
 
 ### Step 2: Multi-Page Synchronous Crawl
+
 ```typescript
 // Crawl a site — Firecrawl follows links, renders JS, returns all pages
 const crawlResult = await firecrawl.crawlUrl("https://docs.example.com", {
@@ -78,6 +82,7 @@ for (const page of crawlResult.data || []) {
 ```
 
 ### Step 3: Async Crawl for Large Sites
+
 ```typescript
 // Start an async crawl job — returns immediately with job ID
 const job = await firecrawl.asyncCrawlUrl("https://docs.example.com", {
@@ -106,6 +111,7 @@ if (status.status === "completed") {
 ```
 
 ### Step 4: Process and Store Results
+
 ```typescript
 import { writeFileSync, mkdirSync } from "fs";
 
@@ -136,11 +142,13 @@ function processResults(pages: any[], outputDir: string) {
 ```
 
 ## Output
+
 - Clean markdown files per crawled page
 - `manifest.json` with URL-to-file mapping
 - Crawl summary with page count and failures
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Empty `markdown` | JS content not rendered | Increase `waitFor` to 5000ms |
@@ -152,6 +160,7 @@ function processResults(pages: any[], outputDir: string) {
 ## Examples
 
 ### Scrape with Multiple Formats
+
 ```typescript
 const result = await firecrawl.scrapeUrl("https://example.com", {
   formats: ["markdown", "html", "links"],
@@ -164,6 +173,7 @@ console.log("Links:", result.links?.length);
 ```
 
 ### Crawl with Webhook (No Polling)
+
 ```typescript
 const job = await firecrawl.asyncCrawlUrl("https://docs.example.com", {
   limit: 100,
@@ -177,9 +187,11 @@ console.log(`Crawl ${job.id} started — webhook will fire on completion`);
 ```
 
 ## Resources
+
 - [Scrape Endpoint](https://docs.firecrawl.dev/features/scrape)
 - [Crawl Endpoint](https://docs.firecrawl.dev/features/crawl)
 - [Advanced Scraping Guide](https://docs.firecrawl.dev/advanced-scraping-guide)
 
 ## Next Steps
+
 For structured data extraction, see `firecrawl-core-workflow-b`.

@@ -10,6 +10,7 @@ exa-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Exa API performance with caching, batching, result limiting, and response time optimization.
 **Workflow:** Performance optimization skill - reduces latency and improves user experience.
 **Relates to:** Follows exa-search-modes; complementary to exa-cost-tuning

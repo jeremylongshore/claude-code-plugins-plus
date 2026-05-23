@@ -3,6 +3,7 @@
 ## Pre-Launch Checklist
 
 ### API Key Security
+
 ```
 [ ] API key stored in environment variable, not code
 [ ] Key has appropriate credit limit set
@@ -13,6 +14,7 @@
 ```
 
 ### Error Handling
+
 ```
 [ ] All API calls wrapped in try/catch
 [ ] Rate limit errors handled with exponential backoff
@@ -23,6 +25,7 @@
 ```
 
 ### Fallbacks Configured
+
 ```
 [ ] Primary model selected
 [ ] At least 2 fallback models configured
@@ -32,6 +35,7 @@
 ```
 
 ### Cost Controls
+
 ```
 [ ] Per-key credit limits set
 [ ] max_tokens limit on all requests
@@ -41,6 +45,7 @@
 ```
 
 ### Monitoring
+
 ```
 [ ] Request logging enabled
 [ ] Error rate tracking active

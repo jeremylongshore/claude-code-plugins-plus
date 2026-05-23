@@ -19,6 +19,7 @@ Firecrawl converts websites into clean markdown or structured JSON for LLM consu
 ## Skills (30)
 
 ### Getting Started (S01-S04)
+
 | Skill | What It Covers |
 |-------|---------------|
 | `firecrawl-install-auth` | Install `@mendable/firecrawl-js`, configure `FIRECRAWL_API_KEY`, verify connection |
@@ -27,12 +28,14 @@ Firecrawl converts websites into clean markdown or structured JSON for LLM consu
 | `firecrawl-sdk-patterns` | Singleton client, typed wrappers, retry with backoff, Zod validation |
 
 ### Core Workflows (S05-S06)
+
 | Skill | What It Covers |
 |-------|---------------|
 | `firecrawl-core-workflow-a` | `scrapeUrl` + `crawlUrl` + `asyncCrawlUrl` with polling and content processing |
 | `firecrawl-core-workflow-b` | `extract` with JSON schemas, `batchScrapeUrls`, `mapUrl` + selective scrape |
 
 ### Operations (S07-S12)
+
 | Skill | What It Covers |
 |-------|---------------|
 | `firecrawl-common-errors` | Fix 401/402/429/500 errors, empty markdown, stuck crawls, wrong package name |
@@ -43,6 +46,7 @@ Firecrawl converts websites into clean markdown or structured JSON for LLM consu
 | `firecrawl-upgrade-migration` | v0 to v1/v2 migration: crawlerOptions to flat options, new methods, breaking changes |
 
 ### Pro (P13-P18)
+
 | Skill | What It Covers |
 |-------|---------------|
 | `firecrawl-ci-integration` | GitHub Actions workflow, integration tests, mock-based unit tests, credit-aware CI |
@@ -53,6 +57,7 @@ Firecrawl converts websites into clean markdown or structured JSON for LLM consu
 | `firecrawl-reference-architecture` | Scrape/crawl/map/extract pipeline, content processing, chunking, storage patterns |
 
 ### Flagship (F19-F24)
+
 | Skill | What It Covers |
 |-------|---------------|
 | `firecrawl-multi-env-setup` | Dev/staging/prod config, self-hosted Docker for dev, credit-safe wrappers |
@@ -63,6 +68,7 @@ Firecrawl converts websites into clean markdown or structured JSON for LLM consu
 | `firecrawl-migration-deep-dive` | Migrate from Puppeteer/Playwright/Cheerio to Firecrawl with adapter pattern |
 
 ### Flagship+ (X25-X30)
+
 | Skill | What It Covers |
 |-------|---------------|
 | `firecrawl-advanced-troubleshooting` | Layer-by-layer isolation, empty scrape debugging, screenshot diagnosis, timing analysis |

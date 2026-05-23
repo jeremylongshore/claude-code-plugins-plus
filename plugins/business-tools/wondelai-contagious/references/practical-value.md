@@ -142,6 +142,7 @@ Lists are the most shared content format for several reasons:
 ```
 
 Examples:
+
 - "7 Simple Changes That Cut Our Electricity Bill in Half"
 - "The 5-Minute Morning Routine Backed by Neuroscience"
 - "3 Free Tools That Replace $500/Month in Software"
@@ -198,6 +199,7 @@ Evaluate any content or offer for practical value sharing potential.
 | **Framing** | Is the value framed using Prospect Theory principles? | |
 
 **Scoring:**
+
 - **0-20:** Low practical value. Content informs but doesn't compel sharing.
 - **21-40:** Moderate practical value. Occasional shares to close contacts.
 - **41-50:** High practical value. Regular forwards and saves.

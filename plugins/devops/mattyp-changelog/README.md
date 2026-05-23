@@ -10,7 +10,7 @@ Generate weekly/monthly changelogs with a hybrid **Skill + MCP** workflow: colle
 cp ${CLAUDE_PLUGIN_ROOT}/config/changelog-config.example.json .changelog-config.json
 ```
 
-2) Set required environment variables:
+1) Set required environment variables:
 
 ```bash
 export GITHUB_TOKEN="ghp_..."
@@ -18,7 +18,8 @@ export GITHUB_TOKEN="ghp_..."
 export SLACK_TOKEN="xoxb-..."
 ```
 
-3) Run:
+1) Run:
+
 - `/changelog-validate` (sanity checks)
 - `/changelog-weekly` (last 7 days)
 - `/changelog-custom start_date=YYYY-MM-DD end_date=YYYY-MM-DD`
@@ -29,4 +30,3 @@ export SLACK_TOKEN="xoxb-..."
 - Example config: `${CLAUDE_PLUGIN_ROOT}/config/changelog-config.example.json`
 - Skill: `${CLAUDE_PLUGIN_ROOT}/skills/changelog-orchestrator/SKILL.md`
 - MCP server: `${CLAUDE_PLUGIN_ROOT}/scripts/changelog_mcp.py`
-

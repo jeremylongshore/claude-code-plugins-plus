@@ -13,6 +13,7 @@ AI-powered people search and recruiting platform with 800M+ profiles. Build cand
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `juicebox-install-auth` | Install SDK and configure PeopleGPT API authentication |
@@ -29,6 +30,7 @@ AI-powered people search and recruiting platform with 800M+ profiles. Build cand
 | `juicebox-upgrade-migration` | SDK version upgrades |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `juicebox-ci-integration` | CI/CD with mock and integration tests |
@@ -39,6 +41,7 @@ AI-powered people search and recruiting platform with 800M+ profiles. Build cand
 | `juicebox-reference-architecture` | Recruiting platform architecture |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `juicebox-multi-env-setup` | Dev/staging/prod with isolated keys |

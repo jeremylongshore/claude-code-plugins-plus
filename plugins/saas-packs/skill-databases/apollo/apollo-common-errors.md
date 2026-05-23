@@ -10,6 +10,7 @@ apollo-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Apollo common errors
 **Workflow:** Part of the operations skill category for Apollo integration.
 **Relates to:** Other apollo skills in this pack.

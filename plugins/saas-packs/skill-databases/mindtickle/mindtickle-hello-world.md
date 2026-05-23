@@ -10,6 +10,7 @@ mindtickle-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Mindtickle example
 **Workflow:** Part of the onboarding skill category for Mindtickle integration.
 **Relates to:** Other mindtickle skills in this pack.

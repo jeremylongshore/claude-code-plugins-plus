@@ -3,6 +3,7 @@
 ## Cache Invalidation
 
 ### Manual Invalidation
+
 ```python
 class InvalidatableCache:
     def __init__(self):

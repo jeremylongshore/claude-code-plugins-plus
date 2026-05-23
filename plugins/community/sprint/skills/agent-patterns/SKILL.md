@@ -32,6 +32,7 @@ Agent Patterns defines the coordination protocol for multi-agent sprint executio
 ## Instructions
 
 1. Structure every agent spawn using the SPAWN REQUEST format. Include the agent name, the specification file it should read, and any scope constraints:
+
    ```
    SPAWN REQUEST
    Agent: python-dev
@@ -39,6 +40,7 @@ Agent Patterns defines the coordination protocol for multi-agent sprint executio
    Contract: .claude/sprint/1/api-contract.md
    Scope: Authentication endpoints only
    ```
+
 2. Ensure each spawned agent receives only the files relevant to its scope. Pass the `api-contract.md` as a shared interface so backend and frontend agents stay synchronized.
 3. Collect structured reports from every agent upon completion. Each report must include: work completed, files modified, tests added, and conformity status against the specification.
 4. When running agents in parallel, partition work by domain boundary (e.g., backend vs. frontend vs. CI/CD). Never assign overlapping file paths to concurrent agents.
@@ -65,6 +67,7 @@ Agent Patterns defines the coordination protocol for multi-agent sprint executio
 ## Examples
 
 **Spawning parallel implementation agents:**
+
 ```
 SPAWN REQUEST
 Agent: python-dev
@@ -76,9 +79,11 @@ Agent: nextjs-dev
 Specs: .claude/sprint/1/frontend-specs.md
 Contract: .claude/sprint/1/api-contract.md
 ```
+
 Both agents share the same `api-contract.md` to ensure API compatibility.
 
 **Structured agent report format:**
+
 ```
 AGENT REPORT
 Agent: python-dev
@@ -90,6 +95,7 @@ Notes: JWT token expiry set to 24h per spec
 ```
 
 **Testing agent coordination:**
+
 ```
 SPAWN REQUEST
 Agent: qa-test-agent

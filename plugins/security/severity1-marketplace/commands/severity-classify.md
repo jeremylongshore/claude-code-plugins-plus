@@ -10,6 +10,7 @@ Analyze the provided issue, bug report, or security finding and assign an approp
 ## Severity Levels
 
 ### S1 — Critical
+
 - System completely down or unusable
 - Active data loss or corruption
 - Security breach with confirmed exploitation
@@ -17,6 +18,7 @@ Analyze the provided issue, bug report, or security finding and assign an approp
 - **Response time:** Immediate
 
 ### S2 — High
+
 - Major functionality broken for many users
 - Security vulnerability with high exploitability
 - Data integrity at risk
@@ -24,6 +26,7 @@ Analyze the provided issue, bug report, or security finding and assign an approp
 - **Response time:** Within 4 hours
 
 ### S3 — Medium
+
 - Functionality degraded but operational
 - Security issue with limited scope
 - Reasonable workaround available
@@ -31,6 +34,7 @@ Analyze the provided issue, bug report, or security finding and assign an approp
 - **Response time:** Within 24 hours
 
 ### S4 — Low
+
 - Minor issue or cosmetic defect
 - Enhancement request
 - Documentation improvement

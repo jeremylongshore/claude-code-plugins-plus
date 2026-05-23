@@ -154,6 +154,7 @@ Before reacting, let me assess this through the competitive response framework.
 **Classification: Monitor.**
 
 **What to do now:**
+
 1. **Don't build anything.** Wait 3-6 months to see if their AI feature shows real results
 2. **Track mentions.** Set up alerts for competitor + "AI optimization" in sales calls and support tickets
 3. **Prepare a response if needed.** Draft a positioning statement: "We focus on reliable delivery first. AI optimization on top of unreliable delivery optimizes the wrong thing."

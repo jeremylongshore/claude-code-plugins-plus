@@ -31,6 +31,7 @@ This skill empowers Claude to act as a performance optimization advisor, deliver
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Identify performance bottlenecks in a software application.
 - Get recommendations for improving website loading speed.
 - Optimize database query performance.
@@ -44,6 +45,7 @@ This skill activates when you need to:
 User request: "My website is loading very slowly. Can you help me optimize its performance?"
 
 The skill will:
+
 1. Analyze the website's frontend code, backend APIs, and infrastructure configuration.
 2. Identify issues such as unoptimized images, inefficient database queries, and lack of CDN usage.
 3. Generate a report with prioritized recommendations, including image optimization, database query optimization, and CDN implementation.
@@ -53,6 +55,7 @@ The skill will:
 User request: "The API response time is too slow. What can I do to improve it?"
 
 The skill will:
+
 1. Analyze the API code, database queries, and caching strategies.
 2. Identify issues such as inefficient database queries, lack of caching, and slow processing logic.
 3. Generate a report with prioritized recommendations, including database query optimization, caching implementation, and asynchronous processing.
@@ -94,6 +97,7 @@ This skill integrates well with other plugins that provide code analysis, infras
 ## Error Handling
 
 If optimization analysis fails:
+
 - Verify codebase access permissions
 - Check profiling tool installation
 - Validate configuration file formats

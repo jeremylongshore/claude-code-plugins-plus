@@ -27,6 +27,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Reference Architecture
 
 ## Overview
+
 Reference architecture for production Instantly.ai integrations. Covers project layout, API client design, event-driven webhook processing, campaign management, lead pipeline, and analytics dashboard. Designed for teams building outreach automation on top of Instantly API v2.
 
 ## Architecture Diagram
@@ -106,6 +107,7 @@ instantly-integration/
 ## Core Module Implementation
 
 ### API Client (src/instantly/client.ts)
+
 ```typescript
 import "dotenv/config";
 
@@ -196,6 +198,7 @@ export class InstantlyClient {
 ```
 
 ### Campaign Template System (src/campaigns/templates.ts)
+
 ```typescript
 export const SEQUENCE_TEMPLATES = {
   "3-step-cold": {
@@ -244,6 +247,7 @@ export const SEQUENCE_TEMPLATES = {
 ```
 
 ## Data Flow Summary
+
 ```
 Lead CSV/CRM → import.ts → POST /leads → Campaign
                                             ↓
@@ -260,6 +264,7 @@ Lead CSV/CRM → import.ts → POST /leads → Campaign
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Client constructor fails | Missing `INSTANTLY_API_KEY` | Check `.env` file |
@@ -268,9 +273,11 @@ Lead CSV/CRM → import.ts → POST /leads → Campaign
 | Webhook events missing | Webhook not registered | Register after deploy (see `instantly-webhooks-events`) |
 
 ## Resources
+
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
 - [API Schemas](https://developer.instantly.ai/api/v2/schemas)
 - [Instantly Help Center](https://help.instantly.ai)
 
 ## Next Steps
+
 For multi-environment setup, see `instantly-multi-env-setup`.

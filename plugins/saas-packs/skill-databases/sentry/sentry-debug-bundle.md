@@ -10,6 +10,7 @@ sentry-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect comprehensive debug information for Sentry support tickets including SDK version, configuration, network tests, and capture verification.
 **Workflow:** Use when preparing a support request or when standard troubleshooting does not resolve an issue. Gathers all necessary diagnostic data.
 **Relates to:** Follows `sentry-common-errors` when quick fixes do not work. Works with `sentry-advanced-troubleshooting` for complex issues.

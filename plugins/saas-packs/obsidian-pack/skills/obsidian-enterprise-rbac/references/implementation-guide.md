@@ -5,6 +5,7 @@
 ## Detailed Instructions
 
 ### Step 1: Permission System
+
 ```typescript
 // src/rbac/permissions.ts
 export type Role = 'viewer' | 'editor' | 'contributor' | 'manager' | 'admin';
@@ -121,6 +122,7 @@ export class PermissionService {
 ```
 
 ### Step 2: Protected Operations Wrapper
+
 ```typescript
 // src/rbac/protected-vault.ts
 import { App, TFile, Notice } from 'obsidian';
@@ -175,6 +177,7 @@ export class ProtectedVault {
 ```
 
 ### Step 3: User Management
+
 ```typescript
 // src/rbac/user-manager.ts
 import { Plugin } from 'obsidian';
@@ -288,6 +291,7 @@ export class UserManager {
 ```
 
 ### Step 4: Audit Logging
+
 ```typescript
 // src/rbac/audit-log.ts
 export interface AuditEntry {
@@ -377,6 +381,7 @@ export class AuditLogger {
 ```
 
 ### Step 5: UI Integration
+
 ```typescript
 // src/rbac/rbac-ui.ts
 import { App, Modal, Setting } from 'obsidian';
@@ -439,10 +444,10 @@ export function addRoleIndicator(plugin: Plugin, permissions: PermissionService)
 }
 ```
 
-
 ## Complete Examples
 
 ### Configuration File
+
 ```yaml
 enabled: true
 
@@ -478,10 +483,10 @@ folderPermissions:
     allowedRoles: [admin]
 ```
 
-
 ## Access Control Concepts
 
 ### Role Hierarchy
+
 | Role | Read | Write | Delete | Admin | Settings |
 |------|------|-------|--------|-------|----------|
 | Viewer | Yes | No | No | No | No |
@@ -491,6 +496,7 @@ folderPermissions:
 | Admin | Yes | Yes | Yes | Yes | Full |
 
 ### Folder-Based Permissions
+
 ```
 vault/
 ├── public/           # All roles can read

@@ -14,115 +14,115 @@ This collection provides tools for building, testing, securing, and monitoring A
    - `/generate-rest-api` (shortcut: `/gra`)
    - Express, FastAPI, Django, Flask, NestJS support
    - OpenAPI documentation, validation, authentication
-   
+
 2. **graphql-server-builder** - Build GraphQL servers
    - `/build-graphql-server` (shortcut: `/gql`)
    - Schema-first design, resolvers, subscriptions
    - DataLoader, Apollo Server integration
-   
+
 3. **api-gateway-builder** - Build API gateways
    - `/build-api-gateway` (shortcut: `/gateway`)
    - Routing, authentication, rate limiting, load balancing
-   
+
 4. **grpc-service-generator** - Generate gRPC services
    - `/generate-grpc-service` (shortcut: `/grpc`)
    - Protocol Buffers, streaming support
-   
+
 5. **websocket-server-builder** - Build WebSocket servers
    - `/build-websocket-server` (shortcut: `/ws`)
    - Socket.io, real-time bidirectional communication
 
 ### API Security & Authentication (3 plugins)
 
-6. **api-security-scanner** - Scan for OWASP API Top 10
+1. **api-security-scanner** - Scan for OWASP API Top 10
    - `/scan-api-security` (shortcut: `/apiscan`)
    - Vulnerability detection, security audits
-   
-7. **api-authentication-builder** - Build auth systems
+
+2. **api-authentication-builder** - Build auth systems
    - `/build-auth-system` (shortcut: `/auth`)
    - JWT, OAuth2, API keys, RBAC
-   
-8. **webhook-handler-creator** - Create secure webhooks
+
+3. **webhook-handler-creator** - Create secure webhooks
    - `/create-webhook-handler` (shortcut: `/webhook`)
    - Signature verification, idempotency, retry logic
 
 ### API Performance & Reliability (4 plugins)
 
-9. **api-rate-limiter** - Implement rate limiting
+1. **api-rate-limiter** - Implement rate limiting
    - `/add-rate-limiting` (shortcut: `/ratelimit`)
    - Token bucket, sliding window, Redis
-   
-10. **api-throttling-manager** - Manage throttling & quotas
+
+2. **api-throttling-manager** - Manage throttling & quotas
     - `/implement-throttling` (shortcut: `/throttle`)
     - Dynamic rate limits, tiered pricing
-    
-11. **api-cache-manager** - Implement caching strategies
+
+3. **api-cache-manager** - Implement caching strategies
     - `/implement-caching` (shortcut: `/cache`)
     - Redis, HTTP headers, CDN integration
-    
-12. **api-load-tester** - Load test APIs
+
+4. **api-load-tester** - Load test APIs
     - `/run-load-test` (shortcut: `/loadtest`)
     - k6, Gatling, Artillery support
 
 ### API Documentation & Contracts (3 plugins)
 
-13. **api-documentation-generator** - Generate API docs
+1. **api-documentation-generator** - Generate API docs
     - `/generate-api-docs` (shortcut: `/apidoc`)
     - OpenAPI 3.0, Swagger UI, Redoc
-    
-14. **api-contract-generator** - Generate API contracts
+
+2. **api-contract-generator** - Generate API contracts
     - `/generate-contract` (shortcut: `/contract`)
     - Consumer-driven contract testing with Pact
-    
-15. **api-sdk-generator** - Generate client SDKs
+
+3. **api-sdk-generator** - Generate client SDKs
     - `/generate-sdk` (shortcut: `/sdk`)
     - Multi-language SDK generation from OpenAPI
 
 ### API Testing & Validation (3 plugins)
 
-16. **api-response-validator** - Validate API responses
+1. **api-response-validator** - Validate API responses
     - `/validate-api-responses` (shortcut: `/validate`)
     - JSON Schema, OpenAPI validation
-    
-17. **api-schema-validator** - Validate API schemas
+
+2. **api-schema-validator** - Validate API schemas
     - `/validate-schemas` (shortcut: `/schema`)
     - JSON Schema, Joi, Yup, Zod support
-    
-18. **api-mock-server** - Create mock API servers
+
+3. **api-mock-server** - Create mock API servers
     - `/create-mock-server` (shortcut: `/mock`)
     - OpenAPI-based mocking with Faker.js
 
 ### API Versioning & Migration (2 plugins)
 
-19. **api-versioning-manager** - Manage API versions
+1. **api-versioning-manager** - Manage API versions
     - `/manage-api-versions` (shortcut: `/apiver`)
     - Version strategies, deprecation notices
-    
-20. **api-migration-tool** - Migrate API versions
+
+2. **api-migration-tool** - Migrate API versions
     - `/migrate-api` (shortcut: `/migrate`)
     - Breaking change detection, compatibility layers
 
 ### API Observability & Monitoring (3 plugins)
 
-21. **api-monitoring-dashboard** - Create monitoring dashboards
+1. **api-monitoring-dashboard** - Create monitoring dashboards
     - `/create-monitoring` (shortcut: `/monitor`)
     - Metrics, logs, traces, alerts
-    
-22. **api-request-logger** - Implement request logging
+
+2. **api-request-logger** - Implement request logging
     - `/setup-logging` (shortcut: `/logs`)
     - Structured logging, correlation IDs
-    
-23. **api-error-handler** - Standardized error handling
+
+3. **api-error-handler** - Standardized error handling
     - `/implement-error-handling` (shortcut: `/errors`)
     - Custom error classes, HTTP status codes
 
 ### Advanced API Patterns (2 plugins)
 
-24. **api-event-emitter** - Event-driven APIs
+1. **api-event-emitter** - Event-driven APIs
     - `/implement-events` (shortcut: `/events`)
     - Message queues, Kafka, RabbitMQ
-    
-25. **api-batch-processor** - Batch API operations
+
+2. **api-batch-processor** - Batch API operations
     - `/implement-batch-processing` (shortcut: `/batch`)
     - Bulk operations, job queues, progress tracking
 
@@ -209,6 +209,7 @@ done
 ## Best Practices Covered
 
 ### REST API Design
+
 - Resource-based URLs
 - Proper HTTP methods and status codes
 - Pagination, filtering, sorting
@@ -216,12 +217,14 @@ done
 - API versioning
 
 ### GraphQL Best Practices
+
 - Schema-first design
 - DataLoader for N+1 prevention
 - Query complexity limiting
 - Relay-style pagination
 
 ### API Security
+
 - OWASP API Security Top 10
 - JWT token management
 - Rate limiting and throttling
@@ -229,12 +232,14 @@ done
 - HTTPS/TLS enforcement
 
 ### Performance
+
 - Caching strategies (Redis, CDN)
 - Database query optimization
 - Connection pooling
 - Asynchronous processing
 
 ### Observability
+
 - Structured logging
 - Distributed tracing
 - Metrics and alerting
@@ -243,18 +248,21 @@ done
 ## Supported Frameworks
 
 ### Node.js
+
 - Express
 - NestJS
 - Fastify
 - Koa
 
 ### Python
+
 - FastAPI
 - Django REST Framework
 - Flask
 - Sanic
 
 ### Other Languages
+
 - Go (Gin, Echo)
 - Ruby (Rails API, Sinatra)
 - Java (Spring Boot)

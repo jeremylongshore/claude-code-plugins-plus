@@ -3,9 +3,11 @@
 # Lindy Local Dev Loop
 
 ## Overview
+
 Configure efficient local development workflow for Lindy AI agent development.
 
 ## Prerequisites
+
 - Completed `lindy-install-auth` setup
 - Node.js 18+ with npm/pnpm
 - Code editor with TypeScript support
@@ -13,6 +15,7 @@ Configure efficient local development workflow for Lindy AI agent development.
 ## Instructions
 
 ### Step 1: Set Up Project Structure
+
 ```bash
 mkdir lindy-agents && cd lindy-agents
 npm init -y
@@ -21,6 +24,7 @@ npm install -D @types/node nodemon
 ```
 
 ### Step 2: Configure TypeScript
+
 ```json
 // tsconfig.json
 {
@@ -37,6 +41,7 @@ npm install -D @types/node nodemon
 ```
 
 ### Step 3: Create Development Script
+
 ```json
 // package.json scripts
 {
@@ -50,6 +55,7 @@ npm install -D @types/node nodemon
 ```
 
 ### Step 4: Create Agent Test Harness
+
 ```typescript
 // src/test-agent.ts
 import 'dotenv/config';
@@ -72,12 +78,14 @@ testAgent(process.argv[2], process.argv[3] || 'Hello!');
 ```
 
 ## Output
+
 - Configured development environment
 - Hot reload enabled for agent code
 - Test harness for rapid iteration
 - TypeScript support with type checking
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | ts-node not found | Dev deps missing | `npm install -D ts-node` |
@@ -87,6 +95,7 @@ testAgent(process.argv[2], process.argv[3] || 'Hello!');
 ## Examples
 
 ### Watch Mode Development
+
 ```bash
 # Start development with hot reload
 npm run dev
@@ -96,6 +105,7 @@ npm run test:agent agt_abc123 "Test input"
 ```
 
 ### Environment Setup
+
 ```bash
 # .env file
 LINDY_API_KEY=your-api-key
@@ -103,8 +113,10 @@ LINDY_ENVIRONMENT=development
 ```
 
 ## Resources
+
 - [Lindy SDK Reference](https://docs.lindy.ai/sdk)
 - [TypeScript Best Practices](https://docs.lindy.ai/typescript)
 
 ## Next Steps
+
 Proceed to `lindy-sdk-patterns` for SDK best practices.

@@ -66,6 +66,7 @@ const results = await exa.searchAndContents(
 ## Skills Reference
 
 ### Standard (S01-S12)
+
 | Skill | Trigger |
 |-------|---------|
 | `exa-install-auth` | "install exa", "setup exa", "exa API key" |
@@ -82,6 +83,7 @@ const results = await exa.searchAndContents(
 | `exa-upgrade-migration` | "upgrade exa", "update exa-js" |
 
 ### Pro (P13-P18)
+
 | Skill | Trigger |
 |-------|---------|
 | `exa-ci-integration` | "exa CI", "exa GitHub Actions" |
@@ -92,6 +94,7 @@ const results = await exa.searchAndContents(
 | `exa-reference-architecture` | "exa architecture", "exa RAG pipeline" |
 
 ### Flagship (F19-F24)
+
 | Skill | Trigger |
 |-------|---------|
 | `exa-multi-env-setup` | "exa environments", "exa dev prod" |
@@ -102,6 +105,7 @@ const results = await exa.searchAndContents(
 | `exa-migration-deep-dive` | "migrate to exa", "switch to exa" |
 
 ### Flagship+ (X25-X30)
+
 | Skill | Trigger |
 |-------|---------|
 | `exa-advanced-troubleshooting` | "exa deep debug", "exa latency spike" |

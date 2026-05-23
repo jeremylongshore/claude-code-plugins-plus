@@ -10,6 +10,7 @@ cohere-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Cohere advanced debugging
 **Workflow:** Part of the enterprise skill category for Cohere integration.
 **Relates to:** Other cohere skills in this pack.

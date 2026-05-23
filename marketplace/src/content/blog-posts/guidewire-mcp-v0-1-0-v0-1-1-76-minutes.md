@@ -230,4 +230,3 @@ The discipline IS the product. v0.1.0 shipped, v0.1.1 patched the install path 7
 ---
 
 *Jeremy Longshore is the author and sole maintainer of `@intentsolutions/guidewire-mcp-for-claude`. He runs Intent Solutions, a consulting and tooling practice focused on AI integration for regulated industries.*
-

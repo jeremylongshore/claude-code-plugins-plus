@@ -43,6 +43,7 @@ The aggregating-crypto-news skill provides real-time cryptocurrency news aggrega
 ## Target Users
 
 ### Persona 1: Active Day Trader
+
 - **Name**: Marcus
 - **Role**: Full-time crypto day trader
 - **Goals**: Catch news before price moves; identify catalysts
@@ -50,6 +51,7 @@ The aggregating-crypto-news skill provides real-time cryptocurrency news aggrega
 - **Usage**: Runs news scan every 30 minutes during active sessions
 
 ### Persona 2: Research Analyst
+
 - **Name**: Sarah
 - **Role**: Crypto research analyst at investment firm
 - **Goals**: Comprehensive coverage for reports; track regulatory changes
@@ -57,6 +59,7 @@ The aggregating-crypto-news skill provides real-time cryptocurrency news aggrega
 - **Usage**: Daily digest with category filters; export for reports
 
 ### Persona 3: Portfolio Manager
+
 - **Name**: David
 - **Role**: DeFi portfolio manager
 - **Goals**: Monitor protocol updates; track governance proposals
@@ -68,53 +71,63 @@ The aggregating-crypto-news skill provides real-time cryptocurrency news aggrega
 ## User Stories
 
 ### US-1: Breaking News Scan (Critical)
+
 **As a** day trader
 **I want to** scan for breaking crypto news from the past hour
 **So that** I can identify market-moving events before they're priced in
 
 **Acceptance Criteria:**
+
 - Fetch news from past 1h/4h/24h windows
 - Display source, title, timestamp, relevance score
 - Highlight market-moving keywords (listing, delisting, hack, exploit)
 - Complete scan in under 10 seconds
 
 ### US-2: Coin-Specific News (Critical)
+
 **As a** researcher
 **I want to** filter news for specific coins or tokens
 **So that** I can focus on assets in my coverage universe
 
 **Acceptance Criteria:**
+
 - Filter by single coin (--coin BTC) or multiple (--coins BTC,ETH,SOL)
 - Match against title, body, and tags
 - Include protocol-specific sources (e.g., Solana newsletters for SOL)
 - Return results sorted by relevance or recency
 
 ### US-3: Category Filtering (Important)
+
 **As a** portfolio manager
 **I want to** filter news by category (regulatory, DeFi, NFT, etc.)
 **So that** I can focus on my domain without irrelevant noise
 
 **Acceptance Criteria:**
+
 - Categories: regulatory, defi, nft, layer1, layer2, exchange, security
 - Multiple categories can be combined
 - Category detected via keyword matching and source classification
 
 ### US-4: Export to Multiple Formats (Important)
+
 **As a** analyst
 **I want to** export news to JSON/CSV
 **So that** I can integrate with my research tools and create reports
 
 **Acceptance Criteria:**
+
 - Support table, JSON, CSV output formats
 - Include all metadata (source, timestamp, category, relevance)
 - Export to file with --output flag
 
 ### US-5: Source Management (Nice-to-Have)
+
 **As a** user
 **I want to** manage which sources are included in my feed
 **So that** I can customize quality and focus
 
 **Acceptance Criteria:**
+
 - List available sources with categories
 - Enable/disable specific sources
 - Save source preferences to config
@@ -124,28 +137,33 @@ The aggregating-crypto-news skill provides real-time cryptocurrency news aggrega
 ## Functional Requirements
 
 ### REQ-1: Multi-Source Aggregation
+
 - Fetch from RSS feeds (CoinDesk, CoinTelegraph, Decrypt, The Block, etc.)
 - Parse feed entries with proper date handling
 - Deduplicate across sources based on title similarity
 
 ### REQ-2: Relevance Scoring
+
 - Score articles based on keyword matches
 - Boost scores for market-moving terms (exploit, hack, listing, partnership)
 - Penalize promotional/sponsored content
 
 ### REQ-3: Filtering System
+
 - Time-based filtering (1h, 4h, 24h, 7d)
 - Coin/token filtering with symbol matching
 - Category filtering with multi-select
 - Source filtering
 
 ### REQ-4: Output Formatting
+
 - Table format for terminal display
 - JSON format for programmatic use
 - CSV format for spreadsheet analysis
 - Minimal format for quick scanning
 
 ### REQ-5: Caching
+
 - Cache feed responses to reduce API calls
 - Configurable TTL (default 5 minutes)
 - Cache invalidation on demand
@@ -201,14 +219,17 @@ User: "get latest crypto news"
 ## Integration Points
 
 ### Dependencies
+
 - **None** (standalone skill, no other skills required)
 
 ### Consumers (Skills that can use this)
+
 - **market-sentiment-analyzer**: Can consume news feed for sentiment analysis
 - **crypto-signal-generator**: Can use news as signal input
 - **whale-alert-monitor**: Can correlate whale moves with news
 
 ### External APIs
+
 - RSS feeds (no API key required)
 - CryptoCompare News API (optional, for enhanced coverage)
 
@@ -217,11 +238,13 @@ User: "get latest crypto news"
 ## Constraints & Assumptions
 
 ### Constraints
+
 - RSS feed availability (some sources may block or change URLs)
 - Rate limiting on news APIs
 - No real-time push (polling model only)
 
 ### Assumptions
+
 - User has internet connectivity
 - English language sources are sufficient
 - 5-minute cache TTL is acceptable for most use cases
@@ -242,21 +265,27 @@ User: "get latest crypto news"
 ## Examples
 
 ### Example 1: Default News Scan
+
 ```bash
 python news_aggregator.py
 ```
+
 Returns top 20 news items from past 24h, sorted by relevance.
 
 ### Example 2: Bitcoin-Specific News
+
 ```bash
 python news_aggregator.py --coin BTC --period 4h
 ```
+
 Returns Bitcoin news from past 4 hours.
 
 ### Example 3: DeFi Category with Export
+
 ```bash
 python news_aggregator.py --category defi --format json --output defi_news.json
 ```
+
 Exports DeFi news to JSON file.
 
 ---

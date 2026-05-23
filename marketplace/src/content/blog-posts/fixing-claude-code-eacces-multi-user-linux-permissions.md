@@ -19,6 +19,7 @@ syscall: "open",
 ```
 
 **Context:**
+
 - Two user accounts: `jeremy` (master) and `admincostplus` (admin)
 - Both need to run Claude Code independently
 - Shared configuration desired (plugins, MCP servers, slash commands)
@@ -145,16 +146,19 @@ echo "   Admin user: $ADMIN_USER (uses symlinks to shared)"
 ### Why This Architecture Works
 
 **For `admincostplus` (admin user):**
+
 - Symlinks redirect all Claude Code file operations to `/opt/claude-shared`
 - Writes go to shared location where group permissions grant access
 - Transparent to Claude Code—it doesn't know it's writing to shared storage
 
 **For `jeremy` (master user):**
+
 - Uses real directories at `/home/jeremy/.claude`
 - Full ownership and control
 - Changes sync to shared directory (manual rsync when needed)
 
 **The setgid bit (2775):**
+
 ```bash
 chmod 2775 /opt/claude-shared
 # The '2' is the setgid bit
@@ -286,6 +290,7 @@ sudo -iu admincostplus bash -lc 'echo $CLAUDE_CODE_HOME'
 ### What Success Looks Like
 
 **For `admincostplus`:**
+
 ```bash
 $ whoami
 admincostplus
@@ -301,6 +306,7 @@ $ echo $CLAUDE_CODE_HOME
 ```
 
 **For `jeremy`:**
+
 ```bash
 $ whoami
 jeremy
@@ -338,6 +344,7 @@ chmod 2775 /opt/claude-shared
 ### 3. Symlinks Are Transparent Permission Redirects
 
 When you symlink `~/.claude` → `/opt/claude-shared/.claude`:
+
 - All file operations follow the symlink
 - Permissions are checked at the **target** location
 - The source link doesn't need special permissions (just read/traverse)
@@ -345,6 +352,7 @@ When you symlink `~/.claude` → `/opt/claude-shared/.claude`:
 ### 4. Test Each Layer Independently
 
 Don't assume the script worked. Verify:
+
 1. Group exists and users are members: `getent group claudeusers`
 2. Shared directory has correct ownership: `ls -ld /opt/claude-shared`
 3. Symlinks point to correct targets: `readlink -f ~/.claude`
@@ -355,6 +363,7 @@ Don't assume the script worked. Verify:
 ### 5. Ownership Pollution Is Silent and Deadly
 
 During debugging, running commands as different users can leave landmines:
+
 ```bash
 # This creates files owned by admincostplus in jeremy's home
 sudo -u admincostplus touch /home/jeremy/.claude/test.txt
@@ -394,4 +403,3 @@ Two users, zero permission conflicts, shared configuration, independent Claude C
 **After:** Transparent multi-user access, automatic group inheritance, architectural clarity.
 
 The difference between "just make it work" and "make it work correctly" is architecture. This is the latter.
-

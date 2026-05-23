@@ -18,6 +18,7 @@ The wake-up call came in the form of multiple failed deployment emails. ESLint f
 Early in the session, I made a critical mistake: I violated the project's documentation filing system by creating files in `/reports/` instead of the designated `/docs/` directory. The immediate correction I received was blunt but valuable - it forced me to confront a common professional pitfall: **knowing the standard versus enforcing it consistently**.
 
 This led to a complete documentation audit:
+
 - Consolidated 123 scattered markdown files from 8+ directories
 - Implemented DOCUMENT-FILING-SYSTEM-STANDARD-v2.0 with strict naming: `NNN-CC-ABCD-description.ext`
 - Removed ALL subdirectories - completely flat structure
@@ -30,16 +31,19 @@ This led to a complete documentation audit:
 The deployment failures came in waves:
 
 **First Wave:** Conflicting GitHub Actions workflows
+
 - Old workflow using deprecated service account keys
 - Wrong GCP project ID (`hustle-dev-202510` instead of `hustleapp-production`)
 - **Solution:** Deleted old workflow, verified correct project via `gcloud projects list`
 
 **Second Wave:** 16 ESLint errors blocking CI
+
 - Unescaped apostrophes in JSX (Next.js 15 requirement)
 - Explicit `any` types violating TypeScript strict mode
 - **Solution:** Systematic fixes across all files, proper type annotations
 
 **Third Wave:** Auto-fix workflow design
+
 - **Challenge:** "How do we prevent this from happening again?"
 - **Solution:** Created two-tier workflow system:
   - `auto-fix.yml` - Automatically fixes common ESLint issues on PRs
@@ -73,6 +77,7 @@ Setting up Workload Identity Federation (WIF) for GitHub Actions taught me an im
 Implemented full automated deployment with:
 
 **Continuous Integration** (`.github/workflows/ci.yml`):
+
 ```yaml
 - Lint enforcement (ESLint strict mode)
 - TypeScript type checking (--noEmit)
@@ -82,6 +87,7 @@ Implemented full automated deployment with:
 ```
 
 **Continuous Deployment** (`.github/workflows/deploy.yml`):
+
 ```yaml
 - Auto-deploy to Cloud Run on main branch pushes
 - Workload Identity Federation authentication
@@ -90,6 +96,7 @@ Implemented full automated deployment with:
 ```
 
 **Developer Experience** (`.github/workflows/auto-fix.yml`, `branch-protection.yml`):
+
 ```yaml
 - Auto-fix common ESLint issues on PRs
 - Preview deployments to staging
@@ -102,11 +109,13 @@ Implemented full automated deployment with:
 Created **DOCUMENT-FILING-SYSTEM-STANDARD-v2.0**:
 
 **Format:** `NNN-CC-ABCD-description.ext`
+
 - `NNN` = Sequential number (001-999)
 - `CC` = 2-letter category code (PP, AT, DR, etc.)
 - `ABCD` = 4-letter type code (PROD, ADEC, LOGS, etc.)
 
 **Example:**
+
 ```
 104-OD-DEPL-github-actions-setup-complete.md
 │   │  │    └─ Description
@@ -124,6 +133,7 @@ Updated the public-facing site with honest development messaging:
 **Before:** "We're building the future of athlete tracking..."
 
 **After:**
+
 ```tsx
 <div className="inline-flex items-center gap-2 px-4 py-2
      bg-amber-50 rounded-full border border-amber-200">
@@ -142,6 +152,7 @@ Updated the public-facing site with honest development messaging:
 ```
 
 **Dual CTA Strategy:**
+
 - Primary: "Try Early Access" → `/dashboard`
 - Secondary: "Share Feedback" → External survey
 
@@ -161,6 +172,7 @@ This is the difference between junior and senior problem-solving: juniors fix sy
 ## The Impact: From Manual to Automated
 
 **Before Today:**
+
 - Manual deployments to Cloud Run
 - No CI validation
 - Documentation scattered across 8+ directories
@@ -168,6 +180,7 @@ This is the difference between junior and senior problem-solving: juniors fix sy
 - No staging environment
 
 **After Today:**
+
 - Auto-deploy on every push to main
 - Strict CI validation blocks bad code
 - 123 docs consolidated in flat `/docs/` structure (100% compliant)
@@ -175,6 +188,7 @@ This is the difference between junior and senior problem-solving: juniors fix sy
 - Preview deployments for every PR
 
 **Quantified Impact:**
+
 - **Deployment time:** 15 minutes manual → 5 minutes automated
 - **Failed deployment risk:** High → Near zero (caught in CI)
 - **Documentation discoverability:** Difficult → Scannable by number/category
@@ -183,17 +197,20 @@ This is the difference between junior and senior problem-solving: juniors fix sy
 ## Professional Growth Reflections
 
 ### What Went Well
+
 - **Systems thinking:** Addressed root causes, not symptoms
 - **Standard enforcement:** 100% documentation compliance after violation
 - **Modern security:** Adopted keyless WIF instead of deprecated keys
 - **Transparency:** Honest landing page messaging builds trust
 
 ### What I'd Improve Next Time
+
 - **Test before commit:** Should have caught ESLint errors locally
 - **Incremental validation:** Could have validated docs migration in batches
 - **Communication:** Better commit messages during iterative fixes
 
 ### Skills Demonstrated
+
 - GitHub Actions workflow design (CI/CD pipelines)
 - Google Cloud Platform (Cloud Run, Workload Identity Federation, IAM)
 - TypeScript/Next.js strict mode compliance
@@ -220,4 +237,3 @@ The foundation is solid. Now it's time to build on it.
 **Repository:** [HustleStats](https://github.com/jeremylongshore/hustle) (private)
 
 **Live Site:** [hustlestats.io](https://hustlestats.io)
-

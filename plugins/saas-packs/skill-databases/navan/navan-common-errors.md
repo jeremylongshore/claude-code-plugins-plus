@@ -10,6 +10,7 @@ navan-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Navan common errors
 **Workflow:** Part of the operations skill category for Navan integration.
 **Relates to:** Other navan skills in this pack.

@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Core Workflow B: MLflow Training & Serving
 
 ## Overview
+
 Full ML lifecycle on Databricks: Feature Engineering Client for discoverable features, MLflow experiment tracking with auto-logging, Unity Catalog model registry with aliases (`champion`/`challenger`), and Mosaic AI Model Serving endpoints for real-time inference via REST API.
 
 ## Prerequisites
+
 - Completed `databricks-install-auth` and `databricks-core-workflow-a`
 - `databricks-sdk`, `mlflow`, `scikit-learn` installed
 - Unity Catalog enabled (required for model registry)
@@ -34,6 +36,7 @@ Full ML lifecycle on Databricks: Feature Engineering Client for discoverable fea
 ## Instructions
 
 ### Step 1: Feature Engineering with Feature Store
+
 Create a feature table in Unity Catalog so features are discoverable and reusable.
 
 ```python
@@ -67,6 +70,7 @@ fe.create_table(
 ```
 
 ### Step 2: MLflow Experiment Tracking
+
 ```python
 import mlflow
 from sklearn.model_selection import train_test_split
@@ -111,6 +115,7 @@ with mlflow.start_run(run_name="gbm-baseline") as run:
 ```
 
 ### Step 3: Model Registry with Aliases
+
 Unity Catalog model registry replaces legacy stages with aliases (`champion`, `challenger`).
 
 ```python
@@ -132,6 +137,7 @@ predictions = champion.predict(X_test)
 ```
 
 ### Step 4: Deploy Model Serving Endpoint
+
 Mosaic AI Model Serving creates a REST API endpoint with auto-scaling.
 
 ```python
@@ -160,6 +166,7 @@ print(f"Endpoint ready: {endpoint.name} ({endpoint.state.ready})")
 ```
 
 ### Step 5: Query the Serving Endpoint
+
 ```python
 import requests
 
@@ -190,6 +197,7 @@ print(result.predictions)
 ```
 
 ### Step 6: Batch Inference Job
+
 ```python
 # Scheduled Databricks job for daily batch scoring
 model_name = "prod_catalog.ml_models.churn_predictor"
@@ -207,6 +215,7 @@ active_users["churn_probability"] = champion.predict_proba(active_users[feature_
 ```
 
 ## Output
+
 - Feature table in Unity Catalog (`prod_catalog.ml_features.user_behavior`)
 - MLflow experiment with logged runs, metrics, and artifacts
 - Model versions in registry with `champion` alias
@@ -214,6 +223,7 @@ active_users["churn_probability"] = champion.predict_proba(active_users[feature_
 - Batch scoring pipeline writing to `prod_catalog.gold.churn_scores`
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `RESOURCE_DOES_NOT_EXIST` | Wrong experiment path | Verify with `mlflow.search_experiments()` |
@@ -226,6 +236,7 @@ active_users["churn_probability"] = champion.predict_proba(active_users[feature_
 ## Examples
 
 ### Hyperparameter Sweep
+
 ```python
 from sklearn.model_selection import ParameterGrid
 
@@ -240,10 +251,12 @@ for params in ParameterGrid(grid):
 ```
 
 ## Resources
+
 - [MLflow on Databricks](https://docs.databricks.com/aws/en/mlflow/)
 - [Feature Engineering](https://docs.databricks.com/aws/en/machine-learning/feature-store/)
 - [Model Serving](https://docs.databricks.com/aws/en/machine-learning/model-serving/)
 - [Unity Catalog Models](https://docs.databricks.com/aws/en/mlflow/models)
 
 ## Next Steps
+
 For common errors, see `databricks-common-errors`.

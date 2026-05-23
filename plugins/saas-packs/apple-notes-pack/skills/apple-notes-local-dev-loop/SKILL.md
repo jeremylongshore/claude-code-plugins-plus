@@ -20,11 +20,13 @@ compatibility: Designed for Claude Code
 # Apple Notes Local Dev Loop
 
 ## Overview
+
 Iterative development workflow for Apple Notes JXA scripts with file watching and test helpers.
 
 ## Instructions
 
 ### Step 1: Project Setup
+
 ```bash
 mkdir apple-notes-automation && cd apple-notes-automation
 npm init -y
@@ -32,6 +34,7 @@ npm install -D chokidar tsx typescript
 ```
 
 ### Step 2: JXA Runner with Hot Reload
+
 ```typescript
 // src/dev/watch-runner.ts
 import { watch } from "chokidar";
@@ -51,6 +54,7 @@ console.log("Watching scripts/*.js for changes...");
 ```
 
 ### Step 3: Test Helper
+
 ```typescript
 // src/dev/test-notes.ts
 import { execSync } from "child_process";
@@ -76,6 +80,7 @@ export { runJxa, getNoteCount, createTestNote };
 ```
 
 ### Step 4: Dev Scripts
+
 ```json
 {
   "scripts": {
@@ -86,6 +91,7 @@ export { runJxa, getNoteCount, createTestNote };
 ```
 
 ## Output
+
 - Hot-reload JXA development with file watching
 - Test helpers for note CRUD operations
 - Iterative script development workflow

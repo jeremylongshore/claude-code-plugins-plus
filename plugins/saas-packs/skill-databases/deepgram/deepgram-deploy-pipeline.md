@@ -10,6 +10,7 @@ deepgram-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Deepgram integrations to production
 **Workflow:** Part of the cicd skill category for Deepgram integration.
 **Relates to:** Other deepgram skills in this pack.

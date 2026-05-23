@@ -10,6 +10,7 @@ elevenlabs-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply ElevenLabs security best practices
 **Workflow:** Part of the operations skill category for ElevenLabs integration.
 **Relates to:** Other elevenlabs skills in this pack.

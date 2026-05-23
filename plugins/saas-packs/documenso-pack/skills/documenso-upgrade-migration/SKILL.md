@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Documenso Upgrade & Migration
 
 ## Current State
+
 !`npm list @documenso/sdk-typescript 2>/dev/null || echo 'SDK not installed'`
 !`npm list documenso-sdk-python 2>/dev/null || pip show documenso-sdk-python 2>/dev/null | head -3 || echo 'Python SDK not installed'`
 

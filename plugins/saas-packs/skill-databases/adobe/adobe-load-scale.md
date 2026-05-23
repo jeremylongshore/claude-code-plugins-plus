@@ -10,6 +10,7 @@ adobe-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Adobe load testing and scaling
 **Workflow:** Part of the enterprise skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

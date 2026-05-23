@@ -54,6 +54,7 @@ S - Stories             → Is it wrapped in a narrative people want to tell?
 **Why it works:** We use brands and information as social signals. Sharing remarkable facts, exclusive access, or high-status products is a form of self-enhancement. People don't just share what they think — they share what makes them look good for thinking it.
 
 **Key insights:**
+
 - **Remarkability** — things that are surprising, novel, or extreme get shared because they make the sharer seem interesting. "Did you know...?" is one of the most powerful sharing triggers
 - **Game mechanics** — leaderboards, badges, status tiers, and achievement systems create visible markers of accomplishment that people want to display and talk about
 - **Exclusivity and scarcity** — secret menus, invite-only access, members-only content — making people feel like insiders gives them social currency when they share "insider knowledge" with their circle
@@ -71,6 +72,7 @@ S - Stories             → Is it wrapped in a narrative people want to tell?
 | Community | Tiered status with visible badges | Stack Overflow reputation system |
 
 **Copy patterns:**
+
 - "Most people don't know that..."
 - "You're one of the first to try..."
 - "Only available to [exclusive group]..."
@@ -89,6 +91,7 @@ See: [references/social-currency.md](references/social-currency.md) for remarkab
 **Why it works:** Most word-of-mouth is not driven by excitement about the product itself but by whatever happens to be top-of-mind at the moment of conversation. If your product is linked to a frequent environmental cue, it gets mentioned more often — not because it's more exciting, but because it's more accessible in memory.
 
 **Key insights:**
+
 - **Frequency beats strength** — a trigger encountered daily (like coffee) is more valuable than a powerful but rare trigger (like a holiday). Kit Kat linked itself to coffee breaks, which happen multiple times per day
 - **Habitat matters** — where and when do people encounter environments related to your product? Those are your trigger opportunities
 - **Competitive triggers** — you can link competitor moments to your own brand. When people think of [competitor's context], they think of you instead
@@ -107,6 +110,7 @@ See: [references/social-currency.md](references/social-currency.md) for remarkab
 | E-commerce | Connect to seasonal or weather triggers | "When it rains..." campaigns |
 
 **Copy patterns:**
+
 - "Every time you [frequent activity], think of..."
 - "Next time you [daily habit]..."
 - "When you see [environmental cue]..."
@@ -124,6 +128,7 @@ See: [references/triggers.md](references/triggers.md) for habitat analysis and t
 **Why it works:** Physiological arousal — the racing heart, the tightened muscles, the activated state — creates a need to share. It's not about positivity vs. negativity; it's about activation vs. deactivation. Content that fires people up gets shared; content that brings people down gets ignored.
 
 **Key insights:**
+
 - **High-arousal positive:** awe, excitement, amusement, humor, inspiration — all drive sharing
 - **High-arousal negative:** anger, anxiety, outrage, fear — also drive sharing (controversies spread fast)
 - **Low-arousal positive:** contentment, relaxation, satisfaction — suppress sharing (people feel no urgency to act)
@@ -143,6 +148,7 @@ See: [references/triggers.md](references/triggers.md) for habitat analysis and t
 | Feature announcements | Generate curiosity and anticipation | "Something big is coming..." teasers |
 
 **Copy patterns:**
+
 - "This will change how you think about..."
 - "I can't believe [surprising fact]..."
 - "Watch what happens when..."
@@ -161,6 +167,7 @@ See: [references/emotion.md](references/emotion.md) for emotional arousal mappin
 **Why it works:** People imitate what they can see. If your product usage is invisible, you lose the most powerful adoption channel: social proof through observation. The phrase "monkey see, monkey do" exists because observational learning is one of the deepest human instincts.
 
 **Key insights:**
+
 - **Behavioral residue** — design products that leave visible traces after use. A bumper sticker outlasts the rally. A Livestrong wristband is worn long after the donation
 - **Self-advertising products** — every Hotmail email included "Get your free email at Hotmail" in the signature. The product advertised itself through use
 - **Observable consumption** — Apple deliberately designed the MacBook logo to face outward (toward observers) rather than toward the user. Every open laptop became a billboard
@@ -179,6 +186,7 @@ See: [references/emotion.md](references/emotion.md) for emotional arousal mappin
 | Content platforms | Share cards with platform branding | Twitter/X quote cards, Instagram story frames |
 
 **Copy patterns:**
+
 - "Show the world you [achievement/identity]..."
 - "Let others know you..."
 - "Wear your [accomplishment]..."
@@ -196,6 +204,7 @@ See: [references/public-visibility.md](references/public-visibility.md) for obse
 **Why it works:** Sharing practical value is driven by altruism — people genuinely want to help their friends and family. If your content or product saves people time, money, or effort, they'll share it as a favor to their network.
 
 **Key insights:**
+
 - **Prospect Theory** — people evaluate deals relative to a reference point, not in absolute terms. A $10 discount on a $20 item feels better than a $10 discount on a $1,000 item, even though the savings are identical
 - **Rule of 100** — for products under $100, use percentage discounts (50% off a $30 item sounds better than $15 off). For products over $100, use dollar amounts ($200 off sounds better than 10% off a $2,000 item)
 - **Diminishing sensitivity** — the difference between $5 and $10 feels bigger than the difference between $495 and $500. Frame savings relative to small reference points
@@ -214,6 +223,7 @@ See: [references/public-visibility.md](references/public-visibility.md) for obse
 | Customer success | Package how-to guides for common tasks | Quick-start guides users share with teammates |
 
 **Copy patterns:**
+
 - "Save [amount] with this one trick..."
 - "The [number]-step guide to..."
 - "Here's something you'll want to send to [specific person]..."
@@ -232,6 +242,7 @@ See: [references/practical-value.md](references/practical-value.md) for Prospect
 **Why it works:** Stories are how humans naturally process and transmit information. We think in narratives, not bullet points. A well-crafted story carries your brand message inside it like a Trojan Horse — the listener absorbs the message while being entertained by the story.
 
 **Key insights:**
+
 - **The Trojan Horse test** — can someone retell the story without mentioning your brand? If yes, the story fails. Your brand must be so integral to the narrative that removing it makes the story collapse
 - **Stories carry morals** — people extract lessons from narratives. The lesson should naturally lead to your value proposition
 - **Narrative transportation** — when people are absorbed in a story, their critical defenses drop. They accept the embedded message more readily than a direct pitch
@@ -250,6 +261,7 @@ See: [references/practical-value.md](references/practical-value.md) for Prospect
 | Customer advocacy | Give customers a story to tell about their experience | "You won't believe what happened when I called support..." |
 
 **Copy patterns:**
+
 - "Here's the story of how..."
 - "It all started when [founder/customer] realized..."
 - "Nobody believed [audacious claim] — until..."

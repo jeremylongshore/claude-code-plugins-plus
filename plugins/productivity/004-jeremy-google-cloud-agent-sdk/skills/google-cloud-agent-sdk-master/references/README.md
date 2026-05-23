@@ -9,7 +9,9 @@ targets, and production best practices.
 ## Reference Files
 
 ### SKILL.full.md
+
 The comprehensive guide containing:
+
 - ADK framework overview and supported agent types (LLM, Workflow, Custom, Multi-agent)
 - Agent Starter Pack templates (adk_base, agentic_rag, langgraph_base_react, crewai_coding_crew, adk_live)
 - Deployment targets: Vertex AI Agent Engine, Cloud Run, GKE, Local/Docker
@@ -86,16 +88,19 @@ adk evaluate --test-dataset gs://bucket/eval_data.jsonl --metrics accuracy,relev
 ## Architecture Decision Guide
 
 **Choose a single ADK agent when:**
+
 - One domain, one set of tools
 - Latency requirements under 2 seconds
 - Simple request/response pattern
 
 **Choose multi-agent orchestration when:**
+
 - Multiple specialized domains (research, analysis, writing)
 - Complex workflows with branching logic
 - Different models needed for different subtasks (Pro for reasoning, Flash for speed)
 
 **Choose Agent Starter Pack templates when:**
+
 - Starting a new project from scratch
 - Need CI/CD and deployment automation out of the box
 - Want a proven project structure with tests included

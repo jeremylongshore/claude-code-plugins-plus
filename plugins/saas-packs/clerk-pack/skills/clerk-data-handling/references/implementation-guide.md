@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: User Data Export
+
 ```typescript
 // lib/data-export.ts
 import { clerkClient } from '@clerk/nextjs/server'
@@ -84,6 +85,7 @@ function sanitizeForExport(data: any): any {
 ```
 
 ### Step 2: User Deletion (Right to be Forgotten)
+
 ```typescript
 // lib/user-deletion.ts
 import { clerkClient } from '@clerk/nextjs/server'
@@ -162,6 +164,7 @@ async function logDeletionEvent(userId: string, result: DeletionResult) {
 ```
 
 ### Step 3: Data Retention Policies
+
 ```typescript
 // lib/data-retention.ts
 import { db } from './db'
@@ -221,6 +224,7 @@ export async function enforceRetentionPolicy() {
 ```
 
 ### Step 4: Consent Management
+
 ```typescript
 // lib/consent.ts
 import { currentUser } from '@clerk/nextjs/server'
@@ -271,6 +275,7 @@ export async function updateConsent(
 ```
 
 ### Step 5: GDPR API Endpoints
+
 ```typescript
 // app/api/user/data/route.ts
 import { auth } from '@clerk/nextjs/server'
@@ -328,6 +333,7 @@ export async function DELETE() {
 ```
 
 ### Step 6: Audit Logging
+
 ```typescript
 // lib/audit-log.ts
 interface AuditEvent {

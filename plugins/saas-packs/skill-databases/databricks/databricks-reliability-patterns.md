@@ -10,6 +10,7 @@ databricks-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Databricks reliability patterns
 **Workflow:** Part of the enterprise skill category for Databricks integration.
 **Relates to:** Other databricks skills in this pack.

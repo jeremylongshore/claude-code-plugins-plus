@@ -10,6 +10,7 @@ persona-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Persona common errors
 **Workflow:** Part of the operations skill category for Persona integration.
 **Relates to:** Other persona skills in this pack.

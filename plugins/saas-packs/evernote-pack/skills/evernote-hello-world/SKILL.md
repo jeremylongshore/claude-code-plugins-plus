@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Hello World
 
 ## Overview
+
 Create your first Evernote note using the Cloud API, demonstrating ENML format and NoteStore operations.
 
 ## Prerequisites
+
 - Completed `evernote-install-auth` setup
 - Valid access token (OAuth or Developer Token for sandbox)
 - Development environment ready
@@ -106,11 +108,13 @@ console.log('Title:', note.title);
 For the complete working example with Python SDK, todo lists, and a combined workflow, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
+
 - Working code file with Evernote client initialization
 - Successfully created note in your Evernote account
 - Console output with note GUID and confirmation
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `EDAMUserException: BAD_DATA_FORMAT` | Invalid ENML content | Validate against ENML DTD; ensure XML declaration and DOCTYPE |
@@ -119,12 +123,14 @@ For the complete working example with Python SDK, todo lists, and a combined wor
 | `Missing DOCTYPE` | ENML missing required header | Add `<?xml ...?>` and `<!DOCTYPE ...>` before `<en-note>` |
 
 ## Resources
+
 - [Creating Notes](https://dev.evernote.com/doc/articles/creating_notes.php)
 - [ENML Reference](https://dev.evernote.com/doc/articles/enml.php)
 - [Core Concepts](https://dev.evernote.com/doc/articles/core_concepts.php)
 - [API Reference](https://dev.evernote.com/doc/reference/)
 
 ## Next Steps
+
 Proceed to `evernote-local-dev-loop` for development workflow setup.
 
 ## Examples

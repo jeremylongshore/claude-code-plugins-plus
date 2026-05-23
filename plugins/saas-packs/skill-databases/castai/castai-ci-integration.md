@@ -10,6 +10,7 @@ castai-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Cast AI CI/CD integration
 **Workflow:** Part of the cicd skill category for Cast AI integration.
 **Relates to:** Other castai skills in this pack.

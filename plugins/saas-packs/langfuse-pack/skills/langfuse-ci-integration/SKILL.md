@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse CI Integration
 
 ## Overview
+
 Integrate Langfuse into CI/CD pipelines: trace validation tests, prompt regression testing, experiment-driven quality gates, automated prompt deployment from version control, and score monitoring.
 
 ## Prerequisites
+
 - Langfuse API keys stored as GitHub secrets (`LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`)
 - Test framework (Vitest or Jest)
 - OpenAI API key for LLM tests
@@ -283,6 +285,7 @@ checkRegression();
 | Missing secrets in CI | Not configured | Add to GitHub Settings > Secrets > Actions |
 
 ## Resources
+
 - [Experiments via SDK](https://langfuse.com/docs/evaluation/experiments/experiments-via-sdk)
 - [Prompt Management](https://langfuse.com/docs/prompt-management/get-started)
 - [Scores via SDK](https://langfuse.com/docs/evaluation/evaluation-methods/scores-via-sdk)

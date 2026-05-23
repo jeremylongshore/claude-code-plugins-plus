@@ -10,6 +10,7 @@ supabase-auth-storage-realtime-core/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement the core Supabase trifecta: authentication, file storage, and real-time subscriptions in a single cohesive setup.
 **Workflow:** Secondary workflow skill. Complements the primary schema workflow with full-stack Supabase features.
 **Relates to:** Follows supabase-schema-from-requirements; enables modern real-time application development.

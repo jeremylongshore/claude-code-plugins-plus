@@ -10,6 +10,7 @@ apollo-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Apollo core feature integration
 **Workflow:** Part of the onboarding skill category for Apollo integration.
 **Relates to:** Other apollo skills in this pack.

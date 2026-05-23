@@ -10,6 +10,7 @@ abridge-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Abridge security best practices
 **Workflow:** Part of the operations skill category for Abridge integration.
 **Relates to:** Other abridge skills in this pack.

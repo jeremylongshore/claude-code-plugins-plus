@@ -149,6 +149,7 @@ If using the Vim extension with Cursor:
 ```
 
 Common Vim conflicts:
+
 - `Ctrl+K` conflicts with Vim's digraph mode
 - `Ctrl+L` conflicts with Vim's clear/redraw
 - `Ctrl+I` conflicts with Vim's jump forward

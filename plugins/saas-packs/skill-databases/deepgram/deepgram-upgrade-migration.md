@@ -10,6 +10,7 @@ deepgram-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Deepgram SDK upgrades
 **Workflow:** Part of the operations skill category for Deepgram integration.
 **Relates to:** Other deepgram skills in this pack.

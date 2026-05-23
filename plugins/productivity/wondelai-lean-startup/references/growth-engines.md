@@ -29,24 +29,28 @@ New customers join → They find value → They stay → Base grows
 ### Churn Reduction Strategies
 
 **Onboarding optimization:**
+
 - Reduce time to first value (the "aha moment")
 - Guided setup flows that ensure proper configuration
 - Welcome email sequences that reinforce value
 - In-app checklists that drive activation milestones
 
 **Engagement deepening:**
+
 - Feature adoption campaigns for underused capabilities
 - Usage-based notifications ("You saved 3 hours this week")
 - Progressive feature unlock tied to usage milestones
 - Community building around the product
 
 **Churn prediction and intervention:**
+
 - Identify behavioral patterns that precede churn (reduced login frequency, fewer core actions)
 - Trigger automated outreach when risk signals appear
 - Offer concierge support to at-risk high-value customers
 - Exit surveys to understand and address churn reasons
 
 **Switching cost creation (ethical):**
+
 - Data accumulation that becomes more valuable over time
 - Integrations with other tools in the customer's stack
 - Customization and configuration that represents user investment
@@ -110,6 +114,7 @@ This means each user produces one new user, creating self-sustaining growth.
 | Social proof virality | Usage is publicly visible | Linkedin profile badges, GitHub activity |
 
 **Viral loop optimization checklist:**
+
 - [ ] Identify the natural sharing moment (when does a user most want to share?)
 - [ ] Make sharing frictionless (pre-composed messages, one-click invites)
 - [ ] Ensure the landing experience for invitees is optimized for their context
@@ -121,6 +126,7 @@ This means each user produces one new user, creating self-sustaining growth.
 Viral cycle time matters as much as the viral coefficient. A K of 1.5 with a 2-day cycle grows much faster than a K of 2.0 with a 30-day cycle.
 
 **Reducing cycle time:**
+
 - Trigger sharing moments earlier in the user journey
 - Use real-time channels (SMS, messaging apps) over email
 - Create urgency in invitations (time-limited offers, real-time collaboration)
@@ -162,6 +168,7 @@ Spend money to acquire customer → Customer pays over time (LTV)
 ### LTV/CAC Optimization
 
 **Increasing LTV:**
+
 - Reduce churn (longer customer lifetime)
 - Increase ARPU through upsells, cross-sells, or pricing changes
 - Expand usage within customer organizations (seat expansion)
@@ -169,6 +176,7 @@ Spend money to acquire customer → Customer pays over time (LTV)
 - Increase purchase frequency for transactional models
 
 **Reducing CAC:**
+
 - Improve landing page conversion rates
 - Optimize ad targeting and creative
 - Develop organic acquisition channels (content, SEO, community)

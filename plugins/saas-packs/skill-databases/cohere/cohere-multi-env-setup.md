@@ -10,6 +10,7 @@ cohere-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Cohere multi-environment setup
 **Workflow:** Part of the enterprise skill category for Cohere integration.
 **Relates to:** Other cohere skills in this pack.

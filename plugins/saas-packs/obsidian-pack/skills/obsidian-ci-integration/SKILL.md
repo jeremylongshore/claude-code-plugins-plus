@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Obsidian CI Integration
 
 ## Overview
+
 GitHub Actions workflows for Obsidian plugin development: build validation on every push, automated releases when you tag, version-bump scripting, manifest.json validation, and BRAT beta channel support.
 
 ## Prerequisites
+
 - GitHub repository with an Obsidian plugin
 - Working local build (`npm run build` produces `main.js`)
 - `manifest.json` and `versions.json` in repo root
@@ -36,6 +38,7 @@ GitHub Actions workflows for Obsidian plugin development: build validation on ev
 ## Instructions
 
 ### Step 1: Create Build Workflow
+
 ```yaml
 # .github/workflows/build.yml
 name: Build Plugin
@@ -84,6 +87,7 @@ jobs:
 ```
 
 ### Step 2: Create Release Workflow
+
 ```yaml
 # .github/workflows/release.yml
 name: Release Plugin
@@ -119,6 +123,7 @@ jobs:
 ```
 
 ### Step 3: Create Version Bump Script
+
 ```javascript
 // version-bump.mjs
 import { readFileSync, writeFileSync } from 'fs';
@@ -140,6 +145,7 @@ console.log(`Bumped to ${targetVersion} (minAppVersion: ${minAppVersion})`);
 ```
 
 ### Step 4: Wire Version Bump into package.json
+
 ```json
 {
   "scripts": {
@@ -153,6 +159,7 @@ console.log(`Bumped to ${targetVersion} (minAppVersion: ${minAppVersion})`);
 Now `npm version patch` (or minor/major) runs the bump script automatically.
 
 ### Step 5: Add Manifest Validation Workflow
+
 ```yaml
 # .github/workflows/validate.yml
 name: Validate Plugin
@@ -188,7 +195,9 @@ jobs:
 ```
 
 ### Step 6: BRAT Beta Support
+
 Add a `beta-manifest.json` for [BRAT](https://github.com/TfTHacker/obsidian42-brat) beta testers:
+
 ```json
 {
   "id": "your-plugin-id",
@@ -203,6 +212,7 @@ Add a `beta-manifest.json` for [BRAT](https://github.com/TfTHacker/obsidian42-br
 Beta users install via BRAT by entering your GitHub repo URL. BRAT fetches the latest release (including pre-releases) automatically — no submission to the community repo needed.
 
 ## Output
+
 - `.github/workflows/build.yml` — validates build on every push/PR
 - `.github/workflows/release.yml` — creates GitHub release with `main.js`, `manifest.json`, `styles.css` on tag push
 - `.github/workflows/validate.yml` — checks version consistency across manifest, package.json, and versions.json
@@ -210,6 +220,7 @@ Beta users install via BRAT by entering your GitHub repo URL. BRAT fetches the l
 - Optional `beta-manifest.json` for BRAT beta channel
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `main.js not found` | Build script doesn't output to root | Check esbuild `outfile` points to `./main.js` |
@@ -222,6 +233,7 @@ Beta users install via BRAT by entering your GitHub repo URL. BRAT fetches the l
 ## Examples
 
 ### Tag and Release a New Version
+
 ```bash
 set -euo pipefail
 # Bump, commit, tag, push — release workflow fires automatically
@@ -230,6 +242,7 @@ git push origin main --tags
 ```
 
 ### Manual Build Verification
+
 ```bash
 set -euo pipefail
 npm ci
@@ -239,6 +252,7 @@ node -e "const m=require('./manifest.json'); console.log(m.id, 'v'+m.version)"
 ```
 
 ### Release with Changelog
+
 ```yaml
 # In release.yml, replace generate_release_notes with a body:
 - name: Create GitHub Release
@@ -255,11 +269,13 @@ node -e "const m=require('./manifest.json'); console.log(m.id, 'v'+m.version)"
 ```
 
 ## Resources
+
 - [Obsidian Plugin Releasing Guide](https://docs.obsidian.md/Plugins/Releasing/Release+your+plugin+with+GitHub+Actions)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [BRAT Plugin](https://github.com/TfTHacker/obsidian42-brat)
 - [softprops/action-gh-release](https://github.com/softprops/action-gh-release)
 
 ## Next Steps
+
 For publishing to the community plugin directory, see `obsidian-deploy-integration`.
 For pre-release quality checks, see `obsidian-prod-checklist`.

@@ -81,7 +81,7 @@ token caching, rotation, and rate-limit backoff patterns. For deal pipeline
 automation, the required scopes are listed below.
 
 - HubSpot Sales Hub Professional or Enterprise (workflows + custom properties
-  + API access)
+  - API access)
 - Private app token with scopes:
   `crm.objects.deals.read`, `crm.objects.deals.write`,
   `crm.schemas.deals.read`, `crm.schemas.deals.write`,
@@ -357,7 +357,8 @@ async function liveQuotaSnapshot(
 from your internal ops dashboard and poll it on page load instead of embedding
 a HubSpot report iframe. The CRM API reflects stage changes within seconds of
 them happening. The full polling service (Express + 30-second in-memory cache
-+ React widget) is in [implementation-guide.md](references/implementation-guide.md)
+
+- React widget) is in [implementation-guide.md](references/implementation-guide.md)
 § Quota Dashboard Cache-Busting Pattern.
 
 ### 6. Multi-pipeline duplicate detection (neutralizes deal duplication)

@@ -10,6 +10,7 @@ speak-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Speak SDK upgrades
 **Workflow:** Part of the operations skill category for Speak integration.
 **Relates to:** Other speak skills in this pack.

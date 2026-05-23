@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Security Basics
 
 ## Overview
+
 Secure your Ideogram API integration. Ideogram uses a single `Api-Key` header for authentication -- there are no OAuth scopes, roles, or fine-grained permissions. Security focuses on key management, environment isolation, prompt sanitization, and preventing key exposure.
 
 ## Prerequisites
+
 - Ideogram API key from dashboard
 - Understanding of environment variables
 - `.gitignore` configured for secrets
@@ -36,6 +38,7 @@ Secure your Ideogram API integration. Ideogram uses a single `Api-Key` header fo
 ## Instructions
 
 ### Step 1: Secure Key Storage
+
 ```bash
 # .env (NEVER commit)
 IDEOGRAM_API_KEY=your-key-here
@@ -59,6 +62,7 @@ function requireApiKey(): string {
 ```
 
 ### Step 2: Key Rotation Procedure
+
 Ideogram shows the full API key only once at creation. To rotate:
 
 ```bash
@@ -85,6 +89,7 @@ curl -s -o /dev/null -w "%{http_code}" \
 ```
 
 ### Step 3: Prevent Key Exposure
+
 ```typescript
 // Proxy pattern -- never expose API key to browser
 // api/ideogram-proxy.ts (server-side only)
@@ -125,6 +130,7 @@ export async function POST(req: Request) {
 ```
 
 ### Step 4: Git Pre-Commit Hook
+
 ```bash
 #!/bin/bash
 # .git/hooks/pre-commit -- prevent accidental key commits
@@ -139,6 +145,7 @@ fi
 ```
 
 ### Step 5: Prompt Sanitization
+
 ```typescript
 // Prevent prompt injection and abuse
 function sanitizePrompt(prompt: string): { safe: boolean; cleaned: string; reason?: string } {
@@ -158,6 +165,7 @@ function sanitizePrompt(prompt: string): { safe: boolean; cleaned: string; reaso
 ```
 
 ## Security Checklist
+
 - [ ] API key in environment variable, not source code
 - [ ] `.env` files in `.gitignore`
 - [ ] Separate keys for dev / staging / production
@@ -168,6 +176,7 @@ function sanitizePrompt(prompt: string): { safe: boolean; cleaned: string; reaso
 - [ ] Auto top-up billing limits reviewed
 
 ## Error Handling
+
 | Security Issue | Detection | Mitigation |
 |----------------|-----------|------------|
 | Key exposed in git | `git log -p --all -S "Api-Key"` | Rotate key immediately |
@@ -176,14 +185,17 @@ function sanitizePrompt(prompt: string): { safe: boolean; cleaned: string; reaso
 | Prompt contains PII | Sanitization check | Strip before API call |
 
 ## Output
+
 - Secure API key storage with environment variables
 - Key rotation procedure documented
 - Server-side proxy preventing client-side exposure
 - Pre-commit hook blocking accidental commits
 
 ## Resources
+
 - [Ideogram API Setup](https://developer.ideogram.ai/ideogram-api/api-setup)
 - [API Terms of Service](https://ideogram.ai/legal/api-tos)
 
 ## Next Steps
+
 For production deployment, see `ideogram-prod-checklist`.

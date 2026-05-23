@@ -23,6 +23,7 @@ compatibility: Designed for Claude Code
 Finta's fundraising API handles investor list pagination, round data aggregation, and CRM sync batching. Founders querying large investor databases (1,000+ contacts) hit pagination bottlenecks, while round aggregation across multiple funding stages compounds latency. Optimizing paginated fetches with cursor-based iteration, caching investor profiles, and batching CRM sync writes reduces pipeline load times by 50-70% and keeps fundraising dashboards responsive during active rounds.
 
 ## Caching Strategy
+
 ```typescript
 const cache = new Map<string, { data: any; expiry: number }>();
 const TTL = { investors: 600_000, rounds: 300_000, pipeline: 120_000 };
@@ -38,6 +39,7 @@ async function cached(key: string, ttlKey: keyof typeof TTL, fn: () => Promise<a
 ```
 
 ## Batch Operations
+
 ```typescript
 async function syncInvestorsBatch(client: any, cursor?: string, pageSize = 100) {
   const allInvestors = [];
@@ -53,6 +55,7 @@ async function syncInvestorsBatch(client: any, cursor?: string, pageSize = 100) 
 ```
 
 ## Connection Pooling
+
 ```typescript
 import { Agent } from 'https';
 const agent = new Agent({ keepAlive: true, maxSockets: 8, maxFreeSockets: 4, timeout: 30_000 });
@@ -60,6 +63,7 @@ const agent = new Agent({ keepAlive: true, maxSockets: 8, maxFreeSockets: 4, tim
 ```
 
 ## Rate Limit Management
+
 ```typescript
 async function withRateLimit(fn: () => Promise<any>): Promise<any> {
   const res = await fn();
@@ -73,6 +77,7 @@ async function withRateLimit(fn: () => Promise<any>): Promise<any> {
 ```
 
 ## Monitoring
+
 ```typescript
 const metrics = { apiCalls: 0, cacheHits: 0, syncErrors: 0, avgLatencyMs: 0 };
 function track(startMs: number, cached: boolean, error?: boolean) {
@@ -83,6 +88,7 @@ function track(startMs: number, cached: boolean, error?: boolean) {
 ```
 
 ## Performance Checklist
+
 - [ ] Use cursor-based pagination for investor lists (not offset)
 - [ ] Cache investor profiles with 10-min TTL
 - [ ] Batch CRM sync writes in groups of 50
@@ -93,6 +99,7 @@ function track(startMs: number, cached: boolean, error?: boolean) {
 - [ ] Set pipeline cache TTL to 2 min for active-round freshness
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | Slow investor list load | Offset-based pagination on large dataset | Switch to cursor-based iteration with limit=100 |
@@ -101,8 +108,10 @@ function track(startMs: number, cached: boolean, error?: boolean) {
 | 429 Rate Limited | Burst of API calls during pipeline refresh | Parse rate limit headers, add progressive backoff |
 
 ## Resources
+
 - [Finta Developer Docs](https://www.trustfinta.com/developers)
 - [Finta Blog](https://www.trustfinta.com/blog)
 
 ## Next Steps
+
 See `finta-reference-architecture`.

@@ -18,10 +18,10 @@ Detailed implementation reference for the lokalise-webhooks-events skill.
 | `project.branch.merged` | Branch merged | Branch info |
 | `project.contributor.added` | User added | Contributor data |
 
-
 ## Instructions
 
 ### Step 1: Set Up Webhook Endpoint
+
 ```typescript
 import express from "express";
 import crypto from "crypto";
@@ -63,6 +63,7 @@ function verifySecret(received: string, expected: string): boolean {
 ```
 
 ### Step 2: Event Handler Router
+
 ```typescript
 type LokaliseEventType =
   | "project.imported"
@@ -124,6 +125,7 @@ async function handleLokaliseEvent(payload: LokaliseWebhookPayload): Promise<voi
 ```
 
 ### Step 3: Implement Event Handlers
+
 ```typescript
 async function handleFileImported(payload: any): Promise<void> {
   const { project, file, import_details } = payload;
@@ -191,6 +193,7 @@ async function handleKeysAdded(payload: any): Promise<void> {
 ```
 
 ### Step 4: Configure Webhook in Lokalise
+
 ```typescript
 import { LokaliseApi } from "@lokalise/node-api";
 
@@ -220,10 +223,10 @@ async function setupWebhook(projectId: string) {
 }
 ```
 
-
 ## Detailed Examples
 
 ### Idempotent Event Processing
+
 ```typescript
 import { Redis } from "ioredis";
 
@@ -261,6 +264,7 @@ app.post("/webhooks/lokalise", async (req, res) => {
 ```
 
 ### Testing Webhooks Locally
+
 ```bash
 # Use ngrok to expose local server
 ngrok http 3000
@@ -277,6 +281,7 @@ curl -X POST https://your-ngrok-url/webhooks/lokalise \
 ```
 
 ### Auto-Rebuild on Translation Update
+
 ```typescript
 async function handleTranslationsUpdated(payload: any): Promise<void> {
   const { project, translations, action } = payload;
@@ -292,4 +297,3 @@ async function handleTranslationsUpdated(payload: any): Promise<void> {
   }
 }
 ```
-

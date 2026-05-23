@@ -32,6 +32,7 @@
 ### Phase 2: Content Extraction
 
 For each source, extract:
+
 - **Core messaging** (mission statements, value propositions)
 - **Feature descriptions** (what the product/service does)
 - **Version numbers** (software versions, release dates)
@@ -45,6 +46,7 @@ For each source, extract:
 Compare content across sources and identify:
 
 **🔴 Critical Discrepancies:**
+
 - Conflicting version numbers
 - Different feature lists
 - Contradictory technical requirements
@@ -52,12 +54,14 @@ Compare content across sources and identify:
 - Broken cross-references
 
 **🟡 Warning-Level Issues:**
+
 - Inconsistent terminology (e.g., "plugin" vs "extension")
 - Different phrasing of same concept
 - Missing information in one source
 - Outdated timestamps or dates
 
 **🟢 Informational Notes:**
+
 - Stylistic differences (acceptable)
 - Platform-specific variations (expected)
 - Different levels of detail (appropriate)

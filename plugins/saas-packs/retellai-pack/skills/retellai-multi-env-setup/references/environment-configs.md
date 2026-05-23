@@ -1,6 +1,7 @@
 # Environment Configuration Examples
 
 ## Configuration Structure
+
 ```
 config/
   retellai/
@@ -12,6 +13,7 @@ config/
 ```
 
 ## Base Configuration
+
 ```typescript
 // config/retellai/base.ts
 export const baseConfig = {
@@ -25,6 +27,7 @@ export const baseConfig = {
 ```
 
 ## Environment-Specific Configs
+
 ```typescript
 // config/retellai/development.ts
 import { baseConfig } from "./base";
@@ -59,6 +62,7 @@ export const productionConfig = {
 ```
 
 ## Environment Resolver
+
 ```typescript
 // config/retellai/index.ts
 import { developmentConfig } from "./development";
@@ -112,6 +116,7 @@ echo -n "your-prod-key" | gcloud secrets create retellai-api-key-prod --data-fil
 ```
 
 ## CI/CD Workflow
+
 ```yaml
 # .github/workflows/deploy.yml
 jobs:
@@ -127,6 +132,7 @@ jobs:
 ```
 
 ## Startup Validation
+
 ```typescript
 import { z } from "zod";
 

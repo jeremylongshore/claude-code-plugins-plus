@@ -3,9 +3,11 @@
 # Documenso Hello World
 
 ## Overview
+
 Minimal working example demonstrating core Documenso document signing functionality.
 
 ## Prerequisites
+
 - Completed `documenso-install-auth` setup
 - Valid API credentials configured
 - A PDF file to upload (or use built-in test)
@@ -19,6 +21,7 @@ Create a new file `documenso-hello.ts` (or `.py` for Python).
 ### Step 2: Create Your First Document
 
 **TypeScript:**
+
 ```typescript
 import { Documenso } from "@documenso/sdk-typescript";
 import { openAsBlob } from "node:fs";
@@ -46,6 +49,7 @@ createFirstDocument().catch(console.error);
 ### Step 3: Upload PDF and Add Recipient
 
 **TypeScript (Complete Example):**
+
 ```typescript
 import { Documenso } from "@documenso/sdk-typescript";
 import { openAsBlob } from "node:fs";
@@ -155,11 +159,13 @@ if __name__ == "__main__":
 ```
 
 ## Output
+
 - Working code file with Documenso client initialization
 - Created document in Documenso dashboard
 - Recipient added with signature field
 - Email sent to recipient for signing
 - Console output showing:
+
 ```
 Created document: doc_abc123
 Added recipient: rec_xyz789
@@ -184,6 +190,7 @@ Recipient will receive email at: signer@example.com
 | `RADIO` | Radio button group |
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Import Error | SDK not installed | Verify with `npm list @documenso/sdk-typescript` |
@@ -193,9 +200,11 @@ Recipient will receive email at: signer@example.com
 | Recipient Exists | Duplicate email | Use existing recipient or update |
 
 ## Resources
+
 - [Documenso Getting Started](https://docs.documenso.com/developers)
 - [API Reference](https://openapi.documenso.com/)
 - [Document Operations](https://github.com/documenso/sdk-typescript/blob/main/docs/sdks/documents/README.md)
 
 ## Next Steps
+
 Proceed to `documenso-local-dev-loop` for development workflow setup.

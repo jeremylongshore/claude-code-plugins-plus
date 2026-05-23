@@ -10,6 +10,7 @@ klaviyo-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Klaviyo anti-patterns
 **Workflow:** Part of the enterprise skill category for Klaviyo integration.
 **Relates to:** Other klaviyo skills in this pack.

@@ -586,11 +586,13 @@ HubSpot signs webhook payloads with your app's client secret. Always validate be
 **Signature v3 (recommended):**
 
 HubSpot computes:
+
 ```
 HMAC-SHA256(clientSecret, method + uri + requestBody + timestamp)
 ```
 
 Headers:
+
 - `X-HubSpot-Signature-v3`: hex digest
 - `X-HubSpot-Request-Timestamp`: Unix ms timestamp of delivery
 

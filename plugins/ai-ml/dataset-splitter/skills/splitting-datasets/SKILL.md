@@ -32,6 +32,7 @@ This skill automates the process of dividing a dataset into subsets for training
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Prepare a dataset for machine learning model training.
 - Create training, validation, and testing sets.
 - Partition data to evaluate model performance.
@@ -43,6 +44,7 @@ This skill activates when you need to:
 User request: "Split the data in 'my_data.csv' into 70% training, 15% validation, and 15% testing sets."
 
 The skill will:
+
 1. Generate Python code to read the 'my_data.csv' file.
 2. Execute the code to split the data according to the specified proportions, creating 'train.csv', 'validation.csv', and 'test.csv' files.
 
@@ -51,6 +53,7 @@ The skill will:
 User request: "Create a train-test split of 'large_dataset.csv' with an 80/20 ratio."
 
 The skill will:
+
 1. Generate Python code to load 'large_dataset.csv'.
 2. Execute the code to split the dataset into 80% training and 20% testing sets, saving them as 'train.csv' and 'test.csv'.
 

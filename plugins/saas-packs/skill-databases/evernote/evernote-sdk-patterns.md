@@ -10,6 +10,7 @@ evernote-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Evernote SDK patterns
 **Workflow:** Part of the onboarding skill category for Evernote integration.
 **Relates to:** Other evernote skills in this pack.

@@ -10,6 +10,7 @@ cursor-sso-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configures SSO and enterprise authentication in Cursor including SAML 2.0, OAuth 2.0/OIDC, and SCIM provisioning for major identity providers.
 
 **Workflow:** This skill activates when enterprise IT administrators set up centralized authentication. It covers SSO overview, prerequisites, SAML configuration, OAuth/OIDC setup, user provisioning, access controls, testing, rollout strategy, and maintenance.

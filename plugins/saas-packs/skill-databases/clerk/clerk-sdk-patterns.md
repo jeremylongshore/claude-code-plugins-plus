@@ -10,6 +10,7 @@ clerk-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Clerk SDK patterns
 **Workflow:** Part of the onboarding skill category for Clerk integration.
 **Relates to:** Other clerk skills in this pack.

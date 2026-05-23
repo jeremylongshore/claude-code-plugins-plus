@@ -37,6 +37,7 @@ Production readiness verification for PostHog integrations. Covers SDK configura
 ### Pre-Deployment Checklist
 
 **SDK Configuration:**
+
 - [ ] `api_host` set to correct region (`us.i.posthog.com` or `eu.i.posthog.com`)
 - [ ] `capture_pageview: false` if using SPA with manual pageview tracking
 - [ ] `capture_pageleave: true` for session duration accuracy
@@ -45,11 +46,13 @@ Production readiness verification for PostHog integrations. Covers SDK configura
 - [ ] `autocapture` configured to exclude noisy elements
 
 **Server-Side:**
+
 - [ ] `posthog.shutdown()` called in SIGTERM handler and serverless function cleanup
 - [ ] `personalApiKey` set for local flag evaluation (not just project key)
 - [ ] `flushAt` and `flushInterval` tuned (default 20/10s is fine for most apps)
 
 **Security:**
+
 - [ ] Personal API key (`phx_`) never in client bundles or NEXT_PUBLIC_ vars
 - [ ] `.env` files in `.gitignore`
 - [ ] Separate PostHog project per environment

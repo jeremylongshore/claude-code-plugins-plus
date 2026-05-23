@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Cohere Performance Tuning
 
 ## Overview
+
 Optimize Cohere API v2 performance through model selection, embedding batches, rerank pipelines, caching, and streaming for time-to-first-token.
 
 ## Prerequisites
+
 - `cohere-ai` SDK installed
 - Understanding of Cohere endpoints (Chat, Embed, Rerank)
 - Redis or in-memory cache (optional)
@@ -262,6 +264,7 @@ async function timedCohereCall<T>(
 ```
 
 ## Output
+
 - Model selection by latency budget
 - Streaming for sub-200ms TTFT
 - Batch embedding (96x fewer API calls)
@@ -270,6 +273,7 @@ async function timedCohereCall<T>(
 - Rerank as fast pre-filter
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Chat > 5s | Long output + slow model | Use streaming, reduce maxTokens |
@@ -278,9 +282,11 @@ async function timedCohereCall<T>(
 | High costs | No caching | Cache embeddings (deterministic) |
 
 ## Resources
+
 - [Cohere Models & Context](https://docs.cohere.com/docs/models)
 - [Embed Best Practices](https://docs.cohere.com/docs/cohere-embed)
 - [Rerank Best Practices](https://docs.cohere.com/docs/reranking-best-practices)
 
 ## Next Steps
+
 For cost optimization, see `cohere-cost-tuning`.

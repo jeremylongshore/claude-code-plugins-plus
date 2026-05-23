@@ -3,10 +3,12 @@
 Every pack needs a real vendor YAML with actual SDK names, real API URLs, real workflows, real error messages. No more template defaults.
 
 ## Status Key
+
 - [x] Done — vendor YAML written with real content
 - [ ] TODO — still using category defaults only
 
 ## Flagship+ (30 skills) — Priority 1
+
 - [x] supabase (data-platform)
 - [x] vercel (developer-tools)
 - [ ] sentry (infra-ops)
@@ -32,6 +34,7 @@ Every pack needs a real vendor YAML with actual SDK names, real API URLs, real w
 - [ ] snowflake (data-platform)
 
 ## Flagship (24 skills) — Priority 2
+
 - [ ] vastai (infra-ops)
 - [ ] groq (ai-ml)
 - [ ] instantly (sales-crm)
@@ -73,6 +76,7 @@ Every pack needs a real vendor YAML with actual SDK names, real API URLs, real w
 - [ ] apple-notes (productivity)
 
 ## Pro (18 skills) — Priority 3
+
 - [ ] fondo (fintech)
 - [ ] anima (design-creative)
 - [ ] flyio (developer-tools)
@@ -117,9 +121,11 @@ Every pack needs a real vendor YAML with actual SDK names, real API URLs, real w
 - [ ] remofirst (enterprise-vertical)
 
 ## Standard (12 skills) — Priority 4
+
 - [ ] twinmind (ai-ml)
 
 ## Summary
+
 - Total: 105
 - Done: 2 (supabase, vercel)
 - Remaining: 103

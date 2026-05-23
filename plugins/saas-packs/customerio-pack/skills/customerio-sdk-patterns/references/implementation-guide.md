@@ -1,6 +1,7 @@
-# Customer.io SDK Patterns - Implementation Guide
+## Customer.io SDK Patterns - Implementation Guide
 
 ### Pattern 1: Type-Safe Client
+
 ```typescript
 // types/customerio.ts
 export interface UserAttributes {
@@ -52,6 +53,7 @@ export class TypedCustomerIO {
 ```
 
 ### Pattern 2: Retry with Exponential Backoff
+
 ```typescript
 // lib/customerio-resilient.ts
 import { TrackClient } from '@customerio/track';
@@ -116,6 +118,7 @@ export class ResilientCustomerIO {
 ```
 
 ### Pattern 3: Event Queue with Batching
+
 ```typescript
 // lib/customerio-queue.ts
 interface QueuedEvent {
@@ -177,6 +180,7 @@ export class CustomerIOQueue {
 ```
 
 ### Pattern 4: Singleton with Lazy Initialization
+
 ```typescript
 // lib/customerio-singleton.ts
 import { TrackClient, RegionUS } from '@customerio/track';

@@ -10,6 +10,7 @@ lindy-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Lindy advanced debugging
 **Workflow:** Part of the enterprise skill category for Lindy integration.
 **Relates to:** Other lindy skills in this pack.

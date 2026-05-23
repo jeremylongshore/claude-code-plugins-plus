@@ -10,6 +10,7 @@ databricks-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Databricks integrations to production
 **Workflow:** Part of the cicd skill category for Databricks integration.
 **Relates to:** Other databricks skills in this pack.

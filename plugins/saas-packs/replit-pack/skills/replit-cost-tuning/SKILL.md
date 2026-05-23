@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Cost Tuning
 
 ## Overview
+
 Optimize Replit spending across deployment compute, seat licenses, egress, and storage. Covers right-sizing deployment resources, choosing between Autoscale and Reserved VM, eliminating idle Repls, and managing team seat costs.
 
 ## Prerequisites
+
 - Replit account with billing access
 - Understanding of current deployment architecture
 - Access to usage metrics in Replit dashboard
@@ -49,6 +51,7 @@ Optimize Replit spending across deployment compute, seat licenses, egress, and s
 ## Instructions
 
 ### Step 1: Audit Deployment Costs
+
 Review what you're spending and where:
 
 ```markdown
@@ -65,6 +68,7 @@ Key metrics to check:
 ```
 
 ### Step 2: Right-Size Deployment Resources
+
 ```yaml
 # Match resources to actual workload
 
@@ -98,6 +102,7 @@ large:  # Compute-heavy or high-traffic
 ```
 
 ### Step 3: Choose Autoscale vs Reserved VM
+
 ```markdown
 Use AUTOSCALE when:
 - Traffic is unpredictable or bursty
@@ -120,6 +125,7 @@ Use STATIC when:
 ```
 
 ### Step 4: Reduce Egress Costs
+
 Egress (outbound data) costs $0.10/GiB over your plan allowance:
 
 ```typescript
@@ -140,6 +146,7 @@ app.get('/api/items', async (req, res) => {
 ```
 
 ### Step 5: Team Seat Optimization
+
 ```markdown
 Seat audit checklist:
 1. Export member list: Team Settings > Members
@@ -159,6 +166,7 @@ Quarterly seat review:
 ```
 
 ### Step 6: Eliminate Idle Repls
+
 ```markdown
 In Replit Dashboard:
 1. View all Repls by last edited date
@@ -174,6 +182,7 @@ Deployments to review:
 ```
 
 ### Step 7: Optimize PostgreSQL Usage
+
 ```markdown
 PostgreSQL costs:
 - Included in plan credits
@@ -188,6 +197,7 @@ Optimization:
 ```
 
 ## Cost Monitoring Dashboard
+
 ```typescript
 // Track resource usage in your app
 app.get('/admin/costs', requireAuth, (req, res) => {
@@ -211,6 +221,7 @@ app.get('/admin/costs', requireAuth, (req, res) => {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Unexpected high bill | Reserved VM running unused | Undeploy or switch to Autoscale |
@@ -219,9 +230,11 @@ app.get('/admin/costs', requireAuth, (req, res) => {
 | Cold start complaints | Using Autoscale | Switch to Reserved VM for latency-sensitive apps |
 
 ## Resources
+
 - [Replit Pricing](https://replit.com/pricing)
 - [Usage-Based Billing](https://docs.replit.com/billing/about-usage-based-billing)
 - [Deployment Types](https://docs.replit.com/hosting/deployments)
 
 ## Next Steps
+
 For architecture planning, see `replit-reference-architecture`.

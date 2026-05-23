@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel CI Integration
 
 ## Overview
+
 Set up automated Vercel deployments in GitHub Actions with preview deployments on PRs, production deploys on merge to main, and optional test gating. Covers both Vercel's built-in Git integration and custom CI pipelines using the Vercel CLI.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - Vercel project linked to the repo
 - `VERCEL_TOKEN` stored as GitHub Secret
@@ -38,6 +40,7 @@ Set up automated Vercel deployments in GitHub Actions with preview deployments o
 ## Instructions
 
 ### Step 1: Store CI Secrets in GitHub
+
 ```bash
 # Get project and org IDs
 cat .vercel/project.json
@@ -50,6 +53,7 @@ gh secret set VERCEL_PROJECT_ID --body "prj_xxx"
 ```
 
 ### Step 2: GitHub Actions — Preview on PR
+
 ```yaml
 # .github/workflows/vercel-preview.yml
 name: Vercel Preview Deployment
@@ -100,6 +104,7 @@ jobs:
 ```
 
 ### Step 3: GitHub Actions — Production on Merge
+
 ```yaml
 # .github/workflows/vercel-production.yml
 name: Vercel Production Deployment
@@ -136,6 +141,7 @@ jobs:
 ```
 
 ### Step 4: Test Gating — Run Tests Before Deploy
+
 ```yaml
 # .github/workflows/vercel-gated.yml
 name: Gated Vercel Deploy
@@ -176,6 +182,7 @@ jobs:
 ```
 
 ### Step 5: Skip Builds for Non-Code Changes
+
 ```json
 // vercel.json — skip build when only docs change
 {
@@ -186,6 +193,7 @@ jobs:
 Or in the dashboard: **Settings > Git > Ignored Build Step**
 
 ### Step 6: Vercel's Built-In Git Integration (Alternative)
+
 If you prefer Vercel's automatic deployments over custom CI:
 
 1. Connect your GitHub repo in the Vercel dashboard
@@ -198,12 +206,14 @@ If you prefer Vercel's automatic deployments over custom CI:
 This approach requires zero CI configuration but gives less control over test gating.
 
 ## Output
+
 - Preview deployments on every PR with URL comment
 - Production deployments on merge to main (after tests pass)
 - Test gating preventing broken code from reaching production
 - Build skip rules for documentation-only changes
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Error: VERCEL_TOKEN is not set` | Secret not configured | Add `VERCEL_TOKEN` as GitHub repo secret |
@@ -213,10 +223,12 @@ This approach requires zero CI configuration but gives less control over test ga
 | Build cache not working | CI runs on fresh runner | Use `actions/cache` for `node_modules` and `.vercel/output` |
 
 ## Resources
+
 - [Vercel CLI in CI](https://vercel.com/docs/cli/deploying-from-cli)
 - [GitHub Actions](https://docs.github.com/en/actions)
 - [Vercel Git Integration](https://vercel.com/docs/deployments/git)
 - [Ignored Build Step](https://vercel.com/docs/project-configuration#ignorecommand)
 
 ## Next Steps
+
 For deployment orchestration, see `vercel-deploy-integration`.

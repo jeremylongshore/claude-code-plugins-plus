@@ -24,6 +24,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq Incident Runbook
 
 ## Overview
+
 Rapid incident response procedures for Groq API failures. Groq is a third-party inference provider -- when it goes down, your mitigation options are: wait, fall back to a different model, or fall back to a different provider.
 
 ## Severity Levels
@@ -101,6 +102,7 @@ Is the Groq API responding?
 ## Immediate Mitigations
 
 ### Enable Fallback to Different Model
+
 ```typescript
 // If primary model is failing, route to fallback
 async function mitigateModelFailure(messages: any[]) {
@@ -129,6 +131,7 @@ async function mitigateModelFailure(messages: any[]) {
 ```
 
 ### 429 Rate Limit — Immediate Actions
+
 ```bash
 set -euo pipefail
 # Check exact limit info
@@ -146,6 +149,7 @@ curl -si https://api.groq.com/openai/v1/chat/completions \
 ```
 
 ### 401 Auth Failure — Key Rotation
+
 ```bash
 set -euo pipefail
 # 1. Verify current key
@@ -164,6 +168,7 @@ curl -s -o /dev/null -w "%{http_code}" \
 ## Communication Templates
 
 ### Internal Alert (Slack/PagerDuty)
+
 ```
 P[1-4] INCIDENT: Groq API [Error Type]
 Status: INVESTIGATING | MITIGATING | RESOLVED
@@ -175,6 +180,7 @@ Commander: @[name]
 ```
 
 ### Status Page (External)
+
 ```
 AI Feature Performance Issue
 
@@ -188,6 +194,7 @@ Last updated: [timestamp]
 ## Post-Incident
 
 ### Evidence Collection
+
 ```bash
 set -euo pipefail
 INCIDENT_DIR="groq-incident-$(date +%Y%m%d-%H%M%S)"
@@ -208,6 +215,7 @@ echo "Evidence bundle: $INCIDENT_DIR.tar.gz"
 ```
 
 ### Postmortem Template
+
 ```markdown
 ## Incident: Groq [Error Type] — [Date]
 **Duration:** X hours Y minutes
@@ -235,6 +243,7 @@ echo "Evidence bundle: $INCIDENT_DIR.tar.gz"
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Can't reach status.groq.com | Network issue | Use mobile or different network |
@@ -243,9 +252,11 @@ echo "Evidence bundle: $INCIDENT_DIR.tar.gz"
 | Fallback provider also down | Multi-provider outage | Degrade gracefully, show cached content |
 
 ## Resources
+
 - [Groq Status Page](https://status.groq.com)
 - [Groq Error Codes](https://console.groq.com/docs/errors)
 - [Groq Rate Limits](https://console.groq.com/docs/rate-limits)
 
 ## Next Steps
+
 For data handling compliance, see `groq-data-handling`.

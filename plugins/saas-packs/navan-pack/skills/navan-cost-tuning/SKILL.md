@@ -157,6 +157,7 @@ This creates a direct incentive for employees to choose cheaper options — Nava
 ## Output
 
 A cost optimization implementation delivering:
+
 - **Spend analysis report** identifying top savings opportunities by department and route
 - **Configured policy engine** with hard/soft caps and approval workflows
 - **Negotiated rate enforcement** surfacing corporate rates during booking

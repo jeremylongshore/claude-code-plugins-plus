@@ -19,12 +19,14 @@ cd /path/to/your/project
 ```
 
 **What happens:**
+
 - Scans for hardcoded secrets (API keys, passwords)
 - Checks dependencies for known CVEs
 - Identifies insecure configurations
 - Reports severity-rated findings (Critical → Low)
 
 **Expected output:**
+
 ```
  Running Quick Security Scan...
  Project: my-app
@@ -62,6 +64,7 @@ cat security-scan-report.md
 ```
 
 **Pass Criteria:**
+
 - Zero critical issues
 - All high-severity issues resolved or documented
 - Docker containers running as non-root
@@ -99,6 +102,7 @@ Perform comprehensive security review of new code:
 # Step 1: Ask Security Auditor Expert for OWASP review
 # In Claude Code session:
 ```
+
 > "Please perform a security audit using the Security Auditor Expert on the authentication module in src/auth/"
 
 ```bash
@@ -108,6 +112,7 @@ Perform comprehensive security review of new code:
 # Step 3: Threat model new features
 # Ask Threat Modeler agent:
 ```
+
 > "Can you threat model our new payment processing flow using STRIDE?"
 
 **Result:** Comprehensive security analysis covering OWASP Top 10, cryptography, and architectural threats.
@@ -145,6 +150,7 @@ Perform comprehensive security review of new code:
 **Step-by-Step:**
 
 1. **Quick scan** to identify obvious issues:
+
    ```bash
    /ss src/features/new-feature/
    ```
@@ -153,6 +159,7 @@ Perform comprehensive security review of new code:
    > "Please review src/features/new-feature/api.js for OWASP Top 10 vulnerabilities"
 
 3. **Review cryptography** (if using crypto):
+
    ```bash
    /ca src/features/new-feature/
    ```
@@ -163,6 +170,7 @@ Perform comprehensive security review of new code:
 5. **Fix identified issues** based on findings
 
 6. **Re-scan** to verify fixes:
+
    ```bash
    /ss src/features/new-feature/
    ```
@@ -193,6 +201,7 @@ Perform comprehensive security review of new code:
 # Comprehensive security review
 # Ask Security Auditor Expert:
 ```
+
 > "Please perform a full security audit of the codebase covering OWASP Top 10"
 
 ```bash
@@ -209,6 +218,7 @@ Perform comprehensive security review of new code:
 # Full threat model review
 # Ask Threat Modeler:
 ```
+
 > "Review our entire application architecture for security threats using STRIDE"
 
 ---
@@ -216,26 +226,31 @@ Perform comprehensive security review of new code:
 ## Tips for Effective Use
 
 **1. Start Small**
+
 - Begin with `/ss` (quick scan) on one directory
 - Fix critical issues first
 - Gradually expand to full codebase
 
 **2. Use Shortcuts**
+
 - `/ss` instead of `/security-scan-quick`
 - `/ca` instead of `/crypto-audit`
 - Saves time for frequent operations
 
 **3. Integrate with CI/CD**
+
 - Add `/ss` to pre-commit hooks
 - Run `/dss` in Docker build pipeline
 - Include `/asa` in deployment pipeline
 
 **4. Ask Agents for Help**
+
 - Use agents for complex analysis
 - Commands for quick automated checks
 - Combine both for comprehensive coverage
 
 **5. Document Findings**
+
 - Save reports: `/ss --output report.md`
 - Track fixes in issue tracker
 - Share with team for awareness
@@ -261,4 +276,4 @@ Now that you're familiar with basic usage:
 
 ---
 
-**You're all set!** Start securing your code with the Security Pro Pack. 
+**You're all set!** Start securing your code with the Security Pro Pack.

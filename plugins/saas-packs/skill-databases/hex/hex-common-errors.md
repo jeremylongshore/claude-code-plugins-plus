@@ -10,6 +10,7 @@ hex-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Hex common errors
 **Workflow:** Part of the operations skill category for Hex integration.
 **Relates to:** Other hex skills in this pack.

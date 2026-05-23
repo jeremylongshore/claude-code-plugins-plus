@@ -10,6 +10,7 @@ linear-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Linear multi-environment setup
 **Workflow:** Part of the enterprise skill category for Linear integration.
 **Relates to:** Other linear skills in this pack.

@@ -10,6 +10,7 @@ bamboohr-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize BambooHR costs and usage
 **Workflow:** Part of the cicd skill category for BambooHR integration.
 **Relates to:** Other bamboohr skills in this pack.

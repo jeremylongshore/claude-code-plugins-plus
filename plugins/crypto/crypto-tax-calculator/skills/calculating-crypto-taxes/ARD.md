@@ -22,21 +22,25 @@
 ## Workflow
 
 ### Step 1: Import Transactions
+
 Load CSV files from exchange exports or generic format.
 
 ### Step 2: Normalize Data
+
 - Parse dates to ISO format
 - Normalize asset symbols (BTC, ETH)
 - Categorize transaction types
 - Validate required fields
 
 ### Step 3: Calculate Tax Events
+
 - Build lot inventory from acquisitions
 - Match disposals to lots using selected method
 - Calculate gains/losses per disposal
 - Track holding periods
 
 ### Step 4: Generate Report
+
 - Format for Form 8949 compatibility
 - Separate short-term and long-term
 - Calculate summary totals
@@ -91,6 +95,7 @@ plugins/crypto/crypto-tax-calculator/skills/calculating-crypto-taxes/
 **Purpose**: Parse and normalize CSV files from various exchanges.
 
 **Exchange Format Handlers**:
+
 ```python
 EXCHANGE_FORMATS = {
     "coinbase": {
@@ -119,6 +124,7 @@ EXCHANGE_FORMATS = {
 **Purpose**: Track lots and calculate cost basis using selected method.
 
 **Lot Structure**:
+
 ```python
 @dataclass
 class Lot:
@@ -131,11 +137,13 @@ class Lot:
 ```
 
 **Methods**:
+
 - `add_lot(lot)`: Record acquisition
 - `dispose(asset, quantity, date, method)`: Match lots and return cost basis
 - `get_inventory()`: Current holdings by lot
 
 **Cost Basis Methods**:
+
 | Method | Description | Use Case |
 |--------|-------------|----------|
 | FIFO | First In First Out | IRS default, required in some cases |
@@ -148,6 +156,7 @@ class Lot:
 **Purpose**: Calculate gains/losses and categorize taxable events.
 
 **Taxable Event Types**:
+
 | Event | Tax Treatment |
 |-------|---------------|
 | Sell | Capital gain/loss |
@@ -159,6 +168,7 @@ class Lot:
 | Transfer | Non-taxable (same owner) |
 
 **Holding Period**:
+
 - Short-term: < 1 year (ordinary income rates)
 - Long-term: >= 1 year (preferential rates)
 
@@ -167,6 +177,7 @@ class Lot:
 **Purpose**: Format results for tax filing.
 
 **Form 8949 Columns**:
+
 | Column | Description |
 |--------|-------------|
 | Description | "X.XX BTC" |
@@ -177,6 +188,7 @@ class Lot:
 | Gain or Loss | Proceeds - Cost Basis |
 
 **Output Formats**:
+
 - CSV (Form 8949 compatible)
 - JSON (programmatic use)
 - Summary text (terminal display)
@@ -194,6 +206,7 @@ class Lot:
 ## Historical Price Integration
 
 **Primary**: CoinGecko Historical API (free tier)
+
 ```
 GET /coins/{id}/history?date={dd-mm-yyyy}
 ```
@@ -205,16 +218,19 @@ GET /coins/{id}/history?date={dd-mm-yyyy}
 ## Testing Strategy
 
 ### Unit Tests
+
 - Transaction parser: Each exchange format
 - Cost basis: FIFO/LIFO/HIFO scenarios
 - Holding period: Edge cases (exactly 1 year)
 
 ### Integration Tests
+
 - End-to-end with sample exchange exports
 - Multi-year scenarios
 - Mixed transaction types
 
 ### Test Data
+
 ```json
 {
   "transactions": [
@@ -226,6 +242,7 @@ GET /coins/{id}/history?date={dd-mm-yyyy}
 ```
 
 Expected FIFO result:
+
 - Dispose 0.75 BTC from first lot (acquired 2024-01-15)
 - Proceeds: $71,250
 - Cost basis: $30,000
@@ -251,6 +268,7 @@ Expected FIFO result:
 ## Dependencies
 
 **Required** (Python stdlib):
+
 - `csv` - CSV parsing
 - `json` - JSON handling
 - `datetime` - Date/time operations
@@ -259,11 +277,13 @@ Expected FIFO result:
 - `argparse` - CLI arguments
 
 **Optional**:
+
 - `requests` - Historical price API (graceful fallback if missing)
 
 ## Tax Disclaimer
 
 **IMPORTANT**: This tool provides informational calculations only. It is not tax advice. Users should:
+
 - Consult a qualified tax professional
 - Verify calculations independently
 - Understand their jurisdiction's specific rules

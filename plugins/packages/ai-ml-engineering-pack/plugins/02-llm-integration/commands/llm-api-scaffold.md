@@ -34,6 +34,7 @@ When you run this command, you'll receive:
 **Providers:** `anthropic`, `openai`, `multi` (both)
 
 **Examples:**
+
 - `/las anthropic` - Generate Anthropic Claude integration
 - `/las openai` - Generate OpenAI GPT integration
 - `/las multi` - Generate multi-provider with fallback
@@ -43,6 +44,7 @@ When you run this command, you'll receive:
 ### Example: Anthropic Claude Integration
 
 **Input:**
+
 ```
 /las anthropic
 ```
@@ -685,32 +687,36 @@ if __name__ == "__main__":
 ## Features Included
 
 **Production-Ready:**
--  Error handling with retry logic
--  Rate limiting (token bucket)
--  Response caching (memory + Redis)
--  Cost tracking and monitoring
--  Prometheus metrics integration
--  Streaming responses
--  Type safety with dataclasses
--  Async/await throughout
--  Comprehensive tests
--  Docker deployment
+
+- Error handling with retry logic
+- Rate limiting (token bucket)
+- Response caching (memory + Redis)
+- Cost tracking and monitoring
+- Prometheus metrics integration
+- Streaming responses
+- Type safety with dataclasses
+- Async/await throughout
+- Comprehensive tests
+- Docker deployment
 
 **Cost Optimization:**
--  Automatic caching (80%+ cache hit rate typical)
--  Token counting and budgets
--  Model selection guidance
--  Batch processing support
+
+- Automatic caching (80%+ cache hit rate typical)
+- Token counting and budgets
+- Model selection guidance
+- Batch processing support
 
 **Reliability:**
--  Exponential backoff retries
--  Rate limiting to prevent quota exhaustion
--  Graceful error handling
--  Health checks
+
+- Exponential backoff retries
+- Rate limiting to prevent quota exhaustion
+- Graceful error handling
+- Health checks
 
 ## Time Savings
 
 **Manual implementation:** 8-12 hours
+
 - Set up project structure
 - Implement client with error handling
 - Add rate limiting
@@ -720,6 +726,7 @@ if __name__ == "__main__":
 - Configure deployment
 
 **With this command:** 5-10 minutes
+
 - Run command
 - Add API key
 - Deploy to production
@@ -729,6 +736,7 @@ if __name__ == "__main__":
 ---
 
 **Next Steps:**
+
 1. Run `/las anthropic` or `/las openai` or `/las multi`
 2. Copy generated code to your project
 3. Install dependencies: `pip install -r requirements.txt`
@@ -737,6 +745,7 @@ if __name__ == "__main__":
 6. Deploy: `docker-compose up -d`
 
 **Production checklist:**
+
 - [ ] Set up Redis for distributed caching
 - [ ] Configure Prometheus for metrics
 - [ ] Set up alerting (cost thresholds, error rates)

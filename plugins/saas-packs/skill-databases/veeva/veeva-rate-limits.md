@@ -10,6 +10,7 @@ veeva-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Veeva rate limiting and backoff
 **Workflow:** Part of the operations skill category for Veeva integration.
 **Relates to:** Other veeva skills in this pack.

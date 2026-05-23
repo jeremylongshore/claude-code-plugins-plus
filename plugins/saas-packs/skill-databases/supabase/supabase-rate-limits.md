@@ -10,6 +10,7 @@ supabase-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Supabase rate limiting, backoff, and idempotency patterns. Handles 429 errors gracefully with exponential backoff and jitter.
 **Workflow:** Operational skill for production reliability. Should be implemented before going to production.
 **Relates to:** Complements supabase-sdk-patterns with rate limit handling; prerequisite for supabase-prod-checklist.

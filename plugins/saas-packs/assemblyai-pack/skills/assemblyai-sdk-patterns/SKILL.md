@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # AssemblyAI SDK Patterns
 
 ## Overview
+
 Production-ready patterns for the `assemblyai` npm package covering client initialization, type-safe wrappers, error handling, and multi-tenant architectures.
 
 ## Prerequisites
+
 - `assemblyai` package installed (`npm install assemblyai`)
 - Familiarity with async/await and TypeScript generics
 
@@ -241,6 +243,7 @@ def transcribe_audio(audio_url: str, speaker_labels: bool = False) -> Transcript
 ```
 
 ## Output
+
 - Type-safe singleton client with environment validation
 - Transcription service wrapper with clean return types
 - Error handling wrapper that classifies retryable vs non-retryable errors
@@ -248,6 +251,7 @@ def transcribe_audio(audio_url: str, speaker_labels: bool = False) -> Transcript
 - Multi-tenant client factory pattern
 
 ## Error Handling
+
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
 | `safeTranscribe` | All API calls | Prevents uncaught exceptions, classifies errors |
@@ -256,9 +260,11 @@ def transcribe_audio(audio_url: str, speaker_labels: bool = False) -> Transcript
 | Multi-tenant factory | SaaS apps | Per-customer isolation |
 
 ## Resources
+
 - [AssemblyAI Node SDK Reference](https://assemblyai.github.io/assemblyai-node-sdk/)
 - [AssemblyAI TypeScript Types](https://github.com/AssemblyAI/assemblyai-node-sdk/tree/main/src/types)
 - [AssemblyAI API Reference](https://www.assemblyai.com/docs/api-reference/overview)
 
 ## Next Steps
+
 Apply patterns in `assemblyai-core-workflow-a` (async transcription) and `assemblyai-core-workflow-b` (real-time streaming).

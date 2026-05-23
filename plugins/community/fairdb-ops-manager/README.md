@@ -114,6 +114,7 @@ Use the complete setup wizard for automated guidance:
 ```
 
 The wizard will guide you through:
+
 1. VPS hardening (SOP-001)
 2. PostgreSQL installation (SOP-002)
 3. Backup configuration (SOP-003)
@@ -210,6 +211,7 @@ ssh your-vps
 ```
 
 The responder will:
+
 1. Classify severity
 2. Run systematic diagnostics
 3. Execute recovery procedures
@@ -223,6 +225,7 @@ The responder will:
 ```
 
 Provides:
+
 - Rapid space recovery procedures
 - Safe cleanup strategies
 - Long-term solutions
@@ -264,6 +267,7 @@ Provides:
 **Purpose:** Automated PostgreSQL health monitoring
 
 **Checks:**
+
 - PostgreSQL service status
 - Database connectivity
 - Connection pool usage (warns at 90%)
@@ -272,6 +276,7 @@ Provides:
 - Recent backup errors
 
 **Deployment:**
+
 ```bash
 # Deploy to VPS
 scp scripts/pg-health-check.sh admin@vps:/opt/fairdb/scripts/
@@ -285,6 +290,7 @@ ssh admin@vps "crontab -e"
 ```
 
 **Usage:**
+
 ```bash
 /opt/fairdb/scripts/pg-health-check.sh
 echo $?  # 0 = healthy, 1 = issues detected
@@ -295,6 +301,7 @@ echo $?  # 0 = healthy, 1 = issues detected
 **Purpose:** Visual backup health dashboard
 
 **Shows:**
+
 - Repository status
 - Recent backup activity
 - Backup age analysis
@@ -303,6 +310,7 @@ echo $?  # 0 = healthy, 1 = issues detected
 - Disk usage
 
 **Usage:**
+
 ```bash
 /opt/fairdb/scripts/backup-status.sh
 ```
@@ -312,12 +320,14 @@ echo $?  # 0 = healthy, 1 = issues detected
 **Purpose:** Interactive SOP completion verification
 
 **Features:**
+
 - Menu-driven interface
 - Automated verification checks
 - Color-coded results
 - Per-SOP or complete system checks
 
 **Usage:**
+
 ```bash
 /opt/fairdb/scripts/sop-checklist.sh
 
@@ -360,6 +370,7 @@ fairdb-ops-manager/
 ### Technology Stack
 
 **VPS Environment:**
+
 - Ubuntu 24.04 LTS
 - PostgreSQL 16
 - pgBackRest 2.x
@@ -368,6 +379,7 @@ fairdb-ops-manager/
 - Wasabi S3 (backup storage)
 
 **Plugin Components:**
+
 - Claude Code commands (Markdown)
 - Autonomous agents (Markdown)
 - Bash scripts (Shell)
@@ -379,6 +391,7 @@ fairdb-ops-manager/
 ### Security
 
 ✅ **DO:**
+
 - Always use SSH key authentication
 - Disable root login and password authentication
 - Enable automatic security updates
@@ -387,6 +400,7 @@ fairdb-ops-manager/
 - Run regular security audits
 
 ❌ **DON'T:**
+
 - Skip backup restoration testing
 - Run as root user
 - Store passwords in plain text
@@ -396,6 +410,7 @@ fairdb-ops-manager/
 ### Backups
 
 ✅ **DO:**
+
 - Test backup restoration regularly (weekly)
 - Keep encryption passwords secure but accessible
 - Monitor backup age (<48 hours)
@@ -403,6 +418,7 @@ fairdb-ops-manager/
 - Document backup procedures
 
 ❌ **DON'T:**
+
 - Trust backups without testing restoration
 - Delete only backup copies
 - Skip weekly verification
@@ -411,6 +427,7 @@ fairdb-ops-manager/
 ### Operations
 
 ✅ **DO:**
+
 - Run daily health checks
 - Document all changes
 - Keep operations logs
@@ -418,6 +435,7 @@ fairdb-ops-manager/
 - Review metrics regularly
 
 ❌ **DON'T:**
+
 - Make undocumented changes
 - Skip verification steps
 - Ignore warning alerts
@@ -432,6 +450,7 @@ fairdb-ops-manager/
 **Problem:** Plugin not found after installation
 
 **Solution:**
+
 ```bash
 # Verify installation
 /plugin list | grep fairdb
@@ -446,6 +465,7 @@ fairdb-ops-manager/
 **Problem:** Can't connect after hardening
 
 **Solution:**
+
 1. Use VNC console from provider (Contabo, etc.)
 2. Revert SSH config: `sudo cp /etc/ssh/sshd_config.backup /etc/ssh/sshd_config`
 3. Restart SSH: `sudo systemctl restart sshd`
@@ -456,6 +476,7 @@ fairdb-ops-manager/
 **Problem:** Service fails after configuration changes
 
 **Solution:**
+
 ```bash
 # Check logs
 sudo tail -100 /var/log/postgresql/postgresql-16-main.log
@@ -473,6 +494,7 @@ sudo systemctl restart postgresql
 **Problem:** pgBackRest cannot connect to Wasabi
 
 **Solution:**
+
 ```bash
 # Test internet connectivity
 curl -I https://s3.wasabisys.com
@@ -514,6 +536,7 @@ sudo -u postgres pgbackrest --stanza=main check
 ### Q: How much does this cost to run?
 
 **A:** Example costs:
+
 - Contabo VPS (8GB RAM, 200GB NVMe): ~$12/month
 - Wasabi storage (first 1TB free, then $6.99/TB/month)
 - **Total:** ~$12-20/month for single VPS
@@ -552,6 +575,7 @@ Since this is a personal plugin, contributions are managed directly. If you want
 **Repository:** https://github.com/jeremylongshore/claude-code-plugins
 
 **For issues or questions:**
+
 1. Check the Troubleshooting section
 2. Review the SOP documentation
 3. Use the `/agent fairdb-ops-auditor` for compliance checks

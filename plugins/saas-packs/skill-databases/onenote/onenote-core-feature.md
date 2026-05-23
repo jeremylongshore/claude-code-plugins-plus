@@ -10,6 +10,7 @@ onenote-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement OneNote core feature integration
 **Workflow:** Part of the onboarding skill category for OneNote integration.
 **Relates to:** Other onenote skills in this pack.

@@ -12,6 +12,7 @@ Implement production-ready data archival strategies for PostgreSQL and MySQL tha
 ## When to Use This Command
 
 Use `/archival` when you need to:
+
 - Reduce primary database size by archiving historical records (2+ years old)
 - Meet compliance requirements (GDPR, HIPAA) for data retention policies
 - Improve query performance on hot tables by removing cold data
@@ -20,6 +21,7 @@ Use `/archival` when you need to:
 - Maintain audit trail for archived and deleted records
 
 DON'T use this when:
+
 - You need real-time access to all historical data (denormalize instead)
 - Data volume is small (<10GB) and performance is acceptable
 - Records are frequently updated (archival is for immutable historical data)
@@ -29,6 +31,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **automated tiered archival** because:
+
 - Separates hot (active) data from cold (historical) data for performance
 - Reduces storage costs by moving old data to S3 (1/10th database cost)
 - Maintains compliance with automated retention and deletion policies
@@ -36,12 +39,14 @@ This command implements **automated tiered archival** because:
 - Provides audit trail for all archival and deletion operations
 
 **Alternative considered: Database partitioning only**
+
 - Faster queries on partitioned tables (no cross-database joins)
 - Simpler backup/restore (single database)
 - Still incurs full database storage costs
 - Recommended when query performance is primary concern
 
 **Alternative considered: Soft deletes (deleted_at flag)**
+
 - Simplest implementation (no data movement)
 - Maintains referential integrity automatically
 - Database size continues growing indefinitely
@@ -50,6 +55,7 @@ This command implements **automated tiered archival** because:
 ## Prerequisites
 
 Before running this command:
+
 1. Database backup strategy with tested restore procedures
 2. Compliance requirements documented (retention periods, deletion policies)
 3. Storage destination configured (archive database, S3 bucket, or both)
@@ -59,23 +65,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Analyze Table Growth and Identify Archival Candidates
+
 Query table sizes, row counts, and date distribution to identify hot vs cold data.
 
 ### Step 2: Design Archival Strategy
+
 Choose archive tables, cold storage, or hybrid approach based on access patterns.
 
 ### Step 3: Implement Archival Automation
+
 Create jobs to move data in batches with transaction safety and error handling.
 
 ### Step 4: Validate Data Integrity
+
 Compare row counts, checksums, and sample records between source and archive.
 
 ### Step 5: Monitor and Optimize
+
 Track archival job performance, storage savings, and query latency improvements.
 
 ## Output Format
 
 The command generates:
+
 - `archival/schema.sql` - Archive table definitions with identical structure
 - `archival/archive_job.py` - Python script for automated batch archival
 - `archival/cold_storage_export.py` - S3/GCS export with Parquet compression
@@ -868,18 +880,21 @@ ORDER BY table_name, action;
 ## Configuration Options
 
 **Archival Strategies**
+
 - **In-database archival**: Separate archive tables in same database (fastest queries)
 - **Separate archive database**: Dedicated database for historical data (isolation)
 - **Cold storage (S3/GCS)**: Parquet files for long-term retention (90% cost savings)
 - **Hybrid approach**: Recent archives in DB, old data in S3
 
 **Retention Policies**
+
 - **Time-based**: Archive after N days/months/years
 - **Size-based**: Archive when table exceeds N GB
 - **Compliance-based**: GDPR (3 years), HIPAA (6 years), SOX (7 years)
 - **Custom rules**: Business-specific retention requirements
 
 **Deletion Strategies**
+
 - **Soft delete**: Mark as deleted with `deleted_at` column
 - **Archive then delete**: Move to archive before deletion
 - **Hard delete**: Permanent removal for GDPR right to erasure
@@ -888,6 +903,7 @@ ORDER BY table_name, action;
 ## Best Practices
 
 DO:
+
 - Test archival process in staging environment first
 - Validate data integrity after archival (row counts, checksums)
 - Use batched archival (10,000 rows per transaction) to avoid long locks
@@ -897,6 +913,7 @@ DO:
 - Use `FOR UPDATE SKIP LOCKED` to avoid blocking production queries
 
 DON'T:
+
 - Archive tables with active foreign key references (drop FKs first)
 - Run archival during peak business hours (use off-peak windows)
 - Delete source records without verifying archive succeeded

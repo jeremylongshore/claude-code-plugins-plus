@@ -26,12 +26,14 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lindy Observability
 
 ## Overview
+
 Monitor Lindy AI agent execution health, task completion rates, step-level failures,
 trigger frequency, and credit consumption. Lindy provides built-in task history in
 the dashboard. External observability requires webhook callbacks, the Task Completed
 trigger, and application-side metrics collection.
 
 ## Prerequisites
+
 - Lindy workspace with active agents
 - For external monitoring: webhook receiver + metrics stack (Prometheus/Grafana, Datadog)
 - For alerts: Slack or email integration configured
@@ -50,13 +52,16 @@ trigger, and application-side metrics collection.
 ## Instructions
 
 ### Step 1: Dashboard Monitoring (Built-In)
+
 Lindy's Tasks tab provides per-agent monitoring:
+
 1. Open agent > **Tasks** tab
 2. Filter by status: **Completed**, **Failed**, **In Progress**
 3. For failed tasks: click to see which step failed and why
 4. Track patterns: same step failing? same time of day? same trigger type?
 
 ### Step 2: Task Completed Trigger (Agent-to-Agent Monitoring)
+
 Use Lindy's built-in **Task Completed** trigger to build an observability agent:
 
 ```
@@ -71,6 +76,7 @@ Monitoring Agent:
 ```
 
 ### Step 3: Webhook-Based Metrics Collection
+
 Configure agents to call your metrics endpoint on task completion:
 
 ```typescript
@@ -126,9 +132,11 @@ app.get('/metrics', async (req, res) => {
 
 **Lindy agent configuration**:
 Add an HTTP Request action as the last step in each monitored agent:
+
 - **URL**: `https://monitoring.yourapp.com/lindy/metrics`
 - **Method**: POST
 - **Body** (Set Manually):
+
   ```json
   {
     "agent": "support-bot",
@@ -139,6 +147,7 @@ Add an HTTP Request action as the last step in each monitored agent:
   ```
 
 ### Step 4: Grafana Dashboard Panels
+
 Key panels for a Lindy monitoring dashboard:
 
 | Panel | Metric | Type |
@@ -151,6 +160,7 @@ Key panels for a Lindy monitoring dashboard:
 | Trigger Frequency | Tasks per hour by agent | Bar chart |
 
 ### Step 5: Alert Rules
+
 ```yaml
 # Prometheus alert rules
 groups:
@@ -182,13 +192,17 @@ groups:
 ```
 
 ### Step 6: Evals (Built-In Quality Monitoring)
+
 Use Lindy Evals to catch quality regressions:
+
 1. Click the test tube icon below any agent step
 2. Define scoring criteria (LLM-as-judge):
+
    ```
    Score 1 (pass) if the response is professional, accurate, and under 200 words.
    Score 0 (fail) if the response contains hallucinations or exceeds 200 words.
    ```
+
 3. Run evals against historical task data
 4. Track scores over time to detect quality drift
 
@@ -214,9 +228,11 @@ Use Lindy Evals to catch quality regressions:
 | Eval scores dropping | Prompt drift or model change | Review recent prompt/model changes |
 
 ## Resources
+
 - [Lindy Evals](https://docs.lindy.ai/fundamentals/lindy-101/evals)
 - [Lindy Tasks](https://docs.lindy.ai/fundamentals/lindy-101/tasks)
 - [Lindy Documentation](https://docs.lindy.ai)
 
 ## Next Steps
+
 Proceed to `lindy-incident-runbook` for incident response procedures.

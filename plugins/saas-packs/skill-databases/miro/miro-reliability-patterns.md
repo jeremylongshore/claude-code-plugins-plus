@@ -10,6 +10,7 @@ miro-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Miro reliability patterns
 **Workflow:** Part of the enterprise skill category for Miro integration.
 **Relates to:** Other miro skills in this pack.

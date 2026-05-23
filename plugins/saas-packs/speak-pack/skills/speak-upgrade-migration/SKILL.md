@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Speak Upgrade & Migration
 
 ## Overview
+
 Upgrade Speak SDK versions, migrate between language learning platforms, and handle API version changes.
 
 ## Prerequisites
+
 - Completed `speak-install-auth` setup
 - Valid API credentials configured
 - Understanding of Speak API patterns
@@ -33,21 +35,25 @@ Upgrade Speak SDK versions, migrate between language learning platforms, and han
 ## Instructions
 
 ## Current State
+
 !`npm list @speak/language-sdk 2>/dev/null || echo 'Speak SDK not installed'`
 
 ### Step 1: Check Current Version
+
 ```bash
 npm list @speak/language-sdk
 npm outdated @speak/language-sdk
 ```
 
 ### Step 2: Upgrade SDK
+
 ```bash
 npm install @speak/language-sdk@latest
 npm test  # Run tests to verify compatibility
 ```
 
 ### Step 3: API Version Migration
+
 ```typescript
 // Check for deprecated endpoints
 const DEPRECATED_ENDPOINTS = [
@@ -63,6 +69,7 @@ const ENDPOINT_MIGRATION = {
 ```
 
 ### Step 4: Platform Migration (from Duolingo/Babbel APIs)
+
 ```typescript
 // Map learning data between platforms
 interface MigrationMapper {
@@ -87,17 +94,20 @@ const duolingoMapper: MigrationMapper = {
 ```
 
 ### Post-Upgrade Verification
+
 ```bash
 npm test
 node -e "const s = require('@speak/language-sdk'); console.log('SDK version:', s.version || 'loaded OK')"
 ```
 
 ## Output
+
 - Migration implementation complete
 - Speak API integration verified
 - Production-ready patterns applied
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY environment variable |
@@ -106,11 +116,13 @@ node -e "const s = require('@speak/language-sdk'); console.log('SDK version:', s
 | Session expired | Timeout after 30 min | Start a new conversation session |
 
 ## Resources
+
 - [Speak Website](https://speak.com)
 - [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
 - [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
 
 ## Next Steps
+
 See `speak-prod-checklist` for production readiness.
 
 ## Examples

@@ -10,6 +10,7 @@ quicknode-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement QuickNode reference architecture
 **Workflow:** Part of the cicd skill category for QuickNode integration.
 **Relates to:** Other quicknode skills in this pack.

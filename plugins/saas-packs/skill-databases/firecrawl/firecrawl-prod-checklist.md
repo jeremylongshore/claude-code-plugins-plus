@@ -10,6 +10,7 @@ firecrawl-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute production deployment checklist for scraping pipelines including pre-flight checks, monitoring setup, and error handling verification.
 **Workflow:** Production readiness skill - validates scraping pipelines are ready for production workloads.
 **Relates to:** Follows firecrawl-security-basics; complements firecrawl-observability for production operations

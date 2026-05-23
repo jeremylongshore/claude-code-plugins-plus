@@ -10,6 +10,7 @@ onenote-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure OneNote SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for OneNote integration.
 **Relates to:** Other onenote skills in this pack.

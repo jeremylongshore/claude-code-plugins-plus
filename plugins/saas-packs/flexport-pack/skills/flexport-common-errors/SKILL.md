@@ -35,6 +35,7 @@ Quick reference for the most common Flexport API v2 errors. The API returns stan
 **Causes:** Missing `Authorization` header, expired JWT token, revoked API key.
 
 **Fix:**
+
 ```bash
 # Verify key is set
 echo $FLEXPORT_API_KEY | head -c 10
@@ -60,6 +61,7 @@ curl -s -o /dev/null -w "%{http_code}" \
 **Causes:** Wrong ID format, resource deleted, using test ID in production.
 
 **Fix:** List resources first to get valid IDs:
+
 ```bash
 curl -s -H "Authorization: Bearer $FLEXPORT_API_KEY" \
      -H "Flexport-Version: 2" \
@@ -89,6 +91,7 @@ curl -s -H "Authorization: Bearer $FLEXPORT_API_KEY" \
 ```
 
 **Fix:** Check response headers and back off:
+
 ```typescript
 function handleRateLimit(res: Response): number {
   const retryAfter = res.headers.get('Retry-After');
@@ -103,6 +106,7 @@ function handleRateLimit(res: Response): number {
 **Causes:** Flexport internal issue, maintenance window, upstream provider failure.
 
 **Fix:**
+
 ```bash
 # Check Flexport status page
 curl -s https://status.flexport.com/api/v2/status.json | jq '.status'

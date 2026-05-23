@@ -10,6 +10,7 @@ sentry-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Manage Sentry rate limits and quota optimization through error sampling, transaction sampling, ignoring common errors, and client-side filtering.
 **Workflow:** Use when hitting rate limits or proactively managing event volume. Implements strategies to reduce events while maintaining visibility.
 **Relates to:** Works with `sentry-cost-tuning` for cost management. Connects to `sentry-load-scale` for high-volume applications.

@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Core Workflow A — Full-Stack App
 
 ## Overview
+
 Build a production-ready web app on Replit: Express or Flask server, PostgreSQL database, Replit Auth for user login, Object Storage for file uploads, and Autoscale deployment. This is the primary money-path workflow for shipping apps on Replit.
 
 ## Prerequisites
+
 - Replit account (Core plan or higher for deployments)
 - `.replit` and `replit.nix` configured (see `replit-install-auth`)
 - PostgreSQL provisioned in the Database pane
@@ -36,6 +38,7 @@ Build a production-ready web app on Replit: Express or Flask server, PostgreSQL 
 ## Instructions
 
 ### Step 1: Project Structure
+
 ```
 my-app/
 ├── .replit                 # Run + deployment config
@@ -58,6 +61,7 @@ my-app/
 ```
 
 ### Step 2: Configuration Files
+
 ```toml
 # .replit
 entrypoint = "src/index.ts"
@@ -89,6 +93,7 @@ deploymentTarget = "autoscale"
 ```
 
 ### Step 3: Database Layer
+
 ```typescript
 // src/services/db.ts
 import { Pool } from 'pg';
@@ -150,6 +155,7 @@ export { pool };
 ```
 
 ### Step 4: Auth Middleware
+
 ```typescript
 // src/middleware/auth.ts
 import { Request, Response, NextFunction } from 'express';
@@ -174,6 +180,7 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
 ```
 
 ### Step 5: API Routes
+
 ```typescript
 // src/routes/api.ts
 import { Router } from 'express';
@@ -210,6 +217,7 @@ export default router;
 ```
 
 ### Step 6: Entry Point
+
 ```typescript
 // src/index.ts
 import express from 'express';
@@ -252,6 +260,7 @@ initDB().then(() => {
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | DATABASE_URL undefined | PostgreSQL not provisioned | Create database in Database pane |
@@ -260,10 +269,12 @@ initDB().then(() => {
 | Port conflict | Multiple services on same port | Use different ports, set `ignorePorts` |
 
 ## Resources
+
 - [Replit Deployments](https://docs.replit.com/cloud-services/deployments/reserved-vm-deployments)
 - [PostgreSQL on Replit](https://docs.replit.com/cloud-services/storage-and-databases/postgresql-on-replit)
 - [Replit Auth](https://docs.replit.com/replit-workspace/replit-auth)
 - [Object Storage](https://docs.replit.com/cloud-services/storage-and-databases/object-storage/overview)
 
 ## Next Steps
+
 For collaboration and admin workflows, see `replit-core-workflow-b`.

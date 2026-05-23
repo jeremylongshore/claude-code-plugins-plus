@@ -10,6 +10,7 @@ notion-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Notion integrations to production
 **Workflow:** Part of the cicd skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

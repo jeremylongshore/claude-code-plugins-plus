@@ -3,6 +3,7 @@
 ## PII Protection
 
 ### Redacting Sensitive Data
+
 ```python
 import re
 
@@ -62,6 +63,7 @@ def privacy_safe_chat(prompt: str, model: str):
 ```
 
 ### Custom PII Patterns
+
 ```python
 # Add custom patterns for your domain
 custom_patterns = {

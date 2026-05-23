@@ -14,14 +14,15 @@ Generates a complete fullstack project structure with frontend, backend, databas
 ## What This Command Does
 
 **Generated Project:**
--  Frontend (React + TypeScript + Vite)
--  Backend (Express or FastAPI)
--  Database (PostgreSQL + Prisma/SQLAlchemy)
--  Authentication (JWT + OAuth)
--  Testing (Jest/Pytest + E2E)
--  CI/CD (GitHub Actions)
--  Docker setup
--  Documentation
+
+- Frontend (React + TypeScript + Vite)
+- Backend (Express or FastAPI)
+- Database (PostgreSQL + Prisma/SQLAlchemy)
+- Authentication (JWT + OAuth)
+- Testing (Jest/Pytest + E2E)
+- CI/CD (GitHub Actions)
+- Docker setup
+- Documentation
 
 **Output:** Production-ready fullstack application
 
@@ -102,6 +103,7 @@ my-app/
 ## Example: Task Management App
 
 **Frontend (client/src/pages/Dashboard.tsx):**
+
 ```tsx
 import { useState, useEffect } from 'react'
 import { TaskList } from '../components/TaskList'
@@ -159,6 +161,7 @@ export function Dashboard() {
 ```
 
 **Backend (server/src/controllers/task.controller.ts):**
+
 ```typescript
 import { Request, Response } from 'express'
 import { TaskService } from '../services/task.service'
@@ -193,6 +196,7 @@ export class TaskController {
 ## Quick Start
 
 **1. Install dependencies:**
+
 ```bash
 # Install all dependencies (client + server)
 npm install
@@ -203,12 +207,14 @@ cd server && npm install
 ```
 
 **2. Setup environment:**
+
 ```bash
 cp .env.example .env
 # Edit .env with your configuration
 ```
 
 **3. Setup database:**
+
 ```bash
 cd server
 npx prisma migrate dev
@@ -216,6 +222,7 @@ npx prisma generate
 ```
 
 **4. Start development:**
+
 ```bash
 # Start all services (client, server, database)
 docker-compose up
@@ -226,6 +233,7 @@ npm run dev:server   # Backend on http://localhost:3000
 ```
 
 **5. Run tests:**
+
 ```bash
 npm run test         # All tests
 npm run test:client  # Frontend tests
@@ -237,21 +245,25 @@ npm run test:server  # Backend tests
 ## Stack Options
 
 **Frontend:**
+
 - React + TypeScript + Vite (default)
 - Next.js 14 (App Router)
 - Vue 3 + TypeScript
 
 **Backend:**
+
 - Express + TypeScript (default)
 - FastAPI + Python
 - NestJS
 
 **Database:**
+
 - PostgreSQL + Prisma (default)
 - MongoDB + Mongoose
 - MySQL + TypeORM
 
 **Styling:**
+
 - Tailwind CSS (default)
 - CSS Modules
 - Styled Components
@@ -261,29 +273,34 @@ npm run test:server  # Backend tests
 ## Included Features
 
 **Authentication:**
+
 - JWT authentication
 - OAuth (Google, GitHub)
 - Email verification
 - Password reset
 
 **Testing:**
+
 - Frontend: Jest + React Testing Library + Cypress
 - Backend: Jest + Supertest
 - E2E: Playwright
 
 **CI/CD:**
+
 - GitHub Actions workflows
 - Automated testing
 - Docker build and push
 - Deployment to cloud platforms
 
 **Development:**
+
 - Hot reload (frontend + backend)
 - Docker development environment
 - Database migrations
 - Seed data
 
 **Production:**
+
 - Optimized Docker images
 - Health checks
 - Logging and monitoring
@@ -294,6 +311,7 @@ npm run test:server  # Backend tests
 ## Customization
 
 **Add Features:**
+
 ```bash
 # Add payment processing
 /ps --add-feature payments --provider stripe
@@ -309,6 +327,7 @@ npm run test:server  # Backend tests
 ```
 
 **Change Stack:**
+
 ```bash
 # Use Next.js instead of React
 /ps --frontend nextjs
@@ -325,18 +344,21 @@ npm run test:server  # Backend tests
 ## Deployment
 
 **Vercel (Frontend):**
+
 ```bash
 cd client
 vercel
 ```
 
 **Railway (Backend):**
+
 ```bash
 cd server
 railway up
 ```
 
 **Docker (Full Stack):**
+
 ```bash
 docker-compose -f docker-compose.prod.yml up -d
 ```
@@ -352,4 +374,4 @@ docker-compose -f docker-compose.prod.yml up -d
 
 ---
 
-**Start building immediately. Ship faster. Scale effortlessly.** 
+**Start building immediately. Ship faster. Scale effortlessly.**

@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # TwinMind Rate Limits
 
 ## Overview
+
 Handle TwinMind rate limits gracefully with exponential backoff and request optimization.
 
 ## Prerequisites
+
 - TwinMind API access (Pro/Enterprise)
 - Understanding of async/await patterns
 - Familiarity with rate limiting concepts
@@ -42,6 +44,7 @@ Handle TwinMind rate limits gracefully with exponential backoff and request opti
 | Enterprise | Unlimited | 300 | 10 | 50 |
 
 **Key Limits:**
+
 - Transcription: Based on audio duration ($0.23/hour with Ear-3)
 - AI Operations: Token-based (2M context for Pro)
 - Summarization: 10/minute (Free), 30/minute (Pro)
@@ -368,6 +371,7 @@ export class TranscriptionBatcher {
 ```
 
 ## Output
+
 - Reliable API calls with automatic retry
 - Request queue with rate limit awareness
 - Adaptive throttling based on response patterns
@@ -393,11 +397,13 @@ export class TranscriptionBatcher {
 6. **Batch when possible** - Reduce total request count
 
 ## Resources
+
 - [TwinMind Rate Limits](https://twinmind.com/docs/rate-limits)
 - [p-queue Documentation](https://github.com/sindresorhus/p-queue)
 - [Rate Limiting Patterns](https://cloud.google.com/architecture/rate-limiting-strategies-techniques)
 
 ## Next Steps
+
 For security configuration, see `twinmind-security-basics`.
 
 ## Examples

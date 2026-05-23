@@ -10,6 +10,7 @@ langchain-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute LangChain primary workflow
 **Workflow:** Part of the onboarding skill category for LangChain integration.
 **Relates to:** Other langchain skills in this pack.

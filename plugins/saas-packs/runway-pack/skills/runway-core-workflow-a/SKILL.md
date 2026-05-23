@@ -19,14 +19,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Runway Core Workflow A
 
 ## Overview
+
 Advanced text-to-video generation: prompt engineering, model selection, parameter tuning, and batch generation.
 
 ## Prerequisites
+
 - Completed `runway-hello-world`
 
 ## Instructions
 
 ### Step 1: Model Selection
+
 ```python
 from runwayml import RunwayML
 client = RunwayML()
@@ -45,6 +48,7 @@ result = task.wait_for_task_output()
 ```
 
 ### Step 2: Prompt Engineering Tips
+
 ```python
 # Structure: Subject + Action + Setting + Style + Camera
 prompts = [
@@ -60,6 +64,7 @@ prompts = [
 ```
 
 ### Step 3: Batch Generation
+
 ```python
 import asyncio
 
@@ -87,6 +92,7 @@ for task in tasks:
 ```
 
 ### Step 4: Output Format Options
+
 ```python
 task = client.image_to_video.create(
     model='gen3a_turbo',
@@ -99,12 +105,14 @@ task = client.image_to_video.create(
 ```
 
 ## Output
+
 - Videos generated with optimal model selection
 - Prompt engineering best practices applied
 - Batch generation for multiple videos
 - Output in various aspect ratios
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Low quality | Gen3a_turbo for complex scene | Use gen4_turbo for higher quality |
@@ -113,8 +121,10 @@ task = client.image_to_video.create(
 | Wrong aspect ratio | Not specified | Always set ratio explicitly |
 
 ## Resources
+
 - [Runway API Documentation](https://docs.dev.runwayml.com/)
 - [Input Parameters](https://docs.dev.runwayml.com/assets/inputs/)
 
 ## Next Steps
+
 Image-to-video: `runway-core-workflow-b`

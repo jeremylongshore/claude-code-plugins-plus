@@ -10,6 +10,7 @@ algolia-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Algolia anti-patterns
 **Workflow:** Part of the enterprise skill category for Algolia integration.
 **Relates to:** Other algolia skills in this pack.

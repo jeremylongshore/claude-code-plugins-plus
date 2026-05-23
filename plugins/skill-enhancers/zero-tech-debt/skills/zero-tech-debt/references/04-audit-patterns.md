@@ -22,6 +22,7 @@ fd -e ts -e tsx -e py -e go -e rs "(_v2|_new|_old|_legacy)"
 ```
 
 These are usually one of three things:
+
 1. A successful migration where the `_old` should be deleted
 2. A failed migration where the `_new` should be deleted
 3. An in-flight migration — confirm with the owner before touching

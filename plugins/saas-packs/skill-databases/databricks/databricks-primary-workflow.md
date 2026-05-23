@@ -10,6 +10,7 @@ databricks-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Databricks primary workflow
 **Workflow:** Part of the onboarding skill category for Databricks integration.
 **Relates to:** Other databricks skills in this pack.

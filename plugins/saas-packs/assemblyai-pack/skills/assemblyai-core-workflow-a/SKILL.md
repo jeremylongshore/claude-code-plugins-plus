@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code
 # AssemblyAI Core Workflow A — Async Transcription
 
 ## Overview
+
 Primary money-path workflow: submit audio for async transcription with audio intelligence features. The SDK handles file upload (for local files), queues the transcription job, and polls until completion.
 
 ## Prerequisites
+
 - `assemblyai` package installed
 - API key configured in `ASSEMBLYAI_API_KEY`
 
@@ -200,9 +202,11 @@ await client.transcripts.delete('transcript-id');
 ```
 
 ## Supported Audio Formats
+
 MP3, WAV, FLAC, M4A, OGG, WebM, MP4, AAC. Max file size: 5 GB. Max duration: 10 hours (async). The SDK auto-detects format.
 
 ## Output
+
 - Complete transcript with word-level timestamps and confidence scores
 - Speaker-labeled utterances (with `speaker_labels: true`)
 - Sentiment analysis, entity detection, key phrases, topic categories
@@ -210,6 +214,7 @@ MP3, WAV, FLAC, M4A, OGG, WebM, MP4, AAC. Max file size: 5 GB. Max duration: 10 
 - Content safety labels for moderation
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `transcript.status === 'error'` | Corrupted audio or unsupported format | Verify audio file plays locally |
@@ -218,11 +223,13 @@ MP3, WAV, FLAC, M4A, OGG, WebM, MP4, AAC. Max file size: 5 GB. Max duration: 10 
 | `word_boost` has no effect | Misspelled terms or wrong model | Check spelling; word boost works with Best model tier |
 
 ## Resources
+
 - [Transcription API Reference](https://www.assemblyai.com/docs/api-reference/transcripts/submit)
 - [Audio Intelligence Models](https://www.assemblyai.com/docs/audio-intelligence)
 - [PII Redaction Guide](https://www.assemblyai.com/docs/audio-intelligence/pii-redaction)
 - [Speaker Diarization](https://www.assemblyai.com/docs/speech-to-text/speaker-diarization)
 
 ## Next Steps
+
 For real-time streaming transcription, see `assemblyai-core-workflow-b`.
 For LLM-powered analysis of transcripts, see `assemblyai-sdk-patterns` (LeMUR examples).

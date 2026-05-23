@@ -5,6 +5,7 @@
 ## Detailed Instructions
 
 ### Step 1: Implement Singleton Pattern
+
 ```python
 from databricks.sdk import WorkspaceClient
 from functools import lru_cache
@@ -37,6 +38,7 @@ def get_workspace_config(name: str) -> dict:
 ```
 
 ### Step 2: Add Error Handling Wrapper
+
 ```python
 from databricks.sdk.errors import (
     DatabricksError,
@@ -91,6 +93,7 @@ def safe_databricks_call(operation):
 ```
 
 ### Step 3: Implement Retry Logic with Backoff
+
 ```python
 import time
 from typing import Callable, TypeVar
@@ -134,6 +137,7 @@ def with_retry(
 ```
 
 ### Step 4: Context Manager for Clusters
+
 ```python
 from contextlib import contextmanager
 from databricks.sdk import WorkspaceClient
@@ -167,6 +171,7 @@ def ephemeral_cluster(w: WorkspaceClient, spec: dict):
 ```
 
 ### Step 5: Type-Safe Job Builders
+
 ```python
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.service.jobs import (
@@ -240,10 +245,10 @@ job_id = (
 )
 ```
 
-
 ## Complete Examples
 
 ### Factory Pattern (Multi-Tenant)
+
 ```python
 from functools import lru_cache
 
@@ -258,6 +263,7 @@ def get_tenant_client(tenant_id: str) -> WorkspaceClient:
 ```
 
 ### Async Operations
+
 ```python
 import asyncio
 from concurrent.futures import ThreadPoolExecutor

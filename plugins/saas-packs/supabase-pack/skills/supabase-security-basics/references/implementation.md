@@ -1,6 +1,7 @@
-# Implementation Guide
+## Implementation Guide
 
 ### Step 1: Configure Environment Variables
+
 ```bash
 # .env (NEVER commit to git)
 SUPABASE_API_KEY=sk_live_***
@@ -13,6 +14,7 @@ SUPABASE_SECRET=***
 ```
 
 ### Step 2: Implement Secret Rotation
+
 ```bash
 # 1. Generate new key in Supabase dashboard
 # 2. Update environment variable
@@ -26,6 +28,7 @@ curl -H "Authorization: Bearer ${SUPABASE_API_KEY}" \
 ```
 
 ### Step 3: Apply Least Privilege
+
 | Environment | Recommended Scopes |
 |-------------|-------------------|
 | Development | `read, write` |

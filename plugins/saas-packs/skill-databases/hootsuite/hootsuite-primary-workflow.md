@@ -10,6 +10,7 @@ hootsuite-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Hootsuite primary workflow
 **Workflow:** Part of the onboarding skill category for Hootsuite integration.
 **Relates to:** Other hootsuite skills in this pack.

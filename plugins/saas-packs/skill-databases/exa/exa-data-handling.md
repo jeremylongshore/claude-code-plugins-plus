@@ -10,6 +10,7 @@ exa-data-handling/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement data handling policies for search queries, result caching, and PII considerations in Exa usage.
 **Workflow:** Compliance skill - ensures data handling meets regulatory requirements.
 **Relates to:** Follows exa-security-basics; informs enterprise-scaling decisions

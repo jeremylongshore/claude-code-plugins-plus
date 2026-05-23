@@ -10,6 +10,7 @@ openevidence-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement OpenEvidence core feature integration
 **Workflow:** Part of the onboarding skill category for OpenEvidence integration.
 **Relates to:** Other openevidence skills in this pack.

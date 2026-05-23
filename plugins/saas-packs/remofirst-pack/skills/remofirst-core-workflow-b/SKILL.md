@@ -20,14 +20,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # RemoFirst Core Workflow B
 
 ## Overview
+
 Payroll workflow: process payroll runs, manage benefits, handle multi-currency payments, and generate invoices.
 
 ## Prerequisites
+
 - Completed `remofirst-core-workflow-a` (employee onboarding)
 
 ## Instructions
 
 ### Step 1: Get Payroll Summary
+
 ```python
 payroll = client.get("/payroll", params={
     "month": "2026-03",
@@ -40,6 +43,7 @@ print(f"  Total employer cost: {payroll['currency']} {payroll['total_employer_co
 ```
 
 ### Step 2: Review Employee Payslip
+
 ```python
 payslip = client.get(f"/employees/{employee_id}/payslips", params={"month": "2026-03"})
 print(f"Gross: {payslip['gross_salary']}")
@@ -50,6 +54,7 @@ print(f"Net pay: {payslip['net_salary']}")
 ```
 
 ### Step 3: Manage Benefits
+
 ```python
 benefits = client.get(f"/employees/{employee_id}/benefits")
 for benefit in benefits:
@@ -65,6 +70,7 @@ client.post(f"/employees/{employee_id}/benefits", {
 ```
 
 ### Step 4: Generate Invoice
+
 ```python
 invoice = client.get("/invoices/current")
 print(f"Invoice #{invoice['number']}")
@@ -74,12 +80,14 @@ print(f"  Due date: {invoice['due_date']}")
 ```
 
 ## Output
+
 - Payroll summary with gross/net calculations
 - Employee payslips with tax breakdowns
 - Benefits enrollment and management
 - Invoice generation and tracking
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Payroll not ready | Missing employee data | Complete onboarding first |
@@ -87,8 +95,10 @@ print(f"  Due date: {invoice['due_date']}")
 | Benefits unavailable | Country not supported | Check country benefit options |
 
 ## Resources
+
 - [RemoFirst Payroll](https://www.remofirst.com/solutions/finance)
 - [Global Payroll Guide](https://www.remofirst.com/post/beginners-guide-to-global-payroll)
 
 ## Next Steps
+
 Error handling: `remofirst-common-errors`

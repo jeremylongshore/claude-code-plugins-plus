@@ -30,6 +30,7 @@ This skill empowers Claude to handle data encryption and decryption tasks seamle
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Encrypt sensitive data before storage or transmission.
 - Decrypt previously encrypted data for access or processing.
 - Generate encrypted files for secure archiving.
@@ -41,6 +42,7 @@ This skill activates when you need to:
 User request: "Encrypt the file 'sensitive_data.txt' using AES."
 
 The skill will:
+
 1. Activate the encryption-tool plugin.
 2. Encrypt the contents of 'sensitive_data.txt' using AES encryption.
 3. Save the encrypted data to a new file (e.g., 'sensitive_data.txt.enc').
@@ -50,6 +52,7 @@ The skill will:
 User request: "Decrypt the file 'confidential.txt.enc'."
 
 The skill will:
+
 1. Activate the encryption-tool plugin.
 2. Decrypt the contents of 'confidential.txt.enc' using the appropriate decryption key (assumed to be available or prompted for).
 3. Save the decrypted data to a new file (e.g., 'confidential.txt').
@@ -91,6 +94,7 @@ This skill can be integrated with other Claude Code plugins, such as file manage
 ## Error Handling
 
 If security scanning fails:
+
 - Verify tool installation and configuration
 - Check file and directory permissions
 - Validate scan target paths

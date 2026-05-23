@@ -3,9 +3,11 @@
 # Lindy Install & Auth
 
 ## Overview
+
 Set up Lindy AI SDK and configure authentication credentials for AI agent automation.
 
 ## Prerequisites
+
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Lindy account with API access
@@ -14,6 +16,7 @@ Set up Lindy AI SDK and configure authentication credentials for AI agent automa
 ## Instructions
 
 ### Step 1: Install SDK
+
 ```bash
 # Node.js
 npm install @lindy-ai/sdk
@@ -23,6 +26,7 @@ pip install lindy-sdk
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export LINDY_API_KEY="your-api-key"
@@ -32,6 +36,7 @@ echo 'LINDY_API_KEY=your-api-key' >> .env
 ```
 
 ### Step 3: Verify Connection
+
 ```typescript
 import { Lindy } from '@lindy-ai/sdk';
 
@@ -41,11 +46,13 @@ console.log(agents.length > 0 ? 'Connected!' : 'No agents yet');
 ```
 
 ## Output
+
 - Installed SDK package in node_modules or site-packages
 - Environment variable or .env file with API key
 - Successful connection verification output
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Invalid API Key | Incorrect or expired key | Verify key in Lindy dashboard |
@@ -56,6 +63,7 @@ console.log(agents.length > 0 ? 'Connected!' : 'No agents yet');
 ## Examples
 
 ### TypeScript Setup
+
 ```typescript
 import { Lindy } from '@lindy-ai/sdk';
 
@@ -69,6 +77,7 @@ console.log(`Connected as: ${me.email}`);
 ```
 
 ### Python Setup
+
 ```python
 from lindy import Lindy
 
@@ -80,9 +89,11 @@ print(f"Connected as: {me.email}")
 ```
 
 ## Resources
+
 - [Lindy Documentation](https://docs.lindy.ai)
 - [Lindy Dashboard](https://app.lindy.ai)
 - [Lindy API Reference](https://docs.lindy.ai/api)
 
 ## Next Steps
+
 After successful auth, proceed to `lindy-hello-world` for your first AI agent.

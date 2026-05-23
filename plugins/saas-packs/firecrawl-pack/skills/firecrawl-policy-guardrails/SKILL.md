@@ -27,11 +27,13 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Policy Guardrails
 
 ## Overview
+
 Automated guardrails for Firecrawl scraping pipelines. Web scraping carries legal (robots.txt, ToS), ethical (rate limiting, attribution), and cost (credit burn) risks. This skill implements domain blocklists, credit budgets, content quality gates, and per-domain rate limits as enforceable policies.
 
 ## Instructions
 
 ### Step 1: Domain Policy Enforcement
+
 ```typescript
 import FirecrawlApp from "@mendable/firecrawl-js";
 
@@ -80,6 +82,7 @@ class PolicyViolation extends Error {
 ```
 
 ### Step 2: Credit Budget Enforcement
+
 ```typescript
 class CrawlBudget {
   private usage = new Map<string, number>();
@@ -110,6 +113,7 @@ const budget = new CrawlBudget(5000);
 ```
 
 ### Step 3: Content Quality Gate
+
 ```typescript
 function validateScrapedContent(result: any): {
   accepted: boolean;
@@ -142,6 +146,7 @@ function validateScrapedContent(result: any): {
 ```
 
 ### Step 4: Crawl Limit Enforcement
+
 ```typescript
 const MAX_CRAWL_LIMIT = 500;
 const MAX_DEPTH = 5;
@@ -183,6 +188,7 @@ async function policedCrawl(url: string, requestedLimit: number) {
 ```
 
 ### Step 5: Per-Domain Rate Limiting
+
 ```typescript
 const DOMAIN_RATE_LIMITS: Record<string, number> = {
   "docs.example.com": 2,    // 2 requests/second
@@ -219,6 +225,7 @@ async function rateLimitedScrape(url: string) {
 | Per-domain rate | Pre-request delay | Automatic throttling |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | PolicyViolation thrown | Blocked domain | Remove from scrape targets |
@@ -229,6 +236,7 @@ async function rateLimitedScrape(url: string) {
 ## Examples
 
 ### Policy-Checked Pipeline
+
 ```typescript
 async function scrapePipeline(urls: string[]) {
   const results = [];
@@ -253,9 +261,11 @@ async function scrapePipeline(urls: string[]) {
 ```
 
 ## Resources
+
 - [Firecrawl Docs](https://docs.firecrawl.dev)
 - [robots.txt Spec](https://www.robotstxt.org/robotstxt.html)
 - [Web Scraping Legal Guide](https://www.eff.org/issues/web-scraping)
 
 ## Next Steps
+
 For architecture patterns, see `firecrawl-architecture-variants`.

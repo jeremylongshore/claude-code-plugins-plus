@@ -24,6 +24,7 @@ For each test case, spawn two subagents in the same turn — one with the skill,
 Launch everything at once so runs finish around the same time.
 
 **With-skill run:**
+
 ```
 Execute this task:
 - Skill path: <path-to-skill>
@@ -34,11 +35,13 @@ Execute this task:
 ```
 
 **Baseline run** (same prompt, no skill):
+
 - **Creating a new skill**: no skill at all. Save to `without_skill/outputs/`.
 - **Improving an existing skill**: snapshot the old version first (`cp -r`), point baseline
   at the snapshot. Save to `old_skill/outputs/`.
 
 Write an `eval_metadata.json` for each test case:
+
 ```json
 {
   "eval_id": 0,
@@ -63,6 +66,7 @@ Update `eval_metadata.json` files and `evals/evals.json` with the assertions. Se
 When each subagent task completes, the notification contains `total_tokens` and
 `duration_ms`. Save immediately to `timing.json` — this is the only opportunity to
 capture this data:
+
 ```json
 {
   "total_tokens": 84852,
@@ -83,9 +87,11 @@ Once all runs are done:
    eyeballing it.
 
 2. **Aggregate into benchmark**:
+
    ```bash
    python -m scripts.aggregate_benchmark <workspace>/iteration-N --skill-name <name>
    ```
+
    This produces `benchmark.json` and `benchmark.md` with pass_rate, time, and tokens for
    each configuration, with mean +/- stddev and the delta. If generating benchmark.json
    manually, see `${CLAUDE_SKILL_DIR}/references/schemas.md` for the exact schema the
@@ -96,6 +102,7 @@ Once all runs are done:
    what to look for — non-discriminating assertions, high-variance evals, time/token tradeoffs.
 
 4. **Launch the viewer**:
+
    ```bash
    nohup python ${CLAUDE_SKILL_DIR}/eval-viewer/generate_review.py \
      <workspace>/iteration-N \
@@ -104,6 +111,7 @@ Once all runs are done:
      > /dev/null 2>&1 &
    VIEWER_PID=$!
    ```
+
    For iteration 2+, also pass `--previous-workspace <workspace>/iteration-<N-1>`.
 
    **Headless/Cowork:** Use `--static <output_path>` to write standalone HTML instead of
@@ -115,6 +123,7 @@ Once all runs are done:
 ### What the user sees in the viewer
 
 The "Outputs" tab shows one test case at a time:
+
 - **Prompt**: the task that was given
 - **Output**: the files the skill produced, rendered inline where possible
 - **Previous Output** (iteration 2+): collapsed section showing last iteration's output
@@ -131,6 +140,7 @@ all feedback to `feedback.json`.
 ### Step E5: Read the feedback
 
 When the user is done, read `feedback.json`:
+
 ```json
 {
   "reviews": [
@@ -140,6 +150,7 @@ When the user is done, read `feedback.json`:
   "status": "complete"
 }
 ```
+
 Empty feedback means the user thought it was fine. Focus improvements on test cases with
 specific complaints. Kill the viewer server when done: `kill $VIEWER_PID 2>/dev/null`.
 
@@ -172,6 +183,7 @@ After running test cases and collecting feedback, improve the skill based on wha
 ### The iteration loop
 
 After improving the skill:
+
 1. Apply improvements to the skill
 2. Rerun all test cases into a new `iteration-<N+1>/` directory, including baselines
 3. Launch the reviewer with `--previous-workspace` pointing at the previous iteration
@@ -179,6 +191,7 @@ After improving the skill:
 5. Read new feedback, improve again, repeat
 
 Keep going until:
+
 - The user says they're happy
 - The feedback is all empty (everything looks good)
 - You're not making meaningful progress
@@ -194,6 +207,7 @@ accuracy.
 ### Step D1: Generate trigger eval queries
 
 Create 20 eval queries — a mix of should-trigger and should-not-trigger. Save as JSON:
+
 ```json
 [
   {"query": "the user prompt", "should_trigger": true},
@@ -219,6 +233,7 @@ Good: `"ok so my boss just sent me this xlsx file (its in my downloads, called s
 ### Step D2: Review with user
 
 Present the eval set using the HTML template:
+
 1. Read `${CLAUDE_SKILL_DIR}/assets/eval_review.html`
 2. Replace placeholders: `__EVAL_DATA_PLACEHOLDER__` (JSON array, no quotes — it's a JS
    variable assignment), `__SKILL_NAME_PLACEHOLDER__`, `__SKILL_DESCRIPTION_PLACEHOLDER__`
@@ -298,6 +313,7 @@ direct the user to the resulting `.skill` file path so they can install it.
 ### Claude.ai
 
 The core workflow (draft -> test -> review -> improve) is the same, but without subagents:
+
 - **Test cases**: Run them yourself one at a time. Skip baseline runs.
 - **Review**: Present results directly in conversation. Save output files and tell the user
   where they are.

@@ -6,7 +6,9 @@ model: sonnet
 You are an expert in multi-agent system testing and observability.
 
 # Mission
+
 Test a multi-agent orchestration system by:
+
 - Running a sample task through the agent network
 - Showing real-time agent handoffs and routing
 - Displaying performance metrics (time, handoff count)
@@ -18,6 +20,7 @@ Test a multi-agent orchestration system by:
 User invokes: `/ai-agents-test "Task description"`
 
 Examples:
+
 - `/ai-agents-test "Build a REST API with authentication"`
 - `/ai-agents-test "Research best practices for React performance"`
 - `/ai-agents-test "Debug this authentication error"`
@@ -42,10 +45,12 @@ fi
 ## 2. Parse Test Query
 
 Extract the task from user input:
+
 - If provided: Use their task
 - If empty: Use default test task
 
 Default tasks by category:
+
 - **Code generation**: "Build a TODO API with CRUD operations"
 - **Research**: "Research microservices best practices"
 - **Debug**: "Why is my JWT authentication failing?"
@@ -56,6 +61,7 @@ Default tasks by category:
 Create a test runner script:
 
 ### test-runner.ts
+
 ```typescript
 import { runMultiAgentTask } from './index';
 
@@ -509,6 +515,7 @@ After test completion, show:
 # Test Validation Criteria
 
 A successful test should have:
+
 - ✅ At least 2 agents involved (coordinator + 1 specialist)
 - ✅ Meaningful handoffs with clear reasons
 - ✅ Completion within timeout (5 minutes default)
@@ -518,11 +525,13 @@ A successful test should have:
 # Performance Benchmarks
 
 Expected performance ranges:
+
 - **Simple tasks** (research): 10-20 seconds, 2-3 handoffs
 - **Medium tasks** (code generation): 30-60 seconds, 3-5 handoffs
 - **Complex tasks** (full pipeline): 60-120 seconds, 5-8 handoffs
 
 If actual performance exceeds these by 2x, investigate:
+
 - API rate limiting
 - Model selection (use faster models for testing)
 - Network latency

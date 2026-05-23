@@ -38,6 +38,7 @@ Diagnose and resolve Navan API errors using targeted fix procedures. All errors 
 ### Error 401 — Unauthorized (Invalid or Expired OAuth Token)
 
 **Root causes:**
+
 1. OAuth token has expired (tokens have a limited `expires_in` window)
 2. `client_secret` was rotated in the Navan dashboard but not updated in `.env`
 3. Malformed `Authorization` header (missing `Bearer` prefix)
@@ -61,6 +62,7 @@ echo "Token var length: ${#NAVAN_TOKEN}"
 ### Error 403 — Forbidden (Insufficient Permissions)
 
 **Root causes:**
+
 1. API credentials lack required scopes for the endpoint
 2. Account is on Business tier but endpoint requires Enterprise
 3. Expense Transaction API not enabled (requires separate Navan support request)
@@ -84,6 +86,7 @@ echo "Bookings:" && curl -s -o /dev/null -w "%{http_code}" \
 ### Error 404 — Not Found (Invalid Endpoint)
 
 **Root causes:**
+
 1. Typo in endpoint path
 2. Using a legacy or reverse-engineered endpoint that no longer exists
 3. Referencing an endpoint not available on your Navan tier
@@ -102,6 +105,7 @@ echo "Bookings:" && curl -s -o /dev/null -w "%{http_code}" \
 ### Error 429 — Rate Limited
 
 **Root causes:**
+
 1. Exceeding the per-minute request limit
 2. Automated scripts making rapid sequential calls without throttling
 3. Multiple services sharing the same credentials
@@ -133,6 +137,7 @@ async function withBackoff<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> 
 ### Error 500 — Internal Server Error
 
 **Root causes:**
+
 1. Navan backend service failure
 2. Malformed request body causing server-side exception
 3. Data inconsistency in your organization's records
@@ -150,6 +155,7 @@ curl -s -w "\nHTTP %{http_code}" "https://api.navan.com/v1/bookings?page=0&size=
 ### Error 503 — Service Unavailable (Maintenance)
 
 **Root causes:**
+
 1. Scheduled Navan maintenance window
 2. Navan infrastructure scaling event
 3. Regional AWS outage (Navan is AWS-hosted)
@@ -159,6 +165,7 @@ curl -s -w "\nHTTP %{http_code}" "https://api.navan.com/v1/bookings?page=0&size=
 ## Output
 
 This error reference delivers:
+
 - Six HTTP error codes with Navan-specific root causes
 - Copy-paste diagnostic curl commands for each error type
 - Fix procedures ranked by likelihood

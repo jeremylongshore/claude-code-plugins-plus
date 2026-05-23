@@ -8,6 +8,7 @@ featured: true
 # The AI Engineering Revolution Is Here - And You're Invited 🎯
 
 **The numbers are insane:**
+
 - **$206,000** - Average AI Engineer salary (up $50K from last year)
 - **24,000+** - Open positions RIGHT NOW
 - **90%** - Code at leading companies is now AI-generated
@@ -38,6 +39,7 @@ This curriculum incorporates insights from **"The AI Engineering Continuum: A Wh
 ## The Four-Level Mastery Path 🎯
 
 ### [**Level 1: Using AI**](https://jeremylongshore.github.io/ai-engineering-curriculum/level-1.html)
+
 **Weeks 1-8: Master the Fundamentals That 90% Get Wrong**
 
 - **Advanced prompt engineering** (Tree of Thoughts, Graph of Thoughts, Thread of Thought)
@@ -50,6 +52,7 @@ This curriculum incorporates insights from **"The AI Engineering Continuum: A Wh
 **Why Level 1 Matters:** Bell Canada achieved 40% faster response times and 30% cost reduction using these exact techniques.
 
 ### [**Level 2: Integrating AI**](https://jeremylongshore.github.io/ai-engineering-curriculum/level-2.html)
+
 **Weeks 9-16: Build Systems That Actually Work in Production**
 
 - **RAG architectures** (used by 70% of AI companies)
@@ -62,6 +65,7 @@ This curriculum incorporates insights from **"The AI Engineering Continuum: A Wh
 **Industry Impact:** DoorDash reduced support resolution time by 60% while handling 50,000+ queries monthly using these patterns.
 
 ### [**Level 3: Engineering AI Systems**](https://jeremylongshore.github.io/ai-engineering-curriculum/level-3.html)
+
 **Weeks 17-24: Transform Prototypes into Bulletproof Systems**
 
 - **Fine-tuning mastery** (LoRA, QLoRA enabling 65B models on single 48GB GPU)
@@ -74,6 +78,7 @@ This curriculum incorporates insights from **"The AI Engineering Continuum: A Wh
 **Enterprise Reality:** CME Group's financial coding assistant delivers 10.5 hours monthly productivity gain per developer using these techniques.
 
 ### [**Level 4: Optimizing AI at Scale**](https://jeremylongshore.github.io/ai-engineering-curriculum/level-4.html)
+
 **Weeks 25-32: Handle Millions of Users Like Spotify**
 
 - **Distributed inference** (vLLM V1 with 1.7x speedup, TensorRT-LLM 4x lower latency)
@@ -134,21 +139,25 @@ Despite **24,000+ open positions**, only **2.5% target entry-level candidates**.
 Based on analysis of thousands of job postings:
 
 ### Programming Languages
+
 - **Python** (71% of postings) - Primary focus
 - **SQL** (45%) - For data operations
 - **JavaScript** (23%) - For web interfaces
 
 ### Frameworks & Tools
+
 - **PyTorch** (37.7%) and **TensorFlow** (32.9%)
 - **LangChain** (600+ integrations) for agent orchestration
 - **Vector databases** (Pinecone serverless, Weaviate hybrid search)
 
 ### Cloud Platforms
+
 - **Azure** (33%) and **AWS** (26%) split the market
 - **Kubernetes** (17.6%) and **Docker** (15.4%) for MLOps
 - **vLLM/Ray Serve** for distributed inference
 
 ### Specialized AI Skills
+
 - **Natural Language Processing** (19.7% of postings)
 - **Fine-tuning techniques** (14.8%)
 - **RAG system implementation** (13.6%)
@@ -158,19 +167,23 @@ Based on analysis of thousands of job postings:
 ## Everything Is FREE and Open Source 🎁
 
 ### 🌐 [Interactive Web Curriculum](https://jeremylongshore.github.io/ai-engineering-curriculum/)
+
 Beautiful, responsive pages for each level with:
+
 - Animated progress tracking
 - Copy-to-clipboard code examples
 - Real-world case studies
 - Direct links to implementation guides
 
 ### 💻 [Complete GitHub Repository](https://github.com/jeremylongshore/ai-engineering-curriculum)
+
 - All curriculum content and code
 - Exercise templates and solutions
 - Assessment rubrics and grading guides
 - Community discussions and support
 
 ### 📚 [Teaching Manual for Educators](https://jeremylongshore.github.io/ai-engineering-curriculum/teaching-manual.html)
+
 - Week-by-week lesson plans
 - Common challenges and solutions
 - Infrastructure setup guides
@@ -181,6 +194,7 @@ Beautiful, responsive pages for each level with:
 ### Special Recognition
 
 This curriculum builds upon incredible work from:
+
 - Authors of **"The AI Engineering Continuum"** white paper
 - Open source contributors to LangChain, vLLM, Ray, and hundreds of other tools
 - Companies sharing their AI implementation case studies
@@ -189,6 +203,7 @@ This curriculum builds upon incredible work from:
 ### Living, Breathing Curriculum
 
 This isn't a static course - it evolves with the field:
+
 - **Quarterly technology updates** to stay current
 - **Community contributions** via GitHub pull requests
 - **Industry advisory board** input on job market trends
@@ -197,12 +212,14 @@ This isn't a static course - it evolves with the field:
 ## Your Journey Starts Here 🚀
 
 ### Prerequisites (Honest Assessment)
+
 - **Basic Python knowledge** (functions, classes, APIs)
 - **8GB RAM minimum** (16GB recommended for Level 3-4)
 - **~$100 API credits** (educational discounts available)
 - **Dedication to practice** (15-20 hours per week for accelerated track)
 
 ### Success Path
+
 1. 🌟 **[Star the GitHub repo](https://github.com/jeremylongshore/ai-engineering-curriculum)** to stay updated
 2. 📚 **[Start with Level 1](https://jeremylongshore.github.io/ai-engineering-curriculum/level-1.html)** - even experienced devs should review fundamentals
 3. 💬 **[Join community discussions](https://github.com/jeremylongshore/ai-engineering-curriculum/discussions)** - share progress and get help
@@ -220,12 +237,14 @@ Ideal for university courses with deeper exploration, extensive projects, and re
 ## Real Student Outcomes 📈
 
 ### Portfolio Projects That Get Jobs
+
 - **Production RAG system** handling enterprise document search
 - **Fine-tuned domain model** demonstrating ML expertise
 - **Distributed inference service** showing scalability knowledge
 - **Complete MLOps pipeline** with monitoring and deployment
 
 ### Skills That Transfer Immediately
+
 - **API cost optimization** (immediate value to any AI team)
 - **Production debugging** (critical for reliable systems)
 - **Compliance implementation** (essential for enterprise)
@@ -236,12 +255,14 @@ Ideal for university courses with deeper exploration, extensive projects, and re
 The AI revolution isn't coming - it's here. While others debate whether AI will take jobs, smart engineers are learning to build with it and commanding $200K+ salaries.
 
 **Two paths ahead:**
+
 1. **Wait and see** what happens (risk being left behind)
 2. **Master AI engineering NOW** (join the builders shaping the future)
 
 ### The Compound Effect
 
 AI engineering skills compound rapidly:
+
 - **Month 1:** Build functional prototypes
 - **Month 3:** Deploy production systems
 - **Month 6:** Optimize enterprise solutions
@@ -256,12 +277,13 @@ Each level unlocks exponentially higher compensation and more interesting proble
 ### 🚀 [Begin Your AI Engineering Journey](https://jeremylongshore.github.io/ai-engineering-curriculum/)
 
 ### Share the Revolution
+
 Found this valuable? Help others discover it:
+
 - ⭐ **Star the GitHub repo**
 - 🐦 **Share on Twitter** with #AIEngineeringCurriculum
 - 💼 **Post on LinkedIn** to help your network
 - 📝 **Write about your experience** as you progress
-
 
 ## Connect & Contribute 🌍
 
@@ -274,7 +296,4 @@ Found this valuable? Help others discover it:
 
 **The AI engineering field is growing exponentially. Don't just watch it happen - be part of building it.**
 
-
 *PS: This curriculum was developed with AI assistance - that's the point! We're teaching you to build WITH AI, not despite it. The future belongs to those who can orchestrate AI systems, not just use them.*
-
-

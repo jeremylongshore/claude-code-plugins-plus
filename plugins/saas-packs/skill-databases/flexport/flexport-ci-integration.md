@@ -10,6 +10,7 @@ flexport-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Flexport CI/CD integration
 **Workflow:** Part of the cicd skill category for Flexport integration.
 **Relates to:** Other flexport skills in this pack.

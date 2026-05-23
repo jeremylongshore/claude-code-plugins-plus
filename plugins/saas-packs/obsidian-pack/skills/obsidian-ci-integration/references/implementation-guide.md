@@ -5,6 +5,7 @@
 ## Detailed Instructions
 
 ### Step 1: Create Build Workflow
+
 ```yaml
 name: Build Obsidian Plugin
 
@@ -54,6 +55,7 @@ jobs:
 ```
 
 ### Step 2: Create Test Workflow
+
 ```yaml
 name: Test
 
@@ -91,6 +93,7 @@ jobs:
 ```
 
 ### Step 3: Create Release Workflow
+
 ```yaml
 name: Release Obsidian Plugin
 
@@ -156,6 +159,7 @@ jobs:
 ```
 
 ### Step 4: Add Version Bump Script
+
 ```javascript
 // version-bump.mjs
 import { readFileSync, writeFileSync } from "fs";
@@ -197,6 +201,7 @@ console.log(`Version bumped to ${targetVersion}`);
 ```
 
 ### Step 5: Configure package.json Scripts
+
 ```json
 {
   "scripts": {
@@ -213,6 +218,7 @@ console.log(`Version bumped to ${targetVersion}`);
 ```
 
 ### Step 6: Create Validation Workflow
+
 ```yaml
 name: Validate Plugin
 
@@ -279,10 +285,10 @@ jobs:
           fi
 ```
 
-
 ## Complete Examples
 
 ### Manual Release Process
+
 ```bash
 npm run version 1.0.1
 
@@ -294,6 +300,7 @@ git push && git push --tags
 ```
 
 ### Beta Release Workflow
+
 ```yaml
 name: Beta Release
 

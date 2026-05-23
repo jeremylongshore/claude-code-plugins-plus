@@ -88,6 +88,7 @@ model: sonnet
 **Naming Convention:** Use `firebase-` prefix for all commands (e.g., `firebase-init-project.md`, `firebase-deploy-functions.md`)
 
 **Model Selection:**
+
 - Use `sonnet` for complex Firebase operations requiring reasoning (multi-step deployments, security rules, complex queries)
 - Use `haiku` for simple, fast operations (status checks, list resources, basic queries)
 
@@ -108,6 +109,7 @@ model: sonnet
 ```
 
 **Use Cases for Agents:**
+
 - Complete Firebase project setup from scratch
 - Migration from other platforms (Supabase, AWS Amplify) to Firebase
 - Multi-service Firebase architecture implementation
@@ -145,6 +147,7 @@ version: 1.0.0
 **Skill Naming:** Use gerund form (verb+ing) to describe the action: `deploying-firebase-functions`, `configuring-firestore-security`, `analyzing-firebase-usage`
 
 **Tool Categories for Firebase Operations:**
+
 - **Read-only analysis**: `Read, Grep, Glob, Bash` (viewing logs, checking status)
 - **Deployment operations**: `Read, Write, Edit, Bash` (deploying, updating configs)
 - **Security rule editing**: `Read, Write, Edit, Grep, Bash` (firestore.rules, storage.rules)
@@ -153,6 +156,7 @@ version: 1.0.0
 ### Examples Directory
 
 The `examples/` directory should contain:
+
 - **Code snippets** for Firebase service integration (Auth, Firestore, Storage, Functions)
 - **Configuration templates** (firebase.json, firestore.rules, storage.rules, firestore.indexes.json)
 - **Integration patterns** for Firebase + Vertex AI Gemini
@@ -163,6 +167,7 @@ The `examples/` directory should contain:
 This plugin should provide automation for:
 
 ### Core Services
+
 - **Firebase Authentication**: User management, custom claims, email/password, OAuth providers
 - **Cloud Firestore**: Document CRUD, queries, security rules, indexes
 - **Cloud Storage**: File uploads, security rules, signed URLs
@@ -171,6 +176,7 @@ This plugin should provide automation for:
 - **Firebase Analytics**: Event logging, user properties, conversion tracking
 
 ### AI Integration (Vertex AI Gemini)
+
 - **Embeddings Generation**: Text-to-vector for semantic search
 - **Content Analysis**: Gemini API for content moderation, classification
 - **Chat Integration**: Conversational AI with Firebase data context
@@ -178,6 +184,7 @@ This plugin should provide automation for:
 - **RAG Implementation**: Retrieval-Augmented Generation with Firestore vector search
 
 ### DevOps & Operations
+
 - **Firebase CLI Automation**: Project init, deployment, emulator control
 - **Environment Management**: Multiple Firebase projects (dev, staging, prod)
 - **Security Rules Testing**: Automated testing of Firestore and Storage rules
@@ -189,6 +196,7 @@ This plugin should provide automation for:
 **Format:** `firebase-[service]-[action].md`
 
 Examples:
+
 - `firebase-auth-setup-providers.md` (Authentication setup)
 - `firebase-firestore-deploy-rules.md` (Deploy security rules)
 - `firebase-functions-deploy.md` (Deploy Cloud Functions)
@@ -199,13 +207,16 @@ Examples:
 ## Integration with Existing Plugins
 
 ### Related Plugins in Repository
+
 - **jeremy-genkit-pro**: Firebase Genkit integration for AI workflows
 - **jeremy-firestore**: Firestore-specific operations (if this becomes too large, consider extracting Firestore logic)
 - **jeremy-vertex-engine**: Vertex AI Agent Engine deployment
 - **jeremy-gcp-starter-examples**: GCP/Firebase starter code examples
 
 ### Avoid Duplication
+
 Before adding commands/agents, check existing plugins to avoid overlap:
+
 ```bash
 # Search for Firebase-related content in other plugins
 grep -r "firebase" ../../plugins/ --include="*.md" | grep -v jeremy-firebase
@@ -214,7 +225,9 @@ grep -r "firebase" ../../plugins/ --include="*.md" | grep -v jeremy-firebase
 ## Development Best Practices
 
 ### Firebase Project Structure Assumptions
+
 This plugin assumes standard Firebase project structure:
+
 ```
 project-root/
 ├── firebase.json              # Firebase config
@@ -231,18 +244,23 @@ project-root/
 ```
 
 ### Environment Variable Handling
+
 Never hardcode Firebase credentials. Commands should:
+
 1. Check for `.env.local` file with `FIREBASE_PROJECT_ID`, `GOOGLE_APPLICATION_CREDENTIALS`
 2. Use Firebase CLI authentication (`firebase login`)
 3. Prompt for project selection if multiple projects exist
 
 ### Error Handling Patterns
+
 Firebase commands should include:
+
 - **Validation**: Check for `firebase.json`, verify Firebase CLI is installed
 - **Graceful degradation**: Fallback to manual steps if automation fails
 - **Clear error messages**: Explain what went wrong and how to fix it
 
 Example error handling:
+
 ```bash
 # Check Firebase CLI installed
 if ! command -v firebase &> /dev/null; then
@@ -258,6 +276,7 @@ fi
 ```
 
 ### Security Considerations
+
 - **Never expose API keys** in examples or commands
 - **Use environment variables** for sensitive data
 - **Include security rule templates** with least-privilege defaults
@@ -267,7 +286,9 @@ fi
 ## Vertex AI Gemini Integration Patterns
 
 ### Authentication
+
 All Vertex AI operations should use Google Cloud Application Default Credentials:
+
 ```bash
 # Set up ADC for local development
 gcloud auth application-default login
@@ -277,6 +298,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="/path/to/service-account-key.json"
 ```
 
 ### Common Vertex AI Use Cases
+
 - **Content Moderation**: Analyze user-generated content with Gemini before storing in Firestore
 - **Semantic Search**: Generate embeddings for documents, store in Firestore, query by similarity
 - **Chatbots**: Build conversational AI with Firebase data context
@@ -284,6 +306,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="/path/to/service-account-key.json"
 - **Data Enrichment**: Automatically enhance Firestore documents with AI-generated metadata
 
 ### Example Integration Pattern
+
 ```javascript
 // Cloud Function with Vertex AI Gemini
 const {VertexAI} = require('@google-cloud/vertexai');
@@ -308,7 +331,9 @@ exports.analyzeContent = functions.firestore
 ## Testing Strategy
 
 ### Firebase Emulator Suite
+
 Commands should support running against Firebase emulators:
+
 ```bash
 # Start emulators
 firebase emulators:start
@@ -318,7 +343,9 @@ firebase deploy --only functions --project demo-project
 ```
 
 ### Manual Testing Checklist
+
 Before submitting plugin:
+
 - [ ] Test all commands against a test Firebase project
 - [ ] Verify Vertex AI integration with valid GCP credentials
 - [ ] Test security rules deployment and validation
@@ -330,7 +357,9 @@ Before submitting plugin:
 ## Documentation Requirements
 
 ### README.md Structure
+
 The plugin README should include:
+
 1. **Overview**: What this plugin does and why it's useful
 2. **Installation**: How to install from marketplace
 3. **Prerequisites**: Firebase CLI, GCP project, Node.js version requirements
@@ -343,7 +372,9 @@ The plugin README should include:
 10. **Troubleshooting**: Common issues and solutions
 
 ### Code Examples
+
 All examples should:
+
 - Be complete and runnable (no pseudo-code)
 - Include error handling
 - Follow Firebase best practices
@@ -353,6 +384,7 @@ All examples should:
 ## Deployment Workflow
 
 ### Pre-commit Checklist
+
 ```bash
 # 1. Validate plugin structure
 ../../scripts/validate-all-plugins.sh .
@@ -378,7 +410,9 @@ cd ../.. && pnpm run sync-marketplace
 ```
 
 ### Adding to Marketplace Catalog
+
 Edit `.claude-plugin/marketplace.extended.json` at repository root:
+
 ```json
 {
   "plugins": [
@@ -453,6 +487,7 @@ firebase firestore:indexes                 # Deploy indexes
 ## Security Best Practices
 
 ### Firestore Security Rules Template
+
 ```javascript
 rules_version = '2';
 service cloud.firestore {
@@ -476,6 +511,7 @@ service cloud.firestore {
 ```
 
 ### Storage Security Rules Template
+
 ```javascript
 rules_version = '2';
 service firebase.storage {

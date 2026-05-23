@@ -81,6 +81,7 @@ await speechToSpeech(
 ```
 
 **cURL equivalent:**
+
 ```bash
 curl -X POST "https://api.elevenlabs.io/v1/speech-to-speech/21m00Tcm4TlvDq8ikWAM" \
   -H "xi-api-key: ${ELEVENLABS_API_KEY}" \
@@ -137,6 +138,7 @@ await generateSoundEffect(
 ```
 
 **cURL equivalent:**
+
 ```bash
 curl -X POST "https://api.elevenlabs.io/v1/sound-generation" \
   -H "xi-api-key: ${ELEVENLABS_API_KEY}" \
@@ -193,6 +195,7 @@ async function isolateVoiceStreaming(
 ```
 
 **cURL equivalent:**
+
 ```bash
 curl -X POST "https://api.elevenlabs.io/v1/audio-isolation" \
   -H "xi-api-key: ${ELEVENLABS_API_KEY}" \

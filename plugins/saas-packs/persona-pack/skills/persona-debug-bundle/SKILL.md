@@ -23,15 +23,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # persona debug bundle | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview
+
 Gather inquiry state, verification results, webhook delivery logs, API connectivity test.
 
 ## Prerequisites
+
 - Completed `persona-install-auth` setup
 - Valid Persona API key (sandbox or production)
 
 ## Instructions
 
 ### Step 1: Implementation
+
 ```python
 import os, requests
 
@@ -50,9 +53,11 @@ for inq in inquiries:
 ```
 
 ## Output
+
 - Gather inquiry state, verification results, webhook delivery logs, API connectivity test.
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Invalid API key | Check PERSONA_API_KEY |
@@ -60,8 +65,10 @@ for inq in inquiries:
 | 404 Not Found | Wrong resource ID | Verify ID format |
 
 ## Resources
+
 - [Persona API Reference](https://docs.withpersona.com/reference/introduction)
 - [Persona Documentation](https://docs.withpersona.com)
 
 ## Next Steps
+
 See related Persona skills for more workflows.

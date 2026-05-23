@@ -125,4 +125,3 @@ v4.19.0 shipped with all of it.
 - [Marketplace Quality Blitz: 130 Stub Files, 4300 Warnings, Zero Excuses](/posts/marketplace-quality-blitz-130-stubs-4300-warnings/) — The previous wave of quality fixes that set up this audit
 - [Scaling AI Batch Processing with Vertex AI Gemini](/posts/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/) — The batch infrastructure behind large-scale content generation
 - [Verified Plugins Program: Building a Quality Signal for the Marketplace](/posts/verified-plugins-program-quality-signal-for-the-marketplace/) — The rubric that defines what "quality" means for plugins
-

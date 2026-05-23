@@ -14,12 +14,13 @@ Generates environment configuration files (.env templates, validation schemas, a
 ## What This Command Does
 
 **Generated Configuration:**
--  .env.example (committed template)
--  .env.development, .env.production
--  Config validation schema (Zod)
--  Type-safe config loader
--  Secret management guidance
--  Docker environment setup
+
+- .env.example (committed template)
+- .env.development, .env.production
+- Config validation schema (Zod)
+- Type-safe config loader
+- Secret management guidance
+- Docker environment setup
 
 **Output:** Complete environment configuration system
 
@@ -238,6 +239,7 @@ services:
 ## Security Best Practices
 
 **1. Never Commit Secrets:**
+
 ```bash
 # .gitignore
 .env
@@ -250,6 +252,7 @@ secrets/
 ```
 
 **2. Use Secret Rotation:**
+
 ```bash
 # Rotate secrets regularly
 # Use AWS Secrets Manager, GCP Secret Manager, or Azure Key Vault
@@ -257,6 +260,7 @@ secrets/
 ```
 
 **3. Least Privilege:**
+
 ```bash
 # Only provide necessary permissions
 # Use separate credentials for dev/staging/prod
@@ -264,6 +268,7 @@ secrets/
 ```
 
 **4. Environment Validation:**
+
 ```typescript
 // Validate on startup
 if (process.env.NODE_ENV === 'production') {
@@ -293,6 +298,7 @@ openssl rand -base64 32
 ## Platform-Specific Setup
 
 **Vercel:**
+
 ```bash
 # Set environment variables via CLI
 vercel env add DATABASE_URL production
@@ -300,6 +306,7 @@ vercel env add JWT_SECRET production
 ```
 
 **Railway:**
+
 ```bash
 # Environment variables in dashboard
 # Or via railway.json
@@ -313,6 +320,7 @@ vercel env add JWT_SECRET production
 ```
 
 **AWS ECS:**
+
 ```json
 {
   "containerDefinitions": [{

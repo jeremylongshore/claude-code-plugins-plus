@@ -28,26 +28,31 @@ compatibility: Designed for Claude Code
 # AssemblyAI Cost Tuning
 
 ## Overview
+
 Optimize AssemblyAI costs through model selection, feature-aware billing, and usage monitoring. AssemblyAI charges per audio hour with add-on pricing for intelligence features.
 
 ## Prerequisites
+
 - Access to AssemblyAI billing dashboard at https://www.assemblyai.com/app
 - Understanding of current usage patterns
 
 ## Actual Pricing (Pay-As-You-Go)
 
 ### Speech-to-Text (Async)
+
 | Model | Price per Hour | Best For |
 |-------|---------------|----------|
 | **Best** (Universal-3) | $0.37/hr | Highest accuracy, production |
 | **Nano** | $0.12/hr | High volume, cost-sensitive |
 
 ### Streaming Speech-to-Text
+
 | Model | Price per Hour |
 |-------|---------------|
 | Universal Streaming | $0.47/hr |
 
 ### Audio Intelligence Add-Ons
+
 | Feature | Additional Cost per Hour |
 |---------|-------------------------|
 | Speaker Diarization | $0.02/hr |
@@ -61,6 +66,7 @@ Optimize AssemblyAI costs through model selection, feature-aware billing, and us
 | PII Audio Redaction | +processing time |
 
 ### LeMUR
+
 | Model | Price per Input Token | Price per Output Token |
 |-------|----------------------|----------------------|
 | Default | ~$0.003/1K tokens | ~$0.015/1K tokens |
@@ -265,6 +271,7 @@ if (parseFloat(summary.totalCost.replace('$', '')) > MONTHLY_BUDGET * 0.8) {
 ```
 
 ## Output
+
 - Accurate cost estimation with feature-level breakdown
 - Model selection strategy (Best vs. Nano)
 - Feature budgeting to eliminate unnecessary costs
@@ -272,6 +279,7 @@ if (parseFloat(summary.totalCost.replace('$', '')) > MONTHLY_BUDGET * 0.8) {
 - Cost reduction strategies ranked by impact
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Unexpected high bill | Entity detection enabled everywhere | Audit features per endpoint |
@@ -280,9 +288,11 @@ if (parseFloat(summary.totalCost.replace('$', '')) > MONTHLY_BUDGET * 0.8) {
 | Double billing | Re-transcribing same audio | Cache transcript IDs, check before submitting |
 
 ## Resources
+
 - [AssemblyAI Pricing](https://www.assemblyai.com/pricing)
 - [AssemblyAI Billing Dashboard](https://www.assemblyai.com/app)
 - [Speech Model Comparison](https://www.assemblyai.com/docs/speech-to-text/speech-recognition)
 
 ## Next Steps
+
 For architecture patterns, see `assemblyai-reference-architecture`.

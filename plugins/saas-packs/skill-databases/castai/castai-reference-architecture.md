@@ -10,6 +10,7 @@ castai-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Cast AI reference architecture
 **Workflow:** Part of the cicd skill category for Cast AI integration.
 **Relates to:** Other castai skills in this pack.

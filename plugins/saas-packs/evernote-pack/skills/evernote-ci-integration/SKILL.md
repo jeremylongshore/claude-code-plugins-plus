@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote CI Integration
 
 ## Overview
+
 Configure continuous integration pipelines for Evernote integrations with mock-based unit tests, sandbox-based integration tests, credential management, and deployment workflows.
 
 ## Prerequisites
+
 - Git repository with Evernote integration code
 - CI/CD platform (GitHub Actions, GitLab CI, etc.)
 - Test framework (Jest, Vitest, or Mocha)
@@ -100,6 +102,7 @@ Store `EVERNOTE_CONSUMER_KEY`, `EVERNOTE_CONSUMER_SECRET`, and `EVERNOTE_DEV_TOK
 For the full CI workflow, mock client, test examples, and deployment pipeline, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
+
 - GitHub Actions workflow with unit and integration test stages
 - `MockNoteStore` class for deterministic unit testing
 - Integration test suite using sandbox credentials
@@ -107,6 +110,7 @@ For the full CI workflow, mock client, test examples, and deployment pipeline, s
 - npm scripts: `test`, `test:unit`, `test:integration`
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Integration test auth failure | Expired sandbox token | Regenerate Developer Token in sandbox settings |
@@ -115,12 +119,14 @@ For the full CI workflow, mock client, test examples, and deployment pipeline, s
 | Mock drift | Mock doesn't match real API behavior | Update mock when upgrading SDK version |
 
 ## Resources
+
 - [GitHub Actions](https://docs.github.com/en/actions)
 - [Jest Documentation](https://jestjs.io/docs/getting-started)
 - [Evernote Sandbox](https://sandbox.evernote.com)
 - [GitHub Encrypted Secrets](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions)
 
 ## Next Steps
+
 For deployment pipelines, see `evernote-deploy-integration`.
 
 ## Examples

@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Production Checklist
 
 ## Overview
+
 Comprehensive checklist for deploying Langfuse observability to production with verified configuration, error handling, graceful shutdown, monitoring, and a pre-deployment verification script.
 
 ## Prerequisites
+
 - Development and staging testing completed
 - Production Langfuse project created with separate API keys
 - Secret management solution in place
@@ -178,6 +180,7 @@ verify();
 ## Production Checklist
 
 ### Authentication & Security
+
 - [ ] Production API keys created (separate from dev/staging)
 - [ ] Keys stored in secret manager (not env files or code)
 - [ ] Key prefix validated at startup (`pk-lf-` / `sk-lf-`)
@@ -185,24 +188,28 @@ verify();
 - [ ] Secret scanning in CI/CD pipeline
 
 ### SDK Configuration
+
 - [ ] Singleton client pattern (no per-request instantiation)
 - [ ] Batch size tuned (`flushAt: 25-50`)
 - [ ] Flush interval set (`flushInterval: 5000`)
 - [ ] Request timeout configured (`requestTimeout: 15000`)
 
 ### Reliability
+
 - [ ] Graceful shutdown on SIGTERM/SIGINT
 - [ ] All spans end in `try/finally` (v3) or use `observe`/`startActiveObservation` (v4+)
 - [ ] Tracing errors caught -- never crash the app
 - [ ] Circuit breaker for sustained failures
 
 ### Monitoring
+
 - [ ] Trace creation success/failure logged
 - [ ] Flush latency tracked
 - [ ] Rate limit errors monitored
 - [ ] Dashboard alerts for quality score regression
 
 ### Operations
+
 - [ ] Runbook documented for Langfuse outages
 - [ ] Fallback behavior defined (app works without Langfuse)
 - [ ] Data retention policy configured
@@ -218,6 +225,7 @@ verify();
 | Lost traces on deploy | No graceful shutdown | Add SIGTERM handler with `sdk.shutdown()` |
 
 ## Resources
+
 - [TypeScript SDK Setup](https://langfuse.com/docs/observability/sdk/typescript/setup)
 - [Advanced Configuration](https://langfuse.com/docs/observability/sdk/typescript/advanced-usage)
 - [Self-Hosting Guide](https://langfuse.com/self-hosting)

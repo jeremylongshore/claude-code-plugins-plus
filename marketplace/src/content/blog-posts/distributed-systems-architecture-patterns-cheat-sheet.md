@@ -223,4 +223,3 @@ featured: false
 <h2 id="how-to-use-this-cheat-sheet">
  How to Use This Cheat Sheet
 <p><a class="anchor" href="#how-to-use-this-cheat-sheet">#</a></p></h2>
-

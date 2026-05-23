@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Cohere Reference Architecture
 
 ## Overview
+
 Production-ready architecture for Cohere API v2 applications covering RAG pipelines, tool-use agents, and multi-model orchestration.
 
 ## Prerequisites
+
 - Understanding of layered architecture
 - `cohere-ai` SDK v7+
 - TypeScript project with vitest
@@ -338,6 +340,7 @@ User Query
 ```
 
 ## Output
+
 - Layered architecture separating API, service, and client concerns
 - RAG pipeline with rerank pre-filtering and grounded citations
 - Agent loop with pluggable tool registry
@@ -345,6 +348,7 @@ User Query
 - Model selection per environment and use case
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Circular imports | Wrong layering | Services depend on client, not vice versa |
@@ -353,9 +357,11 @@ User Query
 | Cache miss storm | TTL expired | Stale-while-revalidate pattern |
 
 ## Resources
+
 - [Cohere API Reference](https://docs.cohere.com/reference/about)
 - [RAG Guide](https://docs.cohere.com/docs/retrieval-augmented-generation-rag)
 - [Tool Use Guide](https://docs.cohere.com/docs/tools)
 
 ## Next Steps
+
 For multi-environment setup, see `cohere-multi-env-setup`.

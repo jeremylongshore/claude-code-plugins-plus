@@ -3,6 +3,7 @@
 ## Cost-Aware Routing
 
 ### Budget Router
+
 ```python
 MODEL_COSTS = {
     "anthropic/claude-3-opus": 15.0,      # $/M tokens

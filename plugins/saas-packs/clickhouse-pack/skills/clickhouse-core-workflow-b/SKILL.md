@@ -66,6 +66,7 @@ await client.insert({
 ```
 
 **Insert best practices:**
+
 - Batch rows: aim for 10K-100K rows per INSERT (not one at a time)
 - ClickHouse creates a new "part" per INSERT — too many small inserts cause "too many parts"
 - For real-time streams, buffer 1-5 seconds then flush

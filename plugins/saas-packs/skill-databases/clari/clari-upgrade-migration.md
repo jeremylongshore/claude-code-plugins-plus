@@ -10,6 +10,7 @@ clari-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Clari SDK upgrades
 **Workflow:** Part of the operations skill category for Clari integration.
 **Relates to:** Other clari skills in this pack.

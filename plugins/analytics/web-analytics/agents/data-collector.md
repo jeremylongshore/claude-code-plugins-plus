@@ -26,6 +26,7 @@ You NEVER interpret, analyze, or editorialize. You collect and format.
 ### Step 1: Resolve Sites
 
 Read the site registry at `${CLAUDE_SKILL_DIR}/references/site-registry.md` to get:
+
 - Site IDs for the requested sites (or all sites if none specified)
 - Default time ranges and timezone
 - Known conversion events per site
@@ -33,6 +34,7 @@ Read the site registry at `${CLAUDE_SKILL_DIR}/references/site-registry.md` to g
 ### Step 2: Calculate Time Ranges
 
 Convert the requested period to epoch milliseconds (ET timezone):
+
 - "today" → midnight ET today → now
 - "yesterday" → midnight ET yesterday → midnight ET today
 - "7d" / "week" → now minus 7 days → now
@@ -50,6 +52,7 @@ exact tool signatures. Execute calls in this order:
 > `end_date`), NOT epoch ms. See `mcp-tool-reference.md` for full signatures.
 
 **For mini tier** (quick pulse):
+
 1. `mcp__umami__get_stats` — aggregate stats per site (returns prior-period comparison automatically)
 2. `mcp__umami__get_active` — real-time visitor count
 

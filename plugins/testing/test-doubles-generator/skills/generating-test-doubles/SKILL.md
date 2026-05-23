@@ -68,6 +68,7 @@ Generate mocks, stubs, spies, and fakes to isolate units under test from externa
 ## Examples
 
 **Jest mock factory for a UserRepository:**
+
 ```typescript
 // __mocks__/userRepository.ts
 export const createMockUserRepo = () => ({
@@ -78,6 +79,7 @@ export const createMockUserRepo = () => ({
 ```
 
 **Python unittest.mock patch for an HTTP client:**
+
 ```python
 from unittest.mock import patch, MagicMock
 
@@ -90,6 +92,7 @@ def test_fetch_data(mock_get):
 ```
 
 **Go interface-based fake:**
+
 ```go
 type FakeStore struct {
     data map[string]string

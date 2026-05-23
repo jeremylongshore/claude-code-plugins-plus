@@ -10,6 +10,7 @@ salesforce-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Salesforce SDK patterns
 **Workflow:** Part of the onboarding skill category for Salesforce integration.
 **Relates to:** Other salesforce skills in this pack.

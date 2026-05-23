@@ -10,6 +10,7 @@ apollo-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Apollo rate limiting and backoff
 **Workflow:** Part of the operations skill category for Apollo integration.
 **Relates to:** Other apollo skills in this pack.

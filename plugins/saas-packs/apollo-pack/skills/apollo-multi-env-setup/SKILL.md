@@ -24,15 +24,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Multi-Environment Setup
 
 ## Overview
+
 Configure Apollo.io for development, staging, and production with isolated API keys, environment-specific rate limits, feature gating, and Kubernetes-native secret management. Apollo provides sandbox tokens for testing that return dummy data without consuming credits.
 
 ## Prerequisites
+
 - Separate Apollo API keys per environment (or sandbox tokens for dev)
 - Node.js 18+
 
 ## Instructions
 
 ### Step 1: Environment Configuration Schema
+
 ```typescript
 // src/config/apollo-config.ts
 import { z } from 'zod';
@@ -68,6 +71,7 @@ type ApolloEnvConfig = z.infer<typeof ApolloEnvConfig>;
 ```
 
 ### Step 2: Per-Environment Configs
+
 ```typescript
 const configs: Record<string, ApolloEnvConfig> = {
   development: {
@@ -104,6 +108,7 @@ const configs: Record<string, ApolloEnvConfig> = {
 ```
 
 ### Step 3: Environment-Aware Client Factory
+
 ```typescript
 // src/config/client-factory.ts
 import axios, { AxiosInstance } from 'axios';
@@ -148,6 +153,7 @@ export function getClient(): AxiosInstance {
 ```
 
 ### Step 4: Kubernetes Secrets
+
 ```yaml
 # k8s/dev/apollo-secret.yaml
 apiVersion: v1
@@ -172,6 +178,7 @@ stringData:
 ```
 
 ### Step 5: Environment Verification Script
+
 ```typescript
 // src/scripts/verify-envs.ts
 async function verifyAllEnvironments() {
@@ -194,6 +201,7 @@ async function testMasterAccess(client: AxiosInstance): Promise<boolean> {
 ```
 
 ## Output
+
 - Zod-validated environment config schema with feature flags and credit budgets
 - Three environment configs (dev with sandbox, staging, production)
 - Client factory with feature gating and debug logging
@@ -201,6 +209,7 @@ async function testMasterAccess(client: AxiosInstance): Promise<boolean> {
 - Environment verification script testing all configs
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | Feature disabled | Client throws descriptive error identifying which env blocked it |
@@ -209,10 +218,12 @@ async function testMasterAccess(client: AxiosInstance): Promise<boolean> {
 | Sandbox returning dummy data | Expected in development — use staging for real data testing |
 
 ## Resources
+
 - [Apollo Sandbox Testing](https://docs.apollo.io/docs/test-api-key)
 - [Create API Keys](https://docs.apollo.io/docs/create-api-key)
 - [12-Factor App Config](https://12factor.net/config)
 - [Kubernetes Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)
 
 ## Next Steps
+
 Proceed to `apollo-observability` for monitoring setup.

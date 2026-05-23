@@ -94,6 +94,7 @@ class AdobeUsageTracker {
 ### Step 3: Cost Reduction Strategies
 
 **Strategy 1: Cache Firefly outputs by prompt hash**
+
 ```typescript
 import crypto from 'crypto';
 
@@ -111,6 +112,7 @@ if (cached) return cached; // Saves 1 generative credit
 ```
 
 **Strategy 2: Minimize PDF Services transactions**
+
 ```typescript
 // EXPENSIVE: Extract + Create + Merge = 3 transactions
 await extractPdf(input);
@@ -124,6 +126,7 @@ await generateDocument(template, data); // 1 transaction
 ```
 
 **Strategy 3: Right-size Firefly image dimensions**
+
 ```typescript
 // Same credit cost but different use cases:
 // - Thumbnails: 512x512 (same 1 credit, faster generation)
@@ -133,6 +136,7 @@ await generateDocument(template, data); // 1 transaction
 ```
 
 **Strategy 4: Use Photoshop batch actions**
+
 ```typescript
 // EXPENSIVE: 5 separate API calls = 5 credits
 await removeBackground(image1);

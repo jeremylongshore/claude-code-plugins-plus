@@ -10,6 +10,7 @@ figma-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Figma monitoring and observability
 **Workflow:** Part of the enterprise skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

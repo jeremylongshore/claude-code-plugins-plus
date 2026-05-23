@@ -3,6 +3,7 @@
 ## Caching Strategies
 
 ### Response Caching
+
 ```python
 import hashlib
 from functools import lru_cache
@@ -43,6 +44,7 @@ def fast_cached_chat(
 ```
 
 ### Semantic Caching
+
 ```python
 class SemanticCache:
     """Cache similar queries."""

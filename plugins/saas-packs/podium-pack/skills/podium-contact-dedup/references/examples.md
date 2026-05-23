@@ -9,6 +9,7 @@ python3 scripts/phone_normalize.py --phone "0412 345 678" --region AU --output j
 ```
 
 Output:
+
 ```json
 {
   "valid": true,
@@ -28,6 +29,7 @@ done
 ```
 
 Output:
+
 ```json
 {"input":"+61 412 345 678","key":"+61412345678"}
 {"input":"0412 345 678","key":"+61412345678"}
@@ -88,6 +90,7 @@ python3 scripts/merge_contacts.py \
 ```
 
 Output:
+
 ```json
 {
   "cluster_id": "cl_7f3a9c1d",
@@ -120,6 +123,7 @@ python3 scripts/merge_contacts.py \
 ```
 
 Exit code 0 with a final audit-log entry:
+
 ```json
 {
   "ts": "2026-05-12T16:00:01Z",
@@ -160,6 +164,7 @@ python3 scripts/cross_location_dedup.py \
 ```
 
 Output (NDJSON, one cluster per line):
+
 ```json
 {
   "natural_key": "+61400000000",
@@ -184,6 +189,7 @@ sqlite3 ./podium-dedup.sqlite \
 ```
 
 Output:
+
 ```
 patched|1487
 merging|3

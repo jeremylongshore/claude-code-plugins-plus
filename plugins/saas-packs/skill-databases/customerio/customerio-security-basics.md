@@ -10,6 +10,7 @@ customerio-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Customer.io security best practices
 **Workflow:** Part of the operations skill category for Customer.io integration.
 **Relates to:** Other customerio skills in this pack.

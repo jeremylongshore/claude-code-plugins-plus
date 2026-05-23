@@ -10,6 +10,7 @@ sentry-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Scale Sentry for high-traffic applications handling millions of events with adaptive sampling, buffering, resource optimization, and quota management.
 **Workflow:** Apply when scaling applications or experiencing high event volumes. Optimizes Sentry for cost-effective high-volume operation.
 **Relates to:** Works with `sentry-cost-tuning` for cost management. Connects to `sentry-rate-limits` for quota control.

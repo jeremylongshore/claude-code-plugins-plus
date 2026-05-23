@@ -31,6 +31,7 @@ When you run this command, you'll receive:
 ```
 
 **Examples:**
+
 - `/ptg "Generate product descriptions from features"`
 - `/ptg "Extract structured data from customer reviews"`
 - `/ptg "Classify support tickets by urgency and category"`
@@ -41,6 +42,7 @@ When you run this command, you'll receive:
 ### Example: Product Description Generator
 
 **Input:**
+
 ```
 /ptg "Generate product descriptions from features"
 ```
@@ -515,26 +517,31 @@ def generate_with_fallback(input_data):
 The command can generate templates for common tasks:
 
 ### Classification Template
+
 ```
 /ptg "Classify customer support tickets by urgency and category"
 ```
 
 ### Extraction Template
+
 ```
 /ptg "Extract structured contact information from business cards"
 ```
 
 ### Summarization Template
+
 ```
 /ptg "Summarize academic papers with key findings and methodology"
 ```
 
 ### Analysis Template
+
 ```
 /ptg "Analyze customer sentiment from product reviews"
 ```
 
 ### Translation Template
+
 ```
 /ptg "Translate marketing copy while preserving tone and cultural context"
 ```
@@ -554,6 +561,7 @@ Every generated template includes:
 ## When to Use
 
 Use this command when you:
+
 - Need a repeatable LLM task (hundreds+ times)
 - Want production-ready code, not one-off scripts
 - Care about cost optimization
@@ -563,6 +571,7 @@ Use this command when you:
 ## Time Savings
 
 **Manual approach:** 2-4 hours
+
 - Write prompt
 - Implement API calls
 - Add error handling
@@ -570,6 +579,7 @@ Use this command when you:
 - Optimize costs
 
 **With this command:** 2-5 minutes
+
 - Describe task
 - Get production-ready code
 - Copy and customize
@@ -579,6 +589,7 @@ Use this command when you:
 ---
 
 **Next Steps:**
+
 1. Run `/ptg "<your task description>"`
 2. Copy generated code to your project
 3. Install dependencies (`pip install anthropic` or `npm install @anthropic-ai/sdk`)

@@ -191,4 +191,3 @@ The case-study argument: when a privilege boundary is load-bearing, the test tha
 - [Guidewire MCP v0.1.0: The Foundation Ship](/posts/guidewire-mcp-v0-1-0-foundation-ship/) — yesterday's post on the v0.1.0 ship that this sink continues
 - [Anti-Slop Framework Found Three Bugs Inside Itself](/posts/anti-slop-framework-found-three-bugs-inside-itself/) — earlier dogfooding case study on quality gates catching their own author
 - [Audit Harness v0.1.0: Enforcement Travels With the Code](/posts/audit-harness-v010-enforcement-travels-with-code/) — the harness package the test methodology depends on
-

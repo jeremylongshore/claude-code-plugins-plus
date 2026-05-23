@@ -10,6 +10,7 @@ clickup-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute ClickUp SDK upgrades
 **Workflow:** Part of the operations skill category for ClickUp integration.
 **Relates to:** Other clickup skills in this pack.

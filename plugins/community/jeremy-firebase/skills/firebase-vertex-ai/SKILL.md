@@ -66,10 +66,12 @@ Use this skill to design, implement, and deploy Firebase applications that call 
 ## Examples
 
 **Example: Gemini-backed chat API on Firebase**
+
 - Request: “Deploy Hosting + a Function that powers a Gemini chat endpoint.”
 - Result: `/api/chat` function, Secret Manager wiring, and smoke tests.
 
 **Example: Firestore-powered RAG**
+
 - Request: “Build a RAG flow that embeds docs and answers with citations.”
 - Result: ingestion plan, embedding + index strategy, and evaluation prompts.
 

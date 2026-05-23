@@ -10,6 +10,7 @@ framer-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Framer debug evidence for support
 **Workflow:** Part of the operations skill category for Framer integration.
 **Relates to:** Other framer skills in this pack.

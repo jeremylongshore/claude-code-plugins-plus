@@ -6,12 +6,12 @@ Create visual Make.com automation scenarios with AI assistance - perfect for no-
 
 Make.com (formerly Integromat) is a powerful visual automation platform:
 
--  **Visual Design** - See your entire workflow at a glance
--  **1000+ Integrations** - Connect virtually any app
--  **No-Code** - Build complex automations without coding
--  **Powerful Features** - Routers, filters, error handlers
--  **Affordable** - More cost-effective than Zapier
--  **Scalable** - Handle complex multi-step workflows
+- **Visual Design** - See your entire workflow at a glance
+- **1000+ Integrations** - Connect virtually any app
+- **No-Code** - Build complex automations without coding
+- **Powerful Features** - Routers, filters, error handlers
+- **Affordable** - More cost-effective than Zapier
+- **Scalable** - Handle complex multi-step workflows
 - ️ **Built-in Error Handling** - Visual error routes
 
 ## FREE Alternative: Use n8n + Ollama (Self-Hosted)
@@ -34,6 +34,7 @@ Make.com (formerly Integromat) is a powerful visual automation platform:
 ### Why n8n + Ollama?
 
 **n8n (Self-Hosted Automation)**:
+
 - Visual workflow builder (same as Make.com)
 - 400+ integrations (vs Make's 1000+, but covers 90% of use cases)
 - Advanced error handling
@@ -41,6 +42,7 @@ Make.com (formerly Integromat) is a powerful visual automation platform:
 - Open-source = community support
 
 **Ollama (Local LLM)**:
+
 - Runs Llama 3.2, Mistral, CodeLlama locally
 - No API keys required
 - Privacy-first (data never leaves your machine)
@@ -140,11 +142,13 @@ Action: Google Sheets Add Row (n8n)
 ### Real Use Case: AI Email Assistant
 
 #### Make.com + OpenAI Version
+
 - Make.com Core: $9/mo
 - OpenAI API: ~$30/mo (1000 emails)
 - **Total: $39/mo**
 
 #### n8n + Ollama Version
+
 ```javascript
 // n8n HTTP Request Node
 {
@@ -157,6 +161,7 @@ Action: Google Sheets Add Row (n8n)
   }
 }
 ```
+
 - n8n (self-hosted): $0
 - Ollama (local): $0
 - **Total: $0/mo**
@@ -166,6 +171,7 @@ Action: Google Sheets Add Row (n8n)
 ### n8n Workflow Templates
 
 **Available in [n8n-workflow-designer](../../n8n-workflow-designer/) plugin:**
+
 - AI email automation
 - Lead scoring & routing
 - Content distribution
@@ -185,12 +191,14 @@ Action: Google Sheets Add Row (n8n)
 ### When to Use Make.com vs n8n
 
 **Use Make.com if:**
+
 - You need 1000+ integrations (vs n8n's 400+)
 - You prefer managed hosting (no DevOps)
 - Your team is non-technical
 - Budget allows $39-89/month
 
 **Use n8n + Ollama if:**
+
 - You want unlimited operations
 - You need privacy/compliance (HIPAA, GDPR)
 - You have basic Docker skills
@@ -217,6 +225,7 @@ Action: Google Sheets Add Row (n8n)
 ## Features
 
 ### Scenario Design
+
 - **Visual Workflows** - Clear module-by-module design
 - **Routers & Filters** - Conditional logic and branching
 - **Data Mapping** - Transform data between apps
@@ -225,12 +234,14 @@ Action: Google Sheets Add Row (n8n)
 - **Aggregators** - Combine multiple items
 
 ### AI Integration
+
 - **OpenAI** - Native GPT integration
 - **Anthropic Claude** - Via HTTP module
 - **Custom AI** - Connect any AI API
 - **Prompt Design** - Optimized prompts included
 
 ### Module Types
+
 - **Triggers** - Webhooks, scheduled, polling
 - **Actions** - Create, update, search, delete
 - **Tools** - Router, iterator, aggregator, filter
@@ -246,6 +257,7 @@ Action: Google Sheets Add Row (n8n)
 ## Example Scenarios
 
 ### 1. AI Email Assistant
+
 ```
 Gmail Trigger → OpenAI Response → Send Reply → Log to Sheets
 ```
@@ -255,6 +267,7 @@ Gmail Trigger → OpenAI Response → Send Reply → Log to Sheets
 **Setup Time:** 15 minutes
 
 ### 2. Lead Qualification
+
 ```
 Webhook → AI Scoring → Router → [High/Medium/Low] → Actions
 ```
@@ -264,6 +277,7 @@ Webhook → AI Scoring → Router → [High/Medium/Low] → Actions
 **Setup Time:** 20 minutes
 
 ### 3. Content Distribution
+
 ```
 RSS Feed → AI Rewrite → Iterator → Post to Social Platforms
 ```
@@ -273,6 +287,7 @@ RSS Feed → AI Rewrite → Iterator → Post to Social Platforms
 **Setup Time:** 25 minutes
 
 ### 4. Document Processing
+
 ```
 Drive Trigger → OCR → AI Extract → Sheets Log → Email Summary
 ```
@@ -282,6 +297,7 @@ Drive Trigger → OCR → AI Extract → Sheets Log → Email Summary
 **Setup Time:** 30 minutes
 
 ### 5. Support Automation
+
 ```
 Ticket Created → AI Classify → Router → Route by Priority
 ```
@@ -293,18 +309,22 @@ Ticket Created → AI Classify → Router → Route by Priority
 ## Getting Started
 
 ### 1. Install the Plugin
+
 ```bash
 /plugin install make-scenario-builder
 ```
 
 ### 2. Describe Your Scenario
+
 ```
 I need to automatically process new Google Drive PDFs,
 extract data with OCR, and log it to a spreadsheet.
 ```
 
 ### 3. Get Complete Design
+
 The plugin provides:
+
 - Visual workflow diagram
 - Module-by-module configuration
 - Data mapping instructions
@@ -313,6 +333,7 @@ The plugin provides:
 - Cost estimates
 
 ### 4. Build in Make
+
 1. Log into [make.com](https://make.com)
 2. Create new scenario
 3. Add modules as described
@@ -334,25 +355,31 @@ The plugin provides:
 ## Real-World Use Cases
 
 ### Agency: Client Onboarding
+
 **Scenario:** New client signup → Create folders → Send contracts → Schedule calls → Update CRM
 
 **Results:**
+
 - Time saved: 3 hours per client
 - Setup time: 45 minutes
 - ROI: Positive after 1 client
 
 ### SaaS: User Activation
+
 **Scenario:** New signup → Welcome email → Monitor usage → Trigger onboarding → Alert sales
 
 **Results:**
+
 - Activation rate: +18%
 - Setup time: 1 hour
 - Cost: $0.004 per user
 
 ### E-commerce: Order Fulfillment
+
 **Scenario:** Order received → Inventory check → Payment processing → Fulfillment → Tracking
 
 **Results:**
+
 - Error reduction: 75%
 - Setup time: 2 hours
 - Payback: 2 weeks
@@ -374,6 +401,7 @@ The plugin provides:
 ## Best Practices
 
 ### Design Principles
+
 1. **Start simple** - Build incrementally
 2. **Use routers wisely** - Keep logic clear
 3. **Add error handlers** - Always plan for failures
@@ -381,6 +409,7 @@ The plugin provides:
 5. **Document scenarios** - Use Notes modules
 
 ### Performance Tips
+
 1. **Filter early** - Reduce unnecessary operations
 2. **Use aggregators** - Batch API calls
 3. **Optimize data mapping** - Only map needed fields
@@ -388,6 +417,7 @@ The plugin provides:
 5. **Schedule wisely** - Spread load across time
 
 ### Security
+
 1. **Use connections** - Don't hardcode API keys
 2. **Validate webhooks** - Verify request sources
 3. **Limit data exposure** - Only map necessary fields
@@ -397,7 +427,9 @@ The plugin provides:
 ## Advanced Features
 
 ### Routers
+
 Create conditional branches:
+
 ```
 Input → Router
   ├─ High priority → Immediate action
@@ -406,20 +438,26 @@ Input → Router
 ```
 
 ### Iterators
+
 Process arrays:
+
 ```
 Get list of items → Iterator → Process each → Aggregate results
 ```
 
 ### Error Handlers
+
 Graceful failure management:
+
 ```
 API Call → [Success] → Continue
          → [Error] → Retry → Fallback → Notify
 ```
 
 ### Data Stores
+
 Temporary storage:
+
 ```
 Store data → Process → Retrieve → Continue workflow
 ```
@@ -429,18 +467,23 @@ Store data → Process → Retrieve → Continue workflow
 ### Common Issues
 
 **"Not enough operations"**
+
 - Solution: Upgrade plan or optimize scenario
 
 **"Connection error"**
+
 - Solution: Reauthorize app connection
 
 **"Data mapping error"**
+
 - Solution: Check field names and data types
 
 **"Timeout error"**
+
 - Solution: Reduce batch size or add delays
 
 **"Incomplete execution"**
+
 - Solution: Review error logs and add error handlers
 
 ## Requirements
@@ -463,6 +506,7 @@ MIT - See LICENSE file
 ## Contributing
 
 Contributions welcome! Submit PRs with:
+
 - New scenario templates
 - Module configurations
 - Use case examples

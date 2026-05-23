@@ -12,6 +12,7 @@ Implement production-grade database replication for PostgreSQL and MySQL with st
 ## When to Use This Command
 
 Use `/replication` when you need to:
+
 - Implement high availability with automatic failover (99.99%+ uptime)
 - Scale read workloads across multiple replicas (10x read capacity)
 - Create disaster recovery instances in different regions
@@ -20,6 +21,7 @@ Use `/replication` when you need to:
 - Meet compliance requirements for data redundancy
 
 DON'T use this when:
+
 - Single server handles all load comfortably (<50% CPU)
 - Database size is small (<10GB) and backup/restore is fast
 - Application doesn't support read replica routing
@@ -30,6 +32,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **automated replication with failover** because:
+
 - Streaming replication provides real-time data synchronization
 - Automatic failover reduces RTO from hours to seconds
 - Read replicas enable horizontal read scaling
@@ -37,12 +40,14 @@ This command implements **automated replication with failover** because:
 - Synchronous mode ensures zero data loss for critical transactions
 
 **Alternative considered: Application-level read/write splitting**
+
 - No replication overhead at database level
 - Requires application changes for every database interaction
 - More complex error handling and retry logic
 - Recommended when replication infrastructure unavailable
 
 **Alternative considered: Database clustering (Patroni, Galera)**
+
 - Multi-master with automatic failover
 - More complex setup and maintenance
 - Better for write-heavy workloads
@@ -51,6 +56,7 @@ This command implements **automated replication with failover** because:
 ## Prerequisites
 
 Before running this command:
+
 1. Primary and replica servers with network connectivity
 2. Sufficient disk space for WAL archiving (30-50% of database size)
 3. Monitoring system for replication lag alerts
@@ -60,23 +66,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Configure Primary for Replication
+
 Enable WAL archiving, set max_wal_senders, and create replication user.
 
 ### Step 2: Initialize Replica with Base Backup
+
 Use pg_basebackup to clone primary database to replica server.
 
 ### Step 3: Configure Replica Connection
+
 Set primary_conninfo and start replica in standby mode.
 
 ### Step 4: Verify Replication Status
+
 Check replication lag and ensure WAL streaming is active.
 
 ### Step 5: Implement Monitoring and Failover
+
 Deploy replication lag alerts and automatic failover scripts.
 
 ## Output Format
 
 The command generates:
+
 - `replication/primary_setup.sql` - Primary configuration and replication user
 - `replication/replica_setup.sh` - Automated replica initialization script
 - `replication/failover.py` - Automatic failover orchestration
@@ -693,17 +705,20 @@ if __name__ == "__main__":
 ## Configuration Options
 
 **Replication Modes**
+
 - **Asynchronous** (default): Best performance, small data loss risk
 - **Synchronous** (`synchronous_commit=on`): Zero data loss, slower writes
 - **Remote write** (`synchronous_commit=remote_write`): Balanced approach
 - **Remote apply** (`synchronous_commit=remote_apply`): Strongest consistency
 
 **Replication Methods**
+
 - **Streaming replication**: Binary WAL streaming (physical replication)
 - **Logical replication**: Selective table replication (PostgreSQL 10+)
 - **WAL shipping**: Archive-based replication (for backups)
 
 **Failover Strategies**
+
 - **Manual failover**: DBA triggers promotion (safest)
 - **Automatic failover**: Scripted promotion after health check failure
 - **Patroni/repmgr**: Cluster management with automatic failover
@@ -712,6 +727,7 @@ if __name__ == "__main__":
 ## Best Practices
 
 DO:
+
 - Use replication slots to prevent WAL deletion before replica receives it
 - Monitor replication lag continuously (alert at >10 seconds)
 - Test failover procedures quarterly (disaster recovery drills)
@@ -721,6 +737,7 @@ DO:
 - Keep replicas on same PostgreSQL major version as primary
 
 DON'T:
+
 - Run long-running queries on replicas without tuning conflict resolution
 - Forget to update application connection strings after failover
 - Use synchronous replication over high-latency networks (>50ms)

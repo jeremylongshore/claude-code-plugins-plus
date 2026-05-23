@@ -3,6 +3,7 @@
 ## Team Plans Overview
 
 ### Plan Comparison
+
 ```
 Free (Individual):
 - 2000 completions/month

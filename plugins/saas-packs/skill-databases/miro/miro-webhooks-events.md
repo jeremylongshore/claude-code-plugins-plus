@@ -10,6 +10,7 @@ miro-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Miro webhook handling
 **Workflow:** Part of the cicd skill category for Miro integration.
 **Relates to:** Other miro skills in this pack.

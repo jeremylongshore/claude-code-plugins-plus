@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Observability
 
 ## Overview
+
 Production monitoring for Linear integrations using Prometheus metrics, structured logging with pino, health checks, and alerting rules. Track API latency, error rates, rate limit headroom, and webhook throughput.
 
 ## Prerequisites
+
 - Linear integration deployed
 - Prometheus or Datadog for metrics
 - Structured logging (pino, winston)
@@ -39,6 +41,7 @@ Production monitoring for Linear integrations using Prometheus metrics, structur
 ## Instructions
 
 ### Step 1: Define Metrics
+
 ```typescript
 // src/metrics/linear-metrics.ts
 import { Counter, Histogram, Gauge, register } from "prom-client";
@@ -101,6 +104,7 @@ app.get("/metrics", async (req, res) => {
 ```
 
 ### Step 2: Instrumented Client Wrapper
+
 ```typescript
 import { LinearClient } from "@linear/sdk";
 
@@ -134,6 +138,7 @@ const issues = await instrumentedCall("issues", () =>
 ```
 
 ### Step 3: Structured Logging
+
 ```typescript
 import pino from "pino";
 
@@ -182,6 +187,7 @@ function logError(operation: string, error: any) {
 ```
 
 ### Step 4: Health Check Endpoint
+
 ```typescript
 interface HealthCheck {
   status: "healthy" | "degraded" | "unhealthy";
@@ -249,6 +255,7 @@ app.get("/health/linear", async (req, res) => {
 ```
 
 ### Step 5: Alerting Rules (Prometheus)
+
 ```yaml
 # prometheus/linear-alerts.yml
 groups:
@@ -292,6 +299,7 @@ groups:
 ```
 
 ### Step 6: Webhook Instrumentation
+
 ```typescript
 // Instrument webhook handler
 app.post("/webhooks/linear", express.raw({ type: "*/*" }), async (req, res) => {
@@ -330,12 +338,14 @@ app.post("/webhooks/linear", express.raw({ type: "*/*" }), async (req, res) => {
 ## Examples
 
 ### Quick Health Check
+
 ```bash
 curl -s http://localhost:3000/health/linear | jq .
 # { "status": "healthy", "checks": { "linear_api": { "status": "healthy", "latencyMs": 150 } } }
 ```
 
 ## Resources
+
 - [Prometheus Client](https://github.com/siimon/prom-client)
 - [Pino Logger](https://getpino.io/)
 - [Grafana Dashboards](https://grafana.com/docs/grafana/latest/dashboards/)

@@ -25,15 +25,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Common Errors
 
 ## Overview
+
 Comprehensive guide to diagnosing and fixing Apollo.io API errors. Apollo uses `x-api-key` header authentication and the base URL `https://api.apollo.io/api/v1/`. Apollo distinguishes between **master** and **standard** API keys — many endpoints require master keys.
 
 ## Prerequisites
+
 - Valid Apollo.io API credentials
 - Node.js 18+ or Python 3.10+
 
 ## Instructions
 
 ### Step 1: Identify the Error Category
+
 ```typescript
 // src/apollo/error-handler.ts
 import { AxiosError } from 'axios';
@@ -53,6 +56,7 @@ function categorizeError(err: AxiosError): ErrorCategory {
 ```
 
 ### Step 2: Handle 401 — Invalid API Key
+
 ```typescript
 // Most common cause: missing x-api-key header or wrong key format
 async function diagnoseAuth() {
@@ -74,17 +78,20 @@ async function diagnoseAuth() {
 ```
 
 **Common 401 causes:**
+
 1. Using `api_key` query parameter instead of `x-api-key` header
 2. Key was revoked or regenerated in the dashboard
 3. Key has trailing whitespace (check with `echo -n "$APOLLO_API_KEY" | wc -c`)
 
 ### Step 3: Handle 403 — Wrong Key Type
+
 ```
 Standard API key: search + enrichment only
 Master API key:   full access (contacts, sequences, deals, tasks)
 ```
 
 Endpoints that **require a master key**:
+
 - `POST /contacts` (create/update)
 - `POST /emailer_campaigns/search` (sequences)
 - `POST /emailer_campaigns/{id}/add_contact_ids`
@@ -109,6 +116,7 @@ async function diagnoseMasterKey() {
 ```
 
 ### Step 4: Handle 429 — Rate Limiting
+
 Apollo uses fixed-window rate limiting per endpoint category:
 
 ```
@@ -140,6 +148,7 @@ async function handleRateLimit<T>(fn: () => Promise<T>): Promise<T> {
 ```
 
 ### Step 5: Handle 422 — Validation Errors
+
 ```typescript
 // Common 422 causes:
 //   - per_page > 100 on search endpoints
@@ -160,6 +169,7 @@ function logValidationError(err: AxiosError) {
 ```
 
 ### Step 6: Build Comprehensive Error Middleware
+
 ```typescript
 // src/apollo/error-middleware.ts
 import { AxiosError, AxiosInstance } from 'axios';
@@ -207,6 +217,7 @@ export function attachErrorHandler(client: AxiosInstance) {
 ```
 
 ## Error Reference
+
 | Code | Meaning | Fix |
 |------|---------|-----|
 | 401 | Invalid or missing `x-api-key` header | Verify key in dashboard, check header name |
@@ -219,6 +230,7 @@ export function attachErrorHandler(client: AxiosInstance) {
 ## Examples
 
 ### Quick cURL Diagnostic
+
 ```bash
 # Test auth (should return is_logged_in: true)
 curl -s -H "x-api-key: $APOLLO_API_KEY" \
@@ -230,10 +242,12 @@ curl -s -X POST -H "Content-Type: application/json" -H "x-api-key: $APOLLO_API_K
 ```
 
 ## Resources
+
 - [Apollo API Error Reference](https://docs.apollo.io/reference/rate-limits)
 - [Apollo Status Page](https://status.apollo.io)
 - [Create API Keys](https://docs.apollo.io/docs/create-api-key)
 - [API Usage Stats](https://docs.apollo.io/reference/view-api-usage-stats)
 
 ## Next Steps
+
 Proceed to `apollo-debug-bundle` for collecting debug evidence.

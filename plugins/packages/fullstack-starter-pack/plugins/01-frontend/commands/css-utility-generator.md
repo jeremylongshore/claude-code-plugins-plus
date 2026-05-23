@@ -14,12 +14,13 @@ Generates utility CSS classes similar to Tailwind CSS for common styling needs, 
 ## What This Command Does
 
 **Utility Class Generation:**
--  Spacing utilities (margin, padding)
--  Color utilities (background, text, border)
--  Typography utilities (font size, weight, line height)
--  Layout utilities (flexbox, grid, display)
--  Responsive breakpoints
--  Custom design tokens
+
+- Spacing utilities (margin, padding)
+- Color utilities (background, text, border)
+- Typography utilities (font size, weight, line height)
+- Layout utilities (flexbox, grid, display)
+- Responsive breakpoints
+- Custom design tokens
 
 **Output:** Complete utility CSS file with organized sections
 
@@ -51,6 +52,7 @@ Generates utility CSS classes similar to Tailwind CSS for common styling needs, 
 ## Example Output
 
 **Input:**
+
 ```
 /cug --categories spacing,colors,flex
 ```
@@ -342,6 +344,7 @@ Generates utility CSS classes similar to Tailwind CSS for common styling needs, 
 ## Complete Utility Categories
 
 ### 1. Spacing (Margin & Padding)
+
 ```css
 /* Scale: 0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24 */
 /* Directions: all, t, r, b, l, x, y */
@@ -352,6 +355,7 @@ Generates utility CSS classes similar to Tailwind CSS for common styling needs, 
 ```
 
 ### 2. Typography
+
 ```css
 /* Font Size */
 .text-xs    { font-size: 0.75rem; }
@@ -387,6 +391,7 @@ Generates utility CSS classes similar to Tailwind CSS for common styling needs, 
 ```
 
 ### 3. Layout
+
 ```css
 /* Display */
 .block        { display: block; }
@@ -419,6 +424,7 @@ Generates utility CSS classes similar to Tailwind CSS for common styling needs, 
 ```
 
 ### 4. Grid System
+
 ```css
 /* Grid Template Columns */
 .grid-cols-1  { grid-template-columns: repeat(1, minmax(0, 1fr)); }
@@ -437,6 +443,7 @@ Generates utility CSS classes similar to Tailwind CSS for common styling needs, 
 ```
 
 ### 5. Borders & Radius
+
 ```css
 /* Border Width */
 .border-0 { border-width: 0; }
@@ -460,6 +467,7 @@ Generates utility CSS classes similar to Tailwind CSS for common styling needs, 
 ```
 
 ### 6. Effects
+
 ```css
 /* Shadow */
 .shadow-none { box-shadow: none; }
@@ -482,6 +490,7 @@ Generates utility CSS classes similar to Tailwind CSS for common styling needs, 
 ## Usage Examples
 
 ### Example 1: Card Component
+
 ```html
 <div class="bg-white rounded-lg shadow-md p-6 mb-4">
   <h2 class="text-2xl font-bold mb-2 text-gray-900">Card Title</h2>
@@ -493,6 +502,7 @@ Generates utility CSS classes similar to Tailwind CSS for common styling needs, 
 ```
 
 ### Example 2: Flexbox Layout
+
 ```html
 <div class="flex justify-between items-center p-4 bg-gray-50">
   <div class="flex items-center gap-2">
@@ -508,6 +518,7 @@ Generates utility CSS classes similar to Tailwind CSS for common styling needs, 
 ```
 
 ### Example 3: Responsive Grid
+
 ```html
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-8">
   <div class="bg-white p-4 rounded shadow">Item 1</div>
@@ -523,6 +534,7 @@ Generates utility CSS classes similar to Tailwind CSS for common styling needs, 
 ### Design Tokens Configuration
 
 **design-tokens.json:**
+
 ```json
 {
   "colors": {
@@ -565,26 +577,31 @@ Generates utility CSS classes similar to Tailwind CSS for common styling needs, 
 ## Benefits
 
 **1. No Build Step Required**
+
 - Pure CSS, works immediately
 - No JavaScript runtime
 - No npm dependencies
 
 **2. Familiar Syntax**
+
 - Tailwind-like class names
 - Easy to learn for Tailwind users
 - Predictable naming conventions
 
 **3. Customizable**
+
 - Define your own design tokens
 - Choose which categories to include
 - Adjust spacing scales and breakpoints
 
 **4. Lightweight**
+
 - Generate only what you need
 - ~10-50KB depending on categories
 - Much smaller than full Tailwind
 
 **5. Framework Agnostic**
+
 - Works with React, Vue, vanilla HTML
 - No framework lock-in
 - Pure CSS solution
@@ -594,16 +611,19 @@ Generates utility CSS classes similar to Tailwind CSS for common styling needs, 
 ## Integration
 
 ### Add to HTML
+
 ```html
 <link rel="stylesheet" href="utilities.css">
 ```
 
 ### Import in CSS
+
 ```css
 @import url('utilities.css');
 ```
 
 ### Import in JavaScript
+
 ```javascript
 import './utilities.css'
 ```
@@ -618,4 +638,4 @@ import './utilities.css'
 
 ---
 
-**Build your design system. Style faster. Ship consistent UIs.** 
+**Build your design system. Style faster. Ship consistent UIs.**

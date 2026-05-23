@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Install & Auth
 
 ## Overview
+
 Install the `@linear/sdk` TypeScript SDK and configure authentication for the Linear GraphQL API at `https://api.linear.app/graphql`. Supports personal API keys for scripts and OAuth 2.0 (with PKCE) for user-facing apps.
 
 ## Prerequisites
+
 - Node.js 18+ (SDK is TypeScript-first, works in any JS environment)
 - Package manager (npm, pnpm, or yarn)
 - Linear account with workspace access
@@ -37,6 +39,7 @@ Install the `@linear/sdk` TypeScript SDK and configure authentication for the Li
 ## Instructions
 
 ### Step 1: Install the SDK
+
 ```bash
 set -euo pipefail
 npm install @linear/sdk
@@ -47,6 +50,7 @@ npm install @linear/sdk
 The SDK exposes `LinearClient`, typed models for every entity (Issue, Project, Cycle, Team), and error classes (`LinearError`, `InvalidInputLinearError`).
 
 ### Step 2: API Key Authentication (Scripts & Server-Side)
+
 Generate a Personal API key at Linear Settings > Account > API > Personal API keys. Keys start with `lin_api_` and are shown only once.
 
 ```typescript
@@ -63,6 +67,7 @@ console.log(`Authenticated as: ${me.name} (${me.email})`);
 ```
 
 **Environment setup:**
+
 ```bash
 # .env (never commit)
 LINEAR_API_KEY=lin_api_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -72,6 +77,7 @@ echo '.env' >> .gitignore
 ```
 
 ### Step 3: OAuth 2.0 Authentication (User-Facing Apps)
+
 Linear supports the standard Authorization Code flow with optional PKCE. As of October 2025, newly created OAuth apps issue refresh tokens by default.
 
 ```typescript
@@ -113,6 +119,7 @@ const client = new LinearClient({ accessToken: access_token });
 **Available OAuth scopes:** `read`, `write`, `issues:create`, `admin`, `initiative:read`, `initiative:write`, `customer:read`, `customer:write`.
 
 ### Step 4: Token Refresh (OAuth)
+
 ```typescript
 async function refreshAccessToken(refreshToken: string): Promise<string> {
   const response = await fetch("https://api.linear.app/oauth/token", {
@@ -138,6 +145,7 @@ async function refreshAccessToken(refreshToken: string): Promise<string> {
 ```
 
 ### Step 5: Validate Configuration on Startup
+
 ```typescript
 function validateLinearConfig(): void {
   const key = process.env.LINEAR_API_KEY;
@@ -164,6 +172,7 @@ validateLinearConfig();
 ## Examples
 
 ### Raw GraphQL Without SDK
+
 ```typescript
 const response = await fetch("https://api.linear.app/graphql", {
   method: "POST",
@@ -182,6 +191,7 @@ else console.log("Viewer:", data.viewer);
 ```
 
 ### Server-to-Server (Client Credentials)
+
 ```typescript
 // For apps without user interaction — uses client_credentials grant
 const response = await fetch("https://api.linear.app/oauth/token", {
@@ -200,6 +210,7 @@ const client = new LinearClient({ accessToken: access_token });
 ```
 
 ## Resources
+
 - [Linear SDK Getting Started](https://linear.app/developers/sdk)
 - [OAuth 2.0 Authentication](https://linear.app/developers/oauth-2-0-authentication)
 - [GraphQL API Endpoint](https://linear.app/developers/graphql)

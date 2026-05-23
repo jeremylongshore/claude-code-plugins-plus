@@ -10,6 +10,7 @@ clickup-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply ClickUp security best practices
 **Workflow:** Part of the operations skill category for ClickUp integration.
 **Relates to:** Other clickup skills in this pack.

@@ -10,6 +10,7 @@ figma-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Figma load testing and scaling
 **Workflow:** Part of the enterprise skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

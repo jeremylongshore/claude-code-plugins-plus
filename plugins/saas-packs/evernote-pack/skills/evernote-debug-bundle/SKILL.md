@@ -25,13 +25,16 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Debug Bundle
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'N/A'`
 !`python3 --version 2>/dev/null || echo 'N/A'`
 
 ## Overview
+
 Comprehensive debugging toolkit for Evernote API integrations, including request/response logging, ENML validation with auto-fix, token inspection, and diagnostic CLI utilities.
 
 ## Prerequisites
+
 - Evernote SDK installed
 - Node.js environment
 - Understanding of common Evernote errors (see `evernote-common-errors`)
@@ -103,6 +106,7 @@ Create a CLI script with commands: `diagnose` (run all checks), `validate-enml <
 For the full debug logger, instrumented client, ENML auto-fixer, token inspector, and diagnostic CLI, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
+
 - `EvernoteDebugLogger` with file and console output
 - Proxy-based instrumented NoteStore wrapper
 - ENML validator with auto-fix capability
@@ -110,6 +114,7 @@ For the full debug logger, instrumented client, ENML auto-fixer, token inspector
 - Diagnostic CLI with `diagnose`, `validate-enml`, `inspect-token` commands
 
 ## Error Handling
+
 | Issue | Diagnostic | Solution |
 |-------|------------|----------|
 | Auth failures | Run `inspect-token` to check expiration | Re-authenticate if expired |
@@ -118,11 +123,13 @@ For the full debug logger, instrumented client, ENML auto-fixer, token inspector
 | Missing data | Inspect response in debug log | Verify API parameters (withContent flags) |
 
 ## Resources
+
 - [Error Handling](https://dev.evernote.com/doc/articles/error_handling.php)
 - [ENML DTD](http://xml.evernote.com/pub/enml2.dtd)
 - [API Reference](https://dev.evernote.com/doc/reference/)
 
 ## Next Steps
+
 For rate limit handling, see `evernote-rate-limits`.
 
 ## Examples

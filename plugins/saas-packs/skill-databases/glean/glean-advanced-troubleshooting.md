@@ -10,6 +10,7 @@ glean-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Glean advanced debugging
 **Workflow:** Part of the enterprise skill category for Glean integration.
 **Relates to:** Other glean skills in this pack.

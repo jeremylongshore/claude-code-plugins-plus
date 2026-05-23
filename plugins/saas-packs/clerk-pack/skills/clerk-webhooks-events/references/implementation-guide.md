@@ -5,11 +5,13 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Install Dependencies
+
 ```bash
 npm install svix
 ```
 
 ### Step 2: Create Webhook Endpoint
+
 ```typescript
 // app/api/webhooks/clerk/route.ts
 import { Webhook } from 'svix'
@@ -81,6 +83,7 @@ export async function POST(req: Request) {
 ```
 
 ### Step 3: Implement Event Handlers
+
 ```typescript
 // lib/webhook-handlers.ts
 import { db } from './db'
@@ -176,6 +179,7 @@ export async function handleOrgCreated(data: any) {
 ```
 
 ### Step 4: Idempotency and Error Handling
+
 ```typescript
 // lib/webhook-idempotency.ts
 import { Redis } from '@upstash/redis'
@@ -229,6 +233,7 @@ export async function POST(req: Request) {
 ```
 
 ### Step 5: Configure Webhook in Clerk Dashboard
+
 1. Go to Clerk Dashboard > Webhooks
 2. Add endpoint URL: `https://yourdomain.com/api/webhooks/clerk`
 3. Select events:

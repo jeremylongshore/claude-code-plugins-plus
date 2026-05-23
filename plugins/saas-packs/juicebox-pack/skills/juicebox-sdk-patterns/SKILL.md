@@ -18,9 +18,11 @@ compatibility: Designed for Claude Code
 # Juicebox SDK Patterns
 
 ## Overview
+
 Production-ready patterns for the Juicebox AI-powered people search API. Juicebox provides REST endpoints for searching professional profiles and enriching candidate data. The API authenticates via `JUICEBOX_API_KEY` and returns structured profile objects with LinkedIn URLs as natural dedup keys. A singleton client centralizes rate-limit handling across search and enrich endpoints.
 
 ## Singleton Client
+
 ```typescript
 const JUICEBOX_BASE = 'https://api.juicebox.work/v1';
 let _client: JuiceboxClient | null = null;
@@ -49,6 +51,7 @@ class JuiceboxClient {
 ```
 
 ## Error Wrapper
+
 ```typescript
 export class JuiceboxError extends Error {
   constructor(public status: number, message: string) { super(message); this.name = 'JuiceboxError'; }
@@ -64,6 +67,7 @@ export async function safeCall<T>(operation: string, fn: () => Promise<T>): Prom
 ```
 
 ## Request Builder
+
 ```typescript
 class JuiceboxSearchBuilder {
   private body: Record<string, any> = {};
@@ -79,6 +83,7 @@ class JuiceboxSearchBuilder {
 ```
 
 ## Response Types
+
 ```typescript
 interface Profile {
   id: string; name: string; title: string; company: string;
@@ -94,6 +99,7 @@ interface EnrichResult {
 ```
 
 ## Testing Utilities
+
 ```typescript
 export function mockProfile(overrides: Partial<Profile> = {}): Profile {
   return { id: 'prof-001', name: 'Jane Smith', title: 'Senior ML Engineer',
@@ -108,6 +114,7 @@ export function mockSearchResponse(count = 3): SearchResponse {
 ```
 
 ## Error Handling
+
 | Pattern | When to Use | Example |
 |---------|-------------|---------|
 | `safeCall` wrapper | All Juicebox API calls | Structured error with operation context |
@@ -116,7 +123,9 @@ export function mockSearchResponse(count = 3): SearchResponse {
 | Cursor pagination | Search results > 100 | Pass `cursor` from previous response |
 
 ## Resources
+
 - [Juicebox API Docs](https://docs.juicebox.work/sdk)
 
 ## Next Steps
+
 Apply patterns in `juicebox-core-workflow-a`.

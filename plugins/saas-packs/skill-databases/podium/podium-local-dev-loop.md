@@ -10,6 +10,7 @@ podium-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Podium local development workflow
 **Workflow:** Part of the onboarding skill category for Podium integration.
 **Relates to:** Other podium skills in this pack.

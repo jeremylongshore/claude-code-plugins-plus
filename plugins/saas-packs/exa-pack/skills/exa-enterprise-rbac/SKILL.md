@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Enterprise RBAC
 
 ## Overview
+
 Manage access to Exa search API through API key scoping and application-level controls. Exa is API-key-based (no built-in RBAC), so access control is implemented through multiple API keys per use case, application-layer permission enforcement, domain restrictions per team, and per-key usage monitoring.
 
 ## Prerequisites
+
 - Exa API account with team/enterprise plan
 - Dashboard access at dashboard.exa.ai
 - Multiple API keys for key isolation
@@ -35,6 +37,7 @@ Manage access to Exa search API through API key scoping and application-level co
 ## Instructions
 
 ### Step 1: Key-Per-Use-Case Architecture
+
 ```typescript
 // config/exa-keys.ts
 import Exa from "exa-js";
@@ -61,6 +64,7 @@ export function getExaForUseCase(
 ```
 
 ### Step 2: Application-Level Permission Enforcement
+
 ```typescript
 // middleware/exa-permissions.ts
 interface ExaPermissions {
@@ -121,6 +125,7 @@ function validateSearchRequest(
 ```
 
 ### Step 3: Domain Restrictions per Team
+
 ```typescript
 // Enforce domain restrictions so compliance-sensitive teams
 // only see results from vetted sources
@@ -152,6 +157,7 @@ async function enforcedSearch(
 ```
 
 ### Step 4: Per-Key Usage Tracking
+
 ```typescript
 // Track usage per API key / role for budget enforcement
 class KeyUsageTracker {
@@ -192,6 +198,7 @@ class KeyUsageTracker {
 ```
 
 ### Step 5: Key Rotation Procedure
+
 ```bash
 set -euo pipefail
 # 1. Create new key in Exa dashboard (dashboard.exa.ai)
@@ -209,6 +216,7 @@ curl -s -o /dev/null -w "%{http_code}" \
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `401` on search | Invalid or revoked API key | Regenerate in dashboard |
@@ -217,9 +225,11 @@ curl -s -o /dev/null -w "%{http_code}" \
 | Wrong domain results | Missing domain filter | Apply `includeDomains` per role |
 
 ## Resources
+
 - [Exa API Documentation](https://docs.exa.ai)
 - [Exa Dashboard](https://dashboard.exa.ai)
 - [Exa API Key Usage](https://docs.exa.ai/reference/team-management/get-api-key-usage)
 
 ## Next Steps
+
 For policy enforcement, see `exa-policy-guardrails`. For multi-env setup, see `exa-multi-env-setup`.

@@ -3,6 +3,7 @@
 ## Model Migration
 
 ### Updating Model References
+
 ```python
 # Old model name mapping
 MODEL_MIGRATIONS = {
@@ -21,6 +22,7 @@ new_model = migrate_model_name(old_model)
 ```
 
 ### Batch Model Update
+
 ```python
 import re
 

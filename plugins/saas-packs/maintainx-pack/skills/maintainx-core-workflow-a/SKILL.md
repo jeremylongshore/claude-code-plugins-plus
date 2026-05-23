@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Core Workflow A: Work Order Lifecycle
 
 ## Overview
+
 Master the complete work order lifecycle in MaintainX -- from creation through completion. Work orders are the core unit of maintenance operations.
 
 ## Prerequisites
+
 - Completed `maintainx-install-auth` setup
 - `MAINTAINX_API_KEY` environment variable configured
 - MaintainX account with work order permissions
@@ -152,12 +154,14 @@ await client.updateWorkOrder(wo.id, {
 ```
 
 ## Output
+
 - Work orders created with full metadata (title, description, priority, assignees, asset, location)
 - Status transitions executed through the complete lifecycle
 - Paginated query results for filtering work orders
 - Comments and files attached to work orders
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 400 Bad Request | Missing `title` field | Include at least `title` in POST body |
@@ -166,11 +170,13 @@ await client.updateWorkOrder(wo.id, {
 | 422 Invalid transition | Invalid status change (e.g., CLOSED to OPEN) | Follow the status transition flow above |
 
 ## Resources
+
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [Work Orders Help](https://help.getmaintainx.com/about-work-orders)
 - [Complete a Work Order](https://help.getmaintainx.com/complete-a-work-order)
 
 ## Next Steps
+
 For asset and location management, see `maintainx-core-workflow-b`.
 
 ## Examples

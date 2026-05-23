@@ -26,15 +26,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Obsidian Hello World
 
 ## Overview
+
 Build a minimal working Obsidian plugin demonstrating the five core building blocks: commands (palette + editor + checkCallback), settings tab with typed config, ribbon icons, modals, and status bar. Every snippet uses real Obsidian API.
 
 ## Prerequisites
+
 - Completed `obsidian-install-auth` setup (symlinked dev vault, `npm run dev` working)
 - Build pipeline producing `main.js` from `src/main.ts`
 
 ## Instructions
 
 ### Step 1: Define Typed Settings
+
 ```typescript
 // src/main.ts — top of file
 import {
@@ -56,6 +59,7 @@ const DEFAULT_SETTINGS: MyPluginSettings = {
 ```
 
 ### Step 2: Create the Plugin Class with Commands
+
 ```typescript
 export default class MyPlugin extends Plugin {
   settings: MyPluginSettings;
@@ -158,6 +162,7 @@ export default class MyPlugin extends Plugin {
 ```
 
 ### Step 3: Create Settings Tab
+
 ```typescript
 class MySettingTab extends PluginSettingTab {
   plugin: MyPlugin;
@@ -209,6 +214,7 @@ class MySettingTab extends PluginSettingTab {
 ```
 
 ### Step 4: Create a Modal
+
 ```typescript
 class GreetingModal extends Modal {
   message: string;
@@ -238,6 +244,7 @@ class GreetingModal extends Modal {
 ```
 
 ### Step 5: Build and Test
+
 ```bash
 set -euo pipefail
 npm run build
@@ -253,6 +260,7 @@ npm run build
 ```
 
 ### Step 6: Listen to Vault Events
+
 ```typescript
 // Add to onload() — react to file changes
 this.registerEvent(
@@ -274,6 +282,7 @@ this.registerEvent(
 ```
 
 ## Output
+
 - Working plugin with:
   - Three command types: `callback`, `editorCallback`, `checkCallback`
   - Settings tab with text, toggle, and dropdown controls
@@ -283,6 +292,7 @@ this.registerEvent(
   - Event listeners for file-open and file-create
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Plugin not loading | Build errors or bad manifest | Check console (Ctrl+Shift+I) for red errors |
@@ -295,7 +305,9 @@ this.registerEvent(
 ## Examples
 
 ### Available Lucide Icon Names
+
 Obsidian uses [Lucide icons](https://lucide.dev/icons/). Common examples:
+
 - `file-text`, `folder`, `search`, `settings`, `star`
 - `heart`, `bookmark`, `tag`, `link`, `external-link`
 - `edit`, `trash-2`, `copy`, `clipboard`, `check`
@@ -303,6 +315,7 @@ Obsidian uses [Lucide icons](https://lucide.dev/icons/). Common examples:
 - `bar-chart-2`, `globe`, `download`, `upload`
 
 ### Command Types Summary
+
 | Type | When Available | Use Case |
 |------|---------------|----------|
 | `callback` | Always | Non-editor commands (open modal, toggle feature) |
@@ -310,6 +323,7 @@ Obsidian uses [Lucide icons](https://lucide.dev/icons/). Common examples:
 | `checkCallback` | Conditionally | Show/hide based on context |
 
 ### Register a Hotkey-Ready Command
+
 ```typescript
 // Users assign hotkeys in Settings > Hotkeys
 this.addCommand({
@@ -320,12 +334,14 @@ this.addCommand({
 ```
 
 ## Resources
+
 - [Obsidian Plugin API](https://docs.obsidian.md/Reference/TypeScript+API)
 - [Plugin Development Workflow](https://docs.obsidian.md/Plugins/Getting+started/Development+workflow)
 - [Lucide Icons](https://lucide.dev/icons/) — icon names for `addRibbonIcon`
 - [Obsidian Hub](https://publish.obsidian.md/hub/) — community knowledge base
 
 ## Next Steps
+
 - Set up hot-reload development: `obsidian-local-dev-loop`
 - Build advanced UI (views, fuzzy search, context menus): `obsidian-core-workflow-b`
 - Apply production patterns: `obsidian-sdk-patterns`

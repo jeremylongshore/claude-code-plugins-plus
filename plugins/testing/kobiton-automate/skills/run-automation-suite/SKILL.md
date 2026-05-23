@@ -12,6 +12,7 @@ description: Run local Appium test scripts against Kobiton devices. Guides you t
 Ask the user:
 
 > "Would you like to:"
+>
 > 1. Upload a new app build
 > 2. Use an existing app from Kobiton Store or a provided URL
 

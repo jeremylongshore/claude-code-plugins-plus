@@ -6,6 +6,7 @@ A monorepo where the root `AGENTS.md` sets global conventions and individual
 packages add supplemental rules.
 
 **Directory structure:**
+
 ```
 my-monorepo/
 ├── AGENTS.md                        # Global rules
@@ -20,6 +21,7 @@ my-monorepo/
 ```
 
 **Root AGENTS.md:**
+
 ```markdown
 # Project Agent Instructions
 
@@ -36,6 +38,7 @@ my-monorepo/
 ```
 
 **packages/api/AGENTS.md:**
+
 ```markdown
 # API Package Instructions
 
@@ -47,6 +50,7 @@ my-monorepo/
 ```
 
 **packages/web/AGENTS.md:**
+
 ```markdown
 # Web Package Instructions
 
@@ -58,6 +62,7 @@ my-monorepo/
 ```
 
 **Discovery output when working in `packages/api/`:**
+
 ```
 Agent Context Loader — Discovery Results
 ═══════════════════════════════════════════
@@ -93,6 +98,7 @@ Two `AGENTS.md` files contain contradictory instructions. The deeper
 (more specific) file takes precedence with a warning.
 
 **Root AGENTS.md:**
+
 ```markdown
 ## Git Workflow
 - Always sign commits with GPG
@@ -100,6 +106,7 @@ Two `AGENTS.md` files contain contradictory instructions. The deeper
 ```
 
 **services/legacy/AGENTS.md:**
+
 ```markdown
 ## Git Workflow
 - Skip commit signing (legacy CI does not support GPG)
@@ -107,6 +114,7 @@ Two `AGENTS.md` files contain contradictory instructions. The deeper
 ```
 
 **Discovery output:**
+
 ```
 Agent Context Loader — Discovery Results
 ═══════════════════════════════════════════
@@ -135,6 +143,7 @@ Review these conflicts to confirm the overrides are intentional.
 A freshly cloned repository with no `AGENTS.md` anywhere in the tree.
 
 **Discovery output:**
+
 ```
 Agent Context Loader — Discovery Results
 ═══════════════════════════════════════════
@@ -168,6 +177,7 @@ A large project with three levels of agent instructions, each adding or
 overriding the previous.
 
 **Structure:**
+
 ```
 enterprise-app/
 ├── AGENTS.md                         # Company-wide standards
@@ -178,6 +188,7 @@ enterprise-app/
 ```
 
 **Discovery output when working in `services/payment/`:**
+
 ```
 Agent Context Loader — Discovery Results
 ═══════════════════════════════════════════
@@ -213,6 +224,7 @@ On the second activation within the same session, cached results are
 returned without re-scanning the filesystem.
 
 **First activation:**
+
 ```
 Agent Context Loader — Discovery Results
 ═══════════════════════════════════════════
@@ -223,6 +235,7 @@ Cache: Fresh (stored for session)
 ```
 
 **Second activation (same session):**
+
 ```
 Agent Context Loader — Discovery Results
 ═══════════════════════════════════════════
@@ -240,6 +253,7 @@ The scanner encounters a symlinked directory and a permission-restricted
 parent directory during traversal.
 
 **Structure:**
+
 ```
 /home/user/project/
 ├── AGENTS.md
@@ -252,6 +266,7 @@ parent directory during traversal.
 ```
 
 **Discovery output:**
+
 ```
 Agent Context Loader — Discovery Results
 ═══════════════════════════════════════════

@@ -10,6 +10,7 @@ snowflake-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Snowflake integrations to production
 **Workflow:** Part of the cicd skill category for Snowflake integration.
 **Relates to:** Other snowflake skills in this pack.

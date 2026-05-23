@@ -1,6 +1,7 @@
-# Customer.io Upgrade & Migration - Implementation Guide
+## Customer.io Upgrade & Migration - Implementation Guide
 
 ### Step 1: Assess Current State
+
 ```bash
 #!/bin/bash
 # assess-customerio.sh
@@ -23,6 +24,7 @@ pip index versions customerio 2>/dev/null | head -1
 ```
 
 ### Step 2: Review Breaking Changes
+
 ```markdown
 ## Customer.io SDK Changelog Review
 
@@ -38,6 +40,7 @@ pip index versions customerio 2>/dev/null | head -1
 ```
 
 ### Step 3: Create Migration Plan
+
 ```typescript
 // migration-plan.ts
 interface MigrationPlan {
@@ -92,6 +95,7 @@ const migrationPlan: MigrationPlan = {
 ```
 
 ### Step 4: Update Dependencies
+
 ```bash
 # Upgrade Node.js SDK
 npm install @customerio/track@latest
@@ -107,6 +111,7 @@ pip install customerio==2.0.0
 ```
 
 ### Step 5: Update Code for Breaking Changes
+
 ```typescript
 // Before (v1.x)
 import { CustomerIO } from 'customerio-node';
@@ -120,6 +125,7 @@ await client.track(userId, { name: 'event_name', data: { key: 'value' } });
 ```
 
 ### Step 6: Migration Test Suite
+
 ```typescript
 // tests/migration.test.ts
 import { describe, it, expect, beforeAll } from 'vitest';
@@ -164,6 +170,7 @@ describe('Customer.io Migration Tests', () => {
 ```
 
 ### Step 7: Staged Rollout
+
 ```typescript
 // lib/feature-flags.ts
 const migrationFlags = {
@@ -193,6 +200,7 @@ if (shouldUseNewSDK(userId)) {
 ```
 
 ### Step 8: Post-Migration Verification
+
 ```bash
 #!/bin/bash
 # verify-migration.sh

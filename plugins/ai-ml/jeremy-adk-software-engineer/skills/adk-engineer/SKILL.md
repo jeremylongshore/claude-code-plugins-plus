@@ -59,10 +59,12 @@ Use this skill to design and implement ADK agent code that is maintainable and s
 ## Examples
 
 **Example: Productionizing an existing ADK agent**
+
 - Request: “Refactor this agent into a clean module structure and add tests before we deploy.”
 - Result: reorganized `src/` layout, tool boundaries, a test suite, and a deployment checklist.
 
 **Example: Multi-agent workflow**
+
 - Request: “Build a validator + deployer + monitor agent team with a sequential orchestrator.”
 - Result: orchestrator skeleton, per-agent responsibilities, and smoke tests for each step.
 

@@ -26,15 +26,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Observability
 
 ## Overview
+
 Comprehensive observability for Apollo.io integrations: Prometheus metrics (request count, latency, rate limits, credits), structured logging with PII redaction, OpenTelemetry tracing, and alerting rules. Tracks the metrics that matter: credit burn rate, enrichment success rate, and API health.
 
 ## Prerequisites
+
 - Valid Apollo API key
 - Node.js 18+
 
 ## Instructions
 
 ### Step 1: Prometheus Metrics
+
 ```typescript
 // src/observability/metrics.ts
 import { Counter, Histogram, Gauge, Registry } from 'prom-client';
@@ -78,6 +81,7 @@ export const enrichmentSuccessRate = new Gauge({
 ```
 
 ### Step 2: Axios Interceptors for Auto-Collection
+
 ```typescript
 // src/observability/instrument.ts
 import { AxiosInstance } from 'axios';
@@ -125,6 +129,7 @@ export function instrumentClient(client: AxiosInstance) {
 ```
 
 ### Step 3: Structured Logging with PII Redaction
+
 ```typescript
 // src/observability/logger.ts
 import pino from 'pino';
@@ -148,6 +153,7 @@ export const apolloLog = logger.child({ service: 'apollo' });
 ```
 
 ### Step 4: OpenTelemetry Tracing
+
 ```typescript
 // src/observability/tracing.ts
 import { trace, SpanStatusCode } from '@opentelemetry/api';
@@ -188,6 +194,7 @@ export function addTracing(client: AxiosInstance) {
 ```
 
 ### Step 5: Alerting Rules
+
 ```yaml
 # prometheus/apollo-alerts.yml
 groups:
@@ -219,6 +226,7 @@ groups:
 ```
 
 ### Step 6: Metrics Endpoint
+
 ```typescript
 import express from 'express';
 import { registry } from './metrics';
@@ -233,6 +241,7 @@ metricsApp.listen(9090, () => console.log('Metrics on :9090'));
 ```
 
 ## Output
+
 - Prometheus metrics: requests, duration, rate limits, credits, enrichment success
 - Axios interceptors for automatic collection on every API call
 - Pino structured logger with PII redaction
@@ -241,6 +250,7 @@ metricsApp.listen(9090, () => console.log('Metrics on :9090'));
 - `/metrics` and `/health` HTTP endpoints
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | Missing metrics | Verify `instrumentClient()` called before first API call |
@@ -249,10 +259,12 @@ metricsApp.listen(9090, () => console.log('Metrics on :9090'));
 | Credit burn alert | Review enrichment scoring thresholds in `apollo-cost-tuning` |
 
 ## Resources
+
 - [Prometheus Node.js Client](https://github.com/siimon/prom-client)
 - [OpenTelemetry JavaScript](https://opentelemetry.io/docs/languages/js/)
 - [Pino Logger](https://getpino.io/)
 - [Apollo API Usage Stats](https://docs.apollo.io/reference/view-api-usage-stats)
 
 ## Next Steps
+
 Proceed to `apollo-incident-runbook` for incident response.

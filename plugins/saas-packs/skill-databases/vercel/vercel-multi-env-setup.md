@@ -10,6 +10,7 @@ vercel-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Vercel across development, staging, and production environments with secure secret management.
 **Workflow:** Used during initial project setup and when adding new environments.
 **Relates to:** Follows vercel-reference-architecture; complements vercel-observability for monitoring

@@ -24,6 +24,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Gamma Migration Deep Dive
 
 ## Current State
+
 !`npm list 2>/dev/null | head -10`
 
 ## Overview

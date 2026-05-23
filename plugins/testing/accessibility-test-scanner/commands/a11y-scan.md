@@ -77,34 +77,41 @@ When invoked, you should:
 ```
 
 **Testing:**
+
 - [ ] Screen reader: [how to verify]
 - [ ] Keyboard: [how to verify]
 
 ### ARIA Issues
+
 - Missing labels: [N]
 - Invalid roles: [N]
 - Incorrect relationships: [N]
 
 ### Keyboard Navigation
+
  Tab order: Logical
  Focus indicators: Missing on [N] elements
  Keyboard traps: Found [N]
 
 ### Color Contrast
+
  Normal text: Pass
  Small text: [N] failures
  UI components: [N] failures
 
 ### Recommendations
+
 1. [Priority fix]
 2. [Priority fix]
 3. [Enhancement]
 
 ### Next Steps
+
 - [ ] Fix critical WCAG A violations
 - [ ] Address WCAG AA issues
 - [ ] Set up automated a11y testing
 - [ ] Manual screen reader testing
+
 ```
 
 ## Testing Tools Integration

@@ -5,9 +5,11 @@
 ## Architectural Overview
 
 ### Pattern
+
 Data Aggregation with Multi-Source Normalization
 
 ### Architecture Diagram
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                     User Request                                 │
@@ -39,6 +41,7 @@ Data Aggregation with Multi-Source Normalization
 ```
 
 ### Workflow
+
 1. Parse user query (TVL, revenue, users, comparison)
 2. Route to appropriate data fetcher
 3. Aggregate data from multiple sources
@@ -77,6 +80,7 @@ skills/analyzing-on-chain-data/
 ## API Integration Architecture
 
 ### DeFiLlama (Primary - No Rate Limits)
+
 ```python
 # Protocol TVL
 GET /protocols
@@ -92,6 +96,7 @@ GET /protocol/{protocol}
 ```
 
 ### Token Terminal (Secondary)
+
 ```python
 # Protocol metrics
 GET /v2/protocols/{protocol}

@@ -167,6 +167,7 @@ claude-code-plugins/
 ## 🏷️ GitHub Repository Settings
 
 ### Topics (for discoverability)
+
 Add these topics to your GitHub repo:
 
 - `claude-code`
@@ -181,11 +182,13 @@ Add these topics to your GitHub repo:
 - `mcp-server`
 
 ### Description
+
 ```
 Professional financial modeling toolkit for Claude Code with auto-invoked Skills. Build DCF models, LBO analysis, variance reports, and pivot tables using natural language.
 ```
 
 ### Website
+
 ```
 https://claudecodeplugins.io
 ```
@@ -195,6 +198,7 @@ https://claudecodeplugins.io
 ## 📝 Simple Announcement Post
 
 ### LinkedIn
+
 ```
 🚀 Excited to announce Excel Analyst Pro for Claude Code!
 
@@ -219,6 +223,7 @@ GitHub: https://github.com/jeremylongshore/claude-code-plugins
 ```
 
 ### Twitter/X
+
 ```
 🚀 Excel Analyst Pro for Claude Code
 
@@ -235,6 +240,7 @@ GitHub: https://github.com/jeremylongshore/claude-code-plugins
 ```
 
 ### Reddit (r/ClaudeAI, r/excel, r/finance)
+
 ```
 Title: [Tool] Excel Analyst Pro - Build DCF models in minutes with Claude Code
 
@@ -260,6 +266,7 @@ Happy to answer questions!
 ## ✅ Deployment Checklist
 
 ### Pre-Deploy
+
 - [x] Plugin code complete
 - [x] README.md written
 - [x] LICENSE file added
@@ -269,6 +276,7 @@ Happy to answer questions!
 - [ ] Git initialized
 
 ### Deploy to GitHub
+
 - [ ] Repository created on GitHub
 - [ ] Code pushed to main branch
 - [ ] v1.0.0 tag created
@@ -277,12 +285,14 @@ Happy to answer questions!
 - [ ] Repository description set
 
 ### Update Marketplace
+
 - [x] Marketplace JSON updated
 - [ ] Marketplace deployed to production
 - [ ] Plugin appears in listings
 - [ ] Installation command tested
 
 ### Announce
+
 - [ ] LinkedIn post
 - [ ] Twitter/X post
 - [ ] Reddit posts (r/ClaudeAI, r/excel)
@@ -316,18 +326,21 @@ gh release create v1.1.0 --title "v1.1.0" --notes "Bug fixes and improvements"
 ## 📊 Post-Launch Monitoring
 
 ### Track Metrics
+
 - GitHub stars
 - Repository clones
 - Issues opened
 - Pull requests
 
 ### Gather Feedback
+
 - Monitor GitHub Issues
 - Respond to questions
 - Note feature requests
 - Track bug reports
 
 ### Iterate
+
 - Fix critical bugs within 24 hours
 - Add requested features to roadmap
 - Release v1.1.0 with improvements within 2-4 weeks
@@ -345,6 +358,7 @@ gh release create v1.1.0 --title "v1.1.0" --notes "Bug fixes and improvements"
 5. Announce on social media
 
 **Users can install immediately:**
+
 ```bash
 /plugin install excel-analyst-pro@claude-code-plugins
 ```

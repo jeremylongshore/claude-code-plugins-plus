@@ -3,6 +3,7 @@
 ## Zapier Webhook Setup
 
 ### Parse Meeting Content
+
 ```javascript
 // Zapier Code Step - Parse Action Items
 const noteContent = inputData.note_content;
@@ -16,6 +17,7 @@ return { actions: JSON.stringify(actions) };
 ```
 
 ### Create GitHub Issues from Actions
+
 ```yaml
 Action: GitHub - Create Issue
 Repository: your-org/your-repo
@@ -69,6 +71,7 @@ jobs:
 ```
 
 ### Trigger from Zapier
+
 ```yaml
 Method: POST
 URL: https://api.github.com/repos/your-org/your-repo/dispatches
@@ -84,6 +87,7 @@ Body: {
 ```
 
 ## Linear Integration Pipeline
+
 ```yaml
 Step 1 - Trigger: Granola New Note Created
 Step 2 - Filter: Summary contains "TODO" or "action item"
@@ -92,6 +96,7 @@ Step 4 - Loop: For each action item -> Linear Create Issue (Team: Engineering, S
 ```
 
 ## Slack Meeting Summary Bot
+
 ```yaml
 Trigger: New Granola Note
 Channel: "#dev-meetings"
@@ -115,6 +120,7 @@ curl -X POST https://hooks.zapier.com/hooks/catch/YOUR_HOOK_ID \
 ```
 
 ## Error Handling
+
 ```yaml
 On Error:
   Retry: 3 times

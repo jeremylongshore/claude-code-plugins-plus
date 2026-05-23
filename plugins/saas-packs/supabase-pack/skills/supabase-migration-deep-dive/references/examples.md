@@ -1,6 +1,7 @@
-# Examples
+## Examples
 
 ### Quick Migration Status
+
 ```typescript
 const status = await validateSupabaseMigration();
 console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);

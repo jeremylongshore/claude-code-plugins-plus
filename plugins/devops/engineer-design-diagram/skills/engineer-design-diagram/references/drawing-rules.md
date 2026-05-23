@@ -54,6 +54,7 @@ JetBrains Mono for all text — monospace, technical aesthetic:
 ```
 
 Font sizes:
+
 - Component name: `12px`, weight `600`
 - Sublabel: `9px`, weight `400`, color `#94a3b8`
 - Annotations: `8px`, weight `400`
@@ -90,6 +91,7 @@ Rounded rectangles with 1.5px stroke, semi-transparent fill, `rx="6"`:
 Every `<rect>` representing a node must include a `<title>` child for accessibility (see [accessibility.md](accessibility.md)).
 
 Standard dimensions:
+
 - Width: `180px` default, `140-220px` range
 - Height: `60px` for services, `80-120px` for larger grouped components
 
@@ -155,6 +157,7 @@ Small inline connectors placed in the gap between services. Orange fill + stroke
 **40px minimum vertical gap** between components. Buses go *in* the gap, not overlapping.
 
 Standard component heights:
+
 - Service/container: `60px`
 - Grouped service (with sublabel list): `80-120px`
 - Message bus connector: `20px` (placed inside the 40px gap)

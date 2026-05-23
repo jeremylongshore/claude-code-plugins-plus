@@ -86,7 +86,7 @@ modify any files. The output is an audit report documenting findings and recomme
 
 ### Phase 2: Framework-by-Framework Evaluation
 
-4. **Evaluate each applicable framework.** Score against these criteria:
+1. **Evaluate each applicable framework.** Score against these criteria:
 
    **GDPR (General Data Protection Regulation)**
    - [ ] Privacy policy published and accessible
@@ -154,7 +154,7 @@ modify any files. The output is an audit report documenting findings and recomme
    - [ ] Vendor management program
    - [ ] Change management procedures
 
-5. **Calculate compliance scores.** For each framework:
+2. **Calculate compliance scores.** For each framework:
    - Count the criteria met vs. total applicable criteria
    - Calculate a percentage score
    - Assign a letter grade:
@@ -167,7 +167,7 @@ modify any files. The output is an audit report documenting findings and recomme
    | D | 40-59% | Significant gaps, priority remediation |
    | F | 0-39% | Non-compliant, immediate action required |
 
-6. **Generate remediation roadmap.** For each gap, provide:
+3. **Generate remediation roadmap.** For each gap, provide:
    - Description of the gap
    - Regulatory risk (fine amounts, enforcement precedents)
    - Remediation action with specific steps
@@ -175,7 +175,7 @@ modify any files. The output is an audit report documenting findings and recomme
    - Priority tier: P0 (immediate), P1 (30 days), P2 (90 days), P3 (6 months)
    - Suggested responsible party (legal, engineering, marketing, ops)
 
-7. **Compile the audit report** using the output format below.
+4. **Compile the audit report** using the output format below.
 
 ## Output
 
@@ -266,6 +266,7 @@ compliance assessment.
 Request: "Audit https://example-shop.com for compliance"
 
 Result: `COMPLIANCE-AUDIT-ExampleShop-2026-04-02.md` with:
+
 - GDPR: C (68%) — privacy policy exists but missing granular consent, no DPA with Shopify
 - CCPA: D (45%) — no "Do Not Sell" link, no consumer request mechanism
 - ADA/WCAG: B (82%) — good semantic HTML, missing alt text on 12 product images
@@ -280,6 +281,7 @@ Result: `COMPLIANCE-AUDIT-ExampleShop-2026-04-02.md` with:
 Request: "Run a compliance audit on our codebase at ./src"
 
 Result: `COMPLIANCE-AUDIT-SaaSApp-2026-04-02.md` with:
+
 - GDPR: D (52%) — no data processing records, no breach notification procedure
 - CCPA: C (65%) — basic privacy controls exist, missing sensitive data handling
 - ADA/WCAG: F (35%) — minimal ARIA attributes, no keyboard navigation, poor contrast

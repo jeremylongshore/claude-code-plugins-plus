@@ -18,15 +18,18 @@ compatibility: Designed for Claude Code
 # Lucidchart Production Checklist
 
 ## Overview
+
 Lucidchart integrations interact with collaborative diagrams that may be actively edited by multiple users simultaneously. A production deployment must handle OAuth2 token lifecycle management, respect document-level collaboration locks, and account for export throttling on large diagrams. Failing to version API headers correctly causes silent schema drift, while unbounded export requests can exhaust memory on complex documents. This checklist ensures your Lucidchart integration is resilient to these collaboration and export edge cases.
 
 ## Prerequisites
+
 - OAuth2 client credentials registered in Lucid developer portal (production app)
 - Secrets manager configured (Vault, AWS Secrets Manager, or GCP Secret Manager)
 - Monitoring stack operational (Datadog, Grafana, or CloudWatch)
 - Test workspace with sample diagrams covering all export formats (PNG, PDF, SVG)
 
 ## Authentication & Secrets
+
 - [ ] OAuth2 client ID and secret stored in vault/secrets manager (never in code)
 - [ ] Token rotation implemented with refresh token flow (access tokens expire in 60 min)
 - [ ] Refresh tokens stored encrypted at rest, separate from client credentials
@@ -34,6 +37,7 @@ Lucidchart integrations interact with collaborative diagrams that may be activel
 - [ ] Scopes restricted to minimum required (`lucidchart.document.read`, `lucidchart.document.export`)
 
 ## API Integration
+
 - [ ] Base URL points to `https://api.lucid.co/v1` (production endpoint)
 - [ ] `Lucid-Api-Version` header set explicitly on every request (pin to tested version)
 - [ ] Rate limiting enforced client-side with token bucket (respect `X-RateLimit-*` headers)
@@ -43,6 +47,7 @@ Lucidchart integrations interact with collaborative diagrams that may be activel
 - [ ] Request timeout set to 15 seconds for reads, 120 seconds for diagram exports
 
 ## Error Handling & Resilience
+
 - [ ] Circuit breaker configured for Lucidchart API calls (open after 5 consecutive failures)
 - [ ] Retry logic with exponential backoff for 429 (rate limit) and 5xx responses
 - [ ] 409 Conflict responses handled for concurrent document edits (retry with latest version)
@@ -52,6 +57,7 @@ Lucidchart integrations interact with collaborative diagrams that may be activel
 - [ ] Out-of-memory protection: cap export resolution for diagrams exceeding 500 objects
 
 ## Monitoring & Alerting
+
 - [ ] API latency tracked (p50, p95, p99) with 2s p95 threshold for exports
 - [ ] Error rate alerts configured (threshold: >1% over 5-minute window)
 - [ ] OAuth2 token refresh failure rate monitored (alert on any failure)
@@ -60,6 +66,7 @@ Lucidchart integrations interact with collaborative diagrams that may be activel
 - [ ] Collaboration lock contention rate measured per workspace
 
 ## Security
+
 - [ ] OAuth2 redirect URI restricted to exact production callback URL (no wildcards)
 - [ ] PKCE enforced for authorization code flow
 - [ ] Exported diagram files scanned for embedded sensitive data before downstream storage
@@ -67,6 +74,7 @@ Lucidchart integrations interact with collaborative diagrams that may be activel
 - [ ] Access tokens never logged or included in error reports
 
 ## Validation Script
+
 ```typescript
 async function validateLucidchartProduction(accessToken: string): Promise<void> {
   const base = 'https://api.lucid.co/v1';
@@ -100,6 +108,7 @@ async function validateLucidchartProduction(accessToken: string): Promise<void> 
 ```
 
 ## Risk Matrix
+
 | Check | Risk if Skipped | Priority |
 |---|---|---|
 | OAuth2 token refresh mutex | Duplicate refresh calls invalidate tokens, cascading 401s | Critical |
@@ -109,7 +118,9 @@ async function validateLucidchartProduction(accessToken: string): Promise<void> 
 | Export memory cap | OOM crash on complex diagrams (500+ objects) | High |
 
 ## Resources
+
 - [Lucid Developer Reference](https://developer.lucid.co/reference/overview)
 
 ## Next Steps
+
 See `lucidchart-security-basics`.

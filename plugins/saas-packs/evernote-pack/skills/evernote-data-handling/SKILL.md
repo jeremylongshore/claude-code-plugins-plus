@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Data Handling
 
 ## Overview
+
 Best practices for handling Evernote data including ENML content processing, attachment management, local database sync, and ENEX export/import.
 
 ## Prerequisites
+
 - Understanding of Evernote data model (Notes, Notebooks, Tags, Resources)
 - Database for local storage (SQLite, PostgreSQL, etc.)
 - File storage for attachments
@@ -87,6 +89,7 @@ Export notes to ENEX (Evernote's XML export format), JSON, or Markdown. ENEX pre
 For the complete data schema, sync manager, ENML processor, and export implementations, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
+
 - SQL schema for local Evernote data storage
 - ENML-to-text and ENML-to-HTML converters
 - Resource download and local storage manager
@@ -94,6 +97,7 @@ For the complete data schema, sync manager, ENML processor, and export implement
 - ENEX, JSON, and Markdown export utilities
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `BAD_DATA_FORMAT` | Malformed ENML during update | Validate ENML with DTD check before API call |
@@ -102,12 +106,14 @@ For the complete data schema, sync manager, ENML processor, and export implement
 | Sync chunk gaps | Missed USN range | Request full sync from USN 0 |
 
 ## Resources
+
 - [Evernote Data Model](https://dev.evernote.com/doc/articles/data_model.php)
 - [ENML Reference](https://dev.evernote.com/doc/articles/enml.php)
 - [Synchronization](https://dev.evernote.com/doc/articles/synchronization.php)
 - [ENEX Export Format](https://dev.evernote.com/doc/articles/enex.php)
 
 ## Next Steps
+
 For enterprise features, see `evernote-enterprise-rbac`.
 
 ## Examples

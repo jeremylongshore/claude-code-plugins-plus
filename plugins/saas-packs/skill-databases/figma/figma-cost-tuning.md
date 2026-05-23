@@ -10,6 +10,7 @@ figma-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Figma costs and usage
 **Workflow:** Part of the cicd skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

@@ -20,9 +20,11 @@ compatibility: Designed for Claude Code
 # OpenEvidence Install & Auth
 
 ## Overview
+
 Set up OpenEvidence Medical AI API for clinical decision support and evidence-based queries.
 
 ## Prerequisites
+
 - OpenEvidence account and API access
 - API key/credentials from OpenEvidence dashboard
 - Node.js 18+ or Python 3.8+
@@ -30,18 +32,21 @@ Set up OpenEvidence Medical AI API for clinical decision support and evidence-ba
 ## Instructions
 
 ### Step 1: Install SDK
+
 ```bash
 npm install @openevidence/sdk
 # API key from OpenEvidence developer portal
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 export OPENEVIDENCE_API_KEY="your-api-key-here"
 echo 'OPENEVIDENCE_API_KEY=your-api-key' >> .env
 ```
 
 ### Step 3: Verify Connection (TypeScript)
+
 ```typescript
 import { OpenEvidenceClient } from '@openevidence/sdk';
 const client = new OpenEvidenceClient({
@@ -54,6 +59,7 @@ console.log(`Citations: ${result.citations.length} references`);
 ```
 
 ### Step 4: Verify Connection (Python)
+
 ```python
 import openevidence
 client = openevidence.Client(api_key=os.environ['OPENEVIDENCE_API_KEY'])
@@ -63,6 +69,7 @@ print(f'Citations: {len(result.citations)} references')
 ```
 
 ## Error Handling
+
 | Error | Code | Solution |
 |-------|------|----------|
 | Invalid API key | 401 | Verify credentials in dashboard |
@@ -70,7 +77,9 @@ print(f'Citations: {len(result.citations)} references')
 | Rate limited | 429 | Implement backoff |
 
 ## Resources
+
 - [OpenEvidence Documentation](https://www.openevidence.com)
 
 ## Next Steps
+
 After auth, proceed to `openevidence-hello-world`.

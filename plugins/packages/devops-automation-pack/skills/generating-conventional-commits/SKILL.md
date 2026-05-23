@@ -33,6 +33,7 @@ Create well-formatted, informative commit messages that follow the conventional 
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Create a commit message after making code changes.
 - Ensure your commit messages follow the conventional commits standard.
 - Save time writing commit messages manually.
@@ -44,6 +45,7 @@ This skill activates when you need to:
 User request: "Generate a commit message for these changes."
 
 The skill will:
+
 1. Analyze the staged changes related to a new feature.
 2. Generate a commit message like `feat: Implement user authentication`.
 
@@ -52,6 +54,7 @@ The skill will:
 User request: "Create a commit for the bug fix."
 
 The skill will:
+
 1. Analyze the staged changes related to a bug fix.
 2. Generate a commit message like `fix: Resolve issue with incorrect password reset`.
 

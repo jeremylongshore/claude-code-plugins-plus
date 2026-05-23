@@ -10,6 +10,7 @@ granola-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Granola webhook handling
 **Workflow:** Part of the cicd skill category for Granola integration.
 **Relates to:** Other granola skills in this pack.

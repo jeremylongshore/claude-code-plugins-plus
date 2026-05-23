@@ -2,7 +2,6 @@
 
 > Full implementation details for the parent SKILL.md.
 
-
 ## Incident Classification
 
 | Severity | Impact | Response Time | Example |
@@ -12,12 +11,12 @@
 | P3 - Medium | Partial degradation | 2 hours | High error rate |
 | P4 - Low | Minor issues | 1 day | Slow response times |
 
-
 ## Incident Response Procedures
 
 ### INC-01: Complete API Outage
 
 **Symptoms:**
+
 - All Evernote API calls failing
 - 5xx errors from Evernote
 - Connection timeouts
@@ -109,6 +108,7 @@ app.use((req, res, next) => {
 ```
 
 **Resolution:**
+
 1. Monitor Evernote status for resolution
 2. Gradually re-enable API calls
 3. Trigger sync for affected users
@@ -119,6 +119,7 @@ app.use((req, res, next) => {
 ### INC-02: Rate Limit Crisis
 
 **Symptoms:**
+
 - Frequent RATE_LIMIT_REACHED errors
 - rateLimitDuration > 300 seconds
 - Multiple users affected
@@ -201,6 +202,7 @@ class EmergencyRateLimiter {
 ```
 
 **Resolution:**
+
 1. Identify and fix inefficient API usage
 2. Increase cache TTLs
 3. Implement request coalescing
@@ -211,6 +213,7 @@ class EmergencyRateLimiter {
 ### INC-03: Authentication Failures
 
 **Symptoms:**
+
 - Users receiving auth errors
 - OAuth flow failing
 - Token rejections
@@ -259,6 +262,7 @@ async function diagnoseAuthIssue(userId) {
 | 3 (PERMISSION_DENIED) | Insufficient permissions | Check API key permissions |
 
 **Resolution:**
+
 ```javascript
 // Batch re-auth notification
 async function notifyUsersToReauth(userIds) {
@@ -279,6 +283,7 @@ async function notifyUsersToReauth(userIds) {
 ### INC-04: Data Sync Issues
 
 **Symptoms:**
+
 - Notes not appearing
 - Sync state stuck
 - Missing changes
@@ -319,7 +324,6 @@ async function forceResync(userId) {
 ```
 
 ---
-
 
 ## Incident Communication Templates
 
@@ -378,7 +382,6 @@ All notes should now be syncing normally.
 
 We apologize for any inconvenience.
 ```
-
 
 ## Post-Incident Checklist
 

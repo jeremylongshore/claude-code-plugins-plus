@@ -24,6 +24,7 @@ Gamma is an AI-powered content platform for creating presentations, documents, w
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `gamma-install-auth` | API key setup, X-API-KEY header, verify with /themes, thin client wrapper |
@@ -40,6 +41,7 @@ Gamma is an AI-powered content platform for creating presentations, documents, w
 | `gamma-upgrade-migration` | v0.2 to v1.0 migration, breaking changes, rollback procedure |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `gamma-ci-integration` | GitHub Actions, vitest config, mock mode for PRs, integration tests |
@@ -50,6 +52,7 @@ Gamma is an AI-powered content platform for creating presentations, documents, w
 | `gamma-reference-architecture` | Basic, service layer, and event-driven architecture patterns |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `gamma-multi-env-setup` | Dev/staging/prod config, mock mode, secret manager, CI/CD environments |

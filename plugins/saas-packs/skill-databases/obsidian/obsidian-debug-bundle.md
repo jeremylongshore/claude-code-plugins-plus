@@ -10,6 +10,7 @@ obsidian-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Obsidian debug evidence for support
 **Workflow:** Part of the operations skill category for Obsidian integration.
 **Relates to:** Other obsidian skills in this pack.

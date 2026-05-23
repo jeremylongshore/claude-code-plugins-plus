@@ -30,6 +30,7 @@
 ### Product Evolution
 
 **Historical Names:**
+
 - AI Applications
 - Agent Builder
 - Vertex AI Search and Conversation
@@ -43,22 +44,26 @@
 ### Core Capabilities
 
 #### 1. Deep Information Retrieval
+
 - Advanced natural language processing
 - Semantic understanding of user intent
 - Context-aware relevance ranking
 
 #### 2. Foundation Model Integration
+
 - Gemini 2.0 Flash (gemini-2.0-flash-001) for answer generation
 - Context-based question answering
 - Generative AI summarization
 
 #### 3. Google-Quality Search
+
 - Out-of-the-box natural language understanding
 - Automated synonym recognition
 - Spelling correction and auto-suggest
 - Self-learning ranking models with clickstream analytics
 
 #### 4. Retrieval Augmented Generation (RAG)
+
 - Ground LLM responses with retrieved search results
 - Combine enterprise data with foundation models
 - Reduce hallucinations through fact-grounding
@@ -70,22 +75,26 @@
 ### 1. Search Applications
 
 #### Custom Search
+
 - **Purpose:** Search proprietary data or private websites
 - **Data Sources:** Documents, PDFs, HTML, JSON, databases
 - **Use Cases:** Internal knowledge bases, document repositories, corporate wikis
 
 #### Media Search
+
 - **Purpose:** Search movies, videos, music, and multimedia content
 - **Data Sources:** Media catalogs, streaming libraries, content databases
 - **Use Cases:** Streaming platforms, content discovery, media recommendations
 
 #### Healthcare Search
+
 - **Purpose:** Search FHIR R4 data and clinical records
 - **Data Sources:** Cloud Healthcare API FHIR stores
 - **Use Cases:** Patient record search, clinical decision support, medical literature search
 - **Compliance:** HIPAA-compliant, healthcare-specific NLP
 
 #### Website Search
+
 - **Purpose:** Index and search public or private websites
 - **Data Sources:** Website URLs, sitemaps
 - **Use Cases:** Customer support portals, documentation sites, e-commerce catalogs
@@ -93,11 +102,13 @@
 ### 2. Recommendation Applications
 
 #### Media Recommendations
+
 - **Purpose:** Personalized content discovery
 - **Data Sources:** User interaction history, media catalogs
 - **Use Cases:** "Watch next" suggestions, playlist generation, content recommendations
 
 #### Custom Recommendations (Preview)
+
 - **Purpose:** Recommendations for non-media content
 - **Data Sources:** Product catalogs, user behavior
 - **Use Cases:** E-commerce product recommendations, article suggestions, resource discovery
@@ -109,12 +120,14 @@
 ### 1. Out-of-the-Box Natural Language Understanding
 
 **Capabilities:**
+
 - Semantic search (understand meaning, not just keywords)
 - Multi-language support
 - Entity recognition
 - Intent classification
 
 **Example:**
+
 ```
 User query: "How do I reset my password?"
 Semantic understanding: Password recovery, account access, authentication troubleshooting
@@ -124,25 +137,30 @@ Relevant results: Password reset guide, account security documentation, 2FA setu
 ### 2. Automated Search Enhancement
 
 **Synonym Recognition:**
+
 - Automatically detects synonyms and related terms
 - Example: "car" → "automobile", "vehicle", "auto"
 
 **Spelling Correction:**
+
 - Suggests corrected spellings for misspelled queries
 - Example: "pasword reset" → "password reset"
 
 **Auto-Suggest:**
+
 - Real-time query completion
 - Based on popular searches and indexed content
 
 ### 3. Generative AI Capabilities
 
 **Answer Generation:**
+
 - Gemini 2.0 Flash model for context-based Q&A
 - Extractive and abstractive summarization
 - Conversational search experiences
 
 **Example:**
+
 ```
 User: "What are the benefits of our health plan?"
 Generated Answer: "Our health plan provides comprehensive coverage including:
@@ -155,11 +173,13 @@ Generated Answer: "Our health plan provides comprehensive coverage including:
 ### 4. Self-Learning Ranking
 
 **Clickstream Analytics:**
+
 - Track user interactions with search results
 - Learn from clicks, dwell time, and conversions
 - Continuously improve result relevance
 
 **Personalization:**
+
 - User-specific ranking adjustments
 - Contextual relevance based on history
 - Adaptive search experiences
@@ -167,12 +187,14 @@ Generated Answer: "Our health plan provides comprehensive coverage including:
 ### 5. Embeddable Search Widget
 
 **Integration Methods:**
+
 - Iframe embed
 - JavaScript widget
 - REST API integration
 - Custom UI with API backend
 
 **Features:**
+
 - Pre-built UI components
 - Customizable styling
 - Mobile-responsive design
@@ -187,15 +209,18 @@ Generated Answer: "Our health plan provides comprehensive coverage including:
 Vertex AI Search organizes data through **apps** and **data stores**:
 
 #### Apps
+
 **Definition:** The interface through which users interact with search/recommendations
 
 **Types:**
+
 - Custom search apps
 - Custom recommendations apps
 - Media apps
 - Healthcare apps
 
 **Relationship Models:**
+
 - **Custom search apps**: Many-to-many with data stores (blended search)
 - **Custom recommendations apps**: One-to-one with data stores
 - **Media/healthcare apps**: Many-to-one (multiple apps can share a data store)
@@ -203,9 +228,11 @@ Vertex AI Search organizes data through **apps** and **data stores**:
 **Important:** Once connected, **a data store cannot be disconnected** from an app.
 
 #### Data Stores
+
 **Definition:** Repositories that hold indexed data for search/recommendations
 
 **Types:**
+
 1. Structured data stores
 2. Unstructured data stores
 3. Website data stores
@@ -219,22 +246,26 @@ Vertex AI Search organizes data through **apps** and **data stores**:
 **Purpose:** Semantic search or recommendations over structured data
 
 **Data Format:**
+
 - Organized in defined schemas
 - Rows in tables or JSON records
 - Key-value pairs with consistent structure
 
 **Supported Sources:**
+
 - BigQuery tables
 - Cloud Storage (JSON files)
 - Manual JSON uploads via API
 
 **Example Use Cases:**
+
 - Hotel catalogs (name, location, price, amenities)
 - Real estate listings (address, bedrooms, price, photos)
 - Restaurant directories (cuisine, rating, hours, menu)
 - Product catalogs (SKU, name, description, price, inventory)
 
 **Example Schema:**
+
 ```json
 {
   "id": "hotel-123",
@@ -254,19 +285,23 @@ Vertex AI Search organizes data through **apps** and **data stores**:
 **Purpose:** Semantic search over documents and images
 
 **Supported File Types:**
+
 - **Documents:** PDF, TXT, HTML, DOCX, PPTX, XLSX, XLSM
 - **Images:** JPEG, PNG (for multimodal search)
 
 **Data Sources:**
+
 - Cloud Storage buckets
 - BigQuery (with file URIs)
 
 **Processing:**
+
 - Automatic text extraction (OCR for images)
 - Content chunking for large documents
 - Embedding generation for semantic search
 
 **Example Use Cases:**
+
 - Corporate policy documents
 - Technical manuals and user guides
 - Research papers and articles
@@ -274,6 +309,7 @@ Vertex AI Search organizes data through **apps** and **data stores**:
 - Presentation decks and reports
 
 **Example Document Structure:**
+
 ```
 gs://my-bucket/documents/employee-handbook.pdf
 ├── Page 1: Introduction and Welcome
@@ -289,19 +325,23 @@ gs://my-bucket/documents/employee-handbook.pdf
 **Purpose:** Index content from websites (public or private)
 
 **Data Characteristics:**
+
 - Primarily unstructured (HTML, text, images)
 - Can include structured metadata (meta tags, schema.org, PageMap)
 
 **Requirements:**
+
 - **Domain verification** required for data store owners
 - Accessible via HTTP/HTTPS
 - Robots.txt compliance
 
 **Indexing Methods:**
+
 - **Standard indexing:** Basic crawl and index
 - **Advanced indexing:** Enhanced understanding, requires verification
 
 **Metadata Enhancement:**
+
 ```html
 <!-- Schema.org structured data -->
 <script type="application/ld+json">
@@ -324,6 +364,7 @@ gs://my-bucket/documents/employee-handbook.pdf
 ```
 
 **Example Use Cases:**
+
 - Customer support documentation
 - Product documentation sites
 - Corporate blogs and news
@@ -336,6 +377,7 @@ gs://my-bucket/documents/employee-handbook.pdf
 **Purpose:** Structured data stores with media-specific schemas
 
 **Required Fields (5 media-related):**
+
 - Title
 - URI (content location)
 - Categories/genres
@@ -343,6 +385,7 @@ gs://my-bucket/documents/employee-handbook.pdf
 - Availability dates
 
 **Optional Fields:**
+
 - Thumbnail images
 - Actors/artists
 - Release date
@@ -350,6 +393,7 @@ gs://my-bucket/documents/employee-handbook.pdf
 - Language/subtitles
 
 **Example Schema:**
+
 ```json
 {
   "id": "movie-456",
@@ -370,25 +414,30 @@ gs://my-bucket/documents/employee-handbook.pdf
 **Purpose:** Search FHIR R4 data from Cloud Healthcare API
 
 **Data Source:**
+
 - Cloud Healthcare API FHIR stores
 - Supported FHIR R4 resources
 
 **Compliance:**
+
 - HIPAA-compliant infrastructure
 - PHI (Protected Health Information) handling
 - Audit logging for access
 
 **Ingestion Methods:**
+
 - Batch import into data stores
 - Streaming import via data connectors
 
 **Example Use Cases:**
+
 - Patient record search
 - Medication lookup
 - Lab results retrieval
 - Clinical decision support
 
 **Example FHIR Resource:**
+
 ```json
 {
   "resourceType": "Patient",
@@ -410,11 +459,13 @@ gs://my-bucket/documents/employee-handbook.pdf
 ### Cloud Storage Upload
 
 **Supported Formats:**
+
 - JSON, JSONL (for structured data)
 - PDF, TXT, HTML, DOCX, PPTX, XLSX, XLSM (for unstructured data)
 - JPEG, PNG (for images)
 
 **Process:**
+
 ```bash
 # 1. Upload files to Cloud Storage
 gsutil cp documents/*.pdf gs://my-bucket/documents/
@@ -434,11 +485,13 @@ gcloud alpha discovery-engine documents import my-datastore \
 ### BigQuery Import
 
 **Advantages:**
+
 - Large-scale data ingestion
 - Structured data from data warehouse
 - Query-based data selection
 
 **Process:**
+
 ```python
 from google.cloud import discoveryengine_v1
 
@@ -461,6 +514,7 @@ response = operation.result()
 ### Website Indexing
 
 **Standard Indexing:**
+
 ```bash
 # Create website data store
 gcloud alpha discovery-engine data-stores create website-datastore \
@@ -476,6 +530,7 @@ gcloud alpha discovery-engine target-sites create \
 ```
 
 **Advanced Indexing:**
+
 - Requires domain verification
 - Enhanced content understanding
 - Better structured data extraction
@@ -483,6 +538,7 @@ gcloud alpha discovery-engine target-sites create \
 ### RESTful API Integration
 
 **Real-time Updates:**
+
 ```python
 # Create document via API
 from google.cloud import discoveryengine_v1
@@ -512,11 +568,13 @@ client.create_document(
 **Definition:** A single custom search app that searches across **multiple data stores** simultaneously.
 
 **Benefits:**
+
 - Unified search experience across different data types
 - Single API endpoint for diverse content
 - Centralized relevance ranking
 
 **Example:**
+
 ```
 Search Query: "company benefits"
 ├── Data Store 1: Employee Handbook (PDF documents)
@@ -528,16 +586,19 @@ Search Query: "company benefits"
 ### Requirements and Limitations
 
 **Minimum Requirements:**
+
 - At least 2 data stores must be connected during app creation
 - All data stores must be in the same location
 
 **Limitations:**
+
 - Maximum of **50 data stores per search app**
 - Unstructured data imported via BigQuery is **NOT supported**
 - Website data stores must have **advanced indexing enabled**
 - All data stores must have **matching CMEK configurations** (if using customer-managed encryption)
 
 **Configuration:**
+
 ```python
 from google.cloud import discoveryengine_v1
 
@@ -569,11 +630,13 @@ client.create_engine(parent=f"projects/{PROJECT_ID}/locations/global/collections
 ### Why RAG?
 
 **Problem:**
+
 - LLMs are trained on static datasets (knowledge cutoff date)
 - Cannot access real-time or proprietary data
 - Prone to hallucinations (generating false information)
 
 **Solution with RAG:**
+
 - Ground responses in retrieved facts
 - Access up-to-date enterprise data
 - Reduce hallucinations significantly
@@ -604,11 +667,13 @@ client.create_engine(parent=f"projects/{PROJECT_ID}/locations/global/collections
 ### Detailed Process
 
 #### Step 1: User Query
+
 ```python
 user_query = "What are the eligibility requirements for our health insurance plan?"
 ```
 
 #### Step 2: Query Embedding
+
 ```python
 from vertexai.language_models import TextEmbeddingModel
 
@@ -617,6 +682,7 @@ query_embedding = embedding_model.get_embeddings([user_query])[0].values
 ```
 
 #### Step 3: Semantic Search
+
 ```python
 from google.cloud import discoveryengine_v1
 
@@ -631,6 +697,7 @@ retrieved_documents = [result.document for result in response.results]
 ```
 
 #### Step 4: Augment Prompt
+
 ```python
 context = "\n\n".join([
     f"Document {i+1}: {doc.struct_data['content']}"
@@ -650,6 +717,7 @@ Answer:
 ```
 
 #### Step 5: Generate Response
+
 ```python
 from vertexai.preview.generative_models import GenerativeModel
 
@@ -659,6 +727,7 @@ answer = response.text
 ```
 
 #### Step 6: Return with Citations
+
 ```python
 final_response = {
     "answer": answer,
@@ -678,6 +747,7 @@ final_response = {
 **Definition:** RAG that combines **text and visual data** (images, diagrams, charts) for richer context and more accurate responses.
 
 **Capabilities:**
+
 - Process text alongside images
 - Understand diagrams and charts
 - Extract information from visual content
@@ -746,6 +816,7 @@ response = model.generate_content([
 **Definition:** Connecting LLM responses to **verifiable external sources** to reduce hallucinations and improve accuracy.
 
 **Vertex AI Grounding Options:**
+
 1. **Enterprise Data:** Vertex AI Search (your own data)
 2. **Google Search:** Public web information
 3. **Hybrid:** Combination of both
@@ -753,12 +824,14 @@ response = model.generate_content([
 ### When to Use Google Search Grounding
 
 **Ideal For:**
+
 - Current events and news
 - General knowledge questions
 - Public information verification
 - Supplementing limited enterprise data
 
 **Not Ideal For:**
+
 - Proprietary company information
 - Sensitive/confidential data
 - Internal policies and procedures
@@ -791,11 +864,13 @@ print(response.grounding_metadata)
 ### Vector Search
 
 **What It Is:**
+
 - Google Cloud's **vector similarity search engine**
 - Built on the ScaNN (Scalable Nearest Neighbors) algorithm
 - Optimized for **embedding-based search**
 
 **Use Cases:**
+
 - Semantic similarity search
 - Recommendation systems
 - Finding similar items (products, documents, images)
@@ -803,6 +878,7 @@ print(response.grounding_metadata)
 - Real-time analytics
 
 **Key Features:**
+
 - Dense embeddings (semantic meaning)
 - Sparse embeddings (keyword-based)
 - Hybrid search (combining both)
@@ -810,12 +886,14 @@ print(response.grounding_metadata)
 - Billion-scale indexing
 
 **Integration:**
+
 - Vertex AI Embeddings API (generate embeddings)
 - Vertex AI Feature Store (manage features)
 - Vertex AI Pipelines (automate workflows)
 - Vertex AI Ranking API (rerank results)
 
 **Example:**
+
 ```python
 from google.cloud import aiplatform
 
@@ -845,11 +923,13 @@ response = index_endpoint.find_neighbors(
 ### Vertex AI Search
 
 **What It Is:**
+
 - **End-to-end enterprise search platform**
 - Combines retrieval, ranking, and generative AI
 - Built on Discovery Engine API
 
 **Use Cases:**
+
 - Enterprise knowledge bases
 - Document search with answer generation
 - Conversational search experiences
@@ -857,6 +937,7 @@ response = index_endpoint.find_neighbors(
 - Healthcare record search
 
 **Key Features:**
+
 - Out-of-the-box NLP and ranking
 - Multiple data store types (structured, unstructured, website)
 - Generative AI summarization
@@ -864,12 +945,14 @@ response = index_endpoint.find_neighbors(
 - Self-learning from clickstream data
 
 **Integration:**
+
 - Gemini models (answer generation)
 - BigQuery (data import)
 - Cloud Storage (document storage)
 - Cloud Healthcare API (FHIR data)
 
 **Example:**
+
 ```python
 from google.cloud import discoveryengine_v1
 
@@ -905,6 +988,7 @@ print(response.results)  # Source documents
 ### When to Use Each
 
 **Use Vector Search When:**
+
 - Building custom ML applications
 - Need fine-grained control over embeddings
 - Require ultra-low latency (< 10ms)
@@ -912,6 +996,7 @@ print(response.results)  # Source documents
 - Building recommendation engines
 
 **Use Vertex AI Search When:**
+
 - Need enterprise search quickly
 - Want out-of-the-box NLP and ranking
 - Require answer generation (RAG)
@@ -919,6 +1004,7 @@ print(response.results)  # Source documents
 - Need blended search across data types
 
 **Use Both Together:**
+
 - Vector Search for retrieval
 - Vertex AI Search for ranking and summarization
 - Best of both worlds: precision + ease of use
@@ -934,6 +1020,7 @@ print(response.results)  # Source documents
 > "A unified framework for distributed computing and parallel processing essential for machine learning workflows."
 
 **Core Value Proposition:**
+
 - Scale from laptop to cluster with minimal code changes
 - Unified API for diverse workloads (training, serving, data processing)
 - Python-native with strong ecosystem support
@@ -941,6 +1028,7 @@ print(response.results)  # Source documents
 ### What is Ray on Vertex AI?
 
 **Ray on Vertex AI** is a **fully managed Ray cluster service** that:
+
 - Handles cluster lifecycle management (creation, scaling, deletion)
 - Integrates with Google Cloud services (BigQuery, Vertex AI, Cloud Storage)
 - Provides enterprise features (VPC support, monitoring, logging)
@@ -971,6 +1059,7 @@ Ray Cluster on Vertex AI
 ### Key Components
 
 #### 1. Head Node
+
 - **Purpose:** Cluster coordination and job submission
 - **Responsibilities:**
   - Job scheduling
@@ -979,6 +1068,7 @@ Ray Cluster on Vertex AI
   - Dashboard hosting
 
 #### 2. Worker Nodes
+
 - **Purpose:** Execute distributed tasks and actors
 - **Characteristics:**
   - Up to 2,000 nodes per cluster
@@ -986,6 +1076,7 @@ Ray Cluster on Vertex AI
   - Heterogeneous machine types supported
 
 #### 3. Worker Pools
+
 - **Purpose:** Group workers by machine type/configuration
 - **Use Cases:**
   - CPU-intensive tasks (n1-standard-16)
@@ -1001,6 +1092,7 @@ Ray Cluster on Vertex AI
 **Description:** Direct internet access to Ray cluster
 
 **Access Method:**
+
 ```python
 from google.cloud import aiplatform
 
@@ -1011,16 +1103,19 @@ ray.init(f"ray://{cluster_endpoint}:10001")
 ```
 
 **Use Cases:**
+
 - Rapid development and experimentation
 - Notebooks (Colab, Jupyter)
 - Local development environments
 
 **Pros:**
+
 - Simple setup
 - No network configuration required
 - Quick iterations
 
 **Cons:**
+
 - Less secure (internet-exposed)
 - Not suitable for production with sensitive data
 
@@ -1029,22 +1124,26 @@ ray.init(f"ray://{cluster_endpoint}:10001")
 **Description:** Private network connections through VPC peering
 
 **Access Method:**
+
 ```python
 # Connect from Compute Engine VM in same VPC
 ray.init(f"ray://{private_ip}:10001")
 ```
 
 **Use Cases:**
+
 - Enterprise security requirements
 - On-premises connectivity (Cloud Interconnect)
 - Production workloads with compliance needs
 
 **Pros:**
+
 - Secure (no internet exposure)
 - Low latency (private network)
 - Fine-grained access control (IAM + VPC)
 
 **Cons:**
+
 - Requires VPC configuration
 - More complex setup
 
@@ -1055,6 +1154,7 @@ ray.init(f"ray://{private_ip}:10001")
 ### 1. Persistent Resources
 
 **Unlike standard training jobs:**
+
 - Clusters remain active until explicitly deleted
 - No startup overhead for subsequent jobs
 - Data caching across runs
@@ -1063,11 +1163,13 @@ ray.init(f"ray://{private_ip}:10001")
 > "Reduces startup time for iterative work from minutes to seconds."
 
 **Use Case:**
+
 - Hyperparameter tuning (multiple runs)
 - Experiment tracking
 - Interactive development
 
 **Example:**
+
 ```python
 # Create persistent cluster
 cluster = aiplatform.RayCluster.create(
@@ -1096,10 +1198,12 @@ cluster.delete()
 **Description:** Automatic adjustment of worker nodes based on demand
 
 **Modes:**
+
 1. **Autoscaling (Recommended):** Automatic based on Ray task/actor resource requirements
 2. **Manual Scaling:** Fixed number of workers
 
 **Configuration:**
+
 ```python
 cluster = aiplatform.RayCluster.create(
     display_name="autoscaling-cluster",
@@ -1114,6 +1218,7 @@ cluster = aiplatform.RayCluster.create(
 ```
 
 **Cost Optimization:**
+
 - Scale down to minimum during idle periods
 - Scale up for burst workloads
 - Pay only for actual usage
@@ -1121,11 +1226,13 @@ cluster = aiplatform.RayCluster.create(
 ### 3. BigQuery Integration
 
 **Native Support:**
+
 - Read from BigQuery tables
 - Write results back to BigQuery
 - Transform data within Ray
 
 **Example:**
+
 ```python
 import vertex_ray
 
@@ -1149,6 +1256,7 @@ vertex_ray.data.write_bigquery(
 ### 4. Model Deployment Integration
 
 **Vertex AI Inference:**
+
 ```python
 import ray
 from ray import serve
@@ -1177,11 +1285,13 @@ endpoint.deploy(
 ### 5. Monitoring and Logging
 
 **Built-in Integration:**
+
 - **Cloud Logging:** Automatic log ingestion
 - **Cloud Monitoring:** Metrics and dashboards
 - **Ray Dashboard:** Real-time cluster visualization
 
 **Access Ray Dashboard:**
+
 ```bash
 # Get cluster info
 gcloud ai ray-clusters describe CLUSTER_NAME \
@@ -1192,6 +1302,7 @@ gcloud ai ray-clusters describe CLUSTER_NAME \
 ```
 
 **Monitoring Metrics:**
+
 - CPU/GPU utilization
 - Memory usage
 - Task throughput
@@ -1205,6 +1316,7 @@ gcloud ai ray-clusters describe CLUSTER_NAME \
 ### Use Cases
 
 Ray on Vertex AI excels for:
+
 1. **Repeated Jobs:** Leverage data caching
 2. **Short-Lived Tasks:** Avoid startup overhead
 3. **Large-Scale Training:** Distributed data parallelism
@@ -1218,6 +1330,7 @@ Ray on Vertex AI excels for:
 ### 1. Distributed Training with Ray Train
 
 **XGBoost Example:**
+
 ```python
 import ray
 from ray import train
@@ -1256,6 +1369,7 @@ result = trainer.fit()
 ```
 
 **PyTorch Distributed Training:**
+
 ```python
 import ray
 from ray import train
@@ -1291,6 +1405,7 @@ result = trainer.fit()
 ### 2. Hyperparameter Tuning with Ray Tune
 
 **Parallel Experiments:**
+
 ```python
 from ray import tune
 from ray.tune.schedulers import ASHAScheduler
@@ -1323,6 +1438,7 @@ print(f"Best config: {analysis.best_config}")
 ### 3. Fine-Tuning Gemma with Ray Train
 
 **HuggingFace Transformers:**
+
 ```python
 import ray
 from ray.train.huggingface import TransformersTrainer
@@ -1353,6 +1469,7 @@ result = trainer.fit()
 ### 4. Batch Inference at Scale
 
 **Distributed Prediction:**
+
 ```python
 import ray
 
@@ -1390,6 +1507,7 @@ predictions.write_parquet("gs://bucket/predictions.parquet")
 ### Reading from BigQuery
 
 **Basic Read:**
+
 ```python
 import vertex_ray
 
@@ -1418,6 +1536,7 @@ ds.materialize()
 ### Writing to BigQuery
 
 **Basic Write:**
+
 ```python
 # Write Ray dataset back to BigQuery
 vertex_ray.data.write_bigquery(
@@ -1429,6 +1548,7 @@ vertex_ray.data.write_bigquery(
 ### End-to-End ML Pipeline with BigQuery
 
 **Chicago Taxi Tips Prediction:**
+
 ```python
 import ray
 import vertex_ray
@@ -1495,6 +1615,7 @@ vertex_ray.data.write_bigquery(
 ### Advanced: Data Transformation Pipeline
 
 **Multi-Stage ETL:**
+
 ```python
 import ray
 import vertex_ray
@@ -1537,6 +1658,7 @@ vertex_ray.data.write_bigquery(
 ### Pattern 1: Development → Staging → Production
 
 **Development (Small Cluster):**
+
 ```python
 dev_cluster = aiplatform.RayCluster.create(
     display_name="dev-cluster",
@@ -1551,6 +1673,7 @@ dev_cluster = aiplatform.RayCluster.create(
 ```
 
 **Staging (Medium Cluster):**
+
 ```python
 staging_cluster = aiplatform.RayCluster.create(
     display_name="staging-cluster",
@@ -1565,6 +1688,7 @@ staging_cluster = aiplatform.RayCluster.create(
 ```
 
 **Production (Large Cluster with GPU):**
+
 ```python
 prod_cluster = aiplatform.RayCluster.create(
     display_name="prod-cluster",
@@ -1590,6 +1714,7 @@ prod_cluster = aiplatform.RayCluster.create(
 ### Pattern 2: Ephemeral Clusters for Batch Jobs
 
 **Create → Run → Delete:**
+
 ```python
 def run_batch_job(data_path, output_path):
     # Create cluster
@@ -1616,6 +1741,7 @@ def run_batch_job(data_path, output_path):
 ### Pattern 3: Persistent Cluster with Job Scheduling
 
 **Long-Running Cluster:**
+
 ```python
 # Create persistent cluster once
 cluster = aiplatform.RayCluster.create(
@@ -1653,6 +1779,7 @@ for config in experiment_configs:
 ### 1. Autoscaling Configuration
 
 **Aggressive Autoscaling (Cost-Optimized):**
+
 ```python
 cluster = aiplatform.RayCluster.create(
     display_name="cost-optimized",
@@ -1668,6 +1795,7 @@ cluster = aiplatform.RayCluster.create(
 ### 2. Spot/Preemptible Instances
 
 **Use Preemptible VMs for Worker Nodes:**
+
 ```python
 cluster = aiplatform.RayCluster.create(
     display_name="spot-cluster",
@@ -1683,6 +1811,7 @@ cluster = aiplatform.RayCluster.create(
 ### 3. Right-Sizing Machine Types
 
 **Match Workload to Resources:**
+
 - **CPU-bound:** n1-standard, n1-highcpu
 - **Memory-bound:** n1-highmem, n2-highmem
 - **GPU training:** a2-highgpu, g2-standard
@@ -1691,6 +1820,7 @@ cluster = aiplatform.RayCluster.create(
 ### 4. Data Caching
 
 **Reuse Preprocessed Data:**
+
 ```python
 # Cache preprocessed data in Ray object store
 @ray.remote
@@ -1710,26 +1840,31 @@ for config in configs:
 ## Related jeremy-* Plugins
 
 ### jeremy-vertex-engine
+
 - Vertex AI Agent Engine integration
 - RAG implementations with Vertex AI Search
 - Gemini model deployment
 
 ### jeremy-vertex-validator
+
 - Validate Vertex AI Search configurations
 - Check Ray cluster health
 - Production readiness validation
 
 ### jeremy-genkit-pro
+
 - Firebase Genkit integration with Vertex AI Search
 - RAG application templates
 - Gemini API integration
 
 ### jeremy-vertex-terraform
+
 - Terraform infrastructure for Vertex AI Search
 - Ray cluster provisioning as code
 - Automated deployment pipelines
 
 ### jeremy-bigquery-ops
+
 - BigQuery data preparation for Vertex AI Search
 - Ray + BigQuery pipeline automation
 - Data quality validation
@@ -1741,6 +1876,7 @@ for config in configs:
 ### Vertex AI Search
 
 **Create Data Store:**
+
 ```bash
 gcloud alpha discovery-engine data-stores create my-datastore \
     --location=global \
@@ -1749,6 +1885,7 @@ gcloud alpha discovery-engine data-stores create my-datastore \
 ```
 
 **Search Query:**
+
 ```python
 from google.cloud import discoveryengine_v1
 
@@ -1764,6 +1901,7 @@ response = search_client.search(
 ### Ray on Vertex AI
 
 **Create Cluster:**
+
 ```python
 cluster = aiplatform.RayCluster.create(
     display_name="my-cluster",
@@ -1773,11 +1911,13 @@ cluster = aiplatform.RayCluster.create(
 ```
 
 **Connect to Cluster:**
+
 ```python
 ray.init(f"ray://{cluster.endpoint}:10001")
 ```
 
 **Read from BigQuery:**
+
 ```python
 ds = vertex_ray.data.read_bigquery(dataset="project.dataset.table", parallelism=10)
 ```

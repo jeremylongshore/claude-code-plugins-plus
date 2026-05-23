@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Multi-Environment Setup
 
 ## Overview
+
 Configure Perplexity Sonar API across dev/staging/prod. Key decisions per environment: which models are allowed (sonar vs sonar-pro), rate limits, and cost caps. All environments use the same base URL (`https://api.perplexity.ai`) but different API keys with different budget limits.
 
 ## Environment Strategy
@@ -37,6 +38,7 @@ Configure Perplexity Sonar API across dev/staging/prod. Key decisions per enviro
 | Production | `sonar` + `sonar-pro` | 50 RPM | Secret manager | $500+ |
 
 ## Prerequisites
+
 - Separate Perplexity API keys per environment
 - `openai` package installed
 - Secret management (env files for dev, vault/KMS for prod)
@@ -44,6 +46,7 @@ Configure Perplexity Sonar API across dev/staging/prod. Key decisions per enviro
 ## Instructions
 
 ### Step 1: Configuration Structure
+
 ```
 config/
   perplexity/
@@ -55,6 +58,7 @@ config/
 ```
 
 ### Step 2: Base Configuration
+
 ```typescript
 // config/perplexity/base.ts
 import OpenAI from "openai";
@@ -70,6 +74,7 @@ export function createPerplexityClient(apiKey: string): OpenAI {
 ```
 
 ### Step 3: Environment Configs
+
 ```typescript
 // config/perplexity/development.ts
 export const devConfig = {
@@ -103,6 +108,7 @@ export const productionConfig = {
 ```
 
 ### Step 4: Environment Resolver
+
 ```typescript
 // config/perplexity/index.ts
 import { createPerplexityClient } from "./base";
@@ -137,6 +143,7 @@ export function getModelForDepth(depth: SearchDepth): string {
 ```
 
 ### Step 5: Usage with Environment-Aware Search
+
 ```typescript
 // lib/search.ts
 import { getClient, getModelForDepth, getConfig } from "../config/perplexity";
@@ -166,6 +173,7 @@ export async function search(query: string, depth: "quick" | "deep" = "quick") {
 ```
 
 ### Step 6: Secret Manager Integration (Production)
+
 ```bash
 set -euo pipefail
 # Google Cloud Secret Manager
@@ -182,6 +190,7 @@ vault kv put secret/perplexity api_key="$PERPLEXITY_API_KEY_PROD"
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `401` in staging | Wrong API key for environment | Verify `PERPLEXITY_API_KEY_STAGING` |
@@ -190,14 +199,17 @@ vault kv put secret/perplexity api_key="$PERPLEXITY_API_KEY_PROD"
 | High dev costs | Using production config locally | Ensure `NODE_ENV=development` is set |
 
 ## Output
+
 - Environment-specific Perplexity configurations
 - Model routing by environment and query depth
 - Secret manager integration for production keys
 - Cost controls per environment
 
 ## Resources
+
 - [Perplexity API Documentation](https://docs.perplexity.ai)
 - [Perplexity Pricing](https://docs.perplexity.ai/docs/getting-started/pricing)
 
 ## Next Steps
+
 For deployment configuration, see `perplexity-deploy-integration`.

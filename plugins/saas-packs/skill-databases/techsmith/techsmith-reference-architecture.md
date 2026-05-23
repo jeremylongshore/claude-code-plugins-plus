@@ -10,6 +10,7 @@ techsmith-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement TechSmith reference architecture
 **Workflow:** Part of the cicd skill category for TechSmith integration.
 **Relates to:** Other techsmith skills in this pack.

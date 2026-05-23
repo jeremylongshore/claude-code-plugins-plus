@@ -3,6 +3,7 @@
 ## Prompt Optimization
 
 ### Compress Prompts
+
 ```python
 def compress_prompt(prompt: str, max_tokens: int) -> str:
     """Compress prompt to fit within token limit."""
@@ -39,6 +40,7 @@ def optimize_system_prompt(prompt: str) -> str:
 ```
 
 ### Context Compression
+
 ```python
 def compress_context(
     context: str,

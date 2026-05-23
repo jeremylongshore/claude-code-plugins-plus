@@ -21,9 +21,11 @@ compatibility: Designed for Claude Code
 # Fondo Security Basics
 
 ## Overview
+
 Fondo handles startup tax preparation, bookkeeping, and R&D tax credits containing SSNs, EINs, bank account details, revenue figures, and complete tax returns. A breach exposes founder personal tax data, company financials, and IRS filing details. Protect OAuth connections to banking/payroll systems, exported financial documents, and team access controls with the same rigor as a CPA firm.
 
 ## API Key Management
+
 ```typescript
 function createFondoClient(): { apiKey: string; baseUrl: string } {
   const apiKey = process.env.FONDO_API_KEY;
@@ -37,6 +39,7 @@ function createFondoClient(): { apiKey: string; baseUrl: string } {
 ```
 
 ## Webhook Signature Verification
+
 ```typescript
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
@@ -54,6 +57,7 @@ function verifyFondoWebhook(req: Request, res: Response, next: NextFunction): vo
 ```
 
 ## Input Validation
+
 ```typescript
 import { z } from "zod";
 
@@ -72,6 +76,7 @@ function validateTaxFiling(data: unknown) {
 ```
 
 ## Data Protection
+
 ```typescript
 const FONDO_PII_FIELDS = ["ssn", "ein", "bank_account", "routing_number", "tax_return_url", "revenue", "salary"];
 
@@ -85,6 +90,7 @@ function redactFondoLog(record: Record<string, unknown>): Record<string, unknown
 ```
 
 ## Security Checklist
+
 - [ ] API keys stored in secrets manager, never in code
 - [ ] OAuth connections (Gusto, QuickBooks, Plaid, Stripe) reviewed quarterly
 - [ ] Financial exports never committed to git (`.gitignore` enforced)
@@ -95,6 +101,7 @@ function redactFondoLog(record: Record<string, unknown>): Record<string, unknown
 - [ ] Bank connections use Plaid (encrypted, not screen-scraping)
 
 ## Error Handling
+
 | Vulnerability | Risk | Mitigation |
 |---|---|---|
 | Leaked API key | Full access to tax returns and SSN/EIN data | Secrets manager + rotation |
@@ -104,8 +111,10 @@ function redactFondoLog(record: Record<string, unknown>): Record<string, unknown
 | Tax data in application logs | IRS compliance violation | Field-level PII redaction |
 
 ## Resources
+
 - [Fondo Security](https://fondo.com)
 - [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
 
 ## Next Steps
+
 See `fondo-prod-checklist`.

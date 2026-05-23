@@ -10,6 +10,7 @@ cohere-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Cohere reference architecture
 **Workflow:** Part of the cicd skill category for Cohere integration.
 **Relates to:** Other cohere skills in this pack.

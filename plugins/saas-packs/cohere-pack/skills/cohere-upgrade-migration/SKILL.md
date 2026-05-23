@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Cohere Upgrade & Migration
 
 ## Overview
+
 Guide for migrating from Cohere API v1 to v2 and upgrading the `cohere-ai` TypeScript / `cohere` Python SDK. Covers every breaking change with before/after code.
 
 ## Prerequisites
+
 - Current Cohere SDK installed
 - Git for version control
 - Test suite available
@@ -289,12 +291,14 @@ grep -rn "eventType.*text-generation" src/ --include="*.ts"
 ```
 
 ## Output
+
 - Updated SDK to latest version
 - Migrated all endpoints from v1 to v2 format
 - Updated model IDs to current names
 - All tests passing against v2 API
 
 ## Error Handling
+
 | Error After Migration | Cause | Fix |
 |----------------------|-------|-----|
 | `model is required` | Missed adding model param | Add model to every call |
@@ -303,9 +307,11 @@ grep -rn "eventType.*text-generation" src/ --include="*.ts"
 | `input_type required` | v2 embed requirement | Add `inputType: 'search_document'` |
 
 ## Resources
+
 - [API v1 to v2 Migration Guide](https://docs.cohere.com/docs/migrating-v1-to-v2)
 - [Cohere Deprecations](https://docs.cohere.com/docs/deprecations)
 - [Cohere Models Overview](https://docs.cohere.com/docs/models)
 
 ## Next Steps
+
 For CI integration during upgrades, see `cohere-ci-integration`.

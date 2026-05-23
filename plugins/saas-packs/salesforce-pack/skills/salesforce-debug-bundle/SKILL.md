@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Salesforce Debug Bundle
 
 ## Overview
+
 Collect all necessary diagnostic information for Salesforce issues: debug logs, API limits, org configuration, and error traces.
 
 ## Prerequisites
+
 - Salesforce CLI authenticated (`sf org login web`)
 - jsforce connection configured
 - Access to Setup in your Salesforce org
@@ -35,6 +37,7 @@ Collect all necessary diagnostic information for Salesforce issues: debug logs, 
 ## Instructions
 
 ### Step 1: Collect Org Info & API Limits
+
 ```typescript
 import { getConnection } from './salesforce/connection';
 
@@ -59,6 +62,7 @@ console.log(`API Version: ${conn.version}`);
 ```
 
 ### Step 2: Enable & Retrieve Debug Logs
+
 ```bash
 # Set up a trace flag for debug logging via SF CLI
 sf apex log list --target-org my-org
@@ -71,6 +75,7 @@ sf apex log tail --target-org my-org --debug-level SFDC_DevConsole
 ```
 
 ### Step 3: Query Recent API Events
+
 ```typescript
 // EventLogFile — Enterprise+ orgs only
 // Contains API usage data for the last 30 days
@@ -92,6 +97,7 @@ for (const log of eventLogs.records) {
 ```
 
 ### Step 4: Create Debug Bundle Script
+
 ```bash
 #!/bin/bash
 # salesforce-debug-bundle.sh
@@ -130,6 +136,7 @@ echo "Bundle created: $BUNDLE_DIR.tar.gz"
 ```
 
 ### Step 5: Check Salesforce System Status
+
 ```typescript
 // Check if Salesforce itself is having issues
 const statusResponse = await fetch('https://api.status.salesforce.com/v1/incidents/active');
@@ -147,6 +154,7 @@ if (incidents.length > 0) {
 ```
 
 ## Output
+
 - `sf-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
   - `summary.txt` — Environment and SDK versions
   - `org-info.json` — Org identity and configuration
@@ -156,6 +164,7 @@ if (incidents.length > 0) {
   - `config-redacted.txt` — Configuration (secrets removed)
 
 ## Error Handling
+
 | Item | Purpose | Included |
 |------|---------|----------|
 | API limits | Check if limits are exhausted | Yes |
@@ -165,10 +174,12 @@ if (incidents.length > 0) {
 | Environment | Node.js, jsforce versions | Yes |
 
 ## Resources
+
 - [Salesforce Status API](https://api.status.salesforce.com/)
 - [Debug Log Levels](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_debugging_debug_log.htm)
 - [EventLogFile (Shield)](https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_eventlogfile.htm)
 - [API Limits Resource](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_limits.htm)
 
 ## Next Steps
+
 For rate limit issues, see `salesforce-rate-limits`.

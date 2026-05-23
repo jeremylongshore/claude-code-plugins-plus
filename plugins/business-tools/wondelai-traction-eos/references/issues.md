@@ -2,8 +2,8 @@
 
 Every organization has issues. The difference between great companies and mediocre ones is how quickly and permanently they solve them. The Issues Component provides a disciplined process called IDS -- Identify, Discuss, Solve -- that turns chronic problems into resolved action items. This guide covers the full IDS framework, facilitation techniques, issue types, list management, and practice scenarios.
 
-
 ## Table of Contents
+
 1. [The IDS Framework](#the-ids-framework)
 2. [Step 1: Identify the Real Issue](#step-1-identify-the-real-issue)
 3. [Step 2: Discuss](#step-2-discuss)
@@ -47,6 +47,7 @@ This is the most critical and most frequently skipped step. Teams jump to discus
 **The symptom is not the issue.** The issue is the root cause underneath the symptom. Use these techniques to dig deeper:
 
 **The Five Whys:**
+
 1. Revenue is down this quarter. Why?
 2. We closed fewer deals. Why?
 3. We gave fewer demos. Why?
@@ -93,6 +94,7 @@ If the group is quickly converging on a solution, pause and ask: "What could go 
 
 **Time-Boxing:**
 Most issues should take 5-15 minutes to IDS. If an issue is taking longer than 15 minutes:
+
 - The issue may be too big for a Level 10 meeting (move to a separate meeting)
 - The team may not have enough information (create a to-do to gather data)
 - The facilitator may be allowing tangents (tighten the discussion)
@@ -124,8 +126,8 @@ Solving means making a decision and assigning action items. A discussion without
 | **What** | Research three alternative lead gen channels and present options |
 | **When** | By next Tuesday's Level 10 |
 
-4. **Record it.** The action item goes on the To-Do List (7-day items) or becomes a Rock (if it is a 90-day initiative).
-5. **Move on.** Do not revisit. Do not second-guess. The decision is made.
+1. **Record it.** The action item goes on the To-Do List (7-day items) or becomes a Rock (if it is a 90-day initiative).
+2. **Move on.** Do not revisit. Do not second-guess. The decision is made.
 
 ### Solve Outcomes
 
@@ -147,6 +149,7 @@ Not every issue results in an action item. There are several possible outcomes:
 **Definition:** Something that is broken, underperforming, or causing pain.
 
 **Examples:**
+
 - Customer churn increased from 3% to 7% this quarter
 - Two team members are in open conflict and it is affecting the department
 - Our main vendor raised prices 25% and our margins are squeezed
@@ -158,6 +161,7 @@ Not every issue results in an action item. There are several possible outcomes:
 **Definition:** A new opportunity, initiative, or approach that someone wants to propose.
 
 **Examples:**
+
 - "What if we added a freemium tier to our product?"
 - "I think we should open a second office in Austin."
 - "Should we sponsor the industry conference this year?"
@@ -169,6 +173,7 @@ Not every issue results in an action item. There are several possible outcomes:
 **Definition:** Something blocking a Rock or key initiative from moving forward.
 
 **Examples:**
+
 - Engineering capacity is blocking the product launch rock
 - Legal review is delaying the partnership agreement
 - Budget constraints prevent hiring the needed role
@@ -191,11 +196,13 @@ EOS maintains two Issues Lists:
 Anyone in the organization can add issues to either list. The format is simple: a short phrase that captures the issue. Details are discussed live during IDS.
 
 **Good issue entries:**
+
 - "Sales demo no-show rate is 40%"
 - "Need to decide on CRM migration"
 - "Conflict between engineering and product on roadmap priorities"
 
 **Poor issue entries:**
+
 - "Marketing" (too vague)
 - "Everything" (not an issue)
 - Three paragraphs of background (save it for discussion)
@@ -214,6 +221,7 @@ At the start of IDS in every Level 10 meeting:
 ### Issue Hygiene
 
 Every quarter, review the long-term Issues List:
+
 - Remove issues that are no longer relevant
 - Promote issues that have become urgent to the short-term list
 - Merge duplicate issues
@@ -242,12 +250,14 @@ Use these scenarios to practice IDS with your leadership team. Each scenario sho
 **Symptom:** Q2 revenue is 20% below target.
 
 **Information revealed during Identify:**
+
 - One of four reps is at 30% of quota
 - That rep was a top performer last year
 - They recently took on a new territory
 - Their pipeline is full but close rate dropped from 30% to 8%
 
 **Practice questions:**
+
 - What is the real issue? (Symptom vs. root cause)
 - What data would you want before discussing solutions?
 - What are three possible root causes?
@@ -257,12 +267,14 @@ Use these scenarios to practice IDS with your leadership team. Each scenario sho
 **Symptom:** Engineering team missed their Rock deadline by four weeks.
 
 **Information revealed during Identify:**
+
 - The VP of Sales requested "urgent" feature changes mid-quarter
 - Engineering spent 3 weeks on unplanned work
 - No one in leadership approved the scope change
 - This is the third quarter in a row this has happened
 
 **Practice questions:**
+
 - Who owns the decision about engineering priorities?
 - Is this a people issue, a process issue, or both?
 - What structural change would prevent recurrence?
@@ -272,12 +284,14 @@ Use these scenarios to practice IDS with your leadership team. Each scenario sho
 **Symptom:** Three employees resigned in the past month, all citing "culture."
 
 **Information revealed during Identify:**
+
 - Exit interviews mention a specific manager who "rules by fear"
 - That manager's team has the highest performance metrics in the company
 - Two of the departing employees were identified as high-potential
 - The manager has been with the company for seven years
 
 **Practice questions:**
+
 - Is this a right person or right seat issue?
 - How do you weigh performance metrics against culture impact?
 - What is the root cause: the manager's behavior, or the system that enabled it?
@@ -287,12 +301,14 @@ Use these scenarios to practice IDS with your leadership team. Each scenario sho
 **Symptom:** A major competitor just went out of business, freeing up 200 potential customers.
 
 **Information revealed during Identify:**
+
 - Your team is already at capacity
 - Hiring 5 new reps would take 3-4 months
 - A partner firm could handle overflow but at lower margins
 - The window of opportunity is 60-90 days before other competitors move in
 
 **Practice questions:**
+
 - Is this a problem, an idea, or an obstacle?
 - What is the core decision that needs to be made?
 - What are the trade-offs of each option?
@@ -302,12 +318,14 @@ Use these scenarios to practice IDS with your leadership team. Each scenario sho
 **Symptom:** Customer onboarding satisfaction dropped from 4.5 to 3.2 out of 5.
 
 **Information revealed during Identify:**
+
 - The onboarding team grew from 2 to 6 people in the past quarter
 - The four new hires were trained informally by the two original team members
 - There is no documented onboarding process
 - The two original team members each do onboarding differently
 
 **Practice questions:**
+
 - Which EOS component is this really about? (Process? People? Both?)
 - What is the fastest fix? What is the permanent fix?
 - How would you prevent this from recurring as the team continues to grow?

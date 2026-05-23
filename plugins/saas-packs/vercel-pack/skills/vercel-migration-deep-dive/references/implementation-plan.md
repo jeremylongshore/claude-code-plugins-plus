@@ -3,6 +3,7 @@
 ## Implementation Plan
 
 ### Phase 1: Setup (Week 1-2)
+
 ```bash
 # Install Vercel SDK
 npm install vercel
@@ -16,6 +17,7 @@ node -e "require('vercel').ping()"
 ```
 
 ### Phase 2: Adapter Layer (Week 3-4)
+
 ```typescript
 // src/adapters/vercel.ts
 interface ServiceAdapter {
@@ -38,6 +40,7 @@ class VercelAdapter implements ServiceAdapter {
 ```
 
 ### Phase 3: Data Migration (Week 5-6)
+
 ```typescript
 async function migrateVercelData(): Promise<MigrationResult> {
   const batchSize = 100;
@@ -62,6 +65,7 @@ async function migrateVercelData(): Promise<MigrationResult> {
 ```
 
 ### Phase 4: Traffic Shift (Week 7-8)
+
 ```typescript
 // Feature flag controlled traffic split
 function getServiceAdapter(): ServiceAdapter {

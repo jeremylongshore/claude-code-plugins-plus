@@ -21,6 +21,7 @@
 **Visual**: [Show the problem dramatically OR show the final success]
 
 **Script Option A (Show Problem)**:
+
 ```
 [Screen shows: Error message, slow performance, broken feature]
 
@@ -31,6 +32,7 @@ Look at this - [demonstrate problem]."
 ```
 
 **Script Option B (Show Success First)**:
+
 ```
 [Screen shows: Everything working perfectly]
 
@@ -46,6 +48,7 @@ Look at this - [demonstrate problem]."
 **Visual**: [Your face showing genuine concern/frustration]
 
 **Script**:
+
 ```
 "Hey everyone, [name] here.
 
@@ -74,6 +77,7 @@ Let's figure this out together."
 **Visual**: [Screen recording - clearly showing the problem]
 
 **Script**:
+
 ```
 "First, let me show you exactly what's happening:
 
@@ -102,6 +106,7 @@ Let's figure this out together."
 ```
 
 **On-Screen Text**:
+
 - "THE PROBLEM" header
 - Error messages (highlighted)
 - Impact metrics
@@ -114,6 +119,7 @@ Let's figure this out together."
 **Visual**: [Screen recording - debugging process]
 
 **Script**:
+
 ```
 "My first step: [investigation approach]
 
@@ -152,6 +158,7 @@ Let's figure this out together."
 ```
 
 **On-Screen Text**:
+
 - "INVESTIGATION" header
 - Theories (with strikethroughs when disproven)
 - Debug output (highlighted)
@@ -166,6 +173,7 @@ Let's figure this out together."
 **Visual**: [Screen recording - the "aha!" moment]
 
 **Script**:
+
 ```
 "And then I found it:
 
@@ -197,6 +205,7 @@ Let's figure this out together."
 ```
 
 **On-Screen Text**:
+
 - "BREAKTHROUGH 💡" header
 - Root cause highlighted
 - Architecture diagram (if helpful)
@@ -209,6 +218,7 @@ Let's figure this out together."
 **Visual**: [Screen recording - implementing solution]
 
 **Script**:
+
 ```
 "Here's how to fix it:
 
@@ -242,6 +252,7 @@ Let's figure this out together."
 ```
 
 **On-Screen Text**:
+
 - "THE FIX" header
 - Code annotations
 - Step numbers
@@ -254,6 +265,7 @@ Let's figure this out together."
 **Visual**: [Screen recording - testing the fix]
 
 **Script**:
+
 ```
 "Let's see if this works:
 
@@ -288,6 +300,7 @@ Improvement: [percentage]'
 ```
 
 **On-Screen Text**:
+
 - "TESTING" header
 - Test results (✅)
 - Performance comparison
@@ -300,6 +313,7 @@ Improvement: [percentage]'
 **Visual**: [Your face OR split screen with diagrams]
 
 **Script**:
+
 ```
 "Let me explain why this works:
 
@@ -330,6 +344,7 @@ Improvement: [percentage]'
 ```
 
 **On-Screen Text**:
+
 - Architecture diagram
 - Flow chart
 - Prevention checklist
@@ -342,6 +357,7 @@ Improvement: [percentage]'
 **Visual**: [Your face]
 
 **Script**:
+
 ```
 "Key takeaways from this debugging session:
 
@@ -378,6 +394,7 @@ Improvement: [percentage]'
 **Visual**: [Your face OR code on screen]
 
 **Script**:
+
 ```
 "So that's how I fixed [problem].
 
@@ -401,18 +418,21 @@ Thanks for watching, and happy debugging!"
 ## Format Variations
 
 ### Real-Time Debug (20-30 minutes)
+
 - Keep everything uncut
 - Show full thought process
 - Include all dead ends
 - Raw and authentic
 
 ### Edited Debug Story (8-12 minutes)
+
 - Trim repetition
 - Keep key moments
 - Build suspense
 - Clear narrative arc
 
 ### Quick Fix (3-5 minutes)
+
 - Skip investigation details
 - Jump to solution
 - Explain why it works
@@ -423,6 +443,7 @@ Thanks for watching, and happy debugging!"
 ## Storytelling Tips
 
 ### Build Suspense
+
 ```
 "I thought I had it figured out..."
 "But then something strange happened..."
@@ -431,6 +452,7 @@ Thanks for watching, and happy debugging!"
 ```
 
 ### Show Emotion
+
 ```
 "This is so frustrating..."
 "Wait, what?!"
@@ -439,6 +461,7 @@ Thanks for watching, and happy debugging!"
 ```
 
 ### Keep Viewers Engaged
+
 ```
 "Stay with me, this gets good..."
 "You're not going to believe what I found..."
@@ -451,6 +474,7 @@ Thanks for watching, and happy debugging!"
 ## Recording Tips
 
 **During Real Debugging**:
+
 - Record everything (edit later)
 - Narrate your thoughts out loud
 - Use markers for key moments
@@ -458,6 +482,7 @@ Thanks for watching, and happy debugging!"
 - Celebrate when you figure it out
 
 **When Re-Creating**:
+
 - Know the solution already
 - Build the story arc
 - Show realistic struggle
@@ -469,6 +494,7 @@ Thanks for watching, and happy debugging!"
 ## On-Screen Text Templates
 
 **Problem Severity**:
+
 ```
 🔴 CRITICAL
 Blocking production deployment
@@ -481,6 +507,7 @@ Affecting 1000+ users
 ```
 
 **Debug Status**:
+
 ```
 Theory #1: [X] ❌
 Theory #2: [Y] ❌
@@ -488,6 +515,7 @@ Theory #3: [Z] ✅ ROOT CAUSE
 ```
 
 **Fix Impact**:
+
 ```
 BEFORE: [old metric]
 AFTER: [new metric]
@@ -546,6 +574,7 @@ Share your debugging stories in the comments!
 ## Success Metrics
 
 **Good problem-solving video indicators**:
+
 - "I had this exact problem!" comments
 - Questions about related issues
 - People sharing their solutions

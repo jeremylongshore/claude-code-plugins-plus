@@ -15,6 +15,7 @@ Real Salesforce API code — not templates. Every skill uses actual jsforce meth
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | What It Does |
 |-------|-------------|
 | `salesforce-install-auth` | jsforce/simple-salesforce setup with OAuth 2.0 flows (Username-Password, JWT Bearer, Web Server) |
@@ -31,6 +32,7 @@ Real Salesforce API code — not templates. Every skill uses actual jsforce meth
 | `salesforce-upgrade-migration` | API version upgrades, jsforce v1-to-v3 migration |
 
 ### Pro Skills (P13-P18)
+
 | Skill | What It Does |
 |-------|-------------|
 | `salesforce-ci-integration` | GitHub Actions with JWT auth, Apex testing, metadata deployment |
@@ -41,6 +43,7 @@ Real Salesforce API code — not templates. Every skill uses actual jsforce meth
 | `salesforce-reference-architecture` | Polling vs event-driven vs Heroku Connect patterns |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | What It Does |
 |-------|-------------|
 | `salesforce-multi-env-setup` | Sandbox types, org authentication, promotion flows |
@@ -51,6 +54,7 @@ Real Salesforce API code — not templates. Every skill uses actual jsforce meth
 | `salesforce-migration-deep-dive` | Bulk API data migration with External ID relationships |
 
 ### Flagship+ Skills (X25-X30)
+
 | Skill | What It Does |
 |-------|-------------|
 | `salesforce-advanced-troubleshooting` | Debug log analysis, SOQL query plans, governor limits |

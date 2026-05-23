@@ -10,6 +10,7 @@ granola-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Granola primary workflow
 **Workflow:** Part of the onboarding skill category for Granola integration.
 **Relates to:** Other granola skills in this pack.

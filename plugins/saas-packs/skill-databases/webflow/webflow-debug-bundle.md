@@ -10,6 +10,7 @@ webflow-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Webflow debug evidence for support
 **Workflow:** Part of the operations skill category for Webflow integration.
 **Relates to:** Other webflow skills in this pack.

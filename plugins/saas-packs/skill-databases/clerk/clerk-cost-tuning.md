@@ -10,6 +10,7 @@ clerk-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Clerk costs and usage
 **Workflow:** Part of the cicd skill category for Clerk integration.
 **Relates to:** Other clerk skills in this pack.

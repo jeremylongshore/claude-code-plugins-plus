@@ -10,6 +10,7 @@ techsmith-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working TechSmith example
 **Workflow:** Part of the onboarding skill category for TechSmith integration.
 **Relates to:** Other techsmith skills in this pack.

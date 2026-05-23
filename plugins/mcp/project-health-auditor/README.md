@@ -1,4 +1,4 @@
-#  Project Health Auditor
+# Project Health Auditor
 
 **MCP Server Plugin for Claude Code**
 
@@ -6,16 +6,18 @@ Analyze local repositories for code health, complexity, test coverage gaps, and 
 
 ---
 
-##  Features
+## Features
 
 ### 4 Powerful MCP Tools
 
 **1. `list_repo_files`** - File Discovery
+
 - List all files in a repository with glob pattern matching
 - Exclude patterns (node_modules, .git, dist, build)
 - Returns file count and full file list
 
 **2. `file_metrics`** - Code Health Analysis
+
 - Cyclomatic complexity calculation
 - Function/method counting
 - Comment ratio analysis
@@ -23,12 +25,14 @@ Analyze local repositories for code health, complexity, test coverage gaps, and 
 - Health score (0-100) based on multiple factors
 
 **3. `git_churn`** - Change Frequency Analysis
+
 - Identify files that change frequently
 - Track authors per file
 - Find hot spots in your codebase
 - Analyze commit patterns over time
 
 **4. `map_tests`** - Test Coverage Mapping
+
 - Map source files to test files
 - Identify files missing tests
 - Calculate test coverage ratio
@@ -36,7 +40,7 @@ Analyze local repositories for code health, complexity, test coverage gaps, and 
 
 ---
 
-##  Installation
+## Installation
 
 ```bash
 # Install the plugin
@@ -47,7 +51,7 @@ Analyze local repositories for code health, complexity, test coverage gaps, and 
 
 ---
 
-##  Usage
+## Usage
 
 ### Quick Analysis
 
@@ -56,6 +60,7 @@ Analyze the health of /path/to/my-project
 ```
 
 Claude will use the MCP tools to:
+
 1. List all source files
 2. Analyze complexity of key files
 3. Check git churn patterns
@@ -64,21 +69,25 @@ Claude will use the MCP tools to:
 ### Individual Tool Usage
 
 **List Repository Files:**
+
 ```
 Use list_repo_files on /path/to/repo with globs ["src/**/*.ts", "lib/**/*.js"]
 ```
 
 **Analyze File Metrics:**
+
 ```
 What's the complexity of src/services/auth.ts?
 ```
 
 **Check Git Churn:**
+
 ```
 Show me the most frequently changed files in the last 6 months
 ```
 
 **Map Tests:**
+
 ```
 Which files are missing tests in this project?
 ```
@@ -92,6 +101,7 @@ Which files are missing tests in this project?
 **Purpose:** Discover files in a repository
 
 **Input:**
+
 ```typescript
 {
   repoPath: string;           // Absolute path to repository
@@ -101,6 +111,7 @@ Which files are missing tests in this project?
 ```
 
 **Output:**
+
 ```json
 {
   "repoPath": "/path/to/repo",
@@ -118,6 +129,7 @@ Which files are missing tests in this project?
 **Purpose:** Analyze a single file's health
 
 **Input:**
+
 ```typescript
 {
   filePath: string;  // Absolute path to file
@@ -125,6 +137,7 @@ Which files are missing tests in this project?
 ```
 
 **Output:**
+
 ```json
 {
   "file": "src/services/auth.ts",
@@ -145,6 +158,7 @@ Which files are missing tests in this project?
 ```
 
 **Health Score Factors:**
+
 - **High complexity** (>10 per function): -30 points
 - **Medium complexity** (5-10): -15 points
 - **Low comments** (<5%): -10 points
@@ -159,6 +173,7 @@ Which files are missing tests in this project?
 **Purpose:** Find frequently changing files (hot spots)
 
 **Input:**
+
 ```typescript
 {
   repoPath: string;             // Absolute path to git repository
@@ -167,6 +182,7 @@ Which files are missing tests in this project?
 ```
 
 **Output:**
+
 ```json
 {
   "repoPath": "/path/to/repo",
@@ -198,6 +214,7 @@ Which files are missing tests in this project?
 **Purpose:** Identify test coverage gaps
 
 **Input:**
+
 ```typescript
 {
   repoPath: string;  // Absolute path to repository
@@ -205,6 +222,7 @@ Which files are missing tests in this project?
 ```
 
 **Output:**
+
 ```json
 {
   "repoPath": "/path/to/repo",
@@ -231,11 +249,12 @@ Which files are missing tests in this project?
 
 ---
 
-##  Use Cases
+## Use Cases
 
 ### 1. Pre-Refactoring Analysis
 
 Before refactoring, identify:
+
 - High complexity files (complexity > 10)
 - High churn files (commits > 10)
 - Files missing tests
@@ -245,6 +264,7 @@ Before refactoring, identify:
 ### 2. Code Review Preparation
 
 Analyze changed files:
+
 ```
 What's the complexity of the files I changed in the last commit?
 ```
@@ -252,6 +272,7 @@ What's the complexity of the files I changed in the last commit?
 ### 3. Test Coverage Improvement
 
 Find critical files without tests:
+
 ```
 Which files in src/services/ are missing tests?
 ```
@@ -259,18 +280,20 @@ Which files in src/services/ are missing tests?
 ### 4. Technical Debt Identification
 
 Combine metrics to find problematic files:
+
 - High complexity + High churn + Missing tests = **Technical debt hot spot**
 
 ### 5. Onboarding New Developers
 
 Show new team members:
+
 - Most frequently changed files
 - Core files with good health scores
 - Areas needing test coverage
 
 ---
 
-##  Health Score Interpretation
+## Health Score Interpretation
 
 | Score | Health | Action |
 |-------|--------|--------|
@@ -310,7 +333,7 @@ project-health-auditor/
 
 ---
 
-##  Development
+## Development
 
 ### Build
 
@@ -339,11 +362,12 @@ npm run dev
 
 ---
 
-##  Metrics Explained
+## Metrics Explained
 
 ### Cyclomatic Complexity
 
 Measures the number of independent paths through code:
+
 - **1-10:** Simple, low risk
 - **11-20:** Moderate complexity
 - **21-50:** High complexity, hard to test
@@ -354,6 +378,7 @@ Measures the number of independent paths through code:
 ### Git Churn
 
 Frequency of file changes:
+
 - **High churn** (>10 commits): Hot spot, may need stabilization
 - **Medium churn** (5-10): Normal development activity
 - **Low churn** (<5): Stable or new file
@@ -363,6 +388,7 @@ Frequency of file changes:
 ### Test Coverage Ratio
 
 Percentage of source files with corresponding tests:
+
 - **80-100%:** Excellent
 - **60-79%:** Good
 - **40-59%:** Fair
@@ -370,7 +396,7 @@ Percentage of source files with corresponding tests:
 
 ---
 
-##  Contributing
+## Contributing
 
 This plugin is part of the Claude Code Plugins marketplace.
 
@@ -384,13 +410,13 @@ Open an issue with the `enhancement` label.
 
 ---
 
-##  License
+## License
 
 MIT License - see LICENSE file
 
 ---
 
-##  Credits
+## Credits
 
 **Built by:** Intent Solutions IO
 **Website:** https://intentsolutions.io
@@ -400,7 +426,7 @@ MIT License - see LICENSE file
 
 ---
 
-##  Related Plugins
+## Related Plugins
 
 - **conversational-api-debugger** - API debugging with OpenAPI specs
 - **test-coverage-booster** - AI-powered test generation
@@ -408,5 +434,5 @@ MIT License - see LICENSE file
 
 ---
 
-** Generated with Claude Code**
+**Generated with Claude Code**
 **Co-Authored-By:** Claude <noreply@anthropic.com>

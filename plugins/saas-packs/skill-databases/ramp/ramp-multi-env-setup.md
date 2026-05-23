@@ -10,6 +10,7 @@ ramp-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Ramp multi-environment setup
 **Workflow:** Part of the enterprise skill category for Ramp integration.
 **Relates to:** Other ramp skills in this pack.

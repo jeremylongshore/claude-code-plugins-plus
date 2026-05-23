@@ -10,6 +10,7 @@ databricks-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Databricks webhook handling
 **Workflow:** Part of the cicd skill category for Databricks integration.
 **Relates to:** Other databricks skills in this pack.

@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Observability
 
 ## Overview
+
 Implement metrics, structured logging, and alerting for MaintainX integrations to ensure reliability and rapid issue detection.
 
 ## Prerequisites
+
 - MaintainX integration deployed
 - Node.js 18+
 - Monitoring platform (Prometheus/Grafana, Datadog, or CloudWatch)
@@ -258,6 +260,7 @@ groups:
 ```
 
 ## Output
+
 - Prometheus metrics (request count, latency histogram, rate limit counter, sync lag gauge)
 - Instrumented axios client automatically recording metrics on every API call
 - Structured JSON logging for all operations
@@ -265,6 +268,7 @@ groups:
 - Alerting rules for error rate, latency, rate limits, and sync staleness
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Metrics endpoint 500 | prom-client not initialized | Ensure `Registry` is created before metrics |
@@ -273,11 +277,13 @@ groups:
 | Stale sync alert | Sync job stopped | Check cron schedule, restart sync process |
 
 ## Resources
+
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [prom-client](https://github.com/siimon/prom-client) -- Prometheus metrics for Node.js
 - [Prometheus Alerting Rules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/)
 
 ## Next Steps
+
 For incident response, see `maintainx-incident-runbook`.
 
 ## Examples

@@ -19,6 +19,7 @@ compatibility: Designed for Claude Code
 # Anthropic Performance Tuning
 
 ## Overview
+
 Claude latency has two components: **time to first token (TTFT)** and **tokens per second (TPS)**. Different strategies target each.
 
 ## Latency Benchmarks (approximate)
@@ -34,6 +35,7 @@ Claude latency has two components: **time to first token (TTFT)** and **tokens p
 ## Instructions
 
 ### Step 1: Always Stream
+
 ```typescript
 // Streaming delivers the first token ASAP — user sees response instantly
 // instead of waiting for the full response to generate
@@ -54,6 +56,7 @@ for await (const event of stream) {
 ```
 
 ### Step 2: Prompt Caching — Faster TTFT
+
 ```typescript
 // Cached prompts skip re-processing — dramatically lower TTFT for large system prompts
 const message = await client.messages.create({
@@ -72,6 +75,7 @@ const message = await client.messages.create({
 ```
 
 ### Step 3: Use Haiku for Speed-Critical Paths
+
 ```typescript
 // Haiku is 2-4x faster than Sonnet with 80% quality for many tasks
 // Use for: classification, extraction, simple Q&A, routing decisions
@@ -87,6 +91,7 @@ const route = await client.messages.create({
 ```
 
 ### Step 4: Reuse Client Instance
+
 ```typescript
 // BAD — creates new connection pool per request
 app.get('/api/chat', async (req, res) => {
@@ -104,6 +109,7 @@ app.get('/api/chat', async (req, res) => {
 ```
 
 ### Step 5: Parallel Requests
+
 ```typescript
 // When you need multiple independent Claude calls, fire them in parallel
 const [summary, sentiment, entities] = await Promise.all([
@@ -117,6 +123,7 @@ const [summary, sentiment, entities] = await Promise.all([
 ```
 
 ### Step 6: Minimize Output Tokens
+
 ```typescript
 // Fewer output tokens = faster response
 system: 'Be extremely concise. Use bullet points, not paragraphs.',
@@ -126,6 +133,7 @@ max_tokens: 256, // Don't use 4096 for short answers
 ```
 
 ## Output
+
 - Streaming enabled for all user-facing responses (first token in ~400ms with Sonnet)
 - Prompt caching reducing TTFT for large system prompts
 - Model routing to Haiku for speed-critical classification/routing tasks
@@ -133,6 +141,7 @@ max_tokens: 256, // Don't use 4096 for short answers
 - Parallel requests firing independent Claude calls concurrently
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | TTFT > 3s | Large uncached prompt | Enable prompt caching |
@@ -141,17 +150,21 @@ max_tokens: 256, // Don't use 4096 for short answers
 | 529 overloaded | API capacity | SDK auto-retries; add fallback model |
 
 ## Examples
+
 See Latency Benchmarks table and six numbered strategy sections above, each with complete TypeScript code examples.
 
 ## Resources
+
 - [Streaming Docs](https://docs.anthropic.com/en/api/messages-streaming)
 - [Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)
 - [Models Comparison](https://docs.anthropic.com/en/docs/about-claude/models)
 
 ## Next Steps
+
 See `clade-deploy-integration` for production deployment patterns.
 
 ## Prerequisites
+
 - Completed `clade-install-auth`
 - User-facing application where latency matters
 - Understanding of streaming and async patterns

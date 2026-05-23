@@ -11,7 +11,6 @@ Detailed implementation reference for the lokalise-incident-runbook skill.
 | P3 | Minor impact | < 4 hours | Webhook delays, non-critical translations missing |
 | P4 | No user impact | Next business day | Monitoring gaps, sync delays |
 
-
 ## Quick Triage Commands
 
 ```bash
@@ -33,7 +32,6 @@ curl -s https://your-app.com/health/lokalise | jq
 grep -i "lokalise" /var/log/app/*.log | tail -50
 ```
 
-
 ## Decision Tree
 
 ```
@@ -53,10 +51,10 @@ API returning errors?
 └─ 5xx → Lokalise issue. Enable fallback, monitor status.
 ```
 
-
 ## Immediate Actions by Error Type
 
 ### 401/403 - Authentication/Authorization
+
 ```bash
 # Verify token is set
 echo "Token set: ${LOKALISE_API_TOKEN:+YES}"
@@ -72,6 +70,7 @@ curl -s -H "X-Api-Token: $LOKALISE_API_TOKEN" \
 ```
 
 ### 429 - Rate Limited
+
 ```bash
 # Check current rate limit status
 curl -s -I -H "X-Api-Token: $LOKALISE_API_TOKEN" \
@@ -88,6 +87,7 @@ export LOKALISE_REQUEST_DELAY_MS=200
 ```
 
 ### 5xx - Lokalise Server Errors
+
 ```bash
 # Check Lokalise status
 curl -s https://status.lokalise.com/api/v2/status.json | jq
@@ -103,6 +103,7 @@ watch -n 60 'curl -s https://status.lokalise.com/api/v2/status.json | jq ".statu
 ```
 
 ### Missing Translations
+
 ```bash
 # Check if translations exist in Lokalise
 lokalise2 --token "$LOKALISE_API_TOKEN" \
@@ -117,10 +118,10 @@ cat src/locales/en.json | jq 'keys | length'
 npm run i18n:pull
 ```
 
-
 ## Communication Templates
 
 ### Internal (Slack)
+
 ```
 :red_circle: P1 INCIDENT: Lokalise Integration
 Status: INVESTIGATING
@@ -131,6 +132,7 @@ Incident commander: @[name]
 ```
 
 ### External (Status Page)
+
 ```
 Translation Service Issue
 
@@ -142,10 +144,10 @@ We're actively investigating and will provide updates.
 Last updated: [timestamp]
 ```
 
-
 ## Post-Incident
 
 ### Evidence Collection
+
 ```bash
 # Generate debug bundle
 bash scripts/lokalise-debug-bundle.sh
@@ -161,6 +163,7 @@ curl "http://prometheus:9090/api/v1/query_range?query=lokalise_errors_total&star
 ```
 
 ### Postmortem Template
+
 ```markdown
 ## Incident: Lokalise [Error Type]
 **Date:** YYYY-MM-DD
@@ -198,10 +201,10 @@ curl "http://prometheus:9090/api/v1/query_range?query=lokalise_errors_total&star
 - [ ] [Monitoring improvement] - Owner - Due date
 ```
 
-
 ## Rollback Procedures
 
 ### Revert to Bundled Translations
+
 ```bash
 # If translations are corrupted, revert to last known good
 git checkout HEAD~1 -- src/locales/
@@ -215,6 +218,7 @@ export LOKALISE_AUTO_SYNC=false
 ```
 
 ### Re-download from Lokalise
+
 ```bash
 # Download reviewed translations only
 lokalise2 --token "$LOKALISE_API_TOKEN" \
@@ -224,4 +228,3 @@ lokalise2 --token "$LOKALISE_API_TOKEN" \
   --filter-data reviewed \
   --unzip-to ./src/locales
 ```
-

@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Salesforce Performance Tuning
 
 ## Overview
+
 Optimize Salesforce API performance: tune SOQL queries, minimize API calls using Composite/Collections APIs, implement metadata caching, and handle large result sets efficiently.
 
 ## Prerequisites
+
 - jsforce connection configured
 - Understanding of SOQL query plans
 - Redis or in-memory cache available (optional)
@@ -188,6 +190,7 @@ const conn = new jsforce.Connection({
 | Composite (25 subrequests) | 500ms-3s | Replaces 25 individual calls |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `NON_SELECTIVE_QUERY` | WHERE clause too broad | Add indexed field filters |
@@ -196,9 +199,11 @@ const conn = new jsforce.Connection({
 | Cache stampede | TTL expired, all threads miss | Use stale-while-revalidate pattern |
 
 ## Resources
+
 - [SOQL Performance Best Practices](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_SOQL_VLSQ.htm)
 - [Query Plan Tool](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_SOQL_query_plan.htm)
 - [sObject Collections](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_composite_sobjects_collections.htm)
 
 ## Next Steps
+
 For cost optimization, see `salesforce-cost-tuning`.

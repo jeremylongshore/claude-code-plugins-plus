@@ -12,9 +12,11 @@
 | Enterprise blocking | Keywords: enterprise, API-critical, workflow blocked |
 
 ## Viral Thread Circuit Breaker
+
 - 500 replies/hour → sample 100, stop processing rest
 - Prevents resource exhaustion on viral threads
 
 ## Display Rules
+
 - High/critical severity must always expose: why it is severe, consequence vs velocity source
 - Low-volume-but-high-consequence is a valid high/critical rating

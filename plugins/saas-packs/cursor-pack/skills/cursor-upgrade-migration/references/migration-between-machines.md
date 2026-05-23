@@ -3,6 +3,7 @@
 ## Migration Between Machines
 
 ### Using Settings Sync
+
 ```
 1. Enable Settings Sync (Gear icon > Turn on Settings Sync)
 2. Sign in with GitHub/Microsoft
@@ -15,6 +16,7 @@
 ```
 
 ### Manual Migration
+
 ```bash
 # On old machine - export
 cursor --list-extensions > extensions.txt
@@ -26,6 +28,7 @@ cp -r ./cursor-config/* ~/Library/Application\ Support/Cursor/User/
 ```
 
 ### Critical Files to Transfer
+
 ```
 Priority files:
 - settings.json (all preferences)

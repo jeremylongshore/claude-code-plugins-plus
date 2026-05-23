@@ -102,7 +102,7 @@ That's the whole point of infrastructure. You pay once, then it compounds.
 ---
 
 **Related Posts:**
+
 - [Building External Plugin Sync: Keeping Community Plugins Fresh](/posts/external-plugin-sync-keeping-community-plugins-fresh/) — The January cron-based sync system that today's `repository_dispatch` replaces
 - [X Bug Triage Plugin: Zero to v0.4.3 in One Day](/posts/x-bug-triage-plugin-zero-to-v043-one-day/) — The plugin that got its first marketplace sync today
 - [Content Quality War: 7-Check Audit Across 340 Plugins](/posts/content-quality-war-7-check-audit-across-340-plugins/) — The content quality standards that the sync pipeline now enforces automatically
-

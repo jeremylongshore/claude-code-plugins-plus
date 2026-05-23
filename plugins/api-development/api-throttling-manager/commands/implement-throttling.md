@@ -10,6 +10,7 @@ Implement sophisticated API throttling with dynamic rate limits, quota managemen
 ## When to Use This Command
 
 Use `/implement-throttling` when you need to:
+
 - Protect APIs from abuse and overload
 - Implement usage-based billing and quotas
 - Provide differentiated service tiers (free/premium)
@@ -18,6 +19,7 @@ Use `/implement-throttling` when you need to:
 - Comply with third-party API rate limits
 
 DON'T use this when:
+
 - Building internal-only APIs with trusted clients (may be overkill)
 - Prototype or MVP phase (premature optimization)
 - Already using API gateway with throttling (avoid duplication)
@@ -25,6 +27,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **Token Bucket + Sliding Window** as the primary approach because:
+
 - Allows burst traffic while maintaining overall limits
 - Provides smooth rate limiting without hard cutoffs
 - Memory-efficient for high-traffic scenarios
@@ -33,12 +36,14 @@ This command implements **Token Bucket + Sliding Window** as the primary approac
 - Industry-proven algorithm combination
 
 **Alternative considered: Fixed Window**
+
 - Simpler implementation
 - Susceptible to thundering herd at window boundaries
 - Less smooth traffic distribution
 - Recommended for simple use cases
 
 **Alternative considered: Leaky Bucket**
+
 - Constant output rate
 - Better for streaming scenarios
 - Less flexible for burst traffic
@@ -47,6 +52,7 @@ This command implements **Token Bucket + Sliding Window** as the primary approac
 ## Prerequisites
 
 Before running this command:
+
 1. Define rate limit tiers and quotas
 2. Choose storage backend (Redis recommended)
 3. Determine billing/pricing model if applicable
@@ -56,23 +62,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Configure Rate Limit Storage
+
 Set up Redis or similar for distributed rate limit tracking.
 
 ### Step 2: Implement Throttling Algorithms
+
 Deploy token bucket and sliding window algorithms with configurable parameters.
 
 ### Step 3: Create Middleware
+
 Build middleware for automatic rate limit enforcement.
 
 ### Step 4: Add Usage Tracking
+
 Implement detailed usage tracking for analytics and billing.
 
 ### Step 5: Set Up Management API
+
 Create API for managing rate limits, quotas, and user tiers.
 
 ## Output Format
 
 The command generates:
+
 - `middleware/rate-limiter.js` - Core throttling middleware
 - `services/throttling-manager.js` - Rate limit management service
 - `models/usage-tracking.js` - Usage data models
@@ -896,12 +908,14 @@ if __name__ == "__main__":
 ## Configuration Options
 
 **Rate Limiting Algorithms**
+
 - `token-bucket`: Allows burst traffic
 - `sliding-window`: Smooth rate distribution
 - `fixed-window`: Simple time-based limits
 - `leaky-bucket`: Constant output rate
 
 **Storage Backends**
+
 - `redis`: Recommended for distributed systems
 - `memory`: For single-server deployments
 - `dynamodb`: For serverless architectures
@@ -910,6 +924,7 @@ if __name__ == "__main__":
 ## Best Practices
 
 DO:
+
 - Use distributed storage for multi-server deployments
 - Implement graceful degradation when limits are reached
 - Provide clear error messages with retry information
@@ -918,6 +933,7 @@ DO:
 - Implement different weights for different operations
 
 DON'T:
+
 - Use only client-side rate limiting
 - Ignore time synchronization issues
 - Set limits too restrictive initially

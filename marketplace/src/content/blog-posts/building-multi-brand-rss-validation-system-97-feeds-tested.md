@@ -34,6 +34,7 @@ Simple, right? Just gather some RSS feeds and route them appropriately.
 ### Discovery Phase: Finding the Mess
 
 When I started digging into existing feed lists, I found chaos:
+
 - 5+ different locations with RSS feed lists
 - `comprehensive-news-feeds.json` with 45 feeds (never validated)
 - `tech-ai-feeds.json` with 12 feeds (some working, some not)
@@ -48,6 +49,7 @@ The first lesson hit immediately: **scattered data is a symptom of a larger prob
 I made my first mistake here. I analyzed the comprehensive-news-feeds.json, organized feeds by category, and proposed them for the workflow.
 
 33 feeds across:
+
 - AI Research & Industry (8 feeds)
 - Tech News (7 feeds)
 - Home Repair & DIY (3 feeds)
@@ -110,6 +112,7 @@ echo "TOTAL: $((pass + fail))"
 ```
 
 **Key validation criteria:**
+
 - HTTP 200 status code (not redirects, not errors)
 - Valid XML/RSS/Atom content-type header
 - Response within 10 seconds
@@ -146,6 +149,7 @@ Only 20 of my 33 "carefully selected" feeds actually worked.
 ### The Surprises and Discoveries
 
 **OpenAI Blog Changed URLs:**
+
 - Old URL: `https://openai.com/blog/rss.xml` → 307 redirect (failed)
 - New URL: `https://openai.com/news/rss.xml` → 200 OK (works)
 
@@ -165,6 +169,7 @@ Old URL returns 301 redirect. After following redirects, found it still doesn't 
 Next challenge: validate repair and maintenance feeds for DixieRoad brand.
 
 I created a new test script for:
+
 - RV repair & maintenance (5 feeds tested)
 - Motorcycle repair (5 feeds tested)
 - Boat repair & maintenance (5 feeds tested)
@@ -217,6 +222,7 @@ TOTAL: 31
 ## The Consolidation Challenge
 
 At this point I had:
+
 - 20 validated tech/AI feeds
 - 7 validated repair/maintenance feeds
 - Multiple scattered documentation files
@@ -265,6 +271,7 @@ This was the organizational architecture challenge. I needed:
 ```
 
 **Symlink for n8n workflows:**
+
 ```bash
 ln -sf /home/jeremy/projects/brainstorm/MASTER-RSS-FEEDS.md \
        /home/jeremy/projects/n8n-workflows/MASTER-RSS-FEEDS.md
@@ -290,9 +297,11 @@ Pushed to GitHub: [rssatoms-tier1-feeds](https://github.com/jeremylongshore/rssa
 With validated feeds, I could finally design the routing system:
 
 ### Intent Solutions (AI Agency - Professional Authority)
+
 **Criteria:** AI/Tech content, Quality Score 4+
 
 **Assigned Feeds (11):**
+
 - OpenAI News, The Gradient, AI News, MIT News AI
 - TechCrunch, The Verge, Ars Technica, Wired
 - MIT Technology Review, Bloomberg Tech, WSJ Tech
@@ -300,9 +309,11 @@ With validated feeds, I could finally design the routing system:
 **Expected:** 200-250 articles/day → 15-25 curated
 
 ### StartAITools (Tech Blog - Developer Focus)
+
 **Criteria:** AI/Tech/Dev content, Quality Score 3+
 
 **Assigned Feeds (23):**
+
 - All Intent Solutions feeds (11)
 - Plus: Hugging Face, ML Mastery, Engadget, Hacker News
 - GitHub Blog, Stack Overflow, InfoQ, KrebsOnSecurity
@@ -311,9 +322,11 @@ With validated feeds, I could finally design the routing system:
 **Expected:** 350-400 articles/day → 30-50 curated
 
 ### DixieRoad (Repair/Survival/Homestead)
+
 **Criteria:** Repair/Survival/Homestead, Quality Score 3+
 
 **Assigned Feeds (18):**
+
 - Family Handyman, Bob Vila
 - Car and Driver, Road & Track, Diesel World, Auto Service World
 - RV Life, Do It Yourself RV, Camper Report
@@ -347,6 +360,7 @@ Each feed gets an HTTP Request node:
 ```
 
 **Critical settings:**
+
 - 10-second timeout (validated in testing)
 - Follow redirects (max 3) for feeds that moved
 - Error Continue: true (don't stop workflow on single feed failure)
@@ -358,6 +372,7 @@ Each feed gets an HTTP Request node:
 I spent hours designing beautiful routing systems before testing if the data sources actually worked. **Wrong order.**
 
 The right approach:
+
 1. Test data sources first
 2. Document what works
 3. Design architecture around validated data
@@ -368,6 +383,7 @@ Not the other way around.
 ### 2. Real-World Data is Messy
 
 **Assumptions I made that were wrong:**
+
 - "Tech companies always have RSS feeds" (Anthropic doesn't)
 - "Redirects mean the feed still works" (often they don't)
 - "Industry leaders maintain feeds" (they discontinue them)
@@ -378,6 +394,7 @@ Not the other way around.
 ### 3. Failure Documentation is as Valuable as Success
 
 Documenting the 45 failed feeds with specific reasons saved future work:
+
 - No one will waste time trying Anthropic's non-existent feed
 - We know VentureBeat redirects are unreliable
 - IEEE Spectrum moved and we have the failure documented
@@ -388,6 +405,7 @@ This becomes institutional knowledge.
 ### 4. Category-Specific Validation Matters
 
 The 52% difference in success rates between tech (75%) and repair (23%) feeds taught me:
+
 - Different industries have different RSS maturity
 - Validation criteria may need to be category-specific
 - Volume expectations should account for category reliability
@@ -404,6 +422,7 @@ Finding feeds scattered across 5+ locations was a red flag. I should have consol
 Manual checking of a few feeds? They might work.
 
 Automated checking of 97 feeds? You discover:
+
 - 13 with redirect issues
 - 8 discontinued
 - 7 blocking automation
@@ -415,6 +434,7 @@ Automated checking of 97 feeds? You discover:
 ## The Results: Production-Ready Feed System
 
 ### Final Metrics
+
 - **97 feeds tested** across 16 categories
 - **52 tier-1 validated** (53.6% success rate)
 - **45 failed feeds** documented with specific reasons
@@ -422,17 +442,20 @@ Automated checking of 97 feeds? You discover:
 - **138 total feeds** in master CSV (including pre-existing)
 
 ### Validation Scripts Created
+
 1. `test-comprehensive-feeds.sh` - Tech/AI/general feeds (45 tested)
 2. `test-repair-feeds.sh` - Repair/maintenance feeds (31 tested)
 3. `test-rss-feeds.sh` - Original tier-1 validation (33 tested)
 
 ### Documentation Artifacts
+
 - `MASTER-RSS-FEEDS.md` - Single source of truth
 - `TIER1_BEST_FEEDS.csv` - Automation-ready format
 - Symlinks across projects for access
 - GitHub repo for version control
 
 ### Expected Daily Volume (After Validation)
+
 - **Before filtering:** 650-800 articles/day across all feeds
 - **After quality filtering:** 70-115 curated articles/day
 - **Per brand:**
@@ -443,26 +466,33 @@ Automated checking of 97 feeds? You discover:
 ## What's Next
 
 ### Immediate: Automated Health Monitoring
+
 The validation scripts should run weekly:
+
 ```bash
 # Cron job
 0 2 * * 0 /home/jeremy/projects/brainstorm/test-comprehensive-feeds.sh >> /var/log/rss-validation.log
 ```
 
 Alert on:
+
 - Feed failures (new 404s, timeouts)
 - Success rate drops below threshold
 - New redirect patterns
 
 ### Future: Enhanced Validation
+
 Add checks for:
+
 - Content freshness (posts within 30 days)
 - Feed update frequency (daily/weekly/monthly)
 - Average quality scores over time
 - Automatic category detection with AI
 
 ### Advanced: Multi-Source Aggregation
+
 Extend validation framework to:
+
 - API-based content sources (Twitter, Reddit, etc.)
 - Newsletter parsing systems
 - Social media monitoring feeds
@@ -488,13 +518,12 @@ The most important lesson? **When someone asks "did you test it first?" - the an
 
 Design follows validation. Architecture follows data quality. Automation follows both.
 
-
 **Code Repository:** [rssatoms-tier1-feeds](https://github.com/jeremylongshore/rssatoms-tier1-feeds)
 
 **Final Stats:**
+
 - 97 feeds tested
 - 52 validated (53.6%)
 - 16 categories
 - 3 brands
 - 138 total tier-1 feeds in production
-

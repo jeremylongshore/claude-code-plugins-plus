@@ -3,6 +3,7 @@
 ## Network Security
 
 ### Firewall Configuration
+
 ```
 Required endpoints for Cursor:
 
@@ -22,6 +23,7 @@ VS Code/Extensions:
 ```
 
 ### Proxy Configuration
+
 ```json
 // settings.json
 {

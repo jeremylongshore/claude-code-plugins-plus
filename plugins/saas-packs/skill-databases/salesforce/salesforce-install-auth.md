@@ -10,6 +10,7 @@ salesforce-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Salesforce SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Salesforce integration.
 **Relates to:** Other salesforce skills in this pack.

@@ -10,6 +10,7 @@ guidewire-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Guidewire reference architecture
 **Workflow:** Part of the cicd skill category for Guidewire integration.
 **Relates to:** Other guidewire skills in this pack.

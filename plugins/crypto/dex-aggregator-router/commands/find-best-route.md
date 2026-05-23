@@ -61,8 +61,10 @@ Structure your analysis as:
 
  **RECOMMENDED ROUTE**
 ```
+
 [Token A] → [Token B] → [Token C]
    DEX1      DEX2
+
 ```
 
 - **Expected Output**: [X] [Token]
@@ -126,10 +128,12 @@ Structure your analysis as:
 
 **Transaction Details:**
 ```
+
 From: [Amount] [Token A]
 To (minimum): [Amount] [Token B] (includes slippage)
 Route: [Detailed path]
 Expected gas: [Units] ([Cost] at [gwei])
+
 ```
 
 ### Market Conditions
@@ -173,30 +177,35 @@ Expected gas: [Units] ([Cost] at [gwei])
 ## DEX Characteristics
 
 ### Uniswap V2
+
 - **Best for**: Standard pairs, proven security
 - **Liquidity**: Very high
 - **Gas cost**: Medium
 - **Fee**: 0.3% flat
 
 ### Uniswap V3
+
 - **Best for**: Deep liquidity pairs, efficiency
 - **Liquidity**: Concentrated (can be higher effective)
 - **Gas cost**: Higher than V2
 - **Fee**: 0.05%, 0.3%, 1% tiers
 
 ### Curve Finance
+
 - **Best for**: Stablecoin swaps, low slippage
 - **Liquidity**: Excellent for stables
 - **Gas cost**: Low
 - **Fee**: 0.04% typically
 
 ### SushiSwap
+
 - **Best for**: Alternative to Uniswap V2
 - **Liquidity**: Good on major pairs
 - **Gas cost**: Similar to Uni V2
 - **Fee**: 0.3%
 
 ### Balancer
+
 - **Best for**: Multi-token pools
 - **Liquidity**: Moderate
 - **Gas cost**: Higher (complex math)
@@ -205,19 +214,24 @@ Expected gas: [Units] ([Cost] at [gwei])
 ## Key Concepts
 
 ### Price Impact
+
 ```
 Price Impact = (Expected Price - Execution Price) / Expected Price
 ```
+
 - < 0.5%: Good execution
 - 0.5-1%: Acceptable for medium trades
 - 1-3%: High, consider splitting
 - > 3%: Very high, use alternative strategy
 
 ### Slippage Tolerance
+
 ```
 Minimum Received = Expected × (1 - Slippage %)
 ```
+
 Recommended settings:
+
 - Stable pairs: 0.1-0.5%
 - Major pairs: 0.5-1%
 - Volatile pairs: 1-3%
@@ -226,6 +240,7 @@ Recommended settings:
 ## Example Queries
 
 Users might ask:
+
 - "Best route to swap 10 ETH for USDC?"
 - "Compare Uniswap vs SushiSwap for DAI → USDC"
 - "I want to swap $50k USDT to ETH - what's the best strategy?"

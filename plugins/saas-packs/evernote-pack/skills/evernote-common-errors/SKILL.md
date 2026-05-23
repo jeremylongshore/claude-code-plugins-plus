@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Common Errors
 
 ## Overview
+
 Comprehensive guide to diagnosing and resolving Evernote API errors. Evernote uses three exception types: `EDAMUserException` (client errors), `EDAMSystemException` (server/rate limit errors), and `EDAMNotFoundException` (invalid GUIDs).
 
 ## Prerequisites
+
 - Basic Evernote SDK setup
 - Understanding of Evernote data model
 
@@ -104,6 +106,7 @@ async function safeGetNote(noteStore, guid) {
 Build a centralized error handler that classifies exceptions and returns structured results with `type`, `code`, `action`, and `recoverable` flags. See [Implementation Guide](references/implementation-guide.md) for the complete `EvernoteErrorHandler` class.
 
 ## Output
+
 - Error code reference table for all `EDAMUserException` codes
 - ENML validation utility that catches common content errors
 - Rate limit retry with `rateLimitDuration` handling
@@ -111,6 +114,7 @@ Build a centralized error handler that classifies exceptions and returns structu
 - Centralized `EvernoteErrorHandler` service class
 
 ## Error Handling
+
 | Exception | When Thrown | Recovery |
 |-----------|------------|----------|
 | `EDAMUserException` | Client error (invalid input, permissions) | Fix input or re-authenticate |
@@ -118,12 +122,14 @@ Build a centralized error handler that classifies exceptions and returns structu
 | `EDAMNotFoundException` | Resource not found (invalid GUID) | Verify GUID, check trash |
 
 ## Resources
+
 - [Error Handling](https://dev.evernote.com/doc/articles/error_handling.php)
 - [Rate Limits](https://dev.evernote.com/doc/articles/rate_limits.php)
 - [API Reference](https://dev.evernote.com/doc/reference/)
 - [ENML DTD](http://xml.evernote.com/pub/enml2.dtd)
 
 ## Next Steps
+
 For debugging tools and techniques, see `evernote-debug-bundle`.
 
 ## Examples

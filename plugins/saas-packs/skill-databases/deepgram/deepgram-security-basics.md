@@ -10,6 +10,7 @@ deepgram-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Deepgram security best practices
 **Workflow:** Part of the operations skill category for Deepgram integration.
 **Relates to:** Other deepgram skills in this pack.

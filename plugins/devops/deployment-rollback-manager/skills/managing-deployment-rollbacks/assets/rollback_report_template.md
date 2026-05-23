@@ -37,12 +37,13 @@ This report documents the rollback process, its reasons, actions taken, and outc
 [**Placeholder: Outline the planned steps for the rollback. Include specific versions, scripts, and commands used.**]
 
 *Example:
-1.  Verify the integrity of the previous version (2.4.0) backup.
-2.  Stop the current version (2.5.0) deployment.
-3.  Deploy the backup version (2.4.0).
-4.  Run database migrations to revert to the previous schema (if applicable).
-5.  Verify application functionality and performance.
-6.  Monitor system logs for any errors.*
+
+1. Verify the integrity of the previous version (2.4.0) backup.
+2. Stop the current version (2.5.0) deployment.
+3. Deploy the backup version (2.4.0).
+4. Run database migrations to revert to the previous schema (if applicable).
+5. Verify application functionality and performance.
+6. Monitor system logs for any errors.*
 
 ### 3.2. Rollback Execution
 
@@ -55,17 +56,19 @@ This report documents the rollback process, its reasons, actions taken, and outc
 [**Placeholder: Record the start and end times of the rollback process.**]
 
 *Example:
-*   Start Time: 2024-01-26 10:00 UTC
-*   End Time: 2024-01-26 10:45 UTC*
+
+* Start Time: 2024-01-26 10:00 UTC
+* End Time: 2024-01-26 10:45 UTC*
 
 ### 3.4. Personnel Involved
 
 [**Placeholder: List the individuals involved in the rollback process and their roles.**]
 
 *Example:
-*   John Doe: Lead Engineer
-*   Jane Smith: Database Administrator
-*   Peter Jones: Operations Engineer*
+
+* John Doe: Lead Engineer
+* Jane Smith: Database Administrator
+* Peter Jones: Operations Engineer*
 
 ## 4. Post-Rollback Analysis
 
@@ -86,28 +89,31 @@ This report documents the rollback process, its reasons, actions taken, and outc
 [**Placeholder: Outline the planned corrective actions to prevent similar issues from occurring in the future.**]
 
 *Example:
-1.  Conduct a thorough code review of the payment processing module.
-2.  Implement more robust unit and integration tests for critical code paths.
-3.  Improve monitoring and alerting to detect issues earlier.
-4.  Implement a canary deployment strategy for future releases.*
+
+1. Conduct a thorough code review of the payment processing module.
+2. Implement more robust unit and integration tests for critical code paths.
+3. Improve monitoring and alerting to detect issues earlier.
+4. Implement a canary deployment strategy for future releases.*
 
 ### 4.4. Lessons Learned
 
 [**Placeholder: Document any lessons learned from the rollback process. What went well? What could be improved?**]
 
 *Example:
-*   The rollback process was well-documented and executed efficiently.
-*   The monitoring dashboards provided valuable insights into the issue.
-*   The communication between teams was effective.
-*   Areas for improvement:
-    *   Improve the speed of database migrations.
-    *   Automate the rollback process further.*
+
+* The rollback process was well-documented and executed efficiently.
+* The monitoring dashboards provided valuable insights into the issue.
+* The communication between teams was effective.
+* Areas for improvement:
+  * Improve the speed of database migrations.
+  * Automate the rollback process further.*
 
 ## 5. Appendix
 
 [**Placeholder: Include any supporting documentation, such as logs, screenshots, and scripts.**]
 
 *Example:
-*   Database migration log: [Link to log file]
-*   Monitoring dashboard screenshot: [Link to screenshot]
-*   Rollback script: [Link to script]*
+
+* Database migration log: [Link to log file]
+* Monitoring dashboard screenshot: [Link to screenshot]
+* Rollback script: [Link to script]*

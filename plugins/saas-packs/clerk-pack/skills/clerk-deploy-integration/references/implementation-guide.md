@@ -7,6 +7,7 @@ Detailed implementation examples and code patterns.
 ### Platform 1: Vercel Deployment
 
 #### Step 1: Configure Environment Variables
+
 ```bash
 # Using Vercel CLI
 vercel env add NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY production
@@ -36,11 +37,13 @@ vercel env add CLERK_WEBHOOK_SECRET production
 ```
 
 #### Step 2: Configure Clerk Dashboard
+
 1. Add Vercel domain to allowed origins
 2. Set production URLs in Clerk Dashboard
 3. Configure webhook endpoint
 
 #### Step 3: Deploy
+
 ```bash
 # Deploy to production
 vercel --prod
@@ -52,6 +55,7 @@ vercel link
 ### Platform 2: Netlify Deployment
 
 #### Step 1: Configure Environment Variables
+
 ```bash
 # netlify.toml
 [build]
@@ -66,6 +70,7 @@ vercel link
 ```
 
 #### Step 2: Create Netlify Functions for API
+
 ```typescript
 // netlify/functions/clerk-webhook.ts
 import { Handler } from '@netlify/functions'
@@ -98,6 +103,7 @@ export const handler: Handler = async (event) => {
 ### Platform 3: Railway Deployment
 
 #### Step 1: Configure Railway
+
 ```bash
 # railway.json
 {
@@ -112,6 +118,7 @@ export const handler: Handler = async (event) => {
 ```
 
 #### Step 2: Set Environment Variables
+
 ```bash
 # Using Railway CLI
 railway variables set NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_...
@@ -122,6 +129,7 @@ railway variables set CLERK_WEBHOOK_SECRET=whsec_...
 ### Platform 4: Docker Deployment
 
 #### Dockerfile
+
 ```dockerfile
 FROM node:20-alpine AS builder
 
@@ -193,17 +201,20 @@ frontend:
 ## Clerk Dashboard Configuration
 
 ### Production Domain Setup
+
 1. Go to Clerk Dashboard > Configure > Domains
 2. Add your production domain
 3. Configure SSL (automatic with most platforms)
 
 ### Webhook Configuration
+
 1. Go to Clerk Dashboard > Webhooks
 2. Add endpoint: `https://yourdomain.com/api/webhooks/clerk`
 3. Select events to subscribe
 4. Copy webhook secret to environment
 
 ### OAuth Redirect URLs
+
 1. Update OAuth providers with production URLs
 2. Add `https://yourdomain.com/sso-callback`
 3. Remove development URLs for security

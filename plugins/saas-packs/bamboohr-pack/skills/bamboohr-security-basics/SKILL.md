@@ -54,6 +54,7 @@ BAMBOOHR_WEBHOOK_SECRET=your-webhook-hmac-secret
 ```
 
 **Key management rules:**
+
 - Each environment (dev/staging/prod) uses a separate API key
 - Create API keys under service accounts, not personal accounts
 - API keys inherit the permissions of the user who created them

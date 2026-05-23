@@ -104,10 +104,12 @@ GA4 property IDs are 9-digit numbers (not the `G-XXXXX` measurement ID, which is
 ## Secret hygiene
 
 - **Never commit the SA JSON key.** Add to `.gitignore`:
+
   ```
   *-sa-*.json
   sa-ga4.json
   ```
+
 - **Use SOPS+age** for the SA key in any repo it lives in. Per the IS standard: `cd <repo> && sops-init`, then `mv ~/.config/gcloud/sa-ga4.json .sops/ga4-sa.json.sops` and decrypt in-process when needed.
 - **Rotate the SA key annually** at minimum: `gcloud iam service-accounts keys list --iam-account=$SA_EMAIL` shows the active keys; create a new one + delete the old one.
 - **Grant Viewer-only** at the GA4 property level. Editor or Administrator gives the SA the power to delete the property — you don't want a CI pipeline with that blast radius.

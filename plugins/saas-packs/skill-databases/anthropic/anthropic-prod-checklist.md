@@ -10,6 +10,7 @@ anthropic-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Anthropic production deployment checklist
 **Workflow:** Part of the operations skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

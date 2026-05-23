@@ -3,9 +3,11 @@
 # Lindy AI Deploy Integration
 
 ## Overview
+
 Deploy Lindy AI agent integrations to production environments. Lindy agents run on Lindy's managed infrastructure, so deployment focuses on configuring your application's connection to Lindy agents, managing API credentials, and setting up webhook endpoints that Lindy agents interact with.
 
 ## Prerequisites
+
 - Lindy account with agents configured
 - Lindy API key stored in `LINDY_API_KEY` environment variable
 - Application endpoints ready for Lindy agent callbacks
@@ -14,6 +16,7 @@ Deploy Lindy AI agent integrations to production environments. Lindy agents run 
 ## Instructions
 
 ### Step 1: Configure Agent Connection
+
 ```typescript
 // config/lindy.ts
 interface LindyConfig {
@@ -36,6 +39,7 @@ export function getLindyConfig(): LindyConfig {
 ```
 
 ### Step 2: Docker Deployment
+
 ```dockerfile
 FROM node:20-slim
 WORKDIR /app
@@ -58,6 +62,7 @@ docker run -d \
 ```
 
 ### Step 3: Vercel Deployment
+
 ```bash
 vercel env add LINDY_API_KEY production
 vercel env add LINDY_EMAIL_AGENT_ID production
@@ -67,6 +72,7 @@ vercel --prod
 ```
 
 ### Step 4: Production Agent Trigger
+
 ```typescript
 async function triggerLindyAgent(agentId: string, input: any) {
   const config = getLindyConfig();
@@ -88,6 +94,7 @@ async function triggerLindyAgent(agentId: string, input: any) {
 ```
 
 ### Step 5: Health Check
+
 ```typescript
 export async function GET() {
   try {
@@ -102,6 +109,7 @@ export async function GET() {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Agent not found | Invalid agent ID | Verify agent IDs in Lindy dashboard |
@@ -112,6 +120,7 @@ export async function GET() {
 ## Examples
 
 ### Deploy Script
+
 ```bash
 #!/bin/bash
 set -e
@@ -122,8 +131,10 @@ echo "Deployed. Verify webhook: curl -s https://api.yourapp.com/health"
 ```
 
 ## Resources
+
 - [Lindy AI Documentation](https://docs.lindy.ai)
 - [Lindy API Reference](https://docs.lindy.ai/api)
 
 ## Next Steps
+
 For webhook handling, see `lindy-webhooks-events`.

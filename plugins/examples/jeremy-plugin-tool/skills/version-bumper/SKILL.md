@@ -42,6 +42,7 @@ Automates semantic version bumps across all version-bearing files in a Claude Co
 ## Output
 
 A version bump execution summary containing:
+
 - The computed transition (`old_version` to `new_version`)
 - The exact files updated: `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.extended.json`, and regenerated `.claude-plugin/marketplace.json`
 - Validation confirmation that all files carry the same version

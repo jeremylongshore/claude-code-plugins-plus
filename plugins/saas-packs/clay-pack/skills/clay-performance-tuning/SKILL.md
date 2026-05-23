@@ -70,6 +70,7 @@ ICP Score >= 70 AND ISNOTEMPTY(Work Email)
 ```
 
 This prevents:
+
 - Waterfall enrichment on rows with missing domains (wasted credits)
 - Claygent research on low-value prospects (expensive AI credits)
 - CRM pushes for incomplete records

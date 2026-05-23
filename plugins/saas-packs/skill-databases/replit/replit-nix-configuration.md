@@ -10,6 +10,7 @@ replit-nix-configuration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Nix packages and system dependencies for reproducible Replit environments.
 **Workflow:** Environment configuration skill - enables advanced system-level customization.
 **Relates to:** Required for replit-common-errors resolution; foundation for complex projects.

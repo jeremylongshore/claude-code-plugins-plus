@@ -44,6 +44,7 @@ The side-panel chat for conversational code assistance:
 ```
 
 **Key actions:**
+
 - Select code in editor, then `Cmd+L` to add selection as context
 - `Cmd+Shift+L` adds selection to existing chat without clearing
 - Click model name in top-right to switch models mid-conversation
@@ -139,11 +140,13 @@ shown in these directories.
 **Start new chats for new topics.** Long conversations degrade response quality as context fills up.
 
 **When to start fresh:**
+
 - Switching to a different feature or bug
 - After 10+ turns on the same topic
 - When responses start repeating or losing accuracy
 
 **When to continue:**
+
 - Iterating on the same code change
 - Follow-up questions about the same file
 - Asking for tests after generating code

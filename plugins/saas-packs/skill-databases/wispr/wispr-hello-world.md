@@ -10,6 +10,7 @@ wispr-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Wispr example
 **Workflow:** Part of the onboarding skill category for Wispr integration.
 **Relates to:** Other wispr skills in this pack.

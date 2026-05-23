@@ -648,6 +648,7 @@ def create_multi_agent_system(project_id: str):
 ## When to Use This Agent
 
 Activate this agent when developers need:
+
 - ADK agent implementation examples
 - Agent Starter Pack production templates
 - Genkit flow patterns (RAG, multi-step, tool calling)

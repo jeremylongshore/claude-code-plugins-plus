@@ -17,9 +17,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola Cost Tuning
 
 ## Overview
+
 Optimize Granola spending with plan selection, ROI analysis, and seat management. Granola pricing is simple: $0 (Basic), $14/user/month (Business), or $35+/user/month (Enterprise). No per-minute charges, no meeting count limits on paid plans, and no hardware device requirements.
 
 ## Prerequisites
+
 - Current Granola plan and usage data (Settings > Account)
 - Team size and meeting frequency for team deployments
 - Budget constraints identified
@@ -76,12 +78,14 @@ Granola's differentiator: no bot joins your meeting, which means no "Granola is 
 ### Step 3 — Optimize Team Costs
 
 **Seat audit (monthly):**
+
 1. Settings > Team — review all active seats
 2. Identify inactive users (no meetings in 30+ days)
 3. Deactivate unused seats — they reduce from next billing cycle
 4. Reassign seats to new team members (no extra charge)
 
 **Right-size your deployment:**
+
 ```
 Team of 10 users:
   All on Business:         10 * $14 = $140/month
@@ -143,6 +147,7 @@ Additional Benefits:
 ```
 
 ## Output
+
 - ROI calculated for individual or team deployment
 - Optimal plan selected based on usage and requirements
 - Seat management cadence established (monthly audit)
@@ -158,10 +163,12 @@ Additional Benefits:
 | Free plan exhausted | 25 lifetime meetings used | Upgrade to Business ($14/mo) |
 
 ## Resources
+
 - [Granola Pricing](https://www.granola.ai/pricing)
 - [Pricing Blog with ROI Calculator](https://www.granola.ai/blog/granola-pricing-plans-features-roi)
 - [Team Pricing Guide](https://www.granola.ai/blog/granola-pricing-teams-per-user-enterprise)
 - [Enterprise Options](https://www.granola.ai/blog/granola-pricing-teams-per-user-enterprise)
 
 ## Next Steps
+
 Proceed to `granola-reference-architecture` for enterprise deployment patterns.

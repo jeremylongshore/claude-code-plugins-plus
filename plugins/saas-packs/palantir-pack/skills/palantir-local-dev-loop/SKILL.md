@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Local Dev Loop
 
 ## Overview
+
 Set up local development for Palantir Foundry integrations. Covers running transforms locally against sample data, mocking the Foundry API for fast iteration, and testing with pytest before pushing to Foundry.
 
 ## Prerequisites
+
 - Completed `palantir-install-auth` setup
 - Python 3.9+ with pip
 - A Foundry Code Repository cloned locally (or a standalone project)
@@ -37,6 +39,7 @@ Set up local development for Palantir Foundry integrations. Covers running trans
 ## Instructions
 
 ### Step 1: Project Structure
+
 ```
 my-foundry-project/
 ├── src/myproject/
@@ -53,6 +56,7 @@ my-foundry-project/
 ```
 
 ### Step 2: Install Local Dependencies
+
 ```bash
 set -euo pipefail
 pip install foundry-platform-sdk pyspark pytest pandas
@@ -60,6 +64,7 @@ python -c "import foundry; import pyspark; print('Dependencies ready')"
 ```
 
 ### Step 3: Test Transforms Locally with PySpark
+
 ```python
 # tests/conftest.py
 import pytest
@@ -92,6 +97,7 @@ def test_clean_orders_removes_nulls_and_test_emails(sample_orders):
 ```
 
 ### Step 4: Mock Foundry API for Integration Tests
+
 ```python
 # tests/test_api.py
 import pytest
@@ -111,6 +117,7 @@ def test_list_ontology_objects():
 ```
 
 ### Step 5: Run Tests
+
 ```bash
 set -euo pipefail
 pytest tests/ -v --tb=short
@@ -118,6 +125,7 @@ pytest tests/ -v --tb=short
 ```
 
 ### Step 6: Live API Smoke Test (Optional)
+
 ```python
 # scripts/smoke_test.py — runs against real Foundry (needs credentials)
 import os, foundry, sys
@@ -139,12 +147,14 @@ except foundry.ApiError as e:
 ```
 
 ## Output
+
 - Local PySpark environment for testing transforms without Foundry
 - Mocked Foundry API client for integration tests
 - pytest suite validating pipeline logic
 - Optional live smoke test for credential verification
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Java not found` (PySpark) | JDK not installed | Install JDK 11+: `apt install openjdk-11-jdk` |
@@ -155,6 +165,7 @@ except foundry.ApiError as e:
 ## Examples
 
 ### Watch Mode with pytest-watch
+
 ```bash
 pip install pytest-watch
 ptw tests/ -- -v --tb=short
@@ -162,10 +173,12 @@ ptw tests/ -- -v --tb=short
 ```
 
 ## Resources
+
 - [Foundry Local Development](https://www.palantir.com/docs/foundry/transforms-python/local-development)
 - [Code Examples](https://www.palantir.com/docs/foundry/code-examples/foundry-apis-local-environment)
 - [PySpark Testing](https://spark.apache.org/docs/latest/api/python/getting_started/testing_pyspark.html)
 
 ## Next Steps
+
 - Apply SDK patterns: `palantir-sdk-patterns`
 - Build data pipelines: `palantir-core-workflow-a`

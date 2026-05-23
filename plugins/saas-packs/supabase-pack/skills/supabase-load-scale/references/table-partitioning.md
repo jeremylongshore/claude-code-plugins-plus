@@ -1,4 +1,4 @@
-# Database Table Partitioning
+## Database Table Partitioning
 
 For tables with millions/billions of rows, partitioning splits data into smaller physical chunks. Supabase supports PostgreSQL native partitioning (range, list, hash). Queries that include the partition key only scan relevant partitions.
 

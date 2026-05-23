@@ -10,6 +10,7 @@ sentry-policy-guardrails/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement governance and policy guardrails for Sentry including shared configuration packages, compliance enforcement, and audit procedures.
 **Workflow:** Implement at the organizational level. Creates standards and enforcement mechanisms for consistent Sentry usage across teams.
 **Relates to:** Works with `sentry-enterprise-rbac` for access control. Connects to `sentry-data-handling` for compliance.

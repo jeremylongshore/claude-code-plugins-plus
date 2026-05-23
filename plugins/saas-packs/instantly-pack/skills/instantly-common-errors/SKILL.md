@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Common Errors
 
 ## Overview
+
 Diagnostic reference for Instantly API v2 errors. Covers HTTP status codes, campaign state errors, account health issues, lead operation failures, and webhook delivery problems.
 
 ## Prerequisites
+
 - Completed `instantly-install-auth` setup
 - Access to Instantly dashboard for verification
 - API key with appropriate scopes
@@ -47,6 +49,7 @@ Diagnostic reference for Instantly API v2 errors. Covers HTTP status codes, camp
 ## Campaign Errors
 
 ### Campaign Won't Activate (Stuck in Draft)
+
 ```typescript
 // Diagnosis: check campaign requirements
 async function diagnoseCampaign(campaignId: string) {
@@ -89,6 +92,7 @@ async function diagnoseCampaign(campaignId: string) {
 ```
 
 ### Campaign Status Codes
+
 | Status | Label | Meaning |
 |--------|-------|---------|
 | `0` | Draft | Not yet activated |
@@ -101,6 +105,7 @@ async function diagnoseCampaign(campaignId: string) {
 | `-99` | Suspended | Account-level suspension |
 
 ### Fix: Accounts Unhealthy (-1)
+
 ```typescript
 async function fixUnhealthyAccounts(campaignId: string) {
   // 1. Get accounts assigned to campaign
@@ -127,6 +132,7 @@ async function fixUnhealthyAccounts(campaignId: string) {
 ## Lead Errors
 
 ### Duplicate Lead (422)
+
 ```typescript
 // Prevent duplicates by setting skip flags
 await instantly("/leads", {
@@ -142,6 +148,7 @@ await instantly("/leads", {
 ```
 
 ### Lead Status Reference
+
 | Status | Label | Description |
 |--------|-------|-------------|
 | `1` | Active | Eligible to receive emails |
@@ -152,6 +159,7 @@ await instantly("/leads", {
 | `-3` | Skipped | Skipped (blocklist, duplicate, etc.) |
 
 ## Rate Limit Handling
+
 ```typescript
 async function withBackoff<T>(
   operation: () => Promise<T>,
@@ -184,6 +192,7 @@ async function withBackoff<T>(
 | Retries exhausting | Instantly retries 3x in 30s | Return 200 immediately, process async |
 
 ## Quick Diagnostic Script
+
 ```bash
 set -euo pipefail
 echo "=== Instantly Health Check ==="
@@ -205,6 +214,7 @@ curl -s https://api.instantly.ai/api/v2/accounts?limit=100 \
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401` after key rotation | Old key cached | Restart app / clear env cache |
@@ -214,9 +224,11 @@ curl -s https://api.instantly.ai/api/v2/accounts?limit=100 \
 | Warmup health dropping | Too many campaign emails too soon | Reduce daily_limit, extend warmup period |
 
 ## Resources
+
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
 - [Instantly Help Center](https://help.instantly.ai)
 - [API Schemas](https://developer.instantly.ai/api/v2/schemas)
 
 ## Next Steps
+
 For structured debugging, see `instantly-debug-bundle`.

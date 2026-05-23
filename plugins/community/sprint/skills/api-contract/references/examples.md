@@ -132,7 +132,9 @@ List products with pagination and filtering.
 ```
 
 **Errors:**
+
 - 400: Invalid query parameter → `{ code: "INVALID_PARAM", details: { limit: ["max 100"] } }`
+
 ```
 
 ## Example 2: Authentication Contract with Token Flow
@@ -183,6 +185,7 @@ Create a new user account and return authentication tokens.
 ```
 
 **Errors:**
+
 - 400: Invalid email format or weak password → field-level details
 - 409: Email already registered → `{ code: "EMAIL_EXISTS" }`
 
@@ -193,12 +196,14 @@ Create a new user account and return authentication tokens.
 Authenticate with email and password.
 
 **Request:**
+
 | Field    | Type   | Required |
 |----------|--------|----------|
 | email    | string | yes      |
 | password | string | yes      |
 
 **Response (200 OK):**
+
 ```json
 {
   "user": UserProfile,
@@ -207,6 +212,7 @@ Authenticate with email and password.
 ```
 
 **Errors:**
+
 - 401: Invalid credentials → `{ code: "INVALID_CREDENTIALS" }`
   (same message for wrong email and wrong password to prevent enumeration)
 - 429: Too many attempts → `{ code: "RATE_LIMITED", message: "Try again in 60s" }`
@@ -219,11 +225,13 @@ Exchange a valid refresh token for new tokens. The old refresh token is
 invalidated (rotation).
 
 **Request:**
+
 | Field        | Type   | Required |
 |--------------|--------|----------|
 | refreshToken | string | yes      |
 
 **Response (200 OK):**
+
 ```json
 {
   "tokens": AuthTokens
@@ -231,6 +239,7 @@ invalidated (rotation).
 ```
 
 **Errors:**
+
 - 401: Invalid or expired refresh token → `{ code: "INVALID_REFRESH_TOKEN" }`
   (also triggered if token was already rotated — potential theft detection)
 
@@ -241,11 +250,13 @@ invalidated (rotation).
 Invalidate the refresh token for the current session.
 
 **Headers:**
+
 | Header        | Value                |
 |---------------|----------------------|
 | Authorization | Bearer {accessToken} |
 
 **Request:**
+
 | Field        | Type   | Required |
 |--------------|--------|----------|
 | refreshToken | string | yes      |
@@ -254,7 +265,9 @@ Invalidate the refresh token for the current session.
 Empty body.
 
 **Errors:**
+
 - 401: Missing or invalid access token
+
 ```
 
 ## Example 3: TypeScript Interface Definitions
@@ -408,8 +421,10 @@ List line items for a specific order.
 ```
 
 **Errors:**
+
 - 403: Order belongs to a different user
 - 404: Order not found
+
 ```
 
 ## Example 5: Contract Section for Webhook Callbacks

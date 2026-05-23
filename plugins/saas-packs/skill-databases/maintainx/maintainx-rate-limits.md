@@ -10,6 +10,7 @@ maintainx-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement MaintainX rate limiting and backoff
 **Workflow:** Part of the operations skill category for MaintainX integration.
 **Relates to:** Other maintainx skills in this pack.

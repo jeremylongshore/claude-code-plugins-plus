@@ -30,6 +30,7 @@ The offer is the #1 lever in any business. You can have mediocre marketing, aver
 **Why it works:** People don't buy products -- they buy outcomes. They weigh the dream result and their confidence in achieving it against how long it will take and how hard it will be. When the numerator vastly outweighs the denominator, the offer feels like a no-brainer regardless of price.
 
 **Key insights:**
+
 - Dream Outcome is the single most important lever -- it defines the ceiling of your value
 - Perceived Likelihood of Achievement often matters more than actual results (social proof, guarantees, and track record increase this)
 - Time Delay is a silent killer -- faster results always command premium prices
@@ -48,6 +49,7 @@ The offer is the #1 lever in any business. You can have mediocre marketing, aver
 | **Info product** | Templates and tools reduce effort | "Just fill in the blanks -- no writing from scratch" |
 
 **Copy patterns:**
+
 - "Get [Dream Outcome] in [short time] without [Effort & Sacrifice]"
 - "Guaranteed [result] or [risk reversal]"
 - "[X%] of our clients achieve [Dream Outcome] within [Time Delay]"
@@ -65,6 +67,7 @@ See: [references/value-equation.md](references/value-equation.md) for the four l
 **Why it works:** When you bundle multiple value elements into a single offer, you make price comparison impossible. Prospects cannot shop around because no one else offers the same combination. You become a category of one, which eliminates commoditization and price pressure.
 
 **Key insights:**
+
 - Start by listing every problem and obstacle the customer faces on the way to the Dream Outcome
 - For each problem, create a solution and a delivery vehicle (how you deliver the solution)
 - Trim solutions that are low value / high cost, and stack solutions that are high value / low cost
@@ -83,6 +86,7 @@ See: [references/value-equation.md](references/value-equation.md) for the four l
 | **Consulting** | Package frameworks, assessments, and support | "Diagnostic + Roadmap + 90-Day Implementation Support" |
 
 **Copy patterns:**
+
 - "Here's everything you get when you join today..."
 - "Total value: $[sum of components]. Your investment: $[price]."
 - "This is the only program that includes [unique component]"
@@ -100,6 +104,7 @@ See: [references/grand-slam-offers.md](references/grand-slam-offers.md) for the 
 **Why it works:** Selling to a starving crowd means you do not have to convince people they have a problem. They already know. They are already looking for a solution. Your only job is to present a compelling offer. This dramatically reduces the cost of customer acquisition and increases conversion rates.
 
 **Key insights:**
+
 - A "starving crowd" has four characteristics: massive pain, purchasing power, easy to target, and growing market
 - Pain is the most important factor -- people pay to solve pain faster than they pay to gain pleasure
 - Purchasing power means they have money and willingness to spend it
@@ -118,6 +123,7 @@ See: [references/grand-slam-offers.md](references/grand-slam-offers.md) for the 
 | **Info product** | Solve a narrow, painful, urgent problem | "How doctors can negotiate their first hospital contract" |
 
 **Copy patterns:**
+
 - "Made specifically for [narrow audience] who struggle with [specific pain]"
 - "We only work with [type of client] because we know your world"
 - "If you're a [avatar] dealing with [pain], this was built for you"
@@ -135,6 +141,7 @@ See: [references/starving-crowd.md](references/starving-crowd.md) for market sel
 **Why it works:** Low prices attract price-sensitive customers who churn fastest, complain most, and refer least. High prices attract committed customers who get better results (because they invest more effort), refer more, and stay longer. Premium pricing also gives you the margin to deliver an exceptional experience, creating a virtuous cycle.
 
 **Key insights:**
+
 - Price is not a function of cost; it is a function of perceived value
 - Raising prices often increases conversions because it signals quality and seriousness
 - The 10:1 rule: if your offer delivers $100,000 in value, charge $10,000
@@ -153,6 +160,7 @@ See: [references/starving-crowd.md](references/starving-crowd.md) for market sel
 | **Info product** | Price against the alternative (time, failures, opportunity cost) | "$2,000 course vs. 3 years of trial-and-error and $50K in mistakes" |
 
 **Copy patterns:**
+
 - "An investment of $[price] for $[10x value] in [outcome]"
 - "What would it be worth to you if [Dream Outcome]?"
 - "The cost of doing nothing is $[opportunity cost] per [time period]"
@@ -170,6 +178,7 @@ See: [references/pricing-strategy.md](references/pricing-strategy.md) for value-
 **Why it works:** Bonuses shift the mental math in the prospect's favor. When the total value of bonuses alone exceeds the price of the offer, the core product feels "free." Strategic bonus stacking also addresses objections preemptively -- each bonus removes a reason not to buy.
 
 **Key insights:**
+
 - Each bonus should address a specific objection or obstacle to success
 - Assign honest, defensible dollar values to each bonus (what it sells for independently or what it would cost to replicate)
 - Stack order matters: present the most valuable bonus first to set an anchor
@@ -188,6 +197,7 @@ See: [references/pricing-strategy.md](references/pricing-strategy.md) for value-
 | **Info product** | Stack swipe files, worksheets, case studies | "Bonus: 100-page swipe file of winning ads ($997 value)" |
 
 **Copy patterns:**
+
 - "But wait -- that's not all. You also get..."
 - "Bonus #1: [Name] (a $[value] value) -- FREE"
 - "This bonus alone is worth more than your entire investment"
@@ -205,6 +215,7 @@ See: [references/bonuses-stacking.md](references/bonuses-stacking.md) for bonus 
 **Why it works:** Every purchase involves perceived risk: financial risk, time risk, reputation risk, and identity risk. Guarantees neutralize these fears. Counterintuitively, stronger guarantees reduce refund rates because they signal confidence and attract more committed buyers.
 
 **Key insights:**
+
 - There are five types: unconditional, conditional, anti-guarantee, implied, and performance-based
 - Unconditional guarantees (full refund, no questions) are simplest and most powerful for low-ticket
 - Conditional guarantees ("Do X steps and if it doesn't work, we refund") attract better clients
@@ -224,6 +235,7 @@ See: [references/bonuses-stacking.md](references/bonuses-stacking.md) for bonus 
 | **Info product** | Conditional with action requirement | "Complete the course and implement. If no results, full refund." |
 
 **Copy patterns:**
+
 - "You literally cannot lose."
 - "The only risk is not trying."
 - "Our [Named] Guarantee: [specific promise] or [consequence]"
@@ -241,6 +253,7 @@ See: [references/guarantees.md](references/guarantees.md) for the five guarantee
 **Why it works:** Without a reason to act now, prospects default to "I'll think about it" -- which functionally means no. Scarcity and urgency provide the final push for people who already want the offer but are procrastinating. Loss aversion ensures the fear of missing out outweighs the inertia of inaction.
 
 **Key insights:**
+
 - Scarcity of supply: limited seats, limited enrollment, limited production runs
 - Urgency of time: enrollment windows, seasonal offers, deadline-driven bonuses
 - Cohort-based models are the most ethical form of scarcity (real limited capacity)
@@ -259,6 +272,7 @@ See: [references/guarantees.md](references/guarantees.md) for the five guarantee
 | **Info product** | Fast-action bonuses, enrollment deadlines | "Enroll by Friday and get the bonus Implementation Sprint" |
 
 **Copy patterns:**
+
 - "Only [X] spots remaining in this cohort"
 - "Enrollment closes [specific date] at midnight"
 - "First [X] people to join also receive [bonus]"
@@ -276,6 +290,7 @@ See: [references/scarcity-urgency.md](references/scarcity-urgency.md) for ethica
 **Why it works:** A well-named offer does the selling for you. It pre-qualifies the right audience, sets expectations, and creates curiosity. A poorly named offer requires explanation, which means you have already lost attention. The name is also the single most testable element of any offer.
 
 **Key insights:**
+
 - M = Magnetic reason why (a hook, an event, a season, a trend)
 - A = Avatar (who is this for -- the more specific, the better)
 - G = Goal (the Dream Outcome in concrete terms)
@@ -296,6 +311,7 @@ See: [references/scarcity-urgency.md](references/scarcity-urgency.md) for ethica
 | **Info product** | Combine avatar + goal + container | "The SaaS Launch Masterclass: Your First 100 Paying Customers" |
 
 **Copy patterns:**
+
 - "The [Time Frame] [Avatar] [Goal] [Container]"
 - "[Magnetic Reason] [Avatar] [Container]: [Goal] in [Time Frame]"
 - "[Goal] [Container] for [Avatar]"

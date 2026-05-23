@@ -32,6 +32,7 @@ Evernote uses ENML (Evernote Markup Language), a restricted subset of XHTML:
 ```
 
 **Key ENML Rules:**
+
 - Must include XML declaration and DOCTYPE
 - Root element is `<en-note>`, not `<html>` or `<body>`
 - All tags must be lowercase and properly closed
@@ -149,7 +150,6 @@ async function getNote(noteGuid) {
 }
 ```
 
-
 ## Complete Example
 
 ```javascript
@@ -194,7 +194,6 @@ async function main() {
 
 main().catch(console.error);
 ```
-
 
 ## ENML Quick Reference
 

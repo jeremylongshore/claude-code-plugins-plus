@@ -10,6 +10,7 @@ gamma-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Gamma monitoring and observability
 **Workflow:** Part of the enterprise skill category for Gamma integration.
 **Relates to:** Other gamma skills in this pack.

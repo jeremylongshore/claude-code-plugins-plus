@@ -10,6 +10,7 @@ fathom-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Fathom SDK upgrades
 **Workflow:** Part of the operations skill category for Fathom integration.
 **Relates to:** Other fathom skills in this pack.

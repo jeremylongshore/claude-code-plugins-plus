@@ -12,6 +12,7 @@ Implement production-grade database schema comparison for PostgreSQL and MySQL t
 ## When to Use This Command
 
 Use `/db-diff` when you need to:
+
 - Compare development and production schemas to identify drift
 - Generate migration scripts for deploying schema changes
 - Validate that staging environment matches production before cutover
@@ -20,6 +21,7 @@ Use `/db-diff` when you need to:
 - Audit schema evolution over time for compliance
 
 DON'T use this when:
+
 - Schemas are managed by ORM migrations (use migration tools like Alembic, Flyway)
 - Database has no versioned schema baseline (establish first)
 - You need to compare data, not just schema (use data diff tools)
@@ -29,6 +31,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **comprehensive schema analysis with safe migration generation** because:
+
 - Detects all schema objects (tables, indexes, constraints, triggers, sequences)
 - Generates idempotent migration scripts (safe to re-run)
 - Validates dependencies before dropping objects (prevents cascading failures)
@@ -36,12 +39,14 @@ This command implements **comprehensive schema analysis with safe migration gene
 - Outputs human-readable diff reports for code review
 
 **Alternative considered: Manual SQL diff**
+
 - Simple for small schemas (<10 tables)
 - Error-prone for complex changes (missed dependencies)
 - No validation or safety checks
 - Recommended only for one-off comparisons
 
 **Alternative considered: Database migration frameworks (Flyway, Liquibase)**
+
 - Tracks migration history automatically
 - Requires all changes via migration files (no ad-hoc changes)
 - Better for greenfield projects with strict change control
@@ -50,6 +55,7 @@ This command implements **comprehensive schema analysis with safe migration gene
 ## Prerequisites
 
 Before running this command:
+
 1. Read access to both source and target databases
 2. Understanding of schema dependencies (foreign keys, views, triggers)
 3. Backup of target database before applying migrations
@@ -59,23 +65,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Connect to Source and Target Databases
+
 Establish connections with appropriate read-only permissions.
 
 ### Step 2: Extract Schema Metadata
+
 Query information_schema for tables, columns, indexes, constraints, and triggers.
 
 ### Step 3: Compare Schemas
+
 Identify additions, deletions, and modifications for each object type.
 
 ### Step 4: Generate Migration Script
+
 Create SQL statements in correct dependency order with transaction safety.
 
 ### Step 5: Validate and Test
+
 Review generated script, test in staging, then apply to production.
 
 ## Output Format
 
 The command generates:
+
 - `schema_diff_report.md` - Human-readable diff report with impact analysis
 - `migration_forward.sql` - Migration script to apply changes
 - `migration_rollback.sql` - Rollback script for quick revert
@@ -788,18 +800,21 @@ jobs:
 ## Configuration Options
 
 **Comparison Scope**
+
 - **Full schema**: All objects (tables, views, functions, triggers)
 - **Tables only**: Just table definitions
 - **Data types only**: Column type compatibility check
 - **Custom filter**: Compare specific tables/schemas only
 
 **Migration Safety**
+
 - **Idempotent**: Add `IF NOT EXISTS` / `IF EXISTS` clauses
 - **Transaction-wrapped**: Wrap in BEGIN/COMMIT for atomicity
 - **Commented destructive ops**: Comment out DROP operations for review
 - **Validation checks**: Add pre-flight validation queries
 
 **Output Formats**
+
 - **SQL**: Standard SQL migration scripts
 - **Liquibase XML**: For Liquibase-managed databases
 - **Flyway migrations**: Versioned migration files
@@ -808,6 +823,7 @@ jobs:
 ## Best Practices
 
 DO:
+
 - Always backup target database before applying migrations
 - Test migrations in staging environment identical to production
 - Review generated migration scripts manually (don't apply blindly)
@@ -817,6 +833,7 @@ DO:
 - Run schema diff in CI/CD pipeline for every database change
 
 DON'T:
+
 - Apply migrations directly to production without staging test
 - Drop columns without data archival (data loss is permanent)
 - Ignore foreign key dependencies (cascading failures)

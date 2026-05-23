@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Incident Runbook
 
 ## Overview
+
 Rapid incident response procedures for Fireflies.ai integration failures. Covers API outages, authentication problems, webhook issues, and rate limiting.
 
 ## Severity Levels
@@ -90,6 +91,7 @@ API returning errors?
 ## Remediation by Error Type
 
 ### `auth_failed` (401) -- P1
+
 ```bash
 set -euo pipefail
 # Verify API key format (should be non-empty)
@@ -109,6 +111,7 @@ curl -s -X POST https://api.fireflies.ai/graphql \
 ```
 
 ### `too_many_requests` (429) -- P2
+
 ```bash
 set -euo pipefail
 # Check if we have a request loop
@@ -120,6 +123,7 @@ echo "Check application logs for request volume"
 ```
 
 ### Webhook Not Firing -- P2
+
 ```bash
 set -euo pipefail
 # Verify webhook is registered
@@ -139,6 +143,7 @@ curl -s -X POST https://api.fireflies.ai/graphql \
 ```
 
 ### Invalid Webhook Signature -- P3
+
 ```typescript
 // Debug signature verification
 import crypto from "crypto";
@@ -161,6 +166,7 @@ function debugWebhookSignature(payload: string, receivedSig: string, secret: str
 ## Communication Templates
 
 ### Internal (Slack)
+
 ```
 P[1-4] INCIDENT: Fireflies.ai Integration
 Status: INVESTIGATING / MITIGATED / RESOLVED
@@ -171,6 +177,7 @@ ETA: [next update time]
 ```
 
 ### Postmortem Template
+
 ```markdown
 ## Incident: Fireflies.ai [Error Type]
 **Date:** YYYY-MM-DD | **Duration:** Xh Ym | **Severity:** P[1-4]
@@ -193,6 +200,7 @@ ETA: [next update time]
 ```
 
 ## Error Handling
+
 | Issue | Response |
 |-------|----------|
 | Can't run triage script | Check `FIREFLIES_API_KEY` is set, check network |
@@ -201,14 +209,17 @@ ETA: [next update time]
 | All endpoints failing | Likely Fireflies platform issue -- enable fallback mode |
 
 ## Output
+
 - Issue identified and categorized by severity
 - Remediation applied based on error code
 - Stakeholders notified via templates
 - Evidence collected for postmortem
 
 ## Resources
+
 - [Fireflies API Docs](https://docs.fireflies.ai/)
 - [Fireflies Webhooks](https://docs.fireflies.ai/graphql-api/webhooks)
 
 ## Next Steps
+
 For data handling and compliance, see `fireflies-data-handling`.

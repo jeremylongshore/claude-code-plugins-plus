@@ -10,6 +10,7 @@ onenote-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute OneNote SDK upgrades
 **Workflow:** Part of the operations skill category for OneNote integration.
 **Relates to:** Other onenote skills in this pack.

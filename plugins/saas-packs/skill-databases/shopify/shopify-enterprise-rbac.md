@@ -10,6 +10,7 @@ shopify-enterprise-rbac/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Shopify enterprise access control
 **Workflow:** Part of the advanced skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

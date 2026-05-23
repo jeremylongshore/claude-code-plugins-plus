@@ -90,9 +90,11 @@ description: string;
 tail -n 1000 /var/log/claude-code.log | grep -c ERROR
 
 # Check affected users
+
 grep "ERROR" /var/log/claude-code.log | awk '{print $5}' | sort -u | wc -l
 
 # Check service health
+
 curl http://localhost:3333/api/status</code></pre>
 
 <p><strong>Step 2: Check Obvious Issues</strong></p>
@@ -129,9 +131,11 @@ systemctl restart claude-code-daemon
 pm2 restart all
 
 # Clear cache if corrupted
+
 redis-cli FLUSHALL
 
 # Rate limit protection
+
 iptables -A INPUT -p tcp --dport 80 -m limit --limit 25/minute --limit-burst 100 -j ACCEPT</code></pre>
 
 <h3>Communication Template</h3>
@@ -223,10 +227,13 @@ this.lastRefill = now;
 ps aux | grep claude | grep -v grep
 
 # Check system load
+
 uptime
+
 # Output: load average: 12.5, 8.3, 5.2 (CPU overload!)
 
 # Check for blocking I/O
+
 iotop -o -d 5</code></pre>
 
 <p><strong>Fix</strong>:</p>
@@ -261,7 +268,9 @@ free -m
 # Mem:         16384  15892    492  # Critical!
 
 # Process memory
+
 ps aux --sort=-%mem | head -5
+
 # claude-daemon: 8.2GB (!)</code></pre>
 
 <p><strong>Diagnosis</strong>:</p>
@@ -301,8 +310,11 @@ pm2 status
 # plugin-server | errored | 47 restarts in 2 minutes
 
 # Logs show crash
+
 tail -f /var/log/pm2/plugin-server-error.log
+
 # Error: ECONNREFUSED 127.0.0.1:5432
+
 # (PostgreSQL connection failed)</code></pre>
 
 <p><strong>Diagnosis</strong>:</p>
@@ -311,7 +323,9 @@ docker ps | grep postgres
 # (empty - PostgreSQL container not running!)
 
 # Check network
+
 netstat -tulpn | grep 5432
+
 # (no listener on port 5432)</code></pre>
 
 <p><strong>Fix</strong>:</p>
@@ -319,9 +333,11 @@ netstat -tulpn | grep 5432
 docker-compose up -d postgres
 
 # Verify connectivity
+
 psql -h localhost -U user -d database -c "SELECT 1"
 
 # Restart plugin
+
 pm2 restart plugin-server</code></pre>
 
 <hr>
@@ -487,7 +503,7 @@ console.log('Errors by component:');
 Object.entries(errorsByComponent)
 .sort((a, b) => b[1].length - a[1].length)
 .forEach(([component, errors]) => {
-console.log(`  ${component}: ${errors.length}`);
+console.log(`${component}: ${errors.length}`);
 });
 
 // Recent errors (last 5 minutes)
@@ -498,7 +514,7 @@ Date.now() - l.timestamp.getTime() < 300000
 
 console.log(`\nRecent errors: ${recentErrors.length}`);
 recentErrors.slice(0, 10).forEach(err => {
-console.log(`  ${err.timestamp.toISOString()} - ${err.message}`);
+console.log(`${err.timestamp.toISOString()} - ${err.message}`);
 });
 }</code></pre>
 
@@ -817,6 +833,7 @@ await scheduleReview(incident);</code></pre>
    Root cause: Developer X wrote bad code
 
 # ✅ System-focused
+
 Root cause: Missing code review process for file operations</code></pre>
 
 <ul>
@@ -849,9 +866,11 @@ pnpm start
 htop
 
 # Network
+
 iftop
 
 # Disk I/O
+
 iotop</code></pre>
 
 <h3>Log Aggregation</h3>

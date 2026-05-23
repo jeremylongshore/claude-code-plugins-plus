@@ -10,6 +10,7 @@ lokalise-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Lokalise security best practices
 **Workflow:** Part of the operations skill category for Lokalise integration.
 **Relates to:** Other lokalise skills in this pack.

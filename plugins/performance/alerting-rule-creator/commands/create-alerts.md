@@ -34,6 +34,7 @@ Create comprehensive alerting rules to detect performance issues proactively.
 ## Output
 
 Provide:
+
 - Alert rule definitions (Prometheus, Datadog, etc.)
 - Threshold calculations with rationale
 - Alert routing configuration

@@ -1,6 +1,7 @@
 # Error Handling Reference
 
 Common errors and solutions:
+
 1. **401 Unauthorized**: Check API key configuration
 2. **400 Bad Request**: Validate prompt and parameters
 3. **429 Rate Limited**: Wait and retry with backoff

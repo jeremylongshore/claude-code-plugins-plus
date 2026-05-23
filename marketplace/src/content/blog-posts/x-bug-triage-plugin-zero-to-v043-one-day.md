@@ -166,4 +166,3 @@ The x-bug-triage-plugin is the headline. Zero to v0.4.3 with a full pipeline —
 - [Content Quality War: 7-Check Audit Across 340 Plugins](/posts/content-quality-war-7-check-audit-across-340-plugins/) — The audit framework driving these pack quality repairs
 - [Building a Meta-Agent System From Scratch in One Day](/posts/oss-agent-lab-meta-agent-system-one-day/) — Another zero-to-production build in a single session, with a similar epic-by-epic pattern
 - [Mobile Fixes, Crypto Upgrades, and Killer Skills](/posts/mobile-fixes-crypto-upgrades-and-killer-skills/) — The Killer Skills spotlight that the nomination form now feeds into
-

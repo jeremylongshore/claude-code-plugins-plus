@@ -10,6 +10,7 @@ apify-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Apify API performance
 **Workflow:** Part of the cicd skill category for Apify integration.
 **Relates to:** Other apify skills in this pack.

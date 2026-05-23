@@ -10,6 +10,7 @@ algolia-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Algolia SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Algolia integration.
 **Relates to:** Other algolia skills in this pack.

@@ -3,6 +3,7 @@
 ## Log Retention & Archival
 
 ### Retention Policy
+
 ```python
 class LogRetentionManager:
     """Manage log retention and archival."""

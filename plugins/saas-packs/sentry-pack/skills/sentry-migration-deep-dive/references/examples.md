@@ -5,6 +5,7 @@
 **Request:** "Migrate our Express API from Rollbar to Sentry"
 
 **Before (Rollbar):**
+
 ```typescript
 import Rollbar from 'rollbar';
 const rollbar = new Rollbar({
@@ -19,6 +20,7 @@ rollbar.configure({ person: { id: user.id, email: user.email } });
 ```
 
 **After (Sentry):**
+
 ```typescript
 import * as Sentry from '@sentry/node';
 Sentry.init({
@@ -42,6 +44,7 @@ Sentry.setUser({ id: user.id, email: user.email });
 **Request:** "Replace Bugsnag with Sentry in our React SPA"
 
 **Changes:**
+
 1. Replaced `@bugsnag/js` + `@bugsnag/plugin-react` with `@sentry/react`
 2. Swapped `Bugsnag.notify()` calls to `Sentry.captureException()`
 3. Replaced Bugsnag error boundary with `<Sentry.ErrorBoundary>`

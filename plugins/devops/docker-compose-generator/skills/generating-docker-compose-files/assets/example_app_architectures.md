@@ -4,9 +4,9 @@ This document provides examples of common application architectures and their co
 
 ## Table of Contents
 
-1.  [Simple Web Application (Frontend + Backend + Database)](#simple-web-application)
-2.  [Message Queue Application (Producer + Message Broker + Consumer)](#message-queue-application)
-3.  [Microservices Architecture (API Gateway + Multiple Microservices)](#microservices-architecture)
+1. [Simple Web Application (Frontend + Backend + Database)](#simple-web-application)
+2. [Message Queue Application (Producer + Message Broker + Consumer)](#message-queue-application)
+3. [Microservices Architecture (API Gateway + Multiple Microservices)](#microservices-architecture)
 
 ## 1. Simple Web Application (Frontend + Backend + Database)
 
@@ -73,12 +73,12 @@ networks:
 
 **Instructions:**
 
-1.  Replace `<YOUR_FRONTEND_IMAGE>`, `<YOUR_BACKEND_IMAGE>`, `<DB_USER>`, `<DB_PASSWORD>`, and `<DB_NAME>` with your actual values.
-2.  Ensure your frontend and backend applications are properly configured to connect to the database using the environment variable `DATABASE_URL`.
-3.  The `depends_on` directive ensures that services start in the correct order.
-4.  The `healthcheck` ensures the database is ready before the backend attempts to connect.  Adjust the parameters (interval, timeout, retries) as needed.
-5.  The `restart: always` directive ensures that services are automatically restarted if they fail.
-6.  Consider using environment variables for sensitive information like passwords.  For production, use Docker secrets.
+1. Replace `<YOUR_FRONTEND_IMAGE>`, `<YOUR_BACKEND_IMAGE>`, `<DB_USER>`, `<DB_PASSWORD>`, and `<DB_NAME>` with your actual values.
+2. Ensure your frontend and backend applications are properly configured to connect to the database using the environment variable `DATABASE_URL`.
+3. The `depends_on` directive ensures that services start in the correct order.
+4. The `healthcheck` ensures the database is ready before the backend attempts to connect.  Adjust the parameters (interval, timeout, retries) as needed.
+5. The `restart: always` directive ensures that services are automatically restarted if they fail.
+6. Consider using environment variables for sensitive information like passwords.  For production, use Docker secrets.
 
 ## 2. Message Queue Application (Producer + Message Broker + Consumer)
 
@@ -140,10 +140,10 @@ networks:
 
 **Instructions:**
 
-1.  Replace `<YOUR_PRODUCER_IMAGE>`, `<YOUR_CONSUMER_IMAGE>`, `<RABBITMQ_USER>`, and `<RABBITMQ_PASSWORD>` with your actual values.
-2.  Configure your producer and consumer applications to connect to RabbitMQ using the specified environment variables.
-3.  The RabbitMQ management UI is accessible at `http://localhost:15672` (or the appropriate host and port).
-4.  Consider using persistent volumes for RabbitMQ data to avoid data loss on container restarts.
+1. Replace `<YOUR_PRODUCER_IMAGE>`, `<YOUR_CONSUMER_IMAGE>`, `<RABBITMQ_USER>`, and `<RABBITMQ_PASSWORD>` with your actual values.
+2. Configure your producer and consumer applications to connect to RabbitMQ using the specified environment variables.
+3. The RabbitMQ management UI is accessible at `http://localhost:15672` (or the appropriate host and port).
+4. Consider using persistent volumes for RabbitMQ data to avoid data loss on container restarts.
 
 ## 3. Microservices Architecture (API Gateway + Multiple Microservices)
 
@@ -197,11 +197,11 @@ networks:
 
 **Instructions:**
 
-1.  Replace `<YOUR_API_GATEWAY_IMAGE>`, `<YOUR_MICROSERVICE1_IMAGE>`, and `<YOUR_MICROSERVICE2_IMAGE>` with your actual values.
-2.  Configure your API gateway to route requests to the appropriate microservices.  The example provides a PORT environment variable that the microservices can use.
-3.  Consider using a service discovery mechanism (e.g., Consul, etcd) for more dynamic microservice discovery.
-4.  Implement proper authentication and authorization in the API gateway.
-5.  Implement monitoring and logging for all services.
+1. Replace `<YOUR_API_GATEWAY_IMAGE>`, `<YOUR_MICROSERVICE1_IMAGE>`, and `<YOUR_MICROSERVICE2_IMAGE>` with your actual values.
+2. Configure your API gateway to route requests to the appropriate microservices.  The example provides a PORT environment variable that the microservices can use.
+3. Consider using a service discovery mechanism (e.g., Consul, etcd) for more dynamic microservice discovery.
+4. Implement proper authentication and authorization in the API gateway.
+5. Implement monitoring and logging for all services.
 6. Consider using health checks for each microservice and exposing them via an endpoint like `/health`. The API Gateway can then use these endpoints to determine if a microservice is healthy before routing traffic.
 
 This is a basic example.  For a production environment, you would likely include additional services for monitoring, logging, and service discovery.  You would also likely use a more sophisticated API gateway solution.

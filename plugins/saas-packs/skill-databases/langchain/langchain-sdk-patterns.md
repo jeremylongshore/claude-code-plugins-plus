@@ -10,6 +10,7 @@ langchain-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready LangChain SDK patterns
 **Workflow:** Part of the onboarding skill category for LangChain integration.
 **Relates to:** Other langchain skills in this pack.

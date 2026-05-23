@@ -10,6 +10,7 @@ coreweave-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement CoreWeave webhook handling
 **Workflow:** Part of the cicd skill category for CoreWeave integration.
 **Relates to:** Other coreweave skills in this pack.

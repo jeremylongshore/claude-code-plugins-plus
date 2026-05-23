@@ -17,6 +17,7 @@ Every skill uses the official `@notionhq/client` SDK with actual Notion API patt
 ## Skills (30)
 
 ### Getting Started (S01-S12)
+
 | Skill | What It Does |
 |-------|-------------|
 | `notion-install-auth` | Install `@notionhq/client`, create integration, configure OAuth |
@@ -33,6 +34,7 @@ Every skill uses the official `@notionhq/client` SDK with actual Notion API patt
 | `notion-upgrade-migration` | SDK upgrades, API version migration, 2025-09-03 data source model |
 
 ### Integration (P13-P18)
+
 | Skill | What It Does |
 |-------|-------------|
 | `notion-ci-integration` | GitHub Actions with mocked unit tests + gated live API integration tests |
@@ -43,6 +45,7 @@ Every skill uses the official `@notionhq/client` SDK with actual Notion API patt
 | `notion-reference-architecture` | Layered project structure with extractors, services, error classification |
 
 ### Enterprise (F19-F24)
+
 | Skill | What It Does |
 |-------|-------------|
 | `notion-multi-env-setup` | Per-environment integrations, secret management, environment guards |
@@ -53,6 +56,7 @@ Every skill uses the official `@notionhq/client` SDK with actual Notion API patt
 | `notion-migration-deep-dive` | CSV/JSON import, database export, cross-database sync, validation |
 
 ### Advanced (X25-X30)
+
 | Skill | What It Does |
 |-------|-------------|
 | `notion-advanced-troubleshooting` | Debug logging, raw curl testing, request ID tracking, schema validation |

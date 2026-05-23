@@ -10,6 +10,7 @@ gamma-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Gamma production deployment checklist
 **Workflow:** Part of the operations skill category for Gamma integration.
 **Relates to:** Other gamma skills in this pack.

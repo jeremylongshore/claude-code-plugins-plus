@@ -22,9 +22,11 @@ compatibility: Designed for Claude Code
 # Flexport Security Basics
 
 ## Overview
+
 Flexport manages global freight logistics containing shipping manifests, customs declarations, commercial invoices, and supply chain partner data. A breach exposes trade routes, commodity values, importer/exporter identities, and customs brokerage details. Secure API credentials, webhook endpoints, and any pipeline that processes shipment tracking or purchase order data.
 
 ## API Key Management
+
 ```typescript
 function createFlexportClient(): { apiKey: string; baseUrl: string } {
   const apiKey = process.env.FLEXPORT_API_KEY;
@@ -38,6 +40,7 @@ function createFlexportClient(): { apiKey: string; baseUrl: string } {
 ```
 
 ## Webhook Signature Verification
+
 ```typescript
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
@@ -55,6 +58,7 @@ function verifyFlexportWebhook(req: Request, res: Response, next: NextFunction):
 ```
 
 ## Input Validation
+
 ```typescript
 import { z } from "zod";
 
@@ -72,6 +76,7 @@ function validateShipmentQuery(data: unknown) {
 ```
 
 ## Data Protection
+
 ```typescript
 const FLEXPORT_SENSITIVE_FIELDS = ["customs_value", "commercial_invoice", "importer_tax_id", "broker_credentials", "hs_code"];
 
@@ -85,6 +90,7 @@ function redactFlexportLog(record: Record<string, unknown>): Record<string, unkn
 ```
 
 ## Security Checklist
+
 - [ ] API keys stored in secrets manager, `.env` files in `.gitignore`
 - [ ] Webhook signatures verified on every inbound request
 - [ ] Different keys for dev/staging/prod environments
@@ -95,6 +101,7 @@ function redactFlexportLog(record: Record<string, unknown>): Record<string, unkn
 - [ ] Least-privilege access: read-only tokens for dashboards, run tokens for operations
 
 ## Error Handling
+
 | Vulnerability | Risk | Mitigation |
 |---|---|---|
 | Leaked API key | Full shipment and customs data exposure | Secrets manager + quarterly rotation |
@@ -104,8 +111,10 @@ function redactFlexportLog(record: Record<string, unknown>): Record<string, unkn
 | Unencrypted commercial invoices | Financial data breach | TLS 1.2+ in transit, AES at rest |
 
 ## Resources
+
 - [Flexport Webhooks](https://apidocs.flexport.com/v2/tag/Webhook-Endpoints/)
 - [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
 
 ## Next Steps
+
 See `flexport-prod-checklist`.

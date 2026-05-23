@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Architecture Variants
 
 ## Overview
+
 How you structure your Windsurf workspace directly impacts Cascade's effectiveness. Large monorepos, multi-service setups, polyglot codebases, and different team sizes each require different approaches. This skill covers workspace strategies from solo projects to 100+ developer organizations.
 
 ## Prerequisites
+
 - Windsurf installed
 - Understanding of Cascade's workspace indexing model
 - Git workflow established
@@ -50,6 +52,7 @@ my-project/
 ```
 
 **Configuration:**
+
 - Open entire project as workspace
 - Cascade indexes everything — no partitioning needed
 - `.windsurfrules` contains complete stack and architecture details
@@ -77,6 +80,7 @@ monorepo/
 ```
 
 **Strategy:**
+
 ```bash
 # Each developer opens their package directory:
 windsurf packages/api/        # Backend dev
@@ -100,6 +104,7 @@ Each developer gets focused Cascade context per workspace window.
 ```
 
 **Team conventions:**
+
 ```markdown
 1. One Windsurf window per service/package
 2. Every service has its own .windsurfrules and .codeiumignore
@@ -172,6 +177,7 @@ services/
 ```
 
 **Cascade integration:** Use Previews to iterate on UI components:
+
 ```
 "Preview the Button component with all variants"
 Click elements in Preview → send to Cascade for refinement
@@ -188,6 +194,7 @@ Click elements in Preview → send to Cascade for refinement
 | Context Quality | Excellent | Good | Good | Good (per lang) |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Cascade is slow | Too many files indexed | Open smaller workspace, add .codeiumignore |
@@ -199,6 +206,7 @@ Click elements in Preview → send to Cascade for refinement
 ## Examples
 
 ### Optimized .codeiumignore (Universal)
+
 ```gitignore
 node_modules/
 dist/
@@ -216,6 +224,7 @@ vendor/
 ```
 
 ### Workspace Health Check
+
 ```bash
 set -euo pipefail
 FILE_COUNT=$(find . -type f -not -path '*/node_modules/*' -not -path '*/.git/*' | wc -l)
@@ -226,8 +235,10 @@ echo "Indexed files: ~$FILE_COUNT"
 ```
 
 ## Resources
+
 - [Windsurf Context Awareness](https://docs.windsurf.com/context-awareness/overview)
 - [Windsurf Ignore](https://docs.windsurf.com/context-awareness/windsurf-ignore)
 
 ## Next Steps
+
 For known pitfalls and anti-patterns, see `windsurf-known-pitfalls`.

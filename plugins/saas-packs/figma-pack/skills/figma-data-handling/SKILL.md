@@ -24,15 +24,18 @@ compatibility: Designed for Claude Code
 # Figma Data Handling
 
 ## Overview
+
 Work with Figma's data APIs: comments, version history, and user information. Handle sensitive data correctly with redaction and privacy compliance.
 
 ## Prerequisites
+
 - `FIGMA_PAT` with appropriate scopes (`file_comments:read/write`, `file_versions:read`)
 - Understanding of GDPR/CCPA basics
 
 ## Instructions
 
 ### Step 1: Comments API
+
 ```typescript
 const PAT = process.env.FIGMA_PAT!;
 const FILE_KEY = process.env.FIGMA_FILE_KEY!;
@@ -97,6 +100,7 @@ async function reactToComment(fileKey: string, commentId: string, emoji: string)
 ```
 
 ### Step 2: Version History API
+
 ```typescript
 // GET /v1/files/:key/versions -- requires file_versions:read scope
 async function getVersionHistory(fileKey: string) {
@@ -132,6 +136,7 @@ async function getAllVersions(fileKey: string) {
 ```
 
 ### Step 3: User Data and Privacy
+
 ```typescript
 // GET /v1/me -- returns authenticated user
 interface FigmaUser {
@@ -168,6 +173,7 @@ const figmaDataClassification: DataClassification[] = [
 ```
 
 ### Step 4: Data Retention
+
 ```typescript
 // Figma image export URLs expire after 30 days
 // Plan data retention accordingly
@@ -198,6 +204,7 @@ async function cleanupExpiredData(db: any) {
 ```
 
 ### Step 5: Safe Logging
+
 ```typescript
 // Never log these fields from Figma responses
 const REDACT_FIELDS = ['email', 'img_url', 'access_token', 'refresh_token'];
@@ -221,12 +228,14 @@ function safeFigmaLog(label: string, data: any) {
 ```
 
 ## Output
+
 - Comments fetched and posted via REST API
 - Version history retrieved with pagination
 - PII redacted before logging and storage
 - Data retention policies applied
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 403 on comments | Missing `file_comments:read` scope | Regenerate PAT with scope |
@@ -235,9 +244,11 @@ function safeFigmaLog(label: string, data: any) {
 | Stale image URLs | URLs older than 30 days | Re-export images; do not cache URLs long-term |
 
 ## Resources
+
 - [Figma Comments Endpoints](https://developers.figma.com/docs/rest-api/comments-endpoints/)
 - [Figma Version History](https://developers.figma.com/docs/rest-api/version-history-endpoints/)
 - [GDPR Developer Guide](https://gdpr.eu/developers/)
 
 ## Next Steps
+
 For enterprise access control, see `figma-enterprise-rbac`.

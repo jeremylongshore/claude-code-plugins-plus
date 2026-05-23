@@ -13,6 +13,7 @@ Corporate travel and expense management API for flight booking, expense reportin
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `navan-common-errors` | Common Errors |
@@ -29,6 +30,7 @@ Corporate travel and expense management API for flight booking, expense reportin
 | `navan-upgrade-migration` | Upgrade Migration |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `navan-ci-integration` | Ci Integration |
@@ -39,6 +41,7 @@ Corporate travel and expense management API for flight booking, expense reportin
 | `navan-webhooks-events` | Webhooks Events |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `navan-data-handling` | Data Handling |

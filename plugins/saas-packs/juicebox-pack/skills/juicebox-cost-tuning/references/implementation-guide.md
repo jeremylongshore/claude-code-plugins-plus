@@ -14,6 +14,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Track Usage
+
 ```typescript
 // lib/usage-tracker.ts
 interface UsageMetrics {
@@ -64,6 +65,7 @@ export class UsageTracker {
 ```
 
 ### Step 2: Implement Smart Caching
+
 ```typescript
 // lib/cost-aware-cache.ts
 export class CostAwareCache {
@@ -98,6 +100,7 @@ export class CostAwareCache {
 ```
 
 ### Step 3: Deduplicate Requests
+
 ```typescript
 // lib/request-deduplicator.ts
 export class RequestDeduplicator {
@@ -129,6 +132,7 @@ async function getProfile(id: string): Promise<Profile> {
 ```
 
 ### Step 4: Batch Operations
+
 ```typescript
 // lib/cost-optimizer.ts
 export class CostOptimizer {
@@ -163,6 +167,7 @@ export class CostOptimizer {
 ```
 
 ### Step 5: Usage Dashboard
+
 ```typescript
 // routes/usage.ts
 router.get('/api/usage/dashboard', async (req, res) => {

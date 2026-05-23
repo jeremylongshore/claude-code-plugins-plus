@@ -10,6 +10,7 @@ framer-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Framer reference architecture
 **Workflow:** Part of the cicd skill category for Framer integration.
 **Relates to:** Other framer skills in this pack.

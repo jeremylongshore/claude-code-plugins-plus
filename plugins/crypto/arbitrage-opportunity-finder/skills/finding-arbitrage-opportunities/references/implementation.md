@@ -3,6 +3,7 @@
 ## Supported Exchanges
 
 ### Centralized Exchanges (CEX)
+
 | Exchange | Maker Fee | Taker Fee | Withdrawal |
 |----------|-----------|-----------|------------|
 | Binance | 0.10% | 0.10% | Variable |
@@ -12,6 +13,7 @@
 | OKX | 0.08% | 0.10% | Variable |
 
 ### Decentralized Exchanges (DEX)
+
 | DEX | Fee Range | Gas (ETH) | Chains |
 |-----|-----------|-----------|--------|
 | Uniswap V3 | 0.01-1% | ~150k | ETH, Polygon, Arbitrum |
@@ -40,6 +42,7 @@ exchanges:
 ```
 
 Environment variables for API keys:
+
 ```bash
 export BINANCE_API_KEY="your-key"
 export COINBASE_API_KEY="your-key"
@@ -48,12 +51,15 @@ export COINBASE_API_KEY="your-key"
 ## Advanced Arbitrage Types
 
 ### Triangular Arbitrage
+
 Find profitable circular paths within a single exchange:
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py triangular binance --min-profit 0.5
 ```
 
 Example output:
+
 ```
 Path: ETH -> BTC -> USDT -> ETH
 Gross: +0.82%
@@ -63,19 +69,24 @@ Net:   +0.52%
 ```
 
 ### Cross-Chain Opportunities
+
 Compare prices across different blockchains:
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py cross-chain USDC \
   --chains ethereum,polygon,arbitrum
 ```
 
 Shows:
+
 - Price on each chain
 - Bridge fees and times
 - Net profit after bridging
 
 ### Real-Time Monitoring
+
 Continuously monitor for opportunities:
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py monitor ETH USDC \
   --threshold 0.5 \
@@ -83,6 +94,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py monitor ETH USDC \
 ```
 
 Alert format:
+
 ```
 [ALERT] ETH/USDC spread 0.62% (Binance -> Coinbase)
         Buy: $2,541.20 | Sell: $2,556.98
@@ -90,7 +102,9 @@ Alert format:
 ```
 
 ### Profit Calculator
+
 Calculate exact profit for a trade:
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py calc \
   --buy-exchange binance \
@@ -100,6 +114,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py calc \
 ```
 
 Shows detailed breakdown:
+
 - Gross profit
 - Trading fees (both exchanges)
 - Withdrawal fees
@@ -111,6 +126,7 @@ Shows detailed breakdown:
 **FOR EDUCATIONAL PURPOSES ONLY**
 
 Arbitrage trading involves significant risks:
+
 - Opportunities may disappear before execution
 - Price data may be delayed or inaccurate
 - Fees can exceed profits on small trades

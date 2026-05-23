@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Security Basics
 
 ## Overview
+
 Security best practices for Firecrawl API keys, webhook signature verification, and scraped content handling. Firecrawl API keys start with `fc-` and grant full access to scrape, crawl, map, and extract endpoints — protecting them is critical.
 
 ## Prerequisites
+
 - Firecrawl API key
 - Understanding of environment variables
 - Webhook endpoint (if using async crawl callbacks)
@@ -37,6 +39,7 @@ Security best practices for Firecrawl API keys, webhook signature verification, 
 ## Instructions
 
 ### Step 1: Secure API Key Storage
+
 ```bash
 # .env (NEVER commit to git)
 FIRECRAWL_API_KEY=fc-your-api-key-here
@@ -59,6 +62,7 @@ const firecrawl = new FirecrawlApp({
 ```
 
 ### Step 2: Verify Webhook Signatures
+
 Firecrawl signs webhook payloads with HMAC-SHA256 via the `X-Firecrawl-Signature` header.
 
 ```typescript
@@ -99,6 +103,7 @@ app.post("/webhooks/firecrawl", (req, res) => {
 ```
 
 ### Step 3: Separate Keys per Environment
+
 ```bash
 # GitHub Actions secrets
 gh secret set FIRECRAWL_API_KEY_DEV --body "fc-dev-..."
@@ -119,6 +124,7 @@ const apiKey = process.env[envVar] || process.env.FIRECRAWL_API_KEY;
 ```
 
 ### Step 4: Rotate Keys
+
 ```bash
 set -euo pipefail
 # 1. Generate new key at firecrawl.dev/app
@@ -134,6 +140,7 @@ curl -s https://api.firecrawl.dev/v1/scrape \
 ```
 
 ### Step 5: Sanitize Scraped Content
+
 ```typescript
 // Scraped web content may contain PII, scripts, or malicious data
 function sanitizeScrapedContent(markdown: string): string {
@@ -151,6 +158,7 @@ function sanitizeScrapedContent(markdown: string): string {
 ```
 
 ## Security Checklist
+
 - [ ] API key stored in environment variable, never hardcoded
 - [ ] `.env` files listed in `.gitignore`
 - [ ] Different keys for dev/staging/production
@@ -160,6 +168,7 @@ function sanitizeScrapedContent(markdown: string): string {
 - [ ] Git history scanned for leaked keys
 
 ## Error Handling
+
 | Security Issue | Detection | Mitigation |
 |----------------|-----------|------------|
 | Leaked API key in git | `git log -p \| grep "fc-"` | Rotate immediately, revoke old key |
@@ -168,9 +177,11 @@ function sanitizeScrapedContent(markdown: string): string {
 | PII in scraped content | Content scanning | Sanitize before storage |
 
 ## Resources
+
 - [Firecrawl Dashboard](https://firecrawl.dev/app)
 - [Firecrawl Webhooks](https://docs.firecrawl.dev/webhooks/overview)
 - [GitHub Secret Scanning](https://docs.github.com/en/code-security/secret-scanning)
 
 ## Next Steps
+
 For production deployment, see `firecrawl-prod-checklist`.

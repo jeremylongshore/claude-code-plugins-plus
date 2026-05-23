@@ -10,6 +10,7 @@ salesloft-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Salesloft primary workflow
 **Workflow:** Part of the onboarding skill category for Salesloft integration.
 **Relates to:** Other salesloft skills in this pack.

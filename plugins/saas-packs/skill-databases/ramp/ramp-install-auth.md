@@ -10,6 +10,7 @@ ramp-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Ramp SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Ramp integration.
 **Relates to:** Other ramp skills in this pack.

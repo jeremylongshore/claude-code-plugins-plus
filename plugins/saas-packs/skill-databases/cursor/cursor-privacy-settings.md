@@ -10,6 +10,7 @@ cursor-privacy-settings/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configures Cursor privacy and data handling settings including privacy mode, sensitive file exclusion, telemetry, and enterprise compliance.
 
 **Workflow:** This skill activates when security-conscious developers or compliance teams need to configure data protection. It covers privacy mode, data handling, sensitive file exclusion, telemetry, enterprise controls, network security, and incident response.

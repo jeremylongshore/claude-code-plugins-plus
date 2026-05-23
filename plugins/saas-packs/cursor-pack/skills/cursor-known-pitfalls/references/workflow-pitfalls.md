@@ -3,6 +3,7 @@
 ## Workflow Pitfalls
 
 ### Not Using Chat History
+
 ```
 PITFALL:
 Re-asking questions you've already asked.
@@ -16,6 +17,7 @@ SOLUTION:
 ```
 
 ### Ignoring Composer Review
+
 ```
 PITFALL:
 Clicking "Apply All" without review.
@@ -29,6 +31,7 @@ SOLUTION:
 ```
 
 ### Single-Tool Mindset
+
 ```
 PITFALL:
 Using only chat or only completions.

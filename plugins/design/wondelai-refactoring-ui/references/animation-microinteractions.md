@@ -2,8 +2,8 @@
 
 Guidelines for when and how to animate UI elements effectively.
 
-
 ## Table of Contents
+
 1. [The Purpose of Animation](#the-purpose-of-animation)
 2. [Timing & Duration](#timing-duration)
 3. [Easing Functions](#easing-functions)
@@ -56,6 +56,7 @@ Animation should serve a function, not just look nice.
 ### The 200ms Rule
 
 Most UI animations should be around 200ms:
+
 - Faster than 100ms → Too fast to perceive
 - Slower than 400ms → Feels sluggish, interrupts flow
 
@@ -89,26 +90,32 @@ Easing makes motion feel natural. Linear motion looks robotic.
 ### When to Use Each
 
 **Ease-out (default for entrances):**
+
 ```css
 transition: transform 200ms ease-out;
 ```
+
 - Modals appearing
 - Notifications sliding in
 - Dropdowns opening
 - Tooltips appearing
 
 **Ease-in (for exits):**
+
 ```css
 transition: opacity 150ms ease-in;
 ```
+
 - Modals dismissing
 - Elements fading out
 - Notifications leaving
 
 **Ease-in-out (for on-screen movement):**
+
 ```css
 transition: transform 250ms ease-in-out;
 ```
+
 - Tab indicators sliding
 - Carousel transitions
 - Drawer/sidebar toggling
@@ -132,6 +139,7 @@ transition: transform 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
 ### Button States
 
 **Hover:**
+
 ```css
 .btn {
   transition: background-color 100ms ease-out, transform 100ms ease-out;
@@ -142,6 +150,7 @@ transition: transform 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
 ```
 
 **Active/Pressed:**
+
 ```css
 .btn:active {
   transform: scale(0.97);
@@ -149,6 +158,7 @@ transition: transform 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
 ```
 
 **Loading state:**
+
 ```css
 .btn.loading {
   opacity: 0.7;
@@ -162,6 +172,7 @@ transition: transform 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
 ### Modal Entrance/Exit
 
 **Enter:**
+
 ```css
 .modal {
   opacity: 0;
@@ -175,6 +186,7 @@ transition: transform 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
 ```
 
 **Exit:**
+
 ```css
 .modal.closing {
   opacity: 0;
@@ -291,6 +303,7 @@ Small animations that provide feedback and delight.
 ### Effective Microinteractions
 
 **Toggle switches:**
+
 ```css
 .toggle-thumb {
   transition: transform 150ms ease-out;
@@ -301,6 +314,7 @@ Small animations that provide feedback and delight.
 ```
 
 **Checkbox check:**
+
 ```css
 .checkmark {
   stroke-dasharray: 20;
@@ -313,6 +327,7 @@ Small animations that provide feedback and delight.
 ```
 
 **Like/Heart animation:**
+
 ```css
 .heart {
   transform: scale(1);
@@ -329,6 +344,7 @@ Small animations that provide feedback and delight.
 ```
 
 **Input focus:**
+
 ```css
 .input {
   border-color: #ccc;
@@ -393,10 +409,12 @@ Small animations that provide feedback and delight.
 ### GPU-Accelerated Properties
 
 Animate these for smooth 60fps:
+
 - `transform` (translate, scale, rotate)
 - `opacity`
 
 Avoid animating (causes reflow/repaint):
+
 - `width`, `height`
 - `top`, `left`, `right`, `bottom`
 - `margin`, `padding`
@@ -420,6 +438,7 @@ Avoid animating (causes reflow/repaint):
 ### Batch Animations
 
 Start animations together, not staggered excessively:
+
 - 0-50ms stagger: feels cohesive
 - 100ms+ stagger: feels slow, sequential
 

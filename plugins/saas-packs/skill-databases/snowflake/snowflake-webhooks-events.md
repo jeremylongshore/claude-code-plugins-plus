@@ -10,6 +10,7 @@ snowflake-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Snowflake webhook handling
 **Workflow:** Part of the cicd skill category for Snowflake integration.
 **Relates to:** Other snowflake skills in this pack.

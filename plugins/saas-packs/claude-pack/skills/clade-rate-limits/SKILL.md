@@ -18,6 +18,7 @@ compatibility: Designed for Claude Code
 # Anthropic Rate Limits
 
 ## Overview
+
 Anthropic enforces three types of limits: requests per minute (RPM), input tokens per minute (TPM), and output tokens per minute. Limits depend on your spend tier.
 
 ## Rate Limit Tiers
@@ -33,7 +34,9 @@ Anthropic enforces three types of limits: requests per minute (RPM), input token
 > **Check your tier:** console.anthropic.com → Settings → Limits
 
 ## Response Headers
+
 Every API response includes rate limit headers:
+
 ```
 claude-ratelimit-requests-limit: 1000
 claude-ratelimit-requests-remaining: 998
@@ -45,7 +48,9 @@ retry-after: 5
 ```
 
 ## Built-In SDK Retries
+
 The SDK automatically retries 429 and 529 errors with exponential backoff:
+
 ```typescript
 import Anthropic from '@claude-ai/sdk';
 
@@ -55,6 +60,7 @@ const client = new Anthropic({
 ```
 
 ## Custom Backoff
+
 ```typescript
 async function callWithBackoff(params: Anthropic.MessageCreateParams, maxRetries = 5) {
   for (let attempt = 0; attempt < maxRetries; attempt++) {
@@ -76,6 +82,7 @@ async function callWithBackoff(params: Anthropic.MessageCreateParams, maxRetries
 ```
 
 ## Throughput Optimization
+
 | Strategy | Impact |
 |----------|--------|
 | Use Message Batches API | Bypasses rate limits entirely (async, 24h SLA) |
@@ -85,6 +92,7 @@ async function callWithBackoff(params: Anthropic.MessageCreateParams, maxRetries
 | Queue and batch requests | Smooth out bursts |
 
 ## Token Counting
+
 ```typescript
 // Count before sending — avoid burning RPM on requests that'll fail
 const count = await client.messages.countTokens({
@@ -96,6 +104,7 @@ console.log(`This request will use ${count.input_tokens} input tokens`);
 ```
 
 ## Python
+
 ```python
 import anthropic
 import time
@@ -111,28 +120,34 @@ except anthropic.RateLimitError as e:
 ```
 
 ## Output
+
 - Rate limit tier identified from response headers
 - SDK configured with appropriate `maxRetries` setting
 - Custom backoff implemented with jitter for high-throughput use cases
 - Throughput optimized using batches, caching, or model selection
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | API Error | Check error type and status code | See `clade-common-errors` |
 
 ## Examples
+
 See Rate Limit Tiers table, Response Headers section, Built-In SDK Retries, Custom Backoff implementation, and Throughput Optimization strategies above.
 
 ## Resources
+
 - [Rate Limits Docs](https://docs.anthropic.com/en/api/rate-limits)
 - [Message Batches](https://docs.anthropic.com/en/api/creating-message-batches) — no rate limits
 - [Token Counting](https://docs.anthropic.com/en/api/counting-tokens)
 
 ## Next Steps
+
 See `clade-cost-tuning` for cost optimization strategies.
 
 ## Prerequisites
+
 - Completed `clade-install-auth`
 - Understanding of HTTP response headers
 - Familiarity with exponential backoff patterns
@@ -140,10 +155,13 @@ See `clade-cost-tuning` for cost optimization strategies.
 ## Instructions
 
 ### Step 1: Review the patterns below
+
 Each section contains production-ready code examples. Copy and adapt them to your use case.
 
 ### Step 2: Apply to your codebase
+
 Integrate the patterns that match your requirements. Test each change individually.
 
 ### Step 3: Verify
+
 Run your test suite to confirm the integration works correctly.

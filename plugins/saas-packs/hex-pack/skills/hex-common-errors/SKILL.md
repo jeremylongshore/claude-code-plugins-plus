@@ -27,26 +27,32 @@ compatibility: Designed for Claude Code
 ## Error Reference
 
 ### 401 Unauthorized
+
 **Cause:** Token invalid, expired, or missing.
 **Fix:** Regenerate token in Hex workspace settings.
 
 ### 403 Forbidden — Read-Only Token
+
 **Cause:** Token has "Read projects" scope but RunProject requires "Run projects".
 **Fix:** Create new token with "Run projects" scope.
 
 ### 404 Not Found — Project
+
 **Cause:** Project ID wrong or project not published.
 **Fix:** Verify project ID. Only published projects can be run via API.
 
 ### 429 Too Many Requests
+
 **Cause:** RunProject is limited to 20 requests/min, 60/hr.
 **Fix:** Queue runs with delays. See `hex-rate-limits`.
 
 ### Run Status: ERRORED
+
 **Cause:** SQL query, Python code, or connection error in the project.
 **Fix:** Open the project in Hex UI and check the error in the run history.
 
 ### Run Status: KILLED
+
 **Cause:** Run exceeded timeout or was manually cancelled.
 **Fix:** Optimize slow queries. Increase timeout in API trigger.
 

@@ -10,6 +10,7 @@ grammarly-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Grammarly advanced debugging
 **Workflow:** Part of the enterprise skill category for Grammarly integration.
 **Relates to:** Other grammarly skills in this pack.

@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Security Basics
 
 ## Overview
+
 Implement Databricks security: secret scopes for credential storage, token rotation, least-privilege access via Unity Catalog grants, and security auditing via system tables. Secrets API uses `PUT /api/2.0/secrets/put` and values are automatically redacted in notebook output.
 
 ## Prerequisites
+
 - Databricks CLI configured
 - Workspace admin access (for secret scope creation)
 - Unity Catalog enabled
@@ -36,6 +38,7 @@ Implement Databricks security: secret scopes for credential storage, token rotat
 ## Instructions
 
 ### Step 1: Create and Manage Secret Scopes
+
 ```bash
 # Create a Databricks-backed secret scope
 databricks secrets create-scope my-app-secrets
@@ -51,6 +54,7 @@ databricks secrets list-scopes
 ```
 
 ### Step 2: Store and Access Secrets
+
 ```bash
 # Store a secret (prompts for value interactively)
 databricks secrets put-secret my-app-secrets db-password
@@ -76,6 +80,7 @@ df = spark.read.format("jdbc").option("url", jdbc_url).load()
 ```
 
 ### Step 3: Secret Scope Access Control
+
 ```bash
 # Grant READ to a user
 databricks secrets put-acl my-app-secrets user@company.com READ
@@ -88,6 +93,7 @@ databricks secrets list-acls my-app-secrets
 ```
 
 ### Step 4: Token Audit and Rotation
+
 ```python
 from databricks.sdk import WorkspaceClient
 from datetime import datetime
@@ -133,6 +139,7 @@ for finding in audit_tokens():
 ```
 
 ### Step 5: Unity Catalog Least Privilege
+
 ```sql
 -- Grant minimal access per role
 -- Engineers: read/write bronze+silver, read gold
@@ -151,6 +158,7 @@ SHOW GRANTS `data-analysts` ON CATALOG analytics;
 ```
 
 ### Step 6: Column-Level Masking and Row-Level Security
+
 ```sql
 -- Mask email for non-privileged users
 CREATE OR REPLACE FUNCTION analytics.gold.mask_email(email STRING)
@@ -170,6 +178,7 @@ ALTER TABLE analytics.gold.sales
 ```
 
 ### Step 7: Security Audit via System Tables
+
 ```sql
 -- Recent permission changes (last 7 days)
 SELECT event_time, user_identity.email AS actor,
@@ -190,6 +199,7 @@ ORDER BY event_time DESC;
 ```
 
 ## Output
+
 - Secret scopes with ACL-based access control
 - Token audit report identifying expiring/non-expiring tokens
 - Unity Catalog grants enforcing least privilege by role
@@ -197,6 +207,7 @@ ORDER BY event_time DESC;
 - Audit queries for ongoing security monitoring
 
 ## Error Handling
+
 | Security Issue | Detection | Mitigation |
 |---------------|-----------|------------|
 | Token without expiry | `audit_tokens()` shows `NEVER` | Set 90-day max lifetime via rotation |
@@ -207,6 +218,7 @@ ORDER BY event_time DESC;
 ## Examples
 
 ### Security Checklist
+
 - [ ] All PATs have expiration dates (max 90 days)
 - [ ] Secrets stored in Databricks Secret Scopes, not env vars
 - [ ] No hardcoded credentials in notebooks or repos
@@ -218,10 +230,12 @@ ORDER BY event_time DESC;
 - [ ] Audit log queries scheduled for weekly review
 
 ## Resources
+
 - [Secret Management](https://docs.databricks.com/aws/en/security/secrets/)
 - [Unity Catalog Security](https://docs.databricks.com/aws/en/data-governance/unity-catalog/)
 - [Row and Column Filters](https://docs.databricks.com/aws/en/data-governance/unity-catalog/row-and-column-filters)
 - [Audit Logs](https://docs.databricks.com/aws/en/admin/system-tables/audit-logs)
 
 ## Next Steps
+
 For production deployment, see `databricks-prod-checklist`.

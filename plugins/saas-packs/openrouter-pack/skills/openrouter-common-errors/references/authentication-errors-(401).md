@@ -3,6 +3,7 @@
 ## Authentication Errors (401)
 
 ### Invalid API Key
+
 ```
 Error: 401 Unauthorized
 {
@@ -14,6 +15,7 @@ Error: 401 Unauthorized
 ```
 
 **Causes:**
+
 ```
 1. Wrong key format (should start with sk-or-)
 2. Key revoked or expired
@@ -22,6 +24,7 @@ Error: 401 Unauthorized
 ```
 
 **Fixes:**
+
 ```python
 # Check key format
 import os
@@ -36,6 +39,7 @@ headers = {
 ```
 
 ### Missing Authorization Header
+
 ```python
 # Wrong
 requests.post(url, json=data)

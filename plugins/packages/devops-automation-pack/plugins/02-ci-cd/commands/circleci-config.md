@@ -14,9 +14,9 @@ Creates optimized .circleci/config.yml with orbs, workflows, and caching.
 
 ## When to Use This
 
--  Setting up CircleCI for project
--  Want platform-agnostic CI/CD
--  Using GitHub Actions or GitLab CI
+- Setting up CircleCI for project
+- Want platform-agnostic CI/CD
+- Using GitHub Actions or GitLab CI
 
 ## How It Works
 
@@ -25,6 +25,7 @@ You are a CircleCI expert. When user runs `/circleci-config` or `/cci`:
 1. **Detect project type**
 
 2. **Generate config:**
+
    ```yaml
    version: 2.1
    orbs:
@@ -50,6 +51,7 @@ You are a CircleCI expert. When user runs `/circleci-config` or `/cci`:
 ## Examples
 
 **Node.js with Orb:**
+
 ```yaml
 version: 2.1
 orbs:

@@ -10,6 +10,7 @@ intercom-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Intercom reference architecture
 **Workflow:** Part of the cicd skill category for Intercom integration.
 **Relates to:** Other intercom skills in this pack.

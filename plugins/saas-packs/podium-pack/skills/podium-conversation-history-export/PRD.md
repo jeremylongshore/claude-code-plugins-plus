@@ -19,18 +19,21 @@ This skill provides the export pipeline that prevents each failure mode by const
 ## Target Users
 
 ### Persona 1: Data Engineer (Dana)
+
 - **Role**: Owns the data pipeline that lands Podium history in the analytics warehouse and the vector store.
 - **Goals**: Idempotent re-runnable exports; clear watermark semantics; one-line cron entry for incremental sync; observable failure modes (counts in / counts out, watermark advancement, errors per resource).
 - **Pain Points**: A previous "quick script" produced duplicate records and a corrupted cursor file; the export OOM'd on a single 4000-message thread and took down the analytics box for an afternoon; nobody noticed the watermark hadn't advanced for three weeks.
 - **Technical Level**: High (async Python, SQL, comfortable with CDC patterns, knows what idempotency means).
 
 ### Persona 2: AI Engineer (Priya)
+
 - **Role**: Builds the embedding pipeline that reads the exported corpus, computes vectors, and loads them into pgvector/Qdrant/Weaviate.
 - **Goals**: Chunks that are coherent (one chunk = one semantic unit, not a random 1500-token slice); deterministic chunk IDs so re-embedding is incremental; PII redaction guaranteed at chunk-emit, not best-effort.
 - **Pain Points**: An earlier RAG pilot embedded raw PII because redaction lived in a downstream filter and was bypassed in a refactor; chunk boundaries cut mid-message and produced poor retrieval quality on the long-thread case; re-embedding the full corpus to fix one bug cost a month of vector-store API spend.
 - **Technical Level**: High (ML eng; sometimes asks "why does Dana's pipeline emit chunks instead of raw messages?").
 
 ### Persona 3: Compliance Officer (Hema)
+
 - **Role**: Reviews what data leaves the customer's tenant boundary into third-party systems (the embedding API, the vector store).
 - **Goals**: Verifiable PII-redaction guarantee at export time; an audit log of what was redacted vs not; the ability to point at a specific commit and say "this redaction policy was in effect for this run."
 - **Pain Points**: A prior vendor's "redact PII" feature was applied at query time, not embedding time — the eternal-PII problem. The audit log was structured-but-incomplete; tracking down what was redacted in a specific six-week window required reconstructing logs from gzipped archives.
@@ -39,66 +42,78 @@ This skill provides the export pipeline that prevents each failure mode by const
 ## User Stories
 
 ### US-1: Resumable cursor-paginated full crawl (P0)
+
 **As** a data engineer,
 **I want** the full historical crawl to persist its cursor after every page and dedup on row id,
 **So that** a process crash mid-crawl resumes at the last good page boundary without duplicating records.
 
 **Acceptance Criteria:**
+
 - Cursor and seen-id set are persisted to disk after every successful page
 - A `SIGKILL` mid-page does not duplicate any row in the output JSONL
 - A row updated mid-crawl is yielded exactly once (the first sighting wins)
 - `seen_ids` cache is bounded to last 50k IDs to prevent unbounded memory growth
 
 ### US-2: Overlap-margin CDC watermark (P0)
+
 **As** a data engineer,
 **I want** incremental syncs to use `updated_at >= (watermark - overlap_margin)` and dedup,
 **So that** writes happening exactly at the watermark second are never missed.
 
 **Acceptance Criteria:**
+
 - Default `overlap_margin_seconds = 60`
 - Watermark advances only after a full pass completes successfully
 - A partial pass (crash mid-pass) re-pulls from the previous watermark on retry
 - Loader dedups on `(id, updated_at)` to absorb the overlap re-pull volume
 
 ### US-3: Attachment URL refresh on 403 (P0)
+
 **As** a data engineer,
 **I want** the attachment downloader to detect a 403, fetch a fresh signed URL, and retry,
 **So that** multi-hour exports do not lose attachments to URL expiry.
 
 **Acceptance Criteria:**
+
 - 403 response triggers a `GET /v4/attachments/{id}` and a single retry
 - Repeated 403 after refresh raises (no infinite retry loop)
 - Parallel downloads honor a concurrency cap (default 8)
 - Partial downloads (interrupted mid-file) are re-fetched, not patched
 
 ### US-4: Semantic-boundary chunking (P1)
+
 **As** an AI engineer,
 **I want** chunks to break on natural boundaries (turn boundaries, idle gaps > 24h, token cap),
 **So that** retrieved chunks carry coherent context, not arbitrary 1500-token slices.
 
 **Acceptance Criteria:**
+
 - Default `target_tokens = 1500`, `overlap_tokens = 200`
 - Force-break on idle gap > 24h between consecutive messages
 - Chunk overlap carries last ~`overlap_tokens` of messages from the previous chunk
 - Each chunk emits a deterministic `chunk_id` (`source_id:start_msg_id:end_msg_id`) so re-chunking is reproducible
 
 ### US-5: PII redaction before embedding (P0)
+
 **As** a compliance officer,
 **I want** the same redaction pattern set as `podium-call-transcript-pipeline` applied at chunk-emit time,
 **So that** PII never reaches the embedding API or the vector store.
 
 **Acceptance Criteria:**
+
 - Redaction runs on chunk body + display names + reproduced attachment filenames
 - Redacted output uses unambiguous placeholders (`[REDACTED_SSN]`, etc.) — never blank/empty strings
 - A `pii_redacted: true` field is emitted on every chunk that passed through redaction
 - The pattern set is the same module imported by `podium-call-transcript-pipeline` (single source of truth)
 
 ### US-6: Streaming JSONL output (P0)
+
 **As** a data engineer,
 **I want** records written one-per-line to a gzip stream, never held in memory in bulk,
 **So that** a 4000-message thread does not OOM the export host.
 
 **Acceptance Criteria:**
+
 - Memory cost is O(one record) at the export stage
 - Memory cost is O(window-size) at the chunking stage, not O(thread-size)
 - Output is `.jsonl.gz` with `separators=(",", ":")` and a flush every 1000 records

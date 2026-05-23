@@ -20,6 +20,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Detecting Infrastructure Drift
 
 ## Current State
+
 !`ls *.tf Dockerfile docker-compose.yml 2>/dev/null || echo 'No IaC files found'`
 !`terraform version 2>/dev/null || echo 'Terraform not installed'`
 

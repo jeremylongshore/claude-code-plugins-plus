@@ -10,6 +10,7 @@ hubspot-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement HubSpot reliability patterns
 **Workflow:** Part of the enterprise skill category for HubSpot integration.
 **Relates to:** Other hubspot skills in this pack.

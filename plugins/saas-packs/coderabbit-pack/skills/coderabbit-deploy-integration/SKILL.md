@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Deploy Integration
 
 ## Overview
+
 Roll out CodeRabbit AI code review across an organization. Covers multi-repo deployment strategy, organization-level configuration, team-specific customization, and developer onboarding. CodeRabbit is a GitHub/GitLab App -- deployment means configuring the App installation, customizing review behavior, and integrating review status into merge workflows.
 
 ## Prerequisites
+
 - GitHub Organization admin access
 - CodeRabbit GitHub App installed (https://github.com/apps/coderabbitai)
 - CodeRabbit Pro or Enterprise plan for private repos
@@ -37,6 +39,7 @@ Roll out CodeRabbit AI code review across an organization. Covers multi-repo dep
 ## Instructions
 
 ### Step 1: Plan the Rollout
+
 ```markdown
 # Phase 1 (Week 1): Pilot
 - Pick 2-3 high-activity repos with receptive teams
@@ -55,6 +58,7 @@ Roll out CodeRabbit AI code review across an organization. Covers multi-repo dep
 ```
 
 ### Step 2: Create Organization-Level Configuration
+
 ```yaml
 # .github/.coderabbit.yaml (in the .github repository)
 # This is the org-level default applied to ALL repos in the org
@@ -96,6 +100,7 @@ chat:
 ```
 
 ### Step 3: Create Team-Specific Repo Configs
+
 ```yaml
 # .coderabbit.yaml for a backend API repo
 # Inherits org defaults, adds API-specific instructions
@@ -142,6 +147,7 @@ reviews:
 ```
 
 ### Step 4: Script Multi-Repo Config Deployment
+
 ```bash
 #!/bin/bash
 # deploy-coderabbit-config.sh - Deploy .coderabbit.yaml to multiple repos
@@ -175,6 +181,7 @@ done
 ```
 
 ### Step 5: Set Up Branch Protection with CodeRabbit
+
 ```bash
 set -euo pipefail
 ORG="your-org"
@@ -195,6 +202,7 @@ done
 ```
 
 ### Step 6: Developer Onboarding Guide
+
 ```markdown
 # Share with your team:
 
@@ -222,6 +230,7 @@ CodeRabbit automatically reviews your PRs. No action needed on your part.
 ```
 
 ## Output
+
 - Organization-level CodeRabbit configuration deployed
 - Team-specific repo configs with path instructions
 - Multi-repo deployment script
@@ -229,6 +238,7 @@ CodeRabbit automatically reviews your PRs. No action needed on your part.
 - Developer onboarding guide
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Org config not applied | No `.github` repo | Create `.github` repo with `.coderabbit.yaml` |
@@ -238,9 +248,11 @@ CodeRabbit automatically reviews your PRs. No action needed on your part.
 | Bot accounts consuming seats | Bots opening PRs | Exclude bot accounts in seat management |
 
 ## Resources
+
 - [CodeRabbit Getting Started](https://docs.coderabbit.ai/getting-started/yaml-configuration)
 - [CodeRabbit Configuration Reference](https://docs.coderabbit.ai/reference/configuration)
 - [Organization-Level Config](https://docs.coderabbit.ai/guides/organization-level-config)
 
 ## Next Steps
+
 For multi-environment configuration, see `coderabbit-multi-env-setup`.

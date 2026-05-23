@@ -10,6 +10,7 @@ cohere-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Cohere example
 **Workflow:** Part of the onboarding skill category for Cohere integration.
 **Relates to:** Other cohere skills in this pack.

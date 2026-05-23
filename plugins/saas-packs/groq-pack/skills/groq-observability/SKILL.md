@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq Observability
 
 ## Overview
+
 Monitor Groq LPU inference for latency, token throughput, rate limit utilization, and cost. Groq's defining advantage is speed (280-560 tok/s), so latency degradation is the highest-priority signal. The API returns rich timing metadata (`queue_time`, `prompt_time`, `completion_time`) and rate limit headers on every response.
 
 ## Key Metrics to Track
@@ -42,6 +43,7 @@ Monitor Groq LPU inference for latency, token throughput, rate limit utilization
 ## Instructions
 
 ### Step 1: Instrumented Groq Client
+
 ```typescript
 import Groq from "groq-sdk";
 
@@ -106,6 +108,7 @@ async function trackedCompletion(
 ```
 
 ### Step 2: Prometheus Metrics
+
 ```typescript
 import { Histogram, Counter, Gauge } from "prom-client";
 
@@ -156,6 +159,7 @@ function emitMetrics(m: GroqMetrics) {
 ```
 
 ### Step 3: Rate Limit Header Tracking
+
 ```typescript
 // Parse rate limit headers from any Groq response
 function trackRateLimitHeaders(headers: Record<string, string>) {
@@ -172,6 +176,7 @@ function trackRateLimitHeaders(headers: Record<string, string>) {
 ```
 
 ### Step 4: Prometheus Alert Rules
+
 ```yaml
 # prometheus/groq-alerts.yml
 groups:
@@ -218,6 +223,7 @@ groups:
 ```
 
 ### Step 5: Structured Request Logging
+
 ```typescript
 // Structured JSON log for each Groq request
 function logGroqRequest(metrics: GroqMetrics, requestId?: string) {
@@ -241,6 +247,7 @@ function logGroqRequest(metrics: GroqMetrics, requestId?: string) {
 ```
 
 ### Step 6: Dashboard Panels
+
 Key Grafana/dashboard panels for Groq monitoring:
 
 1. **TTFT Distribution** (histogram) -- Groq's main value; alert if > 500ms
@@ -252,6 +259,7 @@ Key Grafana/dashboard panels for Groq monitoring:
 7. **Queue Time** (histogram) -- Groq-specific, should be < 50ms
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | 429 with high retry-after | RPM or TPM exhausted | Implement request queuing |
@@ -260,9 +268,11 @@ Key Grafana/dashboard panels for Groq monitoring:
 | Tokens/sec drop | Streaming disabled or large prompts | Enable streaming for better perceived performance |
 
 ## Resources
+
 - [Groq API Reference (usage fields)](https://console.groq.com/docs/api-reference)
 - [Groq Rate Limits](https://console.groq.com/docs/rate-limits)
 - [prom-client on npm](https://www.npmjs.com/package/prom-client)
 
 ## Next Steps
+
 For incident response procedures, see `groq-incident-runbook`.

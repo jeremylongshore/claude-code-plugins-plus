@@ -10,6 +10,7 @@ oraclecloud-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Oracle Cloud primary workflow
 **Workflow:** Part of the onboarding skill category for Oracle Cloud integration.
 **Relates to:** Other oraclecloud skills in this pack.

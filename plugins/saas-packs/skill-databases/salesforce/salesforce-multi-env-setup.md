@@ -10,6 +10,7 @@ salesforce-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Salesforce multi-environment setup
 **Workflow:** Part of the enterprise skill category for Salesforce integration.
 **Relates to:** Other salesforce skills in this pack.

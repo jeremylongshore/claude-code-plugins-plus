@@ -4,34 +4,39 @@ Real-time market price tracking across crypto, stocks, forex, and commodities wi
 
 ## Features
 
-###  Multi-Asset Support
+### Multi-Asset Support
+
 - **Cryptocurrencies**: BTC, ETH, and 10,000+ altcoins
 - **Stocks**: US equities, international markets
 - **Forex**: Major and exotic currency pairs
 - **Commodities**: Gold, silver, oil, agricultural products
 - **Indices**: S&P 500, NASDAQ, international indices
 
-###  Data Sources
+### Data Sources
+
 - **Crypto Exchanges**: Binance, Coinbase, Kraken, FTX, Bitfinex
 - **Stock Data**: Alpha Vantage, IEX Cloud, Polygon.io, Yahoo Finance
 - **Forex Feeds**: OANDA, Forex Connect, Currency Layer
 - **Alternative Data**: Messari, CoinGecko, Quandl
 
-###  Real-Time Capabilities
+### Real-Time Capabilities
+
 - **WebSocket Streaming**: Sub-second price updates
 - **Multi-Exchange Aggregation**: VWAP and median pricing
 - **Latency Monitoring**: Track feed performance
 - **Automatic Failover**: Redundant data sources
 - **Smart Reconnection**: Exponential backoff strategies
 
-###  Technical Analysis
+### Technical Analysis
+
 - **Indicators**: RSI, MACD, Bollinger Bands, ATR, OBV
 - **Moving Averages**: SMA, EMA, WMA, VWAP
 - **Pattern Recognition**: Head & Shoulders, Triangles, Flags
 - **Candlestick Patterns**: Doji, Hammer, Engulfing, Morning Star
 - **Market Structure**: Support/Resistance, Liquidity Zones
 
-###  Alert System
+### Alert System
+
 - **Price Alerts**: Above/below thresholds
 - **Percentage Changes**: Volatility spikes
 - **Volume Alerts**: Unusual activity detection
@@ -111,6 +116,7 @@ Real-time market price tracking across crypto, stocks, forex, and commodities wi
 #### Paid Approach (Premium APIs)
 
 **Monthly Costs:**
+
 - Polygon.io (stocks): $49/mo
 - Messari Pro (crypto): $99/mo
 - OANDA Pro (forex): $25/mo
@@ -120,6 +126,7 @@ Real-time market price tracking across crypto, stocks, forex, and commodities wi
 #### Free Approach (This Configuration)
 
 **Monthly Costs:**
+
 - CoinGecko (crypto): $0
 - Binance API (crypto): $0
 - Yahoo Finance (stocks): $0
@@ -134,6 +141,7 @@ Real-time market price tracking across crypto, stocks, forex, and commodities wi
 #### Crypto Price Tracking (BTC/ETH)
 
 **Free Configuration:**
+
 ```javascript
 // CoinGecko API - FREE
 const prices = await fetch(
@@ -148,6 +156,7 @@ const prices = await fetch(
 #### Stock Price Tracking (AAPL, TSLA, MSFT)
 
 **Free Configuration:**
+
 ```javascript
 // Yahoo Finance - FREE (via yfinance Python library or direct API)
 import yfinance as yf
@@ -161,6 +170,7 @@ prices = tickers.tickers['AAPL'].history(period='1d')
 #### Forex Pair Tracking (EUR/USD)
 
 **Free Configuration:**
+
 ```javascript
 // Currency Layer free tier - 250 req/month
 const response = await fetch(
@@ -201,6 +211,7 @@ const response = await fetch(
 ### When Free APIs Are NOT Enough
 
 **Use paid APIs if:**
+
 - You need <100ms real-time updates (day trading)
 - You require tick-by-tick data streams
 - You need institutional-grade SLA
@@ -254,6 +265,7 @@ I'll set up real-time price tracking. Please provide:
 ```
 
 The tracker will:
+
 1. Connect to multiple exchanges via WebSocket
 2. Aggregate prices using VWAP
 3. Display real-time updates
@@ -273,6 +285,7 @@ I'll analyze market trends. Please specify:
 ```
 
 Analysis includes:
+
 - Trend identification and strength
 - Momentum indicators (RSI, MACD, Stochastic)
 - Pattern detection (chart and candlestick)
@@ -402,6 +415,7 @@ function detectHeadAndShoulders(prices) {
 ## Technical Indicators
 
 ### Momentum Indicators
+
 - **RSI (Relative Strength Index)**: Overbought/oversold conditions
 - **MACD**: Trend changes and momentum
 - **Stochastic Oscillator**: Momentum comparison
@@ -409,18 +423,21 @@ function detectHeadAndShoulders(prices) {
 - **CCI (Commodity Channel Index)**: Trend identification
 
 ### Trend Indicators
+
 - **Moving Averages**: SMA, EMA, WMA
 - **ADX**: Trend strength measurement
 - **Parabolic SAR**: Stop and reverse points
 - **Ichimoku Cloud**: Multiple trend components
 
 ### Volatility Indicators
+
 - **Bollinger Bands**: Price channels
 - **ATR (Average True Range)**: Volatility measurement
 - **Standard Deviation**: Price dispersion
 - **Keltner Channels**: Volatility-based bands
 
 ### Volume Indicators
+
 - **OBV (On-Balance Volume)**: Volume flow
 - **Volume Profile**: Price level activity
 - **ADL (Accumulation/Distribution)**: Money flow
@@ -429,24 +446,28 @@ function detectHeadAndShoulders(prices) {
 ## Alert Types
 
 ### Price-Based Alerts
+
 - Crosses above/below specific price
 - Percentage change from reference
 - Breaking support/resistance levels
 - New daily/weekly/monthly highs/lows
 
 ### Technical Alerts
+
 - RSI entering overbought/oversold
 - MACD crossovers
 - Moving average crossovers
 - Bollinger Band squeezes
 
 ### Pattern Alerts
+
 - Chart pattern completion
 - Candlestick pattern formation
 - Trendline breaks
 - Fibonacci retracement levels
 
 ### Volume Alerts
+
 - Unusual volume spikes
 - Volume divergence
 - Accumulation/distribution signals
@@ -454,18 +475,21 @@ function detectHeadAndShoulders(prices) {
 ## Performance Optimization
 
 ### Caching Strategy
+
 - Price data: 5-second cache
 - Technical indicators: 1-minute cache
 - Historical data: 24-hour cache
 - Pattern detection: 5-minute cache
 
 ### Connection Management
+
 - Connection pooling for REST APIs
 - WebSocket multiplexing
 - Automatic failover to backup sources
 - Load balancing across data feeds
 
 ### Data Processing
+
 - Streaming data pipeline
 - Incremental indicator calculations
 - Parallel pattern detection
@@ -474,18 +498,21 @@ function detectHeadAndShoulders(prices) {
 ## Error Handling
 
 ### Connection Errors
+
 - Automatic reconnection with exponential backoff
 - Fallback to alternative data sources
 - Queue messages during disconnection
 - Alert on prolonged outages
 
 ### Data Validation
+
 - Sanity checks on price data
 - Outlier detection and filtering
 - Cross-validation between sources
 - Missing data interpolation
 
 ### Rate Limiting
+
 - Request throttling per API
 - Token bucket algorithm
 - Prioritized request queue
@@ -494,12 +521,14 @@ function detectHeadAndShoulders(prices) {
 ## Security Considerations
 
 ### API Key Management
+
 - Environment variables for credentials
 - Encrypted storage for sensitive data
 - Read-only API keys where possible
 - Regular key rotation
 
 ### Data Integrity
+
 - HMAC signature verification
 - TLS/SSL for all connections
 - Input sanitization
@@ -508,18 +537,21 @@ function detectHeadAndShoulders(prices) {
 ## Advanced Features
 
 ### Machine Learning Integration
+
 - Price prediction models
 - Anomaly detection
 - Pattern recognition enhancement
 - Sentiment analysis correlation
 
 ### Backtesting Support
+
 - Historical data replay
 - Strategy testing framework
 - Performance metrics calculation
 - Risk assessment tools
 
 ### Multi-Timeframe Analysis
+
 - Synchronized timeframe views
 - Higher timeframe confirmation
 - Fractal pattern detection
@@ -530,18 +562,21 @@ function detectHeadAndShoulders(prices) {
 ### Common Issues
 
 **No price updates**
+
 - Check API key configuration
 - Verify network connectivity
 - Confirm symbol format
 - Check exchange status
 
 **Delayed data**
+
 - Review connection latency
 - Check cache settings
 - Verify time synchronization
 - Monitor rate limits
 
 **Incorrect calculations**
+
 - Validate input data
 - Check indicator parameters
 - Review aggregation method
@@ -577,6 +612,7 @@ MIT License - See LICENSE file for details
 ## Changelog
 
 ### v1.0.0 (2024-10-11)
+
 - Initial release
 - Multi-exchange real-time tracking
 - Technical analysis suite

@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lokalise Migration Deep Dive
 
 ## Current State
+
 !`lokalise2 --version 2>/dev/null || echo 'CLI not installed'`
 !`npm list @lokalise/node-api 2>/dev/null | grep lokalise || echo 'SDK not installed'`
 !`node --version 2>/dev/null || echo 'Node.js not available'`
@@ -49,6 +50,7 @@ Migrate translations from another TMS (Crowdin, Phrase, POEditor) into Lokalise 
 Each TMS has its own export format. Export to a Lokalise-compatible format when possible (JSON, XLIFF, or the platform's native format).
 
 **From Crowdin:**
+
 ```bash
 set -euo pipefail
 # Export all translations as JSON (flat key-value structure)
@@ -67,6 +69,7 @@ echo "Exported $(find crowdin-export/ -name '*.json' | wc -l) translation files"
 ```
 
 **From Phrase (formerly PhraseApp):**
+
 ```bash
 set -euo pipefail
 # Export all locales as JSON
@@ -80,6 +83,7 @@ echo "Exported locales: $(ls phrase-export/)"
 ```
 
 **From POEditor:**
+
 ```bash
 set -euo pipefail
 # Export via POEditor API (returns a download URL)

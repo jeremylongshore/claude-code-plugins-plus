@@ -10,6 +10,7 @@ databricks-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Databricks debug evidence for support
 **Workflow:** Part of the operations skill category for Databricks integration.
 **Relates to:** Other databricks skills in this pack.

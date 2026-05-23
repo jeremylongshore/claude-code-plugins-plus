@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Deploy Integration
 
 ## Overview
+
 Deploy Foundry-integrated applications to cloud platforms (GCP Cloud Run, AWS Lambda, Docker) with proper secrets management and health checks.
 
 ## Prerequisites
+
 - Passing CI tests: `palantir-ci-integration`
 - Production OAuth2 credentials from Developer Console
 - Cloud platform CLI configured (gcloud, aws, etc.)
@@ -37,6 +39,7 @@ Deploy Foundry-integrated applications to cloud platforms (GCP Cloud Run, AWS La
 ## Instructions
 
 ### Step 1: Dockerfile
+
 ```dockerfile
 FROM python:3.11-slim
 WORKDIR /app
@@ -48,6 +51,7 @@ CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8080"]
 ```
 
 ### Step 2: Deploy to Google Cloud Run
+
 ```bash
 set -euo pipefail
 PROJECT_ID=$(gcloud config get-value project)
@@ -71,6 +75,7 @@ gcloud run deploy "$SERVICE_NAME" \
 ```
 
 ### Step 3: Health Check Endpoint
+
 ```python
 # src/main.py
 from fastapi import FastAPI
@@ -89,6 +94,7 @@ async def health():
 ```
 
 ### Step 4: Environment-Specific Configuration
+
 ```python
 # src/config.py
 import os
@@ -118,12 +124,14 @@ class FoundryConfig:
 ```
 
 ## Output
+
 - Containerized Foundry integration deployed to cloud platform
 - Secrets injected via cloud secrets manager
 - Health check endpoint verifying Foundry connectivity
 - Environment-specific scope configuration
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | Container fails to start | Missing env vars | Verify all secrets are mounted |
@@ -132,8 +140,10 @@ class FoundryConfig:
 | Secret rotation breaks app | Old secret revoked | Deploy new secret before revoking old |
 
 ## Resources
+
 - [Cloud Run Documentation](https://cloud.google.com/run/docs)
 - [Foundry Authentication](https://www.palantir.com/docs/foundry/api/general/overview/authentication)
 
 ## Next Steps
+
 For observability setup, see `palantir-observability`.

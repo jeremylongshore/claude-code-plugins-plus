@@ -10,6 +10,7 @@ algolia-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Algolia SDK patterns
 **Workflow:** Part of the onboarding skill category for Algolia integration.
 **Relates to:** Other algolia skills in this pack.

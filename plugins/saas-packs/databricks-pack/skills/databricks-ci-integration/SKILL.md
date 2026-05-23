@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks CI Integration
 
 ## Overview
+
 Automate Databricks deployments with Declarative Automation Bundles (DABs) and GitHub Actions. Covers bundle validation, unit testing PySpark transforms locally, deploying to staging on PR, production on merge, and integration testing against live workspaces. Uses `databricks/setup-cli` action and OAuth M2M for secure CI auth.
 
 ## Prerequisites
+
 - Databricks workspace with service principal (OAuth M2M)
 - Asset Bundle (`databricks.yml`) configured
 - GitHub repo with Actions enabled
@@ -38,6 +40,7 @@ Automate Databricks deployments with Declarative Automation Bundles (DABs) and G
 ## Instructions
 
 ### Step 1: GitHub Actions — Validate and Test on PR
+
 ```yaml
 # .github/workflows/databricks-ci.yml
 name: Databricks CI
@@ -103,6 +106,7 @@ jobs:
 ```
 
 ### Step 2: Unit Tests for PySpark Transforms
+
 ```python
 # tests/unit/test_transformations.py
 import pytest
@@ -140,6 +144,7 @@ def test_gold_aggregation(spark):
 ```
 
 ### Step 3: Deploy to Production on Merge
+
 ```yaml
 # .github/workflows/databricks-deploy.yml
 name: Databricks Deploy
@@ -186,6 +191,7 @@ jobs:
 ```
 
 ### Step 4: OIDC Authentication (Keyless CI)
+
 Eliminate long-lived secrets by using GitHub OIDC federation with Databricks.
 
 ```yaml
@@ -209,12 +215,14 @@ jobs:
 ```
 
 ## Output
+
 - CI workflow validating bundles and running unit tests on every PR
 - Staging deployment with integration tests before merge
 - Production deployment on merge to main with approval gate
 - Concurrency control preventing parallel deployments
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Bundle validation fails | Invalid YAML or missing variables | Run `databricks bundle validate` locally first |
@@ -226,6 +234,7 @@ jobs:
 ## Examples
 
 ### Local Validation Before Push
+
 ```bash
 # Validate and dry-run before committing
 databricks bundle validate -t staging
@@ -234,6 +243,7 @@ pytest tests/unit/ -v
 ```
 
 ### Branch-Based Development Targets
+
 ```yaml
 # databricks.yml — auto-name resources per developer
 targets:
@@ -246,10 +256,12 @@ targets:
 ```
 
 ## Resources
+
 - [CI/CD with Bundles](https://docs.databricks.com/aws/en/dev-tools/bundles/ci-cd-bundles)
 - [databricks/setup-cli Action](https://github.com/databricks/setup-cli)
 - [OAuth M2M](https://docs.databricks.com/aws/en/dev-tools/auth/oauth-m2m)
 - [Bundle Configuration](https://docs.databricks.com/aws/en/dev-tools/bundles/settings)
 
 ## Next Steps
+
 For Asset Bundle deployment details, see `databricks-deploy-integration`.

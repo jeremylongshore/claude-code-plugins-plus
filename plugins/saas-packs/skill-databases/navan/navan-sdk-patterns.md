@@ -10,6 +10,7 @@ navan-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Navan SDK patterns
 **Workflow:** Part of the onboarding skill category for Navan integration.
 **Relates to:** Other navan skills in this pack.

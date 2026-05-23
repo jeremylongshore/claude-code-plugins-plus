@@ -25,14 +25,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Debug Bundle
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'N/A'`
 !`python3 --version 2>/dev/null || echo 'N/A'`
 !`echo "IDEOGRAM_API_KEY set: ${IDEOGRAM_API_KEY:+YES}${IDEOGRAM_API_KEY:-NO}"`
 
 ## Overview
+
 Collect diagnostic information for Ideogram API issues. Produces a tarball with environment details, API connectivity tests, request/response samples, and redacted configuration -- suitable for attaching to support tickets.
 
 ## Prerequisites
+
 - `IDEOGRAM_API_KEY` environment variable set
 - `curl` and `tar` available
 - Permission to collect environment info
@@ -40,6 +43,7 @@ Collect diagnostic information for Ideogram API issues. Produces a tarball with 
 ## Instructions
 
 ### Step 1: Full Debug Bundle Script
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -107,6 +111,7 @@ echo "Contents: summary.txt, api-response-sample.json, env-redacted.txt"
 ```
 
 ### Step 2: Quick One-Line Diagnostics
+
 ```bash
 set -euo pipefail
 # Test API key validity
@@ -124,6 +129,7 @@ curl -s -o /dev/null -w "V3 Status: %{http_code}\n" \
 ```
 
 ### Step 3: Request Logging Wrapper
+
 ```typescript
 // Add to your client for capturing failed requests
 async function debuggableRequest(url: string, init: RequestInit) {
@@ -155,19 +161,23 @@ async function debuggableRequest(url: string, init: RequestInit) {
 ```
 
 ## Sensitive Data Handling
+
 **ALWAYS REDACT before sharing:**
+
 - API keys and tokens
 - `.env` file values
 - PII in prompts
 - File paths containing usernames
 
 **Safe to include:**
+
 - HTTP status codes and error messages
 - Request timing and latency
 - Runtime versions (Node, Python)
 - Package dependency versions
 
 ## Error Handling
+
 | Item | Purpose | Included |
 |------|---------|----------|
 | API key status | Auth verification | SET/NOT SET only |
@@ -177,14 +187,17 @@ async function debuggableRequest(url: string, init: RequestInit) {
 | Package versions | Compatibility check | Version strings |
 
 ## Output
+
 - `ideogram-debug-YYYYMMDD-HHMMSS.tar.gz` containing:
   - `summary.txt` -- environment, API test, DNS, dependencies
   - `api-response-sample.json` -- truncated API response
   - `env-redacted.txt` -- configuration with values masked
 
 ## Resources
+
 - [Ideogram API Overview](https://developer.ideogram.ai/ideogram-api/api-overview)
 - Enterprise support: `partnership@ideogram.ai`
 
 ## Next Steps
+
 For rate limit issues, see `ideogram-rate-limits`.

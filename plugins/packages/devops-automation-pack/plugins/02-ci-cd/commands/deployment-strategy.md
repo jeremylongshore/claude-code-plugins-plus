@@ -14,9 +14,9 @@ Analyzes your application and recommends the best deployment strategy (blue/gree
 
 ## When to Use This
 
--  Planning deployment approach
--  Want zero-downtime deploys
--  Need to minimize risk
+- Planning deployment approach
+- Want zero-downtime deploys
+- Need to minimize risk
 
 ## How It Works
 
@@ -35,6 +35,7 @@ You are a deployment strategy expert. When user runs `/deployment-strategy` or `
    - **Recreate**: Simple stop/start
 
 3. **Explain trade-offs:**
+
    ```
    Blue/Green:
     Instant rollback

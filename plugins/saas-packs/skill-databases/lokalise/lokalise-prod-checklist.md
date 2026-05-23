@@ -10,6 +10,7 @@ lokalise-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Lokalise production deployment checklist
 **Workflow:** Part of the operations skill category for Lokalise integration.
 **Relates to:** Other lokalise skills in this pack.

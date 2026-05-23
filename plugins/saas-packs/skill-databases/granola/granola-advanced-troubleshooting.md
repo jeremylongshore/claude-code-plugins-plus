@@ -10,6 +10,7 @@ granola-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Granola advanced debugging
 **Workflow:** Part of the enterprise skill category for Granola integration.
 **Relates to:** Other granola skills in this pack.

@@ -7,17 +7,20 @@ Detailed implementation examples and code patterns.
 ### Authentication Errors (401/403)
 
 #### Invalid API Key
+
 ```
 Error: Authentication required
 Code: UNAUTHENTICATED
 ```
 
 **Causes:**
+
 - API key is invalid, expired, or revoked
 - Key format is incorrect (should start with `lin_api_`)
 - Environment variable not loaded
 
 **Solutions:**
+
 ```typescript
 // Verify key format
 const apiKey = process.env.LINEAR_API_KEY;
@@ -36,17 +39,20 @@ try {
 ```
 
 #### Permission Denied
+
 ```
 Error: You don't have permission to access this resource
 Code: FORBIDDEN
 ```
 
 **Causes:**
+
 - API key doesn't have required scope
 - User not a member of the team/organization
 - Resource belongs to different workspace
 
 **Solutions:**
+
 - Check API key permissions in Linear Settings > API
 - Verify team membership
 - Regenerate key with correct permissions
@@ -60,10 +66,12 @@ Headers: X-RateLimit-Remaining: 0, Retry-After: 60
 ```
 
 **Causes:**
+
 - Too many requests in time window
 - Burst of requests without throttling
 
 **Solutions:**
+
 ```typescript
 // Implement exponential backoff
 async function withRetry<T>(
@@ -105,6 +113,7 @@ Code: BAD_USER_INPUT
 | `assigneeId` | "User not found" | User must be team member |
 
 **Debug Validation:**
+
 ```typescript
 async function createIssueWithValidation(input: {
   teamId: string;
@@ -144,11 +153,13 @@ Code: GRAPHQL_VALIDATION_FAILED
 ```
 
 **Causes:**
+
 - Field name typo
 - Querying deprecated field
 - SDK version mismatch with API
 
 **Solutions:**
+
 ```bash
 # Update SDK to latest
 npm update @linear/sdk
@@ -167,6 +178,7 @@ Cause: ECONNREFUSED / ETIMEDOUT
 ```
 
 **Solutions:**
+
 ```typescript
 // Add timeout and retry
 const controller = new AbortController();
@@ -185,6 +197,7 @@ try {
 ## Diagnostic Commands
 
 ### Test API Connection
+
 ```bash
 curl -s -H "Authorization: $LINEAR_API_KEY" \
   -H "Content-Type: application/json" \
@@ -193,6 +206,7 @@ curl -s -H "Authorization: $LINEAR_API_KEY" \
 ```
 
 ### Check Rate Limit Status
+
 ```bash
 curl -I -H "Authorization: $LINEAR_API_KEY" \
   https://api.linear.app/graphql
@@ -200,6 +214,7 @@ curl -I -H "Authorization: $LINEAR_API_KEY" \
 ```
 
 ### Validate Webhook Signature
+
 ```typescript
 import crypto from "crypto";
 

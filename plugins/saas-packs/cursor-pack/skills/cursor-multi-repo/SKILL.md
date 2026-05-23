@@ -161,6 +161,7 @@ monorepo/
 ```
 
 **Behavior:**
+
 - Root rules apply to all files in the monorepo
 - Package-level rules apply only when editing files in that package
 - If both match, both are included in context

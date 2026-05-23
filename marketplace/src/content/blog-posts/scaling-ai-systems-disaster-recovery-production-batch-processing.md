@@ -18,6 +18,7 @@ This case study demonstrates systems thinking, risk management, and production-g
 Most engineers jump straight to implementation. I started by defining hard constraints:
 
 **Non-negotiable requirements:**
+
 - Must stay within Vertex AI free tier (1,500 requests/day)
 - 100% success rate (no corrupted production files)
 - Complete audit trail for compliance
@@ -25,6 +26,7 @@ Most engineers jump straight to implementation. I started by defining hard const
 - Zero tolerance for quota violations
 
 **The math:**
+
 - 235 plugins × 2 API calls each = 470 total calls
 - Free tier: 1,500 calls/day
 - Safety margin required: 3x headroom
@@ -54,6 +56,7 @@ CREATE TABLE enhancements (
 ```
 
 **Why SQLite?**
+
 - Zero external dependencies
 - Queryable for metrics
 - Easy to backup (copy one file)
@@ -62,6 +65,7 @@ CREATE TABLE enhancements (
 **2. Automatic Backup System**
 
 Before any modification:
+
 - Create timestamped backup directory
 - Copy entire plugin structure
 - Log backup location
@@ -96,6 +100,7 @@ if idx % 10 == 0:
 First test run: Process appeared stuck.
 
 **My debugging process:**
+
 1. Check process still running ✓
 2. Check CPU usage ✓
 3. Check log file... empty?
@@ -138,6 +143,7 @@ With 235 production plugins, GitHub lockout would be catastrophic. Local backups
 ### Turso: Edge SQLite for Disaster Recovery
 
 **Why Turso?**
+
 - Edge SQLite database (globally distributed)
 - Free tier: 500 databases, 9GB storage
 - CLI-first (perfect for automation)
@@ -171,11 +177,13 @@ With 235 production plugins, GitHub lockout would be catastrophic. Local backups
 After 12 hours: 157/235 plugins complete (66%)
 
 **Analysis showed:**
+
 - API quota usage: Only 7-14% of daily limit
 - Success rate: 100% (no failures)
 - Safety margin: Excessive (could safely go 2x faster)
 
 **Risk assessment:**
+
 - Cutting delays in half: 45-60s per plugin
 - New quota usage: ~28% of daily limit
 - Still 3.5x safety margin
@@ -210,6 +218,7 @@ if skill_md_exists and len(content) > 8000:
 ```
 
 **Business value:**
+
 - Saves API quota (money)
 - Enables safe restarts after failures
 - Allows incremental improvements
@@ -218,6 +227,7 @@ if skill_md_exists and len(content) > 8000:
 ### Graceful Degradation
 
 If AI generation fails:
+
 1. Log detailed error to SQLite
 2. Preserve existing plugin structure (no corruption)
 3. Continue to next plugin (don't block entire batch)
@@ -228,6 +238,7 @@ If AI generation fails:
 ## Production Results
 
 **Final Metrics (as of 11:30 PM):**
+
 - Plugins processed: 163/235 (69%)
 - Success rate: 100%
 - Average enhancement size: 10,617 bytes
@@ -236,12 +247,14 @@ If AI generation fails:
 - Cost: $0 (free tier)
 
 **Quality metrics:**
+
 - All files follow official Anthropic standards
 - Comprehensive documentation (8,000-14,000 bytes)
 - Complete backup trail (every change logged)
 - Zero corrupted files
 
 **Business impact:**
+
 - 163 plugins × 10KB = 1.63MB of production documentation
 - Generated overnight, unattended
 - Zero manual intervention required
@@ -252,6 +265,7 @@ If AI generation fails:
 ### 1. Constraints Drive Better Design
 
 Free tier limits forced me to:
+
 - Build efficient rate limiting
 - Implement smart skipping
 - Design for restartability
@@ -262,6 +276,7 @@ Free tier limits forced me to:
 ### 2. Disaster Recovery Isn't Optional
 
 Building Turso backup mid-batch was the right call. In production:
+
 - Murphy's Law applies
 - GitHub can go down
 - Servers crash
@@ -272,6 +287,7 @@ Building Turso backup mid-batch was the right call. In production:
 ### 3. Observability Enables Optimization
 
 Without real-time monitoring, I couldn't:
+
 - Calculate accurate completion times
 - Identify optimization opportunities
 - Prove 100% success rate
@@ -282,6 +298,7 @@ Without real-time monitoring, I couldn't:
 ### 4. Start Conservative, Prove Safety, Then Optimize
 
 The 90s → 45s optimization was safe because:
+
 - I had 12 hours of production data
 - Metrics showed excessive safety margins
 - Success rate was 100%
@@ -292,6 +309,7 @@ The 90s → 45s optimization was safe because:
 ### 5. Idempotent Operations Enable Fault Tolerance
 
 Smart skipping means:
+
 - Restarts are cheap
 - Partial failures are recoverable
 - Incremental improvements are possible
@@ -306,30 +324,35 @@ Related: [Building Scalable Content Systems](https://jeremylongshore.com/posts/b
 This project showcases:
 
 **Systems Architecture:**
+
 - Rate limiting and quota management
 - Batch processing design
 - Fault-tolerant systems
 - Disaster recovery planning
 
 **Production Engineering:**
+
 - Real-time observability
 - Performance optimization with data
 - Risk management under constraints
 - Zero-downtime operations
 
 **Data Engineering:**
+
 - SQLite for audit trails
 - Integrity verification (SHA256)
 - Queryable backup metadata
 - Idempotent data operations
 
 **AI Engineering:**
+
 - Vertex AI integration
 - Free tier optimization
 - Two-phase AI processing
 - Quality control for AI outputs
 
 **DevOps:**
+
 - Automated backup systems
 - Off-site disaster recovery
 - Process monitoring
@@ -338,17 +361,20 @@ This project showcases:
 ## What's Next
 
 **Immediate:**
+
 - Complete batch processing (163/235 done tonight)
 - Run Turso backup after completion
 - Deploy v1.2.0 release
 
 **Short-term:**
+
 - Automate weekly Turso backups
 - Build restoration testing procedures
 - Generate quality analytics dashboard
 - Document runbooks for operations
 
 **Long-term:**
+
 - Progressive enhancement system (update existing files)
 - A/B testing framework for documentation quality
 - Cost optimization for scale (beyond free tier)
@@ -359,6 +385,7 @@ This project showcases:
 Full code available: [claude-code-plugins](https://github.com/jeremylongshore/claude-code-plugins)
 
 **Key files:**
+
 - `scripts/overnight-plugin-enhancer.py` - Batch processor
 - `scripts/turso-plugin-backup.sh` - Disaster recovery
 - `scripts/TURSO-BACKUP-GUIDE.md` - Recovery procedures
@@ -382,4 +409,3 @@ By 2:30 AM tonight, this system will have generated 2.3MB of high-quality docume
 **Interested in AI engineering, systems architecture, or production operations?** Connect with me on [LinkedIn](https://linkedin.com/in/jeremylongshore) or check out more case studies on [my portfolio](https://jeremylongshore.com/).
 
 **See the results:** Visit [claudecodeplugins.io](https://claudecodeplugins.io/) to explore the enhanced plugin marketplace.
-

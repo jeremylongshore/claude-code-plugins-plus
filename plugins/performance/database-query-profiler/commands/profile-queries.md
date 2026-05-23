@@ -28,6 +28,7 @@ Analyze database queries for performance issues and optimization opportunities.
 ## Output
 
 Provide detailed report with:
+
 - Query inventory with execution patterns
 - N+1 query identification with locations
 - Index recommendations with CREATE INDEX statements

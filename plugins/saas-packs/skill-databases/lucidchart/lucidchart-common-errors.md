@@ -10,6 +10,7 @@ lucidchart-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Lucidchart common errors
 **Workflow:** Part of the operations skill category for Lucidchart integration.
 **Relates to:** Other lucidchart skills in this pack.

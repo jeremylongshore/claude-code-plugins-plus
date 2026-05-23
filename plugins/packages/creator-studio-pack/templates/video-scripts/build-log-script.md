@@ -25,6 +25,7 @@
 **Visual**: [Show your best moment/achievement first - the payoff]
 
 **Script**:
+
 ```
 [No talking - just show the working result]
 
@@ -35,11 +36,13 @@
 ```
 
 **On-Screen Text**:
+
 - Achievement headline
 - Project name
 - Day/Week number
 
 **Example**:
+
 ```
 [Screen shows: User logging in successfully, animated celebration]
 
@@ -56,6 +59,7 @@
 **Visual**: [Your face OR workspace]
 
 **Script**:
+
 ```
 "What's up everyone, [name] here.
 
@@ -75,11 +79,13 @@ Let's jump into it."
 ```
 
 **On-Screen Text**:
+
 - Day/Week number
 - Project name
 - Current status
 
 **Example**:
+
 ```
 "What's up everyone, Jeremy here.
 
@@ -97,6 +103,7 @@ Let me show you what I built and what I learned."
 **Visual**: [Screen recording OR talking head with B-roll]
 
 **Script**:
+
 ```
 "Quick context for anyone new:
 
@@ -123,6 +130,7 @@ Progress so far:
 ```
 
 **On-Screen Text**:
+
 - Project summary (1-2 sentences)
 - Progress checklist
 - Today's goal highlighted
@@ -136,6 +144,7 @@ Progress so far:
 **Visual**: [Screen recording - code/app state at start]
 
 **Script**:
+
 ```
 "Here's where I started [today/this week]:
 
@@ -170,6 +179,7 @@ And that's when I hit my first issue..."
 ```
 
 **On-Screen Text**:
+
 - Starting state screenshot
 - Plan overview
 - Time-lapse speed indicator ("10x speed")
@@ -182,6 +192,7 @@ And that's when I hit my first issue..."
 **Visual**: [Screen recording - debugging/problem-solving]
 
 **Script**:
+
 ```
 "So here's what went wrong:
 
@@ -214,6 +225,7 @@ And that's when I hit my first issue..."
 ```
 
 **On-Screen Text**:
+
 - "CHALLENGE #1" header
 - Problem description
 - Failed attempts (strikethrough)
@@ -229,6 +241,7 @@ And that's when I hit my first issue..."
 **Visual**: [Time-lapse OR screen recording with voiceover]
 
 **Script**:
+
 ```
 "With that fixed, I moved on to the main feature:
 
@@ -266,6 +279,7 @@ Step 3: [Show implementation]'
 ```
 
 **On-Screen Text**:
+
 - Time-lapse speed
 - Git commits scrolling
 - Progress percentage
@@ -278,6 +292,7 @@ Step 3: [Show implementation]'
 **Visual**: [Screen recording - second problem]
 
 **Script**:
+
 ```
 "The second challenge was [problem]:
 
@@ -301,6 +316,7 @@ Step 3: [Show implementation]'
 ```
 
 **On-Screen Text**:
+
 - "CHALLENGE #2" header
 - Problem → Solution flow
 - Code snippet of fix
@@ -314,6 +330,7 @@ Step 3: [Show implementation]'
 **Visual**: [Full demo of completed work]
 
 **Script**:
+
 ```
 "Alright, here's what I built:
 
@@ -345,6 +362,7 @@ And finally [action 3]...'
 ```
 
 **On-Screen Text**:
+
 - Feature highlights
 - Metrics/stats
 - Before/after comparison
@@ -357,6 +375,7 @@ And finally [action 3]...'
 **Visual**: [Your face OR split screen with notes]
 
 **Script**:
+
 ```
 "Quick reflection on what I learned [today/this week]:
 
@@ -383,6 +402,7 @@ If I did this again, I would [improvement].
 ```
 
 **On-Screen Text**:
+
 - Key learnings list
 - Technical notes
 - Process improvements
@@ -394,6 +414,7 @@ If I did this again, I would [improvement].
 **Visual**: [Screen showing roadmap OR talking head]
 
 **Script**:
+
 ```
 "So what's next?
 
@@ -420,6 +441,7 @@ If I did this again, I would [improvement].
 ```
 
 **On-Screen Text**:
+
 - Next goals list
 - Timeline/roadmap
 - Subscribe reminder
@@ -431,11 +453,13 @@ If I did this again, I would [improvement].
 **Visual**: [End screen with elements]
 
 **Script**:
+
 ```
 [No speaking - end screen music]
 ```
 
 **On-Screen Elements**:
+
 - Next build log (clickable)
 - Subscribe button
 - Playlist: "Building [Project] Series"
@@ -446,9 +470,11 @@ If I did this again, I would [improvement].
 ## Format Variations
 
 ### Daily Build Log (5-8 minutes)
+
 **Focus**: What you did today, quick and focused
 **Pacing**: Fast, energetic
 **Structure**:
+
 - Hook (15s)
 - Today's goal (30s)
 - Build montage (3m)
@@ -456,9 +482,11 @@ If I did this again, I would [improvement].
 - Tomorrow's goal (30s)
 
 ### Weekly Build Log (10-15 minutes)
+
 **Focus**: Week's progress, multiple features
 **Pacing**: Moderate, comprehensive
 **Structure**:
+
 - Hook (30s)
 - Week recap (1m)
 - Feature 1 (3m)
@@ -468,9 +496,11 @@ If I did this again, I would [improvement].
 - Next week (1m)
 
 ### Milestone Build Log (15-20 minutes)
+
 **Focus**: Major achievement, reflection
 **Pacing**: Storytelling, emotional
 **Structure**:
+
 - Hook (1m)
 - Journey so far (2m)
 - The challenge (5m)
@@ -484,12 +514,14 @@ If I did this again, I would [improvement].
 ## Time-Lapse Tips
 
 **When to use time-lapse**:
+
 - Long coding sessions
 - Repetitive work
 - Setup/configuration
 - Design iterations
 
 **How to narrate**:
+
 ```
 "Setting up the database..."
 "Writing the API endpoints..."
@@ -500,6 +532,7 @@ If I did this again, I would [improvement].
 ```
 
 **Speed recommendations**:
+
 - Code writing: 10-20x speed
 - Problem-solving: 5-10x speed
 - Important moments: 1x (normal speed)
@@ -510,12 +543,14 @@ If I did this again, I would [improvement].
 ## Authenticity Tips
 
 ### Show Reality
+
 - Include failures and bugs (briefly)
 - Show your actual debugging process
 - Express genuine emotions (frustration, excitement)
 - Don't hide mistakes
 
 ### Be Honest
+
 ```
 "This took way longer than I expected..."
 "I'm not 100% happy with this solution, but..."
@@ -524,6 +559,7 @@ If I did this again, I would [improvement].
 ```
 
 ### Share Struggles
+
 ```
 "I was stuck on this for 3 hours..."
 "I almost gave up on this approach..."
@@ -532,6 +568,7 @@ If I did this again, I would [improvement].
 ```
 
 ### Celebrate Wins
+
 ```
 "YES! Finally!"
 "This is working better than I expected!"
@@ -544,6 +581,7 @@ If I did this again, I would [improvement].
 ## B-Roll Suggestions
 
 **Throughout the video, include:**
+
 - Time-lapse of coding
 - Git commit history scrolling
 - Tests passing/failing
@@ -619,6 +657,7 @@ Follow my journey:
 ## Metrics for Success
 
 **Good build log indicators**:
+
 - Consistent audience returning (subscriber views)
 - Comments asking "what's next?"
 - "Following your journey!" comments
@@ -627,6 +666,7 @@ Follow my journey:
 - Steady subscriber growth
 
 **Ideas for improvement**:
+
 - More personal/authentic moments
 - Better pacing (too slow/too fast?)
 - Show more of the process
@@ -638,12 +678,14 @@ Follow my journey:
 ## Building in Public Tips
 
 ### Consistency
+
 - Same day/time each week
 - Same format/structure
 - Playlist for easy binge-watching
 - Clear episode numbering
 
 ### Community
+
 - Reply to every comment
 - Ask questions to viewers
 - Feature viewer suggestions
@@ -651,6 +693,7 @@ Follow my journey:
 - Build in public, learn in public
 
 ### Transparency
+
 - Share metrics (when comfortable)
 - Discuss business decisions
 - Show failures, not just wins
@@ -674,19 +717,23 @@ Follow my journey:
 ## Week-to-Week Continuity
 
 ### Episode Opening
+
 ```
 "Previously, I [last episode summary]...
 Today, I'm continuing with [current goal]..."
 ```
 
 ### Episode Closing
+
 ```
 "Next time, I'll be working on [next goal]...
 Don't miss it - hit subscribe!"
 ```
 
 ### Progress Tracking
+
 Show consistent metrics:
+
 - Days/weeks into project
 - Features completed vs remaining
 - Users (if launched)

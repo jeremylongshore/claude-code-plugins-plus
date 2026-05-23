@@ -1,4 +1,4 @@
-# Offline Queue, Graceful Degradation, Health Checks, and Dual-Write
+## Offline Queue, Graceful Degradation, Health Checks, and Dual-Write
 
 ### Offline Queue with IndexedDB (Browser)
 

@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Core Workflow B: Multi-Instance & Cost Optimization
 
 ## Overview
+
 Secondary workflow for Vast.ai: orchestrate multiple GPU instances for distributed training, implement automatic spot interruption recovery with checkpoint-based resume, and analyze spending to reduce per-job cost.
 
 ## Prerequisites
+
 - Completed `vastai-core-workflow-a`
 - Understanding of distributed training (PyTorch DDP, DeepSpeed)
 - Checkpoint-based training pipeline
@@ -158,12 +160,14 @@ def destroy_cluster(instances):
 ```
 
 ## Output
+
 - Multi-node GPU cluster provisioned from marketplace offers
 - Automatic spot interruption detection and recovery with checkpoint resume
 - Cost analysis report comparing GPU types and actual spend
 - Clean cluster teardown stopping all billing
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Insufficient offers for cluster | Not enough matching GPUs available | Reduce `num_nodes` or relax GPU requirements |
@@ -172,11 +176,13 @@ def destroy_cluster(instances):
 | Budget exceeded | Unexpected spot price spikes | Set `dph_total` ceiling in search query |
 
 ## Resources
+
 - [Vast.ai Instance Types](https://docs.vast.ai/api-reference/instances/create-instance)
 - [Search Filtering](https://docs.vast.ai/search-and-filter-gpu-offers)
 - [CLI Reference](https://docs.vast.ai/cli/get-started)
 
 ## Next Steps
+
 For common errors, see `vastai-common-errors`.
 
 ## Examples

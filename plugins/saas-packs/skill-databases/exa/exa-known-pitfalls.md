@@ -10,6 +10,7 @@ exa-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid 10 common Exa anti-patterns including over-fetching, ignoring search modes, and missing caching.
 **Workflow:** Code review skill - prevents common mistakes before they reach production.
 **Relates to:** Follows all onboarding skills; used in code review processes

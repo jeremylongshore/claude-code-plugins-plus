@@ -10,6 +10,7 @@ webflow-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Webflow example
 **Workflow:** Part of the onboarding skill category for Webflow integration.
 **Relates to:** Other webflow skills in this pack.

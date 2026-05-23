@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola Upgrade & Migration
 
 ## Overview
+
 Manage Granola desktop app updates and subscription plan changes. Granola auto-updates by default, but manual intervention may be needed for major versions or plan migrations that affect feature access.
 
 ## Prerequisites
+
 - Current Granola version info (Granola menu > About, or check via CLI)
 - Admin access for organization-level plan changes
 - Data backup awareness before downgrading
@@ -47,11 +49,13 @@ Check for available updates: Granola menu bar icon > Check for Updates, or visit
 
 **Auto-update (recommended):**
 Granola checks for updates automatically and downloads in the background. Enable at:
+
 ```
 Granola > Preferences > General > Check for updates automatically: On
 ```
 
 **Manual update via Homebrew (macOS):**
+
 ```bash
 brew update && brew upgrade --cask granola
 ```
@@ -119,6 +123,7 @@ Before downgrading, understand what you lose:
 | Enterprise → Business | SSO, SCIM, custom retention, analytics | Reconfigure authentication, manual user provisioning |
 
 **Pre-downgrade checklist:**
+
 1. Notify team members of the change
 2. Export critical notes (there is no bulk export — share important notes to Notion or copy individually)
 3. Document active integration configurations
@@ -159,6 +164,7 @@ Reassign seats:
 | Any | Annual billing | 10-15% savings | No data change | Confirm in Billing |
 
 ## Output
+
 - Granola updated to latest version
 - Subscription plan changed with feature access verified
 - Team seats managed (added/removed/reassigned)
@@ -175,10 +181,12 @@ Reassign seats:
 | SSO stops working after downgrade | Enterprise feature removed | Switch to Google/Microsoft social login |
 
 ## Resources
+
 - [Granola Updates & Changelog](https://www.granola.ai/updates)
 - [Pricing Plans](https://www.granola.ai/pricing)
 - [Pricing FAQ](https://www.granola.ai/docs/docs/FAQs/granola-plans-faq)
 - [Download](https://www.granola.ai/download)
 
 ## Next Steps
+
 Proceed to `granola-ci-integration` for automated meeting-to-dev-tool workflows.

@@ -53,6 +53,7 @@ Use `offset` and `limit` parameters for pagination on large datasets. Save each 
 ## Output
 
 Save JSON files to the specified directory. Report:
+
 - Total channels scraped (with data vs without data)
 - Total videos fetched
 - Total search results fetched

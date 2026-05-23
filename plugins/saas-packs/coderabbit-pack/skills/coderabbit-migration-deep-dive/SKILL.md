@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Migration Deep Dive
 
 ## Overview
+
 Comprehensive guide for migrating to CodeRabbit from other AI code review tools (Codacy, SonarCloud, DeepSource, Sourcery) or from manual-only code review. Covers assessment, phased rollout, configuration transfer, team buy-in, and measuring success.
 
 ## Prerequisites
+
 - GitHub/GitLab organization admin access
 - Inventory of current review tools and their configurations
 - Understanding of team review workflows
@@ -48,6 +50,7 @@ Comprehensive guide for migrating to CodeRabbit from other AI code review tools 
 ## Instructions
 
 ### Step 1: Assess Current State
+
 ```bash
 set -euo pipefail
 ORG="${1:-your-org}"
@@ -72,6 +75,7 @@ done
 ```
 
 ### Step 2: Map Review Rules to CodeRabbit Path Instructions
+
 ```yaml
 # Common rule translations:
 
@@ -124,6 +128,7 @@ reviews:
 ```
 
 ### Step 3: Phase 1 -- Parallel Run (Week 1-2)
+
 ```yaml
 # Run CodeRabbit alongside existing tool for comparison
 # .coderabbit.yaml - Start with non-blocking mode
@@ -157,6 +162,7 @@ chat:
 ```
 
 ### Step 4: Phase 2 -- Primary Tool (Week 3-4)
+
 ```yaml
 # After successful parallel run, make CodeRabbit primary
 # .coderabbit.yaml - Enable full features
@@ -196,6 +202,7 @@ reviews:
 ```
 
 ### Step 5: Phase 3 -- Decommission Old Tool (Week 4-6)
+
 ```bash
 set -euo pipefail
 ORG="${1:-your-org}"
@@ -223,6 +230,7 @@ echo "5. Update team documentation and onboarding guides"
 ```
 
 ### Step 6: Measure Migration Success
+
 ```bash
 set -euo pipefail
 ORG="${1:-your-org}"
@@ -249,6 +257,7 @@ echo "  - Team satisfaction: Survey developers after 2 weeks"
 ```
 
 ## Output
+
 - Current review tool assessment completed
 - Rule translation from old tool to CodeRabbit path_instructions
 - Phased migration plan executed
@@ -256,6 +265,7 @@ echo "  - Team satisfaction: Survey developers after 2 weeks"
 - Adoption metrics measured
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Old tool conflicts with CodeRabbit | Both posting reviews | Run parallel briefly, then disable old tool |
@@ -265,10 +275,12 @@ echo "  - Team satisfaction: Survey developers after 2 weeks"
 | Higher seat cost than old tool | Per-seat vs per-repo pricing | Scope repos to reduce seat count |
 
 ## Resources
+
 - [CodeRabbit vs Alternatives](https://coderabbit.ai/compare)
 - [CodeRabbit Configuration Reference](https://docs.coderabbit.ai/reference/configuration)
 - [Migration from Codacy](https://docs.coderabbit.ai/guides/migration)
 - [CodeRabbit Path Instructions](https://docs.coderabbit.ai/guides/review-instructions)
 
 ## Next Steps
+
 For ongoing configuration tuning, see `coderabbit-core-workflow-b`.

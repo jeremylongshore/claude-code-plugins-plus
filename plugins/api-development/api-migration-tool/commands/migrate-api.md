@@ -12,12 +12,14 @@ Orchestrate comprehensive API version migrations with automated compatibility la
 ## Design Decisions
 
 **Architecture Approach:**
+
 - Version routing at API gateway level for clean separation
 - Adapter pattern for backward compatibility transformations
 - Feature flags for gradual rollout control
 - Automated test generation across all supported versions
 
 **Alternatives Considered:**
+
 - Hard cutover migration (rejected: high risk, no rollback)
 - Separate API endpoints per version (rejected: operational complexity)
 - GraphQL federation (chosen for microservices architectures)
@@ -26,6 +28,7 @@ Orchestrate comprehensive API version migrations with automated compatibility la
 ## When to Use
 
 **USE when:**
+
 - Introducing breaking changes to API contracts
 - Deprecating legacy endpoints with controlled timelines
 - Migrating between API paradigms (REST to GraphQL)
@@ -34,6 +37,7 @@ Orchestrate comprehensive API version migrations with automated compatibility la
 - Consolidating multiple API versions
 
 **DON'T USE when:**
+
 - Adding backward-compatible endpoints (use versioned routes)
 - Making internal refactoring without contract changes
 - Deploying hotfixes or security patches
@@ -42,6 +46,7 @@ Orchestrate comprehensive API version migrations with automated compatibility la
 ## Prerequisites
 
 **Required:**
+
 - Complete OpenAPI/GraphQL schema for both versions
 - Comprehensive API test suite with >80% coverage
 - Version control with tagged releases
@@ -50,6 +55,7 @@ Orchestrate comprehensive API version migrations with automated compatibility la
 - Monitoring and alerting infrastructure
 
 **Recommended:**
+
 - Consumer registry with contact information
 - Deprecation policy documented and communicated
 - Traffic analysis showing endpoint usage patterns
@@ -59,6 +65,7 @@ Orchestrate comprehensive API version migrations with automated compatibility la
 ## Migration Process
 
 **Step 1: Analysis and Impact Assessment**
+
 - Scan API schemas to detect breaking changes
 - Analyze usage patterns from API logs
 - Identify affected consumers and endpoints
@@ -66,6 +73,7 @@ Orchestrate comprehensive API version migrations with automated compatibility la
 - Generate compatibility matrix between versions
 
 **Step 2: Compatibility Layer Generation**
+
 - Create adapter functions for data transformation
 - Generate request/response mappers automatically
 - Build version-specific validation schemas
@@ -73,6 +81,7 @@ Orchestrate comprehensive API version migrations with automated compatibility la
 - Create deprecation warning middleware
 
 **Step 3: Migration Script Creation**
+
 - Generate database migration scripts for schema changes
 - Create data backfill scripts for new required fields
 - Build rollback procedures for each migration step
@@ -80,6 +89,7 @@ Orchestrate comprehensive API version migrations with automated compatibility la
 - Create automated smoke tests for critical paths
 
 **Step 4: Routing and Deployment Configuration**
+
 - Configure API gateway version routing rules
 - Set up feature flags for gradual rollout
 - Implement traffic splitting for canary deployment
@@ -87,6 +97,7 @@ Orchestrate comprehensive API version migrations with automated compatibility la
 - Set up deprecation warning headers and logs
 
 **Step 5: Validation and Monitoring**
+
 - Execute automated test suite across all versions
 - Verify backward compatibility with consumer tests
 - Monitor error rates and performance metrics
@@ -635,6 +646,7 @@ describe('gRPC API Migration Tests', () => {
 ## Configuration Options
 
 **Basic Usage:**
+
 ```bash
 /migrate-api \
   --source=v1 \
@@ -646,6 +658,7 @@ describe('gRPC API Migration Tests', () => {
 **Available Options:**
 
 `--strategy <type>` - Migration deployment strategy
+
 - `canary` - Gradual traffic shifting (default, safest)
 - `blue-green` - Instant switchover with rollback capability
 - `rolling` - Progressive deployment across instances
@@ -653,44 +666,52 @@ describe('gRPC API Migration Tests', () => {
 - `parallel-run` - Run both versions, compare results
 
 `--compatibility-mode <mode>` - Backward compatibility approach
+
 - `adapter` - Transform requests/responses between versions (default)
 - `proxy` - Route old endpoints to new implementation
 - `shim` - Minimal compatibility layer, consumers must adapt
 - `none` - No compatibility, hard cutover (dangerous)
 
 `--deprecation-period <duration>` - Support window for old version
+
 - `3months` - Short deprecation (minor changes)
 - `6months` - Standard deprecation (default)
 - `12months` - Extended support (major changes)
 - `custom:YYYY-MM-DD` - Specific sunset date
 
 `--breaking-changes-policy <policy>` - How to handle breaking changes
+
 - `require-adapters` - Force compatibility layer generation
 - `warn-consumers` - Send notifications, allow migration time
 - `block-deployment` - Prevent deploy until consumers updated
 - `document-only` - Just update documentation
 
 `--traffic-split <percentage>` - Initial new version traffic
+
 - Default: `0` (dark launch)
 - Range: 0-100
 - Example: `10` for 10% canary deployment
 
 `--rollback-threshold <percentage>` - Error rate trigger for auto-rollback
+
 - Default: `5` (5% error rate)
 - Range: 1-50
 - Example: `2` for strict quality requirements
 
 `--test-coverage-required <percentage>` - Minimum test coverage before deploy
+
 - Default: `80`
 - Range: 0-100
 - Blocks deployment if coverage below threshold
 
 `--generate-migration-guide` - Create consumer migration documentation
+
 - Generates markdown guide with code examples
 - Includes breaking change summaries
 - Provides timeline and support contacts
 
 `--dry-run` - Simulate migration without making changes
+
 - Analyze breaking changes
 - Generate compatibility report
 - Estimate migration effort
@@ -701,6 +722,7 @@ describe('gRPC API Migration Tests', () => {
 **Common Errors and Solutions:**
 
 **Error: Breaking changes detected without compatibility layer**
+
 ```
 ERROR: 15 breaking changes detected in target API version
 - Removed field: User.username (affects 12 endpoints)
@@ -714,6 +736,7 @@ Solution: Either:
 ```
 
 **Error: Consumer test failures in compatibility mode**
+
 ```
 ERROR: 3 consumer integration tests failed with v2 adapter
 - AcmeApp: Expected username field, received null
@@ -728,6 +751,7 @@ Solution:
 ```
 
 **Error: Database migration rollback required**
+
 ```
 ERROR: Migration script 003_add_foreign_keys.sql failed
 Constraint violation: user_addresses.user_id references missing users
@@ -740,6 +764,7 @@ Solution:
 ```
 
 **Error: Traffic spike indicating rollback needed**
+
 ```
 WARNING: v1 traffic increased from 10% to 45% in 5 minutes
 Possible rollback from consumers due to v2 issues
@@ -752,6 +777,7 @@ Solution:
 ```
 
 **Error: Incompatible schema versions in distributed system**
+
 ```
 ERROR: Service A running v2 schema, Service B still on v1
 Message deserialization failed: unknown field 'profile'
@@ -766,6 +792,7 @@ Solution:
 ## Best Practices
 
 **DO:**
+
 - Start with comprehensive API usage analysis before planning migration
 - Generate automated compatibility tests for all breaking changes
 - Implement feature flags for granular control over version activation
@@ -778,6 +805,7 @@ Solution:
 - Use API gateways for centralized version routing and monitoring
 
 **DON'T:**
+
 - Deploy breaking changes without backward compatibility period
 - Remove deprecated endpoints immediately after new version launch
 - Skip comprehensive testing of compatibility layers under load
@@ -790,6 +818,7 @@ Solution:
 - Mix multiple unrelated breaking changes in single version
 
 **TIPS:**
+
 - Use OpenAPI diff tools to automatically detect breaking changes
 - Implement consumer registry to track who uses which endpoints
 - Add X-API-Version header to all responses for debugging
@@ -814,12 +843,14 @@ Solution:
 ## Performance Considerations
 
 **Migration Performance Impact:**
+
 - Compatibility adapters add 5-20ms latency per request
 - Dual-write patterns during migration can double database load
 - Traffic splitting requires load balancer state management
 - Monitoring overhead increases with multiple active versions
 
 **Optimization Strategies:**
+
 - Cache adapter transformation results for identical requests
 - Use asynchronous migration for non-critical data changes
 - Implement read-through caches for backward compatibility lookups
@@ -829,6 +860,7 @@ Solution:
 - Consider edge caching for frequently accessed compatibility transformations
 
 **Capacity Planning:**
+
 - Expect 20-30% overhead during dual-version support period
 - Plan for 2x database capacity during migration window
 - Allocate extra API gateway resources for routing logic
@@ -838,6 +870,7 @@ Solution:
 ## Security Considerations
 
 **Version Transition Security:**
+
 - Audit authentication mechanisms for compatibility breaks
 - Verify authorization rules apply consistently across versions
 - Scan for security vulnerabilities in compatibility adapters
@@ -850,6 +883,7 @@ Solution:
 - Review audit logging captures version information
 
 **Security Checklist:**
+
 - [ ] Authentication backward compatible or migration path clear
 - [ ] Authorization policies tested with both version payloads
 - [ ] Sensitive data transformations don't expose information
@@ -862,6 +896,7 @@ Solution:
 ## Troubleshooting Guide
 
 **Issue: Consumers report intermittent failures after migration**
+
 - Check load balancer health checks for version endpoints
 - Verify DNS propagation completed for new version domains
 - Review session affinity settings (sticky sessions may cause issues)
@@ -869,6 +904,7 @@ Solution:
 - Check for race conditions in data migration scripts
 
 **Issue: Adapter performance degrading over time**
+
 - Monitor adapter service memory for leaks
 - Check for unbounded cache growth in transformation layer
 - Review database query performance for compatibility lookups
@@ -876,6 +912,7 @@ Solution:
 - Profile adapter code for inefficient object mapping
 
 **Issue: Version metrics not appearing in dashboard**
+
 - Verify X-API-Version header added to all responses
 - Check logging configuration captures version metadata
 - Confirm monitoring agents updated to track new version
@@ -883,6 +920,7 @@ Solution:
 - Ensure API gateway properly tags requests by version
 
 **Issue: Rollback triggered unexpectedly**
+
 - Review error rate thresholds (may be too sensitive)
 - Check if external service outages affected v2 only
 - Verify rollback threshold uses appropriate time windows
@@ -892,30 +930,35 @@ Solution:
 ## Version History
 
 **v1.0.0** (2024-01-15)
+
 - Initial release with REST API migration support
 - Basic compatibility adapter generation
 - Canary deployment strategy
 - OpenAPI 3.0 diff analysis
 
 **v1.1.0** (2024-02-10)
+
 - Added GraphQL schema evolution support
 - Implemented automatic deprecation warning injection
 - Enhanced consumer notification system
 - Added rollback automation based on error thresholds
 
 **v1.2.0** (2024-03-05)
+
 - gRPC service versioning support with Envoy integration
 - Blue-green deployment strategy option
 - Database schema migration with automated rollback
 - Consumer registry integration for impact analysis
 
 **v1.3.0** (2024-04-20)
+
 - Feature flag integration for gradual rollout control
 - Enhanced compatibility testing framework
 - Performance optimization for adapter transformations
 - Multi-region migration coordination
 
 **v2.0.0** (2024-06-15)
+
 - Complete rewrite of adapter generation engine
 - Support for complex data transformation scenarios
 - Integration with major API gateway platforms
@@ -923,6 +966,7 @@ Solution:
 - Automated consumer SDK generation for new versions
 
 **v2.1.0** (2024-08-30) - Current
+
 - AI-powered breaking change impact analysis
 - Automated migration guide generation
 - Enhanced security scanning for version transitions

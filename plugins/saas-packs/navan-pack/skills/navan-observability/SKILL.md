@@ -208,6 +208,7 @@ increase(navan_api_errors_total{error_type="auth"}[5m]) > 0
 ## Output
 
 A fully instrumented Navan API integration with:
+
 - **Structured JSON logs** with correlation IDs for request tracing
 - **Real-time dashboards** showing latency, throughput, and error rates
 - **Automated alerts** differentiating auth failures, rate limits, and server errors

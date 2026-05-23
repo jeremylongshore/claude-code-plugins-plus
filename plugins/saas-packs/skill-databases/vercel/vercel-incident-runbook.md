@@ -10,6 +10,7 @@ vercel-incident-runbook/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute rapid incident response with triage, mitigation, communication templates, and postmortem procedures.
 **Workflow:** Used during active incidents - quick reference for on-call engineers responding to alerts.
 **Relates to:** Activated by vercel-observability alerts; evidence from vercel-debug-bundle supports analysis

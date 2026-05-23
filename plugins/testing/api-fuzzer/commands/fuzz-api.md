@@ -10,12 +10,14 @@ Automated fuzz testing for REST APIs to discover vulnerabilities, crashes, and u
 ## Design Decisions
 
 **Why fuzz testing matters:**
+
 - **Security**: Discovers SQL injection, XSS, command injection vulnerabilities
 - **Robustness**: Finds crashes from unexpected inputs before users do
 - **Edge cases**: Uncovers boundary conditions developers didn't consider
 - **Compliance**: Validates input sanitization meets security standards
 
 **Alternatives considered:**
+
 - **Manual testing**: Too slow, can't cover mutation space
 - **Property-based testing**: Good for unit tests, less suited for API integration
 - **Penetration testing tools**: Expensive, requires security expertise
@@ -26,6 +28,7 @@ Automated fuzz testing for REST APIs to discover vulnerabilities, crashes, and u
 ## When to Use
 
 Use API fuzzing when:
+
 - Testing security-critical APIs (auth, payment, admin endpoints)
 - Validating input sanitization and validation logic
 - Finding edge cases before production incidents
@@ -34,6 +37,7 @@ Use API fuzzing when:
 - Preparing for penetration testing or security audits
 
 Don't use when:
+
 - API has no user input (static data endpoints)
 - Building proof-of-concept with no security requirements
 - Input validation is already exhaustively tested
@@ -604,22 +608,27 @@ fuzzer.run(duration_minutes=60)
 **Common issues and solutions:**
 
 **Problem**: Fuzzer overwhelms API with requests
+
 - **Cause**: No rate limiting in fuzzer
 - **Solution**: Add delays between requests, respect API rate limits
 
 **Problem**: False positives (valid errors reported as crashes)
+
 - **Cause**: Fuzzer doesn't understand expected behavior
 - **Solution**: Define expected error codes (400, 404), only flag 500s as crashes
 
 **Problem**: Fuzzer credentials get rate-limited or blocked
+
 - **Cause**: Too many failed auth attempts
 - **Solution**: Use test credentials, whitelist test IPs, reset between runs
 
 **Problem**: Fuzzing breaks production data
+
 - **Cause**: Fuzzer running against production environment
 - **Solution**: Always fuzz staging/test environments, use test data
 
 **Problem**: Can't reproduce crashes
+
 - **Cause**: Fuzzer doesn't log exact inputs that caused crashes
 - **Solution**: Log all inputs, responses, timestamps for crash reproduction
 
@@ -681,6 +690,7 @@ module.exports = {
 ## Best Practices
 
 DO:
+
 - Run fuzzing in staging/test environments, never production
 - Log all crash-inducing inputs for reproducibility
 - Integrate fuzzing into CI/CD pipeline
@@ -690,6 +700,7 @@ DO:
 - Combine fuzzing with other security testing (SAST, DAST, pen testing)
 
 DON'T:
+
 - Fuzz production APIs without explicit permission
 - Use production credentials or test accounts in fuzzer
 - Ignore 400-level errors (they might indicate security issues)
@@ -698,6 +709,7 @@ DON'T:
 - Overlook API dependencies (databases, external APIs)
 
 TIPS:
+
 - Start with known payloads (OWASP, SecLists) before random fuzzing
 - Use OpenAPI specs to auto-generate fuzz tests
 - Combine grammar-based and mutation-based fuzzing
@@ -721,6 +733,7 @@ TIPS:
 - **Resource usage**: Monitor CPU/memory during fuzzing to detect leaks
 
 **Optimization strategies:**
+
 - Use parallel fuzzing with multiple workers
 - Cache API responses to avoid redundant tests
 - Prioritize high-risk endpoints for deeper fuzzing
@@ -735,6 +748,7 @@ TIPS:
 - **Compliance**: Document fuzzing for security compliance (SOC 2, ISO 27001)
 
 **Security checklist:**
+
 - [ ] Fuzz authentication endpoints (login, register, password reset)
 - [ ] Test authorization bypass (accessing other users' data)
 - [ ] Validate input sanitization (XSS, SQL injection)
@@ -745,24 +759,28 @@ TIPS:
 ## Troubleshooting
 
 **Fuzzer hangs or times out:**
+
 1. Increase request timeout setting
 2. Check for infinite loops in API code
 3. Monitor API server resources (CPU, memory)
 4. Reduce concurrent fuzzing requests
 
 **No crashes found:**
+
 1. Verify API is actually receiving fuzz inputs
 2. Check if input validation is too strict (rejecting all fuzz inputs)
 3. Increase fuzzing iterations
 4. Use smarter fuzzing strategies (grammar-based, mutation-based)
 
 **Too many false positives:**
+
 1. Define expected error codes (400, 404, 401, 403)
 2. Only flag 500-level errors as crashes
 3. Review API logs to understand error causes
 4. Adjust fuzzer configuration
 
 **Can't reproduce crashes:**
+
 1. Ensure fuzzer logs exact inputs that caused crashes
 2. Check if crash is timing-dependent (race condition)
 3. Verify environment matches (same data, same config)

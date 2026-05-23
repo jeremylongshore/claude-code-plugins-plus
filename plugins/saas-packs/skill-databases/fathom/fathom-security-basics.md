@@ -10,6 +10,7 @@ fathom-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Fathom security best practices
 **Workflow:** Part of the operations skill category for Fathom integration.
 **Relates to:** Other fathom skills in this pack.

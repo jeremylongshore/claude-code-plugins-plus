@@ -10,6 +10,7 @@ onenote-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize OneNote costs and usage
 **Workflow:** Part of the cicd skill category for OneNote integration.
 **Relates to:** Other onenote skills in this pack.

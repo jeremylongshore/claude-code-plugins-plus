@@ -26,15 +26,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Hello World
 
 ## Overview
+
 Minimal working example demonstrating CodeRabbit AI code review. CodeRabbit reviews PRs automatically via a GitHub/GitLab App -- no SDK or API calls needed. You configure behavior through a `.coderabbit.yaml` file and interact via PR comments.
 
 ## Prerequisites
+
 - CodeRabbit GitHub App installed (see `coderabbit-install-auth`)
 - A repository with at least one branch
 
 ## Instructions
 
 ### Step 1: Create Minimal Configuration
+
 ```yaml
 # .coderabbit.yaml (repository root)
 language: "en-US"
@@ -49,6 +52,7 @@ chat:
 ```
 
 ### Step 2: Add Path-Specific Instructions
+
 ```yaml
 # .coderabbit.yaml - add review context for better feedback
 reviews:
@@ -67,6 +71,7 @@ chat:
 ```
 
 ### Step 3: Create a PR to Trigger Review
+
 ```bash
 set -euo pipefail
 git checkout -b feat/hello-coderabbit
@@ -95,7 +100,9 @@ gh pr create --title "feat: enable CodeRabbit AI code review" \
 ```
 
 ### Step 4: Interact with CodeRabbit on the PR
+
 Once CodeRabbit posts its review (typically 2-5 minutes), you can interact:
+
 ```markdown
 # In a PR comment, use these commands:
 @coderabbitai summary        # Get a walkthrough of all changes
@@ -108,6 +115,7 @@ Once CodeRabbit posts its review (typically 2-5 minutes), you can interact:
 ```
 
 ### Step 5: Try the CLI for Local Reviews (Optional)
+
 ```bash
 set -euo pipefail
 # Review staged changes before committing
@@ -122,17 +130,20 @@ cr review src/index.ts src/utils.ts
 ```
 
 ## What CodeRabbit Posts on Your PR
+
 1. **Walkthrough comment**: High-level summary of all changes with a file-by-file breakdown
 2. **Sequence diagram**: Visual control flow of the changes (if enabled)
 3. **Line-level comments**: Specific suggestions on individual code lines
 4. **Review status**: Approved or changes-requested based on severity of findings
 
 ## Output
+
 - `.coderabbit.yaml` committed to repository root
 - First AI review posted on a test PR within 2-5 minutes
 - Interactive review conversation demonstrated
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | No review appears | App not installed on this repo | Check GitHub App > Repository access |
@@ -141,9 +152,11 @@ cr review src/index.ts src/utils.ts
 | Bot not responding to commands | Typo in mention | Must use exact `@coderabbitai` mention |
 
 ## Resources
+
 - [YAML Configuration Guide](https://docs.coderabbit.ai/getting-started/yaml-configuration)
 - [Review Commands Reference](https://docs.coderabbit.ai/reference/review-commands)
 - [CodeRabbit CLI](https://www.coderabbit.ai/cli)
 
 ## Next Steps
+
 Proceed to `coderabbit-local-dev-loop` for a full development workflow with CodeRabbit.

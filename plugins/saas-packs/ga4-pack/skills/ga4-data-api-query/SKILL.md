@@ -91,6 +91,7 @@ GA4 enforces a compatibility matrix at the API level. If you ask for `sessions` 
 2. **High-cardinality custom dimensions can trigger sampling.** GA4 will silently sample if a single query touches more than the property's data-quota threshold; the response includes `metadata.dataLossFromOtherRow=true`. Check it.
 
 If you're unsure, query the compatibility metadata endpoint:
+
 ```python
 from google.analytics.data_v1beta.types import CheckCompatibilityRequest
 compat = client.check_compatibility(CheckCompatibilityRequest(
@@ -165,10 +166,12 @@ Use `metric_filter` for filtering by metric (e.g. only rows where `sessions > 10
 GA4 has **48-hour data freshness** — today's numbers fluctuate; yesterday's settle ~24h after midnight in the property's timezone; numbers older than 48h are stable. Don't draw conclusions from "today" alone.
 
 Multiple `date_ranges` in one request gives you a comparison report:
+
 ```python
 DateRange(start_date="30daysAgo", end_date="yesterday", name="current"),
 DateRange(start_date="60daysAgo", end_date="31daysAgo", name="prior"),
 ```
+
 The response will have `dateRange` as an extra dimension on each row.
 
 ## Pagination

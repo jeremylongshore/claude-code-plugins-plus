@@ -50,6 +50,7 @@ Use this command when you need to:
 **Why**: Different blockchains require different metrics and APIs. Bitcoin uses UTXO model while Ethereum uses account-based model. A unified interface with chain-specific implementations provides flexibility while maintaining consistent output formats.
 
 **Alternatives Considered**:
+
 - **Single Chain Only**: Rejected due to limited market coverage
 - **Chain-Agnostic Generic Metrics**: Rejected due to loss of blockchain-specific insights
 - **Separate Tools Per Chain**: Rejected due to code duplication and maintenance burden
@@ -61,6 +62,7 @@ Use this command when you need to:
 **Why**: Most users don't run full nodes. Using APIs (Etherscan, Blockchain.com, Glassnode) provides immediate access without infrastructure requirements. Full node support remains optional for advanced users needing maximum decentralization.
 
 **Alternatives Considered**:
+
 - **Full Node Required**: Rejected due to high infrastructure costs ($500+/month)
 - **APIs Only**: Considered but added full node option for enterprise users
 - **Light Client Sync**: Rejected due to incomplete data and sync time requirements
@@ -72,6 +74,7 @@ Use this command when you need to:
 **Why**: Static thresholds (e.g., "1000 BTC = whale") become outdated as prices change. Using percentile-based detection (top 0.1% holders) with absolute minimums (e.g., $1M USD equivalent) adapts to market conditions.
 
 **Alternatives Considered**:
+
 - **Fixed Token Amounts**: Rejected due to price volatility making thresholds obsolete
 - **USD Value Only**: Rejected as it misses on-chain concentration patterns
 - **Machine Learning Clustering**: Rejected due to complexity vs accuracy tradeoff
@@ -83,6 +86,7 @@ Use this command when you need to:
 **Why**: On-chain metrics are time-stamped numerical data perfect for time-series databases. InfluxDB provides efficient storage, fast queries, and built-in downsampling. PostgreSQL stores wallet metadata, labels, and relationships.
 
 **Alternatives Considered**:
+
 - **PostgreSQL Only**: Rejected due to poor time-series query performance
 - **InfluxDB Only**: Rejected due to poor relational data handling
 - **ElasticSearch**: Rejected due to higher complexity and resource requirements
@@ -94,6 +98,7 @@ Use this command when you need to:
 **Why**: Most metrics update every 10-15 minutes (blockchain confirmation time). Batch processing handles historical data efficiently. Real-time processing monitors mempool for large transactions requiring immediate alerts.
 
 **Alternatives Considered**:
+
 - **Batch Only**: Rejected due to delayed whale movement detection
 - **Real-Time Only**: Rejected due to high API costs and rate limits
 - **Streaming-First Architecture**: Rejected as overkill for blockchain data latency
@@ -103,6 +108,7 @@ Use this command when you need to:
 ### 1. Blockchain API Access
 
 **Ethereum**:
+
 ```bash
 # Etherscan API (Free tier: 5 calls/second)
 export ETHERSCAN_API_KEY="your_etherscan_key"
@@ -114,6 +120,7 @@ export INFURA_ENDPOINT="https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}"
 ```
 
 **Bitcoin**:
+
 ```bash
 # Blockchain.com API (No key required, rate limited)
 export BLOCKCHAIN_API_ENDPOINT="https://blockchain.info"
@@ -124,6 +131,7 @@ export BLOCKCHAIR_ENDPOINT="https://api.blockchair.com"
 ```
 
 **Premium Data Providers**:
+
 ```bash
 # Glassnode (Professional tier required, $800+/month)
 export GLASSNODE_API_KEY="your_glassnode_key"
@@ -150,6 +158,7 @@ pip install web3==6.11.0 \
 ### 3. Database Infrastructure
 
 **InfluxDB Setup**:
+
 ```bash
 # Docker installation
 docker run -d -p 8086:8086 \
@@ -163,6 +172,7 @@ docker run -d -p 8086:8086 \
 ```
 
 **PostgreSQL Setup**:
+
 ```bash
 # Docker installation
 docker run -d -p 5432:5432 \
@@ -176,6 +186,7 @@ docker run -d -p 5432:5432 \
 ### 4. Configuration File
 
 Create `config/chains.yaml`:
+
 ```yaml
 ethereum:
   chain_id: 1
@@ -1643,6 +1654,7 @@ logging:
 ## Version History
 
 ### v2.0.0 (2025-10-11)
+
 - Complete rewrite with production-ready architecture
 - Added multi-chain support (Ethereum, Bitcoin)
 - Implemented InfluxDB time-series storage
@@ -1659,6 +1671,7 @@ logging:
 - Complete documentation with examples
 
 ### v1.0.0 (2024-09-15)
+
 - Initial release with basic on-chain metrics
 - Simple JavaScript implementation
 - Limited to single-chain Ethereum analysis

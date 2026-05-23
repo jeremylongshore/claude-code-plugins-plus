@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Obsidian Rate Limits
 
 ## Overview
+
 Obsidian has no traditional API rate limits, but it runs on Electron with a single-threaded UI. This skill covers debouncing, batching, throttling, and async queue patterns to keep plugins responsive and prevent UI freezes.
 
 ## Prerequisites
+
 - Understanding of JavaScript event loop and `requestAnimationFrame`
 - Familiarity with async/await and Promises
 - Working Obsidian plugin with file operations
@@ -65,6 +67,7 @@ export default class ThrottledPlugin extends Plugin {
 ```
 
 If you need per-file debouncing (common when multiple files change simultaneously):
+
 ```typescript
 private fileTimers = new Map<string, NodeJS.Timeout>();
 
@@ -269,6 +272,7 @@ private async syncData() {
 ```
 
 ## Output
+
 - Debounced event handlers that fire at most once per 500ms
 - Batch file processor with UI yielding and progress feedback
 - Throttled UI updates using `requestAnimationFrame`
@@ -276,6 +280,7 @@ private async syncData() {
 - Periodic tasks with `registerInterval` and overlap guards
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | UI freezes during bulk operation | Processing all files synchronously | Batch with `await sleep(0)` between batches |
@@ -288,6 +293,7 @@ private async syncData() {
 ## Examples
 
 ### Vault Statistics Collector
+
 ```typescript
 // Efficient vault scan that doesn't freeze UI
 async getVaultStats(): Promise<{ total: number; words: number }> {
@@ -308,6 +314,7 @@ async getVaultStats(): Promise<{ total: number; words: number }> {
 ```
 
 ### Debounced Search Index Rebuild
+
 ```typescript
 // Rebuild search index at most once per 2 seconds
 private rebuildIndex = debounce(async () => {
@@ -323,8 +330,10 @@ private rebuildIndex = debounce(async () => {
 ```
 
 ## Resources
+
 - [Obsidian Performance Guide](https://docs.obsidian.md/Plugins/Guides/Performance)
 - [Obsidian API — debounce](https://docs.obsidian.md/Reference/TypeScript+API/debounce)
 
 ## Next Steps
+
 For event handling patterns that complement these throttling strategies, see `obsidian-webhooks-events`. For production deployment readiness, see `obsidian-prod-checklist`.

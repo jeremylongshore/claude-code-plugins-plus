@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Multi-Environment Setup
 
 ## Overview
+
 Configure and manage multiple MaintainX environments for development, staging, and production with proper secret management and client isolation.
 
 ## Prerequisites
+
 - Separate MaintainX accounts or organizations for each environment
 - Secret management solution (environment variables, GCP Secret Manager, or AWS SSM)
 - Node.js 18+
@@ -192,6 +194,7 @@ npx tsx scripts/validate-environments.ts
 ```
 
 ## Output
+
 - Environment-specific configuration with type-safe config loader
 - Client factory producing isolated clients per environment
 - `.env.*` files with `.gitignore` protection
@@ -199,6 +202,7 @@ npx tsx scripts/validate-environments.ts
 - Validation script to verify all environment credentials
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Missing API key | Environment variable not set | Check `.env.*` file for target environment |
@@ -207,11 +211,13 @@ npx tsx scripts/validate-environments.ts
 | Config mismatch after deploy | Old secrets cached | Clear client cache, reload secrets |
 
 ## Resources
+
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [12-Factor App: Config](https://12factor.net/config)
 - [GCP Secret Manager](https://cloud.google.com/secret-manager/docs)
 
 ## Next Steps
+
 For observability setup, see `maintainx-observability`.
 
 ## Examples

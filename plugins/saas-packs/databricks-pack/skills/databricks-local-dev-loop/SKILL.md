@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Local Dev Loop
 
 ## Overview
+
 Set up a fast local development workflow using Databricks Connect v2, Asset Bundles, and VS Code. Databricks Connect lets you run PySpark code locally while executing on a remote Databricks cluster, giving you IDE debugging, fast iteration, and proper test isolation.
 
 ## Prerequisites
+
 - Completed `databricks-install-auth` setup
 - Python 3.10+ (must match cluster's Python version)
 - A running Databricks cluster (DBR 13.3 LTS+)
@@ -37,6 +39,7 @@ Set up a fast local development workflow using Databricks Connect v2, Asset Bund
 ## Instructions
 
 ### Step 1: Project Structure
+
 ```
 my-databricks-project/
 ├── src/
@@ -65,6 +68,7 @@ my-databricks-project/
 ```
 
 ### Step 2: Install Development Tools
+
 ```bash
 set -euo pipefail
 
@@ -85,6 +89,7 @@ databricks-connect test
 ```
 
 ### Step 3: Configure Databricks Connect
+
 Databricks Connect v2 reads from standard SDK auth (env vars, `~/.databrickscfg`, or `DATABRICKS_CLUSTER_ID`).
 
 ```bash
@@ -109,6 +114,7 @@ df.show()  # Results streamed back locally
 ```
 
 ### Step 4: Asset Bundle Configuration
+
 ```yaml
 # databricks.yml
 bundle:
@@ -163,6 +169,7 @@ resources:
 ```
 
 ### Step 5: Test Setup
+
 ```python
 # tests/conftest.py
 import pytest
@@ -203,6 +210,7 @@ def test_dedup_by_primary_key(local_spark):
 ```
 
 ### Step 6: Dev Workflow Commands
+
 ```bash
 # Validate bundle configuration
 databricks bundle validate
@@ -227,6 +235,7 @@ pytest tests/ --cov=src --cov-report=html
 ```
 
 ### Step 7: VS Code Configuration
+
 ```json
 // .vscode/settings.json
 {
@@ -241,6 +250,7 @@ pytest tests/ --cov=src --cov-report=html
 ```
 
 ## Output
+
 - Local Python environment with Databricks Connect
 - Unit tests running with local Spark (no cluster required)
 - Integration tests running against remote cluster
@@ -248,6 +258,7 @@ pytest tests/ --cov=src --cov-report=html
 - VS Code debugging with breakpoints in PySpark code
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Cluster not running` | Auto-terminated | Set `DATABRICKS_CLUSTER_ID` and start it: `databricks clusters start --cluster-id ...` |
@@ -259,6 +270,7 @@ pytest tests/ --cov=src --cov-report=html
 ## Examples
 
 ### Interactive Development Script
+
 ```python
 # src/pipelines/bronze.py
 from pyspark.sql import SparkSession, DataFrame
@@ -281,9 +293,11 @@ if __name__ == "__main__":
 ```
 
 ## Resources
+
 - [Databricks Connect v2](https://docs.databricks.com/aws/en/dev-tools/databricks-connect/python/)
 - [Declarative Automation Bundles](https://docs.databricks.com/aws/en/dev-tools/bundles/)
 - [VS Code Extension](https://docs.databricks.com/aws/en/dev-tools/vscode-ext/)
 
 ## Next Steps
+
 See `databricks-sdk-patterns` for production-ready code patterns.

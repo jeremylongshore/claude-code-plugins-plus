@@ -30,6 +30,7 @@ Generate comprehensive security audit reports with vulnerability assessments, co
 ## Report Structure
 
 ### 1. Executive Summary
+
 ```
 SECURITY AUDIT REPORT
 =====================
@@ -53,6 +54,7 @@ TOP RECOMMENDATIONS:
 ```
 
 ### 2. Vulnerability Details
+
 ```
 CRITICAL VULNERABILITIES
 ------------------------
@@ -87,6 +89,7 @@ Priority: Immediate
 ```
 
 ### 3. Compliance Status
+
 ```
 COMPLIANCE DASHBOARD
 ====================
@@ -111,6 +114,7 @@ PCI-DSS: 60% (Not Ready for Audit)
 ```
 
 ### 4. Security Controls Assessment
+
 ```
 AUTHENTICATION & AUTHORIZATION
 -------------------------------
@@ -136,6 +140,7 @@ LOGGING & MONITORING
 ```
 
 ### 5. Remediation Roadmap
+
 ```
 PRIORITY 1 - IMMEDIATE (0-7 days)
 ----------------------------------
@@ -175,24 +180,28 @@ PRIORITY 4 - LONG TERM (3-6 months)
 ## Stakeholder Distribution
 
 ### Executive Leadership
+
 - Executive summary
 - Risk trends
 - Budget requirements
 - Business impact
 
 ### Security Team
+
 - Full technical report
 - Vulnerability details
 - Remediation steps
 - Testing procedures
 
 ### Development Team
+
 - Code-specific findings
 - Secure coding guidelines
 - Fix priorities
 - Testing requirements
 
 ### Compliance Team
+
 - Compliance status
 - Gap analysis
 - Policy updates

@@ -10,6 +10,7 @@ wispr-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Wispr costs and usage
 **Workflow:** Part of the cicd skill category for Wispr integration.
 **Relates to:** Other wispr skills in this pack.

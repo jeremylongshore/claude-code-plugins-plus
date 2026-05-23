@@ -326,6 +326,7 @@ python3 scripts/context_fetch.py \
 ```
 
 Output (truncated):
+
 ```json
 {
   "contact": {"phone": "+15551230199", "opt_out_sms": false, "live_fields_available": true},

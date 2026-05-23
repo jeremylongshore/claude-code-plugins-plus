@@ -10,6 +10,7 @@ salesforce-policy-guardrails/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Salesforce policy enforcement
 **Workflow:** Part of the advanced skill category for Salesforce integration.
 **Relates to:** Other salesforce skills in this pack.

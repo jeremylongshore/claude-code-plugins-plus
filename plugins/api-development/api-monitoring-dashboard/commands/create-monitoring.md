@@ -10,6 +10,7 @@ Build comprehensive monitoring infrastructure with metrics, logs, traces, and al
 ## When to Use This Command
 
 Use `/create-monitoring` when you need to:
+
 - Establish observability for production APIs
 - Track RED metrics (Rate, Errors, Duration) across services
 - Set up real-time alerting for SLO violations
@@ -18,6 +19,7 @@ Use `/create-monitoring` when you need to:
 - Implement SRE practices with data-driven insights
 
 DON'T use this when:
+
 - Building proof-of-concept applications (use lightweight logging instead)
 - Monitoring non-critical internal tools (basic health checks may suffice)
 - Resources are extremely constrained (consider managed solutions like Datadog first)
@@ -25,18 +27,21 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements a **Prometheus + Grafana stack** as the primary approach because:
+
 - Open-source with no vendor lock-in
 - Industry-standard metric format with wide ecosystem support
 - Powerful query language (PromQL) for complex analysis
 - Horizontal scalability via federation and remote storage
 
 **Alternative considered: ELK Stack** (Elasticsearch, Logstash, Kibana)
+
 - Better for log-centric analysis
 - Higher resource requirements
 - More complex operational overhead
 - Recommended when logs are primary data source
 
 **Alternative considered: Managed solutions** (Datadog, New Relic)
+
 - Faster time-to-value
 - Higher ongoing cost
 - Less customization flexibility
@@ -45,6 +50,7 @@ This command implements a **Prometheus + Grafana stack** as the primary approach
 ## Prerequisites
 
 Before running this command:
+
 1. Docker and Docker Compose installed
 2. API instrumented with metrics endpoints (Prometheus format)
 3. Basic understanding of PromQL query language
@@ -54,23 +60,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Configure Prometheus
+
 Set up Prometheus to scrape metrics from your API endpoints with service discovery.
 
 ### Step 2: Create Grafana Dashboards
+
 Build visualizations for RED metrics, custom business metrics, and SLO tracking.
 
 ### Step 3: Implement Distributed Tracing
+
 Integrate Jaeger for end-to-end request tracing across microservices.
 
 ### Step 4: Configure Alerting
+
 Set up AlertManager rules for critical thresholds with notification channels (Slack, PagerDuty).
 
 ### Step 5: Deploy Monitoring Stack
+
 Deploy complete observability infrastructure with health checks and backup configurations.
 
 ## Output Format
 
 The command generates:
+
 - `docker-compose.yml` - Complete monitoring stack configuration
 - `prometheus.yml` - Prometheus scrape configuration
 - `grafana-dashboards/` - Pre-built dashboard JSON files
@@ -1793,6 +1805,7 @@ if __name__ == "__main__":
 ## Configuration Options
 
 **Basic Usage:**
+
 ```bash
 /create-monitoring \
   --stack=prometheus \
@@ -1804,6 +1817,7 @@ if __name__ == "__main__":
 **Available Options:**
 
 `--stack <type>` - Monitoring stack to deploy
+
 - `prometheus` - Prometheus + Grafana + AlertManager (default, open-source)
 - `elastic` - ELK stack (Elasticsearch, Logstash, Kibana) for log-centric
 - `datadog` - Datadog agent configuration (requires API key)
@@ -1811,6 +1825,7 @@ if __name__ == "__main__":
 - `hybrid` - Combination of metrics (Prometheus) and logs (ELK)
 
 `--tracing <backend>` - Distributed tracing backend
+
 - `jaeger` - Jaeger all-in-one (default, recommended for start)
 - `zipkin` - Zipkin server
 - `tempo` - Grafana Tempo (for high-scale)
@@ -1818,16 +1833,19 @@ if __name__ == "__main__":
 - `none` - Skip tracing setup
 
 `--retention <duration>` - Metrics retention period
+
 - Default: `15d` (15 days)
 - Production: `30d` to `90d`
 - With remote storage: `365d` or more
 
 `--scrape-interval <duration>` - How often to collect metrics
+
 - Default: `15s`
 - High-frequency: `5s` (higher resource usage)
 - Low-frequency: `60s` (for stable metrics)
 
 `--alerting-channels <channels>` - Where to send alerts
+
 - `slack` - Slack webhook integration
 - `pagerduty` - PagerDuty integration
 - `email` - SMTP email notifications
@@ -1835,6 +1853,7 @@ if __name__ == "__main__":
 - `opsgenie` - Atlassian OpsGenie
 
 `--dashboard-presets <presets>` - Pre-built dashboards to install
+
 - `red-metrics` - Rate, Errors, Duration
 - `four-golden` - Latency, Traffic, Errors, Saturation
 - `business-kpis` - Revenue, Users, Conversion
@@ -1842,6 +1861,7 @@ if __name__ == "__main__":
 - `security` - Security metrics and anomalies
 
 `--exporters <list>` - Additional exporters to configure
+
 - `node-exporter` - System/host metrics
 - `blackbox-exporter` - Probe endpoints
 - `postgres-exporter` - PostgreSQL metrics
@@ -1849,11 +1869,13 @@ if __name__ == "__main__":
 - `custom` - Custom business metrics
 
 `--high-availability` - Enable HA configuration
+
 - Sets up Prometheus federation
 - Configures AlertManager clustering
 - Enables Grafana database replication
 
 `--storage <type>` - Long-term storage backend
+
 - `local` - Local disk (default)
 - `thanos` - Thanos for unlimited retention
 - `cortex` - Cortex for multi-tenant
@@ -1861,6 +1883,7 @@ if __name__ == "__main__":
 - `s3` - S3-compatible object storage
 
 `--dry-run` - Generate configuration without deploying
+
 - Creates all config files
 - Validates syntax
 - Shows what would be deployed
@@ -1869,6 +1892,7 @@ if __name__ == "__main__":
 ## Best Practices
 
 DO:
+
 - Start with RED metrics (Rate, Errors, Duration) as your foundation
 - Use histogram buckets that align with your SLO targets
 - Tag metrics with environment, region, version, and service
@@ -1881,6 +1905,7 @@ DO:
 - Archive old dashboards before creating new ones
 
 DON'T:
+
 - Add high-cardinality labels like user IDs, session IDs, or UUIDs
 - Create dashboards with 50+ panels (causes browser performance issues)
 - Alert on symptoms without providing actionable runbooks
@@ -1893,6 +1918,7 @@ DON'T:
 - Skip capacity planning for metrics growth
 
 TIPS:
+
 - Import dashboards from grafana.com marketplace (dashboard IDs)
 - Use Prometheus federation for multi-region deployments
 - Implement progressive alerting: warning (Slack) → critical (PagerDuty)
@@ -1907,6 +1933,7 @@ TIPS:
 ## Performance Considerations
 
 **Prometheus Resource Planning**
+
 ```
 Memory Required =
   (number_of_time_series * 2KB) +    # Active series
@@ -1925,6 +1952,7 @@ Disk IOPS Required =
 ```
 
 **Optimization Strategies**
+
 1. **Reduce cardinality**: Audit and remove unnecessary labels
 2. **Use recording rules**: Pre-compute expensive queries
 3. **Optimize scrape configs**: Different intervals for different metrics
@@ -1937,6 +1965,7 @@ Disk IOPS Required =
 10. **Capacity limits**: Set max_samples_per_send and queue sizes
 
 **Scaling Thresholds**
+
 - < 1M active series: Single Prometheus instance
 - 1M - 10M series: Prometheus with remote storage
 - 10M - 100M series: Sharded Prometheus or Cortex
@@ -1945,6 +1974,7 @@ Disk IOPS Required =
 ## Security Considerations
 
 **Authentication & Authorization**
+
 ```yaml
 # prometheus.yml with basic auth
 scrape_configs:
@@ -1961,6 +1991,7 @@ scrape_configs:
 ```
 
 **Network Security**
+
 - Deploy monitoring stack in isolated subnet
 - Use internal load balancers for Prometheus federation
 - Implement mTLS between Prometheus and targets
@@ -1968,6 +1999,7 @@ scrape_configs:
 - Use VPN or private links for cross-region federation
 
 **Data Security**
+
 - Encrypt data at rest (filesystem encryption)
 - Sanitize metrics to avoid leaking sensitive data
 - Implement audit logging for all access
@@ -1975,6 +2007,7 @@ scrape_configs:
 - Rotate credentials and certificates regularly
 
 **Compliance Considerations**
+
 - GDPR: Avoid collecting PII in metrics labels
 - HIPAA: Encrypt all health-related metrics
 - PCI DSS: Separate payment metrics into isolated stack
@@ -1983,6 +2016,7 @@ scrape_configs:
 ## Troubleshooting Guide
 
 **Issue: Prometheus consuming too much memory**
+
 ```bash
 # 1. Check current memory usage and series count
 curl -s http://localhost:9090/api/v1/status/tsdb | jq '.data.seriesCountByMetricName' | head -20
@@ -2002,6 +2036,7 @@ metric_relabel_configs:
 ```
 
 **Issue: Grafana dashboards loading slowly**
+
 ```bash
 # 1. Check query performance
 curl -s 'http://localhost:9090/api/v1/query_log' | jq '.data[] | select(.duration_seconds > 1)'
@@ -2028,6 +2063,7 @@ groups:
 ```
 
 **Issue: Alerts not firing**
+
 ```bash
 # 1. Check alert state
 curl http://localhost:9090/api/v1/alerts | jq
@@ -2046,6 +2082,7 @@ curl http://localhost:9093/api/v1/alerts | jq '.[] | select(.status.inhibitedBy 
 ```
 
 **Issue: Missing traces in Jaeger**
+
 ```javascript
 // 1. Verify sampling rate
 const tracer = initTracer({
@@ -2068,6 +2105,7 @@ curl http://localhost:14268/api/traces?service=api-gateway
 ## Migration Guide
 
 **From CloudWatch to Prometheus:**
+
 ```python
 # Migration script example
 import boto3
@@ -2096,6 +2134,7 @@ def migrate_cloudwatch_to_prometheus():
 ```
 
 **From Datadog to Prometheus:**
+
 1. Export Datadog dashboards as JSON
 2. Convert queries using query translator
 3. Import to Grafana with dashboard converter
@@ -2114,6 +2153,7 @@ def migrate_cloudwatch_to_prometheus():
 ## Advanced Topics
 
 **Multi-Cluster Monitoring with Thanos:**
+
 ```yaml
 # thanos-sidecar.yaml
 apiVersion: v1
@@ -2152,6 +2192,7 @@ spec:
 ```
 
 **Service Mesh Observability (Istio):**
+
 ```yaml
 # Automatic metrics from Istio
 telemetry:

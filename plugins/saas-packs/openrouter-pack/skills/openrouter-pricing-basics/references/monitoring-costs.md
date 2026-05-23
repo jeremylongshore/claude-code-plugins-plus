@@ -3,6 +3,7 @@
 ## Monitoring Costs
 
 ### Per-Request Cost
+
 ```python
 def get_request_cost(response, model_pricing):
     usage = response.usage
@@ -18,6 +19,7 @@ print(f"Request cost: ${cost:.6f}")
 ```
 
 ### Dashboard Monitoring
+
 ```
 openrouter.ai/activity shows:
 - Per-request costs
@@ -27,6 +29,7 @@ openrouter.ai/activity shows:
 ```
 
 ### Budget Alerts
+
 ```
 Set up monitoring:
 1. Per-key credit limits

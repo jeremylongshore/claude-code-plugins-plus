@@ -10,6 +10,7 @@ bamboohr-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure BambooHR CI/CD integration
 **Workflow:** Part of the cicd skill category for BambooHR integration.
 **Relates to:** Other bamboohr skills in this pack.

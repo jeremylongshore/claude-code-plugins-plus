@@ -10,6 +10,7 @@ anthropic-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Anthropic security best practices
 **Workflow:** Part of the operations skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

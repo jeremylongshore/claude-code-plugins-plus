@@ -10,6 +10,7 @@ mistral-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Mistral AI SDK patterns
 **Workflow:** Part of the onboarding skill category for Mistral AI integration.
 **Relates to:** Other mistral skills in this pack.

@@ -10,6 +10,7 @@ supabase-deploy-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Supabase integrations to Vercel, Fly.io, and Cloud Run platforms with proper secrets management and health checks.
 **Workflow:** Deployment skill for multiple platforms. Provides platform-specific deployment guidance.
 **Relates to:** Follows supabase-ci-integration; connects to supabase-webhooks-events for post-deployment configuration.

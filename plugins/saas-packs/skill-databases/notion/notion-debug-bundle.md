@@ -10,6 +10,7 @@ notion-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Notion debug evidence for support
 **Workflow:** Part of the operations skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

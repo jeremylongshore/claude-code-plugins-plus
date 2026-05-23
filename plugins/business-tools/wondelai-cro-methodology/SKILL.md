@@ -30,6 +30,7 @@ Scientific, customer-centric approach to conversion rate optimization based on t
 **Why it works:** Random optimization efforts fail because they skip the critical research steps. The CRE process forces you to understand visitors before changing anything, ensuring changes are based on evidence rather than opinion.
 
 **Key insights:**
+
 - Define success metrics aligned with business KPIs before touching any page
 - Map the entire conversion funnel to find "blocked arteries" (high-traffic underperforming paths) and "missing links" (absent funnel stages)
 - Understand visitors in three dimensions: who they are (types and intentions), what blocks them (UX problems), and what stops them (objections)
@@ -50,6 +51,7 @@ Scientific, customer-centric approach to conversion rate optimization based on t
 | **Competitor response** | Step 4: Market intelligence | Transfer proven strategies from adjacent industries |
 
 **Copy patterns:**
+
 - "What's preventing you from [action] today?" (exit survey question to discover objections)
 - "Here's what [X] customers found..." (counter-objection with social proof)
 - Document hypothesis: "If we [change X], then [metric Y] will improve because [reason from research]"
@@ -66,6 +68,7 @@ See: [testing-methodology.md](references/testing-methodology.md) for detailed IC
 **Why it works:** Companies guess why visitors leave, but guesses are almost always wrong. Direct research consistently uncovers objections that teams never anticipated, and the language customers use is more persuasive than any copywriter's invention.
 
 **Key insights:**
+
 - Primary sources (exit surveys, live chat logs, support tickets, sales call recordings) give you direct visitor language
 - Secondary sources (reviews, social media, competitor analysis) reveal industry-wide objections
 - Objections fall into two categories: explicit ("too expensive") and implicit ("I'm not sure I'll follow through")
@@ -85,6 +88,7 @@ See: [testing-methodology.md](references/testing-methodology.md) for detailed IC
 | **Competitive gaps** | Review mining (yours and competitors') | Negative reviews = unaddressed objections |
 
 **Copy patterns:**
+
 - Use exact customer language in headlines and body copy (more persuasive than polished marketing copy)
 - "What's the one thing we could change to make you [action]?"
 - "How would you describe [product] to a friend?" (reveals positioning in customer terms)
@@ -101,6 +105,7 @@ See: [RESEARCH.md](references/RESEARCH.md) for tools, survey questions, and data
 **Why it works:** Visitors make decisions based on evidence and proof, not claims. A bold claim without proof is just noise. A modest claim with overwhelming proof is irresistible. Most companies sit on goldmines of proof they never use.
 
 **Key insights:**
+
 - Audit five categories: Credentials & Authority, Social Proof, Risk Reversal, Data & Specificity, Process & Methodology
 - Create a "wish list" for missing assets and actively acquire them (request testimonials, apply for awards, compile statistics)
 - The "proof sandwich" structure: Claim (bold promise) then Proof (evidence) then Reinforcement (secondary proof)
@@ -119,6 +124,7 @@ See: [RESEARCH.md](references/RESEARCH.md) for tools, survey questions, and data
 | **About page** | Team credentials | Years of experience, certifications, publications, patents |
 
 **Copy patterns:**
+
 - "Here's how we did it for [Company X]..." (case study proof)
 - "And here's what their CEO says about working with us..." (testimonial reinforcement)
 - "[Specific number] businesses trust us" (not "thousands of customers")
@@ -135,6 +141,7 @@ See: [PERSUASION.md](references/PERSUASION.md) for the full persuasion assets ch
 **Why it works:** Visitors arrive with objections. If the page doesn't address them, visitors leave. The O/CO framework ensures no objection goes unanswered, and counter-objections are placed exactly where objections naturally arise during the reading flow.
 
 **Key insights:**
+
 - Don't guess objections -- research them from surveys, chat logs, support tickets, and sales calls
 - Implicit objections (ones visitors won't admit) require "CO Only" approach: address the objection without stating it
 - Place counter-objections at the point of friction (credit card objection near payment form), not buried in FAQ
@@ -153,6 +160,7 @@ See: [PERSUASION.md](references/PERSUASION.md) for the full persuasion assets ch
 | **Effort** | "How hard will this be?" | "Done for you" framing, "Set up in 5 minutes", step-by-step breakdown |
 
 **Copy patterns:**
+
 - Bad (stating implicit objection): "Worried you're too lazy to learn a language?"
 - Good (CO Only): "Let the audio do the work for you."
 - "What's preventing you from signing up today?" (survey to discover objections)
@@ -169,6 +177,7 @@ See: [OBJECTIONS.md](references/OBJECTIONS.md) for the full O/CO framework, rese
 **Why it works:** Without a hypothesis, you're just changing things randomly. The hypothesis forces you to articulate WHY a change should work, which means it must be grounded in customer research. ICE scoring prevents teams from wasting time on low-impact "meek tweaks."
 
 **Key insights:**
+
 - Hypothesis format: "If we [change X], then [metric Y] will improve because [reason based on research]"
 - Define primary metric (determines winner), secondary metrics (additional monitoring), and guardrail metrics (must not decrease)
 - ICE scores: Impact (1-10: could this double conversion?), Confidence (1-10: is research backing strong?), Ease (1-10: how easy to implement?)
@@ -187,6 +196,7 @@ See: [OBJECTIONS.md](references/OBJECTIONS.md) for the full O/CO framework, rese
 | **Button color** | "If we change button from blue to green, clicks will increase because green means go" | I:2, C:2, E:10 = 4.7 |
 
 **Copy patterns:**
+
 - "Based on our research, visitors' #1 objection is [X]. This test addresses it by [Y]."
 - Document before: hypothesis, primary metric, sample size, duration, traffic allocation
 - Document after: raw numbers, confidence interval, practical significance, learnings, next steps
@@ -203,6 +213,7 @@ See: [testing-methodology.md](references/testing-methodology.md) for ICE scoring
 **Why it works:** Without controlled experiments, you can't distinguish real improvements from random variation. Proper A/B testing methodology prevents the most common errors: peeking and stopping early, insufficient sample size, ignoring practical significance, and the multiple comparison problem.
 
 **Key insights:**
+
 - Calculate required sample size BEFORE starting (inputs: baseline rate, minimum detectable effect, 80% power, 95% significance)
 - Run for at least one full business cycle (1-2 weeks) including weekdays AND weekends
 - Never peek at results and stop early -- this inflates false positive rates dramatically
@@ -223,6 +234,7 @@ See: [testing-methodology.md](references/testing-methodology.md) for ICE scoring
 | **Post-test** | Scale wins | Apply winning insights across landing pages, ad copy, email sequences |
 
 **Copy patterns:**
+
 - "We increased [metric] by [X]% with [Y]% confidence over [Z] weeks"
 - "Test showed no significant difference, teaching us that [insight about customers]"
 - "Control outperformed challenger, suggesting visitors prefer [existing approach] because [reason]"

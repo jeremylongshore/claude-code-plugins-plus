@@ -21,20 +21,24 @@
 ## Workflow
 
 ### Step 1: Fetch Protocol Data
+
 Query DeFiLlama and other APIs for yield opportunities.
 
 ### Step 2: Normalize Yields
+
 - Convert APR to APY where needed
 - Calculate total yield (base + rewards)
 - Factor in reward token prices
 
 ### Step 3: Assess Risks
+
 - Check audit status
 - Analyze TVL trends
 - Score protocol maturity
 - Flag anomalies
 
 ### Step 4: Rank and Output
+
 - Sort by user preference (APY, risk, TVL)
 - Apply filters
 - Format for display
@@ -92,12 +96,14 @@ plugins/crypto/defi-yield-optimizer/skills/optimizing-defi-yields/
 **Purpose**: Aggregate yield data from multiple APIs.
 
 **Data Sources**:
+
 | Source | Data | Rate Limit |
 |--------|------|------------|
 | DeFiLlama | Yields, TVL, protocols | Generous |
 | CoinGecko | Token prices | 10-30/min |
 
 **Caching Strategy**:
+
 - Cache TTL: 5 minutes for yields, 1 hour for protocol metadata
 - Local file cache: `~/.defi_yield_cache.json`
 - Fallback to cache on API failure
@@ -107,6 +113,7 @@ plugins/crypto/defi-yield-optimizer/skills/optimizing-defi-yields/
 **Purpose**: Normalize and calculate true yields.
 
 **Calculations**:
+
 ```python
 # APR to APY conversion
 APY = (1 + APR / n) ** n - 1  # n = compounding periods
@@ -122,6 +129,7 @@ IL = 2 * sqrt(price_ratio) / (1 + price_ratio) - 1
 ```
 
 **Output**:
+
 ```python
 {
     "protocol": "Curve",
@@ -138,6 +146,7 @@ IL = 2 * sqrt(price_ratio) / (1 + price_ratio) - 1
 **Purpose**: Score protocol and pool risks.
 
 **Risk Factors**:
+
 | Factor | Weight | Scoring |
 |--------|--------|---------|
 | Audit Status | 30% | Audited=10, Partial=5, None=0 |
@@ -147,6 +156,7 @@ IL = 2 * sqrt(price_ratio) / (1 + price_ratio) - 1
 | Token Concentration | 15% | Distributed=10, Concentrated=3 |
 
 **Risk Levels**:
+
 | Score | Level | Description |
 |-------|-------|-------------|
 | 8-10 | Low | Blue-chip, battle-tested |
@@ -159,6 +169,7 @@ IL = 2 * sqrt(price_ratio) / (1 + price_ratio) - 1
 **Purpose**: Format output for display.
 
 **Formats**:
+
 - Table: Terminal-friendly yield comparison
 - JSON: Full data for programmatic use
 - Summary: Quick overview of top opportunities
@@ -168,6 +179,7 @@ IL = 2 * sqrt(price_ratio) / (1 + price_ratio) - 1
 ### DeFiLlama API
 
 **Endpoints**:
+
 ```
 GET /pools              # All yield pools
 GET /pools/{chain}      # Chain-specific pools
@@ -175,6 +187,7 @@ GET /protocol/{name}    # Protocol details
 ```
 
 **Response Structure**:
+
 ```json
 {
   "data": [
@@ -195,6 +208,7 @@ GET /protocol/{name}    # Protocol details
 ### CoinGecko API
 
 **Endpoints**:
+
 ```
 GET /simple/price?ids={tokens}&vs_currencies=usd
 ```
@@ -246,16 +260,19 @@ Cache Layer:
 ## Testing Strategy
 
 ### Unit Tests
+
 - Yield calculations (APR to APY, rewards)
 - Risk scoring logic
 - Filter application
 
 ### Integration Tests
+
 - API response handling
 - Cache fallback scenarios
 - Multi-chain queries
 
 ### Test Data
+
 ```json
 {
   "pools": [
@@ -275,33 +292,39 @@ Cache Layer:
 ## Dependencies
 
 **Required**:
+
 - `requests` - HTTP client for APIs
 - `json` - Data handling
 - `datetime` - Cache timestamps
 
 **Optional**:
+
 - `tabulate` - Pretty table output (fallback to manual)
 
 ## Supported Protocols
 
 ### Lending
+
 - Aave (v2, v3)
 - Compound (v2, v3)
 - Spark
 - Radiant
 
 ### DEX/AMM
+
 - Curve
 - Convex
 - Balancer
 - Uniswap v3
 
 ### Yield Aggregators
+
 - Yearn
 - Beefy
 - Harvest
 
 ### Liquid Staking
+
 - Lido
 - Rocket Pool
 - Frax ETH

@@ -3,6 +3,7 @@
 ## Deployment Tracking
 
 ### Create Release and Deploy
+
 ```bash
 #!/bin/bash
 # deploy.sh
@@ -35,6 +36,7 @@ echo "Deployed $VERSION to $ENVIRONMENT"
 ```
 
 ### Application Configuration
+
 ```typescript
 import * as Sentry from '@sentry/node';
 

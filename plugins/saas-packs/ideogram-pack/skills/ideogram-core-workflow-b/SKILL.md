@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Core Workflow B -- Edit, Remix, Upscale, Describe, Reframe
 
 ## Overview
+
 Secondary workflows for Ideogram beyond text-to-image generation. Covers five endpoints: **Edit** (Magic Fill inpainting), **Remix** (style transfer with image weight), **Upscale** (enhance resolution), **Describe** (image-to-text), and **Reframe** (extend canvas to new aspect ratio). All image-input endpoints use multipart form data.
 
 ## Prerequisites
+
 - Completed `ideogram-install-auth` setup
 - Source images in JPEG, PNG, or WebP format (max 10MB each)
 - For editing: a black-and-white mask image matching source dimensions
@@ -38,6 +40,7 @@ Secondary workflows for Ideogram beyond text-to-image generation. Covers five en
 ## Instructions
 
 ### Step 1: Edit (Magic Fill / Inpainting)
+
 Replace specific regions of an image using a mask. Black regions in the mask indicate areas to regenerate.
 
 ```typescript
@@ -83,6 +86,7 @@ await editImage("poster.png", "text-area-mask.png",
 ```
 
 ### Step 2: Remix (Style Transfer / Variation)
+
 Generate a new image influenced by a source image. The `image_weight` parameter (1-100) controls how closely the output matches the original.
 
 ```typescript
@@ -116,6 +120,7 @@ await remixImage("logo.png", "Same logo but with neon glow effect", { image_weig
 ```
 
 ### Step 3: Upscale (Enhance Resolution)
+
 ```typescript
 async function upscaleImage(imagePath: string, options: {
   prompt?: string;
@@ -145,6 +150,7 @@ async function upscaleImage(imagePath: string, options: {
 ```
 
 ### Step 4: Describe (Image to Text)
+
 ```typescript
 async function describeImage(imagePath: string, modelVersion: "V_2" | "V_3" = "V_3") {
   const form = new FormData();
@@ -168,6 +174,7 @@ console.log("Suggested prompts:", descriptions);
 ```
 
 ### Step 5: Reframe (Extend Canvas)
+
 Expand an image to a new resolution while maintaining style consistency.
 
 ```typescript
@@ -206,6 +213,7 @@ await reframeImage("square-photo.png", "1344x768");
 | Reframe V3 | `/v1/ideogram-v3/reframe` | image + resolution | `rendering_speed`, `style_preset` |
 
 ## Error Handling
+
 | Error | HTTP Status | Cause | Solution |
 |-------|-------------|-------|----------|
 | Mask size mismatch | 400 | Mask dimensions differ from image | Ensure mask matches source image size exactly |
@@ -215,11 +223,13 @@ await reframeImage("square-photo.png", "1344x768");
 | Rate limited | 429 | Too many requests | Queue with delays between calls |
 
 ## Output
+
 - Edited, remixed, upscaled, or reframed images downloaded locally
 - Descriptions array for image-to-text analysis
 - Metadata including seed, resolution, and safety status
 
 ## Resources
+
 - [Edit V3 API](https://developer.ideogram.ai/api-reference/api-reference/edit-v3)
 - [Remix V3 API](https://developer.ideogram.ai/api-reference/api-reference/remix-v3)
 - [Upscale API](https://developer.ideogram.ai/api-reference/api-reference/upscale)
@@ -227,4 +237,5 @@ await reframeImage("square-photo.png", "1344x768");
 - [Reframe V3 API](https://developer.ideogram.ai/api-reference/api-reference/reframe-v3)
 
 ## Next Steps
+
 For common errors, see `ideogram-common-errors`.

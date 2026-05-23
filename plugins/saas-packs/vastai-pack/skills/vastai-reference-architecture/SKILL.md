@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Reference Architecture
 
 ## Overview
+
 Production architecture for GPU compute workflows on Vast.ai. Covers the three-tier pattern (orchestrator, GPU workers, artifact storage), job queue design, and fault-tolerant training pipelines.
 
 ## Prerequisites
+
 - Vast.ai account with CLI
 - Cloud storage (S3, GCS, or MinIO) for artifacts
 - Understanding of ML training pipelines
@@ -152,12 +154,14 @@ class CheckpointManager:
 ```
 
 ## Output
+
 - Three-tier architecture (orchestrator, GPU workers, artifact storage)
 - Project structure for ML pipeline on Vast.ai
 - GPU profile configuration per job type
 - Checkpoint manager with cloud storage integration
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Orchestrator loses track of instance | API timeout | Implement heartbeat from worker |
@@ -166,10 +170,12 @@ class CheckpointManager:
 | Budget exceeded | No cost controls | Implement profile-based max_duration_hours |
 
 ## Resources
+
 - [Vast.ai REST API](https://vast.ai/developers/api)
 - [PyTorch Distributed](https://pytorch.org/tutorials/intermediate/ddp_tutorial.html)
 
 ## Next Steps
+
 For multi-environment configuration, see `vastai-multi-env-setup`.
 
 ## Examples

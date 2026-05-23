@@ -10,6 +10,7 @@ guidewire-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Guidewire common errors
 **Workflow:** Part of the operations skill category for Guidewire integration.
 **Relates to:** Other guidewire skills in this pack.

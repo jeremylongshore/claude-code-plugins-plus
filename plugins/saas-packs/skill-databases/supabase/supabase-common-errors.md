@@ -10,6 +10,7 @@ supabase-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix the top 10 most common Supabase errors including Invalid JWT, RLS Policy Violation, and Connection Pool Exhausted.
 **Workflow:** First troubleshooting skill. Used when encountering errors during development or production.
 **Relates to:** Entry point for troubleshooting; escalates to supabase-debug-bundle for complex issues.

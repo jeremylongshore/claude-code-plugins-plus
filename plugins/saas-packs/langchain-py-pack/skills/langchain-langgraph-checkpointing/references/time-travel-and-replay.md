@@ -69,19 +69,23 @@ The `as_node` argument controls which node's output reducer handles the update. 
 
 1. **Find the thread_id from logs.** Your structured logger should include `thread_id` on every log line (if not, see `langchain-observability`).
 2. **Get the history:**
+
    ```python
    config = {"configurable": {"thread_id": bad_thread_id}}
    history = list(graph.get_state_history(config))
    for i, snap in enumerate(history):
        print(i, snap.metadata.get("step"), snap.next, snap.metadata.get("writes"))
    ```
+
 3. **Identify the bad step.** Look for the transition where the output diverged from expected. The `writes` metadata tells you which node wrote what.
 4. **Inspect state at the prior checkpoint.** The node's *input* is the state of the step *before* its write:
+
    ```python
    bad_step = history[i]
    prior = history[i + 1]   # history is newest-first
    print("input to bad node:", prior.values)
    ```
+
 5. **Decide the fix.** Two paths:
    - **Reproduce locally.** Use `prior.config` to resume in a dev copy of the graph with breakpoints or added logging.
    - **Patch in place.** `update_state` to correct the state, then `invoke(None, config=prior.config)` to regenerate the response. The user gets a correct answer, the original branch is still there for forensics.

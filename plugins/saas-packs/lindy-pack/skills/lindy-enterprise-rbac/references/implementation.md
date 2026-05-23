@@ -3,6 +3,7 @@
 ## Role-Based Access Control
 
 Lindy's enterprise model has three access levels:
+
 - **Owner**: Full access including billing, team management, and all agents
 - **Admin**: Can create/modify/delete agents and manage team members
 - **Member**: Can view and run agents they have been granted access to

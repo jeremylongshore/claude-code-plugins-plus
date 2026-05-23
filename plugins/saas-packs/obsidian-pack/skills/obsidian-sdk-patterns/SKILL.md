@@ -229,6 +229,7 @@ export default class MyPlugin extends Plugin {
 ```
 
 Anti-pattern to avoid:
+
 ```typescript
 // BAD: leaks on plugin unload
 this.app.vault.on("modify", handler);
@@ -441,6 +442,7 @@ onunload() {
 ## Output
 
 After applying these patterns:
+
 - Settings survive across plugin updates with automatic migration
 - File operations never crash on missing files or duplicate paths
 - All events auto-clean on plugin unload (zero memory leaks)
@@ -463,6 +465,7 @@ After applying these patterns:
 ## Examples
 
 **Complete plugin using all patterns together:**
+
 ```typescript
 import { Plugin, TFile, debounce, normalizePath } from "obsidian";
 import { loadSettings, PluginSettings } from "./settings";
@@ -500,10 +503,12 @@ export default class MyPlugin extends Plugin {
 ```
 
 ## Resources
+
 - [Obsidian Plugin API](https://docs.obsidian.md/Reference/TypeScript+API)
 - [Vault API](https://docs.obsidian.md/Reference/TypeScript+API/Vault)
 - [MetadataCache API](https://docs.obsidian.md/Reference/TypeScript+API/MetadataCache)
 - [Plugin Guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines)
 
 ## Next Steps
+
 Debug and test: `obsidian-local-dev-loop`. Common errors: `obsidian-common-errors`. Release: `obsidian-prod-checklist`.

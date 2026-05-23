@@ -26,6 +26,7 @@ Detailed implementation examples and code patterns.
 ```
 
 ### Implementation
+
 ```typescript
 // app/layout.tsx
 import { ClerkProvider } from '@clerk/nextjs'
@@ -94,6 +95,7 @@ v       v       v       v       v
 ```
 
 ### Implementation
+
 ```typescript
 // API Gateway - Verify Clerk JWT
 // gateway/src/middleware/auth.ts
@@ -163,6 +165,7 @@ export async function createOrder(req: AuthenticatedRequest) {
 ```
 
 ### Implementation
+
 ```typescript
 // middleware.ts - Organization context
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
@@ -236,6 +239,7 @@ export async function getTenantPrisma() {
 ```
 
 ### Implementation
+
 ```typescript
 // Backend API - Platform-agnostic auth
 // api/src/middleware/verify-clerk.ts

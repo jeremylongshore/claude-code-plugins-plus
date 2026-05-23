@@ -19,9 +19,11 @@ compatibility: Designed for Claude Code
 # Anthropic CI Integration
 
 ## Overview
+
 Testing Claude integrations in CI requires handling API keys securely, mocking for unit tests, and making real calls only in integration tests.
 
 ## GitHub Actions Setup
+
 ```yaml
 # .github/workflows/test.yml
 name: Test Claude Integration
@@ -48,6 +50,7 @@ jobs:
 ```
 
 ## Mock Strategy for Unit Tests
+
 ```typescript
 // tests/helpers/mock-anthropic.ts
 import { vi } from 'vitest';
@@ -88,6 +91,7 @@ test('summarize function returns text', async () => {
 ```
 
 ## Integration Test (Real API)
+
 ```typescript
 // tests/integration/claude.test.ts
 import Anthropic from '@claude-ai/sdk';
@@ -111,6 +115,7 @@ describe('Claude API Integration', () => {
 ```
 
 ## Cost Control in CI
+
 | Strategy | How |
 |----------|-----|
 | Use Haiku only | Cheapest model, fast |
@@ -120,27 +125,33 @@ describe('Claude API Integration', () => {
 | Budget cap | Set spending limits in Anthropic console |
 
 ## Output
+
 - GitHub Actions workflow running unit tests (mocked, no API key needed)
 - Integration tests making real Claude API calls on main branch
 - Mock client returning realistic response shapes for unit tests
 - CI costs controlled via Haiku model and tight max_tokens
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | API Error | Check error type and status code | See `clade-common-errors` |
 
 ## Examples
+
 See GitHub Actions YAML, Mock Strategy with Vitest, Integration Test with real API, and Cost Control table above.
 
 ## Resources
+
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-for-github-actions/using-secrets-in-github-actions)
 - [Anthropic SDK](https://github.com/anthropics/claude-sdk-typescript)
 
 ## Next Steps
+
 See `clade-deploy-integration` for deploying to production.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - `ANTHROPIC_API_KEY` stored as GitHub Actions secret
 - Test framework installed (Vitest, Jest, or pytest)
@@ -148,10 +159,13 @@ See `clade-deploy-integration` for deploying to production.
 ## Instructions
 
 ### Step 1: Review the patterns below
+
 Each section contains production-ready code examples. Copy and adapt them to your use case.
 
 ### Step 2: Apply to your codebase
+
 Integrate the patterns that match your requirements. Test each change individually.
 
 ### Step 3: Verify
+
 Run your test suite to confirm the integration works correctly.

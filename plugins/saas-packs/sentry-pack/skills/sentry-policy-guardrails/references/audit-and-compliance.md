@@ -3,6 +3,7 @@
 ## Audit and Compliance
 
 ### Configuration Audit Script
+
 ```typescript
 // audit-sentry-config.ts
 async function auditSentryConfiguration(): Promise<AuditReport> {
@@ -50,6 +51,7 @@ async function auditSentryConfiguration(): Promise<AuditReport> {
 ```
 
 ### Compliance Dashboard
+
 ```typescript
 // Generate compliance metrics
 async function getComplianceMetrics(): Promise<ComplianceMetrics> {

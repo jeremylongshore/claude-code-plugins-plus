@@ -10,6 +10,7 @@ snowflake-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Snowflake local development workflow
 **Workflow:** Part of the onboarding skill category for Snowflake integration.
 **Relates to:** Other snowflake skills in this pack.

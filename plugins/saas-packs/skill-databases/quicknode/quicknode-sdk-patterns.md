@@ -10,6 +10,7 @@ quicknode-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready QuickNode SDK patterns
 **Workflow:** Part of the onboarding skill category for QuickNode integration.
 **Relates to:** Other quicknode skills in this pack.

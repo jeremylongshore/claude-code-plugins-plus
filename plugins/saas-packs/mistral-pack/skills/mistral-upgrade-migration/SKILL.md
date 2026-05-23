@@ -26,13 +26,16 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral AI Upgrade & Migration
 
 ## Current State
+
 !`npm list @mistralai/mistralai 2>/dev/null || echo 'not installed'`
 !`pip show mistralai 2>/dev/null | grep -E "^(Name|Version)" || echo 'not installed'`
 
 ## Overview
+
 Guide for upgrading the Mistral AI SDK between major versions. The TypeScript SDK (`@mistralai/mistralai`) moved from CommonJS to ESM-only in v1.x, with significant API surface changes. This skill covers version detection, breaking change migration, automated code transforms, and rollback.
 
 ## Prerequisites
+
 - Current Mistral AI SDK installed
 - Git for version control
 - Test suite available
@@ -227,6 +230,7 @@ git branch -D upgrade/mistral-sdk-v1
 ```
 
 ## Error Handling
+
 | Error After Upgrade | Cause | Solution |
 |---------------------|-------|----------|
 | `ERR_REQUIRE_ESM` | Missing "type": "module" | Add to package.json |
@@ -236,12 +240,14 @@ git branch -D upgrade/mistral-sdk-v1
 | Test failures | Response shape changed | Update assertions and mocks |
 
 ## Resources
+
 - [TypeScript SDK Releases](https://github.com/mistralai/client-ts/releases)
 - [Python SDK Releases](https://github.com/mistralai/client-python/releases)
 - [Changelog](https://docs.mistral.ai/getting-started/changelog/)
 - [Models Deprecation](https://docs.mistral.ai/getting-started/models/)
 
 ## Output
+
 - Updated SDK to latest version
 - Automated code migration applied
 - Model name references updated

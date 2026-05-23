@@ -10,6 +10,7 @@ assemblyai-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement AssemblyAI core feature integration
 **Workflow:** Part of the onboarding skill category for AssemblyAI integration.
 **Relates to:** Other assemblyai skills in this pack.

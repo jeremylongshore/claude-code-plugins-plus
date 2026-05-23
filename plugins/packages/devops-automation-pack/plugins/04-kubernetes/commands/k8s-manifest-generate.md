@@ -22,12 +22,12 @@ Generates complete, production-ready Kubernetes manifests with best practices (h
 
 ## When to Use This
 
--  Deploying application to Kubernetes
--  Need complete manifest set (Deployment, Service, Ingress, etc.)
--  Want production-ready configuration
--  Need auto-scaling setup
--  Using Helm (use `/k8s-helm-chart` instead)
--  Simple one-off task (use `kubectl run`)
+- Deploying application to Kubernetes
+- Need complete manifest set (Deployment, Service, Ingress, etc.)
+- Want production-ready configuration
+- Need auto-scaling setup
+- Using Helm (use `/k8s-helm-chart` instead)
+- Simple one-off task (use `kubectl run`)
 
 ## How It Works
 
@@ -91,14 +91,17 @@ kubectl apply -f manifests.yaml
 ```
 
 ### 3. Verify:
+
 ```bash
 kubectl get pods -n <namespace>
 ```
 
 ## Expected Results
+
 - Pods: Running
 - Service: ClusterIP assigned
 - Ingress: Address assigned (if applicable)
+
 ```
 
 ## Examples
@@ -281,6 +284,7 @@ spec:
 **User:** `/km`
 
 **Questions:**
+
 - App type? → Stateful database
 - Image? → `postgres:15-alpine`
 - Port? → `5432`
@@ -415,6 +419,7 @@ spec:
 **User:** `/km`
 
 **Questions:**
+
 - App type? → Scheduled batch job
 - Image? → `myregistry/data-sync:1.0.0`
 - Schedule? → Every day at 2 AM

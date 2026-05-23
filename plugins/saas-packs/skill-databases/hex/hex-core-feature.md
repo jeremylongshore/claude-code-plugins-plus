@@ -10,6 +10,7 @@ hex-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Hex core feature integration
 **Workflow:** Part of the onboarding skill category for Hex integration.
 **Relates to:** Other hex skills in this pack.

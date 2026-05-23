@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Local Dev Loop
 
 ## Overview
+
 Set up an efficient local development workflow for building and testing MaintainX integrations with hot reload, mock servers, and automated testing.
 
 ## Prerequisites
+
 - Completed `maintainx-install-auth` setup
 - Node.js 18+ installed
 - `MAINTAINX_API_KEY` environment variable set
@@ -46,6 +48,7 @@ npx tsc --init --target ES2022 --module NodeNext --moduleResolution nodenext --o
 ```
 
 Create `tsconfig.json` paths:
+
 ```json
 {
   "compilerOptions": {
@@ -176,6 +179,7 @@ npm run repl
 ```
 
 ## Output
+
 - TypeScript project configured with `tsx watch` for hot reload
 - Vitest unit tests with mocked MaintainX API responses
 - Interactive REPL for exploring the API
@@ -183,6 +187,7 @@ npm run repl
 - Dev/test/build scripts in `package.json`
 
 ## Error Handling
+
 | Issue | Solution |
 |-------|----------|
 | `MAINTAINX_API_KEY` undefined | Copy `.env.example` to `.env` and fill in your key |
@@ -191,11 +196,13 @@ npm run repl
 | `tsx` not found | Install with `npm i -D tsx` |
 
 ## Resources
+
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [Vitest Documentation](https://vitest.dev/)
 - [tsx - TypeScript Execute](https://github.com/privatenumber/tsx)
 
 ## Next Steps
+
 For SDK patterns and best practices, see `maintainx-sdk-patterns`.
 
 ## Examples

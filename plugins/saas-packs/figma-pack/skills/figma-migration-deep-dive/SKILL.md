@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code
 # Figma Migration Deep Dive
 
 ## Overview
+
 Automate migration of design data between Figma files, from other tools to Figma, or from Figma styles to the Variables API. Covers inventory, extraction, transformation, and validation.
 
 ## Prerequisites
+
 - Source and destination Figma file keys
 - `FIGMA_PAT` with `file_content:read` and `file_variables:write` (Enterprise) scopes
 - Understanding of source file structure
@@ -34,6 +36,7 @@ Automate migration of design data between Figma files, from other tools to Figma
 ## Instructions
 
 ### Step 1: Inventory Source File
+
 ```typescript
 const PAT = process.env.FIGMA_PAT!;
 
@@ -78,6 +81,7 @@ console.log(`Total nodes: ${(inv as any).totalNodes}`);
 ```
 
 ### Step 2: Extract Styles from Source
+
 ```typescript
 async function extractAllStyles(fileKey: string) {
   const file = await fetch(
@@ -115,6 +119,7 @@ async function extractAllStyles(fileKey: string) {
 ```
 
 ### Step 3: Transform and Map to Target
+
 ```typescript
 // Map extracted styles to design tokens JSON
 interface MigrationToken {
@@ -169,6 +174,7 @@ function transformStyles(styles: any[], sourceFileKey: string): MigrationToken[]
 ```
 
 ### Step 4: Write to Target (Variables API)
+
 ```typescript
 // Enterprise only: create variables in the target file
 async function migrateToVariables(
@@ -222,6 +228,7 @@ async function migrateToVariables(
 ```
 
 ### Step 5: Validation
+
 ```typescript
 async function validateMigration(
   sourceFileKey: string,
@@ -249,12 +256,14 @@ async function validateMigration(
 ```
 
 ## Output
+
 - Source file inventoried (components, styles, nodes)
 - Styles extracted and transformed to tokens
 - Tokens written to target file via Variables API
 - Migration validated with comparison report
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 403 on Variables POST | Not Enterprise | Use JSON export instead of Variables API |
@@ -263,9 +272,11 @@ async function validateMigration(
 | Large file timeout | File >100MB | Use `/nodes` endpoint for specific pages |
 
 ## Resources
+
 - [Figma Variables API](https://developers.figma.com/docs/rest-api/variables-endpoints/)
 - [Figma File Endpoints](https://developers.figma.com/docs/rest-api/file-endpoints/)
 - [Design Tokens Format](https://design-tokens.github.io/community-group/format/)
 
 ## Next Steps
+
 For advanced troubleshooting, see `figma-advanced-troubleshooting`.

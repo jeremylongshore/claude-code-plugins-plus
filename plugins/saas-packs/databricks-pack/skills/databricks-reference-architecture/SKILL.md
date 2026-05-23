@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Reference Architecture
 
 ## Overview
+
 Production-ready lakehouse architecture with Unity Catalog, Delta Lake, and the medallion pattern. Covers workspace organization, three-level namespace governance, compute strategy, CI/CD with Asset Bundles, and project structure for team collaboration.
 
 ## Prerequisites
+
 - Databricks workspace with Unity Catalog enabled
 - Understanding of medallion architecture (bronze/silver/gold)
 - Databricks CLI configured
@@ -96,6 +98,7 @@ databricks-platform/
 ## Instructions
 
 ### Step 1: Unity Catalog Hierarchy
+
 ```sql
 -- One catalog per environment (or shared with schema isolation)
 CREATE CATALOG IF NOT EXISTS dev_catalog;
@@ -119,6 +122,7 @@ GRANT SELECT ON SCHEMA prod_catalog.gold TO `data-analysts`;
 ```
 
 ### Step 2: Asset Bundle Configuration
+
 ```yaml
 # databricks.yml
 bundle:
@@ -157,6 +161,7 @@ targets:
 ```
 
 ### Step 3: Compute Strategy
+
 ```yaml
 # resources/etl_jobs.yml
 resources:
@@ -203,6 +208,7 @@ resources:
 ```
 
 ### Step 4: Medallion Pipeline Pattern
+
 ```python
 # src/ingestion/bronze_raw_events.py
 from pyspark.sql import SparkSession
@@ -230,6 +236,7 @@ raw = (
 ```
 
 ### Step 5: Table Maintenance Schedule
+
 ```yaml
 # resources/maintenance.yml
 resources:
@@ -267,6 +274,7 @@ for table, z_cols in tables_to_optimize:
 ```
 
 ## Output
+
 - Unity Catalog hierarchy with env-isolated catalogs and medallion schemas
 - Asset Bundle with dev/staging/prod targets and variable overrides
 - Medallion pipeline (Auto Loader > MERGE > aggregations)
@@ -274,6 +282,7 @@ for table, z_cols in tables_to_optimize:
 - Table maintenance schedule (weekly OPTIMIZE + VACUUM)
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Schema evolution failure | New source columns | Auto Loader handles with `schemaEvolutionMode` |
@@ -284,6 +293,7 @@ for table, z_cols in tables_to_optimize:
 ## Examples
 
 ### Validate Data Flow
+
 ```sql
 SELECT 'bronze' AS layer, COUNT(*) AS rows FROM prod_catalog.bronze.raw_events
 UNION ALL SELECT 'silver', COUNT(*) FROM prod_catalog.silver.events
@@ -291,6 +301,7 @@ UNION ALL SELECT 'gold', COUNT(*) FROM prod_catalog.gold.daily_metrics;
 ```
 
 ## Resources
+
 - [Unity Catalog Best Practices](https://docs.databricks.com/aws/en/data-governance/unity-catalog/best-practices)
 - [Medallion Architecture](https://www.databricks.com/glossary/medallion-architecture)
 - [Declarative Automation Bundles](https://docs.databricks.com/aws/en/dev-tools/bundles/)

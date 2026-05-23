@@ -10,6 +10,7 @@ oraclecloud-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Oracle Cloud multi-environment setup
 **Workflow:** Part of the enterprise skill category for Oracle Cloud integration.
 **Relates to:** Other oraclecloud skills in this pack.

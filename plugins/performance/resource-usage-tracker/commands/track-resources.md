@@ -27,6 +27,7 @@ Implement comprehensive resource usage tracking and optimization.
 ## Output
 
 Provide:
+
 - Resource monitoring instrumentation code
 - Dashboard configuration for resource metrics
 - Alert thresholds for resource exhaustion

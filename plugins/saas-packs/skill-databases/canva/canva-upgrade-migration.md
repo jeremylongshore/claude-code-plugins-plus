@@ -10,6 +10,7 @@ canva-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Canva SDK upgrades
 **Workflow:** Part of the operations skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

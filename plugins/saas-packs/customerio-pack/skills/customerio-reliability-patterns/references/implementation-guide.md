@@ -1,6 +1,7 @@
-# Customer.io Reliability Patterns - Implementation Guide
+## Customer.io Reliability Patterns - Implementation Guide
 
 ### Pattern 1: Circuit Breaker
+
 ```typescript
 // lib/circuit-breaker.ts
 enum CircuitState {
@@ -78,6 +79,7 @@ export class CircuitBreaker {
 ```
 
 ### Pattern 2: Retry with Jitter
+
 ```typescript
 // lib/retry.ts
 interface RetryConfig {
@@ -129,6 +131,7 @@ export async function withRetry<T>(
 ```
 
 ### Pattern 3: Fallback Queue
+
 ```typescript
 // lib/fallback-queue.ts
 import { Queue, Worker } from 'bullmq';
@@ -182,6 +185,7 @@ worker.on('failed', (job, error) => {
 ```
 
 ### Pattern 4: Graceful Degradation
+
 ```typescript
 // lib/graceful-degradation.ts
 import { TrackClient } from '@customerio/track';
@@ -251,6 +255,7 @@ export class ResilientCustomerIO {
 ```
 
 ### Pattern 5: Health Checks
+
 ```typescript
 // lib/health-check.ts
 interface HealthStatus {
@@ -293,6 +298,7 @@ export class CustomerIOHealthChecker {
 ```
 
 ### Pattern 6: Idempotency
+
 ```typescript
 // lib/idempotency.ts
 import { LRUCache } from 'lru-cache';

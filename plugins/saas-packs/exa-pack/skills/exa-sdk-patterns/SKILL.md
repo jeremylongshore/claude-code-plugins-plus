@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa SDK Patterns
 
 ## Overview
+
 Production-ready patterns for the `exa-js` SDK. Covers client singletons, typed wrappers, error handling, retry logic, and response validation for real Exa API methods.
 
 ## Prerequisites
+
 - `exa-js` installed and `EXA_API_KEY` configured
 - TypeScript project with strict mode
 - Familiarity with async/await and error handling
@@ -36,6 +38,7 @@ Production-ready patterns for the `exa-js` SDK. Covers client singletons, typed 
 ## Instructions
 
 ### Step 1: Client Singleton
+
 ```typescript
 // src/exa/client.ts
 import Exa from "exa-js";
@@ -55,6 +58,7 @@ export function getExa(): Exa {
 ```
 
 ### Step 2: Typed Search Wrapper
+
 ```typescript
 // src/exa/search.ts
 import Exa from "exa-js";
@@ -107,6 +111,7 @@ export async function exaSearchWithContents(
 ```
 
 ### Step 3: Error Handling Wrapper
+
 ```typescript
 // src/exa/safe.ts
 interface ExaResult<T> {
@@ -158,6 +163,7 @@ export async function safeExaCall<T>(
 ```
 
 ### Step 4: Retry with Exponential Backoff
+
 ```typescript
 // src/exa/retry.ts
 export async function withRetry<T>(
@@ -192,6 +198,7 @@ export async function withRetry<T>(
 ```
 
 ### Step 5: Response Validation with Zod
+
 ```typescript
 // src/exa/validate.ts
 import { z } from "zod";
@@ -217,6 +224,7 @@ export function validateSearchResponse(response: unknown) {
 ```
 
 ## Error Handling
+
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
 | Singleton | All API calls | Single client instance, consistent config |
@@ -228,6 +236,7 @@ export function validateSearchResponse(response: unknown) {
 ## Examples
 
 ### Factory Pattern (Multi-tenant)
+
 ```typescript
 const clients = new Map<string, Exa>();
 
@@ -241,6 +250,7 @@ export function getExaForTenant(tenantId: string): Exa {
 ```
 
 ### Combined: Safe + Retry + Typed
+
 ```typescript
 async function resilientSearch(query: string) {
   return safeExaCall(() =>
@@ -256,9 +266,11 @@ async function resilientSearch(query: string) {
 ```
 
 ## Resources
+
 - [exa-js TypeScript SDK](https://docs.exa.ai/sdks/typescript-sdk-specification)
 - [Exa Error Codes](https://docs.exa.ai/reference/error-codes)
 - [Zod Documentation](https://zod.dev/)
 
 ## Next Steps
+
 Apply patterns in `exa-core-workflow-a` for real-world search usage.

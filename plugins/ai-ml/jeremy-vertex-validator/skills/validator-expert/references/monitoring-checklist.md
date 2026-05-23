@@ -1,6 +1,7 @@
 # Monitoring Validation Checklist (20% Weight)
 
 Sources:
+
 - [Cloud Monitoring Alerting](https://cloud.google.com/monitoring/alerts)
 - [Service Monitoring SLOs](https://cloud.google.com/monitoring/service-monitoring)
 - [Cloud Logging](https://cloud.google.com/logging/docs)

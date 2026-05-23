@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Core Workflow A: Issue Lifecycle
 
 ## Overview
+
 Master issue lifecycle management: creating, updating, transitioning states, building parent/sub-issue hierarchies, managing labels, and commenting. Linear issues flow through typed workflow states (`triage` -> `backlog` -> `unstarted` -> `started` -> `completed` | `canceled`), belong to a team, and support priorities 0-4, estimates, due dates, labels, and cycle/project assignment.
 
 ## Prerequisites
+
 - `@linear/sdk` installed with API key or OAuth token configured
 - Access to target team(s)
 - Understanding of your team's workflow states
@@ -34,6 +36,7 @@ Master issue lifecycle management: creating, updating, transitioning states, bui
 ## Instructions
 
 ### Step 1: Create Issues
+
 ```typescript
 import { LinearClient } from "@linear/sdk";
 
@@ -77,6 +80,7 @@ await client.createIssue({
 ```
 
 ### Step 2: Update Issues
+
 ```typescript
 // Update by issue ID
 await client.updateIssue("issue-uuid", {
@@ -111,6 +115,7 @@ if (featureLabel) {
 ```
 
 ### Step 3: State Transitions
+
 ```typescript
 // List all workflow states for a team
 const teamStates = await team.states();
@@ -140,6 +145,7 @@ if (done) {
 ```
 
 ### Step 4: Parent/Sub-Issue Hierarchy
+
 ```typescript
 // Create parent issue
 const parentResult = await client.createIssue({
@@ -172,6 +178,7 @@ for (const child of children.nodes) {
 ```
 
 ### Step 5: Issue Relations
+
 ```typescript
 // Relation types: "blocks", "duplicate", "related"
 await client.createIssueRelation({
@@ -196,6 +203,7 @@ for (const rel of relations.nodes) {
 ```
 
 ### Step 6: Comments
+
 ```typescript
 // Add a comment (supports Markdown)
 await client.createComment({
@@ -212,6 +220,7 @@ for (const comment of comments.nodes) {
 ```
 
 ### Step 7: Attachments
+
 ```typescript
 // Create a link attachment on an issue
 await client.createAttachment({
@@ -235,6 +244,7 @@ await client.createAttachment({
 ## Examples
 
 ### Bulk Create from CSV
+
 ```typescript
 import { parse } from "csv-parse/sync";
 import fs from "fs";
@@ -253,6 +263,7 @@ for (const row of rows) {
 ```
 
 ### Close Stale Issues
+
 ```typescript
 const stale = await client.issues({
   filter: {
@@ -274,6 +285,7 @@ for (const issue of stale.nodes) {
 ```
 
 ## Resources
+
 - [SDK Data Fetching](https://linear.app/developers/sdk-fetching-and-modifying-data)
 - [GraphQL Filtering](https://linear.app/developers/filtering)
 - [Issue Model Schema](https://studio.apollographql.com/public/Linear-API/variant/current/schema/reference/objects/Issue)

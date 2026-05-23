@@ -10,6 +10,7 @@ clickup-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix ClickUp common errors
 **Workflow:** Part of the operations skill category for ClickUp integration.
 **Relates to:** Other clickup skills in this pack.

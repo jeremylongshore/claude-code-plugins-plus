@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Performance Tuning
 
 ## Overview
+
 Optimize Langfuse tracing for minimal overhead and maximum throughput: benchmark measurement, batch tuning, non-blocking patterns, payload optimization, sampling, and memory management.
 
 ## Prerequisites
+
 - Existing Langfuse integration
 - Performance baseline to compare against
 - Understanding of async patterns
@@ -271,6 +273,7 @@ setInterval(logMemoryStats, 60000);
 | Dropped spans | Queue full | Increase `maxQueueSize` |
 
 ## Resources
+
 - [Event Queuing/Batching](https://langfuse.com/docs/observability/features/queuing-batching)
 - [Advanced SDK Configuration](https://langfuse.com/docs/observability/sdk/typescript/advanced-usage)
 - [Token & Cost Tracking](https://langfuse.com/docs/observability/features/token-and-cost-tracking)

@@ -63,4 +63,3 @@ If you're tweaking three hex values on a landing page, HSL is fine. But the mome
 - [Verified Plugins Program: Building a Quality Signal for the Marketplace](/posts/verified-plugins-program-quality-signal-for-the-marketplace/)
 - [Three Projects, Two Reverts, One Day](/posts/three-projects-two-reverts-one-day/)
 - [React Native Mobile App in One Session](/posts/react-native-mobile-app-one-session/)
-

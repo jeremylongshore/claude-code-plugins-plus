@@ -31,6 +31,7 @@ This skill provides a structured approach to defining and tracking SLAs, SLIs, a
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Define SLAs, SLIs, and SLOs for a service.
 - Track service performance against defined objectives.
 - Calculate error budgets based on SLOs.
@@ -42,6 +43,7 @@ This skill activates when you need to:
 User request: "Create SLOs for our new payment processing service."
 
 The skill will:
+
 1. Prompt the user to define SLIs (e.g., latency, error rate).
 2. Assist in setting target values for each SLI (e.g., p99 latency < 100ms, error rate < 0.01%).
 
@@ -50,6 +52,7 @@ The skill will:
 User request: "Track the availability SLI for the database service."
 
 The skill will:
+
 1. Guide the user in setting up the tracking of the availability SLI.
 2. Visualize availability performance against the defined SLO.
 
@@ -90,6 +93,7 @@ This skill can be integrated with monitoring tools to automatically collect SLI 
 ## Error Handling
 
 If SLI/SLO tracking fails:
+
 - Verify SLI definition completeness
 - Check metric collection infrastructure
 - Validate data accuracy and granularity

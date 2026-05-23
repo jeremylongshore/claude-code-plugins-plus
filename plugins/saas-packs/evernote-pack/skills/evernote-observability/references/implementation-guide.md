@@ -542,7 +542,6 @@ groups:
 }
 ```
 
-
 ## Key Metrics
 
 | Metric | Type | Purpose |

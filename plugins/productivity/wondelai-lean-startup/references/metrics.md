@@ -9,6 +9,7 @@ Metrics are the language of validated learning. The wrong metrics create the ill
 Vanity metrics make you feel good but do not inform decisions. They go up and to the right even when the product is failing.
 
 **Common vanity metrics:**
+
 - Total registered users (includes dead accounts)
 - Total page views (says nothing about engagement quality)
 - Total downloads (says nothing about retention)
@@ -23,6 +24,7 @@ Vanity metrics make you feel good but do not inform decisions. They go up and to
 Actionable metrics directly inform decisions. If the metric changes, you change your behavior.
 
 **Properties of actionable metrics:**
+
 - Tied to a specific, repeatable action
 - Measured per cohort, not in aggregate
 - Have a clear cause-and-effect relationship with product changes
@@ -57,6 +59,7 @@ A metric is accessible if the entire team can understand it and access it easily
 **Test:** "Can every team member explain what this metric means and find the current value in under 60 seconds?"
 
 **Implementation:**
+
 - Use simple, human-readable dashboards
 - Display metrics on a shared screen or Slack channel
 - Define every metric in a shared glossary
@@ -70,6 +73,7 @@ A metric is auditable if the data can be verified and traced to individual custo
 **Test:** "Can I look at the underlying data and verify this number is correct? Can I talk to real customers whose behavior contributed to this metric?"
 
 **Implementation:**
+
 - Ensure data pipelines are transparent and well-documented
 - Maintain the ability to drill down from aggregate metrics to individual events
 - Cross-check automated reports against manual spot checks periodically
@@ -82,6 +86,7 @@ A metric is auditable if the data can be verified and traced to individual custo
 A cohort groups users by a shared experience within a defined time window.
 
 **Common cohort definitions:**
+
 - **Acquisition cohort:** Users who signed up in the same week/month
 - **Behavioral cohort:** Users who completed a specific action (e.g., made first purchase)
 - **Channel cohort:** Users acquired through the same marketing channel
@@ -200,6 +205,7 @@ Dave McClure's Pirate Metrics framework maps cleanly to lean startup stages:
 Focus on engagement and retention. Revenue metrics are premature.
 
 **Primary metrics:**
+
 - Retention (Week 1, Week 4 by cohort)
 - Core action completion rate
 - Qualitative: Sean Ellis test ("How would you feel if you could no longer use this product?")
@@ -213,6 +219,7 @@ Focus on engagement and retention. Revenue metrics are premature.
 Focus on unit economics and channel efficiency.
 
 **Primary metrics:**
+
 - LTV and LTV/CAC ratio
 - CAC by channel
 - Monthly retention and churn by cohort
@@ -226,6 +233,7 @@ Focus on unit economics and channel efficiency.
 Focus on efficiency at scale and sustainable growth.
 
 **Primary metrics:**
+
 - Net revenue retention
 - Payback period (months to recover CAC)
 - Gross margin

@@ -3,6 +3,7 @@
 ## Privacy Mode
 
 ### Understanding Privacy Mode
+
 ```
 Privacy Mode OFF (default):
 - Full AI features enabled
@@ -18,6 +19,7 @@ Privacy Mode ON:
 ```
 
 ### Enabling Privacy Mode
+
 ```
 Global:
 Settings > Cursor > Privacy Mode > Enable
@@ -30,6 +32,7 @@ Add to .vscode/settings.json:
 ```
 
 ### When to Use Privacy Mode
+
 ```
 Enable for:
 - Proprietary algorithms

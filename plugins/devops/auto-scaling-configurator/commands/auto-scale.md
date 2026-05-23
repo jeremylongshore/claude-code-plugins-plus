@@ -6,7 +6,6 @@ description: Configure auto-scaling policies for applications and infrastructure
 
 Configure auto-scaling policies for applications and infrastructure
 
-
 ## Key Features
 
 - Production-ready configurations

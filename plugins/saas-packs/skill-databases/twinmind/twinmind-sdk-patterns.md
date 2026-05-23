@@ -10,6 +10,7 @@ twinmind-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready TwinMind SDK patterns
 **Workflow:** Part of the onboarding skill category for TwinMind integration.
 **Relates to:** Other twinmind skills in this pack.

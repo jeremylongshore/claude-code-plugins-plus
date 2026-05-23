@@ -10,6 +10,7 @@ juicebox-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Juicebox multi-environment setup
 **Workflow:** Part of the enterprise skill category for Juicebox integration.
 **Relates to:** Other juicebox skills in this pack.

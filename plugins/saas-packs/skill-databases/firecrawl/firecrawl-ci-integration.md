@@ -10,6 +10,7 @@ firecrawl-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure FireCrawl CI/CD integration with GitHub Actions, automated testing, and scheduled crawl jobs.
 **Workflow:** DevOps skill - integrates scraping pipelines into CI/CD workflows for automated testing and deployment.
 **Relates to:** Enables automation for all skills; foundational for firecrawl-deploy-pipeline

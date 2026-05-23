@@ -10,6 +10,7 @@ together-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Together AI reference architecture
 **Workflow:** Part of the cicd skill category for Together AI integration.
 **Relates to:** Other together skills in this pack.

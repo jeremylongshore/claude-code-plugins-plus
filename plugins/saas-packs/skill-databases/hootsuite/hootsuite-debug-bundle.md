@@ -10,6 +10,7 @@ hootsuite-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Hootsuite debug evidence for support
 **Workflow:** Part of the operations skill category for Hootsuite integration.
 **Relates to:** Other hootsuite skills in this pack.

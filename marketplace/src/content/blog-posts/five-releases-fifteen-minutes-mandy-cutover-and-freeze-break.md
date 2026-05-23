@@ -215,4 +215,3 @@ The same calendar day's commit surface had four other items that don't fit eithe
 - [VPS as the Home — Day 1, Eight Deploy Iterations](/posts/vps-as-the-home-day-1-eight-deploy-iterations/)
 - [Propagation Day — When the Spec Becomes the Migration Plan](/posts/propagation-day-when-the-spec-becomes-the-migration-plan/)
 - [Audit Harness v0.10 — Enforcement Travels with the Code](/posts/audit-harness-v010-enforcement-travels-with-code/)
-

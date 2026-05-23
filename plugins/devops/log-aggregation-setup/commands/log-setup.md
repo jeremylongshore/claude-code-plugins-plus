@@ -6,7 +6,6 @@ description: Set up log aggregation (ELK, Loki, Splunk)
 
 Set up log aggregation (ELK, Loki, Splunk)
 
-
 ## Key Features
 
 - Production-ready configurations

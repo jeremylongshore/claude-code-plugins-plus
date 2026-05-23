@@ -10,6 +10,7 @@ shopify-incident-runbook/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Shopify incident response
 **Workflow:** Part of the advanced skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

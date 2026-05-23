@@ -3,6 +3,7 @@
 ## Domain-Specific Prompts
 
 ### API Development
+
 ```
 "Create REST endpoint for [resource]:
 
@@ -26,6 +27,7 @@ Include:
 ```
 
 ### React Components
+
 ```
 "Create React component [Name]:
 
@@ -47,6 +49,7 @@ Accessibility: WCAG 2.1 AA"
 ```
 
 ### Database Operations
+
 ```
 "Create database [operation] for [entity]:
 

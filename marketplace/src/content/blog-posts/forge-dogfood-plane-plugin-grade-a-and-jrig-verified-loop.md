@@ -310,4 +310,3 @@ The day did not stop at the marketplace and the forge.
 - [Guidewire MCP v0.1.0 → v0.1.1 in 76 minutes](/posts/guidewire-mcp-v0-1-0-v0-1-1-76-minutes/) — release engineering with the same evidence-first discipline
 - [The Anti-Slop Framework Found Three Bugs Inside Itself](/posts/anti-slop-framework-found-three-bugs-inside-itself/) — validator dogfooding, the same pattern that produced today's false-positive guard
 - [Propagation Day: When the Spec Becomes the Migration Plan](/posts/propagation-day-when-the-spec-becomes-the-migration-plan/) — spec-to-execution arcs, the same shape this dogfood follows
-

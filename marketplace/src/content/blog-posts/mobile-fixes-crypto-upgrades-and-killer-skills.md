@@ -79,4 +79,3 @@ Five commits, four meaningful improvements. Not every day needs to be a marathon
 - [Verified Plugins Program: Building a Quality Signal for the Marketplace](/posts/verified-plugins-program-quality-signal-for-the-marketplace/)
 - [Three Projects, Two Reverts, One Day](/posts/three-projects-two-reverts-one-day/)
 - [Scaling AI Batch Processing: Enhancing 235 Plugins with Vertex AI Gemini on the Free Tier](/posts/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/)
-

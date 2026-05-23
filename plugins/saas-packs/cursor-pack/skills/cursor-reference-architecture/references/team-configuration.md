@@ -3,6 +3,7 @@
 ## Team Configuration
 
 ### Shared Settings
+
 ```json
 // .vscode/settings.json (committed)
 {
@@ -32,6 +33,7 @@
 ```
 
 ### Recommended Extensions
+
 ```json
 // .vscode/extensions.json
 {

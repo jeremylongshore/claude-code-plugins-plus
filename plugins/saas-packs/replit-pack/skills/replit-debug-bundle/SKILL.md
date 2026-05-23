@@ -26,14 +26,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Debug Bundle
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'Node: N/A'`
 !`python3 --version 2>/dev/null || echo 'Python: N/A'`
 !`echo "REPL_SLUG=$REPL_SLUG REPL_OWNER=$REPL_OWNER" 2>/dev/null || echo 'Not on Replit'`
 
 ## Overview
+
 Collect all diagnostic information needed to debug Replit workspace, deployment, and database issues. Produces a redacted evidence bundle safe for sharing with Replit support.
 
 ## Prerequisites
+
 - Shell access in Replit Workspace
 - Permission to read logs and configuration
 - Access to deployment monitoring (if deployed)
@@ -41,6 +44,7 @@ Collect all diagnostic information needed to debug Replit workspace, deployment,
 ## Instructions
 
 ### Step 1: Automated Debug Bundle Script
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -109,6 +113,7 @@ rm -rf "$BUNDLE"
 ```
 
 ### Step 2: Quick Health Check
+
 ```bash
 set -euo pipefail
 # Fast triage without full bundle
@@ -125,6 +130,7 @@ curl -s https://status.replit.com/api/v2/summary.json 2>/dev/null | \
 ```
 
 ### Step 3: Deployment-Specific Diagnostics
+
 ```bash
 set -euo pipefail
 # Check deployment health
@@ -142,19 +148,23 @@ echo "time curl -s $DEPLOY_URL/health"
 ```
 
 ## Sensitive Data Handling
+
 **ALWAYS REDACT before sharing:**
+
 - API keys, tokens, passwords
 - DATABASE_URL connection strings
 - PII (emails, names, IDs)
 - REPL_IDENTITY tokens
 
 **Safe to include:**
+
 - Error messages and stack traces
 - Package versions
 - `.replit` and `replit.nix` contents
 - HTTP status codes and response times
 
 ## Error Handling
+
 | Item | Purpose | Safe to Share |
 |------|---------|---------------|
 | Runtime versions | Compatibility check | Yes |
@@ -165,6 +175,7 @@ echo "time curl -s $DEPLOY_URL/health"
 | Connection strings | Database access | NEVER |
 
 ## Submit to Support
+
 1. Create bundle: `bash replit-debug-bundle.sh`
 2. Review for sensitive data
 3. Open support ticket at https://replit.com/support
@@ -172,9 +183,11 @@ echo "time curl -s $DEPLOY_URL/health"
 5. Include: steps to reproduce, expected vs actual behavior
 
 ## Resources
+
 - [Replit Support](https://replit.com/support)
 - [Replit Status Page](https://status.replit.com)
 - [Replit Community Forum](https://ask.replit.com)
 
 ## Next Steps
+
 For rate limit issues, see `replit-rate-limits`.

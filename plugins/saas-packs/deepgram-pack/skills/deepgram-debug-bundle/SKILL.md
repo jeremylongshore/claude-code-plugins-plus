@@ -25,14 +25,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Debug Bundle
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'Node.js not installed'`
 !`npm list @deepgram/sdk 2>/dev/null | grep deepgram || echo '@deepgram/sdk not found'`
 !`python3 --version 2>/dev/null || echo 'Python not installed'`
 
 ## Overview
+
 Collect comprehensive debug information for Deepgram support tickets. Generates a sanitized bundle with environment info, API connectivity tests, audio analysis, request/response logs, and a minimal reproduction script. All API keys are automatically redacted.
 
 ## Prerequisites
+
 - Deepgram API key configured
 - `ffprobe` available for audio analysis (part of ffmpeg)
 - Sample audio that reproduces the issue
@@ -251,6 +254,7 @@ Attachments:
 ```
 
 ## Output
+
 - `deepgram-debug-YYYYMMDD-HHMMSS.tar.gz` with sanitized diagnostics
 - Environment and connectivity test results
 - Audio file analysis with compatibility warnings
@@ -258,6 +262,7 @@ Attachments:
 - Support ticket template
 
 ## Error Handling
+
 | Issue | Cause | Resolution |
 |-------|-------|------------|
 | `ffprobe` not found | ffmpeg not installed | `apt install ffmpeg` or `brew install ffmpeg` |
@@ -266,6 +271,7 @@ Attachments:
 | Tar fails | Permissions issue | Check write permissions in current directory |
 
 ## Resources
+
 - [Deepgram Support Portal](https://developers.deepgram.com/support)
 - [Deepgram Community](https://github.com/orgs/deepgram/discussions)
 - [Status Page](https://status.deepgram.com)

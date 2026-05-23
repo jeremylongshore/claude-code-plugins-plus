@@ -10,6 +10,7 @@ cohere-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Cohere integrations to production
 **Workflow:** Part of the cicd skill category for Cohere integration.
 **Relates to:** Other cohere skills in this pack.

@@ -10,7 +10,6 @@ Detailed implementation reference for the speak-multi-env-setup skill.
 | Staging | Pre-prod validation | Staging keys | Test data | All enabled |
 | Production | Live users | Production keys | Real data | Enabled per plan |
 
-
 ## Configuration Structure
 
 ```
@@ -23,6 +22,7 @@ config/
 ```
 
 ### base.json
+
 ```json
 {
   "timeout": 30000,
@@ -41,6 +41,7 @@ config/
 ```
 
 ### development.json
+
 ```json
 {
   "baseUrl": "https://api-sandbox.speak.com",
@@ -58,6 +59,7 @@ config/
 ```
 
 ### staging.json
+
 ```json
 {
   "baseUrl": "https://api-staging.speak.com",
@@ -75,6 +77,7 @@ config/
 ```
 
 ### production.json
+
 ```json
 {
   "baseUrl": "https://api.speak.com",
@@ -91,7 +94,6 @@ config/
   }
 }
 ```
-
 
 ## Environment Detection
 
@@ -128,10 +130,10 @@ export function getSpeakConfig(): SpeakConfig {
 }
 ```
 
-
 ## Secret Management by Environment
 
 ### Local Development
+
 ```bash
 # .env.local (git-ignored)
 SPEAK_ENV=development
@@ -141,6 +143,7 @@ SPEAK_MOCK_MODE=true
 ```
 
 ### CI/CD (GitHub Actions)
+
 ```yaml
 jobs:
   deploy:
@@ -155,6 +158,7 @@ jobs:
 ```
 
 ### Production (Vault/Secrets Manager)
+
 ```bash
 # AWS Secrets Manager
 aws secretsmanager get-secret-value \
@@ -168,10 +172,10 @@ gcloud secrets versions access latest \
 vault kv get -field=api_key secret/speak/production
 ```
 
-
 ## Environment Isolation
 
 ### Prevent Production Operations in Non-Prod
+
 ```typescript
 function guardProductionOperation(operation: string): void {
   const config = getSpeakConfig();
@@ -190,6 +194,7 @@ async function deleteUserData(userId: string): Promise<void> {
 ```
 
 ### Environment-Specific Lesson Restrictions
+
 ```typescript
 function getAvailableLanguages(): string[] {
   const config = getSpeakConfig();
@@ -207,7 +212,6 @@ function canAccessFeature(feature: string): boolean {
   return config.features?.[feature] ?? false;
 }
 ```
-
 
 ## Feature Flags by Environment
 
@@ -250,7 +254,6 @@ export function isFeatureEnabled(feature: keyof FeatureFlags): boolean {
 }
 ```
 
-
 ## Environment-Specific Audio Storage
 
 ```typescript
@@ -281,7 +284,6 @@ const audioStorage: Record<Environment, AudioStorageConfig> = {
   },
 };
 ```
-
 
 ## Environment Health Checks
 
@@ -325,10 +327,10 @@ async function verifyEnvironmentConfig(): Promise<EnvironmentCheck> {
 }
 ```
 
-
 ## Detailed Examples
 
 ### Quick Environment Check
+
 ```typescript
 const config = getSpeakConfig();
 console.log(`Environment: ${config.environment}`);
@@ -338,6 +340,7 @@ console.log(`Features:`, config.features);
 ```
 
 ### Environment Switching Script
+
 ```bash
 #!/bin/bash
 # switch-speak-env.sh
@@ -359,4 +362,3 @@ esac
 
 echo "Switched to $SPEAK_ENV environment"
 ```
-

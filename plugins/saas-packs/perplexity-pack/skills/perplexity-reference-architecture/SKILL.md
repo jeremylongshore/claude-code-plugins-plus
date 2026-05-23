@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Reference Architecture
 
 ## Overview
+
 Production architecture for AI-powered search with Perplexity Sonar API. Three tiers: search service (model routing + caching), citation pipeline (extract, validate, store), and research orchestrator (multi-query synthesis).
 
 ## Architecture
@@ -50,6 +51,7 @@ Production architecture for AI-powered search with Perplexity Sonar API. Three t
 ```
 
 ## Prerequisites
+
 - Perplexity API key with Sonar access
 - OpenAI-compatible client library (`openai` package)
 - Redis for production caching (LRU for development)
@@ -57,6 +59,7 @@ Production architecture for AI-powered search with Perplexity Sonar API. Three t
 ## Instructions
 
 ### Step 1: Search Service with Model Routing
+
 ```typescript
 // src/perplexity/search-service.ts
 import OpenAI from "openai";
@@ -126,6 +129,7 @@ export class SearchService {
 ```
 
 ### Step 2: Citation Pipeline
+
 ```typescript
 // src/perplexity/citation-pipeline.ts
 export interface Citation {
@@ -162,6 +166,7 @@ export function deduplicateCitations(citations: Citation[]): Citation[] {
 ```
 
 ### Step 3: Research Orchestrator
+
 ```typescript
 // src/perplexity/research-orchestrator.ts
 export class ResearchOrchestrator {
@@ -203,6 +208,7 @@ export class ResearchOrchestrator {
 ```
 
 ### Step 4: Fact-Check Service
+
 ```typescript
 export async function factCheck(
   claim: string,
@@ -223,6 +229,7 @@ export async function factCheck(
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | No citations returned | Using sonar for complex query | Upgrade to sonar-pro |
@@ -231,11 +238,13 @@ export async function factCheck(
 | Rate limit on research | Too many sequential queries | Add 2s delay between calls |
 
 ## Output
+
 - Search service with model routing by query depth
 - Citation extraction and rendering pipeline
 - Multi-query research orchestrator
 - Fact-checking service
 
 ## Resources
+
 - [Perplexity API Docs](https://docs.perplexity.ai)
 - [Model Guide](https://docs.perplexity.ai/getting-started/models)

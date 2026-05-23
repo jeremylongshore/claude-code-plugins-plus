@@ -443,6 +443,7 @@ echo "ACTION: Manually verify in Lokalise dashboard > Team > Members"
 ## Output
 
 A complete pre-deployment report covering:
+
 - Translation coverage percentage per locale (must be 100% for production)
 - Missing and orphaned key counts
 - Format validation results (JSON validity, placeholder consistency)

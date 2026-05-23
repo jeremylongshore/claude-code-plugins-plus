@@ -10,6 +10,7 @@ cursor-usage-analytics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Tracks and analyzes Cursor usage metrics including user activity, AI feature adoption, costs, and team performance through the admin dashboard and API.
 
 **Workflow:** This skill activates when team admins or managers need usage insights. It covers available metrics, dashboard views, custom reports, analytics API, benchmarking, optimization insights, and privacy compliance.

@@ -176,6 +176,7 @@ await webflow.collections.items.createItemsBulk(collectionId, {
 ```
 
 Available bulk endpoints:
+
 - `createItemsBulk` — Create up to 100 items
 - `updateItemsBulk` — Update up to 100 items
 - `deleteItemsBulk` — Delete up to 100 items

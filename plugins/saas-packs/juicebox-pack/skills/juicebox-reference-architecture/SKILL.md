@@ -22,6 +22,7 @@ compatibility: Designed for Claude Code
 Production architecture for AI-powered candidate analysis integrations with Juicebox. Designed for recruiting teams needing automated dataset ingestion from job descriptions, intelligent candidate scoring and ranking, result caching for repeated searches, and seamless export to ATS platforms like Greenhouse and Lever. Key design drivers: search result freshness, candidate deduplication across sources, outreach sequencing, and analysis pipeline throughput for high-volume hiring.
 
 ## Architecture Diagram
+
 ```
 Recruiter Dashboard ──→ Search Service ──→ Cache (Redis) ──→ Juicebox API
                              ↓                                /search
@@ -33,6 +34,7 @@ Recruiter Dashboard ──→ Search Service ──→ Cache (Redis) ──→ J
 ```
 
 ## Service Layer
+
 ```typescript
 class CandidateSearchService {
   constructor(private juicebox: JuiceboxClient, private cache: CacheLayer) {}
@@ -56,6 +58,7 @@ class CandidateSearchService {
 ```
 
 ## Caching Strategy
+
 ```typescript
 const CACHE_CONFIG = {
   searchResults: { ttl: 1800, prefix: 'search' },   // 30 min — candidate pools shift slowly
@@ -68,6 +71,7 @@ const CACHE_CONFIG = {
 ```
 
 ## Event Pipeline
+
 ```typescript
 class RecruitingPipeline {
   private queue = new Bull('juicebox-events', { redis: process.env.REDIS_URL });
@@ -86,6 +90,7 @@ class RecruitingPipeline {
 ```
 
 ## Data Model
+
 ```typescript
 interface SearchCriteria   { role: string; skills: string[]; location?: string; experienceYears?: number; companySize?: string; }
 interface RankedCandidate  { id: string; name: string; title: string; company: string; score: number; skills: string[]; profileUrl: string; }
@@ -94,6 +99,7 @@ interface ExportResult     { exported: number; duplicatesSkipped: number; atsJob
 ```
 
 ## Scaling Considerations
+
 - Parallelize search requests across role categories — Juicebox API supports concurrent queries
 - Cache analysis results aggressively — AI scoring is the most expensive operation per candidate
 - Batch ATS exports by job requisition to minimize Greenhouse/Lever API round-trips
@@ -101,6 +107,7 @@ interface ExportResult     { exported: number; duplicatesSkipped: number; atsJob
 - Rate-limit outreach sequencing to maintain sender reputation and deliverability
 
 ## Error Handling
+
 | Component | Failure Mode | Recovery |
 |-----------|-------------|----------|
 | Candidate search | Juicebox API timeout | Retry with reduced result count, serve cached results if available |
@@ -110,8 +117,10 @@ interface ExportResult     { exported: number; duplicatesSkipped: number; atsJob
 | Webhook handler | Duplicate event delivery | Idempotency key on event ID + candidate ID |
 
 ## Resources
+
 - [Juicebox AI](https://juicebox.ai)
 - [Juicebox Integrations](https://juicebox.ai/integrations)
 
 ## Next Steps
+
 See `juicebox-deploy-integration`.

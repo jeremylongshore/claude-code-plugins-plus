@@ -10,6 +10,7 @@ hubspot-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure HubSpot multi-environment setup
 **Workflow:** Part of the enterprise skill category for HubSpot integration.
 **Relates to:** Other hubspot skills in this pack.

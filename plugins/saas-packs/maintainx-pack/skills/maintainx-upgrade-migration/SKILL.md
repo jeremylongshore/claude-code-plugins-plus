@@ -25,12 +25,15 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Upgrade & Migration
 
 ## Current State
+
 !`npm list 2>/dev/null | head -20`
 
 ## Overview
+
 Handle MaintainX API version upgrades, deprecations, and breaking changes with a safe, incremental migration strategy.
 
 ## Prerequisites
+
 - Existing MaintainX integration
 - Test environment with separate API key
 - Version control (git) for all integration code
@@ -240,6 +243,7 @@ echo "5. Document issues for v2 retry"
 ```
 
 ## Output
+
 - API usage audit report listing all endpoints and call sites
 - Version compatibility layer with request/response adapters
 - Feature flag system for incremental per-endpoint migration
@@ -247,6 +251,7 @@ echo "5. Document issues for v2 retry"
 - Rollback procedure for safe revert
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | 404 on v2 endpoint | Endpoint path changed | Update adapter mappings |
@@ -255,10 +260,12 @@ echo "5. Document issues for v2 retry"
 | Feature flag stuck | Config not reloaded | Restart service or use dynamic config |
 
 ## Resources
+
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html) -- Incremental migration strategy
 
 ## Next Steps
+
 For CI/CD integration, see `maintainx-ci-integration`.
 
 ## Examples

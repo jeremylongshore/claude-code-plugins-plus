@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Anthropic Install & Auth
 
 ## Overview
+
 Set up the Anthropic SDK and configure your API key to start using Claude models.
 
 ## Prerequisites
+
 - Node.js 18+ or Python 3.10+
 - Anthropic account at [console.anthropic.com](https://console.anthropic.com)
 - API key from Settings → API Keys (starts with `sk-ant-`)
@@ -35,6 +37,7 @@ Set up the Anthropic SDK and configure your API key to start using Claude models
 ## Instructions
 
 ### Step 1: Install SDK
+
 ```bash
 # Node.js / TypeScript
 npm install @claude-ai/sdk
@@ -44,6 +47,7 @@ pip install anthropic
 ```
 
 ### Step 2: Configure API Key
+
 ```bash
 # Set environment variable (recommended)
 export ANTHROPIC_API_KEY="sk-ant-api03-..."
@@ -55,6 +59,7 @@ echo 'ANTHROPIC_API_KEY=sk-ant-api03-...' >> .env
 > **Important:** Never hardcode API keys. Use environment variables or a secrets manager. Keys start with `sk-ant-`.
 
 ### Step 3: Verify Connection
+
 ```typescript
 import Anthropic from '@claude-ai/sdk';
 
@@ -82,11 +87,13 @@ print(message.content[0].text)  # "Connected"
 ```
 
 ## Output
+
 - `@claude-ai/sdk` in node_modules or `anthropic` in site-packages
 - `ANTHROPIC_API_KEY` environment variable set
 - Successful Claude response confirming API access
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `authentication_error` (401) | API key missing, invalid, or revoked | Check key at console.anthropic.com → API Keys |
@@ -97,6 +104,7 @@ print(message.content[0].text)  # "Connected"
 ## Examples
 
 ### TypeScript Setup
+
 ```typescript
 import Anthropic from '@claude-ai/sdk';
 
@@ -113,6 +121,7 @@ const client = new Anthropic({
 ```
 
 ### Python Setup
+
 ```python
 import anthropic
 
@@ -127,10 +136,12 @@ client = anthropic.AsyncAnthropic()
 ```
 
 ## Resources
+
 - [Anthropic API Docs](https://docs.anthropic.com/en/api/getting-started)
 - [Console Dashboard](https://console.anthropic.com)
 - [API Key Management](https://console.anthropic.com/settings/keys)
 - [Anthropic Status](https://status.anthropic.com)
 
 ## Next Steps
+
 After successful auth, proceed to `clade-hello-world` for your first Claude conversation.

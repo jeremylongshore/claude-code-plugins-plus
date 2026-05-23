@@ -7,10 +7,12 @@ Complete installation instructions for the Fullstack Starter Pack Claude Code pl
 ## Prerequisites
 
 **Required:**
+
 - Claude Code CLI installed and configured
 - Git (for version control)
 
 **Recommended:**
+
 - Node.js 18+ (for frontend/backend development)
 - Docker Desktop (for containerized development)
 - PostgreSQL 14+ or Docker (for database)
@@ -90,6 +92,7 @@ mklink /D "%USERPROFILE%\.claude\plugins\fullstack-starter-pack" "C:\path\to\ful
 ### Frontend Development
 
 **Install Node.js dependencies (one-time):**
+
 ```bash
 # These will be installed automatically when you generate projects
 # But you may want to pre-install common tools:
@@ -101,6 +104,7 @@ npm install -g vite
 ### Backend Development
 
 **Database Setup:**
+
 ```bash
 # Option 1: Docker (recommended for development)
 docker run --name postgres \
@@ -116,6 +120,7 @@ docker run --name postgres \
 ```
 
 **Redis Setup (Optional):**
+
 ```bash
 # Docker
 docker run --name redis -p 6379:6379 -d redis:7-alpine
@@ -153,6 +158,7 @@ docker run --name redis -p 6379:6379 -d redis:7-alpine
 ### 2. Test Agents
 
 Ask Claude:
+
 - "Review this React component for performance issues" → React Specialist activates
 - "Design a REST API for a blog" → API Builder activates
 - "Help me design a database schema for e-commerce" → Database Designer activates
@@ -189,6 +195,7 @@ Ask Claude:
 ### Issue: Plugins not appearing
 
 **Solution:**
+
 ```bash
 # Reload Claude Code
 # Restart Claude Code CLI
@@ -201,6 +208,7 @@ Ask Claude:
 ### Issue: Commands not working
 
 **Check:**
+
 1. Plugin installed correctly: `/plugin list`
 2. Shortcut conflicts: Check if shortcuts (`/cg`, `/eas`, etc.) conflict with other plugins
 3. Claude Code version: Requires Claude Code >=0.1.0
@@ -208,6 +216,7 @@ Ask Claude:
 ### Issue: Agents not activating
 
 **Solution:**
+
 - Be explicit in requests: "I need help with React performance optimization"
 - Use activation keywords: "react", "api", "database", "deployment"
 
@@ -276,4 +285,4 @@ npm install -g dotenv-cli  # Environment variable management
 
 ---
 
-**Installation complete! Start building fullstack applications faster.** 
+**Installation complete! Start building fullstack applications faster.**

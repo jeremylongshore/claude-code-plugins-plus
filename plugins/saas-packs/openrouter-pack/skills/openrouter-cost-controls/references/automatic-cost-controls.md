@@ -3,6 +3,7 @@
 ## Automatic Cost Controls
 
 ### Hard Limit Enforcement
+
 ```python
 class HardLimitEnforcer:
     def __init__(
@@ -53,6 +54,7 @@ def limited_chat(prompt: str, model: str):
 ```
 
 ### Automatic Model Downgrade
+
 ```python
 def auto_downgrade_chat(
     prompt: str,

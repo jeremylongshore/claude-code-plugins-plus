@@ -10,6 +10,7 @@ exa-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement production-ready reference architecture with search service layer, caching, error handling, and health checks.
 **Workflow:** Architecture guidance skill - provides blueprint for new Exa integrations.
 **Relates to:** Follows exa-sdk-patterns; provides foundation for all production deployments

@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Salesforce Core Workflow A — CRUD & SOQL
 
 ## Overview
+
 Primary workflow: perform CRUD operations on standard sObjects (Account, Contact, Lead, Opportunity) using SOQL queries, jsforce methods, and REST API endpoints.
 
 ## Prerequisites
+
 - Completed `salesforce-install-auth` setup
 - jsforce installed and connection configured
 - Understanding of Salesforce sObject model
@@ -204,6 +206,7 @@ await conn.request({
 ```
 
 ## Output
+
 - SOQL queries returning typed sObject records
 - Single and bulk record creation
 - Record updates and upserts by External ID
@@ -211,6 +214,7 @@ await conn.request({
 - Direct REST API calls for advanced use cases
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `INVALID_FIELD` | Wrong field API name in SOQL | Use Object Manager to check field names |
@@ -221,10 +225,12 @@ await conn.request({
 | `ENTITY_IS_DELETED` | Operating on deleted record | Query Recycle Bin or use `ALL ROWS` in SOQL |
 
 ## Resources
+
 - [sObject CRUD (REST API)](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/dome_sobject_create.htm)
 - [sObject Collections](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_composite_sobjects_collections.htm)
 - [SOQL Reference](https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_soql.htm)
 - [SOSL Reference](https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_sosl.htm)
 
 ## Next Steps
+
 For Bulk API and Composite API patterns, see `salesforce-core-workflow-b`.

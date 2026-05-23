@@ -10,6 +10,7 @@ langfuse-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Langfuse common errors
 **Workflow:** Part of the operations skill category for Langfuse integration.
 **Relates to:** Other langfuse skills in this pack.

@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Production Checklist
 
 ## Overview
+
 Complete go-live checklist for deploying Foundry-integrated applications to production. Covers credential management, health checks, monitoring, and rollback procedures.
 
 ## Prerequisites
+
 - Staging environment tested and verified
 - Production OAuth2 credentials from Developer Console
 - Deployment pipeline configured
@@ -38,6 +40,7 @@ Complete go-live checklist for deploying Foundry-integrated applications to prod
 ## Instructions
 
 ### Pre-Deployment: Credentials & Config
+
 - [ ] OAuth2 client credentials in secrets manager (not personal tokens)
 - [ ] Scopes are minimal: only what the app actually needs
 - [ ] `FOUNDRY_HOSTNAME` points to production enrollment
@@ -45,6 +48,7 @@ Complete go-live checklist for deploying Foundry-integrated applications to prod
 - [ ] Credential rotation schedule documented (90-day max)
 
 ### Code Quality
+
 - [ ] All tests passing including Foundry integration tests
 - [ ] No hardcoded hostnames, tokens, or RIDs
 - [ ] Error handling covers all Foundry `ApiError` status codes
@@ -52,7 +56,9 @@ Complete go-live checklist for deploying Foundry-integrated applications to prod
 - [ ] Logging uses structured format (JSON) with request IDs
 
 ### Infrastructure
+
 - [ ] Health check endpoint verifies Foundry connectivity
+
 ```python
 @app.get("/health")
 async def health():
@@ -62,12 +68,14 @@ async def health():
     except foundry.ApiError as e:
         return {"status": "degraded", "foundry": f"error_{e.status_code}"}
 ```
+
 - [ ] Circuit breaker pattern for Foundry API calls
 - [ ] Graceful degradation when Foundry is unreachable
 - [ ] Timeout configuration: 30s for reads, 60s for writes
 - [ ] Connection pooling configured
 
 ### Monitoring & Alerting
+
 - [ ] Metrics: request count, latency p50/p99, error rate by status code
 - [ ] Alert: 5xx error rate > 5% for 5 minutes → P1
 - [ ] Alert: p99 latency > 10s for 10 minutes → P2
@@ -76,6 +84,7 @@ async def health():
 - [ ] Dashboard with Foundry API health summary
 
 ### Documentation
+
 - [ ] Incident runbook: `palantir-incident-runbook`
 - [ ] Credential rotation procedure documented
 - [ ] Rollback procedure documented and tested
@@ -83,6 +92,7 @@ async def health():
 - [ ] Foundry support contact info available
 
 ### Deploy
+
 ```bash
 set -euo pipefail
 # Pre-flight
@@ -96,18 +106,21 @@ kubectl rollout status deployment/my-app --timeout=300s
 ```
 
 ### Rollback
+
 ```bash
 kubectl rollout undo deployment/my-app
 kubectl rollout status deployment/my-app
 ```
 
 ## Output
+
 - Production deployment with verified Foundry connectivity
 - Health checks passing
 - Monitoring and alerting active
 - Rollback procedure tested
 
 ## Error Handling
+
 | Alert | Condition | Severity |
 |-------|-----------|----------|
 | Foundry Unreachable | Health check fails 3x | P1 |
@@ -116,8 +129,10 @@ kubectl rollout status deployment/my-app
 | High Latency | p99 > 10s | P2 |
 
 ## Resources
+
 - [Foundry API Reference](https://www.palantir.com/docs/foundry/api/general/overview/introduction)
 - [Foundry Documentation](https://www.palantir.com/docs/foundry)
 
 ## Next Steps
+
 For version upgrades, see `palantir-upgrade-migration`.

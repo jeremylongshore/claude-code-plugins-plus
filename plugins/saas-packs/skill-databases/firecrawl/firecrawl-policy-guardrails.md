@@ -10,6 +10,7 @@ firecrawl-policy-guardrails/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement robots.txt compliance, rate limiting policies, content filtering, and ethical scraping guardrails.
 **Workflow:** Compliance skill - ensures scraping operations are ethical, legal, and respect target site policies.
 **Relates to:** Extends firecrawl-security-basics; supports firecrawl-data-handling for responsible data use

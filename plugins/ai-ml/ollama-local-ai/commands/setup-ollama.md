@@ -19,6 +19,7 @@ uname -s
 ## Step 2: Install Ollama
 
 ### For macOS:
+
 ```bash
 # Using Homebrew (recommended)
 brew install ollama
@@ -28,6 +29,7 @@ brew services start ollama
 ```
 
 ### For Linux:
+
 ```bash
 # Official installation script
 curl -fsSL https://ollama.com/install.sh | sh
@@ -38,6 +40,7 @@ sudo systemctl enable ollama
 ```
 
 ### For Windows:
+
 Download installer from: https://ollama.com/download/windows
 
 ## Step 3: Verify Installation
@@ -74,6 +77,7 @@ echo "Write a hello world in Python" | ollama run llama3.2
 Ollama runs on `http://localhost:11434` by default.
 
 Test the API:
+
 ```bash
 curl http://localhost:11434/api/generate -d '{
   "model": "llama3.2",
@@ -84,6 +88,7 @@ curl http://localhost:11434/api/generate -d '{
 ## Optional: GPU Acceleration
 
 ### NVIDIA GPU:
+
 ```bash
 # Check GPU availability
 nvidia-smi
@@ -92,6 +97,7 @@ nvidia-smi
 ```
 
 ### Apple Silicon:
+
 ```bash
 # Metal acceleration is automatic on M1/M2/M3
 ```
@@ -103,6 +109,7 @@ nvidia-smi
 3. ✅ API tested
 
 You can now use Ollama in your projects:
+
 - Python: `pip install ollama`
 - Node.js: `npm install ollama`
 - Direct API calls to `http://localhost:11434`

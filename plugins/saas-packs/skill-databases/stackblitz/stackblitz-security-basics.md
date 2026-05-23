@@ -10,6 +10,7 @@ stackblitz-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply StackBlitz security best practices
 **Workflow:** Part of the operations skill category for StackBlitz integration.
 **Relates to:** Other stackblitz skills in this pack.

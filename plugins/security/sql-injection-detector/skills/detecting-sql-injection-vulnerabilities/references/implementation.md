@@ -1,4 +1,4 @@
-# Implementation Guide
+## Implementation Guide
 
 1. Identify input surfaces and data flows into database queries.
 2. Review query construction and parameterization patterns.
@@ -8,6 +8,7 @@
 ### 1. Code Discovery Phase
 
 Locate database interaction code:
+
 - SQL query construction
 - ORM usage (ActiveRecord, Hibernate, SQLAlchemy, etc.)
 - Stored procedure calls
@@ -15,6 +16,7 @@ Locate database interaction code:
 - User input handling for database operations
 
 **Common patterns to search**:
+
 - Direct SQL: `SELECT`, `INSERT`, `UPDATE`, `DELETE` statements
 - String concatenation with user input
 - ORM raw query methods
@@ -25,6 +27,7 @@ Locate database interaction code:
 **Critical SQL Injection Patterns**:
 
 **String Concatenation (Highly Vulnerable)**:
+
 ```python
 # INSECURE: Direct concatenation
 

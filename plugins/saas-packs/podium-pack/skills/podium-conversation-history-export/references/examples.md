@@ -73,6 +73,7 @@ python3 scripts/export_conversations.py \
 ```
 
 Output:
+
 ```json
 {
   "resource": "conversations",
@@ -93,6 +94,7 @@ python3 scripts/cdc_watermark.py --db ./watermarks.sqlite
 ```
 
 Output:
+
 ```json
 {
   "conversations": {"watermark": 1715212800, "iso8601": "2026-05-09T00:00:00Z", "age_seconds": 86400},
@@ -129,6 +131,7 @@ python3 scripts/attachment_downloader.py \
 ```
 
 Output:
+
 ```json
 {
   "attachments_total": 1842,
@@ -152,6 +155,7 @@ python3 scripts/chunk_for_embedding.py \
 ```
 
 Each output line is one chunk:
+
 ```json
 {
   "chunk_id": "conv_a1b2c3:msg_001:msg_042",

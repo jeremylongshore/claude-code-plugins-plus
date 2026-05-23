@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Local Dev Loop
 
 ## Overview
+
 Set up a fast, cost-effective local development workflow for Perplexity Sonar API. Key challenge: every real API call performs a web search and costs money, so mocking and caching are essential for development.
 
 ## Prerequisites
+
 - Completed `perplexity-install-auth` setup
 - Node.js 18+ with npm/pnpm
 - `vitest` for testing
@@ -36,6 +38,7 @@ Set up a fast, cost-effective local development workflow for Perplexity Sonar AP
 ## Instructions
 
 ### Step 1: Project Structure
+
 ```
 my-perplexity-project/
 ├── src/
@@ -55,6 +58,7 @@ my-perplexity-project/
 ```
 
 ### Step 2: Type-Safe Client Wrapper
+
 ```typescript
 // src/perplexity/client.ts
 import OpenAI from "openai";
@@ -107,6 +111,7 @@ export async function search(
 ```
 
 ### Step 3: Save Fixtures for Offline Development
+
 ```typescript
 // scripts/capture-fixture.ts
 import { createClient, search } from "../src/perplexity/client";
@@ -127,6 +132,7 @@ captureFixture();
 ```
 
 ### Step 4: Mock Client for Tests
+
 ```typescript
 // tests/setup.ts
 import { vi } from "vitest";
@@ -144,6 +150,7 @@ export function mockPerplexityClient() {
 ```
 
 ### Step 5: Write Tests
+
 ```typescript
 // tests/perplexity.test.ts
 import { describe, it, expect } from "vitest";
@@ -176,6 +183,7 @@ describe("Perplexity Search", () => {
 ```
 
 ### Step 6: Dev Scripts
+
 ```json
 {
   "scripts": {
@@ -189,6 +197,7 @@ describe("Perplexity Search", () => {
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Fixture missing | Never captured | Run `npm run capture-fixtures` once |
@@ -197,14 +206,17 @@ describe("Perplexity Search", () => {
 | High dev costs | Making live calls in loop | Use fixtures; reserve live calls for CI |
 
 ## Output
+
 - Type-safe Perplexity client wrapper
 - Fixture-based test suite that runs offline
 - Live integration test gated on API key presence
 - Hot-reload dev server
 
 ## Resources
+
 - [Vitest Documentation](https://vitest.dev/)
 - [Perplexity API Reference](https://docs.perplexity.ai/api-reference/chat-completions-post)
 
 ## Next Steps
+
 See `perplexity-sdk-patterns` for production-ready code patterns.

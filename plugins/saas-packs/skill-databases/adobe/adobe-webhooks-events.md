@@ -10,6 +10,7 @@ adobe-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Adobe webhook handling
 **Workflow:** Part of the cicd skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

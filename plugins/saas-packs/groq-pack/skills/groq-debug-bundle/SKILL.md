@@ -24,14 +24,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq Debug Bundle
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'N/A'`
 !`python3 --version 2>/dev/null || echo 'N/A'`
 !`npm list groq-sdk 2>/dev/null | grep groq-sdk || echo 'groq-sdk not installed'`
 
 ## Overview
+
 Collect all diagnostic information needed to resolve Groq API issues. Produces a redacted support bundle with environment info, SDK version, connectivity test results, and rate limit status.
 
 ## Prerequisites
+
 - `GROQ_API_KEY` set in environment
 - `curl` and `jq` available
 - Access to application logs
@@ -39,6 +42,7 @@ Collect all diagnostic information needed to resolve Groq API issues. Produces a
 ## Instructions
 
 ### Step 1: Create Debug Bundle Script
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -62,6 +66,7 @@ ENVEOF
 ```
 
 ### Step 2: API Connectivity Test
+
 ```bash
 # Test API endpoint and capture headers
 echo "--- API Connectivity ---" >> "$BUNDLE_DIR/connectivity.txt"
@@ -78,6 +83,7 @@ echo "Models available: $(curl -s https://api.groq.com/openai/v1/models \
 ```
 
 ### Step 3: Rate Limit Status
+
 ```bash
 # Make a minimal request and capture rate limit headers
 echo "--- Rate Limit Status ---" >> "$BUNDLE_DIR/rate-limits.txt"
@@ -91,6 +97,7 @@ curl -si https://api.groq.com/openai/v1/chat/completions \
 ```
 
 ### Step 4: Latency Benchmark
+
 ```bash
 # Quick latency test across models
 echo "--- Latency Benchmark ---" >> "$BUNDLE_DIR/latency.txt"
@@ -107,6 +114,7 @@ done
 ```
 
 ### Step 5: Application Log Extraction
+
 ```bash
 # Capture recent Groq-related errors from application logs (redacted)
 echo "--- Application Logs (redacted) ---" >> "$BUNDLE_DIR/app-logs.txt"
@@ -127,6 +135,7 @@ fi
 ```
 
 ### Step 6: Package Bundle
+
 ```bash
 # Create tarball
 tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
@@ -136,6 +145,7 @@ echo "Review before sharing -- ensure no secrets are included."
 ```
 
 ## Programmatic Debug Check (TypeScript)
+
 ```typescript
 import Groq from "groq-sdk";
 
@@ -177,6 +187,7 @@ groqDiagnostic().then((r) => console.log(JSON.stringify(r, null, 2)));
 ```
 
 ## Bundle Contents
+
 | File | Purpose | Sensitive? |
 |------|---------|-----------|
 | `environment.txt` | Node/Python versions, SDK version | Key prefix only |
@@ -187,14 +198,17 @@ groqDiagnostic().then((r) => console.log(JSON.stringify(r, null, 2)));
 | `config-redacted.txt` | Config keys only (values masked) | Redacted |
 
 ## ALWAYS Redact Before Sharing
+
 - API keys (anything starting with `gsk_`)
 - Bearer tokens
 - PII (emails, names, IDs)
 - Internal hostnames and IPs
 
 ## Resources
+
 - [Groq Error Codes](https://console.groq.com/docs/errors)
 - [Groq Status Page](https://status.groq.com)
 
 ## Next Steps
+
 For rate limit issues, see `groq-rate-limits`.

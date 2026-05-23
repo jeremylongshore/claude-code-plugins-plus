@@ -19,6 +19,7 @@ tail -f ~/Library/Logs/Granola/granola.log
 ## Incident: Recording Not Starting
 
 ### Quick Fix (< 5 min)
+
 1. Manually click "Start Recording" in Granola
 2. Check calendar is connected (Settings > Integrations)
 3. Verify meeting is on synced calendar
@@ -26,6 +27,7 @@ tail -f ~/Library/Logs/Granola/granola.log
 5. Check audio permissions granted
 
 ### Root Cause Investigation
+
 - Calendar Sync: Last sync time? OAuth token valid? Correct calendar selected?
 - Audio Permission: System Preferences > Security > Microphone - Is Granola listed?
 - App State: Force quit and restart, clear cache, check for updates
@@ -33,6 +35,7 @@ tail -f ~/Library/Logs/Granola/granola.log
 ## Incident: No Audio Captured
 
 ### Quick Fix
+
 1. Check audio input device in System Preferences
 2. Verify physical mic is not muted
 3. Test mic with other app (Voice Memos)
@@ -40,11 +43,13 @@ tail -f ~/Library/Logs/Granola/granola.log
 5. Rejoin meeting if possible
 
 ### Workaround
+
 Take manual notes, record with backup tool (QuickTime, OBS), upload/transcribe after meeting.
 
 ## Incident: Processing Stuck
 
 ### Quick Fix
+
 1. Wait up to 15 minutes (large meetings take longer)
 2. Check internet connectivity
 3. Check status page for delays
@@ -52,12 +57,14 @@ Take manual notes, record with backup tool (QuickTime, OBS), upload/transcribe a
 5. Contact support if > 20 min
 
 ### Support Escalation
+
 Email: help@granola.ai
 Include: meeting date/time, meeting ID, duration, error messages, steps tried.
 
 ## Incident: Integration Failure
 
 ### Quick Fix
+
 1. Check integration status (Settings > Integrations)
 2. Reconnect if showing "Disconnected"
 3. Test integration manually
@@ -65,22 +72,26 @@ Include: meeting date/time, meeting ID, duration, error messages, steps tried.
 5. Verify Zapier Zap is enabled
 
 ### Manual Workaround
+
 Export note as Markdown. Manually paste to Notion/Slack. Create tasks manually in Linear.
 
 ## Incident: Complete Outage
 
 ### During Outage
+
 1. Acknowledge internally (Slack)
 2. Enable backup note-taking
 3. Monitor status page
 4. Document affected meetings
 
 ### Backup Procedures
+
 Designate note-taker per meeting, use Google Docs/Notion directly, record via native platform recording.
 
 ## Communication Templates
 
 ### Internal (Slack)
+
 ```
 :warning: Granola Incident
 Status: [Investigating/Identified/Monitoring/Resolved]
@@ -91,6 +102,7 @@ Next update: [Time]
 ```
 
 ### User Notification (Email)
+
 ```
 Subject: Granola Service Update
 We're aware of issues with [issue] affecting [scope].
@@ -100,6 +112,7 @@ We'll update within [timeframe].
 ```
 
 ## Post-Incident Report Template
+
 ```markdown
 ## Incident Report: [Title]
 **Date:** [Date/Time]  **Duration:** [Start to resolution]
@@ -117,6 +130,7 @@ We'll update within [timeframe].
 ```
 
 ## Escalation Path
+
 1. Primary: IT Support
 2. Secondary: Granola Admin
 3. Management: Team Lead

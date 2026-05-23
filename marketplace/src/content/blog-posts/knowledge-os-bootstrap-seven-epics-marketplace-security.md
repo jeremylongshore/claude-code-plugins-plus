@@ -160,7 +160,7 @@ No epic can ship without the one before it. But each one is small enough to ship
 ---
 
 *Related posts:*
+
 - [Building Post-Compaction Recovery with Beads](/posts/building-post-compaction-recovery-beads/) — the task persistence system that keeps multi-epic days recoverable
 - [From Tool to Platform: IntentCAD Five Epics One Day](/posts/from-tool-to-platform-intentcad-five-epics-one-day/) — the same contracts-then-execute pattern applied to CAD tooling
 - [Nuclear Option Day: Validator Rewrite Across 414 Plugins](/posts/nuclear-option-day-validator-rewrite-414-plugins/) — another high-output day driven by a single architectural decision
-

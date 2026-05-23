@@ -23,6 +23,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Data Handling
 
 ## Overview
+
 Manage data flowing through Perplexity Sonar API. Critical concern: queries are sent to Perplexity for web search, so any PII in queries is exposed to external infrastructure. Responses contain citations (third-party URLs) that must be validated before displaying to users.
 
 ## Data Flow
@@ -39,6 +40,7 @@ User Input → Query Sanitization → Perplexity API → Response Parsing
 ```
 
 ## Prerequisites
+
 - Perplexity API key configured
 - Understanding of PII regulations (GDPR/CCPA)
 - Cache storage (Redis or in-memory)
@@ -46,6 +48,7 @@ User Input → Query Sanitization → Perplexity API → Response Parsing
 ## Instructions
 
 ### Step 1: Query Sanitization
+
 ```typescript
 function sanitizeQuery(query: string): { clean: string; redacted: boolean } {
   let clean = query;
@@ -84,6 +87,7 @@ async function safeSearch(rawQuery: string) {
 ```
 
 ### Step 2: Citation Validation
+
 ```typescript
 interface ValidatedCitation {
   url: string;
@@ -129,6 +133,7 @@ function renderCitations(answer: string, citations: ValidatedCitation[]): string
 ```
 
 ### Step 3: Result Caching with Freshness Policy
+
 ```typescript
 import { LRUCache } from "lru-cache";
 import { createHash } from "crypto";
@@ -182,6 +187,7 @@ async function cachedSearch(query: string, model = "sonar") {
 ```
 
 ### Step 4: Conversation Context Management
+
 ```typescript
 import OpenAI from "openai";
 
@@ -241,6 +247,7 @@ class SearchContext {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | PII in search query | User entered personal data | Apply `sanitizeQuery` before API call |
@@ -250,14 +257,17 @@ class SearchContext {
 | Duplicate citations | Same source cited multiple times | Deduplicate by normalized URL |
 
 ## Output
+
 - Query sanitization stripping PII before API calls
 - Citation validation and deduplication
 - Cache with query-type-aware TTL
 - Conversation context with automatic trimming
 
 ## Resources
+
 - [Perplexity API Documentation](https://docs.perplexity.ai)
 - [Perplexity Privacy Policy](https://www.perplexity.ai/privacy)
 
 ## Next Steps
+
 For access control, see `perplexity-enterprise-rbac`.

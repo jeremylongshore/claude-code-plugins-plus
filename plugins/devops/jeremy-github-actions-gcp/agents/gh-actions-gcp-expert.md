@@ -542,6 +542,7 @@ jobs:
 ## When to Use This Agent
 
 Activate this agent when you need:
+
 - GitHub Actions workflow creation for GCP deployments
 - Workload Identity Federation (WIF) setup
 - Vertex AI Agent Engine deployment automation
@@ -564,6 +565,7 @@ Activate this agent when you need:
 ## Best Practices
 
 ### Security
+
 ✅ **Always use WIF** instead of JSON service account keys
 ✅ **Least privilege IAM** - Grant minimal required permissions
 ✅ **Attribute-based access control** - Restrict by repository/branch
@@ -572,12 +574,14 @@ Activate this agent when you need:
 ✅ **VPC Service Controls** for enterprise isolation
 
 ### Performance
+
 ✅ **Auto-scaling** configuration (min/max instances)
 ✅ **Caching** for Docker builds and dependencies
 ✅ **Concurrent job execution** when possible
 ✅ **Matrix builds** for testing across environments
 
 ### Reliability
+
 ✅ **Post-deployment validation** to ensure successful deployment
 ✅ **Health check endpoints** for services
 ✅ **Retry logic** with exponential backoff
@@ -585,6 +589,7 @@ Activate this agent when you need:
 ✅ **Monitoring setup** as part of deployment
 
 ### Cost Optimization
+
 ✅ **Preemptible runners** for non-critical jobs
 ✅ **Conditional job execution** (only run on relevant path changes)
 ✅ **Artifact caching** to reduce build times

@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Enterprise RBAC
 
 ## Overview
+
 Configure enterprise access control for Langfuse: built-in roles and permissions, scoped API keys per service, SSO integration, project-level isolation, and audit logging for compliance.
 
 ## Prerequisites
+
 - Langfuse Cloud (Team/Enterprise plan) or self-hosted instance
 - Organization admin access
 - SSO provider (optional, for SAML/OIDC integration)
@@ -223,6 +225,7 @@ function auditedLangfuseClient(actor: string): LangfuseClient {
 | New user gets no access | Not added to project | Admin must invite to specific project |
 
 ## Resources
+
 - [Langfuse Access Control](https://langfuse.com/docs/rbac)
 - [Self-Hosting Configuration](https://langfuse.com/self-hosting/configuration)
 - [Headless Initialization](https://langfuse.com/self-hosting/administration/headless-initialization)

@@ -3,6 +3,7 @@
 ## Configuration File Architecture
 
 ### Essential Cursor Files
+
 ```
 project/
 ├── .cursorrules              # Project-specific AI rules
@@ -15,6 +16,7 @@ project/
 ```
 
 ### .cursorrules Template
+
 ```yaml
 # .cursorrules
 

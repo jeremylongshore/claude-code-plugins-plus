@@ -3,6 +3,7 @@
 ## Configuration Pitfalls
 
 ### Missing .cursorrules
+
 ```
 PITFALL:
 AI doesn't know your project conventions.
@@ -16,6 +17,7 @@ SOLUTION:
 ```
 
 ### Poor .cursorignore
+
 ```
 PITFALL:
 Indexing node_modules, build outputs.
@@ -29,6 +31,7 @@ SOLUTION:
 ```
 
 ### Settings Not Synced
+
 ```
 PITFALL:
 Different settings on different machines.

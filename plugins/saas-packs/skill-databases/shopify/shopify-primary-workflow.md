@@ -10,6 +10,7 @@ shopify-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Shopify primary workflow
 **Workflow:** Part of the onboarding skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

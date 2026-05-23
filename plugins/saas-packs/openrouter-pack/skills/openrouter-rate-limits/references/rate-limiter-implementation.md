@@ -3,6 +3,7 @@
 ## Rate Limiter Implementation
 
 ### Token Bucket
+
 ```python
 import threading
 import time
@@ -49,6 +50,7 @@ def rate_limited_chat(prompt: str, model: str):
 ```
 
 ### Async Rate Limiter
+
 ```python
 import asyncio
 

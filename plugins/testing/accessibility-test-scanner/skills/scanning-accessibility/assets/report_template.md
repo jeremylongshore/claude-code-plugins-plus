@@ -18,10 +18,10 @@ This report covers the following pages/sections of the website/application:
 
 This audit was conducted using the Accessibility Test Scanner plugin, which performs automated checks based on the following guidelines and standards:
 
-*   **WCAG 2.1/2.2 (Levels A, AA, AAA)**: Web Content Accessibility Guidelines
-*   **ARIA Validation**: Evaluation of proper ARIA (Accessible Rich Internet Applications) usage.
-*   **Screen Reader Compatibility**: Simulated screen reader testing.
-*   **Keyboard Navigation**: Evaluation of keyboard operability.
+* **WCAG 2.1/2.2 (Levels A, AA, AAA)**: Web Content Accessibility Guidelines
+* **ARIA Validation**: Evaluation of proper ARIA (Accessible Rich Internet Applications) usage.
+* **Screen Reader Compatibility**: Simulated screen reader testing.
+* **Keyboard Navigation**: Evaluation of keyboard operability.
 
 `[Optionally, include details about any manual testing performed in addition to the automated checks.]`
 
@@ -31,21 +31,21 @@ This section details the accessibility issues identified during the audit.  Each
 
 **Severity Levels:**
 
-*   **Critical:**  A violation that severely impacts users' ability to access essential content or functionality.
-*   **Major:**  A violation that significantly hinders users' ability to access content or functionality.
-*   **Moderate:**  A violation that causes some difficulty for users but does not completely prevent access.
-*   **Minor:**  A violation that has a minimal impact on users but should still be addressed.
+* **Critical:**  A violation that severely impacts users' ability to access essential content or functionality.
+* **Major:**  A violation that significantly hinders users' ability to access content or functionality.
+* **Moderate:**  A violation that causes some difficulty for users but does not completely prevent access.
+* **Minor:**  A violation that has a minimal impact on users but should still be addressed.
 
 ### WCAG 2.1/2.2 Violations
 
 `[For each violation, provide the following information:]`
 
-*   **WCAG Success Criterion:** `[e.g., 1.1.1 Non-text Content, 1.4.3 Contrast (Minimum)]`
-*   **Severity:** `[Critical, Major, Moderate, Minor]`
-*   **Description:** `[A clear explanation of the issue.  For example: "The image on the homepage lacks alt text."]`
-*   **Location:** `[Specific page or element where the issue was found. For example: "Homepage, <img src="logo.png"> tag."]`
-*   **Recommendation:** `[Specific steps to fix the issue.  For example: "Add descriptive alt text to the image.  Example: <img src="logo.png" alt="Company Logo">"]`
-*   **Example:**
+* **WCAG Success Criterion:** `[e.g., 1.1.1 Non-text Content, 1.4.3 Contrast (Minimum)]`
+* **Severity:** `[Critical, Major, Moderate, Minor]`
+* **Description:** `[A clear explanation of the issue.  For example: "The image on the homepage lacks alt text."]`
+* **Location:** `[Specific page or element where the issue was found. For example: "Homepage, <img src="logo.png"> tag."]`
+* **Recommendation:** `[Specific steps to fix the issue.  For example: "Add descriptive alt text to the image.  Example: <img src="logo.png" alt="Company Logo">"]`
+* **Example:**
 
     **WCAG Success Criterion:** 1.4.3 Contrast (Minimum)
     **Severity:** Critical
@@ -58,25 +58,25 @@ This section details the accessibility issues identified during the audit.  Each
 
 `[Document any issues related to incorrect or missing ARIA attributes.  Follow the same format as above.]`
 
-*   **Description:** `[e.g., "Missing ARIA label on a form field."]`
-*   **Location:** `[e.g., "Contact Us page, <input type="text" id="name">"]`
-*   **Recommendation:** `[e.g., "Add aria-label attribute to the input field. Example: <input type="text" id="name" aria-label="Your Name">"]`
+* **Description:** `[e.g., "Missing ARIA label on a form field."]`
+* **Location:** `[e.g., "Contact Us page, <input type="text" id="name">"]`
+* **Recommendation:** `[e.g., "Add aria-label attribute to the input field. Example: <input type="text" id="name" aria-label="Your Name">"]`
 
 ### Keyboard Navigation Issues
 
 `[Document any issues related to keyboard accessibility.  Follow the same format as above.]`
 
-*   **Description:** `[e.g., "The tab order is not logical."]`
-*   **Location:** `[e.g., "Product Listing page"]`
-*   **Recommendation:** `[e.g., "Ensure the tab order follows the visual flow of the page. Use the `tabindex` attribute to explicitly define the tab order if necessary."]`
+* **Description:** `[e.g., "The tab order is not logical."]`
+* **Location:** `[e.g., "Product Listing page"]`
+* **Recommendation:** `[e.g., "Ensure the tab order follows the visual flow of the page. Use the`tabindex`attribute to explicitly define the tab order if necessary."]`
 
 ### Screen Reader Compatibility Issues
 
 `[Document any issues identified during simulated screen reader testing.  Follow the same format as above.]`
 
-*   **Description:** `[e.g., "The screen reader does not announce the state of the checkbox."]`
-*   **Location:** `[e.g., "User Profile section, <input type="checkbox" id="newsletter">"]`
-*   **Recommendation:** `[e.g., "Use appropriate ARIA attributes to provide screen readers with information about the state of the checkbox. Example: <input type="checkbox" id="newsletter" aria-checked="false">"]`
+* **Description:** `[e.g., "The screen reader does not announce the state of the checkbox."]`
+* **Location:** `[e.g., "User Profile section, <input type="checkbox" id="newsletter">"]`
+* **Recommendation:** `[e.g., "Use appropriate ARIA attributes to provide screen readers with information about the state of the checkbox. Example: <input type="checkbox" id="newsletter" aria-checked="false">"]`
 
 ## Recommendations
 

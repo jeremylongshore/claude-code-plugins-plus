@@ -33,6 +33,7 @@ This skill empowers Claude to streamline performance monitoring by aggregating m
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Centralize performance metrics from multiple applications and systems.
 - Design a consistent metrics naming convention.
 - Choose the right metrics aggregation tool for your needs.
@@ -45,6 +46,7 @@ This skill activates when you need to:
 User request: "Aggregate application and system metrics into Prometheus."
 
 The skill will:
+
 1. Guide the user in defining metrics for applications (e.g., request latency, error rates) and systems (e.g., CPU usage, memory utilization).
 2. Help configure Prometheus to scrape metrics from the application and system endpoints.
 
@@ -53,6 +55,7 @@ The skill will:
 User request: "Centralize database metrics and set up alerts for slow queries."
 
 The skill will:
+
 1. Help the user define metrics for database performance (e.g., query execution time, connection pool usage).
 2. Guide the user in configuring the aggregation tool to collect these metrics from the database.
 3. Assist in setting up alerts in the aggregation tool to notify the user when query execution time exceeds a defined threshold.
@@ -94,6 +97,7 @@ This skill integrates with other plugins that manage infrastructure, deploy appl
 ## Error Handling
 
 If metrics aggregation fails:
+
 - Verify network connectivity to sources
 - Check authentication credentials
 - Validate metrics format compatibility

@@ -1,4 +1,4 @@
-# Implementation Guide
+## Implementation Guide
 
 1. Analyze current formatting (`prettier --check`) and identify files to update.
 2. Configure formatting rules (`.prettierrc`, `.editorconfig`) for the project.

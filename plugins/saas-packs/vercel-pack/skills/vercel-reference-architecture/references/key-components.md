@@ -3,6 +3,7 @@
 ## Key Components
 
 ### Step 1: Client Wrapper
+
 ```typescript
 // src/vercel/client.ts
 export class VercelService {
@@ -25,6 +26,7 @@ export class VercelService {
 ```
 
 ### Step 2: Error Boundary
+
 ```typescript
 // src/vercel/errors.ts
 export class VercelServiceError extends Error {
@@ -45,6 +47,7 @@ export function wrapVercelError(error: unknown): VercelServiceError {
 ```
 
 ### Step 3: Health Check
+
 ```typescript
 // src/vercel/health.ts
 export async function checkVercelHealth(): Promise<HealthStatus> {

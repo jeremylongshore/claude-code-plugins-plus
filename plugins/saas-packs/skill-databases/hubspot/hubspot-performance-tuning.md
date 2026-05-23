@@ -10,6 +10,7 @@ hubspot-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize HubSpot API performance
 **Workflow:** Part of the cicd skill category for HubSpot integration.
 **Relates to:** Other hubspot skills in this pack.

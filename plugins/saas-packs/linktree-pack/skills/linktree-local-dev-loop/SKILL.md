@@ -18,9 +18,11 @@ compatibility: Designed for Claude Code
 # Linktree Local Dev Loop
 
 ## Overview
+
 Local development workflow for Linktree link-in-bio API integration. Provides a fast feedback loop with mock link profiles, analytics, and appearance data so you can build social management tools without hitting the live Linktree API. Toggle between mock mode for rapid UI iteration and live mode for validating profile updates against the real Linktree platform.
 
 ## Environment Setup
+
 ```bash
 cp .env.example .env
 # Set your credentials:
@@ -32,6 +34,7 @@ npm install -D vitest supertest @types/express
 ```
 
 ## Dev Server
+
 ```typescript
 // src/dev/server.ts
 import express from "express";
@@ -53,6 +56,7 @@ app.listen(3005, () => console.log(`Linktree dev server on :3005 [mock=${MOCK}]`
 ```
 
 ## Mock Mode
+
 ```typescript
 // src/dev/mocks.ts — realistic link-in-bio profile and analytics responses
 export function mountMockRoutes(app: any) {
@@ -73,6 +77,7 @@ export function mountMockRoutes(app: any) {
 ```
 
 ## Testing Workflow
+
 ```bash
 npm run dev:mock &                    # Start mock server in background
 npm run test                          # Unit tests with vitest
@@ -81,6 +86,7 @@ MOCK_MODE=false npm run test:integration  # Integration test against real API
 ```
 
 ## Debug Tips
+
 - Linktree link ordering is zero-indexed — verify `position` field when reordering
 - Analytics endpoints may return `null` for new links with no click data yet
 - Use `enabled: false` to test hidden links without deleting them
@@ -88,6 +94,7 @@ MOCK_MODE=false npm run test:integration  # Integration test against real API
 - Rate limits are per-user — test with a dedicated dev account
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | `401 Unauthorized` | Invalid or expired API key | Regenerate at Linktree developer portal |
@@ -97,7 +104,9 @@ MOCK_MODE=false npm run test:integration  # Integration test against real API
 | `ECONNREFUSED :3005` | Dev server not running | Run `npm run dev:mock` first |
 
 ## Resources
+
 - [Linktree Developer Docs](https://linktr.ee/marketplace/developer)
 
 ## Next Steps
+
 See `linktree-debug-bundle`.

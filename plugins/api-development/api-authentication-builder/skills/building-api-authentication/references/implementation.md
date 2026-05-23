@@ -1,7 +1,9 @@
-# Implementation Guide
+## Implementation Guide
 
 ### Step 1: Design API Structure
+
 Plan the API architecture and endpoints:
+
 1. Use Read tool to examine existing API specifications from ${CLAUDE_SKILL_DIR}/api-specs/
 2. Define resource models, endpoints, and HTTP methods
 3. Document request/response schemas and data types
@@ -9,7 +11,9 @@ Plan the API architecture and endpoints:
 5. Plan error handling and validation strategies
 
 ### Step 2: Implement API Components
+
 Build the API implementation:
+
 1. Generate boilerplate code using Bash(api:auth-*) with framework scaffolding
 2. Implement endpoint handlers with business logic
 3. Add input validation and schema enforcement
@@ -17,7 +21,9 @@ Build the API implementation:
 5. Configure database connections and ORM models
 
 ### Step 3: Add API Features
+
 Enhance with production-ready capabilities:
+
 - Implement rate limiting and throttling policies
 - Add request/response logging with correlation IDs
 - Configure error handling with standardized responses
@@ -25,7 +31,9 @@ Enhance with production-ready capabilities:
 - Enable CORS and security headers
 
 ### Step 4: Test and Document
+
 Validate API functionality:
+
 1. Write integration tests covering all endpoints
 2. Generate OpenAPI/Swagger documentation automatically
 3. Create usage examples and authentication guides

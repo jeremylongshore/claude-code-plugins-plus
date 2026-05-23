@@ -10,6 +10,7 @@ clickhouse-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure ClickHouse CI/CD integration
 **Workflow:** Part of the cicd skill category for ClickHouse integration.
 **Relates to:** Other clickhouse skills in this pack.

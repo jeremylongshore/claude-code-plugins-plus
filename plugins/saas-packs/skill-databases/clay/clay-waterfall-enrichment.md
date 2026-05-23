@@ -10,6 +10,7 @@ clay-waterfall-enrichment/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Clay waterfall enrichment patterns with multi-provider fallback and quality scoring. Maximizes enrichment coverage while optimizing costs.
 **Workflow:** Data quality skill. Use when building comprehensive enrichment pipelines.
 **Relates to:** Builds on clay-enrichment-patterns; integrates with clay-cost-tuning for optimization.

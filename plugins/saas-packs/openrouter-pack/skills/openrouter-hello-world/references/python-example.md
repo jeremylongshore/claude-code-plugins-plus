@@ -3,6 +3,7 @@
 ## Python Example
 
 ### Basic Request
+
 ```python
 import os
 from openai import OpenAI
@@ -23,6 +24,7 @@ print(response.choices[0].message.content)
 ```
 
 ### With System Message
+
 ```python
 response = client.chat.completions.create(
     model="anthropic/claude-3-sonnet",

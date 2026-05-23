@@ -60,7 +60,6 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 
 ## Resources
 
-
 - Official Gastown documentation
 - Community best practices and patterns
 - Related skills in this plugin pack

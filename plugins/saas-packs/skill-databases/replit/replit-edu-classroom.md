@@ -10,6 +10,7 @@ replit-edu-classroom/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Replit for Education with classroom management, assignments, and automated grading.
 **Workflow:** Education administration skill - sets up learning environments for students.
 **Relates to:** Builds on replit-team-management concepts; integrates with replit-multiplayer-collab for live teaching.

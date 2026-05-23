@@ -10,6 +10,7 @@ clickhouse-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement ClickHouse load testing and scaling
 **Workflow:** Part of the enterprise skill category for ClickHouse integration.
 **Relates to:** Other clickhouse skills in this pack.

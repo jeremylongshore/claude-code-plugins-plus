@@ -10,6 +10,7 @@ supabase-policy-guardrails/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Supabase lint rules, policy enforcement with ESLint and OPA, pre-commit hooks, CI policy checks, and runtime guardrails.
 **Workflow:** Policy enforcement skill. Used for automated code quality and security enforcement.
 **Relates to:** Builds on supabase-reliability-patterns; enforces patterns from supabase-sdk-patterns.

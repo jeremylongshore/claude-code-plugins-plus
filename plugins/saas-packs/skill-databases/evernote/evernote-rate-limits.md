@@ -10,6 +10,7 @@ evernote-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Evernote rate limiting and backoff
 **Workflow:** Part of the operations skill category for Evernote integration.
 **Relates to:** Other evernote skills in this pack.

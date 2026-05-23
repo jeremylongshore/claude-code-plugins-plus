@@ -59,6 +59,7 @@ node scripts/sync-marketplace.cjs
 ```
 
 Output:
+
 ```
 ✅ Synced CLI marketplace catalog -> .claude-plugin/marketplace.json
 ```
@@ -202,6 +203,7 @@ GitHub Pages doesn't let you set HTTP headers, but you can use meta tags:
 ```
 
 **Expected timeline:**
+
 - Short term (1-7 days): Some users may still see warnings
 - Long term: Domain builds trust, warnings disappear
 
@@ -274,6 +276,7 @@ Our extended catalog is the source of truth. The CLI catalog is generated. Never
 A security scan that flags documentation about security patterns is a false positive generator.
 
 **Better approach:** Use exclusion patterns thoughtfully:
+
 - Exclude documentation files (README.md, SKILL.md)
 - Exclude "Pattern:" mentions (indicating examples)
 - Still catch actual secrets
@@ -287,6 +290,7 @@ When users say "this of legal importance," they mean it. GetTerms.io saved hours
 X/Twitter, Google, and other platforms flag new domains aggressively. Security headers help, but time builds trust.
 
 **Immediate actions:**
+
 - Add security meta tags
 - Submit for manual review
 - Get organic engagement (each "Continue" click helps)
@@ -294,6 +298,7 @@ X/Twitter, Google, and other platforms flag new domains aggressively. Security h
 ## Final Results
 
 **Before This Session:**
+
 - ❌ ZERO users could install marketplace
 - ❌ Schema validation error on installation
 - ❌ No legal pages (Terms, Privacy, Acceptable Use)
@@ -301,6 +306,7 @@ X/Twitter, Google, and other platforms flag new domains aggressively. Security h
 - ❌ No security headers for X/Twitter
 
 **After This Session:**
+
 - ✅ Marketplace installation works for all users
 - ✅ Schema validation passes
 - ✅ Full legal compliance with embedded policies
@@ -337,12 +343,12 @@ https://claudecodeplugins.io/
 - [Deploying Next.js 15 to Google Cloud Run with Custom Domains](/posts/deploying-nextjs-15-google-cloud-run-custom-domain-ssl/) - Production deployment best practices
 - [Master Directory Standards Prompt for Repository Organization](/posts/master-directory-standards-prompt-repository-organization/) - Keeping codebases organized
 
-
 **The Bottom Line:** One invalid schema field broke everything. But systematic debugging, proper CI/CD discipline, and attention to legal/security requirements turned a critical bug into a comprehensive improvement.
 
 **Time from bug report to fully deployed fix:** 31 minutes.
 
 **Lessons for your next debugging session:**
+
 1. Validate against schemas before pushing
 2. Never manually edit generated files
 3. Use exclusion patterns thoughtfully in security scans
@@ -350,4 +356,3 @@ https://claudecodeplugins.io/
 5. New domains need security headers
 
 What's the worst schema validation bug you've encountered? Let me know on [X/Twitter](https://twitter.com/jeremylongshore)!
-

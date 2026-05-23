@@ -10,6 +10,7 @@ mindtickle-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Mindtickle SDK patterns
 **Workflow:** Part of the onboarding skill category for Mindtickle integration.
 **Relates to:** Other mindtickle skills in this pack.

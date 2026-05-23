@@ -3,6 +3,7 @@
 ## Caching Strategy
 
 ### Response Caching
+
 ```typescript
 import { LRUCache } from 'lru-cache';
 
@@ -27,6 +28,7 @@ async function cachedVercelRequest<T>(
 ```
 
 ### Redis Caching (Distributed)
+
 ```typescript
 import Redis from 'ioredis';
 

@@ -3,6 +3,7 @@
 ## Optimize What You Send
 
 ### Reduce Event Size
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -28,6 +29,7 @@ Sentry.init({
 ```
 
 ### Disable Unused Features
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,

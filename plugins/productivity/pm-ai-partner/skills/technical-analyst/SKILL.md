@@ -74,22 +74,26 @@ Let me search the codebase and explain what I find.
 **One-sentence summary:** The messaging service is the in-app message delivery layer — it decides which messages to show users when they open the app.
 
 **How it works:**
+
 1. Client app calls the messaging service on startup
 2. The service checks which messages are eligible for this user
 3. Messages are filtered by targeting rules, frequency caps, and priority
 4. Selected messages are returned to the client for display
 
 Key components:
+
 - **Message Store**: Where message definitions live
 - **Eligibility Engine**: Checks targeting rules
 - **Frequency Capping**: Prevents message fatigue
 
 **Product implications:**
+
 - Message latency affects app startup time
 - Targeting accuracy depends on user data freshness
 - Priority rules determine which messages "win" when multiple are eligible
 
 **Questions for engineering:**
+
 - What's the P99 latency for message selection?
 - How are targeting rules updated — real-time or batch?
 - What happens when the service is down?
@@ -112,12 +116,14 @@ Key components:
 | **User permission** | Requires opt-in | No permission needed |
 
 **Product implications:**
+
 - Push is for re-engagement (bring users back)
 - In-app is for engagement (guide users already in the app)
 - Push delivery rates vary by platform (~70-90%)
 - In-app has near 100% delivery for active users
 
 **Questions for engineering:**
+
 - What's our current push delivery rate by platform?
 - How do we handle users who have push disabled?
 
@@ -134,6 +140,7 @@ Let me trace the user flow through both platforms.
 **How it works — iOS:**
 
 The iOS code calls `requestAuthorization` when the user taps "Enable":
+
 ```swift
 UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
     // System shows native popup: "Allow Notifications?"
@@ -144,6 +151,7 @@ UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge
 **How it works — Android:**
 
 Most Android contextual flows share a single permission handler that does this:
+
 ```kotlin
 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
 intent.data = Uri.parse("package:${context.packageName}")
@@ -153,6 +161,7 @@ context.startActivity(intent)
 ```
 
 Only the Onboarding flow uses the native API:
+
 ```kotlin
 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
 // System shows native popup: "Allow notifications?"
@@ -160,12 +169,14 @@ requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
 ```
 
 **Product implications:**
+
 - iOS: 1 tap, stays in app, ~50% CTR on contextual education flow
 - Android: 4+ taps, leaves app, ~24% CTR on same flow
 - The gap isn't user willingness (Android users DO tap "Enable") — it's completion friction after the tap
 - Onboarding is the only Android flow with a native prompt, and it has the highest conversion
 
 **Questions for engineering:**
+
 - Why do contextual flows use Settings redirect instead of native prompt? Is it a legacy decision or intentional?
 - Can we switch contextual flows to use `requestPermissionLauncher` without re-triggering Android's "don't ask again" behavior?
 - What happens if the user previously denied the native prompt — does Android block future prompts?

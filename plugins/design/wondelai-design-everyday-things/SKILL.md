@@ -40,12 +40,14 @@ USER                                    PRODUCT
 **The gap between what users want to do and what the product lets them do.**
 
 **Questions users ask:**
+
 - What can I do here?
 - How do I do it?
 - Which control do I use?
 - How do I operate this control?
 
 **Bridging strategies:**
+
 - Clear signifiers showing what's possible
 - Natural mappings between controls and outcomes
 - Constraints preventing wrong actions
@@ -56,12 +58,14 @@ USER                                    PRODUCT
 **The gap between what the product did and what users understand happened.**
 
 **Questions users ask:**
+
 - What happened?
 - Did it work?
 - Is this what I wanted?
 - What state is the system in now?
 
 **Bridging strategies:**
+
 - Immediate, visible feedback
 - Clear system state indicators
 - Meaningful error messages
@@ -78,6 +82,7 @@ See: [references/two-gulfs.md](references/two-gulfs.md) for gulf analysis exerci
 **Definition:** Can users figure out what actions are possible and how to perform them?
 
 **Five components of discoverability:**
+
 - Affordances
 - Signifiers
 - Constraints
@@ -117,6 +122,7 @@ See: [references/two-gulfs.md](references/two-gulfs.md) for gulf analysis exerci
 | **Scroll area** | Affords scrolling | Scroll bar, fade at edge, partial content |
 
 **Common failures:**
+
 - Flat design removes perceived affordances (is it a button or a label?)
 - Touch targets that are too small (fat finger problem)
 - No visual distinction between interactive and decorative elements
@@ -171,6 +177,7 @@ See: [references/signifiers.md](references/signifiers.md) for signifier patterns
 | **Poor** | Stovetop controls in a row (which knob = which burner?) | Layout doesn't match |
 
 **Digital mapping principles:**
+
 - Controls should be near what they affect
 - Layout of controls should mirror layout of content
 - Direction of action should match expectation (scroll down = content moves up)
@@ -221,6 +228,7 @@ See: [references/constraints.md](references/constraints.md) for constraint desig
 **Definition:** Communicating the results of an action back to the user.
 
 **Feedback must be:**
+
 - **Immediate:** Within 0.1 seconds for direct manipulation
 - **Informative:** Tells user what happened and current state
 - **Appropriate:** Not too much (annoying) or too little (confusing)
@@ -247,12 +255,14 @@ See: [references/constraints.md](references/constraints.md) for constraint desig
 | **Drag** | Object follows cursor | Element moves with mouse |
 
 **Common failures:**
+
 - No feedback at all (did my click register?)
 - Delayed feedback (makes system feel broken)
 - Unclear feedback (something happened but what?)
 - Too much feedback (every action triggers alert)
 
 **Response time guidelines:**
+
 - 0.1s: Feels instantaneous (direct manipulation)
 - 1.0s: Noticeable delay (show cursor change)
 - 10s: Attention wanders (show progress bar)
@@ -275,21 +285,25 @@ See: [references/feedback.md](references/feedback.md) for feedback design patter
 **Goal:** User's model should match the design model. The system image is the bridge.
 
 **When models match:**
+
 - Users predict outcomes correctly
 - Users recover from errors easily
 - Users feel confident and in control
 
 **When models mismatch:**
+
 - Users are confused and frustrated
 - Users blame themselves
 - Users give up or call support
 
 **Example: Thermostat**
+
 - **Design model:** Set temperature, system maintains it
 - **Common user model:** Higher setting = faster heating (wrong!)
 - **Result:** Users crank thermostat to 90°F hoping for faster warmth
 
 **Building correct conceptual models:**
+
 - Use familiar metaphors (desktop, folder, trash)
 - Make system state visible
 - Provide clear feedback
@@ -326,6 +340,7 @@ See: [references/conceptual-models.md](references/conceptual-models.md) for mode
 ### Design for Error
 
 **Error prevention:**
+
 - Constraints that make errors impossible
 - Undo/redo for all actions
 - Confirmation for destructive actions
@@ -333,12 +348,14 @@ See: [references/conceptual-models.md](references/conceptual-models.md) for mode
 - Forgiving input (accept variations)
 
 **Error recovery:**
+
 - Clear error messages (what happened + how to fix)
 - Don't erase user's work on error
 - Allow partial saves
 - Easy reset to known good state
 
 **Error message checklist:**
+
 - [ ] Says what went wrong (in human language)
 - [ ] Says how to fix it
 - [ ] Doesn't blame the user
@@ -364,6 +381,7 @@ See: [references/human-error.md](references/human-error.md) for error prevention
 ```
 
 **Design implications:**
+
 - Stages 1-3 (execution): Support with clear signifiers, mappings, constraints
 - Stage 4 (action): Support with good affordances
 - Stages 5-7 (evaluation): Support with clear feedback, system state
@@ -381,24 +399,28 @@ Observation → Idea Generation → Prototyping → Testing → (iterate)
 ```
 
 ### 1. Observation
+
 - Watch real users in real contexts
 - Don't ask what they want (they don't know)
 - Look for workarounds, frustrations, adaptations
 - Focus on activities, not individual tasks
 
 ### 2. Idea Generation
+
 - Generate many ideas (diverge before converge)
 - Don't criticize during ideation
 - Build on others' ideas
 - Defer judgment
 
 ### 3. Prototyping
+
 - Quick, cheap, disposable
 - Test concepts, not polish
 - Paper prototypes for early ideas
 - Interactive prototypes for validation
 
 ### 4. Testing
+
 - Test with real users (not designers)
 - 5 users reveal 85% of problems
 - Observe behavior, not just opinions

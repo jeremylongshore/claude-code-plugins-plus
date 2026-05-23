@@ -10,6 +10,7 @@ canva-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Canva multi-environment setup
 **Workflow:** Part of the enterprise skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

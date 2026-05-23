@@ -10,6 +10,7 @@ openevidence-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement OpenEvidence reference architecture
 **Workflow:** Part of the cicd skill category for OpenEvidence integration.
 **Relates to:** Other openevidence skills in this pack.

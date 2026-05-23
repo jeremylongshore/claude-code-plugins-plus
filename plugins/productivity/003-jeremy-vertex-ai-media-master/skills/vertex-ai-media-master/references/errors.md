@@ -1,6 +1,7 @@
 # Error Handling Reference
 
 If execution fails:
+
 - Verify prerequisites are met
 - Check input parameters and formats
 - Validate file paths and permissions

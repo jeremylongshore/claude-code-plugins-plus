@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD028 -->
+
 # GitHub Issue: Web Research Findings
 
 This issue was automatically generated from web research conducted by Claude. Please review and fill in the missing details.
@@ -30,9 +32,9 @@ This issue was automatically generated from web research conducted by Claude. Pl
 
 *Example:*
 
-1.  *Visit the website [website link] on a mobile device.*
-2.  *Observe the loading time of the page.*
-3.  *Compare the loading time before and after implementing image optimization techniques.*
+1. *Visit the website [website link] on a mobile device.*
+2. *Observe the loading time of the page.*
+3. *Compare the loading time before and after implementing image optimization techniques.*
 
 ## Acceptance Criteria
 
@@ -40,9 +42,9 @@ This issue was automatically generated from web research conducted by Claude. Pl
 
 *Example:*
 
-*   *Website loading time (as measured by Google PageSpeed Insights) is reduced by at least 20%.*
-*   *Images are optimized for web and mobile devices without significant loss of quality.*
-*   *WebP format is used for all new images uploaded to the website.*
+* *Website loading time (as measured by Google PageSpeed Insights) is reduced by at least 20%.*
+* *Images are optimized for web and mobile devices without significant loss of quality.*
+* *WebP format is used for all new images uploaded to the website.*
 
 ## Relevant URLs
 
@@ -50,9 +52,9 @@ This issue was automatically generated from web research conducted by Claude. Pl
 
 *Example:*
 
-*   *[Website Link]*
-*   *[Link to Google PageSpeed Insights]*
-*   *[Link to Image Optimization Tool]*
+* *[Website Link]*
+* *[Link to Google PageSpeed Insights]*
+* *[Link to Image Optimization Tool]*
 
 ## Additional Notes
 

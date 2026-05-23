@@ -29,6 +29,7 @@ Checklist for deploying Framer plugins, code components, and Server API integrat
 ## Checklist
 
 ### Plugin Production
+
 - [ ] Plugin tested in Framer editor with real data
 - [ ] No `console.log` calls remaining
 - [ ] Error states handled (network failures, API errors)
@@ -37,6 +38,7 @@ Checklist for deploying Framer plugins, code components, and Server API integrat
 - [ ] All property controls have default values
 
 ### Code Components
+
 - [ ] `export default` on all components
 - [ ] `addPropertyControls` on all components
 - [ ] Responsive at all viewport sizes
@@ -45,6 +47,7 @@ Checklist for deploying Framer plugins, code components, and Server API integrat
 - [ ] Performance tested with large datasets
 
 ### Server API (CMS Sync)
+
 - [ ] API key in secrets vault (not `.env`)
 - [ ] CMS collection schema matches source data
 - [ ] Incremental sync (not full replace every run)
@@ -53,6 +56,7 @@ Checklist for deploying Framer plugins, code components, and Server API integrat
 - [ ] Rate limiting for batch operations
 
 ### Site Publishing
+
 - [ ] Custom domain configured
 - [ ] SEO meta tags on all pages
 - [ ] CMS collections populated

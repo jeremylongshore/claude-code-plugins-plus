@@ -10,6 +10,7 @@ webflow-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Webflow common errors
 **Workflow:** Part of the operations skill category for Webflow integration.
 **Relates to:** Other webflow skills in this pack.

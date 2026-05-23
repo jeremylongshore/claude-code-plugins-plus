@@ -10,6 +10,7 @@ replit-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid top 10 common Replit anti-patterns including resource leaks, public secrets, and port conflicts.
 **Workflow:** Best practices skill - prevents common mistakes through awareness.
 **Relates to:** Summarizes lessons from replit-common-errors; informs code review practices.

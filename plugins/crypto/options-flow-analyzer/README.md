@@ -4,28 +4,32 @@ Track institutional options flow, unusual options activity, and smart money move
 
 ## Features
 
-###  Institutional Flow Tracking
+### Institutional Flow Tracking
+
 - **Large Premium Trades**: Track trades >$100K, $500K, $1M+
 - **Sweep Orders**: Multi-exchange sweep detection
 - **Block Trades**: Identify institutional block trades
 - **Dark Pool Activity**: Hidden liquidity detection
 - **Smart Money Identification**: Institutional vs retail flow
 
-###  Unusual Activity Detection
+### Unusual Activity Detection
+
 - **Volume Spikes**: 5x, 10x average volume alerts
 - **Premium Anomalies**: Unusually large premium trades
 - **Opening Positions**: New position detection
 - **Closing Activity**: Position unwinding signals
 - **Complex Spreads**: Multi-leg strategy detection
 
-###  Gamma Analysis
+### Gamma Analysis
+
 - **Net Gamma Exposure**: Dealer positioning metrics
 - **Gamma Flip Points**: Key hedging levels
 - **Max Pain Calculation**: Options pinning targets
 - **Vanna Flows**: Volatility-driven positioning
 - **Charm Decay**: Time decay hedging flows
 
-###  Real-Time Alerts
+### Real-Time Alerts
+
 - **Institutional Size Alerts**: >$1M premium trades
 - **Sweep Alerts**: Multi-exchange sweeps
 - **Unusual Volume**: Extreme volume detection
@@ -141,19 +145,24 @@ Create a `.options-flow.json` configuration file:
 ## Flow Metrics Explained
 
 ### Put/Call Ratio
+
 - **< 0.7**: Bullish sentiment
 - **0.7 - 1.3**: Neutral sentiment
 - **> 1.3**: Bearish sentiment
 - **> 2.0**: Extreme bearish/hedging
 
 ### Premium Ratio
+
 Ratio of call premium to put premium:
+
 - **> 2.0**: Strong bullish positioning
 - **1.0 - 2.0**: Moderate bullish
 - **< 1.0**: Bearish positioning
 
 ### Volume Ratio
+
 Current volume vs average:
+
 - **> 10x**: Extreme unusual activity
 - **5x - 10x**: High unusual activity
 - **2x - 5x**: Moderate activity
@@ -162,23 +171,27 @@ Current volume vs average:
 ## Unusual Activity Signals
 
 ### Sweep Orders
+
 - Multi-exchange execution
 - Aggressive pricing (at ask)
 - Time span < 1 second
 - Institutional urgency signal
 
 ### Block Trades
+
 - Single large execution
 - Negotiated off-exchange
 - Typically >$1M premium
 - Institutional positioning
 
 ### Opening Positions
+
 - Open interest increase ≈ volume
 - New strikes being opened
 - Directional positioning
 
 ### Complex Spreads
+
 - Multi-leg executions
 - Volatility strategies
 - Risk reversal
@@ -187,35 +200,44 @@ Current volume vs average:
 ## Gamma Exposure Metrics
 
 ### Net Gamma Exposure (GEX)
+
 ```
 Positive GEX: Market makers long gamma → Volatility suppression
 Negative GEX: Market makers short gamma → Volatility expansion
 ```
 
 ### Gamma Flip Point
+
 Price level where dealer gamma exposure flips from positive to negative:
+
 - **Above flip**: Dealers dampen moves
 - **Below flip**: Dealers amplify moves
 
 ### Max Pain
+
 Strike price where most options expire worthless:
+
 - Options tend to pin near max pain at expiry
 - Useful for short-term price targets
 
 ### Vanna Flows
+
 Sensitivity of delta to volatility changes:
+
 - Rising volatility → Dealer buying/selling
 - Falling volatility → Opposite flows
 
 ## Smart Money Detection
 
 ### Institutional Patterns
+
 - **Near-the-money large trades**: Directional bets
 - **Out-of-money sweeps**: Lottery tickets or hedges
 - **Delta-neutral spreads**: Volatility plays
 - **Rolling positions**: Extending timeframe
 
 ### Confidence Scoring
+
 ```javascript
 confidence = base_score
   + (premium > $1M ? 20 : 0)
@@ -228,18 +250,21 @@ confidence = base_score
 ## Alert Types
 
 ### Critical Alerts
+
 - **Gamma Squeeze Setup**: Short gamma > $2B
 - **Institutional Accumulation**: Multiple $1M+ trades
 - **Massive Sweep**: >$5M premium sweep order
 - **Expiry Concentration**: Large near-expiry positions
 
 ### Warning Alerts
+
 - **Unusual Volume**: 10x average volume
 - **Large Premium**: >$500K single trade
 - **Position Unwinding**: Large closing trades
 - **Volatility Spike**: Implied volatility surge
 
 ### Informational Alerts
+
 - **Daily Summary**: Top flows of the day
 - **Strike Concentration**: Highest open interest
 - **Sentiment Shift**: P/C ratio changes
@@ -248,12 +273,14 @@ confidence = base_score
 ## Data Sources
 
 ### Primary
+
 - **OPRA**: Official options trade data
 - **CBOE**: Chicago Board Options Exchange
 - **ISE**: International Securities Exchange
 - **PHLX**: Philadelphia Stock Exchange
 
 ### Alternative
+
 - **Unusual Whales**: Unusual activity feed
 - **FlowAlgo**: Real-time flow data
 - **OptionsFlow.com**: Institutional tracking
@@ -262,12 +289,14 @@ confidence = base_score
 ## Performance Optimization
 
 ### Caching Strategy
+
 - Flow data: 5-second cache
 - Greeks calculation: 1-minute cache
 - Historical averages: 1-hour cache
 - Chain data: 30-second cache
 
 ### Data Processing
+
 - Streaming architecture
 - Parallel greek calculations
 - Batch flow aggregation
@@ -276,18 +305,21 @@ confidence = base_score
 ## Best Practices
 
 ### For Day Trading
+
 - Focus on near-expiry flows
 - Monitor gamma flip points
 - Track intraday sweeps
 - Watch for squeeze setups
 
 ### For Swing Trading
+
 - Analyze weekly flow trends
 - Track institutional accumulation
 - Monitor unusual activity
 - Follow smart money
 
 ### For Position Trading
+
 - Focus on quarterly expiries
 - Track large block trades
 - Analyze dealer positioning
@@ -296,18 +328,21 @@ confidence = base_score
 ## Troubleshooting
 
 ### No Flow Data
+
 - Check API credentials
 - Verify market hours
 - Confirm symbol validity
 - Review rate limits
 
 ### Incorrect Greeks
+
 - Update volatility surface
 - Check interest rates
 - Verify time to expiry
 - Validate price inputs
 
 ### Missing Alerts
+
 - Review threshold settings
 - Check notification config
 - Verify webhook URL
@@ -316,18 +351,21 @@ confidence = base_score
 ## Advanced Features
 
 ### Machine Learning
+
 - Flow pattern recognition
 - Predictive signals
 - Anomaly detection
 - Success rate tracking
 
 ### Backtesting
+
 - Historical flow analysis
 - Signal performance
 - Strategy validation
 - Risk assessment
 
 ### Portfolio Integration
+
 - Position Greeks overlay
 - Hedging recommendations
 - Risk metrics calculation
@@ -363,6 +401,7 @@ MIT License - See LICENSE file
 ## Changelog
 
 ### v1.0.0 (2024-10-11)
+
 - Initial release
 - Institutional flow tracking
 - Unusual activity detection

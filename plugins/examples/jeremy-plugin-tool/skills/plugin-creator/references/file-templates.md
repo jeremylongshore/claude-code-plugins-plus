@@ -3,6 +3,7 @@
 ## File Templates
 
 ### plugin.json Template
+
 ```json
 {
   "name": "plugin-name",
@@ -19,6 +20,7 @@
 ```
 
 ### Command Template
+
 ```markdown
 ---
 name: command-name
@@ -32,6 +34,7 @@ Instructions for Claude...
 ```
 
 ### Skill Template
+
 ```markdown
 ---
 name: Skill Name

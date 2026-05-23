@@ -25,14 +25,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Upgrade & Migration
 
 ## Current State
+
 !`npm list graphql graphql-request 2>/dev/null || echo 'No graphql packages'`
 
 ## Overview
+
 Fireflies.ai uses a GraphQL API (no versioned SDK). Breaking changes come as field deprecations and new query parameter patterns. This skill covers all known deprecations and migration paths.
 
 ## Known Deprecations
 
 ### Transcript Query Parameter Changes
+
 ```typescript
 // DEPRECATED: Single organizer email string
 const OLD = `{ transcripts(organizer_email: "alice@co.com") { id } }`;
@@ -71,6 +74,7 @@ const NEW = `{
 ```
 
 ### Field-Level Deprecations
+
 ```typescript
 // DEPRECATED
 transcript.host_email
@@ -82,6 +86,7 @@ transcript.organizer_email
 ## Migration Procedure
 
 ### Step 1: Scan Codebase for Deprecated Patterns
+
 ```bash
 set -euo pipefail
 echo "=== Scanning for deprecated Fireflies patterns ==="
@@ -95,7 +100,9 @@ grep -rn 'transcripts(.*date:' --include='*.ts' --include='*.js' --include='*.py
 ```
 
 ### Step 2: Update Query Patterns
+
 Create a migration helper:
+
 ```typescript
 // migrations/fireflies-deprecations.ts
 
@@ -123,6 +130,7 @@ export function checkForDeprecations(query: string): string[] {
 ```
 
 ### Step 3: Introspect Schema for Changes
+
 ```bash
 set -euo pipefail
 # Discover all available query fields
@@ -143,6 +151,7 @@ curl -s -X POST https://api.fireflies.ai/graphql \
 ```
 
 ### Step 4: Test Updated Queries
+
 ```typescript
 import { describe, it, expect } from "vitest";
 import { checkForDeprecations } from "../migrations/fireflies-deprecations";
@@ -166,6 +175,7 @@ describe("Deprecation Check", () => {
 ```
 
 ### Step 5: Monitor Fireflies Changelog
+
 ```bash
 # Check for API updates
 set -euo pipefail
@@ -174,6 +184,7 @@ curl -s https://docs.fireflies.ai/additional-info/change-log | head -100
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Field not found | Using removed field | Introspect schema, update query |
@@ -182,15 +193,18 @@ curl -s https://docs.fireflies.ai/additional-info/change-log | head -100
 | Type mismatch | String vs array param | Wrap single value in array |
 
 ## Output
+
 - Codebase scanned for deprecated patterns
 - All queries updated to current API patterns
 - Schema introspection results for reference
 - Tests verifying updated queries work
 
 ## Resources
+
 - [Fireflies Changelog](https://docs.fireflies.ai/additional-info/change-log)
 - [Fireflies What's New](https://docs.fireflies.ai/getting-started/whats-new)
 - [Fireflies Introspection](https://docs.fireflies.ai/fundamentals/introspection)
 
 ## Next Steps
+
 For CI integration during upgrades, see `fireflies-ci-integration`.

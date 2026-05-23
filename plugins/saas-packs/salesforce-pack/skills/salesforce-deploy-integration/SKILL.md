@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Salesforce Deploy Integration
 
 ## Overview
+
 Deploy Salesforce-connected Node.js applications to Heroku (native SF integration), Vercel, or Cloud Run with JWT authentication and proper secrets management.
 
 ## Prerequisites
+
 - Salesforce Connected App with JWT Bearer flow
 - RSA key pair for server-to-server auth
 - Platform CLI installed (heroku, vercel, or gcloud)
@@ -164,6 +166,7 @@ export async function healthCheck() {
 ```
 
 ## Output
+
 - Application deployed to production platform
 - JWT authentication configured (no passwords in config)
 - Salesforce secrets stored in platform-native secrets manager
@@ -171,6 +174,7 @@ export async function healthCheck() {
 - API limit monitoring active
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `INVALID_GRANT` on deploy | JWT key format issue | Ensure full private key including headers |
@@ -179,10 +183,12 @@ export async function healthCheck() {
 | Secret not found | Wrong secret name | Verify with platform-specific secret list command |
 
 ## Resources
+
 - [Heroku Connect](https://devcenter.heroku.com/articles/heroku-connect)
 - [Vercel Environment Variables](https://vercel.com/docs/environment-variables)
 - [Cloud Run Secrets](https://cloud.google.com/run/docs/configuring/secrets)
 - [JWT Bearer Flow](https://help.salesforce.com/s/articleView?id=sf.remoteaccess_oauth_jwt_flow.htm)
 
 ## Next Steps
+
 For event handling, see `salesforce-webhooks-events`.

@@ -9,6 +9,7 @@ python gas_optimizer.py current
 ```
 
 Output:
+
 ```
 CURRENT GAS PRICES (ETHEREUM)
 ============================================================
@@ -34,6 +35,7 @@ python gas_optimizer.py estimate --operation uniswap_v2_swap --all-tiers
 ```
 
 Output:
+
 ```
 COST ESTIMATE: UNISWAP_V2_SWAP
 Gas Limit: 150,000
@@ -55,6 +57,7 @@ python gas_optimizer.py optimal
 ```
 
 Output:
+
 ```
 OPTIMAL TRANSACTION WINDOW
 ============================================================
@@ -110,6 +113,7 @@ python gas_optimizer.py patterns
 ```
 
 Output:
+
 ```
 HOURLY GAS PATTERNS (UTC)
 ============================================================
@@ -151,6 +155,7 @@ python gas_optimizer.py compare
 ```
 
 Output:
+
 ```
 MULTI-CHAIN GAS COMPARISON
 ======================================================================
@@ -185,6 +190,7 @@ python gas_optimizer.py history --blocks 50
 ```
 
 Output:
+
 ```
 BASE FEE HISTORY (Last 50 blocks)
 ============================================================
@@ -207,6 +213,7 @@ python gas_optimizer.py current --json
 ```
 
 Output:
+
 ```json
 {
   "chain": "ethereum",
@@ -236,6 +243,7 @@ python gas_optimizer.py operations
 ```
 
 Output:
+
 ```
 KNOWN OPERATIONS
 ==================================================

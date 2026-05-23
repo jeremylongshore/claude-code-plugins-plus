@@ -3,6 +3,7 @@
 ## Provider-Specific Features
 
 ### OpenAI Features
+
 ```python
 def openai_with_json_mode(prompt: str):
     """Use OpenAI JSON mode."""
@@ -26,6 +27,7 @@ def openai_with_functions(prompt: str, tools: list):
 ```
 
 ### Anthropic Features
+
 ```python
 def anthropic_long_context(prompt: str, context: str):
     """Use Claude's long context window."""
@@ -43,6 +45,7 @@ def anthropic_long_context(prompt: str, context: str):
 ```
 
 ### Open Source Models
+
 ```python
 def use_open_source(prompt: str, prefer_local: bool = False):
     """Use open source models through OpenRouter."""

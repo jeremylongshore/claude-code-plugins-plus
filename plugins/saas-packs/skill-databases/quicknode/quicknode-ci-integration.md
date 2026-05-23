@@ -10,6 +10,7 @@ quicknode-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure QuickNode CI/CD integration
 **Workflow:** Part of the cicd skill category for QuickNode integration.
 **Relates to:** Other quicknode skills in this pack.

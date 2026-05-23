@@ -10,6 +10,7 @@ supabase-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Supabase SDK patterns including singleton client, error handling wrapper, retry logic with exponential backoff, and Zod validation.
 **Workflow:** Fourth skill in onboarding. Establishes the patterns that will be used throughout the codebase for all Supabase operations.
 **Relates to:** Builds on supabase-local-dev-loop; patterns used by all subsequent operational skills.

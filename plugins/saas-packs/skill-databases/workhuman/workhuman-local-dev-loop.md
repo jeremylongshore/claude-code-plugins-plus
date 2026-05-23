@@ -10,6 +10,7 @@ workhuman-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Workhuman local development workflow
 **Workflow:** Part of the onboarding skill category for Workhuman integration.
 **Relates to:** Other workhuman skills in this pack.

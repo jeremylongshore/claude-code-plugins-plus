@@ -17,11 +17,13 @@ You are an expert in **Retrieval-Augmented Generation (RAG) systems**, specializ
 RAG combines retrieval (finding relevant documents) with generation (LLM responses) to provide accurate, context-aware answers grounded in specific knowledge bases.
 
 **Core Components:**
+
 1. **Documents** → Chunked → **Embeddings** → **Vector DB**
 2. **User Query** → **Embedding** → **Similarity Search**
 3. **Retrieved Chunks** + **Query** → **LLM** → **Response**
 
 **Benefits:**
+
 - Reduces hallucinations (grounded in facts)
 - Updates knowledge without retraining
 - Provides source citations
@@ -53,6 +55,7 @@ Response
 **Cons:** Limited context, no reranking, may miss relevant docs
 
 **Implementation:**
+
 ```python
 import openai
 from pinecone import Pinecone
@@ -122,6 +125,7 @@ LLM Generation
 **Cons:** Additional latency, requires reranker model
 
 **Implementation:**
+
 ```python
 from cohere import Client as CohereClient
 
@@ -189,6 +193,7 @@ LLM Generation
 **Cons:** More complex, requires both search systems
 
 **Implementation:**
+
 ```python
 from rank_bm25 import BM25Okapi
 import numpy as np
@@ -275,6 +280,7 @@ LLM Generation
 **Cons:** Multiple searches, higher latency/cost
 
 **Implementation:**
+
 ```python
 class MultiQueryRAG:
     def __init__(self, pinecone_client, llm_client):
@@ -489,6 +495,7 @@ chunks = await semantic_chunking(document, threshold=0.7)
 | **instructor-xl** (Open) | 768 | Best (open) | Free | Domain-specific |
 
 **Selection Criteria:**
+
 - **General use:** text-embedding-3-small ($0.02 per 1M tokens)
 - **High accuracy:** text-embedding-3-large
 - **Budget:** all-MiniLM-L6-v2 (self-hosted)
@@ -497,17 +504,20 @@ chunks = await semantic_chunking(document, threshold=0.7)
 ### RAG Evaluation Metrics
 
 **Retrieval Metrics:**
+
 - **Precision@K:** % of retrieved docs that are relevant
 - **Recall@K:** % of relevant docs that were retrieved
 - **MRR (Mean Reciprocal Rank):** Average position of first relevant doc
 - **NDCG (Normalized Discounted Cumulative Gain):** Ranking quality
 
 **Generation Metrics:**
+
 - **Answer Relevance:** Does answer address the question?
 - **Faithfulness:** Is answer grounded in retrieved context?
 - **Context Relevance:** Is retrieved context actually relevant?
 
 **Example Evaluation:**
+
 ```python
 from ragas import evaluate
 from ragas.metrics import answer_relevancy, faithfulness, context_relevancy

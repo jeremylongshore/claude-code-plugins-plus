@@ -10,6 +10,7 @@ maintainx-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix MaintainX common errors
 **Workflow:** Part of the operations skill category for MaintainX integration.
 **Relates to:** Other maintainx skills in this pack.

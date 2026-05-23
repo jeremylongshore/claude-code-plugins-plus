@@ -5,6 +5,7 @@
 ## Architectural Overview
 
 ### Pattern
+
 **Multi-Source Data Aggregation with Optimization Engine**
 
 The skill aggregates staking data from multiple sources, calculates normalized metrics, runs optimization algorithms, and produces actionable recommendations.
@@ -84,6 +85,7 @@ The skill aggregates staking data from multiple sources, calculates normalized m
 ## Progressive Disclosure Strategy
 
 ### Level 1: Quick Summary
+
 ```
 Top Staking Opportunities for ETH:
 1. Rocket Pool (rETH): 4.2% APY - Low Risk
@@ -92,9 +94,11 @@ Top Staking Opportunities for ETH:
 ```
 
 ### Level 2: Comparison Table
+
 Full table with all metrics: APY, fees, lock-up, risk score, TVL
 
 ### Level 3: Detailed Analysis
+
 - Risk breakdown per protocol
 - Fee structure analysis
 - Implementation guide
@@ -103,17 +107,20 @@ Full table with all metrics: APY, fees, lock-up, risk score, TVL
 ## Tool Permission Strategy
 
 ### Allowed Tools
+
 ```yaml
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:staking-*)
 ```
 
 ### Scoped Access
+
 - `Read`: Config files, reference documentation
 - `Write`: Output reports, cache files
 - `Edit`: Update local configurations
 - `Bash(crypto:staking-*)`: Run staking analysis scripts only
 
 ### Rationale
+
 - No network tools needed - scripts handle API calls
 - Scoped Bash prevents arbitrary command execution
 - File access limited to plugin directory context
@@ -394,6 +401,7 @@ def safe_fetch_with_retry(url, max_retries=3, timeout=15):
 ## Composability & Stacking
 
 ### Works With
+
 - **market-price-tracker**: Get current asset prices for USD calculations
 - **gas-fee-optimizer**: Optimize staking transaction timing
 - **crypto-portfolio-tracker**: Track staking positions over time
@@ -485,16 +493,19 @@ def test_end_to_end():
 ## Security Considerations
 
 ### Data Validation
+
 - Validate APY ranges (0-1000%)
 - Sanitize protocol names
 - Verify TVL is positive
 
 ### No Private Data
+
 - No wallet connections
 - No private key handling
 - No transaction signing
 
 ### Output Safety
+
 - Escape special characters in output
 - Validate file paths for writing
 - No arbitrary code execution

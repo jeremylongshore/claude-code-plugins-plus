@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # AssemblyAI Debug Bundle
 
 ## Overview
+
 Collect all diagnostic information needed to resolve AssemblyAI issues — SDK version, transcript status, API connectivity, and configuration — packaged for support tickets.
 
 ## Prerequisites
+
 - `assemblyai` package installed
 - Access to application logs
 - Failed transcript ID (if applicable)
@@ -154,6 +156,7 @@ async function findFailedTranscripts(limit = 50) {
 ## What to Include in a Support Ticket
 
 **Always include:**
+
 - Transcript ID (e.g., `6wij2z3g66-...`)
 - Error message (exact text)
 - SDK version (`npm list assemblyai`)
@@ -161,22 +164,26 @@ async function findFailedTranscripts(limit = 50) {
 - Timestamp of the failure (UTC)
 
 **Never include:**
+
 - Your API key
 - Raw audio containing PII
 - Customer data
 
 **Helpful extras:**
+
 - Audio file format and duration
 - Which features were enabled (speaker_labels, etc.)
 - Whether the issue is intermittent or consistent
 
 ## Output
+
 - `assemblyai-debug-YYYYMMDD-HHMMSS.tar.gz` archive with:
   - `summary.txt` — Runtime, SDK version, API connectivity, service status
 - Programmatic transcript diagnosis report
 - List of recently failed transcripts
 
 ## Error Handling
+
 | Item | Purpose | Check |
 |------|---------|-------|
 | SDK version | Version-specific bugs | `npm list assemblyai` |
@@ -186,9 +193,11 @@ async function findFailedTranscripts(limit = 50) {
 | Audio URL | Accessibility | `curl -I <audio_url>` |
 
 ## Resources
+
 - [AssemblyAI Support](https://support.assemblyai.com)
 - [AssemblyAI Status Page](https://status.assemblyai.com)
 - [AssemblyAI Community Discord](https://www.assemblyai.com/discord)
 
 ## Next Steps
+
 For rate limit issues, see `assemblyai-rate-limits`.

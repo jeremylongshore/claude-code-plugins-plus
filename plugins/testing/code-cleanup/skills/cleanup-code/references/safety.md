@@ -24,6 +24,7 @@ Every finding gets a confidence score:
 | **LOW** | Heuristic match only, could be intentional | Flag with explanation only |
 
 **Scoring rules:**
+
 - Tool verification (knip, madge, tsc) → +1 confidence level
 - Multiple signals pointing to same issue → +1 confidence level
 - Dynamic usage possible (reflection, eval, metaprogramming) → -1 confidence level
@@ -33,6 +34,7 @@ Every finding gets a confidence score:
 ## Revert Procedures
 
 ### Revert Single Dimension
+
 ```bash
 # Undo all unstaged changes
 git checkout -- .
@@ -42,12 +44,14 @@ git checkout -- src/path/to/file.ts
 ```
 
 ### Revert Everything
+
 ```bash
 # Reset to pre-cleanup state
 git reset --hard <baseline-commit-hash>
 ```
 
 ### Partial Revert (Keep Some Changes)
+
 ```bash
 # Interactive: review each hunk
 git add -p        # Stage only the changes you want to keep
@@ -82,6 +86,7 @@ After every auto-applied dimension:
 3. Run linter (`eslint`, `ruff`, `golangci-lint`, etc.)
 
 **If any step fails:**
+
 1. Immediately revert: `git checkout -- .`
 2. Log which changes caused the failure
 3. Re-apply only the safe subset

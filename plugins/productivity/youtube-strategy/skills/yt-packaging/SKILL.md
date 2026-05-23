@@ -39,6 +39,7 @@ You need from the user:
 ### Step 1: Competitive Title Analysis
 
 Before writing titles, research what's already out there:
+
 - Search YouTube for the topic
 - Note the top 5-10 existing titles
 - Identify patterns: what words/structures appear in high-view videos?
@@ -50,25 +51,30 @@ Create 5-10 title options across different strategies:
 
 **Strategy A: Direct Benefit**
 Focus on what the viewer will be able to DO.
+
 - "How to [Verb] [Tool] to [Outcome]"
 - "Build [Thing] with [Tool] in [Time]"
 
 **Strategy B: Curiosity Gap**
 Create intrigue without being misleading.
+
 - "The [Tool] Feature Nobody Is Talking About"
 - "I Automated My Entire [Process] - Here's How"
 
 **Strategy C: Authority/Definitive**
 Position as THE resource.
+
 - "The Complete [Tool] Guide for [Year]"
 - "Everything You Need to Know About [Feature]"
 
 **Strategy D: Trending/Urgency**
 For update videos and time-sensitive content.
+
 - "[Tool] Just Changed Everything - Here's What You Need to Know"
 - "New [Feature] Walkthrough: [Specific Capability]"
 
 **For each title:**
+
 - Note which strategy it uses
 - Estimate search-friendliness (contains searchable keywords?)
 - Estimate curiosity factor (would you click?)
@@ -79,12 +85,14 @@ For update videos and time-sensitive content.
 Create 3-5 thumbnail concepts. Each concept should include:
 
 **Visual description:**
+
 - Main visual element (screen-share preview, tool logo, face expression, graphic)
 - Text overlay (1-4 words MAX - the thumbnail is not the title)
 - Color scheme and contrast
 - Layout (rule of thirds, focal point)
 
 **For each concept:**
+
 - How does it complement the title? (Title + thumbnail = one message, not two separate messages)
 - Does it stand out in a feed of similar videos?
 - Is it readable at mobile size (small thumbnail)?
@@ -93,6 +101,7 @@ Create 3-5 thumbnail concepts. Each concept should include:
 ### Step 4: A/B Test Variants
 
 For the top 2-3 title + thumbnail combos, suggest A/B testing variants:
+
 - Same title, different thumbnail approach
 - Same thumbnail, different title strategy
 - Small tweaks (word swaps, number inclusion)
@@ -128,6 +137,7 @@ Title #[X] + Thumbnail Concept [Y] because [reasoning]
 ```
 
 "Pick your title and thumbnail direction."
+
 - Go with recommended combo
 - Mix and match (pick different title + thumbnail)
 - Request more options

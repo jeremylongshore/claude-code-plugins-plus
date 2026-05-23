@@ -33,6 +33,7 @@ construct and execute automated data preprocessing pipelines, ensuring data qual
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Prepare raw data for machine learning models.
 - Automate data cleaning and transformation processes.
 - Implement a robust ETL (Extract, Transform, Load) pipeline.
@@ -44,6 +45,7 @@ This skill activates when you need to:
 User request: "Preprocess the customer data from the CSV file to remove duplicates and handle missing values."
 
 The skill will:
+
 1. Generate a Python script to read the CSV file, remove duplicate entries, and impute missing values using appropriate techniques (e.g., mean imputation).
 2. Execute the script and provide a summary of the changes made, including the number of duplicates removed and the number of missing values imputed.
 
@@ -52,6 +54,7 @@ The skill will:
 User request: "Create an ETL pipeline to transform the sensor data from the database into a format suitable for time series analysis."
 
 The skill will:
+
 1. Generate a Python script to extract sensor data from the database, transform it into a time series format (e.g., resampling to a fixed frequency), and load it into a suitable storage location.
 2. Execute the script and provide performance metrics, such as the time taken for each step of the pipeline and the size of the transformed data.
 

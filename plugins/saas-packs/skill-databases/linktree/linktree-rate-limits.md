@@ -10,6 +10,7 @@ linktree-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Linktree rate limiting and backoff
 **Workflow:** Part of the operations skill category for Linktree integration.
 **Relates to:** Other linktree skills in this pack.

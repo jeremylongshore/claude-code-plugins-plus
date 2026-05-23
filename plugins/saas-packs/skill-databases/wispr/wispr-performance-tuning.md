@@ -10,6 +10,7 @@ wispr-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Wispr API performance
 **Workflow:** Part of the cicd skill category for Wispr integration.
 **Relates to:** Other wispr skills in this pack.

@@ -30,6 +30,7 @@
 The skill activates automatically when working with YAML files. No commands needed!
 
 **Example 1: Validate YAML**
+
 ```
 User: Check this kubernetes manifest for errors
 *Opens deployment.yaml*
@@ -44,6 +45,7 @@ Here's the corrected version...
 ```
 
 **Example 2: Convert JSON to YAML**
+
 ```
 User: Convert this JSON config to YAML
 
@@ -52,6 +54,7 @@ Agent: 📋 Converting JSON to idiomatic YAML...
 ```
 
 **Example 3: Generate Docker Compose**
+
 ```
 User: Create docker-compose.yaml for nginx, postgres, redis
 
@@ -66,6 +69,7 @@ Agent: 🐳 Generating optimized Docker Compose configuration...
 ### ⚡ Automatic Activation (Proactive Skill)
 
 The YAML Master Agent activates automatically when Claude detects:
+
 - Reading/writing `.yaml` or `.yml` files
 - Working with Kubernetes, Docker Compose, CI/CD configs
 - Mentions of "yaml", "validate", "convert", "lint"
@@ -80,13 +84,16 @@ The YAML Master Agent activates automatically when Claude detects:
 - Provides detailed fix suggestions
 
 **Example**:
+
 ```yaml
 # ❌ INVALID
 services:
   web:
-	image: nginx  # Tab indentation ERROR!
+ image: nginx  # Tab indentation ERROR!
 ```
+
 **Agent fixes**:
+
 ```yaml
 # ✅ VALID
 services:
@@ -102,6 +109,7 @@ services:
 - Creates OpenAPI specs from YAML
 
 **Example**:
+
 ```yaml
 # Input
 user:
@@ -110,6 +118,7 @@ user:
 ```
 
 **Agent generates schema**:
+
 ```json
 {
   "type": "object",
@@ -128,6 +137,7 @@ user:
 ### 🔄 Format Conversion
 
 Seamless conversion between:
+
 - **YAML** ↔ **JSON**
 - **YAML** ↔ **TOML**
 - **YAML** ↔ **XML**
@@ -142,6 +152,7 @@ Preserves comments and maintains semantic equivalence.
 - Generates complete manifests from minimal specs
 
 **Example - Minimal to Production-Ready**:
+
 ```yaml
 # You provide
 apiVersion: apps/v1
@@ -151,6 +162,7 @@ metadata:
 ```
 
 **Agent expands with best practices**:
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -195,6 +207,7 @@ spec:
 ### ⚙️ CI/CD Pipeline Intelligence
 
 Optimizes workflows for:
+
 - **GitHub Actions**
 - **GitLab CI**
 - **CircleCI**
@@ -211,6 +224,7 @@ Suggests caching, parallelization, and matrix builds for faster pipelines.
 - Suggests canonical YAML representations
 
 **Linting Rules**:
+
 1. Consistent 2-space indentation
 2. No duplicate keys
 3. Quoted strings for special characters
@@ -225,6 +239,7 @@ Suggests caching, parallelization, and matrix builds for faster pipelines.
 - Suggests merge keys for DRY configurations
 
 **Example - Refactoring with Anchors**:
+
 ```yaml
 # ❌ REPETITIVE
 services:
@@ -239,6 +254,7 @@ services:
 ```
 
 **Agent refactors**:
+
 ```yaml
 # ✅ DRY
 x-common: &common
@@ -262,6 +278,7 @@ services:
 **Scenario**: Kubernetes manifest won't apply
 
 **Agent Action**:
+
 1. Reads YAML file
 2. Identifies syntax errors
 3. Validates against K8s API schema
@@ -272,6 +289,7 @@ services:
 **Scenario**: Need to convert JSON to YAML for configuration
 
 **Agent Action**:
+
 1. Parses JSON input
 2. Converts to idiomatic YAML (multi-line strings, minimal quotes)
 3. Adds helpful comments
@@ -282,6 +300,7 @@ services:
 **Scenario**: "Create docker-compose.yaml for nginx + postgres + redis"
 
 **Agent Action**:
+
 1. Generates complete docker-compose.yaml
 2. Adds healthchecks, volumes, networks
 3. Includes environment variable templates
@@ -292,6 +311,7 @@ services:
 **Scenario**: GitHub Actions workflow is slow
 
 **Agent Action**:
+
 1. Analyzes workflow YAML
 2. Identifies bottlenecks (no caching, sequential jobs)
 3. Suggests parallelization and caching strategies
@@ -302,6 +322,7 @@ services:
 ## Integration with Other Tools
 
 Works seamlessly with:
+
 - **yamllint** - Validates against yamllint rules
 - **Kustomize** - Handles Kustomization files
 - **Helm** - Works with chart values.yaml
@@ -374,6 +395,7 @@ database:
 ### Complex Data Types
 
 Supports advanced YAML types:
+
 - Timestamps
 - Binary data (base64)
 - Null values
@@ -397,6 +419,7 @@ Supports advanced YAML types:
 ### Issue: "YAML won't parse"
 
 **Diagnosis**:
+
 1. Check indentation (tabs vs spaces)
 2. Verify key-value separator (`:` with space)
 3. Look for duplicate keys
@@ -404,6 +427,7 @@ Supports advanced YAML types:
 ### Issue: "Kubernetes apply fails"
 
 **Diagnosis**:
+
 1. Validate API version matches cluster version
 2. Check required fields are present
 3. Verify resource names are DNS-compliant
@@ -411,6 +435,7 @@ Supports advanced YAML types:
 ### Issue: "Docker Compose won't start"
 
 **Diagnosis**:
+
 1. Check version compatibility
 2. Validate service dependencies
 3. Verify volume mount paths exist
@@ -488,6 +513,7 @@ spec:
 ### v1.0.0 (2025-10-24)
 
 **Initial Release**:
+
 - ✅ Intelligent YAML validation
 - ✅ Schema inference and generation
 - ✅ Format conversion (JSON/TOML/XML)
@@ -505,6 +531,7 @@ spec:
 This plugin is part of the [Claude Code Plugins Plus](https://github.com/jeremylongshore/claude-code-plugins-plus) collection.
 
 **Ideas for enhancements**:
+
 - YAML diff visualization
 - Helm chart validation
 - Ansible vault integration

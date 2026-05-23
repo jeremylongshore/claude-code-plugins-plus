@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity CI Integration
 
 ## Overview
+
 Set up CI/CD pipelines for Perplexity Sonar API integrations. Key CI concerns: live API calls cost money (use mocks for unit tests, reserve live calls for integration tests), API keys must be in GitHub Secrets, and rate limits apply even in CI.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - Perplexity API key for CI (separate from production)
 - Test suite with mocked and live test separation
@@ -35,6 +37,7 @@ Set up CI/CD pipelines for Perplexity Sonar API integrations. Key CI concerns: l
 ## Instructions
 
 ### Step 1: Configure GitHub Secret
+
 ```bash
 set -euo pipefail
 # Store API key as a GitHub secret
@@ -42,6 +45,7 @@ gh secret set PERPLEXITY_API_KEY --body "pplx-your-ci-key-here"
 ```
 
 ### Step 2: GitHub Actions Workflow
+
 ```yaml
 # .github/workflows/perplexity-tests.yml
 name: Perplexity Integration Tests
@@ -84,6 +88,7 @@ jobs:
 ```
 
 ### Step 3: Test Structure
+
 ```typescript
 // tests/perplexity.unit.test.ts — runs on every PR, uses mocks
 import { describe, it, expect, vi } from "vitest";
@@ -147,6 +152,7 @@ describe.skipIf(!LIVE)("Perplexity Live API", () => {
 ```
 
 ### Step 4: Cost-Aware CI
+
 ```yaml
 # Only run live tests on main branch pushes (not every PR)
 # Budget: ~$0.01 per test run (2 sonar queries at $0.005 each)
@@ -169,6 +175,7 @@ describe.skipIf(!LIVE)("Perplexity Live API", () => {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Secret not found | Missing GitHub secret | Run `gh secret set PERPLEXITY_API_KEY` |
@@ -177,14 +184,17 @@ describe.skipIf(!LIVE)("Perplexity Live API", () => {
 | High CI costs | Running live tests on every PR | Gate live tests on main branch only |
 
 ## Output
+
 - Unit test suite with mocked Perplexity responses (runs on every PR)
 - Integration test suite with live API (runs on main pushes)
 - Cost-optimized CI that limits API calls
 - GitHub Actions workflow file
 
 ## Resources
+
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Vitest Documentation](https://vitest.dev/)
 
 ## Next Steps
+
 For deployment patterns, see `perplexity-deploy-integration`.

@@ -10,6 +10,7 @@ databricks-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Databricks CI/CD integration
 **Workflow:** Part of the cicd skill category for Databricks integration.
 **Relates to:** Other databricks skills in this pack.

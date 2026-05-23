@@ -144,11 +144,13 @@ echo "REVIEW FOR SENSITIVE DATA BEFORE SHARING"
 ## Sensitive Data Checklist
 
 **ALWAYS REDACT before sharing:**
+
 - API tokens and zone passwords
 - Customer IDs
 - Target URLs (if confidential)
 
 **Safe to include:**
+
 - Error codes and X-Luminati headers
 - Response timing
 - Runtime versions

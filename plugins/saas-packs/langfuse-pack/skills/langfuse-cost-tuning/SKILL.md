@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Cost Tuning
 
 ## Overview
+
 Track, analyze, and optimize LLM costs using Langfuse's built-in token/cost tracking, the Metrics API for programmatic cost analysis, model routing for cost reduction, and automated budget alerts.
 
 ## Prerequisites
+
 - Langfuse tracing with token usage captured (via `observeOpenAI` or manual `usage` fields)
 - For Metrics API: `@langfuse/client` installed
 - Understanding of LLM pricing models
@@ -265,6 +267,7 @@ Langfuse provides built-in cost analytics in the UI:
 | Stale pricing | Model prices changed | Update model definitions periodically |
 
 ## Resources
+
 - [Token & Cost Tracking](https://langfuse.com/docs/observability/features/token-and-cost-tracking)
 - [Metrics API](https://langfuse.com/docs/metrics/features/metrics-api)
 - [Custom Dashboards](https://langfuse.com/docs/metrics/features/custom-dashboards)

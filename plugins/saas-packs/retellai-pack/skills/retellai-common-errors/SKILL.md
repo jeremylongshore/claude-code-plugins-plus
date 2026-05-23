@@ -25,31 +25,40 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Retell AI Common Errors
 
 ## Overview
+
 Quick reference for the top Retell AI errors and their solutions.
 
 ## Prerequisites
+
 - `retell-sdk` installed
 - API key configured
 
 ## Instructions
 
 ### Error 1: 401 Unauthorized
+
 ```
 RetellError: 401 — Invalid API key
 ```
+
 **Fix:** Verify API key in Retell Dashboard. Ensure `RETELL_API_KEY` starts with `key_`.
 
 ### Error 2: Call Fails Immediately
+
 ```
 RetellError: 400 — Invalid phone number format
 ```
+
 **Fix:** Use E.164 format: `+14155551234`. Both `from_number` and `to_number` must be valid.
 
 ### Error 3: Agent Not Responding
+
 ```
 Call connected but agent says nothing
 ```
+
 **Fix:** Check LLM configuration:
+
 ```typescript
 const llm = await retell.llm.retrieve(agent.response_engine.llm_id);
 console.log(`Model: ${llm.model}`);
@@ -58,10 +67,13 @@ console.log(`Prompt length: ${llm.general_prompt.length} chars`);
 ```
 
 ### Error 4: Function Call Timeout
+
 ```
 Function call to https://your-api.com/endpoint timed out
 ```
+
 **Fix:** Your function endpoint must respond within 5 seconds. Offload heavy work:
+
 ```typescript
 app.post('/functions/lookup', async (req, res) => {
   // Respond immediately with acknowledgment
@@ -72,10 +84,13 @@ app.post('/functions/lookup', async (req, res) => {
 ```
 
 ### Error 5: Webhook Not Receiving Events
+
 ```
 No webhook events received after call
 ```
+
 **Fix:** Set `webhook_url` on the agent, not just in Dashboard settings:
+
 ```typescript
 await retell.agent.update(agentId, {
   webhook_url: 'https://your-app.com/webhooks/retell',
@@ -83,17 +98,21 @@ await retell.agent.update(agentId, {
 ```
 
 ### Error 6: Voice Quality Issues
+
 ```
 Agent voice sounds robotic/choppy
 ```
+
 **Fix:** Check network latency to Retell servers. Use a voice optimized for your use case. Try different voice IDs.
 
 ## Output
+
 - Error identified and root cause found
 - Fix applied and verified
 - Call successfully completed
 
 ## Error Handling
+
 | HTTP Code | Meaning | Retryable |
 |-----------|---------|-----------|
 | 400 | Bad request | No — fix params |
@@ -103,8 +122,10 @@ Agent voice sounds robotic/choppy
 | 500+ | Server error | Yes — retry |
 
 ## Resources
+
 - [Retell AI Documentation](https://docs.retellai.com)
 - [retell-sdk npm](https://www.npmjs.com/package/retell-sdk)
 
 ## Next Steps
+
 For debugging, see `retellai-debug-bundle`.

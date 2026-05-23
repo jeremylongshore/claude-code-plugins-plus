@@ -3,6 +3,7 @@
 ## Basic Staking Comparison
 
 ### Compare ETH Staking Options
+
 ```bash
 python staking_optimizer.py --asset ETH
 
@@ -26,6 +27,7 @@ python staking_optimizer.py --asset ETH
 ```
 
 ### Compare SOL Staking Options
+
 ```bash
 python staking_optimizer.py --asset SOL
 
@@ -33,6 +35,7 @@ python staking_optimizer.py --asset SOL
 ```
 
 ### Compare Multiple Assets
+
 ```bash
 python staking_optimizer.py --assets ETH,SOL,ATOM
 
@@ -42,6 +45,7 @@ python staking_optimizer.py --assets ETH,SOL,ATOM
 ## Position Analysis
 
 ### Analyze with Position Size
+
 ```bash
 python staking_optimizer.py --asset ETH --amount 10
 
@@ -50,6 +54,7 @@ python staking_optimizer.py --asset ETH --amount 10
 ```
 
 ### Analyze with USD Value
+
 ```bash
 python staking_optimizer.py --asset ETH --amount-usd 25000
 
@@ -57,6 +62,7 @@ python staking_optimizer.py --asset ETH --amount-usd 25000
 ```
 
 ### Detailed Single Protocol Analysis
+
 ```bash
 python staking_optimizer.py --protocol lido --detailed
 
@@ -100,6 +106,7 @@ python staking_optimizer.py --protocol lido --detailed
 ## Portfolio Optimization
 
 ### Optimize Existing Portfolio
+
 ```bash
 python staking_optimizer.py --optimize \
   --positions "10 ETH @ lido 4.0%, 100 ATOM @ native 18%, 50 DOT @ native 14%"
@@ -133,6 +140,7 @@ python staking_optimizer.py --optimize \
 ```
 
 ### Optimize with Constraints
+
 ```bash
 # Only consider protocols with risk score >= 8
 python staking_optimizer.py --optimize \
@@ -143,6 +151,7 @@ python staking_optimizer.py --optimize \
 ## Protocol Comparison
 
 ### Compare Specific Protocols
+
 ```bash
 python staking_optimizer.py --compare --protocols lido,rocket-pool,frax-ether
 
@@ -150,6 +159,7 @@ python staking_optimizer.py --compare --protocols lido,rocket-pool,frax-ether
 ```
 
 ### Protocol Deep Dive
+
 ```bash
 python staking_optimizer.py --protocol rocket-pool --detailed
 
@@ -159,6 +169,7 @@ python staking_optimizer.py --protocol rocket-pool --detailed
 ## Output Formats
 
 ### JSON Output
+
 ```bash
 python staking_optimizer.py --asset ETH --format json
 
@@ -187,6 +198,7 @@ python staking_optimizer.py --asset ETH --format json
 ```
 
 ### CSV Output
+
 ```bash
 python staking_optimizer.py --asset ETH --format csv --output eth_staking.csv
 
@@ -196,6 +208,7 @@ python staking_optimizer.py --asset ETH --format csv --output eth_staking.csv
 ```
 
 ### Save to File
+
 ```bash
 python staking_optimizer.py --asset ETH --format json --output analysis.json
 python staking_optimizer.py --asset SOL --format csv --output sol_staking.csv
@@ -204,6 +217,7 @@ python staking_optimizer.py --asset SOL --format csv --output sol_staking.csv
 ## Advanced Usage
 
 ### Custom Gas Price
+
 ```bash
 python staking_optimizer.py --asset ETH --amount 10 --gas-price 50
 
@@ -211,6 +225,7 @@ python staking_optimizer.py --asset ETH --amount 10 --gas-price 50
 ```
 
 ### Custom ETH Price
+
 ```bash
 python staking_optimizer.py --asset ETH --amount 10 --eth-price 3000
 
@@ -218,6 +233,7 @@ python staking_optimizer.py --asset ETH --amount 10 --eth-price 3000
 ```
 
 ### Bypass Cache
+
 ```bash
 python staking_optimizer.py --asset ETH --no-cache
 
@@ -225,6 +241,7 @@ python staking_optimizer.py --asset ETH --no-cache
 ```
 
 ### Verbose Mode
+
 ```bash
 python staking_optimizer.py --asset ETH --verbose
 
@@ -238,6 +255,7 @@ python staking_optimizer.py --asset ETH --verbose
 ## Real-World Workflows
 
 ### Research Best Staking Option
+
 ```bash
 # 1. Quick overview of all options
 python staking_optimizer.py --asset ETH
@@ -251,6 +269,7 @@ python staking_optimizer.py --asset ETH --amount 32 --detailed
 ```
 
 ### Monthly Portfolio Review
+
 ```bash
 # Export current state for tracking
 python staking_optimizer.py --assets ETH,SOL,ATOM --format csv --output $(date +%Y%m)_staking.csv
@@ -261,6 +280,7 @@ python staking_optimizer.py --optimize \
 ```
 
 ### Compare Liquid vs Native Staking
+
 ```bash
 # Get both options for comparison
 python staking_optimizer.py --asset ETH --detailed
@@ -274,11 +294,13 @@ python staking_optimizer.py --asset ETH --detailed
 ## Integration Examples
 
 ### Pipe to jq
+
 ```bash
 python staking_optimizer.py --asset ETH --format json | jq '.data[].metrics.net_apy'
 ```
 
 ### Use in Shell Scripts
+
 ```bash
 #!/bin/bash
 # Get best APY for ETH
@@ -288,6 +310,7 @@ echo "Best ETH staking: $BEST"
 ```
 
 ### Scheduled Analysis
+
 ```bash
 # Add to crontab for daily report
 0 9 * * * python /path/to/staking_optimizer.py --assets ETH,SOL,ATOM --format json --output /reports/staking_$(date +\%Y\%m\%d).json

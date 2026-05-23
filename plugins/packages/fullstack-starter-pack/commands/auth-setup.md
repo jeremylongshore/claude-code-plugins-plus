@@ -14,14 +14,15 @@ Generates complete authentication boilerplate including JWT, OAuth (Google/GitHu
 ## What This Command Does
 
 **Generated Auth System:**
--  JWT authentication with refresh tokens
--  OAuth2 (Google, GitHub, Facebook)
--  Password hashing (bcrypt)
--  Email verification
--  Password reset flow
--  Session management
--  Rate limiting on auth endpoints
--  Authentication middleware
+
+- JWT authentication with refresh tokens
+- OAuth2 (Google, GitHub, Facebook)
+- Password hashing (bcrypt)
+- Email verification
+- Password reset flow
+- Session management
+- Rate limiting on auth endpoints
+- Authentication middleware
 
 **Output:** Complete authentication system ready for production
 
@@ -49,6 +50,7 @@ Generates complete authentication boilerplate including JWT, OAuth (Google/GitHu
 ### **JWT Authentication**
 
 **auth.service.ts:**
+
 ```typescript
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
@@ -201,6 +203,7 @@ export class AuthService {
 ### **OAuth2 Setup (Google)**
 
 **oauth.controller.ts:**
+
 ```typescript
 import { OAuth2Client } from 'google-auth-library'
 
@@ -263,6 +266,7 @@ export class OAuthController {
 ### **Authentication Middleware**
 
 **auth.middleware.ts:**
+
 ```typescript
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
@@ -419,4 +423,4 @@ export default router
 
 ---
 
-**Secure authentication. Easy integration. Production-ready.** 
+**Secure authentication. Easy integration. Production-ready.**

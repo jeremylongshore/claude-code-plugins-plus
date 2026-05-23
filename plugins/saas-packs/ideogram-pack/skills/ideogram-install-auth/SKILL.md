@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Install & Auth
 
 ## Overview
+
 Set up Ideogram API authentication for AI image generation. Ideogram provides a REST API at `api.ideogram.ai` for text-to-image generation, editing, remixing, upscaling, and describing images. Authentication uses an `Api-Key` header on every request.
 
 ## Prerequisites
+
 - Node.js 18+ or Python 3.10+
 - Ideogram account at [ideogram.ai](https://ideogram.ai)
 - API key from Ideogram dashboard (Settings > API Beta)
@@ -37,6 +39,7 @@ Set up Ideogram API authentication for AI image generation. Ideogram provides a 
 ## Instructions
 
 ### Step 1: Get Your API Key
+
 1. Log into [ideogram.ai](https://ideogram.ai)
 2. Navigate to **Settings** (burger icon) > **API Beta**
 3. Accept the Developer API Agreement
@@ -44,6 +47,7 @@ Set up Ideogram API authentication for AI image generation. Ideogram provides a 
 5. Click **Create API key** -- store it immediately, it is shown only once
 
 ### Step 2: Install HTTP Client
+
 ```bash
 set -euo pipefail
 # Node.js (no SDK required -- Ideogram uses a plain REST API)
@@ -54,6 +58,7 @@ pip install requests python-dotenv
 ```
 
 ### Step 3: Configure Authentication
+
 ```bash
 # Create .env file (NEVER commit to git)
 echo 'IDEOGRAM_API_KEY=your-api-key-here' >> .env
@@ -64,6 +69,7 @@ echo '.env.local' >> .gitignore
 ```
 
 ### Step 4: Verify Connection
+
 ```typescript
 // verify-ideogram.ts
 import "dotenv/config";
@@ -141,12 +147,14 @@ else:
 | Describe | `https://api.ideogram.ai/describe` | Multipart form data |
 
 ## Billing Model
+
 - Auto top-up: balance refills to $20 when it drops below $10 (configurable)
 - Default rate limit: 10 in-flight requests
 - Image URLs expire -- download immediately after generation
 - Enterprise: contact `partnership@ideogram.ai` for higher limits
 
 ## Error Handling
+
 | Error | HTTP Status | Cause | Solution |
 |-------|-------------|-------|----------|
 | Invalid API Key | 401 | Key missing or revoked | Verify key in dashboard, regenerate if needed |
@@ -155,15 +163,18 @@ else:
 | Safety Rejected | 422 | Prompt or image failed safety check | Rephrase prompt, remove flagged content |
 
 ## Output
+
 - Environment variable `IDEOGRAM_API_KEY` configured
 - `.env` file with key (git-ignored)
 - Successful test generation confirming connectivity
 
 ## Resources
+
 - [Ideogram Developer Docs](https://developer.ideogram.ai)
 - [API Reference](https://developer.ideogram.ai/api-reference)
 - [API Setup Guide](https://developer.ideogram.ai/ideogram-api/api-setup)
 - [API Pricing](https://ideogram.ai/features/api-pricing)
 
 ## Next Steps
+
 After successful auth, proceed to `ideogram-hello-world` for your first real generation.

@@ -22,12 +22,12 @@ Generates production-ready monitoring infrastructure with Prometheus, Grafana, a
 
 ## When to Use This
 
--  Setting up monitoring for new application
--  Need observability for Kubernetes cluster
--  Want pre-configured dashboards and alerts
--  Production deployment requires monitoring
--  Using managed monitoring (CloudWatch, Datadog, etc.)
--  Simple application (overkill for toy projects)
+- Setting up monitoring for new application
+- Need observability for Kubernetes cluster
+- Want pre-configured dashboards and alerts
+- Production deployment requires monitoring
+- Using managed monitoring (CloudWatch, Datadog, etc.)
+- Simple application (overkill for toy projects)
 
 ## How It Works
 
@@ -76,9 +76,11 @@ You are a monitoring and observability expert. When user runs `/monitoring-setup
 ```
 
 ### Access dashboards:
+
 - Prometheus: http://prometheus:9090
 - Grafana: http://grafana:3000 (admin/[password])
 - AlertManager: http://alertmanager:9093
+
 ```
 
 ## Example
@@ -578,6 +580,7 @@ spec:
 ## Key Metrics to Monitor
 
 **Infrastructure:**
+
 - CPU usage (per node, per pod)
 - Memory usage (per node, per pod)
 - Disk space (per node)
@@ -585,6 +588,7 @@ spec:
 - Pod restarts
 
 **Application:**
+
 - HTTP request rate
 - HTTP request duration (p50, p95, p99)
 - HTTP error rate (4xx, 5xx)
@@ -592,6 +596,7 @@ spec:
 - Queue depth (if using queues)
 
 **Business:**
+
 - Orders per minute
 - Revenue per hour
 - User signups
@@ -608,18 +613,21 @@ spec:
 ## Alert Configuration Best Practices
 
 **Critical Alerts (Page oncall):**
+
 - Pod/service down
 - Error rate >5%
 - Disk space <10%
 - Memory usage >95%
 
 **Warning Alerts (Slack/email):**
+
 - High latency (p95 >1s)
 - Memory usage >80%
 - Disk space <20%
 - Unusual traffic patterns
 
 **Info Alerts (Monitoring only):**
+
 - Deployment events
 - Pod restarts (if infrequent)
 - Configuration changes

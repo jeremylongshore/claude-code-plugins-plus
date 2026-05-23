@@ -146,6 +146,7 @@ The token datacenter code must match the portal's datacenter; requests to the wr
 ## Token Revocation
 
 HubSpot does not expose a `/revoke` endpoint. To invalidate:
+
 - **Private app token**: Rotate in Settings → Integrations → Private Apps → your app → Rotate token
 - **OAuth token**: Disconnect the app from Settings → Integrations → Connected Apps, or the user disconnects from their account
 

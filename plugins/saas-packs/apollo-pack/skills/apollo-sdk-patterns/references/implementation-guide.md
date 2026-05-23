@@ -5,9 +5,11 @@
 # Apollo SDK Patterns
 
 ## Overview
+
 Production-ready patterns for Apollo.io API integration with type safety, error handling, and retry logic.
 
 ## Prerequisites
+
 - Completed `apollo-install-auth` setup
 - Familiarity with async/await patterns
 - Understanding of TypeScript generics
@@ -265,6 +267,7 @@ export class ApolloValidationError extends ApolloError {
 ```
 
 ## Output
+
 - Type-safe client singleton with Zod validation
 - Robust error handling with custom error classes
 - Automatic retry with exponential backoff
@@ -272,6 +275,7 @@ export class ApolloValidationError extends ApolloError {
 - Request batching for bulk operations
 
 ## Error Handling
+
 | Pattern | When to Use |
 |---------|-------------|
 | Singleton | Always - ensures single client instance |
@@ -281,9 +285,11 @@ export class ApolloValidationError extends ApolloError {
 | Custom Errors | Distinguish error types in catch blocks |
 
 ## Resources
+
 - [Zod Documentation](https://zod.dev/)
 - [Axios Interceptors](https://axios-http.com/docs/interceptors)
 - [TypeScript Generics](https://www.typescriptlang.org/docs/handbook/2/generics.html)
 
 ## Next Steps
+
 Proceed to `apollo-core-workflow-a` for lead search implementation.

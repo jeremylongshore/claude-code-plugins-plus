@@ -3,6 +3,7 @@
 ## Breadcrumbs Issues
 
 ### Debug Breadcrumb Capture
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -18,6 +19,7 @@ Sentry.init({
 ```
 
 ### Manual Breadcrumb Test
+
 ```typescript
 // Add test breadcrumb
 Sentry.addBreadcrumb({

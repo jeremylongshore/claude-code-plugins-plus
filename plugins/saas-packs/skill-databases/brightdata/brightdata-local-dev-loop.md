@@ -10,6 +10,7 @@ brightdata-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Bright Data local development workflow
 **Workflow:** Part of the onboarding skill category for Bright Data integration.
 **Relates to:** Other brightdata skills in this pack.

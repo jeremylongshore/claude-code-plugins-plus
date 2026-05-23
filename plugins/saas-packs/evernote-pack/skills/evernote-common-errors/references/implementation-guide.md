@@ -2,7 +2,6 @@
 
 > Full implementation details for the parent SKILL.md.
 
-
 ## Error Types
 
 Evernote uses three main exception types:
@@ -12,7 +11,6 @@ Evernote uses three main exception types:
 | `EDAMUserException` | Client error - invalid input, permissions |
 | `EDAMSystemException` | Server error - rate limits, maintenance |
 | `EDAMNotFoundException` | Resource not found - invalid GUID |
-
 
 ## EDAMUserException Errors
 
@@ -235,7 +233,6 @@ async function getRemainingQuota(userStore) {
 }
 ```
 
-
 ## EDAMSystemException Errors
 
 ### RATE_LIMIT_REACHED
@@ -300,7 +297,6 @@ async function withMaintenanceRetry(operation) {
 }
 ```
 
-
 ## EDAMNotFoundException Errors
 
 **Cause:** Referenced resource doesn't exist
@@ -331,7 +327,6 @@ async function safeGetNote(noteStore, guid) {
   }
 }
 ```
-
 
 ## Error Handling Service
 
@@ -415,7 +410,6 @@ class EvernoteErrorHandler {
 module.exports = EvernoteErrorHandler;
 ```
 
-
 ## Usage Example
 
 ```javascript
@@ -443,7 +437,6 @@ async function createNoteSafely(noteStore, note) {
   }
 }
 ```
-
 
 ## Quick Reference
 

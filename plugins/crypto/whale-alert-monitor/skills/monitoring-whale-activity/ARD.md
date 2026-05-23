@@ -51,12 +51,14 @@ skills/monitoring-whale-activity/
 ## API Integration
 
 ### Whale Alert API
+
 - **Endpoint**: `https://api.whale-alert.io/v1/transactions`
 - **Auth**: API key in header
 - **Rate Limits**: 10 req/min (free), 100 req/min (paid)
 - **Data**: Real-time large transactions across chains
 
 ### Etherscan (Fallback)
+
 - **Endpoint**: `https://api.etherscan.io/api`
 - **Auth**: API key in query param
 - **Rate Limits**: 5 req/sec (free)
@@ -65,6 +67,7 @@ skills/monitoring-whale-activity/
 ## Component Design
 
 ### whale_api.py
+
 ```python
 class WhaleAlertClient:
     def get_transactions(chain, min_value, limit) -> List[Transaction]
@@ -72,6 +75,7 @@ class WhaleAlertClient:
 ```
 
 ### wallet_labels.py
+
 ```python
 class WalletLabeler:
     def label_wallet(address, chain) -> WalletLabel
@@ -80,6 +84,7 @@ class WalletLabeler:
 ```
 
 ### price_service.py
+
 ```python
 class PriceService:
     def get_price(symbol, timestamp=None) -> float
@@ -99,6 +104,7 @@ class PriceService:
 ## Wallet Label Database
 
 Built-in labels for:
+
 - **Exchanges**: Binance, Coinbase, Kraken, OKX, Bybit, etc.
 - **Bridges**: Wormhole, LayerZero, Stargate, Multichain
 - **Funds**: Known VC/fund wallets (a16z, Paradigm, etc.)

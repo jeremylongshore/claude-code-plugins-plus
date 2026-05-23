@@ -10,6 +10,7 @@ featured: false
 I had Bob deployed as a basic multi-agent orchestrator on Vertex AI Agent Engine. But here's what was wrong:
 
 **Before Fine-Tuning:**
+
 - Generic "master orchestrator" identity
 - Vague routing decisions
 - No clear decision framework
@@ -17,6 +18,7 @@ I had Bob deployed as a basic multi-agent orchestrator on Vertex AI Agent Engine
 - Missing business model alignment
 
 **What I Needed:**
+
 - IAM1 as a **Regional Manager** (sovereign in domain)
 - Clear hierarchy: IAM1 can **command** IAM2s, can **coordinate** with peer IAM1s
 - Intelligent routing based on task complexity
@@ -49,6 +51,7 @@ Quick context on what we're building:
 ```
 
 **Business Value:**
+
 - Deploy IAM1 to Client A → Revenue Stream
 - Deploy IAM1 to Client B → Revenue Stream
 - Add IAM2 specialists → Upsell
@@ -89,6 +92,7 @@ Remember: You are IAM1, the Regional Manager. Your IAM2s are your team members w
 ```
 
 **Key Additions:**
+
 - Explicit IAM1 identity (not just "orchestrator")
 - Clear peer vs subordinate relationship rules
 - Step-by-step decision framework for routing
@@ -97,6 +101,7 @@ Remember: You are IAM1, the Regional Manager. Your IAM2s are your team members w
 ### 2. Improved Routing Function
 
 **Before:**
+
 ```python
 def route_to_agent(task_type: str, query: str) -> str:
     specialist = AGENT_REGISTRY[task_type]
@@ -105,6 +110,7 @@ def route_to_agent(task_type: str, query: str) -> str:
 ```
 
 **After:**
+
 ```python
 def route_to_agent(task_type: str, query: str) -> str:
     """
@@ -143,6 +149,7 @@ def route_to_agent(task_type: str, query: str) -> str:
 ```
 
 **Improvements:**
+
 - Detailed docstring with examples for each specialist
 - Better error messages with available options
 - Transparency logging
@@ -193,6 +200,7 @@ Remember: You are IAM2, executing research tasks assigned by your IAM1 manager."
 ```
 
 **Pattern Applied to All IAM2s:**
+
 - Clear reporting structure (reports to IAM1)
 - Defined expertise areas
 - Step-by-step work process
@@ -200,6 +208,7 @@ Remember: You are IAM2, executing research tasks assigned by your IAM1 manager."
 - Role reminder at the end
 
 **All 4 IAM2 Specialists:**
+
 1. **Research IAM2** - Knowledge synthesis, citations, recommendations
 2. **Code IAM2** - Clean code, security considerations, usage examples
 3. **Data IAM2** - SQL queries, business insights, visualizations
@@ -213,6 +222,7 @@ make deploy
 ```
 
 **Output:**
+
 ```
 🤖 DEPLOYING AGENT TO VERTEX AI AGENT ENGINE 🤖
 
@@ -228,6 +238,7 @@ Agent ID: 5828234061910376448
 ```
 
 **What Changed in Deployment:**
+
 - Updated IAM1 orchestrator with new instruction
 - Enhanced routing function with examples
 - All 4 IAM2 agents with professional instructions
@@ -238,18 +249,21 @@ Agent ID: 5828234061910376448
 Here's how IAM1 should now route different query types:
 
 **1. Simple Greeting:**
+
 ```
 User: "Hello!"
 IAM1: [Answers directly without routing]
 ```
 
 **2. Knowledge Question:**
+
 ```
 User: "What is Vertex AI Search?"
 IAM1: [Uses retrieve_docs tool, returns grounded answer]
 ```
 
 **3. Research Task:**
+
 ```
 User: "Research best practices for multi-agent systems"
 IAM1: [Routes to Research IAM2]
@@ -260,6 +274,7 @@ Executive Summary: Multi-agent systems benefit from...
 ```
 
 **4. Code Task:**
+
 ```
 User: "Write a Python function to validate email addresses"
 IAM1: [Routes to Code IAM2]
@@ -271,6 +286,7 @@ Approach: Using regex with comprehensive validation
 ```
 
 **5. Multi-Step Task:**
+
 ```
 User: "Research Vertex AI, then write code to deploy an agent"
 IAM1: [Coordinates Research IAM2 → Code IAM2, synthesizes results]
@@ -281,6 +297,7 @@ IAM1: [Coordinates Research IAM2 → Code IAM2, synthesizes results]
 ### 1. Decision Frameworks > Generic Prompts
 
 Don't just say "you can delegate tasks." Provide a **step-by-step decision framework**:
+
 - IF simple question → answer directly
 - IF knowledge question → use RAG tool
 - IF specialized task → route to specialist
@@ -289,6 +306,7 @@ Don't just say "you can delegate tasks." Provide a **step-by-step decision frame
 ### 2. Examples Drive Behavior
 
 The routing function docstring with **concrete examples** makes a huge difference:
+
 ```python
 # Instead of: "Use for research tasks"
 # Write: "Examples: 'Research best practices for X', 'Compare approaches to Y'"
@@ -297,6 +315,7 @@ The routing function docstring with **concrete examples** makes a huge differenc
 ### 3. Standardized Deliverables Improve Quality
 
 All IAM2 specialists now follow a **deliverable format**:
+
 - Research: Executive summary → Findings → Recommendations
 - Code: Approach → Code → Examples → Testing
 - Data: Business question → Query → Insights → Recommendations
@@ -307,6 +326,7 @@ This creates consistency and professionalism.
 ### 4. Identity Matters for Business Products
 
 Transforming "Bob the orchestrator" into "IAM1 Regional Manager" aligns the agent with the **business model**:
+
 - Deployable per client ($500/month)
 - Add IAM2 specialists ($200/IAM2)
 - Multiple IAM1s coordinate (enterprise scale)
@@ -316,6 +336,7 @@ The agent now **knows** it's a deployable business product.
 ## Production Architecture
 
 **Current Stack:**
+
 - **Platform**: Vertex AI Agent Engine
 - **IAM1 Model**: Gemini 2.0 Flash (orchestrator)
 - **IAM2 Models**: Gemini 2.5 Flash (specialists)
@@ -325,6 +346,7 @@ The agent now **knows** it's a deployable business product.
 - **Telemetry**: Full observability enabled
 
 **Agent Card Definition:**
+
 ```python
 AGENT_CARD = {
     "name": "IAM1",
@@ -342,11 +364,13 @@ AGENT_CARD = {
 ## What's Next
 
 **Immediate:**
+
 - Test orchestration in Vertex AI Playground
 - Validate routing decisions with real queries
 - Configure Slack app webhook
 
 **Future:**
+
 - Implement A2A (Agent-to-Agent) for peer IAM1 coordination
 - Deploy to first client (isolated GCP project)
 - Add BigQuery tools to Data IAM2
@@ -369,10 +393,9 @@ Fine-tuning isn't just about better prompts. It's about:
 The result? An agent that **knows its role**, **makes better decisions**, and **delivers consistent quality**.
 
 **Test it yourself:**
+
 - Console Playground: [Vertex AI Agent Engine](https://console.cloud.google.com/vertex-ai/agents/locations/us-central1/agent-engines/5828234061910376448/playground?project=bobs-brain)
 
 The future of AI agents isn't one super-intelligent model. It's **hierarchical teams** of specialized agents with clear roles and decision-making frameworks.
 
-
 **Jeremy Longshore** builds production multi-agent systems on Google Cloud. Connect on [LinkedIn](https://linkedin.com/in/jeremylongshore) or follow on [X](https://twitter.com/AsphaltCowb0y).
-

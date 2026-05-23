@@ -10,6 +10,7 @@ onenote-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready OneNote SDK patterns
 **Workflow:** Part of the onboarding skill category for OneNote integration.
 **Relates to:** Other onenote skills in this pack.

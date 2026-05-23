@@ -3,6 +3,7 @@
 ## Monitoring & Profiling
 
 ### Latency Tracking
+
 ```python
 import time
 from dataclasses import dataclass

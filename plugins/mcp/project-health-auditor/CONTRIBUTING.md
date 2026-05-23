@@ -156,6 +156,7 @@ function calculateHealthScore(
 ```
 
 **When modifying this algorithm:**
+
 - Update the function in `servers/code-metrics.ts`
 - Update corresponding tests in `tests/code-metrics.test.ts`
 - Update documentation in `README.md` and `agents/reviewer.md`
@@ -201,6 +202,7 @@ pnpm build
 
 1. **Fork the repository**
 2. **Create a feature branch**
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -211,17 +213,20 @@ pnpm build
    - Update documentation
 
 4. **Run tests**
+
    ```bash
    pnpm test
    pnpm build
    ```
 
 5. **Commit with clear message**
+
    ```bash
    git commit -m "feat: add support for Python files"
    ```
 
 6. **Push to your fork**
+
    ```bash
    git push origin feature/your-feature-name
    ```
@@ -244,6 +249,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `chore:` - Build/tooling changes
 
 Examples:
+
 ```
 feat: add Python file support to complexity analysis
 fix: correct health score calculation for edge cases
@@ -256,6 +262,7 @@ test: add integration tests for git_churn tool
 ### 1. Language Support
 
 Add support for new programming languages:
+
 - Update file patterns in `list_repo_files`
 - Add language-specific complexity rules in `file_metrics`
 - Add comment pattern detection
@@ -264,6 +271,7 @@ Add support for new programming languages:
 ### 2. Metrics Improvements
 
 Enhance existing metrics:
+
 - Improve cyclomatic complexity calculation
 - Add new health score factors
 - Better test coverage detection

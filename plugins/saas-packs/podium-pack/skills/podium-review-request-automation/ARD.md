@@ -200,6 +200,7 @@ The retry policy is in `with_retry()` in the library. Permanent errors short-cir
 ```
 
 A consumer building on this skill gets:
+
 - Token refresh + scope validation + decay monitoring (from `podium-auth`)
 - Per-campaign rate-limit handling with `Retry-After` (from `podium-rate-limit-survival`)
 - Durable inbound webhook persistence with signature verification (from `podium-webhook-reliability`)

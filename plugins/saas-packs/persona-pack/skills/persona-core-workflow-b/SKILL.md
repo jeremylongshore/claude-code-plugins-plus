@@ -28,15 +28,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Persona Core Workflow B — Verification Checks
 
 ## Overview
+
 Work with Persona's verification types: government ID (passport, driver's license), selfie liveness detection, and database checks (SSN, watchlist). Covers retrieving verification details, interpreting check results, and handling edge cases.
 
 ## Prerequisites
+
 - Completed `persona-core-workflow-a` (inquiry flow)
 - Inquiry Template with verification checks configured
 
 ## Instructions
 
 ### Step 1: List Verifications for an Inquiry
+
 ```python
 import os, requests
 
@@ -61,6 +64,7 @@ for v in verifications:
 ```
 
 ### Step 2: Government ID Verification Results
+
 ```python
 # Government ID verification includes extracted data
 def get_gov_id_details(verification_id: str) -> dict:
@@ -87,6 +91,7 @@ def get_gov_id_details(verification_id: str) -> dict:
 ```
 
 ### Step 3: Selfie Liveness Check
+
 ```python
 def get_selfie_result(verification_id: str) -> dict:
     resp = requests.get(f"{BASE}/verifications/{verification_id}", headers=HEADERS)
@@ -104,6 +109,7 @@ def get_selfie_result(verification_id: str) -> dict:
 ```
 
 ### Step 4: Database Verification (SSN, Watchlist)
+
 ```python
 def get_database_check(verification_id: str) -> dict:
     resp = requests.get(f"{BASE}/verifications/{verification_id}", headers=HEADERS)
@@ -123,6 +129,7 @@ def get_database_check(verification_id: str) -> dict:
 ```
 
 ### Step 5: Decision Logic
+
 ```python
 def make_verification_decision(inquiry_id: str) -> str:
     resp = requests.get(f"{BASE}/inquiries/{inquiry_id}", headers=HEADERS)
@@ -140,12 +147,14 @@ def make_verification_decision(inquiry_id: str) -> str:
 ```
 
 ## Output
+
 - Verification results retrieved with extracted data
 - Government ID fields (name, DOB, ID number) parsed
 - Selfie liveness status checked
 - Database checks (SSN, watchlist) interpreted
 
 ## Error Handling
+
 | Verification Status | Meaning | Action |
 |--------------------|---------|--------|
 | `passed` | All checks passed | Approve user |
@@ -154,9 +163,11 @@ def make_verification_decision(inquiry_id: str) -> str:
 | `initiated` | Check still running | Poll again |
 
 ## Resources
+
 - [Government ID Verifications](https://docs.withpersona.com/api-reference/verifications/government-id-verifications)
 - [Verification Checks](https://docs.withpersona.com/api-reference/verifications)
 
 ## Next Steps
+
 - Handle events via webhooks: `persona-webhooks-events`
 - Debug verification issues: `persona-common-errors`

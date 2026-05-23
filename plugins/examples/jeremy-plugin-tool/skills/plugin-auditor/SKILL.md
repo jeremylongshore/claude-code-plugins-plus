@@ -57,6 +57,7 @@ Audits Claude Code plugins for security vulnerabilities, best practices complian
 ## Output
 
 A structured audit report containing:
+
 - Plugin identification (name, version, category, audit date)
 - Per-category results: passed checks, failed checks with fix commands, warnings with recommendations
 - Numeric quality scores: Security (x/10), Best Practices (x/10), Compliance (x/10), Documentation (x/10)

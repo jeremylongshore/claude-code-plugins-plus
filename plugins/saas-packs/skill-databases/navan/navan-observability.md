@@ -10,6 +10,7 @@ navan-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Navan monitoring and observability
 **Workflow:** Part of the enterprise skill category for Navan integration.
 **Relates to:** Other navan skills in this pack.

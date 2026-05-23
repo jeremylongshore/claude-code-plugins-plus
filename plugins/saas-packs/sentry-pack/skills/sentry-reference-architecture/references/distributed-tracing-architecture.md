@@ -3,6 +3,7 @@
 ## Distributed Tracing Architecture
 
 ### Service-to-Service
+
 ```typescript
 // Outgoing request (client)
 async function callService(url: string, data: unknown) {

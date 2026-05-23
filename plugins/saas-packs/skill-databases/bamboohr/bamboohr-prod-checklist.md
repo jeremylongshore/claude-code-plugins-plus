@@ -10,6 +10,7 @@ bamboohr-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute BambooHR production deployment checklist
 **Workflow:** Part of the operations skill category for BambooHR integration.
 **Relates to:** Other bamboohr skills in this pack.

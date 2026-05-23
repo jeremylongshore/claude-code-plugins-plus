@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Hello World
 
 ## Overview
+
 Create your first work order using the MaintainX REST API -- the core building block of CMMS operations.
 
 ## Prerequisites
+
 - Completed `maintainx-install-auth` setup
 - Valid `MAINTAINX_API_KEY` environment variable
 - Node.js 18+ or curl
@@ -49,6 +51,7 @@ curl -X POST https://api.getmaintainx.com/v1/workorders \
 ```
 
 Expected response:
+
 ```json
 {
   "id": 12345,
@@ -105,11 +108,13 @@ curl -X DELETE "https://api.getmaintainx.com/v1/workorders/12345" \
 ```
 
 ## Output
+
 - Working code file that creates a MaintainX work order via REST API
 - Console output showing the created work order ID, status, and timestamp
 - Verified retrieval of the created work order
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 400 Bad Request | Missing required `title` field | Include at least `title` in the POST body |
@@ -118,10 +123,12 @@ curl -X DELETE "https://api.getmaintainx.com/v1/workorders/12345" \
 | 422 Unprocessable | Invalid enum value | Use valid `priority` (`NONE`, `LOW`, `MEDIUM`, `HIGH`) |
 
 ## Resources
+
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [Work Orders Help](https://help.getmaintainx.com/about-work-orders)
 
 ## Next Steps
+
 Proceed to `maintainx-local-dev-loop` for development workflow setup.
 
 ## Examples

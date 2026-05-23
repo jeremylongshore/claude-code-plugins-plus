@@ -3,6 +3,7 @@
 ## Scaling Patterns
 
 ### Horizontal Scaling
+
 ```yaml
 # kubernetes HPA
 apiVersion: autoscaling/v2
@@ -33,6 +34,7 @@ spec:
 ```
 
 ### Connection Pooling
+
 ```typescript
 import { Pool } from 'generic-pool';
 

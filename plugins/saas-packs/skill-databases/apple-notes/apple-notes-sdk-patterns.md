@@ -10,6 +10,7 @@ apple-notes-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Apple Notes SDK patterns
 **Workflow:** Part of the onboarding skill category for Apple Notes integration.
 **Relates to:** Other apple-notes skills in this pack.

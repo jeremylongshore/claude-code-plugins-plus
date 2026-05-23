@@ -3,6 +3,7 @@
 ## Custom Analytics Implementation
 
 ### Usage Logger
+
 ```python
 from dataclasses import dataclass
 from datetime import datetime, timedelta
@@ -107,6 +108,7 @@ analytics = UsageAnalytics()
 ```
 
 ### Model Analytics
+
 ```python
 def get_model_breakdown(self) -> dict:
     """Analyze usage by model."""
@@ -143,6 +145,7 @@ def get_model_breakdown(self) -> dict:
 ```
 
 ### Time Series Analytics
+
 ```python
 def get_daily_stats(self, days: int = 30) -> list[dict]:
     """Get daily statistics."""
@@ -186,6 +189,7 @@ def get_hourly_distribution(self) -> dict:
 ```
 
 ### User Analytics
+
 ```python
 def get_user_stats(self) -> dict:
     """Analyze usage by user."""

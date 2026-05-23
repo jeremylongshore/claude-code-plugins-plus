@@ -40,6 +40,7 @@ The fundamental cycle of Lean Startup:
 **Critical insight:** The loop is actually backward. Start with what you want to learn, determine metrics that will inform that learning, then build the minimum product to collect those metrics.
 
 **Reverse planning:**
+
 1. **What do we want to learn?** (hypothesis to test)
 2. **How will we know if we learned it?** (metrics)
 3. **What's the minimum we can build?** (MVP)
@@ -53,11 +54,13 @@ See: [references/build-measure-learn.md](references/build-measure-learn.md) for 
 **Definition:** Learning what customers really want through validated experiments, not opinion or anecdotes.
 
 **Validated learning is not:**
+
 - Building features customers request (they don't know what they want)
 - Achieving vanity metrics (downloads, signups without engagement)
 - Doing surveys or focus groups (people lie/mispredict behavior)
 
 **Validated learning is:**
+
 - Testing hypotheses with real behavior
 - Measuring what customers *do*, not what they *say*
 - Running experiments that could falsify your assumptions
@@ -80,11 +83,13 @@ See: [references/build-measure-learn.md](references/build-measure-learn.md) for 
 **Definition:** The version of a new product that allows a team to collect the maximum amount of validated learning with the least effort.
 
 **MVP is not:**
+
 - A prototype (not about proving technical feasibility)
 - A beta version (not about quality or features)
 - A minimum marketable product (it might be embarrassing)
 
 **MVP is:**
+
 - A learning vehicle
 - The smallest experiment to test a hypothesis
 - Often much smaller than you think
@@ -100,11 +105,13 @@ See: [references/build-measure-learn.md](references/build-measure-learn.md) for 
 | **Piecemeal** | Combine existing tools | Test workflow before custom build | Groupon (WordPress + email) |
 
 **MVP Design Questions:**
+
 - What's the riskiest assumption to test first?
 - What's the minimum to test that assumption?
 - How do we measure if the assumption was validated?
 
 **Common mistakes:**
+
 - Building too much (overestimate MVP size)
 - Optimizing for scale prematurely
 - Confusing quality with learning (MVP can be low quality)
@@ -117,6 +124,7 @@ See: [references/mvp-design.md](references/mvp-design.md) for MVP types and desi
 **Definition:** The assumptions that, if wrong, will cause your business to fail.
 
 **Process:**
+
 1. **Identify your business model's critical assumptions**
 2. **Prioritize by risk** (which failure would be fatal?)
 3. **Test the riskiest assumption first**
@@ -131,6 +139,7 @@ See: [references/mvp-design.md](references/mvp-design.md) for MVP types and desi
 | **Monetization hypothesis** | Will customers pay? | Pre-orders, pricing tests |
 
 **Example: Dropbox**
+
 - **Leap-of-faith:** "People will download and use a file sync tool"
 - **Test:** Explainer video showing product (before building full version)
 - **Metric:** Beta signup list grew from 5,000 to 75,000 overnight
@@ -145,6 +154,7 @@ See: [references/assumptions.md](references/assumptions.md) for assumption mappi
 **Definition:** Measuring progress when traditional accounting doesn't apply.
 
 **The problem with traditional metrics:**
+
 - Revenue (startups start at $0)
 - Customers (startups start at 0)
 - Vanity metrics (look good but don't drive decisions)
@@ -152,11 +162,13 @@ See: [references/assumptions.md](references/assumptions.md) for assumption mappi
 **Innovation accounting framework:**
 
 ### 1. Establish the Baseline
+
 **Question:** Where are we today?
 
 Measure current reality, even if it's zero or embarrassing.
 
 **Metrics to establish:**
+
 - Conversion funnel (signup → active → retained → paying)
 - Engagement (DAU/MAU, session length, features used)
 - Economics (CAC, LTV, churn rate)
@@ -164,11 +176,13 @@ Measure current reality, even if it's zero or embarrassing.
 **Goal:** Know your starting point precisely.
 
 ### 2. Tune the Engine
+
 **Question:** What can we improve to move toward our goal?
 
 Run experiments to improve baseline metrics.
 
 **Examples:**
+
 - A/B test pricing ($9/mo vs. $19/mo)
 - Test onboarding flows (% who complete setup)
 - Experiment with channels (SEO vs. paid vs. referral)
@@ -176,11 +190,13 @@ Run experiments to improve baseline metrics.
 **Goal:** Systematically improve metrics through validated learning.
 
 ### 3. Pivot or Persevere
+
 **Question:** Are we making sufficient progress, or do we need to change strategy?
 
 Based on data, decide whether to continue or pivot.
 
 **Criteria:**
+
 - Are metrics moving in the right direction?
 - Is the rate of improvement acceptable?
 - Are we learning what we expected?
@@ -210,6 +226,7 @@ See: [references/innovation-accounting.md](references/innovation-accounting.md) 
 3. **Auditable:** Can check the underlying data (not a black box)
 
 **Example:**
+
 - **Vanity:** "We have 100,000 users!"
 - **Actionable:** "Users from channel X have 2x retention vs. channel Y. Let's double down on X."
 
@@ -222,12 +239,14 @@ See: [references/metrics.md](references/metrics.md) for metric selection and tra
 **Pivot:** A structured course correction designed to test a new hypothesis about the product, strategy, or engine of growth.
 
 **When to pivot:**
+
 - Experiments consistently fail to validate hypotheses
 - Metrics are flat despite multiple iterations
 - Customer feedback contradicts your vision
 - Progress is too slow given runway
 
 **When to persevere:**
+
 - Metrics are improving (even if slowly)
 - Clear learning is happening
 - Adjustments are moving in right direction
@@ -268,6 +287,7 @@ See: [references/pivots.md](references/pivots.md) for pivot decision frameworks 
 **Focus:** Keep customers coming back
 
 **Metrics:**
+
 - Churn rate (% who stop using per month)
 - Retention cohorts (% still active after 30/60/90 days)
 - Engagement (DAU/MAU ratio)
@@ -285,6 +305,7 @@ See: [references/pivots.md](references/pivots.md) for pivot decision frameworks 
 **Focus:** Viral coefficient > 1.0 = exponential growth
 
 **Metrics:**
+
 - Viral coefficient (invites → signups)
 - Viral cycle time (how long until referred user invites others)
 - Referral source attribution
@@ -302,6 +323,7 @@ See: [references/pivots.md](references/pivots.md) for pivot decision frameworks 
 **Focus:** Unit economics that allow reinvestment
 
 **Metrics:**
+
 - CAC (cost per acquisition)
 - LTV (average revenue per customer)
 - LTV/CAC ratio (target: > 3x)
@@ -320,6 +342,7 @@ See: [references/growth-engines.md](references/growth-engines.md) for engine sel
 **Purpose:** Root cause analysis to prevent problems from recurring.
 
 **Process:**
+
 1. A problem occurs (bug, outage, customer complaint)
 2. Ask "Why did this happen?" → Answer
 3. Ask "Why?" about that answer → Second answer
@@ -337,6 +360,7 @@ See: [references/growth-engines.md](references/growth-engines.md) for engine sel
 5. **Why?** Team is moving too fast to create processes
 
 **Proportional investments:**
+
 - Fix the immediate bug (level 1)
 - Add memory monitoring (level 2)
 - Implement code review (level 3-4)
@@ -351,6 +375,7 @@ See: [references/five-whys.md](references/five-whys.md) for facilitation guides.
 **Principle:** Work in small batches to accelerate learning and reduce waste.
 
 **Why small batches win:**
+
 - Faster feedback loops
 - Easier to pivot
 - Less waste when you're wrong
@@ -368,6 +393,7 @@ See: [references/five-whys.md](references/five-whys.md) for facilitation guides.
 **Continuous deployment:** The ultimate small batch = deploy every code commit.
 
 **Benefits:**
+
 - Bugs are caught immediately
 - Learning happens continuously
 - Reduced risk per deployment
@@ -379,6 +405,7 @@ See: [references/small-batches.md](references/small-batches.md) for implementati
 **For different contexts:**
 
 ### SaaS Startup
+
 1. **Smoke test:** Landing page + email list (validate demand)
 2. **Concierge MVP:** Manually deliver service to 10 customers (validate value)
 3. **Single-feature MVP:** Build one core workflow (validate engagement)
@@ -386,12 +413,14 @@ See: [references/small-batches.md](references/small-batches.md) for implementati
 5. **Pivot or scale:** Based on cohort data
 
 ### Corporate Innovation
+
 1. **Innovation accounting:** Separate metrics from core business
 2. **Protected teams:** Shield from quarterly revenue pressure
 3. **Metered funding:** Unlock funding based on validated learning milestones
 4. **Internal entrepreneurship:** Treat team as startup within company
 
 ### Product Features
+
 1. **Feature flags:** Deploy behind flag, test with small cohort
 2. **A/B test:** Measure impact on core metrics
 3. **Kill, iterate, or scale:** Based on data
@@ -424,16 +453,19 @@ Audit any product development plan:
 ## The Lean Startup Applied: From Idea to Scale
 
 **Phase 1: Problem/Solution Fit**
+
 - **Goal:** Validate the problem exists and customers care
 - **Method:** Customer discovery, smoke tests, concierge MVP
 - **Metric:** Customers willing to pay or commit
 
 **Phase 2: Product/Market Fit**
+
 - **Goal:** Build something people want
 - **Method:** Build MVP, iterate based on usage data
 - **Metric:** High retention, organic growth, strong engagement
 
 **Phase 3: Scale**
+
 - **Goal:** Grow efficiently
 - **Method:** Optimize growth engine, improve unit economics
 - **Metric:** Sustainable, profitable growth

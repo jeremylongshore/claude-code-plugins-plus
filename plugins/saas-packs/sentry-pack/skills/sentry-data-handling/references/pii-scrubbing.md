@@ -3,6 +3,7 @@
 ## PII Scrubbing
 
 ### Built-in Data Scrubbing
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -24,6 +25,7 @@ Sentry.init({
 ```
 
 ### Custom Data Scrubbing
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -54,6 +56,7 @@ Sentry.init({
 ```
 
 ### Scrub Specific Fields
+
 ```typescript
 function scrubSensitiveData(obj: Record<string, unknown>): Record<string, unknown> {
   const sensitiveKeys = [

@@ -45,6 +45,7 @@ export function getConfig(): LinearEnvironmentConfig {
 ## Secret Management
 
 ### HashiCorp Vault
+
 ```typescript
 import Vault from "node-vault";
 const vault = Vault({ endpoint: process.env.VAULT_ADDR, token: process.env.VAULT_TOKEN });
@@ -56,6 +57,7 @@ export async function getLinearSecrets(environment: string) {
 ```
 
 ### AWS Secrets Manager
+
 ```typescript
 import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 const client = new SecretsManagerClient({ region: "us-east-1" });
@@ -67,6 +69,7 @@ export async function getLinearSecrets(environment: string) {
 ```
 
 ### GCP Secret Manager
+
 ```typescript
 import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
 const client = new SecretManagerServiceClient();

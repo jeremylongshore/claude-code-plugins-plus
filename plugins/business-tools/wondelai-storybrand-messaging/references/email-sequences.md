@@ -2,8 +2,8 @@
 
 Structured email nurture sequences that move subscribers through the SB7 framework toward conversion.
 
-
 ## Table of Contents
+
 1. [The Philosophy of Nurture Emails](#the-philosophy-of-nurture-emails)
 2. [The Welcome Sequence (5-Email Foundation)](#the-welcome-sequence-5-email-foundation)
 3. [The Nurture Sequence (Ongoing)](#the-nurture-sequence-ongoing)
@@ -33,11 +33,13 @@ Triggered when someone joins your email list. This sequence is critical—50%+ o
 **Purpose:** Deliver what they signed up for + set expectations.
 
 **Subject lines:**
+
 - "Your [lead magnet name] is here"
 - "Here's your free [guide/checklist/etc.]"
 - "[First name], your download is ready"
 
 **Structure:**
+
 ```
 Hi [Name],
 
@@ -62,11 +64,13 @@ P.S. If you have questions about [topic], just hit reply. I read every email.
 **Purpose:** Show you understand their struggle. Build trust through empathy.
 
 **Subject lines:**
+
 - "The [problem] no one talks about"
 - "Why [common approach] doesn't work"
 - "I struggled with this too"
 
 **Structure:**
+
 ```
 Hi [Name],
 
@@ -90,11 +94,13 @@ For now, here's one quick thing you can do: [actionable tip].
 **Purpose:** Establish credibility. Show you can actually help.
 
 **Subject lines:**
+
 - "How [client] achieved [result]"
 - "[Number] [things] we learned from [X clients/years/projects]"
 - "The method behind [result]"
 
 **Structure:**
+
 ```
 Hi [Name],
 
@@ -123,11 +129,13 @@ Tomorrow I'll share [specific tactic or next topic].
 **Purpose:** Show them the path from where they are to where they want to be.
 
 **Subject lines:**
+
 - "Your 3-step path to [desired outcome]"
 - "The simple plan that works"
 - "From [current state] to [desired state]"
 
 **Structure:**
+
 ```
 Hi [Name],
 
@@ -159,11 +167,13 @@ Next email: I'll address the #1 question people ask me about [topic].
 **Purpose:** Make the ask. Invite them to take the next step.
 
 **Subject lines:**
+
 - "Ready to [achieve outcome]?"
 - "Let's do this together"
 - "Your next step"
 
 **Structure:**
+
 ```
 Hi [Name],
 
@@ -203,12 +213,14 @@ After the welcome sequence, continue providing value and making periodic offers.
 ### Content Ratio
 
 **Follow the 3-1 rule:**
+
 - 3 value emails (teach, help, entertain)
 - 1 sales email (ask for something)
 
 ### Value Email Templates
 
 **Template: Quick Win**
+
 ```
 Subject: [Number] minute fix for [problem]
 
@@ -226,6 +238,7 @@ Try it and let me know how it goes.
 ```
 
 **Template: Story + Lesson**
+
 ```
 Subject: What [person/client/I] learned about [topic]
 
@@ -243,6 +256,7 @@ Hi [Name],
 ```
 
 **Template: Common Mistake**
+
 ```
 Subject: Stop [common mistake] (here's why)
 
@@ -258,6 +272,7 @@ Instead, try this: [better approach]
 ```
 
 **Template: FAQ Answer**
+
 ```
 Subject: "How do I [common question]?"
 
@@ -277,6 +292,7 @@ Longer answer: [more detailed explanation]
 ### Sales Email Templates
 
 **Template: Problem Agitation**
+
 ```
 Subject: Still [struggling with problem]?
 
@@ -302,6 +318,7 @@ Ready to [achieve outcome]?
 ```
 
 **Template: Customer Story**
+
 ```
 Subject: How [Name/Company] [achieved result]
 
@@ -328,6 +345,7 @@ Want similar results?
 ```
 
 **Template: Deadline/Urgency (only if genuine)**
+
 ```
 Subject: [Offer] ends [timeframe]
 

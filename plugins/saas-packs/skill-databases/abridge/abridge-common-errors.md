@@ -10,6 +10,7 @@ abridge-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Abridge common errors
 **Workflow:** Part of the operations skill category for Abridge integration.
 **Relates to:** Other abridge skills in this pack.

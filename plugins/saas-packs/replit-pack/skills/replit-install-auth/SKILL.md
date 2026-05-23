@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Install & Auth
 
 ## Overview
+
 Set up a Replit App from scratch: configure `.replit` and `replit.nix`, manage Secrets (AES-256 encrypted environment variables), and integrate Replit Auth for zero-setup user authentication with Google, GitHub, Apple, X, and Email login.
 
 ## Prerequisites
+
 - Replit account (Free, Core, or Teams plan)
 - Replit App created from template, GitHub import, or blank
 - For Auth: deployed app on `.replit.app` or custom domain
@@ -38,6 +40,7 @@ Set up a Replit App from scratch: configure `.replit` and `replit.nix`, manage S
 ## Instructions
 
 ### Step 1: Configure `.replit` File
+
 ```toml
 # .replit — controls run behavior, deployment, and environment
 entrypoint = "index.ts"
@@ -73,6 +76,7 @@ requiredFiles = [".replit", "replit.nix"]
 ```
 
 ### Step 2: Configure `replit.nix`
+
 ```nix
 # replit.nix — system-level dependencies via Nix
 { pkgs }: {
@@ -90,7 +94,9 @@ requiredFiles = [".replit", "replit.nix"]
 After editing `replit.nix`, reload the shell for changes to take effect.
 
 ### Step 3: Configure Secrets
+
 Secrets are encrypted with AES-256 at rest and TLS in transit. Two scopes:
+
 - **App-level**: specific to one Replit App
 - **Account-level**: shared across all your Apps
 
@@ -123,9 +129,11 @@ const config = requireSecrets(['DATABASE_URL', 'JWT_SECRET']);
 Secrets sync automatically between Workspace and Deployments. Replit's Secret Scanner warns if you paste API keys directly into code files.
 
 ### Step 4: Add Replit Auth
+
 Replit Auth provides zero-setup authentication. Users log in with Google, GitHub, Apple, X, or Email. Replit handles sessions via cookies, password resets, and user management.
 
 **Express.js integration:**
+
 ```typescript
 // src/auth.ts
 import express from 'express';
@@ -170,6 +178,7 @@ function requireAuth(req: express.Request, res: express.Response, next: express.
 ```
 
 **Flask integration:**
+
 ```python
 from flask import Flask, request, jsonify
 
@@ -196,6 +205,7 @@ def profile():
 ```
 
 ### Step 5: Verify Setup
+
 ```typescript
 // test-setup.ts — run to verify everything works
 const checks = {
@@ -209,6 +219,7 @@ console.log('Replit Setup Verification:', checks);
 ```
 
 Built-in environment variables available in every Repl:
+
 | Variable | Description |
 |----------|-------------|
 | `REPL_SLUG` | Your Repl's name/slug |
@@ -218,6 +229,7 @@ Built-in environment variables available in every Repl:
 | `REPLIT_DB_URL` | Key-value database endpoint |
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Module not found` | Nix package missing | Add to `replit.nix` deps, reload shell |
@@ -227,10 +239,12 @@ Built-in environment variables available in every Repl:
 | `channel not found` | Invalid Nix channel | Use `stable-24_05` or check Nix channels list |
 
 ## Resources
+
 - [Replit App Configuration](https://docs.replit.com/replit-app/configuration)
 - [Using Nix with Replit](https://docs.replit.com/programming-ide/nix-on-replit)
 - [Replit Secrets](https://docs.replit.com/replit-workspace/workspace-features/secrets)
 - [Replit Auth](https://docs.replit.com/replit-workspace/replit-auth)
 
 ## Next Steps
+
 Proceed to `replit-hello-world` for a working starter app, or `replit-deploy-integration` to deploy.

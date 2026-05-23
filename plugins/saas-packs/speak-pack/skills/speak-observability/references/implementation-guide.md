@@ -5,6 +5,7 @@ Detailed implementation reference for the speak-observability skill.
 ## Key Metrics for Language Learning
 
 ### Business Metrics
+
 | Metric | Type | Description |
 |--------|------|-------------|
 | `speak_lessons_started_total` | Counter | Lessons initiated |
@@ -15,6 +16,7 @@ Detailed implementation reference for the speak-observability skill.
 | `speak_daily_active_learners` | Gauge | Unique learners today |
 
 ### Technical Metrics
+
 | Metric | Type | Description |
 |--------|------|-------------|
 | `speak_api_requests_total` | Counter | Total API requests |
@@ -22,7 +24,6 @@ Detailed implementation reference for the speak-observability skill.
 | `speak_api_errors_total` | Counter | Error count by type |
 | `speak_speech_recognition_duration_seconds` | Histogram | Audio processing time |
 | `speak_rate_limit_remaining` | Gauge | Rate limit headroom |
-
 
 ## Prometheus Metrics Implementation
 
@@ -85,7 +86,6 @@ const speechRecognitionDuration = new Histogram({
   registers: [registry],
 });
 ```
-
 
 ## Instrumented Speak Client
 
@@ -150,10 +150,10 @@ async function trackLessonEnd(
 }
 ```
 
-
 ## Distributed Tracing
 
 ### OpenTelemetry Setup
+
 ```typescript
 import { trace, SpanStatusCode, context, propagation } from '@opentelemetry/api';
 
@@ -215,7 +215,6 @@ async function tracedLessonSession(
 }
 ```
 
-
 ## Structured Logging
 
 ```typescript
@@ -264,10 +263,10 @@ logSpeakOperation('info', 'lesson.completed', {
 });
 ```
 
-
 ## Alert Configuration
 
 ### Prometheus AlertManager Rules
+
 ```yaml
 # speak_alerts.yaml
 groups:
@@ -333,7 +332,6 @@ groups:
           summary: "Average pronunciation scores below 60%"
 ```
 
-
 ## Grafana Dashboard
 
 ```json
@@ -388,4 +386,3 @@ groups:
   ]
 }
 ```
-

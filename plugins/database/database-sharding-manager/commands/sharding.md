@@ -11,6 +11,7 @@ Design and implement horizontal database sharding strategies to distribute data 
 ## When to Use This Command
 
 Use `/sharding` when you need to:
+
 - Scale beyond single database server capacity (>10TB or >100k QPS)
 - Distribute write load across multiple database servers
 - Improve query performance through data locality
@@ -19,6 +20,7 @@ Use `/sharding` when you need to:
 - Support multi-tenant SaaS with tenant-level isolation
 
 DON'T use this when:
+
 - Database is small (<1TB) and performing well
 - Can solve with read replicas and caching instead
 - Application can't handle distributed transactions complexity
@@ -28,6 +30,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **consistent hashing with virtual nodes** because:
+
 - Minimizes data movement when adding/removing shards (only K/n keys move)
 - Distributes load evenly across shards with virtual nodes
 - Supports gradual shard addition without downtime
@@ -35,12 +38,14 @@ This command implements **consistent hashing with virtual nodes** because:
 - Provides automatic failover with shard replica promotion
 
 **Alternative considered: Range-based sharding**
+
 - Simple to implement and understand
 - Predictable data distribution
 - Prone to hotspots if key distribution uneven
 - Recommended for time-series data with sequential IDs
 
 **Alternative considered: Directory-based sharding**
+
 - Flexible shard assignment with lookup table
 - Easy to move individual records
 - Single point of failure (directory lookup)
@@ -49,6 +54,7 @@ This command implements **consistent hashing with virtual nodes** because:
 ## Prerequisites
 
 Before running this command:
+
 1. Application supports sharding-aware database connections
 2. Clear understanding of sharding key (immutable, high cardinality)
 3. Strategy for handling cross-shard queries and joins
@@ -58,23 +64,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Choose Sharding Strategy
+
 Select sharding approach based on data access patterns and scale requirements.
 
 ### Step 2: Design Shard Key
+
 Choose immutable, high-cardinality key that distributes data evenly (user_id, tenant_id).
 
 ### Step 3: Implement Shard Routing Layer
+
 Build connection pooling and routing logic to direct queries to correct shard.
 
 ### Step 4: Migrate Data to Shards
+
 Perform zero-downtime migration from monolithic to sharded architecture.
 
 ### Step 5: Monitor and Rebalance
+
 Track shard load distribution and rebalance data as needed.
 
 ## Output Format
 
 The command generates:
+
 - `sharding/shard_router.py` - Consistent hashing router implementation
 - `sharding/shard_manager.js` - Shard connection pool manager
 - `migration/shard_migration.sql` - Data migration scripts per shard
@@ -687,17 +699,20 @@ print(f"EU user → {eu_user_shard.host}")
 ## Configuration Options
 
 **Sharding Strategies**
+
 - `consistent_hash`: Best for even distribution, minimal rebalancing
 - `range`: Simple, good for time-series, prone to hotspots
 - `directory`: Flexible, requires lookup table maintenance
 - `geographic`: Data residency compliance, region isolation
 
 **Virtual Nodes**
+
 - 50-100: Faster routing, less even distribution
 - 150-200: Balanced (recommended for production)
 - 300+: Most even distribution, higher memory usage
 
 **Connection Pooling**
+
 - `max_connections_per_shard`: 10-50 depending on load
 - `idle_timeout`: 30-60 seconds
 - `connection_timeout`: 2-5 seconds
@@ -705,6 +720,7 @@ print(f"EU user → {eu_user_shard.host}")
 ## Best Practices
 
 DO:
+
 - Use immutable, high-cardinality shard keys (user_id, tenant_id)
 - Implement connection pooling per shard
 - Monitor shard load distribution continuously
@@ -713,6 +729,7 @@ DO:
 - Plan shard capacity for 2-3 years growth
 
 DON'T:
+
 - Use mutable shard keys (email, username can change)
 - Perform JOINs across shards (denormalize instead)
 - Ignore shard imbalance (leads to hotspots)

@@ -3,6 +3,7 @@
 ## Error Handling Gaps
 
 ### No Error Handling
+
 ```python
 # ❌ Wrong: No error handling
 response = client.chat.completions.create(
@@ -27,6 +28,7 @@ except APIError as e:
 ```
 
 ### Not Handling Empty Responses
+
 ```python
 # ❌ Problem: Assume content exists
 content = response.choices[0].message.content

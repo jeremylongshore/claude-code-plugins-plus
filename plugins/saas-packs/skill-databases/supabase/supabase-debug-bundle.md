@@ -10,6 +10,7 @@ supabase-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect comprehensive Supabase debug evidence for support tickets and troubleshooting. Creates a bundle with environment info, logs, and configuration.
 **Workflow:** Escalation skill when common-errors doesn't resolve the issue. Prepares evidence for support tickets.
 **Relates to:** Follows supabase-common-errors when issues persist; feeds into support escalation process.

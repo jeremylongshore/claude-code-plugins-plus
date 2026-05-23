@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code
 # Notion Core Workflow B — Blocks, Content & Comments
 
 ## Overview
+
 Secondary workflow for content operations: reading block trees, appending content, building rich text with annotations, and managing comments.
 
 ## Prerequisites
+
 - Completed `notion-install-auth` setup
 - A Notion page shared with your integration
 - Familiarity with `notion-core-workflow-a` (databases/pages)
@@ -34,6 +36,7 @@ Secondary workflow for content operations: reading block trees, appending conten
 ## Instructions
 
 ### Step 1: Retrieve Block Children
+
 ```typescript
 import { Client } from '@notionhq/client';
 
@@ -58,6 +61,7 @@ async function getPageContent(pageId: string) {
 ```
 
 ### Step 2: Read Blocks Recursively (Nested Content)
+
 ```typescript
 async function getBlockTree(blockId: string, depth = 0): Promise<any[]> {
   const blocks = await getPageContent(blockId);
@@ -86,6 +90,7 @@ function blockToText(block: any): string {
 ```
 
 ### Step 3: Append Content Blocks
+
 ```typescript
 async function appendContent(pageId: string) {
   await notion.blocks.children.append({
@@ -179,6 +184,7 @@ async function appendContent(pageId: string) {
 ```
 
 ### Step 4: Rich Text Annotations Reference
+
 ```typescript
 // All annotation options
 interface Annotations {
@@ -217,6 +223,7 @@ const richTextExamples = [
 ```
 
 ### Step 5: Update and Delete Blocks
+
 ```typescript
 // Update a block's content
 async function updateBlock(blockId: string) {
@@ -235,6 +242,7 @@ async function deleteBlock(blockId: string) {
 ```
 
 ### Step 6: Work with Comments
+
 ```typescript
 // Add a comment to a page
 async function addComment(pageId: string, text: string) {
@@ -263,12 +271,14 @@ async function listComments(blockId: string) {
 ```
 
 ## Output
+
 - Page content blocks retrieved (flat or recursive tree)
 - Rich content appended with formatting, lists, code, callouts
 - Blocks updated and deleted
 - Comments created and listed
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `validation_error` on append | Invalid block type structure | Check block type object shape |
@@ -279,6 +289,7 @@ async function listComments(blockId: string) {
 ## Examples
 
 ### Build a Report Page
+
 ```typescript
 async function buildReport(pageId: string, data: { title: string; items: string[] }) {
   const blocks: any[] = [
@@ -298,6 +309,7 @@ async function buildReport(pageId: string, data: { title: string; items: string[
 ```
 
 ## Resources
+
 - [Block Object Reference](https://developers.notion.com/reference/block)
 - [Rich Text Reference](https://developers.notion.com/reference/rich-text)
 - [Append Block Children](https://developers.notion.com/reference/patch-block-children)
@@ -305,4 +317,5 @@ async function buildReport(pageId: string, data: { title: string; items: string[
 - [Working with Comments](https://developers.notion.com/docs/working-with-comments)
 
 ## Next Steps
+
 For common errors, see `notion-common-errors`.

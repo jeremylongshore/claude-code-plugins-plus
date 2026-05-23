@@ -14,6 +14,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Data Classification System
+
 ```typescript
 // lib/data-classifier.ts
 export enum DataCategory {
@@ -63,6 +64,7 @@ export function classifyData(data: Record<string, any>): Record<DataCategory, st
 ```
 
 ### Step 2: PII Handling
+
 ```typescript
 // lib/pii-handler.ts
 import crypto from 'crypto';
@@ -114,6 +116,7 @@ export class PIIHandler {
 ```
 
 ### Step 3: Retention Policies
+
 ```typescript
 // lib/retention-policy.ts
 export class RetentionPolicy {
@@ -185,6 +188,7 @@ cron.schedule('0 2 * * *', async () => {
 ```
 
 ### Step 4: Data Subject Rights
+
 ```typescript
 // services/data-rights.ts
 export class DataRightsService {
@@ -271,6 +275,7 @@ export class DataRightsService {
 ```
 
 ### Step 5: Access Logging
+
 ```typescript
 // middleware/access-logging.ts
 export function logDataAccess(req: Request, res: Response, next: NextFunction) {

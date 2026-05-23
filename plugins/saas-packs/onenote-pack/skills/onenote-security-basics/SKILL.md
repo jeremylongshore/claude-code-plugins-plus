@@ -47,6 +47,7 @@ Choose the minimum scope required for your use case:
 | `Notes.Create` | No | No | Yes | Yes | No |
 
 **Least-privilege recommendations:**
+
 - Read-only dashboards: `Notes.Read` (user consent only)
 - Personal note creation: `Notes.ReadWrite` (user consent only)
 - Cross-user/organizational access: `Notes.ReadWrite.All` (requires tenant admin approval)
@@ -176,6 +177,7 @@ tenant_id = kv_client.get_secret("onenote-tenant-id").value
 ### Multi-Tenant Security Considerations
 
 For apps serving multiple organizations:
+
 - Register as a multi-tenant app (set `supportedAccountTypes` to `AzureADMultipleOrgs`)
 - Validate the `tid` (tenant ID) claim in every token — reject tokens from unexpected tenants
 - Store per-tenant token caches separately (never mix tenant tokens)

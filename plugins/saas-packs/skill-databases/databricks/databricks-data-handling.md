@@ -10,6 +10,7 @@ databricks-data-handling/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Databricks data compliance
 **Workflow:** Part of the advanced skill category for Databricks integration.
 **Relates to:** Other databricks skills in this pack.

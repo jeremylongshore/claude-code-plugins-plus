@@ -26,6 +26,7 @@ Brilliant move, Jeremy. Really nailing this whole "building in public" thing.
 Turns out I'd created:
 
 **Hybrid AI Stack Project:**
+
 - 17 comprehensive documentation files
 - Complete architecture guide
 - Production deployment patterns
@@ -34,6 +35,7 @@ Turns out I'd created:
 - Working code with ROI calculator
 
 **Terraform Research:**
+
 - 796-line learning guide
 - Beginner to advanced coverage
 - Real-world ML infrastructure examples
@@ -57,12 +59,14 @@ This is like writing a book and keeping it in your desk drawer. Or cooking an am
 ## Why This Happens (And Why It Matters)
 
 **The internal monologue:**
+
 - "This is just project documentation, not 'real' content"
 - "I wrote this for myself, it's not polished enough"
 - "Who would want to read internal docs?"
 - "I'll publish it when I clean it up..." (never happens)
 
 **The reality:**
+
 - Documentation that solves real problems = valuable content
 - "Not polished" usually means "authentic and practical"
 - People searching for solutions don't care about polish
@@ -73,17 +77,20 @@ This is like writing a book and keeping it in your desk drawer. Or cooking an am
 Once I stopped being precious about it, the work was straightforward:
 
 **Step 1: Extract** (30 minutes)
+
 - Found the Hybrid AI Stack docs folder
 - Located the Terraform research guide
 - Realized they were already 80% blog-ready
 
 **Step 2: Adapt** (45 minutes)
+
 - Added introductions for public audience
 - Created real-world cost scenarios
 - Added SEO-friendly titles and tags
 - Included code examples and diagrams
 
 **Step 3: Publish** (15 minutes)
+
 - Created blog post files
 - Updated Research & Curriculum page
 - Pushed to Git, deployed via Netlify
@@ -117,6 +124,7 @@ Rename it. Reframe it. Publish it.
 ### 3. Perfect is the Enemy of Published
 
 My docs weren't "blog-ready." They had:
+
 - Internal project references
 - Rough formatting
 - Missing introductions
@@ -131,12 +139,14 @@ Published and imperfect beats perfect and invisible every single time.
 **What could have happened if I'd published this 3 months ago:**
 
 **Hybrid AI Stack Guide:**
+
 - Demonstrates Docker/Kubernetes expertise
 - Shows cost optimization skills (61% savings)
 - Proves monitoring/observability knowledge
 - Attracts businesses with high AI costs
 
 **Terraform Guide:**
+
 - Establishes infrastructure authority
 - Shows cloud platform expertise
 - Demonstrates teaching ability
@@ -162,6 +172,7 @@ I keep doing the hard work (building) and skipping the easy work (telling people
 I realized: **The work isn't done when the code works. It's done when people know about it.**
 
 New workflow:
+
 1. Build something
 2. Document it (I already do this)
 3. **Transform docs into published content** ← The new step
@@ -174,6 +185,7 @@ If you're a developer, engineer, or builder:
 **Go look in your project folders right now.**
 
 Seriously. Stop reading. Go check:
+
 - README files
 - `/docs` folders
 - Research notes
@@ -183,6 +195,7 @@ Seriously. Stop reading. Go check:
 I guarantee you have content worth publishing.
 
 **Then ask yourself:**
+
 - Could this help someone learn something?
 - Does this demonstrate my expertise?
 - Would this be valuable to my target audience?
@@ -192,6 +205,7 @@ If yes to any of those: **Publish it.**
 ## What I'm Doing Differently
 
 **New rule:** Every project gets:
+
 1. Internal documentation (for me)
 2. Published educational content (for everyone)
 3. Promotion in at least 2 channels (blog + social)
@@ -217,14 +231,15 @@ How much valuable content are you sitting on?
 ---
 
 **The guides I finally published:**
+
 - Hybrid AI Stack: 60-80% cost reduction system
 - Terraform for AI Infrastructure: Complete learning guide
 
 **What I learned:**
+
 - Your best content might be hiding in project folders
 - Documentation = Educational content (rename it)
 - Published and imperfect > Perfect and invisible
 - Make your work visible or it doesn't count
 
 **Next time:** I won't wait 3 months to share what I've built.
-

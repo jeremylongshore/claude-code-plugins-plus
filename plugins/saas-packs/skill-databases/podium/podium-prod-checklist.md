@@ -10,6 +10,7 @@ podium-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Podium production deployment checklist
 **Workflow:** Part of the operations skill category for Podium integration.
 **Relates to:** Other podium skills in this pack.

@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Core Workflow B — Teams & Admin
 
 ## Overview
+
 Secondary workflow for Replit: team member management, role assignment, deployment promotion (dev to production), custom domain setup, and organizational audit. Complements the app-building workflow in `replit-core-workflow-a`.
 
 ## Prerequisites
+
 - Replit Teams or Enterprise plan
 - Organization Owner or Admin role
 - Team API token stored in `REPLIT_TOKEN`
@@ -37,6 +39,7 @@ Secondary workflow for Replit: team member management, role assignment, deployme
 ## Instructions
 
 ### Step 1: Team Member Management
+
 ```typescript
 // src/admin/team-manager.ts
 interface TeamMember {
@@ -73,6 +76,7 @@ async function removeMember(teamId: string, username: string) {
 ```
 
 ### Step 2: Seat Audit
+
 ```typescript
 // Identify inactive members for seat optimization
 async function auditSeats(teamId: string) {
@@ -94,6 +98,7 @@ async function auditSeats(teamId: string) {
 ```
 
 ### Step 3: Deployment Promotion
+
 ```typescript
 // Promote from development to production deployment
 async function promoteDeployment(replId: string) {
@@ -130,6 +135,7 @@ async function promoteDeployment(replId: string) {
 ```
 
 ### Step 4: Custom Domain Configuration
+
 ```markdown
 1. Go to Deployment Settings > Custom Domain
 2. Enter your domain: app.example.com
@@ -144,6 +150,7 @@ For domains purchased through Replit:
 ```
 
 ### Step 5: Bulk Repl Audit
+
 ```typescript
 // Audit all team Repls for compliance
 async function auditRepls(teamId: string) {
@@ -173,6 +180,7 @@ async function auditRepls(teamId: string) {
 ```
 
 ### Step 6: Activity Monitoring
+
 ```bash
 # Review recent team activity
 curl "https://replit.com/api/v1/teams/TEAM_ID/audit-log?limit=50" \
@@ -186,6 +194,7 @@ curl "https://replit.com/api/v1/teams/TEAM_ID/members" \
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 403 on member invite | Not an admin | Requires Owner or Admin role |
@@ -194,9 +203,11 @@ curl "https://replit.com/api/v1/teams/TEAM_ID/members" \
 | DNS not resolving | Wrong CNAME record | Verify DNS points to `.replit.app` |
 
 ## Resources
+
 - [Replit Teams](https://docs.replit.com/teams/identity-and-access-management/groups-and-permissions)
 - [Replit Deployments](https://docs.replit.com/cloud-services/deployments/reserved-vm-deployments)
 - [Custom Domains](https://docs.replit.com/hosting/custom-domains)
 
 ## Next Steps
+
 For common errors, see `replit-common-errors`.

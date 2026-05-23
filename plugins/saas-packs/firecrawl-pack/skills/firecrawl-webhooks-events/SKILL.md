@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Webhooks & Events
 
 ## Overview
+
 Handle Firecrawl webhooks for real-time notifications on async crawl and batch scrape jobs. Instead of polling `checkCrawlStatus`, configure a webhook URL and Firecrawl will POST events as pages are scraped and jobs complete. Signed with HMAC-SHA256 via `X-Firecrawl-Signature`.
 
 ## Webhook Event Types
@@ -40,6 +41,7 @@ Handle Firecrawl webhooks for real-time notifications on async crawl and batch s
 ## Instructions
 
 ### Step 1: Start Crawl with Webhook
+
 ```typescript
 import FirecrawlApp from "@mendable/firecrawl-js";
 
@@ -72,6 +74,7 @@ const job2 = await firecrawl.asyncCrawlUrl("https://docs.example.com", {
 ```
 
 ### Step 2: Webhook Handler with Signature Verification
+
 ```typescript
 import express from "express";
 import crypto from "crypto";
@@ -119,6 +122,7 @@ app.post("/webhooks/firecrawl", express.raw({ type: "application/json" }), async
 ```
 
 ### Step 3: Process Page Events (Streaming)
+
 ```typescript
 async function handlePageScraped(jobId: string, data: any[], metadata: any) {
   for (const page of data) {
@@ -140,6 +144,7 @@ async function handlePageScraped(jobId: string, data: any[], metadata: any) {
 ```
 
 ### Step 4: Handle Crawl Completion
+
 ```typescript
 async function handleCrawlComplete(jobId: string, data: any[], metadata: any) {
   console.log(`Crawl ${jobId} complete: ${data.length} pages`);
@@ -171,6 +176,7 @@ async function handleCrawlFailed(jobId: string, data: any) {
 ```
 
 ### Step 5: Polling as Webhook Fallback
+
 ```typescript
 // Fall back to polling if webhook delivery fails
 async function pollWithFallback(jobId: string, timeoutMs = 600000) {
@@ -197,6 +203,7 @@ async function pollWithFallback(jobId: string, timeoutMs = 600000) {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Webhook not received | URL not publicly accessible | Use ngrok for local dev, verify HTTPS |
@@ -208,6 +215,7 @@ async function pollWithFallback(jobId: string, timeoutMs = 600000) {
 ## Examples
 
 ### Local Development with ngrok
+
 ```bash
 set -euo pipefail
 # Start ngrok tunnel for local webhook testing
@@ -217,9 +225,11 @@ ngrok http 3000
 ```
 
 ## Resources
+
 - [Firecrawl Webhooks](https://docs.firecrawl.dev/webhooks/overview)
 - [Webhook Event Types](https://docs.firecrawl.dev/webhooks/events)
 - [Crawl Endpoint](https://docs.firecrawl.dev/features/crawl)
 
 ## Next Steps
+
 For deployment setup, see `firecrawl-deploy-integration`.

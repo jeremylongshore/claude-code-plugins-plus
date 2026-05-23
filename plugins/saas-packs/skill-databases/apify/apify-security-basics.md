@@ -10,6 +10,7 @@ apify-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Apify security best practices
 **Workflow:** Part of the operations skill category for Apify integration.
 **Relates to:** Other apify skills in this pack.

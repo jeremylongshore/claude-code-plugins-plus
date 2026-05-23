@@ -10,6 +10,7 @@ firecrawl-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working FireCrawl example demonstrating core scraping and markdown conversion capabilities.
 **Workflow:** Second skill in the onboarding sequence - demonstrates the basic scrape-to-markdown workflow that is FireCrawl's core value proposition.
 **Relates to:** Requires firecrawl-install-auth; leads into firecrawl-scrape-single for deeper single-page scraping

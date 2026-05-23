@@ -10,6 +10,7 @@ canva-architecture-variants/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Choose Canva architecture blueprints
 **Workflow:** Part of the advanced skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

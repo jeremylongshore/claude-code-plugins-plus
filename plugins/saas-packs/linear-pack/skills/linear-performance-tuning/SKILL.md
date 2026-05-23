@@ -25,14 +25,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Performance Tuning
 
 ## Overview
+
 Optimize Linear API usage for minimal latency and efficient resource consumption. The three main levers are: (1) query flattening to avoid N+1 and reduce complexity, (2) caching static data with webhook-driven invalidation, and (3) batching mutations into single GraphQL requests.
 
 **Key numbers:**
+
 - Query complexity budget: 250,000 pts/hour, max 10,000 per query
 - Each property: 0.1 pt, each object: 1 pt, connections: multiply by `first`
 - Best practice: sort by `updatedAt` to get fresh data first
 
 ## Prerequisites
+
 - Working Linear integration with `@linear/sdk`
 - Understanding of GraphQL query structure
 - Optional: Redis for distributed caching
@@ -40,6 +43,7 @@ Optimize Linear API usage for minimal latency and efficient resource consumption
 ## Instructions
 
 ### Step 1: Eliminate N+1 Queries
+
 The SDK lazy-loads relations. Accessing `.assignee` on 50 issues makes 50 separate API calls.
 
 ```typescript
@@ -76,6 +80,7 @@ const response = await client.client.rawRequest(`
 ```
 
 ### Step 2: Cache Static Data
+
 Teams, workflow states, and labels change rarely. Cache them with appropriate TTLs.
 
 ```typescript
@@ -138,6 +143,7 @@ async function getLabels(client: LinearClient) {
 ```
 
 ### Step 3: Webhook-Driven Cache Invalidation
+
 Replace polling with webhooks. Invalidate cache when relevant entities change.
 
 ```typescript
@@ -160,6 +166,7 @@ function handleCacheInvalidation(event: { type: string; action: string; data: an
 ```
 
 ### Step 4: Batch Mutations
+
 Combine multiple mutations into one GraphQL request.
 
 ```typescript
@@ -198,6 +205,7 @@ async function batchCreate(
 ```
 
 ### Step 5: Efficient Pagination
+
 ```typescript
 // Stream all issues without loading everything into memory
 async function* paginateIssues(
@@ -237,6 +245,7 @@ const updated = await client.issues({
 ```
 
 ### Step 6: Request Coalescing
+
 Deduplicate concurrent identical requests.
 
 ```typescript
@@ -267,6 +276,7 @@ const team = await coalesce("team:ENG", () =>
 ## Examples
 
 ### Performance Benchmark
+
 ```typescript
 async function benchmark(label: string, fn: () => Promise<any>) {
   const start = Date.now();
@@ -283,6 +293,7 @@ await benchmark("50 issues (raw)", () => client.client.rawRequest(
 ```
 
 ## Resources
+
 - [Linear Best Practices](https://linear.app/developers/graphql)
 - [Rate Limiting](https://linear.app/developers/rate-limiting)
 - [Pagination](https://linear.app/developers/pagination)

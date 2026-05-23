@@ -55,6 +55,7 @@ The foundation of great positioning is understanding that customers always evalu
 **Why it works:** Customers always evaluate products relative to alternatives. If you don't understand the real alternatives, you can't understand what "differentiated" means in your customer's mind. Your positioning is only as strong as the alternatives you're positioning against.
 
 **Key insights:**
+
 - Ask existing happy customers, not prospects — they've already chosen you and can tell you what they switched from
 - The most common competitive alternative is often not another product — it's a spreadsheet, a manual process, or the status quo
 - "Do nothing" is your biggest competitor in many markets
@@ -71,6 +72,7 @@ The foundation of great positioning is understanding that customers always evalu
 | Competitive analysis | Map alternatives by customer segment | Enterprise buyers compare to Salesforce; SMBs compare to spreadsheets |
 
 **Copy patterns:**
+
 - "Unlike [competitive alternative], [product] does [unique thing]"
 - "Stop using [painful alternative] for [job]"
 - "You've outgrown [alternative]. Here's what comes next."
@@ -86,6 +88,7 @@ See: [Competitive Alternatives Analysis](references/competitive-alternatives.md)
 **Why it works:** Unique attributes are the raw material of differentiation. If an attribute isn't unique, it can't differentiate you. If it isn't true, you'll lose trust. The goal is an honest inventory of what makes you objectively different.
 
 **Key insights:**
+
 - Features are the most obvious attributes, but don't stop there — consider architecture, business model, team expertise, approach, integrations, community
 - "Better" is not unique — "10% faster" is not a unique attribute; "uses a fundamentally different algorithm that enables real-time processing" might be
 - Attributes must survive the "only we" test: "Only we [attribute]"
@@ -102,6 +105,7 @@ See: [Competitive Alternatives Analysis](references/competitive-alternatives.md)
 | Acquisition | Identify which attributes of the acquired product are truly unique | "Their NLP engine processes medical terminology — no other EMR does this" |
 
 **Copy patterns:**
+
 - "The only [category] that [unique attribute]"
 - "Built from the ground up to [unique capability]"
 - "No other [category] can [unique thing] because [reason]"
@@ -117,6 +121,7 @@ See: [Unique Attributes Discovery](references/unique-attributes.md)
 **Why it works:** Customers don't buy features. They buy outcomes. A unique attribute is meaningless unless you can articulate why it matters in terms the customer cares about. Value themes give your positioning narrative structure and make it memorable.
 
 **Key insights:**
+
 - Use the "So what?" chain: Feature → "So what?" → Advantage → "So what?" → Value
 - Example: "Real-time collaboration" → "So what?" → "Finance teams can work simultaneously" → "So what?" → "Close the books 3 days faster each quarter"
 - Value must be expressed in terms the customer uses, not your internal jargon
@@ -133,6 +138,7 @@ See: [Unique Attributes Discovery](references/unique-attributes.md)
 | Content marketing | Create content pillars from value themes | Blog series, whitepapers, and webinars organized by value theme |
 
 **Copy patterns:**
+
 - "[Value outcome] with [product], powered by [unique attribute]"
 - "Our customers [measurable outcome] because [unique capability]"
 - "[Number]% of customers report [value] within [timeframe]"
@@ -148,6 +154,7 @@ See: [Value Mapping Framework](references/value-mapping.md)
 **Why it works:** Trying to position for everyone means positioning for no one. Best-fit customers are the ones who buy fastest, churn least, refer most, and expand most. When you nail positioning for them, it naturally expands outward. They're also the customers whose testimonials and case studies are most compelling.
 
 **Key insights:**
+
 - Best-fit characteristics must be identifiable before you talk to the customer (job title, company size, industry, tech stack — not psychographics)
 - Start with your happiest, most successful existing customers and work backward to find common characteristics
 - The ideal best-fit definition lets your sales and marketing teams identify and target these customers proactively
@@ -164,6 +171,7 @@ See: [Value Mapping Framework](references/value-mapping.md)
 | Product roadmap | Prioritize features best-fit customers request | "Our best-fit customers consistently ask for Salesforce integration — build it next" |
 
 **Copy patterns:**
+
 - "Built for [specific customer type] who [specific situation]"
 - "If you're a [role] at a [company type], you know [pain point]"
 - "Purpose-built for [segment], not a generic tool adapted for everyone"
@@ -179,6 +187,7 @@ See: [Target Customer Analysis](references/target-customers.md)
 **Why it works:** The market category you choose triggers a set of assumptions in the customer's mind about what your product does, who it competes with, and how it should be priced. Choosing the right category leverages these assumptions in your favor. Choosing the wrong one fights them.
 
 **Key insights:**
+
 - **Head-to-head (existing category):** Best when your product can credibly claim to be the best in an established category. Customers already understand the category — you just need to prove you're the best option. Risk: you inherit all the category's assumptions and competitors.
 - **Subcategory:** Best when you have unique attributes that redefine how a portion of the existing category should be evaluated. You get the category's built-in awareness while shifting evaluation criteria. Example: "CRM for real estate" vs. just "CRM."
 - **New category:** Best when your product is genuinely different from anything that exists. Highest potential upside but requires significant investment in education. You pay an "education tax" — customers need to learn what the category is before they can evaluate you. Only viable if you have the resources and time to define the category.
@@ -195,6 +204,7 @@ See: [Target Customer Analysis](references/target-customers.md)
 | Competitive response | Reframe category when competitors flood yours | Shift from "project management" to "product development workflow" to escape commodity comparisons |
 
 **Copy patterns:**
+
 - Existing: "The best [category] for [best-fit customers]"
 - Subcategory: "[Modifier] [category] — [category] reimagined for [specific need]"
 - New category: "Introducing [new category]: [one-sentence definition]"
@@ -217,6 +227,7 @@ Trends act as tailwinds for your positioning. When a relevant market trend align
 **Example:** If your unique attribute is real-time collaboration across time zones, the remote work trend makes your value feel urgent and timely. "As finance teams go remote, real-time collaboration isn't a nice-to-have — it's essential."
 
 **Warning signs of trend abuse:**
+
 - Your positioning only makes sense in light of the trend
 - The trend doesn't connect to any unique attribute
 - The trend is aspirational rather than actually happening
@@ -252,6 +263,7 @@ Effective positioning requires cross-functional alignment. The positioning exerc
 - **Customer Success** — best-fit customer characteristics and value proof
 
 **Exercise overview:**
+
 1. Pre-work: Gather customer research, competitive data, and win/loss analysis (1-2 weeks before)
 2. Workshop: Walk through all 5 steps as a team, building consensus at each step (2-3 hours)
 3. Post-work: Document the positioning canvas, create messaging, and align all customer-facing materials (1-2 weeks after)

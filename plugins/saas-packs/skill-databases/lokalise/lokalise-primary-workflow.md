@@ -10,6 +10,7 @@ lokalise-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Lokalise primary workflow
 **Workflow:** Part of the onboarding skill category for Lokalise integration.
 **Relates to:** Other lokalise skills in this pack.

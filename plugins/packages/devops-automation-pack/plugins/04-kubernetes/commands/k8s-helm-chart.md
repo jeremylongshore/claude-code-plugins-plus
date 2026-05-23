@@ -22,12 +22,12 @@ Creates production-ready Helm charts for Kubernetes applications with parameteri
 
 ## When to Use This
 
--  Package app for multiple environments (dev, staging, prod)
--  Need configurable deployments (replicas, resources, ingress)
--  Want version-controlled releases
--  Deploy to multiple clusters with different configs
--  Single environment deployment (use `/k8s-manifest-generate`)
--  Quick one-off deployment (use `kubectl run`)
+- Package app for multiple environments (dev, staging, prod)
+- Need configurable deployments (replicas, resources, ingress)
+- Want version-controlled releases
+- Deploy to multiple clusters with different configs
+- Single environment deployment (use `/k8s-manifest-generate`)
+- Quick one-off deployment (use `kubectl run`)
 
 ## How It Works
 
@@ -40,6 +40,7 @@ You are a Helm expert. When user runs `/k8s-helm-chart` or `/kh`:
    - Assess external access needs
 
 2. **Generate chart structure:**
+
    ```
    mychart/
    ├── Chart.yaml           # Chart metadata
@@ -90,14 +91,17 @@ helm install myapp ./mychart -f values-prod.yaml
 ```
 
 ### Upgrade:
+
 ```bash
 helm upgrade myapp ./mychart -f values-prod.yaml
 ```
 
 ### Rollback:
+
 ```bash
 helm rollback myapp <revision>
 ```
+
 ```
 
 ## Example
@@ -533,6 +537,7 @@ helm install nodejs-api ./nodejs-api -f values-dev.yaml
 ```
 
 ### Production:
+
 ```bash
 # Set secrets via command line (more secure)
 helm install nodejs-api ./nodejs-api \

@@ -20,9 +20,11 @@ compatibility: Designed for Claude Code
 # Fondo SDK Patterns
 
 ## Overview
+
 Production-ready patterns for integrating with Fondo tax and accounting data. Fondo is a managed bookkeeping platform that syncs through QuickBooks Online and payroll providers. Integration uses the `FONDO_API_KEY`-authenticated REST endpoints for exports, the QuickBooks Online API for GL data, and structured CSV parsing with Zod validation for bulk imports.
 
 ## Singleton Client
+
 ```typescript
 const FONDO_BASE = 'https://api.fondo.com/v1';
 let _client: FondoClient | null = null;
@@ -49,6 +51,7 @@ class FondoClient {
 ```
 
 ## Error Wrapper
+
 ```typescript
 export class FondoError extends Error {
   constructor(public status: number, message: string) { super(message); this.name = 'FondoError'; }
@@ -64,6 +67,7 @@ export async function safeCall<T>(operation: string, fn: () => Promise<T>): Prom
 ```
 
 ## Request Builder
+
 ```typescript
 class FondoQuery {
   private params: Record<string, string> = {};
@@ -78,6 +82,7 @@ class FondoQuery {
 ```
 
 ## Response Types
+
 ```typescript
 interface FondoTransaction {
   id: string; date: string; description: string; amount: number;
@@ -98,6 +103,7 @@ interface FondoRnDCredit {
 ```
 
 ## Testing Utilities
+
 ```typescript
 export function mockTransaction(overrides: Partial<FondoTransaction> = {}): FondoTransaction {
   return { id: 'txn-001', date: '2025-03-15', description: 'AWS hosting',
@@ -111,6 +117,7 @@ export function mockAccount(overrides: Partial<FondoAccount> = {}): FondoAccount
 ```
 
 ## Error Handling
+
 | Pattern | When to Use | Example |
 |---------|-------------|---------|
 | `safeCall` wrapper | All Fondo API calls | Structured error logging with operation context |
@@ -119,7 +126,9 @@ export function mockAccount(overrides: Partial<FondoAccount> = {}): FondoAccount
 | Auth validation | Client init | Fail fast on missing `FONDO_API_KEY` |
 
 ## Resources
+
 - [Fondo](https://fondo.com)
 
 ## Next Steps
+
 Apply patterns in `fondo-core-workflow-a`.

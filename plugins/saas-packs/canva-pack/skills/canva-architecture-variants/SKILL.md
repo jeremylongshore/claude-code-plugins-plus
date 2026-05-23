@@ -164,6 +164,7 @@ canva-service/                # Dedicated microservice
 ```
 
 **Key differences:**
+
 - Dedicated service owns all Canva API interaction
 - gRPC for internal services, REST for external
 - Separate workers for exports, autofills, webhooks

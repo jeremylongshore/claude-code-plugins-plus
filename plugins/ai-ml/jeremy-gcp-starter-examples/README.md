@@ -24,9 +24,11 @@ This plugin provides instant access to production-ready code examples from 6 off
 ## Components
 
 ### Agent
+
 - **gcp-starter-kit-expert**: Aggregates code examples from official Google Cloud repos
 
 ### Skills (Auto-Activating)
+
 - **gcp-examples-expert**: Triggers on "show adk example", "genkit starter template", "vertex ai code sample"
   - **Tool Permissions**: Read, Write, Edit, Grep, Glob, Bash
   - **Version**: 1.0.0 (2026 schema compliant)
@@ -62,6 +64,7 @@ The skill auto-activates and provides production-ready code examples.
 - IAM least privilege patterns
 
 **Example Request**:
+
 ```
 "Show me how to create an ADK agent with Code Execution and Memory Bank"
 ```
@@ -78,6 +81,7 @@ The skill auto-activates and provides production-ready code examples.
 - Error tracking and distributed tracing
 
 **Example Request**:
+
 ```
 "Give me the Agent Starter Pack production template"
 ```
@@ -93,6 +97,7 @@ The skill auto-activates and provides production-ready code examples.
 - Node.js, Python, and Go examples
 
 **Example Request**:
+
 ```
 "I need a Genkit RAG flow template with vector search"
 ```
@@ -109,6 +114,7 @@ The skill auto-activates and provides production-ready code examples.
 - A/B testing and traffic splitting
 
 **Example Request**:
+
 ```
 "Show me how to fine-tune Gemini on custom data"
 ```
@@ -125,6 +131,7 @@ The skill auto-activates and provides production-ready code examples.
 - Token counting and cost optimization
 
 **Example Request**:
+
 ```
 "How do I analyze video content with Gemini multimodal?"
 ```
@@ -141,6 +148,7 @@ The skill auto-activates and provides production-ready code examples.
 - Retry logic with exponential backoff
 
 **Example Request**:
+
 ```
 "I want to build a multi-agent system with AgentSmithy"
 ```
@@ -148,38 +156,47 @@ The skill auto-activates and provides production-ready code examples.
 ## Use Cases
 
 ### Quick Prototyping
+
 Get production-ready code to start building immediately without searching through documentation.
 
 ### Learning Best Practices
+
 See how Google Cloud engineers implement security, monitoring, and scalability in official examples.
 
 ### Production Templates
+
 Use battle-tested patterns from Agent Starter Pack for production deployments.
 
 ### Framework Comparison
+
 Compare ADK, Genkit, and Vertex AI implementations to choose the right framework.
 
 ### Infrastructure as Code
+
 Get Terraform templates for deploying agents and infrastructure.
 
 ## Integration with Other Plugins
 
 ### jeremy-genkit-pro
+
 - Provides Genkit code examples
 - Complements Genkit flow architect agent
 - Shares production best practices
 
 ### jeremy-adk-orchestrator
+
 - Provides ADK sample code
 - Shows A2A protocol implementation
 - Demonstrates multi-agent patterns
 
 ### jeremy-vertex-validator
+
 - Provides code that passes production validation
 - Follows security and performance best practices
 - Includes monitoring from the start
 
 ### jeremy-*-terraform plugins
+
 - Provides infrastructure code examples
 - Shows Terraform module patterns
 - Demonstrates resource configuration
@@ -228,6 +245,7 @@ Plugin provides:
 ## Best Practices Included
 
 ### Security
+
 - IAM least privilege service accounts
 - VPC Service Controls for enterprise isolation
 - Model Armor for prompt injection protection
@@ -235,6 +253,7 @@ Plugin provides:
 - No hardcoded credentials (Secret Manager)
 
 ### Performance
+
 - Auto-scaling (min/max instances)
 - Appropriate machine types and accelerators
 - Caching strategies
@@ -242,6 +261,7 @@ Plugin provides:
 - Token optimization
 
 ### Observability
+
 - Cloud Monitoring dashboards
 - Alerting policies
 - Structured logging
@@ -249,6 +269,7 @@ Plugin provides:
 - Error tracking
 
 ### Reliability
+
 - Multi-region deployment
 - Circuit breaker patterns
 - Retry logic with exponential backoff
@@ -256,6 +277,7 @@ Plugin provides:
 - Graceful degradation
 
 ### Cost Optimization
+
 - Gemini 2.5 Flash for simple tasks
 - Gemini 2.5 Pro for complex reasoning
 - Batch predictions for bulk processing

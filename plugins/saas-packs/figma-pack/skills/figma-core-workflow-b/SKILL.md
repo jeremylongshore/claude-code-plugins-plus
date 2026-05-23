@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code
 # Figma Core Workflow B -- Asset Export
 
 ## Overview
+
 Export images, icons, and assets from Figma files using the REST API. Render specific nodes as PNG, SVG, JPG, or PDF. Build automated asset pipelines for icons, illustrations, and component previews.
 
 ## Prerequisites
+
 - Completed `figma-install-auth` setup
 - Node IDs of the frames/components to export (from `figma-hello-world`)
 - `FIGMA_PAT` and `FIGMA_FILE_KEY` env vars set
@@ -33,6 +35,7 @@ Export images, icons, and assets from Figma files using the REST API. Render spe
 ## Instructions
 
 ### Step 1: Render Nodes as Images
+
 ```typescript
 const PAT = process.env.FIGMA_PAT!;
 const FILE_KEY = process.env.FIGMA_FILE_KEY!;
@@ -68,6 +71,7 @@ async function exportImages(
 ```
 
 ### Step 2: Download Exported Images
+
 ```typescript
 import { writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
@@ -102,6 +106,7 @@ async function downloadAssets(
 ```
 
 ### Step 3: Export All Icons from a Frame
+
 ```typescript
 // Find all COMPONENT children in an "Icons" frame, then export each as SVG
 async function exportIconsFromFrame(frameNodeId: string) {
@@ -132,6 +137,7 @@ async function exportIconsFromFrame(frameNodeId: string) {
 ```
 
 ### Step 4: Named Export with Component Metadata
+
 ```typescript
 // Use component metadata for better filenames
 async function exportNamedIcons(frameNodeId: string) {
@@ -169,12 +175,14 @@ async function exportNamedIcons(frameNodeId: string) {
 ```
 
 ## Output
+
 - Images rendered from Figma nodes at specified format and scale
 - Downloaded assets saved to local filesystem
 - Icon library exported as named SVG files
 - Batch processing for large component sets
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `null` in images map | Node is invisible or has 0% opacity | Make node visible in Figma |
@@ -186,6 +194,7 @@ async function exportNamedIcons(frameNodeId: string) {
 ## Examples
 
 ### Quick Export via curl
+
 ```bash
 # Export a single node as PNG at 2x
 curl -s -H "X-Figma-Token: ${FIGMA_PAT}" \
@@ -195,9 +204,11 @@ curl -s -H "X-Figma-Token: ${FIGMA_PAT}" \
 ```
 
 ## Resources
+
 - [Figma Images Endpoint](https://developers.figma.com/docs/rest-api/file-endpoints/)
 - [Export Settings](https://developers.figma.com/docs/plugins/api/ExportSettings/)
 - [figma-export-assets](https://github.com/mariohamann/figma-export-assets) (community tool)
 
 ## Next Steps
+
 For common errors, see `figma-common-errors`.

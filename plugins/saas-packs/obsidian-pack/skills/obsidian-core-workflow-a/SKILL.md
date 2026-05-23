@@ -320,6 +320,7 @@ echo "Plugin installed. Open Obsidian, enable it in Settings > Community plugins
 ```
 
 In Obsidian:
+
 1. Settings > Community plugins > Enable community plugins
 2. Find "My Obsidian Plugin" in the list, toggle it on
 3. Click the sparkles icon in the left ribbon
@@ -329,6 +330,7 @@ In Obsidian:
 ## Output
 
 A complete plugin directory containing:
+
 - `manifest.json` -- plugin metadata Obsidian reads
 - `src/main.ts` -- Plugin subclass with commands, ribbon icon, settings tab
 - `esbuild.config.mjs` -- bundler with watch mode support
@@ -349,6 +351,7 @@ A complete plugin directory containing:
 ## Examples
 
 **Minimal manifest.json for community submission:**
+
 ```json
 {
   "id": "my-obsidian-plugin",
@@ -363,6 +366,7 @@ A complete plugin directory containing:
 ```
 
 **Adding a hotkey-enabled command:**
+
 ```typescript
 this.addCommand({
   id: "toggle-sidebar",

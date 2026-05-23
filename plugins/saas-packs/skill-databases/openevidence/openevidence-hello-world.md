@@ -10,6 +10,7 @@ openevidence-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working OpenEvidence example
 **Workflow:** Part of the onboarding skill category for OpenEvidence integration.
 **Relates to:** Other openevidence skills in this pack.

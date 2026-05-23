@@ -77,6 +77,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --coin BTC --detailed
 ## Contrarian Indicator Theory
 
 Sentiment is often used as a contrarian indicator:
+
 - **Extreme Fear** readings historically correlate with market bottoms and buying opportunities
 - **Extreme Greed** readings historically correlate with market tops and selling opportunities
 - The Fear & Greed Index has shown predictive value when combined with technical analysis

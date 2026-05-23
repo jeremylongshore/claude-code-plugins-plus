@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Core Workflow A: Automated PR Review
 
 ## Overview
+
 The primary CodeRabbit workflow: a developer opens a PR, CodeRabbit automatically analyzes the diff, posts a walkthrough summary and line-level comments, and the developer addresses feedback. This skill covers configuration, review profiles, path instructions, and the full review lifecycle.
 
 ## Prerequisites
+
 - CodeRabbit GitHub App installed (see `coderabbit-install-auth`)
 - `.coderabbit.yaml` in repository root
 - At least one PR-capable branch
@@ -35,6 +37,7 @@ The primary CodeRabbit workflow: a developer opens a PR, CodeRabbit automaticall
 ## Instructions
 
 ### Step 1: Configure the Review Pipeline
+
 ```yaml
 # .coderabbit.yaml - Production-ready configuration
 language: "en-US"
@@ -98,6 +101,7 @@ reviews:
 ```
 
 ### Step 2: Understand the Review Lifecycle
+
 ```
 Developer opens/updates PR
          │
@@ -128,6 +132,7 @@ Developer opens/updates PR
 ```
 
 ### Step 3: Interact with Reviews
+
 ```markdown
 # In any PR comment:
 @coderabbitai full review          # Re-review all files from scratch
@@ -145,6 +150,7 @@ Developer opens/updates PR
 ```
 
 ### Step 4: Configure Finishing Touch Recipes
+
 ```yaml
 # .coderabbit.yaml - Custom finishing touch recipes (open beta)
 finishing_touches:
@@ -171,6 +177,7 @@ finishing_touches:
 ```
 
 ## Output
+
 - Automated review on every PR targeting configured branches
 - Walkthrough summary with sequence diagrams
 - Line-level feedback categorized by severity
@@ -178,6 +185,7 @@ finishing_touches:
 - Finishing touch recipes for automated code improvements
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Review takes 15+ minutes | PR has 1000+ changed lines | Split into smaller PRs |
@@ -188,9 +196,11 @@ finishing_touches:
 | Review on draft PR | `drafts: true` in config | Set `drafts: false` to skip drafts |
 
 ## Resources
+
 - [Configuration Reference](https://docs.coderabbit.ai/reference/configuration)
 - [Review Commands](https://docs.coderabbit.ai/reference/review-commands)
 - [Finishing Touches](https://docs.coderabbit.ai/finishing-touches/index)
 
 ## Next Steps
+
 For configuration tuning and noise reduction, see `coderabbit-core-workflow-b`.

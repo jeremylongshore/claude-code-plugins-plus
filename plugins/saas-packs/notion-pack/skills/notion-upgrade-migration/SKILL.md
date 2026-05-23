@@ -84,6 +84,7 @@ Record the current SDK version and API version before proceeding. If no `notionV
 Create an isolated branch, upgrade the package, and address breaking changes before merging.
 
 **Node.js upgrade:**
+
 ```bash
 # Create upgrade branch
 git checkout -b upgrade/notionhq-client-$(npm view @notionhq/client version)
@@ -97,6 +98,7 @@ git diff package.json package-lock.json
 ```
 
 **Python upgrade:**
+
 ```bash
 git checkout -b upgrade/notion-client-$(pip show notion-client 2>/dev/null | grep Version | awk '{print $2}')
 
@@ -142,6 +144,7 @@ const notion = new Client({
 ```
 
 **Python breaking changes:**
+
 ```python
 from notion_client import Client, APIResponseError
 
@@ -238,6 +241,7 @@ await verifyComments(process.env.TEST_PAGE_ID!);
 ```
 
 After all tests pass, merge the upgrade branch:
+
 ```bash
 npm test                  # Run project test suite
 git add -A

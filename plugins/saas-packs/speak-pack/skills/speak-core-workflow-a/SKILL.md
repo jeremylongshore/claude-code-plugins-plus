@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Speak Core Workflow A: AI Conversation Practice
 
 ## Overview
+
 Primary workflow for Speak: AI-powered conversation practice with real-time pronunciation feedback and adaptive tutoring. Speak uses GPT-4o for conversation generation and OpenAI's Realtime API for speech processing, delivering sub-second response times.
 
 ## Prerequisites
+
 - Completed `speak-install-auth` setup
 - Valid API credentials configured
 - Audio handling capabilities (microphone or pre-recorded files)
@@ -154,6 +156,7 @@ console.table(results.map(r => ({
 ```
 
 ### Topic Categories
+
 | Category | Scenarios | Level |
 |----------|-----------|-------|
 | Daily Life | greetings, introductions, weather | Beginner |
@@ -163,6 +166,7 @@ console.table(results.map(r => ({
 | Social | party, dating, opinions, debate | Advanced |
 
 ## Output
+
 - Conversation session with AI tutor
 - Real-time pronunciation feedback (0-100 score)
 - Grammar corrections and suggestions
@@ -170,6 +174,7 @@ console.table(results.map(r => ({
 - Session summary with progress metrics
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Session timeout | Exceeded 30 min | Auto-end with summary, start new session |
@@ -178,12 +183,14 @@ console.table(results.map(r => ({
 | Recognition failed | Poor audio quality | Prompt user to re-record in quiet environment |
 
 ## Resources
+
 - [Speak Website](https://speak.com)
 - [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
 - [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
 - [Live Roleplays](https://speak.com/blog/live-roleplays)
 
 ## Next Steps
+
 For pronunciation-focused training, see `speak-core-workflow-b`.
 
 ## Examples

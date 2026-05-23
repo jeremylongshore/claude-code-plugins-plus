@@ -26,11 +26,13 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Data Handling
 
 ## Overview
+
 Process scraped web content from Firecrawl pipelines. Covers markdown cleaning, structured data extraction with Zod validation, content deduplication, chunking for LLM/RAG, and storage patterns for crawled content.
 
 ## Instructions
 
 ### Step 1: Content Cleaning
+
 ```typescript
 import FirecrawlApp from "@mendable/firecrawl-js";
 
@@ -67,6 +69,7 @@ function cleanMarkdown(md: string): string {
 ```
 
 ### Step 2: Structured Extraction with Validation
+
 ```typescript
 import { z } from "zod";
 
@@ -105,6 +108,7 @@ async function extractArticle(url: string) {
 ```
 
 ### Step 3: Content Deduplication
+
 ```typescript
 import { createHash } from "crypto";
 
@@ -135,6 +139,7 @@ function deduplicatePages(pages: Array<{ url: string; markdown: string }>) {
 ```
 
 ### Step 4: Chunk for LLM / RAG
+
 ```typescript
 interface ContentChunk {
   url: string;
@@ -183,6 +188,7 @@ function chunkForRAG(
 ```
 
 ### Step 5: Crawl and Store Pipeline
+
 ```typescript
 import { writeFileSync, mkdirSync } from "fs";
 import { join } from "path";
@@ -222,6 +228,7 @@ async function crawlAndStore(baseUrl: string, outputDir: string, opts?: {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Empty content | JS not rendered | Increase `waitFor`, use `onlyMainContent` |
@@ -233,6 +240,7 @@ async function crawlAndStore(baseUrl: string, outputDir: string, opts?: {
 ## Examples
 
 ### Documentation Scraper with RAG Output
+
 ```typescript
 const docs = await crawlAndStore("https://docs.example.com", "./scraped-docs", {
   maxPages: 50,
@@ -249,9 +257,11 @@ for (const doc of docs) {
 ```
 
 ## Resources
+
 - [Firecrawl Scrape Options](https://docs.firecrawl.dev/features/scrape)
 - [Firecrawl Extract](https://docs.firecrawl.dev/features/llm-extract)
 - [Zod Validation](https://zod.dev/)
 
 ## Next Steps
+
 For access control, see `firecrawl-enterprise-rbac`.

@@ -3,6 +3,7 @@
 ## Bridge TVL Rankings
 
 ### Show Top Bridges by TVL
+
 ```bash
 python bridge_monitor.py tvl
 
@@ -19,6 +20,7 @@ python bridge_monitor.py tvl
 ```
 
 ### TVL as JSON
+
 ```bash
 python bridge_monitor.py -f json tvl --limit 5
 ```
@@ -26,6 +28,7 @@ python bridge_monitor.py -f json tvl --limit 5
 ## List All Bridges
 
 ### Show Bridge Rankings by Volume
+
 ```bash
 python bridge_monitor.py bridges
 
@@ -42,6 +45,7 @@ python bridge_monitor.py bridges
 ```
 
 ### Filter by Chain
+
 ```bash
 # Show bridges supporting Arbitrum
 python bridge_monitor.py bridges --chain arbitrum
@@ -50,6 +54,7 @@ python bridge_monitor.py bridges --chain arbitrum
 ## Bridge Details
 
 ### Get Detailed Bridge Info
+
 ```bash
 python bridge_monitor.py detail --bridge stargate
 
@@ -83,6 +88,7 @@ python bridge_monitor.py detail --bridge stargate
 ## Compare Bridge Routes
 
 ### Compare Fees for a Route
+
 ```bash
 python bridge_monitor.py compare --source ethereum --dest arbitrum --amount 1000 --token USDC
 
@@ -102,6 +108,7 @@ python bridge_monitor.py compare --source ethereum --dest arbitrum --amount 1000
 ```
 
 ### Compare Large Transfer
+
 ```bash
 python bridge_monitor.py compare \
   --source ethereum \
@@ -111,6 +118,7 @@ python bridge_monitor.py compare \
 ```
 
 ### Compare as JSON
+
 ```bash
 python bridge_monitor.py -f json compare \
   --source ethereum \
@@ -122,6 +130,7 @@ python bridge_monitor.py -f json compare \
 ## Track Transactions
 
 ### Track a Bridge Transaction
+
 ```bash
 python bridge_monitor.py tx --tx-hash 0x1234...abcd
 
@@ -144,6 +153,7 @@ python bridge_monitor.py tx --tx-hash 0x1234...abcd
 ```
 
 ### Track with Bridge Hint
+
 ```bash
 # Faster tracking if you know the bridge
 python bridge_monitor.py tx \
@@ -152,6 +162,7 @@ python bridge_monitor.py tx \
 ```
 
 ### Track with Source Chain
+
 ```bash
 python bridge_monitor.py tx \
   --tx-hash 0x1234...abcd \
@@ -161,6 +172,7 @@ python bridge_monitor.py tx \
 ## List Supported Chains
 
 ### Show All Chains
+
 ```bash
 python bridge_monitor.py chains
 
@@ -177,6 +189,7 @@ python bridge_monitor.py chains
 ## List Bridge Protocols
 
 ### Show Supported Protocols
+
 ```bash
 python bridge_monitor.py protocols
 
@@ -211,6 +224,7 @@ python bridge_monitor.py protocols
 ## JSON Output
 
 ### Any Command with JSON
+
 ```bash
 # TVL as JSON
 python bridge_monitor.py -f json tvl
@@ -228,6 +242,7 @@ python bridge_monitor.py -f json tx --tx-hash 0x...
 ## Common Workflows
 
 ### Find Best Route for Large Transfer
+
 ```bash
 # Compare routes
 python bridge_monitor.py compare -s ethereum -d arbitrum -a 50000 -t USDC
@@ -240,6 +255,7 @@ python bridge_monitor.py tvl
 ```
 
 ### Monitor Bridge After Transfer
+
 ```bash
 # Get tx hash from wallet/explorer, then track
 python bridge_monitor.py tx --tx-hash 0x...
@@ -249,6 +265,7 @@ watch -n 30 "python bridge_monitor.py tx --tx-hash 0x..."
 ```
 
 ### Research Bridge Safety
+
 ```bash
 # Check bridge volume and TVL trends
 python bridge_monitor.py detail --bridge synapse
@@ -260,6 +277,7 @@ python bridge_monitor.py bridges | head -20
 ## Integration Examples
 
 ### Python Import
+
 ```python
 from bridge_fetcher import BridgeFetcher
 from protocol_adapters import get_all_adapters
@@ -282,6 +300,7 @@ print(f"Status: {status.status}")
 ```
 
 ### Shell Script Monitoring
+
 ```bash
 #!/bin/bash
 # Monitor bridge TVL changes

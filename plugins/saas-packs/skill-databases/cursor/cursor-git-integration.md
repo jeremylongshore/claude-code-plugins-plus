@@ -10,6 +10,7 @@ cursor-git-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Integrates Git workflows with Cursor IDE including AI-powered commit messages, code review assistance, conflict resolution, and branch management.
 
 **Workflow:** This skill activates when using version control within Cursor. It covers built-in Git features, AI-powered workflows, terminal commands, branch management, history viewing, and recommended extensions.

@@ -82,22 +82,27 @@ Written commitments are more powerful than verbal ones because:
 The best onboarding flows are designed as progressive commitment sequences:
 
 **Step 1: Identity commitment**
+
 - "What best describes you?" (founder, marketer, developer)
 - Psychological effect: User self-categorizes, creating identity consistency pressure
 
 **Step 2: Goal commitment**
+
 - "What's your primary goal with [product]?"
 - Psychological effect: User articulates a desired outcome tied to the product
 
 **Step 3: Preference commitment**
+
 - "Choose your workspace settings / preferences"
 - Psychological effect: User customizes, increasing switching costs and ownership
 
 **Step 4: Creation commitment**
+
 - "Create your first [project/document/campaign]"
 - Psychological effect: User has produced something, making abandonment feel like waste
 
 **Step 5: Social commitment**
+
 - "Invite your team / share your progress"
 - Psychological effect: Others now know, creating social consistency pressure
 
@@ -248,11 +253,13 @@ Before implementing a commitment mechanism, ask:
 ### Forced Commitments vs. Free Commitments
 
 **Forced commitment (unethical):**
+
 - Pre-selected options the user didn't choose
 - Mandatory fields that extract unnecessary information
 - "You must agree to X to continue" when X is unrelated
 
 **Free commitment (ethical):**
+
 - User actively selects their own goals
 - Optional profile fields that improve their experience
 - Transparent choices with clear consequences

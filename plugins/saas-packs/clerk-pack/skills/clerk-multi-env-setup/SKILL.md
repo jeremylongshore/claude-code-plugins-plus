@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Multi-Environment Setup
 
 ## Overview
+
 Configure Clerk across development, staging, and production environments with separate instances, environment-aware configuration, and safe promotion workflows.
 
 ## Prerequisites
+
 - Clerk account (one instance per environment recommended)
 - CI/CD pipeline (GitHub Actions, Vercel, etc.)
 - Environment variable management in place
@@ -34,6 +36,7 @@ Configure Clerk across development, staging, and production environments with se
 ## Instructions
 
 ### Step 1: Create Clerk Instances
+
 Create separate Clerk instances in the Dashboard for each environment:
 
 | Environment | Instance | Key Prefix | Domain |
@@ -43,6 +46,7 @@ Create separate Clerk instances in the Dashboard for each environment:
 | Production | my-app-prod | `pk_live_` / `sk_live_` | myapp.com |
 
 ### Step 2: Environment Configuration Files
+
 ```bash
 # .env.local (development - git-ignored)
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_dev...
@@ -61,6 +65,7 @@ CLERK_WEBHOOK_SECRET=whsec_prod...
 ```
 
 ### Step 3: Environment-Aware Configuration
+
 ```typescript
 // lib/clerk-config.ts
 type ClerkEnv = 'development' | 'staging' | 'production'
@@ -92,6 +97,7 @@ export const clerkConfig = {
 ```
 
 ### Step 4: Startup Validation
+
 ```typescript
 // lib/validate-env.ts
 export function validateClerkEnv() {
@@ -123,6 +129,7 @@ export function validateClerkEnv() {
 ```
 
 Call at app startup:
+
 ```typescript
 // app/layout.tsx
 import { validateClerkEnv } from '@/lib/validate-env'
@@ -130,6 +137,7 @@ validateClerkEnv()
 ```
 
 ### Step 5: Webhook Configuration Per Environment
+
 ```typescript
 // app/api/webhooks/clerk/route.ts
 import { headers } from 'next/headers'
@@ -163,6 +171,7 @@ export async function POST(req: Request) {
 ```
 
 ### Step 6: CI/CD Environment Promotion
+
 ```yaml
 # .github/workflows/deploy.yml
 name: Deploy
@@ -192,6 +201,7 @@ jobs:
 ```
 
 ## Output
+
 - Separate Clerk instances per environment (dev, staging, production)
 - Environment-aware configuration with key validation
 - Startup checks preventing key mismatches
@@ -199,6 +209,7 @@ jobs:
 - CI/CD pipeline deploying correct keys per branch
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Key mismatch error | `pk_test_` with `sk_live_` | Ensure both keys from same Clerk instance |
@@ -209,6 +220,7 @@ jobs:
 ## Examples
 
 ### Vercel Preview Environment Setup
+
 ```bash
 # Set env vars for Vercel preview deployments
 vercel env add NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY preview
@@ -216,9 +228,11 @@ vercel env add CLERK_SECRET_KEY preview
 ```
 
 ## Resources
+
 - [Clerk Deployment Environments](https://clerk.com/docs/deployments/overview)
 - [Preview Environment Setup](https://clerk.com/docs/deployments/set-up-preview-environment)
 - [Vercel Environment Variables](https://vercel.com/docs/environment-variables)
 
 ## Next Steps
+
 Proceed to `clerk-observability` for monitoring and logging.

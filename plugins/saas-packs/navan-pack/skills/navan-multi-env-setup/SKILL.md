@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code
 # Navan Multi-Environment Setup
 
 ## Overview
+
 Navan does not offer a sandbox or staging API — every call hits production data with real corporate bookings and expense records. This creates risk for development and testing: a bug in a sync script could modify live itineraries, and CI pipelines cannot safely run integration tests. This skill implements environment isolation using separate OAuth apps, environment variable validation, a local development proxy, and a CI mock server.
 
 ## Prerequisites
+
 - Navan admin access to create multiple OAuth apps (Admin > Travel admin > Settings > Integrations)
 - Node.js 18+ for proxy and mock server
 - Understanding of OAuth 2.0 client credentials flow (see `navan-install-auth`)
@@ -34,6 +36,7 @@ Navan does not offer a sandbox or staging API — every call hits production dat
 ## Instructions
 
 ### Step 1: Create Per-Environment OAuth Apps
+
 Create separate API credentials in the Navan admin dashboard for each environment. This provides natural isolation — the dev app can have read-only scopes while production gets full access.
 
 ```bash
@@ -60,6 +63,7 @@ NAVAN_READ_ONLY=false
 ```
 
 ### Step 2: Build an Environment-Aware Client
+
 ```typescript
 import { config } from 'dotenv';
 
@@ -142,6 +146,7 @@ class NavanClient {
 ```
 
 ### Step 3: Create a Local Development Proxy
+
 ```typescript
 import express from 'express';
 
@@ -193,6 +198,7 @@ proxy.listen(4000, () => console.log('Navan dev proxy on http://localhost:4000')
 ```
 
 ### Step 4: Build a CI Mock Server
+
 ```typescript
 import express from 'express';
 const mock = express();
@@ -242,6 +248,7 @@ mock.listen(port, () => console.log(`Navan mock server on http://localhost:${por
 ```
 
 ### Step 5: Wire Mock Server into CI
+
 ```yaml
 # .github/workflows/test.yml
 - name: Start Navan mock server
@@ -261,9 +268,11 @@ mock.listen(port, () => console.log(`Navan mock server on http://localhost:${por
 ```
 
 ## Output
+
 A complete environment isolation strategy for Navan integrations: separate OAuth apps per environment with scoped permissions, an environment-aware client with write protection, a local dev proxy for request logging and mutation blocking, and a CI-ready mock server that eliminates production API dependencies from automated tests.
 
 ## Error Handling
+
 | Error | Code | Solution |
 |-------|------|----------|
 | Missing env vars | N/A | Config loader throws on startup; check the correct `.env.<environment>` file exists |
@@ -275,6 +284,7 @@ A complete environment isolation strategy for Navan integrations: separate OAuth
 ## Examples
 
 **Validate environment configuration:**
+
 ```bash
 # Check which environment would load
 NODE_ENV=staging node -e "
@@ -286,6 +296,7 @@ NODE_ENV=staging node -e "
 ```
 
 **Run tests against mock server locally:**
+
 ```bash
 # Terminal 1: Start mock
 MOCK_PORT=4001 node navan-mock-server.js
@@ -295,10 +306,12 @@ NAVAN_API_BASE=http://localhost:4001/v1 npm test
 ```
 
 ## Resources
+
 - [Navan Help Center](https://app.navan.com/app/helpcenter) — API credential creation and management
 - [Navan Integrations](https://navan.com/integrations) — Available integration patterns and partners
 - [Navan Security](https://navan.com/security) — Data handling and environment security policies
 - [dotenv Documentation](https://github.com/motdotla/dotenv) — Environment variable management for Node.js
 
 ## Next Steps
+
 After setting up environments, see `navan-security-basics` for credential rotation across all environments, or `navan-ci-integration` for building the full CI/CD pipeline with Navan API tests.

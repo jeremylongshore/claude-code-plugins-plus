@@ -10,6 +10,7 @@ miro-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Miro debug evidence for support
 **Workflow:** Part of the operations skill category for Miro integration.
 **Relates to:** Other miro skills in this pack.

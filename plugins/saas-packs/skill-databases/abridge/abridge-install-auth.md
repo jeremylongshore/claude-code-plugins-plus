@@ -10,6 +10,7 @@ abridge-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Abridge SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Abridge integration.
 **Relates to:** Other abridge skills in this pack.

@@ -3,6 +3,7 @@
 ## Sensitive File Exclusion
 
 ### .cursorignore for Security
+
 ```gitignore
 # .cursorignore
 
@@ -40,6 +41,7 @@ secrets/
 ```
 
 ### Code-Level Exclusions
+
 ```typescript
 // Mark sections to skip
 // @cursor-ignore-start

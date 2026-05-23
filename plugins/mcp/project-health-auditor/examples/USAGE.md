@@ -129,6 +129,7 @@ The `/analyze` command combines all 4 tools into a comprehensive workflow:
 ```
 
 This will:
+
 1. List all source files
 2. Analyze complexity of key files
 3. Check git churn patterns
@@ -144,6 +145,7 @@ I need code health recommendations for my project at /path/to/repo
 ```
 
 The reviewer agent will:
+
 - Identify technical debt hot spots (high complexity + high churn + no tests)
 - Provide specific, actionable refactoring steps
 - Estimate effort required

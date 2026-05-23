@@ -13,6 +13,7 @@ description: Swift 6 strict concurrency patterns, fixes, and best practices - Qu
 ## When to Use This Skill
 
 ✅ **Use this skill when**:
+
 - Debugging Swift 6 concurrency errors (actor isolation, data races, Sendable warnings)
 - Implementing `@MainActor` classes or async functions
 - Converting delegate callbacks to async-safe patterns
@@ -22,6 +23,7 @@ description: Swift 6 strict concurrency patterns, fixes, and best practices - Qu
 - Offloading CPU-intensive work to background threads
 
 ❌ **Do NOT use this skill for**:
+
 - General Swift syntax (use Swift documentation)
 - SwiftUI-specific patterns (different context)
 - API-specific patterns (use API documentation)
@@ -112,6 +114,7 @@ enum Result: Sendable {
 **Why `@MainActor` on delegate doesn't work**: Delegate protocols define methods as nonisolated by the framework. You can't change their isolation.
 
 **❌ WRONG (Accessing delegate parameters directly)**:
+
 ```swift
 nonisolated func delegate(_ param: SomeType) {
     Task { @MainActor in
@@ -123,6 +126,7 @@ nonisolated func delegate(_ param: SomeType) {
 ```
 
 **✅ CORRECT (Capture Before Task)**:
+
 ```swift
 nonisolated func delegate(_ param: SomeType) {
     // ✅ Step 1: Capture delegate parameter values BEFORE Task
@@ -144,6 +148,7 @@ nonisolated func delegate(_ param: SomeType) {
 **Rule**: Capture all delegate parameter values before Task. Accessing `self` inside the Task is safe and expected.
 
 **Real-world example** (chat message delegate):
+
 ```swift
 // Delegate method called from network layer's thread
 nonisolated func didReceiveMessage(_ message: Message, fromUser user: User) {
@@ -163,6 +168,7 @@ nonisolated func didReceiveMessage(_ message: Message, fromUser user: User) {
 ```
 
 **Key distinction**:
+
 - Delegate parameters (`message`, `user`) → Must capture before Task
 - Self properties (`self.messages`) → Safe to access inside `Task { @MainActor in }`
 
@@ -173,6 +179,7 @@ nonisolated func didReceiveMessage(_ message: Message, fromUser user: User) {
 **When**: Task is stored as a property OR runs for a long time
 
 **❌ WRONG (Memory Leak)**:
+
 ```swift
 class MusicPlayer {
     private var progressTask: Task<Void, Never>?
@@ -189,6 +196,7 @@ class MusicPlayer {
 ```
 
 **✅ CORRECT (No Leak)**:
+
 ```swift
 class MusicPlayer {
     private var progressTask: Task<Void, Never>?
@@ -212,6 +220,7 @@ class MusicPlayer {
 **Why**: Task strongly captures `self`, creating retain cycle if stored as property. Use `[weak self]` to break cycle.
 
 **Note**: Short-lived Tasks (not stored) can use strong captures:
+
 ```swift
 // ✅ OK: Task executes immediately and completes
 func quickUpdate() {
@@ -228,6 +237,7 @@ func quickUpdate() {
 **When**: Reading multiple properties from an object that could change mid-access
 
 **❌ WRONG (Torn Reads)**:
+
 ```swift
 var currentTime: TimeInterval {
     get async {
@@ -238,6 +248,7 @@ var currentTime: TimeInterval {
 ```
 
 **✅ CORRECT (Atomic Snapshot)**:
+
 ```swift
 var currentTime: TimeInterval {
     get async {
@@ -307,6 +318,7 @@ let metadata = await extractMetadata(from: fileURL)
 ## Anti-Patterns (DO NOT DO THIS)
 
 ### Anti-Pattern 1: Accessing Self Before Task Hop
+
 ```swift
 // ❌ NEVER DO THIS
 nonisolated func delegate(_ param: Type) {
@@ -317,6 +329,7 @@ nonisolated func delegate(_ param: Type) {
 ```
 
 ### Anti-Pattern 2: Strong Self in Stored Tasks
+
 ```swift
 // ❌ NEVER DO THIS
 progressTask = Task {  // ❌ Memory leak!
@@ -327,6 +340,7 @@ progressTask = Task {  // ❌ Memory leak!
 ```
 
 ### Anti-Pattern 3: Using nonisolated(unsafe) Without Justification
+
 ```swift
 // ❌ DON'T DO THIS
 nonisolated(unsafe) var currentTrack: Track?  // ❌ Mutable! Data race possible!
@@ -336,6 +350,7 @@ nonisolated(unsafe) var currentTrack: Track?  // ❌ Mutable! Data race possible
 ```
 
 **Rule**: Only use `nonisolated(unsafe)` for:
+
 - Static immutable values you're certain are thread-safe
 - Legacy global state that can't be refactored (document why)
 
@@ -352,6 +367,7 @@ nonisolated(unsafe) var currentTrack: Track?  // ❌ Mutable! Data race possible
 ### Error: "Type ... does not conform to the Sendable protocol"
 
 **Fix**: Add `Sendable` conformance to the type:
+
 ```swift
 enum State: Sendable {  // ✅ Add Sendable
     case idle
@@ -364,6 +380,7 @@ enum State: Sendable {  // ✅ Add Sendable
 ### Error: "Static property ... must be Sendable"
 
 **Fix**: Use `nonisolated static let` (for immutable data):
+
 ```swift
 nonisolated static let defaultValue = "Hello"
 ```
@@ -373,6 +390,7 @@ nonisolated static let defaultValue = "Hello"
 ### Warning: "Capture of 'self' with non-Sendable type in a @Sendable closure"
 
 **Fix**: Use `[weak self]` in Task:
+
 ```swift
 Task { [weak self] in  // ✅ Weak capture
     guard let self = self else { return }
@@ -392,6 +410,7 @@ Build Settings → Swift Compiler - Concurrency
 ```
 
 **What it does**:
+
 - Compile-time data race prevention
 - Enforces actor isolation
 - Requires explicit Sendable conformance
@@ -403,27 +422,32 @@ Build Settings → Swift Compiler - Concurrency
 Use this when reviewing new code or fixing concurrency warnings:
 
 ### 1. Delegate Methods
+
 - [ ] All delegate methods marked `nonisolated`
 - [ ] Delegate parameter values captured **before** Task creation
 - [ ] Accessing `self` inside `Task { @MainActor in }` is safe and expected
 - [ ] Captured values used for delegate parameters only
 
 ### 2. Types Crossing Actors
+
 - [ ] Enums have `: Sendable` if crossing actors
 - [ ] Structs have all Sendable properties
 - [ ] No classes crossing actors (use @MainActor or actors)
 
 ### 3. Tasks
+
 - [ ] Stored Tasks use `[weak self]`
 - [ ] Short-lived Tasks can use strong self
 - [ ] Task inherits actor context from creation point
 
 ### 4. Property Access
+
 - [ ] Multi-property access uses cached reference
 - [ ] No torn reads from changing state
 - [ ] Optional unwrapping with `?? fallback`
 
 ### 5. Actor Isolation
+
 - [ ] UI-touching code is @MainActor
 - [ ] Background work is nonisolated or uses @concurrent
 - [ ] No blocking operations on MainActor
@@ -442,6 +466,7 @@ Use this when reviewing new code or fixing concurrency warnings:
 ## Reference Documentation
 
 **Apple Resources**:
+
 - [Swift Concurrency Documentation](https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html)
 - [Adopting strict concurrency in Swift 6](https://developer.apple.com/documentation/swift/adoptingswift6)
 - [Sendable Protocol](https://developer.apple.com/documentation/swift/sendable)

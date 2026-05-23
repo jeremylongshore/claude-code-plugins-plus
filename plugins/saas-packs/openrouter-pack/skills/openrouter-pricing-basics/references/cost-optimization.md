@@ -3,6 +3,7 @@
 ## Cost Optimization
 
 ### Model Selection Strategy
+
 ```
 Task Type → Recommended Model → Cost
 
@@ -20,6 +21,7 @@ Final review:
 ```
 
 ### Token Optimization
+
 ```python
 # Reduce prompt tokens
 - Remove unnecessary context
@@ -33,6 +35,7 @@ Final review:
 ```
 
 ### Caching Strategy
+
 ```python
 import hashlib
 from functools import lru_cache

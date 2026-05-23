@@ -10,6 +10,7 @@ workhuman-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Workhuman rate limiting and backoff
 **Workflow:** Part of the operations skill category for Workhuman integration.
 **Relates to:** Other workhuman skills in this pack.

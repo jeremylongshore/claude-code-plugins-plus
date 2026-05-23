@@ -10,6 +10,7 @@ lindy-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Lindy rate limiting and backoff
 **Workflow:** Part of the operations skill category for Lindy integration.
 **Relates to:** Other lindy skills in this pack.

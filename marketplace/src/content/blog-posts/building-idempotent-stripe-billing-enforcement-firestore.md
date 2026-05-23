@@ -36,6 +36,7 @@ await recordBillingEvent(workspaceId, {
 ```
 
 **The problems:**
+
 - ~180 lines of duplicated logic across handlers
 - No guarantee of consistency if one handler was updated but not others
 - No built-in idempotency for duplicate webhooks
@@ -47,27 +48,33 @@ await recordBillingEvent(workspaceId, {
 Stripe webhooks are **eventually consistent**, which means:
 
 **Scenario 1: Duplicate Webhooks**
+
 ```
 Webhook 1: customer.subscription.updated (plan change)
 Webhook 2: customer.subscription.updated (same event, redelivered)
 ```
+
 Without idempotency, you'd process the same change twice and create duplicate ledger entries.
 
 **Scenario 2: Out-of-Order Arrival**
+
 ```
 Event 1: subscription.updated (plan: starter → plus) sent at 14:00:01
 Event 2: payment.succeeded (plan: plus) sent at 14:00:05
 
 But Event 2 arrives first!
 ```
+
 Your workspace briefly shows the wrong plan until Event 1 catches up.
 
 **Scenario 3: Delayed Webhooks**
+
 ```
 User upgrades at 14:00
 Webhook arrives at 14:05 (5 minutes late)
 Meanwhile, auditor runs at 14:03 and detects drift
 ```
+
 Who wins? How do you prevent conflicting updates?
 
 ## The Solution: Unified Plan Enforcement Engine
@@ -386,6 +393,7 @@ describe('Workspace Plan Enforcement', () => {
 ### 1. Stripe Webhook Handler
 
 **Before** (duplicated logic):
+
 ```typescript
 async function handleSubscriptionUpdated(subscription, eventId) {
   const workspace = await getWorkspaceByStripeCustomerId(customerId);
@@ -416,6 +424,7 @@ async function handleSubscriptionUpdated(subscription, eventId) {
 ```
 
 **After** (unified enforcement):
+
 ```typescript
 async function handleSubscriptionUpdated(subscription, eventId) {
   const workspace = await getWorkspaceByStripeCustomerId(customerId);
@@ -526,6 +535,7 @@ export async function auditWorkspaceBilling(
 **Result:** Auditor detects drift AND automatically fixes it!
 
 **Ledger Audit Trail** (2 entries):
+
 1. `drift_detected` (from auditor) - "Drift detected... (auto-applied)"
 2. `plan_changed` (from enforcement) - "Plan enforcement: active→past_due"
 
@@ -551,6 +561,7 @@ await enforceWorkspacePlan(workspace.id, {
 ```
 
 **Result:**
+
 - `workspace.status` updated: `active` → `past_due`
 - `workspace.plan` unchanged: `starter` → `starter`
 - Ledger entry: "Plan enforcement: plan unchanged, active→past_due"
@@ -572,6 +583,7 @@ await enforceWorkspacePlan(workspace.id, {
 ```
 
 **Result:**
+
 - `workspace.plan` updated: `plus` → `starter`
 - `workspace.status` unchanged: `active` → `active`
 - Ledger entry: "Plan enforcement: plus→starter, status unchanged"
@@ -582,11 +594,13 @@ await enforceWorkspacePlan(workspace.id, {
 **Event:** Periodic audit runs at 14:00, finds drift
 
 **Audit Report:**
+
 - `workspace.status = 'active'`
 - `subscription.status = 'past_due'` (payment failed, but webhook delayed)
 - `recommendedFix = 'run_event_replay'`
 
 **Auto-Enforcement:**
+
 ```typescript
 // Auditor automatically applies enforcement
 await enforceWorkspacePlan(workspace.id, {
@@ -598,6 +612,7 @@ await enforceWorkspacePlan(workspace.id, {
 ```
 
 **Ledger Entries** (2 entries):
+
 1. `drift_detected` - "Drift detected: Status mismatch (auto-applied)"
 2. `plan_changed` - "Plan enforcement: active→past_due"
 
@@ -610,6 +625,7 @@ await enforceWorkspacePlan(workspace.id, {
 Webhooks **will** be duplicated. Design for it from day one.
 
 **Key pattern:**
+
 ```typescript
 // Always compare current state vs. target state
 const changed = current !== target;
@@ -626,6 +642,7 @@ if (changed) {
 Our ratio: **450 lines of tests vs. 264 lines of implementation** (1.7:1)
 
 Why?
+
 - Caught 5 bugs before they hit production
 - Mocking Firestore requires careful setup
 - Edge cases (workspace not found, unknown price ID) easy to miss
@@ -634,12 +651,14 @@ Why?
 ### 3. Audit Trails Are Critical
 
 Every enforcement action writes to ledger with:
+
 - Before/after state (delta tracking)
 - Event source (webhook, replay, auditor, manual)
 - Stripe event ID (when applicable)
 - Human-readable note
 
 **Value:**
+
 - Troubleshoot billing issues: "When did plan change?"
 - Customer support: "Show me all billing events for this workspace"
 - Compliance: "Prove we applied subscription correctly"
@@ -649,6 +668,7 @@ Every enforcement action writes to ledger with:
 **Never modify Stripe data from enforcement.**
 
 Why?
+
 - Stripe is source of truth for billing
 - Workspace is source of truth for runtime behavior
 - Updating Stripe triggers webhook → triggers enforcement → infinite loop
@@ -697,11 +717,13 @@ Building a unified plan enforcement engine solved three critical problems:
 3. **Automated drift correction** - Auditor detects and fixes drift automatically
 
 **Code impact:**
+
 - Removed: ~180 lines of duplicate logic
 - Added: 264 lines of enforcement + 450 lines of tests
 - Net: Cleaner, more maintainable codebase
 
 **Key takeaways:**
+
 - Design for idempotency from day one
 - Test more than you implement
 - Audit trails are critical for billing
@@ -710,9 +732,8 @@ Building a unified plan enforcement engine solved three critical problems:
 If you're building subscription billing with Stripe webhooks, consider whether your plan/status updates are consolidated. It's worth the upfront investment.
 
 **Related posts:**
+
 - [Architecting Production Multi-Agent AI Platform: Technical Leadership](https://startaitools.com/posts/architecting-production-multi-agent-ai-platform-technical-leadership/)
 - [Building Production Multi-Agent AI with Vertex AI](https://startaitools.com/posts/building-production-multi-agent-ai-brightstream-vertex-ai/)
 
-
 *Building Hustle, a youth sports stats platform with Firebase, Stripe, and Vertex AI. Follow along as I document the technical decisions and lessons learned.*
-

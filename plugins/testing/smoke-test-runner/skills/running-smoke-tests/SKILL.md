@@ -82,6 +82,7 @@ Execute fast, high-confidence smoke tests that validate critical application fun
 ## Examples
 
 **Shell-based smoke test script:**
+
 ```bash
 #!/bin/bash
 set -e
@@ -110,6 +111,7 @@ echo "Results: $PASS passed, $FAIL failed"
 ```
 
 **Playwright smoke test:**
+
 ```typescript
 import { test, expect } from '@playwright/test';
 

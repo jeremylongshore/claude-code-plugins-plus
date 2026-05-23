@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Install & Auth
 
 ## Overview
+
 Install the Langfuse SDK and configure authentication for LLM observability. Covers both the legacy `langfuse` package (v3) and the modern modular SDK (v4+/v5) built on OpenTelemetry.
 
 ## Prerequisites
+
 - Node.js 18+ or Python 3.9+
 - Package manager (npm, pnpm, or pip)
 - Langfuse account (cloud at https://cloud.langfuse.com or self-hosted)
@@ -39,6 +41,7 @@ Install the Langfuse SDK and configure authentication for LLM observability. Cov
 ### Step 1: Install SDK
 
 **TypeScript/JavaScript (v4+ modular SDK -- recommended):**
+
 ```bash
 set -euo pipefail
 # Core client for prompt management, datasets, scores
@@ -55,11 +58,13 @@ npm install @langfuse/langchain
 ```
 
 **TypeScript/JavaScript (v3 legacy -- single package):**
+
 ```bash
 npm install langfuse
 ```
 
 **Python:**
+
 ```bash
 pip install langfuse
 ```
@@ -192,10 +197,12 @@ print(f"Connected. Trace: {trace.get_trace_url()}")
 | Using pk- key as secret | Keys swapped | Public key starts `pk-lf-`, secret starts `sk-lf-` |
 
 ## Resources
+
 - [TypeScript SDK Setup](https://langfuse.com/docs/observability/sdk/typescript/setup)
 - [Python SDK Setup](https://langfuse.com/docs/sdk/python/decorators)
 - [v3 to v4 Migration Guide](https://langfuse.com/docs/observability/sdk/upgrade-path/js-v3-to-v4)
 - [Self-Hosting Configuration](https://langfuse.com/self-hosting/configuration)
 
 ## Next Steps
+
 After auth is working, proceed to `langfuse-hello-world` for your first traced LLM call.

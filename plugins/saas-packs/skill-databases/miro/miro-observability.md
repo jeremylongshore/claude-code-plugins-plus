@@ -10,6 +10,7 @@ miro-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Miro monitoring and observability
 **Workflow:** Part of the enterprise skill category for Miro integration.
 **Relates to:** Other miro skills in this pack.

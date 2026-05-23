@@ -3,9 +3,11 @@
 # Lindy Prod Checklist
 
 ## Overview
+
 Comprehensive production readiness checklist for Lindy AI deployments.
 
 ## Prerequisites
+
 - Completed development and testing
 - Production Lindy account
 - Deployment infrastructure ready
@@ -13,6 +15,7 @@ Comprehensive production readiness checklist for Lindy AI deployments.
 ## Production Checklist
 
 ### Authentication & Security
+
 ```markdown
 [ ] Production API key generated
 [ ] API key stored in secret manager (not env file)
@@ -23,6 +26,7 @@ Comprehensive production readiness checklist for Lindy AI deployments.
 ```
 
 ### Agent Configuration
+
 ```markdown
 [ ] All agents tested with production-like data
 [ ] Agent instructions reviewed and finalized
@@ -33,6 +37,7 @@ Comprehensive production readiness checklist for Lindy AI deployments.
 ```
 
 ### Monitoring & Observability
+
 ```markdown
 [ ] Logging configured and tested
 [ ] Error alerting set up (PagerDuty/Slack/etc)
@@ -43,6 +48,7 @@ Comprehensive production readiness checklist for Lindy AI deployments.
 ```
 
 ### Performance & Reliability
+
 ```markdown
 [ ] Load testing completed
 [ ] Rate limit handling implemented
@@ -53,6 +59,7 @@ Comprehensive production readiness checklist for Lindy AI deployments.
 ```
 
 ### Compliance & Documentation
+
 ```markdown
 [ ] Data handling documented
 [ ] Privacy review completed
@@ -65,6 +72,7 @@ Comprehensive production readiness checklist for Lindy AI deployments.
 ## Implementation
 
 ### Health Check Endpoint
+
 ```typescript
 // health/lindy.ts
 import { Lindy } from '@lindy-ai/sdk';
@@ -93,6 +101,7 @@ export async function checkLindyHealth(): Promise<HealthStatus> {
 ```
 
 ### Pre-Deployment Validation
+
 ```typescript
 async function preDeploymentCheck(): Promise<boolean> {
   const checks = {
@@ -123,12 +132,14 @@ async function preDeploymentCheck(): Promise<boolean> {
 ```
 
 ## Output
+
 - Complete production checklist
 - Health check implementation
 - Pre-deployment validation script
 - Go/no-go criteria defined
 
 ## Error Handling
+
 | Check | Failure Action | Severity |
 |-------|----------------|----------|
 | API Key | Block deploy | Critical |
@@ -139,6 +150,7 @@ async function preDeploymentCheck(): Promise<boolean> {
 ## Examples
 
 ### Deployment Gate Script
+
 ```bash
 #!/bin/bash
 # deploy-gate.sh
@@ -155,9 +167,11 @@ echo "All checks passed. Proceeding with deployment."
 ```
 
 ## Resources
+
 - [Lindy Production Guide](https://docs.lindy.ai/production)
 - [SLA Information](https://lindy.ai/sla)
 - [Support](https://support.lindy.ai)
 
 ## Next Steps
+
 Proceed to `lindy-upgrade-migration` for version upgrades.

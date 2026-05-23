@@ -10,6 +10,7 @@ fondo-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Fondo security best practices
 **Workflow:** Part of the operations skill category for Fondo integration.
 **Relates to:** Other fondo skills in this pack.

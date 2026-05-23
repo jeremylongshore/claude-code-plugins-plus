@@ -41,11 +41,13 @@ Kling AI offers multiple model versions across video generation, image generatio
 **T2V** = text-to-video, **I2V** = image-to-video
 
 ### Kling v2.5 Turbo (Recommended for Speed)
+
 - 40% faster than v2.0
 - Up to 1080p at 30 FPS
 - Best cost/quality ratio for production pipelines
 
 ### Kling v2.6 (Recommended for Quality)
+
 - Native audio generation (voice, SFX, ambient in one pass)
 - 1080p at 30-48 FPS
 - Set `motion_has_audio: true` for synchronized audio

@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # TwinMind SDK Patterns
 
 ## Overview
+
 Production patterns for TwinMind's AI memory and meeting intelligence REST API. TwinMind captures, organizes, and retrieves contextual memories from conversations and meetings.
 
 ## Prerequisites
+
 - TwinMind API key configured
 - Understanding of REST API patterns
 - Familiarity with memory/context retrieval concepts
@@ -122,6 +124,7 @@ def batch_store_memories(client: TwinMindClient, memories: list, batch_size: int
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401 Unauthorized` | Invalid API key | Verify `TWINMIND_API_KEY` |
@@ -132,6 +135,7 @@ def batch_store_memories(client: TwinMindClient, memories: list, batch_size: int
 ## Examples
 
 ### Full Meeting Workflow
+
 ```python
 client = TwinMindClient()
 # After meeting ends
@@ -146,6 +150,7 @@ for item in insights.get("action_items", []):
 ```
 
 ## Resources
+
 - [TwinMind API](https://docs.twinmind.com)
 
 ## Output

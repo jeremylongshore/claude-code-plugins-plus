@@ -23,6 +23,7 @@ How Claude works with GitHub across different platforms. Use this to set accurat
 **Best for:** Developers who want full control, automation, and the ability to handle complex git operations (rebase, cherry-pick, bisect, etc.).
 
 **How this skill works here:**
+
 - All six modes (setup, save, share, understand, fix, learn) are fully supported
 - Commands are executed directly — the AI runs git commands and shows results
 - Real-time conflict resolution with file editing
@@ -35,6 +36,7 @@ How Claude works with GitHub across different platforms. Use this to set accurat
 **Best for:** Non-technical users, teams that want a guided experience, people building with AI who need version control but don't want to learn git deeply.
 
 **How this skill works here:**
+
 - All six modes supported through the skill interface
 - Setup mode is especially important — many Cowork users are GitHub beginners
 - Save and Share modes abstract away terminal commands
@@ -47,6 +49,7 @@ How Claude works with GitHub across different platforms. Use this to set accurat
 **Best for:** Developers who want AI-assisted coding with git integration in their editor.
 
 **How this skill works here:**
+
 - All six modes work through the terminal
 - The skill complements the editor's built-in git GUI
 - Some operations (like viewing diffs) may be better in the editor's visual interface
@@ -59,6 +62,7 @@ How Claude works with GitHub across different platforms. Use this to set accurat
 **Best for:** Quick help, learning, drafting commit messages or PR descriptions, code review advice on pasted code.
 
 **What the user can do here:**
+
 - Ask for help understanding git concepts
 - Paste error messages and get troubleshooting advice
 - Draft commit messages from described changes
@@ -67,6 +71,7 @@ How Claude works with GitHub across different platforms. Use this to set accurat
 - Learn git through conversation (no hands-on exercises)
 
 **What the user CANNOT do here:**
+
 - Run any git commands
 - Have the AI check their repo status
 - Have the AI resolve conflicts
@@ -77,16 +82,19 @@ How Claude works with GitHub across different platforms. Use this to set accurat
 When the user's platform is known, adapt recommendations:
 
 **Terminal-capable platforms (Claude Code, Cursor, etc.):**
+
 - Run commands directly
 - Show real output
 - Hands-on exercises work fully
 
 **Cowork:**
+
 - Rely on skill abstractions
 - Focus on concepts over commands
 - Guide through the skill interface
 
 **Claude AI (web/app):**
+
 - Teach concepts conversationally
 - Provide commands for the user to copy-paste into their terminal
 - Draft artifacts (commit messages, PR descriptions) the user can use

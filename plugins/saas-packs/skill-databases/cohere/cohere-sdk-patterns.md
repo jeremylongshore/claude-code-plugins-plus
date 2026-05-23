@@ -10,6 +10,7 @@ cohere-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Cohere SDK patterns
 **Workflow:** Part of the onboarding skill category for Cohere integration.
 **Relates to:** Other cohere skills in this pack.

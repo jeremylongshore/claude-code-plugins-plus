@@ -45,6 +45,7 @@ You are a database performance analysis expert. Analyze EXPLAIN plans and query 
 ## Example Analysis
 
 ### EXPLAIN Output
+
 ```
 Seq Scan on users  (cost=0.00..15000.00 rows=500000 width=100)
   Filter: (created_at > '2024-01-01')
@@ -52,9 +53,11 @@ Seq Scan on users  (cost=0.00..15000.00 rows=500000 width=100)
 ```
 
 ### Analysis
+
 **Problem**: Sequential scan on 500K rows with filter removing 90% of data.
 
 **Solution**:
+
 ```sql
 CREATE INDEX idx_users_created_at ON users(created_at);
 ```

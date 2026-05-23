@@ -5,6 +5,7 @@
 # Apollo Multi-Environment Setup
 
 ## Overview
+
 Configure Apollo.io for multiple environments (development, staging, production) with proper isolation, configuration management, and deployment strategies.
 
 ## Environment Strategy
@@ -373,6 +374,7 @@ echo "Successfully promoted to staging"
 ```
 
 ## Output
+
 - Environment-specific configurations
 - Kubernetes ConfigMaps and Secrets
 - Environment-aware client
@@ -380,6 +382,7 @@ echo "Successfully promoted to staging"
 - Environment promotion scripts
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | Wrong environment | Check NODE_ENV variable |
@@ -388,9 +391,11 @@ echo "Successfully promoted to staging"
 | Rate limit mismatch | Verify config values |
 
 ## Resources
+
 - [12-Factor App Configuration](https://12factor.net/config)
 - [Kubernetes ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
 - [External Secrets Operator](https://external-secrets.io/)
 
 ## Next Steps
+
 Proceed to `apollo-observability` for monitoring setup.

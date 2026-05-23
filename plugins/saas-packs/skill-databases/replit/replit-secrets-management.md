@@ -10,6 +10,7 @@ replit-secrets-management/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Replit Secrets for secure environment variable storage with team sharing and rotation policies.
 **Workflow:** Security-first skill - establishes secure credential management before using external services.
 **Relates to:** Required by replit-database-setup, replit-api-integration; informs replit-security-audit.

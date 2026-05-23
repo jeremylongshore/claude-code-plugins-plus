@@ -11,6 +11,7 @@ Automatically generate high-performance gRPC services with Protocol Buffer defin
 ## When to Use This Command
 
 Use `/generate-grpc-service` when you need to:
+
 - Build high-performance microservices with binary protocol
 - Implement real-time bidirectional streaming communication
 - Create strongly-typed service contracts across languages
@@ -19,6 +20,7 @@ Use `/generate-grpc-service` when you need to:
 - Implement efficient mobile/IoT communication protocols
 
 DON'T use this when:
+
 - Building browser-based web applications (limited browser support)
 - Simple REST APIs suffice (gRPC adds complexity)
 - Working with teams unfamiliar with Protocol Buffers
@@ -27,6 +29,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **gRPC with Protocol Buffers v3** as the primary approach because:
+
 - Binary protocol offers 20-30% better performance than JSON
 - Built-in code generation for 10+ languages
 - Native support for streaming in all RPC patterns
@@ -35,12 +38,14 @@ This command implements **gRPC with Protocol Buffers v3** as the primary approac
 - Built-in service discovery and load balancing
 
 **Alternative considered: Apache Thrift**
+
 - Similar performance characteristics
 - Less ecosystem support
 - Fewer language bindings
 - Recommended for Facebook ecosystem
 
 **Alternative considered: GraphQL with subscriptions**
+
 - Better for public APIs
 - More flexible queries
 - Higher overhead
@@ -49,6 +54,7 @@ This command implements **gRPC with Protocol Buffers v3** as the primary approac
 ## Prerequisites
 
 Before running this command:
+
 1. Protocol Buffer compiler (protoc) installed
 2. Language-specific gRPC tools installed
 3. Understanding of Protocol Buffer syntax
@@ -58,23 +64,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Define Service Contract
+
 Create comprehensive .proto files with service definitions and message types.
 
 ### Step 2: Generate Language Bindings
+
 Compile Protocol Buffers to target language code with gRPC plugins.
 
 ### Step 3: Implement Service Logic
+
 Build server-side implementations for all RPC methods.
 
 ### Step 4: Add Interceptors
+
 Implement cross-cutting concerns like auth, logging, and error handling.
 
 ### Step 5: Configure Production Settings
+
 Set up TLS, connection pooling, and load balancing.
 
 ## Output Format
 
 The command generates:
+
 - `proto/service.proto` - Protocol Buffer definitions
 - `server/` - Server implementation with all RPC methods
 - `client/` - Client library with connection management
@@ -885,12 +897,14 @@ main();
 ## Configuration Options
 
 **Server Options**
+
 - `MaxConcurrentStreams`: Limit concurrent streams per connection
 - `MaxReceiveMessageSize`: Maximum message size (default 4MB)
 - `KeepaliveParams`: Connection health monitoring
 - `ConnectionTimeout`: Maximum idle time before closing
 
 **Client Options**
+
 - `LoadBalancingPolicy`: round_robin, pick_first, grpclb
 - `WaitForReady`: Block until server available
 - `Retry`: Automatic retry configuration
@@ -899,6 +913,7 @@ main();
 ## Best Practices
 
 DO:
+
 - Use field numbers consistently for backward compatibility
 - Implement proper error codes and messages
 - Add request deadlines for all RPCs
@@ -907,6 +922,7 @@ DO:
 - Version your services properly
 
 DON'T:
+
 - Change field numbers in proto files
 - Use gRPC for browser clients without proxy
 - Ignore proper error handling

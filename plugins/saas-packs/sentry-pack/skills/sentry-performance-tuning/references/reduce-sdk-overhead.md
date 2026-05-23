@@ -3,6 +3,7 @@
 ## Reduce SDK Overhead
 
 ### Minimal Integrations
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -20,6 +21,7 @@ Sentry.init({
 ```
 
 ### Limit Breadcrumbs
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -28,6 +30,7 @@ Sentry.init({
 ```
 
 ### Batch Events
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,

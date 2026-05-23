@@ -10,6 +10,7 @@ framer-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Framer rate limiting and backoff
 **Workflow:** Part of the operations skill category for Framer integration.
 **Relates to:** Other framer skills in this pack.

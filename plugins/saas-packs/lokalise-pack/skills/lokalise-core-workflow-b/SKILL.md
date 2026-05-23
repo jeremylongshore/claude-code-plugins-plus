@@ -99,7 +99,7 @@ const download = await client.files().download(PROJECT_ID, {
 });
 ```
 
-2. Manage translations — list, update, and mark as reviewed.
+1. Manage translations — list, update, and mark as reviewed.
 
 **SDK — List translations for a language:**
 
@@ -175,7 +175,7 @@ for await (const t of paginateTranslations(client, PROJECT_ID, 673)) {
 }
 ```
 
-3. Leverage translation memory (TM) for auto-suggestions based on previously translated segments.
+1. Leverage translation memory (TM) for auto-suggestions based on previously translated segments.
 
 **SDK — Use TM during upload:**
 
@@ -208,7 +208,7 @@ const download = await client.files().download(PROJECT_ID, {
 });
 ```
 
-4. Manage contributors — add translators and configure language access.
+1. Manage contributors — add translators and configure language access.
 
 **SDK — Add a translator with specific language access:**
 
@@ -268,7 +268,7 @@ await client.contributors().update(CONTRIBUTOR_ID, {
 });
 ```
 
-5. Handle file format differences across JSON flat, JSON nested, XLIFF, and PO.
+1. Handle file format differences across JSON flat, JSON nested, XLIFF, and PO.
 
 **JSON flat (react-i18next default):**
 

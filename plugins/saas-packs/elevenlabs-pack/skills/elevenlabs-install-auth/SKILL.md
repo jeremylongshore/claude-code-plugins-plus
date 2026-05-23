@@ -41,6 +41,7 @@ Set up the ElevenLabs SDK and configure API key authentication. ElevenLabs uses 
 ### Step 1: Install the SDK
 
 **Node.js** (official package: `@elevenlabs/elevenlabs-js`):
+
 ```bash
 npm install @elevenlabs/elevenlabs-js
 # or
@@ -48,6 +49,7 @@ pnpm add @elevenlabs/elevenlabs-js
 ```
 
 **Python** (official package: `elevenlabs`):
+
 ```bash
 pip install elevenlabs
 ```
@@ -63,6 +65,7 @@ echo 'ELEVENLABS_API_KEY=sk_your_key_here' >> .env
 ```
 
 Add to `.gitignore`:
+
 ```gitignore
 .env
 .env.local
@@ -72,6 +75,7 @@ Add to `.gitignore`:
 ### Step 3: Initialize the Client
 
 **TypeScript:**
+
 ```typescript
 import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
 
@@ -85,6 +89,7 @@ const client = new ElevenLabsClient({
 ```
 
 **Python:**
+
 ```python
 import os
 from elevenlabs.client import ElevenLabsClient
@@ -97,6 +102,7 @@ client = ElevenLabsClient(
 ### Step 4: Verify Connection
 
 **TypeScript:**
+
 ```typescript
 async function verifyConnection() {
   // List available voices to confirm auth works
@@ -113,6 +119,7 @@ verifyConnection().catch(console.error);
 ```
 
 **Python:**
+
 ```python
 def verify_connection():
     voices = client.voices.get_all()
@@ -126,6 +133,7 @@ verify_connection()
 ```
 
 **cURL (raw API):**
+
 ```bash
 curl -s https://api.elevenlabs.io/v1/user \
   -H "xi-api-key: ${ELEVENLABS_API_KEY}" | jq '.subscription.tier'

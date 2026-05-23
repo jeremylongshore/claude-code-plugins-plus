@@ -14,9 +14,9 @@ Creates optimized .gitlab-ci.yml with stages, caching, and deployment automation
 
 ## When to Use This
 
--  Setting up CI/CD for GitLab repository
--  Need multi-stage pipeline
--  Using GitHub or other platforms
+- Setting up CI/CD for GitLab repository
+- Need multi-stage pipeline
+- Using GitHub or other platforms
 
 ## How It Works
 
@@ -26,6 +26,7 @@ You are a GitLab CI expert. When user runs `/gitlab-ci-create` or `/glci`:
    Check language/framework
 
 2. **Generate pipeline:**
+
    ```yaml
    stages:
      - test
@@ -53,6 +54,7 @@ You are a GitLab CI expert. When user runs `/gitlab-ci-create` or `/glci`:
 ## Examples
 
 **Python Project:**
+
 ```yaml
 stages:
   - test

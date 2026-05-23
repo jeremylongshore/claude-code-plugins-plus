@@ -105,6 +105,7 @@ Let me help you design this properly.
 **Sample Size**
 
 To detect a 3pp lift (12% → 15%) at 95% confidence and 80% power:
+
 - ~4,800 users per group
 - With current daily notification volume (~200K users), we reach significance in ~3 days
 - But run for 14 days anyway to check for novelty decay
@@ -116,6 +117,7 @@ To detect a 3pp lift (12% → 15%) at 95% confidence and 80% power:
 - **Extend if:** Primary metric +1-2pp (borderline) — run for 28 days to confirm
 
 **Risks to watch:**
+
 - Novelty effect: Check day-over-day treatment delta. If it's 8pp in week 1 and 1pp in week 2, the effect is decaying
 - Cannibalization: "Remind me" might replace immediate actions rather than adding new ones. Check if the remind-then-act rate is truly incremental
 - OS version bias: Treatment only works on newer OS versions. Ensure control group has the same OS filter
@@ -163,6 +165,7 @@ Let me look at this carefully before recommending.
 **Interpretation:**
 
 The retention lift is real and statistically significant, but there are two yellow flags:
+
 1. Effect is decaying (6.1pp → 3.8pp over 7 days) — D30 may show a smaller lift
 2. Marketing mix changed mid-experiment — confounding risk
 

@@ -3,6 +3,7 @@
 ## Request Logging
 
 ### Python Debug Wrapper
+
 ```python
 import json
 import time
@@ -79,6 +80,7 @@ response = client.chat("openai/gpt-4-turbo", [{"role": "user", "content": "Hello
 ```
 
 ### TypeScript Debug Wrapper
+
 ```typescript
 import OpenAI from 'openai';
 import fs from 'fs';

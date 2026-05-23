@@ -10,6 +10,7 @@ salesforce-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Salesforce security best practices
 **Workflow:** Part of the operations skill category for Salesforce integration.
 **Relates to:** Other salesforce skills in this pack.

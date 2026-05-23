@@ -25,6 +25,7 @@ Real `.replit` and `replit.nix` configuration. Real Replit Database, Object Stor
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | What It Does |
 |-------|-------------|
 | `replit-install-auth` | .replit + replit.nix setup, Secrets (AES-256), Replit Auth headers |
@@ -41,6 +42,7 @@ Real `.replit` and `replit.nix` configuration. Real Replit Database, Object Stor
 | `replit-upgrade-migration` | Nix channel upgrades, KV-to-PostgreSQL migration, deployment type changes |
 
 ### Pro Skills (P13-P18)
+
 | Skill | What It Does |
 |-------|-------------|
 | `replit-ci-integration` | GitHub Actions, deploy-on-push, post-deploy health verification |
@@ -51,6 +53,7 @@ Real `.replit` and `replit.nix` configuration. Real Replit Database, Object Stor
 | `replit-reference-architecture` | Production project structure, data layer strategy, platform constraints |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | What It Does |
 |-------|-------------|
 | `replit-multi-env-setup` | Dev/staging/prod with dual databases, branch strategy, secret isolation |
@@ -61,6 +64,7 @@ Real `.replit` and `replit.nix` configuration. Real Replit Database, Object Stor
 | `replit-migration-deep-dive` | Migrate from Heroku/Railway/Docker, database import, post-migration checklist |
 
 ### Flagship+ Skills (X25-X30)
+
 | Skill | What It Does |
 |-------|-------------|
 | `replit-advanced-troubleshooting` | Layer-by-layer diagnosis, Nix build debugging, crash loop analysis, memory leaks |

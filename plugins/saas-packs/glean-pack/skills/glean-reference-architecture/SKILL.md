@@ -24,6 +24,7 @@ compatibility: Designed for Claude Code
 Enterprise search integration architecture for connecting internal knowledge systems to Glean's indexing and search platform. Designed for organizations needing unified search across Confluence, Google Drive, Notion, Slack, Jira, and custom internal tools. Key design drivers: connector reliability for continuous indexing, permission synchronization to enforce source-system ACLs, incremental vs bulk indexing tradeoffs, and low-latency search aggregation across heterogeneous document types.
 
 ## Architecture Diagram
+
 ```
 Source Systems ──→ Connector Framework ──→ Queue (SQS) ──→ Glean Indexing API
 (Confluence, Drive,    (Cloud Run)              ↓            /indexing/documents
@@ -36,6 +37,7 @@ Source Systems ──→ Connector Framework ──→ Queue (SQS) ──→ Gle
 ```
 
 ## Service Layer
+
 ```typescript
 class ConnectorService {
   constructor(private glean: GleanIndexingClient, private cache: CacheLayer) {}
@@ -60,6 +62,7 @@ class ConnectorService {
 ```
 
 ## Caching Strategy
+
 ```typescript
 const CACHE_CONFIG = {
   searchResults:  { ttl: 30,   prefix: 'search' },   // 30s — freshness critical for search
@@ -72,6 +75,7 @@ const CACHE_CONFIG = {
 ```
 
 ## Event Pipeline
+
 ```typescript
 class IndexingPipeline {
   private queue = new Bull('glean-indexing', { redis: process.env.REDIS_URL });
@@ -92,6 +96,7 @@ class IndexingPipeline {
 ```
 
 ## Data Model
+
 ```typescript
 interface SourceDocument  { id: string; datasource: string; title: string; body: string; url: string; author: string; updatedAt: string; acl: Permission[]; }
 interface Permission      { type: 'user' | 'group' | 'domain'; value: string; access: 'read' | 'write'; }
@@ -100,6 +105,7 @@ interface IndexReport     { datasource: string; totalIndexed: number; failures: 
 ```
 
 ## Scaling Considerations
+
 - Deploy one connector instance per datasource to isolate failures and rate limits
 - Schedule bulk reindexing during off-peak hours — Glean indexing API has per-datasource throughput limits
 - Use incremental sync (change cursors) for high-frequency sources (Slack, Jira) to minimize API calls
@@ -107,6 +113,7 @@ interface IndexReport     { datasource: string; totalIndexed: number; failures: 
 - Monitor connector health per datasource; alert on sync lag > 15 minutes for critical sources
 
 ## Error Handling
+
 | Component | Failure Mode | Recovery |
 |-----------|-------------|----------|
 | Connector sync | Source API rate limit | Per-datasource backoff, degrade to hourly bulk sync |
@@ -116,9 +123,11 @@ interface IndexReport     { datasource: string; totalIndexed: number; failures: 
 | Search aggregation | Stale index for one datasource | Degrade gracefully — return results from healthy sources, flag staleness |
 
 ## Resources
+
 - [Glean Developer Portal](https://developers.glean.com/)
 - [Indexing API](https://developers.glean.com/api-info/indexing/getting-started/overview)
 - [Search API](https://developers.glean.com/api/client-api/search/overview)
 
 ## Next Steps
+
 See `glean-deploy-integration`.

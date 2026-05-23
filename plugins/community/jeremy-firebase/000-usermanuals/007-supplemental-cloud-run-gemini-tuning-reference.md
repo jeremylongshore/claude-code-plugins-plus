@@ -17,6 +17,7 @@ Cloud Run is Google's **fully managed platform** for deploying and running conta
 ### Core Philosophy
 
 **Serverless Containers:**
+
 - Deploy any containerized application
 - No infrastructure management required
 - Automatic scaling from zero to thousands of instances
@@ -24,6 +25,7 @@ Cloud Run is Google's **fully managed platform** for deploying and running conta
 - Built-in security and compliance
 
 **Language Agnostic:**
+
 - Supports **any programming language** that can be containerized
 - Source-based deployment for: Go, Node.js, Python, Java, .NET, Ruby
 - Automatic container building following language best practices
@@ -38,6 +40,7 @@ Cloud Run is Google's **fully managed platform** for deploying and running conta
 **Use Case:** Respond to HTTP requests via stable HTTPS endpoints
 
 **Features:**
+
 - Unique HTTPS endpoints per service
 - Automatic TLS certificate management
 - WebSocket, HTTP/2, and gRPC support
@@ -46,6 +49,7 @@ Cloud Run is Google's **fully managed platform** for deploying and running conta
 - Traffic splitting for gradual rollouts
 
 **Example Scenarios:**
+
 - REST APIs
 - Web applications
 - Microservices
@@ -53,6 +57,7 @@ Cloud Run is Google's **fully managed platform** for deploying and running conta
 - Firebase Cloud Functions alternative
 
 **Deployment:**
+
 ```bash
 gcloud run deploy SERVICE_NAME \
     --source . \
@@ -65,6 +70,7 @@ gcloud run deploy SERVICE_NAME \
 **Use Case:** Execute parallelizable tasks to completion, optionally on a schedule
 
 **Features:**
+
 - Run once, or on a schedule (cron)
 - Parallel task execution
 - Automatic retries on failure
@@ -72,6 +78,7 @@ gcloud run deploy SERVICE_NAME \
 - Cost-effective for batch processing
 
 **Example Scenarios:**
+
 - Data processing pipelines
 - Scheduled ETL jobs
 - Batch inference for ML models
@@ -79,6 +86,7 @@ gcloud run deploy SERVICE_NAME \
 - Report generation
 
 **Deployment:**
+
 ```bash
 gcloud run jobs create JOB_NAME \
     --source . \
@@ -92,6 +100,7 @@ gcloud run jobs create JOB_NAME \
 **Use Case:** Handle continuous pull-based workloads
 
 **Features:**
+
 - Long-running processes
 - Pull from Pub/Sub, Kafka, queues
 - Maintain persistent connections
@@ -99,6 +108,7 @@ gcloud run jobs create JOB_NAME \
 - Always-on instances (minimum instance count)
 
 **Example Scenarios:**
+
 - Kafka consumers
 - Pub/Sub message processors
 - Queue workers (Redis, RabbitMQ)
@@ -106,6 +116,7 @@ gcloud run jobs create JOB_NAME \
 - Real-time data ingestion
 
 **Deployment:**
+
 ```bash
 gcloud run workers create WORKER_NAME \
     --source . \
@@ -121,18 +132,21 @@ gcloud run workers create WORKER_NAME \
 ### 1. Unique HTTPS Endpoints
 
 **Automatic Infrastructure:**
+
 - Each service gets a unique, stable HTTPS URL
 - Automatic TLS certificate provisioning and renewal
 - Global load balancing included
 - Custom domain mapping support
 
 **Protocol Support:**
+
 - HTTP/1.1, HTTP/2, HTTP/3
 - WebSocket connections
 - gRPC (binary protocol)
 - Server-Sent Events (SSE)
 
 **Example URL:**
+
 ```
 https://service-name-xyz123-uc.a.run.app
 ```
@@ -140,12 +154,14 @@ https://service-name-xyz123-uc.a.run.app
 ### 2. Auto-Scaling
 
 **Dynamic Scaling:**
+
 - Rapidly adjusts from **zero to thousands** of instances
 - Based on incoming request volume
 - CPU utilization
 - Custom metrics (via Cloud Monitoring)
 
 **Scaling Configuration:**
+
 ```yaml
 apiVersion: serving.knative.dev/v1
 kind: Service
@@ -161,6 +177,7 @@ spec:
 ```
 
 **Scale to Zero:**
+
 - No traffic = no running instances = no cost
 - First request triggers cold start (~1-5 seconds)
 - Keep warm with minimum instances if needed
@@ -168,6 +185,7 @@ spec:
 ### 3. Pay-Per-Use Pricing
 
 **Billing Model:**
+
 - Charge only for **actual usage** (not idle time)
 - CPU and memory billed per 100ms increments
 - Network egress charges apply
@@ -177,6 +195,7 @@ spec:
   - 180,000 GiB-seconds/month
 
 **Cost Optimization:**
+
 - Scale to zero when idle
 - Right-size CPU and memory
 - Use minimum instances sparingly
@@ -185,18 +204,21 @@ spec:
 ### 4. Disposable Containers
 
 **Stateless Design:**
+
 - Each instance has an in-memory filesystem
 - Data does NOT persist across instances
 - Instances can be replaced at any time
 - No guaranteed execution order
 
 **External Storage Required:**
+
 - Use Cloud Storage for files
 - Use Firestore/Cloud SQL for databases
 - Use Memorystore for caching
 - Use Pub/Sub for messaging
 
 **Best Practices:**
+
 ```python
 # ❌ BAD: Store data in local filesystem
 with open('/tmp/user_data.json', 'w') as f:
@@ -213,12 +235,14 @@ blob.upload_from_string(json.dumps(data))
 ### 5. Traffic Management
 
 **Gradual Rollouts:**
+
 - Deploy new revision without sending traffic
 - Split traffic between revisions (e.g., 90% old, 10% new)
 - Monitor metrics and gradually increase traffic
 - Instant rollback if issues detected
 
 **Traffic Splitting Example:**
+
 ```bash
 # Deploy new revision without traffic
 gcloud run deploy SERVICE_NAME --source . --no-traffic
@@ -229,6 +253,7 @@ gcloud run services update-traffic SERVICE_NAME \
 ```
 
 **Use Cases:**
+
 - Canary deployments
 - A/B testing
 - Blue-green deployments
@@ -243,22 +268,26 @@ Cloud Run seamlessly integrates with **Google Cloud services** without managing 
 ### Database Integration
 
 **Cloud SQL:**
+
 - Private VPC connection
 - Unix socket connections
 - Connection pooling built-in
 
 **Firestore:**
+
 - Native SDK support
 - Application Default Credentials
 - No explicit connection management
 
 **AlloyDB:**
+
 - High-performance PostgreSQL
 - Private Service Connect
 
 ### Storage Integration
 
 **Cloud Storage:**
+
 - Upload/download files
 - Signed URLs for temporary access
 - Object lifecycle management
@@ -266,11 +295,13 @@ Cloud Run seamlessly integrates with **Google Cloud services** without managing 
 ### Messaging & Events
 
 **Pub/Sub:**
+
 - Push subscriptions to Cloud Run
 - Pull via Worker Pools
 - Ordered message delivery
 
 **Eventarc:**
+
 - Event-driven architecture
 - Trigger on Cloud Storage events
 - Audit log triggers
@@ -279,23 +310,27 @@ Cloud Run seamlessly integrates with **Google Cloud services** without managing 
 ### AI/ML Integration
 
 **Vertex AI:**
+
 - ADK agent deployment target
 - Gemini API calls
 - Embeddings generation
 - Model inference
 
 **Firebase ML:**
+
 - Custom model deployment
 - AutoML integration
 
 ### Monitoring & Logging
 
 **Cloud Logging:**
+
 - Automatic log ingestion
 - Structured logging support
 - Log-based metrics
 
 **Cloud Monitoring:**
+
 - Request latency metrics
 - Error rates
 - Custom metrics
@@ -323,18 +358,21 @@ adk deploy cloud_run \
 ### Key Parameters
 
 **ADK-Specific:**
+
 - `--session_service_uri`: Vertex AI Sessions service
 - `--memory_service_uri`: Vertex AI Memory Bank
 - `--app_name`: Agent application name
 - `--with_ui`: Enable ADK Web UI for testing
 
 **Cloud Run-Specific:**
+
 - `--allow-unauthenticated`: Public access (testing only)
 - `--no-user-output-enabled`: Disable user output logging
 
 ### Production Configuration
 
 **For production deployments:**
+
 1. **Require authentication**: Replace `--allow-unauthenticated` with `--no-allow-unauthenticated`
 2. **Expose REST API or A2A endpoint** instead of Web UI
 3. **Set resource limits**: `--memory 2Gi --cpu 2`
@@ -348,6 +386,7 @@ adk deploy cloud_run \
 ### What is Supervised Fine-Tuning?
 
 Supervised fine-tuning (SFT) **adapts Gemini models** using labeled datasets to:
+
 - Adjust model weights
 - Minimize prediction differences from actual labels
 - Specialize model behavior for domain-specific tasks
@@ -355,6 +394,7 @@ Supervised fine-tuning (SFT) **adapts Gemini models** using labeled datasets to:
 ### When to Use Fine-Tuning
 
 **Ideal Use Cases:**
+
 - Content differs significantly from model's original training data
 - Prompts not producing expected results consistently
 - Need for specific output formatting
@@ -362,6 +402,7 @@ Supervised fine-tuning (SFT) **adapts Gemini models** using labeled datasets to:
 - Consistent behavioral patterns required
 
 **Not Recommended When:**
+
 - Few-shot prompting works well
 - Simple formatting adjustments needed
 - General-purpose responses sufficient
@@ -373,6 +414,7 @@ Supervised fine-tuning (SFT) **adapts Gemini models** using labeled datasets to:
 ### Current Fine-Tuning Support (November 2025)
 
 **Gemini 2.x Family:**
+
 - Gemini 2.5 Pro
 - Gemini 2.5 Flash
 - Gemini 2.5 Flash-Lite
@@ -390,6 +432,7 @@ Supervised fine-tuning (SFT) **adapts Gemini models** using labeled datasets to:
 **Task:** Generate single-word or phrase responses
 
 **Example:**
+
 ```json
 {
   "contents": [
@@ -400,6 +443,7 @@ Supervised fine-tuning (SFT) **adapts Gemini models** using labeled datasets to:
 ```
 
 **Use Cases:**
+
 - Content moderation
 - Sentiment analysis
 - Intent classification
@@ -410,6 +454,7 @@ Supervised fine-tuning (SFT) **adapts Gemini models** using labeled datasets to:
 **Task:** Follow specific formats (e.g., remove PII, structured summaries)
 
 **Example:**
+
 ```json
 {
   "contents": [
@@ -420,6 +465,7 @@ Supervised fine-tuning (SFT) **adapts Gemini models** using labeled datasets to:
 ```
 
 **Use Cases:**
+
 - Medical record summarization (HIPAA-compliant)
 - Legal document summaries
 - Customer interaction summaries
@@ -429,6 +475,7 @@ Supervised fine-tuning (SFT) **adapts Gemini models** using labeled datasets to:
 **Task:** Return exact substrings from source material
 
 **Example:**
+
 ```json
 {
   "contents": [
@@ -439,6 +486,7 @@ Supervised fine-tuning (SFT) **adapts Gemini models** using labeled datasets to:
 ```
 
 **Use Cases:**
+
 - FAQ systems
 - Document Q&A
 - Contract analysis
@@ -448,6 +496,7 @@ Supervised fine-tuning (SFT) **adapts Gemini models** using labeled datasets to:
 **Task:** Implement specific personas or behavioral patterns
 
 **Example:**
+
 ```json
 {
   "contents": [
@@ -458,6 +507,7 @@ Supervised fine-tuning (SFT) **adapts Gemini models** using labeled datasets to:
 ```
 
 **Use Cases:**
+
 - Brand-specific chatbots
 - Character-based interactions
 - Industry-specific assistants
@@ -469,6 +519,7 @@ Supervised fine-tuning (SFT) **adapts Gemini models** using labeled datasets to:
 ### Dataset Limitations (Gemini 2.5 Flash/Flash-Lite)
 
 **Size Limits:**
+
 - **Maximum training tokens per example:** 131,072 (128K context)
 - **Maximum validation dataset:** 5,000 examples
 - **Maximum file size:** 1GB (JSONL format)
@@ -477,6 +528,7 @@ Supervised fine-tuning (SFT) **adapts Gemini models** using labeled datasets to:
   - Multimodal: 300,000 examples
 
 **Format Requirements:**
+
 - JSONL (JSON Lines) format
 - One example per line
 - Each example must follow the schema
@@ -484,15 +536,18 @@ Supervised fine-tuning (SFT) **adapts Gemini models** using labeled datasets to:
 ### Adapter Sizes
 
 **Gemini 2.5 Flash/Flash-Lite:**
+
 - Available sizes: 1, 2, 4, 8, 16
 - Larger adapters = more capacity but slower training
 - Smaller adapters = faster training but less adaptation
 
 **Gemini 2.5 Pro:**
+
 - Available sizes: 1, 2, 4, 8
 - Same trade-offs as Flash
 
 **Recommendation:**
+
 - Start with adapter size 4
 - Increase if underfitting
 - Decrease if overfitting or slow training
@@ -500,6 +555,7 @@ Supervised fine-tuning (SFT) **adapts Gemini models** using labeled datasets to:
 ### Training Data Format
 
 **Required Schema:**
+
 ```json
 {
   "contents": [
@@ -516,6 +572,7 @@ Supervised fine-tuning (SFT) **adapts Gemini models** using labeled datasets to:
 ```
 
 **Multi-Turn Conversations:**
+
 ```json
 {
   "contents": [
@@ -528,6 +585,7 @@ Supervised fine-tuning (SFT) **adapts Gemini models** using labeled datasets to:
 ```
 
 **Multimodal Examples:**
+
 ```json
 {
   "contents": [
@@ -649,11 +707,13 @@ print(response.text)
 ### Integrated Evaluation
 
 **Gen AI Evaluation Service:**
+
 - Automatic evaluation for supported models and regions
 - Track quality metrics over time
 - Compare base model vs. tuned model performance
 
 **Evaluation Metrics:**
+
 - Accuracy
 - Precision/Recall (classification tasks)
 - ROUGE scores (summarization)
@@ -663,11 +723,13 @@ print(response.text)
 ### Deployment Options
 
 **Inference Pricing:**
+
 - Tuned models use **same pricing as base models**
 - No additional inference cost
 - Pay for tuning job compute time only
 
 **Deployment Methods:**
+
 1. **Direct API calls** via Vertex AI SDK
 2. **Cloud Run deployment** for scalable serving
 3. **Agent Engine integration** for agent-based apps
@@ -678,6 +740,7 @@ print(response.text)
 > "Models aren't trained to handle controlled generation during tuning."
 
 **What This Means:**
+
 - Don't use JSON mode with tuned models
 - Don't apply strict output constraints at inference
 - Train the model to produce desired format instead
@@ -742,26 +805,31 @@ print(response.text)
 ## Related jeremy-* Plugins
 
 ### jeremy-vertex-engine
+
 - Vertex AI Agent Engine deployment and management
 - Runtime configuration validation
 - Production readiness checks
 
 ### jeremy-vertex-validator
+
 - Validate fine-tuning datasets
 - Check JSONL format compliance
 - Production deployment validation
 
 ### jeremy-genkit-pro
+
 - Firebase Genkit integration with tuned Gemini models
 - Cloud Run deployment automation
 - RAG with fine-tuned models
 
 ### jeremy-vertex-terraform
+
 - Terraform infrastructure for tuning jobs
 - Automated pipeline deployment
 - Resource provisioning
 
 ### jeremy-adk-orchestrator
+
 - ADK agents with fine-tuned Gemini models
 - Multi-agent systems on Cloud Run
 - Memory Bank integration
@@ -771,16 +839,19 @@ print(response.text)
 ## Quick Reference
 
 ### Cloud Run Deployment
+
 ```bash
 gcloud run deploy SERVICE_NAME --source . --region us-central1
 ```
 
 ### ADK to Cloud Run
+
 ```bash
 adk deploy cloud_run --project PROJECT_ID --region REGION --service_name SERVICE
 ```
 
 ### Start Fine-Tuning Job
+
 ```python
 tuning_job = vertex_client.tunings.tune(
     base_model="gemini-2.5-flash",
@@ -790,12 +861,14 @@ tuning_job = vertex_client.tunings.tune(
 ```
 
 ### Check Tuning Job Status
+
 ```python
 job = vertex_client.tunings.get(name=tuning_job.name)
 print(job.state)
 ```
 
 ### Query Tuned Model
+
 ```python
 response = vertex_client.models.generate_content(
     model=tuned_model_endpoint,

@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD024 -->
+
 # Detailed Reference
 
 ## Overview
@@ -31,6 +33,7 @@ This skill covers implementing request-based routing logic to select optimal mod
 ## Basic Routing Strategies
 
 ### Content-Based Routing
+
 ```python
 def route_by_content(prompt: str) -> str:
     """Route to appropriate model based on content analysis."""
@@ -61,6 +64,7 @@ def chat_routed(prompt: str, **kwargs):
 ```
 
 ### Token-Length Routing
+
 ```python
 def estimate_tokens(text: str) -> int:
     """Rough token estimate (4 chars = 1 token)."""
@@ -90,6 +94,7 @@ def route_by_length(prompt: str, expected_output: int = 500) -> str:
 ## Rule-Based Router
 
 ### Configurable Router
+
 ```python
 from dataclasses import dataclass
 from typing import Callable, Optional
@@ -152,6 +157,7 @@ model = router.route("Write a Python function to sort a list")
 ## Cost-Aware Routing
 
 ### Budget Router
+
 ```python
 MODEL_COSTS = {
     "anthropic/claude-3-opus": 15.0,      # $/M tokens
@@ -205,6 +211,7 @@ model = budget_router.route("Hello", expected_tokens=1000)
 ## Latency-Aware Routing
 
 ### Fast Response Router
+
 ```python
 import time
 from statistics import mean
@@ -262,6 +269,7 @@ class LatencyRouter:
 ## User-Based Routing
 
 ### Tier-Based Routing
+
 ```python
 USER_TIERS = {
     "free": ["meta-llama/llama-3.1-8b-instruct", "mistralai/mistral-7b-instruct"],
@@ -292,6 +300,7 @@ def chat_for_user(prompt: str, user_tier: str, task_type: str = "general"):
 ## A/B Testing Router
 
 ### Experiment Router
+
 ```python
 import random
 import hashlib
@@ -346,6 +355,7 @@ model, variant = ab_router.route("sonnet_vs_gpt4", user_id="user123")
 ## Configuration-Driven Routing
 
 ### YAML Rules Config
+
 ```yaml
 # routing-rules.yaml
 routing:
@@ -377,6 +387,7 @@ routing:
 ```
 
 ### Load and Apply Rules
+
 ```python
 import yaml
 import re
@@ -414,6 +425,7 @@ def apply_rules(prompt: str, config: dict) -> str:
 ## Output
 
 Successful execution produces:
+
 - Working OpenRouter integration
 - Verified API connectivity
 - Example responses demonstrating functionality
@@ -421,6 +433,7 @@ Successful execution produces:
 ## Error Handling
 
 Common errors and solutions:
+
 1. **401 Unauthorized**: Check API key format (must start with `sk-or-`)
 2. **429 Rate Limited**: Implement exponential backoff
 3. **500 Server Error**: Retry with backoff, check OpenRouter status page
@@ -477,6 +490,7 @@ print(chat("What is 2+2?"))                   # gpt-3.5-turbo (default)
 ## Output
 
 Successful execution produces:
+
 - Working OpenRouter integration
 - Verified API connectivity
 - Example responses demonstrating functionality
@@ -484,6 +498,7 @@ Successful execution produces:
 ## Error Handling
 
 Common errors and solutions:
+
 1. **401 Unauthorized**: Check API key format (must start with `sk-or-`)
 2. **429 Rate Limited**: Implement exponential backoff
 3. **500 Server Error**: Retry with backoff, check OpenRouter status page

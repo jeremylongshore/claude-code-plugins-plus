@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Cost Tuning
 
 ## Overview
+
 Optimize Deepgram API costs through smart model selection, audio preprocessing to reduce billable minutes, usage monitoring via the Deepgram API, budget guardrails, and feature-aware cost estimation. Deepgram bills per audio minute processed.
 
 ## Deepgram Pricing (2026)
@@ -41,6 +42,7 @@ Optimize Deepgram API costs through smart model selection, audio preprocessing t
 | Intelligence | Summarize/Topics/Sentiment | Included with STT | No extra cost |
 
 **Add-on costs:**
+
 - Diarization: +$0.0044/min
 - Multichannel: billed per channel
 
@@ -301,6 +303,7 @@ function estimateJobCost(params: {
 ```
 
 ## Output
+
 - Budget-aware transcription with auto-blocking
 - Audio preprocessing to reduce billable minutes
 - Usage dashboard via Deepgram API
@@ -320,6 +323,7 @@ function estimateJobCost(params: {
 | Batch pre-recorded vs streaming | 37% ($0.0043 vs $0.0059) | Medium |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Budget exceeded | No controls | Enable budget check before transcription |
@@ -328,6 +332,7 @@ function estimateJobCost(params: {
 | Cost spike | Batch job without limits | Set concurrency limits + budget cap |
 
 ## Resources
+
 - [Deepgram Pricing](https://deepgram.com/pricing)
 - [Usage API](https://developers.deepgram.com/reference/get-usage)
 - [Cost Optimization Guide](https://developers.deepgram.com/docs/cost-optimization)

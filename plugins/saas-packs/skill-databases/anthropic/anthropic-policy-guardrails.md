@@ -10,6 +10,7 @@ anthropic-policy-guardrails/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Anthropic policy enforcement
 **Workflow:** Part of the advanced skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

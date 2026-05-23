@@ -3,6 +3,7 @@
 ## Performance Diagnostics
 
 ### Checking Performance
+
 ```
 1. Process Explorer
    Help > Process Explorer
@@ -23,6 +24,7 @@
 ```
 
 ### Common Performance Issues
+
 ```
 Symptoms → Likely Cause:
 

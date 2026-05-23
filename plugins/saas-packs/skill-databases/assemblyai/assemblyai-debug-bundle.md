@@ -10,6 +10,7 @@ assemblyai-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect AssemblyAI debug evidence for support
 **Workflow:** Part of the operations skill category for AssemblyAI integration.
 **Relates to:** Other assemblyai skills in this pack.

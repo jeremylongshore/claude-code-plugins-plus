@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD024 -->
+
 # Detailed Reference
 
 ## Overview
@@ -31,6 +33,7 @@ This skill covers advanced routing patterns including A/B testing, gradual rollo
 ## Intelligent Model Selection
 
 ### Multi-Criteria Router
+
 ```python
 from dataclasses import dataclass
 from typing import Callable, Optional
@@ -164,6 +167,7 @@ router = IntelligentRouter()
 ```
 
 ### Task Detection
+
 ```python
 def detect_task_type(prompt: str) -> str:
     """Analyze prompt to determine task type."""
@@ -241,6 +245,7 @@ def auto_route(prompt: str, **kwargs) -> str:
 ## Cost-Quality Optimization
 
 ### Adaptive Quality Router
+
 ```python
 class AdaptiveQualityRouter:
     """Adjust model quality based on request importance."""
@@ -280,6 +285,7 @@ adaptive_router = AdaptiveQualityRouter()
 ```
 
 ### Budget-Aware Routing
+
 ```python
 class BudgetRouter:
     """Route while respecting budget constraints."""
@@ -326,6 +332,7 @@ budget_router = BudgetRouter(daily_budget=50.0)
 ## Cascading Router
 
 ### Try Cheap, Fall Back to Premium
+
 ```python
 class CascadeRouter:
     """Try cheaper model first, escalate if needed."""
@@ -380,6 +387,7 @@ response, used_model = cascade.chat("What is 2+2?")
 ## Context-Aware Routing
 
 ### Conversation History Router
+
 ```python
 class ConversationRouter:
     """Route based on conversation state."""
@@ -424,6 +432,7 @@ def chat_multi_turn(messages: list, **kwargs):
 ## A/B Testing Router
 
 ### Experiment-Driven Selection
+
 ```python
 import random
 import hashlib
@@ -515,6 +524,7 @@ ab_router.add_experiment(
 ## Output
 
 Successful execution produces:
+
 - Working OpenRouter integration
 - Verified API connectivity
 - Example responses demonstrating functionality
@@ -522,6 +532,7 @@ Successful execution produces:
 ## Error Handling
 
 Common errors and solutions:
+
 1. **401 Unauthorized**: Check API key format (must start with `sk-or-`)
 2. **429 Rate Limited**: Implement exponential backoff
 3. **500 Server Error**: Retry with backoff, check OpenRouter status page
@@ -585,6 +596,7 @@ print(routed_complete("Analyze tradeoffs between microservices and monoliths"))
 ## Output
 
 Successful execution produces:
+
 - Working OpenRouter integration
 - Verified API connectivity
 - Example responses demonstrating functionality
@@ -592,6 +604,7 @@ Successful execution produces:
 ## Error Handling
 
 Common errors and solutions:
+
 1. **401 Unauthorized**: Check API key format (must start with `sk-or-`)
 2. **429 Rate Limited**: Implement exponential backoff
 3. **500 Server Error**: Retry with backoff, check OpenRouter status page

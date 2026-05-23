@@ -17,18 +17,21 @@ These failures are silent until a customer notices. A campervan retailer with tw
 ## Target Users
 
 ### Persona 1: Integration Engineer (Ravi)
+
 - **Role**: Builds and operates a Podium webhook receiver that ingests call transcripts, webchat events, and review notifications for a single SMB.
 - **Goals**: Zero forged events processed; zero duplicate side effects; every failed event recoverable from the DLQ; batch-ordering edge cases handled by construction not by post-incident patches.
 - **Pain Points**: The previous receiver accepted any POST and a contractor's penetration test created 200 phantom contacts in 3 minutes; the retry storm during a Redis outage processed every call transcript five times and exhausted the AI context budget for the day.
 - **Technical Level**: High (FastAPI/asyncio fluent, has shipped HMAC verification before, comfortable with Redis idempotency patterns).
 
 ### Persona 2: Security Engineer (Priya)
+
 - **Role**: Reviews and signs off on the webhook integration before it goes to prod. Owns the threat model for inbound side-channel traffic.
 - **Goals**: Constant-time HMAC compare; replay window enforcement; secret stored in a real secret store with rotation policy; audit trail for every rejected signature; no logging of request bodies for failed signatures (attacker probing).
 - **Pain Points**: Previous integrations used `==` for signature compare; a junior engineer caught it in review but only because they happened to remember the timing-attack class. There is no automated guard.
 - **Technical Level**: High (threat-modeling background, fluent in OWASP API Top 10, comfortable arguing with developers about provably-safe primitives).
 
 ### Persona 3: On-Call SRE (Jordan)
+
 - **Role**: On-call for the Podium-integrated service. Does not own the receiver code but must respond when it pages at 2am.
 - **Goals**: A runbook for draining the DLQ after a handler bug is patched; clear signal on whether Podium-side or receiver-side is the root cause; ability to replay events without re-firing the ones that already succeeded.
 - **Pain Points**: Previous outages required `grep`-ing log archives for raw payloads because there was no DLQ; replays double-fired half the events because there was no dedup cache covering replays.
@@ -37,63 +40,75 @@ These failures are silent until a customer notices. A campervan retailer with tw
 ## User Stories
 
 ### US-1: HMAC-SHA256 signature verification on the raw body (P0)
+
 **As** an integration engineer,
 **I want** every inbound webhook verified against the signing secret using HMAC-SHA256 over the raw request body,
 **So that** forged POSTs are rejected with 401 before any handler logic runs.
 
 **Acceptance Criteria:**
+
 - Signature is computed over the raw bytes of the body, never the re-encoded JSON.
 - Missing signature header returns 401 without parsing the body.
 - Invalid signature returns 401; the body is NOT logged (attacker probing).
 - Verification uses `hmac.compare_digest`, never `==`.
 
 ### US-2: Replay-attack window enforcement (P0)
+
 **As** a security engineer,
 **I want** every event's signed timestamp checked against a 5-minute window,
 **So that** an attacker replaying a captured-off-the-wire signed event cannot keep firing it forever.
 
 **Acceptance Criteria:**
+
 - Window is configurable (default 300 seconds).
 - Both past-skew and future-skew are bounded by the window.
 - Failed window check returns 401 (same response code as signature failure — does not leak the difference).
 
 ### US-3: Idempotent dedup with 24h TTL (P0)
+
 **As** an integration engineer,
 **I want** every event_id atomically claimed in Redis with a 24-hour TTL,
 **So that** Podium's retry-on-5xx for up to 24 hours never causes a duplicate side effect.
 
 **Acceptance Criteria:**
+
 - Claim uses `SET NX EX 86400` (atomic check-and-set).
 - Duplicate event returns 200 with `status: "duplicate"` — Podium stops retrying.
 - TTL is exactly 86400 seconds (24h Podium retry ceiling).
 - In-memory fallback exists for dev when Redis is unavailable.
 
 ### US-4: Dead-letter queue persistence before 5xx (P0)
+
 **As** an on-call SRE,
 **I want** every handler exception to persist the raw signed payload to a DLQ before the response returns 5xx,
 **So that** I can replay the event after the handler bug is fixed, independent of Podium's retry clock.
 
 **Acceptance Criteria:**
+
 - DLQ entry contains raw body, signature header, event_id, exception class + message, received_at timestamp.
 - DLQ persist happens before the response is sent — failure to persist is itself logged and paged.
 - DLQ backend is pluggable: Redis list (default), SQLite, append-only JSONL.
 
 ### US-5: Batch event ordering by `occurred_at` (P1)
+
 **As** an integration engineer,
 **I want** events within a batch dispatched in `occurred_at` ascending order,
 **So that** `conversation.deleted` never runs before `conversation.created` within a single delivery.
 
 **Acceptance Criteria:**
+
 - Batch sort uses `(occurred_at, event_id)` as the key for stable ordering.
 - Cross-batch out-of-order events that violate a precondition are deferred to the DLQ with `reason: "out_of_order_*"`.
 - Replay logic from the DLQ re-attempts deferred events after their precondition has been satisfied.
 
 ### US-6: Constant-time HMAC compare (P0)
+
 **As** a security engineer,
 **I want** signature comparison done with `hmac.compare_digest`,
 **So that** the receiver does not leak the signature byte-by-byte via response latency.
 
 **Acceptance Criteria:**
+
 - All signature compares route through a single `verify_signature()` function.
 - That function uses `hmac.compare_digest`, never `==`.
 - A pre-commit grep gate fails the build if `==` appears within 3 lines of `hmac` or `signature` in source.

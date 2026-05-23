@@ -10,6 +10,7 @@ guidewire-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Guidewire security best practices
 **Workflow:** Part of the operations skill category for Guidewire integration.
 **Relates to:** Other guidewire skills in this pack.

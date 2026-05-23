@@ -28,14 +28,18 @@ Comprehensive SQL injection vulnerability detection with pattern matching, conte
 ## Detection Methods
 
 ### 1. Code Pattern Analysis
+
 Scans for dangerous patterns:
+
 - String concatenation in queries
 - Unsafe variable interpolation
 - Dynamic query construction
 - Missing parameterization
 
 ### 2. Input Vector Analysis
+
 Checks all input sources:
+
 - GET/POST parameters
 - HTTP headers
 - Cookies
@@ -43,7 +47,9 @@ Checks all input sources:
 - GraphQL variables
 
 ### 3. Context Analysis
+
 Understands query context:
+
 - WHERE clause injection
 - ORDER BY injection
 - LIMIT injection
@@ -54,6 +60,7 @@ Understands query context:
 ## Common Vulnerabilities
 
 ### Classic SQL Injection
+
 ```javascript
 // VULNERABLE
 const query = `SELECT * FROM users WHERE username='${username}'`;
@@ -69,6 +76,7 @@ db.query(query, [username]);
 ```
 
 ### Second-Order SQL Injection
+
 ```javascript
 // VULNERABLE
 app.post('/register', (req, res) => {
@@ -92,6 +100,7 @@ Use parameterized queries for all database interactions
 ```
 
 ### ORM Misuse
+
 ```javascript
 // VULNERABLE (Sequelize)
 User.findAll({
@@ -110,6 +119,7 @@ User.findAll({
 ```
 
 ### Blind SQL Injection
+
 ```javascript
 // VULNERABLE
 const query = `SELECT * FROM products WHERE id=${id}`;
@@ -262,22 +272,26 @@ CRITICAL VULNERABILITIES
 ## Database-Specific Exploits
 
 ### MySQL
+
 - UNION SELECT attacks
 - INTO OUTFILE file writes
 - LOAD_FILE() reads
 - Blind injection with SLEEP()
 
 ### PostgreSQL
+
 - COPY TO PROGRAM command execution
 - pg_read_file() arbitrary file reads
 - Large object manipulation
 
 ### SQL Server
+
 - xp_cmdshell command execution
 - OPENROWSET file access
 - Linked server attacks
 
 ### Oracle
+
 - UTL_FILE file operations
 - UTL_HTTP SSRF attacks
 - Java stored procedures
@@ -285,6 +299,7 @@ CRITICAL VULNERABILITIES
 ## Prevention Best Practices
 
 1. **Use Parameterized Queries**
+
    ```javascript
    // Node.js (mysql2)
    db.execute('SELECT * FROM users WHERE id = ?', [userId]);

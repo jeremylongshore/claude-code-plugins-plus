@@ -10,6 +10,7 @@ exa-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply security best practices for API key management, secrets rotation, and secure request handling in Exa integrations.
 **Workflow:** Security hardening skill - essential before production deployment.
 **Relates to:** Follows exa-install-auth; precedes exa-prod-checklist

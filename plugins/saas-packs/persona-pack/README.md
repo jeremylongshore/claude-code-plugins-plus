@@ -17,6 +17,7 @@ Persona is an identity verification platform for KYC/AML compliance. This pack c
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `persona-install-auth` | Configure API keys (`persona_sandbox_*` / `persona_production_*`), set up Bearer auth |
@@ -33,6 +34,7 @@ Persona is an identity verification platform for KYC/AML compliance. This pack c
 | `persona-upgrade-migration` | API version upgrades, deprecated field migration |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `persona-ci-integration` | GitHub Actions with sandbox API testing, webhook simulation |

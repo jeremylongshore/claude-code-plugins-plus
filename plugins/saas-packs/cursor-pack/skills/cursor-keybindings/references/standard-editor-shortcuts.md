@@ -3,6 +3,7 @@
 ## Standard Editor Shortcuts
 
 ### File Operations
+
 | Action | Mac | Windows/Linux |
 |--------|-----|---------------|
 | New File | Cmd+N | Ctrl+N |
@@ -13,6 +14,7 @@
 | Reopen Closed | Cmd+Shift+T | Ctrl+Shift+T |
 
 ### Navigation
+
 | Action | Mac | Windows/Linux |
 |--------|-----|---------------|
 | Quick Open | Cmd+P | Ctrl+P |
@@ -24,6 +26,7 @@
 | Command Palette | Cmd+Shift+P | Ctrl+Shift+P |
 
 ### Editing
+
 | Action | Mac | Windows/Linux |
 |--------|-----|---------------|
 | Cut Line | Cmd+X | Ctrl+X |
@@ -36,6 +39,7 @@
 | Block Comment | Cmd+Shift+/ | Ctrl+Shift+/ |
 
 ### Multi-Cursor
+
 | Action | Mac | Windows/Linux |
 |--------|-----|---------------|
 | Add Cursor | Alt+Click | Alt+Click |

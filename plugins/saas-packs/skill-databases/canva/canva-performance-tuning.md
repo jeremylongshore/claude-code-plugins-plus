@@ -10,6 +10,7 @@ canva-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Canva API performance
 **Workflow:** Part of the cicd skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

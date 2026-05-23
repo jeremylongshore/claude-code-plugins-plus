@@ -27,6 +27,7 @@ Set up comprehensive infrastructure metrics collection for performance monitorin
 ## Output
 
 Provide:
+
 - Metrics collection agent configuration
 - Infrastructure inventory
 - Collection endpoint setup

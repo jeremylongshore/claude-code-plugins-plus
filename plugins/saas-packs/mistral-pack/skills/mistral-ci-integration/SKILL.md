@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral CI Integration
 
 ## Overview
+
 Integrate Mistral AI validation into CI/CD pipelines: prompt regression tests, model response quality checks, cost estimation in PR comments, and deployment gates for prompt changes. Uses GitHub Actions with `MISTRAL_API_KEY` stored as a repository secret.
 
 ## Prerequisites
+
 - `MISTRAL_API_KEY` stored as GitHub repository secret
 - GitHub Actions configured
 - Test framework (Vitest recommended)
@@ -210,6 +212,7 @@ jobs:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Tests fail in CI | Missing API key secret | Add `MISTRAL_API_KEY` to repo Settings > Secrets |
@@ -220,6 +223,7 @@ jobs:
 ## Examples
 
 ### Minimal Smoke Test
+
 ```yaml
 - name: Mistral smoke test
   env:
@@ -233,10 +237,12 @@ jobs:
 ```
 
 ## Resources
+
 - [Mistral API Reference](https://docs.mistral.ai/api/)
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions)
 
 ## Output
+
 - GitHub Actions workflow for prompt testing
 - Regression test suite with deterministic assertions
 - Cost estimation in PR summaries

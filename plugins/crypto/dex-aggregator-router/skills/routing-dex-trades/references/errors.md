@@ -11,12 +11,15 @@ Common issues and solutions for the DEX Aggregator Router.
 **Cause**: Exceeded aggregator API rate limits
 
 **Solution**:
+
 - Wait 60 seconds before retrying
 - Set up API keys for higher limits:
+
   ```bash
   export ONEINCH_API_KEY=your-key  # 5 req/sec vs 1 req/sec
   export ZEROX_API_KEY=your-key    # 10 req/sec vs 3 req/sec
   ```
+
 - The router automatically uses fallback aggregators when one is rate-limited
 
 ### Quote Not Found
@@ -26,6 +29,7 @@ Common issues and solutions for the DEX Aggregator Router.
 **Cause**: Token pair not supported or insufficient liquidity
 
 **Solution**:
+
 - Verify token symbols are correct (ETH, USDC, not eth, usdc)
 - Check if tokens exist on the selected chain
 - Try major pairs first (ETH/USDC, ETH/WBTC)
@@ -38,11 +42,14 @@ Common issues and solutions for the DEX Aggregator Router.
 **Cause**: Invalid or expired API key
 
 **Solution**:
+
 - Regenerate API key from provider dashboard
 - Verify environment variable is set correctly:
+
   ```bash
   echo $ONEINCH_API_KEY  # Should show your key
   ```
+
 - Check API key hasn't been revoked
 
 ## Network Errors
@@ -54,6 +61,7 @@ Common issues and solutions for the DEX Aggregator Router.
 **Cause**: Network issues or aggregator service down
 
 **Solution**:
+
 - Check your internet connection
 - Verify aggregator status pages:
   - 1inch: https://status.1inch.io/
@@ -67,7 +75,9 @@ Common issues and solutions for the DEX Aggregator Router.
 **Cause**: System SSL certificates outdated
 
 **Solution**:
+
 - Update SSL certificates:
+
   ```bash
   # Ubuntu/Debian
   sudo apt-get update && sudo apt-get install ca-certificates
@@ -85,6 +95,7 @@ Common issues and solutions for the DEX Aggregator Router.
 **Cause**: Quote validity window (30s) exceeded
 
 **Solution**:
+
 - Re-fetch quote immediately before execution
 - Don't cache quotes for more than 30 seconds
 - Use `--no-cache` flag for fresh quotes
@@ -96,11 +107,14 @@ Common issues and solutions for the DEX Aggregator Router.
 **Cause**: Token symbol not in our mapping
 
 **Solution**:
+
 - Use contract address instead of symbol:
+
   ```bash
   python dex_router.py 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 \
                        0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 1.0
   ```
+
 - Verify token contract on Etherscan
 
 ### Insufficient Liquidity
@@ -110,6 +124,7 @@ Common issues and solutions for the DEX Aggregator Router.
 **Cause**: Trade size exceeds available liquidity
 
 **Solution**:
+
 - Reduce trade amount
 - Use `--split` to distribute across multiple DEXs
 - Try a different token pair with more liquidity
@@ -124,6 +139,7 @@ Common issues and solutions for the DEX Aggregator Router.
 **Cause**: Non-numeric or negative amount provided
 
 **Solution**:
+
 - Use decimal format: `1.5` not `1,5`
 - Avoid scientific notation
 - Ensure positive values only
@@ -135,10 +151,13 @@ Common issues and solutions for the DEX Aggregator Router.
 **Cause**: Complex route or congested network
 
 **Solution**:
+
 - Use `--gas-price` to set manually:
+
   ```bash
   python dex_router.py ETH USDC 1.0 --gas-price 50
   ```
+
 - Check current gas at https://etherscan.io/gastracker
 
 ## Chain Errors
@@ -150,6 +169,7 @@ Common issues and solutions for the DEX Aggregator Router.
 **Cause**: Selected chain not available for aggregator
 
 **Solution**:
+
 - Verify chain is supported:
   - 1inch: Ethereum, Arbitrum, Polygon, Optimism
   - Paraswap: Ethereum, Arbitrum, Polygon, Optimism
@@ -163,6 +183,7 @@ Common issues and solutions for the DEX Aggregator Router.
 **Cause**: Token address is for different chain
 
 **Solution**:
+
 - Use chain-specific token addresses
 - ETH is native on Ethereum, but needs WETH contract on L2s
 - Check token addresses per chain on CoinGecko

@@ -10,6 +10,7 @@ salesloft-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Salesloft SDK upgrades
 **Workflow:** Part of the operations skill category for Salesloft integration.
 **Relates to:** Other salesloft skills in this pack.

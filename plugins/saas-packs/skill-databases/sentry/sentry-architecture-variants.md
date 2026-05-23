@@ -10,6 +10,7 @@ sentry-architecture-variants/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Sentry architecture patterns for different application types including monoliths, microservices, serverless, hybrid, event-driven, and multi-tenant architectures.
 **Workflow:** Reference when designing Sentry integration for specific application architectures. Provides patterns appropriate for each type.
 **Relates to:** Works with `sentry-reference-architecture` for overall design. Connects to `sentry-multi-env-setup` for environments.

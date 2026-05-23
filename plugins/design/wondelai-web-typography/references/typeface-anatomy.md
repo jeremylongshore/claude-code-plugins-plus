@@ -122,12 +122,14 @@ Think of it like: typeface is the song, font is the MP3 file.
 A complete type family for professional use should include:
 
 ### Essential
+
 - [ ] Regular (400 weight)
 - [ ] Bold (700 weight)
 - [ ] Regular Italic
 - [ ] Bold Italic
 
 ### Ideal
+
 - [ ] Light (300)
 - [ ] Medium (500)
 - [ ] Semibold (600)

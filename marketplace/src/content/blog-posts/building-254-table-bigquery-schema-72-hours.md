@@ -82,6 +82,7 @@ The architectural breakthrough was implementing an **Export Gateway Pattern** th
 ```
 
 This pattern ensures:
+
 - **No direct database access** from scrapers
 - **Single exit point** for all collected data
 - **Schema validation** before BigQuery import
@@ -391,6 +392,7 @@ if __name__ == "__main__":
 After 72 hours of development and deployment, here are the production metrics:
 
 ### BigQuery Statistics
+
 ```
 Total Tables:           254 (266 including system tables)
 Total Rows:             47.3 million
@@ -401,6 +403,7 @@ Validation Latency:     < 100ms per batch
 ```
 
 ### Data Pipeline Performance
+
 ```
 ┌──────────────────────┬──────────────┬──────────────┐
 │ Metric               │ Target       │ Achieved     │
@@ -511,12 +514,15 @@ echo "⏰ Latest Import: $LATEST"
 ## Best Practices for Large-Scale BigQuery Deployments
 
 ### 1. Use NDJSON for Imports
+
 Newline-delimited JSON is BigQuery's preferred format. It's streamable, compressible, and handles nested data well.
 
 ### 2. Implement Idempotent Imports
+
 Use `WRITE_TRUNCATE` disposition to ensure imports are repeatable without duplicating data.
 
 ### 3. Partition and Cluster Strategically
+
 ```sql
 -- Partitioned by date, clustered by frequently-queried fields
 CREATE TABLE diagnosticpro_prod.diagnostic_sessions
@@ -526,6 +532,7 @@ AS SELECT * FROM staging_table
 ```
 
 ### 4. Use Materialized Views for Complex Queries
+
 ```sql
 CREATE MATERIALIZED VIEW diagnosticpro_prod.daily_diagnostics_summary AS
 SELECT 
@@ -539,6 +546,7 @@ GROUP BY date, equipment_category
 ```
 
 ### 5. Implement Cost Controls
+
 ```python
 # Set table expiration for temporary tables
 table.expires = datetime.now() + timedelta(days=7)
@@ -554,6 +562,7 @@ reservation = bigquery.Reservation(
 ## The Architecture That Scales
 
 The final architecture handles:
+
 - **226 RSS feeds** checked every 30 minutes
 - **500K+ Reddit posts** collected daily
 - **10K+ YouTube videos** processed per hour
@@ -569,6 +578,7 @@ Building 254 BigQuery tables in 72 hours wasn't about coding faster—it was abo
 The system now runs in production, processing millions of records daily with minimal supervision. The architecture scales horizontally—adding new data sources is as simple as writing to the export gateway.
 
 Key takeaways:
+
 - **Architecture beats algorithms** when dealing with scale
 - **Separation of concerns** enables parallel development
 - **Batch processing** is essential for throughput
@@ -580,5 +590,3 @@ The diagnostic-pro-start-up BigQuery instance continues to grow, now approaching
 ---
 
 *The complete codebase and deployment scripts are available in the DiagnosticPro platform repository. The system continues to evolve with new data sources and enhanced analytics capabilities being added regularly.*
-
-

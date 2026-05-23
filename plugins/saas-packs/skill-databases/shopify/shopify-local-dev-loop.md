@@ -10,6 +10,7 @@ shopify-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Shopify local development workflow
 **Workflow:** Part of the onboarding skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

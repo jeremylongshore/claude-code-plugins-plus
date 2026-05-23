@@ -10,6 +10,7 @@ databricks-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Databricks SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Databricks integration.
 **Relates to:** Other databricks skills in this pack.

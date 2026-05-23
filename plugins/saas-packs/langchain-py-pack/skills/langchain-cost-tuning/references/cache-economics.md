@@ -21,6 +21,7 @@ the cache key and returns wrong answers (P61).
 ## Break-even: Anthropic prompt cache
 
 Anthropic prompt cache:
+
 - **Cache write:** 1.25x the input rate
 - **Cache read:** 0.10x the input rate
 - **TTL:** 5 minutes default, 1 hour with extended-cache beta
@@ -157,6 +158,7 @@ but optimize for different metrics. Hit rate helps both. FPR kills quality
 (cost concern) but doesn't affect latency directly.
 
 Cross-reference `langchain-performance-tuning` for:
+
 - Cache warm-up strategies
 - Multi-layer cache architecture (hot in-process, warm Redis, cold object storage)
 - Cache eviction policies

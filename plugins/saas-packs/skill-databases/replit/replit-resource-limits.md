@@ -10,6 +10,7 @@ replit-resource-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Understand and optimize Replit resource limits including CPU, memory, storage, and egress quotas.
 **Workflow:** Resource optimization skill - prevents throttling and ensures efficient platform usage.
 **Relates to:** Informs replit-cost-optimization and replit-performance-tuning; prevents replit-common-errors.

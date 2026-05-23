@@ -10,6 +10,7 @@ cursor-custom-prompts/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Creates effective custom prompts for Cursor AI including structured templates, domain-specific patterns, and .cursorrules integration for reusable prompt libraries.
 
 **Workflow:** This skill activates when developers want to improve their prompt effectiveness or create reusable prompt templates. It covers prompt structure, templates, domain-specific prompts, advanced techniques, and best practices.

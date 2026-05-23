@@ -3,6 +3,7 @@
 ## AI Feature Optimization
 
 ### Completion Speed
+
 ```json
 {
   // Use faster model for completions
@@ -17,6 +18,7 @@
 ```
 
 ### Context Management
+
 ```
 Reduce context for faster responses:
 1. Select less code
@@ -30,6 +32,7 @@ Use .cursorignore aggressively:
 ```
 
 ### Model Selection
+
 ```
 Speed vs Quality:
 

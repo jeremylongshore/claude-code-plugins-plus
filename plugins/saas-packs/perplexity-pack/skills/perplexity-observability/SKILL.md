@@ -27,6 +27,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Observability
 
 ## Overview
+
 Monitor Perplexity Sonar API performance, cost, and quality. Key signals unique to Perplexity: citation count per response (quality indicator), search latency variability (web search is non-deterministic), and per-model cost differences.
 
 ## Key Metrics
@@ -39,6 +40,7 @@ Monitor Perplexity Sonar API performance, cost, and quality. Key signals unique 
 | Cost/query | $0.005 | $0.02 | >$0.10 |
 
 ## Prerequisites
+
 - Perplexity API integration running
 - Metrics backend (Prometheus, Datadog, or custom)
 - Alerting system configured
@@ -46,6 +48,7 @@ Monitor Perplexity Sonar API performance, cost, and quality. Key signals unique 
 ## Instructions
 
 ### Step 1: Instrument the Perplexity Client
+
 ```typescript
 import OpenAI from "openai";
 
@@ -105,6 +108,7 @@ async function instrumentedSearch(
 ```
 
 ### Step 2: Prometheus Metrics Export
+
 ```typescript
 // Export metrics in Prometheus format
 function prometheusMetrics(): string {
@@ -140,6 +144,7 @@ function prometheusMetrics(): string {
 ```
 
 ### Step 3: Citation Quality Scoring
+
 ```typescript
 function evaluateCitationQuality(citations: string[]): {
   total: number;
@@ -165,6 +170,7 @@ function evaluateCitationQuality(citations: string[]): {
 ```
 
 ### Step 4: Cost Tracking
+
 ```typescript
 const COST_PER_MILLION_TOKENS: Record<string, { input: number; output: number }> = {
   "sonar":              { input: 1, output: 1 },
@@ -180,6 +186,7 @@ function estimateCost(model: string, usage: { prompt_tokens: number; completion_
 ```
 
 ### Step 5: Alert Rules (Prometheus/Alertmanager)
+
 ```yaml
 groups:
   - name: perplexity
@@ -209,7 +216,9 @@ groups:
 ```
 
 ## Dashboard Panels
+
 Track these metrics on your dashboard:
+
 - Query latency by model (sonar vs sonar-pro histogram)
 - Citations per response distribution
 - Query volume over time (by model)
@@ -218,6 +227,7 @@ Track these metrics on your dashboard:
 - Cache hit rate
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | High latency on sonar-pro | Complex multi-source search | Expected; use sonar for simple queries |
@@ -226,6 +236,7 @@ Track these metrics on your dashboard:
 | Error rate elevated | Rate limiting or API issue | Check for 429s in error breakdown |
 
 ## Output
+
 - Instrumented Perplexity client with latency/error/citation tracking
 - Prometheus metrics export endpoint
 - Citation quality scoring
@@ -233,8 +244,10 @@ Track these metrics on your dashboard:
 - Alert rules for latency, errors, and cost
 
 ## Resources
+
 - [Perplexity API Documentation](https://docs.perplexity.ai)
 - [Prometheus Documentation](https://prometheus.io/docs/)
 
 ## Next Steps
+
 For incident response, see `perplexity-incident-runbook`.

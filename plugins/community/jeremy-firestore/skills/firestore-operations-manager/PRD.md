@@ -49,33 +49,42 @@ These problems share a root cause: Firestore's document model and operational co
 ## Functional Requirements
 
 ### FR-1: Schema-Aware CRUD
+
 The skill must detect the existing collection schema (by reading sample documents) before proposing writes. New fields added via `update()` must not overwrite existing data unless explicitly requested.
 
 ### FR-2: Batch Write Management
+
 Batch writes must:
+
 - Chunk operations into groups of 500 (Firestore limit per `batch.commit()`)
 - Log progress every N documents (configurable, default 1,000)
 - Write a checkpoint document after each successful batch so the operation can resume
 - Retry failed batches with exponential backoff (3 attempts, 1s/2s/4s delays)
 
 ### FR-3: Composite Index Generation
+
 When the skill generates a query with multiple `where()` clauses or a `where()` + `orderBy()` combination, it must also produce the corresponding composite index entry for `firestore.indexes.json`.
 
 ### FR-4: Security Rules
+
 Generated rules must:
+
 - Deny all access by default (no `match /{document=**} { allow read, write: if true }`)
 - Use helper functions for authentication and ownership checks
 - Include field-level validation for create and update operations
 - Be testable with `@firebase/rules-unit-testing`
 
 ### FR-5: Migration Operations
+
 Migrations must:
+
 - Support backfill (add field to existing documents) and transform (modify field values)
 - Write a checkpoint after each batch to a `_migrations/{migrationId}` document
 - Support dry-run mode that reads but does not write
 - Produce a summary (documents processed, skipped, failed)
 
 ### FR-6: Pagination
+
 Queries that may return more than 100 documents must use `startAfter()` cursor-based pagination. The skill must produce both the query code and the pagination cursor management logic.
 
 ## Non-Functional Requirements

@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Cohere SDK Patterns
 
 ## Overview
+
 Production-ready patterns for the `cohere-ai` TypeScript SDK (CohereClientV2) and Python `cohere` package. Real model names, real API shapes, real error types.
 
 ## Prerequisites
+
 - `cohere-ai` v7+ installed (TypeScript) or `cohere` v5+ (Python)
 - Familiarity with async/await patterns
 - Understanding of Cohere API v2 endpoints
@@ -273,6 +275,7 @@ def embed(texts: list[str], input_type: str = "search_document") -> list[list[fl
 ```
 
 ## Error Handling
+
 | Error Type | When | Recovery |
 |------------|------|----------|
 | `CohereError` (status 400) | Bad request params | Fix request, do not retry |
@@ -282,9 +285,11 @@ def embed(texts: list[str], input_type: str = "search_document") -> list[list[fl
 | `CohereTimeoutError` | Network timeout | Retry with backoff |
 
 ## Resources
+
 - [Cohere TypeScript SDK](https://github.com/cohere-ai/cohere-typescript)
 - [Cohere Python SDK](https://github.com/cohere-ai/cohere-python)
 - [API v2 Reference](https://docs.cohere.com/reference/about)
 
 ## Next Steps
+
 Apply patterns in `cohere-core-workflow-a` for RAG workflows.

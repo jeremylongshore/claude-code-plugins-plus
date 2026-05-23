@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl CI Integration
 
 ## Overview
+
 Set up CI/CD pipelines to test Firecrawl integrations automatically. Covers GitHub Actions workflow, API key secrets management, integration tests that validate real scraping, and mock-based unit tests for PRs.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - Firecrawl API key for testing (separate from production)
 - `@mendable/firecrawl-js` installed
@@ -37,6 +39,7 @@ Set up CI/CD pipelines to test Firecrawl integrations automatically. Covers GitH
 ## Instructions
 
 ### Step 1: Configure Secrets
+
 ```bash
 set -euo pipefail
 # Store test API key in GitHub Actions secrets
@@ -44,6 +47,7 @@ gh secret set FIRECRAWL_API_KEY --body "fc-test-key-here"
 ```
 
 ### Step 2: GitHub Actions Workflow
+
 ```yaml
 # .github/workflows/firecrawl-tests.yml
 name: Firecrawl Integration Tests
@@ -84,6 +88,7 @@ jobs:
 ```
 
 ### Step 3: Integration Tests
+
 ```typescript
 // tests/firecrawl.integration.test.ts
 import { describe, it, expect } from "vitest";
@@ -132,6 +137,7 @@ describe.skipIf(SKIP)("Firecrawl Integration", () => {
 ```
 
 ### Step 4: Mock-Based Unit Tests (No API Key)
+
 ```typescript
 // tests/scraper.unit.test.ts
 import { describe, it, expect, vi } from "vitest";
@@ -162,6 +168,7 @@ describe("Scraper Unit Tests", () => {
 ```
 
 ### Step 5: Credit-Aware CI
+
 ```yaml
 # Only run expensive crawl tests on release tags
 integration-crawl:
@@ -180,6 +187,7 @@ integration-crawl:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Secret not found | Missing GitHub secret | `gh secret set FIRECRAWL_API_KEY` |
@@ -188,9 +196,11 @@ integration-crawl:
 | Credit burn from PRs | Integration tests on every PR | Run integration tests only on merge |
 
 ## Resources
+
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-for-github-actions/using-secrets-in-github-actions)
 - [Vitest](https://vitest.dev/)
 - [Firecrawl Node SDK](https://docs.firecrawl.dev/sdks/node)
 
 ## Next Steps
+
 For deployment patterns, see `firecrawl-deploy-integration`.

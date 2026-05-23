@@ -49,6 +49,7 @@ MetricName[interval]{dimensionKey = "value"}.groupingFunction.statistic
 ```
 
 Key components:
+
 - **MetricName** — e.g., `CpuUtilization`, `MemoryUtilization`, `NetworkBytesIn`
 - **Interval** — data granularity: `1m`, `5m`, `1h` (minimum depends on metric)
 - **Dimensions** — filters in curly braces: `{resourceId = "ocid1.instance..."}`
@@ -217,6 +218,7 @@ print("Alarm created — email confirmation sent to subscriber")
 ## Output
 
 Successful completion produces:
+
 - Working MQL queries for CPU, memory, network, and disk metrics
 - A reusable `query_metric()` helper function for ad-hoc monitoring
 - Instance-level metric filtering by OCID

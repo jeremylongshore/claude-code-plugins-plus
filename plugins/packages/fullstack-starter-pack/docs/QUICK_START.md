@@ -14,6 +14,7 @@ Get up and running with the Fullstack Starter Pack in 10 minutes.
 ```
 
 **Generated:**
+
 - React frontend with TypeScript + Vite
 - Express backend with TypeScript
 - PostgreSQL database with Prisma
@@ -53,11 +54,13 @@ API Docs: http://localhost:3000/api/docs
 ### Frontend Development
 
 **Generate Component:**
+
 ```bash
 /component-generator "UserProfile with avatar, name, email, and edit button"
 ```
 
 **Generate Utilities:**
+
 ```bash
 /css-utility-generator --categories spacing,colors,flexbox
 ```
@@ -69,16 +72,19 @@ Ask: "How should I structure state management for a shopping cart?"
 ### Backend Development
 
 **Generate API:**
+
 ```bash
 /express-api-scaffold "Blog API"
 ```
 
 **Design Database Schema:**
+
 ```bash
 /prisma-schema-gen "Blog with users, posts, comments, and tags"
 ```
 
 **Generate SQL Queries:**
+
 ```bash
 /sql-query-builder "Get top 10 products by sales with category info"
 ```
@@ -86,12 +92,14 @@ Ask: "How should I structure state management for a shopping cart?"
 ### Authentication Setup
 
 **Add Auth to Existing Project:**
+
 ```bash
 cd your-project
 /auth-setup jwt --features email-verification,password-reset
 ```
 
 **Result:**
+
 - JWT authentication with refresh tokens
 - Email verification flow
 - Password reset functionality
@@ -105,6 +113,7 @@ Ask: "Set up GitHub Actions for my Express app with tests and Docker deployment"
 → Deployment Specialist creates complete workflow
 
 **Generate Environment Config:**
+
 ```bash
 /env-config-setup --services database,redis,email
 ```
@@ -207,4 +216,4 @@ Generated code is a starting point—modify to fit your needs.
 
 ---
 
-**Start building! You're ready to create production-grade fullstack applications.** 
+**Start building! You're ready to create production-grade fullstack applications.**

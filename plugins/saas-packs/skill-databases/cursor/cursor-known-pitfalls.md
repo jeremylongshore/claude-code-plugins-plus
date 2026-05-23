@@ -10,6 +10,7 @@ cursor-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Documents common Cursor IDE pitfalls and mistakes with prevention strategies and recovery procedures across AI features, configuration, security, and team workflows.
 
 **Workflow:** This skill activates when users want to avoid common mistakes or need to recover from issues. It covers AI feature pitfalls, completion pitfalls, configuration pitfalls, security pitfalls, performance pitfalls, workflow pitfalls, team pitfalls, and recovery strategies.

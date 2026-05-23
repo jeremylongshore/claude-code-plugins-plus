@@ -10,6 +10,7 @@ hex-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Hex local development workflow
 **Workflow:** Part of the onboarding skill category for Hex integration.
 **Relates to:** Other hex skills in this pack.

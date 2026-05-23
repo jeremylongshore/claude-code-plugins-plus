@@ -10,6 +10,7 @@ clerk-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Clerk anti-patterns
 **Workflow:** Part of the enterprise skill category for Clerk integration.
 **Relates to:** Other clerk skills in this pack.

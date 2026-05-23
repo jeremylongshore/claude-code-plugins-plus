@@ -10,6 +10,7 @@ langchain-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working LangChain example
 **Workflow:** Part of the onboarding skill category for LangChain integration.
 **Relates to:** Other langchain skills in this pack.

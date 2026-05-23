@@ -10,6 +10,7 @@ apple-notes-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Apple Notes monitoring and observability
 **Workflow:** Part of the enterprise skill category for Apple Notes integration.
 **Relates to:** Other apple-notes skills in this pack.

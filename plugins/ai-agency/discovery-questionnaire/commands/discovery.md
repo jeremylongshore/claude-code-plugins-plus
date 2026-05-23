@@ -13,6 +13,7 @@ When a user requests a discovery questionnaire, create a customized set of quest
 ## Questionnaire Structure
 
 ### 1. Business Context (Understanding the Client)
+
 - Company overview and history
 - Current business model
 - Market position and competitors
@@ -20,6 +21,7 @@ When a user requests a discovery questionnaire, create a customized set of quest
 - Decision-making process
 
 ### 2. Current State Assessment
+
 - Existing tools and systems
 - Current workflows and processes
 - Pain points and bottlenecks
@@ -27,6 +29,7 @@ When a user requests a discovery questionnaire, create a customized set of quest
 - Data sources and integrations
 
 ### 3. Project Goals & Objectives
+
 - Primary objectives
 - Success metrics (KPIs)
 - Timeline and urgency
@@ -34,6 +37,7 @@ When a user requests a discovery questionnaire, create a customized set of quest
 - Expected ROI
 
 ### 4. Technical Environment
+
 - Existing tech stack
 - API access and documentation
 - Data security requirements
@@ -41,6 +45,7 @@ When a user requests a discovery questionnaire, create a customized set of quest
 - IT/development team involvement
 
 ### 5. Team & Stakeholders
+
 - Key stakeholders and roles
 - End users of the solution
 - Decision makers
@@ -48,6 +53,7 @@ When a user requests a discovery questionnaire, create a customized set of quest
 - Training requirements
 
 ### 6. Scope & Deliverables
+
 - Must-have features
 - Nice-to-have features
 - Out of scope
@@ -57,6 +63,7 @@ When a user requests a discovery questionnaire, create a customized set of quest
 ## Questionnaire Templates
 
 ### AI Automation Project
+
 ```markdown
 # Discovery Questionnaire: AI Automation Project
 
@@ -116,6 +123,7 @@ When a user requests a discovery questionnaire, create a customized set of quest
 ```
 
 ### AI Content Generation Project
+
 ```markdown
 # Discovery Questionnaire: AI Content Generation
 
@@ -156,6 +164,7 @@ When a user requests a discovery questionnaire, create a customized set of quest
 ```
 
 ### AI Customer Support Automation
+
 ```markdown
 # Discovery Questionnaire: AI Customer Support
 
@@ -205,6 +214,7 @@ When a user requests a discovery questionnaire, create a customized set of quest
 ## Best Practices
 
 ### Questions Should Be:
+
 1. **Open-ended** - Encourage detailed responses
 2. **Specific** - Avoid vague questions
 3. **Prioritized** - Most important questions first
@@ -212,6 +222,7 @@ When a user requests a discovery questionnaire, create a customized set of quest
 5. **Actionable** - Answers should inform project decisions
 
 ### Avoid:
+
 1. **Leading questions** - Don't bias responses
 2. **Technical jargon** - Unless client is technical
 3. **Too many questions** - Keep under 35
@@ -219,6 +230,7 @@ When a user requests a discovery questionnaire, create a customized set of quest
 5. **Assumptions** - Ask, don't assume
 
 ### Follow-up Strategy:
+
 1. **Send questionnaire** - With context and deadline
 2. **Schedule review call** - Discuss responses
 3. **Clarify answers** - Ask follow-ups
@@ -259,12 +271,14 @@ Questions? Contact [NAME] at [EMAIL/PHONE].
 ## Customization Tips
 
 **For Small Businesses:**
+
 - Simpler language
 - Fewer technical questions
 - Focus on ROI and time savings
 - Shorter questionnaire (20-25 questions)
 
 **For Enterprises:**
+
 - Include compliance questions
 - Ask about procurement process
 - Include security requirements
@@ -272,12 +286,14 @@ Questions? Contact [NAME] at [EMAIL/PHONE].
 - Longer, more detailed (30-40 questions)
 
 **For Technical Clients:**
+
 - Use technical terminology
 - Ask about architecture
 - Include API/integration details
 - Ask about dev team involvement
 
 **For Non-Technical Clients:**
+
 - Plain language
 - Focus on outcomes, not technology
 - Include more examples
@@ -286,16 +302,19 @@ Questions? Contact [NAME] at [EMAIL/PHONE].
 ## Delivery Method
 
 **Email:**
+
 - Google Form or Typeform
 - PDF with form fields
 - Word/Google Doc
 
 **Video Call:**
+
 - Live interview
 - Screen share for note-taking
 - Record for reference
 
 **Hybrid:**
+
 - Send questionnaire first
 - Review on call
 - Ask follow-ups live

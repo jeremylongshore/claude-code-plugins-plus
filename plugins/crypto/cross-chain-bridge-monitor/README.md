@@ -20,6 +20,7 @@ Monitor cross-chain bridge activity, track transfers, analyze security, and dete
 ## Usage
 
 The bridge monitor agent automatically activates when you discuss:
+
 - Cross-chain bridges and transfers
 - Bridge security and TVL
 - Transaction status lookups
@@ -45,6 +46,7 @@ Which bridge has the lowest fees for Polygon to Ethereum?
 ## Supported Bridges
 
 ### Canonical Bridges
+
 - Arbitrum Bridge (Official)
 - Optimism Gateway (Official)
 - Polygon PoS Bridge (Official)
@@ -52,6 +54,7 @@ Which bridge has the lowest fees for Polygon to Ethereum?
 - Base Bridge (Official)
 
 ### Third-Party Bridges
+
 - Wormhole
 - Multichain (Anyswap)
 - Stargate (LayerZero)
@@ -61,6 +64,7 @@ Which bridge has the lowest fees for Polygon to Ethereum?
 - Celer cBridge
 
 ### Specialized
+
 - Portal (Wormhole)
 - Connext
 - Axelar
@@ -90,30 +94,35 @@ Create a `.bridge-monitor-config.json` file:
 ## Security Models
 
 ### 1. Trusted Bridges
+
 - Centralized validators/relayers
 - Fast and low cost
 - Trust in validators required
 - Examples: Multichain, Wormhole
 
 ### 2. Optimistic Bridges
+
 - Challenge period for disputes
 - More decentralized
 - Slower due to challenge window
 - Examples: Hop, Across, Nomad
 
 ### 3. Light Client Bridges
+
 - Cryptographic proofs
 - Most secure, trustless
 - Higher cost and complexity
 - Examples: Rainbow Bridge, IBC
 
 ### 4. Liquidity Networks
+
 - Liquidity pools on each chain
 - Fast and scalable
 - Risk of slippage and imbalances
 - Examples: Stargate, Synapse
 
 ### 5. Canonical Bridges
+
 - Official protocol bridges
 - Highest trust
 - May have longer withdrawal times
@@ -122,20 +131,23 @@ Create a `.bridge-monitor-config.json` file:
 ## Risk Assessment
 
 ### TVL Risk Levels
+
 - < $10M: Lower priority, less tested
 - $10M - $100M: Moderate risk
 - $100M - $1B: High value target
 - > $1B: Critical infrastructure
 
 ### Validator Risk
-- Single operator: Critical risk 
+
+- Single operator: Critical risk
 - < 5 validators: High centralization ️
 - 5-15 validators: Moderate decentralization
-- \> 15 validators: Good decentralization 
+- \> 15 validators: Good decentralization
 
 ## Historical Bridge Exploits
 
 Major incidents to learn from:
+
 - **Ronin Bridge (2022)**: $625M - Validator compromise
 - **Wormhole (2022)**: $325M - Signature bug
 - **Nomad Bridge (2022)**: $190M - Initialization bug
@@ -145,6 +157,7 @@ Major incidents to learn from:
 ## Best Practices
 
 ### For Users
+
 1. Start with small test amounts
 2. Verify destination addresses
 3. Use reputable, audited bridges
@@ -153,6 +166,7 @@ Major incidents to learn from:
 6. Save transaction hashes
 
 ### For Monitoring
+
 1. Track volume, TVL, validators
 2. Set appropriate alert thresholds
 3. Cross-reference multiple data sources
@@ -173,6 +187,7 @@ Major incidents to learn from:
 ️ **Cross-chain bridges are high-risk infrastructure** with a history of major exploits.
 
 Users should:
+
 - Only bridge amounts they can afford to lose
 - Understand the bridge's security model
 - Verify bridge status before transferring

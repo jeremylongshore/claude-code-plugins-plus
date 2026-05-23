@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Reference Architecture
 
 ## Overview
+
 Four reference architectures for Deepgram transcription at scale: synchronous REST for short files, async queue (BullMQ) for batch processing, WebSocket proxy for real-time streaming, and a hybrid router that auto-selects the best pattern based on audio duration.
 
 ## Architecture Selection Guide
@@ -307,6 +308,7 @@ class TranscriptionRouter {
 ```
 
 ## Output
+
 - Sync REST endpoint for short files
 - BullMQ queue with workers for batch processing
 - WebSocket proxy for real-time streaming
@@ -314,6 +316,7 @@ class TranscriptionRouter {
 - Architecture diagram
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Sync timeout on large file | Wrong pattern selected | Use async queue or callback |
@@ -322,6 +325,7 @@ class TranscriptionRouter {
 | Callback not received | Endpoint unreachable | Check HTTPS, verify callback URL |
 
 ## Resources
+
 - [Deepgram Architecture Guide](https://developers.deepgram.com/docs/architecture)
 - [BullMQ Documentation](https://docs.bullmq.io/)
 - [WebSocket API](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)

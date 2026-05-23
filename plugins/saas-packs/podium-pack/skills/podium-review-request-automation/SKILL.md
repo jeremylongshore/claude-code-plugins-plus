@@ -283,6 +283,7 @@ python3 scripts/cooldown_check.py --phone "+61412345678" --redis-url "$REDIS_URL
 ```
 
 Output:
+
 ```json
 {
   "phone": "+61412345678",
@@ -299,6 +300,7 @@ python3 scripts/optout_compliance_audit.py --phone "+61412345678"
 ```
 
 Output:
+
 ```json
 {
   "phone": "+61412345678",

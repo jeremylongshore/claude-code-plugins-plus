@@ -10,6 +10,7 @@ flexport-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Flexport SDK upgrades
 **Workflow:** Part of the operations skill category for Flexport integration.
 **Relates to:** Other flexport skills in this pack.

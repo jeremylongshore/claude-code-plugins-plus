@@ -10,6 +10,7 @@ notion-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Notion core feature integration
 **Workflow:** Part of the onboarding skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

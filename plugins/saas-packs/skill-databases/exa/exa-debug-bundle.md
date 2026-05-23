@@ -10,6 +10,7 @@ exa-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect comprehensive diagnostic information for Exa support tickets including logs, configuration, request traces, and environment details.
 **Workflow:** Used when common-errors skill doesn't resolve the issue - prepares complete support bundle.
 **Relates to:** Follows exa-common-errors; provides input for support escalation

@@ -10,6 +10,7 @@ intercom-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Intercom primary workflow
 **Workflow:** Part of the onboarding skill category for Intercom integration.
 **Relates to:** Other intercom skills in this pack.

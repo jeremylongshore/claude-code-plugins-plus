@@ -10,6 +10,7 @@ clay-deploy-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Clay integrations to serverless platforms including AWS Lambda, Google Cloud Functions, and Vercel. Covers secrets management and production configuration.
 **Workflow:** Deployment skill. Use when deploying Clay-powered applications to production.
 **Relates to:** Follows clay-ci-integration for pipeline setup; integrates with clay-prod-checklist for validation.

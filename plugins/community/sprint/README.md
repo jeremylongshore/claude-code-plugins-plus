@@ -48,6 +48,7 @@ Sprint is **technology-agnostic**. While it includes specialized agents for Pyth
 Two files give agents persistent memory across sprints — reducing token usage and keeping context focused:
 
 **`.claude/project-goals.md`** — The business brain *(you maintain this)*
+
 - Product vision and target audience
 - Market analysis and differentiators
 - Success metrics and constraints
@@ -56,6 +57,7 @@ Two files give agents persistent memory across sprints — reducing token usage 
 The more detail you provide, the sharper and more shrewd the architect becomes.
 
 **`.claude/project-map.md`** — The technical brain *(architect maintains this)*
+
 - Project structure and architecture
 - API surface and database schema
 - Routes, components, environment variables
@@ -98,6 +100,7 @@ claude --plugin-dir ./agentic-sprint
 ```
 
 This creates both Second Brain documents through guided questions:
+
 - `.claude/project-goals.md` (business vision)
 - `.claude/project-map.md` (technical architecture)
 
@@ -116,6 +119,7 @@ This creates `.claude/sprint/1/specs.md`. Edit it with your requirements.
 ```
 
 Watch the agents work:
+
 1. Architect analyzes specs and creates detailed specifications
 2. Implementation agents build in parallel
 3. Testing agents validate the work
@@ -148,6 +152,7 @@ Set `UI Testing Mode: manual` in your `specs.md`:
 ```
 
 When the architect requests UI testing:
+
 1. **Chrome opens a browser tab** pointing to your app
 2. **You interact with the app manually** — click around, test forms, explore edge cases
 3. **Console errors are monitored** in real-time
@@ -238,6 +243,7 @@ The architect can then request your agent via SPAWN REQUEST blocks.
 ## Specification Files
 
 **`specs.md`** - Your input (minimal or detailed):
+
 ```markdown
 # Sprint 1: User Authentication
 
@@ -261,6 +267,7 @@ Add user authentication with email/password login
 ```
 
 **`api-contract.md`** - Generated shared interface:
+
 ```markdown
 ## POST /api/auth/login
 Request: { email: string, password: string }
@@ -287,11 +294,13 @@ Sprint includes knowledge modules that Claude can load when needed:
 ## Troubleshooting
 
 ### Sprint stuck in iteration loop
+
 - Check `status.md` for blockers
 - Review agent reports for errors
 - Max 5 iterations before pause
 
 ### Agents not following specs
+
 - Ensure `api-contract.md` is clear and complete
 - Check for conflicting information in spec files
 - Architect may need to clarify specs
@@ -309,6 +318,7 @@ MIT License - See [LICENSE](LICENSE)
 **Contributions are highly encouraged!** This is a community project — the built-in agents are just a starting point.
 
 Ways to contribute:
+
 - **Add new agents** for different tech stacks (Go, Rust, Vue, Django, etc.)
 - **Improve existing agents** with better prompts, patterns, or capabilities
 - **Share your workflows** — what sprint configurations work well?

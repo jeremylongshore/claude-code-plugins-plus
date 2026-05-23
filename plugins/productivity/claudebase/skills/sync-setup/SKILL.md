@@ -36,6 +36,7 @@ Replace REPO_NAME and PROFILE_NAME with the user's values or defaults.
 ### If `gh` is not installed
 
 Guide the user to install it:
+
 - **macOS**: `brew install gh`
 - **Linux**: `sudo apt install gh` or `sudo dnf install gh`
 - **Windows**: `winget install --id GitHub.cli`

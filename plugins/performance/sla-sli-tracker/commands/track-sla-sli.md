@@ -36,6 +36,7 @@ Define and track Service Level Agreements, Indicators, and Objectives.
 ## Output
 
 Provide:
+
 - SLI definitions with measurement methodology
 - SLO targets with justification
 - Error budget calculations

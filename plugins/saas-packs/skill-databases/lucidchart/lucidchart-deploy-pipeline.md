@@ -10,6 +10,7 @@ lucidchart-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Lucidchart integrations to production
 **Workflow:** Part of the cicd skill category for Lucidchart integration.
 **Relates to:** Other lucidchart skills in this pack.

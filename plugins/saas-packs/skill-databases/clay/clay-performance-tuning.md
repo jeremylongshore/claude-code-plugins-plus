@@ -10,6 +10,7 @@ clay-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Clay API performance with batching, caching, and parallel processing. Reduces latency and improves throughput for high-volume enrichment.
 **Workflow:** Optimization skill. Use when Clay integration performance needs improvement.
 **Relates to:** Builds on clay-enrichment-patterns; enables clay-load-scale for high-volume operations.

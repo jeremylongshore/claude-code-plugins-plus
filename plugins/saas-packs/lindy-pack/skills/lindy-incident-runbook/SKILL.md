@@ -24,6 +24,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lindy Incident Runbook
 
 ## Overview
+
 Incident response procedures for Lindy AI agent failures. Covers platform outages,
 individual agent failures, integration breakdowns, credit exhaustion, and webhook
 endpoint failures.
@@ -40,6 +41,7 @@ endpoint failures.
 ## Quick Diagnostics (First 5 Minutes)
 
 ### Step 1: Check Lindy Platform Status
+
 ```bash
 # Is Lindy up?
 curl -s -o /dev/null -w "Lindy API: HTTP %{http_code}\n" \
@@ -50,6 +52,7 @@ echo "Status page: https://status.lindy.ai"
 ```
 
 ### Step 2: Check Your Integration
+
 ```bash
 # Is your webhook receiver up?
 curl -s -o /dev/null -w "Our endpoint: HTTP %{http_code}\n" \
@@ -64,17 +67,21 @@ curl -s -o /dev/null -w "Webhook auth: HTTP %{http_code}\n" \
 ```
 
 ### Step 3: Check Credit Balance
+
 Log in at https://app.lindy.ai > Settings > Billing
+
 - Credits at 0? Agents stop processing
 - Credits low? Non-essential agents may be paused
 
 ## Incident Playbooks
 
 ### Incident: Lindy Platform Outage (SEV1)
+
 **Symptoms**: All agents failing, status.lindy.ai shows incident
 **Impact**: All Lindy-dependent workflows halted
 
 **Runbook**:
+
 1. Confirm outage at https://status.lindy.ai
 2. Notify team: "Lindy platform outage confirmed. All agents affected."
 3. Activate fallback procedures:
@@ -85,6 +92,7 @@ Log in at https://app.lindy.ai > Settings > Billing
 5. When recovered: re-enable triggers, replay queued events, verify agent health
 
 **Fallback code**:
+
 ```typescript
 async function triggerLindyWithFallback(payload: any) {
   try {
@@ -110,10 +118,12 @@ async function triggerLindyWithFallback(payload: any) {
 ```
 
 ### Incident: Individual Agent Failure (SEV2)
+
 **Symptoms**: Specific agent tasks showing "Failed" status
 **Impact**: One workflow affected, others may be fine
 
 **Runbook**:
+
 1. Open agent > Tasks tab > Filter by "Failed"
 2. Click latest failed task — identify the failing step
 3. Diagnose based on failing step type:
@@ -130,10 +140,12 @@ async function triggerLindyWithFallback(payload: any) {
 6. Monitor next 5 tasks for success
 
 ### Incident: Integration Auth Expired (SEV2-3)
+
 **Symptoms**: Actions failing with "Not authorized" or "Token expired"
 **Impact**: All tasks using that integration fail
 
 **Runbook**:
+
 1. Identify which integration is failing (Gmail, Slack, Sheets, etc.)
 2. In Lindy dashboard: Settings > Integrations
 3. Find the expired connection (may show warning icon)
@@ -142,10 +154,12 @@ async function triggerLindyWithFallback(payload: any) {
 6. Set calendar reminder for 90-day re-authorization check
 
 ### Incident: Credit Exhaustion (SEV2-3)
+
 **Symptoms**: Agents stop running, no new tasks created
 **Impact**: All agents paused until credits refill
 
 **Runbook**:
+
 1. Confirm at Settings > Billing: credits at 0
 2. Immediate: Upgrade plan or purchase additional credits
 3. Investigate: Which agent consumed the most credits?
@@ -154,10 +168,12 @@ async function triggerLindyWithFallback(payload: any) {
 6. Prevent: Set budget alerts at 50%, 80%, 95% thresholds
 
 ### Incident: Webhook Endpoint Failure (SEV2-3)
+
 **Symptoms**: Lindy agent runs but your callback never receives data
 **Impact**: Agent completes but results are lost
 
 **Runbook**:
+
 1. Check your endpoint health: `curl -s https://api.yourapp.com/health`
 2. Check server logs for incoming requests from Lindy
 3. Verify the HTTP Request action URL matches your production endpoint
@@ -175,6 +191,7 @@ async function triggerLindyWithFallback(payload: any) {
 | Lindy Support | support@lindy.ai | Confirmed Lindy platform issue |
 
 ## Post-Incident Template
+
 ```markdown
 ## Incident Report
 
@@ -213,9 +230,11 @@ async function triggerLindyWithFallback(payload: any) {
 | Endpoint down | Health check | Redirect to fallback |
 
 ## Resources
+
 - [Lindy Status](https://status.lindy.ai)
 - [Lindy Support](mailto:support@lindy.ai)
 - [Lindy Community](https://community.lindy.ai)
 
 ## Next Steps
+
 Proceed to `lindy-data-handling` for data security and compliance.

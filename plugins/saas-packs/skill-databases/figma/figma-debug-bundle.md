@@ -10,6 +10,7 @@ figma-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Figma debug evidence for support
 **Workflow:** Part of the operations skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

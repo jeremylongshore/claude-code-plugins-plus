@@ -5,11 +5,13 @@
 # Apollo Deploy Integration
 
 ## Overview
+
 Deploy Apollo.io integrations to production environments with proper configuration, health checks, and rollback procedures.
 
 ## Deployment Platforms
 
 ### Vercel Deployment
+
 ```json
 // vercel.json
 {
@@ -33,6 +35,7 @@ vercel --prod
 ```
 
 ### Google Cloud Run
+
 ```yaml
 # cloudbuild.yaml
 steps:
@@ -66,6 +69,7 @@ gcloud secrets add-iam-policy-binding apollo-api-key \
 ```
 
 ### AWS Lambda
+
 ```yaml
 # serverless.yml
 service: apollo-integration
@@ -107,6 +111,7 @@ serverless deploy --stage production
 ```
 
 ### Kubernetes
+
 ```yaml
 # k8s/deployment.yaml
 apiVersion: apps/v1
@@ -391,6 +396,7 @@ export function getConfig(): EnvironmentConfig {
 ```
 
 ## Output
+
 - Platform-specific deployment configs (Vercel, GCP, AWS, K8s)
 - Health check endpoints
 - Blue-green deployment workflow
@@ -398,6 +404,7 @@ export function getConfig(): EnvironmentConfig {
 - Environment configuration
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | Secret not found | Verify secret configuration |
@@ -406,10 +413,12 @@ export function getConfig(): EnvironmentConfig {
 | Traffic not switching | Verify service selector |
 
 ## Resources
+
 - [Vercel Environment Variables](https://vercel.com/docs/concepts/projects/environment-variables)
 - [Google Cloud Secret Manager](https://cloud.google.com/secret-manager)
 - [AWS Systems Manager](https://docs.aws.amazon.com/systems-manager/)
 - [Kubernetes Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)
 
 ## Next Steps
+
 Proceed to `apollo-webhooks-events` for webhook implementation.

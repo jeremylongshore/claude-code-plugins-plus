@@ -10,6 +10,7 @@ exa-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply advanced debugging for hard-to-diagnose Exa issues including relevance problems, edge cases, and intermittent failures.
 **Workflow:** Escalation skill when standard troubleshooting fails - for complex issues.
 **Relates to:** Follows exa-debug-bundle; provides input for support escalation

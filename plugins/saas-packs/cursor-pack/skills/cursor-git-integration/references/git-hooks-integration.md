@@ -3,6 +3,7 @@
 ## Git Hooks Integration
 
 ### Pre-commit with Cursor
+
 ```bash
 # .git/hooks/pre-commit
 #!/bin/sh
@@ -18,6 +19,7 @@ npm run test
 ```
 
 ### Commit Message Templates
+
 ```bash
 # .gitmessage template
 # Type: feat|fix|docs|style|refactor|test|chore

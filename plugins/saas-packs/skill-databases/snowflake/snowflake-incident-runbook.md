@@ -10,6 +10,7 @@ snowflake-incident-runbook/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Snowflake incident response
 **Workflow:** Part of the advanced skill category for Snowflake integration.
 **Relates to:** Other snowflake skills in this pack.

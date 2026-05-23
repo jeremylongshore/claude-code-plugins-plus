@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Core Workflow B — Extract, Batch & Map
 
 ## Overview
+
 Secondary workflow complementing the scrape/crawl workflow. Covers LLM-powered structured data extraction with JSON schemas, batch scraping multiple known URLs, and rapid site map discovery. Use this when you need typed data rather than raw markdown.
 
 ## Prerequisites
+
 - `@mendable/firecrawl-js` installed
 - `FIRECRAWL_API_KEY` environment variable set
 - Understanding of JSON Schema (for extract)
@@ -35,6 +37,7 @@ Secondary workflow complementing the scrape/crawl workflow. Covers LLM-powered s
 ## Instructions
 
 ### Step 1: LLM Extract — Structured Data from Pages
+
 ```typescript
 import FirecrawlApp from "@mendable/firecrawl-js";
 
@@ -71,6 +74,7 @@ console.log("Extracted plans:", JSON.stringify(result.extract, null, 2));
 ```
 
 ### Step 2: Extract with Prompt (No Schema)
+
 ```typescript
 // Use natural language prompt instead of rigid schema
 const result = await firecrawl.scrapeUrl("https://news.ycombinator.com", {
@@ -84,6 +88,7 @@ console.log(result.extract);
 ```
 
 ### Step 3: Batch Scrape Known URLs
+
 ```typescript
 // Scrape multiple specific URLs at once — more efficient than individual calls
 const batchResult = await firecrawl.batchScrapeUrls(
@@ -105,6 +110,7 @@ for (const page of batchResult.data || []) {
 ```
 
 ### Step 4: Async Batch Scrape (Large Sets)
+
 ```typescript
 // Start async batch scrape for many URLs — returns job ID
 const job = await firecrawl.asyncBatchScrapeUrls(
@@ -123,6 +129,7 @@ console.log(`Batch complete: ${status.data?.length} pages`);
 ```
 
 ### Step 5: Map — Rapid URL Discovery
+
 ```typescript
 // Discover all URLs on a site in ~2-3 seconds
 // Uses sitemap.xml + SERP + cached crawl data
@@ -145,6 +152,7 @@ Object.entries(sections).forEach(([name, list]) => {
 ```
 
 ### Step 6: Map + Selective Scrape Pipeline
+
 ```typescript
 // 1. Map to discover URLs, 2. Filter, 3. Batch scrape relevant ones
 async function intelligentScrape(siteUrl: string, pathFilter: string) {
@@ -170,12 +178,14 @@ await intelligentScrape("https://docs.firecrawl.dev", "/features/");
 ```
 
 ## Output
+
 - Typed JSON objects extracted from web pages
 - Batch scrape results for multiple URLs
 - Complete site URL map for discovery
 - Filtered scrape pipeline combining map + batch
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Empty `extract` | Page content too complex for LLM | Simplify schema, shorten prompt |
@@ -187,6 +197,7 @@ await intelligentScrape("https://docs.firecrawl.dev", "/features/");
 ## Examples
 
 ### Extract Products from E-Commerce
+
 ```typescript
 const products = await firecrawl.scrapeUrl("https://store.example.com/products", {
   formats: ["extract"],
@@ -213,10 +224,12 @@ const products = await firecrawl.scrapeUrl("https://store.example.com/products",
 ```
 
 ## Resources
+
 - [Extract (JSON Mode)](https://docs.firecrawl.dev/features/llm-extract)
 - [Batch Scrape](https://docs.firecrawl.dev/features/batch-scrape)
 - [Map Endpoint](https://docs.firecrawl.dev/features/map)
 - [Extract v2 Blog](https://www.firecrawl.dev/blog/launch-week-iii-day-3-extract-v2)
 
 ## Next Steps
+
 For common errors, see `firecrawl-common-errors`.

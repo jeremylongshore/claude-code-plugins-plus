@@ -10,6 +10,7 @@ flexport-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Flexport SDK patterns
 **Workflow:** Part of the onboarding skill category for Flexport integration.
 **Relates to:** Other flexport skills in this pack.

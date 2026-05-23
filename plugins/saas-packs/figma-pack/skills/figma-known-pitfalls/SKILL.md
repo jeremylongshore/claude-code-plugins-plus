@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code
 # Figma Known Pitfalls
 
 ## Overview
+
 The ten most common mistakes when integrating with the Figma REST API and Plugin API, with correct alternatives for each.
 
 ## Prerequisites
+
 - Working Figma integration to audit
 - Access to codebase
 
@@ -206,6 +208,7 @@ app.post('/webhooks/figma', (req, res) => {
 | 10 | No webhook verification | Security vulnerability | Verify passcode |
 
 ## Resources
+
 - [Figma REST API](https://developers.figma.com/docs/rest-api/)
 - [Figma Rate Limits](https://developers.figma.com/docs/rest-api/rate-limits/)
 - [Figma API Scopes](https://developers.figma.com/docs/rest-api/scopes/)

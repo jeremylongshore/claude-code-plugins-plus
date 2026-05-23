@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code
 # Figma Architecture Variants
 
 ## Overview
+
 Three proven architecture patterns for Figma integrations, based on the two primary Figma APIs: the REST API (external tools) and the Plugin API (in-editor experiences).
 
 ## Prerequisites
+
 - Clear use case requirements
 - Understanding of Figma REST API vs Plugin API differences
 
@@ -199,6 +201,7 @@ for (const comp of components) {
 | Auth | PAT | PAT + webhook passcode | None (runs in Figma) |
 
 ### Step 3: Hybrid Architecture
+
 Many production systems combine variants:
 
 ```
@@ -210,12 +213,14 @@ Figma Plugin ← In-editor design linting and data population
 ```
 
 ## Output
+
 - Architecture variant selected based on use case
 - Data flow documented
 - API choice justified (REST vs Plugin)
 - Implementation skeleton provided
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | CLI too slow | Full file fetch | Use `depth=1` and `/nodes` |
@@ -224,10 +229,12 @@ Figma Plugin ← In-editor design linting and data population
 | Wrong variant choice | Over-engineering | Start with CLI, add webhook when needed |
 
 ## Resources
+
 - [Figma REST API](https://developers.figma.com/docs/rest-api/)
 - [Figma Plugin API](https://developers.figma.com/docs/plugins/)
 - [Figma Widgets API](https://developers.figma.com/docs/widgets/)
 - [Compare Figma APIs](https://www.figma.com/developers/compare-apis)
 
 ## Next Steps
+
 For common anti-patterns, see `figma-known-pitfalls`.

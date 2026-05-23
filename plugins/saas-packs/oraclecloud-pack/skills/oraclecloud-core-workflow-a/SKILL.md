@@ -165,6 +165,7 @@ for attachment in vnic_attachments:
 ## Output
 
 Successful completion produces:
+
 - A running compute instance in the best available AD
 - Capacity retry logic that falls back across availability domains
 - Instance lifecycle management (stop, start, reboot, terminate)

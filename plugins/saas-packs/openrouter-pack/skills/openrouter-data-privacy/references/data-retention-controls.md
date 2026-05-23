@@ -3,6 +3,7 @@
 ## Data Retention Controls
 
 ### Automatic Cleanup
+
 ```python
 import os
 from pathlib import Path
@@ -37,6 +38,7 @@ retention = DataRetention(retention_days=7)
 ```
 
 ### Request Anonymization
+
 ```python
 import uuid
 

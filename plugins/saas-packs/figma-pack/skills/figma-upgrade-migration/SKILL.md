@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code
 # Figma Upgrade & Migration
 
 ## Overview
+
 Handle Figma REST API deprecations and breaking changes. The most significant recent change is the deprecation of the `files:read` scope in favor of granular scopes, and the move from Webhooks V1 to V2.
 
 ## Prerequisites
+
 - Current Figma integration working
 - Git for version control
 - Access to Figma developer settings
@@ -33,6 +35,7 @@ Handle Figma REST API deprecations and breaking changes. The most significant re
 ## Instructions
 
 ### Step 1: Scope Migration (files:read Deprecation)
+
 The `files:read` scope is deprecated. Migrate to granular scopes:
 
 | Deprecated Scope | Replacement Scopes | Endpoints Covered |
@@ -43,6 +46,7 @@ The `files:read` scope is deprecated. Migrate to granular scopes:
 | `files:read` | `file_versions:read` | `GET /v1/files/:key/versions` |
 
 **Migration steps:**
+
 1. Audit which endpoints your code calls
 2. Map each endpoint to its required scope
 3. Generate a new PAT with granular scopes
@@ -63,6 +67,7 @@ grep -rn "api.figma.com" --include="*.ts" --include="*.js" src/ \
 ```
 
 ### Step 2: Webhooks V1 to V2 Migration
+
 ```typescript
 // V1 (deprecated): POST /v1/webhooks
 // V2 (current):    POST /v2/webhooks
@@ -104,6 +109,7 @@ async function listWebhooks(teamId: string) {
 ```
 
 ### Step 3: OAuth App Publishing Flow
+
 All OAuth apps (public and private) must complete the new publishing flow:
 
 1. Go to your app in the Figma developer dashboard
@@ -127,6 +133,7 @@ async function checkTokenHealth(accessToken: string): Promise<boolean> {
 ```
 
 ### Step 4: Audit and Update Codebase
+
 ```typescript
 // Create a migration checker
 function auditFigmaIntegration(codebasePaths: string[]) {
@@ -146,12 +153,14 @@ function auditFigmaIntegration(codebasePaths: string[]) {
 ```
 
 ## Output
+
 - Scopes migrated from `files:read` to granular alternatives
 - Webhooks upgraded from V1 to V2
 - OAuth app publishing flow completed
 - All endpoints tested with new tokens
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | 403 after scope change | Missing required scope | Add the specific scope for each endpoint |
@@ -160,9 +169,11 @@ function auditFigmaIntegration(codebasePaths: string[]) {
 | Token format mismatch | Old token type | Generate new PAT with `figd_` prefix |
 
 ## Resources
+
 - [Figma REST API Changelog](https://developers.figma.com/docs/rest-api/changelog/)
 - [Figma API Scopes](https://developers.figma.com/docs/rest-api/scopes/)
 - [Webhooks V2 Documentation](https://developers.figma.com/docs/rest-api/webhooks/)
 
 ## Next Steps
+
 For CI integration during upgrades, see `figma-ci-integration`.

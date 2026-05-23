@@ -10,6 +10,7 @@ customerio-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Customer.io load testing and scaling
 **Workflow:** Part of the enterprise skill category for Customer.io integration.
 **Relates to:** Other customerio skills in this pack.

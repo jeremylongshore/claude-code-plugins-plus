@@ -62,6 +62,7 @@ curl -s "https://openrouter.ai/api/v1/models?supported_parameters=tools" | jq '.
 ```
 
 Key fields:
+
 - `pricing.prompt` / `pricing.completion` -- cost per token (not per million; multiply by 1M for readable rates)
 - `context_length` -- max input tokens
 - `top_provider.max_completion_tokens` -- max output tokens

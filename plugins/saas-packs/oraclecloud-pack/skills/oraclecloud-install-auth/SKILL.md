@@ -140,6 +140,7 @@ validate()
 ## Output
 
 Successful completion produces:
+
 - An RSA key pair at `~/.oci/oci_api_key.pem` (private) and `~/.oci/oci_api_key_public.pem` (public)
 - A validated `~/.oci/config` with all five required fields
 - The public key uploaded to your OCI user profile with a matching fingerprint

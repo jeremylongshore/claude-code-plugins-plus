@@ -3,6 +3,7 @@
 ## Troubleshooting Upgrades
 
 ### Settings Not Preserved
+
 ```
 Recovery:
 1. Check backup location
@@ -12,6 +13,7 @@ Recovery:
 ```
 
 ### Extensions Missing
+
 ```
 Re-install from list:
 cat my-extensions.txt | xargs -L 1 cursor --install-extension
@@ -21,6 +23,7 @@ Cmd+Shift+X > Search > Install
 ```
 
 ### Performance Issues After Upgrade
+
 ```
 Fixes:
 1. Clear cache:
@@ -33,6 +36,7 @@ Fixes:
 ```
 
 ### Rollback to Previous Version
+
 ```bash
 # If needed, download specific version
 # From GitHub releases or Cursor archive

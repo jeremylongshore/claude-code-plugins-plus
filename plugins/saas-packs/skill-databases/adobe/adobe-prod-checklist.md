@@ -10,6 +10,7 @@ adobe-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Adobe production deployment checklist
 **Workflow:** Part of the operations skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

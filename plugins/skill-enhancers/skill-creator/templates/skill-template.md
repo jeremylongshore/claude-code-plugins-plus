@@ -68,11 +68,13 @@ model: inherit
 ### {{EXAMPLE_1_TITLE}}
 
 **Input:**
+
 ```
 {{EXAMPLE_1_INPUT}}
 ```
 
 **Output:**
+
 ```
 {{EXAMPLE_1_OUTPUT}}
 ```
@@ -80,11 +82,13 @@ model: inherit
 ### {{EXAMPLE_2_TITLE}}
 
 **Input:**
+
 ```
 {{EXAMPLE_2_INPUT}}
 ```
 
 **Output:**
+
 ```
 {{EXAMPLE_2_OUTPUT}}
 ```

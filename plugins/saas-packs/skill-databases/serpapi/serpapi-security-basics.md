@@ -10,6 +10,7 @@ serpapi-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply SerpApi security best practices
 **Workflow:** Part of the operations skill category for SerpApi integration.
 **Relates to:** Other serpapi skills in this pack.

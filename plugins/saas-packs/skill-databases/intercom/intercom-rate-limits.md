@@ -10,6 +10,7 @@ intercom-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Intercom rate limiting and backoff
 **Workflow:** Part of the operations skill category for Intercom integration.
 **Relates to:** Other intercom skills in this pack.

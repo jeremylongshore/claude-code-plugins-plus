@@ -4,7 +4,7 @@
 
 Transform design files into React, Svelte, or Vue components with built-in accessibility.
 
-##  Features
+## Features
 
 - **Figma Parser** - Extract components from Figma JSON exports
 - **Screenshot Analysis** - Analyze UI layouts from images
@@ -12,15 +12,16 @@ Transform design files into React, Svelte, or Vue components with built-in acces
 - **A11y Built-in** - ARIA labels, semantic HTML, keyboard navigation
 - **Style Extraction** - Colors, typography, spacing
 
-##  Installation
+## Installation
 
 ```bash
 /plugin install design-to-code@claude-code-plugins-plus
 ```
 
-##  3 MCP Tools
+## 3 MCP Tools
 
 ### 1. `parse_figma`
+
 Extract components from Figma JSON export.
 
 ```json
@@ -31,6 +32,7 @@ Extract components from Figma JSON export.
 ```
 
 ### 2. `analyze_screenshot`
+
 Analyze screenshot layout and extract UI elements.
 
 ```json
@@ -41,6 +43,7 @@ Analyze screenshot layout and extract UI elements.
 ```
 
 ### 3. `generate_component`
+
 Generate code from layout specification.
 
 ```json
@@ -54,7 +57,7 @@ Generate code from layout specification.
 }
 ```
 
-##  Quick Start
+## Quick Start
 
 ```javascript
 // 1. Parse Figma design
@@ -73,21 +76,22 @@ const component = await generate_component({
 // Result: Production-ready React component with accessibility
 ```
 
-##  Accessibility Features
+## Accessibility Features
 
 All generated components include:
--  **ARIA labels** - Screen reader support
--  **Semantic HTML** - Proper element usage
--  **Keyboard navigation** - Tab order, focus states
--  **Color contrast** - WCAG AA compliance checking
 
-##  Supported Frameworks
+- **ARIA labels** - Screen reader support
+- **Semantic HTML** - Proper element usage
+- **Keyboard navigation** - Tab order, focus states
+- **Color contrast** - WCAG AA compliance checking
+
+## Supported Frameworks
 
 - **React** - JSX with hooks
 - **Svelte** - Single-file components
 - **Vue** - Composition API
 
-##  License
+## License
 
 MIT License
 

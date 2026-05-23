@@ -24,11 +24,13 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lindy Deploy Integration
 
 ## Overview
+
 Lindy agents run on Lindy's managed infrastructure. Deployment focuses on your
 **integration layer**: webhook receivers, callback handlers, and application code
 that Lindy agents interact with via HTTP Request actions and webhook triggers.
 
 ## Prerequisites
+
 - Lindy agents configured and tested
 - Application with webhook receiver endpoints
 - Deployment platform (Vercel, Railway, Docker, AWS, GCP)
@@ -37,6 +39,7 @@ that Lindy agents interact with via HTTP Request actions and webhook triggers.
 ## Instructions
 
 ### Step 1: Prepare Application for Deployment
+
 ```typescript
 // src/server.ts — Production-ready Lindy webhook receiver
 import express from 'express';
@@ -82,6 +85,7 @@ app.listen(PORT, () => console.log(`Listening on :${PORT}`));
 ```
 
 ### Step 2: Docker Deployment
+
 ```dockerfile
 # Dockerfile
 FROM node:20-alpine
@@ -108,6 +112,7 @@ docker run -d \
 ```
 
 ### Step 3: Vercel Deployment
+
 ```bash
 # Install Vercel CLI
 npm i -g vercel
@@ -131,19 +136,23 @@ vercel --prod
 ```
 
 ### Step 4: Update Lindy Agent Webhook URLs
+
 After deployment, update all Lindy agents with production URLs:
 
 1. In Lindy dashboard, open each agent with a webhook trigger
 2. Navigate to the **HTTP Request** action (if agent calls your API)
 3. Update URL from dev/staging to production:
+
    ```
    OLD: https://abc123.ngrok.io/lindy/callback
    NEW: https://api.yourapp.com/lindy/callback
    ```
+
 4. For webhook triggers, callers need the Lindy-generated URL (unchanged)
 5. Test with a sample webhook to verify end-to-end
 
 ### Step 5: Post-Deploy Verification
+
 ```bash
 #!/bin/bash
 echo "=== Post-Deploy Verification ==="
@@ -173,6 +182,7 @@ echo "Agent triggered — check Tasks tab in Lindy dashboard"
 ```
 
 ### Step 6: Rollback Plan
+
 ```bash
 # If deployment fails, rollback:
 # Vercel
@@ -212,8 +222,10 @@ docker run -d --name lindy-app-rollback \
 | Secret mismatch | Dev secret in prod | Verify production secrets match Lindy config |
 
 ## Resources
+
 - [Lindy Webhooks](https://docs.lindy.ai/skills/by-lindy/webhooks)
 - [Lindy Documentation](https://docs.lindy.ai)
 
 ## Next Steps
+
 See `lindy-webhooks-events` for advanced webhook patterns.

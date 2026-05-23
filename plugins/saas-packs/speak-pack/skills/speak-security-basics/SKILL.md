@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Speak Security Basics
 
 ## Overview
+
 Security best practices for Speak API keys, audio data privacy, student data protection, and COPPA/FERPA compliance.
 
 ## Prerequisites
+
 - Completed `speak-install-auth` setup
 - Valid API credentials configured
 - ffmpeg installed for audio processing
@@ -33,6 +35,7 @@ Security best practices for Speak API keys, audio data privacy, student data pro
 ## Instructions
 
 ### API Key Security
+
 ```bash
 # Never commit API keys
 echo '.env' >> .gitignore
@@ -43,6 +46,7 @@ export SPEAK_API_KEY="$(aws secretsmanager get-secret-value --secret-id speak/ap
 ```
 
 ### Audio Data Privacy
+
 ```typescript
 // Speak processes audio on their servers — do NOT store student audio locally
 // unless required by your application
@@ -62,6 +66,7 @@ class PrivacyAwareClient {
 ```
 
 ### Student Data Protection
+
 - Never log student audio recordings
 - Redact student names from API logs
 - Store assessment scores, not raw audio
@@ -70,6 +75,7 @@ class PrivacyAwareClient {
 - FERPA compliance for educational institutions: student data agreements
 
 ### Security Checklist
+
 - [ ] API keys in secrets manager, not code
 - [ ] Audio files deleted after processing
 - [ ] Student PII not logged
@@ -78,11 +84,13 @@ class PrivacyAwareClient {
 - [ ] Access logs maintained for audit
 
 ## Output
+
 - Basics implementation complete
 - Speak API integration verified
 - Production-ready patterns applied
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY environment variable |
@@ -91,11 +99,13 @@ class PrivacyAwareClient {
 | Session expired | Timeout after 30 min | Start a new conversation session |
 
 ## Resources
+
 - [Speak Website](https://speak.com)
 - [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
 - [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
 
 ## Next Steps
+
 See `speak-prod-checklist` for production readiness.
 
 ## Examples

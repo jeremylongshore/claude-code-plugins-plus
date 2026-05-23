@@ -405,7 +405,6 @@ async function noteManagementWorkflow(accessToken) {
 module.exports = noteManagementWorkflow;
 ```
 
-
 ## Best Practices
 
 1. **Always validate ENML** before sending to API

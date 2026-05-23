@@ -40,6 +40,7 @@ If the user is coming from the ideation flow, load `validated_ideas.json` for th
 ### Step 1: Research the Topic
 
 Before writing the brief, understand the topic deeply:
+
 - What does this feature/tool actually do? (Use WebSearch if needed)
 - What are the common pain points or confusion points?
 - What existing content exists? What angle would differentiate this video?
@@ -50,16 +51,19 @@ Before writing the brief, understand the topic deeply:
 Work with the user to lock in:
 
 **Content Type & Tier:**
+
 - Confirm which tier and category this falls under
 - This determines the format, length, and production approach
 
 **The Angle:**
+
 - What's the unique take? Why would someone click THIS video over alternatives?
 - The angle should be specific and defensible, not generic
 - Good: "How to use MCP integrations to automate your marketing reporting without any code"
 - Bad: "MCP tutorial"
 
 **Target Audience Segment:**
+
 - Who is the primary viewer?
 - What's their starting knowledge level for this topic?
 
@@ -90,6 +94,7 @@ Present the complete brief and ask:
 ```
 
 "What would you like to adjust?"
+
 - Approve - move to packaging
 - Adjust the angle
 - Add/remove key points

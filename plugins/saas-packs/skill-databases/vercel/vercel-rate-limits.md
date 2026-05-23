@@ -10,6 +10,7 @@ vercel-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement rate limiting, exponential backoff with jitter, and idempotency patterns for Vercel API interactions.
 **Workflow:** Applied during initial integration development and when encountering 429 errors.
 **Relates to:** Complements vercel-sdk-patterns; monitoring aspects connect to vercel-observability

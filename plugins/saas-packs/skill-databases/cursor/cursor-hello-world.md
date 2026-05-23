@@ -10,6 +10,7 @@ cursor-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Guides first-time users through creating their first AI-powered project in Cursor, demonstrating core features like tab completion, AI chat, and Composer.
 
 **Workflow:** This skill activates when new users want to explore Cursor's AI capabilities. It provides a 5-minute quick start, hands-on exercises for each feature, and explains the AI context system including model selection and privacy modes.

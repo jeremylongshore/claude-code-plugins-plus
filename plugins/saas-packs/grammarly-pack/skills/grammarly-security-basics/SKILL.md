@@ -19,9 +19,11 @@ compatibility: Designed for Claude Code
 # Grammarly Security Basics
 
 ## Overview
+
 Grammarly processes user-written text content for grammar, tone, and style suggestions. Integrations handle document text that may contain confidential business communications, legal drafts, or personal correspondence. Security concerns include OAuth client credential management, ensuring user text is not persisted or logged unnecessarily, and protecting access tokens that grant read/write access to user documents and suggestion history.
 
 ## API Key Management
+
 ```typescript
 function createGrammarlyClient(): { clientId: string; clientSecret: string } {
   const clientId = process.env.GRAMMARLY_CLIENT_ID;
@@ -36,6 +38,7 @@ function createGrammarlyClient(): { clientId: string; clientSecret: string } {
 ```
 
 ## Webhook Signature Verification
+
 ```typescript
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
@@ -53,6 +56,7 @@ function verifyGrammarlyWebhook(req: Request, res: Response, next: NextFunction)
 ```
 
 ## Input Validation
+
 ```typescript
 import { z } from "zod";
 
@@ -70,6 +74,7 @@ function validateTextAnalysis(data: unknown) {
 ```
 
 ## Data Protection
+
 ```typescript
 const GRAMMARLY_SENSITIVE_FIELDS = ["document_text", "user_email", "access_token", "client_secret", "suggestion_context"];
 
@@ -87,6 +92,7 @@ function redactGrammarlyLog(record: Record<string, unknown>): Record<string, unk
 ```
 
 ## Security Checklist
+
 - [ ] Client secret stored in secrets vault, never in source code
 - [ ] Access tokens held in memory only, never persisted to disk
 - [ ] User document text never logged in application logs
@@ -97,6 +103,7 @@ function redactGrammarlyLog(record: Record<string, unknown>): Record<string, unk
 - [ ] OAuth scopes limited to minimum required permissions
 
 ## Error Handling
+
 | Vulnerability | Risk | Mitigation |
 |---|---|---|
 | Leaked client secret | Unauthorized document analysis access | Secrets vault + rotation |
@@ -106,8 +113,10 @@ function redactGrammarlyLog(record: Record<string, unknown>): Record<string, unk
 | Unencrypted text cache | Local storage breach exposes content | AES encryption for any local cache |
 
 ## Resources
+
 - [Grammarly API](https://developer.grammarly.com/)
 - [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
 
 ## Next Steps
+
 See `grammarly-prod-checklist`.

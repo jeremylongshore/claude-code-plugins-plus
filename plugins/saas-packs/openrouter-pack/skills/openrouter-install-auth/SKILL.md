@@ -52,6 +52,7 @@ export OPENROUTER_API_KEY="sk-or-v1-your-key-here"
 ### 3. Initialize the Client
 
 **Python:**
+
 ```python
 from openai import OpenAI
 
@@ -66,6 +67,7 @@ client = OpenAI(
 ```
 
 **TypeScript:**
+
 ```typescript
 import OpenAI from "openai";
 

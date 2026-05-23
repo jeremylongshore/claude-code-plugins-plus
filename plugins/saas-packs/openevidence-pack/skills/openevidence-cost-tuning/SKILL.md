@@ -18,12 +18,14 @@ compatibility: Designed for Claude Code
 # OpenEvidence Cost Tuning
 
 ## Optimization Strategies
+
 1. Cache frequent API calls
 2. Batch requests where possible
 3. Use appropriate API tier
 4. Monitor usage dashboards
 
 ## Usage Tracking
+
 ```typescript
 let totalCalls = 0;
 async function tracked(fn: () => Promise<any>) {
@@ -34,7 +36,9 @@ async function tracked(fn: () => Promise<any>) {
 ```
 
 ## Resources
+
 - [OpenEvidence Pricing](https://www.openevidence.com)
 
 ## Next Steps
+
 See `openevidence-reference-architecture`.

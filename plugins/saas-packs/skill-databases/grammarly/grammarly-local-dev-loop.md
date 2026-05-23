@@ -10,6 +10,7 @@ grammarly-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Grammarly local development workflow
 **Workflow:** Part of the onboarding skill category for Grammarly integration.
 **Relates to:** Other grammarly skills in this pack.

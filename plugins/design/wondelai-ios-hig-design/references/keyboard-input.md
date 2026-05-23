@@ -2,8 +2,8 @@
 
 Comprehensive guide to keyboard handling, text input, and hardware keyboard support.
 
-
 ## Table of Contents
+
 1. [Software Keyboard Types](#software-keyboard-types)
 2. [Text Content Types](#text-content-types)
 3. [Input Accessory Views](#input-accessory-views)
@@ -110,6 +110,7 @@ iOS automatically suggests codes from SMS messages when this content type is set
 ### When to Use
 
 Input accessory views appear above the keyboard for:
+
 - Navigation between fields (Previous/Next)
 - Custom actions (Done, formatting buttons)
 - Context-specific tools
@@ -187,6 +188,7 @@ struct FormView: View {
 ### Automatic Behavior (SwiftUI)
 
 SwiftUI automatically adjusts for keyboard in most cases:
+
 - ScrollViews scroll to keep focused field visible
 - Safe area adjusts for keyboard height
 
@@ -222,6 +224,7 @@ struct KeyboardAdaptive: ViewModifier {
 ### Why It Matters
 
 iPads commonly use hardware keyboards. Apps should:
+
 - Support standard keyboard shortcuts
 - Provide discoverability
 - Not break when hardware keyboard is attached

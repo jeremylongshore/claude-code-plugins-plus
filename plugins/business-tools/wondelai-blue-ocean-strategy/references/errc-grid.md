@@ -2,8 +2,8 @@
 
 The Eliminate-Reduce-Raise-Create (ERRC) grid is the operational tool that translates blue ocean thinking into concrete strategic actions. It forces companies to pursue differentiation and low cost simultaneously by asking four questions that challenge industry logic. This reference provides a complete guide to facilitating, applying, and validating ERRC decisions.
 
-
 ## Table of Contents
+
 1. [The Four Actions](#the-four-actions)
 2. [ERRC Grid Template](#errc-grid-template)
 3. [Detailed Questions for Each Action](#detailed-questions-for-each-action)
@@ -24,6 +24,7 @@ The Eliminate-Reduce-Raise-Create (ERRC) grid is the operational tool that trans
 These are factors the industry takes for granted but that add cost without proportional value to buyers. Elimination is the most powerful action because it simultaneously reduces cost and simplifies the offering.
 
 **How to identify elimination candidates:**
+
 - Factors that exist because "we have always done it this way"
 - Features that only a small minority of buyers use
 - Factors that exist because competitors have them, not because buyers need them
@@ -31,6 +32,7 @@ These are factors the industry takes for granted but that add cost without propo
 - Legacy features that served past needs but are now irrelevant
 
 **Warning signs that a factor should be eliminated:**
+
 - Removing it in a test does not generate complaints
 - Buyers do not mention it when describing why they buy
 - It requires significant cost but does not appear in purchase criteria
@@ -43,6 +45,7 @@ These are factors the industry takes for granted but that add cost without propo
 These are factors where the industry over-delivers relative to what buyers actually need. Reduction captures the insight that "good enough" on certain dimensions frees resources for factors that matter more.
 
 **How to identify reduction candidates:**
+
 - Factors where diminishing returns have set in
 - Areas where the industry standard exceeds what most buyers need
 - Features that increase complexity without proportional utility
@@ -57,6 +60,7 @@ These are factors where the industry over-delivers relative to what buyers actua
 These are factors where the industry currently under-delivers relative to buyer expectations or latent needs. Raising them creates differentiation that buyers immediately value.
 
 **How to identify raise candidates:**
+
 - Factors where customer complaints are persistent
 - Dimensions where alternatives from other industries outperform your industry
 - Areas where buyers have developed workarounds because the industry standard is not good enough
@@ -69,6 +73,7 @@ These are factors where the industry currently under-delivers relative to buyer 
 These are entirely new sources of value that redefine what the offering means. Creation is what opens new demand and attracts non-customers.
 
 **How to identify creation opportunities:**
+
 - Pain points in the buyer experience cycle that no one addresses
 - Needs currently served by complementary products or services
 - Desires expressed by non-customers that the industry does not serve
@@ -226,6 +231,7 @@ VALUE INNOVATION? (cost down + value up): YES / NO
 | 0:20 | Introduce the ERRC framework and rules |
 
 **Rules to establish:**
+
 - No factor is sacred (everything is a candidate for elimination)
 - Every "raise" or "create" must be funded by an "eliminate" or "reduce"
 - Think from the buyer's perspective, not internal perspective
@@ -263,6 +269,7 @@ For each selected ERRC action, the group works through:
 Using the finalized ERRC grid, draw the proposed value curve on the strategy canvas. Compare it to the current industry curves.
 
 **Validation checks:**
+
 - Is the curve divergent from competitors?
 - Is it focused (not trying to be high on everything)?
 - Can you articulate it in one sentence (compelling tagline)?
@@ -270,6 +277,7 @@ Using the finalized ERRC grid, draw the proposed value curve on the strategy can
 **Part 7: Action Planning (15 minutes)**
 
 For each ERRC decision, assign:
+
 - Owner
 - Timeline
 - Dependencies

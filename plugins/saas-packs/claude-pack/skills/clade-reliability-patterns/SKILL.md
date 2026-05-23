@@ -19,11 +19,13 @@ compatibility: Designed for Claude Code
 # Anthropic Reliability Patterns
 
 ## Overview
+
 Build fault-tolerant Claude integrations with built-in SDK retries, model fallback chains (Sonnet → Haiku), circuit breakers to avoid hammering a failing API, graceful degradation with cached/static responses, and per-request timeout configuration.
 
-
 ## Built-In SDK Retries
+
 The SDK retries 429 (rate limit) and 529 (overloaded) automatically:
+
 ```typescript
 const client = new Anthropic({
   maxRetries: 3, // default: 2
@@ -32,6 +34,7 @@ const client = new Anthropic({
 ```
 
 ## Model Fallback Chain
+
 ```typescript
 const FALLBACK_CHAIN = ['claude-sonnet-4-20250514', 'claude-haiku-4-5-20251001'];
 
@@ -52,6 +55,7 @@ async function callWithFallback(params: Anthropic.MessageCreateParams) {
 ```
 
 ## Circuit Breaker
+
 ```typescript
 class ClaudeCircuitBreaker {
   private failures = 0;
@@ -80,6 +84,7 @@ class ClaudeCircuitBreaker {
 ```
 
 ## Graceful Degradation
+
 ```typescript
 async function getResponse(userInput: string): Promise<string> {
   try {
@@ -98,6 +103,7 @@ async function getResponse(userInput: string): Promise<string> {
 ```
 
 ## Timeout Handling
+
 ```typescript
 const client = new Anthropic({
   timeout: 30_000, // 30s for most requests
@@ -110,27 +116,33 @@ const message = await client.messages.create(params, {
 ```
 
 ## Output
+
 - SDK configured with appropriate `maxRetries` and `timeout`
 - Model fallback chain automatically trying cheaper models on failure
 - Circuit breaker preventing cascading failures during outages
 - Graceful degradation returning static responses when Claude is unavailable
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | API Error | Check error type and status code | See `clade-common-errors` |
 
 ## Examples
+
 See Built-In SDK Retries, Model Fallback Chain, Circuit Breaker class, Graceful Degradation handler, and Timeout Handling above.
 
 ## Resources
+
 - [Error Types](https://docs.anthropic.com/en/api/errors)
 - [SDK Retries](https://github.com/anthropics/claude-sdk-typescript#retries)
 
 ## Next Steps
+
 See `clade-policy-guardrails` for content safety patterns.
 
 ## Prerequisites
+
 - Completed `clade-install-auth`
 - Production Claude integration requiring high availability
 - Understanding of fault tolerance patterns (retries, circuit breakers)
@@ -138,10 +150,13 @@ See `clade-policy-guardrails` for content safety patterns.
 ## Instructions
 
 ### Step 1: Review the patterns below
+
 Each section contains production-ready code examples. Copy and adapt them to your use case.
 
 ### Step 2: Apply to your codebase
+
 Integrate the patterns that match your requirements. Test each change individually.
 
 ### Step 3: Verify
+
 Run your test suite to confirm the integration works correctly.

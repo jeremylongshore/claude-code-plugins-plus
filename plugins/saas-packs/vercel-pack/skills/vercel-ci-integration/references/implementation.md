@@ -1,6 +1,7 @@
-# Implementation Guide
+## Implementation Guide
 
 ### Step 1: Create GitHub Actions Workflow
+
 Create `.github/workflows/vercel-integration.yml`:
 
 ```yaml
@@ -32,11 +33,13 @@ jobs:
 ```
 
 ### Step 2: Configure Secrets
+
 ```bash
 gh secret set VERCEL_API_KEY --body "sk_test_***"
 ```
 
 ### Step 3: Add Integration Tests
+
 ```typescript
 describe('Vercel Integration', () => {
   it.skipIf(!process.env.VERCEL_API_KEY)('should connect', async () => {

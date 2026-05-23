@@ -13,12 +13,13 @@ Generates complete Prisma schema files from natural language descriptions, inclu
 ## What This Command Does
 
 **Generated Schema:**
--  Prisma models with fields
--  Relationships (one-to-one, one-to-many, many-to-many)
--  Indexes and unique constraints
--  Default values and validators
--  Database-specific configuration
--  Example queries
+
+- Prisma models with fields
+- Relationships (one-to-one, one-to-many, many-to-many)
+- Indexes and unique constraints
+- Default values and validators
+- Database-specific configuration
+- Example queries
 
 **Output:** Complete `schema.prisma` file ready for migration
 
@@ -47,6 +48,7 @@ Generates complete Prisma schema files from natural language descriptions, inclu
 ## Example Output
 
 **Input:**
+
 ```
 /psg "Blog platform with users, posts, comments, and tags"
 ```
@@ -492,6 +494,7 @@ model Task {
 ## Database Support
 
 **PostgreSQL:**
+
 ```prisma
 datasource db {
   provider = "postgresql"
@@ -507,6 +510,7 @@ model Example {
 ```
 
 **MySQL:**
+
 ```prisma
 datasource db {
   provider = "mysql"
@@ -515,6 +519,7 @@ datasource db {
 ```
 
 **SQLite (Development):**
+
 ```prisma
 datasource db {
   provider = "sqlite"
@@ -523,6 +528,7 @@ datasource db {
 ```
 
 **MongoDB:**
+
 ```prisma
 datasource db {
   provider = "mongodb"
@@ -540,31 +546,37 @@ model User {
 ## Getting Started
 
 **1. Install Prisma:**
+
 ```bash
 npm install @prisma/client
 npm install -D prisma
 ```
 
 **2. Initialize Prisma:**
+
 ```bash
 npx prisma init
 ```
 
 **3. Use generated schema:**
+
 - Replace `prisma/schema.prisma` with generated content
 - Set `DATABASE_URL` in `.env`
 
 **4. Create migration:**
+
 ```bash
 npx prisma migrate dev --name init
 ```
 
 **5. Generate Prisma Client:**
+
 ```bash
 npx prisma generate
 ```
 
 **6. Use in code:**
+
 ```typescript
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()

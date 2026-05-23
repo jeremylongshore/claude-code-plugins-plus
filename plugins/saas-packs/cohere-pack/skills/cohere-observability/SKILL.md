@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Cohere Observability
 
 ## Overview
+
 Set up production observability for Cohere API v2 with Prometheus metrics, OpenTelemetry tracing, and AlertManager rules. Tracks per-endpoint latency, token usage, error rates, and costs.
 
 ## Prerequisites
+
 - Prometheus or compatible metrics backend
 - OpenTelemetry SDK installed
 - `cohere-ai` SDK v7+
@@ -314,12 +316,14 @@ app.get('/metrics', async (req, res) => {
 | Errors by Code | `sum by (status_code)(rate(cohere_errors_total[5m]))` | Pie chart |
 
 ## Output
+
 - Prometheus metrics for requests, latency, tokens, and errors
 - OpenTelemetry traces with Cohere-specific attributes
 - Structured JSON logging with pino
 - AlertManager rules for error rate, latency, auth, and cost
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Missing token metrics | Usage not in response | Check `response.usage.billedUnits` |
@@ -328,9 +332,11 @@ app.get('/metrics', async (req, res) => {
 | Trace gaps | Missing context propagation | Ensure OTel context flows through async |
 
 ## Resources
+
 - [Prometheus Naming Conventions](https://prometheus.io/docs/practices/naming/)
 - [OpenTelemetry JS](https://opentelemetry.io/docs/languages/js/)
 - [Cohere API Reference](https://docs.cohere.com/reference/about)
 
 ## Next Steps
+
 For incident response, see `cohere-incident-runbook`.

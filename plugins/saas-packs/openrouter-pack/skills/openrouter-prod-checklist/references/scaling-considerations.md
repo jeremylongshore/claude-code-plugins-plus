@@ -3,6 +3,7 @@
 ## Scaling Considerations
 
 ### Connection Pooling
+
 ```python
 import httpx
 
@@ -22,6 +23,7 @@ client = OpenAI(
 ```
 
 ### Async for High Throughput
+
 ```python
 from openai import AsyncOpenAI
 import asyncio

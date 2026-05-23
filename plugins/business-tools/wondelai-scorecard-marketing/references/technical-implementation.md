@@ -2,8 +2,8 @@
 
 Platform comparison, conditional logic patterns, PDF generation, and integration architecture.
 
-
 ## Table of Contents
+
 1. [Platform Comparison](#platform-comparison)
 2. [Scoring Logic Patterns](#scoring-logic-patterns)
 3. [Conditional Logic Patterns](#conditional-logic-patterns)
@@ -38,12 +38,14 @@ Platform comparison, conditional logic patterns, PDF generation, and integration
 ### Custom Development
 
 **When to build custom:**
+
 - Unique scoring logic not supported by platforms
 - Deep product integration required
 - High volume with cost concerns
 - Specific compliance requirements
 
 **Tech stack options:**
+
 - React/Next.js + headless CMS
 - Static form with serverless functions
 - WordPress + custom plugin
@@ -360,6 +362,7 @@ async function generatePDF(data) {
 ### Third-Party PDF Services
 
 If building is too complex:
+
 - **PDF.co** - API-based PDF generation
 - **DocRaptor** - HTML-to-PDF API
 - **Anvil** - PDF filling and generation
@@ -439,6 +442,7 @@ For no-code connections:
 
 **Trigger:** Webhook when quiz completes
 **Actions:**
+
 1. Add row to Google Sheet (backup)
 2. Create/update HubSpot contact
 3. Send email via Mailchimp

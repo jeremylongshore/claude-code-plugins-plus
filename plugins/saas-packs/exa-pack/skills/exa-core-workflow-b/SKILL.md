@@ -26,15 +26,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Core Workflow B — Similarity, Contents & Answer
 
 ## Overview
+
 Secondary Exa workflow covering three endpoints beyond search: `findSimilar` (discover pages semantically related to a URL), `getContents` (retrieve text/highlights for known URLs), and `answer` (get AI-generated answers with web citations). These complement the primary search workflow in `exa-core-workflow-a`.
 
 ## Prerequisites
+
 - `exa-js` installed and `EXA_API_KEY` configured
 - Familiarity with `exa-core-workflow-a` search patterns
 
 ## Instructions
 
 ### Step 1: Find Similar Pages
+
 ```typescript
 import Exa from "exa-js";
 
@@ -58,6 +61,7 @@ for (const r of similar.results) {
 ```
 
 ### Step 2: Find Similar with Contents
+
 ```typescript
 // findSimilarAndContents combines similarity search + content extraction
 const results = await exa.findSimilarAndContents(
@@ -79,6 +83,7 @@ for (const r of results.results) {
 ```
 
 ### Step 3: Get Contents for Known URLs
+
 ```typescript
 // getContents retrieves page content for a list of URLs you already have
 // Useful when you have URLs from a previous search or external source
@@ -107,6 +112,7 @@ for (const r of contents.results) {
 ```
 
 ### Step 4: AI-Powered Answer with Citations
+
 ```typescript
 // answer() searches the web and returns an AI-generated answer with sources
 const answer = await exa.answer(
@@ -125,6 +131,7 @@ for (const r of answer.results) {
 ```
 
 ### Step 5: Streaming Answer
+
 ```typescript
 // streamAnswer returns chunks as they're generated
 for await (const chunk of exa.streamAnswer(
@@ -140,12 +147,14 @@ for await (const chunk of exa.streamAnswer(
 ```
 
 ## Output
+
 - Similar pages discovered from a seed URL
 - Page content (text, highlights, summary) for known URLs
 - AI-generated answers with web source citations
 - Streaming answer chunks for real-time display
 
 ## Error Handling
+
 | Error | HTTP Code | Cause | Solution |
 |-------|-----------|-------|----------|
 | `INVALID_URLS` | 400 | Malformed URLs in getContents | Validate URLs have protocol |
@@ -158,6 +167,7 @@ for await (const chunk of exa.streamAnswer(
 ## Examples
 
 ### Competitive Intelligence Pipeline
+
 ```typescript
 async function findCompetitors(companyUrl: string) {
   // Find companies similar to a given company
@@ -177,6 +187,7 @@ async function findCompetitors(companyUrl: string) {
 ```
 
 ### Batch URL Content Retrieval
+
 ```typescript
 async function enrichUrls(urls: string[]) {
   // Process URLs in batches to stay within rate limits
@@ -197,9 +208,11 @@ async function enrichUrls(urls: string[]) {
 ```
 
 ## Resources
+
 - [Exa Find Similar](https://docs.exa.ai/reference/find-similar-links)
 - [Exa Get Contents](https://docs.exa.ai/reference/get-contents)
 - [Exa Contents Retrieval](https://docs.exa.ai/reference/contents-retrieval)
 
 ## Next Steps
+
 For common errors, see `exa-common-errors`. For SDK patterns, see `exa-sdk-patterns`.

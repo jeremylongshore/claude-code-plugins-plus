@@ -19,6 +19,7 @@ Generate search-optimized metadata (descriptions, tags, keywords) for maximum di
 ## Purpose
 
 Create metadata that:
+
 - **Ranks in search** - Target high-volume keywords
 - **Drives organic traffic** - SEO-optimized descriptions
 - **Improves discoverability** - Platform algorithms favor it
@@ -30,6 +31,7 @@ Create metadata that:
 When user runs `/metadata "I Made My API 11x Faster (Redis Tutorial)"`:
 
 **Step 1: Keyword Research**
+
 ```
 🔍 KEYWORD RESEARCH
 
@@ -67,6 +69,7 @@ Ranking difficulty: Medium (32/100)
 ```
 
 **Step 2: Description Generation**
+
 ```
 📝 YOUTUBE DESCRIPTION
 
@@ -134,6 +137,7 @@ Hashtags: 10 targeted tags ✓
 ```
 
 **Step 3: Tags Generation**
+
 ```
 🏷️ YOUTUBE TAGS
 
@@ -171,6 +175,7 @@ Recommended: Use first 30 tags for best balance
 ```
 
 **Step 4: Additional Metadata**
+
 ```
 🎬 ADDITIONAL METADATA
 
@@ -478,6 +483,7 @@ Projected views: 135K-180K in 6 months
 ## Platform-Specific Optimization
 
 ### YouTube SEO
+
 ```
 Priority:
 1. Title (most important for CTR and ranking)
@@ -496,6 +502,7 @@ Best Practices:
 ```
 
 ### Google Search SEO (Blog)
+
 ```
 Priority:
 1. Content quality (E-E-A-T: Experience, Expertise, Authority, Trust)
@@ -515,6 +522,7 @@ Best Practices:
 ```
 
 ### TikTok/Instagram Discovery
+
 ```
 Priority:
 1. First 3 seconds (hook)
@@ -532,6 +540,7 @@ Best Practices:
 ```
 
 ### LinkedIn Visibility
+
 ```
 Priority:
 1. First 2 lines (most visible before "see more")
@@ -561,6 +570,7 @@ Works with other Creator Studio plugins:
 ## Best Practices
 
 ### Keyword Strategy
+
 1. **One primary keyword per video** - Don't dilute focus
 2. **3-5 secondary keywords** - Related topics
 3. **Natural language** - Don't stuff keywords unnaturally
@@ -568,6 +578,7 @@ Works with other Creator Studio plugins:
 5. **Update older content** - Refresh metadata on old videos
 
 ### Description Writing
+
 1. **Front-load value** - First 200 characters matter most
 2. **Include timestamps** - Helps with watch time and UX
 3. **Add 5-8 links** - Resources, related videos, social
@@ -575,6 +586,7 @@ Works with other Creator Studio plugins:
 5. **Use line breaks** - Make it scannable
 
 ### Common Mistakes
+
 ❌ Keyword stuffing (hurts more than helps)
 ❌ Ignoring search intent (targeting wrong keywords)
 ❌ Copy-pasting same description (looks spammy)

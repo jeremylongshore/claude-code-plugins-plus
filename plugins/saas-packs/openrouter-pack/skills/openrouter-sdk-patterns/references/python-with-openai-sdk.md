@@ -3,6 +3,7 @@
 ## Python with OpenAI SDK
 
 ### Basic Setup
+
 ```python
 from openai import OpenAI
 import os
@@ -18,6 +19,7 @@ client = OpenAI(
 ```
 
 ### Synchronous Requests
+
 ```python
 def chat(prompt: str, model: str = "openai/gpt-4-turbo") -> str:
     response = client.chat.completions.create(
@@ -28,6 +30,7 @@ def chat(prompt: str, model: str = "openai/gpt-4-turbo") -> str:
 ```
 
 ### Async Requests
+
 ```python
 from openai import AsyncOpenAI
 import asyncio
@@ -49,6 +52,7 @@ result = asyncio.run(chat_async("Hello!"))
 ```
 
 ### Streaming
+
 ```python
 def stream_chat(prompt: str, model: str = "openai/gpt-4-turbo"):
     stream = client.chat.completions.create(

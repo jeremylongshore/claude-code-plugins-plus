@@ -38,21 +38,25 @@ Requires Python 3.9+. The setup script installs `requests`, `bandit`, and
 ## Quick Start
 
 **Check security headers on a URL:**
+
 ```
 > Check the security headers on https://example.com
 ```
 
 **Audit project dependencies:**
+
 ```
 > Audit the dependencies in this project for vulnerabilities
 ```
 
 **Scan code for security issues:**
+
 ```
 > Scan this codebase for hardcoded secrets and security issues
 ```
 
 **Full security audit:**
+
 ```
 > Run a full security audit on this project
 ```
@@ -70,6 +74,7 @@ python3 scripts/security_scanner.py https://example.com --output report.json
 ```
 
 **Checks:**
+
 - Security headers (CSP, HSTS, X-Frame-Options, X-Content-Type-Options,
   Referrer-Policy, Permissions-Policy)
 - SSL/TLS certificate validity and expiry
@@ -88,6 +93,7 @@ python3 scripts/dependency_auditor.py . --scanners npm,pip --output findings.jso
 ```
 
 **Supports:**
+
 - npm projects (via `npm audit`)
 - Python projects (via `pip-audit`)
 - Auto-detects project type from manifest files
@@ -103,6 +109,7 @@ python3 scripts/code_security_scanner.py . --exclude "test_*,*_test.py"
 ```
 
 **Detects:**
+
 - Hardcoded secrets (API keys, AWS keys, passwords, tokens)
 - SQL injection (string concatenation in queries)
 - Command injection (os.system, subprocess with shell=True)
@@ -114,6 +121,7 @@ python3 scripts/code_security_scanner.py . --exclude "test_*,*_test.py"
 ## Output
 
 All scanners produce:
+
 - Markdown-formatted reports for terminal display
 - JSON reports via `--output` for programmatic use
 - Risk scoring with severity levels (critical, high, medium, low, info)

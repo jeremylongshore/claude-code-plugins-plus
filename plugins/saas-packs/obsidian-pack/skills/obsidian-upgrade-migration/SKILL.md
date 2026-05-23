@@ -25,13 +25,16 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Obsidian Upgrade Migration
 
 ## Current State
+
 !`npm list 2>/dev/null | head -20`
 !`cat manifest.json 2>/dev/null || echo 'No manifest.json in cwd'`
 
 ## Overview
+
 Upgrade an Obsidian plugin between versions: migrate persisted settings with version checks, replace deprecated API calls, update `manifest.json` `minAppVersion`, and test across Obsidian releases.
 
 ## Prerequisites
+
 - Existing Obsidian plugin with source code
 - Current `manifest.json` and `versions.json`
 - Access to [Obsidian changelog](https://obsidian.md/changelog) and [breaking changes docs](https://docs.obsidian.md/Plugins/Releasing/Breaking+changes)
@@ -139,6 +142,7 @@ async loadSettings(): Promise<PluginSettings> {
 Common deprecations and their replacements:
 
 **Vault API changes:**
+
 ```typescript
 // DEPRECATED: vault.modify with string path
 await this.app.vault.modify(filePath, content);
@@ -155,6 +159,7 @@ const newFile = await this.app.vault.create(path, content);
 ```
 
 **Event registration changes:**
+
 ```typescript
 // DEPRECATED: workspace.on('file-open') with old signature
 this.app.workspace.on('file-open', (file) => { ... });
@@ -165,6 +170,7 @@ this.registerEvent(
 ```
 
 **Editor API (CodeMirror 5 to 6 migration):**
+
 ```typescript
 // DEPRECATED: accessing CM5 editor instance
 const cm = (editor as any).cm;
@@ -188,6 +194,7 @@ this.registerEditorExtension(
 ```
 
 **FileManager changes:**
+
 ```typescript
 // DEPRECATED: processFrontMatter sync signature
 this.app.fileManager.processFrontMatter(file, (fm) => {
@@ -243,6 +250,7 @@ grep -rn 'cm\.getValue\|processFrontMatter.*sync\|vault\.modify.*string' src/ ||
 ```
 
 Manual testing checklist:
+
 1. Install plugin on the `minAppVersion` you declared -- confirm it loads without errors
 2. Install on latest Obsidian -- confirm full functionality
 3. Test settings migration: copy a `data.json` from an older version into the plugin directory, reload, verify settings are preserved and upgraded
@@ -269,6 +277,7 @@ npm run build
 ```
 
 ## Output
+
 - Updated `manifest.json` with correct `minAppVersion`
 - Updated `versions.json` with new version mapping
 - Settings migration code that handles all previous schema versions
@@ -277,6 +286,7 @@ npm run build
 - Tested on minimum and latest Obsidian versions
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Property does not exist on type 'Plugin'` | API removed in newer `obsidian` types | Check changelog for replacement API |
@@ -294,6 +304,7 @@ npm run build
 **Settings schema change**: Plugin v2 renamed `darkMode: boolean` to `theme: 'light' | 'dark' | 'system'`. Add migration in Step 3 that maps the old boolean to the new enum, preserving user preference.
 
 ## Resources
+
 - [Obsidian Changelog](https://obsidian.md/changelog)
 - [Obsidian API Breaking Changes](https://docs.obsidian.md/Plugins/Releasing/Breaking+changes)
 - [Obsidian Developer Docs](https://docs.obsidian.md/Plugins)
@@ -301,4 +312,5 @@ npm run build
 - [CodeMirror 6 Migration](https://codemirror.net/docs/migration/)
 
 ## Next Steps
+
 For CI/CD to automate release testing, see `obsidian-ci-integration`. For multi-environment testing, see `obsidian-multi-env-setup`.

@@ -15,6 +15,7 @@ Options chain analysis, Greeks calculations, and strategy optimization using Ope
 ## Key Features
 
 ### Options Data
+
 - Options chains (calls/puts, all strikes)
 - Greeks (Delta, Gamma, Theta, Vega, Rho)
 - Implied volatility smile/skew

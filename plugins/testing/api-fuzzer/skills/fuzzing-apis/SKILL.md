@@ -83,6 +83,7 @@ Perform API fuzzing to discover crashes, unhandled exceptions, security vulnerab
 ## Examples
 
 **Schemathesis OpenAPI fuzzing:**
+
 ```bash
 # Basic schema-based fuzzing
 schemathesis run http://localhost:3000/api/openapi.json \  # 3000: 3 seconds in ms
@@ -98,6 +99,7 @@ schemathesis run http://localhost:3000/api/openapi.json \  # 3 seconds in ms
 ```
 
 **fast-check property-based API test:**
+
 ```typescript
 import fc from 'fast-check';
 import request from 'supertest';
@@ -122,6 +124,7 @@ test('POST /api/users handles arbitrary input without crashing', async () => {
 ```
 
 **Custom fuzz dictionary for injection testing:**
+
 ```json
 [
   "' OR '1'='1",

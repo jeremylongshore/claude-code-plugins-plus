@@ -10,6 +10,7 @@ clickup-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement ClickUp reference architecture
 **Workflow:** Part of the cicd skill category for ClickUp integration.
 **Relates to:** Other clickup skills in this pack.

@@ -34,6 +34,7 @@ This skill empowers Claude to analyze code for CPU-intensive operations, offerin
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Identify CPU bottlenecks in your application.
 - Optimize application performance by reducing CPU load.
 - Analyze code for computationally intensive operations.
@@ -45,6 +46,7 @@ This skill activates when you need to:
 User request: "Monitor CPU usage in my Python script and suggest optimizations."
 
 The skill will:
+
 1. Analyze the provided Python script for CPU-intensive functions.
 2. Identify potential bottlenecks such as inefficient loops or complex regex patterns.
 3. Provide recommendations for optimizing the code, such as using more efficient algorithms or asynchronous operations.
@@ -54,6 +56,7 @@ The skill will:
 User request: "Analyze the CPU load of this Java code and identify areas with high algorithmic complexity."
 
 The skill will:
+
 1. Analyze the provided Java code, focusing on algorithmic complexity (e.g., O(n^2) or worse).
 2. Pinpoint specific methods or sections of code with high complexity.
 3. Suggest alternative algorithms or data structures to improve performance.

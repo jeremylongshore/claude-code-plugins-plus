@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Performance Tuning
 
 ## Overview
+
 Optimize CodeRabbit review speed, relevance, and developer experience. Review time is primarily a function of PR size. Comment quality is controlled by profile selection, path instructions, and learnings. This skill covers all the levers for tuning CodeRabbit to your team's needs.
 
 ## Prerequisites
+
 - CodeRabbit installed and producing reviews
 - `.coderabbit.yaml` in repository root
 - Several PRs worth of review history to evaluate
@@ -47,6 +49,7 @@ Optimize CodeRabbit review speed, relevance, and developer experience. Review ti
 ## Instructions
 
 ### Step 1: Optimize PR Size for Faster Reviews
+
 ```markdown
 # PR size directly impacts review speed and quality
 
@@ -83,6 +86,7 @@ jobs:
 ```
 
 ### Step 2: Choose the Right Review Profile
+
 ```yaml
 # .coderabbit.yaml - Profile comparison
 reviews:
@@ -109,6 +113,7 @@ reviews:
 ```
 
 ### Step 3: Add Path Instructions for Relevance
+
 ```yaml
 # .coderabbit.yaml - Context makes reviews more relevant
 reviews:
@@ -143,6 +148,7 @@ reviews:
 ```
 
 ### Step 4: Exclude Low-Value Files
+
 ```yaml
 # .coderabbit.yaml - Skip files that generate noise
 reviews:
@@ -185,6 +191,7 @@ reviews:
 ```
 
 ### Step 5: Train CodeRabbit with Learnings
+
 ```markdown
 # CodeRabbit learns from your feedback on PR comments.
 # This improves relevance over time.
@@ -204,6 +211,7 @@ Please don't flag default exports in files under src/pages/."
 ```
 
 ### Step 6: Measure Improvement
+
 ```bash
 set -euo pipefail
 ORG="${1:-your-org}"
@@ -240,6 +248,7 @@ fi
 ```
 
 ## Output
+
 - PR size guidelines documented and enforced via CI
 - Review profile selected based on team needs
 - Path instructions configured for relevant feedback
@@ -248,6 +257,7 @@ fi
 - Review quality measured with metrics
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Review takes 15+ min | PR too large (1000+ lines) | Split into smaller PRs |
@@ -257,9 +267,11 @@ fi
 | Reviews on generated code | Missing path_filters | Add `!**/generated/**` to exclusions |
 
 ## Resources
+
 - [CodeRabbit Review Profiles](https://docs.coderabbit.ai/reference/configuration)
 - [Path Instructions Guide](https://docs.coderabbit.ai/guides/review-instructions)
 - [CodeRabbit Learnings](https://docs.coderabbit.ai/guides/learnings)
 
 ## Next Steps
+
 For learnings and advanced tuning, see `coderabbit-core-workflow-b`.

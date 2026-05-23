@@ -1,0 +1,105 @@
+// markdownlint-cli2 configuration for claude-code-plugins-plus-skills
+//
+// Single source of truth for markdown lint rules applied to:
+//   - plugins/**/SKILL.md (3000+ skill instruction files)
+//   - plugins/**/README.md (1500+ plugin READMEs)
+//   - marketplace/src/content/**/*.md (blog posts, content pages)
+//   - root-level: README.md, CLAUDE.md, CONTRIBUTING.md, CHANGELOG.md
+//
+// Policy: external PR gating + internal cleanliness. We are the marketplace
+// standard for skills; our own markdown holds the same bar.
+//
+// Reference: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+{
+  "config": {
+    "default": true,
+
+    // Disable rules incompatible with this codebase by design:
+
+    // MD013 (line-length) — skill descriptions, frontmatter blobs, and prose
+    // paragraphs in SKILL.md are intentionally long. Prose markdown without
+    // hard-wrap is the convention here.
+    "MD013": false,
+
+    // MD024 (no-duplicate-heading) — SKILL.md files commonly repeat
+    // section headings like "## Overview" across nested levels.
+    "MD024": { "siblings_only": true },
+
+    // MD033 (no-inline-html) — TOC <details>, badges, tables, anchor spans
+    // are intentional in plugin READMEs and SKILL.md.
+    "MD033": false,
+
+    // MD041 (first-line-heading) — YAML frontmatter is the first line in
+    // every SKILL.md and agent.md; rule misfires.
+    "MD041": false,
+
+    // MD036 (no-emphasis-as-heading) — bolded labels like **Author:** in
+    // metadata blocks are intentional, not headings.
+    "MD036": false,
+
+    // MD026 (no-trailing-punctuation in headings) — questions in section
+    // headings ("How does this work?") are intentional.
+    "MD026": false,
+
+    // MD034 (no-bare-urls) — too many auto-linked URLs in skill docs and
+    // changelog; angle-bracketing every one is noise.
+    "MD034": false,
+
+    // MD060 (table-column-style) — pure stylistic noise: enforces that
+    // every table pipe uses identical spacing throughout the file. Real
+    // tables with varying content widths produce thousands of false
+    // positives. Auto-fix doesn't reliably handle it. Not part of any
+    // widely-used markdownlint preset.
+    "MD060": false,
+
+    // MD040 (fenced-code-language) — real bug-prevention rule but the
+    // existing 3000+ SKILL.md files have thousands of bare ``` blocks
+    // for plain text snippets, ascii diagrams, sample output. Adding
+    // language tags to all of them is a separate cleanup wave. Tracking
+    // bead claude-* for the future cleanup; enable when ready.
+    "MD040": false,
+
+    // MD025 (single-h1) — blog posts in marketplace/src/content/ have
+    // both a frontmatter `title:` and a body `# Title` (standard Astro
+    // convention). Many plugin READMEs/SKILL.md also legitimately use
+    // multiple top-level headings (one per logical section). Disabling
+    // outright; tracking real "two h1 lines in one document" via review.
+    "MD025": false,
+
+    // Rules we KEEP enforced (real-markdown-bugs):
+    // MD009 — trailing whitespace
+    // MD011 — reversed link syntax
+    // MD012 — multiple consecutive blank lines
+    // MD018-MD021 — space requirements around heading markers
+    // MD022 — heading blank-line context
+    // MD030 — list marker spacing
+    // MD031 — fenced-code blank-line context
+    // MD032 — list blank-line context
+    // MD040 — fenced code requires language tag
+    // MD047 — file ends with single newline
+  },
+  "globs": [
+    "plugins/**/*.md",
+    "marketplace/src/content/**/*.md",
+    "README.md",
+    "CLAUDE.md",
+    "CONTRIBUTING.md",
+    "CHANGELOG.md",
+    "AGENTS.md",
+    "RELEASING.md",
+    "SECURITY.md"
+  ],
+  "ignores": [
+    "node_modules/**",
+    "**/node_modules/**",
+    "dist/**",
+    "**/dist/**",
+    "marketplace/backup-*/**",
+    "backups/**",
+    "claudes-docs/**",
+    "000-docs/**",
+    "tests/**",
+    ".forge/**",
+    "**/.forge/**"
+  ]
+}

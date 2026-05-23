@@ -10,6 +10,7 @@ navan-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Navan anti-patterns
 **Workflow:** Part of the enterprise skill category for Navan integration.
 **Relates to:** Other navan skills in this pack.

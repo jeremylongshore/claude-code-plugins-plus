@@ -23,6 +23,7 @@ compatibility: Designed for Claude Code
 Production architecture for fundraising operations integrating with Finta's CRM platform. Designed for startup founders and fund managers who need investor pipeline visibility, automated round management, and document room analytics. Key design drivers: deal velocity tracking, investor communication audit trail, capital collection automation via Stripe, and CRM integration with external systems like HubSpot or Salesforce for LP relationship management.
 
 ## Architecture Diagram
+
 ```
 Founder Dashboard ──→ Pipeline Service ──→ Cache (Redis) ──→ Finta API
                            ↓                                  /investors
@@ -34,6 +35,7 @@ Founder Dashboard ──→ Pipeline Service ──→ Cache (Redis) ──→ F
 ```
 
 ## Service Layer
+
 ```typescript
 class FundraiseService {
   constructor(private finta: FintaClient, private cache: CacheLayer) {}
@@ -54,6 +56,7 @@ class FundraiseService {
 ```
 
 ## Caching Strategy
+
 ```typescript
 const CACHE_CONFIG = {
   rounds:     { ttl: 600, prefix: 'round' },     // 10 min — round terms rarely change mid-raise
@@ -66,6 +69,7 @@ const CACHE_CONFIG = {
 ```
 
 ## Event Pipeline
+
 ```typescript
 class FundraiseEventPipeline {
   private queue = new Bull('finta-events', { redis: process.env.REDIS_URL });
@@ -83,6 +87,7 @@ class FundraiseEventPipeline {
 ```
 
 ## Data Model
+
 ```typescript
 interface Round     { id: string; name: string; targetAmount: number; instrument: 'SAFE' | 'convertible-note' | 'priced'; status: 'active' | 'closed'; }
 interface Investor  { id: string; name: string; email: string; firm: string; roundId: string; stage: 'contacted' | 'meeting' | 'dd' | 'term-sheet' | 'committed' | 'passed'; amount: number; }
@@ -91,6 +96,7 @@ interface Document  { id: string; name: string; type: 'pitch-deck' | 'financials
 ```
 
 ## Scaling Considerations
+
 - Partition investor pipelines by round to keep active-raise queries fast and isolated
 - Buffer email sync operations — Gmail/Outlook API rate limits are aggressive for bulk tracking
 - Batch Zapier webhook deliveries to avoid per-event overhead during rapid stage updates
@@ -98,6 +104,7 @@ interface Document  { id: string; name: string; type: 'pitch-deck' | 'financials
 - Use read-through cache for deal room analytics — investors check rooms sporadically but in bursts
 
 ## Error Handling
+
 | Component | Failure Mode | Recovery |
 |-----------|-------------|----------|
 | Investor sync | Finta API rate limit | Queue with exponential backoff, per-round circuit breaker |
@@ -107,8 +114,10 @@ interface Document  { id: string; name: string; type: 'pitch-deck' | 'financials
 | CRM sync | HubSpot conflict | Last-write-wins with Finta as source of truth, log discrepancies |
 
 ## Resources
+
 - [Finta Website](https://www.trustfinta.com)
 - [Finta for Fund Managers](https://www.trustfinta.com/blog/finta-for-fund-managers-venture-capital-crm)
 
 ## Next Steps
+
 See `finta-deploy-integration`.

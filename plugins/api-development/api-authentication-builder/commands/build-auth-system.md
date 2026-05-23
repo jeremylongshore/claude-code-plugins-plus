@@ -15,6 +15,7 @@ Implements a complete authentication and authorization system for your API, supp
 ## When to Use
 
 Use this command when:
+
 - Starting a new API that requires user authentication
 - Adding authentication to an existing unprotected API
 - Migrating from one auth method to another
@@ -24,6 +25,7 @@ Use this command when:
 - Building a SaaS application with tenant isolation
 
 Do NOT use this command for:
+
 - Static websites without user accounts
 - Public APIs that don't require authentication
 - Internal microservices using service mesh auth
@@ -32,6 +34,7 @@ Do NOT use this command for:
 ## Prerequisites
 
 Before running this command, ensure:
+
 - [ ] Database or user store is configured
 - [ ] Framework/language for API is chosen
 - [ ] Security requirements are defined
@@ -41,7 +44,9 @@ Before running this command, ensure:
 ## Process
 
 ### Step 1: Analyze Authentication Requirements
+
 Examines your application to determine the best auth strategy:
+
 - Identifies user types and roles
 - Determines session vs stateless requirements
 - Evaluates security compliance needs
@@ -49,7 +54,9 @@ Examines your application to determine the best auth strategy:
 - Reviews existing auth infrastructure
 
 ### Step 2: Generate Authentication Components
+
 Creates the core authentication system:
+
 - User model with secure password storage
 - Authentication middleware/filters
 - Token generation and validation
@@ -57,7 +64,9 @@ Creates the core authentication system:
 - Password reset and recovery flows
 
 ### Step 3: Implement Authorization Logic
+
 Sets up access control mechanisms:
+
 - Role-based access control (RBAC)
 - Permission-based authorization
 - Resource-level permissions
@@ -65,7 +74,9 @@ Sets up access control mechanisms:
 - Tenant isolation for multi-tenant apps
 
 ### Step 4: Configure Security Features
+
 Implements additional security measures:
+
 - Rate limiting for auth endpoints
 - Account lockout after failed attempts
 - Password complexity requirements
@@ -103,11 +114,13 @@ auth-system/
 ### Example 1: JWT-based Authentication for REST API
 
 **User Input:**
+
 ```
 /auth --type jwt --framework express
 ```
 
 **Generated Authentication Service:**
+
 ```javascript
 // services/auth.service.js
 const jwt = require('jsonwebtoken');
@@ -277,6 +290,7 @@ class AuthService {
 ```
 
 **Generated Middleware:**
+
 ```javascript
 // middleware/authenticate.js
 const jwt = require('jsonwebtoken');
@@ -339,11 +353,13 @@ const authorize = (...allowedRoles) => {
 ### Example 2: OAuth2 Provider Implementation
 
 **User Input:**
+
 ```
 /auth --type oauth2-provider --framework fastapi
 ```
 
 **Generated OAuth2 Provider:**
+
 ```python
 # services/oauth2_provider.py
 from datetime import datetime, timedelta
@@ -463,11 +479,13 @@ class OAuth2Provider:
 ### Example 3: API Key Authentication
 
 **User Input:**
+
 ```
 /auth --type api-key --with-rate-limiting
 ```
 
 **Generated API Key System:**
+
 ```javascript
 // services/apikey.service.js
 const crypto = require('crypto');
@@ -558,9 +576,11 @@ class APIKeyService {
 ## Error Handling
 
 ### Error: Password Too Weak
+
 **Symptoms:** Registration fails with password validation error
 **Cause:** Password doesn't meet complexity requirements
 **Solution:**
+
 ```javascript
 // Implement password strength validation
 const passwordStrength = {
@@ -573,18 +593,22 @@ const passwordStrength = {
 ```
 
 ### Error: Token Expired
+
 **Symptoms:** 401 Unauthorized after token lifetime
 **Cause:** Access token has expired
 **Solution:**
+
 ```javascript
 // Use refresh token to get new access token
 const { accessToken } = await authService.refreshAccessToken(refreshToken);
 ```
 
 ### Error: Account Locked
+
 **Symptoms:** 403 Forbidden after multiple failed attempts
 **Cause:** Brute force protection triggered
 **Solution:**
+
 ```javascript
 // Implement exponential backoff
 const lockoutDuration = Math.pow(2, failedAttempts) * 60 * 1000;
@@ -593,17 +617,20 @@ const lockoutDuration = Math.pow(2, failedAttempts) * 60 * 1000;
 ## Configuration Options
 
 ### Option: `--type`
+
 - **Purpose:** Choose authentication method
 - **Values:** `jwt`, `oauth2`, `api-key`, `session`, `basic`
 - **Default:** `jwt`
 - **Example:** `/auth --type oauth2`
 
 ### Option: `--with-mfa`
+
 - **Purpose:** Add multi-factor authentication
 - **Default:** false
 - **Example:** `/auth --with-mfa`
 
 ### Option: `--with-social`
+
 - **Purpose:** Add social login providers
 - **Default:** false
 - **Example:** `/auth --with-social google,github,facebook`
@@ -611,6 +638,7 @@ const lockoutDuration = Math.pow(2, failedAttempts) * 60 * 1000;
 ## Best Practices
 
 ✅ **DO:**
+
 - Hash passwords with bcrypt or argon2
 - Use secure random tokens
 - Implement rate limiting
@@ -620,6 +648,7 @@ const lockoutDuration = Math.pow(2, failedAttempts) * 60 * 1000;
 - Implement password reset flow
 
 ❌ **DON'T:**
+
 - Store plain text passwords
 - Use MD5 or SHA1 for passwords
 - Create predictable tokens
@@ -628,6 +657,7 @@ const lockoutDuration = Math.pow(2, failedAttempts) * 60 * 1000;
 - Trust client-side validation only
 
 💡 **TIPS:**
+
 - Use refresh tokens for better UX
 - Implement remember me functionality carefully
 - Add CAPTCHA for public endpoints
@@ -651,6 +681,7 @@ const lockoutDuration = Math.pow(2, failedAttempts) * 60 * 1000;
 ## Security Notes
 
 ⚠️ **Security Considerations:**
+
 - Always use HTTPS in production
 - Store secrets in environment variables
 - Rotate JWT secrets regularly
@@ -662,12 +693,15 @@ const lockoutDuration = Math.pow(2, failedAttempts) * 60 * 1000;
 ## Troubleshooting
 
 ### Issue: JWT secret not set
+
 **Solution:** Set JWT_SECRET environment variable with strong random value
 
 ### Issue: Sessions not persisting
+
 **Solution:** Configure session store (Redis recommended for production)
 
 ### Issue: OAuth2 redirect not working
+
 **Solution:** Verify redirect URI is whitelisted in OAuth2 provider
 
 ## Version History

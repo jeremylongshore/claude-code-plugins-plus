@@ -44,6 +44,7 @@ For types with different names but similar shapes:
 4. If overlap > 80%, flag as consolidation candidate
 
 Common patterns:
+
 - `User` and `UserDTO` — same fields, different names
 - `CreateUserInput` and `UpdateUserInput` — differ by 1-2 optional fields
 - `APIResponse` and `ServiceResponse` — identical structure, different domains
@@ -58,6 +59,7 @@ Common patterns:
 | Partial overlap, different domains | Keep separate — different reasons to change |
 
 Example consolidation:
+
 ```typescript
 // BEFORE: Two files with near-identical types
 // user-api.ts
@@ -87,10 +89,12 @@ For HIGH confidence consolidations:
 2. Update all import statements across the codebase
 3. Remove the duplicate definitions
 4. Run verification:
+
    ```bash
    npx tsc --noEmit 2>&1 | tail -20
    npm test 2>&1 | tail -30
    ```
+
 5. If errors → revert, flag as MEDIUM
 
 MEDIUM/LOW — flag with consolidation suggestion and rationale.

@@ -3,9 +3,11 @@
 # Lindy Security Basics
 
 ## Overview
+
 Security practices for Lindy AI agent integrations. Lindy creates autonomous AI agents that can access external services, execute actions, and handle data -- making security boundaries and permission controls essential.
 
 ## Prerequisites
+
 - Lindy account with API access
 - Understanding of Lindy's agent execution model
 - Awareness of connected service permissions
@@ -88,6 +90,7 @@ def audit_agent_action(agent_id: str, action: str, target: str, result: str):
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Agent accesses wrong service | No permission boundaries | Define explicit agent permissions |
@@ -98,6 +101,7 @@ def audit_agent_action(agent_id: str, action: str, target: str, result: str):
 ## Examples
 
 ### Permission Check Middleware
+
 ```python
 @app.before_request
 def check_agent_permissions():
@@ -108,5 +112,6 @@ def check_agent_permissions():
 ```
 
 ## Resources
+
 - [Lindy API Docs](https://docs.lindy.ai)
 - [Lindy Security](https://www.lindy.ai/security)

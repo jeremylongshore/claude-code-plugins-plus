@@ -10,6 +10,7 @@ assemblyai-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy AssemblyAI integrations to production
 **Workflow:** Part of the cicd skill category for AssemblyAI integration.
 **Relates to:** Other assemblyai skills in this pack.

@@ -28,6 +28,7 @@ Build an end-to-end AutoML pipeline: data checks, feature preprocessing, model s
 ## Prerequisites
 
 Before using this skill, ensure you have:
+
 - Python environment with AutoML libraries (Auto-sklearn, TPOT, H2O AutoML, or PyCaret)
 - Training dataset in accessible format (CSV, Parquet, or database)
 - Understanding of problem type (classification, regression, time-series)
@@ -42,13 +43,12 @@ Before using this skill, ensure you have:
 3. Set time and resource budgets for AutoML search
 4. Specify feature types and preprocessing needs
 5. Determine model interpretability requirements
-1. Load training data using Read tool
-2. Perform initial data quality assessment
-3. Configure train/validation/test split strategy
-4. Define feature engineering transformations
-5. Set up data validation checks
-1. Initialize AutoML pipeline with configuration
-
+6. Load training data using Read tool
+7. Perform initial data quality assessment
+8. Configure train/validation/test split strategy
+9. Define feature engineering transformations
+10. Set up data validation checks
+11. Initialize AutoML pipeline with configuration
 
 See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed implementation guide.
 

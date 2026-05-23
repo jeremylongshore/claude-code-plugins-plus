@@ -10,6 +10,7 @@ notion-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Notion reference architecture
 **Workflow:** Part of the cicd skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

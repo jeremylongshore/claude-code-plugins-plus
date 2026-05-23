@@ -10,6 +10,7 @@ anthropic-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Anthropic monitoring and observability
 **Workflow:** Part of the enterprise skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

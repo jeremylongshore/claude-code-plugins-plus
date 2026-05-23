@@ -25,10 +25,12 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lindy Production Checklist
 
 ## Overview
+
 Comprehensive go-live checklist for Lindy AI agents entering production. Covers
 agent configuration, security, monitoring, error handling, and operational readiness.
 
 ## Prerequisites
+
 - Agents tested in development/staging environment
 - Production Lindy workspace configured
 - Team members assigned appropriate roles
@@ -37,6 +39,7 @@ agent configuration, security, monitoring, error handling, and operational readi
 ## Production Checklist
 
 ### Authentication & Security
+
 - [ ] Production API keys generated (separate from dev/staging)
 - [ ] API keys stored in secret manager (not environment files)
 - [ ] Webhook secrets generated for all webhook triggers
@@ -46,6 +49,7 @@ agent configuration, security, monitoring, error handling, and operational readi
 - [ ] Enterprise: SSO enabled, SCIM configured
 
 ### Agent Configuration
+
 - [ ] Agent prompt reviewed for production quality
   - [ ] Clear identity and role definition
   - [ ] Numbered step-by-step instructions
@@ -61,6 +65,7 @@ agent configuration, security, monitoring, error handling, and operational readi
 - [ ] Knowledge base sources current and synced
 
 ### Integration Health
+
 - [ ] All integration OAuth tokens current (not expired)
 - [ ] Gmail: correct account authorized, label filters set
 - [ ] Slack: bot invited to required channels
@@ -69,6 +74,7 @@ agent configuration, security, monitoring, error handling, and operational readi
 - [ ] Phone numbers: provisioned and tested ($10/month each)
 
 ### Error Handling
+
 - [ ] Agents have fallback behavior for common failures:
   - [ ] Integration auth expired -> notify admin
   - [ ] KB returns no results -> graceful fallback response
@@ -79,6 +85,7 @@ agent configuration, security, monitoring, error handling, and operational readi
 - [ ] Credit usage alerts configured (50%, 80%, 95% thresholds)
 
 ### Monitoring & Observability
+
 - [ ] Regular review of agent Tasks tab scheduled
 - [ ] Failed task alerts configured (email or Slack)
 - [ ] Credit consumption tracked per agent
@@ -86,6 +93,7 @@ agent configuration, security, monitoring, error handling, and operational readi
 - [ ] Response time baseline established for each agent
 
 ### Operational Readiness
+
 - [ ] Runbook documented for common agent failures
 - [ ] Escalation path defined (L1 -> L2 -> Lindy support)
 - [ ] On-call schedule if agents are customer-facing
@@ -93,6 +101,7 @@ agent configuration, security, monitoring, error handling, and operational readi
 - [ ] Team credit allocation set for team members ($19.99/seat on Pro)
 
 ### Compliance & Documentation
+
 - [ ] Data handling practices documented per agent
 - [ ] Agent prompts include PII redaction instructions
 - [ ] Knowledge base content reviewed for accuracy
@@ -101,6 +110,7 @@ agent configuration, security, monitoring, error handling, and operational readi
 - [ ] Agent purpose and scope documented for team reference
 
 ## Pre-Launch Validation Script
+
 ```bash
 #!/bin/bash
 echo "=== Lindy Production Validation ==="
@@ -151,9 +161,11 @@ echo "=== Validation Complete ==="
 | Missing documentation | Low | Document within first week |
 
 ## Resources
+
 - [Lindy Documentation](https://docs.lindy.ai)
 - [Lindy Pricing](https://www.lindy.ai/pricing)
 - [Lindy Security](https://www.lindy.ai/security)
 
 ## Next Steps
+
 Proceed to `lindy-upgrade-migration` for version management.

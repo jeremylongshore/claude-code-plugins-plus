@@ -10,6 +10,7 @@ clickhouse-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute ClickHouse SDK upgrades
 **Workflow:** Part of the operations skill category for ClickHouse integration.
 **Relates to:** Other clickhouse skills in this pack.

@@ -34,6 +34,7 @@ This skill empowers Claude to identify and address performance bottlenecks acros
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Diagnose slow application performance.
 - Optimize resource usage (CPU, memory, I/O, database).
 - Proactively prevent performance issues.
@@ -45,6 +46,7 @@ This skill activates when you need to:
 User request: "detect bottlenecks in my database queries"
 
 The skill will:
+
 1. Analyze database query performance and identify slow-running queries.
 2. Suggest optimizations like indexing or query rewriting to improve database performance.
 
@@ -53,6 +55,7 @@ The skill will:
 User request: "analyze performance and find memory leaks"
 
 The skill will:
+
 1. Profile memory usage patterns to identify potential memory leaks.
 2. Provide code examples and recommendations to fix the memory leaks.
 

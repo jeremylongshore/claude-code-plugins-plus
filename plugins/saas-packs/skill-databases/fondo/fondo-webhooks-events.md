@@ -10,6 +10,7 @@ fondo-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Fondo webhook handling
 **Workflow:** Part of the cicd skill category for Fondo integration.
 **Relates to:** Other fondo skills in this pack.

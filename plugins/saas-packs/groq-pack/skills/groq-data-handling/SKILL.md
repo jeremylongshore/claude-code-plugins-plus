@@ -22,9 +22,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq Data Handling
 
 ## Overview
+
 Manage data flowing through Groq's inference API. Covers prompt sanitization before sending to Groq, response filtering after receiving, PII redaction, conversation audit logging, and token usage tracking. Key fact: Groq does not use API data for model training ([Groq Privacy Policy](https://groq.com/privacy-policy/)).
 
 ## Groq Data Policy
+
 - Groq does **not** train on API request/response data
 - Prompts and completions are processed and discarded
 - Groq may temporarily log requests for abuse prevention
@@ -33,6 +35,7 @@ Manage data flowing through Groq's inference API. Covers prompt sanitization bef
 ## Instructions
 
 ### Step 1: Prompt Sanitization Layer
+
 ```typescript
 import Groq from "groq-sdk";
 
@@ -80,6 +83,7 @@ function sanitizeMessages(messages: any[]): { messages: any[]; hadPII: boolean }
 ```
 
 ### Step 2: Safe Completion Wrapper
+
 ```typescript
 async function safeCompletion(
   messages: any[],
@@ -121,6 +125,7 @@ async function safeCompletion(
 ```
 
 ### Step 3: Token Usage Tracking
+
 ```typescript
 interface UsageRecord {
   timestamp: string;
@@ -165,6 +170,7 @@ function trackUsage(model: string, usage: any, sessionId?: string): UsageRecord 
 ```
 
 ### Step 4: Audit-Logged Completion
+
 ```typescript
 interface AuditLog {
   timestamp: string;
@@ -212,6 +218,7 @@ async function auditedCompletion(
 ```
 
 ### Step 5: Content Safety Check
+
 ```typescript
 // Use Groq's Llama Guard for content moderation
 async function moderateContent(text: string): Promise<{
@@ -235,6 +242,7 @@ async function moderateContent(text: string): Promise<{
 ```
 
 ### Step 6: Daily Cost Report
+
 ```typescript
 function generateCostReport(records: UsageRecord[]) {
   const totalCost = records.reduce((sum, r) => sum + r.estimatedCostUsd, 0);
@@ -263,6 +271,7 @@ function generateCostReport(records: UsageRecord[]) {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | PII leaks in response | Model echoes sensitive input | Apply response filtering on all completions |
@@ -271,9 +280,11 @@ function generateCostReport(records: UsageRecord[]) {
 | Audit gaps | Not all code paths use wrapper | Lint rule: ban direct `groq.chat.completions.create` |
 
 ## Resources
+
 - [Groq Privacy Policy](https://groq.com/privacy-policy/)
 - [Groq Pricing](https://groq.com/pricing)
 - [Llama Guard (content moderation)](https://console.groq.com/docs/model/meta-llama/llama-guard-4-12b)
 
 ## Next Steps
+
 For enterprise access controls, see `groq-enterprise-rbac`.

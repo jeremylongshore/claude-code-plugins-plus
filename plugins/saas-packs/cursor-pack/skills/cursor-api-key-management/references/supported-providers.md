@@ -3,6 +3,7 @@
 ## Supported Providers
 
 ### OpenAI
+
 ```json
 // Settings > Cursor > API Keys
 
@@ -20,6 +21,7 @@ Available models with your key:
 ```
 
 ### Anthropic
+
 ```json
 {
   "cursor.anthropic.apiKey": "sk-ant-..."
@@ -33,6 +35,7 @@ Available models:
 ```
 
 ### Azure OpenAI
+
 ```json
 {
   "cursor.azure.apiKey": "...",
@@ -48,6 +51,7 @@ Benefits:
 ```
 
 ### Google AI (Gemini)
+
 ```json
 {
   "cursor.google.apiKey": "...",

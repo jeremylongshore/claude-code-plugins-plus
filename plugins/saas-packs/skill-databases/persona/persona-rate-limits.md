@@ -10,6 +10,7 @@ persona-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Persona rate limiting and backoff
 **Workflow:** Part of the operations skill category for Persona integration.
 **Relates to:** Other persona skills in this pack.

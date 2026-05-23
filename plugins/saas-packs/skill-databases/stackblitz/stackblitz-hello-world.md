@@ -10,6 +10,7 @@ stackblitz-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working StackBlitz example
 **Workflow:** Part of the onboarding skill category for StackBlitz integration.
 **Relates to:** Other stackblitz skills in this pack.

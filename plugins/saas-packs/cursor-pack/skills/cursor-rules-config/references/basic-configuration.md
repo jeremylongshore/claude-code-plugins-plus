@@ -3,6 +3,7 @@
 ## Basic Configuration
 
 ### Minimal Example
+
 ```yaml
 # .cursorrules
 
@@ -18,6 +19,7 @@ rules:
 ```
 
 ### Standard Template
+
 ```yaml
 # .cursorrules
 

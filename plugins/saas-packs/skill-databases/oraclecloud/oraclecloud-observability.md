@@ -10,6 +10,7 @@ oraclecloud-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Oracle Cloud monitoring and observability
 **Workflow:** Part of the enterprise skill category for Oracle Cloud integration.
 **Relates to:** Other oraclecloud skills in this pack.

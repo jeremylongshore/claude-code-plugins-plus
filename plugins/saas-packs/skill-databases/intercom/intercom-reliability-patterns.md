@@ -10,6 +10,7 @@ intercom-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Intercom reliability patterns
 **Workflow:** Part of the enterprise skill category for Intercom integration.
 **Relates to:** Other intercom skills in this pack.

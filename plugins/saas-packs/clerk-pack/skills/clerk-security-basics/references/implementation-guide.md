@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Secure Environment Variables
+
 ```bash
 # .env.local (development)
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
@@ -43,6 +44,7 @@ export function validateEnv() {
 ```
 
 ### Step 2: Secure Middleware Configuration
+
 ```typescript
 // middleware.ts
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
@@ -93,6 +95,7 @@ export default clerkMiddleware(async (auth, request) => {
 ```
 
 ### Step 3: Secure API Routes
+
 ```typescript
 // app/api/protected/route.ts
 import { auth } from '@clerk/nextjs/server'
@@ -137,6 +140,7 @@ export async function POST(request: Request) {
 ```
 
 ### Step 4: Secure Webhook Handling
+
 ```typescript
 // app/api/webhooks/clerk/route.ts
 import { Webhook } from 'svix'
@@ -199,6 +203,7 @@ export async function POST(req: Request) {
 ```
 
 ### Step 5: Session Security
+
 ```typescript
 // lib/session-security.ts
 import { auth } from '@clerk/nextjs/server'

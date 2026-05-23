@@ -10,6 +10,7 @@ glean-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Glean SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Glean integration.
 **Relates to:** Other glean skills in this pack.

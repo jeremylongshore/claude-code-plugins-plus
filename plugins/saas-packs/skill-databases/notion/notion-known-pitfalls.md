@@ -10,6 +10,7 @@ notion-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Notion anti-patterns
 **Workflow:** Part of the enterprise skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

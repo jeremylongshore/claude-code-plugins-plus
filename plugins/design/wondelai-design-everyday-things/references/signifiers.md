@@ -222,6 +222,7 @@ Too many cues. Visual noise overwhelms users and nothing stands out. Symptoms: u
 ### Five-Second Test
 
 Show the interface to a user for exactly 5 seconds, then hide it. Ask:
+
 1. What was this page about?
 2. What could you do on this page?
 3. What would you click first?
@@ -235,6 +236,7 @@ Give users a task and record where they click first. If fewer than 70% of users 
 ### Think-Aloud Walkthrough
 
 Ask users to complete a task while narrating their thought process. Listen for:
+
 - "I'm not sure what to click."
 - "Is this a button?"
 - "What does this icon mean?"

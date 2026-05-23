@@ -10,6 +10,7 @@ together-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Together AI rate limiting and backoff
 **Workflow:** Part of the operations skill category for Together AI integration.
 **Relates to:** Other together skills in this pack.

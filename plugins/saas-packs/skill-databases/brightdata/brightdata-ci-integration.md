@@ -10,6 +10,7 @@ brightdata-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Bright Data CI/CD integration
 **Workflow:** Part of the cicd skill category for Bright Data integration.
 **Relates to:** Other brightdata skills in this pack.

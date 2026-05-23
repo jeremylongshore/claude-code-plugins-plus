@@ -10,6 +10,7 @@ techsmith-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement TechSmith rate limiting and backoff
 **Workflow:** Part of the operations skill category for TechSmith integration.
 **Relates to:** Other techsmith skills in this pack.

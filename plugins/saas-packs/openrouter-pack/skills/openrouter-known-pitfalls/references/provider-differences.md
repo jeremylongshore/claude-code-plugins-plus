@@ -3,6 +3,7 @@
 ## Provider Differences
 
 ### Assuming Identical Behavior
+
 ```python
 # ❌ Problem: Same code, different providers
 # Function calling syntax differs slightly
@@ -19,6 +20,7 @@ response = client.chat.completions.create(
 ```
 
 ### Different Response Formats
+
 ```python
 # Different models may format responses differently
 # Always handle variations

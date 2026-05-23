@@ -18,9 +18,11 @@ compatibility: Designed for Claude Code
 # OpenEvidence Local Dev Loop
 
 ## Overview
+
 Local development workflow for OpenEvidence clinical decision support API integration. Provides a fast feedback loop with mock evidence queries, citation responses, and clinical summary data so you can build health-tech tools without consuming live API quota. Toggle between mock mode for rapid iteration and sandbox mode for validating against the real OpenEvidence platform. Always use de-identified data in development.
 
 ## Environment Setup
+
 ```bash
 cp .env.example .env
 # Set your credentials:
@@ -32,6 +34,7 @@ npm install -D vitest supertest @types/express
 ```
 
 ## Dev Server
+
 ```typescript
 // src/dev/server.ts
 import express from "express";
@@ -53,6 +56,7 @@ app.listen(3008, () => console.log(`OpenEvidence dev server on :3008 [mock=${MOC
 ```
 
 ## Mock Mode
+
 ```typescript
 // src/dev/mocks.ts — realistic clinical decision support responses (de-identified)
 export function mountMockRoutes(app: any) {
@@ -78,6 +82,7 @@ export function mountMockRoutes(app: any) {
 ```
 
 ## Testing Workflow
+
 ```bash
 npm run dev:mock &                    # Start mock server in background
 npm run test                          # Unit tests with vitest
@@ -86,6 +91,7 @@ MOCK_MODE=false npm run test:integration  # Integration test against real API
 ```
 
 ## Debug Tips
+
 - Never use real patient data in development — all mock data must be de-identified
 - `confidenceScore` ranges from 0 to 1 — display as percentage in UI
 - Citation DOIs may be null for preprints or conference abstracts
@@ -93,6 +99,7 @@ MOCK_MODE=false npm run test:integration  # Integration test against real API
 - Use `topics` endpoint to validate query categorization before submitting full queries
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | `401 Unauthorized` | Invalid API key | Regenerate at OpenEvidence developer portal |
@@ -102,7 +109,9 @@ MOCK_MODE=false npm run test:integration  # Integration test against real API
 | `ECONNREFUSED :3008` | Dev server not running | Run `npm run dev:mock` first |
 
 ## Resources
+
 - [OpenEvidence Platform](https://www.openevidence.com)
 
 ## Next Steps
+
 See `openevidence-debug-bundle`.

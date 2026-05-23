@@ -9,12 +9,14 @@ Build DCF models, LBO analysis, variance reports, and pivot tables using natural
 ## 🚀 Features
 
 ### Auto-Invoked Skills
+
 - **DCF Modeler**: Build discounted cash flow valuation models with projections, WACC, and sensitivity analysis
 - **LBO Modeler**: Create leveraged buyout models with debt schedules, cash flow waterfalls, and IRR calculations
 - **Variance Analyzer**: Automate budget vs actual analysis with flagging, commentary, and executive summaries
 - **Pivot Wizard**: Generate pivot tables and charts from raw data using natural language
 
 ### Key Benefits
+
 - ✅ **Natural Language**: Just describe what you want—no Excel formulas to remember
 - ✅ **Auto-Invoked**: Claude automatically detects when to use each Skill
 - ✅ **Investment Banking Grade**: Follows IB best practices and standards
@@ -27,6 +29,7 @@ Build DCF models, LBO analysis, variance reports, and pivot tables using natural
 ## 📦 Installation
 
 ### Prerequisites
+
 - Claude Code 1.0+
 - Node.js 18+
 
@@ -37,6 +40,7 @@ Build DCF models, LBO analysis, variance reports, and pivot tables using natural
 ```
 
 This will automatically:
+
 1. Install the plugin
 2. Configure @negokaz/excel-mcp-server
 3. Load all 4 Skills into Claude Code
@@ -159,18 +163,21 @@ Visualization: Added column chart comparing regions
 ### Why Free Data Works for Financial Modeling
 
 **For DCF Models:**
+
 - Revenue/EBITDA: SEC 10-K/10-Q filings (FREE)
 - Stock prices: Yahoo Finance (FREE)
 - Risk-free rate: FRED (Federal Reserve, FREE)
 - Beta: Calculated from Yahoo Finance data (FREE)
 
 **For LBO Models:**
+
 - Entry valuation: SEC filings + Yahoo Finance (FREE)
 - Debt terms: Company 10-K disclosure (FREE)
 - Comparable multiples: Public comps from Yahoo Finance (FREE)
 - Exit assumptions: Historical trading multiples (FREE)
 
 **For Variance Analysis:**
+
 - Budget data: Your internal files (already have)
 - Actual results: Your accounting system (already have)
 - Industry benchmarks: BEA.gov, Census.gov (FREE)
@@ -184,6 +191,7 @@ Visualization: Added column chart comparing regions
 **What:** Official company filings (10-K, 10-Q, 8-K)
 
 **Use For:**
+
 - Revenue, EBITDA, net income
 - Balance sheet data
 - Cash flow statements
@@ -191,6 +199,7 @@ Visualization: Added column chart comparing regions
 - Risk factors
 
 **Access:**
+
 - Website: [sec.gov/edgar](https://www.sec.gov/edgar)
 - API: FREE, unlimited access
 - Python: `pip install sec-api` (free tier)
@@ -198,6 +207,7 @@ Visualization: Added column chart comparing regions
 **Cost:** $0 (US government public data)
 
 **Example:**
+
 ```python
 # Get Tesla's latest 10-K
 import requests
@@ -213,6 +223,7 @@ filings = response.json()
 **What:** Real-time stock prices, historical data, key stats
 
 **Use For:**
+
 - Current stock price
 - Historical prices (for beta calculation)
 - Market cap
@@ -220,6 +231,7 @@ filings = response.json()
 - 52-week high/low
 
 **Access:**
+
 - Website: [finance.yahoo.com](https://finance.yahoo.com)
 - Python: `pip install yfinance` (FREE)
 - Excel: Power Query (built-in, FREE)
@@ -227,6 +239,7 @@ filings = response.json()
 **Cost:** $0
 
 **Example:**
+
 ```python
 import yfinance as yf
 
@@ -242,6 +255,7 @@ market_cap = tesla.info["marketCap"]
 **What:** 817,000+ economic time series
 
 **Use For:**
+
 - Risk-free rate (10-year Treasury)
 - GDP growth rates
 - Inflation (CPI)
@@ -249,6 +263,7 @@ market_cap = tesla.info["marketCap"]
 - Market risk premium data
 
 **Access:**
+
 - Website: [fred.stlouisfed.org](https://fred.stlouisfed.org)
 - API: FREE (no rate limits)
 - Excel: FRED Excel Add-in (FREE)
@@ -256,6 +271,7 @@ market_cap = tesla.info["marketCap"]
 **Cost:** $0
 
 **Example:**
+
 ```python
 from fredapi import Fred
 
@@ -271,18 +287,21 @@ print(f"Current risk-free rate: {risk_free_rate.iloc[-1]}%")
 **What:** Stock fundamentals, technical indicators, forex
 
 **Use For:**
+
 - Financial statements (income statement, balance sheet, cash flow)
 - Key ratios
 - Earnings calendar
 - Technical indicators (SMA, RSI)
 
 **Access:**
+
 - Website: [alphavantage.co](https://www.alphavantage.co)
 - API: FREE tier (500 calls/day)
 
 **Cost:** $0 (free tier sufficient for modeling)
 
 **Example:**
+
 ```python
 import requests
 
@@ -299,6 +318,7 @@ financials = response.json()
 **What:** Unified interface to 100+ free data providers
 
 **Use For:**
+
 - Stocks, crypto, forex, commodities
 - Fundamentals, technicals, macro
 - Portfolio analytics
@@ -314,12 +334,14 @@ financials = response.json()
 #### Paid Data Approach
 
 **Annual Subscriptions:**
+
 - Bloomberg Terminal: $24,000/year
 - Capital IQ: $12,000/year
 - FactSet: $12,000/year
 - **Total: $48,000/year**
 
 **Advantages:**
+
 - Real-time data
 - Instant analyst estimates
 - Proprietary research
@@ -327,6 +349,7 @@ financials = response.json()
 #### Free Data Approach
 
 **Annual Subscriptions:**
+
 - SEC EDGAR: $0
 - Yahoo Finance: $0
 - FRED: $0
@@ -334,6 +357,7 @@ financials = response.json()
 - **Total: $0/year**
 
 **Advantages:**
+
 - Same official company data (SEC filings)
 - 15-min delayed (fine for modeling)
 - No credit card required
@@ -345,12 +369,14 @@ financials = response.json()
 #### DCF Model for Apple
 
 **Paid Approach (Bloomberg):**
+
 1. Open Bloomberg Terminal ($24K/year)
 2. Type `AAPL <EQUITY> FA` for financials
 3. Export to Excel
 4. Build DCF model
 
 **Free Approach (This Plugin):**
+
 ```python
 import yfinance as yf
 
@@ -376,6 +402,7 @@ risk_free_rate = fred.get_series_latest_release("DGS10").iloc[-1]
 #### LBO Model for Private Company
 
 **Data Needed:**
+
 - Entry valuation: Ask seller or use industry multiples
 - Debt terms: Term sheets from lenders
 - EBITDA projections: Internal management projections
@@ -388,6 +415,7 @@ risk_free_rate = fred.get_series_latest_release("DGS10").iloc[-1]
 #### Variance Analysis
 
 **Data Needed:**
+
 - Budget: Your internal Excel file
 - Actuals: Your accounting system export
 - KPIs: Your tracking dashboards
@@ -415,6 +443,7 @@ Claude: [Builds complete DCF model]
 ### When Free Data Is NOT Enough
 
 **Use paid data if:**
+
 - You're an investment bank pitching M&A ($24K/year justified)
 - You need real-time intraday data for trading
 - Client requires Bloomberg screenshots for compliance
@@ -445,15 +474,18 @@ Claude: [Builds complete DCF model]
 Each Skill has detailed documentation in its `SKILL.md` file:
 
 ### 1. DCF Modeler
+
 **File:** `skills/excel-dcf-modeler/SKILL.md`
 
 **Triggers:**
+
 - "Create a DCF model"
 - "Build a valuation model"
 - "Calculate enterprise value"
 - "Value [company]"
 
 **Outputs:**
+
 - 4-sheet Excel model (Assumptions, FCF Projections, Valuation, Sensitivity)
 - Enterprise value calculation
 - Sensitivity analysis (WACC vs terminal growth)
@@ -461,15 +493,18 @@ Each Skill has detailed documentation in its `SKILL.md` file:
 ---
 
 ### 2. LBO Modeler
+
 **File:** `skills/excel-lbo-modeler/SKILL.md`
 
 **Triggers:**
+
 - "Create an LBO model"
 - "Build a leveraged buyout model"
 - "Private equity analysis"
 - "Calculate IRR for acquisition"
 
 **Outputs:**
+
 - 6-sheet Excel model (Transaction, Sources & Uses, Operating, Debt Schedule, Returns, Covenants)
 - IRR and money-on-money calculations
 - Multiple sensitivity tables
@@ -477,15 +512,18 @@ Each Skill has detailed documentation in its `SKILL.md` file:
 ---
 
 ### 3. Variance Analyzer
+
 **File:** `skills/excel-variance-analyzer/SKILL.md`
 
 **Triggers:**
+
 - "Analyze budget variance"
 - "Compare actual vs forecast"
 - "Create variance report"
 - "Why are we over/under budget?"
 
 **Outputs:**
+
 - 3-sheet Excel report (Variance Summary, Executive Summary, Trend Analysis)
 - Automated flagging (🔴 critical, ⚠️ warning, ✅ on track)
 - Commentary and recommendations
@@ -493,15 +531,18 @@ Each Skill has detailed documentation in its `SKILL.md` file:
 ---
 
 ### 4. Pivot Wizard
+
 **File:** `skills/excel-pivot-wizard/SKILL.md`
 
 **Triggers:**
+
 - "Create a pivot table"
 - "Analyze [data] by [dimension]"
 - "Summarize sales by region"
 - "Show revenue breakdown"
 
 **Outputs:**
+
 - Pivot tables with professional formatting
 - Charts and visualizations
 - Slicers and filters
@@ -539,6 +580,7 @@ excel-analyst-pro/
 This plugin uses `@negokaz/excel-mcp-server` for Excel operations:
 
 **Configuration:**
+
 ```json
 {
   "command": "npx",
@@ -550,6 +592,7 @@ This plugin uses `@negokaz/excel-mcp-server` for Excel operations:
 ```
 
 **Capabilities:**
+
 - Read and write Excel (.xlsx) files
 - Create sheets and workbooks
 - Write formulas
@@ -563,16 +606,19 @@ This plugin uses `@negokaz/excel-mcp-server` for Excel operations:
 ### Skills + MCP Server = Complete Solution
 
 **MCP Server (Low-Level):**
+
 - Provides Excel file operations
 - Read cells, write formulas, create sheets
 - Like having a toolbox 🧰
 
 **Skills (High-Level):**
+
 - Provide domain expertise
 - Financial modeling patterns, best practices
 - Like having an expert consultant 👔
 
 **Together:**
+
 - Professional results with zero effort 🚀
 
 ### Example Flow
@@ -606,21 +652,25 @@ Output: Professional DCF model
 ## 📈 Use Cases
 
 ### Investment Banking Analysts
+
 - **Before**: 2-3 hours to build DCF from scratch
 - **After**: 5 minutes with professional results
 - **Time Saved**: 2-3 hours per model
 
 ### Private Equity Associates
+
 - **Before**: Full day to build LBO model
 - **After**: 10 minutes with complete analysis
 - **Time Saved**: 7-8 hours per deal
 
 ### Finance Managers
+
 - **Before**: 2 hours for monthly variance analysis
 - **After**: 5 minutes with automated commentary
 - **Time Saved**: 1 hour 55 minutes per month
 
 ### Data Analysts
+
 - **Before**: 55 minutes to clean data, create pivots, format charts
 - **After**: 3 minutes end-to-end
 - **Time Saved**: 52 minutes per report
@@ -694,6 +744,7 @@ This boosts IRR by ~300bps with partial liquidity.
 ## ⚠️ Limitations
 
 ### What This Plugin Does Well
+
 - Initial valuation analysis ✅
 - Pitch decks and presentations ✅
 - Academic exercises ✅
@@ -701,6 +752,7 @@ This boosts IRR by ~300bps with partial liquidity.
 - Team standardization ✅
 
 ### What Requires Manual Work
+
 - Official fairness opinions ❌
 - Detailed IC presentations (need scenario planning) ❌
 - Quarterly debt schedules (annual only) ❌
@@ -714,12 +766,14 @@ This boosts IRR by ~300bps with partial liquidity.
 ## 🔒 Security & Privacy
 
 ### Local Processing
+
 - ✅ All Excel work happens locally
 - ✅ No cloud upload required
 - ✅ Works offline
 - ✅ Full control over data
 
 **vs Claude for Excel (cloud-based):**
+
 - ❌ Uploads data to Anthropic cloud
 - ❌ Requires Max/Enterprise/Teams subscription
 - ❌ Subject to data retention policies
@@ -770,6 +824,7 @@ npx --yes @negokaz/excel-mcp-server
 **Problem:** You said "create DCF" but the Skill didn't load.
 
 **Solution:** Be more explicit:
+
 ```
 ❌ "create DCF"
 ✅ "Create a DCF model for Apple"
@@ -790,6 +845,7 @@ Want to add more Skills or improve existing ones?
 5. Submit a pull request
 
 **Ideas for new Skills:**
+
 - Comparable company analysis (comps)
 - M&A accretion/dilution model
 - Three-statement financial model
@@ -823,6 +879,7 @@ MIT License - see LICENSE file for details.
 ## 🚀 What's Next
 
 ### Roadmap
+
 - [ ] Comparable company analysis Skill
 - [ ] M&A accretion/dilution Skill
 - [ ] Three-statement model builder
@@ -831,6 +888,7 @@ MIT License - see LICENSE file for details.
 - [ ] Excel → Database migration tools
 
 ### Version History
+
 - **v1.0.0** (2025-10-27): Initial release with 4 core Skills
 
 ---

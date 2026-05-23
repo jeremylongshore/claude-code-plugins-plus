@@ -21,6 +21,7 @@
 **Visual**: [Montage of tips OR your face with text overlay]
 
 **Script**:
+
 ```
 "[Number] [topic] tips that will [benefit].
 
@@ -31,6 +32,7 @@ Let's go."
 ```
 
 **Example**:
+
 ```
 "5 JavaScript tips that will make your code cleaner.
 
@@ -40,6 +42,7 @@ Let's go."
 ```
 
 **On-Screen Text**:
+
 - Video title
 - Tip count
 - Your name
@@ -51,6 +54,7 @@ Let's go."
 **Visual**: [Your face]
 
 **Script**:
+
 ```
 "Hey everyone, [name] here.
 
@@ -71,6 +75,7 @@ Let's jump right into tip number 1."
 **Visual**: [Screen recording OR split screen]
 
 **Script**:
+
 ```
 "Tip #1: [Tip title - make it catchy]
 
@@ -105,6 +110,7 @@ Let's jump right into tip number 1."
 ```
 
 **On-Screen Text**:
+
 - "TIP #1" large header
 - Tip title
 - Before/after code comparison
@@ -119,6 +125,7 @@ Let's jump right into tip number 1."
 **Visual**: [Screen recording]
 
 **Script**:
+
 ```
 "Tip #2: [Tip title]
 
@@ -156,6 +163,7 @@ Let's jump right into tip number 1."
 **Visual**: [Screen recording]
 
 **Script**:
+
 ```
 "Tip #3: [Tip title]
 
@@ -180,6 +188,7 @@ Let's jump right into tip number 1."
 ### TIPS #4-7 (5:00-11:00) - ~90 seconds each
 
 **Format for each**:
+
 ```
 "Tip #[N]: [Title]
 
@@ -199,6 +208,7 @@ Let's jump right into tip number 1."
 **Visual**: [Screen recording - show the most impressive tip]
 
 **Script**:
+
 ```
 "And here's a bonus tip - this is the most powerful one:
 
@@ -230,6 +240,7 @@ Tip #[N]: [Title]
 **Visual**: [Your face OR text overlay with list]
 
 **Script**:
+
 ```
 "Quick recap of all [number] tips:
 
@@ -254,6 +265,7 @@ Tip #[N]: [Title]
 ```
 
 **On-Screen Text**:
+
 - Numbered list of all tips
 - GitHub link
 - "Which one will you try first?"
@@ -265,6 +277,7 @@ Tip #[N]: [Title]
 **Visual**: [Your face]
 
 **Script**:
+
 ```
 "Which tip was most helpful for you?
 
@@ -287,18 +300,21 @@ Thanks for watching!"
 ## Format Variations
 
 ### Quick Tips (3-5 minutes)
+
 - 3 tips
 - 60 seconds per tip
 - Fast-paced
 - Screen recording only
 
 ### Comprehensive Tips (15-20 minutes)
+
 - 10+ tips
 - 90-120 seconds per tip
 - More examples
 - Talking head + screen
 
 ### Single Tip Deep Dive (5-8 minutes)
+
 - One powerful tip
 - Multiple examples
 - Common mistakes
@@ -337,16 +353,19 @@ Thanks for watching!"
 ### Ordering Tips
 
 **Option 1: Ascending Value**
+
 - Save best for last
 - Builds anticipation
 - "Bonus tip" is the best
 
 **Option 2: Descending Value**
+
 - Start with the best
 - Hook viewers immediately
 - Keep attention throughout
 
 **Option 3: Logical Progression**
+
 - Beginner → Advanced
 - Setup → Implementation → Optimization
 - Conceptual → Practical
@@ -363,6 +382,7 @@ Thanks for watching!"
 **Bonus tip**: Optional, usually the best one
 
 **Timing guidelines**:
+
 - 3 tips: 2 min per tip
 - 5 tips: 1.5 min per tip
 - 7 tips: 1 min per tip
@@ -373,6 +393,7 @@ Thanks for watching!"
 ### Visual Variety
 
 **Keep it interesting**:
+
 - Mix talking head and screen recording
 - Different code examples for each tip
 - Vary the backgrounds
@@ -384,12 +405,14 @@ Thanks for watching!"
 ## On-Screen Text Templates
 
 **Tip Header**:
+
 ```
 TIP #3
 [Catchy tip title]
 ```
 
 **Before/After**:
+
 ```
 ❌ DON'T DO THIS:
 [Bad example]
@@ -399,6 +422,7 @@ TIP #3
 ```
 
 **Benefits List**:
+
 ```
 WHY THIS WORKS:
 ✓ [Benefit 1]
@@ -407,6 +431,7 @@ WHY THIS WORKS:
 ```
 
 **Pro Tip**:
+
 ```
 💡 PRO TIP
 [Advanced usage]
@@ -417,21 +442,25 @@ WHY THIS WORKS:
 ## Title Templates
 
 **Number + Benefit**:
+
 - "5 JavaScript Tips That Will Save You Hours"
 - "7 Git Commands Every Developer Should Know"
 - "10 CSS Tricks for Better Performance"
 
 **Mistakes Format**:
+
 - "5 Mistakes You're Making with React Hooks"
 - "7 SQL Anti-Patterns to Avoid"
 - "10 Security Mistakes in Node.js Apps"
 
 **Hidden Knowledge**:
+
 - "5 Python Features You Didn't Know About"
 - "7 VS Code Shortcuts That Will Change Your Life"
 - "10 Docker Tips Most Tutorials Don't Teach"
 
 **Experience-Based**:
+
 - "5 Things I Wish I Knew Before Learning TypeScript"
 - "7 Lessons from 10 Years of Coding"
 - "10 Habits That Made Me a Better Developer"
@@ -441,19 +470,23 @@ WHY THIS WORKS:
 ## Thumbnail Ideas
 
 **Split Design**:
+
 - Left: Before (bad code)
 - Right: After (good code)
 
 **Number Focus**:
+
 - Large "5" or "7" or "10"
 - Your face + code in background
 
 **Benefit Focus**:
+
 - "SAVE HOURS" text
 - Code screenshot
 - Your excited face
 
 **Comparison**:
+
 - "❌ vs ✅" layout
 - Before/after examples
 - Visual contrast
@@ -528,6 +561,7 @@ Advanced [topic]: [link]
 ## Success Metrics
 
 **Good tips video indicators**:
+
 - High watch time (>50%)
 - Comments asking for more tips
 - "Trying this now!" comments
@@ -540,6 +574,7 @@ Advanced [topic]: [link]
 ## Content Ideas
 
 ### By Topic
+
 - "[Language] tips"
 - "[Framework] best practices"
 - "[Tool] shortcuts"
@@ -548,12 +583,14 @@ Advanced [topic]: [link]
 - "Debugging strategies"
 
 ### By Experience Level
+
 - "Beginner mistakes to avoid"
 - "Intermediate tips"
 - "Advanced techniques"
 - "Expert-level optimizations"
 
 ### By Use Case
+
 - "Tips for [specific project type]"
 - "Tips for [job role]"
 - "Tips for [industry]"

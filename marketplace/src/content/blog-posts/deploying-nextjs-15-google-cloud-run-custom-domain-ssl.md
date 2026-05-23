@@ -10,6 +10,7 @@ I just deployed [ClaudeCodePlugins.io](https://www.claudecodeplugins.io) from sc
 ## The Goal
 
 Deploy a Next.js 15 application to Google Cloud Run with:
+
 - Custom domain (www.claudecodeplugins.io)
 - Google-managed SSL certificate
 - Global load balancer with HTTP/2
@@ -25,12 +26,14 @@ Time budget: Get it done today.
 ## The Stack
 
 **Application:**
+
 - Next.js 15 (App Router) with standalone mode
 - React 19 + TypeScript
 - Node 20 runtime
 - Docker multi-stage build
 
 **Infrastructure:**
+
 - Google Cloud Run (serverless containers)
 - Cloud Build (CI/CD)
 - Artifact Registry (container images)
@@ -96,6 +99,7 @@ CMD ["node", "server.js"]
 ```
 
 **Key decisions:**
+
 - Alpine Linux for small image size (saves bandwidth and startup time)
 - Non-root user (security best practice)
 - Standalone mode copies only what's needed to run
@@ -216,6 +220,7 @@ Google Cloud Run supports custom domains two ways:
 2. **Load Balancer + Serverless NEG** - More complex, but no Search Console needed
 
 I chose the Load Balancer approach because:
+
 - No domain verification required
 - Global anycast IP (faster worldwide)
 - Built-in CDN support
@@ -388,6 +393,7 @@ gcloud compute ssl-certificates describe claudecodeplugins-cert \
 ```
 
 Progression:
+
 1. `PROVISIONING` + `FAILED_NOT_VISIBLE` (DNS not propagated)
 2. `PROVISIONING` + `PROVISIONING` (Google verifying domain)
 3. `ACTIVE` + `ACTIVE` (Ready!)
@@ -410,6 +416,7 @@ content-type: text/html; charset=utf-8
 ```
 
 **Success!** The site was live with:
+
 - ✅ HTTPS with valid SSL certificate
 - ✅ HTTP/2 protocol
 - ✅ Next.js static pre-rendering
@@ -442,7 +449,7 @@ steps:
       - "--port=3000"
 ```
 
-2. **Makefile** - Convenience commands
+1. **Makefile** - Convenience commands
 
 ```makefile
 deploy:
@@ -458,9 +465,9 @@ rollback:
 \t# Roll back to previous revision
 ```
 
-3. **.gcloud.env.example** - Environment variable documentation
+1. **.gcloud.env.example** - Environment variable documentation
 
-4. **README_DEPLOY.md** - 15-line quickstart guide
+2. **README_DEPLOY.md** - 15-line quickstart guide
 
 Future deployments are now just:
 
@@ -488,12 +495,14 @@ make deploy
 ### Cost Breakdown
 
 Monthly estimate:
+
 - Cloud Run: $0-20 (pay per use, 0 min instances)
 - Load Balancer: ~$18/month (global)
 - SSL Certificate: $0 (Google-managed)
 - **Total: ~$20-40/month**
 
 For comparison, a single $5 VPS would be cheaper but:
+
 - No auto-scaling
 - Manual SSL certificate management
 - No global CDN
@@ -567,4 +576,3 @@ The full runbook and all configuration files are in the project repository. Futu
 - **Architecture:** Global Load Balancer → Serverless NEG → Cloud Run
 - **Response Time:** 75ms average
 - **Stack:** Next.js 15 + Docker + Google Cloud Run
-

@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola Enterprise RBAC
 
 ## Overview
+
 Configure role-based access control for Granola with SSO group mapping, per-workspace permissions, sharing policies, and audit logging. Granola's role hierarchy controls who can create, share, and manage meeting notes across the organization.
 
 ## Prerequisites
+
 - Granola Enterprise plan ($35+/user/month)
 - Organization admin access
 - SSO configured (Okta, Azure AD, or Google Workspace)
@@ -97,6 +99,7 @@ Configure in Organization Settings > Security > SSO > Group Mapping:
 
 **Multi-workspace membership:**
 A user can belong to multiple workspaces with different roles:
+
 - Sarah Chen: Engineering (Member) + Product (Admin) + Executive (Viewer)
 - Mike Johnson: Sales (Admin) + Engineering (Guest for cross-team visibility)
 
@@ -105,6 +108,7 @@ A user can belong to multiple workspaces with different roles:
 Set per-workspace sharing rules to control data flow:
 
 **Standard workspaces (Engineering, Product, Sales):**
+
 ```
 Workspace Settings > Sharing:
   Internal sharing: Automatic within workspace members
@@ -114,6 +118,7 @@ Workspace Settings > Sharing:
 ```
 
 **Confidential workspaces (HR, Executive):**
+
 ```
 Workspace Settings > Sharing:
   Internal sharing: Manual only (no auto-share)
@@ -163,22 +168,26 @@ Enterprise audit logging captures:
 Access audit logs: Organization Settings > **Security** > **Audit Log**
 
 **Export audit logs** for SIEM integration (Enterprise):
+
 - Granola can export audit events to external systems
 - Contact Granola support for Splunk/Datadog/SIEM integration
 
 ### Step 7 — Handle User Lifecycle
 
 **Onboarding:**
+
 1. User added to SSO group → SCIM provisions account → JIT assigns workspace + role
 2. First login: SSO authenticates, Granola provisions based on group mapping
 3. User can immediately record meetings in assigned workspaces
 
 **Role change:**
+
 1. Update SSO group membership in IdP
 2. SCIM sync updates Granola role (within sync interval, typically 1-15 min)
 3. Or manually: Workspace Settings > Members > change role
 
 **Offboarding:**
+
 1. Disable user in IdP → SCIM deactivates Granola account
 2. User loses access immediately
 3. Their shared notes remain visible to workspace members
@@ -186,6 +195,7 @@ Access audit logs: Organization Settings > **Security** > **Audit Log**
 5. Reassign ownership of shared folders if needed
 
 ## Output
+
 - Role hierarchy defined and documented
 - SSO group mappings configured for automated provisioning
 - Per-workspace sharing policies enforced
@@ -204,9 +214,11 @@ Access audit logs: Organization Settings > **Security** > **Audit Log**
 | Orphaned accounts after termination | SCIM deprovisioning not configured | Enable deprovisioning in SCIM settings |
 
 ## Resources
+
 - [Security Standards](https://docs.granola.ai/help-center/consent-security-privacy/our-security-standards)
 - [Privacy & Data FAQs](https://docs.granola.ai/help-center/consent-security-privacy/security-privacy-data-faqs)
 - [Enterprise API (admin access)](https://docs.granola.ai/help-center/sharing/integrations/enterprise-api)
 
 ## Next Steps
+
 Proceed to `granola-migration-deep-dive` for migrating from other meeting note tools.

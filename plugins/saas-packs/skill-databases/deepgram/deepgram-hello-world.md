@@ -10,6 +10,7 @@ deepgram-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Deepgram example
 **Workflow:** Part of the onboarding skill category for Deepgram integration.
 **Relates to:** Other deepgram skills in this pack.

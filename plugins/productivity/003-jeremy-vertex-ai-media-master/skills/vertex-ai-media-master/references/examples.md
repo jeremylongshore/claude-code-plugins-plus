@@ -5,6 +5,7 @@
 Extract structured insights from a competitor video to inform campaign strategy.
 
 **Setup:**
+
 ```python
 from google.cloud import aiplatform
 from vertexai.generative_models import GenerativeModel, Part
@@ -14,6 +15,7 @@ model = GenerativeModel("gemini-2.5-pro")
 ```
 
 **Video analysis request:**
+
 ```python
 video_part = Part.from_uri(
     uri="gs://marketing-assets/competitor-ad-q1-2026.mp4",
@@ -33,6 +35,7 @@ analysis = response.text
 ```
 
 **Output:**
+
 ```json
 {
   "scenes": [
@@ -79,6 +82,7 @@ analysis = response.text
 Create multiple brand-consistent hero image variations for a product launch.
 
 **Generate hero images:**
+
 ```python
 from vertexai.preview.vision_models import ImageGenerationModel
 
@@ -104,6 +108,7 @@ for i, image in enumerate(response.images):
 ```
 
 **Output:**
+
 ```
 Saved hero-image-v1.png (1920x1080)
 Saved hero-image-v2.png (1920x1080)
@@ -112,6 +117,7 @@ Saved hero-image-v4.png (1920x1080)
 ```
 
 **Generate social media crops:**
+
 ```python
 # Instagram square
 response_square = imagen.generate_images(
@@ -140,6 +146,7 @@ response_vertical = imagen.generate_images(
 Create a custom background track for a promotional video.
 
 **Music generation:**
+
 ```python
 from vertexai.preview.audio_models import MusicGenerationModel
 
@@ -161,6 +168,7 @@ print(f"Generated {response.duration_seconds}s audio track")
 ```
 
 **Output metadata:**
+
 ```json
 {
   "file": "output/background-track.wav",
@@ -179,6 +187,7 @@ Orchestrate multiple models to produce a complete campaign asset package
 from a single product brief.
 
 **Campaign brief:**
+
 ```python
 brief = """
 Product: CloudSync Pro — cloud storage for teams
@@ -195,6 +204,7 @@ Assets needed:
 ```
 
 **Pipeline execution:**
+
 ```python
 import asyncio
 from pathlib import Path
@@ -261,6 +271,7 @@ asyncio.run(main())
 ```
 
 **Output directory:**
+
 ```
 campaign-assets/cloudsync-pro/
 ├── hero-1.png         (1920x1080)
@@ -279,6 +290,7 @@ Identify the most engaging segments of a long-form video for repurposing
 as short-form content (TikTok, Reels, Shorts).
 
 **Analysis request:**
+
 ```python
 video = Part.from_uri(
     uri="gs://content-library/product-demo-full.mp4",
@@ -301,6 +313,7 @@ response = model.generate_content([video, prompt])
 ```
 
 **Output:**
+
 ```json
 [
   {
@@ -362,6 +375,7 @@ Flag any violations with specific descriptions."""
 ```
 
 **Validation output:**
+
 ```
 Hero image 1: Score 92/100
   ✓ Color palette matches brand (blue and white dominant)

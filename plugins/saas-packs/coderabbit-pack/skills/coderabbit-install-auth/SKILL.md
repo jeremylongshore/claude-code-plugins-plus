@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Install & Auth
 
 ## Overview
+
 CodeRabbit is an AI-powered code review platform. It installs as a GitHub App (or GitLab integration) and automatically reviews pull requests. There is no SDK to install -- you configure it via a `.coderabbit.yaml` file and interact through PR comments. Optionally, install the CLI for local pre-commit reviews.
 
 ## Prerequisites
+
 - GitHub organization admin or GitLab group owner permissions
 - A repository to enable CodeRabbit on
 - (Optional) Shell access for CLI installation
@@ -36,6 +38,7 @@ CodeRabbit is an AI-powered code review platform. It installs as a GitHub App (o
 ## Instructions
 
 ### Step 1: Install the CodeRabbit GitHub App
+
 ```markdown
 1. Navigate to https://github.com/apps/coderabbitai
 2. Click "Install" and select your organization
@@ -47,6 +50,7 @@ CodeRabbit is an AI-powered code review platform. It installs as a GitHub App (o
 ```
 
 ### Step 2: Verify Installation
+
 ```bash
 set -euo pipefail
 # Confirm the GitHub App is installed on your repo
@@ -55,6 +59,7 @@ gh api repos/YOUR_ORG/YOUR_REPO/installation --jq '.app_slug'
 ```
 
 ### Step 3: Create Base Configuration
+
 ```yaml
 # .coderabbit.yaml (place in repository root)
 language: "en-US"
@@ -77,6 +82,7 @@ chat:
 ```
 
 ### Step 4: Install the CLI (Optional)
+
 ```bash
 set -euo pipefail
 # Install CodeRabbit CLI for local pre-commit reviews
@@ -87,6 +93,7 @@ cr --version
 ```
 
 ### Step 5: Trigger Your First Review
+
 ```bash
 set -euo pipefail
 # Create a test branch and PR to verify CodeRabbit is active
@@ -101,6 +108,7 @@ gh pr create --title "test: verify CodeRabbit" --body "Testing CodeRabbit integr
 ```
 
 ### GitLab Setup (Alternative)
+
 ```markdown
 1. Navigate to app.coderabbit.ai and sign in with GitLab
 2. Select your GitLab group during onboarding
@@ -111,12 +119,14 @@ gh pr create --title "test: verify CodeRabbit" --body "Testing CodeRabbit integr
 ```
 
 ## Output
+
 - CodeRabbit GitHub App installed on selected repositories
 - `.coderabbit.yaml` configuration file in repository root
 - (Optional) CLI installed for local reviews
 - First automated review posted on a test PR
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | No review on PR | App not installed on repo | Add repo in GitHub App settings > Repository access |
@@ -126,7 +136,9 @@ gh pr create --title "test: verify CodeRabbit" --body "Testing CodeRabbit integr
 | GitLab webhook missing | Token scope insufficient | Ensure token has `api` and `read_repository` scopes |
 
 ## Seat Management
+
 CodeRabbit charges per seat (developer who creates PRs). To manage seats:
+
 ```markdown
 1. Go to app.coderabbit.ai > Organization > Subscription
 2. Assign seats to specific developers, or set "Active committers" mode
@@ -135,6 +147,7 @@ CodeRabbit charges per seat (developer who creates PRs). To manage seats:
 ```
 
 ## Resources
+
 - [CodeRabbit Getting Started](https://docs.coderabbit.ai/getting-started/yaml-configuration)
 - [GitHub App Installation](https://github.com/apps/coderabbitai)
 - [GitLab Integration](https://docs.coderabbit.ai/platforms/gitlab-com)
@@ -142,4 +155,5 @@ CodeRabbit charges per seat (developer who creates PRs). To manage seats:
 - [Configuration Reference](https://docs.coderabbit.ai/reference/configuration)
 
 ## Next Steps
+
 Proceed to `coderabbit-hello-world` for your first customized review configuration.

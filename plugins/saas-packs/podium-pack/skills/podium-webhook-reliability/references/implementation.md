@@ -73,6 +73,7 @@ app.post("/webhooks/podium",
 | `podium:rate:{client_ip}` | string | 60s | Optional inbound rate-limit counter (defense in depth against probing). |
 
 **ACL recommendation**: a dedicated Redis user for the receiver with only the commands it needs:
+
 - `SET`, `GET`, `EXPIRE` (dedup)
 - `LPUSH`, `LRANGE`, `LLEN`, `BRPOPLPUSH` (DLQ)
 - `INCR`, `EXPIRE` (rate-limit, if used)

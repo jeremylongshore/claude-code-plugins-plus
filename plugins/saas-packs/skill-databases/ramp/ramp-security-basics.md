@@ -10,6 +10,7 @@ ramp-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Ramp security best practices
 **Workflow:** Part of the operations skill category for Ramp integration.
 **Relates to:** Other ramp skills in this pack.

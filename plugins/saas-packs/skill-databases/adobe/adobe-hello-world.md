@@ -10,6 +10,7 @@ adobe-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Adobe example
 **Workflow:** Part of the onboarding skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

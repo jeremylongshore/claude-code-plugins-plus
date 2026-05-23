@@ -10,6 +10,7 @@ oraclecloud-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Oracle Cloud SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Oracle Cloud integration.
 **Relates to:** Other oraclecloud skills in this pack.

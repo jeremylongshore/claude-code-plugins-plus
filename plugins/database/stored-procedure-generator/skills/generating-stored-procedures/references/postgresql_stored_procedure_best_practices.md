@@ -3,6 +3,7 @@
 ## Function vs Procedure
 
 PostgreSQL 11+ supports both:
+
 - **FUNCTION**: Returns values, can be used in SELECT
 - **PROCEDURE**: No return value, supports COMMIT/ROLLBACK inside
 
@@ -48,6 +49,7 @@ $$ LANGUAGE plpgsql;
 ## Return Types
 
 ### Single Row
+
 ```sql
 CREATE FUNCTION get_user(p_id INT)
 RETURNS users AS $$
@@ -56,6 +58,7 @@ $$ LANGUAGE sql;
 ```
 
 ### Multiple Rows
+
 ```sql
 CREATE FUNCTION get_active_users()
 RETURNS SETOF users AS $$
@@ -64,6 +67,7 @@ $$ LANGUAGE sql;
 ```
 
 ### Custom Columns
+
 ```sql
 CREATE FUNCTION get_user_summary(p_id INT)
 RETURNS TABLE(name VARCHAR, order_count BIGINT, total_spent NUMERIC) AS $$

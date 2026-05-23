@@ -10,6 +10,7 @@ exa-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Exa SDK authentication including API key setup, environment variable configuration (EXA_API_KEY), and connection verification.
 **Workflow:** First skill in the onboarding sequence - sets up foundational SDK and authentication before any other Exa operations can be performed.
 **Relates to:** Prerequisite for exa-hello-world and all other skills; security patterns build on exa-security-basics

@@ -6,7 +6,6 @@ description: Plan and implement disaster recovery procedures
 
 Plan and implement disaster recovery procedures
 
-
 ## Key Features
 
 - Production-ready configurations

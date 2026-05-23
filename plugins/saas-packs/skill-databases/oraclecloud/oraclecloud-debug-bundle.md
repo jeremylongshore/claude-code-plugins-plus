@@ -10,6 +10,7 @@ oraclecloud-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Oracle Cloud debug evidence for support
 **Workflow:** Part of the operations skill category for Oracle Cloud integration.
 **Relates to:** Other oraclecloud skills in this pack.

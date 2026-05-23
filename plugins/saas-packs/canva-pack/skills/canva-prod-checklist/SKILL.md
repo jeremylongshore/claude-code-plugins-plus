@@ -31,6 +31,7 @@ Complete checklist for deploying Canva Connect API integrations to production, c
 ## Pre-Deployment
 
 ### OAuth & Security
+
 - [ ] Client ID and secret stored in secret manager (not env files)
 - [ ] Redirect URIs use HTTPS and match production domains
 - [ ] Only required OAuth scopes requested (least privilege)
@@ -40,6 +41,7 @@ Complete checklist for deploying Canva Connect API integrations to production, c
 - [ ] No client secrets in frontend code
 
 ### API Integration
+
 - [ ] All API calls use `api.canva.com/rest/v1/*` endpoints
 - [ ] Rate limits respected with exponential backoff (see `canva-rate-limits`)
 - [ ] Export polling implemented with timeout (don't poll forever)
@@ -50,6 +52,7 @@ Complete checklist for deploying Canva Connect API integrations to production, c
 - [ ] Export download URLs consumed within 24-hour window
 
 ### Webhook Security
+
 - [ ] Webhook endpoint uses HTTPS
 - [ ] JWK signature verification implemented (see `canva-webhooks-events`)
 - [ ] Webhook handler returns 200 immediately
@@ -57,6 +60,7 @@ Complete checklist for deploying Canva Connect API integrations to production, c
 - [ ] Idempotency keys prevent duplicate processing
 
 ### Data Handling
+
 - [ ] No access tokens in log output
 - [ ] User design metadata treated as sensitive
 - [ ] Temporary URLs (thumbnails, exports) not cached beyond expiry

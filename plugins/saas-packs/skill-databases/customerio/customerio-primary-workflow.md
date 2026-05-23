@@ -10,6 +10,7 @@ customerio-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Customer.io primary workflow
 **Workflow:** Part of the onboarding skill category for Customer.io integration.
 **Relates to:** Other customerio skills in this pack.

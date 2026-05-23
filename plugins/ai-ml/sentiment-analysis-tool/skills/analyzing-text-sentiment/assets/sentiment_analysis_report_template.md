@@ -10,54 +10,54 @@ This report presents the findings of a sentiment analysis performed on [Specify 
 
 ### 2.1. Data Source
 
-*   **Source:** [Specify the source of the text data, e.g., Amazon product reviews, Twitter API, internal survey data].
-*   **Collection Method:** [Describe how the data was collected, e.g., web scraping, API extraction, database query].
-*   **Time Period:** [Specify the time period covered by the data, e.g., January 1, 2023 - December 31, 2023].
-*   **Data Volume:** [Specify the number of text entries analyzed, e.g., 10,000 reviews].
+* **Source:** [Specify the source of the text data, e.g., Amazon product reviews, Twitter API, internal survey data].
+* **Collection Method:** [Describe how the data was collected, e.g., web scraping, API extraction, database query].
+* **Time Period:** [Specify the time period covered by the data, e.g., January 1, 2023 - December 31, 2023].
+* **Data Volume:** [Specify the number of text entries analyzed, e.g., 10,000 reviews].
 
 ### 2.2. Data Preprocessing
 
-*   **Preprocessing Steps:** [Describe the preprocessing steps applied to the data, e.g., removal of punctuation, lowercasing, stemming/lemmatization, stop word removal].
-    *   Example: "The text data was preprocessed by removing punctuation, converting all text to lowercase, and removing common stop words such as 'the,' 'a,' and 'is'."
+* **Preprocessing Steps:** [Describe the preprocessing steps applied to the data, e.g., removal of punctuation, lowercasing, stemming/lemmatization, stop word removal].
+  * Example: "The text data was preprocessed by removing punctuation, converting all text to lowercase, and removing common stop words such as 'the,' 'a,' and 'is'."
 
 ## 3. Methodology
 
 ### 3.1. Sentiment Analysis Technique
 
-*   **Technique Used:** [Specify the sentiment analysis technique used, e.g., lexicon-based approach, machine learning model (specify the model, e.g., Naive Bayes, Support Vector Machine, transformer model)].
-    *   Example: "We employed a lexicon-based approach using the VADER (Valence Aware Dictionary and sEntiment Reasoner) lexicon, which assigns sentiment scores based on the valence of individual words and phrases."
-*   **Justification for Choice:** [Explain why this technique was chosen, e.g., computational efficiency, accuracy, suitability for the data].
-    *   Example: "VADER was chosen for its speed and effectiveness in analyzing sentiment in social media text, particularly for handling slang and emoticons."
+* **Technique Used:** [Specify the sentiment analysis technique used, e.g., lexicon-based approach, machine learning model (specify the model, e.g., Naive Bayes, Support Vector Machine, transformer model)].
+  * Example: "We employed a lexicon-based approach using the VADER (Valence Aware Dictionary and sEntiment Reasoner) lexicon, which assigns sentiment scores based on the valence of individual words and phrases."
+* **Justification for Choice:** [Explain why this technique was chosen, e.g., computational efficiency, accuracy, suitability for the data].
+  * Example: "VADER was chosen for its speed and effectiveness in analyzing sentiment in social media text, particularly for handling slang and emoticons."
 
 ### 3.2. Sentiment Scoring
 
-*   **Sentiment Scale:** [Describe the scale used to quantify sentiment, e.g., positive, negative, neutral; or a numerical scale (e.g., -1 to +1)].
-    *   Example: "Sentiment was scored on a scale of -1 (negative) to +1 (positive), with 0 indicating a neutral sentiment."
-*   **Thresholds:** [Define the thresholds used to classify sentiment into different categories, if applicable].
-    *   Example: "Scores between -1 and -0.2 were classified as negative, scores between -0.2 and 0.2 were classified as neutral, and scores between 0.2 and 1 were classified as positive."
+* **Sentiment Scale:** [Describe the scale used to quantify sentiment, e.g., positive, negative, neutral; or a numerical scale (e.g., -1 to +1)].
+  * Example: "Sentiment was scored on a scale of -1 (negative) to +1 (positive), with 0 indicating a neutral sentiment."
+* **Thresholds:** [Define the thresholds used to classify sentiment into different categories, if applicable].
+  * Example: "Scores between -1 and -0.2 were classified as negative, scores between -0.2 and 0.2 were classified as neutral, and scores between 0.2 and 1 were classified as positive."
 
 ## 4. Results
 
 ### 4.1. Overall Sentiment Distribution
 
-*   **Positive Sentiment Percentage:** [Insert percentage of text entries classified as positive].
-*   **Negative Sentiment Percentage:** [Insert percentage of text entries classified as negative].
-*   **Neutral Sentiment Percentage:** [Insert percentage of text entries classified as neutral].
-*   **Visualization (Optional):** [Include a chart or graph illustrating the sentiment distribution, e.g., a pie chart or bar graph].
+* **Positive Sentiment Percentage:** [Insert percentage of text entries classified as positive].
+* **Negative Sentiment Percentage:** [Insert percentage of text entries classified as negative].
+* **Neutral Sentiment Percentage:** [Insert percentage of text entries classified as neutral].
+* **Visualization (Optional):** [Include a chart or graph illustrating the sentiment distribution, e.g., a pie chart or bar graph].
 
 ### 4.2. Key Sentiment Drivers
 
-*   **Positive Keywords/Phrases:** [List the most frequently occurring keywords or phrases associated with positive sentiment].
-    *   Example: "Keywords associated with positive sentiment include 'excellent,' 'amazing,' 'highly recommend,' and 'great value'."
-*   **Negative Keywords/Phrases:** [List the most frequently occurring keywords or phrases associated with negative sentiment].
-    *   Example: "Keywords associated with negative sentiment include 'disappointed,' 'terrible,' 'poor quality,' and 'slow delivery'."
-*   **Examples of Positive Sentiments:** [Provide examples of text entries classified as positive].
-*   **Examples of Negative Sentiments:** [Provide examples of text entries classified as negative].
+* **Positive Keywords/Phrases:** [List the most frequently occurring keywords or phrases associated with positive sentiment].
+  * Example: "Keywords associated with positive sentiment include 'excellent,' 'amazing,' 'highly recommend,' and 'great value'."
+* **Negative Keywords/Phrases:** [List the most frequently occurring keywords or phrases associated with negative sentiment].
+  * Example: "Keywords associated with negative sentiment include 'disappointed,' 'terrible,' 'poor quality,' and 'slow delivery'."
+* **Examples of Positive Sentiments:** [Provide examples of text entries classified as positive].
+* **Examples of Negative Sentiments:** [Provide examples of text entries classified as negative].
 
 ### 4.3. Sentiment Trends (Optional)
 
-*   [If applicable, analyze sentiment trends over time, e.g., changes in sentiment scores over a period of weeks or months].
-*   [Include a chart or graph illustrating sentiment trends].
+* [If applicable, analyze sentiment trends over time, e.g., changes in sentiment scores over a period of weeks or months].
+* [Include a chart or graph illustrating sentiment trends].
 
 ## 5. Conclusion
 
@@ -65,12 +65,12 @@ The sentiment analysis reveals that [Summarize the overall sentiment and its imp
 
 ## 6. Limitations
 
-*   [Describe any limitations of the analysis, e.g., potential bias in the data, limitations of the sentiment analysis technique].
-    *   Example: "The analysis is limited by the potential bias in the data, as customers with strong opinions are more likely to leave reviews. Furthermore, the lexicon-based approach may not accurately capture nuanced sentiment expressions."
+* [Describe any limitations of the analysis, e.g., potential bias in the data, limitations of the sentiment analysis technique].
+  * Example: "The analysis is limited by the potential bias in the data, as customers with strong opinions are more likely to leave reviews. Furthermore, the lexicon-based approach may not accurately capture nuanced sentiment expressions."
 
 ## 7. Recommendations
 
-*   [Provide recommendations for future analysis or actions based on the findings and limitations].
-    *   Example: "We recommend conducting further analysis using a machine learning model trained on a domain-specific dataset to improve accuracy. Additionally, gathering more balanced data from different sources would help mitigate potential bias."
+* [Provide recommendations for future analysis or actions based on the findings and limitations].
+  * Example: "We recommend conducting further analysis using a machine learning model trained on a domain-specific dataset to improve accuracy. Additionally, gathering more balanced data from different sources would help mitigate potential bias."
 
 ---

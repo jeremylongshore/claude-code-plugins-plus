@@ -10,6 +10,7 @@ framer-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Framer example
 **Workflow:** Part of the onboarding skill category for Framer integration.
 **Relates to:** Other framer skills in this pack.

@@ -10,6 +10,7 @@ hex-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Hex integrations to production
 **Workflow:** Part of the cicd skill category for Hex integration.
 **Relates to:** Other hex skills in this pack.

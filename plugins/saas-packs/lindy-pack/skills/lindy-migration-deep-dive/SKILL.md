@@ -24,12 +24,14 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lindy Migration Deep Dive
 
 ## Overview
+
 Migrate existing automation workflows from Zapier, Make (Integromat), n8n,
 LangChain, or custom code to Lindy AI. Key insight: Lindy replaces rigid
 rule-based automations with AI agents that can reason, adapt, and handle
 ambiguity — so migration is a redesign opportunity, not a 1:1 translation.
 
 ## Prerequisites
+
 - Inventory of existing automations (source platform)
 - Lindy workspace ready with required integrations authorized
 - Migration timeline approved
@@ -48,6 +50,7 @@ ambiguity — so migration is a redesign opportunity, not a 1:1 translation.
 ## Instructions
 
 ### Step 1: Inventory Source Automations
+
 For each existing automation, document:
 
 | Field | Example |
@@ -60,6 +63,7 @@ For each existing automation, document:
 | **Complexity** | Medium (3 steps, 1 condition) |
 
 ### Step 2: Classify Migration Complexity
+
 | Complexity | Criteria | Migration Approach | Time |
 |-----------|---------|-------------------|------|
 | **Simple** | 1-3 steps, no conditions | Build from scratch in Lindy | 30 min |
@@ -70,6 +74,7 @@ For each existing automation, document:
 ### Step 3: Migration Strategy by Source
 
 **From Zapier**:
+
 ```
 Zapier Pattern → Lindy Pattern
 ────────────────────────────────
@@ -82,6 +87,7 @@ Paths → Conditions (natural language branching)
 ```
 
 **From Make (Integromat)**:
+
 ```
 Make Pattern → Lindy Pattern
 ────────────────────────────────
@@ -94,6 +100,7 @@ Error Handler → Agent prompt error instructions
 ```
 
 **From n8n**:
+
 ```
 n8n Pattern → Lindy Pattern
 ────────────────────────────────
@@ -105,6 +112,7 @@ Merge Node → Agent step (AI merges intelligently)
 ```
 
 **From LangChain/Custom Code**:
+
 ```
 LangChain Pattern → Lindy Pattern
 ────────────────────────────────
@@ -119,6 +127,7 @@ Retrieval Chain → Knowledge Base + AI Prompt
 ### Step 4: Execute Migration (Phased)
 
 **Phase 1: Internal-Only Agents (Days 1-3)**
+
 1. Migrate non-customer-facing automations first
 2. Build in Lindy using natural language description
 3. Test with real data for 48 hours
@@ -126,6 +135,7 @@ Retrieval Chain → Knowledge Base + AI Prompt
 5. Decommission source automation after verification
 
 **Phase 2: Low-Risk Customer-Facing (Days 4-7)**
+
 1. Build Lindy agent alongside existing automation (parallel run)
 2. Route 10% of traffic to Lindy agent
 3. Compare results for 48 hours
@@ -133,6 +143,7 @@ Retrieval Chain → Knowledge Base + AI Prompt
 5. Monitor task success rate and response quality
 
 **Phase 3: Critical Workflows (Days 8-14)**
+
 1. Build Lindy agent as exact replacement
 2. Test extensively with staging data
 3. Schedule cutover during low-traffic window
@@ -140,6 +151,7 @@ Retrieval Chain → Knowledge Base + AI Prompt
 5. Monitor closely for 48 hours post-cutover
 
 ### Step 5: Redesign Opportunities
+
 Migration is a chance to improve, not just replicate:
 
 | Old Pattern | Lindy Improvement |
@@ -151,6 +163,7 @@ Migration is a chance to improve, not just replicate:
 | No error handling | Agent prompt includes fallback behavior |
 
 ### Step 6: Validate and Cutover
+
 ```bash
 # Post-migration validation checklist
 echo "=== Migration Validation ==="
@@ -172,6 +185,7 @@ echo "Check: Credit consumption within budget"
 ```
 
 ## Migration Checklist
+
 - [ ] Source system inventory complete
 - [ ] Each automation classified by complexity
 - [ ] Lindy integrations authorized
@@ -195,11 +209,13 @@ echo "Check: Credit consumption within budget"
 | Data format mismatch | Different field names | Map fields in Run Code action |
 
 ## Resources
+
 - [Lindy Templates](https://docs.lindy.ai/fundamentals/lindy-101/templates)
 - [Lindy Agent Builder](https://www.lindy.ai/blog/ai-agent-tutorial)
 - [Lindy Documentation](https://docs.lindy.ai)
 - [Lindy vs n8n](https://www.lindy.ai/blog/n8n-ai-agents)
 
 ## Next Steps
+
 This completes the Flagship tier. Review Standard and Pro skills for comprehensive
 Lindy mastery.

@@ -18,9 +18,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola Common Errors
 
 ## Overview
+
 Diagnose and fix the most common Granola issues. Each error includes platform-specific symptoms, root causes, and step-by-step remediation. Granola captures audio from your device's system audio output (not via meeting platform APIs), so most issues trace back to audio permissions or device configuration.
 
 ## Prerequisites
+
 - Granola installed (even if malfunctioning)
 - Terminal access for diagnostic commands (macOS) or PowerShell (Windows)
 - Admin/sudo access for permission changes
@@ -28,6 +30,7 @@ Diagnose and fix the most common Granola issues. Each error includes platform-sp
 ## Instructions
 
 ### Step 1 — Quick Diagnostic Check
+
 ```bash
 # Is Granola running?
 pgrep -l Granola
@@ -50,6 +53,7 @@ system_profiler SPAudioDataType 2>/dev/null | grep -A2 "Default Input"
 **Root cause:** Granola cannot hear system audio. On macOS, this is almost always a permissions issue.
 
 **macOS fix:**
+
 1. System Settings > Privacy & Security > **Screen & System Audio Recording**
 2. Enable Granola (this grants system audio access despite the misleading name)
 3. System Settings > Privacy & Security > **Microphone** > Enable Granola
@@ -62,6 +66,7 @@ sudo killall coreaudiod
 ```
 
 **Windows fix:**
+
 1. Settings > Privacy & Security > Microphone > Ensure Granola is enabled
 2. Check that the correct audio device is set as default output
 3. Right-click sound icon > Sound settings > ensure no audio enhancements are enabled
@@ -71,6 +76,7 @@ sudo killall coreaudiod
 **Root cause:** Granola stops transcription when it detects no new audio for ~15 minutes, or when the computer sleeps.
 
 **Fix:**
+
 - Keep your machine awake during meetings (disable sleep/screen lock)
 - Ensure meeting audio is playing through your default output device
 - Bluetooth devices can cause dropouts — try built-in speakers or wired headset
@@ -95,6 +101,7 @@ sudo killall coreaudiod
 **Symptoms:** Granola doesn't show the floating notepad when you join a call.
 
 **Checklist:**
+
 1. **Calendar connected?** Settings > Calendar — reconnect if expired
 2. **Event has video link?** Granola only detects events with Zoom/Meet/Teams/WebEx links
 3. **Right calendar synced?** Check that the meeting's calendar is in the sync list
@@ -104,6 +111,7 @@ sudo killall coreaudiod
 ### "Calendar Authentication Failed"
 
 **Fix:**
+
 1. Settings > Calendar > Disconnect
 2. Clear browser cookies for accounts.google.com or login.microsoftonline.com
 3. Reconnect calendar in a private/incognito browser window
@@ -174,6 +182,7 @@ brew reinstall --cask granola
 - Restart Granola and reopen the note
 
 ## Output
+
 - Root cause identified for the specific Granola issue
 - Platform-specific fix applied and verified
 - Meeting capture confirmed working after remediation
@@ -190,10 +199,12 @@ brew reinstall --cask granola
 | App crashes | Corrupted cache | Delete ~/Library/Caches/Granola |
 
 ## Resources
+
 - [Transcription Troubleshooting](https://docs.granola.ai/help-center/troubleshooting/transcription-issues)
 - [How Transcription Works](https://docs.granola.ai/help-center/taking-notes/how-transcription-works)
 - [Granola Status Page](https://status.granola.ai)
 - [Granola Updates (Known Issues)](https://www.granola.ai/updates)
 
 ## Next Steps
+
 Proceed to `granola-debug-bundle` for creating comprehensive diagnostic reports.

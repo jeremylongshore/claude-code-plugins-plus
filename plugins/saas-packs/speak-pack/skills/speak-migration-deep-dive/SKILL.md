@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Speak Migration Deep Dive
 
 ## Overview
+
 Migrate between language learning platforms, import student progress, and transition from legacy speech APIs.
 
 ## Prerequisites
+
 - Completed `speak-install-auth` setup
 - Valid API credentials configured
 - Understanding of Speak API patterns
@@ -68,11 +70,13 @@ curl -sf -H "Authorization: Bearer $SPEAK_API_KEY" https://api.speak.com/v1/heal
 ```
 
 ## Output
+
 - Speak Migration Deep Dive configured and verified
 - Production-ready Speak integration
 - Error handling and monitoring in place
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY |
@@ -81,11 +85,13 @@ curl -sf -H "Authorization: Bearer $SPEAK_API_KEY" https://api.speak.com/v1/heal
 | Audio format error | Wrong codec | Convert to WAV 16kHz mono |
 
 ## Resources
+
 - [Speak Website](https://speak.com)
 - [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
 - [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
 
 ## Next Steps
+
 For production checklist, see `speak-prod-checklist`.
 
 ## Examples

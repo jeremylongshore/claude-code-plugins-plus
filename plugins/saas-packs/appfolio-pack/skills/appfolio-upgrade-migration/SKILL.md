@@ -19,6 +19,7 @@ compatibility: Designed for Claude Code
 # AppFolio Upgrade & Migration
 
 ## Overview
+
 AppFolio property management integrations depend on versioned REST API endpoints that
 evolve with the platform. Upgrades can rename fields on property and tenant objects,
 change pagination models, deprecate work-order endpoints, and alter the basic-auth
@@ -26,6 +27,7 @@ flow. This skill detects your current API version, maps deprecated response shap
 to replacements, and rolls back automatically if the new version fails.
 
 ## Prerequisites
+
 - Current API version prefix documented (e.g., `/api/v1/`)
 - Access to the AppFolio API changelog and release notes
 - Staging environment with test property and tenant data
@@ -33,6 +35,7 @@ to replacements, and rolls back automatically if the new version fails.
 - Existing integration test suite that covers core endpoints
 
 ## Instructions
+
 1. Run version detection to compare your active API version against the latest.
 2. Review the AppFolio changelog for breaking changes between the two versions.
 3. Apply schema migration transforms to property and tenant response objects.
@@ -43,13 +46,16 @@ to replacements, and rolls back automatically if the new version fails.
 8. Monitor error logs for 410/401 responses indicating missed migration steps.
 
 ## Output
+
 After a successful migration the skill produces:
+
 - A `VersionInfo` object confirming current, latest, and deprecated versions
 - Transformed property and tenant objects matching the new schema
 - Smoke test results for properties, tenants, work orders, and accounting endpoints
 - Rollback log entries if any endpoint fell back to the previous version
 
 ## Version Detection
+
 ```typescript
 interface VersionInfo { current: string; latest: string; deprecated: string[]; }
 
@@ -66,6 +72,7 @@ async function detectApiVersion(baseUrl: string, headers: Record<string, string>
 ```
 
 ## Schema Migration
+
 ```typescript
 interface LegacyProperty { address_line1: string; unit_count: number; mgr_id: string; }
 interface CurrentProperty { street_address: string; total_units: number; manager_id: string; }
@@ -83,6 +90,7 @@ function migrateTenant(old: LegacyTenant): CurrentTenant {
 ```
 
 ## Rollback Strategy
+
 ```typescript
 async function versionAwareRequest(
   baseUrl: string, path: string, headers: Record<string, string>,
@@ -101,6 +109,7 @@ async function versionAwareRequest(
 ```
 
 ## Examples
+
 ```typescript
 // Detect version and migrate if needed
 const info = await detectApiVersion("https://acme.appfolio.com", authHeaders);
@@ -112,6 +121,7 @@ if (info.deprecated.includes(info.current)) {
 ```
 
 ## Error Handling
+
 | Migration Issue | Symptom | Fix |
 |---|---|---|
 | Deprecated version prefix | `410 Gone` on every request | Update base URL to latest version prefix |
@@ -121,6 +131,7 @@ if (info.deprecated.includes(info.current)) {
 | Webhook envelope change | Event handler parse errors | Update payload parser for new envelope |
 
 ## Resources
+
 - [AppFolio Stack APIs](https://www.appfolio.com/stack/partners/api)
 - [AppFolio Engineering Blog](https://engineering.appfolio.com)
 - See `appfolio-ci-integration` for post-migration CI validation

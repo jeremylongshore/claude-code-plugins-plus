@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit CI Integration
 
 ## Overview
+
 Set up CI/CD for Replit apps: GitHub repo connected to Replit, automated testing via GitHub Actions, deploy-on-push, and post-deploy health verification. Replit supports direct GitHub import and auto-sync.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - Replit App connected to GitHub (Settings > Git > Connect)
 - GitHub Secrets configured for deploy verification
@@ -37,6 +39,7 @@ Set up CI/CD for Replit apps: GitHub repo connected to Replit, automated testing
 ## Instructions
 
 ### Step 1: Connect Replit to GitHub
+
 ```markdown
 1. In your Repl, click "Git" in the sidebar
 2. Click "Connect to GitHub"
@@ -51,6 +54,7 @@ Alternative: Import from GitHub
 ```
 
 ### Step 2: GitHub Actions — Test on PR
+
 ```yaml
 # .github/workflows/test.yml
 name: Test
@@ -77,6 +81,7 @@ jobs:
 ```
 
 ### Step 3: Deploy Verification After Push
+
 Replit auto-deploys when you push to the connected branch. Verify the deployment is healthy:
 
 ```yaml
@@ -117,6 +122,7 @@ jobs:
 ```
 
 ### Step 4: Store Deployment Secrets
+
 ```bash
 # Set GitHub secrets for deploy verification
 gh secret set REPLIT_DEPLOY_URL --body "https://your-app.replit.app"
@@ -126,6 +132,7 @@ gh secret set REPLIT_TOKEN --body "your-replit-api-token"
 ```
 
 ### Step 5: Branch Protection
+
 ```yaml
 # Require tests to pass before merge
 # In GitHub: Settings > Branches > Branch protection rules
@@ -141,6 +148,7 @@ required_status_checks:
 ```
 
 ### Step 6: GitHub Actions — Deploy from GitHub Repo
+
 For repos not directly connected to Replit, deploy via GitHub Import:
 
 ```yaml
@@ -179,6 +187,7 @@ jobs:
 ```
 
 ### Step 7: Python CI Variant
+
 ```yaml
 # .github/workflows/test-python.yml
 name: Test Python
@@ -200,6 +209,7 @@ jobs:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | GitHub sync not working | App not connected | Reconnect in Replit Git settings |
@@ -208,9 +218,11 @@ jobs:
 | Secret not found in Actions | Not set in GitHub | `gh secret set` with correct name |
 
 ## Resources
+
 - [Deploying from GitHub](https://docs.replit.com/hosting/deployments/deploying-a-github-repository)
 - [GitHub Actions](https://docs.github.com/en/actions)
 - [Replit Git Integration](https://docs.replit.com/replit-workspace/configuring-repl)
 
 ## Next Steps
+
 For deployment patterns, see `replit-deploy-integration`.

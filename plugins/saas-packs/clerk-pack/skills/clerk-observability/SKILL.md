@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Observability
 
 ## Overview
+
 Implement monitoring, logging, and observability for Clerk authentication. Covers structured auth logging, middleware performance tracking, webhook event monitoring, Sentry integration, and health check endpoints.
 
 ## Prerequisites
+
 - Clerk integration working
 - Monitoring platform (Sentry, DataDog, or Pino logger at minimum)
 - Logging infrastructure (structured JSON logs recommended)
@@ -36,6 +38,7 @@ Implement monitoring, logging, and observability for Clerk authentication. Cover
 ## Instructions
 
 ### Step 1: Structured Authentication Event Logging
+
 ```typescript
 // lib/auth-logger.ts
 import pino from 'pino'
@@ -71,6 +74,7 @@ export function logAuthError(error: Error, context: { userId?: string; path: str
 ```
 
 ### Step 2: Middleware Performance Monitoring
+
 ```typescript
 // middleware.ts
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
@@ -102,6 +106,7 @@ export default clerkMiddleware(async (auth, req) => {
 ```
 
 ### Step 3: Webhook Event Tracking
+
 ```typescript
 // app/api/webhooks/clerk/route.ts
 import { logAuthEvent } from '@/lib/auth-logger'
@@ -156,6 +161,7 @@ async function handleWebhookEvent(evt: WebhookEvent) {
 ```
 
 ### Step 4: Sentry Error Tracking Integration
+
 ```typescript
 // lib/sentry-clerk.ts
 import * as Sentry from '@sentry/nextjs'
@@ -207,6 +213,7 @@ Sentry.init({
 ```
 
 ### Step 5: Health Check Endpoint
+
 ```typescript
 // app/api/health/route.ts
 import { clerkClient } from '@clerk/nextjs/server'
@@ -242,6 +249,7 @@ export async function GET() {
 ```
 
 ### Step 6: Dashboard Metrics Query
+
 ```typescript
 // app/api/admin/auth-metrics/route.ts
 import { auth } from '@clerk/nextjs/server'
@@ -275,6 +283,7 @@ export async function GET() {
 ```
 
 ## Output
+
 - Structured auth event logging with Pino (sign-in, sign-out, sign-up, errors)
 - Middleware performance tracking with slow-request alerts
 - Webhook event monitoring with processing time metrics
@@ -283,6 +292,7 @@ export async function GET() {
 - Admin metrics endpoint for auth dashboard
 
 ## Error Handling
+
 | Issue | Monitoring Action |
 |-------|-------------------|
 | High auth latency (p95 > 200ms) | Alert via middleware timing logs, investigate caching |
@@ -293,15 +303,18 @@ export async function GET() {
 ## Examples
 
 ### Quick Monitoring One-Liner
+
 ```bash
 # Watch auth events in real-time (development)
 LOG_LEVEL=debug npm run dev 2>&1 | grep '"category":"auth"'
 ```
 
 ## Resources
+
 - [Clerk Dashboard Analytics](https://dashboard.clerk.com)
 - [Sentry Next.js Integration](https://docs.sentry.io/platforms/javascript/guides/nextjs/)
 - [Pino Logger](https://getpino.io/)
 
 ## Next Steps
+
 Proceed to `clerk-incident-runbook` for incident response procedures.

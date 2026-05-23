@@ -10,6 +10,7 @@ customerio-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Customer.io local development workflow
 **Workflow:** Part of the onboarding skill category for Customer.io integration.
 **Relates to:** Other customerio skills in this pack.

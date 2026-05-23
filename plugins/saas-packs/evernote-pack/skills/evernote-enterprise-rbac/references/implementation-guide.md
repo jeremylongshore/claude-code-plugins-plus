@@ -616,7 +616,6 @@ router.post('/:noteGuid/share',
 module.exports = router;
 ```
 
-
 ## Evernote Permission Levels
 
 | Level | Scope | Capabilities |
@@ -627,7 +626,6 @@ module.exports = router;
 | Notebook Read | Notebook | Read all notes |
 | Notebook Modify | Notebook | Edit all notes |
 | Notebook Full | Notebook | Full control |
-
 
 ## Database Schema
 

@@ -10,6 +10,7 @@ glean-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Glean anti-patterns
 **Workflow:** Part of the enterprise skill category for Glean integration.
 **Relates to:** Other glean skills in this pack.

@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Salesforce Policy & Guardrails
 
 ## Overview
+
 Automated policy enforcement for Salesforce integrations: SOQL injection prevention, API key leak detection, governor limit guardrails, and CI pipeline checks.
 
 ## Prerequisites
+
 - ESLint configured in project
 - jsforce TypeScript project
 - CI/CD pipeline with policy checks
@@ -258,6 +260,7 @@ function validateSoql(soql: string): { valid: boolean; warnings: string[] } {
 ```
 
 ## Output
+
 - SOQL injection prevention with escape function
 - ESLint rule detecting injection risks
 - Pre-commit hook blocking credential leaks
@@ -265,6 +268,7 @@ function validateSoql(soql: string): { valid: boolean; warnings: string[] } {
 - CI pipeline policy checks
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | ESLint rule false positive | escapeSoql used but not detected | Update rule to check function name |
@@ -273,9 +277,11 @@ function validateSoql(soql: string): { valid: boolean; warnings: string[] } {
 | SOQL injection detected | String concatenation | Apply escapeSoql() wrapper |
 
 ## Resources
+
 - [SOQL Injection](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/pages_security_tips_soql_injection.htm)
 - [Salesforce Security Guide](https://developer.salesforce.com/docs/atlas.en-us.securityImplGuide.meta/securityImplGuide/)
 - [ESLint Plugin Development](https://eslint.org/docs/latest/extend/plugins)
 
 ## Next Steps
+
 For architecture blueprints, see `salesforce-architecture-variants`.

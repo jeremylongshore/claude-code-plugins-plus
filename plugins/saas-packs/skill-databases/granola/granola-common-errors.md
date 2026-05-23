@@ -10,6 +10,7 @@ granola-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Granola common errors
 **Workflow:** Part of the operations skill category for Granola integration.
 **Relates to:** Other granola skills in this pack.

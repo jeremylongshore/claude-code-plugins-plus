@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral AI Install & Auth
 
 ## Overview
+
 Set up the official Mistral AI SDK (`@mistralai/mistralai` for TypeScript, `mistralai` for Python) and configure authentication for chat completions, embeddings, function calling, vision, and agents.
 
 ## Prerequisites
+
 - Node.js 18+ or Python 3.9+
 - Package manager (npm, pnpm, yarn, or pip)
 - Mistral AI account at [console.mistral.ai](https://console.mistral.ai/)
@@ -38,6 +40,7 @@ Set up the official Mistral AI SDK (`@mistralai/mistralai` for TypeScript, `mist
 ### Step 1: Install SDK
 
 **Node.js (TypeScript/JavaScript) — ESM only**
+
 ```bash
 set -euo pipefail
 # npm
@@ -51,6 +54,7 @@ yarn add @mistralai/mistralai
 ```
 
 **Python**
+
 ```bash
 set -euo pipefail
 pip install mistralai
@@ -59,6 +63,7 @@ pip install mistralai
 ### Step 2: Configure Authentication
 
 **Environment Variables (Recommended)**
+
 ```bash
 # Set in shell
 export MISTRAL_API_KEY="your-api-key"
@@ -69,6 +74,7 @@ echo '.env' >> .gitignore
 ```
 
 **Using dotenv (Node.js)**
+
 ```bash
 set -euo pipefail
 npm install dotenv
@@ -81,6 +87,7 @@ import 'dotenv/config';
 ### Step 3: Verify Connection
 
 **TypeScript**
+
 ```typescript
 import { Mistral } from '@mistralai/mistralai';
 
@@ -108,6 +115,7 @@ testConnection();
 ```
 
 **Python**
+
 ```python
 import os
 from mistralai import Mistral
@@ -157,11 +165,13 @@ async function getMistralKey(): Promise<string> {
 ```
 
 ## Output
+
 - Installed SDK package (`@mistralai/mistralai` or `mistralai`)
 - Environment variable or .env file with API key
 - Successful connection verification listing available models
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401 Unauthorized` | Invalid or missing API key | Verify key at console.mistral.ai |
@@ -172,6 +182,7 @@ async function getMistralKey(): Promise<string> {
 ## Examples
 
 ### TypeScript Client with Retry
+
 ```typescript
 import { Mistral } from '@mistralai/mistralai';
 
@@ -185,6 +196,7 @@ export default client;
 ```
 
 ### Python Client with Retry
+
 ```python
 import os
 from mistralai import Mistral
@@ -197,6 +209,7 @@ client = Mistral(
 ```
 
 ### Validate API Key Format
+
 ```typescript
 function validateMistralApiKey(key: string): boolean {
   // Mistral keys are typically 32-char hex strings
@@ -205,6 +218,7 @@ function validateMistralApiKey(key: string): boolean {
 ```
 
 ## Resources
+
 - [Mistral AI Documentation](https://docs.mistral.ai/)
 - [Mistral AI Console](https://console.mistral.ai/)
 - [TypeScript SDK (client-ts)](https://github.com/mistralai/client-ts)
@@ -212,4 +226,5 @@ function validateMistralApiKey(key: string): boolean {
 - [API Reference](https://docs.mistral.ai/api/)
 
 ## Next Steps
+
 After successful auth, proceed to `mistral-hello-world` for your first chat completion.

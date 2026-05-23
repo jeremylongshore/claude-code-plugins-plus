@@ -10,6 +10,7 @@ vercel-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Vercel costs through tier selection, sampling, batching, and usage monitoring with budget alerts.
 **Workflow:** Applied during initial setup and reviewed monthly/quarterly during cost reviews.
 **Relates to:** Complements vercel-performance-tuning; leads to vercel-reference-architecture for full design

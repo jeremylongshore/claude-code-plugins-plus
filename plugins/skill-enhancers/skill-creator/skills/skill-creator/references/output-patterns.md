@@ -29,6 +29,7 @@ Generate output using this exact template:
 ```
 
 Replace placeholders with gathered values. Do not add extra fields.
+
 ```
 
 ### Flexible Template (Medium Degrees of Freedom)
@@ -69,20 +70,24 @@ Provide input/output pairs that demonstrate expected behavior.
 **Input**: `/skill-name auth.py`
 **Output**:
 ```
+
 auth.py: 3 issues found
   Line 15: SQL injection risk in query builder
   Line 42: Hardcoded credential detected
   Line 89: Missing input validation
+
 ```
 
 ### Complex case
 **Input**: `/skill-name --deep src/`
 **Output**:
 ```
+
 Deep scan: 12 files, 7 issues
   CRITICAL (2): sql-injection, hardcoded-secret
   WARNING (3): missing-validation, weak-hash, cors-wildcard
   INFO (2): deprecated-api, unused-import
+
 ```
 ```
 
@@ -135,6 +140,7 @@ Example HTML structure:
 </body>
 </html>
 ```
+
 ```
 
 ### When to Use
@@ -177,6 +183,7 @@ Results are written as JSON to `{output_path}/results.json`:
 ```
 
 Additionally, a human-readable summary is printed to the conversation.
+
 ```
 
 ---

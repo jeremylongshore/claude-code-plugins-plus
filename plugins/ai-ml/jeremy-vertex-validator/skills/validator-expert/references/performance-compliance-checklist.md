@@ -5,24 +5,28 @@
 ## Performance Validation
 
 ### Auto-Scaling
+
 - Auto-scaling enabled for Agent Engine
 - Min/max replicas configured appropriately
 - CPU/memory targets set
 - Scale-up/scale-down thresholds tuned
 
 ### Caching
+
 - Memory Bank caching enabled
 - Cache hit rate >60%
 - Cache TTL configured
 - Response caching for frequent queries
 
 ### Resource Limits
+
 - Memory limits appropriate for workload
 - CPU allocation sufficient
 - Timeout values configured
 - Concurrent request limits set
 
 ### Code Execution Sandbox
+
 - Sandbox state persistence TTL configured (1-14 days)
 - Execution timeout appropriate
 - Artifact storage configured
@@ -55,24 +59,28 @@ def validate_performance(agent_config):
 ## Compliance Validation
 
 ### Audit Logging
+
 - Cloud Audit Logs enabled
 - Admin activity logged
 - Data access logs enabled for sensitive operations
 - Log retention >1 year for compliance
 
 ### Data Residency
+
 - Agent deployed in compliant region
 - Data storage in approved locations
 - Cross-border data transfer documented
 - Regional data processing requirements met
 
 ### Privacy
+
 - PII handling policies implemented
 - User consent mechanisms in place
 - Data anonymization for non-prod environments
 - Right to deletion implemented
 
 ### Backup & DR
+
 - Memory Bank backup configured
 - Disaster recovery plan documented
 - RTO/RPO objectives defined

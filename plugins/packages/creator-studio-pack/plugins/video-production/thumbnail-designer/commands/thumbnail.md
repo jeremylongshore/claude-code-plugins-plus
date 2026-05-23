@@ -19,6 +19,7 @@ Generate high-CTR YouTube thumbnails with AI-assisted design and proven formulas
 ## Purpose
 
 Create thumbnails that:
+
 - **Stop the scroll** - Eye-catching in feed
 - **Communicate value** - Clear what video is about
 - **Optimize CTR** - A/B test multiple versions
@@ -27,6 +28,7 @@ Create thumbnails that:
 ## Thumbnail Formulas
 
 ### Formula 1: Mr Beast Style
+
 ```
 Elements:
 - Large expressive face (40% of thumbnail)
@@ -41,6 +43,7 @@ CTR Benchmark: 12-18%
 ```
 
 ### Formula 2: Ali Abdaal Style
+
 ```
 Elements:
 - Clean minimalist design
@@ -55,6 +58,7 @@ CTR Benchmark: 8-12%
 ```
 
 ### Formula 3: Tech Review Style
+
 ```
 Elements:
 - Product photo (professional)
@@ -69,6 +73,7 @@ CTR Benchmark: 10-14%
 ```
 
 ### Formula 4: Tutorial Style
+
 ```
 Elements:
 - Before/After split
@@ -83,6 +88,7 @@ CTR Benchmark: 7-11%
 ```
 
 ### Formula 5: Vlog Style
+
 ```
 Elements:
 - Candid action shot
@@ -101,6 +107,7 @@ CTR Benchmark: 6-10%
 When user runs `/thumbnail "How I Made My API 10x Faster"`:
 
 **Step 1: Analyze Title**
+
 ```
 📊 TITLE ANALYSIS
 
@@ -114,6 +121,7 @@ Alternative: Tech Review (Formula 3)
 ```
 
 **Step 2: Generate Design Concepts**
+
 ```
 🎨 GENERATING 3 CONCEPTS
 
@@ -146,6 +154,7 @@ Select concept (A/B/C) or 'all' to generate all 3:
 ```
 
 **Step 3: Generate Thumbnail**
+
 ```
 ✨ GENERATING THUMBNAIL
 
@@ -173,6 +182,7 @@ Suggested Improvements:
 ```
 
 **Step 4: A/B Test Recommendations**
+
 ```
 📈 A/B TEST STRATEGY
 
@@ -196,6 +206,7 @@ Expected CTR improvement: 20-40%
 ```
 
 Automatically:
+
 - Detect face in image
 - Remove background
 - Enhance contrast and color
@@ -225,6 +236,7 @@ Face Quality Score: 8.7/10 ✓
 Automatically optimize text for readability:
 
 **Text Analysis**
+
 ```
 Title: "How I Made My API 10x Faster"
 Length: 32 characters
@@ -242,6 +254,7 @@ Recommended: Option 3 (best mobile readability)
 ```
 
 **Font Selection**
+
 ```
 Based on "technical tutorial" category:
 
@@ -291,6 +304,7 @@ Generate thumbnails for multiple videos:
 ```
 
 `video-list.txt`:
+
 ```
 How I Made My API 10x Faster | tutorial
 Building a Redis Cache | tutorial
@@ -300,6 +314,7 @@ Redis vs Memcached | comparison
 ```
 
 Output:
+
 ```
 📦 BATCH GENERATION
 
@@ -374,6 +389,7 @@ Compared to average: +34% above typical 6.8%
 Different platforms need different approaches:
 
 **YouTube (1280x720)**
+
 ```
 - Large text (readable at 100px preview)
 - High contrast
@@ -383,6 +399,7 @@ Different platforms need different approaches:
 ```
 
 **TikTok/Shorts (1080x1920 cover)**
+
 ```
 - Vertical format
 - Face in upper 60%
@@ -392,6 +409,7 @@ Different platforms need different approaches:
 ```
 
 **LinkedIn (1200x627)**
+
 ```
 - Professional appearance
 - Clean design
@@ -401,6 +419,7 @@ Different platforms need different approaches:
 ```
 
 **Twitter (1200x675)**
+
 ```
 - Punchy text
 - Eye-catching
@@ -411,18 +430,21 @@ Different platforms need different approaches:
 ## Best Practices
 
 ### Text Guidelines
+
 - **3-7 words maximum** - Any more is too busy
 - **Readable at 100px** - Most people see small previews
 - **High contrast** - White text, dark stroke + shadow
 - **Split long titles** - Focus on hook, not full title
 
 ### Face Guidelines
+
 - **Expression matters** - Shocked, happy, or focused
 - **30-40% of frame** - Large enough to see emotion
 - **Eye contact** - Looking at camera is best
 - **Good lighting** - Front-lit, no harsh shadows
 
 ### Color Guidelines
+
 - **High contrast** - Visible in any context
 - **3 colors max** - More is chaotic
 - **Brand consistency** - Use same palette across videos
@@ -441,6 +463,7 @@ Works with other Creator Studio plugins:
 ## Examples
 
 ### Tutorial Thumbnail
+
 ```bash
 User: /thumbnail "Building a REST API in 15 Minutes"
 
@@ -460,6 +483,7 @@ Files:
 ```
 
 ### Comparison Thumbnail
+
 ```bash
 User: /thumbnail "Redis vs PostgreSQL" --style comparison
 
@@ -477,6 +501,7 @@ Predicted CTR: 11.4%
 ## Troubleshooting
 
 ### Text Too Small on Mobile
+
 ```
 ⚠️ Warning: Text may be hard to read on mobile
 
@@ -487,6 +512,7 @@ Auto-fix: Increase font to 96pt? (y/n)
 ```
 
 ### Low Contrast Warning
+
 ```
 ⚠️ Low contrast detected (4.2:1 ratio)
 
@@ -501,6 +527,7 @@ Suggestions:
 ```
 
 ### Face Detection Failed
+
 ```
 ❌ No face detected in image
 

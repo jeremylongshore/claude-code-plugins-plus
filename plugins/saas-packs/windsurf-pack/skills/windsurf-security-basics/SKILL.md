@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Security Basics
 
 ## Overview
+
 Security best practices for Windsurf AI IDE: controlling what code Cascade can see, preventing secrets from leaking into AI context, managing telemetry, and configuring workspace isolation for regulated environments.
 
 ## Prerequisites
+
 - Windsurf installed
 - Understanding of Codeium's data processing model
 - Repository with identified sensitive files
@@ -183,6 +185,7 @@ data_processing:
 - [ ] Enterprise: SSO configured, personal accounts blocked
 
 ## Error Handling
+
 | Security Issue | Detection | Mitigation |
 |----------------|-----------|------------|
 | Secret in Cascade suggestion | Appears in AI output | Add source file to `.codeiumignore`, rotate secret |
@@ -193,6 +196,7 @@ data_processing:
 ## Examples
 
 ### Enterprise .codeiumignore
+
 ```gitignore
 # ~/.codeium/.codeiumignore (global, all workspaces)
 *.pem
@@ -206,6 +210,7 @@ terraform.tfstate*
 ```
 
 ### Quick Privacy Check
+
 ```bash
 # Verify critical files are excluded
 echo ".env" | while read f; do
@@ -214,9 +219,11 @@ done
 ```
 
 ## Resources
+
 - [Windsurf Security](https://windsurf.com/security)
 - [Codeium Privacy Policy](https://codeium.com/privacy-policy)
 - [Windsurf Ignore Docs](https://docs.windsurf.com/context-awareness/windsurf-ignore)
 
 ## Next Steps
+
 For production deployment, see `windsurf-prod-checklist`.

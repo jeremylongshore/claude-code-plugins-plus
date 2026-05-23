@@ -21,7 +21,6 @@ When you see "deploy in days, not months," it sounds like marketing fluff. This 
 
 **Combined infrastructure:** Google Cloud Platform (primary), AWS (secondary), Netlify (static sites), Firebase (customer platforms).
 
-
 ## Case Study 1: DiagnosticPro - $4.99 AI Diagnostics at Scale
 
 ### The Business Problem
@@ -31,6 +30,7 @@ Traditional automotive diagnostics cost $120-200 per visit. Customers want faste
 ### Technical Solution
 
 **Architecture:**
+
 ```
 User Upload (Firebase Storage)
     ↓
@@ -44,6 +44,7 @@ Email Delivery + Firestore Record
 ```
 
 **Cost Structure:**
+
 - Vertex AI Gemini: $0.15 per diagnostic
 - Firebase Hosting: $0.026 per GB
 - Cloud Functions: $0.40 per 1M invocations
@@ -52,6 +53,7 @@ Email Delivery + Firestore Record
 - **Gross margin:** 96.4%
 
 **Why this works:**
+
 1. **Vertex AI cost advantage:** 62.5% cheaper than OpenAI GPT-4 for equivalent quality
 2. **Firebase auto-scaling:** Zero infrastructure management overhead
 3. **Serverless architecture:** Pay-per-use eliminates fixed costs
@@ -60,18 +62,19 @@ Email Delivery + Firestore Record
 ### Data Platform Scale
 
 **Supporting infrastructure:**
+
 - **226+ RSS feeds:** Curated automotive content sources
 - **Multiple BigQuery datasets:** Production data analytics
 - **3 GCP projects:** Clean separation (prod, analytics, creatives)
 
 **Key learning:** Data platform investment pays dividends. RSS feed curation and BigQuery analytics inform diagnostic accuracy improvements.
 
-
 ## Case Study 2: Hustle - Next.js 15 + COPPA Compliance
 
 ### The Technical Challenge
 
 Build youth sports stats platform with:
+
 - COPPA-compliant authentication (age 13+ requirement)
 - Parent verification workflow
 - College recruiter trust signals
@@ -80,10 +83,12 @@ Build youth sports stats platform with:
 ### Architecture Decisions
 
 **Framework:** Next.js 15 with Turbopack
+
 - **Why:** React 19 + App Router + Turbopack = fastest development velocity
 - **Trade-off:** Bleeding edge = occasional breaking changes, but speed wins
 
 **Authentication:** NextAuth v5 with JWT strategy
+
 ```typescript
 // Simplified NextAuth v5 config
 import NextAuth from "next-auth"
@@ -112,6 +117,7 @@ export const { handlers, auth } = NextAuth({
 **Database:** PostgreSQL 15 with Prisma ORM
 
 Schema highlights:
+
 ```prisma
 model Player {
   id          String   @id @default(cuid())
@@ -138,6 +144,7 @@ model Game {
 ```
 
 **Deployment:** Terraform-managed GCP infrastructure
+
 ```hcl
 resource "google_cloud_run_v2_service" "hustle_frontend" {
   name     = "hustle-frontend"
@@ -171,6 +178,7 @@ resource "google_cloud_run_v2_service" "hustle_frontend" {
 ### COPPA Compliance Implementation
 
 **Critical requirements:**
+
 1. Age verification at signup (reject < 13 years old)
 2. Parental consent for data collection
 3. Privacy policy accessible before registration
@@ -178,6 +186,7 @@ resource "google_cloud_run_v2_service" "hustle_frontend" {
 5. Data minimization (collect only necessary fields)
 
 **Implementation:**
+
 ```typescript
 // Age validation utility
 export function validateCOPPAAge(birthday: Date): boolean {
@@ -210,7 +219,6 @@ async function registerPlayer(data: PlayerInput) {
 
 **Lesson learned:** Legal compliance isn't a feature you bolt on—it's architecture from day one.
 
-
 ## Case Study 3: CostPlusDB - Radical Pricing Transparency
 
 **Live at:** [costplusdb.dev](https://costplusdb.dev)
@@ -222,6 +230,7 @@ Traditional managed PostgreSQL providers mark up costs 300-400%. What if we show
 ### Pricing Model
 
 **Traditional AWS RDS pricing (db.t3.medium):**
+
 - Instance: $0.068/hour × 730 hours = $49.64
 - Storage: 100GB SSD @ $0.115/GB = $11.50
 - Backups: 100GB @ $0.095/GB = $9.50
@@ -230,6 +239,7 @@ Traditional managed PostgreSQL providers mark up costs 300-400%. What if we show
 - **Typical managed provider:** $250-350/month
 
 **CostPlusDB pricing:**
+
 - Infrastructure cost: $70/month (AWS + overhead)
 - Markup: $19/month (25% transparent margin)
 - **Customer price:** $89/month
@@ -238,6 +248,7 @@ Traditional managed PostgreSQL providers mark up costs 300-400%. What if we show
 ### Technical Architecture
 
 **Deployment:**
+
 - PostgreSQL 16 on dedicated AWS EC2
 - pgBackRest for automated backups (30-day retention)
 - 7-day point-in-time recovery
@@ -248,7 +259,6 @@ Traditional managed PostgreSQL providers mark up costs 300-400%. What if we show
 
 **Constraint-driven growth:** Max 5 new clients/month maintains quality. Waitlist creates urgency.
 
-
 ## Case Study 4: ClaudeCodePlugins - 236 Plugins at Scale
 
 ### The Scale Challenge
@@ -258,6 +268,7 @@ Managing 236 production plugins requires automation. Manual processes break at 5
 ### Two-Catalog Architecture
 
 **marketplace.extended.json** (Source of Truth):
+
 ```json
 {
   "plugins": [
@@ -282,6 +293,7 @@ Managing 236 production plugins requires automation. Manual processes break at 5
 ```
 
 **marketplace.json** (Generated, CLI-compatible):
+
 ```json
 {
   "plugins": [
@@ -296,6 +308,7 @@ Managing 236 production plugins requires automation. Manual processes break at 5
 ```
 
 **Generation script:**
+
 ```bash
 #!/bin/bash
 # Strip website metadata for CLI compatibility
@@ -312,6 +325,7 @@ jq '.plugins | map({
 **Solution:** Batch processing with comprehensive context
 
 **Vertex AI prompt structure:**
+
 ```
 System Context (480 lines):
 - What Claude Code is (released 2025)
@@ -327,13 +341,13 @@ Requirements: Strict markdown, auto-triggered, 2000-4000 chars
 ```
 
 **Results:**
+
 - **159 plugins processed**
 - **100% success rate** (zero errors)
 - **$0 cost** (Gemini 2.0 Flash free tier)
 - **3,210 bytes average SKILL.md** (17x larger than Anthropic examples)
 
 **Key learning:** Comprehensive context engineering + free tier optimization = scalable AI content generation.
-
 
 ## Technical Patterns Across All Platforms
 
@@ -342,6 +356,7 @@ Requirements: Strict markdown, auto-triggered, 2000-4000 chars
 **Principle:** Minimize fixed infrastructure costs. Pay only for usage.
 
 **Implementation:**
+
 - Cloud Run (DiagnosticPro, CCPI, Hustle)
 - Firebase Functions (DiagnosticPro)
 - Netlify Functions (static sites)
@@ -354,6 +369,7 @@ Requirements: Strict markdown, auto-triggered, 2000-4000 chars
 **Principle:** No vendor lock-in. Use best tool for each job.
 
 **Distribution:**
+
 - **GCP:** Primary (Vertex AI, BigQuery, Cloud Run, Firestore)
 - **AWS:** Secondary (RDS, EC2 for specific workloads)
 - **Netlify:** Static hosting (Hugo blogs, marketing sites)
@@ -364,12 +380,14 @@ Requirements: Strict markdown, auto-triggered, 2000-4000 chars
 ### Pattern 3: Infrastructure as Code Everywhere
 
 **Tools:**
+
 - Terraform (GCP, AWS infrastructure)
 - Firebase CLI (deployment automation)
 - GitHub Actions (CI/CD pipelines)
 - Docker (containerization)
 
 **Example GitHub Actions workflow:**
+
 ```yaml
 name: Deploy to Cloud Run
 on:
@@ -401,6 +419,7 @@ jobs:
 ### Pattern 4: Comprehensive Documentation as Code
 
 **CLAUDE.md in every repository:**
+
 ```markdown
 # CLAUDE.md
 
@@ -412,13 +431,17 @@ npm run deploy
 ```
 
 ## Architecture
+
 [System diagrams, API docs, deployment flow]
 
 ## Common Tasks
+
 [Step-by-step instructions for frequent operations]
 
 ## Troubleshooting
+
 [Known issues, solutions, debugging guides]
+
 ```
 
 **Why this matters:** Future developers (including future you) need context, not tribal knowledge.
@@ -556,6 +579,7 @@ service cloud.firestore {
 ### Pattern: Terraform Multi-Environment Setup
 
 **Structure:**
+
 ```
 terraform/
 ├── environments/
@@ -580,6 +604,7 @@ terraform/
 ### Pattern: GitHub Actions Multi-Stage Deployment
 
 **Workflow:**
+
 ```yaml
 name: Multi-Stage Deployment
 on:
@@ -620,7 +645,6 @@ jobs:
 
 **Result:** Branch-based environments with automatic deployment.
 
-
 ## Business Lessons from Running Five Platforms
 
 ### Lesson 1: Margin Comes from Infrastructure Decisions
@@ -649,29 +673,31 @@ jobs:
 
 **Insight:** Artificial constraints prevent scope creep and force focus.
 
-
 ## What's Next: Q4 2025 Roadmap
 
 ### ClaudeCodePlugins
+
 - **Goal:** Community contribution system
 - **Milestone:** 10 external contributors by Dec 2025
 - **Technical:** GitHub-based submission workflow
 
 ### Hustle
+
 - **Goal:** Early access beta
 - **Milestone:** 10 families testing verification workflow
 - **Technical:** Parent consent automation
 
 ### CostPlusDB
+
 - **Goal:** Public case studies
 - **Milestone:** 3 customer migration stories
 - **Technical:** Transparent cost tracking dashboards
 
 ### Intent Solutions
+
 - **Goal:** Consulting engagement process
 - **Milestone:** 5 client engagements
 - **Technical:** Standardized project templates
-
 
 ## For Technical Founders: Lessons Learned
 
@@ -705,7 +731,6 @@ CLAUDE.md files get more usage than some features.
 
 **Corollary:** If you can't explain it, you can't maintain it.
 
-
 ## Conclusion: Deploy in Days, Learn Forever
 
 The real achievement isn't five production platforms. It's the architecture patterns, cost optimization strategies, and deployment velocity that make the next platform faster.
@@ -716,6 +741,7 @@ The real achievement isn't five production platforms. It's the architecture patt
 **For Intent Solutions customers:** This infrastructure exists to serve your deployments. Every pattern proven in production. Every cost optimized. Every deployment automated.
 
 **Want to see the code?** Most projects are open source:
+
 - [Claude Code Plugins](https://github.com/jeremylongshore/claude-code-plugins-plus)
 - [Waygate MCP](https://github.com/jeremylongshore/waygate-mcp)
 - [Bob's Brain](https://github.com/jeremylongshore/bobs-brain)
@@ -723,8 +749,6 @@ The real achievement isn't five production platforms. It's the architecture patt
 
 **Ready to deploy?** [jeremy@intentsolutions.io](mailto:jeremy@intentsolutions.io)
 
-
 **About Intent Solutions:** AI automation consultancy specializing in rapid deployment, cost optimization, and production-ready systems. Based in Gulf Shores, Alabama. Deployed five production platforms in 2025.
 
 **Last updated:** October 20, 2025
-

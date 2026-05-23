@@ -5,6 +5,7 @@
 **Error:** `Invalid or missing API key`
 
 **Causes:**
+
 - API key not set in environment
 - API key is invalid or revoked
 - Missing Authorization header
@@ -30,6 +31,7 @@ headers = {
 **Error:** `Invalid request parameters`
 
 **Causes:**
+
 - Missing required fields (prompt)
 - Invalid duration value
 - Unsupported aspect ratio
@@ -64,6 +66,7 @@ def validate_request(params: dict) -> list[str]:
 **Error:** `Access denied` or `Content policy violation`
 
 **Causes:**
+
 - Account suspended
 - Feature not available on plan
 - Content violates usage policy
@@ -88,6 +91,7 @@ def check_content_policy(prompt: str) -> bool:
 **Error:** `Too many requests`
 
 **Causes:**
+
 - Exceeded requests per minute
 - Exceeded concurrent jobs
 - Burst limit hit
@@ -122,6 +126,7 @@ def rate_limit_handler(max_retries: int = 5):
 **Error:** `Insufficient credits`
 
 **Causes:**
+
 - Account out of credits
 - Credit limit reached on API key
 - Payment method failed
@@ -144,6 +149,7 @@ def check_credits_before_generation(required: int) -> bool:
 **Error:** `Internal server error` or `Service unavailable`
 
 **Causes:**
+
 - Temporary service outage
 - High load on servers
 - Infrastructure issues
@@ -170,6 +176,7 @@ def retry_on_server_error(func, max_retries=3):
 **Error:** `Video generation failed`
 
 **Causes:**
+
 - Complex prompt that couldn't be processed
 - Timeout during generation
 - Internal processing error

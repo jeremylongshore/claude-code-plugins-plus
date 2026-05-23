@@ -17,6 +17,7 @@ You are the Link Curator - validating URLs, detecting broken links, and maintain
 ## Validation Process
 
 ### Link Checking
+
 ```bash
 # Check single URL
 curl -sI "https://example.com" | head -1
@@ -59,12 +60,15 @@ done
 ## Coordination Protocol
 
 **Delegates to:**
+
 - None (specialized task)
 
 **Called by:**
+
 - `geepers_data`: For source URL validation
 - `geepers_a11y`: For link accessibility
 - Manual invocation
 
 **Shares data with:**
+
 - `geepers_status`: Link health metrics

@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Data Handling
 
 ## Overview
+
 Manage meeting transcript data: export in multiple formats (JSON, text, SRT), redact PII from transcripts and summaries, implement retention policies with automated cleanup, and handle GDPR/CCPA data subject requests.
 
 ## Prerequisites
+
 - `FIREFLIES_API_KEY` configured
 - Understanding of transcript data structure (sentences, summary, analytics)
 - Storage for processed transcripts
@@ -35,6 +37,7 @@ Manage meeting transcript data: export in multiple formats (JSON, text, SRT), re
 ## Instructions
 
 ### Step 1: Fetch Transcript Data
+
 ```typescript
 const FIREFLIES_API = "https://api.fireflies.ai/graphql";
 
@@ -68,6 +71,7 @@ async function getFullTranscript(id: string) {
 ```
 
 ### Step 2: Export in Multiple Formats
+
 ```typescript
 type ExportFormat = "json" | "text" | "srt" | "csv";
 
@@ -130,6 +134,7 @@ function fmtSrt(sec: number): string {
 ```
 
 ### Step 3: PII Redaction
+
 ```typescript
 const PII_PATTERNS = [
   { regex: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g, tag: "[EMAIL]" },
@@ -175,6 +180,7 @@ function redactTranscript(transcript: any): any {
 ```
 
 ### Step 4: Retention Policy with Automated Cleanup
+
 ```typescript
 interface RetentionPolicy {
   fullTranscriptDays: number;   // Keep full sentences
@@ -232,6 +238,7 @@ async function deleteTranscript(id: string) {
 ```
 
 ### Step 5: GDPR Data Subject Request
+
 ```typescript
 // Handle "right to be forgotten" requests
 async function handleDataSubjectDeletion(email: string) {
@@ -268,6 +275,7 @@ async function handleDataSubjectDeletion(email: string) {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Missing sentences | Transcript still processing | Check before export |
@@ -276,15 +284,18 @@ async function handleDataSubjectDeletion(email: string) {
 | Large transcript OOM | 2+ hour meeting | Stream or paginate sentences |
 
 ## Output
+
 - Multi-format transcript export (JSON, text, SRT, CSV)
 - PII redaction covering sentences, summaries, and attendee info
 - Automated retention policy with configurable thresholds
 - GDPR/CCPA data subject request handler
 
 ## Resources
+
 - [Fireflies Privacy Policy](https://fireflies.ai/privacy)
 - [Fireflies API Docs](https://docs.fireflies.ai/)
 - [Transcript Query](https://docs.fireflies.ai/graphql-api/query/transcript)
 
 ## Next Steps
+
 For enterprise access control, see `fireflies-enterprise-rbac`.

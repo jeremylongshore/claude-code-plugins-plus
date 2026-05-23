@@ -10,6 +10,7 @@ persona-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Persona security best practices
 **Workflow:** Part of the operations skill category for Persona integration.
 **Relates to:** Other persona skills in this pack.

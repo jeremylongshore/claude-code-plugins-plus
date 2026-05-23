@@ -24,6 +24,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clay Debug Bundle
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'N/A'`
 !`python3 --version 2>/dev/null || echo 'N/A'`
 
@@ -183,12 +184,14 @@ echo "Submit at: https://community.clay.com or support@clay.com"
 ## Sensitive Data Handling
 
 **Always redact before submitting:**
+
 - API keys and tokens
 - Email addresses and names from enrichment data
 - Provider API keys (Apollo, Clearbit, etc.)
 - CRM credentials
 
 **Safe to include:**
+
 - Error messages and HTTP status codes
 - Column names and table structure
 - Credit usage numbers

@@ -335,6 +335,7 @@ After the incident is resolved:
 ## Output
 
 After executing this runbook:
+
 - Root cause identified and documented
 - Immediate mitigation applied (fallback translations, redeployment, or cache clear)
 - Stakeholders notified via communication templates

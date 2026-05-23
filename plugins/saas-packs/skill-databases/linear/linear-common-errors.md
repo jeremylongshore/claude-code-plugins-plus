@@ -10,6 +10,7 @@ linear-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Linear common errors
 **Workflow:** Part of the operations skill category for Linear integration.
 **Relates to:** Other linear skills in this pack.

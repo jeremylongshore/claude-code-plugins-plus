@@ -25,6 +25,7 @@ Complete Claude Code skill pack for [OpenRouter](https://openrouter.ai) -- the u
 ## Skills Included (30)
 
 ### Onboarding & Foundations (6)
+
 | Skill | Description |
 |-------|-------------|
 | `openrouter-install-auth` | API key setup, environment config, key rotation |
@@ -35,6 +36,7 @@ Complete Claude Code skill pack for [OpenRouter](https://openrouter.ai) -- the u
 | `openrouter-pricing-basics` | Token pricing, cost calculation, `:floor` variants |
 
 ### Operations & Debugging (6)
+
 | Skill | Description |
 |-------|-------------|
 | `openrouter-common-errors` | Every error code (401/402/429/5xx) with exact fixes |
@@ -45,6 +47,7 @@ Complete Claude Code skill pack for [OpenRouter](https://openrouter.ai) -- the u
 | `openrouter-upgrade-migration` | Migration from direct APIs, feature flags, comparison tests |
 
 ### Routing & Reliability (6)
+
 | Skill | Description |
 |-------|-------------|
 | `openrouter-fallback-config` | Native model fallback, provider fallback, client-side chains |
@@ -55,6 +58,7 @@ Complete Claude Code skill pack for [OpenRouter](https://openrouter.ai) -- the u
 | `openrouter-reference-architecture` | Simple/standard/enterprise architecture patterns |
 
 ### Enterprise & Compliance (6)
+
 | Skill | Description |
 |-------|-------------|
 | `openrouter-team-setup` | Management API key provisioning, per-user budgets |
@@ -65,6 +69,7 @@ Complete Claude Code skill pack for [OpenRouter](https://openrouter.ai) -- the u
 | `openrouter-compliance-review` | SOC2/GDPR checklist, BYOK, data classification |
 
 ### Advanced Patterns (6)
+
 | Skill | Description |
 |-------|-------------|
 | `openrouter-model-routing` | Task-based routing, complexity classification, cost-aware selection |
@@ -77,6 +82,7 @@ Complete Claude Code skill pack for [OpenRouter](https://openrouter.ai) -- the u
 ## Quick Start
 
 After installation, these skills activate automatically when you:
+
 - Set up OpenRouter API integration
 - Configure model fallbacks and provider routing
 - Optimize LLM costs and manage credits

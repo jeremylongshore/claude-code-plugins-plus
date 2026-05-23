@@ -10,6 +10,7 @@ webflow-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Webflow reliability patterns
 **Workflow:** Part of the enterprise skill category for Webflow integration.
 **Relates to:** Other webflow skills in this pack.

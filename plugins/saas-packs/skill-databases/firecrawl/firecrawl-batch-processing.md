@@ -10,6 +10,7 @@ firecrawl-batch-processing/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement batch URL processing with parallel execution, progress tracking, result aggregation, and failure handling.
 **Workflow:** High-volume skill - enables processing of large URL lists with optimal throughput and reliability.
 **Relates to:** Builds on firecrawl-rate-limits; extends firecrawl-crawl-site for custom URL lists

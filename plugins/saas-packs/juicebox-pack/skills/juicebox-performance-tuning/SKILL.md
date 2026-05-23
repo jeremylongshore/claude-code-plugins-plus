@@ -22,6 +22,7 @@ compatibility: Designed for Claude Code
 Juicebox's AI analysis API handles dataset uploads, analysis queue wait times, and result pagination. Large dataset uploads (100K+ rows) can block the analysis pipeline, while queue contention during peak hours increases wait times. Result sets from broad queries return thousands of profiles requiring efficient pagination. Caching search results, batching enrichment calls, and managing upload chunking reduces end-to-end analysis time by 40-60% and keeps interactive searches responsive.
 
 ## Caching Strategy
+
 ```typescript
 const cache = new Map<string, { data: any; expiry: number }>();
 const TTL = { search: 300_000, profile: 600_000, analysis: 900_000 };
@@ -37,6 +38,7 @@ async function cached(key: string, ttlKey: keyof typeof TTL, fn: () => Promise<a
 ```
 
 ## Batch Operations
+
 ```typescript
 async function enrichBatch(client: any, profileIds: string[], batchSize = 50) {
   const results = [];
@@ -51,6 +53,7 @@ async function enrichBatch(client: any, profileIds: string[], batchSize = 50) {
 ```
 
 ## Connection Pooling
+
 ```typescript
 import { Agent } from 'https';
 const agent = new Agent({ keepAlive: true, maxSockets: 8, maxFreeSockets: 4, timeout: 60_000 });
@@ -58,6 +61,7 @@ const agent = new Agent({ keepAlive: true, maxSockets: 8, maxFreeSockets: 4, tim
 ```
 
 ## Rate Limit Management
+
 ```typescript
 async function withRateLimit(fn: () => Promise<any>): Promise<any> {
   try { return await fn(); }
@@ -73,6 +77,7 @@ async function withRateLimit(fn: () => Promise<any>): Promise<any> {
 ```
 
 ## Monitoring
+
 ```typescript
 const metrics = { searches: 0, enrichments: 0, cacheHits: 0, queueWaitMs: 0, errors: 0 };
 function track(op: 'search' | 'enrich', startMs: number, cached: boolean) {
@@ -83,6 +88,7 @@ function track(op: 'search' | 'enrich', startMs: number, cached: boolean) {
 ```
 
 ## Performance Checklist
+
 - [ ] Use specific filters (location, skills, title) to narrow search scope
 - [ ] Cache search results with 5-min TTL to avoid redundant queries
 - [ ] Batch profile enrichment in groups of 50 with 300ms delays
@@ -93,6 +99,7 @@ function track(op: 'search' | 'enrich', startMs: number, cached: boolean) {
 - [ ] Paginate results with limit=20 and cursor for interactive UIs
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | Analysis queue timeout | Peak hour contention | Schedule large analyses off-peak, increase client timeout |
@@ -101,8 +108,10 @@ function track(op: 'search' | 'enrich', startMs: number, cached: boolean) {
 | Slow broad search | Unfiltered query returning thousands of results | Add location/skills/title filters, set limit=20 |
 
 ## Resources
+
 - [Juicebox API Docs](https://docs.juicebox.work/api)
 - [Juicebox Performance Guide](https://docs.juicebox.work/performance)
 
 ## Next Steps
+
 See `juicebox-reference-architecture`.

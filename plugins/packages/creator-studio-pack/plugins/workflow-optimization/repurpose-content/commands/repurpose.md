@@ -18,6 +18,7 @@ Transform one video into 30+ optimized content pieces across platforms, maximizi
 ## Purpose
 
 Maximize content ROI by:
+
 - **1 video → 30+ pieces** - Amplify reach exponentially
 - **Platform-specific optimization** - Adapt for each audience
 - **Zero additional recording** - Reuse existing content
@@ -237,6 +238,7 @@ Timeline:
 ## Platform-Specific Adaptations
 
 ### YouTube Shorts (from long-form)
+
 ```
 ✂️ EXTRACTING SHORTS
 
@@ -269,6 +271,7 @@ Expected views: 10K-50K each
 ```
 
 ### Twitter Thread (from transcript)
+
 ```
 🐦 TWITTER THREAD CREATION
 
@@ -294,6 +297,7 @@ Expected impressions: 10K-40K
 ```
 
 ### Blog Post (from video content)
+
 ```
 📝 BLOG POST GENERATION
 
@@ -374,6 +378,7 @@ Works with other Creator Studio plugins:
 ## Best Practices
 
 ### Repurposing Strategy
+
 1. **Quality over quantity** - 10 great pieces > 50 mediocre
 2. **Platform-specific** - Adapt, don't just repost
 3. **Stagger releases** - Spread over 2-4 weeks
@@ -381,6 +386,7 @@ Works with other Creator Studio plugins:
 5. **Track performance** - Double down on winners
 
 ### Content Derivatives Priority
+
 High Value (Do First):
 ✓ YouTube Shorts (discovery)
 ✓ Blog post (SEO)

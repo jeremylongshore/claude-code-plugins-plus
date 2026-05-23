@@ -3,6 +3,7 @@
 ## Architecture Patterns
 
 ### Pattern 1: Basic Integration
+
 ```
 ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
 │   Client    │────▶│   Backend   │────▶│   Lindy AI  │
@@ -26,6 +27,7 @@ app.post('/api/chat', async (req, res) => {
 ```
 
 ### Pattern 2: Event-Driven Architecture
+
 ```
 ┌──────────────────────────────────────────────────────────┐
 │                     Event Bus (Redis/SQS)                │
@@ -72,6 +74,7 @@ const worker = new Worker('lindy-tasks', async (job) => {
 ```
 
 ### Pattern 3: Multi-Agent Orchestration
+
 ```
                     ┌─────────────────┐
                     │   Orchestrator  │
@@ -127,6 +130,7 @@ class AgentOrchestrator {
 ```
 
 ### Pattern 4: High-Availability Setup
+
 ```
 ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
 │   Load      │────▶│   App       │────▶│   Lindy     │

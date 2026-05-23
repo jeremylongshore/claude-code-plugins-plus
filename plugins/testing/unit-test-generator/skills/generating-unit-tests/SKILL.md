@@ -77,6 +77,7 @@ Automatically generate comprehensive unit tests from source code analysis coveri
 ## Examples
 
 **Jest test for a string utility:**
+
 ```typescript
 import { slugify } from '../src/utils/slugify';
 
@@ -100,6 +101,7 @@ describe('slugify', () => {
 ```
 
 **pytest test for a data validator:**
+
 ```python
 import pytest
 from myapp.validators import validate_email

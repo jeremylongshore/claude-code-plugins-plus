@@ -26,6 +26,7 @@ The analyzer uses natural language processing (NLP), time-series analysis, and m
 ### Social Media Sentiment (35% weight)
 
 **Twitter/X Analysis (15%)**
+
 - Real-time tweet monitoring for crypto-specific keywords and cashtags
 - Sentiment scoring using VADER and FinBERT NLP models
 - Influencer tracking with follower-weighted sentiment
@@ -33,6 +34,7 @@ The analyzer uses natural language processing (NLP), time-series analysis, and m
 - Trending topics and hashtag velocity analysis
 
 **Reddit Sentiment (10%)**
+
 - r/CryptoCurrency, r/Bitcoin, r/ethereum analysis
 - Post and comment sentiment with upvote weighting
 - Daily discussion thread analysis
@@ -40,6 +42,7 @@ The analyzer uses natural language processing (NLP), time-series analysis, and m
 - Cross-post momentum tracking
 
 **Telegram & Discord (10%)**
+
 - Group message sentiment analysis
 - Active user count and engagement rate
 - Admin/moderator sentiment filtering
@@ -49,6 +52,7 @@ The analyzer uses natural language processing (NLP), time-series analysis, and m
 ### News & Media Sentiment (20% weight)
 
 **Mainstream Media Coverage**
+
 - Automated news scraping from CoinDesk, CoinTelegraph, Bloomberg Crypto
 - Headline sentiment analysis with clickbait filtering
 - Source credibility scoring
@@ -56,6 +60,7 @@ The analyzer uses natural language processing (NLP), time-series analysis, and m
 - Fear/uncertainty/doubt (FUD) detection
 
 **Regulatory News Impact**
+
 - Government announcement tracking
 - SEC filing monitoring
 - Central bank statement analysis
@@ -65,6 +70,7 @@ The analyzer uses natural language processing (NLP), time-series analysis, and m
 ### Derivatives Market Sentiment (25% weight)
 
 **Funding Rates Analysis (12%)**
+
 - Perpetual futures funding rate tracking across exchanges
 - Historical funding rate comparison
 - Funding rate divergence alerts
@@ -72,6 +78,7 @@ The analyzer uses natural language processing (NLP), time-series analysis, and m
 - Liquidation cascade prediction
 
 **Options Market Sentiment (13%)**
+
 - Put/Call ratio analysis for major strikes
 - Implied volatility skew interpretation
 - Options open interest distribution
@@ -81,6 +88,7 @@ The analyzer uses natural language processing (NLP), time-series analysis, and m
 ### Whale & Smart Money Tracking (15% weight)
 
 **Large Holder Movements**
+
 - Whale wallet transaction monitoring (>$1M transfers)
 - Exchange deposit/withdrawal flow analysis
 - Cold wallet accumulation patterns
@@ -88,6 +96,7 @@ The analyzer uses natural language processing (NLP), time-series analysis, and m
 - Whale sentiment divergence from retail
 
 **Exchange Flow Analysis**
+
 - Net flow (deposits minus withdrawals)
 - Exchange reserve levels
 - Miner selling pressure
@@ -97,6 +106,7 @@ The analyzer uses natural language processing (NLP), time-series analysis, and m
 ### On-Chain Sentiment Indicators (5% weight)
 
 **Network Value Metrics**
+
 - MVRV ratio (Market Value to Realized Value)
 - NVT ratio (Network Value to Transactions)
 - Spent Output Age analysis
@@ -108,6 +118,7 @@ The analyzer uses natural language processing (NLP), time-series analysis, and m
 The Fear & Greed Index aggregates multiple data sources into a single 0-100 score:
 
 **Score Interpretation:**
+
 - 0-25: Extreme Fear (potential buying opportunity)
 - 25-45: Fear (cautious sentiment)
 - 45-55: Neutral (balanced market)
@@ -1322,6 +1333,7 @@ if __name__ == '__main__':
 ## Usage Examples
 
 ### Command-Line Analysis
+
 ```bash
 # Basic sentiment analysis
 /analyze-sentiment BTC
@@ -1337,6 +1349,7 @@ if __name__ == '__main__':
 ```
 
 ### Integration with Trading Strategy
+
 ```python
 # Use sentiment for entry signals
 result = await aggregator.analyze_complete_sentiment('BTC')
@@ -1356,15 +1369,18 @@ if len(result['alerts']) > 0:
 ## Interpretation Guidelines
 
 ### Fear & Greed Extremes
+
 - **Extreme Fear (0-25)**: Historically good buying opportunities (contrarian)
 - **Extreme Greed (75-100)**: Potential market tops, consider profit-taking
 
 ### Derivatives Signals
+
 - **High positive funding rates**: Overleveraged longs, potential for long squeeze
 - **High negative funding rates**: Overleveraged shorts, potential for short squeeze
 - **Extreme put/call ratios**: Sentiment extremes often precede reversals
 
 ### Whale Activity
+
 - **Large exchange withdrawals**: Accumulation phase (bullish)
 - **Large exchange deposits**: Distribution phase (bearish)
 - **Divergence from retail**: Smart money positioning differently

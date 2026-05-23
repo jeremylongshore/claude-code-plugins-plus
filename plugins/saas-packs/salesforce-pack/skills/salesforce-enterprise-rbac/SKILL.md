@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Salesforce Enterprise RBAC
 
 ## Overview
+
 Configure Salesforce's multi-layered security model: Profiles (baseline permissions), Permission Sets (additive permissions), Roles (record visibility), Organization-Wide Defaults (OWD), and Sharing Rules.
 
 ## Prerequisites
+
 - Salesforce System Administrator access
 - Understanding of your org's user hierarchy
 - For SSO: Identity Provider (Okta, Azure AD, etc.) with SAML 2.0
@@ -208,6 +210,7 @@ async function getObjectPermissions(objectType: string) {
 ```
 
 ## Output
+
 - Profiles configured with least-privilege for integration users
 - Permission Sets created for modular access control
 - OWD set appropriately for each sObject
@@ -215,6 +218,7 @@ async function getObjectPermissions(objectType: string) {
 - Programmatic access verification implemented
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `INSUFFICIENT_ACCESS_OR_READONLY` | Missing object/field permission | Check Profile + Permission Sets |
@@ -223,10 +227,12 @@ async function getObjectPermissions(objectType: string) {
 | User can't see records | OWD is Private, no sharing rule | Add appropriate Sharing Rule or Role Hierarchy |
 
 ## Resources
+
 - [Salesforce Security Model](https://developer.salesforce.com/docs/atlas.en-us.securityImplGuide.meta/securityImplGuide/)
 - [Permission Sets](https://help.salesforce.com/s/articleView?id=sf.perm_sets_overview.htm)
 - [Sharing Rules](https://help.salesforce.com/s/articleView?id=sf.security_sharing_rules.htm)
 - [SAML SSO](https://help.salesforce.com/s/articleView?id=sf.sso_saml.htm)
 
 ## Next Steps
+
 For major migrations, see `salesforce-migration-deep-dive`.

@@ -1,4 +1,4 @@
-# Implementation Guide
+## Implementation Guide
 
 ### Step 1: Understand Rate Limit Tiers
 

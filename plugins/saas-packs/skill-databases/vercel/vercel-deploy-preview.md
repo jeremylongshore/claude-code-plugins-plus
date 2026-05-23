@@ -10,6 +10,7 @@ vercel-deploy-preview/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy preview environments for pull requests and branches - instant previews for every commit.
 **Workflow:** Primary deployment workflow - triggered on every PR to create shareable preview environments.
 **Relates to:** Follows vercel-sdk-patterns; complements vercel-edge-functions as secondary workflow

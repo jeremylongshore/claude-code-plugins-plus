@@ -10,6 +10,7 @@ techsmith-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix TechSmith common errors
 **Workflow:** Part of the operations skill category for TechSmith integration.
 **Relates to:** Other techsmith skills in this pack.

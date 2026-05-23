@@ -10,6 +10,7 @@ replit-multiplayer-collab/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure real-time multiplayer coding sessions with voice chat, cursors, and collaborative editing.
 **Workflow:** Collaboration skill - enables Google Docs-style real-time coding with teammates.
 **Relates to:** Enabled by replit-team-management; enhances replit-edu-classroom for live teaching.

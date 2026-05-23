@@ -3,6 +3,7 @@
 ## Performance Optimization
 
 ### Editor Performance
+
 ```
 [ ] Unused extensions disabled
 [ ] File watcher exclusions set
@@ -25,6 +26,7 @@ Settings:
 ```
 
 ### AI Performance
+
 ```
 [ ] Appropriate models selected for tasks
 [ ] Completion delay tuned

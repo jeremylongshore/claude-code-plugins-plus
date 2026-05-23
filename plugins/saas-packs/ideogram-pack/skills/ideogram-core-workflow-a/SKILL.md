@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Core Workflow A -- Text-to-Image Generation
 
 ## Overview
+
 Primary workflow for Ideogram: generating images from text prompts. Ideogram excels at rendering legible text inside images -- a capability where most image models fail. Use this for social media graphics, marketing banners, product mockups, posters, logos, and any visual that combines illustration with typography.
 
 ## Prerequisites
+
 - Completed `ideogram-install-auth` setup
 - `IDEOGRAM_API_KEY` environment variable set
 - Understanding of style types and aspect ratios
@@ -50,6 +52,7 @@ Primary workflow for Ideogram: generating images from text prompts. Ideogram exc
 | Wide banner | `DESIGN` | `ASPECT_3_1` | `V_2` | Website header |
 
 ### Step 2: Generate Image (Legacy Endpoint)
+
 ```typescript
 import { writeFileSync, mkdirSync } from "fs";
 
@@ -100,6 +103,7 @@ async function generateImage(prompt: string, options: {
 ```
 
 ### Step 3: Generate with V3 Endpoint (Multipart)
+
 ```typescript
 async function generateV3(prompt: string, options: {
   aspect_ratio?: string;
@@ -130,6 +134,7 @@ async function generateV3(prompt: string, options: {
 ```
 
 ### Step 4: Text-in-Image Best Practices
+
 ```typescript
 // Ideogram renders quoted text literally inside the image
 const textPrompts = [
@@ -151,6 +156,7 @@ for (const prompt of textPrompts) {
 ```
 
 ### Step 5: Batch Generation with Seed Consistency
+
 ```typescript
 // Use the same seed to reproduce or create consistent variations
 async function generateVariations(basePrompt: string, seed: number) {
@@ -174,9 +180,11 @@ async function generateVariations(basePrompt: string, seed: number) {
 ```
 
 ## V3 Style Presets (50+)
+
 `80S_ILLUSTRATION`, `90S_NOSTALGIA`, `ART_DECO`, `ART_POSTER`, `BAUHAUS`, `BLUEPRINT`, `BRIGHT_ART`, `CHILDRENS_BOOK`, `COLLAGE`, `CUBISM`, `DOUBLE_EXPOSURE`, `DRAMATIC_CINEMA`, `EDITORIAL`, `FLAT_ART`, `FLAT_VECTOR`, `GOLDEN_HOUR`, `GRAFFITI_I`, `HALFTONE_PRINT`, `JAPANDI_FUSION`, `LONG_EXPOSURE`, `MAGAZINE_EDITORIAL`, `MIXED_MEDIA`, `MONOCHROME`, `OIL_PAINTING`, `POP_ART`, `RETRO_ETCHING`, `SURREAL_COLLAGE`, `TRAVEL_POSTER`, `VINTAGE_POSTER`, `WATERCOLOR`, and more.
 
 ## V3 Rendering Speeds
+
 | Speed | Quality | Cost | Use Case |
 |-------|---------|------|----------|
 | `FLASH` | Lowest | Cheapest | Quick previews |
@@ -185,6 +193,7 @@ async function generateVariations(basePrompt: string, seed: number) {
 | `QUALITY` | Highest | Premium | Final deliverables |
 
 ## Error Handling
+
 | Error | HTTP Status | Cause | Solution |
 |-------|-------------|-------|----------|
 | Content filtered | 422 | Prompt failed safety check | Remove brand names, trademarks, or flagged terms |
@@ -193,15 +202,18 @@ async function generateVariations(basePrompt: string, seed: number) {
 | Expired URL | -- | Downloaded too late | Fetch image within minutes of generation |
 
 ## Output
+
 - Generated image files downloaded to `./output/`
 - Metadata: URL, seed, resolution, style type, safety status
 - Seed values logged for reproducibility
 
 ## Resources
+
 - [Legacy Generate API](https://developer.ideogram.ai/api-reference/api-reference/generate)
 - [V3 Generate API](https://developer.ideogram.ai/api-reference/api-reference/generate-v3)
 - [Style Guide](https://docs.ideogram.ai/using-ideogram/generation-settings/style)
 - [Aspect Ratios](https://docs.ideogram.ai/using-ideogram/generation-settings/aspect-ratio-and-dimensions)
 
 ## Next Steps
+
 For editing and remixing, see `ideogram-core-workflow-b`.

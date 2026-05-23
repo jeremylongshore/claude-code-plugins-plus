@@ -10,6 +10,7 @@ clay-data-handling/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Clay PII handling, data retention, and GDPR/CCPA compliance patterns. Ensures proper handling of enriched prospect data.
 **Workflow:** Compliance skill. Use during security audits and compliance implementations.
 **Relates to:** Builds on clay-security-basics; integrates with clay-enterprise-rbac for access control.

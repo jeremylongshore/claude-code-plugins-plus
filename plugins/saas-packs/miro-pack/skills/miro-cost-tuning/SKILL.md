@@ -215,6 +215,7 @@ if (report.creditUtilizationPercent > 80) {
 ## When to Upgrade to Enterprise
 
 Consider Enterprise if you need:
+
 - Higher rate limits (negotiated per account)
 - SCIM API for automated user provisioning
 - Audit logs API for compliance

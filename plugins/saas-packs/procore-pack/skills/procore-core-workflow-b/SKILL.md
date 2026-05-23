@@ -18,14 +18,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Procore Core Workflow B
 
 ## Overview
+
 Build a submittal workflow: create submittals, assign reviewers, track approvals, and manage the review cycle.
 
 ## Prerequisites
+
 - Completed `procore-core-workflow-a` (RFIs)
 
 ## Instructions
 
 ### Step 1: Create Submittal
+
 ```python
 submittal = requests.post(
     f"{BASE}/projects/{project_id}/submittals",
@@ -46,6 +49,7 @@ print(f"Submittal #{submittal.json()['number']} created")
 ```
 
 ### Step 2: Update Submittal Status
+
 ```python
 # Approve the submittal
 requests.patch(
@@ -56,6 +60,7 @@ requests.patch(
 ```
 
 ### Step 3: List Submittals with Filters
+
 ```python
 # Get all pending submittals
 pending = requests.get(
@@ -68,19 +73,23 @@ for s in pending.json():
 ```
 
 ## Output
+
 - Submittals created with specification sections
 - Review workflow with approve/reject
 - Filtered submittal listing
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `422 Missing approver` | Required field | Set approver_id |
 | `403 Cannot approve` | Not the approver | Only assigned approver can approve |
 
 ## Resources
+
 - [Submittals API](https://developers.procore.com/reference/rest/submittals)
 - [Procore Developers](https://developers.procore.com/)
 
 ## Next Steps
+
 Handle events: `procore-webhooks-events`

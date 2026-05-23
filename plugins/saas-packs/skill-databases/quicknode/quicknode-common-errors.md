@@ -10,6 +10,7 @@ quicknode-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix QuickNode common errors
 **Workflow:** Part of the operations skill category for QuickNode integration.
 **Relates to:** Other quicknode skills in this pack.

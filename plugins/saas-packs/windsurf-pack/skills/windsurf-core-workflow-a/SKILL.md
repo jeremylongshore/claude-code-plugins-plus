@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Core Workflow A — Cascade Write Mode
 
 ## Overview
+
 Cascade Write mode is Windsurf's primary productivity tool. It acts as an autonomous agent that can create files, modify code across multiple files, run terminal commands, install dependencies, and debug errors -- all from a single natural language prompt. This is the "money-path" workflow for Windsurf users.
 
 ## Prerequisites
+
 - Windsurf IDE with Cascade enabled
 - `.windsurfrules` configured (see `windsurf-sdk-patterns`)
 - Git initialized with clean working tree
@@ -84,6 +86,7 @@ Cascade output flow:
 ```
 
 **Review each file diff in the Cascade output.** You can:
+
 - **Revert** individual steps by hovering over a step and clicking the revert arrow
 - **Revert all** to return to the state before the Cascade session
 - Create named **checkpoints** for complex multi-step sessions
@@ -108,12 +111,14 @@ Cascade reads the error, understands its own recent changes, and applies targete
 ```
 
 ## Output
+
 - Multi-file code changes applied by Cascade
 - Terminal commands executed (installs, tests, builds)
 - Test results confirming implementation correctness
 - Reviewable diffs for every file change
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Cascade modifies wrong files | Vague prompt | Specify exact file paths and constraints |
@@ -125,6 +130,7 @@ Cascade reads the error, understands its own recent changes, and applies targete
 ## Examples
 
 ### Full-Stack Feature
+
 ```
 "Add a user profile page:
 1. Create app/profile/page.tsx as a Server Component
@@ -136,6 +142,7 @@ Cascade reads the error, understands its own recent changes, and applies targete
 ```
 
 ### Refactoring Task
+
 ```
 "Extract the authentication logic from src/middleware/auth.ts into:
 - src/services/auth.ts (JWT validation, token refresh)
@@ -144,8 +151,10 @@ Update all imports across the codebase. Run tests after."
 ```
 
 ## Resources
+
 - [Cascade Write Mode](https://docs.windsurf.com/windsurf/cascade/cascade)
 - [Cascade Checkpoints](https://docs.windsurf.com/windsurf/cascade/cascade)
 
 ## Next Steps
+
 For configuration management workflow, see `windsurf-core-workflow-b`.

@@ -53,6 +53,7 @@ cd ${CLAUDE_SKILL_DIR}/scripts
 6. Watch specific contract: `python mempool_analyzer.py watch 0x7a250d...`
 
 Alternatively, customize with flags:
+
 ```bash
 python mempool_analyzer.py pending --limit 100    # Limit results
 python mempool_analyzer.py --chain polygon gas     # Use different chain
@@ -62,12 +63,14 @@ python mempool_analyzer.py --chain arbitrum pending # Or use Arbitrum
 ### Step 3: Interpret Results
 
 **Gas Recommendations:**
+
 - Slow (10th percentile): May take 10+ blocks
 - Standard (50th percentile): 2-5 blocks
 - Fast (75th percentile): 1-2 blocks
 - Instant (90th percentile): Next block likely
 
 **MEV Warnings:**
+
 - MEV detection is for educational purposes
 - Real MEV extraction requires specialized infrastructure
 - Use this for research and understanding mempool dynamics
@@ -83,6 +86,7 @@ python mempool_analyzer.py --chain arbitrum pending # Or use Arbitrum
 ## Error Handling
 
 See `${CLAUDE_SKILL_DIR}/references/errors.md` for:
+
 - RPC connection issues and timeout recovery
 - Mempool access limitations per chain
 - Transaction decoding errors and fallbacks
@@ -91,17 +95,20 @@ See `${CLAUDE_SKILL_DIR}/references/errors.md` for:
 ## Examples
 
 **Example 1: Check gas before sending transaction:**
+
 ```bash
 python mempool_analyzer.py gas
 # Use "Fast" for quick confirmation
 ```
 
 **Example 2: Monitor for large pending swaps:**
+
 ```bash
 python mempool_analyzer.py swaps --limit 200  # 200: max results to scan
 ```
 
 **Example 3: Research MEV opportunities:**
+
 ```bash
 python mempool_analyzer.py mev -v
 ```

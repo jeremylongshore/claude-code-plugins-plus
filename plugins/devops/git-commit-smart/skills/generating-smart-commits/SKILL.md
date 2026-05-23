@@ -20,6 +20,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Generating Smart Commits
 
 ## Current State
+
 !`git diff --cached --stat`
 !`git log --oneline -5`
 !`git status --short`

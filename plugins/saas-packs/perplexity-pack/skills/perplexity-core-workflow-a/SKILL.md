@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Core Workflow A: Search with Citations
 
 ## Overview
+
 Primary money-path workflow: send a search query to Perplexity Sonar, receive a web-grounded answer with inline citations, parse and display the results. This is the single-query pattern used for search widgets, fact-checking, and real-time information retrieval.
 
 ## Prerequisites
+
 - Completed `perplexity-install-auth` setup
 - `openai` package installed
 - `PERPLEXITY_API_KEY` set
@@ -34,6 +36,7 @@ Primary money-path workflow: send a search query to Perplexity Sonar, receive a 
 ## Instructions
 
 ### Step 1: Initialize Client and Send Query
+
 ```typescript
 import OpenAI from "openai";
 
@@ -61,6 +64,7 @@ async function searchWithCitations(query: string) {
 ```
 
 ### Step 2: Parse Response with Citations
+
 ```typescript
 interface SearchResult {
   answer: string;
@@ -80,6 +84,7 @@ function parseResponse(response: any): SearchResult {
 ```
 
 ### Step 3: Format Citations for Display
+
 ```typescript
 function formatAnswer(result: SearchResult): string {
   let formatted = result.answer;
@@ -102,6 +107,7 @@ function formatAnswer(result: SearchResult): string {
 ```
 
 ### Step 4: Complete Workflow
+
 ```typescript
 async function main() {
   const query = "What are the latest advances in battery technology?";
@@ -118,6 +124,7 @@ main().catch(console.error);
 ```
 
 ### Step 5: Domain-Filtered Search
+
 ```typescript
 // Restrict search to trusted sources
 async function domainFilteredSearch(query: string, domains: string[]) {
@@ -138,6 +145,7 @@ const result = await domainFilteredSearch(
 ```
 
 ### Step 6: Python Implementation
+
 ```python
 from openai import OpenAI
 import os, re
@@ -178,6 +186,7 @@ for i, url in enumerate(result["citations"], 1):
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401 Unauthorized` | Invalid API key | Regenerate at perplexity.ai/settings/api |
@@ -187,14 +196,17 @@ for i, url in enumerate(result["citations"], 1):
 | Slow response (>10s) | Using sonar-pro | Switch to sonar for faster results |
 
 ## Output
+
 - Web-grounded answer text with inline citation markers
 - Parsed citation URLs for source verification
 - Formatted markdown with linked sources
 - Token usage for cost tracking
 
 ## Resources
+
 - [Perplexity API Reference](https://docs.perplexity.ai/api-reference/chat-completions-post)
 - [Search Parameters](https://docs.perplexity.ai/docs/sonar/quickstart)
 
 ## Next Steps
+
 For multi-query research, see `perplexity-core-workflow-b`.

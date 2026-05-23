@@ -3,16 +3,19 @@
 ## View Pending Transactions
 
 ### Basic View
+
 ```bash
 python mempool_analyzer.py pending
 ```
 
 ### Limit Results
+
 ```bash
 python mempool_analyzer.py pending --limit 20
 ```
 
 ### JSON Output
+
 ```bash
 python mempool_analyzer.py pending --format json
 ```
@@ -20,11 +23,13 @@ python mempool_analyzer.py pending --format json
 ## Gas Price Analysis
 
 ### Current Gas Prices
+
 ```bash
 python mempool_analyzer.py gas
 ```
 
 ### Gas Recommendations
+
 ```bash
 python mempool_analyzer.py gas
 # Output shows:
@@ -34,6 +39,7 @@ python mempool_analyzer.py gas
 ```
 
 ### JSON for Programmatic Use
+
 ```bash
 python mempool_analyzer.py gas --format json
 ```
@@ -41,11 +47,13 @@ python mempool_analyzer.py gas --format json
 ## Pending DEX Swaps
 
 ### View All Pending Swaps
+
 ```bash
 python mempool_analyzer.py swaps
 ```
 
 ### Analyze More Transactions
+
 ```bash
 python mempool_analyzer.py swaps --limit 200
 ```
@@ -53,16 +61,19 @@ python mempool_analyzer.py swaps --limit 200
 ## MEV Opportunity Scanning
 
 ### Scan for Opportunities
+
 ```bash
 python mempool_analyzer.py mev
 ```
 
 ### Detailed Analysis
+
 ```bash
 python mempool_analyzer.py mev --limit 300 -v
 ```
 
 ### JSON Output
+
 ```bash
 python mempool_analyzer.py mev --format json
 ```
@@ -70,6 +81,7 @@ python mempool_analyzer.py mev --format json
 ## Mempool Summary
 
 ### Quick Overview
+
 ```bash
 python mempool_analyzer.py summary
 ```
@@ -77,11 +89,13 @@ python mempool_analyzer.py summary
 ## Watch Specific Contract
 
 ### Monitor Uniswap Router
+
 ```bash
 python mempool_analyzer.py watch 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D
 ```
 
 ### Monitor Any Contract
+
 ```bash
 python mempool_analyzer.py watch 0xYOUR_CONTRACT_ADDRESS --limit 200
 ```
@@ -89,6 +103,7 @@ python mempool_analyzer.py watch 0xYOUR_CONTRACT_ADDRESS --limit 200
 ## Connection Status
 
 ### Check RPC Connection
+
 ```bash
 python mempool_analyzer.py status
 ```
@@ -96,17 +111,20 @@ python mempool_analyzer.py status
 ## Different Chains
 
 ### Polygon
+
 ```bash
 python mempool_analyzer.py --chain polygon pending
 python mempool_analyzer.py --chain polygon gas
 ```
 
 ### Arbitrum
+
 ```bash
 python mempool_analyzer.py --chain arbitrum summary
 ```
 
 ### Custom RPC URL
+
 ```bash
 python mempool_analyzer.py --rpc-url https://your-rpc.example.com pending
 ```
@@ -114,6 +132,7 @@ python mempool_analyzer.py --rpc-url https://your-rpc.example.com pending
 ## Common Workflows
 
 ### Pre-Transaction Gas Check
+
 ```bash
 # Before sending a transaction, check optimal gas
 python mempool_analyzer.py gas
@@ -124,6 +143,7 @@ python mempool_analyzer.py gas
 ```
 
 ### Monitor for Front-Running Risk
+
 ```bash
 # Check if there are pending swaps that might affect your trade
 python mempool_analyzer.py swaps
@@ -132,6 +152,7 @@ python mempool_analyzer.py swaps
 ```
 
 ### MEV Opportunity Research
+
 ```bash
 # Educational: See what MEV opportunities exist
 python mempool_analyzer.py mev -v
@@ -169,18 +190,21 @@ print(f"Pending swaps: {len(swaps)}")
 ## Integration with jq
 
 ### Filter High Gas Transactions
+
 ```bash
 python mempool_analyzer.py pending --format json | \
   jq '[.[] | select(.gas_price > 50000000000)]'
 ```
 
 ### Count by Transaction Type
+
 ```bash
 python mempool_analyzer.py swaps --format json | \
   jq 'group_by(.dex) | map({dex: .[0].dex, count: length})'
 ```
 
 ### Export Gas Data
+
 ```bash
 python mempool_analyzer.py gas --format json > gas_snapshot.json
 ```

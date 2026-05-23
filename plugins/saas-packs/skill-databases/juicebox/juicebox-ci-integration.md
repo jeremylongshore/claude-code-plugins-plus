@@ -10,6 +10,7 @@ juicebox-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Juicebox CI/CD integration
 **Workflow:** Part of the cicd skill category for Juicebox integration.
 **Relates to:** Other juicebox skills in this pack.

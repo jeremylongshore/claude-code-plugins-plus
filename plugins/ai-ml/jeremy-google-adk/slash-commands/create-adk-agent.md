@@ -90,6 +90,7 @@ result = await agent.run({
 ## Next Steps
 
 After generation:
+
 1. Install dependencies: `pip install -r requirements.txt`
 2. Set environment variables in `.env`
 3. Run tests: `pytest tests/`

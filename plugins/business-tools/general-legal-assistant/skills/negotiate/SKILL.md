@@ -149,6 +149,7 @@ Generate a single Markdown file named `NEGOTIATION-STRATEGY-{contract-name}.md` 
 Request: "Analyze this vendor agreement and generate counter-proposals — we're the customer"
 
 Result: Strategy document identifying 12 clauses across 3 tiers:
+
 - MUST-CHANGE: Unlimited liability for customer (cap at 12 months fees), auto-renewal
   without 60-day notice window
 - SHOULD-CHANGE: NET-60 payment terms (propose NET-30 with 2% early payment discount),

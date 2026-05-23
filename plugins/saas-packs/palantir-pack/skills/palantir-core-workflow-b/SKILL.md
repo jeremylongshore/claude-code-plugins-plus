@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Core Workflow B — Ontology Objects & Actions
 
 ## Overview
+
 Query, filter, and mutate Ontology objects using the Foundry Platform SDK and OSDK. Covers listing objects with property filters, following links between object types, applying actions, and aggregating object data. This is the primary workflow for Ontology-driven applications.
 
 ## Prerequisites
+
 - Completed `palantir-install-auth` setup
 - An Ontology with configured object types, link types, and actions
 - Familiarity with `palantir-core-workflow-a` (data pipelines feed the Ontology)
@@ -38,6 +40,7 @@ Query, filter, and mutate Ontology objects using the Foundry Platform SDK and OS
 ## Instructions
 
 ### Step 1: List and Filter Objects (REST API)
+
 ```python
 import os, foundry
 
@@ -66,6 +69,7 @@ for obj in result.data:
 ```
 
 ### Step 2: Search Objects with Filters
+
 ```python
 # Search with complex filters using the search endpoint
 search_result = client.ontologies.OntologyObject.search(
@@ -84,6 +88,7 @@ print(f"Found {len(search_result.data)} matching employees")
 ```
 
 ### Step 3: Follow Links Between Objects
+
 ```python
 # Get all projects linked to an employee
 employee_rid = "ri.ontology.main.object.employee-001"
@@ -100,6 +105,7 @@ for project in linked_projects.data:
 ```
 
 ### Step 4: Apply Actions to Modify Objects
+
 ```python
 # Promote an employee — triggers validation rules defined in Ontology
 result = client.ontologies.Action.apply(
@@ -116,6 +122,7 @@ print(f"Validation: {result.validation}")  # VALID or INVALID with reasons
 ```
 
 ### Step 5: Aggregate Object Data
+
 ```python
 # Aggregate salary by department
 aggregation = client.ontologies.OntologyObject.aggregate(
@@ -135,6 +142,7 @@ for bucket in aggregation.data:
 ```
 
 ### Step 6: TypeScript OSDK (Generated SDK)
+
 ```typescript
 import { createClient } from "@osdk/client";
 import { Employee } from "@my-app/sdk";  // generated types
@@ -157,12 +165,14 @@ await client(Employee).applyAction("promoteEmployee", {
 ```
 
 ## Output
+
 - Filtered and sorted Ontology object queries
 - Cross-object navigation via link types
 - Action application with validation feedback
 - Server-side aggregations grouped by properties
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `ObjectTypeNotFound` | Wrong api_name | Check Ontology Manager for exact type names |
@@ -174,6 +184,7 @@ await client(Employee).applyAction("promoteEmployee", {
 ## Examples
 
 ### Batch Action Application
+
 ```python
 employee_ids = ["EMP-001", "EMP-002", "EMP-003"]
 for eid in employee_ids:
@@ -187,12 +198,14 @@ for eid in employee_ids:
 ```
 
 ## Resources
+
 - [Ontology SDK Overview](https://www.palantir.com/docs/foundry/ontology-sdk/overview)
 - [Get Object API](https://www.palantir.com/docs/foundry/api/ontology-resources/objects/get-object)
 - [Python OSDK Guide](https://www.palantir.com/docs/foundry/ontology-sdk/python-osdk)
 - [Actions API](https://www.palantir.com/docs/foundry/api/ontology-resources/actions/)
 
 ## Next Steps
+
 - Handle errors systematically: `palantir-common-errors`
 - Optimize query performance: `palantir-performance-tuning`
 - Secure object access with RBAC: `palantir-enterprise-rbac`

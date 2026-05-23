@@ -10,6 +10,7 @@ shopify-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Shopify SDK upgrades
 **Workflow:** Part of the operations skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

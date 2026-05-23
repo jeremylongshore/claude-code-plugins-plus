@@ -10,6 +10,7 @@ vercel-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement load testing with k6, auto-scaling with Kubernetes HPA, and capacity planning strategies.
 **Workflow:** Used before major releases and periodically to validate capacity headroom.
 **Relates to:** Follows vercel-advanced-troubleshooting; leads to vercel-reliability-patterns

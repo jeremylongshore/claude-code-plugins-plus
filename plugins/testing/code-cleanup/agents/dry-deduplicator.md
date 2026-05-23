@@ -75,12 +75,14 @@ Priority: Type 1 > Type 2 > Type 3 > Type 4 (Type 4 is rarely worth deduplicatin
 For each clone, evaluate whether extraction is worthwhile:
 
 **Extract when:**
+
 - ≥10 identical lines appear in ≥2 locations
 - The duplicated code has a single, clear responsibility
 - Changes to the logic would need to be applied in all copies (maintenance burden)
 - The extracted function/module has a natural, descriptive name
 
 **Do NOT extract when:**
+
 - Duplication is <10 lines (the abstraction overhead exceeds the benefit)
 - Code is duplicated in tests (test isolation is more valuable than DRY)
 - The copies serve different domains and will diverge over time
@@ -88,6 +90,7 @@ For each clone, evaluate whether extraction is worthwhile:
 - Three similar lines — this is coincidence, not duplication
 
 **Decision framework:**
+
 ```
 Is it ≥10 identical lines?
   NO → Skip (not worth abstracting)
@@ -151,21 +154,26 @@ async function validateInput(data: unknown) {
   }
   const schema = z.object({
 ```
+
 **Recommended extraction:** Create `src/utils/validate-input.ts` with shared validation function
 **Blast radius:** 2 files to update
 
 #### Clone Set 2 — MEDIUM confidence
+
 **Lines:** 15 near-identical | **Type:** Renamed (Type 2)
 ...
 
 ### Skipped (below threshold or intentional)
+
 - test/setup.ts ↔ test/integration/setup.ts — test isolation (intentional)
 - src/models/user.ts ↔ src/models/admin.ts — 8 similar lines (below threshold)
 
 ### Stats
+
 - Clone sets: N flagged, M skipped
 - Duplicated lines: N (X% of scanned code)
 - Recommended extractions: N functions, M utilities
+
 ```
 
 ## Edge Cases

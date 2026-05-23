@@ -10,6 +10,7 @@ assemblyai-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply AssemblyAI security best practices
 **Workflow:** Part of the operations skill category for AssemblyAI integration.
 **Relates to:** Other assemblyai skills in this pack.

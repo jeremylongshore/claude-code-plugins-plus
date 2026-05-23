@@ -26,6 +26,7 @@ Implement RUM to capture actual user performance experiences.
 ## Output
 
 Provide:
+
 - RUM integration code for frontend
 - Configuration for chosen platform
 - Custom metric definitions

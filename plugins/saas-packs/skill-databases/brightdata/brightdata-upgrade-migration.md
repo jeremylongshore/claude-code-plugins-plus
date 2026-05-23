@@ -10,6 +10,7 @@ brightdata-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Bright Data SDK upgrades
 **Workflow:** Part of the operations skill category for Bright Data integration.
 **Relates to:** Other brightdata skills in this pack.

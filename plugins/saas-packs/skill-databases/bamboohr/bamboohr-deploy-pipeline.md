@@ -10,6 +10,7 @@ bamboohr-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy BambooHR integrations to production
 **Workflow:** Part of the cicd skill category for BambooHR integration.
 **Relates to:** Other bamboohr skills in this pack.

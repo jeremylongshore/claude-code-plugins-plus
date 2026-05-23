@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Rate Limits
 
 ## Overview
+
 Understand and work within Replit's resource limits: Key-Value Database size caps, Object Storage quotas, deployment compute budgets, and egress allowances. Implement rate limiting in your own app for production safety.
 
 ## Prerequisites
+
 - Replit account with active Repls
 - Understanding of your current resource usage
 - For rate limiting: Express or Flask app
@@ -37,6 +39,7 @@ Understand and work within Replit's resource limits: Key-Value Database size cap
 ## Replit Platform Limits
 
 ### Key-Value Database
+
 | Limit | Value |
 |-------|-------|
 | Total storage | 50 MiB (keys + values combined) |
@@ -45,6 +48,7 @@ Understand and work within Replit's resource limits: Key-Value Database size cap
 | Value size | 5 MiB per value |
 
 ### Object Storage (App Storage)
+
 | Limit | Value |
 |-------|-------|
 | Object size | Configurable per bucket |
@@ -52,6 +56,7 @@ Understand and work within Replit's resource limits: Key-Value Database size cap
 | Rate | Throttled at high request volume |
 
 ### PostgreSQL
+
 | Limit | Value |
 |-------|-------|
 | Storage | Plan-dependent (1-10+ GB) |
@@ -59,6 +64,7 @@ Understand and work within Replit's resource limits: Key-Value Database size cap
 | Dev + Prod | Separate databases auto-provisioned |
 
 ### Deployments
+
 | Resource | Autoscale | Reserved VM |
 |----------|-----------|-------------|
 | Scale behavior | 0 to N based on traffic | Always-on, fixed size |
@@ -69,6 +75,7 @@ Understand and work within Replit's resource limits: Key-Value Database size cap
 ## Instructions
 
 ### Step 1: Monitor KV Database Usage
+
 ```typescript
 // Check how close you are to KV limits
 import Database from '@replit/database';
@@ -98,6 +105,7 @@ async function checkKVUsage() {
 ```
 
 ### Step 2: Implement App-Level Rate Limiting
+
 ```typescript
 // src/middleware/rate-limit.ts — protect your Replit-hosted API
 import { Request, Response, NextFunction } from 'express';
@@ -154,6 +162,7 @@ setInterval(() => {
 ```
 
 ### Step 3: Apply Rate Limiting
+
 ```typescript
 import express from 'express';
 import { rateLimit } from './middleware/rate-limit';
@@ -171,6 +180,7 @@ app.get('/api/*', rateLimit({ windowMs: 60000, max: 500 }));
 ```
 
 ### Step 4: Exponential Backoff for External APIs
+
 ```typescript
 // When your Replit app calls external APIs
 export async function withBackoff<T>(
@@ -195,6 +205,7 @@ export async function withBackoff<T>(
 ```
 
 ### Step 5: Request Queue for Burst Protection
+
 ```typescript
 import PQueue from 'p-queue';
 
@@ -211,6 +222,7 @@ async function rateLimitedFetch(url: string, opts?: RequestInit) {
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | KV `Max storage exceeded` | Over 50 MiB | Migrate large values to Object Storage |
@@ -220,9 +232,11 @@ async function rateLimitedFetch(url: string, opts?: RequestInit) {
 | High egress costs | Large responses | Compress, paginate, or cache at CDN |
 
 ## Resources
+
 - [Replit Database](https://docs.replit.com/cloud-services/storage-and-databases/replit-database)
 - [Usage-Based Billing](https://docs.replit.com/billing/about-usage-based-billing)
 - [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For security configuration, see `replit-security-basics`.

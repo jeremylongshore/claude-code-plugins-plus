@@ -154,7 +154,7 @@ The result is an open-source lab where you can evaluate any agent framework by w
 ---
 
 *Related posts:*
+
 - [Building a Deterministic DXF Comparison Engine in One Day](/posts/deterministic-dxf-comparison-engine-one-day-build/) — another greenfield system with layered architecture shipped in a single session
 - [From Tool to Platform: IntentCAD Ships Five EPICs in One Day](/posts/from-tool-to-platform-intentcad-five-epics-one-day/) — the same contract-driven routing pattern applied to CAD operations
 - [Zero to CI: Full-Stack Dashboard in One Session](/posts/zero-to-ci-full-stack-dashboard-one-session/) — opinionated stack choices and specs-first methodology in a different domain
-

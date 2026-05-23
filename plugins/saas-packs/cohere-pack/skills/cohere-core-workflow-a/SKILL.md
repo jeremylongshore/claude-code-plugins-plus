@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Cohere RAG Pipeline (Core Workflow A)
 
 ## Overview
+
 End-to-end Retrieval-Augmented Generation using Cohere's three core endpoints: Embed (vectorize), Rerank (sort by relevance), Chat (generate grounded answer with citations).
 
 ## Prerequisites
+
 - Completed `cohere-install-auth` setup
 - `cohere-ai` package installed
 - Understanding of vector similarity search
@@ -183,11 +185,13 @@ async function rag(query: string, knowledgeBase: string[]) {
 ```
 
 ## Output
+
 - Embedded document vectors (float, int8, or binary)
 - Reranked candidates with relevance scores (0.0-1.0)
 - Grounded answer with fine-grained citations pointing to source documents
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `input_type is required` | Missing embed inputType | Use `search_document` or `search_query` |
@@ -196,10 +200,12 @@ async function rag(query: string, knowledgeBase: string[]) {
 | `too many documents` | >1000 rerank docs | Batch into groups of 1000 |
 
 ## Resources
+
 - [RAG Complete Example](https://docs.cohere.com/docs/rag-complete-example)
 - [RAG Citations](https://docs.cohere.com/docs/rag-citations)
 - [Embed API](https://docs.cohere.com/reference/embed)
 - [Rerank Best Practices](https://docs.cohere.com/docs/reranking-best-practices)
 
 ## Next Steps
+
 For tool-use and agents workflow, see `cohere-core-workflow-b`.

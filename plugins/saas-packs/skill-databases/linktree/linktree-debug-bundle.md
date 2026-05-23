@@ -10,6 +10,7 @@ linktree-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Linktree debug evidence for support
 **Workflow:** Part of the operations skill category for Linktree integration.
 **Relates to:** Other linktree skills in this pack.

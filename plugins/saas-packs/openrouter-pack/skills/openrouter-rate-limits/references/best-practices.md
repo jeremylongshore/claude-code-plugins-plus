@@ -3,6 +3,7 @@
 ## Best Practices
 
 ### Pre-Request Check
+
 ```python
 def safe_chat(prompt: str, model: str):
     """Chat with proactive rate limit checking."""
@@ -24,6 +25,7 @@ def safe_chat(prompt: str, model: str):
 ```
 
 ### Circuit Breaker
+
 ```python
 class CircuitBreaker:
     def __init__(self, failure_threshold: int = 5, reset_timeout: float = 60):

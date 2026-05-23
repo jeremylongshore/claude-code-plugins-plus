@@ -10,6 +10,7 @@ apple-notes-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Apple Notes load testing and scaling
 **Workflow:** Part of the enterprise skill category for Apple Notes integration.
 **Relates to:** Other apple-notes skills in this pack.

@@ -32,6 +32,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 Walk through every production-critical Sentry configuration item before a deploy — SDK init options, source map uploads, alert routing, PII scrubbing, sample rate tuning, and test error verification. Covers `@sentry/node` (v8+) and `sentry-cli` workflows.
 
 **Use when:**
+
 - Preparing a first production deploy with Sentry
 - Auditing an existing Sentry config after an incident
 - Running a go-live readiness review
@@ -176,6 +177,7 @@ sentry-cli releases deploys "$VERSION" new -e production
 - [ ] Source maps are NOT served to browsers (add to `.gitignore` or strip from deploy artifact)
 
 Verify upload succeeded:
+
 ```bash
 sentry-cli releases files "$VERSION" list
 # Should show .js and .js.map files with correct paths
@@ -234,6 +236,7 @@ Sentry.init({
 ```
 
 Also verify in Sentry project settings:
+
 - **Settings > Security & Privacy > Data Scrubbing** is enabled
 - **IP Address** collection is disabled if not needed
 - **Sensitive Fields** list includes your app-specific fields (e.g., `ssn`, `creditCard`)
@@ -302,6 +305,7 @@ Sentry.captureException(new Error('Production deploy verification — safe to ig
 ```
 
 After sending, verify in the Sentry dashboard:
+
 1. Event appears in **Issues** with correct `environment:production`
 2. Stack trace shows **original source** (not minified) — confirms source maps work
 3. Release tag matches your deployed version
@@ -370,6 +374,7 @@ echo "=== Results: $PASS passed, $FAIL failed ==="
 ## Output
 
 After completing this checklist, you will have:
+
 - Production-hardened `Sentry.init()` with tuned sample rates and PII scrubbing
 - Source maps uploaded and validated via `sentry-cli` for the current release
 - `beforeSend` filtering known browser noise before it burns quota
@@ -482,6 +487,7 @@ export const handler = Sentry.wrapHandler(async (event, context) => {
 ## Next Steps
 
 After completing this production checklist:
+
 1. **Set up release health monitoring** — track crash-free session rates across releases
 2. **Configure ownership rules** — route issues to the right team based on file paths or error tags
 3. **Add custom dashboards** — build a deployment dashboard showing error rates, P95 latency, and throughput per release

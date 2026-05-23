@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq Reference Architecture
 
 ## Overview
+
 Production architecture for applications built on Groq's LPU inference API. Covers model routing by latency requirements, streaming pipelines, multi-provider fallback, and the middleware layer that ties it together.
 
 ## Architecture Diagram
@@ -54,6 +55,7 @@ Production architecture for applications built on Groq's LPU inference API. Cove
 ```
 
 ## Project Structure
+
 ```
 src/
 ├── groq/
@@ -77,6 +79,7 @@ src/
 ## Instructions
 
 ### Step 1: Model Registry
+
 ```typescript
 // src/groq/models.ts
 export interface ModelSpec {
@@ -135,6 +138,7 @@ export const MODELS: Record<string, ModelSpec> = {
 ```
 
 ### Step 2: Model Router
+
 ```typescript
 // src/groq/router.ts
 import { MODELS, ModelSpec } from "./models";
@@ -165,6 +169,7 @@ export function selectModel(req: RoutingRequest): ModelSpec {
 ```
 
 ### Step 3: Middleware Layer
+
 ```typescript
 // src/groq/middleware.ts
 import Groq from "groq-sdk";
@@ -225,6 +230,7 @@ function emitMetrics(data: any) {
 ```
 
 ### Step 4: Fallback Chain
+
 ```typescript
 // src/groq/fallback.ts
 import Groq from "groq-sdk";
@@ -276,6 +282,7 @@ export async function completionWithFallback(
 ```
 
 ### Step 5: Streaming Pipeline
+
 ```typescript
 // src/groq/streaming.ts
 import Groq from "groq-sdk";
@@ -318,6 +325,7 @@ export async function* streamCompletion(
 | Vision analysis | Image understanding | Llama 4 Scout/Maverick |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | 429 on primary model | RPM/TPM exceeded | Fall back to different model |
@@ -326,10 +334,12 @@ export async function* streamCompletion(
 | Vision errors | Wrong model for images | Use Llama 4 Scout full model path |
 
 ## Resources
+
 - [Groq API Documentation](https://console.groq.com/docs)
 - [Groq Models](https://console.groq.com/docs/models)
 - [Groq Rate Limits](https://console.groq.com/docs/rate-limits)
 - [Groq Pricing](https://groq.com/pricing)
 
 ## Next Steps
+
 For multi-environment deployment, see `groq-multi-env-setup`.

@@ -66,6 +66,7 @@ This catches issues that predefined expectations might miss.
 ### Step 5: Read User Notes
 
 If `{outputs_dir}/user_notes.md` exists:
+
 1. Read it and note any uncertainties or issues flagged by the executor
 2. Include relevant concerns in the grading output
 3. These may reveal problems even when expectations pass
@@ -77,6 +78,7 @@ After grading, consider whether the evals themselves could be improved. Only sur
 Good suggestions test meaningful outcomes — assertions that are hard to satisfy without actually doing the work correctly. Think about what makes an assertion *discriminating*: it passes when the skill genuinely succeeds and fails when it doesn't.
 
 Suggestions worth raising:
+
 - An assertion that passed but would also pass for a clearly wrong output (e.g., checking filename existence but not file content)
 - An important outcome you observed — good or bad — that no assertion covers at all
 - An assertion that can't actually be verified from the available outputs
@@ -90,11 +92,13 @@ Save results to `{outputs_dir}/../grading.json` (sibling to outputs_dir).
 ## Grading Criteria
 
 **PASS when**:
+
 - The transcript or outputs clearly demonstrate the expectation is true
 - Specific evidence can be cited
 - The evidence reflects genuine substance, not just surface compliance (e.g., a file exists AND contains correct content, not just the right filename)
 
 **FAIL when**:
+
 - No evidence found for the expectation
 - Evidence contradicts the expectation
 - The expectation cannot be verified from available information

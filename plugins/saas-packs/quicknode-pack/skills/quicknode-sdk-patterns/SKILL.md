@@ -23,15 +23,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # QuickNode SDK Patterns
 
 ## Overview
+
 Production-ready patterns for blockchain development with QuickNode: provider singletons, retry logic, batch RPC calls, and multi-chain support.
 
 ## Prerequisites
+
 - Completed `quicknode-install-auth`
 - ethers.js or @quicknode/sdk installed
 
 ## Instructions
 
 ### Step 1: Provider Singleton
+
 ```typescript
 import { ethers } from 'ethers';
 
@@ -49,6 +52,7 @@ export function getProvider(): ethers.JsonRpcProvider {
 ```
 
 ### Step 2: Retry Wrapper with Backoff
+
 ```typescript
 async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
@@ -69,6 +73,7 @@ const balance = await withRetry(() => getProvider().getBalance(address));
 ```
 
 ### Step 3: Multi-Chain Client Factory
+
 ```typescript
 const ENDPOINTS: Record<string, string> = {
   ethereum: process.env.QUICKNODE_ETH_ENDPOINT!,
@@ -89,6 +94,7 @@ export function getChainProvider(chain: string): ethers.JsonRpcProvider {
 ```
 
 ### Step 4: Batch RPC Calls
+
 ```typescript
 async function batchGetBalances(addresses: string[]): Promise<Map<string, bigint>> {
   const provider = getProvider();
@@ -106,6 +112,7 @@ async function batchGetBalances(addresses: string[]): Promise<Map<string, bigint
 ```
 
 ### Step 5: Contract Wrapper with Caching
+
 ```typescript
 import { LRUCache } from 'lru-cache';
 
@@ -123,12 +130,14 @@ async function cachedContractCall(contract: ethers.Contract, method: string, ...
 ```
 
 ## Output
+
 - Thread-safe provider singleton with batch support
 - Retry logic for transient RPC failures
 - Multi-chain client factory
 - Cached contract calls reducing RPC usage
 
 ## Error Handling
+
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
 | Singleton | All RPC calls | One connection, reused |
@@ -137,8 +146,10 @@ async function cachedContractCall(contract: ethers.Contract, method: string, ...
 | Contract cache | Repeated reads | Fewer RPC calls |
 
 ## Resources
+
 - [QuickNode SDK](https://www.quicknode.com/docs/quicknode-sdk/getting-started)
 - [ethers.js Documentation](https://docs.ethers.org/)
 
 ## Next Steps
+
 Build transaction workflows: `quicknode-core-workflow-a`

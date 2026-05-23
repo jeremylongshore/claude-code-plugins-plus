@@ -10,6 +10,7 @@ oraclecloud-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Oracle Cloud local development workflow
 **Workflow:** Part of the onboarding skill category for Oracle Cloud integration.
 **Relates to:** Other oraclecloud skills in this pack.

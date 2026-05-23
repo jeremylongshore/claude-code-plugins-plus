@@ -27,6 +27,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Performance Tuning
 
 ## Overview
+
 Optimize Deepgram transcription performance through audio preprocessing with ffmpeg, model selection for speed vs accuracy, streaming for large files, parallel processing, result caching, and connection reuse. Targets: <2s latency for short files, 100+ files/minute batch throughput.
 
 ## Performance Levers
@@ -297,6 +298,7 @@ async function benchmark(audioUrl: string) {
 ```
 
 ## Output
+
 - Audio preprocessing pipeline (16kHz mono, silence removal, noise reduction)
 - Model selection strategy by priority (accuracy/speed/cost)
 - Streaming transcription for large files (>60s)
@@ -305,6 +307,7 @@ async function benchmark(audioUrl: string) {
 - Performance benchmarking script
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Slow transcription | Unoptimized audio format | Preprocess to 16kHz mono WAV |
@@ -313,6 +316,7 @@ async function benchmark(audioUrl: string) {
 | Cache stale | Audio changed at same URL | Include hash of audio content in cache key |
 
 ## Resources
+
 - [Audio Best Practices](https://developers.deepgram.com/docs/audio-best-practices)
 - [Model Options](https://developers.deepgram.com/docs/model)
 - [Concurrency Limits](https://developers.deepgram.com/docs/working-with-concurrency-rate-limits)

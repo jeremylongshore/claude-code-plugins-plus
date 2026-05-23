@@ -10,6 +10,7 @@ speak-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Speak rate limiting and backoff
 **Workflow:** Part of the operations skill category for Speak integration.
 **Relates to:** Other speak skills in this pack.

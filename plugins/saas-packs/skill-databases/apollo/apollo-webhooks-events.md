@@ -10,6 +10,7 @@ apollo-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Apollo webhook handling
 **Workflow:** Part of the cicd skill category for Apollo integration.
 **Relates to:** Other apollo skills in this pack.

@@ -2,8 +2,8 @@
 
 Designing for global audiences: RTL languages, color meanings, form conventions, and localization.
 
-
 ## Table of Contents
+
 1. [Right-to-Left (RTL) Languages](#right-to-left-rtl-languages)
 2. [Color Meanings Across Cultures](#color-meanings-across-cultures)
 3. [Form Conventions](#form-conventions)
@@ -161,6 +161,7 @@ Icons with inherent direction need mirroring:
 | Arabic | Given + Father's + Grandfather's + Family |
 
 **Best practices:**
+
 - Use single "Full Name" field when possible
 - If splitting, use "Given Name" and "Family Name" (not First/Last)
 - Don't assume first/last order
@@ -177,6 +178,7 @@ Icons with inherent direction need mirroring:
 | Countries without postal codes | 50+ countries don't use them |
 
 **Best practices:**
+
 - Don't require postal code universally
 - Use country-appropriate field labels
 - Allow flexible formats
@@ -192,6 +194,7 @@ Icons with inherent direction need mirroring:
 | Mobile vs landline | Labels may not translate |
 
 **Best practices:**
+
 - Accept multiple formats
 - Store in E.164 format internally (+1234567890)
 - Display in local format
@@ -207,6 +210,7 @@ Icons with inherent direction need mirroring:
 | ISO standard | YYYY-MM-DD |
 
 **Best practices:**
+
 - Use date pickers instead of text input
 - Show month names (not numbers) to avoid confusion
 - Store in ISO format (YYYY-MM-DD)
@@ -222,6 +226,7 @@ Icons with inherent direction need mirroring:
 | Currency names | Dollar, Yuan, Rupee |
 
 **Best practices:**
+
 - Format according to user locale
 - Always show currency symbol/code
 - Be clear about which currency
@@ -245,6 +250,7 @@ Translated text is often longer than English:
 | Japanese | 0.9x |
 
 **Design implications:**
+
 - Don't design to exact English text length
 - Allow buttons and labels to expand
 - Test layouts with longest expected translations
@@ -253,6 +259,7 @@ Translated text is often longer than English:
 ### Text in Images
 
 Avoid text in images because:
+
 - Can't be translated easily
 - Not accessible to screen readers
 - Doesn't scale with user preferences
@@ -334,24 +341,28 @@ const price = currencyFormatter.format(1000);
 Before launching internationally:
 
 **Layout:**
+
 - [ ] Supports RTL if targeting Arabic, Hebrew, Persian
 - [ ] Text can expand 30% without breaking
 - [ ] No text in images
 - [ ] Icons are culturally neutral
 
 **Forms:**
+
 - [ ] Name fields are flexible
 - [ ] Addresses work without postal codes
 - [ ] Phone numbers accept various formats
 - [ ] Dates use pickers or clear formats
 
 **Content:**
+
 - [ ] Colors don't carry unintended meaning
 - [ ] Images represent target audience
 - [ ] No culture-specific idioms
 - [ ] Units match target region
 
 **Technical:**
+
 - [ ] Dates, numbers, currency use locale formatting
 - [ ] All strings externalized for translation
 - [ ] Character encoding supports target languages

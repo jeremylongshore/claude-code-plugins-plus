@@ -77,6 +77,7 @@ Analogies let you borrow someone else's schema. Instead of explaining your new i
 | Stripe | "PayPal for developers" | Positioned in a known market with a twist |
 
 **Rules for good analogies:**
+
 - The source concept must be well-known to YOUR audience (not just you)
 - The comparison should hold at the structural level, not just surface
 - Acknowledge where the analogy breaks down before your audience does
@@ -105,6 +106,7 @@ Simplicity requires forced-ranking. If everything is important, nothing is.
 3. Everything else becomes supporting evidence for that one thing
 
 **Example for a project management SaaS:**
+
 - Candidate messages: easy to use, powerful integrations, great reporting, saves time, team collaboration, affordable
 - Forced choice: "Saves time"
 - Everything else supports it: "Easy to use (saves learning time), great reporting (saves analysis time), integrations (saves switching time)"
@@ -139,6 +141,7 @@ There is a critical difference between simple and simplistic. Simple ideas retai
 | "Innovation platform" | "Test 10 ideas a week instead of 1 a month" |
 
 **The test for simple vs. simplistic:**
+
 - Does it help someone make a decision? (Simple)
 - Could it apply to any company in the world? (Simplistic)
 - Does it generate specific behavior? (Simple)
@@ -209,6 +212,7 @@ Write the newspaper headline for your product. You have 8 words maximum. What ma
 5. That is your core message
 
 **Example:**
+
 - "We use AI to analyze sales calls" — So what?
 - "Managers see which reps need coaching" — So what?
 - "Reps close more deals" — So what?

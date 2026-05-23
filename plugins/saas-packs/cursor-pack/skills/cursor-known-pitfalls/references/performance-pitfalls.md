@@ -3,6 +3,7 @@
 ## Performance Pitfalls
 
 ### Too Many Extensions
+
 ```
 PITFALL:
 Installing every interesting extension.
@@ -16,6 +17,7 @@ SOLUTION:
 ```
 
 ### Large Context Requests
+
 ```
 PITFALL:
 @-mentioning entire folders.
@@ -29,6 +31,7 @@ SOLUTION:
 ```
 
 ### Indexing Entire Codebase
+
 ```
 PITFALL:
 Indexing massive monorepo.

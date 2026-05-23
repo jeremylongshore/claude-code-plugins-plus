@@ -25,18 +25,22 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Upgrade Migration
 
 ## Current State
+
 !`npm list axios 2>/dev/null | head -5`
 
 ## Overview
+
 Plan and execute safe upgrades for Apollo.io API integrations. Apollo has made several breaking changes historically (query param auth to header auth, endpoint URL changes, new search endpoints). This covers auditing current usage, building compatibility layers, and migrating safely.
 
 ## Prerequisites
+
 - Valid Apollo API key
 - Node.js 18+
 
 ## Instructions
 
 ### Step 1: Audit Current API Usage
+
 ```typescript
 // src/scripts/api-audit.ts
 import { execSync } from 'child_process';
@@ -88,6 +92,7 @@ function auditUsage(srcDir: string = 'src'): EndpointUsage[] {
 ```
 
 ### Step 2: Migration Map — Old to New
+
 ```typescript
 // src/migration/apollo-migration-map.ts
 interface MigrationRule {
@@ -137,6 +142,7 @@ const MIGRATION_RULES: MigrationRule[] = [
 ```
 
 ### Step 3: Build a Feature-Flagged Migration
+
 ```typescript
 // src/migration/feature-flags.ts
 const flags = {
@@ -162,6 +168,7 @@ export function getAuthConfig(): Record<string, any> {
 ```
 
 ### Step 4: Run Parallel Comparison
+
 ```typescript
 async function shadowTest(searchParams: Record<string, any>) {
   const oldClient = axios.create({ baseURL: 'https://api.apollo.io/v1', params: { api_key: process.env.APOLLO_API_KEY } });
@@ -185,6 +192,7 @@ async function shadowTest(searchParams: Record<string, any>) {
 ```
 
 ### Step 5: Post-Migration Cleanup
+
 ```bash
 # Find remaining deprecated patterns
 grep -rn "api.apollo.io/v1[^/]" src/ --include="*.ts" || echo "No old base URL found"
@@ -195,6 +203,7 @@ echo "Cleanup complete. Remove feature flags: FF_NEW_SEARCH, FF_HEADER_AUTH, FF_
 ```
 
 ## Output
+
 - API usage audit identifying current and deprecated patterns
 - Migration rule map for auth, base URL, and endpoint changes
 - Feature-flagged migration with environment variable controls
@@ -202,6 +211,7 @@ echo "Cleanup complete. Remove feature flags: FF_NEW_SEARCH, FF_HEADER_AUTH, FF_
 - Post-migration cleanup script
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | Audit finds deprecated patterns | Apply migration rules file by file |
@@ -210,9 +220,11 @@ echo "Cleanup complete. Remove feature flags: FF_NEW_SEARCH, FF_HEADER_AUTH, FF_
 | Old endpoints still work | Apollo maintains backward compatibility, but migrate proactively |
 
 ## Resources
+
 - [Apollo API Documentation](https://docs.apollo.io/)
 - [Apollo API Overview](https://docs.apollo.io/docs/api-overview)
 - [Authentication Reference](https://docs.apollo.io/reference/authentication)
 
 ## Next Steps
+
 Proceed to `apollo-ci-integration` for CI/CD setup.

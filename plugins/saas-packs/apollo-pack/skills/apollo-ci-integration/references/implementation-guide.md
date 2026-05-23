@@ -5,11 +5,13 @@
 # Apollo CI Integration
 
 ## Overview
+
 Set up CI/CD pipelines for Apollo.io integrations with automated testing, secret management, and deployment workflows.
 
 ## GitHub Actions Setup
 
 ### Basic CI Workflow
+
 ```yaml
 # .github/workflows/apollo-ci.yml
 name: Apollo Integration CI
@@ -80,6 +82,7 @@ jobs:
 ```
 
 ### Integration Test Workflow
+
 ```yaml
 # .github/workflows/apollo-integration.yml
 name: Apollo Integration Tests
@@ -143,6 +146,7 @@ jobs:
 ## Secrets Management
 
 ### GitHub Secrets Setup
+
 ```bash
 # Add secrets via GitHub CLI
 gh secret set APOLLO_API_KEY_TEST --body "your-test-api-key"
@@ -153,6 +157,7 @@ gh secret list
 ```
 
 ### Environment-Based Secrets
+
 ```yaml
 # .github/workflows/deploy.yml
 jobs:
@@ -177,6 +182,7 @@ jobs:
 ## Test Configuration
 
 ### Test Setup
+
 ```typescript
 // tests/setup/apollo.ts
 import { beforeAll, afterAll, beforeEach } from 'vitest';
@@ -201,6 +207,7 @@ export { server };
 ```
 
 ### Mock Handlers for CI
+
 ```typescript
 // tests/mocks/apollo-handlers.ts
 import { http, HttpResponse } from 'msw';
@@ -246,6 +253,7 @@ export const apolloHandlers = [
 ```
 
 ### Integration Tests
+
 ```typescript
 // tests/integration/apollo.test.ts
 import { describe, it, expect, beforeEach } from 'vitest';
@@ -301,6 +309,7 @@ describe('Apollo API Integration', () => {
 ## Pipeline Scripts
 
 ### package.json Scripts
+
 ```json
 {
   "scripts": {
@@ -314,6 +323,7 @@ describe('Apollo API Integration', () => {
 ```
 
 ### Validation Script
+
 ```typescript
 // scripts/validate-apollo-config.ts
 async function validateConfig() {
@@ -358,6 +368,7 @@ validateConfig();
 ```
 
 ## Output
+
 - GitHub Actions workflows for CI
 - Secrets management configuration
 - Test setup with MSW mocks
@@ -365,6 +376,7 @@ validateConfig();
 - Validation scripts
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | Secret not found | Verify secret name in GitHub |
@@ -373,9 +385,11 @@ validateConfig();
 | Health check fails | Check Apollo status page |
 
 ## Resources
+
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 - [MSW (Mock Service Worker)](https://mswjs.io/)
 - [Vitest Documentation](https://vitest.dev/)
 
 ## Next Steps
+
 Proceed to `apollo-deploy-integration` for deployment configuration.

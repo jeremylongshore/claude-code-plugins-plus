@@ -10,6 +10,7 @@ workhuman-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Workhuman common errors
 **Workflow:** Part of the operations skill category for Workhuman integration.
 **Relates to:** Other workhuman skills in this pack.

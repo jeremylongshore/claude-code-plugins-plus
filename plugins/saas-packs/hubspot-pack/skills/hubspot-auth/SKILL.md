@@ -182,6 +182,7 @@ git grep -r "HUBSPOT_ACCESS_TOKEN\s*=" -- '*.ts' '*.js'
 ```
 
 For rotation without downtime:
+
 1. Create a **new** private app (or rotate the token in the existing app — HubSpot generates a new token, old is immediately revoked).
 2. Load the new token into your secret store.
 3. Signal the running process to reload (SIGHUP, env var change trigger, or restart).

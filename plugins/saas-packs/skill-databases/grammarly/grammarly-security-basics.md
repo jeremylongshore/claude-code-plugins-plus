@@ -10,6 +10,7 @@ grammarly-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Grammarly security best practices
 **Workflow:** Part of the operations skill category for Grammarly integration.
 **Relates to:** Other grammarly skills in this pack.

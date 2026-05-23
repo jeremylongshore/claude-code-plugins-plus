@@ -27,6 +27,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lokalise Upgrade Migration
 
 ## Current State
+
 !`npm list @lokalise/node-api 2>/dev/null | grep lokalise || echo 'SDK not installed'`
 !`lokalise2 --version 2>/dev/null || echo 'CLI not installed'`
 !`node --version 2>/dev/null || echo 'Node.js not available'`

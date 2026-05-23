@@ -28,12 +28,14 @@
 **Value Proposition**: This is the **foundation skill** for the entire crypto plugin ecosystem. It provides the price data infrastructure that 10+ other skills depend on for their functionality. Without reliable price tracking, portfolio management, tax calculation, DeFi optimization, and arbitrage detection are impossible.
 
 **Key Metrics**:
+
 - Activation accuracy: 95%+
 - Price data freshness: < 30 seconds
 - API reliability: 99.5%+ uptime
 - Supported assets: 10,000+ cryptocurrencies
 
 **Dependent Skills** (skills that require this one):
+
 - market-movers-scanner
 - crypto-portfolio-tracker
 - crypto-tax-calculator
@@ -52,6 +54,7 @@
 ### Current State (Without This Skill)
 
 **Pain Points**:
+
 1. **Fragmented Data Sources**: Traders must manually check multiple exchanges and websites for price information, wasting time and risking decisions on stale data
 2. **No Standardized Format**: Price data comes in different formats from different sources, making programmatic analysis difficult
 3. **Missing Historical Context**: Point-in-time prices without historical trends lead to poor trading decisions
@@ -59,12 +62,14 @@
 5. **Currency Confusion**: Prices in USD only ignore users who think in EUR, GBP, or other currencies
 
 **Current Workarounds**:
+
 - Manually refreshing CoinGecko/CoinMarketCap tabs
 - Using spreadsheets with manual data entry
 - Writing one-off scripts for each data source
 - Subscribing to expensive third-party services
 
 **Impact of Problem**:
+
 - Time wasted: 30+ minutes daily checking prices across sources
 - Error rate: 15% of decisions based on stale/incorrect data
 - Missed opportunities: Significant due to delayed information
@@ -73,10 +78,12 @@
 ### Desired State (With This Skill)
 
 **Transformation**:
+
 - From: Manual, fragmented, time-consuming price checking
 - To: Instant, unified, automated price intelligence with historical context
 
 **Expected Benefits**:
+
 1. **Time Savings**: Reduce price checking from 30+ minutes to < 30 seconds
 2. **Accuracy**: 99.9%+ data accuracy with source verification
 3. **Intelligence**: Historical trends and price alerts reduce missed opportunities by 80%
@@ -89,18 +96,21 @@
 ### Primary Users
 
 **User Persona 1**: Active Cryptocurrency Trader
+
 - **Background**: Trades crypto daily, uses multiple exchanges, technically competent
 - **Goals**: Get real-time prices quickly, set price alerts, compare across exchanges
 - **Pain Points**: Switching between apps/tabs, missing price movements, stale data
 - **Use Frequency**: 10-50 times daily
 
 **User Persona 2**: Crypto Investor (HODLer)
+
 - **Background**: Long-term holder, checks portfolio weekly, moderate technical skills
 - **Goals**: Monitor portfolio value, track historical performance, set major price alerts
 - **Pain Points**: No simple way to see current holdings value, missing major moves
 - **Use Frequency**: 2-5 times weekly
 
 **User Persona 3**: Developer Building Crypto Tools
+
 - **Background**: Software developer integrating price data into applications
 - **Goals**: Reliable price API, consistent data format, historical data access
 - **Pain Points**: Inconsistent API responses, rate limits, data normalization
@@ -175,6 +185,7 @@
 ### Core Capabilities (Must Have)
 
 **REQ-1**: Real-Time Price Fetching
+
 - **Description**: Fetch current price for any cryptocurrency by symbol or name
 - **Rationale**: Core functionality - everything else depends on this
 - **Acceptance Criteria**:
@@ -185,6 +196,7 @@
 - **Dependencies**: CoinGecko API or equivalent
 
 **REQ-2**: Historical Price Data
+
 - **Description**: Fetch OHLCV data for specified time ranges
 - **Rationale**: Trend analysis requires historical context
 - **Acceptance Criteria**:
@@ -195,6 +207,7 @@
 - **Dependencies**: Yahoo Finance, CoinGecko, or exchange APIs
 
 **REQ-3**: Multi-Currency Support
+
 - **Description**: Display prices in user's preferred fiat currency
 - **Rationale**: Global user base thinks in different currencies
 - **Acceptance Criteria**:
@@ -204,6 +217,7 @@
 - **Dependencies**: Exchange rate API
 
 **REQ-4**: Watchlist Management
+
 - **Description**: Track a personalized list of cryptocurrencies
 - **Rationale**: Users care about specific assets, not all 10,000+
 - **Acceptance Criteria**:
@@ -213,6 +227,7 @@
 - **Dependencies**: Local storage for watchlist data
 
 **REQ-5**: Caching Layer
+
 - **Description**: Cache price data to reduce API calls and improve speed
 - **Rationale**: Rate limits and latency require intelligent caching
 - **Acceptance Criteria**:
@@ -224,6 +239,7 @@
 ### Integration Requirements
 
 **REQ-API-1**: CoinGecko API
+
 - **Purpose**: Primary source for price data (10,000+ assets, free tier available)
 - **Endpoints**:
   - `/simple/price` - Current prices
@@ -234,6 +250,7 @@
 - **Error Handling**: Exponential backoff on 429, fallback to cache
 
 **REQ-API-2**: Yahoo Finance (yfinance)
+
 - **Purpose**: Backup source, especially for historical OHLCV data
 - **Endpoints**: Via yfinance Python library
 - **Authentication**: None required
@@ -243,12 +260,14 @@
 ### Data Requirements
 
 **REQ-DATA-1**: Input Data Format
+
 - **Format**: Command-line arguments or JSON config
 - **Required Fields**: `symbol` or `symbols` (list)
 - **Optional Fields**: `currency`, `period`, `interval`
 - **Validation Rules**: Symbol must be valid crypto ticker
 
 **REQ-DATA-2**: Output Data Format
+
 - **Format**: JSON (programmatic) or formatted table (human-readable)
 - **Fields**: `symbol`, `name`, `price`, `change_24h`, `volume_24h`, `market_cap`, `last_updated`
 - **Quality Standards**: Prices accurate to 8 decimal places for small-cap assets
@@ -256,10 +275,12 @@
 ### Performance Requirements
 
 **REQ-PERF-1**: Response Time
+
 - **Target**: < 3 seconds for single asset
 - **Max Acceptable**: < 10 seconds for watchlist of 20 assets
 
 **REQ-PERF-2**: Token Budget
+
 - **Description Size**: < 250 characters
 - **SKILL.md Size**: < 500 lines
 - **Total Skill Size**: < 5,000 tokens
@@ -267,6 +288,7 @@
 ### Quality Requirements
 
 **REQ-QUAL-1**: Description Quality
+
 - **Target Score**: 80%+ on quality formula
 - **Must Include**:
   - [ ] Action-oriented verbs
@@ -275,6 +297,7 @@
   - [ ] Domain keywords (price, crypto, exchange, market)
 
 **REQ-QUAL-2**: Data Accuracy
+
 - **Price Accuracy**: Match exchange prices within 0.5%
 - **Data Freshness**: < 30 seconds for spot prices
 - **Error Rate**: < 1% failed requests after retries
@@ -308,11 +331,13 @@
 ### Skill Activation Metrics
 
 **Metric 1**: Activation Accuracy
+
 - **Definition**: % of times skill activates when user intends to check prices
 - **Target**: 95%+
 - **Measurement**: Manual testing with 50+ trigger phrase variations
 
 **Metric 2**: False Positive Rate
+
 - **Definition**: % of times skill activates when user meant something else
 - **Target**: < 2%
 - **Measurement**: User feedback and log analysis
@@ -320,6 +345,7 @@
 ### Quality Metrics
 
 **Metric 3**: Description Quality Score
+
 - **Formula**: 6-criterion weighted scoring
 - **Target**: 85%+
 - **Components**:
@@ -333,12 +359,14 @@
 ### Usage Metrics
 
 **Metric 4**: Daily Active Use
+
 - **Target**: Used 5+ times daily by active users
 - **Measurement**: Skill invocation logs
 
 ### Performance Metrics
 
 **Metric 5**: Data Freshness
+
 - **Definition**: Time since last price update
 - **Target**: < 30 seconds for cached data
 - **Measurement**: Timestamp comparison
@@ -364,11 +392,13 @@
 **Scenario**: Check current prices for a watchlist
 
 **Input**:
+
 ```
 Check prices for my top holdings: BTC, ETH, SOL
 ```
 
 **Claude's Response**:
+
 ```
 Fetching current prices...
 
@@ -397,12 +427,14 @@ Fetching current prices...
 ### External Systems
 
 **System 1**: CoinGecko API
+
 - **Purpose**: Primary price data source
 - **Integration Type**: REST API
 - **Authentication**: Optional API key for higher limits
 - **Data Flow**: Skill → API → Parse JSON → Cache → Format → User
 
 **System 2**: Yahoo Finance (via yfinance)
+
 - **Purpose**: Historical OHLCV data, backup price source
 - **Integration Type**: Python library
 - **Authentication**: None
@@ -411,10 +443,12 @@ Fetching current prices...
 ### Internal Dependencies
 
 **Dependency 1**: Local Cache System
+
 - **What it provides**: Fast access to recently fetched prices
 - **Why needed**: Reduces API calls, improves response time
 
 **Dependency 2**: Python Libraries
+
 - **Libraries**: requests, pandas, yfinance
 - **Versions**: requests>=2.28, pandas>=2.0, yfinance>=0.2.30
 
@@ -467,11 +501,13 @@ Fetching current prices...
 ### Technical Risks
 
 **Risk 1**: API Rate Limiting
+
 - **Probability**: High (free tier has strict limits)
 - **Impact**: Medium (degraded but not broken experience)
 - **Mitigation**: Aggressive caching, exponential backoff, batch requests
 
 **Risk 2**: API Downtime
+
 - **Probability**: Low (CoinGecko has 99.9% uptime)
 - **Impact**: High (skill unusable)
 - **Mitigation**: Multiple fallback providers, cached data with staleness warning
@@ -479,11 +515,13 @@ Fetching current prices...
 ### User Experience Risks
 
 **Risk 1**: Skill Over-Triggering (False Positives)
+
 - **Probability**: Medium
 - **Impact**: Low (user can clarify)
 - **Mitigation**: Precise trigger phrases, domain-specific keywords
 
 **Risk 2**: Stale Data Confusion
+
 - **Probability**: Medium (if cache too aggressive)
 - **Impact**: Medium (bad trading decisions)
 - **Mitigation**: Clear timestamps, configurable cache duration, manual refresh
@@ -509,17 +547,20 @@ Fetching current prices...
 ### Example 1: Single Asset Price Check
 
 **User Request**:
+
 ```
 What's the current Ethereum price?
 ```
 
 **Expected Skill Behavior**:
+
 1. Parse "Ethereum" as ETH
 2. Check cache for recent ETH price
 3. If stale (>30s), fetch from CoinGecko
 4. Format response with price card
 
 **Expected Output**:
+
 ```
 ETH (Ethereum)
 $3,456.78 USD
@@ -530,11 +571,13 @@ Updated: [timestamp]
 ### Example 2: Watchlist Scan
 
 **User Request**:
+
 ```
 Check prices for the top 10 cryptos
 ```
 
 **Expected Behavior**:
+
 1. Use predefined "crypto_top10" watchlist
 2. Batch fetch all 10 prices
 3. Format as table with all metrics
@@ -542,11 +585,13 @@ Check prices for the top 10 cryptos
 ### Example 3: Historical Data Export
 
 **User Request**:
+
 ```
 Get Bitcoin's price history for the last 30 days and save to CSV
 ```
 
 **Expected Behavior**:
+
 1. Fetch 30-day OHLCV data from yfinance
 2. Format as DataFrame
 3. Export to `data/BTC_30d_[date].csv`

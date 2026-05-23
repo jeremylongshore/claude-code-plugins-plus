@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Multi-Environment Setup
 
 ## Overview
+
 Configure Databricks across dev, staging, and production with isolated workspaces (or catalog-level isolation), per-environment secrets, Asset Bundle targets, and Terraform for workspace provisioning. Each environment gets its own credentials, Unity Catalog namespace, and compute policies.
 
 ## Prerequisites
+
 - Databricks account with multiple workspaces (or Premium for catalog-level isolation)
 - Service principals per environment
 - Secret management (Databricks Secret Scopes, AWS Secrets Manager, or GCP Secret Manager)
@@ -43,6 +45,7 @@ Configure Databricks across dev, staging, and production with isolated workspace
 ## Instructions
 
 ### Step 1: CLI Profiles per Environment
+
 ```ini
 # ~/.databrickscfg
 [dev]
@@ -67,6 +70,7 @@ databricks clusters list --profile production
 ```
 
 ### Step 2: Asset Bundle Targets
+
 ```yaml
 # databricks.yml — single project, multiple targets
 bundle:
@@ -111,6 +115,7 @@ targets:
 ```
 
 ### Step 3: Per-Environment Secret Scopes
+
 ```bash
 # Create environment-specific secret scopes in each workspace
 for env in dev staging prod; do
@@ -130,6 +135,7 @@ api_key = dbutils.secrets.get(scope=f"{env}-secrets", key="api-key")
 ```
 
 ### Step 4: Environment-Aware Python Config
+
 ```python
 # config/databricks_config.py
 from dataclasses import dataclass
@@ -182,6 +188,7 @@ def get_config() -> DatabricksEnvConfig:
 ```
 
 ### Step 5: CI/CD with Environment Secrets
+
 ```yaml
 # .github/workflows/deploy.yml
 name: Deploy Pipeline
@@ -218,6 +225,7 @@ jobs:
 ```
 
 ### Step 6: Terraform for Workspace Provisioning (Optional)
+
 ```hcl
 # terraform/main.tf
 resource "databricks_workspace" "staging" {
@@ -243,6 +251,7 @@ resource "databricks_schema" "staging_bronze" {
 ```
 
 ## Output
+
 - CLI profiles configured per environment (`~/.databrickscfg`)
 - Asset Bundle with dev/staging/prod targets and variable overrides
 - Per-environment secret scopes with isolated credentials
@@ -250,6 +259,7 @@ resource "databricks_schema" "staging_bronze" {
 - CI/CD pipeline with GitHub environment secrets and approval gates
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Wrong environment targeted | Missing `--profile` or `-t` flag | Default profile should always be dev |
@@ -260,6 +270,7 @@ resource "databricks_schema" "staging_bronze" {
 ## Examples
 
 ### Quick Environment Verification
+
 ```bash
 for profile in dev staging production; do
     echo "=== $profile ==="
@@ -268,6 +279,7 @@ done
 ```
 
 ### Startup Validation
+
 ```python
 config = get_config()
 print(f"Environment: {os.getenv('ENVIRONMENT', 'dev')}")
@@ -276,9 +288,11 @@ print(f"Debug: {config.debug}")
 ```
 
 ## Resources
+
 - [Declarative Automation Bundles](https://docs.databricks.com/aws/en/dev-tools/bundles/)
 - [CLI Authentication](https://docs.databricks.com/aws/en/dev-tools/cli/authentication)
 - [Terraform Provider](https://docs.databricks.com/aws/en/dev-tools/terraform/)
 
 ## Next Steps
+
 For deployment, see `databricks-deploy-integration`.

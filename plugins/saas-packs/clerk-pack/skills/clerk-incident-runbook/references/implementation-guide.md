@@ -5,9 +5,11 @@ Detailed implementation examples and code patterns.
 ## Incident Categories
 
 ### Category 1: Complete Auth Outage
+
 **Symptoms:** All users unable to sign in, middleware returning errors
 
 **Immediate Actions:**
+
 ```bash
 # 1. Check Clerk status
 curl -s https://status.clerk.com/api/v1/status | jq
@@ -20,6 +22,7 @@ vercel env ls | grep CLERK
 ```
 
 **Mitigation Steps:**
+
 ```typescript
 // Emergency bypass mode (use with caution)
 // middleware.ts
@@ -44,9 +47,11 @@ export default clerkMiddleware(async (auth, request) => {
 ```
 
 ### Category 2: Webhook Processing Failure
+
 **Symptoms:** User data out of sync, missing user records
 
 **Diagnosis:**
+
 ```bash
 # Check webhook endpoint
 curl -X POST https://yourapp.com/api/webhooks/clerk \
@@ -59,6 +64,7 @@ curl -X POST https://yourapp.com/api/webhooks/clerk \
 ```
 
 **Recovery:**
+
 ```typescript
 // scripts/resync-users.ts
 import { clerkClient } from '@clerk/nextjs/server'
@@ -106,9 +112,11 @@ resyncAllUsers()
 ```
 
 ### Category 3: Security Incident
+
 **Symptoms:** Unauthorized access detected, suspicious sessions
 
 **Immediate Actions:**
+
 ```typescript
 // scripts/emergency-session-revoke.ts
 import { clerkClient } from '@clerk/nextjs/server'
@@ -160,9 +168,11 @@ async function lockoutUser(userId: string) {
 ```
 
 ### Category 4: Performance Degradation
+
 **Symptoms:** Slow sign-in, high latency, timeouts
 
 **Diagnosis:**
+
 ```typescript
 // scripts/diagnose-performance.ts
 async function diagnosePerformance() {
@@ -205,6 +215,7 @@ async function diagnosePerformance() {
 ## Runbook Procedures
 
 ### Procedure 1: Auth Outage Response
+
 ```
 1. [ ] Confirm outage (check status.clerk.com)
 2. [ ] Check application logs for errors
@@ -222,6 +233,7 @@ async function diagnosePerformance() {
 ```
 
 ### Procedure 2: Security Breach Response
+
 ```
 1. [ ] Identify affected accounts
 2. [ ] Revoke all sessions for affected users
@@ -234,6 +246,7 @@ async function diagnosePerformance() {
 ```
 
 ### Procedure 3: Data Sync Recovery
+
 ```
 1. [ ] Identify sync gap (check webhook logs)
 2. [ ] Pause webhook processing
@@ -274,6 +287,7 @@ contacts:
 ## Post-Incident
 
 ### Template
+
 ```markdown
 # Incident Report: [Title]
 

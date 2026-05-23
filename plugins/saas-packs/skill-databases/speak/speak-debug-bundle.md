@@ -10,6 +10,7 @@ speak-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Speak debug evidence for support
 **Workflow:** Part of the operations skill category for Speak integration.
 **Relates to:** Other speak skills in this pack.

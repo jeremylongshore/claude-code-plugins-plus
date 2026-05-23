@@ -54,6 +54,7 @@ Design the Accountability Chart for the company you need, not the company you ha
 ### The One-Person-Per-Seat Rule
 
 Every seat has exactly one accountable owner. Shared accountability is no accountability. If two people share a seat:
+
 - Neither feels fully responsible
 - Conflicts go unresolved
 - Results suffer
@@ -95,6 +96,7 @@ The two most important seats in any EOS company are the Visionary and the Integr
 ### The Visionary-Integrator Relationship
 
 **Healthy dynamics:**
+
 - [ ] They meet weekly for a 30-60 minute "Same Page Meeting"
 - [ ] The Visionary shares ideas freely; the Integrator evaluates and filters
 - [ ] The Integrator has authority to run the business without daily Visionary approval
@@ -102,6 +104,7 @@ The two most important seats in any EOS company are the Visionary and the Integr
 - [ ] Both publicly support each other's decisions
 
 **Unhealthy dynamics:**
+
 - The Visionary micromanages the Integrator
 - The Integrator blocks all new ideas
 - They contradict each other in team meetings
@@ -185,6 +188,7 @@ GWC stands for Get it, Want it, Capacity to do it. All three must be "yes" for s
 Does this person truly understand the role? Not just the tasks, but the nuances, the judgment calls, the unwritten rules. Someone who "gets it" can anticipate problems, see connections, and make decisions without being told.
 
 **Diagnostic questions:**
+
 - Can they explain the role's purpose in one sentence?
 - Do they see the downstream impact of their decisions?
 - Do they need constant direction, or do they figure things out?
@@ -194,6 +198,7 @@ Does this person truly understand the role? Not just the tasks, but the nuances,
 Does this person genuinely want this specific role? Not a paycheck. Not a title. This actual work, every day. People who "want it" show up with energy for the role, not just tolerance.
 
 **Diagnostic questions:**
+
 - Would they choose this role if money were not a factor?
 - Do they light up when talking about their work?
 - Are they making sacrifices willingly, or resentfully?
@@ -203,6 +208,7 @@ Does this person genuinely want this specific role? Not a paycheck. Not a title.
 Does this person have the intellectual, physical, emotional, and time capacity to excel? Capacity is the hardest to change. Skills can be trained. Capacity is more fundamental.
 
 **Diagnostic questions:**
+
 - Can they handle the volume and complexity of the role?
 - Do they have the emotional resilience the role requires?
 - Are they already at capacity, or do they have room to grow into the role?

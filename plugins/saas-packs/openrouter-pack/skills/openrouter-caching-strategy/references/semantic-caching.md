@@ -3,6 +3,7 @@
 ## Semantic Caching
 
 ### Embedding-Based Cache
+
 ```python
 import numpy as np
 from openai import OpenAI

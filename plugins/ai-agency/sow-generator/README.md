@@ -3,11 +3,13 @@
 Generate professional Statements of Work for AI automation projects.
 
 ## Installation
+
 ```bash
 /plugin install sow-generator
 ```
 
 ## Features
+
 - Complete SOW templates
 - Customizable sections
 - Payment terms
@@ -15,9 +17,11 @@ Generate professional Statements of Work for AI automation projects.
 - Legal terms
 
 ## Commands
+
 | Command | Description |
 |---------|-------------|
 | `/sow` | Generate Statement of Work |
 
 ## License
+
 MIT

@@ -32,19 +32,19 @@
 
 ### 3.1. PCI DSS Requirement 3.2: Do not store sensitive authentication data after authorization (even if encrypted).
 
-*   **Finding:**  The application stores the Card Verification Value (CVV) in the database after transaction processing.
+* **Finding:**  The application stores the Card Verification Value (CVV) in the database after transaction processing.
 
-*   **Impact:**  This violates PCI DSS requirement 3.2 and significantly increases the risk of data breach. Storing CVV data is strictly prohibited.
+* **Impact:**  This violates PCI DSS requirement 3.2 and significantly increases the risk of data breach. Storing CVV data is strictly prohibited.
 
-*   **Recommendation:**  Modify the application to prevent the storage of CVV data after authorization.  CVV data should only be used for the initial transaction and then discarded.  Implement processes to ensure no CVV data exists in the database and schedule regular audits to verify adherence.
+* **Recommendation:**  Modify the application to prevent the storage of CVV data after authorization.  CVV data should only be used for the initial transaction and then discarded.  Implement processes to ensure no CVV data exists in the database and schedule regular audits to verify adherence.
 
 ### 3.2. [Compliance Standard] Requirement [Number]: [Requirement Description]
 
-*   **Finding:** [Detailed description of the non-compliance issue.]
+* **Finding:** [Detailed description of the non-compliance issue.]
 
-*   **Impact:** [Explanation of the potential consequences of the non-compliance issue.]
+* **Impact:** [Explanation of the potential consequences of the non-compliance issue.]
 
-*   **Recommendation:** [Specific steps to remediate the non-compliance issue.]
+* **Recommendation:** [Specific steps to remediate the non-compliance issue.]
 
 [Repeat the above structure for each finding related to the compliance standard being assessed.]
 
@@ -65,12 +65,12 @@
 
 [List any supporting documentation used in the compliance assessment, such as:
 
-*   System architecture diagrams
-*   Configuration files
-*   Code review reports
-*   Vulnerability scan reports
-*   Policy documents
-*   Training records]
+* System architecture diagrams
+* Configuration files
+* Code review reports
+* Vulnerability scan reports
+* Policy documents
+* Training records]
 
 ## 7.  Assumptions and Limitations
 

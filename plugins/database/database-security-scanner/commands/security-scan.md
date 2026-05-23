@@ -11,6 +11,7 @@ Implement production-grade database security scanning for PostgreSQL and MySQL t
 ## When to Use This Command
 
 Use `/security-scan` when you need to:
+
 - Perform security audits for compliance (SOC2, HIPAA, PCI DSS)
 - Detect vulnerabilities before security incidents occur
 - Validate database hardening after deployment
@@ -19,6 +20,7 @@ Use `/security-scan` when you need to:
 - Identify privilege escalation risks and over-permissioned users
 
 DON'T use this when:
+
 - You lack permission to query security-sensitive system tables
 - Database is in active development (expect frequent config changes)
 - You need application-level security testing (use SAST/DAST tools)
@@ -28,6 +30,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **comprehensive multi-layer security scanning** because:
+
 - Checks 50+ OWASP Database Security vulnerabilities
 - Validates encryption at rest and in transit (SSL/TLS)
 - Detects privilege escalation and over-permissioned roles
@@ -36,12 +39,14 @@ This command implements **comprehensive multi-layer security scanning** because:
 - Generates automated remediation scripts for findings
 
 **Alternative considered: Manual security checklist**
+
 - Simple for small databases (<10 users, <50 tables)
 - Time-consuming and error-prone for large databases
 - No continuous monitoring or automation
 - Recommended for one-time assessments only
 
 **Alternative considered: Commercial security tools (Tenable, Qualys)**
+
 - More comprehensive (network scanning, OS hardening)
 - Expensive licensing ($10k-50k/year)
 - Better for enterprise-wide security programs
@@ -50,6 +55,7 @@ This command implements **comprehensive multi-layer security scanning** because:
 ## Prerequisites
 
 Before running this command:
+
 1. Database superuser or security admin permissions
 2. Access to system catalogs (pg_catalog, information_schema)
 3. Understanding of compliance requirements (PCI DSS, HIPAA, SOC2)
@@ -59,23 +65,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Connect with Security Admin Privileges
+
 Ensure connection has permissions to query user roles, grants, and configurations.
 
 ### Step 2: Run Vulnerability Scans
+
 Check authentication, authorization, encryption, auditing, and network security.
 
 ### Step 3: Analyze Findings
+
 Categorize vulnerabilities by severity (critical, high, medium, low).
 
 ### Step 4: Generate Remediation Scripts
+
 Create SQL scripts to fix identified issues with rollback procedures.
 
 ### Step 5: Validate and Re-scan
+
 Apply fixes in staging, validate, then re-scan to confirm remediation.
 
 ## Output Format
 
 The command generates:
+
 - `security_report.md` - Human-readable security audit report with severity ratings
 - `vulnerabilities.json` - Machine-readable findings for CI/CD integration
 - `remediation.sql` - SQL script to fix identified vulnerabilities
@@ -636,12 +648,14 @@ if __name__ == "__main__":
 ## Configuration Options
 
 **Scan Scope**
+
 - **Full scan**: All 50+ security checks (recommended for compliance)
 - **Quick scan**: Critical and high severity only (fast assessment)
 - **Compliance scan**: Specific to SOC2/HIPAA/PCI DSS requirements
 - **Custom scan**: User-defined check selection
 
 **Severity Thresholds**
+
 - **Critical**: Immediate exploitation risk (exposed passwords, SQL injection)
 - **High**: Significant security impact (excessive permissions, no encryption)
 - **Medium**: Security weakness (insecure config, missing hardening)
@@ -649,6 +663,7 @@ if __name__ == "__main__":
 - **Info**: Security recommendations (optional improvements)
 
 **Remediation Modes**
+
 - **Manual review**: Human approval required for all fixes
 - **Semi-automated**: Auto-fix low/medium, manual for critical/high
 - **Automated**: Apply all fixes automatically (staging only)
@@ -656,6 +671,7 @@ if __name__ == "__main__":
 ## Best Practices
 
 DO:
+
 - Run security scans weekly or after configuration changes
 - Test remediation scripts in staging before production
 - Document exceptions for findings that cannot be fixed
@@ -665,6 +681,7 @@ DO:
 - Review and update security baseline quarterly
 
 DON'T:
+
 - Auto-apply remediation without testing (risk of breaking changes)
 - Ignore findings because "it's always been that way"
 - Run scans during peak load (may impact performance)

@@ -85,11 +85,13 @@ For any writing task:
 **Good Response:**
 
 Let me confirm before drafting:
+
 - **Purpose**: Get engineering alignment and kickoff scoping
 - **Audience**: Engineering team, tech lead
 - **Key points**: Problem, proposed solution, success metrics
 
 **Proposed structure:**
+
 1. Problem Statement (2-3 sentences)
 2. Proposed Solution (what, not how)
 3. User Value (why this matters)
@@ -112,6 +114,7 @@ Users who receive push notifications must open the app to respond to any call-to
 Add quick reply buttons to push notifications, allowing users to take action directly from the notification tray without opening the app.
 
 Initial use cases:
+
 - "Remind me later" for promotional content
 - "Play now" for new release alerts
 - "Yes/No" responses for social features
@@ -152,6 +155,7 @@ Want me to adjust the tone, add more detail anywhere, or restructure?
 **Good Response:**
 
 Before I draft, quick questions:
+
 - What's the reason for the delay? (technical issue, scope change, dependency?)
 - How will you use the extra 2 weeks?
 - Is the VP likely to push back or generally supportive?
@@ -171,6 +175,7 @@ Hi [VP Name],
 **The tradeoff:** We could launch on time and fix it later, but this risks negative user sentiment and potential rollback. The 2-week delay lets us ship with confidence.
 
 **What we're doing:**
+
 - Week 1: Engineering fix + testing
 - Week 2: Staged rollout with monitoring
 - Daily standups to track progress

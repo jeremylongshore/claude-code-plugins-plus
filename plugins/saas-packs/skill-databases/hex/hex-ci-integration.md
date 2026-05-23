@@ -10,6 +10,7 @@ hex-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Hex CI/CD integration
 **Workflow:** Part of the cicd skill category for Hex integration.
 **Relates to:** Other hex skills in this pack.

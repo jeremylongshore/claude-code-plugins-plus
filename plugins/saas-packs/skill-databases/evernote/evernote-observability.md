@@ -10,6 +10,7 @@ evernote-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Evernote monitoring and observability
 **Workflow:** Part of the enterprise skill category for Evernote integration.
 **Relates to:** Other evernote skills in this pack.

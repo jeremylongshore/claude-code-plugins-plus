@@ -10,6 +10,7 @@ supabase-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Supabase load testing with k6, horizontal auto-scaling with Kubernetes HPA, connection pooling, and capacity planning.
 **Workflow:** Performance testing skill. Used for validating performance and planning capacity.
 **Relates to:** Builds on supabase-performance-tuning; informs supabase-reliability-patterns for production hardening.

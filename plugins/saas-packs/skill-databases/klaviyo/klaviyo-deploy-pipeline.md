@@ -10,6 +10,7 @@ klaviyo-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Klaviyo integrations to production
 **Workflow:** Part of the cicd skill category for Klaviyo integration.
 **Relates to:** Other klaviyo skills in this pack.

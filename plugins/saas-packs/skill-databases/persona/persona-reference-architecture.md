@@ -10,6 +10,7 @@ persona-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Persona reference architecture
 **Workflow:** Part of the cicd skill category for Persona integration.
 **Relates to:** Other persona skills in this pack.

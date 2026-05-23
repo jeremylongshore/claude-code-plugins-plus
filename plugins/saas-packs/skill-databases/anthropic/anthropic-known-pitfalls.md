@@ -10,6 +10,7 @@ anthropic-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Anthropic anti-patterns
 **Workflow:** Part of the enterprise skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

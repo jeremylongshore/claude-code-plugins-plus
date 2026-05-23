@@ -10,6 +10,7 @@ snowflake-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Snowflake rate limiting and backoff
 **Workflow:** Part of the operations skill category for Snowflake integration.
 **Relates to:** Other snowflake skills in this pack.

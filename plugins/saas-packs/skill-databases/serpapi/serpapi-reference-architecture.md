@@ -10,6 +10,7 @@ serpapi-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement SerpApi reference architecture
 **Workflow:** Part of the cicd skill category for SerpApi integration.
 **Relates to:** Other serpapi skills in this pack.

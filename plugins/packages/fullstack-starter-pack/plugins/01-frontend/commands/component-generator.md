@@ -14,12 +14,13 @@ Generates production-ready React components from natural language descriptions, 
 ## What This Command Does
 
 **Component Generation:**
--  Creates React component with TypeScript
--  Generates prop types and interfaces
--  Adds basic styling (CSS modules or Tailwind)
--  Creates test file (React Testing Library)
--  Includes JSDoc comments
--  Follows React best practices
+
+- Creates React component with TypeScript
+- Generates prop types and interfaces
+- Adds basic styling (CSS modules or Tailwind)
+- Creates test file (React Testing Library)
+- Includes JSDoc comments
+- Follows React best practices
 
 **Output:** Complete component with types, styles, and tests
 
@@ -48,6 +49,7 @@ Generates production-ready React components from natural language descriptions, 
 ## Example Output
 
 **Input:**
+
 ```
 /cg "Create a Button component with variants (primary, secondary, ghost), sizes (sm, md, lg), loading state, and icon support"
 ```
@@ -55,6 +57,7 @@ Generates production-ready React components from natural language descriptions, 
 **Generated Files:**
 
 **Button.tsx:**
+
 ```tsx
 import { ButtonHTMLAttributes, ReactNode } from 'react'
 import styles from './Button.module.css'
@@ -113,6 +116,7 @@ export function Button({
 ```
 
 **Button.module.css:**
+
 ```css
 .button {
   display: inline-flex;
@@ -183,6 +187,7 @@ export function Button({
 ```
 
 **Button.test.tsx:**
+
 ```tsx
 import { render, screen, fireEvent } from '@testing-library/react'
 import { Button } from './Button'
@@ -238,6 +243,7 @@ describe('Button', () => {
 ### Common Components Generated
 
 **1. Card Component:**
+
 ```tsx
 <Card
   image="/product.jpg"
@@ -248,6 +254,7 @@ describe('Button', () => {
 ```
 
 **2. Modal Component:**
+
 ```tsx
 <Modal
   isOpen={isOpen}
@@ -259,6 +266,7 @@ describe('Button', () => {
 ```
 
 **3. Form Field Component:**
+
 ```tsx
 <FormField
   label="Email"
@@ -269,6 +277,7 @@ describe('Button', () => {
 ```
 
 **4. Dropdown Component:**
+
 ```tsx
 <Dropdown
   items={options}
@@ -283,6 +292,7 @@ describe('Button', () => {
 ## Features
 
 ### Accessibility Built-In
+
 - Semantic HTML elements
 - ARIA attributes where needed
 - Keyboard navigation support
@@ -290,18 +300,21 @@ describe('Button', () => {
 - Screen reader announcements
 
 ### TypeScript Support
+
 - Full type definitions
 - Prop validation
 - IntelliSense support
 - Generic types where appropriate
 
 ### Testing Included
+
 - Unit tests with React Testing Library
 - Accessibility tests
 - User interaction tests
 - Edge case coverage
 
 ### Styling Options
+
 - CSS Modules (default)
 - Tailwind CSS
 - Styled Components
@@ -313,18 +326,21 @@ describe('Button', () => {
 ## Best Practices Applied
 
 **Component Structure:**
+
 - Single responsibility
 - Composable design
 - Prop drilling avoided
 - Performance optimized (React.memo where beneficial)
 
 **Code Quality:**
+
 - ESLint compliant
 - Prettier formatted
 - TypeScript strict mode
 - JSDoc comments
 
 **Testing:**
+
 - 80%+ code coverage
 - User-centric tests (not implementation details)
 - Accessibility assertions

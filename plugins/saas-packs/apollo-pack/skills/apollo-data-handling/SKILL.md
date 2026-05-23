@@ -24,15 +24,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Data Handling
 
 ## Overview
+
 Data management, compliance, and governance for Apollo.io contact data. Apollo's database contains 275M+ contacts with PII (emails, phones, LinkedIn profiles). This covers GDPR subject access/erasure, data retention, field-level encryption, and audit logging — using the real Apollo Contacts API endpoints.
 
 ## Prerequisites
+
 - Apollo master API key (contacts/delete requires master key)
 - Node.js 18+
 
 ## Instructions
 
 ### Step 1: GDPR Subject Access Request (SAR)
+
 Find all data Apollo has on a person and export it.
 
 ```typescript
@@ -100,6 +103,7 @@ export async function handleSAR(email: string): Promise<SubjectAccessReport> {
 ```
 
 ### Step 2: Right to Erasure (Delete)
+
 ```typescript
 export async function handleErasure(email: string): Promise<{
   email: string; erased: boolean; sequencesRemoved: number;
@@ -134,6 +138,7 @@ export async function handleErasure(email: string): Promise<{
 ```
 
 ### Step 3: Data Retention Policy
+
 ```typescript
 // src/data/retention.ts
 interface RetentionPolicy {
@@ -177,6 +182,7 @@ export async function enforceRetention(policy: RetentionPolicy) {
 ```
 
 ### Step 4: Field-Level Encryption for Local Storage
+
 ```typescript
 // src/data/encryption.ts
 import crypto from 'crypto';
@@ -214,6 +220,7 @@ export function encryptContactPII(contact: any) {
 ```
 
 ### Step 5: Audit Logging
+
 ```typescript
 // src/data/audit-log.ts
 interface AuditEntry {
@@ -237,6 +244,7 @@ export function logAudit(entry: Omit<AuditEntry, 'timestamp'>) {
 ```
 
 ## Output
+
 - GDPR Subject Access Request handler searching CRM contacts + Apollo database
 - Right to Erasure handler: remove from sequences then delete contact
 - Retention policy enforcer with age-based cleanup and label protection
@@ -244,6 +252,7 @@ export function logAudit(entry: Omit<AuditEntry, 'timestamp'>) {
 - Audit log capturing every data operation with user attribution
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | 403 on delete | Contact deletion requires master API key |
@@ -252,10 +261,12 @@ export function logAudit(entry: Omit<AuditEntry, 'timestamp'>) {
 | Audit log gaps | Write to durable store before processing, not after |
 
 ## Resources
+
 - [Search for Contacts](https://docs.apollo.io/reference/search-for-contacts)
 - [Update Contact Status in Sequence](https://docs.apollo.io/reference/update-contact-status-sequence)
 - [Apollo Privacy Policy](https://www.apollo.io/privacy-policy)
 - [GDPR Official Text](https://gdpr.eu/)
 
 ## Next Steps
+
 Proceed to `apollo-enterprise-rbac` for access control.

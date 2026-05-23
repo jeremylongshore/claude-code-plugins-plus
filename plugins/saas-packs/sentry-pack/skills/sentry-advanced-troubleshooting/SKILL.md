@@ -40,6 +40,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 This skill addresses complex Sentry issues that go beyond basic setup: events that silently drop, source maps that refuse to resolve, distributed traces with gaps between services, SDK memory leaks, conflicts with other observability libraries, and network-level DSN blocking. Each section provides a systematic diagnosis path with concrete commands and code to identify root causes.
 
 ## Prerequisites
+
 - Sentry SDK v8 installed and initialized (see `sentry-install-auth` skill)
 - Access to application logs, Sentry dashboard, and project settings
 - Sentry CLI installed (`npm install -g @sentry/cli`) for source map debugging
@@ -260,6 +261,7 @@ Sentry.init({
 See [SDK conflicts, network blocks, and custom transport](references/sdk-conflicts-network-transport.md) for OpenTelemetry dual-registration fixes, winston/pino conflict resolution, network proxy/firewall diagnosis (DNS, curl, raw envelope test), custom transport debugging wrappers, and a comprehensive diagnostic shell script.
 
 ## Output
+
 - Root cause identified for silently dropped events (beforeSend, sampling, transport, tunnel)
 - Source map resolution verified or mismatch pinpointed with `sourcemaps explain`
 - Distributed tracing continuity confirmed across service boundaries
@@ -381,6 +383,7 @@ else:
 ```
 
 ## Resources
+
 - [Troubleshooting Guide](https://docs.sentry.io/platforms/javascript/troubleshooting/)
 - [Source Maps Troubleshooting](https://docs.sentry.io/platforms/javascript/sourcemaps/troubleshooting_js/)
 - [Source Maps Explain Command](https://docs.sentry.io/cli/sourcemaps/#explain)
@@ -390,6 +393,7 @@ else:
 - [Python SDK Troubleshooting](https://docs.sentry.io/platforms/python/troubleshooting/)
 
 ## Next Steps
+
 - **sentry-performance-tracing** — Deep dive into span instrumentation and custom transactions
 - **sentry-release-management** — Automate release tracking and source map uploads in CI
 - **sentry-ci-integration** — Wire Sentry into your CI pipeline for deploy notifications

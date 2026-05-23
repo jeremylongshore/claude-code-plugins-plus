@@ -10,6 +10,7 @@ figma-incident-runbook/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Figma incident response
 **Workflow:** Part of the advanced skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

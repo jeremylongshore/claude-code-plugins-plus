@@ -10,6 +10,7 @@ supabase-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Supabase reliability patterns including circuit breaker with opossum, idempotency keys, bulkhead isolation, timeout hierarchy, graceful degradation, and dead letter queues.
 **Workflow:** Reliability engineering skill. Essential for production-grade fault tolerance.
 **Relates to:** Builds on supabase-load-scale; enables supabase-policy-guardrails for enforcement.

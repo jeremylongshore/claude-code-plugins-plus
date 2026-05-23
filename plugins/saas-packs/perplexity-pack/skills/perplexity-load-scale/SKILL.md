@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Load & Scale
 
 ## Overview
+
 Load testing and capacity planning for Perplexity Sonar API. Key constraint: Perplexity rate limits at 50 RPM (default tier), and every request performs a live web search with variable latency. Load testing must respect these limits to avoid burning through credits.
 
 ## Capacity Constraints
@@ -39,6 +40,7 @@ Load testing and capacity planning for Perplexity Sonar API. Key constraint: Per
 | `search_domain_filter` | 20 domains max | Per-request limit |
 
 ## Prerequisites
+
 - k6 load testing tool installed
 - Separate Perplexity API key for load testing
 - Budget approval (load tests cost money)
@@ -46,6 +48,7 @@ Load testing and capacity planning for Perplexity Sonar API. Key constraint: Per
 ## Instructions
 
 ### Step 1: k6 Load Test Script
+
 ```javascript
 // perplexity-load-test.js
 import http from "k6/http";
@@ -119,6 +122,7 @@ export default function () {
 ```
 
 ### Step 2: Run Load Test
+
 ```bash
 set -euo pipefail
 # Minimal test (5 queries, verify setup)
@@ -132,6 +136,7 @@ k6 run --env PERPLEXITY_API_KEY=$PERPLEXITY_API_KEY \
 ```
 
 ### Step 3: Capacity Estimation
+
 ```typescript
 interface CapacityEstimate {
   maxRPM: number;
@@ -163,6 +168,7 @@ const capacity = estimateCapacity(50, 2000, "sonar");
 ```
 
 ### Step 4: Request Queue for Scale
+
 ```typescript
 import PQueue from "p-queue";
 
@@ -205,6 +211,7 @@ function queueStatus() {
 For Medium+ scale, caching is mandatory. A 50% cache hit rate halves your API costs and doubles effective throughput.
 
 ## Benchmark Results Template
+
 ```markdown
 ## Perplexity Load Test Report
 **Date:** YYYY-MM-DD | **Model:** sonar | **Duration:** 10 min
@@ -222,6 +229,7 @@ For Medium+ scale, caching is mandatory. A 50% cache hit rate halves your API co
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | 429 during load test | Exceeding 50 RPM | Reduce VUs, increase sleep |
@@ -230,14 +238,17 @@ For Medium+ scale, caching is mandatory. A 50% cache hit rate halves your API co
 | High cost from test | Too many queries | Use `max_tokens: 50` for load tests |
 
 ## Output
+
 - k6 load test script calibrated for Perplexity rate limits
 - Capacity estimation calculator
 - Request queue for sustained throughput
 - Scaling strategy by volume tier
 
 ## Resources
+
 - [k6 Documentation](https://k6.io/docs/)
 - [Perplexity Rate Limits](https://docs.perplexity.ai/guides/rate-limits)
 
 ## Next Steps
+
 For reliability patterns, see `perplexity-reliability-patterns`.

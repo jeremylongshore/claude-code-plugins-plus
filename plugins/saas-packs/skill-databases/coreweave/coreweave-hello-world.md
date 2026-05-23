@@ -10,6 +10,7 @@ coreweave-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working CoreWeave example
 **Workflow:** Part of the onboarding skill category for CoreWeave integration.
 **Relates to:** Other coreweave skills in this pack.

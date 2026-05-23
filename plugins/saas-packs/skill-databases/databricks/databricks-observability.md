@@ -10,6 +10,7 @@ databricks-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Databricks monitoring and observability
 **Workflow:** Part of the enterprise skill category for Databricks integration.
 **Relates to:** Other databricks skills in this pack.

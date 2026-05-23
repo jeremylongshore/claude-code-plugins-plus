@@ -10,6 +10,7 @@ vercel-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement webhook signature validation, event handling, and replay protection for Vercel notifications.
 **Workflow:** Used when implementing event-driven integrations that respond to Vercel notifications.
 **Relates to:** Security builds on vercel-security-basics; leads to vercel-performance-tuning for optimization

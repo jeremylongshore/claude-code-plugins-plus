@@ -10,6 +10,7 @@ Automatically generate type-safe, production-ready client SDKs from OpenAPI/Swag
 ## When to Use This Command
 
 Use `/generate-sdk` when you need to:
+
 - Create official client libraries for your API
 - Ensure type safety across different programming languages
 - Maintain SDK consistency with API changes
@@ -18,6 +19,7 @@ Use `/generate-sdk` when you need to:
 - Support multiple programming languages
 
 DON'T use this when:
+
 - Your API lacks proper OpenAPI documentation (create spec first)
 - Building internal-only APIs with single consumer (direct integration may be simpler)
 - API is still rapidly changing (wait for stability)
@@ -25,6 +27,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **OpenAPI Generator** as the primary approach because:
+
 - Supports 50+ programming languages and frameworks
 - Active community with regular updates
 - Customizable templates for each language
@@ -33,12 +36,14 @@ This command implements **OpenAPI Generator** as the primary approach because:
 - Battle-tested in production environments
 
 **Alternative considered: Swagger Codegen**
+
 - Original OpenAPI code generator
 - Less frequent updates
 - Fewer customization options
 - Recommended for legacy projects
 
 **Alternative considered: Custom generators**
+
 - Full control over generated code
 - Better for specific requirements
 - Higher maintenance burden
@@ -47,6 +52,7 @@ This command implements **OpenAPI Generator** as the primary approach because:
 ## Prerequisites
 
 Before running this command:
+
 1. Complete OpenAPI specification (v3.0 or v3.1)
 2. Validate spec with OpenAPI validators
 3. Define authentication schemes
@@ -56,23 +62,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Validate OpenAPI Specification
+
 Ensure your OpenAPI spec is complete, valid, and includes all necessary details.
 
 ### Step 2: Configure Generator Options
+
 Set language-specific options like package names, versions, and dependencies.
 
 ### Step 3: Generate SDK Code
+
 Run the generator for each target language with customized templates.
 
 ### Step 4: Add Custom Enhancements
+
 Implement additional features like retry logic, caching, or specialized authentication.
 
 ### Step 5: Package and Distribute
+
 Create distribution packages for each language's package manager.
 
 ## Output Format
 
 The command generates:
+
 - `sdks/javascript/` - Node.js/Browser SDK with TypeScript definitions
 - `sdks/python/` - Python SDK with type hints
 - `sdks/java/` - Java SDK with Maven/Gradle support
@@ -571,6 +583,7 @@ echo "SDK generation complete!"
 ## Configuration Options
 
 **Generator Options**
+
 - `library`: HTTP client library to use
 - `dateLibrary`: Date handling library
 - `useSingleRequestParameter`: Bundle parameters
@@ -578,6 +591,7 @@ echo "SDK generation complete!"
 - `enumUnknownDefaultCase`: Handle unknown enums
 
 **Language-Specific Options**
+
 - TypeScript: `npmRepository`, `withoutPrefixEnums`
 - Python: `packageUrl`, `useNose`, `asyncio`
 - Java: `serializationLibrary`, `useRuntimeException`
@@ -586,6 +600,7 @@ echo "SDK generation complete!"
 ## Best Practices
 
 DO:
+
 - Keep OpenAPI spec as single source of truth
 - Version SDKs alongside API versions
 - Include comprehensive examples
@@ -594,6 +609,7 @@ DO:
 - Publish to package registries
 
 DON'T:
+
 - Manually edit generated code (use templates)
 - Skip OpenAPI validation before generation
 - Ignore breaking changes in API

@@ -3,6 +3,7 @@
 ## Model Selection for Speed
 
 ### Fast Model Options
+
 ```python
 FAST_MODELS = [
     {

@@ -10,6 +10,7 @@ linktree-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Linktree example
 **Workflow:** Part of the onboarding skill category for Linktree integration.
 **Relates to:** Other linktree skills in this pack.

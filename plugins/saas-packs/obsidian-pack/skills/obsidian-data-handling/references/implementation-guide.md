@@ -5,6 +5,7 @@
 ## Detailed Instructions
 
 ### Step 1: Data Export Service
+
 ```typescript
 // src/services/export-service.ts
 import { App, TFile, TFolder, Notice } from 'obsidian';
@@ -81,6 +82,7 @@ export class ExportService {
 ```
 
 ### Step 2: Data Import Service
+
 ```typescript
 // src/services/import-service.ts
 import { App, TFile, Notice } from 'obsidian';
@@ -178,6 +180,7 @@ export class ImportService {
 ```
 
 ### Step 3: Backup Service
+
 ```typescript
 // src/services/backup-service.ts
 import { App, TFile, Notice } from 'obsidian';
@@ -386,6 +389,7 @@ export class BackupService {
 ```
 
 ### Step 4: Data Validation
+
 ```typescript
 // src/services/validation-service.ts
 import { App, TFile } from 'obsidian';
@@ -523,6 +527,7 @@ export class ValidationService {
 ```
 
 ### Step 5: Data Sync Patterns
+
 ```typescript
 // src/services/sync-service.ts
 import { App, TFile } from 'obsidian';
@@ -593,10 +598,10 @@ export class SyncService {
 }
 ```
 
-
 ## Complete Examples
 
 ### Quick Backup Command
+
 ```typescript
 this.addCommand({
   id: 'quick-backup',
@@ -613,7 +618,6 @@ this.addCommand({
   },
 });
 ```
-
 
 ## Data Categories
 

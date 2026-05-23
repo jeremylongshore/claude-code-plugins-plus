@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code
 # AssemblyAI Upgrade & Migration
 
 ## Overview
+
 Guide for upgrading the `assemblyai` npm package and migrating between SDK versions, including the major v3 to v4 migration and speech model transitions.
 
 ## Prerequisites
+
 - Current `assemblyai` package installed
 - Git for version control
 - Test suite available
@@ -190,12 +192,14 @@ verifyUpgrade().catch(console.error);
 ```
 
 ## Output
+
 - Updated `assemblyai` package to latest version
 - Migrated import paths and method calls
 - Updated streaming setup to current patterns
 - Verified all API endpoints work post-upgrade
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `Cannot find module 'assemblyai'` | Old package name | `npm uninstall @assemblyai/sdk && npm install assemblyai` |
@@ -205,9 +209,11 @@ verifyUpgrade().catch(console.error);
 | TypeScript errors | Type definitions changed | Update imports to match new types |
 
 ## Resources
+
 - [AssemblyAI Node SDK Releases](https://github.com/AssemblyAI/assemblyai-node-sdk/releases)
 - [AssemblyAI SDK Migration Guide](https://github.com/AssemblyAI/assemblyai-node-sdk/blob/main/MIGRATION.md)
 - [AssemblyAI npm Package](https://www.npmjs.com/package/assemblyai)
 
 ## Next Steps
+
 For CI integration during upgrades, see `assemblyai-ci-integration`.

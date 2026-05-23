@@ -225,6 +225,7 @@ tags.service:payment-api #payments-team
 ```
 
 **Alert tiers:**
+
 - **P0 Critical:** error rate > 50/min OR crash-free < 95% — PagerDuty on-call, 15 min SLA
 - **P1 Warning:** new production issue or regression — Slack #alerts-prod, same-day SLA
 - **P2 Performance:** P95 > 2s or Apdex < 0.7 — Slack #alerts-perf, next sprint
@@ -366,6 +367,7 @@ app.get('/readiness', async (_req, res) => {
 ## Examples
 
 **Bootstrap a service (3 lines):**
+
 ```typescript
 import { SentryService } from '@acme/sentry-config';
 const sentry = SentryService.getInstance({ serviceName: 'user-service', dsn: process.env.SENTRY_DSN! });
@@ -373,6 +375,7 @@ sentry.init();
 ```
 
 **Capture with business context:**
+
 ```typescript
 sentry.captureError(err, {
   tags: { 'payment.provider': 'stripe' },
@@ -382,6 +385,7 @@ sentry.captureError(err, {
 ```
 
 **Track an operation:**
+
 ```typescript
 const result = await sentry.trackOperation('order.fulfillment', 'business.process', () => fulfillOrder(id));
 ```

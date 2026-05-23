@@ -19,15 +19,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Retell AI Hello World
 
 ## Overview
+
 Create your first Retell AI voice agent and make a test phone call.
 
 ## Prerequisites
+
 - Completed `retellai-install-auth`
 - A phone number registered in Retell AI Dashboard (or use web call for testing)
 
 ## Instructions
 
 ### Step 1: Create an LLM Configuration
+
 ```typescript
 import Retell from 'retell-sdk';
 const retell = new Retell({ apiKey: process.env.RETELL_API_KEY! });
@@ -45,6 +48,7 @@ console.log(`LLM created: ${llm.llm_id}`);
 ```
 
 ### Step 2: Create a Voice Agent
+
 ```typescript
 const agent = await retell.agent.create({
   response_engine: {
@@ -58,6 +62,7 @@ console.log(`Agent created: ${agent.agent_id}`);
 ```
 
 ### Step 3: Make a Test Phone Call
+
 ```typescript
 // Outbound call (requires a registered phone number)
 const call = await retell.call.createPhoneCall({
@@ -69,6 +74,7 @@ console.log(`Call initiated: ${call.call_id}`);
 ```
 
 ### Step 4: Or Test with Web Call
+
 ```typescript
 // Web call (no phone number needed — great for testing)
 const webCall = await retell.call.createWebCall({
@@ -79,6 +85,7 @@ console.log(`Web call URL: ${webCall.call_id}`);
 ```
 
 ### Step 5: Check Call Status
+
 ```typescript
 const callDetail = await retell.call.retrieve(call.call_id);
 console.log(`Status: ${callDetail.call_status}`);
@@ -89,12 +96,14 @@ if (callDetail.transcript) {
 ```
 
 ## Output
+
 - LLM configuration with custom prompt
 - Voice agent with selected voice
 - Test call initiated (phone or web)
 - Call status and transcript retrieved
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `422 Invalid voice_id` | Unknown voice | List available voices in Dashboard |
@@ -102,8 +111,10 @@ if (callDetail.transcript) {
 | Call not connecting | Destination unreachable | Try web call for testing |
 
 ## Resources
+
 - [Retell AI Documentation](https://docs.retellai.com)
 - [Create Phone Call](https://docs.retellai.com/api-references/create-phone-call)
 
 ## Next Steps
+
 Configure agent behavior: `retellai-core-workflow-a`

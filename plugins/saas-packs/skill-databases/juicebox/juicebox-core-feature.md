@@ -10,6 +10,7 @@ juicebox-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Juicebox core feature integration
 **Workflow:** Part of the onboarding skill category for Juicebox integration.
 **Relates to:** Other juicebox skills in this pack.

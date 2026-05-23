@@ -40,6 +40,7 @@ When `--risk-analysis` is enabled, four risk factors are scored 0-100:
 - **Liquidity Risk** (0-100): Whether pool depth supports the trade size. Score > 80 means trade may move price significantly.
 
 Overall viability grades:
+
 - **A**: All risks low, high confidence
 - **B**: Moderate risks, proceed with caution
 - **C**: High risks, likely unprofitable
@@ -48,20 +49,25 @@ Overall viability grades:
 ## Output Modes
 
 **Quick Mode** (default):
+
 - Net profit/loss, provider recommendation, Go/No-Go verdict
 
 **Breakdown Mode** (`--breakdown`):
+
 - Step-by-step transaction flow, individual cost components, slippage estimates
 
 **Comparison Mode** (`--compare-providers`):
+
 - All providers ranked by net profit, fee differences, liquidity availability
 
 **Risk Analysis** (`--risk-analysis`):
+
 - Competition score, execution probability, protocol safety, overall viability grade
 
 ## Educational Disclaimer
 
 **FOR EDUCATIONAL PURPOSES ONLY.** Flash loan strategies involve significant risks:
+
 - Smart contract bugs can cause total loss of borrowed funds
 - MEV bots compete for the same opportunities with faster infrastructure
 - Gas costs can exceed profits, especially during network congestion

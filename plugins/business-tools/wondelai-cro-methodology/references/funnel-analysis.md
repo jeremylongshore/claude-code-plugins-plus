@@ -2,8 +2,8 @@
 
 Deep methodology for mapping, analyzing, and optimizing conversion funnels.
 
-
 ## Table of Contents
+
 1. [Funnel Philosophy](#funnel-philosophy)
 2. [Mapping Your Funnel](#mapping-your-funnel)
 3. [Blocked Arteries](#blocked-arteries)
@@ -35,21 +35,25 @@ Awareness → Interest → Consideration → Intent → Evaluation → Purchase 
 ### Simplified Business Models
 
 **E-commerce:**
+
 ```
 Visit → View Product → Add to Cart → Begin Checkout → Complete Purchase → Repeat Purchase
 ```
 
 **SaaS:**
+
 ```
 Visit → Signup → Onboard → Activate → Engage → Convert (Paid) → Retain → Expand
 ```
 
 **Lead Generation:**
+
 ```
 Visit → Lead Magnet → MQL → SQL → Opportunity → Close → Upsell
 ```
 
 **Content/Media:**
+
 ```
 Visit → Read/View → Subscribe → Engage → Share → Become Regular
 ```
@@ -129,18 +133,21 @@ A "missing link" is an absent or underutilized funnel stage that leaves value on
 ### Common Missing Links
 
 **Pre-purchase:**
+
 - No retargeting for abandoned visitors
 - No email capture before purchase intent
 - No comparison tools for researchers
 - No social proof at decision points
 
 **Purchase:**
+
 - No upsell/cross-sell offers
 - No subscription/bundle options
 - No referral program at purchase
 - No installation/setup guidance
 
 **Post-purchase:**
+
 - No email onboarding sequence
 - No check-in at key milestones
 - No expansion offers at right time
@@ -178,16 +185,19 @@ Map products that naturally pair together:
 ### E-commerce Funnels
 
 **Standard:**
+
 ```
 Visit → Browse → Product → Cart → Checkout → Purchase
 ```
 
 **Enhanced:**
+
 ```
 Visit → Browse → Product → Wishlist/Email → Retarget → Cart → Checkout → Upsell → Purchase → Post-purchase email → Review request → Repeat purchase
 ```
 
 **Key metrics:**
+
 - Cart abandonment rate (benchmark: 70%)
 - Checkout abandonment rate (benchmark: 25%)
 - Repeat purchase rate (benchmark: 25-40%)
@@ -195,16 +205,19 @@ Visit → Browse → Product → Wishlist/Email → Retarget → Cart → Checko
 ### SaaS Funnels
 
 **Standard:**
+
 ```
 Visit → Trial/Freemium → Activation → Engagement → Conversion
 ```
 
 **Enhanced:**
+
 ```
 Visit → Content → Lead magnet → Nurture → Trial → Onboarding → Activation → Engagement → Conversion → Onboarding (paid) → Expansion → Advocacy
 ```
 
 **Key metrics:**
+
 - Trial-to-paid conversion (benchmark: 3-5% freemium, 15-25% free trial)
 - Activation rate (varies by product)
 - Expansion revenue % (benchmark: 30%+ of revenue)
@@ -212,16 +225,19 @@ Visit → Content → Lead magnet → Nurture → Trial → Onboarding → Activ
 ### Lead Generation Funnels
 
 **Standard:**
+
 ```
 Visit → Form → Lead → Sales contact → Opportunity → Close
 ```
 
 **Enhanced:**
+
 ```
 Visit → Lead magnet → Nurture → Scorecard/Quiz → MQL → SDR qualify → Demo → SQL → Proposal → Close → Onboarding → Expansion
 ```
 
 **Key metrics:**
+
 - Lead-to-MQL conversion (benchmark: 20-30%)
 - MQL-to-SQL conversion (benchmark: 30-50%)
 - SQL-to-close rate (benchmark: 20-40%)
@@ -229,16 +245,19 @@ Visit → Lead magnet → Nurture → Scorecard/Quiz → MQL → SDR qualify →
 ### Subscription/Membership Funnels
 
 **Standard:**
+
 ```
 Visit → Free content → Subscribe → Retain
 ```
 
 **Enhanced:**
+
 ```
 Visit → Free content → Email opt-in → Free trial → Subscribe → Onboard → Engage → Retain → Annual upgrade → Advocacy
 ```
 
 **Key metrics:**
+
 - Free-to-paid conversion (benchmark: 2-5%)
 - Monthly churn rate (benchmark: 3-7%)
 - Annual vs. monthly mix (benchmark: 30%+ annual)
@@ -256,6 +275,7 @@ Opportunity = (Current Volume) × (Conversion Gap) × (Revenue per Conversion)
 ```
 
 **Example:**
+
 ```
 Current: 1,000 visitors, 2% conversion, $100/conversion = $2,000 revenue
 Potential: 1,000 visitors, 3% conversion, $100/conversion = $3,000 revenue
@@ -275,6 +295,7 @@ Opportunity value: $1,000/month = $12,000/year
 ### The 80/20 Rule in Funnels
 
 Typically:
+
 - 80% of revenue comes from 20% of the funnel stages
 - 80% of drop-off happens at 20% of the steps
 - 80% of improvement potential is in 20% of the pages
@@ -350,6 +371,7 @@ Product Page (3,000 visitors)
 ### The Problem
 
 Customers don't convert in a straight line. They might:
+
 1. See a Facebook ad
 2. Google your brand
 3. Read a blog post

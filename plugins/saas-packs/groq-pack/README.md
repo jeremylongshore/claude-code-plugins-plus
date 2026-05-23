@@ -7,6 +7,7 @@
 Groq provides the fastest LLM inference available through custom LPU (Language Processing Unit) hardware. This skill pack covers the `groq-sdk` npm package, the OpenAI-compatible REST API at `api.groq.com/openai/v1/`, and all current model families: Llama 3.x text, Llama 4 vision, Whisper audio, and text-to-speech.
 
 **Key model IDs used throughout:**
+
 - `llama-3.1-8b-instant` -- fastest, cheapest (~560 tok/s, $0.05/M tokens)
 - `llama-3.3-70b-versatile` -- best quality (~280 tok/s, $0.59/M tokens)
 - `llama-3.3-70b-specdec` -- speculative decoding variant
@@ -22,6 +23,7 @@ Groq provides the fastest LLM inference available through custom LPU (Language P
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | What It Does |
 |-------|-------------|
 | `groq-install-auth` | Install `groq-sdk`, configure `GROQ_API_KEY`, verify connection |
@@ -38,6 +40,7 @@ Groq provides the fastest LLM inference available through custom LPU (Language P
 | `groq-upgrade-migration` | SDK upgrades, deprecated model scanner, model ID migration map |
 
 ### Pro Skills (P13-P18)
+
 | Skill | What It Does |
 |-------|-------------|
 | `groq-ci-integration` | GitHub Actions: unit tests, integration tests, model deprecation checks |
@@ -48,6 +51,7 @@ Groq provides the fastest LLM inference available through custom LPU (Language P
 | `groq-reference-architecture` | Model registry, router, middleware, fallback chain, streaming pipeline |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | What It Does |
 |-------|-------------|
 | `groq-multi-env-setup` | Dev/staging/prod config, secret management, Docker Compose |

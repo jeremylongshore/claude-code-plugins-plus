@@ -1025,6 +1025,7 @@ if opportunity.net_profit_usd > 100:
 ## Integration
 
 This plugin integrates with:
+
 - **Market Price Tracker**: Real-time price feeds
 - **Gas Fee Optimizer**: Optimal gas price selection
 - **Trading Strategy Backtester**: Historical performance analysis

@@ -24,6 +24,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Rate Limits
 
 ## Overview
+
 Firecrawl enforces rate limits per API key measured in requests per minute and concurrent connections. When exceeded, the API returns `429 Too Many Requests` with a `Retry-After` header. This skill covers backoff strategies, request queuing, and proactive throttling.
 
 ## Rate Limit Tiers
@@ -41,6 +42,7 @@ Concurrent crawl jobs count against concurrency limits. If the queue is full, ne
 ## Instructions
 
 ### Step 1: Exponential Backoff with Jitter
+
 ```typescript
 import FirecrawlApp from "@mendable/firecrawl-js";
 
@@ -81,6 +83,7 @@ const result = await withBackoff(() =>
 ```
 
 ### Step 2: Queue-Based Rate Limiting with p-queue
+
 ```typescript
 import PQueue from "p-queue";
 
@@ -106,6 +109,7 @@ console.log(`Queue: ${scrapeQueue.pending} pending, ${scrapeQueue.size} queued`)
 ```
 
 ### Step 3: Proactive Throttling (Pre-emptive)
+
 ```typescript
 class RateLimitTracker {
   private requestTimes: number[] = [];
@@ -141,6 +145,7 @@ async function throttledScrape(url: string) {
 ```
 
 ### Step 4: Batch Scrape for Efficiency
+
 ```typescript
 // batchScrapeUrls is more efficient than individual scrapes
 // It handles internal rate limiting and is cheaper on credits
@@ -159,6 +164,7 @@ console.log(`Batch scraped ${batchResult.data?.length} pages`);
 ```
 
 ## Error Handling
+
 | Header | Description | Action |
 |--------|-------------|--------|
 | `Retry-After` | Seconds to wait | Honor this exact value |
@@ -169,6 +175,7 @@ console.log(`Batch scraped ${batchResult.data?.length} pages`);
 ## Examples
 
 ### Monitor Rate Limit Usage
+
 ```typescript
 class RateLimitMonitor {
   private remaining = Infinity;
@@ -189,8 +196,10 @@ class RateLimitMonitor {
 ```
 
 ## Resources
+
 - [Firecrawl Rate Limits](https://docs.firecrawl.dev/rate-limits)
 - [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For security configuration, see `firecrawl-security-basics`.

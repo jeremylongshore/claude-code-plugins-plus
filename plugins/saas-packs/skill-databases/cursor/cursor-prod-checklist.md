@@ -10,6 +10,7 @@ cursor-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Provides a comprehensive production readiness checklist for Cursor IDE setup covering authentication, configuration, security, team settings, and maintenance schedules.
 
 **Workflow:** This skill activates when preparing Cursor for team deployment or production use. It provides checklists for initial setup, project configuration, performance optimization, security, workflow integration, and ongoing maintenance.

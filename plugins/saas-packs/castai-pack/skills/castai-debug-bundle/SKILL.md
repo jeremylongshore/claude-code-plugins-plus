@@ -96,6 +96,7 @@ echo "Bundle created: $BUNDLE_DIR.tar.gz"
 ### Step 2: Review Before Sharing
 
 **Safe to include:**
+
 - Pod logs (no secrets in CAST AI agent logs)
 - Helm release metadata
 - Node names and instance types
@@ -103,6 +104,7 @@ echo "Bundle created: $BUNDLE_DIR.tar.gz"
 - Cluster events
 
 **Redact before sharing:**
+
 - API keys (the script never writes them)
 - Custom environment variables
 - Internal hostnames if sensitive

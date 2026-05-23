@@ -113,6 +113,7 @@ Look at the bottom status bar. If it says "Indexing...", wait for it to finish. 
 ### Check 2: Is the File Excluded?
 
 A file might be excluded by:
+
 1. `.gitignore` (Cursor respects this by default)
 2. `.cursorignore` (explicit exclusion)
 3. `.cursorindexingignore` (excluded from index but not from AI features)
@@ -124,6 +125,7 @@ This opens a text file listing all indexed paths. Search for the file you expect
 ### Check 3: Network Connectivity
 
 Indexing requires network access to Cursor's embedding API. Test:
+
 - Can you access `api.cursor.com`?
 - Is a corporate proxy blocking outbound HTTPS?
 - Is a VPN interfering?

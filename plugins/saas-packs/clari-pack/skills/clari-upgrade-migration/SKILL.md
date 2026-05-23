@@ -79,6 +79,7 @@ UPDATE clari_forecasts SET new_field_name = 'default' WHERE new_field_name IS NU
 ### Rollback
 
 Keep the previous client version alongside the new one until migration is verified:
+
 ```python
 # Pin client to specific behavior
 client_v4 = ClariClient(ClariConfig(api_key=api_key, base_url="https://api.clari.com/v4"))

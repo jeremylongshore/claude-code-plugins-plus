@@ -40,6 +40,7 @@ Cryptocurrency market sentiment analysis combining Fear & Greed Index, news keyw
    - Quick vs detailed: quick score or full component breakdown
 
 2. **Run sentiment analysis** with appropriate options:
+
    ```bash
    # Quick market sentiment check
    python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py
@@ -55,6 +56,7 @@ Cryptocurrency market sentiment analysis combining Fear & Greed Index, news keyw
    ```
 
 3. **Export results** for trading models or analysis:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --format json --output sentiment.json
    ```

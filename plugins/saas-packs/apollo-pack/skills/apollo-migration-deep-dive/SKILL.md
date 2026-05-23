@@ -25,12 +25,15 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Migration Deep Dive
 
 ## Current State
+
 !`npm list 2>/dev/null | head -10`
 
 ## Overview
+
 Migrate contact and company data into Apollo.io from other CRMs (Salesforce, HubSpot) or CSV sources. Uses Apollo's **Contacts API** for creating/updating contacts and **Bulk Create Contacts** endpoint for high-throughput imports (up to 100 contacts per call). Covers field mapping, assessment, batch processing, reconciliation, and rollback.
 
 ## Prerequisites
+
 - Apollo master API key (Contacts API requires master key)
 - Node.js 18+
 - Source CRM export in CSV or JSON format
@@ -38,6 +41,7 @@ Migrate contact and company data into Apollo.io from other CRMs (Salesforce, Hub
 ## Instructions
 
 ### Step 1: Define Field Mappings
+
 ```typescript
 // src/migration/field-map.ts
 interface FieldMapping {
@@ -84,6 +88,7 @@ function mapRecord(record: Record<string, any>, mappings: FieldMapping[]): Recor
 ```
 
 ### Step 2: Pre-Migration Assessment
+
 ```typescript
 // src/migration/assessment.ts
 import fs from 'fs';
@@ -118,6 +123,7 @@ async function assess(csvPath: string, mappings: FieldMapping[]) {
 ```
 
 ### Step 3: Batch Migration Using Bulk Create
+
 Apollo's Bulk Create Contacts endpoint creates up to 100 contacts per call with intelligent deduplication.
 
 ```typescript
@@ -180,6 +186,7 @@ async function migrateBatch(records: Record<string, any>[], batchSize: number = 
 ```
 
 ### Step 4: Post-Migration Reconciliation
+
 ```typescript
 async function reconcile(sourceRecords: Record<string, any>[]) {
   let matched = 0, missing = 0, mismatched = 0;
@@ -203,6 +210,7 @@ async function reconcile(sourceRecords: Record<string, any>[]) {
 ```
 
 ### Step 5: Rollback
+
 ```typescript
 async function rollback(contactIds: string[]) {
   console.log(`Rolling back ${contactIds.length} contacts...`);
@@ -223,6 +231,7 @@ async function rollback(contactIds: string[]) {
 ```
 
 ## Output
+
 - Field mappings for Salesforce and HubSpot to Apollo Contacts API
 - Pre-migration assessment with validation, duplicates, and missing fields
 - Batch migration via `POST /contacts/bulk_create` (100 per call)
@@ -230,6 +239,7 @@ async function rollback(contactIds: string[]) {
 - Rollback procedure deleting created contacts
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | 403 on create | Contacts API requires master key |
@@ -241,6 +251,7 @@ async function rollback(contactIds: string[]) {
 ## Examples
 
 ### Full Migration Pipeline
+
 ```typescript
 const assessment = await assess('./salesforce-export.csv', salesforceMap);
 if (assessment.invalid > assessment.total * 0.1) {
@@ -259,10 +270,12 @@ await reconcile(records);
 ```
 
 ## Resources
+
 - [Create a Contact](https://docs.apollo.io/reference/create-a-contact)
 - [Bulk Create Contacts](https://docs.apollo.io/reference/bulk-create-contacts)
 - [Search for Contacts](https://docs.apollo.io/reference/search-for-contacts)
 - [Update a Contact](https://docs.apollo.io/reference/update-a-contact)
 
 ## Next Steps
+
 After migration, verify data with `apollo-prod-checklist`.

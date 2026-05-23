@@ -68,6 +68,7 @@ The translation lifecycle follows this flow:
 ```
 
 **Two delivery paths:**
+
 1. **Build-time** (solid arrows): Translations downloaded during CI build, bundled into the application. Changes require a new deployment.
 2. **OTA** (dashed arrow): Translations fetched from Lokalise CDN at runtime. Changes appear without redeployment. Adds a network dependency.
 
@@ -233,6 +234,7 @@ Follow these conventions for translation file organization:
 **Nested keys** work better for large projects with clear module boundaries, where each top-level key maps to a feature area. Both formats are supported by Lokalise and i18next.
 
 **Key naming conventions:**
+
 - Use dot notation: `module.section.element`
 - Use snake_case for key segments: `user_profile`, not `userProfile`
 - Prefix by feature area: `checkout.payment.card_label`
@@ -240,6 +242,7 @@ Follow these conventions for translation file organization:
 - Keep keys under 100 characters (Lokalise hard limit is 1024 chars per key name)
 
 **File naming:**
+
 - One file per locale: `en.json`, `de.json`, `fr.json`
 - For large apps, split by namespace: `common.json`, `auth.json`, `dashboard.json`
 - Namespace files go in subdirectories: `locales/en/common.json`, `locales/en/auth.json`
@@ -435,6 +438,7 @@ t('homepage.hero.titl');        // TypeScript error: not a valid key
 ## Output
 
 After applying this skill, the project will have:
+
 - A clear architecture showing the translation flow from source code through Lokalise to deployment
 - Organized project structure with separated i18n concerns
 - Lokalise API client wrapper with built-in rate limiting

@@ -112,6 +112,7 @@ If you see `retry-after` values climbing (2 → 4 → 8 → 16), you are pushing
 ## Retry + rate-limit interaction (the subtle one)
 
 Setup:
+
 - `rate_limiter = InMemoryRateLimiter(requests_per_second=10)`
 - `max_retries = 6`
 
@@ -190,6 +191,7 @@ chain = (prompt | llm | parser).with_fallbacks(
 ```
 
 Three knobs, three jobs:
+
 - `max_retries=2` — absorb transient blips, do not amplify cost
 - `rate_limiter` — cluster-wide gate to stop 429s at the source
 - `with_fallbacks(narrow_tuple)` — cross-provider continuity when primary is unhealthy

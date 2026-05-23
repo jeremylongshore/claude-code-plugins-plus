@@ -22,6 +22,7 @@ Common issues and solutions when using the AI/ML Engineering Pack.
 ### Issue: "Plugin not found" after installation
 
 **Symptoms:**
+
 ```bash
 claude plugin install ai-ml-engineering-pack@claude-code-plugins-plus
 Error: Plugin 'ai-ml-engineering-pack' not found in marketplace 'claude-code-plugins-plus'
@@ -30,22 +31,26 @@ Error: Plugin 'ai-ml-engineering-pack' not found in marketplace 'claude-code-plu
 **Solutions:**
 
 1. **Verify marketplace is added:**
+
 ```bash
 claude plugin marketplace list
 # Should show: jeremylongshore/claude-code-plugins
 ```
 
-2. **Add marketplace if missing:**
+1. **Add marketplace if missing:**
+
 ```bash
 claude plugin marketplace add jeremylongshore/claude-code-plugins
 ```
 
-3. **Update marketplace index:**
+1. **Update marketplace index:**
+
 ```bash
 claude plugin marketplace update claude-code-plugins-plus
 ```
 
-4. **Check Claude Code version:**
+1. **Check Claude Code version:**
+
 ```bash
 claude --version
 # Requires >= 0.1.0
@@ -54,25 +59,29 @@ claude --version
 ### Issue: Commands not showing up (e.g., `/ptg` doesn't work)
 
 **Symptoms:**
+
 - Type `/ptg` and nothing happens
 - Commands don't appear in autocomplete
 
 **Solutions:**
 
 1. **Reload Claude Code session:**
+
 ```bash
 # Exit and restart Claude Code
 exit
 claude
 ```
 
-2. **Verify plugin is active:**
+1. **Verify plugin is active:**
+
 ```bash
 claude plugin list
 # All plugins should show  (active)
 ```
 
-3. **Reinstall the pack:**
+1. **Reinstall the pack:**
+
 ```bash
 claude plugin uninstall ai-ml-engineering-pack
 claude plugin install ai-ml-engineering-pack@claude-code-plugins-plus
@@ -85,6 +94,7 @@ claude plugin install ai-ml-engineering-pack@claude-code-plugins-plus
 ### Issue: "Invalid API key" errors
 
 **Symptoms:**
+
 ```python
 openai.AuthenticationError: Incorrect API key provided
 ```
@@ -92,6 +102,7 @@ openai.AuthenticationError: Incorrect API key provided
 **Solutions:**
 
 1. **Check API key format:**
+
 ```bash
 # OpenAI keys start with 'sk-'
 echo $OPENAI_API_KEY
@@ -102,7 +113,8 @@ echo $ANTHROPIC_API_KEY
 # Should output: sk-ant-...
 ```
 
-2. **Set environment variables correctly:**
+1. **Set environment variables correctly:**
+
 ```bash
 # In .env file:
 OPENAI_API_KEY=sk-your-actual-key-here
@@ -113,7 +125,8 @@ GOOGLE_API_KEY=your-google-key-here
 export $(cat .env | xargs)
 ```
 
-3. **Test API keys directly:**
+1. **Test API keys directly:**
+
 ```bash
 # OpenAI
 curl https://api.openai.com/v1/models \
@@ -125,7 +138,8 @@ curl https://api.anthropic.com/v1/messages \
   -H "anthropic-version: 2023-06-01"
 ```
 
-4. **Check API key permissions:**
+1. **Check API key permissions:**
+
 - OpenAI: Ensure key has access to required models (GPT-4, embeddings)
 - Anthropic: Verify Claude 3 models are enabled
 - Google: Enable Vertex AI API in GCP console
@@ -133,6 +147,7 @@ curl https://api.anthropic.com/v1/messages \
 ### Issue: Rate limit errors
 
 **Symptoms:**
+
 ```python
 openai.RateLimitError: Rate limit exceeded
 ```
@@ -140,6 +155,7 @@ openai.RateLimitError: Rate limit exceeded
 **Solutions:**
 
 1. **Implement rate limiting in generated code:**
+
 ```python
 # Add to your config:
 from llm_integration import TokenBucketRateLimiter
@@ -150,11 +166,13 @@ rate_limiter = TokenBucketRateLimiter(
 )
 ```
 
-2. **Request rate limit increase:**
+1. **Request rate limit increase:**
+
 - OpenAI: https://platform.openai.com/account/rate-limits
 - Anthropic: Contact support for tier upgrade
 
-3. **Use model cascading to reduce high-tier usage:**
+1. **Use model cascading to reduce high-tier usage:**
+
 ```python
 # Try cheap model first, fallback to expensive
 try:
@@ -170,12 +188,14 @@ except Exception:
 ### Issue: Slow response times (>30 seconds)
 
 **Symptoms:**
+
 - LLM calls taking 30+ seconds
 - Timeout errors
 
 **Solutions:**
 
 1. **Enable streaming:**
+
 ```python
 # Instead of:
 response = await client.complete(prompt)
@@ -185,21 +205,24 @@ async for chunk in await client.complete_stream(prompt):
     print(chunk, end="")
 ```
 
-2. **Reduce token count:**
+1. **Reduce token count:**
+
 ```python
 # Use prompt-optimizer to reduce tokens:
 # Before: 500 tokens → After: 150 tokens (70% reduction)
 max_tokens=200  # Limit output length
 ```
 
-3. **Use faster models:**
+1. **Use faster models:**
+
 ```python
 # Slow: gpt-4-turbo (5-10s)
 # Fast: gpt-3.5-turbo (1-2s)
 # Faster: claude-3-haiku (0.5-1s)
 ```
 
-4. **Check network latency:**
+1. **Check network latency:**
+
 ```bash
 # Test API latency
 time curl -X POST https://api.openai.com/v1/chat/completions \
@@ -210,6 +233,7 @@ time curl -X POST https://api.openai.com/v1/chat/completions \
 ### Issue: "Context length exceeded" errors
 
 **Symptoms:**
+
 ```python
 openai.BadRequestError: This model's maximum context length is 4096 tokens
 ```
@@ -217,6 +241,7 @@ openai.BadRequestError: This model's maximum context length is 4096 tokens
 **Solutions:**
 
 1. **Count tokens before sending:**
+
 ```python
 import tiktoken
 
@@ -229,7 +254,8 @@ if count_tokens(prompt) > 4000:
     prompt = truncate_prompt(prompt, max_tokens=4000)
 ```
 
-2. **Use models with larger context:**
+1. **Use models with larger context:**
+
 ```python
 # Small context (4K tokens)
 model="gpt-3.5-turbo"
@@ -239,7 +265,8 @@ model="gpt-4-turbo"
 model="claude-3-opus"  # 200K tokens
 ```
 
-3. **Implement prompt truncation:**
+1. **Implement prompt truncation:**
+
 ```python
 def truncate_to_token_limit(text: str, max_tokens: int = 4000):
     encoding = tiktoken.encoding_for_model("gpt-4")
@@ -252,12 +279,14 @@ def truncate_to_token_limit(text: str, max_tokens: int = 4000):
 ### Issue: Inconsistent outputs (different results each time)
 
 **Symptoms:**
+
 - Same prompt produces different outputs
 - Unpredictable quality
 
 **Solutions:**
 
 1. **Lower temperature:**
+
 ```python
 # High variance (temperature=1.0)
 # Low variance (temperature=0.1)
@@ -267,7 +296,8 @@ response = await client.complete(
 )
 ```
 
-2. **Set seed (for reproducibility):**
+1. **Set seed (for reproducibility):**
+
 ```python
 # OpenAI supports seed parameter
 response = await client.complete(
@@ -276,7 +306,8 @@ response = await client.complete(
 )
 ```
 
-3. **Use few-shot examples:**
+1. **Use few-shot examples:**
+
 ```python
 # Add examples to stabilize outputs
 prompt = f"""
@@ -294,12 +325,14 @@ Now process: {user_input}
 ### Issue: Poor retrieval quality (irrelevant results)
 
 **Symptoms:**
+
 - RAG returns documents unrelated to query
 - Answers are generic, not using context
 
 **Solutions:**
 
 1. **Improve chunking strategy:**
+
 ```python
 # Bad: Fixed 500-char chunks (splits mid-sentence)
 chunks = [text[i:i+500] for i in range(0, len(text), 500)]
@@ -315,7 +348,8 @@ splitter = RecursiveCharacterTextSplitter(
 chunks = splitter.split_text(text)
 ```
 
-2. **Add metadata filters:**
+1. **Add metadata filters:**
+
 ```python
 # Filter by document type, date, category
 results = await vector_store.search(
@@ -328,7 +362,8 @@ results = await vector_store.search(
 )
 ```
 
-3. **Implement reranking:**
+1. **Implement reranking:**
+
 ```python
 # After vector search, rerank with Cohere
 from cohere import Client
@@ -348,7 +383,8 @@ reranked = cohere.rerank(
 final_results = [candidates[r.index] for r in reranked.results]
 ```
 
-4. **Use hybrid search (vector + keyword):**
+1. **Use hybrid search (vector + keyword):**
+
 ```python
 # Combine vector similarity with BM25 keyword search
 from rank_bm25 import BM25Okapi
@@ -363,6 +399,7 @@ combined = merge_results(bm25_results, vector_results)
 ### Issue: Embedding model errors
 
 **Symptoms:**
+
 ```python
 openai.APIError: Model 'text-embedding-ada-002' not found
 ```
@@ -370,6 +407,7 @@ openai.APIError: Model 'text-embedding-ada-002' not found
 **Solutions:**
 
 1. **Use correct embedding model names:**
+
 ```python
 # OpenAI embeddings (current)
 model="text-embedding-3-small"  # $0.02/1M tokens
@@ -379,7 +417,8 @@ model="text-embedding-3-large"  # $0.13/1M tokens
 model="text-embedding-ada-002"  # $0.10/1M tokens
 ```
 
-2. **Handle embedding errors:**
+1. **Handle embedding errors:**
+
 ```python
 async def embed_with_retry(text: str, max_retries: int = 3):
     for attempt in range(max_retries):
@@ -391,7 +430,8 @@ async def embed_with_retry(text: str, max_retries: int = 3):
             await asyncio.sleep(2 ** attempt)
 ```
 
-3. **Batch embeddings for efficiency:**
+1. **Batch embeddings for efficiency:**
+
 ```python
 # Bad: Embed one at a time (slow, expensive)
 embeddings = [await embedder.embed(chunk) for chunk in chunks]
@@ -407,6 +447,7 @@ embeddings = await embedder.embed_batch(chunks, batch_size=100)
 ### Issue: "Connection refused" to Qdrant/Pinecone/Weaviate
 
 **Symptoms:**
+
 ```python
 ConnectionError: Failed to connect to Qdrant at localhost:6333
 ```
@@ -416,6 +457,7 @@ ConnectionError: Failed to connect to Qdrant at localhost:6333
 1. **Verify database is running:**
 
 **Qdrant (local):**
+
 ```bash
 docker ps | grep qdrant
 # If not running:
@@ -423,6 +465,7 @@ docker run -p 6333:6333 qdrant/qdrant
 ```
 
 **Pinecone (cloud):**
+
 ```bash
 # Test API connectivity
 curl https://api.pinecone.io/describe_index_stats \
@@ -430,11 +473,13 @@ curl https://api.pinecone.io/describe_index_stats \
 ```
 
 **Weaviate (local):**
+
 ```bash
 docker-compose up -d weaviate
 ```
 
-2. **Check connection settings:**
+1. **Check connection settings:**
+
 ```python
 # Qdrant
 from qdrant_client import QdrantClient
@@ -453,7 +498,8 @@ pinecone.init(
 )
 ```
 
-3. **Test connection manually:**
+1. **Test connection manually:**
+
 ```bash
 # Qdrant
 curl http://localhost:6333/collections
@@ -466,6 +512,7 @@ curl https://controller.YOUR_ENV.pinecone.io/describe_index_stats \
 ### Issue: "Collection not found" errors
 
 **Symptoms:**
+
 ```python
 ValueError: Collection 'my-rag-collection' does not exist
 ```
@@ -473,6 +520,7 @@ ValueError: Collection 'my-rag-collection' does not exist
 **Solutions:**
 
 1. **Create collection before using:**
+
 ```python
 # Check if collection exists
 collections = client.get_collections()
@@ -484,7 +532,8 @@ if "my-rag-collection" not in [c.name for c in collections.collections]:
     )
 ```
 
-2. **Verify vector dimensions match:**
+1. **Verify vector dimensions match:**
+
 ```python
 # Embedding size must match collection config
 # text-embedding-3-small: 1536 dimensions
@@ -502,12 +551,14 @@ client.create_collection(
 ### Issue: Slow vector search (>5 seconds)
 
 **Symptoms:**
+
 - Vector similarity search taking 5+ seconds
 - Query timeouts
 
 **Solutions:**
 
 1. **Tune HNSW index parameters:**
+
 ```python
 # Better performance (less accuracy)
 client.create_collection(
@@ -531,7 +582,8 @@ results = client.search(
 )
 ```
 
-2. **Add payload index for filters:**
+1. **Add payload index for filters:**
+
 ```python
 # Index frequently filtered fields
 client.create_payload_index(
@@ -541,7 +593,8 @@ client.create_payload_index(
 )
 ```
 
-3. **Use quantization (Qdrant):**
+1. **Use quantization (Qdrant):**
+
 ```python
 # Reduce memory and improve speed with scalar quantization
 client.update_collection(
@@ -562,6 +615,7 @@ client.update_collection(
 ### Issue: PII detector not finding obvious PII
 
 **Symptoms:**
+
 ```python
 text = "Call me at 555-123-4567"
 detected = pii_detector.detect_pii(text)
@@ -571,6 +625,7 @@ detected = pii_detector.detect_pii(text)
 **Solutions:**
 
 1. **Check entity types configuration:**
+
 ```python
 # Specify entity types explicitly
 detected = pii_detector.detect_pii(
@@ -579,7 +634,8 @@ detected = pii_detector.detect_pii(
 )
 ```
 
-2. **Lower detection threshold:**
+1. **Lower detection threshold:**
+
 ```python
 from presidio_analyzer import AnalyzerEngine
 
@@ -591,7 +647,8 @@ results = analyzer.analyze(
 )
 ```
 
-3. **Use regex fallback for common patterns:**
+1. **Use regex fallback for common patterns:**
+
 ```python
 import re
 
@@ -619,19 +676,22 @@ class HybridPIIDetector:
 ### Issue: Toxicity filter too aggressive (false positives)
 
 **Symptoms:**
+
 - Benign messages flagged as toxic
 - Can't discuss certain topics (medical, legal)
 
 **Solutions:**
 
 1. **Increase toxicity threshold:**
+
 ```python
 # Default threshold: 0.7
 # Higher = less sensitive
 toxicity_filter = ToxicityFilter(threshold=0.85)
 ```
 
-2. **Add context-aware filtering:**
+1. **Add context-aware filtering:**
+
 ```python
 def is_toxic_in_context(text: str, context: str) -> bool:
     # Check if text is toxic standalone
@@ -644,7 +704,8 @@ def is_toxic_in_context(text: str, context: str) -> bool:
     return contextual_toxicity > threshold
 ```
 
-3. **Whitelist specific terms for domain:**
+1. **Whitelist specific terms for domain:**
+
 ```python
 # Medical terms that may trigger false positives
 MEDICAL_WHITELIST = ["cancer", "tumor", "pain", "bleeding", "death"]
@@ -665,12 +726,14 @@ def filter_with_whitelist(text: str, whitelist: List[str]) -> bool:
 ### Issue: High memory usage during processing
 
 **Symptoms:**
+
 - Python process using 8GB+ RAM
 - Out of memory errors
 
 **Solutions:**
 
 1. **Use generators for large datasets:**
+
 ```python
 # Bad: Load all documents into memory
 documents = [load_doc(file) for file in files]
@@ -687,7 +750,8 @@ for batch in document_generator(files):
     vector_store.upsert(embeddings)
 ```
 
-2. **Clear caches periodically:**
+1. **Clear caches periodically:**
+
 ```python
 import gc
 
@@ -700,7 +764,8 @@ with tempfile.TemporaryDirectory() as tmpdir:
     pass  # Automatically cleaned up
 ```
 
-3. **Reduce model size:**
+1. **Reduce model size:**
+
 ```python
 # Use quantized models (4-bit, 8-bit)
 from transformers import AutoModelForSequenceClassification
@@ -714,12 +779,14 @@ model = AutoModelForSequenceClassification.from_pretrained(
 ### Issue: Slow batch processing
 
 **Symptoms:**
+
 - Processing 1000 documents takes hours
 - CPU usage low (<20%)
 
 **Solutions:**
 
 1. **Use async parallel processing:**
+
 ```python
 import asyncio
 
@@ -739,7 +806,8 @@ async def process_batch(documents, max_concurrent=10):
 results = await process_batch(documents, max_concurrent=20)
 ```
 
-2. **Use multiprocessing for CPU-bound tasks:**
+1. **Use multiprocessing for CPU-bound tasks:**
+
 ```python
 from multiprocessing import Pool
 
@@ -751,7 +819,8 @@ with Pool(processes=8) as pool:
     results = pool.map(process_document, documents)
 ```
 
-3. **Implement caching:**
+1. **Implement caching:**
+
 ```python
 from functools import lru_cache
 import hashlib
@@ -784,12 +853,14 @@ def embed_with_redis_cache(text: str):
 ### Issue: Unexpectedly high API costs
 
 **Symptoms:**
+
 - Monthly bill is $5K (expected $500)
 - Budget alerts firing daily
 
 **Solutions:**
 
 1. **Implement cost tracking:**
+
 ```python
 from dataclasses import dataclass
 from datetime import datetime
@@ -818,7 +889,8 @@ class CostTracker:
         return cost
 ```
 
-2. **Use model cascading:**
+1. **Use model cascading:**
+
 ```python
 async def smart_completion(prompt: str, complexity: str = "auto"):
     # Determine complexity
@@ -834,7 +906,8 @@ async def smart_completion(prompt: str, complexity: str = "auto"):
 # Savings: 85% if 70% of queries are simple
 ```
 
-3. **Cache aggressively:**
+1. **Cache aggressively:**
+
 ```python
 # Cache LLM responses
 @lru_cache(maxsize=10000)
@@ -855,7 +928,8 @@ def cached_embedding(text: str):
     return embedding
 ```
 
-4. **Set hard limits:**
+1. **Set hard limits:**
+
 ```python
 class BudgetEnforcer:
     def __init__(self, daily_limit: float = 100.0):
@@ -889,12 +963,14 @@ class BudgetEnforcer:
 ### Issue: Can't debug why LLM responses are poor quality
 
 **Symptoms:**
+
 - LLM gives irrelevant answers
 - No visibility into decision-making
 
 **Solutions:**
 
 1. **Add detailed logging:**
+
 ```python
 import logging
 
@@ -916,7 +992,8 @@ async def complete_with_logging(prompt: str, model: str):
     return response
 ```
 
-2. **Use Langfuse for LLM observability:**
+1. **Use Langfuse for LLM observability:**
+
 ```python
 from langfuse import Langfuse
 
@@ -944,7 +1021,8 @@ generation = trace.generation(
 # View in Langfuse dashboard
 ```
 
-3. **Export metrics to Prometheus:**
+1. **Export metrics to Prometheus:**
+
 ```python
 from prometheus_client import Counter, Histogram, start_http_server
 
@@ -972,24 +1050,28 @@ start_http_server(9090)
 ### Issue: Monitoring dashboard not showing data
 
 **Symptoms:**
+
 - Grafana dashboard is empty
 - Prometheus not scraping metrics
 
 **Solutions:**
 
 1. **Verify Prometheus is running:**
+
 ```bash
 curl http://localhost:9090/-/healthy
 # Should return: Prometheus is Healthy.
 ```
 
-2. **Check metrics endpoint:**
+1. **Check metrics endpoint:**
+
 ```bash
 curl http://localhost:8000/metrics
 # Should show Prometheus metrics
 ```
 
-3. **Verify Prometheus scrape config:**
+1. **Verify Prometheus scrape config:**
+
 ```yaml
 # prometheus.yml
 scrape_configs:
@@ -998,7 +1080,8 @@ scrape_configs:
       - targets: ['localhost:8000']  # Your app's metrics endpoint
 ```
 
-4. **Test metric collection:**
+1. **Test metric collection:**
+
 ```bash
 # Check if Prometheus is collecting metrics
 curl 'http://localhost:9090/api/v1/query?query=llm_requests_total'
@@ -1018,15 +1101,18 @@ curl 'http://localhost:9090/api/v1/query?query=llm_requests_total'
 ### Where to Get Help
 
 **GitHub Issues (Recommended):**
+
 - https://github.com/jeremylongshore/claude-code-plugins/issues
 - Search existing issues first
 - Include error logs, code snippets, and steps to reproduce
 
 **Email Support:**
+
 - [email protected]
 - Include plugin version, Claude Code version, and detailed description
 
 **Community Discord:**
+
 - Join Claude Code Discord: https://discord.com/invite/6PPFFzqPDZ
 - #claude-code channel for general questions
 - #plugins channel for plugin-specific issues
@@ -1056,7 +1142,9 @@ curl 'http://localhost:9090/api/v1/query?query=llm_requests_total'
 
 **Error Logs:**
 ```
+
 [Paste error logs here]
+
 ```
 
 **Code Snippet:**
@@ -1067,6 +1155,7 @@ curl 'http://localhost:9090/api/v1/query?query=llm_requests_total'
 **Environment Variables:**
 OPENAI_API_KEY=sk-... (redacted)
 QDRANT_URL=http://localhost:6333
+
 ```
 
 ### Known Issues

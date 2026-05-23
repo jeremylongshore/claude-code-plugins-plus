@@ -15,6 +15,7 @@ echo "Region: ${CUSTOMERIO_REGION:-us}"
 ```
 
 **Checklist:**
+
 - [ ] Production Site ID configured (different from dev)
 - [ ] Production API Key configured (different from dev)
 - [ ] Correct region selected (US or EU)
@@ -42,6 +43,7 @@ async function auditIntegration(): Promise<AuditResult> {
 ```
 
 **Checklist:**
+
 - [ ] All identify calls include email attribute
 - [ ] User IDs are consistent across systems
 - [ ] Event names follow `snake_case` convention
@@ -52,6 +54,7 @@ async function auditIntegration(): Promise<AuditResult> {
 ### 3. Campaign Configuration
 
 **In Customer.io Dashboard:**
+
 - [ ] Production campaigns created (not draft)
 - [ ] Sender email verified and authenticated
 - [ ] SPF/DKIM/DMARC configured for sending domain
@@ -62,6 +65,7 @@ async function auditIntegration(): Promise<AuditResult> {
 ### 4. Deliverability
 
 **Checklist:**
+
 - [ ] Sender domain authenticated
 - [ ] Dedicated IP warmed up (if applicable)
 - [ ] Suppression list imported
@@ -103,6 +107,7 @@ const alertThresholds = {
 ```
 
 **Checklist:**
+
 - [ ] API error rate alerting configured
 - [ ] Delivery rate monitoring enabled
 - [ ] Bounce rate alerting (threshold: 5%)
@@ -137,6 +142,7 @@ echo "Smoke tests complete"
 ```
 
 **Checklist:**
+
 - [ ] End-to-end test in staging passed
 - [ ] Production smoke test passed
 - [ ] Load test completed (if high volume)
@@ -146,6 +152,7 @@ echo "Smoke tests complete"
 ### 7. Documentation & Runbooks
 
 **Checklist:**
+
 - [ ] Integration documentation updated
 - [ ] Event catalog documented
 - [ ] Attribute schema documented
@@ -178,6 +185,7 @@ const rollbackPlan = {
 ```
 
 **Checklist:**
+
 - [ ] Rollback procedure documented
 - [ ] Feature flags for quick disable
 - [ ] Backup messaging path available

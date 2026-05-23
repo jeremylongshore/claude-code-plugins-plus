@@ -26,11 +26,13 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lindy Cost Tuning
 
 ## Overview
+
 Lindy uses a credit-based pricing model. Every task costs credits based on model
 size, step count, premium actions, and duration. Cost tuning targets: model
 right-sizing, agent consolidation, trigger optimization, and credit monitoring.
 
 ## Prerequisites
+
 - Lindy workspace with billing access
 - Multiple active agents to evaluate
 - Dashboard access to review per-agent task history
@@ -60,13 +62,16 @@ right-sizing, agent consolidation, trigger optimization, and credit monitoring.
 ## Instructions
 
 ### Step 1: Audit Agent Credit Consumption
+
 For each active agent, collect:
+
 1. **Task count** (last 30 days) — from Tasks tab
 2. **Average credits per task** — total credits / task count
 3. **Model used** — from agent settings
 4. **Trigger frequency** — how often the agent fires
 
 Create a cost audit table:
+
 | Agent | Tasks/Month | Credits/Task | Model | Monthly Credits | % of Total |
 |-------|------------|-------------|-------|----------------|-----------|
 | Support Bot | 500 | 5 | Claude Sonnet | 2,500 | 50% |
@@ -74,6 +79,7 @@ Create a cost audit table:
 | Report Gen | 30 | 10 | GPT-4 | 300 | 6% |
 
 ### Step 2: Right-Size Models
+
 The highest-impact optimization. For each agent, ask:
 > "Does this task actually need GPT-4/Claude, or would Gemini Flash work?"
 
@@ -87,9 +93,11 @@ The highest-impact optimization. For each agent, ask:
 Most classification, routing, and extraction tasks work identically on smaller models.
 
 ### Step 3: Consolidate Redundant Agents
+
 Multiple single-purpose agents cost more than one multi-purpose agent:
 
 Before (5 agents, 5 minimum credits per run):
+
 ```
 Agent 1: Classify billing emails
 Agent 2: Classify technical emails
@@ -99,6 +107,7 @@ Agent 5: Draft technical responses
 ```
 
 After (1 agent, 1 minimum credit per run):
+
 ```
 Support Agent: Classify email → Condition (billing/technical/general)
   → Draft appropriate response → Send
@@ -108,9 +117,11 @@ Support Agent: Classify email → Condition (billing/technical/general)
 simplifies management.
 
 ### Step 4: Optimize Trigger Frequency
+
 Credits are consumed every time a trigger fires. Reduce unnecessary triggers:
 
 **Email Received**:
+
 ```
 Before: Trigger on ALL emails (300/day) = 300 tasks
 After:  Filter: label "support" AND NOT from "noreply@" (40/day) = 40 tasks
@@ -118,6 +129,7 @@ Savings: 87% fewer tasks
 ```
 
 **Schedule trigger**:
+
 ```
 Before: Every 15 minutes (96/day)
 After:  Every 2 hours (12/day)
@@ -125,6 +137,7 @@ Question: Does this agent really need to run every 15 minutes?
 ```
 
 **Slack trigger**:
+
 ```
 Before: Any message in #general (200/day)
 After:  Messages containing "@support-bot" (10/day)
@@ -132,19 +145,24 @@ Savings: 95% fewer tasks
 ```
 
 ### Step 5: Reduce Steps Per Task
+
 Each action in a workflow costs credits. Eliminate unnecessary steps:
+
 - Combine multiple LLM calls into one (see `lindy-performance-tuning`)
 - Use Set Manually instead of AI Prompt for known values
 - Remove debug/logging steps in production
 - Simplify condition branches
 
 ### Step 6: Optimize Knowledge Base Usage
+
 KB search costs credits per query. Optimize:
+
 - Reduce Max Results from 10 to 4 (sufficient for most queries)
 - Use specific query instructions to get relevant results in one search
 - For small datasets (<100 entries), consider putting data directly in the prompt
 
 ### Step 7: Budget Monitoring Setup
+
 1. Check credit usage weekly in **Settings > Billing**
 2. Set internal alerts for high-consumption agents:
    - 50% of budget: Warning — review usage
@@ -152,12 +170,15 @@ KB search costs credits per query. Optimize:
    - 95% of budget: Critical — pause non-essential agents
 
 ### Step 8: Deactivate Idle Agents
+
 Review agents monthly:
+
 - No tasks in 30 days → Pause the agent
 - No tasks in 90 days → Delete or archive
 - Lindy only charges for active agent execution, not idle agents
 
 ## Monthly Cost Optimization Checklist
+
 - [ ] Review per-agent credit consumption
 - [ ] Identify agents using large models for simple tasks
 - [ ] Check for redundant agents that could be consolidated
@@ -176,8 +197,10 @@ Review agents monthly:
 | Model downgrade hurts quality | Task needs larger model | Selectively upgrade only that step |
 
 ## Resources
+
 - [Lindy Pricing](https://www.lindy.ai/pricing)
 - [Lindy Documentation](https://docs.lindy.ai)
 
 ## Next Steps
+
 Proceed to `lindy-reference-architecture` for production architecture patterns.

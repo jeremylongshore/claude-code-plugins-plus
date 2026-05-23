@@ -10,6 +10,7 @@ clickhouse-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up ClickHouse monitoring and observability
 **Workflow:** Part of the enterprise skill category for ClickHouse integration.
 **Relates to:** Other clickhouse skills in this pack.

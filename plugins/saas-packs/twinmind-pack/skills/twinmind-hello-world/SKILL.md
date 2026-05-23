@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # TwinMind Hello World
 
 ## Overview
+
 Create your first meeting transcription with AI-generated summary and action items.
 
 ## Prerequisites
+
 - Completed `twinmind-install-auth` setup
 - Chrome extension authenticated
 - Microphone permissions granted
@@ -38,12 +40,14 @@ Create your first meeting transcription with AI-generated summary and action ite
 ### Step 1: Start a Test Meeting
 
 Option A - Browser Meeting:
+
 1. Open Google Meet, Zoom, or Teams in browser
 2. Start or join a test call
 3. Click TwinMind extension icon
 4. Click "Start Transcribing"
 
 Option B - Voice Memo:
+
 1. Click TwinMind extension icon
 2. Select "Voice Memo" mode
 3. Click the microphone button
@@ -52,6 +56,7 @@ Option B - Voice Memo:
 ### Step 2: Speak Test Content
 
 For a meaningful test, speak for 30-60 seconds covering:
+
 ```
 "Welcome to today's project status meeting.
 We have three items on the agenda.
@@ -79,6 +84,7 @@ We should schedule a follow-up meeting next week to discuss improvements."
 ### Step 4: Review Output
 
 Expected transcript output:
+
 ```
 [00:00] Welcome to today's project status meeting...
 [00:05] We have three items on the agenda...
@@ -87,6 +93,7 @@ Expected transcript output:
 ```
 
 Expected AI summary:
+
 ```
 ## Meeting Summary
 Project status meeting covering mobile app launch, Q1 budget review,
@@ -106,6 +113,7 @@ and customer feedback analysis.
 ### Step 5: Access Memory Vault
 
 After the meeting:
+
 ```javascript
 // TwinMind stores transcripts in your Memory Vault
 // Access via extension sidebar or ask AI:
@@ -123,11 +131,13 @@ After the meeting:
 4. Test AI queries on mobile
 
 ## Output
+
 - Complete meeting transcript with timestamps
 - AI-generated summary document
 - Extracted action items with assignees
 - Content indexed in Memory Vault
 - Console output showing:
+
 ```
 Transcription complete!
 Duration: 1m 23s
@@ -151,6 +161,7 @@ Action Items: 3 extracted
 ## Understanding the Output
 
 ### Transcript Quality Metrics
+
 ```javascript
 // TwinMind uses Ear-3 model with:
 // - 5.26% Word Error Rate (industry-leading)
@@ -164,7 +175,9 @@ Action Items: 3 extracted
 ```
 
 ### AI Model Selection
+
 TwinMind routes queries to optimal models:
+
 - Summaries: GPT-4 or Claude
 - Quick answers: Gemini Flash
 - Memory search: Custom embeddings
@@ -172,6 +185,7 @@ TwinMind routes queries to optimal models:
 ## Examples
 
 ### Quick Voice Memo
+
 ```javascript
 // Perfect for capturing ideas on the go
 // 1. Click extension
@@ -186,6 +200,7 @@ the new color palette before Thursday's review."
 ```
 
 ### Meeting with Multiple Speakers
+
 ```javascript
 // TwinMind automatically labels speakers
 // Speaker diarization identifies who said what
@@ -197,9 +212,11 @@ the new color palette before Thursday's review."
 ```
 
 ## Resources
+
 - [TwinMind Chrome Extension Tutorial](https://twinmind.com/ce-tutorial)
 - [TwinMind Documentation](https://twinmind.com)
 - [Ear-3 Model Details](https://twinmind.com/ear-3)
 
 ## Next Steps
+
 Proceed to `twinmind-local-dev-loop` for development workflow integration.

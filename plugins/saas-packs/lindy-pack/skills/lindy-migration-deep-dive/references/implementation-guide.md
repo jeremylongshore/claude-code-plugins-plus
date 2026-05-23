@@ -5,6 +5,7 @@
 ### Scenario 1: From Custom AI to Lindy
 
 **Assessment Phase:**
+
 ```typescript
 // migration/assess.ts
 interface MigrationAssessment {
@@ -43,6 +44,7 @@ async function assessMigration(source: any): Promise<MigrationAssessment> {
 ### Scenario 2: Agent Consolidation
 
 **Before:**
+
 ```
 ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
 │  Agent A    │ │  Agent B    │ │  Agent C    │
@@ -55,6 +57,7 @@ async function assessMigration(source: any): Promise<MigrationAssessment> {
 ```
 
 **After:**
+
 ```
 ┌─────────────────────────────────────────────┐
 │           Unified Support Agent             │
@@ -301,6 +304,7 @@ class RollbackManager {
 ```
 
 ## Migration Checklist
+
 ```markdown
 [ ] Source system documented
 [ ] Migration plan approved

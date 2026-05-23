@@ -19,18 +19,21 @@ Off-the-shelf RAG libraries do not address any of these failure modes — they a
 ## Target Users
 
 ### Persona 1: AI Engineer (Priya)
+
 - **Role**: Builds the agent loop. Owns the LLM-facing prompt template and the retrieval substrate that feeds it. Reports to a head of AI; deliverable is "agent-assisted call handling that beats the unassisted baseline on first-call-resolution."
 - **Goals**: A retrieval surface she can call from her agent loop with a one-line API and trust to return inside her latency budget; clear separation between "live state" and "historical context" so she can reason about what the model is grounding on; deterministic behavior under degraded conditions (vector store slow → graceful fallback, not a hung loop).
 - **Pain Points**: The first prototype was top-K=5 over a flat corpus, the model kept hallucinating order numbers, and her director asked "why is the model worse than no context?" She does not want to build the retrieval stack from scratch but also does not trust off-the-shelf RAG libraries to handle real-time correctness.
 - **Technical Level**: High (LLM-fluent, comfortable with async Python, has shipped agentic systems before).
 
 ### Persona 2: Integration Engineer (Ravi)
+
 - **Role**: Wires the Podium transcription stream into the agent loop and operates the bridge as a service. Owns the deployment, the observability, and the on-call playbook.
 - **Goals**: A bridge that emits structured logs he can dashboard (p50/p95/p99 per surface), a clear failure model (which surfaces degraded, in what order), and an obvious answer for "the LLM said something wrong — what did the bridge ship to it?"
 - **Pain Points**: The vector store went read-only for 40 minutes during a Podium webhook burst and the bridge silently fell back to live-only — nobody noticed until a CSM asked why the agent stopped referencing prior conversations. The bridge needed a `partial: true` flag that propagates to the model and the logs.
 - **Technical Level**: High (production-ops-engineer; reads code, writes Terraform, lives in dashboards).
 
 ### Persona 3: Small-Business Owner (Mark archetype)
+
 - **Role**: Owns a campervan retailer. Uses Podium across SMS, calls, and webchat. Asked for the LLM-driven agent because his team cannot scale call handling. Does not write code; pays a consultant to wire it.
 - **Goals**: The agent says correct things about his customers. Stops asking returning customers their name. References the right order number. Does not call a number that's been disconnected for a year.
 - **Pain Points**: His last attempt at an "AI for Podium" missed obvious context that was in the contact's webchat from last month — said it didn't know who the caller was when the caller had been a customer for 3 years. He fired the consultant; the system was not the problem, the retrieval was.
@@ -39,74 +42,88 @@ Off-the-shelf RAG libraries do not address any of these failure modes — they a
 ## User Stories
 
 ### US-1: Transcript-chunk to context bundle (P0)
+
 **As** an AI engineer,
 **I want** to pass a transcript chunk + contact_uid and receive a structured JSON bundle in ≤800ms,
 **So that** my agent loop can build an LLM prompt without blocking the call.
 
 **Acceptance Criteria:**
+
 - API surface: `build_context(transcript_chunk, contact_uid, ...) -> dict`
 - p95 latency ≤ 800ms; p99 ≤ 1200ms on a 100k-chunk corpus
 - Bundle shape includes `contact`, `historical_excerpts`, `token_count`, `meta`
 - Returns even on full timeout (with `meta.partial: true`)
 
 ### US-2: Cross-encoder reranking (P0)
+
 **As** an AI engineer,
 **I want** retrieved excerpts reranked by a cross-encoder before they reach the model,
 **So that** the top-5 the model sees are actually the top-5, not five copies of "thanks for reaching out."
 
 **Acceptance Criteria:**
+
 - Pool size `pool_k` configurable (default 20)
 - Final size `final_k` configurable (default 5)
 - Each excerpt carries both `cosine_score` (recall) and `rerank_score` (relevance)
 - Reranker is pluggable: cross-encoder default, LLM-as-reranker optional
 
 ### US-3: Live state wins over vector state (P0)
+
 **As** an AI engineer,
 **I want** the contact's live fields (phone, opt_out, location) to override any stale vector embeddings,
 **So that** the LLM never grounds on a number that hasn't worked in 16 hours.
 
 **Acceptance Criteria:**
+
 - Live Podium `GET /v4/contacts/{uid}` is called in parallel with vector search
 - A documented `LIVE_FIELDS` set identifies which fields are always live
 - Merge is asymmetric: live wins on `LIVE_FIELDS`, vector contributes content only
 
 ### US-4: PII redaction at retrieval time (P0)
+
 **As** an integration engineer,
 **I want** a redaction filter applied to retrieved excerpts before they reach the LLM,
 **So that** even if ingest forgot to redact, the model never sees raw PII.
 
 **Acceptance Criteria:**
+
 - Patterns for CC, SSN, email, phone, DOB, street address applied
 - Redaction is at retrieval time, AFTER merge, BEFORE emission
 - Tokens replaced with `[REDACTED:KIND]` markers so the model can refer to them by category
 
 ### US-5: Token-budget enforcement (P1)
+
 **As** an AI engineer,
 **I want** the retrieved-excerpts surface bounded to a configurable token budget,
 **So that** the LLM prompt never silently truncates from the middle.
 
 **Acceptance Criteria:**
+
 - Default budget: 1500 tokens for `historical_excerpts`
 - Over-budget excerpts dropped lowest-rerank first
 - Last excerpt hard-truncated only if it alone exceeds the budget, with `truncated: true` flag
 
 ### US-6: Hard deadline + degraded-mode signaling (P0)
+
 **As** an integration engineer,
 **I want** a hard wall-clock timeout that returns whatever surfaces completed and flags the bundle as `partial`,
 **So that** the agent loop never hangs waiting for a slow surface and the LLM knows it is grounding on incomplete context.
 
 **Acceptance Criteria:**
+
 - Default timeout 800ms; configurable per-request
 - `meta.partial: true` when timeout was reached
 - `meta.had_vector_hits` / `meta.had_live_lookup` reflect which surfaces completed
 - Sustained `partial: true` rate above 5% triggers an alert
 
 ### US-7: Sliding-window chunk coalescing (P1)
+
 **As** an AI engineer,
 **I want** transcript-chunk boundaries softened by sliding-window overlap,
 **So that** an order number that straddles two 800ms chunks still makes it into the embed query.
 
 **Acceptance Criteria:**
+
 - Configurable overlap window (default 200ms tail of previous chunk)
 - Coalescing is stateful per-conversation (keyed on `conversation_uid` if available)
 - Skip coalescing if the calling agent has already pre-processed chunks

@@ -25,16 +25,20 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Enterprise RBAC
 
 ## Overview
+
 Role-based access control for Apollo.io API integrations. Apollo API keys are all-or-nothing (standard vs master), so RBAC must be implemented in your application layer as a proxy between users and the Apollo API. This skill builds a permission matrix, scoped API key system, Express middleware, and admin audit endpoints.
 
 ## Prerequisites
+
 - Apollo master API key
 - Node.js 18+ with Express
 
 ## Instructions
 
 ### Step 1: Define Roles and Permission Matrix
+
 Map Apollo API operations to team roles. Apollo's API has two main categories:
+
 - **Read-only**: search (free), enrichment (credits)
 - **Write**: contacts CRUD, sequences, deals, tasks
 
@@ -91,6 +95,7 @@ export const PERMISSIONS: Record<Role, Permission> = {
 ```
 
 ### Step 2: Scoped API Key System
+
 ```typescript
 // src/rbac/api-keys.ts
 import crypto from 'crypto';
@@ -129,6 +134,7 @@ export function revokeKey(apiKey: string) { keys.delete(apiKey); }
 ```
 
 ### Step 3: Permission Middleware
+
 ```typescript
 // src/rbac/middleware.ts
 import { Request, Response, NextFunction } from 'express';
@@ -169,6 +175,7 @@ export function requirePermission(action: keyof Permission) {
 ```
 
 ### Step 4: Apollo API Proxy with RBAC
+
 ```typescript
 // src/rbac/proxy.ts
 import express from 'express';
@@ -202,6 +209,7 @@ app.all('/apollo/*', (req, res, next) => {
 ```
 
 ### Step 5: Admin Endpoints
+
 ```typescript
 // src/rbac/admin.ts
 import { Router } from 'express';
@@ -235,6 +243,7 @@ export { admin };
 ```
 
 ## Output
+
 - Five-tier role system mapping to Apollo API operations
 - Scoped API key creation with configurable TTL and revocation
 - Express middleware enforcing per-endpoint permissions
@@ -242,6 +251,7 @@ export { admin };
 - Admin endpoints for key management and usage stats
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | 403 Permission denied | Check role matrix; request upgrade from admin |
@@ -250,10 +260,12 @@ export { admin };
 | Proxy timeout | Increase timeout, check Apollo API latency |
 
 ## Resources
+
 - [Apollo API Overview](https://docs.apollo.io/docs/api-overview)
 - [Create API Keys](https://docs.apollo.io/docs/create-api-key)
 - [RBAC Best Practices (Auth0)](https://auth0.com/docs/manage-users/access-control/rbac)
 - [View API Usage Stats](https://docs.apollo.io/reference/view-api-usage-stats)
 
 ## Next Steps
+
 Proceed to `apollo-migration-deep-dive` for migration strategies.

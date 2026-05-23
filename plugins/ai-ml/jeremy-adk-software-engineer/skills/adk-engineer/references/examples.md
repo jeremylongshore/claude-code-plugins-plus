@@ -252,6 +252,7 @@ def test_agent_custom_config():
 ### Expected Output
 
 Running the agent:
+
 ```
 $ python -m src.agent
 

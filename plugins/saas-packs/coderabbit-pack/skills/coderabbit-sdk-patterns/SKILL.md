@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit SDK Patterns
 
 ## Overview
+
 CodeRabbit does not have a traditional SDK. You interact with it through `.coderabbit.yaml` configuration, PR comment commands (`@coderabbitai`), and the GitHub/GitLab API to process its review output. These patterns show how to automate around CodeRabbit reviews programmatically.
 
 ## Prerequisites
+
 - CodeRabbit installed on repository (see `coderabbit-install-auth`)
 - GitHub CLI (`gh`) or GitHub API access via personal access token
 - Node.js 18+ for automation scripts
@@ -37,6 +39,7 @@ CodeRabbit does not have a traditional SDK. You interact with it through `.coder
 ## Instructions
 
 ### Step 1: Fetch CodeRabbit Reviews via GitHub API
+
 ```typescript
 // scripts/fetch-coderabbit-reviews.ts
 import { Octokit } from "@octokit/rest";
@@ -64,6 +67,7 @@ async function getCodeRabbitReview(owner: string, repo: string, prNumber: number
 ```
 
 ### Step 2: Extract Line-Level Comments
+
 ```typescript
 async function getCodeRabbitComments(owner: string, repo: string, prNumber: number) {
   const comments = await octokit.pulls.listReviewComments({
@@ -96,6 +100,7 @@ function categorizeSeverity(body: string): "critical" | "warning" | "suggestion"
 ```
 
 ### Step 3: Post Commands to CodeRabbit via PR Comments
+
 ```typescript
 // Programmatically trigger CodeRabbit actions
 async function sendCodeRabbitCommand(
@@ -117,6 +122,7 @@ async function sendCodeRabbitCommand(
 ```
 
 ### Step 4: Build a Review Dashboard Script
+
 ```bash
 #!/bin/bash
 # scripts/coderabbit-dashboard.sh - Review metrics for last 50 PRs
@@ -143,6 +149,7 @@ echo "Review Coverage: $REVIEWED/$TOTAL PRs reviewed ($(( REVIEWED * 100 / TOTAL
 ```
 
 ### Step 5: GitHub Actions Automation
+
 ```yaml
 # .github/workflows/coderabbit-gate.yml
 # Block merge until CodeRabbit has reviewed
@@ -175,12 +182,14 @@ jobs:
 ```
 
 ## Output
+
 - GitHub API integration for fetching CodeRabbit review data
 - Automated command posting to trigger CodeRabbit actions
 - Review metrics dashboard script
 - CI gate that enforces CodeRabbit approval before merge
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Review not found | PR too new | Wait 2-5 minutes for review to complete |
@@ -189,9 +198,11 @@ jobs:
 | Rate limited by GitHub | Too many API calls | Use pagination and caching for bulk queries |
 
 ## Resources
+
 - [CodeRabbit Review Commands](https://docs.coderabbit.ai/reference/review-commands)
 - [GitHub REST API - Pull Reviews](https://docs.github.com/en/rest/pulls/reviews)
 - [Octokit.js](https://github.com/octokit/octokit.js)
 
 ## Next Steps
+
 Apply patterns in `coderabbit-core-workflow-a` for real-world review workflows.

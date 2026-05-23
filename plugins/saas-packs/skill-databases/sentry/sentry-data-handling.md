@@ -10,6 +10,7 @@ sentry-data-handling/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Handle sensitive data properly in Sentry with PII scrubbing, GDPR compliance, data retention configuration, and IP address anonymization.
 **Workflow:** Configure during security review or compliance preparation. Ensures sensitive data is properly handled and compliance requirements are met.
 **Relates to:** Extends `sentry-security-basics`. Works with `sentry-policy-guardrails` for organizational standards.

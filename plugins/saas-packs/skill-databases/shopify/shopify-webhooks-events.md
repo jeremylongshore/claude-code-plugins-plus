@@ -10,6 +10,7 @@ shopify-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Shopify webhook handling
 **Workflow:** Part of the cicd skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

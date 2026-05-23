@@ -19,15 +19,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Retell AI Webhooks Events
 
 ## Overview
+
 Handle Retell AI webhook events for call lifecycle, transcripts, and function execution.
 
 ## Prerequisites
+
 - HTTPS webhook endpoint
 - Agent configured with webhook URL
 
 ## Instructions
 
 ### Step 1: Configure Webhook URL
+
 ```typescript
 // Set webhook URL in agent configuration
 await retell.agent.update(agentId, {
@@ -36,6 +39,7 @@ await retell.agent.update(agentId, {
 ```
 
 ### Step 2: Webhook Endpoint
+
 ```typescript
 import express from 'express';
 
@@ -71,6 +75,7 @@ app.post('/webhooks/retell', express.json(), async (req, res) => {
 ```
 
 ### Step 3: Handle Function Calls During Conversation
+
 ```typescript
 // When agent triggers a function, Retell calls your URL
 app.post('/functions/book-appointment', express.json(), async (req, res) => {
@@ -87,11 +92,13 @@ app.post('/functions/book-appointment', express.json(), async (req, res) => {
 ```
 
 ## Output
+
 - Webhook handling for call lifecycle events
 - Transcript storage on call completion
 - Function execution during live calls
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | No webhook events | URL not configured | Set webhook_url on agent |
@@ -99,8 +106,10 @@ app.post('/functions/book-appointment', express.json(), async (req, res) => {
 | Missing transcript | Short call | Transcript only for calls > 5 seconds |
 
 ## Resources
+
 - [Retell AI Documentation](https://docs.retellai.com)
 - [retell-sdk npm](https://www.npmjs.com/package/retell-sdk)
 
 ## Next Steps
+
 Common errors: `retellai-common-errors`

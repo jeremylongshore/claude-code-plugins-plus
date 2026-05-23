@@ -20,4 +20,3 @@ version: {{version}}
 ## Internal
 
 {{internal}}
-

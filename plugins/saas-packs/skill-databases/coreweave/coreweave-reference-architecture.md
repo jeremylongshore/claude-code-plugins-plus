@@ -10,6 +10,7 @@ coreweave-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement CoreWeave reference architecture
 **Workflow:** Part of the cicd skill category for CoreWeave integration.
 **Relates to:** Other coreweave skills in this pack.

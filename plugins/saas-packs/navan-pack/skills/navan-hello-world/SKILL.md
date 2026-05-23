@@ -170,6 +170,7 @@ Navan API responses use `uuid` as the primary key for booking records. Key field
 ## Output
 
 Successful completion produces:
+
 - A working API call retrieving real booking data from the Navan organization
 - Parsed response structure with records in `.data` array and `uuid` primary key
 - Tested pagination (`page` + `size`) and date filtering (`createdFrom` / `createdTo`)

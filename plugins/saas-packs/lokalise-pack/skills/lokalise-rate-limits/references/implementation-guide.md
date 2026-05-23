@@ -5,6 +5,7 @@ Detailed implementation reference for the lokalise-rate-limits skill.
 ## Rate Limit Specifications
 
 ### Current Limits (2025)
+
 | Limit Type | Value | Scope |
 |------------|-------|-------|
 | Requests per second | 6 | Per API token + IP |
@@ -14,16 +15,17 @@ Detailed implementation reference for the lokalise-rate-limits skill.
 | Keys per bulk create | 500 | Per request |
 
 ### Rate Limit Headers
+
 ```
 X-RateLimit-Limit: 6
 X-RateLimit-Remaining: 5
 X-RateLimit-Reset: 1640000000
 ```
 
-
 ## Instructions
 
 ### Step 1: Implement Request Queue
+
 ```typescript
 import PQueue from "p-queue";
 
@@ -48,6 +50,7 @@ queue.on("active", () => {
 ```
 
 ### Step 2: Add Exponential Backoff with Jitter
+
 ```typescript
 interface BackoffConfig {
   maxRetries: number;
@@ -99,6 +102,7 @@ export async function withExponentialBackoff<T>(
 ```
 
 ### Step 3: Create Rate-Aware Client Wrapper
+
 ```typescript
 import { LokaliseApi, ApiError } from "@lokalise/node-api";
 
@@ -172,6 +176,7 @@ export class RateLimitedLokaliseClient {
 ```
 
 ### Step 4: Implement Batch Processing
+
 ```typescript
 async function batchProcess<T, R>(
   items: T[],
@@ -198,10 +203,10 @@ async function batchProcess<T, R>(
 }
 ```
 
-
 ## Detailed Examples
 
 ### CLI with Rate Limiting
+
 ```bash
 #!/bin/bash
 # Respect rate limits in shell scripts
@@ -226,6 +231,7 @@ lokalise_request --token "$TOKEN" project list
 ```
 
 ### Monitor Rate Limit Usage
+
 ```typescript
 class RateLimitMonitor {
   private requests: number[] = [];
@@ -258,6 +264,7 @@ class RateLimitMonitor {
 ```
 
 ### Bulk Operations with Progress
+
 ```typescript
 async function bulkCreateKeys(
   projectId: string,
@@ -286,4 +293,3 @@ async function bulkCreateKeys(
   return results;
 }
 ```
-

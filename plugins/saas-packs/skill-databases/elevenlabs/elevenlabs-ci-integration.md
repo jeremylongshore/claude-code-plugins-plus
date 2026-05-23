@@ -10,6 +10,7 @@ elevenlabs-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure ElevenLabs CI/CD integration
 **Workflow:** Part of the cicd skill category for ElevenLabs integration.
 **Relates to:** Other elevenlabs skills in this pack.

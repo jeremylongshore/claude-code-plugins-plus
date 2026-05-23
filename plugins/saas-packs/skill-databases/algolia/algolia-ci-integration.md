@@ -10,6 +10,7 @@ algolia-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Algolia CI/CD integration
 **Workflow:** Part of the cicd skill category for Algolia integration.
 **Relates to:** Other algolia skills in this pack.

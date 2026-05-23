@@ -60,6 +60,7 @@ Memory provides persistent context across Claude Code sessions by storing and re
 ## Examples
 
 **Automatic preference recall across sessions:**
+
 ```
 Session 1:
 User: "Always use Vitest instead of Jest for this project"
@@ -72,6 +73,7 @@ User: "Add tests for the auth module"
 ```
 
 **Manual memory management:**
+
 ```bash
 /remember "This project uses Tailwind CSS v4 with the Vite plugin"
 /remember "Deploy to Cloudflare Workers, not Vercel"
@@ -80,6 +82,7 @@ User: "Add tests for the auth module"
 ```
 
 **Tool rejection captured as correction:**
+
 ```
 set -euo pipefail
 User declines a suggested `npm install` action

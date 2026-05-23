@@ -10,6 +10,7 @@ figma-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Figma webhook handling
 **Workflow:** Part of the cicd skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

@@ -23,15 +23,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # persona sdk patterns | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview
+
 Singleton API client, typed verification results, pagination through inquiries, error classification.
 
 ## Prerequisites
+
 - Completed `persona-install-auth` setup
 - Valid Persona API key (sandbox or production)
 
 ## Instructions
 
 ### Step 1: Typed API Client Wrapper
+
 ```typescript
 import axios, { AxiosInstance, AxiosError } from 'axios';
 
@@ -95,6 +98,7 @@ export function getPersonaClient(): PersonaClient {
 ```
 
 ### Step 2: Error Classification
+
 ```typescript
 function classifyPersonaError(error: AxiosError): { retryable: boolean; message: string } {
   const status = error.response?.status;
@@ -107,12 +111,14 @@ function classifyPersonaError(error: AxiosError): { retryable: boolean; message:
 ```
 
 ## Output
+
 - Typed Persona API client with inquiry and verification methods
 - Singleton pattern for reuse
 - Error classification for retry decisions
 - Paginated inquiry listing
 
 ## Error Handling
+
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
 | Singleton | All API calls | One client, consistent headers |
@@ -120,8 +126,10 @@ function classifyPersonaError(error: AxiosError): { retryable: boolean; message:
 | Typed responses | Data access | Autocomplete, type safety |
 
 ## Resources
+
 - [Persona API Reference](https://docs.withpersona.com/reference/introduction)
 - [API Introduction](https://docs.withpersona.com/api-introduction)
 
 ## Next Steps
+
 Apply in `persona-core-workflow-a` for real KYC flows.

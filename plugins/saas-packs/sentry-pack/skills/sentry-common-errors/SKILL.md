@@ -80,6 +80,7 @@ Sentry.init({
 ```
 
 **Python equivalent:**
+
 ```python
 import os, sentry_sdk
 
@@ -120,7 +121,7 @@ beforeSend(event) {
 }
 ```
 
-2. **`sampleRate` set to 0:**
+1. **`sampleRate` set to 0:**
 
 ```typescript
 // WRONG
@@ -130,7 +131,7 @@ Sentry.init({ sampleRate: 0, tracesSampleRate: 0 }); // Nothing is sent
 Sentry.init({ sampleRate: 1.0, tracesSampleRate: 0.1 });
 ```
 
-3. **Missing `await Sentry.flush()` in serverless / CLI contexts:**
+1. **Missing `await Sentry.flush()` in serverless / CLI contexts:**
 
 ```typescript
 // WRONG — Lambda/CLI process exits before SDK sends the event
@@ -156,6 +157,7 @@ export const handler = async (event) => {
 ```
 
 **Python (AWS Lambda):**
+
 ```python
 def handler(event, context):
     try:
@@ -166,7 +168,7 @@ def handler(event, context):
         raise
 ```
 
-4. **SDK initialized after error occurs:**
+1. **SDK initialized after error occurs:**
 
 ```typescript
 // WRONG — error happens before Sentry.init()
@@ -183,6 +185,7 @@ import express from 'express';
 ```
 
 **Diagnostic checklist for missing events:**
+
 ```bash
 # 1. Verify DSN is present
 echo "DSN set: ${SENTRY_DSN:+yes}"

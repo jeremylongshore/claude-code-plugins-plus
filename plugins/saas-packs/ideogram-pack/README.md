@@ -28,6 +28,7 @@ Ideogram is an AI image generation API that excels at rendering legible text ins
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | What It Does |
 |-------|-------------|
 | `ideogram-install-auth` | API key setup, authentication, billing configuration |
@@ -44,6 +45,7 @@ Ideogram is an AI image generation API that excels at rendering legible text ins
 | `ideogram-upgrade-migration` | Legacy to V3 migration with enum mapping |
 
 ### Pro Skills (P13-P18)
+
 | Skill | What It Does |
 |-------|-------------|
 | `ideogram-ci-integration` | GitHub Actions, mocked tests, prompt validation |
@@ -54,6 +56,7 @@ Ideogram is an AI image generation API that excels at rendering legible text ins
 | `ideogram-reference-architecture` | Prompt templates, asset pipelines, describe-then-remix |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | What It Does |
 |-------|-------------|
 | `ideogram-multi-env-setup` | Dev/staging/prod isolation with secret managers |
@@ -71,17 +74,21 @@ Ideogram is an AI image generation API that excels at rendering legible text ins
 **Image URLs:** Expire after ~1 hour -- download immediately
 
 ### Models (Legacy)
+
 `V_1`, `V_1_TURBO`, `V_2`, `V_2_TURBO`, `V_2A`, `V_2A_TURBO`
 
 ### Style Types
+
 Legacy: `AUTO`, `GENERAL`, `REALISTIC`, `DESIGN`, `RENDER_3D`, `ANIME`
 V3: `AUTO`, `GENERAL`, `REALISTIC`, `DESIGN`, `FICTION`
 
 ### Aspect Ratios
+
 Legacy: `ASPECT_1_1`, `ASPECT_16_9`, `ASPECT_9_16`, `ASPECT_3_2`, `ASPECT_2_3`, `ASPECT_4_3`, `ASPECT_3_4`, `ASPECT_10_16`, `ASPECT_16_10`, `ASPECT_1_3`, `ASPECT_3_1`
 V3: `1x1`, `16x9`, `9x16`, `3x2`, `2x3`, `4x3`, `3x4`, `10x16`, `16x10`, `1x3`, `3x1`, `1x2`, `2x1`, `4x5`, `5x4`
 
 ### V3 Rendering Speeds
+
 `FLASH` (fastest) | `TURBO` | `DEFAULT` | `QUALITY` (highest)
 
 ## Usage

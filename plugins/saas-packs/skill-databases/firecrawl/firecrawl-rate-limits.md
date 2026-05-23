@@ -10,6 +10,7 @@ firecrawl-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement rate limiting, exponential backoff with jitter, and request queuing to handle FireCrawl API rate limits gracefully.
 **Workflow:** Production hardening skill - ensures reliable operation under rate limit constraints.
 **Relates to:** Builds on firecrawl-sdk-patterns; foundational for firecrawl-batch-processing

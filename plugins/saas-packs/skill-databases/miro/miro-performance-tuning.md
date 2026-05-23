@@ -10,6 +10,7 @@ miro-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Miro API performance
 **Workflow:** Part of the cicd skill category for Miro integration.
 **Relates to:** Other miro skills in this pack.

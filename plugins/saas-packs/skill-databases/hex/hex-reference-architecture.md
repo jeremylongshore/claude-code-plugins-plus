@@ -10,6 +10,7 @@ hex-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Hex reference architecture
 **Workflow:** Part of the cicd skill category for Hex integration.
 **Relates to:** Other hex skills in this pack.

@@ -10,12 +10,14 @@ Create standardized, production-ready error handling middleware with proper HTTP
 ## Design Decisions
 
 **Why standardized error handling matters:**
+
 - **Client experience**: Consistent error formats make client integration predictable
 - **Debugging**: Structured errors with context accelerate troubleshooting
 - **Security**: Proper error handling prevents information leakage in production
 - **Monitoring**: Standardized errors integrate cleanly with observability tools
 
 **Alternatives considered:**
+
 - **HTTP-only errors**: Simpler but lacks context for debugging
 - **Framework defaults**: Inconsistent across endpoints, lacks business context
 - **Exception-based only**: Can leak sensitive information, harder to test
@@ -25,6 +27,7 @@ Create standardized, production-ready error handling middleware with proper HTTP
 ## When to Use
 
 Use this command when:
+
 - Starting a new API project that needs error handling
 - Refactoring inconsistent error responses across endpoints
 - Adding error monitoring and alerting to an existing API
@@ -32,6 +35,7 @@ Use this command when:
 - Implementing error handling for microservices that need consistency
 
 Don't use when:
+
 - Your framework's default error handling already meets your needs
 - Building proof-of-concept code without production requirements
 - Working with legacy systems that can't adopt new error formats
@@ -371,22 +375,27 @@ async function callExternalAPI(endpoint) {
 **Common issues and solutions:**
 
 **Problem**: Errors logged multiple times
+
 - **Cause**: Error handlers at multiple middleware layers
 - **Solution**: Log only in the central error handler, not in route handlers
 
 **Problem**: Stack traces visible in production
+
 - **Cause**: Environment check not working correctly
 - **Solution**: Verify `NODE_ENV=production` is set, check conditional logic
 
 **Problem**: Lost error context (request ID, user info)
+
 - **Cause**: Context not attached to request object
 - **Solution**: Use middleware to attach request ID, user before error handler
 
 **Problem**: Async errors not caught
+
 - **Cause**: Missing try-catch or next() in async routes
 - **Solution**: Use express-async-errors or wrap all async routes
 
 **Problem**: Database connection errors crashing app
+
 - **Cause**: Uncaught promise rejections
 - **Solution**: Add process-level error handlers:
 
@@ -434,6 +443,7 @@ const errorHandlerOptions = {
 ## Best Practices
 
 DO:
+
 - Log all errors with sufficient context for debugging
 - Use specific error classes for different failure scenarios
 - Return consistent error format across all endpoints
@@ -443,6 +453,7 @@ DO:
 - Document error codes and responses in API documentation
 
 DON'T:
+
 - Expose internal implementation details in error messages
 - Log sensitive data (passwords, tokens, PII)
 - Ignore errors or swallow exceptions silently
@@ -452,6 +463,7 @@ DON'T:
 - Let programmer errors (bugs) be handled the same as operational errors
 
 TIPS:
+
 - Use error codes clients can handle programmatically (`INSUFFICIENT_FUNDS`, `RATE_LIMIT_EXCEEDED`)
 - Provide actionable error messages ("Email already registered, try logging in" not "Duplicate entry")
 - Group related errors with similar status codes (all validation = 400, all auth = 401/403)
@@ -476,6 +488,7 @@ TIPS:
 - **Memory leaks**: Ensure errors don't hold references to large objects
 
 **Optimization strategies:**
+
 ```javascript
 // Disable stack traces in production for performance
 if (process.env.NODE_ENV === 'production') {
@@ -502,6 +515,7 @@ const logger = winston.createLogger({
 - **Sensitive data in logs**: Redact passwords, tokens, SSNs before logging
 
 **Security checklist:**
+
 ```javascript
 // BAD: Exposes internal structure
 throw new Error(`User ${userId} not found in users table`);
@@ -522,21 +536,25 @@ if (!user || password !== user.password) {
 ## Troubleshooting
 
 **Error handler not catching errors:**
+
 1. Ensure error handler is registered AFTER all routes
 2. Check async routes call `next(error)` or use express-async-errors
 3. Verify middleware order: routes → 404 handler → error handler
 
 **Errors not logged:**
+
 1. Check logger configuration and file permissions
 2. Verify log level settings (error should be logged at all levels)
 3. Test logger independently before integration
 
 **Production errors too verbose:**
+
 1. Verify NODE_ENV=production environment variable
 2. Check conditional stack trace logic
 3. Test with actual production config locally
 
 **Error monitoring not working:**
+
 1. Verify API keys for Sentry/DataDog/New Relic
 2. Check network connectivity to monitoring service
 3. Test error reporting independently

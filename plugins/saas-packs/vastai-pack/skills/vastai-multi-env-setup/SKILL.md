@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Multi-Environment Setup
 
 ## Overview
+
 Configure separate Vast.ai environments for development, staging, and production by using different API keys, GPU profiles, and spending limits. Vast.ai does not have built-in environment isolation, so you implement it through configuration.
 
 ## Prerequisites
+
 - Vast.ai accounts or API keys per environment
 - Secrets manager for key storage
 - Understanding of GPU profile requirements per tier
@@ -147,6 +149,7 @@ docker tag training:latest ghcr.io/org/training:v1.2.3
 ```
 
 ## Output
+
 - Environment-specific configuration (dev, staging, production)
 - Instance limits and budget caps per environment
 - GPU whitelist enforcement
@@ -154,6 +157,7 @@ docker tag training:latest ghcr.io/org/training:v1.2.3
 - Environment-aware client wrapper
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Wrong environment selected | `VASTAI_ENV` not set | Default to `development` for safety |
@@ -162,10 +166,12 @@ docker tag training:latest ghcr.io/org/training:v1.2.3
 | Dev key used in prod | Environment variable misconfigured | Validate key matches expected account |
 
 ## Resources
+
 - [Vast.ai CLI](https://docs.vast.ai/cli/get-started)
 - [REST API](https://vast.ai/developers/api)
 
 ## Next Steps
+
 For observability and monitoring, see `vastai-observability`.
 
 ## Examples

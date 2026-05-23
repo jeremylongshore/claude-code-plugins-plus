@@ -22,17 +22,23 @@ User needs a landing page designed for growth: activation funnels, A/B testing, 
 
 1. **Identify product type and growth goal** from user request (acquisition, activation, PLG, trial, freemium, etc.)
 2. **Search landing page patterns:**
+
    ```bash
    python3 -m surge_agent.uiux search --domain landing --query "{product_type}" --limit 3
    ```
+
 3. **Search product reasoning:**
+
    ```bash
    python3 -m surge_agent.uiux search --domain product --query "{product_type}" --limit 3
    ```
+
 4. **Search UX for friction points:**
+
    ```bash
    python3 -m surge_agent.uiux search --domain ux --query "forms validation loading" --limit 3
    ```
+
 5. **Output** experiment-friendly structure with activation triggers and friction audit
 
 ## Output format

@@ -15,6 +15,7 @@ Positioning is always relative. "Differentiated" only has meaning in contrast to
 ## The Five Types of Competitive Alternatives
 
 ### 1. Direct Competitors
+
 Products in the same category that solve the same problem in a similar way.
 
 | Signal | Example |
@@ -24,6 +25,7 @@ Products in the same category that solve the same problem in a similar way.
 | Sales team encounters them in head-to-head deals | You lose deals specifically to this competitor |
 
 ### 2. Adjacent Competitors
+
 Products in a different category that customers repurpose to solve the same problem.
 
 | Signal | Example |
@@ -33,6 +35,7 @@ Products in a different category that customers repurpose to solve the same prob
 | Customers combine multiple tools to approximate your solution | Slack + Google Docs + Trello instead of a dedicated collaboration platform |
 
 ### 3. Manual Processes
+
 Human-powered alternatives that don't involve purchasing any product.
 
 | Signal | Example |
@@ -42,6 +45,7 @@ Human-powered alternatives that don't involve purchasing any product.
 | Work is done in email threads or meetings | Strategic planning happens in recurring meetings with no shared tool |
 
 ### 4. Outsourced or Hired Help
+
 Paying someone else to do the work instead of buying a tool.
 
 | Signal | Example |
@@ -51,6 +55,7 @@ Paying someone else to do the work instead of buying a tool.
 | Customers use a managed service | Using a managed IT service instead of IT management software |
 
 ### 5. Do Nothing (Status Quo)
+
 The customer simply accepts the problem and doesn't solve it.
 
 | Signal | Example |
@@ -62,9 +67,11 @@ The customer simply accepts the problem and doesn't solve it.
 ## Customer Interview Scripts
 
 ### Interview Setup
+
 Interview 15-20 of your happiest, most successful customers. These are the customers whose experience is most representative of good positioning, because they actually chose you and stayed.
 
 **Selection criteria for interviewees:**
+
 - Have been customers for at least 3-6 months
 - Are actively using the product (not dormant accounts)
 - Have renewed or expanded (if applicable)
@@ -74,6 +81,7 @@ Interview 15-20 of your happiest, most successful customers. These are the custo
 ### Core Interview Questions
 
 **Opening (establish context):**
+
 1. "Tell me about your role and what you're responsible for."
 2. "Walk me through how [your product] fits into your daily/weekly workflow."
 
@@ -94,7 +102,9 @@ Interview 15-20 of your happiest, most successful customers. These are the custo
 12. "If a colleague in your role at another company asked you what they should use, what would you tell them? What would you warn them about?"
 
 ### Follow-Up Probes
+
 When a customer mentions an alternative, go deeper:
+
 - "Tell me more about how you used [alternative] for this."
 - "What specifically didn't work about [alternative]?"
 - "What was good enough about [alternative] that you stuck with it as long as you did?"
@@ -111,6 +121,7 @@ Write every alternative on a sticky note or in a spreadsheet. Include the number
 
 **Step 2: Group similar alternatives**
 Combine alternatives that are functionally equivalent from the customer's perspective:
+
 - Excel, Google Sheets, and Numbers → "General-purpose spreadsheets"
 - Trello, Asana, Monday.com → "General project management tools"
 - McKinsey, Bain, Accenture → "Management consulting firms"
@@ -153,6 +164,7 @@ Different customer segments may have different primary alternatives:
 ### Countering "Do Nothing"
 
 Your positioning must address "do nothing" by:
+
 1. **Quantifying the cost of inaction** — "Companies like yours lose an average of $X per quarter to this problem"
 2. **Reducing perceived switching cost** — "Live in 2 weeks, not 6 months"
 3. **Demonstrating social proof** — "450 companies like yours already made the switch"
@@ -163,6 +175,7 @@ Your positioning must address "do nothing" by:
 Use this exercise in a team setting to build consensus on competitive alternatives.
 
 ### Materials Needed
+
 - Whiteboard or digital whiteboard (Miro, FigJam)
 - Sticky notes (5 colors for 5 alternative types)
 - Customer interview summaries

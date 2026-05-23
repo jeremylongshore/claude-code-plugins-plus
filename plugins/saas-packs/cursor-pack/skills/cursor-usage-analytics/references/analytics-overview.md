@@ -3,6 +3,7 @@
 ## Analytics Overview
 
 ### Available Metrics (Business/Enterprise)
+
 ```
 User Metrics:
 - Active users (daily/weekly/monthly)
@@ -25,6 +26,7 @@ Cost Metrics:
 ```
 
 ### Accessing Analytics
+
 ```
 Admin Dashboard > Analytics
 

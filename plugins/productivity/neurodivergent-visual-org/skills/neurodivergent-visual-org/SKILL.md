@@ -28,6 +28,7 @@ This skill supports four modes to adapt to different cognitive styles and access
 ### Mode Selection
 
 **Base Modes** (choose one):
+
 1. **Neurodivergent Mode** - ADHD-friendly, energy-aware, compassionate language
 2. **Neurotypical Mode** - Direct, efficient, standard cognitive load
 
@@ -36,6 +37,7 @@ This skill supports four modes to adapt to different cognitive styles and access
 4. **Monochrome Mode** - Pure black & white optimized for printing and e-ink displays
 
 #### Mode Combinations Available:
+
 - Neurodivergent + Colorblind-Safe
 - Neurodivergent + Monochrome
 - Neurotypical + Colorblind-Safe
@@ -46,18 +48,21 @@ This skill supports four modes to adapt to different cognitive styles and access
 #### Selection Methods:
 
 #### 1. Auto-Detect (Default)
+
 - Analyzes user language for distress signals ("overwhelmed", "paralyzed", "stuck")
 - Detects mentions of neurodivergent conditions or executive dysfunction
 - Detects accessibility requests ("colorblind-safe", "print-friendly", "grayscale")
 - Defaults to neurodivergent mode when ambiguous (inclusive design)
 
 #### 2. Explicit Mode Request
+
 - User says: "Use neurotypical mode" or "Use ADHD mode"
 - User says: "Use colorblind-safe mode" or "Make it print-friendly"
 - User says: "Combine neurodivergent and colorblind-safe modes"
 - Persists for current conversation unless changed
 
 #### 3. Configuration File
+
 - User creates: `.claude/neurodivergent-visual-org-preference.yml`
 - Sets default base mode, accessibility modes, time multipliers, chunk sizes
 - Can set auto-enable rules (e.g., monochrome for PDFs)
@@ -90,6 +95,7 @@ This skill supports four modes to adapt to different cognitive styles and access
 | WCAG compliance | 2.1 AA (Use of Color 1.4.1) | 2.1 AAA (Maximum contrast) |
 
 #### Mode Combination Notes:
+
 - Base mode controls language, time estimates, and cognitive scaffolding
 - Accessibility mode controls visual encoding (patterns, contrast, shapes)
 - Both can be active simultaneously for maximum accommodation
@@ -97,6 +103,7 @@ This skill supports four modes to adapt to different cognitive styles and access
 ### Backward Compatibility
 
 v3.1.1 maintains v3.0 behavior:
+
 - Defaults to neurodivergent base mode (v2.0 compatible)
 - Accessibility modes are opt-in (not enabled by default)
 - v3.0 visualizations remain valid (no breaking changes)
@@ -108,6 +115,7 @@ See [references/mode-detection-algorithm.md](references/mode-detection-algorithm
 ## Accessibility Mode Implementation
 
 See [references/accessibility-modes.md](references/accessibility-modes.md) for complete specifications including:
+
 - Colorblind-safe mode: border patterns, shape coding, text prefixes, color strategy
 - Monochrome mode: fill patterns, border styles, verbose labels, spacing
 - Mode combination logic and combined output examples
@@ -123,6 +131,7 @@ Create visual organizational tools that make invisible work visible and reduce c
 ## Why Visual Tools Work for ADHD Brains
 
 Visual aids externalize executive function by:
+
 - **Converting abstract concepts** (time, energy, priorities) into concrete visual formats
 - **Reducing working memory load** by moving information from internal to external scaffolding
 - **Combating "out of sight, out of mind"** through persistent visual presence
@@ -135,6 +144,7 @@ Research shows altered early sensory processing in ADHD (P1 component deficits),
 ## When to Use This Skill
 
 Use when the user:
+
 - Feels overwhelmed by a task or project ("I don't know where to start")
 - Needs to break down something complex into steps
 - Is stuck making a decision or mentions analysis paralysis
@@ -150,6 +160,7 @@ Use when the user:
 ## Core Principles
 
 #### Always apply these neurodivergent-friendly principles:
+
 - Use compassionate, non-judgmental language (never "just do it" or "should be easy")
 - Give realistic time estimates with buffer (use 1.5-2x what seems reasonable)
 - Acknowledge energy costs, not just time (consider spoon theory)
@@ -168,17 +179,20 @@ Use when the user:
 ### Color Psychology for ADHD
 
 #### Primary Palette (Use These)
+
 - **Blues and greens** in soft, muted tones - promote tranquility and focus
 - **Muted browns** - provide grounding without stimulation
 - **Soft pastels** (light blues, lavenders, pale greens) - reduce visual stress
 - **Muted yellows** (sparingly) - boost energy without overstimulation
 
 #### Avoid
+
 - Bright reds, oranges, intense yellows - increase hyperactivity/agitation
 - Bright saturated colors - cause sensory overload
 - Clashing color combinations - create visual stress
 
 #### Implementation
+
 - Use `forest` theme (green-based) or `neutral` theme (muted earth tones)
 - Apply 60-30-10 rule: 60% calming background, 30% secondary, 10% accent
 - Maintain 4.5:1 contrast ratio minimum (WCAG compliance)
@@ -187,11 +201,13 @@ Use when the user:
 ### Information Density Management
 
 #### Miller's Law + ADHD Considerations
+
 - Working memory holds 5-7 chunks (neurotypical) or 3-5 chunks (ADHD)
 - Stay at lower end (3-5 chunks) to prevent cognitive overload
 - Increased cognitive load reduces ADHD performance more severely
 
 #### Practical Limits
+
 - **Flowcharts**: 15-20 nodes maximum before splitting into multiple diagrams
 - **Mindmaps**: 3-4 levels deep maximum
 - **Pie charts**: 6-8 slices for readability
@@ -199,6 +215,7 @@ Use when the user:
 - **Sections**: Use timeline/journey sections to chunk events logically
 
 #### Implementation
+
 - Break complex diagrams into digestible sections
 - Use progressive disclosure (show relevant info upfront, details on demand)
 - Provide TL;DR sections at beginning of complex diagrams
@@ -207,17 +224,20 @@ Use when the user:
 ### Visual Hierarchy Principles
 
 **Size Contrast** (must be dramatic for ADHD attention)
+
 - H1 significantly larger than H2, which is notably larger than body text
 - Important nodes visibly larger than standard nodes
 - Use `classDef` to style critical elements distinctly
 
 #### Priority Signaling
+
 - Distinguish important information through bold or color
 - Use visual highlights for critical numbers or elements
 - Separate each instruction clearly
 - Implement color-coded systems for immediate visual feedback
 
 #### Avoid
+
 - Competing visual elements fighting for attention
 - Auto-playing animations or flashy effects (extremely distracting)
 - Blinking or flashing elements
@@ -299,12 +319,14 @@ When providing links to edit Mermaid diagrams in online playgrounds (like https:
 Mermaid diagrams use `<br/>` for line breaks in node text. These MUST be encoded properly in URLs.
 
 **❌ BROKEN** (angle brackets not encoded):
+
 ```
 https://mermaid.live/edit#pako:flowchart TD
     Start{Can decide<br/>in 3 seconds?}
 ```
 
 **✅ CORRECT** (all characters properly encoded):
+
 ```
 https://mermaid.live/edit#pako:flowchart%20TD%0A%20%20%20%20Start%7BCan%20decide%3Cbr%2F%3Ein%203%20seconds%3F%7D
 ```
@@ -326,6 +348,7 @@ url = f"https://mermaid.live/edit#pako:{encoded}"
 ```
 
 #### Key encodings:
+
 - `<` → `%3C`
 - `>` → `%3E`
 - `/` → `%2F`
@@ -349,6 +372,7 @@ Always include properly encoded playground links in your diagram output:
 ```
 
 This allows users to:
+
 - View rendered diagrams online
 - Edit and customize diagrams
 - Share diagrams with collaborators
@@ -357,6 +381,7 @@ This allows users to:
 ### Testing Links
 
 Before providing a playground link, verify that:
+
 1. The URL opens without errors
 2. The diagram renders correctly
 3. All `<br/>` tags display as line breaks (not literal `<br/>` text)
@@ -389,6 +414,7 @@ If angle brackets appear as literal text in the rendered diagram, the URL encodi
 - "Plan my day" → Timeline or Gantt (time-blocked)
 
 #### Always:
+
 ✅ Use calming colors (forest/neutral theme)
 ✅ Limit to 3-5 chunks per section
 ✅ Be compassionate and realistic
@@ -398,6 +424,7 @@ If angle brackets appear as literal text in the rendered diagram, the URL encodi
 ✅ Properly URL-encode playground links (REQUIRED for `<br/>` tags)
 
 #### Never:
+
 ❌ Judgmental language ("just" or "should")
 ❌ Unrealistic time estimates
 ❌ Too many nodes/elements
@@ -446,4 +473,3 @@ Creates ADHD-friendly visual organizational tools using Mermaid diagrams optimiz
 - [references/accessibility-modes.md](references/accessibility-modes.md) — colorblind-safe and monochrome specifications
 - [references/configuration-schema.md](references/configuration-schema.md) — user preference file schema and examples
 - [Mermaid documentation](https://mermaid.js.org/intro/) — official syntax reference
-

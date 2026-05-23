@@ -10,6 +10,7 @@ assemblyai-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize AssemblyAI costs and usage
 **Workflow:** Part of the cicd skill category for AssemblyAI integration.
 **Relates to:** Other assemblyai skills in this pack.

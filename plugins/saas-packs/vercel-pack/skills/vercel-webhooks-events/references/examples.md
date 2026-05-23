@@ -1,6 +1,7 @@
-# Examples
+## Examples
 
 ### Testing Webhooks Locally
+
 ```bash
 # Use ngrok to expose local server
 ngrok http 3000

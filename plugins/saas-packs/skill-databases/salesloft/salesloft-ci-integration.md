@@ -10,6 +10,7 @@ salesloft-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Salesloft CI/CD integration
 **Workflow:** Part of the cicd skill category for Salesloft integration.
 **Relates to:** Other salesloft skills in this pack.

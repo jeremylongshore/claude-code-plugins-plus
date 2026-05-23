@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Salesforce Production Checklist
 
 ## Overview
+
 Complete checklist for deploying Salesforce integrations to production, including sandbox validation, API limit planning, and rollback procedures.
 
 ## Prerequisites
+
 - Staging/sandbox environment tested and verified
 - Production Connected App configured
 - Dedicated integration user in production
@@ -36,6 +38,7 @@ Complete checklist for deploying Salesforce integrations to production, includin
 ## Instructions
 
 ### Pre-Deployment Configuration
+
 - [ ] Production Connected App has minimum OAuth scopes (not `full`)
 - [ ] Dedicated integration user with restricted profile (not admin)
 - [ ] SF_LOGIN_URL set to `https://login.salesforce.com` (not `test.salesforce.com`)
@@ -44,6 +47,7 @@ Complete checklist for deploying Salesforce integrations to production, includin
 - [ ] JWT certificate uploaded (if using JWT Bearer flow)
 
 ### API Limit Planning
+
 - [ ] Estimated daily API calls documented
 - [ ] API limit headroom > 20% (`GET /services/data/v59.0/limits/`)
 - [ ] Bulk API used for operations > 200 records
@@ -52,6 +56,7 @@ Complete checklist for deploying Salesforce integrations to production, includin
 - [ ] Caching implemented for describe/metadata calls
 
 ### Code Quality
+
 - [ ] All SOQL queries use parameterized filters (no injection)
 - [ ] Error handling covers Salesforce error codes (`INVALID_FIELD`, `REQUEST_LIMIT_EXCEEDED`, etc.)
 - [ ] Retry logic implemented for transient errors (`UNABLE_TO_LOCK_ROW`, `SERVER_UNAVAILABLE`)
@@ -60,6 +65,7 @@ Complete checklist for deploying Salesforce integrations to production, includin
 - [ ] Logging redacts PII and credentials
 
 ### Sandbox Validation
+
 ```bash
 # Test in Full sandbox first (mirrors production data)
 # 1. Deploy to sandbox
@@ -76,6 +82,7 @@ sf apex run test --target-org my-sandbox --result-format human --code-coverage
 ```
 
 ### Health Check Endpoint
+
 ```typescript
 async function salesforceHealthCheck(): Promise<{
   status: 'healthy' | 'degraded' | 'unhealthy';
@@ -112,6 +119,7 @@ async function salesforceHealthCheck(): Promise<{
 ```
 
 ### Deployment Steps
+
 ```bash
 # 1. Pre-flight: check Salesforce system status
 curl -s https://api.status.salesforce.com/v1/incidents/active | jq 'length'
@@ -130,6 +138,7 @@ curl -sf https://yourapp.com/health | jq '.services.salesforce'
 ```
 
 ### Rollback Procedure
+
 ```bash
 # Metadata rollback
 sf project deploy start --target-org production --metadata-dir rollback/
@@ -140,6 +149,7 @@ SF_INTEGRATION_ENABLED=false
 ```
 
 ## Error Handling
+
 | Alert | Condition | Severity |
 |-------|-----------|----------|
 | API Limit Warning | > 80% daily limit used | P3 |
@@ -149,9 +159,11 @@ SF_INTEGRATION_ENABLED=false
 | Record Lock | UNABLE_TO_LOCK_ROW spikes | P3 |
 
 ## Resources
+
 - [Salesforce Status Page](https://status.salesforce.com)
 - [Deployment Best Practices](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_develop.htm)
 - [Sandbox Types](https://help.salesforce.com/s/articleView?id=sf.deploy_sandboxes_intro.htm)
 
 ## Next Steps
+
 For version upgrades, see `salesforce-upgrade-migration`.

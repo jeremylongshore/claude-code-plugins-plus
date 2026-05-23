@@ -167,6 +167,7 @@ print("Forecast alert created: warns if burn rate exceeds budget")
 Apply these strategies to reduce OCI spending:
 
 **Always Free tier resources** — run dev/test workloads for free:
+
 - 2 AMD Compute VMs (1/8 OCPU, 1 GB each) or 4 Arm A1 VMs (24 GB total)
 - 200 GB total block storage, 10 GB object storage
 - 1 Autonomous Database (20 GB), 10 Mbps load balancer
@@ -210,6 +211,7 @@ print("Preemptible instance launched — up to 50% cost savings")
 ## Output
 
 Successful completion produces:
+
 - Usage API queries showing cost breakdown by service, compartment, and SKU
 - A monthly budget with alert rules at 80% and 95% thresholds
 - A forecast-based alert for projected overspend

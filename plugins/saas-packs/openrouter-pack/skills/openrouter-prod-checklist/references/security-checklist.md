@@ -3,6 +3,7 @@
 ## Security Checklist
 
 ### Key Management
+
 ```python
 # ✓ Correct: Environment variable
 api_key = os.environ["OPENROUTER_API_KEY"]
@@ -17,6 +18,7 @@ api_key = client.access_secret_version(name=secret_path).payload.data.decode()
 ```
 
 ### Request Validation
+
 ```python
 def validate_request(prompt: str, model: str):
     """Validate before sending to API."""
@@ -34,6 +36,7 @@ def validate_request(prompt: str, model: str):
 ```
 
 ### Response Handling
+
 ```python
 def safe_extract_response(response) -> str:
     """Safely extract content from response."""

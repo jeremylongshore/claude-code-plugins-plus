@@ -10,6 +10,7 @@ apify-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Apify production deployment checklist
 **Workflow:** Part of the operations skill category for Apify integration.
 **Relates to:** Other apify skills in this pack.

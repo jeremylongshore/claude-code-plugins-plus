@@ -1,6 +1,7 @@
 # OpenEvidence Performance Tuning - Implementation Details
 
 ## Query Optimization
+
 ```typescript
 function optimizeQuestion(question: string): string {
   return question.replace(/\b(please|can you|could you)\b/gi, '').replace(/\s+/g, ' ').trim() + '?';
@@ -17,6 +18,7 @@ function optimizeContext(context: ClinicalContext): ClinicalContext {
 ```
 
 ## Intelligent Caching Layer
+
 ```typescript
 export class ClinicalQueryCache {
   private getTTL(question: string, context: ClinicalContext): number {
@@ -32,12 +34,14 @@ export class ClinicalQueryCache {
 ```
 
 ## Connection Pooling & Keep-Alive
+
 ```typescript
 const httpsAgent = new Agent({ keepAlive: true, keepAliveMsecs: 30000, maxSockets: 10, maxFreeSockets: 5 });
 export const optimizedClient = new OpenEvidenceClient({ httpAgent: httpsAgent, timeout: 30000 });
 ```
 
 ## Request Batching
+
 ```typescript
 const queryBatcher = new DataLoader(async (queries) => {
   return Promise.all(queries.map(q => optimizedClient.query(q)));
@@ -45,6 +49,7 @@ const queryBatcher = new DataLoader(async (queries) => {
 ```
 
 ## Response Streaming
+
 ```typescript
 export async function streamingClinicalQuery(question: string, context: ClinicalContext, onPartial: (partial: string) => void) {
   if (optimizedClient.supportsStreaming?.()) {
@@ -60,6 +65,7 @@ export async function streamingClinicalQuery(question: string, context: Clinical
 ```
 
 ## Performance Monitoring
+
 Prometheus metrics: queryLatency histogram, cacheHits/Misses counters, queueSize gauge.
 
 ---

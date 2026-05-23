@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Hex Security Basics
 
 ## Overview
+
 Hex is a collaborative data analytics platform where notebooks query production databases, generate visualizations, and share results across teams. Security concerns center on API token management (read vs run scopes), protecting database connection credentials embedded in Hex projects, and ensuring query results containing sensitive business data are not leaked through logs or exports. A compromised run-scope token can trigger arbitrary queries against connected databases.
 
 ## API Key Management
+
 ```typescript
 function createHexClient(scope: "read" | "run"): { token: string; baseUrl: string } {
   const envVar = scope === "run" ? "HEX_RUN_TOKEN" : "HEX_READ_TOKEN";
@@ -42,6 +44,7 @@ function createHexClient(scope: "read" | "run"): { token: string; baseUrl: strin
 ```
 
 ## Webhook Signature Verification
+
 ```typescript
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
@@ -59,6 +62,7 @@ function verifyHexWebhook(req: Request, res: Response, next: NextFunction): void
 ```
 
 ## Input Validation
+
 ```typescript
 import { z } from "zod";
 
@@ -75,6 +79,7 @@ function validateHexRunRequest(data: unknown) {
 ```
 
 ## Data Protection
+
 ```typescript
 const HEX_SENSITIVE_FIELDS = ["db_connection_string", "query_results", "api_token", "input_params", "export_url"];
 
@@ -88,6 +93,7 @@ function redactHexLog(record: Record<string, unknown>): Record<string, unknown> 
 ```
 
 ## Security Checklist
+
 - [ ] API tokens stored in secrets vault, never in code
 - [ ] Read-only tokens for monitoring, run tokens for orchestration only
 - [ ] Token expiration set to 90 days maximum
@@ -98,6 +104,7 @@ function redactHexLog(record: Record<string, unknown>): Record<string, unknown> 
 - [ ] Notebook sharing permissions audited per team
 
 ## Error Handling
+
 | Vulnerability | Risk | Mitigation |
 |---|---|---|
 | Leaked run-scope token | Arbitrary queries against production databases | Secrets vault + least-privilege scoping |
@@ -107,8 +114,10 @@ function redactHexLog(record: Record<string, unknown>): Record<string, unknown> 
 | No token expiration | Indefinite access from compromised token | 90-day expiration policy |
 
 ## Resources
+
 - [Hex API Authentication](https://learn.hex.tech/docs/api/api-overview)
 - [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
 
 ## Next Steps
+
 See `hex-prod-checklist`.

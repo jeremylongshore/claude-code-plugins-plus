@@ -9,6 +9,7 @@
 **Scenario:** Your team is about to deploy a new payment processing feature to production. You need to ensure it meets security standards before launch.
 
 **Challenge:**
+
 - New feature handles sensitive payment data (PCI DSS compliance required)
 - Multiple developers contributed code (varying security awareness)
 - Tight deadline (2 days until launch)
@@ -85,6 +86,7 @@ const paymentLimiter = rateLimit({
 ```
 
 **Outcome:**
+
 - **Prevented:** PCI DSS compliance violation (potential $5,000-$100,000/month fines)
 - **Saved:** $3,000-$5,000 (cost of external security audit)
 - **Time:** 8.5 hours total (vs. 2-3 weeks for traditional audit)
@@ -97,6 +99,7 @@ const paymentLimiter = rateLimit({
 **Scenario:** Your production API experienced unauthorized data access. You need to quickly identify the vulnerability and assess the scope.
 
 **Challenge:**
+
 - Users reported seeing other users' data
 - Incident occurred 2 hours ago
 - Need to identify vulnerability immediately
@@ -173,6 +176,7 @@ Ask Threat Modeler:
 ```
 
 **Outcome:**
+
 - **Response Time:** Vulnerability identified and patched within 3 hours
 - **Scope:** Accurately assessed data exposure for GDPR breach notification
 - **Prevented:** Further unauthorized access (15,000 users protected)
@@ -186,6 +190,7 @@ Ask Threat Modeler:
 **Scenario:** Your team is migrating to Kubernetes. You need to ensure all container images meet security standards before production deployment.
 
 **Challenge:**
+
 - 25 microservices (25 Docker images)
 - Varying base images (Ubuntu, Alpine, Node, Python)
 - Some images built by different teams
@@ -293,6 +298,7 @@ jobs:
 ```
 
 **Outcome:**
+
 - **Vulnerabilities Fixed:** 247 → 0 critical issues
 - **Compliance:** Met Kubernetes security best practices
 - **Automation:** Security scanning integrated into CI/CD (prevents future issues)
@@ -306,6 +312,7 @@ jobs:
 **Scenario:** Your healthcare startup is preparing for first HIPAA audit. Auditors arrive in 4 weeks.
 
 **Challenge:**
+
 - No existing HIPAA documentation
 - Small team (5 developers) with limited compliance knowledge
 - Electronic Protected Health Information (ePHI) stored in application
@@ -407,12 +414,14 @@ Identified Risks:
 - Practice audit interview questions
 
 **Audit Result:**
+
 - **Passed** HIPAA audit on first attempt
 - **Minor Findings:** 3 (documentation formatting issues only)
 - **Major Findings:** 0
 - **Critical Findings:** 0
 
 **Outcome:**
+
 - **Time Saved:** 6-8 weeks (manual documentation would take 200+ hours)
 - **Cost Saved:** $15,000-$25,000 (HIPAA consultant fees)
 - **Risk Avoided:** Potential $50,000 per violation fines
@@ -425,6 +434,7 @@ Identified Risks:
 **Scenario:** Your startup is launching a public REST API for third-party developers. You need to ensure it's secure before making it public.
 
 **Challenge:**
+
 - First public API (no prior experience)
 - Will be used by thousands of developers
 - Needs to handle high traffic
@@ -548,12 +558,14 @@ Identified Threats:
 ```
 
 **Public Launch:**
+
 - **Security Score:** A+ (0 critical, 0 high vulnerabilities)
 - **Performance:** Handles 10,000 req/min with auto-scaling
 - **Uptime:** 99.99% first month
 - **Security Incidents:** 0 in first 6 months
 
 **Outcome:**
+
 - **Prevented:** API abuse and data breaches
 - **Developer Trust:** Developers feel confident using secure API
 - **Business Impact:** 1,000+ developers integrated in first month
@@ -566,6 +578,7 @@ Identified Threats:
 **Scenario:** Your team implemented custom encryption for user data. You need to verify it's implemented correctly before production.
 
 **Challenge:**
+
 - Team unfamiliar with cryptography best practices
 - Storing sensitive PII (personally identifiable information)
 - GDPR compliance required (data protection by design)
@@ -672,6 +685,7 @@ function encryptPII(plaintext) {
 ```
 
 **Outcome:**
+
 - **Prevented:** Catastrophic data breach (weak MD5 passwords, compromised encryption)
 - **GDPR Compliance:** Achieved "data protection by design" requirement
 - **Reputation:** Avoided security researcher disclosure of broken crypto
@@ -684,6 +698,7 @@ function encryptPII(plaintext) {
 **Scenario:** Your startup hired 3 junior developers. They need security training but you have no dedicated security team.
 
 **Challenge:**
+
 - Junior developers with limited security knowledge
 - No budget for external security training ($2,000+ per person)
 - Need practical, hands-on learning
@@ -771,6 +786,7 @@ Ask Threat Modeler:
 - Share findings and fixes with team
 
 **Outcome:**
+
 - **Knowledge:** Developers gained practical security skills
 - **Cost Saved:** $6,000 (3 developers × $2,000 training cost)
 - **Culture:** Security-first mindset embedded in team

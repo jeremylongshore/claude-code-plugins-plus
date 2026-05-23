@@ -10,6 +10,7 @@ apify-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Apify primary workflow
 **Workflow:** Part of the onboarding skill category for Apify integration.
 **Relates to:** Other apify skills in this pack.

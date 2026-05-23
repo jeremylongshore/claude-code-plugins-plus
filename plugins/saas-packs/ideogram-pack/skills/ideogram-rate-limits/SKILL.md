@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Rate Limits
 
 ## Overview
+
 Handle Ideogram's rate limits with exponential backoff, request queuing, and concurrency control. Ideogram enforces a default limit of **10 in-flight requests** (concurrent, not per-minute). Image generation takes 5-15 seconds per call, so this limit can be hit quickly during batch operations.
 
 ## Prerequisites
+
 - `IDEOGRAM_API_KEY` configured
 - Understanding of async patterns
 - `p-queue` npm package (optional, for queue-based approach)
@@ -46,6 +48,7 @@ Handle Ideogram's rate limits with exponential backoff, request queuing, and con
 ## Instructions
 
 ### Step 1: Exponential Backoff with Jitter
+
 ```typescript
 async function withBackoff<T>(
   operation: () => Promise<T>,
@@ -74,6 +77,7 @@ async function withBackoff<T>(
 ```
 
 ### Step 2: Concurrency-Limited Queue
+
 ```typescript
 import PQueue from "p-queue";
 
@@ -107,6 +111,7 @@ const results = await Promise.all(prompts.map(p => queuedGenerate(p)));
 ```
 
 ### Step 3: Token Bucket Rate Limiter
+
 ```typescript
 class TokenBucket {
   private tokens: number;
@@ -150,6 +155,7 @@ async function throttledGenerate(prompt: string) {
 ```
 
 ### Step 4: Batch with Progress Tracking
+
 ```typescript
 async function batchGenerate(
   prompts: string[],
@@ -174,6 +180,7 @@ async function batchGenerate(
 ```
 
 ## Error Handling
+
 | Scenario | Detection | Action |
 |----------|-----------|--------|
 | 429 received | HTTP status | Exponential backoff + retry |
@@ -182,15 +189,18 @@ async function batchGenerate(
 | Credits exhausted | 402 status | Alert, stop batch immediately |
 
 ## Output
+
 - Reliable API calls with automatic retry on 429
 - Concurrency-controlled request queue
 - Token bucket for sustained throughput
 - Batch processing with progress and error tracking
 
 ## Resources
+
 - [Ideogram API Overview](https://developer.ideogram.ai/ideogram-api/api-overview)
 - [p-queue](https://github.com/sindresorhus/p-queue)
 - Enterprise limits: `partnership@ideogram.ai`
 
 ## Next Steps
+
 For security configuration, see `ideogram-security-basics`.

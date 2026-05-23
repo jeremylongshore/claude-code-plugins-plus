@@ -33,6 +33,7 @@ This skill empowers Claude to perform sentiment analysis on text, providing insi
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Determine the overall sentiment of customer reviews.
 - Analyze the emotional tone of social media posts.
 - Gauge public opinion on a particular topic.
@@ -45,6 +46,7 @@ This skill activates when you need to:
 User request: "Analyze the sentiment of these customer reviews: 'The product is amazing!', 'The service was terrible.', 'It was okay.'"
 
 The skill will:
+
 1. Process the provided customer reviews.
 2. Classify each review as positive, negative, or neutral and provide sentiment scores.
 
@@ -53,6 +55,7 @@ The skill will:
 User request: "Perform sentiment analysis on the following tweet: 'I love this new feature!'"
 
 The skill will:
+
 1. Analyze the provided tweet.
 2. Identify the sentiment as positive and provide a corresponding sentiment score.
 

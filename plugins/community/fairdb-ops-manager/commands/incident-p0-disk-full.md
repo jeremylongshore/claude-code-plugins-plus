@@ -11,6 +11,7 @@ model: sonnet
 You are responding to a **disk space emergency** that threatens database operations.
 
 ## Severity: P0 - CRITICAL
+
 - **Impact:** Database writes failing, potential data loss
 - **Response Time:** IMMEDIATE
 - **Resolution Target:** <30 minutes
@@ -18,6 +19,7 @@ You are responding to a **disk space emergency** that threatens database operati
 ## IMMEDIATE DANGER SIGNS
 
 If disk is at 100%:
+
 - ❌ PostgreSQL cannot write data
 - ❌ WAL files cannot be created
 - ❌ Transactions will fail
@@ -29,6 +31,7 @@ If disk is at 100%:
 ## RAPID ASSESSMENT
 
 ### 1. Check Current Usage
+
 ```bash
 # Overall disk usage
 df -h
@@ -44,6 +47,7 @@ find /var/lib/postgresql/16/main -type f -size +100M -exec ls -lh {} \; | sort -
 ```
 
 ### 2. Identify Culprits
+
 ```bash
 # Check log sizes
 du -sh /var/log/postgresql/
@@ -181,6 +185,7 @@ sudo -u postgres psql -c "DROP DATABASE [database_name];"
 ### Option 1: Increase Disk Size
 
 **Contabo/VPS Provider:**
+
 1. Log into provider control panel
 2. Upgrade storage plan
 3. Resize disk partition
@@ -230,12 +235,14 @@ ALTER TABLE [table_name] SET (autovacuum_vacuum_scale_factor = 0.05);
 ### Set Up Disk Monitoring
 
 Add to cron (`crontab -e`):
+
 ```bash
 # Check disk space every hour
 0 * * * * /opt/fairdb/scripts/check-disk-space.sh
 ```
 
 **Create script** `/opt/fairdb/scripts/check-disk-space.sh`:
+
 ```bash
 #!/bin/bash
 THRESHOLD=80
@@ -249,6 +256,7 @@ fi
 ### Configure Log Rotation
 
 Edit `/etc/logrotate.d/postgresql`:
+
 ```
 /var/log/postgresql/*.log {
     daily
@@ -270,6 +278,7 @@ ALTER DATABASE customer_db_001 SET max_database_size = '10GB';
 ## POST-RECOVERY ACTIONS
 
 ### 1. Verify Database Health
+
 ```bash
 # Check PostgreSQL status
 sudo systemctl status postgresql
@@ -335,6 +344,7 @@ Disk at 100%?
 ## START RESPONSE
 
 Ask user:
+
 1. "What is the current disk usage? (run `df -h`)"
 2. "Is PostgreSQL still running?"
 3. "When did this start happening?"

@@ -27,6 +27,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Architecture Variants
 
 ## Overview
+
 Three deployment architectures for Exa neural search at different scales. Each uses real Exa SDK methods: `search`, `searchAndContents`, `findSimilar`, `getContents`, and `answer`.
 
 ## Decision Matrix
@@ -43,6 +44,7 @@ Three deployment architectures for Exa neural search at different scales. Each u
 ## Instructions
 
 ### Variant 1: Direct Search Integration
+
 **Best for:** Adding search to an existing app, < 1K queries/day.
 
 ```typescript
@@ -78,6 +80,7 @@ app.get("/api/search", async (req, res) => {
 ```
 
 ### Variant 2: Cached Search with Category Profiles
+
 **Best for:** High-traffic search, 1K-50K queries/day, content discovery.
 
 ```typescript
@@ -124,6 +127,7 @@ async function cachedProfileSearch(
 ```
 
 ### Variant 3: Full RAG Pipeline
+
 **Best for:** AI-powered answers, research agents, 50K+ queries/day.
 
 ```typescript
@@ -213,6 +217,7 @@ class ExaRAGPipeline {
 | RAG Pipeline | 2-3 API calls per question; cache aggressively |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Slow search in UI | No caching | Add LRU or Redis cache |
@@ -221,9 +226,11 @@ class ExaRAGPipeline {
 | High API costs | No query deduplication | Cache layer deduplicates identical queries |
 
 ## Resources
+
 - [Exa API Documentation](https://docs.exa.ai)
 - [Exa Contents Retrieval](https://docs.exa.ai/reference/contents-retrieval)
 - [Exa Find Similar](https://docs.exa.ai/reference/find-similar-links)
 
 ## Next Steps
+
 For reference architecture details, see `exa-reference-architecture`.

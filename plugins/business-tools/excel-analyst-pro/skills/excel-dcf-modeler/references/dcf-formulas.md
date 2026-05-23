@@ -19,36 +19,43 @@ Revenue (Year 0 - Year 5)
 ## Excel Formulas
 
 ### FCF Formula
+
 ```excel
 =NOPAT + D&A - CapEx - ΔWC
 ```
 
 ### Present Value of FCF
+
 ```excel
 =FCF_Year1/(1+WACC)^1 + FCF_Year2/(1+WACC)^2 + ... + FCF_Year5/(1+WACC)^5
 ```
 
 ### Terminal Value (Gordon Growth)
+
 ```excel
 =FCF_Year5*(1+TerminalGrowth)/(WACC-TerminalGrowth)
 ```
 
 ### PV of Terminal Value
+
 ```excel
 =TerminalValue/(1+WACC)^5
 ```
 
 ### Enterprise Value
+
 ```excel
 =SUM(PV_FCF) + PV_TerminalValue
 ```
 
 ### Equity Value
+
 ```excel
 =EnterpriseValue - NetDebt + NonOperatingAssets
 ```
 
 ### Per Share Value
+
 ```excel
 =EquityValue/SharesOutstanding
 ```
@@ -68,6 +75,7 @@ Tc = Corporate tax rate
 ```
 
 ### Cost of Equity (CAPM)
+
 ```excel
 Re = Rf + β × (Rm - Rf)
 

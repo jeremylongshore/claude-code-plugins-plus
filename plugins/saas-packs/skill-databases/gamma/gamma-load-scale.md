@@ -10,6 +10,7 @@ gamma-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Gamma load testing and scaling
 **Workflow:** Part of the enterprise skill category for Gamma integration.
 **Relates to:** Other gamma skills in this pack.

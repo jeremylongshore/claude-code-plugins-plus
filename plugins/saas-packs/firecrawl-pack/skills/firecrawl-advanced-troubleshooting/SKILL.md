@@ -27,11 +27,13 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Advanced Troubleshooting
 
 ## Overview
+
 Deep debugging techniques for complex Firecrawl issues: empty scrapes on certain domains, crawl jobs that never complete, inconsistent extraction results, and webhook delivery failures. Uses systematic layer-by-layer isolation.
 
 ## Instructions
 
 ### Step 1: Minimal Reproduction
+
 ```typescript
 import FirecrawlApp from "@mendable/firecrawl-js";
 
@@ -80,6 +82,7 @@ async function minimalRepro() {
 ```
 
 ### Step 2: Layer-by-Layer Isolation
+
 ```typescript
 async function diagnose(url: string) {
   const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY! });
@@ -146,6 +149,7 @@ console.table(results);
 ```
 
 ### Step 3: Debug Empty Scrapes
+
 ```typescript
 // When scrapeUrl returns empty or thin markdown:
 async function debugEmptyScrape(url: string) {
@@ -181,6 +185,7 @@ async function debugEmptyScrape(url: string) {
 ```
 
 ### Step 4: Debug Stuck Crawl Jobs
+
 ```typescript
 async function debugCrawlJob(jobId: string) {
   const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY! });
@@ -204,6 +209,7 @@ async function debugCrawlJob(jobId: string) {
 ```
 
 ### Step 5: Timing Analysis
+
 ```typescript
 async function timeScrape(url: string, iterations = 5) {
   const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY! });
@@ -223,6 +229,7 @@ async function timeScrape(url: string, iterations = 5) {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Empty markdown, HTML exists | Shadow DOM or iframes | Use `actions` to interact with page |
@@ -232,6 +239,7 @@ async function timeScrape(url: string, iterations = 5) {
 | Webhook never fires | URL unreachable | Test with `curl` to your endpoint first |
 
 ## Support Escalation Template
+
 ```
 Subject: [P1/P2/P3] [Brief description]
 
@@ -250,9 +258,11 @@ Workarounds tried:
 ```
 
 ## Resources
+
 - [Firecrawl Advanced Scraping](https://docs.firecrawl.dev/advanced-scraping-guide)
 - [GitHub Issues](https://github.com/mendableai/firecrawl/issues)
 - [Firecrawl Discord](https://discord.gg/firecrawl)
 
 ## Next Steps
+
 For load testing, see `firecrawl-load-scale`.

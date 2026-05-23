@@ -27,14 +27,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Migration Deep Dive
 
 ## Current State
+
 !`windsurf --version 2>/dev/null || echo 'Not installed'`
 !`code --version 2>/dev/null | head -1 || echo 'VS Code not installed'`
 !`cursor --version 2>/dev/null | head -1 || echo 'Cursor not installed'`
 
 ## Overview
+
 Comprehensive guide for migrating teams to Windsurf from VS Code + Copilot, Cursor, or other AI editors. Covers settings transfer, concept mapping, team rollout planning, and rollback strategy.
 
 ## Prerequisites
+
 - Current editor still installed (for config export)
 - Target repositories identified
 - Team buy-in for evaluation period
@@ -193,6 +196,7 @@ rollback:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Extension doesn't work in Windsurf | VS Code API incompatibility | Check Windsurf marketplace for alternative |
@@ -204,6 +208,7 @@ rollback:
 ## Examples
 
 ### Quick Evaluation Script
+
 ```bash
 # Install Windsurf alongside existing editor
 brew install --cask windsurf  # macOS
@@ -217,6 +222,7 @@ cursor /path/to/project  # or: code /path/to/project
 ```
 
 ### Concept Quick Reference
+
 ```
 Copilot → Supercomplete (Tab completions)
 Copilot Chat → Cascade Chat (Cmd+L, Chat mode)
@@ -228,9 +234,11 @@ Cmd+K (Cursor) → Cmd+I (Windsurf Command)
 ```
 
 ## Resources
+
 - [Windsurf Download](https://windsurf.com/download)
 - [Windsurf vs Cursor Comparison](https://windsurf.com/compare/windsurf-vs-cursor)
 - [Windsurf Changelog](https://windsurf.com/changelog)
 
 ## Next Steps
+
 For advanced troubleshooting, see `windsurf-advanced-troubleshooting`.

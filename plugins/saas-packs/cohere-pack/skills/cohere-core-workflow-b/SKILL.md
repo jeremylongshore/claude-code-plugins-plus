@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Cohere Tool Use & Agents (Core Workflow B)
 
 ## Overview
+
 Build multi-step tool-using agents with Cohere's Chat API v2. The model decides which tools to call, you execute them, and feed results back in a loop until the task is complete.
 
 ## Prerequisites
+
 - Completed `cohere-install-auth` setup
 - Understanding of `cohere-core-workflow-a` (RAG)
 - Command R7B or newer model (required for tool use)
@@ -246,12 +248,14 @@ async function streamWithTools(userMessage: string) {
 ```
 
 ## Output
+
 - Single-step tool calls with automatic execution
 - Multi-step agent loop handling sequential reasoning
 - Parallel tool execution for independent calls
 - Streaming with tool-call events
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `tool not found` | Mismatched tool name | Verify `tools` array matches executors |
@@ -260,10 +264,12 @@ async function streamWithTools(userMessage: string) {
 | `TOOL_CALL` with no toolCalls | Edge case | Check `response.message?.toolCalls` length |
 
 ## Resources
+
 - [Tool Use Quickstart](https://docs.cohere.com/docs/tool-use-quickstart)
 - [Multi-Step Tool Use](https://docs.cohere.com/docs/multi-step-tool-use)
 - [Tool Use Streaming](https://docs.cohere.com/docs/tool-use-streaming)
 - [Tool Use Citations](https://docs.cohere.com/docs/tool-use-citations)
 
 ## Next Steps
+
 For common errors, see `cohere-common-errors`.

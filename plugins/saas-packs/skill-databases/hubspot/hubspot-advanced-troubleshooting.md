@@ -10,6 +10,7 @@ hubspot-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply HubSpot advanced debugging
 **Workflow:** Part of the enterprise skill category for HubSpot integration.
 **Relates to:** Other hubspot skills in this pack.

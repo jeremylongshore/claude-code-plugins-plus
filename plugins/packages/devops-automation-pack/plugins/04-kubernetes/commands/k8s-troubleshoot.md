@@ -6,6 +6,8 @@ category: devops
 difficulty: advanced
 estimated_time: 2 minutes
 ---
+
+<!-- markdownlint-disable MD024 -->
 <!-- DESIGN DECISION: Streamlines K8s debugging -->
 <!-- Kubernetes failures are cryptic (CrashLoopBackOff, ImagePullBackOff, OOMKilled).
      Developers waste hours running kubectl describe/logs/events manually.
@@ -23,13 +25,13 @@ Systematically debugs Kubernetes pod failures (CrashLoopBackOff, ImagePullBackOf
 
 ## When to Use This
 
--  Pod stuck in CrashLoopBackOff
--  Pod stuck in ImagePullBackOff
--  Pod stuck in Pending
--  Pod terminated with OOMKilled
--  Service not accessible
--  Ingress not routing traffic
--  Cluster-level issues (use cluster admin tools)
+- Pod stuck in CrashLoopBackOff
+- Pod stuck in ImagePullBackOff
+- Pod stuck in Pending
+- Pod terminated with OOMKilled
+- Service not accessible
+- Ingress not routing traffic
+- Cluster-level issues (use cluster admin tools)
 
 ## How It Works
 
@@ -42,6 +44,7 @@ You are a Kubernetes troubleshooting expert. When user runs `/k8s-troubleshoot` 
    - What symptom? (CrashLoopBackOff, Pending, etc.)
 
 2. **Gather diagnostic data:**
+
    ```bash
    kubectl get pod <pod> -n <namespace>
    kubectl describe pod <pod> -n <namespace>
@@ -76,7 +79,9 @@ You are a Kubernetes troubleshooting expert. When user runs `/k8s-troubleshoot` 
 ## Evidence
 
 ```
+
 [Relevant logs/events/describe output]
+
 ```
 
 ## Fix
@@ -88,6 +93,7 @@ You are a Kubernetes troubleshooting expert. When user runs `/k8s-troubleshoot` 
 ```bash
 [Commands to verify fix worked]
 ```
+
 ```
 
 ## Examples
@@ -134,10 +140,12 @@ kubectl logs webapp-7d6f9c8b4-x9k2l -n production --previous
 ## Evidence
 
 ```
+
 Error from container logs:
   Error: getaddrinfo ENOTFOUND postgres
   Error: Failed to connect to database at postgres:5432
   at TCPConnectWrap.afterConnect [as oncomplete]
+
 ```
 
 ## Root Cause Analysis
@@ -161,11 +169,13 @@ If missing, deploy database or create service pointing to external database.
 ### Option 2: Wrong hostname in environment variable
 
 Check current DATABASE_URL:
+
 ```bash
 kubectl get deploy webapp -n production -o yaml | grep DATABASE_URL
 ```
 
 Fix the environment variable in deployment:
+
 ```yaml
 env:
 - name: DATABASE_URL
@@ -174,6 +184,7 @@ env:
 ```
 
 Apply fix:
+
 ```bash
 kubectl set env deployment/webapp \
   DATABASE_URL="postgresql://user:pass@postgres-service:5432/dbname" \
@@ -183,6 +194,7 @@ kubectl set env deployment/webapp \
 ### Option 3: Database in different namespace
 
 If database is in namespace "database", use FQDN:
+
 ```bash
 kubectl set env deployment/webapp \
   DATABASE_URL="postgresql://user:pass@postgres.database.svc.cluster.local:5432/dbname" \
@@ -202,6 +214,7 @@ kubectl logs -f deployment/webapp -n production
 kubectl get pods -n production
 # Should show: Running (not CrashLoopBackOff)
 ```
+
 ```
 
 ### Example 2: ImagePullBackOff
@@ -225,11 +238,13 @@ kubectl get pods -n production
 ## Evidence
 
 ```
+
 Events:
   Warning  Failed     3m (x4 over 5m)  kubelet  Failed to pull image "myregistry.io/api:v2.0.0": rpc error: code = Unknown desc = Error response from daemon: pull access denied for myregistry.io/api, repository does not exist or may require 'docker login'
   Warning  Failed     3m (x4 over 5m)  kubelet  Error: ErrImagePull
   Normal   BackOff    2m (x6 over 5m)  kubelet  Back-off pulling image "myregistry.io/api:v2.0.0"
   Warning  Failed     2m (x6 over 5m)  kubelet  Error: ImagePullBackOff
+
 ```
 
 ## Root Cause Analysis
@@ -276,6 +291,7 @@ spec:
 ```
 
 Apply fix:
+
 ```bash
 kubectl patch deployment api-deployment -n staging -p '
 spec:
@@ -308,6 +324,7 @@ kubectl describe pod <new-pod-name> -n staging
 # Verify pod is running
 kubectl get pods -n staging
 ```
+
 ```
 
 ### Example 3: Pod Pending (Resource Constraints)
@@ -331,6 +348,7 @@ kubectl get pods -n staging
 ## Evidence
 
 ```
+
 Events:
   Warning  FailedScheduling  2m (x10 over 5m)  default-scheduler  0/3 nodes are available: 3 Insufficient cpu.
 
@@ -338,6 +356,7 @@ Pod resource requests:
   Requests:
     cpu: 4000m
     memory: 8Gi
+
 ```
 
 ## Root Cause Analysis
@@ -357,6 +376,7 @@ kubectl top pods -n database
 ```
 
 If actual usage is much lower (e.g., 1 CPU), reduce requests:
+
 ```yaml
 resources:
   requests:
@@ -398,6 +418,7 @@ kubectl get pod db-0 -n database
 # Check node resources
 kubectl top nodes
 ```
+
 ```
 
 ### Example 4: OOMKilled (Out of Memory)
@@ -421,6 +442,7 @@ kubectl top nodes
 ## Evidence
 
 ```
+
 Last State:     Terminated
   Reason:       OOMKilled
   Exit Code:    137
@@ -428,6 +450,7 @@ Last State:     Terminated
   Finished:     Mon, 01 Jan 2024 10:05:23 +0000
 
 Current memory limit: 512Mi
+
 ```
 
 ## Root Cause Analysis
@@ -450,6 +473,7 @@ resources:
 ```
 
 Apply:
+
 ```bash
 kubectl set resources deployment worker \
   --requests=memory=1Gi \
@@ -460,6 +484,7 @@ kubectl set resources deployment worker \
 ### Option 2: Fix memory leak (if app has leak)
 
 Check memory growth over time:
+
 ```bash
 kubectl top pod worker-6d8f7c9b4-p2m5n -n jobs --containers
 ```
@@ -469,6 +494,7 @@ If memory constantly grows, investigate app code for leaks.
 ### Option 3: Add resource monitoring
 
 Add Prometheus metrics to track memory:
+
 ```yaml
 annotations:
   prometheus.io/scrape: "true"
@@ -488,6 +514,7 @@ kubectl get pods -n jobs
 # Monitor over time
 watch kubectl top pod -n jobs
 ```
+
 ```
 
 ## Pro Tips

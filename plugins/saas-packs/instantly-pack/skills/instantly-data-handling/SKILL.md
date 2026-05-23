@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Data Handling
 
 ## Overview
+
 Manage leads, lead lists, block lists, and regulatory compliance in Instantly API v2. Covers lead CRUD operations, list management, bulk import patterns, unsubscribe handling, GDPR right-to-deletion, CAN-SPAM compliance, and block list automation. Cold email has specific legal requirements — this skill ensures your integrations are compliant.
 
 ## Prerequisites
+
 - Completed `instantly-install-auth` setup
 - API key with `leads:all` scope
 - Understanding of CAN-SPAM / GDPR requirements for cold outreach
@@ -38,6 +40,7 @@ Manage leads, lead lists, block lists, and regulatory compliance in Instantly AP
 ## Instructions
 
 ### Step 1: Lead List Management
+
 ```typescript
 import { InstantlyClient } from "./src/instantly/client";
 const client = new InstantlyClient();
@@ -69,6 +72,7 @@ async function deleteLeadList(listId: string) {
 ```
 
 ### Step 2: Lead Import with Validation
+
 ```typescript
 interface LeadImport {
   email: string;
@@ -139,6 +143,7 @@ const BLOCKED_PATTERNS = [
 ```
 
 ### Step 3: Lead Operations (Move, Update, Delete)
+
 ```typescript
 // Move leads between campaigns or lists
 async function moveLeads(opts: {
@@ -205,6 +210,7 @@ async function deleteLeadsFromCampaign(campaignId: string, status?: number) {
 ```
 
 ### Step 4: Block List Management
+
 ```typescript
 // Add entries to workspace block list
 async function addToBlockList(entries: string[]) {
@@ -258,6 +264,7 @@ async function auditBlockList() {
 ```
 
 ### Step 5: GDPR / CAN-SPAM Compliance
+
 ```typescript
 // GDPR: Right to deletion — remove lead from everywhere
 async function handleDeletionRequest(email: string) {
@@ -319,6 +326,7 @@ async function verifyEmail(email: string) {
 ```
 
 ## Key API Endpoints
+
 | Method | Path | Purpose |
 |--------|------|---------|
 | `POST` | `/leads` | Create lead |
@@ -336,6 +344,7 @@ async function verifyEmail(email: string) {
 | `GET` | `/campaigns/search-by-contact` | Find campaigns by lead |
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `422` on lead create | Duplicate in workspace | Use `skip_if_in_workspace: true` |
@@ -344,9 +353,11 @@ async function verifyEmail(email: string) {
 | Email verification timeout | External service delay | Poll status endpoint |
 
 ## Resources
+
 - [Instantly Lead API](https://developer.instantly.ai/api/v2/lead/listleads)
 - [Instantly Block List API](https://developer.instantly.ai/api/v2/schemas)
 - [CAN-SPAM Requirements](https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business)
 
 ## Next Steps
+
 For workspace access control, see `instantly-enterprise-rbac`.

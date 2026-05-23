@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Incident Runbook
 
 ## Overview
+
 Step-by-step procedures for Langfuse-related incidents, from initial triage (2 min) through resolution and post-incident review. Your application should work without Langfuse -- these procedures focus on restoring observability.
 
 ## Severity Classification
@@ -100,6 +101,7 @@ if (process.env.LANGFUSE_ENABLED === "false") {
 ```
 
 For v3, use the `enabled` flag:
+
 ```typescript
 const langfuse = new Langfuse({
   enabled: process.env.LANGFUSE_ENABLED !== "false",
@@ -109,6 +111,7 @@ const langfuse = new Langfuse({
 ### Step 4: Common Resolution Procedures
 
 **Procedure A: Missing Traces**
+
 ```typescript
 // 1. Verify SDK is initialized
 console.log("Langfuse configured:", !!process.env.LANGFUSE_PUBLIC_KEY);
@@ -125,6 +128,7 @@ const processor = new LangfuseSpanProcessor({
 ```
 
 **Procedure B: Rate Limit (429) Recovery**
+
 ```typescript
 // Increase batching to reduce API calls
 const processor = new LangfuseSpanProcessor({
@@ -137,6 +141,7 @@ const EMERGENCY_SAMPLE_RATE = 0.1; // Only trace 10%
 ```
 
 **Procedure C: Self-Hosted Instance Down**
+
 ```bash
 set -euo pipefail
 # Check container status
@@ -179,6 +184,7 @@ fi
 ### Step 6: Post-Incident Review (P1/P2)
 
 Document for post-mortem:
+
 1. **Timeline**: When detected, when resolved, total duration
 2. **Impact**: Traces lost, application impact, user impact
 3. **Root cause**: Why did the incident occur?
@@ -195,6 +201,7 @@ Document for post-mortem:
 | L3 | Langfuse support | Confirmed service-side issue |
 
 **Langfuse support channels:**
+
 - [Status Page](https://status.langfuse.com) -- check first
 - [Discord](https://langfuse.com/discord) -- community support
 - [GitHub Issues](https://github.com/langfuse/langfuse/issues) -- bug reports
@@ -210,6 +217,7 @@ Document for post-mortem:
 | Auth failures | Rotate and redeploy keys | Add key validation at startup |
 
 ## Resources
+
 - [Langfuse Status](https://status.langfuse.com)
 - [GitHub Issues](https://github.com/langfuse/langfuse/issues)
 - [Discord Community](https://langfuse.com/discord)

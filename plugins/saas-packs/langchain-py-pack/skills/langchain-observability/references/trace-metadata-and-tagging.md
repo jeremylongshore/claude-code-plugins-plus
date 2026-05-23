@@ -75,6 +75,7 @@ config = {"run_name": "support_ticket_classifier", ...}
 ```
 
 Common conventions:
+
 - Top-level entrypoint: `run_name="{route}_{operation}"` (`chat_invoke`,
   `document_summarize`)
 - Inside a multi-stage chain, set `run_name` on sub-runnables via

@@ -7,11 +7,14 @@ Detailed implementation examples and code patterns.
 ### Error Category 1: Configuration Errors
 
 #### Invalid API Key
+
 ```
 Error: Clerk: Invalid API key
 ```
+
 **Cause:** Publishable or secret key is incorrect or mismatched.
 **Solution:**
+
 ```bash
 # Verify keys in .env.local match Clerk dashboard
 # Publishable key starts with pk_test_ or pk_live_
@@ -25,11 +28,14 @@ echo $NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 ```
 
 #### ClerkProvider Not Found
+
 ```
 Error: useAuth can only be used within the <ClerkProvider /> component
 ```
+
 **Cause:** Component using Clerk hooks is outside ClerkProvider.
 **Solution:**
+
 ```typescript
 // Ensure ClerkProvider wraps entire app in layout.tsx
 import { ClerkProvider } from '@clerk/nextjs'
@@ -46,11 +52,14 @@ export default function RootLayout({ children }) {
 ### Error Category 2: Authentication Errors
 
 #### Session Not Found
+
 ```
 Error: Session not found
 ```
+
 **Cause:** User session expired or was revoked.
 **Solution:**
+
 ```typescript
 // Handle gracefully in your app
 const { userId } = await auth()
@@ -60,11 +69,14 @@ if (!userId) {
 ```
 
 #### Form Identifier Not Found
+
 ```
 Error: form_identifier_not_found
 ```
+
 **Cause:** Email/username not registered.
 **Solution:**
+
 ```typescript
 // Show helpful message to user
 catch (err: any) {
@@ -75,11 +87,14 @@ catch (err: any) {
 ```
 
 #### Password Incorrect
+
 ```
 Error: form_password_incorrect
 ```
+
 **Cause:** Wrong password entered.
 **Solution:**
+
 ```typescript
 catch (err: any) {
   if (err.errors?.[0]?.code === 'form_password_incorrect') {
@@ -91,11 +106,14 @@ catch (err: any) {
 ### Error Category 3: Middleware Errors
 
 #### Infinite Redirect Loop
+
 ```
 Error: Too many redirects
 ```
+
 **Cause:** Middleware matcher includes sign-in page.
 **Solution:**
+
 ```typescript
 // middleware.ts
 const isPublicRoute = createRouteMatcher([
@@ -112,11 +130,14 @@ export default clerkMiddleware(async (auth, request) => {
 ```
 
 #### Middleware Not Executing
+
 ```
 Error: Routes not protected
 ```
+
 **Cause:** Matcher not matching routes correctly.
 **Solution:**
+
 ```typescript
 export const config = {
   matcher: [
@@ -131,11 +152,14 @@ export const config = {
 ### Error Category 4: Server/Client Errors
 
 #### Hydration Mismatch
+
 ```
 Error: Text content does not match server-rendered HTML
 ```
+
 **Cause:** Auth state differs between server and client.
 **Solution:**
+
 ```typescript
 'use client'
 import { useUser } from '@clerk/nextjs'
@@ -153,11 +177,14 @@ export function UserGreeting() {
 ```
 
 #### Cannot Read Properties of Undefined
+
 ```
 Error: Cannot read properties of undefined (reading 'userId')
 ```
+
 **Cause:** Using auth() in client component or non-server context.
 **Solution:**
+
 ```typescript
 // Server Component - use auth()
 import { auth } from '@clerk/nextjs/server'
@@ -172,11 +199,14 @@ const { userId } = useAuth()
 ### Error Category 5: Webhook Errors
 
 #### Webhook Verification Failed
+
 ```
 Error: Webhook signature verification failed
 ```
+
 **Cause:** Incorrect webhook secret or missing headers.
 **Solution:**
+
 ```typescript
 // app/api/webhooks/clerk/route.ts
 import { Webhook } from 'svix'

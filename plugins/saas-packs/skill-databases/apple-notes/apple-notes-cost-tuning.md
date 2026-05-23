@@ -10,6 +10,7 @@ apple-notes-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Apple Notes costs and usage
 **Workflow:** Part of the cicd skill category for Apple Notes integration.
 **Relates to:** Other apple-notes skills in this pack.

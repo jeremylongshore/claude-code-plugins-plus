@@ -10,6 +10,7 @@ clay-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up comprehensive observability for Clay integrations with metrics, traces, and alerts. Provides complete visibility into enrichment operations.
 **Workflow:** Monitoring skill. Use when establishing production monitoring for Clay.
 **Relates to:** Integrates with clay-prod-checklist; supports clay-incident-runbook for incident response.

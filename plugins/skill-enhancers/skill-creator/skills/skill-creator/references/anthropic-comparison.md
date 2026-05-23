@@ -3,6 +3,7 @@
 Sources: [AgentSkills.io spec](https://agentskills.io/specification) · [Anthropic docs](https://code.claude.com/docs/en/skills) · [anthropics/skills repo](https://github.com/anthropics/skills)
 
 Comparison of our skill-creator implementation against:
+
 - AgentSkills.io specification (canonical open standard)
 - Anthropic best practices (platform.claude.com)
 - anthropics/skills official skill-creator
@@ -73,6 +74,7 @@ Comparison of our skill-creator implementation against:
 ### For Existing Skills
 
 Existing skills that pass our old validator will mostly pass the new one because:
+
 - Enterprise tier (default) still checks `metadata.author`, `metadata.version`, scoped tools
 - The body section checks are warnings, not errors
 - "Use when" / "Trigger with" are now recommended patterns, not hard requirements
@@ -85,6 +87,7 @@ Existing skills that pass our old validator will mostly pass the new one because
 ### New Capabilities
 
 Skills can now use:
+
 - `$ARGUMENTS` for dynamic input
 - `context: fork` for subagent execution
 - `hooks` for lifecycle automation

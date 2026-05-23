@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq Deploy Integration
 
 ## Overview
+
 Deploy applications using Groq's inference API to Vercel Edge, Cloud Run, Docker, and other platforms. Groq's sub-200ms latency makes it ideal for edge deployments and real-time applications.
 
 ## Prerequisites
+
 - Groq API key stored in `GROQ_API_KEY`
 - Application using `groq-sdk` package
 - Platform CLI installed (vercel, docker, or gcloud)
@@ -34,6 +36,7 @@ Deploy applications using Groq's inference API to Vercel Edge, Cloud Run, Docker
 ## Instructions
 
 ### Step 1: Vercel Edge Function
+
 ```typescript
 // app/api/chat/route.ts (Next.js App Router)
 import Groq from "groq-sdk";
@@ -88,6 +91,7 @@ export async function POST(req: Request) {
 ```
 
 ### Step 2: Vercel Deployment
+
 ```bash
 set -euo pipefail
 # Set secret
@@ -98,6 +102,7 @@ vercel --prod
 ```
 
 ### Step 3: Docker Container
+
 ```dockerfile
 FROM node:20-slim AS builder
 WORKDIR /app
@@ -117,6 +122,7 @@ CMD ["node", "dist/index.js"]
 ```
 
 ### Step 4: Cloud Run Deployment
+
 ```bash
 set -euo pipefail
 # Store API key in Secret Manager
@@ -135,6 +141,7 @@ gcloud run deploy groq-api \
 ```
 
 ### Step 5: Express Server with Health Check
+
 ```typescript
 import express from "express";
 import Groq from "groq-sdk";
@@ -205,6 +212,7 @@ app.listen(3000, () => console.log("Groq API server on :3000"));
 ```
 
 ### Step 6: Vercel AI SDK Integration
+
 ```typescript
 // Using @ai-sdk/groq for Vercel AI SDK
 import { createGroq } from "@ai-sdk/groq";
@@ -225,6 +233,7 @@ export async function POST(req: Request) {
 ```
 
 ## Environment Variable Config
+
 | Platform | Command |
 |----------|---------|
 | Vercel | `vercel env add GROQ_API_KEY production` |
@@ -234,6 +243,7 @@ export async function POST(req: Request) {
 | Docker | `-e GROQ_API_KEY=gsk_...` or Docker secrets |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Rate limited (429) | Too many requests | Implement request queuing with backoff |
@@ -243,9 +253,11 @@ export async function POST(req: Request) {
 | API key not found | Secret not configured | Check platform secret config |
 
 ## Resources
+
 - [Groq API Documentation](https://console.groq.com/docs)
 - [Vercel AI SDK + Groq](https://console.groq.com/docs/ai-sdk)
 - [Groq Client Libraries](https://console.groq.com/docs/libraries)
 
 ## Next Steps
+
 For multi-environment setup, see `groq-multi-env-setup`.

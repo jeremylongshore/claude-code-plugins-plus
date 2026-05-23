@@ -15,11 +15,13 @@ When a problem occurs, ask "why" five times. Each answer becomes the basis for t
 State the problem as a specific, observable event. Not "the product has bugs" but "Customer X received an incorrect invoice on Tuesday."
 
 **Good problem statements:**
+
 - "Three customers reported receiving duplicate emails on March 15"
 - "The deploy on Friday caused a 2-hour outage for all users"
 - "New user onboarding completion dropped from 65% to 40% this week"
 
 **Bad problem statements:**
+
 - "Our quality is poor" (too vague)
 - "Users are unhappy" (too broad)
 - "Things are broken" (not specific)
@@ -29,12 +31,14 @@ State the problem as a specific, observable event. Not "the product has bugs" bu
 Include everyone directly involved in the problem. Not managers looking over shoulders, but the people who touched the code, the process, or the customer interaction.
 
 **Who to include:**
+
 - The person who discovered the problem
 - The person(s) who contributed to the problem
 - A facilitator (someone not directly involved)
 - Optionally, one person with organizational context (can explain process history)
 
 **Who not to include:**
+
 - Senior leaders who will inhibit honest answers
 - People looking to assign blame
 - Anyone not directly connected to the incident
@@ -122,15 +126,18 @@ Each investment gets an owner and a deadline. Follow up in the next cycle.
 This is the most important aspect of Five Whys in a startup context. The investment at each level should be proportional to the problem severity.
 
 **For a minor issue (first occurrence, low impact):**
+
 - Level 1: Fix the specific instance (minutes to hours)
 - Level 2: Add a check or guard (hours)
 - Levels 3-5: Document the root cause but do not invest heavily in prevention yet
 
 **For a major issue (customer-facing, recurring, or high impact):**
+
 - All levels: Make meaningful investments
 - Level 5: Expect systemic changes (new processes, new tools, organizational changes)
 
 **For a critical issue (data loss, security breach, major outage):**
+
 - All levels: Invest heavily
 - Level 5: May require leadership changes, architecture overhauls, or cultural shifts
 

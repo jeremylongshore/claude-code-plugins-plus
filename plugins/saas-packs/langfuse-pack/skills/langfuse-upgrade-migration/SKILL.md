@@ -25,13 +25,16 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Upgrade & Migration
 
 ## Current State
+
 !`npm list langfuse @langfuse/client @langfuse/tracing @langfuse/otel 2>/dev/null | head -10 || echo 'No langfuse packages found'`
 !`pip show langfuse 2>/dev/null | grep -E "Name|Version" || echo 'Python langfuse not installed'`
 
 ## Overview
+
 Step-by-step guide for upgrading the Langfuse SDK across major versions. Covers v3 to v4 (OTel rewrite), v4 to v5, breaking changes, and automated codemods.
 
 ## Prerequisites
+
 - Existing Langfuse integration
 - Test suite covering traced operations
 - Git branch for the upgrade
@@ -68,6 +71,7 @@ pip index versions langfuse 2>/dev/null | head -3
 This is the biggest migration -- v4 rewrites tracing on OpenTelemetry.
 
 **2a. Install new packages:**
+
 ```bash
 set -euo pipefail
 # Install v4+ packages
@@ -78,6 +82,7 @@ npm install @langfuse/client @langfuse/tracing @langfuse/otel @opentelemetry/sdk
 ```
 
 **2b. Update initialization:**
+
 ```typescript
 // BEFORE (v3):
 import { Langfuse } from "langfuse";
@@ -103,6 +108,7 @@ const langfuse = new LangfuseClient();
 ```
 
 **2c. Update tracing calls:**
+
 ```typescript
 // BEFORE (v3): Manual trace/span/generation
 const trace = langfuse.trace({ name: "my-op", input: data });
@@ -134,6 +140,7 @@ await startActiveObservation("my-op", async () => {
 ```
 
 **2d. Update OpenAI wrapper:**
+
 ```typescript
 // BEFORE (v3):
 import { observeOpenAI } from "langfuse";
@@ -144,12 +151,14 @@ import { observeOpenAI } from "@langfuse/openai";
 ```
 
 **2e. Update environment variable:**
+
 ```bash
 # BEFORE: LANGFUSE_HOST or LANGFUSE_BASEURL
 # AFTER:  LANGFUSE_BASE_URL (LANGFUSE_BASEURL still works in v4 but not v5)
 ```
 
 **2f. Update prompt management:**
+
 ```typescript
 // BEFORE (v3):
 const prompt = await langfuse.getPrompt("my-prompt", 2); // version as positional arg
@@ -162,6 +171,7 @@ const prompt = await langfuse.prompt.get("my-prompt", {
 ```
 
 **2g. Update shutdown:**
+
 ```typescript
 // BEFORE (v3):
 await langfuse.shutdownAsync();
@@ -240,6 +250,7 @@ grep -rn "from ['\"]langfuse['\"]" src/ || echo "No old imports found"
 | `LANGFUSE_HOST` ignored | v5 dropped legacy env var | Rename to `LANGFUSE_BASE_URL` |
 
 ## Resources
+
 - [v3 to v4 Migration Guide](https://langfuse.com/docs/observability/sdk/upgrade-path/js-v3-to-v4)
 - [v4 to v5 Migration Guide](https://langfuse.com/docs/observability/sdk/upgrade-path/js-v4-to-v5)
 - [Python v3 to v4 Migration](https://langfuse.com/docs/observability/sdk/upgrade-path/python-v3-to-v4)

@@ -3,6 +3,7 @@
 ## Composer Workflow Patterns
 
 ### Feature Generation
+
 ```
 1. Describe the feature completely
 2. Specify technologies/patterns
@@ -21,6 +22,7 @@ Example:
 ```
 
 ### Incremental Building
+
 ```
 Session 1: "Create the database schema for a blog"
 Session 2: "Add API routes for CRUD operations"
@@ -32,6 +34,7 @@ Each session builds on previous work
 ```
 
 ### Pattern Replication
+
 ```
 "Look at how UserService is structured in services/UserService.ts
 Create similar services for:

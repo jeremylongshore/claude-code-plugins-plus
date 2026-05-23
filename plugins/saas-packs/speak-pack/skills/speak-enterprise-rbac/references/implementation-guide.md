@@ -13,7 +13,6 @@ Detailed implementation reference for the speak-enterprise-rbac skill.
 | Observer | Read-only access to progress | Parents, supervisors |
 | Service | API access only | Automated systems |
 
-
 ## Role Implementation
 
 ```typescript
@@ -143,10 +142,10 @@ function checkPermission(
 }
 ```
 
-
 ## SSO Integration
 
 ### SAML Configuration
+
 ```typescript
 // Speak SAML setup for enterprise SSO
 const samlConfig = {
@@ -184,6 +183,7 @@ function mapSamlToRole(samlAttributes: SamlAttributes): SpeakRole {
 ```
 
 ### OAuth2/OIDC Integration
+
 ```typescript
 import { OAuth2Client } from '@speak/sdk';
 
@@ -218,7 +218,6 @@ async function handleOAuthCallback(code: string): Promise<AuthResult> {
   };
 }
 ```
-
 
 ## Organization Management
 
@@ -271,7 +270,6 @@ async function createOrganization(
   return org;
 }
 ```
-
 
 ## Team and Class Management
 
@@ -345,7 +343,6 @@ class TeamManager {
 }
 ```
 
-
 ## Access Control Middleware
 
 ```typescript
@@ -406,7 +403,6 @@ app.delete('/api/content/:id',
 );
 ```
 
-
 ## Audit Trail
 
 ```typescript
@@ -460,10 +456,10 @@ async function generateAccessReport(
 }
 ```
 
-
 ## Detailed Examples
 
 ### Quick Permission Check
+
 ```typescript
 if (!checkPermission(user.role, 'viewLearnerProgress')) {
   throw new ForbiddenError('Cannot view learner progress');
@@ -471,6 +467,7 @@ if (!checkPermission(user.role, 'viewLearnerProgress')) {
 ```
 
 ### Instructor Dashboard Access
+
 ```typescript
 app.get('/instructor/dashboard',
   requireSpeakPermission('viewLearnerProgress'),
@@ -483,4 +480,3 @@ app.get('/instructor/dashboard',
   }
 );
 ```
-

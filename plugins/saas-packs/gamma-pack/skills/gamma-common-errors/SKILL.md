@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Gamma Common Errors
 
 ## Overview
+
 Reference guide for debugging and resolving common Gamma API errors.
 
 ## Prerequisites
+
 - Active Gamma integration
 - Access to logs and error messages
 - Understanding of HTTP status codes
@@ -46,6 +48,7 @@ Reference guide for debugging and resolving common Gamma API errors.
 ```
 
 **Solutions:**
+
 1. Verify API key in Gamma dashboard
 2. Check environment variable is set: `echo $GAMMA_API_KEY`
 3. Ensure key hasn't been rotated
@@ -63,6 +66,7 @@ Reference guide for debugging and resolving common Gamma API errors.
 ```
 
 **Solutions:**
+
 1. Implement exponential backoff
 2. Check rate limit headers: `X-RateLimit-Remaining`
 3. Upgrade plan for higher limits
@@ -97,6 +101,7 @@ async function withRetry(fn: () => Promise<any>, maxRetries = 3) {
 ```
 
 **Solutions:**
+
 1. Simplify prompt or reduce slide count
 2. Remove special characters from content
 3. Check content length limits
@@ -113,6 +118,7 @@ async function withRetry(fn: () => Promise<any>, maxRetries = 3) {
 ```
 
 **Solutions:**
+
 1. Increase client timeout setting
 2. Use async job pattern for large presentations
 3. Check network connectivity
@@ -137,6 +143,7 @@ const gamma = new GammaClient({
 ```
 
 **Solutions:**
+
 1. Verify presentation exists and is complete
 2. Check supported export formats
 3. Ensure no pending generation jobs
@@ -145,6 +152,7 @@ const gamma = new GammaClient({
 ## Debugging Tools
 
 ### Enable Debug Logging
+
 ```typescript
 const gamma = new GammaClient({
   apiKey: process.env.GAMMA_API_KEY,
@@ -153,6 +161,7 @@ const gamma = new GammaClient({
 ```
 
 ### Check API Status
+
 ```typescript
 const status = await gamma.status();
 console.log('API Status:', status.healthy ? 'OK' : 'Issues');
@@ -160,6 +169,7 @@ console.log('Services:', status.services);
 ```
 
 ## Error Handling Pattern
+
 ```typescript
 import { GammaError, RateLimitError, AuthError } from '@gamma/sdk';
 
@@ -179,6 +189,7 @@ try {
 ```
 
 ## Resources
+
 - [Gamma Status Page](https://status.gamma.app)
 - [Gamma Error Codes](https://gamma.app/docs/errors)
 - [Gamma Support](https://gamma.app/support)

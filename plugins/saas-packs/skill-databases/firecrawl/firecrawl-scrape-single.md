@@ -10,6 +10,7 @@ firecrawl-scrape-single/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Scrape a single URL and convert to clean markdown with metadata extraction, content formatting, and proper error handling.
 **Workflow:** Core scraping workflow - the primary operation for extracting content from individual web pages.
 **Relates to:** Follows firecrawl-sdk-patterns; leads into firecrawl-crawl-site for multi-page extraction

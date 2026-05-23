@@ -10,6 +10,7 @@ documenso-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Documenso CI/CD integration
 **Workflow:** Part of the cicd skill category for Documenso integration.
 **Relates to:** Other documenso skills in this pack.

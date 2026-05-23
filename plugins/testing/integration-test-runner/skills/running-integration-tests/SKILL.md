@@ -84,6 +84,7 @@ Execute integration tests that validate interactions between multiple components
 ## Examples
 
 **Supertest API integration test:**
+
 ```typescript
 import request from 'supertest';
 import { app } from '../src/app';
@@ -107,6 +108,7 @@ describe('POST /api/users', () => {
 ```
 
 **pytest with database transaction rollback:**
+
 ```python
 import pytest
 from myapp.services import UserService

@@ -10,6 +10,7 @@ firecrawl-incident-runbook/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute rapid incident response for scraping failures including blocked requests, timeouts, rate limits, and data quality issues.
 **Workflow:** Operations skill - provides structured incident response procedures for production scraping issues.
 **Relates to:** Follows firecrawl-observability for detection; escalates to firecrawl-advanced-troubleshooting when needed

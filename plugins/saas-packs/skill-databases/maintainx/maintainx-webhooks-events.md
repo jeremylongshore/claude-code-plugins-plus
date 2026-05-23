@@ -10,6 +10,7 @@ maintainx-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement MaintainX webhook handling
 **Workflow:** Part of the cicd skill category for MaintainX integration.
 **Relates to:** Other maintainx skills in this pack.

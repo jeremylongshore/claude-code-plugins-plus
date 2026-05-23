@@ -24,12 +24,14 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lindy Multi-Environment Setup
 
 ## Overview
+
 Isolate Lindy AI agents across development, staging, and production using separate
 workspaces, dedicated API keys, and environment-specific webhook configurations.
 Lindy agents live in workspaces — each environment should use its own workspace
 to prevent cross-environment data leakage.
 
 ## Prerequisites
+
 - Multiple Lindy workspaces (one per environment) or Enterprise plan
 - Secret management solution (env vars, Vault, AWS/GCP secrets)
 - CI/CD pipeline with environment-aware deployment
@@ -46,12 +48,14 @@ to prevent cross-environment data leakage.
 ## Instructions
 
 ### Step 1: Create Separate Workspaces
+
 1. Log in at https://app.lindy.ai
 2. Create workspace for each environment: `[company]-dev`, `[company]-staging`, `[company]-prod`
 3. Generate separate API keys in each workspace
 4. Store each key in the appropriate secret store
 
 ### Step 2: Environment Configuration
+
 ```typescript
 // config/lindy.ts — Environment-aware Lindy configuration
 interface LindyConfig {
@@ -98,6 +102,7 @@ export const lindyConfig = getLindyConfig();
 ```
 
 ### Step 3: Startup Validation
+
 ```typescript
 // validate-env.ts — Fail fast if Lindy config is missing
 import { z } from 'zod';
@@ -126,6 +131,7 @@ export function validateLindyEnv() {
 ```
 
 ### Step 4: Secret Management
+
 ```bash
 # Development — .env.local (gitignored)
 LINDY_API_KEY=lnd_dev_xxxxxxxxxxxx
@@ -148,6 +154,7 @@ echo -n "lnd_prod_xxxxxxxxxxxx" | \
 ```
 
 ### Step 5: Agent Promotion (Dev to Staging to Prod)
+
 ```
 1. Build and test agent in dev workspace
 2. Share agent as Template
@@ -164,6 +171,7 @@ echo -n "lnd_prod_xxxxxxxxxxxx" | \
 between workspaces. Each must be reconfigured per environment.
 
 ### Step 6: CI/CD Integration
+
 ```yaml
 # .github/workflows/deploy.yml
 jobs:
@@ -198,8 +206,10 @@ jobs:
 | Secret not found in CI | Missing environment secret | Add via `gh secret set` per environment |
 
 ## Resources
+
 - [Lindy Documentation](https://docs.lindy.ai)
 - [Lindy Templates](https://docs.lindy.ai/fundamentals/lindy-101/templates)
 
 ## Next Steps
+
 Proceed to `lindy-observability` for monitoring and alerting.

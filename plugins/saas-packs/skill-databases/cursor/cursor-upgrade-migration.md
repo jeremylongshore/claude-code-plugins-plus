@@ -10,6 +10,7 @@ cursor-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Guides upgrading Cursor versions and migrating settings between machines or from VS Code, including backup procedures and rollback strategies.
 
 **Workflow:** This skill activates when users need to upgrade Cursor or migrate configurations. It covers version checking, upgrade methods, pre-upgrade backup, migration between machines, VS Code migration, and troubleshooting.

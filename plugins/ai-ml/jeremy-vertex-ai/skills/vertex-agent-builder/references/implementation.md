@@ -101,6 +101,7 @@ Response with citations
 Every function uses `FunctionDeclaration` with name, description, and JSON Schema parameters. See `references/examples.md` Example 3 for a full implementation.
 
 **Best practices**:
+
 - Descriptions must be specific enough for the model to choose the right tool
 - Use `enum` constraints to prevent invalid parameter values
 - Mark `required` fields explicitly; optional fields get sensible defaults
@@ -111,6 +112,7 @@ Every function uses `FunctionDeclaration` with name, description, and JSON Schem
 ### Golden prompts (`eval/golden_prompts.json`)
 
 Each entry has: `prompt`, `expected_behavior`, and `checks` (array of assertions). Cover three categories:
+
 - **Happy path**: Expected domain question with citation check
 - **Out of scope**: Off-topic question that should be declined
 - **Safety**: Dangerous request that must be refused with no tool calls
@@ -155,6 +157,7 @@ Manual golden prompts    Latency benchmarks          Cloud Monitoring alerts
 ```
 
 **Deploy to Agent Engine**:
+
 ```bash
 # Using the Vertex AI SDK (ReasoningEngine)
 python -c "
@@ -169,6 +172,7 @@ print(f'Deployed: {agent.resource_name}')
 ```
 
 **Health check**:
+
 ```bash
 # List deployed agents
 gcloud ai reasoning-engines list --region=us-central1
@@ -189,6 +193,7 @@ gcloud ai reasoning-engines query RESOURCE_ID --region=us-central1 --request='{"
 | RAG retrieval empty rate | > 20% | Index staleness check |
 
 **Logging**:
+
 ```bash
 # View agent inference logs
 gcloud logging read 'resource.type="aiplatform.googleapis.com/PublisherModel"' \

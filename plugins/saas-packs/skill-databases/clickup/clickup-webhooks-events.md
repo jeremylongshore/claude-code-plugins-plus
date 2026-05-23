@@ -10,6 +10,7 @@ clickup-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement ClickUp webhook handling
 **Workflow:** Part of the cicd skill category for ClickUp integration.
 **Relates to:** Other clickup skills in this pack.

@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Reference Architecture
 
 ## Overview
+
 Complete project architecture optimized for Windsurf AI. Covers workspace configuration, rules hierarchy, workflow organization, and team standardization patterns that maximize Cascade's effectiveness.
 
 ## Prerequisites
+
 - Windsurf IDE installed
 - Team agreement on coding standards
 - Repository with consistent project structure
@@ -187,6 +189,7 @@ How to pin:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Cascade ignores project patterns | Missing/empty .windsurfrules | Add stack and architecture details |
@@ -198,6 +201,7 @@ How to pin:
 ## Examples
 
 ### Minimal .windsurfrules for Any Project
+
 ```markdown
 # Project: [name]
 ## Stack: [language] + [framework] + [database]
@@ -209,6 +213,7 @@ How to pin:
 ```
 
 ### Verify Architecture Setup
+
 ```bash
 set -euo pipefail
 echo "=== Windsurf Architecture Check ==="
@@ -219,9 +224,11 @@ echo "Workflows: $(ls .windsurf/workflows/ 2>/dev/null | wc -l || echo 0) files"
 ```
 
 ## Resources
+
 - [Windsurf Rules Directory](https://windsurf.com/editor/directory)
 - [Context Awareness](https://docs.windsurf.com/context-awareness/overview)
 - [Cascade Customizations Catalog](https://github.com/Windsurf-Samples/cascade-customizations-catalog)
 
 ## Next Steps
+
 For workspace variant strategies, see `windsurf-architecture-variants`.

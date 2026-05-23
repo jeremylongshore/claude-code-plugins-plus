@@ -25,6 +25,7 @@ Every skill uses real Obsidian Plugin API: `Plugin`, `Vault`, `MetadataCache`, `
 ## Skills (24)
 
 ### Standard (S01-S12)
+
 | Skill | What It Does |
 |-------|-------------|
 | `obsidian-install-auth` | Clone sample plugin, install deps, symlink into dev vault |
@@ -41,6 +42,7 @@ Every skill uses real Obsidian Plugin API: `Plugin`, `Vault`, `MetadataCache`, `
 | `obsidian-upgrade-migration` | API version migration, settings schema upgrade, CM5-to-CM6 |
 
 ### Pro (P13-P18)
+
 | Skill | What It Does |
 |-------|-------------|
 | `obsidian-ci-integration` | GitHub Actions build/release/validate workflows, BRAT beta |
@@ -51,6 +53,7 @@ Every skill uses real Obsidian Plugin API: `Plugin`, `Vault`, `MetadataCache`, `
 | `obsidian-reference-architecture` | Modular project structure, service layer, command/view registries |
 
 ### Flagship (F19-F24)
+
 | Skill | What It Does |
 |-------|-------------|
 | `obsidian-multi-env-setup` | Dev/test/prod vaults, env detection, vault templates, sync config |

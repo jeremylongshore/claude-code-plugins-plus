@@ -10,6 +10,7 @@ clari-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Clari security best practices
 **Workflow:** Part of the operations skill category for Clari integration.
 **Relates to:** Other clari skills in this pack.

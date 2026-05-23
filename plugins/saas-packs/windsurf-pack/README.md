@@ -13,6 +13,7 @@ Windsurf is an AI-powered code editor built on VS Code with Cascade (agentic mul
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | What It Does |
 |-------|-------------|
 | `windsurf-install-auth` | Install Windsurf IDE, authenticate with Codeium, select AI models |
@@ -29,6 +30,7 @@ Windsurf is an AI-powered code editor built on VS Code with Cascade (agentic mul
 | `windsurf-upgrade-migration` | Upgrade Windsurf, migrate from VS Code or Cursor |
 
 ### Pro Skills (P13-P18)
+
 | Skill | What It Does |
 |-------|-------------|
 | `windsurf-ci-integration` | CI gates for .windsurfrules, AI code quality checks in GitHub Actions |
@@ -39,6 +41,7 @@ Windsurf is an AI-powered code editor built on VS Code with Cascade (agentic mul
 | `windsurf-reference-architecture` | Complete project structure optimized for Cascade AI |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | What It Does |
 |-------|-------------|
 | `windsurf-multi-env-setup` | Configure per-service rules, monorepo strategy, team onboarding |
@@ -49,6 +52,7 @@ Windsurf is an AI-powered code editor built on VS Code with Cascade (agentic mul
 | `windsurf-migration-deep-dive` | Full migration from Cursor/VS Code, feature comparison, team rollout plan |
 
 ### Flagship+ Skills (X25-X30)
+
 | Skill | What It Does |
 |-------|-------------|
 | `windsurf-advanced-troubleshooting` | Layer isolation, context debugging, MCP diagnostics, nuclear reset |

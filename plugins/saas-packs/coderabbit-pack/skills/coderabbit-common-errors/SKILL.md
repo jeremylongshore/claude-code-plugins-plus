@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Common Errors
 
 ## Overview
+
 Quick-reference troubleshooting guide for the most common CodeRabbit issues. CodeRabbit is a GitHub/GitLab App that reviews PRs automatically -- most problems are configuration issues, permission gaps, or YAML syntax errors rather than API failures.
 
 ## Prerequisites
+
 - CodeRabbit GitHub App installed on repository
 - Access to GitHub repository settings
 - `.coderabbit.yaml` in repository root
@@ -46,9 +48,11 @@ Quick-reference troubleshooting guide for the most common CodeRabbit issues. Cod
 | Review takes too long | Performance | Error 8 |
 
 ### Error 1: No Review Posted on PR
+
 **Symptoms:** PR is open, targeting main, but no CodeRabbit review appears after 15+ minutes.
 
 **Diagnosis:**
+
 ```bash
 set -euo pipefail
 # Check if CodeRabbit App is installed on this repo
@@ -59,17 +63,20 @@ gh api repos/OWNER/REPO/installation --jq '.app_slug' 2>/dev/null || echo "NOT I
 ```
 
 **Causes & Solutions:**
+
 1. **App not installed**: Visit https://github.com/apps/coderabbitai and install on the repo
 2. **Repo not selected**: In GitHub > Installed Apps > CodeRabbit, add the specific repository
 3. **No seat assigned**: The PR author needs a CodeRabbit seat (app.coderabbit.ai > Subscription)
 4. **Private repo without org plan**: Free tier only works on public repos
 
 ### Error 2: Reviews Only on Some Branches
+
 **Symptoms:** Reviews appear on PRs to `main` but not `develop` or feature branches.
 
 **Cause:** `base_branches` filter in configuration only includes specific branches.
 
 **Fix:**
+
 ```yaml
 # .coderabbit.yaml
 reviews:
@@ -84,9 +91,11 @@ reviews:
 ```
 
 ### Error 3: Reviews Skip Certain PRs
+
 **Symptoms:** Some PRs get reviewed, others are silently skipped.
 
 **Diagnosis checklist:**
+
 ```yaml
 # Check these .coderabbit.yaml settings:
 reviews:
@@ -103,9 +112,11 @@ reviews:
 ```
 
 ### Error 4: Reviews Include Generated/Unwanted Files
+
 **Symptoms:** CodeRabbit comments on lock files, generated code, or build output.
 
 **Fix:**
+
 ```yaml
 # .coderabbit.yaml - Add path filters
 reviews:
@@ -122,9 +133,11 @@ reviews:
 ```
 
 ### Error 5: Too Many Comments / Review Noise
+
 **Symptoms:** CodeRabbit posts 10-20+ comments per PR, most are nitpicks.
 
 **Fix:**
+
 ```yaml
 # .coderabbit.yaml - Reduce comment volume
 reviews:
@@ -144,9 +157,11 @@ reviews:
 ```
 
 ### Error 6: Configuration Changes Not Taking Effect
+
 **Symptoms:** You updated `.coderabbit.yaml` but reviews behave the same way.
 
 **Diagnosis:**
+
 ```markdown
 # In a PR comment, run:
 @coderabbitai configuration
@@ -162,6 +177,7 @@ reviews:
 ```
 
 **YAML validation:**
+
 ```bash
 set -euo pipefail
 # Validate YAML syntax
@@ -171,9 +187,11 @@ python3 -c "import yaml; yaml.safe_load(open('.coderabbit.yaml'))" && echo "YAML
 ```
 
 ### Error 7: Bot Not Responding to PR Comments
+
 **Symptoms:** You post `@coderabbitai full review` but nothing happens.
 
 **Causes & Solutions:**
+
 1. **Typo in mention**: Must be exactly `@coderabbitai` (one word, lowercase)
 2. **Comment in wrong location**: Commands work in PR comments, not commit comments
 3. **Chat disabled**: Ensure `.coderabbit.yaml` has `chat: auto_reply: true`
@@ -186,9 +204,11 @@ chat:
 ```
 
 ### Error 8: Review Takes Too Long (15+ Minutes)
+
 **Symptoms:** PR opened but CodeRabbit review not posted after 15 minutes.
 
 **Causes:**
+
 | PR Size | Expected Time | Action |
 |---------|--------------|--------|
 | < 200 lines | 2-3 min | Normal, wait |
@@ -197,6 +217,7 @@ chat:
 | 1000+ lines | 12-15+ min | Split PR or be patient |
 
 **If it is been 20+ minutes on a small PR:**
+
 ```markdown
 1. Check CodeRabbit status: https://status.coderabbit.ai
 2. Try: @coderabbitai full review (force re-review)
@@ -205,7 +226,9 @@ chat:
 ```
 
 ### Step 2: Verify Fix
+
 After applying a fix, create or update a PR and confirm CodeRabbit behaves as expected:
+
 ```bash
 set -euo pipefail
 # Force a re-review on an existing PR
@@ -216,11 +239,13 @@ gh pr comment PR_NUMBER --body "@coderabbitai configuration"
 ```
 
 ## Output
+
 - Issue identified from symptom-based diagnosis
 - Configuration fix applied to `.coderabbit.yaml`
 - Fix verified via re-review or configuration check
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | All reviews stopped suddenly | GitHub App permissions revoked | Reinstall CodeRabbit GitHub App |
@@ -229,10 +254,12 @@ gh pr comment PR_NUMBER --body "@coderabbitai configuration"
 | Stale reviews on old PRs | PR was created before config change | Run `@coderabbitai full review` |
 
 ## Resources
+
 - [CodeRabbit Configuration Reference](https://docs.coderabbit.ai/reference/configuration)
 - [CodeRabbit FAQ](https://docs.coderabbit.ai/faq)
 - [CodeRabbit Status Page](https://status.coderabbit.ai)
 - [CodeRabbit Discord](https://discord.gg/coderabbit)
 
 ## Next Steps
+
 For comprehensive debugging, see `coderabbit-debug-bundle`.

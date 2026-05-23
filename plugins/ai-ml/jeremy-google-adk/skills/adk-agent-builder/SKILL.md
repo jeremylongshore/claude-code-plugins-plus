@@ -62,10 +62,12 @@ Build production-ready agents with Google’s Agent Development Kit (ADK): scaff
 ## Examples
 
 **Example: Scaffold a single ReAct agent**
+
 - Request: “Create an ADK agent that summarizes PRs and proposes test updates.”
 - Result: agent entrypoint + tool registry + a smoke test command for local verification.
 
 **Example: Multi-agent orchestrator**
+
 - Request: “Build a supervisor + deployer + verifier team and deploy to Agent Engine.”
 - Result: orchestrator skeleton, per-agent responsibilities, and `adk deploy ...` + post-deploy health checks.
 

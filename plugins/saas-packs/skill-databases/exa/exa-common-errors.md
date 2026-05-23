@@ -10,6 +10,7 @@ exa-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix top 10 most common Exa errors including rate limits, invalid queries, authentication failures, and content extraction issues.
 **Workflow:** First-line troubleshooting resource - covers 90% of issues developers encounter.
 **Relates to:** Follows any onboarding skill; precedes exa-debug-bundle for complex issues

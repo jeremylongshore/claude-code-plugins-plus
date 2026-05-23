@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola SDK Patterns
 
 ## Overview
+
 Granola does not have a traditional SDK. Integration is achieved through three channels: Zapier (8,000+ app connections), the Enterprise API (REST, workspace-level read access), and native integrations (Slack, Notion, HubSpot, Attio, Affinity). This skill covers automation patterns for all three.
 
 ## Prerequisites
+
 - Granola Business plan ($14/user/month) for Zapier + native CRM
 - Enterprise plan ($35+/user/month) for API access
 - Zapier account for automation workflows
@@ -42,6 +44,7 @@ Granola provides two Zapier triggers:
 | **Note Shared to Zapier** | You manually share a note to Zapier | Selective sharing for important meetings |
 
 **Webhook payload data available:**
+
 - `title` — meeting title from calendar
 - `creator_name` / `creator_email` — note creator
 - `attendees[]` — array of `{name, email}` objects
@@ -52,6 +55,7 @@ Granola provides two Zapier triggers:
 ### Step 2 — Build Common Zap Patterns
 
 **Pattern 1: Meeting Notes to Notion (auto-archive)**
+
 ```yaml
 Trigger: Note Added to Granola Folder ("All Meetings")
 Action: Notion — Create Database Item
@@ -63,6 +67,7 @@ Action: Notion — Create Database Item
 ```
 
 **Pattern 2: Action Items to Asana/Linear**
+
 ```yaml
 Trigger: Note Shared to Zapier
 Filter: note_content contains "Action Items"
@@ -79,6 +84,7 @@ Action: Linear — Create Issue (for each action)
 ```
 
 **Pattern 3: Sales Call Summary to Slack + HubSpot**
+
 ```yaml
 Trigger: Note Added to Granola Folder ("Sales Calls")
 Path A — Slack:
@@ -98,6 +104,7 @@ Path B — HubSpot (via Zapier if not using native):
 ```
 
 **Pattern 4: Meeting Follow-Up Email**
+
 ```yaml
 Trigger: Note Shared to Zapier
 Action: ChatGPT — Generate Follow-Up Email
@@ -126,18 +133,21 @@ curl -s "https://api.granola.ai/v0/notes/{note_id}" \
 ```
 
 **API characteristics:**
+
 - Bearer token authentication
 - Read-only access to publicly shared notes within your workspace
 - Rate limited per workspace (429 response when exceeded)
 - Pagination for list endpoints
 
 **Reverse-engineered endpoints (unofficial, for reference):**
+
 ```
 POST https://api.granola.ai/v2/get-documents    # List documents (paginated)
 POST https://api.granola.ai/v1/get-document-transcript  # Get transcript
 POST https://api.granola.ai/v1/get-workspaces    # List workspaces
 POST https://api.granola.ai/v1/get-documents-batch  # Bulk fetch by IDs
 ```
+
 Authentication uses WorkOS with refresh token rotation via `POST https://api.workos.com/user_management/authenticate`.
 
 ### Step 4 — Multi-Step Automation Chains
@@ -183,6 +193,7 @@ Organize Granola folders to drive different Zap behaviors:
 | `1-on-1s` | None | Private, no automation |
 
 ## Output
+
 - Zapier workflows configured for automated note processing
 - API access established for custom integrations
 - Multi-step automation chains routing by meeting type
@@ -199,10 +210,12 @@ Organize Granola folders to drive different Zap behaviors:
 | Attendee data empty | Calendar event has no attendee list | Add attendees to the calendar event |
 
 ## Resources
+
 - [Zapier Granola App](https://zapier.com/apps/granola/integrations)
 - [Automate Granola (4 Ways)](https://zapier.com/blog/automate-granola/)
 - [Granola Enterprise API](https://docs.granola.ai/introduction)
 - [Enterprise API Docs](https://docs.granola.ai/help-center/sharing/integrations/enterprise-api)
 
 ## Next Steps
+
 Proceed to `granola-common-errors` for troubleshooting.

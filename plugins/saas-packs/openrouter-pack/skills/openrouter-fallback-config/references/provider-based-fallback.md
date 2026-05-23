@@ -3,6 +3,7 @@
 ## Provider-Based Fallback
 
 ### Cross-Provider Resilience
+
 ```python
 PROVIDERS = {
     "anthropic": [

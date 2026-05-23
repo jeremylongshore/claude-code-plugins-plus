@@ -33,6 +33,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 Organizational governance framework that prevents Sentry configuration drift across multiple services. A shared npm package (`@company/sentry-config`) wraps `Sentry.init()` to enforce PII scrubbing, naming conventions, tagging standards, and per-tier trace rate caps. CI checks block policy violations before merge, and a monthly drift audit detects projects that have fallen out of compliance.
 
 ## Prerequisites
+
 - `@sentry/node` v8+ installed in target services
 - Internal npm registry available (GitHub Packages, Artifactory, or similar)
 - Team structure and project ownership defined in Sentry
@@ -375,6 +376,7 @@ jobs:
 ```
 
 ## Output
+
 - `@company/sentry-config` shared package with enforced PII scrubbing, naming validation, and tier-based trace rate caps
 - Mandatory `beforeSend` chain: headers, credit cards, emails, and SSNs scrubbed before any custom logic
 - Naming standards enforced at init: release format, validated environments, kebab-case service names
@@ -398,6 +400,7 @@ jobs:
 ## Examples
 
 **Minimal compliant init:**
+
 ```typescript
 import { initSentry } from '@company/sentry-config';
 
@@ -410,6 +413,7 @@ initSentry({
 ```
 
 **Critical service with custom filtering:**
+
 ```typescript
 import { initSentry } from '@company/sentry-config';
 
@@ -429,6 +433,7 @@ initSentry({
 ```
 
 ## Resources
+
 - [Sentry Organization Settings](https://docs.sentry.io/organization/)
 - [Data Scrubbing](https://docs.sentry.io/product/data-management-settings/scrubbing/)
 - [Sentry API Reference](https://docs.sentry.io/api/)
@@ -436,6 +441,7 @@ initSentry({
 - [Security Policy](https://sentry.io/security/)
 
 ## Next Steps
+
 - Publish `@company/sentry-config` to internal registry and onboard first two services
 - Add the CI policy workflow to all service repositories via shared workflow or template
 - Schedule the drift audit as a monthly cron and cost check as weekly

@@ -71,12 +71,14 @@ export SHOPIFY_API_VERSION="2025-04"  # Update quarterly — see shopify.dev/doc
 ### Sensitive Data Checklist
 
 **ALWAYS REDACT before sharing:**
+
 - Access tokens (`shpat_xxx`)
 - API keys and secrets
 - Customer PII (emails, names, addresses)
 - Order details with customer data
 
 **Safe to include:**
+
 - Store name and plan
 - API version and scopes
 - Error messages and X-Request-Id values

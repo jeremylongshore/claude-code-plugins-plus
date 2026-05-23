@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Reference Architecture
 
 ## Overview
+
 Production-ready reference architecture for Apollo.io integrations. Layered design with API client, service layer, background jobs, database models, CRM sync, and deals pipeline — all built around Apollo's REST API with correct endpoints and `x-api-key` authentication.
 
 ## Prerequisites
+
 - Apollo master API key
 - Node.js 18+ with TypeScript
 - PostgreSQL for data layer
@@ -35,6 +37,7 @@ Production-ready reference architecture for Apollo.io integrations. Layered desi
 ## Instructions
 
 ### Step 1: Architecture Diagram
+
 ```
 ┌───────────────────────────────────────────────┐
 │                 API Layer                      │  Express routes
@@ -55,6 +58,7 @@ Production-ready reference architecture for Apollo.io integrations. Layered desi
 ```
 
 ### Step 2: Service Layer
+
 ```typescript
 // src/services/lead-service.ts
 import { getApolloClient } from '../apollo/client';
@@ -90,6 +94,7 @@ export class LeadService {
 ```
 
 ### Step 3: Deals/Opportunities Service
+
 Apollo has a full Deals API for tracking revenue pipeline.
 
 ```typescript
@@ -139,6 +144,7 @@ export class DealService {
 ```
 
 ### Step 4: Background Job Processing
+
 ```typescript
 // src/jobs/enrichment-job.ts
 import { Queue, Worker, Job } from 'bullmq';
@@ -177,6 +183,7 @@ new Worker('apollo-enrichment', async (job: Job) => {
 ```
 
 ### Step 5: Database Model
+
 ```typescript
 // src/models/contact.ts (Prisma schema excerpt)
 // model Contact {
@@ -215,6 +222,7 @@ export class Contact {
 ```
 
 ### Step 6: API Routes
+
 ```typescript
 // src/api/routes.ts
 import { Router } from 'express';
@@ -254,6 +262,7 @@ export { router };
 ```
 
 ## Output
+
 - Layered architecture: API, Service, Client, Jobs, Data
 - `LeadService` with cached search and retried enrichment
 - `DealService` with create, list, update, and stage management
@@ -262,6 +271,7 @@ export { router };
 - Express API routes for search, enrichment, and deals
 
 ## Error Handling
+
 | Layer | Strategy |
 |-------|----------|
 | Client | Retry with backoff, circuit breaker for prolonged outages |
@@ -270,6 +280,7 @@ export { router };
 | API | Structured JSON error responses with error codes |
 
 ## Resources
+
 - [Apollo API Overview](https://docs.apollo.io/docs/api-overview)
 - [Create Deal](https://docs.apollo.io/reference/create-deal)
 - [List Deals](https://docs.apollo.io/reference/list-all-deals)
@@ -277,4 +288,5 @@ export { router };
 - [BullMQ Documentation](https://docs.bullmq.io/)
 
 ## Next Steps
+
 Proceed to `apollo-multi-env-setup` for environment configuration.

@@ -10,6 +10,7 @@ databricks-policy-guardrails/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Databricks policy enforcement
 **Workflow:** Part of the advanced skill category for Databricks integration.
 **Relates to:** Other databricks skills in this pack.

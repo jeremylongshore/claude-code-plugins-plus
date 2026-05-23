@@ -11,6 +11,7 @@ You are configuring pgBackRest with Wasabi S3 storage for automated PostgreSQL b
 ## Prerequisites Check
 
 Verify before starting:
+
 1. PostgreSQL 16 is installed and running
 2. Wasabi S3 account is active with bucket created
 3. AWS CLI credentials are available
@@ -376,6 +377,7 @@ EOF
 ## Verification Checklist
 
 Confirm these items:
+
 - [ ] pgBackRest installed and configured
 - [ ] Wasabi S3 credentials configured
 - [ ] Stanza created and verified
@@ -398,6 +400,7 @@ Confirm these items:
 ## Output Summary
 
 Provide the user with:
+
 1. Backup stanza status: `pgbackrest --stanza=fairdb info`
 2. Next full backup time from cron schedule
 3. Location of backup scripts and logs

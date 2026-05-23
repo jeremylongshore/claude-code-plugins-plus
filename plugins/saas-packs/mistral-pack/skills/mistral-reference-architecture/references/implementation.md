@@ -1,6 +1,7 @@
 # Mistral AI Reference Architecture - Implementation Details
 
 ## Client Wrapper
+
 ```typescript
 import Mistral from '@mistralai/mistralai';
 let instance: Mistral | null = null;
@@ -14,6 +15,7 @@ export function getMistralClient(): Mistral {
 ```
 
 ## Configuration Management (Zod)
+
 ```typescript
 const configSchema = z.object({
   apiKey: z.string().min(1),
@@ -25,6 +27,7 @@ const configSchema = z.object({
 ```
 
 ## Error Handling
+
 ```typescript
 export function wrapMistralError(error: unknown): MistralServiceError {
   if (err.status === 429) return new MistralServiceError('Rate limit exceeded', 'RATE_LIMIT', 429, true, err);
@@ -35,6 +38,7 @@ export function wrapMistralError(error: unknown): MistralServiceError {
 ```
 
 ## Chat Service with Caching
+
 ```typescript
 export class ChatService {
   async complete(messages, options = {}) {
@@ -57,6 +61,7 @@ export class ChatService {
 ```
 
 ## Health Check
+
 ```typescript
 export async function checkMistralHealth(): Promise<HealthStatus> {
   const start = Date.now();
@@ -66,6 +71,7 @@ export async function checkMistralHealth(): Promise<HealthStatus> {
 ```
 
 ## Prompt Templates
+
 ```typescript
 export const templates = {
   summarize: { system: 'You create concise summaries.', user: ({ text, maxWords }) => `Summarize in ${maxWords} words:\n\n${text}` },

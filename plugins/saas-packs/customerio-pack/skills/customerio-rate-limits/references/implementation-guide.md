@@ -1,6 +1,7 @@
-# Customer.io Rate Limits - Implementation Guide
+## Customer.io Rate Limits - Implementation Guide
 
 ### Step 1: Implement Rate Limiter
+
 ```typescript
 // lib/rate-limiter.ts
 class RateLimiter {
@@ -43,6 +44,7 @@ export const trackApiLimiter = new RateLimiter(100);
 ```
 
 ### Step 2: Implement Exponential Backoff
+
 ```typescript
 // lib/backoff.ts
 interface BackoffConfig {
@@ -96,6 +98,7 @@ export async function withExponentialBackoff<T>(
 ```
 
 ### Step 3: Create Rate-Limited Client
+
 ```typescript
 // lib/customerio-rate-limited.ts
 import { TrackClient, RegionUS } from '@customerio/track';
@@ -149,6 +152,7 @@ export class RateLimitedCustomerIO {
 ```
 
 ### Step 4: Handle 429 Response Headers
+
 ```typescript
 // lib/rate-limit-handler.ts
 interface RateLimitInfo {
@@ -183,6 +187,7 @@ async function handleRateLimitResponse(response: Response): Promise<void> {
 ```
 
 ### Step 5: Queue-Based Rate Limiting
+
 ```typescript
 // lib/customerio-queue.ts
 import PQueue from 'p-queue';

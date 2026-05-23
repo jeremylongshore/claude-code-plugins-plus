@@ -19,18 +19,21 @@ This skill installs the production layer that prevents each of those failure mod
 ## Target Users
 
 ### Persona 1: Integration Engineer (Ravi)
+
 - **Role**: Builds the Podium-webhook handler and the durable ingest layer; owns ops for the pipeline end-to-end.
 - **Goals**: The ingest is invisible operationally. Transcripts never go missing, even when the queue is briefly down. The on-call playbook for a stuck transcript is one page. PII redaction is auditable to whatever regulator or customer asks.
 - **Pain Points**: Last month, 14 transcripts were lost overnight because the Redis cluster failed over and the webhook handler had already acked Podium. A previous version of the redactor logged the un-redacted transcript before redacting it, and the logs went to a third-party log aggregator — a 6-week cleanup followed. Partial-then-completed overwrite caused the LLM to confidently summarize a half-transcript as the whole call.
 - **Technical Level**: High (async Python, SQLite/Redis/SQS fluent, comfortable with regex and spaCy).
 
 ### Persona 2: AI Engineer building the RAG layer (Priya)
+
 - **Role**: Consumes the outbound record shape produced by this skill; builds the RAG retrieval and the LLM prompt that the on-phone agent sees.
 - **Goals**: Predictable record shape. Speaker structure preserved. Language tagged at the record level so the RAG retriever can filter by language before invoking a multilingual model. No PII in the vector store, period — both for compliance and because PII fragments cause embedding-similarity garbage.
 - **Pain Points**: An earlier integration concatenated all segments into one text field; the RAG layer could not answer "what did the caller specifically ask for?" because it could not separate caller turns from agent turns. PII tokens (real card numbers) ended up as nearest neighbors to other PII tokens in the embedding space — privacy bug AND retrieval-quality bug at once.
 - **Technical Level**: High (RAG architecture, embedding models, prompt design).
 
 ### Persona 3: Small-business owner (the Mark archetype)
+
 - **Role**: Runs a 12-person team across two locations. Wants AI to help the phone-answering staff give consistent, accurate answers.
 - **Goals**: The phone-AI is reliably helpful. It never reads gibberish from a misdetected language. It never repeats back a credit-card number the caller said. It works on Monday mornings when 40 weekend transcripts arrive at once.
 - **Pain Points**: Two prior attempts to wire AI into phone answering failed because the transcripts arrived broken (one tool dropped 30% on a busy weekend; another fed PII straight to a public LLM). Trust in AI tooling is fragile and one visible leak ends the project.
@@ -39,32 +42,38 @@ This skill installs the production layer that prevents each of those failure mod
 ## User Stories
 
 ### US-1: Webhook ack within latency budget (P0)
+
 **As** an integration engineer,
 **I want** the webhook handler to verify signature, durably store the raw event, and return 200 in under 250ms p95,
 **So that** Podium's webhook retry logic never trips and we never lose events to handler timeout.
 
 **Acceptance Criteria:**
+
 - p95 handler latency ≤ 250ms (signature verify + SQLite insert + JSON response)
 - Inbox insert is durable (SQLite WAL mode or equivalent) before 200 is returned
 - A non-2xx response is returned if the inbox insert fails — never a 200 with a dropped event
 
 ### US-2: Partial-vs-completed reconciliation (P0)
+
 **As** an AI engineer,
 **I want** the outbound record to always carry the completed transcript, never a partial,
 **So that** the LLM never summarizes a half-transcript as if it were the whole call.
 
 **Acceptance Criteria:**
+
 - Inbox has UNIQUE(transcript_id, event_type) — duplicate deliveries are no-ops
 - `call.transcript.completed` always supersedes `call.transcript.partial` regardless of arrival order
 - A `partial` event arriving after `completed` for the same transcript is logged and ignored
 - The outbound record's `status` field is one of `final | failed` — never `partial`
 
 ### US-3: Language detection on ingest (P0)
+
 **As** a small-business owner,
 **I want** non-English transcripts routed to a different queue than English,
 **So that** the phone-AI never feeds an Aussie agent garbage suggestions translated through an English-only model.
 
 **Acceptance Criteria:**
+
 - Every outbound record carries `detected_language` (ISO 639-1) and `language_confidence` (0..1)
 - English with confidence ≥ 0.85 → `queue:rag.transcripts.en`
 - Confidence < 0.50 → `queue:rag.transcripts.review` (human-review queue)
@@ -72,11 +81,13 @@ This skill installs the production layer that prevents each of those failure mod
 - Detection is deterministic across runs (seeded `DetectorFactory`)
 
 ### US-4: PII redaction with auditable log (P0)
+
 **As** an integration engineer,
 **I want** every PII redaction logged with category, rule id, and character offsets,
 **So that** a privacy audit can reconstruct what was redacted from any transcript without re-running detection.
 
 **Acceptance Criteria:**
+
 - Redaction happens before the transcript reaches the outbound queue (not after)
 - Categories covered: CREDIT_CARD (Luhn-validated), PHONE, EMAIL, SSN, ADDRESS, PERSON (when presidio available)
 - Audit log is JSONL keyed by `transcript_id` with one event per redaction
@@ -84,33 +95,39 @@ This skill installs the production layer that prevents each of those failure mod
 - A redactor failure (presidio model missing, etc.) degrades to regex-only with a per-transcript warning — never silently passes raw text through
 
 ### US-5: Durable queue write with replay (P0)
+
 **As** an integration engineer,
 **I want** the inbox to retain events until the downstream queue write succeeds,
 **So that** a Redis/SQS outage never causes transcript loss.
 
 **Acceptance Criteria:**
+
 - Queue write happens from the processor, not from the webhook handler
 - Failed queue writes increment `attempt_count` and set `next_attempt_at` per exponential backoff (max 1h)
 - After 12 failed attempts (~4 days), record moves to a dead-letter table and pages on-call
 - During a 1-hour downstream outage, zero events are lost; all are delivered in arrival order on recovery
 
 ### US-6: Speaker-aware chunking (P1)
+
 **As** an AI engineer,
 **I want** chunks that never split a speaker turn and that tag each chunk with its speaker set,
 **So that** the RAG retriever and the LLM prompt can preserve who-said-what.
 
 **Acceptance Criteria:**
+
 - Chunk boundaries land at segment boundaries — never mid-utterance
 - Each chunk carries `speakers: [...]` listing the speaker roles present
 - Overlap between chunks is built from trailing segments of the prior chunk (token-bounded, default 200)
 - Single-utterance segments longer than `target_tokens` produce one oversize chunk rather than mid-utterance splits (logged as `ERR_TXP_006`)
 
 ### US-7: Webhook-missing fallback poller (P1)
+
 **As** an integration engineer,
 **I want** a poller that detects when a `call.ended` event was never followed by a transcript event within N hours,
 **So that** missing webhook deliveries do not result in permanently-missing transcripts.
 
 **Acceptance Criteria:**
+
 - Poller queries the conversations API since N hours ago
 - For each conversation with a call and no `call.transcript.completed` in the inbox, the poller fetches the transcript directly and synthesizes an inbox row
 - Synthesized rows are tagged `source=poller` to distinguish from webhook-sourced rows

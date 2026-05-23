@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Performance Tuning
 
 ## Overview
+
 Optimize Windsurf's indexing engine, Cascade context building, Supercomplete latency, and overall IDE responsiveness. Most performance issues stem from indexing too many files or missing exclusion patterns.
 
 ## Prerequisites
+
 - Windsurf IDE installed
 - Understanding of workspace indexing
 - Access to Windsurf settings
@@ -225,6 +227,7 @@ fi
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Indexing never completes | Too many files | Add `.codeiumignore`, open subdirectory |
@@ -236,6 +239,7 @@ fi
 ## Examples
 
 ### Quick Performance Fix
+
 ```bash
 # Create minimal .codeiumignore if missing
 [ -f .codeiumignore ] || cat > .codeiumignore << 'EOF'
@@ -250,15 +254,18 @@ EOF
 ```
 
 ### Reset Indexing
+
 ```
 Command Palette (Cmd/Ctrl+Shift+P):
 "Codeium: Reset Indexing"
 ```
 
 ## Resources
+
 - [Windsurf Context Awareness](https://docs.windsurf.com/context-awareness/overview)
 - [Windsurf Ignore](https://docs.windsurf.com/context-awareness/windsurf-ignore)
 - [Autocomplete Tips](https://docs.windsurf.com/autocomplete/tips)
 
 ## Next Steps
+
 For cost optimization, see `windsurf-cost-tuning`.

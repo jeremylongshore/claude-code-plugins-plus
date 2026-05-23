@@ -10,6 +10,7 @@ langfuse-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Langfuse SDK upgrades
 **Workflow:** Part of the operations skill category for Langfuse integration.
 **Relates to:** Other langfuse skills in this pack.

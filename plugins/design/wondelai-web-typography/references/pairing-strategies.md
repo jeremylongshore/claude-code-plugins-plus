@@ -11,12 +11,14 @@ How to successfully combine typefaces—and when to use just one.
 Successful pairings have **clear, intentional contrast**. Faces should be obviously different, not confusingly similar.
 
 **This works:**
+
 ```
 Serif headline + Sans-serif body
 → Clear structural contrast
 ```
 
 **This doesn't:**
+
 ```
 Helvetica headline + Arial body
 → Too similar, looks like a mistake
@@ -39,11 +41,13 @@ Helvetica headline + Arial body
 The most reliable approach. Structural contrast is automatic.
 
 **Serif headlines + Sans body:**
+
 - Traditional, editorial feel
 - Headline has personality, body is neutral
 - Works for: news, magazines, blogs
 
 **Sans headlines + Serif body:**
+
 - Modern but readable
 - Clean headers, comfortable reading
 - Works for: books, longform, documentation
@@ -147,6 +151,7 @@ Assign different jobs to create natural separation:
 A single well-chosen typeface often works better than a poor pairing:
 
 **Use one typeface when:**
+
 - The family has enough weights (light through bold)
 - You need simplicity and consistency
 - The typeface works at all needed sizes
@@ -154,6 +159,7 @@ A single well-chosen typeface often works better than a poor pairing:
 - You're not confident in pairing
 
 **Create variety within one face:**
+
 - Weight contrast (Light headlines, Regular body)
 - Size contrast (Large vs. small)
 - Case variation (ALL CAPS for labels)
@@ -161,6 +167,7 @@ A single well-chosen typeface often works better than a poor pairing:
 - Style variation (Italic for emphasis)
 
 **Great single-family choices:**
+
 - Inter (9 weights, highly readable)
 - Source Sans Pro (6 weights, workhorse)
 - Roboto (extensive family)
@@ -262,11 +269,13 @@ Headline should be heavier than body, but proportionally.
 ## Pairing Resources
 
 **For exploration:**
+
 - [Fontpair.co](https://fontpair.co) - Curated Google Font pairings
 - [Typewolf](https://www.typewolf.com) - Real-world examples
 - [FontJoy](https://fontjoy.com) - AI-assisted discovery
 
 **For validation:**
+
 - Google Fonts has a "Popular pairings" feature
 - Adobe Fonts suggests complements
 - Type foundry sites often show intended pairings

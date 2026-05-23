@@ -53,10 +53,12 @@ Instead of manually creating branches, use the branch creator:
 **What happens:**
 
 The command will ask you:
+
 - **Feature type?** (feature, bugfix, hotfix, etc.)
 - **Brief description?** (what you're building)
 
 **Example interaction:**
+
 ```
 ? Select branch type: feature
 ? Brief description: add user authentication
@@ -69,6 +71,7 @@ The command will ask you:
 You're now on a new branch with a properly formatted name following team conventions.
 
 **Verify:**
+
 ```bash
 git branch
 ```
@@ -98,12 +101,14 @@ Instead of writing your own commit message, let AI do it:
 **What happens:**
 
 The command will:
+
 1. Analyze your changes (sees you modified README.md)
 2. Review your recent commit messages for style
 3. Generate a conventional commit message
 4. Show you the proposed commit
 
 **Example output:**
+
 ```
  Analyzing changes...
  Found 1 modified file: README.md
@@ -126,6 +131,7 @@ Create this commit? (y/n):
 Type `y` and press Enter.
 
 **Expected result:**
+
 ```
  Commit created: a3f8d92
  Message follows conventional commits standard
@@ -135,13 +141,14 @@ Next step: Create a pull request with /pr-create
 ```
 
 **Verify:**
+
 ```bash
 git log -1
 ```
 
 You'll see your beautifully formatted conventional commit!
 
->  **Tip:** The shortcut `/gc` does the same thing (gc = Git Commit)
+> **Tip:** The shortcut `/gc` does the same thing (gc = Git Commit)
 
 ---
 
@@ -168,12 +175,14 @@ Don't have a remote? That's fine - you can still see the PR template generation.
 **What happens:**
 
 The command will:
+
 1. Detect your current branch
 2. Analyze commits in this branch
 3. Generate a professional PR description
 4. Create the PR (if you're on GitHub/GitLab)
 
 **Example output:**
+
 ```
  Analyzing branch: feature/add-user-authentication
  Found 1 commit
@@ -209,6 +218,7 @@ Create this PR? (y/n):
 Type `y` to create the pull request.
 
 **Expected result:**
+
 ```
  Pull request created!
  URL: https://github.com/yourname/repo/pull/42
@@ -222,6 +232,7 @@ Next steps:
 **If no remote configured:**
 
 The command will show you the PR template and instructions:
+
 ```
  Pull request template generated
  Save this to use when creating PR manually
@@ -229,7 +240,7 @@ The command will show you the PR template and instructions:
 Copy the template above and paste it when creating your PR on GitHub/GitLab.
 ```
 
->  **Tip:** The shortcut `/gpr` does the same thing (gpr = Git Pull Request)
+> **Tip:** The shortcut `/gpr` does the same thing (gpr = Git Pull Request)
 
 ---
 
@@ -242,15 +253,17 @@ git log --oneline --graph --all
 ```
 
 **You'll see:**
+
 ```
 * a3f8d92 (HEAD -> feature/add-user-authentication) docs: document authentication system addition
 * b2e7c81 (main) Initial commit
 ```
 
 A clean, professional commit history with:
--  Properly named feature branch
--  Conventional commit message
--  Professional pull request description
+
+- Properly named feature branch
+- Conventional commit message
+- Professional pull request description
 
 **All created in under 5 minutes!**
 
@@ -267,12 +280,14 @@ In 5 minutes, you used the DevOps Automation Pack to:
 ### Manual vs Automated
 
 **Without the pack:**
+
 - Manually type branch names (easy to mess up)
 - Write commit messages from scratch (time-consuming)
 - Format PR descriptions (often incomplete)
 - **Total time:** 10-15 minutes per feature
 
 **With the pack:**
+
 - Quick guided workflows
 - AI-generated messages
 - Professional templates
@@ -289,27 +304,35 @@ Now that you've mastered the basics, explore more commands:
 ### Try These Next:
 
 **1. Optimize a Dockerfile:**
+
 ```bash
 /docker-optimize
 ```
+
 Analyzes your Dockerfile and suggests optimizations (can save 80%+ image size!)
 
 **2. Generate a CI/CD Pipeline:**
+
 ```bash
 /github-actions-create
 ```
+
 Creates a GitHub Actions workflow with testing, linting, and deployment.
 
 **3. Create Kubernetes Manifests:**
+
 ```bash
 /k8s-manifest-generate
 ```
+
 Generates production-ready K8s manifests with best practices.
 
 **4. Build a Terraform Module:**
+
 ```bash
 /terraform-module-create
 ```
+
 Creates reusable infrastructure-as-code modules.
 
 ### Explore All 25 Plugins:
@@ -323,6 +346,7 @@ See complete list with descriptions and shortcuts.
 ### Read Real-World Examples:
 
 See `docs/USE_CASES.md` for:
+
 - Junior dev setting up first CI/CD
 - Team migrating to Docker
 - Startup deploying to Kubernetes
@@ -331,6 +355,7 @@ See `docs/USE_CASES.md` for:
 ### Get Advanced:
 
 See `docs/000-docs/157-DR-FAQS-troubleshooting.md` for:
+
 - Common issues and fixes
 - Advanced configurations
 - Performance tips
@@ -362,6 +387,7 @@ See `docs/000-docs/157-DR-FAQS-troubleshooting.md` for:
 ### Problem: "Git not configured"
 
 **Solution:**
+
 ```bash
 git config --global user.name "Your Name"
 git config --global user.email "[email protected]"
@@ -370,6 +396,7 @@ git config --global user.email "[email protected]"
 ### Problem: "Not in a Git repository"
 
 **Solution:**
+
 ```bash
 cd /path/to/your/project
 # OR create a test project:
@@ -380,6 +407,7 @@ git init
 
 **Solution:**
 Make some changes first:
+
 ```bash
 echo "test" >> README.md
 git add README.md
@@ -390,6 +418,7 @@ git add README.md
 
 **Solution:**
 Either:
+
 1. Add a remote: `git remote add origin <url>`
 2. Or skip the push step - you can still create PR template
 
@@ -400,10 +429,11 @@ Either:
 You've completed your first workflow with the DevOps Automation Pack.
 
 **What you've achieved:**
--  Created a properly named feature branch
--  Made a conventional commit with AI assistance
--  Generated a professional pull request
--  Saved 10+ minutes of manual work
+
+- Created a properly named feature branch
+- Made a conventional commit with AI assistance
+- Generated a professional pull request
+- Saved 10+ minutes of manual work
 
 **Keep going!** Every command saves you time and enforces best practices.
 

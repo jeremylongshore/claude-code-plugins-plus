@@ -3,6 +3,7 @@
 ## Model Selection Criteria
 
 ### By Task Type
+
 ```
 Code generation:
   1. anthropic/claude-3.5-sonnet
@@ -26,6 +27,7 @@ Quick tasks:
 ```
 
 ### By Context Length
+
 ```
 < 4K tokens:   Any model
 4K - 16K:      gpt-3.5-turbo-16k, most models
@@ -35,6 +37,7 @@ Quick tasks:
 ```
 
 ### By Cost (per 1M tokens)
+
 ```
 Budget (< $1):
   - meta-llama/llama-3.1-8b-instruct

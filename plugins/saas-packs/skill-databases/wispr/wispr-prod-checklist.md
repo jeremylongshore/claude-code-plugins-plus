@@ -10,6 +10,7 @@ wispr-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Wispr production deployment checklist
 **Workflow:** Part of the operations skill category for Wispr integration.
 **Relates to:** Other wispr skills in this pack.

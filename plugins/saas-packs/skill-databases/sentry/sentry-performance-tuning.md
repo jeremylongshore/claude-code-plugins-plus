@@ -10,6 +10,7 @@ sentry-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Sentry performance monitoring configuration including dynamic sampling, SDK overhead reduction, and transaction optimization.
 **Workflow:** Apply after initial performance monitoring setup. Fine-tunes configuration for production workloads and cost optimization.
 **Relates to:** Builds on `sentry-performance-tracing`. Works with `sentry-cost-tuning` for cost management.

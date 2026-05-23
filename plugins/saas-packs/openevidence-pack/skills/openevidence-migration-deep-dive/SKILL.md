@@ -18,11 +18,13 @@ compatibility: Designed for Claude Code
 # OpenEvidence Migration Deep Dive
 
 ## Migration Strategies
+
 1. **Parallel run**: Run old and new systems simultaneously
 2. **Strangler fig**: Gradually route traffic to OpenEvidence
 3. **Big bang**: Switch all at once (risky)
 
 ## Migration Checklist
+
 - [ ] API mapping documented
 - [ ] Data migration plan
 - [ ] Rollback procedure
@@ -30,7 +32,9 @@ compatibility: Designed for Claude Code
 - [ ] Team training complete
 
 ## Resources
+
 - [OpenEvidence Migration Guide](https://www.openevidence.com)
 
 ## Next Steps
+
 Start with `openevidence-install-auth`.

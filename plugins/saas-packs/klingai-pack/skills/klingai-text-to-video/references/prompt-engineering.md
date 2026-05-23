@@ -3,6 +3,7 @@
 ## Prompt Engineering
 
 ### Anatomy of a Good Prompt
+
 ```
 [Subject] + [Action] + [Setting] + [Style] + [Quality Modifiers]
 

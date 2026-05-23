@@ -114,6 +114,7 @@ python3 scripts/validate-skills-schema.py --verbose plugins/category/my-plugin/
 ```
 
 This checks Anthropic minimum requirements:
+
 - Valid YAML frontmatter syntax
 - Required fields present (`name`, `description`, `version`, `author`, `license`)
 - Valid `allowed-tools` entries (no misspelled tool names)
@@ -291,11 +292,13 @@ git diff .claude-plugin/marketplace.json
 If your plugin lives inside the `claude-code-plugins` repository:
 
 1. Create a feature branch:
+
    ```bash
    git checkout -b feat/add-my-plugin
    ```
 
 2. Add your plugin files and the marketplace entry:
+
    ```bash
    git add plugins/category/my-plugin/
    git add .claude-plugin/marketplace.extended.json
@@ -303,6 +306,7 @@ If your plugin lives inside the `claude-code-plugins` repository:
    ```
 
 3. Run the full validation suite:
+
    ```bash
    pnpm run sync-marketplace
    ./scripts/quick-test.sh
@@ -310,6 +314,7 @@ If your plugin lives inside the `claude-code-plugins` repository:
    ```
 
 4. Commit and push:
+
    ```bash
    git commit -m "feat: add my-plugin to marketplace"
    git push -u origin feat/add-my-plugin

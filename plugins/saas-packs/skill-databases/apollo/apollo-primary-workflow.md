@@ -10,6 +10,7 @@ apollo-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Apollo primary workflow
 **Workflow:** Part of the onboarding skill category for Apollo integration.
 **Relates to:** Other apollo skills in this pack.

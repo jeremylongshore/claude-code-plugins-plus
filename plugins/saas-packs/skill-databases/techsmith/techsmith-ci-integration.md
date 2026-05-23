@@ -10,6 +10,7 @@ techsmith-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure TechSmith CI/CD integration
 **Workflow:** Part of the cicd skill category for TechSmith integration.
 **Relates to:** Other techsmith skills in this pack.

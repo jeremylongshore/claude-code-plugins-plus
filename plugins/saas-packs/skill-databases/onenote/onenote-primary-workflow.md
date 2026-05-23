@@ -10,6 +10,7 @@ onenote-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute OneNote primary workflow
 **Workflow:** Part of the onboarding skill category for OneNote integration.
 **Relates to:** Other onenote skills in this pack.

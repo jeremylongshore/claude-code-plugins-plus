@@ -13,6 +13,7 @@
 [TwinMind](https://twinmind.com) is an AI-powered "second brain" that captures and organizes your spoken knowledge. Built by ex-Google X scientists at ThirdEar AI Inc., TwinMind transcribes meetings, generates summaries, extracts action items, and builds a searchable memory vault of everything you've discussed. Raised $5.7M (seed round, Sept 2025).
 
 **Key facts:**
+
 - **Ear-3 speech model**: 5.26% Word Error Rate, 3.8% speaker diarization error, 140+ languages
 - **Privacy-first**: On-device audio processing, no recordings stored, local transcripts with optional encrypted cloud backup
 - **Multi-model AI**: Auto-routes to GPT-4, Claude, or Gemini based on task (summaries, quick answers, memory search)
@@ -22,6 +23,7 @@
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `twinmind-install-auth` | Install Chrome extension, mobile app, calendar integration |
@@ -38,6 +40,7 @@
 | `twinmind-upgrade-migration` | Plan tier upgrades and feature migrations |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `twinmind-ci-integration` | CI pipeline for meeting workflow automation |
@@ -48,6 +51,7 @@
 | `twinmind-reference-architecture` | Meeting AI pipeline architecture |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `twinmind-multi-env-setup` | Dev/staging/prod environment configuration |

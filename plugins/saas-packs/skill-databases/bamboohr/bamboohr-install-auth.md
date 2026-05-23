@@ -10,6 +10,7 @@ bamboohr-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure BambooHR SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for BambooHR integration.
 **Relates to:** Other bamboohr skills in this pack.

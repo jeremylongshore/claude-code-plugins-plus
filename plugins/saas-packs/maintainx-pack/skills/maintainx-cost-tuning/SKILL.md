@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Cost Tuning
 
 ## Overview
+
 Reduce MaintainX API request volume and optimize costs through caching, webhook-driven sync, request batching, and smart polling strategies.
 
 ## Prerequisites
+
 - MaintainX integration deployed and working
 - Redis or in-memory cache available
 - Baseline API usage metrics
@@ -193,6 +195,7 @@ async function deduplicatedGet(client: MaintainXClient, endpoint: string): Promi
 ```
 
 ## Output
+
 - API usage tracking with per-endpoint request counts
 - Response caching with resource-specific TTLs
 - Webhook-driven sync replacing expensive polling loops
@@ -200,6 +203,7 @@ async function deduplicatedGet(client: MaintainXClient, endpoint: string): Promi
 - Request deduplication preventing concurrent identical calls
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Stale cache data | TTL too long for volatile resources | Reduce TTL for `/workorders` to 15-30s |
@@ -208,11 +212,13 @@ async function deduplicatedGet(client: MaintainXClient, endpoint: string): Promi
 | Duplicate webhook events | MaintainX retries | Deduplicate by event ID (see webhooks skill) |
 
 ## Resources
+
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [MaintainX Pricing](https://www.getmaintainx.com/pricing)
 - [node-cache](https://github.com/node-cache/node-cache) -- In-memory caching for Node.js
 
 ## Next Steps
+
 For architecture patterns, see `maintainx-reference-architecture`.
 
 ## Examples

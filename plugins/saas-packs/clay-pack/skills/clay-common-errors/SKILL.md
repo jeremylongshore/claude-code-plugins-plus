@@ -42,6 +42,7 @@ Quick reference for the top 12 most common Clay errors across webhooks, enrichme
 **Cause:** Invalid JSON payload or missing Content-Type header.
 
 **Fix:**
+
 ```bash
 # Always include Content-Type header
 curl -X POST "$CLAY_WEBHOOK_URL" \
@@ -71,6 +72,7 @@ echo '{"email": "test@example.com"}' | jq . || echo "Invalid JSON!"
 **Cause:** Input data quality is poor (personal email domains, invalid domains, missing fields).
 
 **Fix:**
+
 ```typescript
 // Pre-validate before sending to Clay
 const personalDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com'];
@@ -92,6 +94,7 @@ function isEnrichable(row: { domain?: string; email?: string }): boolean {
 **Cause:** Monthly credit allowance exhausted.
 
 **Fix:** Check credit balance in **Settings > Plans & Billing**. Options:
+
 - Connect your own provider API keys (saves 70-80% credits)
 - Reduce waterfall depth (fewer providers = fewer credits per row)
 - Upgrade plan for more monthly credits
@@ -115,15 +118,18 @@ function isEnrichable(row: { domain?: string; email?: string }): boolean {
 **Cause:** Target API URL is wrong, auth header is incorrect, or response format unexpected.
 
 **Fix:**
+
 1. Click the errored cell to see the full error response
 2. Test the API call independently with curl:
+
 ```bash
 curl -X POST "https://api.example.com/endpoint" \
   -H "Authorization: Bearer YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{"test": "data"}'
 ```
-3. Verify the response JSON path selector matches the actual response structure
+
+1. Verify the response JSON path selector matches the actual response structure
 
 ---
 
@@ -134,6 +140,7 @@ curl -X POST "https://api.example.com/endpoint" \
 **Cause:** Prompt is too vague, company is too small/private, or website blocks bots.
 
 **Fix:**
+
 - Make prompts specific: "Find the CEO's name from the About page at {{domain}}" vs "Research this company"
 - Add fallback instructions: "If the information is not on the website, check LinkedIn and Crunchbase"
 - Use **Navigator** mode for JavaScript-heavy sites
@@ -157,6 +164,7 @@ curl -X POST "https://api.example.com/endpoint" \
 **Cause:** Explorer plan has a 400 records/hour throttle.
 
 **Fix:**
+
 ```typescript
 // Add delay between webhook submissions
 async function sendWithThrottle(rows: any[], webhookUrl: string) {

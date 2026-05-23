@@ -13,6 +13,7 @@ When users request Zapier automations, design complete Zaps with step-by-step co
 ## Zap Structure
 
 Every Zap has:
+
 1. **Trigger** - What starts the Zap
 2. **Action Steps** - What the Zap does
 3. **Filters** (optional) - Conditional logic
@@ -22,6 +23,7 @@ Every Zap has:
 ## Common Zap Templates
 
 ### 1. AI Email Assistant
+
 ```
 Trigger: Gmail - New Email
 Filter: Subject contains "support"
@@ -31,6 +33,7 @@ Action 3: Google Sheets - Create Row (log)
 ```
 
 ### 2. Lead Capture & Qualification
+
 ```
 Trigger: Webhook - Catch Hook (form submission)
 Action 1: OpenAI - Send Prompt (score lead 0-100)
@@ -40,6 +43,7 @@ Action 3: HubSpot - Create Contact & Deal
 ```
 
 ### 3. Content Distribution
+
 ```
 Trigger: RSS by Zapier - New Item in Feed
 Action 1: OpenAI - Send Prompt (rewrite for social)
@@ -50,6 +54,7 @@ Paths:
 ```
 
 ### 4. Calendar to Task Automation
+
 ```
 Trigger: Google Calendar - Event Start
 Filter: Event contains "meeting"
@@ -59,6 +64,7 @@ Action 3: Gmail - Send Email (summary to attendees)
 ```
 
 ### 5. Invoice Processing
+
 ```
 Trigger: Gmail - New Attachment
 Filter: Filename contains "invoice"
@@ -71,7 +77,9 @@ Action 4: Slack - Send Direct Message (notify accounting)
 ## Zapier Features
 
 ### Filters
+
 Add conditional logic between steps:
+
 ```
 Filter: Only continue if...
   - Field: {{email}}
@@ -80,7 +88,9 @@ Filter: Only continue if...
 ```
 
 ### Paths
+
 Create branching logic:
+
 ```
 Paths: Branch your Zap
   Path A: High Priority
@@ -94,7 +104,9 @@ Paths: Branch your Zap
 ```
 
 ### Formatters
+
 Transform data:
+
 ```
 Formatter by Zapier
   - Transform: Text
@@ -109,7 +121,9 @@ Formatter by Zapier
 ```
 
 ### Delays
+
 Add time delays:
+
 ```
 Delay by Zapier
   - Type: For
@@ -117,7 +131,9 @@ Delay by Zapier
 ```
 
 ### AI Integration
+
 Use OpenAI directly:
+
 ```
 OpenAI - Send Prompt
   - Model: GPT-4
@@ -192,6 +208,7 @@ When creating a Zap, provide:
 ## Common Integrations
 
 ### Most Popular
+
 - Gmail, Google Sheets, Google Calendar
 - Slack, Microsoft Teams
 - HubSpot, Salesforce
@@ -200,6 +217,7 @@ When creating a Zap, provide:
 - Twitter, LinkedIn, Facebook
 
 ### AI Integrations
+
 - OpenAI (GPT-4, DALL-E)
 - Anthropic Claude (via webhooks)
 - Google Gemini
@@ -283,21 +301,25 @@ At 100 emails/month: 300-400 tasks
 ## Troubleshooting
 
 ### "This Zap would exceed your task limit"
+
 - Add filters to reduce executions
 - Upgrade plan
 - Split into multiple Zaps
 
 ### "We couldn't find a [field]"
+
 - Check trigger test data
 - Use correct field mapping
 - Add formatter if needed
 
 ### "Zap is slow"
+
 - Use webhooks instead of polling
 - Reduce delay steps
 - Optimize filters
 
 ### "Action failed"
+
 - Check app permissions
 - Verify API limits
 - Review error details
@@ -306,18 +328,21 @@ At 100 emails/month: 300-400 tasks
 ## When to Use Zapier
 
 **Use Zapier when:**
+
 - Need easiest setup (non-technical)
 - Want largest app ecosystem (5000+)
 - Prefer managed service
 - Willing to pay for simplicity
 
 **Use n8n when:**
+
 - Need complex logic
 - Want self-hosting
 - Processing high volumes
 - Want lower costs
 
 **Use Make when:**
+
 - Want visual design
 - Need advanced data mapping
 - Prefer middle ground on pricing

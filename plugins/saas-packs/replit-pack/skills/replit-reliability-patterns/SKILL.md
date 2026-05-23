@@ -26,14 +26,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Reliability Patterns
 
 ## Overview
+
 Production reliability patterns for Replit's container-based hosting. Replit containers restart on deploy, sleep on inactivity (Autoscale), and have ephemeral filesystems. These patterns ensure your app survives container lifecycle events gracefully.
 
 ## Prerequisites
+
 - Replit Deployment configured
 - External storage for persistent state (PostgreSQL or Object Storage)
 - Understanding of Replit container lifecycle
 
 ## Container Lifecycle
+
 ```
 Container starts → App boots → Handles requests → [Sleep or Restart]
                                                          │
@@ -51,6 +54,7 @@ Container starts → App boots → Handles requests → [Sleep or Restart]
 ## Instructions
 
 ### Step 1: Graceful Startup
+
 ```typescript
 // Handle cold starts — prioritize accepting requests over initialization
 import express from 'express';
@@ -85,6 +89,7 @@ async function initialize() {
 ```
 
 ### Step 2: Graceful Shutdown
+
 Replit sends SIGTERM before stopping containers. Save state during shutdown.
 
 ```typescript
@@ -128,6 +133,7 @@ const server = app.listen(PORT, '0.0.0.0');
 ```
 
 ### Step 3: Persistent State (Survive Restarts)
+
 Never rely on the local filesystem for data that must persist:
 
 ```typescript
@@ -165,6 +171,7 @@ async function saveReport(data: any) {
 ```
 
 **Python equivalent:**
+
 ```python
 from replit import db
 from replit.object_storage import Client as Storage
@@ -197,6 +204,7 @@ signal.signal(signal.SIGTERM, shutdown)
 ```
 
 ### Step 4: Keep-Alive for Non-Deployment Repls
+
 For Repls not using Deployments, prevent sleep with external pinging:
 
 ```markdown
@@ -222,6 +230,7 @@ Best option: Use Replit Deployments instead
 ```
 
 ### Step 5: Database Connection Resilience
+
 ```typescript
 // Auto-reconnect on database failures
 import { Pool } from 'pg';
@@ -263,6 +272,7 @@ async function queryWithRetry(
 ```
 
 ### Step 6: Deployment Health Monitor
+
 ```typescript
 // Self-monitoring deployment health
 const healthMetrics = {
@@ -302,6 +312,7 @@ app.get('/health', (req, res) => {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Data lost on restart | Using local filesystem | Use KV Database or Object Storage |
@@ -311,10 +322,12 @@ app.get('/health', (req, res) => {
 | State inconsistency | Crash before save | Save state periodically + on SIGTERM |
 
 ## Resources
+
 - [Replit Deployments](https://docs.replit.com/hosting/deployments)
 - [Replit KV Database](https://docs.replit.com/cloud-services/storage-and-databases/replit-database)
 - [Object Storage](https://docs.replit.com/cloud-services/storage-and-databases/object-storage/overview)
 - [Deployment Rollbacks](https://blog.replit.com/introducing-deployment-rollbacks)
 
 ## Next Steps
+
 For policy enforcement, see `replit-policy-guardrails`.

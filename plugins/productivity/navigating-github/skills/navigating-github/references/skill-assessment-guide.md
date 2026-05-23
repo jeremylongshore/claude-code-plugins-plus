@@ -25,6 +25,7 @@ How the AI determines the user's GitHub skill level and adapts its behavior.
 Asked once per session, on first GitHub-related interaction:
 
 > How comfortable are you with GitHub? Pick the closest:
+>
 > 1. "What's GitHub?" — I'm brand new to this
 > 2. "I can commit and push but that's about it" — I know the basics
 > 3. "I use branches and PRs regularly" — I'm comfortable
@@ -75,6 +76,7 @@ The answer is combined with passive signals. Passive signals can override the se
 The skill level is not fixed. The AI continuously watches for signals that the user's level should be adjusted:
 
 ### Level-Up Signals
+
 - User uses git terminology correctly without being taught
 - User runs git commands independently
 - User asks "can you just do X" instead of "what does X mean"
@@ -82,6 +84,7 @@ The skill level is not fixed. The AI continuously watches for signals that the u
 - User mentions workflows, CI/CD, or review processes
 
 ### Level-Down Signals (for specific topics only)
+
 - User freezes or says "I don't understand"
 - User asks "what does that mean?"
 - User makes an error that suggests misunderstanding (e.g., thinking commit = push)
@@ -92,6 +95,7 @@ When a level-down signal is detected, drop into teaching mode **for that specifi
 ## Session Memory
 
 Within a single session, remember:
+
 - The assessed skill level
 - Topics where the user needed extra help (topic-specific level overrides)
 - Topics where the user showed advanced knowledge

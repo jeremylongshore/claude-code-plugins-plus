@@ -32,6 +32,7 @@ find . -name "AGENTS.md" -type f
 ```
 
 **Expected output**:
+
 ```
 ./AGENTS.md
 ./subproject/AGENTS.md
@@ -166,6 +167,7 @@ Add or update the following section in CLAUDE.md:
 **If both CLAUDE.md and AGENTS.md have conflicting rules:**
 
 The sync command will:
+
 1. Keep original CLAUDE.md content intact
 2. Add AGENTS.md content in dedicated section
 3. Document in the header: "In case of conflicts, Agent-Specific Instructions take precedence"
@@ -215,6 +217,7 @@ This would auto-sync whenever AGENTS.md is modified.
 ### Example 1: Single AGENTS.md File
 
 **Before**:
+
 ```
 project/
 ├── CLAUDE.md (200 lines)
@@ -224,6 +227,7 @@ project/
 **Run**: `/sync-agent-context`
 
 **After**:
+
 ```
 project/
 ├── CLAUDE.md (250 lines - merged)
@@ -234,6 +238,7 @@ project/
 ### Example 2: Multiple AGENTS.md Files
 
 **Before**:
+
 ```
 project/
 ├── CLAUDE.md
@@ -246,6 +251,7 @@ project/
 **Run**: `/sync-agent-context`
 
 **After**:
+
 ```
 CLAUDE.md now contains:
 ## Agent-Specific Instructions
@@ -274,6 +280,7 @@ CLAUDE.md now contains:
 **Problem**: Sync command not found
 
 **Solution**: Ensure plugin is installed:
+
 ```bash
 /plugin install agent-context-manager@claude-code-plugins-plus
 ```
@@ -281,12 +288,14 @@ CLAUDE.md now contains:
 **Problem**: CLAUDE.md section duplicated
 
 **Solution**: Sync command should replace, not duplicate. Check for:
+
 - Multiple "## Agent-Specific Instructions" headers (manual edit error)
 - Re-run sync to clean up duplicates
 
 **Problem**: Backup files accumulating
 
 **Solution**: Clean old backups periodically:
+
 ```bash
 find . -name "CLAUDE.md.backup.*" -mtime +30 -delete
 ```

@@ -27,6 +27,7 @@ Analyze network request patterns and optimize for reduced latency.
 ## Output
 
 Provide markdown report with:
+
 - Network request inventory
 - Latency bottleneck identification
 - Parallelization opportunities with code examples

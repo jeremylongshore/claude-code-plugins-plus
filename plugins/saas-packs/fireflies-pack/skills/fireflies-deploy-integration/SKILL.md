@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Deploy Integration
 
 ## Overview
+
 Deploy Fireflies.ai integrations across platforms. Covers GraphQL client setup, webhook receiver deployment, and secret management for Vercel, Docker, and Google Cloud Run.
 
 ## Prerequisites
+
 - Fireflies.ai Business+ plan for API access
 - `FIREFLIES_API_KEY` and `FIREFLIES_WEBHOOK_SECRET` ready
 - Platform CLI installed (vercel, docker, or gcloud)
@@ -35,6 +37,7 @@ Deploy Fireflies.ai integrations across platforms. Covers GraphQL client setup, 
 ## Instructions
 
 ### Step 1: Shared GraphQL Client
+
 ```typescript
 // lib/fireflies.ts
 const FIREFLIES_API = "https://api.fireflies.ai/graphql";
@@ -56,6 +59,7 @@ export async function firefliesQuery(query: string, variables?: any) {
 ```
 
 ### Step 2: Webhook Receiver (Next.js / Vercel)
+
 ```typescript
 // app/api/webhooks/fireflies/route.ts
 import crypto from "crypto";
@@ -97,6 +101,7 @@ export async function POST(req: Request) {
 ```
 
 ### Step 3: Deploy to Vercel
+
 ```bash
 set -euo pipefail
 # Add secrets
@@ -111,6 +116,7 @@ vercel --prod
 ```
 
 ### Step 4: Deploy with Docker
+
 ```dockerfile
 FROM node:20-slim
 WORKDIR /app
@@ -143,6 +149,7 @@ curl -f http://localhost:3000/api/health | jq .
 ```
 
 ### Step 5: Deploy to Google Cloud Run
+
 ```bash
 set -euo pipefail
 # Build and push
@@ -161,6 +168,7 @@ gcloud run services describe fireflies-app --format='value(status.url)'
 ```
 
 ### Step 6: Health Check Endpoint
+
 ```typescript
 // app/api/health/route.ts (or /health endpoint)
 export async function GET() {
@@ -185,12 +193,15 @@ export async function GET() {
 ```
 
 ## Post-Deploy: Register Webhook
+
 After deploying, register your webhook URL:
+
 1. Go to [app.fireflies.ai/settings](https://app.fireflies.ai/settings) > Developer settings
 2. Enter your webhook URL (e.g., `https://your-app.vercel.app/api/webhooks/fireflies`)
 3. Save the webhook secret
 
 Or test via API:
+
 ```bash
 set -euo pipefail
 # Test API connectivity from deployed app
@@ -198,6 +209,7 @@ curl -f https://your-app.vercel.app/api/health | jq .
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | GraphQL auth error | API key not set in platform | Add secret via platform CLI |
@@ -206,14 +218,17 @@ curl -f https://your-app.vercel.app/api/health | jq .
 | No webhook events | URL not registered | Register at app.fireflies.ai/settings |
 
 ## Output
+
 - Deployed webhook receiver with HMAC signature verification
 - GraphQL client configured with platform-specific secrets
 - Health check endpoint monitoring Fireflies connectivity
 - Platform-specific deployment verified
 
 ## Resources
+
 - [Fireflies API Docs](https://docs.fireflies.ai/)
 - [Fireflies Webhooks](https://docs.fireflies.ai/graphql-api/webhooks)
 
 ## Next Steps
+
 For webhook event handling, see `fireflies-webhooks-events`.

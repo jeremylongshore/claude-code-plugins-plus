@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Salesforce Reliability Patterns
 
 ## Overview
+
 Production-grade reliability patterns for Salesforce integrations: circuit breakers for API outages, idempotent operations using External IDs, graceful degradation with cached data, and dead letter queues for failed operations.
 
 ## Prerequisites
+
 - jsforce connection configured
 - Understanding of Salesforce error codes (see `salesforce-common-errors`)
 - Redis or database for state management (optional)
@@ -269,6 +271,7 @@ class SalesforceDeadLetterQueue {
 ```
 
 ## Output
+
 - Circuit breaker preventing cascading failures
 - Idempotent upserts using External IDs
 - Error classification (retryable vs fatal)
@@ -276,6 +279,7 @@ class SalesforceDeadLetterQueue {
 - Dead letter queue for failed operations
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Circuit stays open | SF outage or wrong threshold | Check status.salesforce.com; tune thresholds |
@@ -284,10 +288,12 @@ class SalesforceDeadLetterQueue {
 | Stale cache too old | Long SF outage | Set max stale age, show user warning |
 
 ## Resources
+
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
 - [Opossum Documentation](https://nodeshift.dev/opossum/)
 - [External ID Fields](https://help.salesforce.com/s/articleView?id=sf.fields_about_external_ids.htm)
 - [Salesforce Error Codes](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/errorcodes.htm)
 
 ## Next Steps
+
 For policy enforcement, see `salesforce-policy-guardrails`.

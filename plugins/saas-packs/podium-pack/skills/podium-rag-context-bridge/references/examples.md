@@ -105,6 +105,7 @@ python3 scripts/vector_query.py \
 ```
 
 Output:
+
 ```json
 [
   {"id": "...", "content": "Our refund policy is 30 days...", "channel": "webchat",

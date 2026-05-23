@@ -3,6 +3,7 @@
 ## Testing During Migration
 
 ### Parallel Testing
+
 ```python
 def test_migration(prompt: str, model: str):
     """Test both old and new implementations."""
@@ -26,6 +27,7 @@ def test_migration(prompt: str, model: str):
 ```
 
 ### Gradual Rollout
+
 ```python
 import random
 

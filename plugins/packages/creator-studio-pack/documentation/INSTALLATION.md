@@ -8,11 +8,13 @@
 ## Prerequisites
 
 ### Required
+
 - **Claude Code** 1.0.0 or higher
 - **FFmpeg** for video processing
 - **Git** for build logging
 
 ### Optional (for full functionality)
+
 - **DaVinci Resolve** 18+ for professional editing
 - **Node.js** 18+ for YouTube/Twitter/LinkedIn APIs
 - **YouTube API credentials** for automated uploads
@@ -36,6 +38,7 @@
 ```
 
 You should see:
+
 ```
 creator-studio-pack v1.0.0 (20 plugins)
 ├── 5 Project Documentation plugins
@@ -47,21 +50,25 @@ creator-studio-pack v1.0.0 (20 plugins)
 ### Step 3: Install FFmpeg
 
 **macOS:**
+
 ```bash
 brew install ffmpeg
 ```
 
 **Linux (Ubuntu/Debian):**
+
 ```bash
 sudo apt update && sudo apt install ffmpeg
 ```
 
 **Windows:**
+
 ```bash
 choco install ffmpeg
 ```
 
 **Verify:**
+
 ```bash
 ffmpeg -version
 ```
@@ -75,6 +82,7 @@ ffmpeg -version
 ```
 
 You should see:
+
 ```
 ✅ Recording saved: ~/Videos/test-recording/raw/2025-10-11-14-30-test-recording.mp4
 Duration: 0:32
@@ -92,6 +100,7 @@ Ready for editing
    - Free version is sufficient
 
 2. **Enable Scripting API**
+
    ```bash
    # macOS/Linux
    export RESOLVE_SCRIPT_API="/Library/Application Support/Blackmagic Design/DaVinci Resolve/Developer/Scripting/"
@@ -123,6 +132,7 @@ Ready for editing
    - Download JSON credentials
 
 4. **Configure Creator Studio**
+
    ```bash
    mkdir -p ~/.creator-studio
    cp ~/Downloads/client_secret_*.json ~/.creator-studio/youtube-credentials.json
@@ -145,6 +155,7 @@ Ready for editing
    - Get API keys and tokens
 
 3. **Configure Creator Studio**
+
    ```bash
    cat > ~/.creator-studio/twitter-credentials.json << EOF
    {
@@ -174,6 +185,7 @@ Ready for editing
    - Auth → Copy Client ID and Client Secret
 
 4. **Configure Creator Studio**
+
    ```bash
    cat > ~/.creator-studio/linkedin-credentials.json << EOF
    {
@@ -257,6 +269,7 @@ After installation, verify everything works:
 ## Troubleshooting
 
 ### FFmpeg not found
+
 ```bash
 # macOS
 brew install ffmpeg
@@ -272,6 +285,7 @@ which ffmpeg  # Should show path
 ```
 
 ### Recording fails to start
+
 ```bash
 # Check permissions (macOS)
 System Preferences → Security & Privacy → Screen Recording
@@ -285,6 +299,7 @@ ffmpeg -version
 ```
 
 ### DaVinci Resolve connection fails
+
 ```bash
 # Verify Resolve is running
 ps aux | grep Resolve
@@ -297,6 +312,7 @@ python3 -c "import DaVinciResolveScript as dvr; resolve = dvr.scriptapp('Resolve
 ```
 
 ### API credentials not working
+
 ```bash
 # Check file exists
 ls -la ~/.creator-studio/*-credentials.json
@@ -331,6 +347,7 @@ rm -rf ~/.creator-studio
 ## Next Steps
 
 Once installed, see:
+
 - [Quick Start Guide](QUICK_START.md) - Create your first video in 30 minutes
 - [Complete Workflows](WORKFLOWS.md) - End-to-end production flows
 - [50+ Examples](EXAMPLES.md) - Real-world use cases

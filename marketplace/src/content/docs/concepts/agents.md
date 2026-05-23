@@ -39,12 +39,14 @@ The distinction between agents and skills is fundamental to designing effective 
 | **Typical length** | 500-2,000 words | 200-1,000 words (directives, not procedures) |
 
 **Use a skill when:**
+
 - The task is focused and well-defined (e.g., "write tests for this component")
 - You want auto-activation based on context matching
 - You need precise tool restrictions (only allow specific tools)
 - The instruction set is procedural: step 1, step 2, step 3
 
 **Use an agent when:**
+
 - The task requires autonomous exploration and decision-making
 - Multiple tool categories are needed, with only a few excluded
 - The agent needs to iterate (try, evaluate, adjust) over multiple turns

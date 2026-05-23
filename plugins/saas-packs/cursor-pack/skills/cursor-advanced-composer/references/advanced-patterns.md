@@ -3,6 +3,7 @@
 ## Advanced Patterns
 
 ### Template Application
+
 ```
 "Apply the Repository pattern to all database operations:
 
@@ -24,6 +25,7 @@ Update services:
 ```
 
 ### Code Generation Pipeline
+
 ```
 "Generate full CRUD for entity 'Product':
 
@@ -54,6 +56,7 @@ Update services:
 ```
 
 ### Cross-Cutting Concerns
+
 ```
 "Add logging to all API routes:
 

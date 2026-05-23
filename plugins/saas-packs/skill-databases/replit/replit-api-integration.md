@@ -10,6 +10,7 @@ replit-api-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Integrate Replit API for programmatic control of Repls, deployments, and team management.
 **Workflow:** Automation skill - enables programmatic control of Replit resources from external systems.
 **Relates to:** Extends replit-install-auth; enables CI/CD integration via replit-github-integration.

@@ -20,9 +20,11 @@ compatibility: Designed for Claude Code
 # MindTickle Install & Auth
 
 ## Overview
+
 Set up MindTickle API for sales readiness, training content management, and rep performance analytics.
 
 ## Prerequisites
+
 - MindTickle account and API access
 - API key/credentials from MindTickle dashboard
 - Node.js 18+ or Python 3.8+
@@ -30,18 +32,21 @@ Set up MindTickle API for sales readiness, training content management, and rep 
 ## Instructions
 
 ### Step 1: Install SDK
+
 ```bash
 npm install @mindtickle/sdk
 # API key from MindTickle Admin > Integrations > API
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 export MINDTICKLE_API_KEY="your-api-key-here"
 echo 'MINDTICKLE_API_KEY=your-api-key' >> .env
 ```
 
 ### Step 3: Verify Connection (TypeScript)
+
 ```typescript
 import { MindTickleClient } from '@mindtickle/sdk';
 const client = new MindTickleClient({ apiKey: process.env.MINDTICKLE_API_KEY });
@@ -50,6 +55,7 @@ console.log(`Found ${users.total} users`);
 ```
 
 ### Step 4: Verify Connection (Python)
+
 ```python
 import mindtickle
 client = mindtickle.Client(api_key=os.environ['MINDTICKLE_API_KEY'])
@@ -58,6 +64,7 @@ print(f'Found {users.total} users')
 ```
 
 ## Error Handling
+
 | Error | Code | Solution |
 |-------|------|----------|
 | Invalid API key | 401 | Verify credentials in dashboard |
@@ -65,7 +72,9 @@ print(f'Found {users.total} users')
 | Rate limited | 429 | Implement backoff |
 
 ## Resources
+
 - [MindTickle Documentation](https://www.mindtickle.com/platform/integrations/)
 
 ## Next Steps
+
 After auth, proceed to `mindtickle-hello-world`.

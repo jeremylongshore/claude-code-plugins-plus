@@ -22,18 +22,22 @@ compatibility: Designed for Claude Code
 # Anthropic Core Workflow A → Model Inference
 
 ## Overview
+
 This skill redirects to `clade-model-inference` which covers streaming, vision, structured output, and all Messages API patterns.
 
 ## Prerequisites
+
 - Completed `clade-install-auth` setup
 - `ANTHROPIC_API_KEY` configured
 
 ## Instructions
 
 ### Step 1: Use claude-model-inference instead
+
 This skill has been replaced. The primary Anthropic workflow is the Messages API, covered in full by `clade-model-inference`.
 
 ### Step 2: Key topics covered there
+
 - Streaming responses with `client.messages.stream()`
 - Vision — sending images to Claude
 - Structured JSON output via system prompts
@@ -41,15 +45,18 @@ This skill has been replaced. The primary Anthropic workflow is the Messages API
 - All Messages API parameters
 
 ## Output
+
 - Redirected to `clade-model-inference`
 - All Messages API patterns available there
 
 ## Error Handling
+
 | Issue | Solution |
 |-------|----------|
 | Skill not found | Run `clade-model-inference` directly |
 
 ## Examples
+
 ```typescript
 // Use claude-model-inference for the full Messages API guide
 import Anthropic from '@claude-ai/sdk';
@@ -62,8 +69,10 @@ const stream = client.messages.stream({
 ```
 
 ## Resources
+
 - [Messages API](https://docs.anthropic.com/en/api/messages)
 - [Streaming](https://docs.anthropic.com/en/api/messages-streaming)
 
 ## Next Steps
+
 Run `clade-model-inference` for the complete guide.

@@ -9,6 +9,7 @@
 ### Issue: "Plugin not found" after installation
 
 **Symptoms:**
+
 ```bash
 $ /security-scan-quick
 Error: Command not found: security-scan-quick
@@ -17,6 +18,7 @@ Error: Command not found: security-scan-quick
 **Cause:** Plugin not properly installed or Claude Code hasn't reloaded plugins
 
 **Solution:**
+
 ```bash
 # Step 1: Verify plugin directory exists
 ls -la $HOME/.claude/plugins/security-pro-pack
@@ -36,6 +38,7 @@ claude plugin list | grep security-pro-pack
 ### Issue: Permission denied errors
 
 **Symptoms:**
+
 ```bash
 $ /docker-security-scan
 Error: Permission denied: /home/user/.claude/plugins/security-pro-pack
@@ -44,6 +47,7 @@ Error: Permission denied: /home/user/.claude/plugins/security-pro-pack
 **Cause:** Incorrect file permissions on plugin directory
 
 **Solution:**
+
 ```bash
 # Fix permissions
 chmod -R 755 $HOME/.claude/plugins/security-pro-pack
@@ -60,6 +64,7 @@ claude plugin reload
 ### Issue: Validation errors during install
 
 **Symptoms:**
+
 ```
 Error: Invalid plugin structure
 Missing required file: .claude-plugin/plugin.json
@@ -68,6 +73,7 @@ Missing required file: .claude-plugin/plugin.json
 **Cause:** Corrupted or incomplete plugin package
 
 **Solution:**
+
 ```bash
 # Step 1: Verify package integrity
 sha256sum security-pro-pack.zip
@@ -89,6 +95,7 @@ claude plugin install ./security-pro-pack
 ### Issue: /ss command produces no output
 
 **Symptoms:**
+
 ```bash
 $ /ss
 # Command runs but no report generated
@@ -97,6 +104,7 @@ $ /ss
 **Cause 1:** No files to scan in current directory
 
 **Solution:**
+
 ```bash
 # Verify you're in project directory
 pwd
@@ -111,6 +119,7 @@ ls -la
 **Cause 2:** All issues filtered out (e.g., .gitignore excludes everything)
 
 **Solution:**
+
 ```bash
 # Run with verbose flag
 /ss --verbose
@@ -124,6 +133,7 @@ ls -la
 ### Issue: /dss fails with "Docker daemon not running"
 
 **Symptoms:**
+
 ```bash
 $ /dss nginx:latest
 Error: Cannot connect to Docker daemon
@@ -134,6 +144,7 @@ Error: Cannot connect to Docker daemon
 **Solution:**
 
 **macOS:**
+
 ```bash
 # Start Docker Desktop
 open -a Docker
@@ -143,6 +154,7 @@ docker ps
 ```
 
 **Linux:**
+
 ```bash
 # Start Docker service
 sudo systemctl start docker
@@ -163,6 +175,7 @@ docker ps
 ### Issue: /asa returns "Connection refused"
 
 **Symptoms:**
+
 ```bash
 $ /asa https://api.example.com
 Error: Connection refused
@@ -171,6 +184,7 @@ Error: Connection refused
 **Cause:** API not accessible or network issue
 
 **Solution:**
+
 ```bash
 # Step 1: Verify API is accessible
 curl https://api.example.com/health
@@ -201,6 +215,7 @@ Claude responds without using Security Auditor Expert agent
 **Cause:** Activation triggers not recognized
 
 **Solution:**
+
 ```
 # Use explicit trigger words
 > "Please use the Security Auditor Expert to perform an OWASP Top 10 audit"
@@ -222,6 +237,7 @@ Agent gives general security advice instead of specific HIPAA/PCI DSS/GDPR guida
 **Cause:** Unclear which framework to assess against
 
 **Solution:**
+
 ```
 # Be specific about framework
 > "Use Compliance Checker to review this application for HIPAA compliance"
@@ -243,6 +259,7 @@ Agent suggests algorithms that are no longer recommended
 **Cause:** This should NOT happen - if it does, report as bug
 
 **Solution:**
+
 ```
 # Verify plugin version
 claude plugin info security-pro-pack
@@ -262,6 +279,7 @@ claude plugin update security-pro-pack
 ### Issue: "Image not found" error
 
 **Symptoms:**
+
 ```bash
 $ /dss myapp:latest
 Error: Image not found: myapp:latest
@@ -270,6 +288,7 @@ Error: Image not found: myapp:latest
 **Cause:** Image doesn't exist locally or typo in image name
 
 **Solution:**
+
 ```bash
 # Step 1: List all images
 docker images
@@ -294,6 +313,7 @@ All scans show zero vulnerabilities (unlikely for real images)
 **Cause:** Scanner not accessing vulnerability database
 
 **Solution:**
+
 ```bash
 # Update vulnerability database
 docker pull aquasec/trivy:latest
@@ -312,6 +332,7 @@ docker pull aquasec/trivy:latest
 ### Issue: Rate limiting errors during audit
 
 **Symptoms:**
+
 ```bash
 $ /asa https://api.example.com
 Error: 429 Too Many Requests
@@ -320,6 +341,7 @@ Error: 429 Too Many Requests
 **Cause:** API has aggressive rate limiting
 
 **Solution:**
+
 ```bash
 # Use slower scan mode
 /asa https://api.example.com --slow
@@ -336,6 +358,7 @@ Error: 429 Too Many Requests
 ### Issue: "SSL certificate verification failed"
 
 **Symptoms:**
+
 ```
 Error: SSL certificate verification failed
 ```
@@ -343,6 +366,7 @@ Error: SSL certificate verification failed
 **Cause:** Self-signed certificate or invalid SSL
 
 **Solution:**
+
 ```bash
 # For development/staging with self-signed certs
 /asa https://staging-api.example.com --insecure
@@ -370,6 +394,7 @@ Documentation says "[Company Name]" instead of your company
 **Cause:** Organization name not specified
 
 **Solution:**
+
 ```bash
 # Specify organization during generation
 /compliance-docs-generate --framework hipaa --org "HealthCare Inc"
@@ -389,6 +414,7 @@ Generated policies reference "cloud provider" but we're on-premises
 **Cause:** Templates are generic, need customization
 
 **Solution:**
+
 ```
 # Step 1: Generate base documentation
 /cdg --framework hipaa
@@ -412,6 +438,7 @@ git commit -m "Add customized HIPAA documentation"
 ### Issue: False positives on test code
 
 **Symptoms:**
+
 ```
  CRITICAL: MD5 hashing detected
 File: tests/fixtures/test-data.js:12
@@ -422,6 +449,7 @@ File: tests/fixtures/test-data.js:12
 **Solution:**
 
 **Option 1: Add ignore comments**
+
 ```javascript
 // tests/fixtures/test-data.js
 // CRYPTO_AUDIT_IGNORE: Test fixture, not used in production
@@ -429,11 +457,13 @@ const TEST_HASH = md5("test-data")
 ```
 
 **Option 2: Exclude test directories**
+
 ```bash
 /ca src/crypto/ --exclude tests/,fixtures/
 ```
 
 **Option 3: Configure in .cryptoauditignore file**
+
 ```
 # .cryptoauditignore
 tests/**/*
@@ -452,6 +482,7 @@ Audit completes but reports 0 findings (you know you have crypto)
 **Cause:** Scanner looking in wrong directory or file types not recognized
 
 **Solution:**
+
 ```bash
 # Specify exact files
 /ca src/crypto/encryption.js src/auth/password.js
@@ -475,6 +506,7 @@ Threat model lists obvious issues without system-specific analysis
 **Cause:** Insufficient context provided about your system
 
 **Solution:**
+
 ```
 # Provide detailed context
 > "I need a STRIDE threat model for our payment processing system.
@@ -505,6 +537,7 @@ Threat model lists obvious issues without system-specific analysis
 ### Issue: Security scans taking too long
 
 **Symptoms:**
+
 ```bash
 $ /ss
 # Runs for 10+ minutes on large codebase
@@ -513,6 +546,7 @@ $ /ss
 **Cause:** Scanning too many files (including node_modules, vendor, etc.)
 
 **Solution:**
+
 ```bash
 # Exclude large directories
 /ss --exclude node_modules/,vendor/,dist/,build/
@@ -539,6 +573,7 @@ Each Docker image scan takes 5+ minutes
 **Cause:** Downloading vulnerability database on each scan
 
 **Solution:**
+
 ```bash
 # Pre-download vulnerability DB (run once)
 docker pull aquasec/trivy:latest
@@ -557,6 +592,7 @@ docker pull aquasec/trivy:latest
 ### Issue: Reports not being saved
 
 **Symptoms:**
+
 ```bash
 $ /ss --output report.md
 # Scan completes but report.md not created
@@ -565,6 +601,7 @@ $ /ss --output report.md
 **Cause:** Permission issue or invalid path
 
 **Solution:**
+
 ```bash
 # Check current directory permissions
 ls -la
@@ -587,6 +624,7 @@ Markdown report doesn't render correctly in viewer
 **Cause:** Special characters or encoding issue
 
 **Solution:**
+
 ```bash
 # Specify UTF-8 encoding
 /ss --output report.md --encoding utf-8
@@ -605,6 +643,7 @@ cat report.md | less
 ### Issue: CI/CD pipeline fails with plugin
 
 **Symptoms:**
+
 ```yaml
 # GitHub Actions
 - name: Security Scan
@@ -617,6 +656,7 @@ cat report.md | less
 **Solution:**
 
 **Option 1: Use standalone scripts**
+
 ```bash
 # Extract scanner logic to standalone script
 # security-scan.sh (generated by plugin)
@@ -624,6 +664,7 @@ cat report.md | less
 ```
 
 **Option 2: Install Claude Code in CI**
+
 ```yaml
 - name: Install Claude Code
   run: |
@@ -651,6 +692,7 @@ Local scan finds 5 issues, CI finds 15 issues
 **Cause:** Different file sets scanned (CI has no .gitignore exclusions)
 
 **Solution:**
+
 ```bash
 # Use consistent exclusions
 # Create .securityscanignore (committed to git)
@@ -668,17 +710,20 @@ echo "dist/" >> .securityscanignore
 ### Before Asking for Help
 
 1. **Check plugin version:**
+
    ```bash
    claude plugin info security-pro-pack
    # Should be v1.0.0 or later
    ```
 
 2. **Run in verbose mode:**
+
    ```bash
    /ss --verbose 2>&1 | tee debug.log
    ```
 
 3. **Check logs:**
+
    ```bash
    tail -f ~/.claude/logs/plugins.log
    ```
@@ -686,6 +731,7 @@ echo "dist/" >> .securityscanignore
 ### How to Report Issues
 
 **Good Bug Report:**
+
 ```markdown
 **Plugin:** security-scan-quick
 **Version:** 1.0.0
@@ -726,29 +772,37 @@ Error: Permission denied: /tmp/security-scan-12345
 ## Common Error Messages
 
 ### "Command not found"
+
 → See "Installation Issues" section above
 
 ### "Permission denied"
+
 → See "Permission denied errors" section above
 
 ### "Connection refused"
+
 → See "/asa returns 'Connection refused'" section above
 
 ### "Rate limit exceeded"
+
 → See "Rate limiting errors during audit" section above
 
 ### "SSL certificate verification failed"
+
 → See "SSL certificate verification failed" section above
 
 ### "Docker daemon not running"
+
 → See "/dss fails with Docker daemon" section above
 
 ### "Image not found"
+
 → See "Docker Security Scan Issues" section above
 
 ---
 
 **Still stuck?** Email [email protected] with:
+
 1. Plugin version
 1. Operating system
 1. Error message (full text)

@@ -34,6 +34,7 @@ Scaffolds new Claude Code plugins with proper directory structure, required file
 
 1. Gather requirements from the user request: plugin name (kebab-case), category (`productivity`, `security`, `devops`, `testing`, etc.), plugin type (commands, agents, skills, MCP, or combination), description, and keywords. Default author to the repository owner if unspecified (see `${CLAUDE_SKILL_DIR}/references/plugin-creation-process.md`).
 2. Create the plugin directory structure under `plugins/[category]/[plugin-name]/`:
+
    ```
    plugins/[category]/[plugin-name]/
    ├── .claude-plugin/
@@ -42,6 +43,7 @@ Scaffolds new Claude Code plugins with proper directory structure, required file
    ├── LICENSE
    └── [commands/ | agents/ | skills/ | hooks/ | mcp/]
    ```
+
 3. Generate `.claude-plugin/plugin.json` using the template from `${CLAUDE_SKILL_DIR}/references/file-templates.md`. Populate all required fields: `name`, `version` (default `1.0.0`), `description`, `author` (name and email), `repository`, `license` (default MIT), and `keywords` (minimum 2).
 4. Generate `README.md` with installation instructions, usage examples, a description section, and contributor information.
 5. Create a `LICENSE` file with MIT license text (or the specified license).
@@ -57,6 +59,7 @@ Scaffolds new Claude Code plugins with proper directory structure, required file
 ## Output
 
 A complete, CI-ready plugin containing:
+
 - All required files (`plugin.json`, `README.md`, `LICENSE`)
 - Component files matching the requested plugin type with proper frontmatter
 - Marketplace catalog entry in `marketplace.extended.json`

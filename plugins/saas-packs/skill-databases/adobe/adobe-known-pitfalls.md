@@ -10,6 +10,7 @@ adobe-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Adobe anti-patterns
 **Workflow:** Part of the enterprise skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

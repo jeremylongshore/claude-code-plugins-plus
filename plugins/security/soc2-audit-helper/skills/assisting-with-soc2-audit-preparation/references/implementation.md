@@ -1,4 +1,4 @@
-# Implementation Guide
+## Implementation Guide
 
 1. Confirm scope (services, systems, period) and applicable SOC 2 criteria.
 2. Gather existing controls, policies, and evidence sources.
@@ -10,6 +10,7 @@
 Evaluate controls across five categories:
 
 **Security (Common Criteria)** - Required for all SOC 2 audits:
+
 - CC1: Control Environment
 - CC2: Communication and Information
 - CC3: Risk Assessment
@@ -21,6 +22,7 @@ Evaluate controls across five categories:
 - CC9: Risk Mitigation
 
 **Additional Criteria** (Optional):
+
 - Availability
 - Processing Integrity
 - Confidentiality
@@ -29,6 +31,7 @@ Evaluate controls across five categories:
 ### 2. Evidence Collection Phase
 
 **Security Controls Evidence**:
+
 - Access control policies and configurations
 - Multi-factor authentication implementation
 - Password policy documentation
@@ -37,6 +40,7 @@ Evaluate controls across five categories:
 - Security monitoring and alerting configs
 
 **Operational Evidence**:
+
 - Change management logs
 - Backup and recovery procedures
 - Disaster recovery testing results
@@ -45,6 +49,7 @@ Evaluate controls across five categories:
 - Performance metrics
 
 **Policy and Procedure Evidence**:
+
 - Information security policy
 - Incident response plan
 - Business continuity plan
@@ -53,6 +58,7 @@ Evaluate controls across five categories:
 - Security awareness training records
 
 **System Evidence**:
+
 - System architecture diagrams
 - Data flow diagrams
 - Asset inventory
@@ -62,6 +68,7 @@ Evaluate controls across five categories:
 ### 3. Control Effectiveness Testing
 
 For each control point:
+
 - Verify control design (is it properly designed?)
 - Test operating effectiveness (is it working as intended?)
 - Document test results with screenshots/logs
@@ -71,6 +78,7 @@ For each control point:
 ### 4. Compliance Gap Analysis
 
 Compare current state against SOC 2 requirements:
+
 - Missing controls (critical gaps)
 - Partially implemented controls (needs improvement)
 - Improperly documented controls (evidence gaps)
@@ -79,6 +87,7 @@ Compare current state against SOC 2 requirements:
 ### 5. Evidence Documentation
 
 Organize evidence by Trust Service Criteria:
+
 ```
 ${CLAUDE_SKILL_DIR}/soc2-audit/
 ├── CC1-control-environment/
@@ -99,6 +108,7 @@ ${CLAUDE_SKILL_DIR}/soc2-audit/
 ### 6. Generate Readiness Report
 
 Create comprehensive SOC 2 readiness assessment with:
+
 - Executive summary with readiness score
 - Control-by-control assessment
 - Gap analysis with severity ratings

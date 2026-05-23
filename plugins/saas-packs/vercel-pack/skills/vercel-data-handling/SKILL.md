@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Data Handling
 
 ## Overview
+
 Handle sensitive data correctly on Vercel: PII redaction in logs, GDPR-compliant data processing in serverless functions, secure cookie management, and data residency configuration. Covers both what Vercel stores and what your application should protect.
 
 ## Prerequisites
+
 - Understanding of GDPR/CCPA requirements
 - Vercel Pro or Enterprise (for data residency options)
 - Logging infrastructure with PII awareness
@@ -47,6 +49,7 @@ Handle sensitive data correctly on Vercel: PII redaction in logs, GDPR-compliant
 | Environment variables | Vercel (encrypted) | Until deleted | Scoped access |
 
 ### Step 2: PII Redaction in Logs
+
 ```typescript
 // lib/redact.ts — redact PII before logging
 const PII_PATTERNS: [RegExp, string][] = [
@@ -76,6 +79,7 @@ export async function POST(request: Request) {
 ```
 
 ### Step 3: GDPR-Compliant API Routes
+
 ```typescript
 // api/users/[id]/route.ts — data subject request handlers
 import { NextRequest, NextResponse } from 'next/server';
@@ -127,6 +131,7 @@ export async function DELETE(
 ```
 
 ### Step 4: Secure Cookie Management
+
 ```typescript
 // lib/cookies.ts — GDPR-aware cookie handling
 import { cookies } from 'next/headers';
@@ -161,6 +166,7 @@ export function middleware(request: Request) {
 ```
 
 ### Step 5: Data Residency Configuration
+
 Vercel allows configuring where your serverless functions execute:
 
 ```json
@@ -176,6 +182,7 @@ Vercel allows configuring where your serverless functions execute:
 ```
 
 EU regions for GDPR data residency:
+
 | Region | Location | Code |
 |--------|----------|------|
 | Paris | France | `cdg1` |
@@ -183,6 +190,7 @@ EU regions for GDPR data residency:
 | Frankfurt | Germany | `fra1` |
 
 ### Step 6: Audit Logging
+
 ```typescript
 // lib/audit-log.ts — track data access for compliance
 interface AuditEntry {
@@ -230,6 +238,7 @@ export async function GET(request: NextRequest) {
 | Business | Metrics, usage stats | Aggregate before logging |
 
 ## Output
+
 - PII redaction applied to all log output
 - GDPR data subject request endpoints implemented
 - Secure cookie handling with consent management
@@ -237,6 +246,7 @@ export async function GET(request: NextRequest) {
 - Audit logging for compliance trail
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | PII in Vercel logs | Not redacting before console.log | Use `redact()` wrapper on all log calls |
@@ -245,6 +255,7 @@ export async function GET(request: NextRequest) {
 | Function running in wrong region | Region not set in vercel.json | Specify `regions` per function |
 
 ## Resources
+
 - [Vercel Privacy Policy](https://vercel.com/legal/privacy-policy)
 - [Vercel Data Processing Agreement](https://vercel.com/legal/dpa)
 - [GDPR Overview](https://gdpr.eu/)
@@ -252,4 +263,5 @@ export async function GET(request: NextRequest) {
 - [Vercel Security](https://vercel.com/security)
 
 ## Next Steps
+
 For enterprise RBAC, see `vercel-enterprise-rbac`.

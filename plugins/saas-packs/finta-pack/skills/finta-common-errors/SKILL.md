@@ -62,12 +62,15 @@ function classifyFintaError(status: number, body: string): FintaError {
 ## Debugging Guide
 
 ### Authentication Errors
+
 Finta API keys are scoped per workspace. Verify the key matches the active workspace at Settings > API Access. Keys are revoked automatically when team members are removed. Re-invite and regenerate if a team change caused the failure. Test connectivity with a simple GET to the rounds endpoint before running complex operations.
 
 ### Rate Limit Errors
+
 Finta enforces 60 requests/minute per API key. Batch investor updates using the bulk endpoint instead of individual PUT calls. CSV imports bypass the rate limit -- prefer bulk import for large datasets.
 
 ### Validation Errors
+
 Round state transitions must follow the sequence: Draft, Active, Closing, Closed. Skipping states returns 400. Backward transitions (e.g., Closing to Active) are also rejected. Investor deduplication matches on email -- always check for existing records before creating. Deal room links expire after 30 days by default; regenerate from the round settings page. CSV imports require `name`, `email`, and `stage` columns with dates in YYYY-MM-DD format.
 
 ## Error Handling

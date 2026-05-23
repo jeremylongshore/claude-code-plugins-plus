@@ -67,6 +67,7 @@ console.log('Table "events" created.');
 ```
 
 **Key concepts:**
+
 - `MergeTree()` -- the foundational ClickHouse engine for analytics
 - `ORDER BY` -- defines the primary index (sort key); pick columns you filter/group on
 - `PARTITION BY` -- splits data into parts by month for efficient pruning
@@ -119,6 +120,7 @@ for (const row of rows) {
 ```
 
 **Expected output:**
+
 ```
 page_view: 3 events, 3 users
 click: 1 events, 1 users

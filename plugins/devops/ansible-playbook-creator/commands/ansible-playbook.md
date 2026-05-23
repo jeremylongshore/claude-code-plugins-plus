@@ -6,7 +6,6 @@ description: Create Ansible playbooks for configuration management
 
 Create Ansible playbooks for configuration management
 
-
 ## Key Features
 
 - Production-ready configurations

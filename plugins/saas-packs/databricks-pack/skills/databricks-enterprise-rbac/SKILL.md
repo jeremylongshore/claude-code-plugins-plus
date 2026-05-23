@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Enterprise RBAC
 
 ## Overview
+
 Implement enterprise access control using Unity Catalog privileges, SCIM-provisioned groups, workspace entitlements, cluster policies, and audit logging. Unity Catalog uses a three-level namespace (`catalog.schema.object`) with privilege inheritance: granting `USAGE` on a catalog cascades to schemas. Account-level SCIM syncs groups from your IdP (Okta, Azure AD, Google Workspace).
 
 ## Prerequisites
+
 - Databricks Premium or Enterprise with Unity Catalog enabled
 - Account admin access for SCIM and group management
 - Identity Provider supporting SAML 2.0 and SCIM 2.0
@@ -35,6 +37,7 @@ Implement enterprise access control using Unity Catalog privileges, SCIM-provisi
 ## Instructions
 
 ### Step 1: Provision Groups via SCIM API
+
 Sync groups from your IdP at the account level. Max 10,000 users + service principals and 5,000 groups per account.
 
 ```bash
@@ -84,6 +87,7 @@ acct.workspace_assignment.update(
 ```
 
 ### Step 2: Unity Catalog Privilege Hierarchy
+
 ```sql
 -- Privilege model: CATALOG > SCHEMA > TABLE/VIEW/FUNCTION
 -- USAGE grants must cascade from catalog to schema
@@ -111,6 +115,7 @@ GRANT ALL PRIVILEGES ON CATALOG analytics TO `cicd-service-principal`;
 ```
 
 ### Step 3: Cluster Policies by Role
+
 ```python
 from databricks.sdk import WorkspaceClient
 
@@ -158,6 +163,7 @@ w.cluster_policies.set_permissions(
 ```
 
 ### Step 4: SQL Warehouse Permissions
+
 ```bash
 # Grant warehouse access by group
 databricks permissions update sql/warehouses/$WAREHOUSE_ID --json '[
@@ -168,6 +174,7 @@ databricks permissions update sql/warehouses/$WAREHOUSE_ID --json '[
 ```
 
 ### Step 5: Row-Level Security and Column Masking
+
 ```sql
 -- Row filter: analysts only see their department's data
 CREATE OR REPLACE FUNCTION analytics.gold.dept_filter(dept STRING)
@@ -187,6 +194,7 @@ ALTER TABLE analytics.gold.customers
 ```
 
 ### Step 6: Service Principal for Automation
+
 ```python
 from databricks.sdk import AccountClient
 
@@ -207,6 +215,7 @@ print(f"Secret: {secret.secret}")  # Store securely — shown only once
 ```
 
 ### Step 7: Audit Access Patterns
+
 ```sql
 -- Who accessed what in the last 7 days
 SELECT event_time, user_identity.email AS actor,
@@ -227,6 +236,7 @@ ORDER BY access_count DESC;
 ```
 
 ## Output
+
 - Account-level groups provisioned via SCIM matching IdP teams
 - Unity Catalog grants enforcing least-privilege across medallion layers
 - Cluster policies restricting compute by role (analysts vs engineers)
@@ -236,6 +246,7 @@ ORDER BY access_count DESC;
 - Audit queries for ongoing compliance monitoring
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `PERMISSION_DENIED` on table | Missing `USAGE` on parent catalog/schema | Grant `USAGE` at each namespace level |
@@ -247,6 +258,7 @@ ORDER BY access_count DESC;
 ## Examples
 
 ### Verify Current Permissions
+
 ```sql
 SHOW GRANTS ON CATALOG analytics;
 SHOW GRANTS `data-analysts` ON SCHEMA analytics.gold;
@@ -254,6 +266,7 @@ SHOW GRANTS ON TABLE analytics.gold.sales;
 ```
 
 ### Permission Matrix Reference
+
 | Role | Bronze | Silver | Gold | ML | Clusters | Warehouses |
 |------|--------|--------|------|----|----------|------------|
 | Data Engineer | Read/Write | Read/Write | Read | - | Create (policy) | Use/Manage |
@@ -263,6 +276,7 @@ SHOW GRANTS ON TABLE analytics.gold.sales;
 | CI/CD SP | Full | Full | Full | Full | Manage | - |
 
 ## Resources
+
 - [Unity Catalog Privileges](https://docs.databricks.com/aws/en/data-governance/unity-catalog/manage-privileges/)
 - [SCIM Provisioning](https://docs.databricks.com/aws/en/admin/users-groups/scim/)
 - [Cluster Policies](https://docs.databricks.com/aws/en/admin/clusters/policy-definition)

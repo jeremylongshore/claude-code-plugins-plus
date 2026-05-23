@@ -3,6 +3,7 @@
 ## Vercel Deployment
 
 ### Environment Setup
+
 ```bash
 # Add Supabase secrets to Vercel
 vercel secrets add supabase_api_key sk_live_***
@@ -19,6 +20,7 @@ vercel --prod
 ```
 
 ### vercel.json Configuration
+
 ```json
 {
   "env": {

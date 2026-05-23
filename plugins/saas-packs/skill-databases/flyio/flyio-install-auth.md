@@ -10,6 +10,7 @@ flyio-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Fly.io SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Fly.io integration.
 **Relates to:** Other flyio skills in this pack.

@@ -10,6 +10,7 @@ mindtickle-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Mindtickle SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Mindtickle integration.
 **Relates to:** Other mindtickle skills in this pack.

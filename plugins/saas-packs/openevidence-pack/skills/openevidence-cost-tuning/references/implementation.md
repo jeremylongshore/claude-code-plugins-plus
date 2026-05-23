@@ -1,6 +1,7 @@
 # OpenEvidence Cost Tuning - Implementation Details
 
 ## Usage Tracker
+
 ```typescript
 export class UsageTracker {
   async trackQuery(userId: string): Promise<void> { /* Redis-based daily/monthly tracking */ }
@@ -11,6 +12,7 @@ export class UsageTracker {
 ```
 
 ## Smart DeepConsult Management
+
 ```typescript
 // DeepConsult costs 100x+ more than regular queries
 export function shouldUseDeepConsult(question: string, context: ClinicalContext, userTier: string): DeepConsultDecision {
@@ -27,6 +29,7 @@ export function shouldUseDeepConsult(question: string, context: ClinicalContext,
 ```
 
 ## User Quotas & Tiering
+
 ```typescript
 const USER_TIERS = {
   free: { dailyQueries: 10, monthlyQueries: 100, deepConsultsPerMonth: 0 },
@@ -36,6 +39,7 @@ const USER_TIERS = {
 ```
 
 ## Cost Reporting Dashboard
+
 ```typescript
 export async function generateCostReport(startDate: Date, endDate: Date): Promise<CostReport> {
   const usage = await aggregateUsage(startDate, endDate);

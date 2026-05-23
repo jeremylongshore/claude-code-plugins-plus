@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo CI Integration
 
 ## Overview
+
 Set up CI/CD pipelines for Apollo.io integrations with GitHub Actions. Uses MSW mocks for unit tests (zero API calls), sandbox tokens for staging, and live API tests gated to main branch only. Apollo's sandbox token returns dummy data without consuming credits.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - Apollo master API key + sandbox token
 - Node.js 18+
@@ -36,6 +38,7 @@ Set up CI/CD pipelines for Apollo.io integrations with GitHub Actions. Uses MSW 
 ## Instructions
 
 ### Step 1: Store Secrets in GitHub
+
 ```bash
 # Master API key for integration tests (main branch only)
 gh secret set APOLLO_API_KEY --body "$APOLLO_API_KEY"
@@ -45,6 +48,7 @@ gh secret set APOLLO_SANDBOX_KEY --body "$APOLLO_SANDBOX_KEY"
 ```
 
 ### Step 2: GitHub Actions Workflow
+
 ```yaml
 # .github/workflows/apollo-ci.yml
 name: Apollo CI
@@ -111,6 +115,7 @@ jobs:
 ```
 
 ### Step 3: MSW-Based Unit Tests
+
 ```typescript
 // src/__tests__/apollo.test.ts
 import { describe, it, expect, beforeAll, afterAll, afterEach } from 'vitest';
@@ -160,6 +165,7 @@ describe('People Search', () => {
 ```
 
 ### Step 4: Integration Tests (Live API)
+
 ```typescript
 // src/__tests__/integration/apollo-live.test.ts
 import { describe, it, expect } from 'vitest';
@@ -189,6 +195,7 @@ describe.skipIf(SKIP)('Apollo Live Integration', () => {
 ```
 
 ## Output
+
 - GitHub Actions workflow with lint, typecheck, unit test, integration test, and secret scan jobs
 - MSW mock server for zero-API-call unit tests in PRs
 - Live integration tests gated to main branch pushes only
@@ -196,6 +203,7 @@ describe.skipIf(SKIP)('Apollo Live Integration', () => {
 - Secret scanning to prevent API key commits
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | Secret not found | `gh secret list` to verify, re-add with `gh secret set` |
@@ -204,9 +212,11 @@ describe.skipIf(SKIP)('Apollo Live Integration', () => {
 | Hardcoded key found | Secret scan job fails the build; rotate the key immediately |
 
 ## Resources
+
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 - [Apollo Sandbox Testing](https://docs.apollo.io/docs/test-api-key)
 - [MSW (Mock Service Worker)](https://mswjs.io/)
 
 ## Next Steps
+
 Proceed to `apollo-deploy-integration` for deployment configuration.

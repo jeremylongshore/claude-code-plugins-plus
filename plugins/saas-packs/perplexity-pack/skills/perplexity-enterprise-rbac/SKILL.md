@@ -22,6 +22,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Enterprise RBAC
 
 ## Overview
+
 Control access to Perplexity Sonar API at the organizational level. Perplexity does not have built-in RBAC -- you implement access control through: separate API keys per team/environment, a gateway that enforces model and budget policies, and domain restrictions for compliance.
 
 ## Access Control Strategy
@@ -35,6 +36,7 @@ Control access to Perplexity Sonar API at the organizational level. Perplexity d
 | Rate limiting | Gateway + key limits | Yes (per-key RPM) |
 
 ## Prerequisites
+
 - Perplexity API account with admin access
 - Separate API keys per team/environment
 - Gateway or middleware for policy enforcement
@@ -42,6 +44,7 @@ Control access to Perplexity Sonar API at the organizational level. Perplexity d
 ## Instructions
 
 ### Step 1: Create Per-Team API Keys
+
 Generate separate keys at [perplexity.ai/settings/api](https://www.perplexity.ai/settings/api):
 
 ```
@@ -52,6 +55,7 @@ Key: pplx-executive-reports    → Budget: $300/mo, sonar-pro
 ```
 
 ### Step 2: Gateway with Policy Enforcement
+
 ```typescript
 // perplexity-gateway.ts
 import OpenAI from "openai";
@@ -122,6 +126,7 @@ function enforcePolicy(
 ```
 
 ### Step 3: Enforced Search with Domain Restrictions
+
 ```typescript
 async function teamSearch(
   team: string,
@@ -158,6 +163,7 @@ const supportResult = await teamSearch("support", "How to reset password", "sona
 ```
 
 ### Step 4: Usage Tracking per Team
+
 ```typescript
 class TeamUsageTracker {
   private usage: Map<string, Array<{ timestamp: number; tokens: number; model: string; cost: number }>> = new Map();
@@ -189,6 +195,7 @@ class TeamUsageTracker {
 ```
 
 ### Step 5: Key Rotation Schedule
+
 Rotate API keys every 90 days. Name keys with quarter (`pplx-research-2026Q1`) for tracking.
 
 ```bash
@@ -205,6 +212,7 @@ curl -s -o /dev/null -w "%{http_code}" \
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `401` for a team | Key expired or revoked | Regenerate key for that team |
@@ -213,14 +221,17 @@ curl -s -o /dev/null -w "%{http_code}" \
 | Budget exceeded | Team over monthly cap | Alert team lead, increase cap or throttle |
 
 ## Output
+
 - Per-team API key management
 - Gateway enforcing model and token policies
 - Domain-restricted search for compliance teams
 - Usage tracking and cost allocation per team
 
 ## Resources
+
 - [Perplexity API Documentation](https://docs.perplexity.ai)
 - [API Key Management](https://www.perplexity.ai/settings/api)
 
 ## Next Steps
+
 For migration planning, see `perplexity-migration-deep-dive`.

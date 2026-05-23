@@ -10,6 +10,7 @@ vercel-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply security best practices for API keys, secrets rotation, least privilege access, and webhook signature verification.
 **Workflow:** Applied during initial setup and periodically audited during security reviews.
 **Relates to:** Extends vercel-install-auth with security; leads to vercel-enterprise-rbac for enterprise needs

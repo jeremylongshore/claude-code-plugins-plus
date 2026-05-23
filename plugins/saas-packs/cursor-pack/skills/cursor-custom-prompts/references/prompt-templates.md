@@ -3,6 +3,7 @@
 ## Prompt Templates
 
 ### Code Generation
+
 ```
 Template:
 "Create [COMPONENT_TYPE] for [PURPOSE]:
@@ -24,6 +25,7 @@ Include:
 ```
 
 ### Code Review
+
 ```
 Template:
 "Review this code for:
@@ -37,6 +39,7 @@ Suggest specific improvements with code examples."
 ```
 
 ### Debugging
+
 ```
 Template:
 "Debug this issue:
@@ -56,6 +59,7 @@ What I've tried:
 ```
 
 ### Refactoring
+
 ```
 Template:
 "Refactor [CODE/FILE] to:

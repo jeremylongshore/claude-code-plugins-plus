@@ -3,6 +3,7 @@
 ## AI-Powered Git Workflows
 
 ### Generate Commit Messages
+
 ```
 Method 1: Chat
 Select changed files → Cmd+L →
@@ -18,6 +19,7 @@ Method 3: Composer
 ```
 
 ### Code Review Assistance
+
 ```
 Review changes before commit:
 "@git diff HEAD Review these changes for issues"
@@ -30,6 +32,7 @@ Review branch:
 ```
 
 ### Conflict Resolution
+
 ```
 When conflicts occur:
 1. Open conflicting file

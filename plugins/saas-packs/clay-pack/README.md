@@ -17,6 +17,7 @@ Clay is a data enrichment and lead research platform that aggregates 150+ data p
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `clay-install-auth` | Set up Clay API keys, webhook URLs, and provider connections |
@@ -33,6 +34,7 @@ Clay is a data enrichment and lead research platform that aggregates 150+ data p
 | `clay-upgrade-migration` | Navigate the March 2026 pricing overhaul (Data Credits + Actions split) |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `clay-ci-integration` | GitHub Actions CI for Clay webhook handlers with data schema validation |
@@ -43,6 +45,7 @@ Clay is a data enrichment and lead research platform that aggregates 150+ data p
 | `clay-reference-architecture` | Table schema design, ICP scoring formulas, CRM sync patterns |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `clay-multi-env-setup` | Per-environment tables, webhook URLs, and safety guards |
@@ -53,6 +56,7 @@ Clay is a data enrichment and lead research platform that aggregates 150+ data p
 | `clay-migration-deep-dive` | Migrate from ZoomInfo/Apollo/Clearbit to Clay with parallel run validation |
 
 ### Flagship+ Skills (X25-X30)
+
 | Skill | Description |
 |-------|-------------|
 | `clay-advanced-troubleshooting` | Layer isolation, HTTP API column debugging, Claygent failure analysis |

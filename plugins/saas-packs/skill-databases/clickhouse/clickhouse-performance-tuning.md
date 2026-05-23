@@ -10,6 +10,7 @@ clickhouse-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize ClickHouse API performance
 **Workflow:** Part of the cicd skill category for ClickHouse integration.
 **Relates to:** Other clickhouse skills in this pack.

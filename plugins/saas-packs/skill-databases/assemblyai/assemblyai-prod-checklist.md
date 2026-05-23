@@ -10,6 +10,7 @@ assemblyai-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute AssemblyAI production deployment checklist
 **Workflow:** Part of the operations skill category for AssemblyAI integration.
 **Relates to:** Other assemblyai skills in this pack.

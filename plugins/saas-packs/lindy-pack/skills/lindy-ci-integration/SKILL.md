@@ -25,12 +25,14 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lindy CI Integration
 
 ## Overview
+
 Lindy agents run on Lindy's managed platform — CI/CD tests your **integration code**:
 webhook receivers, callback handlers, and application logic that interacts with Lindy
 agents. Test webhook signature verification, payload processing, and error handling
 without hitting live Lindy endpoints.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - Lindy API key and webhook secret stored as GitHub secrets
 - Node.js project with webhook receiver code
@@ -39,12 +41,14 @@ without hitting live Lindy endpoints.
 ## Instructions
 
 ### Step 1: Store Secrets in GitHub
+
 ```bash
 gh secret set LINDY_API_KEY --body "lnd_live_xxxxxxxxxxxx"
 gh secret set LINDY_WEBHOOK_SECRET --body "whsec_xxxxxxxxxxxx"
 ```
 
 ### Step 2: Create GitHub Actions Workflow
+
 ```yaml
 # .github/workflows/lindy-integration.yml
 name: Lindy Integration Tests
@@ -84,6 +88,7 @@ jobs:
 ```
 
 ### Step 3: Write Webhook Handler Tests
+
 ```typescript
 // __tests__/webhook-handler.test.ts
 import { describe, it, expect, vi } from 'vitest';
@@ -154,6 +159,7 @@ describe('Lindy Webhook Handler', () => {
 ```
 
 ### Step 4: Add Smoke Test for Live Connectivity
+
 ```typescript
 // __tests__/connectivity.test.ts
 import { describe, it, expect } from 'vitest';
@@ -181,6 +187,7 @@ describe('Lindy Connectivity (smoke)', () => {
 ```
 
 ### Step 5: PR Status Check
+
 ```yaml
 # Add to existing workflow
       - name: Post test results
@@ -219,9 +226,11 @@ describe('Lindy Connectivity (smoke)', () => {
 | Flaky live tests | Lindy processing delay | Add retry logic or mock external calls |
 
 ## Resources
+
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Vitest Documentation](https://vitest.dev)
 - [Lindy Webhooks](https://docs.lindy.ai/skills/by-lindy/webhooks)
 
 ## Next Steps
+
 Proceed to `lindy-deploy-integration` for deployment automation.

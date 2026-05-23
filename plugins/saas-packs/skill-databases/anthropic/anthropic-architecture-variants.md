@@ -10,6 +10,7 @@ anthropic-architecture-variants/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Choose Anthropic architecture blueprints
 **Workflow:** Part of the advanced skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

@@ -157,6 +157,7 @@ echo "Bundle ready: $BUNDLE_DIR.tar.gz ($(du -h "$BUNDLE_DIR.tar.gz" | cut -f1))
 ## Output
 
 Successful completion produces:
+
 - A `oci-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing five diagnostic files
 - Instance metadata showing current lifecycle state, shape, and fault domain
 - Serial console log capturing boot output, kernel messages, and cloud-init status

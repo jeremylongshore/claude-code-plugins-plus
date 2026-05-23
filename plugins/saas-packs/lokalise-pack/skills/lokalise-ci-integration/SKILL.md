@@ -300,6 +300,7 @@ jobs:
 ## Output
 
 After applying this skill, the project will have:
+
 - GitHub Actions workflow files for upload, download, and branch management
 - PR checks that block merges when translations are incomplete
 - Integration tests validating key coverage across all required locales

@@ -10,6 +10,7 @@ persona-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Persona core feature integration
 **Workflow:** Part of the onboarding skill category for Persona integration.
 **Relates to:** Other persona skills in this pack.

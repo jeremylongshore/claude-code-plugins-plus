@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Install & Auth
 
 ## Overview
+
 Set up Apollo.io API client and configure authentication credentials. Apollo uses the `x-api-key` HTTP header for authentication against the base URL `https://api.apollo.io/api/v1/`. There is no official SDK — all integrations use the REST API directly.
 
 ## Prerequisites
+
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Apollo.io account with API access (Basic plan or above)
@@ -36,6 +38,7 @@ Set up Apollo.io API client and configure authentication credentials. Apollo use
 ## Instructions
 
 ### Step 1: Install HTTP Client
+
 ```bash
 set -euo pipefail
 # Node.js
@@ -46,7 +49,9 @@ pip install requests python-dotenv
 ```
 
 ### Step 2: Configure API Key
+
 Apollo supports two API key types:
+
 - **Master API key** — full access to all endpoints (required for contacts, sequences, deals)
 - **Standard API key** — limited to search and enrichment only
 
@@ -57,6 +62,7 @@ echo '.env' >> .gitignore
 ```
 
 ### Step 3: Create Apollo Client (TypeScript)
+
 ```typescript
 // src/apollo/client.ts
 import axios, { AxiosInstance } from 'axios';
@@ -85,6 +91,7 @@ export const apolloClient = createApolloClient();
 ```
 
 ### Step 4: Verify Connection
+
 ```typescript
 // src/scripts/verify-auth.ts
 import { apolloClient } from '../apollo/client';
@@ -108,6 +115,7 @@ verifyConnection();
 ```
 
 ### Step 5: Create Apollo Client (Python)
+
 ```python
 # apollo_client.py
 import os
@@ -145,12 +153,14 @@ print('Connected:', client.verify())
 ```
 
 ## Output
+
 - HTTP client configured with `x-api-key` header authentication
 - Environment variable file with `.gitignore` protection
 - Successful `/auth/health` verification
 - Both TypeScript and Python implementations
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Invalid or missing API key | Verify key in Apollo Dashboard > Settings > Integrations > API Keys |
@@ -161,6 +171,7 @@ print('Connected:', client.verify())
 ## Examples
 
 ### Quick cURL Verification
+
 ```bash
 # Test your API key from the command line
 curl -s -X GET \
@@ -171,10 +182,12 @@ curl -s -X GET \
 ```
 
 ## Resources
+
 - [Apollo API Documentation](https://docs.apollo.io/)
 - [Create API Keys](https://docs.apollo.io/docs/create-api-key)
 - [Authentication Reference](https://docs.apollo.io/reference/authentication)
 - [Test API Key](https://docs.apollo.io/docs/test-api-key)
 
 ## Next Steps
+
 After successful auth, proceed to `apollo-hello-world` for your first API call.

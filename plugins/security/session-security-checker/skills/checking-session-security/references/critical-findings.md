@@ -3,11 +3,13 @@
 ## Critical Findings
 
 ### 1. Session Fixation Vulnerability
+
 **File**: ${CLAUDE_SKILL_DIR}/src/auth/login.js
 **Line**: 45
 **Issue**: Session ID not regenerated after authentication
 **Risk**: Attacker can hijack authenticated session
 **Code**:
+
 ```javascript
 function handleLogin(req, res) {
   if (validateCredentials(req.body)) {
@@ -16,7 +18,9 @@ function handleLogin(req, res) {
   }
 }
 ```
+
 **Remediation**:
+
 ```javascript
 function handleLogin(req, res) {
   if (validateCredentials(req.body)) {
@@ -29,6 +33,7 @@ function handleLogin(req, res) {
 ```
 
 ### 2. Missing HttpOnly Flag
+
 **File**: ${CLAUDE_SKILL_DIR}/config/session.js
 **Line**: 12
 **Issue**: Session cookies accessible to JavaScript

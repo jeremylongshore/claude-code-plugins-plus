@@ -76,6 +76,7 @@ You receive these parameters in your prompt:
 ## When Activated
 
 You activate when:
+
 - {{ACTIVATION_CONDITION_1}}
 - {{ACTIVATION_CONDITION_2}}
 - {{ACTIVATION_CONDITION_3}}
@@ -89,11 +90,13 @@ You activate when:
 ## Success Criteria
 
 Good output includes:
+
 - {{QUALITY_MARKER_1}}
 - {{QUALITY_MARKER_2}}
 - {{QUALITY_MARKER_3}}
 
 Poor output is:
+
 - {{ANTI_PATTERN_1}}
 - {{ANTI_PATTERN_2}}
 - {{ANTI_PATTERN_3}}

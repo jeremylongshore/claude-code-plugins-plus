@@ -10,6 +10,7 @@ cursor-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimizes Cursor IDE performance including editor settings, extension management, AI features, indexing, and system resource management.
 
 **Workflow:** This skill activates when Cursor is slow or using excessive resources. It covers diagnostics, editor optimization, extension optimization, AI feature optimization, indexing optimization, system resource management, and maintenance schedules.

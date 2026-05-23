@@ -155,7 +155,7 @@ class ClickUpUsageTracker {
 
 | Monthly Requests | Recommended Plan | Rationale |
 |-----------------|-----------------|-----------|
-| < 144,000 | Free Forever | 100/min * 60min * 24h = 144K/day max |
+| < 144,000 | Free Forever | 100/min *60min* 24h = 144K/day max |
 | 100-1000 req/min sustained | Business Plus | 10x rate limit increase |
 | > 1000 req/min sustained | Enterprise | 10,000 req/min + dedicated support |
 

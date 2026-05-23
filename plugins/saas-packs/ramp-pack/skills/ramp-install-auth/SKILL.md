@@ -19,15 +19,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ramp Install Auth
 
 ## Overview
+
 Set up Ramp API authentication using OAuth2 client credentials flow with sandbox and production environments.
 
 ## Prerequisites
+
 - Ramp account with API access
 - Client ID and Client Secret from Ramp Dashboard
 
 ## Instructions
 
 ### Step 1: Get API Credentials
+
 ```text
 1. Go to Ramp Dashboard > Settings > Developer
 2. Create new API application
@@ -36,6 +39,7 @@ Set up Ramp API authentication using OAuth2 client credentials flow with sandbox
 ```
 
 ### Step 2: Configure Environment
+
 ```bash
 # .env
 RAMP_CLIENT_ID=your_client_id
@@ -44,6 +48,7 @@ RAMP_BASE_URL=https://sandbox-api.ramp.com/v1  # Switch to api.ramp.com for prod
 ```
 
 ### Step 3: Obtain Access Token
+
 ```python
 import os, requests
 
@@ -58,6 +63,7 @@ print(f"Token obtained (expires in {token_resp.json()['expires_in']}s)")
 ```
 
 ### Step 4: Verify Connection
+
 ```python
 headers = {"Authorization": f"Bearer {access_token}"}
 resp = requests.get(f"{os.environ['RAMP_BASE_URL']}/cards", headers=headers)
@@ -67,10 +73,12 @@ print(f"Connected! Found {len(cards)} cards")
 ```
 
 ## Output
+
 - OAuth2 access token obtained
 - API connectivity verified with card listing
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `invalid_client` | Wrong credentials | Verify client_id/secret in Dashboard |
@@ -78,8 +86,10 @@ print(f"Connected! Found {len(cards)} cards")
 | Wrong environment | Sandbox vs prod URL | Check RAMP_BASE_URL |
 
 ## Resources
+
 - [Ramp Authorization](https://docs.ramp.com/developer-api/v1/authorization)
 - [Getting Started](https://docs.ramp.com/developer-api/v1/guides/getting-started)
 
 ## Next Steps
+
 First API call: `ramp-hello-world`

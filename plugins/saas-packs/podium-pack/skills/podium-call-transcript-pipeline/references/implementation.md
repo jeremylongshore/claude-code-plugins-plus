@@ -115,12 +115,14 @@ When `inbox_deadletter` rows appear, the operator runbook is:
    - Malformed payload → investigate Podium-side change; do NOT replay until shape is understood
    - Redactor crash → check presidio model availability; fix and replay
 3. **Replay**:
+
    ```sql
    INSERT INTO inbox(transcript_id, event_type, received_at, raw_payload)
    SELECT transcript_id, event_type, received_at, raw_payload
    FROM inbox_deadletter WHERE id IN (?, ?, ...);
    DELETE FROM inbox_deadletter WHERE id IN (?, ?, ...);
    ```
+
 4. **Verify**: the processor's next pass should pick up the replayed rows and successfully enqueue them. Confirm via `SELECT * FROM inbox WHERE id IN (?,...) AND processed_at IS NOT NULL`.
 5. **Document**: every replay event is logged with operator id, replayed row count, and root-cause classification. The dead-letter table is never silently emptied.
 

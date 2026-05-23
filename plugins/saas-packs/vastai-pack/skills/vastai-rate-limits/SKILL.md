@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Rate Limits
 
 ## Overview
+
 Handle Vast.ai REST API rate limits gracefully. The API at `cloud.vast.ai/api/v0` returns HTTP 429 when request limits are exceeded. Most operations (search, show) are read-heavy and rarely hit limits, but automated scripts doing rapid provisioning or polling can trigger throttling.
 
 ## Prerequisites
+
 - Vast.ai CLI or REST API client
 - Understanding of exponential backoff
 
@@ -118,18 +120,21 @@ all_offers = batch_search(client, configs)
 ### Step 4: Request Optimization
 
 Strategies to reduce API calls:
+
 - **Cache search results**: Offers change slowly; cache for 60-120 seconds
 - **Use `--limit`**: Restrict search results to what you need
 - **Batch instance checks**: Use `show instances` (lists all) instead of individual `show instance ID` calls
 - **Avoid polling loops**: Use longer intervals (15-30s) for status checks
 
 ## Output
+
 - Rate-limited HTTP client with automatic retry on 429
 - Adaptive polling for instance status changes
 - Batch search with inter-request delays
 - Request optimization strategies
 
 ## Error Handling
+
 | Scenario | Response |
 |----------|----------|
 | First 429 | Wait `Retry-After` header value, then retry |
@@ -138,10 +143,12 @@ Strategies to reduce API calls:
 | 429 during search | Cache previous results and use them temporarily |
 
 ## Resources
+
 - [Vast.ai REST API](https://vast.ai/developers/api)
 - [API Reference](https://docs.vast.ai/api-reference/introduction)
 
 ## Next Steps
+
 For security best practices, see `vastai-security-basics`.
 
 ## Examples

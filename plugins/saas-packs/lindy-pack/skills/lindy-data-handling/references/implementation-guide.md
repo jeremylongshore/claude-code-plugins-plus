@@ -3,9 +3,11 @@
 # Lindy Data Handling
 
 ## Overview
+
 Best practices for secure and compliant data handling with Lindy AI.
 
 ## Prerequisites
+
 - Understanding of data privacy requirements
 - Knowledge of applicable regulations (GDPR, CCPA, HIPAA)
 - Access to data classification documentation
@@ -13,6 +15,7 @@ Best practices for secure and compliant data handling with Lindy AI.
 ## Instructions
 
 ### Step 1: Data Classification
+
 ```typescript
 // data/classification.ts
 enum DataClassification {
@@ -58,6 +61,7 @@ const policies: Record<DataClassification, DataPolicy> = {
 ```
 
 ### Step 2: PII Detection and Redaction
+
 ```typescript
 // data/pii-redactor.ts
 interface PIIPattern {
@@ -111,6 +115,7 @@ export function redactPII(text: string): { redacted: string; found: string[] } {
 ```
 
 ### Step 3: Secure Data Pipeline
+
 ```typescript
 // lib/secure-lindy.ts
 import { Lindy } from '@lindy-ai/sdk';
@@ -169,6 +174,7 @@ export class SecureLindy {
 ```
 
 ### Step 4: Data Retention Management
+
 ```typescript
 // data/retention.ts
 import { Lindy } from '@lindy-ai/sdk';
@@ -201,6 +207,7 @@ async function enforceRetention(policy: RetentionPolicy) {
 ```
 
 ### Step 5: GDPR Compliance
+
 ```typescript
 // compliance/gdpr.ts
 import { Lindy } from '@lindy-ai/sdk';
@@ -254,6 +261,7 @@ class GDPRHandler {
 ```
 
 ## Data Handling Checklist
+
 ```markdown
 [ ] Data classification scheme defined
 [ ] PII detection implemented
@@ -267,6 +275,7 @@ class GDPRHandler {
 ```
 
 ## Output
+
 - Data classification system
 - PII detection and redaction
 - Secure data pipeline
@@ -274,6 +283,7 @@ class GDPRHandler {
 - GDPR compliance handlers
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | PII leaked | Missing redaction | Enable auto-redaction |
@@ -281,9 +291,11 @@ class GDPRHandler {
 | Classification missing | No policy | Default to restricted |
 
 ## Resources
+
 - [Lindy Privacy Policy](https://lindy.ai/privacy)
 - [Lindy Security](https://lindy.ai/security)
 - [GDPR Guidelines](https://gdpr.eu/)
 
 ## Next Steps
+
 Proceed to `lindy-enterprise-rbac` for access control.

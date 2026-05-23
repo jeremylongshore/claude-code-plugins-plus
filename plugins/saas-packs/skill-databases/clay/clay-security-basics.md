@@ -10,6 +10,7 @@ clay-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Clay security best practices for API key management, data access control, and prospect data protection. Covers secure configuration patterns and audit logging.
 **Workflow:** Security hardening skill. Use during initial setup and security audits.
 **Relates to:** Builds on clay-install-auth; prerequisite for clay-data-handling and clay-enterprise-rbac.

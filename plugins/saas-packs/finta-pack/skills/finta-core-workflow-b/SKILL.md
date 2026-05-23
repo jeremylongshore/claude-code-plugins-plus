@@ -68,6 +68,7 @@ Asks:
 ### Warm Introduction Network
 
 Finta's network feature identifies 2nd-degree connections:
+
 1. Go to **Network** > **Find Introductions**
 2. Select target investor
 3. Finta shows mutual connections from your team, advisors, and existing investors

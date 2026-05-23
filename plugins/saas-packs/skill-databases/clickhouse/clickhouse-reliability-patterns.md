@@ -10,6 +10,7 @@ clickhouse-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement ClickHouse reliability patterns
 **Workflow:** Part of the enterprise skill category for ClickHouse integration.
 **Relates to:** Other clickhouse skills in this pack.

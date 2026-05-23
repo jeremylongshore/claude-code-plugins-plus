@@ -24,15 +24,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Rate Limits
 
 ## Overview
+
 Implement robust rate limiting and backoff for the Apollo.io API. Apollo uses **fixed-window rate limiting** with per-endpoint limits. Unlike hourly quotas, Apollo limits are **per minute** with a burst limit per second. Exceeding them returns HTTP 429.
 
 ## Prerequisites
+
 - Valid Apollo API key
 - Node.js 18+
 
 ## Instructions
 
 ### Step 1: Understand Apollo's Rate Limit Structure
+
 Apollo's official rate limits (as of 2025):
 
 ```
@@ -49,11 +52,13 @@ Deals                       | 100       | 10        | /opportunities/*
 ```
 
 Response headers on every successful call:
+
 - `x-rate-limit-limit` — max requests per window
 - `x-rate-limit-remaining` — requests remaining in current window
 - `retry-after` — seconds to wait (only on 429 responses)
 
 ### Step 2: Build a Per-Endpoint Rate Limiter
+
 ```typescript
 // src/apollo/rate-limiter.ts
 export class SlidingWindowLimiter {
@@ -97,6 +102,7 @@ export const limiters = {
 ```
 
 ### Step 3: Exponential Backoff with Retry-After
+
 ```typescript
 // src/apollo/backoff.ts
 export async function withBackoff<T>(
@@ -128,6 +134,7 @@ export async function withBackoff<T>(
 ```
 
 ### Step 4: Request Queue with Concurrency Control
+
 ```typescript
 // src/apollo/queue.ts
 import PQueue from 'p-queue';
@@ -153,6 +160,7 @@ export async function queuedRequest<T>(
 ```
 
 ### Step 5: Monitor Rate Limit Usage via Response Headers
+
 ```typescript
 // src/apollo/rate-monitor.ts
 import { AxiosInstance, AxiosResponse } from 'axios';
@@ -174,12 +182,14 @@ export function attachRateMonitor(client: AxiosInstance) {
 ```
 
 ## Output
+
 - Per-endpoint sliding window rate limiter matching Apollo's actual limits
 - Exponential backoff respecting `retry-after` headers
 - `PQueue`-based request queue with per-second burst control
 - Response header monitoring with 80% warning threshold
 
 ## Error Handling
+
 | Scenario | Strategy |
 |----------|----------|
 | 429 with `retry-after` | Wait the specified seconds, then retry |
@@ -190,6 +200,7 @@ export function attachRateMonitor(client: AxiosInstance) {
 ## Examples
 
 ### Bulk Search with Rate Limiting
+
 ```typescript
 import { queuedRequest } from './apollo/queue';
 import { withBackoff } from './apollo/backoff';
@@ -212,9 +223,11 @@ console.log(`Searched ${results.length} domains within rate limits`);
 ```
 
 ## Resources
+
 - [Apollo Rate Limits](https://docs.apollo.io/reference/rate-limits)
 - [API Usage Stats](https://docs.apollo.io/reference/view-api-usage-stats)
 - [p-queue Library](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 Proceed to `apollo-security-basics` for API security best practices.

@@ -10,6 +10,7 @@ figma-migration-deep-dive/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Figma major migrations
 **Workflow:** Part of the advanced skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

@@ -3,6 +3,7 @@
 ## Viewing History
 
 ### Git Log
+
 ```
 View in Cursor:
 1. Source Control panel
@@ -14,6 +15,7 @@ git log --graph --all
 ```
 
 ### Blame/Annotate
+
 ```
 Right-click in editor:
 "Git: Show File History"
@@ -24,6 +26,7 @@ Or via command palette:
 ```
 
 ### Diff Views
+
 ```
 Compare working changes:
 - Click file in Source Control

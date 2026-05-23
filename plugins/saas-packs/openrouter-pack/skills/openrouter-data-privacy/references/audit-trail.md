@@ -3,6 +3,7 @@
 ## Audit Trail
 
 ### Request Logging
+
 ```python
 import hashlib
 from datetime import datetime

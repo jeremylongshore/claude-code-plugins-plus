@@ -78,6 +78,7 @@ skyvern browser select --value "US" --intent "the country dropdown"
 ```
 
 Deterministic. No AI. Three targeting modes:
+
 1. **Intent**: `--intent "the Submit button"` (AI finds element)
 2. **Selector**: `--selector "#submit-btn"` (CSS/XPath, deterministic)
 3. **Hybrid**: both (selector narrows, AI confirms)
@@ -184,6 +185,7 @@ Status lifecycle: `created -> queued -> running -> completed | failed | canceled
 ## Common Patterns
 
 **Login flow:**
+
 ```bash
 skyvern credential list                          # find credential ID
 skyvern browser session create
@@ -194,6 +196,7 @@ skyvern browser screenshot
 ```
 
 **Pagination loop:**
+
 ```bash
 skyvern browser extract --prompt "Extract all rows"
 skyvern browser validate --prompt "Is there a Next button that is not disabled?"
@@ -203,6 +206,7 @@ skyvern browser act --prompt "Click the Next page button"
 ```
 
 **Debugging:**
+
 ```bash
 skyvern browser screenshot                       # visual state
 skyvern browser evaluate --expression "document.title"

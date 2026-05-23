@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Core Workflow A -- Transcript Retrieval & Processing
 
 ## Overview
+
 Primary workflow for Fireflies.ai: fetch meeting transcripts via GraphQL, process speaker-diarized sentences, extract action items and summaries, and route meeting intelligence downstream.
 
 ## Prerequisites
+
 - Completed `fireflies-install-auth` setup
 - `FIREFLIES_API_KEY` set with Business+ plan for full access
 - At least one completed meeting in Fireflies
@@ -36,6 +38,7 @@ Primary workflow for Fireflies.ai: fetch meeting transcripts via GraphQL, proces
 ## Instructions
 
 ### Step 1: Build the GraphQL Client
+
 ```typescript
 // lib/fireflies.ts
 const FIREFLIES_API = "https://api.fireflies.ai/graphql";
@@ -63,6 +66,7 @@ export async function firefliesQuery<T = any>(
 ```
 
 ### Step 2: List Transcripts with Filters
+
 ```typescript
 const LIST_TRANSCRIPTS = `
   query ListTranscripts(
@@ -97,6 +101,7 @@ const data = await firefliesQuery(LIST_TRANSCRIPTS, {
 ```
 
 ### Step 3: Fetch Full Transcript with Sentences
+
 ```typescript
 const GET_TRANSCRIPT = `
   query GetTranscript($id: String!) {
@@ -148,6 +153,7 @@ const { transcript } = await firefliesQuery(GET_TRANSCRIPT, { id: "abc123" });
 ```
 
 ### Step 4: Process Meeting Intelligence
+
 ```typescript
 interface MeetingIntelligence {
   id: string;
@@ -188,6 +194,7 @@ function processMeeting(transcript: any): MeetingIntelligence {
 ```
 
 ### Step 5: Export Transcript as Text
+
 ```typescript
 function transcriptToText(transcript: any): string {
   const lines: string[] = [
@@ -219,6 +226,7 @@ function formatTimestamp(seconds: number): string {
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `auth_failed` | Invalid API key | Regenerate in Fireflies dashboard |
@@ -228,14 +236,17 @@ function formatTimestamp(seconds: number): string {
 | Missing `analytics` | Free/Pro plan | Analytics requires Business+ plan |
 
 ## Output
+
 - Full transcript with speaker-diarized sentences and timestamps
 - AI-generated summary, action items, and keywords
 - Speaker analytics with talk time, word count, and sentiment
 - Meeting intelligence object ready for downstream processing
 
 ## Resources
+
 - [Transcript Query](https://docs.fireflies.ai/graphql-api/query/transcript)
 - [Fireflies API Concepts](https://docs.fireflies.ai/fundamentals/concepts)
 
 ## Next Steps
+
 For search, analytics, and AskFred, see `fireflies-core-workflow-b`.

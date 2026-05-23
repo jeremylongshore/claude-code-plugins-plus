@@ -13,6 +13,7 @@ Sales readiness platform API for training content management, rep performance an
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `mindtickle-common-errors` | Common Errors |
@@ -29,6 +30,7 @@ Sales readiness platform API for training content management, rep performance an
 | `mindtickle-upgrade-migration` | Upgrade Migration |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `mindtickle-ci-integration` | Ci Integration |

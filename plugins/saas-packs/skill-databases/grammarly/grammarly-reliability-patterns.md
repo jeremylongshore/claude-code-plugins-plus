@@ -10,6 +10,7 @@ grammarly-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Grammarly reliability patterns
 **Workflow:** Part of the enterprise skill category for Grammarly integration.
 **Relates to:** Other grammarly skills in this pack.

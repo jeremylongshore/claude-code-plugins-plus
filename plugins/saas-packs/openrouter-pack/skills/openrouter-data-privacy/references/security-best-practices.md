@@ -3,6 +3,7 @@
 ## Security Best Practices
 
 ### Secure Configuration
+
 ```python
 # Environment-based configuration
 class SecureConfig:
@@ -26,6 +27,7 @@ print(f"Using key: {config.masked_key}")
 ```
 
 ### Request Validation
+
 ```python
 def validate_request(prompt: str, max_length: int = 100000) -> bool:
     """Validate request before sending."""

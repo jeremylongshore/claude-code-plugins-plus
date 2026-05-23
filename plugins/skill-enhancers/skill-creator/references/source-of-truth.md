@@ -1,6 +1,7 @@
 # Claude Agent Skills: Source of Truth Specification
 
 Canonical reference synthesizing all authoritative sources:
+
 - **AgentSkills.io** — [agentskills.io/specification](https://agentskills.io/specification) (open standard, Dec 2025)
 - **Anthropic Best Practices** — [code.claude.com/docs/en/skills](https://code.claude.com/docs/en/skills)
 - **Claude Code Extensions** — platform-specific fields ([changelog](https://code.claude.com/docs/en/changelog))
@@ -98,17 +99,20 @@ skill-name/
 Skills use progressive disclosure to minimize context window usage.
 
 ### Level 1: Metadata (~100 tokens)
+
 - Frontmatter `name` and `description` only
 - Always loaded at startup for all installed skills
 - Aggregated into skill list in Claude's system prompt
 - **Budget**: ~2% of context window (configurable via `SLASH_COMMAND_TOOL_CHAR_BUDGET`)
 
 ### Level 2: SKILL.md Body (<5000 tokens / <500 lines)
+
 - Full instruction body loaded when skill activates
 - Contains workflow steps, examples, edge cases
 - Keep concise - Claude is already capable
 
 ### Level 3: Bundled Resources (unlimited)
+
 - `references/`, `scripts/`, `templates/`, `assets/`
 - Loaded only when explicitly needed during execution
 - Use clear section headers for navigability
@@ -183,7 +187,9 @@ description: "A helpful tool for documents"
 ## 5. Core Principles (Anthropic Official)
 
 ### Concise is Key
+
 Claude is already smart. Don't over-explain. Provide:
+
 - Clear workflow steps
 - Concrete examples
 - Edge cases that matter
@@ -231,6 +237,7 @@ For complex multi-step processes, include a copy-pasteable checklist so users ca
 ### Observation of Claude Navigation
 
 Iterative refinement technique: watch how Claude reads and navigates the skill during test runs. Look for:
+
 - Unexpected exploration paths (reading files in wrong order)
 - Missed references (Claude not finding bundled resources)
 - Overreliance on certain sections (skipping others)
@@ -241,6 +248,7 @@ Adjust skill structure, section ordering, and reference links based on these obs
 ### Team Feedback
 
 If applicable, share the skill with teammates and observe their usage:
+
 - Do they trigger the skill as expected?
 - Do they understand the output format?
 - Do they hit edge cases you didn't anticipate?
@@ -251,17 +259,20 @@ Incorporate findings into skill instructions and eval scenarios.
 ### Description Optimization ("Pushy" Pattern)
 
 Skills frequently undertrigger because descriptions are too passive. Use aggressive claiming language:
+
 - "Make sure to use this skill whenever..." + specific scenarios
 - Front-load distinctive keywords
 - Include trigger phrases: "Use when...", "Activates for..."
 - Token budget: all descriptions load at startup (~15,000 char total via `SLASH_COMMAND_TOOL_CHAR_BUDGET`)
 
 ### No Time-Sensitive Information
+
 - Don't include dates, versions, or URLs that change
 - Reference tools by name, not version
 - Use `compatibility` field for environment requirements
 
 ### Consistent Terminology
+
 - Pick terms and stick with them throughout
 - Don't alternate between synonyms
 - Match terminology to the domain
@@ -346,6 +357,7 @@ Session tracking: ${CLAUDE_SESSION_ID}
 - For skills that typically run 3+ discovery commands first, DCI saves those entire tool call rounds
 
 Example `## Current State` section:
+
 ```markdown
 ## Current State
 !`git status --short`
@@ -365,59 +377,83 @@ Example `## Current State` section:
 ## 8. Skill Patterns
 
 ### Script Automation
+
 Deterministic scripts that solve specific problems.
+
 ```
 skill activates → runs script → returns result
 ```
+
 Best for: file conversion, data transformation, API calls.
 
 ### Read-Process-Write
+
 Format conversion and transformation pipeline.
+
 ```
 read input → process/transform → write output
 ```
+
 Best for: document conversion, code generation, data formatting.
 
 ### Search-Analyze-Report
+
 Codebase analysis and reporting.
+
 ```
 search codebase → analyze findings → generate report
 ```
+
 Best for: code review, security audit, dependency analysis.
 
 ### Template-Based Generation
+
 Generate output from templates with variable substitution.
+
 ```
 load template → fill variables → validate → output
 ```
+
 Best for: boilerplate generation, project scaffolding, config files.
 
 ### Wizard-Style Workflow
+
 Interactive multi-step gathering with AskUserQuestion.
+
 ```
 ask question → gather input → ask more → generate result
 ```
+
 Best for: complex configuration, multi-option setup.
 
 ### Conditional Workflow
+
 Branch based on input or context.
+
 ```
 analyze input → choose path → execute branch → output
 ```
+
 Best for: skills that handle multiple related tasks.
 
 ### Plan-Validate-Execute
+
 Verifiable intermediates with feedback loops.
+
 ```
 plan steps → validate plan → execute → verify each step → report
 ```
+
 Best for: deployment, migration, refactoring tasks.
 
 ### Visual Output Generation
+
 Generate HTML or visual artifacts.
+
 ```
 gather data → generate HTML → render preview
 ```
+
 Best for: dashboards, reports, documentation sites.
 
 ---

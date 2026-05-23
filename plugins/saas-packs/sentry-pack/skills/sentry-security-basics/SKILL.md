@@ -81,6 +81,7 @@ Sentry.init({
 ```
 
 When `sendDefaultPii: false` (default):
+
 - **No IP addresses** attached to events
 - **No cookies** sent in request data
 - **No user-agent** strings in request headers
@@ -339,6 +340,7 @@ grep -rn "sntrys_" --include="*.ts" --include="*.js" --include="*.py" \
 ```
 
 Token best practices:
+
 - **Separate tokens per environment** — never share between dev/staging/production
 - **Minimal scopes** — `project:releases` + `org:read` for CI source map uploads
 - **Set expiration dates** — 90 days max for CI tokens

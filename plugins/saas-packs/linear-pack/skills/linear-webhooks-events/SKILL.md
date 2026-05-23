@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Webhooks & Events
 
 ## Overview
+
 Set up and handle Linear webhooks for real-time event processing. Linear sends HTTP POST requests for data changes on Issues, Comments, Issue Attachments, Documents, Emoji Reactions, Projects, Project Updates, Cycles, Labels, Users, and Issue SLAs.
 
 **Webhook headers:**
+
 - `Linear-Signature` — HMAC-SHA256 hex digest of the raw body
 - `Linear-Delivery` — Unique delivery ID for deduplication
 - `Linear-Event` — Event type (e.g., "Issue")
@@ -35,6 +37,7 @@ Set up and handle Linear webhooks for real-time event processing. Linear sends H
 **Payload body includes:** `action`, `type`, `data`, `url`, `actor`, `updatedFrom` (previous values on update), `createdAt`, `webhookTimestamp` (UNIX ms).
 
 ## Prerequisites
+
 - Linear workspace admin access (required for webhook creation)
 - Public HTTPS endpoint for webhook delivery
 - Webhook signing secret (generated in Linear Settings > API > Webhooks)
@@ -42,6 +45,7 @@ Set up and handle Linear webhooks for real-time event processing. Linear sends H
 ## Instructions
 
 ### Step 1: Build Webhook Receiver with Signature Verification
+
 ```typescript
 import express from "express";
 import crypto from "crypto";
@@ -84,6 +88,7 @@ app.listen(3000, () => console.log("Webhook server on :3000"));
 ```
 
 ### Step 2: Event Type Definition
+
 ```typescript
 interface LinearWebhookPayload {
   action: "create" | "update" | "remove";
@@ -102,6 +107,7 @@ interface LinearWebhookPayload {
 ```
 
 ### Step 3: Event Router
+
 ```typescript
 type Handler = (event: LinearWebhookPayload) => Promise<void>;
 
@@ -169,6 +175,7 @@ async function processEvent(event: LinearWebhookPayload, deliveryId: string): Pr
 ```
 
 ### Step 4: Idempotent Processing
+
 Linear may retry failed deliveries. Deduplicate using the `Linear-Delivery` header.
 
 ```typescript
@@ -193,6 +200,7 @@ if (isDuplicate(delivery)) {
 ```
 
 ### Step 5: Register Webhook
+
 ```bash
 # Via Linear UI:
 # Settings > API > Webhooks > New webhook
@@ -210,6 +218,7 @@ curl -X POST https://api.linear.app/graphql \
 ```
 
 ### Step 6: List and Manage Webhooks via SDK
+
 ```typescript
 import { LinearClient } from "@linear/sdk";
 
@@ -229,6 +238,7 @@ await client.deleteWebhook("webhook-id");
 ```
 
 ### Step 7: Local Development with ngrok
+
 ```bash
 # Terminal 1: Start webhook server
 npm run dev
@@ -255,6 +265,7 @@ ngrok http 3000
 ## Examples
 
 ### Slack Notification on Issue Completion
+
 ```typescript
 async function notifySlack(message: string) {
   await fetch(process.env.SLACK_WEBHOOK_URL!, {
@@ -273,6 +284,7 @@ if (e.updatedFrom?.stateId && e.data.state?.type === "completed") {
 ```
 
 ## Resources
+
 - [Linear Webhooks Documentation](https://linear.app/developers/webhooks)
 - [Webhook Payload Format](https://developers.linear.app/docs/graphql/webhooks)
 - [ngrok Documentation](https://ngrok.com/docs)

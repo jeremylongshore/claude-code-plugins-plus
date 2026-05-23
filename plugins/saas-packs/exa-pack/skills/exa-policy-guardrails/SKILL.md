@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Policy Guardrails
 
 ## Overview
+
 Policy enforcement for Exa neural search integrations. Exa searches the open web, so results may include unreliable sources, competitor content, or inappropriate material. This skill covers domain allowlists/blocklists (via Exa's `includeDomains`/`excludeDomains`), content moderation, query sanitization, freshness policies, and per-user budget enforcement.
 
 ## Prerequisites
+
 - `exa-js` installed and configured
 - Content policy requirements defined
 - Redis for per-user quota tracking (optional)
@@ -36,6 +38,7 @@ Policy enforcement for Exa neural search integrations. Exa searches the open web
 ## Instructions
 
 ### Step 1: Domain Filtering (Built-in Exa Feature)
+
 ```typescript
 import Exa from "exa-js";
 
@@ -84,6 +87,7 @@ async function policySearch(
 ```
 
 ### Step 2: Query Content Policy
+
 ```typescript
 const BLOCKED_PATTERNS = [
   /how to (hack|exploit|attack|ddos)/i,
@@ -116,6 +120,7 @@ class PolicyViolation extends Error {
 ```
 
 ### Step 3: Freshness Policy
+
 ```typescript
 // Enforce minimum recency for time-sensitive use cases
 function applyFreshnessPolicy(
@@ -139,6 +144,7 @@ const results = await exa.searchAndContents("AI regulation updates",
 ```
 
 ### Step 4: Per-User Budget Enforcement
+
 ```typescript
 class ExaUsagePolicy {
   private usage = new Map<string, { count: number; resetAt: number }>();
@@ -177,6 +183,7 @@ const usagePolicy = new ExaUsagePolicy();
 ```
 
 ### Step 5: Combined Policy Enforcement
+
 ```typescript
 async function enforcedSearch(
   userId: string,
@@ -216,6 +223,7 @@ async function enforcedSearch(
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Competitor content in results | No domain filtering | Apply `excludeDomains` blocklist |
@@ -225,8 +233,10 @@ async function enforcedSearch(
 | Blocked policy query | False positive | Review and adjust `BLOCKED_PATTERNS` |
 
 ## Resources
+
 - [Exa Search Reference](https://docs.exa.ai/reference/search)
 - [Exa Domain Filtering](https://docs.exa.ai/reference/search)
 
 ## Next Steps
+
 For architecture decisions, see `exa-architecture-variants`. For cost control, see `exa-cost-tuning`.

@@ -24,13 +24,16 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # TwinMind Upgrade & Migration
 
 ## Current State
+
 !`npm list 2>/dev/null | head -20`
 !`pip freeze 2>/dev/null | head -20`
 
 ## Overview
+
 Guide for upgrading TwinMind tiers and migrating configurations between environments.
 
 ## Prerequisites
+
 - Active TwinMind account
 - Admin access for billing changes
 - Backup of current configurations
@@ -182,6 +185,7 @@ exportConfiguration();
 ### Step 3: Upgrade Plan
 
 #### Via Dashboard
+
 1. Log in to https://twinmind.com/settings/billing
 2. Click "Upgrade Plan"
 3. Select desired tier (Pro or Enterprise)
@@ -189,6 +193,7 @@ exportConfiguration();
 5. Confirm upgrade
 
 #### Via API (Enterprise Only)
+
 ```typescript
 // Upgrade request for Enterprise
 async function requestEnterpriseUpgrade() {
@@ -392,6 +397,7 @@ export function updateQueueForTier(tier: 'free' | 'pro' | 'enterprise') {
 ## Migration Paths
 
 ### Free to Pro
+
 1. Enable billing in dashboard
 2. Select Pro plan
 3. Generate API key
@@ -399,6 +405,7 @@ export function updateQueueForTier(tier: 'free' | 'pro' | 'enterprise') {
 5. Enable premium features
 
 ### Pro to Enterprise
+
 1. Contact sales or submit upgrade request
 2. Complete enterprise onboarding
 3. Configure SSO/SAML if needed
@@ -406,6 +413,7 @@ export function updateQueueForTier(tier: 'free' | 'pro' | 'enterprise') {
 5. Review custom SLA terms
 
 ### Environment Migration (Dev to Prod)
+
 1. Export dev configuration
 2. Create production API key
 3. Set up production secrets
@@ -413,6 +421,7 @@ export function updateQueueForTier(tier: 'free' | 'pro' | 'enterprise') {
 5. Verify all features
 
 ## Output
+
 - Usage audit report
 - Exported configuration backup
 - Upgraded plan verification
@@ -428,11 +437,13 @@ export function updateQueueForTier(tier: 'free' | 'pro' | 'enterprise') {
 | Rate limit unchanged | Cache stale | Clear cache, re-auth |
 
 ## Resources
+
 - [TwinMind Pricing](https://twinmind.com/pricing)
 - [Enterprise Features](https://twinmind.com/enterprise)
 - [Billing FAQ](https://twinmind.com/docs/billing)
 
 ## Next Steps
+
 For CI/CD integration, see `twinmind-ci-integration`.
 
 ## Examples

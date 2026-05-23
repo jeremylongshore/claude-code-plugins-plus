@@ -10,6 +10,7 @@ wispr-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Wispr local development workflow
 **Workflow:** Part of the onboarding skill category for Wispr integration.
 **Relates to:** Other wispr skills in this pack.

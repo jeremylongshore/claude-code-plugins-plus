@@ -37,6 +37,7 @@ We just deployed a production-ready n8n instance at `n8n.intentsolutions.io` wit
 ## Technical Challenge: Port Conflicts
 
 The server was already running:
+
 - **Port 80**: Apache2 (existing web server)
 - **Port 443**: Needed for n8n HTTPS
 - **Port 8080**: Caddy file browser
@@ -58,6 +59,7 @@ n8n.intentsolutions.io:443 {
 Key decisions for production stability:
 
 **Network Mode:** `host` (avoids port mapping conflicts)
+
 ```yaml
 services:
   n8n:
@@ -70,6 +72,7 @@ services:
 ```
 
 **Database:** SQLite (perfect for single-user/small team)
+
 ```yaml
 environment:
   - DB_TYPE=sqlite
@@ -92,6 +95,7 @@ docker exec -u node n8n n8n import:workflow --separate --input=/tmp/workflows/
 ```
 
 **Result:** Successfully imported:
+
 - Daily Energizer Article Generator V4
 - Tech/AI News Pipeline
 - Lead Follow-up System (with Bland.ai integration)
@@ -117,11 +121,13 @@ Caddy automatically obtains SSL certificates from Let's Encrypt on first HTTPS r
 ## Performance & Monitoring
 
 **Resource Usage:**
+
 - Memory: ~200MB (n8n container)
 - CPU: Minimal (idle workflows)
 - Storage: SSD on Contabo VPS
 
 **Monitoring Commands:**
+
 ```bash
 # Container health
 docker ps | grep n8n
@@ -155,15 +161,19 @@ find ./backups/ -name "n8n-backup-*.tar.gz" -mtime +30 -delete
 ## Lessons Learned
 
 ### 1. Use Existing Infrastructure
+
 We had Caddy already running - adding n8n was just one more config block. Don't deploy redundant services.
 
 ### 2. Network Mode Matters
+
 `host` networking avoided all port mapping complexity. Sometimes the simple solution is best.
 
 ### 3. SQLite is Underrated
+
 For single-user or small team, SQLite is perfect. No PostgreSQL overhead needed.
 
 ### 4. CLI Import > API
+
 The n8n CLI handled workflow imports reliably. The API had validation issues with exported JSON structure.
 
 ## Related Posts
@@ -183,6 +193,7 @@ The n8n CLI handled workflow imports reliably. The API had validation issues wit
 Self-hosting n8n on existing infrastructure eliminated $240-600/year in SaaS costs while maintaining full control over data and workflows. The 2-hour setup investment pays for itself in the first month.
 
 **Business Impact:**
+
 - ✅ Zero recurring automation costs
 - ✅ Complete data ownership
 - ✅ Custom domain with SSL
@@ -191,6 +202,4 @@ Self-hosting n8n on existing infrastructure eliminated $240-600/year in SaaS cos
 
 **Repository:** [n8n-workflows](https://github.com/jeremylongshore/n8n-workflows)
 
-
 *Want to eliminate your SaaS costs while maintaining enterprise capabilities? Let's talk about self-hosted automation architecture for your business.*
-

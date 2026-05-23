@@ -26,6 +26,7 @@ Creates comprehensive multi-level caching strategies to dramatically improve API
 ## When to Use
 
 Use this command when:
+
 - API response times exceed acceptable thresholds (>200ms)
 - Database queries are repetitive and expensive
 - Static or semi-static content dominates API responses
@@ -35,6 +36,7 @@ Use this command when:
 - Session data requires fast access across servers
 
 Do NOT use this command for:
+
 - Real-time data that changes every request
 - User-specific sensitive data (without proper cache isolation)
 - APIs with complex invalidation dependencies
@@ -43,6 +45,7 @@ Do NOT use this command for:
 ## Prerequisites
 
 Before running this command, ensure:
+
 - [ ] API endpoints are identified and categorized by cache lifetime
 - [ ] Redis or Memcached is available (or can be provisioned)
 - [ ] CDN service is configured (CloudFlare, Fastly, or AWS CloudFront)
@@ -52,7 +55,9 @@ Before running this command, ensure:
 ## Process
 
 ### Step 1: Analyze API Patterns
+
 The command examines your API to determine optimal caching strategies:
+
 - Identifies read-heavy endpoints suitable for caching
 - Categorizes data by volatility (static, semi-dynamic, dynamic)
 - Analyzes request patterns and frequency
@@ -60,7 +65,9 @@ The command examines your API to determine optimal caching strategies:
 - Maps data dependencies for invalidation
 
 ### Step 2: Implement Server-Side Caching
+
 Sets up Redis-based caching with intelligent patterns:
+
 - Cache-aside pattern for on-demand caching
 - Write-through for immediate cache updates
 - Write-behind for asynchronous cache population
@@ -68,7 +75,9 @@ Sets up Redis-based caching with intelligent patterns:
 - Cache warming for critical data
 
 ### Step 3: Configure HTTP Cache Headers
+
 Implements proper HTTP caching directives:
+
 - Cache-Control headers with appropriate max-age
 - ETag generation for conditional requests
 - Vary headers for content negotiation
@@ -76,7 +85,9 @@ Implements proper HTTP caching directives:
 - Stale-while-revalidate for improved perceived performance
 
 ### Step 4: Integrate CDN Caching
+
 Configures edge caching for global distribution:
+
 - Cache rules based on URL patterns
 - Geographic cache distribution
 - Cache purging API integration
@@ -84,7 +95,9 @@ Configures edge caching for global distribution:
 - Custom cache keys for variants
 
 ### Step 5: Implement Cache Invalidation
+
 Creates sophisticated invalidation strategies:
+
 - Tag-based invalidation for related content
 - Event-driven cache clearing
 - Time-based expiration with jitter
@@ -126,6 +139,7 @@ api-caching/
 **Scenario:** High-traffic product catalog requiring sub-100ms response times
 
 **Generated Redis Implementation:**
+
 ```javascript
 // cache/redis-client.js
 import Redis from 'ioredis';
@@ -257,6 +271,7 @@ app.get('/api/products/:id',
 **Scenario:** Global content delivery with CloudFlare integration
 
 **Generated CDN Configuration:**
+
 ```javascript
 // cdn-integration.js
 class CDNManager {
@@ -371,6 +386,7 @@ app.post('/api/content/:slug/update', async (req, res) => {
 **Scenario:** Critical data that must always be cached for performance
 
 **Generated Cache Warming Strategy:**
+
 ```javascript
 // cache-warming-service.js
 class CacheWarmer {
@@ -420,9 +436,11 @@ class CacheWarmer {
 ## Error Handling
 
 ### Error: Redis Connection Failed
+
 **Symptoms:** Cache operations timeout or fail
 **Cause:** Redis server unavailable or misconfigured
 **Solution:**
+
 ```javascript
 // Implement fallback to direct database access
 if (!redis.isReady()) {
@@ -430,14 +448,17 @@ if (!redis.isReady()) {
   return await database.query(sql);
 }
 ```
+
 **Prevention:** Implement circuit breaker pattern and health checks
 
 ### Error: Cache Stampede
+
 **Symptoms:** Multiple simultaneous cache misses cause database overload
 **Cause:** Popular item expires, causing many requests to rebuild cache
 **Solution:** Implement probabilistic early expiration or distributed locks
 
 ### Error: Stale Data Served
+
 **Symptoms:** Users see outdated information
 **Cause:** Cache TTL too long or invalidation not triggered
 **Solution:** Implement event-based invalidation and reduce TTL values
@@ -445,18 +466,21 @@ if (!redis.isReady()) {
 ## Configuration Options
 
 ### Option: `--ttl`
+
 - **Purpose:** Set default time-to-live for cache entries
 - **Values:** Seconds (integer)
 - **Default:** 3600 (1 hour)
 - **Example:** `/cache --ttl 7200`
 
 ### Option: `--strategy`
+
 - **Purpose:** Choose caching pattern
 - **Values:** `cache-aside`, `write-through`, `write-behind`
 - **Default:** `cache-aside`
 - **Example:** `/cache --strategy write-through`
 
 ### Option: `--cdn`
+
 - **Purpose:** Specify CDN provider
 - **Values:** `cloudflare`, `fastly`, `cloudfront`, `akamai`
 - **Default:** `cloudflare`
@@ -465,6 +489,7 @@ if (!redis.isReady()) {
 ## Best Practices
 
 ✅ **DO:**
+
 - Use consistent cache key naming conventions
 - Implement cache metrics and monitoring
 - Set appropriate TTL values based on data volatility
@@ -472,12 +497,14 @@ if (!redis.isReady()) {
 - Implement graceful degradation on cache failure
 
 ❌ **DON'T:**
+
 - Cache user-specific sensitive data without isolation
 - Use overly long TTLs for frequently changing data
 - Forget to handle cache failures gracefully
 - Cache large objects that exceed memory limits
 
 💡 **TIPS:**
+
 - Add jitter to TTL values to prevent synchronized expiration
 - Use cache warming for critical data paths
 - Monitor cache hit ratios (aim for >80%)
@@ -500,6 +527,7 @@ if (!redis.isReady()) {
 ## Security Notes
 
 ⚠️ **Security Considerations:**
+
 - Never cache authentication tokens or passwords
 - Implement cache key signing to prevent injection
 - Use separate cache instances for different security contexts
@@ -509,15 +537,19 @@ if (!redis.isReady()) {
 ## Troubleshooting
 
 ### Issue: Low cache hit ratio
+
 **Solution:** Review cache key strategy and TTL values
 
 ### Issue: Memory pressure on Redis
+
 **Solution:** Implement LRU eviction policy and reduce object sizes
 
 ### Issue: Cache invalidation not working
+
 **Solution:** Verify tag associations and event triggers
 
 ### Getting Help
+
 - Redis documentation: https://redis.io/documentation
 - CDN best practices: https://web.dev/cache-control
 - Cache pattern guide: https://docs.microsoft.com/azure/architecture/patterns/cache-aside

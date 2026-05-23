@@ -15,11 +15,10 @@ This skill provides automated assistance for yaml master tasks.
 
 **⚡ This skill activates AUTOMATICALLY when you work with YAML files!**
 
-
-
 ## Overview
 
 This skill provides automated assistance for the described functionality.
+
 ## Automatic Trigger Conditions
 
 This skill proactively activates when Claude detects:
@@ -40,22 +39,25 @@ This skill proactively activates when Claude detects:
 ### 1. Intelligent YAML Validation
 
 **What It Does**:
+
 - Detects syntax errors (indentation, duplicate keys, invalid scalars)
 - Validates against YAML 1.2 specification
 - Identifies common anti-patterns (tabs vs spaces, anchors/aliases issues)
 - Provides detailed error messages with line numbers and fix suggestions
 
 **Example**:
+
 ```yaml
 # ❌ INVALID YAML
 services:
   web:
     image: nginx
-	  ports:  # Mixed tabs and spaces - ERROR!
+   ports:  # Mixed tabs and spaces - ERROR!
       - "80:80"
 ```
 
 **Agent Action**: Automatically detects mixed indentation, suggests fix:
+
 ```yaml
 # ✅ FIXED YAML
 services:
@@ -68,12 +70,14 @@ services:
 ### 2. Schema Inference & Generation
 
 **What It Does**:
+
 - Analyzes YAML structure and infers JSON Schema
 - Generates OpenAPI/Swagger schemas from YAML
 - Creates type definitions for TypeScript/Python from YAML configs
 - Validates instances against inferred or provided schemas
 
 **Example**:
+
 ```yaml
 # Input YAML
 user:
@@ -85,6 +89,7 @@ user:
 ```
 
 **Agent Action**: Infers schema:
+
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
@@ -109,12 +114,14 @@ user:
 ### 3. Format Conversion (YAML ↔ JSON ↔ TOML ↔ XML)
 
 **What It Does**:
+
 - Bidirectional conversion between YAML, JSON, TOML, XML
 - Preserves comments when possible (YAML ↔ TOML)
 - Handles complex nested structures, arrays, anchors/aliases
 - Validates converted output maintains semantic equivalence
 
 **Example - YAML to JSON**:
+
 ```yaml
 # config.yaml
 database:
@@ -126,6 +133,7 @@ database:
 ```
 
 **Agent Action**: Converts to JSON:
+
 ```json
 {
   "database": {
@@ -142,12 +150,14 @@ database:
 ### 4. Kubernetes Manifest Expertise
 
 **What It Does**:
+
 - Validates K8s manifests against API versions
 - Suggests best practices (resource limits, labels, health checks)
 - Detects security issues (privileged containers, root users)
 - Generates complete manifests from minimal specs
 
 **Example**:
+
 ```yaml
 # Minimal input
 apiVersion: apps/v1
@@ -157,6 +167,7 @@ metadata:
 ```
 
 **Agent Action**: Expands with best practices:
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -210,12 +221,14 @@ spec:
 ### 5. Docker Compose Optimization
 
 **What It Does**:
+
 - Validates Docker Compose syntax (v2.x, v3.x)
 - Suggests networking best practices
 - Optimizes volume mounts and environment variables
 - Detects security misconfigurations
 
 **Example**:
+
 ```yaml
 # ❌ SUBOPTIMAL
 version: '3'
@@ -227,6 +240,7 @@ services:
 ```
 
 **Agent Action**: Suggests secure alternative:
+
 ```yaml
 # ✅ OPTIMIZED
 version: '3.8'
@@ -258,12 +272,14 @@ volumes:
 ### 6. CI/CD Pipeline Intelligence
 
 **What It Does**:
+
 - Validates GitHub Actions, GitLab CI, CircleCI workflows
 - Suggests caching strategies for faster builds
 - Detects matrix build inefficiencies
 - Optimizes job dependencies and parallelization
 
 **Example - GitHub Actions**:
+
 ```yaml
 # ❌ INEFFICIENT
 name: CI
@@ -278,6 +294,7 @@ jobs:
 ```
 
 **Agent Action**: Optimizes with caching:
+
 ```yaml
 # ✅ OPTIMIZED
 name: CI
@@ -316,12 +333,14 @@ jobs:
 ### 7. YAML Linting & Style Enforcement
 
 **What It Does**:
+
 - Enforces consistent indentation (2 spaces, 4 spaces, tabs)
 - Validates key ordering (alphabetical, custom)
 - Detects trailing whitespace, missing newlines
 - Suggests canonical YAML representations
 
 **Linting Rules**:
+
 ```yaml
 # Rule 1: Consistent 2-space indentation
 # Rule 2: No duplicate keys
@@ -335,12 +354,14 @@ jobs:
 ### 8. Anchors & Aliases Mastery
 
 **What It Does**:
+
 - Manages complex YAML anchors and aliases
 - Suggests reusable configurations with merge keys
 - Validates anchor references
 - Refactors duplicate blocks into anchors
 
 **Example**:
+
 ```yaml
 # ❌ REPETITIVE
 services:
@@ -361,6 +382,7 @@ services:
 ```
 
 **Agent Action**: Refactors with anchors:
+
 ```yaml
 # ✅ DRY (Don't Repeat Yourself)
 x-common-config: &common-config
@@ -451,6 +473,7 @@ color: !rgb [255, 128, 0]
 **User**: "My Kubernetes manifest won't apply, fix it"
 
 **Agent Action**:
+
 1. Reads the YAML file
 2. Identifies syntax errors (indentation, missing fields)
 3. Validates against Kubernetes API schema
@@ -461,6 +484,7 @@ color: !rgb [255, 128, 0]
 **User**: "Convert this JSON to YAML for my config file"
 
 **Agent Action**:
+
 1. Parses JSON input
 2. Converts to idiomatic YAML (multi-line strings, minimal quotes)
 3. Adds helpful comments
@@ -471,6 +495,7 @@ color: !rgb [255, 128, 0]
 **User**: "Create docker-compose.yaml for nginx + postgres + redis"
 
 **Agent Action**:
+
 1. Generates complete docker-compose.yaml
 2. Adds healthchecks, volumes, networks
 3. Includes environment variable templates
@@ -481,6 +506,7 @@ color: !rgb [255, 128, 0]
 **User**: "My GitHub Actions workflow is slow, optimize it"
 
 **Agent Action**:
+
 1. Analyzes workflow YAML
 2. Identifies bottlenecks (no caching, sequential jobs)
 3. Suggests parallelization, caching strategies
@@ -676,6 +702,7 @@ spec:
 ### Issue: "YAML won't parse"
 
 **Diagnosis**:
+
 1. Check indentation (tabs vs spaces)
 2. Verify key-value separator (`:` with space after)
 3. Look for duplicate keys
@@ -683,6 +710,7 @@ spec:
 ### Issue: "Kubernetes apply fails"
 
 **Diagnosis**:
+
 1. Validate API version matches cluster version
 2. Check required fields are present
 3. Verify resource names are DNS-compliant
@@ -690,6 +718,7 @@ spec:
 ### Issue: "Docker Compose won't start"
 
 **Diagnosis**:
+
 1. Check version compatibility
 2. Validate service dependencies
 3. Verify volume mount paths exist
@@ -753,6 +782,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 ## Error Handling
 
 If execution fails:
+
 - Verify prerequisites are met
 - Check input parameters and formats
 - Validate file paths and permissions

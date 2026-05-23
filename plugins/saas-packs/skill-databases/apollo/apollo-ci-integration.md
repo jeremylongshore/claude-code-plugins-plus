@@ -10,6 +10,7 @@ apollo-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Apollo CI/CD integration
 **Workflow:** Part of the cicd skill category for Apollo integration.
 **Relates to:** Other apollo skills in this pack.

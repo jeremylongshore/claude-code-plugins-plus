@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Install & Auth
 
 ## Overview
+
 Set up Clerk SDK and configure authentication for Next.js, React, or Express. This skill covers SDK installation, environment variables, ClerkProvider, middleware, and initial auth verification.
 
 ## Prerequisites
+
 - Node.js 18+
 - Package manager (npm, pnpm, or yarn)
 - Clerk account at dashboard.clerk.com
@@ -36,6 +38,7 @@ Set up Clerk SDK and configure authentication for Next.js, React, or Express. Th
 ## Instructions
 
 ### Step 1: Install SDK for Your Framework
+
 ```bash
 set -euo pipefail
 # Next.js (App Router or Pages Router)
@@ -52,6 +55,7 @@ npm install @clerk/backend
 ```
 
 ### Step 2: Configure Environment Variables
+
 ```bash
 # .env.local — never commit this file
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
@@ -65,11 +69,13 @@ NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/onboarding
 ```
 
 Ensure `.env.local` is in `.gitignore`:
+
 ```bash
 echo ".env.local" >> .gitignore
 ```
 
 ### Step 3: Add ClerkProvider (Next.js App Router)
+
 ```typescript
 // app/layout.tsx
 import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
@@ -97,6 +103,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 ```
 
 ### Step 4: Add Middleware
+
 ```typescript
 // middleware.ts (project root, NOT inside app/ or src/app/)
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
@@ -126,6 +133,7 @@ export const config = {
 ```
 
 ### Step 5: Create Sign-In and Sign-Up Pages
+
 ```typescript
 // app/sign-in/[[...sign-in]]/page.tsx
 import { SignIn } from '@clerk/nextjs'
@@ -153,6 +161,7 @@ export default function SignUpPage() {
 ```
 
 ### Step 6: Verify Connection
+
 ```typescript
 // app/api/health/route.ts
 import { auth } from '@clerk/nextjs/server'
@@ -168,6 +177,7 @@ export async function GET() {
 ```
 
 ### React SPA Setup (Vite)
+
 ```typescript
 // src/main.tsx
 import { ClerkProvider } from '@clerk/clerk-react'
@@ -187,6 +197,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 ```
 
 ### Express Setup
+
 ```typescript
 // server.ts
 import express from 'express'
@@ -212,6 +223,7 @@ app.listen(3001, () => console.log('Server running on :3001'))
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Missing publishableKey` | Env var not set | Add `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` to `.env.local` |
@@ -221,6 +233,7 @@ app.listen(3001, () => console.log('Server running on :3001'))
 | 500 error on all pages | `CLERK_SECRET_KEY` missing or wrong | Verify key prefix matches environment (`sk_test_` for dev) |
 
 ## Enterprise Considerations
+
 - Use separate Clerk instances per environment (dev/staging/prod)
 - Store keys in platform secrets (Vercel, AWS Secrets Manager), never in `.env` files committed to git
 - The `CLERK_SECRET_KEY` must never be exposed client-side; only `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` is safe for browsers
@@ -228,10 +241,12 @@ app.listen(3001, () => console.log('Server running on :3001'))
 - Enable Clerk's "Enhanced email deliverability" in production for reliable transactional emails
 
 ## Resources
+
 - [Next.js Quickstart](https://clerk.com/docs/nextjs/getting-started/quickstart)
 - [React Quickstart](https://clerk.com/docs/quickstarts/react)
 - [Express Quickstart](https://clerk.com/docs/quickstarts/express)
 - [Clerk Dashboard](https://dashboard.clerk.com)
 
 ## Next Steps
+
 Proceed to `clerk-hello-world` for your first authenticated request.

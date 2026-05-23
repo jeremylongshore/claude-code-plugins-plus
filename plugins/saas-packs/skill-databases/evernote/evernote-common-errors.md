@@ -10,6 +10,7 @@ evernote-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Evernote common errors
 **Workflow:** Part of the operations skill category for Evernote integration.
 **Relates to:** Other evernote skills in this pack.

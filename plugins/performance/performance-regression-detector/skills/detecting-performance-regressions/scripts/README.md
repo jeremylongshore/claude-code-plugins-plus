@@ -6,6 +6,6 @@ Bundled resources for performance-regression-detector skill
 - [x] generate_report.py: Generates a human-readable report summarizing detected performance regressions, including affected metrics, severity, and potential causes.
 - [x] create_github_comment.py: Creates a comment on a GitHub pull request, highlighting detected performance regressions and linking to the generated report.
 
-
 ## Auto-Generated
+
 Scripts generated on 2025-12-10 03:48:17

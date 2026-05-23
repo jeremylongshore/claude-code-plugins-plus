@@ -364,6 +364,7 @@ npm uninstall @sentry/tracing
 ```
 
 Before (v7 Express setup):
+
 ```typescript
 import * as Sentry from '@sentry/node';
 import { Integrations } from '@sentry/tracing';
@@ -381,6 +382,7 @@ app.use(Sentry.Handlers.errorHandler());
 ```
 
 After (v8 Express setup):
+
 ```typescript
 // instrument.mjs — must be separate file
 import * as Sentry from '@sentry/node';

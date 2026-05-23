@@ -5,26 +5,31 @@
 These prompts activate the skill and demonstrate common usage patterns:
 
 ### Deployment
+
 - "Deploy this ADK agent to Agent Engine with session persistence enabled."
 - "Create a reasoning engine from my agent.py with gemini-2.5-flash."
 - "Deploy my multi-agent pipeline to Vertex AI Agent Engine in us-central1."
 
 ### Agent Management (SDK)
+
 - "List all deployed agents in my project using the Vertex AI SDK."
 - "Get the status of reasoning engine ID 12345 in us-central1."
 - "Delete the old version of my sentiment-analysis agent from Agent Engine."
 
 ### Multi-Agent Orchestration
+
 - "Build a SequentialAgent pipeline: validate config, deploy resources, run health check."
 - "Create a ParallelAgent that runs data extraction and sentiment analysis simultaneously."
 - "Set up a LoopAgent that retries deployment until health check passes (max 5 iterations)."
 
 ### A2A Protocol
+
 - "Expose an A2A AgentCard at `/.well-known/agent-card` for my deployed agent."
 - "Send a task to the agent at [endpoint] using A2A JSON-RPC protocol."
 - "Discover capabilities of the agent at [endpoint] via its AgentCard."
 
 ### Session & Memory
+
 - "Create a stateful agent with VertexAiSessionService for cross-turn persistence."
 - "Set up a runner with session auto-save for compliance."
 - "Query my deployed agent with session_id to maintain conversation context."
@@ -32,6 +37,7 @@ These prompts activate the skill and demonstrate common usage patterns:
 ## Code Snippets
 
 ### Deploy an Agent
+
 ```python
 import vertexai
 from google.adk.agents import Agent
@@ -53,6 +59,7 @@ print(f"Deployed: {remote.resource_name}")
 ```
 
 ### List and Query Agents
+
 ```python
 import vertexai
 
@@ -71,6 +78,7 @@ print(response)
 ```
 
 ### Multi-Agent Sequential Pipeline
+
 ```python
 from google.adk.agents import Agent, SequentialAgent
 

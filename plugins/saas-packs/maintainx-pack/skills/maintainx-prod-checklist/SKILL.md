@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Production Checklist
 
 ## Overview
+
 Comprehensive pre-deployment and post-deployment checklist for MaintainX integrations covering security, reliability, observability, and data integrity.
 
 ## Prerequisites
+
 - MaintainX integration developed and tested
 - Production MaintainX account with API access
 - Deployment infrastructure ready (Cloud Run, K8s, or similar)
@@ -161,6 +163,7 @@ echo "=== Verification complete ==="
 | Recovery | Rollback procedure, reconciliation | P2 |
 
 ## Output
+
 - All P0 checklist items verified before go-live
 - Post-deployment verification script run successfully
 - Test work order created and cleaned up in production
@@ -168,6 +171,7 @@ echo "=== Verification complete ==="
 - Go-live readiness documented
 
 ## Error Handling
+
 | Issue | Check | Solution |
 |-------|-------|----------|
 | Health check fails post-deploy | `curl /health` | Check API key is mounted, restart pod |
@@ -176,11 +180,13 @@ echo "=== Verification complete ==="
 | High error rate after deploy | Check logs | Roll back, investigate, fix, redeploy |
 
 ## Resources
+
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [MaintainX Status Page](https://status.getmaintainx.com)
 - [12-Factor App](https://12factor.net/)
 
 ## Next Steps
+
 For API version migrations, see `maintainx-upgrade-migration`.
 
 ## Examples

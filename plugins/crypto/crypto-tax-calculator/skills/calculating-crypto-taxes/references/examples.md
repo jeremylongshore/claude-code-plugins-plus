@@ -13,6 +13,7 @@ python tax_calculator.py --transactions trades.csv --year 2025
 ```
 
 Output:
+
 ```
 ============================================================
   CRYPTO TAX REPORT - 2025
@@ -57,6 +58,7 @@ python tax_calculator.py --transactions trades.csv --compare-methods
 ```
 
 Output:
+
 ```
 ======================================================================
   COST BASIS METHOD COMPARISON
@@ -85,6 +87,7 @@ python tax_calculator.py --transactions trades.csv --year 2025 --format csv --ou
 ```
 
 Creates:
+
 ```csv
 Description of Property,Date Acquired,Date Sold or Disposed,Proceeds (Sales Price),Cost or Other Basis,Gain or (Loss),Short/Long Term,Holding Period (Days)
 0.75000000 BTC,01/15/2024,01/20/2025,71250.00,30000.00,41250.00,Long-term,371
@@ -116,6 +119,7 @@ python tax_calculator.py --transactions trades.csv --method fifo
 Sells oldest lots first. IRS default method.
 
 **Example**: You bought:
+
 - Lot 1: 1 BTC @ $40,000 (Jan 2024)
 - Lot 2: 0.5 BTC @ $65,000 (Jun 2024)
 
@@ -132,6 +136,7 @@ python tax_calculator.py --transactions trades.csv --method lifo
 Sells newest lots first. May result in more short-term gains.
 
 **Same example**: LIFO would sell:
+
 - 0.5 BTC from Lot 2 (Jun 2024)
 - 0.25 BTC from Lot 1 (Jan 2024)
 
@@ -146,6 +151,7 @@ python tax_calculator.py --transactions trades.csv --method hifo
 Sells highest cost lots first. Minimizes gains but requires tracking.
 
 **Same example**: HIFO would sell:
+
 - 0.5 BTC from Lot 2 ($65,000 basis - higher)
 - 0.25 BTC from Lot 1 ($40,000 basis - lower)
 
@@ -160,6 +166,7 @@ python tax_calculator.py --transactions all_events.csv --income-report
 ```
 
 Output:
+
 ```
 ======================================================================
   CRYPTO INCOME REPORT
@@ -220,6 +227,7 @@ python tax_calculator.py --transactions trades.csv --format json
 ```
 
 Output:
+
 ```json
 {
   "disposals": [
@@ -382,6 +390,7 @@ python tax_calculator.py --transactions trades.csv --verbose
 ```
 
 Shows:
+
 - File loading progress
 - Detected exchange format
 - Lot creation/disposal details

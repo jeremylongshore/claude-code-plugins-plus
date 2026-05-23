@@ -10,6 +10,7 @@ podium-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Podium primary workflow
 **Workflow:** Part of the onboarding skill category for Podium integration.
 **Relates to:** Other podium skills in this pack.

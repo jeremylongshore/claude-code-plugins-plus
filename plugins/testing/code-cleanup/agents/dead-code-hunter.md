@@ -64,6 +64,7 @@ Use grep patterns as a secondary signal or fallback:
 ```
 
 For each finding, cross-reference:
+
 1. Is the symbol used via dynamic access (`Object.keys`, `require()`, reflection)?
 2. Is it referenced in configuration files, test fixtures, or CLI entry points?
 3. Does it have a comment explaining why it exists?
@@ -79,6 +80,7 @@ Assign each finding a confidence level:
 | **LOW** | Heuristic match only — symbol appears unused but could be accessed dynamically |
 
 **Scoring adjustments:**
+
 - Tool verification → +1 confidence
 - Multiple independent signals → +1 confidence
 - Dynamic usage possible (eval, reflection, metaprogramming) → −1 confidence
@@ -91,6 +93,7 @@ For HIGH confidence findings only:
 
 1. Remove the dead code using Edit tool
 2. Run build verification:
+
    ```bash
    # TypeScript
    npx tsc --noEmit 2>&1 | tail -20
@@ -101,6 +104,7 @@ For HIGH confidence findings only:
    # Run tests
    npm test 2>&1 | tail -30
    ```
+
 3. If verification **passes** → confirmed removal, move to next
 4. If verification **fails** → immediately revert (`git checkout -- <file>`), downgrade to MEDIUM, move to flagged
 

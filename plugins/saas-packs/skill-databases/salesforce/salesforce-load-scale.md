@@ -10,6 +10,7 @@ salesforce-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Salesforce load testing and scaling
 **Workflow:** Part of the enterprise skill category for Salesforce integration.
 **Relates to:** Other salesforce skills in this pack.

@@ -1,6 +1,7 @@
-# Examples
+## Examples
 
 ### Import Changes
+
 ```typescript
 // Before (v1.x)
 import { Client } from 'vercel';
@@ -10,6 +11,7 @@ import { VercelClient } from 'vercel';
 ```
 
 ### Configuration Changes
+
 ```typescript
 // Before (v1.x)
 const client = new Client({ key: 'xxx' });
@@ -21,11 +23,13 @@ const client = new VercelClient({
 ```
 
 ### Rollback Procedure
+
 ```bash
 npm install vercel@1.x.x --save-exact
 ```
 
 ### Deprecation Handling
+
 ```typescript
 // Monitor for deprecation warnings in development
 if (process.env.NODE_ENV === 'development') {

@@ -21,6 +21,7 @@ Build production Claude API integrations with the Messages API, tool use, stream
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `anth-install-auth` | Install SDK (Python/TS) and configure API key authentication |
@@ -37,6 +38,7 @@ Build production Claude API integrations with the Messages API, tool use, stream
 | `anth-upgrade-migration` | SDK upgrades, Text Completions to Messages migration |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `anth-ci-integration` | GitHub Actions with mock tests and prompt regression tests |
@@ -47,6 +49,7 @@ Build production Claude API integrations with the Messages API, tool use, stream
 | `anth-reference-architecture` | Sync gateway, async queue, multi-model router architectures |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `anth-multi-env-setup` | Dev/staging/prod with Workspaces and per-env configuration |
@@ -57,6 +60,7 @@ Build production Claude API integrations with the Messages API, tool use, stream
 | `anth-migration-deep-dive` | OpenAI-to-Claude migration with side-by-side code mapping |
 
 ### Flagship+ Skills (X25-X30)
+
 | Skill | Description |
 |-------|-------------|
 | `anth-advanced-troubleshooting` | Context overflow, tool use failures, streaming issues |

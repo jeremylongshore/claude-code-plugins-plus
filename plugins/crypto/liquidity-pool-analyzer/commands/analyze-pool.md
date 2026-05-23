@@ -15,6 +15,7 @@ The liquidity pool analyzer provides institutional-grade analysis for liquidity 
 ## Features
 
 ### Core Analysis Capabilities
+
 - **Real-Time Pool Metrics**: TVL, volume, fee generation, utilization rates
 - **Impermanent Loss Tracking**: Continuous IL monitoring with historical analysis
 - **APY Decomposition**: Breakdown of trading fees, farming rewards, and token incentives
@@ -24,6 +25,7 @@ The liquidity pool analyzer provides institutional-grade analysis for liquidity 
 - **Multi-Chain Support**: Ethereum, BSC, Polygon, Arbitrum, Optimism, Base
 
 ### Advanced Features
+
 - **Historical Performance**: Backtesting LP positions over any time period
 - **Optimal Range Calculation**: For concentrated liquidity positions (V3)
 - **Rebalancing Signals**: Automated alerts when positions drift out of range
@@ -34,24 +36,28 @@ The liquidity pool analyzer provides institutional-grade analysis for liquidity 
 ## Supported DEX Protocols
 
 ### Uniswap V2/V3
+
 - Constant product (x*y=k) AMM analysis
 - V3 concentrated liquidity position evaluation
 - Tick spacing and fee tier optimization
 - Historical fee accumulation tracking
 
 ### Curve Finance
+
 - StableSwap invariant calculations
 - Base APY vs CRV/CVX boosted yields
 - Gauge weight analysis
 - Pool imbalance detection
 
 ### Balancer V2
+
 - Multi-asset weighted pools
 - Custom bonding curves
 - Composable stable pools
 - Protocol fee analysis
 
 ### Other Protocols
+
 - SushiSwap (fork analysis)
 - PancakeSwap (BSC/Ethereum)
 - TraderJoe (Avalanche)

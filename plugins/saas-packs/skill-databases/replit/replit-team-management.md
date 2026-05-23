@@ -10,6 +10,7 @@ replit-team-management/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Replit Teams with member roles, permissions, shared secrets, and collaborative workflows.
 **Workflow:** Team administration skill - establishes organizational structure for collaborative development.
 **Relates to:** Enables replit-multiplayer-collab; integrates with replit-secrets-management for shared credentials.

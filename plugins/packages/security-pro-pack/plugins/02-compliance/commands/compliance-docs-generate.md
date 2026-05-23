@@ -26,11 +26,12 @@ Automatically generates comprehensive compliance documentation including policie
 ## What This Command Does
 
 **Instant Compliance Documentation:**
--  Generates framework-specific policies and procedures
--  Creates data flow and network diagrams
--  Produces risk assessment templates
--  Builds audit-ready documentation packages
--  Customizes for your organization
+
+- Generates framework-specific policies and procedures
+- Creates data flow and network diagrams
+- Produces risk assessment templates
+- Builds audit-ready documentation packages
+- Customizes for your organization
 
 **Output:** Complete compliance documentation package
 
@@ -41,6 +42,7 @@ Automatically generates comprehensive compliance documentation including policie
 ## When to Use This Command
 
 **Perfect For:**
+
 - Preparing for compliance audit
 - Starting compliance program
 - Customer compliance questionnaire responses
@@ -48,6 +50,7 @@ Automatically generates comprehensive compliance documentation including policie
 - Annual compliance documentation updates
 
 **Use This When:**
+
 - Customer requests security documentation
 - Auditor asks for policies and procedures
 - Board asks for compliance status
@@ -79,6 +82,7 @@ Automatically generates comprehensive compliance documentation including policie
 ```
 
 **Shortcut:**
+
 ```bash
 /cdg --framework hipaa  # Generate HIPAA docs
 ```
@@ -90,6 +94,7 @@ Automatically generates comprehensive compliance documentation including policie
 ### HIPAA Documentation Package
 
 **Policies (12 documents):**
+
 1. Security Management Process Policy
 2. Workforce Security Policy
 3. Information Access Management Policy
@@ -104,6 +109,7 @@ Automatically generates comprehensive compliance documentation including policie
 12. Business Associate Agreement Template
 
 **Procedures (8 documents):**
+
 1. Risk Assessment Procedure
 2. Risk Management Procedure
 3. Security Incident Response Procedure
@@ -114,11 +120,13 @@ Automatically generates comprehensive compliance documentation including policie
 8. Breach Notification Procedure
 
 **Diagrams (3 visualizations):**
+
 1. Data Flow Diagram (PHI through systems)
 2. Network Architecture Diagram
 3. Incident Response Flowchart
 
 **Risk Assessment:**
+
 1. Risk Analysis Template
 2. Risk Register
 3. Risk Treatment Plan
@@ -389,6 +397,7 @@ _______________________________
 ### GDPR Documentation Package
 
 **Policies (8 documents):**
+
 1. Data Protection Policy
 2. Privacy Policy (Public-Facing)
 3. Data Retention Policy
@@ -399,6 +408,7 @@ _______________________________
 8. Data Processing Agreement Template
 
 **Procedures (6 documents):**
+
 1. Data Subject Access Request (DSAR) Procedure
 2. Right to Erasure Procedure
 3. Data Breach Notification Procedure
@@ -407,6 +417,7 @@ _______________________________
 6. Data Inventory Procedure
 
 **Registers (3 tracking documents):**
+
 1. Data Processing Register (Article 30)
 2. Consent Register
 3. DSAR Request Log
@@ -479,6 +490,7 @@ Also provide:
 ## 6. DSAR Processing Workflow
 
 ```
+
 DSAR Received
      ↓
 Log in DSAR Register
@@ -498,6 +510,7 @@ Generate DSAR Response
 Deliver to Data Subject
      ↓
 Update DSAR Register
+
 ```
 
 ## 7. System Search

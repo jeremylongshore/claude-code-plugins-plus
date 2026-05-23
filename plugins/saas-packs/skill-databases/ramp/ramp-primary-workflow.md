@@ -10,6 +10,7 @@ ramp-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Ramp primary workflow
 **Workflow:** Part of the onboarding skill category for Ramp integration.
 **Relates to:** Other ramp skills in this pack.

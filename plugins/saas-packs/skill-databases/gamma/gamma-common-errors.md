@@ -10,6 +10,7 @@ gamma-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Gamma common errors
 **Workflow:** Part of the operations skill category for Gamma integration.
 **Relates to:** Other gamma skills in this pack.

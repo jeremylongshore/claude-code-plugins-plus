@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Incident Runbook
 
 ## Overview
+
 Step-by-step procedures for responding to Evernote integration incidents including API outages, rate limit escalations, authentication failures, data sync issues, and quota exhaustion.
 
 ## Prerequisites
+
 - Access to monitoring dashboards and production logs
 - Production Evernote API credentials
 - Communication channels for escalation (Slack, PagerDuty)
@@ -86,6 +88,7 @@ For sync issues: compare local USN with server USN via `getSyncState()`. If gap 
 For the complete diagnostic scripts, mitigation implementations, and communication templates, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
+
 - Incident severity classification table
 - Triage diagnostic commands for quick assessment
 - Rate limit, auth, and sync failure response procedures
@@ -93,6 +96,7 @@ For the complete diagnostic scripts, mitigation implementations, and communicati
 - Post-incident review checklist
 
 ## Error Handling
+
 | Incident Type | Diagnostic | Mitigation |
 |---------------|------------|------------|
 | API outage | Check `status.evernote.com` | Activate circuit breaker, serve cached data |
@@ -101,11 +105,13 @@ For the complete diagnostic scripts, mitigation implementations, and communicati
 | Sync data loss | Compare local vs server note counts | Full re-sync from USN 0 |
 
 ## Resources
+
 - [Evernote Status Page](https://status.evernote.com/)
 - [Evernote Developer Support](https://dev.evernote.com/support/)
 - [Error Handling](https://dev.evernote.com/doc/articles/error_handling.php)
 
 ## Next Steps
+
 For data handling best practices, see `evernote-data-handling`.
 
 ## Examples

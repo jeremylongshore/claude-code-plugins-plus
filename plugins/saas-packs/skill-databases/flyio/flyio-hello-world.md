@@ -10,6 +10,7 @@ flyio-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Fly.io example
 **Workflow:** Part of the onboarding skill category for Fly.io integration.
 **Relates to:** Other flyio skills in this pack.

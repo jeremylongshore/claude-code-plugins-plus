@@ -16,4 +16,3 @@ Validate `.changelog-config.json` before generating a changelog.
 - Output path is writable
 
 If validation fails, show actionable fixes (missing token env vars, missing template, invalid paths).
-

@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Migration Deep Dive
 
 ## Overview
+
 Strategies for migrating to/from Instantly or consolidating multiple outreach tools into Instantly. Covers data migration (leads, campaigns, templates), account migration (email infrastructure), analytics preservation, and parallel-run strategies with zero-downtime cutover.
 
 ## Migration Scenarios
@@ -39,6 +40,7 @@ Strategies for migrating to/from Instantly or consolidating multiple outreach to
 ## Instructions
 
 ### Step 1: Pre-Migration Audit
+
 ```typescript
 import { InstantlyClient } from "./src/instantly/client";
 const client = new InstantlyClient();
@@ -95,6 +97,7 @@ async function preMigrationAudit(): Promise<MigrationPlan> {
 ```
 
 ### Step 2: Import Email Accounts
+
 ```typescript
 // Add email accounts with IMAP/SMTP credentials
 async function migrateEmailAccounts(accounts: Array<{
@@ -174,6 +177,7 @@ async function migrateWithOAuth(provider: "google" | "microsoft") {
 ```
 
 ### Step 3: Import Leads from CSV
+
 ```typescript
 import { readFileSync } from "fs";
 import { parse } from "csv-parse/sync";
@@ -253,6 +257,7 @@ const mapping = {
 ```
 
 ### Step 4: Migrate Unsubscribes to Block List
+
 ```typescript
 async function migrateUnsubscribes(unsubscribedEmails: string[]) {
   console.log(`Migrating ${unsubscribedEmails.length} unsubscribes to block list`);
@@ -273,6 +278,7 @@ async function migrateUnsubscribes(unsubscribedEmails: string[]) {
 ```
 
 ### Step 5: Parallel Run Strategy
+
 ```typescript
 // Run old and new platforms simultaneously during transition
 async function parallelRunMonitor() {
@@ -301,6 +307,7 @@ async function parallelRunMonitor() {
 ```
 
 ## Migration Timeline
+
 ```
 Week 1: Setup & Warmup
   - Add email accounts to Instantly
@@ -327,6 +334,7 @@ Week 4: Cutover
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Account SMTP auth fails | Wrong credentials from old platform | Re-check app password or OAuth flow |
@@ -335,9 +343,11 @@ Week 4: Cutover
 | Performance worse than old platform | Accounts not warmed up | Wait 14+ days, check inbox rates |
 
 ## Resources
+
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
 - [Instantly Account API](https://developer.instantly.ai/api/v2/account)
 - [Instantly Quick Start Guide](https://help.instantly.ai/en/articles/6451970-quick-start-guide-all-in-one)
 
 ## Next Steps
+
 After migration, set up monitoring with `instantly-observability`.

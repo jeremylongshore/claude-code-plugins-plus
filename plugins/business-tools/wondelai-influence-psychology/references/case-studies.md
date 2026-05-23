@@ -22,6 +22,7 @@ In 2008, Dropbox faced a common startup problem: they had a great product but we
 ### Implementation Details
 
 **The referral program:**
+
 - Both referrer and referee receive 500MB of free storage (later increased to 16GB maximum)
 - The reward is immediate and tangible (not a discount or points)
 - The referral is framed as doing a friend a favor, not selling to them
@@ -80,6 +81,7 @@ Airbnb faced a fundamental trust problem: convincing strangers to stay in other 
 | **Personal profiles** | Bios, interests, verifications | Liking (similarity, familiarity) |
 
 **The review system in detail:**
+
 - Reviews are reciprocal: both parties review, creating commitment
 - Reviews are public: creating social proof for future guests
 - Reviews are written: more powerful than simple star ratings
@@ -215,6 +217,7 @@ Language learning has one of the highest abandonment rates of any educational pu
 | XP system | Points for every lesson completed | Progress visualization |
 
 **Onboarding (Commitment Ladder):**
+
 1. "What language do you want to learn?" (identity commitment)
 2. "Why are you learning?" (goal commitment)
 3. "How much time per day?" (specific commitment)

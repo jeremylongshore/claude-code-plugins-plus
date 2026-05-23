@@ -3,6 +3,7 @@
 ## Model Health Monitoring
 
 ### Health Check Function
+
 ```python
 import time
 from typing import Optional
@@ -52,6 +53,7 @@ for model in models_to_check:
 ```
 
 ### Continuous Monitoring
+
 ```python
 import asyncio
 from datetime import datetime

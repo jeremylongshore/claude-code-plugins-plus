@@ -203,6 +203,7 @@ done
 ## Output
 
 Successful execution produces:
+
 - Independent health probe results for Identity, Compute, and Networking services
 - Severity classification (P1/P2/P3) based on probe results
 - Instance recovery action (reset, reboot, or stop/start) applied to the impacted instance

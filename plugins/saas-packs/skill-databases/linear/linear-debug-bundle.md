@@ -10,6 +10,7 @@ linear-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Linear debug evidence for support
 **Workflow:** Part of the operations skill category for Linear integration.
 **Relates to:** Other linear skills in this pack.

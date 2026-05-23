@@ -10,6 +10,7 @@ sentry-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Integrate Sentry with the observability stack including structured logging, metrics, APM tools like Datadog and New Relic, and distributed tracing correlation.
 **Workflow:** Configure when building a unified observability platform. Connects Sentry errors with logs, metrics, and traces from other tools.
 **Relates to:** Works with `sentry-performance-tracing` for tracing. Connects to `sentry-incident-runbook` for incident response.

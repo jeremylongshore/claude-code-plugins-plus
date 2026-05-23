@@ -30,6 +30,7 @@ This skill helps you identify and resolve memory leaks in your code. By analyzin
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Detect potential memory leaks in your application.
 - Analyze memory usage patterns to identify performance bottlenecks.
 - Troubleshoot performance issues related to memory leaks.
@@ -41,6 +42,7 @@ This skill activates when you need to:
 User request: "detect memory leaks in my event handling code"
 
 The skill will:
+
 1. Analyze the code for unremoved event listeners.
 2. Generate a report highlighting potential event listener leaks and suggesting how to properly remove them.
 
@@ -49,6 +51,7 @@ The skill will:
 User request: "analyze memory usage to find excessive cache growth"
 
 The skill will:
+
 1. Analyze cache implementations for unbounded growth.
 2. Identify caches that are not properly managed and recommend strategies for limiting their size.
 
@@ -89,6 +92,7 @@ This skill can be used in conjunction with other performance analysis tools to p
 ## Error Handling
 
 If memory leak detection fails:
+
 - Verify code file access permissions
 - Check profiling tool installation
 - Validate code syntax and structure

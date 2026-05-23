@@ -30,18 +30,21 @@ Complete checklist for deploying Claude API integrations to production with reli
 ## Pre-Launch Checklist
 
 ### Authentication & Keys
+
 - [ ] Production API key from dedicated Workspace
 - [ ] Key stored in secret manager (not env files on servers)
 - [ ] Key rotation procedure documented and tested
 - [ ] Separate keys for each environment (dev/staging/prod)
 
 ### Error Handling
+
 - [ ] All 5 error types handled: `authentication_error`, `invalid_request_error`, `rate_limit_error`, `api_error`, `overloaded_error`
 - [ ] SDK `maxRetries` set (recommended: 3-5 for production)
 - [ ] Custom error logging with `request-id` captured
 - [ ] Circuit breaker for sustained API failures
 
 ### Rate Limits & Cost
+
 - [ ] Usage tier verified at [console.anthropic.com](https://console.anthropic.com/settings/limits)
 - [ ] Application-level rate limiting implemented
 - [ ] Cost alerts configured (monthly spend caps)
@@ -50,6 +53,7 @@ Complete checklist for deploying Claude API integrations to production with reli
 - [ ] Prompt caching enabled for repeated system prompts
 
 ### Reliability
+
 - [ ] Timeout configured (`timeout` parameter, recommended 60-120s)
 - [ ] Graceful degradation when API is unavailable
 - [ ] Health check endpoint tests API connectivity
@@ -68,6 +72,7 @@ async def health_check():
 ```
 
 ### Observability
+
 - [ ] Request/response logging (redact content, keep metadata)
 - [ ] Latency tracking (p50, p95, p99)
 - [ ] Token usage tracking (input + output per request)
@@ -104,12 +109,14 @@ def tracked_create(**kwargs):
 ```
 
 ### Content Safety
+
 - [ ] System prompts reviewed for injection resistance
 - [ ] User input validated and length-limited
 - [ ] Output scanned for sensitive data leakage
 - [ ] Content moderation for user-facing responses
 
 ### Infrastructure
+
 - [ ] Deployment uses canary/rolling strategy
 - [ ] Rollback procedure documented and tested
 - [ ] Runbook created (see `anth-incident-runbook`)

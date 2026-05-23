@@ -27,17 +27,20 @@ compatibility: Designed for Claude Code
 # Anthropic Tool Use (Function Calling)
 
 ## Overview
+
 Tool use lets Claude call functions you define — query databases, hit APIs, read files, do math. Claude decides when to call a tool, you execute it, and feed the result back. This is how you build Claude-powered agents.
 
 > **Note:** Anthropic does not offer an embeddings API. For embeddings + vector search, pair Claude with a dedicated embedding model (OpenAI, Cohere, or Voyage).
 
 ## Prerequisites
+
 - Completed `clade-model-inference`
 - Understanding of JSON Schema for tool definitions
 
 ## Instructions
 
 ### Step 1: Define Tools
+
 ```typescript
 import Anthropic from '@claude-ai/sdk';
 
@@ -60,6 +63,7 @@ const tools: Anthropic.Tool[] = [
 ```
 
 ### Step 2: Send Message with Tools
+
 ```typescript
 const response = await client.messages.create({
   model: 'claude-sonnet-4-20250514',
@@ -74,6 +78,7 @@ const response = await client.messages.create({
 ```
 
 ### Step 3: Execute Tool and Return Result
+
 ```typescript
 // Find the tool use block
 const toolUse = response.content.find(block => block.type === 'tool_use');
@@ -105,6 +110,7 @@ console.log(finalResponse.content[0].text);
 ```
 
 ## Python Example
+
 ```python
 import anthropic
 
@@ -137,6 +143,7 @@ for block in response.content:
 ```
 
 ## Agentic Tool Loop
+
 ```typescript
 // Keep calling Claude until it stops requesting tools
 let messages = [{ role: 'user', content: userInput }];
@@ -176,12 +183,14 @@ while (true) {
 ```
 
 ## Output
+
 - `tool_use` content blocks with `name` and `input` when Claude wants to call a tool
 - `stop_reason: "tool_use"` indicating Claude is waiting for tool results
 - Final text response after all tool results are provided
 - Complete agentic loop until `stop_reason: "end_turn"`
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `invalid_request_error` | Bad tool schema | Validate JSON Schema. `input_schema` must be a valid JSON Schema object |
@@ -189,11 +198,14 @@ while (true) {
 | `tool_result` mismatch | Wrong `tool_use_id` | Each `tool_result` must reference the exact `id` from the `tool_use` block |
 
 ## Examples
+
 See Step 1 (tool definition), Step 2 (sending with tools), Step 3 (executing and returning results), and the full agentic tool loop example above.
 
 ## Resources
+
 - [Tool Use Guide](https://docs.anthropic.com/en/docs/build-with-claude/tool-use)
 - [Tool Use API Reference](https://docs.anthropic.com/en/api/messages)
 
 ## Next Steps
+
 See `clade-common-errors` for error handling patterns.

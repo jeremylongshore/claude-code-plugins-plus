@@ -10,6 +10,7 @@ stackblitz-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement StackBlitz core feature integration
 **Workflow:** Part of the onboarding skill category for StackBlitz integration.
 **Relates to:** Other stackblitz skills in this pack.

@@ -20,15 +20,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # QuickNode Webhooks Events
 
 ## Overview
+
 Set up QuickNode Streams for real-time on-chain event processing with custom filters and webhook delivery.
 
 ## Prerequisites
+
 - QuickNode account with Streams access
 - HTTPS webhook endpoint
 
 ## Instructions
 
 ### Step 1: Create a Stream via Dashboard
+
 ```text
 1. Dashboard > Streams > Create Stream
 2. Select chain: Ethereum Mainnet
@@ -38,6 +41,7 @@ Set up QuickNode Streams for real-time on-chain event processing with custom fil
 ```
 
 ### Step 2: Handle Stream Events
+
 ```typescript
 import express from 'express';
 
@@ -56,6 +60,7 @@ app.post('/webhooks/quicknode', express.json(), async (req, res) => {
 ```
 
 ### Step 3: Filter by Contract Events
+
 ```javascript
 // Stream filter function (runs on QuickNode infrastructure)
 function main(data) {
@@ -72,11 +77,13 @@ function main(data) {
 ```
 
 ## Output
+
 - Real-time blockchain event streaming
 - Custom filter functions for specific contracts/events
 - Webhook delivery for processed events
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | No events received | Filter too restrictive | Test with broader filter first |
@@ -84,8 +91,10 @@ function main(data) {
 | Webhook timeout | Slow processing | Return 200 immediately, process async |
 
 ## Resources
+
 - [QuickNode Streams](https://www.quicknode.com/docs/streams)
 - [QuickNode Docs](https://www.quicknode.com/docs/welcome)
 
 ## Next Steps
+
 Optimize performance: `quicknode-performance-tuning`

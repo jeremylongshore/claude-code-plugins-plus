@@ -118,6 +118,7 @@ export function getSession(): ApiKeySession {
 ### Step 2: Secret Management by Platform
 
 #### GCP Secret Manager
+
 ```bash
 # Create secrets per environment
 echo -n "pk_test_dev_***" | gcloud secrets create klaviyo-key-dev --data-file=-
@@ -130,6 +131,7 @@ gcloud run deploy my-app \
 ```
 
 #### AWS Secrets Manager
+
 ```bash
 aws secretsmanager create-secret \
   --name klaviyo/production/private-key \
@@ -152,6 +154,7 @@ async function loadKlaviyoKey(env: string): Promise<string> {
 ```
 
 #### Local Development
+
 ```bash
 # .env.local (git-ignored)
 KLAVIYO_PRIVATE_KEY=pk_test_dev_********************************

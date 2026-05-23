@@ -10,6 +10,7 @@ ramp-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Ramp debug evidence for support
 **Workflow:** Part of the operations skill category for Ramp integration.
 **Relates to:** Other ramp skills in this pack.

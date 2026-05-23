@@ -1,6 +1,7 @@
-# Examples
+## Examples
 
 ### Import Changes
+
 ```typescript
 // Before (v1.x)
 import { Client } from '@supabase/supabase-js';
@@ -10,6 +11,7 @@ import { SupabaseClient } from '@supabase/supabase-js';
 ```
 
 ### Configuration Changes
+
 ```typescript
 // Before (v1.x)
 const client = new Client({ key: 'xxx' });
@@ -21,11 +23,13 @@ const client = new SupabaseClient({
 ```
 
 ### Rollback Procedure
+
 ```bash
 npm install @supabase/supabase-js@1.x.x --save-exact
 ```
 
 ### Deprecation Handling
+
 ```typescript
 // Monitor for deprecation warnings in development
 if (process.env.NODE_ENV === 'development') {

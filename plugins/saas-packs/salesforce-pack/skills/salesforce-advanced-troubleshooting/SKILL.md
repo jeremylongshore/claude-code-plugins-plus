@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Salesforce Advanced Troubleshooting
 
 ## Overview
+
 Deep debugging techniques for complex Salesforce issues: Apex debug log analysis, SOQL query plan optimization, governor limit diagnosis, and EventLogFile forensics.
 
 ## Prerequisites
+
 - Salesforce CLI authenticated
 - Access to Setup > Debug Logs
 - Understanding of Apex governor limits
@@ -228,6 +230,7 @@ async function minimalRepro(): Promise<void> {
 ```
 
 ## Output
+
 - Debug logging enabled with trace flags
 - Governor limit consumption identified
 - SOQL query plan analyzed for performance issues
@@ -235,6 +238,7 @@ async function minimalRepro(): Promise<void> {
 - Minimal reproduction created for support escalation
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | No debug logs appearing | Trace flag expired or wrong user | Recreate trace flag in Setup |
@@ -243,10 +247,12 @@ async function minimalRepro(): Promise<void> {
 | EventLogFile empty | Not Enterprise+ edition | Use instrumented client logging instead |
 
 ## Resources
+
 - [Debug Log Reference](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_debugging_debug_log.htm)
 - [SOQL Query Plan](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_SOQL_query_plan.htm)
 - [Governor Limits](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm)
 - [EventLogFile](https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_eventlogfile.htm)
 
 ## Next Steps
+
 For load testing, see `salesforce-load-scale`.

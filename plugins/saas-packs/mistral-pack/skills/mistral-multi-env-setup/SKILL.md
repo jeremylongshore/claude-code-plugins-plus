@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral AI Multi-Environment Setup
 
 ## Overview
+
 Configure Mistral AI across development, staging, and production with per-environment API keys, model selection, rate limits, and secret management via GCP Secret Manager, AWS Secrets Manager, or Vault.
 
 ## Prerequisites
+
 - Separate Mistral API keys per environment (from [console.mistral.ai](https://console.mistral.ai/))
 - Secret management solution configured
 - CI/CD pipeline with environment variables
@@ -131,6 +133,7 @@ function detectEnvironment(): Environment {
 ### Step 4: Secret Management
 
 **GCP Secret Manager**
+
 ```typescript
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
 
@@ -145,6 +148,7 @@ async function getMistralApiKey(env: string): Promise<string> {
 ```
 
 **AWS Secrets Manager**
+
 ```typescript
 import { SecretsManager } from '@aws-sdk/client-secrets-manager';
 
@@ -159,6 +163,7 @@ async function getMistralApiKey(env: string): Promise<string> {
 ```
 
 **GitHub Actions**
+
 ```yaml
 jobs:
   deploy-staging:
@@ -236,6 +241,7 @@ export function getFlags(): FeatureFlags {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Wrong environment | Missing `APP_ENV` | Set explicitly in deployment config |
@@ -244,11 +250,13 @@ export function getFlags(): FeatureFlags {
 | Config mismatch | Env var naming | Use consistent naming convention |
 
 ## Resources
+
 - [GCP Secret Manager](https://cloud.google.com/secret-manager)
 - [AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/)
 - [12-Factor App Config](https://12factor.net/config)
 
 ## Output
+
 - Multi-environment config with type-safe overrides
 - Environment detection for Vercel, Cloud Run, and K8s
 - Secret management integration (GCP, AWS, GitHub Actions)

@@ -10,6 +10,7 @@ ramp-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Ramp CI/CD integration
 **Workflow:** Part of the cicd skill category for Ramp integration.
 **Relates to:** Other ramp skills in this pack.

@@ -61,6 +61,7 @@ split <#>  ·  reroute <#>  ·  full-report
 ### Step 2: Render Detail View (for `details` command)
 
 When showing a single cluster in detail:
+
 - Family, surface, feature area
 - Report count, confidence percentage
 - Severity + rationale (always show rationale for high/critical)
@@ -73,6 +74,7 @@ When showing a single cluster in detail:
 ### Step 3: Parse Review Commands
 
 When receiving a command string, call `mcp__triage__parse_review_command`:
+
 - Returns structured ParsedCommand with command, clusterNumber, args, valid, error
 - If invalid: display the error message to the user
 - If valid: return the parsed command to the orchestrator for execution
@@ -80,6 +82,7 @@ When receiving a command string, call `mcp__triage__parse_review_command`:
 ### Step 4: Render Action Confirmation
 
 After each successfully executed review command, display a confirmation line using `formatActionConfirmation()` from `mcp/triage-server/lib.ts`. Examples:
+
 - `dismiss 1 noise` → "Cluster #1 dismissed (noise). Suppression rule created."
 - `file 2` → 'Draft issue created for cluster #2. Use "confirm file 2" to submit.'
 - `escalate 3` → "Cluster #3 escalated. Severity raised."

@@ -42,9 +42,11 @@ Create detailed, stakeholder-friendly test reports with coverage metrics, test t
 
 ### Trend (Last 7 Days)
 ```
+
 Day       | Tests | Pass Rate | Coverage
 ---------|-------|-----------|----------
 Oct 11   | 1,247 | 96.1%     | 87.3%
 Oct 10   | 1,235 | 94.8%     | 85.2%
 Oct 09   | 1,228 | 95.2%     | 84.9%
+
 ```

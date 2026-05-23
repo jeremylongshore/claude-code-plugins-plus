@@ -1,6 +1,7 @@
 # OpenEvidence Migration Deep Dive - Implementation Details
 
 ## Legacy System Assessment
+
 ```typescript
 async function assessLegacySystem(): Promise<LegacySystemAssessment> {
   return {
@@ -14,6 +15,7 @@ async function assessLegacySystem(): Promise<LegacySystemAssessment> {
 ```
 
 ## Parallel Running Period
+
 ```typescript
 export class ParallelRunner {
   async query(question: string, context: any) {
@@ -28,9 +30,11 @@ export class ParallelRunner {
 ```
 
 ## Data Migration
+
 User migration with role mapping (doctor->Physician, nurse->Nurse), audit log migration (HIPAA required), batch processing with progress tracking and error handling.
 
 ## EHR Integration (Epic SMART on FHIR)
+
 ```typescript
 export const epicConfig: SMARTConfig = {
   scope: ['openid', 'fhirUser', 'launch/patient', 'patient/Patient.read', 'patient/MedicationRequest.read', 'patient/Condition.read'],
@@ -38,9 +42,11 @@ export const epicConfig: SMARTConfig = {
 ```
 
 ## CDS Hooks Integration
+
 Discovery endpoint and service endpoints for patient-view and medication-prescribe hooks. Drug interaction checking with severity-based CDS cards.
 
 ## Multi-Site Expansion
+
 Site-specific configuration with per-site OpenEvidence org IDs, EHR system selection (epic/cerner/meditech/none), feature flags, and quota management.
 
 ---

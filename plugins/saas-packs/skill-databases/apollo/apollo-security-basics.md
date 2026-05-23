@@ -10,6 +10,7 @@ apollo-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Apollo security best practices
 **Workflow:** Part of the operations skill category for Apollo integration.
 **Relates to:** Other apollo skills in this pack.

@@ -75,6 +75,7 @@ Track, manage, and maintain regression test suites across releases to ensure pre
 ## Examples
 
 **pytest regression test with marker:**
+
 ```python
 import pytest
 
@@ -88,6 +89,7 @@ def test_csv_export_handles_unicode_characters():
 ```
 
 **Jest regression test with ticket reference:**
+
 ```typescript
 describe('BUG-789: Cart total calculation', () => {  # 789 = configured value
   it('applies percentage discount before tax', () => {
@@ -100,6 +102,7 @@ describe('BUG-789: Cart total calculation', () => {  # 789 = configured value
 ```
 
 **Regression inventory entry:**
+
 ```json
 {
   "BUG-1042": {  # 1042 = configured value

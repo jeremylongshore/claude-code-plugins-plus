@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Upgrade Migration
 
 ## Overview
+
 Safely upgrade `@linear/sdk` versions with zero downtime. The SDK is auto-generated from Linear's GraphQL schema -- major versions can rename fields, change return types, add required parameters, or remove deprecated methods. This skill covers version checking, upgrade procedure, compatibility layers, and rollback.
 
 ## Prerequisites
+
 - Existing Linear integration with version control (Git)
 - Test suite covering Linear SDK operations
 - Understanding of semantic versioning
@@ -35,6 +37,7 @@ Safely upgrade `@linear/sdk` versions with zero downtime. The SDK is auto-genera
 ## Instructions
 
 ### Step 1: Check Current vs Latest Version
+
 ```bash
 set -euo pipefail
 # Current installed version
@@ -48,6 +51,7 @@ npm view @linear/sdk versions --json | jq '.[-10:]'
 ```
 
 ### Step 2: Review Changelog for Breaking Changes
+
 ```bash
 set -euo pipefail
 # View SDK changelog on GitHub
@@ -59,6 +63,7 @@ npm view @linear/sdk repository.url
 ```
 
 Common breaking changes between major versions:
+
 - **Renamed fields**: e.g., `issue.state` property vs lazy relation
 - **Changed return types**: direct value to paginated connection
 - **New required parameters**: mutations gaining mandatory fields
@@ -66,6 +71,7 @@ Common breaking changes between major versions:
 - **ESM/CJS**: module system changes
 
 ### Step 3: Create Upgrade Branch and Install
+
 ```bash
 set -euo pipefail
 git checkout -b upgrade/linear-sdk-$(npm view @linear/sdk version)
@@ -76,6 +82,7 @@ npx tsc --noEmit 2>&1 | head -50
 ```
 
 ### Step 4: Fix Type Errors with Compatibility Layer
+
 ```typescript
 // src/linear-compat.ts
 // Bridge pattern for gradual migration across SDK versions
@@ -124,6 +131,7 @@ export async function createIssue(
 ```
 
 ### Step 5: Run Tests and Fix Failures
+
 ```bash
 set -euo pipefail
 # Type-check
@@ -140,6 +148,7 @@ npm run lint 2>&1 || true
 ```
 
 Common fixes:
+
 ```typescript
 // Fix: Property 'x' does not exist
 // Old: issue.statusName
@@ -156,6 +165,7 @@ Common fixes:
 ```
 
 ### Step 6: Test in Staging Before Production
+
 ```bash
 set -euo pipefail
 # Deploy to staging
@@ -170,6 +180,7 @@ curl -s https://staging.yourapp.com/health/linear | jq .
 ```
 
 ### Step 7: Deploy with Rollback Plan
+
 ```bash
 set -euo pipefail
 # Commit upgrade
@@ -205,6 +216,7 @@ npm run deploy
 ## Examples
 
 ### Pre-Upgrade Audit Script
+
 ```typescript
 // scripts/audit-linear-usage.ts
 // Run before upgrading to find all SDK touchpoints
@@ -235,6 +247,7 @@ for (const file of files) {
 ```
 
 ## Resources
+
 - [SDK Changelog](https://github.com/linear/linear/blob/master/packages/sdk/CHANGELOG.md)
 - [API Changelog](https://linear.app/changelog)
 - [SDK npm Page](https://www.npmjs.com/package/@linear/sdk)

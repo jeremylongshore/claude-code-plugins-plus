@@ -9,6 +9,7 @@ python rarity_analyzer.py collection pudgypenguins
 ```
 
 Output:
+
 ```
 COLLECTION: PUDGY PENGUINS
 ============================================================
@@ -39,6 +40,7 @@ python rarity_analyzer.py token boredapeyachtclub 1234
 ```
 
 Output:
+
 ```
 TOKEN: Bored Ape #1234
 ============================================================
@@ -82,6 +84,7 @@ python rarity_analyzer.py collection cryptopunks --traits
 ```
 
 Output:
+
 ```
 TRAIT DISTRIBUTION
 ======================================================================
@@ -134,6 +137,7 @@ python rarity_analyzer.py compare boredapeyachtclub 1234,5678,9012
 ```
 
 Output:
+
 ```
 TOKEN COMPARISON
 ================================================================================

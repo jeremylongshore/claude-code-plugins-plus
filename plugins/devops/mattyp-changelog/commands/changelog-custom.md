@@ -18,4 +18,3 @@ Generate a changelog for a custom date range and prepare a branch/PR.
 1. Ensure `.changelog-config.json` exists at repo root (copy `${CLAUDE_PLUGIN_ROOT}/config/changelog-config.example.json` if missing).
 2. Validate setup by running `/changelog-validate` first.
 3. Use the `changelog-orchestrator` skill to run the workflow for the provided date range.
-

@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq CI Integration
 
 ## Overview
+
 Set up CI/CD pipelines for Groq integrations with unit tests (mocked), integration tests (live API), and model deprecation checks. Groq's fast inference makes live integration tests practical in CI -- a completion round-trip takes < 500ms.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - Groq API key stored as GitHub secret
 - vitest or jest for testing
@@ -36,6 +38,7 @@ Set up CI/CD pipelines for Groq integrations with unit tests (mocked), integrati
 ## Instructions
 
 ### Step 1: GitHub Actions Workflow
+
 ```yaml
 # .github/workflows/groq-tests.yml
 name: Groq Integration Tests
@@ -116,6 +119,7 @@ jobs:
 ```
 
 ### Step 2: Configure Secrets
+
 ```bash
 # Store Groq API key as GitHub secret
 gh secret set GROQ_API_KEY --body "gsk_your_ci_key_here"
@@ -124,6 +128,7 @@ gh secret set GROQ_API_KEY --body "gsk_your_ci_key_here"
 ```
 
 ### Step 3: Integration Test Suite
+
 ```typescript
 // tests/groq.integration.ts
 import { describe, it, expect } from "vitest";
@@ -191,6 +196,7 @@ describe.skipIf(!shouldRun)("Groq API Integration", () => {
 ```
 
 ### Step 4: Release Workflow
+
 ```yaml
 # .github/workflows/release.yml
 on:
@@ -218,6 +224,7 @@ jobs:
 ```
 
 ## CI Best Practices
+
 - Mock `groq-sdk` in unit tests (no API key needed, no network)
 - Run integration tests only on `main` push (not PRs -- saves quota)
 - Use `llama-3.1-8b-instant` for CI tests (cheapest, fastest)
@@ -226,6 +233,7 @@ jobs:
 - Schedule weekly model deprecation checks
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Secret not found | `GROQ_API_KEY` not configured | `gh secret set GROQ_API_KEY` |
@@ -234,9 +242,11 @@ jobs:
 | Flaky tests | Rate limiting in CI | Add backoff, run integration tests less often |
 
 ## Resources
+
 - [GitHub Actions Docs](https://docs.github.com/en/actions)
 - [Groq API Reference](https://console.groq.com/docs/api-reference)
 - [Groq Model Deprecations](https://console.groq.com/docs/deprecations)
 
 ## Next Steps
+
 For deployment patterns, see `groq-deploy-integration`.

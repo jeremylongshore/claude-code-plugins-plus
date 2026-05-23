@@ -7,6 +7,7 @@ Transform Claude Code into your complete creative studio - from product ideation
 ## 🎯 The Vision
 
 The most powerful creators in 2025 combine:
+
 - **Building** (design, engineering, products)
 - **Filmmaking** (video, storytelling, distribution)
 
@@ -30,6 +31,7 @@ AFTER: "My builds generate content automatically as I work"
 ### 20 Production-Ready Plugins
 
 **Category 1: Project Documentation** (5 plugins)
+
 - `build-logger-agent` - Auto-document your entire build process
 - `screen-recorder-command` - Start/stop recording with commands
 - `code-explainer-video` - Generate video scripts from your code
@@ -37,6 +39,7 @@ AFTER: "My builds generate content automatically as I work"
 - `demo-video-generator` - Auto-create product demo videos
 
 **Category 2: Video Production** (5 plugins)
+
 - `video-editor-ai` - AI-assisted editing via DaVinci Resolve
 - `thumbnail-designer` - Generate YouTube-style thumbnails
 - `script-to-teleprompter` - Teleprompter with auto-scroll
@@ -44,6 +47,7 @@ AFTER: "My builds generate content automatically as I work"
 - `subtitle-generator-pro` - Animated subtitles (Mr. Beast, Ali Abdaal styles)
 
 **Category 3: Content Strategy** (5 plugins)
+
 - `viral-idea-generator` - Generate video ideas from your builds
 - `title-optimizer` - A/B test titles for CTR
 - `seo-metadata-generator` - YouTube/blog optimization
@@ -51,6 +55,7 @@ AFTER: "My builds generate content automatically as I work"
 - `analytics-insights` - Track performance, optimize strategy
 
 **Category 4: Workflow Optimization** (5 plugins)
+
 - `batch-recording-scheduler` - Record multiple videos efficiently
 - `template-library` - Save/load video templates
 - `content-calendar-ai` - Strategic content planning
@@ -139,10 +144,12 @@ ROI: Pays for itself with 1-2 videos
 ## 🛠 Technical Requirements
 
 ### Required
+
 - Claude Code 1.0.0 or higher
 - FFmpeg (for video processing)
 
 ### Optional Integrations
+
 - DaVinci Resolve (for professional editing)
 - YouTube API (for automated uploads)
 - Twitter API (for thread distribution)
@@ -151,17 +158,20 @@ ROI: Pays for itself with 1-2 videos
 ## 🌟 Key Features
 
 ### Automation
+
 - **Document builds automatically** - Zero effort journaling
 - **Edit videos 80% automatically** - AI removes silence, adds cuts
 - **Generate content strategy** - AI suggests what to make next
 - **Distribute with one click** - Publish to 8+ platforms instantly
 
 ### Quality
+
 - **Broadcast-quality output** - Professional audio mixing and color grading
 - **Optimized for virality** - Titles, thumbnails, and metadata tested for CTR
 - **Multi-platform ready** - Formats optimized for each platform
 
 ### Efficiency
+
 - **Batch recording** - Record 7 videos in 3 hours
 - **Template system** - Reuse successful formats
 - **Content repurposing** - 1 video → 30+ pieces

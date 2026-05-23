@@ -52,10 +52,12 @@ This skill activates when working with `.yml`/`.yaml` files to detect structural
 ## Examples
 
 **Example: Fix an indentation/syntax error**
+
 - Input: a workflow with a mis-indented `steps:` block.
 - Output: corrected indentation and a note on which job/step was affected.
 
 **Example: Convert JSON to YAML safely**
+
 - Input: a JSON config blob.
 - Output: YAML with explicit quoting where necessary to avoid type surprises.
 

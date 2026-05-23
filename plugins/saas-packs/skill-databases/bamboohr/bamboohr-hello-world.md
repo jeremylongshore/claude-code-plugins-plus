@@ -10,6 +10,7 @@ bamboohr-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working BambooHR example
 **Workflow:** Part of the onboarding skill category for BambooHR integration.
 **Relates to:** Other bamboohr skills in this pack.

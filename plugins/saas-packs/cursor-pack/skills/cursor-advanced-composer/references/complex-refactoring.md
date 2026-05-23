@@ -3,6 +3,7 @@
 ## Complex Refactoring
 
 ### Pattern Transformation
+
 ```
 "Refactor all class components to functional components:
 
@@ -18,6 +19,7 @@ Start with @components/Dashboard.tsx as example"
 ```
 
 ### Architecture Migration
+
 ```
 "Migrate from Redux to Zustand:
 
@@ -38,6 +40,7 @@ Phase 3 - Cleanup:
 ```
 
 ### API Version Migration
+
 ```
 "Migrate from REST to tRPC:
 

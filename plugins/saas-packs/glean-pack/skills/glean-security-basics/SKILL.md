@@ -19,9 +19,11 @@ compatibility: Designed for Claude Code
 # Glean Security Basics
 
 ## Overview
+
 Glean indexes and searches across an enterprise's entire knowledge base — Confluence, Google Drive, Slack, GitHub, and dozens more connectors. Security concerns center on indexing token management (write-access tokens that can push content into the search index), client token scoping (user-level search permissions), and document-level access controls. A leaked indexing token allows injecting arbitrary content into enterprise search results.
 
 ## API Key Management
+
 ```typescript
 function createGleanClient(tokenType: "indexing" | "client"): { token: string; baseUrl: string } {
   const token = tokenType === "indexing"
@@ -39,6 +41,7 @@ function createGleanClient(tokenType: "indexing" | "client"): { token: string; b
 ```
 
 ## Webhook Signature Verification
+
 ```typescript
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
@@ -56,6 +59,7 @@ function verifyGleanWebhook(req: Request, res: Response, next: NextFunction): vo
 ```
 
 ## Input Validation
+
 ```typescript
 import { z } from "zod";
 
@@ -75,6 +79,7 @@ function validateIndexDocument(data: unknown) {
 ```
 
 ## Data Protection
+
 ```typescript
 const GLEAN_SENSITIVE_FIELDS = ["indexing_token", "client_token", "document_body", "user_query", "search_results"];
 
@@ -88,6 +93,7 @@ function redactGleanLog(record: Record<string, unknown>): Record<string, unknown
 ```
 
 ## Security Checklist
+
 - [ ] Indexing tokens stored server-side only, never in frontend code
 - [ ] Client tokens scoped per-user with `X-Glean-Auth-Type` header
 - [ ] Tokens rotated quarterly via Admin > API Tokens
@@ -98,6 +104,7 @@ function redactGleanLog(record: Record<string, unknown>): Record<string, unknown
 - [ ] Connector permissions reviewed when adding new data sources
 
 ## Error Handling
+
 | Vulnerability | Risk | Mitigation |
 |---|---|---|
 | Leaked indexing token | Arbitrary content injected into search index | Backend-only storage + rotation |
@@ -107,8 +114,10 @@ function redactGleanLog(record: Record<string, unknown>): Record<string, unknown
 | Search queries in logs | Employee activity surveillance risk | Query redaction in logging pipeline |
 
 ## Resources
+
 - [Glean Developer Portal](https://developers.glean.com/)
 - [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
 
 ## Next Steps
+
 See `glean-prod-checklist`.

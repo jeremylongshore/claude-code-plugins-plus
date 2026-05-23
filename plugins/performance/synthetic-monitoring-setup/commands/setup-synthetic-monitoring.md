@@ -26,6 +26,7 @@ Implement proactive synthetic monitoring to track performance and availability.
 ## Output
 
 Provide:
+
 - Monitoring configuration for chosen platform
 - Test scripts for critical transactions
 - Multi-location test setup

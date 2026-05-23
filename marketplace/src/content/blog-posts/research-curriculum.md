@@ -63,4 +63,3 @@ featured: false
 </ul>
 <h2 id="methodology--tools">Methodology &amp; Tools</h2>
 <p>Our research methodology emphasizes:</p>
-

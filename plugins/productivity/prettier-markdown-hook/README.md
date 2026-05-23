@@ -151,6 +151,7 @@ Skip formatting for specific GitHub organizations (e.g., employer/client repos):
 ```
 
 **Important**: Organization names are **case-sensitive** and must match exactly:
+
 - ✅ Correct: `"Eon-Labs"` (matches `github.com/Eon-Labs/repo`)
 - ❌ Wrong: `"eonlabs"` (will not match)
 
@@ -181,15 +182,18 @@ export PRETTIER_ENABLE_AI_COMMITS=true
 ```
 
 **Requirements:**
+
 - `claude` CLI installed and in PATH
 - Environment variable set to `true`
 
 **Default behavior** (AI disabled):
+
 ```
 style: format markdown files with prettier
 ```
 
 **AI-generated example**:
+
 ```
 docs: standardize markdown formatting across user guides
 
@@ -364,6 +368,7 @@ chmod 755 ~/.local/state/prettier-hook
 **Solutions:**
 
 1. **Increase timeout** in `hooks/hooks.json`:
+
    ```json
    {
      "hooks": [
@@ -503,6 +508,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ### 1.0.0 (Initial Release)
 
 **Features:**
+
 - Stop hook for automatic markdown formatting
 - JSON-based configuration system
 - Organization exclusion support
@@ -513,6 +519,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 - Extensive logging
 
 **Dependencies:**
+
 - prettier (2.0+)
 - jq (1.6+)
 - git (1.8.5+)

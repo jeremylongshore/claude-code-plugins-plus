@@ -10,6 +10,7 @@ supabase-migration-deep-dive/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Supabase major re-architecture and migration strategies using strangler fig pattern with adapter layers, data migration, and traffic shifting.
 **Workflow:** Major migration skill. Used for platform changes or major version upgrades.
 **Relates to:** Builds on all enterprise skills; leads to supabase-advanced-troubleshooting for complex issues during migration.

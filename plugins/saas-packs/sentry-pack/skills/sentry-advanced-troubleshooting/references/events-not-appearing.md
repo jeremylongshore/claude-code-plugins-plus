@@ -3,6 +3,7 @@
 ## Events Not Appearing
 
 ### Check 1: SDK Initialization
+
 ```typescript
 // Verify SDK is initialized
 import * as Sentry from '@sentry/node';
@@ -19,6 +20,7 @@ console.log('DSN:', client?.getDsn()?.toString());
 ```
 
 ### Check 2: Network Issues
+
 ```typescript
 // Test network connectivity
 Sentry.init({
@@ -51,6 +53,7 @@ Sentry.init({
 ```
 
 ### Check 3: Sampling Configuration
+
 ```typescript
 // Verify sample rates
 Sentry.init({
@@ -69,6 +72,7 @@ Sentry.init({
 ```
 
 ### Check 4: beforeSend Filtering
+
 ```typescript
 // Temporarily disable filtering
 Sentry.init({

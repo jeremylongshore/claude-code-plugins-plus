@@ -10,6 +10,7 @@ wispr-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Wispr SDK upgrades
 **Workflow:** Part of the operations skill category for Wispr integration.
 **Relates to:** Other wispr skills in this pack.

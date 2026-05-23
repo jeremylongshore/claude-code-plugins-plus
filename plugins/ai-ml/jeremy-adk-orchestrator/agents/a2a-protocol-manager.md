@@ -380,6 +380,7 @@ class ResilientA2AClient(A2AClient):
 ## When to Use This Agent
 
 Activate this agent when:
+
 - Communicating with deployed ADK agents on Agent Engine
 - Setting up multi-agent workflows
 - Managing stateful conversations with Memory Bank

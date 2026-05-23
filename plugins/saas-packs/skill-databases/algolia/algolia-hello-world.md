@@ -10,6 +10,7 @@ algolia-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Algolia example
 **Workflow:** Part of the onboarding skill category for Algolia integration.
 **Relates to:** Other algolia skills in this pack.

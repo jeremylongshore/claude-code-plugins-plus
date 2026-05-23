@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Common Errors
 
 ## Overview
+
 Quick-reference diagnostic guide for the most frequent Databricks errors. Covers cluster failures, Spark OOM, Delta Lake conflicts, permissions, schema mismatches, rate limits, and job run failures with real SDK/SQL solutions.
 
 ## Prerequisites
+
 - Databricks CLI configured
 - Access to cluster/job logs
 - `databricks-sdk` installed for programmatic debugging
@@ -34,6 +36,7 @@ Quick-reference diagnostic guide for the most frequent Databricks errors. Covers
 ## Instructions
 
 ### Step 1: Identify the Error Source
+
 ```bash
 # Get failed run details
 databricks runs get --run-id $RUN_ID --output json | jq '{
@@ -48,9 +51,11 @@ databricks runs get --run-id $RUN_ID --output json | jq '{
 ---
 
 ### CLUSTER_NOT_READY / INVALID_STATE
+
 ```
 ClusterNotReadyException: Cluster 0123-456789-abcde is not in a RUNNING state
 ```
+
 **Cause:** Cluster is starting, terminating, or in error state.
 
 ```python
@@ -73,10 +78,12 @@ elif cluster.state == State.ERROR:
 ---
 
 ### SPARK_DRIVER_OOM
+
 ```
 java.lang.OutOfMemoryError: Java heap space
 SparkException: Job aborted due to stage failure
 ```
+
 **Cause:** Driver or executor running out of memory.
 
 ```python
@@ -99,10 +106,12 @@ result = large_df.join(broadcast(small_lookup_df), "key")
 ---
 
 ### DELTA_CONCURRENT_WRITE
+
 ```
 ConcurrentAppendException: Files were added by a concurrent update
 ConcurrentDeleteReadException: A concurrent operation modified files
 ```
+
 **Cause:** Multiple jobs writing to the same Delta table simultaneously.
 
 ```python
@@ -130,10 +139,12 @@ def merge_with_retry(spark, source_df, target_table, merge_key, max_retries=3):
 ---
 
 ### PERMISSION_DENIED
+
 ```
 PERMISSION_DENIED: User does not have SELECT on TABLE catalog.schema.table
 PermissionDeniedException: User does not have permission MANAGE on cluster
 ```
+
 **Cause:** Missing Unity Catalog grants or workspace permissions.
 
 ```sql
@@ -159,10 +170,12 @@ databricks permissions update jobs --job-id 123 --json '{
 ---
 
 ### INVALID_PARAMETER_VALUE
+
 ```
 InvalidParameterValue: Instance type xyz not supported in region us-east-1
 Invalid spark_version: 13.x.x-scala2.12
 ```
+
 **Cause:** Wrong cluster config for the workspace region.
 
 ```python
@@ -181,9 +194,11 @@ for v in w.clusters.spark_versions().versions:
 ---
 
 ### SCHEMA_MISMATCH
+
 ```
 AnalysisException: A schema mismatch detected when writing to the Delta table
 ```
+
 **Cause:** Source schema doesn't match target table.
 
 ```python
@@ -206,6 +221,7 @@ for field in target_schema:
 ---
 
 ### JOB_RUN_FAILED
+
 ```
 RunState: FAILED — Run terminated with error
 ```
@@ -230,6 +246,7 @@ for task in run.tasks:
 ---
 
 ### HTTP 429 — RATE_LIMIT_EXCEEDED
+
 See `databricks-rate-limits` skill for full retry patterns.
 
 ```python
@@ -248,11 +265,13 @@ def call_with_backoff(operation, max_retries=5):
 ```
 
 ## Output
+
 - Error identified and categorized
 - Fix applied from matching error pattern
 - Resolution verified
 
 ## Error Handling
+
 | Error Code | HTTP | Category | Quick Fix |
 |-----------|------|----------|-----------|
 | `CLUSTER_NOT_READY` | - | Compute | `ensure_cluster_is_running()` |
@@ -267,6 +286,7 @@ def call_with_backoff(operation, max_retries=5):
 ## Examples
 
 ### Quick Diagnostic Commands
+
 ```bash
 databricks clusters get --cluster-id $CID | jq '{state, termination_reason}'
 databricks runs list --job-id $JID --limit 5 | jq '.runs[] | {run_id, state: .state.result_state}'
@@ -274,15 +294,18 @@ databricks permissions get jobs --job-id $JID
 ```
 
 ### Escalation Path
+
 1. Check [Databricks Status](https://status.databricks.com)
 2. Collect evidence with `databricks-debug-bundle`
 3. Search [Community Forum](https://community.databricks.com)
 4. Contact support with workspace ID and request ID from error response
 
 ## Resources
+
 - [Troubleshooting Guide](https://docs.databricks.com/aws/en/resources/troubleshooting)
 - [Delta Lake Troubleshooting](https://docs.databricks.com/aws/en/delta/best-practices)
 - [Resource Limits](https://docs.databricks.com/aws/en/resources/limits)
 
 ## Next Steps
+
 For comprehensive debugging, see `databricks-debug-bundle`.

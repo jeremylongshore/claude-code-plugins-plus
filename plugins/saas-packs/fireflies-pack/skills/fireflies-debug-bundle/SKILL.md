@@ -24,13 +24,16 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Debug Bundle
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'N/A'`
 !`python3 --version 2>/dev/null || echo 'N/A'`
 
 ## Overview
+
 Collect all diagnostic information needed to resolve Fireflies.ai integration issues. Generates a redacted bundle safe for sharing with support.
 
 ## Prerequisites
+
 - `FIREFLIES_API_KEY` environment variable set
 - `curl` and `jq` available
 - Permission to collect environment info
@@ -38,6 +41,7 @@ Collect all diagnostic information needed to resolve Fireflies.ai integration is
 ## Instructions
 
 ### Step 1: Create Debug Bundle Script
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -106,6 +110,7 @@ echo "Bundle created: $BUNDLE_DIR.tar.gz"
 ```
 
 ### Step 2: Quick Health Check
+
 ```bash
 set -euo pipefail
 echo "=== Fireflies Quick Health Check ==="
@@ -133,19 +138,23 @@ curl -s -X POST https://api.fireflies.ai/graphql \
 ```
 
 ## Sensitive Data Handling
+
 **ALWAYS REDACT before sharing:**
+
 - API keys and tokens
 - Meeting content and transcripts
 - Attendee emails and names
 - PII in action items
 
 **Safe to include:**
+
 - Error codes and messages
 - HTTP status codes and latency
 - Package versions
 - Account metadata (admin status, transcript count)
 
 ## Error Handling
+
 | Item | Purpose | Included |
 |------|---------|----------|
 | API connectivity | Is the endpoint reachable? | HTTP status + latency |
@@ -155,14 +164,17 @@ curl -s -X POST https://api.fireflies.ai/graphql \
 | Dependencies | Version conflicts? | Package versions |
 
 ## Output
+
 - `fireflies-debug-YYYYMMDD-HHMMSS.tar.gz` archive with:
   - `summary.txt` -- environment, connectivity, account info
   - `api-response.json` -- raw API response
   - `config-redacted.txt` -- configuration with secrets masked
 
 ## Resources
+
 - [Fireflies API Docs](https://docs.fireflies.ai/)
 - [Fireflies Status](https://fireflies.ai)
 
 ## Next Steps
+
 For rate limit issues, see `fireflies-rate-limits`.

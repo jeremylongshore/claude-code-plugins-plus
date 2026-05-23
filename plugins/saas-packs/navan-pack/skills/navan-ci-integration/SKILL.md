@@ -144,6 +144,7 @@ exit $FAILED
 ## Output
 
 The CI workflow produces:
+
 - **Pass/fail status** on each PR for Navan API connectivity
 - **GitHub Step Summary** with a compliance report table
 - **Annotations** warning about missing booking data fields

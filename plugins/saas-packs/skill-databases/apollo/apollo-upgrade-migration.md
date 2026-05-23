@@ -10,6 +10,7 @@ apollo-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Apollo SDK upgrades
 **Workflow:** Part of the operations skill category for Apollo integration.
 **Relates to:** Other apollo skills in this pack.

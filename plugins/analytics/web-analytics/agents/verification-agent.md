@@ -32,6 +32,7 @@ insights, unsupported claims, logical errors, and sampling bias before they reac
 - [ ] Totals add up (site totals match portfolio total)
 
 **Common issues:**
+
 - Specialist invents a "30% increase" when data shows 23%
 - Comparison periods are mismatched
 - Percentages calculated against wrong denominator
@@ -69,6 +70,7 @@ insights, unsupported claims, logical errors, and sampling bias before they reac
 - [ ] No time-series patterns described that aren't visible in the data
 
 **Red flags for hallucination:**
+
 - Specific numbers that are suspiciously round (exactly 50%, exactly 1000 visitors)
 - Named referrers not in the data (e.g., claiming Reddit traffic when no Reddit in referrers)
 - Described patterns in data that was never fetched (e.g., hourly patterns when only daily data)

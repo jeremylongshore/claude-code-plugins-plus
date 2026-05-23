@@ -19,6 +19,7 @@ Known issues and recovery paths.
 **Cause:** iOS Safari has a known limit on SVG path length (~10k points per element) and a line-length cap on embedded CSS (>5000 chars per line can fail to paint).
 
 **Fix:**
+
 - Keep SVG paths short — split long polylines into multiple `<path>` elements.
 - Break inline `<style>` into multiple lines; never emit one megaline of CSS.
 - For any graph exceeding these limits, fall back to `templates/mermaid-fallback.html`.
@@ -30,6 +31,7 @@ Known issues and recovery paths.
 **Cause:** The base template uses hand-placed coordinates. At >50 nodes, layout quality collapses.
 
 **Fix:** auto-switch to Mermaid fallback. Trigger conditions (any one):
+
 - Node count > 50
 - Detected layout collision (two nodes overlap in output)
 - Heuristic flag: sum of `(node.width * node.height)` exceeds 60% of canvas area
@@ -41,6 +43,7 @@ Known issues and recovery paths.
 **Cause:** The `schema_version` field in `arch-state.json` differs from the current skill's schema.
 
 **Fix:**
+
 - Archive the old state: `mv arch-state.json arch-state.json.v<old>.bak`
 - Run `/design:generate` to write a fresh baseline with the current schema
 - Future diffs compare against the new baseline
@@ -60,6 +63,7 @@ Known issues and recovery paths.
 **Cause:** LLM hand-placing coordinates missed the 40px gap rule or placed a message bus outside the gap.
 
 **Fix (automated):**
+
 - Validator emits the overlap coordinates in its error message
 - Re-run template fill with an added constraint: "Move node X to y=N+40" based on validator output
 - Max 3 iterations; on 4th failure, fall back to Mermaid
@@ -71,6 +75,7 @@ Known issues and recovery paths.
 **Cause:** env var not set (skill running outside plugin context, or v<2.1.78 Claude Code).
 
 **Fix (automatic fallback chain):**
+
 1. `${CLAUDE_PLUGIN_DATA}/arch-state.json`
 2. `${XDG_STATE_HOME}/claude/arch/arch-state.json`
 3. `~/.claude-state/arch/arch-state.json` (auto-created)
@@ -84,6 +89,7 @@ Script probes each in order; first writable wins.
 **Cause:** the input doesn't match Sentry JSON, OpenTelemetry span JSON, or a recognizable raw-text pattern.
 
 **Fix:**
+
 - Inspect input file manually to identify format
 - If it's a supported format with unusual shape, report the format to the skill maintainer
 - As a workaround: reformat input as raw stack trace (`at ServiceName.methodName(file.ext:line)` per line)

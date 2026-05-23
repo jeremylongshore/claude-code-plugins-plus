@@ -44,6 +44,7 @@ Analyzes existing plugins in the repository to extract their capabilities, then 
 ## Output
 
 A structured adaptation report containing:
+
 - List of plugins analyzed and capabilities extracted from each
 - The synthesized approach combining relevant patterns
 - The direct application of that approach to the user's task

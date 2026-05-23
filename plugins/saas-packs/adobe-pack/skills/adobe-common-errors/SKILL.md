@@ -62,6 +62,7 @@ Adobe APIs return structured error responses:
 **Cause:** Access token expired (24h TTL) or you are still using deprecated JWT credentials.
 
 **Fix:**
+
 ```bash
 # Regenerate OAuth Server-to-Server token
 curl -X POST 'https://ims-na1.adobelogin.com/ims/token/v3' \
@@ -93,11 +94,13 @@ Retry-After: 30
 ```
 
 **Cause:** Exceeded API rate limits. Adobe rate limits vary by API:
+
 - Firefly: ~20 req/min on trial
 - PDF Services: 500 transactions/month (free tier)
 - Events Publishing: 3,000 req/5sec per api-key
 
 **Fix:**
+
 ```typescript
 // Honor the Retry-After header
 const retryAfter = parseInt(response.headers.get('Retry-After') || '30');
@@ -127,6 +130,7 @@ await new Promise(r => setTimeout(r, retryAfter * 1000));
 **Cause:** Photoshop/Lightroom APIs require pre-signed cloud storage URLs (S3, Azure Blob, Dropbox), not direct file uploads.
 
 **Fix:**
+
 ```typescript
 // Generate a pre-signed S3 URL for input
 const inputUrl = await s3.getSignedUrl('getObject', {
@@ -149,6 +153,7 @@ const outputUrl = await s3.getSignedUrl('putObject', {
 **Cause:** PDF is password-protected or has DRM restrictions.
 
 **Fix:** Remove encryption before processing:
+
 ```bash
 # Remove PDF password with qpdf
 qpdf --decrypt --password=yourpassword input.pdf decrypted.pdf
@@ -177,6 +182,7 @@ Error: getaddrinfo ENOTFOUND ims-na1.adobelogin.com
 **Cause:** DNS resolution failure or network firewall blocking Adobe endpoints.
 
 **Fix:**
+
 ```bash
 # Test DNS resolution
 nslookup ims-na1.adobelogin.com

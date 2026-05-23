@@ -10,6 +10,7 @@ adobe-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Adobe rate limiting and backoff
 **Workflow:** Part of the operations skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

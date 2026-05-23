@@ -10,6 +10,7 @@ palantir-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Palantir multi-environment setup
 **Workflow:** Part of the enterprise skill category for Palantir integration.
 **Relates to:** Other palantir skills in this pack.

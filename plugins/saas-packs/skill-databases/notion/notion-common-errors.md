@@ -10,6 +10,7 @@ notion-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Notion common errors
 **Workflow:** Part of the operations skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

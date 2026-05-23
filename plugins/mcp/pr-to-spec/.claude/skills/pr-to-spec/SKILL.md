@@ -17,6 +17,7 @@ Convert code changes into structured, agent-consumable specs with intent drift d
 ## Commands
 
 ### /pr-to-spec scan
+
 Analyze current branch changes vs main and output a structured spec.
 
 ```bash
@@ -26,6 +27,7 @@ pr-to-spec scan --branch main --json
 Use `--diff N` to scan last N commits, or `--staged` for staged changes only.
 
 ### /pr-to-spec check
+
 Scan current changes AND check for drift against declared intent.
 
 ```bash
@@ -35,6 +37,7 @@ pr-to-spec check --json
 Returns exit code 3 if drift is detected, 2 if high-risk, 0 if clean.
 
 ### /pr-to-spec intent set
+
 Declare what this change is supposed to do.
 
 ```bash
@@ -42,6 +45,7 @@ pr-to-spec intent set --goal "Add rate limiting to API" --scope "src/middleware/
 ```
 
 ### /pr-to-spec intent show
+
 Show the current intent declaration.
 
 ```bash

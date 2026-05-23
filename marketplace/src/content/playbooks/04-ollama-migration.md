@@ -377,6 +377,7 @@ Annual cost: $5,400
 - Total: $3,600
 
 Operating costs (annual):
+
 - Electricity (24/7, 450W GPU): $400/year
 - Maintenance: $200/year
 - Total: $600/year

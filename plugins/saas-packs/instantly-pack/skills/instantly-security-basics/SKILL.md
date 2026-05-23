@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Security Basics
 
 ## Overview
+
 Secure your Instantly.ai integration with scoped API keys, least-privilege access, secret management, webhook validation, and audit logging. Instantly API v2 uses Bearer token auth with granular scope-based permissions.
 
 ## Prerequisites
+
 - Instantly account with API access
 - Understanding of environment variable management
 - Access to Instantly dashboard Settings > Integrations
@@ -36,6 +38,7 @@ Secure your Instantly.ai integration with scoped API keys, least-privilege acces
 ## Instructions
 
 ### Step 1: Least-Privilege API Key Scopes
+
 Create separate API keys for different use cases with minimal required scopes.
 
 ```typescript
@@ -67,6 +70,7 @@ const WEBHOOK_KEY_SCOPES = ["leads:read"];
 | Webhook handler | `leads:read` | Low |
 
 ### Step 2: Secret Management
+
 ```typescript
 // NEVER hardcode API keys
 // BAD:
@@ -97,6 +101,7 @@ async function getApiKey(): Promise<string> {
 ```
 
 ### Step 3: API Key Rotation
+
 ```typescript
 // Instantly supports multiple API keys — rotate without downtime
 
@@ -129,6 +134,7 @@ async function rotateApiKey() {
 ```
 
 ### Step 4: Webhook Security
+
 ```typescript
 import express from "express";
 
@@ -178,6 +184,7 @@ async function createSecureWebhook(targetUrl: string) {
 ```
 
 ### Step 5: Audit Logging
+
 ```typescript
 // Instantly provides audit logs for workspace activity
 async function checkAuditLogs() {
@@ -197,6 +204,7 @@ async function checkAuditLogs() {
 ```
 
 ### Step 6: Workspace Member Permissions
+
 ```typescript
 // Manage workspace members with role-based access
 async function listWorkspaceMembers() {
@@ -218,6 +226,7 @@ async function removeMember(memberId: string) {
 ```
 
 ## Security Checklist
+
 - [ ] API keys stored in environment variables or secret manager
 - [ ] `.env` files listed in `.gitignore`
 - [ ] Each integration has its own scoped API key
@@ -229,6 +238,7 @@ async function removeMember(memberId: string) {
 - [ ] Block list entries for competitor/internal domains
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401` after rotation | Old key still in use | Verify deployment picked up new key |
@@ -237,9 +247,11 @@ async function removeMember(memberId: string) {
 | Audit log empty | Plan doesn't include audit logs | Upgrade plan or check workspace settings |
 
 ## Resources
+
 - [Instantly API Key Management](https://developer.instantly.ai/api/v2/apikey)
 - [Instantly Webhook Docs](https://developer.instantly.ai/api/v2/webhook)
 - [Audit Logs API](https://developer.instantly.ai/)
 
 ## Next Steps
+
 For production readiness, see `instantly-prod-checklist`.

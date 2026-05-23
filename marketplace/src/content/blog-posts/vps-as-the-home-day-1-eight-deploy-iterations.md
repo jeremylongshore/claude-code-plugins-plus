@@ -231,4 +231,3 @@ Day 1 ended with eight priorities open, three closed, one closed-scope-modified,
 - [How yesterday's three multi-repo propagations set the muscle memory for today's parallel P6 push](/posts/propagation-day-when-the-spec-becomes-the-migration-plan/)
 - [Braves Booth — the application running through every smoke check in this post](/posts/braves-postgame-expansion-and-two-ai-lessons/)
 - [The audit-harness package being propagated in P6, and why enforcement has to travel with the code](/posts/audit-harness-v010-enforcement-travels-with-code/)
-

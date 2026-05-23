@@ -21,9 +21,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq Enterprise Access Management
 
 ## Overview
+
 Manage team access to Groq's inference API through API key strategy, model-level routing controls, spending limits, and usage monitoring. Groq uses flat API keys (`gsk_` prefix) with no built-in scoping -- access control is implemented at the application layer.
 
 ## Groq Access Model
+
 - **API keys** are per-organization, not per-user
 - **No built-in scopes** -- every key has full API access
 - **Rate limits** are per-organization, shared across all keys
@@ -33,6 +35,7 @@ Manage team access to Groq's inference API through API key strategy, model-level
 ## Instructions
 
 ### Step 1: API Key Strategy
+
 ```typescript
 // Create separate keys per team/service via Groq Console Projects
 // Each project gets its own API key and can have independent rate limits
@@ -48,6 +51,7 @@ const KEY_REGISTRY = {
 ```
 
 ### Step 2: Application-Level Model Access Control
+
 ```typescript
 // Since Groq keys don't have model scoping, implement it in your gateway
 interface TeamConfig {
@@ -95,6 +99,7 @@ function validateRequest(team: string, model: string, maxTokens: number): void {
 ```
 
 ### Step 3: Groq API Gateway
+
 ```typescript
 import Groq from "groq-sdk";
 import PQueue from "p-queue";
@@ -149,6 +154,7 @@ async function groqGateway(
 ```
 
 ### Step 4: Spending Controls
+
 ```markdown
 ## Groq Console Setup (per organization)
 
@@ -196,6 +202,7 @@ async function recordTeamUsage(
 ```
 
 ### Step 5: API Key Rotation
+
 ```bash
 set -euo pipefail
 # Zero-downtime key rotation process:
@@ -218,6 +225,7 @@ set -euo pipefail
 ```
 
 ### Step 6: Usage Dashboard Query
+
 ```typescript
 // Weekly usage report per team
 function weeklyReport(records: Array<{ team: string; model: string; cost: number; tokens: number }>) {
@@ -241,6 +249,7 @@ function weeklyReport(records: Array<{ team: string; model: string; cost: number
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `429 rate_limit_exceeded` | Org-level RPM/TPM hit | Teams share org limits; reduce aggregate volume |
@@ -249,10 +258,12 @@ function weeklyReport(records: Array<{ team: string; model: string; cost: number
 | Wrong model used | No server-side enforcement | Validate model against team config before calling Groq |
 
 ## Resources
+
 - [Groq Projects](https://console.groq.com/docs/projects)
 - [Groq Spend Limits](https://console.groq.com/docs/spend-limits)
 - [Groq Rate Limits](https://console.groq.com/docs/rate-limits)
 - [Groq API Keys](https://console.groq.com/keys)
 
 ## Next Steps
+
 For migration strategies, see `groq-migration-deep-dive`.

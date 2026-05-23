@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Multi-Environment Setup
 
 ## Overview
+
 Configure separate development, staging, and production environments for Evernote integrations with proper isolation, configuration management, and environment-aware client factories.
 
 ## Prerequisites
+
 - Multiple Evernote API keys (sandbox for dev/staging, production for prod)
 - Environment management infrastructure
 - CI/CD pipeline (see `evernote-ci-integration`)
@@ -109,6 +111,7 @@ app.get('/health', async (req, res) => {
 For the full configuration loader, client factory, Docker setup, and CI/CD environment matrix, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
+
 - Per-environment configuration files (development, staging, production)
 - Environment-aware Evernote client factory
 - `.env` templates for each environment
@@ -117,6 +120,7 @@ For the full configuration loader, client factory, Docker setup, and CI/CD envir
 - CI/CD configuration with environment-specific secrets
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Invalid consumer key` | Using sandbox key in production | Verify `EVERNOTE_SANDBOX` matches key type |
@@ -125,11 +129,13 @@ For the full configuration loader, client factory, Docker setup, and CI/CD envir
 | Docker connection refused | Service not started | Run `docker compose up` before testing |
 
 ## Resources
+
 - [12 Factor App - Config](https://12factor.net/config)
 - [Evernote Sandbox](https://sandbox.evernote.com)
 - [Docker Compose](https://docs.docker.com/compose/)
 
 ## Next Steps
+
 For observability setup, see `evernote-observability`.
 
 ## Examples

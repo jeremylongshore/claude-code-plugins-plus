@@ -163,6 +163,7 @@ Generate a single Markdown file named `NDA-{Party1}-{Party2}-{YYYY-MM-DD}.md` wi
 Request: "Create a mutual NDA between Acme Corp and Beta LLC for exploring a joint venture"
 
 Result: `NDA-AcmeCorp-BetaLLC-2026-04-02.md` with:
+
 - Mutual obligations mirrored for both parties
 - Scope: financial data, technical specifications, customer lists, strategic plans
 - 2-year term, 3-year survival period
@@ -174,6 +175,7 @@ Result: `NDA-AcmeCorp-BetaLLC-2026-04-02.md` with:
 Request: "Generate an employee NDA for a new software engineer joining our startup in California"
 
 Result: `NDA-TechStartup-JaneDoe-2026-04-02.md` with:
+
 - One-way structure (company discloses to employee)
 - DTSA whistleblower immunity notice included
 - No non-compete clause (California restriction noted)

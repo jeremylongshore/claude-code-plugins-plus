@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Hello World
 
 ## Overview
+
 First hands-on experience with Windsurf's three AI modalities: Cascade (agentic chat), Supercomplete (inline completions), and Command (inline editing). This skill walks through real interactions, not placeholder code.
 
 ## Prerequisites
+
 - Completed `windsurf-install-auth` setup
 - Windsurf open with a project folder
 
@@ -53,6 +55,7 @@ users.forEach(user => console.log(greet(user)));
 ```
 
 Key Supercomplete behaviors:
+
 - Press **Tab** to accept a suggestion
 - Press **Esc** to dismiss
 - Suggestions appear as gray ghost text
@@ -69,6 +72,7 @@ the greet function. Include error handling for missing name parameter."
 ```
 
 Cascade will:
+
 1. Create `src/api.ts` with Express setup
 2. Import the greet function
 3. Add error handling
@@ -109,11 +113,13 @@ In Cascade chat, use @ to inject specific context:
 ```
 
 Example prompt with context:
+
 ```
 "@src/api.ts Add rate limiting middleware to all endpoints"
 ```
 
 ## Output
+
 - Working Supercomplete experience with Tab completions
 - Cascade Write mode: file creation and modification
 - Cascade Chat mode: codebase questions without edits
@@ -121,6 +127,7 @@ Example prompt with context:
 - @ context mentions for precise AI context
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | No Supercomplete suggestions | Extension disabled | Click status bar widget, enable autocomplete |
@@ -131,6 +138,7 @@ Example prompt with context:
 ## Examples
 
 ### Terminal Command Mode
+
 ```
 Press Cmd/Ctrl+I in the terminal, then type:
 "Find all TypeScript files that import express"
@@ -139,6 +147,7 @@ Windsurf generates: find src -name "*.ts" -exec grep -l "express" {} \;
 ```
 
 ### Preview Your App
+
 ```
 Ask Cascade: "Preview the API server in the browser"
 Windsurf opens an in-IDE preview tab with your running app.
@@ -146,9 +155,11 @@ Click elements in the preview to send them back to Cascade for edits.
 ```
 
 ## Resources
+
 - [Windsurf Getting Started](https://docs.windsurf.com)
 - [Cascade Overview](https://docs.windsurf.com/windsurf/cascade/cascade)
 - [Autocomplete Tips](https://docs.windsurf.com/autocomplete/tips)
 
 ## Next Steps
+
 Proceed to `windsurf-local-dev-loop` for development workflow setup.

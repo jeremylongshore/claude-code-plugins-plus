@@ -10,6 +10,7 @@ castai-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Cast AI SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Cast AI integration.
 **Relates to:** Other castai skills in this pack.

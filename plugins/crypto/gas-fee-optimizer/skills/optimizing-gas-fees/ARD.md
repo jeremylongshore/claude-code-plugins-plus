@@ -53,20 +53,24 @@ skills/optimizing-gas-fees/
 ## API Integration
 
 ### Ethereum RPC
+
 - **Method**: `eth_gasPrice`, `eth_feeHistory`
 - **Data**: Current gas price, base fee history
 
 ### Etherscan Gas Tracker
+
 - **Endpoint**: `https://api.etherscan.io/api?module=gastracker`
 - **Data**: Safe/Proposed/Fast gas prices
 
 ### Blocknative (Optional)
+
 - **Endpoint**: `https://api.blocknative.com/gasprices/blockprices`
 - **Data**: Confidence-based predictions
 
 ## Component Design
 
 ### gas_fetcher.py
+
 ```python
 class GasFetcher:
     def __init__(self, chain: str = "ethereum", rpc_url: str = None, api_key: str = None, verbose: bool = False)
@@ -76,6 +80,7 @@ class GasFetcher:
 ```
 
 ### pattern_analyzer.py
+
 ```python
 class PatternAnalyzer:
     def __init__(self, history_file: str = None, verbose: bool = False)
@@ -87,6 +92,7 @@ class PatternAnalyzer:
 ```
 
 ### cost_estimator.py
+
 ```python
 class CostEstimator:
     def __init__(self, native_symbol: str = "ETH", verbose: bool = False)

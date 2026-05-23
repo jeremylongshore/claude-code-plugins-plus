@@ -10,6 +10,7 @@ abridge-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Abridge SDK patterns
 **Workflow:** Part of the onboarding skill category for Abridge integration.
 **Relates to:** Other abridge skills in this pack.

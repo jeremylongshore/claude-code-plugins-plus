@@ -10,6 +10,7 @@ firecrawl-crawl-site/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Crawl entire websites or sections with depth control, URL filtering, sitemap respect, and comprehensive coverage options.
 **Workflow:** Multi-page crawling workflow - extracts content from entire sites or specific sections with intelligent navigation.
 **Relates to:** Extends firecrawl-scrape-single; complements firecrawl-batch-processing for high-volume operations

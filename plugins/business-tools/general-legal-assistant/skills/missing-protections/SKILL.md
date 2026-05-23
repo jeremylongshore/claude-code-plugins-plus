@@ -121,6 +121,7 @@ templates (CC BY 4.0) and widely accepted market standards.
      Section 8.3")
 
 7. **Summarize the protection coverage score:**
+
    ```
    Universal protections present: X / 15
    Type-specific protections present: Y / Z

@@ -26,11 +26,13 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Reliability Patterns
 
 ## Overview
+
 Production reliability patterns for Firecrawl scraping pipelines. Firecrawl's async crawl model, JS rendering, and credit-based pricing create specific reliability challenges: crawl jobs may time out, scraped content may be empty (bot detection, JS failures), and credits can be burned by runaway crawls. This skill covers battle-tested patterns for each.
 
 ## Instructions
 
 ### Step 1: Robust Crawl with Timeout and Backoff
+
 ```typescript
 import FirecrawlApp from "@mendable/firecrawl-js";
 
@@ -69,6 +71,7 @@ async function reliableCrawl(
 ```
 
 ### Step 2: Content Quality Validation
+
 ```typescript
 interface ScrapedPage {
   url: string;
@@ -104,6 +107,7 @@ function validateContent(page: ScrapedPage): {
 ```
 
 ### Step 3: Crawl-to-Scrape Fallback
+
 ```typescript
 // If a full crawl fails, fall back to scraping critical pages individually
 async function resilientFetch(urls: string[]): Promise<any[]> {
@@ -154,6 +158,7 @@ async function resilientFetch(urls: string[]): Promise<any[]> {
 ```
 
 ### Step 4: Circuit Breaker for Firecrawl
+
 ```typescript
 class FirecrawlCircuitBreaker {
   private failures = 0;
@@ -209,6 +214,7 @@ async function protectedScrape(url: string) {
 ```
 
 ### Step 5: Credit-Aware Processing
+
 ```typescript
 class CreditGuard {
   private dailyUsage = new Map<string, number>();
@@ -248,6 +254,7 @@ async function budgetedCrawl(url: string, limit: number) {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Crawl timeout | Large site, slow rendering | Set timeout, reduce limit |
@@ -259,6 +266,7 @@ async function budgetedCrawl(url: string, limit: number) {
 ## Examples
 
 ### Full Resilient Pipeline
+
 ```typescript
 async function resilientPipeline(url: string) {
   const map = await firecrawl.mapUrl(url);
@@ -278,8 +286,10 @@ async function resilientPipeline(url: string) {
 ```
 
 ## Resources
+
 - [Firecrawl API Reference](https://docs.firecrawl.dev/api-reference/introduction)
 - [Firecrawl Rate Limits](https://docs.firecrawl.dev/rate-limits)
 
 ## Next Steps
+
 For policy enforcement, see `firecrawl-policy-guardrails`.

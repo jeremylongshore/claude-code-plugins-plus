@@ -79,20 +79,25 @@ plugin-name/
 ## Key Features Across All Plugins
 
 ### 1. Comprehensive Documentation
+
 - Detailed README with usage examples
 - Security best practices
 - Remediation guidance
 - Code examples (secure vs. vulnerable)
 
 ### 2. Severity Classification
+
 All plugins use consistent CVSS-based severity:
+
 - **CRITICAL** (9.0-10.0): Immediate action required
 - **HIGH** (7.0-8.9): Fix within 7 days
 - **MEDIUM** (4.0-6.9): Fix within 30 days
 - **LOW** (0.1-3.9): Fix when possible
 
 ### 3. Actionable Reports
+
 Every plugin generates reports with:
+
 - Executive summary
 - Detailed findings with code locations
 - Proof of concept exploits (where applicable)
@@ -100,6 +105,7 @@ Every plugin generates reports with:
 - Best practices
 
 ### 4. Compliance Coverage
+
 - OWASP Top 10 (2021)
 - GDPR (Data Protection)
 - PCI DSS (Payment Security)
@@ -111,6 +117,7 @@ Every plugin generates reports with:
 ## Usage Workflows
 
 ### Pre-Deployment Security Check
+
 ```bash
 /vuln                    # Full vulnerability scan
 /secrets                 # Check for exposed secrets
@@ -120,6 +127,7 @@ Every plugin generates reports with:
 ```
 
 ### Compliance Audit
+
 ```bash
 /auditreport             # Generate security audit report
 /gdpr                    # GDPR compliance check
@@ -129,6 +137,7 @@ Every plugin generates reports with:
 ```
 
 ### Vulnerability Deep Dive
+
 ```bash
 /sqli                    # SQL injection detection
 /xss                     # XSS vulnerability scanning
@@ -138,6 +147,7 @@ Every plugin generates reports with:
 ```
 
 ### Security Hardening
+
 ```bash
 /authcheck               # Authentication validation
 /session                 # Session security check
@@ -149,6 +159,7 @@ Every plugin generates reports with:
 ## Integration Examples
 
 ### CI/CD Pipeline
+
 ```yaml
 name: Security Scan
 on: [push, pull_request]
@@ -167,6 +178,7 @@ jobs:
 ```
 
 ### Pre-Commit Hook
+
 ```bash
 #!/bin/bash
 # .git/hooks/pre-commit
@@ -194,6 +206,7 @@ echo "Security checks passed!"
 ## Security Standards
 
 All plugins follow established security frameworks:
+
 - OWASP Testing Guide
 - NIST Cybersecurity Framework
 - CIS Controls
@@ -241,6 +254,7 @@ All plugins are licensed under MIT License.
 ## Author
 
 **Jeremy Longshore**
+
 - GitHub: jeremylongshore
 - Email: [email protected]
 

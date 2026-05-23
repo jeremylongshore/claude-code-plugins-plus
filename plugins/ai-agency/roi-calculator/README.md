@@ -3,11 +3,13 @@
 Calculate and present ROI for AI automation projects.
 
 ## Installation
+
 ```bash
 /plugin install roi-calculator
 ```
 
 ## Features
+
 - Current state analysis
 - Cost-benefit analysis
 - Payback period calculation
@@ -15,11 +17,13 @@ Calculate and present ROI for AI automation projects.
 - Industry-specific examples
 
 ## Commands
+
 | Command | Description |
 |---------|-------------|
 | `/roi` | Calculate automation ROI |
 
 ## Use Cases
+
 - Customer support automation
 - Content generation
 - Lead qualification
@@ -27,4 +31,5 @@ Calculate and present ROI for AI automation projects.
 - Data enrichment
 
 ## License
+
 MIT

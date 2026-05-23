@@ -3,9 +3,11 @@
 # Lindy Core Workflow A: Agent Creation
 
 ## Overview
+
 Complete workflow for creating, configuring, and deploying Lindy AI agents.
 
 ## Prerequisites
+
 - Completed `lindy-install-auth` setup
 - Understanding of agent use case
 - Clear instructions/persona defined
@@ -13,6 +15,7 @@ Complete workflow for creating, configuring, and deploying Lindy AI agents.
 ## Instructions
 
 ### Step 1: Define Agent Specification
+
 ```typescript
 interface AgentSpec {
   name: string;
@@ -40,6 +43,7 @@ const agentSpec: AgentSpec = {
 ```
 
 ### Step 2: Create the Agent
+
 ```typescript
 import { Lindy } from '@lindy-ai/sdk';
 
@@ -63,6 +67,7 @@ async function createAgent(spec: AgentSpec) {
 ```
 
 ### Step 3: Configure Agent Tools
+
 ```typescript
 async function configureTools(agentId: string, tools: string[]) {
   for (const tool of tools) {
@@ -76,6 +81,7 @@ async function configureTools(agentId: string, tools: string[]) {
 ```
 
 ### Step 4: Test the Agent
+
 ```typescript
 async function testAgent(agentId: string) {
   const testCases = [
@@ -93,12 +99,14 @@ async function testAgent(agentId: string) {
 ```
 
 ## Output
+
 - Fully configured AI agent
 - Connected tools and integrations
 - Tested agent responses
 - Ready for deployment
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Tool not found | Invalid tool name | Check available tools list |
@@ -108,6 +116,7 @@ async function testAgent(agentId: string) {
 ## Examples
 
 ### Complete Agent Creation Flow
+
 ```typescript
 async function main() {
   // Create agent
@@ -126,9 +135,11 @@ main().catch(console.error);
 ```
 
 ## Resources
+
 - [Lindy Agent Creation](https://docs.lindy.ai/agents/create)
 - [Available Tools](https://docs.lindy.ai/tools)
 - [Model Options](https://docs.lindy.ai/models)
 
 ## Next Steps
+
 Proceed to `lindy-core-workflow-b` for task automation workflows.

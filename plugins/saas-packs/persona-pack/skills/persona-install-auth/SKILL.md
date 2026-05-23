@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Persona Install & Auth
 
 ## Overview
+
 Set up Persona API authentication. Persona uses Bearer token auth with environment-prefixed API keys (`persona_sandbox_*` for testing, `persona_production_*` for live). No SDK required -- direct REST API calls with any HTTP client.
 
 ## Prerequisites
+
 - Persona account at [withpersona.com](https://withpersona.com)
 - At least one Inquiry Template configured in the Persona Dashboard
 - Node.js 18+ or Python 3.9+
@@ -37,6 +39,7 @@ Set up Persona API authentication. Persona uses Bearer token auth with environme
 ## Instructions
 
 ### Step 1: Get API Keys
+
 ```text
 1. Log into dashboard.withpersona.com
 2. Go to Settings > API Keys
@@ -45,6 +48,7 @@ Set up Persona API authentication. Persona uses Bearer token auth with environme
 ```
 
 ### Step 2: Configure Environment
+
 ```bash
 # .env — never commit
 PERSONA_API_KEY=persona_sandbox_xxxxxxxxxxxxxxxxxxxxxxxx
@@ -55,6 +59,7 @@ echo '.env' >> .gitignore
 ```
 
 ### Step 3: Install HTTP Client
+
 ```bash
 set -euo pipefail
 # Node.js
@@ -65,6 +70,7 @@ pip install requests python-dotenv
 ```
 
 ### Step 4: Verify Connection (Node.js)
+
 ```typescript
 import axios from 'axios';
 
@@ -85,6 +91,7 @@ verify().catch(console.error);
 ```
 
 ### Step 5: Verify Connection (Python)
+
 ```python
 import os, requests
 from dotenv import load_dotenv
@@ -102,11 +109,13 @@ print(f"Connected! Status: {resp.status_code}")
 ```
 
 ## Output
+
 - API key configured and verified
 - HTTP client set up with correct headers
 - Successful test call to Persona API
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401 Unauthorized` | Invalid or expired API key | Verify key in Dashboard > Settings > API Keys |
@@ -115,9 +124,11 @@ print(f"Connected! Status: {resp.status_code}")
 | Connection refused | Network/firewall issue | Ensure HTTPS to withpersona.com is allowed |
 
 ## Resources
+
 - [Persona API Introduction](https://docs.withpersona.com/api-introduction)
 - [API Keys](https://docs.withpersona.com/api-keys)
 - [API Quickstart](https://docs.withpersona.com/api-quickstart-tutorial)
 
 ## Next Steps
+
 Create your first inquiry: `persona-hello-world`

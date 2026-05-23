@@ -31,6 +31,7 @@ This skill automates the detection of performance regressions within a CI/CD pip
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Identify performance regressions in a CI/CD pipeline.
 - Analyze performance metrics for potential degradation.
 - Compare current performance against historical baselines.
@@ -42,6 +43,7 @@ This skill activates when you need to:
 User request: "Detect performance regressions in the latest build. Specifically, check for increases in response time."
 
 The skill will:
+
 1. Analyze response time metrics from the latest build.
 2. Compare the response times against a historical baseline.
 3. Report any statistically significant increases in response time that exceed a defined threshold.
@@ -51,6 +53,7 @@ The skill will:
 User request: "Analyze throughput for performance regressions after the recent code merge."
 
 The skill will:
+
 1. Gather throughput data (requests per second) from the post-merge CI/CD run.
 2. Compare the throughput to pre-merge values, looking for statistically significant drops.
 3. Generate a report highlighting any throughput degradation, indicating a potential performance regression.
@@ -92,6 +95,7 @@ This skill can be integrated with other CI/CD tools to automatically trigger reg
 ## Error Handling
 
 If regression detection fails:
+
 - Verify baseline data availability
 - Check metrics collection configuration
 - Validate statistical analysis parameters

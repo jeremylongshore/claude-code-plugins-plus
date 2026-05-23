@@ -36,6 +36,7 @@ This skill streamlines the process of adapting pre-trained machine learning mode
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Fine-tune a pre-trained model for a specific task.
 - Adapt a pre-trained model to a new dataset.
 - Perform transfer learning to improve model performance.
@@ -48,6 +49,7 @@ This skill activates when you need to:
 User request: "Fine-tune a ResNet50 model to classify images of different types of flowers."
 
 The skill will:
+
 1. Download the ResNet50 model and load a flower image dataset.
 2. Generate code to fine-tune the model on the flower dataset, including data augmentation and optimization techniques.
 
@@ -56,6 +58,7 @@ The skill will:
 User request: "Adapt a BERT model to perform sentiment analysis on customer reviews."
 
 The skill will:
+
 1. Download the BERT model and load a dataset of customer reviews with sentiment labels.
 2. Generate code to fine-tune the model on the review dataset, including tokenization, padding, and attention mechanisms.
 

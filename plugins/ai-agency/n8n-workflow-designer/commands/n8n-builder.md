@@ -13,6 +13,7 @@ When the user requests an n8n workflow, analyze their requirements and create a 
 ## Workflow Templates
 
 ### 1. AI Email Responder
+
 ```json
 {
   "name": "AI Email Auto-Responder",
@@ -108,6 +109,7 @@ When the user requests an n8n workflow, analyze their requirements and create a 
 ```
 
 ### 2. Data Processing Pipeline
+
 ```json
 {
   "name": "CSV to Database with AI Enhancement",
@@ -216,6 +218,7 @@ When the user requests an n8n workflow, analyze their requirements and create a 
 ```
 
 ### 3. Content Pipeline
+
 ```json
 {
   "name": "RSS to Social Media with AI",
@@ -317,6 +320,7 @@ When the user requests an n8n workflow, analyze their requirements and create a 
 ```
 
 ### 4. Lead Qualification
+
 ```json
 {
   "name": "Lead Scoring and Routing",
@@ -481,7 +485,9 @@ When generating a workflow, provide:
 
 ## Architecture
 ```
+
 Ticket Created → Classify (AI) → Route by Priority → Draft Response (AI) → Human Review → Send
+
 ```
 
 ## Nodes

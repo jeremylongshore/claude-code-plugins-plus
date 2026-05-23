@@ -19,6 +19,7 @@ When the user requests a repository health analysis, follow this systematic appr
 ## Analysis Workflow
 
 ### Step 1: File Discovery
+
 ```
 Use list_repo_files with appropriate globs for the language:
 - TypeScript/JavaScript: ["**/*.{ts,tsx,js,jsx}"]
@@ -30,31 +31,40 @@ Exclude: ["node_modules/**", ".git/**", "dist/**", "build/**"]
 ```
 
 ### Step 2: Complexity Analysis
+
 Focus on:
+
 - Files > 300 lines
 - Core business logic files (services, controllers, models)
 - Recently changed files
 
 For each file, report:
+
 - Cyclomatic complexity
 - Function count
 - Health score
 - Comment ratio
 
 ### Step 3: Git Churn Analysis
+
 Identify hot spots:
+
 - Files with >10 commits (high churn)
 - Files changed by multiple authors
 - Recent change patterns
 
 ### Step 4: Test Coverage Mapping
+
 Find gaps:
+
 - Files in critical directories missing tests
 - High-complexity files without tests
 - High-churn files without tests
 
 ### Step 5: Prioritized Recommendations
+
 Combine metrics to find:
+
 - **Technical Debt Hot Spots**: High complexity + High churn + No tests
 - **Refactoring Candidates**: Complexity >10 + Health score <50
 - **Testing Priorities**: Critical files missing tests
@@ -63,25 +73,31 @@ Combine metrics to find:
 
 Present findings in this structure:
 
-###  Repository Overview
+### Repository Overview
+
 - Total files: X
 - Average health score: Y
 - Test coverage: Z%
 
-###  Critical Issues
+### Critical Issues
+
 1. High complexity + High churn + No tests
 2. Health score <30 (critical)
 
 ### ️  Warnings
+
 1. Health score 30-70 (needs attention)
 2. Test coverage <60%
 
-###  Good Practices
+### Good Practices
+
 1. Well-tested files (high complexity + has tests)
 2. Stable code (low churn + good health)
 
-###  Recommendations
+### Recommendations
+
 Prioritized list of actions:
+
 1. Add tests for critical files
 2. Refactor high-complexity hot spots
 3. Monitor high-churn files
@@ -91,6 +107,7 @@ Prioritized list of actions:
 User: "Analyze the health of /home/user/my-project"
 
 Response:
+
 ```
 I'll analyze the code health of your project using multiple dimensions...
 

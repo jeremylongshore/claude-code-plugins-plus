@@ -19,14 +19,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ramp Cost Tuning
 
 ## Overview
+
 Implementation patterns for Ramp cost tuning using the Developer API with OAuth2 authentication.
 
 ## Prerequisites
+
 - Completed `ramp-install-auth` setup
 
 ## Instructions
 
 ### Step 1: API Call Pattern
+
 ```python
 import os, requests
 
@@ -44,9 +47,11 @@ print(f"Cards: {len(cards.json()['data'])}")
 ```
 
 ## Output
+
 - Ramp API integration for cost tuning
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Expired token | Re-authenticate |
@@ -54,8 +59,10 @@ print(f"Cards: {len(cards.json()['data'])}")
 | 403 Forbidden | Insufficient permissions | Check API app permissions |
 
 ## Resources
+
 - [Ramp API Documentation](https://docs.ramp.com/)
 - [Authorization](https://docs.ramp.com/developer-api/v1/authorization)
 
 ## Next Steps
+
 See related Ramp skills for more workflows.

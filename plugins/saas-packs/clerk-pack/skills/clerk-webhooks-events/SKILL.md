@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Webhooks & Events
 
 ## Overview
+
 Configure and handle Clerk webhooks for user lifecycle events and data synchronization. Clerk uses Svix for webhook delivery with HMAC-SHA256 signature verification. As of 2025, Clerk provides a built-in `verifyWebhook()` helper in `@clerk/backend` alongside the manual Svix approach.
 
 ## Prerequisites
+
 - Clerk account with webhook endpoint configured in Dashboard
 - HTTPS endpoint (use `ngrok` for local dev)
 - `CLERK_WEBHOOK_SECRET` environment variable (starts with `whsec_`)
@@ -35,6 +37,7 @@ Configure and handle Clerk webhooks for user lifecycle events and data synchroni
 ## Instructions
 
 ### Step 1: Install Dependencies
+
 ```bash
 # Option A: Use @clerk/backend's built-in verifyWebhook() (recommended)
 # Already included with @clerk/nextjs — no extra install needed
@@ -44,6 +47,7 @@ npm install svix
 ```
 
 ### Step 2: Create Webhook Endpoint (verifyWebhook — Recommended)
+
 ```typescript
 // app/api/webhooks/clerk/route.ts
 import { verifyWebhook } from '@clerk/backend/webhooks'
@@ -64,6 +68,7 @@ export async function POST(req: Request) {
 ```
 
 ### Step 2 (Alternative): Manual Svix Verification
+
 ```typescript
 // app/api/webhooks/clerk/route.ts
 import { Webhook } from 'svix'
@@ -105,6 +110,7 @@ export async function POST(req: Request) {
 ```
 
 ### Step 3: Implement Event Handlers
+
 ```typescript
 async function handleWebhookEvent(evt: WebhookEvent) {
   const eventType = evt.type
@@ -194,6 +200,7 @@ async function handleWebhookEvent(evt: WebhookEvent) {
 ```
 
 ### Step 4: Idempotency Protection
+
 ```typescript
 // lib/webhook-idempotency.ts
 // Clerk/Svix may retry failed deliveries — prevent duplicate processing
@@ -236,6 +243,7 @@ export async function processIdempotently(
 ```
 
 ### Step 5: Configure Webhook in Clerk Dashboard
+
 1. Navigate to **Clerk Dashboard > Webhooks > Add Endpoint**
 2. Set endpoint URL: `https://yourdomain.com/api/webhooks/clerk`
 3. Select events to subscribe to:
@@ -243,11 +251,13 @@ export async function processIdempotently(
    - **Org events:** `organization.created`, `organizationMembership.created`
    - **Session events:** `session.created`, `session.ended` (optional, high volume)
 4. Copy the **Signing Secret** (`whsec_...`) to your `.env.local`:
+
 ```bash
 CLERK_WEBHOOK_SECRET=whsec_...
 ```
 
 ### Step 6: Express.js Webhook Endpoint
+
 ```typescript
 import express from 'express'
 import { Webhook } from 'svix'
@@ -276,6 +286,7 @@ app.post('/api/webhooks/clerk',
 ```
 
 ### Local Development with ngrok
+
 ```bash
 # Start ngrok tunnel for local webhook testing
 ngrok http 3000
@@ -286,6 +297,7 @@ ngrok http 3000
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Invalid signature | Wrong `CLERK_WEBHOOK_SECRET` | Re-copy signing secret from Dashboard > Webhooks |
@@ -296,6 +308,7 @@ ngrok http 3000
 | 404 on webhook URL | Route not matching | Ensure `/api/webhooks` is in middleware's `isPublicRoute` |
 
 ## Enterprise Considerations
+
 - Treat `CLERK_WEBHOOK_SECRET` like a password -- rotate it if compromised (Dashboard > Webhooks > Signing Secret > Rotate)
 - Svix headers include `svix-timestamp` for replay attack protection (rejects events older than 5 minutes by default)
 - For high-volume apps, offload webhook processing to a queue (BullMQ, Inngest, Trigger.dev) and return 200 immediately
@@ -303,10 +316,12 @@ ngrok http 3000
 - Use `verifyWebhook()` from `@clerk/backend/webhooks` when possible -- it handles header extraction and secret key resolution automatically
 
 ## Resources
+
 - [Webhooks Overview](https://clerk.com/docs/guides/development/webhooks/overview)
 - [verifyWebhook() Reference](https://clerk.com/docs/reference/backend/verify-webhook)
 - [Sync Data with Webhooks](https://clerk.com/docs/webhooks/sync-data)
 - [Debug Webhooks](https://clerk.com/docs/guides/development/webhooks/debugging)
 
 ## Next Steps
+
 Proceed to `clerk-performance-tuning` for optimization strategies.

@@ -10,6 +10,7 @@ langchain-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid LangChain anti-patterns
 **Workflow:** Part of the enterprise skill category for LangChain integration.
 **Relates to:** Other langchain skills in this pack.

@@ -19,12 +19,14 @@ compatibility: Designed for Claude Code
 # Anthropic Advanced Troubleshooting
 
 ## Overview
+
 Debug complex Claude integration issues that go beyond basic error handling — inconsistent outputs, tool use failures where Claude calls nonexistent tools, streaming connection drops, max_tokens truncation, and image/vision format problems.
 
-
 ## Inconsistent Outputs
+
 **Symptom:** Same prompt gives different answers each time.
 **Cause:** `temperature` defaults to 1.0 (maximum randomness).
+
 ```typescript
 // Fix: Set temperature to 0 for deterministic outputs
 const message = await client.messages.create({
@@ -36,7 +38,9 @@ const message = await client.messages.create({
 ```
 
 ## Tool Use Failures
+
 **Symptom:** Claude calls a tool that doesn't exist or sends wrong parameters.
+
 ```typescript
 // Always validate tool calls before executing
 const toolUse = response.content.find(b => b.type === 'tool_use');
@@ -57,7 +61,9 @@ if (toolUse) {
 ```
 
 ## Streaming Connection Drops
+
 **Symptom:** Stream stops mid-response without `message_stop` event.
+
 ```typescript
 // Detect incomplete streams
 const stream = client.messages.stream({ ... });
@@ -75,7 +81,9 @@ if (!gotStop) {
 ```
 
 ## `max_tokens` Truncation
+
 **Symptom:** Response cuts off mid-sentence.
+
 ```typescript
 const message = await client.messages.create({ ... });
 
@@ -88,7 +96,9 @@ if (message.stop_reason === 'max_tokens') {
 ```
 
 ## Image/Vision Issues
+
 **Symptom:** Claude says it can't see the image.
+
 - Max image size: 5MB
 - Supported: PNG, JPEG, GIF, WebP
 - Max 20 images per request
@@ -107,6 +117,7 @@ if (message.stop_reason === 'max_tokens') {
 ```
 
 ## Output
+
 - Inconsistent outputs fixed via temperature control
 - Tool use validated against defined tool names before execution
 - Streaming connection drops detected and retried
@@ -114,22 +125,27 @@ if (message.stop_reason === 'max_tokens') {
 - Image format issues resolved (correct media_type, raw base64, size limits)
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | API Error | Check error type and status code | See `clade-common-errors` |
 
 ## Examples
+
 See Inconsistent Outputs (temperature fix), Tool Use Failures (validation), Streaming Connection Drops (detection), max_tokens Truncation (stop_reason check), and Image/Vision Issues (correct format) above.
 
 ## Resources
+
 - [Error Types](https://docs.anthropic.com/en/api/errors)
 - [Tool Use Guide](https://docs.anthropic.com/en/docs/build-with-claude/tool-use)
 - [Vision Docs](https://docs.anthropic.com/en/docs/build-with-claude/vision)
 
 ## Next Steps
+
 See `clade-debug-bundle` for collecting support evidence.
 
 ## Prerequisites
+
 - Completed `clade-common-errors` for basic error handling
 - Familiarity with Claude API response structure
 - Access to application logs with full request/response data
@@ -137,10 +153,13 @@ See `clade-debug-bundle` for collecting support evidence.
 ## Instructions
 
 ### Step 1: Review the patterns below
+
 Each section contains production-ready code examples. Copy and adapt them to your use case.
 
 ### Step 2: Apply to your codebase
+
 Integrate the patterns that match your requirements. Test each change individually.
 
 ### Step 3: Verify
+
 Run your test suite to confirm the integration works correctly.

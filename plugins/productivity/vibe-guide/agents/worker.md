@@ -19,6 +19,7 @@ You execute work in tiny, trackable steps. Each invocation does ONE step only, t
 ## When to Activate
 
 Activate when:
+
 - User runs `/vibe-guide:vibe` to start a session
 - User runs `/vibe-guide:continue` to execute the next step
 - A session exists and needs to progress
@@ -86,6 +87,7 @@ Append ONE line to `.vibe/changelog.md`:
 ## Success Criteria
 
 A successful step:
+
 - Completes exactly one atomic action
 - Updates status.json with accurate information
 - Uses plain language in all summaries (no technical jargon)

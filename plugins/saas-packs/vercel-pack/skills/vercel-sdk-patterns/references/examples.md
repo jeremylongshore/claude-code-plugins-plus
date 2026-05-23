@@ -1,6 +1,7 @@
-# Examples
+## Examples
 
 ### Factory Pattern (Multi-tenant)
+
 ```typescript
 const clients = new Map<string, VercelClient>();
 
@@ -14,6 +15,7 @@ export function getClientForTenant(tenantId: string): VercelClient {
 ```
 
 ### Python Context Manager
+
 ```python
 from contextlib import asynccontextmanager
 from None import VercelClient
@@ -28,6 +30,7 @@ async def get_vercel_client():
 ```
 
 ### Zod Validation
+
 ```typescript
 import { z } from 'zod';
 

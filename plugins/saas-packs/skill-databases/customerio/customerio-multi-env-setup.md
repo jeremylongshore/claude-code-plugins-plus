@@ -10,6 +10,7 @@ customerio-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Customer.io multi-environment setup
 **Workflow:** Part of the enterprise skill category for Customer.io integration.
 **Relates to:** Other customerio skills in this pack.

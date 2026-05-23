@@ -10,6 +10,7 @@ grammarly-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Grammarly common errors
 **Workflow:** Part of the operations skill category for Grammarly integration.
 **Relates to:** Other grammarly skills in this pack.

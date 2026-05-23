@@ -3,6 +3,7 @@
 ## Data Flow Documentation
 
 ### Document Data Flows
+
 ```
 ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
 │   User      │────▶│   Your App  │────▶│ OpenRouter  │
@@ -22,6 +23,7 @@ Data Classification:
 ```
 
 ### Data Classification
+
 ```python
 class DataClassification:
     """Classify and handle data appropriately."""

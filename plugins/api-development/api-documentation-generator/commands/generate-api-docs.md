@@ -11,6 +11,7 @@ Automatically generate comprehensive OpenAPI 3.0 specifications with interactive
 ## When to Use This Command
 
 Use `/generate-api-docs` when you need to:
+
 - Document existing APIs without manual specification writing
 - Generate interactive API documentation for developers
 - Create Postman/Insomnia collections from your API
@@ -22,6 +23,7 @@ Use `/generate-api-docs` when you need to:
 - Enable API mocking for frontend development
 
 DON'T use this when:
+
 - Your API is still in early design phase (use `/api-contract-generator` instead)
 - You only need internal code comments (use JSDoc/docstrings)
 - Building GraphQL APIs (use `/build-graphql-server` with introspection)
@@ -30,6 +32,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **OpenAPI 3.0.3 specification** as the primary approach because:
+
 - Industry standard adopted by major organizations
 - Extensive tooling ecosystem (Swagger UI, Redoc, SDKs)
 - Supports complex schemas including oneOf, allOf, discriminators
@@ -38,18 +41,21 @@ This command implements **OpenAPI 3.0.3 specification** as the primary approach 
 - Multiple security schemes support
 
 **Alternative considered: API Blueprint**
+
 - Markdown-based format
 - Simpler for human writing
 - Less tooling support
 - Recommended for documentation-first design
 
 **Alternative considered: RAML**
+
 - YAML-based with reusable components
 - Good for large enterprise APIs
 - Smaller ecosystem
 - Recommended when modularity is critical
 
 **Alternative considered: AsyncAPI**
+
 - Specialized for event-driven APIs
 - WebSocket and message queue support
 - Use alongside OpenAPI for complete coverage
@@ -57,6 +63,7 @@ This command implements **OpenAPI 3.0.3 specification** as the primary approach 
 ## Prerequisites
 
 Before running this command:
+
 1. Functioning API with consistent patterns
 2. Request/response examples available
 3. Authentication mechanism implemented
@@ -66,23 +73,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: API Analysis and Discovery
+
 Scan codebase and running API to discover all endpoints, methods, and data structures.
 
 ### Step 2: Schema Extraction
+
 Extract request/response schemas from code annotations, TypeScript types, or runtime analysis.
 
 ### Step 3: OpenAPI Generation
+
 Generate complete OpenAPI 3.0 specification with all paths, schemas, and security definitions.
 
 ### Step 4: Documentation Enhancement
+
 Add descriptions, examples, and grouping tags for better organization and understanding.
 
 ### Step 5: Interactive Documentation Setup
+
 Deploy Swagger UI and Redoc for interactive API exploration and testing.
 
 ## Output Format
 
 The command generates:
+
 - `openapi.yaml` - Main OpenAPI 3.0 specification
 - `openapi.json` - JSON format for tooling
 - `docs/` - Static HTML documentation
@@ -1598,8 +1611,8 @@ See the OpenAPI specification for detailed authentication information.
         with open(output_path / "README.md", "w") as f:
             f.write(readme_content)
 
-
 # FastAPI app example with enhanced documentation
+
 app = FastAPI(
     title="E-commerce API",
     version="2.0.0",
@@ -1609,13 +1622,16 @@ app = FastAPI(
 enhancer = OpenAPIEnhancer(app)
 
 # Override the default OpenAPI endpoint
+
 @app.get("/openapi.json")
 async def get_open_api_endpoint():
     return enhancer.enhance_openapi()
 
 # Export documentation
-if __name__ == "__main__":
+
+if **name** == "**main**":
     enhancer.export_documentation()
+
 ```
 
 ## Error Handling
@@ -1642,6 +1658,7 @@ if __name__ == "__main__":
 **Available Options:**
 
 `--framework <type>` - Web framework to analyze
+
 - `express` - Express.js applications
 - `fastapi` - FastAPI Python applications
 - `spring` - Spring Boot applications
@@ -1649,39 +1666,47 @@ if __name__ == "__main__":
 - `django` - Django REST framework
 
 `--format <spec>` - Output specification format
+
 - `openapi3` - OpenAPI 3.0.3 (default)
 - `openapi2` - OpenAPI 2.0 (Swagger)
 - `asyncapi` - AsyncAPI for event-driven
 - `graphql` - GraphQL schema
 
 `--output <path>` - Output directory for documentation
+
 - Default: `./api-docs`
 
 `--include-examples` - Generate request/response examples
+
 - Analyzes codebase for real examples
 - Creates synthetic examples from schemas
 
 `--interactive-ui <type>` - Interactive documentation UI
+
 - `swagger` - Swagger UI (default)
 - `redoc` - ReDoc documentation
 - `both` - Both UIs
 - `none` - Static docs only
 
 `--auth-docs` - Include authentication documentation
+
 - Extracts auth middleware
 - Documents OAuth flows
 - Includes example tokens
 
 `--sdk-generation` - Generate client SDKs
+
 - `--languages` - Comma-separated list (js,python,go,java)
 - `--sdk-output` - SDK output directory
 
 `--postman` - Generate Postman collection
+
 - Includes environment variables
 - Pre-request scripts
 - Test assertions
 
 `--validate` - Validate generated specification
+
 - Checks for completeness
 - Validates examples
 - Tests schema consistency
@@ -1689,6 +1714,7 @@ if __name__ == "__main__":
 ## Best Practices
 
 DO:
+
 - Keep API documentation in sync with code using CI/CD
 - Include realistic examples from actual API usage
 - Document all error responses and status codes
@@ -1699,6 +1725,7 @@ DO:
 - Version your API documentation alongside code
 
 DON'T:
+
 - Expose sensitive information in examples
 - Use production data in documentation
 - Skip documenting edge cases and errors
@@ -1725,6 +1752,7 @@ DON'T:
 ## Troubleshooting
 
 **Issue: Routes not detected**
+
 ```javascript
 // Ensure routes are registered before doc generation
 app.use('/api', apiRouter);
@@ -1733,6 +1761,7 @@ const docs = new APIDocumentationGenerator(app);
 ```
 
 **Issue: TypeScript types not extracted**
+
 ```bash
 # Install required packages
 npm install --save-dev typescript ts-json-schema-generator
@@ -1740,6 +1769,7 @@ npm install --save-dev typescript ts-json-schema-generator
 ```
 
 **Issue: Swagger UI CORS errors**
+
 ```javascript
 // Enable CORS for documentation
 app.use('/api-docs', cors({

@@ -1,4 +1,4 @@
-# Error Handling Reference
+## Error Handling Reference
 
 ### Standard Error Format
 

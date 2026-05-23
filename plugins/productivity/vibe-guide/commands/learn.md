@@ -76,6 +76,7 @@ To turn on, run: /vibe-guide:learn on
 ## Effect
 
 When `learning_mode` is true:
+
 - The `vibe-explorer` agent runs after each step
 - Provides 2-4 sentence explanation of ONE concept
 - Uses simple analogies, no jargon

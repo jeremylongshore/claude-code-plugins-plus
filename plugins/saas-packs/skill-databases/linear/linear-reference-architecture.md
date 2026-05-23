@@ -10,6 +10,7 @@ linear-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Linear reference architecture
 **Workflow:** Part of the cicd skill category for Linear integration.
 **Relates to:** Other linear skills in this pack.

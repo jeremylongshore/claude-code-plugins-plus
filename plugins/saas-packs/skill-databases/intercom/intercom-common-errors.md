@@ -10,6 +10,7 @@ intercom-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Intercom common errors
 **Workflow:** Part of the operations skill category for Intercom integration.
 **Relates to:** Other intercom skills in this pack.

@@ -18,15 +18,18 @@ compatibility: Designed for Claude Code
 # MindTickle SDK Patterns
 
 ## Overview
+
 MindTickle's REST API serves sales enablement workflows including course management, quiz administration, user progress tracking, SCIM user provisioning, and coaching analytics. A structured SDK client is critical because MindTickle uses compound API keys with org-scoped tokens, returns progress data as nested completion trees with module-level granularity, and enforces strict SCIM schema compliance for user sync. These patterns provide org-aware authentication, typed models for training content hierarchies, progress query builders, and mock factories for sales readiness test scenarios.
 
 ## Prerequisites
+
 - Node.js 18+, TypeScript 5+
 - `MINDTICKLE_API_KEY` environment variable (generated in Admin > Integrations > API Keys)
 - `MINDTICKLE_ORG_ID` for multi-org deployments
 - `axios` or `node-fetch` for HTTP transport
 
 ## Singleton Client
+
 ```typescript
 interface MindTickleConfig {
   apiKey: string;
@@ -54,6 +57,7 @@ export function getMindTickleClient(overrides?: Partial<MindTickleConfig>): Mind
 ```
 
 ## Error Wrapper
+
 ```typescript
 interface MindTickleError { statusCode: number; errorType: string; description: string; requestId: string; }
 
@@ -79,6 +83,7 @@ async function safeMindTickle<T>(fn: () => Promise<T>): Promise<T> {
 ```
 
 ## Request Builder
+
 ```typescript
 class ProgressQueryBuilder {
   private params: Record<string, string> = {};
@@ -93,6 +98,7 @@ class ProgressQueryBuilder {
 ```
 
 ## Response Types
+
 ```typescript
 interface Course { id: string; title: string; moduleCount: number; status: 'draft' | 'published' | 'archived'; createdAt: string; }
 interface QuizResult { quizId: string; userId: string; score: number; passingScore: number; passed: boolean; attemptNumber: number; completedAt: string; }
@@ -101,6 +107,7 @@ interface ScimUser { id: string; userName: string; displayName: string; emails: 
 ```
 
 ## Middleware Pattern
+
 ```typescript
 type Middleware = (req: RequestInit, next: () => Promise<Response>) => Promise<Response>;
 
@@ -118,6 +125,7 @@ const metricsMiddleware: Middleware = async (req, next) => {
 ```
 
 ## Testing Utilities
+
 ```typescript
 function mockCourse(overrides?: Partial<Course>): Course {
   return { id: 'series_abc', title: 'Q3 Product Training', moduleCount: 8, status: 'published', createdAt: '2025-07-01T00:00:00Z', ...overrides };
@@ -131,6 +139,7 @@ function mockScimUser(overrides?: Partial<ScimUser>): ScimUser {
 ```
 
 ## Error Handling
+
 | Pattern | When to Use | Example |
 |---------|-------------|---------|
 | Retry with header delay | 429 on progress or analytics endpoints | Parse `Retry-After-Ms` header, wait exact duration, retry once |
@@ -140,7 +149,9 @@ function mockScimUser(overrides?: Partial<ScimUser>): ScimUser {
 | Bulk operation chunking | Enrolling 500+ users in a course | Batch into groups of 50, sequential with rate limit pauses |
 
 ## Resources
+
 - [MindTickle API Reference](https://www.mindtickle.com/platform/integrations/)
 
 ## Next Steps
+
 Apply in `mindtickle-core-workflow-a`.

@@ -28,14 +28,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Multi-Environment Setup
 
 ## Overview
+
 Configure CodeRabbit review behavior based on branch targets and environments. CodeRabbit reads `.coderabbit.yaml` from the PR's base branch, allowing different review configurations per branch. This enables stricter reviews for production branches, relaxed reviews for development, and custom instructions per environment.
 
 ## Prerequisites
+
 - CodeRabbit GitHub App installed on repository
 - Branch strategy defined (e.g., GitFlow, trunk-based, GitHub Flow)
 - `.coderabbit.yaml` committed to each relevant branch
 
 ## How Branch-Based Config Works
+
 ```
 Developer opens PR: feature/auth → develop
   CodeRabbit reads: .coderabbit.yaml from develop branch
@@ -53,6 +56,7 @@ Developer opens PR: hotfix/fix → release/v2.1
 ## Instructions
 
 ### Step 1: Configure Development Branch (Relaxed)
+
 ```yaml
 # .coderabbit.yaml on develop branch
 language: "en-US"
@@ -92,6 +96,7 @@ chat:
 ```
 
 ### Step 2: Configure Production Branch (Strict)
+
 ```yaml
 # .coderabbit.yaml on main branch
 language: "en-US"
@@ -156,6 +161,7 @@ chat:
 ```
 
 ### Step 3: Configure Release Branch (Security-Focused)
+
 ```yaml
 # .coderabbit.yaml on release/* branches
 language: "en-US"
@@ -194,6 +200,7 @@ chat:
 ```
 
 ### Step 4: Maintain Branch Configs with a Script
+
 ```bash
 #!/bin/bash
 # update-coderabbit-configs.sh - Keep branch configs in sync
@@ -221,6 +228,7 @@ echo "Push both branches to apply: git push origin develop main"
 ```
 
 ### Step 5: Verify Per-Branch Configuration
+
 ```markdown
 # On a PR targeting develop:
 @coderabbitai configuration
@@ -237,6 +245,7 @@ echo "Push both branches to apply: git push origin develop main"
 ```
 
 ### Step 6: Branch Protection per Environment
+
 ```bash
 set -euo pipefail
 OWNER="your-org"
@@ -264,6 +273,7 @@ echo "  develop: CodeRabbit optional"
 ```
 
 ## Output
+
 - Branch-specific `.coderabbit.yaml` configs committed
 - Development branch with relaxed review profile
 - Production branch with strict review and security instructions
@@ -271,6 +281,7 @@ echo "  develop: CodeRabbit optional"
 - Branch protection rules aligned with review policies
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Same review profile on all branches | Config only on one branch | Commit different `.coderabbit.yaml` to each base branch |
@@ -279,9 +290,11 @@ echo "  develop: CodeRabbit optional"
 | Release branch not reviewed | `base_branches` doesn't include `release/*` | Add glob pattern `release/*` to base_branches |
 
 ## Resources
+
 - [CodeRabbit Configuration Reference](https://docs.coderabbit.ai/reference/configuration)
 - [CodeRabbit Branch-Based Config](https://docs.coderabbit.ai/guides/review-instructions)
 - [GitHub Branch Protection](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository)
 
 ## Next Steps
+
 For deployment and org-wide rollout, see `coderabbit-deploy-integration`.

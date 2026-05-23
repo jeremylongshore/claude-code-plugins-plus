@@ -68,12 +68,14 @@ selector = SemanticSimilarityExampleSelector.from_examples(
 ```
 
 **k selection:**
+
 - `k=3` — tight token budget, well-defined tasks
 - `k=5` — default for most extraction / classification
 - `k=7-10` — open-ended generation, complex domain
 - `k > 10` — diminishing returns; invest in better examples instead
 
 **Corpus size:**
+
 - `< 20` — use static instead; embedding overhead dominates
 - `50-500` — FAISS in-memory is ideal
 - `> 500` — consider a persistent vector store so you don't rebuild on every boot
@@ -98,6 +100,7 @@ selector = MaxMarginalRelevanceExampleSelector.from_examples(
 ```
 
 **Lambda tuning:**
+
 - `lambda_mult=0.8` — mostly similarity, slight diversity. Good when queries are specific.
 - `lambda_mult=0.5` — balanced. Default for ambiguous queries.
 - `lambda_mult=0.3` — heavily diverse. Good when the input is a single broad question

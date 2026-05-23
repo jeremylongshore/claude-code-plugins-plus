@@ -10,6 +10,7 @@ workhuman-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Workhuman SDK patterns
 **Workflow:** Part of the onboarding skill category for Workhuman integration.
 **Relates to:** Other workhuman skills in this pack.

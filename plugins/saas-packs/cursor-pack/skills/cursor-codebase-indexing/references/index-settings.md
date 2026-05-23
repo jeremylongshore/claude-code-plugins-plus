@@ -3,6 +3,7 @@
 ## Index Settings
 
 ### Performance Settings
+
 ```json
 // settings.json
 {
@@ -21,6 +22,7 @@
 ```
 
 ### Language-Specific Settings
+
 ```json
 {
   // Include/exclude by language

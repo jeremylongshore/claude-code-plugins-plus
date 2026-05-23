@@ -10,6 +10,7 @@ clay-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Clay local development environment with testing workflows, mock data, and efficient iteration patterns. Enables rapid development without consuming API credits.
 **Workflow:** Development environment setup skill. Execute after clay-install-auth when setting up a development workflow.
 **Relates to:** Builds on clay-install-auth; enables efficient development for all other Clay skills.

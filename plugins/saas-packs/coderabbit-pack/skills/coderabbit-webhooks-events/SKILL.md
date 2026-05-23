@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Webhooks & Events
 
 ## Overview
+
 Handle CodeRabbit events triggered through GitHub and GitLab integrations. CodeRabbit posts AI-powered code review comments on pull requests.
 
 ## Prerequisites
+
 - CodeRabbit installed on your GitHub or GitLab repository
 - GitHub webhook endpoint configured for PR events
 - GitHub App or personal access token for API access
@@ -45,6 +47,7 @@ Handle CodeRabbit events triggered through GitHub and GitLab integrations. CodeR
 ## Instructions
 
 ### Step 1: Configure GitHub Webhook Receiver
+
 ```typescript
 import express from "express";
 import crypto from "crypto";
@@ -75,6 +78,7 @@ app.post("/webhooks/github",
 ```
 
 ### Step 2: Filter and Route CodeRabbit Events
+
 ```typescript
 async function routeCodeRabbitEvent(event: string, payload: any) {
   const isCodeRabbit = payload?.sender?.login === "coderabbitai[bot]";
@@ -101,6 +105,7 @@ async function routeCodeRabbitEvent(event: string, payload: any) {
 ```
 
 ### Step 3: Process Review Results
+
 ```typescript
 async function handleCodeRabbitReview(payload: any) {
   const { review, pull_request } = payload;
@@ -129,6 +134,7 @@ function parseReviewIssues(body: string): string[] {
 ```
 
 ### Step 4: Configure CodeRabbit Behavior
+
 ```yaml
 # .coderabbit.yaml
 reviews:
@@ -146,6 +152,7 @@ chat:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | No review posted | PR too large | Split PR or adjust `max_files` in config |
@@ -156,6 +163,7 @@ chat:
 ## Examples
 
 ### Track Review Metrics
+
 ```typescript
 async function handleCheckRunComplete(payload: any) {
   const { check_run } = payload;
@@ -169,11 +177,13 @@ async function handleCheckRunComplete(payload: any) {
 ```
 
 ## Resources
+
 - [CodeRabbit Documentation](https://docs.coderabbit.ai)
 - [GitHub Webhooks Guide](https://docs.github.com/en/webhooks)
 - [CodeRabbit Configuration](https://docs.coderabbit.ai/configuration)
 
 ## Output
+
 - GitHub webhook receiver with signature validation
 - CodeRabbit event routing for reviews, comments, and check runs
 - Review result processing with team notifications
@@ -181,4 +191,5 @@ async function handleCheckRunComplete(payload: any) {
 - Review metrics tracking via check run events
 
 ## Next Steps
+
 For deployment setup, see `coderabbit-deploy-integration`.

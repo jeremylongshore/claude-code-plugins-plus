@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Webhooks & Events
 
 ## Overview
+
 Handle Instantly API v2 webhooks for real-time email outreach event notifications. Instantly fires events when emails are sent, opened, clicked, replied to, or bounced, and when leads change interest status. Webhooks require Hypergrowth plan ($97/mo) or higher. Delivery retries: **3 times within 30 seconds** on failure.
 
 ## Prerequisites
+
 - Instantly Hypergrowth plan or higher (required for webhooks)
 - API key with `all:all` or appropriate webhook scopes
 - Public HTTPS endpoint for receiving webhook payloads
@@ -59,6 +61,7 @@ Handle Instantly API v2 webhooks for real-time email outreach event notification
 ## Instructions
 
 ### Step 1: Create Webhook via API
+
 ```typescript
 import { instantly } from "./src/instantly";
 
@@ -104,6 +107,7 @@ async function createWebhook() {
 ```
 
 ### Step 2: Build Event Handler
+
 ```typescript
 import express from "express";
 
@@ -158,6 +162,7 @@ async function routeEvent(eventType: string, data: any) {
 ```
 
 ### Step 3: Implement Event Handlers
+
 ```typescript
 async function handleReply(data: {
   lead_email: string;
@@ -242,6 +247,7 @@ async function handleAccountError(data: { email: string; error_type: string }) {
 ```
 
 ### Step 4: Manage Webhooks
+
 ```typescript
 // List all webhooks
 async function listWebhooks() {
@@ -280,6 +286,7 @@ async function deleteWebhook(webhookId: string) {
 ```
 
 ## Key API Endpoints
+
 | Method | Path | Purpose |
 |--------|------|---------|
 | `POST` | `/webhooks` | Create webhook subscription |
@@ -292,6 +299,7 @@ async function deleteWebhook(webhookId: string) {
 | `GET` | `/webhook-events/summary` | Delivery summary |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | No events delivered | Webhook not registered or paused | Check `GET /webhooks`, resume if paused |
@@ -301,9 +309,11 @@ async function deleteWebhook(webhookId: string) {
 | Missing event_type | Using custom label events | Check `custom_interest_value` field |
 
 ## Resources
+
 - [Instantly Webhook API](https://developer.instantly.ai/api/v2/webhook)
 - [Instantly Webhook Events](https://developer.instantly.ai/api/v2/webhook)
 - [Instantly Blog: Webhooks Guide](https://instantly.ai/blog/api-webhooks-custom-integrations-for-outreach/)
 
 ## Next Steps
+
 For performance optimization, see `instantly-performance-tuning`.

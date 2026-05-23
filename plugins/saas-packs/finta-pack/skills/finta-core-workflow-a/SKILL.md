@@ -33,6 +33,7 @@ End-to-end fundraise management with Finta: prospect investors, manage outreach,
 ### Step 1: Investor Prospecting with Aurora AI
 
 Aurora AI analyzes your company profile and recommends investors based on:
+
 - Thesis alignment (sector, stage, geography)
 - Historical investment behavior
 - Warm introduction availability from your network
@@ -46,6 +47,7 @@ Navigate to **Investors** > **Discover** and review AI-ranked suggestions.
 3. Finta auto-tracks replies and updates pipeline stages
 
 **Stage automation rules:**
+
 - Investor opens email --> "Reaching Out" (stays)
 - Investor replies --> auto-advance to "Intro Meeting"
 - Meeting scheduled --> confirm via calendar sync
@@ -53,6 +55,7 @@ Navigate to **Investors** > **Discover** and review AI-ranked suggestions.
 ### Step 3: Deal Room Setup
 
 For each active conversation:
+
 1. Create a **Deal Room** with relevant materials
 2. Upload: pitch deck, financial model, cap table, team bios
 3. Share link with investor
@@ -76,6 +79,7 @@ For each active conversation:
 ## Fundraise Metrics Dashboard
 
 Track in Finta or export for custom analysis:
+
 - Total pipeline value
 - Conversion rate by stage
 - Average time in each stage

@@ -43,10 +43,12 @@ S - Stories
 **Simple ≠ dumbed down.** Simple means finding the essential core and expressing it in a compact way. It means ruthless prioritization.
 
 **The Commander's Intent:**
+
 - Military term: If everything goes wrong, what ONE thing must we accomplish?
 - For messaging: If people remember ONE thing about your product, what should it be?
 
 **The inverted pyramid:**
+
 - Lead with the most important thing
 - Add detail in order of decreasing importance
 - Readers who stop anywhere still got the core
@@ -79,10 +81,12 @@ See: [references/simple.md](references/simple.md) for simplification exercises a
 **Core concept:** Get attention by breaking patterns. Hold attention by creating curiosity gaps.
 
 **Two tasks:**
+
 1. **Get attention** → Surprise (violate expectations)
 2. **Hold attention** → Interest (create curiosity gaps)
 
 **Surprise:**
+
 - Identify the core message
 - Figure out the counterintuitive implication
 - Communicate the surprise
@@ -96,6 +100,7 @@ See: [references/simple.md](references/simple.md) for simplification exercises a
 | **Value prop** | "Save money on insurance" | "15 minutes could save you 15%" (specific, unexpected) |
 
 **Curiosity gaps:**
+
 - Open a gap in knowledge → create desire to fill it
 - "Before I tell you the answer, let me ask..."
 - Mystery format: Present a puzzle, delay the resolution
@@ -131,6 +136,7 @@ See: [references/unexpected.md](references/unexpected.md) for pattern-breaking t
 | "Scalable solution" | "Handle 10,000 users on day one without code changes" |
 
 **The Velcro theory of memory:**
+
 - Concrete ideas have more "hooks" for memory
 - "Bicycle" is easier to remember than "vehicle" (you can picture it)
 - Sensory details create mental images
@@ -146,6 +152,7 @@ See: [references/unexpected.md](references/unexpected.md) for pattern-breaking t
 | **Before/after** | Tangible transformation | "Before: 4 hours. After: 10 minutes." |
 
 **Application to product messaging:**
+
 - Features → Outcomes (what it does → what changes for user)
 - Percentages → Real numbers ("saves 40%" → "saves 16 hours/month")
 - Categories → Specific examples ("restaurants" → "pizza shops in Brooklyn")
@@ -175,12 +182,14 @@ See: [references/concrete.md](references/concrete.md) for concreteness exercises
 | **Human-scale statistics** | Relate numbers to experience | Not "10TB of data" but "every book ever written, 100 times" |
 
 **The Sinatra Test:**
+
 - One reference so impressive it handles all objections
 - "We secured the White House" = instant security credibility
 - "We handle Super Bowl traffic" = instant scalability credibility
 - "Used by Apple, Google, and Microsoft" = instant quality credibility
 
 **Making statistics sticky:**
+
 - Don't: "37 grams of saturated fat"
 - Do: "More saturated fat than a Big Mac, fries, and milkshake combined"
 - **Rule:** Put statistics in a context people understand
@@ -205,6 +214,7 @@ See: [references/credible.md](references/credible.md) for credibility-building t
 | **Maslow's hierarchy** | Appeal to the right level | Security, belonging, esteem, self-actualization |
 
 **The identity approach:**
+
 - People make decisions based on identity, not calculation
 - "What would a person like me do in this situation?"
 - Frame your product as consistent with who they want to be
@@ -218,6 +228,7 @@ See: [references/credible.md](references/credible.md) for credibility-building t
 | "I'm a serious professional" | B2B service | "The tool Fortune 500 CTOs rely on" |
 
 **Avoiding the "semantic stretch":**
+
 - Don't over-abstract the emotion
 - "Support the troops" > "Support our national defense infrastructure"
 - Keep it personal and specific
@@ -229,6 +240,7 @@ See: [references/emotional.md](references/emotional.md) for emotional appeal fra
 **Core concept:** Stories are flight simulators for the brain. They teach people how to act.
 
 **Why stories work:**
+
 - Simulate experience (mental rehearsal)
 - Inspire action (not just understanding)
 - Are memorable (narrative structure)
@@ -254,6 +266,7 @@ See: [references/emotional.md](references/emotional.md) for emotional appeal fra
 > "Sarah ran a 10-person design agency. Her team spent 4 hours every Friday compiling client reports from 5 different tools. She'd tried hiring an intern, building spreadsheets, even a custom tool. Nothing worked. Then she found [Product]. Now reports generate in 10 minutes. Last Friday, her team left at 3pm for the first time in years."
 
 **Spotting stories in the wild:**
+
 - Customer support tickets (problems + resolutions)
 - Sales calls (objections + breakthroughs)
 - User interviews (before/after moments)
@@ -268,12 +281,14 @@ See: [references/stories.md](references/stories.md) for story templates and coll
 **Definition:** Once you know something, you can't imagine not knowing it.
 
 **How it manifests:**
+
 - Using jargon your audience doesn't know
 - Skipping context that seems "obvious"
 - Assuming your audience sees the same things you do
 - Over-abstracting because you know the specifics
 
 **Solutions:**
+
 - Test messaging with outsiders (not your team)
 - Use concrete language, not abstractions
 - Tell stories, not bullet points
@@ -293,6 +308,7 @@ See: [references/stories.md](references/stories.md) for story templates and coll
 | **Stories** | Is there a narrative or character? | |
 
 **Scoring:**
+
 - 50-60: Extremely sticky (rare, aim for this)
 - 35-49: Strong (most good messaging lands here)
 - 20-34: Average (forgettable, needs work)
@@ -301,6 +317,7 @@ See: [references/stories.md](references/stories.md) for story templates and coll
 ## Applying SUCCESs to Product
 
 ### Landing Pages
+
 - **Simple:** One clear value proposition above the fold
 - **Unexpected:** Counterintuitive claim or statistic
 - **Concrete:** Specific outcome ("save 4 hours/week" not "save time")
@@ -309,6 +326,7 @@ See: [references/stories.md](references/stories.md) for story templates and coll
 - **Stories:** Customer transformation narrative
 
 ### Product Demos
+
 - **Simple:** Show ONE core workflow, not every feature
 - **Unexpected:** Start with the "aha moment" not a tour
 - **Concrete:** Use real data, not "Lorem ipsum"
@@ -317,6 +335,7 @@ See: [references/stories.md](references/stories.md) for story templates and coll
 - **Stories:** "Let me show you what happens when [customer] has this problem..."
 
 ### Onboarding
+
 - **Simple:** One action per screen
 - **Unexpected:** Delight with quick win early
 - **Concrete:** Show real results, not abstract promises

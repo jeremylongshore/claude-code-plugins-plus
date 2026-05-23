@@ -98,6 +98,7 @@ ALTER TABLE analytics.events DROP PARTITION '202401';
 ```
 
 **Important notes on ClickHouse deletions:**
+
 - `DELETE FROM` is lightweight but still creates mutations internally
 - Mutations rewrite data parts in the background — not instant
 - For GDPR compliance, use `ALTER TABLE DELETE` and verify via `system.mutations`

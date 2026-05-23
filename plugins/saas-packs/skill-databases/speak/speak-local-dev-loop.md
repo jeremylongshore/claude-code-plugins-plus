@@ -10,6 +10,7 @@ speak-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Speak local development workflow
 **Workflow:** Part of the onboarding skill category for Speak integration.
 **Relates to:** Other speak skills in this pack.

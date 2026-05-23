@@ -10,6 +10,7 @@ glean-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Glean rate limiting and backoff
 **Workflow:** Part of the operations skill category for Glean integration.
 **Relates to:** Other glean skills in this pack.

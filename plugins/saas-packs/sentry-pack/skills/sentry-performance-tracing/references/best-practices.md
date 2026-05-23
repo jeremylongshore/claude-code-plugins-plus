@@ -3,6 +3,7 @@
 ## Best Practices
 
 ### Sample Rate Guidelines
+
 ```typescript
 const environment = process.env.NODE_ENV;
 
@@ -18,6 +19,7 @@ Sentry.init({
 ```
 
 ### Custom Instrumentation
+
 ```typescript
 // Wrap database operations
 function instrumentedQuery<T>(sql: string, fn: () => Promise<T>): Promise<T> {

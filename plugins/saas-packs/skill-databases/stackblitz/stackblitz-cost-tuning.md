@@ -10,6 +10,7 @@ stackblitz-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize StackBlitz costs and usage
 **Workflow:** Part of the cicd skill category for StackBlitz integration.
 **Relates to:** Other stackblitz skills in this pack.

@@ -117,6 +117,7 @@ Enrichment not running?
 ### Step 3: Common Incident Resolutions
 
 **P1: Credits Exhausted**
+
 ```
 1. Check: Settings > Plans & Billing > Credit balance
 2. Immediate: Connect your own provider API keys (0 credits)
@@ -125,6 +126,7 @@ Enrichment not running?
 ```
 
 **P1: Webhook URL Expired (50K Limit)**
+
 ```
 1. Check: Table > + Add > Webhooks — does existing webhook show "limit reached"?
 2. Fix: Create new webhook on same table
@@ -133,6 +135,7 @@ Enrichment not running?
 ```
 
 **P2: Low Enrichment Hit Rate**
+
 ```
 1. Check: Sample 10 rows — are input domains valid?
 2. Check: Are providers connected? (Settings > Connections)
@@ -141,6 +144,7 @@ Enrichment not running?
 ```
 
 **P2: CRM Sync Failures**
+
 ```
 1. Check: HTTP API column errors (click red cells)
 2. Common: CRM API key expired → regenerate and update in column config

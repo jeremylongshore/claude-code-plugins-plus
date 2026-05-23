@@ -10,6 +10,7 @@ palantir-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Palantir security best practices
 **Workflow:** Part of the operations skill category for Palantir integration.
 **Relates to:** Other palantir skills in this pack.

@@ -3,6 +3,7 @@
 ## Advanced Git Operations
 
 ### Interactive Rebase Help
+
 ```
 Ask AI for guidance:
 "I need to squash the last 5 commits. Walk me through:
@@ -12,6 +13,7 @@ Ask AI for guidance:
 ```
 
 ### Cherry-Pick Guidance
+
 ```
 "@git log Show recent commits on feature/payments"
 "Help me cherry-pick commit abc123 to main:
@@ -21,6 +23,7 @@ Ask AI for guidance:
 ```
 
 ### Stash Operations
+
 ```
 Stash with AI:
 "I need to switch branches but have uncommitted changes.

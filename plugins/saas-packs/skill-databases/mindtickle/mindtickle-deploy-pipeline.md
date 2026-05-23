@@ -10,6 +10,7 @@ mindtickle-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Mindtickle integrations to production
 **Workflow:** Part of the cicd skill category for Mindtickle integration.
 **Relates to:** Other mindtickle skills in this pack.

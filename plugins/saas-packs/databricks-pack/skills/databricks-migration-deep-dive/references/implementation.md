@@ -122,6 +122,7 @@ def generate_cutover_plan(migration_wave, tables, cutover_date):
 ```
 
 ## Quick Migration Validation
+
 ```sql
 SELECT 'source' as system, COUNT(*) as row_count FROM hive_metastore.db.table
 UNION ALL

@@ -3,6 +3,7 @@
 ## Team Key Management
 
 ### Shared Keys (Not Recommended)
+
 ```
 Issues with shared keys:
 - No individual tracking
@@ -12,6 +13,7 @@ Issues with shared keys:
 ```
 
 ### Per-User Keys
+
 ```
 Best practice:
 1. Each developer has own key
@@ -21,6 +23,7 @@ Best practice:
 ```
 
 ### Enterprise Setup
+
 ```
 Options:
 1. Azure OpenAI (enterprise)

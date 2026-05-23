@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Multi-Environment Setup
 
 ## Overview
+
 Configure Windsurf consistently across team members, projects, and deployment contexts. Windsurf is an IDE, not a cloud API -- "multi-environment setup" means standardizing AI behavior, workspace configuration, and Cascade context across your team.
 
 ## Prerequisites
+
 - Windsurf IDE installed on developer machines
 - Shared git repository
 - Team agreement on coding standards per service
@@ -175,6 +177,7 @@ echo "Example: windsurf services/payments/"
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Cascade lacks project context | .windsurfrules missing or empty | Add stack + patterns to rules file |
@@ -186,11 +189,13 @@ echo "Example: windsurf services/payments/"
 ## Examples
 
 ### Quick Health Check
+
 ```bash
 ls -la .windsurfrules .codeiumignore .windsurf/settings.json 2>/dev/null
 ```
 
 ### Per-Environment Cascade Workflows
+
 ```markdown
 <!-- .windsurf/workflows/deploy-staging.md -->
 ---
@@ -203,9 +208,11 @@ name: deploy-staging
 ```
 
 ## Resources
+
 - [Windsurf Rules Documentation](https://docs.windsurf.com/windsurf/cascade/memories)
 - [Windsurf Admin Guide](https://docs.windsurf.com/windsurf/guide-for-admins)
 - [Context Awareness](https://docs.windsurf.com/context-awareness/overview)
 
 ## Next Steps
+
 For architecture best practices, see `windsurf-reference-architecture`.

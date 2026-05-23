@@ -3,6 +3,7 @@
 ## Model Comparison
 
 ### Compare Responses
+
 ```python
 async def compare_models(
     prompt: str,
@@ -46,6 +47,7 @@ comparison = await compare_models("Explain quantum computing", models)
 ```
 
 ### Parallel Comparison
+
 ```python
 import asyncio
 

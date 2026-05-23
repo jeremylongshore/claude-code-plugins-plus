@@ -54,12 +54,14 @@ Let me show you the improvement metrics:
 This isn't just about my repo. It's about what's happening to software development:
 
 ### The Old World
+
 - Documentation was an afterthought
 - Enterprise practices were gatekept
 - Tools required massive setup
 - Quality meant expensive consultants
 
 ### The New World
+
 - Documentation drives development
 - Enterprise practices are democratized
 - Tools work instantly
@@ -72,12 +74,14 @@ We're witnessing the Great Leveling — where a solo developer with AI can produ
 Claude and Cursor aren't competing — they're complementary:
 
 **Claude Code CLI:**
+
 - Bulk operations
 - Rapid prototyping
 - Documentation generation
 - "Breadth-first" development
 
 **Cursor IDE:**
+
 - Iterative refinement
 - Code implementation
 - Debugging assistance
@@ -90,20 +94,25 @@ Together, they create a complete development ecosystem. You start with Claude fo
 Since launching this system:
 
 ### The Startup Founder
+
 "I generated a complete technical spec for my investors in 2 minutes. They thought I had a team of 10."
 
 ### The Open Source Maintainer
+
 "Finally, my project has the documentation it deserves. Contributors actually understand the codebase now."
 
 ### The Fortune 500 CTO
+
 "This is better than what my team produces, and it takes 1% of the time."
 
 ### The Student
+
 "I'm learning how real companies document projects. This is better than any textbook."
 
 ## What This Means for the Future
 
 We're at an inflection point. The combination of:
+
 - AI that understands context
 - Templates that encode best practices
 - Tools that eliminate friction
@@ -147,11 +156,10 @@ Welcome to the AI-first development era. It's going to be wild.
 ---
 
 **Series Navigation:**
+
 - Part 1: The Mess (and Why It Mattered)
 - Part 2: Evolving Templates into an Enterprise Library
 - Part 3: From Templates to One-Paste Magic
 - **Part 4: Dual AI Workflows — Claude Meets Cursor** ← You are here
 
 **Credits**: The foundation of this journey comes from @ryancarson's original templates. The future is being built by all of us, together.
-
-

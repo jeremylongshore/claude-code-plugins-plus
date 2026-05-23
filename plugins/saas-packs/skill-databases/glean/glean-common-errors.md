@@ -10,6 +10,7 @@ glean-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Glean common errors
 **Workflow:** Part of the operations skill category for Glean integration.
 **Relates to:** Other glean skills in this pack.

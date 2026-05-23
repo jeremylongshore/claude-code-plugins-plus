@@ -36,6 +36,7 @@ When using `--format json`, the scanner outputs:
 ## Significance Score
 
 The significance score (0-100) combines:
+
 - **Change %** (40%): Larger moves score higher
 - **Volume Ratio** (40%): Higher volume confirmation scores higher
 - **Market Cap** (20%): Larger caps score slightly higher
@@ -87,6 +88,7 @@ categories:
 Create presets in `${CLAUDE_SKILL_DIR}/config/presets/`:
 
 **aggressive.yaml:**
+
 ```yaml
 min_change: 3
 volume_spike: 1.5
@@ -95,6 +97,7 @@ top_n: 50
 ```
 
 **conservative.yaml:**
+
 ```yaml
 min_change: 10
 volume_spike: 3
@@ -103,6 +106,7 @@ top_n: 10
 ```
 
 Use with:
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --preset aggressive
 ```
@@ -112,6 +116,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --preset aggressive
 This skill can be combined with other crypto skills:
 
 **With crypto-signal-generator:**
+
 ```bash
 # Get movers, then generate signals for top gainers
 python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format json | \

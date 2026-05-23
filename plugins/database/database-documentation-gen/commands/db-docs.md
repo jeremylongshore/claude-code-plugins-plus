@@ -11,6 +11,7 @@ Automatically generate comprehensive database documentation including ERD diagra
 ## When to Use This Command
 
 Use `/db-docs` when you need to:
+
 - Document existing database schemas for team onboarding
 - Generate ERD diagrams for architectural reviews
 - Create data dictionaries for compliance requirements
@@ -23,6 +24,7 @@ Use `/db-docs` when you need to:
 - Generate test data documentation
 
 DON'T use this when:
+
 - Database is still in early design phase (use `/design-schema` instead)
 - You only need query optimization docs (use `/optimize-query`)
 - Working with NoSQL databases without fixed schemas
@@ -31,6 +33,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **SchemaSpy with PlantUML** as the primary approach because:
+
 - Supports 30+ database types out of the box
 - Generates interactive HTML with JavaScript navigation
 - Creates high-quality vector ERD diagrams
@@ -39,12 +42,14 @@ This command implements **SchemaSpy with PlantUML** as the primary approach beca
 - Open-source with active community support
 
 **Alternative considered: dbdocs.io**
+
 - Cloud-based with collaboration features
 - DBML (Database Markup Language) based
 - Requires internet connection
 - Recommended for team collaboration needs
 
 **Alternative considered: SQL Server Data Tools**
+
 - Excellent for SQL Server specifically
 - Visual Studio integration
 - Platform-specific limitation
@@ -53,6 +58,7 @@ This command implements **SchemaSpy with PlantUML** as the primary approach beca
 ## Prerequisites
 
 Before running this command:
+
 1. Database connection credentials with schema read access
 2. JDBC driver for your database type
 3. Java Runtime Environment (JRE) 8+
@@ -62,23 +68,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Database Introspection
+
 Connect to database and extract complete schema metadata including tables, views, procedures, and relationships.
 
 ### Step 2: Relationship Analysis
+
 Identify explicit foreign keys and implicit relationships based on naming patterns and data types.
 
 ### Step 3: ERD Generation
+
 Create entity-relationship diagrams at multiple levels: full schema, per-module, and neighborhood views.
 
 ### Step 4: Documentation Generation
+
 Generate HTML documentation with search, filtering, and interactive navigation features.
 
 ### Step 5: Export and Publishing
+
 Package documentation for distribution via static hosting, PDF export, or integration with existing docs.
 
 ## Output Format
 
 The command generates:
+
 - `index.html` - Main documentation entry point
 - `diagrams/` - ERD diagrams in multiple formats
   - `schema.svg` - Complete database diagram
@@ -1731,6 +1743,7 @@ if __name__ == "__main__":
 ## Configuration Options
 
 **Basic Usage:**
+
 ```bash
 /db-docs \
   --type=postgresql \
@@ -1742,6 +1755,7 @@ if __name__ == "__main__":
 **Available Options:**
 
 `--type <database>` - Database type
+
 - `mysql` - MySQL/MariaDB
 - `postgresql` - PostgreSQL
 - `mssql` - SQL Server
@@ -1750,18 +1764,23 @@ if __name__ == "__main__":
 - `mongodb` - MongoDB
 
 `--include-views` - Document database views
+
 - Default: `true`
 
 `--include-procedures` - Document stored procedures
+
 - Default: `true`
 
 `--generate-erd` - Create entity relationship diagrams
+
 - Default: `true`
 
 `--analyze-implicit` - Find implicit relationships
+
 - Default: `true`
 
 `--output-format <format>` - Documentation format
+
 - `html` - Interactive HTML (default)
 - `markdown` - Markdown files
 - `pdf` - PDF document
@@ -1769,6 +1788,7 @@ if __name__ == "__main__":
 - `all` - All formats
 
 `--theme <theme>` - HTML documentation theme
+
 - `default` - Standard theme
 - `dark` - Dark mode
 - `minimal` - Minimal design
@@ -1777,6 +1797,7 @@ if __name__ == "__main__":
 ## Best Practices
 
 DO:
+
 - Run documentation generation in CI/CD pipeline
 - Version control your database documentation
 - Include business context in table/column comments
@@ -1785,6 +1806,7 @@ DO:
 - Review orphan tables and missing relationships
 
 DON'T:
+
 - Expose production credentials in documentation
 - Include sensitive data in examples
 - Skip documenting views and procedures

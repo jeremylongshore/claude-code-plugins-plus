@@ -10,6 +10,7 @@ langfuse-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Langfuse production deployment checklist
 **Workflow:** Part of the operations skill category for Langfuse integration.
 **Relates to:** Other langfuse skills in this pack.

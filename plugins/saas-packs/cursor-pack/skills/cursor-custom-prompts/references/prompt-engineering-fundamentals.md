@@ -3,6 +3,7 @@
 ## Prompt Engineering Fundamentals
 
 ### Effective Prompt Structure
+
 ```
 [CONTEXT] What you're working on
 [TASK] What you want to accomplish
@@ -12,6 +13,7 @@
 ```
 
 ### Example Well-Structured Prompt
+
 ```
 CONTEXT: Working on a Next.js 14 e-commerce app with TypeScript
 

@@ -3,6 +3,7 @@
 ## Git Commands via Terminal
 
 ### Integrated Terminal
+
 ```bash
 # Open terminal: Cmd+` or Ctrl+`
 
@@ -17,6 +18,7 @@ Cmd+L: "How do I rebase my branch onto main?"
 ```
 
 ### Git Aliases for Cursor Workflow
+
 ```bash
 # ~/.gitconfig
 [alias]

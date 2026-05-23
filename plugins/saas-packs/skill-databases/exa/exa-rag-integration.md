@@ -10,6 +10,7 @@ exa-rag-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Build RAG (Retrieval Augmented Generation) pipelines using Exa for real-time web knowledge retrieval to enhance LLM responses.
 **Workflow:** Key integration pattern for AI applications - connects Exa search to LLM workflows.
 **Relates to:** Follows exa-content-extraction; integrates with exa-embedding-integration

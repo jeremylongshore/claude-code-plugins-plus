@@ -10,6 +10,7 @@ adobe-policy-guardrails/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Adobe policy enforcement
 **Workflow:** Part of the advanced skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

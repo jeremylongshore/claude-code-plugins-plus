@@ -67,6 +67,7 @@ The official Node.js package changed names:
 | Current | `@elevenlabs/elevenlabs-js` | `import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js"` |
 
 **Migration steps:**
+
 ```bash
 # Remove old package
 npm uninstall elevenlabs
@@ -79,6 +80,7 @@ git checkout -b upgrade/elevenlabs-sdk
 ```
 
 **Update imports:**
+
 ```typescript
 // BEFORE (legacy community package)
 import ElevenLabs from "elevenlabs";
@@ -106,6 +108,7 @@ ElevenLabs models evolve across generations. Migration paths:
 | `eleven_multilingual_v2` | `eleven_v3` | Most expressive; 70+ languages; NO WebSocket support |
 
 **Model migration code:**
+
 ```typescript
 // config/models.ts
 type ModelPreference = "quality" | "balanced" | "speed";

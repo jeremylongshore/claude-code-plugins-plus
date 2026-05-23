@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Cohere Common Errors
 
 ## Overview
+
 Quick reference for real Cohere API v2 errors with exact messages, causes, and fixes.
 
 ## Prerequisites
+
 - `cohere-ai` SDK installed
 - `CO_API_KEY` configured
 - Access to error logs
@@ -43,6 +45,7 @@ CohereError: model is required
 **Cause:** API v2 requires `model` for all endpoints (Chat, Embed, Rerank, Classify).
 
 **Fix:**
+
 ```typescript
 // Wrong (v1 style)
 await cohere.chat({ messages: [...] });
@@ -60,6 +63,7 @@ CohereError: embedding_types is required for embed models v3 and higher
 ```
 
 **Fix:**
+
 ```typescript
 await cohere.embed({
   model: 'embed-v4.0',
@@ -90,6 +94,7 @@ CohereError: invalid api token
 **Cause:** `CO_API_KEY` is missing, wrong, or revoked.
 
 **Fix:**
+
 ```bash
 # Verify key is set
 echo $CO_API_KEY
@@ -117,6 +122,7 @@ CohereError: You are using a Trial key, which is limited to N calls/minute
 | Production | 1000/min | 1000/min | 1000/min | Unlimited |
 
 **Fix:**
+
 ```typescript
 import { CohereError } from 'cohere-ai';
 
@@ -140,6 +146,7 @@ CohereError: each unique label requires at least 2 examples
 ```
 
 **Fix:**
+
 ```typescript
 await cohere.classify({
   model: 'embed-english-v3.0',
@@ -163,6 +170,7 @@ CohereError: too many documents, max is 1000
 ```
 
 **Fix:** Batch your documents:
+
 ```typescript
 async function batchRerank(query: string, docs: string[], topN = 10) {
   const BATCH = 1000;
@@ -216,6 +224,7 @@ CohereTimeoutError: Request timed out
 ```
 
 **Fix:** The SDK has a default timeout. Increase it or reduce payload:
+
 ```typescript
 const cohere = new CohereClientV2({
   token: process.env.CO_API_KEY,
@@ -263,10 +272,12 @@ function diagnoseCohereError(err: unknown): string {
 ```
 
 ## Resources
+
 - [Cohere Error Codes](https://docs.cohere.com/reference/errors)
 - [Cohere Status Page](https://status.cohere.com)
 - [Rate Limits](https://docs.cohere.com/docs/rate-limits)
 - [API v1 to v2 Migration](https://docs.cohere.com/docs/migrating-v1-to-v2)
 
 ## Next Steps
+
 For comprehensive debugging, see `cohere-debug-bundle`.

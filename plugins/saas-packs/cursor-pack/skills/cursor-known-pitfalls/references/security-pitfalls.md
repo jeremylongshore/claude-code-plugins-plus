@@ -3,6 +3,7 @@
 ## Security Pitfalls
 
 ### Exposing Secrets
+
 ```
 PITFALL:
 AI context includes sensitive data.
@@ -16,6 +17,7 @@ SOLUTION:
 ```
 
 ### Trusting AI for Security Code
+
 ```
 PITFALL:
 AI-generated auth/crypto code may have flaws.
@@ -29,6 +31,7 @@ SOLUTION:
 ```
 
 ### API Keys in Settings
+
 ```
 PITFALL:
 Storing API keys in settings.json.

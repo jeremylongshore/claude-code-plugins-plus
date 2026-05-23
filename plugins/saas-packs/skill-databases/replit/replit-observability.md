@@ -10,6 +10,7 @@ replit-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up comprehensive observability with logging, metrics, and external monitoring integrations.
 **Workflow:** Production monitoring skill - enables visibility into application behavior and health.
 **Relates to:** Complements replit-always-on-config; foundation for replit-reliability-patterns.

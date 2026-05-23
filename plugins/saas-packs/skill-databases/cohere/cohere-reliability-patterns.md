@@ -10,6 +10,7 @@ cohere-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Cohere reliability patterns
 **Workflow:** Part of the enterprise skill category for Cohere integration.
 **Relates to:** Other cohere skills in this pack.

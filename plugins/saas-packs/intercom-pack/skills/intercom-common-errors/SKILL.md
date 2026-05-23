@@ -57,6 +57,7 @@ All Intercom errors return this structure:
 ```
 
 **Causes:**
+
 - Access token is expired, revoked, or malformed
 - Using a test token against production (or vice versa)
 - Token was regenerated in Developer Hub but not updated in app
@@ -86,6 +87,7 @@ curl -s https://api.intercom.io/me \
 ```
 
 **Causes:**
+
 - OAuth app missing required scope
 - Trying to access a resource in another workspace
 - Admin permissions insufficient
@@ -104,6 +106,7 @@ curl -s https://api.intercom.io/me \
 ```
 
 **Causes:**
+
 - Contact, conversation, or article ID is invalid
 - Resource was deleted
 - Using `user_id` where `contact_id` is expected (or vice versa)
@@ -133,6 +136,7 @@ try {
 ```
 
 **Causes:**
+
 - Creating a contact with a duplicate `external_id` or `email`
 - Race condition in concurrent contact creation
 
@@ -169,6 +173,7 @@ async function findOrCreateContact(email: string, externalId: string) {
 ```
 
 **Causes:**
+
 - Invalid field value (bad email format, wrong type)
 - Missing required field
 - Custom attribute name exceeds 190 characters

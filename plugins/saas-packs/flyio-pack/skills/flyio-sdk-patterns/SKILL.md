@@ -21,9 +21,11 @@ compatibility: Designed for Claude Code
 # Fly.io SDK Patterns
 
 ## Overview
+
 Production-ready patterns for the Fly.io Machines REST API at `https://api.machines.dev`. Fly.io exposes both GraphQL (organization queries) and REST (machine lifecycle) APIs. The Machines REST API is the primary integration surface for creating, starting, stopping, and destroying VMs across 30+ global regions. A structured client ensures consistent auth, typed machine states, and reliable wait-for-state polling.
 
 ## Singleton Client
+
 ```typescript
 const FLY_API = 'https://api.machines.dev';
 let _client: FlyClient | null = null;
@@ -58,6 +60,7 @@ class FlyClient {
 ```
 
 ## Error Wrapper
+
 ```typescript
 export class FlyError extends Error {
   constructor(public status: number, message: string) { super(message); this.name = 'FlyError'; }
@@ -73,6 +76,7 @@ export async function safeCall<T>(operation: string, fn: () => Promise<T>): Prom
 ```
 
 ## Request Builder
+
 ```typescript
 class DeployBuilder {
   private regions: string[] = []; private config: Partial<MachineConfig> = {};
@@ -90,6 +94,7 @@ class DeployBuilder {
 ```
 
 ## Response Types
+
 ```typescript
 type MachineState = 'created' | 'starting' | 'started' | 'stopping' | 'stopped' | 'destroying' | 'destroyed';
 interface FlyMachine {
@@ -105,6 +110,7 @@ interface FlyVolume { id: string; name: string; region: string; size_gb: number;
 ```
 
 ## Testing Utilities
+
 ```typescript
 export function mockMachine(overrides: Partial<FlyMachine> = {}): FlyMachine {
   return { id: 'mach-001', name: 'test-machine', state: 'started', region: 'iad',
@@ -114,6 +120,7 @@ export function mockMachine(overrides: Partial<FlyMachine> = {}): FlyMachine {
 ```
 
 ## Error Handling
+
 | Pattern | When to Use | Example |
 |---------|-------------|---------|
 | `safeCall` wrapper | All Machines API calls | Catches network + API errors uniformly |
@@ -122,7 +129,9 @@ export function mockMachine(overrides: Partial<FlyMachine> = {}): FlyMachine {
 | Region fallback | Multi-region deploy failure | Skip failed region, continue others |
 
 ## Resources
+
 - [Machines API Reference](https://fly.io/docs/machines/api/machines-resource/)
 
 ## Next Steps
+
 Apply patterns in `flyio-core-workflow-a`.

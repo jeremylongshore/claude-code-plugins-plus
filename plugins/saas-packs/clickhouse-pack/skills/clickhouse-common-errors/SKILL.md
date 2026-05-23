@@ -41,6 +41,7 @@ DB::Exception: Too many parts (600). Merges are processing significantly slower 
 overwhelm the merge process.
 
 **Fix:**
+
 ```sql
 -- Check current part count per table
 SELECT database, table, count() AS part_count
@@ -62,6 +63,7 @@ DB::Exception: Memory limit (for query) exceeded: ... (MEMORY_LIMIT_EXCEEDED)
 **Cause:** Query allocates more RAM than `max_memory_usage` (default ~10GB).
 
 **Fix:**
+
 ```sql
 -- Check what's consuming memory
 SELECT query, memory_usage, peak_memory_usage
@@ -87,6 +89,7 @@ DB::Exception: Syntax error: ... Expected ... before ... (SYNTAX_ERROR)
 ```
 
 **Common causes:**
+
 ```sql
 -- Wrong: using backticks for identifiers (MySQL habit)
 SELECT `user_id` FROM events;
@@ -112,6 +115,7 @@ DB::Exception: Table default.events does not exist. (UNKNOWN_TABLE)
 ```
 
 **Fix:**
+
 ```sql
 -- List all tables in the database
 SHOW TABLES FROM default;
@@ -130,6 +134,7 @@ DB::Exception: Timeout exceeded: elapsed ... seconds, max ... (TIMEOUT_EXCEEDED)
 ```
 
 **Fix:**
+
 ```sql
 -- Increase timeout for this query
 SET max_execution_time = 120;  -- seconds
@@ -154,6 +159,7 @@ DB::Exception: Cannot parse datetime ... (CANNOT_PARSE_DATETIME)
 ```
 
 **Fix:**
+
 ```sql
 -- ClickHouse expects: YYYY-MM-DD HH:MM:SS
 -- Wrong: ISO 8601 with T and Z
@@ -175,6 +181,7 @@ DB::Exception: ... is in readonly mode (READONLY)
 **Cause:** User lacks write permissions or server is in readonly mode.
 
 **Fix:**
+
 ```sql
 -- Check user permissions
 SHOW GRANTS FOR CURRENT_USER;
@@ -190,6 +197,7 @@ DB::Exception: Missing columns: 'user_name' ... (NO_SUCH_COLUMN_IN_TABLE)
 ```
 
 **Fix:**
+
 ```sql
 -- Inspect actual column names
 DESCRIBE TABLE events;
@@ -206,6 +214,7 @@ DB::Exception: Cannot convert ... to UInt64 (TYPE_MISMATCH)
 ```
 
 **Fix:**
+
 ```sql
 -- Check expected types
 DESCRIBE TABLE events;
@@ -228,6 +237,7 @@ DB::Exception: All connection tries failed. ... (ALL_CONNECTION_TRIES_FAILED)
 ```
 
 **Fix:**
+
 ```sql
 -- Check cluster health
 SELECT * FROM system.clusters;

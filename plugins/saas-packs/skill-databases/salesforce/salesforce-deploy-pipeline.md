@@ -10,6 +10,7 @@ salesforce-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Salesforce integrations to production
 **Workflow:** Part of the cicd skill category for Salesforce integration.
 **Relates to:** Other salesforce skills in this pack.

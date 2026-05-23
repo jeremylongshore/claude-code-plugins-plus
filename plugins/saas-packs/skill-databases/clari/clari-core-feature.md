@@ -10,6 +10,7 @@ clari-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Clari core feature integration
 **Workflow:** Part of the onboarding skill category for Clari integration.
 **Relates to:** Other clari skills in this pack.

@@ -10,6 +10,7 @@ serpapi-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure SerpApi SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for SerpApi integration.
 **Relates to:** Other serpapi skills in this pack.

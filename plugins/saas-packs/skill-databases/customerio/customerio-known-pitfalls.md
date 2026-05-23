@@ -10,6 +10,7 @@ customerio-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Customer.io anti-patterns
 **Workflow:** Part of the enterprise skill category for Customer.io integration.
 **Relates to:** Other customerio skills in this pack.

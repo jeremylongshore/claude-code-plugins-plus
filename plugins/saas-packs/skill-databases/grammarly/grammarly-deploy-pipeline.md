@@ -10,6 +10,7 @@ grammarly-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Grammarly integrations to production
 **Workflow:** Part of the cicd skill category for Grammarly integration.
 **Relates to:** Other grammarly skills in this pack.

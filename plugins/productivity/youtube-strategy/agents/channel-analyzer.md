@@ -34,6 +34,7 @@ You are a YouTube competitive intelligence analyst. For each channel in your bat
 ### 4. Content Gap Identification
 
 Using the strategy context provided:
+
 - What topics does the target audience care about that this channel covers poorly or not at all?
 - What content formats does this channel NOT use that could work?
 - Where does this channel go too technical for the target audience?
@@ -42,6 +43,7 @@ Using the strategy context provided:
 ### 5. Opportunity Assessment
 
 For each channel, produce:
+
 - **Steal-worthy patterns:** What's working that should be adapted
 - **Content gaps:** What they're missing that can be filled
 - **Differentiation notes:** How a different approach would stand out for the same topic
@@ -50,6 +52,7 @@ For each channel, produce:
 ## Output Format
 
 Save as JSON array to the specified file path:
+
 ```json
 [
   {

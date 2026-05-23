@@ -3,6 +3,7 @@
 ## Pre-Deployment Checklist
 
 ### Configuration
+
 - [ ] Production API key generated (separate from staging)
 - [ ] API key stored in secure vault (not in code)
 - [ ] Environment variables configured in deployment platform
@@ -11,6 +12,7 @@
 - [ ] Base URL correct for environment
 
 ### Code Quality
+
 - [ ] All tests passing (`npm test`)
 - [ ] No hardcoded credentials or API keys
 - [ ] Error handling covers all Documenso error types
@@ -19,6 +21,7 @@
 - [ ] TypeScript strict mode enabled
 
 ### Security
+
 - [ ] API keys have minimal required permissions
 - [ ] Webhook signature verification implemented
 - [ ] Input validation on all user inputs
@@ -27,12 +30,14 @@
 - [ ] Audit logging enabled
 
 ### Infrastructure
+
 - [ ] Health check endpoint includes Documenso connectivity
 - [ ] Monitoring/alerting configured for errors
 - [ ] Circuit breaker pattern implemented
 - [ ] Graceful degradation for Documenso outages
 
 ### Documentation
+
 - [ ] Incident runbook created
 - [ ] API key rotation procedure documented
 - [ ] Rollback procedure documented

@@ -10,6 +10,7 @@ coreweave-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement CoreWeave core feature integration
 **Workflow:** Part of the onboarding skill category for CoreWeave integration.
 **Relates to:** Other coreweave skills in this pack.

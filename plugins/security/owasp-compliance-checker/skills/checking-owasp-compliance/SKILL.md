@@ -30,6 +30,7 @@ This skill empowers Claude to assess your project's adherence to the OWASP Top 1
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Evaluate your application's security posture against the OWASP Top 10 (2021).
 - Identify potential vulnerabilities related to common web application security risks.
 - Obtain actionable remediation guidance to address identified vulnerabilities.
@@ -42,6 +43,7 @@ This skill activates when you need to:
 User request: "Check OWASP compliance for SQL injection vulnerabilities."
 
 The skill will:
+
 1. Activate the owasp-compliance-checker plugin.
 2. Scan the codebase for potential SQL injection vulnerabilities.
 3. Generate a report highlighting any identified SQL injection vulnerabilities and providing remediation guidance.
@@ -51,6 +53,7 @@ The skill will:
 User request: "/owasp"
 
 The skill will:
+
 1. Activate the owasp-compliance-checker plugin.
 2. Scan the entire codebase for vulnerabilities across all OWASP Top 10 categories.
 3. Generate a comprehensive report detailing compliance gaps and remediation steps for each category.
@@ -92,6 +95,7 @@ This skill can be integrated with other plugins to automate vulnerability remedi
 ## Error Handling
 
 If security scanning fails:
+
 - Verify tool installation and configuration
 - Check file and directory permissions
 - Validate scan target paths

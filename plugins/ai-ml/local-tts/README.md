@@ -51,6 +51,7 @@ On first call, VoxCPM2 downloads ~10 GB of model weights. Subsequent calls reuse
 ### Via natural language (auto-triggered)
 
 Just ask Claude to:
+
 - "Say hello in French"
 - "Generate a voiceover for this text: ..."
 - "Clone this voice: /path/to/sample.wav and say ..."

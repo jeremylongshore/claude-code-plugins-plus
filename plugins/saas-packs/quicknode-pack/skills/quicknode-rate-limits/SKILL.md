@@ -20,14 +20,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # QuickNode Rate Limits
 
 ## Overview
+
 Implementation patterns for QuickNode rate limits using blockchain RPC endpoints and the QuickNode SDK.
 
 ## Prerequisites
+
 - Completed `quicknode-install-auth` setup
 
 ## Instructions
 
 ### Step 1: Connect to QuickNode
+
 ```typescript
 import { ethers } from 'ethers';
 const provider = new ethers.JsonRpcProvider(process.env.QUICKNODE_ENDPOINT);
@@ -36,9 +39,11 @@ console.log(`Connected at block ${block}`);
 ```
 
 ## Output
+
 - QuickNode integration for rate limits
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Invalid endpoint token | Verify URL from Dashboard |
@@ -46,8 +51,10 @@ console.log(`Connected at block ${block}`);
 | Method not found | Add-on required | Enable in QuickNode Dashboard |
 
 ## Resources
+
 - [QuickNode Docs](https://www.quicknode.com/docs/welcome)
 - [Ethereum API](https://www.quicknode.com/docs/ethereum)
 
 ## Next Steps
+
 See related QuickNode skills for more workflows.

@@ -67,6 +67,7 @@ kubectl logs -l app=my-app --all-containers
 ### Symptom: Pod Stuck in Pending
 
 **Check scheduling constraints:**
+
 ```bash
 kubectl describe pod <pod-name> | grep -A 20 Events
 kubectl get nodes -o wide
@@ -74,12 +75,14 @@ kubectl describe nodes | grep -A 10 "Allocated resources"
 ```
 
 **Common causes:**
+
 1. **Insufficient resources:** Lower requests or add nodes
 2. **Node selector mismatch:** Check nodeSelector/affinity
 3. **Taint not tolerated:** Add toleration
 4. **PVC not bound:** Check PersistentVolumeClaim
 
 **Fix insufficient resources:**
+
 ```yaml
 resources:
   requests:
@@ -90,17 +93,20 @@ resources:
 ### Symptom: ImagePullBackOff
 
 **Check image issues:**
+
 ```bash
 kubectl describe pod <pod-name> | grep -A 5 "Events"
 kubectl get events --field-selector reason=Failed
 ```
 
 **Common causes:**
+
 1. **Wrong image name/tag:** Verify image exists
 2. **Private registry:** Add imagePullSecrets
 3. **Rate limiting:** Use authenticated pulls
 
 **Fix with imagePullSecrets:**
+
 ```yaml
 spec:
   imagePullSecrets:
@@ -110,6 +116,7 @@ spec:
 ### Symptom: CrashLoopBackOff
 
 **Check application issues:**
+
 ```bash
 kubectl logs <pod-name> --previous
 kubectl describe pod <pod-name>
@@ -117,12 +124,14 @@ kubectl get pod <pod-name> -o jsonpath='{.status.containerStatuses[0].lastState}
 ```
 
 **Common causes:**
+
 1. **Application error:** Check logs
 2. **Missing config:** Verify ConfigMap/Secret exists
 3. **Health check failing too early:** Increase initialDelaySeconds
 4. **OOMKilled:** Increase memory limits
 
 **Fix health check timing:**
+
 ```yaml
 livenessProbe:
   initialDelaySeconds: 60  # Increase for slow apps
@@ -134,6 +143,7 @@ startupProbe:              # Add startup probe
 ### Symptom: CreateContainerConfigError
 
 **Check config references:**
+
 ```bash
 kubectl describe pod <pod-name>
 kubectl get configmap -n <namespace>
@@ -141,6 +151,7 @@ kubectl get secret -n <namespace>
 ```
 
 **Fix:**
+
 ```bash
 # Create missing ConfigMap
 kubectl create configmap my-config --from-literal=KEY=value
@@ -156,6 +167,7 @@ kubectl create secret generic my-secret --from-literal=PASSWORD=secret
 ### Symptom: Service Returns No Response
 
 **Check service and endpoints:**
+
 ```bash
 kubectl get svc <service-name>
 kubectl get endpoints <service-name>
@@ -163,11 +175,13 @@ kubectl describe svc <service-name>
 ```
 
 **Common causes:**
+
 1. **No endpoints:** Pod selector doesn't match
 2. **Wrong port:** Service port doesn't match container port
 3. **Pods not ready:** Failing readiness probe
 
 **Debug connectivity:**
+
 ```bash
 # Test from within cluster
 kubectl run debug --rm -it --image=busybox -- wget -qO- http://<service-name>:<port>
@@ -180,6 +194,7 @@ curl localhost:8080
 ### Symptom: Ingress Returns 404/502/503
 
 **Check ingress configuration:**
+
 ```bash
 kubectl describe ingress <ingress-name>
 kubectl get pods -n ingress-nginx
@@ -187,6 +202,7 @@ kubectl logs -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx
 ```
 
 **Troubleshooting steps:**
+
 1. Verify ingress class matches controller
 2. Check backend service exists and has endpoints
 3. Verify host and path configuration
@@ -203,6 +219,7 @@ kubectl get endpoints <backend-service>
 ### Symptom: Intermittent Timeouts
 
 **Check resource issues:**
+
 ```bash
 kubectl top pods
 kubectl describe pod <pod-name> | grep -A 5 "Containers"
@@ -210,6 +227,7 @@ kubectl get hpa
 ```
 
 **Common causes:**
+
 1. **CPU throttling:** Increase CPU limits
 2. **Memory pressure:** Check for OOMKilled
 3. **Network policy blocking:** Check NetworkPolicy
@@ -222,6 +240,7 @@ kubectl get hpa
 ### Symptom: Rollout Stuck
 
 **Check rollout status:**
+
 ```bash
 kubectl rollout status deployment/<name>
 kubectl get replicaset
@@ -229,11 +248,13 @@ kubectl describe deployment <name>
 ```
 
 **Common causes:**
+
 1. **New pods failing:** Check new pod logs
 2. **Insufficient resources:** Check node capacity
 3. **Image pull failure:** Verify image exists
 
 **Recovery options:**
+
 ```bash
 # Rollback to previous version
 kubectl rollout undo deployment/<name>
@@ -249,6 +270,7 @@ kubectl rollout pause deployment/<name>
 ### Symptom: Pods Evicted
 
 **Check eviction reasons:**
+
 ```bash
 kubectl get pods --field-selector=status.phase=Failed
 kubectl describe pod <evicted-pod>
@@ -256,6 +278,7 @@ kubectl describe node <node-name> | grep -A 10 Conditions
 ```
 
 **Common causes:**
+
 1. **Node pressure (disk/memory):** Clean up or add resources
 2. **PriorityClass preemption:** Higher priority pod scheduled
 3. **Taints added:** Add toleration or move workload
@@ -267,6 +290,7 @@ kubectl describe node <node-name> | grep -A 10 Conditions
 ### Symptom: PVC Stuck in Pending
 
 **Check PVC status:**
+
 ```bash
 kubectl describe pvc <pvc-name>
 kubectl get storageclass
@@ -274,12 +298,14 @@ kubectl get pv
 ```
 
 **Common causes:**
+
 1. **No matching PV:** Create PV or use dynamic provisioning
 2. **StorageClass doesn't exist:** Create or use existing class
 3. **Access mode mismatch:** Verify access modes
 4. **Insufficient capacity:** Request less storage
 
 **Debug:**
+
 ```bash
 # Check storage provisioner logs
 kubectl logs -n kube-system -l app=ebs-csi-controller
@@ -288,12 +314,14 @@ kubectl logs -n kube-system -l app=ebs-csi-controller
 ### Symptom: Volume Mount Failed
 
 **Check mount issues:**
+
 ```bash
 kubectl describe pod <pod-name> | grep -A 10 "Events"
 kubectl get pv,pvc
 ```
 
 **Common causes:**
+
 1. **PV not available:** Check PV status
 2. **Node doesn't have access:** Check node selectors
 3. **FS corruption:** Check node logs
@@ -305,6 +333,7 @@ kubectl get pv,pvc
 ### Symptom: DNS Not Resolving
 
 **Test DNS:**
+
 ```bash
 kubectl run dns-test --rm -it --image=busybox -- nslookup kubernetes.default
 
@@ -313,6 +342,7 @@ kubectl logs -n kube-system -l k8s-app=kube-dns
 ```
 
 **Common causes:**
+
 1. **CoreDNS pods not running:** Check kube-system
 2. **NetworkPolicy blocking DNS:** Allow UDP/TCP 53 to kube-dns
 3. **Node DNS configuration:** Check /etc/resolv.conf
@@ -320,12 +350,14 @@ kubectl logs -n kube-system -l k8s-app=kube-dns
 ### Symptom: Cross-Namespace Communication Failed
 
 **Check NetworkPolicy:**
+
 ```bash
 kubectl get networkpolicy -A
 kubectl describe networkpolicy <policy-name>
 ```
 
 **Debug:**
+
 ```bash
 # Test from source pod
 kubectl exec -it <source-pod> -- nc -zv <target-service>.<target-namespace>.svc.cluster.local <port>
@@ -338,6 +370,7 @@ kubectl exec -it <source-pod> -- nc -zv <target-service>.<target-namespace>.svc.
 ### Symptom: High Latency
 
 **Check resource utilization:**
+
 ```bash
 kubectl top pods
 kubectl top nodes
@@ -345,6 +378,7 @@ kubectl describe pod <pod-name> | grep -A 10 "Limits"
 ```
 
 **Common causes:**
+
 1. **CPU throttling:** Increase CPU limits
 2. **Insufficient replicas:** Scale up
 3. **Network latency:** Check node placement
@@ -353,12 +387,14 @@ kubectl describe pod <pod-name> | grep -A 10 "Limits"
 ### Symptom: OOMKilled
 
 **Check memory usage:**
+
 ```bash
 kubectl describe pod <pod-name> | grep -A 5 "Last State"
 kubectl top pod <pod-name>
 ```
 
 **Fix:**
+
 ```yaml
 resources:
   limits:
@@ -429,6 +465,7 @@ kubectl diff -f manifest.yaml
 ## Escalation Checklist
 
 Before escalating:
+
 - [ ] Collected `kubectl describe` output
 - [ ] Gathered relevant logs
 - [ ] Checked events in namespace

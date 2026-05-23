@@ -10,6 +10,7 @@ fondo-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Fondo reference architecture
 **Workflow:** Part of the cicd skill category for Fondo integration.
 **Relates to:** Other fondo skills in this pack.

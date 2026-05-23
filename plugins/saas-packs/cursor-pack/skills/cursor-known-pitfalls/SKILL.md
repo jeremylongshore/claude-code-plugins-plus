@@ -30,6 +30,7 @@ Common Cursor IDE pitfalls and their solutions. Organized by category: AI behavi
 **Problem:** Clicking "Apply All" without reviewing diffs. Composer can generate code with wrong imports, hallucinated APIs, or logic errors.
 
 **Solution:**
+
 ```
 1. Click each file in the Changes panel to review its diff
 2. Check imports: are they real packages in your project?
@@ -42,11 +43,13 @@ Common Cursor IDE pitfalls and their solutions. Organized by category: AI behavi
 ### Pitfall 2: Context Window Overflow
 
 **Problem:** Adding too many `@Files`, `@Folders`, and `@Codebase` references. The model silently drops information, leading to:
+
 - Ignoring your instructions
 - Repeating itself
 - Generating generic instead of project-specific code
 
 **Solution:**
+
 ```
 - Use @Files (specific) over @Folders (broad) over @Codebase (broadest)
 - Limit to 3-5 file references per prompt
@@ -65,6 +68,7 @@ Common Cursor IDE pitfalls and their solutions. Organized by category: AI behavi
 **Problem:** AI uses old APIs (React class components, Express 4 syntax, CommonJS require).
 
 **Solution:** Pin versions in project rules:
+
 ```yaml
 # .cursor/rules/stack.mdc
 ---
@@ -84,6 +88,7 @@ ALWAYS use these versions:
 **Problem:** Tab suggests text you do not want, and you accidentally accept it while pressing Tab for indentation.
 
 **Solution:**
+
 - Use `Esc` to dismiss before pressing Tab for indentation
 - Remap Tab acceptance: `Cmd+K Cmd+S` > search `acceptCursorTabSuggestion` > assign different key
 - Or temporarily disable Tab completion for specific tasks
@@ -95,6 +100,7 @@ ALWAYS use these versions:
 **Problem:** Copying an error message that includes an API key, database URL, or token and pasting it into Chat.
 
 **Solution:**
+
 ```
 NEVER paste:
 - .env file contents
@@ -113,6 +119,7 @@ INSTEAD:
 **Problem:** Without `.cursorignore`, sensitive files (.env, credentials, PII) may be included in AI context via `@Codebase` search or automatic context.
 
 **Solution:** Create `.cursorignore` in every project:
+
 ```gitignore
 .env*
 **/secrets/
@@ -126,6 +133,7 @@ INSTEAD:
 **Problem:** Without Privacy Mode, code may be retained by model providers for training.
 
 **Solution:**
+
 - Individual: `Cursor Settings` > `General` > Privacy Mode > ON
 - Team: Admin Dashboard > Privacy > Enforce for all members
 - Verify at cursor.com/settings
@@ -135,6 +143,7 @@ INSTEAD:
 **Problem:** AI generates authentication, encryption, or authorization code that looks correct but has subtle vulnerabilities (timing attacks, SQL injection via string concatenation, missing CSRF protection).
 
 **Solution:**
+
 ```
 - Security-critical code ALWAYS needs human expert review
 - Run SAST tools (Semgrep, Snyk) on AI-generated code
@@ -149,6 +158,7 @@ INSTEAD:
 **Problem:** Without `.cursor/rules/`, the AI generates code without knowing your conventions, stack, or patterns. Result: inconsistent code that does not match your project.
 
 **Solution:** Create at minimum:
+
 1. `project.mdc` (stack, conventions, alwaysApply: true)
 2. `security.mdc` (security constraints, alwaysApply: true)
 3. Language-specific rules with glob patterns
@@ -158,6 +168,7 @@ INSTEAD:
 **Problem:** Multiple `.mdc` rules with contradictory instructions (one says "use classes", another says "use functions").
 
 **Solution:**
+
 - Review all rules together for consistency
 - Use specific globs so rules apply only to relevant files
 - Test with `@Cursor Rules` in Chat to see which rules are active for a given file
@@ -167,6 +178,7 @@ INSTEAD:
 **Problem:** GitHub Copilot + Cursor Tab both enabled. Double ghost text, conflicting suggestions, UI glitches.
 
 **Solution:** Disable all other inline completion extensions:
+
 - GitHub Copilot
 - TabNine
 - Codeium
@@ -187,6 +199,7 @@ Only one inline completion provider should be active.
 **Problem:** Cursor watches every file for changes, including `node_modules/`, `dist/`, and `.git/objects/`. Causes high CPU and memory.
 
 **Solution:**
+
 ```json
 // settings.json
 {
@@ -218,6 +231,7 @@ Only one inline completion provider should be active.
 **Problem:** Developers commit AI-generated code without review. Bugs, wrong patterns, and security issues reach main branch.
 
 **Solution:**
+
 - Pre-commit hooks: lint + test (catches many AI errors)
 - PR reviews: all code (human or AI) needs review
 - Team policy: "AI output is a first draft, not production code"
@@ -227,6 +241,7 @@ Only one inline completion provider should be active.
 **Problem:** Some developers use Opus for everything (consuming quota fast), others use cursor-small (poor quality).
 
 **Solution:**
+
 - Set team default model in admin dashboard
 - Document model selection guidance in onboarding
 - Use Auto mode as default (Cursor selects appropriate model)

@@ -19,14 +19,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ramp Hello World
 
 ## Overview
+
 List cards, get transactions, and check user details using the Ramp API.
 
 ## Prerequisites
+
 - Completed `ramp-install-auth` with valid access token
 
 ## Instructions
 
 ### Step 1: List Virtual Cards
+
 ```python
 resp = requests.get(f"{BASE}/cards", headers=headers, params={"page_size": 10})
 for card in resp.json()["data"]:
@@ -35,6 +38,7 @@ for card in resp.json()["data"]:
 ```
 
 ### Step 2: Get Recent Transactions
+
 ```python
 resp = requests.get(f"{BASE}/transactions", headers=headers, params={
     "start_date": "2026-01-01",
@@ -45,6 +49,7 @@ for tx in resp.json()["data"]:
 ```
 
 ### Step 3: List Users
+
 ```python
 resp = requests.get(f"{BASE}/users", headers=headers, params={"page_size": 10})
 for user in resp.json()["data"]:
@@ -52,11 +57,13 @@ for user in resp.json()["data"]:
 ```
 
 ## Output
+
 - Cards listed with limits and status
 - Recent transactions with merchant details
 - Users with role information
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Empty results | No data in sandbox | Create test cards first |
@@ -64,8 +71,10 @@ for user in resp.json()["data"]:
 | `400 Bad date format` | Wrong date format | Use ISO 8601: YYYY-MM-DD |
 
 ## Resources
+
 - [Ramp API Documentation](https://docs.ramp.com/)
 - [Cards and Funds](https://docs.ramp.com/developer-api/v1/cards-and-funds)
 
 ## Next Steps
+
 Issue virtual cards: `ramp-core-workflow-a`

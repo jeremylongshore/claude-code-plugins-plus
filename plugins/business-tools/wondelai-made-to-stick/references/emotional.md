@@ -202,6 +202,7 @@ Nonprofit messaging lives or dies on emotional appeal — but faces unique chall
 ### Exercise 1: The "Why Do You Care?" Chain
 
 Ask "Why do you care about this?" five times, going deeper each time:
+
 1. "We want to increase conversion rates." — Why do you care?
 2. "Because we need more revenue." — Why do you care?
 3. "Because if we do not grow, we will have to lay people off." — Why do you care?

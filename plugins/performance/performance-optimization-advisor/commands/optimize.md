@@ -46,6 +46,7 @@ Receive comprehensive, prioritized performance optimization recommendations.
 ## Output
 
 Provide comprehensive report with:
+
 - Executive summary of performance state
 - Categorized optimization opportunities
 - Prioritization matrix (impact vs effort)

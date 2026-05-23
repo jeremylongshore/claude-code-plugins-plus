@@ -10,6 +10,7 @@ appfolio-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute AppFolio production deployment checklist
 **Workflow:** Part of the operations skill category for AppFolio integration.
 **Relates to:** Other appfolio skills in this pack.

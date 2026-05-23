@@ -10,6 +10,7 @@ coreweave-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure CoreWeave local development workflow
 **Workflow:** Part of the onboarding skill category for CoreWeave integration.
 **Relates to:** Other coreweave skills in this pack.

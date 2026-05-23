@@ -20,9 +20,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # QuickNode Install Auth
 
 ## Overview
+
 Set up QuickNode blockchain RPC endpoints and install the QuickNode SDK or ethers.js for blockchain interactions.
 
 ## Prerequisites
+
 - QuickNode account at quicknode.com
 - An endpoint created for your target chain (Ethereum, Solana, etc.)
 - Node.js 18+
@@ -30,6 +32,7 @@ Set up QuickNode blockchain RPC endpoints and install the QuickNode SDK or ether
 ## Instructions
 
 ### Step 1: Create Endpoint
+
 ```text
 1. Go to quicknode.com > Dashboard > Create Endpoint
 2. Select chain: Ethereum Mainnet (or testnet for development)
@@ -39,6 +42,7 @@ Set up QuickNode blockchain RPC endpoints and install the QuickNode SDK or ether
 ```
 
 ### Step 2: Install SDK
+
 ```bash
 set -euo pipefail
 npm install @quicknode/sdk viem
@@ -47,6 +51,7 @@ npm install ethers
 ```
 
 ### Step 3: Configure Environment
+
 ```bash
 # .env
 QUICKNODE_ENDPOINT=https://xxx-yyy.quiknode.pro/YOUR_TOKEN/
@@ -54,6 +59,7 @@ QUICKNODE_WSS=wss://xxx-yyy.quiknode.pro/YOUR_TOKEN/
 ```
 
 ### Step 4: Verify Connection (QuickNode SDK)
+
 ```typescript
 import { Core } from '@quicknode/sdk';
 
@@ -63,6 +69,7 @@ console.log(`Connected! Current block: ${parseInt(blockNumber, 16)}`);
 ```
 
 ### Step 5: Verify Connection (ethers.js)
+
 ```typescript
 import { ethers } from 'ethers';
 
@@ -72,11 +79,13 @@ console.log(`Connected! Block: ${block}`);
 ```
 
 ## Output
+
 - QuickNode endpoint configured
 - SDK installed and verified
 - Successful RPC call confirming connectivity
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401 Unauthorized` | Invalid token in URL | Verify endpoint URL from Dashboard |
@@ -84,8 +93,10 @@ console.log(`Connected! Block: ${block}`);
 | `eth method not found` | Add-on required | Enable add-on in QuickNode Dashboard |
 
 ## Resources
+
 - [QuickNode SDK Getting Started](https://www.quicknode.com/docs/quicknode-sdk/getting-started)
 - [Ethereum Quickstart](https://www.quicknode.com/docs/ethereum/quickstart)
 
 ## Next Steps
+
 First blockchain query: `quicknode-hello-world`

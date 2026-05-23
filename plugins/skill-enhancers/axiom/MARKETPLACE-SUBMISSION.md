@@ -14,11 +14,13 @@ Battle-tested Claude Code skills for modern xOS (iOS, iPadOS, watchOS, tvOS) dev
 ## Installation Methods
 
 ### Method 1: Direct Installation from GitHub
+
 ```bash
 claude-code plugin add CharlesWiltgen/Axiom
 ```
 
 ### Method 2: Add Axiom Marketplace
+
 ```bash
 /plugin marketplace add CharlesWiltgen/Axiom
 ```
@@ -30,6 +32,7 @@ Users can then install Axiom from the marketplace within Claude Code.
 13 production-ready, battle-tested skills organized in 4 categories:
 
 ### Debugging & Troubleshooting (5 skills)
+
 - **Xcode Debugging** – Environment-first diagnostics, prevents 30+ minute rabbit holes
 - **Memory Debugging** – Systematic leak diagnosis covering 90% of real-world issues
 - **Build Troubleshooting** – CocoaPods/SPM dependency resolution
@@ -37,15 +40,18 @@ Users can then install Axiom from the marketplace within Claude Code.
 - **UI Testing** – Condition-based waiting patterns and Recording UI Automation (Xcode 26)
 
 ### Concurrency & Async (1 skill)
+
 - **Swift Concurrency** – Swift 6 strict concurrency patterns, actor isolation, Sendable, data race prevention
 
 ### UI & Design (4 skills)
+
 - **Liquid Glass** – Apple's new material design system (iOS 26+)
 - **SwiftUI Performance** – New SwiftUI Instrument in Instruments 26, Cause & Effect Graph
 - **SwiftUI Debugging** – View updates, preview crashes, layout issues with decision trees
 - **UI Testing** – Covered above under Debugging & Troubleshooting
 
 ### Persistence (4 skills)
+
 - **Database Migration** – Safe schema evolution, prevents data loss for 100k+ user apps
 - **SwiftData** – @Model, @Query patterns, CloudKit integration, iOS 26+ features
 - **SQLiteData** – Point-Free's type-safe SQLite patterns, batch performance
@@ -54,12 +60,14 @@ Users can then install Axiom from the marketplace within Claude Code.
 ## Quality Assurance
 
 ### Testing Methodology
+
 - **TDD-Tested:** 3 core skills (xcode-debugging, swift-concurrency, database-migration) validated with RED-GREEN-REFACTOR cycles
 - **Pressure Testing:** Validated under App Store deadline pressure, authority pressure, misinterpretation scenarios
 - **Research-Validated:** WWDC 2025 skills (Liquid Glass, SwiftUI Performance, UI Testing) reviewed against official guidance
 - **Peer-Reviewed:** Reference skills (persistence) reviewed for accuracy and completeness
 
 ### Key Metrics
+
 - **Reduces debugging time:** 30+ min → 2-5 min (Xcode issues)
 - **Memory leak diagnosis:** 2-3 hours → 15-30 min
 - **Test reliability:** From flaky (50% CI failures) → reliable

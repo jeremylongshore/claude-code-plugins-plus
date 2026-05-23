@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola Incident Runbook
 
 ## Overview
+
 Standard operating procedures for Granola incidents — from individual recording failures to organization-wide outages. Covers triage, remediation, communication, escalation, and post-incident review. Designed for IT admins, team leads, and individual users.
 
 ## Prerequisites
+
 - Granola admin access (for org-level incidents)
 - Bookmark [status.granola.ai](https://status.granola.ai) for service status
 - Internal communication channel identified (#granola-support or similar)
@@ -58,6 +60,7 @@ except:
 | **P4 Low** | Minor issue, workaround exists | < 24 hours | UI glitch, slow processing |
 
 **Scope assessment questions:**
+
 1. Is it just you, or are others affected too? → Ask in #granola-support
 2. Is [status.granola.ai](https://status.granola.ai) showing an incident? → P1/P2 if yes
 3. Was it working earlier today? → Recent change (OS update, permissions) likely
@@ -72,6 +75,7 @@ except:
 **Severity:** P3 (single user) or P2 (team-wide)
 
 **Immediate actions:**
+
 1. Click Granola menu bar icon > **Start Recording** (manual override)
 2. If manual start fails:
    - Check that the meeting has audio playing
@@ -79,6 +83,7 @@ except:
    - Restart: right-click menu bar icon > **Restart Granola**
 
 **Root cause investigation:**
+
 - [ ] Calendar event has a video conferencing link (Zoom/Meet/Teams)
 - [ ] Calendar is connected in Settings > Calendar
 - [ ] Microphone permission granted
@@ -94,6 +99,7 @@ except:
 **Severity:** P3
 
 **Immediate actions:**
+
 1. Check: is the computer awake? (Sleep kills transcription)
 2. Right-click Granola icon > **Restart Granola**
 3. Reopen your note — transcription may resume
@@ -108,6 +114,7 @@ except:
 **Severity:** P3
 
 **Immediate actions:**
+
 1. Wait 15 minutes — long meetings take longer to process
 2. Check internet connectivity
 3. Check [status.granola.ai](https://status.granola.ai) for service issues
@@ -123,12 +130,14 @@ except:
 **Severity:** P3
 
 **Immediate actions:**
+
 1. Settings > Integrations > check the target integration status
 2. Disconnect and reconnect the integration
 3. Re-share the note manually
 4. For Zapier: check Zap history at zapier.com for errors
 
 **Common causes:**
+
 | Integration | Likely Cause | Fix |
 |-------------|-------------|-----|
 | Slack | Bot removed from channel | `/invite @Granola` in the channel |
@@ -143,6 +152,7 @@ except:
 **Severity:** P1 Critical
 
 **Immediate actions:**
+
 1. Confirm at [status.granola.ai](https://status.granola.ai)
 2. Switch to **backup note-taking** immediately:
    - Open a text editor or Google Doc
@@ -162,8 +172,8 @@ I'll update when service is restored.
 Next update: [time + 30 min]
 ```
 
-4. Subscribe to status updates at status.granola.ai
-5. Resume normal operation when status returns to Operational
+1. Subscribe to status updates at status.granola.ai
+2. Resume normal operation when status returns to Operational
 
 ### Step 3 — Escalation Path
 
@@ -215,6 +225,7 @@ After resolution, document:
 ```
 
 ## Output
+
 - Incident triaged and severity assigned
 - Remediation applied or workaround enabled
 - Stakeholders notified with status updates
@@ -230,10 +241,12 @@ After resolution, document:
 | Issue persists after all troubleshooting | Create debug bundle, submit to help@granola.ai |
 
 ## Resources
+
 - [Granola Status Page](https://status.granola.ai)
 - [Help Center](https://help.granola.ai)
 - [Transcription Troubleshooting](https://docs.granola.ai/help-center/troubleshooting/transcription-issues)
 - [Granola Updates (Known Issues)](https://www.granola.ai/updates)
 
 ## Next Steps
+
 Proceed to `granola-data-handling` for data export, retention, and GDPR compliance.

@@ -10,6 +10,7 @@ miro-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Miro integrations to production
 **Workflow:** Part of the cicd skill category for Miro integration.
 **Relates to:** Other miro skills in this pack.

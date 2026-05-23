@@ -51,6 +51,7 @@ sudo dpkg -i cursor.deb
 ```
 
 Add to PATH for terminal launching:
+
 ```bash
 # Add to ~/.bashrc or ~/.zshrc
 alias cursor='/path/to/cursor.AppImage'

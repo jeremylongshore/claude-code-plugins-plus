@@ -66,6 +66,7 @@ Detailed risk output (with `--detailed` flag):
 ## Protocol Deep Dive
 
 Use `--protocol <name> --detailed` for full protocol analysis including:
+
 - Validator count and diversity metrics
 - Fee structure breakdown
 - Historical APY trends

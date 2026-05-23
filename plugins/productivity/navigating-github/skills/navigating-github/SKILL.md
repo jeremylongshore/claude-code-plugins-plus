@@ -92,16 +92,19 @@ Hands-on lessons using real commands on the user's actual project. Every lesson 
 Read `${CLAUDE_SKILL_DIR}/references/learning-curriculum.md` for the full curriculum. Route by trigger:
 
 **Beginner track:**
+
 - "teach me github" / "learn github" → **GitHub 101** — commits, push, the basics
 - "what are branches" / "teach me branches" → **Branching Basics** — create, switch, see the difference
 - "teach me PRs" → **Your First PR** — branch, push, create PR, merge
 
 **Intermediate track:**
+
 - "teach me branching strategies" → **Branch Workflows** — naming, feature branches, staying current
 - "teach me code review" → **PR Review Flow** — review, comment, approve
 - "how do I collaborate" → **Team Git** — forks, upstream sync, co-authoring
 
 **Advanced track:**
+
 - "teach me rebase" → **Rebase vs Merge** — interactive rebase, squash, clean history
 - "teach me CI/CD" / "github actions" → **GitHub Actions** — write a workflow, watch it run
 - "how do code review apps work" → **Review Ecosystem** — CodeRabbit, Copilot Review, and the ecosystem (read `${CLAUDE_SKILL_DIR}/references/github-review-apps.md`)
@@ -109,6 +112,7 @@ Read `${CLAUDE_SKILL_DIR}/references/learning-curriculum.md` for the full curric
 After each lesson: summarize what was learned (2-3 bullets), give a small challenge to try solo, suggest the next lesson.
 
 **Teaching rules:**
+
 - Run commands one at a time, explain after each result
 - If the user makes a mistake, fix it together — mistakes are learning moments
 - If the user already knows something, skip ahead
@@ -120,6 +124,7 @@ After each lesson: summarize what was learned (2-3 bullets), give a small challe
 ## Examples
 
 **Setup** (no .git, no auth):
+
 ```
 User: "help me with github"
 Agent: [checks — no .git, gh not authenticated]
@@ -130,6 +135,7 @@ Agent: "Repo is live at github.com/user/project. Run /github-learn to
 ```
 
 **Learn** (beginner, GitHub 101):
+
 ```
 User: "teach me github"
 Agent: "Make a small change to any file — add a comment, fix a typo."
@@ -141,6 +147,7 @@ Agent: [verifies understanding before moving to next step]
 ```
 
 **Learn** (advanced, rebase):
+
 ```
 User: "/github-learn rebase"
 Agent: "Create a branch with 3 small commits, then we'll squash them."

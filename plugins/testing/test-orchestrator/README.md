@@ -3,16 +3,19 @@
 Orchestrate complex test workflows with dependencies, parallel execution, and smart test selection.
 
 ## Installation
+
 ```bash
 /plugin install test-orchestrator@claude-code-plugins-plus
 ```
 
 ## Usage
+
 ```bash
 /orchestrate
 ```
 
 ## Features
+
 - Dependency-aware test execution
 - Parallel test running
 - Smart test selection (run only affected tests)
@@ -21,4 +24,5 @@ Orchestrate complex test workflows with dependencies, parallel execution, and sm
 - CI/CD integration
 
 ## License
+
 MIT

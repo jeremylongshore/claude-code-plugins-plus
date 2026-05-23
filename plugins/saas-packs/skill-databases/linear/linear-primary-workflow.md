@@ -10,6 +10,7 @@ linear-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Linear primary workflow
 **Workflow:** Part of the onboarding skill category for Linear integration.
 **Relates to:** Other linear skills in this pack.

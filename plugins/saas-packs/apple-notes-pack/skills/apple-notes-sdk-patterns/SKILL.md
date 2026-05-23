@@ -19,11 +19,13 @@ compatibility: Designed for Claude Code
 # Apple Notes SDK Patterns
 
 ## Overview
+
 Production patterns for Apple Notes automation: JXA wrapper class, error handling, batch operations, and cross-account support.
 
 ## Instructions
 
 ### Step 1: JXA Client Wrapper (Node.js)
+
 ```typescript
 // src/notes-client.ts
 import { execSync } from "child_process";
@@ -74,6 +76,7 @@ export { AppleNotesClient };
 ```
 
 ### Step 2: Batch Operations with Throttling
+
 ```typescript
 async function batchCreateNotes(
   client: AppleNotesClient,
@@ -91,6 +94,7 @@ async function batchCreateNotes(
 ```
 
 ## Output
+
 - Type-safe JXA client wrapper for Node.js
 - List, create, search operations via osascript
 - Batch operations with throttling

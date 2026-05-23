@@ -10,6 +10,7 @@ clickhouse-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply ClickHouse advanced debugging
 **Workflow:** Part of the enterprise skill category for ClickHouse integration.
 **Relates to:** Other clickhouse skills in this pack.

@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Hello World
 
 ## Overview
+
 Make your first authenticated requests using Clerk across server components, client components, API routes, and server actions. Validates your Clerk integration end-to-end.
 
 ## Prerequisites
+
 - Clerk SDK installed (`clerk-install-auth` completed)
 - Environment variables configured (`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`)
 - ClerkProvider wrapping application root
@@ -37,6 +39,7 @@ Make your first authenticated requests using Clerk across server components, cli
 ## Instructions
 
 ### Step 1: Server Component — auth() and currentUser()
+
 ```typescript
 // app/dashboard/page.tsx
 import { auth, currentUser } from '@clerk/nextjs/server'
@@ -65,6 +68,7 @@ export default async function DashboardPage() {
 **Key distinction:** `auth()` is cheap (JWT parsing, no network). `currentUser()` is expensive (Backend API call, rate-limited). Prefer `auth()` when you only need `userId`, `orgId`, or `sessionClaims`.
 
 ### Step 2: Protected API Route
+
 ```typescript
 // app/api/hello/route.ts
 import { auth } from '@clerk/nextjs/server'
@@ -87,6 +91,7 @@ export async function GET() {
 ```
 
 ### Step 3: Client Component with Hooks
+
 ```typescript
 'use client'
 import { useUser, useAuth, useClerk } from '@clerk/nextjs'
@@ -125,6 +130,7 @@ export function AuthTest() {
 ```
 
 ### Step 4: Server Action with Auth
+
 ```typescript
 // app/actions.ts
 'use server'
@@ -163,6 +169,7 @@ export function GreetingButton() {
 ```
 
 ### Step 5: Express.js Hello World
+
 ```typescript
 import express from 'express'
 import { clerkMiddleware, requireAuth, getAuth } from '@clerk/express'
@@ -189,6 +196,7 @@ app.listen(3001)
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `userId` is null | User not authenticated | Redirect to `/sign-in` or check middleware covers route |
@@ -198,6 +206,7 @@ app.listen(3001)
 | `auth() was called but Clerk can't detect clerkMiddleware()` | Middleware not in project root | Move `middleware.ts` out of `app/` to project root |
 
 ## Enterprise Considerations
+
 - Use `auth()` over `currentUser()` in hot paths to avoid Backend API rate limits
 - Deduplicate `currentUser()` calls with React's `cache()` function across server components in the same request
 - For microservices, pass Clerk JWTs between services and verify with `@clerk/backend` or `@clerk/express`
@@ -205,10 +214,12 @@ app.listen(3001)
 - Custom session claims can be set in Dashboard > Sessions > Customize session token (limit: 1.2KB)
 
 ## Resources
+
 - [auth() Reference](https://clerk.com/docs/reference/nextjs/app-router/auth)
 - [currentUser() Reference](https://clerk.com/docs/reference/nextjs/app-router/current-user)
 - [useUser() Hook](https://clerk.com/docs/references/react/use-user)
 - [Express getAuth()](https://clerk.com/docs/reference/express/get-auth)
 
 ## Next Steps
+
 Proceed to `clerk-local-dev-loop` for local development workflow setup.

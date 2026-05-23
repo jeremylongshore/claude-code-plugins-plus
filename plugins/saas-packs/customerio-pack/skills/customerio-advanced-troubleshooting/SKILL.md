@@ -248,6 +248,7 @@ curl -s "https://status.customer.io/api/v2/status.json" \
 ### Step 5: Incident Response Runbooks
 
 **P1 — Complete outage (all API calls failing):**
+
 1. Check https://status.customer.io — is Customer.io down?
 2. If CIO is up: check your credentials (rotate if compromised)
 3. Enable circuit breaker to stop retries hitting a dead endpoint
@@ -256,6 +257,7 @@ curl -s "https://status.customer.io/api/v2/status.json" \
 6. When restored: drain fallback queue, verify event delivery
 
 **P2 — High error rate (>5% failures):**
+
 1. Check error breakdown: which status codes?
 2. If 429: reduce concurrency, check rate limiter config
 3. If 5xx: check CIO status page, enable backoff
@@ -263,6 +265,7 @@ curl -s "https://status.customer.io/api/v2/status.json" \
 5. Monitor error rate — escalate to P1 if not recovering
 
 **P3 — Delivery issues (messages not arriving):**
+
 1. Verify user has `email` attribute (People > user profile)
 2. Check suppression status (Suppressed badge)
 3. Check bounce history (Activity tab > filter bounces)
@@ -271,6 +274,7 @@ curl -s "https://status.customer.io/api/v2/status.json" \
 6. Review spam folder and email headers
 
 **P4 — Webhook processing failures:**
+
 1. Verify webhook endpoint is publicly accessible
 2. Check signature verification (secret matches dashboard?)
 3. Review webhook event logs for parsing errors

@@ -10,6 +10,7 @@ appfolio-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working AppFolio example
 **Workflow:** Part of the onboarding skill category for AppFolio integration.
 **Relates to:** Other appfolio skills in this pack.

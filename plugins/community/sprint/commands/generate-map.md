@@ -74,10 +74,12 @@ Create/overwrite `.claude/project-map.md` with this structure:
 ## Project Structure
 
 ```
+
 /
 ├── backend/          # [description]
 ├── frontend/         # [description]
 ├── ...
+
 ```
 
 ## API Surface
@@ -113,11 +115,13 @@ Key components: [list]
 ```
 
 ### Docker Services
+
 | Service | Port | Description |
 |---------|------|-------------|
 | ...     | ...  | ...         |
 
 ### Environment Variables
+
 | Variable | Purpose | Required |
 |----------|---------|----------|
 | ...      | ...     | ...      |
@@ -142,6 +146,7 @@ Key components: [list]
 
 - [Limitation 1]
 - [Limitation 2]
+
 ```
 
 ## Guidelines

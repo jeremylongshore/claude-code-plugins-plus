@@ -10,6 +10,7 @@ abridge-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Abridge example
 **Workflow:** Part of the onboarding skill category for Abridge integration.
 **Relates to:** Other abridge skills in this pack.

@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly CI Integration
 
 ## Overview
+
 Set up CI/CD pipelines for Instantly API v2 integrations. Covers GitHub Actions workflows for testing against the Instantly mock server, validating API key scopes, and deploying webhook receivers. Uses the mock server at `https://developer.instantly.ai/_mock/api/v2/` so CI runs don't send real emails or consume production API limits.
 
 ## Prerequisites
+
 - GitHub repository with Instantly integration code
 - `INSTANTLY_API_KEY` secret in GitHub repo settings (for production tests)
 - Node.js 18+ or Python 3.10+ in the project
@@ -37,6 +39,7 @@ Set up CI/CD pipelines for Instantly API v2 integrations. Covers GitHub Actions 
 ## Instructions
 
 ### Step 1: GitHub Actions Workflow
+
 ```yaml
 # .github/workflows/instantly-ci.yml
 name: Instantly Integration CI
@@ -101,6 +104,7 @@ jobs:
 ```
 
 ### Step 2: API Scope Validation Script
+
 ```typescript
 // scripts/validate-types.ts
 // Verifies the API client types match expected Instantly v2 schema
@@ -127,6 +131,7 @@ validateApiAccess().catch((err) => {
 ```
 
 ### Step 3: Integration Test Suite
+
 ```typescript
 // tests/integration/instantly.test.ts
 import { describe, it, expect } from "vitest";
@@ -171,6 +176,7 @@ describe("Instantly API v2 Integration", () => {
 ```
 
 ### Step 4: Deployment Workflow
+
 ```yaml
 # .github/workflows/deploy.yml
 name: Deploy Instantly Integration
@@ -210,6 +216,7 @@ jobs:
 ```
 
 ### Step 5: Pre-Commit Hook
+
 ```bash
 #!/bin/bash
 # .husky/pre-commit
@@ -229,6 +236,7 @@ npx vitest run --reporter=dot
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | CI fails on mock server | Mock schema doesn't match code | Update types to match v2 schema |
@@ -237,9 +245,11 @@ npx vitest run --reporter=dot
 | Deploy fails | Missing env vars | Check secrets are set in deployment target |
 
 ## Resources
+
 - [Instantly Mock Server](https://developer.instantly.ai/_mock/api/v2/)
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
 
 ## Next Steps
+
 For deployment to cloud platforms, see `instantly-deploy-integration`.

@@ -191,6 +191,7 @@ Check the **Issues** tab in your Sentry project within 30 seconds. If the messag
 The DSN authenticates the SDK for sending events. For the Sentry CLI (source maps, releases, deploys), you need a separate **auth token**.
 
 Generate one at https://sentry.io/settings/auth-tokens/ with scopes:
+
 - `project:releases` — create releases and upload source maps
 - `org:read` — read organization data
 

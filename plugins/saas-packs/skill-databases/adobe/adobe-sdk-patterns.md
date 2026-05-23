@@ -10,6 +10,7 @@ adobe-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Adobe SDK patterns
 **Workflow:** Part of the onboarding skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

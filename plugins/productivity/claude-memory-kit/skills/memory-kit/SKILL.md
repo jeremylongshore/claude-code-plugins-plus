@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code
 # Memory Kit
 
 ## Current State
+
 !`[ -f MEMORY.md ] && echo "MEMORY.md: $(wc -l < MEMORY.md) lines, last modified $(date -r MEMORY.md '+%Y-%m-%d %H:%M')" || echo "No MEMORY.md found"`
 !`[ -f tasks/current-task.md ] && echo "Active task file found" || echo "No task file"`
 
@@ -35,6 +36,7 @@ session state (goals, decisions, patterns, open questions) to a `MEMORY.md` file
 that survives across sessions.
 
 Five commands cover the full lifecycle:
+
 - `/memory-save` — snapshot before compaction
 - `/memory-load` — restore at session start
 - `/memory-update` — log a decision mid-session
@@ -57,6 +59,7 @@ Five commands cover the full lifecycle:
 ## Output
 
 The skill produces and maintains a `MEMORY.md` file containing:
+
 - **Session metadata**: Timestamp, branch, and project name
 - **Goals**: Current objectives carried across sessions
 - **Decisions**: Key choices made with rationale

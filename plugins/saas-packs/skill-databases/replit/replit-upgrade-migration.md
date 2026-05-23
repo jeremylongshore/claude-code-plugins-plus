@@ -10,6 +10,7 @@ replit-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Migrate between Replit tiers, handle breaking changes, and update deprecated features gracefully.
 **Workflow:** Maintenance skill - manages transitions as platform evolves and team needs change.
 **Relates to:** Informs replit-cost-optimization; references replit-nix-configuration for environment updates.

@@ -10,6 +10,7 @@ anima-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Anima SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Anima integration.
 **Relates to:** Other anima skills in this pack.

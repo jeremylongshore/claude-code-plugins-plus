@@ -8,7 +8,7 @@ Circuit breakers prevent cascading failures by stopping requests to a failing se
 
 **Implementation:**
 
-*   **Istio:** Use Istio's `DestinationRule` to configure circuit breaking.  Define thresholds for connection errors, request timeouts, and number of consecutive errors.
+* **Istio:** Use Istio's `DestinationRule` to configure circuit breaking.  Define thresholds for connection errors, request timeouts, and number of consecutive errors.
 
     ```yaml
     apiVersion: networking.istio.io/v1alpha3
@@ -31,17 +31,17 @@ Circuit breakers prevent cascading failures by stopping requests to a failing se
           maxEjectionPercent: 10
     ```
 
-    *   `consecutive5xxErrors`: Number of consecutive 5xx errors before ejecting the host.
-    *   `interval`: The time interval between ejection analysis.
-    *   `baseEjectionTime`: The minimum ejection duration.
-    *   `maxEjectionPercent`: The maximum percentage of hosts that can be ejected.
+  * `consecutive5xxErrors`: Number of consecutive 5xx errors before ejecting the host.
+  * `interval`: The time interval between ejection analysis.
+  * `baseEjectionTime`: The minimum ejection duration.
+  * `maxEjectionPercent`: The maximum percentage of hosts that can be ejected.
 
-*   **Linkerd:** Linkerd automatically implements circuit breaking through its retries and timeouts configuration. You can fine-tune its behavior via Service Profiles. See Linkerd documentation for details.
+* **Linkerd:** Linkerd automatically implements circuit breaking through its retries and timeouts configuration. You can fine-tune its behavior via Service Profiles. See Linkerd documentation for details.
 
 **Configuration Notes:**
 
-*   Adjust the thresholds (e.g., `consecutive5xxErrors`, `interval`) based on your application's specific needs and traffic patterns.
-*   Monitor the circuit breaker status to identify failing services and potential issues.
+* Adjust the thresholds (e.g., `consecutive5xxErrors`, `interval`) based on your application's specific needs and traffic patterns.
+* Monitor the circuit breaker status to identify failing services and potential issues.
 
 ## 2. Retries
 
@@ -49,7 +49,7 @@ Retries allow a client to automatically retry failed requests, potentially recov
 
 **Implementation:**
 
-*   **Istio:** Configure retries within the `VirtualService`. Specify the number of retries, the retry timeout, and the retry conditions (e.g., `gateway-error`, `connect-failure`, `refused-stream`).
+* **Istio:** Configure retries within the `VirtualService`. Specify the number of retries, the retry timeout, and the retry conditions (e.g., `gateway-error`, `connect-failure`, `refused-stream`).
 
     ```yaml
     apiVersion: networking.istio.io/v1alpha3
@@ -69,17 +69,17 @@ Retries allow a client to automatically retry failed requests, potentially recov
           retryOn: gateway-error,connect-failure,refused-stream
     ```
 
-    *   `attempts`: The maximum number of retry attempts.
-    *   `perTryTimeout`: The timeout for each retry attempt.
-    *   `retryOn`: The conditions under which a retry should be attempted.
+  * `attempts`: The maximum number of retry attempts.
+  * `perTryTimeout`: The timeout for each retry attempt.
+  * `retryOn`: The conditions under which a retry should be attempted.
 
-*   **Linkerd:** Linkerd provides automatic retries based on Service Profiles. Retries are configured based on the observed behavior of the service.
+* **Linkerd:** Linkerd provides automatic retries based on Service Profiles. Retries are configured based on the observed behavior of the service.
 
 **Configuration Notes:**
 
-*   Use exponential backoff for retries to avoid overwhelming the failing service.
-*   Limit the number of retries to prevent infinite loops.
-*   Consider the idempotency of the operation being retried to avoid unintended side effects.  Only retry idempotent operations unless your application logic can handle duplicates.
+* Use exponential backoff for retries to avoid overwhelming the failing service.
+* Limit the number of retries to prevent infinite loops.
+* Consider the idempotency of the operation being retried to avoid unintended side effects.  Only retry idempotent operations unless your application logic can handle duplicates.
 
 ## 3. Timeouts
 
@@ -87,7 +87,7 @@ Timeouts prevent requests from hanging indefinitely, ensuring that resources are
 
 **Implementation:**
 
-*   **Istio:** Configure timeouts within the `VirtualService`. Specify the `timeout` duration for each route.
+* **Istio:** Configure timeouts within the `VirtualService`. Specify the `timeout` duration for each route.
 
     ```yaml
     apiVersion: networking.istio.io/v1alpha3
@@ -104,15 +104,15 @@ Timeouts prevent requests from hanging indefinitely, ensuring that resources are
         timeout: 5s
     ```
 
-    *   `timeout`: The maximum duration for a request to complete.
+  * `timeout`: The maximum duration for a request to complete.
 
-*   **Linkerd:** Linkerd uses request timeouts based on Service Profiles. These are automatically configured based on the observed behavior of the service. You can manually override these.
+* **Linkerd:** Linkerd uses request timeouts based on Service Profiles. These are automatically configured based on the observed behavior of the service. You can manually override these.
 
 **Configuration Notes:**
 
-*   Set timeouts that are appropriate for the expected response time of the service.
-*   Monitor timeout events to identify slow or unresponsive services.
-*   Consider using different timeouts for different types of requests.
+* Set timeouts that are appropriate for the expected response time of the service.
+* Monitor timeout events to identify slow or unresponsive services.
+* Consider using different timeouts for different types of requests.
 
 ## 4. Fallbacks (Optional)
 
@@ -120,7 +120,7 @@ For critical services, consider implementing fallback mechanisms to provide a de
 
 **Implementation:**
 
-*   Fallbacks are typically implemented within the application code itself.  The service mesh can be configured to route traffic to a fallback service when the primary service is unavailable.
+* Fallbacks are typically implemented within the application code itself.  The service mesh can be configured to route traffic to a fallback service when the primary service is unavailable.
 
 **Example (Conceptual):**
 
@@ -137,8 +137,8 @@ return data
 
 **Configuration Notes:**
 
-*   Carefully design fallback mechanisms to ensure data consistency and avoid unintended side effects.
-*   Monitor the usage of fallback mechanisms to identify potential issues with the primary service.
+* Carefully design fallback mechanisms to ensure data consistency and avoid unintended side effects.
+* Monitor the usage of fallback mechanisms to identify potential issues with the primary service.
 
 ## 5. Graceful Degradation
 
@@ -146,13 +146,13 @@ Graceful degradation ensures that the application remains functional, albeit wit
 
 **Implementation:**
 
-*   Implement mechanisms to disable non-essential features or redirect traffic to less resource-intensive services.
-*   Use feature flags to dynamically enable or disable features based on the current system load.
+* Implement mechanisms to disable non-essential features or redirect traffic to less resource-intensive services.
+* Use feature flags to dynamically enable or disable features based on the current system load.
 
 **Configuration Notes:**
 
-*   Prioritize essential features to ensure that the most critical functionality remains available.
-*   Monitor system load and performance metrics to trigger graceful degradation when necessary.
+* Prioritize essential features to ensure that the most critical functionality remains available.
+* Monitor system load and performance metrics to trigger graceful degradation when necessary.
 
 ## 6. Health Checks
 
@@ -160,7 +160,7 @@ Regular health checks allow the service mesh to automatically detect and remove 
 
 **Implementation:**
 
-*   **Istio:** Configure health checks within the `Service` definition in Kubernetes.
+* **Istio:** Configure health checks within the `Service` definition in Kubernetes.
 
     ```yaml
     apiVersion: v1
@@ -203,13 +203,13 @@ Regular health checks allow the service mesh to automatically detect and remove 
               periodSeconds: 5
     ```
 
-*   **Linkerd:** Linkerd automatically uses health checks provided by Kubernetes.
+* **Linkerd:** Linkerd automatically uses health checks provided by Kubernetes.
 
 **Configuration Notes:**
 
-*   Use health checks that accurately reflect the health of the service.
-*   Configure appropriate timeouts and thresholds for health checks.
-*   Ensure that health checks are lightweight and do not consume excessive resources.
+* Use health checks that accurately reflect the health of the service.
+* Configure appropriate timeouts and thresholds for health checks.
+* Ensure that health checks are lightweight and do not consume excessive resources.
 
 ## Monitoring and Alerting
 
@@ -217,9 +217,9 @@ Implement comprehensive monitoring and alerting to detect and respond to errors 
 
 **Configuration Notes:**
 
-*   Use a monitoring tool such as Prometheus, Grafana, or Datadog.
-*   Configure alerts to notify you of critical errors or performance degradations.
-*   Regularly review monitoring dashboards and alerts to identify trends and potential issues.
+* Use a monitoring tool such as Prometheus, Grafana, or Datadog.
+* Configure alerts to notify you of critical errors or performance degradations.
+* Regularly review monitoring dashboards and alerts to identify trends and potential issues.
 
 ## Conclusion
 

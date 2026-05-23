@@ -154,6 +154,7 @@ Produce a cleanup report in this format:
 ## Output
 
 A structured cleanup report containing:
+
 - Summary table with findings per dimension (count, applied, flagged, confidence)
 - List of changes applied with file:line references
 - List of flagged items with reasoning and suggested fixes
@@ -172,21 +173,25 @@ A structured cleanup report containing:
 ## Examples
 
 **Full cleanup:**
+
 ```
 /cleanup-code
 ```
 
 **Security-focused:**
+
 ```
 /cleanup-code --dimensions security,async
 ```
 
 **Changed files only:**
+
 ```
 /cleanup-code src/api/ --changed
 ```
 
 **Single dimension deep-dive:**
+
 ```
 /cleanup-code --dimensions dead
 ```

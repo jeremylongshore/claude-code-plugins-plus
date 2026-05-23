@@ -3,6 +3,7 @@
 ## Project Naming Standards
 
 ### Enforced Naming Convention
+
 ```typescript
 // Project naming: {team}-{service}-{environment}
 // Examples: payments-api-production, auth-worker-staging

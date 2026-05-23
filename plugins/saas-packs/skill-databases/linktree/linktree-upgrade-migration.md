@@ -10,6 +10,7 @@ linktree-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Linktree SDK upgrades
 **Workflow:** Part of the operations skill category for Linktree integration.
 **Relates to:** Other linktree skills in this pack.

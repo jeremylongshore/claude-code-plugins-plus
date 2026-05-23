@@ -10,6 +10,7 @@ grammarly-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Grammarly SDK patterns
 **Workflow:** Part of the onboarding skill category for Grammarly integration.
 **Relates to:** Other grammarly skills in this pack.

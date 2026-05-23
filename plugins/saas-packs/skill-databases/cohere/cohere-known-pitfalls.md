@@ -10,6 +10,7 @@ cohere-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Cohere anti-patterns
 **Workflow:** Part of the enterprise skill category for Cohere integration.
 **Relates to:** Other cohere skills in this pack.

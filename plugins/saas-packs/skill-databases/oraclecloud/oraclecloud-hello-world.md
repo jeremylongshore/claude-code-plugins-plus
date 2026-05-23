@@ -10,6 +10,7 @@ oraclecloud-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Oracle Cloud example
 **Workflow:** Part of the onboarding skill category for Oracle Cloud integration.
 **Relates to:** Other oraclecloud skills in this pack.

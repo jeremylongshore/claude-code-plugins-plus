@@ -5,6 +5,7 @@ Build a leveraged buyout (LBO) model in Excel with sources & uses, debt schedule
 ## What This Command Does
 
 Creates a complete 6-sheet LBO model:
+
 1. **Transaction Summary** - Deal terms and returns overview
 2. **Sources & Uses** - How the deal is financed
 3. **Operating Model** - 5-year revenue and EBITDA projections
@@ -19,6 +20,7 @@ When the user types `/build-lbo`, follow these steps:
 ### 1. Gather Transaction Inputs
 
 Ask for:
+
 - Target company name
 - Current year EBITDA
 - Entry valuation multiple (EV/EBITDA)
@@ -30,6 +32,7 @@ Ask for:
 ### 2. Structure Financing
 
 Build typical LBO capital structure:
+
 - Revolver: 1-2x EBITDA (undrawn at close)
 - Term Loan A: 2-2.5x EBITDA
 - Term Loan B: 2-3x EBITDA
@@ -40,6 +43,7 @@ Build typical LBO capital structure:
 ### 3. Build Complete Model
 
 Use Excel MCP server to:
+
 1. Calculate sources & uses
 2. Build operating projections
 3. Create debt schedules with amortization
@@ -50,6 +54,7 @@ Use Excel MCP server to:
 ### 4. Return Results
 
 Provide:
+
 - Entry and exit enterprise values
 - Equity check size
 - Debt paydown over hold period

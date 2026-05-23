@@ -30,6 +30,7 @@ Every compelling story follows the same pattern. Use this structure for all mess
 **Why it works:** Opening a story gap — the distance between where a character is and where they want to be — creates tension that demands resolution. When you name a customer's desire clearly, they lean in because they feel understood and want to know how the gap gets closed.
 
 **Key insights:**
+
 - Open a story gap (desire creates tension that pulls people into the narrative)
 - Focus on ONE desire per message (not a list — multiple desires dilute the story gap)
 - The desire should relate to survival (physical, financial, relational, or spiritual)
@@ -45,6 +46,7 @@ Every compelling story follows the same pattern. Use this structure for all mess
 | Audience segmentation | Tailor the desire to each segment | CEO: "Scale without chaos" vs. IC: "Do your best work without friction" |
 
 **Copy patterns:**
+
 - "You want [specific desire]..."
 - "Imagine [aspirational identity]..."
 - "What if you could [single clear outcome]?"
@@ -61,6 +63,7 @@ See: [references/brand-script.md](references/brand-script.md)
 **Why it works:** Companies tend to sell solutions to external problems, but customers buy solutions to internal problems. When you name how the problem makes them feel — confused, overwhelmed, embarrassed — you tap into the emotional driver that actually motivates purchasing decisions.
 
 **Key insights:**
+
 - External problems are tangible and surface-level ("my investments are scattered")
 - Internal problems are emotional ("I feel confused and overwhelmed")
 - Philosophical problems frame the injustice ("People shouldn't have to be experts to retire well")
@@ -77,6 +80,7 @@ See: [references/brand-script.md](references/brand-script.md)
 | Ad copy | Personify the villain | "Stop letting confusing software steal your evenings." |
 
 **Copy patterns:**
+
 - "You're tired of [internal problem]..."
 - "[Villain] has been keeping you from [desire]..."
 - "It's not right that [philosophical problem]..."
@@ -93,6 +97,7 @@ See: [references/brand-script.md](references/brand-script.md)
 **Why it works:** Customers are not looking for another hero — they are looking for a guide. Think Yoda, not Luke. When a brand expresses empathy, the customer feels seen. When the brand demonstrates authority (testimonials, logos, statistics), the customer feels safe. Together, these two qualities create the trust needed for a customer to engage.
 
 **Key insights:**
+
 - Empathy without authority makes you seem weak; authority without empathy makes you seem arrogant
 - Demonstrate empathy with "we understand" language and by accurately describing their frustration
 - Demonstrate authority with testimonials, client logos, statistics, awards, and years of experience
@@ -108,6 +113,7 @@ See: [references/brand-script.md](references/brand-script.md)
 | Sales call | Open with empathy, close with authority | "I hear you — that sounds frustrating. Here's what we've seen work for teams like yours." |
 
 **Copy patterns:**
+
 - "We understand what it's like to [empathy statement]..."
 - "In our experience working with [authority reference]..."
 - "We've helped [number] [customers] achieve [result]..."
@@ -124,6 +130,7 @@ See: [references/sales-conversations.md](references/sales-conversations.md)
 **Why it works:** Customers feel uncertain before making a purchase. A clear, simple plan acts as stepping stones across a creek — it shows them exactly how to get from where they are to where they want to be. Without a plan, the path feels murky and they stall. Plans reduce cognitive load and perceived risk.
 
 **Key insights:**
+
 - Process Plan: 3-4 numbered steps to work with you (e.g., "1. Schedule a call. 2. Get a custom plan. 3. Start seeing results.")
 - Agreement Plan: commitments that remove fear (e.g., "100% satisfaction guaranteed", "Cancel anytime", "We'll never pressure you")
 - Limit to 3-4 steps maximum — more than that overwhelms
@@ -140,6 +147,7 @@ See: [references/sales-conversations.md](references/sales-conversations.md)
 | Email CTA | Reference the plan to simplify next steps | "Getting started is simple — just three steps." |
 
 **Copy patterns:**
+
 - "Here's how it works: Step 1... Step 2... Step 3..."
 - "Getting started is easy. Just [step 1]."
 - "We promise [agreement plan commitment]."
@@ -156,6 +164,7 @@ See: [references/brand-script.md](references/brand-script.md)
 **Why it works:** Customers do not take action unless they are challenged to take action. A clear, repeated, visually prominent call to action tells the customer exactly what to do next. The transitional CTA captures people who aren't ready to buy but are willing to engage — keeping them in your story until they are ready.
 
 **Key insights:**
+
 - Direct CTA: "Buy Now", "Schedule a Call", "Get Started" — the primary conversion action
 - Transitional CTA: "Download Free Guide", "Watch Demo", "Take the Quiz" — lower commitment
 - Use a button (not a text link) for the Direct CTA
@@ -173,6 +182,7 @@ See: [references/brand-script.md](references/brand-script.md)
 | Email | Single Direct CTA per email | "Schedule Your Call" button, one per message |
 
 **Copy patterns:**
+
 - "Get [desired result] now."
 - "Start your free [trial/demo/assessment] today."
 - "Download your free [lead magnet]."
@@ -189,6 +199,7 @@ See: [references/website-wireframe.md](references/website-wireframe.md)
 **Why it works:** Humans are loss-averse. The fear of losing something is more motivating than the promise of gaining something. A taste of what could go wrong — not a full scare campaign — creates the emotional stakes needed for a customer to move from "interested" to "committed."
 
 **Key insights:**
+
 - Don't overdo fear — just a taste of the negative consequence is enough
 - Be honest about real consequences, not hypothetical catastrophes
 - Focus on opportunity cost, not punishment ("another year of feeling stuck")
@@ -205,6 +216,7 @@ See: [references/website-wireframe.md](references/website-wireframe.md)
 | Sales conversation | Name the cost of inaction | "What happens to your team if nothing changes in the next 6 months?" |
 
 **Copy patterns:**
+
 - "Don't let [negative outcome] happen when [solution] is this simple."
 - "How long will you wait before [addressing the problem]?"
 - "Without [your solution], [realistic negative consequence]."
@@ -221,6 +233,7 @@ See: [references/brand-script.md](references/brand-script.md)
 **Why it works:** People need to see the destination before they start the journey. A clear success picture gives customers something concrete to desire. When you show the transformation — not just the features — customers can place themselves in that future and feel the emotional pull toward it.
 
 **Key insights:**
+
 - Status: How will they be perceived? ("Become the go-to expert in your field")
 - Completeness: What gap will be closed? ("Finally have financial peace of mind")
 - Self-realization: Who will they become? ("Be the leader you were meant to be")
@@ -237,6 +250,7 @@ See: [references/brand-script.md](references/brand-script.md)
 | Testimonial placement | Let customers describe their own success | "I finally feel like I know where every dollar is going." — real customer quote |
 
 **Copy patterns:**
+
 - "Imagine [specific success picture]..."
 - "Join [number] [customers] who now [success outcome]..."
 - "What would it mean for you to [self-realization outcome]?"
@@ -251,6 +265,7 @@ See: [references/brand-script.md](references/brand-script.md)
 A single sentence that clearly explains what you do. Use it everywhere.
 
 **Formula:**
+
 ```
 [Problem] + [Solution] + [Result]
 ```
@@ -259,6 +274,7 @@ A single sentence that clearly explains what you do. Use it everywhere.
 "We help [CHARACTER] who struggle with [PROBLEM] to [SOLUTION] so they can [RESULT]."
 
 **Examples:**
+
 - "We help busy parents who struggle to cook healthy meals get fresh ingredients delivered weekly so they can feed their family nutritious food without the stress."
 - "We help small business owners who feel overwhelmed by marketing create a clear message so they can grow their revenue."
 
@@ -271,12 +287,14 @@ See: [references/one-liners.md](references/one-liners.md)
 Your brand voice should be consistent across all channels while adapting to context:
 
 **Guide qualities to convey:**
+
 - Empathy: "We understand..."
 - Authority: "In our experience..."
 - Confidence: "Here's what works..."
 - Helpfulness: "Let us show you..."
 
 **Avoid:**
+
 - Hero language: "We're the best at..."
 - Jargon: Use customer's words
 - Condescension: Respect their intelligence

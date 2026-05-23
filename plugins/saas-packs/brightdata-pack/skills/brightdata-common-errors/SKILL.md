@@ -55,6 +55,7 @@ HTTP/1.1 407 Proxy Authentication Required
 **Cause:** Username format is wrong or credentials are invalid.
 
 **Fix:**
+
 ```bash
 # Verify credential format — must be exactly:
 # brd-customer-{CUSTOMER_ID}-zone-{ZONE_NAME}
@@ -77,6 +78,7 @@ X-Luminati-Error: target_site_blocked
 **Cause:** Target site blocked the request despite Web Unlocker retries.
 
 **Fix:**
+
 - Increase timeout to 120s (Web Unlocker needs time to solve CAPTCHAs)
 - Switch to Scraping Browser zone for JS-heavy sites
 - Add `-country-us` to username for geo-specific content
@@ -92,6 +94,7 @@ Error: SSL: CERTIFICATE_VERIFY_FAILED
 **Cause:** Missing Bright Data CA certificate for HTTPS proxying.
 
 **Fix:**
+
 ```bash
 # Download the Bright Data CA certificate
 curl -sO https://brightdata.com/ssl/brd-ca.crt
@@ -114,6 +117,7 @@ Error: connect ETIMEDOUT brd.superproxy.io:33335
 **Cause:** Firewall blocking outbound connections to Bright Data.
 
 **Fix:**
+
 ```bash
 # Test connectivity
 nc -zv brd.superproxy.io 33335
@@ -138,6 +142,7 @@ nc -zv brd.superproxy.io 9222
 **Cause:** Exceeded concurrent request limit for your zone.
 
 **Fix:**
+
 ```typescript
 // Implement request queuing
 import PQueue from 'p-queue';
@@ -152,6 +157,7 @@ const result = await queue.add(() => client.get(url));
 **Cause:** Target returned a CAPTCHA page that Web Unlocker couldn't solve, or wrong zone type for the target.
 
 **Fix:**
+
 - Check zone type matches target (Web Unlocker for static, Scraping Browser for JS)
 - Verify target URL is accessible in a regular browser
 - Try adding `&brd_json=1` for SERP API requests

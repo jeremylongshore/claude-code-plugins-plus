@@ -10,6 +10,7 @@ cursor-tab-completion/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Masters Cursor tab completion including acceptance patterns, context awareness optimization, and settings configuration for optimal suggestions.
 
 **Workflow:** This skill activates when developers want to improve their tab completion experience. It covers how completions work, acceptance methods (full, partial, word-by-word), cycling through suggestions, context factors, and troubleshooting.

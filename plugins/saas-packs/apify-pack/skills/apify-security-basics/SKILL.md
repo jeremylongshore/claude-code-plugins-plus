@@ -91,6 +91,7 @@ APIFY_TOKEN=apify_api_prod_token
 ```
 
 Platform secrets management:
+
 ```bash
 # GitHub Actions
 gh secret set APIFY_TOKEN --body "apify_api_prod_token"

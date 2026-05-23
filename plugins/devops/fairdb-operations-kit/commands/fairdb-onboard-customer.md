@@ -11,6 +11,7 @@ You are onboarding a new customer for FairDB PostgreSQL as a Service. This compr
 ## Step 1: Gather Customer Information
 
 Collect these details:
+
 1. **Customer Name**: Company/organization name
 2. **Database Name**: Preferred database name (lowercase, no spaces)
 3. **Primary Contact**: Name and email
@@ -410,6 +411,7 @@ Next Actions:
 ## Onboarding Checklist
 
 Verify completion:
+
 - [ ] Database created
 - [ ] Users created with secure passwords
 - [ ] Network access configured
@@ -424,6 +426,7 @@ Verify completion:
 ## Rollback Procedure
 
 If onboarding fails:
+
 ```bash
 # Remove database and users
 sudo -u postgres psql << EOF

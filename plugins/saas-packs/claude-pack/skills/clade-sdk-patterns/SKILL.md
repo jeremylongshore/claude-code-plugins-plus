@@ -20,6 +20,7 @@ compatibility: Designed for Claude Code
 # Anthropic SDK Patterns
 
 ## Overview
+
 Production patterns for the `@claude-ai/sdk` (TypeScript) and `anthropic` (Python) SDKs.
 
 ## Client Configuration
@@ -27,6 +28,7 @@ Production patterns for the `@claude-ai/sdk` (TypeScript) and `anthropic` (Pytho
 ## Instructions
 
 ### Step 1: TypeScript
+
 ```typescript
 import Anthropic from '@claude-ai/sdk';
 
@@ -46,6 +48,7 @@ const client = new Anthropic({
 ```
 
 ### Step 2: Python
+
 ```python
 import anthropic
 
@@ -66,6 +69,7 @@ client = anthropic.Anthropic(
 ```
 
 ## Output
+
 - Properly configured client with retries, timeouts, and custom headers
 - Type-safe error handling with specific exception classes
 - Streaming implementation using your preferred pattern
@@ -73,6 +77,7 @@ client = anthropic.Anthropic(
 - Batch processing configured for bulk operations (50% cost savings)
 
 ## Error Handling
+
 ```typescript
 import Anthropic from '@claude-ai/sdk';
 
@@ -108,6 +113,7 @@ except anthropic.APIConnectionError:
 ## Streaming Patterns
 
 ### Event-Based (TypeScript)
+
 ```typescript
 const stream = client.messages.stream({
   model: 'claude-sonnet-4-20250514',
@@ -123,6 +129,7 @@ const finalMessage = await stream.finalMessage();
 ```
 
 ### Async Iterator (TypeScript)
+
 ```typescript
 const stream = await client.messages.create({
   model: 'claude-sonnet-4-20250514',
@@ -139,6 +146,7 @@ for await (const event of stream) {
 ```
 
 ### Context Manager (Python)
+
 ```python
 with client.messages.stream(
     model="claude-sonnet-4-20250514",
@@ -152,6 +160,7 @@ message = stream.get_final_message()
 ```
 
 ## TypeScript Types
+
 ```typescript
 import Anthropic from '@claude-ai/sdk';
 
@@ -171,6 +180,7 @@ type MessageCreateParams = Anthropic.MessageCreateParams;
 ```
 
 ## Prompt Caching (Beta)
+
 ```typescript
 const message = await client.messages.create({
   model: 'claude-sonnet-4-20250514',
@@ -191,6 +201,7 @@ const message = await client.messages.create({
 ```
 
 ## Message Batches
+
 ```typescript
 // Submit up to 10,000 messages as a batch (50% cheaper, 24h SLA)
 const batch = await client.messages.batches.create({
@@ -213,18 +224,22 @@ while (status.processing_status !== 'ended') {
 ```
 
 ## Examples
+
 See Client Configuration, Error Handling, Streaming Patterns, TypeScript Types, Prompt Caching, and Message Batches sections above for complete code examples.
 
 ## Resources
+
 - [TypeScript SDK](https://github.com/anthropics/claude-sdk-typescript)
 - [Python SDK](https://github.com/anthropics/claude-sdk-python)
 - [Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)
 - [Message Batches](https://docs.anthropic.com/en/api/creating-message-batches)
 
 ## Next Steps
+
 See `clade-rate-limits` for throughput optimization.
 
 ## Prerequisites
+
 - Completed `clade-install-auth`
 - Familiarity with TypeScript generics or Python type hints
 - Understanding of async/await patterns

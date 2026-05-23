@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Local Dev Loop
 
 ## Overview
+
 Set up a fast development workflow for Firecrawl integrations. Use self-hosted Firecrawl via Docker to avoid burning API credits during development, mock the SDK for unit tests, and run integration tests against the local instance.
 
 ## Prerequisites
+
 - Node.js 18+ with npm/pnpm
 - Docker + Docker Compose (for self-hosted Firecrawl)
 - `@mendable/firecrawl-js` installed
@@ -37,6 +39,7 @@ Set up a fast development workflow for Firecrawl integrations. Use self-hosted F
 ## Instructions
 
 ### Step 1: Project Structure
+
 ```
 my-firecrawl-project/
 ├── src/
@@ -52,6 +55,7 @@ my-firecrawl-project/
 ```
 
 ### Step 2: Self-Hosted Firecrawl for Zero-Credit Dev
+
 ```yaml
 # docker-compose.yml
 services:
@@ -90,6 +94,7 @@ curl -s http://localhost:3002/health | jq .
 ```
 
 ### Step 3: Environment-Aware Configuration
+
 ```typescript
 // src/config.ts
 import FirecrawlApp from "@mendable/firecrawl-js";
@@ -115,6 +120,7 @@ NODE_ENV=development
 ```
 
 ### Step 4: Unit Tests with Mocked SDK
+
 ```typescript
 // tests/scraper.test.ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -155,6 +161,7 @@ describe("Scraper", () => {
 ```
 
 ### Step 5: Integration Tests Against Local Instance
+
 ```typescript
 // tests/integration.test.ts
 import { describe, it, expect } from "vitest";
@@ -180,6 +187,7 @@ describe.skipIf(!process.env.FIRECRAWL_API_URL)("Firecrawl Integration", () => {
 ```
 
 ### Step 6: Dev Scripts
+
 ```json
 {
   "scripts": {
@@ -195,12 +203,14 @@ describe.skipIf(!process.env.FIRECRAWL_API_URL)("Firecrawl Integration", () => {
 ```
 
 ## Output
+
 - Self-hosted Firecrawl running on `localhost:3002`
 - Unit tests with mocked SDK (zero API calls)
 - Integration tests against local instance
 - Hot-reload dev server with `tsx watch`
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Docker `ECONNREFUSED` | Container not running | `docker compose up -d` |
@@ -212,6 +222,7 @@ describe.skipIf(!process.env.FIRECRAWL_API_URL)("Firecrawl Integration", () => {
 ## Examples
 
 ### Quick Scrape Script for Dev
+
 ```typescript
 // scripts/dev-scrape.ts
 import { getFirecrawl } from "../src/config";
@@ -228,9 +239,11 @@ npx tsx scripts/dev-scrape.ts https://docs.firecrawl.dev
 ```
 
 ## Resources
+
 - [Firecrawl Self-Hosting](https://docs.firecrawl.dev/contributing/self-host)
 - [Vitest Documentation](https://vitest.dev/)
 - [tsx (TypeScript Execute)](https://github.com/privatenumber/tsx)
 
 ## Next Steps
+
 See `firecrawl-sdk-patterns` for production-ready code patterns.

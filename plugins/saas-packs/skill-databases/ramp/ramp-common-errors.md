@@ -10,6 +10,7 @@ ramp-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Ramp common errors
 **Workflow:** Part of the operations skill category for Ramp integration.
 **Relates to:** Other ramp skills in this pack.

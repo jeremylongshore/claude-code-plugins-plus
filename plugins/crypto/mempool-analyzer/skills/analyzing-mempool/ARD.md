@@ -54,11 +54,13 @@ skills/analyzing-mempool/
 ## API Integration
 
 ### Ethereum RPC
+
 - **Endpoints**: `eth_pendingTransactions`, `eth_getTransactionByHash`, `eth_gasPrice`
 - **Auth**: RPC URL with API key embedded
 - **WebSocket**: `eth_subscribe` for real-time updates
 
 ### Transaction Decoding
+
 - **Router ABIs**: Uniswap V2/V3, SushiSwap, 1inch
 - **Method Detection**: Swap, addLiquidity, removeLiquidity, approve
 - **Value Estimation**: Using pool reserves or price feeds
@@ -66,6 +68,7 @@ skills/analyzing-mempool/
 ## Component Design
 
 ### rpc_client.py
+
 ```python
 class MempoolClient:
     def connect(rpc_url) -> None
@@ -75,6 +78,7 @@ class MempoolClient:
 ```
 
 ### tx_decoder.py
+
 ```python
 class TransactionDecoder:
     def decode_input(tx) -> DecodedCall
@@ -83,6 +87,7 @@ class TransactionDecoder:
 ```
 
 ### gas_analyzer.py
+
 ```python
 class GasAnalyzer:
     def analyze_pending_gas() -> GasDistribution
@@ -91,6 +96,7 @@ class GasAnalyzer:
 ```
 
 ### mev_detector.py
+
 ```python
 class MEVDetector:
     def detect_sandwich_opportunity(pending_txs) -> List[Opportunity]
@@ -124,6 +130,7 @@ class MEVDetector:
 ## DEX Detection
 
 Supported routers with ABI decoding:
+
 - Uniswap V2 Router
 - Uniswap V3 Router
 - SushiSwap Router

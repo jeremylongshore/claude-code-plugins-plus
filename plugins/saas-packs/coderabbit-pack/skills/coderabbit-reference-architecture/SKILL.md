@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Reference Architecture
 
 ## Overview
+
 Complete reference architecture for CodeRabbit AI code review in a production team. Covers the full configuration file, path-specific review instructions per project type, tool integrations, CI pipeline integration, and the review lifecycle. Use this as a starting template and customize for your team.
 
 ## Architecture Diagram
+
 ```
 Developer pushes code
          │
@@ -70,6 +72,7 @@ Developer pushes code
 ## Instructions
 
 ### Step 1: Full Reference Configuration
+
 ```yaml
 # .coderabbit.yaml - Production Reference Architecture
 # Copy this file and customize for your project.
@@ -219,6 +222,7 @@ chat:
 ### Step 2: Project-Specific Templates
 
 **Node.js/TypeScript Backend:**
+
 ```yaml
 # Add to path_instructions:
     - path: "src/middleware/**"
@@ -230,6 +234,7 @@ chat:
 ```
 
 **React/Next.js Frontend:**
+
 ```yaml
 # Add to path_instructions:
     - path: "src/hooks/**"
@@ -241,6 +246,7 @@ chat:
 ```
 
 **Python/Django Backend:**
+
 ```yaml
 # Add to path_instructions:
     - path: "**/*.py"
@@ -254,6 +260,7 @@ chat:
 ```
 
 ### Step 3: CI Pipeline Integration
+
 ```yaml
 # .github/workflows/pr-checks.yml
 name: PR Checks
@@ -285,6 +292,7 @@ jobs:
 ```
 
 ### Step 4: Team Onboarding Document
+
 ```markdown
 # CodeRabbit Quick Reference for Developers
 
@@ -310,12 +318,14 @@ jobs:
 ```
 
 ## Output
+
 - Complete reference `.coderabbit.yaml` with all configuration sections
 - Project-specific path instruction templates
 - CI pipeline integration for review gating
 - Team onboarding quick reference document
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Config not applied | YAML syntax error | Validate with `python3 -c "import yaml; yaml.safe_load(open('.coderabbit.yaml'))"` |
@@ -324,10 +334,12 @@ jobs:
 | Wrong branch config | Config not on base branch | Commit `.coderabbit.yaml` to the PR's target branch |
 
 ## Resources
+
 - [CodeRabbit Configuration Reference](https://docs.coderabbit.ai/reference/configuration)
 - [CodeRabbit Path Instructions](https://docs.coderabbit.ai/guides/review-instructions)
 - [CodeRabbit Tools](https://docs.coderabbit.ai/tools)
 - [CodeRabbit Finishing Touches](https://docs.coderabbit.ai/finishing-touches)
 
 ## Next Steps
+
 For initial setup, see `coderabbit-install-auth`. For tuning, see `coderabbit-core-workflow-b`.

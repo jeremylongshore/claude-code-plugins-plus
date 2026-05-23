@@ -10,6 +10,7 @@ linktree-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Linktree primary workflow
 **Workflow:** Part of the onboarding skill category for Linktree integration.
 **Relates to:** Other linktree skills in this pack.

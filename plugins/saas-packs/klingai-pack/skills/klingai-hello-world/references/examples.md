@@ -34,6 +34,7 @@ while True:
 ```
 
 **Expected output:**
+
 ```
 Job ID: vid_a1b2c3d4e5f6
 Status: processing
@@ -68,6 +69,7 @@ curl -s "https://api.klingai.com/v1/videos/$JOB_ID" \
 ```
 
 **Expected response (when complete):**
+
 ```json
 {
   "status": "completed",
@@ -211,6 +213,7 @@ print(f"Video saved to: {path}")
 ```
 
 **Expected output:**
+
 ```
 Job submitted: vid_r4s5t6u7v8
 Downloading video...
@@ -223,6 +226,7 @@ Video saved to: output/vid_r4s5t6u7v8.mp4
 Effective prompts follow a structure: subject + action + style + quality modifiers.
 
 **Good prompts (specific, descriptive):**
+
 ```python
 prompts = {
     "nature": (
@@ -249,6 +253,7 @@ prompts = {
 ```
 
 **Poor prompts vs improved versions:**
+
 ```
 Bad:  "A dog"
 Good: "A golden retriever puppy playing in autumn leaves, warm afternoon light"

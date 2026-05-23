@@ -22,15 +22,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # persona webhooks events | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview
+
 HMAC signature verification, inquiry.completed/approved/declined events, idempotent processing.
 
 ## Prerequisites
+
 - Completed `persona-install-auth` setup
 - Valid Persona API key (sandbox or production)
 
 ## Instructions
 
 ### Step 1: Configure Webhook in Dashboard
+
 ```text
 1. Dashboard > Settings > Webhooks > Add Webhook
 2. URL: https://your-app.com/webhooks/persona
@@ -40,6 +43,7 @@ HMAC signature verification, inquiry.completed/approved/declined events, idempot
 ```
 
 ### Step 2: Webhook Endpoint with HMAC Verification
+
 ```typescript
 import express from 'express';
 import crypto from 'crypto';
@@ -70,6 +74,7 @@ app.post('/webhooks/persona',
 ```
 
 ### Step 3: Event Handlers
+
 ```typescript
 async function handlePersonaEvent(event: any) {
   const { type, data } = event;
@@ -106,6 +111,7 @@ async function handlePersonaEvent(event: any) {
 ```
 
 ### Step 4: Idempotent Processing
+
 ```typescript
 const processedEvents = new Set<string>();
 
@@ -121,11 +127,13 @@ async function idempotentHandle(event: any) {
 ```
 
 ## Output
+
 - Webhook endpoint with HMAC signature verification
 - Event handlers for inquiry and verification lifecycle
 - Idempotent processing preventing duplicates
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Invalid signature | Wrong webhook secret | Re-copy secret from Dashboard |
@@ -133,8 +141,10 @@ async function idempotentHandle(event: any) {
 | Duplicate processing | Retry delivery | Use event ID deduplication |
 
 ## Resources
+
 - [Webhooks Quickstart](https://docs.withpersona.com/quickstart-webhooks)
 - [Create a Webhook](https://docs.withpersona.com/api-reference/webhooks/create-a-webhook)
 
 ## Next Steps
+
 For common errors, see `persona-common-errors`.

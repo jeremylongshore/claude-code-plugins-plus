@@ -31,6 +31,7 @@ This skill empowers Claude to transform raw data into compelling visual represen
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Create a visual representation of data.
 - Generate a specific type of plot, chart, or graph (e.g., "create a bar chart").
 - Explore data patterns and relationships through visualization.
@@ -42,6 +43,7 @@ This skill activates when you need to:
 User request: "Create a bar chart showing sales by region."
 
 The skill will:
+
 1. Analyze the sales data, identifying regions and corresponding sales figures.
 2. Generate a bar chart with regions on the x-axis and sales on the y-axis.
 
@@ -50,6 +52,7 @@ The skill will:
 User request: "Plot the stock price of AAPL over the last year."
 
 The skill will:
+
 1. Retrieve historical stock price data for AAPL.
 2. Generate a line graph showing the stock price over time.
 

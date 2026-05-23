@@ -159,6 +159,7 @@ $$ language plpgsql security definer;
 ```
 
 Key details for multi-tenant RLS:
+
 - `auth.jwt() ->> 'org_id'` reads a custom claim from the user's JWT — zero application code needed
 - Every tenant-scoped table must have an `org_id` column and RLS enabled
 - Tenant switching requires updating the JWT claim and re-authenticating
@@ -229,6 +230,7 @@ For SvelteKit integration and additional framework patterns, see [Examples](refe
 ## Output
 
 After applying these patterns you will have:
+
 - Monorepo with shared Supabase client, typed database access, and centralized migrations
 - Multi-tenant RLS isolation using `auth.jwt() ->> 'org_id'` — zero application-level filtering
 - Framework-specific integration for Next.js (server/client split) and SvelteKit (hooks)

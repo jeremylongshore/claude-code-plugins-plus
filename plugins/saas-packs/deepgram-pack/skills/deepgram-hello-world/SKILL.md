@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Hello World
 
 ## Overview
+
 Minimal working examples for Deepgram speech-to-text. Transcribe an audio URL in 5 lines with `createClient` + `listen.prerecorded.transcribeUrl`. Includes local file transcription, Python equivalent, and Nova-3 model selection.
 
 ## Prerequisites
+
 - `npm install @deepgram/sdk` completed
 - `DEEPGRAM_API_KEY` environment variable set
 - Audio source: URL or local file (WAV, MP3, FLAC, OGG, M4A)
@@ -163,11 +165,13 @@ python hello_deepgram.py
 ```
 
 ## Output
+
 - Working transcription from URL or local file
 - Printed transcript text with confidence score
 - Optional: speaker-labeled utterances
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401 Unauthorized` | Invalid API key | Check `DEEPGRAM_API_KEY` |
@@ -177,10 +181,12 @@ python hello_deepgram.py
 | `Cannot find module '@deepgram/sdk'` | SDK not installed | Run `npm install @deepgram/sdk` |
 
 ## Resources
+
 - [Pre-recorded Audio Guide](https://developers.deepgram.com/docs/pre-recorded-audio)
 - [Model Options](https://developers.deepgram.com/docs/model)
 - [Smart Formatting](https://developers.deepgram.com/docs/smart-format)
 - [Sample Audio Files](https://static.deepgram.com/examples/)
 
 ## Next Steps
+
 Proceed to `deepgram-core-workflow-a` for production transcription patterns or `deepgram-core-workflow-b` for live streaming.

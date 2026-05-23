@@ -3,9 +3,11 @@
 # Documenso Local Dev Loop
 
 ## Overview
+
 Configure a productive local development environment for Documenso integrations with fast iteration cycles.
 
 ## Prerequisites
+
 - Completed `documenso-install-auth` setup
 - Node.js 18+ or Python 3.10+
 - Docker (optional, for self-hosted testing)
@@ -40,6 +42,7 @@ my-documenso-project/
 ### Step 2: Environment Configuration
 
 **.env.development:**
+
 ```bash
 # Use staging API for development
 DOCUMENSO_API_KEY=your-dev-api-key
@@ -51,6 +54,7 @@ TEST_RECIPIENT_NAME=Dev Tester
 ```
 
 **.env.test:**
+
 ```bash
 # Use staging with test-specific key
 DOCUMENSO_API_KEY=your-test-api-key
@@ -110,6 +114,7 @@ export async function createTestDocument(
 ### Step 4: Development Scripts
 
 **package.json:**
+
 ```json
 {
   "scripts": {
@@ -265,18 +270,21 @@ docker-compose up -d
 ```
 
 **.env.local (for self-hosted):**
+
 ```bash
 DOCUMENSO_API_KEY=your-local-api-key
 DOCUMENSO_BASE_URL=http://localhost:3000/api/v2/
 ```
 
 ## Output
+
 - Configured development environment
 - Verification script passing
 - Integration tests running against staging
 - Cleanup script for test documents
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Connection refused | Wrong base URL | Check DOCUMENSO_BASE_URL |
@@ -285,9 +293,11 @@ DOCUMENSO_BASE_URL=http://localhost:3000/api/v2/
 | Rate limited | Too many requests | Add delays between tests |
 
 ## Resources
+
 - [Documenso Staging Environment](https://stg-app.documenso.com)
 - [Self-Hosting Guide](https://docs.documenso.com/developers/self-hosting)
 - [Developer Quickstart](https://docs.documenso.com/developers/local-development/quickstart)
 
 ## Next Steps
+
 Apply patterns in `documenso-sdk-patterns` for production-ready code.

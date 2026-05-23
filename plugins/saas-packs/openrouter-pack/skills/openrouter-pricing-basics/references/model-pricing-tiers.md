@@ -3,6 +3,7 @@
 ## Model Pricing Tiers
 
 ### Budget Models (< $0.50/1M tokens)
+
 ```
 meta-llama/llama-3.1-8b-instruct
   Prompt:     $0.06/1M tokens
@@ -18,6 +19,7 @@ google/gemma-7b-it
 ```
 
 ### Standard Models ($0.50-3/1M tokens)
+
 ```
 anthropic/claude-3-haiku
   Prompt:     $0.25/1M tokens
@@ -33,6 +35,7 @@ meta-llama/llama-3.1-70b-instruct
 ```
 
 ### Premium Models ($3-15/1M tokens)
+
 ```
 anthropic/claude-3.5-sonnet
   Prompt:     $3.00/1M tokens
@@ -48,6 +51,7 @@ anthropic/claude-3-sonnet
 ```
 
 ### Enterprise Models ($15+/1M tokens)
+
 ```
 anthropic/claude-3-opus
   Prompt:     $15.00/1M tokens

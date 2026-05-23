@@ -6,11 +6,13 @@ Detect version mismatches between a deployed website, GitHub README, and
 internal documentation after a new release.
 
 **Scenario:**
+
 - Website at `tonsofskills.com` claims version 2.1.0
 - GitHub README says version 2.0.0
 - Internal docs in `docs/release-notes.md` reference version 2.1.0-beta
 
 **Discovery:**
+
 ```
 Content sources found:
   1. Website: dist/index.html (built site)
@@ -19,6 +21,7 @@ Content sources found:
 ```
 
 **Report output:**
+
 ```markdown
 # Content Consistency Report
 Generated: 2026-03-17T14:30:00Z
@@ -61,6 +64,7 @@ The website adds "AI-powered search" to the features list, but the GitHub
 README and internal docs do not mention it.
 
 **Report output:**
+
 ```markdown
 ## Warning Findings
 
@@ -88,6 +92,7 @@ The project calls its extensions "plugins" on the website, "extensions" in
 the GitHub README, and "add-ons" in internal documentation.
 
 **Report output:**
+
 ```markdown
 ## Terminology Consistency Matrix
 
@@ -118,6 +123,7 @@ Verify that contact details and URLs are consistent and not stale
 across all content sources.
 
 **Report output:**
+
 ```markdown
 ## Critical Findings
 
@@ -146,6 +152,7 @@ across all content sources.
 Run a full audit before a major release to catch all inconsistencies at once.
 
 **Command flow:**
+
 ```
 Step 1: Discover sources
   → Website build: marketplace/dist/ (376 HTML files)
@@ -170,11 +177,13 @@ Step 4: Classification
 ```
 
 **Report saved to:**
+
 ```
 consistency-reports/2026-03-17-14-30-00.md
 ```
 
 **Summary table:**
+
 ```markdown
 ## Pre-Release Audit Summary
 
@@ -197,6 +206,7 @@ Recommendation: Fix critical items before release. Address warnings in next spri
 Run the validator as part of a CI pipeline to catch consistency drift early.
 
 **GitHub Actions step:**
+
 ```yaml
 - name: Content Consistency Check
   run: |
@@ -215,6 +225,7 @@ Run the validator as part of a CI pipeline to catch consistency drift early.
 ```
 
 **CI output on failure:**
+
 ```
 ::error::Content consistency check found critical issues
 Critical: Version mismatch — README.md says 2.0.0, website says 2.1.0

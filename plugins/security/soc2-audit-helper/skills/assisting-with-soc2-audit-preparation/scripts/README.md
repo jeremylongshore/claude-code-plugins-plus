@@ -7,6 +7,6 @@ Bundled resources for soc2-audit-helper skill
 - [x] suggest_remediation_steps.py: Provides suggestions for remediation steps to address identified compliance gaps.
 - [x] evidence_gathering_automation.py: Automates the process of gathering evidence for SOC2 audits.
 
-
 ## Auto-Generated
+
 Scripts generated on 2025-12-10 03:48:17

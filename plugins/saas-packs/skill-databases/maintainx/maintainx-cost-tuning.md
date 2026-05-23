@@ -10,6 +10,7 @@ maintainx-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize MaintainX costs and usage
 **Workflow:** Part of the cicd skill category for MaintainX integration.
 **Relates to:** Other maintainx skills in this pack.

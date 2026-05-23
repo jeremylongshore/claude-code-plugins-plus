@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Obsidian Data Handling
 
 ## Overview
+
 Data management patterns for Obsidian plugins: plugin config with loadData/saveData, vault file I/O, frontmatter parsing via metadataCache, handling renames and deletes, cross-device sync considerations, and IndexedDB fallback for large datasets.
 
 ## Prerequisites
+
 - Working Obsidian plugin (`export default class extends Plugin`)
 - Understanding of Obsidian's `Vault` and `MetadataCache` APIs
 - TypeScript compilation configured
@@ -240,6 +242,7 @@ mergeConfigs(local: SyncSafeConfig, remote: SyncSafeConfig): SyncSafeConfig {
 ```
 
 Guidelines for sync-friendly plugins:
+
 - Avoid storing file paths in `data.json` — they differ across devices with different vault locations
 - Use file content hashes or frontmatter IDs for identity instead of paths
 - Keep `data.json` small — large files cause sync conflicts and slow sync
@@ -317,6 +320,7 @@ onunload() {
 IndexedDB is per-device and does not sync across devices. Use it for caches and derived data that can be rebuilt, not for primary user data.
 
 ## Output
+
 - Plugin config loading with version migration
 - Safe vault file read/write/append operations
 - Frontmatter access via metadataCache
@@ -325,6 +329,7 @@ IndexedDB is per-device and does not sync across devices. Use it for caches and 
 - IndexedDB storage for large datasets
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `loadData()` returns null | First run, no data.json yet | `Object.assign` onto defaults |
@@ -337,6 +342,7 @@ IndexedDB is per-device and does not sync across devices. Use it for caches and 
 ## Examples
 
 ### Export All Notes with Tag to JSON
+
 ```typescript
 async exportTaggedNotes(tag: string): Promise<string> {
   const files = this.getFilesWithTag(tag);
@@ -352,6 +358,7 @@ async exportTaggedNotes(tag: string): Promise<string> {
 ```
 
 ### Atomic Config Update
+
 ```typescript
 async updateConfig<K extends keyof PluginConfig>(
   key: K,
@@ -363,10 +370,12 @@ async updateConfig<K extends keyof PluginConfig>(
 ```
 
 ## Resources
+
 - [Obsidian Vault API](https://docs.obsidian.md/Reference/TypeScript+API/Vault)
 - [Obsidian FileManager API](https://docs.obsidian.md/Reference/TypeScript+API/FileManager)
 - [MetadataCache API](https://docs.obsidian.md/Reference/TypeScript+API/MetadataCache)
 - [Obsidian Sync](https://help.obsidian.md/Obsidian+Sync)
 
 ## Next Steps
+
 For team access control patterns, see `obsidian-enterprise-rbac`. For performance with large vaults, see `obsidian-rate-limits`.

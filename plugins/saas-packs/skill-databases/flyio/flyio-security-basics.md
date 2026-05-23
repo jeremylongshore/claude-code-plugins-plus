@@ -10,6 +10,7 @@ flyio-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Fly.io security best practices
 **Workflow:** Part of the operations skill category for Fly.io integration.
 **Relates to:** Other flyio skills in this pack.

@@ -26,14 +26,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Debug Bundle
 
 ## Current State
+
 !`windsurf --version 2>/dev/null || echo 'Windsurf CLI not in PATH'`
 !`node --version 2>/dev/null || echo 'N/A'`
 !`uname -a`
 
 ## Overview
+
 Collect all diagnostic information needed to troubleshoot Windsurf issues or submit effective support tickets.
 
 ## Prerequisites
+
 - Windsurf installed (even if malfunctioning)
 - Terminal access
 - Permission to read Windsurf config directories
@@ -158,6 +161,7 @@ echo "Review for sensitive data before submitting to support."
 ```
 
 ## Error Handling
+
 | Item | Purpose | Included |
 |------|---------|----------|
 | Windsurf version | Compatibility check | Yes |
@@ -169,12 +173,14 @@ echo "Review for sensitive data before submitting to support."
 ## Examples
 
 ### ALWAYS REDACT
+
 - API keys and tokens
 - Passwords and secrets
 - Personal file paths (replace with ~/)
 - Customer data
 
 ### Quick Single-Command Health Check
+
 ```bash
 echo "Windsurf: $(windsurf --version 2>/dev/null || echo 'N/A')" && \
 echo "Rules: $([ -f .windsurfrules ] && wc -c < .windsurfrules || echo 'none')" && \
@@ -182,8 +188,10 @@ echo "Ignore: $([ -f .codeiumignore ] && wc -l < .codeiumignore || echo 'none')"
 ```
 
 ## Resources
+
 - [Windsurf GitHub Issues](https://github.com/Exafunction/codeium/issues)
 - [Windsurf Status](https://status.windsurf.com)
 
 ## Next Steps
+
 For rate limit issues, see `windsurf-rate-limits`.

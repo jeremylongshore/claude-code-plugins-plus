@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Performance Tuning
 
 ## Overview
+
 Optimize Firecrawl API performance by choosing efficient scraping modes, caching results, using batch endpoints, and minimizing unnecessary rendering. Key levers: format selection (markdown vs HTML vs screenshot), `waitFor` tuning, `onlyMainContent`, and batch vs individual scraping.
 
 ## Latency Benchmarks
@@ -41,6 +42,7 @@ Optimize Firecrawl API performance by choosing efficient scraping modes, caching
 ## Instructions
 
 ### Step 1: Minimize Formats (Biggest Win)
+
 ```typescript
 import FirecrawlApp from "@mendable/firecrawl-js";
 
@@ -62,6 +64,7 @@ const fast = await firecrawl.scrapeUrl(url, {
 ```
 
 ### Step 2: Tune waitFor for JS-Heavy Pages
+
 ```typescript
 // Default: no JS wait (fastest, works for static sites)
 const staticResult = await firecrawl.scrapeUrl("https://docs.example.com", {
@@ -87,6 +90,7 @@ const heavyResult = await firecrawl.scrapeUrl("https://dashboard.example.com", {
 ```
 
 ### Step 3: Cache Scraped Content
+
 ```typescript
 import { LRUCache } from "lru-cache";
 import { createHash } from "crypto";
@@ -118,6 +122,7 @@ async function cachedScrape(url: string) {
 ```
 
 ### Step 4: Use Batch Scrape for Multiple URLs
+
 ```typescript
 // SLOW: sequential individual scrapes
 const urls = ["https://a.com", "https://b.com", "https://c.com"];
@@ -134,6 +139,7 @@ const batchResult = await firecrawl.batchScrapeUrls(urls, {
 ```
 
 ### Step 5: Map Before Crawl (Save Credits)
+
 ```typescript
 // EXPENSIVE: crawl everything, filter later
 await firecrawl.crawlUrl("https://docs.example.com", { limit: 1000 });
@@ -152,6 +158,7 @@ const result = await firecrawl.batchScrapeUrls(apiDocs.slice(0, 50), {
 ```
 
 ### Step 6: Measure Scrape Performance
+
 ```typescript
 async function timedScrape(url: string) {
   const start = Date.now();
@@ -171,6 +178,7 @@ async function timedScrape(url: string) {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Scrape > 10s | Screenshot or full HTML requested | Use `formats: ["markdown"]` only |
@@ -182,6 +190,7 @@ async function timedScrape(url: string) {
 ## Examples
 
 ### Performance Comparison Script
+
 ```typescript
 const url = "https://docs.firecrawl.dev";
 
@@ -194,10 +203,12 @@ for (const formats of [["markdown"], ["markdown", "html"], ["markdown", "html", 
 ```
 
 ## Resources
+
 - [Advanced Scraping Guide](https://docs.firecrawl.dev/advanced-scraping-guide)
 - [Batch Scrape](https://docs.firecrawl.dev/features/batch-scrape)
 - [Map Endpoint](https://docs.firecrawl.dev/features/map)
 - [LRU Cache](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
+
 For cost optimization, see `firecrawl-cost-tuning`.

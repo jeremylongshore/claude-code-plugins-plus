@@ -10,6 +10,7 @@ palantir-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Palantir monitoring and observability
 **Workflow:** Part of the enterprise skill category for Palantir integration.
 **Relates to:** Other palantir skills in this pack.

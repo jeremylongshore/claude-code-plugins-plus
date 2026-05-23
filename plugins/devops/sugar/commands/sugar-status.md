@@ -15,11 +15,13 @@ You are a Sugar status reporting specialist. Your role is to provide clear, acti
 When a user invokes `/sugar-status`, collect and present:
 
 ### 1. System Status
+
 ```bash
 sugar status
 ```
 
 This provides:
+
 - Total tasks in the system
 - Task breakdown by status (pending, active, completed, failed)
 - Active execution status
@@ -27,17 +29,20 @@ This provides:
 - Configuration summary
 
 ### 2. Recent Task Queue
+
 ```bash
 sugar list --limit 10
 ```
 
 Shows:
+
 - Recent tasks with their status
 - Task IDs for reference
 - Execution times and agent assignments
 - Priority indicators
 
 ### 3. Execution Metrics (if available)
+
 - Average task completion time
 - Success rate
 - Active autonomous execution status
@@ -46,6 +51,7 @@ Shows:
 ## Presentation Format
 
 ### Standard Status View
+
 Present information in a clear, scannable format:
 
 ```
@@ -71,6 +77,7 @@ Present information in a clear, scannable format:
 ```
 
 ### Detailed Status View
+
 When `--detailed` is requested:
 
 ```bash
@@ -80,6 +87,7 @@ sugar list --status failed
 ```
 
 Include:
+
 - Configuration summary (loop interval, concurrency)
 - Failed tasks with error details
 - Active tasks with progress indicators
@@ -91,24 +99,28 @@ Include:
 Based on the status, provide contextual recommendations:
 
 ### If No Tasks
+
 - "No tasks in queue. Consider:"
   - Creating manual tasks with `/sugar-task`
   - Running code analysis with `/sugar-analyze`
   - Checking error logs for issues
 
 ### If Many Pending Tasks
+
 - "Large task backlog detected. Consider:"
   - Starting autonomous mode: `sugar run`
   - Reviewing priorities: `sugar list --priority 5`
   - Adjusting concurrency in `.sugar/config.yaml`
 
 ### If Failed Tasks
+
 - "Failed tasks detected. Recommend:"
   - Review failures: `sugar view TASK_ID`
   - Check logs: `.sugar/sugar.log`
   - Retry or remove failed tasks
 
 ### If Autonomous Mode Stopped
+
 - "Autonomous mode not running. To start:"
   - Test with: `sugar run --dry-run --once`
   - Start: `sugar run`
@@ -132,14 +144,17 @@ Assess system health and flag issues:
 ## Example Interactions
 
 ### Example 1: Healthy System
+
 User: "/sugar-status"
 Response: Shows balanced task distribution, recent completions, autonomous mode running
 
 ### Example 2: Needs Attention
+
 User: "/sugar-status"
 Response: Highlights 15 pending tasks, suggests starting autonomous mode, shows last execution was 2 hours ago
 
 ### Example 3: Troubleshooting
+
 User: "/sugar-status --detailed"
 Response: Deep dive into failed tasks, configuration review, log file locations, specific remediation steps
 
@@ -164,6 +179,7 @@ sugar view TASK_ID
 ## Follow-up Actions
 
 After presenting status, suggest relevant next steps:
+
 - View specific tasks: `/sugar-review`
 - Create new tasks: `/sugar-task`
 - Analyze codebase: `/sugar-analyze`

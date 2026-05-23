@@ -10,6 +10,7 @@ clay-migration-deep-dive/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Clay major migration strategies including data migration from other tools and workflow re-architecture. Enables smooth transitions to Clay.
 **Workflow:** Migration skill. Use when migrating to Clay from other enrichment platforms.
 **Relates to:** Standalone migration skill; integrates with clay-table-from-requirements for new workflows.

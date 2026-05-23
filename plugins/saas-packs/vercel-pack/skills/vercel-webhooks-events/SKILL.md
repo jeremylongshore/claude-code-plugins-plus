@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Webhooks & Events
 
 ## Overview
+
 Handle Vercel webhook events (deployment.created, deployment.ready, deployment.error) with HMAC signature verification. Covers both integration webhooks (Vercel Marketplace) and project-level deploy hooks.
 
 ## Prerequisites
+
 - HTTPS endpoint accessible from the internet
 - Webhook secret from Vercel dashboard or integration settings
 - `crypto` module for HMAC signature verification
@@ -37,7 +39,9 @@ Handle Vercel webhook events (deployment.created, deployment.ready, deployment.e
 ## Instructions
 
 ### Step 1: Register a Webhook
+
 In the Vercel dashboard:
+
 1. Go to **Settings > Webhooks**
 2. Add your endpoint URL (must be HTTPS)
 3. Select events to subscribe to
@@ -46,6 +50,7 @@ In the Vercel dashboard:
 Or for Integration webhooks, configure in the Integration Console at `vercel.com/dashboard/integrations`.
 
 ### Step 2: Verify Webhook Signature
+
 ```typescript
 // api/webhooks/vercel.ts
 import type { VercelRequest, VercelResponse } from '@vercel/node';
@@ -86,6 +91,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 ```
 
 ### Step 3: Handle Deployment Events
+
 ```typescript
 // lib/webhook-handlers.ts
 interface VercelWebhookEvent {
@@ -150,6 +156,7 @@ async function handleEvent(event: VercelWebhookEvent): Promise<void> {
 ```
 
 ### Step 4: Idempotency — Prevent Duplicate Processing
+
 ```typescript
 // lib/idempotency.ts
 // Vercel may retry webhook delivery — track processed event IDs
@@ -171,6 +178,7 @@ async function processWebhookIdempotent(
 ```
 
 ### Step 5: Slack Notification Example
+
 ```typescript
 // lib/notifications.ts
 async function notifyProductionDeploy(event: VercelWebhookEvent): Promise<void> {
@@ -211,6 +219,7 @@ async function notifyDeploymentError(event: VercelWebhookEvent): Promise<void> {
 ```
 
 ### Step 6: Test Webhooks Locally
+
 ```bash
 # Use the Vercel CLI to test webhook signatures
 # Or use a tunnel service for local testing
@@ -238,12 +247,14 @@ curl -X POST http://localhost:3000/api/webhooks/vercel \
 | `integration.configuration.removed` | Integration uninstalled |
 
 ## Output
+
 - Webhook endpoint with HMAC signature verification
 - Event handlers for deployment lifecycle events
 - Idempotent processing preventing duplicates
 - Slack notifications for production deploys and failures
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401 Invalid signature` | Wrong webhook secret or body mismatch | Verify secret matches dashboard, use raw body for HMAC |
@@ -253,10 +264,12 @@ curl -X POST http://localhost:3000/api/webhooks/vercel \
 | Missing `x-vercel-signature` | Not a real Vercel webhook | Reject requests without the signature header |
 
 ## Resources
+
 - [Vercel Webhooks API](https://vercel.com/docs/webhooks/webhooks-api)
 - [Setting Up Webhooks](https://vercel.com/docs/webhooks)
 - [Deploy Hooks](https://vercel.com/docs/deploy-hooks)
 - [Integration Webhooks](https://vercel.com/docs/integrations/create-integration)
 
 ## Next Steps
+
 For performance optimization, see `vercel-performance-tuning`.

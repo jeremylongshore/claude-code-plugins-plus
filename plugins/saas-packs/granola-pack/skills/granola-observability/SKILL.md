@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola Observability
 
 ## Overview
+
 Monitor Granola usage, track meeting patterns, and build analytics dashboards. Granola Enterprise includes a usage analytics dashboard. For deeper insights, build custom pipelines using Zapier to stream meeting metadata to BigQuery, Metabase, or other analytics platforms.
 
 ## Prerequisites
+
 - Granola Business or Enterprise plan
 - Admin access for organization-level analytics
 - Optional: BigQuery/Metabase for custom dashboards, Zapier for data pipeline
@@ -97,6 +99,7 @@ Step 2 — BigQuery: Insert Row
 ```
 
 **BigQuery schema:**
+
 ```sql
 CREATE TABLE meeting_analytics.granola_meetings (
   meeting_id STRING NOT NULL,
@@ -165,6 +168,7 @@ ORDER BY month DESC;
 ### Step 5 — Automated Reporting
 
 **Weekly Slack digest (via Zapier Schedule):**
+
 ```yaml
 Trigger: Schedule by Zapier — Every Friday at 5 PM
 
@@ -198,6 +202,7 @@ Set up alerts for operational issues:
 | Zero meetings captured | No meetings for any workspace (daily) | Email to workspace admin |
 
 **Status monitoring:**
+
 ```bash
 # Check Granola service status
 curl -s https://status.granola.ai/api/v2/status.json | python3 -c "
@@ -209,6 +214,7 @@ print(f'Granola Status: {status}')
 ```
 
 ## Output
+
 - Built-in analytics reviewed and baselines established
 - Custom analytics pipeline streaming to data warehouse
 - Dashboard visualizing adoption, efficiency, and meeting patterns
@@ -225,9 +231,11 @@ print(f'Granola Status: {status}')
 | Low adoption alert false positive | New seats just added | Adjust alert threshold, use percentage not absolute |
 
 ## Resources
+
 - [Granola Updates](https://www.granola.ai/updates)
 - [Enterprise API](https://docs.granola.ai/help-center/sharing/integrations/enterprise-api)
 - [Status Page](https://status.granola.ai)
 
 ## Next Steps
+
 Proceed to `granola-incident-runbook` for incident response procedures.

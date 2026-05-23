@@ -284,4 +284,3 @@ The framework that catches AI slop has now been falsified by its own first real 
   ]
 }
 </script>
-

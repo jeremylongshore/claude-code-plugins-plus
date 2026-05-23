@@ -47,6 +47,7 @@ Organization
 ```
 
 **Key concepts:**
+
 - Teams are separate from personal accounts -- team documents are owned by the team
 - Team API keys access all team documents; personal keys only access personal documents
 - Each team member can have Owner, Admin, or Member role

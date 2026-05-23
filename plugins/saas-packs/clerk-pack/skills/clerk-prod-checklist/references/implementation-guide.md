@@ -7,6 +7,7 @@ Detailed implementation examples and code patterns.
 ### 1. Environment Configuration
 
 #### API Keys
+
 - [ ] Switch from test keys (`pk_test_`, `sk_test_`) to live keys (`pk_live_`, `sk_live_`)
 - [ ] Store secret key in secure secrets manager (not environment files)
 - [ ] Remove any hardcoded keys from codebase
@@ -18,6 +19,7 @@ echo "Publishable key starts with: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:0:8}"
 ```
 
 #### Environment Variables
+
 ```bash
 # Required production variables
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_...
@@ -34,17 +36,20 @@ NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/onboarding
 ### 2. Clerk Dashboard Configuration
 
 #### Domain Settings
+
 - [ ] Add production domain in Clerk Dashboard
 - [ ] Configure allowed origins for CORS
 - [ ] Set up custom domain for Clerk (optional)
 
 #### Authentication Settings
+
 - [ ] Review and configure allowed sign-in methods
 - [ ] Configure password requirements
 - [ ] Set session token lifetime
 - [ ] Configure multi-session behavior
 
 #### OAuth Providers
+
 - [ ] Switch OAuth apps to production mode
 - [ ] Update redirect URLs to production domain
 - [ ] Verify OAuth scopes are minimal needed
@@ -52,6 +57,7 @@ NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/onboarding
 ### 3. Security Configuration
 
 #### Middleware
+
 ```typescript
 // middleware.ts - Production configuration
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
@@ -72,6 +78,7 @@ export default clerkMiddleware(async (auth, request) => {
 ```
 
 #### Security Headers
+
 - [ ] X-Frame-Options: DENY
 - [ ] X-Content-Type-Options: nosniff
 - [ ] Strict-Transport-Security enabled

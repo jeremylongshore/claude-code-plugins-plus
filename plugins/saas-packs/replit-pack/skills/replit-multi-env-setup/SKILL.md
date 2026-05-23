@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Multi-Environment Setup
 
 ## Overview
+
 Configure development, staging, and production environments on Replit. Leverages Replit's built-in dev/prod database separation, environment-specific secrets, and deployment types. Covers the Replit-native approach (single Repl, dual databases) and the multi-Repl approach (separate Repls per environment).
 
 ## Prerequisites
+
 - Replit Core or Teams plan (deployment access)
 - PostgreSQL provisioned in Database pane
 - Understanding of Replit Secrets
@@ -36,7 +38,9 @@ Configure development, staging, and production environments on Replit. Leverages
 ## Environment Strategy
 
 ### Approach 1: Single Repl, Dual Databases (Recommended)
+
 Replit natively provides separate development and production databases:
+
 ```markdown
 Workspace "Run" button → Development database
 Deployed app (.replit.app) → Production database
@@ -46,7 +50,9 @@ No code changes needed between environments.
 ```
 
 ### Approach 2: Multi-Repl (Staging + Production)
+
 For teams that need a staging environment:
+
 ```markdown
 Repl 1: my-app-staging → Autoscale deployment → staging.replit.app
 Repl 2: my-app-prod   → Reserved VM deployment → app.example.com
@@ -61,6 +67,7 @@ Each Repl has its own:
 ## Instructions
 
 ### Step 1: Environment Detection
+
 ```typescript
 // src/config/environment.ts
 type Environment = 'development' | 'staging' | 'production';
@@ -88,6 +95,7 @@ export const IS_PROD = ENV === 'production';
 ```
 
 ### Step 2: Environment-Specific Configuration
+
 ```typescript
 // src/config/index.ts
 import { ENV, IS_PROD } from './environment';
@@ -138,6 +146,7 @@ if (IS_PROD) {
 ```
 
 ### Step 3: Separate Secrets Per Environment
+
 ```markdown
 For Single Repl (dev/prod separation):
 - All secrets set once in Secrets tab
@@ -155,6 +164,7 @@ Account-level secrets (shared across all Repls):
 ```
 
 ### Step 4: GitHub Branch Strategy (Multi-Repl)
+
 ```markdown
 Repository setup:
 - main branch → connected to production Repl
@@ -206,6 +216,7 @@ jobs:
 ```
 
 ### Step 5: Database Migration Between Environments
+
 ```typescript
 // scripts/promote-data.ts — Copy staging data to production (carefully!)
 import { Pool } from 'pg';
@@ -231,6 +242,7 @@ async function promoteConfig() {
 ```
 
 ### Step 6: Environment Indicator in UI
+
 ```typescript
 // Show environment badge in development/staging
 app.use((req, res, next) => {
@@ -250,6 +262,7 @@ app.get('/api/status', (req, res) => {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Wrong database in prod | Manual DATABASE_URL override | Let Replit manage DB routing |
@@ -258,10 +271,12 @@ app.get('/api/status', (req, res) => {
 | Config validation fails | Missing env-specific secret | Add secret to correct Repl's Secrets tab |
 
 ## Resources
+
 - [Replit Deployments](https://docs.replit.com/hosting/deployments)
 - [Replit Secrets](https://docs.replit.com/replit-workspace/workspace-features/secrets)
 - [Deploying from GitHub](https://docs.replit.com/hosting/deployments/deploying-a-github-repository)
 - [PostgreSQL Dev/Prod Databases](https://docs.replit.com/cloud-services/storage-and-databases/postgresql-on-replit)
 
 ## Next Steps
+
 For monitoring, see `replit-observability`. For deployment, see `replit-deploy-integration`.

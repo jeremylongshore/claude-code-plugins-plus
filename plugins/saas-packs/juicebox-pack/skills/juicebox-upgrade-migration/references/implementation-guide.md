@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Assess Current State
+
 ```bash
 # Check current SDK version
 npm list @juicebox/sdk
@@ -17,6 +18,7 @@ curl -s https://api.github.com/repos/juicebox-ai/sdk-js/releases/latest | jq '.b
 ```
 
 ### Step 2: Review Breaking Changes
+
 ```typescript
 // Common breaking changes between versions
 
@@ -31,6 +33,7 @@ const results = await client.search.people({ query });
 ```
 
 ### Step 3: Create Migration Script
+
 ```typescript
 // scripts/migrate-juicebox.ts
 
@@ -73,6 +76,7 @@ function migrateResultAccess(code: string): string {
 ```
 
 ### Step 4: Staged Rollout
+
 ```typescript
 // lib/feature-flags.ts
 export class JuiceboxVersionManager {
@@ -100,6 +104,7 @@ export class JuiceboxVersionManager {
 ```
 
 ### Step 5: Validation Testing
+
 ```typescript
 // tests/migration.test.ts
 import { describe, it, expect } from 'vitest';

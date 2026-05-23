@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Enterprise RBAC
 
 ## Overview
+
 Manage workspace access control in Instantly API v2. Covers workspace member management, API key governance with scoped permissions, workspace group management (for agencies), custom tag-based resource isolation, and audit logging. Instantly uses workspace-level isolation — each workspace is a separate tenant with its own data and API keys.
 
 ## Prerequisites
+
 - Instantly Hypergrowth plan or higher
 - Workspace admin access
 - API key with `all:all` scope (for admin operations)
@@ -37,6 +39,7 @@ Manage workspace access control in Instantly API v2. Covers workspace member man
 ## Instructions
 
 ### Step 1: Workspace Member Management
+
 ```typescript
 import { InstantlyClient } from "./src/instantly/client";
 const client = new InstantlyClient();
@@ -83,6 +86,7 @@ async function removeMember(memberId: string) {
 ```
 
 ### Step 2: API Key Governance
+
 ```typescript
 // Create scoped API keys for different team roles
 async function createScopedKeys() {
@@ -157,6 +161,7 @@ async function revokeApiKey(keyId: string) {
 ```
 
 ### Step 3: Workspace Group Management (Agency Pattern)
+
 ```typescript
 // For agencies managing multiple client workspaces
 async function manageWorkspaceGroups() {
@@ -185,6 +190,7 @@ async function manageWorkspaceGroups() {
 ```
 
 ### Step 4: Custom Tags for Resource Isolation
+
 ```typescript
 // Use custom tags to organize campaigns and accounts by team/client
 async function setupTeamTags() {
@@ -226,6 +232,7 @@ async function getAccountsByTeam(tagId: string) {
 ```
 
 ### Step 5: Audit Logging
+
 ```typescript
 // Review workspace audit logs
 async function reviewAuditLogs() {
@@ -265,6 +272,7 @@ async function changeWorkspaceOwner(newOwnerUserId: string) {
 | Viewer | View only | View only | View only | - | - | - |
 
 ## Key API Endpoints
+
 | Method | Path | Purpose |
 |--------|------|---------|
 | `POST` | `/workspace-members` | Invite member |
@@ -280,6 +288,7 @@ async function changeWorkspaceOwner(newOwnerUserId: string) {
 | `POST` | `/workspaces/current/change-owner` | Transfer ownership |
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `403` on member operations | Not workspace admin | Use admin API key |
@@ -288,9 +297,11 @@ async function changeWorkspaceOwner(newOwnerUserId: string) {
 | Audit logs empty | Feature not available on plan | Upgrade to higher tier |
 
 ## Resources
+
 - [Instantly API Key Management](https://developer.instantly.ai/api/v2/apikey)
 - [Workspace Members API](https://developer.instantly.ai/)
 - [Custom Tags API](https://developer.instantly.ai/api/v2/schemas)
 
 ## Next Steps
+
 For migration strategies, see `instantly-migration-deep-dive`.

@@ -6,7 +6,6 @@ description: Detect infrastructure drift from desired state
 
 Detect infrastructure drift from desired state
 
-
 ## Key Features
 
 - Production-ready configurations

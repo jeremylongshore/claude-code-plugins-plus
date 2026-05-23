@@ -148,23 +148,27 @@ This directory contains comprehensive user manuals and supplemental reference do
 **Source:** `agents/agent_engine/tutorial_a2a_on_agent_engine.ipynb`
 
 **What You'll Learn:**
+
 - Building A2A-compliant agents with ADK
 - Deploying to fully-managed Agent Engine
 - Querying agents via SDK, A2A Client, and HTTP
 - Local testing before cloud deployment
 
 **Key Concepts:**
+
 - **A2A Protocol:** Open standard for agent communication
 - **Agent Cards:** Capability discovery mechanism
 - **Agent Executor:** Task lifecycle management (submitted → working → completed)
 - **Agent Engine:** Serverless platform for agent hosting
 
 **Practical Examples:**
+
 - Q&A agent with web search
 - Three query methods demonstrated
 - Local testing workflow
 
 **Related Plugins:**
+
 - jeremy-vertex-engine
 - jeremy-adk-orchestrator
 - jeremy-vertex-validator
@@ -177,24 +181,28 @@ This directory contains comprehensive user manuals and supplemental reference do
 **Source:** `agents/cloud_run/agents_with_memory/get_started_with_memory_for_adk_in_cloud_run.ipynb`
 
 **What You'll Learn:**
+
 - Implementing short-term memory (Sessions)
 - Implementing long-term memory (Memory Bank)
 - Deploying ADK agents to Cloud Run
 - Using PreloadMemoryTool and after_agent_callback
 
 **Key Concepts:**
+
 - **Sessions:** Multi-turn conversation history
 - **Memory Bank:** Persistent, personalized memories
 - **VertexAiSessionService:** Production-ready session storage
 - **VertexAiMemoryBankService:** Managed memory persistence
 
 **Practical Examples:**
+
 - Weather agent with memory
 - Session creation and management
 - Memory generation and retrieval
 - Cloud Run deployment with ADK CLI
 
 **Architecture:**
+
 ```
 User Request → Cloud Run Service → ADK Runner
                                     ├── Session Service (short-term)
@@ -205,6 +213,7 @@ User Request → Cloud Run Service → ADK Runner
 ```
 
 **Related Plugins:**
+
 - jeremy-adk-orchestrator
 - jeremy-vertex-engine
 - jeremy-vertex-validator
@@ -217,6 +226,7 @@ User Request → Cloud Run Service → ADK Runner
 **Source:** `agents/agent_engine/tutorial_get_started_with_agent_engine_terraform_deployment.ipynb`
 
 **What You'll Learn:**
+
 - Agent Engine template pattern (\_\_init\_\_, set_up, query)
 - Packaging agents with cloudpickle
 - Writing Terraform configurations for agents
@@ -224,16 +234,19 @@ User Request → Cloud Run Service → ADK Runner
 - Managing dependencies and requirements
 
 **Key Concepts:**
+
 - **Infrastructure as Code (IaC):** Version-controlled deployments
 - **Reasoning Engine Resource:** Terraform resource for Agent Engine
 - **Agent Template Pattern:** Python class structure
 - **Class Methods:** Operations exposed by agent (query, async_stream_query, etc.)
 
 **Practical Examples:**
+
 1. **Custom Agent:** Simple Gemini-powered assistant
 2. **ADK Agent:** Currency exchange agent with function calling
 
 **Terraform Workflow:**
+
 ```
 1. Build Agent (Python class)
 2. Package Agent (cloudpickle → .pkl)
@@ -243,6 +256,7 @@ User Request → Cloud Run Service → ADK Runner
 ```
 
 **Related Plugins:**
+
 - jeremy-vertex-terraform
 - jeremy-adk-terraform
 - jeremy-vertex-engine
@@ -255,6 +269,7 @@ User Request → Cloud Run Service → ADK Runner
 **Source:** `gemini/tuning/sft_gemini_predictive_maintenance.ipynb`
 
 **What You'll Learn:**
+
 - Supervised fine-tuning workflow
 - Preparing JSONL training data
 - Launching and monitoring tuning jobs
@@ -262,6 +277,7 @@ User Request → Cloud Run Service → ADK Runner
 - Integrating Gemini for reporting
 
 **Key Concepts:**
+
 - **Supervised Fine-Tuning:** Adapt model weights with labeled data
 - **JSONL Format:** Training data structure (user/model pairs)
 - **Adapter Sizes:** Control tuning capacity vs. speed
@@ -271,6 +287,7 @@ User Request → Cloud Run Service → ADK Runner
 Equipment status classification (Normal, Warning, Critical) based on sensor data
 
 **Workflow:**
+
 ```
 1. Generate/Load Data (sensor readings, failure logs)
 2. Prepare Tuning Data (JSONL format)
@@ -282,12 +299,14 @@ Equipment status classification (Normal, Warning, Critical) based on sensor data
 ```
 
 **Dataset Requirements:**
+
 - Max training tokens per example: 131,072
 - Max validation dataset: 5,000 examples
 - Max file size: 1GB (JSONL)
 - Max dataset size: 1M text-only or 300K multimodal examples
 
 **Related Plugins:**
+
 - jeremy-vertex-engine
 - jeremy-vertex-validator
 - jeremy-genkit-pro
@@ -302,6 +321,7 @@ Equipment status classification (Normal, Warning, Critical) based on sensor data
 **Purpose:** Comprehensive index of all external documentation sources
 
 **Coverage:**
+
 - 25+ unique documentation sources
 - GitHub repositories (GoogleCloudPlatform/generative-ai)
 - Official Google Cloud documentation
@@ -309,6 +329,7 @@ Equipment status classification (Normal, Warning, Critical) based on sensor data
 - External APIs (Frankfurter currency exchange)
 
 **Categories:**
+
 - Google Cloud Platform Services (Vertex AI, Cloud Run, BigQuery)
 - Developer Tools & SDKs (ADK, Terraform, Google GenAI SDK)
 - GitHub Repositories (source notebooks)
@@ -321,6 +342,7 @@ Equipment status classification (Normal, Warning, Critical) based on sensor data
 **Purpose:** Consolidated deep-dive into ADK and Agent Engine architecture
 
 **Sections:**
+
 1. **Agent Development Kit Overview**
    - What is ADK and why use it
    - Core components (agents, tools, sessions, memory)
@@ -340,6 +362,7 @@ Equipment status classification (Normal, Warning, Critical) based on sensor data
    - Use cases and best practices
 
 **Key Insights:**
+
 - ADK is model-agnostic and deployment-agnostic
 - Agent Engine provides fully-managed serverless infrastructure
 - Memory Bank enables personalization across sessions
@@ -352,6 +375,7 @@ Equipment status classification (Normal, Warning, Critical) based on sensor data
 **Purpose:** Comprehensive guide to deployment platforms and model customization
 
 **Sections:**
+
 1. **Cloud Run Overview**
    - Three execution models (Services, Jobs, Worker Pools)
    - Key features (auto-scaling, pay-per-use, disposable containers)
@@ -371,6 +395,7 @@ Equipment status classification (Normal, Warning, Critical) based on sensor data
    - Evaluation and deployment
 
 **Key Insights:**
+
 - Cloud Run supports any containerized application
 - Scale to zero = cost-effective serverless
 - Fine-tuning excels for consistent output formatting
@@ -383,6 +408,7 @@ Equipment status classification (Normal, Warning, Critical) based on sensor data
 **Purpose:** Master guide for enterprise search, RAG applications, and distributed ML workloads
 
 **Sections:**
+
 1. **Vertex AI Search Overview**
    - What it is and core capabilities
    - Application types (custom search, media, healthcare, website)
@@ -429,6 +455,7 @@ Equipment status classification (Normal, Warning, Critical) based on sensor data
    - Cost optimization strategies
 
 **Key Insights:**
+
 - Vertex AI Search provides out-of-the-box NLP and ranking
 - RAG grounds LLM responses in enterprise data to reduce hallucinations
 - Multimodal RAG combines text and visual data for richer context
@@ -450,6 +477,7 @@ Equipment status classification (Normal, Warning, Critical) based on sensor data
 | **004: Fine-Tuning** | ✅ Gemini | ⚠️ Partial | ✅ Validation | ✅ Gemini | ✅ IaC |
 
 **Legend:**
+
 - ✅ Directly relevant
 - ⚠️ Partially relevant
 - ❌ Not relevant
@@ -599,11 +627,13 @@ supervisor = create_supervisor_agent(
 ## Document Maintenance
 
 ### Update Frequency
+
 - **Core Manuals (001-004):** Updated when source notebooks change
 - **Reference Docs (005-008):** Updated quarterly or when APIs change
 - **This Index:** Updated with each new manual addition
 
 ### Contributing
+
 Found an error or want to suggest improvements? Open an issue at:
 https://github.com/jeremylongshore/claude-code-plugins/issues
 

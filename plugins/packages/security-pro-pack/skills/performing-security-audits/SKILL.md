@@ -35,6 +35,7 @@ Perform in-depth security audits across various domains, from code vulnerability
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Assess the security of code for vulnerabilities like those in the OWASP Top 10.
 - Evaluate compliance with standards such as HIPAA, PCI DSS, GDPR, or SOC 2.
 - Review cryptographic implementations for weaknesses.
@@ -47,6 +48,7 @@ This skill activates when you need to:
 User request: "Please perform a security audit on this authentication code to find any potential vulnerabilities."
 
 The skill will:
+
 1. Invoke the `Security Auditor Expert` agent.
 2. Analyze the provided authentication code for common vulnerabilities.
 3. Generate a report detailing any identified vulnerabilities, their severity, and recommended fixes.
@@ -56,6 +58,7 @@ The skill will:
 User request: "Check this application against GDPR compliance requirements."
 
 The skill will:
+
 1. Invoke the `Compliance Checker` agent.
 2. Evaluate the application's architecture and code against GDPR guidelines.
 3. Generate a report highlighting any non-compliant areas and suggesting necessary changes.

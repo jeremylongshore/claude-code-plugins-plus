@@ -10,6 +10,7 @@ exa-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Exa costs through tier selection, result limiting, content option optimization, and usage monitoring with budget alerts.
 **Workflow:** FinOps skill - ensures cost-effective Exa usage at scale.
 **Relates to:** Follows exa-performance-tuning; informs capacity planning

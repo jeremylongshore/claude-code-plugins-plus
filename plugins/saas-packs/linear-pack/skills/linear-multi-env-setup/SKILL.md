@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Multi-Environment Setup
 
 ## Overview
+
 Configure Linear integrations across dev, staging, and production with isolated API keys, secret management, environment guards, and per-environment webhook routing. Use separate Linear workspaces or at minimum separate API keys per environment.
 
 ## Prerequisites
+
 - Separate Linear API keys per environment (dev, staging, prod)
 - Secret management (Vault, AWS Secrets Manager, GCP Secret Manager)
 - CI/CD pipeline with environment support
@@ -36,6 +38,7 @@ Configure Linear integrations across dev, staging, and production with isolated 
 ## Instructions
 
 ### Step 1: Environment Configuration
+
 ```typescript
 // src/config/linear.ts
 import { LinearClient } from "@linear/sdk";
@@ -87,6 +90,7 @@ async function loadConfig(): Promise<LinearEnvConfig> {
 ```
 
 ### Step 2: Secret Manager Integration
+
 ```typescript
 // GCP Secret Manager
 import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
@@ -120,6 +124,7 @@ async function getSecretVault(path: string): Promise<string> {
 ```
 
 ### Step 3: Environment-Aware Client Factory
+
 ```typescript
 let _client: LinearClient | null = null;
 let _config: LinearEnvConfig | null = null;
@@ -147,6 +152,7 @@ export function setTestClient(client: LinearClient) {
 ```
 
 ### Step 4: Environment Guards
+
 Prevent dangerous operations from running in the wrong environment.
 
 ```typescript
@@ -191,6 +197,7 @@ async function safeRemoveIssue(issueId: string) {
 ```
 
 ### Step 5: Per-Environment Webhooks
+
 ```typescript
 // Different webhook configs per environment
 const webhookConfigs: Record<Environment, {
@@ -217,6 +224,7 @@ const webhookConfigs: Record<Environment, {
 ```
 
 ### Step 6: CI/CD with Environment Secrets
+
 ```yaml
 # .github/workflows/deploy.yml
 name: Deploy
@@ -252,6 +260,7 @@ jobs:
 ```
 
 ### Step 7: Environment Validation Script
+
 ```typescript
 // scripts/validate-environment.ts
 async function validateEnvironment() {
@@ -306,6 +315,7 @@ validateEnvironment();
 ## Examples
 
 ### Quick Validation
+
 ```bash
 NODE_ENV=staging npx tsx scripts/validate-environment.ts
 # Output:
@@ -320,6 +330,7 @@ NODE_ENV=staging npx tsx scripts/validate-environment.ts
 ```
 
 ## Resources
+
 - [Linear API Authentication](https://linear.app/developers/graphql)
 - [12-Factor Config](https://12factor.net/config)
 - [GCP Secret Manager](https://cloud.google.com/secret-manager)

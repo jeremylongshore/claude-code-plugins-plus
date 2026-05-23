@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Linear Permission Model
 
 ### Built-in Roles
+
 | Role | Scope | Permissions |
 |------|-------|-------------|
 | Organization Admin | Org-wide | Full access, billing, SSO |
@@ -14,6 +15,7 @@ Detailed implementation examples and code patterns.
 | Guest | Per-team | Limited view access |
 
 ### API Key Scopes
+
 | Scope | Access Level |
 |-------|-------------|
 | `read` | Read-only access |
@@ -24,6 +26,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Define Application Roles
+
 ```typescript
 // lib/rbac/roles.ts
 export enum AppRole {
@@ -94,6 +97,7 @@ export const ROLE_PERMISSIONS: Record<AppRole, RolePermissions> = {
 ```
 
 ### Step 2: Permission Guard Implementation
+
 ```typescript
 // lib/rbac/guards.ts
 import { LinearClient } from "@linear/sdk";
@@ -163,6 +167,7 @@ export class PermissionGuard {
 ```
 
 ### Step 3: Secure Linear Client Factory
+
 ```typescript
 // lib/rbac/secure-client.ts
 import { LinearClient } from "@linear/sdk";
@@ -241,6 +246,7 @@ export class SecureLinearClient {
 ```
 
 ### Step 4: SSO Integration
+
 ```typescript
 // lib/auth/sso.ts
 import { OAuth2Client } from "google-auth-library";
@@ -320,6 +326,7 @@ export function mapGroupsToTeams(groups: string[]): string[] {
 ```
 
 ### Step 5: Audit Logging
+
 ```typescript
 // lib/rbac/audit.ts
 interface AuditEntry {
@@ -376,6 +383,7 @@ export const auditLogger = new AuditLogger();
 ```
 
 ### Step 6: API Middleware
+
 ```typescript
 // middleware/rbac.ts
 import { SecureLinearClient } from "../lib/rbac/secure-client";

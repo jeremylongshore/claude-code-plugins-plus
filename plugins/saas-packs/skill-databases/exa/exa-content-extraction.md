@@ -10,6 +10,7 @@ exa-content-extraction/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Exa content extraction with text, highlights, and full page content options for downstream processing.
 **Workflow:** Essential skill for building data pipelines - enables extracting structured content from search results.
 **Relates to:** Follows exa-search-modes; critical for exa-rag-integration

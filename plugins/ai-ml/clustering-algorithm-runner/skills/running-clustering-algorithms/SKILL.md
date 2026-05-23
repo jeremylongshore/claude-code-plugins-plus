@@ -33,6 +33,7 @@ This skill empowers Claude to perform clustering analysis on provided datasets. 
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Identify distinct groups within a dataset.
 - Perform a cluster analysis to understand data structure.
 - Run K-means, DBSCAN, or hierarchical clustering on a given dataset.
@@ -44,6 +45,7 @@ This skill activates when you need to:
 User request: "Run clustering on this customer data to identify customer segments. The data is in customer_data.csv."
 
 The skill will:
+
 1. Load the customer_data.csv dataset.
 2. Perform K-means clustering to identify distinct customer segments based on their attributes.
 3. Provide a visualization of the customer segments and their characteristics.
@@ -53,6 +55,7 @@ The skill will:
 User request: "Perform DBSCAN clustering on this network traffic data to identify anomalies. The data is available at network_traffic.txt."
 
 The skill will:
+
 1. Load the network_traffic.txt dataset.
 2. Perform DBSCAN clustering to identify outliers representing anomalous network traffic.
 3. Report the identified anomalies and their characteristics.

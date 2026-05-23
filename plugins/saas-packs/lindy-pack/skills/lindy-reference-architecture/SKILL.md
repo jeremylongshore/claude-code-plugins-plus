@@ -24,16 +24,19 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lindy Reference Architecture
 
 ## Overview
+
 Production-ready architecture patterns for integrating Lindy AI agents into
 applications. Covers webhook integration, multi-agent societies, event-driven
 pipelines, and high-availability patterns.
 
 ## Prerequisites
+
 - Understanding of Lindy agent model (triggers, actions, skills)
 - Familiarity with webhook-based architectures
 - Production requirements defined (throughput, latency, reliability)
 
 ## Architecture 1: Simple Webhook Integration
+
 Single agent triggered by your application, results sent via callback.
 
 ```
@@ -46,6 +49,7 @@ Single agent triggered by your application, results sent via callback.
 ```
 
 **Implementation**:
+
 - Your app sends webhook with `callbackUrl` field
 - Lindy agent processes and responds via Send POST Request to Callback
 - Your app receives results asynchronously
@@ -53,6 +57,7 @@ Single agent triggered by your application, results sent via callback.
 **Best for**: Simple automations (email triage, lead scoring, content generation)
 
 ## Architecture 2: Event-Driven Pipeline
+
 Multiple event sources feed agents through a central webhook router.
 
 ```
@@ -70,6 +75,7 @@ Multiple event sources feed agents through a central webhook router.
 ```
 
 **Implementation**:
+
 ```typescript
 // Event router — maps events to specific Lindy agents
 const agentWebhooks: Record<string, string> = {
@@ -102,6 +108,7 @@ app.post('/events', async (req, res) => {
 **Best for**: Multiple event sources, different agents per event type
 
 ## Architecture 3: Multi-Agent Society (Delegation)
+
 Specialized agents collaborate through Lindy's built-in delegation system.
 
 ```
@@ -127,12 +134,14 @@ Specialized agents collaborate through Lindy's built-in delegation system.
 ```
 
 **Setup in Lindy**:
+
 1. Create specialized agents with **Agent Message Received** triggers
 2. Orchestrator uses **Agent Send Message** action to delegate
 3. Each agent completes its specialty and sends results forward
 4. Writer agent synthesizes and delivers final output
 
 **Key decisions**:
+
 | Decision | Option A | Option B |
 |----------|---------|---------|
 | Context passing | Full context (accurate, expensive) | Selective context (cheap, focused) |
@@ -142,6 +151,7 @@ Specialized agents collaborate through Lindy's built-in delegation system.
 **Best for**: Complex tasks requiring multiple specialties (research + analysis + writing)
 
 ## Architecture 4: Scheduled Pipeline
+
 Agents run on schedules, each feeding data to the next.
 
 ```
@@ -171,6 +181,7 @@ Agents run on schedules, each feeding data to the next.
 **Best for**: Daily reports, weekly digests, scheduled data processing
 
 ## Architecture 5: Chat + Knowledge Base
+
 Agent deployed as customer-facing chatbot with RAG-powered responses.
 
 ```
@@ -191,6 +202,7 @@ Agent deployed as customer-facing chatbot with RAG-powered responses.
 ```
 
 **Deploy the embed widget**:
+
 ```html
 <!-- Paste near end of <body> tag -->
 <script src="https://embed.lindy.ai/widget.js"
@@ -198,6 +210,7 @@ Agent deployed as customer-facing chatbot with RAG-powered responses.
 ```
 
 **KB configuration**:
+
 - Sources: Product docs, FAQ PDFs, knowledge articles
 - Fuzziness: 100 (semantic search)
 - Max Results: 5 (balance relevance vs context size)
@@ -226,11 +239,13 @@ Agent deployed as customer-facing chatbot with RAG-powered responses.
 | Chat + KB | KB empty | Fallback to generic response + escalate |
 
 ## Resources
+
 - [Lindy Introduction](https://docs.lindy.ai/fundamentals/lindy-101/introduction)
 - [Delegation 101](https://www.lindy.ai/academy-lessons/delegation-101)
 - [Building a Chatbot](https://www.lindy.ai/academy-lessons/building-a-chatbot-101)
 - [Lindy Embed](https://www.lindy.ai/integrations/lindy-embed)
 
 ## Next Steps
+
 Proceed to Flagship tier skills for enterprise features: multi-env, observability,
 incident response, data handling, RBAC, and migration.

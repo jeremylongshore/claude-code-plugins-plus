@@ -159,6 +159,7 @@ oci ons subscription list --compartment-id ocid1.compartment.oc1..example --topi
 ## Output
 
 Successful completion produces:
+
 - An ONS topic with at least one confirmed subscription (email, HTTPS, or PagerDuty)
 - One or more Events rules with condition filters matching target event types
 - Verified event delivery — triggering a matched action (e.g., stopping an instance) delivers a notification to the subscribed endpoint

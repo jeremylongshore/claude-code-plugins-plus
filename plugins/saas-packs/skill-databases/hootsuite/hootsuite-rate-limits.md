@@ -10,6 +10,7 @@ hootsuite-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Hootsuite rate limiting and backoff
 **Workflow:** Part of the operations skill category for Hootsuite integration.
 **Relates to:** Other hootsuite skills in this pack.

@@ -10,6 +10,7 @@ clickup-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement ClickUp rate limiting and backoff
 **Workflow:** Part of the operations skill category for ClickUp integration.
 **Relates to:** Other clickup skills in this pack.

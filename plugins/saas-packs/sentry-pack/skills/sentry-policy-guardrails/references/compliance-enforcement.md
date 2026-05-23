@@ -3,6 +3,7 @@
 ## Compliance Enforcement
 
 ### Required Data Scrubbing
+
 ```typescript
 // Enforced by shared config - cannot be disabled
 function scrubSensitiveData(event: Sentry.Event): Sentry.Event {
@@ -52,6 +53,7 @@ function scrubPattern(event: Sentry.Event, pattern: RegExp, replacement: string)
 ```
 
 ### Environment Enforcement
+
 ```typescript
 // Prevent test data in production
 function validateEnvironment(event: Sentry.Event): Sentry.Event | null {

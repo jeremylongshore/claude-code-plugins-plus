@@ -91,6 +91,7 @@ src/
 ```
 
 **Rules:**
+
 - API layer calls Service layer only
 - Service layer calls SDK layer and Infrastructure
 - SDK layer never calls upward

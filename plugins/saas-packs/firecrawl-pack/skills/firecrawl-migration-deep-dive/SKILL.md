@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Migration Deep Dive
 
 ## Current State
+
 !`npm list puppeteer playwright cheerio 2>/dev/null | grep -E "puppeteer|playwright|cheerio" || echo 'No scraping libs found'`
 
 ## Overview
+
 Migrate from custom scraping (Puppeteer, Playwright, Cheerio) or competing APIs to Firecrawl. Firecrawl eliminates browser management, anti-bot handling, and JS rendering infrastructure. This skill shows equivalent code for common scraping patterns.
 
 ## Migration Comparison
@@ -192,6 +194,7 @@ function getScrapeAdapter(): ScrapeAdapter {
 ```
 
 ### Step 5: Remove Old Dependencies
+
 ```bash
 set -euo pipefail
 # After migration is complete and verified
@@ -207,6 +210,7 @@ grep -r "puppeteer\|playwright\|cheerio" src/ --include="*.ts" || echo "Clean!"
 ```
 
 ## Migration Checklist
+
 - [ ] Install `@mendable/firecrawl-js`
 - [ ] Create adapter layer wrapping Firecrawl
 - [ ] Replace single-page scrapes with `scrapeUrl`
@@ -218,6 +222,7 @@ grep -r "puppeteer\|playwright\|cheerio" src/ --include="*.ts" || echo "Clean!"
 - [ ] Delete browser management code
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Different output format | Puppeteer returns HTML, Firecrawl markdown | Adjust downstream consumers |
@@ -226,9 +231,11 @@ grep -r "puppeteer\|playwright\|cheerio" src/ --include="*.ts" || echo "Clean!"
 | Content differences | Different JS wait timing | Tune `waitFor` parameter |
 
 ## Resources
+
 - [Firecrawl vs Puppeteer](https://docs.firecrawl.dev/introduction)
 - [Firecrawl Scrape Options](https://docs.firecrawl.dev/features/scrape)
 - [Advanced Scraping Guide](https://docs.firecrawl.dev/advanced-scraping-guide)
 
 ## Next Steps
+
 For advanced troubleshooting, see `firecrawl-advanced-troubleshooting`.

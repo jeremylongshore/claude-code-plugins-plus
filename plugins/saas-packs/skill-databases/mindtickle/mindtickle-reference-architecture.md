@@ -10,6 +10,7 @@ mindtickle-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Mindtickle reference architecture
 **Workflow:** Part of the cicd skill category for Mindtickle integration.
 **Relates to:** Other mindtickle skills in this pack.

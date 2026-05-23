@@ -49,6 +49,7 @@ The V/TO answers eight questions on two pages:
 | **Issues List** | All unresolved obstacles | Problems, ideas, opportunities to discuss |
 
 **Process:**
+
 1. Leadership team completes V/TO together (2-day off-site)
 2. Share with entire organization
 3. Review quarterly
@@ -67,6 +68,7 @@ See: [references/vto.md](references/vto.md) for V/TO templates and exercises.
 Not an org chart—an accountability chart. Defines the structure and who owns what.
 
 **Structure:**
+
 ```
 Visionary ←→ Integrator
               ├── Sales/Marketing
@@ -75,6 +77,7 @@ Visionary ←→ Integrator
 ```
 
 **Two key roles:**
+
 - **Visionary:** Big ideas, culture, key relationships, creative problem solving
 - **Integrator:** Runs business day-to-day, manages team, executes vision, resolves conflicts
 
@@ -95,6 +98,7 @@ Evaluate every person on two dimensions:
 **Standard:** Must be "+" on all core values. One "+/-" is a conversation. Any "-" is wrong person.
 
 **2. Right Seat (GWC)**
+
 - **G**et it: Understands the role
 - **W**ant it: Genuinely wants the role
 - **C**apacity: Has the mental, physical, emotional capacity
@@ -104,6 +108,7 @@ Evaluate every person on two dimensions:
 **The formula:** Right People + Right Seats = A-players
 
 **People decisions:**
+
 - Right person, right seat → Keep and invest in
 - Right person, wrong seat → Move to right seat
 - Wrong person, right seat → Coaching/exit (hardest call)
@@ -120,6 +125,7 @@ See: [references/people.md](references/people.md) for accountability chart and p
 A weekly report card of 5-15 numbers that tell you how the business is doing.
 
 **Scorecard rules:**
+
 - Activity-based metrics (leading indicators), not results (lagging)
 - Weekly numbers (monthly is too slow)
 - Every number has an owner
@@ -137,6 +143,7 @@ A weekly report card of 5-15 numbers that tell you how the business is doing.
 | Cash Balance | Finance | >$200K | ✓ | ✓ | ✓ | ✓ |
 
 **Benefits:**
+
 - Spot problems 2-4 weeks earlier
 - Reduce "gut feeling" management
 - Create accountability without micromanagement
@@ -155,17 +162,20 @@ See: [references/data.md](references/data.md) for scorecard templates and metric
 **I**dentify → **D**iscuss → **S**olve
 
 **Step 1: Identify**
+
 - What's the real issue? (Not the symptom)
 - Ask "Why?" until you reach root cause
 - State the issue in one sentence
 
 **Step 2: Discuss**
+
 - Everyone gets input (not equal time)
 - Tangents are stopped
 - Focus on the ONE issue
 - Time-boxed (usually 5-15 minutes)
 
 **Step 3: Solve**
+
 - Decision is made
 - Action items are assigned (who + what + when)
 - Move to next issue
@@ -179,12 +189,14 @@ See: [references/data.md](references/data.md) for scorecard templates and metric
 | **Obstacles** | Blocking a rock, resource constraint, dependency | IDS → remove or escalate |
 
 **Issues list rules:**
+
 - Everyone can add issues
 - Prioritize: most important first
 - Not all issues get solved every meeting
 - Unsolved issues carry forward
 
 **Common IDS mistakes:**
+
 - Discussing symptoms, not root cause
 - Rehashing same issue every week
 - No clear action items
@@ -201,6 +213,7 @@ See: [references/issues.md](references/issues.md) for IDS facilitation guides.
 **The 20/80 rule:** Document 20% of your processes to get 80% consistency.
 
 **Identify core processes:**
+
 - HR process (hiring, onboarding, reviews)
 - Sales process (lead → close)
 - Operations process (delivery, fulfillment)
@@ -208,12 +221,14 @@ See: [references/issues.md](references/issues.md) for IDS facilitation guides.
 - Finance process (invoicing, collections)
 
 **Documentation format:**
+
 1. Name the process
 2. List 5-20 major steps
 3. Add just enough detail (not a 50-page manual)
 4. Make it visual where possible
 
 **Example: Sales Process "The Closer"**
+
 1. Qualify lead (BANT: Budget, Authority, Need, Timeline)
 2. Discovery call (30 min, use question guide)
 3. Demo (customize to their pain points)
@@ -222,6 +237,7 @@ See: [references/issues.md](references/issues.md) for IDS facilitation guides.
 6. Close or disqualify
 
 **Followed By All (FBA):**
+
 - Document it
 - Train on it
 - Measure compliance
@@ -240,11 +256,13 @@ See: [references/process.md](references/process.md) for process documentation te
 **Definition:** The 3-7 most important things to accomplish in the next 90 days.
 
 **Why 90 days?**
+
 - Long enough to accomplish something meaningful
 - Short enough to maintain urgency
 - Natural human rhythm for focus
 
 **Rock-setting process:**
+
 1. Review V/TO (vision, 3-year, 1-year)
 2. Brainstorm: "What must get done this quarter to stay on track?"
 3. Narrow to 3-7 company rocks
@@ -254,6 +272,7 @@ See: [references/process.md](references/process.md) for process documentation te
 7. Track weekly
 
 **SMART rocks:**
+
 - **S**pecific: "Launch new pricing page" not "improve pricing"
 - **M**easurable: Clear completion criteria
 - **A**chievable: Can be done in 90 days
@@ -261,11 +280,13 @@ See: [references/process.md](references/process.md) for process documentation te
 - **T**ime-bound: Due end of quarter
 
 **Rock scoring:**
+
 - **Done** = checked off (no partial credit)
 - **Not done** = carried forward or dropped
 - **Goal:** 80%+ completion rate
 
 **Anti-patterns:**
+
 - Too many rocks (>7) → Focus is diluted
 - Rocks too vague → Can't tell if done
 - No owner → Nobody accountable
@@ -292,6 +313,7 @@ See: [references/rocks.md](references/rocks.md) for rock-setting exercises.
 | 5 min | **Conclude** | Recap to-dos, rate meeting 1-10 |
 
 **Level 10 meeting rules:**
+
 - Starts on time, ends on time (non-negotiable)
 - Same day, same time every week
 - No phones/laptops (except for agenda)
@@ -300,10 +322,12 @@ See: [references/rocks.md](references/rocks.md) for rock-setting exercises.
 - If below 8, discuss what to improve
 
 **Why "Level 10"?**
+
 - Every meeting is rated 1-10 by participants
 - Goal is to consistently achieve 10/10
 
 **To-Do rules:**
+
 - 7-day action items only
 - Each has owner and due date
 - Done = 100% complete
@@ -324,6 +348,7 @@ See: [references/level-10.md](references/level-10.md) for meeting facilitation g
 | **Annual Planning** | Yearly | Full V/TO review, set 1-year plan, Q1 rocks |
 
 **Self-implementation vs. EOS Implementer:**
+
 - Self: Read the book, follow the tools (free, slower)
 - EOS Implementer: Certified facilitator guides the process (faster, expensive)
 
@@ -341,6 +366,7 @@ Rate your company 1-5 on each statement:
 | **Traction** | We set and achieve 90-day priorities (rocks) | |
 
 **Scoring:**
+
 - 25-30: Strong (maintain and fine-tune)
 - 20-24: Good (close gaps)
 - 15-19: Average (significant work needed)

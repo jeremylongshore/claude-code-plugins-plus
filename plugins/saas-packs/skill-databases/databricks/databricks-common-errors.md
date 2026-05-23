@@ -10,6 +10,7 @@ databricks-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Databricks common errors
 **Workflow:** Part of the operations skill category for Databricks integration.
 **Relates to:** Other databricks skills in this pack.

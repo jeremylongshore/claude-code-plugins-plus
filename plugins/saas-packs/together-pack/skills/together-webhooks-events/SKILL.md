@@ -21,9 +21,11 @@ compatibility: Designed for Claude Code
 # Together AI Webhooks & Events
 
 ## Overview
+
 Together AI delivers webhook callbacks for asynchronous operations including fine-tuning jobs, batch inference, and model lifecycle events. Subscribe to events for fine-tune completion, job failures, model deprecation notices, and batch processing status to build automated ML pipelines without polling the jobs API.
 
 ## Webhook Registration
+
 ```typescript
 const response = await fetch("https://api.together.xyz/v1/webhooks", {
   method: "POST",
@@ -40,6 +42,7 @@ const response = await fetch("https://api.together.xyz/v1/webhooks", {
 ```
 
 ## Signature Verification
+
 ```typescript
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
@@ -56,6 +59,7 @@ function verifyTogetherSignature(req: Request, res: Response, next: NextFunction
 ```
 
 ## Event Handler
+
 ```typescript
 import express from "express";
 const app = express();
@@ -78,6 +82,7 @@ app.post("/webhooks/together", express.raw({ type: "application/json" }), verify
 ```
 
 ## Event Types
+
 | Event | Payload Fields | Use Case |
 |-------|---------------|----------|
 | `fine_tune.completed` | `fine_tune_id`, `model_name`, `eval_loss` | Auto-deploy fine-tuned model |
@@ -87,6 +92,7 @@ app.post("/webhooks/together", express.raw({ type: "application/json" }), verify
 | `fine_tune.checkpoint` | `fine_tune_id`, `step`, `loss` | Monitor training progress in real time |
 
 ## Retry & Idempotency
+
 ```typescript
 const processed = new Set<string>();
 
@@ -102,6 +108,7 @@ async function handleIdempotent(event: { id: string; type: string; data: any }) 
 ```
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | `401 Unauthorized` | Invalid or expired API key | Rotate key at api.together.xyz |
@@ -110,8 +117,10 @@ async function handleIdempotent(event: { id: string; type: string; data: any }) 
 | Model not found | Deprecated without migration | Check `model.deprecated` events proactively |
 
 ## Resources
+
 - [Together AI Docs](https://docs.together.ai/)
 - [Fine-tuning Guide](https://docs.together.ai/docs/fine-tuning)
 
 ## Next Steps
+
 See `together-security-basics`.

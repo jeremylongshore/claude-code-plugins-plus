@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code
 # Figma Common Errors
 
 ## Overview
+
 Quick reference for the most common Figma REST API and Plugin API errors, with exact error messages and working solutions.
 
 ## Prerequisites
+
 - Figma API credentials configured
 - Access to your application logs or browser console
 
@@ -46,6 +48,7 @@ Quick reference for the most common Figma REST API and Plugin API errors, with e
 ### Step 2: Diagnose Specific Errors
 
 #### 403 Forbidden -- Token Issues
+
 ```bash
 # Test your token
 curl -s -o /dev/null -w "%{http_code}" \
@@ -61,12 +64,14 @@ curl -s -o /dev/null -w "%{http_code}" \
 ```
 
 Common 403 causes:
+
 - PAT expired (90-day maximum lifetime)
 - Token missing required scope (e.g., using `file_content:read` but calling comments endpoint)
 - File not shared with the token owner
 - OAuth token not refreshed after expiry
 
 #### 429 Rate Limited
+
 ```typescript
 // Figma returns these headers on 429:
 // Retry-After: <seconds>            -- wait this long before retrying
@@ -86,6 +91,7 @@ async function handleRateLimit(response: Response) {
 ```
 
 #### 404 Not Found
+
 ```bash
 # Verify your file key is correct
 # URL format: https://www.figma.com/design/<FILE_KEY>/<file-name>
@@ -98,6 +104,7 @@ curl -s -H "X-Figma-Token: ${FIGMA_PAT}" \
 ```
 
 #### Images Endpoint Returns `null`
+
 ```typescript
 // GET /v1/images/:key returns null for nodes that cannot render
 const images = await exportImages(['0:1', '0:2']);
@@ -125,6 +132,7 @@ for (const [nodeId, url] of Object.entries(images)) {
 | `Permission denied` | Plugin | Missing `manifest.json` permission | Add required permission to `permissions` array |
 
 ### Step 4: Quick Diagnostic Script
+
 ```bash
 #!/bin/bash
 echo "=== Figma API Diagnostics ==="
@@ -151,6 +159,7 @@ echo "FIGMA_FILE_KEY: ${FIGMA_FILE_KEY:-NOT SET}"
 ```
 
 ## Output
+
 - Identified error cause from status code and headers
 - Applied targeted fix
 - Verified resolution with diagnostic commands
@@ -158,6 +167,7 @@ echo "FIGMA_FILE_KEY: ${FIGMA_FILE_KEY:-NOT SET}"
 ## Examples
 
 ### Error Wrapper with Actionable Messages
+
 ```typescript
 function diagnoseFigmaError(status: number, body: string): string {
   switch (status) {
@@ -171,9 +181,11 @@ function diagnoseFigmaError(status: number, body: string): string {
 ```
 
 ## Resources
+
 - [Figma Status Page](https://status.figma.com)
 - [Figma REST API Rate Limits](https://developers.figma.com/docs/rest-api/rate-limits/)
 - [Figma API Scopes](https://developers.figma.com/docs/rest-api/scopes/)
 
 ## Next Steps
+
 For comprehensive debugging, see `figma-debug-bundle`.

@@ -10,6 +10,7 @@ intercom-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Intercom anti-patterns
 **Workflow:** Part of the enterprise skill category for Intercom integration.
 **Relates to:** Other intercom skills in this pack.

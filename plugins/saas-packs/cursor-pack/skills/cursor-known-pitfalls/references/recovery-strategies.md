@@ -3,6 +3,7 @@
 ## Recovery Strategies
 
 ### When Things Go Wrong
+
 ```
 1. Don't panic - use version control
 2. Git stash or commit work in progress
@@ -12,6 +13,7 @@
 ```
 
 ### Reset Options
+
 ```bash
 # Clear just cache
 rm -rf ~/Library/Caches/Cursor/
@@ -25,6 +27,7 @@ rm -rf ~/.cursor/
 ```
 
 ### Getting Help
+
 ```
 1. Check Cursor documentation
 2. Search GitHub issues

@@ -3,9 +3,11 @@
 # Customer.io Core Feature Integration
 
 ## Overview
+
 Implement Customer.io core features: segments, transactional messaging, data pipelines, and broadcast campaigns.
 
 ## Prerequisites
+
 - Customer.io SDK configured
 - Understanding of customer data model
 - App API credentials for transactional emails
@@ -13,6 +15,7 @@ Implement Customer.io core features: segments, transactional messaging, data pip
 ## Instructions
 
 ### Feature 1: Transactional Messages
+
 ```typescript
 // lib/customerio-transactional.ts
 import { APIClient, RegionUS, SendEmailRequest } from '@customerio/track';
@@ -66,6 +69,7 @@ await sendTransactionalEmail({
 ```
 
 ### Feature 2: Segments
+
 ```typescript
 // lib/customerio-segments.ts
 import { TrackClient } from '@customerio/track';
@@ -120,6 +124,7 @@ const segmentExamples = {
 ```
 
 ### Feature 3: Anonymous Tracking
+
 ```typescript
 // lib/customerio-anonymous.ts
 import { TrackClient } from '@customerio/track';
@@ -155,6 +160,7 @@ export class AnonymousTracker {
 ```
 
 ### Feature 4: Object Tracking (Companies/Accounts)
+
 ```typescript
 // lib/customerio-objects.ts
 import { TrackClient } from '@customerio/track';
@@ -189,6 +195,7 @@ export class ObjectTracker {
 ```
 
 ### Feature 5: Data Pipeline Integration
+
 ```typescript
 // lib/customerio-data-pipeline.ts
 export interface DataPipelineConfig {
@@ -223,6 +230,7 @@ export async function handleCDPWebhook(
 ```
 
 ## Output
+
 - Transactional email sending capability
 - Segment-ready user attributes
 - Anonymous to known user merging
@@ -230,6 +238,7 @@ export async function handleCDPWebhook(
 - CDP data pipeline integration
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Invalid template | Wrong message ID | Verify transactional_message_id in dashboard |
@@ -237,9 +246,11 @@ export async function handleCDPWebhook(
 | Segment not updating | Attribute not matching | Verify attribute types and operators |
 
 ## Resources
+
 - [Transactional API](https://customer.io/docs/transactional-api/)
 - [Segments](https://customer.io/docs/segments/)
 - [Anonymous Events](https://customer.io/docs/anonymous-events/)
 
 ## Next Steps
+
 After implementing core features, proceed to `customerio-common-errors` to learn troubleshooting.

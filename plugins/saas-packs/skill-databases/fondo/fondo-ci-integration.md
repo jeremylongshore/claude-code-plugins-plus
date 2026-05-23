@@ -10,6 +10,7 @@ fondo-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Fondo CI/CD integration
 **Workflow:** Part of the cicd skill category for Fondo integration.
 **Relates to:** Other fondo skills in this pack.

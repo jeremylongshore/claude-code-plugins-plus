@@ -11,6 +11,7 @@
 This plugin bridges the gap between research and action by automatically creating GitHub issues from Claude's web search results.
 
 **The Flow:**
+
 ```
 1. 🔍 Claude searches web (web_search Skill)
 2. 📝 Plugin extracts key findings
@@ -21,36 +22,45 @@ This plugin bridges the gap between research and action by automatically creatin
 ## 🎯 Use Cases
 
 ### Technical Research
+
 Research best practices and create implementation tickets:
+
 ```bash
 claude: "research PostgreSQL indexing best practices and create a ticket"
 ```
 
 **Result:** GitHub issue with:
+
 - Summary of indexing strategies
 - Key recommendations with sources
 - Related topics (performance, query optimization)
 - Next steps checklist
 
 ### Security Monitoring
+
 Stay on top of vulnerabilities:
+
 ```bash
 claude: "find latest CVEs for React dependencies, create urgent security ticket"
 ```
 
 **Result:** High-priority issue with:
+
 - CVE details and severity
 - Affected versions
 - Remediation steps
 - Source links to advisories
 
 ### Feature Research
+
 Investigate competitor features:
+
 ```bash
 claude: "research Stripe payment features, create feature request ticket"
 ```
 
 **Result:** Feature request issue with:
+
 - Feature comparison matrix
 - Implementation considerations
 - Market insights
@@ -59,6 +69,7 @@ claude: "research Stripe payment features, create feature request ticket"
 ## 🚀 Installation
 
 ### Prerequisites
+
 - Claude Code CLI
 - GitHub Personal Access Token with `repo` scope
 - Node.js 18+
@@ -209,10 +220,13 @@ export GITHUB_DEFAULT_LABELS=research,enhancement
 ## 🤔 How It Works
 
 ### 1. Research Phase
+
 Claude uses the `web_search` Skill to find relevant information based on your query.
 
 ### 2. Analysis Phase
+
 The plugin:
+
 - Parses search results
 - Extracts key findings
 - Detects priority level (normal/urgent)
@@ -220,7 +234,9 @@ The plugin:
 - Extracts related topics
 
 ### 3. Creation Phase
+
 The plugin:
+
 - Generates issue title
 - Formats markdown body with sections
 - Adds appropriate labels
@@ -228,7 +244,9 @@ The plugin:
 - Returns issue URL
 
 ### 4. Result
+
 You get a fully formatted GitHub issue ready for team action, complete with:
+
 - Research summary
 - Key findings with sources
 - Related topics
@@ -238,6 +256,7 @@ You get a fully formatted GitHub issue ready for team action, complete with:
 ## 🆚 Why Use This Plugin?
 
 ### Without Plugin
+
 1. Ask Claude to research topic
 2. Read through results
 3. Manually open GitHub
@@ -250,6 +269,7 @@ You get a fully formatted GitHub issue ready for team action, complete with:
 **Time: 10-15 minutes**
 
 ### With Plugin
+
 1. Ask Claude to research and create ticket
 
 **Time: 30 seconds**
@@ -267,6 +287,7 @@ You get a fully formatted GitHub issue ready for team action, complete with:
 ## 🐛 Troubleshooting
 
 ### Error: GitHub token required
+
 ```bash
 # Set your token
 export GITHUB_TOKEN=ghp_your_token_here
@@ -276,6 +297,7 @@ echo $GITHUB_TOKEN
 ```
 
 ### Error: Repository not found
+
 ```bash
 # Check format
 /research-and-ticket "topic" --repo owner/repo  # ✅ Correct
@@ -286,11 +308,13 @@ gh repo view owner/repo
 ```
 
 ### No search results found
+
 - Try broader search terms
 - Check internet connectivity
 - Verify web_search Skill is available in your Claude Code instance
 
 ### Issue created but poorly formatted
+
 - Plugin relies on quality search results
 - Try more specific search terms
 - Review and edit the generated issue as needed

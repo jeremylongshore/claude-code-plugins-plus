@@ -19,14 +19,15 @@ compatibility: Designed for Claude Code
 # Anthropic Load & Scale
 
 ## Overview
-Scale Claude usage for high-throughput applications. Covers four strategies: Message Batches (10K requests, 50% off, no rate limits), request queues with concurrency control via p-limit, tier upgrades (Tier 1-4 + Scale), and model selection for throughput (Haiku is 3-4x faster than Sonnet).
 
+Scale Claude usage for high-throughput applications. Covers four strategies: Message Batches (10K requests, 50% off, no rate limits), request queues with concurrency control via p-limit, tier upgrades (Tier 1-4 + Scale), and model selection for throughput (Haiku is 3-4x faster than Sonnet).
 
 ## Scaling Strategies
 
 ## Instructions
 
 ### Step 1: Message Batches (Best for Bulk)
+
 ```typescript
 // 10K requests per batch, 50% cheaper, no rate limits
 const batch = await client.messages.batches.create({
@@ -39,6 +40,7 @@ const batch = await client.messages.batches.create({
 ```
 
 ### Step 2: Request Queue with Concurrency Control
+
 ```typescript
 import pLimit from 'p-limit';
 
@@ -57,6 +59,7 @@ const results = await Promise.all(
 ```
 
 ### Step 3: Tier Upgrades
+
 Increase your spending to unlock higher tiers:
 
 | Tier | RPM | Input TPM | How to Qualify |
@@ -68,6 +71,7 @@ Increase your spending to unlock higher tiers:
 | Scale | Custom | Custom | Contact sales |
 
 ### Step 4: Model Selection for Throughput
+
 ```typescript
 // Haiku processes 3-4x faster than Sonnet, 8x faster than Opus
 // Use the fastest model that meets quality requirements
@@ -75,6 +79,7 @@ const model = taskComplexity === 'simple' ? 'claude-haiku-4-5-20251001' : 'claud
 ```
 
 ## Monitoring at Scale
+
 ```typescript
 // Track throughput metrics
 let requestCount = 0;
@@ -88,27 +93,33 @@ setInterval(() => {
 ```
 
 ## Output
+
 - Batch processing configured for bulk workloads (50% cheaper, no rate limits)
 - Concurrency-controlled request queue matching rate limit tier
 - Rate limit tier upgraded by increasing cumulative spend
 - Throughput metrics tracked (requests/min, tokens/min)
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | API Error | Check error type and status code | See `clade-common-errors` |
 
 ## Examples
+
 See Message Batches example, p-limit concurrency control, Tier Upgrades table, and Monitoring at Scale metrics tracking above.
 
 ## Resources
+
 - [Rate Limits](https://docs.anthropic.com/en/api/rate-limits)
 - [Message Batches](https://docs.anthropic.com/en/api/creating-message-batches)
 
 ## Next Steps
+
 See `clade-reliability-patterns` for fault-tolerant high-scale patterns.
 
 ## Prerequisites
+
 - Completed `clade-rate-limits` for understanding tier limits
 - High-volume use case requiring more than basic tier throughput
 - For batches: tolerance for async processing (24h SLA)

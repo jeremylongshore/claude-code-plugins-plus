@@ -77,6 +77,7 @@ func migration00X_AddNewColumn() throws {
 ```
 
 **Why this works:**
+
 - Nullable columns don't require DEFAULT
 - Existing rows get NULL automatically
 - No data transformation needed
@@ -231,6 +232,7 @@ func migration012_AddIndexes() throws {
 ```
 
 **Test 2:** Fresh install (run all migrations, verify final schema)
+
 ```swift
 @Test func freshInstallCreatesCorrectSchema() async throws {
     let db = try Database(inMemory: true)
@@ -251,6 +253,7 @@ func migration012_AddIndexes() throws {
 ```
 
 **Test 3:** Idempotency (run migrations twice, should not throw)
+
 ```swift
 @Test func migrationsAreIdempotent() async throws {
     let db = try Database(inMemory: true)
@@ -268,6 +271,7 @@ func migration012_AddIndexes() throws {
 ```
 
 **Manual testing (before TestFlight):**
+
 1. Install v(n-1) build on device → add real user data
 2. Install v(n) build (with new migration)
 3. Verify: App launches, data visible, no crashes
@@ -305,12 +309,14 @@ What are you trying to do?
 ## Common Mistakes
 
 ❌ **Adding NOT NULL without DEFAULT**
+
 ```swift
 // ❌ Fails on existing data
 ALTER TABLE albums ADD COLUMN rating INTEGER NOT NULL
 ```
 
 ✅ **Correct: Add as nullable first**
+
 ```swift
 ALTER TABLE albums ADD COLUMN rating INTEGER  // NULL allowed
 // Backfill in separate migration if needed

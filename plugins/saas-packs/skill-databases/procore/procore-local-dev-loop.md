@@ -10,6 +10,7 @@ procore-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Procore local development workflow
 **Workflow:** Part of the onboarding skill category for Procore integration.
 **Relates to:** Other procore skills in this pack.

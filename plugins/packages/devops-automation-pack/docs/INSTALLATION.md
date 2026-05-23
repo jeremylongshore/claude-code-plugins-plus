@@ -10,12 +10,13 @@
 
 Before you start, make sure you have:
 
--  Claude Code version 1.5 or higher installed
--  Command line access (Terminal on Mac/Linux, PowerShell on Windows)
--  10 MB free disk space
--  Internet connection for download
+- Claude Code version 1.5 or higher installed
+- Command line access (Terminal on Mac/Linux, PowerShell on Windows)
+- 10 MB free disk space
+- Internet connection for download
 
 **Check your Claude Code version:**
+
 ```bash
 claude --version
 ```
@@ -39,6 +40,7 @@ After purchasing, you'll receive a download link via email.
 ### Step 2: Extract the Files
 
 **On Mac or Linux:**
+
 ```bash
 cd ~/Downloads
 unzip DevOps_Automation_Pack.zip
@@ -46,6 +48,7 @@ cd DevOps_Automation_Pack
 ```
 
 **On Windows:**
+
 1. Open your Downloads folder
 2. Right-click `DevOps_Automation_Pack.zip`
 3. Select **"Extract All..."**
@@ -61,6 +64,7 @@ claude plugin install .
 ```
 
 Expected output:
+
 ```
  Installing devops-automation-pack...
  Loaded 25 commands
@@ -70,7 +74,7 @@ Expected output:
 Try: /commit-smart to get started
 ```
 
-**Installation complete!** 
+**Installation complete!**
 
 ---
 
@@ -81,6 +85,7 @@ Let's confirm everything installed correctly.
 ### Check Available Commands
 
 Run this command:
+
 ```bash
 claude plugin list
 ```
@@ -90,6 +95,7 @@ You should see `devops-automation-pack` in the list.
 ### Test a Command
 
 Try the smart commit command:
+
 ```bash
 /commit-smart
 ```
@@ -99,6 +105,7 @@ If you see the command prompt for Git status, it's working!
 ### View All Commands
 
 See everything you installed:
+
 ```bash
 /help | grep devops
 ```
@@ -112,6 +119,7 @@ You'll see all 25 commands with their shortcuts.
 Congratulations! You now have access to **25 professional DevOps plugins**:
 
 ### Git Workflow (5 plugins)
+
 - `/commit-smart` (gc) - Generate conventional commits with AI
 - `/pr-create` (gpr) - Create pull requests with templates
 - `/branch-create` (bc) - Create feature branches with naming conventions
@@ -119,6 +127,7 @@ Congratulations! You now have access to **25 professional DevOps plugins**:
 - `/rebase-interactive` (ri) - Interactive rebase workflow
 
 ### CI/CD Automation (6 plugins)
+
 - `/github-actions-create` (gha) - Generate GitHub Actions workflows
 - `/gitlab-ci-create` (glci) - Generate GitLab CI pipelines
 - `/circleci-config` (cci) - Generate CircleCI configuration
@@ -127,24 +136,28 @@ Congratulations! You now have access to **25 professional DevOps plugins**:
 - **CI/CD Expert Agent** - Pipeline design specialist
 
 ### Docker (4 plugins)
+
 - `/dockerfile-generate` (dg) - Create optimized Dockerfiles
 - `/docker-compose-create` (dcc) - Generate docker-compose.yml files
 - `/docker-optimize` (do) - Reduce image size and build time
 - **Docker Specialist Agent** - Container optimization expert
 
 ### Kubernetes (4 plugins)
+
 - `/k8s-manifest-generate` (km) - Generate Kubernetes manifests
 - `/k8s-helm-chart` (kh) - Create Helm charts
 - `/k8s-troubleshoot` (kt) - Debug pod failures and issues
 - **Kubernetes Expert Agent** - K8s orchestration specialist
 
 ### Terraform (4 plugins)
+
 - `/terraform-module-create` (tm) - Generate reusable modules
 - `/terraform-plan-analyze` (tpa) - Analyze plans for risks
 - `/cloudformation-generate` (cfn) - Create CloudFormation templates
 - **Terraform Architect Agent** - Infrastructure as code expert
 
 ### Deployment (2 plugins)
+
 - `/monitoring-setup` (ms) - Set up Prometheus + Grafana
 - **Deployment Specialist Agent** - Release management expert
 
@@ -165,12 +178,14 @@ If you're in a Git repository with changes:
 ```
 
 The command will:
+
 1. Analyze your Git changes
 2. Review recent commit messages for style
 3. Generate a conventional commit message
 4. Show you the commit before creating it
 
 **Example output:**
+
 ```
  Analyzing changes...
  Found 3 modified files
@@ -188,7 +203,7 @@ Create this commit? (y/n):
 
 Type `y` and press Enter. Your commit is created!
 
->  **Tip:** You can use the shortcut `/gc` instead of typing the full command name.
+> **Tip:** You can use the shortcut `/gc` instead of typing the full command name.
 
 ---
 
@@ -197,15 +212,18 @@ Type `y` and press Enter. Your commit is created!
 ### Error: "Command not found"
 
 **Symptoms:**
+
 - Running `/commit-smart` shows "unknown command"
 - Plugins don't appear in `/help`
 
 **Solution:**
+
 1. Restart Claude Code completely
 2. Reopen Claude Code
 3. Run `/help` again to verify commands appear
 
 If still not working:
+
 ```bash
 claude plugin install ~/Downloads/DevOps_Automation_Pack
 ```
@@ -215,18 +233,21 @@ claude plugin install ~/Downloads/DevOps_Automation_Pack
 ### Error: "Permission denied"
 
 **Symptoms:**
+
 - Installation fails with permission error
 - Cannot execute installation script
 
 **Solution:**
 
 **On Mac/Linux:**
+
 ```bash
 chmod +x install.sh
 ./install.sh
 ```
 
 **On Windows:**
+
 1. Right-click PowerShell
 2. Select "Run as Administrator"
 3. Run installation command again
@@ -236,12 +257,14 @@ chmod +x install.sh
 ### Error: "Plugin already installed"
 
 **Symptoms:**
+
 - Installation says pack already exists
 - Want to reinstall or upgrade
 
 **Solution:**
 
 Uninstall the old version first:
+
 ```bash
 claude plugin uninstall devops-automation-pack
 claude plugin install ~/Downloads/DevOps_Automation_Pack
@@ -254,18 +277,21 @@ This removes the old version and installs the new one.
 ### Commands work but give errors
 
 **Symptoms:**
+
 - Commands run but produce unexpected errors
 - Features don't work as described
 
 **Possible causes and solutions:**
 
 **1. Git not configured:**
+
 ```bash
 git config --global user.name "Your Name"
 git config --global user.email "[email protected]"
 ```
 
 **2. Not in a Git repository:**
+
 ```bash
 cd /path/to/your/project
 git init  # if needed
@@ -274,6 +300,7 @@ git init  # if needed
 **3. Missing dependencies:**
 
 Some commands require:
+
 - Git (for Git workflow commands)
 - Docker (for Docker commands)
 - kubectl (for Kubernetes commands)
@@ -296,6 +323,7 @@ Install only what you need for the commands you'll use.
 **Email:** mandy@intentsolutions.io
 
 When contacting support, include:
+
 1. **Error message** (exact text - copy and paste it)
 2. **Command you ran** (what you typed)
 3. **Your setup:**
@@ -322,6 +350,7 @@ Now that you've installed the pack, here's what to do:
 See `docs/QUICK_START.md` for a guided first task.
 
 You'll learn to:
+
 - Create a feature branch
 - Make changes
 - Generate a smart commit
@@ -332,6 +361,7 @@ All in 5 minutes!
 ### 2. Explore Use Cases
 
 See `docs/USE_CASES.md` for real-world examples:
+
 - Setting up a new project with CI/CD
 - Optimizing Docker images
 - Deploying to Kubernetes
@@ -343,6 +373,7 @@ See `docs/USE_CASES.md` for real-world examples:
 Run `/help` and look for commands that match your workflow.
 
 Each command has:
+
 - A full name (e.g., `/commit-smart`)
 - A shortcut (e.g., `/gc`)
 - Built-in help (e.g., `/commit-smart --help`)
@@ -350,6 +381,7 @@ Each command has:
 ### 4. Use the Agents
 
 The 6 specialized agents activate automatically when you:
+
 - Ask about CI/CD pipelines
 - Work with Docker files
 - Debug Kubernetes issues

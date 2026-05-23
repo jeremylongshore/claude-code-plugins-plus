@@ -5,6 +5,7 @@ Detailed implementation reference for the speak-local-dev-loop skill.
 ## Instructions
 
 ### Step 1: Create Project Structure
+
 ```
 my-speak-project/
 ├── src/
@@ -33,6 +34,7 @@ my-speak-project/
 ```
 
 ### Step 2: Configure Environment
+
 ```bash
 # Copy environment template
 cp .env.example .env.local
@@ -53,6 +55,7 @@ npm run dev
 ```
 
 ### Step 3: Setup Hot Reload
+
 ```json
 {
   "scripts": {
@@ -66,6 +69,7 @@ npm run dev
 ```
 
 ### Step 4: Configure Testing with Mocks
+
 ```typescript
 // tests/mocks/speak-mock.ts
 import { vi } from 'vitest';
@@ -115,6 +119,7 @@ vi.mock('@speak/language-sdk', () => ({
 ```
 
 ### Step 5: Write Unit Tests
+
 ```typescript
 // tests/unit/speak.test.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -156,6 +161,7 @@ describe('Speak Client', () => {
 ```
 
 ### Step 6: Create Mock Lesson Runner
+
 ```typescript
 // src/dev/mock-lesson.ts
 import { SpeakClient } from '@speak/language-sdk';
@@ -183,10 +189,10 @@ export async function runMockLesson() {
 }
 ```
 
-
 ## Detailed Examples
 
 ### Mock Speech Recognition
+
 ```typescript
 // tests/mocks/speech-mock.ts
 export function createMockSpeechRecognizer() {
@@ -213,6 +219,7 @@ export function createMockSpeechRecognizer() {
 ```
 
 ### Debug Mode with Verbose Logging
+
 ```bash
 # Enable verbose logging for Speak operations
 DEBUG=speak:* npm run dev
@@ -225,6 +232,7 @@ DEBUG=speak:tutor npm run dev
 ```
 
 ### Development Scripts
+
 ```json
 {
   "scripts": {
@@ -237,4 +245,3 @@ DEBUG=speak:tutor npm run dev
   }
 }
 ```
-

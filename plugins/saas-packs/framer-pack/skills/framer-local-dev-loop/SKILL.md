@@ -44,6 +44,7 @@ npm run dev  # Starts Vite dev server — hot-reloads into Framer editor
 ```
 
 Project structure:
+
 ```
 my-plugin/
 ├── src/

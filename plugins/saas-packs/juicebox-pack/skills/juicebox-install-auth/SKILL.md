@@ -20,9 +20,11 @@ compatibility: Designed for Claude Code
 # Juicebox Install & Auth
 
 ## Overview
+
 Set up Juicebox PeopleGPT API for AI-powered people search across 800M+ professional profiles.
 
 ## Prerequisites
+
 - Juicebox account at [app.juicebox.ai](https://app.juicebox.ai)
 - API key from Dashboard > Settings > API Keys
 - Node.js 18+ or Python 3.8+
@@ -30,18 +32,21 @@ Set up Juicebox PeopleGPT API for AI-powered people search across 800M+ professi
 ## Instructions
 
 ### Step 1: Install SDK
+
 ```bash
 npm install @juicebox/sdk
 # or: pip install juicebox-sdk
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 export JUICEBOX_API_KEY="jb_live_..."
 echo 'JUICEBOX_API_KEY=jb_live_your-key' >> .env
 ```
 
 ### Step 3: Verify Connection
+
 ```typescript
 import { JuiceboxClient } from '@juicebox/sdk';
 const client = new JuiceboxClient({ apiKey: process.env.JUICEBOX_API_KEY });
@@ -58,6 +63,7 @@ print(f'Connected! {results.total} profiles')
 ```
 
 ## Error Handling
+
 | Error | Code | Solution |
 |-------|------|----------|
 | Invalid API key | 401 | Verify at app.juicebox.ai/settings |
@@ -65,8 +71,10 @@ print(f'Connected! {results.total} profiles')
 | Rate limited | 429 | Check `Retry-After` header |
 
 ## Resources
+
 - [Juicebox Docs](https://docs.juicebox.work)
 - [PeopleGPT](https://juicebox.ai/peoplegpt)
 
 ## Next Steps
+
 After auth, proceed to `juicebox-hello-world`.

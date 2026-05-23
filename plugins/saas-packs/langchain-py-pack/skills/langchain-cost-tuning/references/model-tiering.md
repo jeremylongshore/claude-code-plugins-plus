@@ -8,6 +8,7 @@ prove no quality regression.
 ## Per-1M pricing snapshot (2026-04)
 
 **Verify current prices before shipping** at:
+
 - Anthropic: https://www.anthropic.com/pricing
 - OpenAI: https://openai.com/api/pricing/
 

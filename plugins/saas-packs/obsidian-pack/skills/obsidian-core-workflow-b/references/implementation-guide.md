@@ -5,6 +5,7 @@
 ## Detailed Instructions
 
 ### Step 1: Modal Dialogs
+
 ```typescript
 import { App, Modal, Setting } from 'obsidian';
 
@@ -101,6 +102,7 @@ export class InputModal extends Modal {
 ```
 
 ### Step 2: Suggestion Popups (FuzzySuggestModal)
+
 ```typescript
 import { App, FuzzySuggestModal, TFile } from 'obsidian';
 
@@ -167,6 +169,7 @@ new SuggestModal(
 ```
 
 ### Step 3: Custom Views (Leaf Views)
+
 ```typescript
 import { ItemView, WorkspaceLeaf } from 'obsidian';
 
@@ -257,6 +260,7 @@ export default class MyPlugin extends Plugin {
 ```
 
 ### Step 4: Editor Extensions (CodeMirror 6)
+
 ```typescript
 import { EditorView, ViewPlugin, Decoration, DecorationSet } from '@codemirror/view';
 import { RangeSetBuilder } from '@codemirror/state';
@@ -306,6 +310,7 @@ this.registerEditorExtension(highlightPlugin);
 ```
 
 ### Step 5: Context Menus
+
 ```typescript
 import { Menu, TFile, TFolder } from 'obsidian';
 
@@ -341,10 +346,10 @@ this.registerEvent(
 );
 ```
 
-
 ## Complete Examples
 
 ### Progress Modal
+
 ```typescript
 export class ProgressModal extends Modal {
   private progressEl: HTMLElement;
@@ -382,6 +387,7 @@ modal.close();
 ```
 
 ### Sidebar Styling
+
 ```css
 /* styles.css */
 .custom-view-content {

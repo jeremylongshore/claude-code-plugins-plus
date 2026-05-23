@@ -86,6 +86,7 @@ python scripts/optimize.py \
 ## Step 5: Analyze Results
 
 Results are saved to `reports/` directory:
+
 - `*_summary.txt` - Performance metrics table
 - `*_trades.csv` - Trade log with entry/exit details
 - `*_equity.csv` - Equity curve data

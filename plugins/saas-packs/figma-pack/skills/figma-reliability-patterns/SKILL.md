@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code
 # Figma Reliability Patterns
 
 ## Overview
+
 Production reliability patterns for Figma REST API integrations. Figma is an external dependency -- your application must handle its outages, rate limits, and slow responses without cascading failures.
 
 ## Prerequisites
+
 - Working Figma API integration
 - Understanding of circuit breaker pattern
 - Cache or file system for fallback data
@@ -34,6 +36,7 @@ Production reliability patterns for Figma REST API integrations. Figma is an ext
 ## Instructions
 
 ### Step 1: Circuit Breaker
+
 ```typescript
 // Prevent cascading failures when Figma is down
 class FigmaCircuitBreaker {
@@ -88,6 +91,7 @@ async function safeFigmaCall<T>(fn: () => Promise<T>): Promise<T> {
 ```
 
 ### Step 2: Cached Fallback
+
 ```typescript
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 
@@ -138,6 +142,7 @@ async function fetchWithFallback<T>(
 ```
 
 ### Step 3: Retry with Backoff (Respecting Retry-After)
+
 ```typescript
 async function figmaRetry<T>(
   fn: () => Promise<Response>,
@@ -171,6 +176,7 @@ async function figmaRetry<T>(
 ```
 
 ### Step 4: Request Timeout
+
 ```typescript
 // Prevent requests from hanging indefinitely
 async function figmaFetchWithTimeout(
@@ -198,6 +204,7 @@ async function figmaFetchWithTimeout(
 ```
 
 ### Step 5: Health-Aware Request Routing
+
 ```typescript
 // Only make non-critical Figma calls when the API is healthy
 class FigmaHealthTracker {
@@ -241,6 +248,7 @@ async function conditionalFigmaCall<T>(
 ```
 
 ## Output
+
 - Circuit breaker preventing cascading failures
 - Cached fallback serving stale data during outages
 - Retry logic respecting Figma's `Retry-After` header
@@ -248,6 +256,7 @@ async function conditionalFigmaCall<T>(
 - Health-aware routing for non-critical calls
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Circuit stays open | Threshold too low | Increase threshold or decrease reset time |
@@ -256,9 +265,11 @@ async function conditionalFigmaCall<T>(
 | Timeout too short | Large file responses | Increase timeout for `/v1/files` calls |
 
 ## Resources
+
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
 - [Figma Rate Limits](https://developers.figma.com/docs/rest-api/rate-limits/)
 - [Figma Status Page](https://status.figma.com)
 
 ## Next Steps
+
 For policy enforcement, see `figma-policy-guardrails`.

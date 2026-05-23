@@ -26,6 +26,7 @@ Implement distributed tracing for end-to-end request visibility in microservices
 ## Output
 
 Provide:
+
 - Tracing SDK integration code
 - Instrumentation for key services
 - Context propagation configuration

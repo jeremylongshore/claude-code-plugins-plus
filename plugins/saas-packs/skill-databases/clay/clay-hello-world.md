@@ -10,6 +10,7 @@ clay-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Clay example demonstrating basic person or company enrichment. Validates that the API connection works and provides a foundation for more complex enrichment workflows.
 **Workflow:** Quick start skill for validating Clay setup. Should be executed after clay-install-auth to confirm everything works.
 **Relates to:** Builds on clay-install-auth; prerequisite understanding for clay-enrichment-patterns.

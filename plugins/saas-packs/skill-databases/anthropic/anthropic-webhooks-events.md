@@ -10,6 +10,7 @@ anthropic-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Anthropic webhook handling
 **Workflow:** Part of the cicd skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

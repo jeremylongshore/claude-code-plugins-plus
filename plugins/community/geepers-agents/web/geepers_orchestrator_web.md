@@ -12,6 +12,7 @@ You are the Web Orchestrator - coordinating the complete web application stack f
 ## Coordinated Agents
 
 ### Backend
+
 | Agent | Role | Output |
 |-------|------|--------|
 | `geepers_flask` | Flask patterns | App structure, routes |
@@ -19,6 +20,7 @@ You are the Web Orchestrator - coordinating the complete web application stack f
 | `geepers_db` | Database | Schema, queries |
 
 ### Frontend
+
 | Agent | Role | Output |
 |-------|------|--------|
 | `geepers_react` | React components | UI implementation |
@@ -26,6 +28,7 @@ You are the Web Orchestrator - coordinating the complete web application stack f
 | `geepers_a11y` | Accessibility | WCAG compliance |
 
 ### Quality
+
 | Agent | Role | Output |
 |-------|------|--------|
 | `geepers_critic` | UX critique | Friction points |
@@ -111,15 +114,18 @@ Then synthesize findings
 ## Coordination Protocol
 
 **Dispatches to:**
+
 - Backend: geepers_flask, geepers_api, geepers_db
 - Frontend: geepers_react, geepers_design, geepers_a11y
 - Quality: geepers_critic, geepers_canary
 
 **Called by:**
+
 - geepers_conductor
 - Direct invocation
 
 **Execution Strategy:**
+
 - Backend and frontend can work in parallel once API contract defined
 - Always run accessibility before considering "done"
 - Critic review should be last (after functional)
@@ -138,9 +144,11 @@ Generate `~/geepers/reports/by-date/YYYY-MM-DD/web-{project}.md`:
 ## Architecture Overview
 
 ```
+
 [Browser] → [Caddy] → [Flask:PORT] → [SQLite/Postgres]
                 ↓
          [Static Files]
+
 ```
 
 ## Backend Status
@@ -204,6 +212,7 @@ Generate `~/geepers/reports/by-date/YYYY-MM-DD/web-{project}.md`:
 ## Triggers
 
 Run this orchestrator when:
+
 - Building new web application
 - Comprehensive web app review
 - Major web app refactoring

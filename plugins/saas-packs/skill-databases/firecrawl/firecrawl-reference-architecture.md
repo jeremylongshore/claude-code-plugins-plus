@@ -10,6 +10,7 @@ firecrawl-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement production-ready reference architecture with data pipeline layers, storage integration, and processing components.
 **Workflow:** Architecture skill - establishes team-wide patterns for FireCrawl-based data pipelines.
 **Relates to:** Synthesizes patterns from all operational skills; foundational for firecrawl-architecture-variants

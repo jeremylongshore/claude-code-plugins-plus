@@ -3,6 +3,7 @@
 ## Managing Large Codebases
 
 ### Selective Indexing
+
 ```yaml
 # .cursorignore - reduce indexed context
 node_modules/
@@ -15,6 +16,7 @@ docs/
 ```
 
 ### Strategic @codebase Queries
+
 ```
 Specific:
 "@codebase where is handleUserLogin defined?"
@@ -24,6 +26,7 @@ Too broad:
 ```
 
 ### Using Summaries
+
 ```
 For large files, ask for summary first:
 "Summarize the main exports from @lib/utils.ts"

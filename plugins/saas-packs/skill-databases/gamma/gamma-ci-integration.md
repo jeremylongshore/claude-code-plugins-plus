@@ -10,6 +10,7 @@ gamma-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Gamma CI/CD integration
 **Workflow:** Part of the cicd skill category for Gamma integration.
 **Relates to:** Other gamma skills in this pack.

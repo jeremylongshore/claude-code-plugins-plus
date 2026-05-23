@@ -1,6 +1,7 @@
-# Implementation Guide
+## Implementation Guide
 
 ### Step 1: Implement Singleton Pattern (Recommended)
+
 ```typescript
 // src/supabase/client.ts
 import { SupabaseClient } from '@supabase/supabase-js';
@@ -19,6 +20,7 @@ export function getSupabaseClient(): SupabaseClient {
 ```
 
 ### Step 2: Add Error Handling Wrapper
+
 ```typescript
 import { SupabaseError } from '@supabase/supabase-js';
 
@@ -41,6 +43,7 @@ async function safeSupabaseCall<T>(
 ```
 
 ### Step 3: Implement Retry Logic
+
 ```typescript
 async function withRetry<T>(
   operation: () => Promise<T>,

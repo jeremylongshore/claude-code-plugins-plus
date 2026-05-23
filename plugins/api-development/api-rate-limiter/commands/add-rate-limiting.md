@@ -10,6 +10,7 @@ Implement production-ready rate limiting with token bucket, sliding window, or f
 ## When to Use This Command
 
 Use `/add-rate-limiting` when you need to:
+
 - Protect APIs from abuse and DDoS attacks
 - Enforce fair usage policies across user tiers
 - Prevent resource exhaustion from runaway clients
@@ -18,6 +19,7 @@ Use `/add-rate-limiting` when you need to:
 - Control costs for expensive operations (AI inference, video processing)
 
 DON'T use this when:
+
 - Building internal-only APIs with trusted clients (use circuit breakers instead)
 - Single-user applications (no shared resource contention)
 - Already behind API gateway with built-in rate limiting (avoid double limiting)
@@ -25,24 +27,28 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **Token Bucket algorithm with Redis** as the primary approach because:
+
 - Allows burst traffic while maintaining average rate (better UX)
 - Distributed state enables horizontal scaling
 - Redis atomic operations prevent race conditions
 - Standard algorithm with well-understood behavior
 
 **Alternative considered: Sliding Window**
+
 - More accurate rate limiting (no reset boundary issues)
 - Higher Redis memory usage (stores timestamp per request)
 - Slightly higher computational overhead
 - Recommended for strict compliance requirements
 
 **Alternative considered: Fixed Window**
+
 - Simplest implementation (single counter)
 - Burst at window boundaries (2x limit possible)
 - Lower memory footprint
 - Recommended only for non-critical rate limiting
 
 **Alternative considered: Leaky Bucket**
+
 - Constant output rate (smooths bursty traffic)
 - Complex to explain to users
 - Less common in practice
@@ -51,6 +57,7 @@ This command implements **Token Bucket algorithm with Redis** as the primary app
 ## Prerequisites
 
 Before running this command:
+
 1. Redis server installed and accessible (standalone or cluster)
 2. Node.js/Python runtime for middleware implementation
 3. API framework that supports middleware (Express, FastAPI, etc.)
@@ -60,23 +67,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Choose Rate Limiting Strategy
+
 Select algorithm based on requirements: Token Bucket for user-facing APIs, Sliding Window for strict compliance, Fixed Window for internal APIs.
 
 ### Step 2: Configure Redis Connection
+
 Set up Redis client with connection pooling, retry logic, and failover handling for high availability.
 
 ### Step 3: Implement Rate Limiter Middleware
+
 Create middleware that intercepts requests, checks Redis state, and enforces limits with proper HTTP headers.
 
 ### Step 4: Define Rate Limit Tiers
+
 Configure different limits for user segments (anonymous, free, premium, enterprise) based on business requirements.
 
 ### Step 5: Add Monitoring and Alerting
+
 Instrument rate limiter with metrics for blocked requests, Redis latency, and tier usage patterns.
 
 ## Output Format
 
 The command generates:
+
 - `rate-limiter.js` or `rate_limiter.py` - Core rate limiting middleware
 - `redis-config.js` - Redis connection configuration with failover
 - `rate-limit-tiers.json` - Tiered limit definitions
@@ -531,12 +544,14 @@ module.exports = MultiLayerRateLimiter;
 ## Configuration Options
 
 **Rate Limit Algorithms**
+
 - **Token Bucket**: Best for user-facing APIs with burst allowance
 - **Sliding Window**: Most accurate, higher memory usage
 - **Fixed Window**: Simplest, allows boundary bursts
 - **Leaky Bucket**: Constant rate, complex UX
 
 **Tier Definitions**
+
 ```json
 {
   "anonymous": { "points": 20, "duration": 60 },
@@ -547,6 +562,7 @@ module.exports = MultiLayerRateLimiter;
 ```
 
 **Redis Configuration**
+
 - **Connection pooling**: Minimum 5 connections
 - **Retry strategy**: Exponential backoff up to 2s
 - **Failover**: Redis Sentinel or Cluster for HA
@@ -555,6 +571,7 @@ module.exports = MultiLayerRateLimiter;
 ## Best Practices
 
 DO:
+
 - Return standard rate limit headers (X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset)
 - Implement graceful degradation (fail open on Redis failure)
 - Use user ID over IP when authenticated (avoids NAT issues)
@@ -563,6 +580,7 @@ DO:
 - Provide clear error messages with retry guidance
 
 DON'T:
+
 - Block legitimate traffic (tune limits based on real usage)
 - Use client-side rate limiting only (easily bypassed)
 - Forget to handle Redis connection failures (causes complete outage)
@@ -570,6 +588,7 @@ DON'T:
 - Use rate limiting as only defense against DDoS (need multiple layers)
 
 TIPS:
+
 - Start conservative, increase limits based on monitoring
 - Use different limits for different operations (read vs write)
 - Implement per-endpoint rate limits for expensive operations
@@ -580,16 +599,19 @@ TIPS:
 ## Performance Considerations
 
 **Latency Impact**
+
 - Token bucket: 1-2ms added to request (single Redis call)
 - Sliding window: 2-4ms (multiple Redis operations)
 - With pipelining: <1ms for all algorithms
 
 **Redis Memory Usage**
+
 - Token bucket: ~100 bytes per user
 - Sliding window: ~50 bytes per request in window
 - Fixed window: ~50 bytes per user per window
 
 **Throughput**
+
 - Redis can handle 100k+ operations/second
 - Use Redis Cluster for horizontal scaling
 - Pipeline Redis operations when possible
@@ -607,6 +629,7 @@ TIPS:
 ## Troubleshooting
 
 **Rate Limits Not Enforced**
+
 ```bash
 # Check Redis connectivity
 redis-cli -h localhost -p 6379 ping
@@ -619,6 +642,7 @@ redis-cli TTL rl:user:123456
 ```
 
 **Too Many False Positives**
+
 ```bash
 # Review blocked requests by IP
 redis-cli --scan --pattern 'rl:ip:*' | xargs redis-cli MGET
@@ -631,6 +655,7 @@ redis-cli --scan --pattern 'rl:ip:*' | xargs redis-cli MGET
 ```
 
 **Redis Memory Issues**
+
 ```bash
 # Check memory usage
 redis-cli INFO memory

@@ -77,24 +77,28 @@ How will you know the meeting went well?
 ## Meeting Type Patterns
 
 ### 1:1 with Manager
+
 - Lead with your asks (don't bury them)
 - Bring specific examples for feedback discussions
 - Have your "state of me" summary ready
 - Prepare 2-3 topics, let them fill the rest
 
 ### Stakeholder Alignment
+
 - Start with shared context (don't assume they remember)
 - Present options, not just your recommendation
 - Have backup data ready but don't lead with it
 - End with clear ask and next steps
 
 ### Cross-Functional Planning
+
 - Acknowledge other team's priorities first
 - Frame asks as mutual benefit
 - Come with a proposal, not just a problem
 - Be ready to negotiate scope/timeline
 
 ### Leadership Review
+
 - Lead with the headline (bottom line up front)
 - One slide = one idea
 - Anticipate "so what" and "why now"
@@ -109,6 +113,7 @@ How will you know the meeting went well?
 **Good Response:**
 
 Let me help you prepare. First, some questions:
+
 - Is this a new deprioritization or ongoing?
 - What outcome do you want? (Re-prioritize it? Understand why? Move to a new project?)
 - How's your relationship with your manager? (Direct ok, or need to be careful?)
@@ -120,6 +125,7 @@ Here's a prep framework:
 ## 1:1 Prep: Project Deprioritization Discussion
 
 ### Your Goal
+
 Understand the reasoning and advocate for [specific outcome you want].
 
 ### Opening Frame (30 sec)
@@ -127,6 +133,7 @@ Understand the reasoning and advocate for [specific outcome you want].
 > "I wanted to discuss the decision to deprioritize [Project]. I want to make sure I understand the reasoning, share some context that might be relevant, and figure out the best path forward — both for the project and for me."
 
 This framing:
+
 - Shows you're not just complaining
 - Signals you want to understand
 - Opens door for negotiation
@@ -161,6 +168,7 @@ This framing:
 ### Success Criteria
 
 Meeting went well if:
+
 - [ ] You understand the real reasoning (not just the official line)
 - [ ] You made your perspective heard without damaging the relationship
 - [ ] You have clarity on what's next for you
@@ -180,11 +188,13 @@ Anything specific you want to adjust or practice?
 ## Meeting Prep: Design Timeline Discussion
 
 ### Context
+
 - Meeting with: Design Lead
 - Topic: Feature running late
 - Tension: They're likely feeling pressure too
 
 ### Your Goal
+
 Align on realistic timeline and identify what can be cut/simplified.
 
 ### Opening Frame

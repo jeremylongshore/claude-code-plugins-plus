@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Cohere Local Dev Loop
 
 ## Overview
+
 Set up a fast, reproducible local development workflow with Cohere API v2 mocking, vitest testing, and hot reload.
 
 ## Prerequisites
+
 - Completed `cohere-install-auth` setup
 - Node.js 18+ with npm/pnpm
 - TypeScript project with `tsx` or `ts-node`
@@ -217,12 +219,14 @@ CO_API_KEY=actual-key
 ```
 
 ## Output
+
 - Working dev environment with hot reload via `tsx watch`
 - Unit tests with mocked Cohere responses (no API calls)
 - Optional integration tests gated by `COHERE_INTEGRATION=1`
 - Mock fixtures matching real API v2 response shapes
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `vi.mock not working` | Wrong import order | Mock before importing modules |
@@ -231,9 +235,11 @@ CO_API_KEY=actual-key
 | Type mismatch on mock | API shape changed | Update fixtures to match SDK types |
 
 ## Resources
+
 - [Vitest Documentation](https://vitest.dev/)
 - [tsx (TypeScript Execute)](https://github.com/privatenumber/tsx)
 - [Cohere TypeScript SDK](https://github.com/cohere-ai/cohere-typescript)
 
 ## Next Steps
+
 See `cohere-sdk-patterns` for production-ready code patterns.

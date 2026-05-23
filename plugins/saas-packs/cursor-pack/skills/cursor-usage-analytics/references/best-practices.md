@@ -3,6 +3,7 @@
 ## Best Practices
 
 ### Regular Review
+
 ```
 Weekly:
 - Check active user trends
@@ -23,6 +24,7 @@ Quarterly:
 ```
 
 ### Acting on Insights
+
 ```
 Data → Action:
 

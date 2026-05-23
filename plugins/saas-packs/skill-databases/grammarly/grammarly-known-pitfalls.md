@@ -10,6 +10,7 @@ grammarly-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Grammarly anti-patterns
 **Workflow:** Part of the enterprise skill category for Grammarly integration.
 **Relates to:** Other grammarly skills in this pack.

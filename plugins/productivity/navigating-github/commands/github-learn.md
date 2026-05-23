@@ -61,6 +61,7 @@ Present via `AskUserQuestion`:
 > Pick a lesson (or say "teach me" followed by a topic):
 >
 > **Beginner**
+>
 > 1. GitHub 101 — commits, push, the basics
 > 2. Branching Basics — create, switch, see the difference
 > 3. First PR — branch, push, create a PR, merge

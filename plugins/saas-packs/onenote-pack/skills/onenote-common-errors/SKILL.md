@@ -65,6 +65,7 @@ A complete error decoder for the OneNote Graph API. Each HTTP status code has mu
 This is the single most common production issue since March 2025. If your code uses `ClientSecretCredential` (Node) or `client_secret` (Python) for OneNote calls, every request returns 403 regardless of permission scope.
 
 **How to diagnose:**
+
 ```typescript
 // Check if you're using the deprecated auth pattern
 // SEARCH your codebase for these — any match means you need to migrate:
@@ -259,6 +260,7 @@ function diagnoseOneNoteError(statusCode: number, errorBody?: any): DiagnosticRe
 ## Output
 
 After using this skill you will be able to:
+
 - Immediately identify the root cause of any OneNote Graph API error
 - Distinguish between permission errors and deprecated auth patterns
 - Detect silent upload failures that return 200 OK
@@ -272,6 +274,7 @@ This entire skill IS error handling documentation. For implementation of retry l
 ## Examples
 
 **Quick error check script:**
+
 ```bash
 # Test connectivity and permissions in one command
 curl -s -w "\nHTTP %{http_code}" \
@@ -282,6 +285,7 @@ curl -s -w "\nHTTP %{http_code}" \
 ```
 
 **Decode a specific error in logs:**
+
 ```typescript
 // When you see this in logs:
 // { statusCode: 403, code: "40004", message: "Insufficient privileges" }

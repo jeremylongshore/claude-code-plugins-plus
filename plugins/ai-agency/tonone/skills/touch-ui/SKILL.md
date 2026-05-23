@@ -22,13 +22,17 @@ User asks about mobile UI, touch targets, platform conventions, or mobile intera
 
 1. **Identify platform and topic** from user request (iOS / Android / cross-platform; touch targets, navigation, forms, gestures, etc.)
 2. **Search app-interface knowledge base:**
+
    ```bash
    python3 -m touch_agent.uiux search --domain app-interface --query "{platform} {topic}" --limit 5
    ```
+
 3. **Search stack conventions if framework is mentioned:**
+
    ```bash
    python3 -m touch_agent.uiux search --domain stacks --query "{framework}" --limit 3
    ```
+
 4. **Output** platform-specific rules with code examples
 
 ## Output format

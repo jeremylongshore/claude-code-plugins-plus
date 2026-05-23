@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Deploy Preview
 
 ## Overview
+
 Deploy preview environments for branches and pull requests. Every `git push` to a non-production branch generates a unique preview URL. Covers CLI-based previews, API-based previews, deployment protection, and comment integration.
 
 ## Prerequisites
+
 - Completed `vercel-install-auth` setup
 - Project linked via `vercel link`
 - Git repository connected in Vercel dashboard
@@ -36,6 +38,7 @@ Deploy preview environments for branches and pull requests. Every `git push` to 
 ## Instructions
 
 ### Step 1: Deploy Preview via CLI
+
 ```bash
 # Deploy current directory to a preview URL (default — not --prod)
 vercel
@@ -53,6 +56,7 @@ vercel --no-wait  # returns immediately with deployment URL
 ```
 
 ### Step 2: Deploy Preview via REST API
+
 ```bash
 # Create a deployment via API — useful for custom CI pipelines
 curl -X POST "https://api.vercel.com/v13/deployments" \
@@ -71,6 +75,7 @@ curl -X POST "https://api.vercel.com/v13/deployments" \
 ```
 
 ### Step 3: Check Deployment Status
+
 ```bash
 # Poll deployment status until READY
 curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
@@ -95,6 +100,7 @@ async function waitForDeployment(client: VercelClient, deploymentId: string) {
 ```
 
 ### Step 4: Configure Preview Environment Variables
+
 ```bash
 # Add env vars scoped to preview only
 vercel env add DATABASE_URL preview
@@ -113,6 +119,7 @@ curl -X POST "https://api.vercel.com/v9/projects/my-app/env" \
 ```
 
 ### Step 5: Deployment Protection
+
 Vercel supports password-protecting preview deployments:
 
 ```json
@@ -125,18 +132,22 @@ Vercel supports password-protecting preview deployments:
 ```
 
 Options:
+
 - `"vercel-authentication"` — requires Vercel team login
 - `"standard-protection"` — bypass for automation with `x-vercel-protection-bypass` header
 - Disabled — previews are publicly accessible
 
 ### Step 6: GitHub Integration — PR Comments
+
 When a GitHub repo is connected, Vercel automatically:
+
 1. Creates a preview deployment on every push
 2. Posts a comment on the PR with the preview URL
 3. Updates the GitHub commit status (pending → success/failure)
 4. Adds "Visit Preview" link in the PR checks section
 
 To configure in the Vercel dashboard:
+
 - **Settings > Git > Deploy Hooks** for manual triggers
 - **Settings > Git > Ignored Build Step** to skip builds for certain paths
 
@@ -157,12 +168,14 @@ To configure in the Vercel dashboard:
 | Random deploy | `my-app-abc123def.vercel.app` |
 
 ## Output
+
 - Preview deployment URL unique to each branch/commit
 - Build logs accessible via Vercel dashboard or API
 - PR comment with preview link (GitHub integration)
 - Environment variables scoped to preview only
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `BUILD_FAILED` | Build command failed | Check build logs: `vercel inspect <url>` |
@@ -172,10 +185,12 @@ To configure in the Vercel dashboard:
 | `DEPLOYMENT_BLOCKED` | Deployment protection active | Use `x-vercel-protection-bypass` header |
 
 ## Resources
+
 - [Preview Deployments](https://vercel.com/docs/deployments/preview-deployments)
 - [Deployment Protection](https://vercel.com/docs/security/deployment-protection)
 - [CLI Deploy Command](https://vercel.com/docs/cli/deploy)
 - [REST API: Create Deployment](https://vercel.com/docs/rest-api/deployments/create-a-new-deployment)
 
 ## Next Steps
+
 For edge function development, see `vercel-edge-functions`.

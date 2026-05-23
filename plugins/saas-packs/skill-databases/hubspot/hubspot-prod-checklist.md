@@ -10,6 +10,7 @@ hubspot-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute HubSpot production deployment checklist
 **Workflow:** Part of the operations skill category for HubSpot integration.
 **Relates to:** Other hubspot skills in this pack.

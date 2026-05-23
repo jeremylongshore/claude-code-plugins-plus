@@ -10,6 +10,7 @@ firecrawl-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure FireCrawl local development with testing, caching, and fast iteration cycles to minimize API costs during development.
 **Workflow:** Development environment setup skill - establishes efficient local development patterns before production scraping.
 **Relates to:** Follows firecrawl-hello-world; complements firecrawl-cost-tuning for cost optimization

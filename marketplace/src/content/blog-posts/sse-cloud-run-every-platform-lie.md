@@ -172,4 +172,3 @@ The protocol is 10 lines of code. The production deployment is nine PRs and five
 - [Zero to CI: Full-Stack Dashboard in One Session](/posts/zero-to-ci-full-stack-dashboard-one-session/) — The initial build of this same Braves dashboard
 - [The Silent Killer: How Bare catch {} Blocks Hide Failures](/posts/silent-killer-bare-catch-blocks-hide-failures/) — Another debugging saga where the platform hid the real error
 - [Session Cookies, Forgot-Password Timeouts, and Flaky E2E Tests](/posts/session-cookies-forgot-password-flaky-e2e-tests/) — Firebase Hosting strikes again with timeout surprises
-

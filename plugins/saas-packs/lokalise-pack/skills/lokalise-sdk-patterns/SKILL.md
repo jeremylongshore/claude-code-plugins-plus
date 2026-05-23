@@ -59,7 +59,7 @@ export function projectId(id: string, branch?: string): string {
 }
 ```
 
-2. Build a cursor-based pagination helper that works with any paginated endpoint.
+1. Build a cursor-based pagination helper that works with any paginated endpoint.
 
 ```typescript
 // src/lib/paginate.ts
@@ -105,7 +105,7 @@ const allKeys = await paginateAll(
 );
 ```
 
-3. Wrap API calls with structured error handling that classifies retryable errors.
+1. Wrap API calls with structured error handling that classifies retryable errors.
 
 ```typescript
 // src/lib/lokalise-api.ts
@@ -142,7 +142,7 @@ try {
 }
 ```
 
-4. Batch key operations that chunk requests to respect the 500-key-per-request limit.
+1. Batch key operations that chunk requests to respect the 500-key-per-request limit.
 
 ```typescript
 // src/lib/batch.ts
@@ -186,7 +186,7 @@ export async function batchDeleteKeys(
 }
 ```
 
-5. Upload files with async process monitoring and progress callbacks.
+1. Upload files with async process monitoring and progress callbacks.
 
 ```typescript
 // src/lib/upload.ts
@@ -237,7 +237,7 @@ await uploadWithProgress(client, "123456.abcdef", {
 }, (status, ms) => console.log(`[${(ms / 1000).toFixed(1)}s] ${status}`));
 ```
 
-6. Add a retry decorator with exponential backoff and a rate limiter for sequential calls.
+1. Add a retry decorator with exponential backoff and a rate limiter for sequential calls.
 
 ```typescript
 // src/lib/retry.ts

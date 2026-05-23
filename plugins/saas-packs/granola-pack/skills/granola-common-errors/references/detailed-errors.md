@@ -3,6 +3,7 @@
 ## Processing Issues
 
 ### Error: "Notes Not Appearing"
+
 **Symptoms:** Meeting ended but no notes generated
 
 | Timeframe | Action |
@@ -13,14 +14,17 @@
 | > 10 min | Contact support |
 
 ### Error: "Processing Failed"
+
 **Symptoms:** Error message after meeting
 **Causes:**
+
 - Audio file corrupted
 - Meeting too short (< 2 min)
 - Server issues
 - Storage full
 
 **Solutions:**
+
 1. Check Granola status page
 2. Verify sufficient disk space
 3. Try re-uploading if option available
@@ -29,7 +33,9 @@
 ## Integration Issues
 
 ### Error: "Zapier Connection Lost"
+
 **Symptoms:** Automations not triggering
+
 1. Open Zapier dashboard
 2. Find Granola connection
 3. Click "Reconnect"
@@ -37,7 +43,9 @@
 5. Test Zap manually
 
 ### Error: "Slack/Notion Sync Failed"
+
 **Symptoms:** Notes not appearing in connected apps
+
 1. Check integration status in Settings
 2. Verify target workspace permissions
 3. Re-authenticate if expired
@@ -48,6 +56,7 @@
 ### Error: "App Won't Start"
 
 **macOS:**
+
 ```bash
 set -euo pipefail
 # Force quit Granola
@@ -62,11 +71,13 @@ brew reinstall granola
 ```
 
 **Windows:**
+
 1. Task Manager > End Granola process
 2. Settings > Apps > Granola > Repair
 3. If repair fails, uninstall and reinstall
 
 ### Error: "Update Failed"
+
 1. Close Granola completely
 2. Download latest from granola.ai/download
 3. Install over existing version
@@ -84,6 +95,7 @@ brew reinstall granola
 | E006 | Calendar sync error | Reconnect calendar |
 
 ## When to Contact Support
+
 - Errors persist after troubleshooting
 - Data loss or corruption
 - Billing issues

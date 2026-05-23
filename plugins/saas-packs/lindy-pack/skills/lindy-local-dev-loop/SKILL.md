@@ -25,12 +25,14 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lindy Local Dev Loop
 
 ## Overview
+
 Lindy agents run on Lindy's managed infrastructure — you do not run agents locally.
 Local development focuses on building and testing the **webhook receivers**, **callback
 handlers**, and **application code** that Lindy agents interact with. Use ngrok or
 similar tunnels to expose local endpoints for Lindy webhook triggers.
 
 ## Prerequisites
+
 - Node.js 18+ or Python 3.10+
 - ngrok or Cloudflare Tunnel for HTTPS tunneling
 - Lindy account with at least one agent configured
@@ -39,6 +41,7 @@ similar tunnels to expose local endpoints for Lindy webhook triggers.
 ## Instructions
 
 ### Step 1: Create Webhook Receiver
+
 ```typescript
 // server.ts — Express webhook receiver for Lindy callbacks
 import express from 'express';
@@ -79,6 +82,7 @@ app.listen(3000, () => console.log('Webhook receiver running on :3000'));
 ```
 
 ### Step 2: Expose Local Server via Tunnel
+
 ```bash
 # Install and start ngrok
 npm install -g ngrok
@@ -89,21 +93,26 @@ ngrok http 3000
 ```
 
 ### Step 3: Configure Lindy Agent to Call Your Endpoint
+
 In the Lindy dashboard, add an **HTTP Request** action to your agent:
+
 - **Method**: POST
 - **URL**: `https://abc123.ngrok.io/lindy/callback`
 - **Headers**: `Content-Type: application/json`
 - **Body** (AI Prompt mode):
+
   ```
   Send the task result as JSON with fields: taskId, result, status
   ```
 
 Or configure a webhook trigger pointing to your tunnel URL:
+
 ```
 https://abc123.ngrok.io/lindy/webhook
 ```
 
 ### Step 4: Create Test Harness
+
 ```typescript
 // test-trigger.ts — Fire a test webhook to your Lindy agent
 import fetch from 'node-fetch';
@@ -132,6 +141,7 @@ triggerAgent();
 ```
 
 ### Step 5: Watch Mode Development
+
 ```json
 // package.json scripts
 {
@@ -155,6 +165,7 @@ npm run test:trigger
 ```
 
 ### Step 6: Environment Configuration
+
 ```bash
 # .env
 LINDY_API_KEY=lnd_live_xxxxxxxxxxxx
@@ -186,9 +197,11 @@ NODE_ENV=development
 | SSL error | ngrok not using HTTPS | Always use the `https://` ngrok URL |
 
 ## Resources
+
 - [Webhook Triggers](https://www.lindy.ai/academy-lessons/webhook-triggers)
 - [Calling Any API](https://www.lindy.ai/academy-lessons/calling-any-api)
 - [Lindy Documentation](https://docs.lindy.ai)
 
 ## Next Steps
+
 Proceed to `lindy-sdk-patterns` for integration patterns and best practices.

@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Production Checklist
 
 ## Overview
+
 Pre-deployment validation checklist for applications using Firecrawl's scrape, crawl, map, and extract APIs. Covers credential management, crawl safety limits, error handling, monitoring, and rollback.
 
 ## Prerequisites
+
 - Staging environment tested and passing
 - Production API key from [firecrawl.dev/app](https://firecrawl.dev/app)
 - Monitoring infrastructure ready
@@ -34,6 +36,7 @@ Pre-deployment validation checklist for applications using Firecrawl's scrape, c
 ## Pre-Deployment Checklist
 
 ### Credentials & Security
+
 - [ ] Production `FIRECRAWL_API_KEY` in secure vault (not in code or .env)
 - [ ] Key starts with `fc-` and is scoped to production
 - [ ] Different API keys for dev/staging/production
@@ -42,6 +45,7 @@ Pre-deployment validation checklist for applications using Firecrawl's scrape, c
 - [ ] Git history scanned for leaked keys
 
 ### Crawl Safety
+
 - [ ] All `crawlUrl` calls have `limit` parameter set
 - [ ] `maxDepth` configured to prevent unbounded crawling
 - [ ] `includePaths` / `excludePaths` filters applied where appropriate
@@ -49,6 +53,7 @@ Pre-deployment validation checklist for applications using Firecrawl's scrape, c
 - [ ] No hardcoded URLs in production code
 
 ### Error Handling
+
 - [ ] 429 rate limit handling with exponential backoff
 - [ ] 402 credit exhaustion handled gracefully (no crash)
 - [ ] 401 auth failure logged and alerted
@@ -57,6 +62,7 @@ Pre-deployment validation checklist for applications using Firecrawl's scrape, c
 - [ ] Empty markdown detection (JS rendering issues)
 
 ### Monitoring & Alerting
+
 - [ ] Scrape success/failure rate tracked
 - [ ] Credit consumption monitored
 - [ ] Crawl job completion rate tracked
@@ -67,6 +73,7 @@ Pre-deployment validation checklist for applications using Firecrawl's scrape, c
 ## Instructions
 
 ### Step 1: Verify API Connectivity
+
 ```bash
 set -euo pipefail
 # Test production key
@@ -81,6 +88,7 @@ curl -s https://api.firecrawl.dev/v1/team/credits \
 ```
 
 ### Step 2: Health Check Endpoint
+
 ```typescript
 import FirecrawlApp from "@mendable/firecrawl-js";
 
@@ -110,6 +118,7 @@ export async function healthCheck() {
 ```
 
 ### Step 3: Production-Safe Crawl Wrapper
+
 ```typescript
 export async function productionCrawl(url: string, opts: {
   maxPages: number;
@@ -145,6 +154,7 @@ export async function productionCrawl(url: string, opts: {
 ```
 
 ### Step 4: Rollback Procedure
+
 ```bash
 set -euo pipefail
 # Immediate rollback — disable Firecrawl integration
@@ -156,6 +166,7 @@ curl -s https://app.example.com/health | jq '.services.firecrawl'
 ```
 
 ## Alerting Rules
+
 | Alert | Condition | Severity |
 |-------|-----------|----------|
 | API unreachable | Health check fails 3x | P1 |
@@ -165,9 +176,11 @@ curl -s https://app.example.com/health | jq '.services.firecrawl'
 | Auth failure | Any 401 response | P1 |
 
 ## Resources
+
 - [Firecrawl Dashboard](https://firecrawl.dev/app)
 - [Firecrawl Rate Limits](https://docs.firecrawl.dev/rate-limits)
 - [Firecrawl API Reference](https://docs.firecrawl.dev/api-reference/introduction)
 
 ## Next Steps
+
 For version upgrades, see `firecrawl-upgrade-migration`.

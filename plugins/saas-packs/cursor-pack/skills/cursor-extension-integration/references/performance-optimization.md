@@ -3,6 +3,7 @@
 ## Performance Optimization
 
 ### Reducing Extension Overhead
+
 ```
 Disable when not needed:
 - Project-specific extensions
@@ -15,6 +16,7 @@ Check extension impact:
 ```
 
 ### Workspace-Specific Extensions
+
 ```json
 // .vscode/settings.json
 {
@@ -25,6 +27,7 @@ Check extension impact:
 ```
 
 ### Remote/SSH Considerations
+
 ```
 When using remote development:
 - Install extensions on remote

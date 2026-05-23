@@ -10,6 +10,7 @@ salesforce-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Salesforce advanced debugging
 **Workflow:** Part of the enterprise skill category for Salesforce integration.
 **Relates to:** Other salesforce skills in this pack.

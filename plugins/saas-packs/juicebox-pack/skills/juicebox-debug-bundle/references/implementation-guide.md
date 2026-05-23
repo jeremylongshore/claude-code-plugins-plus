@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Collect Environment Info
+
 ```bash
 #!/bin/bash
 # collect-debug-info.sh
@@ -25,6 +26,7 @@ echo "" >> debug-bundle.txt
 ```
 
 ### Step 2: Test API Connectivity
+
 ```bash
 echo "=== API Connectivity ===" >> debug-bundle.txt
 
@@ -45,6 +47,7 @@ echo "" >> debug-bundle.txt
 ```
 
 ### Step 3: Gather Error Logs
+
 ```typescript
 // debug/collect-logs.ts
 import * as fs from 'fs';
@@ -71,6 +74,7 @@ export function collectRecentErrors(logPath: string): string[] {
 ```
 
 ### Step 4: Create Support Bundle
+
 ```typescript
 // debug/create-bundle.ts
 import * as fs from 'fs';

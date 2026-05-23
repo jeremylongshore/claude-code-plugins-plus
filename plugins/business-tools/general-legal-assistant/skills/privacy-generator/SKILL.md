@@ -196,6 +196,7 @@ Generate a single Markdown file named `PRIVACY-POLICY-{company}-{YYYY-MM-DD}.md`
 Request: "Generate a privacy policy for https://example-app.com"
 
 Result: `PRIVACY-POLICY-ExampleApp-2026-04-02.md` detecting:
+
 - Google Analytics 4 (behavioral data, IP address)
 - Stripe payment processing (financial data)
 - Intercom chat widget (identifiers, conversation content)
@@ -209,6 +210,7 @@ Result: `PRIVACY-POLICY-ExampleApp-2026-04-02.md` detecting:
 Request: "Create privacy policy for my WordPress blog with Mailchimp newsletter"
 
 Result: `PRIVACY-POLICY-MyBlog-2026-04-02.md` detecting:
+
 - WordPress cookies (session, comment author)
 - Mailchimp email collection (consent-based)
 - Google Fonts (IP address to Google servers)

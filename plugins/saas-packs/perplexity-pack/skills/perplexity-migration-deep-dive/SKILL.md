@@ -25,10 +25,12 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Migration Deep Dive
 
 ## Current State
+
 !`npm list openai 2>/dev/null | grep openai || echo 'N/A'`
 !`grep -rn "google.*search\|bing.*api\|serpapi\|pplx-7b\|pplx-70b" --include="*.ts" --include="*.py" . 2>/dev/null | head -5 || echo 'No legacy search APIs found'`
 
 ## Overview
+
 Migrate from traditional search APIs (Google Custom Search, Bing, SerpAPI) or legacy LLMs to Perplexity Sonar. Key advantage: Perplexity combines search + LLM summarization in a single API call, replacing a multi-step pipeline.
 
 ## Migration Comparison
@@ -45,6 +47,7 @@ Migrate from traditional search APIs (Google Custom Search, Bing, SerpAPI) or le
 ## Instructions
 
 ### Step 1: Assess Current Integration
+
 ```bash
 set -euo pipefail
 # Find existing search API usage
@@ -59,6 +62,7 @@ grep -rln "search.*api\|customsearch\|bing.*web" \
 ```
 
 ### Step 2: Build Adapter Layer
+
 ```typescript
 // src/search/adapter.ts
 export interface SearchResult {
@@ -117,6 +121,7 @@ class PerplexitySearchAdapter implements SearchAdapter {
 ```
 
 ### Step 3: Feature Flag Traffic Split
+
 ```typescript
 // src/search/factory.ts
 function getSearchAdapter(): SearchAdapter {
@@ -136,6 +141,7 @@ function getSearchAdapter(): SearchAdapter {
 ```
 
 ### Step 4: Validate Migration Quality
+
 ```typescript
 // Compare results between old and new adapter
 async function compareSearchResults(query: string): Promise<{
@@ -162,6 +168,7 @@ async function compareSearchResults(query: string): Promise<{
 ```
 
 ### Step 5: Simplify Post-Migration
+
 ```typescript
 // Before migration: 3-step pipeline
 // 1. Google Custom Search API → raw results
@@ -188,6 +195,7 @@ async function search(query: string): Promise<{ answer: string; sources: string[
 ```
 
 ## Rollback Plan
+
 ```bash
 set -euo pipefail
 # Instant rollback: set traffic to 0%
@@ -196,6 +204,7 @@ set -euo pipefail
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Citation format differs | Google returns titles, Perplexity returns URLs | Normalize in adapter |
@@ -204,14 +213,17 @@ set -euo pipefail
 | Cost increase | Perplexity uses more tokens | Route simple queries to sonar, limit max_tokens |
 
 ## Output
+
 - Adapter layer abstracting search implementations
 - Feature-flagged traffic split for gradual migration
 - Quality comparison between old and new search
 - Simplified single-API architecture post-migration
 
 ## Resources
+
 - [Perplexity API Documentation](https://docs.perplexity.ai)
 - [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
 
 ## Next Steps
+
 For advanced troubleshooting, see `perplexity-advanced-troubleshooting`.

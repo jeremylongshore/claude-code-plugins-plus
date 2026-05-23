@@ -18,9 +18,11 @@ compatibility: Designed for Claude Code
 # OpenEvidence Webhooks & Events
 
 ## Overview
+
 OpenEvidence delivers webhook notifications for clinical evidence retrieval workflows. Subscribe to events when queries complete, evidence bases are updated, new citations are added, or clinical reviews are flagged. Use these webhooks to keep clinical decision support systems current and trigger downstream audit workflows in real time.
 
 ## Webhook Registration
+
 ```typescript
 const response = await fetch("https://api.openevidence.com/v1/webhooks", {
   method: "POST",
@@ -37,6 +39,7 @@ const response = await fetch("https://api.openevidence.com/v1/webhooks", {
 ```
 
 ## Signature Verification
+
 ```typescript
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
@@ -53,6 +56,7 @@ function verifyOpenEvidenceSignature(req: Request, res: Response, next: NextFunc
 ```
 
 ## Event Handler
+
 ```typescript
 import express from "express";
 const app = express();
@@ -75,6 +79,7 @@ app.post("/webhooks/openevidence", express.raw({ type: "application/json" }), ve
 ```
 
 ## Event Types
+
 | Event | Payload Fields | Use Case |
 |-------|---------------|----------|
 | `query.completed` | `query_id`, `evidence_count`, `confidence` | Deliver clinical answers to requester |
@@ -84,6 +89,7 @@ app.post("/webhooks/openevidence", express.raw({ type: "application/json" }), ve
 | `query.failed` | `query_id`, `error_code`, `retry_after` | Alert ops and queue retry |
 
 ## Retry & Idempotency
+
 ```typescript
 const processed = new Set<string>();
 
@@ -99,6 +105,7 @@ async function handleIdempotent(event: { id: string; type: string; data: any }) 
 ```
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | Signature mismatch | Secret rotation during deployment | Re-sync secret from OpenEvidence dashboard |
@@ -107,7 +114,9 @@ async function handleIdempotent(event: { id: string; type: string; data: any }) 
 | Review escalation loop | Automated re-flag on same content | Deduplicate by `review_id` with cooldown |
 
 ## Resources
+
 - [OpenEvidence Platform](https://www.openevidence.com)
 
 ## Next Steps
+
 See `openevidence-security-basics`.

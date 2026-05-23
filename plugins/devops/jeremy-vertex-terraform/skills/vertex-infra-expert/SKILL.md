@@ -27,6 +27,7 @@ Provision Vertex AI infrastructure with Terraform (endpoints, deployed models, v
 ## Prerequisites
 
 Before using this skill, ensure:
+
 - Google Cloud project with Vertex AI API enabled
 - Terraform 1.0+ installed
 - gcloud CLI authenticated with appropriate permissions
@@ -46,7 +47,6 @@ Before using this skill, ensure:
 8. **Validate Deployment**: Test endpoints and verify model availability
 
 ## Output
-
 
 - Configuration files or code changes applied to the project
 - Validation report confirming correct implementation

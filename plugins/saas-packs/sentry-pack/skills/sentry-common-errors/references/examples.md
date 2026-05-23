@@ -5,6 +5,7 @@
 **Request:** "Sentry captureException runs but nothing shows in the dashboard"
 
 **Diagnosis:**
+
 1. Enabled `debug: true` in `sentry.client.config.ts`
 2. Console showed: `[Sentry] No DSN provided, will not send event`
 3. `NEXT_PUBLIC_SENTRY_DSN` was missing from `.env.production`
@@ -17,10 +18,12 @@
 **Request:** "Stack traces in Sentry are all minified"
 
 **Diagnosis:**
+
 ```bash
 sentry-cli sourcemaps explain --org acme --project frontend EVENT_ID
 # Output: "source map not found for URL ~/assets/index-abc123.js"
 ```
+
 The `--url-prefix` was `~/dist` but Vite serves from `~/assets`.
 
 **Fix:** Changed to `--url-prefix '~/assets'` and re-uploaded.

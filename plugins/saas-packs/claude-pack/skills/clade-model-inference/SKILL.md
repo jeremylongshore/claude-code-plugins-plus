@@ -26,15 +26,18 @@ compatibility: Designed for Claude Code
 # Anthropic Messages API — Streaming & Advanced Patterns
 
 ## Overview
+
 The Messages API is the only inference endpoint. Every Claude interaction goes through `client.messages.create()`. This skill covers streaming, system prompts, vision, and structured output.
 
 ## Prerequisites
+
 - Completed `clade-install-auth`
 - Familiarity with `clade-hello-world`
 
 ## Instructions
 
 ### Step 1: Streaming Responses
+
 ```typescript
 import Anthropic from '@claude-ai/sdk';
 
@@ -57,6 +60,7 @@ console.log('\n\nTokens:', finalMessage.usage);
 ```
 
 ### Step 2: Vision — Sending Images
+
 ```typescript
 const message = await client.messages.create({
   model: 'claude-sonnet-4-20250514',
@@ -79,6 +83,7 @@ const message = await client.messages.create({
 ```
 
 ### Step 3: JSON / Structured Output
+
 ```typescript
 const message = await client.messages.create({
   model: 'claude-sonnet-4-20250514',
@@ -92,6 +97,7 @@ const result = JSON.parse(message.content[0].text);
 ```
 
 ## Python Streaming
+
 ```python
 import anthropic
 
@@ -109,6 +115,7 @@ print(f"\nTokens: {stream.get_final_message().usage}")
 ```
 
 ## Output
+
 - **Non-streaming:** Full `Message` object with `content`, `usage`, `stop_reason`
 - **Streaming events:**
   - `message_start` — message metadata
@@ -118,6 +125,7 @@ print(f"\nTokens: {stream.get_final_message().usage}")
   - `message_stop` — stream complete
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `overloaded_error` (529) | Anthropic API temporarily overloaded | Retry with exponential backoff; use `client.messages.create` with built-in retries |
@@ -125,6 +133,7 @@ print(f"\nTokens: {stream.get_final_message().usage}")
 | `invalid_request_error` | Image too large or bad format | Max 20 images per request. Supported: PNG, JPEG, GIF, WebP. Max 5MB each |
 
 ## Key Parameters
+
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `model` | string | Required. Model ID (e.g. `claude-sonnet-4-20250514`) |
@@ -137,12 +146,15 @@ print(f"\nTokens: {stream.get_final_message().usage}")
 | `stream` | boolean | Optional. Enable SSE streaming |
 
 ## Examples
+
 See Step 1 (streaming), Step 2 (vision with base64 images), and Step 3 (structured JSON output) above. Python streaming example included.
 
 ## Resources
+
 - [Messages API](https://docs.anthropic.com/en/api/messages)
 - [Streaming](https://docs.anthropic.com/en/api/messages-streaming)
 - [Vision](https://docs.anthropic.com/en/docs/build-with-claude/vision)
 
 ## Next Steps
+
 See `clade-embeddings-search` for tool use and function calling patterns.

@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Configure GitHub Secrets
+
 ```bash
 # Add secrets via GitHub CLI
 gh secret set JUICEBOX_API_KEY --body "jb_test_xxxx"
@@ -12,6 +13,7 @@ gh secret set JUICEBOX_API_KEY_PROD --body "jb_prod_xxxx"
 ```
 
 ### Step 2: Create Test Workflow
+
 ```yaml
 # .github/workflows/juicebox-tests.yml
 name: Juicebox Integration Tests
@@ -53,6 +55,7 @@ jobs:
 ```
 
 ### Step 3: Add Integration Tests
+
 ```typescript
 // tests/juicebox.integration.test.ts
 import { describe, it, expect, beforeAll } from 'vitest';
@@ -92,6 +95,7 @@ describe('Juicebox Integration', () => {
 ```
 
 ### Step 4: Configure Branch Protection
+
 ```yaml
 # .github/workflows/required-checks.yml
 name: Required Checks
@@ -115,6 +119,7 @@ jobs:
 ```
 
 ### Step 5: Add Deployment Pipeline
+
 ```yaml
 # .github/workflows/deploy.yml
 name: Deploy

@@ -36,27 +36,36 @@ Before using this skill, ensure you have:
 ## Instructions
 
 1. Search for yield opportunities across all chains or filter by a specific chain:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --top 20
    python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --chain ethereum --top 10
    ```
+
 2. Filter by criteria -- minimum TVL (for safety), asset type, or protocol:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --min-tvl 10000000 --top 15  # 10000000 = 10M limit
    python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --asset USDC --chain ethereum
    python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --protocol aave,compound,curve
    ```
+
 3. Apply risk filters -- show only audited protocols or filter by risk level (`--risk low`, `--risk medium`, `--risk high`):
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --audited-only --min-tvl 1000000  # 1000000 = 1M limit
    python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --risk low --min-apy 3
    ```
+
 4. Analyze specific opportunities -- get detailed pool breakdown or compare protocols:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --pool "aave-v3-usdc-ethereum" --detailed
    python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --compare aave,compound,spark --asset USDC
    ```
+
 5. Export results to JSON or CSV for further analysis:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --top 50 --format json --output yields.json
    python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --chain ethereum --format csv --output eth_yields.csv
@@ -65,6 +74,7 @@ Before using this skill, ensure you have:
 ## Output
 
 ### Yield Summary Table
+
 ```
 ==============================================================================
   DEFI YIELD OPTIMIZER                              2026-01-15 15:30 UTC  # 2026 year
@@ -90,6 +100,7 @@ Before using this skill, ensure you have:
 ```
 
 ### Risk Assessment
+
 ```
   RISK ANALYSIS: Convex cvxCRV
 ------------------------------------------------------------------------------
@@ -111,6 +122,7 @@ Before using this skill, ensure you have:
 See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 
 Common issues:
+
 - **API timeout**: Uses cached data with staleness warning
 - **No pools found**: Broaden search criteria
 - **Invalid protocol**: Check supported protocols list
@@ -122,21 +134,25 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed usage examples.
 ### Quick Examples
 
 **Find stablecoin yields**:
+
 ```bash
 python yield_optimizer.py --asset USDC,USDT,DAI --min-tvl 10000000  # 10000000 = 10M limit
 ```
 
 **Low-risk opportunities**:
+
 ```bash
 python yield_optimizer.py --risk low --audited-only --min-apy 2
 ```
 
 **Multi-chain search**:
+
 ```bash
 python yield_optimizer.py --chain ethereum,arbitrum,polygon --top 20
 ```
 
 **Export top yields**:
+
 ```bash
 python yield_optimizer.py --top 100 --format json --output all_yields.json
 ```

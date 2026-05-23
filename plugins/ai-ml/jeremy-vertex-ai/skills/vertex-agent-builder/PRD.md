@@ -37,6 +37,7 @@ The Vertex AI Agent Builder skill eliminates this by producing a deployment-read
 ### FR-1: Scope Confirmation
 
 Before generating anything, the skill confirms:
+
 - Agent purpose (chat, extraction, routing, RAG)
 - Deployment target (Agent Engine vs. Cloud Run vs. local-only)
 - Model tier (gemini-2.0-flash for low latency, gemini-2.5-pro for complex reasoning)
@@ -53,6 +54,7 @@ Before generating anything, the skill confirms:
 ### FR-3: RAG Pipeline Configuration
 
 When retrieval is needed:
+
 - Document ingestion plan (GCS source, chunking strategy, chunk size/overlap)
 - Embedding model selection (`text-embedding-005` for English, `text-multilingual-embedding-002` for multi-language)
 - Vertex AI Search corpus creation or Vertex AI RAG Engine index setup

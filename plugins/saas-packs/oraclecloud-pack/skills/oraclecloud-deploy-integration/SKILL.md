@@ -225,6 +225,7 @@ print("Container Instance created")
 ## Output
 
 Successful completion produces:
+
 - A container image pushed to OCIR with proper authentication
 - Either an OKE cluster with node pool, kubeconfig, and running deployment, or a Container Instance running your application
 - OCIR pull secret configured in the Kubernetes cluster

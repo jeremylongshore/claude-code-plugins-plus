@@ -55,12 +55,14 @@ This made sense. The templates I created used industry-standard COPPA language. 
 I started by creating two comprehensive legal documents:
 
 **Terms of Service** (`/terms`):
+
 - 14 sections covering everything from user eligibility to governing law
 - Clear 18+ parent/guardian requirement
 - Reference to COPPA compliance
 - Contact information for legal requests
 
 **Privacy Policy** (`/privacy`):
+
 - Prominent COPPA compliance notice with amber warning styling
 - Detailed parental rights section (review, delete, modify data)
 - Data collection transparency
@@ -68,6 +70,7 @@ I started by creating two comprehensive legal documents:
 - Third-party service disclosures
 
 Both pages follow the same structure:
+
 - Professional header with "Back to Home" link
 - Dynamic "Last Updated" date
 - Clean, readable sections
@@ -165,6 +168,7 @@ npx prisma generate
 Based on my initial question about consent UX, we went with implicit consent:
 
 **Registration Form Changes**:
+
 1. Added legal notice below "Create Account" button
 2. Made Terms/Privacy links open in new tabs
 3. No checkboxes required
@@ -191,6 +195,7 @@ Based on my initial question about consent UX, we went with implicit consent:
 ```
 
 This approach:
+
 - ✅ Legally valid (affirmative consent via button click)
 - ✅ User-friendly (no extra clicks)
 - ✅ Transparent (links to full documents)
@@ -281,6 +286,7 @@ Once everything was working, I ran the `/release` command to execute the complet
 6. **Git Push**: All commits and tags pushed to `main` branch
 
 The release includes detailed metrics:
+
 - **Legal Pages Created**: 2
 - **Database Fields Added**: 5
 - **Documentation Files**: +4 comprehensive DevOps guides
@@ -292,6 +298,7 @@ The release includes detailed metrics:
 ### 1. Legal Compliance Isn't Just Documents
 
 It's a complete system:
+
 - Legal documents (Terms, Privacy)
 - Database tracking (who agreed to what, when)
 - UX integration (clear, accessible)
@@ -301,6 +308,7 @@ It's a complete system:
 ### 2. ORMs Are Tools, Not Solutions
 
 When `prisma migrate` failed, we didn't give up on the feature - we went around the tool:
+
 - Tried `db push` (failed)
 - Tried `migrate dev` (incompatible)
 - Used direct SQL (success)
@@ -321,6 +329,7 @@ My question about containerization and cloud setup came mid-implementation. It w
 ### 5. Documentation Compounds Value
 
 We created 4 comprehensive DevOps guides alongside the legal compliance work:
+
 - Deployment procedures
 - Architecture deep-dive
 - Operations guide
@@ -333,6 +342,7 @@ These documents make future development faster and onboarding easier.
 **What's Live**: https://hustle-app-zk63g3embq-uc.a.run.app
 
 **What Works**:
+
 - ✅ COPPA-compliant Terms of Service
 - ✅ COPPA-compliant Privacy Policy
 - ✅ Automatic consent tracking in PostgreSQL
@@ -343,6 +353,7 @@ These documents make future development faster and onboarding easier.
 - ✅ Automatic backups configured
 
 **What's Next**:
+
 - Custom domain setup (optional)
 - Email verification flow (production email service)
 - Payment processing (future feature)
@@ -364,8 +375,8 @@ If you found this journey interesting, check out these related posts:
 - **[DevOps Onboarding at Scale: Comprehensive System Analysis & Universal Templates](/posts/devops-onboarding-at-scale-comprehensive-system-analysis-universal-templates/)** - Building production-ready documentation systems
 - **[Building a 254-Table BigQuery Schema in 72 Hours](/posts/building-254-table-bigquery-schema-72-hours/)** - Large-scale database design and deployment
 
-
 **Built with**:
+
 - Next.js 15.5.4 + Turbopack
 - NextAuth v5
 - Prisma ORM + PostgreSQL
@@ -373,12 +384,11 @@ If you found this journey interesting, check out these related posts:
 - shadcn/ui components
 
 **Production Infrastructure**:
+
 - Containerized with Docker
 - Deployed to Google Cloud Run
 - PostgreSQL on Cloud SQL
 - Private VPC networking
 - Automatic daily backups + point-in-time recovery
 
-
 *This post documents real development work completed on October 8, 2025. All code is in production at [Hustle](https://github.com/jeremylongshore/hustle).*
-

@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram SDK Patterns
 
 ## Overview
+
 Production-ready patterns for Ideogram's REST API. Since Ideogram has no official SDK, these patterns provide type-safe wrappers, retry logic, response validation, and multi-tenant support for the `api.ideogram.ai` endpoints.
 
 ## Prerequisites
+
 - Completed `ideogram-install-auth` setup
 - Familiarity with async/await and fetch API
 - Understanding of Ideogram response lifecycle (URLs expire)
@@ -36,6 +38,7 @@ Production-ready patterns for Ideogram's REST API. Since Ideogram has no officia
 ## Instructions
 
 ### Step 1: Singleton Client with Auto-Download
+
 ```typescript
 // src/ideogram/client.ts
 import { writeFileSync, mkdirSync } from "fs";
@@ -128,6 +131,7 @@ export class IdeogramApiError extends Error {
 ```
 
 ### Step 2: Retry with Exponential Backoff
+
 ```typescript
 export async function withRetry<T>(
   operation: () => Promise<T>,
@@ -157,6 +161,7 @@ export async function withRetry<T>(
 ```
 
 ### Step 3: Response Validation with Zod
+
 ```typescript
 import { z } from "zod";
 
@@ -180,6 +185,7 @@ export function validateGenerateResponse(raw: unknown) {
 ```
 
 ### Step 4: Python Client
+
 ```python
 # ideogram_client.py
 import os, requests, hashlib, time
@@ -216,6 +222,7 @@ class IdeogramClient:
 ```
 
 ### Step 5: Multi-Tenant Factory
+
 ```typescript
 const tenantClients = new Map<string, IdeogramClient>();
 
@@ -229,6 +236,7 @@ export function getClientForTenant(tenantId: string): IdeogramClient {
 ```
 
 ## Error Handling
+
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
 | Singleton | Shared client across modules | Single connection, consistent config |
@@ -238,14 +246,17 @@ export function getClientForTenant(tenantId: string): IdeogramClient {
 | Multi-tenant | SaaS platforms | Per-customer API key isolation |
 
 ## Output
+
 - Type-safe client singleton with generate and describe methods
 - Retry logic with exponential backoff and jitter
 - Runtime validation for API responses
 - Auto-download to prevent URL expiration issues
 
 ## Resources
+
 - [Ideogram API Reference](https://developer.ideogram.ai/api-reference)
 - [Zod Documentation](https://zod.dev/)
 
 ## Next Steps
+
 Apply patterns in `ideogram-core-workflow-a` for real-world usage.

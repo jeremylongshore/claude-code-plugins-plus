@@ -3,6 +3,7 @@
 ## Debug Information Gathering
 
 ### System Debug Function
+
 ```python
 def gather_debug_info():
     """Collect all relevant debug information."""
@@ -44,6 +45,7 @@ print(json.dumps(gather_debug_info(), indent=2))
 ```
 
 ### Request Debug Template
+
 ```python
 def debug_request(model, messages, **kwargs):
     """Create a debug-friendly request."""

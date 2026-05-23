@@ -79,6 +79,7 @@ Structure data analysis as:
 **Approach:** I'll query delivery events, calculate daily delivery rates, and segment by platform.
 
 **Query:**
+
 ```sql
 SELECT
   DATE(send_timestamp) as date,
@@ -101,15 +102,18 @@ ORDER BY date DESC, platform
 | Worst day | Feb 3 (91%) | Feb 8 (82%) |
 
 **Interpretation:**
+
 - iOS is healthy and stable
 - Android shows a concerning downward trend
 - Feb 8 Android dip correlates with app version 8.4.2 rollout
 
 **Limitations:**
+
 - "Delivered" means reached device, not necessarily seen
 - We can't distinguish "notification disabled" from "delivery failure"
 
 **Next steps:**
+
 1. Investigate Android 8.4.2 release — any FCM changes?
 2. Segment Android by OS version — is this device-specific?
 3. Check if delivery rate correlates with user activity
@@ -127,6 +131,7 @@ Want me to run any of these follow-up queries?
 **Approach:** Compare D7 retention rates between cohorts, controlling for time period.
 
 **Query:**
+
 ```sql
 WITH user_cohorts AS (
   SELECT
@@ -155,16 +160,19 @@ GROUP BY onboarding_version
 | v2 (new) | 48,105 | 38.7% |
 
 **Interpretation:**
+
 - v2 shows +4.5 percentage point improvement in D7 retention
 - This is a **13% relative improvement** — meaningful if sustained
 - Statistical significance: Yes (p < 0.01, chi-squared test)
 
 **Limitations:**
+
 - Cohorts may differ (v2 users are more recent, different marketing mix)
 - D7 is early signal — D30 and D90 matter more for long-term value
 - We're measuring correlation, not causation — other changes shipped
 
 **Next steps:**
+
 1. Wait for D30 data to confirm trend holds
 2. Segment by acquisition source to control for marketing mix
 3. Look at activation metrics (first play, first save) not just retention
@@ -182,6 +190,7 @@ Should I run the D30 analysis when data is available?
 **Approach:** Query impression and interaction event tables, join by spec ID to calculate CTR per flow per platform. Validate that each spec ID actually measures what we think it measures.
 
 **Query:**
+
 ```sql
 WITH impressions AS (
   SELECT
@@ -230,16 +239,19 @@ ORDER BY i.spec_id, i.platform
 **Critical caveat:** `in-app-chat` spec is unusable for notification CTR — it tracks ALL chat interactions (send_message, add_reaction, play_preview), not just the notification dialog. Excluded from analysis.
 
 **Interpretation:**
+
 - Where both platforms use native OS prompts (Feature Education), iOS wins 2.1x — expected, since iOS prompt is a single tap
 - Where Android redirects to Settings, CTR is paradoxically *higher* — users are willing to tap "Settings" but the completion rate after that tap is the real bottleneck
 - The problem isn't user willingness, it's the friction of navigating the OS Settings app
 
 **Limitations:**
+
 - CTR measures intent to enable, not actual permission grant (we can't see what happens in OS Settings)
 - `in-app-chat` data contamination means we have no clean signal for one of the highest-volume flows
 - One week of data; seasonal patterns not captured
 
 **Next steps:**
+
 1. Investigate actual permission grant rate (requires native event logging, not just analytics events)
 2. Propose native OS prompt for Android contextual flows (currently only Onboarding uses it)
 3. Flag `in-app-chat` instrumentation to the owning team for cleanup

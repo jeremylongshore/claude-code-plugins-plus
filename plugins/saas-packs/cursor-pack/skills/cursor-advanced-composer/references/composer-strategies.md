@@ -3,6 +3,7 @@
 ## Composer Strategies
 
 ### Incremental Refinement
+
 ```
 Round 1: "Create basic user authentication"
   → Review generated code
@@ -18,6 +19,7 @@ Round 4: "Add comprehensive error handling"
 ```
 
 ### Reference-Based Generation
+
 ```
 "Using @services/UserService.ts as the canonical example:
 1. Analyze its patterns (error handling, typing, logging)
@@ -27,6 +29,7 @@ Round 4: "Add comprehensive error handling"
 ```
 
 ### Constraint-Based Generation
+
 ```
 "Create payment processing module with constraints:
 

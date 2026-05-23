@@ -10,6 +10,7 @@ canva-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Canva advanced debugging
 **Workflow:** Part of the enterprise skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

@@ -10,6 +10,7 @@ snowflake-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Snowflake common errors
 **Workflow:** Part of the operations skill category for Snowflake integration.
 **Relates to:** Other snowflake skills in this pack.

@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Architecture Variants
 
 ## Overview
+
 Choose the right Vercel architecture based on team size, traffic patterns, and technical requirements. Covers five validated blueprints from static site to multi-project enterprise deployment, with migration paths between them.
 
 ## Prerequisites
+
 - Understanding of team size and traffic requirements
 - Knowledge of Vercel deployment model (edge, serverless, static)
 - Clear SLA requirements
@@ -38,6 +40,7 @@ Choose the right Vercel architecture based on team size, traffic patterns, and t
 ## Instructions
 
 ### Variant 1: Static Site (JAMstack)
+
 **Best for:** Marketing sites, docs, blogs, landing pages
 **Team size:** 1-3 developers
 **Traffic:** Any (fully CDN-served)
@@ -67,12 +70,14 @@ project/
 ```
 
 **Key decisions:**
+
 - No serverless functions needed
 - All pages pre-rendered at build time
 - ISR for pages that update periodically
 - Cost: minimal (mostly bandwidth)
 
 ### Variant 2: Full-Stack Next.js (Most Common)
+
 **Best for:** SaaS applications, dashboards, e-commerce
 **Team size:** 2-10 developers
 **Traffic:** Low to high
@@ -106,12 +111,14 @@ project/
 ```
 
 **Key decisions:**
+
 - Mixed rendering: SSG for marketing, SSR for dashboard
 - API routes in `app/api/` for backend logic
 - Edge Middleware for auth (runs before every request)
 - Database in same region as functions
 
 ### Variant 3: API-Only Backend
+
 **Best for:** Mobile app backends, microservices, webhook processors
 **Team size:** 1-5 developers
 **Traffic:** API-driven
@@ -150,12 +157,14 @@ project/
 ```
 
 **Key decisions:**
+
 - No frontend — pure API
 - CORS headers for cross-origin access
 - Version routing via rewrites (`/v1/*` → `/api/*`)
 - Multi-region for global API latency
 
 ### Variant 4: Monorepo with Turborepo
+
 **Best for:** Multiple related apps, shared component libraries
 **Team size:** 5-20 developers
 **Traffic:** Varies per app
@@ -196,6 +205,7 @@ Vercel auto-detects monorepos and builds only the affected app:
 Each app in `apps/` is a separate Vercel project with its own domain, env vars, and deployment settings.
 
 ### Variant 5: Multi-Zone Micro-Frontends (Enterprise)
+
 **Best for:** Large organizations with independent teams
 **Team size:** 20+ developers across multiple teams
 **Traffic:** High
@@ -230,6 +240,7 @@ module.exports = {
 ```
 
 **Key decisions:**
+
 - Independent deploy cycles per team
 - Shared auth via Edge Middleware or external IdP
 - Consistent design system via shared npm packages
@@ -257,12 +268,14 @@ Static Site → Full-Stack Next.js → Monorepo → Multi-Zone
 ```
 
 ## Output
+
 - Architecture variant selected based on team size and requirements
 - Project structure implemented following the chosen blueprint
 - Vercel configuration optimized for the architecture
 - Migration path documented for future scaling
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Monorepo builds all apps | Missing `ignoreCommand` | Add `npx turbo-ignore` |
@@ -271,10 +284,12 @@ Static Site → Full-Stack Next.js → Monorepo → Multi-Zone
 | API-only 404 on root | No `public/index.html` | Add a minimal index or redirect |
 
 ## Resources
+
 - [Vercel Monorepos](https://vercel.com/docs/monorepos)
 - [Turborepo on Vercel](https://vercel.com/docs/monorepos/turborepo)
 - [Next.js Multi-Zones](https://nextjs.org/docs/app/building-your-application/deploying/multi-zones)
 - [Vercel Project Structure](https://vercel.com/docs/project-configuration)
 
 ## Next Steps
+
 For known pitfalls and anti-patterns, see `vercel-known-pitfalls`.

@@ -12,6 +12,7 @@ When the user runs `/ai-report`, generate a comprehensive, well-formatted termin
 ### 1. Summary Statistics
 
 Display at the top:
+
 ```
 ╔══════════════════════════════════════════════════════════════╗
 ║           AI EXPERIMENT LOGGER - SUMMARY REPORT              ║
@@ -27,6 +28,7 @@ Date Range: [earliest] → [latest]
 ### 2. Top Performing AI Tools
 
 Show the top 5 AI tools by average rating:
+
 ```
 🏆 TOP AI TOOLS BY PERFORMANCE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -38,6 +40,7 @@ Show the top 5 AI tools by average rating:
 ### 3. Rating Distribution
 
 Show distribution visually:
+
 ```
 ⭐ RATING DISTRIBUTION
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -51,6 +54,7 @@ Show distribution visually:
 ### 4. Most Used Tags
 
 Show top 10 tags:
+
 ```
 🏷️  POPULAR TAGS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -61,6 +65,7 @@ creative-writing (8)    data-analysis (7)      testing (6)
 ### 5. Recent Activity
 
 Show last 7 days:
+
 ```
 📈 RECENT ACTIVITY (Last 7 Days)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -72,6 +77,7 @@ Show last 7 days:
 ### 6. Latest Experiments
 
 Show the 5 most recent:
+
 ```
 📝 LATEST EXPERIMENTS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -91,6 +97,7 @@ Use the `get_statistics` and `list_experiments` MCP tools to gather all data.
 ## Optional Filters
 
 Support these filters via arguments:
+
 - `/ai-report tool:ChatGPT` - Show report for specific tool
 - `/ai-report tag:code-generation` - Show report for specific tag
 - `/ai-report days:30` - Show last 30 days only
@@ -99,6 +106,7 @@ Support these filters via arguments:
 ## Error Handling
 
 If no experiments exist:
+
 ```
 ╔══════════════════════════════════════════════════════════════╗
 ║           AI EXPERIMENT LOGGER - SUMMARY REPORT              ║

@@ -10,6 +10,7 @@ figma-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Figma production deployment checklist
 **Workflow:** Part of the operations skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

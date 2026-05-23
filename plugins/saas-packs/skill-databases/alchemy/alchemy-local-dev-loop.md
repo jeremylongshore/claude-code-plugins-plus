@@ -10,6 +10,7 @@ alchemy-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Alchemy local development workflow
 **Workflow:** Part of the onboarding skill category for Alchemy integration.
 **Relates to:** Other alchemy skills in this pack.

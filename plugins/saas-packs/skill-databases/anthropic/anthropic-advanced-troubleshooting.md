@@ -10,6 +10,7 @@ anthropic-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Anthropic advanced debugging
 **Workflow:** Part of the enterprise skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

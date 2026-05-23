@@ -3,6 +3,7 @@
 ## Detailed Output Formats
 
 ### Tax Report (Form 8949)
+
 ```
 ============================================================
   CRYPTO TAX REPORT - 2025
@@ -36,6 +37,7 @@ Long-term Gains:          $53,000
 ```
 
 ### Income Report
+
 ```
 CRYPTO INCOME - 2025
 ------------------------------------------------------------
@@ -59,11 +61,13 @@ Settings in `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
 ## Advanced Usage
 
 ### Verbose with Lot Details
+
 ```bash
 python tax_calculator.py --transactions trades.csv --verbose --show-lots
 ```
 
 ### JSON Output for Processing
+
 ```bash
 python tax_calculator.py --transactions trades.csv --format json --output tax_data.json
 ```
@@ -71,6 +75,7 @@ python tax_calculator.py --transactions trades.csv --format json --output tax_da
 ### Multi-Exchange Consolidation Details
 
 When combining multiple exchange exports, the tool:
+
 - Merges all transactions chronologically
 - Calculates unified cost basis across exchanges
 - Handles transfers between exchanges (matching withdrawals to deposits)

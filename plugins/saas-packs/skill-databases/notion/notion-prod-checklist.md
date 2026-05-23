@@ -10,6 +10,7 @@ notion-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Notion production deployment checklist
 **Workflow:** Part of the operations skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

@@ -17,6 +17,7 @@ Optimize Ethereum transaction gas fees through strategic timing, routing alterna
 ```
 
 Or use the shortcut:
+
 ```bash
 /gas
 ```
@@ -89,16 +90,19 @@ Or use the shortcut:
 ## Optimization Strategies
 
 ### Timing
+
 - Identify low-congestion time windows
 - Historical pattern analysis
 - Weekend vs weekday comparison
 
 ### Routing
+
 - L2 migration for frequent users
 - Sidechain alternatives for specific use cases
 - Bridge cost calculations
 
 ### Technical
+
 - Batch transaction recommendations
 - Gas-efficient contract interactions
 - Approval optimization
@@ -106,6 +110,7 @@ Or use the shortcut:
 ## Data Sources
 
 Analysis references:
+
 - Etherscan Gas Tracker
 - ETH Gas Station
 - Blocknative (mempool data)

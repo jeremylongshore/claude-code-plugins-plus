@@ -59,6 +59,7 @@ API Contract guides the creation of `api-contract.md` files that serve as the sh
 ## Examples
 
 **Authentication endpoint contract:**
+
 ```markdown
 #### POST /auth/register
 
@@ -86,6 +87,7 @@ Create a new user account.
 ```
 
 **Paginated list endpoint:**
+
 ```markdown
 #### GET /products
 
@@ -107,6 +109,7 @@ List products with pagination.
 ```
 
 **Shared TypeScript interface:**
+
 ```typescript
 interface ApiError {
   code: string;

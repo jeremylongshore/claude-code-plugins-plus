@@ -10,6 +10,7 @@ apollo-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Apollo multi-environment setup
 **Workflow:** Part of the enterprise skill category for Apollo integration.
 **Relates to:** Other apollo skills in this pack.

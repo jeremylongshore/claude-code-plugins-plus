@@ -10,6 +10,7 @@ linear-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Linear SDK patterns
 **Workflow:** Part of the onboarding skill category for Linear integration.
 **Relates to:** Other linear skills in this pack.

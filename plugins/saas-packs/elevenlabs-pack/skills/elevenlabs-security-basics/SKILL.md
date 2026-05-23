@@ -56,6 +56,7 @@ ELEVENLABS_API_KEY=sk_your_key_here
 ```
 
 **Git pre-commit hook** to prevent accidental key commits:
+
 ```bash
 #!/bin/bash
 # .git/hooks/pre-commit
@@ -251,6 +252,7 @@ function logVoiceOperation(operation: string, voiceId: string, userId: string) {
 ## Webhook Failure Policy
 
 ElevenLabs auto-disables webhooks after:
+
 - 10+ consecutive delivery failures, AND
 - Last successful delivery was 7+ days ago (or never delivered)
 

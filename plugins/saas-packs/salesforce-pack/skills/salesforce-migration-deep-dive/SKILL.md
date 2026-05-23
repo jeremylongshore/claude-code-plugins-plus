@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Salesforce Migration Deep Dive
 
 ## Overview
+
 Comprehensive guide for migrating data to/from Salesforce: ETL patterns using Bulk API 2.0, data mapping between CRM schemas, record relationship preservation, and validation.
 
 ## Prerequisites
+
 - Source and target Salesforce orgs (or external CRM)
 - jsforce with Bulk API 2.0 access
 - Understanding of sObject relationships and External IDs
@@ -218,6 +220,7 @@ async function rollbackMigration(objectType: string): Promise<void> {
 ```
 
 ## Output
+
 - Data assessment with record counts and storage usage
 - Field mapping layer transforming source to Salesforce schema
 - Bulk API migration respecting parent-child relationships
@@ -225,6 +228,7 @@ async function rollbackMigration(objectType: string): Promise<void> {
 - Validation and rollback procedures
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `DUPLICATE_VALUE` on External_ID__c | Re-running migration | Use upsert instead of insert |
@@ -234,10 +238,12 @@ async function rollbackMigration(objectType: string): Promise<void> {
 | Field mapping errors | Source schema mismatch | Validate transform functions with sample data first |
 
 ## Resources
+
 - [Bulk API 2.0](https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/bulk_api_2_0.htm)
 - [External ID Fields](https://help.salesforce.com/s/articleView?id=sf.fields_about_external_ids.htm)
 - [Data Import Best Practices](https://help.salesforce.com/s/articleView?id=sf.importing_data.htm)
 - [Salesforce Data Loader](https://developer.salesforce.com/docs/atlas.en-us.dataLoader.meta/dataLoader/)
 
 ## Next Steps
+
 For advanced troubleshooting, see `salesforce-advanced-troubleshooting`.

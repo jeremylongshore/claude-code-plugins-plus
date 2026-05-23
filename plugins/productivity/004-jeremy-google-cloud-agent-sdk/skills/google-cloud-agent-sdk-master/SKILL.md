@@ -26,6 +26,7 @@ Use this skill to quickly answer “how do I do X with Google ADK?” and to pro
 ## Examples
 
 **Example: Pick the right ADK pattern**
+
 - Request: “Should this be a single agent or a multi-agent orchestrator?”
 - Output: an architecture recommendation with tradeoffs, plus a minimal scaffold plan.
 

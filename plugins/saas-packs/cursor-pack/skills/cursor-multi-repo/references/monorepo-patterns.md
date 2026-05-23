@@ -3,6 +3,7 @@
 ## Monorepo Patterns
 
 ### Common Structures
+
 ```
 # Turborepo/Nx style
 monorepo/
@@ -22,6 +23,7 @@ monorepo/
 ```
 
 ### Monorepo .cursorrules
+
 ```yaml
 # Root .cursorrules
 
@@ -57,6 +59,7 @@ build:
 ```
 
 ### Working in Monorepo
+
 ```
 Tips:
 

@@ -10,6 +10,7 @@ canva-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Canva anti-patterns
 **Workflow:** Part of the enterprise skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

@@ -1,6 +1,7 @@
-# Examples
+## Examples
 
 ### Full Test Script (TypeScript)
+
 ```typescript
 import * as Sentry from '@sentry/node';
 
@@ -27,6 +28,7 @@ console.log('Events sent - check Sentry dashboard');
 ```
 
 ### Python Test Script
+
 ```python
 import sentry_sdk
 

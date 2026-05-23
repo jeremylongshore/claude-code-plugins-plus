@@ -10,6 +10,7 @@ twinmind-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix TwinMind common errors
 **Workflow:** Part of the operations skill category for TwinMind integration.
 **Relates to:** Other twinmind skills in this pack.

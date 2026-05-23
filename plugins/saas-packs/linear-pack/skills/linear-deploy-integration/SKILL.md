@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Deploy Integration
 
 ## Overview
+
 Deploy Linear-integrated applications with automatic deployment tracking. Linear's GitHub integration links PRs to issues using magic words (`Fixes`, `Closes`, `Resolves`) and auto-detects Vercel preview links. This skill adds custom deployment comments, state transitions, and rollback tracking.
 
 ## Prerequisites
+
 - Working Linear integration with API key or OAuth
 - Deployment platform (Vercel, Railway, Cloud Run, etc.)
 - GitHub integration enabled in Linear (Settings > Integrations > GitHub)
@@ -34,6 +36,7 @@ Deploy Linear-integrated applications with automatic deployment tracking. Linear
 ## Instructions
 
 ### Step 1: Deployment Workflow with Linear Tracking
+
 ```yaml
 # .github/workflows/deploy.yml
 name: Deploy and Track
@@ -83,6 +86,7 @@ jobs:
 ```
 
 ### Step 2: Deployment Tracking Script
+
 ```typescript
 // scripts/track-deployment.ts
 import { LinearClient } from "@linear/sdk";
@@ -142,6 +146,7 @@ trackDeployment().catch(console.error);
 ```
 
 ### Step 3: Rollback Tracking
+
 ```typescript
 async function trackRollback(
   client: LinearClient,
@@ -171,6 +176,7 @@ async function trackRollback(
 ```
 
 ### Step 4: PR Template for Deployment Tracking
+
 ```markdown
 <!-- .github/PULL_REQUEST_TEMPLATE.md -->
 ## Linear Issues
@@ -185,6 +191,7 @@ Fixes ENG-XXX
 ```
 
 ### Step 5: Deployment Dashboard Query
+
 ```typescript
 // Query recently deployed issues
 async function getDeploymentSummary(client: LinearClient, days = 14) {
@@ -221,6 +228,7 @@ async function getDeploymentSummary(client: LinearClient, days = 14) {
 ## Examples
 
 ### Multi-Environment Matrix
+
 ```yaml
 strategy:
   matrix:
@@ -232,6 +240,7 @@ strategy:
 ```
 
 ## Resources
+
 - [Linear GitHub Integration](https://linear.app/docs/github)
 - [Vercel Deploy Hooks](https://vercel.com/docs/deploy-hooks)
 - [Linear API Authentication](https://linear.app/developers/graphql)

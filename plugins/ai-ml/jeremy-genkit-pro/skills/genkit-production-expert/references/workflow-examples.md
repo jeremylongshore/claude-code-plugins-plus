@@ -7,8 +7,10 @@
 **User Request**: "Create a Genkit flow that answers user questions using Gemini 2.5 Flash"
 
 **Skill Response**:
+
 1. Creates TypeScript project (default)
 2. Implements flow with input validation:
+
 ```typescript
 const qaFlow = ai.defineFlow(
   {
@@ -26,16 +28,19 @@ const qaFlow = ai.defineFlow(
   }
 );
 ```
-3. Sets up local testing
-4. Provides deployment instructions
+
+1. Sets up local testing
+2. Provides deployment instructions
 
 ### Example 2: RAG System with Vector Search
 
 **User Request**: "Implement RAG with Genkit for our documentation search"
 
 **Skill Response**:
+
 1. Analyzes document storage needs
 2. Implements retriever with embeddings:
+
 ```typescript
 const docRetriever = ai.defineRetriever(
   {
@@ -58,16 +63,19 @@ const docRetriever = ai.defineRetriever(
   }
 );
 ```
-3. Creates RAG flow combining retrieval + generation
-4. Sets up vector database connection
-5. Implements caching for efficiency
+
+1. Creates RAG flow combining retrieval + generation
+2. Sets up vector database connection
+3. Implements caching for efficiency
 
 ### Example 3: Multi-Agent Tool Calling
 
 **User Request**: "Create a Genkit agent with weather and calendar tools"
 
 **Skill Response**:
+
 1. Defines tools with proper schemas:
+
 ```typescript
 const weatherTool = ai.defineTool({
   name: 'getWeather',
@@ -90,7 +98,9 @@ const calendarTool = ai.defineTool({
   // Check calendar API
 });
 ```
-2. Creates agent flow with tool access:
+
+1. Creates agent flow with tool access:
+
 ```typescript
 const agentFlow = ai.defineFlow(async (userQuery) => {
   const { text } = await ai.generate({
@@ -101,5 +111,6 @@ const agentFlow = ai.defineFlow(async (userQuery) => {
   return text;
 });
 ```
-3. Implements proper error handling
-4. Sets up tool execution tracing
+
+1. Implements proper error handling
+2. Sets up tool execution tracing

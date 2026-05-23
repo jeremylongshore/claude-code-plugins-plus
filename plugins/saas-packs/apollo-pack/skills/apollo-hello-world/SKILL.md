@@ -25,15 +25,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Hello World
 
 ## Overview
+
 Minimal working example demonstrating the three core Apollo.io API operations: people search, person enrichment, and organization enrichment. Uses the correct `x-api-key` header and `api.apollo.io/api/v1/` base URL.
 
 ## Prerequisites
+
 - Completed `apollo-install-auth` setup
 - Valid API key configured in `APOLLO_API_KEY` environment variable
 
 ## Instructions
 
 ### Step 1: Search for People (No Credits Consumed)
+
 The People API Search endpoint finds contacts in Apollo's 275M+ database. This endpoint is **free** — it does not consume enrichment credits, but it also does not return emails or phone numbers.
 
 ```typescript
@@ -69,6 +72,7 @@ searchPeople().catch(console.error);
 ```
 
 ### Step 2: Enrich a Single Person (Consumes 1 Credit)
+
 The People Enrichment endpoint returns full contact details including email and phone.
 
 ```typescript
@@ -98,6 +102,7 @@ async function enrichPerson() {
 ```
 
 ### Step 3: Enrich an Organization (Consumes 1 Credit)
+
 ```typescript
 // Organization Enrichment — GET /organizations/enrich
 async function enrichOrg() {
@@ -118,6 +123,7 @@ async function enrichOrg() {
 ```
 
 ### Step 4: Python Equivalent
+
 ```python
 import os, requests
 
@@ -142,11 +148,13 @@ print(f"Company: {org.get('name')} ({org.get('estimated_num_employees')} employe
 ```
 
 ## Output
+
 - People search results (name, title, company — no emails)
 - Enriched person with email, phone, LinkedIn URL
 - Enriched organization with industry, headcount, revenue, tech stack
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Missing or invalid `x-api-key` header | Check `APOLLO_API_KEY` env var |
@@ -155,10 +163,12 @@ print(f"Company: {org.get('name')} ({org.get('estimated_num_employees')} employe
 | Empty `people` array | No matches for filters | Broaden titles/seniority or use different domain |
 
 ## Resources
+
 - [People API Search](https://docs.apollo.io/reference/people-api-search)
 - [People Enrichment](https://docs.apollo.io/reference/people-enrichment)
 - [Organization Enrichment](https://docs.apollo.io/reference/organization-enrichment)
 - [Find People Using Filters](https://docs.apollo.io/docs/find-people-using-filters)
 
 ## Next Steps
+
 Proceed to `apollo-local-dev-loop` for development workflow setup.

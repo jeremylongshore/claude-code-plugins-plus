@@ -10,10 +10,10 @@ Detailed implementation reference for the lokalise-multi-env-setup skill.
 | Staging | Pre-production testing | CI/CD secrets | Production-like settings |
 | Production | Live traffic | Secret manager | Optimized, hardened |
 
-
 ## Instructions
 
 ### Step 1: Configuration Structure
+
 ```
 config/
   lokalise/
@@ -25,6 +25,7 @@ config/
 ```
 
 ### Step 2: Base Configuration
+
 ```typescript
 // config/lokalise/base.ts
 export const baseConfig = {
@@ -38,6 +39,7 @@ export const baseConfig = {
 ```
 
 ### Step 3: Environment-Specific Configs
+
 ```typescript
 // config/lokalise/development.ts
 import { baseConfig } from "./base";
@@ -72,6 +74,7 @@ export const productionConfig = {
 ```
 
 ### Step 4: Environment Resolver
+
 ```typescript
 // config/lokalise/index.ts
 import { developmentConfig } from "./development";
@@ -106,6 +109,7 @@ export function getLokaliseConfig() {
 ```
 
 ### Step 5: Secret Management
+
 ```bash
 # Local development (.env.local - git-ignored)
 LOKALISE_API_TOKEN_DEV=your-dev-key
@@ -136,4 +140,3 @@ jobs:
     env:
       LOKALISE_API_TOKEN_PROD: ${{ secrets.LOKALISE_API_TOKEN_PROD }}
 ```
-

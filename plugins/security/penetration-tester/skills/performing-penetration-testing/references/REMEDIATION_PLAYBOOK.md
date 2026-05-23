@@ -8,17 +8,20 @@ the vulnerable pattern, the fix, and a verification command.
 ## SQL Injection
 
 **Vulnerable pattern (Python):**
+
 ```python
 query = "SELECT * FROM users WHERE username = '" + username + "'"
 cursor.execute(query)
 ```
 
 **Fix (Python - parameterized query):**
+
 ```python
 cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
 ```
 
 **Fix (Python - SQLAlchemy):**
+
 ```python
 from sqlalchemy import text
 result = session.execute(text("SELECT * FROM users WHERE username = :name"),
@@ -26,22 +29,26 @@ result = session.execute(text("SELECT * FROM users WHERE username = :name"),
 ```
 
 **Vulnerable pattern (Node.js):**
+
 ```javascript
 const query = `SELECT * FROM users WHERE username = '${username}'`;
 db.query(query);
 ```
 
 **Fix (Node.js - parameterized):**
+
 ```javascript
 db.query("SELECT * FROM users WHERE username = $1", [username]);
 ```
 
 **Fix (Node.js - Knex.js):**
+
 ```javascript
 knex("users").where("username", username).first();
 ```
 
 **Verification:**
+
 ```bash
 python3 code_security_scanner.py /path/to/code --tools regex
 # Check that no SQL string concatenation findings remain
@@ -52,37 +59,44 @@ python3 code_security_scanner.py /path/to/code --tools regex
 ## Cross-Site Scripting (XSS)
 
 **Vulnerable pattern (Python/Jinja2):**
+
 ```python
 # Marking user input as safe bypasses auto-escaping
 return Markup(f"<p>Hello {user_input}</p>")
 ```
 
 **Fix (Python/Jinja2):**
+
 ```python
 # Let the template engine auto-escape (default in Jinja2)
 return render_template("greeting.html", name=user_input)
 ```
+
 ```html
 <!-- greeting.html - auto-escaped by default -->
 <p>Hello {{ name }}</p>
 ```
 
 **Vulnerable pattern (Node.js/Express):**
+
 ```javascript
 res.send(`<p>Search results for: ${req.query.q}</p>`);
 ```
 
 **Fix (Node.js - use template engine with auto-escaping):**
+
 ```javascript
 // With EJS (auto-escapes by default with <%= %>)
 res.render("search", { query: req.query.q });
 ```
+
 ```html
 <!-- search.ejs -->
 <p>Search results for: <%= query %></p>
 ```
 
 **Fix (React - auto-escapes by default):**
+
 ```jsx
 // React auto-escapes variables in JSX
 return <p>Search results for: {query}</p>;
@@ -90,11 +104,13 @@ return <p>Search results for: {query}</p>;
 ```
 
 **Additional protection - CSP header:**
+
 ```
 Content-Security-Policy: default-src 'self'; script-src 'self'
 ```
 
 **Verification:**
+
 ```bash
 python3 security_scanner.py https://your-site.com --checks headers
 # Verify CSP header is present and configured
@@ -105,6 +121,7 @@ python3 security_scanner.py https://your-site.com --checks headers
 ## Hardcoded Secrets
 
 **Vulnerable pattern:**
+
 ```python
 API_KEY = "sk-abc123def456ghi789"
 DATABASE_URL = "postgresql://admin:password123@db.example.com/prod"
@@ -112,6 +129,7 @@ AWS_SECRET_KEY = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 ```
 
 **Fix (Python - environment variables):**
+
 ```python
 import os
 
@@ -121,6 +139,7 @@ AWS_SECRET_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
 ```
 
 **Fix (Python - dotenv for development):**
+
 ```python
 from dotenv import load_dotenv
 import os
@@ -130,6 +149,7 @@ API_KEY = os.environ["API_KEY"]
 ```
 
 **Fix (Node.js):**
+
 ```javascript
 // npm install dotenv
 require("dotenv").config();
@@ -139,6 +159,7 @@ const dbUrl = process.env.DATABASE_URL;
 ```
 
 **Prevention - .gitignore:**
+
 ```gitignore
 .env
 .env.local
@@ -149,6 +170,7 @@ credentials.json
 ```
 
 **Verification:**
+
 ```bash
 python3 code_security_scanner.py /path/to/code --tools regex
 # Check for hardcoded-secret findings
@@ -163,12 +185,14 @@ grep -q '.env' .gitignore && echo "OK" || echo "MISSING"
 **Vulnerable:** No security headers configured (defaults to none).
 
 **Fix (Express.js - Helmet):**
+
 ```javascript
 const helmet = require("helmet");
 app.use(helmet());
 ```
 
 **Fix (Django):**
+
 ```python
 # settings.py
 MIDDLEWARE = [
@@ -184,6 +208,7 @@ SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 ```
 
 **Fix (Flask):**
+
 ```python
 from flask_talisman import Talisman
 
@@ -195,6 +220,7 @@ Talisman(app, content_security_policy={
 ```
 
 **Verification:**
+
 ```bash
 python3 security_scanner.py https://your-site.com --checks headers
 # All headers should show as present
@@ -207,6 +233,7 @@ python3 security_scanner.py https://your-site.com --checks headers
 **Vulnerable:** TLS 1.0/1.1 enabled, weak cipher suites, expired certificates.
 
 **Fix (Nginx):**
+
 ```nginx
 ssl_protocols TLSv1.2 TLSv1.3;
 ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384;
@@ -217,6 +244,7 @@ ssl_session_tickets off;
 ```
 
 **Fix (Apache):**
+
 ```apache
 SSLProtocol all -SSLv3 -TLSv1 -TLSv1.1
 SSLCipherSuite ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384
@@ -224,6 +252,7 @@ SSLHonorCipherOrder off
 ```
 
 **Certificate renewal (Let's Encrypt):**
+
 ```bash
 # Install certbot
 sudo certbot renew --dry-run
@@ -233,6 +262,7 @@ sudo certbot renew --dry-run
 ```
 
 **Verification:**
+
 ```bash
 python3 security_scanner.py https://your-site.com --checks ssl
 # Check certificate expiry and protocol version
@@ -245,6 +275,7 @@ python3 security_scanner.py https://your-site.com --checks ssl
 **Vulnerable:** Outdated packages with known CVEs.
 
 **Fix (npm):**
+
 ```bash
 # View vulnerabilities
 npm audit
@@ -260,6 +291,7 @@ npm install package-name@latest
 ```
 
 **Fix (Python/pip):**
+
 ```bash
 # Audit installed packages
 pip-audit
@@ -276,6 +308,7 @@ for pkg in json.load(sys.stdin):
 ```
 
 **Fix (Lock file hygiene):**
+
 ```bash
 # npm - regenerate lock file
 rm package-lock.json && npm install
@@ -285,6 +318,7 @@ pip freeze > requirements.txt
 ```
 
 **Verification:**
+
 ```bash
 python3 dependency_auditor.py /path/to/project
 # Should show no critical/high vulnerabilities
@@ -295,6 +329,7 @@ python3 dependency_auditor.py /path/to/project
 ## Command Injection
 
 **Vulnerable pattern (Python):**
+
 ```python
 import os
 os.system("ping " + user_host)
@@ -304,6 +339,7 @@ subprocess.run(f"grep {pattern} {filename}", shell=True)
 ```
 
 **Fix (Python):**
+
 ```python
 import subprocess
 import shlex
@@ -317,12 +353,14 @@ subprocess.run(f"grep {shlex.quote(pattern)} {shlex.quote(filename)}",
 ```
 
 **Vulnerable pattern (Node.js):**
+
 ```javascript
 const { exec } = require("child_process");
 exec(`ls ${userInput}`);
 ```
 
 **Fix (Node.js):**
+
 ```javascript
 const { execFile } = require("child_process");
 // execFile does not invoke a shell
@@ -332,6 +370,7 @@ execFile("ls", [validatedPath], (error, stdout) => {
 ```
 
 **Verification:**
+
 ```bash
 python3 code_security_scanner.py /path/to/code --tools bandit,regex
 # Check for command-injection category findings
@@ -342,6 +381,7 @@ python3 code_security_scanner.py /path/to/code --tools bandit,regex
 ## Insecure Deserialization
 
 **Vulnerable pattern (Python):**
+
 ```python
 import pickle
 data = pickle.loads(request.data)    # Arbitrary code execution
@@ -351,6 +391,7 @@ config = yaml.load(user_input)       # Arbitrary code execution
 ```
 
 **Fix (Python):**
+
 ```python
 # Use safe data formats
 import json
@@ -372,6 +413,7 @@ def verify_and_load(data, signature, secret_key):
 ```
 
 **Verification:**
+
 ```bash
 python3 code_security_scanner.py /path/to/code --tools bandit,regex
 # Check for insecure-deserialization category findings
@@ -382,6 +424,7 @@ python3 code_security_scanner.py /path/to/code --tools bandit,regex
 ## CORS Misconfiguration
 
 **Vulnerable:**
+
 ```javascript
 app.use(cors({ origin: "*", credentials: true }));
 // Or reflecting any origin:
@@ -389,6 +432,7 @@ res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
 ```
 
 **Fix (Express.js):**
+
 ```javascript
 const allowedOrigins = ["https://app.example.com", "https://admin.example.com"];
 
@@ -407,6 +451,7 @@ app.use(cors({
 ```
 
 **Fix (Django):**
+
 ```python
 # pip install django-cors-headers
 CORS_ALLOWED_ORIGINS = [
@@ -417,6 +462,7 @@ CORS_ALLOW_CREDENTIALS = True
 ```
 
 **Verification:**
+
 ```bash
 python3 security_scanner.py https://your-api.com --checks cors
 # Should not show wildcard or reflected origin with credentials

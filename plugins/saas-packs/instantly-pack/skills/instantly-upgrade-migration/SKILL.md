@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Upgrade Migration: API v1 to v2
 
 ## Overview
+
 Migrate from Instantly API v1 (deprecated January 2026) to API v2. Key changes: Bearer token auth replaces query-string API keys, REST-standard endpoints replace legacy paths, scoped API keys replace single global key, and cursor-based pagination replaces offset pagination. Existing v1 integrations via Zapier/Make continue working, but new integrations must use v2.
 
 ## Prerequisites
+
 - Existing Instantly API v1 integration
 - Access to Instantly dashboard to generate v2 API keys
 - Understanding of Bearer token authentication
@@ -35,6 +37,7 @@ Migrate from Instantly API v1 (deprecated January 2026) to API v2. Key changes: 
 ## Migration Map
 
 ### Authentication Change
+
 ```typescript
 // v1: API key as query parameter
 // DEPRECATED — do not use
@@ -47,6 +50,7 @@ const v2Response = await fetch("https://api.instantly.ai/api/v2/campaigns", {
 ```
 
 ### Endpoint Migration Table
+
 | Operation | v1 Endpoint | v2 Endpoint | Method Change |
 |-----------|------------|------------|---------------|
 | List campaigns | `GET /api/v1/campaign/list` | `GET /api/v2/campaigns` | Same |
@@ -61,6 +65,7 @@ const v2Response = await fetch("https://api.instantly.ai/api/v2/campaigns", {
 | List accounts | `GET /api/v1/account/list` | `GET /api/v2/accounts` | Simplified |
 
 ### Request Body Changes
+
 ```typescript
 // v1: Campaign creation
 const v1Body = {
@@ -92,6 +97,7 @@ const v2Body = {
 ```
 
 ### Lead Operation Changes
+
 ```typescript
 // v1: Add leads to campaign
 const v1AddLeads = {
@@ -118,6 +124,7 @@ const v2AddLead = {
 ## Instructions
 
 ### Step 1: Audit Existing v1 Calls
+
 ```bash
 set -euo pipefail
 # Find all v1 API calls in your codebase
@@ -126,6 +133,7 @@ grep -rn "api_key=" src/ --include="*.ts" --include="*.js" --include="*.py" || e
 ```
 
 ### Step 2: Create Migration Adapter
+
 ```typescript
 // src/instantly-migration.ts
 // Drop-in adapter that maps v1 calls to v2 endpoints
@@ -197,6 +205,7 @@ export class InstantlyV1ToV2Adapter {
 ```
 
 ### Step 3: Pagination Migration
+
 ```typescript
 // v1: Offset-based (skip/limit)
 // const v1 = await fetch(`/api/v1/lead/list?api_key=${key}&campaign_id=${id}&skip=100&limit=50`);
@@ -220,6 +229,7 @@ async function* paginateV2<T extends { id: string }>(
 ```
 
 ### Step 4: New v2 Features to Adopt
+
 ```typescript
 // These features are v2-only — no v1 equivalent
 
@@ -264,6 +274,7 @@ await instantly("/block-lists-entries/bulk-create", {
 ```
 
 ## Migration Checklist
+
 - [ ] Generate v2 API key with appropriate scopes
 - [ ] Replace `api_key` query params with `Authorization: Bearer` header
 - [ ] Update all endpoint paths per migration table above
@@ -274,6 +285,7 @@ await instantly("/block-lists-entries/bulk-create", {
 - [ ] Remove old v1 API key from environment
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401` on v2 | Using v1 key format | Generate new v2 Bearer token |
@@ -282,9 +294,11 @@ await instantly("/block-lists-entries/bulk-create", {
 | Missing pagination data | Using `skip` instead of `starting_after` | Convert to cursor pagination |
 
 ## Resources
+
 - [API v1 to v2 Migration Guide](https://developer.instantly.ai/api-v1-docs)
 - [API v2 Documentation](https://developer.instantly.ai/)
 - [API v2 Schemas](https://developer.instantly.ai/api/v2/schemas)
 
 ## Next Steps
+
 For CI/CD integration, see `instantly-ci-integration`.

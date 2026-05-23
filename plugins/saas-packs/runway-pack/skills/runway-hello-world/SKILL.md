@@ -19,15 +19,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Runway Hello World
 
 ## Overview
+
 Generate your first AI video from a text prompt using Runway's Gen-3 Alpha model.
 
 ## Prerequisites
+
 - Completed `runway-install-auth`
 - API credits available in your Runway account
 
 ## Instructions
 
 ### Step 1: Text-to-Video Generation
+
 ```python
 from runwayml import RunwayML
 
@@ -44,6 +47,7 @@ print(f"Task created: {task.id}")
 ```
 
 ### Step 2: Poll for Completion
+
 ```python
 import time
 
@@ -63,6 +67,7 @@ else:
 ```
 
 ### Step 3: Download the Video
+
 ```python
 import urllib.request
 
@@ -73,6 +78,7 @@ if task_result.status == 'SUCCEEDED':
 ```
 
 ### Step 4: Using the Built-in Wait Helper
+
 ```python
 # Simpler approach — SDK polls automatically
 task = client.image_to_video.create(
@@ -86,12 +92,14 @@ print(f"Video: {result.output[0]}")
 ```
 
 ## Output
+
 - Video generation task created
 - Task polled until completion
 - Generated video URL retrieved
 - Video downloaded to local file
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Task `FAILED` | Content policy violation | Adjust prompt to comply with content policy |
@@ -100,9 +108,11 @@ print(f"Video: {result.output[0]}")
 | Low quality output | Prompt too vague | Add style keywords: "cinematic", "4K", "professional" |
 
 ## Resources
+
 - [API Getting Started](https://docs.dev.runwayml.com/guides/using-the-api/)
 - [API Reference](https://docs.dev.runwayml.com/api/)
 - [Input Parameters](https://docs.dev.runwayml.com/assets/inputs/)
 
 ## Next Steps
+
 Advanced text-to-video: `runway-core-workflow-a`

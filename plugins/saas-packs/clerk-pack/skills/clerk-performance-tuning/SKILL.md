@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Performance Tuning
 
 ## Overview
+
 Optimize Clerk authentication for best performance. Covers middleware optimization, user data caching, token handling, lazy loading, and edge runtime configuration.
 
 ## Prerequisites
+
 - Clerk integration working
 - Performance monitoring in place (Lighthouse, Web Vitals)
 - Understanding of Next.js rendering strategies
@@ -35,6 +37,7 @@ Optimize Clerk authentication for best performance. Covers middleware optimizati
 ## Instructions
 
 ### Step 1: Optimize Middleware (Skip Static Assets)
+
 ```typescript
 // middleware.ts — avoid running auth on static files
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
@@ -58,6 +61,7 @@ export const config = {
 ```
 
 ### Step 2: Cache User Data
+
 ```typescript
 // lib/cached-user.ts
 import { auth, currentUser } from '@clerk/nextjs/server'
@@ -75,6 +79,7 @@ export const getAuthUser = cache(async () => {
 ```
 
 For cross-request caching with `unstable_cache`:
+
 ```typescript
 import { unstable_cache } from 'next/cache'
 import { clerkClient } from '@clerk/nextjs/server'
@@ -96,6 +101,7 @@ export const getCachedUserProfile = unstable_cache(
 ```
 
 ### Step 3: Optimize Token Handling
+
 ```typescript
 // lib/token-cache.ts
 let tokenCache: { token: string; expiresAt: number } | null = null
@@ -117,6 +123,7 @@ export async function getOptimizedToken(getToken: () => Promise<string | null>) 
 ```
 
 ### Step 4: Lazy Load Auth Components
+
 ```typescript
 // components/lazy-auth.tsx
 'use client'
@@ -137,6 +144,7 @@ export { UserButton, SignInButton }
 ```
 
 ### Step 5: Optimize Server Components
+
 ```typescript
 // app/dashboard/page.tsx — parallel data fetching
 import { auth } from '@clerk/nextjs/server'
@@ -171,6 +179,7 @@ async function RecentActivity({ userId }: { userId: string }) {
 ```
 
 ### Step 6: Edge Runtime for Middleware
+
 ```typescript
 // middleware.ts — runs on Vercel Edge (cold start <50ms vs ~250ms Node)
 import { clerkMiddleware } from '@clerk/nextjs/server'
@@ -185,6 +194,7 @@ export const config = {
 ```
 
 ## Output
+
 - Middleware skipping static assets (fewer auth checks)
 - React `cache()` deduplicating user fetches within requests
 - Cross-request user profile caching (5-minute TTL)
@@ -193,6 +203,7 @@ export const config = {
 - Edge Runtime middleware for faster cold starts
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Slow initial page load | Blocking auth calls | Use Suspense boundaries for parallel loading |
@@ -204,6 +215,7 @@ export const config = {
 ## Examples
 
 ### Measure Clerk Auth Overhead
+
 ```typescript
 // lib/perf-measure.ts
 export async function measureAuthTime() {
@@ -216,9 +228,11 @@ export async function measureAuthTime() {
 ```
 
 ## Resources
+
 - [Next.js Performance Optimization](https://nextjs.org/docs/app/building-your-application/optimizing)
 - [Clerk Quickstart (Next.js)](https://clerk.com/docs/quickstarts/nextjs)
 - [Vercel Edge Runtime](https://vercel.com/docs/functions/runtimes/edge-runtime)
 
 ## Next Steps
+
 Proceed to `clerk-cost-tuning` for cost optimization strategies.

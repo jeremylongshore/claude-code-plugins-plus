@@ -24,14 +24,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Debug Bundle
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'N/A'`
 !`python3 --version 2>/dev/null || echo 'N/A'`
 !`npm list langfuse @langfuse/client @langfuse/tracing 2>/dev/null | head -5 || echo 'No langfuse packages'`
 
 ## Overview
+
 Collect all diagnostic information needed for Langfuse support tickets: environment versions, SDK config, API connectivity, redacted logs, and a reproduction template.
 
 ## Prerequisites
+
 - Langfuse SDK installed
 - Access to application logs
 - Bash shell available
@@ -136,21 +139,26 @@ cat > "$BUNDLE_DIR/reproduction-steps.md" << 'REPRO'
 
 ## Error Messages
 ```
+
 Paste error output here
+
 ```
 
 ## Relevant Code
 ```typescript
 // Paste minimal reproduction here
 ```
+
 REPRO
 
 # --- Package ---
+
 tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR" 2>/dev/null
 echo ""
 echo "Bundle created: $BUNDLE_DIR.tar.gz"
 echo "Contents:"
 ls -la "$BUNDLE_DIR/"
+
 ```
 
 ### Step 2: Review Before Sharing
@@ -202,6 +210,7 @@ echo "Health: $(curl -s -o /dev/null -w '%{http_code}' $HOST/api/public/health)"
 | Package deps | Conflicting versions, missing peer deps |
 
 ## Resources
+
 - [GitHub Issues](https://github.com/langfuse/langfuse/issues)
 - [Discord Community](https://langfuse.com/discord)
 - [Langfuse Status](https://status.langfuse.com)

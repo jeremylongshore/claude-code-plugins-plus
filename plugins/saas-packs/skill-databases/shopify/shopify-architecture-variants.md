@@ -10,6 +10,7 @@ shopify-architecture-variants/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Choose Shopify architecture blueprints
 **Workflow:** Part of the advanced skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

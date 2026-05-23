@@ -10,6 +10,7 @@ lindy-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Lindy integrations to production
 **Workflow:** Part of the cicd skill category for Lindy integration.
 **Relates to:** Other lindy skills in this pack.

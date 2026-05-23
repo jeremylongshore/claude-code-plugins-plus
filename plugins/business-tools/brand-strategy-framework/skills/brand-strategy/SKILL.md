@@ -35,6 +35,7 @@ Walk the user through each phase sequentially. Ask discovery questions, synthesi
 The foundation. Define who the brand authentically is before anything else.
 
 **Discovery Questions:**
+
 - What problem does this brand exist to solve?
 - What would be lost if this brand disappeared tomorrow?
 - What does this brand believe that competitors don't?
@@ -50,6 +51,7 @@ The foundation. Define who the brand authentically is before anything else.
 Define who the brand serves — not demographics, but motivations.
 
 **Discovery Questions:**
+
 - Who benefits most from what this brand offers?
 - What are they trying to achieve or avoid?
 - What do they currently believe about this category?
@@ -57,6 +59,7 @@ Define who the brand serves — not demographics, but motivations.
 - Who is explicitly NOT the target?
 
 **Output:** 2-4 audience personas, each with:
+
 - Name/archetype
 - Core motivation (what they want)
 - Current belief (what they think now)
@@ -70,6 +73,7 @@ Define who the brand serves — not demographics, but motivations.
 Position the brand within the broader landscape.
 
 **Discovery Questions:**
+
 - What's happening in culture that makes this brand relevant now?
 - Who are the real competitors (including non-obvious ones)?
 - What category conventions should be challenged?
@@ -85,6 +89,7 @@ Position the brand within the broader landscape.
 Translate strategy into language.
 
 **Discovery Questions:**
+
 - What's the one thing people should remember?
 - What proof points support the core claim?
 - What objections need to be overcome?
@@ -92,6 +97,7 @@ Translate strategy into language.
 - What words should never be used?
 
 **Output:** A messaging framework including:
+
 - Core message (1 sentence)
 - Supporting messages (3-5 proof points)
 - Tone attributes (3-5 adjectives with definitions)
@@ -104,6 +110,7 @@ Translate strategy into language.
 Define the principles (not the executions) for visual identity.
 
 **Discovery Questions:**
+
 - What should people feel when they see the brand?
 - What visual references resonate with the brand truth?
 - What does the category typically look like — and how should this differ?
@@ -111,6 +118,7 @@ Define the principles (not the executions) for visual identity.
 - What elements are sacred vs. flexible?
 
 **Output:** Visual principles document including:
+
 - Mood/feeling descriptors
 - Reference directions (with rationale)
 - Typography philosophy
@@ -125,6 +133,7 @@ Define the principles (not the executions) for visual identity.
 Define where and how the brand shows up.
 
 **Discovery Questions:**
+
 - Where does the audience already spend attention?
 - What channels align with the brand personality?
 - What's the role of each channel (awareness, conversion, retention)?
@@ -132,6 +141,7 @@ Define where and how the brand shows up.
 - What's the owned vs. earned vs. paid balance?
 
 **Output:** Channel matrix with:
+
 - Priority channels (ranked)
 - Role of each channel
 - Content themes per channel
@@ -145,6 +155,7 @@ Define where and how the brand shows up.
 Define what success looks like.
 
 **Discovery Questions:**
+
 - What business outcomes matter most?
 - What leading indicators predict those outcomes?
 - What's the current baseline?
@@ -152,6 +163,7 @@ Define what success looks like.
 - What will you NOT measure (to stay focused)?
 
 **Output:** Measurement dashboard including:
+
 - North star metric
 - 3-5 supporting KPIs
 - Tracking cadence

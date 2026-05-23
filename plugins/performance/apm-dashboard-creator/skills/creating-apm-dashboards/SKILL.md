@@ -35,6 +35,7 @@ This skill automates the creation of Application Performance Monitoring (APM) da
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Create a new APM dashboard for an application.
 - Define key metrics and visualizations for monitoring application performance.
 - Generate dashboard configurations for Grafana, Datadog, or other monitoring platforms.
@@ -46,6 +47,7 @@ This skill activates when you need to:
 User request: "Create a Grafana dashboard for monitoring my web application's performance."
 
 The skill will:
+
 1. Identify the need for a Grafana dashboard focused on web application performance.
 2. Define dashboard components including request rate, response times, error rates, and resource utilization (CPU, memory).
 3. Generate a Grafana dashboard configuration file with pre-defined visualizations for these metrics.
@@ -55,6 +57,7 @@ The skill will:
 User request: "Set up a Datadog dashboard to track the golden signals for my microservice."
 
 The skill will:
+
 1. Identify the need for a Datadog dashboard focused on golden signals.
 2. Define dashboard components including latency, traffic, errors, and saturation metrics.
 3. Generate a Datadog dashboard configuration file with pre-defined visualizations for these metrics.

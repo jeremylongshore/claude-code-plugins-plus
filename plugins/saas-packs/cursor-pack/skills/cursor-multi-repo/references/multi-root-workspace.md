@@ -3,6 +3,7 @@
 ## Multi-Root Workspace
 
 ### Creating Workspace
+
 ```json
 // my-workspace.code-workspace
 {
@@ -18,6 +19,7 @@
 ```
 
 ### Opening Workspace
+
 ```bash
 # Open workspace file
 cursor my-workspace.code-workspace
@@ -29,6 +31,7 @@ File > Open Workspace from File
 ### Configuration
 
 #### Root .cursorrules
+
 ```yaml
 # workspace-root/.cursorrules
 
@@ -54,6 +57,7 @@ cross-project-rules:
 ```
 
 #### Per-Project Override
+
 ```yaml
 # frontend/.cursorrules
 
@@ -69,6 +73,7 @@ rules:
 ```
 
 ### Cross-Project Context
+
 ```
 Using @-mentions across projects:
 

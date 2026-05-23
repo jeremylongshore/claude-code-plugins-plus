@@ -10,6 +10,7 @@ framer-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Framer security best practices
 **Workflow:** Part of the operations skill category for Framer integration.
 **Relates to:** Other framer skills in this pack.

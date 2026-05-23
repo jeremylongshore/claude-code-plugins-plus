@@ -22,6 +22,7 @@ my-pr-agent/
 ```
 
 **Agent entrypoint** (`src/agents/pr_summarizer.py`):
+
 ```python
 from google.adk.agents import Agent
 from google.adk.tools import Tool
@@ -74,6 +75,7 @@ pipeline = SequentialAgent(
 **Request**: "Deploy my agent to Agent Engine with health checks."
 
 **Commands produced**:
+
 ```bash
 # Build and deploy
 adk deploy --project=my-gcp-project --region=us-central1 --agent=src/agents/pr_summarizer.py
@@ -98,6 +100,7 @@ gcloud logging read "resource.type=aiplatform.googleapis.com/Agent AND resource.
 **Request**: "Add a Slack notification tool to my existing agent."
 
 **Tool file** (`src/tools/slack_notifier.py`):
+
 ```python
 from google.adk.tools import Tool
 import os, requests
@@ -110,6 +113,7 @@ def send_slack_message(channel: str, message: str) -> str:
 ```
 
 **Register in agent**:
+
 ```python
 from src.tools.slack_notifier import send_slack_message
 

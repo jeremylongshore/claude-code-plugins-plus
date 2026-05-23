@@ -24,15 +24,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Known Pitfalls
 
 ## Overview
+
 Real gotchas when integrating Perplexity Sonar API. Perplexity uses an OpenAI-compatible chat endpoint but performs live web searches -- a fundamentally different paradigm from standard LLM completions. These pitfalls come from treating it like a regular chatbot.
 
 ## Prerequisites
+
 - Perplexity API key configured
 - Understanding of OpenAI-compatible chat API format
 
 ## Pitfalls
 
 ### 1. Using It as a Generic Chatbot
+
 Perplexity searches the web per request. Using it for tasks that don't need web search wastes money.
 
 ```python
@@ -48,6 +51,7 @@ response = call_perplexity(
 ```
 
 ### 2. Ignoring Citations
+
 Perplexity returns `[1]`, `[2]` markers in text with a separate `citations` array. Ignoring them loses the key value prop.
 
 ```python
@@ -65,6 +69,7 @@ for i, url in enumerate(citations, 1):
 ```
 
 ### 3. Using Wrong SDK Import
+
 There is no `@perplexity/sdk` or `perplexity` Python package. Use the standard OpenAI client.
 
 ```typescript
@@ -80,6 +85,7 @@ const client = new OpenAI({
 ```
 
 ### 4. Not Setting max_tokens
+
 Without `max_tokens`, responses can be arbitrarily long, increasing costs unpredictably.
 
 ```typescript
@@ -98,6 +104,7 @@ await client.chat.completions.create({
 ```
 
 ### 5. No Recency Filter for Time-Sensitive Queries
+
 Without `search_recency_filter`, Perplexity may cite outdated articles.
 
 ```python
@@ -112,6 +119,7 @@ response = call_perplexity(
 ```
 
 ### 6. Sending Full Conversation History
+
 Each message in the conversation may trigger new search queries. Sending 20 turns of history is expensive and slow.
 
 ```python
@@ -126,6 +134,7 @@ messages = [
 ```
 
 ### 7. Using sonar-pro for Simple Queries
+
 `sonar-pro` costs 3-15x more than `sonar`. Using it for simple factual lookups wastes budget.
 
 ```typescript
@@ -140,6 +149,7 @@ const model = isComplexQuery(query) ? "sonar-pro" : "sonar";
 ```
 
 ### 8. Mixing Allowlist and Denylist in Domain Filter
+
 `search_domain_filter` supports either allowlist (include) or denylist (exclude with `-` prefix), but not both in the same request.
 
 ```typescript
@@ -153,6 +163,7 @@ search_domain_filter: ["-reddit.com", "-quora.com"]  // Denylist
 ```
 
 ### 9. Not Caching Search Results
+
 Every uncached call performs a web search. At scale, duplicate queries burn budget.
 
 ```typescript
@@ -174,6 +185,7 @@ app.get("/search", (req, res) => {
 ```
 
 ### 10. Wrong Base URL
+
 The API is at `api.perplexity.ai`, not `api.perplexity.com`.
 
 ```typescript
@@ -185,6 +197,7 @@ baseURL: "https://api.perplexity.ai"   // Correct
 ```
 
 ## Code Review Checklist
+
 - [ ] Uses `openai` package, not fake `@perplexity/sdk`
 - [ ] Base URL is `https://api.perplexity.ai`
 - [ ] `max_tokens` set on every request
@@ -197,6 +210,7 @@ baseURL: "https://api.perplexity.ai"   // Correct
 - [ ] Domain filter uses only allowlist OR denylist, not both
 
 ## Error Handling
+
 | Pitfall | Impact | Detection |
 |---------|--------|-----------|
 | No caching | 3-5x cost overrun | Check cache hit rate metric |
@@ -205,11 +219,13 @@ baseURL: "https://api.perplexity.ai"   // Correct
 | PII in queries | Privacy violation | Run sanitization check in CI |
 
 ## Output
+
 - Identified anti-patterns in existing code
 - Applied fixes for each pitfall
 - Code review checklist for ongoing quality
 
 ## Resources
+
 - [Perplexity API Documentation](https://docs.perplexity.ai)
 - [Perplexity Model Guide](https://docs.perplexity.ai/getting-started/models)
 - [OpenAI Compatibility](https://docs.perplexity.ai/guides/chat-completions-guide)

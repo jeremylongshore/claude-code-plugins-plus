@@ -10,6 +10,7 @@ palantir-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Palantir core feature integration
 **Workflow:** Part of the onboarding skill category for Palantir integration.
 **Relates to:** Other palantir skills in this pack.

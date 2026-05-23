@@ -16,6 +16,7 @@ Framework for discovering innovation based on a fundamental truth: customers don
 **Job to Be Done** = the progress a customer wants to make in specific circumstances.
 
 Key elements of the definition:
+
 - **Progress** (not goal, not solution) - customer wants to move from current state to a better one
 - **Circumstances** - context determines the job, not customer attributes (demographics are useless)
 - **Hiring/Firing** - customer actively chooses a product for the "job"
@@ -43,6 +44,7 @@ Every job has three inseparable dimensions - omitting any means failure:
 **Why it works:** By forcing teams to articulate the job in the customer's language and circumstances, it prevents solution-first thinking and keeps innovation grounded in real human progress.
 
 **Key insights:**
+
 - The format is: "When [circumstances], I want to [progress], so I can [outcome]"
 - Circumstances matter more than customer demographics - the same person has different jobs in different situations
 - A well-written job statement never mentions your product or any specific solution
@@ -57,6 +59,7 @@ Every job has three inseparable dimensions - omitting any means failure:
 | Positioning & messaging | Use the job statement language in marketing copy | Lead with the circumstance and desired progress, not product specs |
 
 **Copy patterns:**
+
 - "When you're [circumstance], you need [progress] -- that's exactly what [product] does"
 - Lead with the situation the customer recognizes, not the product category
 - Mirror the emotional and social dimensions alongside the functional one
@@ -72,6 +75,7 @@ See: [references/innovation-process.md](references/innovation-process.md)
 **Why it works:** Most innovation efforts focus only on making the product better (increasing Pull), but ignore the equally powerful anti-change forces. Understanding all four forces reveals why great products still fail to gain adoption.
 
 **Key insights:**
+
 - Push is frustration with the current situation ("this annoys me")
 - Pull is the attraction of a new solution ("I want this")
 - Habit is attachment to current behavior ("I've always done it this way")
@@ -88,6 +92,7 @@ See: [references/innovation-process.md](references/innovation-process.md)
 | Content marketing | Awaken push in passive seekers by naming their frustration | Blog post: "5 signs your current tool is costing you hours every week" |
 
 **Copy patterns:**
+
 - Address anxiety directly: "No lock-in, cancel anytime, your data is always yours"
 - Name the push: "Tired of [frustration]? There's a better way"
 - Reduce habit friction: "Switch in 5 minutes -- we import everything automatically"
@@ -103,6 +108,7 @@ See: [references/competitive-strategy.md](references/competitive-strategy.md)
 **Why it works:** Many products win the sale but lose the customer because they optimize only for the purchase decision and neglect the repeated usage decision. Understanding both moments reveals where retention problems truly originate.
 
 **Key insights:**
+
 - Big Hire is driven by marketing, onboarding, and first impressions
 - Little Hire is driven by product quality, UX, and ongoing value delivery
 - Many products lose at the Little Hire stage -- purchased but never used
@@ -118,6 +124,7 @@ See: [references/competitive-strategy.md](references/competitive-strategy.md)
 | Customer success | Monitor Little Hire signals to predict churn | Declining usage frequency is a Little Hire failure signaling upcoming churn |
 
 **Copy patterns:**
+
 - Big Hire copy focuses on the promise: "Transform how you [job]"
 - Little Hire copy focuses on ease: "One click and you're done"
 - Re-engagement copy addresses Little Hire failure: "We've made [specific friction] easier"
@@ -133,6 +140,7 @@ See: [references/case-studies.md](references/case-studies.md)
 **Why it works:** Analyzing competition through product categories creates blind spots. A milkshake competes with bananas, bagels, boredom, and podcasts. Netflix competes with TikTok, sleep, family conversation, and games. By mapping the full competitive landscape around the job, teams spot threats and opportunities invisible to traditional analysis.
 
 **Key insights:**
+
 - Non-consumption (doing nothing) is often the biggest competitor
 - Workarounds and compensating behaviors reveal unserved jobs: people hack, combine, and improvise solutions
 - Online courses compete with books, YouTube, mentoring, and doing nothing
@@ -148,6 +156,7 @@ See: [references/case-studies.md](references/case-studies.md)
 | Pricing strategy | Price relative to the job's value, not competitor pricing | If the job saves 10 hours per week, price against the value of that time, not against similar SaaS products |
 
 **Copy patterns:**
+
 - "Stop using [workaround] for [job] -- there's a purpose-built solution"
 - "You wouldn't hire a [bad fit] to [job] -- so why are you using [current hack]?"
 - Position around the job outcome, not feature comparison charts
@@ -163,6 +172,7 @@ See: [references/competitive-strategy.md](references/competitive-strategy.md)
 **Why it works:** Customers rationalize decisions after the fact and can't articulate latent needs. By walking backward through the concrete events of their decision journey, you uncover the true circumstances, forces, and tradeoffs that drove their behavior.
 
 **Key insights:**
+
 - First thought questions: "When did you first think about looking for a solution?", "What was happening in your life then?", "What was frustrating you?"
 - Search questions: "What alternatives did you look for?", "What eliminated options?", "Who did you talk to about this decision?"
 - Purchase moment questions: "Where were you?", "What ultimately convinced you?", "What were you afraid of?"
@@ -178,6 +188,7 @@ See: [references/competitive-strategy.md](references/competitive-strategy.md)
 | Feature discovery | Interview customers using workarounds | A customer using spreadsheets alongside your product reveals an unmet job dimension |
 
 **Copy patterns:**
+
 - Use exact customer language from interviews in marketing copy
 - "We heard you say [verbatim quote] -- so we built [feature]"
 - Frame benefits using the circumstances and emotions customers actually described
@@ -193,6 +204,7 @@ See: [references/innovation-process.md](references/innovation-process.md)
 **Why it works:** When every product decision answers "will this help the customer better accomplish their job?", teams avoid feature bloat, build coherent experiences, and create products that customers genuinely value. If you can't answer the question, you don't understand the job yet.
 
 **Key insights:**
+
 - Replace customer satisfaction metrics with "did the job get done?" metrics
 - Replace NPS with "reasons for hiring and firing"
 - Replace feature usage metrics with "progress on the job"
@@ -209,6 +221,7 @@ See: [references/innovation-process.md](references/innovation-process.md)
 | Organizational alignment | Structure teams around jobs, not product components | A "morning commute job" team owns everything from content to packaging to distribution |
 
 **Copy patterns:**
+
 - "Built for [the job], not for [the category]"
 - Emphasize outcome and progress, not features and specifications
 - "Everything you need to [job] -- nothing you don't"

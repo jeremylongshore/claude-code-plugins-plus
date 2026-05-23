@@ -62,10 +62,12 @@ Use this skill to design Firestore data access patterns and implement changes wi
 ## Examples
 
 **Example: Fix a failing query**
+
 - Request: “This query needs a composite index—what do I add?”
 - Result: the exact index definition and a safer query pattern if needed.
 
 **Example: Batch migration**
+
 - Request: “Backfill a new field across 100k docs.”
 - Result: batched write strategy, checkpoints, and rollback guidance.
 

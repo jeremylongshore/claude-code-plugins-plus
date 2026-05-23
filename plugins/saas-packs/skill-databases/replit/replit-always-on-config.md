@@ -10,6 +10,7 @@ replit-always-on-config/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Replit Always On feature for persistent server uptime with health checks and monitoring.
 **Workflow:** Production readiness skill - ensures applications remain running 24/7 without manual intervention.
 **Relates to:** Prerequisite for replit-deployments; integrates with replit-observability.

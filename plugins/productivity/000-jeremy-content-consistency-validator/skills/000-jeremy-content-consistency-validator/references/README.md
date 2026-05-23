@@ -5,6 +5,7 @@ This directory contains reference materials that enhance this skill's capabiliti
 ## Purpose
 
 References can include:
+
 - Code examples
 - Style guides
 - Best practices documentation

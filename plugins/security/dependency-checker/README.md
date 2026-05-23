@@ -38,6 +38,7 @@ Check dependencies for known vulnerabilities, outdated packages, and license com
 ## Report Structure
 
 ### 1. Vulnerability Summary
+
 ```
 DEPENDENCY VULNERABILITIES
 ==========================
@@ -49,6 +50,7 @@ Vulnerable: 5 (3.3%)
 ```
 
 ### 2. Detailed Findings
+
 ```
 CRITICAL: SQL Injection in sequelize
   Package: sequelize@5.21.3
@@ -59,6 +61,7 @@ CRITICAL: SQL Injection in sequelize
 ```
 
 ### 3. Outdated Packages
+
 ```
 OUTDATED PACKAGES
 =================
@@ -68,6 +71,7 @@ react: 17.0.2 → 18.2.0 (major, breaking changes)
 ```
 
 ### 4. License Issues
+
 ```
 LICENSE COMPLIANCE
 ==================

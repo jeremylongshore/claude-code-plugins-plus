@@ -3,6 +3,7 @@
 ## Security Assessment
 
 ### API Key Security
+
 ```python
 class SecurityAssessment:
     """Assess OpenRouter security configuration."""

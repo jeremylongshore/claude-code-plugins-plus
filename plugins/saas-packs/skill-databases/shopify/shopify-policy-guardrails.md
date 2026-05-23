@@ -10,6 +10,7 @@ shopify-policy-guardrails/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Shopify policy enforcement
 **Workflow:** Part of the advanced skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

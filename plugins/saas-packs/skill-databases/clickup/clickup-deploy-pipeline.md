@@ -10,6 +10,7 @@ clickup-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy ClickUp integrations to production
 **Workflow:** Part of the cicd skill category for ClickUp integration.
 **Relates to:** Other clickup skills in this pack.

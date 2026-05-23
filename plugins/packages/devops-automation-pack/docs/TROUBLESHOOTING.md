@@ -28,6 +28,7 @@
 ### 1. Commands Not Found After Installation
 
 **Symptoms:**
+
 ```bash
 /commit-smart
 # Error: Unknown command '/commit-smart'
@@ -38,6 +39,7 @@
 **Solution:**
 
 **Step 1:** Verify installation
+
 ```bash
 claude plugin list
 ```
@@ -45,11 +47,13 @@ claude plugin list
 You should see `devops-automation-pack` in the list.
 
 **Step 2:** If not listed, reinstall
+
 ```bash
 claude plugin install ~/Downloads/DevOps_Automation_Pack
 ```
 
 **Step 3:** Restart Claude Code completely
+
 ```bash
 # Close Claude Code window
 # Reopen Claude Code
@@ -57,6 +61,7 @@ claude plugin install ~/Downloads/DevOps_Automation_Pack
 ```
 
 **Still not working?**
+
 ```bash
 # Check installation directory
 ls ~/.claude/plugins/
@@ -71,6 +76,7 @@ If directory missing, reinstall from download location.
 ### 2. Command Fails: "Permission Denied"
 
 **Symptoms:**
+
 ```bash
 /github-actions-create
 # Error: Permission denied: cannot write to .github/workflows/
@@ -81,11 +87,13 @@ If directory missing, reinstall from download location.
 **Solution:**
 
 **Check directory permissions:**
+
 ```bash
 ls -la .github/workflows/
 ```
 
 **Fix permissions:**
+
 ```bash
 # If directory doesn't exist, create it
 mkdir -p .github/workflows
@@ -95,6 +103,7 @@ sudo chown -R $USER:$USER .github/
 ```
 
 **For scripts:**
+
 ```bash
 # Make scripts executable
 chmod +x scripts/*.sh
@@ -105,6 +114,7 @@ chmod +x scripts/*.sh
 ### 3. Plugin Installation Fails: "Already Exists"
 
 **Symptoms:**
+
 ```bash
 claude plugin install DevOps_Automation_Pack
 # Error: Plugin 'devops-automation-pack' already installed
@@ -115,16 +125,19 @@ claude plugin install DevOps_Automation_Pack
 **Solution:**
 
 **Uninstall old version first:**
+
 ```bash
 claude plugin uninstall devops-automation-pack
 ```
 
 **Then install new version:**
+
 ```bash
 claude plugin install ~/Downloads/DevOps_Automation_Pack
 ```
 
 **Verify version:**
+
 ```bash
 claude plugin list | grep devops
 # Should show: devops-automation-pack (v1.0.0)
@@ -137,6 +150,7 @@ claude plugin list | grep devops
 ### 4. Git Not Configured
 
 **Symptoms:**
+
 ```bash
 /commit-smart
 # Error: Please tell me who you are
@@ -148,12 +162,14 @@ claude plugin list | grep devops
 **Solution:**
 
 **Set your identity globally:**
+
 ```bash
 git config --global user.name "Your Name"
 git config --global user.email "[email protected]"
 ```
 
 **Verify configuration:**
+
 ```bash
 git config --list | grep user
 # Should show:
@@ -162,6 +178,7 @@ git config --list | grep user
 ```
 
 **Set per-project (optional):**
+
 ```bash
 cd your-project
 git config user.name "Your Name"
@@ -173,6 +190,7 @@ git config user.email "[email protected]"
 ### 5. Not in a Git Repository
 
 **Symptoms:**
+
 ```bash
 /branch-create
 # Error: fatal: not a git repository
@@ -183,16 +201,19 @@ git config user.email "[email protected]"
 **Solution:**
 
 **Initialize Git repository:**
+
 ```bash
 git init
 ```
 
 **Or navigate to existing repository:**
+
 ```bash
 cd /path/to/your/project
 ```
 
 **Verify you're in a Git repo:**
+
 ```bash
 git status
 # Should NOT say "not a git repository"
@@ -203,6 +224,7 @@ git status
 ### 6. Branch Already Exists
 
 **Symptoms:**
+
 ```bash
 /branch-create
 # Prompt: feature/user-auth
@@ -214,12 +236,14 @@ git status
 **Solution:**
 
 **Option 1: Use different branch name**
+
 ```bash
 /branch-create
 # Try: feature/user-auth-v2
 ```
 
 **Option 2: Delete old branch (if safe)**
+
 ```bash
 # View all branches
 git branch -a
@@ -232,6 +256,7 @@ git branch -D feature/user-auth
 ```
 
 **Option 3: Switch to existing branch**
+
 ```bash
 git checkout feature/user-auth
 ```
@@ -241,6 +266,7 @@ git checkout feature/user-auth
 ### 7. /commit-smart Says "No Changes to Commit"
 
 **Symptoms:**
+
 ```bash
 /commit-smart
 # Error: No changes to commit
@@ -251,6 +277,7 @@ git checkout feature/user-auth
 **Solution:**
 
 **Stage your changes first:**
+
 ```bash
 # Stage all changes
 git add .
@@ -263,6 +290,7 @@ git status
 ```
 
 **Then try commit again:**
+
 ```bash
 /commit-smart
 ```
@@ -270,6 +298,7 @@ git status
 **Alternative: Stage changes automatically**
 
 Most commands auto-stage. If not working:
+
 ```bash
 # Commit with auto-stage
 git add . && /commit-smart
@@ -280,6 +309,7 @@ git add . && /commit-smart
 ### 8. /pr-create Fails: "No Remote Configured"
 
 **Symptoms:**
+
 ```bash
 /pr-create
 # Error: No remote repository configured
@@ -290,6 +320,7 @@ git add . && /commit-smart
 **Solution:**
 
 **Add remote repository:**
+
 ```bash
 # GitHub
 git remote add origin https://github.com/username/repo.git
@@ -299,6 +330,7 @@ git remote add origin https://gitlab.com/username/repo.git
 ```
 
 **Verify remote:**
+
 ```bash
 git remote -v
 # Should show:
@@ -307,11 +339,13 @@ git remote -v
 ```
 
 **Push branch to remote:**
+
 ```bash
 git push -u origin your-branch-name
 ```
 
 **Then create PR:**
+
 ```bash
 /pr-create
 ```
@@ -321,6 +355,7 @@ git push -u origin your-branch-name
 ### 9. Push Fails: "Authentication Failed"
 
 **Symptoms:**
+
 ```bash
 git push
 # Error: Authentication failed
@@ -331,6 +366,7 @@ git push
 **Solution:**
 
 **For HTTPS (use personal access token):**
+
 ```bash
 # GitHub: Create token at https://github.com/settings/tokens
 # Use token as password when prompted
@@ -340,6 +376,7 @@ git config --global credential.helper cache
 ```
 
 **For SSH (recommended):**
+
 ```bash
 # Generate SSH key
 ssh-keygen -t ed25519 -C "[email protected]"
@@ -355,6 +392,7 @@ cat ~/.ssh/id_ed25519.pub
 ```
 
 **Switch remote to SSH:**
+
 ```bash
 git remote set-url origin [email protected]:username/repo.git
 ```
@@ -366,6 +404,7 @@ git remote set-url origin [email protected]:username/repo.git
 ### 10. GitHub Actions Workflow Syntax Error
 
 **Symptoms:**
+
 ```bash
 /github-actions-create
 # Workflow created, but GitHub shows syntax error
@@ -376,6 +415,7 @@ git remote set-url origin [email protected]:username/repo.git
 **Solution:**
 
 **Validate YAML syntax:**
+
 ```bash
 # Install yamllint
 pip install yamllint
@@ -389,7 +429,7 @@ yamllint .github/workflows/ci.yml
 ```yaml
 #  WRONG: Mixed tabs and spaces
 jobs:
-	build:
+ build:
     runs-on: ubuntu-latest
 
 #  CORRECT: Use spaces only
@@ -399,6 +439,7 @@ jobs:
 ```
 
 **Fix with GitHub's validator:**
+
 1. Go to repository → Actions
 2. Click "New workflow"
 3. Paste your YAML
@@ -411,6 +452,7 @@ jobs:
 ### 11. Docker Commands Fail: "Docker Daemon"
 
 **Symptoms:**
+
 ```bash
 /docker-optimize
 # Error: Cannot connect to Docker daemon
@@ -423,23 +465,27 @@ jobs:
 **Start Docker:**
 
 **On Mac:**
+
 ```bash
 open -a Docker
 # Wait for Docker icon in menu bar to show "running"
 ```
 
 **On Linux:**
+
 ```bash
 sudo systemctl start docker
 sudo systemctl enable docker  # Start on boot
 ```
 
 **On Windows:**
+
 ```bash
 # Start Docker Desktop from Start Menu
 ```
 
 **Verify Docker is running:**
+
 ```bash
 docker ps
 # Should NOT say "Cannot connect to Docker daemon"
@@ -450,6 +496,7 @@ docker ps
 ### 12. Dockerfile Build Fails: "No Such File"
 
 **Symptoms:**
+
 ```bash
 docker build -t myapp .
 # Error: COPY failed: no such file or directory
@@ -460,6 +507,7 @@ docker build -t myapp .
 **Solution:**
 
 **Check build context:**
+
 ```bash
 # List files Docker can see
 docker build --no-cache -t test . 2>&1 | grep "COPY"
@@ -476,6 +524,7 @@ COPY config.json /app/
 ```
 
 **Fix: Copy files into context first**
+
 ```bash
 # Copy file into project directory
 cp ../config.json ./config.json
@@ -491,6 +540,7 @@ docker build -t myapp .
 ### 13. Kubernetes Commands Fail: "Connection Refused"
 
 **Symptoms:**
+
 ```bash
 /k8s-troubleshoot pod-name
 # Error: Unable to connect to server: connection refused
@@ -501,6 +551,7 @@ docker build -t myapp .
 **Solution:**
 
 **Verify kubectl configured:**
+
 ```bash
 kubectl cluster-info
 # Should show cluster endpoint
@@ -509,21 +560,25 @@ kubectl cluster-info
 **If not configured, set up kubeconfig:**
 
 **For GKE:**
+
 ```bash
 gcloud container clusters get-credentials CLUSTER_NAME --region REGION
 ```
 
 **For EKS:**
+
 ```bash
 aws eks update-kubeconfig --name CLUSTER_NAME --region REGION
 ```
 
 **For local (minikube):**
+
 ```bash
 minikube start
 ```
 
 **Verify connection:**
+
 ```bash
 kubectl get nodes
 # Should list cluster nodes
@@ -534,6 +589,7 @@ kubectl get nodes
 ### 14. Pod Troubleshooting Shows "Not Found"
 
 **Symptoms:**
+
 ```bash
 /k8s-troubleshoot my-pod
 # Error: Pod 'my-pod' not found
@@ -544,11 +600,13 @@ kubectl get nodes
 **Solution:**
 
 **List all pods:**
+
 ```bash
 kubectl get pods --all-namespaces
 ```
 
 **Get exact pod name:**
+
 ```bash
 kubectl get pods | grep my-app
 # Copy full pod name (includes random suffix)
@@ -556,6 +614,7 @@ kubectl get pods | grep my-app
 ```
 
 **Specify namespace if needed:**
+
 ```bash
 kubectl get pods -n production
 /k8s-troubleshoot my-pod -n production
@@ -568,6 +627,7 @@ kubectl get pods -n production
 ### 15. Terraform Commands Fail: "Command Not Found"
 
 **Symptoms:**
+
 ```bash
 /terraform-module-create
 # Error: terraform: command not found
@@ -580,11 +640,13 @@ kubectl get pods -n production
 **Install Terraform:**
 
 **On Mac:**
+
 ```bash
 brew install terraform
 ```
 
 **On Linux:**
+
 ```bash
 wget https://releases.hashicorp.com/terraform/1.6.0/terraform_1.6.0_linux_amd64.zip
 unzip terraform_1.6.0_linux_amd64.zip
@@ -592,11 +654,13 @@ sudo mv terraform /usr/local/bin/
 ```
 
 **On Windows:**
+
 ```bash
 choco install terraform
 ```
 
 **Verify installation:**
+
 ```bash
 terraform --version
 # Should show: Terraform v1.6.0 or higher
@@ -607,6 +671,7 @@ terraform --version
 ### 16. Terraform Plan Analysis Fails: "Invalid JSON"
 
 **Symptoms:**
+
 ```bash
 /terraform-plan-analyze plan.json
 # Error: Invalid JSON format
@@ -617,6 +682,7 @@ terraform --version
 **Solution:**
 
 **Export plan correctly:**
+
 ```bash
 # Step 1: Create plan
 terraform plan -out=plan.out
@@ -632,6 +698,7 @@ cat plan.json | jq empty
 ```
 
 **If still fails:**
+
 ```bash
 # Check file size
 ls -lh plan.json
@@ -647,6 +714,7 @@ terraform show -json plan.out | jq '.resource_changes' > plan.json
 ### 17. Commands Hang or Take Too Long
 
 **Symptoms:**
+
 ```bash
 /commit-smart
 # (command runs for 60+ seconds)
@@ -657,6 +725,7 @@ terraform show -json plan.out | jq '.resource_changes' > plan.json
 **Solution:**
 
 **For commit commands:**
+
 ```bash
 # Commit specific paths only
 git add src/
@@ -664,6 +733,7 @@ git add src/
 ```
 
 **For analysis commands:**
+
 ```bash
 # Analyze specific directory
 cd src/
@@ -671,12 +741,14 @@ cd src/
 ```
 
 **Check repository size:**
+
 ```bash
 du -sh .git/
 # If >1GB, repository is large
 ```
 
 **Optimize Git repository:**
+
 ```bash
 git gc --aggressive
 git prune
@@ -687,6 +759,7 @@ git prune
 ### 18. Commands Are Slow or Timeout
 
 **Symptoms:**
+
 ```bash
 /github-actions-create
 # Error: Operation timed out after 60s
@@ -697,6 +770,7 @@ git prune
 **Solution:**
 
 **Check network connectivity:**
+
 ```bash
 ping github.com
 # Should show responses
@@ -705,18 +779,21 @@ ping github.com
 **Check API rate limits:**
 
 **GitHub:**
+
 ```bash
 curl https://api.github.com/rate_limit
 # Shows remaining API calls
 ```
 
 **If rate limited, wait or authenticate:**
+
 ```bash
 # Set GitHub token
 export GITHUB_TOKEN=your_token_here
 ```
 
 **Increase timeout (advanced):**
+
 ```bash
 # Set in plugin config
 claude config set timeout 120
@@ -729,6 +806,7 @@ claude config set timeout 120
 ### 19. AI Agent Not Activating
 
 **Symptoms:**
+
 ```bash
 # Ask about CI/CD
 "How do I optimize my pipeline?"
@@ -748,6 +826,7 @@ claude config set timeout 120
  "My Docker image is 2GB, how do I reduce it?"
 
 **Explicitly invoke agent (if available):**
+
 ```bash
 /ci-cd-expert "optimize my pipeline"
 /docker-specialist "reduce image size"
@@ -758,6 +837,7 @@ claude config set timeout 120
 ### 20. Hooks Not Firing
 
 **Symptoms:**
+
 ```bash
 # Edit file
 # No automatic formatting or validation
@@ -768,17 +848,20 @@ claude config set timeout 120
 **Solution:**
 
 **Verify hooks enabled:**
+
 ```bash
 claude plugin hooks list
 # Should show devops-automation-pack hooks
 ```
 
 **Enable hooks if disabled:**
+
 ```bash
 claude plugin hooks enable devops-automation-pack
 ```
 
 **Check hook configuration:**
+
 ```bash
 cat ~/.claude/plugins/devops-automation-pack/hooks/hooks.json
 ```
@@ -814,6 +897,7 @@ claude plugin list | grep devops
 ### 3. Get Help
 
 **Email Support:**
+
 - **Address:** mandy@intentsolutions.io
 - **Include:**
   - Exact error message (copy-paste)

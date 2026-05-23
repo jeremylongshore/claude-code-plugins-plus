@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Load & Scale
 
 ## Overview
+
 Load test Vercel deployments to identify scaling limits, cold start impact, and concurrency thresholds. Covers k6/autocannon test scripts, Vercel's auto-scaling model, Fluid Compute concurrency, and capacity planning.
 
 ## Prerequisites
+
 - Load testing tool: k6, autocannon, or artillery
 - Test environment deployment (never load test production without approval)
 - Access to Vercel Analytics for monitoring during tests
@@ -37,6 +39,7 @@ Load test Vercel deployments to identify scaling limits, cold start impact, and 
 ## Instructions
 
 ### Step 1: Understand Vercel's Scaling Model
+
 Vercel serverless functions scale automatically:
 
 | Behavior | Details |
@@ -56,6 +59,7 @@ Vercel serverless functions scale automatically:
 | Enterprise | 100,000 |
 
 ### Step 2: Basic Load Test with autocannon
+
 ```bash
 # Install autocannon
 npm install -g autocannon
@@ -70,6 +74,7 @@ autocannon -c 50 -d 30 https://my-app-preview.vercel.app/api/endpoint
 ```
 
 ### Step 3: k6 Load Test Script
+
 ```javascript
 // load-test.js
 import http from 'k6/http';
@@ -122,6 +127,7 @@ k6 run --out json=results.json load-test.js
 ```
 
 ### Step 4: Cold Start Stress Test
+
 ```javascript
 // cold-start-test.js — specifically test cold start behavior
 import http from 'k6/http';
@@ -159,6 +165,7 @@ export default function () {
 ```
 
 ### Step 5: Fluid Compute Concurrency Tuning
+
 ```json
 // vercel.json — configure concurrency for Fluid Compute (Pro/Enterprise)
 {
@@ -173,12 +180,14 @@ export default function () {
 ```
 
 With Fluid Compute concurrency, a single function instance handles multiple requests:
+
 - Reduces cold starts (fewer instances needed)
 - Reduces cost (shared memory across requests)
 - Best for I/O-bound functions (waiting on DB/API calls)
 - Not ideal for CPU-bound functions (computation blocks other requests)
 
 ### Step 6: Capacity Planning
+
 ```
 Capacity Planning Formula:
 
@@ -228,6 +237,7 @@ Capacity Planning Formula:
 ```
 
 ## Output
+
 - Load test scripts for sustained and spike traffic scenarios
 - Cold start frequency and duration measured
 - Concurrency limits tested and validated
@@ -235,6 +245,7 @@ Capacity Planning Formula:
 - Benchmark results documented
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `FUNCTION_THROTTLED` (429) | Exceeded concurrent limit | Reduce test concurrency or upgrade plan |
@@ -244,6 +255,7 @@ Capacity Planning Formula:
 | Inconsistent results | Shared infrastructure variability | Run multiple test rounds, use median results |
 
 ## Resources
+
 - [Vercel Function Limits](https://vercel.com/docs/functions/limitations)
 - [Concurrency Scaling](https://vercel.com/docs/functions/concurrency-scaling)
 - [Fluid Compute](https://vercel.com/docs/functions/usage-and-pricing)
@@ -251,4 +263,5 @@ Capacity Planning Formula:
 - [Vercel Load Testing Policy](https://vercel.com/kb/guide/what-s-vercel-s-policy-regarding-load-testing-deployments)
 
 ## Next Steps
+
 For reliability patterns, see `vercel-reliability-patterns`.

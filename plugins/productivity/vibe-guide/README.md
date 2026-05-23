@@ -14,6 +14,7 @@ Vibe Guide introduces a completely new way to interact with Claude Code:
 - **Auto-Summarization**: Hook automatically condenses verbose command output
 
 This plugin is perfect for:
+
 - Non-technical founders working with AI to build products
 - Designers reviewing code changes
 - Product managers pairing on implementations
@@ -275,6 +276,7 @@ This folder is automatically added to `.gitignore`.
 ## Troubleshooting
 
 ### Plugin not found after install
+
 ```bash
 # Verify the marketplace is added
 /plugin marketplace list
@@ -284,6 +286,7 @@ This folder is automatically added to `.gitignore`.
 ```
 
 ### Commands not working
+
 ```bash
 # Check plugin is installed
 /plugin list
@@ -294,6 +297,7 @@ This folder is automatically added to `.gitignore`.
 ```
 
 ### Session stuck or corrupted
+
 ```bash
 # Remove the .vibe folder and start fresh
 rm -rf .vibe/

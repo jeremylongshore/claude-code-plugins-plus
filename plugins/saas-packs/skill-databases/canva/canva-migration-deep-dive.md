@@ -10,6 +10,7 @@ canva-migration-deep-dive/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Canva major migrations
 **Workflow:** Part of the advanced skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

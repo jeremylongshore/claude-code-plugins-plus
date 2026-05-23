@@ -10,6 +10,7 @@ persona-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Persona production deployment checklist
 **Workflow:** Part of the operations skill category for Persona integration.
 **Relates to:** Other persona skills in this pack.

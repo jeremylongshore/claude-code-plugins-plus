@@ -20,6 +20,7 @@ Transform written scripts into teleprompter-ready formats with auto-scroll and d
 ## Purpose
 
 Convert scripts to teleprompter format for:
+
 - **Natural delivery** - Read while maintaining eye contact
 - **Consistent pacing** - Auto-scroll at optimal speed
 - **Timing practice** - Hit target video length
@@ -83,6 +84,7 @@ Elapsed: 00:32  Remaining: ~04:28  Total: ~05:00
 ### Text Optimization
 
 **Line Breaks for Natural Breathing**
+
 ```
 ❌ BEFORE (Hard to read):
 Hey everyone! Today I'm going to show you how I took my API from 2000 milliseconds response time down to just 180 milliseconds.
@@ -96,6 +98,7 @@ time down to just 180 milliseconds.
 ```
 
 **Delivery Cues**
+
 ```
 [PAUSE]          - Stop for 1-2 seconds
 [PAUSE LONG]     - Stop for 3-4 seconds
@@ -108,6 +111,7 @@ time down to just 180 milliseconds.
 ```
 
 **Visual Action Markers**
+
 ```
 >>> VISUAL: Screen recording starts <<<
 >>> VISUAL: Terminal command <<<
@@ -118,6 +122,7 @@ time down to just 180 milliseconds.
 ```
 
 **Timing Markers**
+
 ```
 (00:15) - Hook delivered
 (01:30) - Problem explained
@@ -129,6 +134,7 @@ time down to just 180 milliseconds.
 ### Auto-Scroll Features
 
 **Adaptive Speed**
+
 ```
 Base Speed: 120 words per minute
 Automatically adjusts based on:
@@ -139,6 +145,7 @@ Automatically adjusts based on:
 ```
 
 **Smooth Scrolling Algorithm**
+
 ```
 ├─ Ease-in at paragraph start
 ├─ Constant speed during reading
@@ -152,6 +159,7 @@ Automatically adjusts based on:
 When user runs `/teleprompter script.md --practice`:
 
 **Step 1: Process Script**
+
 ```
 📝 PROCESSING SCRIPT
 
@@ -169,6 +177,7 @@ Readability Score: 8.7/10 (good for teleprompter)
 ```
 
 **Step 2: Practice Mode**
+
 ```
 🎯 PRACTICE MODE
 
@@ -197,6 +206,7 @@ Real-time Feedback:
 ```
 
 **Step 3: Live Teleprompter**
+
 ```
 Starting teleprompter in:
 3...
@@ -363,6 +373,7 @@ Custom mapping:
 ## Display Modes
 
 ### Standard Mode (Default)
+
 ```
 ╔══════════════════════════════╗
 ║                              ║
@@ -378,6 +389,7 @@ Visible distance: 3-5 feet
 ```
 
 ### Presentation Mode
+
 ```
 ╔══════════════════════════════╗
 ║                              ║
@@ -395,6 +407,7 @@ Visible distance: 6-8 feet
 ```
 
 ### Mobile Mode
+
 ```
 ┌──────────────┐
 │              │
@@ -412,6 +425,7 @@ Portrait orientation
 ```
 
 ### Mirror Mode (for physical prompters)
+
 ```
 ╔══════════════════════════════╗
 ║                              ║
@@ -439,6 +453,7 @@ Works with other Creator Studio plugins:
 ## Best Practices
 
 ### Script Preparation
+
 1. **Write conversationally** - Use contractions, natural speech
 2. **Short sentences** - 10-15 words per sentence
 3. **Clear structure** - Intro, body, conclusion
@@ -446,6 +461,7 @@ Works with other Creator Studio plugins:
 5. **Include cues** - Delivery instructions for yourself
 
 ### Delivery Tips
+
 1. **Practice 2-3 times** - Get comfortable with flow
 2. **Maintain eye contact** - Look at camera, not just prompter
 3. **Natural pace** - Don't race, breathe normally
@@ -453,6 +469,7 @@ Works with other Creator Studio plugins:
 5. **Use markers** - Hit timing checkpoints consistently
 
 ### Setup Optimization
+
 1. **Position prompter** - Eye level with camera
 2. **Adjust brightness** - Readable without squinting
 3. **Test scroll speed** - Find comfortable pace
@@ -462,6 +479,7 @@ Works with other Creator Studio plugins:
 ## Troubleshooting
 
 ### Scroll Too Fast
+
 ```
 ⚠️ Scroll pace too fast for comfortable reading
 
@@ -472,6 +490,7 @@ Auto-adjust to 125 WPM? (y/n)
 ```
 
 ### Missing Timing Checkpoints
+
 ```
 ⚠️ You're behind schedule
 
@@ -486,6 +505,7 @@ Recommendations:
 ```
 
 ### Text Not Visible
+
 ```
 ❌ Text may not be visible from recording distance
 

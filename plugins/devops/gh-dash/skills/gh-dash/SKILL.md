@@ -29,6 +29,7 @@ compatibility: Designed for Claude Code
 # gh-dash
 
 ## Current State
+
 !`git rev-parse --abbrev-ref HEAD 2>/dev/null || echo 'Not in a git repo'`
 !`gh auth status 2>&1 | head -1`
 
@@ -83,6 +84,7 @@ The skill produces formatted terminal output covering:
 **User:** "What's the status of my PR?"
 
 The skill will:
+
 1. Run `gh pr view --json title,state,reviews,statusCheckRollup,additions,deletions,changedFiles` to gather data.
 2. Display a formatted summary showing the PR title, review approvals, and CI status.
 3. Highlight any blockers: failing checks, requested changes, or missing required reviews.
@@ -92,6 +94,7 @@ The skill will:
 **User:** "Merge this PR with squash."
 
 The skill will:
+
 1. Verify all required status checks are passing with `gh pr checks`.
 2. Confirm the PR has sufficient approvals.
 3. Execute `gh pr merge --squash --delete-branch` to squash-merge and clean up the branch.
@@ -102,6 +105,7 @@ The skill will:
 **User:** "Summarize the bot comments on this PR."
 
 The skill will:
+
 1. Fetch all PR comments with `gh api repos/{owner}/{repo}/pulls/{number}/comments`.
 2. Identify automated comments by known bot usernames and patterns.
 3. Group findings by bot: CodeRabbit suggestions, coverage report deltas, security scan results.

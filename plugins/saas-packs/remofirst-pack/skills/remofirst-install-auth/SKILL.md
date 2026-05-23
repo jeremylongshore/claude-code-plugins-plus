@@ -20,9 +20,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # RemoFirst Install Auth
 
 ## Overview
+
 Set up RemoFirst API authentication for global HR and payroll integration. RemoFirst provides API access for enterprise customers.
 
 ## Prerequisites
+
 - RemoFirst enterprise account
 - API credentials from RemoFirst support team
 - Node.js 18+ or Python 3.9+
@@ -30,6 +32,7 @@ Set up RemoFirst API authentication for global HR and payroll integration. RemoF
 ## Instructions
 
 ### Step 1: Get API Credentials
+
 ```text
 1. Contact RemoFirst support for API access
 2. Receive API key and base URL
@@ -37,6 +40,7 @@ Set up RemoFirst API authentication for global HR and payroll integration. RemoF
 ```
 
 ### Step 2: Configure Environment
+
 ```bash
 # .env
 REMOFIRST_API_KEY=your_api_key
@@ -44,6 +48,7 @@ REMOFIRST_BASE_URL=https://api.remofirst.com/v1
 ```
 
 ### Step 3: Initialize Client
+
 ```python
 import os, requests
 
@@ -69,6 +74,7 @@ client = RemoFirstClient()
 ```
 
 ### Step 4: Verify Connection
+
 ```python
 company = client.get("/company")
 print(f"Connected! Company: {company['name']}")
@@ -76,11 +82,13 @@ print(f"Countries: {len(company.get('active_countries', []))}")
 ```
 
 ## Output
+
 - API credentials configured
 - Client initialized with authentication
 - Connection verified
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401 Unauthorized` | Invalid API key | Contact RemoFirst support |
@@ -88,8 +96,10 @@ print(f"Countries: {len(company.get('active_countries', []))}")
 | Connection refused | Wrong base URL | Verify URL with RemoFirst |
 
 ## Resources
+
 - [RemoFirst](https://www.remofirst.com)
 - [Global HR Solutions](https://www.remofirst.com/solutions/human-resources)
 
 ## Next Steps
+
 First API call: `remofirst-hello-world`

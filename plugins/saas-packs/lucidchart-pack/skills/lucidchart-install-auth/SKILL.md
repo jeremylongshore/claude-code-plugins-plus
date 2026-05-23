@@ -20,9 +20,11 @@ compatibility: Designed for Claude Code
 # Lucidchart Install & Auth
 
 ## Overview
+
 Set up Lucid REST API for programmatic diagram creation and document management.
 
 ## Prerequisites
+
 - Lucidchart account and API access
 - API key/credentials from Lucidchart dashboard
 - Node.js 18+ or Python 3.8+
@@ -30,18 +32,21 @@ Set up Lucid REST API for programmatic diagram creation and document management.
 ## Instructions
 
 ### Step 1: Install SDK
+
 ```bash
 npm install @lucid-co/sdk
 # OAuth2 app credentials from developer.lucid.co
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 export LUCID_API_KEY="your-api-key-here"
 echo 'LUCID_API_KEY=your-api-key' >> .env
 ```
 
 ### Step 3: Verify Connection (TypeScript)
+
 ```typescript
 import { LucidClient } from '@lucid-co/sdk';
 const client = new LucidClient({
@@ -53,6 +58,7 @@ console.log(`Found ${docs.length} documents`);
 ```
 
 ### Step 4: Verify Connection (Python)
+
 ```python
 import lucid
 client = lucid.Client(client_id=os.environ['LUCID_CLIENT_ID'],
@@ -62,6 +68,7 @@ print(f'Found {len(docs)} documents')
 ```
 
 ## Error Handling
+
 | Error | Code | Solution |
 |-------|------|----------|
 | Invalid API key | 401 | Verify credentials in dashboard |
@@ -69,7 +76,9 @@ print(f'Found {len(docs)} documents')
 | Rate limited | 429 | Implement backoff |
 
 ## Resources
+
 - [Lucidchart Documentation](https://developer.lucid.co/reference/overview)
 
 ## Next Steps
+
 After auth, proceed to `lucidchart-hello-world`.

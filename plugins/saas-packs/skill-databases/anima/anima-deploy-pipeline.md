@@ -10,6 +10,7 @@ anima-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Anima integrations to production
 **Workflow:** Part of the cicd skill category for Anima integration.
 **Relates to:** Other anima skills in this pack.

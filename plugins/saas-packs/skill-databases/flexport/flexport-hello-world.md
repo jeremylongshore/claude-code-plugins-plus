@@ -10,6 +10,7 @@ flexport-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Flexport example
 **Workflow:** Part of the onboarding skill category for Flexport integration.
 **Relates to:** Other flexport skills in this pack.

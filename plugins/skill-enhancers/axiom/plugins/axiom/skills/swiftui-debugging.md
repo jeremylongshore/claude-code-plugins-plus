@@ -23,17 +23,20 @@ SwiftUI debugging falls into three categories, each with a different diagnostic 
 ## When to Use SwiftUI Debugging
 
 **Use this skill when:**
+
 - ✅ A view isn't updating when you expect it to
 - ✅ Preview crashes or won't load
 - ✅ Layout looks wrong on specific devices
 - ✅ You're tempted to bandaid with @ObservedObject everywhere
 
 **Use `xcode-debugging` instead when:**
+
 - App crashes at runtime (not preview)
 - Build fails completely
 - You need environment diagnostics
 
 **Use `swift-concurrency` instead when:**
+
 - Questions about async/await or MainActor
 - Data race warnings
 
@@ -356,12 +359,14 @@ struct DetailView: View {
 **Root cause**: Xcode cache corruption. The preview process has stale information about your code.
 
 **Diagnostic checklist**:
+
 - Preview worked yesterday, code hasn't changed → Likely cache
 - Restarting Xcode fixes it temporarily but returns → Definitely cache
 - Same code builds in simulator fine but preview fails → Cache
 - Multiple unrelated previews fail at once → Cache
 
 **Fix it** (in order):
+
 1. Restart Preview Canvas: `Cmd+Option+P`
 2. Restart Xcode completely (File → Close Window, then reopen project)
 3. Nuke derived data: `rm -rf ~/Library/Developer/Xcode/DerivedData`
@@ -540,6 +545,7 @@ When you're under deadline pressure, you'll be tempted to shortcuts that hide pr
 ### Scenario 1: "Preview keeps crashing, we ship tomorrow"
 
 **Red flags you might hear:**
+
 - "Just rebuild everything"
 - "Delete derived data and don't worry about it"
 - "Ship without validating in preview"
@@ -548,6 +554,7 @@ When you're under deadline pressure, you'll be tempted to shortcuts that hide pr
 **The danger**: You skip diagnosis, cache issue recurs after 2 weeks in production, you're debugging while users hit crashes.
 
 **What to do instead** (5-minute protocol, total):
+
 1. Restart Preview Canvas: `Cmd+Option+P` (30 seconds)
 2. Restart Xcode (2 minutes)
 3. Nuke derived data: `rm -rf ~/Library/Developer/Xcode/DerivedData` (30 seconds)
@@ -563,6 +570,7 @@ When you're under deadline pressure, you'll be tempted to shortcuts that hide pr
 ### Scenario 2: "View won't update, let me just wrap it in @ObservedObject"
 
 **Red flags you might think:**
+
 - "Adding @ObservedObject everywhere will fix it"
 - "Use ObservableObject as a band-aid"
 - "Add @Published to random properties"
@@ -571,6 +579,7 @@ When you're under deadline pressure, you'll be tempted to shortcuts that hide pr
 **The danger**: You're treating symptoms, not diagnosing. Same view won't update in other contexts. You've just hidden the bug.
 
 **What to do instead** (2-minute diagnosis):
+
 1. Can you reproduce in a minimal preview? If NO → cache corruption (see Scenario 1)
 2. If YES: Test each root cause in order:
    - Does the view have @State that you're modifying directly? → Struct Mutation
@@ -586,6 +595,7 @@ When you're under deadline pressure, you'll be tempted to shortcuts that hide pr
 ### Scenario 2b: "Intermittent updates - it works sometimes, not always"
 
 **Red flags you might think:**
+
 - "It must be a threading issue, let me add @MainActor everywhere"
 - "Let me try @ObservedObject, @State, and custom Binding until something works"
 - "Delete DerivedData and hope cache corruption fixes it"
@@ -598,6 +608,7 @@ Intermittent bugs are the MOST important to diagnose correctly. One wrong guess 
 **What to do instead** (60-minute systematic diagnosis):
 
 **Step 1: Reproduce in preview** (15 min)
+
 - Create minimal preview of just the broken view
 - Tap/interact 20 times
 - Does it fail intermittently, consistently, or never?
@@ -606,6 +617,7 @@ Intermittent bugs are the MOST important to diagnose correctly. One wrong guess 
   - **Can't reproduce at all**: Intermittent race condition, investigate further
 
 **Step 2: Isolate the variable** (15 min)
+
 - If it's intermittent in preview: Likely view recreation
   - Did the view recently move into a conditional? Remove it and test
   - Did you add `if` logic that might recreate the parent? Remove it and test
@@ -614,11 +626,13 @@ Intermittent bugs are the MOST important to diagnose correctly. One wrong guess 
   - Try after clearing DerivedData
 
 **Step 3: Apply the specific fix** (30 min)
+
 - Once you've identified view recreation: Use `.opacity()` instead of conditionals
 - Once you've identified struct mutation: Use full reassignment
 - Once you've verified it's cache: Nuke DerivedData properly
 
 **Step 4: Verify 100% reliability** (until submission)
+
 - Run the same interaction 30+ times
 - Test on multiple devices/simulators
 - Get QA to verify
@@ -639,6 +653,7 @@ Intermittent bugs are the MOST important to diagnose correctly. One wrong guess 
 ### Scenario 3: "Layout looks wrong on iPad, we're out of time"
 
 **Red flags you might think:**
+
 - "Add some padding and magic numbers"
 - "It's probably a safe area thing, let me just ignore it"
 - "Let's lock this to iPhone only"
@@ -647,6 +662,7 @@ Intermittent bugs are the MOST important to diagnose correctly. One wrong guess 
 **The danger**: Magic numbers break on other sizes. SafeArea ignoring is often wrong. Locking to iPhone means you ship a broken iPad experience.
 
 **What to do instead** (3-minute diagnosis):
+
 1. Run in simulator or device
 2. Use Debug View Hierarchy: Debug menu → View Hierarchy (takes 30 seconds to load)
 3. Check: Is the problem SafeArea, ZStack ordering, or GeometryReader sizing?
@@ -720,6 +736,7 @@ Text().cornerRadius(8).padding()  // Corners first
 **Scenario**: You have a list of tasks. When you tap a task to mark it complete, the checkmark should appear, but it doesn't.
 
 **Code**:
+
 ```swift
 struct TaskListView: View {
     @State var tasks: [Task] = [...]
@@ -743,10 +760,12 @@ struct TaskListView: View {
 ```
 
 **Diagnosis using the skill**:
+
 1. Can you reproduce in preview? YES
 2. Are you modifying the struct directly? YES → **Struct Mutation** (Root Cause 1)
 
 **Fix**:
+
 ```swift
 Button("Done") {
     // ✅ RIGHT: Full reassignment
@@ -765,6 +784,7 @@ Button("Done") {
 **Scenario**: You created a custom data model. It works fine in the app, but the preview crashes with "Cannot find 'CustomModel' in scope".
 
 **Code**:
+
 ```swift
 import SwiftUI
 
@@ -784,10 +804,12 @@ struct TaskDetailView: View {
 ```
 
 **Diagnosis using the skill**:
+
 1. What's the error? "Cannot find in scope" → **Missing Dependency** (Error Type 1)
 2. What does TaskDetailView need? The Task model and modelContext
 
 **Fix**:
+
 ```swift
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
@@ -807,6 +829,7 @@ struct TaskDetailView: View {
 **Scenario**: You have a search field. You type characters, but the text doesn't appear in the UI. However, the search results DO update.
 
 **Code**:
+
 ```swift
 struct SearchView: View {
     @State var searchText = ""
@@ -832,11 +855,13 @@ struct SearchView: View {
 ```
 
 **Diagnosis using the skill**:
+
 1. Can you reproduce in preview? YES
 2. Are you passing a binding to a child view? YES (TextField)
 3. Is it a constant binding? YES → **Lost Binding Identity** (Root Cause 2)
 
 **Fix**:
+
 ```swift
 // ✅ RIGHT: Pass the actual binding
 TextField("Search", text: $searchText)
@@ -849,11 +874,13 @@ TextField("Search", text: $searchText)
 ## External Resources
 
 **Apple Documentation:**
+
 - [SwiftUI View Fundamentals](https://developer.apple.com/documentation/swiftui)
 - [State and Data Flow](https://developer.apple.com/documentation/swiftui/state-and-data-flow)
 - [Xcode Previews](https://developer.apple.com/documentation/xcode/previews)
 
 **Related Axiom Skills:**
+
 - `xcode-debugging` – For Xcode cache corruption, build issues
 - `swift-concurrency` – For @MainActor and async/await patterns
 
@@ -868,4 +895,3 @@ TextField("Search", text: $searchText)
 **Created:** 2025-11-30
 **Targets:** iOS 14+, Swift 5.5+
 **Framework:** SwiftUI
-

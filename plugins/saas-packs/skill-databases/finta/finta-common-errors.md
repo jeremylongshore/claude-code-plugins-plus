@@ -10,6 +10,7 @@ finta-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Finta common errors
 **Workflow:** Part of the operations skill category for Finta integration.
 **Relates to:** Other finta skills in this pack.

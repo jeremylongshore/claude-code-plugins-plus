@@ -3,6 +3,7 @@
 ## Error Handling Architecture
 
 ### Global Error Handler
+
 ```typescript
 // middleware/errorHandler.ts
 import { Sentry } from '@mycompany/shared/sentry';
@@ -31,6 +32,7 @@ export function errorHandler(
 ```
 
 ### Domain-Specific Handlers
+
 ```typescript
 // errors/PaymentError.ts
 export class PaymentError extends Error {

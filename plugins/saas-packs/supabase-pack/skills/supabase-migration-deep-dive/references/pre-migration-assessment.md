@@ -3,6 +3,7 @@
 ## Pre-Migration Assessment
 
 ### Step 1: Current State Analysis
+
 ```bash
 # Document current implementation
 find . -name "*.ts" -o -name "*.py" | xargs grep -l "supabase" > supabase-files.txt
@@ -16,6 +17,7 @@ pip freeze | grep supabase
 ```
 
 ### Step 2: Data Inventory
+
 ```typescript
 interface MigrationInventory {
   dataTypes: string[];

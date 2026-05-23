@@ -21,11 +21,13 @@ compatibility: Designed for Claude Code
 # Claude Architecture Variants
 
 ## Overview
+
 Five architecture patterns for Claude-powered applications: Chatbot (stateless API wrapper), RAG (retrieval-augmented generation with vector search), Agent (tool use loop), Content Pipeline (batch processing), and Evaluation (using Claude as a judge). Each includes complete code and a comparison table.
 
-
 ## 1. Chatbot (Stateless API Wrapper)
+
 Simplest pattern — proxy Claude with a system prompt.
+
 ```typescript
 // api/chat.ts
 export async function POST(req: Request) {
@@ -40,10 +42,13 @@ export async function POST(req: Request) {
   return new Response(response.toReadableStream());
 }
 ```
+
 **Best for:** Customer support, Q&A, simple conversational interfaces.
 
 ## 2. RAG (Retrieval-Augmented Generation)
+
 Fetch relevant context, inject into prompt, generate grounded answer.
+
 ```typescript
 async function ragQuery(question: string) {
   // 1. Embed the question (use Voyage, OpenAI, or Cohere — not Anthropic)
@@ -65,10 +70,13 @@ async function ragQuery(question: string) {
   return message.content[0].text;
 }
 ```
+
 **Best for:** Documentation Q&A, knowledge bases, support with source citations.
 
 ## 3. Agent (Tool Use Loop)
+
 Claude decides which tools to call, you execute them, loop until done.
+
 ```typescript
 async function agentLoop(userInput: string, tools: Anthropic.Tool[]) {
   let messages: MessageParam[] = [{ role: 'user', content: userInput }];
@@ -98,10 +106,13 @@ async function agentLoop(userInput: string, tools: Anthropic.Tool[]) {
   }
 }
 ```
+
 **Best for:** Data analysis, code generation, multi-step workflows.
 
 ## 4. Content Pipeline (Batch Processing)
+
 Process thousands of documents through Claude asynchronously.
+
 ```typescript
 const batch = await client.messages.batches.create({
   requests: documents.map((doc, i) => ({
@@ -115,10 +126,13 @@ const batch = await client.messages.batches.create({
 });
 // 50% cheaper, processes within 24h
 ```
+
 **Best for:** Summarization, classification, extraction at scale.
 
 ## 5. Evaluation / Grading
+
 Use Claude to evaluate other AI outputs or human content.
+
 ```typescript
 const evaluation = await client.messages.create({
   model: 'claude-opus-4-20250514', // Best judgment
@@ -130,9 +144,11 @@ const evaluation = await client.messages.create({
   }],
 });
 ```
+
 **Best for:** AI output quality, content moderation, automated grading.
 
 ## Choosing a Pattern
+
 | Pattern | Latency | Cost | Complexity |
 |---------|---------|------|------------|
 | Chatbot | Low (streaming) | Low | Simple |
@@ -142,27 +158,33 @@ const evaluation = await client.messages.create({
 | Evaluation | Medium | Varies | Simple |
 
 ## Output
+
 - Architecture pattern selected based on requirements
 - Implementation code for chosen pattern
 - Cost and latency characteristics understood
 - Scaling strategy identified (streaming for chatbots, batches for pipelines)
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | API Error | Check error type and status code | See `clade-common-errors` |
 
 ## Examples
+
 See five numbered pattern sections with complete TypeScript code, and the Choosing a Pattern comparison table with latency, cost, and complexity ratings.
 
 ## Resources
+
 - [Tool Use Guide](https://docs.anthropic.com/en/docs/build-with-claude/tool-use)
 - [Prompt Engineering](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering)
 
 ## Next Steps
+
 See `clade-known-pitfalls` for common mistakes.
 
 ## Prerequisites
+
 - Completed `clade-install-auth` and `clade-model-inference`
 - Understanding of your use case requirements (latency, cost, complexity)
 - For RAG: vector database and embedding model (Voyage, OpenAI, or Cohere)
@@ -170,10 +192,13 @@ See `clade-known-pitfalls` for common mistakes.
 ## Instructions
 
 ### Step 1: Review the patterns below
+
 Each section contains production-ready code examples. Copy and adapt them to your use case.
 
 ### Step 2: Apply to your codebase
+
 Integrate the patterns that match your requirements. Test each change individually.
 
 ### Step 3: Verify
+
 Run your test suite to confirm the integration works correctly.

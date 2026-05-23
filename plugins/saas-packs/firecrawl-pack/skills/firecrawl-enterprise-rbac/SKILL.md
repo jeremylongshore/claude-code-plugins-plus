@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Enterprise RBAC
 
 ## Overview
+
 Control access to Firecrawl scraping resources through API key management, domain allowlists, and credit budgets per team. Firecrawl's credit-based pricing means access control is primarily about limiting credit consumption and restricting scrape targets per consumer.
 
 ## Prerequisites
+
 - Firecrawl Team or Scale plan
 - Dashboard access at [firecrawl.dev/app](https://firecrawl.dev/app)
 - Understanding of credit-per-page billing
@@ -35,6 +37,7 @@ Control access to Firecrawl scraping resources through API key management, domai
 ## Instructions
 
 ### Step 1: Separate API Keys per Consumer
+
 ```bash
 set -euo pipefail
 # Create dedicated keys at firecrawl.dev/app for each team/service
@@ -50,6 +53,7 @@ set -euo pipefail
 ```
 
 ### Step 2: Gateway Proxy with Domain Allowlists
+
 ```typescript
 import FirecrawlApp from "@mendable/firecrawl-js";
 
@@ -96,6 +100,7 @@ function getTeamClient(team: string): FirecrawlApp {
 ```
 
 ### Step 3: Credit Budget Enforcement
+
 ```typescript
 class TeamBudget {
   private usage = new Map<string, Map<string, number>>(); // team -> date -> credits
@@ -125,6 +130,7 @@ const budget = new TeamBudget();
 ```
 
 ### Step 4: Policy-Enforced Scraping
+
 ```typescript
 export async function teamScrape(team: string, url: string) {
   // Check domain policy
@@ -174,6 +180,7 @@ export async function teamCrawl(team: string, url: string, pages: number) {
 ```
 
 ### Step 5: Key Rotation Schedule
+
 ```bash
 set -euo pipefail
 # Rotate keys quarterly:
@@ -189,6 +196,7 @@ curl -s https://api.firecrawl.dev/v1/scrape \
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `402 Payment Required` | Team credit limit reached | Increase limit or wait for reset |
@@ -199,6 +207,7 @@ curl -s https://api.firecrawl.dev/v1/scrape \
 ## Examples
 
 ### Audit Team Usage
+
 ```typescript
 for (const team of Object.keys(TEAM_POLICIES)) {
   console.log(`${team}: ${budget.getUsage(team)} credits today`);
@@ -206,9 +215,11 @@ for (const team of Object.keys(TEAM_POLICIES)) {
 ```
 
 ## Resources
+
 - [Firecrawl Dashboard](https://firecrawl.dev/app)
 - [Firecrawl Rate Limits](https://docs.firecrawl.dev/rate-limits)
 - [Firecrawl Pricing](https://firecrawl.dev/pricing)
 
 ## Next Steps
+
 For migration strategies, see `firecrawl-migration-deep-dive`.

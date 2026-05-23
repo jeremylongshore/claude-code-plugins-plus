@@ -10,6 +10,7 @@ intercom-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Intercom SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Intercom integration.
 **Relates to:** Other intercom skills in this pack.

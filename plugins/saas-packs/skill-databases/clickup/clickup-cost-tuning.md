@@ -10,6 +10,7 @@ clickup-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize ClickUp costs and usage
 **Workflow:** Part of the cicd skill category for ClickUp integration.
 **Relates to:** Other clickup skills in this pack.

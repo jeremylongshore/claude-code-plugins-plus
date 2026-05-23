@@ -10,6 +10,7 @@ hootsuite-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Hootsuite SDK upgrades
 **Workflow:** Part of the operations skill category for Hootsuite integration.
 **Relates to:** Other hootsuite skills in this pack.

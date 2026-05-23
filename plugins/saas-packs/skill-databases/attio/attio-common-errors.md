@@ -10,6 +10,7 @@ attio-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Attio common errors
 **Workflow:** Part of the operations skill category for Attio integration.
 **Relates to:** Other attio skills in this pack.

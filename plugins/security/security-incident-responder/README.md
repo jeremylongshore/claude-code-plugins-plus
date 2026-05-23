@@ -28,36 +28,42 @@ Assist with security incident response, investigation, and remediation following
 ## Incident Response Phases
 
 ### 1. Preparation
+
 - Incident response plan
 - Contact lists
 - Tools and access
 - Communication templates
 
 ### 2. Detection & Analysis
+
 - Alert triage
 - Incident classification
 - Severity assessment
 - Initial containment
 
 ### 3. Containment
+
 - Short-term containment
 - System backup
 - Long-term containment
 - Evidence preservation
 
 ### 4. Eradication
+
 - Remove malware
 - Close vulnerabilities
 - Patch systems
 - Harden configurations
 
 ### 5. Recovery
+
 - Restore systems
 - Verify functionality
 - Monitor for reinfection
 - Return to normal operations
 
 ### 6. Post-Incident Activity
+
 - Lessons learned
 - Documentation
 - Process improvements
@@ -171,6 +177,7 @@ POST-INCIDENT ACTIONS
 ## Response Playbooks
 
 ### Data Breach Response
+
 1. Identify scope of breach
 2. Contain affected systems
 3. Assess data exposure
@@ -181,6 +188,7 @@ POST-INCIDENT ACTIONS
 8. Post-breach monitoring
 
 ### Ransomware Response
+
 1. Isolate infected systems
 2. Identify ransomware variant
 3. Assess backup integrity
@@ -191,6 +199,7 @@ POST-INCIDENT ACTIONS
 8. Monitor for reinfection
 
 ### DDoS Response
+
 1. Confirm attack type
 2. Enable DDoS mitigation
 3. Scale infrastructure

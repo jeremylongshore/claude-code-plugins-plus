@@ -26,15 +26,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Incident Runbook
 
 ## Overview
+
 Rapid incident response for Replit deployment failures, database issues, and platform outages. Covers triage, diagnosis, remediation, rollback, and communication.
 
 ## Prerequisites
+
 - Access to Replit Workspace and Deployment settings
 - Deployment URL for health checks
 - Communication channel (Slack, email)
 - Rollback awareness (Deployment History)
 
 ## Severity Levels
+
 | Level | Definition | Response Time | Examples |
 |-------|------------|---------------|----------|
 | P1 | Complete outage | < 15 min | App returns 5xx, DB down |
@@ -94,6 +97,7 @@ App not responding?
 ## Remediation by Error Type
 
 ### Deployment Crash (5xx / App Unreachable)
+
 ```markdown
 1. Open Replit Workspace
 2. Go to Deployment Settings > Logs
@@ -111,11 +115,13 @@ App not responding?
 ```
 
 ### Database Connection Failure
+
 ```markdown
 1. Check database status in Database pane
 2. Verify DATABASE_URL is set in Secrets
 3. Test connection:
 ```
+
 ```bash
 # From Replit Shell
 node -e "
@@ -124,6 +130,7 @@ const pool = new Pool({connectionString: process.env.DATABASE_URL, ssl:{rejectUn
 pool.query('SELECT NOW()').then(r => console.log('OK:', r.rows[0])).catch(e => console.error('FAIL:', e.message)).finally(() => pool.end());
 "
 ```
+
 ```markdown
 4. If connection fails:
    - Check if PostgreSQL is provisioned (Database pane)
@@ -132,6 +139,7 @@ pool.query('SELECT NOW()').then(r => console.log('OK:', r.rows[0])).catch(e => c
 ```
 
 ### Cold Start Too Slow (Autoscale)
+
 ```markdown
 If cold starts exceed acceptable latency:
 1. Check deployment type: Autoscale scales to zero
@@ -145,6 +153,7 @@ If cold starts exceed acceptable latency:
 ```
 
 ### Secrets Missing After Deploy
+
 ```markdown
 1. Open Secrets tab (lock icon in sidebar)
 2. Verify all required secrets are present
@@ -158,6 +167,7 @@ If cold starts exceed acceptable latency:
 ```
 
 ## Rollback Procedure
+
 ```markdown
 Replit supports one-click rollback to any previous deployment:
 
@@ -176,6 +186,7 @@ Rollback restores:
 ## Communication Templates
 
 ### Internal (Slack)
+
 ```
 P[1-4] INCIDENT: [App Name] on Replit
 Status: INVESTIGATING / IDENTIFIED / MONITORING / RESOLVED
@@ -187,6 +198,7 @@ Next update: [Time]
 ```
 
 ### External (Status Page)
+
 ```
 [App Name] Service Disruption
 
@@ -202,6 +214,7 @@ Last updated: [timestamp]
 ## Post-Incident
 
 ### Evidence Collection
+
 ```bash
 set -euo pipefail
 # Capture deployment logs
@@ -217,6 +230,7 @@ echo "- [time] Service restored" >> incident-report.md
 ```
 
 ### Postmortem Template
+
 ```markdown
 ## Incident: [Title]
 **Date:** YYYY-MM-DD
@@ -245,6 +259,7 @@ echo "- [time] Service restored" >> incident-report.md
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Can't access Workspace | Replit outage | Use status.replit.com, wait |
@@ -253,10 +268,12 @@ echo "- [time] Service restored" >> incident-report.md
 | DB rollback needed | Bad migration | Restore from Replit DB snapshot |
 
 ## Resources
+
 - [Replit Status](https://status.replit.com)
 - [Deployment Rollbacks](https://blog.replit.com/introducing-deployment-rollbacks)
 - [Monitoring Deployments](https://docs.replit.com/cloud-services/deployments/monitoring-a-deployment)
 - [Replit Support](https://replit.com/support)
 
 ## Next Steps
+
 For data handling patterns, see `replit-data-handling`.

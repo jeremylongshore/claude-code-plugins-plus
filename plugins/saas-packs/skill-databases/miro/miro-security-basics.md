@@ -10,6 +10,7 @@ miro-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Miro security best practices
 **Workflow:** Part of the operations skill category for Miro integration.
 **Relates to:** Other miro skills in this pack.

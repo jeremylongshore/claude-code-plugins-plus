@@ -40,6 +40,7 @@ Complete checklist for deploying Klaviyo integrations to production, with health
 ### Pre-Deployment Checklist
 
 #### Authentication & Secrets
+
 - [ ] Production `KLAVIYO_PRIVATE_KEY` stored in secret manager (not env file)
 - [ ] Key has minimal scopes (only what the app needs)
 - [ ] Webhook signing secret (`KLAVIYO_WEBHOOK_SIGNING_SECRET`) configured
@@ -47,6 +48,7 @@ Complete checklist for deploying Klaviyo integrations to production, with health
 - [ ] No hardcoded keys in codebase (`grep -r "pk_" src/`)
 
 #### API Integration
+
 - [ ] All API calls use `klaviyo-api` SDK (not raw HTTP)
 - [ ] SDK version pinned in `package.json` (not `^` or `*`)
 - [ ] `revision` header set to `2024-10-15` (or current supported revision)
@@ -55,6 +57,7 @@ Complete checklist for deploying Klaviyo integrations to production, with health
 - [ ] Phone numbers validated as E.164 format (`+15551234567`)
 
 #### Error Handling & Resilience
+
 - [ ] 429 retry logic honors `Retry-After` header
 - [ ] 5xx errors retried with exponential backoff
 - [ ] 401/403 errors logged with alert (key rotation needed)
@@ -62,12 +65,14 @@ Complete checklist for deploying Klaviyo integrations to production, with health
 - [ ] Request queue prevents exceeding 75 req/s burst limit
 
 #### Webhook Security
+
 - [ ] Webhook endpoint uses HTTPS only
 - [ ] HMAC-SHA256 signature verification enabled
 - [ ] Idempotency handling (dedup by event ID)
 - [ ] Webhook endpoint returns 200 within 30 seconds
 
 #### Monitoring
+
 - [ ] Health check endpoint includes Klaviyo connectivity test
 - [ ] Alert on 429 rate (>5/min = P2)
 - [ ] Alert on 401/403 errors (any = P1)

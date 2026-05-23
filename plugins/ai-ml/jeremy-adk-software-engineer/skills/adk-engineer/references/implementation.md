@@ -103,6 +103,7 @@ python -m src.agent
 ```
 
 Pass criteria:
+
 - All unit tests pass (exit code 0)
 - Coverage >= 80% on `src/` modules
 - No import errors in smoke test

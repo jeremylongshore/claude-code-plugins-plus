@@ -36,6 +36,7 @@ ApiError: Invalid Application-ID or API key
 **Cause:** App ID or API key is wrong, expired, or deleted.
 
 **Fix:**
+
 ```bash
 # Verify your env vars are set
 echo "APP_ID: $ALGOLIA_APP_ID"
@@ -82,6 +83,7 @@ ApiError: Index products_staging does not exist
 **Cause:** Searching an index that hasn't been created yet. Algolia creates indices lazily on first `saveObjects`.
 
 **Fix:** Index some data first, or check the index name for typos:
+
 ```bash
 # List all indices in your app
 curl -s "https://${ALGOLIA_APP_ID}-dsn.algolia.net/1/indexes" \
@@ -100,6 +102,7 @@ ApiError: Too Many Requests
 **Cause:** API key's `maxQueriesPerIPPerHour` exceeded, or server-side indexing rate limit hit.
 
 **Fix:**
+
 ```typescript
 // Algolia's built-in retry handles transient 429s.
 // For sustained rate limits:
@@ -128,6 +131,7 @@ ApiError: Record at the position 0 is too big size=15234 bytes. Contact us if yo
 **Cause:** Single record exceeds 10KB (free/Build plan) or 100KB (paid plans).
 
 **Fix:**
+
 ```typescript
 // Strip unnecessary fields before indexing
 function trimForAlgolia(record: any) {
@@ -155,6 +159,7 @@ ApiError: Attribute "price" is not in attributesForFaceting
 **Cause:** Using `filters` or `facetFilters` on an attribute not configured for faceting.
 
 **Fix:**
+
 ```typescript
 await client.setSettings({
   indexName: 'products',
@@ -176,6 +181,7 @@ RetryError: Unreachable hosts - yourass might not be connected to the internet
 **Cause:** Network/DNS issue. Can't reach `*.algolia.net` or `*.algolianet.com`.
 
 **Fix:**
+
 ```bash
 # Test DNS resolution
 nslookup ${ALGOLIA_APP_ID}-dsn.algolia.net
@@ -199,6 +205,7 @@ ApiError: Invalid syntax for filter: 'price > AND < 100'
 ```
 
 **Fix:** Algolia filter syntax reference:
+
 ```
 # Correct syntax
 price > 50 AND price < 100        # Numeric range

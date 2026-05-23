@@ -10,6 +10,7 @@ algolia-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Algolia primary workflow
 **Workflow:** Part of the onboarding skill category for Algolia integration.
 **Relates to:** Other algolia skills in this pack.

@@ -10,6 +10,7 @@ vercel-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Vercel example demonstrating core API patterns and client initialization.
 **Workflow:** Second skill in onboarding - validates that authentication works and teaches basic API interaction patterns.
 **Relates to:** Depends on vercel-install-auth; leads to vercel-local-dev-loop for development workflow setup

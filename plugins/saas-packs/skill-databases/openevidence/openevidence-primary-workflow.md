@@ -10,6 +10,7 @@ openevidence-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute OpenEvidence primary workflow
 **Workflow:** Part of the onboarding skill category for OpenEvidence integration.
 **Relates to:** Other openevidence skills in this pack.

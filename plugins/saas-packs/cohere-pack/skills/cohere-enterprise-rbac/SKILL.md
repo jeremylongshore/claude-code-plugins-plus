@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Cohere Enterprise RBAC
 
 ## Overview
+
 Configure enterprise-grade access control for Cohere API v2 with multi-team API key management, per-team model/budget restrictions, and audit trails.
 
 ## Prerequisites
+
 - Cohere production API keys
 - Understanding of your team/service structure
 - Secret management infrastructure
@@ -285,6 +287,7 @@ kubectl rollout restart deployment/search-service
 ```
 
 ## Output
+
 - Multi-team API key management with separate keys per team
 - Model access enforcement (search team cannot use chat models)
 - Per-team daily budget limits with automatic cutoff
@@ -292,6 +295,7 @@ kubectl rollout restart deployment/search-service
 - API gateway middleware for access control
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Team key missing | Env var not set | Check secret manager |
@@ -300,9 +304,11 @@ kubectl rollout restart deployment/search-service
 | Key rotation gap | Old key revoked too early | Overlap keys during rotation |
 
 ## Resources
+
 - [Cohere API Keys](https://dashboard.cohere.com/api-keys)
 - [Cohere Pricing](https://cohere.com/pricing)
 - [Cohere Rate Limits](https://docs.cohere.com/docs/rate-limits)
 
 ## Next Steps
+
 For major migrations, see `cohere-migration-deep-dive`.

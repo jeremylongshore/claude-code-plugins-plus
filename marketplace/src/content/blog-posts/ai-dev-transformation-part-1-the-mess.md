@@ -39,6 +39,7 @@ The first "aha" moment was realizing I didn't need BMAD to run the show. It was 
 3. **Document-first** (templates drive everything)
 
 That meant:
+
 - Archiving BMAD into `archive/bmad-method/` (safe, but out of the way)
 - Stripping my Makefile down from 57 lines to just 12 lines
 - Rebuilding templates from scratch — taking the killer seeds and enhancing them into 22 enterprise-grade frameworks
@@ -46,23 +47,28 @@ That meant:
 ## Lessons from the Cleanup
 
 ### Preserve, Don't Delete
+
 I didn't want to burn bridges. BMAD and all legacy files were archived, not destroyed. You never know when you'll need that weird edge case solution from 6 months ago.
 
 ### Simplicity Beats Power
+
 A clean 2-step workflow beats a monster 10-step one. Every. Single. Time.
 
 ### Documentation is the Product
+
 The README itself became the "magic portal" — copy/paste one Claude prompt, and you're in business. No setup. No dependencies. Just results.
 
 ## The Numbers Don't Lie
 
 Before cleanup:
+
 - Setup time: 30-60 minutes
 - Dependencies: Docker, Node, Make, BMAD
 - Success rate: ~60% (if Docker behaved)
 - User confusion level: High
 
 After cleanup:
+
 - Setup time: 30 seconds
 - Dependencies: None
 - Success rate: 100%
@@ -79,7 +85,7 @@ The journey from chaos to clarity wasn't just about cleaning up files. It was ab
 ---
 
 **Series Navigation:**
+
 - **Part 1: The Mess (and Why It Mattered)** ← You are here
 - Part 2: Evolving Templates into an Enterprise Library (coming soon)
 - Part 3: From Templates to One-Paste Magic (coming soon)
-

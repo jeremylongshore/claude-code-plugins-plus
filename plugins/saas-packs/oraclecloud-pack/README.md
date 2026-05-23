@@ -13,6 +13,7 @@ Oracle Cloud Infrastructure (OCI) SDK for compute instances, object storage, net
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `oraclecloud-common-errors` | Common Errors |
@@ -29,6 +30,7 @@ Oracle Cloud Infrastructure (OCI) SDK for compute instances, object storage, net
 | `oraclecloud-upgrade-migration` | Upgrade Migration |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `oraclecloud-ci-integration` | Ci Integration |
@@ -39,6 +41,7 @@ Oracle Cloud Infrastructure (OCI) SDK for compute instances, object storage, net
 | `oraclecloud-webhooks-events` | Webhooks Events |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `oraclecloud-data-handling` | Data Handling |

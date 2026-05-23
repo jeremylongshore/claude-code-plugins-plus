@@ -384,6 +384,7 @@ Run the universal validator to check your plugin against both the Anthropic spec
 ```
 
 This checks:
+
 - `plugin.json` contains only allowed fields
 - All referenced files exist
 - Script files have execute permissions

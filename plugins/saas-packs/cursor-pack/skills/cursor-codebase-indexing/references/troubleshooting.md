@@ -3,6 +3,7 @@
 ## Troubleshooting
 
 ### Index Not Updating
+
 ```
 Symptoms: Changes not reflected in @codebase
 
@@ -14,6 +15,7 @@ Fixes:
 ```
 
 ### Search Returns Nothing
+
 ```
 Symptoms: @codebase queries return empty
 
@@ -25,6 +27,7 @@ Fixes:
 ```
 
 ### High Resource Usage
+
 ```
 Symptoms: CPU/memory spike during indexing
 

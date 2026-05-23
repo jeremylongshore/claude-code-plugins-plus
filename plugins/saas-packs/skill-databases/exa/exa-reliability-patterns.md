@@ -10,6 +10,7 @@ exa-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement circuit breakers, fallback search providers, and graceful degradation for Exa reliability.
 **Workflow:** Resilience engineering skill - ensures search availability during outages.
 **Relates to:** Follows exa-rate-limits; provides patterns for exa-incident-runbook

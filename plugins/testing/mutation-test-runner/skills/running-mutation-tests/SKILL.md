@@ -80,6 +80,7 @@ Execute mutation testing to evaluate the effectiveness of a test suite by system
 ## Examples
 
 **Stryker configuration for TypeScript project:**
+
 ```javascript
 // stryker.config.mjs
 export default {
@@ -94,6 +95,7 @@ export default {
 ```
 
 **Example surviving mutant and fix:**
+
 ```
 Mutant: src/utils/discount.ts:15 -- ConditionalExpression
   Original:  if (total > 100)
@@ -110,6 +112,7 @@ it('applies discount above 100', () => {
 ```
 
 **mutmut for Python:**
+
 ```bash
 # Run mutation testing
 mutmut run --paths-to-mutate=src/ --tests-dir=tests/

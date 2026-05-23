@@ -10,6 +10,7 @@ apollo-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Apollo load testing and scaling
 **Workflow:** Part of the enterprise skill category for Apollo integration.
 **Relates to:** Other apollo skills in this pack.

@@ -86,6 +86,7 @@ GET https://graph.microsoft.com/v1.0/sites/{site-id}/onenote/sections/{section-i
 - Stored in the site's document library
 - Permission: `Notes.ReadWrite` + `Sites.Read.All` (Sites scope often requires admin consent)
 - **Gotcha:** You need the site ID, not the site URL. Resolve it first:
+
   ```
   GET https://graph.microsoft.com/v1.0/sites/{hostname}:/{server-relative-path}
   ```

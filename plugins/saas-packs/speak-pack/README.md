@@ -13,6 +13,7 @@
 [Speak](https://speak.com) is an AI-powered language learning platform that gets users speaking from day one. Built on OpenAI's GPT-4o and Realtime API, Speak provides real-time pronunciation feedback, adaptive AI tutoring, and conversation practice without a live tutor. Backed by OpenAI Startup Fund, Founders Fund, and Y Combinator. Valued at $1B+ (Series C, 2024).
 
 **Key facts:**
+
 - 14+ supported languages (Korean, Spanish, Japanese, French, German, and more)
 - GPT-4o for conversation generation and personalized feedback
 - OpenAI Whisper + proprietary models for speech recognition
@@ -22,6 +23,7 @@
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `speak-install-auth` | Install SDK, configure API keys, set up speech pipeline |
@@ -38,6 +40,7 @@
 | `speak-upgrade-migration` | SDK upgrades, API version migration |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `speak-ci-integration` | GitHub Actions with mocked API tests |
@@ -48,6 +51,7 @@
 | `speak-reference-architecture` | Client, API gateway, assessment engine, progress store |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `speak-multi-env-setup` | Dev/staging/prod with separate keys and mock modes |

@@ -22,9 +22,11 @@ User needs a chart implementation, visualization type recommendation, or data di
 
 1. **Identify data type** from user request (time series, comparison, distribution, composition, relationship, etc.)
 2. **Search chart knowledge base:**
+
    ```bash
    python3 -m prism_agent.uiux search --domain chart --query "{data_type}" --limit 3
    ```
+
 3. **Evaluate results** for: data volume threshold, accessibility grade, interaction level
 4. **Output** recommendation with library choice and accessibility fallback
 

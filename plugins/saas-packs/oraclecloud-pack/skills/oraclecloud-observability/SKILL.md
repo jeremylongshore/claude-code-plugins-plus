@@ -193,6 +193,7 @@ print("Health check probe created: api.example.com/health every 30s")
 ## Output
 
 Successful completion produces:
+
 - Metric queries returning CPU, memory, and network data for your compartment
 - Alarm rules that fire to notification topics when thresholds are breached
 - Custom application metrics published to OCI Monitoring

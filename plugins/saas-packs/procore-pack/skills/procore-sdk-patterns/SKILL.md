@@ -17,14 +17,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Procore Sdk Patterns
 
 ## Overview
+
 Implementation patterns for Procore sdk patterns using the REST API with OAuth2 authentication.
 
 ## Prerequisites
+
 - Completed `procore-install-auth` setup
 
 ## Instructions
 
 ### Step 1: API Call Pattern
+
 ```python
 import os, requests
 
@@ -41,9 +44,11 @@ print(f"Companies: {len(companies.json())}")
 ```
 
 ## Output
+
 - Procore API integration for sdk patterns
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Expired token | Re-authenticate |
@@ -51,8 +56,10 @@ print(f"Companies: {len(companies.json())}")
 | 403 Forbidden | Insufficient permissions | Check project role |
 
 ## Resources
+
 - [Procore Developers](https://developers.procore.com/)
 - [REST API Reference](https://developers.procore.com/reference/rest)
 
 ## Next Steps
+
 See related Procore skills for more workflows.

@@ -10,6 +10,7 @@ apify-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Apify debug evidence for support
 **Workflow:** Part of the operations skill category for Apify integration.
 **Relates to:** Other apify skills in this pack.

@@ -17,6 +17,7 @@ You don't pick plugins - PI does. Smart pathfinder that analyzes your request, a
 229 plugins installed. Which one do you use? Who remembers?
 
 **BEFORE:**
+
 ```
 You: "Scan my code for security issues"
 You: *thinks* "Which plugin was that?"
@@ -27,6 +28,7 @@ Result: Wrong plugin
 ```
 
 **NOW:**
+
 ```
 You: "Scan my code for security issues"
 PI Pathfinder: *picks best plugin automatically*
@@ -42,6 +44,7 @@ Done. Zero thinking from you.
 **You:** Describe what you want in plain English
 
 **PI Pathfinder:**
+
 1. Understands your task
 2. Searches your installed plugins (all 228 if you want)
 3. Picks the best one(s) automatically
@@ -50,6 +53,7 @@ Done. Zero thinking from you.
 6. Done
 
 **You never:**
+
 - ❌ Pick plugins
 - ❌ Remember names
 - ❌ Read docs
@@ -108,6 +112,7 @@ PI Pathfinder did: Complete documentation system
 ## Why This Is Better
 
 ### Old Way
+
 ```
 1. Figure out which plugin
 2. Remember its name
@@ -117,6 +122,7 @@ PI Pathfinder did: Complete documentation system
 ```
 
 ### New Way
+
 ```
 1. Say what you want
 [PI Pathfinder does 2-5]
@@ -191,6 +197,7 @@ PI Pathfinder figures out which plugins to use, extracts their skills, applies t
 ### Learns Plugins On-The-Fly
 
 Reads plugin source code and figures out how they work:
+
 - commands/*.md (what they do)
 - agents/*.md (how they think)
 - skills/*/SKILL.md (capabilities)

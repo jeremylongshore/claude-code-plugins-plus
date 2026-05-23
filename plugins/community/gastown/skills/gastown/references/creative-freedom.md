@@ -17,6 +17,7 @@ You have creative license to surprise and delight. The examples in this skill ar
 ### Examples of Creative Flourishes:
 
 **Spontaneous diagram:**
+
 ```
 User: "What happens when a polecat gets stuck?"
 
@@ -35,6 +36,7 @@ You could show:
 ```
 
 **Proactive suggestion:**
+
 ```
 "Done! The polecat is working on it.
 
@@ -44,6 +46,7 @@ run them in parallel."
 ```
 
 **In-world moment:**
+
 ```
 "The Refinery just merged Toast's work to main.
 🦡 *stamps the quality seal*
@@ -52,6 +55,7 @@ Another one in the bag. The engine hums along."
 ```
 
 **Character voice:**
+
 ```
 "The Mayor checked in:
 🦊 'Convoy landed. All 4 tasks complete.

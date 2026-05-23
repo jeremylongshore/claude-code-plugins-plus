@@ -190,6 +190,7 @@ The plugin is a systematization of the quality sweep you just read about in qmd.
 Meanwhile in the same claude-code-plugins repo: commit `f61853026` — "refactor: comprehensive codebase cleanup — 8 parallel agents" — changed 126 files at 423 insertions and 25,307 deletions. The deletions were scripts that had been used once and never cleaned up: `overnight-skill-fix.py` at 978 lines, `skills-generate-vertex-safe.py` at 740, `skill-gap-report.py` at 577, `skills-enhancer-batch.py` at 651, `validate-plugin.js` at 807. Eight parallel agents did the work. A human confirmed the deletions. A 24,884-line net reduction in a single commit is the kind of thing that happens when you have named the failure class — "one-shot scripts that accreted" — and pointed a system at it.
 
 Four more cleanup commits landed the same week, each one a named failure class caught by tooling rather than by hand:
+
 - `4e07649fe` — resolved 27 validation errors across 3,874 files (schema drift between skill definitions and the validator)
 - `11f7b5b94` — split 13 SKILL.md files that exceeded the 500-line limit (notion-pack 4, supabase-pack 8, sentry-pack 1)
 - `b2debbdf8` — removed XML tags from 4 skill descriptions
@@ -295,4 +296,3 @@ None of this replaces careful human judgment. It makes careful human judgment sc
   "keywords": "peer review, failure class, cosign SLSA, unchecked derivation, code cleanup, supply-chain-security"
 }
 </script>
-

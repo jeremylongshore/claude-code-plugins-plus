@@ -42,12 +42,14 @@ Complete checklist for deploying ElevenLabs TTS/voice integrations to production
 ### Step 1: Pre-Deployment Verification
 
 **Configuration:**
+
 - [ ] Production API key stored in secure vault (not in code)
 - [ ] `ELEVENLABS_API_KEY` set in deployment platform's secrets
 - [ ] Webhook secret configured (if using webhooks)
 - [ ] Using production model ID (`eleven_multilingual_v2` or `eleven_v3`)
 
 **Code Quality:**
+
 - [ ] All tests passing with mocked ElevenLabs SDK
 - [ ] No hardcoded API keys (scan with `grep -r "sk_" src/`)
 - [ ] Error handling covers 400, 401, 404, 429, 5xx responses
@@ -56,6 +58,7 @@ Complete checklist for deploying ElevenLabs TTS/voice integrations to production
 - [ ] Audio output format appropriate for use case
 
 **Quota Planning:**
+
 - [ ] Estimated monthly character usage fits within plan limit
 - [ ] Usage-based billing enabled (Creator+ plans) if needed
 - [ ] Flash/Turbo models used where latency matters more than quality

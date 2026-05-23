@@ -26,15 +26,18 @@ compatibility: Designed for Claude Code
 # AssemblyAI Rate Limits
 
 ## Overview
+
 Handle AssemblyAI rate limits with exponential backoff, queue-based throttling, and concurrency management. AssemblyAI auto-scales limits for paid users.
 
 ## Prerequisites
+
 - `assemblyai` package installed
 - Understanding of async/await patterns
 
 ## Rate Limit Tiers (Actual)
 
 ### Async Transcription API
+
 | Endpoint | Free | Pay-as-you-go |
 |----------|------|---------------|
 | `POST /v2/transcript` | 5/min | Scales with usage |
@@ -42,12 +45,14 @@ Handle AssemblyAI rate limits with exponential backoff, queue-based throttling, 
 | `POST /v2/upload` | 5/min | Scales with usage |
 
 ### Streaming (WebSocket)
+
 | Metric | Free | Pay-as-you-go |
 |--------|------|---------------|
 | New streams/min | 5 | 100 (auto-scales) |
 | Concurrent streams | ~5 | Unlimited (auto-scales 10% every 60s at 70% usage) |
 
 ### LeMUR
+
 | Metric | Free | Paid |
 |--------|------|------|
 | Requests/min | Limited | Scales with usage |
@@ -189,12 +194,14 @@ async function connectStreamingWithRetry(maxRetries = 3) {
 ```
 
 ## Output
+
 - Automatic retry with exponential backoff and jitter
 - Queue-based concurrency control with p-queue
 - Batch transcription with progress reporting
 - Streaming reconnection logic
 
 ## Error Handling
+
 | Scenario | Status | Strategy |
 |----------|--------|----------|
 | Rate limited (async) | 429 | Exponential backoff, honor `Retry-After` header |
@@ -204,9 +211,11 @@ async function connectStreamingWithRetry(maxRetries = 3) {
 | Invalid input | 400 | Do not retry, fix request |
 
 ## Resources
+
 - [AssemblyAI Rate Limits](https://www.assemblyai.com/docs/deployment/account-management)
 - [p-queue Documentation](https://github.com/sindresorhus/p-queue)
 - [AssemblyAI Streaming Limits](https://www.assemblyai.com/docs/streaming)
 
 ## Next Steps
+
 For security configuration, see `assemblyai-security-basics`.

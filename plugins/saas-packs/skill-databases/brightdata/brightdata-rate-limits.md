@@ -10,6 +10,7 @@ brightdata-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Bright Data rate limiting and backoff
 **Workflow:** Part of the operations skill category for Bright Data integration.
 **Relates to:** Other brightdata skills in this pack.

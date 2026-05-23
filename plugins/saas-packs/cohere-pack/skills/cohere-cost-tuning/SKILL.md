@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Cohere Cost Tuning
 
 ## Overview
+
 Optimize Cohere costs through model selection, token budgets, embedding compression, and usage monitoring. Cohere pricing is token-based with separate input/output rates.
 
 ## Prerequisites
+
 - Cohere production key (trial is free but limited)
 - Access to [dashboard.cohere.com](https://dashboard.cohere.com) billing page
 
@@ -222,12 +224,14 @@ async function cheapRAG(query: string, corpus: string[]) {
 - [ ] Use `rerank` instead of `embed` for small corpora (< 1000 docs)
 
 ## Output
+
 - Model tiering by cost/quality
 - Token budget controls preventing runaway costs
 - Usage tracking with daily budget alerts
 - Cost-effective RAG with rerank pre-filtering
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Unexpected bill spike | No maxTokens | Set maxTokens on all chat calls |
@@ -236,9 +240,11 @@ async function cheapRAG(query: string, corpus: string[]) {
 | Over-provisioned model | Using premium everywhere | Tier models by task complexity |
 
 ## Resources
+
 - [Cohere Pricing](https://cohere.com/pricing)
 - [Cohere Billing Dashboard](https://dashboard.cohere.com/billing)
 - [Cohere Token Counting](https://docs.cohere.com/docs/tokens-and-tokenizers)
 
 ## Next Steps
+
 For architecture patterns, see `cohere-reference-architecture`.

@@ -34,7 +34,7 @@ cd /path/to/your/project
 nano AGENTS.md
 ```
 
-2. **Add agent-specific rules**:
+1. **Add agent-specific rules**:
 
 ```markdown
 # AGENTS.md - Agent-Specific Instructions
@@ -56,7 +56,7 @@ When working with Agent Skills in this project:
 - Add comprehensive JSDoc comments
 ```
 
-3. **That's it!** Start Claude Code and the plugin will automatically:
+1. **That's it!** Start Claude Code and the plugin will automatically:
    - Detect AGENTS.md
    - Load the content
    - Apply the rules for your session
@@ -74,6 +74,7 @@ The plugin **automatically** detects and loads AGENTS.md when:
 - Invoking any other agent skill
 
 **User Experience**:
+
 ```
 📋 Loaded agent-specific context from AGENTS.md
 
@@ -118,12 +119,14 @@ Permanently merge AGENTS.md into CLAUDE.md:
 ```
 
 **What it does**:
+
 1. Finds all AGENTS.md files in your project
 2. Reads their content
 3. Merges into CLAUDE.md under "## Agent-Specific Instructions" section
 4. Creates backup: `CLAUDE.md.backup.TIMESTAMP`
 
 **Result**:
+
 ```markdown
 ## Agent-Specific Instructions
 
@@ -181,6 +184,7 @@ This ensures AGENTS.md is **always** loaded, even if one layer fails.
 ### Example 1: Single Project with Agent Rules
 
 **Project Structure**:
+
 ```
 my-project/
 ├── CLAUDE.md           # General project context
@@ -190,6 +194,7 @@ my-project/
 ```
 
 **Workflow**:
+
 ```bash
 cd my-project
 # Plugin automatically detects AGENTS.md
@@ -200,6 +205,7 @@ cd my-project
 ### Example 2: Multi-Package Monorepo
 
 **Project Structure**:
+
 ```
 monorepo/
 ├── CLAUDE.md
@@ -212,6 +218,7 @@ monorepo/
 ```
 
 **Workflow**:
+
 ```bash
 # In root: Loads monorepo/AGENTS.md
 cd monorepo
@@ -256,6 +263,7 @@ Claude: 📋 Checking for AGENTS.md...
 - For conflicts: AGENTS.md takes **precedence** for agent workflows
 
 **Example Conflict**:
+
 ```markdown
 # CLAUDE.md
 Use JavaScript for all code
@@ -359,6 +367,7 @@ Use TypeScript for agent-generated code
 ### Problem: AGENTS.md Not Loading Automatically
 
 **Diagnose**:
+
 ```bash
 # Check if plugin is installed
 /plugin list | grep agent-context-manager
@@ -371,6 +380,7 @@ stat AGENTS.md
 ```
 
 **Solutions**:
+
 1. **Manual invoke**: Say "load agent context"
 2. **Explicit path**: "Read ./AGENTS.md and follow those rules"
 3. **Permanent merge**: Run `/sync-agent-context`
@@ -381,6 +391,7 @@ stat AGENTS.md
 
 **Option A**: Remove conflicting rule from AGENTS.md
 **Option B**: Add clarification in AGENTS.md:
+
 ```markdown
 # AGENTS.md
 
@@ -393,6 +404,7 @@ For rules that conflict with CLAUDE.md, prefer CLAUDE.md unless explicitly marke
 **Cause**: Auto-loader only loads from current directory
 
 **Solution**: Use slash command to merge all:
+
 ```bash
 /sync-agent-context
 ```
@@ -404,6 +416,7 @@ This finds and merges ALL AGENTS.md files in the project.
 ## Best Practices
 
 ### DO:
+
 ✅ Use AGENTS.md for agent-specific rules only
 ✅ Keep CLAUDE.md for general project context
 ✅ Be specific and actionable in agent rules
@@ -411,6 +424,7 @@ This finds and merges ALL AGENTS.md files in the project.
 ✅ Version control both CLAUDE.md and AGENTS.md
 
 ### DON'T:
+
 ❌ Duplicate rules between CLAUDE.md and AGENTS.md
 ❌ Make AGENTS.md too generic (use CLAUDE.md instead)
 ❌ Forget to run /sync-agent-context after major AGENTS.md updates
@@ -451,12 +465,14 @@ When using the `code-generator` skill:
 ### Proactive Skill: `agent-context-loader`
 
 **Triggers automatically when**:
+
 - Starting new session
 - Changing directories
 - Invoking other agent skills
 - User requests: "load agent context"
 
 **Behavior**:
+
 1. Checks for `./AGENTS.md`
 2. Reads file if exists
 3. Loads into session context
@@ -465,10 +481,12 @@ When using the `code-generator` skill:
 ### Hook Script: `check-agents-md.sh`
 
 **Runs automatically on**:
+
 - Session start (`onSessionStart`)
 - Directory change (`onDirectoryChange`)
 
 **Behavior**:
+
 1. Detects `./AGENTS.md`
 2. Prints formatted message
 3. Prompts Claude to load content
@@ -476,11 +494,13 @@ When using the `code-generator` skill:
 ### Slash Command: `/sync-agent-context`
 
 **User invokes manually**:
+
 ```bash
 /sync-agent-context
 ```
 
 **Behavior**:
+
 1. Finds all `AGENTS.md` files (recursive)
 2. Reads each file
 3. Merges into `CLAUDE.md`
@@ -515,6 +535,7 @@ When using the `code-generator` skill:
 ### Anthropic Agent Skills Spec v1.0
 
 ✅ **Compliant with all requirements**:
+
 - Skills in `skills/` directory
 - SKILL.md at root of skill directory
 - Descriptive skill names (agent-context-loader)
@@ -525,6 +546,7 @@ When using the `code-generator` skill:
 ### Exceeds Anthropic Standards
 
 🌟 **Enhancements beyond spec**:
+
 - Three-layer redundancy system
 - Automated synchronization
 - Comprehensive error handling
@@ -539,6 +561,7 @@ When using the `code-generator` skill:
 ### v1.0.0 (2025-10-23)
 
 **Initial Release**:
+
 - ✅ Proactive skill for auto-loading AGENTS.md
 - ✅ Directory change hooks
 - ✅ Manual sync slash command
@@ -553,6 +576,7 @@ When using the `code-generator` skill:
 Contributions welcome! This plugin is part of the [Claude Code Plugins Plus](https://github.com/jeremylongshore/claude-code-plugins-plus) collection.
 
 **Ideas for enhancements**:
+
 - Auto-sync on AGENTS.md file change
 - Multi-level agent context (project, workspace, global)
 - Template generator for AGENTS.md

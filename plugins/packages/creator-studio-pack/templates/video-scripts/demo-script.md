@@ -21,6 +21,7 @@
 **Visual**: [Show the most impressive result immediately]
 
 **Script**:
+
 ```
 [Show the end result first - the "wow" moment]
 
@@ -32,6 +33,7 @@
 ```
 
 **Example**:
+
 ```
 [Screen shows: Complex task completed in 3 clicks]
 
@@ -45,6 +47,7 @@
 **Visual**: [Show the old way / competitor way]
 
 **Script**:
+
 ```
 "Here's the problem:
 
@@ -71,6 +74,7 @@
 **Visual**: [Your product interface]
 
 **Script**:
+
 ```
 "Meet [product name].
 
@@ -94,6 +98,7 @@
 **Visual**: [Screen recording - getting started]
 
 **Script**:
+
 ```
 "First, let's get started:
 
@@ -120,6 +125,7 @@ On the right, [sidebar/tools]...'
 ```
 
 **On-Screen Text**:
+
 - "30 seconds to sign up"
 - Interface labels
 - Action annotations
@@ -131,6 +137,7 @@ On the right, [sidebar/tools]...'
 **Visual**: [Screen recording - feature in action]
 
 **Script**:
+
 ```
 "Now let's look at the most powerful feature: [feature name].
 
@@ -159,6 +166,7 @@ Finally, [step 3]...'
 ```
 
 **On-Screen Text**:
+
 - Feature name highlighted
 - Step numbers
 - Time saved metric
@@ -171,6 +179,7 @@ Finally, [step 3]...'
 **Visual**: [Screen recording - second feature]
 
 **Script**:
+
 ```
 "Another powerful feature is [feature name].
 
@@ -197,6 +206,7 @@ Finally, [step 3]...'
 **Visual**: [Screen recording - integrations or advanced features]
 
 **Script**:
+
 ```
 "[Product] also integrates with [tools]:
 
@@ -220,6 +230,7 @@ Finally, [step 3]...'
 **Visual**: [Dashboard showing metrics OR testimonial]
 
 **Script**:
+
 ```
 "So what kind of results can you expect?
 
@@ -249,6 +260,7 @@ Finally, [step 3]...'
 **Visual**: [Signup page OR pricing page]
 
 **Script**:
+
 ```
 "Getting started is easy:
 
@@ -272,6 +284,7 @@ Finally, [step 3]...'
 ```
 
 **On-Screen Text**:
+
 - URL prominently displayed
 - Pricing/offer details
 - Sign up button
@@ -283,6 +296,7 @@ Finally, [step 3]...'
 **Visual**: [Your face OR product logo]
 
 **Script**:
+
 ```
 "That's [product name].
 
@@ -296,6 +310,7 @@ Thanks for watching!"
 ## Demo Variations
 
 ### Quick Demo (3 minutes)
+
 - Hook (10s)
 - Problem (20s)
 - Solution (30s)
@@ -303,12 +318,14 @@ Thanks for watching!"
 - CTA (30s)
 
 ### Comprehensive Demo (15 minutes)
+
 - Detailed walkthrough of all features
 - Multiple use cases
 - Q&A from comments
 - Comparison with competitors
 
 ### Use Case Demo (8 minutes)
+
 - Specific scenario start to finish
 - One complete workflow
 - Before/after comparison
@@ -319,6 +336,7 @@ Thanks for watching!"
 ## Recording Tips
 
 **Before Recording**:
+
 - Clean test account (no personal data)
 - Prepare sample data
 - Close unnecessary tabs/apps
@@ -326,6 +344,7 @@ Thanks for watching!"
 - Rehearse the flow
 
 **While Recording**:
+
 - Move mouse slowly and deliberately
 - Pause after each action (easier to edit)
 - Narrate what you're doing
@@ -333,6 +352,7 @@ Thanks for watching!"
 - Keep energy high
 
 **Screen Recording Settings**:
+
 - 1920x1080 resolution
 - 60fps if possible
 - Include mouse cursor
@@ -344,6 +364,7 @@ Thanks for watching!"
 ## On-Screen Annotations
 
 **Feature Highlights**:
+
 ```
 [Arrow pointing to button]
 "Click here to [action]"
@@ -356,6 +377,7 @@ Thanks for watching!"
 ```
 
 **Performance Metrics**:
+
 ```
 Before: [metric]
 After: [metric]
@@ -363,6 +385,7 @@ Improvement: [percentage]
 ```
 
 **Time Savings**:
+
 ```
 Old way: [X hours]
 New way: [Y minutes]
@@ -425,6 +448,7 @@ Perfect for:
 ## Success Metrics
 
 **Good demo indicators**:
+
 - High CTR to product website
 - Many "just signed up!" comments
 - Questions about specific features

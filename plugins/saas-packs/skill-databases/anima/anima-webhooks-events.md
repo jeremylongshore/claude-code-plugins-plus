@@ -10,6 +10,7 @@ anima-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Anima webhook handling
 **Workflow:** Part of the cicd skill category for Anima integration.
 **Relates to:** Other anima skills in this pack.

@@ -10,6 +10,7 @@ palantir-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Palantir local development workflow
 **Workflow:** Part of the onboarding skill category for Palantir integration.
 **Relates to:** Other palantir skills in this pack.

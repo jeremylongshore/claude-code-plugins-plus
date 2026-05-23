@@ -10,6 +10,7 @@ linktree-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Linktree SDK patterns
 **Workflow:** Part of the onboarding skill category for Linktree integration.
 **Relates to:** Other linktree skills in this pack.

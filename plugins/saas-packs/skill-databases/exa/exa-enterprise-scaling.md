@@ -10,6 +10,7 @@ exa-enterprise-scaling/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Design enterprise-scale Exa integration with multi-tenant support, usage quotas, team management, and cost attribution.
 **Workflow:** Enterprise architecture skill - enables organization-wide Exa deployment.
 **Relates to:** Follows exa-multi-env-setup; integrates with exa-cost-tuning

@@ -5,6 +5,7 @@
 ## Detailed Instructions
 
 ### Step 1: Workspace Events
+
 ```typescript
 import { Plugin, TFile, WorkspaceLeaf } from 'obsidian';
 
@@ -67,6 +68,7 @@ export default class MyPlugin extends Plugin {
 ```
 
 ### Step 2: Vault Events
+
 ```typescript
 import { Plugin, TFile, TFolder, TAbstractFile } from 'obsidian';
 
@@ -130,6 +132,7 @@ export default class MyPlugin extends Plugin {
 ```
 
 ### Step 3: MetadataCache Events
+
 ```typescript
 import { Plugin, TFile, CachedMetadata } from 'obsidian';
 
@@ -177,6 +180,7 @@ export default class MyPlugin extends Plugin {
 ```
 
 ### Step 4: Debounced Event Handling
+
 ```typescript
 // src/utils/debounced-events.ts
 import { Plugin, TFile } from 'obsidian';
@@ -247,6 +251,7 @@ export default class MyPlugin extends Plugin {
 ```
 
 ### Step 5: Custom Event Emitter
+
 ```typescript
 // src/events/event-bus.ts
 import { Events } from 'obsidian';
@@ -295,6 +300,7 @@ eventBus.trigger('index-updated', 42);
 ```
 
 ### Step 6: File Watcher Pattern
+
 ```typescript
 // src/watchers/file-watcher.ts
 import { Plugin, TFile } from 'obsidian';
@@ -401,10 +407,10 @@ new FileWatcher(
 );
 ```
 
-
 ## Complete Examples
 
 ### Complete Event-Driven Plugin
+
 ```typescript
 export default class MyPlugin extends Plugin {
   async onload() {
@@ -446,10 +452,10 @@ export default class MyPlugin extends Plugin {
 }
 ```
 
-
 ## Event Categories
 
 ### Available Events
+
 | Category | Events | Use Case |
 |----------|--------|----------|
 | Workspace | file-open, active-leaf-change, layout-change | UI state changes |

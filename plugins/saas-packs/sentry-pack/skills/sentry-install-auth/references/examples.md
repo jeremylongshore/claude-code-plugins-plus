@@ -1,6 +1,7 @@
-# Examples
+## Examples
 
 ### TypeScript Setup
+
 ```typescript
 import * as Sentry from '@sentry/node';
 
@@ -13,6 +14,7 @@ Sentry.init({
 ```
 
 ### Python Setup
+
 ```python
 import sentry_sdk
 

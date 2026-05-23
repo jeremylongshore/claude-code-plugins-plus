@@ -10,6 +10,7 @@ abridge-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Abridge debug evidence for support
 **Workflow:** Part of the operations skill category for Abridge integration.
 **Relates to:** Other abridge skills in this pack.

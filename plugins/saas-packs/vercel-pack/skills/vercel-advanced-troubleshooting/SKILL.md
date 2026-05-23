@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Advanced Troubleshooting
 
 ## Overview
+
 Diagnose hard-to-find Vercel issues: intermittent cold start failures, edge function crashes, region-specific behavior, function bundling problems, and serverless concurrency issues. Uses systematic isolation, request tracing, and Vercel-specific debugging techniques.
 
 ## Prerequisites
+
 - Vercel CLI with access to production logs
 - Familiarity with `vercel-common-errors` (standard debugging)
 - `curl` and `jq` for API inspection
@@ -38,6 +40,7 @@ Diagnose hard-to-find Vercel issues: intermittent cold start failures, edge func
 ## Instructions
 
 ### Step 1: Request-Level Tracing
+
 ```bash
 # Trace a single request through Vercel's edge network
 curl -v https://yourdomain.com/api/endpoint 2>&1 | grep -E "x-vercel|cf-ray|age|cache"
@@ -51,6 +54,7 @@ curl -v https://yourdomain.com/api/endpoint 2>&1 | grep -E "x-vercel|cf-ray|age|
 ```
 
 ### Step 2: Cold Start Investigation
+
 ```typescript
 // Instrument cold start timing in your function
 let coldStart = true;
@@ -84,6 +88,7 @@ done
 ```
 
 ### Step 3: Function Bundle Analysis
+
 ```bash
 # Check what's being bundled into your function
 vercel inspect https://my-app-xxx.vercel.app
@@ -103,6 +108,7 @@ npx @vercel/nft print api/heavy-endpoint.ts 2>/dev/null \
 ```
 
 ### Step 4: Region-Specific Debugging
+
 ```bash
 # Test from different regions to isolate geographic issues
 # Use Vercel's deployment URL with region hints
@@ -121,6 +127,7 @@ done
 ```
 
 ### Step 5: Edge Function Crash Debugging
+
 ```typescript
 // Edge functions crash silently on Node.js API usage
 // Common crashes and their symptoms:
@@ -151,6 +158,7 @@ npx edge-runtime --eval "import('your-module')" 2>&1
 ```
 
 ### Step 6: Concurrency and Throttling Debug
+
 ```bash
 # Check current function concurrency limits
 curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
@@ -165,6 +173,7 @@ npx autocannon -c 50 -d 10 https://yourdomain.com/api/endpoint
 ```
 
 ### Step 7: Systematic Isolation
+
 ```
 Issue persists? Isolate systematically:
 
@@ -189,6 +198,7 @@ Issue persists? Isolate systematically:
 ```
 
 ### Step 8: Vercel Support Escalation
+
 ```bash
 # Collect comprehensive evidence
 mkdir vercel-debug && cd vercel-debug
@@ -211,6 +221,7 @@ tar czf vercel-debug-$(date +%Y%m%d).tar.gz .
 ```
 
 ## Output
+
 - Request traced through Vercel's edge network with region and cache data
 - Cold start frequency and duration quantified
 - Function bundle analyzed for size issues
@@ -218,6 +229,7 @@ tar czf vercel-debug-$(date +%Y%m%d).tar.gz .
 - Evidence bundle ready for support escalation
 
 ## Error Handling
+
 | Symptom | Likely Cause | Debug Approach |
 |---------|-------------|---------------|
 | Intermittent 500 errors | Cold start + unhandled async | Add global error handler, check init code |
@@ -227,6 +239,7 @@ tar czf vercel-debug-$(date +%Y%m%d).tar.gz .
 | Function works locally, fails deployed | Missing dependency or env var | Run `vercel build` locally, check output |
 
 ## Resources
+
 - [Vercel Error Codes](https://vercel.com/docs/errors)
 - [Function Limitations](https://vercel.com/docs/functions/limitations)
 - [Edge Runtime API](https://vercel.com/docs/functions/runtimes/edge)
@@ -234,4 +247,5 @@ tar czf vercel-debug-$(date +%Y%m%d).tar.gz .
 - [@vercel/nft](https://github.com/vercel/nft)
 
 ## Next Steps
+
 For load testing and scaling, see `vercel-load-scale`.

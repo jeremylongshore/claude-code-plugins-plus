@@ -10,6 +10,7 @@ deepgram-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Deepgram common errors
 **Workflow:** Part of the operations skill category for Deepgram integration.
 **Relates to:** Other deepgram skills in this pack.

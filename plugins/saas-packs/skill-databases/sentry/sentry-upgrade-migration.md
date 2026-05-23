@@ -10,6 +10,7 @@ sentry-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Upgrade Sentry SDK and migrate between versions, handling breaking changes between major versions in JavaScript and Python.
 **Workflow:** Use when upgrading Sentry SDK versions. Review changelog, handle breaking changes, test functionality, and plan rollback.
 **Relates to:** Independent upgrade skill. Works with `sentry-common-errors` for post-upgrade issues.

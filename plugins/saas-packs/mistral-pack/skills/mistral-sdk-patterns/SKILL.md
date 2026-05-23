@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral SDK Patterns
 
 ## Overview
+
 Production-ready patterns for the Mistral AI SDK. Covers singleton client, retry/backoff, structured output, streaming, function calling, batch embeddings, and async Python — all with proper error handling. SDK is ESM-only for TypeScript (`@mistralai/mistralai`), sync+async for Python (`mistralai`).
 
 ## Prerequisites
+
 - `@mistralai/mistralai` (TypeScript) or `mistralai` (Python) installed
 - `MISTRAL_API_KEY` environment variable set
 
@@ -36,6 +38,7 @@ Production-ready patterns for the Mistral AI SDK. Covers singleton client, retry
 ### Step 1: Singleton Client with Configuration
 
 **TypeScript**
+
 ```typescript
 import { Mistral } from '@mistralai/mistralai';
 
@@ -62,6 +65,7 @@ export function resetClient(): void {
 ```
 
 **Python**
+
 ```python
 import os
 from mistralai import Mistral
@@ -256,6 +260,7 @@ class UsageTracker {
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401 Unauthorized` | Invalid API key | Verify `MISTRAL_API_KEY` |
@@ -265,12 +270,14 @@ class UsageTracker {
 | Timeout | Large prompt or slow network | Increase `timeoutMs` |
 
 ## Resources
+
 - [TypeScript SDK (client-ts)](https://github.com/mistralai/client-ts)
 - [Python SDK (client-python)](https://github.com/mistralai/client-python)
 - [API Reference](https://docs.mistral.ai/api/)
 - [Pricing](https://docs.mistral.ai/deployment/laplateforme/pricing/)
 
 ## Output
+
 - Singleton client pattern for TypeScript and Python
 - Structured output with JSON Schema validation
 - Streaming with accumulation

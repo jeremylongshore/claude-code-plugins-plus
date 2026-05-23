@@ -239,19 +239,23 @@ Can users answer these questions immediately?
 ## Recommendations Summary
 
 ### Immediate (Severity 4)
+
 1.
 2.
 
 ### Short-term (Severity 3)
+
 1.
 2.
 3.
 
 ### Medium-term (Severity 2)
+
 1.
 2.
 3.
 
 ### Low Priority (Severity 1)
+
 1.
 2.

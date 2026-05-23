@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral AI Local Dev Loop
 
 ## Overview
+
 Set up a fast, reproducible local development workflow for Mistral AI integrations: project scaffold, environment config, hot reload with `tsx`, unit tests with Vitest mocking, and integration tests against the live API.
 
 ## Prerequisites
+
 - Completed `mistral-install-auth` setup
 - Node.js 18+ with npm/pnpm
 - `MISTRAL_API_KEY` set in environment
@@ -60,6 +62,7 @@ my-mistral-project/
 ### Step 2: Package Configuration
 
 **package.json**
+
 ```json
 {
   "type": "module",
@@ -85,6 +88,7 @@ my-mistral-project/
 ```
 
 **tsconfig.json**
+
 ```json
 {
   "compilerOptions": {
@@ -143,6 +147,7 @@ export function resetClient(): void {
 ### Step 5: Unit Tests with Mocking
 
 **vitest.config.ts**
+
 ```typescript
 import { defineConfig } from 'vitest/config';
 
@@ -157,6 +162,7 @@ export default defineConfig({
 ```
 
 **tests/unit/mistral.test.ts**
+
 ```typescript
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
@@ -259,12 +265,14 @@ describe.skipIf(!apiKey)('Mistral Integration', () => {
 ```
 
 ## Output
+
 - Working dev environment with hot reload (`tsx watch`)
 - Unit tests with full SDK mocking
 - Integration tests against live API (skip when no key)
 - Environment variable management with `.env.local`
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Module not found | Missing dependency | Run `npm install` |
@@ -273,9 +281,11 @@ describe.skipIf(!apiKey)('Mistral Integration', () => {
 | Mock type errors | SDK interface changed | Update mock to match current SDK |
 
 ## Resources
+
 - [Mistral TypeScript SDK](https://github.com/mistralai/client-ts)
 - [Vitest Documentation](https://vitest.dev/)
 - [tsx](https://github.com/privatenumber/tsx)
 
 ## Next Steps
+
 See `mistral-sdk-patterns` for production-ready code patterns.

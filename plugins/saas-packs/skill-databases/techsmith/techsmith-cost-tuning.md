@@ -10,6 +10,7 @@ techsmith-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize TechSmith costs and usage
 **Workflow:** Part of the cicd skill category for TechSmith integration.
 **Relates to:** Other techsmith skills in this pack.

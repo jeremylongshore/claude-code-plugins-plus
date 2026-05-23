@@ -10,6 +10,7 @@ shopify-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Shopify integrations to production
 **Workflow:** Part of the cicd skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

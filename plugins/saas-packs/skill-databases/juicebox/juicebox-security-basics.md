@@ -10,6 +10,7 @@ juicebox-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Juicebox security best practices
 **Workflow:** Part of the operations skill category for Juicebox integration.
 **Relates to:** Other juicebox skills in this pack.

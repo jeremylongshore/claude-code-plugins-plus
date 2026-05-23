@@ -10,6 +10,7 @@ fathom-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Fathom CI/CD integration
 **Workflow:** Part of the cicd skill category for Fathom integration.
 **Relates to:** Other fathom skills in this pack.

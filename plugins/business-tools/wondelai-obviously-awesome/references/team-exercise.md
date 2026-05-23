@@ -39,6 +39,7 @@ Individual positioning work produces individual opinions. Team positioning exerc
 ### Opening (15 minutes) — 0:00-0:15
 
 **0:00-0:05 — Set the stage**
+
 - Welcome and logistics (breaks, timing, ground rules)
 - "Today we're going to align on how we position our product. Positioning is not messaging — it's the strategic foundation that messaging is built on."
 - Ground rules:
@@ -49,6 +50,7 @@ Individual positioning work produces individual opinions. Team positioning exerc
   - What's said in this room stays in this room (creates psychological safety)
 
 **0:05-0:15 — Review the framework**
+
 - Walk through the 5 steps briefly (1-2 minutes per step)
 - Explain that each step builds on the previous one
 - Show the blank positioning canvas — "This is what we'll fill in together by the end"
@@ -56,21 +58,25 @@ Individual positioning work produces individual opinions. Team positioning exerc
 ### Step 1: Competitive Alternatives (30 minutes) — 0:15-0:45
 
 **0:15-0:25 — Individual brainstorm (10 min)**
+
 - Each person writes competitive alternatives on sticky notes (one per note)
 - Prompt: "If our product disappeared tomorrow, what would our best customers use or do instead?"
 - Remind: Include spreadsheets, manual processes, hiring someone, and doing nothing
 
 **0:25-0:35 — Share and cluster (10 min)**
+
 - Go around the room. Each person places stickies on the board and explains.
 - Facilitator groups similar alternatives together.
 - Label each cluster.
 
 **0:35-0:45 — Validate and rank (10 min)**
+
 - Cross-reference with customer interview data. Remove alternatives without customer evidence.
 - Dot-vote: Each person gets 3 dots. Place on the alternatives that are MOST commonly considered by best-fit customers.
 - Record the top 3-5 competitive alternatives.
 
 **Facilitator notes:**
+
 - Sales team members often have the strongest input here — they hear competitor names daily
 - If the group can't agree, defer to customer data
 - Common debate: whether "do nothing" is a real alternative. If more than 30% of deals end in no decision, it is.
@@ -78,22 +84,26 @@ Individual positioning work produces individual opinions. Team positioning exerc
 ### Step 2: Unique Attributes (30 minutes) — 0:45-1:15
 
 **0:45-0:55 — Individual brainstorm (10 min)**
+
 - Each person writes unique attributes on sticky notes
 - Prompt: "What do we have or do that NONE of the competitive alternatives we just listed can claim?"
 - Remind: Consider features, architecture, data, team, business model, methodology
 
 **0:55-1:05 — Share and verify (10 min)**
+
 - Go around the room. Each person shares attributes.
 - For EACH attribute, the group asks: "Can [alternative A] claim this? What about [alternative B]?"
 - If ANY alternative can make the claim, it's not unique — move to a "table stakes" pile
 - Only verified unique attributes stay
 
 **1:05-1:15 — Cluster and record (10 min)**
+
 - Group related unique attributes into clusters (these will become value themes)
 - Name each cluster
 - Record all unique attributes organized by cluster
 
 **Facilitator notes:**
+
 - Product and engineering team members are strongest here
 - The most common mistake is claiming "better" versions of common features as unique. Push back: "Is this UNIQUE or just BETTER?"
 - If the team struggles to find unique attributes, that's a critical finding — you may have a differentiation problem
@@ -103,22 +113,26 @@ Individual positioning work produces individual opinions. Team positioning exerc
 ### Step 3: Value Mapping (25 minutes) — 1:25-1:50
 
 **1:25-1:35 — "So what?" chains (10 min)**
+
 - For each attribute cluster, run the "So what?" chain as a group
 - Facilitator writes on the board: Attribute → "So what?" → Advantage → "So what?" → Value
 - Keep going until you reach something a customer would care about
 - Stop when the value is specific and measurable (not generic like "save time")
 
 **1:35-1:45 — Name value themes (10 min)**
+
 - For each cluster, agree on a value theme name that captures the benefit
 - Write a one-sentence value statement for each theme
 - Identify the primary proof point for each theme
 
 **1:45-1:50 — Rank value themes (5 min)**
+
 - Which theme matters MOST to best-fit customers?
 - Rank: primary, secondary, tertiary
 - This hierarchy will drive messaging priority
 
 **Facilitator notes:**
+
 - Customer success and sales team members are strongest here — they hear how customers describe value
 - If the "So what?" chain goes more than 4 levels, the attribute may not connect strongly to customer value
 - Keep asking: "Would a customer actually say this? Would they use these words?"
@@ -126,18 +140,21 @@ Individual positioning work produces individual opinions. Team positioning exerc
 ### Step 4: Best-Fit Customers (20 minutes) — 1:50-2:10
 
 **1:50-2:00 — Characteristics brainstorm (10 min)**
+
 - "Who cares THE MOST about the value themes we just identified?"
 - Each person lists characteristics of their best customers
 - Focus on ACTIONABLE characteristics (things you can identify before talking to them)
 - Prompt with categories: industry, size, role, tech stack, trigger event
 
 **2:00-2:10 — Agree on definition (10 min)**
+
 - Look for characteristics that appear across multiple people's lists
 - Write the best-fit customer definition: "[Role] at [company type] that [characteristics] experiencing [trigger]"
 - Validate: "Can we build a target list of 100+ accounts from this definition?"
 - Validate: "Do our best existing customers match this definition?"
 
 **Facilitator notes:**
+
 - The biggest debate is usually around how narrow to go. Push for tighter: "Are we defining who we're BEST for, or who we could POSSIBLY sell to?"
 - If sales pushes back on narrowing, remind them: "This is about who we POSITION for, not who we'll refuse to sell to"
 - Ensure the definition uses actionable criteria, not psychographics
@@ -145,35 +162,42 @@ Individual positioning work produces individual opinions. Team positioning exerc
 ### Step 5: Market Category (25 minutes) — 2:10-2:35
 
 **2:10-2:20 — Evaluate options (10 min)**
+
 - Present the three strategies: head-to-head, subcategory, new category
 - For each, ask: "If we positioned in [category], what would customers expect? What would they compare us to?"
 - List pros and cons of each option for your specific situation
 
 **2:20-2:30 — Debate and decide (10 min)**
+
 - The key question: "In which category does our unique value seem MOST obvious?"
 - Test: "If a prospect heard we were a [category], would they immediately understand why our unique attributes matter?"
 - Vote if needed. Majority rules.
 
 **2:30-2:35 — Identify relevant trends (5 min)**
+
 - "What market trends make our positioning feel timely and urgent?"
 - List 1-3 trends that genuinely connect to your unique value
 - Remove any trend that doesn't directly relate to your positioning
 
 **Facilitator notes:**
+
 - This is often the most contentious step. Founders may want a new category (vision). Sales may want an existing category (easier to sell). Marketing may want a subcategory (easier to differentiate).
 - Defer to: "What do our best customers call us?" and "What category would make our value most obvious to a new prospect?"
 
 ### Synthesis (20 minutes) — 2:35-2:55
 
 **2:35-2:45 — Complete the positioning canvas (10 min)**
+
 - Fill in all components on the positioning canvas together
 - Read it aloud as a group — does it feel right? Is anything missing or contradictory?
 
 **2:45-2:50 — Write the positioning statement (5 min)**
+
 - Template: "For [best-fit customers], [product] is the [category] that [primary value], unlike [key alternative] which [limitation]."
 - Wordsmith as a group. Keep it under 2 sentences.
 
 **2:50-2:55 — Draft the primary message (5 min)**
+
 - Write one headline that captures the essence of the positioning
 - This is the external expression of the positioning statement
 - Test: "Would this headline make a best-fit prospect stop scrolling?"
@@ -181,11 +205,13 @@ Individual positioning work produces individual opinions. Team positioning exerc
 ### Closing (10 minutes) — 2:55-3:05
 
 **2:55-3:00 — Review and commit**
+
 - Read the complete positioning canvas aloud
 - Ask: "Can everyone in this room commit to using this positioning?"
 - Note any reservations — these become follow-up items
 
 **3:00-3:05 — Assign follow-up actions**
+
 - Assign owner and deadline for each follow-up item (see below)
 - Schedule 90-day positioning review
 
@@ -204,6 +230,7 @@ Individual positioning work produces individual opinions. Team positioning exerc
 ### The "Disagree and Commit" Protocol
 
 If consensus can't be reached on a component after 15 minutes of discussion:
+
 1. Acknowledge the disagreement explicitly
 2. Vote — majority wins
 3. Set a 90-day review point to revisit with data
@@ -222,6 +249,7 @@ If consensus can't be reached on a component after 15 minutes of discussion:
 | Facilitation | Co-facilitator to manage chat, handle tech issues, and watch for raised hands |
 
 ### Remote-Specific Tips
+
 - Camera on for everyone, no exceptions
 - One person speaks at a time (use a virtual "talking stick" — whoever has it speaks)
 - Use the chat for "+1" reactions, not for side conversations
@@ -256,6 +284,7 @@ At the 90-day mark, reconvene the group (60 minutes) to assess:
 ## Facilitator Checklist
 
 ### Before the Workshop
+
 - [ ] 5-8 participants confirmed (right mix of functions)
 - [ ] 3-hour block scheduled and protected
 - [ ] Customer interviews completed (10-15 happy customers)
@@ -267,6 +296,7 @@ At the 90-day mark, reconvene the group (60 minutes) to assess:
 - [ ] Materials prepared: sticky notes, markers, printed canvas templates, timer
 
 ### During the Workshop
+
 - [ ] Ground rules established
 - [ ] Framework explained
 - [ ] Each step completed within time allocation
@@ -277,6 +307,7 @@ At the 90-day mark, reconvene the group (60 minutes) to assess:
 - [ ] Follow-up actions assigned with owners and deadlines
 
 ### After the Workshop
+
 - [ ] Positioning canvas documented and distributed
 - [ ] Follow-up actions tracked
 - [ ] 90-day review scheduled

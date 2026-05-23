@@ -1,7 +1,9 @@
-# Error Handling Reference
+## Error Handling Reference
 
 ### Invalid JWT
+
 **Error Message:**
+
 ```
 Invalid JWT: expired or malformed
 ```
@@ -9,6 +11,7 @@ Invalid JWT: expired or malformed
 **Cause:** JWT token has expired or is incorrectly formatted
 
 **Solution:**
+
 ```bash
 Check token expiry with supabase.auth.getSession() and call refreshSession() if needed
 ```
@@ -16,7 +19,9 @@ Check token expiry with supabase.auth.getSession() and call refreshSession() if 
 ---
 
 ### RLS Policy Violation
+
 **Error Message:**
+
 ```
 new row violates row-level security policy for table
 ```
@@ -29,7 +34,9 @@ Check RLS policies in dashboard or via pg_policies table. Ensure user has requir
 ---
 
 ### Connection Pool Exhausted
+
 **Error Message:**
+
 ```
 too many clients already
 ```
@@ -37,6 +44,7 @@ too many clients already
 **Cause:** Connection pool limit reached due to too many concurrent connections
 
 **Solution:**
+
 ```typescript
 Use connection pooling mode in Supabase dashboard. Switch to Session mode or pgBouncer.
 ```

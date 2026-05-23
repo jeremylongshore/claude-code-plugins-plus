@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Incident Runbook
 
 ## Overview
+
 Rapid incident response for Foundry-related outages: API failures, transform build failures, authentication issues, and data pipeline stalls.
 
 ## Prerequisites
+
 - Access to application logs and Foundry build history
 - Foundry service user credentials for health checks
 - On-call escalation path defined
@@ -37,6 +39,7 @@ Rapid incident response for Foundry-related outages: API failures, transform bui
 ## Instructions
 
 ### Step 1: Triage (First 5 Minutes)
+
 ```bash
 set -euo pipefail
 echo "=== Foundry Incident Triage ==="
@@ -55,6 +58,7 @@ grep -c "ApiError\|status_code.*[45][0-9][0-9]" /var/log/app/app.log | tail -1
 ```
 
 ### Step 2: Classify Severity
+
 | Severity | Criteria | Response Time |
 |----------|----------|---------------|
 | P1 Critical | Foundry API completely unreachable, all operations failing | Immediate |
@@ -65,6 +69,7 @@ grep -c "ApiError\|status_code.*[45][0-9][0-9]" /var/log/app/app.log | tail -1
 ### Step 3: Common Incident Playbooks
 
 **Playbook A: Authentication Failure (401/403)**
+
 ```bash
 # 1. Verify token is set
 echo "Token set: ${FOUNDRY_TOKEN:+yes}"
@@ -86,6 +91,7 @@ print('Auth OK:', list(client.ontologies.Ontology.list())[0].api_name)
 ```
 
 **Playbook B: Rate Limiting (429)**
+
 ```bash
 # 1. Check rate limit headers from last response
 # 2. Enable request throttling
@@ -94,6 +100,7 @@ print('Auth OK:', list(client.ontologies.Ontology.list())[0].api_name)
 ```
 
 **Playbook C: Transform Build Failure**
+
 ```text
 1. Open Foundry > Pipeline Builder > failed build
 2. Check the "Errors" tab for stack trace
@@ -105,6 +112,7 @@ print('Auth OK:', list(client.ontologies.Ontology.list())[0].api_name)
 ```
 
 ### Step 4: Escalation
+
 ```text
 Level 1: On-call engineer (your team)
   → Check logs, verify credentials, restart service
@@ -118,6 +126,7 @@ Level 3: Palantir support
 ```
 
 ### Step 5: Postmortem Template
+
 ```markdown
 ## Incident: [Title]
 **Duration:** [start] to [end] ([X] minutes)
@@ -140,12 +149,14 @@ Level 3: Palantir support
 ```
 
 ## Output
+
 - Incident triaged and classified within 5 minutes
 - Appropriate playbook executed
 - Escalation if needed with debug bundle
 - Postmortem documented with action items
 
 ## Error Handling
+
 | Incident Type | First Action | Escalation Trigger |
 |---------------|-------------|-------------------|
 | API unreachable | Check Foundry status | If Foundry is up but we cannot connect |
@@ -154,8 +165,10 @@ Level 3: Palantir support
 | Build failure | Check error logs | If error is infrastructure-related |
 
 ## Resources
+
 - [Foundry Documentation](https://www.palantir.com/docs/foundry)
 - [Foundry API Reference](https://www.palantir.com/docs/foundry/api/general/overview/introduction)
 
 ## Next Steps
+
 For proactive monitoring, see `palantir-observability`.

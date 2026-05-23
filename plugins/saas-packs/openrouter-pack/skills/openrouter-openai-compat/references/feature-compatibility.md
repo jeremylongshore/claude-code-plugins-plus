@@ -3,6 +3,7 @@
 ## Feature Compatibility
 
 ### Fully Supported
+
 ```
 ✓ chat.completions.create
 ✓ Streaming responses
@@ -16,6 +17,7 @@
 ```
 
 ### OpenRouter Extras
+
 ```
 Additional features via OpenRouter:
 - Access to 100+ models (not just OpenAI)
@@ -26,6 +28,7 @@ Additional features via OpenRouter:
 ```
 
 ### Not Applicable
+
 ```
 ✗ Assistants API (OpenAI specific)
 ✗ File uploads to OpenAI

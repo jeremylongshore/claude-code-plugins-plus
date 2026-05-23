@@ -74,11 +74,13 @@ To turn on, run: /vibe-guide:details on
 ## Effect
 
 When `show_details` is true, the explainer may include:
+
 - File names that changed (not full paths)
 - Command names that ran (not full output)
 - Slightly more specific descriptions
 
 Still NO:
+
 - Raw diffs
 - Command output logs
 - Stack traces

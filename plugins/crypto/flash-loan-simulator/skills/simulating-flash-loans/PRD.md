@@ -20,18 +20,21 @@ Flash loans are powerful DeFi primitives that allow borrowing any amount without
 ## Target Users
 
 ### Persona 1: DeFi Developer
+
 - **Profile**: Building flash loan arbitrage bots or liquidation systems
 - **Pain Points**: Testing on mainnet is expensive; needs simulation before deployment
 - **Goals**: Validate profitability; optimize gas usage; identify edge cases
 - **Usage Pattern**: Daily simulation runs during development cycle
 
 ### Persona 2: Arbitrage Researcher
+
 - **Profile**: Analyzes DeFi protocols for arbitrage opportunities
 - **Pain Points**: Manual calculation of multi-hop arbitrage is error-prone
 - **Goals**: Quickly evaluate opportunities; backtest historical scenarios
 - **Usage Pattern**: Continuous opportunity scanning and analysis
 
 ### Persona 3: Smart Contract Auditor
+
 - **Profile**: Reviews DeFi protocols for vulnerabilities
 - **Pain Points**: Needs to simulate attack vectors without executing them
 - **Goals**: Understand flash loan attack scenarios; verify protocol safety
@@ -63,13 +66,13 @@ Flash loans are powerful DeFi primitives that allow borrowing any amount without
 
 ### Important (P1)
 
-4. **As a researcher**, I want to simulate triangular arbitrage, so that I can evaluate multi-hop strategies.
+1. **As a researcher**, I want to simulate triangular arbitrage, so that I can evaluate multi-hop strategies.
    - **Acceptance Criteria**:
      - Support 3+ DEX paths
      - Calculate cumulative slippage
      - Show optimal route and amounts
 
-5. **As a developer**, I want to backtest strategies against historical data, so that I can validate my approach.
+2. **As a developer**, I want to backtest strategies against historical data, so that I can validate my approach.
    - **Acceptance Criteria**:
      - Input: Strategy parameters, date range
      - Output: Historical profit/loss per opportunity
@@ -77,7 +80,7 @@ Flash loans are powerful DeFi primitives that allow borrowing any amount without
 
 ### Nice-to-Have (P2)
 
-6. **As an auditor**, I want to simulate flash loan attack scenarios, so that I can test protocol security.
+1. **As an auditor**, I want to simulate flash loan attack scenarios, so that I can test protocol security.
    - **Acceptance Criteria**:
      - Template attack patterns (price manipulation, governance, etc.)
      - Safe simulation without actual execution
@@ -196,12 +199,14 @@ Flash loans are powerful DeFi primitives that allow borrowing any amount without
 ## Constraints & Assumptions
 
 ### Constraints
+
 - Free RPC endpoints have rate limits (25-100 req/sec)
 - Historical simulations require archive node access
 - Gas estimates are approximations (actual may vary ±20%)
 - Price data has latency (not real-time MEV-competitive)
 
 ### Assumptions
+
 - User understands DeFi and flash loan concepts
 - User has access to RPC endpoint (free or paid)
 - Simulation results are for analysis, not execution
@@ -227,6 +232,7 @@ Flash loans are powerful DeFi primitives that allow borrowing any amount without
 - Protocol exploits may have legal implications
 
 Users should:
+
 - Never deploy unaudited code
 - Start with testnets before mainnet
 - Understand the risks fully

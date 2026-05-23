@@ -10,6 +10,7 @@ deepgram-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Deepgram production deployment checklist
 **Workflow:** Part of the operations skill category for Deepgram integration.
 **Relates to:** Other deepgram skills in this pack.

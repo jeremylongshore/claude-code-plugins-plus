@@ -10,6 +10,7 @@ hubspot-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure HubSpot SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for HubSpot integration.
 **Relates to:** Other hubspot skills in this pack.

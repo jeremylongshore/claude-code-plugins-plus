@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lokalise Security Basics
 
 ## Overview
+
 Security practices for Lokalise integrations: API token management with scoped permissions, translation content sanitization, CI/CD secret handling, webhook secret verification, and audit logging. Lokalise handles translation strings that may contain user-facing content, interpolation variables, and occasionally PII embedded in keys or values.
 
 ## Prerequisites
+
 - Lokalise API token provisioned (admin token for audit, scoped tokens for operations)
 - Understanding of Lokalise token permission model (read-only vs read-write)
 - Secret management infrastructure (GitHub Secrets, AWS Secrets Manager, GCP Secret Manager, or Vault)
@@ -254,6 +256,7 @@ function logTranslationChange(entry: TranslationAuditEntry): void {
 ```
 
 ## Output
+
 - Scoped token configuration with separate read/write/admin tokens
 - Translation content validator catching XSS, credential leaks, and malformed placeholders
 - Webhook secret verification middleware for Express
@@ -262,6 +265,7 @@ function logTranslationChange(entry: TranslationAuditEntry): void {
 - Audit logging for translation changes (PII-safe)
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Token leaked in CI logs | Token in command output | Use env variables; GitHub Actions auto-masks secrets |
@@ -271,10 +275,12 @@ function logTranslationChange(entry: TranslationAuditEntry): void {
 | Token in git history | Committed .env file | Rotate token immediately, use `git filter-repo` to scrub |
 
 ## Resources
+
 - [Lokalise API Authentication](https://developers.lokalise.com/reference/api-authentication)
 - [Lokalise Security](https://lokalise.com/security)
 - [Webhook Events Reference](https://developers.lokalise.com/docs/webhook-events)
 - [OWASP Secrets Management](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html)
 
 ## Next Steps
+
 For enterprise-level access control with SSO and contributor groups, see `lokalise-enterprise-rbac`.

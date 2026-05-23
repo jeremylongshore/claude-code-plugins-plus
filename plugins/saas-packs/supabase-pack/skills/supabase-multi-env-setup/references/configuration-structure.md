@@ -12,6 +12,7 @@ config/
 ```
 
 ### base.json
+
 ```json
 {
   "timeout": 30000,
@@ -24,6 +25,7 @@ config/
 ```
 
 ### development.json
+
 ```json
 {
   "apiKey": "${SUPABASE_API_KEY}",
@@ -36,6 +38,7 @@ config/
 ```
 
 ### staging.json
+
 ```json
 {
   "apiKey": "${SUPABASE_API_KEY_STAGING}",
@@ -45,6 +48,7 @@ config/
 ```
 
 ### production.json
+
 ```json
 {
   "apiKey": "${SUPABASE_API_KEY_PROD}",

@@ -34,6 +34,7 @@ This skill streamlines the process of setting up distributed tracing in a micros
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Implement distributed tracing in a microservices application.
 - Gain end-to-end visibility into request flows across multiple services.
 - Troubleshoot performance bottlenecks and latency issues.
@@ -45,6 +46,7 @@ This skill activates when you need to:
 User request: "setup tracing for the new payment service"
 
 The skill will:
+
 1. Prompt for the preferred tracing backend (e.g., Jaeger).
 2. Generate code snippets for OpenTelemetry instrumentation in the payment service.
 
@@ -53,6 +55,7 @@ The skill will:
 User request: "implement distributed tracing to debug slow checkout process"
 
 The skill will:
+
 1. Guide the user through instrumenting relevant services in the checkout flow.
 2. Provide configuration examples for context propagation.
 

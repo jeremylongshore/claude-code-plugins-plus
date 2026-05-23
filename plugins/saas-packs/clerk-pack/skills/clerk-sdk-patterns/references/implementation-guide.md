@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Pattern 1: Server-Side Authentication
+
 ```typescript
 // app/api/protected/route.ts
 import { auth, currentUser } from '@clerk/nextjs/server'
@@ -30,6 +31,7 @@ export async function GET() {
 ```
 
 ### Pattern 2: Client-Side Hooks
+
 ```typescript
 'use client'
 import { useUser, useAuth, useClerk, useSession } from '@clerk/nextjs'
@@ -63,6 +65,7 @@ export function AuthenticatedComponent() {
 ```
 
 ### Pattern 3: Protected Routes with Middleware
+
 ```typescript
 // middleware.ts
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
@@ -91,6 +94,7 @@ export const config = {
 ```
 
 ### Pattern 4: Organization-Aware Queries
+
 ```typescript
 import { auth } from '@clerk/nextjs/server'
 
@@ -117,6 +121,7 @@ export async function GET() {
 ```
 
 ### Pattern 5: Custom JWT Templates
+
 ```typescript
 // Use custom JWT claims for external services
 const { getToken } = useAuth()
@@ -143,6 +148,7 @@ const hasuraToken = await getToken({ template: 'hasura' })
 ## Examples
 
 ### Complete Protected Page Pattern
+
 ```typescript
 // app/dashboard/page.tsx
 import { auth, currentUser } from '@clerk/nextjs/server'
@@ -168,6 +174,7 @@ export default async function DashboardPage() {
 ```
 
 ### Typed User Metadata
+
 ```typescript
 // types/clerk.d.ts
 interface UserPublicMetadata {

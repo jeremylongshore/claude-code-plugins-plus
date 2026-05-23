@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral AI Enterprise RBAC
 
 ## Overview
+
 Control access to Mistral AI at the organization level using La Plateforme workspace management: scoped API keys per team, model access restrictions, spending limits, key auditing, and automated rotation. Mistral organizes access via **Organizations > Workspaces > API Keys**, with rate limits set at the workspace level.
 
 ## Prerequisites
+
 - Mistral La Plateforme organization account ([console.mistral.ai](https://console.mistral.ai/))
 - Organization admin or owner role
 - Understanding of workspace vs key-level controls
@@ -184,6 +186,7 @@ async function rotateApiKey(oldKeyId: string, keyName: string): Promise<string> 
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `401 Unauthorized` | Key revoked or invalid | Regenerate on La Plateforme |
@@ -192,11 +195,13 @@ async function rotateApiKey(oldKeyId: string, keyName: string): Promise<string> 
 | Spending alert | Monthly budget near cap | Review per-key usage, restrict heavy consumers |
 
 ## Resources
+
 - [La Plateforme Console](https://console.mistral.ai/)
 - [Organizations & Workspaces](https://docs.mistral.ai/deployment/ai-studio/organization/)
 - [Rate Limits & Tiers](https://docs.mistral.ai/deployment/ai-studio/tier/)
 
 ## Output
+
 - Workspace-based team isolation
 - Scoped API keys with model restrictions
 - Application-level model access gateway

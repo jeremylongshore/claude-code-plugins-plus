@@ -10,6 +10,7 @@ palantir-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Palantir anti-patterns
 **Workflow:** Part of the enterprise skill category for Palantir integration.
 **Relates to:** Other palantir skills in this pack.

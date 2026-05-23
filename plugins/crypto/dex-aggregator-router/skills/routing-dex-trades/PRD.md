@@ -19,18 +19,21 @@ DeFi traders face fragmented liquidity across dozens of decentralized exchanges.
 ## Target Users
 
 ### Persona 1: Active DeFi Trader
+
 - **Profile**: Trades $1K-$50K weekly across multiple tokens
 - **Pain Points**: Manually checking 5+ DEXs is time-consuming; misses optimal routes
 - **Goals**: Best execution price with minimal effort; understand true cost of trades
 - **Usage Pattern**: Multiple trades daily, needs quick comparisons
 
 ### Persona 2: Arbitrage Bot Operator
+
 - **Profile**: Runs automated trading strategies exploiting price differences
 - **Pain Points**: Needs real-time route optimization; gas efficiency is critical
 - **Goals**: Programmatic access to optimal routes; sub-second decisions
 - **Usage Pattern**: High frequency, API-first, cost-sensitive
 
 ### Persona 3: Whale / Treasury Manager
+
 - **Profile**: Executes large trades ($100K+) for DAOs or personal portfolios
 - **Pain Points**: Large trades create massive price impact; MEV exposure
 - **Goals**: Minimize market impact; protect against sandwich attacks
@@ -60,13 +63,13 @@ DeFi traders face fragmented liquidity across dozens of decentralized exchanges.
 
 ### Important (P1)
 
-4. **As a MEV-aware user**, I want to see MEV protection recommendations, so that I can avoid sandwich attacks.
+1. **As a MEV-aware user**, I want to see MEV protection recommendations, so that I can avoid sandwich attacks.
    - **Acceptance Criteria**:
      - Flag high-MEV-risk routes (low liquidity, pending large orders)
      - Recommend private transaction options (Flashbots, CoW Swap)
      - Show estimated MEV exposure per route
 
-5. **As a gas-conscious trader**, I want gas-optimized route selection, so that I don't waste ETH on complex routes for small trades.
+2. **As a gas-conscious trader**, I want gas-optimized route selection, so that I don't waste ETH on complex routes for small trades.
    - **Acceptance Criteria**:
      - Calculate break-even point for multi-hop vs. direct routes
      - Factor current gas prices into recommendations
@@ -74,7 +77,7 @@ DeFi traders face fragmented liquidity across dozens of decentralized exchanges.
 
 ### Nice-to-Have (P2)
 
-6. **As a trader**, I want historical route performance data, so that I can trust the recommendations.
+1. **As a trader**, I want historical route performance data, so that I can trust the recommendations.
    - **Acceptance Criteria**:
      - Show average slippage vs. quoted for each DEX
      - Display route success rates
@@ -177,11 +180,13 @@ DeFi traders face fragmented liquidity across dozens of decentralized exchanges.
 ## Constraints & Assumptions
 
 ### Constraints
+
 - API rate limits require caching and request optimization
 - Gas prices volatile; recommendations valid for ~30 seconds
 - Some DEXs have different liquidity on different chains
 
 ### Assumptions
+
 - User has basic understanding of DEX trading
 - User can execute recommended trades manually or via preferred interface
 - Real-time prices acceptable (not tick-by-tick precision)

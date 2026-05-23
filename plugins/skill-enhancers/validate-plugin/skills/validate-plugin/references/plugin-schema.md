@@ -121,6 +121,7 @@ plugin-root/
 ```
 
 Notes:
+
 - The `.claude-plugin/` directory is the canonical manifest location.
 - Claude auto-discovers `commands/`, `agents/`, and `skills/` by convention when component path fields are omitted from `plugin.json`.
 - `hooks.json`, `.mcp.json`, and `.lsp.json` are discovered at the plugin root by default.
@@ -146,11 +147,13 @@ These fields are **not** part of the official Anthropic spec and will be rejecte
 ## 7. Validation Rules
 
 ### Structural rules
+
 - The 15 Anthropic spec fields (section 4) and the 2 IS-extension fields (section 2.5) are accepted. Other unknown fields are flagged but not currently rejected by CI — see `.github/workflows/validate-plugins.yml` for the current enforced gate (JSON validity + README existence + script executability + source path existence).
 - `plugin.json` must be valid JSON (no trailing commas, no comments).
 - File must be located at `.claude-plugin/plugin.json` relative to plugin root.
 
 ### Field-level rules
+
 - **`name`**: Required. Non-empty string. No whitespace characters.
 - **`version`**: Must match semver format `X.Y.Z` where X, Y, Z are non-negative integers.
 - **`description`**: Non-empty string when present.
@@ -161,11 +164,13 @@ These fields are **not** part of the official Anthropic spec and will be rejecte
 - **`keywords`**: Array of non-empty strings. No duplicates.
 
 ### Component path rules
+
 - When a component path is specified, the referenced directory or file must exist.
 - String values are treated as single paths; array values as multiple paths.
 - Object values (for `hooks`, `mcpServers`, `lspServers`) are treated as inline configuration.
 
 ### Enterprise policy (recommended, not Anthropic-required)
+
 - All seven metadata fields (`version`, `description`, `author`, `repository`, `homepage`, `license`, `keywords`) should be present for published plugins.
 - The enterprise validator grades completeness on a 100-point scale.
 

@@ -141,12 +141,14 @@ Count the marks. That is your Curse of Knowledge score. Aim for zero.
 The most reliable cure is to show your communication to people who are NOT inside your bubble.
 
 **Who to test with:**
+
 - New employees (first 30 days — they still remember what confusion feels like)
 - Customers who recently evaluated your product (they remember the learning curve)
 - Friends and family who work in different industries
 - Interns or junior team members
 
 **What to test:**
+
 - "Read this and tell me what you think it means"
 - "After reading this, what would you do next?"
 - "Is there anything confusing or unclear?"
@@ -194,6 +196,7 @@ When you catch yourself using jargon or abstraction, pause and say "What I mean 
 Product managers are deeply cursed. They live inside the product every day, understand every feature, and have context for every decision. When they write requirements, release notes, or product pages, they unconsciously skip the context that makes things understandable.
 
 **Common symptoms:**
+
 - Release notes that list feature names without explaining value
 - Product pages organized by feature category instead of customer problem
 - Onboarding flows that assume familiarity with the product concept
@@ -206,6 +209,7 @@ Product managers are deeply cursed. They live inside the product every day, unde
 Marketers inherit the curse from the product team and add their own layer. They develop their own shorthand ("lead nurturing," "funnel optimization," "brand positioning") that means nothing to customers.
 
 **Common symptoms:**
+
 - Landing pages filled with industry buzzwords
 - Value propositions that could describe any company
 - Campaign messaging that sounds impressive but communicates nothing specific
@@ -218,6 +222,7 @@ Marketers inherit the curse from the product team and add their own layer. They 
 Sales teams develop their own jargon through repetition. They pitch so often that they forget which parts of the pitch require context.
 
 **Common symptoms:**
+
 - Demos that start with a product tour instead of the customer's problem
 - Pitches that assume the prospect understands the problem as deeply as the salesperson
 - Follow-up emails full of product terminology the prospect has never used
@@ -230,6 +235,7 @@ Sales teams develop their own jargon through repetition. They pitch so often tha
 Technical writers are often the most deeply cursed. They know the product so well that they write documentation for themselves, not for the user.
 
 **Common symptoms:**
+
 - Setup guides that skip "obvious" steps (which are only obvious to people who already know the product)
 - Error messages that use internal error codes instead of plain language
 - Help articles that answer "how" but never "why" or "when"
@@ -246,6 +252,7 @@ For one week, every time someone in your team uses a jargon word in customer-fac
 ### Exercise 2: The Blank Slate Review
 
 Give your homepage, pitch deck, or key email to five people who have never heard of your product. Ask them three questions:
+
 1. What does this company do?
 2. Who is it for?
 3. Why would someone use it?

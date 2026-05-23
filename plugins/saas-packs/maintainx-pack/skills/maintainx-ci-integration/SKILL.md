@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX CI Integration
 
 ## Overview
+
 Configure CI/CD pipelines for MaintainX integrations with unit tests (mocked), integration tests (live API), and automated quality gates.
 
 ## Prerequisites
+
 - Git repository with MaintainX integration
 - GitHub Actions (or GitLab CI)
 - Test environment MaintainX API key stored as CI secret
@@ -224,6 +226,7 @@ describe.skipIf(!INTEGRATION)('MaintainX Integration', () => {
 ```
 
 ## Output
+
 - GitHub Actions workflow with unit tests, integration tests, and security scanning
 - Unit tests using vitest with mocked axios responses
 - Integration tests that run against a live staging MaintainX API
@@ -231,6 +234,7 @@ describe.skipIf(!INTEGRATION)('MaintainX Integration', () => {
 - Quality gate script combining lint, typecheck, and test coverage
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Integration tests fail in CI | Missing `MAINTAINX_API_KEY_STAGING` secret | Add secret in GitHub repo Settings > Secrets |
@@ -239,11 +243,13 @@ describe.skipIf(!INTEGRATION)('MaintainX Integration', () => {
 | Secret scan false positives | Test fixtures with key-like strings | Add `.gitleaksignore` for known false positives |
 
 ## Resources
+
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [GitHub Actions Docs](https://docs.github.com/en/actions)
 - [Vitest Documentation](https://vitest.dev/)
 
 ## Next Steps
+
 For deployment automation, see `maintainx-deploy-integration`.
 
 ## Examples

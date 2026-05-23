@@ -3,6 +3,7 @@
 ## Security Best Practices
 
 ### Secure Storage
+
 ```
 DO:
 - Use environment variables
@@ -18,6 +19,7 @@ DON'T:
 ```
 
 ### File Permissions
+
 ```bash
 # Secure settings file
 chmod 600 ~/.config/Cursor/User/settings.json
@@ -28,6 +30,7 @@ ls -la ~/.config/Cursor/User/settings.json
 ```
 
 ### Key Rotation
+
 ```
 Regular rotation schedule:
 - Development keys: Every 90 days

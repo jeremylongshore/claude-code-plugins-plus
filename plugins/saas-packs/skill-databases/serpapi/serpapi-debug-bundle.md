@@ -10,6 +10,7 @@ serpapi-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect SerpApi debug evidence for support
 **Workflow:** Part of the operations skill category for SerpApi integration.
 **Relates to:** Other serpapi skills in this pack.

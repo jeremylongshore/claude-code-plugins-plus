@@ -76,10 +76,10 @@
 
 *Example:*
 
-*   *Accuracy: 92%*
-*   *Precision (Positive): 90%*
-*   *Recall (Positive): 95%*
-*   *F1-score (Positive): 92.5%*
+* *Accuracy: 92%*
+* *Precision (Positive): 90%*
+* *Recall (Positive): 95%*
+* *F1-score (Positive): 92.5%*
 
 ### 3.2. Evaluation Data
 

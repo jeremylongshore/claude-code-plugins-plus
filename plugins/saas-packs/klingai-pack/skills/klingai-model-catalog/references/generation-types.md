@@ -3,6 +3,7 @@
 ## Generation Types
 
 ### Text-to-Video
+
 ```python
 def text_to_video(prompt: str, model: str = "kling-v1.5"):
     """Generate video from text prompt."""
@@ -20,6 +21,7 @@ def text_to_video(prompt: str, model: str = "kling-v1.5"):
 ```
 
 ### Image-to-Video
+
 ```python
 def image_to_video(image_url: str, motion_prompt: str, model: str = "kling-v1.5"):
     """Animate an image into video."""
@@ -37,6 +39,7 @@ def image_to_video(image_url: str, motion_prompt: str, model: str = "kling-v1.5"
 ```
 
 ### Video Extension
+
 ```python
 def extend_video(video_id: str, additional_seconds: int):
     """Extend an existing video (Pro only)."""

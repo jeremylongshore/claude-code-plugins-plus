@@ -246,6 +246,7 @@ connection.close()
 ## Output
 
 Successful completion produces:
+
 - A provisioned Autonomous Database with mTLS wallet downloaded and extracted
 - A working python-oracledb connection in thin mode (no Oracle Client required)
 - Data Pump export with ADB-compatible exclusions

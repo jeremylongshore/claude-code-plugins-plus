@@ -5,6 +5,7 @@
 ### Common Findings
 
 #### Finding: Secrets in Code
+
 ```
 Severity: High
 
@@ -17,6 +18,7 @@ Remediation:
 ```
 
 #### Finding: Stale Accounts
+
 ```
 Severity: Medium
 
@@ -29,6 +31,7 @@ Remediation:
 ```
 
 #### Finding: Missing Documentation
+
 ```
 Severity: Low-Medium
 

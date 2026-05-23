@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Production Checklist
 
 ## Overview
+
 Pre-flight checklist for launching Instantly cold email campaigns in production. Covers account warmup verification, deliverability testing, lead list hygiene, campaign configuration, webhook setup, and monitoring. Skip any step that doesn't apply to your use case.
 
 ## Prerequisites
+
 - Completed `instantly-install-auth` setup
 - Email accounts connected and warmed up (minimum 14 days recommended)
 - Lead list prepared with verified emails
@@ -245,6 +247,7 @@ main().catch(console.error);
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Campaign won't activate | Missing sequences/accounts/leads | Run Phase 2 checks |
@@ -253,9 +256,11 @@ main().catch(console.error);
 | High bounce rate post-launch | Unverified leads | Pause campaign, clean list |
 
 ## Resources
+
 - [Instantly Campaign Options](https://help.instantly.ai/en/articles/6222396-campaign-options)
 - [Instantly Quick Start](https://help.instantly.ai/en/articles/6451970-quick-start-guide-all-in-one)
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
 
 ## Next Steps
+
 For version migration, see `instantly-upgrade-migration`.

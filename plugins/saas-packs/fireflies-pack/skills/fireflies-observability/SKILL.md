@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Observability
 
 ## Overview
+
 Monitor Fireflies.ai integration health: API connectivity, webhook delivery, transcript processing latency, and seat utilization. Built for Prometheus/Grafana but adaptable to any metrics system.
 
 ## Prerequisites
+
 - Fireflies Business+ plan (for full API access)
 - Prometheus + Grafana (or equivalent metrics stack)
 - Webhook endpoint deployed and receiving events
@@ -35,6 +37,7 @@ Monitor Fireflies.ai integration health: API connectivity, webhook delivery, tra
 ## Instructions
 
 ### Step 1: Instrument the GraphQL Client
+
 ```typescript
 // lib/fireflies-instrumented.ts
 import { Counter, Histogram, Gauge } from "prom-client";
@@ -90,6 +93,7 @@ export async function firefliesQueryInstrumented(
 ```
 
 ### Step 2: Webhook Event Metrics
+
 ```typescript
 const webhookEvents = new Counter({
   name: "fireflies_webhook_events_total",
@@ -126,6 +130,7 @@ export async function handleWebhookWithMetrics(event: any) {
 ```
 
 ### Step 3: Health Check Probe
+
 ```typescript
 const healthStatus = new Gauge({
   name: "fireflies_health_status",
@@ -151,6 +156,7 @@ setInterval(healthProbe, 5 * 60 * 1000);
 ```
 
 ### Step 4: Seat Utilization Tracking
+
 ```typescript
 const seatUtilization = new Gauge({
   name: "fireflies_seat_utilization",
@@ -182,6 +188,7 @@ async function trackSeatUtilization() {
 ```
 
 ### Step 5: Alerting Rules
+
 ```yaml
 # prometheus/rules/fireflies.yml
 groups:
@@ -227,7 +234,9 @@ groups:
 ```
 
 ### Step 6: Dashboard Panels (Grafana)
+
 Key panels to create:
+
 - **API Health**: `fireflies_health_status` (stat panel, green/red)
 - **Request Rate**: `rate(fireflies_api_requests_total[5m])` by status
 - **Latency P50/P95/P99**: `histogram_quantile` on `fireflies_api_latency_seconds`
@@ -236,6 +245,7 @@ Key panels to create:
 - **Seat Utilization**: `fireflies_seat_utilization` (table, sorted ascending)
 
 ## Error Handling
+
 | Alert | Cause | Response |
 |-------|-------|----------|
 | API Down | Fireflies outage or key revoked | Check status page, verify API key |
@@ -244,14 +254,17 @@ Key panels to create:
 | Webhook Backlog | Processing bottleneck | Scale webhook workers |
 
 ## Output
+
 - Instrumented GraphQL client with latency and error metrics
 - Webhook event tracking with queue depth monitoring
 - Health probe running on 5-minute interval
 - Prometheus alerting rules for critical conditions
 
 ## Resources
+
 - [Fireflies API Docs](https://docs.fireflies.ai/)
 - [Prometheus Client](https://github.com/siimon/prom-client)
 
 ## Next Steps
+
 For incident response, see `fireflies-incident-runbook`.

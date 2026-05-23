@@ -10,6 +10,7 @@ canva-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Canva rate limiting and backoff
 **Workflow:** Part of the operations skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

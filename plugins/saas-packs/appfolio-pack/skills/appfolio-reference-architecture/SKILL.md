@@ -23,6 +23,7 @@ compatibility: Designed for Claude Code
 Production architecture for property management integrations with the AppFolio Stack API. Designed for multi-property portfolios requiring real-time vacancy tracking, tenant lifecycle management, work order routing, and accounting reconciliation. Key design drivers: data freshness for leasing decisions, idempotent sync for financial accuracy, and tenant-facing portal responsiveness.
 
 ## Architecture Diagram
+
 ```
 Dashboard (React) ──→ Property Service ──→ Redis Cache ──→ AppFolio Stack API
                            ↓                                 /properties
@@ -34,6 +35,7 @@ Dashboard (React) ──→ Property Service ──→ Redis Cache ──→ App
 ```
 
 ## Service Layer
+
 ```typescript
 class PropertyService {
   constructor(private client: AppFolioClient, private cache: CacheLayer) {}
@@ -55,6 +57,7 @@ class PropertyService {
 ```
 
 ## Caching Strategy
+
 ```typescript
 const CACHE_CONFIG = {
   properties: { ttl: 300, prefix: 'prop' },     // 5 min — changes infrequently
@@ -67,6 +70,7 @@ const CACHE_CONFIG = {
 ```
 
 ## Event Pipeline
+
 ```typescript
 class PropertyEventPipeline {
   private queue = new Bull('appfolio-events', { redis: process.env.REDIS_URL });
@@ -87,6 +91,7 @@ class PropertyEventPipeline {
 ```
 
 ## Data Model
+
 ```typescript
 interface Property { id: string; name: string; address: Address; units: Unit[]; region: string; }
 interface Tenant   { id: string; name: string; email: string; leaseId: string; balance: number; }
@@ -95,6 +100,7 @@ interface WorkOrder { id: string; propertyId: string; unitId: string; category: 
 ```
 
 ## Scaling Considerations
+
 - Partition sync workers by property region to avoid cross-region API rate limits
 - Use read replicas for dashboard queries; write path goes through event pipeline
 - Batch tenant notifications (rent reminders, maintenance updates) via queue to avoid email rate limits
@@ -102,6 +108,7 @@ interface WorkOrder { id: string; propertyId: string; unitId: string; category: 
 - Shard work order routing by property portfolio to enable independent scaling per management group
 
 ## Error Handling
+
 | Component | Failure Mode | Recovery |
 |-----------|-------------|----------|
 | Property sync | AppFolio 429 rate limit | Exponential backoff with jitter, per-property circuit breaker |
@@ -111,8 +118,10 @@ interface WorkOrder { id: string; propertyId: string; unitId: string; category: 
 | Tenant portal | Cache miss storm | Stale-while-revalidate pattern, circuit breaker on API layer |
 
 ## Resources
+
 - [AppFolio Stack APIs](https://www.appfolio.com/stack/partners/api)
 - [AppFolio Engineering Blog](https://engineering.appfolio.com)
 
 ## Next Steps
+
 See `appfolio-deploy-integration`.

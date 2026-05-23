@@ -84,6 +84,7 @@ curl -s https://api.clickup.com/api/v2/task/TASK_ID \
 ### 429 Rate Limited
 
 Rate limits vary by plan (per token, per minute):
+
 - **Free/Unlimited/Business**: 100 req/min
 - **Business Plus**: 1,000 req/min
 - **Enterprise**: 10,000 req/min

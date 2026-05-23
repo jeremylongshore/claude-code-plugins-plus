@@ -17,6 +17,7 @@ Instantly.ai is a cold email outreach platform that manages sending infrastructu
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `instantly-install-auth` | API v2 authentication, scoped key generation, client wrapper setup |
@@ -33,6 +34,7 @@ Instantly.ai is a cold email outreach platform that manages sending infrastructu
 | `instantly-upgrade-migration` | API v1 to v2 migration: endpoint map, auth change, pagination, new features |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `instantly-ci-integration` | GitHub Actions CI with mock server, scope validation, deploy pipeline |
@@ -43,6 +45,7 @@ Instantly.ai is a cold email outreach platform that manages sending infrastructu
 | `instantly-reference-architecture` | Project layout, modular client design, campaign template system |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `instantly-multi-env-setup` | Dev/staging/prod workspace isolation, environment guards, webhook routing |

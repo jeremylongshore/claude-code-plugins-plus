@@ -498,7 +498,6 @@ class PollingService {
 module.exports = PollingService;
 ```
 
-
 ## How Evernote Webhooks Work
 
 Unlike most APIs, Evernote webhooks only notify that a user's account changed. They do NOT include the actual changes in the payload. You must:
@@ -506,7 +505,6 @@ Unlike most APIs, Evernote webhooks only notify that a user's account changed. T
 1. Receive webhook notification
 2. Use sync API to fetch actual changes
 3. Process the retrieved changes
-
 
 ## Webhook vs Polling
 

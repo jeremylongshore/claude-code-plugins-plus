@@ -11,6 +11,7 @@ Detect, analyze, and prevent database deadlocks with automated monitoring, alert
 ## When to Use This Command
 
 Use `/deadlock` when you need to:
+
 - Investigate recurring deadlock issues in production
 - Implement proactive deadlock detection and alerting
 - Analyze transaction patterns causing deadlocks
@@ -19,6 +20,7 @@ Use `/deadlock` when you need to:
 - Generate deadlock reports for performance tuning
 
 DON'T use this when:
+
 - Database doesn't support deadlock detection (use lock monitoring instead)
 - Dealing with application-level race conditions (not database deadlocks)
 - Looking for slow queries (use query analyzer instead)
@@ -27,6 +29,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **comprehensive deadlock detection and prevention** because:
+
 - Proactive monitoring prevents production incidents
 - Automated analysis identifies root causes faster
 - Prevention strategies reduce deadlock frequency by 90%+
@@ -34,12 +37,14 @@ This command implements **comprehensive deadlock detection and prevention** beca
 - Historical analysis reveals patterns and trends
 
 **Alternative considered: Reactive deadlock handling**
+
 - Only responds after deadlocks occur
 - Relies on application retry logic
 - No visibility into deadlock patterns
 - Recommended only for low-traffic systems
 
 **Alternative considered: Database-native logging only**
+
 - Limited to log file analysis
 - No automated alerting or resolution
 - Requires manual correlation of events
@@ -48,6 +53,7 @@ This command implements **comprehensive deadlock detection and prevention** beca
 ## Prerequisites
 
 Before running this command:
+
 1. Database user with monitoring permissions (e.g., `pg_monitor` role)
 2. Access to database logs or system views
 3. Understanding of your application's transaction patterns
@@ -57,23 +63,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Configure Database Deadlock Logging
+
 Enable comprehensive deadlock detection and logging in your database.
 
 ### Step 2: Implement Deadlock Monitoring
+
 Set up automated monitoring to detect and alert on deadlocks in real-time.
 
 ### Step 3: Analyze Deadlock Patterns
+
 Build analysis tools to identify common deadlock scenarios and root causes.
 
 ### Step 4: Implement Prevention Strategies
+
 Apply code changes and database tuning to prevent deadlocks proactively.
 
 ### Step 5: Set Up Continuous Monitoring
+
 Deploy dashboards and alerting for ongoing deadlock visibility.
 
 ## Output Format
 
 The command generates:
+
 - `monitoring/deadlock-detector.py` - Real-time deadlock monitoring script
 - `analysis/deadlock-analyzer.sql` - SQL queries for pattern analysis
 - `config/deadlock-prevention.md` - Prevention strategies documentation
@@ -745,12 +757,14 @@ setInterval(async () => {
 ## Configuration Options
 
 **Deadlock Detection**
+
 - `deadlock_timeout`: Time to wait before logging lock waits (PostgreSQL: 1s default)
 - `innodb_deadlock_detect`: Enable/disable InnoDB deadlock detection (MySQL)
 - `innodb_print_all_deadlocks`: Log all deadlocks to error log (MySQL)
 - `log_lock_waits`: Log queries waiting for locks (PostgreSQL)
 
 **Monitoring Parameters**
+
 - `check_interval`: Frequency of deadlock checks (5-10 seconds recommended)
 - `alert_threshold`: Number of deadlocks before alerting (3-5 recommended)
 - `retention_period`: How long to keep deadlock history (7-30 days)
@@ -758,6 +772,7 @@ setInterval(async () => {
 ## Best Practices
 
 DO:
+
 - Always acquire locks in consistent order across transactions
 - Keep transactions as short as possible
 - Use row-level locking instead of table-level when possible
@@ -766,6 +781,7 @@ DO:
 - Set appropriate lock timeouts (`innodb_lock_wait_timeout` = 50s)
 
 DON'T:
+
 - Hold locks during expensive operations (network calls, file I/O)
 - Mix DDL and DML in the same transaction
 - Use SELECT ... FOR UPDATE without ORDER BY

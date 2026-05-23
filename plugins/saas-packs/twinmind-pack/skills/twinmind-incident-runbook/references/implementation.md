@@ -49,6 +49,7 @@ curl -s http://localhost:8080/metrics | grep rate_limit
 **Symptoms:** 100% error rate, `twinmind_transcriptions_total{status="error"}` spiking
 
 **Diagnosis:**
+
 ```bash
 curl -v -H "Authorization: Bearer $TWINMIND_API_KEY" \
   https://api.twinmind.com/v1/health
@@ -58,6 +59,7 @@ kubectl logs -l app=twinmind-service --tail=200 | \
 ```
 
 **Resolution:**
+
 1. TwinMind API down: Update status page, notify users, monitor status.twinmind.com
 2. Invalid API key: Check expiration, regenerate, update secrets, restart services
 3. Network issue: Check DNS, firewall rules, egress connectivity
@@ -67,6 +69,7 @@ kubectl logs -l app=twinmind-service --tail=200 | \
 **Symptoms:** P95 > 5s, `twinmind_api_latency_seconds` high values
 
 **Resolution:**
+
 1. TwinMind slow: Check status page, switch to faster model (ear-2), queue non-urgent
 2. Service overloaded: Scale up replicas, increase rate limiting
 3. Network latency: Check regional connectivity, cache DNS
@@ -76,6 +79,7 @@ kubectl logs -l app=twinmind-service --tail=200 | \
 **Symptoms:** 429 errors, `twinmind_errors_total{error_type="RATE_LIMITED"}` > 0
 
 **Resolution:**
+
 1. Immediate: Enable request queue, reject non-critical requests
 2. Short-term: Request limit increase, upgrade tier
 3. Long-term: Implement caching, batch requests
@@ -85,6 +89,7 @@ kubectl logs -l app=twinmind-service --tail=200 | \
 **Symptoms:** 401 errors, "Invalid API key" messages
 
 **Resolution:**
+
 1. Key expired: Generate new key, update secrets manager, restart services
 2. Key leaked: Immediately revoke, generate new, audit logs, update security practices
 
@@ -98,6 +103,7 @@ Level 1: On-Call Engineer (0-15 min)
 ```
 
 ## TwinMind Support Contacts
+
 - **Email:** support@twinmind.com
 - **Enterprise:** enterprise-support@twinmind.com
 - **Status:** https://status.twinmind.com
@@ -134,12 +140,14 @@ Level 1: On-Call Engineer (0-15 min)
 ## Post-Incident Checklist
 
 ### Immediate (Within 24 hours)
+
 - [ ] Confirm issue fully resolved
 - [ ] Update status page to resolved
 - [ ] Notify stakeholders
 - [ ] Document timeline
 
 ### Follow-up (Within 1 week)
+
 - [ ] Schedule post-mortem meeting
 - [ ] Write incident report
 - [ ] Identify root cause

@@ -10,6 +10,7 @@ snowflake-data-handling/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Snowflake data compliance
 **Workflow:** Part of the advanced skill category for Snowflake integration.
 **Relates to:** Other snowflake skills in this pack.

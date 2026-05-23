@@ -10,6 +10,7 @@ clay-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Clay API authentication. Sets up API key configuration, environment variables, and verifies connectivity to Clay enrichment services.
 **Workflow:** Entry point skill for any Clay integration. Should be the first skill executed when setting up a new project with Clay.
 **Relates to:** Prerequisite for clay-hello-world, clay-local-dev-loop, and all other Clay skills.

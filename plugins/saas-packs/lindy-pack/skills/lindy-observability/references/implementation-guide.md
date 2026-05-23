@@ -3,9 +3,11 @@
 # Lindy AI Observability
 
 ## Overview
+
 Monitor Lindy AI agent execution health, automation success rates, and response latency. Key observability signals for Lindy include agent run duration, step-level success/failure within multi-step automations, trigger frequency (how often agents are invoked), and per-agent cost tracking based on Lindy's per-agent pricing model where each active agent incurs a fixed monthly cost.
 
 ## Prerequisites
+
 - Lindy Team or Enterprise workspace
 - API access with a valid `LINDY_API_KEY`
 - External monitoring stack (Prometheus/Grafana, Datadog, or similar)
@@ -13,6 +15,7 @@ Monitor Lindy AI agent execution health, automation success rates, and response 
 ## Instructions
 
 ### Step 1: Poll Agent Run Status via API
+
 ```bash
 # List recent runs for all agents, sorted by recency
 curl "https://api.lindy.ai/v1/runs?limit=50&sort=-created_at" \
@@ -21,6 +24,7 @@ curl "https://api.lindy.ai/v1/runs?limit=50&sort=-created_at" \
 ```
 
 ### Step 2: Emit Metrics from Run Data
+
 ```typescript
 // lindy-metrics-exporter.ts
 async function exportLindyMetrics() {
@@ -43,7 +47,9 @@ setInterval(exportLindyMetrics, 60_000);
 ```
 
 ### Step 3: Set Up Webhook-Based Real-Time Monitoring
+
 Configure Lindy webhooks to push events on agent run completion:
+
 ```bash
 curl -X POST https://api.lindy.ai/v1/webhooks \
   -H "Authorization: Bearer $LINDY_API_KEY" \
@@ -55,6 +61,7 @@ curl -X POST https://api.lindy.ai/v1/webhooks \
 ```
 
 ### Step 4: Alert on Agent Failures
+
 ```yaml
 groups:
   - name: lindy
@@ -72,9 +79,11 @@ groups:
 ```
 
 ### Step 5: Build a Dashboard
+
 Key panels: agent run success/failure rate (stacked bar), run duration p50/p95 by agent, step failure heatmap (which steps fail most), trigger frequency (runs/hour), and active agent count vs billing (since Lindy charges per active agent).
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Webhook not delivering | Endpoint returning non-2xx | Fix endpoint, check Lindy webhook logs |
@@ -83,6 +92,7 @@ Key panels: agent run success/failure rate (stacked bar), run duration p50/p95 b
 | Metrics exporter missing data | API rate limit on `/runs` | Reduce polling frequency, use webhooks instead |
 
 ## Examples
+
 ```bash
 # Quick health check: agent success rate over last 24h
 curl -s "https://api.lindy.ai/v1/runs?since=24h" \

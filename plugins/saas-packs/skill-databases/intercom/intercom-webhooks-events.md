@@ -10,6 +10,7 @@ intercom-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Intercom webhook handling
 **Workflow:** Part of the cicd skill category for Intercom integration.
 **Relates to:** Other intercom skills in this pack.

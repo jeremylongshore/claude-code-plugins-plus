@@ -25,24 +25,28 @@ Before deploying Apple Notes automation to a production macOS machine, validate 
 ## Pre-Deployment Checklist
 
 ### Permissions and Access
+
 - [ ] TCC automation permission granted (System Settings > Privacy > Automation)
 - [ ] Permission tested from the exact context that will run in production (Terminal, launchd, etc.)
 - [ ] Full Disk Access granted if reading Notes database directly (not recommended)
 - [ ] Script runs without interactive prompts (no "Allow" dialogs left)
 
 ### Application Configuration
+
 - [ ] Notes.app configured to launch at login (System Settings > General > Login Items)
 - [ ] Target Apple ID / iCloud account signed in and syncing
 - [ ] "On My Mac" account enabled if local storage is needed
 - [ ] Correct default account set for automation scripts
 
 ### Data and Sync
+
 - [ ] iCloud sync verified working (create note on Mac, verify on iPhone)
 - [ ] Backup strategy documented (JSON export on schedule)
 - [ ] Exported data files have restricted permissions (`chmod 600`)
 - [ ] No sensitive data written to logs or temp files
 
 ### Reliability
+
 - [ ] Error handling for all AppleEvent failure codes (-1743, -1712, -609, -1728)
 - [ ] Retry logic with exponential backoff for transient failures
 - [ ] Write operations throttled (max 1 per second for iCloud sync)
@@ -50,6 +54,7 @@ Before deploying Apple Notes automation to a production macOS machine, validate 
 - [ ] Alerting configured for automation failures (macOS notification or webhook)
 
 ### Compatibility
+
 - [ ] Script tested on target macOS version (`sw_vers`)
 - [ ] JXA API compatibility verified for target OS (Ventura/Sonoma/Sequoia)
 - [ ] Node.js version matches production (if using child_process for osascript)

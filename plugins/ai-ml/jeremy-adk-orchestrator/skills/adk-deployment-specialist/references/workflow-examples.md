@@ -7,6 +7,7 @@
 **User**: "Create an ADK agent that deploys GCP resources"
 
 **Implementation**:
+
 ```python
 from google.adk.agents import Agent
 from google.adk.tools import FunctionTool
@@ -58,6 +59,7 @@ remote_agent = client.agent_engines.create(
 **User**: "Build a multi-agent pipeline with ADK orchestrating retrieval and analysis"
 
 **Implementation**:
+
 ```python
 from google.adk.agents import Agent, SequentialAgent
 
@@ -99,6 +101,7 @@ orchestrator = SequentialAgent(
 **User**: "Deploy a GKE cluster agent and check its status"
 
 **Implementation**:
+
 ```python
 import vertexai
 
@@ -138,6 +141,7 @@ print(f"Agent status: {agent.display_name}")
 **User**: "Build a stateful agent that remembers context across turns"
 
 **Implementation**:
+
 ```python
 from google.adk.agents import Agent
 from google.adk.runners import Runner

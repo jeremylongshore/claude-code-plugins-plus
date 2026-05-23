@@ -100,6 +100,7 @@ export class EfficientFileProcessor {
 ## Memory-Efficient Data Structures
 
 ### LRU Cache
+
 ```typescript
 export class LRUCache<K, V> {
   private cache = new Map<K, V>();
@@ -126,6 +127,7 @@ export class LRUCache<K, V> {
 ```
 
 ### WeakMap File Cache
+
 ```typescript
 export class WeakFileCache<T> {
   private cache = new WeakMap<object, T>();
@@ -197,6 +199,7 @@ export class RenderOptimizer {
 ```
 
 ## Memory Usage Monitor
+
 ```typescript
 function logMemoryUsage(label: string): void {
   if (performance.memory) {

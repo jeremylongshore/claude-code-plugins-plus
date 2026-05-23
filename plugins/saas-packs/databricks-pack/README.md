@@ -17,6 +17,7 @@ Every skill contains working code, not placeholder templates.
 ## Skills (24)
 
 ### Standard (S01-S12)
+
 | Skill | What It Covers |
 |-------|---------------|
 | `databricks-install-auth` | CLI v2, Python SDK, PAT/OAuth U2M/OAuth M2M, profiles |
@@ -33,6 +34,7 @@ Every skill contains working code, not placeholder templates.
 | `databricks-upgrade-migration` | DBR version upgrade, Hive-to-Unity-Catalog, protocol upgrade |
 
 ### Pro (P13-P18)
+
 | Skill | What It Covers |
 |-------|---------------|
 | `databricks-ci-integration` | GitHub Actions, bundle validation, unit tests, OIDC auth |
@@ -43,6 +45,7 @@ Every skill contains working code, not placeholder templates.
 | `databricks-reference-architecture` | Lakehouse layout, Unity Catalog hierarchy, maintenance jobs |
 
 ### Flagship (F19-F24)
+
 | Skill | What It Covers |
 |-------|---------------|
 | `databricks-multi-env-setup` | Dev/staging/prod profiles, per-env secrets, Terraform |

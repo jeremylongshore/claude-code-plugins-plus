@@ -44,16 +44,19 @@ We will respond within 48 hours and aim to release a fix within 7 days for criti
 ### Required Token Scopes
 
 **CLI (Personal Access Token):**
+
 - Classic: `repo` scope (for private repos) or `public_repo` (for public repos only)
 - Fine-grained: `Pull requests: Read` + `Contents: Read`
 
 **GitHub Action:**
+
 - Uses the default `GITHUB_TOKEN` with `pull-requests: write` permission
 - No additional secrets required for core functionality
 
 ### Dependencies
 
 We keep the dependency tree minimal:
+
 - `@octokit/rest` — GitHub API client (Octokit is GitHub's official library)
 - `commander` — CLI argument parsing
 - `yaml` — YAML serialization

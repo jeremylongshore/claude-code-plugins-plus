@@ -10,6 +10,7 @@ speak-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Speak primary workflow
 **Workflow:** Part of the onboarding skill category for Speak integration.
 **Relates to:** Other speak skills in this pack.

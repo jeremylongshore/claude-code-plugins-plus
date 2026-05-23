@@ -33,6 +33,7 @@ design and implement recommendation systems tailored to specific datasets and us
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Build a personalized movie recommendation system.
 - Create a product recommendation engine for an e-commerce platform.
 - Implement a content recommendation system for a news website.
@@ -44,6 +45,7 @@ This skill activates when you need to:
 User request: "Build a movie recommendation system using collaborative filtering."
 
 The skill will:
+
 1. Generate code to load and preprocess movie rating data.
 2. Implement a collaborative filtering algorithm (e.g., matrix factorization) to predict user preferences.
 
@@ -52,6 +54,7 @@ The skill will:
 User request: "Create a product recommendation engine for an online store, using content-based filtering."
 
 The skill will:
+
 1. Generate code to extract features from product descriptions and user purchase history.
 2. Implement a content-based filtering algorithm to recommend similar products.
 

@@ -188,8 +188,8 @@ In your Clay table, add an HTTP API enrichment column:
 }
 ```
 
-6. **Conditional run**: `ISNOTEMPTY(Work Email) AND ICP Score >= 50`
-7. **Auto-run on new rows**: ON
+1. **Conditional run**: `ISNOTEMPTY(Work Email) AND ICP Score >= 50`
+2. **Auto-run on new rows**: ON
 
 ### Step 4: Idempotent Processing
 

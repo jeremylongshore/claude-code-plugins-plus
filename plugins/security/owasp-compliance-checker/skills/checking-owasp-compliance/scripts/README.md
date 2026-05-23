@@ -6,6 +6,6 @@ Bundled resources for owasp-compliance-checker skill
 - [x] report_generator.py: Python script to generate detailed compliance reports in various formats (e.g., HTML, JSON).
 - [x] remediation_advisor.py: Python script that takes scan results and suggests specific remediation steps.
 
-
 ## Auto-Generated
+
 Scripts generated on 2025-12-10 03:48:17

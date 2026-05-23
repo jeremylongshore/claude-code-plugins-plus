@@ -3,9 +3,11 @@
 # Lindy SDK Patterns
 
 ## Overview
+
 Essential SDK patterns and best practices for Lindy AI agent development.
 
 ## Prerequisites
+
 - Completed `lindy-install-auth` setup
 - Basic understanding of async/await
 - Familiarity with TypeScript
@@ -13,6 +15,7 @@ Essential SDK patterns and best practices for Lindy AI agent development.
 ## Instructions
 
 ### Pattern 1: Client Singleton
+
 ```typescript
 // lib/lindy.ts
 import { Lindy } from '@lindy-ai/sdk';
@@ -31,6 +34,7 @@ export function getLindyClient(): Lindy {
 ```
 
 ### Pattern 2: Agent Factory
+
 ```typescript
 // agents/factory.ts
 import { getLindyClient } from '../lib/lindy';
@@ -55,6 +59,7 @@ export async function createAgent(config: AgentConfig) {
 ```
 
 ### Pattern 3: Retry with Backoff
+
 ```typescript
 async function runWithRetry<T>(
   fn: () => Promise<T>,
@@ -76,6 +81,7 @@ async function runWithRetry<T>(
 ```
 
 ### Pattern 4: Streaming Responses
+
 ```typescript
 async function streamAgentResponse(agentId: string, input: string) {
   const lindy = getLindyClient();
@@ -90,12 +96,14 @@ async function streamAgentResponse(agentId: string, input: string) {
 ```
 
 ## Output
+
 - Reusable client singleton pattern
 - Agent factory for consistent creation
 - Robust error handling with retries
 - Streaming support for real-time output
 
 ## Error Handling
+
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
 | Singleton | Connection reuse | Reduced overhead |
@@ -106,6 +114,7 @@ async function streamAgentResponse(agentId: string, input: string) {
 ## Examples
 
 ### Complete Agent Service
+
 ```typescript
 // services/agent-service.ts
 import { getLindyClient } from '../lib/lindy';
@@ -130,8 +139,10 @@ export class AgentService {
 ```
 
 ## Resources
+
 - [Lindy SDK Patterns](https://docs.lindy.ai/patterns)
 - [TypeScript Best Practices](https://docs.lindy.ai/typescript)
 
 ## Next Steps
+
 Proceed to `lindy-core-workflow-a` for agent creation workflows.

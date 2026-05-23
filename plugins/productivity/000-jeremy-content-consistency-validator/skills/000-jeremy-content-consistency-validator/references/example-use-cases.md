@@ -7,6 +7,7 @@
 **Trigger:** "Check if all docs mention the same version number"
 
 **Result:**
+
 ```
 Version Analysis Report
 Website: v1.2.1 (5 mentions)
@@ -21,6 +22,7 @@ Action: Update Local Docs to v1.2.1
 **Trigger:** "Validate that all platforms claim the same features"
 
 **Result:**
+
 ```
 Feature Consistency Analysis
 "236 plugins": Website ✅, GitHub ✅, Docs ❌ (says "230+")
@@ -35,6 +37,7 @@ Action: Update Docs to specify "236 plugins" and clarify MCP support
 **Trigger:** "Before I update training materials, what's changed on the website?"
 
 **Result:**
+
 ```
 Website Changes Since Last Training Update (Oct 15)
 - New feature added: "Skill Enhancers" (not in training)

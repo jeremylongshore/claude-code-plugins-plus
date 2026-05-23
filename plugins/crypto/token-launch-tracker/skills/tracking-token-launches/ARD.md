@@ -54,20 +54,24 @@ skills/tracking-token-launches/
 ## API Integration
 
 ### Ethereum RPC (eth_getLogs)
+
 - **Events**: PairCreated, Transfer, Mint
 - **Data**: New pair address, token addresses, reserves
 
 ### DexScreener API
+
 - **Endpoint**: `https://api.dexscreener.com/latest/dex/tokens/{address}`
 - **Data**: Price, liquidity, volume, pair info
 
 ### GeckoTerminal API
+
 - **Endpoint**: `https://api.geckoterminal.com/api/v2/`
 - **Data**: New pools, token info, trading data
 
 ## Component Design
 
 ### event_monitor.py
+
 ```python
 class EventMonitor:
     def get_recent_pairs(chain, dex, hours) -> List[PairCreated]
@@ -76,6 +80,7 @@ class EventMonitor:
 ```
 
 ### token_analyzer.py
+
 ```python
 class TokenAnalyzer:
     def get_token_info(address) -> TokenInfo
@@ -85,6 +90,7 @@ class TokenAnalyzer:
 ```
 
 ### dex_sources.py
+
 ```python
 # DEX factory addresses per chain
 DEX_FACTORIES = {
@@ -100,6 +106,7 @@ DEX_FACTORIES = {
 ## Data Structures
 
 ### PairCreated Event
+
 ```python
 @dataclass
 class PairCreated:
@@ -113,6 +120,7 @@ class PairCreated:
 ```
 
 ### TokenInfo
+
 ```python
 @dataclass
 class TokenInfo:
@@ -126,6 +134,7 @@ class TokenInfo:
 ```
 
 ### ContractAnalysis
+
 ```python
 @dataclass
 class ContractAnalysis:

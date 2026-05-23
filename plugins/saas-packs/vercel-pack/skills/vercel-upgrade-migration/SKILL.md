@@ -26,14 +26,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Upgrade Migration
 
 ## Overview
+
 Safely upgrade Vercel CLI, Node.js runtime versions, and framework versions (especially Next.js) on Vercel. Covers breaking change detection, vercel.json schema changes, and rollback strategy.
 
 ## Current State
+
 !`vercel --version 2>/dev/null || echo 'Vercel CLI not installed'`
 !`node --version 2>/dev/null || echo 'N/A'`
 !`cat package.json 2>/dev/null | jq -r '.dependencies.next // "no next.js"' 2>/dev/null || echo 'N/A'`
 
 ## Prerequisites
+
 - Current Vercel CLI installed
 - Git for version control
 - Test suite available
@@ -42,6 +45,7 @@ Safely upgrade Vercel CLI, Node.js runtime versions, and framework versions (esp
 ## Instructions
 
 ### Step 1: Check Current Versions
+
 ```bash
 # Current CLI version
 vercel --version
@@ -59,6 +63,7 @@ npm ls next react
 ```
 
 ### Step 2: Upgrade Vercel CLI
+
 ```bash
 # Upgrade to latest
 npm install -g vercel@latest
@@ -71,11 +76,13 @@ vercel --version
 ```
 
 **CLI breaking changes to watch for:**
+
 - v28+: `vercel env pull` output format changed
 - v32+: `vercel dev` uses new function runtime
 - v37+: `vercel.json` `builds` property deprecated in favor of framework detection
 
 ### Step 3: Upgrade Node.js Runtime
+
 ```json
 // package.json — specify the Node.js version
 {
@@ -86,6 +93,7 @@ vercel --version
 ```
 
 Available runtimes on Vercel:
+
 | Runtime | Status | EOL |
 |---------|--------|-----|
 | Node.js 18.x | Supported | April 2025 |
@@ -100,6 +108,7 @@ npm run build
 ```
 
 ### Step 4: Upgrade Next.js on Vercel
+
 ```bash
 # Use the Next.js upgrade codemod
 npx @next/codemod@latest upgrade
@@ -112,11 +121,13 @@ npx @next/codemod --dry-run
 ```
 
 **Key Next.js migration points:**
+
 - **13 → 14**: App Router stable, Turbopack available, Server Actions stable
 - **14 → 15**: `fetch` no longer cached by default, `cookies()` is async, `NextRequest.geo` removed (use `geolocation()` from `@vercel/functions`)
 - **vercel.json changes**: `rewrites`/`redirects` in `next.config.js` take precedence over `vercel.json`
 
 ### Step 5: Test in Preview Before Production
+
 ```bash
 # Create a branch for the upgrade
 git checkout -b upgrade/vercel-cli-39
@@ -134,6 +145,7 @@ npm test -- --env=preview
 ```
 
 ### Step 6: Rollback Strategy
+
 ```bash
 # If the upgrade breaks production — instant rollback
 vercel rollback
@@ -150,6 +162,7 @@ vercel rollback
 ## vercel.json Schema Migration
 
 Deprecated `builds` property (v2 → current):
+
 ```json
 // Old (deprecated):
 {
@@ -170,6 +183,7 @@ Deprecated `builds` property (v2 → current):
 ```
 
 ## Output
+
 - Vercel CLI upgraded to latest version
 - Node.js runtime version updated in package.json
 - Framework upgraded with codemods applied
@@ -177,6 +191,7 @@ Deprecated `builds` property (v2 → current):
 - Rollback strategy documented
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Build failed` after Node upgrade | Dependency incompatible with new Node | Check `npm ls` for native modules, rebuild |
@@ -186,10 +201,12 @@ Deprecated `builds` property (v2 → current):
 | Preview works but prod fails | Env vars differ between environments | Verify production env vars match preview |
 
 ## Resources
+
 - [Vercel CLI Changelog](https://github.com/vercel/vercel/releases)
 - [Node.js Runtime on Vercel](https://vercel.com/docs/functions/runtimes/node-js)
 - [Next.js Upgrade Guide](https://nextjs.org/docs/app/building-your-application/upgrading)
 - [vercel.json Reference](https://vercel.com/docs/project-configuration)
 
 ## Next Steps
+
 For CI/CD integration, see `vercel-ci-integration`.

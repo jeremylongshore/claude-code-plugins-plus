@@ -1,9 +1,11 @@
 # Data Handling Reference
 
 ## Overview
+
 Handle sensitive data correctly when integrating with Supabase.
 
 ## Prerequisites
+
 - Understanding of GDPR/CCPA requirements
 - Supabase SDK with data export capabilities
 - Database for audit logging
@@ -65,6 +67,7 @@ console.log('Supabase request:', redactPII(requestData));
 ## Data Retention Policy
 
 ### Retention Periods
+
 | Data Type | Retention | Reason |
 |-----------|-----------|--------|
 | API logs | 30 days | Debugging |
@@ -150,24 +153,30 @@ const cacheData = {
 ## Instructions
 
 ### Step 1: Classify Data
+
 Categorize all Supabase data by sensitivity level.
 
 ### Step 2: Implement PII Detection
+
 Add regex patterns to detect sensitive data in logs.
 
 ### Step 3: Configure Redaction
+
 Apply redaction to sensitive fields before logging.
 
 ### Step 4: Set Up Retention
+
 Configure automatic cleanup with appropriate retention periods.
 
 ## Output
+
 - Data classification documented
 - PII detection implemented
 - Redaction in logging active
 - Retention policy enforced
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | PII in logs | Missing redaction | Wrap logging with redact |
@@ -178,6 +187,7 @@ Configure automatic cleanup with appropriate retention periods.
 ## Examples
 
 ### Quick PII Scan
+
 ```typescript
 const findings = detectPII(JSON.stringify(userData));
 if (findings.length > 0) {
@@ -186,23 +196,27 @@ if (findings.length > 0) {
 ```
 
 ### Redact Before Logging
+
 ```typescript
 const safeData = redactPII(apiResponse);
 logger.info('Supabase response:', safeData);
 ```
 
 ### GDPR Data Export
+
 ```typescript
 const userExport = await exportUserData('user-123');
 await sendToUser(userExport);
 ```
 
 ## Resources
+
 - [GDPR Developer Guide](https://gdpr.eu/developers/)
 - [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
 - [Supabase Privacy Guide](https://supabase.com/docs/privacy)
 
 ## Next Steps
+
 For enterprise access control, see `supabase-enterprise-rbac`.
 
 ---

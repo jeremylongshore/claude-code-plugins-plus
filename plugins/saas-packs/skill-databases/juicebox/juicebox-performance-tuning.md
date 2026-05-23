@@ -10,6 +10,7 @@ juicebox-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Juicebox API performance
 **Workflow:** Part of the cicd skill category for Juicebox integration.
 **Relates to:** Other juicebox skills in this pack.

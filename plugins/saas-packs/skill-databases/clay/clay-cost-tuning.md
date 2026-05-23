@@ -10,6 +10,7 @@ clay-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Clay costs through credit management, enrichment selection, and usage monitoring. Enables predictable spend and maximum value from Clay credits.
 **Workflow:** Cost optimization skill. Use during budget planning and ongoing cost management.
 **Relates to:** Supports all Clay integrations; integrates with clay-observability for usage tracking.

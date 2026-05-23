@@ -5,11 +5,13 @@
 # Apollo Security Basics
 
 ## Overview
+
 Implement security best practices for Apollo.io API integrations including key management, data protection, and access controls.
 
 ## API Key Security
 
 ### Never Hardcode Keys
+
 ```typescript
 // BAD - Never do this
 const apiKey = 'sk_live_abc123...';
@@ -24,6 +26,7 @@ if (!process.env.APOLLO_API_KEY) {
 ```
 
 ### Secure Storage
+
 ```bash
 # .env file (never commit!)
 APOLLO_API_KEY=your-api-key-here
@@ -36,6 +39,7 @@ APOLLO_API_KEY=your-api-key-here
 ```
 
 ### Key Rotation
+
 ```typescript
 // src/lib/apollo/key-rotation.ts
 interface KeyConfig {
@@ -101,6 +105,7 @@ class ApiKeyManager {
 ## Network Security
 
 ### HTTPS Only
+
 ```typescript
 // Force HTTPS
 const apolloClient = axios.create({
@@ -114,6 +119,7 @@ const apolloClient = axios.create({
 ```
 
 ### IP Allowlisting
+
 ```typescript
 // If using Apollo Enterprise with IP restrictions
 // Configure your server's outbound IP in Apollo settings
@@ -127,6 +133,7 @@ const apolloClient = axios.create({
 ## Data Protection
 
 ### PII Handling
+
 ```typescript
 // src/lib/apollo/pii-handler.ts
 const PII_FIELDS = ['email', 'phone', 'personal_email', 'mobile_phone'];
@@ -168,6 +175,7 @@ console.log('Contact data:', redactPII(contactData));
 ```
 
 ### Secure Logging
+
 ```typescript
 // src/lib/apollo/secure-logger.ts
 import pino from 'pino';
@@ -200,6 +208,7 @@ apolloClient.interceptors.request.use((config) => {
 ```
 
 ### Data Retention
+
 ```typescript
 // src/lib/apollo/data-retention.ts
 interface CacheConfig {
@@ -266,6 +275,7 @@ export const apolloCache = new SecureCache({
 ## Access Control
 
 ### Role-Based API Key Usage
+
 ```typescript
 // Different keys for different access levels
 const API_KEYS = {
@@ -291,6 +301,7 @@ function getApiKeyForOperation(operation: string): string {
 ## Security Checklist
 
 ### Pre-Deployment
+
 - [ ] API key stored in environment variables
 - [ ] .env files added to .gitignore
 - [ ] No hardcoded credentials in code
@@ -299,6 +310,7 @@ function getApiKeyForOperation(operation: string): string {
 - [ ] Error responses don't leak sensitive data
 
 ### Production
+
 - [ ] API key rotation schedule established
 - [ ] Logging redacts PII
 - [ ] Cache has appropriate TTL
@@ -307,6 +319,7 @@ function getApiKeyForOperation(operation: string): string {
 - [ ] IP allowlisting configured (if enterprise)
 
 ### Compliance
+
 - [ ] Data retention policy documented
 - [ ] GDPR/CCPA requirements met
 - [ ] Data processing agreement signed
@@ -314,6 +327,7 @@ function getApiKeyForOperation(operation: string): string {
 - [ ] Deletion capability implemented
 
 ## Output
+
 - Secure API key management
 - PII redaction for logging
 - Data retention controls
@@ -321,6 +335,7 @@ function getApiKeyForOperation(operation: string): string {
 - Security audit checklist
 
 ## Error Handling
+
 | Issue | Mitigation |
 |-------|------------|
 | Key exposure | Immediate rotation |
@@ -329,9 +344,11 @@ function getApiKeyForOperation(operation: string): string {
 | Data breach | Follow incident response |
 
 ## Resources
+
 - [Apollo Security Practices](https://www.apollo.io/security)
 - [OWASP API Security](https://owasp.org/www-project-api-security/)
 - [GDPR for API Developers](https://gdpr.eu/)
 
 ## Next Steps
+
 Proceed to `apollo-prod-checklist` for production deployment.

@@ -10,6 +10,7 @@ salesforce-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Salesforce production deployment checklist
 **Workflow:** Part of the operations skill category for Salesforce integration.
 **Relates to:** Other salesforce skills in this pack.

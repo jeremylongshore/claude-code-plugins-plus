@@ -3,6 +3,7 @@
 ## Stream Processing
 
 ### With Callbacks
+
 ```python
 from typing import Callable
 
@@ -48,6 +49,7 @@ stream_with_callbacks(
 ```
 
 ### Token Counting During Stream
+
 ```python
 def stream_with_token_count(prompt: str, model: str = "openai/gpt-4-turbo"):
     """Stream and count tokens."""

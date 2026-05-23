@@ -183,4 +183,3 @@ This eliminated an entire class of auth failures. No more 504 timeouts on sessio
 **E2E flakiness is cumulative.** No single issue caused the test failures. It was loose regexes, framework noise, wrong navigation methods, and optimistic timeouts — all combining to create random failures. You have to fix all of them to get stability.
 
 **Client-side auth simplifies everything.** Once `onAuthStateChanged` becomes the primary auth mechanism, server-side session management becomes optional. Fewer moving parts, fewer failure modes.
-

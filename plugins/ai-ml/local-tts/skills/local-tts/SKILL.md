@@ -82,11 +82,13 @@ OUT=/tmp/tts_$(date +%s).wav
 ```
 
 **Default voice (auto-detected language)**:
+
 ```bash
 "$VENV/bin/python" "$SCRIPT" --text "Your text here." --out "$OUT"
 ```
 
 **Voice Design** — describe the voice in parentheses at the start. The parenthetical is stripped from the spoken audio.
+
 ```bash
 "$VENV/bin/python" "$SCRIPT" \
   --text "(warm female voice, mid-30s, American accent)Welcome back." \
@@ -94,12 +96,14 @@ OUT=/tmp/tts_$(date +%s).wav
 ```
 
 Description examples that work:
+
 - `(young woman, gentle and sweet voice)`
 - `(older man, deep resonant voice, slow pace)`
 - `(cheerful, energetic, fast-talking)`
 - `(voix féminine chaleureuse, ton posé)` — descriptions in any supported language
 
 **Voice Cloning** — provide a reference clip (3-10s). Clones timbre, accent, emotional tone.
+
 ```bash
 "$VENV/bin/python" "$SCRIPT" \
   --text "This is the cloned voice speaking." \
@@ -108,6 +112,7 @@ Description examples that work:
 ```
 
 **Ultimate Cloning** — reference + prompt for maximum fidelity (reproduces micro-level vocal nuances):
+
 ```bash
 "$VENV/bin/python" "$SCRIPT" \
   --text "Highest fidelity clone." \
@@ -117,6 +122,7 @@ Description examples that work:
 ```
 
 **Long text via stdin** (for articles, scripts):
+
 ```bash
 cat /path/to/article.txt | "$VENV/bin/python" "$SCRIPT" --stdin --out "$OUT"
 ```
@@ -167,6 +173,7 @@ No language tag needed — VoxCPM auto-detects from the text.
 ## Performance
 
 On Apple M4 with MPS + bfloat16:
+
 - First load: ~340s (downloads weights)
 - Subsequent loads: ~30s
 - Generation: ~2.3× realtime (10s audio ≈ 23s compute)
@@ -176,6 +183,7 @@ Not suitable for real-time streaming. Good for batch generation, voiceovers, pod
 ## Examples
 
 **Example 1: Voice message for Telegram**
+
 ```bash
 "$VENV/bin/python" "$SCRIPT" \
   --text "Hey, quick voice note about our meeting tomorrow." \
@@ -183,6 +191,7 @@ Not suitable for real-time streaming. Good for batch generation, voiceovers, pod
 ```
 
 **Example 2: Clone a voice from an MP3**
+
 ```bash
 "$VENV/bin/python" "$SCRIPT" \
   --text "Bonjour, c'est une voix clonée localement." \
@@ -191,6 +200,7 @@ Not suitable for real-time streaming. Good for batch generation, voiceovers, pod
 ```
 
 **Example 3: Designed voice for narration**
+
 ```bash
 "$VENV/bin/python" "$SCRIPT" \
   --text "(deep narrator voice, dramatic, slow pace)In a world where AI runs locally..." \

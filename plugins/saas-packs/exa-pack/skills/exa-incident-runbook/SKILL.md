@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Incident Runbook
 
 ## Overview
+
 Rapid incident response procedures for Exa search API issues. Exa errors include a `requestId` field for support escalation. Default rate limit is 10 QPS. Contact hello@exa.ai for urgent production issues.
 
 ## Severity Levels
@@ -81,6 +82,7 @@ Exa API returning errors?
 ## Immediate Actions by Error Code
 
 ### 401/403 — Authentication
+
 ```bash
 set -euo pipefail
 # Verify API key
@@ -97,6 +99,7 @@ curl -v -X POST https://api.exa.ai/search \
 ```
 
 ### 429 — Rate Limited
+
 ```typescript
 // Enable emergency caching to reduce API calls
 import { LRUCache } from "lru-cache";
@@ -112,6 +115,7 @@ const queue = new PQueue({ concurrency: 3, interval: 1000, intervalCap: 5 });
 ```
 
 ### 5xx — Exa Server Errors
+
 ```typescript
 // Enable graceful degradation
 async function searchWithFallback(query: string, opts: any) {
@@ -133,6 +137,7 @@ async function searchWithFallback(query: string, opts: any) {
 ## Communication Templates
 
 ### Internal (Slack)
+
 ```
 P[1-4] INCIDENT: Exa Search Integration
 Status: INVESTIGATING
@@ -144,6 +149,7 @@ Next update: [Time]
 ```
 
 ### Support Escalation
+
 ```
 To: hello@exa.ai
 Subject: [P1/P2] Production issue — [brief description]
@@ -159,6 +165,7 @@ Impact: [number of affected users/requests]
 ## Post-Incident
 
 ### Evidence Collection
+
 ```bash
 set -euo pipefail
 # Capture recent error logs
@@ -169,6 +176,7 @@ curl -s "localhost:9090/api/v1/query?query=rate(exa_search_error[1h])" 2>/dev/nu
 ```
 
 ### Postmortem Template
+
 ```markdown
 ## Incident: Exa [Error Type]
 **Date:** YYYY-MM-DD | **Duration:** Xh Ym | **Severity:** P[1-4]
@@ -191,6 +199,7 @@ curl -s "localhost:9090/api/v1/query?query=rate(exa_search_error[1h])" 2>/dev/nu
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Intermittent 5xx | Exa server issues | Retry with backoff, check status page |
@@ -199,8 +208,10 @@ curl -s "localhost:9090/api/v1/query?query=rate(exa_search_error[1h])" 2>/dev/nu
 | Latency spike | Exa under load | Use `fast` type, enable caching |
 
 ## Resources
+
 - [Exa Error Codes](https://docs.exa.ai/reference/error-codes)
 - [Exa Support](mailto:hello@exa.ai)
 
 ## Next Steps
+
 For data handling, see `exa-data-handling`. For debugging, see `exa-debug-bundle`.

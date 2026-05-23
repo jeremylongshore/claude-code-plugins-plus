@@ -17,6 +17,7 @@ Load:
 ```
 
 ### BigQuery Schema
+
 ```sql
 CREATE TABLE meetings.granola_notes (
   meeting_id STRING NOT NULL,
@@ -41,6 +42,7 @@ FROM meetings.granola_notes GROUP BY meeting_date;
 ```
 
 ### Analytics Queries
+
 ```sql
 -- Meeting frequency by user
 SELECT user_email, COUNT(*) as meeting_count,
@@ -124,6 +126,7 @@ Alerts:
 ```
 
 ## Scheduled Executive Report
+
 ```yaml
 Schedule: 1st of month
 Content: Total meetings YTD, meeting time per employee, action item velocity, top participants, cost savings estimate

@@ -78,6 +78,7 @@ Coordinate parallel test execution across multiple test suites, frameworks, and 
 ## Examples
 
 **GitHub Actions matrix strategy for Jest sharding:**
+
 ```yaml
 jobs:
   test:
@@ -98,11 +99,13 @@ jobs:
 ```
 
 **pytest-xdist parallel execution:**
+
 ```bash
 pytest -n auto --dist worksteal -q --junitxml=results.xml
 ```
 
 **Playwright sharded execution:**
+
 ```bash
 npx playwright test --shard=1/3 --reporter=junit
 ```

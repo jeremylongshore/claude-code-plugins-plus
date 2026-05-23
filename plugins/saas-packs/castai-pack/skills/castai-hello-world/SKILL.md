@@ -45,6 +45,7 @@ curl -s -H "X-API-Key: ${CASTAI_API_KEY}" \
 ```
 
 Expected output:
+
 ```json
 {
   "id": "abc123-def456",

@@ -17,6 +17,7 @@ Ramp is a corporate card and spend management platform. This pack covers the **R
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `ramp-install-auth` | OAuth2 client credentials, sandbox vs production setup |
@@ -33,6 +34,7 @@ Ramp is a corporate card and spend management platform. This pack covers the **R
 | `ramp-upgrade-migration` | API version migration |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `ramp-ci-integration` | CI pipeline with sandbox Ramp API tests |
@@ -43,6 +45,7 @@ Ramp is a corporate card and spend management platform. This pack covers the **R
 | `ramp-reference-architecture` | Expense management integration architecture |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `ramp-multi-env-setup` | Sandbox/production environment configuration |

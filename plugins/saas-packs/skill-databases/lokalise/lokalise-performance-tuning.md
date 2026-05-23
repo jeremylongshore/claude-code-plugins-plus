@@ -10,6 +10,7 @@ lokalise-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Lokalise API performance
 **Workflow:** Part of the cicd skill category for Lokalise integration.
 **Relates to:** Other lokalise skills in this pack.

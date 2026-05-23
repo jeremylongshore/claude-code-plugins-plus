@@ -3,6 +3,7 @@
 ## Model Information API
 
 ### Get Model Details
+
 ```python
 def get_model_info(model_id):
     response = requests.get(
@@ -19,6 +20,7 @@ print(f"Completion cost: ${model['pricing']['completion']}/token")
 ```
 
 ### Model Schema
+
 ```json
 {
   "id": "anthropic/claude-3.5-sonnet",

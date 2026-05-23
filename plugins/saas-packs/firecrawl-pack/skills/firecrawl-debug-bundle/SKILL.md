@@ -24,13 +24,16 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Debug Bundle
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'N/A'`
 !`npm list @mendable/firecrawl-js 2>/dev/null | grep firecrawl || echo 'SDK not installed'`
 
 ## Overview
+
 Collect all diagnostic information needed for Firecrawl support tickets. Tests API connectivity, checks SDK version, verifies credentials, captures error context, and packages it all into a redacted bundle.
 
 ## Prerequisites
+
 - Firecrawl SDK installed
 - `FIRECRAWL_API_KEY` environment variable set
 - Access to application logs
@@ -38,6 +41,7 @@ Collect all diagnostic information needed for Firecrawl support tickets. Tests A
 ## Instructions
 
 ### Step 1: Create Debug Bundle Script
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -59,6 +63,7 @@ echo "FIRECRAWL_API_URL: ${FIRECRAWL_API_URL:-https://api.firecrawl.dev (default
 ```
 
 ### Step 2: Collect SDK and API Status
+
 ```bash
 set -euo pipefail
 # SDK version
@@ -86,6 +91,7 @@ curl -s https://api.firecrawl.dev/v1/team/credits \
 ```
 
 ### Step 3: Capture Error Context
+
 ```bash
 set -euo pipefail
 # Recent error logs (redacted)
@@ -99,6 +105,7 @@ cat .env 2>/dev/null | sed 's/\(API_KEY\|SECRET\|TOKEN\|PASSWORD\)=.*/\1=***REDA
 ```
 
 ### Step 4: Run Diagnostic Scrape
+
 ```typescript
 // diagnostic-scrape.ts — include output in debug bundle
 import FirecrawlApp from "@mendable/firecrawl-js";
@@ -128,6 +135,7 @@ runDiagnostic();
 ```
 
 ### Step 5: Package Bundle
+
 ```bash
 set -euo pipefail
 tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
@@ -137,12 +145,14 @@ rm -rf "$BUNDLE_DIR"
 ```
 
 ## Output
+
 - `firecrawl-debug-YYYYMMDD-HHMMSS.tar.gz` containing:
   - `summary.txt` — Runtime, SDK version, API status, credits
   - `errors.txt` — Recent error logs
   - `config-redacted.txt` — Configuration with secrets masked
 
 ## Error Handling
+
 | Item | Purpose | Included |
 |------|---------|----------|
 | Node/Python version | Compatibility check | Yes |
@@ -152,14 +162,17 @@ rm -rf "$BUNDLE_DIR"
 | Diagnostic scrape | End-to-end test | Yes |
 
 ## ALWAYS REDACT
+
 - API keys (anything starting with `fc-`)
 - Passwords, tokens, secrets
 - PII in scraped content
 
 ## Resources
+
 - [Firecrawl Status](https://firecrawl.dev/status)
 - [Firecrawl Dashboard](https://firecrawl.dev/app)
 - [GitHub Issues](https://github.com/mendableai/firecrawl/issues)
 
 ## Next Steps
+
 For rate limit issues, see `firecrawl-rate-limits`.

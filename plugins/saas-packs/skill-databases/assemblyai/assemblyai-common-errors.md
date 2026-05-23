@@ -10,6 +10,7 @@ assemblyai-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix AssemblyAI common errors
 **Workflow:** Part of the operations skill category for AssemblyAI integration.
 **Relates to:** Other assemblyai skills in this pack.

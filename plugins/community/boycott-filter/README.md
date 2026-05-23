@@ -56,6 +56,7 @@ Browser extensions can't be auto-installed from a Claude plugin. One-time manual
 4. Select the `extension/` folder inside this plugin directory
 
 The plugin path is typically:
+
 ```
 ~/.claude/plugins/cache/claude-code-plugins-plus/boycott-filter/1.0.0/extension/
 ```
@@ -75,6 +76,7 @@ The plugin path is typically:
 ### Conversational examples
 
 Say things like:
+
 - *"Boycott Nestlé, their water practices are criminal."*
 - *"I'm done with Shein — fast fashion, can't support it."*
 - *"Add all Nestlé brands — Nespresso, KitKat, Purina, Perrier."*
@@ -154,6 +156,7 @@ The extension also sets a badge on its icon with the count of matches on the cur
 ## Privacy
 
 Everything runs locally:
+
 - The list lives in `boycott-list.json` inside the plugin directory
 - The sync server only listens on `127.0.0.1` — not reachable from other machines
 - The Chrome extension never calls any external server
@@ -164,6 +167,7 @@ Everything runs locally:
 ## Demo
 
 See a 28-second video demo at:
+
 - https://github.com/vdk888/boycott-filter/blob/main/demo.mp4
 - https://bubble-sentinel.netlify.app/boycott-filter.html (landing page)
 

@@ -53,6 +53,7 @@ curl -s https://api.clickup.com/api/v2/team \
 ```
 
 Response shape:
+
 ```json
 {
   "teams": [{

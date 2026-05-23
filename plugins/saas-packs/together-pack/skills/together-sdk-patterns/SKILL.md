@@ -21,9 +21,11 @@ compatibility: Designed for Claude Code
 # Together AI SDK Patterns
 
 ## Overview
+
 Production-ready patterns for Together AI inference. Together exposes an OpenAI-compatible REST API at `https://api.together.xyz/v1`, meaning any OpenAI client library works with a base URL swap. This makes Together a drop-in replacement for OpenAI when running open-source models (Llama, Mixtral, Qwen, FLUX). A singleton client centralizes the base URL override and enables seamless backend switching.
 
 ## Singleton Client
+
 ```typescript
 import OpenAI from 'openai';
 let _client: OpenAI | null = null;
@@ -40,6 +42,7 @@ export function getClient(): OpenAI {
 ```
 
 ## Error Wrapper
+
 ```typescript
 export class TogetherError extends Error {
   constructor(public status: number, public code: string, message: string) { super(message); }
@@ -57,6 +60,7 @@ export async function safeCall<T>(operation: string, fn: () => Promise<T>): Prom
 ```
 
 ## Request Builder
+
 ```typescript
 class TogetherRequest {
   private params: Record<string, any> = {};
@@ -73,6 +77,7 @@ class TogetherRequest {
 ```
 
 ## Response Types
+
 ```typescript
 interface TogetherModel {
   id: string; type: 'chat' | 'language' | 'image' | 'embedding' | 'code';
@@ -94,6 +99,7 @@ interface FineTuneJob {
 ```
 
 ## Testing Utilities
+
 ```typescript
 export function mockCompletion(content = 'Hello!', overrides: Partial<ChatCompletion> = {}): ChatCompletion {
   return { id: 'cmpl-001', model: 'meta-llama/Meta-Llama-3.1-70B-Instruct', created: Date.now(),
@@ -108,6 +114,7 @@ export function mockModel(overrides: Partial<TogetherModel> = {}): TogetherModel
 ```
 
 ## Error Handling
+
 | Pattern | When to Use | Example |
 |---------|-------------|---------|
 | `safeCall` wrapper | All Together API calls | Structured error with operation context |
@@ -116,7 +123,9 @@ export function mockModel(overrides: Partial<TogetherModel> = {}): TogetherModel
 | Streaming fallback | Long completions timeout | Switch `stream: true` on timeout |
 
 ## Resources
+
 - [Together AI Docs](https://docs.together.ai/)
 
 ## Next Steps
+
 Apply patterns in `together-core-workflow-a`.

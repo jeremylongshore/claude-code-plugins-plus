@@ -10,6 +10,7 @@ shopify-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Shopify costs and usage
 **Workflow:** Part of the cicd skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

@@ -10,6 +10,7 @@ procore-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Procore rate limiting and backoff
 **Workflow:** Part of the operations skill category for Procore integration.
 **Relates to:** Other procore skills in this pack.

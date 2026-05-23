@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Upgrade Migration
 
 ## Current State
+
 !`npm list @deepgram/sdk 2>/dev/null | grep deepgram || echo 'SDK not installed'`
 
 ## Overview
+
 Guide for Deepgram SDK version upgrades (v3 -> v4 -> v5) and model migrations (Nova-2 -> Nova-3). Includes breaking change maps, side-by-side API comparison, A/B testing scripts, automated validation, and rollback procedures.
 
 ## SDK Version History
@@ -254,6 +256,7 @@ curl -s -X POST 'https://api.deepgram.com/v1/listen?model=nova-2' \
 ```
 
 ## Output
+
 - SDK version migration map (v3/v4 -> v5)
 - Model migration path (Nova-2 -> Nova-3)
 - A/B testing script with similarity scoring
@@ -261,6 +264,7 @@ curl -s -X POST 'https://api.deepgram.com/v1/listen?model=nova-2' \
 - Rollback procedure
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `createClient is not a function` | v5 installed | Use `new DeepgramClient()` |
@@ -269,6 +273,7 @@ curl -s -X POST 'https://api.deepgram.com/v1/listen?model=nova-2' \
 | `speak.request is undefined` | v5 namespace change | Use `speak.v1.audio.generate` |
 
 ## Resources
+
 - [JS SDK Releases](https://github.com/deepgram/deepgram-js-sdk/releases)
 - [Model Options](https://developers.deepgram.com/docs/model)
 - [Models & Languages](https://developers.deepgram.com/docs/models-languages-overview)

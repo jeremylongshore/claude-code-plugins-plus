@@ -11,6 +11,7 @@
 The **Security Pro Pack** is a comprehensive collection of 10 security-focused plugins for Claude Code, providing automated security scanning, compliance checking, cryptography review, and infrastructure security analysis.
 
 **What's Included:**
+
 - **3 Core Security plugins** - OWASP Top 10 vulnerability detection, penetration testing, quick security scans
 - **2 Compliance plugins** - HIPAA/PCI DSS/GDPR/SOC 2 compliance checking and documentation generation
 - **2 Cryptography plugins** - Cryptographic implementation review and automated crypto auditing
@@ -52,6 +53,7 @@ The **Security Pro Pack** is a comprehensive collection of 10 security-focused p
 **Step 1: Download the Security Pro Pack**
 
 Option A - From GitHub Releases:
+
 ```bash
 # Download the latest release
 curl -L https://github.com/jeremylongshore/claude-code-plugins/releases/download/security-pro-pack-v1.0.0/security-pro-pack.zip -o security-pro-pack.zip
@@ -61,6 +63,7 @@ unzip security-pro-pack.zip
 ```
 
 Option B - From Gumroad (if purchased):
+
 ```bash
 # Download from Gumroad dashboard
 # Extract the ZIP file
@@ -80,6 +83,7 @@ claude plugin list | grep "security-pro-pack"
 **Step 3: Verification**
 
 Test that all plugins are installed correctly:
+
 ```bash
 # Test a command plugin
 /security-scan-quick --version
@@ -194,6 +198,7 @@ pip install requests pytest
 Test each plugin category to ensure proper installation:
 
 **1. Core Security:**
+
 ```bash
 # Quick security scan
 /ss
@@ -202,6 +207,7 @@ Test each plugin category to ensure proper installation:
 ```
 
 **2. Compliance:**
+
 ```bash
 # Generate HIPAA documentation
 /compliance-docs-generate --framework hipaa
@@ -210,6 +216,7 @@ Test each plugin category to ensure proper installation:
 ```
 
 **3. Cryptography:**
+
 ```bash
 # Crypto audit
 /ca
@@ -218,6 +225,7 @@ Test each plugin category to ensure proper installation:
 ```
 
 **4. Infrastructure Security:**
+
 ```bash
 # Docker security scan
 /dss nginx:latest
@@ -233,6 +241,7 @@ claude plugin list | grep -E "(security-auditor|penetration-tester|security-scan
 ```
 
 Expected output:
+
 ```
  security-auditor-expert (agent)
  penetration-tester (agent)
@@ -253,6 +262,7 @@ Expected output:
 ### Issue: "Plugin not found"
 
 **Solution:**
+
 ```bash
 # Check plugin directory path
 echo $HOME/.claude/plugins
@@ -266,6 +276,7 @@ ls -la $HOME/.claude/plugins/security-pro-pack
 ### Issue: "Permission denied"
 
 **Solution:**
+
 ```bash
 # Fix permissions
 chmod -R 755 $HOME/.claude/plugins/security-pro-pack
@@ -277,6 +288,7 @@ chown -R $USER:$USER $HOME/.claude/plugins/security-pro-pack
 ### Issue: Docker commands fail
 
 **Solution:**
+
 ```bash
 # Verify Docker is running
 sudo systemctl status docker  # Linux
@@ -291,6 +303,7 @@ newgrp docker
 ### Issue: "Command not found" for shortcuts
 
 **Solution:**
+
 ```bash
 # Reload Claude Code configuration
 claude plugin reload
@@ -303,6 +316,7 @@ claude plugin reload
 ### Issue: Validation errors during install
 
 **Solution:**
+
 ```bash
 # Verify package integrity (if downloaded from GitHub)
 sha256sum security-pro-pack.zip
@@ -383,20 +397,23 @@ After successful installation:
 ## Support & Help
 
 **Installation Issues:**
+
 - GitHub Issues: https://github.com/jeremylongshore/claude-code-plugins/issues
 - Email Support: [email protected]
 
 **Documentation:**
+
 - Full Documentation: https://docs.claude-code-plugins.com/security-pro-pack
 - Video Tutorials: https://youtube.com/@claudecodeplugins
 
 **Community:**
+
 - Discord: https://discord.gg/claude-code-plugins
 - Slack: https://claude-code-plugins.slack.com
 
 ---
 
-**Installation Complete!** 
+**Installation Complete!**
 
 You now have access to 10 powerful security plugins. Proceed to `QUICK_START.md` to begin using the Security Pro Pack.
 

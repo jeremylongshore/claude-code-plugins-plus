@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Salesforce Incident Runbook
 
 ## Overview
+
 Rapid incident response procedures for Salesforce integration failures, covering Salesforce-side outages, API limit exhaustion, authentication failures, and data sync issues.
 
 ## Prerequisites
+
 - Salesforce CLI authenticated (`sf org login`)
 - Access to Salesforce Status API
 - Monitoring dashboards configured (see `salesforce-observability`)
@@ -76,6 +78,7 @@ Integration returning errors?
 ## Immediate Actions by Error Type
 
 ### REQUEST_LIMIT_EXCEEDED — API Limit Exhausted
+
 ```typescript
 // This is a P1 — your integration is completely blocked
 
@@ -101,6 +104,7 @@ const topUsers = await conn.query(`
 ```
 
 ### INVALID_SESSION_ID — Authentication Failure
+
 ```bash
 # Token expired or revoked — re-authenticate
 sf org login web --alias my-org --instance-url https://login.salesforce.com
@@ -117,6 +121,7 @@ sf org display --target-org my-org
 ```
 
 ### Salesforce System Outage
+
 ```typescript
 // Enable graceful degradation — serve stale data from cache
 const FALLBACK_MODE = process.env.SF_FALLBACK_MODE === 'true';
@@ -143,6 +148,7 @@ async function queryWithFallback<T>(soql: string, cacheKey: string): Promise<T[]
 ## Communication Templates
 
 ### Internal (Slack)
+
 ```
 P1 INCIDENT: Salesforce Integration
 Status: INVESTIGATING
@@ -153,6 +159,7 @@ Next update: [time]
 ```
 
 ### Postmortem Template
+
 ```markdown
 ## Incident: Salesforce [Error Type]
 **Date:** YYYY-MM-DD | **Duration:** X hours | **Severity:** P[1-4]
@@ -180,6 +187,7 @@ Next update: [time]
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Can't reach status API | Network issue | Try https://status.salesforce.com manually |
@@ -188,9 +196,11 @@ Next update: [time]
 | Bulk job stuck | Processing timeout | Abort and retry: `sf data bulk delete` |
 
 ## Resources
+
 - [Salesforce Status API](https://api.status.salesforce.com/)
 - [Salesforce Trust Site](https://status.salesforce.com)
 - [API Limits Quick Reference](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm)
 
 ## Next Steps
+
 For data handling, see `salesforce-data-handling`.

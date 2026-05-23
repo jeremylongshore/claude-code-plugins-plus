@@ -5,6 +5,7 @@
 # Apollo Data Handling
 
 ## Overview
+
 Data management, compliance, and governance practices for Apollo.io contact data including GDPR, data retention, and secure handling.
 
 ## Data Classification
@@ -454,6 +455,7 @@ export function auditMiddleware(req: any, res: any, next: any) {
 ```
 
 ## Output
+
 - GDPR compliance (access, erasure, consent)
 - Data retention policies
 - Secure data export
@@ -461,6 +463,7 @@ export function auditMiddleware(req: any, res: any, next: any) {
 - Comprehensive audit logging
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | Export too large | Implement streaming |
@@ -469,9 +472,11 @@ export function auditMiddleware(req: any, res: any, next: any) {
 | Consent conflicts | Use latest consent record |
 
 ## Resources
+
 - [GDPR Official Text](https://gdpr.eu/)
 - [CCPA Requirements](https://oag.ca.gov/privacy/ccpa)
 - [Apollo Privacy Policy](https://www.apollo.io/privacy-policy)
 
 ## Next Steps
+
 Proceed to `apollo-enterprise-rbac` for access control.

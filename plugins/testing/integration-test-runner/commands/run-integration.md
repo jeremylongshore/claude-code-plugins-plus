@@ -10,6 +10,7 @@ Run integration tests with comprehensive environment setup, database seeding, se
 ## Purpose
 
 Execute integration tests that verify interactions between multiple system components:
+
 - API endpoints with database operations
 - Microservices communication
 - Third-party service integrations
@@ -90,6 +91,7 @@ Run integration tests with:
 ## Test Organization
 
 Structure integration tests by:
+
 - **API routes** - Endpoint-specific tests
 - **User workflows** - End-to-end user journeys
 - **Service interactions** - Cross-service communication
@@ -98,6 +100,7 @@ Structure integration tests by:
 ## Reporting
 
 Generate comprehensive reports with:
+
 - Test results (pass/fail counts)
 - Execution time per test
 - Failed test details with stack traces
@@ -108,6 +111,7 @@ Generate comprehensive reports with:
 ## Cleanup
 
 After tests complete:
+
 - Drop test database or truncate tables
 - Stop test containers/services
 - Remove temporary files
@@ -159,6 +163,7 @@ Report saved to: test-results/integration-2025-10-11-14-30.json
 ## Troubleshooting
 
 Common issues:
+
 - **Connection refused** - Check service is running
 - **Database errors** - Verify migrations are current
 - **Timeout errors** - Increase test timeouts

@@ -58,13 +58,16 @@ bd list --status in_progress | grep -E "ccpi-[a-z]+" | head -1
 ## Workflow Phases
 
 ### Phase 0: Infrastructure (Do First)
+
 - [ ] Create TRACKER.csv
 - [ ] Create beads epics + tasks
 - [ ] Create _templates/slots/
 - [ ] Update pnpm-workspace.yaml
 
 ### Phase 1+: Vendor Packs (One at a Time)
+
 For each vendor (starting with Supabase):
+
 1. Research vendor docs (Explore agent)
 2. Create all skills (worker agents)
 3. Test each skill (validation scripts)
@@ -83,6 +86,7 @@ MAIN AGENT (You)
 ```
 
 **Beads Manager responsibilities:**
+
 - Mark tasks in_progress/completed
 - Update TRACKER.csv after completions
 - Run `bd sync` after batches

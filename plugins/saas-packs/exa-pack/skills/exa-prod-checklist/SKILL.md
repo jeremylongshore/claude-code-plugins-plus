@@ -26,11 +26,13 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Production Checklist
 
 ## Overview
+
 Complete checklist for deploying Exa search integrations to production. Covers API key management, error handling verification, performance baselines, monitoring, and rollback procedures.
 
 ## Pre-Deployment Checklist
 
 ### Security
+
 - [ ] Production API key stored in secret manager (not env file)
 - [ ] Different API keys for dev/staging/production
 - [ ] `.env` files in `.gitignore`
@@ -38,6 +40,7 @@ Complete checklist for deploying Exa search integrations to production. Covers A
 - [ ] API key has minimal scopes needed
 
 ### Code Quality
+
 - [ ] All tests passing (unit + integration)
 - [ ] No hardcoded API keys or URLs
 - [ ] Error handling covers all Exa HTTP codes (400, 401, 402, 403, 429, 5xx)
@@ -46,6 +49,7 @@ Complete checklist for deploying Exa search integrations to production. Covers A
 - [ ] Content moderation enabled (`moderation: true`) for user-facing search
 
 ### Performance
+
 - [ ] Search type appropriate for latency SLO (`fast`/`auto`/`neural`)
 - [ ] `numResults` minimized per use case (3-5 for most)
 - [ ] `maxCharacters` set on text and highlights
@@ -53,6 +57,7 @@ Complete checklist for deploying Exa search integrations to production. Covers A
 - [ ] Request queue with concurrency limit (respect 10 QPS default)
 
 ### Monitoring
+
 - [ ] Search latency histogram instrumented
 - [ ] Error rate counter by status code
 - [ ] Cache hit/miss rate tracked
@@ -62,6 +67,7 @@ Complete checklist for deploying Exa search integrations to production. Covers A
 ## Deploy Procedure
 
 ### Step 1: Pre-Flight Verification
+
 ```bash
 set -euo pipefail
 echo "=== Exa Pre-Flight ==="
@@ -82,6 +88,7 @@ echo "Pre-flight PASSED"
 ```
 
 ### Step 2: Health Check Endpoint
+
 ```typescript
 import Exa from "exa-js";
 
@@ -110,6 +117,7 @@ app.get("/health/exa", async (_req, res) => {
 ```
 
 ### Step 3: Gradual Rollout
+
 ```bash
 set -euo pipefail
 # Deploy canary (10% traffic)
@@ -124,6 +132,7 @@ echo "Check: /health/exa endpoint, error rates, latency"
 ```
 
 ## Post-Deployment Verification
+
 ```bash
 set -euo pipefail
 # Verify production endpoint
@@ -134,6 +143,7 @@ curl -s "localhost:9090/api/v1/query?query=rate(exa_search_error[5m])" 2>/dev/nu
 ```
 
 ## Rollback Procedure
+
 ```bash
 set -euo pipefail
 # Immediate rollback
@@ -153,6 +163,7 @@ echo "Rollback complete. Verify /health/exa endpoint."
 | Budget Warning | Daily searches > 80% of limit | P3 |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Health check fails | API key not set in prod | Verify secret injection |
@@ -161,8 +172,10 @@ echo "Rollback complete. Verify /health/exa endpoint."
 | Rollback needed | Error rate spike | `kubectl rollout undo` |
 
 ## Resources
+
 - [Exa API Documentation](https://docs.exa.ai)
 - [Exa Error Codes](https://docs.exa.ai/reference/error-codes)
 
 ## Next Steps
+
 For version upgrades, see `exa-upgrade-migration`. For incident response, see `exa-incident-runbook`.

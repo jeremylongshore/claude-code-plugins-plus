@@ -10,6 +10,7 @@ serpapi-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute SerpApi primary workflow
 **Workflow:** Part of the onboarding skill category for SerpApi integration.
 **Relates to:** Other serpapi skills in this pack.

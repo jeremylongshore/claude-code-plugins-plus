@@ -1,6 +1,7 @@
-# Examples
+## Examples
 
 ### Quick Pitfall Scan
+
 ```bash
 # Check for common pitfalls
 grep -r "sk_live_" --include="*.ts" src/        # Key leakage

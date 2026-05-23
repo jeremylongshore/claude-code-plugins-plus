@@ -10,6 +10,7 @@ databricks-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Databricks security best practices
 **Workflow:** Part of the operations skill category for Databricks integration.
 **Relates to:** Other databricks skills in this pack.

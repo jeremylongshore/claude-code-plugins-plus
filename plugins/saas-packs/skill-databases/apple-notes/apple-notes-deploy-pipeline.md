@@ -10,6 +10,7 @@ apple-notes-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Apple Notes integrations to production
 **Workflow:** Part of the cicd skill category for Apple Notes integration.
 **Relates to:** Other apple-notes skills in this pack.

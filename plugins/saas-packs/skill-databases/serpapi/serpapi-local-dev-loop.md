@@ -10,6 +10,7 @@ serpapi-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure SerpApi local development workflow
 **Workflow:** Part of the onboarding skill category for SerpApi integration.
 **Relates to:** Other serpapi skills in this pack.

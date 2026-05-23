@@ -10,6 +10,7 @@ procore-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Procore primary workflow
 **Workflow:** Part of the onboarding skill category for Procore integration.
 **Relates to:** Other procore skills in this pack.

@@ -3,6 +3,7 @@
 ## Advanced Techniques
 
 ### Layered Context
+
 ```
 Layer 1: .cursorrules (always present)
 Layer 2: @-mentions (specific files)
@@ -17,6 +18,7 @@ Optimize each layer:
 ```
 
 ### Context Priming
+
 ```
 Start chat with context summary:
 "Working on auth module. Using JWT, refresh tokens,
@@ -28,6 +30,7 @@ Then ask specific questions:
 ```
 
 ### Reference vs Include
+
 ```
 Reference (efficient):
 "Follow the pattern in UserService"

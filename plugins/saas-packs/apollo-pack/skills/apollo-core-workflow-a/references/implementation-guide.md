@@ -5,9 +5,11 @@
 # Apollo Core Workflow A: Lead Search & Enrichment
 
 ## Overview
+
 Implement the primary Apollo.io workflow for searching leads and enriching contact/company data. This is the core use case for B2B sales intelligence.
 
 ## Prerequisites
+
 - Completed `apollo-sdk-patterns` setup
 - Valid Apollo API credentials
 - Understanding of your target market criteria
@@ -15,6 +17,7 @@ Implement the primary Apollo.io workflow for searching leads and enriching conta
 ## Workflow Components
 
 ### 1. People Search
+
 Search for contacts based on various criteria like company, title, location, and industry.
 
 ```typescript
@@ -68,6 +71,7 @@ function transformPerson(person: any) {
 ```
 
 ### 2. Company Enrichment
+
 Enrich company data to get comprehensive firmographic information.
 
 ```typescript
@@ -107,6 +111,7 @@ export async function enrichCompany(domain: string) {
 ```
 
 ### 3. Contact Enrichment
+
 Enrich individual contacts with email and additional data.
 
 ```typescript
@@ -219,12 +224,14 @@ leads.forEach(lead => {
 ```
 
 ## Output
+
 - Paginated people search results
 - Enriched company firmographic data
 - Enriched contact data with emails
 - Combined lead pipeline with scoring
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Empty Results | Too narrow criteria | Broaden search parameters |
@@ -233,9 +240,11 @@ leads.forEach(lead => {
 | Invalid Domain | Domain doesn't exist | Validate domains first |
 
 ## Resources
+
 - [Apollo People Search Docs](https://apolloio.github.io/apollo-api-docs/#search-for-people)
 - [Apollo Organization Enrichment](https://apolloio.github.io/apollo-api-docs/#enrich-organization)
 - [Apollo Person Enrichment](https://apolloio.github.io/apollo-api-docs/#enrich-person)
 
 ## Next Steps
+
 Proceed to `apollo-core-workflow-b` for email sequences and outreach.

@@ -10,6 +10,7 @@ techsmith-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute TechSmith SDK upgrades
 **Workflow:** Part of the operations skill category for TechSmith integration.
 **Relates to:** Other techsmith skills in this pack.

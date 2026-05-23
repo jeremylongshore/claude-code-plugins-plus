@@ -3,6 +3,7 @@
 ## Summary
 
 Built complete production-ready `lumera-agent-memory` MCP plugin from scratch following exact specification:
+
 - ✅ Exactly 4 MCP tools with exact required names
 - ✅ Object storage + metadata index pattern
 - ✅ Client-side AES-256-GCM encryption with user-controlled keys
@@ -25,9 +26,11 @@ CASS → Redact → Encrypt → Upload Cascade → Store URI in SQLite FTS
 ## Files Created
 
 ### Core MCP Server
+
 - `src/mcp_server.py` (362 lines) - Main MCP server with 4 tools
 
 ### Security Module
+
 - `src/security/redact.py` (131 lines) - Fail-closed + redact-and-continue
   - Critical patterns: private keys, AWS secret keys, auth headers → **FAIL**
   - Non-critical: emails, phones, AWS access keys, IPs → **REDACT & CONTINUE**
@@ -38,6 +41,7 @@ CASS → Redact → Encrypt → Upload Cascade → Store URI in SQLite FTS
   - Nonce prepending for storage
 
 ### Cascade Storage
+
 - `src/cascade/interface.py` (46 lines) - Abstract interface
 - `src/cascade/mock_fs.py` (85 lines) - Content-addressed filesystem mock
   - URIs: `cascade://sha256:<hash>`
@@ -45,6 +49,7 @@ CASS → Redact → Encrypt → Upload Cascade → Store URI in SQLite FTS
   - Subdir sharding (first 2 chars of hash)
 
 ### Index Module
+
 - `src/index/index.py` (192 lines) - SQLite FTS5 index
   - Full-text search with BM25 ranking
   - Tag filtering
@@ -53,12 +58,14 @@ CASS → Redact → Encrypt → Upload Cascade → Store URI in SQLite FTS
   - Snippet generation from memory cards
 
 ### Tests (21 tests, all passing)
+
 - `tests/test_redaction.py` (8 tests) - Critical vs non-critical behavior
 - `tests/test_encryption.py` (6 tests) - Roundtrip + integrity checks
 - `tests/test_fts_search.py` (7 tests) - FTS, ranking, filtering
 - `tests/standalone_smoke_test.py` - E2E: store → query → retrieve
 
 ### Documentation
+
 - `README.md` - Complete plugin documentation
 - `EXAMPLE_PAYLOADS.md` - JSON examples for all 4 tools
 - `CHANGES.md` - This file
@@ -70,6 +77,7 @@ CASS → Redact → Encrypt → Upload Cascade → Store URI in SQLite FTS
 ## MCP Tools (Exact Names)
 
 ### 1. `store_session_to_cascade`
+
 - Extracts from CASS (mocked)
 - Redacts PII/secrets (fail-closed for critical patterns)
 - Generates memory card (title, keywords, entities, decisions, todos, quotes)
@@ -78,6 +86,7 @@ CASS → Redact → Encrypt → Upload Cascade → Store URI in SQLite FTS
 - Stores in local SQLite FTS index
 
 ### 2. `query_memories`
+
 - Searches **local SQLite FTS5 index only** (NEVER queries Cascade)
 - Full-text search with BM25 ranking
 - Tag filtering
@@ -85,6 +94,7 @@ CASS → Redact → Encrypt → Upload Cascade → Store URI in SQLite FTS
 - Returns Cascade URIs for retrieval
 
 ### 3. `retrieve_session_from_cascade`
+
 - Fetches encrypted blob from Cascade via URI
 - Gets crypto metadata from local index
 - Verifies ciphertext integrity (SHA-256)
@@ -92,6 +102,7 @@ CASS → Redact → Encrypt → Upload Cascade → Store URI in SQLite FTS
 - Returns session + memory card
 
 ### 4. `estimate_storage_cost`
+
 - Estimates monthly Cascade storage costs
 - Configurable redundancy and pricing inputs
 - Returns GB, storage cost, request cost, total
@@ -99,7 +110,9 @@ CASS → Redact → Encrypt → Upload Cascade → Store URI in SQLite FTS
 ## Security Behavior Changes
 
 ### Critical Patterns (Fail-Closed)
+
 These patterns **abort storage** immediately:
+
 - Private keys (`-----BEGIN PRIVATE KEY-----`)
 - AWS secret access keys (`aws_secret_access_key=...`)
 - Raw authorization headers (`Authorization: Bearer ...`)
@@ -108,7 +121,9 @@ These patterns **abort storage** immediately:
 **Error message:** Clear, actionable, tells user to remove from source CASS session.
 
 ### Non-Critical Patterns (Redact & Continue)
+
 These patterns are **redacted** with `[REDACTED:PATTERN_NAME]`:
+
 - Email addresses
 - Phone numbers
 - AWS access keys (AKIA...)
@@ -120,6 +135,7 @@ These patterns are **redacted** with `[REDACTED:PATTERN_NAME]`:
 ## Wow Factor: Memory Cards
 
 Every stored session gets a deterministic memory card generated via heuristics:
+
 - **Title**: First user message (truncated to 80 chars)
 - **Summary bullets**: First 3 messages with role prefix
 - **Keywords**: Top 10 frequent words (5+ chars)
@@ -135,6 +151,7 @@ Query results include intelligent snippets using memory card data.
 ## Search Implementation
 
 **Local SQLite FTS5 index:**
+
 - FTS5 virtual table with Porter stemming + Unicode tokenization
 - BM25 ranking (negative rank scores, converted to positive)
 - Tag filtering via JSON array column
@@ -146,6 +163,7 @@ Query results include intelligent snippets using memory card data.
 ## Mock Cascade
 
 Content-addressed filesystem storage:
+
 - URIs: `cascade://sha256:<sha256_hash>`
 - Storage: `~/.lumera/cascade/<first_2_chars>/<full_hash>`
 - Deduplication: Same content = same hash = single blob
@@ -154,6 +172,7 @@ Content-addressed filesystem storage:
 ## Live Cascade Mode
 
 Stub implementation returns clear error:
+
 ```
 Live Cascade mode not configured. Required: LUMERA_CASCADE_ENDPOINT
 and LUMERA_CASCADE_API_KEY environment variables. Use mode='mock'

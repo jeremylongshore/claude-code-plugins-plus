@@ -10,6 +10,7 @@ framer-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Framer SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Framer integration.
 **Relates to:** Other framer skills in this pack.

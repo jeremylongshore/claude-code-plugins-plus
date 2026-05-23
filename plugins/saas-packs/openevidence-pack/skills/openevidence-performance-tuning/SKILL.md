@@ -22,6 +22,7 @@ compatibility: Designed for Claude Code
 OpenEvidence's clinical API handles evidence query response times, citation batch retrieval, and complex multi-condition query optimization. Clinical evidence queries can take 2-5 seconds as the system searches across thousands of medical studies and synthesizes responses. Citation batch retrieval for systematic reviews generates heavy load when fetching 50-200 references per query. Caching evidence responses, batching citation fetches, and optimizing query specificity reduces clinician wait times by 50-70% and keeps complex queries within acceptable latency bounds.
 
 ## Caching Strategy
+
 ```typescript
 const cache = new Map<string, { data: any; expiry: number }>();
 const TTL = { evidence: 1_800_000, citations: 3_600_000, queries: 300_000 };
@@ -37,6 +38,7 @@ async function cached(key: string, ttlKey: keyof typeof TTL, fn: () => Promise<a
 ```
 
 ## Batch Operations
+
 ```typescript
 async function fetchCitationsBatch(client: any, citationIds: string[], batchSize = 25) {
   const results = [];
@@ -51,6 +53,7 @@ async function fetchCitationsBatch(client: any, citationIds: string[], batchSize
 ```
 
 ## Connection Pooling
+
 ```typescript
 import { Agent } from 'https';
 const agent = new Agent({ keepAlive: true, maxSockets: 6, maxFreeSockets: 3, timeout: 30_000 });
@@ -58,6 +61,7 @@ const agent = new Agent({ keepAlive: true, maxSockets: 6, maxFreeSockets: 3, tim
 ```
 
 ## Rate Limit Management
+
 ```typescript
 async function withRateLimit(fn: () => Promise<any>): Promise<any> {
   try { return await fn(); }
@@ -73,6 +77,7 @@ async function withRateLimit(fn: () => Promise<any>): Promise<any> {
 ```
 
 ## Monitoring
+
 ```typescript
 const metrics = { queries: 0, citationFetches: 0, cacheHits: 0, avgLatencyMs: 0, errors: 0 };
 function track(op: 'query' | 'citation', startMs: number, cached: boolean) {
@@ -84,6 +89,7 @@ function track(op: 'query' | 'citation', startMs: number, cached: boolean) {
 ```
 
 ## Performance Checklist
+
 - [ ] Cache evidence responses with 30-min TTL (studies update periodically)
 - [ ] Cache citation metadata with 1-hour TTL (stable once published)
 - [ ] Batch citation retrieval in groups of 25 with 500ms pauses
@@ -94,6 +100,7 @@ function track(op: 'query' | 'citation', startMs: number, cached: boolean) {
 - [ ] Set client timeout to 30s for complex multi-condition queries
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | Slow evidence query (> 5s) | Broad multi-condition search | Narrow query to specific condition + intervention |
@@ -103,8 +110,10 @@ function track(op: 'query' | 'citation', startMs: number, cached: boolean) {
 | Missing citations | Study not yet indexed | Retry after 24h, check study publication date |
 
 ## Resources
+
 - [OpenEvidence Platform](https://www.openevidence.com)
 - [OpenEvidence API Docs](https://www.openevidence.com/developers)
 
 ## Next Steps
+
 See `openevidence-reference-architecture`.

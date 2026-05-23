@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Local Dev Loop
 
 ## Overview
+
 Use CodeRabbit CLI to review code locally before opening a PR. The CLI provides the same AI-powered review as the GitHub App but runs in your terminal against staged or unstaged changes. This creates a multi-layered review process: local CLI review before commit, then automated PR review after push.
 
 ## Prerequisites
+
 - CodeRabbit CLI installed (`curl -fsSL https://cli.coderabbit.ai/install.sh | sh`)
 - Git repository with `.coderabbit.yaml` configuration
 - CodeRabbit account (CLI uses credits: $0.25 per file reviewed)
@@ -37,6 +39,7 @@ Use CodeRabbit CLI to review code locally before opening a PR. The CLI provides 
 ## Instructions
 
 ### Step 1: Install and Verify CLI
+
 ```bash
 set -euo pipefail
 # Install CodeRabbit CLI
@@ -50,6 +53,7 @@ cr auth login
 ```
 
 ### Step 2: Local Review Workflow
+
 ```bash
 set -euo pipefail
 # Review all staged changes (most common workflow)
@@ -67,6 +71,7 @@ cr review --prompt-only
 ```
 
 ### Step 3: Git Hook Integration
+
 ```bash
 #!/bin/bash
 # .git/hooks/pre-push (make executable: chmod +x .git/hooks/pre-push)
@@ -91,6 +96,7 @@ fi
 ```
 
 ### Step 4: Configuration for Local Development
+
 ```yaml
 # .coderabbit.yaml - Settings that affect both CLI and PR reviews
 language: "en-US"
@@ -113,6 +119,7 @@ chat:
 ```
 
 ### Step 5: IDE Integration Pattern
+
 ```json
 // .vscode/tasks.json - Run CodeRabbit review from VS Code
 {
@@ -137,6 +144,7 @@ chat:
 ```
 
 ## Two-Layer Review Strategy
+
 ```
 Developer writes code
        │
@@ -158,12 +166,14 @@ Developer writes code
 ```
 
 ## Output
+
 - CodeRabbit CLI installed and authenticated
 - Pre-push git hook for automated local reviews
 - VS Code task integration for on-demand reviews
 - Two-layer review workflow (local + PR)
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `cr: command not found` | CLI not in PATH | Re-run install script or add to PATH |
@@ -173,9 +183,11 @@ Developer writes code
 | Empty review output | No changed files detected | Stage changes with `git add` first |
 
 ## Resources
+
 - [CodeRabbit CLI Documentation](https://docs.coderabbit.ai/cli)
 - [CLI Blog Announcement](https://www.coderabbit.ai/blog/coderabbit-cli-free-ai-code-reviews-in-your-cli)
 - [VS Code IDE Extension](https://www.coderabbit.ai/ide)
 
 ## Next Steps
+
 See `coderabbit-sdk-patterns` for PR interaction automation patterns.

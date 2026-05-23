@@ -14,6 +14,7 @@ Real-time price tracking system with institutional-grade data feeds from multipl
 When the user wants to track market prices, implement a comprehensive price monitoring system with these capabilities:
 
 ### Required Information
+
 - **Symbol**: Asset ticker (BTC, AAPL, EUR/USD, etc.)
 - **Asset Type**: crypto, stock, forex, commodity
 - **Interval**: 1s, 5s, 30s, 1m, 5m (real-time streaming)

@@ -10,6 +10,7 @@ granola-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Granola SDK patterns
 **Workflow:** Part of the onboarding skill category for Granola integration.
 **Relates to:** Other granola skills in this pack.

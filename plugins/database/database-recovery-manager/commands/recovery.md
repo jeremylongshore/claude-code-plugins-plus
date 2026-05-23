@@ -11,6 +11,7 @@ Implement comprehensive disaster recovery, point-in-time recovery (PITR), and au
 ## When to Use This Command
 
 Use `/recovery` when you need to:
+
 - Set up disaster recovery infrastructure for production databases
 - Implement point-in-time recovery (PITR) capabilities
 - Automate backup validation and recovery testing
@@ -19,6 +20,7 @@ Use `/recovery` when you need to:
 - Meet compliance requirements for backup retention and recovery time objectives (RTO)
 
 DON'T use this when:
+
 - Only need basic database backups (use backup automator instead)
 - Working with development databases without recovery requirements
 - Database system doesn't support WAL/binary log replication
@@ -27,6 +29,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **comprehensive disaster recovery with PITR** because:
+
 - Point-in-time recovery prevents data loss from user errors or corruption
 - Automated failover ensures minimal downtime (RTO < 5 minutes)
 - Regular recovery testing validates backup integrity before disasters
@@ -34,12 +37,14 @@ This command implements **comprehensive disaster recovery with PITR** because:
 - WAL archiving enables recovery to any point in last 30 days
 
 **Alternative considered: Snapshot-only backups**
+
 - Simpler to implement and restore
 - No point-in-time recovery capability
 - Recovery point objective (RPO) limited to snapshot frequency
 - Recommended only for non-critical databases
 
 **Alternative considered: Manual recovery procedures**
+
 - No automation or testing
 - Prone to human error during incidents
 - Longer recovery times (RTO hours vs minutes)
@@ -48,6 +53,7 @@ This command implements **comprehensive disaster recovery with PITR** because:
 ## Prerequisites
 
 Before running this command:
+
 1. Database with WAL/binary logging enabled
 2. Object storage for backup retention (S3, GCS, Azure Blob)
 3. Monitoring infrastructure for backup validation
@@ -57,23 +63,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Configure WAL Archiving and Continuous Backup
+
 Enable write-ahead logging (WAL) archiving for point-in-time recovery capabilities.
 
 ### Step 2: Implement Automated Base Backup System
+
 Set up scheduled base backups with compression and encryption to object storage.
 
 ### Step 3: Design Failover and High Availability Architecture
+
 Configure streaming replication with automated failover for zero-downtime recovery.
 
 ### Step 4: Build Recovery Testing Framework
+
 Automate recovery validation by restoring backups to test environments regularly.
 
 ### Step 5: Document and Drill Recovery Procedures
+
 Create runbooks and conduct disaster recovery drills quarterly.
 
 ## Output Format
 
 The command generates:
+
 - `config/recovery.conf` - PostgreSQL recovery configuration
 - `scripts/pitr-restore.sh` - Point-in-time recovery automation script
 - `monitoring/backup-validator.py` - Automated backup verification
@@ -701,24 +713,28 @@ log "Point-in-time recovery completed"
 ## Configuration Options
 
 **WAL Archiving**
+
 - `wal_level = replica`: Enable WAL archiving (PostgreSQL)
 - `archive_mode = on`: Activate WAL archiving
 - `archive_timeout = 300`: Force WAL segment switch every 5 minutes
 - `log-bin`: Enable binary logging (MySQL)
 
 **Recovery Targets**
+
 - `recovery_target_time`: Restore to specific timestamp
 - `recovery_target_xid`: Restore to transaction ID
 - `recovery_target_name`: Restore to named restore point
 - `recovery_target = 'immediate'`: Stop at end of base backup
 
 **Replication**
+
 - `max_wal_senders = 10`: Maximum replication connections
 - `wal_keep_size = 1GB`: Minimum WAL retention on primary
 
 ## Best Practices
 
 DO:
+
 - Test recovery procedures monthly in isolated environment
 - Monitor WAL archiving lag and alert if > 5 minutes
 - Encrypt backups at rest and in transit
@@ -727,6 +743,7 @@ DO:
 - Document RTO/RPO requirements and measure against them
 
 DON'T:
+
 - Skip recovery testing (untested backups are useless)
 - Store backups on same infrastructure as production database
 - Ignore WAL archiving failures (creates recovery gaps)

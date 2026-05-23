@@ -47,6 +47,7 @@ Production-ready patterns for the official Notion SDK (`@notionhq/client` for Ty
 Set up the SDK client and execute filtered, sorted database queries.
 
 **TypeScript — Client initialization:**
+
 ```typescript
 import { Client } from '@notionhq/client';
 
@@ -54,6 +55,7 @@ const notion = new Client({ auth: process.env.NOTION_TOKEN });
 ```
 
 **Database query with filter and sort:**
+
 ```typescript
 const response = await notion.databases.query({
   database_id,
@@ -73,6 +75,7 @@ const response = await notion.databases.query({
 ```
 
 **Compound filters** combine conditions with `and`/`or`:
+
 ```typescript
 const response = await notion.databases.query({
   database_id,
@@ -91,6 +94,7 @@ const response = await notion.databases.query({
 ```
 
 **Python — Client initialization and query:**
+
 ```python
 from notion_client import Client
 
@@ -111,6 +115,7 @@ results = notion.databases.query(
 The Notion API returns at most 100 results per request. Use cursor-based pagination to retrieve all records.
 
 **Cursor-based pagination:**
+
 ```typescript
 let cursor: string | undefined;
 do {
@@ -129,6 +134,7 @@ do {
 ```
 
 **Reusable pagination helper (generic):**
+
 ```typescript
 type PaginatedFn<T> = (args: { start_cursor?: string }) => Promise<{
   results: T[];
@@ -158,6 +164,7 @@ const allPages = await collectPaginated((args) =>
 ```
 
 **Read block children (page content):**
+
 ```typescript
 const blocks = await notion.blocks.children.list({
   block_id: pageId,
@@ -171,6 +178,7 @@ for (const block of blocks.results) {
 ```
 
 **Append blocks to a page:**
+
 ```typescript
 await notion.blocks.children.append({
   block_id: pageId,
@@ -198,6 +206,7 @@ await notion.blocks.children.append({
 ```
 
 **Rich text with annotations and links:**
+
 ```typescript
 const richTextBlock = {
   type: 'text' as const,
@@ -217,6 +226,7 @@ const richTextBlock = {
 ```
 
 **Python — block manipulation:**
+
 ```python
 # List block children
 blocks = notion.blocks.children.list(block_id=page_id)
@@ -240,6 +250,7 @@ notion.blocks.children.append(
 Use the SDK's built-in error type guards instead of catching generic exceptions.
 
 **TypeScript — type-safe error handling:**
+
 ```typescript
 import {
   isNotionClientError,
@@ -280,6 +291,7 @@ try {
 ```
 
 **Python — error handling:**
+
 ```python
 from notion_client import Client, APIResponseError
 
@@ -300,6 +312,7 @@ except APIResponseError as e:
 ```
 
 **Safe wrapper pattern (Result type):**
+
 ```typescript
 async function safeNotionCall<T>(
   operation: () => Promise<T>,
@@ -353,6 +366,7 @@ The SDK has built-in retry with exponential backoff (defaults: `maxRetries=2`, `
 ## Examples
 
 ### Property Value Extractors
+
 ```typescript
 import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
@@ -383,6 +397,7 @@ function getCheckbox(page: PageObjectResponse, prop: string): boolean {
 ```
 
 ### Multi-Workspace Factory
+
 ```typescript
 const clients = new Map<string, Client>();
 
@@ -395,6 +410,7 @@ function getClient(workspaceId: string, token: string): Client {
 ```
 
 ### Create a Page with Properties
+
 ```typescript
 await notion.pages.create({
   parent: { database_id },
@@ -409,6 +425,7 @@ await notion.pages.create({
 ```
 
 ### Python Pagination
+
 ```python
 cursor = None
 all_results = []

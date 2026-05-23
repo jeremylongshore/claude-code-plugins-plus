@@ -10,6 +10,7 @@ intercom-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Intercom integrations to production
 **Workflow:** Part of the cicd skill category for Intercom integration.
 **Relates to:** Other intercom skills in this pack.

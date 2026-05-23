@@ -46,6 +46,7 @@ The same pattern existed for the original preview rendered after upload:
 ```
 
 Two silent black holes. Any of these failure modes would vanish completely:
+
 - Firebase auth token not yet valid (race condition on initial load)
 - CORS header missing from a Cloud Run response
 - `/api/render` returning 404 because the session expired
@@ -180,6 +181,6 @@ Make failures loud, even when they're non-blocking. Your future self debugging a
 ---
 
 *Related posts:*
+
 - [Session Cookie Auth, Forgot-Password Timeouts, and Killing Flaky E2E Tests](/posts/session-cookies-forgot-password-flaky-e2e-tests/) — another deep-dive into Firebase auth edge cases and debugging invisible failures
 - [Waygate MCP v2.1.0: From Forensic Analysis to Production Enterprise Server](/posts/waygate-mcp-v2-1-0-forensic-analysis-to-production-enterprise-server-with-taskwarrior/) — systematic resolution of 19 critical issues through forensic analysis
-

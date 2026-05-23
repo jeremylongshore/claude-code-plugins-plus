@@ -3,6 +3,7 @@
 ## Authentication Issues
 
 ### Wrong Key Format
+
 ```python
 # ❌ Wrong: OpenAI key format
 api_key = "sk-..."  # OpenAI format
@@ -12,6 +13,7 @@ api_key = "sk-or-v1-..."  # OpenRouter format
 ```
 
 ### Missing Bearer Prefix
+
 ```python
 # ❌ Wrong: No Bearer prefix
 headers = {"Authorization": api_key}
@@ -21,6 +23,7 @@ headers = {"Authorization": f"Bearer {api_key}"}
 ```
 
 ### Hardcoded Keys
+
 ```python
 # ❌ Wrong: Hardcoded key
 client = OpenAI(

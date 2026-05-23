@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Install & Auth
 
 ## Overview
+
 Set up the Palantir Foundry Platform SDK (Python or TypeScript) and configure authentication using either bearer tokens for development or OAuth2 client credentials for production. Covers both the Platform SDK for direct API access and the OSDK for Ontology-based workflows.
 
 ## Prerequisites
+
 - Python 3.9+ or Node.js 18+
 - A Palantir Foundry enrollment with API access enabled
 - A third-party application registered in Developer Console (for OAuth2)
@@ -40,6 +42,7 @@ Set up the Palantir Foundry Platform SDK (Python or TypeScript) and configure au
 ### Step 1: Install the SDK
 
 **Python (Platform SDK):**
+
 ```bash
 set -euo pipefail
 pip install foundry-platform-sdk
@@ -47,6 +50,7 @@ python -c "import foundry; print(f'foundry-platform-sdk {foundry.__version__} in
 ```
 
 **Python (OSDK for Ontology access):**
+
 ```bash
 set -euo pipefail
 pip install palantir-sdk
@@ -54,6 +58,7 @@ python -c "import palantir; print('palantir-sdk installed')"
 ```
 
 **TypeScript (OSDK):**
+
 ```bash
 set -euo pipefail
 npm install @osdk/client @osdk/oauth
@@ -61,6 +66,7 @@ npx tsc --version
 ```
 
 ### Step 2: Configure Environment Variables
+
 ```bash
 # .env — never commit this file
 FOUNDRY_HOSTNAME=mycompany.palantirfoundry.com
@@ -74,6 +80,7 @@ FOUNDRY_CLIENT_SECRET=secret456
 ```
 
 ### Step 3: Initialize with Bearer Token (Development)
+
 ```python
 import os
 import foundry
@@ -93,6 +100,7 @@ for ds in datasets:
 ```
 
 ### Step 4: Initialize with OAuth2 (Production)
+
 ```python
 import os
 import foundry
@@ -117,6 +125,7 @@ for ont in ontologies:
 ```
 
 ### Step 5: TypeScript OSDK Setup
+
 ```typescript
 import { createClient } from "@osdk/client";
 import { createConfidentialOauthClient } from "@osdk/oauth";
@@ -135,6 +144,7 @@ const client = createClient(
 ```
 
 ### Step 6: Generate Credentials via Developer Console
+
 ```text
 1. Navigate to https://<hostname>/workspace/developer-console
 2. Create a new application > select "Server application"
@@ -144,12 +154,14 @@ const client = createClient(
 ```
 
 ## Output
+
 - SDK installed and importable (`foundry-platform-sdk` or `@osdk/client`)
 - Environment variables configured for your Foundry enrollment
 - Authenticated client verified against the Foundry API
 - Ontology or dataset listing confirms read access
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401 Unauthorized` | Token expired or invalid | Regenerate token in Developer Console |
@@ -161,6 +173,7 @@ const client = createClient(
 ## Examples
 
 ### SDK Comparison
+
 | SDK | Package | Use Case |
 |-----|---------|----------|
 | Platform SDK | `foundry-platform-sdk` | Direct REST: datasets, branches, files, builds |
@@ -168,10 +181,12 @@ const client = createClient(
 | TypeScript OSDK | `@osdk/client` | Frontend/Node.js Ontology access |
 
 ## Resources
+
 - [Foundry API Getting Started](https://www.palantir.com/docs/foundry/api/general/overview/getting-started)
 - [Authentication Guide](https://www.palantir.com/docs/foundry/api/general/overview/authentication)
 - [Python SDK GitHub](https://github.com/palantir/foundry-platform-python)
 - [OSDK Overview](https://www.palantir.com/docs/foundry/ontology-sdk/overview)
 
 ## Next Steps
+
 Proceed to `palantir-hello-world` for your first Ontology query, or `palantir-local-dev-loop` for development workflow.

@@ -8,6 +8,7 @@ argument-hint: "[url]"
 You are launching a manual UI testing session using Chrome browser.
 
 This is a **standalone command** - it does NOT run the full sprint workflow. Use this when you want to:
+
 - Quickly explore your app in a real browser
 - Manually test features while console errors are captured
 - Debug UI issues interactively
@@ -18,11 +19,13 @@ This is a **standalone command** - it does NOT run the full sprint workflow. Use
 ### Step 0: Locate Sprint Directory
 
 Find the current sprint directory:
+
 ```bash
 ls -d .claude/sprint/*/ 2>/dev/null | sort -V | tail -1
 ```
 
 If no sprint exists, create the first one:
+
 ```bash
 mkdir -p .claude/sprint/1
 ```
@@ -32,6 +35,7 @@ Store the sprint directory path (e.g., `.claude/sprint/1/`) for saving the repor
 ### Step 1: Determine Frontend URL
 
 Check for URL in this order:
+
 1. Command argument (e.g., `/sprint:test http://localhost:8080`)
 2. `.claude/project-map.md` - look for frontend URL
 3. Default: `http://localhost:3000`
@@ -69,6 +73,7 @@ Call: mcp__claude-in-chrome__computer
 ```
 
 Report to user:
+
 ```
 Browser opened at [URL]
 
@@ -93,6 +98,7 @@ If errors are found, briefly note them but don't interrupt the user's flow.
 ### Step 6: Wait for User to Finish
 
 The user will indicate they're done testing by saying something like:
+
 - "done"
 - "finish"
 - "stop testing"
@@ -103,19 +109,22 @@ The user will indicate they're done testing by saying something like:
 When the user signals completion:
 
 1. Take final screenshot:
+
 ```
 Call: mcp__claude-in-chrome__computer
 - action: "screenshot"
 - tabId: [tabId]
 ```
 
-2. Get all console messages:
+1. Get all console messages:
+
 ```
 Call: mcp__claude-in-chrome__read_console_messages
 - tabId: [tabId]
 ```
 
-3. Optionally get network requests if relevant:
+1. Optionally get network requests if relevant:
+
 ```
 Call: mcp__claude-in-chrome__read_network_requests
 - tabId: [tabId]
@@ -154,6 +163,7 @@ Generate a report with this structure:
 Write the report to: `.claude/sprint/[N]/manual-test-report.md`
 
 If a previous `manual-test-report.md` exists, append a timestamp suffix:
+
 - `.claude/sprint/[N]/manual-test-report-[timestamp].md`
 
 **Inform the user:**
@@ -168,6 +178,7 @@ The architect will use it to understand what needs to be fixed.
 ## Error Handling
 
 If the browser fails to open or navigate:
+
 - Report the error to the user
 - Suggest checking if the app is running
 - Provide the URL that was attempted

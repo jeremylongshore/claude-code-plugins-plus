@@ -31,6 +31,7 @@ Generate production-ready backup scripts for PostgreSQL, MySQL, MongoDB, and SQL
 ## Quick Start
 
 ### PostgreSQL Backup
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -50,6 +51,7 @@ rm "$BACKUP_FILE"
 ```
 
 ### MySQL Backup
+
 ```bash
 #!/bin/bash
 BACKUP_DIR="/var/backups/mysql"
@@ -64,6 +66,7 @@ mysqldump -h localhost -u root -p"${MYSQL_PASSWORD}" \
 ```
 
 ### MongoDB Backup
+
 ```bash
 #!/bin/bash
 mongodump --uri="mongodb://localhost:27017" \  # 27017: MongoDB port
@@ -75,7 +78,9 @@ mongodump --uri="mongodb://localhost:27017" \  # 27017: MongoDB port
 ## Instructions
 
 ### Step 1: Gather Requirements
+
 Ask the user for:
+
 - Database type (PostgreSQL, MySQL, MongoDB, SQLite)
 - Database connection details (host, port, database name)
 - Backup schedule (cron expression or frequency)
@@ -84,7 +89,9 @@ Ask the user for:
 - Backup destination (local path, S3, GCS)
 
 ### Step 2: Generate Backup Script
+
 Use `scripts/backup_script_generator.py` to create a customized backup script:
+
 ```bash
 python3 ${CLAUDE_SKILL_DIR}/scripts/backup_script_generator.py \
   --db-type postgresql \
@@ -95,7 +102,9 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/backup_script_generator.py \
 ```
 
 ### Step 3: Schedule with Cron
+
 Use `scripts/backup_scheduler.py` to create cron entries:
+
 ```bash
 python3 ${CLAUDE_SKILL_DIR}/scripts/backup_scheduler.py \
   --script /opt/backup-scripts/mydb-backup.sh \
@@ -104,7 +113,9 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/backup_scheduler.py \
 ```
 
 ### Step 4: Validate Backup
+
 After backup completes, validate integrity:
+
 ```bash
 python3 ${CLAUDE_SKILL_DIR}/scripts/backup_validator.py \
   --backup-file /var/backups/postgresql/mydb_20250115.sql.gz \
@@ -112,7 +123,9 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/backup_validator.py \
 ```
 
 ### Step 5: Generate Restore Procedure
+
 Create matching restore script:
+
 ```bash
 python3 ${CLAUDE_SKILL_DIR}/scripts/restore_script_generator.py \
   --db-type postgresql \

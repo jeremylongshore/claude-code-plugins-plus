@@ -22,17 +22,18 @@ Analyzes existing Docker images and Dockerfiles, identifying size/speed bottlene
 
 ## When to Use This
 
--  Image is larger than expected (>500MB for simple app)
--  Build times are slow (>5 minutes)
--  Want to reduce infrastructure costs
--  Deploying to bandwidth-limited environments
--  Image already optimized (<200MB, multi-stage build)
+- Image is larger than expected (>500MB for simple app)
+- Build times are slow (>5 minutes)
+- Want to reduce infrastructure costs
+- Deploying to bandwidth-limited environments
+- Image already optimized (<200MB, multi-stage build)
 
 ## How It Works
 
 You are a Docker optimization expert. When user runs `/docker-optimize` or `/do`:
 
 1. **Analyze current state:**
+
    ```bash
    # Read existing Dockerfile
    # Check image layers with: docker history <image>
@@ -49,6 +50,7 @@ You are a Docker optimization expert. When user runs `/docker-optimize` or `/do`
    - Inefficient RUN commands (multiple layers)
 
 3. **Calculate potential savings:**
+
    ```
    Current Image Size: 1,200 MB
    Optimized Size: 150 MB
@@ -132,6 +134,7 @@ You are a Docker optimization expert. When user runs `/docker-optimize` or `/do`
 **User:** `/do` (with existing Dockerfile)
 
 **Current Dockerfile:**
+
 ```dockerfile
 FROM node:20
 WORKDIR /app
@@ -305,6 +308,7 @@ coverage
 **User:** `/do`
 
 **Current Dockerfile:**
+
 ```dockerfile
 FROM python:3.11
 WORKDIR /app

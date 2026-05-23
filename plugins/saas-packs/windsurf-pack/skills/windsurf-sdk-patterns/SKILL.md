@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Configuration Patterns
 
 ## Overview
+
 Production-ready configuration patterns for Windsurf IDE: rules files, workspace rules with trigger modes, MCP server integration, and Cascade prompt engineering.
 
 ## Prerequisites
+
 - Windsurf authenticated and operational
 - Understanding of Cascade Write vs Chat modes
 - Project with established coding conventions
@@ -184,6 +186,7 @@ BAD prompts (vague, unscoped):
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Rules ignored by Cascade | File over 6,000 chars | Trim to essentials, split into workspace rules |
@@ -195,6 +198,7 @@ BAD prompts (vague, unscoped):
 ## Examples
 
 ### Global Rules (Apply to All Projects)
+
 ```markdown
 <!-- ~/.windsurf/global_rules.md (6,000 char limit) -->
 - Always use English for code comments and commit messages
@@ -205,15 +209,18 @@ BAD prompts (vague, unscoped):
 ```
 
 ### Project Health Check
+
 ```bash
 # Verify Windsurf config exists
 ls -la .windsurfrules .codeiumignore .windsurf/rules/ 2>/dev/null
 ```
 
 ## Resources
+
 - [Windsurf Rules Directory](https://windsurf.com/editor/directory)
 - [Cascade Memories](https://docs.windsurf.com/windsurf/cascade/memories)
 - [MCP Integration](https://docs.windsurf.com/windsurf/cascade/mcp)
 
 ## Next Steps
+
 Apply patterns in `windsurf-core-workflow-a` for real-world Cascade usage.

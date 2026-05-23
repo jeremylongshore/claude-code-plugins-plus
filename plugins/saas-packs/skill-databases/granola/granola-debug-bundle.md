@@ -10,6 +10,7 @@ granola-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Granola debug evidence for support
 **Workflow:** Part of the operations skill category for Granola integration.
 **Relates to:** Other granola skills in this pack.

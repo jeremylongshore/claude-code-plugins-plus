@@ -10,6 +10,7 @@ Initialize a production-ready Firebase Genkit project with proper structure, con
 ## Step 1: Determine Project Language
 
 Ask the user to choose the target language:
+
 - **Node.js/TypeScript** (Genkit 1.0 - Stable, recommended for most use cases)
 - **Python** (Alpha - Early adopters, Python ecosystem integration)
 - **Go** (1.0 - High performance, backend services)
@@ -36,6 +37,7 @@ npx tsc --init
 ```
 
 Create `tsconfig.json`:
+
 ```json
 {
   "compilerOptions": {
@@ -57,6 +59,7 @@ Create `tsconfig.json`:
 ```
 
 Create `src/index.ts`:
+
 ```typescript
 import { genkit, z } from 'genkit';
 import { googleAI, gemini25Flash } from '@genkit-ai/googleai';
@@ -99,6 +102,7 @@ export { exampleFlow };
 ```
 
 Create `package.json` scripts:
+
 ```json
 {
   "scripts": {
@@ -128,6 +132,7 @@ pip freeze > requirements.txt
 ```
 
 Create `main.py`:
+
 ```python
 from genkit import genkit
 from genkit.plugins import google_ai
@@ -169,6 +174,7 @@ go get github.com/firebase/genkit/go/plugins/googleai
 ```
 
 Create `main.go`:
+
 ```go
 package main
 
@@ -218,6 +224,7 @@ func main() {
 ## Step 3: Environment Configuration
 
 Create `.env` file:
+
 ```bash
 # Google API Key (for Google AI plugin)
 GOOGLE_API_KEY=your_api_key_here
@@ -230,6 +237,7 @@ NODE_ENV=development
 ```
 
 Create `.env.example` (committed to git):
+
 ```bash
 GOOGLE_API_KEY=
 GOOGLE_CLOUD_PROJECT=
@@ -278,6 +286,7 @@ firebase init
 ```
 
 Update `firebase.json`:
+
 ```json
 {
   "functions": [
@@ -315,6 +324,7 @@ Access UI at: `http://localhost:4000`
 ## Step 7: Testing
 
 Create test file `tests/flows.test.ts`:
+
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { exampleFlow } from '../src/index';
@@ -341,6 +351,7 @@ describe('exampleFlow', () => {
 ## Next Steps
 
 After initialization:
+
 1. Review and customize the example flow
 2. Add your specific business logic
 3. Implement additional flows for your use case

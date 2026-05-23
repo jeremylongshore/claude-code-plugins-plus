@@ -3,6 +3,7 @@
 ## Rate Limit Architecture
 
 Lindy enforces rate limits at two levels:
+
 1. **API rate limits** -- requests per minute/hour to the Lindy REST API
 2. **Agent execution limits** -- concurrent runs per workspace
 

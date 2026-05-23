@@ -56,12 +56,14 @@ The template structure I developed:
 Running this framework against DiagnosticPro revealed fascinating insights:
 
 **What's Working Well:**
+
 - Production architecture with 95%+ success rate
 - Proprietary 14-section AI diagnostic framework
 - Clean separation of concerns across GCP projects
 - Comprehensive data pipeline (266 BigQuery tables)
 
 **Critical Gaps Identified:**
+
 - No Infrastructure as Code implementation
 - Missing monitoring dashboards for cross-project visibility
 - Documentation scattered across multiple locations
@@ -81,10 +83,12 @@ You are a senior cloud architect creating analysis for [ENGINEER_NAME]...
 
 ## Project Structure
 ```
+
 [PROJECT_ROOT]/
 ├── docs/                 # Documentation
 ├── src/                  # Source code
 ├── [ENGINEER_NAME]_DEVOPS_GUIDE.md  # 🔑 PRIMARY REFERENCE
+
 ```
 
 This template can now be used for any project by simply replacing:
@@ -113,6 +117,7 @@ gcloud projects add-iam-policy-binding diagnosticpro-relay-1758728286 \
 ### The Troubleshooting Journey
 
 **Second Attempt:** Added IAP tunneling access
+
 ```bash
 gcloud projects add-iam-policy-binding diagnosticpro-relay-1758728286 \
   --member="user:opeyemi.ariyo@gmail.com" \
@@ -120,6 +125,7 @@ gcloud projects add-iam-policy-binding diagnosticpro-relay-1758728286 \
 ```
 
 **Third Attempt:** Firewall rules and network tags
+
 ```bash
 gcloud compute firewall-rules create allow-ssh-via-iap \
   --source-ranges=35.235.240.0/20 \
@@ -134,6 +140,7 @@ gcloud compute firewall-rules create allow-ssh-via-iap \
 The issue wasn't just permissions - the VM had OS Login service problems. Organization policy `constraints/compute.requireOsLogin` was enforcing OS Login, but the service wasn't working correctly.
 
 **Solution:** Create a new VM with proper OS Login configuration:
+
 ```bash
 gcloud compute instances create opeyemi-dev-vm-v2 \
   --zone=us-central1-a \
@@ -173,6 +180,7 @@ The universal template framework only works if it's been tested against real com
 ### 4. IAP vs Traditional SSH
 
 We chose Identity-Aware Proxy over traditional SSH for security reasons:
+
 - No need to manage SSH keys across team members
 - Centralized access logging and audit trails
 - Integration with existing IAM policies
@@ -189,6 +197,7 @@ This taught me that infrastructure decisions always have business context. The e
 Here's how this approach can be applied to any project:
 
 **Step 1: Template Customization**
+
 ```bash
 # Replace placeholders with project specifics
 sed -i 's/\[PROJECT_NAME\]/YourProject/g' analysis-template.md
@@ -196,12 +205,14 @@ sed -i 's/\[ENGINEER_NAME\]/TeamMember/g' analysis-template.md
 ```
 
 **Step 2: Systematic Analysis**
+
 - Start with README and root files
 - Analyze directory structure (preferably numbered like 01-docs, 02-src)
 - Cross-reference documentation with actual implementation
 - Document discrepancies honestly
 
 **Step 3: Operational Testing**
+
 - Try the access procedures yourself
 - Document failure modes and workarounds
 - Test permissions with actual use cases
@@ -210,16 +221,19 @@ sed -i 's/\[ENGINEER_NAME\]/TeamMember/g' analysis-template.md
 ## Results and Metrics
 
 **Documentation Impact:**
+
 - 20,000+ word comprehensive system analysis created
 - Universal template framework for future onboarding
 - Reduced onboarding time from weeks to days
 
 **Technical Resolution:**
+
 - Complex multi-project GCP permissions resolved
 - Secure IAP tunneling implemented
 - Development environment operational
 
 **Process Innovation:**
+
 - Reusable template framework created
 - Real-world permission troubleshooting documented
 - Cost-conscious infrastructure decisions established
@@ -234,6 +248,7 @@ I've saved both the DiagnosticPro-specific analysis and the universal template t
 ## What's Next
 
 This framework is now being used for:
+
 - Onboarding additional team members to other projects
 - Creating system documentation for client handoffs
 - Standardizing DevOps analysis across the portfolio
@@ -246,6 +261,3 @@ The combination of comprehensive documentation and systematic permission managem
 - [Building AI-Friendly Codebase Documentation: A Real-Time CLAUDE.md Creation Journey](/posts/building-ai-friendly-codebase-documentation-real-time-claude-md-creation-journey/) - Deep dive into AI-assisted documentation creation
 - [Waygate MCP v2.1.0: From Forensic Analysis to Production Enterprise Server](/posts/waygate-mcp-v2-1-0-forensic-analysis-to-production-enterprise-server/) - Systematic infrastructure analysis and resolution
 - [Comprehensive Technical Guide to SSH, Debian Packages, and Grep](/posts/startai/comprehensive-technical-guide-to-ssh-debian-packages-and-grep/) - Technical reference for Linux system administration
-
-
-

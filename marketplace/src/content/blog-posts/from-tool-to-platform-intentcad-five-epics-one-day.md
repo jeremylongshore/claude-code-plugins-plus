@@ -152,7 +152,7 @@ Stack the contracts right and velocity compounds.
 ---
 
 *Related posts:*
+
 - [Building a Deterministic DXF Comparison Engine in One Day](/posts/deterministic-dxf-comparison-engine-one-day-build/) — the E1-E4 engine layers that IntentCAD's diff service hardens
 - [Engine to Product: Three Interfaces, One Codebase](/posts/engine-to-product-three-interfaces-one-codebase/) — the CLI, API, and frontend wizard that preceded the platform pivot
 - [PDF Extraction Sweep: Day of 42 Commits](/posts/pdf-extraction-sweep-day-42-commits/) — another high-velocity build day shipping a complete pipeline
-

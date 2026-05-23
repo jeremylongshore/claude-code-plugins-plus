@@ -24,13 +24,16 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Debug Bundle
 
 ## Current State
+
 !`vastai --version 2>/dev/null || echo 'vastai CLI not installed'`
 !`python3 --version 2>/dev/null || echo 'Python not available'`
 
 ## Overview
+
 Collect comprehensive diagnostic information for Vast.ai GPU instance issues. Covers account verification, instance inspection, log collection, GPU diagnostics, and network testing.
 
 ## Prerequisites
+
 - Vast.ai CLI installed and authenticated
 - Access to the problematic instance (if still running)
 
@@ -119,6 +122,7 @@ echo ""
 ```
 
 ## Output
+
 - Account info (username, balance, key prefix)
 - All instance statuses with GPU details
 - Instance logs (last 100 lines)
@@ -126,6 +130,7 @@ echo ""
 - API connectivity test
 
 ## Error Handling
+
 | Issue | Diagnostic | Solution |
 |-------|------------|----------|
 | Instance shows `error` | Check `status_msg` in details | Destroy and reprovision on different host |
@@ -134,10 +139,12 @@ echo ""
 | Disk full | Check `df -h /workspace` | Increase disk or clean artifacts |
 
 ## Resources
+
 - [Vast.ai CLI Reference](https://docs.vast.ai/cli/get-started)
 - [vast-cli GitHub](https://github.com/vast-ai/vast-cli)
 
 ## Next Steps
+
 For rate limit handling, see `vastai-rate-limits`.
 
 ## Examples

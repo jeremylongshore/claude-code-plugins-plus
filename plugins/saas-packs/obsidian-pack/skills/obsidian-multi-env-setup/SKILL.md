@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Obsidian Multi-Environment Setup
 
 ## Overview
+
 Configure separate development, testing, and production vaults for Obsidian plugin work. Covers vault templates for team onboarding, environment-specific plugin settings, sync strategies, and `.obsidian/` directory management across environments.
 
 ## Prerequisites
+
 - Obsidian desktop app installed
 - Node.js 18+ and npm/pnpm for plugin builds
 - Git for version control (recommended)
@@ -201,6 +203,7 @@ echo "Vault provisioned at $VAULT_DIR for $USERNAME ($ROLE)"
 Choose based on your team's needs:
 
 **Git sync** (best for plugin developers):
+
 ```bash
 cd ~/obsidian-envs/prod
 git init
@@ -249,6 +252,7 @@ done
 ```
 
 ## Output
+
 - Three isolated vaults (dev/test/prod) with independent plugin configurations
 - Symlinked plugin source in dev vault with hot reload
 - Environment detection and config switching in plugin code
@@ -257,6 +261,7 @@ done
 - `.obsidian/` management scripts for consistent cross-env config
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Symlink not working | Permission denied on Windows | Run terminal as Administrator, or use `mklink /D` |
@@ -275,10 +280,12 @@ done
 **CI testing across Obsidian versions**: Create a headless test vault with your plugin installed. Use `obsidian-cli` or Electron automation to open the vault, run plugin commands, and verify output. Repeat for each Obsidian version in your support matrix.
 
 ## Resources
+
 - [Obsidian URI Protocol](https://help.obsidian.md/Extending+Obsidian/Obsidian+URI)
 - [BRAT for Beta Testing](https://github.com/TfTHacker/obsidian42-brat)
 - [Hot Reload Plugin](https://github.com/pjeby/hot-reload)
 - [Obsidian Git Plugin](https://github.com/denolehov/obsidian-git)
 
 ## Next Steps
+
 For monitoring and logging across environments, see `obsidian-observability`. For access control on shared vaults, see `obsidian-enterprise-rbac`.

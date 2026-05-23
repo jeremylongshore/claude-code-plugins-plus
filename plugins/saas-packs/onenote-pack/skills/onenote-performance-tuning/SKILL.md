@@ -29,6 +29,7 @@ OneNote performance degrades predictably at scale: notebooks with 100+ sections 
 This skill provides tested patterns for every performance bottleneck: selective `$expand` and `$select` for minimal payloads, image compression before upload, batch requests via `$batch`, pagination with `$top` to avoid loading thousands of pages, and caching strategies that invalidate on change detection.
 
 Key pain points addressed:
+
 - Full `$expand=sections($expand=pages)` on large notebooks can take 10+ seconds and return multi-MB responses
 - Image uploads silently fail when a single multipart part exceeds 25MB — no error, just missing image
 - `507 Insufficient Storage` when a section hits its page limit (approximately 5,000 pages)
@@ -369,6 +370,7 @@ def compress_image(image_bytes: bytes, max_size_mb: float = 4.0) -> bytes:
 ## Output
 
 Performance optimization delivers:
+
 - **Payload reduction:** 80-95% smaller responses with `$select` vs default queries
 - **Latency improvement:** 5-10x faster responses by avoiding deep `$expand`
 - **Image reliability:** Pre-validated uploads that never silently fail
@@ -388,6 +390,7 @@ Performance optimization delivers:
 ## Examples
 
 **Profile a notebook for performance issues:**
+
 ```typescript
 async function profileNotebook(client: any, notebookId: string) {
   const sections = await client.api(
@@ -416,6 +419,7 @@ async function profileNotebook(client: any, notebookId: string) {
 ```
 
 **Python — Parallel section loading with concurrency limit:**
+
 ```python
 import asyncio
 

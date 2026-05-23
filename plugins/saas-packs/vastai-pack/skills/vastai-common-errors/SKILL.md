@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Common Errors
 
 ## Overview
+
 Quick reference for the most common Vast.ai errors across CLI, REST API, and instance operations. Vast.ai uses HTTP status codes for API errors and instance status strings for machine-level issues.
 
 ## Prerequisites
+
 - Vast.ai CLI installed (`pip install vastai`)
 - API key configured
 
@@ -116,11 +118,13 @@ vastai search offers 'gpu_ram>=48 num_gpus=1' --order dph_total
 ```
 
 ## Output
+
 - Identified error with matching resolution
 - Corrected configuration or command
 - Verification that the fix resolves the issue
 
 ## Error Handling
+
 | Category | Diagnostic Command |
 |----------|--------------------|
 | Auth issues | `vastai show user` |
@@ -130,11 +134,13 @@ vastai search offers 'gpu_ram>=48 num_gpus=1' --order dph_total
 | Balance check | `vastai show user --raw \| jq '.balance'` |
 
 ## Resources
+
 - [Vast.ai Documentation](https://docs.vast.ai)
 - [Vast.ai Status Page](https://status.vast.ai)
 - [CLI Reference](https://docs.vast.ai/cli/get-started)
 
 ## Next Steps
+
 For comprehensive debugging, see `vastai-debug-bundle`.
 
 ## Examples

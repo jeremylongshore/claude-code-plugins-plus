@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Observability
 
 ## Overview
+
 Set up comprehensive observability for Foundry integrations: structured logging with request IDs, Prometheus metrics for API latency/errors, health check endpoints, and alert rules.
 
 ## Prerequisites
+
 - Working Foundry integration
 - Prometheus + Grafana (or equivalent monitoring stack)
 - Familiarity with `palantir-prod-checklist`
@@ -37,6 +39,7 @@ Set up comprehensive observability for Foundry integrations: structured logging 
 ## Instructions
 
 ### Step 1: Structured Logging
+
 ```python
 import logging, json, time, uuid
 
@@ -62,6 +65,7 @@ class FoundryLogger:
 ```
 
 ### Step 2: Prometheus Metrics
+
 ```python
 from prometheus_client import Counter, Histogram, Gauge
 
@@ -98,6 +102,7 @@ def instrumented_call(client, method, *args, **kwargs):
 ```
 
 ### Step 3: Health Check with Metrics
+
 ```python
 import time
 
@@ -114,6 +119,7 @@ async def foundry_health_check():
 ```
 
 ### Step 4: Alert Rules (Prometheus)
+
 ```yaml
 groups:
   - name: foundry
@@ -140,6 +146,7 @@ groups:
 ```
 
 ### Step 5: Dashboard Queries (Grafana)
+
 ```
 # Request rate by status
 rate(foundry_api_requests_total[5m])
@@ -153,12 +160,14 @@ sum(rate(foundry_api_requests_total{status=~"[45].."}[5m]))
 ```
 
 ## Output
+
 - Structured JSON logging with request IDs
 - Prometheus metrics for requests, latency, and health
 - Alert rules for API downtime, error rate, and latency
 - Grafana dashboard queries
 
 ## Error Handling
+
 | Alert | Threshold | Action |
 |-------|-----------|--------|
 | API Down | Health check fails 2min | Page on-call, check `palantir-incident-runbook` |
@@ -167,8 +176,10 @@ sum(rate(foundry_api_requests_total{status=~"[45].."}[5m]))
 | Rate Limited | 429 count spike | Tune rate limiter settings |
 
 ## Resources
+
 - [Prometheus Python Client](https://github.com/prometheus/client_python)
 - [Foundry API Reference](https://www.palantir.com/docs/foundry/api/general/overview/introduction)
 
 ## Next Steps
+
 For multi-environment setup, see `palantir-multi-env-setup`.

@@ -10,6 +10,7 @@ together-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Together AI costs and usage
 **Workflow:** Part of the cicd skill category for Together AI integration.
 **Relates to:** Other together skills in this pack.

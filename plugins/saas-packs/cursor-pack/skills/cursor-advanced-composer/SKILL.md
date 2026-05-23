@@ -104,6 +104,7 @@ Each agent has its own context and conversation history. They can modify the sam
 ### Conflict Resolution Between Agents
 
 If two agents modify the same file, the second write overwrites the first. Mitigate this by:
+
 - Assigning non-overlapping file scopes to each agent
 - Running agents sequentially for shared files
 - Using git to cherry-pick the best changes
@@ -242,6 +243,7 @@ When generating code via Composer:
 ### Iterative Refinement
 
 After first pass:
+
 ```
 The generated product.service.ts looks good but:
 1. Add pagination support to findMany (page, limit params)

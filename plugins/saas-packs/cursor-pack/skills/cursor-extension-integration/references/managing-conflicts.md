@@ -3,6 +3,7 @@
 ## Managing Conflicts
 
 ### Cursor AI vs Other AI
+
 ```
 Disable conflicting extensions:
 1. Extensions panel (Cmd+Shift+X)
@@ -19,6 +20,7 @@ Or via settings:
 ```
 
 ### Completion Conflicts
+
 ```
 If completions behave strangely:
 
@@ -41,6 +43,7 @@ If completions behave strangely:
 ```
 
 ### Keybinding Conflicts
+
 ```
 Find conflicts:
 1. Cmd+K Cmd+S (Keyboard Shortcuts)

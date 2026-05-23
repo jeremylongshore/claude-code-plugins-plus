@@ -17,6 +17,7 @@ RemoFirst is a global Employer of Record (EOR) platform for hiring and paying em
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `remofirst-install-auth` | API authentication setup and credential configuration |

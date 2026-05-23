@@ -9,6 +9,7 @@ Validate test suite quality by introducing code mutations and verifying tests ca
 ## Mutation Testing Concept
 
 Mutation testing modifies ("mutates") code to check if tests detect the changes:
+
 - **Mutant killed**  - Test failed (good, caught the bug)
 - **Mutant survived**  - Test passed (bad, missed the bug)
 

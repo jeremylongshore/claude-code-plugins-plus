@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Core Workflow A: Instance Provisioning & Job Execution
 
 ## Overview
+
 Primary workflow for Vast.ai: search for GPU offers, provision an instance, transfer data, execute a training or inference job, collect artifacts, and destroy the instance to stop billing. This is the money-path operation for every Vast.ai user.
 
 ## Prerequisites
+
 - Completed `vastai-install-auth` setup
 - Docker image published to a registry (Docker Hub, GHCR, etc.)
 - SSH key uploaded to Vast.ai
@@ -160,12 +162,14 @@ cleanup_instance(instance_id, info["ssh_host"], info["ssh_port"])
 ```
 
 ## Output
+
 - GPU instance provisioned from the cheapest matching offer
 - Training job executed with GPU acceleration
 - Model checkpoints and logs downloaded locally
 - Instance destroyed (billing stopped)
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | No offers match filters | GPU type or price too restrictive | Relax `dph_total` or try different `gpu_name` |
@@ -175,12 +179,14 @@ cleanup_instance(instance_id, info["ssh_host"], info["ssh_port"])
 | Instance preempted (spot) | Host reclaimed interruptible instance | Use on-demand or implement checkpoint recovery |
 
 ## Resources
+
 - [Search & Filter Offers](https://docs.vast.ai/search-and-filter-gpu-offers)
 - [Instance Management](https://docs.vast.ai/api-reference/instances/create-instance)
 - [CLI Reference](https://docs.vast.ai/cli/get-started)
 - [REST API Overview](https://docs.vast.ai/api/overview-and-quickstart)
 
 ## Next Steps
+
 For multi-instance orchestration and cost optimization, see `vastai-core-workflow-b`.
 
 ## Examples

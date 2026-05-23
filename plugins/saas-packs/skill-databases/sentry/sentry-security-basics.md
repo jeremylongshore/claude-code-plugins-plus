@@ -10,6 +10,7 @@ sentry-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Sentry security settings and data protection including PII scrubbing, DSN security, access control, and compliance considerations.
 **Workflow:** Configure during initial setup or when preparing for compliance audits. Essential for production deployments handling sensitive data.
 **Relates to:** Works with `sentry-data-handling` for advanced compliance. Connects to `sentry-enterprise-rbac` for access control.

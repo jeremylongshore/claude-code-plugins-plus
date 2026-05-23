@@ -3,6 +3,7 @@
 ## Performance Analytics
 
 ### Latency Analysis
+
 ```python
 import statistics
 
@@ -35,6 +36,7 @@ def get_latency_by_model(self) -> dict:
 ```
 
 ### Error Rate Tracking
+
 ```python
 class ErrorTracker:
     def __init__(self):

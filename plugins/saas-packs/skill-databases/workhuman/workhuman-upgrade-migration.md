@@ -10,6 +10,7 @@ workhuman-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Workhuman SDK upgrades
 **Workflow:** Part of the operations skill category for Workhuman integration.
 **Relates to:** Other workhuman skills in this pack.

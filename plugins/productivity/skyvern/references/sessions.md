@@ -15,6 +15,7 @@
 ## Validation step
 
 After login, run `skyvern_validate` with a concrete condition:
+
 - user avatar visible,
 - logout button present,
 - account dashboard heading shown.

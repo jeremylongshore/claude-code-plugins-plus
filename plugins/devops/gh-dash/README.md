@@ -17,6 +17,7 @@ claude --plugin-dir /path/to/claude-code-gh-dash
 ```
 
 Or install from marketplace:
+
 ```
 /plugin install gh-dash
 ```

@@ -10,6 +10,7 @@ techsmith-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute TechSmith primary workflow
 **Workflow:** Part of the onboarding skill category for TechSmith integration.
 **Relates to:** Other techsmith skills in this pack.

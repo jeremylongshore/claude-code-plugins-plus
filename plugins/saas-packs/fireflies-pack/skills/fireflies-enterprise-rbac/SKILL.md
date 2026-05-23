@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Enterprise RBAC
 
 ## Overview
+
 Manage workspace access control in Fireflies.ai using roles, channels, privacy levels, and the sharing API. Fireflies uses per-seat licensing with workspace roles and channel-based transcript organization.
 
 ## Prerequisites
+
 - Fireflies Business or Enterprise plan
 - Workspace admin privileges (or API key from admin account)
 - Understanding of your team structure
@@ -43,6 +45,7 @@ Manage workspace access control in Fireflies.ai using roles, channels, privacy l
 ## Instructions
 
 ### Step 1: List Workspace Members
+
 ```bash
 set -euo pipefail
 curl -s -X POST https://api.fireflies.ai/graphql \
@@ -53,6 +56,7 @@ curl -s -X POST https://api.fireflies.ai/graphql \
 ```
 
 ### Step 2: Set User Roles via API
+
 ```typescript
 // Promote or change a user's role
 async function setUserRole(userId: string, role: string) {
@@ -67,6 +71,7 @@ async function setUserRole(userId: string, role: string) {
 ```
 
 ### Step 3: Organize Transcripts with Channels
+
 ```typescript
 // List all channels
 const channels = await firefliesQuery(`{
@@ -90,11 +95,13 @@ async function assignToChannel(transcriptIds: string[], channelId: string) {
 ```
 
 Organize by department:
+
 - **Sales** channel: All client/prospect calls
 - **Engineering** channel: Sprint reviews, architecture discussions
 - **Leadership** channel (private): Board meetings, strategy sessions
 
 ### Step 4: Control Transcript Privacy
+
 ```typescript
 // Privacy levels (most restrictive to least)
 type PrivacyLevel =
@@ -117,6 +124,7 @@ await setTranscriptPrivacy("transcript-id", "participants");
 ```
 
 ### Step 5: Share Meetings with External Users
+
 ```typescript
 // Share a transcript with up to 100 email recipients
 async function shareMeeting(transcriptId: string, emails: string[], expiryDays = 30) {
@@ -140,6 +148,7 @@ async function revokeAccess(transcriptId: string, email: string) {
 ```
 
 ### Step 6: User Groups for Bulk Access
+
 ```typescript
 // List user groups
 const groups = await firefliesQuery(`
@@ -156,6 +165,7 @@ const groups = await firefliesQuery(`
 ```
 
 ### Step 7: Audit Transcript Access
+
 ```typescript
 async function auditTranscriptAccess(transcriptId: string) {
   const { transcript } = await firefliesQuery(`
@@ -183,6 +193,7 @@ async function auditTranscriptAccess(transcriptId: string) {
 ```
 
 ## Recommended Enterprise Configuration
+
 ```yaml
 privacy_defaults:
   internal_meetings: "teammatesandparticipants"
@@ -206,6 +217,7 @@ sharing_policy:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Cannot set role | Not workspace admin | Use admin API key |
@@ -214,14 +226,17 @@ sharing_policy:
 | Privacy update fails | Transcript not owned | Only organizer can change privacy |
 
 ## Output
+
 - Workspace members audited with roles and utilization
 - Channels created for department-based transcript organization
 - Privacy levels configured per meeting type
 - Sharing controls with expiry and revocation
 
 ## Resources
+
 - [Fireflies API Docs](https://docs.fireflies.ai/)
 - [User Query](https://docs.fireflies.ai/graphql-api/query/user)
 
 ## Next Steps
+
 For migration strategies, see `fireflies-migration-deep-dive`.

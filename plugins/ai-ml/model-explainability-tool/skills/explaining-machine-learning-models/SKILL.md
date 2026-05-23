@@ -35,6 +35,7 @@ This skill empowers Claude to analyze and explain machine learning models. It he
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Understand why a machine learning model made a specific prediction.
 - Identify the most important features influencing a model's output.
 - Debug model performance issues by identifying unexpected feature interactions.
@@ -48,6 +49,7 @@ This skill activates when you need to:
 User request: "Explain why this loan application was rejected."
 
 The skill will:
+
 1. Analyze the loan application data and the model's prediction.
 2. Calculate SHAP values to determine the contribution of each feature to the rejection decision.
 3. Present the results, highlighting the features that most strongly influenced the outcome, such as credit score or debt-to-income ratio.
@@ -57,6 +59,7 @@ The skill will:
 User request: "Interpret the customer churn model and identify the most important factors."
 
 The skill will:
+
 1. Analyze the customer churn model and its predictions.
 2. Use LIME to generate local explanations for individual customer churn predictions.
 3. Aggregate the LIME explanations to identify the most important features driving churn, such as customer tenure or service usage.

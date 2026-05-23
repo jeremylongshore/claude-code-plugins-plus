@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Hello World
 
 ## Overview
+
 Rent your first GPU instance on Vast.ai, run a PyTorch workload, and destroy the instance when done. Demonstrates the full lifecycle: search offers, create instance, connect via SSH, run a job, and tear down.
 
 ## Prerequisites
+
 - Completed `vastai-install-auth` setup
 - Vast.ai account with credits ($1+ recommended for testing)
 - SSH key uploaded to Vast.ai (cloud.vast.ai > Account > SSH Keys)
@@ -35,6 +37,7 @@ Rent your first GPU instance on Vast.ai, run a PyTorch workload, and destroy the
 ## Instructions
 
 ### Step 1: Search for Available GPUs (CLI)
+
 ```bash
 # Find cheap single-GPU offers sorted by price
 vastai search offers 'num_gpus=1 gpu_ram>=8 inet_down>100 reliability>0.95' \
@@ -44,6 +47,7 @@ vastai search offers 'num_gpus=1 gpu_ram>=8 inet_down>100 reliability>0.95' \
 ```
 
 ### Step 2: Search for Available GPUs (REST API)
+
 ```bash
 curl -s -H "Authorization: Bearer $VASTAI_API_KEY" \
   "https://cloud.vast.ai/api/v0/bundles/?q=%7B%22num_gpus%22%3A%7B%22eq%22%3A1%7D%2C%22gpu_ram%22%3A%7B%22gte%22%3A8%7D%2C%22reliability2%22%3A%7B%22gte%22%3A0.95%7D%2C%22rentable%22%3A%7B%22eq%22%3Atrue%7D%7D&order=dph_total&limit=5" \
@@ -51,6 +55,7 @@ curl -s -H "Authorization: Bearer $VASTAI_API_KEY" \
 ```
 
 ### Step 3: Create an Instance (CLI)
+
 ```bash
 # Replace OFFER_ID with the ID from search results
 vastai create instance OFFER_ID \
@@ -60,6 +65,7 @@ vastai create instance OFFER_ID \
 ```
 
 ### Step 4: Create an Instance (Python)
+
 ```python
 from vastai_client import VastClient
 
@@ -88,6 +94,7 @@ print(f"Instance created: {instance}")
 ```
 
 ### Step 5: Monitor and Connect
+
 ```bash
 # Check instance status (wait for 'running')
 vastai show instances --raw | jq '.[] | {id, actual_status, ssh_host, ssh_port}'
@@ -101,6 +108,7 @@ python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}')"
 ```
 
 ### Step 6: Run a Test Workload
+
 ```python
 # test_gpu.py — run this ON the rented instance
 import torch
@@ -126,6 +134,7 @@ print("Hello World from Vast.ai!")
 ```
 
 ### Step 7: Destroy the Instance
+
 ```bash
 # IMPORTANT: Destroy to stop billing
 vastai destroy instance INSTANCE_ID
@@ -135,12 +144,14 @@ vastai show instances
 ```
 
 ## Output
+
 - GPU instance rented and running on Vast.ai
 - SSH connection established to the remote GPU machine
 - PyTorch workload executed successfully with GPU acceleration
 - Instance destroyed (billing stopped)
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `No offers found` | Filters too strict | Relax GPU or reliability filters |
@@ -150,12 +161,14 @@ vastai show instances
 | `CUDA not available` | Driver mismatch | Use a CUDA-compatible Docker image |
 
 ## Resources
+
 - [Vast.ai Search & Filter](https://docs.vast.ai/search-and-filter-gpu-offers)
 - [Creating Instances](https://docs.vast.ai/api-reference/instances/create-instance)
 - [CLI Reference](https://docs.vast.ai/cli/get-started)
 - [REST API Quickstart](https://docs.vast.ai/api/overview-and-quickstart)
 
 ## Next Steps
+
 Proceed to `vastai-local-dev-loop` for development workflow setup.
 
 ## Examples

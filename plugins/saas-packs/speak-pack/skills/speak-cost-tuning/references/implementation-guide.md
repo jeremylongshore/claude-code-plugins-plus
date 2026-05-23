@@ -5,6 +5,7 @@ Detailed implementation reference for the speak-cost-tuning skill.
 ## Pricing Model
 
 ### Subscription Tiers
+
 | Tier | Monthly Cost | Lessons/mo | Audio Min/mo | Users |
 |------|-------------|------------|--------------|-------|
 | Free | $0 | 50 | 30 | 1 |
@@ -14,13 +15,13 @@ Detailed implementation reference for the speak-cost-tuning skill.
 | Enterprise | Custom | Unlimited | Unlimited | Unlimited |
 
 ### Usage-Based Pricing (Overages)
+
 | Resource | Unit | Overage Cost |
 |----------|------|--------------|
 | Lesson Sessions | per session | $0.05 |
 | Audio Recognition | per minute | $0.02 |
 | Pronunciation Scoring | per evaluation | $0.01 |
 | AI Tutor Interactions | per exchange | $0.02 |
-
 
 ## Cost Estimation
 
@@ -88,7 +89,6 @@ function estimateSpeakCost(
 }
 ```
 
-
 ## Usage Monitoring
 
 ```typescript
@@ -145,10 +145,10 @@ class SpeakUsageMonitor {
 }
 ```
 
-
 ## Cost Reduction Strategies
 
 ### Strategy 1: Efficient Lesson Design
+
 ```typescript
 // Reduce unnecessary API calls by batching
 async function efficientLesson(
@@ -168,6 +168,7 @@ async function efficientLesson(
 ```
 
 ### Strategy 2: Client-Side Audio Pre-processing
+
 ```typescript
 // Reduce audio minutes billed by trimming silence
 async function optimizedAudioSubmit(
@@ -186,6 +187,7 @@ async function optimizedAudioSubmit(
 ```
 
 ### Strategy 3: Caching Vocabulary Lookups
+
 ```typescript
 // Cache vocabulary to reduce API calls
 const vocabularyCache = new Map<string, VocabularyEntry>();
@@ -207,6 +209,7 @@ async function cachedVocabularyLookup(
 ```
 
 ### Strategy 4: Pronunciation Scoring Optimization
+
 ```typescript
 // Only score pronunciation on final attempts
 async function smartPronunciationScoring(
@@ -228,6 +231,7 @@ async function smartPronunciationScoring(
 ```
 
 ### Strategy 5: Off-Peak Usage
+
 ```typescript
 // Schedule non-urgent operations for off-peak
 async function scheduleProgressSync(userId: string): Promise<void> {
@@ -246,7 +250,6 @@ async function scheduleProgressSync(userId: string): Promise<void> {
   }
 }
 ```
-
 
 ## Budget Alerts Configuration
 
@@ -283,7 +286,6 @@ async function checkBudget(usage: UsageReport): Promise<void> {
 }
 ```
 
-
 ## Cost Dashboard Query
 
 ```sql
@@ -307,4 +309,3 @@ WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE)
 GROUP BY 1, 2, 3
 ORDER BY estimated_cost DESC;
 ```
-

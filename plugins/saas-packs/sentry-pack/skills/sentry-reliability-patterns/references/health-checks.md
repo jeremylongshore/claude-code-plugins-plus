@@ -45,6 +45,7 @@ app.get('/health/sentry', async (_req, res) => {
 ## Response Schema
 
 Healthy response:
+
 ```json
 {
   "status": "healthy",
@@ -57,6 +58,7 @@ Healthy response:
 ```
 
 Degraded response (flush timed out but SDK running):
+
 ```json
 {
   "status": "degraded",
@@ -67,6 +69,7 @@ Degraded response (flush timed out but SDK running):
 ```
 
 Unhealthy response (SDK not initialized or Sentry unreachable):
+
 ```json
 {
   "status": "unhealthy",

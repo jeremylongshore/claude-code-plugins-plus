@@ -32,6 +32,7 @@ Seven principles for building professional interfaces without a designer:
 **Why it works:** When every element competes for attention, nothing stands out. Deliberate de-emphasis of secondary content makes primary content powerful by contrast.
 
 **Key insights:**
+
 - Combine levers, don't multiply -- primary text = large OR bold OR dark, not all three
 - Save "all three" for the single most important element on the page
 - Labels are secondary -- form labels, table headers, and metadata labels support the data, not compete with it
@@ -49,6 +50,7 @@ Seven principles for building professional interfaces without a designer:
 | **Tables** | De-emphasize headers, emphasize cell data | Headers uppercase small gray, data normal weight |
 
 **Design patterns:**
+
 - Three-level hierarchy table: Size (large/base/small), Weight (bold/medium/normal), Color (dark/medium/light gray)
 - Label-value pattern: de-emphasized label above emphasized value
 - Button hierarchy: primary (filled), secondary (outlined or muted), tertiary (text only)
@@ -64,6 +66,7 @@ See: [references/advanced-patterns.md](references/advanced-patterns.md) for inte
 **Why it works:** Arbitrary spacing (padding: 13px) creates inconsistency. A fixed scale forces deliberate decisions and produces harmonious layouts. Generous spacing feels premium; dense spacing feels overwhelming.
 
 **Key insights:**
+
 - Use a linear or near-linear scale: 4, 8, 16, 24, 32, 48, 64px
 - Start with too much white space, then remove -- you'll almost never remove enough
 - Spacing between groups should be larger than spacing within groups
@@ -82,6 +85,7 @@ See: [references/advanced-patterns.md](references/advanced-patterns.md) for inte
 | **Container width** | Constrain to content | `max-w-prose` for text, `max-w-md` for forms |
 
 **CSS patterns:**
+
 - `p-1`(4px) `p-2`(8px) `p-4`(16px) `p-6`(24px) `p-8`(32px) `p-12`(48px) `p-16`(64px)
 - `max-w-prose`(65ch) `max-w-md`(28rem) `max-w-lg`(32rem) `max-w-xl`(36rem)
 - `gap-2` for related items, `gap-6` for section separation
@@ -97,6 +101,7 @@ See: [references/advanced-patterns.md](references/advanced-patterns.md) for resp
 **Why it works:** A modular scale (e.g., 1.25 ratio) creates natural visual rhythm. Tight line heights on headings and relaxed line heights on body text improve readability across contexts.
 
 **Key insights:**
+
 - Use a modular scale: 12, 14, 16, 20, 24, 30, 36px (1.25 ratio)
 - Headings need tight line height (1.0-1.25); body text needs relaxed (1.5-1.75)
 - Wider text needs more line height
@@ -115,6 +120,7 @@ See: [references/advanced-patterns.md](references/advanced-patterns.md) for resp
 | **Code/data** | Monospace, 14px, consistent width | Tabular data alignment |
 
 **CSS patterns:**
+
 - `text-xs`(12px) `text-sm`(14px) `text-base`(16px) `text-lg`(18px) `text-xl`(20px)
 - `font-normal`(400) `font-medium`(500) `font-semibold`(600) `font-bold`(700)
 - `leading-tight`(1.25) `leading-normal`(1.5) `leading-relaxed`(1.75)
@@ -130,6 +136,7 @@ See: [references/advanced-patterns.md](references/advanced-patterns.md) for text
 **Why it works:** Random colors clash. A systematic palette with predefined shades ensures consistency across the entire interface. HSL adjustments create natural-feeling lighter and darker variants.
 
 **Key insights:**
+
 - Each color needs 5-9 shades from near-white to near-black (50 through 900)
 - The darkest shade is not black -- use 900-level dark grays (e.g., `#111827`) instead of pure `#000000`
 - Pure grays look lifeless -- add subtle saturation (cool UI: blue tint like `#64748b`; warm UI: yellow/brown tint like `#78716c`)
@@ -148,6 +155,7 @@ See: [references/advanced-patterns.md](references/advanced-patterns.md) for text
 | **Accessible contrast** | Test all text/background combos | `#374151` on white = 10.5:1 ratio |
 
 **CSS patterns:**
+
 - `text-gray-900`(dark) `text-gray-600`(medium) `text-gray-400`(light)
 - `bg-blue-50` for subtle backgrounds, `bg-blue-500` for primary actions
 - `border-gray-200` for subtle borders, `border-gray-300` for stronger
@@ -163,6 +171,7 @@ See: [references/theming-dark-mode.md](references/theming-dark-mode.md) for dark
 **Why it works:** Shadows create a sense of physical depth that helps users understand which elements are interactive, which are floating above the surface, and which are part of the background.
 
 **Key insights:**
+
 - Small shadows = raised slightly (buttons, cards); large shadows = floating (modals, dropdowns)
 - Shadows have two parts: a tight, dark shadow for crispness plus a larger, softer shadow for atmosphere
 - Depth without shadows: lighter top border + darker bottom border, subtle gradient backgrounds, overlapping elements with offset
@@ -180,6 +189,7 @@ See: [references/theming-dark-mode.md](references/theming-dark-mode.md) for dark
 | **Flat alternatives** | Border + background shift | Lighter top border, darker bottom border |
 
 **CSS patterns:**
+
 - `shadow-sm`: `0 1px 2px rgba(0,0,0,0.05)`
 - `shadow-md`: `0 4px 6px rgba(0,0,0,0.1)`
 - `shadow-lg`: `0 10px 15px rgba(0,0,0,0.1)`
@@ -196,6 +206,7 @@ See: [references/advanced-patterns.md](references/advanced-patterns.md) for inte
 **Why it works:** Poorly sized icons look awkward. Unstyled images break visual consistency. Deliberate image treatment (overlays, object-fit, border radius) makes interfaces feel polished.
 
 **Key insights:**
+
 - Icons should be sized relative to their context -- don't use the same size everywhere
 - Use icon sets with consistent stroke width and style
 - Images need treatment: object-fit cover, consistent aspect ratios, overlays for text
@@ -213,6 +224,7 @@ See: [references/advanced-patterns.md](references/advanced-patterns.md) for inte
 | **Thumbnails** | Fixed aspect ratio with object-fit cover | 16:9 cards with no distortion |
 
 **CSS patterns:**
+
 - `object-fit: cover` with fixed `aspect-ratio` for consistent image display
 - Icon sizing: `w-4 h-4` inline, `w-6 h-6` in navigation, `w-8 h-8` for feature icons
 - Image overlay: `bg-gradient-to-t from-black/60 to-transparent` for text on images
@@ -228,6 +240,7 @@ See: [references/advanced-patterns.md](references/advanced-patterns.md) for imag
 **Why it works:** Left-aligned text is easier to read. Varied layouts keep users engaged. Breaking out of rigid boxes makes designs feel dynamic and intentional.
 
 **Key insights:**
+
 - Left-align text by default; center only short headlines, hero sections, single-action CTAs, and empty states
 - Cards don't need to contain everything -- let images bleed to edges, overlap containers, or extend beyond bounds
 - In lists and feeds, vary the visual treatment -- feature some items, minimize others
@@ -245,6 +258,7 @@ See: [references/advanced-patterns.md](references/advanced-patterns.md) for imag
 | **Content pages** | Constrained width, left-aligned | `max-w-prose` centered container with left text |
 
 **CSS patterns:**
+
 - `text-left` by default, `text-center` only for heroes and short headlines
 - `grid grid-cols-3 gap-6` for feature grids
 - `max-w-4xl mx-auto` for page containers

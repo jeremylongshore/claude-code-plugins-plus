@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Cost Tuning
 
 ## Overview
+
 Minimize Ideogram API spending by selecting the right model per task, caching identical prompts, batching images per call, and tracking credit burn rate. Ideogram bills per image generated at a flat rate that varies by model and rendering speed.
 
 ## Pricing Reference
@@ -45,6 +46,7 @@ Minimize Ideogram API spending by selecting the right model per task, caching id
 ## Instructions
 
 ### Step 1: Two-Phase Generation Workflow
+
 ```typescript
 // Draft with TURBO (cheap), finalize with V_2 (quality)
 async function costEfficientGeneration(prompt: string, iterations = 5) {
@@ -67,6 +69,7 @@ async function costEfficientGeneration(prompt: string, iterations = 5) {
 ```
 
 ### Step 2: Batch Images Per Call
+
 ```typescript
 // Single API call for up to 4 images costs the same as 4 separate calls
 // BUT saves latency (one round-trip instead of four)
@@ -93,6 +96,7 @@ async function generateVariations(prompt: string) {
 ```
 
 ### Step 3: Cache Identical Prompts
+
 ```typescript
 import { createHash } from "crypto";
 
@@ -126,6 +130,7 @@ async function cachedGeneration(prompt: string, style = "AUTO", model = "V_2") {
 ```
 
 ### Step 4: Budget Tracking
+
 ```typescript
 interface CostTracker {
   totalImages: number;
@@ -179,6 +184,7 @@ function costReport() {
 ```
 
 ### Step 5: Billing Auto Top-Up Configuration
+
 ```
 Ideogram Dashboard > Settings > API Beta > Billing:
 
@@ -196,6 +202,7 @@ Enterprise:
 ```
 
 ## Cost Optimization Checklist
+
 - [ ] Use V_2_TURBO for iteration, V_2 for final assets only
 - [ ] Cache identical prompts (7-day TTL)
 - [ ] Batch with `num_images: 4` where possible
@@ -205,6 +212,7 @@ Enterprise:
 - [ ] Set conservative auto top-up limits
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | 402 credits exhausted | Balance depleted | Top up in dashboard, check auto top-up |
@@ -213,14 +221,17 @@ Enterprise:
 | Unexpected charges | High-res for thumbnails | Match model to use case |
 
 ## Output
+
 - Two-phase generation workflow (draft then finalize)
 - Prompt-based cache preventing duplicate charges
 - Budget tracker with daily spending alerts
 - Cost report by model version
 
 ## Resources
+
 - [Ideogram API Pricing](https://ideogram.ai/features/api-pricing)
 - [API Billing Setup](https://developer.ideogram.ai/ideogram-api/api-setup)
 
 ## Next Steps
+
 For architecture patterns, see `ideogram-reference-architecture`.

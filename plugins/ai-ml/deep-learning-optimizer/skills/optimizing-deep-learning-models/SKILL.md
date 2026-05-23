@@ -34,6 +34,7 @@ This skill empowers Claude to automatically optimize deep learning models, enhan
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Optimize the performance of a deep learning model.
 - Reduce the training time of a deep learning model.
 - Improve the accuracy of a deep learning model.
@@ -47,6 +48,7 @@ This skill activates when you need to:
 User request: "Optimize this deep learning model for improved image classification accuracy."
 
 The skill will:
+
 1. Analyze the model and identify potential areas for improvement, such as adjusting the learning rate or adding regularization.
 2. Apply the selected optimization techniques and generate optimized code.
 3. Evaluate the model's performance and report the improved accuracy.
@@ -56,6 +58,7 @@ The skill will:
 User request: "Reduce the training time of this deep learning model."
 
 The skill will:
+
 1. Analyze the model and identify bottlenecks in the training process.
 2. Apply techniques like batch size adjustment or optimizer selection to reduce training time.
 3. Evaluate the model's performance and report the reduced training time.

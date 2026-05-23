@@ -10,6 +10,7 @@ cursor-ai-chat/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Masters the Cursor AI chat interface for code assistance, covering effective chat patterns, context management with @-mentions, and model selection strategies.
 
 **Workflow:** This skill activates when developers use chat for code explanation, generation, refactoring, or debugging. It provides prompt patterns, context management techniques, chat commands, and guidance on multi-turn conversations.

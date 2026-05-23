@@ -5,9 +5,11 @@
 # Apollo Local Dev Loop
 
 ## Overview
+
 Set up efficient local development workflow for Apollo.io integrations with proper environment management, testing, and debugging.
 
 ## Prerequisites
+
 - Completed `apollo-install-auth` setup
 - Node.js 18+ or Python 3.10+
 - Git repository initialized
@@ -15,6 +17,7 @@ Set up efficient local development workflow for Apollo.io integrations with prop
 ## Instructions
 
 ### Step 1: Environment Setup
+
 ```bash
 # Create environment files
 touch .env .env.example .env.test
@@ -32,6 +35,7 @@ APOLLO_ENV=development
 ```
 
 ### Step 2: Create Development Client
+
 ```typescript
 // src/lib/apollo-dev.ts
 import axios from 'axios';
@@ -64,6 +68,7 @@ if (isDev) {
 ```
 
 ### Step 3: Create Mock Server for Testing
+
 ```typescript
 // src/mocks/apollo-mock.ts
 import { rest } from 'msw';
@@ -95,6 +100,7 @@ export const apolloHandlers = [
 ```
 
 ### Step 4: Development Scripts
+
 ```json
 {
   "scripts": {
@@ -107,6 +113,7 @@ export const apolloHandlers = [
 ```
 
 ### Step 5: Quota Monitoring Script
+
 ```typescript
 // scripts/check-apollo-quota.ts
 import { apolloClient } from '../src/lib/apollo-dev';
@@ -127,6 +134,7 @@ checkQuota();
 ```
 
 ## Output
+
 - Environment file structure (.env, .env.example)
 - Development client with logging interceptors
 - Mock server for testing without API calls
@@ -134,6 +142,7 @@ checkQuota();
 - Quota monitoring utility
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Missing API Key | .env not loaded | Run `source .env` or use dotenv |
@@ -144,6 +153,7 @@ checkQuota();
 ## Examples
 
 ### Watch Mode Development
+
 ```bash
 # Terminal 1: Run dev server with watch
 npm run dev
@@ -155,6 +165,7 @@ curl -X POST http://localhost:3000/api/apollo/search \
 ```
 
 ### Testing with Mocks
+
 ```typescript
 // src/services/apollo.apollo.test.ts
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
@@ -177,9 +188,11 @@ describe('Apollo Service', () => {
 ```
 
 ## Resources
+
 - [MSW (Mock Service Worker)](https://mswjs.io/)
 - [Vitest Testing Framework](https://vitest.dev/)
 - [dotenv Documentation](https://github.com/motdotla/dotenv)
 
 ## Next Steps
+
 Proceed to `apollo-sdk-patterns` for production-ready code patterns.

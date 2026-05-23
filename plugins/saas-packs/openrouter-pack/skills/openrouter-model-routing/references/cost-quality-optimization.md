@@ -3,6 +3,7 @@
 ## Cost-Quality Optimization
 
 ### Adaptive Quality Router
+
 ```python
 class AdaptiveQualityRouter:
     """Adjust model quality based on request importance."""
@@ -42,6 +43,7 @@ adaptive_router = AdaptiveQualityRouter()
 ```
 
 ### Budget-Aware Routing
+
 ```python
 class BudgetRouter:
     """Route while respecting budget constraints."""

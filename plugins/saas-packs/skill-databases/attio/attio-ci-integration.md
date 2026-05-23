@@ -10,6 +10,7 @@ attio-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Attio CI/CD integration
 **Workflow:** Part of the cicd skill category for Attio integration.
 **Relates to:** Other attio skills in this pack.

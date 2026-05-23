@@ -10,6 +10,7 @@ shopify-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Shopify debug evidence for support
 **Workflow:** Part of the operations skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

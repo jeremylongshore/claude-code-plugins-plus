@@ -27,6 +27,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Cost Tuning
 
 ## Overview
+
 Optimize Fireflies.ai subscription costs. Fireflies charges per-seat per month. The main levers: remove unused seats, configure selective recording, manage storage, and right-size your plan tier.
 
 ## Pricing Reference
@@ -41,6 +42,7 @@ Optimize Fireflies.ai subscription costs. Fireflies charges per-seat per month. 
 ## Instructions
 
 ### Step 1: Audit Seat Utilization via API
+
 ```bash
 set -euo pipefail
 # List all workspace users with their transcript counts
@@ -83,6 +85,7 @@ async function seatUtilizationReport() {
 ```
 
 ### Step 2: Configure Selective Recording
+
 Instead of recording every meeting, configure auto-join rules in Fireflies Settings > Auto-Join:
 
 ```yaml
@@ -102,6 +105,7 @@ skip_recording:
 Estimated savings: Teams recording every meeting typically waste 30-50% of transcription credits on low-value meetings.
 
 ### Step 3: Manage Storage to Avoid Forced Upgrades
+
 ```typescript
 // Check storage and clean up old transcripts
 async function storageAudit() {
@@ -144,6 +148,7 @@ async function deleteOldTranscripts(ids: string[]) {
 ```
 
 ### Step 4: Right-Size Your Plan
+
 ```yaml
 # Decision matrix
 choose_pro:
@@ -169,6 +174,7 @@ choose_enterprise:
 ```
 
 ### Step 5: API Cost Optimization
+
 ```typescript
 // Free/Pro plans: 50 requests/day. Make every request count.
 // Strategy: Fetch meeting list once, cache aggressively
@@ -206,6 +212,7 @@ async function efficientDailySync() {
 | API request caching | Stay within Free/Pro limits |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Can't remove seat | User has admin role | Reassign admin first |
@@ -214,14 +221,17 @@ async function efficientDailySync() {
 | Unexpected invoice increase | Auto-provisioned members | Disable auto-provisioning |
 
 ## Output
+
 - Seat utilization report with inactive members identified
 - Selective recording policy configured
 - Storage audit with cleanup recommendations
 - Plan right-sizing recommendation
 
 ## Resources
+
 - [Fireflies Pricing](https://fireflies.ai/pricing)
 - [Fireflies API Docs](https://docs.fireflies.ai/)
 
 ## Next Steps
+
 For architecture design, see `fireflies-reference-architecture`.

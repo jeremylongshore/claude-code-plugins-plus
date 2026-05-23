@@ -14,6 +14,7 @@ With one paste in Claude Code CLI, or a structured workflow in Cursor IDE, anyon
 Let me show you the transformation with real numbers:
 
 ### Before
+
 - ❌ Docker + BMAD container dependency
 - ❌ 57-line Makefile with 15+ commands
 - ❌ Users forced to fill long form prompts
@@ -22,6 +23,7 @@ Let me show you the transformation with real numbers:
 - ❌ 60% success rate (if Docker behaved)
 
 ### After
+
 - ✅ One paste in Claude = 22 enterprise docs
 - ✅ Cursor IDE workflow for devs who want structure
 - ✅ 30-second setup (clone + paste)
@@ -105,6 +107,7 @@ Since deploying this system:
 - **Enterprise quality maintained** across both paths
 
 I've used it for:
+
 - DiagnosticPro MVP planning (generated full docs in 90 seconds)
 - Client proposals (impressed a Fortune 500 CTO)
 - Open source projects (5 different repos documented)
@@ -143,9 +146,8 @@ The templates and one-paste magic are powerful. But when you see how they fit in
 ---
 
 **Series Navigation:**
+
 - Part 1: The Mess (and Why It Mattered)
 - Part 2: Evolving Templates into an Enterprise Library
 - **Part 3: From Templates to One-Paste Magic** ← You are here
 - Part 4: Dual AI Workflows — Claude Meets Cursor (coming soon)
-
-

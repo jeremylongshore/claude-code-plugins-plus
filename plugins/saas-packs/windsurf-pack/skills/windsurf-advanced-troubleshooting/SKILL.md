@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Advanced Troubleshooting
 
 ## Overview
+
 Deep debugging techniques for Windsurf issues that resist standard troubleshooting. Covers Cascade context corruption, indexing engine problems, extension conflicts, MCP failures, and workspace configuration debugging.
 
 ## Prerequisites
+
 - Standard troubleshooting attempted (see `windsurf-common-errors`)
 - Terminal access
 - Understanding of Windsurf's architecture (VS Code base + Codeium AI layer)
@@ -225,6 +227,7 @@ When nothing else works:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Cascade gives contradictory advice | Conflicting memories | Clear old memories |
@@ -237,11 +240,13 @@ When nothing else works:
 ## Examples
 
 ### Quick Diagnostic One-Liner
+
 ```bash
 echo "WS files: $(find . -not -path '*/node_modules/*' -not -path '*/.git/*' -type f | wc -l) | Rules: $(wc -c < .windsurfrules 2>/dev/null || echo 0)c | Ignore: $(wc -l < .codeiumignore 2>/dev/null || echo 0) patterns | Exts: $(windsurf --list-extensions 2>/dev/null | wc -l)"
 ```
 
 ### Submit Support Ticket
+
 ```markdown
 Attach:
 1. Output from all diagnostic scripts above
@@ -251,8 +256,10 @@ Attach:
 ```
 
 ## Resources
+
 - [Windsurf GitHub Issues](https://github.com/Exafunction/codeium/issues)
 - [Windsurf Status Page](https://status.windsurf.com)
 
 ## Next Steps
+
 For load and scale patterns, see `windsurf-load-scale`.

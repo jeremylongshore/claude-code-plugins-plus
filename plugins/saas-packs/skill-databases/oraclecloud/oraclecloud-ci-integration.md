@@ -10,6 +10,7 @@ oraclecloud-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Oracle Cloud CI/CD integration
 **Workflow:** Part of the cicd skill category for Oracle Cloud integration.
 **Relates to:** Other oraclecloud skills in this pack.

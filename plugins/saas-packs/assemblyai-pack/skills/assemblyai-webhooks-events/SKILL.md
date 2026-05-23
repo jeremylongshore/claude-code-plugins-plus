@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code
 # AssemblyAI Webhooks & Events
 
 ## Overview
+
 Handle AssemblyAI webhooks for transcription completion. When you submit a transcript with `webhook_url`, AssemblyAI sends a POST request to your URL when the transcript is completed or fails. One webhook per transcript — no complex event routing needed.
 
 ## Prerequisites
+
 - HTTPS endpoint accessible from the internet
 - `assemblyai` package installed
 - API key configured
@@ -221,6 +223,7 @@ AssemblyAI sends a POST with this JSON body:
 ```
 
 For errors:
+
 ```json
 {
   "transcript_id": "6wij2z3g66-...",
@@ -232,12 +235,14 @@ For errors:
 If `redact_pii_audio` was enabled, a second webhook fires when redacted audio is ready.
 
 ## Output
+
 - Webhook endpoint that receives transcription completion events
 - Auth header verification for secure webhook handling
 - Idempotent processing to handle retries
 - LeMUR auto-analysis triggered on completion
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Webhook not received | URL not accessible from internet | Verify HTTPS URL, check firewall |
@@ -247,9 +252,11 @@ If `redact_pii_audio` was enabled, a second webhook fires when redacted audio is
 | Missing transcript data | Fetching too early | Fetch with `client.transcripts.get()` after webhook |
 
 ## Resources
+
 - [AssemblyAI Webhooks Guide](https://www.assemblyai.com/docs/getting-started/webhooks)
 - [Webhook API Reference](https://www.assemblyai.com/docs/api-reference/transcripts/submit)
 - [Streaming Webhooks](https://www.assemblyai.com/docs/streaming/webhooks)
 
 ## Next Steps
+
 For performance optimization, see `assemblyai-performance-tuning`.

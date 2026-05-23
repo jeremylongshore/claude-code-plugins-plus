@@ -27,6 +27,7 @@ Analyze code for potential memory leaks and improper resource management.
 ## Output
 
 Provide markdown report with:
+
 - Identified leak patterns with severity ratings
 - File locations and line numbers
 - Code snippets showing the issue

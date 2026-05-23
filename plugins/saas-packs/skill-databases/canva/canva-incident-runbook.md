@@ -10,6 +10,7 @@ canva-incident-runbook/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Canva incident response
 **Workflow:** Part of the advanced skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

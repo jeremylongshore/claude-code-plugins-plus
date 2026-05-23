@@ -26,6 +26,7 @@ Configure the Slack channel with your bot token and app-level token.
    - Second token must start with `xapp-` (App-Level Token)
 
 2. If either token is missing or has the wrong prefix, show this error and stop:
+
    ```
    Error: Two tokens required.
      - Bot token (starts with xoxb-) from OAuth & Permissions
@@ -35,22 +36,26 @@ Configure the Slack channel with your bot token and app-level token.
    ```
 
 3. Create the state directory if it doesn't exist:
+
    ```
    ~/.claude/channels/slack/
    ```
 
 4. Write the `.env` file at `~/.claude/channels/slack/.env`:
+
    ```
    SLACK_BOT_TOKEN=<bot-token>
    SLACK_APP_TOKEN=<app-token>
    ```
 
 5. Set file permissions to owner-only:
+
    ```bash
    chmod 600 ~/.claude/channels/slack/.env
    ```
 
 6. Confirm success:
+
    ```
    Slack channel configured.
 

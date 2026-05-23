@@ -7,6 +7,7 @@
 **Request**: "Build a support bot that answers from our docs in `gs://acme-docs/` with citations."
 
 **Agent code** (`agent.py`):
+
 ```python
 import vertexai
 from vertexai.generative_models import GenerativeModel, Tool
@@ -39,6 +40,7 @@ print(response.text)
 ```
 
 **Document ingestion** (`rag_config.py`):
+
 ```python
 from vertexai.preview import rag
 
@@ -63,6 +65,7 @@ rag.import_files(
 **Request**: "Build an extraction agent that pulls structured data from invoices in PDF and image format."
 
 **Agent code**:
+
 ```python
 import vertexai
 from vertexai.generative_models import GenerativeModel, Part, GenerationConfig
@@ -105,6 +108,7 @@ response = model.generate_content([image_part, "Extract all invoice fields."])
 **Request**: "Build an agent with function calling for our order management API."
 
 **Function declarations**:
+
 ```python
 from vertexai.generative_models import (
     GenerativeModel, Tool, FunctionDeclaration,
@@ -163,6 +167,7 @@ for candidate in response.candidates:
 **Request**: "Add cost guardrails to my Vertex AI agent so we don't exceed $500/month."
 
 **Token budget configuration**:
+
 ```python
 from vertexai.generative_models import GenerativeModel, GenerationConfig
 
@@ -176,6 +181,7 @@ model = GenerativeModel(
 ```
 
 **Budget alert**:
+
 ```bash
 gcloud billing budgets create \
   --billing-account=BILLING_ACCT_ID \
@@ -187,6 +193,7 @@ gcloud billing budgets create \
 ```
 
 **Cost estimation** (per-query):
+
 ```
 gemini-2.0-flash: ~$0.00028/query  ($500 budget = ~1.78M queries/month)
 gemini-2.5-pro:   ~$0.00600/query  ($500 budget = ~83K queries/month)

@@ -10,6 +10,7 @@ clay-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Clay across development, staging, and production environments. Implements secure configuration management and environment isolation.
 **Workflow:** Enterprise setup skill. Use when establishing multi-environment Clay deployments.
 **Relates to:** Builds on clay-reference-architecture; enables clay-enterprise-rbac for access control.

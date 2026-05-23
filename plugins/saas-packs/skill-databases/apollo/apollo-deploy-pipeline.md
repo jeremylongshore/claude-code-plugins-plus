@@ -10,6 +10,7 @@ apollo-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Apollo integrations to production
 **Workflow:** Part of the cicd skill category for Apollo integration.
 **Relates to:** Other apollo skills in this pack.

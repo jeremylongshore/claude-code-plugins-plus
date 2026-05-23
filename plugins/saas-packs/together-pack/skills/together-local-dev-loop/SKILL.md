@@ -21,9 +21,11 @@ compatibility: Designed for Claude Code
 # Together AI Local Dev Loop
 
 ## Overview
+
 Local development workflow for Together AI inference API integration. Provides a fast feedback loop with mock chat completions, embeddings, and model listing endpoints so you can build AI-powered applications without consuming live API credits. Together AI is OpenAI-compatible, so the same client libraries work with both. Toggle between mock mode for rapid iteration and live mode for model evaluation.
 
 ## Environment Setup
+
 ```bash
 cp .env.example .env
 # Set your credentials:
@@ -36,6 +38,7 @@ npm install -D vitest supertest @types/express
 ```
 
 ## Dev Server
+
 ```typescript
 // src/dev/server.ts
 import express from "express";
@@ -57,6 +60,7 @@ app.listen(3009, () => console.log(`Together dev server on :3009 [mock=${MOCK}]`
 ```
 
 ## Mock Mode
+
 ```typescript
 // src/dev/mocks.ts — OpenAI-compatible mock responses for inference
 export function mountMockRoutes(app: any) {
@@ -80,6 +84,7 @@ export function mountMockRoutes(app: any) {
 ```
 
 ## Testing Workflow
+
 ```bash
 npm run dev:mock &                    # Start mock server in background
 npm run test                          # Unit tests with vitest
@@ -88,6 +93,7 @@ MOCK_MODE=false npm run test:integration  # Integration test against real API
 ```
 
 ## Debug Tips
+
 - Together AI is OpenAI-compatible — set `base_url` to `http://localhost:3009/v1` for local dev
 - Use `/v1/models` to discover available model IDs instead of hardcoding them
 - Monitor `usage.total_tokens` in responses to estimate costs before switching to live mode
@@ -95,6 +101,7 @@ MOCK_MODE=false npm run test:integration  # Integration test against real API
 - Set `max_tokens` explicitly to avoid unexpectedly large responses and costs
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | `401 Unauthorized` | Invalid API key | Regenerate at api.together.xyz dashboard |
@@ -104,9 +111,11 @@ MOCK_MODE=false npm run test:integration  # Integration test against real API
 | `ECONNREFUSED :3009` | Dev server not running | Run `npm run dev:mock` first |
 
 ## Resources
+
 - [Together AI Docs](https://docs.together.ai/)
 - [API Reference](https://docs.together.ai/reference/chat-completions-1)
 - [Model List](https://docs.together.ai/docs/inference-models)
 
 ## Next Steps
+
 See `together-debug-bundle`.

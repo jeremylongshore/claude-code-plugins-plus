@@ -3,6 +3,7 @@
 ## Migration from Direct API to SDK
 
 ### Before (Raw Requests)
+
 ```python
 import requests
 
@@ -22,6 +23,7 @@ content = result["choices"][0]["message"]["content"]
 ```
 
 ### After (OpenAI SDK)
+
 ```python
 from openai import OpenAI
 
@@ -38,6 +40,7 @@ content = response.choices[0].message.content
 ```
 
 ### Benefits of SDK
+
 ```
 ✓ Automatic retries
 ✓ Better error types

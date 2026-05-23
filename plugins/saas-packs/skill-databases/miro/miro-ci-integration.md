@@ -10,6 +10,7 @@ miro-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Miro CI/CD integration
 **Workflow:** Part of the cicd skill category for Miro integration.
 **Relates to:** Other miro skills in this pack.

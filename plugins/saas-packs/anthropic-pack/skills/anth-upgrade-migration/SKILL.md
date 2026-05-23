@@ -67,6 +67,7 @@ npm install @anthropic-ai/sdk@latest
 Key breaking changes by version:
 
 **Python SDK 0.20+ (anthropic-version: 2023-06-01)**
+
 ```python
 # OLD: Text Completions API (deprecated)
 response = client.completions.create(
@@ -84,6 +85,7 @@ response = client.messages.create(
 ```
 
 **Python SDK 0.30+ (streaming changes)**
+
 ```python
 # OLD: Manual SSE parsing
 response = client.messages.create(..., stream=True)
@@ -97,6 +99,7 @@ with client.messages.stream(...) as stream:
 ```
 
 **TypeScript SDK 0.20+ (import path change)**
+
 ```typescript
 // OLD
 import Anthropic from 'anthropic';

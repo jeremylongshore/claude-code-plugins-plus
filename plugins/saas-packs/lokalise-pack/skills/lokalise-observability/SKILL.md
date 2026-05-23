@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lokalise Observability
 
 ## Overview
+
 Monitor Lokalise translation pipeline health: API response times, rate limit consumption, translation completion rates, webhook delivery reliability, file upload/download status, and per-word cost tracking. Built around the `@lokalise/node-api` SDK with Prometheus-compatible metrics and alerting rules.
 
 ## Prerequisites
+
 - `@lokalise/node-api` SDK installed
 - Metrics backend (Prometheus, Datadog, CloudWatch, or OpenTelemetry collector)
 - Lokalise API token with read access
@@ -301,6 +303,7 @@ Key panels for Grafana/Datadog:
 | Error Rate by Code | `rate(lokalise_api_requests_total{status="error"}[5m])` by code | Stacked area |
 
 ## Output
+
 - `trackedApiCall()` wrapper emitting duration and error metrics for every Lokalise API operation
 - Translation progress gauge metrics broken down by project and locale
 - Rate limit consumption monitoring via response headers
@@ -309,6 +312,7 @@ Key panels for Grafana/Datadog:
 - Dashboard specification with 7 panels covering the full translation pipeline
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `429 Too Many Requests` | Exceeded 6 req/sec rate limit | Add request throttling with p-queue |
@@ -318,6 +322,7 @@ Key panels for Grafana/Datadog:
 | High cardinality | Too many label values | Limit `operation` labels to top-level SDK methods |
 
 ## Resources
+
 - [Lokalise Webhooks API](https://developers.lokalise.com/reference/create-a-webhook)
 - [Lokalise Webhook Events](https://developers.lokalise.com/docs/webhook-events)
 - [Lokalise API Rate Limits](https://developers.lokalise.com/reference/api-rate-limits)
@@ -326,4 +331,5 @@ Key panels for Grafana/Datadog:
 - [p-queue](https://github.com/sindresorhus/p-queue) — rate-limited request queue
 
 ## Next Steps
+
 For setting up real-time automation based on webhook events, see `lokalise-webhooks-events`. For incident response procedures when alerts fire, see `lokalise-incident-runbook`.

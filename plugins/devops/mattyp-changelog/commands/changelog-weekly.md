@@ -18,4 +18,3 @@ Generate a changelog for the last 7 days using `.changelog-config.json`, then pr
    - Draft + format changelog using the configured template
    - Run quality gate (threshold from config)
    - Create branch + commit, then open PR if possible
-

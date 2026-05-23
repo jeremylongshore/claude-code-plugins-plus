@@ -10,6 +10,7 @@ obsidian-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Obsidian production deployment checklist
 **Workflow:** Part of the operations skill category for Obsidian integration.
 **Relates to:** Other obsidian skills in this pack.

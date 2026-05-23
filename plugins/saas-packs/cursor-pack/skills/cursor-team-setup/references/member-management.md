@@ -3,6 +3,7 @@
 ## Member Management
 
 ### Inviting Members
+
 ```
 Admin Dashboard > Members > Invite
 
@@ -19,6 +20,7 @@ Invite by email:
 ```
 
 ### Role Management
+
 ```
 Roles:
 
@@ -40,6 +42,7 @@ Member:
 ```
 
 ### Removing Members
+
 ```
 Admin Dashboard > Members > Select User > Remove
 

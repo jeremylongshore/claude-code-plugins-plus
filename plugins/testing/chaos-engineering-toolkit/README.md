@@ -11,12 +11,14 @@ Chaos testing for resilience with failure injection, latency simulation, and sys
 ## Usage
 
 The chaos engineering agent activates automatically when discussing:
+
 - System resilience testing
 - Failure injection strategies
 - Chaos experiments (GameDays)
 - Recovery mechanism validation
 
 Or invoke directly in conversation:
+
 ```
 "Help me design a chaos experiment to test our payment service resilience"
 ```

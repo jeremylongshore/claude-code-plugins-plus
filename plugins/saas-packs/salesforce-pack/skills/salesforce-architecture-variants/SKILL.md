@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code
 # Salesforce Architecture Variants
 
 ## Overview
+
 Three validated architecture blueprints for Salesforce integrations: Direct API (simple), Event-Driven (scalable), and Middleware/iPaaS (enterprise). Each pattern addresses different scale, latency, and complexity requirements.
 
 ## Prerequisites
+
 - Understanding of your data volume and sync frequency requirements
 - Decision on unidirectional vs bidirectional data flow
 - Knowledge of Salesforce edition (affects available features like CDC)
@@ -51,6 +53,7 @@ Data flow:
 ```
 
 ### Key Characteristics
+
 - Single jsforce connection per process
 - Polling-based reads (cron schedule)
 - Direct REST writes
@@ -58,6 +61,7 @@ Data flow:
 - Suitable for: internal tools, admin dashboards, simple data sync
 
 ### Code Pattern
+
 ```typescript
 // Cron-based sync — runs every 15 minutes
 import cron from 'node-cron';
@@ -102,6 +106,7 @@ cron.schedule('*/15 * * * *', async () => {
 ```
 
 ### Key Characteristics
+
 - CDC for real-time change notifications (no polling waste)
 - Bulk API 2.0 for high-volume writes
 - Queue-based async processing for write-back
@@ -109,6 +114,7 @@ cron.schedule('*/15 * * * *', async () => {
 - Suitable for: CRM sync, data warehouse ETL, real-time dashboards
 
 ### Code Pattern
+
 ```typescript
 // Event-driven — near-real-time sync
 import { getConnection } from './salesforce/connection';
@@ -143,6 +149,7 @@ queue.process('sync-to-salesforce', async (job) => {
 ```
 
 ### Required Salesforce Features
+
 - Change Data Capture (Enterprise Edition+)
 - Platform Events (all editions)
 - Bulk API 2.0 (all editions with API access)
@@ -170,6 +177,7 @@ queue.process('sync-to-salesforce', async (job) => {
 ```
 
 ### Key Characteristics
+
 - Middleware handles transformation, routing, error handling
 - Pre-built Salesforce connectors (no custom code for basic sync)
 - Visual flow builders for business users
@@ -177,6 +185,7 @@ queue.process('sync-to-salesforce', async (job) => {
 - Suitable for: multi-system integration, complex business rules, compliance-heavy
 
 ### iPaaS Options
+
 | Platform | Salesforce Integration | Best For |
 |----------|----------------------|----------|
 | MuleSoft | Native (Salesforce owns it) | Enterprise, complex flows |
@@ -215,12 +224,14 @@ Variant C (Middleware/iPaaS)
 ```
 
 ## Output
+
 - Architecture variant selected based on requirements
 - Integration pattern implemented
 - Data flow documented
 - Scaling path planned
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Polling misses changes | Interval too long | Switch to CDC (Variant B) |
@@ -229,10 +240,12 @@ Variant C (Middleware/iPaaS)
 | Middleware cost too high | Over-engineered | Start with Variant A or B |
 
 ## Resources
+
 - [Salesforce Integration Patterns](https://developer.salesforce.com/docs/atlas.en-us.integration_patterns_and_practices.meta/integration_patterns_and_practices/)
 - [Change Data Capture](https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture/)
 - [MuleSoft Salesforce Connector](https://docs.mulesoft.com/salesforce-connector/latest/)
 - [Heroku Connect](https://devcenter.heroku.com/articles/heroku-connect)
 
 ## Next Steps
+
 For common anti-patterns, see `salesforce-known-pitfalls`.

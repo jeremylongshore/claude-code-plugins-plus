@@ -27,6 +27,7 @@ Deploy Genkit applications to production with Terraform (Firebase Functions, Clo
 ## Prerequisites
 
 Before using this skill, ensure:
+
 - Google Cloud project with Firebase enabled
 - Terraform 1.0+ installed
 - gcloud and firebase CLI authenticated
@@ -46,7 +47,6 @@ Before using this skill, ensure:
 8. **Validate Deployment**: Test Genkit flows via HTTP endpoints
 
 ## Output
-
 
 - Configuration files or code changes applied to the project
 - Validation report confirming correct implementation

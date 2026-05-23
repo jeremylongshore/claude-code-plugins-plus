@@ -36,17 +36,20 @@ New token launches happen constantly across multiple chains and DEXes. Traders m
 ## Data Sources
 
 ### On-Chain Detection
+
 - Factory contract events (PairCreated)
 - Token deployment transactions
 - Liquidity mint events
 
 ### IDO/IEO Platforms
+
 - CoinList
 - Pinksale
 - DxSale
 - Unicrypt
 
 ### Aggregators
+
 - DEXTools
 - DexScreener
 - GeckoTerminal

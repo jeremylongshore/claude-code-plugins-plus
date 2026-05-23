@@ -10,6 +10,7 @@ hootsuite-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Hootsuite example
 **Workflow:** Part of the onboarding skill category for Hootsuite integration.
 **Relates to:** Other hootsuite skills in this pack.

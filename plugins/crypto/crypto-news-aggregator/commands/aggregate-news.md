@@ -14,6 +14,7 @@ Multi-source cryptocurrency news aggregation system with AI-powered sentiment an
 ## When to Use This Command
 
 Use `/aggregate-news` when you need to:
+
 - Monitor breaking crypto news across multiple sources in real-time
 - Analyze sentiment shifts before market movements
 - Track specific coins, projects, or topics (DeFi, NFTs, regulation)
@@ -24,6 +25,7 @@ Use `/aggregate-news` when you need to:
 - Track whale social media activity and influencer sentiment
 
 **DON'T use this command for:**
+
 - Single-source news reading - Use direct RSS feeds
 - Historical price analysis - Use `/analyze-trends` instead
 - On-chain data analysis - Use `/analyze-chain` instead
@@ -36,18 +38,22 @@ Use `/aggregate-news` when you need to:
 Single sources have bias and delays. Aggregating 50+ sources provides complete market coverage and cross-verification of breaking news.
 
 **Why Sentiment Analysis?**
+
 - **AI sentiment chosen**: News sentiment predicts price movements 15-30 minutes before impact
 - **Manual reading rejected**: Impossible to read 1000+ articles/day across sources
 
 **Why Real-Time vs Hourly Digests?**
+
 - **Real-time chosen**: Breaking news impacts prices within seconds (exchange hacks, regulations)
 - **Hourly rejected**: 60-minute delays miss trading opportunities
 
 **Why Deduplication?**
+
 - **Deduplication chosen**: 50+ sources report same news, creates 80% redundancy
 - **All articles kept rejected**: Would generate 5000+ alerts/day
 
 **Why Market Impact Scoring?**
+
 - **Scoring chosen**: Not all news is equally important (0-100 scale)
 - **Equal weight rejected**: Treats minor updates same as exchange hacks
 
@@ -388,7 +394,9 @@ volumes:
 The command generates 5 output files:
 
 ### 1. `news_alerts_YYYYMMDD_HHMMSS.json`
+
 Real-time high-impact news alerts:
+
 ```json
 {
   "alert_id": "alert_1634567890_coindesk_abc123",
@@ -445,7 +453,9 @@ Real-time high-impact news alerts:
 ```
 
 ### 2. `daily_summary_YYYYMMDD.json`
+
 Daily news summary with trends:
+
 ```json
 {
   "date": "2025-10-11",
@@ -497,7 +507,9 @@ Daily news summary with trends:
 ```
 
 ### 3. `trending_narratives_YYYYMMDD.csv`
+
 Trending narratives and memes:
+
 ```csv
 rank,narrative,mentions_24h,mentions_7d,growth_rate,avg_sentiment,related_coins,sample_headlines
 1,"Bitcoin ETF Approval",342,892,283%,0.87,"BTC,ETH","SEC Approves BlackRock Bitcoin ETF; Historic Day for Crypto; ETF Approval Sends BTC to $50K"
@@ -506,7 +518,9 @@ rank,narrative,mentions_24h,mentions_7d,growth_rate,avg_sentiment,related_coins,
 ```
 
 ### 4. `entity_sentiment_tracker.json`
+
 Per-entity sentiment tracking:
+
 ```json
 {
   "timestamp": "2025-10-11T14:23:45Z",
@@ -554,7 +568,9 @@ Per-entity sentiment tracking:
 ```
 
 ### 5. `market_moving_events.json`
+
 Critical market-moving events detected:
+
 ```json
 {
   "date": "2025-10-11",
@@ -1179,6 +1195,7 @@ performance:
 ## Best Practices
 
 ### DO:
+
 - ✅ Aggregate from 20+ sources minimum for comprehensive coverage
 - ✅ Implement deduplication (80% of news is duplicated across sources)
 - ✅ Use AI sentiment analysis (>80% accuracy with GPT-4/Claude)
@@ -1191,6 +1208,7 @@ performance:
 - ✅ Track correlation between sentiment shifts and price movements
 
 ### DON'T:
+
 - ❌ Rely on single news source - creates blind spots
 - ❌ Skip sentiment analysis - raw news requires manual interpretation
 - ❌ Process articles synchronously - too slow for real-time
@@ -1215,6 +1233,7 @@ performance:
   - NewsAPI: Free tier sufficient for testing
 
 **Optimization Tips:**
+
 1. Use Redis for hot cache (recent articles, sentiment results)
 2. Implement connection pooling for database (10-20 connections)
 3. Process sentiment in batches of 10 to maximize throughput

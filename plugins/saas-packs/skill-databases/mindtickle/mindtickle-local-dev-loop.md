@@ -10,6 +10,7 @@ mindtickle-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Mindtickle local development workflow
 **Workflow:** Part of the onboarding skill category for Mindtickle integration.
 **Relates to:** Other mindtickle skills in this pack.

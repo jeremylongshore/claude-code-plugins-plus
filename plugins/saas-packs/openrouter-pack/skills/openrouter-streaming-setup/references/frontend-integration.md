@@ -3,6 +3,7 @@
 ## Frontend Integration
 
 ### React Hook for Streaming
+
 ```typescript
 import { useState, useCallback } from 'react';
 
@@ -61,6 +62,7 @@ function ChatComponent() {
 ```
 
 ### SSE Client
+
 ```javascript
 function streamSSE(prompt, onChunk, onComplete, onError) {
   const eventSource = new EventSource(

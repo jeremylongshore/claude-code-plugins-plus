@@ -5,6 +5,7 @@ Step-by-step recovery procedures for common git and GitHub problems. Each sectio
 ## Merge Conflicts
 
 ### Detection
+
 ```bash
 # Check for conflicted files via git
 git diff --name-only --diff-filter=U 2>/dev/null
@@ -13,6 +14,7 @@ git diff --name-only --diff-filter=U 2>/dev/null
 ### Recovery
 
 **Step 1: Identify conflicted files**
+
 ```bash
 git status  # Shows "both modified" files
 ```
@@ -20,6 +22,7 @@ git status  # Shows "both modified" files
 **Step 2: Open each conflicted file and resolve**
 
 The conflict markers look like this:
+
 ```
 <<<<<<< HEAD
 Your changes (current branch)
@@ -33,12 +36,14 @@ Their changes (incoming branch)
 **Advanced guidance:** Show `git diff` for each conflicted file. Let them resolve in their editor. Offer to handle specific files if asked.
 
 **Step 3: After resolving all conflicts**
+
 ```bash
 git add <resolved-files>
 git commit  # Completes the merge
 ```
 
 ### Prevention Tips
+
 - Pull/rebase frequently to reduce divergence
 - Communicate with teammates about who's editing what
 - Keep commits small and focused
@@ -46,6 +51,7 @@ git commit  # Completes the merge
 ## Authentication Errors
 
 ### Symptoms
+
 - `fatal: Authentication failed`
 - `Permission denied (publickey)`
 - `gh: error: HTTP 401`
@@ -54,12 +60,14 @@ git commit  # Completes the merge
 ### Recovery
 
 **Step 1: Check current auth status**
+
 ```bash
 gh auth status
 git remote -v  # Check if using HTTPS or SSH
 ```
 
 **Step 2: Re-authenticate**
+
 ```bash
 # For gh CLI (recommended)
 gh auth login
@@ -72,6 +80,7 @@ ssh -T git@github.com  # Test SSH connection
 ```
 
 **Step 3: Fix remote URL if needed**
+
 ```bash
 # Switch from SSH to HTTPS (or vice versa)
 git remote set-url origin https://github.com/USER/REPO.git
@@ -84,18 +93,21 @@ git remote set-url origin git@github.com:USER/REPO.git
 ## Detached HEAD
 
 ### Symptoms
+
 - `git status` shows "HEAD detached at <hash>"
 - User checked out a specific commit, tag, or remote branch directly
 
 ### Recovery
 
 **Step 1: Check if there are unsaved changes**
+
 ```bash
 git status
 git log --oneline -5  # See where HEAD is
 ```
 
 **Step 2: Save work if needed**
+
 ```bash
 # If there are commits you want to keep:
 git branch recovery-branch  # Creates a branch at current position
@@ -105,6 +117,7 @@ git checkout main
 ```
 
 **Step 3: If no work to save**
+
 ```bash
 git checkout main  # Just go back
 ```
@@ -114,6 +127,7 @@ git checkout main  # Just go back
 ## Rebase Gone Wrong
 
 ### Symptoms
+
 - Conflicts during rebase
 - History looks wrong
 - User is confused about current state
@@ -121,17 +135,20 @@ git checkout main  # Just go back
 ### Recovery
 
 **Step 1: Check current state first**
+
 ```bash
 git status  # Always check before any recovery action
 ```
 
 **Step 2: If rebase is still in progress**
+
 ```bash
 # Abort and go back to pre-rebase state
 git rebase --abort
 ```
 
 **Step 3: If rebase completed but history is wrong**
+
 ```bash
 # Find the pre-rebase state in reflog
 git reflog
@@ -140,6 +157,7 @@ git reset --hard REFLOG_HASH
 ```
 
 **Step 3: Offer merge as alternative**
+
 ```bash
 # If rebase is too complex, merge is safer
 git merge main  # Instead of rebase
@@ -152,6 +170,7 @@ git merge main  # Instead of rebase
 ### Recovery
 
 **Step 1: Check state and move the commit to a new branch**
+
 ```bash
 git status  # Verify clean working tree before destructive operation
 git branch feature-branch  # Creates branch at current position (with the commit)
@@ -160,6 +179,7 @@ git switch feature-branch
 ```
 
 **Step 2: Push the feature branch**
+
 ```bash
 git push -u origin feature-branch
 ```
@@ -171,30 +191,35 @@ git push -u origin feature-branch
 ### Recovery
 
 **If the file was committed:**
+
 ```bash
 git restore path/to/file  # Restore from last commit (Git 2.23+)
 # Legacy: git checkout HEAD -- path/to/file
 ```
 
 **If the file was staged but not committed:**
+
 ```bash
 git restore --staged path/to/file  # Unstage, then restore
 # Legacy: git checkout -- path/to/file
 ```
 
 **If the file was never tracked:**
+
 - Check trash/recycle bin
 - Cannot be recovered via git
 
 ## Large File Accidentally Committed
 
 ### Symptoms
+
 - `git push` fails with size limit error
 - Repository grew unexpectedly large
 
 ### Recovery
 
 **Step 1: Remove from current commit (if last commit)**
+
 ```bash
 git reset HEAD~1           # Undo last commit, keep changes — do NOT re-add the large file
 # Add file to .gitignore (check for duplicates first)
@@ -205,30 +230,35 @@ git commit -m "Add changes without large file"
 ```
 
 **Step 2: If pushed or multiple commits deep**
+
 - Consider `git filter-branch` or BFG Repo Cleaner (advanced — explain risks)
 - For beginners: walk through the simpler reset approach, or start fresh if the repo is small
 
 ## Push Rejected (Non-Fast-Forward)
 
 ### Symptoms
+
 - `! [rejected] main -> main (non-fast-forward)`
 - `Updates were rejected because the tip of your current branch is behind`
 
 ### Recovery
 
 **For intermediate+ users:**
+
 ```bash
 git pull --rebase origin BRANCH  # Rebase local changes on top of remote
 git push
 ```
 
 **For beginners (simpler merge-based approach):**
+
 ```bash
 git pull origin BRANCH  # Merge remote changes in
 git push
 ```
 
 **If conflicts arise during pull:**
+
 - Resolve conflicts (see Merge Conflicts section above)
 - If rebasing: `git rebase --continue` then `git push`
 - If merging: `git commit` then `git push`
@@ -238,6 +268,7 @@ git push
 ## Stash Recovery
 
 ### Symptoms
+
 - `git stash pop` caused conflicts
 - Lost track of stashed changes
 - Stash accidentally dropped
@@ -245,23 +276,27 @@ git push
 ### Recovery
 
 **Step 1: List all stashes**
+
 ```bash
 git stash list  # Shows all saved stashes
 ```
 
 **Step 2: View stash contents without applying**
+
 ```bash
 git stash show -p stash@{0}  # Show diff of most recent stash
 ```
 
 **Step 3: If `git stash pop` caused conflicts**
 The stash is NOT dropped when pop causes conflicts. Resolve the conflicts normally (see Merge Conflicts section), then drop the stash manually:
+
 ```bash
 git stash drop stash@{0}
 ```
 
 **Step 4: If stash was dropped accidentally**
 Stashes can sometimes be recovered from the reflog within a few weeks:
+
 ```bash
 git fsck --unreachable | grep commit  # Find orphaned commits
 ```

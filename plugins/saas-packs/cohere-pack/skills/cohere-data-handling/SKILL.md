@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Cohere Data Handling
 
 ## Overview
+
 Handle sensitive data when calling Cohere APIs. Cohere processes text server-side for Chat, Embed, Rerank, and Classify — any PII in your input reaches their servers. This skill covers pre-call redaction, post-call scrubbing, and compliance patterns.
 
 ## Prerequisites
+
 - Understanding of GDPR/CCPA requirements
 - `cohere-ai` SDK installed
 - Database for audit logging
@@ -244,12 +246,14 @@ await cohere.chat({
 - [ ] Classify examples use synthetic data (no real PII)
 
 ## Output
+
 - PII detection and redaction pipeline
 - Safe wrappers for Chat, Embed, and Classify
 - Audit logging with PII metadata (not content)
 - Data retention policy with automated cleanup
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | PII in embeddings | Missing pre-check | Add detectPII before embed |
@@ -258,9 +262,11 @@ await cohere.chat({
 | Safety mode ignored | Used with tools/docs | Separate safety from RAG calls |
 
 ## Resources
+
 - [Cohere Safety Modes](https://docs.cohere.com/docs/safety-modes)
 - [Cohere Privacy Policy](https://cohere.com/privacy)
 - [GDPR Developer Guide](https://gdpr.eu/developers/)
 
 ## Next Steps
+
 For enterprise access control, see `cohere-enterprise-rbac`.

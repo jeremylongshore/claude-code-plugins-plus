@@ -3,6 +3,7 @@
 ## Upgrade Methods
 
 ### Auto-Update (Recommended)
+
 ```
 Cursor auto-updates by default:
 1. Notification appears when update ready
@@ -14,6 +15,7 @@ Cursor auto-updates by default:
 ### Manual Update
 
 #### macOS
+
 ```bash
 # Download latest from cursor.com
 # Or via Homebrew
@@ -21,6 +23,7 @@ brew upgrade --cask cursor
 ```
 
 #### Linux
+
 ```bash
 # Download new AppImage from cursor.com
 chmod +x cursor-new-version.AppImage
@@ -30,6 +33,7 @@ mv cursor-new-version.AppImage /opt/cursor/cursor.AppImage
 ```
 
 #### Windows
+
 ```powershell
 # Download installer from cursor.com
 # Run installer - updates in place

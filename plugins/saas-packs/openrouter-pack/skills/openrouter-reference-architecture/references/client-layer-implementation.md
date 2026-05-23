@@ -3,6 +3,7 @@
 ## Client Layer Implementation
 
 ### Production OpenRouter Service
+
 ```python
 from openai import OpenAI, AsyncOpenAI
 import os

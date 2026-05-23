@@ -3,6 +3,7 @@
 ## Breaking Changes by Version
 
 ### v1.0.0 → v1.1.0
+
 ```python
 # No breaking changes
 # New features:
@@ -11,6 +12,7 @@
 ```
 
 ### v0.x → v1.0 (Major)
+
 ```python
 # Breaking: Response structure changed
 

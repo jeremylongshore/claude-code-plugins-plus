@@ -15,6 +15,7 @@
 ## Skills Included
 
 ### Getting Started (S01-S04)
+
 | Skill | What It Does |
 |-------|-------------|
 | `assemblyai-install-auth` | Install `assemblyai` npm package, configure API key, verify connection |
@@ -23,12 +24,14 @@
 | `assemblyai-sdk-patterns` | Singleton client, type-safe wrappers, error handling, retry logic, multi-tenant |
 
 ### Core Workflows (S05-S06)
+
 | Skill | What It Does |
 |-------|-------------|
 | `assemblyai-core-workflow-a` | Async transcription — speaker diarization, sentiment, entities, PII redaction, content safety |
 | `assemblyai-core-workflow-b` | Streaming transcription via WebSocket + LeMUR (summarize, Q&A, action items, custom tasks) |
 
 ### Troubleshooting (S07-S09)
+
 | Skill | What It Does |
 |-------|-------------|
 | `assemblyai-common-errors` | Real error messages with fixes — auth, download errors, rate limits, streaming codes, LeMUR |
@@ -36,6 +39,7 @@
 | `assemblyai-rate-limits` | Exponential backoff, p-queue concurrency control, streaming reconnection |
 
 ### Security & Production (S10-S12)
+
 | Skill | What It Does |
 |-------|-------------|
 | `assemblyai-security-basics` | API key management, temporary tokens for browsers, PII redaction, data retention |
@@ -43,6 +47,7 @@
 | `assemblyai-upgrade-migration` | SDK migration (old `@assemblyai/sdk` to `assemblyai`), model transitions, breaking changes |
 
 ### Pro Skills (P13-P18)
+
 | Skill | What It Does |
 |-------|-------------|
 | `assemblyai-ci-integration` | GitHub Actions with mocked unit tests + live integration tests, cost-controlled strategy |

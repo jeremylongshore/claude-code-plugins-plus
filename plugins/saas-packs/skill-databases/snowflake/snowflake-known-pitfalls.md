@@ -10,6 +10,7 @@ snowflake-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Snowflake anti-patterns
 **Workflow:** Part of the enterprise skill category for Snowflake integration.
 **Relates to:** Other snowflake skills in this pack.

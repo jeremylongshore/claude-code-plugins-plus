@@ -10,6 +10,7 @@ canva-policy-guardrails/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Canva policy enforcement
 **Workflow:** Part of the advanced skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

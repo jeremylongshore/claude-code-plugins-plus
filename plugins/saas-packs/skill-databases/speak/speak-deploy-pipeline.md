@@ -10,6 +10,7 @@ speak-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Speak integrations to production
 **Workflow:** Part of the cicd skill category for Speak integration.
 **Relates to:** Other speak skills in this pack.

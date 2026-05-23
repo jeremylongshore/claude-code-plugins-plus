@@ -5,14 +5,16 @@ Detailed implementation reference for the speak-common-errors skill.
 ## Instructions
 
 ### Step 1: Identify the Error
+
 Check error message and code in your logs or console.
 
 ### Step 2: Find Matching Error Below
+
 Match your error to one of the documented cases.
 
 ### Step 3: Apply Solution
-Follow the solution steps for your specific error.
 
+Follow the solution steps for your specific error.
 
 ## Quick Diagnostic Commands
 
@@ -32,16 +34,18 @@ env | grep SPEAK
 speak sessions list --status active
 ```
 
-
 ## Escalation Path
+
 1. Collect evidence with `speak-debug-bundle`
 2. Check Speak status page: https://status.speak.com
 3. Contact support with request ID from error
 
-
 ## Error Reference
+
 ### 1. Authentication Failed
+
 **Error Message:**
+
 ```
 SpeakAuthError: Invalid API key or App ID
 Code: AUTH_001
@@ -50,6 +54,7 @@ Code: AUTH_001
 **Cause:** API key is missing, expired, or invalid. App ID mismatch.
 
 **Solution:**
+
 ```bash
 # Verify API key is set
 echo $SPEAK_API_KEY
@@ -64,7 +69,9 @@ curl -X POST https://api.speak.com/v1/health \
 ---
 
 ### 2. Rate Limit Exceeded
+
 **Error Message:**
+
 ```
 SpeakRateLimitError: Rate limit exceeded. Retry after 60 seconds.
 Code: RATE_001
@@ -84,7 +91,9 @@ await new Promise(resolve => setTimeout(resolve, 1000));
 ---
 
 ### 3. Audio Processing Failed
+
 **Error Message:**
+
 ```
 SpeakAudioError: Invalid audio format or corrupted audio data
 Code: AUDIO_001
@@ -93,6 +102,7 @@ Code: AUDIO_001
 **Cause:** Audio file is in wrong format, too short, or corrupted.
 
 **Solution:**
+
 ```typescript
 // Validate audio before sending
 function validateAudio(audioData: ArrayBuffer): boolean {
@@ -118,6 +128,7 @@ function validateAudio(audioData: ArrayBuffer): boolean {
 ```
 
 **Supported formats:**
+
 - WAV (PCM, 16-bit, mono, 16kHz) - Recommended
 - MP3 (128kbps minimum)
 - WebM (Opus codec)
@@ -125,7 +136,9 @@ function validateAudio(audioData: ArrayBuffer): boolean {
 ---
 
 ### 4. Session Expired
+
 **Error Message:**
+
 ```
 SpeakSessionError: Session expired or not found
 Code: SESSION_001
@@ -135,6 +148,7 @@ SessionId: sess_abc123
 **Cause:** Lesson session timed out or was ended.
 
 **Solution:**
+
 ```typescript
 // Check session status before operations
 async function safeSessionOperation(
@@ -156,7 +170,9 @@ async function safeSessionOperation(
 ---
 
 ### 5. Language Not Supported
+
 **Error Message:**
+
 ```
 SpeakLanguageError: Language 'xyz' is not supported
 Code: LANG_001
@@ -165,6 +181,7 @@ Code: LANG_001
 **Cause:** Requested language code is invalid or not available.
 
 **Solution:**
+
 ```typescript
 const SUPPORTED_LANGUAGES = [
   'en', 'es', 'fr', 'de', 'pt-BR',
@@ -184,7 +201,9 @@ function validateLanguage(lang: string): boolean {
 ---
 
 ### 6. Speech Recognition Failed
+
 **Error Message:**
+
 ```
 SpeakRecognitionError: Could not recognize speech
 Code: RECOGNITION_001
@@ -194,6 +213,7 @@ Confidence: 0.12
 **Cause:** Audio quality too poor, background noise, or unclear speech.
 
 **Solution:**
+
 ```typescript
 // Check recognition confidence
 async function recognizeWithRetry(
@@ -213,6 +233,7 @@ async function recognizeWithRetry(
 ```
 
 **Tips for better recognition:**
+
 - Use a high-quality microphone
 - Reduce background noise
 - Speak clearly and at normal pace
@@ -221,7 +242,9 @@ async function recognizeWithRetry(
 ---
 
 ### 7. Network Timeout
+
 **Error Message:**
+
 ```
 SpeakNetworkError: Request timeout after 30000ms
 Code: NETWORK_001
@@ -230,6 +253,7 @@ Code: NETWORK_001
 **Cause:** Network connectivity or server latency issues.
 
 **Solution:**
+
 ```typescript
 // Increase timeout for large audio files
 const client = new SpeakClient({
@@ -243,7 +267,9 @@ const client = new SpeakClient({
 ---
 
 ### 8. Quota Exceeded
+
 **Error Message:**
+
 ```
 SpeakQuotaError: Monthly API quota exceeded
 Code: QUOTA_001
@@ -253,6 +279,7 @@ Usage: 100000/100000
 **Cause:** Exceeded monthly API call limit for your plan.
 
 **Solution:**
+
 ```typescript
 // Monitor usage before operations
 async function checkQuota(client: SpeakClient): Promise<boolean> {
@@ -272,7 +299,9 @@ async function checkQuota(client: SpeakClient): Promise<boolean> {
 ---
 
 ### 9. Invalid Response Format
+
 **Error Message:**
+
 ```
 SpeakParseError: Invalid response from AI tutor
 Code: PARSE_001
@@ -281,6 +310,7 @@ Code: PARSE_001
 **Cause:** AI tutor returned unexpected response format.
 
 **Solution:**
+
 ```typescript
 // Validate tutor responses
 function validateTutorResponse(response: any): TutorResponse {
@@ -299,7 +329,9 @@ function validateTutorResponse(response: any): TutorResponse {
 ---
 
 ### 10. Concurrent Session Limit
+
 **Error Message:**
+
 ```
 SpeakLimitError: Maximum concurrent sessions reached
 Code: LIMIT_001
@@ -310,6 +342,7 @@ CurrentSessions: 5
 **Cause:** Too many active sessions for your account.
 
 **Solution:**
+
 ```typescript
 // Clean up old sessions before starting new ones
 async function ensureSessionSlot(

@@ -4,7 +4,7 @@
 
 An MCP server that helps developers quickly identify and fix API issues by analyzing OpenAPI specifications, ingesting HTTP logs, explaining failures, and generating reproducible test commands.
 
-##  What It Does
+## What It Does
 
 This plugin transforms API debugging from guesswork into systematic analysis:
 
@@ -13,17 +13,18 @@ This plugin transforms API debugging from guesswork into systematic analysis:
 3. **Explain Failures** - Analyze why API calls failed with root cause analysis
 4. **Generate Repros** - Create cURL/HTTPie/fetch commands to reproduce issues
 
-##  Installation
+## Installation
 
 ```bash
 /plugin install conversational-api-debugger@claude-code-plugins-plus
 ```
 
-##  Features
+## Features
 
 ### 4 Powerful MCP Tools
 
 #### 1. `load_openapi`
+
 Load and parse OpenAPI 3.x specifications.
 
 ```json
@@ -34,12 +35,14 @@ Load and parse OpenAPI 3.x specifications.
 ```
 
 **Returns:**
+
 - API title, version, description
 - Base URL and servers
 - Complete endpoint list
 - Endpoint count and structure
 
 #### 2. `ingest_logs`
+
 Import HTTP request/response logs for analysis.
 
 ```json
@@ -67,6 +70,7 @@ Or provide logs directly:
 ```
 
 **Returns:**
+
 - Total requests ingested
 - Success/failure breakdown
 - Status code distribution
@@ -74,6 +78,7 @@ Or provide logs directly:
 - Top errors (first 10)
 
 #### 3. `explain_failure`
+
 Analyze why an API call failed.
 
 ```json
@@ -84,6 +89,7 @@ Analyze why an API call failed.
 ```
 
 **Returns:**
+
 - **Severity**: critical | high | medium | low
 - **Possible Causes**: List of likely root causes
 - **Suggested Fixes**: Actionable remediation steps
@@ -91,6 +97,7 @@ Analyze why an API call failed.
 - **Details**: Request/response for inspection
 
 #### 4. `make_repro`
+
 Generate cURL command to reproduce API call.
 
 ```json
@@ -102,12 +109,13 @@ Generate cURL command to reproduce API call.
 ```
 
 **Returns:**
+
 - **cURL Command**: Ready to copy-paste
 - **HTTPie Alternative**: Shorter syntax
 - **JavaScript fetch**: For automated tests
 - **Metadata**: Method, URL, headers count
 
-##  Quick Start
+## Quick Start
 
 ### Scenario 1: Debugging a 400 Bad Request
 
@@ -173,7 +181,7 @@ Use explain_failure
 # - Missing scopes/permissions
 ```
 
-##  Slash Command
+## Slash Command
 
 Use the `/debug-api` command for a guided debugging workflow:
 
@@ -182,12 +190,13 @@ Use the `/debug-api` command for a guided debugging workflow:
 ```
 
 This activates a systematic 4-step process:
+
 1. Load API documentation (OpenAPI spec)
 2. Ingest HTTP logs (HAR or JSON)
 3. Analyze failures (explain errors)
 4. Generate test commands (cURL repros)
 
-##  AI Agent
+## AI Agent
 
 The `api-expert` agent specializes in API debugging:
 
@@ -198,29 +207,33 @@ The `api-expert` agent specializes in API debugging:
 - **Test command generation**
 
 Activate by asking questions like:
+
 - "Why is my API returning 400?"
 - "Help me debug this authentication error"
 - "Analyze these API logs"
 
-##  Supported Formats
+## Supported Formats
 
 ### OpenAPI Specs
--  OpenAPI 3.0.x
--  OpenAPI 3.1.x
--  JSON format
--  YAML format
+
+- OpenAPI 3.0.x
+- OpenAPI 3.1.x
+- JSON format
+- YAML format
 - ️ Swagger 2.0 (limited support)
 
 ### HTTP Logs
--  HAR (HTTP Archive) - browser DevTools export
--  JSON array of request/response objects
--  Direct log objects (manual entry)
 
-##  Status Code Knowledge Base
+- HAR (HTTP Archive) - browser DevTools export
+- JSON array of request/response objects
+- Direct log objects (manual entry)
+
+## Status Code Knowledge Base
 
 The plugin has built-in expertise for all common HTTP status codes:
 
 ### 4xx Client Errors
+
 - **400** Bad Request → Validation/syntax errors
 - **401** Unauthorized → Authentication issues
 - **403** Forbidden → Permission problems
@@ -232,12 +245,13 @@ The plugin has built-in expertise for all common HTTP status codes:
 - **429** Too Many Requests → Rate limiting
 
 ### 5xx Server Errors
+
 - **500** Internal Server Error → Server bug (CRITICAL)
 - **502** Bad Gateway → Upstream error (CRITICAL)
 - **503** Service Unavailable → Temporary issue (HIGH)
 - **504** Gateway Timeout → Upstream timeout (HIGH)
 
-##  How It Works
+## How It Works
 
 ### Under the Hood
 
@@ -250,17 +264,19 @@ The plugin has built-in expertise for all common HTTP status codes:
 ### In-Memory Storage
 
 The plugin maintains:
+
 - **API Specs**: Map of loaded OpenAPI documents
 - **HTTP Logs**: Array of ingested requests/responses
 - **Log Indexing**: Fast lookup by index for analysis
 
 Data persists during the session but clears on restart (no disk storage).
 
-##  Examples
+## Examples
 
 ### Export HAR from Browser
 
 **Chrome/Edge:**
+
 1. Open DevTools (F12)
 2. Go to Network tab
 3. Perform API calls
@@ -268,6 +284,7 @@ Data persists during the session but clears on restart (no disk storage).
 5. "Save all as HAR with content"
 
 **Firefox:**
+
 1. Open DevTools (F12)
 2. Go to Network tab
 3. Perform API calls
@@ -314,7 +331,7 @@ conversational-api-debugger/
     └── plugin.json            # Plugin metadata
 ```
 
-##  Testing
+## Testing
 
 ```bash
 # Run test suite
@@ -328,6 +345,7 @@ pnpm build
 ```
 
 **Test Coverage:**
+
 - OpenAPI spec loading (JSON/YAML)
 - HAR file parsing
 - Log analysis (status codes, methods)
@@ -337,22 +355,22 @@ pnpm build
 - Input validation (Zod schemas)
 - Error handling
 
-##  Contributing
+## Contributing
 
 See [CONTRIBUTING.md](../../../000-docs/007-DR-GUID-contributing.md) for development guidelines.
 
-##  License
+## License
 
 MIT License - see [LICENSE](../../../000-docs/001-BL-LICN-license.txt)
 
-##  Related Tools
+## Related Tools
 
 - **project-health-auditor** - Code quality and technical debt analysis
 - **domain-memory-agent** - Knowledge base with semantic search
 - **design-to-code** - Figma/screenshot to component generation
 - **workflow-orchestrator** - DAG-based task automation
 
-##  Use Cases
+## Use Cases
 
 1. **Debugging Production Issues** - Analyze production API failures quickly
 2. **API Integration** - Understand third-party API errors
@@ -361,7 +379,7 @@ MIT License - see [LICENSE](../../../000-docs/001-BL-LICN-license.txt)
 5. **Bug Reports** - Include working repro commands
 6. **Onboarding** - Help new developers understand APIs
 
-##  Best Practices
+## Best Practices
 
 1. **Always load OpenAPI spec first** - Provides context for analysis
 2. **Use HAR files when possible** - Most complete log format
@@ -370,14 +388,14 @@ MIT License - see [LICENSE](../../../000-docs/001-BL-LICN-license.txt)
 5. **Test fixes immediately** - Use generated cURL to verify
 6. **Keep specs up-to-date** - Ensure accurate comparisons
 
-##  Performance
+## Performance
 
 - **OpenAPI Loading**: < 100ms for typical specs
 - **HAR Parsing**: < 500ms for 100 requests
 - **Failure Analysis**: < 50ms per request
 - **cURL Generation**: < 10ms per command
 
-##  Troubleshooting
+## Troubleshooting
 
 **Q: OpenAPI spec fails to load**
 A: Ensure it's valid OpenAPI 3.x (check `openapi: "3.0.0"` field)
@@ -391,7 +409,7 @@ A: Check URL path matches OpenAPI spec (including base path)
 **Q: Generated cURL doesn't work**
 A: Verify all required headers are in original request
 
-##  Features Coming Soon
+## Features Coming Soon
 
 - [ ] Support for GraphQL APIs
 - [ ] Batch failure analysis

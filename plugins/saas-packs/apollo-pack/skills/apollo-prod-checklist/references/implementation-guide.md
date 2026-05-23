@@ -5,11 +5,13 @@
 # Apollo Production Checklist
 
 ## Overview
+
 Comprehensive checklist for deploying Apollo.io integrations to production with validation scripts and verification steps.
 
 ## Pre-Deployment Checklist
 
 ### 1. API Configuration
+
 ```bash
 # Verify production API key
 echo "Key length: $(echo -n $APOLLO_API_KEY | wc -c)"
@@ -25,6 +27,7 @@ curl -s "https://api.apollo.io/v1/auth/health?api_key=$APOLLO_API_KEY" | jq
 - [ ] Backup/secondary key configured
 
 ### 2. Error Handling
+
 ```typescript
 // Verify error handlers are in place
 const requiredHandlers = [
@@ -43,6 +46,7 @@ const requiredHandlers = [
 - [ ] Fallback behavior defined
 
 ### 3. Rate Limiting
+
 ```typescript
 // Verify rate limit configuration
 const config = {
@@ -62,6 +66,7 @@ const config = {
 - [ ] Rate limit monitoring enabled
 
 ### 4. Security
+
 - [ ] API keys not in code
 - [ ] .env files in .gitignore
 - [ ] HTTPS only
@@ -69,6 +74,7 @@ const config = {
 - [ ] Data retention policy implemented
 
 ### 5. Monitoring
+
 - [ ] Request/response logging
 - [ ] Error rate alerts
 - [ ] Latency monitoring
@@ -279,12 +285,14 @@ if (isFeatureEnabled('peopleSearch')) {
 | Rollback | Revert deployment | `kubectl rollout undo` |
 
 ## Output
+
 - Pre-deployment checklist completed
 - Validation script results
 - Post-deployment verification
 - Rollback procedures documented
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | Validation fails | Fix issues before deploy |
@@ -293,9 +301,11 @@ if (isFeatureEnabled('peopleSearch')) {
 | Full outage | Contact Apollo support |
 
 ## Resources
+
 - [Apollo Status Page](https://status.apollo.io)
 - [Apollo Support](https://support.apollo.io)
 - [Apollo API Changelog](https://apolloio.github.io/apollo-api-docs/#changelog)
 
 ## Next Steps
+
 Proceed to `apollo-upgrade-migration` for SDK upgrade procedures.

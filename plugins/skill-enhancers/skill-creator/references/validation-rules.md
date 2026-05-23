@@ -1,4 +1,5 @@
 # Skill Validation Rules
+
 Sources: [AgentSkills.io spec](https://agentskills.io/specification) · [Anthropic docs](https://code.claude.com/docs/en/skills) · Intent Solutions 100-point rubric
 
 Two-tier validation aligned with AgentSkills.io spec + Enterprise extensions.
@@ -151,6 +152,7 @@ Plus MCP tools in `ServerName:tool_name` format.
 | Enterprise | Error |
 
 Valid scoped patterns:
+
 ```
 Bash(git:*)
 Bash(npm:*)
@@ -237,6 +239,7 @@ The command runs at skill activation time. Output is injected verbatim into the 
 ## String Substitution Validation
 
 If SKILL.md body contains `$ARGUMENTS` or `$0`, `$1`, etc.:
+
 - `argument-hint` SHOULD be set in frontmatter
 - Instructions SHOULD handle empty `$ARGUMENTS` case
 - `$ARGUMENTS[N]` indexing should be sequential from 0
@@ -248,23 +251,27 @@ Also recognized: `${CLAUDE_SESSION_ID}` — current session identifier (official
 ## Validation Process
 
 ### Pre-flight
+
 1. File exists and is readable
 2. YAML frontmatter parses without error
 3. Frontmatter separator (`---`) present at start and end
 
 ### Field Validation
+
 1. Required fields present
 2. Field types correct
 3. Field constraints met
 4. No deprecated fields (or warned)
 
 ### Body Validation
+
 1. Length within limits
 2. Required sections present (Enterprise)
 3. No absolute paths
 4. Instructions have steps (Enterprise)
 
 ### Resource Validation
+
 1. All `${CLAUDE_SKILL_DIR}/scripts/*` references exist
 2. All `${CLAUDE_SKILL_DIR}/references/*` references exist
 3. All `${CLAUDE_SKILL_DIR}/templates/*` references exist
@@ -273,6 +280,7 @@ Also recognized: `${CLAUDE_SESSION_ID}` — current session identifier (official
 6. No path escape attempts
 
 ### Report
+
 - Errors: Must fix (blocks pass)
 - Warnings: Should fix (does not block pass)
 - Info: Optional improvements (includes structural advisor suggestions)
@@ -286,16 +294,19 @@ Also recognized: `${CLAUDE_SESSION_ID}` — current session identifier (official
 INFO-level suggestions emitted after grading. Not scored — purely advisory.
 
 ### Split to Commands
+
 - **Trigger**: 3+ kebab-case `## operation-name` sections without `commands/` directory
 - **Suggestion**: Split into individual `commands/*.md` files
 - **Why**: Each operation becomes a separate slash command; skill stays lean
 
 ### Offload to References
+
 - **Trigger**: Body sections >20 lines (Output, Error Handling, Examples) without `references/`
 - **Suggestion**: Move to `references/section-name.md` with relative markdown link
 - **Why**: Reduces token footprint; Claude reads on demand
 
 ### DCI Opportunities
+
 - **Trigger**: File existence checks, git operations, or tool version detection without DCI
 - **Suggestion**: Add `` !`command` `` directives for auto-detection at activation
 - **Why**: Eliminates discovery tool calls; Claude starts with context pre-loaded

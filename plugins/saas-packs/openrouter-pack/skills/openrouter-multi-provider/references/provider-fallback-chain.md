@@ -3,6 +3,7 @@
 ## Provider Fallback Chain
 
 ### Cross-Provider Resilience
+
 ```python
 class MultiProviderClient:
     """Client with cross-provider fallback."""

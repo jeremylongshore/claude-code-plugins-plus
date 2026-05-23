@@ -38,6 +38,7 @@ Quick reference for the most common Canva Connect API errors at `api.canva.com/r
 **Cause:** Access tokens expire after ~4 hours. Token may be malformed or revoked.
 
 **Fix:**
+
 ```typescript
 // Refresh the token
 const res = await fetch('https://api.canva.com/rest/v1/oauth/token', {
@@ -66,6 +67,7 @@ const { access_token, refresh_token } = await res.json();
 **Cause:** Your integration doesn't have the required OAuth scope enabled, or the user isn't authorized for the resource.
 
 **Fix:**
+
 1. Check required scope in the [Scopes Reference](https://www.canva.dev/docs/connect/appendix/scopes/)
 2. Enable the scope in your integration settings at [canva.dev](https://www.canva.dev)
 3. Re-authorize the user — existing tokens don't gain new scopes retroactively
@@ -91,6 +93,7 @@ const { access_token, refresh_token } = await res.json();
 | `POST /v1/folders` | 20 req/min |
 
 **Fix:**
+
 ```typescript
 async function canvaAPIWithRetry(path: string, token: string, opts: RequestInit = {}) {
   const res = await fetch(`https://api.canva.com/rest/v1${path}`, {
@@ -117,6 +120,7 @@ async function canvaAPIWithRetry(path: string, token: string, opts: RequestInit 
 **Cause:** Design, asset, template, or folder ID doesn't exist, was deleted, or the user doesn't have access.
 
 **Fix:**
+
 ```bash
 # Verify the resource exists — check design ID
 curl -s -H "Authorization: Bearer $TOKEN" \
@@ -128,6 +132,7 @@ curl -s -H "Authorization: Bearer $TOKEN" \
 ### 400 Bad Request — Validation Error
 
 **Common cases:**
+
 ```json
 { "error": "validation_error", "message": "Design title invalid" }
 ```

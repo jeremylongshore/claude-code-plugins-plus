@@ -17,6 +17,7 @@ resources:
 ```
 
 **Guidelines:**
+
 - Requests = typical usage (for scheduling)
 - Limits = maximum acceptable (for protection)
 - Memory limits are hard - exceeding causes OOMKill
@@ -81,6 +82,7 @@ startupProbe:
 | failureThreshold | 3 | 3 | 30 (slow apps) |
 
 **Don'ts:**
+
 - Don't make liveness probes depend on external services
 - Don't make readiness probes too expensive
 - Don't set initialDelaySeconds too low
@@ -101,6 +103,7 @@ spec:
 ```
 
 **Configurations:**
+
 - **Aggressive:** maxSurge: 100%, maxUnavailable: 0 (zero downtime, double resources)
 - **Conservative:** maxSurge: 1, maxUnavailable: 0 (slow but safe)
 - **Balanced:** maxSurge: 25%, maxUnavailable: 25% (default)
@@ -114,6 +117,7 @@ spec:
 ```
 
 Use Recreate when:
+
 - Application can't run multiple versions simultaneously
 - Database migrations require exclusive access
 - Resource constraints prevent double deployment
@@ -130,6 +134,7 @@ spec:
 ```
 
 **Guidelines:**
+
 - Minimum 3 replicas for production
 - Odd numbers for quorum-based apps
 - Consider traffic patterns for worker scaling
@@ -237,12 +242,14 @@ volumes:
 ### Configuration Reload Strategies
 
 1. **Restart pods on config change:**
+
    ```yaml
    annotations:
      configmap-hash: {{ .Values.config | toYaml | sha256sum }}
    ```
 
 2. **Use Reloader controller:**
+
    ```yaml
    annotations:
      reloader.stakater.com/auto: "true"
@@ -407,6 +414,7 @@ securityContext:
 ## Pre-Deployment Checklist
 
 ### Manifest Quality
+
 - [ ] Resource requests and limits defined
 - [ ] Health probes configured
 - [ ] Labels applied (app, version, env)
@@ -414,18 +422,21 @@ securityContext:
 - [ ] Image tag is specific (not :latest)
 
 ### High Availability
+
 - [ ] Multiple replicas (3+)
 - [ ] PodDisruptionBudget created
 - [ ] Pod anti-affinity configured
 - [ ] Topology spread constraints set
 
 ### Operations
+
 - [ ] ConfigMaps/Secrets externalized
 - [ ] Metrics endpoint exposed
 - [ ] Logging configured
 - [ ] Graceful shutdown implemented
 
 ### Security
+
 - [ ] Security context set
 - [ ] Network policies defined
 - [ ] Service account configured

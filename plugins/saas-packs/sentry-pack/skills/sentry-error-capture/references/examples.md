@@ -1,6 +1,7 @@
-# Examples
+## Examples
 
 ### API Error Handler
+
 ```typescript
 async function apiHandler(req, res, next) {
   try {
@@ -21,6 +22,7 @@ async function apiHandler(req, res, next) {
 ```
 
 ### Python Context Manager
+
 ```python
 from contextlib import contextmanager
 import sentry_sdk

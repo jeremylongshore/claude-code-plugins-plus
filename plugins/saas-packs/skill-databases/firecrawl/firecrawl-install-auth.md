@@ -10,6 +10,7 @@ firecrawl-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure FireCrawl SDK authentication including API key setup, environment variable configuration, and connection verification.
 **Workflow:** First skill in the onboarding sequence - sets up foundational SDK and authentication before any other FireCrawl operations can be performed.
 **Relates to:** Prerequisite for firecrawl-hello-world and all other skills; security patterns build on firecrawl-security-basics

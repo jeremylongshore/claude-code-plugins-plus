@@ -34,6 +34,7 @@ kubectl get pods -l app=signing-service
 ### Procedure 1: Documenso API Unresponsive
 
 **Symptoms:**
+
 - Connection timeouts
 - 5xx errors from Documenso
 - Health checks failing
@@ -41,6 +42,7 @@ kubectl get pods -l app=signing-service
 **Steps:**
 
 1. **Confirm the issue (2 min)**
+
    ```bash
    # Check Documenso status page
    curl -s https://status.documenso.com/api/v2/status.json | jq
@@ -52,6 +54,7 @@ kubectl get pods -l app=signing-service
    ```
 
 2. **Enable graceful degradation (5 min)**
+
    ```bash
    # If using feature flags
    curl -X POST https://your-feature-flags.com/api/flags \
@@ -62,6 +65,7 @@ kubectl get pods -l app=signing-service
    ```
 
 3. **Notify stakeholders**
+
    ```
    Subject: [P1] Documenso Integration Degraded
 
@@ -72,12 +76,14 @@ kubectl get pods -l app=signing-service
    ```
 
 4. **Monitor for recovery**
+
    ```bash
    # Watch for recovery
    watch -n 30 'curl -s https://status.documenso.com/api/v2/status.json | jq .status'
    ```
 
 5. **Re-enable after recovery**
+
    ```bash
    kubectl set env deployment/signing-service DOCUMENSO_ENABLED=true
    ```
@@ -85,6 +91,7 @@ kubectl get pods -l app=signing-service
 ### Procedure 2: High Error Rate (4xx/5xx)
 
 **Symptoms:**
+
 - Error rate > 5%
 - Mixed successful and failed requests
 - Specific operations failing
@@ -92,6 +99,7 @@ kubectl get pods -l app=signing-service
 **Steps:**
 
 1. **Identify error pattern (5 min)**
+
    ```bash
    # Check recent errors
    kubectl logs -l app=signing-service --since=30m | \
@@ -100,6 +108,7 @@ kubectl get pods -l app=signing-service
    ```
 
 2. **Check specific error types**
+
    ```bash
    # 401 Unauthorized - API key issue
    # 403 Forbidden - Permission issue
@@ -110,6 +119,7 @@ kubectl get pods -l app=signing-service
    ```
 
 3. **For 401/403 errors:**
+
    ```bash
    # Verify API key
    echo $DOCUMENSO_API_KEY | head -c 10
@@ -120,6 +130,7 @@ kubectl get pods -l app=signing-service
    ```
 
 4. **For 429 errors:**
+
    ```bash
    # Check request rate
    kubectl logs -l app=signing-service --since=5m | \
@@ -137,6 +148,7 @@ kubectl get pods -l app=signing-service
 ### Procedure 3: Document Stuck in Pending
 
 **Symptoms:**
+
 - Documents not completing
 - Recipients not receiving emails
 - Webhooks not firing
@@ -144,12 +156,14 @@ kubectl get pods -l app=signing-service
 **Steps:**
 
 1. **Check document status**
+
    ```bash
    curl -H "Authorization: Bearer $DOCUMENSO_API_KEY" \
      https://app.documenso.com/api/v2/documents/{documentId}
    ```
 
 2. **Check recipient status**
+
    ```bash
    # Look for recipient signing status
    curl -H "Authorization: Bearer $DOCUMENSO_API_KEY" \
@@ -163,6 +177,7 @@ kubectl get pods -l app=signing-service
    - Test webhook endpoint manually
 
 4. **Manual intervention**
+
    ```bash
    # Resend document
    curl -X POST \
@@ -173,6 +188,7 @@ kubectl get pods -l app=signing-service
 ### Procedure 4: Webhook Not Receiving Events
 
 **Symptoms:**
+
 - No webhook events received
 - Events delayed significantly
 - Partial event delivery
@@ -185,6 +201,7 @@ kubectl get pods -l app=signing-service
    - Confirm events are subscribed
 
 2. **Test webhook endpoint**
+
    ```bash
    curl -X POST https://your-app.com/webhooks/documenso \
      -H "Content-Type: application/json" \
@@ -197,6 +214,7 @@ kubectl get pods -l app=signing-service
    - View delivery attempts and responses
 
 4. **Check your endpoint**
+
    ```bash
    # Verify endpoint is responding
    curl -I https://your-app.com/webhooks/documenso

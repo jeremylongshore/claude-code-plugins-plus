@@ -47,6 +47,7 @@ Formats and validates code files using Prettier and related formatting tools. Su
 ## Output
 
 A formatting execution report containing:
+
 - Count of files checked and files reformatted
 - List of files that were modified with before/after formatting status
 - Configuration file(s) created or updated (`.prettierrc`, `.prettierignore`)

@@ -30,6 +30,7 @@ Scan codebase for exposed secrets, API keys, passwords, and sensitive credential
 ## What It Detects
 
 ### API Keys & Tokens
+
 - AWS Access Keys
 - Google API Keys
 - Azure Storage Keys
@@ -41,6 +42,7 @@ Scan codebase for exposed secrets, API keys, passwords, and sensitive credential
 - Mailgun API Keys
 
 ### Credentials
+
 - Database passwords
 - SMTP credentials
 - FTP credentials
@@ -48,12 +50,14 @@ Scan codebase for exposed secrets, API keys, passwords, and sensitive credential
 - PGP private keys
 
 ### Tokens
+
 - OAuth tokens
 - JWT tokens
 - Session tokens
 - Bearer tokens
 
 ### High-Entropy Strings
+
 - Base64-encoded secrets
 - Hexadecimal keys
 - Random-looking strings (>4.5 entropy)
@@ -113,6 +117,7 @@ CRITICAL SECRETS
 ## Remediation Guide
 
 ### For Exposed API Keys
+
 ```bash
 # 1. Revoke the exposed key immediately
 # (Use provider's console/CLI)
@@ -129,6 +134,7 @@ echo "config/keys.js" >> .gitignore
 ```
 
 ### For Configuration Files
+
 ```bash
 # Create template file
 cp .env .env.example
@@ -174,6 +180,7 @@ EOF
 ## Pre-commit Hook
 
 Add to `.git/hooks/pre-commit`:
+
 ```bash
 #!/bin/bash
 if /plugin secret-scanner | grep -q "CRITICAL"; then

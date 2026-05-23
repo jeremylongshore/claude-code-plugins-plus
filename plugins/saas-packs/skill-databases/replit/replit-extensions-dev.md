@@ -10,6 +10,7 @@ replit-extensions-dev/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Build custom Replit extensions to extend IDE functionality with custom panels, commands, and integrations.
 **Workflow:** Platform development skill - creates custom tooling for teams or community.
 **Relates to:** Builds on replit-workspace-setup; enables team-specific tooling.

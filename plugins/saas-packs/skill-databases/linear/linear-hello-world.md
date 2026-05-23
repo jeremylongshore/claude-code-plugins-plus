@@ -10,6 +10,7 @@ linear-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Linear example
 **Workflow:** Part of the onboarding skill category for Linear integration.
 **Relates to:** Other linear skills in this pack.

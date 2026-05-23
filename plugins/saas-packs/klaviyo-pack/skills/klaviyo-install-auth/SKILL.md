@@ -62,6 +62,7 @@ echo '.env.local' >> .gitignore
 ```
 
 Klaviyo uses two key types:
+
 | Key Type | Prefix | Use Case | Header |
 |----------|--------|----------|--------|
 | Private API Key | `pk_` | Server-side REST API | `Authorization: Klaviyo-API-Key pk_***` |

@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Incident Runbook
 
 ## Overview
+
 Rapid incident response for Perplexity Sonar API issues. Perplexity-specific: the API depends on live web search, so outages can be partial (search degraded but API responding), model-specific (sonar-pro down but sonar working), or citation-related (answers returned but no sources).
 
 ## Severity Levels
@@ -97,6 +98,7 @@ API returning errors?
 ## Immediate Actions
 
 ### Auth Failure (401/402)
+
 ```bash
 set -euo pipefail
 # Verify current key
@@ -111,6 +113,7 @@ echo "Key length: ${#PERPLEXITY_API_KEY}"
 ```
 
 ### Rate Limited (429)
+
 ```bash
 set -euo pipefail
 # Check if we're making too many requests
@@ -124,6 +127,7 @@ set -euo pipefail
 ```
 
 ### Model-Specific Fallback
+
 ```typescript
 // If sonar-pro is failing, fall back to sonar
 async function resilientSearch(query: string) {
@@ -148,6 +152,7 @@ async function resilientSearch(query: string) {
 ## Communication Templates
 
 ### Internal (Slack)
+
 ```
 P[1-4] INCIDENT: Perplexity Search Integration
 Status: INVESTIGATING | IDENTIFIED | MONITORING | RESOLVED
@@ -161,6 +166,7 @@ IC: @[name]
 ## Post-Incident
 
 ### Evidence Collection
+
 ```bash
 set -euo pipefail
 # Collect debug bundle
@@ -180,6 +186,7 @@ tar -czf "incident-$(date +%Y%m%d-%H%M%S).tar.gz" incident-evidence/
 ```
 
 ### Postmortem Template
+
 ```markdown
 ## Incident: Perplexity [Error Type]
 **Date:** YYYY-MM-DD | **Duration:** Xh Ym | **Severity:** P[1-4]
@@ -201,6 +208,7 @@ tar -czf "incident-$(date +%Y%m%d-%H%M%S).tar.gz" incident-evidence/
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | All models failing | Perplexity outage | Serve cached results, notify users |
@@ -209,14 +217,17 @@ tar -czf "incident-$(date +%Y%m%d-%H%M%S).tar.gz" incident-evidence/
 | No citations | Search degradation | Log and monitor, usually resolves |
 
 ## Output
+
 - Issue triaged and categorized
 - Remediation applied (fallback/queue/key rotation)
 - Stakeholders notified
 - Evidence collected for postmortem
 
 ## Resources
+
 - [Perplexity Community Forum](https://community.perplexity.ai)
 - [Perplexity API Documentation](https://docs.perplexity.ai)
 
 ## Next Steps
+
 For data handling, see `perplexity-data-handling`.

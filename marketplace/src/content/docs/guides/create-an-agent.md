@@ -413,6 +413,7 @@ python3 scripts/validate-skills-schema.py --enterprise --verbose my-plugin/agent
 ```
 
 The validator checks:
+
 - Required frontmatter fields are present
 - `description` length is within 20-200 characters
 - `capabilities` is a valid array if present

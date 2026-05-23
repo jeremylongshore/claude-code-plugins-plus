@@ -10,6 +10,7 @@ bamboohr-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement BambooHR webhook handling
 **Workflow:** Part of the cicd skill category for BambooHR integration.
 **Relates to:** Other bamboohr skills in this pack.

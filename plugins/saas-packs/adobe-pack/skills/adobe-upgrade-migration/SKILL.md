@@ -59,6 +59,7 @@ const tokenResponse = await fetch('https://ims-na1.adobelogin.com/ims/token/v3',
 ```
 
 **Migration steps:**
+
 1. In Developer Console, open your project
 2. Click **Add credential** > **OAuth Server-to-Server**
 3. Assign same product profiles as your JWT credential

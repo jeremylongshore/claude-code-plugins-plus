@@ -10,6 +10,7 @@ palantir-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Palantir SDK upgrades
 **Workflow:** Part of the operations skill category for Palantir integration.
 **Relates to:** Other palantir skills in this pack.

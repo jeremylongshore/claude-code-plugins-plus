@@ -3,6 +3,7 @@
 ## Troubleshooting
 
 ### Cursor Won't Start
+
 ```bash
 # Start without extensions
 cursor --disable-extensions
@@ -15,6 +16,7 @@ cursor --disable-gpu
 ```
 
 ### Extreme Slowness
+
 ```
 1. Disable all extensions
 2. Open empty folder
@@ -23,6 +25,7 @@ cursor --disable-gpu
 ```
 
 ### Memory Leak
+
 ```
 Symptoms: Memory grows over time
 

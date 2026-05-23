@@ -177,9 +177,11 @@ Closes #42.
 ## Test results
 
 ```
-PASS  src/__tests__/format.test.ts (2 added)
+
+PASS  src/**tests**/format.test.ts (2 added)
 Tests: 78 passed, 78 total
 Duration: 1.2s
+
 ```
 ```
 

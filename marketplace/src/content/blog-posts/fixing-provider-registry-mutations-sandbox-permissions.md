@@ -75,6 +75,7 @@ Custom providers shadow built-in ones through the lookup chain. Each registry in
 The same release hardened the sandbox system. The `SandboxedAgent` previously trusted agent configurations without enforcing permission boundaries. Three fixes:
 
 **Deny-by-default network access:**
+
 ```typescript
 const allowNet = this.permissionProfile.permissions.allowNet;
 const networkEnabled = allowNet === true || Array.isArray(allowNet);
@@ -90,6 +91,7 @@ this.sandbox = await this.provider.create({
 If the permission profile doesn't explicitly grant network access, the sandbox has no network. No implicit permissions.
 
 **Destructive operation checks:**
+
 ```typescript
 commit(): RunArtifact | null {
   if (!this.permissionProfile.allowsDestructive) {
@@ -163,4 +165,3 @@ Mutable global registries are a recurring source of bugs in multi-tenant systems
 The fix is also always the same: make the data instance-owned, not module-owned. If you need to look up shared defaults, use a fallback chain — check the instance first, fall back to the module-level constant second. The constant stays read-only. The instance handles all mutations.
 
 For LLM response parsing, the lesson is simpler: TypeScript types are compile-time documentation. They tell you what the response *should* look like. Zod schemas tell you what it *actually* looks like. When your data comes from an LLM that can return literally anything, runtime validation isn't optional.
-

@@ -10,6 +10,7 @@ persona-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Persona debug evidence for support
 **Workflow:** Part of the operations skill category for Persona integration.
 **Relates to:** Other persona skills in this pack.

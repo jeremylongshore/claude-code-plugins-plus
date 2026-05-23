@@ -10,6 +10,7 @@ openevidence-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure OpenEvidence CI/CD integration
 **Workflow:** Part of the cicd skill category for OpenEvidence integration.
 **Relates to:** Other openevidence skills in this pack.

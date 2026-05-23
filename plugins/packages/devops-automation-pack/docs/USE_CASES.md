@@ -13,6 +13,7 @@
 **Meet Alex**, a junior developer at a startup. Their team needs CI/CD, but Alex has never set one up before.
 
 **Manual approach challenges:**
+
 - Overwhelming documentation (GitHub Actions has 500+ pages)
 - Unclear what to test (unit? integration? e2e?)
 - No idea what a "good" pipeline looks like
@@ -29,6 +30,7 @@ cd ~/my-project
 ```
 
 **What happens:**
+
 ```
  Analyzing project structure...
  Detected: Node.js project with package.json
@@ -51,17 +53,19 @@ Alex types `y` and gets a complete, working pipeline in 2 minutes.
 ### The Result
 
 **Before:**
--  No automated testing
--  Manual deployments (error-prone)
--  No code quality checks
+
+- No automated testing
+- Manual deployments (error-prone)
+- No code quality checks
 - ⏱️ 2-3 days to set up
 
 **After:**
--  Automated tests on every commit
--  One-click deployments
--  Linting enforced automatically
+
+- Automated tests on every commit
+- One-click deployments
+- Linting enforced automatically
 - ⏱️ 2 minutes to set up
--  **Time saved: 2.5 days (20 hours)**
+- **Time saved: 2.5 days (20 hours)**
 
 **Alex's feedback:** *"I went from terrified to confident in 10 minutes. The pipeline just works."*
 
@@ -74,6 +78,7 @@ Alex types `y` and gets a complete, working pipeline in 2 minutes.
 **Meet the DevOps team at MedTech Corp**. They have a 5-year-old Python app that needs to run in containers.
 
 **Manual approach challenges:**
+
 - Team hasn't used Docker before
 - App has complex dependencies (Python 3.8, Redis, PostgreSQL)
 - Unclear how to structure multi-stage builds
@@ -90,6 +95,7 @@ cd ~/medtech-app
 ```
 
 **What happens:**
+
 ```
  Analyzing application...
  Detected: Python 3.8 app with requirements.txt
@@ -114,6 +120,7 @@ After generating, they optimize:
 ```
 
 **Optimization results:**
+
 ```
  Analyzing Dockerfile...
 
@@ -129,18 +136,20 @@ Apply all optimizations? (y/n):
 ### The Result
 
 **Before:**
--  No containerization
--  "Works on my machine" problems
--  Manual server setup (2 hours per deploy)
+
+- No containerization
+- "Works on my machine" problems
+- Manual server setup (2 hours per deploy)
 - ⏱️ 1 week to create Dockerfile
 
 **After:**
--  Complete Docker setup in 15 minutes
--  Image size: 310MB (from 2.1GB = 85% reduction)
--  Consistent environments (dev, staging, prod)
+
+- Complete Docker setup in 15 minutes
+- Image size: 310MB (from 2.1GB = 85% reduction)
+- Consistent environments (dev, staging, prod)
 - ⏱️ 15 minutes to set up
--  **Time saved: 39 hours**
--  **Deployment speed: 2 hours → 5 minutes**
+- **Time saved: 39 hours**
+- **Deployment speed: 2 hours → 5 minutes**
 
 **Team lead's feedback:** *"We were Docker beginners on Monday. By Tuesday, we had production-ready containers."*
 
@@ -153,6 +162,7 @@ Apply all optimizations? (y/n):
 **Meet CloudSync**, a SaaS startup. They're growing fast and need to move from Heroku to Kubernetes for cost savings.
 
 **Manual approach challenges:**
+
 - Team has zero Kubernetes experience
 - Need manifests for 5 microservices
 - Unclear what resources (CPU, memory) to request
@@ -169,6 +179,7 @@ cd ~/cloudsync-api
 ```
 
 **What happens:**
+
 ```
  Analyzing application...
  Detected: Node.js API on port 3000
@@ -203,6 +214,7 @@ When they encounter a pod crash, they use `/k8s-troubleshoot`:
 ```
 
 **Diagnostic output:**
+
 ```
  Diagnosing pod: cloudsync-api-7f9d6c-xk2m9
 
@@ -220,19 +232,21 @@ Apply fixes? (y/n):
 ### The Result
 
 **Before:**
--  Heroku cost: $2,800/month
--  Limited scaling options
--  No containerization
+
+- Heroku cost: $2,800/month
+- Limited scaling options
+- No containerization
 - ⏱️ 2-3 weeks to learn K8s
 
 **After:**
--  All 5 services running on Kubernetes in 3 days
--  Auto-scaling configured
--  Zero-downtime deployments
--  GKE cost: $850/month (70% savings)
+
+- All 5 services running on Kubernetes in 3 days
+- Auto-scaling configured
+- Zero-downtime deployments
+- GKE cost: $850/month (70% savings)
 - ⏱️ 3 days to production
--  **Time saved: 2+ weeks**
--  **Monthly savings: $1,950**
+- **Time saved: 2+ weeks**
+- **Monthly savings: $1,950**
 
 **CTO's feedback:** *"We expected a month-long migration. We were live in a week. The troubleshooting commands saved us countless hours."*
 
@@ -245,6 +259,7 @@ Apply fixes? (y/n):
 **Meet Jordan**, a DevOps engineer at E-commerce Inc. Their CI/CD pipeline takes 47 minutes to run, blocking 12 developers.
 
 **Manual approach challenges:**
+
 - Pipeline has grown organically over 2 years
 - No one knows which steps are slow
 - Unclear what can run in parallel
@@ -260,6 +275,7 @@ cd ~/ecommerce-app
 ```
 
 **Analysis output:**
+
 ```
  Analyzing pipeline performance...
 
@@ -308,17 +324,19 @@ Jordan types `y` and the pipeline config is automatically updated.
 ### The Result
 
 **Before:**
+
 - ⏱️ Pipeline duration: 47 minutes
--  Developer frustration: High (long feedback loops)
--  CI/CD costs: $890/month (GitHub Actions minutes)
--  Deployment frequency: 2-3 per day (too slow)
+- Developer frustration: High (long feedback loops)
+- CI/CD costs: $890/month (GitHub Actions minutes)
+- Deployment frequency: 2-3 per day (too slow)
 
 **After:**
+
 - ⏱️ Pipeline duration: 11 minutes (76% faster)
--  Developer satisfaction: Improved dramatically
--  CI/CD costs: $340/month (62% reduction)
--  Deployment frequency: 8-12 per day
--  **Monthly savings: $550**
+- Developer satisfaction: Improved dramatically
+- CI/CD costs: $340/month (62% reduction)
+- Deployment frequency: 8-12 per day
+- **Monthly savings: $550**
 - ⏰ **Developer time saved: 432 minutes/day (7.2 hours)**
 
 **Jordan's feedback:** *"The analysis was spot-on. We implemented all suggestions in 2 hours and saw immediate results."*
@@ -332,6 +350,7 @@ Jordan types `y` and the pipeline config is automatically updated.
 **Meet the infrastructure team at FinServe Bank**. They manage 40+ AWS resources manually through the console.
 
 **Manual approach challenges:**
+
 - Console changes are error-prone
 - No version control for infrastructure
 - Environments drift (dev ≠ staging ≠ prod)
@@ -347,6 +366,7 @@ The team uses `/terraform-module-create` to generate reusable modules:
 ```
 
 **What happens:**
+
 ```
 What infrastructure do you need?
 1. VPC + networking
@@ -389,6 +409,7 @@ terraform show -json plan.out > plan.json
 ```
 
 **Risk analysis:**
+
 ```
  Analyzing Terraform plan...
 
@@ -414,20 +435,22 @@ Review risks before applying.
 ### The Result
 
 **Before:**
--  Manual infrastructure changes
--  No audit trail
--  Environment drift issues
+
+- Manual infrastructure changes
+- No audit trail
+- Environment drift issues
 - ⏱️ 3 weeks to write Terraform
--  Disaster recovery: 12+ hours
+- Disaster recovery: 12+ hours
 
 **After:**
--  Infrastructure as Code for all resources
--  Git history of all changes
--  Consistent environments
+
+- Infrastructure as Code for all resources
+- Git history of all changes
+- Consistent environments
 - ⏱️ 2 days to adopt Terraform
--  Disaster recovery: 15 minutes (terraform apply)
--  **Time saved: 2.5 weeks**
--  **Security improved:** Caught 2 critical issues before production
+- Disaster recovery: 15 minutes (terraform apply)
+- **Time saved: 2.5 weeks**
+- **Security improved:** Caught 2 critical issues before production
 
 **Infrastructure lead's feedback:** *"The risk analysis alone paid for the pack. We nearly deployed a public S3 bucket to production."*
 
@@ -440,6 +463,7 @@ Review risks before applying.
 **Meet the security team at HealthData Corp**. They need comprehensive monitoring but have never set up Prometheus/Grafana.
 
 **Manual approach challenges:**
+
 - 400+ page Prometheus documentation
 - Unclear what metrics to collect
 - No idea how to create useful dashboards
@@ -455,6 +479,7 @@ The team uses `/monitoring-setup`:
 ```
 
 **What happens:**
+
 ```
  Setting up monitoring stack...
 
@@ -494,6 +519,7 @@ Create monitoring stack? (y/n):
 ```
 
 They type `y` and get:
+
 - Complete Prometheus config
 - 8 Grafana dashboards
 - Alert rules for common issues
@@ -502,18 +528,20 @@ They type `y` and get:
 ### The Result
 
 **Before:**
--  No centralized monitoring
--  Incidents discovered by customers
--  No visibility into system health
+
+- No centralized monitoring
+- Incidents discovered by customers
+- No visibility into system health
 - ⏱️ 1-2 weeks to set up monitoring
 
 **After:**
--  Complete monitoring in 3 hours
--  Proactive alerts (catch issues before users)
--  8 dashboards showing system health
--  Mean time to detection: 45 min → 3 min (93% faster)
+
+- Complete monitoring in 3 hours
+- Proactive alerts (catch issues before users)
+- 8 dashboards showing system health
+- Mean time to detection: 45 min → 3 min (93% faster)
 - ⏱️ 3 hours to full monitoring
--  **Time saved: 1.5 weeks**
+- **Time saved: 1.5 weeks**
 
 **Security engineer's feedback:** *"We caught a memory leak in staging before it hit production. The dashboards are exactly what we needed."*
 
@@ -526,6 +554,7 @@ They type `y` and get:
 **Meet TechCorp**, a 200-developer enterprise. Every team uses different commit message formats and PR templates.
 
 **Manual approach challenges:**
+
 - Inconsistent commit history (impossible to search)
 - PRs missing critical information
 - Code review delays (reviewers need more context)
@@ -567,18 +596,20 @@ fi
 ### The Result
 
 **Before:**
--  20+ different commit message styles
--  PRs missing context (reviewers ask questions)
+
+- 20+ different commit message styles
+- PRs missing context (reviewers ask questions)
 - ⏱️ Code review time: 2.3 days average
--  Onboarding: 2 weeks (learn team-specific practices)
+- Onboarding: 2 weeks (learn team-specific practices)
 
 **After:**
--  Consistent commit messages across all teams
--  PRs always have complete context
+
+- Consistent commit messages across all teams
+- PRs always have complete context
 - ⏱️ Code review time: 1.1 days (52% faster)
--  Onboarding: 3 days (universal workflow)
--  **Developer time saved: 240 hours/week** (200 devs × 1.2 hr/week)
--  **Commit history searchable:** "Show all feat(auth) commits"
+- Onboarding: 3 days (universal workflow)
+- **Developer time saved: 240 hours/week** (200 devs × 1.2 hr/week)
+- **Commit history searchable:** "Show all feat(auth) commits"
 
 **VP Engineering's feedback:** *"Standardization was painful before. Now everyone uses the same commands and we have a uniform commit history. Game changer."*
 
@@ -589,21 +620,25 @@ fi
 Every use case follows the same pattern:
 
 **1. Analysis Phase**
+
 - Pack analyzes your project structure
 - Detects technologies, frameworks, dependencies
 - Identifies best practices for your stack
 
 **2. Recommendation Phase**
+
 - Shows you exactly what will be created
 - Explains why (educational)
 - Gives you control (approve/modify)
 
 **3. Generation Phase**
+
 - Creates production-ready configs
 - Follows industry best practices
 - Includes helpful comments
 
 **4. Verification Phase**
+
 - Tests what was created
 - Provides next steps
 - Links to documentation

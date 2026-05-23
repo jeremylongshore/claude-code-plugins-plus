@@ -3,6 +3,7 @@
 ## Model Name Mistakes
 
 ### Missing Provider Prefix
+
 ```python
 # ❌ Wrong: No provider prefix
 model = "gpt-4-turbo"
@@ -12,6 +13,7 @@ model = "openai/gpt-4-turbo"
 ```
 
 ### Typos in Model Names
+
 ```python
 # Common typos:
 # ❌ "anthropic/claude-3-sonnet"   -> ✓ "anthropic/claude-3.5-sonnet"
@@ -25,6 +27,7 @@ def verify_model(model: str) -> bool:
 ```
 
 ### Deprecated Model Names
+
 ```python
 # Models get deprecated - check current list
 # ❌ "anthropic/claude-2"          -> ✓ "anthropic/claude-3-haiku" (or newer)

@@ -3,6 +3,7 @@
 ## Customizing Keybindings
 
 ### Access Keybindings
+
 ```
 Cmd+K Cmd+S (Mac)
 Ctrl+K Ctrl+S (Windows/Linux)
@@ -11,6 +12,7 @@ Or: Command Palette > "Preferences: Open Keyboard Shortcuts"
 ```
 
 ### Custom Keybinding Example
+
 ```json
 // keybindings.json
 [
@@ -28,6 +30,7 @@ Or: Command Palette > "Preferences: Open Keyboard Shortcuts"
 ```
 
 ### Cursor-Specific Commands
+
 ```json
 // Available cursor.* commands
 "cursor.newChat"

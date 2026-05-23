@@ -10,6 +10,7 @@ replit-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect comprehensive diagnostic information for Replit support including logs, config, and resource usage.
 **Workflow:** Support escalation skill - creates detailed diagnostic package when self-service troubleshooting fails.
 **Relates to:** Follows replit-common-errors when issues persist; informs replit-observability.

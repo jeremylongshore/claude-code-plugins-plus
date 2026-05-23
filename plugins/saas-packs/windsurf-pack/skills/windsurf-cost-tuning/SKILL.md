@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Cost Tuning
 
 ## Overview
+
 Optimize Windsurf AI IDE licensing costs by right-sizing seat allocation, matching plan tiers to actual usage, and monitoring credit consumption. Windsurf charges per seat with different tiers offering different AI capabilities.
 
 ## Prerequisites
+
 - Windsurf Admin dashboard access (Teams or Enterprise)
 - Team usage data (at least 30 days)
 - Understanding of team roles and AI usage patterns
@@ -174,6 +176,7 @@ negotiation_tips:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Paying for unused seats | No utilization monitoring | Quarterly seat audit |
@@ -185,6 +188,7 @@ negotiation_tips:
 ## Examples
 
 ### Quick Cost Analysis
+
 ```bash
 echo "Monthly cost estimate:"
 echo "Pro seats: $PRO_COUNT x \$15 = \$(($PRO_COUNT * 15))"
@@ -193,6 +197,7 @@ echo "Free seats: $FREE_COUNT x \$0 = \$0"
 ```
 
 ### Free Features Checklist
+
 ```
 These features are FREE (no credits) on all plans:
 - Supercomplete (Tab completions)
@@ -204,8 +209,10 @@ These features are FREE (no credits) on all plans:
 ```
 
 ## Resources
+
 - [Windsurf Pricing](https://windsurf.com/pricing)
 - [Windsurf Admin Guide](https://docs.windsurf.com/windsurf/guide-for-admins)
 
 ## Next Steps
+
 For architecture planning, see `windsurf-reference-architecture`.

@@ -3,6 +3,7 @@
 ## Debugging Completions
 
 ### Completion Quality Checklist
+
 ```
 [ ] Does the comment/docstring clearly describe intent?
 [ ] Are type hints present and accurate?
@@ -15,6 +16,7 @@
 ### Improving Completion Quality
 
 #### Add Context
+
 ```python
 # Before (AI guesses):
 def process(data):
@@ -32,6 +34,7 @@ def process(data: pd.DataFrame) -> pd.DataFrame:
 ```
 
 #### Use Explicit Comments
+
 ```javascript
 // Before:
 function handle(req) {

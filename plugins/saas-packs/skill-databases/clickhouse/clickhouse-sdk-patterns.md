@@ -10,6 +10,7 @@ clickhouse-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready ClickHouse SDK patterns
 **Workflow:** Part of the onboarding skill category for ClickHouse integration.
 **Relates to:** Other clickhouse skills in this pack.

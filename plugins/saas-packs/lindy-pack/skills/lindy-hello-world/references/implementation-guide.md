@@ -3,9 +3,11 @@
 # Lindy Hello World
 
 ## Overview
+
 Minimal working example demonstrating core Lindy AI agent functionality.
 
 ## Prerequisites
+
 - Completed `lindy-install-auth` setup
 - Valid API credentials configured
 - Development environment ready
@@ -13,9 +15,11 @@ Minimal working example demonstrating core Lindy AI agent functionality.
 ## Instructions
 
 ### Step 1: Create Entry File
+
 Create a new file for your hello world example.
 
 ### Step 2: Import and Initialize Client
+
 ```typescript
 import { Lindy } from '@lindy-ai/sdk';
 
@@ -25,6 +29,7 @@ const lindy = new Lindy({
 ```
 
 ### Step 3: Create Your First Agent
+
 ```typescript
 async function main() {
   // Create a simple AI agent
@@ -48,15 +53,18 @@ main().catch(console.error);
 ```
 
 ## Output
+
 - Working code file with Lindy client initialization
 - Created AI agent in your Lindy workspace
 - Console output showing:
+
 ```
 Created agent: agt_abc123
 Agent response: Hello, World! I'm your new Lindy AI assistant.
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Import Error | SDK not installed | Verify with `npm list @lindy-ai/sdk` |
@@ -67,6 +75,7 @@ Agent response: Hello, World! I'm your new Lindy AI assistant.
 ## Examples
 
 ### TypeScript Example
+
 ```typescript
 import { Lindy } from '@lindy-ai/sdk';
 
@@ -91,6 +100,7 @@ main().catch(console.error);
 ```
 
 ### Python Example
+
 ```python
 from lindy import Lindy
 
@@ -106,9 +116,11 @@ print(result.output)
 ```
 
 ## Resources
+
 - [Lindy Getting Started](https://docs.lindy.ai/getting-started)
 - [Lindy API Reference](https://docs.lindy.ai/api)
 - [Lindy Examples](https://docs.lindy.ai/examples)
 
 ## Next Steps
+
 Proceed to `lindy-local-dev-loop` for development workflow setup.

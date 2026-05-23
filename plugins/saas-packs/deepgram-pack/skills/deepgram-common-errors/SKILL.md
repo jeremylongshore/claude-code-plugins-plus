@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Common Errors
 
 ## Overview
+
 Comprehensive error reference for Deepgram API integration. Covers HTTP error codes, WebSocket errors, transcription quality issues, SDK-specific problems, and audio format debugging with real diagnostic commands.
 
 ## Prerequisites
+
 - Deepgram API key configured
 - `curl` available for API testing
 - Access to application logs
@@ -185,6 +187,7 @@ async function transcribeWithRetry(
 ```
 
 ## Output
+
 - API diagnostic curl commands
 - HTTP error reference with solutions
 - WebSocket error handling patterns
@@ -193,6 +196,7 @@ async function transcribeWithRetry(
 - Retry pattern for transient failures
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `ECONNRESET` | Network interruption | Implement retry with backoff |
@@ -201,6 +205,7 @@ async function transcribeWithRetry(
 | `CORS error` (browser) | API called from client-side | Proxy through your server |
 
 ## Resources
+
 - [Deepgram Error Handling](https://developers.deepgram.com/docs/error-handling)
 - [API Rate Limits](https://developers.deepgram.com/reference/api-rate-limits)
 - [Status Page](https://status.deepgram.com)

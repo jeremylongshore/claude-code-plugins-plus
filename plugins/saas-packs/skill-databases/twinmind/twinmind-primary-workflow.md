@@ -10,6 +10,7 @@ twinmind-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute TwinMind primary workflow
 **Workflow:** Part of the onboarding skill category for TwinMind integration.
 **Relates to:** Other twinmind skills in this pack.

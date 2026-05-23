@@ -3,6 +3,7 @@
 ## Model Compatibility
 
 ### Check Tool Support
+
 ```python
 TOOL_SUPPORTING_MODELS = {
     "openai/gpt-4-turbo": True,

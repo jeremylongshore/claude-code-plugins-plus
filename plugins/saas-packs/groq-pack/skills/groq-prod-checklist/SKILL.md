@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq Production Checklist
 
 ## Overview
+
 Complete pre-launch checklist for deploying Groq-powered applications to production. Covers API key security, model selection, rate limit planning, fallback strategies, and monitoring setup.
 
 ## Prerequisites
+
 - Staging environment tested with Groq API
 - Groq Developer or Enterprise plan (free tier is not suitable for production)
 - Production API key created in console.groq.com
@@ -35,18 +37,21 @@ Complete pre-launch checklist for deploying Groq-powered applications to product
 ## Pre-Deployment Checklist
 
 ### API Key & Auth
+
 - [ ] Production API key stored in secret manager (not `.env` files)
 - [ ] Key is NOT shared with development or staging environments
 - [ ] Key rotation procedure documented and tested
 - [ ] Pre-commit hook blocks `gsk_` pattern in code
 
 ### Model Selection
+
 - [ ] Production model chosen and tested (recommend `llama-3.3-70b-versatile`)
 - [ ] Fallback model configured (`llama-3.1-8b-instant`)
 - [ ] Deprecated model IDs removed (check [deprecations](https://console.groq.com/docs/deprecations))
 - [ ] `max_tokens` set to actual expected output size (not context max)
 
 ### Rate Limit Planning
+
 - [ ] Production rate limits known (check console.groq.com/settings/limits)
 - [ ] Estimated peak RPM < 80% of limit
 - [ ] Estimated peak TPM < 80% of limit
@@ -54,6 +59,7 @@ Complete pre-launch checklist for deploying Groq-powered applications to product
 - [ ] Request queue for burst protection (`p-queue` or similar)
 
 ### Error Handling
+
 - [ ] All Groq error types caught (`Groq.APIError`, `Groq.APIConnectionError`)
 - [ ] 429 errors retried with backoff
 - [ ] 5xx errors retried with backoff
@@ -62,6 +68,7 @@ Complete pre-launch checklist for deploying Groq-powered applications to product
 - [ ] Circuit breaker pattern for sustained failures
 
 ### Fallback & Degradation
+
 ```typescript
 async function completionWithFallback(messages: any[]) {
   try {
@@ -90,6 +97,7 @@ async function completionWithFallback(messages: any[]) {
 ```
 
 ### Health Check Endpoint
+
 ```typescript
 // /api/health or /healthz
 export async function GET() {
@@ -114,6 +122,7 @@ export async function GET() {
 ```
 
 ### Monitoring Setup
+
 - [ ] Latency histogram (p50, p95, p99)
 - [ ] Token throughput counter (tokens/sec by model)
 - [ ] Error rate by status code (429, 5xx)
@@ -124,17 +133,20 @@ export async function GET() {
 - [ ] Alert: rate limit remaining < 10%
 
 ### Spending Controls
+
 - [ ] Monthly spending cap set in Groq Console
 - [ ] Budget alerts at 50%, 80%, 95%
 - [ ] Auto-pause enabled when cap is reached
 
 ### Documentation
+
 - [ ] Incident runbook created (see `groq-incident-runbook`)
 - [ ] Key rotation SOP documented
 - [ ] On-call knows how to check [status.groq.com](https://status.groq.com)
 - [ ] Rollback procedure tested
 
 ## Go-Live Verification
+
 ```bash
 set -euo pipefail
 # Pre-flight checks
@@ -157,6 +169,7 @@ curl -si https://api.groq.com/openai/v1/chat/completions \
 ```
 
 ## Error Handling
+
 | Alert | Condition | Severity |
 |-------|-----------|----------|
 | API errors spike | 5xx rate > 5/min | P1 |
@@ -166,10 +179,12 @@ curl -si https://api.groq.com/openai/v1/chat/completions \
 | Spending near cap | >90% of monthly budget | P3 |
 
 ## Resources
+
 - [Groq Status Page](https://status.groq.com)
 - [Groq Rate Limits](https://console.groq.com/docs/rate-limits)
 - [Groq Spend Limits](https://console.groq.com/docs/spend-limits)
 - [Groq Models (check deprecations)](https://console.groq.com/docs/deprecations)
 
 ## Next Steps
+
 For version upgrades, see `groq-upgrade-migration`.

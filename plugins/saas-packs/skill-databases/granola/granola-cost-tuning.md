@@ -10,6 +10,7 @@ granola-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Granola costs and usage
 **Workflow:** Part of the cicd skill category for Granola integration.
 **Relates to:** Other granola skills in this pack.

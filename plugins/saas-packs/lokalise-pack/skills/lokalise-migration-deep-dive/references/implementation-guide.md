@@ -13,10 +13,10 @@ Detailed implementation reference for the lokalise-migration-deep-dive skill.
 | From spreadsheets | Medium | 1 week | Medium |
 | Custom legacy | High | 2-4 weeks | High |
 
-
 ## Instructions
 
 ### Step 1: Pre-Migration Assessment
+
 ```typescript
 interface MigrationAssessment {
   sourceSystem: string;
@@ -72,6 +72,7 @@ function estimateMigrationEffort(assessment: MigrationAssessment): {
 ```
 
 ### Step 2: Export from Source System
+
 ```bash
 # Export from common platforms
 
@@ -89,6 +90,7 @@ crowdin download --all --export-only-approved
 ```
 
 ### Step 3: Data Transformation
+
 ```typescript
 // Transform exported data to Lokalise-compatible format
 interface SourceKey {
@@ -146,6 +148,7 @@ function normalizeKey(key: string, sourceSystem: string): string {
 ```
 
 ### Step 4: Create Lokalise Project
+
 ```typescript
 import { LokaliseApi } from "@lokalise/node-api";
 
@@ -173,6 +176,7 @@ async function createMigrationProject(
 ```
 
 ### Step 5: Import Keys and Translations
+
 ```typescript
 async function importKeysToLokalise(
   projectId: string,
@@ -231,6 +235,7 @@ async function importViaFile(
 ```
 
 ### Step 6: Migrate Translation Memory
+
 ```typescript
 // Lokalise supports TM import via TMX format
 async function importTranslationMemory(
@@ -255,6 +260,7 @@ async function importTranslationMemory(
 ```
 
 ### Step 7: Post-Migration Validation
+
 ```typescript
 interface ValidationResult {
   passed: boolean;
@@ -312,13 +318,14 @@ async function validateMigration(
 }
 ```
 
-
 ## Flagship+ Skills
+
 For advanced troubleshooting, see `lokalise-common-errors`.
 
 ## Detailed Examples
 
 ### Placeholder Transformation
+
 ```typescript
 // Convert placeholders between formats
 function convertPlaceholders(
@@ -342,6 +349,7 @@ function convertPlaceholders(
 ```
 
 ### Migration Rollback
+
 ```bash
 #!/bin/bash
 # rollback-migration.sh
@@ -355,6 +363,7 @@ echo "Migration rolled back. Continue using source system."
 ```
 
 ### Full Migration Script
+
 ```typescript
 async function runMigration() {
   console.log("=== Lokalise Migration ===\n");
@@ -391,4 +400,3 @@ async function runMigration() {
   return { projectId, validation };
 }
 ```
-

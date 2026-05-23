@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Local Dev Loop
 
 ## Overview
+
 Set up a fast local development workflow for Fireflies.ai integrations: project structure, mock data for offline development, test helpers, and API response recording for replay.
 
 ## Prerequisites
+
 - Completed `fireflies-install-auth` setup
 - Node.js 18+ with npm/pnpm
 - Vitest for testing
@@ -35,6 +37,7 @@ Set up a fast local development workflow for Fireflies.ai integrations: project 
 ## Instructions
 
 ### Step 1: Project Structure
+
 ```
 my-fireflies-app/
   src/
@@ -53,6 +56,7 @@ my-fireflies-app/
 ```
 
 ### Step 2: Record Real API Responses as Fixtures
+
 ```typescript
 // scripts/record-fixtures.ts
 import { FirefliesClient } from "../src/lib/fireflies-client";
@@ -102,6 +106,7 @@ recordFixtures().catch(console.error);
 ```
 
 ### Step 3: Mock Client for Tests
+
 ```typescript
 // tests/helpers/mock-fireflies.ts
 import { readFileSync } from "fs";
@@ -128,6 +133,7 @@ export function createMockClient() {
 ```
 
 ### Step 4: Write Tests
+
 ```typescript
 // tests/transcript-service.test.ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -167,6 +173,7 @@ describe("Transcript Service", () => {
 ```
 
 ### Step 5: Development Scripts
+
 ```json
 {
   "scripts": {
@@ -180,6 +187,7 @@ describe("Transcript Service", () => {
 ```
 
 ### Step 6: Environment Setup
+
 ```bash
 set -euo pipefail
 # Create .env from template
@@ -194,6 +202,7 @@ echo 'tests/fixtures/*.json' >> .gitignore
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Fixture not found | Fixtures not recorded | Run `npm run record-fixtures` |
@@ -202,14 +211,17 @@ echo 'tests/fixtures/*.json' >> .gitignore
 | Rate limit during recording | Too many fixture requests | Record once, commit fixtures |
 
 ## Output
+
 - Project structure with typed client and service layers
 - Recorded API fixtures for offline testing
 - Mock client for unit tests
 - Dev scripts with hot reload and watch mode
 
 ## Resources
+
 - [Vitest Documentation](https://vitest.dev/)
 - [Fireflies API Docs](https://docs.fireflies.ai/)
 
 ## Next Steps
+
 See `fireflies-sdk-patterns` for production-ready client patterns.

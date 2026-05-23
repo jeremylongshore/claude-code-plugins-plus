@@ -6,7 +6,6 @@ description: Manage Kubernetes network policies and firewall rules
 
 Manage Kubernetes network policies and firewall rules
 
-
 ## Key Features
 
 - Production-ready configurations

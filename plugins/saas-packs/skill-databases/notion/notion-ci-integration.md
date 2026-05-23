@@ -10,6 +10,7 @@ notion-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Notion CI/CD integration
 **Workflow:** Part of the cicd skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

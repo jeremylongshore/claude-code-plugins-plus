@@ -10,6 +10,7 @@ anima-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Anima local development workflow
 **Workflow:** Part of the onboarding skill category for Anima integration.
 **Relates to:** Other anima skills in this pack.

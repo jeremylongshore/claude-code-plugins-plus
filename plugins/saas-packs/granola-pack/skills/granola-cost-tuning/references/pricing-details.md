@@ -3,6 +3,7 @@
 ## Plan Comparison
 
 ### Current Pricing
+
 | Plan | Price | Best For |
 |------|-------|----------|
 | Free | $0/month | Trying Granola, < 10 meetings/month |
@@ -11,6 +12,7 @@
 | Enterprise | Custom | Large organizations |
 
 ### Feature Comparison
+
 | Feature | Free | Pro | Business |
 |---------|------|-----|----------|
 | Meetings/month | 10 | Unlimited | Unlimited |
@@ -21,6 +23,7 @@
 | Support | Community | Email | Priority |
 
 ## Team ROI Calculation
+
 ```markdown
 Team Size: 10 people
 Avg meetings/person: 20/month
@@ -35,6 +38,7 @@ ROI: ($5,000 - $250) / $250 = 1,900%
 ```
 
 ## Storage Management Strategy
+
 1. Export old notes to external storage monthly
 2. Delete meetings older than 6 months
 3. Remove draft/test recordings
@@ -42,11 +46,13 @@ ROI: ($5,000 - $250) / $250 = 1,900%
 5. Keep last 3 months in Granola, export to Notion/Google Drive for archive
 
 ## Integration Efficiency (Minimize Zapier Costs)
+
 - Free Tier (100 tasks/month): use for critical automations only
 - Batch notifications (digest vs real-time)
 - Combine related Zap actions and use filters early
 
 ## Annual vs Monthly Billing Savings
+
 ```
 Monthly: Pro $120/year, Business $300/user/year
 Annual (15-20% discount): Pro ~$96/year, Business ~$255/user/year
@@ -58,6 +64,7 @@ Savings: $450/year
 ```
 
 ## Enterprise Negotiation Leverage
+
 1. Commit to annual billing (10-15% discount)
 2. Volume discount for 50+ seats (15-25%)
 3. Multi-year agreements (20-30%)
@@ -65,15 +72,18 @@ Savings: $450/year
 5. Reference competitor pricing
 
 ## Startup & Non-Profit Discounts
+
 Check for startup program discounts, non-profit pricing, educational discounts, and partner program benefits.
 
 ## Usage Waste Indicators
+
 - Unused seats (no activity > 30 days)
 - Storage near limit but old notes not archived
 - Premium features not being used
 - Duplicate accounts
 
 ## Cost Comparison vs Competitors
+
 | Service | Price | Notes |
 |---------|-------|-------|
 | Granola | $10-25/user | No bot, best privacy |
@@ -82,6 +92,7 @@ Check for startup program discounts, non-profit pricing, educational discounts, 
 | Fathom | Free-$24/user | Free tier generous |
 
 ## Total Cost of Ownership
+
 ```markdown
 Direct Costs:
 + Subscription: $X/month

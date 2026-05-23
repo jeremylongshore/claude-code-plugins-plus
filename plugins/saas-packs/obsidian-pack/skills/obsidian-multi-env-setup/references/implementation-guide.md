@@ -5,6 +5,7 @@
 ## Detailed Instructions
 
 ### Step 1: Create Environment Structure
+
 ```bash
 #!/bin/bash
 
@@ -41,6 +42,7 @@ echo "Testing environment reset complete"
 ```
 
 ### Environment Indicator Component
+
 ```typescript
 // src/ui/components/env-indicator.ts
 import { Plugin } from 'obsidian';
@@ -57,7 +59,6 @@ export function addEnvironmentIndicator(plugin: Plugin): void {
 }
 ```
 
-
 ## Environment Types
 
 | Environment | Purpose | Plugin Source | Data |
@@ -66,27 +67,26 @@ export function addEnvironmentIndicator(plugin: Plugin): void {
 | Testing | QA/Validation | Built release | Test data |
 | Production | Real usage | Community/Release | Real notes |
 
-
 ## Test Content
 
 - [[Link to test]]
 - #test-tag
 - Regular content
 
-
 ## Frontmatter Test
 
 ---
+
 title: Test Note
 tags: [development, test]
 created: 2024-01-01
 ---
+
 EOF
 
 cat > "$OBSIDIAN_ENVS/testing/Test Notes/Welcome.md" << 'EOF'
 
 This vault is for **QA and validation testing**.
-
 
 ## Test Scenarios
 
@@ -97,6 +97,7 @@ This vault is for **QA and validation testing**.
 EOF
 
 echo "Created test notes"
+
 ```
 
 ### Step 2: Link Plugin to Development Environment
@@ -115,6 +116,7 @@ echo "Vault location: $DEV_VAULT/.obsidian/plugins/$PLUGIN_NAME"
 ```
 
 ### Step 3: Configure Environment-Specific Settings
+
 ```typescript
 // src/config/environment.ts
 export type Environment = 'development' | 'testing' | 'production';
@@ -175,6 +177,7 @@ export function getConfig(): EnvironmentConfig {
 ```
 
 ### Step 4: Testing Vault Configuration
+
 ```bash
 #!/bin/bash
 
@@ -195,6 +198,7 @@ echo "Copied release build to testing vault"
 ```
 
 ### Step 5: Automated Environment Switching
+
 ```bash
 #!/bin/bash
 
@@ -227,6 +231,7 @@ esac
 ```
 
 ### Step 6: Test Data Generation
+
 ```typescript
 // scripts/generate-test-data.ts
 import * as fs from 'fs';
@@ -328,6 +333,7 @@ generateTestData();
 ```
 
 ### Step 7: CI Integration for Environments
+
 ```yaml
 name: Test in Multiple Environments
 

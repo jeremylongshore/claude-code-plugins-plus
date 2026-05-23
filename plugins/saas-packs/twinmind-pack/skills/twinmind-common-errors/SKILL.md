@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # TwinMind Common Errors
 
 ## Overview
+
 Quick reference for the most common TwinMind errors and their solutions.
 
 ## Prerequisites
+
 - TwinMind extension or API configured
 - Access to error logs or console
 - API credentials for testing
@@ -35,18 +37,23 @@ Quick reference for the most common TwinMind errors and their solutions.
 ## Instructions
 
 ### Step 1: Identify the Error
+
 Check error message in console, extension popup, or API response.
 
 ### Step 2: Find Matching Error Below
+
 Match your error to one of the documented cases.
 
 ### Step 3: Apply Solution
+
 Follow the solution steps for your specific error.
 
 ## Error Reference
 
 ### Authentication Failed
+
 **Error Message:**
+
 ```
 Error: Authentication failed - Invalid or expired API key
 Status: 401 Unauthorized  # HTTP 401 Unauthorized
@@ -55,6 +62,7 @@ Status: 401 Unauthorized  # HTTP 401 Unauthorized
 **Cause:** API key is missing, expired, or incorrect.
 
 **Solution:**
+
 ```bash
 set -euo pipefail
 # Verify API key is set correctly
@@ -71,7 +79,9 @@ curl -H "Authorization: Bearer $TWINMIND_API_KEY" \
 ---
 
 ### Microphone Access Denied
+
 **Error Message:**
+
 ```
 Error: Microphone permission denied
 NotAllowedError: Permission denied
@@ -82,6 +92,7 @@ NotAllowedError: Permission denied
 **Solution:**
 
 Chrome:
+
 ```
 1. Click lock icon in address bar
 2. Site Settings > Microphone > Allow
@@ -89,6 +100,7 @@ Chrome:
 ```
 
 macOS:
+
 ```bash
 # Check current permissions
 tccutil list com.google.Chrome
@@ -98,6 +110,7 @@ tccutil reset Microphone com.google.Chrome
 ```
 
 Windows:
+
 ```
 Settings > Privacy > Microphone > Allow apps to access microphone
 ```
@@ -105,7 +118,9 @@ Settings > Privacy > Microphone > Allow apps to access microphone
 ---
 
 ### Transcription Timeout
+
 **Error Message:**
+
 ```
 Error: Transcription timeout after 300000ms
 RequestTimeoutError: Request exceeded timeout
@@ -114,6 +129,7 @@ RequestTimeoutError: Request exceeded timeout
 **Cause:** Audio file too large or network issues.
 
 **Solution:**
+
 ```typescript
 // Increase timeout for large files
 const client = new TwinMindClient({
@@ -132,7 +148,9 @@ const response = await client.post('/transcribe', {
 ---
 
 ### Rate Limit Exceeded
+
 **Error Message:**
+
 ```
 Error: Rate limit exceeded. Please retry after 60 seconds.
 Status: 429 Too Many Requests  # HTTP 429 Too Many Requests
@@ -142,6 +160,7 @@ X-RateLimit-Remaining: 0
 **Cause:** Too many API requests in a short period.
 
 **Solution:**
+
 ```typescript
 // Implement exponential backoff
 async function withBackoff<T>(operation: () => Promise<T>): Promise<T> {
@@ -166,7 +185,9 @@ See `twinmind-rate-limits` for detailed rate limiting strategies.
 ---
 
 ### Audio Format Not Supported
+
 **Error Message:**
+
 ```
 Error: Unsupported audio format
 AudioFormatError: Format 'xyz' is not supported
@@ -175,6 +196,7 @@ AudioFormatError: Format 'xyz' is not supported
 **Cause:** Audio file in incompatible format.
 
 **Solution:**
+
 ```bash
 # Convert to supported format using ffmpeg
 ffmpeg -i input.xyz -acodec libmp3lame -q:a 2 output.mp3
@@ -183,6 +205,7 @@ ffmpeg -i input.xyz -acodec libmp3lame -q:a 2 output.mp3
 ```
 
 Supported formats:
+
 | Format | Extension | Notes |
 |--------|-----------|-------|
 | MP3 | .mp3 | Recommended, good compression |
@@ -195,7 +218,9 @@ Supported formats:
 ---
 
 ### No Audio Detected
+
 **Error Message:**
+
 ```
 Error: No audio detected in input
 TranscriptionError: Empty or silent audio
@@ -204,6 +229,7 @@ TranscriptionError: Empty or silent audio
 **Cause:** Audio file is silent, corrupted, or too quiet.
 
 **Solution:**
+
 ```bash
 # Check audio file properties
 ffprobe -i audio.mp3 -show_streams -select_streams a
@@ -218,7 +244,9 @@ ffmpeg -i quiet.mp3 -filter:a "volume=2.0" amplified.mp3
 ---
 
 ### Speaker Diarization Failed
+
 **Error Message:**
+
 ```
 Error: Speaker diarization failed
 DiarizationError: Unable to identify distinct speakers
@@ -227,6 +255,7 @@ DiarizationError: Unable to identify distinct speakers
 **Cause:** Single speaker, overlapping speech, or poor audio quality.
 
 **Solution:**
+
 ```typescript
 // Retry without diarization
 const transcript = await client.transcribe(audioUrl, {
@@ -243,7 +272,9 @@ const transcript = await client.transcribe(audioUrl, {
 ---
 
 ### Calendar Sync Failed
+
 **Error Message:**
+
 ```
 Error: Calendar sync failed
 OAuth2Error: Token expired or revoked
@@ -252,6 +283,7 @@ OAuth2Error: Token expired or revoked
 **Cause:** Google/Microsoft OAuth token expired.
 
 **Solution:**
+
 ```
 1. Open TwinMind extension
 2. Go to Settings > Integrations
@@ -263,7 +295,9 @@ OAuth2Error: Token expired or revoked
 ---
 
 ### Summary Generation Failed
+
 **Error Message:**
+
 ```
 Error: Summary generation failed
 GenerationError: Transcript too short for summarization
@@ -272,6 +306,7 @@ GenerationError: Transcript too short for summarization
 **Cause:** Transcript doesn't have enough content.
 
 **Solution:**
+
 ```typescript
 // Check transcript length before summarization
 const minWordsForSummary = 50;
@@ -288,7 +323,9 @@ const summary = await client.summarize(transcript.id);
 ---
 
 ### Extension Not Loading
+
 **Error Message:**
+
 ```
 Extension error: Unable to establish connection
 Chrome error: Extension context invalidated
@@ -297,6 +334,7 @@ Chrome error: Extension context invalidated
 **Cause:** Extension crashed, outdated, or Chrome issue.
 
 **Solution:**
+
 ```
 1. Disable and re-enable extension:
    chrome://extensions/ > TwinMind > Toggle off/on
@@ -314,7 +352,9 @@ Chrome error: Extension context invalidated
 ---
 
 ### Network Error
+
 **Error Message:**
+
 ```
 Error: Network request failed
 TypeError: Failed to fetch
@@ -324,6 +364,7 @@ ERR_CONNECTION_REFUSED
 **Cause:** Network connectivity issues or firewall blocking.
 
 **Solution:**
+
 ```bash
 set -euo pipefail
 # Test API connectivity
@@ -366,12 +407,14 @@ ffprobe -v error -show_format -show_streams audio.mp3
 4. Contact support with request ID: support@twinmind.com
 
 ## Resources
+
 - [TwinMind Status Page](https://status.twinmind.com)
 - [TwinMind Support](https://twinmind.com/support)
 - [TwinMind Community](https://community.twinmind.com)
 - [Error Code Reference](https://twinmind.com/docs/errors)
 
 ## Next Steps
+
 For comprehensive debugging, see `twinmind-debug-bundle`.
 
 ## Output

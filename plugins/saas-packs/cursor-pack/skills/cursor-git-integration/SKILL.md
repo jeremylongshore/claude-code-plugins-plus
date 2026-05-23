@@ -47,6 +47,7 @@ Access with `Cmd+Shift+G` / `Ctrl+Shift+G`:
 Click the sparkle/AI icon next to the commit message input. Cursor reads the staged diff and generates a message:
 
 **Example output:**
+
 ```
 feat: add product catalog CRUD API with Prisma model
 
@@ -56,6 +57,7 @@ feat: add product catalog CRUD API with Prisma model
 ```
 
 **Tips for better commit messages:**
+
 - Stage related changes together (not unrelated edits)
 - The AI reads the diff, so clean diffs produce better messages
 - Edit the generated message before committing if needed
@@ -231,6 +233,7 @@ When reviewing code changes (@Git):
 ### GitLens Extension
 
 GitLens works in Cursor and enhances git features:
+
 - Inline blame annotations
 - File history and line history
 - Interactive rebase editor

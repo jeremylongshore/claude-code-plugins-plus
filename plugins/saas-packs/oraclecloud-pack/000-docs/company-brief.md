@@ -1,6 +1,7 @@
 # Oracle Cloud Infrastructure (OCI) — Company Brief
 
 ## Overview
+
 Oracle Cloud Infrastructure is Oracle's IaaS/PaaS cloud platform competing with AWS, Azure, and GCP. Strengths: Always Free tier (ARM instances), Autonomous Database, competitive pricing. Weaknesses: capacity constraints, complex IAM, slow console UI, underdocumented APIs.
 
 ## Real Pain Points (sourced from community, reviews, GitHub)
@@ -23,6 +24,7 @@ Oracle Cloud Infrastructure is Oracle's IaaS/PaaS cloud platform competing with 
 ## Canonical SDK/URL Reference
 
 ### Python SDK
+
 - Install: `pip install oci`
 - Import: `import oci`
 - Config load: `config = oci.config.from_file("~/.oci/config")`
@@ -36,6 +38,7 @@ Oracle Cloud Infrastructure is Oracle's IaaS/PaaS cloud platform competing with 
 - Notifications: `oci.ons.NotificationDataPlaneClient(config)`
 
 ### Auth Config File (~/.oci/config)
+
 ```ini
 [DEFAULT]
 user=ocid1.user.oc1..aaaaaaaexample
@@ -46,17 +49,20 @@ key_file=~/.oci/oci_api_key.pem
 ```
 
 ### OCI CLI
+
 - Install: `bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)"`
 - Config setup: `oci setup config`
 - Example: `oci compute instance list --compartment-id <OCID>`
 
 ### API Bases
+
 - Compute: `https://iaas.{region}.oraclecloud.com/20160918/`
 - Object Storage: `https://objectstorage.{region}.oraclecloud.com/n/{namespace}/`
 - Identity: `https://identity.{region}.oraclecloud.com/20160918/`
 - Database: `https://database.{region}.oraclecloud.com/20160918/`
 
 ### Canonical URLs
+
 - Docs: https://docs.oracle.com/en-us/iaas/Content/
 - API ref: https://docs.oracle.com/en-us/iaas/api/
 - Python SDK ref: https://docs.oracle.com/en-us/iaas/tools/python/latest/
@@ -70,6 +76,7 @@ key_file=~/.oci/oci_api_key.pem
 - Always Free: https://www.oracle.com/cloud/free/
 
 ### Real Error Codes
+
 - 401 NotAuthenticated — bad config/key
 - 404 NotAuthorizedOrNotFound — IAM OR wrong OCID
 - 429 TooManyRequests — rate limited (no Retry-After header)
@@ -78,6 +85,7 @@ key_file=~/.oci/oci_api_key.pem
 - CERTIFICATE_VERIFY_FAILED — SSL cert issue
 
 ## Key OCI Concepts
+
 - **Compartments**: Logical grouping (like AWS accounts but nested, within a single tenancy)
 - **OCIDs**: Oracle Cloud Identifiers (format: `ocid1.<resource_type>.oc1..<unique_id>`)
 - **Tenancy**: Root compartment, top-level account
@@ -90,6 +98,7 @@ key_file=~/.oci/oci_api_key.pem
 - **Pre-Authenticated Requests (PARs)**: Signed URLs for Object Storage
 
 ## Common Shapes
+
 | Shape | Arch | Free? | Notes |
 |-------|------|-------|-------|
 | VM.Standard.A1.Flex | ARM | Yes (4 OCPU, 24GB) | Chronic capacity issues |

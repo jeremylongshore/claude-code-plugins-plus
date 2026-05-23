@@ -3,6 +3,7 @@
 ## Streaming with Tools
 
 ### Stream Tool Responses
+
 ```python
 def stream_with_tools(prompt: str, tools: list):
     """Stream response that may include tool calls."""

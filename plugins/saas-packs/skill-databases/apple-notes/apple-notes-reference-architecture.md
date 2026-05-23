@@ -10,6 +10,7 @@ apple-notes-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Apple Notes reference architecture
 **Workflow:** Part of the cicd skill category for Apple Notes integration.
 **Relates to:** Other apple-notes skills in this pack.

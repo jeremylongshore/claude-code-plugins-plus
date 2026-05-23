@@ -72,6 +72,7 @@ Depending on the input and requested scope, the skill generates:
 **User:** "Read `data/products.csv` and generate a FastAPI app to serve this data."
 
 The skill will:
+
 1. Read the CSV file and analyze column names, data types, and sample values.
 2. Generate a Pydantic model (`Product`) with fields inferred from the CSV headers.
 3. Create FastAPI routes: `GET /products`, `GET /products/{id}`, `POST /products`, `PUT /products/{id}`, `DELETE /products/{id}`.
@@ -83,6 +84,7 @@ The skill will:
 **User:** "Here's my API response schema. Generate TypeScript types and a Zod validator."
 
 The skill will:
+
 1. Parse the JSON Schema, resolving `$ref` references and nested objects.
 2. Generate TypeScript interfaces for each schema definition.
 3. Create corresponding Zod schemas that enforce the same constraints (required fields, string patterns, numeric ranges).
@@ -93,6 +95,7 @@ The skill will:
 **User:** "Read `migrations/001_create_tables.sql` and generate Go structs with sqlc-compatible annotations."
 
 The skill will:
+
 1. Parse CREATE TABLE statements to extract table names, columns, types, and constraints.
 2. Map SQL types to Go types (e.g., `VARCHAR` to `string`, `TIMESTAMP` to `time.Time`, `BOOLEAN` to `bool`).
 3. Generate Go struct definitions with `db` and `json` tags.

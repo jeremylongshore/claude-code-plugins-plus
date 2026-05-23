@@ -10,6 +10,7 @@ glean-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Glean costs and usage
 **Workflow:** Part of the cicd skill category for Glean integration.
 **Relates to:** Other glean skills in this pack.

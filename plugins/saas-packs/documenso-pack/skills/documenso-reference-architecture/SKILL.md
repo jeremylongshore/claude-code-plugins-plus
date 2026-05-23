@@ -98,6 +98,7 @@ my-signing-app/
 ```
 
 **Rules:**
+
 - Controllers never call Documenso directly -- always go through services
 - Services never import `@documenso/sdk-typescript` directly -- use the client wrapper
 - Webhook processors are isolated -- one file per event type

@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Reference Architecture
 
 ## Overview
+
 Production-grade architecture patterns for Langfuse LLM observability: singleton SDK, context propagation with `AsyncLocalStorage`, cross-service trace correlation, multi-environment configurations, and scale strategies.
 
 ## Prerequisites
+
 - Understanding of distributed systems and async patterns
 - Node.js 18+ with OpenTelemetry SDK
 - For v4+: `@langfuse/tracing`, `@langfuse/otel`, `@opentelemetry/sdk-node`
@@ -314,6 +316,7 @@ export function safeTrace<T extends (...args: any[]) => Promise<any>>(
 | Scale bottleneck | Direct SDK at high volume | Add queue buffer or increase sampling |
 
 ## Resources
+
 - [TypeScript SDK Overview](https://langfuse.com/docs/observability/sdk/typescript/overview)
 - [Advanced Configuration](https://langfuse.com/docs/observability/sdk/typescript/advanced-usage)
 - [Self-Hosting Guide](https://langfuse.com/self-hosting)

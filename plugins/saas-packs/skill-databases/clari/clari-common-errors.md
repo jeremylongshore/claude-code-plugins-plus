@@ -10,6 +10,7 @@ clari-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Clari common errors
 **Workflow:** Part of the operations skill category for Clari integration.
 **Relates to:** Other clari skills in this pack.

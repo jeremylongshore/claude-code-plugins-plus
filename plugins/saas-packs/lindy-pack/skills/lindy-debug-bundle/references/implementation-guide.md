@@ -3,9 +3,11 @@
 # Lindy Debug Bundle
 
 ## Overview
+
 Comprehensive debugging toolkit for collecting diagnostics and resolving issues.
 
 ## Prerequisites
+
 - Lindy SDK installed
 - Access to logs
 - curl installed for API testing
@@ -13,6 +15,7 @@ Comprehensive debugging toolkit for collecting diagnostics and resolving issues.
 ## Instructions
 
 ### Step 1: Collect Environment Info
+
 ```bash
 #!/bin/bash
 echo "=== Lindy Debug Bundle ==="
@@ -32,6 +35,7 @@ echo ""
 ```
 
 ### Step 2: Test API Connectivity
+
 ```bash
 echo "=== API Connectivity ==="
 curl -s -o /dev/null -w "Status: %{http_code}\nTime: %{time_total}s\n" \
@@ -41,6 +45,7 @@ echo ""
 ```
 
 ### Step 3: Collect Agent State
+
 ```typescript
 // debug/collect-agent-state.ts
 import { Lindy } from '@lindy-ai/sdk';
@@ -64,6 +69,7 @@ console.log(JSON.stringify(state, null, 2));
 ```
 
 ### Step 4: Check Run History
+
 ```typescript
 async function analyzeRuns(agentId: string) {
   const lindy = new Lindy({ apiKey: process.env.LINDY_API_KEY });
@@ -86,6 +92,7 @@ async function analyzeRuns(agentId: string) {
 ```
 
 ### Step 5: Generate Support Bundle
+
 ```typescript
 async function generateSupportBundle(agentId: string) {
   const bundle = {
@@ -108,6 +115,7 @@ async function generateSupportBundle(agentId: string) {
 ```
 
 ## Output
+
 - Environment diagnostic information
 - API connectivity test results
 - Agent state and configuration
@@ -115,6 +123,7 @@ async function generateSupportBundle(agentId: string) {
 - Exportable support bundle
 
 ## Error Handling
+
 | Issue | Diagnostic | Resolution |
 |-------|------------|------------|
 | Auth fails | Check API key | Regenerate key |
@@ -124,6 +133,7 @@ async function generateSupportBundle(agentId: string) {
 ## Examples
 
 ### Quick Health Check
+
 ```bash
 # One-liner health check
 curl -s -H "Authorization: Bearer $LINDY_API_KEY" \
@@ -131,6 +141,7 @@ curl -s -H "Authorization: Bearer $LINDY_API_KEY" \
 ```
 
 ### Full Debug Script
+
 ```bash
 #!/bin/bash
 # save as lindy-debug.sh
@@ -141,9 +152,11 @@ echo "Bundle saved to debug-bundle.json"
 ```
 
 ## Resources
+
 - [Lindy Support](https://support.lindy.ai)
 - [Status Page](https://status.lindy.ai)
 - [API Reference](https://docs.lindy.ai/api)
 
 ## Next Steps
+
 Proceed to `lindy-rate-limits` for rate limit management.

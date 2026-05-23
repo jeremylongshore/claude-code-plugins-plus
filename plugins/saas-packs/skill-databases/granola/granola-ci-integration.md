@@ -10,6 +10,7 @@ granola-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Granola CI/CD integration
 **Workflow:** Part of the cicd skill category for Granola integration.
 **Relates to:** Other granola skills in this pack.

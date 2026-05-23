@@ -22,18 +22,22 @@ compatibility: Designed for Claude Code
 # Anthropic Core Workflow B → Tool Use
 
 ## Overview
+
 This skill redirects to `clade-embeddings-search` which covers tool use (function calling), the agentic tool loop, and building Claude-powered agents.
 
 ## Prerequisites
+
 - Completed `clade-model-inference`
 - Understanding of JSON Schema for tool definitions
 
 ## Instructions
 
 ### Step 1: Use claude-embeddings-search instead
+
 This skill has been replaced. The secondary Anthropic workflow is tool use / function calling, covered in full by `clade-embeddings-search`.
 
 ### Step 2: Key topics covered there
+
 - Defining tools with JSON Schema input schemas
 - Sending messages with tools attached
 - Executing tool calls and returning results
@@ -41,16 +45,19 @@ This skill has been replaced. The secondary Anthropic workflow is tool use / fun
 - Error handling for tool use edge cases
 
 ## Output
+
 - Redirected to `clade-embeddings-search`
 - Complete tool use patterns available there
 
 ## Error Handling
+
 | Issue | Solution |
 |-------|----------|
 | Skill not found | Run `clade-embeddings-search` directly |
 | Tool use errors | See tool validation patterns in that skill |
 
 ## Examples
+
 ```typescript
 // Use claude-embeddings-search for the full tool use guide
 const tools: Anthropic.Tool[] = [{
@@ -71,8 +78,10 @@ const response = await client.messages.create({
 ```
 
 ## Resources
+
 - [Tool Use Guide](https://docs.anthropic.com/en/docs/build-with-claude/tool-use)
 - [Tool Use API](https://docs.anthropic.com/en/api/messages)
 
 ## Next Steps
+
 Run `clade-embeddings-search` for the complete tool use guide.

@@ -18,11 +18,11 @@ This section provides detailed information about each vulnerability identified d
 
 ### 1. [Vulnerability Title, e.g., Broken Authentication]
 
-*   **OWASP API Security Top 10 Category:** [e.g., API1:2023 Broken Object Level Authorization]
-*   **Severity:** [e.g., High, Medium, Low, Informational]
-*   **Description:** [Provide a detailed explanation of the vulnerability.  For example: `The API endpoint is vulnerable to Broken Authentication due to weak password policies and the absence of multi-factor authentication. Attackers can potentially gain unauthorized access to user accounts by brute-forcing passwords.`]
-*   **Affected Endpoint(s):** [List the specific API endpoints affected by the vulnerability.  For example: `/api/login`, `/api/reset-password`]
-*   **Request Example:**
+* **OWASP API Security Top 10 Category:** [e.g., API1:2023 Broken Object Level Authorization]
+* **Severity:** [e.g., High, Medium, Low, Informational]
+* **Description:** [Provide a detailed explanation of the vulnerability.  For example: `The API endpoint is vulnerable to Broken Authentication due to weak password policies and the absence of multi-factor authentication. Attackers can potentially gain unauthorized access to user accounts by brute-forcing passwords.`]
+* **Affected Endpoint(s):** [List the specific API endpoints affected by the vulnerability.  For example: `/api/login`, `/api/reset-password`]
+* **Request Example:**
 
     ```
     POST /api/login
@@ -33,7 +33,8 @@ This section provides detailed information about each vulnerability identified d
       "password": "weakpassword"
     }
     ```
-*   **Response Example:**
+
+* **Response Example:**
 
     ```
     {
@@ -41,38 +42,41 @@ This section provides detailed information about each vulnerability identified d
       "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
     }
     ```
-*   **Impact:** [Describe the potential impact of the vulnerability. For example: `Successful exploitation could allow attackers to access sensitive user data, perform actions on behalf of users, and potentially compromise the entire system.`]
-*   **Recommendation:** [Provide specific and actionable remediation steps. For example: `Implement strong password policies, enforce multi-factor authentication, and implement rate limiting to prevent brute-force attacks.`]
-*   **Evidence:** [Provide evidence or proof of concept that demonstrates the vulnerability. This could include screenshots, logs, or code snippets.  Be mindful of sensitive information.]
+
+* **Impact:** [Describe the potential impact of the vulnerability. For example: `Successful exploitation could allow attackers to access sensitive user data, perform actions on behalf of users, and potentially compromise the entire system.`]
+* **Recommendation:** [Provide specific and actionable remediation steps. For example: `Implement strong password policies, enforce multi-factor authentication, and implement rate limiting to prevent brute-force attacks.`]
+* **Evidence:** [Provide evidence or proof of concept that demonstrates the vulnerability. This could include screenshots, logs, or code snippets.  Be mindful of sensitive information.]
 
 ### 2. [Vulnerability Title, e.g., Injection Vulnerability]
 
-*   **OWASP API Security Top 10 Category:** [e.g., API2:2023 Broken User Authentication]
-*   **Severity:** [e.g., High, Medium, Low, Informational]
-*   **Description:** [Provide a detailed explanation of the vulnerability. For example: `The API endpoint is vulnerable to SQL injection due to insufficient input validation. Attackers can potentially execute arbitrary SQL queries by injecting malicious code into input fields.`]
-*   **Affected Endpoint(s):** [List the specific API endpoints affected by the vulnerability. For example: `/api/users/{id}`]
-*   **Request Example:**
+* **OWASP API Security Top 10 Category:** [e.g., API2:2023 Broken User Authentication]
+* **Severity:** [e.g., High, Medium, Low, Informational]
+* **Description:** [Provide a detailed explanation of the vulnerability. For example: `The API endpoint is vulnerable to SQL injection due to insufficient input validation. Attackers can potentially execute arbitrary SQL queries by injecting malicious code into input fields.`]
+* **Affected Endpoint(s):** [List the specific API endpoints affected by the vulnerability. For example: `/api/users/{id}`]
+* **Request Example:**
 
     ```
     GET /api/users/1' OR '1'='1
     ```
-*   **Response Example:** [Show the unexpected response indicating injection success, or an error message revealing the backend technology.]
-*   **Impact:** [Describe the potential impact of the vulnerability. For example: `Successful exploitation could allow attackers to access, modify, or delete sensitive data from the database, potentially leading to data breaches and system compromise.`]
-*   **Recommendation:** [Provide specific and actionable remediation steps. For example: `Implement proper input validation, use parameterized queries or prepared statements, and apply the principle of least privilege to database access.`]
-*   **Evidence:** [Provide evidence or proof of concept that demonstrates the vulnerability. This could include screenshots, logs, or code snippets. Be mindful of sensitive information.]
+
+* **Response Example:** [Show the unexpected response indicating injection success, or an error message revealing the backend technology.]
+* **Impact:** [Describe the potential impact of the vulnerability. For example: `Successful exploitation could allow attackers to access, modify, or delete sensitive data from the database, potentially leading to data breaches and system compromise.`]
+* **Recommendation:** [Provide specific and actionable remediation steps. For example: `Implement proper input validation, use parameterized queries or prepared statements, and apply the principle of least privilege to database access.`]
+* **Evidence:** [Provide evidence or proof of concept that demonstrates the vulnerability. This could include screenshots, logs, or code snippets. Be mindful of sensitive information.]
 
 ### 3. [Vulnerability Title, e.g., Excessive Data Exposure]
 
-*   **OWASP API Security Top 10 Category:** [e.g., API3:2023 Excessive Data Exposure]
-*   **Severity:** [e.g., High, Medium, Low, Informational]
-*   **Description:** [Provide a detailed explanation of the vulnerability. For example: `The API endpoint returns more data than necessary, potentially exposing sensitive user information to unauthorized parties.`]
-*   **Affected Endpoint(s):** [List the specific API endpoints affected by the vulnerability. For example: `/api/profile`]
-*   **Request Example:**
+* **OWASP API Security Top 10 Category:** [e.g., API3:2023 Excessive Data Exposure]
+* **Severity:** [e.g., High, Medium, Low, Informational]
+* **Description:** [Provide a detailed explanation of the vulnerability. For example: `The API endpoint returns more data than necessary, potentially exposing sensitive user information to unauthorized parties.`]
+* **Affected Endpoint(s):** [List the specific API endpoints affected by the vulnerability. For example: `/api/profile`]
+* **Request Example:**
 
     ```
     GET /api/profile
     ```
-*   **Response Example:**
+
+* **Response Example:**
 
     ```json
     {
@@ -84,9 +88,10 @@ This section provides detailed information about each vulnerability identified d
       "credit_card_number": "XXXXXXXXXXXXXXXX"
     }
     ```
-*   **Impact:** [Describe the potential impact of the vulnerability. For example: `Exposure of sensitive data could lead to identity theft, financial fraud, and privacy violations.`]
-*   **Recommendation:** [Provide specific and actionable remediation steps. For example: `Implement data filtering and masking to return only the necessary data to the client. Avoid exposing sensitive information such as credit card numbers and social security numbers.`]
-*   **Evidence:** [Provide evidence or proof of concept that demonstrates the vulnerability. This could include screenshots, logs, or code snippets. Be mindful of sensitive information.]
+
+* **Impact:** [Describe the potential impact of the vulnerability. For example: `Exposure of sensitive data could lead to identity theft, financial fraud, and privacy violations.`]
+* **Recommendation:** [Provide specific and actionable remediation steps. For example: `Implement data filtering and masking to return only the necessary data to the client. Avoid exposing sensitive information such as credit card numbers and social security numbers.`]
+* **Evidence:** [Provide evidence or proof of concept that demonstrates the vulnerability. This could include screenshots, logs, or code snippets. Be mindful of sensitive information.]
 
 **(Repeat the above section for each identified vulnerability)**
 

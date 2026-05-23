@@ -10,6 +10,7 @@ replit-bounty-hunting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Find, bid on, and complete Replit Bounties for paid development work within the platform.
 **Workflow:** Monetization skill - earns income through Replit's built-in freelance marketplace.
 **Relates to:** Leverages all technical skills; demonstrates portfolio via replit-hello-world and projects.

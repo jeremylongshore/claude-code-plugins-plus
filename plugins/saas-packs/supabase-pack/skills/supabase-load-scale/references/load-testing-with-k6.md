@@ -3,6 +3,7 @@
 ## Load Testing with k6
 
 ### Basic Load Test
+
 ```javascript
 // supabase-load-test.js
 import http from 'k6/http';
@@ -44,6 +45,7 @@ export default function () {
 ```
 
 ### Run Load Test
+
 ```bash
 # Install k6
 brew install k6  # macOS

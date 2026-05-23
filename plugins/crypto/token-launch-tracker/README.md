@@ -20,6 +20,7 @@ Track new token launches, detect rugpulls, and analyze smart contract security f
 ## Usage
 
 The launch tracker agent automatically activates when you discuss:
+
 - New token launches and analysis
 - Rugpull detection and scam identification
 - Contract security verification
@@ -45,6 +46,7 @@ What are the safest new token launches today?
 ## Risk Assessment
 
 ### Critical Red Flags (Avoid)
+
 - Unverified contract source code
 - No liquidity lock
 - Owner has not renounced
@@ -53,6 +55,7 @@ What are the safest new token launches today?
 - No social media presence
 
 ### Warning Signs (High Risk)
+
 - Very new social accounts
 - Anonymous team, no KYC
 - Short liquidity lock (< 30 days)
@@ -60,11 +63,12 @@ What are the safest new token launches today?
 - Paid promotion only
 
 ### Safety Indicators
-- Contract verified 
-- Liquidity locked > 1 year 
-- Ownership renounced 
-- Audit completed 
-- Active community 
+
+- Contract verified
+- Liquidity locked > 1 year
+- Ownership renounced
+- Audit completed
+- Active community
 
 ## Configuration
 
@@ -94,30 +98,35 @@ Create a `.token-launch-config.json` file:
 ## Risk Scoring System
 
 **Contract Security (40 points)**
+
 - Verified source code
 - Ownership renounced
 - No dangerous functions
 - Audit completed
 
 **Liquidity (30 points)**
+
 - LP locked > 1 year
 - LP burned
 - Initial liquidity > $50k
 
 **Team & Community (20 points)**
+
 - KYC verified
 - Active socials
 - Organic community
 
 **Trading Metrics (10 points)**
+
 - Healthy distribution
 - Normal volume
 
 **Risk Levels:**
-- 80-100: Low Risk 
+
+- 80-100: Low Risk
 - 60-79: Medium Risk ️
-- 40-59: High Risk 
-- 0-39: Critical Risk 
+- 40-59: High Risk
+- 0-39: Critical Risk
 
 ## Data Sources
 
@@ -140,6 +149,7 @@ Create a `.token-launch-config.json` file:
 ️ **This plugin provides informational analysis only** and is NOT financial advice.
 
 Users must:
+
 - Conduct their own research (DYOR)
 - Understand investment risks
 - Only invest what they can afford to lose

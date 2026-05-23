@@ -10,6 +10,7 @@ apollo-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Apollo SDK patterns
 **Workflow:** Part of the onboarding skill category for Apollo integration.
 **Relates to:** Other apollo skills in this pack.

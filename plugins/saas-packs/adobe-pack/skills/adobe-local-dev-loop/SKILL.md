@@ -41,6 +41,7 @@ Set up a fast local development workflow for Adobe integrations using the `aio` 
 ### Step 1: Choose Your Project Type
 
 **Option A — App Builder (serverless Runtime actions):**
+
 ```bash
 # Install Adobe I/O CLI
 npm install -g @adobe/aio-cli
@@ -58,6 +59,7 @@ aio app run
 ```
 
 **Option B — Standalone SDK project:**
+
 ```bash
 mkdir my-adobe-project && cd my-adobe-project
 npm init -y

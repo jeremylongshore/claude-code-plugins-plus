@@ -19,9 +19,11 @@ compatibility: Designed for Claude Code
 # Glean Local Dev Loop
 
 ## Overview
+
 Local development workflow for Glean enterprise search API integration. Provides a fast feedback loop with mock search results, connector testing, and document indexing simulation so you can build custom datasource connectors and search UIs without needing a live Glean deployment. Toggle between mock mode for rapid connector iteration and sandbox mode for validating against your Glean instance.
 
 ## Environment Setup
+
 ```bash
 cp .env.example .env
 # Set your credentials:
@@ -33,6 +35,7 @@ npm install -D vitest supertest @types/express
 ```
 
 ## Dev Server
+
 ```typescript
 // src/dev/server.ts
 import express from "express";
@@ -54,6 +57,7 @@ app.listen(3003, () => console.log(`Glean dev server on :3003 [mock=${MOCK}]`));
 ```
 
 ## Mock Mode
+
 ```typescript
 // src/dev/mocks.ts — realistic enterprise search responses
 export function mountMockRoutes(app: any) {
@@ -77,6 +81,7 @@ export function mountMockRoutes(app: any) {
 ```
 
 ## Testing Workflow
+
 ```bash
 npm run dev:mock &                    # Start mock server in background
 npm run test                          # Unit tests with vitest
@@ -85,6 +90,7 @@ MOCK_MODE=false npm run test:integration  # Integration test against real Glean 
 ```
 
 ## Debug Tips
+
 - Use `curl -X POST http://localhost:3003/api/search -d '{"query":"test"}'` to verify mock search
 - Glean connectors must return documents with `id`, `title`, `body.textContent`, and `datasource` fields
 - Check connector transform output shape before pushing to the indexing API
@@ -92,6 +98,7 @@ MOCK_MODE=false npm run test:integration  # Integration test against real Glean 
 - Verify OAuth scopes if search returns empty results against a live instance
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | `401 Unauthorized` | Invalid API key or expired token | Regenerate at Glean admin console |
@@ -101,8 +108,10 @@ MOCK_MODE=false npm run test:integration  # Integration test against real Glean 
 | `ECONNREFUSED :3003` | Dev server not running | Run `npm run dev:mock` first |
 
 ## Resources
+
 - [Glean Indexing API](https://developers.glean.com/api-info/indexing/getting-started/overview)
 - [Glean Search API](https://developers.glean.com/api-info/search/getting-started/overview)
 
 ## Next Steps
+
 See `glean-debug-bundle`.

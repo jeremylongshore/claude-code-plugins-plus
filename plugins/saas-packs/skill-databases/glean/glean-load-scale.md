@@ -10,6 +10,7 @@ glean-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Glean load testing and scaling
 **Workflow:** Part of the enterprise skill category for Glean integration.
 **Relates to:** Other glean skills in this pack.

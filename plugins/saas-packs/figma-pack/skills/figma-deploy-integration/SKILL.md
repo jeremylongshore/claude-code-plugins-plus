@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code
 # Figma Deploy Integration
 
 ## Overview
+
 Deploy Figma webhook receivers and design API services to production platforms with proper secret management and health checks.
 
 ## Prerequisites
+
 - Figma PAT for production environment
 - Platform CLI installed (vercel, fly, or gcloud)
 - Application tested locally with Figma API
@@ -33,6 +35,7 @@ Deploy Figma webhook receivers and design API services to production platforms w
 ## Instructions
 
 ### Step 1: Vercel Deployment (Webhook Receiver)
+
 ```bash
 # Store Figma secrets
 vercel env add FIGMA_PAT production
@@ -78,6 +81,7 @@ export const config = { maxDuration: 10 };
 ```
 
 ### Step 2: Google Cloud Run (Design Token API)
+
 ```dockerfile
 FROM node:20-slim
 WORKDIR /app
@@ -109,6 +113,7 @@ gcloud run deploy $SERVICE \
 ```
 
 ### Step 3: Fly.io (Persistent Webhook Service)
+
 ```toml
 # fly.toml
 app = "figma-webhook-service"
@@ -139,6 +144,7 @@ fly deploy
 ```
 
 ### Step 4: Health Check Endpoint
+
 ```typescript
 // src/health.ts -- works on any platform
 import { figmaFetch } from './figma-client';
@@ -170,12 +176,14 @@ export async function healthHandler(req: Request): Promise<Response> {
 ```
 
 ## Output
+
 - Application deployed with Figma secrets configured
 - Webhook endpoint receiving Figma events
 - Health check validating Figma connectivity
 - Platform-specific optimizations applied
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Secret not found in runtime | Wrong env name | Verify with platform CLI (`vercel env ls`) |
@@ -184,9 +192,11 @@ export async function healthHandler(req: Request): Promise<Response> {
 | Health check fails | PAT expired | Rotate token via platform secret management |
 
 ## Resources
+
 - [Vercel Serverless Functions](https://vercel.com/docs/functions)
 - [Cloud Run Documentation](https://cloud.google.com/run/docs)
 - [Fly.io Documentation](https://fly.io/docs)
 
 ## Next Steps
+
 For webhook handling, see `figma-webhooks-events`.

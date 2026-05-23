@@ -48,6 +48,7 @@ a different tier in ad-hoc mode).
 
 Read `~/.claude/agent-memory/scout/MEMORY.md` if it exists. It contains
 patterns you've learned over time:
+
 - Orgs that reject AI-flagged PRs (lower their score)
 - Tiers that historically don't convert to merges for this user
 - CLA-required repos to avoid for first-pass
@@ -91,6 +92,7 @@ Common causes: gh not authenticated, rate limit, invalid tier name.
 ```
 
 The scorer reads profile.md itself and applies weights:
+
 - `star_tier` ∈ `target_star_tiers` (×0.30)
 - `competing_prs == 0` (×0.25)
 - repo updated within last 30d (×0.20)
@@ -122,6 +124,7 @@ For **Ad-hoc mode**: do NOT write to candidates/ unless the user says
 Walks every candidate file, re-fetches metadata via gh, updates
 frontmatter (star_count, competing_prs, last_refreshed, momentum,
 growth_velocity_pct), drops candidates where:
+
 - repo archived
 - maintainer silent >60d
 - issue closed
@@ -135,6 +138,7 @@ The scripts append events to `~/.contribute-system/log.jsonl`
 automatically. You don't need to do this manually.
 
 Return ONLY this to the parent conversation:
+
 - Mode you ran
 - Counts: candidates by tier (baseline) / refreshed+dropped (refresh) /
   top 5 picks (ad-hoc)

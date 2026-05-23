@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Architecture Variants
 
 ## Overview
+
 Application architectures on Replit at three scales: single-file prototype, modular production app, and multi-service architecture. Each matches Replit's container model, built-in services, and deployment types.
 
 ## Prerequisites
+
 - Replit account
 - Understanding of deployment types (Static, Autoscale, Reserved VM)
 - Familiarity with Replit's storage options
@@ -48,6 +50,7 @@ Application architectures on Replit at three scales: single-file prototype, modu
 ## Instructions
 
 ### Variant A: Single-File Script (Prototype)
+
 **Best for:** Bots, scripts, learning, hackathon projects.
 
 ```python
@@ -95,6 +98,7 @@ deploymentTarget = "autoscale"
 ---
 
 ### Variant B: Modular App with PostgreSQL (Production)
+
 **Best for:** Web apps, APIs, SaaS MVPs with 100-10K daily users.
 
 ```
@@ -133,6 +137,7 @@ Architecture:
 ```
 
 **Key decisions:**
+
 - PostgreSQL for all structured data (users, posts, orders)
 - KV Database for cache and session data only
 - Object Storage for user uploads and backups
@@ -141,6 +146,7 @@ Architecture:
 ---
 
 ### Variant C: Multi-Service (Scale)
+
 **Best for:** Production services with 10K+ daily users, background jobs, or real-time features.
 
 ```
@@ -158,6 +164,7 @@ Architecture:
 ```
 
 **Implementation:**
+
 ```markdown
 Repl 1: my-app-api
   - Express/Fastify API server
@@ -183,6 +190,7 @@ Communication:
 ```
 
 **When to use external services:**
+
 | Service | Replit-native | External (Recommended at Scale) |
 |---------|---------------|--------------------------------|
 | Database | Replit PostgreSQL | Neon, Supabase, PlanetScale |
@@ -194,6 +202,7 @@ Communication:
 ---
 
 ### Variant D: Static + API Split
+
 **Best for:** Frontend-heavy apps with a lightweight API backend.
 
 ```
@@ -224,6 +233,7 @@ build = ["sh", "-c", "npm ci && npm run build"]
 **Benefit:** Frontend is free (Static deployment), API only charges when receiving requests (Autoscale).
 
 ## Growth Path
+
 ```
 Single-File → Modular App → Multi-Service
    │                │              │
@@ -234,6 +244,7 @@ Single-File → Modular App → Multi-Service
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | KV database full | Over 50 MiB limit | Migrate to PostgreSQL |
@@ -242,10 +253,12 @@ Single-File → Modular App → Multi-Service
 | Static deploy stale | Cache not cleared | Redeploy or add cache-busting |
 
 ## Resources
+
 - [Replit Deployments](https://docs.replit.com/hosting/deployments)
 - [Replit Database Options](https://docs.replit.com/category/storage-and-databases)
 - [Upstash (Redis/Kafka)](https://upstash.com)
 - [Neon (PostgreSQL)](https://neon.tech)
 
 ## Next Steps
+
 For known pitfalls at each scale, see `replit-known-pitfalls`.

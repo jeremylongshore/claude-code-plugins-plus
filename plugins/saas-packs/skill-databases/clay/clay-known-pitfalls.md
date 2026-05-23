@@ -10,6 +10,7 @@ clay-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Clay anti-patterns and common integration mistakes. Prevents common errors and improves code quality.
 **Workflow:** Code quality skill. Use during code reviews and architecture planning.
 **Relates to:** Preventive guidance for all Clay skills; informs clay-reference-architecture patterns.

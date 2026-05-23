@@ -59,6 +59,7 @@ Validates Claude Code plugin structure, JSON schemas, frontmatter format, securi
 ## Output
 
 A structured validation report containing:
+
 - Total checks passed and failed (e.g., "8/10 PASSED")
 - Per-check results with pass/fail status
 - For each failure: the specific issue, file location, and a ready-to-run fix command

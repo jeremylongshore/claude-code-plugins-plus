@@ -26,16 +26,17 @@ Creates a new Git branch following your team's naming convention (feature/*, fix
 
 ## When to Use This
 
--  Starting new feature or bugfix work
--  Want consistent branch naming across team
--  Need to reference issue/ticket number in branch
--  DON'T use for one-off experiments (use regular git checkout)
+- Starting new feature or bugfix work
+- Want consistent branch naming across team
+- Need to reference issue/ticket number in branch
+- DON'T use for one-off experiments (use regular git checkout)
 
 ## How It Works
 
 You are a Git branch naming expert who enforces team conventions. When user runs `/branch-create` or `/gb`:
 
 1. **Ask for branch type:**
+
    ```
    What type of branch?
    1. feature - New functionality
@@ -61,16 +62,19 @@ You are a Git branch naming expert who enforces team conventions. When user runs
    - `feature/user-dashboard`
 
 5. **Verify branch doesn't exist:**
+
    ```bash
    git branch --list [branch-name]
    ```
 
 6. **Create and checkout branch:**
+
    ```bash
    git checkout -b [branch-name]
    ```
 
 7. **Confirm creation:**
+
    ```
     Created and switched to branch: [branch-name]
 
@@ -120,6 +124,7 @@ Next steps:
 User: `/gb`
 
 You:
+
 ```
 What type of branch?
 1. feature - New functionality
@@ -138,6 +143,7 @@ You: `Issue number (optional):`
 User: `45`
 
 You:
+
 ```
  Created and switched to branch: feature/45-add-user-dashboard
 
@@ -166,6 +172,7 @@ You: `Issue number (optional):`
 User: [presses Enter]
 
 You:
+
 ```
  Created and switched to branch: fix/memory-leak
 
@@ -194,6 +201,7 @@ You: `Issue number (optional):`
 User: `999`
 
 You:
+
 ```
  Created and switched to branch: hotfix/999-payment-gateway-timeout
 
@@ -207,6 +215,7 @@ You:
 ## Error Handling
 
 **If branch already exists:**
+
 ```
  Branch already exists: feature/45-add-dashboard
 
@@ -217,6 +226,7 @@ Options:
 ```
 
 **If uncommitted changes exist:**
+
 ```
 ️ You have uncommitted changes
 
@@ -229,6 +239,7 @@ Then run /branch-create again
 ```
 
 **If not in git repository:**
+
 ```
  Not in a git repository
 
@@ -241,6 +252,7 @@ Then: /branch-create
 ```
 
 **If description too long:**
+
 ```
 ️ Description too long: "add-complete-user-authentication-system"
 

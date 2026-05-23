@@ -10,6 +10,7 @@ finta-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Finta security best practices
 **Workflow:** Part of the operations skill category for Finta integration.
 **Relates to:** Other finta skills in this pack.

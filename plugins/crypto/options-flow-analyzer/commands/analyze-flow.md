@@ -13,6 +13,7 @@ Track institutional options flow, unusual options activity, and smart money move
 When analyzing options flow, implement comprehensive tracking of institutional activity:
 
 ### Required Parameters
+
 - **Symbol**: Underlying ticker or "ALL" for market-wide
 - **Timeframe**: real-time, 1d, 5d, 30d
 - **Flow Type**: calls, puts, both

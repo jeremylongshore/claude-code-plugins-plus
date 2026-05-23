@@ -120,6 +120,7 @@ echo "Symlinked $PLUGIN_ID into dev vault."
 ```
 
 On Windows, use an admin terminal:
+
 ```powershell
 mklink /D "%USERPROFILE%\ObsidianDev\.obsidian\plugins\my-plugin" "%cd%"
 ```
@@ -169,6 +170,7 @@ Obsidian is an Electron app, so full Chrome DevTools are available.
 5. **Elements** tab -- inspect Obsidian's DOM for CSS/layout work
 
 Tips:
+
 - With inline source maps enabled, your TypeScript source appears in Sources > `src/main.ts`
 - Use `debugger;` statements in code for precise breakpoints
 - `console.log('[MyPlugin]', ...)` prefix makes filtering easy
@@ -294,6 +296,7 @@ Add to `package.json`:
 ## Output
 
 After completing all steps:
+
 - Dev vault at `~/ObsidianDev` with test notes
 - Plugin symlinked into vault (no manual copying)
 - `npm run dev` for sub-second rebuilds on save
@@ -317,6 +320,7 @@ After completing all steps:
 ## Examples
 
 **Quick dev startup script** (`dev.sh`):
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -335,6 +339,7 @@ wait
 ```
 
 **VSCode task for integrated dev:**
+
 ```json
 {
   "version": "2.0.0",

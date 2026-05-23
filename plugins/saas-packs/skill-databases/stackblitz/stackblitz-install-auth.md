@@ -10,6 +10,7 @@ stackblitz-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure StackBlitz SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for StackBlitz integration.
 **Relates to:** Other stackblitz skills in this pack.

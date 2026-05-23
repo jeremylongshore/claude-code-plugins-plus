@@ -10,6 +10,7 @@ replit-workspace-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Replit workspace with extensions, themes, keybindings, and collaborative settings for optimal productivity.
 **Workflow:** Personalization skill run after hello-world - establishes developer preferences before diving into features.
 **Relates to:** Complements replit-hello-world; enables replit-multiplayer-collab and replit-ghostwriter-mastery.

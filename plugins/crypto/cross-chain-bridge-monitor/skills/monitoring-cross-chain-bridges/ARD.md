@@ -52,6 +52,7 @@ skills/monitoring-cross-chain-bridges/
 ## API Integration
 
 ### DefiLlama Bridges API
+
 - **Endpoint**: `https://bridges.llama.fi/`
 - **Endpoints**:
   - `/bridges` - List all bridges with TVL
@@ -61,6 +62,7 @@ skills/monitoring-cross-chain-bridges/
 - **Rate Limits**: Public API, fair use
 
 ### Bridge Protocol APIs
+
 - **Wormhole**: `https://api.wormholescan.io/`
 - **LayerZero**: `https://layerzeroscan.com/api/`
 - **Stargate**: `https://api.stargate.finance/`
@@ -68,12 +70,14 @@ skills/monitoring-cross-chain-bridges/
 - **Hop**: `https://hop.exchange/api/`
 
 ### On-Chain Verification
+
 - Use RPC calls to verify bridge contract balances
 - Track pending transactions via tx hash
 
 ## Component Design
 
 ### bridge_monitor.py
+
 ```python
 # Main CLI with commands:
 # - tvl: Show bridge TVL rankings
@@ -85,6 +89,7 @@ skills/monitoring-cross-chain-bridges/
 ```
 
 ### bridge_fetcher.py
+
 ```python
 class BridgeFetcher:
     def get_all_bridges() -> List[BridgeInfo]
@@ -94,6 +99,7 @@ class BridgeFetcher:
 ```
 
 ### protocol_adapters.py
+
 ```python
 class ProtocolAdapter:
     def get_supported_chains() -> List[str]
@@ -103,6 +109,7 @@ class ProtocolAdapter:
 ```
 
 ### tx_tracker.py
+
 ```python
 class TxTracker:
     def track_bridge_tx(tx_hash: str, bridge: str) -> TxStatus
@@ -113,6 +120,7 @@ class TxTracker:
 ## Data Structures
 
 ### BridgeInfo
+
 ```python
 @dataclass
 class BridgeInfo:
@@ -127,6 +135,7 @@ class BridgeInfo:
 ```
 
 ### TVLData
+
 ```python
 @dataclass
 class TVLData:
@@ -138,6 +147,7 @@ class TVLData:
 ```
 
 ### TxStatus
+
 ```python
 @dataclass
 class TxStatus:
@@ -155,6 +165,7 @@ class TxStatus:
 ```
 
 ### FeeEstimate
+
 ```python
 @dataclass
 class FeeEstimate:

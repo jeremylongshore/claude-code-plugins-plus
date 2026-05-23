@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Core Workflow A: Note Creation & Management
 
 ## Overview
+
 Primary workflow for creating, organizing, and managing notes in Evernote. Covers CRUD operations, ENML formatting, notebook organization, and tag management.
 
 ## Prerequisites
+
 - Completed `evernote-install-auth` setup
 - Understanding of ENML format
 - Valid access token configured
@@ -69,6 +71,7 @@ Manage notebooks with `listNotebooks()`, `createNotebook()`, and `getDefaultNote
 See [Implementation Guide](references/implementation-guide.md) for the full `NoteService`, `NotebookService`, and a combined workflow that creates meeting notes with checklists, appends content, and toggles todos.
 
 ## Output
+
 - `NoteService` class with create, read, update, and delete operations
 - ENML content formatting and validation helpers
 - `NotebookService` for notebook CRUD and stack organization
@@ -76,6 +79,7 @@ See [Implementation Guide](references/implementation-guide.md) for the full `Not
 - Checklist note support with `<en-todo>` elements
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `BAD_DATA_FORMAT` | Invalid ENML | Use `wrapInENML()` helper; remove forbidden elements (`<script>`, `<form>`) |
@@ -84,11 +88,13 @@ See [Implementation Guide](references/implementation-guide.md) for the full `Not
 | `INVALID_USER` | Token expired | Re-authenticate user via OAuth flow |
 
 ## Resources
+
 - [Creating Notes](https://dev.evernote.com/doc/articles/creating_notes.php)
 - [ENML Reference](https://dev.evernote.com/doc/articles/enml.php)
 - [Note Types Reference](https://dev.evernote.com/doc/reference/)
 
 ## Next Steps
+
 For search and retrieval workflows, see `evernote-core-workflow-b`.
 
 ## Examples

@@ -10,6 +10,7 @@ clay-enrichment-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Clay enrichment patterns for person and company data. Covers batching strategies, error handling, retry logic, and type-safe implementations.
 **Workflow:** Pattern reference skill for building robust Clay integrations. Use when moving from prototype to production-ready code.
 **Relates to:** Builds on clay-hello-world; foundational patterns used by clay-table-from-requirements and clay-crm-sync-core.

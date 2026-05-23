@@ -23,6 +23,7 @@ compatibility: Designed for Claude Code
 AppFolio's property management API handles bulk tenant queries, property portfolio pagination, and work order batch processing. Large portfolios with thousands of units generate heavy read traffic on listing endpoints. Optimizing cache lifetimes for slow-changing property data, batching work order updates, and pooling HTTP connections reduces API call volume by 60-80% and cuts dashboard load times from seconds to sub-second.
 
 ## Caching Strategy
+
 ```typescript
 const cache = new Map<string, { data: any; expiry: number }>();
 const TTL = { properties: 300_000, tenants: 120_000, units: 300_000, workOrders: 60_000 };
@@ -37,6 +38,7 @@ async function cached(key: string, ttlKey: keyof typeof TTL, fn: () => Promise<a
 ```
 
 ## Batch Operations
+
 ```typescript
 async function batchWorkOrders(client: any, ids: string[], batchSize = 25) {
   const results = [];
@@ -51,6 +53,7 @@ async function batchWorkOrders(client: any, ids: string[], batchSize = 25) {
 ```
 
 ## Connection Pooling
+
 ```typescript
 import { Agent } from 'https';
 const agent = new Agent({ keepAlive: true, maxSockets: 10, maxFreeSockets: 5, timeout: 30_000 });
@@ -58,6 +61,7 @@ const agent = new Agent({ keepAlive: true, maxSockets: 10, maxFreeSockets: 5, ti
 ```
 
 ## Rate Limit Management
+
 ```typescript
 async function withRateLimit(fn: () => Promise<any>): Promise<any> {
   const res = await fn();
@@ -71,6 +75,7 @@ async function withRateLimit(fn: () => Promise<any>): Promise<any> {
 ```
 
 ## Monitoring
+
 ```typescript
 const metrics = { apiCalls: 0, cacheHits: 0, errors: 0, totalLatency: 0 };
 function track(startMs: number, hit: boolean, error?: boolean) {
@@ -81,6 +86,7 @@ function track(startMs: number, hit: boolean, error?: boolean) {
 ```
 
 ## Performance Checklist
+
 - [ ] Cache property and unit listings with 5-min TTL
 - [ ] Use incremental sync via last_modified timestamps
 - [ ] Batch work order updates in groups of 25
@@ -91,6 +97,7 @@ function track(startMs: number, hit: boolean, error?: boolean) {
 - [ ] Set request timeouts to 30s to avoid hung connections
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | 429 Too Many Requests | Exceeded API rate limit | Parse Retry-After header, exponential backoff |
@@ -99,8 +106,10 @@ function track(startMs: number, hit: boolean, error?: boolean) {
 | Connection reset | Socket exhaustion | Enable keep-alive agent with maxSockets cap |
 
 ## Resources
+
 - [AppFolio Stack APIs](https://www.appfolio.com/stack/partners/api)
 - [AppFolio Engineering Blog](https://engineering.appfolio.com)
 
 ## Next Steps
+
 See `appfolio-reference-architecture`.

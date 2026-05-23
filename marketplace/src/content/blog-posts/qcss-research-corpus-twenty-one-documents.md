@@ -125,7 +125,7 @@ That clarity — knowing exactly where you stand and exactly what remains — is
 ---
 
 *Related posts:*
+
 - [Designing a Local-First Resume Parser Architecture](/posts/designing-local-first-resume-parser-architecture-edge-ai/) — another architecture-first approach where the design phase precedes implementation
 - [Building a Meta-Agent System From Scratch in One Day](/posts/oss-agent-lab-meta-agent-system-one-day/) — a different kind of single-day build: code instead of research
 - [Building Post-Compaction Recovery for AI Agent Workflows with Beads](/posts/building-post-compaction-recovery-beads/) — the task persistence system that keeps multi-day research projects recoverable across sessions
-

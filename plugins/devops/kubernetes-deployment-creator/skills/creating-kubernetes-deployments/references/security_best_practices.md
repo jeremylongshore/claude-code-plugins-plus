@@ -271,6 +271,7 @@ spec:
 ### Secrets Best Practices
 
 1. **Enable encryption at rest:**
+
    ```yaml
    # kube-apiserver config
    --encryption-provider-config=/etc/kubernetes/encryption-config.yaml
@@ -477,6 +478,7 @@ metadata:
 ## Security Checklist
 
 ### Pod Level
+
 - [ ] runAsNonRoot: true
 - [ ] allowPrivilegeEscalation: false
 - [ ] readOnlyRootFilesystem: true
@@ -486,24 +488,28 @@ metadata:
 - [ ] automountServiceAccountToken: false (if not needed)
 
 ### Network Level
+
 - [ ] Default deny NetworkPolicy
 - [ ] Explicit allow policies only for required traffic
 - [ ] Ingress TLS configured
 - [ ] No hostNetwork: true
 
 ### Secrets
+
 - [ ] No secrets in environment variables (use files)
 - [ ] Secrets encrypted at rest
 - [ ] External secrets manager integration
 - [ ] Regular rotation
 
 ### Images
+
 - [ ] Specific image tags (not :latest)
 - [ ] Image digest verification
 - [ ] Vulnerability scanning
 - [ ] Trusted registry only
 
 ### Cluster Level
+
 - [ ] RBAC enabled
 - [ ] Audit logging enabled
 - [ ] Pod Security Standards enforced

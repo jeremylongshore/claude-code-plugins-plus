@@ -10,6 +10,7 @@ algolia-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Algolia common errors
 **Workflow:** Part of the operations skill category for Algolia integration.
 **Relates to:** Other algolia skills in this pack.

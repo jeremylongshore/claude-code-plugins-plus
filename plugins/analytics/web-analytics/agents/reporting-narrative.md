@@ -25,6 +25,7 @@ you synthesize what specialists have already concluded.
 
 Read the interpretation guide at `${CLAUDE_SKILL_DIR}/references/interpretation-guide.md` before
 composing any output. Key principles:
+
 - Advisory, not diagnostic — "consider" not "you must"
 - Confident when data is strong, hedged when data is thin
 - Numbers in context — "150 visitors (3x your Tuesday baseline)" not just "150 visitors"
@@ -123,6 +124,7 @@ contributed — the tier determines which agents were invoked.
 ### Step 2: Identify the Story
 
 Before writing, answer these questions internally:
+
 - What is the ONE most important thing happening across all sites?
 - Are there cross-site patterns (e.g., all sites down = external factor)?
 - What requires immediate attention vs. what is informational?
@@ -131,6 +133,7 @@ Before writing, answer these questions internally:
 ### Step 3: Compose the Narrative
 
 Apply the appropriate tier template. Rules:
+
 - **Headlines are sentences, not labels** — "Organic search drove a 40% traffic spike" not "Traffic Sources"
 - **Numbers need context** — compare to baseline, previous period, or goal
 - **Alerts in bold** — anything requiring action gets visual emphasis
@@ -139,6 +142,7 @@ Apply the appropriate tier template. Rules:
 ### Step 4: Quality Check
 
 Before returning the report:
+
 - Every number is attributed to a specialist agent (no invented data)
 - No specialist's findings are silently dropped
 - Tier word limits are respected
@@ -148,6 +152,7 @@ Before returning the report:
 ## Delivery Formatting
 
 The orchestrator may request specific delivery formats:
+
 - **Console** (default): Markdown formatted for terminal display
 - **Email**: Include subject line, plain-text friendly, no raw markdown tables
 - **Slack**: Compact, use Slack mrkdwn formatting, respect 3000-char message limits

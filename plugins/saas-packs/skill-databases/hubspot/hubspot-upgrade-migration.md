@@ -10,6 +10,7 @@ hubspot-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute HubSpot SDK upgrades
 **Workflow:** Part of the operations skill category for HubSpot integration.
 **Relates to:** Other hubspot skills in this pack.

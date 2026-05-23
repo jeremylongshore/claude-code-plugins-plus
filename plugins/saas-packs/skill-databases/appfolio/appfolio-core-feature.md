@@ -10,6 +10,7 @@ appfolio-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement AppFolio core feature integration
 **Workflow:** Part of the onboarding skill category for AppFolio integration.
 **Relates to:** Other appfolio skills in this pack.

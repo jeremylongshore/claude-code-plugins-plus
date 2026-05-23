@@ -5,6 +5,7 @@ model: sonnet
 temperature: 0.0
 ---
 **CRITICAL INSTRUCTIONS:**
+
 - **Temperature: 0.0** - ZERO creativity. Pure factual analysis only.
 - **Read-only** - Report discrepancies, never suggest creative solutions
 - **Exact matching** - Report differences precisely as they appear
@@ -13,11 +14,13 @@ temperature: 0.0
 # Content Consistency Validation Report Generator
 
 Generate a comprehensive read-only discrepancy report that identifies messaging inconsistencies across:
+
 1. **Website content** (ANY HTML-based website: static HTML, WordPress, Hugo, Astro, Jekyll, Next.js, React, Vue, Gatsby, etc.) - **OFFICIAL SOURCE OF TRUTH**
 2. **GitHub repositories** (README, docs, technical documentation)
 3. **Local documentation** (SOPs, standards, principles, beliefs, training materials, internal docs, procedures)
 
 **WORKFLOW MANDATE:**
+
 - Website is the OFFICIAL documentation - always the source of truth
 - Internal docs (SOPs, standards, principles, beliefs) MUST match website
 - Report what's missing/different in local docs compared to published web content
@@ -28,19 +31,24 @@ Generate a comprehensive read-only discrepancy report that identifies messaging 
 Create a Markdown report with these sections:
 
 ### 1. Executive Summary
+
 - Total sources analyzed
 - Critical discrepancies count
 - Warnings count
 - Informational notes count
 
 ### 2. Source Inventory
+
 List all content sources discovered:
+
 - Website pages (with URLs)
 - GitHub files (with repo paths)
 - Local docs (with file paths)
 
 ### 3. Critical Discrepancies 🔴
+
 Issues that MUST be fixed:
+
 - Version number conflicts
 - Feature list contradictions
 - Contact information mismatches
@@ -48,33 +56,42 @@ Issues that MUST be fixed:
 - Broken cross-references
 
 For each:
+
 - Show conflicting content from each source
 - Provide exact file locations and line numbers
 - Recommend which source is authoritative
 
 ### 4. Warnings 🟡
+
 Issues that SHOULD be reviewed:
+
 - Inconsistent terminology
 - Different phrasing of same concepts
 - Missing information in one source
 - Outdated timestamps
 
 For each:
+
 - Compare the variations
 - Suggest standardization approach
 
 ### 5. Terminology Analysis
+
 Table showing term usage across sources:
+
 | Term | Website | GitHub | Local Docs | Recommendation |
 |------|---------|--------|------------|----------------|
 
 ### 6. Priority Action Items
+
 Ordered list of fixes:
+
 1. 🔴 Critical issues first
 2. 🟡 Warnings second
 3. 🟢 Informational last
 
 Each with:
+
 - What to fix
 - Where to fix it
 - Recommended approach
@@ -86,6 +103,7 @@ Each with:
 Use these patterns to find content:
 
 **Website (detect ANY HTML-based site automatically):**
+
 ```bash
 # Static HTML sites
 find . -name "*.html" -not -path "*/node_modules/*" -not -path "*/.git/*"
@@ -127,6 +145,7 @@ find . -name "*.html" -path "*/build/*"
 ```
 
 **GitHub:**
+
 ```bash
 # Key files
 find . -name "README.md" -o -name "CONTRIBUTING.md"
@@ -134,6 +153,7 @@ find . -path "*/docs/*.md"
 ```
 
 **Local Docs:**
+
 ```bash
 # Documentation directories
 find . -path "*/claudes-docs/*.md"
@@ -144,6 +164,7 @@ find . -path "*/000-docs/*.md"
 ### Step 2: Extract Key Content
 
 For each source, extract:
+
 - **Version numbers**: Look for `v\d+\.\d+\.\d+`, `version`, `release`
 - **Feature claims**: Lists, bullet points, "supports X", "includes Y"
 - **Contact info**: Email addresses, support URLs, social media links
@@ -151,6 +172,7 @@ For each source, extract:
 - **Terminology**: Product names, technical terms, acronyms
 
 Use grep patterns:
+
 ```bash
 # Versions
 grep -E "v[0-9]+\.[0-9]+\.[0-9]+" file.md
@@ -184,6 +206,7 @@ Build comparison tables:
 ### Step 4: Generate Report
 
 Save report to:
+
 ```
 consistency-reports/YYYY-MM-DD-HH-MM-SS-full-audit.md
 ```
@@ -193,6 +216,7 @@ Include timestamp, sources analyzed, and full findings.
 ### Step 5: Present Summary
 
 Print terminal summary:
+
 ```
 ╔════════════════════════════════════════════════╗
 ║   Content Consistency Validation Report       ║
@@ -211,12 +235,14 @@ Print terminal summary:
 ## Read-Only Operations ONLY
 
 ✅ **Allowed:**
+
 - `Read` - Read local files
 - `Glob` - Find files by pattern
 - `Grep` - Search file contents
 - `Bash` (read-only): `cat`, `grep`, `find`, `wc`
 
 ❌ **Forbidden:**
+
 - `Write` - NO file modifications
 - `Edit` - NO file edits
 - `git commit` - NO version control changes
@@ -285,6 +311,7 @@ Print terminal summary:
 ### Interactive Prompts
 
 If scope is unclear, ask:
+
 ```
 I'll validate content consistency. Please specify:
 1. Which sources? (website/github/docs/all)
@@ -295,6 +322,7 @@ I'll validate content consistency. Please specify:
 ### Progress Updates
 
 Show progress:
+
 ```
 🔍 Scanning website... found 23 pages
 🔍 Scanning GitHub... found 15 markdown files
@@ -335,6 +363,7 @@ Top priority fix:
 ```
 
 The command/skill automatically:
+
 1. Discovers all relevant sources
 2. Extracts key messaging
 3. Compares for consistency

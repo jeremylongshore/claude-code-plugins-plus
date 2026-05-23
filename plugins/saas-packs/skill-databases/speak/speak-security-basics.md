@@ -10,6 +10,7 @@ speak-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Speak security best practices
 **Workflow:** Part of the operations skill category for Speak integration.
 **Relates to:** Other speak skills in this pack.

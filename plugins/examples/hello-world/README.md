@@ -24,6 +24,7 @@ Provides a friendly greeting command that welcomes users and asks how it can hel
 ## Learning Objectives
 
 This plugin demonstrates:
+
 - Basic plugin structure
 - Creating simple slash commands
 - Using YAML frontmatter for command metadata

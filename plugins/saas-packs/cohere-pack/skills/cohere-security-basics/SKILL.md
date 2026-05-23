@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Cohere Security Basics
 
 ## Overview
+
 Security best practices for Cohere API keys, request validation, and data protection. Cohere uses bearer token auth with trial and production key tiers.
 
 ## Prerequisites
+
 - Cohere account at [dashboard.cohere.com](https://dashboard.cohere.com)
 - Understanding of environment variables
 - Secret management solution for production
@@ -51,6 +53,7 @@ CO_API_KEY=your-key-here
 ```
 
 **Key types:**
+
 - **Trial keys** — free, rate-limited, for development only
 - **Production keys** — metered billing, for live applications
 
@@ -211,6 +214,7 @@ fi
 ```
 
 ## Error Handling
+
 | Security Issue | Detection | Mitigation |
 |----------------|-----------|------------|
 | Key in git history | `git log -p \| grep CO_API_KEY` | Rotate key immediately |
@@ -219,9 +223,11 @@ fi
 | Excessive token spend | Billing dashboard | Set budget alerts |
 
 ## Resources
+
 - [Cohere API Keys Dashboard](https://dashboard.cohere.com/api-keys)
 - [Cohere Safety Modes](https://docs.cohere.com/docs/safety-modes)
 - [Cohere Rate Limits](https://docs.cohere.com/docs/rate-limits)
 
 ## Next Steps
+
 For production deployment, see `cohere-prod-checklist`.

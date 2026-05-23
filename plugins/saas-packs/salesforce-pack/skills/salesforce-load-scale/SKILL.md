@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Salesforce Load & Scale
 
 ## Overview
+
 Load testing, scaling strategies, and capacity planning for Salesforce integrations. Focus on API limit budgeting, Bulk API throughput, and handling Salesforce's unique constraint: org-wide shared limits.
 
 ## Prerequisites
+
 - k6 or Artillery load testing tool
 - Sandbox or Developer org for testing (never load test production)
 - Understanding of your org's API limit allocation
@@ -195,6 +197,7 @@ console.log({
 | **Total** | **115,500** | **586** | **Well within limits** |
 
 ## Output
+
 - API limit budget allocated across integrations
 - Load test script targeting sandbox
 - Bulk API throughput benchmarked
@@ -202,6 +205,7 @@ console.log({
 - Capacity planning table for production
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `REQUEST_LIMIT_EXCEEDED` during test | Wrong org (testing production) | ONLY test against sandbox |
@@ -210,9 +214,11 @@ console.log({
 | Inconsistent results | Concurrent jobs contending | Run one test at a time |
 
 ## Resources
+
 - [API Limits by Edition](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm)
 - [Bulk API 2.0 Limits](https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/bulk_api_2_0.htm)
 - [k6 Documentation](https://k6.io/docs/)
 
 ## Next Steps
+
 For reliability patterns, see `salesforce-reliability-patterns`.

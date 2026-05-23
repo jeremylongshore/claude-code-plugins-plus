@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Observability
 
 ## Overview
+
 Monitor Exa search API performance, result quality, and cost efficiency. Key metrics: search latency by type (neural ~500-2000ms, keyword ~200-500ms), result count per query, cache hit rates, error rates by status code, and daily search volume for budget tracking.
 
 ## Prerequisites
+
 - Exa API integration in production
 - Metrics backend (Prometheus, Datadog, or OpenTelemetry)
 - Alerting system (PagerDuty, Slack, or equivalent)
@@ -35,6 +37,7 @@ Monitor Exa search API performance, result quality, and cost efficiency. Key met
 ## Instructions
 
 ### Step 1: Instrument the Exa Client
+
 ```typescript
 import Exa from "exa-js";
 
@@ -79,6 +82,7 @@ async function trackedSearch(query: string, options: any = {}) {
 ```
 
 ### Step 2: Track Result Quality
+
 ```typescript
 // Measure whether search results are actually used downstream
 function trackResultUsage(
@@ -106,6 +110,7 @@ function trackContentValue(result: any) {
 ```
 
 ### Step 3: Cache Monitoring
+
 ```typescript
 class MonitoredCache {
   private hits = 0;
@@ -142,6 +147,7 @@ class MonitoredCache {
 ```
 
 ### Step 4: Prometheus Alert Rules
+
 ```yaml
 groups:
   - name: exa_alerts
@@ -172,6 +178,7 @@ groups:
 ```
 
 ### Step 5: Health Check Endpoint
+
 ```typescript
 app.get("/health/exa", async (_req, res) => {
   const start = performance.now();
@@ -205,6 +212,7 @@ app.get("/health/exa", async (_req, res) => {
 | Daily Cost | `sum(exa.search.success)` | Budget tracking |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `429 Too Many Requests` | Rate limit exceeded | Implement backoff + request queue |
@@ -213,9 +221,11 @@ app.get("/health/exa", async (_req, res) => {
 | Budget exhausted | Uncapped search volume | Add application-level budget tracking |
 
 ## Resources
+
 - [Exa API Documentation](https://docs.exa.ai)
 - [Exa Rate Limits](https://docs.exa.ai/reference/rate-limits)
 - [Prometheus Alerting Rules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/)
 
 ## Next Steps
+
 For incident response, see `exa-incident-runbook`. For cost optimization, see `exa-cost-tuning`.

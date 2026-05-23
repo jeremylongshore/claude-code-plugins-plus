@@ -10,6 +10,7 @@ shopify-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Shopify production deployment checklist
 **Workflow:** Part of the operations skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

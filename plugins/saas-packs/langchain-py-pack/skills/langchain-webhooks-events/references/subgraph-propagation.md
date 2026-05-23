@@ -160,6 +160,7 @@ event shapes differ.
 ## Debugging a dark subagent
 
 Symptoms:
+
 - Handler fires on outer nodes, silent on inner nodes
 - No exceptions, no warnings — just no events
 - `langchain.debug=True` output shows the inner runnable executing
@@ -167,10 +168,12 @@ Symptoms:
 Steps:
 
 1. Check invoke site — is config passed?
+
    ```python
    await graph.ainvoke(x, config={"callbacks": [h]})  # right
    await graph.with_config({"callbacks": [h]}).ainvoke(x)  # wrong
    ```
+
 2. Install the `EventCounter` probe above and assert inner names appear.
 3. If step 2 passes but your dispatch handler still misses events — check
    event filtering. You may be filtering out the inner events by name /

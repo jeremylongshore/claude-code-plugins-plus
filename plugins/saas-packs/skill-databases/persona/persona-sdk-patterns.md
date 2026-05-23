@@ -10,6 +10,7 @@ persona-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Persona SDK patterns
 **Workflow:** Part of the onboarding skill category for Persona integration.
 **Relates to:** Other persona skills in this pack.

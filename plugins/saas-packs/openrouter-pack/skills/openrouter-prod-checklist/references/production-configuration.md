@@ -3,6 +3,7 @@
 ## Production Configuration
 
 ### Recommended Defaults
+
 ```python
 PRODUCTION_CONFIG = {
     # Timeouts
@@ -27,6 +28,7 @@ PRODUCTION_CONFIG = {
 ```
 
 ### Production Client
+
 ```python
 class ProductionOpenRouterClient:
     def __init__(self, config: dict = None):

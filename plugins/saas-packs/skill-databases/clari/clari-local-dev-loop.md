@@ -10,6 +10,7 @@ clari-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Clari local development workflow
 **Workflow:** Part of the onboarding skill category for Clari integration.
 **Relates to:** Other clari skills in this pack.

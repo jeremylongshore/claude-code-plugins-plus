@@ -3,6 +3,7 @@ Patterns for splitting expensive Shopify GraphQL queries into cheaper ones.
 ## When to Split
 
 Split a query when:
+
 - `requestedQueryCost` exceeds 500 points
 - You have nested connections deeper than 2 levels
 - You need data from multiple unrelated resource types

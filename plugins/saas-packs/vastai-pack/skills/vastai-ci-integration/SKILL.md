@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai CI Integration
 
 ## Overview
+
 Integrate Vast.ai GPU provisioning into CI/CD pipelines. Run GPU-accelerated tests, model validation, and benchmarks as part of your automated workflow using GitHub Actions with the Vast.ai CLI.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - `VASTAI_API_KEY` stored as GitHub Actions secret
 - Docker image for GPU workload published to a registry
@@ -144,12 +146,14 @@ def pytest_collection_modifyitems(config, items):
 ```
 
 ## Output
+
 - GitHub Actions workflow with GPU instance lifecycle
 - Cost-controlled CI with budget limits
 - Automatic cleanup on success or failure
 - Mock mode for non-GPU CI runs
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | No offers in CI | All cheap GPUs rented | Increase `dph_total` limit or retry later |
@@ -158,10 +162,12 @@ def pytest_collection_modifyitems(config, items):
 | Cleanup skipped | Job cancelled | Use `if: always()` on cleanup step |
 
 ## Resources
+
 - [Vast.ai CLI](https://docs.vast.ai/cli/get-started)
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 
 ## Next Steps
+
 For deployment patterns, see `vastai-deploy-integration`.
 
 ## Examples

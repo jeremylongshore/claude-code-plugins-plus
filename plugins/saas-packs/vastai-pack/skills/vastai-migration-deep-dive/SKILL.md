@@ -24,13 +24,16 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Migration Deep Dive
 
 ## Current State
+
 !`vastai --version 2>/dev/null || echo 'vastai CLI not installed'`
 !`pip show vastai 2>/dev/null | grep Version || echo 'N/A'`
 
 ## Overview
+
 Migrate GPU workloads to Vast.ai from hyperscaler providers (AWS, GCP, Azure) or other GPU clouds (Lambda, RunPod, CoreWeave). Also covers migrating between GPU types on Vast.ai and the reverse migration away from Vast.ai.
 
 ## Prerequisites
+
 - Existing GPU workload with Docker image
 - Understanding of current GPU costs and utilization
 - Checkpoint-based training pipeline (for training migrations)
@@ -162,6 +165,7 @@ echo "Migration validation complete"
 | Support | Enterprise support | Community/email |
 
 ## Output
+
 - Cost savings analysis comparing providers
 - Adapted Docker image for Vast.ai
 - Cloud credential migration pattern
@@ -169,6 +173,7 @@ echo "Migration validation complete"
 - Rollback procedure
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Docker image incompatible | Relies on IAM roles or cloud-specific APIs | Pass credentials via env vars |
@@ -177,11 +182,13 @@ echo "Migration validation complete"
 | No matching offers | Specific GPU unavailable | Try alternative GPU type or wait for availability |
 
 ## Resources
+
 - [Vast.ai vs AWS](https://vast.ai/)
 - [Vast.ai CLI](https://docs.vast.ai/cli/get-started)
 - [Docker Migration](https://docs.docker.com/get-started/)
 
 ## Next Steps
+
 Review `vastai-reference-architecture` for best-practice project structure.
 
 ## Examples

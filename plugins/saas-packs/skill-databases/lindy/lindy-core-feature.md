@@ -10,6 +10,7 @@ lindy-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Lindy core feature integration
 **Workflow:** Part of the onboarding skill category for Lindy integration.
 **Relates to:** Other lindy skills in this pack.

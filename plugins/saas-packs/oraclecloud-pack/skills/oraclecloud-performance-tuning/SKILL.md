@@ -108,6 +108,7 @@ print(f"Performance: {volume.vpus_per_gb} VPUs/GB")
 ```
 
 The `vpus_per_gb` parameter controls the tier:
+
 - `10` = Balanced (default)
 - `20` = Higher Performance
 - `30`–`120` = Ultra High Performance (scales IOPS linearly)
@@ -162,6 +163,7 @@ for metric in response.data:
 ## Output
 
 Successful completion produces:
+
 - A shape comparison showing processor, OCPU range, and network bandwidth
 - Available shapes queried from your tenancy and region
 - A block volume created with the appropriate performance tier

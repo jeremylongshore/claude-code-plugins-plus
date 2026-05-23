@@ -3,6 +3,7 @@
 ## Model Categories
 
 ### OpenAI Models
+
 ```
 openai/gpt-4o              - Latest multimodal
 openai/gpt-4-turbo         - Fast GPT-4
@@ -13,6 +14,7 @@ openai/gpt-3.5-turbo-16k   - Extended context
 ```
 
 ### Anthropic Models
+
 ```
 anthropic/claude-3.5-sonnet  - Best balance
 anthropic/claude-3-opus      - Highest capability
@@ -22,6 +24,7 @@ anthropic/claude-2.1         - Legacy
 ```
 
 ### Meta Llama Models
+
 ```
 meta-llama/llama-3.1-405b-instruct  - Largest
 meta-llama/llama-3.1-70b-instruct   - Great balance
@@ -30,6 +33,7 @@ meta-llama/llama-3-70b-instruct     - Previous gen
 ```
 
 ### Mistral Models
+
 ```
 mistralai/mistral-large       - Most capable
 mistralai/mistral-medium      - Balanced
@@ -38,6 +42,7 @@ mistralai/mistral-7b-instruct - Smallest
 ```
 
 ### Google Models
+
 ```
 google/gemini-pro-1.5      - Latest Gemini
 google/gemini-pro          - Standard
@@ -45,6 +50,7 @@ google/palm-2-chat-bison   - PaLM 2
 ```
 
 ### Specialized Models
+
 ```
 # Code-focused
 deepseek/deepseek-coder

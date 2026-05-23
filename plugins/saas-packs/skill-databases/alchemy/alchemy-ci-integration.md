@@ -10,6 +10,7 @@ alchemy-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Alchemy CI/CD integration
 **Workflow:** Part of the cicd skill category for Alchemy integration.
 **Relates to:** Other alchemy skills in this pack.

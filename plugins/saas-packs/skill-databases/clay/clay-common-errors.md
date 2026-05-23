@@ -10,6 +10,7 @@ clay-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Clay common errors including API rate limits, enrichment failures, authentication issues, and integration problems. Provides error-specific troubleshooting flows.
 **Workflow:** Troubleshooting skill. Use when encountering Clay errors that need rapid resolution.
 **Relates to:** Supports all Clay skills; often leads to clay-debug-bundle for complex issues.

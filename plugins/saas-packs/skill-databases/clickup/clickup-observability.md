@@ -10,6 +10,7 @@ clickup-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up ClickUp monitoring and observability
 **Workflow:** Part of the enterprise skill category for ClickUp integration.
 **Relates to:** Other clickup skills in this pack.

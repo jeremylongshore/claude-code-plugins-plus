@@ -21,9 +21,11 @@ compatibility: Designed for Claude Code
 # Fly.io Security Basics
 
 ## Overview
+
 Fly.io deploys applications to edge locations worldwide using Firecracker microVMs. Security concerns center on deploy token scoping (org-wide vs per-app), secrets management (encrypted at rest, injected as env vars), private networking via WireGuard mesh (6PN), and TLS certificate management. A leaked deploy token can push arbitrary code to production machines across all regions.
 
 ## API Key Management
+
 ```typescript
 function validateFlyToken(): void {
   const token = process.env.FLY_API_TOKEN;
@@ -37,6 +39,7 @@ function validateFlyToken(): void {
 ```
 
 ## Webhook Signature Verification
+
 ```typescript
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
@@ -54,6 +57,7 @@ function verifyFlyWebhook(req: Request, res: Response, next: NextFunction): void
 ```
 
 ## Input Validation
+
 ```typescript
 import { z } from "zod";
 
@@ -71,6 +75,7 @@ function validateDeployConfig(data: unknown) {
 ```
 
 ## Data Protection
+
 ```typescript
 const FLY_SENSITIVE_FIELDS = ["fly_api_token", "deploy_token", "db_password", "wireguard_private_key", "tls_private_key"];
 
@@ -84,6 +89,7 @@ function redactFlyLog(record: Record<string, unknown>): Record<string, unknown> 
 ```
 
 ## Security Checklist
+
 - [ ] All sensitive values in `fly secrets`, never in `[env]` section of fly.toml
 - [ ] Deploy tokens scoped per-app, not org-wide
 - [ ] `force_https = true` set in fly.toml `[http_service]`
@@ -94,6 +100,7 @@ function redactFlyLog(record: Record<string, unknown>): Record<string, unknown> 
 - [ ] Container images scanned before deployment
 
 ## Error Handling
+
 | Vulnerability | Risk | Mitigation |
 |---|---|---|
 | Leaked deploy token | Arbitrary code deployed to production | Per-app scoped tokens + rotation |
@@ -103,8 +110,10 @@ function redactFlyLog(record: Record<string, unknown>): Record<string, unknown> 
 | Expired TLS certificates | MITM attacks on custom domains | Automated Let's Encrypt renewal |
 
 ## Resources
+
 - [Fly Secrets](https://fly.io/docs/reference/secrets/)
 - [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
 
 ## Next Steps
+
 See `flyio-prod-checklist`.

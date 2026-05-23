@@ -20,14 +20,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # RemoFirst Common Errors
 
 ## Overview
+
 Implementation patterns for RemoFirst common errors — global HR and EOR platform integration.
 
 ## Prerequisites
+
 - Completed `remofirst-install-auth` setup
 
 ## Instructions
 
 ### Step 1: API Pattern
+
 ```python
 client = RemoFirstClient()
 employees = client.get("/employees", params={"page_size": 10})
@@ -35,9 +38,11 @@ print(f"Employees: {len(employees['data'])}")
 ```
 
 ## Output
+
 - RemoFirst integration for common errors
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Invalid API key | Contact RemoFirst support |
@@ -45,7 +50,9 @@ print(f"Employees: {len(employees['data'])}")
 | 422 Validation Error | Missing required field | Check API documentation |
 
 ## Resources
+
 - [RemoFirst](https://www.remofirst.com)
 
 ## Next Steps
+
 See related RemoFirst skills for more workflows.

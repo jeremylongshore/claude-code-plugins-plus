@@ -10,6 +10,7 @@ openevidence-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure OpenEvidence SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for OpenEvidence integration.
 **Relates to:** Other openevidence skills in this pack.

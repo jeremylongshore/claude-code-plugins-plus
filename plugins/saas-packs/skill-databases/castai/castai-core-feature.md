@@ -10,6 +10,7 @@ castai-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Cast AI core feature integration
 **Workflow:** Part of the onboarding skill category for Cast AI integration.
 **Relates to:** Other castai skills in this pack.

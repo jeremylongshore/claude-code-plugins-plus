@@ -68,6 +68,7 @@ Machine-readable specification for the Vertex AI Production Readiness Validator.
 ## API Surface
 
 No gcloud CLI exists for Agent Engine. Management uses:
+
 - **Python SDK**: `vertexai.Client().agent_engines.*` (list, get, create, delete)
 - **REST**: `https://{LOC}-aiplatform.googleapis.com/v1/projects/{P}/locations/{L}/reasoningEngines`
 - **ADK CLI**: `adk deploy agent_engine` (deployment only)

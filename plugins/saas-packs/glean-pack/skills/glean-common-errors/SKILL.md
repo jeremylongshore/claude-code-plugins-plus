@@ -64,12 +64,15 @@ function classifyGleanError(status: number, body: string): GleanError {
 ## Debugging Guide
 
 ### Authentication Errors
+
 Glean uses two distinct token types. Indexing tokens authenticate bulk document uploads. Client tokens authenticate search queries and require the `X-Glean-Auth-Type: BEARER` header. Using the wrong token type returns 403, not 401 -- check the token type first.
 
 ### Rate Limit Errors
+
 Glean enforces per-token rate limits. Indexing operations should batch documents (up to 100 per request). Search queries are rate-limited per client token. Use `Retry-After` header when present and implement exponential backoff starting at 2 seconds.
 
 ### Validation Errors
+
 Bulk index uploads require a unique `uploadId` per run -- reusing an ID silently drops the upload. Documents must include both `id` and `title` fields. Content bodies over 100KB are rejected; truncate or split large documents. New datasources must be registered via `adddatasource` before any documents can be indexed against them. The `datasource` field in each document must exactly match the registered datasource name (case-sensitive).
 
 ## Error Handling

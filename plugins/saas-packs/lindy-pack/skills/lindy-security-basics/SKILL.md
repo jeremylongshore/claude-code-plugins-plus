@@ -25,12 +25,14 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lindy Security Basics
 
 ## Overview
+
 Security practices for Lindy AI agents. Agents are autonomous — they connect to
 external services, execute actions, and handle data. Security focuses on: API key
 management, webhook authentication, agent permission scoping, integration account
 isolation, and connection sharing controls.
 
 ## Prerequisites
+
 - Lindy account with API access
 - Understanding of which integrations your agents use
 - For Enterprise: SSO/SCIM configuration access
@@ -38,6 +40,7 @@ isolation, and connection sharing controls.
 ## Instructions
 
 ### Step 1: API Key Management
+
 ```bash
 # Store API key in environment variable — never in source code
 export LINDY_API_KEY="lnd_live_xxxxxxxxxxxxxxxxxxxx"
@@ -54,6 +57,7 @@ echo -n "$LINDY_API_KEY" | gcloud secrets create lindy-api-key \
 ```
 
 **Key rotation schedule**:
+
 | Environment | Rotation Period | Method |
 |-------------|----------------|--------|
 | Development | 30 days | Manual regeneration |
@@ -62,6 +66,7 @@ echo -n "$LINDY_API_KEY" | gcloud secrets create lindy-api-key \
 | Post-incident | Immediately | Manual regeneration + revoke old key |
 
 ### Step 2: Webhook Authentication
+
 Every webhook trigger generates a unique secret key. Verify it on every inbound request:
 
 ```typescript
@@ -94,15 +99,18 @@ app.post('/lindy/callback', verifyLindyWebhook, (req, res) => {
 ```
 
 ### Step 3: Agent Permission Scoping
+
 Lindy agents access external services through authorized connections. Minimize blast radius:
 
 **Per-agent integration isolation**:
+
 - Authorize a dedicated Gmail account per agent (not your personal inbox)
 - Create Slack bot tokens scoped to specific channels
 - Use read-only database credentials where possible
 - Create separate API keys for each integration
 
 **Connection sharing controls**:
+
 | Sharing Level | When to Use |
 |--------------|-------------|
 | Private (default) | Personal agents, sensitive data |
@@ -110,13 +118,16 @@ Lindy agents access external services through authorized connections. Minimize b
 | Workspace shared | Organization-wide utility agents |
 
 ### Step 4: Limit Agent Skill Surface Area
+
 Agents with Agent Steps can choose which skills to use. Reduce risk:
+
 - Start with 2-4 focused skills per agent (not the full catalog)
 - Avoid giving agents both read AND write access to the same service unless necessary
 - Separate "read" agents from "write" agents for critical systems
 - Use conditions to gate destructive actions behind human approval
 
 ### Step 5: Data Handling in Agents
+
 ```
 Agent Prompt Security Patterns:
 
@@ -129,13 +140,16 @@ Agent Prompt Security Patterns:
 ```
 
 ### Step 6: Audit Agent Activity
+
 1. **Task history**: Review agent Tasks tab for unexpected actions
 2. **Integration access**: Periodically review which services each agent can access
 3. **Credit anomalies**: Sudden credit spikes may indicate misuse or misconfiguration
 4. **Connection review**: Remove unused integrations from agents
 
 ### Step 7: Enterprise Security Features
+
 Available on Enterprise plan:
+
 | Feature | Purpose |
 |---------|---------|
 | **SSO** | SAML-based single sign-on |
@@ -146,6 +160,7 @@ Available on Enterprise plan:
 | **AES-256** | Encryption at rest and in transit |
 
 ## Security Checklist
+
 - [ ] API keys stored in environment variables or secret manager
 - [ ] `.env` file in `.gitignore`
 - [ ] Webhook secrets generated and verified on every request
@@ -166,9 +181,11 @@ Available on Enterprise plan:
 | Agent sends data to wrong channel | Shared connection | Use per-agent dedicated connections |
 
 ## Resources
+
 - [Lindy Security](https://www.lindy.ai/security)
 - [Lindy Privacy Policy](https://www.lindy.ai/privacy)
 - [Lindy Documentation](https://docs.lindy.ai)
 
 ## Next Steps
+
 Proceed to `lindy-prod-checklist` for production readiness.

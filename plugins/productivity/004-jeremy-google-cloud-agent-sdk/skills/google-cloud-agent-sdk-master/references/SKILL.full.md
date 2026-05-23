@@ -11,8 +11,6 @@ license: MIT
 
 This Agent Skill provides comprehensive mastery of Google's Agent Development Kit (ADK) and Agent Starter Pack for building and deploying production-grade containerized agents.
 
-
-
 ## Overview
 
 This skill provides automated assistance for building and deploying Google Cloud ADK agents.
@@ -47,6 +45,7 @@ make deploy PROJECT_ID=my-gcp-project REGION=us-central1
 ### 🤖 Agent Development Kit (ADK)
 
 **Framework Overview:**
+
 - **Open-source Python framework** from Google
 - Same framework powering Google Agentspace and CES
 - Build production agents in <100 lines of code
@@ -54,6 +53,7 @@ make deploy PROJECT_ID=my-gcp-project REGION=us-central1
 - Deployment-agnostic (local, Cloud Run, GKE, Agent Engine)
 
 **Supported Agent Types:**
+
 1. **LLM Agents**: Dynamic routing with intelligence
 2. **Workflow Agents**:
    - Sequential: Linear execution
@@ -63,6 +63,7 @@ make deploy PROJECT_ID=my-gcp-project REGION=us-central1
 4. **Multi-agent Systems**: Hierarchical coordination
 
 **Key Features:**
+
 - Flexible orchestration (workflow & LLM-driven)
 - Tool ecosystem (search, code execution, custom functions)
 - Third-party integrations (LangChain, CrewAI)
@@ -73,6 +74,7 @@ make deploy PROJECT_ID=my-gcp-project REGION=us-central1
 ### 📦 Agent Starter Pack
 
 **Production Templates:**
+
 1. **adk_base** - ReAct agent using ADK
 2. **agentic_rag** - Document retrieval + Q&A with search
 3. **langgraph_base_react** - LangGraph ReAct implementation
@@ -80,6 +82,7 @@ make deploy PROJECT_ID=my-gcp-project REGION=us-central1
 5. **adk_live** - Multimodal RAG (audio/video/text)
 
 **Infrastructure Automation:**
+
 - CI/CD setup with single command
 - GitHub Actions or Cloud Build pipelines
 - Multi-environment support (dev, staging, prod)
@@ -89,6 +92,7 @@ make deploy PROJECT_ID=my-gcp-project REGION=us-central1
 ### 🚀 Deployment Targets
 
 **1. Vertex AI Agent Engine**
+
 - Fully managed runtime
 - Auto-scaling and load balancing
 - Built-in observability
@@ -96,6 +100,7 @@ make deploy PROJECT_ID=my-gcp-project REGION=us-central1
 - Best for: Production-scale agents
 
 **2. Cloud Run**
+
 - Containerized serverless
 - Pay-per-use pricing
 - Custom domain support
@@ -103,6 +108,7 @@ make deploy PROJECT_ID=my-gcp-project REGION=us-central1
 - Best for: Web-facing agents
 
 **3. Google Kubernetes Engine (GKE)**
+
 - Full container orchestration
 - Advanced networking
 - Resource management
@@ -110,6 +116,7 @@ make deploy PROJECT_ID=my-gcp-project REGION=us-central1
 - Best for: Complex multi-agent systems
 
 **4. Local/Docker**
+
 - Development and testing
 - Custom infrastructure
 - On-premises deployment
@@ -118,6 +125,7 @@ make deploy PROJECT_ID=my-gcp-project REGION=us-central1
 ### 🔧 Technical Implementation
 
 **Installation:**
+
 ```bash
 # Agent Starter Pack (recommended)
 pip install agent-starter-pack
@@ -130,6 +138,7 @@ pip install google-cloud-aiplatform[adk,agent_engines]>=1.111
 ```
 
 **Create Agent (ADK):**
+
 ```python
 from google.cloud.aiplatform import agent
 from vertexai.preview.agents import ADKAgent
@@ -161,6 +170,7 @@ class OrchestratorAgent(ADKAgent):
 ```
 
 **Using Agent Starter Pack:**
+
 ```bash
 # Create project with template
 uvx agent-starter-pack create my-rag-agent \
@@ -184,6 +194,7 @@ my-rag-agent/
 ```
 
 **Deploy to Cloud Run:**
+
 ```bash
 # Using ADK CLI
 adk deploy \
@@ -201,6 +212,7 @@ gcloud run deploy agent \
 ```
 
 **Deploy to Agent Engine:**
+
 ```bash
 # Using Agent Starter Pack
 asp deploy \
@@ -219,6 +231,7 @@ agent_engines.deploy_agent(
 ### 📊 RAG Agent Implementation
 
 **Vector Search Integration:**
+
 ```python
 from vertexai.preview.rag import VectorSearchTool
 from google.cloud import aiplatform
@@ -246,6 +259,7 @@ class RAGAgent(ADKAgent):
 ```
 
 **Vertex AI Search Integration:**
+
 ```python
 from vertexai.preview.search import VertexAISearchTool
 
@@ -264,6 +278,7 @@ agent = ADKAgent(
 ### 🔄 CI/CD Automation
 
 **GitHub Actions (auto-generated):**
+
 ```yaml
 name: Deploy Agent
 on:
@@ -285,6 +300,7 @@ jobs:
 ```
 
 **Cloud Build Pipeline:**
+
 ```yaml
 steps:
   # Build container
@@ -308,6 +324,7 @@ steps:
 ### 🎯 Multi-Agent Orchestration
 
 **Hierarchical Agents:**
+
 ```python
 # Coordinator agent with specialized sub-agents
 class ProjectManagerAgent(ADKAgent):
@@ -327,6 +344,7 @@ class ProjectManagerAgent(ADKAgent):
 ```
 
 **Parallel Agent Execution:**
+
 ```python
 import asyncio
 
@@ -344,6 +362,7 @@ class ParallelResearchAgent(ADKAgent):
 ### 📈 Evaluation & Monitoring
 
 **Built-in Evaluation:**
+
 ```python
 from google.cloud.aiplatform import agent_evaluation
 
@@ -360,6 +379,7 @@ print(f"Relevance: {results.relevance}")
 ```
 
 **Cloud Trace Integration:**
+
 ```python
 from google.cloud import trace_v1
 
@@ -380,6 +400,7 @@ class MonitoredAgent(ADKAgent):
 ### 🔒 Security & Best Practices
 
 **1. Service Account Management:**
+
 ```bash
 # Create minimal-permission service account
 gcloud iam service-accounts create agent-sa \
@@ -392,6 +413,7 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
 ```
 
 **2. Secret Management:**
+
 ```python
 from google.cloud import secretmanager
 
@@ -403,6 +425,7 @@ def get_api_key():
 ```
 
 **3. VPC Service Controls:**
+
 ```bash
 # Enable VPC SC for data security
 gcloud access-context-manager perimeters create agent-perimeter \
@@ -413,6 +436,7 @@ gcloud access-context-manager perimeters create agent-perimeter \
 ### 💰 Cost Optimization
 
 **Strategies:**
+
 - Use Gemini 2.5 Flash for most operations
 - Cache embeddings for RAG systems
 - Implement request batching
@@ -420,6 +444,7 @@ gcloud access-context-manager perimeters create agent-perimeter \
 - Monitor token usage in Cloud Monitoring
 
 **Pricing Examples:**
+
 - Cloud Run: $0.00024/GB-second
 - Agent Engine: Pay-per-request pricing
 - GKE: Standard cluster costs
@@ -428,6 +453,7 @@ gcloud access-context-manager perimeters create agent-perimeter \
 ### 📚 Reference Architecture
 
 **Production Agent System:**
+
 ```
 ┌─────────────────┐
 │   Load Balancer │
@@ -451,12 +477,14 @@ gcloud access-context-manager perimeters create agent-perimeter \
 ### 🎯 Best Practices for Jeremy
 
 **1. Start with Templates:**
+
 ```bash
 # Use Agent Starter Pack templates
 uvx agent-starter-pack create my-agent --template agentic_rag
 ```
 
 **2. Local Development:**
+
 ```bash
 # Test locally first
 adk serve --port 8080
@@ -464,6 +492,7 @@ curl http://localhost:8080/query -d '{"question": "test"}'
 ```
 
 **3. Gradual Deployment:**
+
 ```bash
 # Deploy to dev → staging → prod
 asp deploy --env dev
@@ -474,6 +503,7 @@ asp deploy --env production
 ```
 
 **4. Monitor Everything:**
+
 - Enable Cloud Trace
 - Set up error reporting
 - Track token usage
@@ -483,18 +513,21 @@ asp deploy --env production
 ### 📖 Official Documentation
 
 **Core Resources:**
+
 - ADK Docs: https://google.github.io/adk-docs/
 - Agent Starter Pack: https://github.com/GoogleCloudPlatform/agent-starter-pack
 - Agent Engine: https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview
 - Agent Builder: https://cloud.google.com/products/agent-builder
 
 **Tutorials:**
+
 - Building AI Agents: https://codelabs.developers.google.com/devsite/codelabs/building-ai-agents-vertexai
 - Multi-agent Systems: https://cloud.google.com/blog/products/ai-machine-learning/build-and-manage-multi-system-agents-with-vertex-ai
 
 ## When This Skill Activates
 
 This skill automatically activates when you mention:
+
 - Agent development, ADK, or Agent Starter Pack
 - Multi-agent systems or orchestration
 - Containerized agent deployment
@@ -507,6 +540,7 @@ This skill automatically activates when you mention:
 ## Integration with Other Services
 
 **Google Cloud:**
+
 - Vertex AI (Gemini, Search, Vector Search)
 - Cloud Storage (data storage)
 - Cloud Functions (triggers)
@@ -514,6 +548,7 @@ This skill automatically activates when you mention:
 - Cloud Logging & Monitoring
 
 **Third-party:**
+
 - LangChain integration
 - CrewAI orchestration
 - Custom tool frameworks
@@ -521,6 +556,7 @@ This skill automatically activates when you mention:
 ## Success Metrics
 
 **Track:**
+
 - Agent response time (target: <2s)
 - Evaluation scores (target: >85% accuracy)
 - Deployment frequency (target: daily)
@@ -558,6 +594,7 @@ This skill automatically activates when you mention:
 ## Error Handling
 
 If execution fails:
+
 - Verify prerequisites are met
 - Check input parameters and formats
 - Validate file paths and permissions

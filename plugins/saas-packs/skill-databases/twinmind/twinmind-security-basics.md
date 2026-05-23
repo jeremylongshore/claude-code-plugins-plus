@@ -10,6 +10,7 @@ twinmind-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply TwinMind security best practices
 **Workflow:** Part of the operations skill category for TwinMind integration.
 **Relates to:** Other twinmind skills in this pack.

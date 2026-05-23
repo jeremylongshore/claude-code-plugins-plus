@@ -21,9 +21,11 @@ compatibility: Designed for Claude Code
 # Navan Rate Limits
 
 ## Overview
+
 Navan does not publicly document its API rate limits. Developers typically discover thresholds empirically when bulk data pulls or batch operations begin returning HTTP 429 responses. This skill implements defensive rate-limiting patterns that adapt to server responses rather than relying on fixed quotas — inspecting response headers, applying exponential backoff with jitter, and queuing requests to prevent flooding.
 
 ## Prerequisites
+
 - Active Navan OAuth 2.0 credentials (see `navan-install-auth`)
 - Node.js 18+ (examples use native fetch)
 - Understanding of HTTP 429 status code and Retry-After header semantics
@@ -31,6 +33,7 @@ Navan does not publicly document its API rate limits. Developers typically disco
 ## Instructions
 
 ### Step 1: Build an Adaptive Retry Wrapper
+
 ```typescript
 interface RetryOptions {
   maxRetries: number;
@@ -82,6 +85,7 @@ async function navanFetch(
 ```
 
 ### Step 2: Implement a Request Queue for Bulk Operations
+
 ```typescript
 class NavanRequestQueue {
   private queue: Array<() => Promise<void>> = [];
@@ -117,6 +121,7 @@ class NavanRequestQueue {
 ```
 
 ### Step 3: Use the Queue for Batch Data Pulls
+
 ```typescript
 const queue = new NavanRequestQueue(3, 500); // 3 concurrent, 500ms gap
 const accessToken = process.env.NAVAN_ACCESS_TOKEN!;
@@ -147,6 +152,7 @@ async function fetchAllExpenses(startDate: string, endDate: string) {
 ```
 
 ### Step 4: Log and Monitor Rate Limit Signals
+
 ```typescript
 function logRateLimitHeaders(response: Response, endpoint: string): void {
   const headers = [
@@ -169,9 +175,11 @@ function logRateLimitHeaders(response: Response, endpoint: string): void {
 ```
 
 ## Output
+
 A resilient API client that handles Navan's undocumented rate limits through adaptive retry logic and controlled concurrency. The queue prevents bulk operations from triggering 429 responses, and the retry wrapper recovers gracefully when limits are hit.
 
 ## Error Handling
+
 | Error | Code | Solution |
 |-------|------|----------|
 | Too Many Requests | 429 | Retry with exponential backoff; inspect Retry-After header |
@@ -183,6 +191,7 @@ A resilient API client that handles Navan's undocumented rate limits through ada
 ## Examples
 
 **Quick test for rate limit headers:**
+
 ```bash
 curl -s -D - -o /dev/null \
   -H "Authorization: Bearer $NAVAN_ACCESS_TOKEN" \
@@ -190,6 +199,7 @@ curl -s -D - -o /dev/null \
 ```
 
 **Bulk export with throttling (Python):**
+
 ```python
 import time
 import requests
@@ -206,9 +216,11 @@ def navan_get(url, token, max_retries=5):
 ```
 
 ## Resources
+
 - [Navan Help Center](https://app.navan.com/app/helpcenter) — Official documentation and support articles
 - [Navan Integrations](https://navan.com/integrations) — Integration partner ecosystem
 - [HTTP 429 Specification (RFC 6585)](https://datatracker.ietf.org/doc/html/rfc6585#section-4) — Standard for rate limiting responses
 
 ## Next Steps
+
 After implementing rate limiting, see `navan-security-basics` for credential rotation and token management, or `navan-data-sync` for building paginated data export pipelines.

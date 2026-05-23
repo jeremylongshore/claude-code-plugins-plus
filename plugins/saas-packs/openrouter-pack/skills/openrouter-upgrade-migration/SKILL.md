@@ -19,6 +19,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # OpenRouter Upgrade & Migration
 
 ## Current State
+
 !`npm list openai 2>/dev/null | head -5`
 !`pip show openai 2>/dev/null | head -5`
 

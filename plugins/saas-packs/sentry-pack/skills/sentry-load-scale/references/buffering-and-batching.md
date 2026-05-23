@@ -3,6 +3,7 @@
 ## Buffering and Batching
 
 ### Client-Side Buffering
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -17,6 +18,7 @@ Sentry.init({
 ```
 
 ### Custom Batching Transport
+
 ```typescript
 class BatchingTransport {
   private buffer: Sentry.Event[] = [];

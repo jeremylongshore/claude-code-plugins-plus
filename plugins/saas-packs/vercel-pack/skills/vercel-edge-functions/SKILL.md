@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Edge Functions
 
 ## Overview
+
 Edge Functions run on Vercel's Edge Network (V8 isolates) close to the user with no cold starts. They use Web Standard APIs (Request, Response, fetch) instead of Node.js APIs. Ideal for authentication, A/B testing, geolocation routing, and low-latency API responses.
 
 ## Prerequisites
+
 - Completed `vercel-install-auth` setup
 - Familiarity with Web APIs (Request/Response)
 - Node.js 18+ for local development
@@ -37,6 +39,7 @@ Edge Functions run on Vercel's Edge Network (V8 isolates) close to the user with
 ## Instructions
 
 ### Step 1: Create an Edge Function
+
 ```typescript
 // api/edge-hello.ts
 // Export `runtime = 'edge'` to run on the Edge Runtime
@@ -58,6 +61,7 @@ export default function handler(request: Request): Response {
 ```
 
 ### Step 2: Edge Function with Geolocation
+
 Vercel injects geolocation headers into every edge request:
 
 ```typescript
@@ -81,6 +85,7 @@ export default function handler(request: Request): Response {
 ```
 
 ### Step 3: Edge Middleware (middleware.ts)
+
 Middleware runs before every request and can rewrite, redirect, or add headers:
 
 ```typescript
@@ -117,6 +122,7 @@ export const config = {
 ```
 
 ### Step 4: Edge Function with Streaming
+
 ```typescript
 // api/stream.ts
 export const config = { runtime: 'edge' };
@@ -145,6 +151,7 @@ export default function handler(): Response {
 ```
 
 ### Step 5: Edge Config (Key-Value Store)
+
 ```typescript
 // api/feature-flags.ts
 import { get } from '@vercel/edge-config';
@@ -179,17 +186,20 @@ Install: `npm install @vercel/edge-config`
 | Use case | Auth, routing, A/B, geo | Database queries, heavy compute |
 
 ## Available Web APIs in Edge Runtime
+
 `fetch`, `Request`, `Response`, `Headers`, `URL`, `URLSearchParams`, `TextEncoder`, `TextDecoder`, `ReadableStream`, `WritableStream`, `TransformStream`, `crypto`, `atob`, `btoa`, `structuredClone`, `setTimeout`, `setInterval`, `AbortController`
 
 **NOT available**: `fs`, `path`, `child_process`, `net`, `http`, `dns`, native Node.js modules
 
 ## Output
+
 - Edge Function deployed globally with zero cold starts
 - Geolocation-based routing using Vercel's injected headers
 - Middleware running authentication and A/B tests at the edge
 - Streaming responses for real-time data delivery
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `EDGE_FUNCTION_INVOCATION_FAILED` | Runtime error in edge function | Check logs — no `try/catch` around async code |
@@ -199,6 +209,7 @@ Install: `npm install @vercel/edge-config`
 | `TypeError: x is not a function` | Node.js API used in edge runtime | Replace with Web Standard API equivalent |
 
 ## Resources
+
 - [Edge Functions Documentation](https://vercel.com/docs/functions/runtimes/edge)
 - [Edge Middleware](https://vercel.com/docs/functions/edge-middleware)
 - [Edge Config](https://vercel.com/docs/edge-config)
@@ -206,4 +217,5 @@ Install: `npm install @vercel/edge-config`
 - [Vercel Geolocation Headers](https://vercel.com/docs/headers/request-headers)
 
 ## Next Steps
+
 For common errors, see `vercel-common-errors`.

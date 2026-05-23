@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Salesforce Webhooks & Events
 
 ## Overview
+
 Salesforce doesn't use traditional webhooks. Instead, it offers Platform Events, Change Data Capture (CDC), and Outbound Messages for real-time data flow. All use the CometD (Bayeux) streaming protocol via jsforce.
 
 ## Prerequisites
+
 - jsforce installed with connection configured
 - Platform Events or CDC enabled in your org
 - Understanding of publish/subscribe patterns
@@ -196,12 +198,14 @@ async function processEvent(message: any): Promise<void> {
 ```
 
 ## Output
+
 - CDC subscription for real-time record change notifications
 - Platform Event publishing and subscribing
 - Outbound Message endpoint with SOAP acknowledgment
 - Idempotent event processing with replay ID tracking
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `403: CDC not enabled` | Object not selected for CDC | Setup > Change Data Capture > select objects |
@@ -211,10 +215,12 @@ async function processEvent(message: any): Promise<void> {
 | Outbound Message retry | Ack not sent | Return `<Ack>true</Ack>` XML response |
 
 ## Resources
+
 - [Change Data Capture Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture/)
 - [Platform Events Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/)
 - [Streaming API](https://developer.salesforce.com/docs/atlas.en-us.api_streaming.meta/api_streaming/)
 - [Outbound Messaging](https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_om_outboundmessaging.htm)
 
 ## Next Steps
+
 For performance optimization, see `salesforce-performance-tuning`.

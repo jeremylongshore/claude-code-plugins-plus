@@ -10,6 +10,7 @@ podium-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Podium SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Podium integration.
 **Relates to:** Other podium skills in this pack.

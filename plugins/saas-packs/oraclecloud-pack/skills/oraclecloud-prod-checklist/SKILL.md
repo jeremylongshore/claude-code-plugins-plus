@@ -193,6 +193,7 @@ oci vulnerability-scanning host vulnerability list \
 ## Output
 
 Successful completion produces:
+
 - An 8-point pass/fail checklist covering compartment isolation, backups, security rules, key rotation, encryption, OS agents, Cloud Guard, and vulnerability scanning
 - Specific FAIL findings with remediation commands for each item
 - A clear go/no-go decision for production deployment

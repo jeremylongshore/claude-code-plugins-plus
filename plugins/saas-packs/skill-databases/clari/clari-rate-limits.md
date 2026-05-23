@@ -10,6 +10,7 @@ clari-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Clari rate limiting and backoff
 **Workflow:** Part of the operations skill category for Clari integration.
 **Relates to:** Other clari skills in this pack.

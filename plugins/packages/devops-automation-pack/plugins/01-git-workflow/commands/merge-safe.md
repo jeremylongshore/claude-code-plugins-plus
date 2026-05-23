@@ -22,16 +22,17 @@ Analyzes potential merge conflicts before actually merging, showing you exactly 
 
 ## When to Use This
 
--  Before merging feature branch into main
--  Want to preview conflicts before committing to merge
--  Need to plan conflict resolution strategy
--  DON'T use if you're confident merge will be clean
+- Before merging feature branch into main
+- Want to preview conflicts before committing to merge
+- Need to plan conflict resolution strategy
+- DON'T use if you're confident merge will be clean
 
 ## How It Works
 
 You are a Git merge expert who helps avoid merge disasters. When user runs `/merge-safe` or `/gm`:
 
 1. **Identify current and target branches:**
+
    ```bash
    # Current branch
    git branch --show-current
@@ -40,6 +41,7 @@ You are a Git merge expert who helps avoid merge disasters. When user runs `/mer
    ```
 
 2. **Simulate the merge (don't actually merge):**
+
    ```bash
    # Test merge without committing
    git merge --no-commit --no-ff [target-branch]
@@ -51,6 +53,7 @@ You are a Git merge expert who helps avoid merge disasters. When user runs `/mer
 3. **Analyze results:**
 
    **If NO conflicts:**
+
    ```
     Merge will be clean!
 
@@ -58,6 +61,7 @@ You are a Git merge expert who helps avoid merge disasters. When user runs `/mer
    ```
 
    **If conflicts exist:**
+
    ```
    ️  Conflicts detected in [N] files:
 
@@ -67,6 +71,7 @@ You are a Git merge expert who helps avoid merge disasters. When user runs `/mer
    ```
 
 4. **Abort test merge:**
+
    ```bash
    git merge --abort
    ```
@@ -77,6 +82,7 @@ You are a Git merge expert who helps avoid merge disasters. When user runs `/mer
    - Offer to proceed with actual merge
 
 6. **Ask user's choice:**
+
    ```
    Options:
    1. Proceed with merge (I'll help resolve conflicts)
@@ -92,6 +98,7 @@ You are a Git merge expert who helps avoid merge disasters. When user runs `/mer
 ## Output Format
 
 **Scenario 1: Clean merge**
+
 ```
 Checking merge safety: feature/add-login → main
 
@@ -106,6 +113,7 @@ Proceed with merge? (yes/no)
 ```
 
 **Scenario 2: Conflicts detected**
+
 ```
 Checking merge safety: feature/redesign → main
 
@@ -144,6 +152,7 @@ You: `Which branch to merge into [current: feature/dashboard]?`
 User: `main`
 
 You:
+
 ```
 Checking merge safety: main → feature/dashboard
 
@@ -166,11 +175,13 @@ Proceed with merge? (yes/no)
 User: `yes`
 
 You:
+
 ```bash
 git merge main
 ```
 
 Result:
+
 ```
  Merged successfully!
 
@@ -188,6 +199,7 @@ You: `Which branch to merge?`
 User: `develop`
 
 You:
+
 ```
 Checking merge safety: develop → feature/api-redesign
 
@@ -224,6 +236,7 @@ Your choice?
 ## Error Handling
 
 **If on main/master branch:**
+
 ```
 ️  You're on main branch
 
@@ -239,6 +252,7 @@ Still want to merge? (yes/no)
 ```
 
 **If no target branch specified:**
+
 ```
 Which branch do you want to merge?
 
@@ -251,6 +265,7 @@ Enter branch name:
 ```
 
 **If target branch doesn't exist:**
+
 ```
  Branch "feature/nonexistent" not found
 

@@ -3,6 +3,7 @@
 ## Forced Tool Use
 
 ### Require Specific Tool
+
 ```python
 # Force use of specific function
 response = client.chat.completions.create(

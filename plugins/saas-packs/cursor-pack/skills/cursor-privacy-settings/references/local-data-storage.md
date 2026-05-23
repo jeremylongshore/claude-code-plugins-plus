@@ -3,6 +3,7 @@
 ## Local Data Storage
 
 ### Where Data is Stored
+
 ```bash
 # Local Cursor data locations
 
@@ -23,6 +24,7 @@ Windows:
 ```
 
 ### Clearing Local Data
+
 ```bash
 # Clear cache only
 rm -rf ~/Library/Caches/Cursor/

@@ -613,7 +613,6 @@ async function searchWorkflow(accessToken) {
 module.exports = searchWorkflow;
 ```
 
-
 ## Search Grammar Quick Reference
 
 | Operator | Example | Description |

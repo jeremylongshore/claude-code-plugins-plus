@@ -10,6 +10,7 @@ obsidian-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Obsidian security best practices
 **Workflow:** Part of the operations skill category for Obsidian integration.
 **Relates to:** Other obsidian skills in this pack.

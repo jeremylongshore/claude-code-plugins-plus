@@ -29,12 +29,14 @@ Simply mention these topics and the agent activates:
 ## Quick Usage Examples
 
 ### Generate Unit Tests
+
 ```
 /gut src/utils/validator.js
 Generate unit tests for the user authentication module
 ```
 
 ### Run Integration Tests
+
 ```
 /rit
 /rit --coverage
@@ -42,18 +44,21 @@ Run integration tests for the API
 ```
 
 ### API Testing
+
 ```
 Generate API tests for the user management endpoints
 Create tests for the GraphQL API with authentication
 ```
 
 ### Performance Testing
+
 ```
 Create a load test ramping up to 500 concurrent users
 Design a stress test to find the API breaking point
 ```
 
 ### Security Testing
+
 ```
 Run security scan on the authentication system
 Test for SQL injection vulnerabilities in the search endpoint
@@ -61,6 +66,7 @@ Check for OWASP Top 10 vulnerabilities
 ```
 
 ### E2E Testing
+
 ```
 /e2e
 Generate E2E tests for the checkout workflow
@@ -68,6 +74,7 @@ Create Playwright tests for user registration
 ```
 
 ### Coverage Analysis
+
 ```
 /cov
 /cov --threshold 80
@@ -75,12 +82,14 @@ Analyze test coverage and identify gaps
 ```
 
 ### Mutation Testing
+
 ```
 Run mutation testing on the validator module
 Check test quality with mutation testing
 ```
 
 ### Regression Testing
+
 ```
 /reg
 Mark this test as a regression test
@@ -88,6 +97,7 @@ Run the regression suite before deployment
 ```
 
 ### Test Data Generation
+
 ```
 Generate 100 test users with addresses
 Create e-commerce test data (products, orders, customers)
@@ -120,6 +130,7 @@ Generate realistic test data for the API
 ## Testing Workflow
 
 ### 1️⃣ Development
+
 ```bash
 /gut src/module.js           # Generate unit tests
 Generate test data           # Create fixtures
@@ -127,12 +138,14 @@ npm test                     # Run tests
 ```
 
 ### 2️⃣ Integration
+
 ```bash
 /rit                         # Integration tests
 Generate API tests           # API endpoint tests
 ```
 
 ### 3️⃣ Pre-Deployment
+
 ```bash
 /reg                         # Regression suite
 Security scan                # Vulnerability check
@@ -141,6 +154,7 @@ Performance test             # Load testing
 ```
 
 ### 4️⃣ Quality Assurance
+
 ```bash
 /cov --threshold 80          # Coverage check
 Mutation testing             # Test quality

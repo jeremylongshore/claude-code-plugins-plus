@@ -10,6 +10,7 @@ notion-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Notion example
 **Workflow:** Part of the onboarding skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

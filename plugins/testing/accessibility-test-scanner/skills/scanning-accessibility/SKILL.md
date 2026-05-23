@@ -86,6 +86,7 @@ Validate web applications against WCAG 2.1/2.2 accessibility standards covering 
 ## Examples
 
 **Playwright + axe-core accessibility test:**
+
 ```typescript
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
@@ -110,6 +111,7 @@ test('login form is keyboard accessible', async ({ page }) => {
 ```
 
 **Pa11y CI configuration:**
+
 ```json
 {
   "defaults": {

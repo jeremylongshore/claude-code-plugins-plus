@@ -130,7 +130,7 @@ In your Clay table:
 }
 ```
 
-5. Enable **Auto-run on new rows**
+1. Enable **Auto-run on new rows**
 
 ### Step 5: Dev Loop Iteration Cycle
 
@@ -148,6 +148,7 @@ npx tsx src/send-test-leads.ts
 ```
 
 **Iteration cycle:**
+
 1. Modify enrichment columns or Claygent prompts in Clay UI
 2. Re-send test data via webhook
 3. Observe enriched results in your local receiver

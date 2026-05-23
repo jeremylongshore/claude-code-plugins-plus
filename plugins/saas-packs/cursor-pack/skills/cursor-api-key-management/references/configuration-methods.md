@@ -3,6 +3,7 @@
 ## Configuration Methods
 
 ### Via Settings UI
+
 ```
 1. Open Settings (Cmd+,)
 2. Search for "Cursor API"
@@ -11,6 +12,7 @@
 ```
 
 ### Via settings.json
+
 ```json
 // ~/.config/Cursor/User/settings.json
 
@@ -28,6 +30,7 @@
 ```
 
 ### Via Environment Variables
+
 ```bash
 # Shell profile (~/.zshrc or ~/.bashrc)
 export OPENAI_API_KEY="sk-..."

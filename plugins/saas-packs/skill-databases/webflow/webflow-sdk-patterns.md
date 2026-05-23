@@ -10,6 +10,7 @@ webflow-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Webflow SDK patterns
 **Workflow:** Part of the onboarding skill category for Webflow integration.
 **Relates to:** Other webflow skills in this pack.

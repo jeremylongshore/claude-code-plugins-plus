@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Multi-Environment Setup
 
 ## Overview
+
 Configure Langfuse across dev/staging/production with isolated API keys, environment-specific SDK settings, secret management, and CI/CD integration to prevent cross-environment data leakage.
 
 ## Prerequisites
+
 - Separate Langfuse API key pairs per environment (or separate projects)
 - Secret management solution (env vars, Vault, AWS/GCP secrets)
 - CI/CD pipeline with environment-aware deployment
@@ -240,6 +242,7 @@ console.log(`Langfuse config validated for ${config.NODE_ENV}`);
 | Startup crash | Missing config | Add Zod validation with clear error messages |
 
 ## Resources
+
 - [TypeScript SDK Setup](https://langfuse.com/docs/observability/sdk/typescript/setup)
 - [Self-Hosting Configuration](https://langfuse.com/self-hosting/configuration)
 - [Advanced SDK Configuration](https://langfuse.com/docs/observability/sdk/typescript/advanced-usage)

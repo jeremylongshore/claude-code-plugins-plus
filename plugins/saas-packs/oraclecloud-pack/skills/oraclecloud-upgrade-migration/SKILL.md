@@ -221,6 +221,7 @@ git branch -D upgrade/oci-sdk-$(date +%Y%m%d)
 ## Output
 
 Successful completion produces:
+
 - Version audit showing current OCI SDK, CLI, and Terraform provider versions
 - Breaking change assessment against the known issues table
 - Upgraded Python SDK with all core clients validated (Identity, Compute, Network, Storage, Database, Monitoring)

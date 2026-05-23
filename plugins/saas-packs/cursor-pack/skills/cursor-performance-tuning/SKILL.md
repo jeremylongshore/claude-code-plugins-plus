@@ -118,6 +118,7 @@ Step 5: Memory management
 `Cmd+Shift+P` > `Developer: Show Running Extensions`
 
 This shows:
+
 - Extension name
 - Activation time (ms)
 - Profile CPU time
@@ -129,6 +130,7 @@ Sort by activation time. Extensions taking > 500ms are worth investigating.
 `Cmd+Shift+P` > `Developer: Open Process Explorer`
 
 Shows per-process CPU and memory usage:
+
 - Main window
 - Extension host (all extensions combined)
 - Individual extension processes
@@ -207,6 +209,7 @@ docs/.vitepress/dist/
 ### Tab Completion Speed
 
 Tab completion is fast by design (~100ms), but can feel slow if:
+
 - The file is very large (> 10K lines): split the file
 - Many extensions are running: audit extensions
 - Network is slow: Tab requires network for model inference

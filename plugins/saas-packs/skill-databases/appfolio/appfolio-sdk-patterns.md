@@ -10,6 +10,7 @@ appfolio-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready AppFolio SDK patterns
 **Workflow:** Part of the onboarding skill category for AppFolio integration.
 **Relates to:** Other appfolio skills in this pack.

@@ -3,6 +3,7 @@
 ## Advanced Techniques
 
 ### Chain-of-Thought Prompting
+
 ```
 "Let's approach this step by step:
 
@@ -16,6 +17,7 @@ Start by analyzing @[file]"
 ```
 
 ### Few-Shot Learning
+
 ```
 "Following this pattern:
 
@@ -32,6 +34,7 @@ Input: Order model"
 ```
 
 ### Role-Based Prompting
+
 ```
 "Acting as a senior security engineer:
 
@@ -46,6 +49,7 @@ Focus on:
 ```
 
 ### Constraint Prompting
+
 ```
 "Create a solution that:
 

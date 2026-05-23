@@ -10,6 +10,7 @@ evernote-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Evernote CI/CD integration
 **Workflow:** Part of the cicd skill category for Evernote integration.
 **Relates to:** Other evernote skills in this pack.

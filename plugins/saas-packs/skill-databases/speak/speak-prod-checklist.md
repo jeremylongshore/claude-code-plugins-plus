@@ -10,6 +10,7 @@ speak-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Speak production deployment checklist
 **Workflow:** Part of the operations skill category for Speak integration.
 **Relates to:** Other speak skills in this pack.

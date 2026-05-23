@@ -10,6 +10,7 @@ veeva-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Veeva reliability patterns
 **Workflow:** Part of the enterprise skill category for Veeva integration.
 **Relates to:** Other veeva skills in this pack.

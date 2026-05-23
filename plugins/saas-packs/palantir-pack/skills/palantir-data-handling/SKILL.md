@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Data Handling
 
 ## Overview
+
 Handle sensitive data in Foundry using markings (data classifications), column-level security, PII redaction in transforms, and GDPR/CCPA deletion workflows.
 
 ## Prerequisites
+
 - Foundry enrollment with Markings enabled
 - Understanding of your organization's data classification policy
 - Familiarity with transforms (`palantir-core-workflow-a`)
@@ -38,6 +40,7 @@ Handle sensitive data in Foundry using markings (data classifications), column-l
 ## Instructions
 
 ### Step 1: Data Classification with Markings
+
 Foundry Markings control who can access data at the dataset, column, or row level.
 
 | Marking | Access | Use Case |
@@ -48,6 +51,7 @@ Foundry Markings control who can access data at the dataset, column, or row leve
 | `RESTRICTED` | Named individuals | Compensation, legal, M&A |
 
 ### Step 2: PII Redaction in Transforms
+
 ```python
 from transforms.api import transform_df, Input, Output
 from pyspark.sql import functions as F
@@ -71,6 +75,7 @@ def redact_pii(customers):
 ```
 
 ### Step 3: GDPR Right to Erasure
+
 ```python
 def delete_user_data(client, user_id: str):
     """GDPR Article 17: delete all data for a specific user."""
@@ -99,6 +104,7 @@ def delete_user_data(client, user_id: str):
 ```
 
 ### Step 4: Column-Level Security in Ontology
+
 ```python
 # Define object type with restricted properties
 # In Ontology Manager:
@@ -112,6 +118,7 @@ def delete_user_data(client, user_id: str):
 ```
 
 ### Step 5: Data Retention Policy
+
 ```python
 @transform_df(
     Output("/Company/datasets/events_retained"),
@@ -127,12 +134,14 @@ def apply_retention(events):
 ```
 
 ## Output
+
 - PII-redacted datasets safe for analytics
 - GDPR deletion workflow with audit trail
 - Column-level security via Foundry Markings
 - Automated data retention enforcement
 
 ## Error Handling
+
 | Compliance Risk | Detection | Mitigation |
 |----------------|-----------|------------|
 | PII in analytics dataset | Column scan | Apply redaction transform |
@@ -141,8 +150,10 @@ def apply_retention(events):
 | Over-permissive markings | Access audit | Review marking assignments quarterly |
 
 ## Resources
+
 - [Foundry Markings](https://www.palantir.com/docs/foundry)
 - [Transforms Guide](https://www.palantir.com/docs/foundry/transforms-python/transforms)
 
 ## Next Steps
+
 For access control, see `palantir-enterprise-rbac`.

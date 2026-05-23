@@ -10,6 +10,7 @@ juicebox-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Juicebox costs and usage
 **Workflow:** Part of the cicd skill category for Juicebox integration.
 **Relates to:** Other juicebox skills in this pack.

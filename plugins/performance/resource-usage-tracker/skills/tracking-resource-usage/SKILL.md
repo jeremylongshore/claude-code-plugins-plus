@@ -33,6 +33,7 @@ This skill provides a comprehensive solution for monitoring and optimizing resou
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Identify performance bottlenecks in an application.
 - Optimize resource allocation to improve efficiency.
 - Reduce cloud infrastructure costs by right-sizing instances.
@@ -46,6 +47,7 @@ This skill activates when you need to:
 User request: "Track memory usage and identify potential memory leaks."
 
 The skill will:
+
 1. Activate the resource-usage-tracker plugin to monitor memory usage (heap, stack, RSS).
 2. Analyze the memory usage data over time to detect patterns indicative of memory leaks.
 3. Provide recommendations for identifying and resolving the memory leaks.
@@ -55,6 +57,7 @@ The skill will:
 User request: "Optimize database connection pool utilization."
 
 The skill will:
+
 1. Activate the resource-usage-tracker plugin to monitor database connection pool metrics.
 2. Analyze the connection pool utilization data to identify periods of high contention or underutilization.
 3. Provide recommendations for adjusting the connection pool size to optimize performance and resource consumption.
@@ -96,6 +99,7 @@ This skill can be integrated with other monitoring and alerting tools to provide
 ## Error Handling
 
 If resource tracking fails:
+
 - Verify system monitoring tool permissions
 - Check metrics collection daemon status
 - Validate data storage availability

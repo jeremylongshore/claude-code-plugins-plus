@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code
 # Notion Core Workflow A — Databases & Pages
 
 ## Overview
+
 Primary workflow for Notion integrations: querying databases with filters/sorts, creating pages with typed properties, updating page properties, and retrieving page content.
 
 ## Prerequisites
+
 - Completed `notion-install-auth` setup
 - A Notion database shared with your integration
 - Understanding of your database's property schema
@@ -34,6 +36,7 @@ Primary workflow for Notion integrations: querying databases with filters/sorts,
 ## Instructions
 
 ### Step 1: Retrieve Database Schema
+
 ```typescript
 import { Client } from '@notionhq/client';
 
@@ -54,6 +57,7 @@ async function getDatabaseSchema(databaseId: string) {
 ```
 
 ### Step 2: Query with Filters
+
 Notion filters use a unique nested structure based on property type:
 
 ```typescript
@@ -96,6 +100,7 @@ async function queryWithFilters(databaseId: string) {
 ```
 
 ### Step 3: Filter Syntax by Property Type
+
 ```typescript
 // Text (title, rich_text, url, email, phone_number)
 { property: 'Name', title: { contains: 'search term' } }
@@ -135,6 +140,7 @@ async function queryWithFilters(databaseId: string) {
 ```
 
 ### Step 4: Create a Page with All Property Types
+
 ```typescript
 async function createFullPage(databaseId: string) {
   return notion.pages.create({
@@ -184,6 +190,7 @@ async function createFullPage(databaseId: string) {
 ```
 
 ### Step 5: Update Page Properties
+
 ```typescript
 async function updatePage(pageId: string) {
   return notion.pages.update({
@@ -206,6 +213,7 @@ async function archivePage(pageId: string) {
 ```
 
 ### Step 6: Paginate Through All Results
+
 ```typescript
 async function getAllPages(databaseId: string) {
   const allPages = [];
@@ -226,12 +234,14 @@ async function getAllPages(databaseId: string) {
 ```
 
 ## Output
+
 - Database schema retrieved with property types and options
 - Filtered and sorted query results
 - Pages created with typed properties
 - Pages updated and archived
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `validation_error` | Property name mismatch or wrong type | Use `databases.retrieve` to check schema |
@@ -242,6 +252,7 @@ async function getAllPages(databaseId: string) {
 ## Examples
 
 ### Extract Property Values Helper
+
 ```typescript
 function getPropertyValue(property: any): string | number | boolean | null {
   switch (property.type) {
@@ -272,6 +283,7 @@ function getPropertyValue(property: any): string | number | boolean | null {
 ```
 
 ## Resources
+
 - [Query a Database](https://developers.notion.com/reference/post-database-query)
 - [Filter Database Entries](https://developers.notion.com/reference/post-database-query-filter)
 - [Create a Page](https://developers.notion.com/reference/post-page)
@@ -279,4 +291,5 @@ function getPropertyValue(property: any): string | number | boolean | null {
 - [Database Object](https://developers.notion.com/reference/database)
 
 ## Next Steps
+
 For block-level content operations, see `notion-core-workflow-b`.

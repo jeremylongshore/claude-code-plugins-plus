@@ -32,15 +32,14 @@ This skill turns raw repo activity (merged PRs, issues, commits, optional Slack 
 1. Read `.changelog-config.json` from the repo root.
 2. Validate it with `${CLAUDE_SKILL_DIR}/scripts/validate_config.py`.
 3. Decide date range:
-1. Load the configured markdown template (or fall back to `${CLAUDE_SKILL_DIR}/assets/weekly-template.md`).
-2. Render the final markdown using `${CLAUDE_SKILL_DIR}/scripts/render_template.py`.
-3. Ensure frontmatter contains at least `date` (ISO) and `version` (SemVer if known; otherwise `0.0.0`).
-1. Run deterministic checks using `${CLAUDE_SKILL_DIR}/scripts/quality_score.py`.
-2. If score is below threshold:
-1. Write the changelog file to the configured `output_path`.
-2. Create a branch `changelog-YYYY-MM-DD`, commit with `docs: add changelog for YYYY-MM-DD`.
-3. If `gh` is configured, open a PR; otherwise, print the exact commands the user should run.
-
+4. Load the configured markdown template (or fall back to `${CLAUDE_SKILL_DIR}/assets/weekly-template.md`).
+5. Render the final markdown using `${CLAUDE_SKILL_DIR}/scripts/render_template.py`.
+6. Ensure frontmatter contains at least `date` (ISO) and `version` (SemVer if known; otherwise `0.0.0`).
+7. Run deterministic checks using `${CLAUDE_SKILL_DIR}/scripts/quality_score.py`.
+8. If score is below threshold:
+9. Write the changelog file to the configured `output_path`.
+10. Create a branch `changelog-YYYY-MM-DD`, commit with `docs: add changelog for YYYY-MM-DD`.
+11. If `gh` is configured, open a PR; otherwise, print the exact commands the user should run.
 
 See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed implementation guide.
 

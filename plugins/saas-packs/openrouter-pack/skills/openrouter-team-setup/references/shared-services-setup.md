@@ -3,6 +3,7 @@
 ## Shared Services Setup
 
 ### Central LLM Service
+
 ```python
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials

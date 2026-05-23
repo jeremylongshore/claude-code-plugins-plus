@@ -10,6 +10,7 @@ firecrawl-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply advanced debugging for hard-to-diagnose issues including JavaScript rendering problems, anti-bot detection, and parsing failures.
 **Workflow:** Expert troubleshooting skill - resolves complex issues that evade standard debugging approaches.
 **Relates to:** Escalation from firecrawl-debug-bundle; may inform firecrawl-policy-guardrails

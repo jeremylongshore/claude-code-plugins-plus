@@ -12,6 +12,7 @@ featured: false
 I just built BrightStream - a production-ready positive news platform powered by 10 independent AI agents orchestrated through Google's Vertex AI Agent Engine. This isn't a tutorial with a clean solution. This is the real story: the confusion, the pivots, the "wait, how does this actually work?" moments that happened over the last few hours.
 
 **What We Built:**
+
 - 10 ADK-compliant agent configurations
 - Complete GCP infrastructure (Vertex AI, Firestore, Cloud Storage, Artifact Registry)
 - Docker-based local testing environment
@@ -23,6 +24,7 @@ I just built BrightStream - a production-ready positive news platform powered by
 The original plan was n8n workflows. Simple, visual, click-and-connect. But there's a fundamental problem with treating AI agents like HTTP endpoints in a workflow tool: **you lose the intelligence**.
 
 AI agents aren't just API calls. They:
+
 - Maintain context across conversations
 - Make decisions based on multiple inputs
 - Handle errors adaptively
@@ -75,41 +77,48 @@ So why did we create Dockerfiles?
 ## The 10-Agent Architecture
 
 **Agent 0: Root Orchestrator (Always-On)**
+
 - Coordinates the entire workflow
 - Calls sub-agents via A2A protocol
 - Handles rate limiting (15 RPM for Gemini free tier)
 - 4 CPU, 4Gi RAM, min 1 instance
 
 **Agent 1: News Aggregator**
+
 - Fetches RSS/Atom feeds with adaptive timeouts
 - 48-hour date filtering
 - URL-based deduplication
 - Feed health scoring (deprioritize slow/unreliable sources)
 
 **Agent 2: Story Scorer**
+
 - Multi-agent debate scoring (3 parallel scorers: optimistic, balanced, conservative)
 - Consensus algorithm with confidence weighting
 - Structured debate rounds with hard timeouts (max 60s)
 - Weighted criteria: Impact (35%), Relevance (25%), Quality (25%), Timeliness (15%)
 
 **Agent 3: Content Orchestrator**
+
 - Generates 600-word inspirational articles
 - Reflection-Revision pattern (self-critique before media generation)
 - Quality scoring: Factual accuracy (35%), Tone (25%), Structure (25%), Technical (15%)
 - Triggers Agents 4 & 5 in parallel
 
 **Agent 4: Lyria Audio (Parallel)**
+
 - Text-to-speech narration
 - Cleans markdown, expands abbreviations
 - Outputs MP3 at 128kbps
 - Runs simultaneously with Agent 5
 
 **Agent 5: Imagen Image (Parallel)**
+
 - Generates hero images (photorealistic, vibrant, uplifting)
 - 3 variants: Original (1920x1080), Web (1200x675), Thumbnail (400x225)
 - Runs simultaneously with Agent 4
 
 **Agent 7: QA Verification**
+
 - 4-layer anti-hallucination verification
 - Layer 1: Date filtering (48-hour enforcement)
 - Layer 2: Source URL verification
@@ -118,18 +127,21 @@ So why did we create Dockerfiles?
 - **Veto power:** If ANY layer fails, content does NOT publish
 
 **Agent 8: Publishing**
+
 - Multi-channel: Email (HTML newsletter), X/Twitter (280 chars), Web (SEO-optimized)
 - Exponential backoff retry: 1s → 2s → 4s → 8s with jitter
 - `require_confirmation: true` (human approval before publishing)
 - Partial success handling (queue failed channels)
 
 **Agent 9: Analytics**
+
 - Real-time event logging
 - Weekly reflection pattern (every Sunday)
 - **Dynamic parameter updates with validation** (critical: validates weight sums, ranges, safe bounds)
 - Confidence-based application: High (>80%) = auto-apply, Medium (50-80%) = human review
 
 **Agent 10: Evaluation (Optional)**
+
 - Synthetic test case generation
 - End-to-end workflow testing
 - Performance benchmarking
@@ -140,12 +152,14 @@ So why did we create Dockerfiles?
 ## The Cost Optimization Journey
 
 **Initial Estimate:** $1,548/month
+
 - LLM calls: $1,500/month (assumed paid tier)
 - Infrastructure: $48/month
 
 **User Feedback:** "I don't believe those costs if we use the free tier"
 
 **Corrected Analysis:**
+
 - Gemini 2.0 Flash free tier: 15 RPM, 1M TPM, 1,500 RPD
 - **4,080 articles/month FREE**
 - Lyria Audio: $0.02 × 100 articles/day × 30 days = $60/month
@@ -264,6 +278,7 @@ services:
 ```
 
 Local endpoints:
+
 - Agent 0: `http://localhost:8080`
 - Agent 1: `http://localhost:8081`
 - Agent 2: `http://localhost:8082`
@@ -288,6 +303,7 @@ deploy-agent-0:
 ```
 
 Vertex AI automatically:
+
 1. Reads the YAML config
 2. Bundles `tools/agent_0_tools.py`
 3. Creates a Docker container
@@ -408,6 +424,7 @@ brightstream/
 This wasn't a clean build. It was iterative, confusing, and full of "wait, how does this actually work?" moments. That's real development.
 
 The key insights:
+
 - **Vertex AI Agent Engine is container orchestration for AI** - you provide configs, it handles deployment
 - **Each agent is independent** - true microservices, not a monolith
 - **Cost optimization requires deep analysis** - free tiers can cover 95% of costs
@@ -417,4 +434,3 @@ The key insights:
 **GCP Project:** `brightstream-news`
 **Monthly Cost:** $168
 **Agents:** 10 (0-5, 7-10)
-

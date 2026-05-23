@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # TwinMind Deploy Integration
 
 ## Overview
+
 Deploy TwinMind integrations to production environments with Chrome extension deployment, mobile app configuration, and API access setup. TwinMind uses the Ear-3 speech model (5.26% WER, 3.8% DER) for transcription, with GPT-4, Claude, and Gemini for AI summarization.
 
 ## Prerequisites
+
 - TwinMind account (Free, Pro $10/mo, or Enterprise)
 - Chrome extension installed and authenticated
 - Understanding of TwinMind workflow
@@ -84,11 +86,13 @@ curl -H "Authorization: Bearer $TWINMIND_API_KEY" https://api.twinmind.com/v1/he
 | Pricing | Free / Pro $10/mo / Enterprise custom |
 
 ## Output
+
 - TwinMind Deploy Integration configured and verified
 - TwinMind integration operational
 - Meeting transcription workflow ready
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Microphone access denied | Browser permissions not granted | Enable in Chrome settings |
@@ -98,12 +102,14 @@ curl -H "Authorization: Bearer $TWINMIND_API_KEY" https://api.twinmind.com/v1/he
 | Calendar disconnect | OAuth token expired | Re-authorize in Settings |
 
 ## Resources
+
 - [TwinMind Website](https://twinmind.com)
 - [Chrome Extension](https://chromewebstore.google.com/detail/twinmind/agpbjhhcmoanaljagpoheldgjhclepdj)
 - [Ear-3 Model](https://www.marktechpost.com/2025/09/11/twinmind-introduces-ear-3-model/)
 - [iOS App](https://apps.apple.com/us/app/twinmind-ai-notes-memory/id6504585781)
 
 ## Next Steps
+
 See `twinmind-prod-checklist` for production readiness.
 
 ## Examples

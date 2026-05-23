@@ -32,31 +32,40 @@ Diagnostic guide for the most common Clari API issues: authentication failures, 
 ## Error Reference
 
 ### 1. 401 Unauthorized
+
 ```
 {"error": "Unauthorized", "message": "Invalid API key"}
 ```
+
 **Fix**: Regenerate token at Clari > User Settings > API Token. Tokens may expire or be revoked by admins.
 
 ### 2. 403 Forbidden -- API Access Not Enabled
+
 ```
 {"error": "Forbidden", "message": "API access not enabled for this user"}
 ```
+
 **Fix**: Contact your Clari admin to enable API access. Requires enterprise plan.
 
 ### 3. 404 Forecast Not Found
+
 ```
 {"error": "Not Found", "message": "Forecast 'wrong_name' not found"}
 ```
+
 **Fix**: List available forecasts first:
+
 ```bash
 curl -s -H "apikey: ${CLARI_API_KEY}" \
   https://api.clari.com/v4/export/forecast/list | jq '.forecasts[].forecastName'
 ```
 
 ### 4. Export Returns Empty Entries
+
 The API returns `{"entries": []}` with no error.
 
 **Causes:**
+
 - Time period has no submitted forecasts
 - User lacks visibility into the forecast hierarchy
 - Wrong forecast name (case-sensitive)
@@ -64,18 +73,22 @@ The API returns `{"entries": []}` with no error.
 **Fix**: Verify in Clari UI that the forecast has submissions for the requested period.
 
 ### 5. Job Stuck in PENDING
+
 Export job never reaches COMPLETED status.
 
 **Causes:**
+
 - Very large export (all reps, all periods)
 - Clari backend queue congestion
 
 **Fix**: Increase polling timeout. Break large exports into per-period batches.
 
 ### 6. Data Mismatch Between API and UI
+
 Forecast numbers from API do not match what is shown in Clari UI.
 
 **Causes:**
+
 - API exports submitted calls, UI may show latest-edited values
 - Currency conversion differences
 - Time period boundary differences (calendar vs fiscal)
@@ -83,15 +96,19 @@ Forecast numbers from API do not match what is shown in Clari UI.
 **Fix**: Use `includeHistorical: true` to get all submission versions. Match the exact time period label from the UI.
 
 ### 7. Copilot API OAuth Errors
+
 ```
 {"error": "invalid_client"}
 ```
+
 **Fix**: The Copilot API uses OAuth2, not API key auth. Register your app at https://api-doc.copilot.clari.com and use client credentials flow.
 
 ### 8. Rate Limit Exceeded
+
 ```
 HTTP 429 Too Many Requests
 ```
+
 **Fix**: Implement exponential backoff. See `clari-rate-limits` for patterns.
 
 ## Quick Diagnostic Commands

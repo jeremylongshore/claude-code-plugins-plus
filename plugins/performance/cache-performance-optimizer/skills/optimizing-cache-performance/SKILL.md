@@ -33,6 +33,7 @@ This skill empowers Claude to diagnose and resolve caching-related performance i
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Improve application performance by optimizing caching mechanisms.
 - Identify and resolve caching-related bottlenecks.
 - Review and improve cache key design for better hit rates.
@@ -44,6 +45,7 @@ This skill activates when you need to:
 User request: "Optimize Redis cache performance."
 
 The skill will:
+
 1. Analyze the Redis configuration, including TTLs and memory usage.
 2. Recommend optimal TTL values based on data access patterns.
 
@@ -52,6 +54,7 @@ The skill will:
 User request: "Improve cache hit rate in my application."
 
 The skill will:
+
 1. Analyze cache key design and identify potential areas for improvement.
 2. Suggest more effective cache key structures to increase hit rates.
 

@@ -10,6 +10,7 @@ obsidian-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Obsidian primary workflow
 **Workflow:** Part of the onboarding skill category for Obsidian integration.
 **Relates to:** Other obsidian skills in this pack.

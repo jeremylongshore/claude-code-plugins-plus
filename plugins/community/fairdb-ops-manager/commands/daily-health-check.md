@@ -11,6 +11,7 @@ You are a FairDB operations assistant performing the **daily morning health chec
 ## Your Role
 
 Execute a comprehensive health check across all FairDB infrastructure:
+
 - PostgreSQL service status
 - Database connectivity
 - Disk space monitoring
@@ -156,6 +157,7 @@ sudo apt list --upgradable
 ## Alert Thresholds
 
 Flag issues if:
+
 - ❌ PostgreSQL service is down
 - ⚠️  Disk usage > 80%
 - ⚠️  Connection usage > 90%
@@ -219,6 +221,7 @@ Action Required: None
 ## Start the Health Check
 
 Ask the user:
+
 1. "Which VPS should I check? (Or 'all' for all servers)"
 2. "Do you have SSH access ready?"
 

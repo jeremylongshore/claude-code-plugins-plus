@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Observability
 
 ## Overview
+
 Comprehensive observability setup for Evernote integrations: Prometheus metrics for API call tracking, structured JSON logging, OpenTelemetry tracing, health check endpoints, and alerting rules.
 
 ## Prerequisites
+
 - Monitoring infrastructure (Prometheus, Datadog, or CloudWatch)
 - Log aggregation (ELK, Loki, or CloudWatch Logs)
 - Alerting system (PagerDuty, Opsgenie, or Slack webhooks)
@@ -102,6 +104,7 @@ groups:
 For the complete metrics setup, Grafana dashboard JSON, tracing configuration, and alert rules, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
+
 - Prometheus metrics: API calls, latency histogram, rate limits, quota usage
 - Instrumented NoteStore client with automatic metric recording
 - Structured JSON logging with token redaction
@@ -109,6 +112,7 @@ For the complete metrics setup, Grafana dashboard JSON, tracing configuration, a
 - Prometheus alert rules for rate limits, errors, and latency
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Metrics endpoint not scraped | Prometheus target missing | Add service to Prometheus scrape config |
@@ -117,12 +121,14 @@ For the complete metrics setup, Grafana dashboard JSON, tracing configuration, a
 | Alert fatigue | Thresholds too low | Tune alert thresholds based on baseline metrics |
 
 ## Resources
+
 - [Prometheus](https://prometheus.io/docs/)
 - [OpenTelemetry Node.js](https://opentelemetry.io/docs/languages/js/)
 - [Grafana](https://grafana.com/docs/)
 - [prom-client npm](https://www.npmjs.com/package/prom-client)
 
 ## Next Steps
+
 For incident handling, see `evernote-incident-runbook`.
 
 ## Examples

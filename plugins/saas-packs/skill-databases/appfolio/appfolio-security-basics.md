@@ -10,6 +10,7 @@ appfolio-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply AppFolio security best practices
 **Workflow:** Part of the operations skill category for AppFolio integration.
 **Relates to:** Other appfolio skills in this pack.

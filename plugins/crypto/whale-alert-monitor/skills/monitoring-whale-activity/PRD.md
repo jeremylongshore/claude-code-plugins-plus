@@ -1,6 +1,7 @@
 # PRD: Whale Alert Monitor
 
 ## Summary
+
 **One-liner**: Track large cryptocurrency transactions and whale wallet movements in real-time
 **Domain**: Cryptocurrency / On-Chain Analytics / Market Intelligence
 **Users**: Traders, Analysts, Researchers, Fund Managers
@@ -8,6 +9,7 @@
 ## Problem Statement
 
 Large cryptocurrency holders ("whales") can significantly impact market prices when they move funds. Traders need visibility into these movements to:
+
 - Anticipate potential market volatility
 - Identify accumulation or distribution patterns
 - Track known whale wallets for trading signals

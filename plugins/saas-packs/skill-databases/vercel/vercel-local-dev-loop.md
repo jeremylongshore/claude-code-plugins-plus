@@ -10,6 +10,7 @@ vercel-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Vercel local development environment with hot reload, testing, and fast iteration cycles.
 **Workflow:** Establishes the development workflow - run once to set up, then use daily for development.
 **Relates to:** Follows vercel-hello-world; complements vercel-sdk-patterns for production-ready code

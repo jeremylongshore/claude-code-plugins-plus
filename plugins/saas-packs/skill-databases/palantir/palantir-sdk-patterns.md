@@ -10,6 +10,7 @@ palantir-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Palantir SDK patterns
 **Workflow:** Part of the onboarding skill category for Palantir integration.
 **Relates to:** Other palantir skills in this pack.

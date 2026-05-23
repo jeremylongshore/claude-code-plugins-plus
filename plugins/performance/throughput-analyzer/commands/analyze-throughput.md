@@ -25,6 +25,7 @@ Analyze system throughput and identify optimization opportunities.
 ## Output
 
 Provide report with:
+
 - Current throughput measurements
 - Bottleneck identification
 - Concurrency optimization strategies

@@ -13,6 +13,7 @@ python sentiment_analyzer.py
 ```
 
 Output:
+
 ```
 ==============================================================================
   MARKET SENTIMENT ANALYZER                         2026-01-14 15:30 UTC
@@ -59,6 +60,7 @@ python sentiment_analyzer.py --detailed
 ```
 
 Shows full component breakdown including:
+
 - News sentiment distribution (positive/negative/neutral)
 - Top positive and negative headlines
 - Volume ratio analysis
@@ -93,6 +95,7 @@ python sentiment_analyzer.py --format json
 ```
 
 Output:
+
 ```json
 {
   "composite_score": 58.5,
@@ -177,6 +180,7 @@ python sentiment_analyzer.py -v
 ```
 
 Shows:
+
 - Which APIs are being called
 - Cache hits/misses
 - Individual component fetch times
@@ -242,6 +246,7 @@ fi
 ### Component Weights
 
 Default weights:
+
 - Fear & Greed Index: 40%
 - News Sentiment: 40%
 - Market Momentum: 20%

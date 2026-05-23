@@ -459,7 +459,6 @@ async function main() {
 main().catch(console.error);
 ```
 
-
 ## Rate Limit Structure
 
 | Scope | Limit Window | Error |
@@ -469,11 +468,11 @@ main().catch(console.error);
 | Combined | Per key + per user | RATE_LIMIT_REACHED |
 
 **Key points:**
+
 - Limits are NOT publicly documented (intentionally)
 - Hitting the limit returns `rateLimitDuration` (seconds to wait)
 - Limits are generally generous for normal usage
 - Initial sync boost available (24 hours, must be requested)
-
 
 ## Best Practices Summary
 

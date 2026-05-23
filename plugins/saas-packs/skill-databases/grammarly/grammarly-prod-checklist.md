@@ -10,6 +10,7 @@ grammarly-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Grammarly production deployment checklist
 **Workflow:** Part of the operations skill category for Grammarly integration.
 **Relates to:** Other grammarly skills in this pack.

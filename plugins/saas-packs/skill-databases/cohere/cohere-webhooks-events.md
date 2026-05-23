@@ -10,6 +10,7 @@ cohere-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Cohere webhook handling
 **Workflow:** Part of the cicd skill category for Cohere integration.
 **Relates to:** Other cohere skills in this pack.

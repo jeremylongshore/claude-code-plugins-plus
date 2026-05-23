@@ -10,6 +10,7 @@ palantir-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Palantir CI/CD integration
 **Workflow:** Part of the cicd skill category for Palantir integration.
 **Relates to:** Other palantir skills in this pack.

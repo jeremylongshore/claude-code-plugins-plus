@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Obsidian Install & Auth
 
 ## Overview
+
 Set up a complete Obsidian plugin development environment: clone the official sample plugin, install TypeScript + esbuild, configure a dev vault with symlink, verify the build pipeline, and establish the `manifest.json` / `versions.json` contract.
 
 ## Prerequisites
+
 - Node.js 18+ (LTS recommended)
 - npm or pnpm package manager
 - Obsidian desktop app installed (download from https://obsidian.md)
@@ -38,6 +40,7 @@ Set up a complete Obsidian plugin development environment: clone the official sa
 ## Instructions
 
 ### Step 1: Clone the Official Sample Plugin
+
 ```bash
 set -euo pipefail
 # Clone the maintained template — includes esbuild, tsconfig, and a working main.ts
@@ -52,12 +55,14 @@ git commit -m "initial scaffold from obsidian-sample-plugin"
 ```
 
 The sample plugin includes these key files:
+
 - `esbuild.config.mjs` — bundler with watch mode and external handling
 - `tsconfig.json` — TypeScript config targeting ES2018 with strict null checks
 - `manifest.json` — plugin metadata Obsidian reads at load time
 - `src/main.ts` — Plugin subclass with commands, settings, modal
 
 ### Step 2: Install Dependencies
+
 ```bash
 set -euo pipefail
 npm install
@@ -71,6 +76,7 @@ npm install
 ```
 
 ### Step 3: Configure manifest.json
+
 Every Obsidian plugin requires a `manifest.json` at the project root:
 
 ```json
@@ -89,11 +95,13 @@ Every Obsidian plugin requires a `manifest.json` at the project root:
 Required fields: `id`, `name`, `version`, `minAppVersion`, `description`, `author`.
 
 Rules:
+
 - `id` must be lowercase kebab-case, match the folder name under `.obsidian/plugins/`
 - `minAppVersion` should be `1.5.0` or higher (supports modern APIs like `processFrontMatter`)
 - `isDesktopOnly: false` unless you use Electron-only APIs (child_process, fs, shell)
 
 ### Step 4: Create versions.json
+
 Maps each plugin version to the minimum Obsidian version it requires:
 
 ```json
@@ -105,6 +113,7 @@ Maps each plugin version to the minimum Obsidian version it requires:
 Obsidian uses this to warn users on older versions that they cannot install your plugin. Update it every time you bump `version` in `manifest.json`.
 
 ### Step 5: Create a Development Vault
+
 ```bash
 set -euo pipefail
 DEV_VAULT="$HOME/ObsidianDev"
@@ -136,6 +145,7 @@ echo "Dev vault created at $DEV_VAULT"
 Open this vault in Obsidian: File > Open vault > select `~/ObsidianDev`.
 
 ### Step 6: Symlink Plugin into Dev Vault
+
 ```bash
 set -euo pipefail
 DEV_VAULT="$HOME/ObsidianDev"
@@ -151,11 +161,13 @@ echo "Symlinked $PLUGIN_ID into dev vault"
 ```
 
 On Windows (admin terminal):
+
 ```powershell
 mklink /D "%USERPROFILE%\ObsidianDev\.obsidian\plugins\my-obsidian-plugin" "%cd%"
 ```
 
 ### Step 7: Build and Verify
+
 ```bash
 set -euo pipefail
 # Production build
@@ -169,12 +181,14 @@ npm run dev
 ```
 
 In Obsidian:
+
 1. Settings > Community plugins > Enable community plugins
 2. Find your plugin in the list, toggle it on
 3. Open Developer Console (Ctrl+Shift+I) — look for your plugin's load message
 4. Press Ctrl+R to reload after any code change
 
 ### Step 8: Verify the Obsidian API is Available
+
 ```typescript
 // src/main.ts — minimal verification
 import { Plugin, Notice } from 'obsidian';
@@ -198,6 +212,7 @@ export default class MyPlugin extends Plugin {
 ```
 
 ## Output
+
 - Cloned and configured plugin project with all dependencies
 - `manifest.json` and `versions.json` with correct metadata
 - Development vault at `~/ObsidianDev` with test notes
@@ -206,6 +221,7 @@ export default class MyPlugin extends Plugin {
 - Verified plugin loads and can access Vault API
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Cannot find module 'obsidian'` | Types not installed | `npm install` — obsidian is a devDependency |
@@ -218,6 +234,7 @@ export default class MyPlugin extends Plugin {
 ## Examples
 
 ### Project Structure After Setup
+
 ```
 my-obsidian-plugin/
 ├── src/
@@ -232,6 +249,7 @@ my-obsidian-plugin/
 ```
 
 ### Vault Plugin Directory Structure
+
 ```
 ~/ObsidianDev/
 ├── .obsidian/
@@ -244,6 +262,7 @@ my-obsidian-plugin/
 ```
 
 ### Quick Environment Check Script
+
 ```bash
 set -euo pipefail
 echo "Node: $(node --version)"
@@ -254,6 +273,7 @@ echo "Plugin symlink: $(ls -la ~/ObsidianDev/.obsidian/plugins/*/manifest.json 2
 ```
 
 ## Resources
+
 - [Obsidian Sample Plugin](https://github.com/obsidianmd/obsidian-sample-plugin) — official starter template
 - [Build a Plugin](https://docs.obsidian.md/Plugins/Getting+started/Build+a+plugin) — official getting started guide
 - [Obsidian API Reference](https://docs.obsidian.md/Reference/TypeScript+API) — full TypeScript API
@@ -261,4 +281,5 @@ echo "Plugin symlink: $(ls -la ~/ObsidianDev/.obsidian/plugins/*/manifest.json 2
 - [Hot Reload Plugin](https://github.com/pjeby/hot-reload) — auto-reload on rebuild
 
 ## Next Steps
+
 After successful setup, proceed to `obsidian-hello-world` for your first plugin feature, or `obsidian-local-dev-loop` for hot-reload development workflow.

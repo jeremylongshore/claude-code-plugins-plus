@@ -10,6 +10,7 @@ together-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Together AI primary workflow
 **Workflow:** Part of the onboarding skill category for Together AI integration.
 **Relates to:** Other together skills in this pack.

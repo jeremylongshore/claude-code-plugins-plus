@@ -86,6 +86,7 @@ Validate API contracts between services using consumer-driven contract testing t
 ## Examples
 
 **Pact consumer test (JavaScript):**
+
 ```typescript
 import { PactV4 } from '@pact-foundation/pact';
 
@@ -119,6 +120,7 @@ describe('User API Contract', () => {
 ```
 
 **Provider verification test:**
+
 ```typescript
 import { Verifier } from '@pact-foundation/pact';
 
@@ -142,6 +144,7 @@ describe('User API Provider Verification', () => {
 ```
 
 **can-i-deploy CI check:**
+
 ```bash
 pact-broker can-i-deploy \
   --pacticipant Frontend \

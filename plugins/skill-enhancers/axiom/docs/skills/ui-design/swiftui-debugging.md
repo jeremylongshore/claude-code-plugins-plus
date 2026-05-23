@@ -39,6 +39,7 @@ These are real questions developers ask that this skill answers:
 ## Root Causes
 
 ### Struct Mutation
+
 You're modifying a @State value directly instead of reassigning it. SwiftUI can't see the change.
 
 ```swift
@@ -53,6 +54,7 @@ self.items = items  // Reassignment triggers update
 ```
 
 ### Lost Binding Identity
+
 You're passing `.constant()` or creating a new binding each render, breaking the two-way connection.
 
 ```swift
@@ -64,6 +66,7 @@ TextField("Search", text: $searchText)
 ```
 
 ### Accidental View Recreation
+
 The view moved into a conditional or changed identity, losing its @State and resetting to defaults.
 
 ```swift
@@ -77,6 +80,7 @@ Counter().opacity(showCounter ? 1 : 0)  // Preserve identity
 ```
 
 ### Missing Observer
+
 You're not using @StateObject or @ObservedObject, so SwiftUI doesn't watch for changes.
 
 ```swift
@@ -90,6 +94,7 @@ let model = MyModel()
 ## Preview Crashes
 
 ### Missing Dependencies
+
 ```swift
 // ❌ WRONG
 #Preview {
@@ -106,10 +111,13 @@ let model = MyModel()
 ```
 
 ### State Initialization Failure
+
 Check array bounds, optional unwraps, and default values.
 
 ### Cache Corruption
+
 If preview worked yesterday and code hasn't changed:
+
 1. Restart Preview Canvas: `Cmd+Option+P`
 2. Restart Xcode
 3. Nuke derived data: `rm -rf ~/Library/Developer/Xcode/DerivedData`

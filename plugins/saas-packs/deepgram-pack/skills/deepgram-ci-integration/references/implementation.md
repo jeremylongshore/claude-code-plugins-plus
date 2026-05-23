@@ -1,6 +1,7 @@
 # Deepgram CI Integration - Implementation Details
 
 ## GitHub Actions Workflow
+
 ```yaml
 # .github/workflows/deepgram-ci.yml
 name: Deepgram CI
@@ -86,6 +87,7 @@ jobs:
 ```
 
 ## GitLab CI Configuration
+
 ```yaml
 # .gitlab-ci.yml
 stages:
@@ -138,6 +140,7 @@ deploy-staging:
 ```
 
 ## Integration Test Suite
+
 ```typescript
 // tests/integration/deepgram.test.ts
 import { describe, it, expect, beforeAll } from 'vitest';
@@ -178,6 +181,7 @@ describe('Deepgram Integration Tests', () => {
 ```
 
 ## Smoke Test Script
+
 ```typescript
 // scripts/smoke-test.ts
 import { createClient } from '@deepgram/sdk';
@@ -210,6 +214,7 @@ smokeTest()
 ```
 
 ## Secret Rotation in CI
+
 ```yaml
 # .github/workflows/rotate-keys.yml
 name: Rotate Deepgram Keys

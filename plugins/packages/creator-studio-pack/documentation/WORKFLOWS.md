@@ -35,6 +35,7 @@ This guide contains battle-tested production workflows for different content cre
 **Output**: Automatic build documentation
 
 **Actions:**
+
 ```bash
 # Start of project
 Talk to build-logger-agent: "Start tracking my [project-name] development"
@@ -53,6 +54,7 @@ git push
 ```
 
 **Build Logger Output Example:**
+
 ```markdown
 BUILD LOG - Day 3 - User Auth System
 
@@ -86,6 +88,7 @@ Next steps:
 **Output**: Video script outline
 
 **Actions:**
+
 ```bash
 # Review build log
 Talk to build-logger-agent: "What video ideas do I have from today?"
@@ -95,6 +98,7 @@ Talk to code-explainer-video: "Create a video outline for my JWT authentication 
 ```
 
 **Script Outline Output:**
+
 ```markdown
 VIDEO OUTLINE: "Building Secure Authentication in 2 Hours"
 
@@ -130,6 +134,7 @@ CALL TO ACTION:
 **Output**: Raw video footage
 
 **Actions:**
+
 ```bash
 # Start recording
 /record start jwt-auth-tutorial --webcam
@@ -160,6 +165,7 @@ CALL TO ACTION:
 ```
 
 **Recording Output:**
+
 ```
 ✅ Recording saved: ~/Videos/jwt-auth-tutorial/raw/2025-10-11-jwt-auth.mp4
 Duration: 10:47
@@ -177,6 +183,7 @@ Ready for editing
 **Output**: Polished video ready for upload
 
 **Actions:**
+
 ```bash
 # Automated editing
 Talk to video-editor-ai: "Edit jwt-auth-tutorial:
@@ -196,6 +203,7 @@ Talk to video-editor-ai: "Edit jwt-auth-tutorial:
 ```
 
 **Editing Output:**
+
 ```
 ✅ Video processed in 8 minutes 34 seconds
 
@@ -224,6 +232,7 @@ Size: 487 MB
 **Output**: Video published across 6+ platforms
 
 **Actions:**
+
 ```bash
 # Distribute everywhere
 Talk to distribution-automator: "Publish jwt-auth-tutorial:
@@ -237,6 +246,7 @@ Talk to distribution-automator: "Publish jwt-auth-tutorial:
 ```
 
 **Distribution Output:**
+
 ```
 ✅ YOUTUBE
 Uploaded: 9m 24s video
@@ -285,6 +295,7 @@ Total reach (estimated): 10K-50K in first week
 ### Total Time Investment
 
 **Active time**: 65 minutes
+
 - Document: 5 minutes
 - Record: 30 minutes
 - Edit: 20 minutes
@@ -303,12 +314,14 @@ Total reach (estimated): 10K-50K in first week
 ### Why Batch Recording?
 
 **Efficiency gains:**
+
 - Setup once, record multiple times
 - Context switching minimized
 - Consistent energy/appearance
 - Bulk editing in parallel
 
 **Best for:**
+
 - Weekly content sprints
 - Tutorial series
 - Multiple small topics
@@ -329,6 +342,7 @@ Talk to batch-recording-scheduler: "I have 3.5 hours Saturday morning. Plan maxi
 ```
 
 **Scheduler Output:**
+
 ```markdown
 BATCH RECORDING SESSION - Saturday 9am-12:30pm
 
@@ -484,6 +498,7 @@ Export all as 1080p 60fps for YouTube"
 ```
 
 **Editing Output:**
+
 ```
 ✅ Batch processing started (all 7 videos in parallel)
 Estimated completion: 12-15 minutes
@@ -531,6 +546,7 @@ For each video:
 ```
 
 **Distribution Output:**
+
 ```
 ✅ WEEKLY CONTENT CALENDAR CREATED
 
@@ -555,12 +571,14 @@ Estimated week 1 reach: 50K-200K views
 ### Total Batch ROI
 
 **Time invested**: 5 hours total
+
 - Planning: 30 minutes
 - Recording: 3.5 hours
 - Editing: 1.5 hours (mostly automated)
 - Publishing: 30 minutes (mostly automated)
 
 **Content output**:
+
 - 7 YouTube videos
 - 35 Twitter threads (5 tweets each)
 - 7 LinkedIn articles
@@ -591,6 +609,7 @@ Talk to collaboration-manager: "Plan a collaboration with [guest name]:
 ```
 
 **Manager Output:**
+
 ```markdown
 COLLABORATION PLAN - [Guest Name] x You
 
@@ -674,6 +693,7 @@ POST-SESSION:
 ```
 
 **Recording output:**
+
 ```
 ✅ Collaboration recorded: 63 minutes
 
@@ -717,6 +737,7 @@ VIDEO 3: Key Learnings (3 minutes)
 ```
 
 **Editing output:**
+
 ```
 ✅ 3 videos created from 63-minute recording
 
@@ -766,6 +787,7 @@ Learnings video (Video 3):
 ```
 
 **Distribution output:**
+
 ```
 ✅ CROSS-PROMOTION SCHEDULED
 
@@ -1053,6 +1075,7 @@ Estimated reach: 10x original video views
 ### Publishing Schedule (30 days)
 
 **Week 1: Launch**
+
 - Day 1: YouTube video, Twitter thread, blog post
 - Day 2: LinkedIn article
 - Day 3: Dev.to article
@@ -1061,6 +1084,7 @@ Estimated reach: 10x original video views
 - Day 6-7: Rest (analyze performance)
 
 **Week 2: Short-form**
+
 - Day 8: YouTube Shorts
 - Day 9: TikTok
 - Day 10: Instagram Reels
@@ -1069,6 +1093,7 @@ Estimated reach: 10x original video views
 - Day 13-14: Rest
 
 **Week 3: Educational**
+
 - Day 15: GitHub README + code
 - Day 16: Cheat sheet PDF
 - Day 17: Infographic
@@ -1077,6 +1102,7 @@ Estimated reach: 10x original video views
 - Day 20-21: Rest
 
 **Week 4: Audio + Community**
+
 - Day 22: Podcast episode
 - Day 23: Reddit post (with context)
 - Day 24: Hacker News post
@@ -1096,11 +1122,13 @@ Estimated reach: 10x original video views
 **SEO benefit**: 9 different platforms linking back
 
 **Traditional approach**:
+
 - Create 34 pieces manually: 50+ hours
 - Inconsistent quality: High variation
 - Delayed publishing: Takes months
 
 **With Creator Studio Pack**:
+
 - 15 minutes automated repurposing
 - Consistent quality across all formats
 - Ready to publish immediately
@@ -1123,6 +1151,7 @@ Talk to collaboration-manager: "Set up live coding stream:
 ```
 
 **Setup checklist:**
+
 ```markdown
 STREAMING SETUP
 
@@ -1231,6 +1260,7 @@ Add:
 ```
 
 **Editing output:**
+
 ```
 ✅ 2-hour stream edited to 15-minute tutorial
 
@@ -1305,6 +1335,7 @@ Talk to content-calendar-ai: "Plan a tutorial series:
 ```
 
 **Series outline:**
+
 ```markdown
 TUTORIAL SERIES: "Building a SaaS from Scratch"
 
@@ -1405,6 +1436,7 @@ Talk to template-library: "Create series template:
 ```
 
 **Template output:**
+
 ```markdown
 SERIES TEMPLATE: "Building a SaaS from Scratch"
 
@@ -1449,6 +1481,7 @@ Description:
 ### Total Series Investment
 
 **Time breakdown:**
+
 - Planning: 1 hour (once)
 - Recording: 15 hours (5 sessions x 3 hours)
 - Editing: 5 hours (automated batch editing)
@@ -1466,6 +1499,7 @@ Description:
 **Document debugging and optimization in real-time**
 
 ### Perfect for:
+
 - Performance optimization
 - Bug hunting
 - Refactoring
@@ -1491,6 +1525,7 @@ Talk to build-logger-agent: "Track my performance optimization work on the API"
 ### Problem-Solving Structure
 
 **Part 1: Problem identification (5 minutes)**
+
 ```bash
 # Show the problem
 - Run slow API calls
@@ -1501,6 +1536,7 @@ Talk to build-logger-agent: "Track my performance optimization work on the API"
 ```
 
 **Part 2: Investigation (15 minutes)**
+
 ```bash
 # Debug the issue
 - Add logging
@@ -1511,6 +1547,7 @@ Talk to build-logger-agent: "Track my performance optimization work on the API"
 ```
 
 **Part 3: Solution implementation (20 minutes)**
+
 ```bash
 # Fix the issue
 - Write better query
@@ -1521,6 +1558,7 @@ Talk to build-logger-agent: "Track my performance optimization work on the API"
 ```
 
 **Part 4: Verification (10 minutes)**
+
 ```bash
 # Test the fix
 - Run same API calls
@@ -1531,6 +1569,7 @@ Talk to build-logger-agent: "Track my performance optimization work on the API"
 ```
 
 **Part 5: Explanation (10 minutes)**
+
 ```bash
 # Teach the concept
 - Why it was slow
@@ -1570,6 +1609,7 @@ Add:
 ```
 
 **Editing output:**
+
 ```
 ✅ Problem-solving story edited
 
@@ -1776,6 +1816,7 @@ Week 8: Case study: How users are using it
 ### Launch Workflow ROI
 
 **Content created from launch:**
+
 - 5 YouTube videos (45 minutes total)
 - 30+ social media posts
 - 5 blog posts
@@ -1784,11 +1825,13 @@ Week 8: Case study: How users are using it
 - Press coverage (from good launch)
 
 **Traditional approach**:
+
 - Spend 3 weeks building in silence
 - Scramble to create launch content
 - Launch with minimal audience
 
 **With Creator Studio Pack**:
+
 - Document as you build (no extra time)
 - Launch with 5+ videos ready
 - Audience built before launch
@@ -1818,6 +1861,7 @@ Week 8: Case study: How users are using it
 ## Next Steps
 
 Once you've mastered these workflows:
+
 - [50+ Examples](EXAMPLES.md) - Real-world use cases
 - [Script Templates](../templates/video-scripts/) - Ready-to-use formats
 - [Distribution Checklists](../templates/distribution-checklists/) - Platform guides

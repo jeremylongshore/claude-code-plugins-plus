@@ -47,7 +47,8 @@ Pain-catalog anchors handled here:
 This skill walks through an async `AsyncCallbackHandler` with fire-and-forget
 dispatch, per-target sinks for HTTP / Kafka / Redis Streams / SNS, HMAC-signed
 delivery with 1s/5s/30s retry and DLQ, idempotency keys = `run_id + event_type
-+ step_index`, and `config["callbacks"]` wiring that makes subagent calls visible.
+
+- step_index`, and`config["callbacks"]` wiring that makes subagent calls visible.
 Typical webhook latency budget: <500ms per event. Pin: `langchain-core 1.0.x`,
 `langgraph 1.0.x`. Scope: server-to-server dispatch only — UI streaming is in
 `langchain-langgraph-streaming`.

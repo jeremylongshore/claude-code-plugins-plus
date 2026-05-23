@@ -3,6 +3,7 @@
 ## Comprehensive Audit Logger
 
 ### Base Logger Implementation
+
 ```python
 import json
 import hashlib
@@ -84,6 +85,7 @@ audit_logger = AuditLogger()
 ```
 
 ### Instrumented Client
+
 ```python
 import time
 

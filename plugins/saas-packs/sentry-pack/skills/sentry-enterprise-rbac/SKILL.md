@@ -42,6 +42,7 @@ Configure Sentry's Organization-Team-Project hierarchy, role assignments, SSO/SA
 - **Organization Owner or Manager role** — only these roles can configure auth, teams, and member roles
 - **Identity Provider access** — admin credentials for Okta, Azure AD, or Google Workspace if configuring SSO/SCIM
 - **Environment variables set:**
+
   ```bash
   export SENTRY_AUTH_TOKEN="sntrys_..."   # Auth token with org:admin, member:admin, team:admin scopes
   export SENTRY_ORG="your-org-slug"       # Organization slug from sentry.io/settings/
@@ -139,11 +140,13 @@ SSO centralizes authentication; SCIM automates the user lifecycle. Configure SSO
 2. Set the Single Sign-On URL to: `https://sentry.io/saml/acs/{org_slug}/`
 3. Set the Audience URI (SP Entity ID) to: `https://sentry.io/saml/metadata/{org_slug}/`
 4. Configure attribute statements:
+
    | Name | Value |
    |------|-------|
    | `email` | `user.email` |
    | `firstName` | `user.firstName` |
    | `lastName` | `user.lastName` |
+
 5. Download the IdP metadata XML or copy the metadata URL
 
 **SSO/SAML2 setup — Azure AD:**
@@ -220,6 +223,7 @@ curl -s -X POST \
 ```
 
 SCIM capabilities once connected:
+
 - **Auto-create** users when assigned in the IdP
 - **Auto-deactivate** users when removed from the IdP group
 - **Sync team membership** from IdP groups to Sentry teams
@@ -268,6 +272,7 @@ curl -s -X DELETE \
 ```
 
 **Token hygiene best practices:**
+
 - **CI/CD tokens:** `project:releases` + `org:read` only — the minimum for deploys
 - **Monitoring tokens:** `event:read` + `project:read` — read-only for dashboards
 - **Admin tokens:** Use sparingly, rotate quarterly, limit to one or two Owners
@@ -288,6 +293,7 @@ curl -s -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
 ```
 
 Tracked audit events include:
+
 - `member.invite` / `member.accept` / `member.remove` / `member.edit` — membership changes
 - `team.create` / `team.edit` / `team.remove` — team lifecycle
 - `project.create` / `project.remove` / `project.edit` — project changes

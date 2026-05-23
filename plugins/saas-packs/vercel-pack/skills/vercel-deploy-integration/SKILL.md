@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Deploy Integration
 
 ## Overview
+
 Deploy Vercel applications to production using CLI, API, and Git-triggered workflows. Covers deployment promotion, instant rollback, rolling releases, multi-region function configuration, and deploy hooks for headless CMS integration.
 
 ## Prerequisites
+
 - Vercel project linked and configured
 - Production environment variables set
 - Custom domain configured (optional)
@@ -38,6 +40,7 @@ Deploy Vercel applications to production using CLI, API, and Git-triggered workf
 ## Instructions
 
 ### Step 1: Production Deploy Methods
+
 ```bash
 # Method 1: CLI direct production deploy
 vercel --prod
@@ -65,6 +68,7 @@ curl -X POST "https://api.vercel.com/v1/integrations/deploy/prj_xxx/hook_xxx"
 ```
 
 ### Step 2: Instant Rollback
+
 ```bash
 # Roll back to the previous production deployment (no rebuild)
 vercel rollback
@@ -84,11 +88,13 @@ curl -X POST "https://api.vercel.com/v9/projects/my-app/promote" \
 ```
 
 Key points:
+
 - Instant rollback swaps production traffic without rebuilding
 - The rolled-back deployment retains its original environment variables
 - All production domains immediately point to the rolled-back deployment
 
 ### Step 3: Rolling Releases (Gradual Rollout)
+
 Configure rolling releases in the dashboard under **Settings > Rolling Releases**:
 
 ```json
@@ -108,6 +114,7 @@ Configure rolling releases in the dashboard under **Settings > Rolling Releases*
 This routes 10% of traffic to the new deployment for 5 minutes, then 50% for 10 minutes, then 100%. If errors spike during any stage, rollback instantly.
 
 ### Step 4: Multi-Region Function Configuration
+
 ```json
 // vercel.json — deploy functions to specific regions
 {
@@ -127,6 +134,7 @@ This routes 10% of traffic to the new deployment for 5 minutes, then 50% for 10 
 ```
 
 Available regions:
+
 | Region | Location | Code |
 |--------|----------|------|
 | Washington, D.C. | US East | `iad1` |
@@ -138,6 +146,7 @@ Available regions:
 | London | Europe | `lhr1` |
 
 ### Step 5: Deploy Hooks (CMS Triggers)
+
 Create deploy hooks in **Settings > Git > Deploy Hooks**:
 
 ```bash
@@ -151,6 +160,7 @@ curl -X POST "https://api.vercel.com/v1/integrations/deploy/prj_xxx/hook_xxx"
 ```
 
 ### Step 6: Deployment Monitoring
+
 ```bash
 # List recent production deployments
 vercel ls --prod --limit=5
@@ -175,6 +185,7 @@ git push main
 ```
 
 ## Output
+
 - Production deployment live via CLI, API, or Git push
 - Instant rollback configured to previous deployment
 - Rolling releases for gradual traffic shifting
@@ -182,6 +193,7 @@ git push main
 - Deploy hooks for CMS-triggered rebuilds
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `DEPLOYMENT_BLOCKED` | Deployment freeze or branch protection | Disable freeze in Settings or use --force |
@@ -191,6 +203,7 @@ git push main
 | Region not available | Plan doesn't support multi-region | Upgrade to Pro or Enterprise |
 
 ## Resources
+
 - [Deploying to Vercel](https://vercel.com/docs/deployments)
 - [Instant Rollback](https://vercel.com/docs/instant-rollback)
 - [Rolling Releases](https://vercel.com/docs/rolling-releases)
@@ -199,4 +212,5 @@ git push main
 - [Function Regions](https://vercel.com/docs/functions/configuring-functions)
 
 ## Next Steps
+
 For webhook integration, see `vercel-webhooks-events`.

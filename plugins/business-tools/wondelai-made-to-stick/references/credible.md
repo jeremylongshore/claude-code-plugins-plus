@@ -19,6 +19,7 @@ An authority is someone with recognized expertise or status. When an authority e
 | **Award or certification** | "Winner of the 2024 Red Dot Design Award" | Quality and design claims |
 
 **Limitations of authority credibility:**
+
 - Audiences are increasingly skeptical of celebrity endorsements
 - The authority must be relevant to your claim (a dentist endorsing a car feels wrong)
 - Authority alone is not enough — it must be paired with substance
@@ -28,6 +29,7 @@ An authority is someone with recognized expertise or status. When an authority e
 An anti-authority is the opposite of a traditional expert. It is a real person whose personal experience makes them credible. Anti-authorities are often more persuasive than authorities because they are relatable.
 
 **Why anti-authorities work:**
+
 - They have lived experience, not theoretical knowledge
 - The audience identifies with them ("This person is like me")
 - Their credibility cannot be bought or faked
@@ -72,6 +74,7 @@ Specific, vivid details make claims feel true. When someone says "On a Tuesday a
 Statistics can be powerful — but only if presented correctly. Most statistics fail because they are too abstract, too large, or too disconnected from human experience.
 
 **The problem with raw statistics:**
+
 - "37 grams of saturated fat" means nothing to most people
 - "$3.5 trillion healthcare market" is too large to comprehend
 - "47% improvement" is abstract without a baseline
@@ -112,6 +115,7 @@ If you catered a White House dinner, you can cater anything. If you handled secu
 | **Trust** | "We manage $2 trillion in retirement assets" | Fiduciary trust for anyone |
 
 **Finding your Sinatra Test:**
+
 1. Who is the most demanding, prestigious, or extreme customer you serve?
 2. What is the hardest thing your product has ever handled?
 3. What is the one example that would make a skeptic say "OK, I believe you"?
@@ -129,6 +133,7 @@ A testable credential invites the audience to verify the claim themselves. It sa
 | "Google our name + 'review' and read what comes up" | Transparent confidence |
 
 **Why testable credentials are so powerful:**
+
 - They demonstrate confidence in the product
 - They transfer the burden of proof to the audience
 - They feel fair and honest — you are not hiding anything

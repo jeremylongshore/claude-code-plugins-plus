@@ -1,9 +1,11 @@
 # OpenEvidence Observability - Implementation Details
 
 ## Prometheus Metrics
+
 Full metric definitions: requestCounter, requestDuration, errorCounter, cacheHits, cacheMisses, rateLimitRemaining, deepConsultActive, deepConsultDuration, confidenceScore.
 
 ## Instrumented Client Wrapper
+
 ```typescript
 export class InstrumentedOpenEvidenceClient {
   async query(request: ClinicalQueryRequest): Promise<ClinicalQueryResponse> {
@@ -17,6 +19,7 @@ export class InstrumentedOpenEvidenceClient {
 ```
 
 ## Distributed Tracing (OpenTelemetry)
+
 ```typescript
 export function initTracing(): void {
   const sdk = new NodeSDK({
@@ -32,6 +35,7 @@ export function initTracing(): void {
 ```
 
 ## Structured Logging
+
 ```typescript
 export const logger = pino({
   name: 'clinical-evidence-api',
@@ -40,6 +44,7 @@ export const logger = pino({
 ```
 
 ## Alert Rules (Prometheus)
+
 - OpenEvidenceHighErrorRate: > 5% error rate for 5m
 - OpenEvidenceCriticalErrorRate: > 20% error rate for 2m
 - OpenEvidenceHighLatency: P95 > 15s for 5m
@@ -48,6 +53,7 @@ export const logger = pino({
 - OpenEvidenceDown: no health checks for 1m
 
 ## Grafana Dashboard
+
 Panels: Request Rate, Error Rate gauge, Latency heatmap, Cache Hit Rate timeseries, Rate Limit Usage gauge, Confidence Score histogram.
 
 ---

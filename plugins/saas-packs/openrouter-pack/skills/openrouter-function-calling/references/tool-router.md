@@ -3,6 +3,7 @@
 ## Tool Router
 
 ### Dispatch Tool Calls
+
 ```python
 class ToolRouter:
     """Route and execute tool calls."""

@@ -176,6 +176,7 @@ def test_list_instances(mock_config, mock_client_cls):
 ## Output
 
 Successful completion produces:
+
 - A GitHub Actions workflow that authenticates to OCI using API key secrets
 - Terraform provider configuration with the explicit region workaround
 - OCI CLI setup steps for non-Terraform CI tasks

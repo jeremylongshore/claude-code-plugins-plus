@@ -216,11 +216,13 @@ describe('GraphQL API', () => {
 The agent generates tests for:
 
 ### Success Scenarios
+
 - Valid requests with proper authentication
 - Correct data formats and required fields
 - Expected response structures
 
 ### Error Scenarios
+
 - Missing or invalid authentication
 - Validation errors (bad data formats)
 - Missing required fields
@@ -229,6 +231,7 @@ The agent generates tests for:
 - Conflict errors (409, duplicates)
 
 ### Edge Cases
+
 - Empty request bodies
 - Null/undefined values
 - Boundary values (min/max lengths)
@@ -236,6 +239,7 @@ The agent generates tests for:
 - Large payloads
 
 ### Performance
+
 - Response time thresholds
 - Payload size validation
 - Concurrent request handling

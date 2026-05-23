@@ -10,6 +10,7 @@ apify-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Apify rate limiting and backoff
 **Workflow:** Part of the operations skill category for Apify integration.
 **Relates to:** Other apify skills in this pack.

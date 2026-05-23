@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Local Dev Loop
 
 ## Overview
+
 Fast local development workflow with Langfuse tracing, immediate trace visibility, debug logging, and optional self-hosted local instance via Docker.
 
 ## Prerequisites
+
 - Completed `langfuse-install-auth` setup
 - Node.js 18+ with `tsx` for hot reload (`npm install -D tsx`)
 - Docker (optional, for self-hosted local instance)
@@ -240,9 +242,11 @@ echo 'LANGFUSE_BASE_URL=http://localhost:3000' >> .env.local
 | Traces going to cloud | Wrong `LANGFUSE_BASE_URL` | Point to `http://localhost:3000` |
 
 ## Resources
+
 - [TypeScript SDK Setup](https://langfuse.com/docs/observability/sdk/typescript/setup)
 - [Self-Hosting Docker Compose](https://langfuse.com/self-hosting/deployment/docker-compose)
 - [Advanced SDK Configuration](https://langfuse.com/docs/observability/sdk/typescript/advanced-usage)
 
 ## Next Steps
+
 For SDK patterns and best practices, see `langfuse-sdk-patterns`.

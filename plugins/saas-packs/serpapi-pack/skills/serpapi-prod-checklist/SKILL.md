@@ -25,12 +25,14 @@ compatibility: Designed for Claude Code
 ## Checklist
 
 ### API Key & Authentication
+
 - [ ] API key stored in secret manager (not env files)
 - [ ] Backend proxy for all client-side search requests
 - [ ] Key not exposed in frontend bundles or logs
 - [ ] Usage monitoring configured
 
 ### Credit Budget
+
 - [ ] Monthly search volume estimated
 - [ ] Plan tier matches expected volume
 - [ ] Response caching implemented (LRU or Redis)
@@ -38,6 +40,7 @@ compatibility: Designed for Claude Code
 - [ ] Budget alerts set (e.g., 80% threshold)
 
 ### Error Handling
+
 - [ ] Check `search_metadata.status` before using results
 - [ ] Handle `error` field in responses
 - [ ] Retry on 500/timeout (max 2 retries)
@@ -45,6 +48,7 @@ compatibility: Designed for Claude Code
 - [ ] Log search IDs for debugging (`search_metadata.id`)
 
 ### Performance
+
 - [ ] Response caching with appropriate TTL
 - [ ] Rate limiting per plan tier (see `serpapi-rate-limits`)
 - [ ] Async search for non-critical queries

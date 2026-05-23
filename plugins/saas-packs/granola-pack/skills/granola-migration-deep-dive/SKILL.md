@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola Migration Deep Dive
 
 ## Overview
+
 Comprehensive guide for migrating to Granola from competing meeting note tools. Covers source-specific export procedures, historical data preservation, parallel-run strategy, team transition, and cutover execution. Granola's key differentiator — no bot joins meetings — means the migration also changes the user experience fundamentally.
 
 ## Prerequisites
+
 - Access to source tool with export capability
 - Granola workspace configured (see `granola-install-auth`)
 - Migration timeline agreed with stakeholders
@@ -53,30 +55,35 @@ Parallel run duration: [1 week / 2 weeks]
 ### Step 2 — Source-Specific Export
 
 #### From Otter.ai
+
 - **Export format:** TXT, SRT (subtitles), PDF
 - **Bulk export:** Otter Pro/Business: Settings > Export > Download All
 - **Limitations:** Free plan only exports individual notes
 - **Key data:** Transcripts with timestamps, speaker labels, action items
 
 #### From Fireflies.ai
+
 - **Export format:** TXT, JSON, PDF, SRT
 - **Bulk export:** Admin > Data Management > Export
 - **Limitations:** Custom fields may not export
 - **Key data:** Transcripts, AI summaries, custom topics
 
 #### From Fathom
+
 - **Export format:** Markdown, CSV, video clips
 - **Bulk export:** Settings > Data > Export All
 - **Limitations:** Video clips don't transfer
 - **Key data:** Meeting summaries, action items, highlights
 
 #### From tl;dv
+
 - **Export format:** TXT, video recordings
 - **Bulk export:** Settings > Data Export
 - **Limitations:** AI highlights may not transfer
 - **Key data:** Transcripts, timestamps, meeting recordings
 
 #### From Manual Notes (Google Docs, Notion, Confluence)
+
 - Already in accessible format
 - No export needed — archive in place
 - Focus on establishing the Granola workflow going forward
@@ -139,6 +146,7 @@ Alternatively, upload the archive to Notion or Google Drive for team-wide search
 Run both tools simultaneously to build confidence:
 
 **Week 1: Dual recording**
+
 - Keep source tool active (bot still joins or captures)
 - Enable Granola on all meetings (system audio capture)
 - Compare output quality daily:
@@ -152,6 +160,7 @@ Run both tools simultaneously to build confidence:
 | User experience (no bot) | N/A | Yes | Granola |
 
 **Week 2: Granola primary**
+
 - Keep source tool as backup only (disable auto-record if possible)
 - All sharing and distribution via Granola integrations
 - Team members report any quality issues
@@ -159,6 +168,7 @@ Run both tools simultaneously to build confidence:
 ### Step 6 — Cutover Execution
 
 **Cutover day checklist:**
+
 - [ ] Final export from source tool (last day of data)
 - [ ] Verify archive is complete and accessible
 - [ ] Disable source tool recording/bot
@@ -198,6 +208,7 @@ Thank you for the smooth transition!
 ### Step 7 — Post-Migration Optimization
 
 After 1 week on Granola exclusively:
+
 - [ ] Configure templates for each meeting type (see `granola-core-workflow-a`)
 - [ ] Set up Zapier automation for recurring workflows
 - [ ] Create custom recipes for team-specific post-meeting tasks
@@ -218,6 +229,7 @@ After 1 week on Granola exclusively:
 | Built-in CRM | No | People & Companies |
 
 ## Output
+
 - Source data exported and archived
 - Parallel run completed with quality validation
 - Team migrated and recording in Granola
@@ -235,10 +247,12 @@ After 1 week on Granola exclusively:
 | Low adoption post-migration | Setup issues | Run drop-in support sessions, share quick-start guide |
 
 ## Resources
+
 - [Granola Setup Guide](https://docs.granola.ai/help-center/getting-started/setting-up-granola-for-the-first-time)
 - [Granola vs Otter Comparison](https://www.granola.ai/compare)
 - [Granola Free Trial](https://www.granola.ai/blog/granola-free-trial-get-started)
 - [Granola for Sales Teams](https://www.granola.ai/blog/sales-ai-notetaker-integration-guide-salesforce-hubspot)
 
 ## Next Steps
+
 After migration, explore `granola-performance-tuning` to optimize output quality.

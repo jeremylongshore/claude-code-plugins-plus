@@ -1,6 +1,7 @@
 # Technical Stack Reference
 
 ## Table of Contents
+
 1. Core Technologies
 2. Animation Libraries
 3. Smooth Scrolling Solutions

@@ -10,6 +10,7 @@ cohere-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Cohere debug evidence for support
 **Workflow:** Part of the operations skill category for Cohere integration.
 **Relates to:** Other cohere skills in this pack.

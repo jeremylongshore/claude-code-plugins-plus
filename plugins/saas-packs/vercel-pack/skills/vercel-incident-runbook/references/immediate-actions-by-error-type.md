@@ -3,6 +3,7 @@
 ## Immediate Actions by Error Type
 
 ### 401/403 - Authentication
+
 ```bash
 # Verify API key is set
 kubectl get secret vercel-secrets -o jsonpath='{.data.api-key}' | base64 -d
@@ -16,6 +17,7 @@ kubectl rollout restart deployment/vercel-integration
 ```
 
 ### 429 - Rate Limited
+
 ```bash
 # Check rate limit headers
 curl -v https://api.vercel.com 2>&1 | grep -i rate
@@ -27,6 +29,7 @@ kubectl set env deployment/vercel-integration RATE_LIMIT_MODE=queue
 ```
 
 ### 500/503 - Vercel Errors
+
 ```bash
 # Enable graceful degradation
 kubectl set env deployment/vercel-integration VERCEL_FALLBACK=true

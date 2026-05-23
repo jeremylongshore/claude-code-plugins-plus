@@ -15,6 +15,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Data Assessment
+
 ```typescript
 // scripts/assess-source-data.ts
 interface DataAssessment {
@@ -58,6 +59,7 @@ function calculateFieldCoverage(records: any[]): Record<string, number> {
 ```
 
 ### Step 2: Schema Mapping
+
 ```typescript
 // lib/migration/schema-mapper.ts
 export interface FieldMapping {
@@ -123,6 +125,7 @@ export class SchemaMapper {
 ```
 
 ### Step 3: Data Transformation Pipeline
+
 ```typescript
 // lib/migration/pipeline.ts
 import { Transform, pipeline } from 'stream';
@@ -184,6 +187,7 @@ const pipeline = new MigrationPipeline()
 ```
 
 ### Step 4: Bulk Import with Rate Limiting
+
 ```typescript
 // lib/migration/bulk-importer.ts
 export class BulkImporter {
@@ -257,6 +261,7 @@ export class BulkImporter {
 ```
 
 ### Step 5: Validation and Reconciliation
+
 ```typescript
 // lib/migration/validator.ts
 export class MigrationValidator {
@@ -318,6 +323,7 @@ export class MigrationValidator {
 ```
 
 ### Step 6: Rollback Strategy
+
 ```typescript
 // lib/migration/rollback.ts
 export class MigrationRollback {

@@ -10,6 +10,7 @@ apple-notes-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Apple Notes CI/CD integration
 **Workflow:** Part of the cicd skill category for Apple Notes integration.
 **Relates to:** Other apple-notes skills in this pack.

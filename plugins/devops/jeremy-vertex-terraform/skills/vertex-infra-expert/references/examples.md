@@ -46,6 +46,7 @@ resource "google_vertex_ai_endpoint_deployed_model" "gemini_flash" {
 ```
 
 **Smoke test:**
+
 ```bash
 ENDPOINT_ID=$(terraform output -raw endpoint_id)
 curl -X POST \
@@ -111,6 +112,7 @@ resource "google_vertex_ai_index_endpoint_deployed_index" "rag_deployed" {
 ```
 
 **Validation:**
+
 ```bash
 # Check index build status
 gcloud ai indexes describe rag-document-index \

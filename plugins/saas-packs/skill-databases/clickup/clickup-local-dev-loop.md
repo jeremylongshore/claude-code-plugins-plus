@@ -10,6 +10,7 @@ clickup-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure ClickUp local development workflow
 **Workflow:** Part of the onboarding skill category for ClickUp integration.
 **Relates to:** Other clickup skills in this pack.

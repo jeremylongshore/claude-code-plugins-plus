@@ -26,6 +26,7 @@ The prompt-improver skill evaluates plugin content across five dimensions — cl
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Review and improve a SKILL.md file's instructions
 - Enhance command or agent markdown definitions
 - Audit prompt quality across a plugin
@@ -82,11 +83,13 @@ This skill activates when you need to:
 ### Example 1: Improving a vague skill description
 
 **Before:**
+
 ```yaml
 description: Does stuff with code
 ```
 
 **After:**
+
 ```yaml
 description: |
   Analyze source code for common anti-patterns and suggest refactoring improvements. Use when the user asks to "review code quality", "find code smells", or "refactor this file".
@@ -95,11 +98,13 @@ description: |
 ### Example 2: Adding missing safety guidance
 
 **Before:**
+
 ```markdown
 Delete all temporary files from the project.
 ```
 
 **After:**
+
 ```markdown
 Identify temporary files (*.tmp, *.bak, *.swp) in the project. List them for user confirmation before deletion. Never delete files outside the project root.
 ```
@@ -113,6 +118,7 @@ Identify temporary files (*.tmp, *.bak, *.swp) in the project. List them for use
 ## Output
 
 The skill produces a structured analysis report containing:
+
 - **Score card**: 5 dimensions rated 1-5 with notes and an overall score out of 25
 - **Improvement list**: Specific weaknesses with file paths and line references
 - **Suggested rewrite**: Full improved prompt text preserving original intent

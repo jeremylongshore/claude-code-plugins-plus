@@ -5,6 +5,7 @@
 ## Detailed Instructions
 
 ### Step 1: Create Debug Bundle Script
+
 ```bash
 #!/bin/bash
 
@@ -17,6 +18,7 @@ echo "" >> "$BUNDLE_DIR/summary.txt"
 ```
 
 ### Step 2: Collect System Information
+
 ```bash
 echo "--- System Information ---" >> "$BUNDLE_DIR/summary.txt"
 echo "OS: $(uname -s)" >> "$BUNDLE_DIR/summary.txt"
@@ -27,6 +29,7 @@ echo "" >> "$BUNDLE_DIR/summary.txt"
 ```
 
 ### Step 3: Collect Plugin Information
+
 ```bash
 PLUGIN_DIR="/path/to/your/plugin"
 
@@ -50,6 +53,7 @@ fi
 ```
 
 ### Step 4: Collect Vault Information
+
 ```bash
 VAULT_DIR="$HOME/ObsidianVault"
 
@@ -71,6 +75,7 @@ echo "" >> "$BUNDLE_DIR/summary.txt"
 ```
 
 ### Step 5: Collect Error Logs (from Console)
+
 ```markdown
 
 
@@ -120,6 +125,7 @@ private sanitizeSettings(): any {
 ```
 
 ### Minimal Bug Report Template
+
 ```markdown
 
 
@@ -134,6 +140,7 @@ private sanitizeSettings(): any {
 ```
 
 ### Step 6: Collect Plugin Data (Sanitized)
+
 ```typescript
 // Add to your plugin for debug export
 export function exportDebugData(plugin: Plugin): object {
@@ -160,13 +167,13 @@ function sanitizeSettings(settings: any): any {
 ```
 
 ### Step 7: Package Bundle
+
 ```bash
 tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
 echo "Bundle created: $BUNDLE_DIR.tar.gz"
 
 sha256sum "$BUNDLE_DIR.tar.gz" > "$BUNDLE_DIR.tar.gz.sha256"
 ```
-
 
 ## Bug Report
 
@@ -175,23 +182,29 @@ sha256sum "$BUNDLE_DIR.tar.gz" > "$BUNDLE_DIR.tar.gz.sha256"
 **OS:** [Windows/macOS/Linux]
 
 ### Steps to Reproduce
+
 1.
 2.
 3.
 
 ### Expected Behavior
+
 [What should happen]
 
 ### Actual Behavior
+
 [What actually happens]
 
 ### Console Errors
+
 ```
 [Paste errors here]
 ```
 
 ### Debug Bundle
+
 [Attach obsidian-debug-*.tar.gz]
+
 ```
 
 ### Privacy Checklist Before Sharing

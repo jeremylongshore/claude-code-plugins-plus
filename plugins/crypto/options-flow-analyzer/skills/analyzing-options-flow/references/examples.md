@@ -6,11 +6,13 @@ Generate a comprehensive sentiment snapshot for Bitcoin options covering
 put/call ratios, max pain, and open interest concentration.
 
 **Command:**
+
 ```bash
 python options_flow.py btc --summary --expiry nearest-3
 ```
 
 **Output:**
+
 ```
 BTC Options Sentiment Snapshot
 ══════════════════════════════════════════════════════════════
@@ -54,6 +56,7 @@ Filter for large-notional block trades that indicate institutional positioning
 rather than retail activity.
 
 **Command:**
+
 ```bash
 python options_flow.py btc --blocks \
   --min-notional 500000 \
@@ -62,6 +65,7 @@ python options_flow.py btc --blocks \
 ```
 
 **Output:**
+
 ```
 BTC Block Trades (>$500K notional, last 24h)
 ══════════════════════════════════════════════════════════════
@@ -97,11 +101,13 @@ Generate the IV term structure curve to detect vol compression or expansion
 that may precede a directional move.
 
 **Command:**
+
 ```bash
 python options_flow.py eth --iv-curve --strikes atm --format json
 ```
 
 **Output (formatted for readability):**
+
 ```json
 {
   "underlying": "ETH/USD",
@@ -163,11 +169,13 @@ Build an open interest heatmap showing position concentration across strikes
 and expiration dates.
 
 **Command:**
+
 ```bash
 python options_flow.py btc --oi-heatmap --format csv > btc_oi_heatmap.csv
 ```
 
 **CSV output (excerpt):**
+
 ```csv
 expiry,strike,call_oi,put_oi,total_oi,dominant_side,concentration_pct
 2026-03-21,95000,120,2450,2570,PUT,1.8
@@ -184,6 +192,7 @@ expiry,strike,call_oi,put_oi,total_oi,dominant_side,concentration_pct
 ```
 
 **Interpretation:**
+
 ```
 Hotspots (highest concentration):
   1. $120K Call, Apr 25: 12,450 OI (9.0%) → major upside target
@@ -203,11 +212,13 @@ Flag trades that deviate significantly from historical baselines, indicating
 potential insider knowledge or large directional bets.
 
 **Command:**
+
 ```bash
 python options_flow.py btc --unusual --threshold 2.0 --period 7d
 ```
 
 **Output:**
+
 ```
 Unusual Options Activity Report — BTC
 ══════════════════════════════════════════════════════════════
@@ -249,11 +260,13 @@ Compare options data across Deribit, OKX, and Bybit to find arbitrage
 opportunities or exchange-specific positioning.
 
 **Command:**
+
 ```bash
 python options_flow.py btc --compare-exchanges --strike 110000 --expiry 2026-04-25
 ```
 
 **Output:**
+
 ```
 Cross-Exchange Comparison: BTC $110K Call, Apr 25 2026
 ══════════════════════════════════════════════════════════════

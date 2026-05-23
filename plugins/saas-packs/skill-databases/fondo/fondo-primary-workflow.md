@@ -10,6 +10,7 @@ fondo-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Fondo primary workflow
 **Workflow:** Part of the onboarding skill category for Fondo integration.
 **Relates to:** Other fondo skills in this pack.

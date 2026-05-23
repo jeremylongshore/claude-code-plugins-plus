@@ -10,6 +10,7 @@ vercel-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement circuit breakers, idempotency, bulkhead pattern, dead letter queues, and graceful degradation.
 **Workflow:** Applied during production hardening phase after basic integration works.
 **Relates to:** Follows vercel-load-scale; leads to vercel-policy-guardrails for governance

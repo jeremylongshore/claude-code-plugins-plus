@@ -3,6 +3,7 @@
 Real-time monitoring of large cryptocurrency transactions and whale wallet movements.
 
 ## Features
+
 - Large transaction alerts
 - Exchange whale tracking
 - Wallet clustering analysis
@@ -10,11 +11,13 @@ Real-time monitoring of large cryptocurrency transactions and whale wallet movem
 - Historical whale patterns
 
 ## Installation
+
 ```bash
 /plugin install whale-alert-monitor@claude-code-plugins-plus
 ```
 
 ## Commands
+
 | Command | Description | Shortcut |
 |---------|-------------|----------|
 | `/monitor-whales` | Monitor whale activity | `mw` |

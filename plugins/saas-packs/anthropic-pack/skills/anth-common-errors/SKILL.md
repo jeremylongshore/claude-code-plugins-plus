@@ -74,6 +74,7 @@ Invalid endpoint or model. Check you're using `https://api.anthropic.com/v1/mess
 ```
 
 **Check headers for details:**
+
 - `retry-after` — seconds to wait
 - `anthropic-ratelimit-requests-limit` — RPM cap
 - `anthropic-ratelimit-tokens-limit` — TPM cap

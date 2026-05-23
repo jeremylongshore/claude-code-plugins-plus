@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Data Handling
 
 ## Overview
+
 Control what code and data Windsurf's AI (Cascade, Supercomplete) can access. Covers file exclusion patterns, telemetry controls, Codeium's data processing model, and compliance configuration for regulated environments.
 
 ## Prerequisites
+
 - Windsurf IDE installed
 - Understanding of Codeium's data processing model
 - Identified sensitive files and directories in workspace
@@ -202,6 +204,7 @@ deployment_modes:
 - [ ] Regular audit: verify no new sensitive files outside ignore patterns
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | AI suggests hardcoded secrets | Secret was in indexed file | Add to `.codeiumignore`, rotate secret |
@@ -212,6 +215,7 @@ deployment_modes:
 ## Examples
 
 ### Quick Privacy Audit
+
 ```bash
 set -euo pipefail
 echo "=== Windsurf Data Privacy Audit ==="
@@ -226,9 +230,11 @@ find . -type f \
 ```
 
 ## Resources
+
 - [Codeium Privacy Policy](https://codeium.com/privacy-policy)
 - [Windsurf Security](https://windsurf.com/security)
 - [Windsurf Ignore Docs](https://docs.windsurf.com/context-awareness/windsurf-ignore)
 
 ## Next Steps
+
 For enterprise access controls, see `windsurf-enterprise-rbac`.

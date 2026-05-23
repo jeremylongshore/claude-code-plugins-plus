@@ -10,6 +10,7 @@ anthropic-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Anthropic rate limiting and backoff
 **Workflow:** Part of the operations skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

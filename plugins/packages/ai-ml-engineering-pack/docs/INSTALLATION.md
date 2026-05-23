@@ -5,24 +5,29 @@ Complete installation guide for the AI/ML Engineering Pack, a professional toolk
 ## Prerequisites
 
 ### Required Software
+
 - **Claude Code CLI** (version 0.1.0 or higher)
 - **Python 3.10+** (for running generated code examples)
 - **Node.js 18+** (for TypeScript examples and API scaffolding)
 - **Git** (for cloning examples and templates)
 
 ### Optional Software (Recommended)
+
 - **Docker 20.10+** (for containerized deployments)
 - **Poetry or pip** (Python package management)
 - **npm or yarn** (Node.js package management)
 
 ### API Keys (As Needed)
+
 This pack generates code for multiple LLM providers. You'll need API keys based on your chosen provider:
+
 - **OpenAI API key** (gpt-4-turbo, gpt-3.5-turbo)
 - **Anthropic API key** (claude-3-opus, claude-3-sonnet, claude-3-haiku)
 - **Google Cloud credentials** (gemini-pro, gemini-flash)
 - **Cohere API key** (for reranking in RAG systems)
 
 Vector database credentials (if using hosted solutions):
+
 - **Pinecone API key**
 - **Qdrant Cloud credentials**
 - **Weaviate Cloud credentials**
@@ -58,6 +63,7 @@ claude plugin install ai-ml-engineering-pack@claude-code-plugins-plus
 ```
 
 This installs:
+
 - **Prompt Engineering** (3 plugins)
 - **LLM Integration** (3 plugins)
 - **RAG Systems** (3 plugins)
@@ -72,6 +78,7 @@ claude plugin list
 ```
 
 You should see:
+
 ```
  prompt-architect (agent)
  prompt-optimizer (agent)
@@ -258,6 +265,7 @@ See [TROUBLESHOOTING.md](./000-docs/157-DR-FAQS-troubleshooting.md) for common i
 ## Next Steps
 
 Once installed, proceed to:
+
 1. [Quick Start Guide](./QUICK_START.md) - 10-minute walkthrough
 2. [Use Cases](./USE_CASES.md) - Real-world examples with ROI
 3. [Plugin Reference](./README.md) - Complete plugin documentation

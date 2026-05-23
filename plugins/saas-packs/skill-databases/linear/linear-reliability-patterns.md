@@ -10,6 +10,7 @@ linear-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Linear reliability patterns
 **Workflow:** Part of the enterprise skill category for Linear integration.
 **Relates to:** Other linear skills in this pack.

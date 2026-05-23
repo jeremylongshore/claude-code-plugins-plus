@@ -7,6 +7,6 @@ Bundled resources for anomaly-detection-system skill
 - [x] anomaly_visualizer.py: Generates visualizations (e.g., scatter plots, histograms) to highlight detected anomalies.
 - [x] report_generator.py: Creates a detailed report summarizing the detected anomalies, their severity, and potential causes.
 
-
 ## Auto-Generated
+
 Scripts generated on 2025-12-10 03:48:17

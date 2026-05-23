@@ -33,12 +33,14 @@ Exactly 4 tools with exact names:
 Extract session from CASS, redact secrets/PII, encrypt, upload to Cascade, index locally.
 
 **Args:**
+
 - `session_id` (required): CASS session ID to store
 - `tags` (optional): List of tags
 - `metadata` (optional): Custom metadata
 - `mode` (optional): "mock" | "live" (default: "mock")
 
 **Returns:**
+
 ```json
 {
   "ok": true,
@@ -75,12 +77,14 @@ Extract session from CASS, redact secrets/PII, encrypt, upload to Cascade, index
 Search local SQLite FTS index (NEVER queries Cascade directly).
 
 **Args:**
+
 - `query` (required): Search query text
 - `tags` (optional): Tag filters
 - `time_range` (optional): `{start: ISO8601, end: ISO8601}`
 - `limit` (optional): Max results (default: 10)
 
 **Returns:**
+
 ```json
 {
   "ok": true,
@@ -103,10 +107,12 @@ Search local SQLite FTS index (NEVER queries Cascade directly).
 Fetch encrypted blob from Cascade via URI, decrypt client-side, return session.
 
 **Args:**
+
 - `cascade_uri` (required): Cascade URI from index
 - `mode` (optional): "mock" | "live" (default: "mock")
 
 **Returns:**
+
 ```json
 {
   "ok": true,
@@ -135,11 +141,13 @@ Fetch encrypted blob from Cascade via URI, decrypt client-side, return session.
 Estimate Cascade storage costs for session data.
 
 **Args:**
+
 - `bytes` (required): Data size in bytes
 - `redundancy` (optional): Replication factor (default: 3)
 - `pricing_inputs` (optional): Custom pricing overrides
 
 **Returns:**
+
 ```json
 {
   "ok": true,
@@ -160,6 +168,7 @@ Estimate Cascade storage costs for session data.
 ## Security Behavior
 
 ### Critical Patterns (Fail-Closed)
+
 - Private keys (`-----BEGIN PRIVATE KEY-----`)
 - AWS secret access keys (`aws_secret_access_key=...`)
 - Raw authorization headers (`Authorization: Bearer ...`)
@@ -168,6 +177,7 @@ Estimate Cascade storage costs for session data.
 **Action:** Reject storage immediately with clear error message.
 
 ### Non-Critical Patterns (Redact & Continue)
+
 - Email addresses
 - Phone numbers
 - AWS access keys (AKIA...)
@@ -242,6 +252,7 @@ python3 src/mcp_server.py
 ## Live Cascade Mode
 
 Set environment variables:
+
 ```bash
 export LUMERA_CASCADE_ENDPOINT="https://cascade.example.com"
 export LUMERA_CASCADE_API_KEY="your-api-key"

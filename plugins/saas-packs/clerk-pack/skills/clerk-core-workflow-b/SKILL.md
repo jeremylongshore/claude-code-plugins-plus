@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Core Workflow B: Session & Middleware
 
 ## Overview
+
 Implement session management and route protection with Clerk middleware. Covers `clerkMiddleware()` configuration, `auth()` patterns, custom session claims, JWT templates for external services, organization-scoped sessions, and session token v2.
 
 ## Prerequisites
+
 - `@clerk/nextjs` installed with ClerkProvider wrapping the app
 - Next.js 14+ with App Router
 - Sign-in/sign-up flows working (`clerk-core-workflow-a` completed)
@@ -36,6 +38,7 @@ Implement session management and route protection with Clerk middleware. Covers 
 ## Instructions
 
 ### Step 1: Configure clerkMiddleware with Route Matchers
+
 ```typescript
 // middleware.ts (project root)
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
@@ -77,6 +80,7 @@ export const config = {
 **Key behavior:** `clerkMiddleware()` does NOT protect any routes by default. You must explicitly call `auth.protect()` for routes that require authentication. This is a design decision to avoid over-blocking.
 
 ### Step 2: Protect API Routes with auth()
+
 ```typescript
 // app/api/data/route.ts
 import { auth } from '@clerk/nextjs/server'
@@ -116,6 +120,7 @@ export async function POST(req: Request) {
 ```
 
 ### Step 3: Server Component Auth Patterns
+
 ```typescript
 // app/dashboard/page.tsx
 import { auth, currentUser } from '@clerk/nextjs/server'
@@ -143,6 +148,7 @@ export default async function DashboardPage() {
 ```
 
 ### Step 4: Custom Session Claims
+
 Customize in **Dashboard > Sessions > Customize session token:**
 
 ```json
@@ -153,6 +159,7 @@ Customize in **Dashboard > Sessions > Customize session token:**
 ```
 
 Then declare types and access in code:
+
 ```typescript
 // types/clerk.d.ts
 declare global {
@@ -184,6 +191,7 @@ export async function GET() {
 **Warning:** Session token cookie limit is 4KB. Custom claims should be under 1.2KB. Store large data in your database, not in session claims.
 
 ### Step 5: JWT Templates for External Services
+
 ```typescript
 // app/api/supabase-data/route.ts
 import { auth } from '@clerk/nextjs/server'
@@ -209,6 +217,7 @@ export async function GET() {
 ```
 
 Configure JWT template in **Dashboard > JWT Templates > New template**:
+
 ```json
 {
   "sub": "{{user.id}}",
@@ -219,6 +228,7 @@ Configure JWT template in **Dashboard > JWT Templates > New template**:
 ```
 
 ### Step 6: Organization-Scoped Sessions
+
 ```typescript
 'use client'
 import { useOrganizationList, useOrganization, useAuth } from '@clerk/nextjs'
@@ -254,6 +264,7 @@ export function OrgSwitcher() {
 ```
 
 ### Step 7: Server Action Permission Guards
+
 ```typescript
 'use server'
 import { auth } from '@clerk/nextjs/server'
@@ -286,6 +297,7 @@ export async function updateOrgSettings(settings: Record<string, any>) {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Middleware redirect loop | Sign-in page not in `isPublicRoute` | Add `/sign-in(.*)` to public route matcher |
@@ -296,6 +308,7 @@ export async function updateOrgSettings(settings: Record<string, any>) {
 | `auth() was called but clerkMiddleware() not detected` | Middleware missing or wrong location | Ensure `middleware.ts` at project root |
 
 ## Enterprise Considerations
+
 - Session token v2 (default since April 2025) is more compact -- if your downstream services parse JWTs, verify they handle the new format
 - `auth.protect()` in middleware returns a 401/redirect before reaching your route handler -- this is more efficient than checking `userId` in every route
 - For permission-based access, prefer `has({ permission: '...' })` over `has({ role: '...' })` -- permissions decouple authorization from role names
@@ -303,10 +316,12 @@ export async function updateOrgSettings(settings: Record<string, any>) {
 - Organization switching changes the active session scope instantly -- no page reload needed
 
 ## Resources
+
 - [clerkMiddleware() Reference](https://clerk.com/docs/reference/nextjs/clerk-middleware)
 - [auth() Reference](https://clerk.com/docs/reference/nextjs/app-router/auth)
 - [Custom Session Tokens](https://clerk.com/docs/guides/sessions/customize-session-tokens)
 - [JWT Templates](https://clerk.com/docs/guides/sessions/jwt-templates)
 
 ## Next Steps
+
 Proceed to `clerk-webhooks-events` for webhook and event handling.

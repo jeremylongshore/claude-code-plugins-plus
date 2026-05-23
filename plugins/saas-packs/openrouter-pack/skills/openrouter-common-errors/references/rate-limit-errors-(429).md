@@ -3,6 +3,7 @@
 ## Rate Limit Errors (429)
 
 ### Too Many Requests
+
 ```
 Error: 429 Too Many Requests
 {
@@ -14,6 +15,7 @@ Error: 429 Too Many Requests
 ```
 
 **Handling:**
+
 ```python
 import time
 from openai import RateLimitError

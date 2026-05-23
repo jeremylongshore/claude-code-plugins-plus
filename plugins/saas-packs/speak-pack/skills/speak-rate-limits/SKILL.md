@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Speak Rate Limits
 
 ## Overview
+
 Handle Speak API rate limits with exponential backoff, request queuing, and optimization strategies.
 
 ## Prerequisites
+
 - Completed `speak-install-auth` setup
 - Valid API credentials configured
 - Understanding of Speak API patterns
@@ -33,6 +35,7 @@ Handle Speak API rate limits with exponential backoff, request queuing, and opti
 ## Instructions
 
 ### Rate Limit Overview
+
 | Tier | Assessments/min | Conversations/min | Audio upload/min |
 |------|----------------|-------------------|-----------------|
 | Free | 10 | 5 | 10 |
@@ -40,6 +43,7 @@ Handle Speak API rate limits with exponential backoff, request queuing, and opti
 | Enterprise | 300 | 150 | 300 |
 
 ### Rate-Limited Client
+
 ```typescript
 class RateLimitedSpeakClient {
   private lastRequest = 0;
@@ -82,6 +86,7 @@ class RateLimitedSpeakClient {
 ```
 
 ### Batch Assessment Queue
+
 ```typescript
 async function batchAssess(client: RateLimitedSpeakClient, recordings: Recording[]) {
   const results = [];
@@ -97,11 +102,13 @@ async function batchAssess(client: RateLimitedSpeakClient, recordings: Recording
 ```
 
 ## Output
+
 - Limits implementation complete
 - Speak API integration verified
 - Production-ready patterns applied
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY environment variable |
@@ -110,11 +117,13 @@ async function batchAssess(client: RateLimitedSpeakClient, recordings: Recording
 | Session expired | Timeout after 30 min | Start a new conversation session |
 
 ## Resources
+
 - [Speak Website](https://speak.com)
 - [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
 - [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
 
 ## Next Steps
+
 See `speak-prod-checklist` for production readiness.
 
 ## Examples

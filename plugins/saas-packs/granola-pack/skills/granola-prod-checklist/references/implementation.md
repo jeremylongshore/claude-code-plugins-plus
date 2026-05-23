@@ -1,6 +1,7 @@
 # Granola Production Checklist - Implementation Details
 
 ## Security Configuration
+
 ```markdown
 ## Security Setup
 - [ ] SSO configured (Business/Enterprise)
@@ -13,6 +14,7 @@
 ```
 
 ## Integration Setup
+
 ```markdown
 ## Required Integrations
 - [ ] Calendar integration (Google/Outlook)
@@ -24,6 +26,7 @@
 ```
 
 ## Training Plan
+
 ```markdown
 Week 1:
 - [ ] Admin training (2 hours)
@@ -39,6 +42,7 @@ Ongoing:
 ```
 
 ## Pilot Program
+
 ```markdown
 ## Pilot Phase (Recommended)
 - [ ] Select 5-10 pilot users
@@ -50,6 +54,7 @@ Ongoing:
 ```
 
 ## Workspace Configuration
+
 ```markdown
 - [ ] Workspace name and branding set
 - [ ] Default sharing permissions configured
@@ -60,6 +65,7 @@ Ongoing:
 ```
 
 ## Admin Controls
+
 ```markdown
 - [ ] User roles defined
 - [ ] Permission groups created
@@ -71,6 +77,7 @@ Ongoing:
 ## Technical Requirements
 
 ### Desktop Requirements
+
 - macOS 12 (Monterey) or later
 - Windows 10 (1903) or later
 - 8 GB RAM minimum (16 GB recommended)
@@ -78,7 +85,9 @@ Ongoing:
 - Stable internet (5 Mbps+)
 
 ### Network Configuration
+
 Allow outbound HTTPS to:
+
 - api.granola.ai
 - app.granola.ai
 - storage.granola.ai
@@ -87,6 +96,7 @@ Allow outbound HTTPS to:
 Ports: 443 (HTTPS required), 80 (redirect only)
 
 ### MDM/Deployment
+
 ```markdown
 - [ ] MSI/PKG package available
 - [ ] Silent install tested
@@ -98,6 +108,7 @@ Ports: 443 (HTTPS required), 80 (redirect only)
 ## Go-Live Sequence
 
 ### Day Before Launch
+
 - [ ] All users provisioned
 - [ ] Welcome emails scheduled
 - [ ] Support team briefed
@@ -105,6 +116,7 @@ Ports: 443 (HTTPS required), 80 (redirect only)
 - [ ] Rollback plan documented
 
 ### Launch Day
+
 - [ ] Send welcome emails
 - [ ] Enable user access
 - [ ] Monitor adoption metrics
@@ -112,6 +124,7 @@ Ports: 443 (HTTPS required), 80 (redirect only)
 - [ ] Track first-meeting success
 
 ### Week 1 Post-Launch
+
 - [ ] Daily adoption metrics review
 - [ ] Quick wins shared internally
 - [ ] Issues triaged within 4 hours
@@ -120,6 +133,7 @@ Ports: 443 (HTTPS required), 80 (redirect only)
 ## Success Metrics
 
 ### Adoption KPIs
+
 | Metric | Target | Measurement |
 |--------|--------|-------------|
 | User activation | 80% in Week 1 | First meeting recorded |
@@ -128,6 +142,7 @@ Ports: 443 (HTTPS required), 80 (redirect only)
 | Integration usage | 50% | Using at least one |
 
 ### Quality KPIs
+
 | Metric | Target | Measurement |
 |--------|--------|-------------|
 | Note satisfaction | 4.0/5.0 | User rating |
@@ -136,6 +151,7 @@ Ports: 443 (HTTPS required), 80 (redirect only)
 | Uptime | 99.9% | Status page |
 
 ## Ongoing Operations
+
 ```markdown
 Daily:
 - [ ] Monitor status page

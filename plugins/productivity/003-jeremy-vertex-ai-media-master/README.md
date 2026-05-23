@@ -13,6 +13,7 @@ This plugin makes Claude Code an expert in Google Vertex AI's multimodal capabil
 ## ✨ Key Features
 
 ### 🎥 Video Processing (Gemini 2.0/2.5)
+
 - Process videos up to **6 hours** at low resolution
 - 2M context window for massive content
 - Multi-video analysis in single requests
@@ -20,6 +21,7 @@ This plugin makes Claude Code an expert in Google Vertex AI's multimodal capabil
 - Marketing insights extraction
 
 ### 🎵 Audio Generation (Lyria Model)
+
 - Background music composition
 - Voiceover generation
 - Speech-to-text transcription
@@ -27,6 +29,7 @@ This plugin makes Claude Code an expert in Google Vertex AI's multimodal capabil
 - Multilingual voiceovers
 
 ### 🖼️ Image Generation (Imagen 4)
+
 - Highest quality text-to-image
 - Interleaved image generation with Gemini 2.5 Flash Image
 - Personalized ad images (Adios approach)
@@ -34,6 +37,7 @@ This plugin makes Claude Code an expert in Google Vertex AI's multimodal capabil
 - Campaign asset generation
 
 ### 📢 Marketing Automation
+
 - **ViGenAiR**: Convert long videos to short formats automatically
 - **Adios**: Generate personalized ad images
 - Multi-channel campaign creation
@@ -50,14 +54,17 @@ This plugin makes Claude Code an expert in Google Vertex AI's multimodal capabil
 ## 📋 Components
 
 ### Agent Skills (1)
+
 - **vertex-media-master** - Auto-activates for all Vertex AI multimodal operations
 
 ### Slash Commands (1)
+
 - `/vertex-campaign` - Generate complete multimodal marketing campaigns
 
 ## 💡 Usage Examples
 
 ### Generate Marketing Campaign
+
 ```bash
 /vertex-campaign
 
@@ -68,6 +75,7 @@ Budget: $30K
 ```
 
 **Generates:**
+
 - 15+ product images
 - Video scripts (multiple lengths)
 - Background music
@@ -77,11 +85,13 @@ Budget: $30K
 - Ad copy
 
 ### Process Long-Form Video
+
 ```
 "Analyze this 4-hour webinar video and extract key highlights for social media clips"
 ```
 
 **Auto-activates skill and:**
+
 - Processes full video (up to 6 hours)
 - Extracts key moments
 - Generates short-form clips
@@ -89,11 +99,13 @@ Budget: $30K
 - Suggests distribution strategy
 
 ### Generate Personalized Ads
+
 ```
 "Create 50 variations of this product ad, personalized for different audience segments"
 ```
 
 **Auto-generates:**
+
 - Demographic-specific imagery
 - Localized copy
 - Platform-optimized formats
@@ -102,6 +114,7 @@ Budget: $30K
 ## 🔧 Technical Implementation
 
 ### Prerequisites
+
 ```bash
 # Google Cloud setup
 gcloud auth application-default login
@@ -112,6 +125,7 @@ pip install google-cloud-aiplatform[vision,audio] google-generativeai
 ```
 
 ### API Integration
+
 ```python
 from google.cloud import aiplatform
 from vertexai.preview.generative_models import GenerativeModel
@@ -130,24 +144,28 @@ response = model.generate_content([
 ## 🎯 Marketing Use Cases
 
 ### 1. Campaign Asset Production
+
 - Generate all assets from single brief
 - Consistent brand messaging
 - Multi-channel distribution
 - Cost: ~$5-7 per campaign
 
 ### 2. Video Repurposing
+
 - Long-form to short-form conversion
 - Platform-specific formatting
 - Automatic captioning
 - Highlight extraction
 
 ### 3. Personalized Content at Scale
+
 - Audience-specific variations
 - Localized campaigns
 - Dynamic product placement
 - Real-time adaptation
 
 ### 4. Content Automation Pipeline
+
 - Scheduled asset generation
 - Approval workflows
 - Multi-language support
@@ -156,11 +174,13 @@ response = model.generate_content([
 ## 💰 Cost Optimization
 
 **Pricing:**
+
 - Gemini 2.5 Pro: $3.50/1M input tokens
 - Imagen 4: $0.04/image
 - Lyria audio: Variable by duration
 
 **Best Practices:**
+
 - Use Gemini Flash for faster ops
 - Batch image requests
 - Cache video embeddings
@@ -169,6 +189,7 @@ response = model.generate_content([
 ## 📊 Success Metrics
 
 **Track:**
+
 - Asset generation speed (target: 5 images/min)
 - Content approval rate (target: >80%)
 - Personalization scale (target: 1000+ variants)
@@ -178,12 +199,14 @@ response = model.generate_content([
 ## 🔗 Integration Points
 
 **Google Cloud Services:**
+
 - Cloud Storage (asset management)
 - BigQuery (analytics)
 - Cloud Functions (automation)
 - Vertex AI Pipelines (workflows)
 
 **Marketing Platforms:**
+
 - Google Ads (PMax)
 - Meta Business Suite
 - LinkedIn Campaign Manager
@@ -193,6 +216,7 @@ response = model.generate_content([
 ## 📚 Documentation
 
 **Official Resources:**
+
 - [Vertex AI Multimodal](https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/overview)
 - [Gemini Models](https://cloud.google.com/vertex-ai/generative-ai/docs/models)
 - [Imagen 4](https://cloud.google.com/vertex-ai/generative-ai/docs/image/overview)
@@ -201,6 +225,7 @@ response = model.generate_content([
 ## 🎓 Training Resources
 
 **Learn:**
+
 - Video understanding with Gemini
 - Image generation best practices
 - Audio production workflows
@@ -218,6 +243,7 @@ response = model.generate_content([
 ## 🎯 When This Activates
 
 **Trigger phrases:**
+
 - "vertex ai", "gemini multimodal"
 - "process video", "analyze video"
 - "generate audio", "create images"
@@ -227,6 +253,7 @@ response = model.generate_content([
 ## 📈 Roadmap
 
 **Planned features:**
+
 - Gemini 2.5 Flash Thinking integration
 - Real-time streaming capabilities
 - Advanced A/B testing automation

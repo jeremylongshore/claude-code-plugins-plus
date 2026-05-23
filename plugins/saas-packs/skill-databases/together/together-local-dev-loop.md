@@ -10,6 +10,7 @@ together-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Together AI local development workflow
 **Workflow:** Part of the onboarding skill category for Together AI integration.
 **Relates to:** Other together skills in this pack.

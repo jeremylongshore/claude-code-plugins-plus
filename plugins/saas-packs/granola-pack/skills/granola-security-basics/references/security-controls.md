@@ -1,6 +1,7 @@
 # Granola Security Controls Reference
 
 ## Data Flow & Security Architecture
+
 ```
 Audio Capture (Local Device)
         ↓
@@ -14,6 +15,7 @@ Access via App (Auth Required)
 ```
 
 ## Key Security Features
+
 | Feature | Status | Details |
 |---------|--------|---------|
 | Encryption at rest | Yes | AES-256 |
@@ -23,6 +25,7 @@ Access via App (Auth Required)
 | Audio retention | Configurable | Delete after processing |
 
 ## Sharing Permissions Matrix
+
 | Share Level | Access | Use Case |
 |-------------|--------|----------|
 | Private | Owner only | Sensitive meetings |
@@ -33,6 +36,7 @@ Access via App (Auth Required)
 ## Sensitive Meeting Protocol
 
 ### Pre-Meeting
+
 - [ ] Disable auto-recording
 - [ ] Confirm attendee list
 - [ ] Review sharing settings
@@ -40,17 +44,20 @@ Access via App (Auth Required)
 - [ ] Consider using "Off the Record" mode
 
 ### During Meeting
+
 - Announce recording to all participants
 - Pause recording for sensitive discussions
 - Avoid displaying sensitive documents on screen
 
 ### Post-Meeting
+
 - Review notes before sharing
 - Redact sensitive information
 - Use private sharing link
 - Set expiration on shared links
 
 ## Data Retention Settings
+
 ```
 Settings > Privacy > Data Retention
 
@@ -65,6 +72,7 @@ Recommendation: Delete audio after processing
 ```
 
 ## Data Export Options
+
 Formats: Markdown (.md), PDF, Word (.docx), JSON (full data)
 
 Export includes: Meeting notes, transcripts, action items, metadata
@@ -74,6 +82,7 @@ Does NOT include: Raw audio files, AI model data
 ## Compliance Reference
 
 ### GDPR (EU Users)
+
 | Requirement | Granola Support |
 |-------------|-----------------|
 | Right to access | Data export available |
@@ -83,16 +92,19 @@ Does NOT include: Raw audio files, AI model data
 | DPA available | Yes (Business plans) |
 
 ### HIPAA (Healthcare)
+
 - Standard plans: Not HIPAA compliant
 - Enterprise: BAA available on request
 - Recommendation: Use only for non-PHI meetings
 
 ### SOC 2 Type II
+
 - Granola is SOC 2 Type II certified
 - Audit reports available for Enterprise customers
 - Covers security, availability, confidentiality
 
 ## Team Security Controls (Business Plans)
+
 - [ ] Enforce SSO login
 - [ ] Set password policies
 - [ ] Manage user permissions
@@ -102,6 +114,7 @@ Does NOT include: Raw audio files, AI model data
 - [ ] IP allowlisting
 
 ## Audit Logging Events
+
 - User login/logout
 - Meeting recorded
 - Notes shared
@@ -112,6 +125,7 @@ Does NOT include: Raw audio files, AI model data
 ## Security Incident Response
 
 ### If Account Compromised
+
 1. Immediately change password
 2. Revoke all sessions (Settings > Security > Sign out everywhere)
 3. Review recent activity
@@ -120,6 +134,7 @@ Does NOT include: Raw audio files, AI model data
 6. Contact support if data exposed
 
 ### Reporting Security Issues
+
 - Email: security@granola.ai
 - Include: Detailed description, steps to reproduce
 - Response: Within 24 hours

@@ -3,6 +3,7 @@
 ## Detailed Output Formats
 
 ### Funding Rate Report
+
 ```
 BTC PERPETUAL FUNDING RATES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -18,6 +19,7 @@ Sentiment: Moderately Bullish
 ```
 
 ### Open Interest Report
+
 ```
 BTC OPEN INTEREST ANALYSIS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -34,6 +36,7 @@ Long/Short Ratio: 1.15 (53.5% long)
 ```
 
 ### Liquidation Heatmap
+
 ```
 BTC LIQUIDATION LEVELS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -55,6 +58,7 @@ SHORT LIQUIDATIONS (above):
 ## Options Analysis Deep Dive
 
 ### Options Commands
+
 ```bash
 # Get options overview
 python derivatives_tracker.py options BTC
@@ -70,6 +74,7 @@ python derivatives_tracker.py options BTC --flow
 ```
 
 ### Options Insights
+
 - **High IV rank** (>80): Options expensive, consider selling
 - **Low IV rank** (<20): Options cheap, consider buying
 - **Max pain**: Price where most options expire worthless
@@ -77,6 +82,7 @@ python derivatives_tracker.py options BTC --flow
 ## Basis Trading Guide
 
 ### Basis Commands
+
 ```bash
 # Get spot-perp basis
 python derivatives_tracker.py basis BTC
@@ -89,6 +95,7 @@ python derivatives_tracker.py basis --all
 ```
 
 ### Basis Trading Interpretation
+
 - **Positive basis**: Futures > Spot (contango, normal)
 - **Negative basis**: Futures < Spot (backwardation)
 - **Cash-and-carry**: Buy spot + sell futures when basis high
@@ -104,6 +111,7 @@ python derivatives_tracker.py basis --all
 ## Risk Warning
 
 Derivatives are leveraged instruments with high risk of loss.
+
 - Funding costs accumulate over time
 - Liquidations can happen rapidly
 - Options can expire worthless

@@ -10,6 +10,7 @@ oraclecloud-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Oracle Cloud core feature integration
 **Workflow:** Part of the onboarding skill category for Oracle Cloud integration.
 **Relates to:** Other oraclecloud skills in this pack.

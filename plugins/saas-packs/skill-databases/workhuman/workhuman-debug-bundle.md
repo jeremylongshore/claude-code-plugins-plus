@@ -10,6 +10,7 @@ workhuman-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Workhuman debug evidence for support
 **Workflow:** Part of the operations skill category for Workhuman integration.
 **Relates to:** Other workhuman skills in this pack.

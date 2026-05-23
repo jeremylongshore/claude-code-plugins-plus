@@ -3,6 +3,7 @@
 ## Cost Dashboard
 
 ### Generate Cost Report
+
 ```python
 def generate_cost_report(tracker: CostTracker) -> dict:
     """Generate comprehensive cost report."""

@@ -5,6 +5,7 @@
 The simplest pattern: one agent implementing one spec file with a shared contract.
 
 **SPAWN REQUEST block:**
+
 ```
 SPAWN REQUEST
 Agent: python-dev
@@ -14,6 +15,7 @@ Scope: All backend endpoints
 ```
 
 **Agent reads these files, implements, then returns:**
+
 ```
 AGENT REPORT
 Agent: python-dev
@@ -34,6 +36,7 @@ Multiple agents running concurrently, each assigned to a non-overlapping domain
 boundary to prevent file conflicts.
 
 **Architect produces three SPAWN REQUEST blocks:**
+
 ```
 SPAWN REQUEST
 Agent: python-dev
@@ -54,6 +57,7 @@ Scope: Docker, GitHub Actions, and deployment configs
 ```
 
 **Domain boundaries (no file overlap):**
+
 ```
 python-dev  → src/api/*, src/models/*, tests/api/*
 nextjs-dev  → app/*, components/*, tests/ui/*
@@ -61,6 +65,7 @@ cicd-agent  → .github/workflows/*, Dockerfile, docker-compose.yml
 ```
 
 **All three agents run simultaneously. Reports collected:**
+
 ```
 AGENT REPORT
 Agent: python-dev
@@ -90,6 +95,7 @@ Testing agents must run after implementation agents complete. QA runs first,
 then UI testing runs after QA passes.
 
 **Sequential SPAWN REQUEST chain:**
+
 ```
 SPAWN REQUEST
 Agent: qa-test-agent
@@ -106,6 +112,7 @@ Scope: Browser-based E2E tests for all user flows
 ```
 
 **QA agent report:**
+
 ```
 AGENT REPORT
 Agent: qa-test-agent
@@ -122,6 +129,7 @@ Conformity: 2 endpoints deviate from api-contract.md error codes
 ```
 
 **UI test agent report (using structured format):**
+
 ```
 AGENT REPORT
 Agent: ui-test-agent
@@ -145,6 +153,7 @@ After collecting all agent reports, the architect decides whether to iterate
 or finalize.
 
 **Architect receives reports from Iteration 1:**
+
 ```
 python-dev: COMPLETE (all endpoints working)
 nextjs-dev: COMPLETE (all components rendered)
@@ -153,6 +162,7 @@ ui-test-agent: 1 failure (checkout button disabled)
 ```
 
 **Architect analysis:**
+
 ```
 Conformity Review:
   ✓ 4/6 API endpoints fully conformant
@@ -177,6 +187,7 @@ Updated status.md:
 ```
 
 **Architect spawns narrowed Iteration 2:**
+
 ```
 SPAWN REQUEST
 Agent: python-dev
@@ -196,6 +207,7 @@ The orchestrator detects the project framework and selects appropriate
 specialized agents.
 
 **Project detection:**
+
 ```
 Phase 0 scan:
   → Found: next.config.js → Framework: Next.js
@@ -209,6 +221,7 @@ Agent selection:
 ```
 
 **For a different project stack:**
+
 ```
 Phase 0 scan:
   → Found: nuxt.config.ts → Framework: Nuxt 3
@@ -226,6 +239,7 @@ Agent selection:
 When an agent fails to produce a valid report or encounters unrecoverable errors.
 
 **Failed agent report:**
+
 ```
 AGENT REPORT
 Agent: python-dev
@@ -237,6 +251,7 @@ Conformity: Unable to assess — implementation did not start
 ```
 
 **Architect response:**
+
 ```
 Architect reviews failure:
   → Root cause: platform-specific dependency issue
@@ -256,6 +271,7 @@ Notes: Use asyncpg instead of psycopg2-binary for PostgreSQL
 When agents need strict boundaries to prevent overlapping modifications.
 
 **Tightly scoped SPAWN REQUEST:**
+
 ```
 SPAWN REQUEST
 Agent: python-dev
@@ -273,6 +289,7 @@ Forbidden Paths:
 ```
 
 **Agent respects boundaries in its report:**
+
 ```
 AGENT REPORT
 Agent: python-dev

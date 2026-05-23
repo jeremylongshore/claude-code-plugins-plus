@@ -10,6 +10,7 @@ lokalise-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Lokalise common errors
 **Workflow:** Part of the operations skill category for Lokalise integration.
 **Relates to:** Other lokalise skills in this pack.

@@ -10,6 +10,7 @@ miro-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Miro example
 **Workflow:** Part of the onboarding skill category for Miro integration.
 **Relates to:** Other miro skills in this pack.

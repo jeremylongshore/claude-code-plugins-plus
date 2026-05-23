@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Security Basics
 
 ## Overview
+
 Secure Vercel deployments with proper secret management, security headers, deployment protection, and access token hygiene. Covers environment variable scoping, Content Security Policy, and preventing common secret exposure patterns.
 
 ## Prerequisites
+
 - Vercel CLI installed and authenticated
 - Access to Vercel dashboard
 - Understanding of HTTP security headers
@@ -37,6 +39,7 @@ Secure Vercel deployments with proper secret management, security headers, deplo
 ## Instructions
 
 ### Step 1: Secret Management with Environment Variables
+
 ```bash
 # Add secrets scoped to specific environments
 vercel env add DATABASE_URL production
@@ -61,6 +64,7 @@ curl -X POST "https://api.vercel.com/v9/projects/my-app/env" \
 **Critical rule:** Never prefix secrets with `NEXT_PUBLIC_`. Variables starting with `NEXT_PUBLIC_` are inlined into the client JavaScript bundle and visible to anyone.
 
 ### Step 2: Security Headers via vercel.json
+
 ```json
 {
   "headers": [
@@ -87,6 +91,7 @@ curl -X POST "https://api.vercel.com/v9/projects/my-app/env" \
 ```
 
 ### Step 3: Security Headers via Edge Middleware
+
 ```typescript
 // middleware.ts
 import { NextResponse } from 'next/server';
@@ -112,6 +117,7 @@ export function middleware(request: NextRequest) {
 ```
 
 ### Step 4: Deployment Protection
+
 ```json
 // vercel.json
 {
@@ -123,6 +129,7 @@ export function middleware(request: NextRequest) {
 ```
 
 Protection options:
+
 - **`vercel-authentication`** — requires Vercel team login to view preview deploys
 - **`standard-protection`** — uses bypass header for automation
 - **Deployment Protection Bypass** — for CI/CD and health checks:
@@ -135,6 +142,7 @@ curl -H "x-vercel-protection-bypass: your-bypass-secret" \
 ```
 
 ### Step 5: Access Token Best Practices
+
 ```bash
 # Create scoped tokens — restrict to one team and project
 # Settings > Tokens > Create Token:
@@ -149,6 +157,7 @@ curl -H "x-vercel-protection-bypass: your-bypass-secret" \
 ```
 
 Token security rules:
+
 1. Never commit tokens to git — use `.env.local` or CI secrets
 2. Scope tokens to the minimum required permissions
 3. Set expiration dates (90 days for CI, 30 days for dev)
@@ -156,6 +165,7 @@ Token security rules:
 5. Use separate tokens per environment/pipeline
 
 ### Step 6: API Route Authentication
+
 ```typescript
 // api/protected.ts
 import type { VercelRequest, VercelResponse } from '@vercel/node';
@@ -192,12 +202,14 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
 | `.env.local` in `.gitignore` | Required |
 
 ## Output
+
 - Environment variables properly scoped and typed as sensitive
 - Security headers applied to all responses
 - Deployment protection enabled for preview URLs
 - Access tokens scoped with expiration dates
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Secret visible in client bundle | Prefixed with `NEXT_PUBLIC_` | Remove prefix, redeploy, rotate the secret |
@@ -206,6 +218,7 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
 | Token expired | Past expiration date | Generate new token, update CI secrets |
 
 ## Resources
+
 - [Vercel Security](https://vercel.com/docs/security)
 - [Deployment Protection](https://vercel.com/docs/security/deployment-protection)
 - [Environment Variables](https://vercel.com/docs/environment-variables)
@@ -213,4 +226,5 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
 - [Access Tokens](https://vercel.com/docs/rest-api#creating-an-access-token)
 
 ## Next Steps
+
 For production deployment checklist, see `vercel-prod-checklist`.

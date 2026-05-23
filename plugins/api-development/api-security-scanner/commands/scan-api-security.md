@@ -10,6 +10,7 @@ Perform comprehensive automated security scanning to identify OWASP API Security
 ## When to Use This Command
 
 Use `/scan-api-security` when you need to:
+
 - Audit API security before production deployment
 - Perform regular security assessments
 - Validate security fixes and patches
@@ -18,6 +19,7 @@ Use `/scan-api-security` when you need to:
 - Detect data exposure and injection vulnerabilities
 
 DON'T use this when:
+
 - Scanning third-party APIs without permission (illegal)
 - As a replacement for manual security review (use both)
 - Performance testing is the primary goal (use load testing instead)
@@ -25,6 +27,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **OWASP ZAP + Custom Scanners** as the primary approach because:
+
 - Industry-standard security testing framework
 - Comprehensive vulnerability coverage
 - Active and passive scanning modes
@@ -33,12 +36,14 @@ This command implements **OWASP ZAP + Custom Scanners** as the primary approach 
 - Integration with CI/CD pipelines
 
 **Alternative considered: Burp Suite**
+
 - More features for manual testing
 - Better for complex authentication flows
 - Commercial license required
 - Recommended for enterprise environments
 
 **Alternative considered: Manual testing only**
+
 - More thorough for business logic flaws
 - Time-consuming and expensive
 - Inconsistent coverage
@@ -47,6 +52,7 @@ This command implements **OWASP ZAP + Custom Scanners** as the primary approach 
 ## Prerequisites
 
 Before running this command:
+
 1. API documentation (OpenAPI/Swagger preferred)
 2. Test environment with realistic data
 3. Authentication credentials for all roles
@@ -56,23 +62,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Configure Security Scanner
+
 Set up OWASP ZAP or similar tools with API-specific rules and authentication.
 
 ### Step 2: Perform Automated Scanning
+
 Run comprehensive automated scans for known vulnerability patterns.
 
 ### Step 3: Execute Manual Verification
+
 Verify critical findings and test business logic vulnerabilities.
 
 ### Step 4: Analyze Results
+
 Review findings, eliminate false positives, and prioritize by severity.
 
 ### Step 5: Generate Security Report
+
 Create detailed report with findings, evidence, and remediation steps.
 
 ## Output Format
 
 The command generates:
+
 - `security-report.html` - Executive summary with charts
 - `vulnerabilities.json` - Machine-readable findings
 - `evidence/` - Screenshots and request/response logs
@@ -793,12 +805,14 @@ if __name__ == "__main__":
 ## Configuration Options
 
 **Scan Modes**
+
 - `passive`: Non-intrusive scanning only
 - `active`: Full vulnerability testing
 - `targeted`: Focus on specific vulnerabilities
 - `compliance`: Check against standards
 
 **Authentication Types**
+
 - `bearer`: JWT/OAuth tokens
 - `basic`: Username/password
 - `apikey`: API key authentication
@@ -807,6 +821,7 @@ if __name__ == "__main__":
 ## Best Practices
 
 DO:
+
 - Always get written permission before scanning
 - Test in non-production environments first
 - Verify findings manually to eliminate false positives
@@ -815,6 +830,7 @@ DO:
 - Retest after implementing fixes
 
 DON'T:
+
 - Scan production APIs during peak hours
 - Ignore low-severity findings (defense in depth)
 - Share vulnerability details publicly
@@ -824,6 +840,7 @@ DON'T:
 ## Security Standards Compliance
 
 **OWASP API Security Top 10 (2023)**
+
 1. Broken Object Level Authorization
 2. Broken Authentication
 3. Broken Object Property Level Authorization

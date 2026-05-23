@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit CI Integration
 
 ## Overview
+
 Integrate CodeRabbit into your CI/CD pipeline as a merge gate. CodeRabbit posts a GitHub Check on each PR, and you can require this check to pass before merging. This skill covers branch protection rules, GitHub Actions workflows that react to CodeRabbit reviews, and strategies for enforcing review quality in CI.
 
 ## Prerequisites
+
 - CodeRabbit GitHub App installed on your repository
 - GitHub repository with branch protection enabled
 - `.coderabbit.yaml` committed to repository root
@@ -37,6 +39,7 @@ Integrate CodeRabbit into your CI/CD pipeline as a merge gate. CodeRabbit posts 
 ## Instructions
 
 ### Step 1: Enable CodeRabbit as a Required Status Check
+
 ```markdown
 1. Go to GitHub repo > Settings > Branches > Branch protection rules
 2. Click "Add rule" (or edit existing rule for `main`)
@@ -49,6 +52,7 @@ Result: PRs cannot be merged until CodeRabbit completes its review.
 ```
 
 ### Step 2: Configure Review Approval Behavior
+
 ```yaml
 # .coderabbit.yaml - Control when CodeRabbit blocks merge
 reviews:
@@ -74,6 +78,7 @@ reviews:
 ```
 
 ### Step 3: Create a Review Gate Workflow
+
 ```yaml
 # .github/workflows/coderabbit-gate.yml
 name: CodeRabbit Review Gate
@@ -115,6 +120,7 @@ jobs:
 ```
 
 ### Step 4: Add PR Size Check with CodeRabbit
+
 ```yaml
 # .github/workflows/pr-size-check.yml
 name: PR Size Check
@@ -147,6 +153,7 @@ jobs:
 ```
 
 ### Step 5: Notify on CodeRabbit Findings
+
 ```yaml
 # .github/workflows/coderabbit-notify.yml
 name: CodeRabbit Notification
@@ -183,6 +190,7 @@ jobs:
 ```
 
 ### Step 6: Enforce CodeRabbit via Branch Protection API
+
 ```bash
 set -euo pipefail
 # Programmatically set CodeRabbit as a required check
@@ -201,6 +209,7 @@ echo "Branch protection updated: CodeRabbit review required for merge"
 ```
 
 ## Output
+
 - CodeRabbit configured as a required status check on protected branches
 - GitHub Actions workflow that gates merges on CodeRabbit approval
 - PR size warnings to improve review quality
@@ -208,6 +217,7 @@ echo "Branch protection updated: CodeRabbit review required for merge"
 - Branch protection enforced via API
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | "coderabbitai" not in status checks list | App not installed or no PRs reviewed yet | Install App, create a test PR, then configure |
@@ -217,9 +227,11 @@ echo "Branch protection updated: CodeRabbit review required for merge"
 | Status check stays pending | CodeRabbit outage | Check status.coderabbit.ai; admin merge if needed |
 
 ## Resources
+
 - [CodeRabbit Configuration Reference](https://docs.coderabbit.ai/reference/configuration)
 - [GitHub Branch Protection](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-a-branch-protection-rule)
 - [GitHub Actions: Pull Request Events](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request_review)
 
 ## Next Steps
+
 For deployment and multi-repo rollout, see `coderabbit-deploy-integration`.

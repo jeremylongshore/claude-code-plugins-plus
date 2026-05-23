@@ -3,6 +3,7 @@
 ## Custom Reports
 
 ### Creating Reports
+
 ```
 Admin > Analytics > Custom Reports
 
@@ -15,6 +16,7 @@ Report Types:
 ```
 
 ### Scheduled Reports
+
 ```
 Automate reporting:
 
@@ -31,6 +33,7 @@ Example schedules:
 ```
 
 ### Export Options
+
 ```
 Export formats:
 - CSV (raw data)

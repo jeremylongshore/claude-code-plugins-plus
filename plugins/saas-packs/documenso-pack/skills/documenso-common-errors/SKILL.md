@@ -67,6 +67,7 @@ const client = new Documenso({ apiKey: process.env.DOCUMENSO_API_KEY! });
 ```
 
 **Checklist:**
+
 - API key starts with `api_` (personal) or is team-scoped
 - No trailing whitespace or newline in env var
 - Key hasn't been revoked in dashboard

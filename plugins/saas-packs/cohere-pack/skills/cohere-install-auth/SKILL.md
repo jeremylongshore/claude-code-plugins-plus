@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Cohere Install & Auth
 
 ## Overview
+
 Set up the Cohere SDK (v2) and configure authentication for Chat, Embed, Rerank, and Classify endpoints.
 
 ## Prerequisites
+
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Cohere account at [dashboard.cohere.com](https://dashboard.cohere.com)
@@ -56,6 +58,7 @@ echo 'CO_API_KEY=your-api-key-here' >> .env
 ```
 
 **Key types:**
+
 - **Trial key** — free, rate-limited (5-20 calls/min per endpoint, 1000/month others)
 - **Production key** — metered billing, 1000 calls/min all endpoints, unlimited monthly
 
@@ -111,11 +114,13 @@ print("Status:", response.message.content[0].text)
 | Rerank v3.5 | `rerank-v3.5` | 4K | Search reranking |
 
 ## Output
+
 - Installed `cohere-ai` (TS) or `cohere` (Python) package
 - Environment variable `CO_API_KEY` configured
 - Verified API connectivity with a chat completion
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `CohereApiError: invalid api token` | Wrong or expired key | Regenerate at dashboard.cohere.com |
@@ -124,6 +129,7 @@ print("Status:", response.message.content[0].text)
 | `MODULE_NOT_FOUND cohere-ai` | Package not installed | Run `npm install cohere-ai` |
 
 ## SDK Auto-Detection
+
 The SDK reads `CO_API_KEY` automatically if set. You can skip the `token` param:
 
 ```typescript
@@ -132,10 +138,12 @@ const cohere = new CohereClientV2();
 ```
 
 ## Resources
+
 - [Cohere API v2 Reference](https://docs.cohere.com/reference/about)
 - [Cohere Dashboard](https://dashboard.cohere.com)
 - [Cohere Models Overview](https://docs.cohere.com/docs/models)
 - [API Key & Rate Limits](https://docs.cohere.com/docs/rate-limits)
 
 ## Next Steps
+
 After successful auth, proceed to `cohere-hello-world` for your first real API call.

@@ -11,6 +11,7 @@ You are responding to a critical incident in the FairDB PostgreSQL infrastructur
 ## Incident Classification
 
 First, identify the incident type:
+
 - **P1 Critical**: Complete service outage, data loss risk
 - **P2 High**: Major degradation, affecting multiple customers
 - **P3 Medium**: Single customer impact, performance issues
@@ -450,6 +451,7 @@ echo "================================================" | tee -a $INCIDENT_LOG
 ## Emergency Contacts
 
 Keep these contacts readily available:
+
 - PostgreSQL Expert: [Contact info]
 - Infrastructure Team: [Contact info]
 - Customer Success: [Contact info]

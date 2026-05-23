@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Multi-Environment Setup
 
 ## Overview
+
 Configure isolated Deepgram environments for development, staging, and production. Each environment uses a separate Deepgram project, scoped API keys, environment-specific model selection, and validated configuration. Includes typed config, client factory, Docker Compose profiles, and Kubernetes overlays.
 
 ## Environment Strategy
@@ -315,6 +316,7 @@ async function validateEnvironments() {
 ```
 
 ## Output
+
 - Typed environment configuration (dev/staging/prod)
 - Singleton client factory per environment
 - Docker Compose multi-profile setup
@@ -322,6 +324,7 @@ async function validateEnvironments() {
 - Environment validation script
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `DEEPGRAM_API_KEY_DEV not set` | Missing env var | Set in `.env.development` |
@@ -330,6 +333,7 @@ async function validateEnvironments() {
 | Validation fails for one env | Key expired | Rotate key for that environment |
 
 ## Resources
+
 - [Deepgram Projects](https://developers.deepgram.com/docs/projects)
 - [API Key Management](https://developers.deepgram.com/docs/api-key-management)
 - [Kustomize](https://kustomize.io/)

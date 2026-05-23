@@ -3,6 +3,7 @@
 ## Evidence Collection Framework
 
 ### Comprehensive Debug Bundle
+
 ```bash
 #!/bin/bash
 # advanced-supabase-debug.sh

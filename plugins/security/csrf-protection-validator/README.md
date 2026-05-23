@@ -27,6 +27,7 @@ Validate Cross-Site Request Forgery (CSRF) protection mechanisms in web applicat
 ## CSRF Protection Methods
 
 ### 1. Synchronizer Token Pattern
+
 ```javascript
 // Generate CSRF token
 app.use((req, res, next) => {
@@ -45,6 +46,7 @@ app.post('/transfer', (req, res) => {
 ```
 
 ### 2. Double Submit Cookie
+
 ```javascript
 app.post('/api/action', (req, res) => {
     const cookieToken = req.cookies.csrfToken;
@@ -58,6 +60,7 @@ app.post('/api/action', (req, res) => {
 ```
 
 ### 3. SameSite Cookie Attribute
+
 ```javascript
 res.cookie('session', token, {
     httpOnly: true,
@@ -67,6 +70,7 @@ res.cookie('session', token, {
 ```
 
 ### 4. Origin/Referer Validation
+
 ```javascript
 app.use((req, res, next) => {
     const origin = req.headers.origin || req.headers.referer;

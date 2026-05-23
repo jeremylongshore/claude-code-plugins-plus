@@ -109,6 +109,7 @@ python3 scripts/token_refresh.py \
 ```
 
 Output:
+
 ```json
 {
   "status": "ok",
@@ -150,6 +151,7 @@ python3 scripts/rotate_secret.py \
 ```
 
 The script:
+
 1. Refreshes a token using `v2` and verifies it via `GET /v4/me`.
 2. Runs `health-check-passes` consecutive `/v4/me` calls — all must succeed.
 3. Sleeps `overlap-window-seconds` to let in-flight handlers drain on the old secret.

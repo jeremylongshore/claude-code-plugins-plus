@@ -1,6 +1,7 @@
 # Deepgram Security Basics - Implementation Details
 
 ## AWS Secret Manager Integration
+
 ```typescript
 import { SecretsManager } from '@aws-sdk/client-secrets-manager';
 
@@ -19,6 +20,7 @@ export async function getDeepgramKey(): Promise<string> {
 ```
 
 ## GCP Secret Manager Integration
+
 ```typescript
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
 const client = new SecretManagerServiceClient();
@@ -32,6 +34,7 @@ export async function getDeepgramKey(): Promise<string> {
 ```
 
 ## Key Rotation Script
+
 ```typescript
 export async function rotateDeepgramKey(adminKey: string, projectId: string) {
   const client = createClient(adminKey);
@@ -57,6 +60,7 @@ export async function rotateDeepgramKey(adminKey: string, projectId: string) {
 ```
 
 ## Scoped API Keys
+
 ```typescript
 const scopedKeys = {
   transcription: { scopes: ['listen:*'], comment: 'Read-only transcription key' },
@@ -66,6 +70,7 @@ const scopedKeys = {
 ```
 
 ## Request Sanitization
+
 ```typescript
 export function sanitizeAudioUrl(url: string): string {
   const parsed = new URL(url);
@@ -79,6 +84,7 @@ export function sanitizeAudioUrl(url: string): string {
 ```
 
 ## Audit Logging
+
 ```typescript
 export class AuditLogger {
   log(event: { action: string; success: boolean; userId?: string; metadata?: Record<string, unknown> }) {
@@ -100,6 +106,7 @@ export class AuditLogger {
 ```
 
 ## Data Protection (Encryption at Rest)
+
 ```typescript
 import crypto from 'crypto';
 

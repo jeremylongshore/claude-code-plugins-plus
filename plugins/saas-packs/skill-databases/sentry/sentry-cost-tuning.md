@@ -10,6 +10,7 @@ sentry-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Sentry costs and event volume through sampling, filtering, and disabling unused features while maintaining monitoring quality.
 **Workflow:** Apply when managing Sentry billing or proactively optimizing spend. Implements cost-reduction strategies across the organization.
 **Relates to:** Works with `sentry-rate-limits` for quota management. Connects to `sentry-load-scale` for high-volume optimization.

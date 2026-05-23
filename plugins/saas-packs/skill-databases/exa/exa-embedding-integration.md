@@ -10,6 +10,7 @@ exa-embedding-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Integrate Exa neural embeddings with vector databases for custom similarity search, clustering, and advanced ML workflows.
 **Workflow:** Advanced ML skill - extends Exa capabilities with vector infrastructure.
 **Relates to:** Follows exa-similarity-search; complements exa-rag-integration

@@ -203,21 +203,25 @@ print(f"\n{'='*60}")
 ## Examples
 
 ### Basic equity analysis
+
 ```bash
 /openbb-equity AAPL
 ```
 
 ### Fundamental analysis only
+
 ```bash
 /openbb-equity TSLA --analysis=fundamental
 ```
 
 ### Technical analysis with custom period
+
 ```bash
 /openbb-equity NVDA --analysis=technical --period=6m
 ```
 
 ### Complete analysis
+
 ```bash
 /openbb-equity GOOGL --analysis=all --period=1y
 ```

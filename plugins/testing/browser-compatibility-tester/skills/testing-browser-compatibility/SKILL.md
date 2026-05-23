@@ -97,6 +97,7 @@ Pre-built device matrices: `${CLAUDE_SKILL_DIR}/references/device-matrix.md` (to
 ## Examples
 
 **Playwright multi-browser config:**
+
 ```typescript
 import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
@@ -111,6 +112,7 @@ export default defineConfig({
 ```
 
 **Cross-browser layout test:**
+
 ```typescript
 test('nav renders correctly across browsers', async ({ page }) => {
   await page.goto('/');
@@ -122,6 +124,7 @@ test('nav renders correctly across browsers', async ({ page }) => {
 ```
 
 **Kobiton real-device capabilities:**
+
 ```json
 {
   "platformName": "iOS",

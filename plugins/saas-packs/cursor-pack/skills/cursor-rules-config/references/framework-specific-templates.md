@@ -3,6 +3,7 @@
 ## Framework-Specific Templates
 
 ### Next.js App Router
+
 ```yaml
 # .cursorrules for Next.js App Router
 
@@ -25,6 +26,7 @@ file-conventions:
 ```
 
 ### Express/Node.js Backend
+
 ```yaml
 # .cursorrules for Express API
 
@@ -48,6 +50,7 @@ structure:
 ```
 
 ### Python FastAPI
+
 ```yaml
 # .cursorrules for FastAPI
 

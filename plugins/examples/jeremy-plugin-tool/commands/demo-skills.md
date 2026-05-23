@@ -12,6 +12,7 @@ This command demonstrates the 5 Agent Skills designed specifically for managing 
 **Skills Powerkit is a "meta-plugin"** - it helps you BUILD, VALIDATE, AUDIT, and MANAGE other plugins.
 
 Unlike general development skills, these are **repository-specific** - they understand:
+
 - Two-catalog system (marketplace.extended.json → marketplace.json)
 - Repository structure and standards
 - CLAUDE.md compliance requirements
@@ -22,7 +23,9 @@ Unlike general development skills, these are **repository-specific** - they unde
 ## 5 Plugin Management Skills
 
 ### 1. 🛠️ Plugin Creator
+
 **Auto-invokes when you mention:**
+
 - "create plugin", "new plugin"
 - "scaffold plugin"
 - "add plugin to marketplace"
@@ -30,6 +33,7 @@ Unlike general development skills, these are **repository-specific** - they unde
 **Example request:** "Create a security plugin called 'owasp-scanner' with commands"
 
 **What it automatically does:**
+
 1. Creates directory structure: `plugins/security/owasp-scanner/`
 2. Generates plugin.json with proper schema
 3. Creates README.md, LICENSE
@@ -44,7 +48,9 @@ Unlike general development skills, these are **repository-specific** - they unde
 ---
 
 ### 2. ✅ Plugin Validator
+
 **Auto-invokes when you mention:**
+
 - "validate plugin", "check plugin"
 - "is plugin ready to commit"
 - "plugin errors"
@@ -52,6 +58,7 @@ Unlike general development skills, these are **repository-specific** - they unde
 **Example request:** "Validate the skills-powerkit plugin"
 
 **What it automatically does:**
+
 1. Checks required files exist
 2. Validates plugin.json schema
 3. Checks markdown frontmatter format
@@ -65,7 +72,9 @@ Unlike general development skills, these are **repository-specific** - they unde
 ---
 
 ### 3. 📦 Marketplace Manager
+
 **Auto-invokes when you mention:**
+
 - "update marketplace", "sync marketplace"
 - "add to marketplace"
 - "marketplace catalog"
@@ -73,6 +82,7 @@ Unlike general development skills, these are **repository-specific** - they unde
 **Example request:** "Add the new security-scanner to marketplace"
 
 **What it automatically does:**
+
 1. Reads plugin.json for metadata
 2. Adds entry to marketplace.extended.json
 3. Runs `npm run sync-marketplace`
@@ -85,7 +95,9 @@ Unlike general development skills, these are **repository-specific** - they unde
 ---
 
 ### 4. 🔍 Plugin Auditor
+
 **Auto-invokes when you mention:**
+
 - "audit plugin", "security review"
 - "best practices check"
 - "plugin quality"
@@ -93,6 +105,7 @@ Unlike general development skills, these are **repository-specific** - they unde
 **Example request:** "Security audit on the password-manager plugin"
 
 **What it automatically does:**
+
 1. Scans for hardcoded secrets (passwords, API keys)
 2. Checks for dangerous commands (rm -rf, eval)
 3. Validates security patterns
@@ -106,7 +119,9 @@ Unlike general development skills, these are **repository-specific** - they unde
 ---
 
 ### 5. 🔢 Version Bumper
+
 **Auto-invokes when you mention:**
+
 - "bump version", "update version"
 - "release", "new version"
 - "major/minor/patch"
@@ -114,6 +129,7 @@ Unlike general development skills, these are **repository-specific** - they unde
 **Example request:** "Bump docker-optimizer to minor version"
 
 **What it automatically does:**
+
 1. Reads current version from plugin.json
 2. Calculates new version (1.0.0 → 1.1.0)
 3. Updates plugin.json
@@ -136,6 +152,7 @@ Unlike general development skills, these are **repository-specific** - they unde
 **You:** "I need a new DevOps plugin for Docker optimization with commands"
 
 **Claude automatically:**
+
 1. Recognizes "new plugin" → Invokes Plugin Creator
 2. Recognizes "DevOps" → Sets category
 3. Recognizes "with commands" → Creates commands/ directory
@@ -166,26 +183,32 @@ Unlike general development skills, these are **repository-specific** - they unde
 ## Real Workflow Examples
 
 ### Workflow 1: Create + Validate + Audit
+
 **You:** "Create a security plugin called 'owasp-scanner', validate it, and run security audit"
 
 **Skills automatically chain:**
+
 1. Plugin Creator → Creates plugin
 2. Plugin Validator → Validates structure
 3. Plugin Auditor → Security audit
 4. Reports all results
 
 ### Workflow 2: Update + Sync
+
 **You:** "Bump version to 1.2.0 and update marketplace"
 
 **Skills automatically chain:**
+
 1. Version Bumper → Updates to 1.2.0
 2. Marketplace Manager → Syncs catalog
 3. Reports success
 
 ### Workflow 3: Pre-Commit Check
+
 **You:** "Is everything ready to commit?"
 
 **Skills automatically:**
+
 1. Plugin Validator → Full validation
 2. Plugin Auditor → Security check
 3. Reports: "✅ PASSED - Ready to commit!"
@@ -197,21 +220,25 @@ Unlike general development skills, these are **repository-specific** - they unde
 Skills Powerkit knows about claude-code-plugins:
 
 **Two-Catalog System:**
+
 - marketplace.extended.json (source - edit this)
 - marketplace.json (generated - never edit)
 - Auto-runs `npm run sync-marketplace`
 
 **Directory Structure:**
+
 - plugins/[category]/[plugin-name]/
 - 14 valid categories
 - Required files
 
 **Validation Standards:**
+
 - ./scripts/validate-all.sh
 - python3 scripts/check-frontmatter.py
 - jq for JSON validation
 
 **CLAUDE.md Compliance:**
+
 - Follows repository conventions
 - Uses correct marketplace slug
 - Validates against standards
@@ -254,6 +281,7 @@ Once installed, all 5 skills are active and auto-invoke when relevant.
 ## Time Savings
 
 **Per plugin lifecycle:**
+
 - Create: 15-30 min → 30 seconds
 - Validate: 5-10 min → 10 seconds
 - Marketplace: 3-5 min → 5 seconds
@@ -275,6 +303,7 @@ Once installed, all 5 skills are active and auto-invoke when relevant.
 ---
 
 **Need help?** Just ask:
+
 - "What skills do I have available?"
 - "How do I create a plugin?"
 - "Validate my current plugin"

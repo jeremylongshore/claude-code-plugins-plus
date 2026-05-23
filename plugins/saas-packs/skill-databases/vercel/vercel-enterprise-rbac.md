@@ -10,6 +10,7 @@ vercel-enterprise-rbac/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure enterprise SSO, role-based access control, organization management, and audit trails.
 **Workflow:** Used during enterprise onboarding and when adding new roles or SSO providers.
 **Relates to:** Extends vercel-data-handling security; leads to vercel-migration-deep-dive for major changes

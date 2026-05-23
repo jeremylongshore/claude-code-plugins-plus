@@ -24,15 +24,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo SDK Patterns
 
 ## Overview
+
 Production-ready patterns for Apollo.io API integration. Apollo has no official SDK — these patterns wrap the REST API (`https://api.apollo.io/api/v1/`) with type safety, retry logic, pagination, and bulk operations. All requests use the `x-api-key` header.
 
 ## Prerequisites
+
 - Completed `apollo-install-auth` setup
 - TypeScript 5+ with strict mode
 
 ## Instructions
 
 ### Step 1: Type-Safe Client with Zod Validation
+
 ```typescript
 // src/apollo/client.ts
 import axios, { AxiosInstance } from 'axios';
@@ -71,6 +74,7 @@ export function resetClient() { instance = null; }
 ```
 
 ### Step 2: Custom Error Classes
+
 ```typescript
 // src/apollo/errors.ts
 import { AxiosError } from 'axios';
@@ -112,6 +116,7 @@ export class ApolloRateLimitError extends ApolloApiError {
 ```
 
 ### Step 3: Retry with Exponential Backoff
+
 ```typescript
 // src/apollo/retry.ts
 import { ApolloApiError } from './errors';
@@ -139,6 +144,7 @@ export async function withRetry<T>(
 ```
 
 ### Step 4: Async Pagination Iterator
+
 Apollo endpoints return `pagination.total_entries` and accept `page`/`per_page`. The People Search API limits to 500 pages (50,000 records).
 
 ```typescript
@@ -180,6 +186,7 @@ export async function* paginate<T>(
 ```
 
 ### Step 5: Bulk Enrichment with Rate Awareness
+
 Apollo's Bulk People Enrichment endpoint handles up to 10 records per call.
 
 ```typescript
@@ -227,6 +234,7 @@ export async function bulkEnrichPeople(
 ```
 
 ## Output
+
 - `src/apollo/client.ts` — Zod-validated singleton with `x-api-key` header
 - `src/apollo/errors.ts` — `ApolloApiError` + `ApolloRateLimitError` with retryable flag
 - `src/apollo/retry.ts` — Exponential backoff with jitter
@@ -234,6 +242,7 @@ export async function bulkEnrichPeople(
 - `src/apollo/bulk-enrich.ts` — Batch enrichment via `/people/bulk_match` (10 per call)
 
 ## Error Handling
+
 | Pattern | When to Use |
 |---------|-------------|
 | Singleton client | Always — one client instance per process |
@@ -245,6 +254,7 @@ export async function bulkEnrichPeople(
 ## Examples
 
 ### Full Pipeline: Search, Paginate, Enrich
+
 ```typescript
 import { paginate } from './apollo/paginator';
 import { bulkEnrichPeople } from './apollo/bulk-enrich';
@@ -270,9 +280,11 @@ async function enrichLeadsAtCompany(domain: string) {
 ```
 
 ## Resources
+
 - [Apollo API Overview](https://docs.apollo.io/docs/api-overview)
 - [Bulk People Enrichment](https://docs.apollo.io/reference/bulk-people-enrichment)
 - [Zod Schema Validation](https://zod.dev/)
 
 ## Next Steps
+
 Proceed to `apollo-core-workflow-a` for lead search implementation.

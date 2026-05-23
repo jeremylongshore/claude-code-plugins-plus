@@ -5,9 +5,11 @@ Detailed implementation reference for the speak-hello-world skill.
 ## Instructions
 
 ### Step 1: Create Entry File
+
 Create a new file for your hello world lesson.
 
 ### Step 2: Import and Initialize Client
+
 ```typescript
 // src/speak-hello-world.ts
 import { SpeakClient, LessonSession, AITutor } from '@speak/language-sdk';
@@ -20,6 +22,7 @@ const client = new SpeakClient({
 ```
 
 ### Step 3: Create Your First Lesson Session
+
 ```typescript
 async function startFirstLesson() {
   // Initialize AI tutor
@@ -57,14 +60,15 @@ startFirstLesson().catch(console.error);
 ```
 
 ### Step 4: Run Your First Lesson
+
 ```bash
 npx tsx src/speak-hello-world.ts
 ```
 
-
 ## Detailed Examples
 
 ### TypeScript: Pronunciation Practice
+
 ```typescript
 import { SpeakClient, PronunciationPractice } from '@speak/language-sdk';
 
@@ -94,6 +98,7 @@ practicePronunciation();
 ```
 
 ### Python: Basic Lesson
+
 ```python
 from speak_sdk import SpeakClient, AITutor
 
@@ -118,6 +123,7 @@ asyncio.run(first_lesson())
 ```
 
 ### Vocabulary Quiz Example
+
 ```typescript
 async function vocabularyQuiz() {
   const quiz = await client.vocabulary.createQuiz({
@@ -139,4 +145,3 @@ async function vocabularyQuiz() {
   console.log(`Final Score: ${quiz.score}/${quiz.total}`);
 }
 ```
-

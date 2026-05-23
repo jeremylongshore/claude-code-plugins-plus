@@ -19,6 +19,7 @@ Optimize video titles for maximum click-through rate using data-driven formulas 
 ## Purpose
 
 Create titles that:
+
 - **Stop the scroll** - Grab attention in feed
 - **Maximize CTR** - Get more clicks per impression
 - **Optimize for search** - Rank for target keywords
@@ -30,6 +31,7 @@ Create titles that:
 When user runs `/optimize-title "How to add Redis caching"`:
 
 **Step 1: Initial Analysis**
+
 ```
 📊 TITLE ANALYSIS
 
@@ -52,6 +54,7 @@ Recommendation: Complete rewrite needed
 ```
 
 **Step 2: Generate Alternatives**
+
 ```
 ✨ OPTIMIZED TITLE OPTIONS (Ranked by Predicted CTR)
 
@@ -110,6 +113,7 @@ Alternative: Option B for more technical audience
 ```
 
 **Step 3: A/B Test Prediction**
+
 ```
 📈 A/B TEST SIMULATION
 
@@ -137,6 +141,7 @@ Confidence: 94%
 ## Title Formulas
 
 ### Formula 1: Transformation Story
+
 ```
 Format: "I [ACTION] [THING] From [BAD] to [GOOD]"
 
@@ -156,6 +161,7 @@ Best For: Success stories, transformations, tutorials
 ```
 
 ### Formula 2: Number + Outcome
+
 ```
 Format: "[NUMBER] [THINGS] That [RESULT]"
 
@@ -175,6 +181,7 @@ Best For: Tips, lists, compilations
 ```
 
 ### Formula 3: Secret Reveal
+
 ```
 Format: "The [ADJECTIVE] Secret to [OUTCOME]"
 
@@ -194,6 +201,7 @@ Best For: Unique insights, non-obvious solutions
 ```
 
 ### Formula 4: Problem + Solution
+
 ```
 Format: "Why [PROBLEM] (And How to Fix It)"
 
@@ -213,6 +221,7 @@ Best For: Problem-solving, education, debugging
 ```
 
 ### Formula 5: Comparison
+
 ```
 Format: "[OPTION A] vs [OPTION B]: Which is [BETTER]?"
 
@@ -232,6 +241,7 @@ Best For: Tool comparisons, benchmarks, reviews
 ```
 
 ### Formula 6: Time Challenge
+
 ```
 Format: "[DO THING] in [SHORT TIME]"
 
@@ -251,6 +261,7 @@ Best For: Tutorials, quick wins, introductions
 ```
 
 ### Formula 7: Mistake/Warning
+
 ```
 Format: "Stop [DOING WRONG THING] (Do This Instead)"
 
@@ -272,6 +283,7 @@ Best For: Corrections, best practices, warnings
 ## Power Words
 
 ### High-Impact Words (Use Sparingly)
+
 ```
 Action Words:
 ✓ Destroyed, Crushed, Dominated, Mastered
@@ -295,6 +307,7 @@ Numbers:
 ```
 
 ### Words to Avoid
+
 ```
 Weak Words:
 ❌ "Tips", "Tricks" (overused, weak)
@@ -441,6 +454,7 @@ New predicted CTR: 8.9% → 9.2%
 ## Platform-Specific Optimization
 
 ### YouTube
+
 ```
 Optimal Length: 40-70 characters
 Focus: CTR and searchability
@@ -455,6 +469,7 @@ Best Practices:
 ```
 
 ### TikTok
+
 ```
 Optimal Length: 20-40 characters
 Focus: Immediate hook
@@ -469,6 +484,7 @@ Best Practices:
 ```
 
 ### LinkedIn
+
 ```
 Optimal Length: 30-60 characters
 Focus: Professional credibility
@@ -483,6 +499,7 @@ Best Practices:
 ```
 
 ### Twitter
+
 ```
 Optimal Length: 20-50 characters
 Focus: Shareability
@@ -509,6 +526,7 @@ Works with other Creator Studio plugins:
 ## Best Practices
 
 ### Title Writing Rules
+
 1. **Front-load value** - Put hook in first 40 characters
 2. **Use specifics** - Numbers, timeframes, metrics
 3. **Create curiosity** - Make them want to know more
@@ -516,6 +534,7 @@ Works with other Creator Studio plugins:
 5. **Test variations** - A/B test everything
 
 ### Common Mistakes
+
 ❌ Too long (>80 characters - gets cut off)
 ❌ Too vague ("How to improve performance")
 ❌ Clickbait without payoff (kills trust)
@@ -523,6 +542,7 @@ Works with other Creator Studio plugins:
 ❌ Missing keywords (poor search ranking)
 
 ### Testing Strategy
+
 1. **Generate 5-10 options** - Don't settle for first idea
 2. **Narrow to top 3** - Based on formula and data
 3. **Test with audience** - Poll, tweet, ask
@@ -532,6 +552,7 @@ Works with other Creator Studio plugins:
 ## Troubleshooting
 
 ### Low CTR Despite Good Title
+
 ```
 ⚠️ Title CTR: 3.1% (Expected: 6-8%)
 
@@ -549,6 +570,7 @@ Fixes:
 ```
 
 ### Title Gets Truncated
+
 ```
 ⚠️ Title length: 87 characters (visible: 60)
 

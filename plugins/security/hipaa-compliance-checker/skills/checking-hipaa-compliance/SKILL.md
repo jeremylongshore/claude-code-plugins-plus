@@ -31,6 +31,7 @@ This skill automates the process of identifying potential HIPAA compliance issue
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Evaluate a codebase for HIPAA compliance before deployment.
 - Identify potential HIPAA violations in existing systems.
 - Assess the HIPAA readiness of infrastructure configurations.
@@ -43,6 +44,7 @@ This skill activates when you need to:
 User request: "Check HIPAA compliance of the patient data API codebase."
 
 The skill will:
+
 1. Activate the hipaa-compliance-checker plugin.
 2. Scan the specified API codebase for potential HIPAA violations.
 3. Generate a report listing any identified issues, such as insecure data storage or insufficient access controls.
@@ -52,6 +54,7 @@ The skill will:
 User request: "Assess the HIPAA readiness of our AWS infrastructure configuration."
 
 The skill will:
+
 1. Activate the hipaa-compliance-checker plugin.
 2. Analyze the AWS infrastructure configuration files for potential HIPAA violations, such as misconfigured security groups or inadequate encryption.
 3. Generate a report outlining any identified issues and recommendations for remediation.
@@ -93,6 +96,7 @@ This skill can be integrated with other security and compliance tools to provide
 ## Error Handling
 
 If security scanning fails:
+
 - Verify tool installation and configuration
 - Check file and directory permissions
 - Validate scan target paths

@@ -10,6 +10,7 @@ attio-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Attio SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Attio integration.
 **Relates to:** Other attio skills in this pack.

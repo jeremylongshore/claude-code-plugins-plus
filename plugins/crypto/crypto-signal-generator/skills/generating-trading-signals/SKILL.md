@@ -44,18 +44,23 @@ Optional for visualization: `pip install matplotlib`
 ## Instructions
 
 1. **Quick signal scan** across multiple assets:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --watchlist crypto_top10 --period 6m
    ```
+
    Output shows signal type (STRONG_BUY/BUY/NEUTRAL/SELL/STRONG_SELL) and confidence per asset.
 
 2. **Detailed signal analysis** for a specific symbol:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --symbols BTC-USD --detail
    ```
+
    Shows each indicator's individual signal, value, and reasoning.
 
 3. **Filter and rank** the best opportunities:
+
    ```bash
    # Only buy signals with 70%+ confidence
    python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --filter buy --min-confidence 70 --rank confidence
@@ -65,10 +70,12 @@ Optional for visualization: `pip install matplotlib`
    ```
 
 4. **Use predefined watchlists**:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --list-watchlists
    python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --watchlist crypto_defi
    ```
+
    Available: `crypto_top10`, `crypto_defi`, `crypto_layer2`, `stocks_tech`, `etfs_major`
 
 ## Output
@@ -94,21 +101,25 @@ See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 ## Examples
 
 **Morning crypto scan** - Check all top-10 crypto assets for entry opportunities:
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --watchlist crypto_top10 --period 6m
 ```
 
 **Deep dive on Bitcoin** - Full indicator breakdown with risk management levels:
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --symbols BTC-USD --detail
 ```
 
 **Find strongest DeFi buy signals** - Filter and rank by confidence:
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --watchlist crypto_defi --filter buy --rank confidence
 ```
 
 **Export results** - Save to JSON for automated pipeline or further analysis:
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --watchlist crypto_top10 --output signals.json
 ```

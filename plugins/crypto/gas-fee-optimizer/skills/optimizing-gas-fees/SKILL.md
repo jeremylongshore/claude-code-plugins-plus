@@ -23,6 +23,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 Gas fee optimization skill that:
+
 - Fetches real-time gas prices from multiple sources
 - Estimates transaction costs in ETH and USD
 - Analyzes historical patterns to find optimal timing
@@ -39,33 +40,46 @@ Gas fee optimization skill that:
 ## Instructions
 
 1. Check current gas prices (optionally for a specific chain):
+
    ```bash
    cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py current
    cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py current --chain polygon
    ```
+
 2. Estimate transaction cost for known operations or custom gas limits (available operations: `eth_transfer`, `erc20_transfer`, `erc20_approve`, `uniswap_v2_swap`, `uniswap_v3_swap`, `sushiswap_swap`, `curve_swap`, `nft_mint`, `nft_transfer`, `opensea_listing`, `aave_deposit`, `aave_withdraw`, `compound_supply`, `compound_borrow`, `bridge_deposit`):
+
    ```bash
    cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py estimate --operation uniswap_v2_swap --all-tiers
    cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py estimate --gas-limit 150000 --tier fast  # 150000 = configured value
    ```
+
 3. Find the optimal transaction window with lowest expected gas:
+
    ```bash
    cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py optimal
    ```
+
 4. View gas patterns (hourly or daily):
+
    ```bash
    cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py patterns
    cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py patterns --daily
    ```
+
 5. Predict future gas prices for a given hour:
+
    ```bash
    cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py predict --time 14
    ```
+
 6. Compare gas prices across multiple chains:
+
    ```bash
    cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py compare
    ```
+
 7. View base fee history for recent blocks:
+
    ```bash
    cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py history --blocks 50
    ```
@@ -101,6 +115,7 @@ Gas fee optimization skill that:
 ## Error Handling
 
 See `${CLAUDE_SKILL_DIR}/references/errors.md` for:
+
 - RPC connection issues
 - API rate limiting
 - Price feed errors
@@ -109,6 +124,7 @@ See `${CLAUDE_SKILL_DIR}/references/errors.md` for:
 ## Examples
 
 See `${CLAUDE_SKILL_DIR}/references/examples.md` for:
+
 - Quick start commands
 - Cost estimation scenarios
 - Multi-chain comparison

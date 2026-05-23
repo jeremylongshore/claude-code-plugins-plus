@@ -73,6 +73,7 @@ tags.module:notifications → #engagement-team
 ## When to Graduate from Monolith Pattern
 
 Move to project-per-service when:
+
 - Module count exceeds 50 (tag cardinality limit)
 - Teams need separate DSNs for access control
 - Deploy cadence differs per module (independent releases)

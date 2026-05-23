@@ -37,6 +37,7 @@ These are real questions developers ask that this skill is designed to answer:
 ## Red Flags - Test Reliability Issues
 
 If you see ANY of these, suspect timing issues:
+
 - Tests pass locally, fail in CI (timing differences)
 - Tests sometimes pass, sometimes fail (race conditions)
 - Tests use `sleep()` or `Thread.sleep()` (arbitrary delays)
@@ -60,6 +61,7 @@ Test failing?
 ## Core Pattern: Condition-Based Waiting
 
 **❌ WRONG (Arbitrary Timeout)**:
+
 ```swift
 func testButtonAppears() {
     app.buttons["Login"].tap()
@@ -69,6 +71,7 @@ func testButtonAppears() {
 ```
 
 **✅ CORRECT (Wait for Condition)**:
+
 ```swift
 func testButtonAppears() {
     app.buttons["Login"].tap()
@@ -124,6 +127,7 @@ submitButton.tap()
 ### Pattern 4: Accessibility Identifiers
 
 **Set in app**:
+
 ```swift
 Button("Submit") {
     // action
@@ -132,6 +136,7 @@ Button("Submit") {
 ```
 
 **Use in tests**:
+
 ```swift
 func testSubmitButton() {
     let submitButton = app.buttons["submitButton"]  // Uses identifier, not label
@@ -176,18 +181,21 @@ func testAnimatedTransition() {
 ## Testing Checklist
 
 ### Before Writing Tests
+
 - [ ] Use accessibility identifiers for all interactive elements
 - [ ] Avoid hardcoded labels (use identifiers instead)
 - [ ] Plan for network delays and animations
 - [ ] Choose appropriate timeouts (2s UI, 10s network)
 
 ### When Writing Tests
+
 - [ ] Use `waitForExistence()` not `sleep()`
 - [ ] Use predicates for complex conditions
 - [ ] Test both success and failure paths
 - [ ] Make tests independent (can run in any order)
 
 ### After Writing Tests
+
 - [ ] Run tests 10 times locally (catch flakiness)
 - [ ] Run tests on slowest supported device
 - [ ] Run tests in CI environment
@@ -206,6 +214,7 @@ func testExample() {
 ```
 
 In app code:
+
 ```swift
 if ProcessInfo.processInfo.arguments.contains("UI-Testing") {
     // Use mock data, skip onboarding, etc.
@@ -238,22 +247,26 @@ func testExample() {
 ## Common Mistakes
 
 ### ❌ Using sleep() for Everything
+
 ```swift
 sleep(5)  // ❌ Wastes time if operation completes in 1s
 ```
 
 ### ❌ Not Handling Animations
+
 ```swift
 app.buttons["Next"].tap()
 XCTAssertTrue(app.buttons["Back"].exists)  // ❌ May fail during animation
 ```
 
 ### ❌ Hardcoded Text Labels
+
 ```swift
 app.buttons["Submit"].tap()  // ❌ Breaks with localization
 ```
 
 ### ❌ Tests Depend on Each Other
+
 ```swift
 // ❌ Test 2 assumes Test 1 ran first
 func test1_Login() { /* ... */ }
@@ -261,12 +274,14 @@ func test2_ViewDashboard() { /* assumes logged in */ }
 ```
 
 ### ❌ No Timeout Strategy
+
 ```swift
 element.waitForExistence(timeout: 100)  // ❌ Too long
 element.waitForExistence(timeout: 0.1)  // ❌ Too short
 ```
 
 **Use appropriate timeouts**:
+
 - UI animations: 2-3 seconds
 - Network requests: 10 seconds
 - Complex operations: 30 seconds max
@@ -274,11 +289,13 @@ element.waitForExistence(timeout: 0.1)  // ❌ Too short
 ## Real-World Impact
 
 **Before** (using sleep()):
+
 - Test suite: 15 minutes (waiting for worst-case)
 - Flaky tests: 20% failure rate
 - CI failures: 50% require retry
 
 **After** (condition-based waiting):
+
 - Test suite: 5 minutes (waits only as needed)
 - Flaky tests: <2% failure rate
 - CI failures: <5% require retry
@@ -294,6 +311,7 @@ element.waitForExistence(timeout: 0.1)  // ❌ Too short
 **NEW in Xcode 26**: Record, replay, and review UI automation tests with video recordings.
 
 **Three Phases**:
+
 1. **Record** - Capture interactions (taps, swipes, hardware button presses) as Swift code
 2. **Replay** - Run across multiple devices, languages, regions, orientations
 3. **Review** - Watch video recordings, analyze failures, view UI element overlays
@@ -303,12 +321,14 @@ element.waitForExistence(timeout: 0.1)  // ❌ Too short
 ### How UI Automation Works
 
 **Key Principles**:
+
 - UI automation interacts with your app **as a person does** using gestures and hardware events
 - Runs **completely independently** from your app (app models/data not directly accessible)
 - Uses **accessibility framework** as underlying technology
 - Tells OS which gestures to perform, then waits for completion **synchronously** one at a time
 
 **Actions include**:
+
 - Launching your app
 - Interacting with buttons and navigation
 - Setting system state (Dark Mode, localization, etc.)
@@ -319,6 +339,7 @@ element.waitForExistence(timeout: 0.1)  // ❌ Too short
 **Critical Understanding**: Accessibility provides information directly to UI automation.
 
 What accessibility sees:
+
 - Element types (button, text, image, etc.)
 - Labels (visible text)
 - Values (current state for checkboxes, etc.)
@@ -332,6 +353,7 @@ What accessibility sees:
 #### Step 1: Add Accessibility Identifiers
 
 **SwiftUI**:
+
 ```swift
 Button("Submit") {
     // action
@@ -346,6 +368,7 @@ List(landmarks) { landmark in
 ```
 
 **UIKit**:
+
 ```swift
 let button = UIButton()
 button.accessibilityIdentifier = "submitButton"
@@ -355,17 +378,20 @@ cell.accessibilityIdentifier = "cell-\(indexPath.row)"
 ```
 
 **Good identifiers are**:
+
 - ✅ Unique within entire app
 - ✅ Descriptive of element contents
 - ✅ Static (don't react to content changes)
 - ✅ Not localized (same across languages)
 
 **Why identifiers matter**:
+
 - Titles/descriptions may change, identifiers remain stable
 - Work across localized strings
 - Uniquely identify elements with dynamic content
 
 **Pro Tip**: Use Xcode coding assistant to add identifiers:
+
 ```
 Prompt: "Add accessibility identifiers to the relevant parts of this view"
 ```
@@ -373,15 +399,18 @@ Prompt: "Add accessibility identifiers to the relevant parts of this view"
 #### Step 2: Review Accessibility with Accessibility Inspector
 
 **Launch Accessibility Inspector**:
+
 - Xcode menu → Open Developer Tool → Accessibility Inspector
 - Or: Launch from Spotlight
 
 **Features**:
+
 1. **Element Inspector** - List accessibility values for any view
 2. **Property details** - Click property name for documentation
 3. **Platform support** - Works on all Apple platforms
 
 **What to check**:
+
 - Elements have labels
 - Interactive elements have types (button, not just text)
 - Values set for stateful elements (checkboxes, toggles)
@@ -408,11 +437,13 @@ Prompt: "Add accessibility identifiers to the relevant parts of this view"
 4. Xcode builds and launches app in Simulator/device
 
 **During Recording**:
+
 - Interact with app normally (taps, swipes, text entry, etc.)
 - Code representing interactions appears in source editor in real-time
 - Recording updates as you type (e.g., text field entries)
 
 **Stopping Recording**:
+
 - Click **"Stop Run"** button in Xcode
 
 #### Example Recording Session
@@ -454,11 +485,13 @@ After recording, **review and adjust queries**:
 **Multiple Options**: Each line has dropdown showing alternative ways to address element.
 
 **Selection Recommendations**:
+
 1. **For localized strings** (text, button labels): Choose accessibility identifier if available
 2. **For deeply nested views**: Choose shortest query (stays resilient as app changes)
 3. **For dynamic content** (timestamps, temperature): Use generic query or identifier
 
 **Example**:
+
 ```swift
 // Recorded options for text field:
 app.textFields["Collection Name"]              // ❌ Breaks if label localizes
@@ -536,6 +569,7 @@ func testWithMockData() {
 ```
 
 In app code:
+
 ```swift
 if ProcessInfo.processInfo.arguments.contains("-UI-Testing") {
     // Use mock data, skip onboarding
@@ -570,6 +604,7 @@ func testAccessibility() throws {
 ### Test Plans for Multiple Configurations
 
 **Test Plans** let you:
+
 - Include/exclude individual tests
 - Set system settings (language, region, appearance)
 - Configure test properties (timeouts, repetitions, parallelization)
@@ -594,12 +629,14 @@ Configurations:
 **Each locale** = separate configuration in test plan.
 
 **Settings**:
+
 - Focused for specific locale
 - Shared across all configurations
 
 #### Video & Screenshot Capture
 
 **In Configurations tab**:
+
 - **Capture screenshots**: On/Off
 - **Capture video**: On/Off
 - **Keep media**: "Only failures" or "On, and keep all"
@@ -607,6 +644,7 @@ Configurations:
 **Defaults**: Videos/screenshots kept only for failing runs (for review).
 
 **"On, and keep all" use cases**:
+
 - Documentation
 - Tutorials
 - Marketing materials
@@ -616,17 +654,20 @@ Configurations:
 ### Replaying Tests in Xcode Cloud
 
 **Xcode Cloud** = built-in service for:
+
 - Building app
 - Running tests
 - Uploading to App Store
 - All in cloud without using team devices
 
 **Workflow configuration**:
+
 - Same test plan used locally
 - Runs on multiple devices and configurations
 - Videos/results available in App Store Connect
 
 **Viewing Results**:
+
 - Xcode: Xcode Cloud section
 - App Store Connect: Xcode Cloud section
 - See build info, logs, failure descriptions, video recordings
@@ -643,6 +684,7 @@ Configurations:
 2. Double-click failing run to see video + description
 
 **Features**:
+
 - **Runs dropdown** - Switch between video recordings of different configurations (languages, devices)
 - **Save video** - Secondary click → Save
 - **Play/pause** - Video playback with UI interaction overlays
@@ -652,12 +694,14 @@ Configurations:
 #### UI Element Overlay at Failure
 
 **At moment of failure**:
+
 - Click timeline failure point
 - **Overlay shows all UI elements** present on screen
 - Click any element to see code recommendations for addressing it
 - **Show All** - See alternative examples
 
 **Workflow**:
+
 1. Identify what was actually present (vs what test expected)
 2. Click element to get query code
 3. Secondary click → Copy code
@@ -665,6 +709,7 @@ Configurations:
 5. Paste corrected code
 
 **Example**:
+
 ```swift
 // Test expected:
 let button = app.buttons["Max's Australian Adventure"]
@@ -684,18 +729,21 @@ Click test diamond → Select configuration (e.g., Arabic) → Watch automation 
 ### Recording UI Automation Checklist
 
 #### Before Recording
+
 - [ ] Add accessibility identifiers to interactive elements
 - [ ] Review app with Accessibility Inspector
 - [ ] Add UI Testing Bundle target to project
 - [ ] Plan workflow to record (user journey)
 
 #### During Recording
+
 - [ ] Interact naturally with app
 - [ ] Record complete user journeys (not individual taps)
 - [ ] Check code generates as you interact
 - [ ] Stop recording when workflow complete
 
 #### After Recording
+
 - [ ] Review recorded code options (dropdown on each line)
 - [ ] Choose stable queries (identifiers > labels)
 - [ ] Add validations (waitForExistence, XCTAssert)
@@ -703,6 +751,7 @@ Click test diamond → Select configuration (e.g., Arabic) → Watch automation 
 - [ ] Run test to verify it passes
 
 #### Test Plan Configuration
+
 - [ ] Create/update test plan
 - [ ] Add multiple language configurations
 - [ ] Include right-to-left languages (Arabic, Hebrew)
@@ -710,6 +759,7 @@ Click test diamond → Select configuration (e.g., Arabic) → Watch automation 
 - [ ] Set appropriate timeouts for network tests
 
 #### Running & Reviewing
+
 - [ ] Run test locally across configurations
 - [ ] Review video recordings for failures
 - [ ] Use UI element overlay to debug failures
@@ -723,6 +773,7 @@ Click test diamond → Select configuration (e.g., Arabic) → Watch automation 
 UI tests can pass on fast networks but fail on 3G/LTE. **Network Link Conditioner** simulates real-world network conditions to catch timing-sensitive crashes.
 
 **Critical scenarios**:
+
 - ❌ iPad Pro over Wi-Fi (fast) → pass
 - ❌ iPad Pro over 3G (slow) → crash
 - ✅ Test both to catch device-specific failures
@@ -730,17 +781,20 @@ UI tests can pass on fast networks but fail on 3G/LTE. **Network Link Conditione
 ### Setup Network Link Conditioner
 
 **Install Network Link Conditioner**:
+
 1. Download from [Apple's Additional Tools for Xcode](https://developer.apple.com/download/all/)
 2. Search: "Network Link Conditioner"
 3. Install: `sudo open Network\ Link\ Conditioner.pkg`
 
 **Verify Installation**:
+
 ```bash
 # Check if installed
 ls ~/Library/Application\ Support/Network\ Link\ Conditioner/
 ```
 
 **Enable in Tests**:
+
 ```swift
 override func setUpWithError() throws {
     let app = XCUIApplication()
@@ -754,6 +808,7 @@ override func setUpWithError() throws {
 ### Common Network Profiles
 
 **3G Profile** (most failures occur here):
+
 ```swift
 override func setUpWithError() throws {
     let app = XCUIApplication()
@@ -768,6 +823,7 @@ override func setUpWithError() throws {
 ```
 
 **Manual Network Conditioning** (macOS System Preferences):
+
 1. Open System Preferences → Network
 2. Click "Network Link Conditioner" (installed above)
 3. Select profile: 3G, LTE, WiFi
@@ -777,6 +833,7 @@ override func setUpWithError() throws {
 ### Real-World Example: Photo Upload with Network Throttling
 
 **❌ Without Network Conditioning**:
+
 ```swift
 func testPhotoUpload() {
     app.buttons["Upload Photo"].tap()
@@ -788,6 +845,7 @@ func testPhotoUpload() {
 ```
 
 **✅ With Network Conditioning**:
+
 ```swift
 func testPhotoUploadOn3G() {
     let app = XCUIApplication()
@@ -805,6 +863,7 @@ func testPhotoUploadOn3G() {
 ```
 
 **Key differences**:
+
 - Longer timeout (30s instead of 5s)
 - Check for crashes
 - Run on slowest expected network
@@ -818,6 +877,7 @@ func testPhotoUploadOn3G() {
 Tests can pass on device A but fail on device B due to layout differences + network delays. **Multi-factor testing** catches these combinations.
 
 **Common failure patterns**:
+
 - ✅ iPhone 14 Pro (compact, fast network)
 - ❌ iPad Pro 12.9 (large, 3G network) → crashes
 - ✅ iPhone 15 (compact, LTE)
@@ -826,12 +886,14 @@ Tests can pass on device A but fail on device B due to layout differences + netw
 ### Test Plan Configuration for Multiple Devices
 
 **Create Test Plan in Xcode**:
+
 1. File → New → Test Plan
 2. Select tests to include
 3. Click "Configurations" tab
 4. Add configurations for each device/network combo
 
 **Example Configuration Matrix**:
+
 ```
 Configurations:
 ├─ iPhone 14 Pro + LTE
@@ -842,6 +904,7 @@ Configurations:
 ```
 
 **In Test Plan UI**:
+
 - Device: iPhone 14 Pro / iPad Pro 12.9
 - OS Version: Latest
 - Locale: English
@@ -895,12 +958,14 @@ final class MultiFactorUITests: XCTestCase {
 **Scenario**: App works on iPhone 14, crashes on iPad Pro over 3G.
 
 **Why it crashes**:
+
 1. iPad Pro has larger layout (landscape)
 2. 3G network is slow (latency 100ms+)
 3. Images don't load in time, layout engine crashes
 4. Single-device testing misses this combo
 
 **Test that catches it**:
+
 ```swift
 func testLargeLayoutOn3G() {
     let app = XCUIApplication()
@@ -929,6 +994,7 @@ func testLargeLayoutOn3G() {
 ### Running Multi-Factor Tests in CI
 
 **In GitHub Actions or Xcode Cloud**:
+
 ```yaml
 - name: Run tests across devices
   run: |
@@ -938,6 +1004,7 @@ func testLargeLayoutOn3G() {
 ```
 
 **Test Plan runs on**:
+
 - iPhone 14 Pro + LTE
 - iPhone 14 Pro + 3G
 - iPad Pro + LTE
@@ -954,12 +1021,14 @@ func testLargeLayoutOn3G() {
 UI tests sometimes reveal crashes that don't happen in manual testing. **Key insight:** Automated tests run faster, interact with app differently, and can expose concurrency/timing bugs.
 
 **When crashes happen**:
+
 - ❌ Manual testing: Can't reproduce (works when you run it)
 - ✅ UI Test: Crashes every time (automated repetition finds race condition)
 
 ### Recognizing Test-Revealed Crashes
 
 **Signs in test output**:
+
 ```
 Failing test: testPhotoUpload
 Error: The app crashed while responding to a UI event
@@ -974,6 +1043,7 @@ Stack trace: [EXC_BAD_ACCESS in PhotoViewController]
 #### Step 1: Capture Crash Details
 
 **Enable detailed logging**:
+
 ```swift
 override func setUpWithError() throws {
     let app = XCUIApplication()
@@ -1017,22 +1087,26 @@ func testReproduceCrash() {
 ```
 
 **Run test with Console logs visible**:
+
 - Xcode: View → Navigators → Show Console
 - Watch for exception messages
 
 #### Step 3: Analyze Crash Logs
 
 **Locations**:
+
 1. Xcode Console (real-time, less detail)
 2. ~/Library/Logs/DiagnosticMessages/crash_*.log (full details)
 3. Device Settings → Privacy → Analytics → Analytics Data
 
 **Look for**:
+
 - Thread that crashed
 - Exception type (EXC_BAD_ACCESS, EXC_CRASH, etc.)
 - Stack trace showing which method crashed
 
 **Example crash log**:
+
 ```
 Exception Type: EXC_BAD_ACCESS (SIGSEGV)
 Exception Codes: KERN_INVALID_ADDRESS at 0x0000000000000000
@@ -1042,6 +1116,7 @@ Thread 0 Crashed:
 ```
 
 **This tells us**:
+
 - Crash in `PhotoViewController.reloadPhotos(_:)`
 - Likely null pointer dereference
 - Called from `viewDidLoad`
@@ -1091,6 +1166,7 @@ class PhotoViewController: UIViewController {
 #### Step 5: Add Crash-Prevention Tests
 
 **After fixing**:
+
 ```swift
 func testPhotosLoadWithoutCrash() {
     let app = XCUIApplication()
@@ -1137,6 +1213,7 @@ func testPhotosLoadUnderStress() {
 ### Prevention Checklist
 
 **Before releasing:**
+
 - [ ] Run UI tests on slowest network (3G)
 - [ ] Run on largest device (iPad Pro)
 - [ ] Run on oldest supported device (iPhone 12)
@@ -1151,17 +1228,21 @@ func testPhotosLoadUnderStress() {
 ## Reference
 
 **WWDC 2025 Sessions**:
+
 - [Record, replay, and review: UI automation with Xcode - WWDC25 Session 344](https://developer.apple.com/videos/play/wwdc2025/344/)
   - Recording UI automation, test plans, video review
 
 **WWDC 2023 Sessions**:
+
 - [Fix failures faster with Xcode test reports - WWDC23](https://developer.apple.com/videos/play/wwdc2023/10175/)
 - [Perform accessibility audits for your app - WWDC23](https://developer.apple.com/videos/play/wwdc2023/10035/)
 
 **WWDC 2024 Sessions**:
+
 - [Meet Swift Testing - WWDC24](https://developer.apple.com/videos/play/wwdc2024/10179/)
 
 **Apple Documentation**:
+
 - [XCTest Framework](https://developer.apple.com/documentation/xctest)
 - [Recording UI automation for testing](https://developer.apple.com/documentation/XCUIAutomation/recording-ui-automation-for-testing)
 - [UI Testing in Xcode](https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/testing_with_xcode/chapters/09-ui_testing.html)

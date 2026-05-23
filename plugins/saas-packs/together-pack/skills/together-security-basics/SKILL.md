@@ -21,9 +21,11 @@ compatibility: Designed for Claude Code
 # Together AI Security Basics
 
 ## Overview
+
 Together AI provides inference and fine-tuning for 100+ open-source models (Llama, Mixtral, Qwen, FLUX) via an OpenAI-compatible API. Security concerns include API key management for production inference, protecting fine-tuning datasets that may contain proprietary or sensitive data, rate limit handling to prevent cost overruns, and ensuring model outputs are not logged with sensitive prompt content. A leaked API key grants full access to inference, fine-tuning, and model management endpoints.
 
 ## API Key Management
+
 ```typescript
 function createTogetherClient(): { apiKey: string; baseUrl: string } {
   const apiKey = process.env.TOGETHER_API_KEY;
@@ -37,6 +39,7 @@ function createTogetherClient(): { apiKey: string; baseUrl: string } {
 ```
 
 ## Webhook Signature Verification
+
 ```typescript
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
@@ -54,6 +57,7 @@ function verifyTogetherWebhook(req: Request, res: Response, next: NextFunction):
 ```
 
 ## Input Validation
+
 ```typescript
 import { z } from "zod";
 
@@ -74,6 +78,7 @@ function validateInferenceRequest(data: unknown) {
 ```
 
 ## Data Protection
+
 ```typescript
 const TOGETHER_SENSITIVE_FIELDS = ["api_key", "prompt_content", "fine_tune_dataset", "model_output", "system_prompt"];
 
@@ -87,6 +92,7 @@ function redactTogetherLog(record: Record<string, unknown>): Record<string, unkn
 ```
 
 ## Security Checklist
+
 - [ ] API key stored in secrets manager, never in source code
 - [ ] Separate keys for dev/staging/prod environments
 - [ ] Fine-tuning datasets reviewed for sensitive content before upload
@@ -97,6 +103,7 @@ function redactTogetherLog(record: Record<string, unknown>): Record<string, unkn
 - [ ] Model access scoped to required models only
 
 ## Error Handling
+
 | Vulnerability | Risk | Mitigation |
 |---|---|---|
 | Leaked API key | Unauthorized inference and fine-tuning access | Secrets manager + rotation |
@@ -106,8 +113,10 @@ function redactTogetherLog(record: Record<string, unknown>): Record<string, unkn
 | Unrestricted model access | Cost from premium model usage | API key scoped to approved models |
 
 ## Resources
+
 - [Together AI Docs](https://docs.together.ai/)
 - [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
 
 ## Next Steps
+
 See `together-prod-checklist`.

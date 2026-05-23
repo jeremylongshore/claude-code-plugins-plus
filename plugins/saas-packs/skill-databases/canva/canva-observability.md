@@ -10,6 +10,7 @@ canva-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Canva monitoring and observability
 **Workflow:** Part of the enterprise skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

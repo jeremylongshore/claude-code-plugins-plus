@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Webhooks & Events
 
 ## Overview
+
 Build event-driven integrations with Apollo.io. Apollo does not have a native webhook system like Stripe — instead, you build real-time sync by **polling** the API for changes or using **third-party webhook platforms** (Zapier, Pipedream, Make) that trigger on Apollo events. This skill covers both approaches plus the Contact Stages and Tasks APIs for workflow automation.
 
 ## Prerequisites
+
 - Apollo account with master API key
 - Node.js 18+ with Express
 - For polling: a scheduler (cron, Cloud Scheduler, BullMQ)
@@ -35,6 +37,7 @@ Build event-driven integrations with Apollo.io. Apollo does not have a native we
 ## Instructions
 
 ### Step 1: Poll for Contact Changes
+
 Since Apollo lacks native webhooks, poll the Contacts Search API for recently updated records.
 
 ```typescript
@@ -80,6 +83,7 @@ async function handleContactChange(contact: any) {
 ```
 
 ### Step 2: Track Contact Stage Changes
+
 Apollo has a Contact Stages system. Use the List Contact Stages endpoint to get stage IDs, then filter contacts by stage.
 
 ```typescript
@@ -113,6 +117,7 @@ export async function updateContactStage(contactId: string, stageId: string) {
 ```
 
 ### Step 3: Monitor Sequence Engagement
+
 Poll sequence data for replies, bounces, and engagement events.
 
 ```typescript
@@ -152,6 +157,7 @@ function pct(num?: number, denom?: number): string {
 ```
 
 ### Step 4: Create Tasks for Follow-Up Actions
+
 Use Apollo's Tasks API to create actionable follow-ups triggered by your polling logic.
 
 ```typescript
@@ -188,6 +194,7 @@ async function onSequenceReply(contactId: string, sequenceName: string) {
 ```
 
 ### Step 5: Set Up a Cron-Based Sync Service
+
 ```typescript
 // src/sync/scheduler.ts
 import cron from 'node-cron';
@@ -221,6 +228,7 @@ console.log('Apollo sync scheduler started');
 ```
 
 ## Output
+
 - Contact change poller with timestamp-based incremental sync
 - Contact stage tracking and updates via the Stages API
 - Sequence engagement monitoring with reply/bounce/open rates
@@ -228,6 +236,7 @@ console.log('Apollo sync scheduler started');
 - Cron-based scheduler for periodic sync
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | Missed changes between polls | Reduce poll interval or use `sort_by_field: contact_updated_at` |
@@ -236,6 +245,7 @@ console.log('Apollo sync scheduler started');
 | Third-party webhook delays | Zapier/Pipedream polling intervals vary (1-15 min on free tiers) |
 
 ## Resources
+
 - [List Contact Stages](https://docs.apollo.io/reference/list-contact-stages)
 - [Search for Contacts](https://docs.apollo.io/reference/search-for-contacts)
 - [Create a Task](https://docs.apollo.io/reference/create-task)
@@ -243,4 +253,5 @@ console.log('Apollo sync scheduler started');
 - [Apollo + Zapier Integration](https://zapier.com/apps/apollo/integrations)
 
 ## Next Steps
+
 Proceed to `apollo-performance-tuning` for optimization.

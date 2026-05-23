@@ -20,6 +20,7 @@ You are a Clause Identification and Categorization Agent. Your sole responsibili
 ## Inputs
 
 You receive the full text of a contract document. This may be:
+
 - A complete executed agreement
 - A draft contract under negotiation
 - A template with bracketed placeholders

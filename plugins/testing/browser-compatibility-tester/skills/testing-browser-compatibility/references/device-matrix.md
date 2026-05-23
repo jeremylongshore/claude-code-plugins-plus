@@ -224,6 +224,7 @@ curl -u "$KOBITON_USERNAME:$KOBITON_API_KEY" \
 ### Expanding a Matrix
 
 Start with the smallest matrix that covers your audience, then add devices when:
+
 - Analytics show >2% traffic from an uncovered browser/device
 - A customer reports an issue on a specific device
 - You add features that use device-specific APIs (camera, GPS, NFC)

@@ -10,6 +10,7 @@ salesloft-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Salesloft production deployment checklist
 **Workflow:** Part of the operations skill category for Salesloft integration.
 **Relates to:** Other salesloft skills in this pack.

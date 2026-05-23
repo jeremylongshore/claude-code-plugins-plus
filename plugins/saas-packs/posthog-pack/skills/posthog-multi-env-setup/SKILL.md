@@ -46,6 +46,7 @@ Use separate PostHog projects for each environment (dev, staging, production). T
 ### Step 1: Create Separate PostHog Projects
 
 In PostHog Cloud (app.posthog.com), create three projects:
+
 1. `myapp-development` — copy the `phc_...` project API key
 2. `myapp-staging` — copy the `phc_...` project API key
 3. `myapp-production` — copy the `phc_...` project API key

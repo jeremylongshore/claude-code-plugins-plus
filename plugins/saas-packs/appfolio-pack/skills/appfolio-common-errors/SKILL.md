@@ -61,12 +61,15 @@ function classifyAppFolioError(status: number, body: string): AppFolioError {
 ## Debugging Guide
 
 ### Authentication Errors
+
 AppFolio uses HTTP Basic Auth with `client_id:client_secret`. Verify credentials are not URL-encoded. Each portfolio has its own base URL -- confirm you are targeting the correct `{company}.appfolio.com` subdomain. Credentials rotate on partner approval changes.
 
 ### Rate Limit Errors
+
 The Stack API enforces 120 requests/minute per API key. Batch tenant lookups instead of individual calls. Use `Retry-After` header value when present. Bulk endpoints (e.g., `/properties?page=1&per_page=100`) reduce call count significantly. Rate limits are per-key, not per-portfolio, so multi-portfolio integrations share the same budget.
 
 ### Validation Errors
+
 Work order creation requires `unit_id`, `description`, and `priority`. Tenant creation requires `first_name`, `last_name`, and `email`. Lease creation fails with 409 if dates overlap an existing active lease on the same unit -- query current leases first. Move-in and move-out dates must be valid ISO 8601 format. Unit IDs are portfolio-specific and cannot be reused across subdomains.
 
 ## Error Handling

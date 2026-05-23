@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Core Workflow B: Learnings & Tuning
 
 ## Overview
+
 After initial CodeRabbit setup (Workflow A), this skill covers tuning review quality through learnings, code guidelines, tone customization, and noise reduction. CodeRabbit improves over time by learning from your team's feedback patterns and custom rules.
 
 ## Prerequisites
+
 - CodeRabbit installed and producing reviews (see `coderabbit-core-workflow-a`)
 - Several PRs worth of review history
 - Understanding of team coding standards
@@ -37,6 +39,7 @@ After initial CodeRabbit setup (Workflow A), this skill covers tuning review qua
 ## Instructions
 
 ### Step 1: Configure Code Guidelines
+
 CodeRabbit automatically detects coding rules from standard config files in your repo. It also reads AI agent configuration files for additional context.
 
 ```yaml
@@ -68,6 +71,7 @@ reviews:
 ```
 
 ### Step 2: Train with Learnings via PR Feedback
+
 Learnings are enabled by default. CodeRabbit learns from your team's review interactions:
 
 ```markdown
@@ -85,6 +89,7 @@ Please don't flag default exports in files under src/pages/."
 ```
 
 ### Step 3: Customize Review Tone
+
 ```yaml
 # .coderabbit.yaml - Tone configuration
 tone_instructions: |
@@ -104,6 +109,7 @@ reviews:
 ```
 
 ### Step 4: Reduce False Positives
+
 ```yaml
 # .coderabbit.yaml - Noise reduction strategies
 reviews:
@@ -147,6 +153,7 @@ reviews:
 ```
 
 ### Step 5: A/B Test Review Profiles
+
 ```yaml
 # Try different profiles to find the right signal-to-noise ratio:
 #
@@ -164,6 +171,7 @@ reviews:
 ```
 
 ### Step 6: Monitor Review Effectiveness
+
 ```bash
 set -euo pipefail
 # Check CodeRabbit comment acceptance rate on recent PRs
@@ -179,6 +187,7 @@ done
 ```
 
 ## Output
+
 - Code guidelines configured from team standards documents
 - Learnings trained through PR comment feedback
 - Review tone customized for team culture
@@ -186,6 +195,7 @@ done
 - Review effectiveness measured with acceptance rate metrics
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Reviews ignore custom rules | Guidelines file not referenced | Add path to `custom_patterns` in config |
@@ -195,10 +205,12 @@ done
 | Tone instructions ignored | YAML formatting issue | Ensure `tone_instructions` is a proper string |
 
 ## Resources
+
 - [Code Guidelines](https://www.coderabbit.ai/blog/code-guidelines-bring-your-coding-rules-to-coderabbit)
 - [Knowledge Base](https://docs.coderabbit.ai/integrations/knowledge-base)
 - [Tone Customization](https://www.coderabbit.ai/blog/tone-customizations-roast-your-code)
 - [Context Engineering](https://www.coderabbit.ai/blog/context-engineering-ai-code-reviews)
 
 ## Next Steps
+
 For common errors and troubleshooting, see `coderabbit-common-errors`.

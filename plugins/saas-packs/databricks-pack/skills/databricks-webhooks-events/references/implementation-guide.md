@@ -276,10 +276,10 @@ NOTIFICATIONS (
 );
 ```
 
-
 ## Complete Examples
 
 ### Slack Block Kit Message
+
 ```python
 def format_slack_notification(run_info: dict) -> dict:
     """Format rich Slack notification."""

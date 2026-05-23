@@ -3,6 +3,7 @@
 > 18 Claude Code skills for ElevenLabs text-to-speech, voice cloning, speech-to-speech, sound effects, audio isolation, and real-time WebSocket streaming.
 
 **Install:**
+
 ```bash
 /plugin install elevenlabs-pack@claude-code-plugins-plus
 ```

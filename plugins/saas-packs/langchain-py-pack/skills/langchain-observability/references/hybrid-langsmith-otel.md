@@ -13,18 +13,21 @@ decision, not the OTEL setup itself.
 ## When to split
 
 Run LangSmith alone when:
+
 - You are a pure LangChain shop (no FastAPI traces in OTEL, no distributed
   services with Jaeger/Tempo)
 - Your team uses prompt/response inspection as the primary debugging surface
 - You do not already have an OpenTelemetry Collector in the stack
 
 Run OTEL alone when:
+
 - You have a mature OpenTelemetry stack with Collector, Tempo / Jaeger,
   Prometheus — and LLM calls are one service among many
 - Data residency / self-hosting requirements block LangSmith
 - You want a single pane of glass for HTTP + DB + LLM spans
 
 Run hybrid (both) when:
+
 - You need LangSmith for LLM-specific features (prompt diff, eval datasets,
   annotation queues) AND OTEL for distributed tracing
 - You are migrating from LangSmith → OTEL or vice-versa and need overlap
@@ -125,6 +128,7 @@ LangSmith logs prompt content by default. OTEL's GenAI instrumentation does
 NOT log prompt content by default — that is a safety feature (P27).
 
 If you enable both:
+
 - Apply redaction middleware BEFORE model call so both systems see cleaned
   prompts
 - Do not enable `OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=true` in

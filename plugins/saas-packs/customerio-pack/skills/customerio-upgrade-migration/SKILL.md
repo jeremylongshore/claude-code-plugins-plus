@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Customer.io Upgrade & Migration
 
 ## Current State
+
 !`npm list customerio-node 2>/dev/null | grep customerio || echo 'customerio-node: not installed'`
 !`npm view customerio-node version 2>/dev/null || echo 'Cannot check latest version'`
 
@@ -63,6 +64,7 @@ await api.sendEmail(request);
 ```
 
 **Key changes:**
+
 - `TrackClient` replaces `CustomerIO` for identify/track
 - `APIClient` is new — handles transactional + broadcasts
 - Region is now explicit (`RegionUS` or `RegionEU`)

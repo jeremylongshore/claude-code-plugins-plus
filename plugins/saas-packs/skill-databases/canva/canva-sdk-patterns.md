@@ -10,6 +10,7 @@ canva-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Canva SDK patterns
 **Workflow:** Part of the onboarding skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

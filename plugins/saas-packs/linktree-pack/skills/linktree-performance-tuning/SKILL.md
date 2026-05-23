@@ -188,6 +188,7 @@ const ltRateLimits = new Counter({
 ## Output
 
 After applying these optimizations, expect:
+
 - Profile page API latency under 200ms (cached) vs 500ms+ (uncached)
 - Cache hit rate above 80% for profile and link data
 - Zero 429 errors during normal traffic with graceful degradation during spikes

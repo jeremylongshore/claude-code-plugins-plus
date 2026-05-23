@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD028 -->
+
 # Excel Analyst Pro - Demo Video Script
 
 **Duration:** 3-5 minutes
@@ -9,12 +11,14 @@
 ## 🎬 Video Structure
 
 ### Opening (0:00-0:20)
+
 **Scene:** Terminal with Claude Code open
 
 **Voiceover:**
 > "What if you could build a professional DCF model in 5 minutes instead of 2 hours? With Excel Analyst Pro for Claude Code, you can."
 
 **Screen Actions:**
+
 - Show Claude Code terminal
 - Display plugin name: "Excel Analyst Pro"
 - Quick flash of 4 Skills icons/names
@@ -24,26 +28,31 @@
 ### Demo 1: DCF Model (0:20-1:30)
 
 #### Setup (0:20-0:30)
+
 **Scene:** Empty terminal prompt
 
 **Voiceover:**
 > "Let's value Tesla using a DCF model. No Excel formulas to remember—just natural language."
 
 **Type in terminal:**
+
 ```
 You: Create a DCF model for Tesla
 ```
 
 **Screen Actions:**
+
 - Show typing animation
 - Hit enter
 
 ---
 
 #### Skill Auto-Invocation (0:30-0:40)
+
 **Scene:** Claude responds
 
 **Screen Text:**
+
 ```
 Claude: I'll build a DCF valuation model for Tesla. Let me gather some inputs.
 
@@ -55,15 +64,18 @@ What base year revenue should we use for Tesla?
 > "Notice: Claude automatically detected 'DCF model' and loaded the DCF Modeler Skill. No slash command needed."
 
 **Highlight on screen:**
+
 - Box around "DCF Modeler Skill" text
 - Arrow pointing to "auto-invoked"
 
 ---
 
 #### Conversation (0:40-1:10)
+
 **Scene:** Back-and-forth Q&A
 
 **Screen Text:**
+
 ```
 You: $96.8 billion
 
@@ -85,9 +97,11 @@ Claude: Perfect! Building your DCF model...
 ---
 
 #### Results (1:10-1:30)
+
 **Scene:** Complete DCF model output
 
 **Screen Text:**
+
 ```
 ✅ DCF Model Complete!
 
@@ -100,6 +114,7 @@ Claude: Perfect! Building your DCF model...
 ```
 
 **Screen Actions:**
+
 - Open Tesla_DCF_Model.xlsx in Excel
 - Show 4 sheets: Assumptions, Projections, Valuation, Sensitivity
 - Quickly scroll through each sheet
@@ -113,12 +128,14 @@ Claude: Perfect! Building your DCF model...
 ### Demo 2: LBO Model (1:30-2:15)
 
 #### Quick Setup (1:30-1:40)
+
 **Scene:** New terminal prompt
 
 **Voiceover:**
 > "Let's try something more complex: a leveraged buyout model."
 
 **Type in terminal:**
+
 ```
 You: Build an LBO model for a $50M EBITDA software company
 ```
@@ -126,9 +143,11 @@ You: Build an LBO model for a $50M EBITDA software company
 ---
 
 #### Rapid Conversation (1:40-2:00)
+
 **Scene:** Condensed Q&A
 
 **Screen Text:**
+
 ```
 Claude: I'll create an LBO model. What entry multiple (EV/EBITDA)?
 
@@ -147,9 +166,11 @@ Claude: [Builds complete LBO model]
 ---
 
 #### LBO Results (2:00-2:15)
+
 **Scene:** LBO output and Excel file
 
 **Screen Text:**
+
 ```
 ✅ LBO Model Complete!
 
@@ -162,6 +183,7 @@ Claude: [Builds complete LBO model]
 ```
 
 **Screen Actions:**
+
 - Open Software_LBO_Model.xlsx
 - Show 6 sheets (Transaction, Sources & Uses, Operating, Debt Schedule, Returns, Covenants)
 - Zoom into debt schedule showing paydown
@@ -175,12 +197,14 @@ Claude: [Builds complete LBO model]
 ### Demo 3: Variance Analysis (2:15-3:00)
 
 #### Setup (2:15-2:25)
+
 **Scene:** Terminal with data paste
 
 **Voiceover:**
 > "Finance managers can automate monthly variance reports."
 
 **Type in terminal:**
+
 ```
 You: Analyze Q1 budget vs actual
 
@@ -190,9 +214,11 @@ You: Analyze Q1 budget vs actual
 ---
 
 #### Quick Analysis (2:25-2:45)
+
 **Scene:** Variance output
 
 **Screen Text:**
+
 ```
 ✅ Variance Analysis Complete!
 
@@ -206,6 +232,7 @@ You: Analyze Q1 budget vs actual
 ```
 
 **Screen Actions:**
+
 - Open variance report
 - Show color-coded flags (🔴⚠️✅)
 - Highlight executive summary
@@ -219,14 +246,17 @@ You: Analyze Q1 budget vs actual
 ### Demo 4: Pivot Tables (3:00-3:30)
 
 #### Natural Language Pivot (3:00-3:20)
+
 **Scene:** Terminal with simple request
 
 **Type in terminal:**
+
 ```
 You: Show sales by region and product category
 ```
 
 **Screen Text:**
+
 ```
 Claude: [Creates pivot table]
 
@@ -240,6 +270,7 @@ Top Insights:
 ```
 
 **Screen Actions:**
+
 - Open Excel with pivot table
 - Show professional formatting
 - Show chart
@@ -255,6 +286,7 @@ Top Insights:
 **Scene:** Feature list appears on screen
 
 **Screen Text:**
+
 ```
 🎯 Auto-Invoked Skills
    No slash commands needed
@@ -282,6 +314,7 @@ Top Insights:
 **Scene:** Comparison table
 
 **Screen Text:**
+
 ```
                     Excel Analyst Pro | Claude for Excel | Microsoft Copilot
 Price               Free              | Enterprise       | $30/month
@@ -300,11 +333,13 @@ Financial Models    IB-grade ✅       | Basic           | Basic
 **Scene:** Terminal showing installation
 
 **Screen Text:**
+
 ```bash
 /plugin install excel-analyst-pro@claude-code-plugins
 ```
 
 **Screen Actions:**
+
 - Show installation progress
 - Show "✅ Installation complete" message
 - Show "Skills loaded: 4" confirmation
@@ -319,6 +354,7 @@ Financial Models    IB-grade ✅       | Basic           | Basic
 **Scene:** GitHub repo and website
 
 **Screen Text:**
+
 ```
 Excel Analyst Pro
 ↓
@@ -339,6 +375,7 @@ Browse 220+ plugins
 **Scene:** End card
 
 **Screen Text:**
+
 ```
 Try Excel Analyst Pro Today
 
@@ -357,11 +394,13 @@ Try Excel Analyst Pro Today
 ## 🎥 Recording Instructions
 
 ### Equipment Needed
+
 - Screen recording software (OBS Studio, QuickTime, Loom)
 - High-quality microphone
 - 1920x1080 resolution (minimum)
 
 ### Terminal Setup
+
 ```bash
 # Use a clean terminal
 # Font: 18-20pt for readability
@@ -446,6 +485,7 @@ Try Excel Analyst Pro Today
 ## 🎨 Visual Elements
 
 ### Title Cards
+
 ```
 [0:00] Excel Analyst Pro
        Professional Financial Modeling for Claude Code
@@ -472,6 +512,7 @@ Try Excel Analyst Pro Today
 ```
 
 ### Annotations
+
 - **Yellow box**: Highlight auto-invoked Skills
 - **Green checkmark**: Completed tasks
 - **Blue arrow**: Point to important features
@@ -525,16 +566,19 @@ Build DCF models, LBO analysis, variance reports, and pivot tables using natural
 ## 📱 Social Media Clips
 
 ### LinkedIn (30 seconds)
+
 **Focus:** Professional financial modeling
 **Show:** DCF demo only
 **CTA:** "Link to full demo in comments"
 
 ### X/Twitter (60 seconds)
+
 **Focus:** Speed and efficiency
 **Show:** DCF + LBO demos (fast-paced)
 **CTA:** "Full demo: [link]"
 
 ### Instagram Reel (60 seconds)
+
 **Focus:** Visual impact
 **Show:** Excel models opening, formatted outputs
 **CTA:** "Link in bio"
@@ -544,6 +588,7 @@ Build DCF models, LBO analysis, variance reports, and pivot tables using natural
 ## 🎬 Production Checklist
 
 ### Pre-Production
+
 - [ ] Install Excel Analyst Pro locally
 - [ ] Test all Skills work correctly
 - [ ] Prepare sample data (Tesla financials, LBO targets, variance data)
@@ -551,6 +596,7 @@ Build DCF models, LBO analysis, variance reports, and pivot tables using natural
 - [ ] Write exact prompts to use
 
 ### Production
+
 - [ ] Record screen at 1920x1080 minimum
 - [ ] Record voiceover separately (easier to edit)
 - [ ] Capture each demo 2-3 times (pick best take)
@@ -558,6 +604,7 @@ Build DCF models, LBO analysis, variance reports, and pivot tables using natural
 - [ ] Get 10 seconds of "B-roll" (Excel sheets scrolling)
 
 ### Post-Production
+
 - [ ] Edit video to 3-5 minutes
 - [ ] Add title cards and transitions
 - [ ] Overlay voiceover audio
@@ -567,6 +614,7 @@ Build DCF models, LBO analysis, variance reports, and pivot tables using natural
 - [ ] Add end card with CTA
 
 ### Distribution
+
 - [ ] Upload to YouTube
 - [ ] Add to GitHub README
 - [ ] Share on LinkedIn, X, Reddit

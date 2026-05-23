@@ -10,6 +10,7 @@ mindtickle-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Mindtickle webhook handling
 **Workflow:** Part of the cicd skill category for Mindtickle integration.
 **Relates to:** Other mindtickle skills in this pack.

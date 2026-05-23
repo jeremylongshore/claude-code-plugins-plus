@@ -10,6 +10,7 @@ canva-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Canva CI/CD integration
 **Workflow:** Part of the cicd skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

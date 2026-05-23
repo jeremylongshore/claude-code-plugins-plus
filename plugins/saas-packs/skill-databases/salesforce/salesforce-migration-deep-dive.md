@@ -10,6 +10,7 @@ salesforce-migration-deep-dive/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Salesforce major migrations
 **Workflow:** Part of the advanced skill category for Salesforce integration.
 **Relates to:** Other salesforce skills in this pack.

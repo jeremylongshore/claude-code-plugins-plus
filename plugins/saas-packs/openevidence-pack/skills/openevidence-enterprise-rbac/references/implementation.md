@@ -1,6 +1,7 @@
 # OpenEvidence Enterprise RBAC - Implementation Details
 
 ## Role and Permission Definitions
+
 ```typescript
 export enum ClinicalRole { Physician = 'physician', Nurse = 'nurse', Pharmacist = 'pharmacist', Resident = 'resident', Admin = 'admin', Auditor = 'auditor', Integration = 'integration' }
 
@@ -13,6 +14,7 @@ export const ROLE_PERMISSIONS: Record<ClinicalRole, ClinicalPermissions> = {
 ```
 
 ## SSO Integration (SAML)
+
 ```typescript
 import { Strategy as SamlStrategy } from 'passport-saml';
 export function configureSAML(config: SAMLConfig): void {
@@ -30,6 +32,7 @@ export function configureSAML(config: SAMLConfig): void {
 ```
 
 ## OAuth2/OIDC Integration
+
 ```typescript
 import { Strategy as OpenIDConnectStrategy } from 'passport-openidconnect';
 export function configureOIDC(config: OIDCConfig): void {
@@ -42,6 +45,7 @@ export function configureOIDC(config: OIDCConfig): void {
 ```
 
 ## Permission Middleware
+
 ```typescript
 export function requirePermission(permission: keyof ClinicalPermissions) {
   return async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -56,6 +60,7 @@ export function requirePermission(permission: keyof ClinicalPermissions) {
 ```
 
 ## Organization Management
+
 ```typescript
 export class OrganizationManager {
   async createOrganization(config): Promise<Organization> { /* ... */ }
@@ -65,6 +70,7 @@ export class OrganizationManager {
 ```
 
 ## Session Management
+
 ```typescript
 export function configureSession(redis: Redis) {
   return {

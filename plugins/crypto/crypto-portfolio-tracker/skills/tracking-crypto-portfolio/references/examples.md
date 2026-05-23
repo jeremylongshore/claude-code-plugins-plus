@@ -13,6 +13,7 @@ python portfolio_tracker.py --portfolio holdings.json
 ```
 
 Output:
+
 ```
 ==============================================================================
   CRYPTO PORTFOLIO TRACKER                          2026-01-14 15:30 UTC
@@ -55,6 +56,7 @@ python portfolio_tracker.py --portfolio holdings.json --detailed
 ```
 
 Shows full analysis including:
+
 - Unrealized P&L per position
 - Total portfolio P&L
 - Category allocation breakdown
@@ -99,6 +101,7 @@ python portfolio_tracker.py --portfolio holdings.json --format json
 ```
 
 Output:
+
 ```json
 {
   "portfolio_name": "My Portfolio",
@@ -132,6 +135,7 @@ python portfolio_tracker.py --portfolio holdings.json --format csv --output port
 ```
 
 Creates spreadsheet-compatible file with columns:
+
 - coin, quantity, price_usd, value_usd, allocation_pct, change_24h_pct, etc.
 
 ---
@@ -293,6 +297,7 @@ python portfolio_tracker.py --portfolio holdings.json -v
 ```
 
 Shows detailed progress:
+
 - Loading portfolio file
 - Fetching prices for X coins
 - API responses and cache status

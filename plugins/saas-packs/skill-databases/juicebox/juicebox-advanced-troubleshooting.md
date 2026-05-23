@@ -10,6 +10,7 @@ juicebox-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Juicebox advanced debugging
 **Workflow:** Part of the enterprise skill category for Juicebox integration.
 **Relates to:** Other juicebox skills in this pack.

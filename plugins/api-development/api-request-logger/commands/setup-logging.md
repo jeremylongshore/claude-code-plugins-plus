@@ -10,6 +10,7 @@ Implement production-grade structured logging with correlation IDs, request/resp
 ## When to Use This Command
 
 Use `/setup-logging` when you need to:
+
 - Debug production issues with complete request context
 - Track user journeys across distributed services
 - Meet compliance requirements (audit trails, GDPR)
@@ -18,6 +19,7 @@ Use `/setup-logging` when you need to:
 - Monitor business metrics derived from API usage
 
 DON'T use this when:
+
 - Building throwaway prototypes (use console.log)
 - Extremely high-throughput systems where logging overhead matters (use sampling)
 - Already using comprehensive APM tool (avoid duplication)
@@ -25,24 +27,28 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **Structured JSON logging with Winston/Bunyan** as the primary approach because:
+
 - JSON format enables powerful query capabilities in log aggregation tools
 - Structured data easier to parse and analyze than free-text logs
 - Correlation IDs enable distributed tracing across services
 - Standard libraries with proven reliability at scale
 
 **Alternative considered: Plain text logging**
+
 - Human-readable without tools
 - Difficult to query and aggregate
 - No structured fields for filtering
 - Recommended only for simple applications
 
 **Alternative considered: Binary logging protocols (gRPC, protobuf)**
+
 - More efficient storage and transmission
 - Requires specialized tooling to read
 - Added complexity without clear benefits for most use cases
 - Recommended only for extremely high-volume scenarios
 
 **Alternative considered: Managed logging services (Datadog, Loggly)**
+
 - Fastest time-to-value with built-in dashboards
 - Higher ongoing costs
 - Potential vendor lock-in
@@ -51,6 +57,7 @@ This command implements **Structured JSON logging with Winston/Bunyan** as the p
 ## Prerequisites
 
 Before running this command:
+
 1. Node.js/Python runtime with logging library support
 2. Understanding of sensitive data in your API (for PII redaction)
 3. Log aggregation platform (ELK stack, Splunk, CloudWatch, etc.)
@@ -60,23 +67,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Configure Structured Logger
+
 Set up Winston (Node.js) or structlog (Python) with JSON formatting and appropriate transports.
 
 ### Step 2: Implement Correlation ID Middleware
+
 Generate unique request IDs and propagate through entire request lifecycle and downstream services.
 
 ### Step 3: Add Request/Response Logging Middleware
+
 Capture HTTP method, path, headers, body, status code, and response time with configurable verbosity.
 
 ### Step 4: Implement PII Redaction
+
 Identify and mask sensitive data (passwords, tokens, credit cards, SSNs) before logging.
 
 ### Step 5: Configure Log Shipping
+
 Set up log rotation, compression, and shipping to centralized log aggregation platform.
 
 ## Output Format
 
 The command generates:
+
 - `logger.js` or `logger.py` - Core logging configuration and utilities
 - `logging-middleware.js` - Express/FastAPI middleware for request logging
 - `pii-redactor.js` - PII detection and masking utilities
@@ -610,6 +623,7 @@ volumes:
 ## Configuration Options
 
 **Log Levels**
+
 - `debug`: Verbose output for development (not in production)
 - `info`: General operational messages (default)
 - `warn`: Unexpected but handled conditions
@@ -617,12 +631,14 @@ volumes:
 - `fatal`: Critical errors causing service failure
 
 **Log Rotation**
+
 - **Size-based**: Rotate when file reaches 10MB
 - **Time-based**: Rotate daily at midnight
 - **Retention**: Keep 7-30 days based on compliance requirements
 - **Compression**: Gzip rotated logs to save space
 
 **PII Redaction Strategies**
+
 - **Pattern matching**: Regex for emails, SSNs, credit cards
 - **Key-based**: Redact specific field names (password, token)
 - **Partial redaction**: Keep domain for emails (***@example.com)
@@ -631,6 +647,7 @@ volumes:
 ## Best Practices
 
 DO:
+
 - Use structured JSON logging for machine readability
 - Generate correlation IDs for request tracking across services
 - Redact PII before logging (passwords, tokens, SSNs, credit cards)
@@ -639,6 +656,7 @@ DO:
 - Implement log rotation and retention policies
 
 DON'T:
+
 - Log passwords, API keys, or authentication tokens
 - Use console.log in production (no structure or persistence)
 - Log full request/response bodies without sanitization
@@ -647,6 +665,7 @@ DON'T:
 - Forget to propagate correlation IDs to downstream services
 
 TIPS:
+
 - Start with conservative logging, increase verbosity during incidents
 - Use log sampling for high-volume endpoints (log 1%)
 - Create dashboards for common queries (error rates, slow requests)
@@ -657,12 +676,14 @@ TIPS:
 ## Performance Considerations
 
 **Logging Overhead**
+
 - Structured logging: ~0.1-0.5ms per log statement
 - JSON serialization: Negligible for small objects
 - PII redaction: 1-2ms for complex objects
 - File I/O: Use async writes to avoid blocking
 
 **Optimization Strategies**
+
 - Use log levels to control verbosity
 - Sample high-volume logs (log 1 in 100 requests)
 - Buffer logs before writing to disk
@@ -670,6 +691,7 @@ TIPS:
 - Compress logs before shipping to reduce bandwidth
 
 **Volume Management**
+
 - Typical API: 100-500 log lines per request
 - At 1000 req/s: 100k-500k log lines/s
 - With 1KB per line: 100-500 MB/s log volume
@@ -687,18 +709,21 @@ TIPS:
 ## Compliance Considerations
 
 **GDPR Requirements**
+
 - Log only necessary personal data
 - Implement data minimization
 - Provide mechanism to delete user logs (right to be forgotten)
 - Document data retention policies
 
 **HIPAA Requirements**
+
 - Encrypt logs containing PHI
 - Maintain audit trails for access
 - Implement access controls
 - Regular security audits
 
 **SOC 2 Requirements**
+
 - Centralized log aggregation
 - Tamper-proof log storage
 - Real-time monitoring and alerting
@@ -707,6 +732,7 @@ TIPS:
 ## Troubleshooting
 
 **Logs Not Appearing**
+
 ```bash
 # Check log file permissions
 ls -la /var/log/api/
@@ -720,6 +746,7 @@ tail -f /var/log/api/combined.log
 ```
 
 **Missing Correlation IDs**
+
 ```bash
 # Verify correlation ID middleware is first
 # Check middleware order in application
@@ -730,6 +757,7 @@ grep "test-123" /var/log/api/combined.log
 ```
 
 **PII Leaking into Logs**
+
 ```bash
 # Search for common PII patterns
 grep -E '\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b' /var/log/api/combined.log
@@ -740,6 +768,7 @@ grep -E '\b\d{3}-\d{2}-\d{4}\b' /var/log/api/combined.log
 ```
 
 **High Disk Usage from Logs**
+
 ```bash
 # Check log directory size
 du -sh /var/log/api/

@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Core Workflow B: Asset & Location Management
 
 ## Overview
+
 Manage equipment assets and facility locations in MaintainX. Assets represent equipment that requires maintenance; locations organize your facilities into a manageable hierarchy.
 
 ## Prerequisites
+
 - Completed `maintainx-install-auth` setup
 - `MAINTAINX_API_KEY` environment variable configured
 - MaintainX account with asset management permissions
@@ -163,12 +165,14 @@ console.log(`Work order #${wo.id} linked to asset ${pump.id}`);
 ```
 
 ## Output
+
 - Location hierarchy created with parent-child relationships
 - Assets registered with serial numbers, models, and location links
 - Paginated asset and location queries
 - Work orders linked to specific assets and locations
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 404 Not Found | Invalid asset or location ID | Verify ID exists with a GET request first |
@@ -177,11 +181,13 @@ console.log(`Work order #${wo.id} linked to asset ${pump.id}`);
 | Empty results | Wrong filter or no data | Check query parameters, try without filters |
 
 ## Resources
+
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [Assets Help](https://help.getmaintainx.com/about-assets)
 - [Locations Help](https://help.getmaintainx.com/about-locations)
 
 ## Next Steps
+
 For troubleshooting common issues, see `maintainx-common-errors`.
 
 ## Examples

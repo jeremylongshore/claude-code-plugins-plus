@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Data Handling
 
 ## Overview
+
 Best practices for handling audio and transcript data with Deepgram. Covers Deepgram's built-in `redact` parameter for PII, secure audio upload with encryption, transcript storage patterns, data retention policies, and GDPR/HIPAA compliance workflows.
 
 ## Data Privacy Quick Reference
@@ -282,6 +283,7 @@ async function processErasureRequest(userId: string, db: any, s3Client: S3Client
 ```
 
 ## Output
+
 - Deepgram built-in PII redaction (pci, ssn, numbers)
 - Application-level PII redaction (email, phone, DOB, address)
 - Secure audio upload to S3 with KMS encryption
@@ -290,6 +292,7 @@ async function processErasureRequest(userId: string, db: any, s3Client: S3Client
 - GDPR erasure workflow
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | PII still visible | Deepgram `redact` not set | Add `redact: ['pci', 'ssn']` to options |
@@ -298,6 +301,7 @@ async function processErasureRequest(userId: string, db: any, s3Client: S3Client
 | Erasure incomplete | Transaction failed | Use database transactions for atomic delete |
 
 ## Resources
+
 - [Deepgram Redaction](https://developers.deepgram.com/docs/redaction)
 - [Deepgram Security](https://deepgram.com/security)
 - [HIPAA Compliance](https://deepgram.com/hipaa)

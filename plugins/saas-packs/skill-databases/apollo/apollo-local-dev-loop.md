@@ -10,6 +10,7 @@ apollo-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Apollo local development workflow
 **Workflow:** Part of the onboarding skill category for Apollo integration.
 **Relates to:** Other apollo skills in this pack.

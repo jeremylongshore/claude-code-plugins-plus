@@ -26,6 +26,7 @@ audience segments and flag churn risk in key cohorts.
 ### Step 1: Load Context
 
 Read the site registry at `${CLAUDE_SKILL_DIR}/references/site-registry.md` for:
+
 - Custom segment definitions (AI referrals, GitHub traffic, etc.)
 - Baseline visitor counts per site
 - Business goals per site
@@ -38,11 +39,13 @@ voice and framing.
 From data-collector's country metrics:
 
 **Geographic Distribution:**
+
 | Country | Visitors | % of Total | Δ vs Prior | Signal |
 |---------|----------|-----------|-----------|--------|
 | {country} | {n} | {n%} | {+/-n%} | {context} |
 
 **Key geographic insights:**
+
 - US/EU concentration (expected for dev tools audience)
 - Emerging markets growth (India, Brazil, SE Asia = growth signals for dev tools)
 - Anomalous countries (sudden traffic from unexpected countries = potential bot signal)
@@ -53,6 +56,7 @@ From data-collector's country metrics:
 From data-collector's device, browser, and OS metrics:
 
 **Device Mix:**
+
 | Device | Visitors | % | Δ vs Prior |
 |--------|----------|---|-----------|
 | Desktop | {n} | {n%} | {+/-n%} |
@@ -60,6 +64,7 @@ From data-collector's device, browser, and OS metrics:
 | Tablet | {n} | {n%} | {+/-n%} |
 
 **Browser Distribution:**
+
 | Browser | Visitors | % | Signal |
 |---------|----------|---|--------|
 | Chrome | {n} | {n%} | {expected/unexpected} |
@@ -69,6 +74,7 @@ From data-collector's device, browser, and OS metrics:
 | Other | {n} | {n%} | {unusual browsers flagged} |
 
 **OS Distribution:**
+
 | OS | Visitors | % | Signal |
 |----|----------|---|--------|
 | macOS | {n} | {n%} | {dev signal} |
@@ -78,6 +84,7 @@ From data-collector's device, browser, and OS metrics:
 | Android | {n} | {n%} | {mobile} |
 
 **Developer Audience Signals:**
+
 - Linux + Firefox % = "power user" proxy
 - macOS % = developer-heavy indicator
 - Mobile % trends = content consumption shifting
@@ -87,16 +94,19 @@ From data-collector's device, browser, and OS metrics:
 From aggregate stats, derive:
 
 **New vs Returning (approximated):**
+
 - Visits / Visitors ratio — higher ratio = more return visits
 - Compare ratio to previous period — rising = improving retention
 - Single-visit bounce rate vs multi-page session rate
 
 **Session Depth:**
+
 - Pageviews per session (pageviews / visits)
 - Average session duration (totaltime / visits)
 - Compare both to previous period
 
 **Engagement Tiers:**
+
 | Tier | Definition | Count | % | Δ |
 |------|-----------|-------|---|---|
 | Drive-by | 1 page, <10s | {n} | {n%} | {+/-n%} |
@@ -108,19 +118,23 @@ From aggregate stats, derive:
 From the site registry's custom segment definitions, analyze:
 
 **AI Referral Visitors:**
+
 - Volume and growth trend
 - Pages per session (do AI-referred visitors explore more?)
 - Conversion rate vs average
 
 **GitHub Visitors:**
+
 - Volume and top referring repos/pages
 - Engagement depth (developers exploring vs drive-by)
 
 **Organic Search Visitors:**
+
 - Landing page diversity
 - Bounce rate vs other channels
 
 **Social Visitors:**
+
 - Source breakdown (Twitter vs LinkedIn vs Reddit)
 - Content preferences (which pages attract social traffic)
 

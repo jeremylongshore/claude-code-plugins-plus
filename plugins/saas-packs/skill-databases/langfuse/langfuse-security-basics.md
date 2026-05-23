@@ -10,6 +10,7 @@ langfuse-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Langfuse security best practices
 **Workflow:** Part of the operations skill category for Langfuse integration.
 **Relates to:** Other langfuse skills in this pack.

@@ -24,6 +24,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Incident Runbook
 
 ## Overview
+
 Rapid incident response for Ideogram API outages, auth failures, rate limiting, and degraded generation quality. Covers triage, immediate remediation, fallback activation, and postmortem process.
 
 ## Severity Levels
@@ -93,6 +94,7 @@ Is api.ideogram.ai returning errors?
 ## Immediate Actions
 
 ### 401 -- Authentication Failure
+
 ```bash
 set -euo pipefail
 # Verify key is set
@@ -112,6 +114,7 @@ kubectl rollout restart deployment/ideogram-service
 ```
 
 ### 429 -- Sustained Rate Limiting
+
 ```bash
 set -euo pipefail
 # Reduce concurrency immediately
@@ -122,6 +125,7 @@ kubectl set env deployment/ideogram-service IDEOGRAM_CONCURRENCY=3
 ```
 
 ### 500/503 -- Ideogram Outage
+
 ```bash
 set -euo pipefail
 # Enable fallback mode (return placeholder images)
@@ -133,6 +137,7 @@ kubectl rollout restart deployment/ideogram-service
 ```
 
 ### 402 -- Credits Exhausted
+
 ```
 1. Log into ideogram.ai > Settings > API Beta
 2. Check current balance
@@ -142,6 +147,7 @@ kubectl rollout restart deployment/ideogram-service
 ```
 
 ## Fallback Implementation
+
 ```typescript
 const FALLBACK_ENABLED = process.env.IDEOGRAM_FALLBACK === "true";
 
@@ -173,6 +179,7 @@ async function generateWithFallback(prompt: string, options: any = {}) {
 ## Communication Templates
 
 ### Internal (Slack)
+
 ```
 P[X] INCIDENT: Ideogram Integration
 Status: INVESTIGATING / MITIGATED / RESOLVED
@@ -184,6 +191,7 @@ Owner: @[name]
 ```
 
 ## Postmortem Template
+
 ```markdown
 ## Incident: Ideogram [Type]
 **Date:** YYYY-MM-DD | **Duration:** Xh Ym | **Severity:** P[1-4]
@@ -207,6 +215,7 @@ Owner: @[name]
 ```
 
 ## Error Handling
+
 | Issue | Detection | Mitigation |
 |-------|-----------|------------|
 | Total API outage | Health check fails | Enable fallback images |
@@ -215,6 +224,7 @@ Owner: @[name]
 | Rate limit flood | Sustained 429 | Reduce concurrency to 3 |
 
 ## Output
+
 - Incident identified and categorized by severity
 - Immediate remediation applied
 - Fallback activated if needed
@@ -222,8 +232,10 @@ Owner: @[name]
 - Evidence collected for postmortem
 
 ## Resources
+
 - [Ideogram API Overview](https://developer.ideogram.ai/ideogram-api/api-overview)
 - Enterprise support: `partnership@ideogram.ai`
 
 ## Next Steps
+
 For data handling patterns, see `ideogram-data-handling`.

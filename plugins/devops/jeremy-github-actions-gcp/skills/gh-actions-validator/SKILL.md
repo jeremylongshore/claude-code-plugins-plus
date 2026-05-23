@@ -28,6 +28,7 @@ Validate and harden GitHub Actions workflows that deploy to Google Cloud (especi
 ## Prerequisites
 
 Before using this skill, ensure:
+
 - GitHub repository with Actions enabled
 - Google Cloud project with billing enabled
 - gcloud CLI authenticated with admin permissions

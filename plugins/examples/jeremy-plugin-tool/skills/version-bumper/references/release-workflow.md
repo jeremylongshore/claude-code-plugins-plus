@@ -19,17 +19,20 @@ Complete release process:
    - Include date
 
 4. **Commit Changes**
+
    ```bash
    git add .
    git commit -m "chore: Release v1.2.4"
    ```
 
 5. **Create Tag**
+
    ```bash
    git tag -a "v1.2.4" -m "Release v1.2.4"
    ```
 
 6. **Push**
+
    ```bash
    git push origin main
    git push origin v1.2.4

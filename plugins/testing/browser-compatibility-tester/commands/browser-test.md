@@ -97,21 +97,25 @@ Test web applications across Chrome, Firefox, Safari, and Edge using local Playw
 **Can I Use:** [caniuse.com link]
 
 ### Cloud Session Links (if applicable)
+
 | Provider | Session URL | Video | Duration |
 |----------|-------------|-------|----------|
 | Kobiton | [session link] | [video link] | 2m 34s |
 | BrowserStack | [session link] | [video link] | 1m 48s |
 
 ### Summary
+
 - Tests passed: [N] ([%])
 - Tests with warnings: [N]
 - Tests failed: [N]
 
 ### Next Steps
+
 - [ ] Fix compatibility issues listed above
 - [ ] Add polyfills or @supports fallbacks
 - [ ] Re-run on cloud provider to confirm fixes on real devices
 - [ ] Update browserslist config if dropping old versions
+
 ```
 
 ## Configuration Example

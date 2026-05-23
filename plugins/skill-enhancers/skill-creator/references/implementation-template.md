@@ -37,6 +37,7 @@ Standard implementation guide for all marketplace skills. Every references/imple
 ```
 
 Rules:
+
 - Write from the perspective of how this specific skill works, not generic patterns
 - Include real commands, real API calls, real config values
 - Keep under 200 lines — this is a reference, not a textbook

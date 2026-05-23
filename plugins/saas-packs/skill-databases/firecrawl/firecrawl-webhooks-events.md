@@ -10,6 +10,7 @@ firecrawl-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement webhook handlers for crawl completion notifications and event-driven data processing pipelines.
 **Workflow:** Integration skill - enables event-driven architectures for long-running crawl operations.
 **Relates to:** Complements firecrawl-crawl-site for async crawls; feeds into firecrawl-batch-processing

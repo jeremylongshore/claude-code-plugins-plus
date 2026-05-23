@@ -10,6 +10,7 @@ fathom-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Fathom local development workflow
 **Workflow:** Part of the onboarding skill category for Fathom integration.
 **Relates to:** Other fathom skills in this pack.

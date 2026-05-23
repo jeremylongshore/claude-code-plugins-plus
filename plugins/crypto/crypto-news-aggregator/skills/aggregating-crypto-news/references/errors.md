@@ -13,6 +13,7 @@ Comprehensive guide to errors, causes, and solutions for the aggregating-crypto-
 **Cause:** No internet connectivity or DNS resolution failure.
 
 **Solution:**
+
 1. Check internet connection
 2. Verify DNS settings
 3. Try again after connection is restored
@@ -27,12 +28,14 @@ Comprehensive guide to errors, causes, and solutions for the aggregating-crypto-
 **Cause:** RSS feed server not responding within timeout window.
 
 **Solution:**
+
 1. Source is automatically skipped
 2. Other sources continue to be fetched
 3. Cached data used if available for that source
 4. Check if source is down: visit URL in browser
 
 **Mitigation:**
+
 - Default timeout is 10 seconds per source
 - Parallel fetching prevents one slow source from blocking others
 
@@ -45,6 +48,7 @@ Comprehensive guide to errors, causes, and solutions for the aggregating-crypto-
 **Cause:** Source blocking requests or server issues.
 
 **Solution:**
+
 - 403: Source may be blocking automated access
 - 404: RSS feed URL has changed
 - 5xx: Server-side issue, try later
@@ -62,6 +66,7 @@ Comprehensive guide to errors, causes, and solutions for the aggregating-crypto-
 **Cause:** Malformed RSS/Atom XML that feedparser cannot process.
 
 **Solution:**
+
 1. Source is skipped
 2. Check if source has valid RSS: validate at https://validator.w3.org/feed/
 3. Report issue if feed URL has changed
@@ -75,6 +80,7 @@ Comprehensive guide to errors, causes, and solutions for the aggregating-crypto-
 **Cause:** Feed entry lacks required fields (title, link).
 
 **Solution:**
+
 1. Entry is skipped
 2. Other entries from source continue to process
 3. No user action needed
@@ -88,6 +94,7 @@ Comprehensive guide to errors, causes, and solutions for the aggregating-crypto-
 **Cause:** Non-standard date format in feed entry.
 
 **Solution:**
+
 1. Article is included without date
 2. Recency scoring disabled for that article
 3. May appear out of order when sorted by recency
@@ -103,6 +110,7 @@ Comprehensive guide to errors, causes, and solutions for the aggregating-crypto-
 **Cause:** User provided unrecognized coin symbol.
 
 **Solution:**
+
 1. Check spelling (case-insensitive: btc, BTC, Btc all work)
 2. Use common symbols: BTC, ETH, SOL, BNB, XRP, ADA, DOGE, etc.
 3. Filter will attempt to match anyway against article text
@@ -129,12 +137,14 @@ Use one of: `market`, `defi`, `nft`, `regulatory`, `layer1`, `layer2`, `exchange
 **Cause:** Filters are too restrictive for current news.
 
 **Solution:**
+
 1. Relax time window: `--period 24h` instead of `--period 1h`
 2. Remove coin filter: drop `--coin` option
 3. Lower score threshold: `--min-score 0`
 4. Try different category or remove category filter
 
 **Suggested Relaxations:**
+
 ```bash
 # If no results with strict filters:
 python news_aggregator.py --coin BTC --period 1h --min-score 50
@@ -156,6 +166,7 @@ python news_aggregator.py --period 4h               # Both relaxed
 **Cause:** Cannot write to specified path.
 
 **Solution:**
+
 1. Check directory exists
 2. Check write permissions
 3. Ensure disk space available
@@ -183,6 +194,7 @@ Use one of: `table`, `json`, `csv`
 **Cause:** feedparser package not installed.
 
 **Solution:**
+
 ```bash
 pip install feedparser
 ```
@@ -196,6 +208,7 @@ pip install feedparser
 **Cause:** requests package not installed.
 
 **Solution:**
+
 ```bash
 pip install requests
 ```
@@ -246,6 +259,7 @@ python news_aggregator.py --verbose
 ```
 
 Shows:
+
 - Which sources are being fetched
 - Cache hits/misses
 - Parse results per source
@@ -286,6 +300,7 @@ Edit `config/sources.yaml` to include only one source for testing.
 When reporting issues, include:
 
 1. **Command executed:**
+
    ```bash
    python news_aggregator.py --verbose [your options]
    ```
@@ -293,12 +308,14 @@ When reporting issues, include:
 2. **Full error output** (with `--verbose`)
 
 3. **Environment:**
+
    ```bash
    python --version
    pip list | grep -E "feedparser|requests"
    ```
 
 4. **Network test:**
+
    ```bash
    curl -I https://www.coindesk.com/arc/outboundfeeds/rss/
    ```

@@ -60,9 +60,9 @@ curl -s -X GET "https://api.navan.com/v1/expenses?status=approved&limit=50" \
 # }
 ```
 
-5. **Set up sync schedule** — Navan supports daily or real-time export via webhooks
-6. **Validate with test expenses** — Submit 3-5 test expenses through the full approval flow
-7. **Enable in production** — Switch from sandbox to production OAuth credentials
+1. **Set up sync schedule** — Navan supports daily or real-time export via webhooks
+2. **Validate with test expenses** — Submit 3-5 test expenses through the full approval flow
+3. **Enable in production** — Switch from sandbox to production OAuth credentials
 
 ### Category B — HRIS User Provisioning (Workday, BambooHR, ADP)
 
@@ -83,9 +83,9 @@ curl -s -X GET "https://api.navan.com/v1/expenses?status=approved&limit=50" \
 | Manager | `urn:navan:manager_email` | Recommended |
 | Cost Center | `urn:navan:cost_center` | Optional |
 
-4. **Test provisioning** — Create a test user in HRIS and verify they appear in Navan within 15 minutes
-5. **Test deprovisioning** — Deactivate the test user and confirm Navan access is revoked
-6. **Verify via API:**
+1. **Test provisioning** — Create a test user in HRIS and verify they appear in Navan within 15 minutes
+2. **Test deprovisioning** — Deactivate the test user and confirm Navan access is revoked
+3. **Verify via API:**
 
 ```bash
 # Check provisioned users
@@ -111,14 +111,15 @@ lastName    → user.lastName     (Required)
 department  → user.department   (Optional — enables policy routing)
 ```
 
-4. **Upload IdP metadata XML** to Navan Admin console
-5. **Enable JIT provisioning** (optional) — Auto-create Navan accounts on first SSO login
-6. **Test with a pilot group** — Assign 5-10 users before org-wide rollout
-7. **Enforce SSO** — After pilot validation, enable "SSO Required" to disable password login
+1. **Upload IdP metadata XML** to Navan Admin console
+2. **Enable JIT provisioning** (optional) — Auto-create Navan accounts on first SSO login
+3. **Test with a pilot group** — Assign 5-10 users before org-wide rollout
+4. **Enforce SSO** — After pilot validation, enable "SSO Required" to disable password login
 
 ## Output
 
 Each integration deployment produces:
+
 - **Connection validation** confirming data flows between systems
 - **Field mapping documentation** for ongoing maintenance
 - **Test results** from pilot user group

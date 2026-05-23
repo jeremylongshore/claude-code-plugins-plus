@@ -19,6 +19,7 @@ Analyzes portfolio performance, calculates risk metrics, and provides optimizati
 ## Key Features
 
 ### Portfolio Metrics
+
 - **Returns**: Total return, annualized, Sharpe ratio, Sortino ratio
 - **Risk**: Volatility, max drawdown, VaR, conditional VaR
 - **Allocation**: Asset mix, sector exposure, geographic distribution

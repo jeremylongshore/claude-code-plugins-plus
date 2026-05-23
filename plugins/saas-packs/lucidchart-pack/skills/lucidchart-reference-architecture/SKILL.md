@@ -18,9 +18,11 @@ compatibility: Designed for Claude Code
 # Lucidchart Reference Architecture
 
 ## Overview
+
 Design a version-controlled integration layer for the Lucidchart diagramming platform. Document versioning is the primary driver, so every shape mutation is tracked for diff, rollback, and branch operations while an async export pipeline renders diagrams without blocking collaboration.
 
 ## Instructions
+
 1. Provision the prerequisites below and register a Lucidchart OAuth2 application.
 2. Deploy the document sync service to reconcile local snapshots with Lucidchart state.
 3. Start the collaboration event consumer to capture shape deltas in real time.
@@ -28,10 +30,12 @@ Design a version-controlled integration layer for the Lucidchart diagramming pla
 5. Tune the sync interval and version retention policy for your document volume.
 
 ## Prerequisites
+
 - Node.js 18+, TypeScript 5, PostgreSQL 15, Redis 7, RabbitMQ or SQS
 - Lucidchart OAuth2 credentials with `document:read`, `document:write`, `export` scopes
 
 ## Architecture Diagram
+
 ```
 Client --> API Gateway --> DocumentSyncService --> Lucidchart API
                                   |
@@ -42,6 +46,7 @@ Client --> API Gateway --> DocumentSyncService --> Lucidchart API
 ```
 
 ## Service Layer
+
 ```typescript
 class DocumentSyncService {
   constructor(
@@ -69,6 +74,7 @@ class DocumentSyncService {
 ```
 
 ## Caching Strategy
+
 ```typescript
 class DocumentCache {
   constructor(private redis: RedisClient) {}
@@ -91,6 +97,7 @@ class DocumentCache {
 ```
 
 ## Event Pipeline
+
 ```typescript
 class CollabEventConsumer {
   constructor(private queue: MessageQueue, private versions: VersionStore) {}
@@ -115,6 +122,7 @@ class ExportWorker {
 ```
 
 ## Data Model
+
 ```typescript
 interface DocumentSnapshot {
   docId: string; revision: number; title: string;
@@ -136,15 +144,18 @@ interface ExportJob {
 ```
 
 ## Output
+
 Running this architecture produces a versioned document store with full revision history, a real-time collaboration delta stream, and on-demand diagram exports to PNG, SVG, or PDF with deduplication.
 
 ## Scaling Considerations
+
 - Partition the version store by document ID to isolate write-heavy diagrams
 - Export workers are stateless; scale horizontally based on queue depth
 - Deduplicate concurrent export requests for the same document/format via Redis SETNX
 - Distribute sync jobs across OAuth tokens to respect per-user rate limits
 
 ## Error Handling
+
 | Component | Failure Mode | Recovery |
 |-----------|-------------|----------|
 | Lucidchart API | 429 rate limit | Exponential backoff, pause sync for that token |
@@ -154,6 +165,7 @@ Running this architecture produces a versioned document store with full revision
 | Redis | Cache eviction | Rebuild metadata from version store on next read |
 
 ## Examples
+
 ```bash
 # Sync a document and capture its current revision
 curl http://localhost:3000/api/documents/abc123/sync
@@ -162,7 +174,9 @@ curl -X POST http://localhost:3000/api/documents/abc123/export?format=png
 ```
 
 ## Resources
+
 - [Lucidchart API Reference](https://developer.lucid.co/reference/overview)
 
 ## Next Steps
+
 See `lucidchart-deploy-integration`.

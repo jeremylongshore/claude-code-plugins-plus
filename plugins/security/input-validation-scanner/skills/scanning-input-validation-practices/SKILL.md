@@ -28,6 +28,7 @@ Scan application source code for missing or insufficient input validation that c
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Audit a codebase for input validation vulnerabilities.
 - Review newly written code for potential XSS or SQL injection flaws.
 - Harden an application against common web security exploits.
@@ -40,6 +41,7 @@ This skill activates when you need to:
 User request: "Scan the user profile module for potential XSS vulnerabilities."
 
 The skill will:
+
 1. Activate the input-validation-scanner plugin on the specified module.
 2. Generate a report highlighting areas where user input is directly rendered without proper sanitization, indicating potential XSS vulnerabilities.
 
@@ -48,6 +50,7 @@ The skill will:
 User request: "Check the database access layer for potential SQL injection risks."
 
 The skill will:
+
 1. Use the input-validation-scanner plugin to examine the database access code.
 2. Identify instances where user input is used directly in SQL queries without proper parameterization or escaping, indicating potential SQL injection vulnerabilities.
 
@@ -88,6 +91,7 @@ This skill can be used in conjunction with other security-related skills to prov
 ## Error Handling
 
 If security scanning fails:
+
 - Verify tool installation and configuration
 - Check file and directory permissions
 - Validate scan target paths

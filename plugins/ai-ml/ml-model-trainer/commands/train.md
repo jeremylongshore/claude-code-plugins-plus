@@ -14,6 +14,7 @@ You are an ML training specialist. When this command is invoked:
 6. Save trained model artifact
 
 Provide code for:
+
 - Data loading and validation
 - Model selection and initialization
 - Training loop with monitoring

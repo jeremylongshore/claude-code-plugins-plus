@@ -10,6 +10,7 @@ hootsuite-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Hootsuite SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Hootsuite integration.
 **Relates to:** Other hootsuite skills in this pack.

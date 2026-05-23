@@ -10,6 +10,7 @@ onenote-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement OneNote rate limiting and backoff
 **Workflow:** Part of the operations skill category for OneNote integration.
 **Relates to:** Other onenote skills in this pack.

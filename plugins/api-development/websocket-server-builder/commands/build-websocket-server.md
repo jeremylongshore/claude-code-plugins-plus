@@ -11,6 +11,7 @@ Automatically generate production-ready WebSocket servers with Socket.IO or nati
 ## When to Use This Command
 
 Use `/build-websocket-server` when you need to:
+
 - Build real-time chat applications or messaging systems
 - Implement live collaboration features (Google Docs-style)
 - Create real-time dashboards with live data updates
@@ -19,6 +20,7 @@ Use `/build-websocket-server` when you need to:
 - Implement real-time notifications and alerts
 
 DON'T use this when:
+
 - Simple request-response patterns suffice (use REST)
 - Unidirectional server-to-client updates only (consider SSE)
 - Very high throughput binary streaming (consider WebRTC)
@@ -27,6 +29,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **Socket.IO** as the primary approach because:
+
 - Automatic fallback to long-polling for compatibility
 - Built-in room and namespace management
 - Automatic reconnection with exponential backoff
@@ -35,12 +38,14 @@ This command implements **Socket.IO** as the primary approach because:
 - Extensive middleware ecosystem
 
 **Alternative considered: Native WebSocket (ws)**
+
 - Lower overhead and better performance
 - No automatic fallbacks
 - Manual implementation of features
 - Recommended for simple, high-performance needs
 
 **Alternative considered: Server-Sent Events (SSE)**
+
 - Simpler for unidirectional communication
 - Works over HTTP/2
 - No bidirectional support
@@ -49,6 +54,7 @@ This command implements **Socket.IO** as the primary approach because:
 ## Prerequisites
 
 Before running this command:
+
 1. Choose Socket.IO vs native WebSocket
 2. Design event/message protocol
 3. Plan authentication strategy
@@ -58,23 +64,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Initialize WebSocket Server
+
 Set up Socket.IO or ws server with proper configuration.
 
 ### Step 2: Implement Authentication
+
 Add middleware for connection authentication and authorization.
 
 ### Step 3: Define Event Handlers
+
 Create handlers for all client events and server broadcasts.
 
 ### Step 4: Add Room Management
+
 Implement room joining, leaving, and broadcasting logic.
 
 ### Step 5: Configure Resilience
+
 Set up reconnection, heartbeat, and error handling.
 
 ## Output Format
 
 The command generates:
+
 - `websocket/server.js` - Main WebSocket server setup
 - `websocket/handlers/` - Event handler modules
 - `websocket/middleware/` - Auth and validation middleware
@@ -1192,6 +1204,7 @@ describe('WebSocket Server Tests', () => {
 ## Configuration Options
 
 **Server Options**
+
 - `perMessageDeflate`: Enable compression
 - `maxPayload`: Maximum message size
 - `pingInterval`: Heartbeat frequency
@@ -1199,6 +1212,7 @@ describe('WebSocket Server Tests', () => {
 - `transports`: Allowed transports (Socket.IO)
 
 **Client Options**
+
 - `reconnection`: Enable auto-reconnection
 - `reconnectionAttempts`: Max reconnect tries
 - `reconnectionDelay`: Initial reconnect delay
@@ -1208,6 +1222,7 @@ describe('WebSocket Server Tests', () => {
 ## Best Practices
 
 DO:
+
 - Implement heartbeat/ping-pong for connection health
 - Use rooms/namespaces for logical grouping
 - Add authentication before accepting connections
@@ -1216,6 +1231,7 @@ DO:
 - Monitor connection count and memory usage
 
 DON'T:
+
 - Send large payloads without chunking
 - Store state only in memory without persistence
 - Skip authentication for production

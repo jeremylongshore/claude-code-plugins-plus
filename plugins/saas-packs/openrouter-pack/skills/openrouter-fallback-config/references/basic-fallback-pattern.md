@@ -3,6 +3,7 @@
 ## Basic Fallback Pattern
 
 ### Simple Fallback Chain
+
 ```python
 from openai import OpenAI
 
@@ -38,6 +39,7 @@ def chat_with_fallback(prompt: str, **kwargs):
 ```
 
 ### TypeScript Fallback
+
 ```typescript
 const FALLBACK_CHAIN = [
   'anthropic/claude-3.5-sonnet',

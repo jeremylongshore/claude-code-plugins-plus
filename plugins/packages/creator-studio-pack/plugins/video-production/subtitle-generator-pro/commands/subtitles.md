@@ -22,6 +22,7 @@ Create professional, animated subtitles in various popular creator styles with a
 ## Purpose
 
 Generate subtitles that:
+
 - **Increase retention** - Keep viewers watching longer
 - **Improve accessibility** - Reach deaf/hard-of-hearing audience
 - **Enable silent viewing** - 85% of social videos watched on mute
@@ -31,6 +32,7 @@ Generate subtitles that:
 ## Subtitle Styles
 
 ### Mr Beast Style
+
 ```
 Characteristics:
 ├─ Every word animated individually
@@ -53,6 +55,7 @@ Example:
 ```
 
 ### Ali Abdaal Style
+
 ```
 Characteristics:
 ├─ Full sentences displayed
@@ -76,6 +79,7 @@ Example:
 ```
 
 ### Alex Hormozi Style
+
 ```
 Characteristics:
 ├─ Short, punchy phrases
@@ -98,6 +102,7 @@ Example:
 ```
 
 ### Minimal Style
+
 ```
 Characteristics:
 ├─ Simple white text
@@ -122,6 +127,7 @@ Example:
 ```
 
 ### Podcast Style
+
 ```
 Characteristics:
 ├─ Speaker names displayed
@@ -148,6 +154,7 @@ Example:
 When user runs `/subtitles redis-tutorial.mp4 --style mr-beast`:
 
 **Step 1: Transcription**
+
 ```
 🎤 TRANSCRIBING AUDIO
 
@@ -175,6 +182,7 @@ results were incredible..."
 ```
 
 **Step 2: Timing Analysis**
+
 ```
 ⏱️ ANALYZING TIMING
 
@@ -196,6 +204,7 @@ Subtitle Segments:
 ```
 
 **Step 3: Style Application**
+
 ```
 🎨 APPLYING MR BEAST STYLE
 
@@ -223,6 +232,7 @@ Animations Applied:
 ```
 
 **Step 4: Generate Output**
+
 ```
 ✅ SUBTITLES GENERATED
 
@@ -431,6 +441,7 @@ Save changes? (y/n)
 ## Platform-Specific Optimization
 
 ### YouTube
+
 ```
 Format: SRT (upload separately)
 Position: Bottom center
@@ -440,6 +451,7 @@ Benefits: SEO boost, accessibility, multi-language
 ```
 
 ### TikTok/Instagram Reels
+
 ```
 Format: Burned-in (ASS)
 Position: Center (safe zone)
@@ -449,6 +461,7 @@ Benefits: Essential (85% watch on mute)
 ```
 
 ### LinkedIn
+
 ```
 Format: Burned-in (SRT)
 Position: Bottom third
@@ -458,6 +471,7 @@ Benefits: Professional, 85% watch on mute
 ```
 
 ### Twitter
+
 ```
 Format: Burned-in (SRT)
 Position: Bottom center
@@ -469,6 +483,7 @@ Benefits: Feed auto-plays on mute
 ## Subtitle File Formats
 
 ### SRT (SubRip)
+
 ```
 1
 00:00:00,000 --> 00:00:03,500
@@ -479,9 +494,11 @@ show you how I made my API 10x faster.
 00:00:03,500 --> 00:00:07,200
 The secret? Redis caching.
 ```
+
 **Use Case**: Standard format, universally supported
 
 ### ASS (Advanced SubStation Alpha)
+
 ```
 [Script Info]
 Title: Redis Tutorial
@@ -492,9 +509,11 @@ Style: Default,Arial,48,&H00FFFFFF,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,
 [Events]
 Dialogue: 0,0:00:00.00,0:00:03.50,Default,,0,0,0,,Hey everyone! Today I'm going to\Nshow you how I made my API {\c&H00FFFF&}10x faster{\r}.
 ```
+
 **Use Case**: Advanced styling, animations, positioning
 
 ### VTT (WebVTT)
+
 ```
 WEBVTT
 
@@ -505,6 +524,7 @@ show you how I made my API 10x faster.
 00:03.500 --> 00:07.200
 The secret? Redis caching.
 ```
+
 **Use Case**: Web-based players, HTML5 video
 
 ## Integration Points
@@ -520,6 +540,7 @@ Works with other Creator Studio plugins:
 ## Best Practices
 
 ### Timing
+
 1. **2-4 seconds per subtitle** - Comfortable reading speed
 2. **Sync with natural pauses** - Don't break mid-sentence awkwardly
 3. **Never exceed 5 seconds** - Viewers lose interest
@@ -527,6 +548,7 @@ Works with other Creator Studio plugins:
 5. **Full sentences for professional** - Ali Abdaal style for credibility
 
 ### Readability
+
 1. **Max 2 lines per subtitle** - More is hard to read
 2. **40 characters per line** - Optimal reading width
 3. **High contrast colors** - White on black, or black on white
@@ -534,6 +556,7 @@ Works with other Creator Studio plugins:
 5. **Add text outline** - 2-3px stroke for visibility
 
 ### Styling
+
 1. **Match brand identity** - Consistent across videos
 2. **Less is more** - Don't over-animate
 3. **Test on mobile** - Most viewers on phones
@@ -543,6 +566,7 @@ Works with other Creator Studio plugins:
 ## Troubleshooting
 
 ### Poor Transcription Accuracy
+
 ```
 ⚠️ Transcription accuracy: 84.2% (below 95% target)
 
@@ -561,6 +585,7 @@ Solutions:
 ```
 
 ### Subtitles Out of Sync
+
 ```
 ⚠️ Subtitles drifting out of sync
 
@@ -580,6 +605,7 @@ Apply auto-fix? (y/n)
 ```
 
 ### Text Unreadable on Mobile
+
 ```
 ⚠️ Text too small for mobile viewing
 

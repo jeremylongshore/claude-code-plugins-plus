@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Reference Architecture
 
 ## Overview
+
 Reference architectures for implementing Clerk in common application patterns: Next.js full-stack, microservices with shared auth, multi-tenant SaaS, and mobile + web with shared backend.
 
 ## Prerequisites
+
 - Understanding of web application architecture
 - Familiarity with authentication patterns (JWT, sessions, OAuth)
 - Knowledge of your tech stack and scaling requirements
@@ -34,6 +36,7 @@ Reference architectures for implementing Clerk in common application patterns: N
 ## Instructions
 
 ### Architecture 1: Next.js Full-Stack Application
+
 ```
 Browser
   │
@@ -78,6 +81,7 @@ export default clerkMiddleware(async (auth, req) => {
 ```
 
 ### Architecture 2: Microservices with Shared Auth
+
 ```
 Browser ─▸ API Gateway / BFF (Next.js + Clerk)
               │
@@ -125,6 +129,7 @@ app.get('/api/data', requireAuth(), (req, res) => {
 ```
 
 ### Architecture 3: Multi-Tenant SaaS
+
 ```
 Tenant A (org_abc) ──┐
 Tenant B (org_def) ──┤──▸ Shared App ──▸ Shared DB (tenant-scoped queries)
@@ -186,6 +191,7 @@ export default function SelectOrg() {
 ```
 
 ### Architecture 4: Mobile + Web with Shared Backend
+
 ```
 Web App (Next.js + @clerk/nextjs)  ──┐
 Mobile App (React Native + @clerk/clerk-expo) ──┤──▸ Backend API (Express + @clerk/express)
@@ -219,12 +225,14 @@ app.listen(3001)
 ```
 
 ## Output
+
 - Next.js full-stack architecture with middleware, server/client components, and webhooks
 - Microservices architecture with BFF proxy and JWT-based service auth
 - Multi-tenant SaaS with organization-scoped data access
 - Mobile + web with shared Express backend using `@clerk/express`
 
 ## Error Handling
+
 | Pattern | Common Issue | Solution |
 |---------|-------------|----------|
 | Full-stack | Middleware redirect loop | Add sign-in route to public routes |
@@ -235,6 +243,7 @@ app.listen(3001)
 ## Examples
 
 ### Database Schema for Clerk Integration
+
 ```prisma
 // prisma/schema.prisma
 model User {
@@ -258,9 +267,11 @@ model OrgMembership {
 ```
 
 ## Resources
+
 - [Clerk Architecture Patterns](https://clerk.com/docs/quickstarts/nextjs)
 - [Clerk Organizations (Multi-Tenant)](https://clerk.com/docs/organizations/overview)
 - [Clerk Express Integration](https://clerk.com/docs/quickstarts/express)
 
 ## Next Steps
+
 Proceed to `clerk-multi-env-setup` for multi-environment configuration.

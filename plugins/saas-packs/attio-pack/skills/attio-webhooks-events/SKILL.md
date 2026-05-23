@@ -22,9 +22,11 @@ compatibility: Designed for Claude Code
 # Attio Webhooks & Events
 
 ## Overview
+
 Attio v2 webhooks deliver real-time CRM event notifications to your HTTPS endpoint. Subscribe to record, list-entry, note, and task events with optional object or attribute filters to reduce volume. Webhooks are managed via `POST /v2/webhooks` and verified with HMAC-SHA256 signatures using a timestamp-prefixed payload.
 
 ## Webhook Registration
+
 ```typescript
 const webhook = await fetch("https://api.attio.com/v2/webhooks", {
   method: "POST",
@@ -45,6 +47,7 @@ const webhook = await fetch("https://api.attio.com/v2/webhooks", {
 ```
 
 ## Signature Verification
+
 ```typescript
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
@@ -65,6 +68,7 @@ function verifyAttioSignature(req: Request, res: Response, next: NextFunction) {
 ```
 
 ## Event Handler
+
 ```typescript
 import express from "express";
 const app = express();
@@ -87,6 +91,7 @@ app.post("/webhooks/attio", express.raw({ type: "application/json" }), verifyAtt
 ```
 
 ## Event Types
+
 | Event | Payload Fields | Use Case |
 |-------|---------------|----------|
 | `record.created` | `object.api_slug`, `record.record_id`, `actor` | Sync new contacts/deals to external CRM |
@@ -96,6 +101,7 @@ app.post("/webhooks/attio", express.raw({ type: "application/json" }), verifyAtt
 | `list-entry.created` | `list.api_slug`, `entry.entry_id` | Trigger pipeline stage automation |
 
 ## Retry & Idempotency
+
 ```typescript
 const processed = new Set<string>();
 
@@ -112,6 +118,7 @@ async function handleIdempotent(event: { id: { event_id: string }; event_type: s
 ```
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | Signature mismatch | Body parsed before raw verification | Use `express.raw()`, verify raw body |
@@ -120,8 +127,10 @@ async function handleIdempotent(event: { id: { event_id: string }; event_type: s
 | Too many events | No subscription filtering | Add `filter` clauses to subscriptions |
 
 ## Resources
+
 - [Attio Webhooks Guide](https://docs.attio.com/rest-api/guides/webhooks)
 - [Attio Webhook Events Reference](https://docs.attio.com/rest-api/webhook-reference/record-events/recordcreated)
 
 ## Next Steps
+
 See `attio-security-basics`.

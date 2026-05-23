@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Install & Auth
 
 ## Overview
+
 Set up Perplexity Sonar API access using the OpenAI-compatible chat completions endpoint at `https://api.perplexity.ai`. Perplexity does not have a custom SDK -- you use the standard OpenAI client library pointed at Perplexity's base URL.
 
 ## Prerequisites
+
 - Node.js 18+ or Python 3.10+
 - Perplexity account at [perplexity.ai](https://www.perplexity.ai)
 - API key from [perplexity.ai/settings/api](https://www.perplexity.ai/settings/api)
@@ -35,6 +37,7 @@ Set up Perplexity Sonar API access using the OpenAI-compatible chat completions 
 ## Instructions
 
 ### Step 1: Install OpenAI Client Library
+
 ```bash
 set -euo pipefail
 # Node.js / TypeScript
@@ -47,6 +50,7 @@ pip install openai
 There is no `@perplexity/sdk` package. Perplexity uses the OpenAI wire format, so you use the official `openai` package with a custom `baseURL`.
 
 ### Step 2: Configure API Key
+
 ```bash
 # Set environment variable
 export PERPLEXITY_API_KEY="pplx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -58,6 +62,7 @@ echo 'PERPLEXITY_API_KEY=pplx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' 
 API keys start with `pplx-` and are generated at [perplexity.ai/settings/api](https://www.perplexity.ai/settings/api). You must add credits to your account before making API calls.
 
 ### Step 3: Verify Connection (TypeScript)
+
 ```typescript
 import OpenAI from "openai";
 
@@ -81,6 +86,7 @@ verify().catch(console.error);
 ```
 
 ### Step 4: Verify Connection (Python)
+
 ```python
 import os
 from openai import OpenAI
@@ -110,6 +116,7 @@ print("Tokens:", response.usage.total_tokens)
 | `sonar-deep-research` | Multi-step research synthesis | $2 | $8 |
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401 Unauthorized` | Invalid or missing API key | Verify key starts with `pplx-` and has credits |
@@ -118,15 +125,18 @@ print("Tokens:", response.usage.total_tokens)
 | `Connection refused` | Wrong base URL | Ensure `baseURL` is `https://api.perplexity.ai` |
 
 ## Output
+
 - OpenAI client configured with Perplexity base URL
 - Successful API response confirming connection
 - Token usage confirming billing is active
 
 ## Resources
+
 - [Perplexity API Documentation](https://docs.perplexity.ai)
 - [API Key Management](https://www.perplexity.ai/settings/api)
 - [OpenAI Compatibility Guide](https://docs.perplexity.ai/guides/chat-completions-guide)
 - [Model Cards](https://docs.perplexity.ai/getting-started/models)
 
 ## Next Steps
+
 After successful auth, proceed to `perplexity-hello-world` for your first search query.

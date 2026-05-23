@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Security Basics
 
 ## Overview
+
 Secure your MaintainX integration with proper credential management, input validation, audit logging, and key rotation procedures.
 
 ## Prerequisites
+
 - MaintainX account with admin access
 - Node.js 18+
 - Familiarity with environment variables and secret management
@@ -83,6 +85,7 @@ chmod +x .git/hooks/pre-commit
 ```
 
 Or use `gitleaks`:
+
 ```bash
 npx gitleaks detect --source . --no-git
 ```
@@ -202,6 +205,7 @@ rotateApiKey();
 ```
 
 ## Output
+
 - `.env` with API key, protected by `.gitignore`
 - Pre-commit hook blocking secret leaks
 - Zod-based input validation for all API inputs
@@ -209,6 +213,7 @@ rotateApiKey();
 - Key rotation procedure with verification steps
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Key leaked to git | Committed `.env` or hardcoded key | Rotate immediately, add pre-commit hook |
@@ -217,12 +222,14 @@ rotateApiKey();
 | Stale key | Key not rotated in > 90 days | Follow rotation procedure in Step 5 |
 
 ## Resources
+
 - [MaintainX Security](https://www.getmaintainx.com/security)
 - [OWASP API Security Top 10](https://owasp.org/API-Security/)
 - [gitleaks](https://github.com/gitleaks/gitleaks) -- Secret detection in git repos
 - [Zod](https://zod.dev/) -- TypeScript-first schema validation
 
 ## Next Steps
+
 For production deployment, see `maintainx-prod-checklist`.
 
 ## Examples

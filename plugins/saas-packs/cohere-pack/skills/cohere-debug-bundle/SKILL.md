@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Cohere Debug Bundle
 
 ## Overview
+
 Collect all diagnostic information needed to resolve Cohere API v2 issues. Generates a support-ready bundle with environment info, request/response logs, and SDK version data.
 
 ## Prerequisites
+
 - `cohere-ai` SDK installed
 - Access to application logs
 - `curl` and `jq` available
@@ -180,6 +182,7 @@ echo "Node: $(node -v 2>/dev/null || echo N/A) | SDK: $(npm list cohere-ai 2>/de
 ```
 
 ## Error Handling
+
 | Item | Purpose |
 |------|---------|
 | SDK version | Identify version-specific bugs |
@@ -189,9 +192,11 @@ echo "Node: $(node -v 2>/dev/null || echo N/A) | SDK: $(npm list cohere-ai 2>/de
 | Error codes | Classify issue type (4xx vs 5xx) |
 
 ## Resources
+
 - [Cohere Status Page](https://status.cohere.com)
 - [Cohere Error Codes](https://docs.cohere.com/reference/errors)
 - [Cohere Support](https://support.cohere.com)
 
 ## Next Steps
+
 For rate limit issues, see `cohere-rate-limits`.

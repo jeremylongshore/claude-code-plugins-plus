@@ -57,4 +57,3 @@ featured: false
 </tbody>
 </table>
 <p><strong>Combined infrastructure:</strong> Google Cloud Platform (primary), AWS (secondary), Netlify (static sites), Firebase (customer platforms).</p>
-

@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Security Basics
 
 ## Overview
+
 Secure authentication patterns for Linear integrations: API key management, OAuth 2.0 with PKCE, token refresh (mandatory for new apps after Oct 2025), webhook HMAC-SHA256 signature verification, and secret rotation.
 
 ## Prerequisites
+
 - Linear account with API access
 - Understanding of environment variables and secret management
 - Familiarity with OAuth 2.0 and HMAC concepts
@@ -36,6 +38,7 @@ Secure authentication patterns for Linear integrations: API key management, OAut
 ## Instructions
 
 ### Step 1: Secure API Key Storage
+
 ```typescript
 // NEVER hardcode keys
 // BAD:
@@ -50,6 +53,7 @@ const client = new LinearClient({
 ```
 
 **Environment setup:**
+
 ```bash
 # .env (never commit)
 LINEAR_API_KEY=lin_api_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -66,6 +70,7 @@ LINEAR_WEBHOOK_SECRET=your_webhook_secret_here
 ```
 
 **Startup validation:**
+
 ```typescript
 function validateConfig(): void {
   const key = process.env.LINEAR_API_KEY;
@@ -77,6 +82,7 @@ validateConfig();
 ```
 
 ### Step 2: OAuth 2.0 with PKCE
+
 ```typescript
 import express from "express";
 import crypto from "crypto";
@@ -154,6 +160,7 @@ app.get("/auth/linear/callback", async (req, res) => {
 ```
 
 ### Step 3: Token Refresh
+
 As of Oct 2025, all new Linear OAuth apps issue refresh tokens. Existing apps must migrate by April 2026.
 
 ```typescript
@@ -191,6 +198,7 @@ async function getValidToken(userId: string): Promise<string> {
 ```
 
 ### Step 4: Webhook Signature Verification
+
 Linear signs every webhook with HMAC-SHA256 using the webhook's signing secret. The signature is in the `Linear-Signature` header.
 
 ```typescript
@@ -239,6 +247,7 @@ app.post("/webhooks/linear", express.raw({ type: "*/*" }), (req, res) => {
 ```
 
 ### Step 5: Secret Rotation
+
 ```typescript
 // Support multiple keys during rotation period
 const apiKeys = [
@@ -261,6 +270,7 @@ async function getWorkingClient(): Promise<LinearClient> {
 ```
 
 ## Security Checklist
+
 - [ ] API keys in environment variables only (never in code)
 - [ ] `.env` files in `.gitignore`
 - [ ] OAuth state parameter validated (CSRF protection)
@@ -285,6 +295,7 @@ async function getWorkingClient(): Promise<LinearClient> {
 ## Examples
 
 ### Test Webhook Signature Locally
+
 ```typescript
 import crypto from "crypto";
 
@@ -301,6 +312,7 @@ console.log(`Valid: ${verifyWebhookSignature(payload, sig, secret)}`);
 ```
 
 ## Resources
+
 - [OAuth 2.0 Authentication](https://linear.app/developers/oauth-2-0-authentication)
 - [OAuth Actor Authorization](https://linear.app/developers/oauth-actor-authorization)
 - [Webhooks Documentation](https://linear.app/developers/webhooks)

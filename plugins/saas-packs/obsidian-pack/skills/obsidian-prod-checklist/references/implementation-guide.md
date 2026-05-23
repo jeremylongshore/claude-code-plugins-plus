@@ -5,6 +5,7 @@
 ## Detailed Instructions
 
 ### Step 1: Validate manifest.json
+
 ```json
 {
   "id": "my-plugin",
@@ -20,6 +21,7 @@
 ```
 
 **Validation Script:**
+
 ```bash
 #!/bin/bash
 
@@ -53,6 +55,7 @@ echo "manifest.json validation passed"
 ```
 
 ### Step 2: Validate versions.json
+
 ```json
 {
   "1.0.0": "1.0.0",
@@ -78,6 +81,7 @@ echo "versions.json validation passed"
 ```
 
 ### Step 3: Code Quality Checks
+
 ```bash
 #!/bin/bash
 
@@ -113,6 +117,7 @@ echo "Quality checks complete"
 ```
 
 ### Step 4: Functionality Testing Checklist
+
 ```markdown
 
 
@@ -141,32 +146,34 @@ npm test
 echo "Ready to create GitHub release for v$VERSION"
 ```
 
-
 ## Community Plugin Requirements
 
 ### Mandatory Items
+
 - [ ] Plugin hosted on public GitHub repository
 - [ ] Valid `manifest.json` with all required fields
 - [ ] Valid `versions.json` tracking compatibility
 - [ ] No console errors during normal operation
 - [ ] Works on all platforms (desktop: Win/Mac/Linux, mobile: iOS/Android)
 
-
 ## Manual Testing Checklist
 
 ### Installation
+
 - [ ] Plugin installs correctly from .zip
 - [ ] Plugin loads without errors
 - [ ] Settings tab appears and functions
 - [ ] All commands appear in command palette
 
 ### Core Features
+
 - [ ] Primary feature works as expected
 - [ ] Secondary features work correctly
 - [ ] Settings persist after reload
 - [ ] Plugin unloads cleanly
 
 ### Edge Cases
+
 - [ ] Empty vault handling
 - [ ] Large vault (1000+ files) performance
 - [ ] Files with special characters in names
@@ -174,6 +181,7 @@ echo "Ready to create GitHub release for v$VERSION"
 - [ ] Files with malformed frontmatter
 
 ### Platform Testing
+
 - [ ] Windows desktop
 - [ ] macOS desktop
 - [ ] Linux desktop
@@ -181,9 +189,11 @@ echo "Ready to create GitHub release for v$VERSION"
 - [ ] Android mobile
 
 ### Compatibility
+
 - [ ] Works with popular themes (minimal, default)
 - [ ] No conflicts with common plugins
 - [ ] Works in restricted mode (if applicable)
+
 ```
 
 ### Step 5: Documentation Checklist
@@ -227,6 +237,7 @@ echo "Release prepared: my-plugin-${VERSION}.zip"
 ```
 
 ### Step 7: Submission Checklist
+
 ```markdown
 
 
@@ -249,6 +260,7 @@ Explain how to use the plugin.
 ```
 
 ### Step 6: GitHub Release Preparation
+
 ```bash
 #!/bin/bash
 
@@ -303,10 +315,13 @@ cat > "release-notes-${VERSION}.md" << EOF
   "repo": "username/repo-name"
 }
 ```
-3. Create PR with description of plugin
+
+1. Create PR with description of plugin
 
 ### After Submission
+
 - [ ] Respond to reviewer feedback promptly
 - [ ] Test any requested changes
 - [ ] Update PR as needed
+
 ```

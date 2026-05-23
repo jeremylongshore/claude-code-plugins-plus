@@ -7,6 +7,7 @@
 ## 🎯 Planned Features
 
 ### Example Usage
+
 ```bash
 claude: "read PRD.pdf and generate Express.js API endpoints"
 
@@ -16,6 +17,7 @@ claude: "read PRD.pdf and generate Express.js API endpoints"
 ```
 
 ### Capabilities
+
 - 🏗️ API endpoint generation (Express, FastAPI, Django)
 - ✅ Input validation and error handling
 - 🧪 Test suite generation (Jest, pytest)
@@ -24,6 +26,7 @@ claude: "read PRD.pdf and generate Express.js API endpoints"
 - 📚 Comprehensive documentation
 
 ### Supported Formats
+
 - **Input:** PDF, Markdown, Word docs, Figma specs
 - **Output:** Node.js, Python, Go, TypeScript, Rust
 
@@ -32,6 +35,7 @@ claude: "read PRD.pdf and generate Express.js API endpoints"
 This plugin will be available to Pro tier sponsors ($19/month):
 
 **Pro Benefits:**
+
 - ✅ All premium Skill Enhancers
 - ✅ Priority feature requests
 - ✅ 1:1 consultation (30min/quarter)

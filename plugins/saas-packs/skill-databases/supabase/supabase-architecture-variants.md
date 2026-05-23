@@ -10,6 +10,7 @@ supabase-architecture-variants/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Choose and implement Supabase validated architecture blueprints: Monolith (simple), Service Layer (moderate), and Microservice (complex) with migration paths.
 **Workflow:** Architecture decision skill. Used when designing new integrations or planning scaling.
 **Relates to:** Builds on supabase-reference-architecture; informs supabase-known-pitfalls for architecture-specific issues.

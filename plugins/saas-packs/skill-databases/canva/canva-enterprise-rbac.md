@@ -10,6 +10,7 @@ canva-enterprise-rbac/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Canva enterprise access control
 **Workflow:** Part of the advanced skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

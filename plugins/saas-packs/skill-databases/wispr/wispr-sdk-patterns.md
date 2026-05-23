@@ -10,6 +10,7 @@ wispr-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Wispr SDK patterns
 **Workflow:** Part of the onboarding skill category for Wispr integration.
 **Relates to:** Other wispr skills in this pack.

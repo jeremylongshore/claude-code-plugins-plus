@@ -10,6 +10,7 @@ sentry-error-capture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Advanced error capture and context enrichment with Sentry including user context, tags, extra data, breadcrumbs, and custom fingerprinting.
 **Workflow:** Use when implementing detailed error tracking that goes beyond basic exception capture. Adds rich context for better debugging.
 **Relates to:** Extends patterns from `sentry-sdk-patterns`. Leads to `sentry-performance-tracing` for APM features.

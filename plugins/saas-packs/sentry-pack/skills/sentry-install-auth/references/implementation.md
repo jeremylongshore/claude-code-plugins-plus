@@ -1,6 +1,7 @@
-# Implementation Guide
+## Implementation Guide
 
 ### Step 1: Install SDK
+
 ```bash
 # Node.js
 npm install @sentry/node
@@ -13,6 +14,7 @@ pip install sentry-sdk
 ```
 
 ### Step 2: Configure DSN
+
 ```bash
 # Set environment variable
 export SENTRY_DSN="https://key@org.ingest.sentry.io/project"
@@ -22,6 +24,7 @@ echo 'SENTRY_DSN=https://key@org.ingest.sentry.io/project' >> .env
 ```
 
 ### Step 3: Initialize Sentry
+
 ```typescript
 import * as Sentry from '@sentry/node';
 
@@ -33,6 +36,7 @@ Sentry.init({
 ```
 
 ### Step 4: Verify Connection
+
 ```typescript
 Sentry.captureMessage('Sentry test message');
 console.log('Check Sentry dashboard for test message');

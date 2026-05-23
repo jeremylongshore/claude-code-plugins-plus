@@ -162,6 +162,7 @@ All HTTP calls flow through a `podium_get(path, params=...)` injected dependency
 ```
 
 Two streaming boundaries are load-bearing:
+
 1. Records never accumulate in memory between Podium and JSONL.
 2. Records never accumulate in memory between JSONL and chunked output.
 

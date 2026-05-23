@@ -10,6 +10,7 @@ klaviyo-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Klaviyo common errors
 **Workflow:** Part of the operations skill category for Klaviyo integration.
 **Relates to:** Other klaviyo skills in this pack.

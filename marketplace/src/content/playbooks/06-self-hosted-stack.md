@@ -1015,6 +1015,7 @@ spec:
      - "5432:5432"  # PostgreSQL exposed!
 
 # ✅ Use reverse proxy
+
 # Access via Nginx only</code></pre>
 
 <ul>
@@ -1024,6 +1025,7 @@ spec:
    listen 80;
 
 # ✅ HTTPS with redirect
+
 listen 443 ssl http2;</code></pre>
 
 <ul>
@@ -1033,6 +1035,7 @@ listen 443 ssl http2;</code></pre>
    POSTGRES_PASSWORD=password
 
 # ✅ Strong random password
+
 POSTGRES_PASSWORD=$(openssl rand -base64 32)</code></pre>
 
 <hr>

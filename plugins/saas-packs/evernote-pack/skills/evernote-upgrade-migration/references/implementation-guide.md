@@ -367,7 +367,6 @@ function wrapWithDeprecationWarnings(noteStore) {
 module.exports = { wrapWithDeprecationWarnings };
 ```
 
-
 ## SDK Version History
 
 | Version | Node.js | Key Changes |
@@ -375,7 +374,6 @@ module.exports = { wrapWithDeprecationWarnings };
 | 2.0.x | 10+ | Promise-based API, ES6 modules |
 | 1.25.x | 8+ | Legacy callback pattern |
 | 1.x | 6+ | Original SDK |
-
 
 ## Migration Checklist
 

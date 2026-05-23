@@ -5,6 +5,7 @@ Detailed implementation reference for the lokalise-debug-bundle skill.
 ## Instructions
 
 ### Step 1: Create Debug Bundle Script
+
 ```bash
 #!/bin/bash
 # lokalise-debug-bundle.sh
@@ -21,6 +22,7 @@ echo "" >> "$BUNDLE_DIR/summary.txt"
 ```
 
 ### Step 2: Collect Environment Info
+
 ```bash
 # Environment info
 echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
@@ -32,6 +34,7 @@ echo "LOKALISE_PROJECT_ID: ${LOKALISE_PROJECT_ID:-[NOT SET]}" >> "$BUNDLE_DIR/su
 ```
 
 ### Step 3: Gather SDK and Project Info
+
 ```bash
 # SDK version
 echo "" >> "$BUNDLE_DIR/summary.txt"
@@ -52,6 +55,7 @@ fi
 ```
 
 ### Step 4: Network and API Diagnostics
+
 ```bash
 # Network connectivity test
 echo "" >> "$BUNDLE_DIR/summary.txt"
@@ -82,6 +86,7 @@ fi
 ```
 
 ### Step 5: Collect Logs (Redacted)
+
 ```bash
 # Recent application logs (redacted)
 echo "" >> "$BUNDLE_DIR/summary.txt"
@@ -113,6 +118,7 @@ fi
 ```
 
 ### Step 6: Package Bundle
+
 ```bash
 # Create archive
 tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
@@ -129,11 +135,12 @@ echo "IMPORTANT: Review the bundle for any remaining sensitive data before shari
 rm -rf "$BUNDLE_DIR"
 ```
 
-
 ## Detailed Examples
 
 ### Sensitive Data Handling
+
 **ALWAYS REDACT:**
+
 - API tokens
 - Webhook secrets
 - OAuth credentials
@@ -141,6 +148,7 @@ rm -rf "$BUNDLE_DIR"
 - User IDs (if PII)
 
 **Safe to Include:**
+
 - Error messages
 - Stack traces (redacted)
 - SDK/runtime versions
@@ -148,6 +156,7 @@ rm -rf "$BUNDLE_DIR"
 - HTTP status codes
 
 ### One-Liner Quick Check
+
 ```bash
 # Quick API test
 curl -s -w "\nStatus: %{http_code}\nTime: %{time_total}s\n" \
@@ -156,6 +165,7 @@ curl -s -w "\nStatus: %{http_code}\nTime: %{time_total}s\n" \
 ```
 
 ### Submit to Support
+
 1. Run: `bash lokalise-debug-bundle.sh`
 2. Review `*.tar.gz` contents for sensitive data
 3. Email to [support@lokalise.com](mailto:support@lokalise.com) with:
@@ -164,6 +174,7 @@ curl -s -w "\nStatus: %{http_code}\nTime: %{time_total}s\n" \
    - Attachment: Debug bundle
 
 ### TypeScript Debug Helper
+
 ```typescript
 import { LokaliseApi } from "@lokalise/node-api";
 
@@ -194,4 +205,3 @@ async function collectDebugInfo() {
   return info;
 }
 ```
-

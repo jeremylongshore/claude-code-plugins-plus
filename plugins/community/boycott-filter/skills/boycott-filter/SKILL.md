@@ -44,6 +44,7 @@ The user's value: they complain ONCE, they're reminded FOREVER — in their own 
 - The local sync server must be running on port 7847
 
 Check with:
+
 ```bash
 curl -s http://127.0.0.1:7847/health
 ```
@@ -61,6 +62,7 @@ Tell the user: "The boycott server isn't running. Open a terminal and run: `bash
 ### When the user wants to ADD a brand
 
 Detect phrases like:
+
 - "I'm done with X"
 - "Never buying from X again"
 - "Boycott X"
@@ -68,6 +70,7 @@ Detect phrases like:
 - "Sick of X"
 
 Extract:
+
 - **Brand name** (the thing they want to avoid)
 - **Reason** (their own words — critical, this is what will be shown back to them)
 - **Aliases** (optional — if you know subsidiaries, offer them: Nestlé → Nespresso, KitKat, Purina, etc.)
@@ -87,11 +90,13 @@ If the user didn't give a reason, ask: "Got it. Any specific reason you want to 
 ### When the user wants to REMOVE a brand
 
 Detect phrases like:
+
 - "Remove X from my boycott list"
 - "Unban X"
 - "Actually I'm fine with X now"
 
 Call:
+
 ```bash
 curl -s -X DELETE http://127.0.0.1:7847/remove \
   -H 'Content-Type: application/json' \
@@ -105,6 +110,7 @@ curl -s http://127.0.0.1:7847/list
 ```
 
 Display the brands and reasons nicely:
+
 - "You're currently boycotting N brands:"
 - `- Temu: "Cheap garbage everywhere"`
 - `- Shein: "Fast fashion, not supporting"`
@@ -113,6 +119,7 @@ Display the brands and reasons nicely:
 ### When the user asks about the extension
 
 Explain that the Chrome extension needs to be loaded manually once:
+
 1. Open `chrome://extensions`
 2. Enable Developer mode
 3. Click "Load unpacked"
@@ -152,6 +159,7 @@ For add, confirm like:
 User: *"Ugh, another Shein ad. Never buying from them, fast fashion is killing everything."*
 
 Agent action:
+
 ```bash
 curl -s -X POST http://127.0.0.1:7847/add \
   -H 'Content-Type: application/json' \
@@ -165,6 +173,7 @@ Response: "Added Shein. Next time you land on a page mentioning them, you'll see
 User: *"Boycott Nestlé, their water extraction practices in drought zones are criminal."*
 
 Agent action:
+
 ```bash
 curl -s -X POST http://127.0.0.1:7847/add \
   -H 'Content-Type: application/json' \
@@ -178,12 +187,14 @@ Response: "Added Nestlé with their main subsidiaries (Nespresso, KitKat, Purina
 User: *"What's on my boycott list?"*
 
 Agent action:
+
 ```bash
 curl -s http://127.0.0.1:7847/list
 ```
 
 Response formatting:
 > You're currently boycotting 3 brands:
+>
 > - **Temu** — *"Cheap garbage, ads everywhere"*
 > - **Shein** — *"Fast fashion is killing everything"*
 > - **Nestlé** (+ Nespresso, KitKat, Purina, Perrier) — *"Water extraction practices in drought zones are criminal"*
@@ -193,6 +204,7 @@ Response formatting:
 User: *"Actually remove Temu, I need something urgent from there."*
 
 Agent action:
+
 ```bash
 curl -s -X DELETE http://127.0.0.1:7847/remove \
   -H 'Content-Type: application/json' \

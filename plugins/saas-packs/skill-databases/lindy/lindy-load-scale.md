@@ -10,6 +10,7 @@ lindy-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Lindy load testing and scaling
 **Workflow:** Part of the enterprise skill category for Lindy integration.
 **Relates to:** Other lindy skills in this pack.

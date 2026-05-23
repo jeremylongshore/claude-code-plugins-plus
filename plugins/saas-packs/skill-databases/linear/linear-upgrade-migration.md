@@ -10,6 +10,7 @@ linear-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Linear SDK upgrades
 **Workflow:** Part of the operations skill category for Linear integration.
 **Relates to:** Other linear skills in this pack.

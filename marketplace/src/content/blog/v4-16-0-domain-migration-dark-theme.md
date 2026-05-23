@@ -30,6 +30,7 @@ A new `/research` page features 6 data-driven analysis documents covering plugin
 ### Trading Strategy Backtester Fixes
 
 8 quality gaps addressed in the trading strategy backtester (#314):
+
 - Stop-loss and take-profit enforcement
 - Short position support for RSI, MACD, Bollinger, and MeanReversion strategies
 - Settings.yaml loading with CLI override support

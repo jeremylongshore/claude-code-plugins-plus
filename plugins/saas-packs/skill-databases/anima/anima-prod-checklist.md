@@ -10,6 +10,7 @@ anima-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Anima production deployment checklist
 **Workflow:** Part of the operations skill category for Anima integration.
 **Relates to:** Other anima skills in this pack.

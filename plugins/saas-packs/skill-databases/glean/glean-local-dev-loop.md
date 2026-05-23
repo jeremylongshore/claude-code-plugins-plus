@@ -10,6 +10,7 @@ glean-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Glean local development workflow
 **Workflow:** Part of the onboarding skill category for Glean integration.
 **Relates to:** Other glean skills in this pack.

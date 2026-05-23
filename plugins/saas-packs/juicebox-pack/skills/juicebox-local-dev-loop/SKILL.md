@@ -18,9 +18,11 @@ compatibility: Designed for Claude Code
 # Juicebox Local Dev Loop
 
 ## Overview
+
 Local development workflow for Juicebox AI-powered people analysis and recruiting API integration. Provides a fast feedback loop with mock profile search results and candidate enrichment data so you can build talent pipeline tools without consuming live API credits. Toggle between mock mode for rapid iteration and sandbox mode for validating against the real Juicebox API.
 
 ## Environment Setup
+
 ```bash
 cp .env.example .env
 # Set your credentials:
@@ -32,6 +34,7 @@ npm install -D vitest supertest @types/express
 ```
 
 ## Dev Server
+
 ```typescript
 // src/dev/server.ts
 import express from "express";
@@ -53,6 +56,7 @@ app.listen(3004, () => console.log(`Juicebox dev server on :3004 [mock=${MOCK}]`
 ```
 
 ## Mock Mode
+
 ```typescript
 // src/dev/mocks.ts — realistic people search and enrichment responses
 export function mountMockRoutes(app: any) {
@@ -73,6 +77,7 @@ export function mountMockRoutes(app: any) {
 ```
 
 ## Testing Workflow
+
 ```bash
 npm run dev:mock &                    # Start mock server in background
 npm run test                          # Unit tests with vitest
@@ -81,6 +86,7 @@ MOCK_MODE=false npm run test:integration  # Integration test against real API
 ```
 
 ## Debug Tips
+
 - Set search `limit` to 5 in development to avoid burning API credits
 - Use `/v1/usage` endpoint to monitor credit consumption before switching off mock mode
 - Juicebox search queries are natural language — test with specific role titles for better results
@@ -88,6 +94,7 @@ MOCK_MODE=false npm run test:integration  # Integration test against real API
 - Log the full request payload to verify boolean filters are serialized correctly
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | `401 Unauthorized` | Invalid API key | Regenerate at Juicebox dashboard |
@@ -97,7 +104,9 @@ MOCK_MODE=false npm run test:integration  # Integration test against real API
 | `ECONNREFUSED :3004` | Dev server not running | Run `npm run dev:mock` first |
 
 ## Resources
+
 - [Juicebox API Docs](https://docs.juicebox.work)
 
 ## Next Steps
+
 See `juicebox-debug-bundle`.

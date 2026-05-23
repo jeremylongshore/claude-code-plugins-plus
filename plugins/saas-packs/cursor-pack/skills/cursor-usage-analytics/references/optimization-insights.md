@@ -3,6 +3,7 @@
 ## Optimization Insights
 
 ### Low Acceptance Rate
+
 ```
 Causes & Solutions:
 
@@ -20,6 +21,7 @@ Lack of training:
 ```
 
 ### Underutilization
+
 ```
 Signs:
 - Low daily active users
@@ -34,6 +36,7 @@ Solutions:
 ```
 
 ### High Costs
+
 ```
 Investigation:
 - Which models are expensive?

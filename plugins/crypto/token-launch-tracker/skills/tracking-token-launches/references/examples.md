@@ -3,6 +3,7 @@
 ## Recent Token Launches
 
 ### Basic Usage
+
 ```bash
 # Show launches from last 24 hours on Ethereum
 python launch_tracker.py recent --chain ethereum
@@ -20,6 +21,7 @@ python launch_tracker.py recent --chain ethereum
 ```
 
 ### With Risk Analysis
+
 ```bash
 # Include token and contract analysis
 python launch_tracker.py recent --chain base --analyze --hours 12
@@ -28,12 +30,14 @@ python launch_tracker.py recent --chain base --analyze --hours 12
 ```
 
 ### Filter by DEX
+
 ```bash
 # Only show Uniswap V2 launches
 python launch_tracker.py recent --chain ethereum --dex "Uniswap V2"
 ```
 
 ### JSON Output
+
 ```bash
 # Get JSON for programmatic use
 python launch_tracker.py -f json recent --chain bsc --hours 6 --limit 10
@@ -42,6 +46,7 @@ python launch_tracker.py -f json recent --chain bsc --hours 6 --limit 10
 ## Token Details
 
 ### Get Full Token Information
+
 ```bash
 python launch_tracker.py detail \
   --address 0x6982508145454ce325ddbe47a25d4ec3d2311933 \
@@ -90,6 +95,7 @@ python launch_tracker.py detail \
 ## Risk Analysis
 
 ### Analyze Token Contract
+
 ```bash
 python launch_tracker.py risk \
   --address 0x1234567890abcdef1234567890abcdef12345678 \
@@ -125,6 +131,7 @@ python launch_tracker.py risk \
 ```
 
 ### With Etherscan Verification
+
 ```bash
 # Include contract verification check
 python launch_tracker.py risk \
@@ -136,6 +143,7 @@ python launch_tracker.py risk \
 ## Launch Summary
 
 ### Cross-Chain Summary
+
 ```bash
 python launch_tracker.py summary --hours 24
 
@@ -162,6 +170,7 @@ python launch_tracker.py summary --hours 24
 ```
 
 ### Specific Chains Only
+
 ```bash
 # Only Ethereum and Base
 python launch_tracker.py summary --chains ethereum,base --hours 12
@@ -170,6 +179,7 @@ python launch_tracker.py summary --chains ethereum,base --hours 12
 ## List DEXes and Chains
 
 ### Show Supported Chains
+
 ```bash
 python launch_tracker.py chains
 
@@ -187,6 +197,7 @@ python launch_tracker.py chains
 ```
 
 ### Show DEXes for Chain
+
 ```bash
 python launch_tracker.py dexes --chain bsc
 
@@ -201,6 +212,7 @@ python launch_tracker.py dexes --chain bsc
 ```
 
 ### All DEXes (JSON)
+
 ```bash
 python launch_tracker.py -f json dexes
 ```
@@ -208,6 +220,7 @@ python launch_tracker.py -f json dexes
 ## Custom RPC Usage
 
 ### Use Custom RPC Endpoint
+
 ```bash
 python launch_tracker.py recent \
   --chain ethereum \
@@ -215,6 +228,7 @@ python launch_tracker.py recent \
 ```
 
 ### Via Environment Variable
+
 ```bash
 export ETHEREUM_RPC_URL=https://mainnet.infura.io/v3/YOUR_PROJECT_ID
 python launch_tracker.py recent --chain ethereum
@@ -223,6 +237,7 @@ python launch_tracker.py recent --chain ethereum
 ## Verbose Output
 
 ### Debug Mode
+
 ```bash
 python launch_tracker.py --verbose recent --chain base --hours 1
 
@@ -238,6 +253,7 @@ python launch_tracker.py --verbose recent --chain base --hours 1
 ## Common Workflows
 
 ### Find High-Risk New Tokens
+
 ```bash
 # Get recent launches with analysis, output as JSON
 python launch_tracker.py -f json recent \
@@ -251,6 +267,7 @@ jq '.[] | select(.analysis.risk_score >= 70)' launches.json
 ```
 
 ### Monitor Multiple Chains
+
 ```bash
 #!/bin/bash
 for chain in ethereum bsc base arbitrum; do
@@ -260,6 +277,7 @@ done
 ```
 
 ### Export to CSV (via jq)
+
 ```bash
 python launch_tracker.py -f json recent --chain ethereum --hours 24 | \
   jq -r '.[] | [.pair.timestamp, .pair.dex, .token_info.symbol // "???", .analysis.risk_score // 0] | @csv'
@@ -268,6 +286,7 @@ python launch_tracker.py -f json recent --chain ethereum --hours 24 | \
 ## Integration Examples
 
 ### Python Import
+
 ```python
 from event_monitor import EventMonitor
 from token_analyzer import TokenAnalyzer

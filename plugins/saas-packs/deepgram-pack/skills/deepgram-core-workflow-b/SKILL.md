@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Core Workflow B: Live Streaming Transcription
 
 ## Overview
+
 Real-time streaming transcription using Deepgram's WebSocket API. The SDK manages the WebSocket connection via `listen.live()`. Covers microphone capture, interim/final result handling, speaker diarization, UtteranceEnd detection, auto-reconnect, and building an SSE endpoint for browser clients.
 
 ## Prerequisites
+
 - `@deepgram/sdk` installed, `DEEPGRAM_API_KEY` configured
 - Audio source: microphone (via Sox/`rec`), file stream, or WebSocket audio from browser
 - For mic capture: `sox` installed (`apt install sox` / `brew install sox`)
@@ -284,6 +286,7 @@ connection.on(LiveTranscriptionEvents.Open, () => {
 ```
 
 ## Output
+
 - Live WebSocket transcription with interim/final results
 - Microphone capture pipeline (Sox -> Deepgram)
 - Speaker diarization in streaming mode
@@ -292,6 +295,7 @@ connection.on(LiveTranscriptionEvents.Open, () => {
 - KeepAlive handling for long sessions
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | WebSocket closes immediately | Invalid API key or bad encoding params | Check key, verify `encoding`/`sample_rate` match audio |
@@ -302,10 +306,12 @@ connection.on(LiveTranscriptionEvents.Open, () => {
 | Garbled output | Sample rate mismatch | Ensure audio sample rate matches `sample_rate` option |
 
 ## Resources
+
 - [Live Streaming Audio](https://developers.deepgram.com/docs/live-streaming-audio)
 - [Streaming API Reference](https://developers.deepgram.com/reference/speech-to-text/listen-streaming)
 - [End of Speech Detection](https://developers.deepgram.com/docs/understanding-end-of-speech-detection)
 - [SDK LiveTranscriptionEvents](https://github.com/deepgram/deepgram-js-sdk)
 
 ## Next Steps
+
 Proceed to `deepgram-data-handling` for transcript processing and storage patterns.

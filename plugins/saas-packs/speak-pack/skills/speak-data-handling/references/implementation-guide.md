@@ -12,10 +12,10 @@ Detailed implementation reference for the speak-data-handling skill.
 | Audio Recordings | Voice samples | Encrypt, consent required |
 | User Preferences | Languages, goals | Standard handling |
 
-
 ## Audio Data Privacy
 
 ### Audio Consent Management
+
 ```typescript
 interface AudioConsent {
   userId: string;
@@ -78,6 +78,7 @@ class AudioConsentManager {
 ```
 
 ### Secure Audio Storage
+
 ```typescript
 class SecureAudioStorage {
   private encryptionKey: Buffer;
@@ -179,10 +180,10 @@ class SecureAudioStorage {
 }
 ```
 
-
 ## Learning Data Handling
 
 ### PII Detection in Learning Data
+
 ```typescript
 const PII_PATTERNS = [
   { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
@@ -233,6 +234,7 @@ async function sanitizeLessonResponse(
 ```
 
 ### Data Retention Policy
+
 ```typescript
 interface RetentionPolicy {
   dataType: string;
@@ -278,10 +280,10 @@ async function cleanupExpiredData(): Promise<CleanupReport> {
 cron.schedule('0 3 * * *', cleanupExpiredData);
 ```
 
-
 ## GDPR/CCPA Compliance
 
 ### Data Subject Access Request (DSAR)
+
 ```typescript
 interface UserDataExport {
   exportedAt: string;
@@ -368,6 +370,7 @@ async function exportUserData(
 ```
 
 ### Right to Deletion
+
 ```typescript
 interface DeletionResult {
   success: boolean;
@@ -426,4 +429,3 @@ async function deleteUserData(userId: string): Promise<DeletionResult> {
   };
 }
 ```
-

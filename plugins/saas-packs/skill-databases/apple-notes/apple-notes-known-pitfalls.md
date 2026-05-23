@@ -10,6 +10,7 @@ apple-notes-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Apple Notes anti-patterns
 **Workflow:** Part of the enterprise skill category for Apple Notes integration.
 **Relates to:** Other apple-notes skills in this pack.

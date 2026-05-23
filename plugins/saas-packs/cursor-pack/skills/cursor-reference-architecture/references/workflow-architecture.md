@@ -3,6 +3,7 @@
 ## Workflow Architecture
 
 ### Development Workflow
+
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                   CURSOR WORKFLOW                        │
@@ -36,6 +37,7 @@
 ```
 
 ### CI/CD Integration
+
 ```yaml
 # Cursor-aware CI/CD considerations
 

@@ -36,6 +36,7 @@ Trigger → Action → Variable Reward → Investment
 **Why it works:** Every habit starts with a cue. Without a trigger, there is no behavior. External triggers get users started, but internal triggers — emotions like boredom, loneliness, uncertainty, or fear of missing out — are what drive unprompted, habitual usage. When your product becomes the automatic response to an internal trigger, you have a habit.
 
 **Key insights:**
+
 - External triggers (push notifications, emails, buttons, ads, word of mouth) initiate behavior early on
 - Internal triggers (emotions, routines, situations) are the ultimate goal — users prompt themselves
 - The goal is to move users from external triggers to internal triggers over time
@@ -53,6 +54,7 @@ Trigger → Action → Variable Reward → Investment
 | **Trigger audit** | Evaluate if users still need external prompts | If yes after 30 days, internal trigger hasn't formed |
 
 **Copy patterns:**
+
 - "You might be wondering about..." (hooks into uncertainty)
 - "Don't miss what happened while you were away" (FOMO trigger)
 - "Your friend just..." (social/external trigger bridging to internal)
@@ -70,6 +72,7 @@ See: [references/triggers.md](references/triggers.md) for detailed trigger desig
 **Why it works:** Increasing motivation is hard and unreliable. Reducing friction (increasing ability) is easier and often more effective. The key insight is that making the action simpler is almost always a better strategy than trying to increase motivation. Every extra step, field, or decision is a point where users drop off.
 
 **Key insights:**
+
 - Fogg Behavior Model: Behavior = Motivation x Ability x Trigger — all three must be present simultaneously
 - Six elements of simplicity (ability): time, money, physical effort, brain cycles, social deviance, non-routine
 - Increasing ability (reducing friction) is almost always more effective than increasing motivation
@@ -87,6 +90,7 @@ See: [references/triggers.md](references/triggers.md) for detailed trigger desig
 | **Friction removal** | Identify and eliminate unnecessary steps | Autocomplete, defaults, skip options, smart prefills |
 
 **Copy patterns:**
+
 - "Just one tap to..." (emphasizes simplicity)
 - "Takes less than 60 seconds" (time simplicity)
 - "No credit card required" (money/risk simplicity)
@@ -104,6 +108,7 @@ See: [references/triggers.md](references/triggers.md) for how triggers connect t
 **Why it works:** The brain's dopamine system responds most strongly to the anticipation of uncertain rewards, not to the rewards themselves. This is the slot machine effect: variable reinforcement schedules are far more engaging than fixed ones. Three types of variable rewards — tribe (social), hunt (resources), and self (mastery) — tap into fundamental human drives.
 
 **Key insights:**
+
 - Dopamine spikes during anticipation of uncertain reward, not upon receiving it
 - Three types: Tribe (social validation), Hunt (search for resources/information), Self (personal mastery)
 - Predictable rewards lose power; variability is what sustains engagement
@@ -122,6 +127,7 @@ See: [references/triggers.md](references/triggers.md) for how triggers connect t
 | **Search/Discovery** | The hunt for the next great find | Pinterest: scroll to find the perfect pin; eBay: hunt for deals |
 
 **Copy patterns:**
+
 - "See what's new" (implies variability — you don't know what you'll find)
 - "You won't believe what happened next" (curiosity + variable reward)
 - "3 people responded to your post" (tribe reward, variable quantity)
@@ -139,6 +145,7 @@ See: [references/rewards.md](references/rewards.md) for reward design patterns, 
 **Why it works:** People value what they put effort into (the IKEA effect). Investment creates stored value that makes the product better with use and harder to leave. Critically, investment is not about immediate reward — it's about improving the next cycle. Each investment loads the next trigger, creating a self-reinforcing loop.
 
 **Key insights:**
+
 - IKEA effect: users value what they invest effort into, even irrationally
 - Investment creates switching costs (data, content, reputation, skill, social connections)
 - Investment should come after reward, not before — users invest when they feel good
@@ -157,6 +164,7 @@ See: [references/rewards.md](references/rewards.md) for reward design patterns, 
 | **Social investment** | Connections and groups that exist only on platform | LinkedIn network, Discord communities, Slack workspaces |
 
 **Copy patterns:**
+
 - "Personalize your experience" (inviting data investment)
 - "Complete your profile to get better matches" (investment → future value)
 - "Invite your team to collaborate" (social investment)
@@ -177,6 +185,7 @@ Two axes determine if a product can become a habit:
 | **Low Perceived Value** | Failure | Failure |
 
 **Questions:**
+
 - How often do users need to engage? (Daily, weekly, monthly?)
 - What's the perceived value of each engagement?
 - Is frequency high enough to form automatic behavior?
@@ -211,6 +220,7 @@ Framework for evaluating the ethics of habit-forming products.
 | **Doesn't Improve Life** | **Entertainer** | **Dealer** |
 
 **Questions to ask:**
+
 1. Would I use this product myself?
 2. Does it genuinely help users achieve their goals?
 3. Am I exploiting vulnerabilities or serving needs?
@@ -218,6 +228,7 @@ Framework for evaluating the ethics of habit-forming products.
 ### When NOT to Use the Hook Model
 
 The Hook Model is inappropriate when:
+
 - Your product doesn't genuinely improve lives
 - You're targeting vulnerable populations (children, addiction-prone users)
 - Business model depends on user regret
@@ -228,6 +239,7 @@ See: [references/ethical-boundaries.md](references/ethical-boundaries.md) for co
 ### Regulatory Context
 
 Be aware of emerging regulations around:
+
 - **Children's apps:** COPPA, GDPR-K restrictions
 - **Dark patterns:** FTC enforcement increasing
 - **Notification practices:** Some jurisdictions regulating "addictive" features
@@ -238,26 +250,31 @@ Be aware of emerging regulations around:
 Optimizing onboarding for habit formation:
 
 ### First Trigger
+
 - [ ] Is the first action obvious and easy?
 - [ ] Is the value proposition clear before asking for investment?
 - [ ] Are we using the right external trigger for this user?
 
 ### First Action
+
 - [ ] Can the user complete the core action in under 60 seconds?
 - [ ] Have we removed all unnecessary friction?
 - [ ] Is the UI familiar (not requiring new learning)?
 
 ### First Reward
+
 - [ ] Does the user get immediate feedback?
 - [ ] Is there a variable element (surprise, delight)?
 - [ ] Does the reward connect to an internal trigger?
 
 ### First Investment
+
 - [ ] Do we ask for investment after reward (not before)?
 - [ ] Is the investment small but meaningful?
 - [ ] Does the investment load the next trigger?
 
 ### Loop Completion
+
 - [ ] Is there a clear path back to the trigger?
 - [ ] Do we send external triggers at appropriate times?
 - [ ] Are we measuring progression through the Hook?

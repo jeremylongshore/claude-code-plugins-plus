@@ -3,6 +3,7 @@
 ## Request-Level Controls
 
 ### Max Tokens Limit
+
 ```python
 def cost_controlled_chat(
     prompt: str,
@@ -39,6 +40,7 @@ def cost_controlled_chat(
 ```
 
 ### Model Tier Restrictions
+
 ```python
 COST_TIERS = {
     "budget": {

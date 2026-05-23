@@ -57,12 +57,14 @@ npm install -g @aomi-labs/client      # version 0.1.30 or newer
 Once installed, ask your agent in natural language. The agent picks the right skill based on the prompt:
 
 **Triggers `aomi-transact`:**
+
 - *"What's the price of ETH?"*
 - *"Swap 1 USDC for WETH on Uniswap V3, send to my wallet."*
 - *"Stake 0.01 ETH with Lido."*
 - *"Bridge 50 USDC from Ethereum to Base via CCTP."*
 
 **Triggers `aomi-build`:**
+
 - *"Use aomi-build to turn this OpenAPI spec into an Aomi app."*
 - *"Build an Aomi plugin from these REST endpoints."*
 - *"Convert this SDK README into an Aomi tool surface."*
@@ -117,6 +119,7 @@ MIT. See [LICENSE](LICENSE).
 Aomi Labs builds native harness around blockchains functioning like Claude Code on-chain. We specialize in executions against arbitrary protocol with non-custodial workflow, account abstraction, and full security with simulations. Aomi also host agentic applications deployed and owned by developers, companies, and agents. Aomi provides E2E integration with UI, Skills and SDKs.
 
 **Links:**
+
 - 🌐 Website: [aomi.dev](https://aomi.dev)
 - 🤖 Agents: [aomi.dev/agents](https://aomi.dev/agents)
 - 𝕏 Twitter: [x.com/aomi_labs](https://x.com/aomi_labs)

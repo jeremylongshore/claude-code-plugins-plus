@@ -208,18 +208,18 @@ webhook verification.
    });
    ```
 
-3. Implement the Checkout Session flow:
+1. Implement the Checkout Session flow:
    - Create a POST endpoint for session creation
    - Configure line items, mode (payment/subscription)
    - Set success and cancel URLs
    - Handle the response on the client
 
-4. Add webhook endpoint for payment confirmation:
+2. Add webhook endpoint for payment confirmation:
    - Verify webhook signature with `stripe.webhooks.constructEvent()`
    - Handle `checkout.session.completed` event
    - Handle `payment_intent.succeeded` event
 
-5. Implement error handling:
+3. Implement error handling:
    - `StripeCardError` for declined cards
    - `StripeInvalidRequestError` for bad parameters
    - `StripeAPIError` for Stripe-side failures
@@ -236,6 +236,7 @@ webhook verification.
 - Always verify webhook signatures
 - Use Stripe.js or Stripe Elements for PCI compliance
 - Store only Stripe customer/subscription IDs, not card details
+
 ```
 
 ## Using SaaS Packs in Your Workflow
@@ -333,6 +334,7 @@ POST /v1/checkout/sessions
   "payment_status": "unpaid"
 }
 ```
+
 ```
 
 ### Step 5: Add a package.json

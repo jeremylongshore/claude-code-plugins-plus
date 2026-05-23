@@ -10,11 +10,13 @@ pipeline, populate the freshie database with results, and produce a structured s
 ## Process
 
 1. **Run the validator** with enterprise grading and DB population:
+
 ```bash
 python3 scripts/validate-skills-schema.py --enterprise --populate-db freshie/inventory.sqlite --verbose
 ```
 
-2. **Summarize grade distribution** with percentages:
+1. **Summarize grade distribution** with percentages:
+
 ```bash
 sqlite3 freshie/inventory.sqlite "
   SELECT grade, COUNT(*) as count,
@@ -26,7 +28,8 @@ sqlite3 freshie/inventory.sqlite "
 "
 ```
 
-3. **Calculate average score**:
+1. **Calculate average score**:
+
 ```bash
 sqlite3 freshie/inventory.sqlite "
   SELECT ROUND(AVG(score), 1) as avg_score
@@ -35,7 +38,8 @@ sqlite3 freshie/inventory.sqlite "
 "
 ```
 
-4. **List worst offenders** (D and F grades):
+1. **List worst offenders** (D and F grades):
+
 ```bash
 sqlite3 freshie/inventory.sqlite "
   SELECT skill_path, score, grade, error_count, warning_count
@@ -46,7 +50,8 @@ sqlite3 freshie/inventory.sqlite "
 "
 ```
 
-5. **Count upgrade candidates** (B grade, score 85-89):
+1. **Count upgrade candidates** (B grade, score 85-89):
+
 ```bash
 sqlite3 freshie/inventory.sqlite "
   SELECT COUNT(*) as upgrade_candidates

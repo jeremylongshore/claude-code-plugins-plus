@@ -19,6 +19,7 @@ compatibility: Designed for Claude Code
 # Anthropic Cost Tuning
 
 ## Overview
+
 Anthropic charges per token. Input tokens, output tokens, and cached tokens each have different prices. Here's how to minimize cost without losing quality.
 
 ## Pricing (per million tokens)
@@ -34,6 +35,7 @@ Anthropic charges per token. Input tokens, output tokens, and cached tokens each
 ## Instructions
 
 ### Step 1: Right-Size Your Model
+
 ```typescript
 // DON'T use Opus for everything
 // DO match model to task complexity:
@@ -49,6 +51,7 @@ const analysis = await analyze(data, 'claude-opus-4-20250514');
 ```
 
 ### Step 2: Prompt Caching (90% off input tokens)
+
 ```typescript
 // Cache your system prompt — pays for itself after 2 calls
 const message = await client.messages.create({
@@ -69,6 +72,7 @@ const message = await client.messages.create({
 ```
 
 ### Step 3: Message Batches (50% off everything)
+
 ```typescript
 // For non-urgent work — 50% cheaper, 24h processing SLA
 const batch = await client.messages.batches.create({
@@ -85,6 +89,7 @@ const batch = await client.messages.batches.create({
 ```
 
 ### Step 4: Reduce Token Count
+
 ```typescript
 // Trim conversation history — keep system + last N turns
 function trimMessages(messages: MessageParam[], maxTurns = 10) {
@@ -104,6 +109,7 @@ system: 'Reply in 1-2 sentences.' // Not a 500-word personality description
 ```
 
 ### Step 5: Monitor Usage
+
 ```typescript
 // Log every call's cost
 function logUsage(message: Anthropic.Message) {
@@ -114,6 +120,7 @@ function logUsage(message: Anthropic.Message) {
 ```
 
 ## Cost Comparison Example
+
 Processing 10,000 documents (avg 500 tokens each, 200 token response):
 
 | Strategy | Input Cost | Output Cost | Total |
@@ -125,6 +132,7 @@ Processing 10,000 documents (avg 500 tokens each, 200 token response):
 | Haiku + Batches + Caching | ~$1.00 | $4.00 | ~$5.00 |
 
 ## Output
+
 - Model selection optimized per task complexity (Haiku for simple, Sonnet for balanced, Opus for complex)
 - Prompt caching enabled for repeated system prompts
 - Batch processing configured for non-urgent workloads
@@ -132,23 +140,28 @@ Processing 10,000 documents (avg 500 tokens each, 200 token response):
 - Spending alerts configured in Anthropic console
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | API Error | Check error type and status code | See `clade-common-errors` |
 
 ## Examples
+
 See Pricing table, five numbered strategy sections with code, and the Cost Comparison Example table showing savings from $225 to $5 for 10K documents.
 
 ## Resources
+
 - [Pricing](https://www.anthropic.com/pricing)
 - [Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)
 - [Message Batches](https://docs.anthropic.com/en/api/creating-message-batches)
 - [Token Counting](https://docs.anthropic.com/en/api/counting-tokens)
 
 ## Next Steps
+
 See `clade-performance-tuning` for latency optimization.
 
 ## Prerequisites
+
 - Completed `clade-install-auth`
 - Active API usage to optimize
 - Access to Anthropic console for usage monitoring

@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Data Handling
 
 ## Overview
+
 Manage user data, implement privacy features, and ensure GDPR/CCPA compliance using the Clerk Backend API. Covers data export, right to be forgotten, consent management, and audit logging.
 
 ## Prerequisites
+
 - Clerk integration working
 - Understanding of GDPR/CCPA requirements
 - Database with user-related data linked by Clerk user IDs
@@ -34,6 +36,7 @@ Manage user data, implement privacy features, and ensure GDPR/CCPA compliance us
 ## Instructions
 
 ### Step 1: User Data Export
+
 ```typescript
 // app/api/privacy/export/route.ts
 import { auth, clerkClient } from '@clerk/nextjs/server'
@@ -71,6 +74,7 @@ export async function GET() {
 ```
 
 ### Step 2: User Deletion (Right to be Forgotten)
+
 ```typescript
 // app/api/privacy/delete/route.ts
 import { auth, clerkClient } from '@clerk/nextjs/server'
@@ -115,6 +119,7 @@ export async function DELETE() {
 ```
 
 ### Step 3: Consent Management with Metadata
+
 ```typescript
 // lib/consent.ts
 import { clerkClient } from '@clerk/nextjs/server'
@@ -152,6 +157,7 @@ export async function getConsent(userId: string): Promise<ConsentRecord | null> 
 ```
 
 ### Step 4: Consent UI Component
+
 ```typescript
 'use client'
 import { useUser } from '@clerk/nextjs'
@@ -189,6 +195,7 @@ export function ConsentManager() {
 ```
 
 ### Step 5: Audit Logging via Webhooks
+
 ```typescript
 // app/api/webhooks/clerk/route.ts (audit section)
 async function logAuditEvent(evt: WebhookEvent) {
@@ -209,6 +216,7 @@ async function logAuditEvent(evt: WebhookEvent) {
 ```
 
 ## Output
+
 - Data export API returning Clerk profile + application data
 - User deletion cascade (app data, then Clerk, then audit log)
 - Consent management stored in Clerk publicMetadata
@@ -216,6 +224,7 @@ async function logAuditEvent(evt: WebhookEvent) {
 - Audit logging for compliance events
 
 ## Error Handling
+
 | Scenario | Action |
 |----------|--------|
 | Partial deletion failure | Log completed steps, retry failed services, alert ops team |
@@ -226,6 +235,7 @@ async function logAuditEvent(evt: WebhookEvent) {
 ## Examples
 
 ### Bulk User Data Cleanup Script
+
 ```typescript
 // scripts/cleanup-orphaned-users.ts
 import { createClerkClient } from '@clerk/backend'
@@ -249,9 +259,11 @@ async function cleanupOrphanedDbUsers() {
 ```
 
 ## Resources
+
 - [Clerk User API](https://clerk.com/docs/references/backend/user/get-user)
 - [Clerk Metadata](https://clerk.com/docs/users/metadata)
 - [GDPR Compliance Guide](https://gdpr.eu/checklist/)
 
 ## Next Steps
+
 Proceed to `clerk-enterprise-rbac` for enterprise SSO and RBAC.

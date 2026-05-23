@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Pre-built Components (Quick Start)
+
 ```typescript
 // app/sign-in/[[...sign-in]]/page.tsx
 import { SignIn } from '@clerk/nextjs'
@@ -49,6 +50,7 @@ export default function SignUpPage() {
 ```
 
 ### Step 2: Custom Sign-In Form
+
 ```typescript
 'use client'
 import { useSignIn } from '@clerk/nextjs'
@@ -103,6 +105,7 @@ export function CustomSignIn() {
 ```
 
 ### Step 3: OAuth Social Login
+
 ```typescript
 'use client'
 import { useSignIn } from '@clerk/nextjs'
@@ -144,6 +147,7 @@ export default function SSOCallback() {
 ```
 
 ### Step 4: Email Verification Flow
+
 ```typescript
 'use client'
 import { useSignUp } from '@clerk/nextjs'
@@ -211,6 +215,7 @@ export function EmailVerification() {
 ## Examples
 
 ### Magic Link Authentication
+
 ```typescript
 const handleMagicLink = async (email: string) => {
   await signIn.create({

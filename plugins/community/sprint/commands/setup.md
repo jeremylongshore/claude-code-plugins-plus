@@ -17,6 +17,7 @@ Initialize a project for use with Sprint by creating the two "Second Brain" docu
 ## Overview
 
 This command interactively creates:
+
 1. `.claude/project-goals.md` - Business vision and objectives (user-maintained)
 2. `.claude/project-map.md` - Technical architecture (architect-maintained)
 
@@ -32,6 +33,7 @@ test -f .claude/project-map.md && echo "MAP_EXISTS" || echo "NO_MAP"
 ```
 
 If files exist, ask the user:
+
 - Overwrite existing files?
 - Skip existing and create only missing?
 - Abort setup?
@@ -49,20 +51,25 @@ mkdir -p .claude
 Use AskUserQuestion to gather business context:
 
 **Question 1: Product Vision**
+
 - "What is this project? Describe it in 1-2 sentences."
 
 **Question 2: Target Users**
+
 - "Who are the target users?"
 - Options: "Developers", "End consumers", "Internal team", "Other"
 
 **Question 3: Key Features**
+
 - "What are the 3-5 most important features or capabilities?"
 
 **Question 4: Success Metrics**
+
 - "How will you measure success?"
 - Options: "User adoption", "Revenue", "Performance metrics", "Other"
 
 **Question 5: Constraints**
+
 - "Any important constraints or requirements?"
 - Examples: compliance, performance, technology restrictions
 
@@ -116,6 +123,7 @@ test -f Cargo.toml && echo "RUST"
 ```
 
 Read key files to understand the project:
+
 - README.md (if exists)
 - package.json / pyproject.toml / etc.
 - Docker configuration
@@ -126,16 +134,20 @@ Read key files to understand the project:
 Ask clarifying questions based on scan results:
 
 **Question: Tech Stack Confirmation**
+
 - "I detected [frameworks]. Is this correct?"
 - Allow corrections
 
 **Question: Architecture Style**
+
 - Options: "Monolith", "Microservices", "Serverless", "Monorepo", "Other"
 
 **Question: Database**
+
 - Options: "PostgreSQL", "MySQL", "MongoDB", "SQLite", "None/Other"
 
 **Question: Deployment**
+
 - Options: "Docker", "Kubernetes", "Serverless", "Traditional hosting", "Not yet decided"
 
 ### Step 7: Generate project-map.md
@@ -163,7 +175,9 @@ Create `.claude/project-map.md` with discovered and confirmed information:
 ## Project Structure
 
 ```
+
 [directory tree of main folders]
+
 ```
 
 ## Key Components
@@ -198,11 +212,13 @@ Create `.claude/project-map.md` with discovered and confirmed information:
 ### Step 8: Offer First Sprint
 
 Ask the user:
+
 - "Would you like to create your first sprint now?"
 
 If yes, prompt for sprint goal and run `/sprint:new` logic.
 
 If no, provide next steps:
+
 ```
 Setup complete!
 
@@ -217,6 +233,7 @@ Next steps:
 ### No Codebase Detected
 
 If the directory appears empty or has no recognizable project structure:
+
 - Ask if this is a new project
 - Offer to create a minimal project-map.md for greenfield development
 - Suggest running setup again after initial code is written
@@ -224,12 +241,14 @@ If the directory appears empty or has no recognizable project structure:
 ### Permission Issues
 
 If unable to write to .claude/:
+
 - Report the error clearly
 - Suggest checking directory permissions
 
 ## Output
 
 On completion, display:
+
 ```
 ✓ Created .claude/project-goals.md
 ✓ Created .claude/project-map.md

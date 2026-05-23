@@ -2,7 +2,6 @@
 
 > Full implementation details for the parent SKILL.md.
 
-
 ## Core Patterns
 
 ### Pattern 1: Search with NoteFilter

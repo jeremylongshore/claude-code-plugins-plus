@@ -10,6 +10,7 @@ podium-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Podium example
 **Workflow:** Part of the onboarding skill category for Podium integration.
 **Relates to:** Other podium skills in this pack.

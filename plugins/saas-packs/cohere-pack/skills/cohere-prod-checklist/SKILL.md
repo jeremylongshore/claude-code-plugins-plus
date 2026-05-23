@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Cohere Production Checklist
 
 ## Overview
+
 Complete go-live checklist for deploying Cohere API v2 integrations to production with safety gates, health checks, and rollback procedures.
 
 ## Prerequisites
+
 - Staging environment tested and verified
 - Production API key (not trial) from [dashboard.cohere.com](https://dashboard.cohere.com)
 - Deployment pipeline configured
@@ -36,6 +38,7 @@ Complete go-live checklist for deploying Cohere API v2 integrations to productio
 ## Checklist
 
 ### API & Authentication
+
 - [ ] Using **production** API key (not trial — trial is rate-limited to 20 calls/min)
 - [ ] `CO_API_KEY` stored in secret manager (Vault, AWS Secrets Manager, GCP Secret Manager)
 - [ ] Key rotation procedure documented and tested
@@ -43,6 +46,7 @@ Complete go-live checklist for deploying Cohere API v2 integrations to productio
 - [ ] Using API v2 endpoints (`CohereClientV2`, not `CohereClient`)
 
 ### Code Quality
+
 - [ ] All API calls specify `model` parameter explicitly
 - [ ] `embeddingTypes` set for all Embed calls (required for v3+)
 - [ ] `inputType` set for all Embed calls (required for v3+)
@@ -52,6 +56,7 @@ Complete go-live checklist for deploying Cohere API v2 integrations to productio
 - [ ] Request/response logging excludes API keys and PII
 
 ### Model Selection
+
 - [ ] Correct model IDs used (not deprecated names):
 
 | Use Case | Recommended Model | Fallback |
@@ -62,6 +67,7 @@ Complete go-live checklist for deploying Cohere API v2 integrations to productio
 | Reranking | `rerank-v3.5` | `rerank-english-v3.0` |
 
 ### Performance
+
 - [ ] Embed calls batched (up to 96 texts per request)
 - [ ] Rerank calls limited to 1000 documents per request
 - [ ] Streaming enabled for user-facing chat (`chatStream`)
@@ -194,15 +200,18 @@ curl -sf https://api.example.com/api/health | jq '.cohere'
 ```
 
 ## Output
+
 - Production-ready Cohere integration with health checks
 - Circuit breaker preventing cascade failures
 - Monitoring alerts for Cohere-specific error conditions
 - Documented rollback procedure
 
 ## Resources
+
 - [Cohere Going Live Guide](https://docs.cohere.com/docs/going-live)
 - [Cohere Status Page](https://status.cohere.com)
 - [Cohere Pricing](https://cohere.com/pricing)
 
 ## Next Steps
+
 For version upgrades, see `cohere-upgrade-migration`.

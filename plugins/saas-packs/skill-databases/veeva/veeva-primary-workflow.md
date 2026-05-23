@@ -10,6 +10,7 @@ veeva-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Veeva primary workflow
 **Workflow:** Part of the onboarding skill category for Veeva integration.
 **Relates to:** Other veeva skills in this pack.

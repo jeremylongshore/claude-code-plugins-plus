@@ -10,6 +10,7 @@ hubspot-data-handling/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement HubSpot data compliance
 **Workflow:** Part of the advanced skill category for HubSpot integration.
 **Relates to:** Other hubspot skills in this pack.

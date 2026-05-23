@@ -170,6 +170,7 @@ console.log(`Prepared ${journalEntries.length} journal entries for NetSuite sync
 ## Output
 
 Successful execution produces:
+
 - Expense transaction records with employee, amount, category, and approval status
 - Approval routing decisions based on configurable threshold rules
 - GL-coded transaction records ready for ERP import

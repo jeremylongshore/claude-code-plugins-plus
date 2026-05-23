@@ -13,10 +13,10 @@ Detailed implementation reference for the lokalise-data-handling skill.
 | API Tokens | `abc123...` | Never log |
 | Screenshots | Context images | May contain PII |
 
-
 ## Instructions
 
 ### Step 1: Translation Content Scanning
+
 ```typescript
 // Scan translations for potential PII before upload
 const PII_PATTERNS = [
@@ -81,6 +81,7 @@ async function validateBeforeUpload(filePath: string): Promise<{
 ```
 
 ### Step 2: Safe Logging Practices
+
 ```typescript
 // Never log API tokens or sensitive translation content
 function safeLokaliseLog(
@@ -119,6 +120,7 @@ safeLokaliseLog("translation.update", {
 ```
 
 ### Step 3: Data Retention Management
+
 ```typescript
 interface RetentionPolicy {
   dataType: string;
@@ -159,6 +161,7 @@ async function enforceRetention(dataType: string): Promise<number> {
 ```
 
 ### Step 4: Audit Logging
+
 ```typescript
 interface AuditEntry {
   timestamp: Date;
@@ -199,6 +202,7 @@ await auditLokaliseAction({
 ```
 
 ### Step 5: Data Export for Compliance
+
 ```typescript
 // GDPR Data Subject Access Request (DSAR)
 async function exportUserTranslationActivity(userId: string): Promise<{
@@ -254,10 +258,10 @@ async function deleteUserTranslationData(userId: string): Promise<{
 }
 ```
 
-
 ## Detailed Examples
 
 ### Pre-commit PII Check
+
 ```bash
 #!/bin/bash
 # .husky/pre-commit
@@ -272,6 +276,7 @@ fi
 ```
 
 ### Compliance Checklist
+
 ```markdown
 ## Translation Data Compliance Checklist
 
@@ -302,6 +307,7 @@ fi
 ```
 
 ### Quick PII Scan
+
 ```typescript
 const result = await validateBeforeUpload("./locales/en.json");
 if (!result.valid) {
@@ -310,4 +316,3 @@ if (!result.valid) {
   process.exit(1);
 }
 ```
-

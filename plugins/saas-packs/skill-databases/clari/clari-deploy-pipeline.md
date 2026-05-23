@@ -10,6 +10,7 @@ clari-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Clari integrations to production
 **Workflow:** Part of the cicd skill category for Clari integration.
 **Relates to:** Other clari skills in this pack.

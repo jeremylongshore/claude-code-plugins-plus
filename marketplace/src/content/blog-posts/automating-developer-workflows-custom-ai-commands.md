@@ -28,6 +28,7 @@ Rather than treating documentation as a separate task, I designed a system that 
 Started by analyzing two Hugo blog sites that weren't updating as expected. Turned out they were functioning correctly - this revealed the real need: streamlining the publishing workflow itself.
 
 **Design Decisions**
+
 - **Slash commands over scripts**: Integration with Claude Code CLI for natural workflow
 - **Git history as documentation**: Real commits provide factual basis
 - **Conversation context inclusion**: Capture problem-solving process, not just solutions
@@ -35,6 +36,7 @@ Started by analyzing two Hugo blog sites that weren't updating as expected. Turn
 
 **Technical Implementation**
 Created custom command files in `~/.claude/commands/` that:
+
 1. Analyze complete working session context
 2. Review git commits since last publication
 3. Generate appropriate content for different audiences
@@ -44,12 +46,14 @@ Created custom command files in `~/.claude/commands/` that:
 
 **Command Discovery**
 Initial implementations weren't recognized by Claude Code. Systematic troubleshooting revealed:
+
 - File extension requirements (`.md`)
 - Command format preferences (plain text instructions vs YAML frontmatter)
 - Dynamic discovery during active sessions
 
 **Context Capture**
 Early versions only analyzed git commits, missing valuable problem-solving context from working sessions. Refined to capture:
+
 - Complete conversation history
 - Failed attempts and troubleshooting steps
 - Iterative refinements
@@ -60,12 +64,14 @@ Early versions only analyzed git commits, missing valuable problem-solving conte
 Built two distinct command systems:
 
 **Technical Blog Command (`/blog-startaitools`)**
+
 - Analyzes project work for technical showcase content
 - Generates developer-focused articles with implementation details
 - Cross-links to related existing content automatically
 - Publishes to Hugo static site with proper SEO optimization
 
 **Portfolio Blog Command (`/blog-jeremylongshore`)**
+
 - Same analysis but portfolio/CV perspective
 - Focuses on professional growth and capability demonstration
 - Emphasizes problem-solving approach over technical details
@@ -78,16 +84,19 @@ Both commands handle complete workflow: content generation, Hugo builds, git com
 ### Skills Demonstrated
 
 **System Design**
+
 - Identified friction points in existing workflows
 - Designed automation that enhances rather than replaces judgment
 - Balanced automation with quality control
 
 **Problem-Solving**
+
 - Systematic troubleshooting of command discovery issues
 - Iterative refinement based on testing
 - Adapted approach when initial implementations failed
 
 **Tool Integration**
+
 - Leveraged Claude Code's command system effectively
 - Integrated with existing Hugo/Netlify publishing pipeline
 - Maintained compatibility with git-based workflows
@@ -106,6 +115,7 @@ Technical readers want implementation details. Portfolio readers want to see pro
 ## Impact & Results
 
 **Immediate Benefits**
+
 - Zero-friction blog publishing from any project directory
 - Automatic context capture from working sessions
 - Cross-linking to related content
@@ -113,6 +123,7 @@ Technical readers want implementation details. Portfolio readers want to see pro
 
 **Repository Cleanup Achievement**
 Applied the system to document today's work, which included:
+
 - Cleaned up two blog repositories (27 files removed from jeremylongshore)
 - Improved .gitignore configurations
 - Verified Hugo builds and deployments
@@ -124,6 +135,7 @@ Documentation is now part of the development workflow rather than a separate tas
 ## Looking Forward
 
 This automation framework opens possibilities for:
+
 - Additional specialized commands for different content types
 - Integration with other publishing platforms
 - Automated cross-promotion between sites
@@ -132,5 +144,3 @@ This automation framework opens possibilities for:
 The principle extends beyond blogging: any repetitive workflow with clear structure becomes a candidate for intelligent automation.
 
 ---
-
-

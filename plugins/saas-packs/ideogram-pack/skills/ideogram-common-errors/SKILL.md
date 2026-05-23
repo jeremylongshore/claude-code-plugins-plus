@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Common Errors
 
 ## Overview
+
 Quick reference for the most common Ideogram API errors, their root causes, and proven fixes. All Ideogram endpoints return standard HTTP status codes with JSON error bodies.
 
 ## Prerequisites
+
 - Ideogram API key configured
 - Access to request/response logs
 - `curl` available for manual testing
@@ -35,12 +37,15 @@ Quick reference for the most common Ideogram API errors, their root causes, and 
 ## Error Reference
 
 ### 401 -- Authentication Failed
+
 ```
 HTTP 401 Unauthorized
 ```
+
 **Cause:** Missing, invalid, or revoked API key.
 
 **Fix:**
+
 ```bash
 set -euo pipefail
 # Verify the key is set and not empty
@@ -55,6 +60,7 @@ curl -s -o /dev/null -w "%{http_code}" \
 ```
 
 **Common mistakes:**
+
 - Using `Authorization: Bearer` instead of `Api-Key` header
 - Whitespace or newlines in the key string
 - Key was regenerated in dashboard but not updated in `.env`
@@ -62,12 +68,15 @@ curl -s -o /dev/null -w "%{http_code}" \
 ---
 
 ### 422 -- Safety Check Failed
+
 ```json
 {"error": "Prompt or provided image failed the safety checks"}
 ```
+
 **Cause:** Prompt text or uploaded image triggered Ideogram's content filter.
 
 **Fix:**
+
 - Remove brand names, celebrity names, or trademarked terms
 - Avoid violent, sexual, or politically sensitive content
 - Remove explicit references to real people
@@ -88,12 +97,15 @@ function isPromptSafe(prompt: string): boolean {
 ---
 
 ### 429 -- Rate Limited
+
 ```
 HTTP 429 Too Many Requests
 ```
+
 **Cause:** More than 10 in-flight requests (default limit).
 
 **Fix:**
+
 ```typescript
 async function rateLimitedGenerate(prompt: string) {
   const maxRetries = 5;
@@ -114,12 +126,15 @@ async function rateLimitedGenerate(prompt: string) {
 ---
 
 ### 400 -- Bad Request
+
 ```json
 {"error": "Invalid input"}
 ```
+
 **Cause:** Invalid parameter values in request body.
 
 **Common issues:**
+
 | Parameter | Wrong | Correct |
 |-----------|-------|---------|
 | aspect_ratio | `"16:9"` | `"ASPECT_16_9"` (legacy) or `"16x9"` (V3) |
@@ -131,12 +146,15 @@ async function rateLimitedGenerate(prompt: string) {
 ---
 
 ### 402 -- Insufficient Credits
+
 ```
 HTTP 402 Payment Required
 ```
+
 **Cause:** API credit balance is depleted.
 
 **Fix:**
+
 1. Log into [ideogram.ai](https://ideogram.ai) > Settings > API Beta
 2. Check current balance and top-up settings
 3. Increase auto top-up amount or manually add credits
@@ -145,12 +163,15 @@ HTTP 402 Payment Required
 ---
 
 ### Expired Image URL
+
 ```
 HTTP 403 or 404 when downloading generated image
 ```
+
 **Cause:** Ideogram image URLs are temporary (expire after ~1 hour).
 
 **Fix:**
+
 ```typescript
 // ALWAYS download immediately after generation
 async function generateAndSave(prompt: string): Promise<string> {
@@ -171,12 +192,15 @@ async function generateAndSave(prompt: string): Promise<string> {
 ---
 
 ### Mask Size Mismatch (Edit Endpoint)
+
 ```json
 {"error": "Invalid input"}
 ```
+
 **Cause:** Mask image dimensions do not match source image dimensions.
 
 **Fix:**
+
 ```bash
 set -euo pipefail
 # Check dimensions match
@@ -190,9 +214,11 @@ convert mask.png -resize 1024x1024! mask-resized.png
 ---
 
 ### Multipart Form Errors (V3 Endpoints)
+
 **Cause:** V3 endpoints (`/v1/ideogram-v3/*`) require multipart form data, not JSON.
 
 **Fix:**
+
 ```typescript
 // WRONG for V3 endpoints:
 fetch(url, { body: JSON.stringify({...}), headers: { "Content-Type": "application/json" } });
@@ -206,6 +232,7 @@ fetch(url, { body: form, headers: { "Api-Key": key } });
 ```
 
 ## Quick Diagnostic Script
+
 ```bash
 set -euo pipefail
 echo "=== Ideogram Diagnostics ==="
@@ -231,6 +258,7 @@ esac
 ```
 
 ## Error Handling
+
 | Error | HTTP | Root Cause | Fix |
 |-------|------|-----------|-----|
 | Auth failed | 401 | Bad `Api-Key` header | Verify key, check header name |
@@ -241,13 +269,16 @@ esac
 | URL expired | 403/404 | Late download | Download immediately |
 
 ## Output
+
 - Identified error root cause
 - Applied fix with verification
 - Diagnostic output confirming resolution
 
 ## Resources
+
 - [Ideogram API Reference](https://developer.ideogram.ai/api-reference)
 - [API Overview](https://developer.ideogram.ai/ideogram-api/api-overview)
 
 ## Next Steps
+
 For comprehensive debugging, see `ideogram-debug-bundle`.

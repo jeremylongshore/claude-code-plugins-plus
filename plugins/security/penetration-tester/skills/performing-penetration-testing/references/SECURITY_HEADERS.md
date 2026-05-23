@@ -11,11 +11,13 @@ recommended values, and implementation across common frameworks.
 resources the browser is allowed to load.
 
 **Recommended value:**
+
 ```
 Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'
 ```
 
 **What security_scanner.py checks:**
+
 - Header is present
 - `default-src` directive exists
 - No `unsafe-eval` in `script-src`
@@ -24,6 +26,7 @@ Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'
 **Implementation:**
 
 Express.js:
+
 ```javascript
 const helmet = require("helmet");
 app.use(helmet.contentSecurityPolicy({
@@ -38,6 +41,7 @@ app.use(helmet.contentSecurityPolicy({
 ```
 
 Django:
+
 ```python
 # settings.py
 CSP_DEFAULT_SRC = ("'self'",)
@@ -48,11 +52,13 @@ CSP_FRAME_ANCESTORS = ("'none'",)
 ```
 
 Nginx:
+
 ```nginx
 add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; frame-ancestors 'none';" always;
 ```
 
 Apache:
+
 ```apache
 Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; frame-ancestors 'none';"
 ```
@@ -65,11 +71,13 @@ Header always set Content-Security-Policy "default-src 'self'; script-src 'self'
 preventing protocol downgrade attacks and cookie hijacking.
 
 **Recommended value:**
+
 ```
 Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 ```
 
 **What security_scanner.py checks:**
+
 - Header is present (critical if site supports HTTPS)
 - `max-age` >= 31536000 (1 year)
 - `includeSubDomains` directive present
@@ -78,6 +86,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 **Implementation:**
 
 Express.js:
+
 ```javascript
 app.use(helmet.hsts({
     maxAge: 31536000,
@@ -87,6 +96,7 @@ app.use(helmet.hsts({
 ```
 
 Django:
+
 ```python
 # settings.py
 SECURE_HSTS_SECONDS = 31536000
@@ -95,11 +105,13 @@ SECURE_HSTS_PRELOAD = True
 ```
 
 Nginx:
+
 ```nginx
 add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
 ```
 
 Apache:
+
 ```apache
 Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
 ```
@@ -112,29 +124,35 @@ Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains
 in a frame, iframe, embed, or object.
 
 **Recommended value:**
+
 ```
 X-Frame-Options: DENY
 ```
+
 Or `SAMEORIGIN` if framing by same-origin pages is needed.
 
 **What security_scanner.py checks:**
+
 - Header is present
 - Value is DENY or SAMEORIGIN (not ALLOW-FROM, which is deprecated)
 
 **Implementation:**
 
 Express.js:
+
 ```javascript
 app.use(helmet.frameguard({ action: "deny" }));
 ```
 
 Django:
+
 ```python
 # settings.py (default in Django 3+)
 X_FRAME_OPTIONS = "DENY"
 ```
 
 Nginx:
+
 ```nginx
 add_header X-Frame-Options "DENY" always;
 ```
@@ -147,28 +165,33 @@ add_header X-Frame-Options "DENY" always;
 interpret files as a different content type than declared.
 
 **Recommended value:**
+
 ```
 X-Content-Type-Options: nosniff
 ```
 
 **What security_scanner.py checks:**
+
 - Header is present
 - Value is exactly `nosniff`
 
 **Implementation:**
 
 Express.js:
+
 ```javascript
 app.use(helmet.noSniff());
 ```
 
 Django:
+
 ```python
 # Enabled by default via SecurityMiddleware
 SECURE_CONTENT_TYPE_NOSNIFF = True
 ```
 
 Nginx:
+
 ```nginx
 add_header X-Content-Type-Options "nosniff" always;
 ```
@@ -181,12 +204,15 @@ add_header X-Content-Type-Options "nosniff" always;
 preventing leakage of sensitive URLs to third parties.
 
 **Recommended values:**
+
 ```
 Referrer-Policy: strict-origin-when-cross-origin
 ```
+
 Or `no-referrer` for maximum privacy.
 
 **What security_scanner.py checks:**
+
 - Header is present
 - Value is not `unsafe-url` (leaks full URL including path and query)
 - Value is not empty
@@ -194,16 +220,19 @@ Or `no-referrer` for maximum privacy.
 **Implementation:**
 
 Express.js:
+
 ```javascript
 app.use(helmet.referrerPolicy({ policy: "strict-origin-when-cross-origin" }));
 ```
 
 Django:
+
 ```python
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 ```
 
 Nginx:
+
 ```nginx
 add_header Referrer-Policy "strict-origin-when-cross-origin" always;
 ```
@@ -216,17 +245,20 @@ add_header Referrer-Policy "strict-origin-when-cross-origin" always;
 its iframes (camera, microphone, geolocation, etc.).
 
 **Recommended value:**
+
 ```
 Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
 ```
 
 **What security_scanner.py checks:**
+
 - Header is present
 - Notes which features are restricted
 
 **Implementation:**
 
 Express.js:
+
 ```javascript
 app.use(helmet.permittedCrossDomainPolicies());
 // Or manually:
@@ -238,6 +270,7 @@ app.use((req, res, next) => {
 ```
 
 Nginx:
+
 ```nginx
 add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()" always;
 ```
@@ -251,13 +284,16 @@ Deprecated in modern browsers in favor of CSP. Can cause issues if set to
 `1; mode=block` on some older browsers.
 
 **Recommended value:**
+
 ```
 X-XSS-Protection: 0
 ```
+
 Set to 0 (disabled) since the browser feature is deprecated and CSP is the
 proper replacement.
 
 **What security_scanner.py checks:**
+
 - Notes if present
 - Info-level finding (not a vulnerability)
 
@@ -269,6 +305,7 @@ proper replacement.
 unauthorized users.
 
 **Recommended value for sensitive pages:**
+
 ```
 Cache-Control: no-store, no-cache, must-revalidate, private
 ```
@@ -276,6 +313,7 @@ Cache-Control: no-store, no-cache, must-revalidate, private
 **Implementation:**
 
 Express.js:
+
 ```javascript
 app.use("/api/private", (req, res, next) => {
     res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, private");
@@ -284,6 +322,7 @@ app.use("/api/private", (req, res, next) => {
 ```
 
 Django:
+
 ```python
 from django.views.decorators.cache import never_cache
 
@@ -309,6 +348,7 @@ X-XSS-Protection: 0
 ```
 
 ### Nginx complete block:
+
 ```nginx
 # Security Headers
 add_header Content-Security-Policy "default-src 'self'; script-src 'self'; frame-ancestors 'none'" always;
@@ -324,6 +364,7 @@ server_tokens off;
 ```
 
 ### Apache complete block:
+
 ```apache
 # Security Headers
 Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; frame-ancestors 'none'"

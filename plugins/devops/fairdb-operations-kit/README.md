@@ -67,6 +67,7 @@ The `fairdb-automation-agent` provides intelligent automation for:
 ### FairDB Backup Manager
 
 An Agent Skill that automatically activates when working with backups:
+
 - Manages pgBackRest configurations
 - Executes scheduled backups
 - Performs test restores
@@ -98,6 +99,7 @@ FairDB Infrastructure Stack
 This plugin implements three core SOPs:
 
 ### SOP-001: VPS Hardening
+
 - OS security updates
 - Firewall configuration (UFW)
 - Intrusion prevention (Fail2ban)
@@ -105,6 +107,7 @@ This plugin implements three core SOPs:
 - Monitoring setup
 
 ### SOP-002: PostgreSQL Installation
+
 - PostgreSQL 16 from official repos
 - Production configuration tuning
 - SSL certificate generation
@@ -112,6 +115,7 @@ This plugin implements three core SOPs:
 - Performance optimization
 
 ### SOP-003: Backup Configuration
+
 - pgBackRest installation
 - Wasabi S3 integration
 - Retention policy setup
@@ -214,6 +218,7 @@ Active: 87/200 (43.5%)
 ## Best Practices
 
 ### Security
+
 - Always use SSL/TLS connections
 - Rotate passwords quarterly
 - Keep IP allowlists updated
@@ -221,6 +226,7 @@ Active: 87/200 (43.5%)
 - Encrypted backups only
 
 ### Performance
+
 - Monitor connection pools
 - Regular VACUUM ANALYZE
 - Index optimization
@@ -228,6 +234,7 @@ Active: 87/200 (43.5%)
 - Resource usage tracking
 
 ### Reliability
+
 - Test restores monthly
 - Document all procedures
 - Maintain runbooks
@@ -239,6 +246,7 @@ Active: 87/200 (43.5%)
 ### Common Issues
 
 **PostgreSQL Won't Start**
+
 ```bash
 # Check logs
 sudo journalctl -u postgresql -n 50
@@ -251,6 +259,7 @@ sudo netstat -tulpn | grep 5432
 ```
 
 **Backup Failures**
+
 ```bash
 # Check pgBackRest status
 sudo -u postgres pgbackrest --stanza=fairdb check
@@ -263,6 +272,7 @@ tail -f /var/log/pgbackrest/fairdb-backup.log
 ```
 
 **High Connection Usage**
+
 ```bash
 # View active connections
 sudo -u postgres psql -c "SELECT * FROM pg_stat_activity;"

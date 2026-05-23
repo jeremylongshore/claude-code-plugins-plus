@@ -32,6 +32,7 @@
 **Architectural Pattern**: Read-Process-Write with Caching
 
 **Why This Pattern**:
+
 - **Read**: Fetch price data from external APIs
 - **Cache**: Store recently fetched data to reduce API calls
 - **Process**: Normalize data from different sources into standard format
@@ -144,6 +145,7 @@ license: MIT
 **Token Budget**: ~2,500 tokens (target <500 lines)
 
 **Required Sections**:
+
 1. Overview (what + who uses this)
 2. Prerequisites (pip install)
 3. Instructions (4 numbered steps with code)
@@ -156,6 +158,7 @@ license: MIT
 ### 2.3 Level 3: Resources (Extended Context)
 
 **scripts/ Directory**:
+
 ```
 scripts/
 ├── price_tracker.py      # Main entry point (CLI)
@@ -165,6 +168,7 @@ scripts/
 ```
 
 **references/ Directory**:
+
 ```
 references/
 ├── errors.md             # Common errors and solutions
@@ -173,6 +177,7 @@ references/
 ```
 
 **config/ Directory**:
+
 ```
 config/
 └── settings.yaml         # API keys, cache duration, watchlists
@@ -185,6 +190,7 @@ config/
 ### 3.1 Required Tools
 
 **Minimal Necessary Set**:
+
 - `Read` - Load cache, read config files
 - `Write` - Save cache, export CSV/JSON
 - `Bash(python:*)` - Execute Python scripts
@@ -200,6 +206,7 @@ config/
 ### 3.3 Tools Explicitly NOT Needed
 
 **Excluded Tools**:
+
 - `Edit` - Scripts generate fresh output, no editing required
 - `WebFetch` - Python scripts handle HTTP directly via requests
 - `Grep` - No code search needed for price queries
@@ -239,11 +246,13 @@ plugins/crypto/market-price-tracker/skills/tracking-crypto-prices/
 ### 4.2 File Naming Conventions
 
 **Scripts**: `[noun]_[purpose].py`
+
 - ✅ `price_tracker.py` - Main price tracking logic
 - ✅ `api_client.py` - API communication
 - ✅ `cache_manager.py` - Cache operations
 
 **References**: `[purpose].md` (lowercase)
+
 - ✅ `errors.md` - Error documentation
 - ✅ `examples.md` - Usage examples
 
@@ -270,6 +279,7 @@ python scripts/price_tracker.py --symbol BTC  # Missing ${CLAUDE_SKILL_DIR}
 **Purpose**: Real-time price data for 10,000+ cryptocurrencies
 
 **Integration Details**:
+
 - **Base URL**: `https://api.coingecko.com/api/v3`
 - **Authentication**: Optional API key (header: `x-cg-demo-api-key` or `x-cg-pro-api-key`)
 - **Rate Limits**: 10-30 calls/minute (free), 500/minute (Pro)
@@ -285,6 +295,7 @@ python scripts/price_tracker.py --symbol BTC  # Missing ${CLAUDE_SKILL_DIR}
 | `/coins/markets` | Top coins by market cap | 1 call per page |
 
 **Example Request**:
+
 ```python
 import requests
 
@@ -305,6 +316,7 @@ def get_prices(symbols: list, vs_currency: str = "usd") -> dict:
 ```
 
 **Example Response**:
+
 ```json
 {
   "bitcoin": {
@@ -323,6 +335,7 @@ def get_prices(symbols: list, vs_currency: str = "usd") -> dict:
 ```
 
 **Error Handling**:
+
 | Code | Cause | Solution |
 |------|-------|----------|
 | 429 | Rate limit exceeded | Exponential backoff (1s, 2s, 4s, 8s) |
@@ -336,12 +349,14 @@ def get_prices(symbols: list, vs_currency: str = "usd") -> dict:
 **Purpose**: Backup price source, primary for historical OHLCV data
 
 **Integration Details**:
+
 - **Library**: `yfinance` Python package
 - **Authentication**: None required
 - **Rate Limits**: Implicit (respectful usage)
 - **Response Format**: pandas DataFrame
 
 **Example Usage**:
+
 ```python
 import yfinance as yf
 
@@ -354,6 +369,7 @@ def get_historical(symbol: str, period: str = "30d") -> pd.DataFrame:
 ```
 
 **Symbol Mapping**:
+
 - CoinGecko uses full names: `bitcoin`, `ethereum`
 - yfinance uses tickers: `BTC-USD`, `ETH-USD`
 - api_client.py handles translation
@@ -394,6 +410,7 @@ Return Cached (stale) + Warning  │        │               │
 ```
 
 **Fallback Strategy**:
+
 1. CoinGecko (primary) → yfinance (fallback) → Cache (stale, last resort)
 2. Always return *something* - stale data with warning beats error
 
@@ -438,6 +455,7 @@ FINAL OUTPUT
 ### 6.2 Data Format Specifications
 
 **Format 1: Cache Entry** (`data/cache.json`)
+
 ```json
 {
   "bitcoin_usd_spot": {
@@ -455,6 +473,7 @@ FINAL OUTPUT
 ```
 
 **Format 2: Standardized Price Output** (returned to dependent skills)
+
 ```json
 {
   "symbol": "BTC",
@@ -471,6 +490,7 @@ FINAL OUTPUT
 ```
 
 **Format 3: Historical OHLCV** (`data/BTC_30d.csv`)
+
 ```csv
 date,open,high,low,close,volume
 2024-12-15,95000.00,96500.00,94200.00,96100.00,25000000000
@@ -606,6 +626,7 @@ PRICES=$(python ${CLAUDE_SKILL_DIR}/../market-price-tracker/scripts/price_tracke
 **Pattern 3: Shared Cache (Efficient for batch operations)**
 
 Multiple skills read from the same cache file:
+
 - price-tracker updates `data/cache.json`
 - portfolio-tracker reads from same cache
 - Reduces redundant API calls
@@ -628,6 +649,7 @@ Multiple skills read from the same cache file:
 ### 8.4 Input/Output Contracts
 
 **Input Contract** (what this skill expects):
+
 ```python
 # Function signature for get_current_prices()
 def get_current_prices(
@@ -640,6 +662,7 @@ def get_current_prices(
 ```
 
 **Output Contract** (what this skill guarantees):
+
 ```python
 @dataclass
 class PriceData:
@@ -672,11 +695,13 @@ class PriceData:
 ### 9.2 Scalability Considerations
 
 **Cache Strategy**:
+
 - Spot prices: 30s TTL (balance freshness vs rate limits)
 - Historical data: 1h TTL (rarely changes)
 - Cache file: Single JSON file (sufficient for <1000 entries)
 
 **Batch Optimization**:
+
 - CoinGecko supports 100+ coins per request
 - Always batch multiple symbol requests
 - Single API call vs N calls = 100x reduction
@@ -694,6 +719,7 @@ class PriceData:
 ### 10.1 Unit Tests
 
 **Test Input Validation**:
+
 ```python
 def test_symbol_resolution():
     assert resolve_symbol("BTC") == "bitcoin"
@@ -703,6 +729,7 @@ def test_symbol_resolution():
 ```
 
 **Test Cache**:
+
 ```python
 def test_cache_hit():
     cache.set("bitcoin", price_data, ttl=30)
@@ -751,6 +778,7 @@ api:
 ```
 
 **Never**:
+
 - Hardcode API keys in scripts
 - Commit API keys to git
 - Log API keys

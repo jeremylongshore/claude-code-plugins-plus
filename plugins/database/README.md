@@ -5,12 +5,14 @@ A comprehensive collection of 25 database and backend plugins for Claude Code, c
 ## Plugin Categories
 
 ### Schema & Design (4 plugins)
+
 - **database-migration-manager** - Database migration management with version control
 - **database-schema-designer** - Design and visualize database schemas with ERD generation
 - **orm-code-generator** - Generate ORM models from schemas (TypeORM, Prisma, SQLAlchemy, etc.)
 - **nosql-data-modeler** - Design NoSQL data models for MongoDB, DynamoDB, Cassandra
 
 ### Performance & Optimization (5 plugins)
+
 - **sql-query-optimizer** - Analyze and optimize SQL queries
 - **query-performance-analyzer** - EXPLAIN plan interpretation and bottleneck identification
 - **database-index-advisor** - Recommend optimal indexes based on query patterns
@@ -18,12 +20,14 @@ A comprehensive collection of 25 database and backend plugins for Claude Code, c
 - **database-cache-layer** - Implement caching strategies with Redis/Memcached
 
 ### Data Management (4 plugins)
+
 - **data-seeder-generator** - Generate realistic test data and seed scripts
 - **data-validation-engine** - Implement comprehensive data validation rules
 - **database-diff-tool** - Compare schemas and generate migration scripts
 - **database-documentation-gen** - Generate database documentation and ERDs
 
 ### Operations & Monitoring (5 plugins)
+
 - **database-backup-automator** - Automated backup with scheduling and retention
 - **database-health-monitor** - Monitor database health and performance metrics
 - **database-transaction-monitor** - Track transaction performance and issues
@@ -31,12 +35,14 @@ A comprehensive collection of 25 database and backend plugins for Claude Code, c
 - **database-audit-logger** - Track database changes for compliance
 
 ### High Availability & Scaling (4 plugins)
+
 - **database-replication-manager** - Manage replication and failover
 - **database-sharding-manager** - Implement database sharding strategies
 - **database-partition-manager** - Manage table partitioning for large datasets
 - **database-recovery-manager** - Disaster recovery and PITR (Point-in-Time Recovery)
 
 ### Security & Maintenance (3 plugins)
+
 - **database-security-scanner** - Scan for security vulnerabilities
 - **stored-procedure-generator** - Generate stored procedures and functions
 - **database-archival-system** - Archive old data with retention policies
@@ -44,6 +50,7 @@ A comprehensive collection of 25 database and backend plugins for Claude Code, c
 ## Installation
 
 Install individual plugins:
+
 ```bash
 /plugin install database-migration-manager@claude-code-plugins-plus
 /plugin install sql-query-optimizer@claude-code-plugins-plus
@@ -83,6 +90,7 @@ Install individual plugins:
 ## Supported Databases
 
 ### SQL Databases
+
 - **PostgreSQL** - Full support for all plugins
 - **MySQL/MariaDB** - Full support with minor syntax variations
 - **SQLite** - Supported for development use cases
@@ -90,6 +98,7 @@ Install individual plugins:
 - **Oracle** - Supported for enterprise scenarios
 
 ### NoSQL Databases
+
 - **MongoDB** - Document database modeling and operations
 - **DynamoDB** - AWS key-value store
 - **Cassandra** - Wide-column store
@@ -99,6 +108,7 @@ Install individual plugins:
 ## Common Use Cases
 
 ### 1. New Project Setup
+
 ```bash
 /design-schema          # Design your schema
 /migration              # Create initial migration
@@ -107,6 +117,7 @@ Install individual plugins:
 ```
 
 ### 2. Performance Optimization
+
 ```bash
 /optimize-query         # Optimize slow queries
 /index-advisor          # Get index recommendations
@@ -115,6 +126,7 @@ Install individual plugins:
 ```
 
 ### 3. Production Operations
+
 ```bash
 /health-check           # Monitor health
 /replication            # Set up HA
@@ -123,6 +135,7 @@ Install individual plugins:
 ```
 
 ### 4. Migration & Scaling
+
 ```bash
 /db-diff                # Compare environments
 /partitioning           # Partition large tables
@@ -133,30 +146,35 @@ Install individual plugins:
 ## Best Practices
 
 ### Migration Management
+
 - One logical change per migration
 - Always include rollback (down migration)
 - Test migrations in development first
 - Use version control for migration files
 
 ### Performance Optimization
+
 - Index WHERE and JOIN columns
 - Avoid SELECT * in production
 - Use connection pooling
 - Implement caching for read-heavy workloads
 
 ### Security
+
 - Principle of least privilege
 - Use SSL/TLS for connections
 - Implement audit logging
 - Regular security scans
 
 ### High Availability
+
 - Set up replication for critical databases
 - Regular backup testing
 - Document recovery procedures
 - Monitor replication lag
 
 ### Data Management
+
 - Implement data validation at database level
 - Use constraints and foreign keys
 - Regular data archival for old records
@@ -222,19 +240,23 @@ Install individual plugins:
 ## Architecture Patterns
 
 ### Microservices Database Pattern
+
 Each plugin supports microservices architecture:
+
 - Independent database per service
 - Connection pooling per service
 - Service-specific caching layers
 - Distributed transaction monitoring
 
 ### Monolith to Microservices Migration
+
 - Use db-diff to identify schema dependencies
 - Implement data partitioning by domain
 - Set up replication for gradual migration
 - Monitor transactions during transition
 
 ### Multi-Tenant Architecture
+
 - Sharding strategies for tenant isolation
 - Row-level security with audit logging
 - Tenant-specific backup schedules
@@ -243,6 +265,7 @@ Each plugin supports microservices architecture:
 ## Technology Stack Coverage
 
 ### Backend Frameworks
+
 - **Node.js**: Express, NestJS, Fastify
 - **Python**: Django, Flask, FastAPI
 - **Java**: Spring Boot, Hibernate
@@ -252,6 +275,7 @@ Each plugin supports microservices architecture:
 - **C#**: Entity Framework, Dapper
 
 ### ORM Support
+
 - TypeORM (TypeScript)
 - Prisma (TypeScript)
 - Sequelize (JavaScript)
@@ -263,6 +287,7 @@ Each plugin supports microservices architecture:
 - Eloquent (PHP)
 
 ### Cloud Platforms
+
 - **AWS**: RDS, Aurora, DynamoDB
 - **Google Cloud**: Cloud SQL, Firestore, BigQuery
 - **Azure**: SQL Database, Cosmos DB
@@ -272,6 +297,7 @@ Each plugin supports microservices architecture:
 ## Contributing
 
 These plugins follow database best practices and industry standards. Contributions welcome for:
+
 - Additional database system support
 - New optimization patterns
 - Cloud-specific implementations
@@ -280,6 +306,7 @@ These plugins follow database best practices and industry standards. Contributio
 ## Support & Documentation
 
 Each plugin includes:
+
 - Comprehensive README with examples
 - Command/agent documentation
 - Best practices guide

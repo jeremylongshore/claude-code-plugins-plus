@@ -10,6 +10,7 @@ apple-notes-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Apple Notes example
 **Workflow:** Part of the onboarding skill category for Apple Notes integration.
 **Relates to:** Other apple-notes skills in this pack.

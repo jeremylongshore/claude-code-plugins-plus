@@ -7,6 +7,7 @@
 ## 🎯 Planned Features
 
 ### Example Usage
+
 ```bash
 claude: "research GCP Cloud Run best practices and deploy to staging"
 
@@ -17,6 +18,7 @@ claude: "research GCP Cloud Run best practices and deploy to staging"
 ```
 
 ### Capabilities
+
 - 🏗️ Infrastructure as Code generation (Terraform, Pulumi)
 - ☁️ Multi-cloud deployment (GCP, AWS, Azure)
 - 📊 Monitoring setup (Cloud Monitoring, Datadog)
@@ -25,6 +27,7 @@ claude: "research GCP Cloud Run best practices and deploy to staging"
 - 🔄 CI/CD pipeline creation
 
 ### Supported Platforms
+
 - Google Cloud Platform (Cloud Run, GKE, App Engine)
 - AWS (ECS, EKS, Lambda, Fargate)
 - Azure (Container Instances, AKS, Functions)
@@ -35,6 +38,7 @@ claude: "research GCP Cloud Run best practices and deploy to staging"
 This plugin will be available to Enterprise tier sponsors ($199/month):
 
 **Enterprise Benefits:**
+
 - ✅ All Pro features +
 - ✅ Custom plugin development (1/month)
 - ✅ Private plugin hosting (claude-code-marketplace repo)

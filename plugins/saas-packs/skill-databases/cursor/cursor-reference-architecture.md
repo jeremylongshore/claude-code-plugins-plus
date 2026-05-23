@@ -10,6 +10,7 @@ cursor-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Establishes reference architecture patterns for Cursor IDE projects including folder structures, configuration files, workflow architecture, and documentation standards.
 
 **Workflow:** This skill activates when setting up new projects or standardizing team architecture. It covers project structure patterns, configuration file architecture, team configuration, workflow patterns, monorepo architecture, security, and documentation.

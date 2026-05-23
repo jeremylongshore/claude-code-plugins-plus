@@ -27,6 +27,7 @@ compatibility: Designed for Claude Code
 OneNote's dedicated search endpoint was deprecated in April 2024. The replacement — OData `$filter` queries on page listings — cannot search page body content, cannot search across all notebooks in a single call, and sometimes returns deleted pages in results. Pagination via `@odata.nextLink` is unreliable: the link is sometimes omitted even when more results exist. This skill provides production-tested patterns for content discovery, cross-notebook queries, and safe pagination with guard rails.
 
 Key pain points addressed:
+
 - The `$search` parameter on `/me/onenote/pages` is deprecated — use `$filter` on metadata fields only
 - No single endpoint searches across all notebooks — you must iterate notebooks and their sections
 - Deleted pages continue appearing in `GET /sections/{id}/pages` results for up to 30 minutes
@@ -275,6 +276,7 @@ async def paginate_pages(client: GraphServiceClient, section_id: str, max_pages:
 ## Output
 
 Search and query operations return:
+
 - **Page listing:** JSON array with `id`, `title`, `createdDateTime`, `lastModifiedDateTime`, `parentSection`
 - **Page content:** XHTML stream (must be buffered and parsed)
 - **Pagination:** `@odata.nextLink` URL (when present) or `@odata.count` (when `$count=true` is specified)
@@ -292,6 +294,7 @@ Search and query operations return:
 ## Examples
 
 **TypeScript — Search recent pages modified this week:**
+
 ```typescript
 const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 const recent = await client.api("/me/onenote/pages")
@@ -305,6 +308,7 @@ console.log(`Found ${recent.value.length} pages modified in the last 7 days`);
 ```
 
 **Python — Count pages per section:**
+
 ```python
 notebooks = await client.me.onenote.notebooks.get()
 for nb in notebooks.value:

@@ -5,6 +5,7 @@ allowed-tools: Bash
 ---
 
 ## Context
+
 - Queue file: `~/.claude/learnings-queue.json`
 
 ## Your Task
@@ -32,6 +33,7 @@ Commands:
 ```
 
 If queue is empty:
+
 ```
 ════════════════════════════════════════════════════════════
 LEARNINGS QUEUE: Empty
@@ -44,11 +46,13 @@ or corrections will be auto-detected. Run /reflect to process.
 ## Implementation
 
 Read and format the queue:
+
 ```bash
 cat ~/.claude/learnings-queue.json 2>/dev/null || echo "[]"
 ```
 
 Parse each item and display:
+
 - `type`: "explicit" or "auto"
 - `message`: truncated to 80 chars with "..." if longer
 - `patterns`: what triggered detection

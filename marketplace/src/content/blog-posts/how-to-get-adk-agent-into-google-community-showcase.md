@@ -49,6 +49,7 @@ Being in Google's showcase provides:
 3. **Credibility** - "Google-recognized" carries weight in other contributions
 
 We immediately leveraged this in our other open PRs:
+
 - A2A Samples PR #419 (foreman-worker pattern demo)
 - Linux Foundation AI Card PR #7 (reference implementation)
 
@@ -66,6 +67,7 @@ What gets accepted into the showcase:
 | Real-world use case | Multi-agent SWE department |
 
 What doesn't matter:
+
 - Repo stars (we had ~50)
 - Team size (solo developer)
 - Company backing (independent)
@@ -86,12 +88,11 @@ What doesn't matter:
 ## What's Next
 
 With Google recognition secured, we're pursuing:
+
 - A2A Protocol samples (PR #419 pending)
 - Linux Foundation AI Card standard (PR #7 pending)
 - Conference speaking opportunities
 
 The community contribution strategy is working. Build something real, document it thoroughly, contribute upstream. Recognition follows.
 
-
 *Building production ADK agents? [Intent Solutions](https://intentsolutions.io) helps teams deploy multi-agent systems on Vertex AI Agent Engine.*
-

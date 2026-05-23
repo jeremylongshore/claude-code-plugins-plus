@@ -3,9 +3,11 @@
 # Lindy Enterprise RBAC
 
 ## Overview
+
 Manage team-level access control for Lindy AI agents and automations. Lindy organizes access around workspaces where agents live, with team members assigned Owner, Editor, or Viewer roles that govern who can create, modify, run, or merely observe AI agents and their execution history.
 
 ## Prerequisites
+
 - Lindy Team or Enterprise plan (per-agent pricing applies)
 - Workspace owner or admin privileges
 - Team members invited to the Lindy workspace
@@ -13,6 +15,7 @@ Manage team-level access control for Lindy AI agents and automations. Lindy orga
 ## Instructions
 
 ### Step 1: Map Organizational Roles to Lindy Permissions
+
 ```yaml
 # lindy-rbac-mapping.yaml
 roles:
@@ -28,6 +31,7 @@ roles:
 ```
 
 ### Step 2: Configure Team Membership via API
+
 ```bash
 # Invite a member with a specific role
 curl -X POST https://api.lindy.ai/v1/workspace/members \
@@ -40,6 +44,7 @@ curl https://api.lindy.ai/v1/workspace/members \
 ```
 
 ### Step 3: Restrict Agent Visibility per Team
+
 ```bash
 # Assign an agent to a specific team folder so only that team sees it
 curl -X PATCH https://api.lindy.ai/v1/agents/agt_abc123 \
@@ -48,6 +53,7 @@ curl -X PATCH https://api.lindy.ai/v1/agents/agt_abc123 \
 ```
 
 ### Step 4: Audit Agent Access
+
 ```bash
 # Pull the activity log filtered by user and action type
 curl "https://api.lindy.ai/v1/workspace/audit-log?actor=dev@company.com&action=agent.run&limit=50" \
@@ -55,9 +61,11 @@ curl "https://api.lindy.ai/v1/workspace/audit-log?actor=dev@company.com&action=a
 ```
 
 ### Step 5: Enforce API Key Scoping
+
 Create separate API keys per integration rather than sharing a single workspace key. Rotate keys on a 90-day schedule and revoke immediately when a team member leaves.
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `403 Forbidden` on agent create | User has Viewer role | Promote to Editor in workspace settings |
@@ -66,6 +74,7 @@ Create separate API keys per integration rather than sharing a single workspace 
 | Cannot delete workspace | Not the Owner | Transfer ownership first via account settings |
 
 ## Examples
+
 ```bash
 # Bulk invite a team from a CSV: email,role
 while IFS=, read -r email role; do

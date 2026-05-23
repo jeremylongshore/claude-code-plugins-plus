@@ -73,6 +73,7 @@ tasks.register('devServer') {
 ```
 
 **IDE Configuration for Hot Reload:**
+
 1. Run > Edit Configurations > Remote JVM Debug
 2. Set port to 5005
 3. Start debug session after server is running

@@ -22,6 +22,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Events & Async Patterns
 
 ## Overview
+
 Build event-driven architectures around Perplexity Sonar API. Perplexity does not have webhooks -- all interactions are request/response. Event patterns are built using streaming SSE, job queues for batch processing, and cron-triggered monitoring.
 
 ## Event Patterns
@@ -34,6 +35,7 @@ Build event-driven architectures around Perplexity Sonar API. Perplexity does no
 | Citation pipeline | Post-processing | Source verification, link validation |
 
 ## Prerequisites
+
 - `openai` package installed
 - `PERPLEXITY_API_KEY` set
 - Queue system (BullMQ, SQS) for batch patterns
@@ -42,6 +44,7 @@ Build event-driven architectures around Perplexity Sonar API. Perplexity does no
 ## Instructions
 
 ### Step 1: Streaming Search (Server-Sent Events)
+
 ```typescript
 import OpenAI from "openai";
 import express from "express";
@@ -95,6 +98,7 @@ app.post("/api/search/stream", async (req, res) => {
 ```
 
 ### Step 2: Batch Research Pipeline
+
 ```typescript
 import { Queue, Worker } from "bullmq";
 
@@ -152,6 +156,7 @@ const worker = new Worker("perplexity-research", async (job) => {
 ```
 
 ### Step 3: Scheduled News Monitor
+
 ```typescript
 // Run via cron: every 6 hours
 async function monitorTopics(
@@ -197,6 +202,7 @@ async function monitorTopics(
 ```
 
 ### Step 4: Client-Side SSE Consumer
+
 ```typescript
 // Browser client consuming the streaming endpoint
 function consumeSearchStream(
@@ -232,6 +238,7 @@ function consumeSearchStream(
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Stream stalls | Complex search taking too long | Set per-chunk timeout (10s) |
@@ -240,15 +247,18 @@ function consumeSearchStream(
 | Callback fails | Webhook URL down | Retry with exponential backoff |
 
 ## Output
+
 - Streaming SSE endpoint for real-time search
 - Batch research pipeline with queue-based processing
 - Scheduled news monitoring with alerting
 - Client-side stream consumer
 
 ## Resources
+
 - [Perplexity API Documentation](https://docs.perplexity.ai)
 - [BullMQ Documentation](https://docs.bullmq.io)
 - [Server-Sent Events MDN](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)
 
 ## Next Steps
+
 For deployment setup, see `perplexity-deploy-integration`.

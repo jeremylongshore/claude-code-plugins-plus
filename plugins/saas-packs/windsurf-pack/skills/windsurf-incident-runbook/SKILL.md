@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Incident Runbook
 
 ## Overview
+
 Incident response procedures for Windsurf-related issues: Cascade service outages, AI-generated code causing bugs, and team workflow disruptions.
 
 ## Prerequisites
+
 - Access to Windsurf dashboard and status page
 - Git access to affected repositories
 - Team communication channel (Slack, Teams)
@@ -68,6 +70,7 @@ Is Windsurf service itself down?
 ## P1 Playbook: AI Code Caused Production Bug
 
 ### Step 1: Immediate Mitigation
+
 ```bash
 set -euo pipefail
 # Revert the deployment
@@ -84,6 +87,7 @@ git push origin main
 ```
 
 ### Step 2: Identify Root Cause
+
 ```bash
 # Find all Cascade-generated commits
 git log --all --oneline --grep="cascade" --since="1 week ago"
@@ -100,6 +104,7 @@ git diff [last-good-commit]..HEAD -- src/
 ```
 
 ### Step 3: Fix and Validate
+
 ```bash
 set -euo pipefail
 git checkout -b fix/cascade-revert
@@ -112,12 +117,14 @@ npm run typecheck
 ## P2 Playbook: Windsurf Service Outage
 
 ### Step 1: Confirm and Communicate
+
 ```bash
 # Check Windsurf status
 curl -sf https://status.windsurf.com || echo "Status page unreachable"
 ```
 
 ### Step 2: Team Notification
+
 ```
 Team notification template:
 
@@ -132,6 +139,7 @@ ETA: Monitoring status page for updates.
 ```
 
 ### Step 3: Workarounds During Outage
+
 ```markdown
 1. Windsurf still works as VS Code (file editing, terminal, git)
 2. Extensions still work (ESLint, Prettier, debugger)
@@ -155,6 +163,7 @@ Indexing stuck → Reset indexing (Command Palette > "Codeium: Reset Indexing")
 ## Post-Incident Actions
 
 ### Evidence Collection
+
 ```bash
 set -euo pipefail
 # Collect relevant data
@@ -165,6 +174,7 @@ cp .windsurfrules incident-$(date +%Y%m%d)/ 2>/dev/null || true
 ```
 
 ### Postmortem Template
+
 ```markdown
 ## Incident: [Title]
 **Date:** YYYY-MM-DD
@@ -195,6 +205,7 @@ cp .windsurfrules incident-$(date +%Y%m%d)/ 2>/dev/null || true
 ```
 
 ## Error Handling
+
 | Issue | Immediate Action | Long-Term Fix |
 |-------|-----------------|---------------|
 | AI code in prod broke feature | Git revert + redeploy | Enforce test gates for Cascade commits |
@@ -205,18 +216,22 @@ cp .windsurfrules incident-$(date +%Y%m%d)/ 2>/dev/null || true
 ## Examples
 
 ### Quick Health Check
+
 ```bash
 curl -sf https://status.windsurf.com | head -5 || echo "WINDSURF STATUS UNREACHABLE"
 ```
 
 ### Find Recent Cascade Commits
+
 ```bash
 git log --all --oneline --since="7 days ago" | grep -i cascade
 ```
 
 ## Resources
+
 - [Windsurf Status Page](https://status.windsurf.com)
 - [Windsurf GitHub Issues](https://github.com/Exafunction/codeium/issues)
 
 ## Next Steps
+
 For data handling compliance, see `windsurf-data-handling`.

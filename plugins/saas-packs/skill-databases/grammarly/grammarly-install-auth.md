@@ -10,6 +10,7 @@ grammarly-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Grammarly SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Grammarly integration.
 **Relates to:** Other grammarly skills in this pack.

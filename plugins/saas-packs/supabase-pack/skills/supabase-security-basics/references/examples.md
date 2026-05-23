@@ -1,6 +1,7 @@
-# Examples
+## Examples
 
 ### Service Account Pattern
+
 ```typescript
 const clients = {
   reader: new SupabaseClient({
@@ -13,6 +14,7 @@ const clients = {
 ```
 
 ### Webhook Signature Verification
+
 ```typescript
 import crypto from 'crypto';
 
@@ -25,6 +27,7 @@ function verifyWebhookSignature(
 ```
 
 ### Security Checklist
+
 - [ ] API keys in environment variables
 - [ ] `.env` files in `.gitignore`
 - [ ] Different keys for dev/staging/prod
@@ -33,6 +36,7 @@ function verifyWebhookSignature(
 - [ ] Audit logging enabled
 
 ### Audit Logging
+
 ```typescript
 interface AuditEntry {
   timestamp: Date;

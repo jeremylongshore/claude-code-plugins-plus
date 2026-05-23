@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear SDK Patterns
 
 ## Overview
+
 Production patterns for `@linear/sdk`. The SDK wraps Linear's GraphQL API with strongly-typed models, cursor-based pagination (`fetchNext()`/`fetchPrevious()`), lazy-loaded relations, and typed error classes. Understanding these patterns avoids N+1 queries and rate limit waste.
 
 ## Prerequisites
+
 - `@linear/sdk` installed
 - TypeScript project with `strict: true`
 - Understanding of async/await and GraphQL concepts
@@ -35,6 +37,7 @@ Production patterns for `@linear/sdk`. The SDK wraps Linear's GraphQL API with s
 ## Instructions
 
 ### Pattern 1: Client Singleton
+
 ```typescript
 import { LinearClient } from "@linear/sdk";
 
@@ -61,6 +64,7 @@ export function getClientForUser(userId: string, accessToken: string): LinearCli
 ```
 
 ### Pattern 2: Cursor-Based Pagination
+
 Linear uses Relay-style cursor pagination. The SDK provides `fetchNext()` and `fetchPrevious()` helpers, plus raw `pageInfo` for manual control.
 
 ```typescript
@@ -98,6 +102,7 @@ for await (const issue of paginateAll(c => client.issues({ first: 50, after: c }
 ```
 
 ### Pattern 3: Relation Loading (Avoiding N+1)
+
 SDK models lazy-load relations. Accessing `.assignee` triggers a separate API call. Use raw GraphQL to batch-fetch relations in one request.
 
 ```typescript
@@ -136,6 +141,7 @@ async function enrichIssue(issue: any) {
 ```
 
 ### Pattern 4: Filtering with Comparators
+
 Linear supports `eq`, `neq`, `in`, `nin`, `lt`, `lte`, `gt`, `gte`, `startsWith`, `contains`, and logical `and`/`or` operators.
 
 ```typescript
@@ -175,6 +181,7 @@ const recent = await client.issues({
 ```
 
 ### Pattern 5: Type-Safe Error Handling
+
 ```typescript
 import { LinearError, InvalidInputLinearError } from "@linear/sdk";
 
@@ -205,6 +212,7 @@ if (result.ok) {
 ```
 
 ### Pattern 6: Custom GraphQL Client
+
 Access the underlying `LinearGraphQLClient` for full control.
 
 ```typescript
@@ -245,6 +253,7 @@ const batchResult = await graphQLClient.rawRequest(`
 ## Examples
 
 ### Create Issue with Full Metadata
+
 ```typescript
 const teams = await client.teams();
 const eng = teams.nodes.find(t => t.key === "ENG")!;
@@ -264,6 +273,7 @@ await client.createIssue({
 ```
 
 ## Resources
+
 - [SDK Getting Started](https://linear.app/developers/sdk)
 - [SDK Data Fetching](https://linear.app/developers/sdk-fetching-and-modifying-data)
 - [SDK Error Handling](https://linear.app/developers/sdk-errors)

@@ -10,6 +10,7 @@ wispr-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Wispr SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Wispr integration.
 **Relates to:** Other wispr skills in this pack.

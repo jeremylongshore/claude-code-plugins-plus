@@ -10,6 +10,7 @@ lindy-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Lindy primary workflow
 **Workflow:** Part of the onboarding skill category for Lindy integration.
 **Relates to:** Other lindy skills in this pack.

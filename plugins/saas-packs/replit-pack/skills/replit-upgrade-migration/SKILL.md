@@ -27,13 +27,16 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Upgrade & Migration
 
 ## Current State
+
 !`cat .replit 2>/dev/null | head -15 || echo 'No .replit found'`
 !`cat replit.nix 2>/dev/null || echo 'No replit.nix found'`
 
 ## Overview
+
 Guide for upgrading Replit environments: Nix channel updates, package version bumps, database migrations (KV to PostgreSQL, dev to prod), deployment type changes, and Node.js/Python runtime upgrades.
 
 ## Prerequisites
+
 - Existing Replit App with `.replit` and `replit.nix`
 - Git version control (recommended)
 - Backup of critical data before migration
@@ -41,6 +44,7 @@ Guide for upgrading Replit environments: Nix channel updates, package version bu
 ## Instructions
 
 ### Step 1: Upgrade Nix Channel
+
 Nix channels determine available package versions. Upgrade to get newer runtimes.
 
 ```toml
@@ -54,12 +58,14 @@ channel = "stable-24_05"
 ```
 
 After changing the channel, reload the shell (exit Shell tab and re-enter). Then verify:
+
 ```bash
 node --version     # Should show newer version
 python3 --version  # Should show newer version
 ```
 
 ### Step 2: Upgrade Node.js or Python Runtime
+
 ```nix
 # replit.nix — update runtime packages
 
@@ -87,6 +93,7 @@ modules = ["nodejs-20:v8-20230920-bd784b9"]
 ```
 
 **Verify after upgrade:**
+
 ```bash
 node --version         # v20.x.x
 npm --version          # 10.x.x
@@ -94,6 +101,7 @@ npm test               # Run tests to catch breaking changes
 ```
 
 ### Step 3: Migrate from Replit KV to PostgreSQL
+
 When your app outgrows the 50 MiB KV database limit:
 
 ```typescript
@@ -145,6 +153,7 @@ migrate().then(() => pool.end());
 ```
 
 ### Step 4: Switch Deployment Type
+
 ```toml
 # .replit — change deployment target
 
@@ -167,6 +176,7 @@ publicDir = "dist"
 After changing: click "Deploy" to create a new deployment with the new type.
 
 ### Step 5: Migrate Large Files to Object Storage
+
 ```typescript
 // Move large values from KV to Object Storage
 import Database from '@replit/database';
@@ -190,6 +200,7 @@ async function migrateToObjectStorage(prefix: string) {
 ```
 
 ### Step 6: Pre-Migration Checklist
+
 ```markdown
 ## Before Any Upgrade
 - [ ] Git commit current working state
@@ -210,6 +221,7 @@ async function migrateToObjectStorage(prefix: string) {
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Package not found` after channel upgrade | Package renamed or removed | Search Nix packages: `nix-env -qaP \| grep name` |
@@ -218,10 +230,12 @@ async function migrateToObjectStorage(prefix: string) {
 | Old deployment still running | Didn't redeploy | Click "Deploy" to apply new config |
 
 ## Resources
+
 - [Replit App Configuration](https://docs.replit.com/replit-app/configuration)
 - [Nix on Replit](https://docs.replit.com/programming-ide/nix-on-replit)
 - [PostgreSQL on Replit](https://docs.replit.com/cloud-services/storage-and-databases/postgresql-on-replit)
 - [Deployment Types](https://docs.replit.com/hosting/deployments)
 
 ## Next Steps
+
 For CI integration during upgrades, see `replit-ci-integration`.

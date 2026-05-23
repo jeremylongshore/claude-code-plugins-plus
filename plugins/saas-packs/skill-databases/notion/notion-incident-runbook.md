@@ -10,6 +10,7 @@ notion-incident-runbook/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Notion incident response
 **Workflow:** Part of the advanced skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

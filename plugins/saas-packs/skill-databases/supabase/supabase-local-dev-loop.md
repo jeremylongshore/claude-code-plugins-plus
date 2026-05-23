@@ -10,6 +10,7 @@ supabase-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Supabase local development with hot reload and testing workflows. Establishes a fast iteration cycle for Supabase development.
 **Workflow:** Third skill in the onboarding sequence. Sets up the development environment that will be used throughout the project lifecycle.
 **Relates to:** Follows supabase-hello-world; enables efficient development for all subsequent skills.

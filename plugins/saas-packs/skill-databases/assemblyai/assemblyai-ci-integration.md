@@ -10,6 +10,7 @@ assemblyai-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure AssemblyAI CI/CD integration
 **Workflow:** Part of the cicd skill category for AssemblyAI integration.
 **Relates to:** Other assemblyai skills in this pack.

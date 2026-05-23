@@ -7,6 +7,7 @@
 **Source**: google/adk-samples
 
 **Examples Provided**:
+
 - Basic agent creation with Code Execution Sandbox
 - Memory Bank configuration for stateful agents
 - A2A protocol implementation for inter-agent communication
@@ -15,6 +16,7 @@
 - IAM least privilege patterns
 
 **Sample Pattern**:
+
 ```python
 from google.cloud.aiplatform import agent_builder
 
@@ -38,6 +40,7 @@ def create_adk_agent(project_id: str, location: str):
 **Source**: GoogleCloudPlatform/agent-starter-pack
 
 **Examples Provided**:
+
 - Production agent with monitoring and observability
 - Auto-scaling configuration
 - Security best practices (Model Armor, VPC-SC)
@@ -46,6 +49,7 @@ def create_adk_agent(project_id: str, location: str):
 - Error tracking setup
 
 **Sample Pattern**:
+
 ```python
 def production_agent_with_observability(project_id: str):
     agent = aiplatform.Agent.create(
@@ -66,6 +70,7 @@ def production_agent_with_observability(project_id: str):
 **Source**: genkit-ai/genkit
 
 **Examples Provided**:
+
 - RAG flows with vector search
 - Multi-step workflows
 - Tool calling integration
@@ -74,6 +79,7 @@ def production_agent_with_observability(project_id: str):
 - Deployment patterns (Cloud Run, Functions)
 
 **Sample Pattern**:
+
 ```typescript
 import { genkit, z } from 'genkit';
 import { googleAI, gemini15ProLatest } from '@genkit-ai/googleai';
@@ -92,6 +98,7 @@ const ragFlow = ai.defineFlow({
 **Source**: GoogleCloudPlatform/vertex-ai-samples
 
 **Examples Provided**:
+
 - Custom model training with Gemini
 - Batch prediction jobs
 - Hyperparameter tuning
@@ -100,6 +107,7 @@ const ragFlow = ai.defineFlow({
 - A/B testing patterns
 
 **Sample Pattern**:
+
 ```python
 def fine_tune_gemini_model(project_id: str, training_data_uri: str):
     job = aiplatform.CustomTrainingJob(
@@ -117,6 +125,7 @@ def fine_tune_gemini_model(project_id: str, training_data_uri: str):
 **Source**: GoogleCloudPlatform/generative-ai
 
 **Examples Provided**:
+
 - Gemini multimodal analysis (text, images, video)
 - Function calling with live APIs
 - Structured output generation
@@ -125,6 +134,7 @@ def fine_tune_gemini_model(project_id: str, training_data_uri: str):
 - Token counting and cost optimization
 
 **Sample Pattern**:
+
 ```python
 from vertexai.generative_models import GenerativeModel, Part
 
@@ -140,6 +150,7 @@ def analyze_multimodal_content(video_uri: str, question: str):
 **Source**: GoogleCloudPlatform/agentsmithy
 
 **Examples Provided**:
+
 - Multi-agent orchestration
 - Supervisory agent patterns
 - Agent-to-agent communication
@@ -148,6 +159,7 @@ def analyze_multimodal_content(video_uri: str, question: str):
 - Error handling and retry logic
 
 **Sample Pattern**:
+
 ```python
 from agentsmithy import Agent, Orchestrator, Task
 

@@ -31,6 +31,7 @@ Finta supports event automation through its built-in automation rules and Zapier
 ## Built-in Automation Rules
 
 Configure in Settings > Automation:
+
 - **Email reply detected** -> Move to next stage
 - **Calendar meeting scheduled** -> Log and notify team
 - **Deal room viewed** -> Send Slack notification
@@ -39,6 +40,7 @@ Configure in Settings > Automation:
 ## Zapier Integration
 
 Available triggers:
+
 1. Pipeline stage changed
 2. New investor added
 3. Deal room accessed

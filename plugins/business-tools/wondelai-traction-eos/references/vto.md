@@ -2,8 +2,8 @@
 
 The Vision/Traction Organizer is the single most important document in EOS. It captures your company's vision on two pages by answering eight critical questions. When the leadership team is aligned on the V/TO, every decision becomes clearer, every hire becomes easier, and every meeting becomes more productive. This guide walks through each question with exercises, templates, and facilitation tips.
 
-
 ## Table of Contents
+
 1. [The Eight Questions](#the-eight-questions)
 2. [Question 1: Core Values](#question-1-core-values)
 3. [Question 2: Core Focus](#question-2-core-focus)
@@ -37,6 +37,7 @@ Core values are the defining characteristics of your organization. They are not 
 **Step 1: Generate a List (50+ Values)**
 
 Have each leadership team member independently list the qualities they admire most in their best employees, past and present. Think about:
+
 - What made that person exceptional?
 - What traits do they share with other top performers?
 - What behaviors do you celebrate and reward?
@@ -50,6 +51,7 @@ Cluster similar values together. "Integrity," "honesty," and "transparency" migh
 **Step 3: Debate and Narrow (3-7 Final Values)**
 
 For each candidate value, ask:
+
 - Is this truly a core value, or is it something we wish we were?
 - Would we fire a high performer who consistently violated this value?
 - Would we keep someone who embodies this value even if they underperformed for a quarter?
@@ -66,6 +68,7 @@ Write 2-3 bullet points under each value that describe observable behaviors.
 | **Grow or Die** | Seeks feedback actively. Reads, learns, and improves quarterly. Embraces uncomfortable challenges. |
 
 **Common Mistakes:**
+
 - Too many values (more than 7 become impossible to remember)
 - Aspirational values instead of actual values
 - Generic values that could apply to any company ("excellence," "teamwork")
@@ -78,6 +81,7 @@ Core Focus has two parts: your purpose/cause/passion and your niche. Together, t
 ### Finding Your Purpose/Cause/Passion
 
 Ask the leadership team:
+
 - Why does this company exist beyond making money?
 - What would the world lose if we disappeared?
 - What gets us out of bed on the hardest days?
@@ -85,6 +89,7 @@ Ask the leadership team:
 This is not a mission statement. It is one sentence that captures your reason for being.
 
 **Examples:**
+
 - "To simplify small business." (Accounting SaaS)
 - "To transform how people learn." (EdTech company)
 - "To build things that matter." (Engineering firm)
@@ -92,11 +97,13 @@ This is not a mission statement. It is one sentence that captures your reason fo
 ### Finding Your Niche
 
 Your niche is what you do better than anyone else. Ask:
+
 - What can we be the best in the world at?
 - Where do we consistently win against competitors?
 - What do customers say is uniquely valuable about us?
 
 **Examples:**
+
 - "Cloud accounting for small businesses" (Niche within accounting)
 - "Mobile-first corporate training" (Niche within EdTech)
 - "Complex structural engineering in seismic zones" (Niche within engineering)
@@ -121,6 +128,7 @@ The 10-Year Target is your Big, Hairy, Audacious Goal (BHAG). It should be speci
 **Step 2:** Share and discuss. Look for common themes.
 
 **Step 3:** Agree on one target. It should:
+
 - Be a single, clear number or milestone
 - Feel achievable but ambitious (60-70% confidence)
 - Be measurable with no ambiguity
@@ -137,6 +145,7 @@ The 10-Year Target is your Big, Hairy, Audacious Goal (BHAG). It should be speci
 | Healthcare | 50 clinics across 5 states |
 
 **Common Mistakes:**
+
 - Making it too easy (not inspiring)
 - Making it too vague ("be the best")
 - Having multiple targets (pick one)
@@ -149,6 +158,7 @@ The Marketing Strategy has four parts that define how you attract and win custom
 ### Part A: Target Market
 
 Define your ideal customer with precision:
+
 - **Demographics:** Industry, size, revenue, location, title of buyer
 - **Psychographics:** Attitudes, values, pain points, buying behavior
 - **The List:** Name 10-20 companies that perfectly represent your target market
@@ -168,6 +178,7 @@ List three things that, taken together, differentiate you from every competitor.
 Name and visualize the steps a customer takes from first contact to long-term relationship. Give it a branded name.
 
 **Example: "The Clarity Path"**
+
 1. Discovery Call (30 min)
 2. Strategic Assessment (delivered in 5 days)
 3. Proposal and Agreement
@@ -180,6 +191,7 @@ Name and visualize the steps a customer takes from first contact to long-term re
 What promise can you make that removes risk for the buyer?
 
 **Examples:**
+
 - "Your first month free if you don't see ROI by day 30."
 - "We'll redo any deliverable you're not satisfied with, no questions asked."
 - "100% money-back guarantee for the first 90 days."

@@ -3,6 +3,7 @@
 ## AI Feature Pitfalls
 
 ### Over-Trusting AI Output
+
 ```
 PITFALL:
 Accepting AI suggestions without review.
@@ -16,6 +17,7 @@ SOLUTION:
 ```
 
 ### Context Pollution
+
 ```
 PITFALL:
 Long conversations accumulate irrelevant context.
@@ -29,6 +31,7 @@ SOLUTION:
 ```
 
 ### Vague Prompts
+
 ```
 PITFALL:
 "Make it better" or "Fix this" without specifics.
@@ -42,6 +45,7 @@ SOLUTION:
 ```
 
 ### Wrong Model for Task
+
 ```
 PITFALL:
 Using GPT-4 for simple completions (slow, expensive).

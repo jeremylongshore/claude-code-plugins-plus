@@ -18,9 +18,11 @@ compatibility: Designed for Claude Code
 # Linktree Reference Architecture
 
 ## Overview
+
 Design a read-optimized integration layer for the Linktree link-in-bio platform. The extreme read-to-write ratio on public profiles drives a two-tier cache with async analytics, keeping the hot path free from downstream blocking.
 
 ## Instructions
+
 1. Provision the prerequisites below and configure Linktree API credentials.
 2. Deploy the service layer with the cache-aside pattern for profile reads.
 3. Wire the webhook ingester to invalidate cache on profile mutations.
@@ -28,10 +30,12 @@ Design a read-optimized integration layer for the Linktree link-in-bio platform.
 5. Adjust Redis TTLs and rate-limit buckets to match your traffic profile.
 
 ## Prerequisites
+
 - Node.js 18+, TypeScript 5, Redis 7, RabbitMQ or SQS, PostgreSQL 15
 - Linktree API credentials with `profile:read` and `links:write` scopes
 
 ## Architecture Diagram
+
 ```
 Client --> API Gateway --> LinktreeService --> Linktree API
                                 |
@@ -42,6 +46,7 @@ Client --> API Gateway --> LinktreeService --> Linktree API
 ```
 
 ## Service Layer
+
 ```typescript
 class LinktreeService {
   constructor(
@@ -67,6 +72,7 @@ class LinktreeService {
 ```
 
 ## Caching Strategy
+
 ```typescript
 class ProfileCache {
   constructor(private redis: RedisClient) {}
@@ -89,6 +95,7 @@ class ProfileCache {
 ```
 
 ## Event Pipeline
+
 ```typescript
 class ClickEventConsumer {
   constructor(private queue: MessageQueue, private db: AnalyticsStore) {}
@@ -112,6 +119,7 @@ class WebhookIngester {
 ```
 
 ## Data Model
+
 ```typescript
 interface Profile {
   id: string; username: string; displayName: string;
@@ -129,15 +137,18 @@ interface ClickEvent {
 ```
 
 ## Output
+
 Running this architecture produces a cached profile API, a real-time click analytics pipeline, and webhook-driven cache invalidation that keeps profiles fresh within 5 minutes of any update.
 
 ## Scaling Considerations
+
 - Shard Redis by username hash prefix to distribute hot profiles across nodes
 - Batch click events into 10-second micro-windows before writing to analytics
 - Use token-bucket rate limiting per Linktree API key (150 req/min default)
 - Deploy read replicas behind cache so warm profiles never hit the upstream API
 
 ## Error Handling
+
 | Component | Failure Mode | Recovery |
 |-----------|-------------|----------|
 | Linktree API | 429 rate limit | Exponential backoff with jitter, serve stale cache |
@@ -147,6 +158,7 @@ Running this architecture produces a cached profile API, a real-time click analy
 | Analytics Store | Write timeout | Buffer in memory, flush on recovery |
 
 ## Examples
+
 ```bash
 # Fetch a profile through the cached service layer
 curl http://localhost:3000/api/profiles/myusername
@@ -155,7 +167,9 @@ curl -X POST http://localhost:3000/api/cache/invalidate/myusername
 ```
 
 ## Resources
+
 - [Linktree Developer Docs](https://linktr.ee/marketplace/developer)
 
 ## Next Steps
+
 See `linktree-deploy-integration`.

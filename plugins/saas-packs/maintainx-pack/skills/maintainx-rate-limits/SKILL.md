@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Rate Limits
 
 ## Overview
+
 Handle MaintainX API rate limits gracefully with exponential backoff, cursor-based pagination, and request queuing to maximize throughput without triggering 429 errors.
 
 ## Prerequisites
+
 - MaintainX API access configured
 - Node.js 18+ with `axios`
 - Understanding of async/await patterns
@@ -233,12 +235,14 @@ class RateMonitor {
 ```
 
 ## Output
+
 - Rate-limited client wrapper with built-in throttling and retry
 - Cursor-based pagination utility collecting all results
 - Batch operations with controlled concurrency via `p-queue`
 - Rate monitoring to track and alert on API usage
 
 ## Error Handling
+
 | Scenario | Strategy |
 |----------|----------|
 | 429 Too Many Requests | Exponential backoff with jitter, honor `Retry-After` header |
@@ -247,11 +251,13 @@ class RateMonitor {
 | Large data sets (1000+ items) | Paginate with `limit: 100`, delay between pages |
 
 ## Resources
+
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [p-queue](https://github.com/sindresorhus/p-queue) -- Promise queue with concurrency control
 - [Exponential Backoff](https://cloud.google.com/storage/docs/exponential-backoff)
 
 ## Next Steps
+
 For security configuration, see `maintainx-security-basics`.
 
 ## Examples

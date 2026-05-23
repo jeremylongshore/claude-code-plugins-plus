@@ -24,6 +24,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lindy Rate Limits & Credits
 
 ## Overview
+
 Lindy uses a **credit-based** consumption model, not traditional API rate limits.
 Every task (everything an agent does after being triggered) costs credits. Cost
 scales with model intelligence, task complexity, premium actions, and duration.
@@ -55,14 +56,18 @@ starts before the limit may complete and push usage slightly over.
 ## Instructions
 
 ### Step 1: Monitor Credit Usage
+
 In the Lindy dashboard:
+
 1. Navigate to **Settings > Billing**
 2. Review current credit consumption
 3. Track per-agent credit usage
 4. Set up alerts for high-consumption agents
 
 ### Step 2: Reduce Per-Task Credit Cost
+
 **Choose the right model for each step**:
+
 | Task Type | Recommended Model | Credits |
 |-----------|------------------|---------|
 | Simple routing/classification | Gemini Flash | ~1 |
@@ -72,13 +77,16 @@ In the Lindy dashboard:
 | Phone calls (complex) | Claude Sonnet | ~20/min |
 
 **Reduce action count per task**:
+
 - Combine multiple LLM calls into one prompt with structured output
 - Use deterministic actions (Set Manually) instead of AI-powered fields where possible
 - Eliminate unnecessary condition branches
 - Use Run Code for data transformation instead of LLM steps
 
 ### Step 3: Optimize Trigger Frequency
+
 Prevent credit waste from over-triggering:
+
 ```
 Problem: Email Received trigger fires on ALL emails → 200 tasks/day
 Solution: Add trigger filter: "sender contains '@customers.com'
@@ -87,12 +95,14 @@ Solution: Add trigger filter: "sender contains '@customers.com'
 ```
 
 Trigger filter best practices:
+
 - Use AND/OR conditions with condition groups
 - Filter by sender, subject, label for email
 - Filter by channel, keyword, user for Slack
 - Add keyword filtering to exclude automated messages
 
 ### Step 4: Implement Webhook Rate Limiting
+
 When your application triggers Lindy agents via webhooks, rate-limit on your side:
 
 ```typescript
@@ -145,6 +155,7 @@ async function triggerLindy(payload: any) {
 ```
 
 ### Step 5: Budget Alerts
+
 Set up monitoring to catch runaway agents before they drain credits:
 
 ```typescript
@@ -162,12 +173,15 @@ const alerts: CreditAlert[] = [
 ```
 
 ### Step 6: Cost Attribution
+
 Track which agents consume the most credits:
+
 1. In dashboard: review per-agent task counts and credit usage
 2. Identify top consumers — agents with frequent triggers or large models
 3. For each high-cost agent, evaluate: Can the model be smaller? Can steps be consolidated?
 
 ## Resource Protection
+
 Lindy includes built-in protection: when a task starts using more resources than
 expected, Lindy **pauses and checks in** before continuing. This prevents runaway
 agent steps from consuming unlimited credits.
@@ -182,8 +196,10 @@ agent steps from consuming unlimited credits.
 | Agent not running | Credit balance at zero | Wait for monthly reset or upgrade |
 
 ## Resources
+
 - [Lindy Pricing](https://www.lindy.ai/pricing)
 - [Lindy Documentation](https://docs.lindy.ai)
 
 ## Next Steps
+
 Proceed to `lindy-security-basics` for API key and agent security.

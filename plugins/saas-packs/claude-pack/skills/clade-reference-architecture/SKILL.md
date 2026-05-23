@@ -21,9 +21,11 @@ compatibility: Designed for Claude Code
 # Claude Code Plugin Architecture
 
 ## Overview
+
 Claude Code has a plugin system with 4 extension points: **skills** (auto-activating knowledge), **commands** (slash commands), **agents** (specialized sub-agents), and **MCP servers** (tool providers). This skill covers building all four.
 
 ## Plugin Structure
+
 ```
 my-plugin/
 ├── .claude-plugin/
@@ -39,6 +41,7 @@ my-plugin/
 ```
 
 ## Building a Skill (SKILL.md)
+
 ```yaml
 ---
 name: my-skill
@@ -79,6 +82,7 @@ What the user should expect when this skill runs.
 ```
 
 ## Building a Slash Command
+
 ```yaml
 ---
 name: my-command
@@ -99,6 +103,7 @@ When the user runs `/my-command <file-path>`, do the following:
 ```
 
 ## Building an Agent
+
 ```yaml
 ---
 name: my-agent
@@ -117,6 +122,7 @@ You are a code review specialist. When invoked:
 ```
 
 ## Building an MCP Server
+
 ```typescript
 // src/index.ts
 #!/usr/bin/env node
@@ -151,6 +157,7 @@ await server.connect(transport);
 ```
 
 ## Hooks
+
 ```json
 // .claude/settings.json
 {
@@ -168,6 +175,7 @@ await server.connect(transport);
 ```
 
 ## Path Variables
+
 | Variable | Context | Resolves To |
 |----------|---------|-------------|
 | `${CLAUDE_SKILL_DIR}` | Skills (bash/DCI) | Skill's directory |
@@ -176,12 +184,15 @@ await server.connect(transport);
 | `$ARGUMENTS` | Commands | User-provided args |
 
 ## Examples
+
 See Building a Skill (SKILL.md), Building a Slash Command, Building an Agent, Building an MCP Server, and Hooks configuration examples above.
 
 ## Resources
+
 - [Plugin Docs](https://docs.anthropic.com/en/docs/claude-code/plugins)
 - [SKILL.md Spec](https://docs.anthropic.com/en/docs/claude-code/skills)
 - [MCP Protocol](https://modelcontextprotocol.io)
 
 ## Next Steps
+
 See `clade-multi-env-setup` for managing plugins across environments.

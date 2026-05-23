@@ -1,6 +1,7 @@
-# Implementation Guide
+## Implementation Guide
 
 ### Step 1: Environment-Based Configuration
+
 ```typescript
 import * as Sentry from '@sentry/node';
 
@@ -22,6 +23,7 @@ Sentry.init({
 ```
 
 ### Step 2: Development-Only DSN
+
 ```bash
 # .env.development
 SENTRY_DSN=https://dev-key@org.ingest.sentry.io/dev-project
@@ -31,6 +33,7 @@ SENTRY_DSN=https://prod-key@org.ingest.sentry.io/prod-project
 ```
 
 ### Step 3: Debug Output
+
 ```typescript
 // Enable verbose logging in development
 if (isDev) {
@@ -41,6 +44,7 @@ if (isDev) {
 ```
 
 ### Step 4: Local Testing Script
+
 ```bash
 # test-sentry.sh
 #!/bin/bash

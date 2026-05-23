@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Core Workflow A: Campaign Launch Pipeline
 
 ## Overview
+
 Build the core Instantly outreach pipeline: create a campaign with email sequences, add leads with personalization, assign sending accounts, and launch. This is the primary money-path workflow for cold email outreach via Instantly API v2.
 
 ## Prerequisites
+
 - Completed `instantly-install-auth` setup
 - At least one warmed-up email account in Instantly
 - Lead data (CSV or programmatic) with email + first name at minimum
@@ -37,6 +39,7 @@ Build the core Instantly outreach pipeline: create a campaign with email sequenc
 ## Instructions
 
 ### Step 1: Create a Campaign with Sequences
+
 ```typescript
 import { instantly } from "./src/instantly";
 
@@ -144,6 +147,7 @@ async function createCampaign() {
 ```
 
 ### Step 2: Add Leads to the Campaign
+
 ```typescript
 interface Lead {
   email: string;
@@ -204,6 +208,7 @@ const sampleLeads: Lead[] = [
 ```
 
 ### Step 3: Map Sending Accounts to Campaign
+
 ```typescript
 async function assignAccounts(campaignId: string) {
   // Get available warmed-up accounts
@@ -236,6 +241,7 @@ async function assignAccounts(campaignId: string) {
 ```
 
 ### Step 4: Launch the Campaign
+
 ```typescript
 async function launchCampaign(campaignId: string) {
   // Activate (start) the campaign
@@ -262,6 +268,7 @@ main().catch(console.error);
 ```
 
 ## Key API Endpoints Used
+
 | Method | Path | Purpose |
 |--------|------|---------|
 | `POST` | `/campaigns` | Create campaign with sequences |
@@ -274,6 +281,7 @@ main().catch(console.error);
 | `GET` | `/account-campaign-mappings/{email}` | Check account assignments |
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `400 Bad Request` on create | Invalid schedule or sequence format | Ensure `days` keys are strings `"0"`-`"6"`, timing is `HH:MM` |
@@ -283,9 +291,11 @@ main().catch(console.error);
 | Low open rates | Poor subject lines or spam folder | Disable link tracking, test with inbox placement |
 
 ## Resources
+
 - [Create Campaign API](https://developer.instantly.ai/api/v2/campaign/createcampaign)
 - [Campaign Schemas](https://developer.instantly.ai/api/v2/schemas)
 - [Instantly Deliverability Guide](https://help.instantly.ai/en/articles/6222396-campaign-options)
 
 ## Next Steps
+
 For account warmup and analytics, see `instantly-core-workflow-b`.

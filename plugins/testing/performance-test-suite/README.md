@@ -64,6 +64,7 @@ export let options = {
 ```
 
 **Validates:**
+
 - Normal performance under expected load
 - Response times remain acceptable
 - Error rates stay low
@@ -87,6 +88,7 @@ export let options = {
 ```
 
 **Validates:**
+
 - Maximum capacity before failure
 - Graceful degradation under stress
 - Recovery after overload
@@ -109,6 +111,7 @@ export let options = {
 ```
 
 **Validates:**
+
 - Auto-scaling response
 - Rate limiting effectiveness
 - System stability during surge
@@ -130,6 +133,7 @@ export let options = {
 ```
 
 **Validates:**
+
 - Memory leaks over time
 - Resource exhaustion
 - Connection pool issues
@@ -165,24 +169,28 @@ export let options = {
 The agent identifies common performance issues:
 
 ### High CPU Usage
+
 - Inefficient algorithms
 - Missing caching
 - Excessive computations
 - Unoptimized loops
 
 ### High Memory Usage
+
 - Memory leaks
 - Large object retention
 - Inefficient data structures
 - Missing garbage collection
 
 ### Slow Database
+
 - N+1 query problems
 - Missing indexes
 - Inefficient queries
 - Connection pool exhaustion
 
 ### Network Saturation
+
 - Large response payloads
 - Missing compression
 - Too many requests

@@ -10,6 +10,7 @@ exa-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement load testing, auto-scaling strategies, and capacity planning for Exa search workloads.
 **Workflow:** Capacity planning skill - ensures Exa integration handles production traffic.
 **Relates to:** Follows exa-performance-tuning; informs exa-cost-tuning

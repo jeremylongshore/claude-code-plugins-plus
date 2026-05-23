@@ -19,14 +19,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Retell AI Core Workflow B
 
 ## Overview
+
 Manage phone calls: outbound campaigns, call transfers, recordings, and concurrent call handling.
 
 ## Prerequisites
+
 - Completed `retellai-core-workflow-a`
 
 ## Instructions
 
 ### Step 1: Outbound Call Campaign
+
 ```typescript
 const phoneNumbers = ['+14155551001', '+14155551002', '+14155551003'];
 
@@ -48,6 +51,7 @@ for (const number of phoneNumbers) {
 ```
 
 ### Step 2: List and Filter Calls
+
 ```typescript
 const calls = await retell.call.list({
   sort_order: 'descending',
@@ -59,6 +63,7 @@ for (const call of calls) {
 ```
 
 ### Step 3: Get Call Recording and Transcript
+
 ```typescript
 const callDetail = await retell.call.retrieve(callId);
 if (callDetail.recording_url) {
@@ -70,11 +75,13 @@ if (callDetail.transcript) {
 ```
 
 ## Output
+
 - Outbound call campaign with rate limiting
 - Call listing with status and duration
 - Recordings and transcripts retrieved
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Call fails immediately | Bad phone number format | Use E.164 format |
@@ -82,8 +89,10 @@ if (callDetail.transcript) {
 | Concurrent limit | Too many active calls | Upgrade plan or queue calls |
 
 ## Resources
+
 - [Create Phone Call](https://docs.retellai.com/api-references/create-phone-call)
 - [Retell AI Documentation](https://docs.retellai.com)
 
 ## Next Steps
+
 Handle call events: `retellai-webhooks-events`

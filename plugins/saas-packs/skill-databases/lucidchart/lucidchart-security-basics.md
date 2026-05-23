@@ -10,6 +10,7 @@ lucidchart-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Lucidchart security best practices
 **Workflow:** Part of the operations skill category for Lucidchart integration.
 **Relates to:** Other lucidchart skills in this pack.

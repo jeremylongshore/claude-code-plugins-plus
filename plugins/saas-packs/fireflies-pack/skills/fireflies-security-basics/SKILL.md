@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Security Basics
 
 ## Overview
+
 Security essentials for Fireflies.ai: API key management, webhook HMAC-SHA256 signature verification, transcript access controls, and audit practices.
 
 ## Prerequisites
+
 - Fireflies.ai API key
 - Understanding of environment variables
 - HTTPS endpoint for webhooks (required by Fireflies)
@@ -36,6 +38,7 @@ Security essentials for Fireflies.ai: API key management, webhook HMAC-SHA256 si
 ## Instructions
 
 ### Step 1: Secure API Key Storage
+
 ```bash
 # .env (NEVER commit)
 FIREFLIES_API_KEY=your-api-key
@@ -48,6 +51,7 @@ FIREFLIES_WEBHOOK_SECRET=your-16-to-32-char-secret
 ```
 
 **Pre-commit hook to catch leaked keys:**
+
 ```bash
 #!/bin/bash
 # .git/hooks/pre-commit
@@ -58,6 +62,7 @@ fi
 ```
 
 ### Step 2: Webhook Signature Verification (HMAC-SHA256)
+
 Fireflies signs webhook payloads with HMAC-SHA256. The signature arrives in the `x-hub-signature` header.
 
 ```typescript
@@ -103,12 +108,14 @@ app.post("/webhooks/fireflies",
 ```
 
 ### Step 3: Configure Webhook Secret
+
 1. Go to [app.fireflies.ai/settings](https://app.fireflies.ai/settings)
 2. Select **Developer settings** tab
 3. Enter a 16-32 character secret or click **Generate**
 4. Store the secret in your environment as `FIREFLIES_WEBHOOK_SECRET`
 
 ### Step 4: Python Webhook Verification
+
 ```python
 import hmac, hashlib, json
 from flask import Flask, request, jsonify
@@ -133,6 +140,7 @@ def handle_webhook():
 ```
 
 ### Step 5: Transcript Privacy Levels
+
 Fireflies supports these privacy levels via `updateMeetingPrivacy`:
 
 | Level | Access |
@@ -153,6 +161,7 @@ await firefliesQuery(`
 ```
 
 ### Step 6: API Key Rotation
+
 ```bash
 set -euo pipefail
 # 1. Generate new key in Fireflies dashboard (Integrations > Fireflies API)
@@ -168,6 +177,7 @@ curl -s -X POST https://api.fireflies.ai/graphql \
 ```
 
 ## Security Checklist
+
 - [ ] API key in environment variables, not code
 - [ ] `.env` files in `.gitignore`
 - [ ] Webhook signatures verified with HMAC-SHA256
@@ -178,6 +188,7 @@ curl -s -X POST https://api.fireflies.ai/graphql \
 - [ ] HTTPS required for all webhook endpoints
 
 ## Error Handling
+
 | Issue | Detection | Fix |
 |-------|-----------|-----|
 | Leaked API key | Git scanning, CI alerts | Regenerate immediately in dashboard |
@@ -186,14 +197,17 @@ curl -s -X POST https://api.fireflies.ai/graphql \
 | Key rotation gap | Auth failures after rotation | Deploy new key before revoking old |
 
 ## Output
+
 - Secure API key storage with leak prevention
 - HMAC-SHA256 webhook signature verification
 - Privacy-controlled transcript access
 - Key rotation procedure
 
 ## Resources
+
 - [Fireflies Webhooks](https://docs.fireflies.ai/graphql-api/webhooks)
 - [Fireflies Privacy Settings](https://fireflies.ai/privacy)
 
 ## Next Steps
+
 For production deployment, see `fireflies-prod-checklist`.

@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Cohere Multi-Environment Setup
 
 ## Overview
+
 Configure Cohere API v2 across dev/staging/prod with environment-specific API keys, model selection, and budget controls.
 
 ## Prerequisites
+
 - Separate Cohere API keys per environment (trial for dev, production for staging/prod)
 - Secret management solution (Vault, AWS Secrets Manager, GCP Secret Manager)
 - Environment detection in application
@@ -242,12 +244,14 @@ services:
 ```
 
 ## Output
+
 - Per-environment Cohere configuration (model, tokens, timeout)
 - Secret management across dev/staging/prod
 - Environment guards preventing misuse
 - Docker compose for local multi-env testing
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Trial key in production | Wrong secret | Validate key length at startup |
@@ -256,9 +260,11 @@ services:
 | Config merge fails | Missing environment | Default to development |
 
 ## Resources
+
 - [Cohere API Keys](https://dashboard.cohere.com/api-keys)
 - [Cohere Rate Limits](https://docs.cohere.com/docs/rate-limits)
 - [12-Factor App Config](https://12factor.net/config)
 
 ## Next Steps
+
 For observability setup, see `cohere-observability`.

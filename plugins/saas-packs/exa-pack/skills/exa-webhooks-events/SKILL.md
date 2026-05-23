@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Webhooks & Events
 
 ## Overview
+
 Build event-driven integrations around Exa neural search. Exa is a synchronous search API (no native webhooks), so this skill covers building async patterns: scheduled content monitoring with `searchAndContents`, similarity alerts with `findSimilarAndContents`, new content detection using date filters, and webhook-style notification delivery.
 
 ## Prerequisites
+
 - `exa-js` installed and `EXA_API_KEY` configured
 - Queue system (BullMQ/Redis) or cron scheduler
 - Webhook endpoint for notifications
@@ -46,6 +48,7 @@ Build event-driven integrations around Exa neural search. Exa is a synchronous s
 ## Instructions
 
 ### Step 1: Content Monitor Service
+
 ```typescript
 import Exa from "exa-js";
 import { Queue, Worker } from "bullmq";
@@ -75,6 +78,7 @@ async function createMonitor(config: Omit<SearchMonitor, "lastResultUrls">) {
 ```
 
 ### Step 2: Execute Monitored Searches
+
 ```typescript
 const worker = new Worker("exa-monitors", async (job) => {
   const monitor = job.data;
@@ -117,6 +121,7 @@ const worker = new Worker("exa-monitors", async (job) => {
 ```
 
 ### Step 3: Similarity Alert System
+
 ```typescript
 async function monitorSimilarContent(
   seedUrl: string,
@@ -152,6 +157,7 @@ async function monitorSimilarContent(
 ```
 
 ### Step 4: Webhook Delivery with Retry
+
 ```typescript
 async function sendWebhook(url: string, payload: any, maxRetries = 3) {
   for (let attempt = 0; attempt < maxRetries; attempt++) {
@@ -175,6 +181,7 @@ async function sendWebhook(url: string, payload: any, maxRetries = 3) {
 ```
 
 ### Step 5: Daily Research Digest
+
 ```typescript
 async function generateDailyDigest(
   topics: string[],
@@ -211,6 +218,7 @@ async function generateDailyDigest(
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Rate limited monitors | Too many concurrent checks | Stagger monitor intervals |
@@ -221,6 +229,7 @@ async function generateDailyDigest(
 ## Examples
 
 ### Create a Competitive Intelligence Monitor
+
 ```typescript
 await createMonitor({
   id: "competitor-watch",
@@ -232,9 +241,11 @@ await createMonitor({
 ```
 
 ## Resources
+
 - [Exa Search Reference](https://docs.exa.ai/reference/search)
 - [Exa Find Similar](https://docs.exa.ai/reference/find-similar-links)
 - [BullMQ Documentation](https://docs.bullmq.io/)
 
 ## Next Steps
+
 For deployment setup, see `exa-deploy-integration`.

@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Multi-Environment Setup
 
 ## Overview
+
 Configure Foundry integrations across dev/staging/prod environments with separate credentials, enrollment hostnames, and scope policies per environment.
 
 ## Prerequisites
+
 - Foundry enrollments for each environment (or separate projects within one enrollment)
 - Secrets manager (AWS SM, GCP SM, or Vault)
 - Familiarity with `palantir-security-basics`
@@ -37,6 +39,7 @@ Configure Foundry integrations across dev/staging/prod environments with separat
 ## Instructions
 
 ### Step 1: Environment Configuration
+
 ```python
 # src/config.py
 import os
@@ -80,6 +83,7 @@ def get_config() -> FoundryEnvConfig:
 ```
 
 ### Step 2: Environment-Aware Client Factory
+
 ```python
 import foundry
 
@@ -99,6 +103,7 @@ client = create_client(config)
 ```
 
 ### Step 3: Environment Variables per Platform
+
 ```bash
 # Docker Compose
 # docker-compose.yml
@@ -123,6 +128,7 @@ gcloud run deploy my-app \
 ```
 
 ### Step 4: Environment Validation
+
 ```python
 def validate_environment():
     """Verify current environment configuration is valid."""
@@ -142,12 +148,14 @@ def validate_environment():
 ```
 
 ## Output
+
 - Per-environment configuration with separate hostnames and credentials
 - Environment-aware client factory
 - Platform-specific deployment configuration
 - Validation script for environment verification
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | Wrong environment data | Misconfigured `ENVIRONMENT` var | Verify env var matches expected |
@@ -156,8 +164,10 @@ def validate_environment():
 | Missing secrets | Not deployed | Run validation script before deploying |
 
 ## Resources
+
 - [Foundry Authentication](https://www.palantir.com/docs/foundry/api/general/overview/authentication)
 - [Developer Console](https://www.palantir.com/docs/foundry/ontology-sdk/create-a-new-osdk)
 
 ## Next Steps
+
 For deep migration strategies, see `palantir-migration-deep-dive`.

@@ -9,6 +9,7 @@ Calculate and present compelling ROI for AI automation projects.
 ## ROI Calculation Framework
 
 ### Current State Costs (Annual)
+
 ```
 Labor Costs:
 - Hours per week: [X]
@@ -28,6 +29,7 @@ Total Annual Cost: $[X]
 ```
 
 ### Automation Solution
+
 ```
 Implementation Costs:
 - Agency fees: $[X]
@@ -43,6 +45,7 @@ Annual Operating Costs:
 ```
 
 ### ROI Calculation
+
 ```
 Time Savings:
 - Current time: [X] hours/week
@@ -167,6 +170,7 @@ Currently, your team spends:
 ## Industry-Specific ROI Examples
 
 ### Customer Support Automation
+
 ```
 Before: 1000 tickets/month, 15 min average = 250 hours
 After: 60% automated, 100 hours saved
@@ -177,6 +181,7 @@ ROI: 252% (4-month payback)
 ```
 
 ### Content Generation
+
 ```
 Before: 10 posts/week, 2 hours each = 20 hours/week
 After: AI generates drafts, 30 min review = 5 hours/week
@@ -187,6 +192,7 @@ ROI: 390% (3-month payback)
 ```
 
 ### Lead Qualification
+
 ```
 Before: 500 leads/month, 10 min each = 83 hours
 After: AI scores leads, review top 20% = 17 hours

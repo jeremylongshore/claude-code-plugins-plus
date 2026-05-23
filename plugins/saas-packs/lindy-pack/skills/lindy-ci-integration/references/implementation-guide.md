@@ -3,9 +3,11 @@
 # Lindy CI Integration
 
 ## Overview
+
 Configure CI/CD pipelines for Lindy AI agent testing and deployment.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - Lindy test API key
 - npm/pnpm project configured
@@ -13,6 +15,7 @@ Configure CI/CD pipelines for Lindy AI agent testing and deployment.
 ## Instructions
 
 ### Step 1: Create GitHub Actions Workflow
+
 ```yaml
 # .github/workflows/lindy-ci.yml
 name: Lindy CI
@@ -64,6 +67,7 @@ jobs:
 ```
 
 ### Step 2: Configure Test API Key
+
 ```bash
 # Add secret to GitHub repository
 gh secret set LINDY_TEST_API_KEY --body "lnd_test_xxx"
@@ -73,6 +77,7 @@ gh secret list
 ```
 
 ### Step 3: Create Integration Tests
+
 ```typescript
 // tests/integration/lindy.test.ts
 import { Lindy } from '@lindy-ai/sdk';
@@ -116,6 +121,7 @@ describe('Lindy Integration', () => {
 ```
 
 ### Step 4: Add PR Checks
+
 ```yaml
 # .github/workflows/lindy-pr-check.yml
 name: Lindy PR Check
@@ -151,12 +157,14 @@ jobs:
 ```
 
 ## Output
+
 - Automated test pipeline
 - PR checks configured
 - Coverage reports uploaded
 - Integration test suite
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Secret not found | Not configured | Add via `gh secret set` |
@@ -166,6 +174,7 @@ jobs:
 ## Examples
 
 ### Matrix Testing
+
 ```yaml
 jobs:
   test:
@@ -181,9 +190,11 @@ jobs:
 ```
 
 ## Resources
+
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Lindy CI Guide](https://docs.lindy.ai/ci)
 - [Jest Configuration](https://jestjs.io/docs/configuration)
 
 ## Next Steps
+
 Proceed to `lindy-deploy-integration` for deployment automation.

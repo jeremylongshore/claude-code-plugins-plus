@@ -3,6 +3,7 @@
 ## Alert Policies
 
 ### Standard Alert Template
+
 ```yaml
 # Organization-wide alert standards
 alert_policies:
@@ -33,6 +34,7 @@ alert_policies:
 ```
 
 ### Alert Configuration Validation
+
 ```typescript
 // Validate team alert configurations
 interface AlertConfig {

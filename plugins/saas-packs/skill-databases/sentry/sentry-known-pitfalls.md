@@ -10,6 +10,7 @@ sentry-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Common Sentry pitfalls and how to avoid them covering SDK initialization, error capture, configuration, performance, source maps, and monitoring anti-patterns.
 **Workflow:** Reference during code review or when troubleshooting. Provides quick identification and resolution of common mistakes.
 **Relates to:** Works with `sentry-common-errors` for troubleshooting. Complements all other skills by highlighting what not to do.

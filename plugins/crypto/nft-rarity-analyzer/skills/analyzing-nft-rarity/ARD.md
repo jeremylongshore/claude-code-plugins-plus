@@ -56,6 +56,7 @@ skills/analyzing-nft-rarity/
 ## API Integration
 
 ### OpenSea API v2
+
 - **Endpoint**: `https://api.opensea.io/api/v2/`
 - **Auth**: API key via `X-API-KEY` header
 - **Endpoints**:
@@ -63,12 +64,14 @@ skills/analyzing-nft-rarity/
   - `GET /collection/{slug}/nfts` - NFT list with traits
 
 ### Alchemy NFT API
+
 - **Endpoint**: `https://{network}.g.alchemy.com/nft/v2/{apiKey}/`
 - **Endpoints**:
   - `getNFTsForCollection` - Batch fetch metadata
   - `getNFTMetadata` - Single token metadata
 
 ### IPFS Gateways
+
 - `https://ipfs.io/ipfs/`
 - `https://gateway.pinata.cloud/ipfs/`
 - `https://cloudflare-ipfs.com/ipfs/`
@@ -76,6 +79,7 @@ skills/analyzing-nft-rarity/
 ## Component Design
 
 ### metadata_fetcher.py
+
 ```python
 class MetadataFetcher:
     def fetch_collection(slug_or_address) -> CollectionData
@@ -84,6 +88,7 @@ class MetadataFetcher:
 ```
 
 ### trait_parser.py
+
 ```python
 class TraitParser:
     def parse_attributes(metadata) -> List[Trait]
@@ -92,6 +97,7 @@ class TraitParser:
 ```
 
 ### rarity_calculator.py
+
 ```python
 class RarityCalculator:
     def calculate_statistical_rarity(trait, total) -> float
@@ -103,6 +109,7 @@ class RarityCalculator:
 ## Data Structures
 
 ### Token Metadata
+
 ```python
 @dataclass
 class TokenData:
@@ -115,6 +122,7 @@ class TokenData:
 ```
 
 ### Trait
+
 ```python
 @dataclass
 class Trait:
@@ -127,18 +135,22 @@ class Trait:
 ## Rarity Scoring Formulas
 
 ### Rarity Score / Statistical Rarity
+
 ```
 score = Σ (1 / trait_frequency) for all traits
 ```
+
 Note: Both `statistical` and `rarity_score` algorithms use this same formula.
 They are kept as separate enum values for backward compatibility.
 
 ### Average Rarity
+
 ```
 score = Σ (trait_rarity) / trait_count
 ```
 
 ### Information Content (Entropy-based)
+
 ```
 score = Σ (-log2(trait_frequency)) for all traits
 ```
@@ -147,6 +159,7 @@ score = Σ (-log2(trait_frequency)) for all traits
 
 Normalization is a post-processing step applied after calculating scores
 using any primary algorithm. It scales scores to a 0-100 range:
+
 ```
 normalized = (score - min_score) / (max_score - min_score) * 100
 ```
@@ -185,6 +198,7 @@ normalized = (score - min_score) / (max_score - min_score) * 100
 ## Supported Collections
 
 Works with any ERC-721 or ERC-1155 collection that:
+
 - Has metadata on OpenSea
 - Has tokenURI pointing to valid JSON
 - Uses standard attributes array format

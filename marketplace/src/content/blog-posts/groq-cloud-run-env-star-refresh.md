@@ -48,7 +48,7 @@ Three repos. Three commits. No drama. Days like this aren't interesting to read 
 ---
 
 **Related Posts:**
+
 - [Building CAD DXF Agent From Zero to v0.1.0](/posts/building-cad-dxf-agent-from-zero-to-v010/)
 - [SSE on Cloud Run: Every Platform Lie](/posts/sse-cloud-run-every-platform-lie/)
 - [Three Projects, Two Reverts, One Day](/posts/three-projects-two-reverts-one-day/)
-

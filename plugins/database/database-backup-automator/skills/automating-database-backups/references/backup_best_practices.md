@@ -67,6 +67,7 @@ Yearly:
 ### Encryption
 
 **At Rest:**
+
 ```bash
 # GPG encryption
 pg_dump mydb | gzip | gpg --symmetric --cipher-algo AES256 -o backup.sql.gz.gpg
@@ -76,6 +77,7 @@ pg_dump mydb | gzip | openssl enc -aes-256-cbc -salt -pbkdf2 -out backup.sql.gz.
 ```
 
 **In Transit:**
+
 ```bash
 # Use SSL/TLS for remote connections
 pg_dump "host=remote.server.com sslmode=require" ...

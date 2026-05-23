@@ -10,6 +10,7 @@ lindy-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Lindy security best practices
 **Workflow:** Part of the operations skill category for Lindy integration.
 **Relates to:** Other lindy skills in this pack.

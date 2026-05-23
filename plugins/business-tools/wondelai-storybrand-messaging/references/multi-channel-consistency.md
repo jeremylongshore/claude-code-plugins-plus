@@ -2,8 +2,8 @@
 
 Adapting the SB7 framework across social media, video, podcasts, PR, and other channels.
 
-
 ## Table of Contents
+
 1. [The Consistency Principle](#the-consistency-principle)
 2. [Social Media Adaptation](#social-media-adaptation)
 3. [Video Scripts](#video-scripts)
@@ -21,6 +21,7 @@ Your brand message must be recognizable across every channel, but adapted to eac
 **Same story, different telling.**
 
 The core elements stay constant:
+
 - Customer as hero
 - Your brand as guide
 - The problem (external, internal, philosophical)
@@ -28,6 +29,7 @@ The core elements stay constant:
 - Stakes (success and failure)
 
 What changes:
+
 - Length and format
 - Tone and style
 - Platform-specific conventions
@@ -44,6 +46,7 @@ What changes:
 **Format adaptations:**
 
 **One-liner posts:**
+
 ```
 Most [target customers] struggle with [problem].
 
@@ -56,6 +59,7 @@ The result? [Success outcome].
 ```
 
 **Story posts:**
+
 ```
 Last week, a client told me they were about to [failure scenario].
 
@@ -72,6 +76,7 @@ If you're dealing with [problem], [transitional CTA].
 ```
 
 **Best practices:**
+
 - Lead with the problem or outcome
 - Use short paragraphs (mobile reading)
 - Professional tone, but human
@@ -84,6 +89,7 @@ If you're dealing with [problem], [transitional CTA].
 **Format adaptations:**
 
 **Single tweet:**
+
 ```
 [Problem] → [Solution] → [Result]
 
@@ -91,6 +97,7 @@ If you're dealing with [problem], [transitional CTA].
 ```
 
 **Thread structure:**
+
 ```
 Tweet 1: Hook (problem or bold claim)
 Tweet 2-4: Story/explanation
@@ -100,6 +107,7 @@ Tweet 7: CTA
 ```
 
 **Best practices:**
+
 - Hook in first tweet is everything
 - One idea per tweet
 - Use line breaks for readability
@@ -112,6 +120,7 @@ Tweet 7: CTA
 **Format adaptations:**
 
 **Caption structure:**
+
 ```
 [Hook - first line visible]
 
@@ -127,11 +136,13 @@ Tweet 7: CTA
 ```
 
 **Story/Reel hooks:**
+
 - "POV: You're struggling with [problem]"
 - "3 things I wish I knew about [topic]"
 - "This is what happens when [solution]"
 
 **Best practices:**
+
 - Visual must stop the scroll
 - First line is your headline
 - Carousel for educational content
@@ -142,12 +153,14 @@ Tweet 7: CTA
 **Audience:** Broader demographic, community-oriented, longer attention
 
 **Format adaptations:**
+
 - Longer posts acceptable
 - Groups for community building
 - Events for launches/webinars
 - Lives for Q&A and authority building
 
 **Best practices:**
+
 - Conversational tone
 - Ask questions to drive comments
 - Use native video (higher reach)
@@ -160,11 +173,13 @@ Tweet 7: CTA
 **Format adaptations:**
 
 **Hook patterns:**
+
 - "Nobody tells you this about [topic]"
 - "The [problem] they don't want you to know about"
 - "Here's why [common approach] doesn't work"
 
 **Structure:**
+
 ```
 0-3 sec: Hook (stop scrolling)
 3-15 sec: Problem/tension
@@ -173,6 +188,7 @@ Tweet 7: CTA
 ```
 
 **Best practices:**
+
 - Entertainment > education
 - Raw/authentic > polished
 - Trend participation with brand twist
@@ -185,6 +201,7 @@ Tweet 7: CTA
 ### YouTube Video Structure
 
 **Intro (30-60 sec):**
+
 ```
 Are you struggling with [problem]?
 In this video, I'll show you [solution] so you can [outcome].
@@ -192,20 +209,24 @@ Stay to the end because I'll share [specific tip/bonus].
 ```
 
 **Problem section (2-3 min):**
+
 - External problem (what's happening)
 - Internal problem (how it feels)
 - Why common solutions don't work
 
 **Solution section (5-10 min):**
+
 - Your plan (step by step)
 - Examples and demonstrations
 - Authority proof (results, credentials)
 
 **Stakes section (1-2 min):**
+
 - Success: What's possible
 - Failure: What happens if nothing changes
 
 **CTA (30-60 sec):**
+
 ```
 If you want help with [solution], [direct CTA].
 Found this valuable? Like and subscribe.
@@ -215,21 +236,25 @@ Drop a comment: What's your biggest challenge with [topic]?
 ### Webinar Structure
 
 **Opening (5 min):**
+
 - Promise: What they'll learn
 - Credibility: Why listen to you
 - Rules: How long, when to ask questions
 
 **Content (30-40 min):**
+
 - Problem deep-dive
 - Solution framework
 - Case studies/proof
 - Implementation steps
 
 **Transition (5 min):**
+
 - Recap value delivered
 - "Want help implementing this?"
 
 **Offer (10-15 min):**
+
 - What you're offering
 - What's included
 - Who it's for
@@ -238,6 +263,7 @@ Drop a comment: What's your biggest challenge with [topic]?
 - Guarantee
 
 **Close (5-10 min):**
+
 - FAQ
 - Final CTA
 - Scarcity (if genuine)
@@ -245,6 +271,7 @@ Drop a comment: What's your biggest challenge with [topic]?
 ### Testimonial Video Guide
 
 **Questions to ask customers:**
+
 1. "What was your situation before working with us?"
 2. "What was the hardest part about that?" (Internal problem)
 3. "Why did you choose us over other options?"
@@ -253,6 +280,7 @@ Drop a comment: What's your biggest challenge with [topic]?
 6. "What would you tell someone considering working with us?"
 
 **Edit structure:**
+
 ```
 [Problem before] → [Why they chose you] → [Experience] → [Results] → [Recommendation]
 ```
@@ -264,17 +292,20 @@ Drop a comment: What's your biggest challenge with [topic]?
 ### As Guest
 
 **Your introduction pitch:**
+
 ```
 "I help [target customers] solve [problem] so they can [outcome].
 Most people approach this by [common mistake], but what actually works is [your unique approach]."
 ```
 
 **Story to have ready:**
+
 - Your origin story (briefly - stay guide, not hero)
 - A client transformation story
 - A contrarian take on your industry
 
 **CTA to negotiate:**
+
 ```
 "If you want [resource], go to [URL]"
 ```
@@ -282,6 +313,7 @@ Most people approach this by [common mistake], but what actually works is [your 
 ### Your Own Podcast
 
 **Episode structure:**
+
 ```
 1. Hook: "Today I'm tackling [problem] because..."
 2. Problem: What's wrong with current thinking
@@ -292,6 +324,7 @@ Most people approach this by [common mistake], but what actually works is [your 
 ```
 
 **Guest interview format:**
+
 1. Context: Why is this guest relevant to our audience's problem?
 2. Journey: What did they struggle with?
 3. Solution: What did they figure out?
@@ -310,11 +343,13 @@ Most people approach this by [common mistake], but what actually works is [your 
 **Good:** "[Target Customers] Can Now [Achieve Outcome] with [Product]"
 
 **First paragraph:**
+
 - Who is helped (the hero)
 - What problem is solved
 - Key outcome/benefit
 
 **Body:**
+
 - Guide credentials (why you/your company)
 - The plan (how it works)
 - Social proof (early results, testimonials)
@@ -329,17 +364,20 @@ One-liner positioning, not feature list.
 ### Interview Preparation
 
 **Key messages to prepare:**
+
 1. Problem framing (external + internal)
 2. Solution summary (your plan)
 3. Proof points (authority)
 4. Memorable phrase or statistic
 
 **Bridging techniques:**
+
 - "The real issue is..."
 - "What matters most to [customers] is..."
 - "Let me put this in context..."
 
 **Sound bites to prepare:**
+
 - One sentence on the problem
 - One sentence on your solution
 - One surprising statistic
@@ -352,6 +390,7 @@ One-liner positioning, not feature list.
 ### Newsletter Format
 
 **Weekly format:**
+
 ```
 Subject: [Benefit] + [Curiosity]
 
@@ -388,11 +427,13 @@ PS: [Secondary CTA or teaser]
 Document these for all content creators:
 
 **Tone:**
+
 - Professional but approachable
 - Confident but not arrogant
 - Empathetic but not condescending
 
 **Language:**
+
 - Words we use: [list]
 - Words we avoid: [list]
 - Customer as hero phrases: [templates]

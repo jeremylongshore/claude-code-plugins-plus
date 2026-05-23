@@ -3,6 +3,7 @@
 ## Indexing Strategy
 
 ### Selective Indexing
+
 ```gitignore
 # .cursorignore for multi-repo
 
@@ -20,6 +21,7 @@ apps/web/.next/
 ```
 
 ### Per-Project Indexing
+
 ```json
 // workspace settings
 {

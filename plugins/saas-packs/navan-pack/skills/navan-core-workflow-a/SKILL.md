@@ -129,6 +129,7 @@ console.log('Token refreshed successfully');
 ## Output
 
 Successful execution returns:
+
 - Booking objects in `.data` array with UUID primary keys, origin/destination, dates, and status
 - Paginated results using `page` + `size` query params
 - Incremental filtering via `createdFrom` / `createdTo` params

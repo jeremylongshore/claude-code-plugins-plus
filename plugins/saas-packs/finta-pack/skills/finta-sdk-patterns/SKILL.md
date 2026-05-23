@@ -76,6 +76,7 @@ def get_investor_emails(service, investor_email: str, after_date: str):
 ## Zapier/Make Webhook Pattern
 
 Finta supports Zapier triggers for pipeline stage changes:
+
 1. Create a Zap with "Finta - Pipeline Stage Changed" trigger
 2. Connect to your destination (Slack, Sheets, CRM)
 3. Map fields: investor name, new stage, deal amount

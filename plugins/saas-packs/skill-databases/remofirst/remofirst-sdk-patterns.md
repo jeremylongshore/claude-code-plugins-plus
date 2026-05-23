@@ -10,6 +10,7 @@ remofirst-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready RemoFirst SDK patterns
 **Workflow:** Part of the onboarding skill category for RemoFirst integration.
 **Relates to:** Other remofirst skills in this pack.

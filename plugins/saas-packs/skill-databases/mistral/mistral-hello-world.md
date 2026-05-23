@@ -10,6 +10,7 @@ mistral-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Mistral AI example
 **Workflow:** Part of the onboarding skill category for Mistral AI integration.
 **Relates to:** Other mistral skills in this pack.

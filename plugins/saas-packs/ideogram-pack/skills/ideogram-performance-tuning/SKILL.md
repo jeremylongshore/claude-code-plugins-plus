@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Performance Tuning
 
 ## Overview
+
 Optimize Ideogram image generation for speed, cost, and throughput. Key levers: model and rendering speed selection, prompt-based caching, parallel generation with concurrency limits, and CDN delivery of generated assets.
 
 ## Performance Baselines
@@ -42,6 +43,7 @@ Optimize Ideogram image generation for speed, cost, and throughput. Key levers: 
 ## Instructions
 
 ### Step 1: Speed Tiers by Use Case
+
 ```typescript
 const SPEED_CONFIGS = {
   // Preview / draft mode -- fastest, cheapest
@@ -75,6 +77,7 @@ function getConfig(tier: keyof typeof SPEED_CONFIGS) {
 ```
 
 ### Step 2: Prompt-Based Cache Layer
+
 ```typescript
 import { createHash } from "crypto";
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "fs";
@@ -144,6 +147,7 @@ async function cachedGenerate(
 ```
 
 ### Step 3: Parallel Generation with Concurrency Control
+
 ```typescript
 import PQueue from "p-queue";
 
@@ -175,6 +179,7 @@ await parallelGenerate(prompts, { style_type: "DESIGN", model: "V_2_TURBO" });
 ```
 
 ### Step 4: CDN Upload for Fast Delivery
+
 ```typescript
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
@@ -204,6 +209,7 @@ async function generateWithCDN(prompt: string, options: any = {}) {
 ```
 
 ## Performance Tips
+
 1. **Use TURBO for drafts** -- V_2_TURBO is 2-3x faster than V_2 at lower cost
 2. **Cache by prompt hash** -- identical prompts produce cacheable results
 3. **Batch with num_images** -- 4 images in 1 call is faster than 4 separate calls
@@ -212,6 +218,7 @@ async function generateWithCDN(prompt: string, options: any = {}) {
 6. **Use V3 FLASH for previews** -- fastest option for UI thumbnails
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Rate limit 429 | Concurrency too high | Reduce queue concurrency to 5-8 |
@@ -220,14 +227,17 @@ async function generateWithCDN(prompt: string, options: any = {}) {
 | Cache stale | Prompt changed slightly | Normalize prompts before hashing |
 
 ## Output
+
 - Speed-tiered configuration for different use cases
 - Prompt-based cache layer preventing duplicate generations
 - Parallel generation with concurrency control
 - CDN integration for fast image delivery
 
 ## Resources
+
 - [Ideogram API Reference](https://developer.ideogram.ai/api-reference)
 - [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For cost optimization, see `ideogram-cost-tuning`.

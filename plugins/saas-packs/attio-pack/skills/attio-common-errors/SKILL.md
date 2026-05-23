@@ -58,6 +58,7 @@ Fields: `status_code` (HTTP status), `type` (error category), `code` (specific c
 | `Invalid filter format` | Malformed filter object | Use shorthand `{ "email": "x" }` or verbose `{ "$and": [...] }` |
 
 **Diagnostic:**
+
 ```bash
 # List attributes to verify types
 curl -s https://api.attio.com/v2/objects/people/attributes \
@@ -78,6 +79,7 @@ curl -s https://api.attio.com/v2/objects/people/attributes \
 | Malformed header | Ensure format is `Bearer <token>` (one space, no quotes) |
 
 **Diagnostic:**
+
 ```bash
 # Verify token works
 curl -s -o /dev/null -w "%{http_code}" \
@@ -123,6 +125,7 @@ curl -s -o /dev/null -w "%{http_code}" \
 Occurs when creating a record with a value that conflicts with an existing unique attribute (e.g., duplicate email or domain).
 
 **Fix:** Use `PUT` (assert) instead of `POST` to upsert:
+
 ```typescript
 // Assert: create or update matching record
 await client.put("/objects/people/records", {
@@ -158,6 +161,7 @@ await client.put("/objects/people/records", {
 Attio uses a **sliding window algorithm** with a **10-second window**. The `Retry-After` response header contains a date (usually the next second).
 
 **Immediate fix:**
+
 ```typescript
 if (res.status === 429) {
   const retryAfter = res.headers.get("Retry-After");

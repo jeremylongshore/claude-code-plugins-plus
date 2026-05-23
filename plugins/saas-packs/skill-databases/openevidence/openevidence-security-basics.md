@@ -10,6 +10,7 @@ openevidence-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply OpenEvidence security best practices
 **Workflow:** Part of the operations skill category for OpenEvidence integration.
 **Relates to:** Other openevidence skills in this pack.

@@ -1,11 +1,13 @@
 # PRD: Blockchain Explorer CLI
 
 ## Summary
+
 **One-liner**: Query and analyze blockchain data including blocks, transactions, addresses, and smart contracts across multiple chains.
 **Domain**: Cryptocurrency / Blockchain Analytics
 **Users**: Developers, Analysts, Traders, Researchers
 
 ## Problem Statement
+
 Blockchain data is scattered across multiple explorers and APIs with inconsistent interfaces. Users need a unified CLI to query blocks, transactions, addresses, and contracts without switching between different blockchain explorers or writing custom scripts.
 
 ## User Stories

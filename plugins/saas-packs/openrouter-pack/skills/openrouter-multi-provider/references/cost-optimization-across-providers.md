@@ -3,6 +3,7 @@
 ## Cost Optimization Across Providers
 
 ### Provider Cost Comparison
+
 ```python
 PROVIDER_PRICING = {
     "anthropic/claude-3-opus": {"prompt": 15.0, "completion": 75.0},

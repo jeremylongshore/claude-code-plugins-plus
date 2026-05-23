@@ -10,6 +10,7 @@ obsidian-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Obsidian SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Obsidian integration.
 **Relates to:** Other obsidian skills in this pack.

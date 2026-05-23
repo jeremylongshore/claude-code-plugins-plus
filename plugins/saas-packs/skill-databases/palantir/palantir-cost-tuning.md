@@ -10,6 +10,7 @@ palantir-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Palantir costs and usage
 **Workflow:** Part of the cicd skill category for Palantir integration.
 **Relates to:** Other palantir skills in this pack.

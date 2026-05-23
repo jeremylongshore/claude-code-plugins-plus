@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Migration Deep Dive
 
 ## Current State
+
 !`npm list 2>/dev/null | head -10`
 
 ## Overview
+
 Comprehensive migration guide for moving to Ideogram from DALL-E, Midjourney, Stable Diffusion, or another image generation provider. Uses the strangler fig pattern for gradual migration. Key Ideogram advantages: superior text rendering in images, REST API with no SDK dependency, and flexible style/aspect ratio control.
 
 ## Migration Types
@@ -42,6 +44,7 @@ Comprehensive migration guide for moving to Ideogram from DALL-E, Midjourney, St
 ## Instructions
 
 ### Step 1: Audit Current Integration
+
 ```bash
 set -euo pipefail
 # Find all image generation API calls
@@ -55,6 +58,7 @@ grep -rl "images/generations\|api.openai.com\|api.stability.ai" \
 ```
 
 ### Step 2: API Mapping -- DALL-E to Ideogram
+
 ```typescript
 // === DALL-E (Before) ===
 const dallEResponse = await fetch("https://api.openai.com/v1/images/generations", {
@@ -114,6 +118,7 @@ const imageUrl = ideogramResult.data[0].url;    // DOWNLOAD IMMEDIATELY - expire
 | URL lifetime | ~1 hour | ~1 hour | ~1 hour |
 
 ### Step 4: Adapter Pattern for Gradual Migration
+
 ```typescript
 interface ImageGenerationRequest {
   prompt: string;
@@ -170,6 +175,7 @@ class IdeogramProvider implements ImageProvider {
 ```
 
 ### Step 5: Feature-Flagged Traffic Split
+
 ```typescript
 function getImageProvider(userId?: string): ImageProvider {
   const percentage = parseInt(process.env.IDEOGRAM_MIGRATION_PCT ?? "0");
@@ -194,6 +200,7 @@ function getImageProvider(userId?: string): ImageProvider {
 ```
 
 ### Step 6: Migration Validation
+
 ```typescript
 async function validateMigration(testPrompts: string[]) {
   const results = { passed: 0, failed: 0, errors: [] as string[] };
@@ -229,6 +236,7 @@ async function validateMigration(testPrompts: string[]) {
 ```
 
 ## Ideogram Advantages Post-Migration
+
 - **Text rendering**: Ideogram generates legible text inside images (DALL-E struggles with this)
 - **Seed reproducibility**: Same seed + prompt = same image
 - **No SDK dependency**: Plain REST API, no `openai` package needed
@@ -237,6 +245,7 @@ async function validateMigration(testPrompts: string[]) {
 - **Character consistency**: V3 character reference images
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Auth format wrong | Using `Authorization: Bearer` | Switch to `Api-Key` header |
@@ -245,15 +254,18 @@ async function validateMigration(testPrompts: string[]) {
 | URL expired | Not downloading immediately | Download in same function |
 
 ## Output
+
 - Parameter mapping from DALL-E/Midjourney to Ideogram
 - Adapter pattern supporting multiple providers
 - Feature-flagged gradual migration
 - Validation script for migration testing
 
 ## Resources
+
 - [Ideogram API Reference](https://developer.ideogram.ai/api-reference)
 - [Ideogram 3.0 Features](https://ideogram.ai/features/3.0)
 - [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
 
 ## Next Steps
+
 For advanced troubleshooting, see `ideogram-debug-bundle`.

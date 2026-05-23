@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Deploy Integration
 
 ## Overview
+
 Deploy Ideogram image generation endpoints to Vercel, Cloud Run, or Docker. Key concerns: API key security, function timeouts (generation takes 5-15s), image persistence (URLs expire), and CDN integration for serving generated images.
 
 ## Prerequisites
+
 - `IDEOGRAM_API_KEY` configured
 - Cloud storage for generated images (S3, GCS, or R2)
 - Platform CLI installed (vercel, gcloud, or docker)
@@ -34,6 +36,7 @@ Deploy Ideogram image generation endpoints to Vercel, Cloud Run, or Docker. Key 
 ## Instructions
 
 ### Step 1: API Endpoint (Next.js / Vercel)
+
 ```typescript
 // app/api/generate/route.ts
 import { NextRequest, NextResponse } from "next/server";
@@ -98,6 +101,7 @@ export const maxDuration = 60; // Vercel function timeout
 ```
 
 ### Step 2: Vercel Configuration
+
 ```json
 {
   "functions": {
@@ -120,6 +124,7 @@ vercel env add CDN_DOMAIN production
 ```
 
 ### Step 3: Cloud Run Deployment
+
 ```dockerfile
 FROM node:20-slim
 WORKDIR /app
@@ -148,6 +153,7 @@ gcloud run deploy ideogram-service \
 ```
 
 ### Step 4: Docker Compose (Self-Hosted)
+
 ```yaml
 # docker-compose.yml
 services:
@@ -168,6 +174,7 @@ services:
 ```
 
 ### Step 5: Health Check Endpoint
+
 ```typescript
 // app/api/health/route.ts
 export async function GET() {
@@ -191,6 +198,7 @@ export async function GET() {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Function timeout | Generation takes 5-15s | Set timeout to 60s+ |
@@ -200,15 +208,18 @@ export async function GET() {
 | Expired URL | Late download | Download immediately in same request |
 
 ## Output
+
 - Deployed API endpoint with image generation
 - Images persisted to durable storage with CDN URLs
 - Health check endpoint for monitoring
 - Platform-specific configuration files
 
 ## Resources
+
 - [Ideogram API Reference](https://developer.ideogram.ai/api-reference)
 - [Vercel Functions](https://vercel.com/docs/functions)
 - [Cloud Run Docs](https://cloud.google.com/run/docs)
 
 ## Next Steps
+
 For event-driven patterns, see `ideogram-webhooks-events`.

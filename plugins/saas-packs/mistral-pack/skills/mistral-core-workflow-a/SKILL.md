@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral AI Core Workflow A: Chat Completions
 
 ## Overview
+
 Production chat completion patterns for Mistral AI: multi-turn conversations, streaming responses, JSON mode structured output, guardrails/moderation, and model selection. Uses the `@mistralai/mistralai` SDK.
 
 ## Prerequisites
+
 - Completed `mistral-install-auth` setup
 - `MISTRAL_API_KEY` environment variable set
 - Understanding of Mistral model tiers
@@ -223,6 +225,7 @@ function selectModel(use: UseCase): string {
 ```
 
 ## Output
+
 - Chat completions with configurable parameters
 - Multi-turn conversation management with history trimming
 - Real-time streaming responses
@@ -230,6 +233,7 @@ function selectModel(use: UseCase): string {
 - Content moderation via guardrails
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401 Unauthorized` | Invalid API key | Verify `MISTRAL_API_KEY` |
@@ -239,10 +243,12 @@ function selectModel(use: UseCase): string {
 | Empty JSON response | Missing instruction | Tell model to respond in JSON in prompt |
 
 ## Resources
+
 - [Chat Completions API](https://docs.mistral.ai/api/endpoint/chat/)
 - [JSON Mode](https://docs.mistral.ai/capabilities/structured_output/json_mode/)
 - [Guardrails](https://docs.mistral.ai/capabilities/guardrailing/)
 - [Models Overview](https://docs.mistral.ai/getting-started/models/)
 
 ## Next Steps
+
 For embeddings and function calling, see `mistral-core-workflow-b`.

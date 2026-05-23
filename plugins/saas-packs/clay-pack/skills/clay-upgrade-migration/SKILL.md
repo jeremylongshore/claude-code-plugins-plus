@@ -54,6 +54,7 @@ Guide for navigating Clay plan upgrades and the March 2026 pricing overhaul. Cla
 | Growth | $495/mo | 6,000 | 40,000 | CRM sync, HTTP API, web intent, ads |
 
 **Key changes:**
+
 - Credits split into **Data Credits** (buying enrichment data) and **Actions** (using the platform)
 - Data costs cut 50-90% (each enrichment is cheaper)
 - No enrichment charges on failed lookups (no data = no charge)

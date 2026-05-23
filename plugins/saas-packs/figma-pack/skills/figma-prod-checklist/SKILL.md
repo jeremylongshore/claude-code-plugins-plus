@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code
 # Figma Production Checklist
 
 ## Overview
+
 Complete checklist for deploying Figma API integrations to production, covering authentication, error handling, rate limits, monitoring, and rollback.
 
 ## Prerequisites
+
 - Staging environment tested and verified
 - Production PAT or OAuth credentials ready
 - Monitoring infrastructure available
@@ -33,6 +35,7 @@ Complete checklist for deploying Figma API integrations to production, covering 
 ## Instructions
 
 ### Step 1: Authentication & Secrets
+
 - [ ] Production PAT stored in secret manager (not env files)
 - [ ] PAT uses minimum required scopes (`file_content:read`, not `files:read`)
 - [ ] PAT expiry tracked (max 90 days) with rotation reminder
@@ -41,6 +44,7 @@ Complete checklist for deploying Figma API integrations to production, covering 
 - [ ] No tokens in client-side code or git history
 
 ### Step 2: Error Handling
+
 - [ ] All HTTP status codes handled (400, 403, 404, 429, 500)
 - [ ] `Retry-After` header honored on 429 responses
 - [ ] Exponential backoff with jitter for transient errors
@@ -49,6 +53,7 @@ Complete checklist for deploying Figma API integrations to production, covering 
 - [ ] Error responses do not leak token values in logs
 
 ### Step 3: Rate Limiting
+
 - [ ] Request queue with concurrency control (max 3-5 concurrent)
 - [ ] Batch node IDs in single requests (up to 50 per call)
 - [ ] Response caching for frequently accessed files (TTL: 60-300s)
@@ -56,6 +61,7 @@ Complete checklist for deploying Figma API integrations to production, covering 
 - [ ] No tight loops calling Figma API without delays
 
 ### Step 4: Monitoring & Health
+
 ```typescript
 // Health check endpoint
 async function figmaHealthCheck() {
@@ -87,12 +93,14 @@ async function figmaHealthCheck() {
 - [ ] Dashboard tracks requests/min, error rate, latency
 
 ### Step 5: Data Handling
+
 - [ ] Image export URLs treated as temporary (expire after 30 days)
 - [ ] No PII from Figma stored without user consent
 - [ ] File data cached with appropriate TTL
 - [ ] Large file responses streamed, not buffered entirely in memory
 
 ### Step 6: Webhook Production Setup
+
 - [ ] HTTPS endpoint (Figma requires TLS)
 - [ ] Passcode verification on every incoming webhook
 - [ ] Idempotency handling for duplicate deliveries
@@ -100,6 +108,7 @@ async function figmaHealthCheck() {
 - [ ] Dead letter queue for failed webhook processing
 
 ### Step 7: Pre-Flight Verification
+
 ```bash
 #!/bin/bash
 echo "=== Figma Production Pre-Flight ==="
@@ -125,12 +134,14 @@ echo "=== Pre-flight complete ==="
 ```
 
 ## Output
+
 - All checklist items verified
 - Health check endpoint deployed
 - Monitoring and alerting configured
 - Pre-flight script passing
 
 ## Error Handling
+
 | Alert | Condition | Severity | Action |
 |-------|-----------|----------|--------|
 | Auth Failure | 403 errors > 0 | P1 | Rotate PAT immediately |
@@ -139,9 +150,11 @@ echo "=== Pre-flight complete ==="
 | API Down | 5xx errors > 10/min | P1 | Enable fallback; check status.figma.com |
 
 ## Resources
+
 - [Figma Status Page](https://status.figma.com)
 - [Figma Rate Limits](https://developers.figma.com/docs/rest-api/rate-limits/)
 - [Figma API Scopes](https://developers.figma.com/docs/rest-api/scopes/)
 
 ## Next Steps
+
 For version upgrades, see `figma-upgrade-migration`.

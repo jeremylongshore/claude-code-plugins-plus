@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Install & Auth
 
 ## Overview
+
 Set up the Evernote SDK and configure OAuth 1.0a authentication for accessing the Evernote Cloud API. Covers API key provisioning, SDK installation, OAuth flow implementation, and connection verification.
 
 ## Prerequisites
+
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Evernote developer account
@@ -36,12 +38,14 @@ Set up the Evernote SDK and configure OAuth 1.0a authentication for accessing th
 ## Instructions
 
 ### Step 1: Request an API Key
+
 1. Navigate to the [Evernote developer portal](https://dev.evernote.com/)
 2. Submit the API key request form
 3. Wait for manual approval (up to 5 business days)
 4. Receive `consumerKey` and `consumerSecret` credentials
 
 ### Step 2: Install the SDK
+
 ```bash
 set -euo pipefail
 # Node.js
@@ -52,6 +56,7 @@ pip install evernote
 ```
 
 ### Step 3: Configure Environment Variables
+
 ```bash
 cat << 'EOF' >> .env
 EVERNOTE_CONSUMER_KEY=your-consumer-key
@@ -61,6 +66,7 @@ EOF
 ```
 
 ### Step 4: Initialize the OAuth Client
+
 ```javascript
 const Evernote = require('evernote');
 
@@ -73,14 +79,17 @@ const client = new Evernote.Client({
 ```
 
 ### Step 5: Implement the OAuth Flow
+
 Set up request token acquisition, user authorization redirect, and callback handling. Alternatively, use a developer token for sandbox testing to skip the OAuth flow entirely.
 
 ### Step 6: Verify the Connection
+
 Create an authenticated client, access `getUserStore()`, and call `getUser()` to confirm authentication succeeds.
 
 For the complete OAuth callback implementation, developer token setup, Python client initialization, and token expiration handling, see [OAuth flow reference](references/oauth-flow.md).
 
 ## Output
+
 - Installed SDK package in node_modules or site-packages
 - Environment variables configured for authentication
 - Working OAuth flow implementation
@@ -103,6 +112,7 @@ For the complete OAuth callback implementation, developer token setup, Python cl
 **Production OAuth**: Request an API key from the developer portal, implement the OAuth 1.0a flow with an HTTPS callback URL, store the access token securely alongside its `edam_expires` timestamp, and schedule token refresh before expiration.
 
 ## Resources
+
 - [Evernote Developer Portal](https://dev.evernote.com/)
 - [OAuth Documentation](https://dev.evernote.com/doc/articles/authentication.php)
 - [API Key Permissions](https://dev.evernote.com/doc/articles/permissions.php)
@@ -110,4 +120,5 @@ For the complete OAuth callback implementation, developer token setup, Python cl
 - [Python SDK](https://github.com/Evernote/evernote-sdk-python)
 
 ## Next Steps
+
 After successful auth, proceed to `evernote-hello-world` for the first note creation.

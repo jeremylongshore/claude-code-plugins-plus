@@ -1,6 +1,7 @@
-# Customer.io Observability - Implementation Guide
+## Customer.io Observability - Implementation Guide
 
 ### Step 1: Metrics Collection
+
 ```typescript
 // lib/metrics.ts
 import { Counter, Histogram, Registry } from 'prom-client';
@@ -64,6 +65,7 @@ export { register };
 ```
 
 ### Step 2: Instrumented Client
+
 ```typescript
 // lib/customerio-instrumented.ts
 import { TrackClient, RegionUS } from '@customerio/track';
@@ -115,6 +117,7 @@ export class InstrumentedCustomerIO {
 ```
 
 ### Step 3: Structured Logging
+
 ```typescript
 // lib/logger.ts
 import pino from 'pino';
@@ -177,6 +180,7 @@ function sanitizeForLogging(data: any): any {
 ```
 
 ### Step 4: Distributed Tracing
+
 ```typescript
 // lib/tracing.ts
 import { trace, SpanKind, SpanStatusCode } from '@opentelemetry/api';
@@ -223,6 +227,7 @@ await withTracing('identify', { userId }, () =>
 ```
 
 ### Step 5: Grafana Dashboard
+
 ```json
 {
   "dashboard": {
@@ -301,6 +306,7 @@ await withTracing('identify', { userId }, () =>
 ```
 
 ### Step 6: Alerting Rules
+
 ```yaml
 # prometheus/alerts/customerio.yml
 groups:

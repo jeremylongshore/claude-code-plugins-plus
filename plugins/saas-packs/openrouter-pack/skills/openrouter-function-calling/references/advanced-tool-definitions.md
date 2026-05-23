@@ -3,6 +3,7 @@
 ## Advanced Tool Definitions
 
 ### Complex Parameters
+
 ```python
 tools = [
     {
@@ -48,6 +49,7 @@ tools = [
 ```
 
 ### Multiple Tools
+
 ```python
 TOOLS = [
     {

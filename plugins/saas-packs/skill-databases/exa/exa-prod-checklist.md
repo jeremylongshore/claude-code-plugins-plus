@@ -10,6 +10,7 @@ exa-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute production deployment checklist for Exa integrations including pre-flight checks, monitoring setup, and fallback procedures.
 **Workflow:** Final operations skill before production launch - ensures deployment readiness.
 **Relates to:** Follows exa-security-basics; precedes exa-observability

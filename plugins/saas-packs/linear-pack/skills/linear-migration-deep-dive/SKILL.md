@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Migration Deep Dive
 
 ## Overview
+
 Comprehensive guide for migrating from Jira, Asana, or GitHub Issues to Linear. Covers assessment, workflow mapping, data export, transformation, batch import with hierarchy support, and post-migration validation. Linear also has a built-in importer (Settings > Import) for Jira, Asana, GitHub, and CSV.
 
 ## Prerequisites
+
 - Admin access to source system (Jira/Asana/GitHub)
 - Linear workspace with admin access
 - API keys for both source and Linear
@@ -36,6 +38,7 @@ Comprehensive guide for migrating from Jira, Asana, or GitHub Issues to Linear. 
 ## Instructions
 
 ### Step 1: Migration Assessment Checklist
+
 ```
 Data Volume
 [ ] Total issues/tasks: ___
@@ -62,6 +65,7 @@ Timeline
 ### Step 2: Workflow Mapping
 
 **Jira -> Linear:**
+
 | Jira Status | Linear State (type) |
 |-------------|-------------------|
 | To Do | Todo (unstarted) |
@@ -86,6 +90,7 @@ Timeline
 | Epic | (becomes Project or parent issue) |
 
 **Asana -> Linear:**
+
 | Asana Section | Linear State |
 |---------------|-------------|
 | Backlog | Backlog (backlog) |
@@ -97,6 +102,7 @@ Timeline
 ### Step 3: Export from Source System
 
 **Jira Export:**
+
 ```typescript
 // src/migration/jira-exporter.ts
 interface JiraIssue {
@@ -158,6 +164,7 @@ async function exportJiraProject(
 ```
 
 **Jira Markup -> Markdown Converter:**
+
 ```typescript
 function convertJiraToMarkdown(text: string): string {
   if (!text) return "";
@@ -174,6 +181,7 @@ function convertJiraToMarkdown(text: string): string {
 ```
 
 ### Step 4: Transform to Linear Format
+
 ```typescript
 interface LinearImportIssue {
   title: string;
@@ -226,6 +234,7 @@ async function transformJiraIssue(
 ```
 
 ### Step 5: Import to Linear
+
 ```typescript
 import { LinearClient } from "@linear/sdk";
 
@@ -290,6 +299,7 @@ async function importToLinear(
 ```
 
 ### Step 6: Post-Migration Validation
+
 ```typescript
 async function validateMigration(
   client: LinearClient,
@@ -330,6 +340,7 @@ async function validateMigration(
 ```
 
 ## Post-Migration Checklist
+
 ```
 [ ] All issues imported and validated
 [ ] Parent/child relationships correct
@@ -354,6 +365,7 @@ async function validateMigration(
 | Markup broken | Incomplete conversion | Improve markdown converter |
 
 ## Resources
+
 - [Linear Import (Built-in)](https://linear.app/docs/import-issues)
 - [Jira REST API](https://developer.atlassian.com/cloud/jira/platform/rest/v3/)
 - [Asana API](https://developers.asana.com/reference)

@@ -9,11 +9,13 @@ Comprehensive usage examples for arbitrage opportunity detection.
 Scan for ETH/USDC arbitrage across all enabled exchanges.
 
 ### Command
+
 ```bash
 python arb_finder.py scan ETH USDC
 ```
 
 ### Output
+
 ```
 ======================== ARBITRAGE SCAN RESULTS ========================
 
@@ -73,11 +75,13 @@ Notes:
 Scan only centralized exchanges (faster, no gas costs).
 
 ### Command
+
 ```bash
 python arb_finder.py scan BTC USDT --cex-only --min-profit 0.05
 ```
 
 ### Output
+
 ```
 ======================== ARBITRAGE SCAN RESULTS ========================
 
@@ -126,11 +130,13 @@ Risk: 🟢 LOW
 Compare prices between specific exchanges only.
 
 ### Command
+
 ```bash
 python arb_finder.py scan ETH USDC --exchanges binance,coinbase,kraken
 ```
 
 ### Output
+
 ```
 ======================== ARBITRAGE SCAN RESULTS ========================
 
@@ -177,11 +183,13 @@ Risk: 🟢 LOW
 Find triangular arbitrage paths on a single exchange.
 
 ### Command
+
 ```bash
 python arb_finder.py triangular binance --min-profit 0.0
 ```
 
 ### Output
+
 ```
 ======================== TRIANGULAR ARBITRAGE ========================
 
@@ -221,11 +229,13 @@ Net Profit: +0.0520%
 Monitor for opportunities with alerts.
 
 ### Command
+
 ```bash
 python arb_finder.py monitor ETH USDC --threshold 0.3 --interval 5
 ```
 
 ### Output
+
 ```
 Monitoring ETH/USDC for spreads > 0.3%
 Interval: 5s | Press Ctrl+C to stop
@@ -258,6 +268,7 @@ Monitoring stopped
 Calculate exact profit for a specific trade.
 
 ### Command
+
 ```bash
 python arb_finder.py calc \
   --buy-exchange binance \
@@ -267,6 +278,7 @@ python arb_finder.py calc \
 ```
 
 ### Output
+
 ```
 ======================== PROFIT BREAKDOWN ========================
 
@@ -298,6 +310,7 @@ Breakeven spread: 0.085%
 Calculate with specific buy/sell prices.
 
 ### Command
+
 ```bash
 python arb_finder.py calc \
   --buy-exchange binance \
@@ -309,6 +322,7 @@ python arb_finder.py calc \
 ```
 
 ### Output
+
 ```
 ======================== PROFIT BREAKDOWN ========================
 
@@ -340,11 +354,13 @@ Breakeven spread: 0.085%
 Export results in JSON format for programmatic use.
 
 ### Command
+
 ```bash
 python arb_finder.py scan ETH USDC --output json
 ```
 
 ### Output
+
 ```json
 {
   "pair": "ETH/USDC",
@@ -391,11 +407,13 @@ python arb_finder.py scan ETH USDC --output json
 Scan only decentralized exchanges.
 
 ### Command
+
 ```bash
 python arb_finder.py scan ETH USDC --dex-only
 ```
 
 ### Output
+
 ```
 ======================== ARBITRAGE SCAN RESULTS ========================
 
@@ -449,11 +467,13 @@ Notes:
 Adjust calculations for different gas conditions.
 
 ### Command
+
 ```bash
 python arb_finder.py scan ETH USDC --dex-only --gas-price 100 --eth-price 3000
 ```
 
 ### Output
+
 ```
 ======================== ARBITRAGE SCAN RESULTS ========================
 
@@ -482,6 +502,7 @@ Note: High gas price ($45.00 per swap) makes small spreads unprofitable.
 ## Common Patterns
 
 ### Morning Scan Routine
+
 ```bash
 # Quick overview of major pairs
 python arb_finder.py scan BTC USDT --cex-only
@@ -490,18 +511,21 @@ python arb_finder.py scan ETH BTC --cex-only
 ```
 
 ### Continuous Monitoring
+
 ```bash
 # Run in tmux/screen for persistent monitoring
 python arb_finder.py monitor ETH USDC --threshold 0.2 --interval 10
 ```
 
 ### Export for Analysis
+
 ```bash
 # Save to file for later analysis
 python arb_finder.py scan ETH USDC --output json > arb_$(date +%Y%m%d).json
 ```
 
 ### Triangular Sweep
+
 ```bash
 # Check all major exchanges for triangular opportunities
 for exchange in binance coinbase kraken; do

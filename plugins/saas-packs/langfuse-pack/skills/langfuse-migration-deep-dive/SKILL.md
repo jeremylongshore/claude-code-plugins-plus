@@ -26,12 +26,15 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Migration Deep Dive
 
 ## Current State
+
 !`npm list langfuse @langfuse/client 2>/dev/null | head -5 || echo 'No langfuse packages'`
 
 ## Overview
+
 Comprehensive guide for complex migrations: cloud-to-self-hosted, LangSmith-to-Langfuse, cross-instance data migration, and zero-downtime dual-write patterns.
 
 ## Prerequisites
+
 - Understanding of source and target Langfuse instances
 - API keys for both source and target
 - Git branch for migration work
@@ -299,6 +302,7 @@ export LANGFUSE_BASE_URL="https://source.langfuse.com"
 | Missing prompts | Not exported | Export prompts before datasets |
 
 ## Resources
+
 - [Self-Hosting Guide](https://langfuse.com/self-hosting)
 - [Upgrade Guide](https://langfuse.com/self-hosting/upgrade)
 - [API Reference](https://api.reference.langfuse.com/)

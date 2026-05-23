@@ -31,6 +31,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 Configure Sentry for applications processing 1M+ requests/day without sacrificing error visibility, burning through quota, or adding measurable SDK overhead. Covers adaptive sampling, connection pooling, multi-region tagging, quota management, SDK benchmarking, batch submission, load testing, and self-hosted deployment considerations.
 
 ## Prerequisites
+
 - Application handling sustained high traffic (>10K requests/min or >1M events/day)
 - Sentry organization with quota and billing access (Settings > Subscription)
 - `@sentry/node` v8+ installed (`npm ls @sentry/node`)
@@ -411,6 +412,7 @@ setInterval(async () => {
 **Self-hosted Sentry for enterprise (>100M events/month):**
 
 Key tuning for self-hosted (`docker-compose.override.yml` on top of [getsentry/self-hosted](https://github.com/getsentry/self-hosted)):
+
 - Relay: `RELAY_PROCESSING_MAX_RATE: 50000`, `RELAY_UPSTREAM_MAX_CONNECTIONS: 200`
 - Kafka: `KAFKA_NUM_PARTITIONS: 32` (match to consumer count)
 - Snuba: 4+ consumer replicas for Clickhouse ingestion parallelism
@@ -425,6 +427,7 @@ Self-hosted vs SaaS break-even:
 ```
 
 ## Output
+
 - Adaptive sampling reducing duplicate error volume by 90%+ while preserving first-occurrence fidelity
 - Traffic-aware `tracesSampler` with 5 tiers adjusting dynamically based on endpoint volume
 - SDK memory and CPU footprint minimized (15 breadcrumbs, truncated contexts, filtered headers)
@@ -489,6 +492,7 @@ Sentry.init({
 ```
 
 ## Resources
+
 - [Quota Management](https://docs.sentry.io/pricing/quotas/) — spike protection, rate limits, reserved volume
 - [Sampling Configuration](https://docs.sentry.io/platforms/javascript/configuration/sampling/) — tracesSampler API reference
 - [Transport Configuration](https://docs.sentry.io/platforms/javascript/configuration/transports/) — custom transport, buffer size
@@ -497,6 +501,7 @@ Sentry.init({
 - [SDK Performance Overhead](https://docs.sentry.io/platforms/javascript/performance/) — benchmarks and best practices
 
 ## Next Steps
+
 - Run the k6 load test against staging to establish your baseline Sentry overhead
 - Set up Sentry Spike Protection (Settings > Subscription > Spike Protection) before going to production
 - Configure server-side sampling rules in Sentry Dynamic Sampling (Project Settings > Performance) to complement client-side `tracesSampler`

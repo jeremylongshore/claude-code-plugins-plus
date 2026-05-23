@@ -5,6 +5,7 @@
 ## Detailed Instructions
 
 ### Step 1: Configure Build Pipeline
+
 ```json
 {
   "scripts": {
@@ -35,6 +36,7 @@ await esbuild.build({
 ```
 
 ### Step 2: Version and Release Files
+
 ```json
 // manifest.json
 {
@@ -56,6 +58,7 @@ await esbuild.build({
 ```
 
 ### Step 3: GitHub Release Workflow
+
 ```yaml
 name: Release Plugin
 on:
@@ -83,6 +86,7 @@ jobs:
 ```
 
 ### Step 4: Submit to Community Plugins
+
 ```markdown
 1. Fork https://github.com/obsidianmd/obsidian-releases
 2. Edit community-plugins.json, add your plugin entry:
@@ -98,6 +102,7 @@ jobs:
 ```
 
 ### Step 5: Version Bump Script
+
 ```javascript
 // version-bump.mjs
 import { readFileSync, writeFileSync } from "fs";
@@ -116,10 +121,10 @@ versions[targetVersion] = minAppVersion;
 writeFileSync("versions.json", JSON.stringify(versions, null, "\t"));
 ```
 
-
 ## Complete Examples
 
 ### Quick Release
+
 ```bash
 npm version patch
 git push --tags

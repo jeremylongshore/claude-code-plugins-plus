@@ -10,6 +10,7 @@ replit-testing-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement testing workflows with unit tests, integration tests, and automated test runs on Replit.
 **Workflow:** Quality assurance skill - establishes testing practices for reliable code.
 **Relates to:** Complements replit-github-integration; informs replit-deployments pre-flight checks.

@@ -10,6 +10,7 @@ langchain-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement LangChain core feature integration
 **Workflow:** Part of the onboarding skill category for LangChain integration.
 **Relates to:** Other langchain skills in this pack.

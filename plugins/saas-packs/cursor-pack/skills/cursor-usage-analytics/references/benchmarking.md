@@ -3,6 +3,7 @@
 ## Benchmarking
 
 ### Industry Benchmarks
+
 ```
 Typical ranges:
 
@@ -23,6 +24,7 @@ Features Used:
 ```
 
 ### Internal Benchmarking
+
 ```
 Compare teams:
 - By department

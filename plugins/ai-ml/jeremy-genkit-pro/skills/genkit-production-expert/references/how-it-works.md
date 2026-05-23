@@ -3,6 +3,7 @@
 ## How It Works
 
 ### Phase 1: Requirements Analysis
+
 ```
 User Request → Analyze needs → Determine:
 - Target language (Node.js/Python/Go)
@@ -12,6 +13,7 @@ User Request → Analyze needs → Determine:
 ```
 
 ### Phase 2: Project Setup
+
 ```
 Check existing project → If new:
   - Initialize project structure
@@ -26,6 +28,7 @@ If existing:
 ```
 
 ### Phase 3: Implementation
+
 ```
 Design flow architecture → Implement:
   - Input/output schemas (Zod/Pydantic/Go structs)
@@ -37,6 +40,7 @@ Design flow architecture → Implement:
 ```
 
 ### Phase 4: Testing & Validation
+
 ```
 Create test cases → Run locally:
   - Genkit Developer UI
@@ -46,6 +50,7 @@ Create test cases → Run locally:
 ```
 
 ### Phase 5: Production Deployment
+
 ```
 Configure deployment → Deploy:
   - Firebase Functions (with AI monitoring)

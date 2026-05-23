@@ -52,6 +52,7 @@ cd ${CLAUDE_SKILL_DIR}/scripts
 5. Search known labels: `python whale_monitor.py labels --query binance`
 
 Alternatively, customize with chain and threshold filters:
+
 ```bash
 python whale_monitor.py recent --chain ethereum              # Specific chain
 python whale_monitor.py recent --min-value 10000000          # 10000000: $10M+ only
@@ -62,11 +63,13 @@ python whale_monitor.py labels --type exchange               # Or use type filte
 ### Step 3: Interpret Results
 
 **Transaction Types:**
+
 - DEPOSIT: Sent to exchange (potential selling pressure)
 - WITHDRAWAL: From exchange (accumulation signal)
 - TRANSFER: Wallet to wallet (whale movement)
 
 **Flow Analysis:**
+
 - Net positive flow to exchanges = selling pressure
 - Net negative flow from exchanges = buying pressure
 
@@ -81,6 +84,7 @@ python whale_monitor.py labels --type exchange               # Or use type filte
 ## Error Handling
 
 See `${CLAUDE_SKILL_DIR}/references/errors.md` for:
+
 - API rate limit handling and backoff
 - Network timeout recovery
 - Invalid address format validation
@@ -89,22 +93,26 @@ See `${CLAUDE_SKILL_DIR}/references/errors.md` for:
 ## Examples
 
 **Example 1: View $10M+ whale transactions on Ethereum:**
+
 ```bash
 python whale_monitor.py recent --chain ethereum --min-value 10000000  # 10000000 = 10M limit
 ```
 
 **Example 2: Analyze if whales are selling:**
+
 ```bash
 python whale_monitor.py flows --chain ethereum
 ```
 
 **Example 3: Track a known whale wallet:**
+
 ```bash
 python whale_monitor.py watch 0x28c6c... --name "Binance Cold"
 python whale_monitor.py track 0x28c6c...
 ```
 
 **Example 4: Export to JSON for further analysis:**
+
 ```bash
 python whale_monitor.py recent --format json > whales.json
 ```

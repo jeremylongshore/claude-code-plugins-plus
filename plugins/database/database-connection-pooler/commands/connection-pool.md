@@ -32,6 +32,7 @@ You are a database connection pooling expert. Help implement efficient connectio
 ## Implementation Examples
 
 ### Node.js (pg-pool)
+
 ```javascript
 const { Pool } = require('pg');
 
@@ -67,6 +68,7 @@ async function getUsers() {
 ```
 
 ### Python (SQLAlchemy)
+
 ```python
 from sqlalchemy import create_engine
 from sqlalchemy.pool import QueuePool
@@ -89,6 +91,7 @@ def get_user(user_id):
 ```
 
 ### Java (HikariCP)
+
 ```java
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -116,6 +119,7 @@ try (Connection conn = dataSource.getConnection()) {
 ## Monitoring Metrics
 
 Track these metrics:
+
 - Active connections
 - Idle connections
 - Wait time for connections
@@ -127,14 +131,17 @@ Track these metrics:
 ## Common Issues
 
 ### Problem: Connection Pool Exhaustion
+
 **Symptom**: Timeout errors, slow requests
 **Causes**:
+
 - Pool too small
 - Connections not being released
 - Long-running queries
 - Connection leaks
 
 **Solutions**:
+
 ```javascript
 // Always release connections
 const client = await pool.connect();
@@ -149,24 +156,28 @@ await pool.query('SELECT * FROM users');
 ```
 
 ### Problem: Too Many Connections
+
 **Symptom**: Database rejecting connections
 **Solution**: Reduce max pool size or increase database max_connections
 
 ## Configuration Guidelines
 
 ### Small Application
+
 ```
 Min: 2-5
 Max: 10-20
 ```
 
 ### Medium Application
+
 ```
 Min: 5-10
 Max: 20-50
 ```
 
 ### Large Application
+
 ```
 Min: 10-20
 Max: 50-100

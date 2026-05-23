@@ -35,6 +35,7 @@ leverage the feature-engineering-toolkit plugin to enhance machine learning mode
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Create new features from existing data to improve model accuracy.
 - Select the most relevant features from a dataset to reduce model complexity and improve efficiency.
 - Transform features to better suit the assumptions of a machine learning model (e.g., scaling, normalization, encoding).
@@ -46,6 +47,7 @@ This skill activates when you need to:
 User request: "Create new features from the existing 'age' and 'income' columns to improve the accuracy of a customer churn prediction model."
 
 The skill will:
+
 1. Generate code to create interaction terms between 'age' and 'income' (e.g., age * income, age / income).
 2. Execute the code and evaluate the impact of the new features on model performance.
 
@@ -54,6 +56,7 @@ The skill will:
 User request: "Select the top 10 most important features from the dataset to reduce the complexity of a fraud detection model."
 
 The skill will:
+
 1. Generate code to calculate feature importance using a suitable method (e.g., Random Forest, SelectKBest).
 2. Execute the code and select the top 10 features based on their importance scores.
 

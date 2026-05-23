@@ -3,6 +3,7 @@
 ## Dashboard Export
 
 ### Generate Report
+
 ```python
 def generate_analytics_report(analytics: UsageAnalytics) -> dict:
     """Generate comprehensive analytics report."""
@@ -34,6 +35,7 @@ def export_to_json(analytics: UsageAnalytics, filepath: str):
 ```
 
 ### CSV Export
+
 ```python
 import csv
 

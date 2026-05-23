@@ -405,6 +405,7 @@ describe("Multi-Environment Configuration", () => {
 ## Environment Checklist
 
 ### Development
+
 - [ ] Using staging Documenso API
 - [ ] Mock mode available for offline development
 - [ ] Debug logging enabled
@@ -412,6 +413,7 @@ describe("Multi-Environment Configuration", () => {
 - [ ] Caching disabled for fresh data
 
 ### Staging
+
 - [ ] Separate API key from production
 - [ ] All webhooks configured
 - [ ] Integration tests passing
@@ -419,6 +421,7 @@ describe("Multi-Environment Configuration", () => {
 - [ ] Monitoring configured
 
 ### Production
+
 - [ ] Production API key secured
 - [ ] Webhooks verified
 - [ ] Caching enabled

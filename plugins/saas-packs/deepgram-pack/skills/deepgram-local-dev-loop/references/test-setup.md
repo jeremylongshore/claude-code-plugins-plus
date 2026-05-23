@@ -1,6 +1,7 @@
 # Deepgram Local Dev Loop Test Setup
 
 ## TypeScript Dev Entry Point
+
 ```typescript
 // src/transcribe.ts
 import { createClient } from '@deepgram/sdk';
@@ -29,6 +30,7 @@ if (import.meta.main) {
 ```
 
 ## Test Setup with Vitest
+
 ```typescript
 // tests/transcribe.test.ts
 import { describe, it, expect } from 'vitest';
@@ -49,6 +51,7 @@ describe('Deepgram Transcription', () => {
 ```
 
 ## Mock Responses for Offline Testing
+
 ```typescript
 // tests/mocks/deepgram.ts
 export const mockTranscriptResponse = {
@@ -68,6 +71,7 @@ export const mockTranscriptResponse = {
 ```
 
 ## Alternative Test Frameworks
+
 - **Jest**: Replace `vitest` imports with `jest` equivalents; mock `@deepgram/sdk` using `jest.mock()`
 - **Mocha + Chai**: Use `describe/it` from mocha with `expect` from chai
 - **Node built-in test runner**: Use `node:test` module for zero-dependency testing

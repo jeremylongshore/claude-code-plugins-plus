@@ -39,6 +39,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Validator Expert
 
 ## Current State
+
 !`gcloud config get-value project 2>/dev/null || echo 'no active project'`
 !`gcloud auth list --filter=status:ACTIVE --format="value(account)" 2>/dev/null || echo 'not authenticated'`
 
@@ -114,11 +115,13 @@ Validate production readiness of Vertex AI Agent Engine deployments by executing
 ## Resources
 
 **Validation checklists** (read the relevant one during each validation step):
+
 - [Security checklist](references/security-checklist.md) — IAM, VPC-SC, encryption, Model Armor (30% weight)
 - [Monitoring checklist](references/monitoring-checklist.md) — dashboards, alerts, SLOs, logging (20% weight)
 - [Performance & compliance checklist](references/performance-compliance-checklist.md) — auto-scaling, caching, audit logs, DR (40% weight)
 
 **Official Google Cloud documentation:**
+
 - [Vertex AI Security Best Practices](https://cloud.google.com/vertex-ai/docs/security)
 - [Cloud Monitoring Alerting](https://cloud.google.com/monitoring/alerts)
 - [VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs)

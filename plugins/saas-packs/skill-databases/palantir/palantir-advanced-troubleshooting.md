@@ -10,6 +10,7 @@ palantir-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Palantir advanced debugging
 **Workflow:** Part of the enterprise skill category for Palantir integration.
 **Relates to:** Other palantir skills in this pack.

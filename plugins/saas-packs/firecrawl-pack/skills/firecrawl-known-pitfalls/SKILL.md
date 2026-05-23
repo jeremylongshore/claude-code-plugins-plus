@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Known Pitfalls
 
 ## Overview
+
 Real gotchas from production Firecrawl integrations. Each pitfall includes the bad pattern, why it fails, and the correct approach. Use this as a code review checklist.
 
 ## Pitfall 1: Unbounded Crawl (Credit Bomb)
+
 ```typescript
 import FirecrawlApp from "@mendable/firecrawl-js";
 
@@ -48,6 +50,7 @@ await firecrawl.crawlUrl("https://docs.large-project.org", {
 ```
 
 ## Pitfall 2: Not Specifying Output Format
+
 ```typescript
 // BAD: default format may not include markdown
 const result = await firecrawl.scrapeUrl("https://example.com");
@@ -62,6 +65,7 @@ console.log(result.markdown); // guaranteed present
 ```
 
 ## Pitfall 3: Not Waiting for JS-Heavy Pages
+
 ```typescript
 // BAD: SPAs show loading state, not content
 const result = await firecrawl.scrapeUrl("https://app.example.com/dashboard");
@@ -84,6 +88,7 @@ const result = await firecrawl.scrapeUrl("https://app.example.com/dashboard", {
 ```
 
 ## Pitfall 4: Wrong Package Name / Import
+
 ```typescript
 // BAD: these packages don't exist or are wrong
 import FirecrawlApp from "firecrawl-js";       // wrong
@@ -96,6 +101,7 @@ import FirecrawlApp from "@mendable/firecrawl-js";  // correct!
 ```
 
 ## Pitfall 5: Polling Too Aggressively
+
 ```typescript
 // BAD: polling every 100ms wastes resources and may trigger rate limits
 let status = await firecrawl.checkCrawlStatus(jobId);
@@ -115,6 +121,7 @@ while (status.status === "scraping") {
 ```
 
 ## Pitfall 6: No Error Handling on Scrape
+
 ```typescript
 // BAD: assuming scrape always succeeds
 const result = await firecrawl.scrapeUrl(url, { formats: ["markdown"] });
@@ -130,6 +137,7 @@ processContent(result.markdown);
 ```
 
 ## Pitfall 7: Ignoring includePaths Start URL Match
+
 ```typescript
 // BAD: start URL doesn't match includePaths — crawl returns 0 pages
 await firecrawl.crawlUrl("https://example.com/docs/intro", {
@@ -145,6 +153,7 @@ await firecrawl.crawlUrl("https://example.com", {
 ```
 
 ## Pitfall 8: Requesting Screenshots Unnecessarily
+
 ```typescript
 // BAD: screenshots are expensive (latency and bandwidth)
 await firecrawl.scrapeUrl(url, {
@@ -160,6 +169,7 @@ await firecrawl.scrapeUrl(url, {
 ```
 
 ## Pitfall 9: Not Using Batch for Multiple URLs
+
 ```typescript
 // BAD: sequential scrapes (slow, N API calls)
 const results = [];
@@ -175,6 +185,7 @@ const batchResult = await firecrawl.batchScrapeUrls(urls, {
 ```
 
 ## Pitfall 10: Not Validating Extracted Content
+
 ```typescript
 // BAD: trusting LLM extraction blindly
 const result = await firecrawl.scrapeUrl(url, {
@@ -212,9 +223,11 @@ if (parsed.success) {
 - [ ] Error handling for 429, 402, and empty content
 
 ## Resources
+
 - [Firecrawl Docs](https://docs.firecrawl.dev)
 - [Scrape vs Crawl](https://docs.firecrawl.dev/features/crawl)
 - [Advanced Scraping Guide](https://docs.firecrawl.dev/advanced-scraping-guide)
 
 ## Next Steps
+
 For reference architecture, see `firecrawl-reference-architecture`.

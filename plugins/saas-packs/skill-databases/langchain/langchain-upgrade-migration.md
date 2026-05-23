@@ -10,6 +10,7 @@ langchain-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute LangChain SDK upgrades
 **Workflow:** Part of the operations skill category for LangChain integration.
 **Relates to:** Other langchain skills in this pack.

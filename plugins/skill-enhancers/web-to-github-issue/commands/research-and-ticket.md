@@ -27,16 +27,19 @@ research-and-ticket <topic> --assignees user1,user2
 ## Examples
 
 ### Technical Research
+
 ```bash
 research-and-ticket "PostgreSQL indexing best practices"
 ```
 
 ### Security Monitoring
+
 ```bash
 research-and-ticket "React CVE vulnerabilities 2025" --labels security,urgent
 ```
 
 ### Feature Investigation
+
 ```bash
 research-and-ticket "Stripe payment features comparison" --labels feature-request
 ```
@@ -44,11 +47,13 @@ research-and-ticket "Stripe payment features comparison" --labels feature-reques
 ## Configuration
 
 Set your GitHub token:
+
 ```bash
 export GITHUB_TOKEN=ghp_your_token_here
 ```
 
 Set default repository (optional):
+
 ```bash
 # In your .env or shell profile
 export GITHUB_DEFAULT_REPO=owner/repo
@@ -68,6 +73,7 @@ export GITHUB_DEFAULT_REPO=owner/repo
 ## Output
 
 The command creates a well-structured GitHub issue with:
+
 - **Title**: Auto-generated based on topic and priority
 - **Labels**: Research + custom labels + priority labels
 - **Body**: Markdown-formatted with sections for findings, sources, and next steps
@@ -89,15 +95,18 @@ The command creates a well-structured GitHub issue with:
 ## Troubleshooting
 
 **Error: GitHub token required**
+
 - Set `GITHUB_TOKEN` environment variable
 - Ensure token has `repo` scope
 
 **Error: Repository not found**
+
 - Check repo format: `owner/repo`
 - Verify you have access to the repository
 - Ensure repository has issues enabled
 
 **No search results found**
+
 - Try broader search terms
 - Check internet connectivity
 - Ensure web_search Skill is available

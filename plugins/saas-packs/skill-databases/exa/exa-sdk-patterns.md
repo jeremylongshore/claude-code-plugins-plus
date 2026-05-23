@@ -10,6 +10,7 @@ exa-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Exa SDK patterns including client singleton, error handling, retry logic, and type-safe wrappers.
 **Workflow:** Graduate skill from basic usage to production-quality code patterns.
 **Relates to:** Follows exa-hello-world; provides foundation for exa-reference-architecture

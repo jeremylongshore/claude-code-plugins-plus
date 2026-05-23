@@ -216,6 +216,7 @@ oci compute instance terminate --instance-id <INSTANCE_OCID>
 ## Output
 
 Successful completion produces:
+
 - A list of existing compute instances in your tenancy
 - A newly launched compute instance (standard or ARM Always Free) in RUNNING state
 - The instance OCID for use in subsequent lifecycle operations

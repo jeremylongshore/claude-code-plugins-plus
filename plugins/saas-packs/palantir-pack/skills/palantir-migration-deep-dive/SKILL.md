@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Migration Deep Dive
 
 ## Overview
+
 Comprehensive guide for migrating data into Foundry, migrating from legacy systems to Foundry-backed architectures, and upgrading between Foundry API versions using the strangler fig pattern.
 
 ## Prerequisites
+
 - Source system access and schema documentation
 - Foundry enrollment with write access
 - Understanding of Foundry data pipeline architecture (`palantir-reference-architecture`)
@@ -38,6 +40,7 @@ Comprehensive guide for migrating data into Foundry, migrating from legacy syste
 ## Instructions
 
 ### Step 1: Migration Assessment
+
 ```markdown
 ## Migration Checklist
 - [ ] Source system inventory (tables, volumes, refresh rates)
@@ -49,6 +52,7 @@ Comprehensive guide for migrating data into Foundry, migrating from legacy syste
 ```
 
 ### Step 2: Data Migration — Bulk Import
+
 ```python
 import foundry, pandas as pd
 
@@ -69,6 +73,7 @@ print(f"Uploaded {len(df)} rows to Foundry")
 ```
 
 ### Step 3: Incremental Sync (Ongoing)
+
 ```python
 from datetime import datetime, timedelta
 
@@ -95,6 +100,7 @@ def incremental_sync(client, source_conn, dataset_rid, last_sync):
 ```
 
 ### Step 4: Strangler Fig Pattern for API Migration
+
 ```python
 class DualWriteClient:
     """Write to both legacy and Foundry during migration period."""
@@ -122,6 +128,7 @@ class DualWriteClient:
 ```
 
 ### Step 5: Validation and Cutover
+
 ```python
 def validate_migration(legacy_conn, foundry_client, ontology, object_type):
     """Compare row counts and checksums between source and Foundry."""
@@ -141,6 +148,7 @@ def validate_migration(legacy_conn, foundry_client, ontology, object_type):
 ```
 
 ## Output
+
 - Migration assessment checklist completed
 - Bulk data import to Foundry datasets
 - Incremental sync for ongoing changes
@@ -148,6 +156,7 @@ def validate_migration(legacy_conn, foundry_client, ontology, object_type):
 - Validation comparing source and Foundry counts
 
 ## Error Handling
+
 | Migration Risk | Detection | Mitigation |
 |---------------|-----------|------------|
 | Data loss | Row count mismatch | Run validation before cutover |
@@ -156,8 +165,10 @@ def validate_migration(legacy_conn, foundry_client, ontology, object_type):
 | Rollback needed | Production issues | Keep legacy running during parallel period |
 
 ## Resources
+
 - [Foundry Data Integration](https://www.palantir.com/docs/foundry/data-integration/rest-apis/)
 - [Foundry Connectors](https://www.palantir.com/docs/foundry/available-connectors/rest-apis)
 
 ## Next Steps
+
 For SDK version upgrades, see `palantir-upgrade-migration`.

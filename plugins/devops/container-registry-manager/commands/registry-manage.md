@@ -6,7 +6,6 @@ description: Manage container registries (ECR, GCR, Harbor)
 
 Manage container registries (ECR, GCR, Harbor)
 
-
 ## Key Features
 
 - Production-ready configurations

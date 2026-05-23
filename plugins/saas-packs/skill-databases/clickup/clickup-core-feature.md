@@ -10,6 +10,7 @@ clickup-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement ClickUp core feature integration
 **Workflow:** Part of the onboarding skill category for ClickUp integration.
 **Relates to:** Other clickup skills in this pack.

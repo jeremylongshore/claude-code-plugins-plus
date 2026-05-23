@@ -10,6 +10,7 @@ anthropic-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Anthropic reference architecture
 **Workflow:** Part of the cicd skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

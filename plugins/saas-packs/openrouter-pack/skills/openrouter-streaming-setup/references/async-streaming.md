@@ -3,6 +3,7 @@
 ## Async Streaming
 
 ### Python Async Stream
+
 ```python
 from openai import AsyncOpenAI
 
@@ -33,6 +34,7 @@ asyncio.run(main())
 ```
 
 ### Collecting Streamed Response
+
 ```python
 async def collect_stream(prompt: str, model: str = "openai/gpt-4-turbo") -> str:
     """Collect full streamed response."""

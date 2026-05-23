@@ -43,6 +43,7 @@ Real gotchas when using Clay's data enrichment platform. These are the mistakes 
 **Root cause:** Each Clay webhook has a hard 50,000 submission lifetime limit. This limit persists even after deleting rows from the table.
 
 **Fix:**
+
 - Monitor webhook submission count in your application
 - Create a new webhook on the same table when approaching 45K
 - Use the `WebhookRotator` pattern from `clay-load-scale`
@@ -67,6 +68,7 @@ Real gotchas when using Clay's data enrichment platform. These are the mistakes 
 **Root cause:** Rows contain gmail.com, yahoo.com, hotmail.com domains. Clay's company enrichment can't match personal email domains to companies.
 
 **Fix:**
+
 ```typescript
 const PERSONAL_DOMAINS = new Set([
   'gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com',
@@ -95,6 +97,7 @@ function filterBeforeEnrichment(rows: any[]) {
 **Root cause:** Table-level auto-update was ON, and a column edit or provider reconnection triggered re-enrichment of all existing rows.
 
 **Fix:**
+
 - Turn off table-level auto-update before editing column configuration
 - Use conditional run rules: `ISEMPTY(Work Email)` to skip already-enriched rows
 - Only enable auto-update for tables with active webhook inflow
@@ -108,6 +111,7 @@ function filterBeforeEnrichment(rows: any[]) {
 **Root cause:** Clay maps CSV columns by exact header name. "Company Name" does not match "company_name" or "company name."
 
 **Fix:**
+
 ```typescript
 // Normalize CSV headers before import
 function normalizeCSVHeaders(headers: string[]): string[] {
@@ -141,6 +145,7 @@ function normalizeCSVHeaders(headers: string[]): string[] {
 **Good prompt:** "Go to {{domain}}/about and find the CEO's name. Then check {{domain}}/pricing for the starting price. Return: CEO Name, Starting Price."
 
 **Fix:**
+
 - Be specific about what page to check
 - Ask for specific data points, not general research
 - Add fallback instructions: "If not on website, check LinkedIn"
@@ -172,6 +177,7 @@ function normalizeCSVHeaders(headers: string[]): string[] {
 **Root cause:** Claygent and AI columns are set to auto-run on all new rows without qualification criteria.
 
 **Fix:** Add "Only run if" conditions:
+
 - Claygent: `ICP Score >= 60 AND ISNOTEMPTY(Company Name)`
 - AI personalization: `ICP Score >= 70 AND ISNOTEMPTY(Work Email)`
 - Phone lookup: `ICP Score >= 80 AND ISNOTEMPTY(Work Email)`

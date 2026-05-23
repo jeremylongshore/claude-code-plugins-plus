@@ -10,6 +10,7 @@ hex-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Hex rate limiting and backoff
 **Workflow:** Part of the operations skill category for Hex integration.
 **Relates to:** Other hex skills in this pack.

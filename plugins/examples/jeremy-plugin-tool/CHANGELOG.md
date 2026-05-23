@@ -10,11 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🎉 Major Transformation: skills-powerkit → jeremy-plugin-tool
 
 **Breaking Changes:**
+
 - Renamed plugin from `skills-powerkit` to `jeremy-plugin-tool`
 - Removed Marketplace Manager skill (5 skills → 4 skills)
 - Changed focus from marketplace management to production-grade plugin creation
 
 ### ✨ Added
+
 - **Nixtla-Grade Validator** (`validate_plugin_nixtla.py`) - 805-line production validator
   - Enforces "Use when..." and "Trigger with..." phrases in descriptions
   - Forbids unscoped Bash permissions (requires `Bash(git:*)` patterns)
@@ -37,16 +39,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Marketplace integration
 
 ### 🔄 Changed
+
 - **Plugin Creator** - Now generates nixtla-compliant SKILL.md templates
 - **Plugin Validator** - Integrated nixtla v2.0 validation logic
 - **Plugin Auditor** - Updated to check nixtla quality standards
 - **Version Bumper** - Streamlined for 4-skill architecture
 
 ### ❌ Removed
+
 - **Marketplace Manager skill** - Focus shifted to plugin quality over marketplace operations
 - All marketplace sync operations (handled separately)
 
 ### 📊 Quality Improvements
+
 - **Validation Compliance:** 0% → 100% target (nixtla standards)
 - **Required Field Coverage:** Basic → Enterprise (Anthropic + Intent Solutions 6767-c)
 - **Security:** Unscoped Bash allowed → Forbidden (scoped patterns required)
@@ -55,12 +60,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Token Management:** No tracking → Lee Han Chung budget enforcement
 
 ### 🐛 Fixes
+
 - Fixed skill descriptions to include trigger phrases
 - Fixed Bash permissions to use scoped patterns
 - Fixed missing required sections in existing skills
 - Fixed reserved word usage ("claude" in descriptions)
 
 ### 📚 Documentation
+
 - Renamed README title and description
 - Updated all skill counts from 5 to 4
 - Renumbered skills (Auditor 4→3, Version Bumper 5→4)
@@ -68,6 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added interactive workflow examples
 
 ### 🔧 Technical Details
+
 - **Lines of Code Added:** 805 (validator) + 200 (create-plugin command)
 - **Files Changed:** 8 files (plugin.json, README.md, marketplace.extended.json, CHANGELOG.md, validator script, command file)
 - **Directory Rename:** `plugins/examples/skills-powerkit/` → `plugins/examples/jeremy-plugin-tool/`
@@ -78,11 +86,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **For existing skills-powerkit users:**
 
 1. **Uninstall old plugin:**
+
    ```bash
    /plugin uninstall skills-powerkit@claude-code-plugins-plus
    ```
 
 2. **Install jeremy-plugin-tool:**
+
    ```bash
    /plugin install jeremy-plugin-tool@claude-code-plugins-plus
    ```
@@ -103,6 +113,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2024-10-16
 
 ### Initial Release (as skills-powerkit)
+
 - 5 repository-specific Agent Skills
 - Plugin Creator, Validator, Marketplace Manager, Auditor, Version Bumper
 - Optimized for claude-code-plugins workflow

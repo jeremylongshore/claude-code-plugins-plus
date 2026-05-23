@@ -10,6 +10,7 @@ grammarly-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Grammarly multi-environment setup
 **Workflow:** Part of the enterprise skill category for Grammarly integration.
 **Relates to:** Other grammarly skills in this pack.

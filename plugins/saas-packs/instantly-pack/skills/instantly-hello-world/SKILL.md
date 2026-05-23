@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Hello World
 
 ## Overview
+
 Minimal working example that lists your campaigns, checks email account health, and pulls campaign analytics — all using real Instantly API v2 endpoints.
 
 ## Prerequisites
+
 - Completed `instantly-install-auth` setup
 - At least one email account connected in Instantly
 - `INSTANTLY_API_KEY` environment variable set
@@ -35,6 +37,7 @@ Minimal working example that lists your campaigns, checks email account health, 
 ## Instructions
 
 ### Step 1: List Your Campaigns
+
 ```typescript
 import { instantly } from "./src/instantly";
 
@@ -62,6 +65,7 @@ async function listCampaigns() {
 ```
 
 ### Step 2: Check Email Account Health
+
 ```typescript
 interface Account {
   email: string;
@@ -90,6 +94,7 @@ async function checkAccounts() {
 ```
 
 ### Step 3: Pull Campaign Analytics
+
 ```typescript
 async function getAnalytics(campaignId: string) {
   const stats = await instantly<{
@@ -112,6 +117,7 @@ async function getAnalytics(campaignId: string) {
 ```
 
 ### Step 4: Run It All
+
 ```typescript
 async function main() {
   console.log("=== Instantly API v2 Hello World ===\n");
@@ -130,6 +136,7 @@ main().catch(console.error);
 ```
 
 ### Quick Test with curl
+
 ```bash
 set -euo pipefail
 # List campaigns
@@ -142,12 +149,14 @@ curl -s https://api.instantly.ai/api/v2/accounts?limit=3 \
 ```
 
 ## Output
+
 - List of campaigns with names and statuses
 - Email account health overview
 - Campaign analytics summary (open rate, reply rate, bounce count)
 - Confirmation that Instantly API v2 is reachable
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401 Unauthorized` | Bad API key | Regenerate in Settings > Integrations |
@@ -156,9 +165,11 @@ curl -s https://api.instantly.ai/api/v2/accounts?limit=3 \
 | `429 Too Many Requests` | Rate limited | Wait and retry with backoff |
 
 ## Resources
+
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
 - [Campaign Endpoints](https://developer.instantly.ai/api/v2/campaign)
 - [Account Endpoints](https://developer.instantly.ai/api/v2/account)
 
 ## Next Steps
+
 Proceed to `instantly-core-workflow-a` to build a full campaign launch workflow.

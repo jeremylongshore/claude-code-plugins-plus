@@ -10,6 +10,7 @@ klaviyo-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Klaviyo production deployment checklist
 **Workflow:** Part of the operations skill category for Klaviyo integration.
 **Relates to:** Other klaviyo skills in this pack.

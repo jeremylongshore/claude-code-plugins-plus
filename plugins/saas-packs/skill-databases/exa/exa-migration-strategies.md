@@ -10,6 +10,7 @@ exa-migration-strategies/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute migration from other search providers (Elasticsearch, Algolia, Google Search) to Exa with parallel running and quality comparison.
 **Workflow:** Migration skill - enables transition from other search solutions.
 **Relates to:** Follows exa-reference-architecture; uses exa-search-quality for comparison

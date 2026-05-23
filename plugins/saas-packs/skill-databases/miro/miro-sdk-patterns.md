@@ -10,6 +10,7 @@ miro-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Miro SDK patterns
 **Workflow:** Part of the onboarding skill category for Miro integration.
 **Relates to:** Other miro skills in this pack.

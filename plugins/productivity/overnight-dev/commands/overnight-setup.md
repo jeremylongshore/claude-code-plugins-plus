@@ -21,14 +21,16 @@ This command sets up your repository for overnight autonomous development sessio
 ### 1. Check Prerequisites
 
 First, verify you have:
--  Git repository initialized (`git status` works)
--  Test framework configured (Jest, pytest, etc.)
--  At least 1 passing test
--  Linter set up (ESLint, flake8, etc.)
+
+- Git repository initialized (`git status` works)
+- Test framework configured (Jest, pytest, etc.)
+- At least 1 passing test
+- Linter set up (ESLint, flake8, etc.)
 
 ### 2. Install the Hooks
 
 The plugin will copy Git hooks to `.git/hooks/`:
+
 - **pre-commit** - Runs linting and tests before each commit
 - **commit-msg** - Enforces conventional commit format
 
@@ -70,6 +72,7 @@ git commit --allow-empty -m "test: verify overnight dev hooks"
 ```
 
 If hooks work correctly, you'll see:
+
 ```
  Overnight Dev: Running pre-commit checks...
  Running linting...
@@ -126,6 +129,7 @@ If hooks work correctly, you'll see:
 Once setup is complete:
 
 1. **Define your goal:**
+
    ```
    Task: Implement user authentication with JWT
    Success: All tests pass, coverage > 85%
@@ -155,6 +159,7 @@ chmod +x .git/hooks/commit-msg
 ### "Tests failing immediately"
 
 Make sure you have at least 1 passing test before starting:
+
 ```bash
 npm test  # or pytest, cargo test, etc.
 ```
@@ -162,6 +167,7 @@ npm test  # or pytest, cargo test, etc.
 ### "Linting errors blocking commits"
 
 Enable auto-fix in config:
+
 ```json
 {
   "autoFix": true
@@ -169,6 +175,7 @@ Enable auto-fix in config:
 ```
 
 Or fix manually:
+
 ```bash
 npm run lint -- --fix
 ```
@@ -185,11 +192,12 @@ npm run lint -- --fix
 ## Success Metrics
 
 Track your overnight session:
--  All commits have passing tests
--  Coverage maintained or improved
--  No linting errors
--  Clean conventional commit messages
--  Features fully implemented and documented
+
+- All commits have passing tests
+- Coverage maintained or improved
+- No linting errors
+- Clean conventional commit messages
+- Features fully implemented and documented
 
 ## Pro Tips
 
@@ -199,4 +207,4 @@ Track your overnight session:
 4. **Commit frequently** - Small, passing commits
 5. **Trust the process** - Hooks enforce quality automatically
 
-Ready to start? Just begin coding and let the hooks guide you to fully tested features! 
+Ready to start? Just begin coding and let the hooks guide you to fully tested features!

@@ -10,6 +10,7 @@ palantir-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Palantir common errors
 **Workflow:** Part of the operations skill category for Palantir integration.
 **Relates to:** Other palantir skills in this pack.

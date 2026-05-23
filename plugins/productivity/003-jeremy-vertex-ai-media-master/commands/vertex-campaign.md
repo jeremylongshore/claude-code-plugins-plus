@@ -17,6 +17,7 @@ Create a comprehensive marketing campaign with all assets generated via Google V
 ## Campaign Assets Generated
 
 ### Visual Assets (Imagen 4)
+
 - Hero image (1920x1080)
 - Social media graphics (Instagram, Facebook, LinkedIn)
 - Display ad creatives (multiple sizes)
@@ -24,18 +25,21 @@ Create a comprehensive marketing campaign with all assets generated via Google V
 - A/B test variations
 
 ### Video Assets (Gemini 2.5 Pro)
+
 - Video scripts (30s, 60s, 2min versions)
 - Storyboard descriptions
 - Video editing instructions
 - Thumbnail designs
 
 ### Audio Assets (Lyria)
+
 - Background music compositions
 - Voiceover scripts
 - Audio ad scripts
 - Podcast episode outlines
 
 ### Written Content (Gemini 2.5 Pro)
+
 - Email marketing sequences
 - Blog post (SEO optimized)
 - Social media captions
@@ -49,6 +53,7 @@ Create a comprehensive marketing campaign with all assets generated via Google V
 ```
 
 Then provide campaign details:
+
 - Product/service name
 - Target audience
 - Campaign objectives
@@ -58,6 +63,7 @@ Then provide campaign details:
 ## Example Workflow
 
 **Input:**
+
 ```
 Product: Premium noise-canceling headphones
 Audience: Remote workers, 25-45, tech-savvy
@@ -66,6 +72,7 @@ Budget: $50K
 ```
 
 **Output:**
+
 1. 15 product images (lifestyle, studio, use-cases)
 2. 30s product launch video script
 3. Background music track (energetic, professional)
@@ -77,6 +84,7 @@ Budget: $50K
 ## Technical Implementation
 
 **Step 1: Initialize Vertex AI**
+
 ```python
 from google.cloud import aiplatform
 from vertexai.preview.generative_models import GenerativeModel
@@ -86,6 +94,7 @@ aiplatform.init(project=PROJECT_ID, location="us-central1")
 ```
 
 **Step 2: Generate Visual Assets**
+
 ```python
 imagen = ImageGenerationModel.from_pretrained("imagen-4")
 hero_image = imagen.generate_images(
@@ -96,6 +105,7 @@ hero_image = imagen.generate_images(
 ```
 
 **Step 3: Create Video Script**
+
 ```python
 gemini = GenerativeModel("gemini-2.5-pro")
 video_script = gemini.generate_content([
@@ -104,6 +114,7 @@ video_script = gemini.generate_content([
 ```
 
 **Step 4: Generate Audio**
+
 ```python
 from vertexai.preview.audio_models import AudioGenerationModel
 lyria = AudioGenerationModel.from_pretrained("lyria")
@@ -114,6 +125,7 @@ background_music = lyria.generate_audio(
 ```
 
 **Step 5: Create Multi-Channel Copy**
+
 ```python
 content = gemini.generate_content([
     f"""Generate marketing content for {product}:
@@ -128,6 +140,7 @@ content = gemini.generate_content([
 ## Cost Estimation
 
 **Per Campaign:**
+
 - Visual Assets: $2-3 (50 images @ $0.04 each)
 - Video Scripts: $0.50 (Gemini tokens)
 - Audio: $1-2 (Lyria generation)
@@ -146,6 +159,7 @@ content = gemini.generate_content([
 ## Integration with Marketing Stack
 
 **Export to:**
+
 - Google Ads (PMax campaigns)
 - Meta Business Suite (Facebook/Instagram)
 - LinkedIn Campaign Manager
@@ -155,6 +169,7 @@ content = gemini.generate_content([
 ## Performance Tracking
 
 **Monitor:**
+
 - Asset generation time
 - Cost per asset
 - Approval rates

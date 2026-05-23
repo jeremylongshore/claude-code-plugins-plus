@@ -62,6 +62,7 @@ Spec Writing provides guidance on authoring effective `specs.md` files that driv
 ## Examples
 
 **Minimal but effective spec:**
+
 ```markdown
 # Sprint 1: User Authentication
 
@@ -87,6 +88,7 @@ Add user authentication with email/password login
 ```
 
 **Frontend-only sprint (no QA needed):**
+
 ```markdown
 # Sprint 3: Dashboard Redesign
 

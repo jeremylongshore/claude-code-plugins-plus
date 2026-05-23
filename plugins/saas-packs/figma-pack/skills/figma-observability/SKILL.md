@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code
 # Figma Observability
 
 ## Overview
+
 Monitor Figma REST API health with custom metrics, structured logging, and alerts. Track request latency, error rates, rate limit headroom, and cache hit rates.
 
 ## Prerequisites
+
 - Prometheus or compatible metrics backend (or use OpenTelemetry)
 - Structured logging (pino, winston)
 - Alerting system (PagerDuty, Slack, OpsGenie)
@@ -33,6 +35,7 @@ Monitor Figma REST API health with custom metrics, structured logging, and alert
 ## Instructions
 
 ### Step 1: Instrumented Figma Client
+
 ```typescript
 // Wrap every Figma API call with metrics and logging
 class InstrumentedFigmaClient {
@@ -109,6 +112,7 @@ class InstrumentedFigmaClient {
 ```
 
 ### Step 2: Prometheus Metrics
+
 ```typescript
 import { Registry, Counter, Histogram, Gauge } from 'prom-client';
 
@@ -150,6 +154,7 @@ app.get('/metrics', async (req, res) => {
 ```
 
 ### Step 3: Alert Rules
+
 ```yaml
 # prometheus-alerts.yml
 groups:
@@ -190,6 +195,7 @@ groups:
 ```
 
 ### Step 4: Health Check with Details
+
 ```typescript
 async function figmaHealthCheck(): Promise<{
   status: 'healthy' | 'degraded' | 'unhealthy';
@@ -225,12 +231,14 @@ async function figmaHealthCheck(): Promise<{
 ```
 
 ## Output
+
 - Instrumented client logging every Figma API call
 - Prometheus metrics for requests, latency, rate limits, cache
 - Alert rules for error rate, rate limits, latency, auth failures
 - Health check endpoint with Figma connectivity details
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | High cardinality | Too many label values | Normalize endpoint paths |
@@ -239,9 +247,11 @@ async function figmaHealthCheck(): Promise<{
 | Metrics not scraping | Wrong port or path | Verify Prometheus scrape config |
 
 ## Resources
+
 - [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
 - [OpenTelemetry JS SDK](https://opentelemetry.io/docs/languages/js/)
 - [Figma Rate Limits](https://developers.figma.com/docs/rest-api/rate-limits/)
 
 ## Next Steps
+
 For incident response, see `figma-incident-runbook`.

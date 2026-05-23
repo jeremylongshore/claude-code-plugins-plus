@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code
 # Anthropic Message Batches & Async Processing
 
 ## Overview
+
 Anthropic doesn't have traditional webhooks. Instead, use **Message Batches** for async bulk processing — up to 10,000 requests per batch at 50% off, with a 24-hour processing SLA.
 
 ## Prerequisites
+
 - Completed `clade-install-auth`
 - Multiple prompts/documents to process in bulk
 - Tolerance for async processing (results within 24 hours)
@@ -34,6 +36,7 @@ Anthropic doesn't have traditional webhooks. Instead, use **Message Batches** fo
 ## Instructions
 
 ### Step 1: Create a Batch
+
 ```typescript
 import Anthropic from '@claude-ai/sdk';
 
@@ -54,6 +57,7 @@ console.log(`Batch ${batch.id} created — ${batch.request_counts.processing} pr
 ```
 
 ### Step 2: Poll for Completion
+
 ```typescript
 async function waitForBatch(batchId: string): Promise<Anthropic.Messages.MessageBatch> {
   while (true) {
@@ -74,6 +78,7 @@ async function waitForBatch(batchId: string): Promise<Anthropic.Messages.Message
 ```
 
 ### Step 3: Retrieve Results
+
 ```typescript
 const results = await client.messages.batches.results(batch.id);
 
@@ -88,6 +93,7 @@ for await (const result of results) {
 ```
 
 ## Python Example
+
 ```python
 import anthropic
 import time
@@ -120,6 +126,7 @@ for result in client.messages.batches.results(batch.id):
 ```
 
 ## Batch Limits
+
 | Limit | Value |
 |-------|-------|
 | Max requests per batch | 10,000 |
@@ -129,12 +136,14 @@ for result in client.messages.batches.results(batch.id):
 | Result availability | 29 days after creation |
 
 ## Output
+
 - Batch created with up to 10,000 requests
 - Processing status tracked via polling
 - Results retrieved with per-request success/error status
 - Failed requests identified for retry in a new batch
 
 ## Error Handling
+
 | Result Type | Meaning | Action |
 |-------------|---------|--------|
 | `succeeded` | Normal response | Process `result.message` |
@@ -143,11 +152,14 @@ for result in client.messages.batches.results(batch.id):
 | `canceled` | Batch was canceled | Resubmit if needed |
 
 ## Examples
+
 See Step 1 (batch creation), Step 2 (polling), Step 3 (result retrieval), Python example, and Batch Limits table above.
 
 ## Resources
+
 - [Message Batches API](https://docs.anthropic.com/en/api/creating-message-batches)
 - [Batch Pricing](https://www.anthropic.com/pricing) — 50% off standard
 
 ## Next Steps
+
 See `clade-ci-integration` for using batches in CI pipelines.

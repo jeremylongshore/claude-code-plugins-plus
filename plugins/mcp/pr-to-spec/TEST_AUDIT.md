@@ -101,6 +101,7 @@ Net gain: +75 tests
 ### Tautological Tests (FIXED)
 
 **`tests/webhook.test.ts` lines 82-86** (old):
+
 ```ts
 it("webhook POST uses correct headers", () => {
   const headers = { "Content-Type": "application/json", "User-Agent": "pr-to-spec/0.6.0" };
@@ -108,6 +109,7 @@ it("webhook POST uses correct headers", () => {
   expect(headers["User-Agent"]).toContain("pr-to-spec");
 });
 ```
+
 This test created a local variable and asserted on it — testing nothing about actual code behavior.
 
 **Fix**: Replaced with a test that verifies the risk flags array structure when an auth file is in the PR (tests actual code output).

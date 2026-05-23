@@ -18,14 +18,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Procore Core Workflow A
 
 ## Overview
+
 Build a complete RFI workflow: create, assign, respond, track, and close RFIs using the Procore API.
 
 ## Prerequisites
+
 - Completed `procore-hello-world` with project access
 
 ## Instructions
 
 ### Step 1: Create RFI with Full Details
+
 ```python
 rfi_data = {
     "rfi": {
@@ -48,6 +51,7 @@ rfi_id = rfi.json()["id"]
 ```
 
 ### Step 2: Add Response to RFI
+
 ```python
 response = requests.post(
     f"{BASE}/projects/{project_id}/rfis/{rfi_id}/responses",
@@ -61,6 +65,7 @@ response = requests.post(
 ```
 
 ### Step 3: Track RFI Status
+
 ```python
 rfi_detail = requests.get(f"{BASE}/projects/{project_id}/rfis/{rfi_id}", headers=headers)
 data = rfi_detail.json()
@@ -70,6 +75,7 @@ print(f"  Responses: {len(data.get('responses', []))}")
 ```
 
 ### Step 4: Close RFI
+
 ```python
 requests.patch(
     f"{BASE}/projects/{project_id}/rfis/{rfi_id}",
@@ -79,12 +85,14 @@ requests.patch(
 ```
 
 ## Output
+
 - RFI created with full metadata (priority, impacts, due date)
 - Responses added to RFI thread
 - Status tracked through lifecycle
 - RFI closed upon resolution
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `422 Invalid assignee` | User not on project | Verify user is a project member |
@@ -92,8 +100,10 @@ requests.patch(
 | Missing responses | RFI in draft status | Distribute RFI first |
 
 ## Resources
+
 - [RFIs API](https://developers.procore.com/reference/rest/rfis)
 - [Procore Developers](https://developers.procore.com/)
 
 ## Next Steps
+
 Submittal workflow: `procore-core-workflow-b`

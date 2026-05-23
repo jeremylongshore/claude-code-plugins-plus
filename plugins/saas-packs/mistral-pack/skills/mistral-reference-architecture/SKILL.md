@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral AI Reference Architecture
 
 ## Overview
+
 Production-ready architecture patterns for Mistral AI integrations: layered project structure, singleton client, Zod-validated config, custom error classes, service layer with caching, health checks, prompt templates, and model routing.
 
 ## Prerequisites
+
 - TypeScript/Node.js project (ESM)
 - `@mistralai/mistralai` SDK
 - `zod` for config validation
@@ -294,6 +296,7 @@ export const PROMPTS: Record<string, PromptTemplate> = {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Resolution |
 |-------|-------|------------|
 | Config validation error | Missing/invalid env vars | Check Zod error message |
@@ -302,11 +305,13 @@ export const PROMPTS: Record<string, PromptTemplate> = {
 | Cache ineffective | High temperature | Only cache temperature=0 requests |
 
 ## Resources
+
 - [Mistral API Reference](https://docs.mistral.ai/api/)
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [12-Factor App](https://12factor.net/)
 
 ## Output
+
 - Layered directory structure with clear separation
 - Zod-validated configuration from environment
 - Singleton client with lazy initialization

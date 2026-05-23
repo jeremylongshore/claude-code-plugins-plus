@@ -10,6 +10,7 @@ exa-incident-runbook/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute rapid incident response for Exa outages with triage, mitigation, fallback activation, and communication templates.
 **Workflow:** On-call response skill - minimizes MTTR during Exa incidents.
 **Relates to:** Follows exa-observability; uses patterns from exa-reliability-patterns

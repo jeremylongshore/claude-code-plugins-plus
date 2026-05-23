@@ -10,6 +10,7 @@ lucidchart-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Lucidchart core feature integration
 **Workflow:** Part of the onboarding skill category for Lucidchart integration.
 **Relates to:** Other lucidchart skills in this pack.

@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Local Dev Loop
 
 ## Overview
+
 Set up a fast, reproducible local development workflow for Exa integrations. Covers project structure, mock responses for unit tests, integration test patterns, and hot-reload configuration.
 
 ## Prerequisites
+
 - `exa-js` installed and `EXA_API_KEY` configured
 - Node.js 18+ with npm/pnpm
 - `vitest` for testing (or `jest`)
@@ -35,6 +37,7 @@ Set up a fast, reproducible local development workflow for Exa integrations. Cov
 ## Instructions
 
 ### Step 1: Project Structure
+
 ```
 my-exa-project/
 ├── src/
@@ -54,6 +57,7 @@ my-exa-project/
 ```
 
 ### Step 2: Package Setup
+
 ```json
 {
   "scripts": {
@@ -75,6 +79,7 @@ my-exa-project/
 ```
 
 ### Step 3: Mock Exa for Unit Tests
+
 ```typescript
 // tests/exa.unit.test.ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -139,6 +144,7 @@ describe("Exa Search", () => {
 ```
 
 ### Step 4: Integration Tests (Real API)
+
 ```typescript
 // tests/exa.integration.test.ts
 import { describe, it, expect } from "vitest";
@@ -177,6 +183,7 @@ describeWithKey("Exa Integration", () => {
 ```
 
 ### Step 5: Environment Configuration
+
 ```bash
 set -euo pipefail
 # Create .env.example template (commit this)
@@ -191,6 +198,7 @@ echo "EXA_API_KEY=your-key-here" > .env.local
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Cannot find module 'exa-js'` | Not installed | Run `npm install exa-js` |
@@ -201,6 +209,7 @@ echo "EXA_API_KEY=your-key-here" > .env.local
 ## Examples
 
 ### Vitest Config for Exa Projects
+
 ```typescript
 // vitest.config.ts
 import { defineConfig } from "vitest/config";
@@ -216,9 +225,11 @@ export default defineConfig({
 ```
 
 ## Resources
+
 - [Vitest Documentation](https://vitest.dev/)
 - [tsx Documentation](https://github.com/privatenumber/tsx)
 - [exa-js on npm](https://www.npmjs.com/package/exa-js)
 
 ## Next Steps
+
 See `exa-sdk-patterns` for production-ready code patterns.

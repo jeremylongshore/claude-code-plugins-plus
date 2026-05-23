@@ -18,6 +18,7 @@ Simple enough, right? Just check a few commands, make sure they're routing throu
 ## The Rabbit Hole Begins
 
 What I discovered was worse than expected:
+
 - **ALL** our slash commands were making direct external requests
 - **ZERO** security controls or monitoring
 - **NO** audit trail whatsoever
@@ -31,6 +32,7 @@ Of course, nothing is ever simple in development. Want to know what consumed 45 
 **PEP 668 externally-managed-environment errors**
 
 You know the drill:
+
 ```bash
 ❌ pip install libsql-client
 ERROR: externally-managed-environment
@@ -41,6 +43,7 @@ This is the Python equivalent of "Have you tried turning it off and on again?" b
 ## The Breaking Point
 
 After fighting with:
+
 - Container dependency issues
 - Virtual environment activation problems
 - Import path conflicts
@@ -64,18 +67,21 @@ Sometimes the best solution is the simplest one. I scrapped the complex FastAPI 
 By the end of this "simple audit":
 
 **Security Infrastructure**:
+
 - Complete zero-trust network architecture
 - Container-based isolation with monitoring
 - Comprehensive audit logging
 - Real-time security violation detection
 
 **Operational Tools**:
+
 - Auto-start systemd service
 - Health monitoring with alerting
 - Performance metrics collection
 - REST API for programmatic access
 
 **Documentation**:
+
 - 32 files created, 7583 lines of infrastructure code
 - Complete deployment guides
 - Security policy framework
@@ -112,5 +118,3 @@ Did we solve ten other problems we didn't know we had? Also yes.
 That's the nature of good engineering work—you don't just fix the symptom, you fix the system. Even when the system fights back with Python environment errors and dependency hell.
 
 **The Waygate MCP is now live at localhost:8000, securing all our external access with enterprise-grade monitoring. And yes, it actually works.**
-
-

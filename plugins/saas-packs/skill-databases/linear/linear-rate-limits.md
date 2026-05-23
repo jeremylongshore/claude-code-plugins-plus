@@ -10,6 +10,7 @@ linear-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Linear rate limiting and backoff
 **Workflow:** Part of the operations skill category for Linear integration.
 **Relates to:** Other linear skills in this pack.

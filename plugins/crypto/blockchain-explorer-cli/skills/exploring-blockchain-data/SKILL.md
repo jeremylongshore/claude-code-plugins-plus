@@ -74,23 +74,29 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full four-step im
 ## Examples
 
 ### Look Up a Transaction Across Chains
+
 ```bash
 # Try Ethereum first, then Polygon if not found
 python blockchain_explorer.py tx 0x1234...abcdef --chain ethereum
 python blockchain_explorer.py tx 0x1234...abcdef --chain polygon
 ```
+
 Returns a formatted table with transaction status, block number, value transferred, gas details, and a link to the block explorer. Adding `--detailed` decodes the function call (e.g., `swapExactTokensForTokens` on Uniswap).
 
 ### Full Wallet Analysis
+
 ```bash
 python blockchain_explorer.py address 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --history --tokens --limit 50
 ```
+
 Produces a wallet summary (ETH balance, total transaction count), the 50 most recent transactions with timestamps and counterparties, and a complete ERC-20 token holdings list with USD values. Useful for whale watching or due diligence on a wallet.
 
 ### Check USDC Balance and Export to JSON
+
 ```bash
 python blockchain_explorer.py token 0xYourWallet 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48 --format json > usdc_balance.json
 ```
+
 Resolves the USDC contract, fetches the wallet balance with proper decimal handling (6 decimals for USDC), includes the current USD price, and writes the result to `usdc_balance.json` for integration with dashboards or alerting pipelines.
 
 ## Resources

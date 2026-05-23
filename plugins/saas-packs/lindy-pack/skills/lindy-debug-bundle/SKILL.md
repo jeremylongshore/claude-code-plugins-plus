@@ -24,16 +24,19 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lindy Debug Bundle
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'Node.js not installed'`
 !`python3 --version 2>/dev/null || echo 'Python not installed'`
 !`curl --version 2>/dev/null | head -1 || echo 'curl not installed'`
 
 ## Overview
+
 Systematic diagnostics for Lindy AI agent issues. Collects environment info,
 tests API connectivity, reviews agent task history, and generates a support
 bundle for Lindy's support team.
 
 ## Prerequisites
+
 - Access to Lindy dashboard (https://app.lindy.ai)
 - curl installed for API testing
 - Agent ID and webhook URLs available
@@ -41,6 +44,7 @@ bundle for Lindy's support team.
 ## Instructions
 
 ### Step 1: Collect Environment Info
+
 ```bash
 # Local environment diagnostics
 echo "=== Local Environment ==="
@@ -53,6 +57,7 @@ echo "LINDY_WEBHOOK_SECRET set: $([ -n "$LINDY_WEBHOOK_SECRET" ] && echo 'yes' |
 ```
 
 ### Step 2: Test Webhook Connectivity
+
 ```bash
 # Test webhook trigger endpoint
 echo "=== Webhook Connectivity ==="
@@ -75,7 +80,9 @@ curl -s -o /dev/null -w "HTTP %{http_code} in %{time_total}s\n" \
 ```
 
 ### Step 3: Review Agent Task History
+
 In the Lindy dashboard:
+
 1. Navigate to the failing agent
 2. Open the **Tasks** tab
 3. Filter by **Failed** status
@@ -87,6 +94,7 @@ In the Lindy dashboard:
 5. Look for patterns: same step failing? same time of day? same input type?
 
 ### Step 4: Check Integration Health
+
 ```bash
 # Test outbound connectivity to common Lindy integration targets
 echo "=== Integration Targets ==="
@@ -104,6 +112,7 @@ done
 ### Step 5: Diagnose Specific Failure Types
 
 **Trigger not firing**:
+
 - Verify agent status: active (not paused)
 - Check trigger filter conditions
 - For webhooks: test URL with curl
@@ -111,24 +120,29 @@ done
 - For schedule: verify timezone settings
 
 **Action failing**:
+
 - Check integration authorization (re-auth if token expired)
 - Verify field references: `{{step_name.field}}` syntax correct
 - Test the target service independently
 - Check if action is a Premium Action (requires Pro plan)
 
 **Agent step looping**:
+
 - Review exit conditions — are they achievable?
 - Check credit consumption (rapid drain = looping)
 - Reduce available skills to 2-4 focused ones
 - Add a fallback exit condition
 
 **High credit consumption**:
+
 - Review model selection: Gemini Flash (cheap) vs GPT-4 (expensive)
 - Check for unnecessary agent steps (use deterministic actions instead)
 - Review loop configurations for unbounded max cycles
 
 ### Step 6: Generate Support Bundle
+
 Compile the following for a support ticket to support@lindy.ai:
+
 ```markdown
 ## Lindy Support Bundle
 
@@ -188,9 +202,11 @@ Agent not working?
 | Slow execution | Model too large or too many steps | Switch to Gemini Flash, consolidate steps |
 
 ## Resources
+
 - [Lindy Community](https://community.lindy.ai)
 - [Lindy Documentation](https://docs.lindy.ai)
 - [Lindy Status](https://status.lindy.ai)
 
 ## Next Steps
+
 Proceed to `lindy-rate-limits` for credit and rate management.

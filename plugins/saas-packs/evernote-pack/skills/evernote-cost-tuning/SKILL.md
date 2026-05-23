@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Cost Tuning
 
 ## Overview
+
 Optimize resource usage and manage costs in Evernote integrations, focusing on monthly upload quotas, storage efficiency, image compression, and account limit monitoring.
 
 ## Prerequisites
+
 - Understanding of Evernote account tiers (Basic: 60MB/mo, Premium: 10GB/mo, Business: 20GB/mo)
 - Access to user quota information via `user.accounting`
 - Monitoring infrastructure for alerts
@@ -93,6 +95,7 @@ For the complete quota monitor, image optimizer, cleanup utilities, and alert sy
 | Notes | 100,000 | 100,000 | 500,000 |
 
 ## Output
+
 - Quota monitoring service with percentage tracking
 - Image compression pipeline for resource optimization
 - Pre-upload quota check with size estimation
@@ -100,6 +103,7 @@ For the complete quota monitor, image optimizer, cleanup utilities, and alert sy
 - Threshold-based alert system for quota usage
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `QUOTA_REACHED` | Monthly upload limit exceeded | Wait for quota reset at `uploadLimitEnd` |
@@ -108,11 +112,13 @@ For the complete quota monitor, image optimizer, cleanup utilities, and alert sy
 | `BAD_DATA_FORMAT` | Attachment hash mismatch | Recompute MD5 hash after image compression |
 
 ## Resources
+
 - [Account Limits](https://help.evernote.com/hc/articles/209005247)
 - [Rate Limits](https://dev.evernote.com/doc/articles/rate_limits.php)
 - [API Reference - User.accounting](https://dev.evernote.com/doc/reference/)
 
 ## Next Steps
+
 For architecture patterns, see `evernote-reference-architecture`.
 
 ## Examples

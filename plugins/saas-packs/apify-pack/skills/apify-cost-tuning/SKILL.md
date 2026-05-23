@@ -139,6 +139,7 @@ for (const memory of [4096, 2048, 1024, 512, 256]) {
 ```
 
 Typical memory sweet spots:
+
 | Actor Type | Start At | Sweet Spot |
 |-----------|----------|-----------|
 | CheerioCrawler (simple) | 256 MB | 256-512 MB |

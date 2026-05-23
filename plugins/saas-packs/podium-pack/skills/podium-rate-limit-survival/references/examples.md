@@ -175,6 +175,7 @@ python3 scripts/bucket_simulator.py \
 ```
 
 Output:
+
 ```json
 {
   "trace_requests": 4127,
@@ -197,12 +198,14 @@ python3 scripts/quota_monitor.py \
 ```
 
 Exit codes:
+
 - `0` = below warn (< 70%)
 - `1` = warn (70–84%)
 - `2` = page (85–94%)
 - `3` = throttle (>= 95%)
 
 Use in a cron / alertmanager:
+
 ```cron
 */5 * * * *  python3 /opt/podium/quota_monitor.py --quota 50000 || alert-router --tier $?
 ```

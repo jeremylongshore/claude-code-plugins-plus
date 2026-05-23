@@ -43,6 +43,7 @@ All typography falls into two categories:
 **Why it works:** When typography aligns with how the brain processes text — through word shape recognition, consistent rhythm, and clear letterform distinction — readers absorb content faster with less fatigue. Fighting these mechanics creates friction that drives readers away.
 
 **Key insights:**
+
 - **Saccades** — eyes jump in 7-9 character bursts, not smooth scanning. Line length and letter spacing directly affect saccade efficiency
 - **Fixation points** — eyes pause briefly to absorb content. Dense or poorly spaced text increases fixation duration and slows reading
 - **Word shapes (bouma)** — experienced readers recognize word silhouettes, not individual letters. Maintaining distinct boumas aids recognition speed
@@ -60,6 +61,7 @@ All typography falls into two categories:
 | Accessibility | Support readers with varying abilities | High contrast, generous spacing, distinct letterforms |
 
 **Copy patterns:**
+
 ```css
 /* Optimal reading rhythm for body text */
 .prose {
@@ -81,6 +83,7 @@ See: [references/typeface-anatomy.md](references/typeface-anatomy.md) for termin
 **Why it works:** Screen rendering, variable bandwidth, and diverse devices impose constraints that print never faced. A typeface that passes structural assessment (consistent strokes, open counters, distinct letterforms) and practical assessment (file size, license, rendering) will perform reliably across the full range of real-world conditions.
 
 **Key insights:**
+
 - **Technical quality** — consistent stroke weights, even color (visual density) across text blocks, good kerning pairs (AV, To, Ty), complete character set (accents, punctuation, figures), and multiple weights (at minimum: regular, bold, italic)
 - **Structural assessment** — adequate x-height (larger = better screen readability), open counters and apertures (a, e, c shapes), distinct letterforms (Il1, O0, rn vs. m), and appropriate contrast (thick/thin stroke variation)
 - **Practical needs** — works at intended sizes (test at actual use size), renders well on target screens and browsers, acceptable file size for web loading, and appropriate license for the project
@@ -98,6 +101,7 @@ See: [references/typeface-anatomy.md](references/typeface-anatomy.md) for termin
 | Brand refresh | Assess whether typeface conveys intended personality | Compare specimen at actual use sizes against brand attributes |
 
 **Copy patterns:**
+
 ```css
 /* Test typeface at actual use sizes */
 body { font-size: 16px; }           /* Minimum body size */
@@ -122,6 +126,7 @@ See: [references/evaluating-typefaces.md](references/evaluating-typefaces.md) fo
 **Why it works:** When typeface selection is grounded in content requirements, the result feels inevitable rather than arbitrary. Purpose-driven choices also survive stakeholder review better because they can be justified with clear reasoning rather than subjective taste.
 
 **Key insights:**
+
 - **Define the job first** — body text, headlines, and UI elements may each need different faces. Clarify the role before browsing specimens
 - **Match tone to content** — a financial report needs different type than a bakery menu. The typeface should feel like a natural voice for the subject matter
 - **Test at actual sizes** — a face beautiful at 72px may be illegible at 14px. Always evaluate at the sizes where the typeface will actually be used
@@ -140,6 +145,7 @@ See: [references/evaluating-typefaces.md](references/evaluating-typefaces.md) fo
 | Accessibility-focused | Select faces designed for maximum legibility | Atkinson Hyperlegible for vision-impaired users |
 
 **Copy patterns:**
+
 ```css
 /* Safe system font stack */
 body {
@@ -165,6 +171,7 @@ See: [references/evaluating-typefaces.md](references/evaluating-typefaces.md) fo
 **Why it works:** Contrast between typefaces creates visual hierarchy and rhythm. When two faces are too similar, they create tension without purpose — the reader senses something is "off" without knowing why. Clear structural contrast (serif + sans, light + bold, humanist + geometric) lets each face play a distinct role while coexisting harmoniously.
 
 **Key insights:**
+
 - **Contrast types** — structure (serif + sans), weight (light + regular), era (humanist + geometric), and width (condensed + normal) all create effective contrast
 - **Same designer strategy** — faces designed by one person often share DNA that harmonizes (e.g., FF Meta + FF Meta Serif)
 - **Superfamilies** — typeface families designed to work together eliminate guesswork (e.g., Roboto + Roboto Slab)
@@ -182,6 +189,7 @@ See: [references/evaluating-typefaces.md](references/evaluating-typefaces.md) fo
 | Minimal brand | Single family with weight variation | Inter at varying weights and sizes |
 
 **Copy patterns:**
+
 ```css
 /* Classic serif + sans-serif pairing */
 h1, h2, h3 {
@@ -211,6 +219,7 @@ See: [references/pairing-strategies.md](references/pairing-strategies.md) for sp
 **Why it works:** These measurements directly govern how the eye tracks across and down text. Optimal line length (45-75 characters) matches the saccade pattern. Adequate line height (1.4-1.8) prevents the eye from jumping to the wrong line on the return sweep. Sufficient font size (16-18px minimum) ensures letterforms are large enough for comfortable recognition on screen.
 
 **Key insights:**
+
 - **Body font size** — 16px minimum; err larger (18px) for reading-heavy sites. Mobile users hold phones farther than designers assume
 - **Line length (measure)** — 45-75 characters ideal, 66 characters optimal. Use the `ch` unit or `max-width` to enforce. Longer lines need more line height to compensate
 - **Line height** — 1.4-1.8 for body text. Longer lines need more; shorter lines need less. Headlines need tighter spacing (1.1-1.25)
@@ -228,6 +237,7 @@ See: [references/pairing-strategies.md](references/pairing-strategies.md) for sp
 | Email template | Constrained width for email client compatibility | `max-width: 600px;` with inline sizing |
 
 **Copy patterns:**
+
 ```css
 /* Optimal body text measurements */
 .prose {
@@ -259,6 +269,7 @@ See: [references/responsive-typography.md](references/responsive-typography.md) 
 **Why it works:** Visual hierarchy mimics how readers naturally prioritize information. When size, weight, and color differences between levels are deliberate and consistent, readers can scan a page and instantly understand its structure. Without hierarchy, everything competes for attention and nothing wins.
 
 **Key insights:**
+
 - **Three levers** — size, weight, and color. Vary one or two between adjacent levels; varying all three creates excessive contrast that wastes headroom for deeper hierarchies
 - **The squint test** — squinting at a page should still reveal the hierarchy. If everything blurs into sameness, the distinction is too subtle
 - **Consistent scale** — use a ratio (1.2-1.5) between heading levels. Arbitrary sizes create visual noise. A modular scale creates rhythm
@@ -276,6 +287,7 @@ See: [references/responsive-typography.md](references/responsive-typography.md) 
 | Mobile app | Tighter scale due to limited viewport | H1 1.75rem, H2 1.25rem, Body 1rem |
 
 **Copy patterns:**
+
 ```css
 /* Type hierarchy with modular scale */
 h1 { font-size: clamp(2rem, 1.5rem + 2vw, 3rem); font-weight: 700; color: #111; }
@@ -304,6 +316,7 @@ See: [references/css-implementation.md](references/css-implementation.md) for co
 **Why it works:** A single fixed font size cannot serve both a 320px phone and a 1440px desktop. Fluid scaling ensures text is always proportionate to its viewport. Meanwhile, web fonts are render-blocking by default — unoptimized loading causes Flash of Invisible Text (FOIT) or Flash of Unstyled Text (FOUT), both of which degrade the reading experience.
 
 **Key insights:**
+
 - **Fluid typography** — `clamp(min, preferred, max)` scales font size smoothly between viewport sizes, eliminating the need for media query breakpoints for type sizing
 - **Breakpoint adjustments** — mobile (<640px) needs slightly larger body size (17-18px) and tighter heading scale; tablet (640-1024px) uses standard sizing with enforced line-length limits; desktop (>1024px) can use larger display type while maintaining line-length
 - **Font loading strategy** — use `font-display: swap` to show fallback text immediately, preload critical fonts with `<link rel="preload">`, and subset fonts to include only needed characters
@@ -321,6 +334,7 @@ See: [references/css-implementation.md](references/css-implementation.md) for co
 | Progressive web app | Cache fonts in service worker for offline use | `caches.open('fonts').then(cache => cache.addAll(...))` |
 
 **Copy patterns:**
+
 ```css
 /* Fluid typography with clamp() */
 body {

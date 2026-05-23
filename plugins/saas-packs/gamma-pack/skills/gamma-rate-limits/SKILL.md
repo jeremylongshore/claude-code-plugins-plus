@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Gamma Rate Limits
 
 ## Overview
+
 Understand Gamma API rate limits and implement effective strategies for high-volume usage.
 
 ## Prerequisites
+
 - Active Gamma API integration
 - Understanding of HTTP headers
 - Basic queuing concepts
@@ -43,6 +45,7 @@ Understand Gamma API rate limits and implement effective strategies for high-vol
 ## Instructions
 
 ### Step 1: Check Rate Limit Headers
+
 ```typescript
 const response = await gamma.presentations.list();
 
@@ -54,6 +57,7 @@ console.log('Reset:', new Date(headers['x-ratelimit-reset'] * 1000));  # 1000: 1
 ```
 
 ### Step 2: Implement Exponential Backoff
+
 ```typescript
 async function withBackoff<T>(
   fn: () => Promise<T>,
@@ -85,6 +89,7 @@ const result = await withBackoff(() =>
 ```
 
 ### Step 3: Request Queue
+
 ```typescript
 class RateLimitedQueue {
   private queue: Array<() => Promise<any>> = [];
@@ -135,6 +140,7 @@ const results = await Promise.all([
 ```
 
 ### Step 4: Monitor Usage
+
 ```typescript
 async function getRateLimitStatus() {
   const status = await gamma.rateLimit.status();
@@ -155,12 +161,14 @@ console.log(`Resets in ${status.resetIn} seconds`);
 ```
 
 ## Output
+
 - Rate limit aware API calls
 - Automatic retry with backoff
 - Request queuing system
 - Usage monitoring dashboard
 
 ## Error Handling
+
 | Scenario | Strategy | Implementation |
 |----------|----------|----------------|
 | Occasional 429 | Exponential backoff | `withBackoff()` wrapper |
@@ -169,6 +177,7 @@ console.log(`Resets in ${status.resetIn} seconds`);
 | Burst traffic | Token bucket | Implement token bucket algorithm |
 
 ## Resources
+
 - [Gamma Rate Limits](https://gamma.app/docs/rate-limits)
 - [Rate Limit Best Practices](https://gamma.app/docs/best-practices)
 

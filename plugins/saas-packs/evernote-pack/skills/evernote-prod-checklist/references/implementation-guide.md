@@ -2,7 +2,6 @@
 
 > Full implementation details for the parent SKILL.md.
 
-
 ## Pre-Production Checklist
 
 ### 1. API Key Configuration
@@ -411,7 +410,6 @@ async function verifyDeployment() {
 
 verifyDeployment();
 ```
-
 
 ## Production Readiness Checklist
 

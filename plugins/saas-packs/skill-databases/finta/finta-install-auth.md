@@ -10,6 +10,7 @@ finta-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Finta SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Finta integration.
 **Relates to:** Other finta skills in this pack.

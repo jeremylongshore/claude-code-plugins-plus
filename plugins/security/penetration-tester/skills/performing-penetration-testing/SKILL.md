@@ -96,31 +96,37 @@ Step 3. Run Scans
 Execute the appropriate scanner(s):
 
 **Web application scan:**
+
 ```bash
 python3 ${CLAUDE_PLUGIN_ROOT}/skills/performing-penetration-testing/scripts/security_scanner.py TARGET_URL
 ```
 
 With specific checks:
+
 ```bash
 python3 ${CLAUDE_PLUGIN_ROOT}/skills/performing-penetration-testing/scripts/security_scanner.py TARGET_URL --checks headers,ssl,endpoints,methods,cors
 ```
 
 **Dependency audit:**
+
 ```bash
 python3 ${CLAUDE_PLUGIN_ROOT}/skills/performing-penetration-testing/scripts/dependency_auditor.py /path/to/project
 ```
 
 With severity filter:
+
 ```bash
 python3 ${CLAUDE_PLUGIN_ROOT}/skills/performing-penetration-testing/scripts/dependency_auditor.py /path/to/project --min-severity high
 ```
 
 **Code security scan:**
+
 ```bash
 python3 ${CLAUDE_PLUGIN_ROOT}/skills/performing-penetration-testing/scripts/code_security_scanner.py /path/to/code
 ```
 
 With specific tools:
+
 ```bash
 python3 ${CLAUDE_PLUGIN_ROOT}/skills/performing-penetration-testing/scripts/code_security_scanner.py /path/to/code --tools bandit,regex --severity high
 ```
@@ -128,6 +134,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/skills/performing-penetration-testing/scripts/code
 Step 4. Analyze Results
 
 Review the scanner output. Each finding includes:
+
 1. **Severity** -- critical, high, medium, low, or info
 2. **Title** -- what was found
 3. **Detail** -- technical explanation
@@ -166,6 +173,7 @@ Options:
 ```
 
 Checks performed:
+
 - Security headers: CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy
 - SSL/TLS: certificate validity, expiry, protocol version
 - Exposed endpoints: .git, .env, admin panels, server-status, directory listing
@@ -253,24 +261,28 @@ All scanners produce structured security reports:
 
 **Missing dependencies:**
 If a scanner fails because a tool isn't installed, run the setup script:
+
 ```bash
 bash ${CLAUDE_PLUGIN_ROOT}/skills/performing-penetration-testing/scripts/setup_pentest_env.sh
 ```
 
 **Connection errors:**
 If security_scanner.py can't reach the target URL:
+
 - Verify the URL is correct and accessible
 - Check if the site requires VPN or special network access
 - Try with `--timeout 30` for slow servers
 
 **Permission errors:**
 If code_security_scanner.py can't read files:
+
 - Check file permissions in the target directory
 - Exclude protected directories with `--exclude`
 
 ## Resources
 
 For detailed reference material, see:
+
 - `references/OWASP_TOP_10.md` -- OWASP Top 10 risks with scanner mapping
 - `references/SECURITY_HEADERS.md` -- HTTP security header implementation guide
 - `references/REMEDIATION_PLAYBOOK.md` -- Copy-paste fix templates

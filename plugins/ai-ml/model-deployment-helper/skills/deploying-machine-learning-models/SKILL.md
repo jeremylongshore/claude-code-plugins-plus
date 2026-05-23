@@ -35,6 +35,7 @@ This skill streamlines the process of deploying machine learning models to produ
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Deploy a trained machine learning model to a production environment.
 - Serve a model via an API endpoint for real-time predictions.
 - Automate the model deployment process.
@@ -46,6 +47,7 @@ This skill activates when you need to:
 User request: "Deploy my regression model trained on the housing dataset."
 
 The skill will:
+
 1. Analyze the model and data format.
 2. Generate code for a REST API endpoint to serve the model.
 3. Deploy the model to a cloud-based serving platform.
@@ -55,6 +57,7 @@ The skill will:
 User request: "Productionize the classification model I just trained."
 
 The skill will:
+
 1. Create a Docker container for the model.
 2. Implement data validation and error handling.
 3. Deploy the container to a Kubernetes cluster.

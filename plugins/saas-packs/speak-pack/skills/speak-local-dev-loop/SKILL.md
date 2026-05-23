@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Speak Local Dev Loop
 
 ## Overview
+
 Set up a fast local development workflow for Speak language learning integrations. Includes mock tutor responses for offline development, audio test fixtures, and a debug mode for scoring analysis.
 
 ## Prerequisites
+
 - Completed `speak-install-auth` setup
 - Node.js 18+ with npm/pnpm
 - ffmpeg installed (for audio conversion)
@@ -35,6 +37,7 @@ Set up a fast local development workflow for Speak language learning integration
 ## Instructions
 
 ### Step 1: Project Structure
+
 ```
 speak-app/
   src/
@@ -52,6 +55,7 @@ speak-app/
 ```
 
 ### Step 2: Mock Tutor for Offline Development
+
 ```typescript
 // tests/mocks/mock-speak-client.ts
 export class MockSpeakClient {
@@ -89,6 +93,7 @@ export class MockSpeakClient {
 ```
 
 ### Step 3: Audio Test Fixtures
+
 ```bash
 # Generate test audio files using text-to-speech
 # macOS:
@@ -101,6 +106,7 @@ ffmpeg -i tests/fixtures/hola-es.wav -ar 16000 -ac 1 tests/fixtures/hola-es-16k.
 ```
 
 ### Step 4: Development Scripts
+
 ```json
 {
   "scripts": {
@@ -114,6 +120,7 @@ ffmpeg -i tests/fixtures/hola-es.wav -ar 16000 -ac 1 tests/fixtures/hola-es-16k.
 ```
 
 ### Step 5: Debug Mode
+
 ```typescript
 // Enable detailed scoring output
 const DEBUG = process.env.SPEAK_DEBUG === 'true';
@@ -134,6 +141,7 @@ function logAssessment(result: PronunciationResult) {
 ```
 
 ## Output
+
 - Project structure with client, tests, and mocks
 - Mock tutor client for offline development
 - Audio test fixtures generated with TTS
@@ -141,6 +149,7 @@ function logAssessment(result: PronunciationResult) {
 - Development scripts for fast iteration
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | ffmpeg not found | Not installed | Install via `brew install ffmpeg` or `apt install ffmpeg` |
@@ -149,11 +158,13 @@ function logAssessment(result: PronunciationResult) {
 | Test timeout | Slow API response | Use mock mode for unit tests |
 
 ## Resources
+
 - [Vitest](https://vitest.dev/)
 - [ffmpeg](https://ffmpeg.org/documentation.html)
 - [Web Speech API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API)
 
 ## Next Steps
+
 See `speak-sdk-patterns` for production-ready code patterns.
 
 ## Examples

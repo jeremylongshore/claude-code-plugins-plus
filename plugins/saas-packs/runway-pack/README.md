@@ -17,6 +17,7 @@ Runway is an AI creative platform for video generation. This pack covers the **R
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `runway-install-auth` | Install `runwayml` SDK, configure API key |
@@ -33,6 +34,7 @@ Runway is an AI creative platform for video generation. This pack covers the **R
 | `runway-upgrade-migration` | SDK version and model upgrades |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `runway-ci-integration` | CI pipeline with generation validation tests |

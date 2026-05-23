@@ -10,6 +10,7 @@ onenote-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect OneNote debug evidence for support
 **Workflow:** Part of the operations skill category for OneNote integration.
 **Relates to:** Other onenote skills in this pack.

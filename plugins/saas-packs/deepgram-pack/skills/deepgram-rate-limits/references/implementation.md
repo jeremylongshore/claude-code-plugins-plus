@@ -1,6 +1,7 @@
 # Deepgram Rate Limits - Implementation Details
 
 ## TypeScript Rate Limiter
+
 ```typescript
 interface RateLimiterConfig {
   maxConcurrent: number;
@@ -74,6 +75,7 @@ export class DeepgramRateLimiter {
 ```
 
 ## Exponential Backoff with Jitter
+
 ```typescript
 export class ExponentialBackoff {
   private attempt = 0;
@@ -96,6 +98,7 @@ export class ExponentialBackoff {
 ```
 
 ## Circuit Breaker Pattern
+
 ```typescript
 enum CircuitState { CLOSED = 'CLOSED', OPEN = 'OPEN', HALF_OPEN = 'HALF_OPEN' }
 
@@ -133,6 +136,7 @@ export class CircuitBreaker {
 ```
 
 ## Usage Monitor
+
 ```typescript
 export class DeepgramUsageMonitor {
   private stats = { requestCount: 0, audioSeconds: 0, errorCount: 0, rateLimitHits: 0, startTime: new Date() };
@@ -148,6 +152,7 @@ export class DeepgramUsageMonitor {
 ```
 
 ## Python Rate Limiter
+
 ```python
 import asyncio, time
 from collections import deque

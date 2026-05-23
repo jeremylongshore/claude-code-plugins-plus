@@ -58,6 +58,7 @@ Attribute Statements:
 ### Step 3: Download IdP Metadata
 
 After creating the app in Okta:
+
 1. Go to the app's "Sign On" tab
 2. Click "Identity Provider metadata" link
 3. Save the XML file
@@ -149,12 +150,14 @@ SCIM 2.0 automatically syncs users and groups from your IdP to Cursor:
 1. Cursor Admin Dashboard > SCIM > Generate SCIM token
 2. In Okta > Cursor app > Provisioning > Enable SCIM
 3. Configure:
+
    ```
    SCIM connector base URL: https://cursor.com/api/scim/v2
    Unique identifier field: email
    Authentication mode: Bearer token
    Bearer token: [paste token from Cursor]
    ```
+
 4. Enable: Create Users, Deactivate Users, Push Groups
 
 ## Domain Verification
@@ -163,11 +166,13 @@ Required before SSO activation:
 
 1. Cursor Admin Dashboard > Domains > Add domain
 2. Add DNS TXT record:
+
    ```
    Type:  TXT
    Host:  _cursor-verification
    Value: cursor-verify=xxxxxxxxxxxxxxxxxxxx
    ```
+
 3. Wait for DNS propagation (up to 48 hours, usually minutes)
 4. Click "Verify" in Cursor admin
 

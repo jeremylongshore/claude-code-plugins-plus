@@ -2,8 +2,8 @@
 
 Overcoming resistance, building jobs-oriented organizations, and avoiding the feature-factory trap.
 
-
 ## Table of Contents
+
 1. [Common Objections to JTBD](#common-objections-to-jtbd)
 2. [The Feature-Factory Trap](#the-feature-factory-trap)
 3. [Getting Executive Buy-In](#getting-executive-buy-in)
@@ -23,6 +23,7 @@ Overcoming resistance, building jobs-oriented organizations, and avoiding the fe
 **The reality:** You know what customers *say* they want and what they *do*. You may not know *why* they do it.
 
 **Counter:**
+
 - "Great—let's validate that knowledge. If we're right, research will confirm it quickly."
 - "When was the last time we talked to customers about their struggles, not our product?"
 - "Do we know why customers choose competitors, or why non-customers don't buy?"
@@ -34,6 +35,7 @@ Overcoming resistance, building jobs-oriented organizations, and avoiding the fe
 **The reality:** JTBD is extremely practical—it tells you what to build and how to market.
 
 **Counter:**
+
 - "Let me show you a job statement for our product. Does this match how we talk about it?"
 - "Here's how [successful company] used JTBD to [specific outcome]."
 - "What if we ran one customer interview using this method and compared insights?"
@@ -45,6 +47,7 @@ Overcoming resistance, building jobs-oriented organizations, and avoiding the fe
 **The reality:** Shipping the wrong features wastes far more time than research.
 
 **Counter:**
+
 - "How much time did we spend building [feature that didn't work]?"
 - "Five customer interviews take ~10 hours. What's the cost of a failed launch?"
 - "We can learn the job from 10 interviews. We can't learn it from guessing."
@@ -56,6 +59,7 @@ Overcoming resistance, building jobs-oriented organizations, and avoiding the fe
 **The reality:** Data shows *what* users do, not *why*. Jobs research explains the why.
 
 **Counter:**
+
 - "Data shows users drop off at step 3. Do we know why?"
 - "Our most-used feature might not be our most-valued feature. Data can't tell us."
 - "Correlation ≠ causation. We see patterns but don't understand motivations."
@@ -67,6 +71,7 @@ Overcoming resistance, building jobs-oriented organizations, and avoiding the fe
 **The reality:** JTBD doesn't change what you build—it changes how you build and position it.
 
 **Counter:**
+
 - "Let's use jobs thinking to make sure we build [planned feature] the right way."
 - "Understanding the job might reveal quick wins within current plans."
 - "We can influence future roadmaps even if this quarter is set."
@@ -78,6 +83,7 @@ Overcoming resistance, building jobs-oriented organizations, and avoiding the fe
 ### What It Looks Like
 
 A feature factory is an organization that:
+
 - Measures success by features shipped, not outcomes achieved
 - Builds what stakeholders request without validating need
 - Competes by feature matching competitors
@@ -125,6 +131,7 @@ A feature factory is an organization that:
 **Step 3: Change the process**
 
 Before greenlighting any feature:
+
 1. What job does this serve?
 2. Who has this job? How many?
 3. How well is the job being served today?
@@ -137,6 +144,7 @@ Before greenlighting any feature:
 ### Speaking Their Language
 
 Executives care about:
+
 - Revenue growth
 - Market share
 - Competitive advantage
@@ -169,6 +177,7 @@ Executives care about:
 ### The Pilot Proposal
 
 Start small to prove value:
+
 1. One focused research project (10 interviews, 2 weeks)
 2. One product decision influenced by findings
 3. Measure the outcome
@@ -181,16 +190,19 @@ Start small to prove value:
 ### Team Structure
 
 **Option 1: Embedded researchers**
+
 - Researchers on each product team
 - Continuous discovery, integrated with development
 - Best for: Large organizations, complex products
 
 **Option 2: Central research team**
+
 - Shared research capability serving all products
 - Standardized methodology, cross-product insights
 - Best for: Multiple products, resource constraints
 
 **Option 3: Everyone does research**
+
 - Product managers, designers, engineers all interview
 - Research is a skill, not a role
 - Best for: Small teams, startups
@@ -198,16 +210,19 @@ Start small to prove value:
 ### Cultural Practices
 
 **Regular customer exposure:**
+
 - Monthly customer interviews for every PM
 - Recordings shared team-wide
 - "Customer of the week" highlights
 
 **Decision-making rituals:**
+
 - "What job does this serve?" in every roadmap discussion
 - Job canvas for every major initiative
 - Retrospectives include job validation
 
 **Metrics and reviews:**
+
 - Quarterly job completion metrics
 - OKRs connected to customer progress
 - Celebrate outcomes, not outputs
@@ -215,11 +230,13 @@ Start small to prove value:
 ### Knowledge Management
 
 **Job documentation:**
+
 - Job atlas maintained and updated
 - Interview insights aggregated
 - Competitive job mapping shared
 
 **Searchable repository:**
+
 - All interview notes and recordings
 - Tagged by job, circumstance, dimension
 - Accessible to entire organization
@@ -231,6 +248,7 @@ Start small to prove value:
 ### Phase 1: Awareness (Weeks 1-4)
 
 **Activities:**
+
 - Present JTBD concepts to leadership
 - Share case studies relevant to your business
 - Identify internal champions
@@ -241,6 +259,7 @@ Start small to prove value:
 ### Phase 2: Pilot (Weeks 5-12)
 
 **Activities:**
+
 - Train pilot team on JTBD methodology
 - Conduct 10-15 customer interviews
 - Document job findings
@@ -252,6 +271,7 @@ Start small to prove value:
 ### Phase 3: Expansion (Months 4-6)
 
 **Activities:**
+
 - Share pilot results broadly
 - Train additional teams
 - Establish research operations
@@ -263,6 +283,7 @@ Start small to prove value:
 ### Phase 4: Integration (Months 7-12)
 
 **Activities:**
+
 - Jobs language in all product discussions
 - Metrics shifted to job completion
 - Hiring includes research skills
@@ -279,6 +300,7 @@ Start small to prove value:
 **Concern:** "This is just going to change requirements mid-sprint."
 
 **Response:**
+
 - JTBD happens before sprint planning, not during
 - Better job understanding = fewer requirement changes later
 - You'll build things people actually use
@@ -288,6 +310,7 @@ Start small to prove value:
 **Concern:** "Customers tell me what they want. I don't need research."
 
 **Response:**
+
 - Customer requests are input, not output
 - Understanding why they want it helps you sell better
 - Competitor feature requests aren't always right
@@ -297,6 +320,7 @@ Start small to prove value:
 **Concern:** "We already have personas and segments."
 
 **Response:**
+
 - Jobs complement personas with motivation
 - Circumstance-based targeting often outperforms demographic
 - Job statements make better copy than feature lists
@@ -306,6 +330,7 @@ Start small to prove value:
 **Concern:** "I don't have time for research—I need to ship."
 
 **Response:**
+
 - Five interviews take less time than one failed feature
 - Research prevents building the wrong thing
 - Good PMs always talk to customers; this just structures it

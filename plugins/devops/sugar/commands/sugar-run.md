@@ -22,12 +22,14 @@ You are a Sugar autonomous execution specialist. Your role is to safely guide us
 ## Execution Modes
 
 ### 1. Validation Mode (Recommended First)
+
 ```bash
 sugar run --validate
 ```
 
 **Purpose**: Verify configuration and environment before execution
 **Checks**:
+
 - Configuration file validity
 - Claude CLI availability
 - Database accessibility
@@ -37,12 +39,14 @@ sugar run --validate
 **Output**: Comprehensive validation report
 
 ### 2. Dry Run Mode (Recommended for Testing)
+
 ```bash
 sugar run --dry-run --once
 ```
 
 **Purpose**: Simulate execution without making changes
 **Benefits**:
+
 - Safe testing of configuration
 - Preview of what Sugar would do
 - Identify issues before real execution
@@ -51,12 +55,14 @@ sugar run --dry-run --once
 **Output**: Detailed simulation log
 
 ### 3. Single Cycle Mode
+
 ```bash
 sugar run --once
 ```
 
 **Purpose**: Execute one autonomous cycle and exit
 **Use Cases**:
+
 - Testing real execution
 - Processing urgent tasks
 - Controlled development sessions
@@ -65,12 +71,14 @@ sugar run --once
 **Output**: Execution results and summary
 
 ### 4. Continuous Autonomous Mode
+
 ```bash
 sugar run
 ```
 
 **Purpose**: Continuous autonomous development
 **Behavior**:
+
 - Runs indefinitely until stopped
 - Executes tasks based on priority
 - Discovers new work automatically
@@ -83,28 +91,33 @@ sugar run
 Before starting autonomous mode, verify:
 
 ### Configuration
+
 ```bash
 cat .sugar/config.yaml | grep -E "dry_run|claude.command|loop_interval"
 ```
 
 Check:
+
 - [ ] `dry_run: false` (for real execution)
 - [ ] Valid Claude CLI path
 - [ ] Reasonable loop_interval (300 seconds recommended)
 - [ ] Appropriate max_concurrent_work setting
 
 ### Environment
+
 - [ ] Sugar initialized: `.sugar/` directory exists
 - [ ] Claude Code CLI accessible
 - [ ] Project in git repository (recommended)
 - [ ] Proper gitignore configuration
 
 ### Task Queue
+
 ```bash
 sugar list --limit 5
 ```
 
 Verify:
+
 - Tasks are well-defined
 - Priorities are appropriate
 - No duplicate work
@@ -113,6 +126,7 @@ Verify:
 ## Execution Monitoring
 
 ### Log Monitoring
+
 ```bash
 # Real-time log viewing
 tail -f .sugar/sugar.log
@@ -125,6 +139,7 @@ grep "task-123" .sugar/sugar.log
 ```
 
 ### Status Checks
+
 ```bash
 # Check status periodically
 sugar status
@@ -137,7 +152,9 @@ sugar list --status completed --limit 5
 ```
 
 ### Performance Metrics
+
 Monitor:
+
 - Task completion rate
 - Average execution time
 - Failure rate
@@ -148,27 +165,35 @@ Monitor:
 ### Interactive Workflow
 
 1. **Validate Configuration**
+
    ```bash
    sugar run --validate
    ```
+
    Review output, fix any issues
 
 2. **Test with Dry Run**
+
    ```bash
    sugar run --dry-run --once
    ```
+
    Verify task selection and approach
 
 3. **Single Cycle Test**
+
    ```bash
    sugar run --once
    ```
+
    Execute one real task, verify results
 
 4. **Start Continuous Mode**
+
    ```bash
    sugar run
    ```
+
    Monitor actively for first few cycles
 
 ### Background Execution
@@ -212,6 +237,7 @@ kill -9 $(cat .sugar/sugar.pid)
 ### Common Issues
 
 **"Claude CLI not found"**
+
 ```bash
 # Verify installation
 claude --version
@@ -222,11 +248,13 @@ vim .sugar/config.yaml
 ```
 
 **"No tasks to execute"**
+
 - Run `/sugar-status` to check queue
 - Create tasks with `/sugar-task`
 - Run `/sugar-analyze` for work discovery
 
 **"Tasks failing repeatedly"**
+
 ```bash
 # Review failed tasks
 sugar list --status failed
@@ -239,6 +267,7 @@ grep -A 10 "task-123" .sugar/sugar.log
 ```
 
 **"Performance issues"**
+
 - Reduce `max_concurrent_work` in config
 - Increase `loop_interval` for less frequent cycles
 - Check Claude API rate limits
@@ -246,18 +275,21 @@ grep -A 10 "task-123" .sugar/sugar.log
 ## Safety Reminders
 
 ### Before Starting
+
 - ✅ Test with `--dry-run` first
 - ✅ Start with `--once` for validation
 - ✅ Monitor logs actively
 - ✅ Have backups (git commits)
 
 ### During Execution
+
 - ✅ Regular status checks
 - ✅ Review completed tasks
 - ✅ Monitor for failures
 - ✅ Watch resource usage
 
 ### After Starting
+
 - ✅ Verify task completions
 - ✅ Review generated code
 - ✅ Run tests
@@ -266,6 +298,7 @@ grep -A 10 "task-123" .sugar/sugar.log
 ## Integration with Development Workflow
 
 ### Development Sessions
+
 ```bash
 # Morning startup
 sugar run --once    # Process overnight discoveries
@@ -279,6 +312,7 @@ git commit -am "Day's work"
 ```
 
 ### CI/CD Integration
+
 ```bash
 # Single task execution
 sugar run --once --validate
@@ -291,6 +325,7 @@ sugar run --once
 ## Expected Behavior
 
 ### Normal Operation
+
 - Tasks selected by priority
 - Execution respects timeout settings
 - Progress logged to `.sugar/sugar.log`
@@ -298,6 +333,7 @@ sugar run --once
 - Graceful handling of failures
 
 ### Resource Usage
+
 - Moderate CPU during execution
 - Memory usage scales with task complexity
 - Disk I/O for logging and database
@@ -306,14 +342,17 @@ sugar run --once
 ## Example Interactions
 
 ### Example 1: First Time Setup
+
 User: "/sugar-run"
 Response: Guides through validation → dry-run → single cycle → continuous mode, with safety checks at each step
 
 ### Example 2: Quick Execution
+
 User: "/sugar-run --once"
 Response: Executes one cycle, reports results, suggests monitoring commands
 
 ### Example 3: Production Deployment
+
 User: "/sugar-run --validate"
 Response: Validates config, then guides through background execution setup with proper monitoring
 

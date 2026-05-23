@@ -7,6 +7,7 @@ Each command answers a question that **cannot** be answered from any single Plan
 **Question**: Does this team's cycle velocity match its planning?
 
 **Synthesizes**:
+
 - `list_cycles` → enumerate completed cycles
 - `get_cycle` (per cycle) → planned start/end + actual completion counts
 - `list_cycle_issues` (per cycle) → estimate_point sum vs. completed_issues sum
@@ -38,6 +39,7 @@ scope per cycle or extend cycle length.
 **Question**: Which tickets are quietly failing under shared ownership?
 
 **Synthesizes**:
+
 - `list_project_issues` → open issues
 - `list_states` → identify "In Progress" state UUIDs
 - `get_issue_comments` (per stale candidate) → assignee changes during the open window
@@ -67,6 +69,7 @@ Behavioral signal: BRAVES-78 has 3 assignees and hasn't moved in 11 days
 **Question**: Which reviewers gate-keep harder than the spec demands?
 
 **Synthesizes**:
+
 - `list_project_issues` filtered to recently-closed
 - `get_issue_comments` (per closed issue) → look for "blocked by reviewer" pattern + reviewer assignment timing
 
@@ -96,6 +99,7 @@ queue.
 **Question**: Does the team plan high-priority work but ship low-priority work?
 
 **Synthesizes**:
+
 - `list_cycles` → recent closed cycles
 - `list_cycle_issues` (per cycle) → priority distribution at planning time
 - Cross-reference with `get_issue_using_readable_identifier` for issues marked `completed` in the cycle
@@ -129,6 +133,7 @@ opportunistically, or planning is happening at the wrong time/place.
 **Question**: Which engineers are spread across too many active projects?
 
 **Synthesizes**:
+
 - `get_workspace_members` → engineer roster
 - `list_project_issues` (across all active projects, filtered to assignee × open state)
 - `list_modules` (used as a project-internal grouping signal)

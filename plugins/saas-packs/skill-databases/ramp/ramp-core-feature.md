@@ -10,6 +10,7 @@ ramp-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Ramp core feature integration
 **Workflow:** Part of the onboarding skill category for Ramp integration.
 **Relates to:** Other ramp skills in this pack.

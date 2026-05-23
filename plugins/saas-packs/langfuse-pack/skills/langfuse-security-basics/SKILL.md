@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Security Basics
 
 ## Overview
+
 Security practices for Langfuse LLM observability: credential management, PII scrubbing before tracing, self-hosted hardening, data retention, and secret scanning.
 
 ## Prerequisites
+
 - Langfuse instance (cloud or self-hosted)
 - API keys provisioned
 - Understanding of data privacy requirements (GDPR, SOC2, HIPAA)
@@ -66,6 +68,7 @@ const { publicKey, secretKey } = validateLangfuseCredentials();
 ```
 
 **Key security rules:**
+
 - Public key (`pk-lf-...`): Identifies the project. Safe in client-side code.
 - Secret key (`sk-lf-...`): Grants write access. **Server-side only.**
 - Store in environment variables or secret manager -- never in source code.
@@ -220,6 +223,7 @@ jobs:
 | Data accumulation | No retention policy | Set `LANGFUSE_RETENTION_DAYS` |
 
 ## Resources
+
 - [Langfuse Data Security](https://langfuse.com/docs/data-security-privacy)
 - [Self-Hosting Configuration](https://langfuse.com/self-hosting/configuration)
 - [Headless Initialization](https://langfuse.com/self-hosting/administration/headless-initialization)

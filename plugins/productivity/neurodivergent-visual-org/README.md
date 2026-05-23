@@ -17,22 +17,25 @@ Create ADHD-friendly visual organizational tools using Mermaid diagrams with ada
 ## Core Features
 
 ### 1. **Adaptive Mode System**
-   - **Base Modes**: Neurotypical or Neurodivergent cognitive styles
-   - **Accessibility Modes**: Optional colorblind-safe or monochrome overlays
-   - **Auto-Detection**: Analyzes language for optimal mode selection
-   - **Configuration Support**: Personalize defaults via YAML config
+
+- **Base Modes**: Neurotypical or Neurodivergent cognitive styles
+- **Accessibility Modes**: Optional colorblind-safe or monochrome overlays
+- **Auto-Detection**: Analyzes language for optimal mode selection
+- **Configuration Support**: Personalize defaults via YAML config
 
 ### 2. **Dual Template System**
-   - **Neurotypical**: 5-7 chunks, standard times, efficient layout
-   - **Neurodivergent**: 3-5 chunks, buffered times, compassionate language
-   - Mode-specific color schemes and energy scaffolding
+
+- **Neurotypical**: 5-7 chunks, standard times, efficient layout
+- **Neurodivergent**: 3-5 chunks, buffered times, compassionate language
+- Mode-specific color schemes and energy scaffolding
 
 ### 3. **Accessibility First**
-   - **Colorblind-Safe**: Pattern-based differentiation for all color vision types
-   - **Monochrome**: Print-optimized B&W designs for e-ink displays
-   - **WCAG Compliance**: Meets accessibility standards
 
-4. **Inclusive Design**
+- **Colorblind-Safe**: Pattern-based differentiation for all color vision types
+- **Monochrome**: Print-optimized B&W designs for e-ink displays
+- **WCAG Compliance**: Meets accessibility standards
+
+1. **Inclusive Design**
    - Neurotypical users benefit during stress/burnout
    - Teams can use same tool with different modes
    - Educational: demonstrates cognitive accessibility
@@ -54,6 +57,7 @@ Create ADHD-friendly visual organizational tools using Mermaid diagrams with ada
 ### Option 1: Via Marketplace (Recommended)
 
 In Claude Code, run:
+
 ```
 /plugin marketplace add JackReis/neurodivergent-visual-org
 ```
@@ -87,6 +91,7 @@ Restart Claude Code.
 ### Auto-Detect (Default)
 
 The skill automatically chooses the best mode based on your language:
+
 - Distress signals → Neurodivergent mode
 - Straightforward requests → Neurotypical mode
 - Ambiguous → Neurodivergent mode (inclusive default)
@@ -94,6 +99,7 @@ The skill automatically chooses the best mode based on your language:
 ### Explicit Mode Request
 
 In conversation:
+
 ```
 "Use neurotypical mode for this diagram"
 "Switch to ADHD mode"
@@ -144,6 +150,7 @@ neurodivergent-visual-org-v3/
 ## Quick Start
 
 The skill activates when users:
+
 - Feel overwhelmed by tasks
 - Experience decision paralysis
 - Need to break down complex projects
@@ -157,6 +164,7 @@ The skill activates when users:
 **User:** "I need to clean my apartment but it's so messy I don't know where to start"
 
 **Skill Response:**
+
 1. Auto-detects neurodivergent mode (keywords: "so messy", "don't know where to start")
 2. Creates flowchart or timeline breaking cleaning into 10-15 minute chunks
 3. Starts with "quick wins" for visible progress
@@ -168,6 +176,7 @@ The skill activates when users:
 ## Key Principles
 
 ### Neurodivergent Mode
+
 - **Compassionate language** (never "just" or "should")
 - **Realistic time estimates** (1.5-2x normal estimates)
 - **Energy awareness** (acknowledge spoon theory)
@@ -178,6 +187,7 @@ The skill activates when users:
 - **Calming colors** (blues, greens, muted tones)
 
 ### Neurotypical Mode
+
 - **Direct language** (efficient, professional)
 - **Standard time estimates** (no buffer)
 - **Standard tasks** (15-30 minute blocks)
@@ -202,6 +212,7 @@ The skill activates when users:
 ### Cognitive Load Limits
 
 **Neurodivergent Mode:**
+
 - **Flowcharts**: 12-15 nodes maximum
 - **Mindmaps**: 2-3 levels deep
 - **Pie charts**: 4-6 slices
@@ -209,6 +220,7 @@ The skill activates when users:
 - **Sections**: 3-5 per diagram
 
 **Neurotypical Mode:**
+
 - **Flowcharts**: 20-25 nodes maximum
 - **Mindmaps**: 4-5 levels deep
 - **Pie charts**: 6-8 slices
@@ -218,11 +230,13 @@ The skill activates when users:
 ### Recommended Themes
 
 **Neurodivergent Mode:**
+
 - `forest` - Calming green-based
 - `neutral` - Muted earth tones
 - Both reduce visual overstimulation
 
 **Neurotypical Mode:**
+
 - `default` - Standard Mermaid theme
 - Any professional color scheme
 
@@ -231,20 +245,24 @@ The skill activates when users:
 ### Common Issues
 
 **Diagram won't render**
+
 - Check indentation consistency (mindmaps, composites)
 - Avoid lowercase "end" as state name (use "End" or "END")
 - Verify coordinates are 0-1 for quadrant charts
 - Remove `::icon()` syntax for GitHub compatibility
 
 **Colors not working**
+
 - Use YAML frontmatter for Sankey config (not directives)
 - Remember pie chart colors assigned by size, not order
 
 **Events missing in timeline**
+
 - All events before first `section` are ignored
 - Add section before any timeline events
 
 **Mode not detected correctly**
+
 - Use explicit mode request: "Use neurotypical mode"
 - Check configuration file syntax
 - See test scenarios in `tests/test_mode_detection.md`

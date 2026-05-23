@@ -22,15 +22,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # persona local dev loop | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview
+
 Sandbox testing with test inquiry templates, ngrok tunnel for webhook testing, mock API responses for CI.
 
 ## Prerequisites
+
 - Completed `persona-install-auth` setup
 - Valid Persona API key (sandbox or production)
 
 ## Instructions
 
 ### Step 1: Set Up Sandbox Environment
+
 ```bash
 set -euo pipefail
 # Use sandbox API key for all development
@@ -39,6 +42,7 @@ echo 'PERSONA_API_VERSION=2023-01-05' >> .env
 ```
 
 ### Step 2: Expose Local Webhooks with ngrok
+
 ```bash
 # Terminal 1: Start your webhook server
 npm run dev  # localhost:3000
@@ -49,6 +53,7 @@ ngrok http 3000
 ```
 
 ### Step 3: Create Test Inquiries
+
 ```python
 import os, requests
 
@@ -70,6 +75,7 @@ print(f"Test inquiry: {resp.json()['data']['id']}")
 ```
 
 ### Step 4: Mock API Responses for CI
+
 ```typescript
 import { vi } from 'vitest';
 
@@ -84,12 +90,14 @@ const mockPersonaApi = {
 ```
 
 ## Output
+
 - Sandbox environment configured for development
 - ngrok tunnel for webhook testing
 - Test inquiry creation workflow
 - Mock API responses for unit tests
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Webhook not received | ngrok URL not configured | Update webhook URL in Dashboard |
@@ -97,8 +105,10 @@ const mockPersonaApi = {
 | Template not found | Wrong environment | Templates are per-environment |
 
 ## Resources
+
 - [Persona API Quickstart](https://docs.withpersona.com/api-quickstart-tutorial)
 - [ngrok Documentation](https://ngrok.com/docs)
 
 ## Next Steps
+
 Apply SDK patterns: `persona-sdk-patterns`

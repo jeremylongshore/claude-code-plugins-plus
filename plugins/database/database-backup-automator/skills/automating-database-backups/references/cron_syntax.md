@@ -147,6 +147,7 @@ MYSQL_PWD=secret
 ```
 
 `/opt/backup/run-backup.sh`:
+
 ```bash
 #!/bin/bash
 source /etc/backup/env

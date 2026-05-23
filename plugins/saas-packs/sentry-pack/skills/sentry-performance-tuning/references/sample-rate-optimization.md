@@ -3,6 +3,7 @@
 ## Sample Rate Optimization
 
 ### Dynamic Sampling
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -34,6 +35,7 @@ Sentry.init({
 ```
 
 ### Environment-Based Rates
+
 ```typescript
 const sampleRates: Record<string, number> = {
   development: 1.0,

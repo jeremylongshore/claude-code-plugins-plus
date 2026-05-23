@@ -5,6 +5,7 @@
 # Apollo Reference Architecture
 
 ## Overview
+
 Production-ready reference architecture for Apollo.io integrations covering system design, data flows, and integration patterns.
 
 ## Architecture Diagram
@@ -438,6 +439,7 @@ eventBus.on(APOLLO_EVENTS.CONTACT_ENRICHED, async (contact) => {
 ```
 
 ## Output
+
 - Layered architecture (client, service, job, model)
 - Background job processing with Bull
 - Database models with TypeORM
@@ -446,6 +448,7 @@ eventBus.on(APOLLO_EVENTS.CONTACT_ENRICHED, async (contact) => {
 - Event-driven architecture
 
 ## Error Handling
+
 | Layer | Strategy |
 |-------|----------|
 | Client | Retry with backoff |
@@ -454,10 +457,12 @@ eventBus.on(APOLLO_EVENTS.CONTACT_ENRICHED, async (contact) => {
 | API | Structured error responses |
 
 ## Resources
+
 - [NestJS Documentation](https://docs.nestjs.com/)
 - [Bull Queue](https://github.com/OptimalBits/bull)
 - [TypeORM](https://typeorm.io/)
 - [Event Sourcing Patterns](https://martinfowler.com/eaaDev/EventSourcing.html)
 
 ## Next Steps
+
 Proceed to `apollo-multi-env-setup` for environment configuration.

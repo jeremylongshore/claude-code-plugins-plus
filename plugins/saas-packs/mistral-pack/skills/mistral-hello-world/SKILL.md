@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral AI Hello World
 
 ## Overview
+
 Minimal working examples demonstrating Mistral AI chat completions, streaming, multi-turn conversation, and JSON mode. Uses the official `@mistralai/mistralai` TypeScript SDK and `mistralai` Python SDK.
 
 ## Prerequisites
+
 - Completed `mistral-install-auth` setup
 - Valid `MISTRAL_API_KEY` environment variable set
 - Node.js 18+ or Python 3.9+
@@ -37,6 +39,7 @@ Minimal working examples demonstrating Mistral AI chat completions, streaming, m
 ### Step 1: Basic Chat Completion
 
 **TypeScript (hello-mistral.ts)**
+
 ```typescript
 import { Mistral } from '@mistralai/mistralai';
 
@@ -58,6 +61,7 @@ main().catch(console.error);
 ```
 
 **Python (hello_mistral.py)**
+
 ```python
 import os
 from mistralai import Mistral
@@ -76,6 +80,7 @@ print(f"Tokens: {response.usage}")
 ```
 
 ### Step 2: Run the Example
+
 ```bash
 # TypeScript
 npx tsx hello-mistral.ts
@@ -89,6 +94,7 @@ python hello_mistral.py
 Streaming delivers the first token in ~200ms instead of waiting 1-2s for the full response.
 
 **TypeScript**
+
 ```typescript
 import { Mistral } from '@mistralai/mistralai';
 
@@ -113,6 +119,7 @@ streamChat().catch(console.error);
 ```
 
 **Python**
+
 ```python
 stream = client.chat.stream(
     model="mistral-small-latest",
@@ -178,11 +185,13 @@ const response = await client.chat.complete({
 ```
 
 ## Output
+
 - Working code file with Mistral client initialization
 - Successful API response with generated text
 - Console output showing response and token usage
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Import Error` | SDK not installed | Run `npm install @mistralai/mistralai` |
@@ -201,9 +210,11 @@ const response = await client.chat.complete({
 | `pixtral-large-latest` | Vision + text (multimodal) | 128k |
 
 ## Resources
+
 - [Mistral AI Quickstart](https://docs.mistral.ai/getting-started/quickstart/)
 - [Chat Completions API](https://docs.mistral.ai/api/endpoint/chat/)
 - [Models Overview](https://docs.mistral.ai/getting-started/models/)
 
 ## Next Steps
+
 Proceed to `mistral-core-workflow-a` for production chat patterns or `mistral-local-dev-loop` for dev workflow setup.

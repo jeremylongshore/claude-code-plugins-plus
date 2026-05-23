@@ -20,6 +20,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Test Coverage Analyzer
 
 ## Current State
+
 !`ls package.json pyproject.toml Cargo.toml go.mod 2>/dev/null || echo 'No project manifest found'`
 !`node -v 2>/dev/null || python3 --version 2>/dev/null || echo 'No runtime detected'`
 
@@ -88,6 +89,7 @@ Analyze code coverage metrics to identify untested code paths, dead code, and co
 ## Examples
 
 **Jest coverage configuration with thresholds:**
+
 ```json
 {
   "jest": {
@@ -113,6 +115,7 @@ Analyze code coverage metrics to identify untested code paths, dead code, and co
 ```
 
 **Coverage gap analysis output:**
+
 ```
 Coverage Gaps (sorted by impact):
 1. src/auth/oauth.ts        Lines: 45%  Branches: 30%  [Lines 42-67, 89-103 uncovered]

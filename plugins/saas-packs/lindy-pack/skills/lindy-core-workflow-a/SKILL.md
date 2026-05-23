@@ -24,12 +24,14 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lindy Core Workflow A: Agent Creation
 
 ## Overview
+
 Complete workflow for creating, configuring, and testing Lindy AI agents.
 Agents consist of four components: **Prompt** (behavioral instructions),
 **Model** (AI engine), **Skills** (available actions), and **Exit Conditions**
 (completion criteria).
 
 ## Prerequisites
+
 - Lindy account at https://app.lindy.ai
 - Use case defined (support bot, email triage, data processor, etc.)
 - Required integrations identified (Slack, Gmail, Sheets, etc.)
@@ -37,31 +39,40 @@ Agents consist of four components: **Prompt** (behavioral instructions),
 ## Instructions
 
 ### Step 1: Define Agent Specification
+
 Before building, document:
+
 - **Purpose**: What the agent does (one sentence)
 - **Trigger**: What wakes it up (webhook, email, schedule, chat, etc.)
 - **Actions**: What it does (send email, update sheet, post to Slack, etc.)
 - **Model**: GPT-4 (smart, expensive), Claude Sonnet (balanced), Gemini Flash (fast, cheap)
 
 ### Step 2: Create the Agent
+
 **Option A — Natural Language (recommended)**:
+
 1. Click **New Agent** at https://app.lindy.ai
 2. Describe your agent in plain English:
+
    ```
    When a customer emails support@company.com, classify the email as
    billing/technical/general, draft a response using our knowledge base,
    and post the classification to #support-triage in Slack
    ```
+
 3. Agent Builder auto-generates trigger + action nodes
 
 **Option B — Manual Build**:
+
 1. Click **New Agent** > **Start from scratch**
 2. Add trigger: Click **"+"** > Select trigger type
 3. Add actions: Click **"+"** > Search for action
 4. Connect nodes by dragging arrows between steps
 
 ### Step 3: Configure the Prompt
+
 Open **Settings > Prompt**. Structure it with clear sections:
+
 ```
 ## Identity
 You are a customer support classifier and responder for [Company].
@@ -80,37 +91,44 @@ You are a customer support classifier and responder for [Company].
 ```
 
 **Prompt best practices** (from Lindy docs):
+
 - Use action-oriented language (imperatives)
 - Break complex logic into numbered steps
 - Include few-shot examples for consistent formatting
 - Add constraints to prevent unwanted behavior
 
 ### Step 4: Add Conditions (Branching Logic)
+
 1. Click **"+"** > **Condition**
 2. Write natural language condition: `"Go down this path if the email is about billing"`
 3. Add multiple branches for different classifications
 4. Enable **"Force the agent to select a branch"** for deterministic routing
 
 ### Step 5: Configure Actions
+
 For each action, set field modes:
 
 **Auto mode** — Agent infers the value from all previous step data:
+
 ```
 Best for: predictable mappings where field names align
 ```
 
 **AI Prompt mode** — Give natural language instructions:
+
 ```
 Summarize the email in 2 sentences, then include the classification.
 Reference: {{email_received.body}}
 ```
 
 **Set Manually mode** — Exact value, no AI:
+
 ```
 Channel: #support-triage
 ```
 
 ### Step 6: Add Knowledge Base (Optional)
+
 1. Go to **Settings > Knowledge Base**
 2. Add sources: PDF, DOCX, Google Drive, Notion, websites
 3. Configure search:
@@ -119,6 +137,7 @@ Channel: #support-triage
 4. Agent auto-searches KB when relevant to the task
 
 ### Step 7: Test the Agent
+
 1. Use the **Test** button in the workflow editor
 2. Provide sample input matching your trigger type
 3. Review each step's output in the task detail view
@@ -163,10 +182,12 @@ Channel: #support-triage
 | Agent loops indefinitely | No exit condition | Add measurable exit criteria |
 
 ## Resources
+
 - [Lindy Introduction](https://docs.lindy.ai/fundamentals/lindy-101/introduction)
 - [Triggers Documentation](https://docs.lindy.ai/fundamentals/lindy-101/triggers)
 - [Actions Documentation](https://docs.lindy.ai/fundamentals/lindy-101/actions)
 - [Prompt Guide](https://docs.lindy.ai/fundamentals/lindy-101/prompt-guide)
 
 ## Next Steps
+
 Proceed to `lindy-core-workflow-b` for triggers, automation, and multi-agent delegation.

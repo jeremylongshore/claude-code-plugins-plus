@@ -3,6 +3,7 @@
 ## Response Length Control
 
 ### Optimal max_tokens
+
 ```python
 def calculate_optimal_max_tokens(
     prompt_tokens: int,

@@ -3,6 +3,7 @@
 ## Audit Procedures
 
 ### Quarterly Security Review
+
 ```
 Week 1: Access Audit
 - Review all user accounts
@@ -30,6 +31,7 @@ Week 4: Documentation
 ```
 
 ### Annual Compliance Review
+
 ```
 Comprehensive review:
 

@@ -10,6 +10,7 @@ together-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Together AI SDK patterns
 **Workflow:** Part of the onboarding skill category for Together AI integration.
 **Relates to:** Other together skills in this pack.

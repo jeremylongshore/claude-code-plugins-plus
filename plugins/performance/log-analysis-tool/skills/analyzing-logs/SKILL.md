@@ -32,6 +32,7 @@ This skill empowers Claude to automatically analyze application logs, pinpoint p
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Identify performance bottlenecks in an application.
 - Debug recurring errors and exceptions.
 - Analyze log data for trends and anomalies.
@@ -44,6 +45,7 @@ This skill activates when you need to:
 User request: "Analyze logs for slow requests."
 
 The skill will:
+
 1. Activate the log analysis tool.
 2. Identify requests exceeding predefined latency thresholds.
 3. Present a list of slow requests with corresponding timestamps and durations.
@@ -53,6 +55,7 @@ The skill will:
 User request: "Find error patterns in the application logs."
 
 The skill will:
+
 1. Activate the log analysis tool.
 2. Scan logs for recurring error messages and exceptions.
 3. Group similar errors and present a summary of error frequencies.
@@ -94,6 +97,7 @@ This skill can be integrated with other tools for monitoring and alerting. For e
 ## Error Handling
 
 If log analysis fails:
+
 - Verify log file paths and permissions
 - Check log format compatibility
 - Validate timestamp parsing

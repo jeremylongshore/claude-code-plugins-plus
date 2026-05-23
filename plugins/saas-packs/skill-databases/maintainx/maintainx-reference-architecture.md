@@ -10,6 +10,7 @@ maintainx-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement MaintainX reference architecture
 **Workflow:** Part of the cicd skill category for MaintainX integration.
 **Relates to:** Other maintainx skills in this pack.

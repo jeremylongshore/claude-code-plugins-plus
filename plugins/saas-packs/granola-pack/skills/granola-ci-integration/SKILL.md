@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola CI Integration
 
 ## Overview
+
 Build automated pipelines that process Granola meeting notes into development artifacts: GitHub Issues from action items, Linear tasks with team routing, Slack digests for stakeholders, and meeting logs in your repository. Uses Zapier as the middleware between Granola and dev tools.
 
 ## Prerequisites
+
 - Granola Business plan (for Zapier access)
 - Zapier account (Free for basic, Paid for multi-step Zaps)
 - GitHub repository with Actions enabled
@@ -154,6 +156,7 @@ jobs:
 ```
 
 Trigger from Zapier using the Webhooks action:
+
 ```yaml
 Action:
   App: Webhooks by Zapier
@@ -205,6 +208,7 @@ Action:
 ```
 
 ## Complete Pipeline Flow
+
 ```
 Meeting ends → Granola enhances notes
   → Note added to "Engineering" folder
@@ -217,6 +221,7 @@ Meeting ends → Granola enhances notes
 ```
 
 ## Output
+
 - Action items automatically created as GitHub Issues and Linear tasks
 - Meeting log updated in repository via GitHub Actions
 - Slack summary posted to team channel
@@ -233,6 +238,7 @@ Meeting ends → Granola enhances notes
 | Slack message empty | Note still processing | Add 2-minute delay as first Zap step |
 
 ## Testing Checklist
+
 - [ ] Schedule a test meeting with explicit action items
 - [ ] Verify note lands in the correct Granola folder
 - [ ] Confirm Zapier trigger fires (check Zap history)
@@ -242,9 +248,11 @@ Meeting ends → Granola enhances notes
 - [ ] Verify Linear tasks appear in correct team
 
 ## Resources
+
 - [Zapier Granola App](https://zapier.com/apps/granola/integrations)
 - [GitHub Actions: repository_dispatch](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#repository_dispatch)
 - [Linear Zapier Integration](https://zapier.com/apps/linear/integrations)
 
 ## Next Steps
+
 Proceed to `granola-deploy-integration` for native app integration setup.

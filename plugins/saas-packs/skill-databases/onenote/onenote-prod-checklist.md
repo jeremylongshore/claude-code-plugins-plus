@@ -10,6 +10,7 @@ onenote-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute OneNote production deployment checklist
 **Workflow:** Part of the operations skill category for OneNote integration.
 **Relates to:** Other onenote skills in this pack.

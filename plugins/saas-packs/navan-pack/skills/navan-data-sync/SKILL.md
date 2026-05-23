@@ -320,6 +320,7 @@ async function idempotentLoad(records: any[], tableName: string) {
 ## Output
 
 Successful execution produces:
+
 - Full-refresh BOOKING sync with merge-upsert deduplication
 - Incremental TRANSACTION sync with watermark state tracking
 - Webhook endpoint for real-time event processing

@@ -126,4 +126,3 @@ Sweep days are maintenance. They're not glamorous. But shipping v0.5.0 of the CA
 - [Building a Deterministic DXF Comparison Engine in One Day](/posts/deterministic-dxf-comparison-engine-one-day-build/) — the engine these PDF fixes extend
 - [Engine to Product: Three Interfaces, One Codebase](/posts/engine-to-product-three-interfaces-one-codebase/) — CLI, API, and wizard on the comparison engine
 - [Zero to CI: Full-Stack Dashboard in One Session](/posts/zero-to-ci-full-stack-dashboard-one-session/) — the Braves dashboard from first commit to green CI
-

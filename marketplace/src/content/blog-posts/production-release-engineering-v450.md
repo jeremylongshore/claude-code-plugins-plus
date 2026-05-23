@@ -21,6 +21,7 @@ I needed to ship v4.5.0 of the Claude Code Plugins marketplace after 8 days of i
 ## Why This Matters
 
 Most teams ship releases manually:
+
 - Someone updates version numbers in 3-4 files
 - Another person writes changelog entries
 - A third verifies tests pass
@@ -28,6 +29,7 @@ Most teams ship releases manually:
 - Another creates the GitHub release
 
 **The problems:**
+
 1. Version conflicts between files
 2. Changelog drift from actual changes
 3. Manual processes = human errors
@@ -60,6 +62,7 @@ git push origin main --tags
 ```
 
 **The problem I hit:** After shipping v4.3.0, I realized:
+
 - README said v4.3.0
 - package.json said v4.2.9
 - CHANGELOG was missing 12 commits
@@ -69,6 +72,7 @@ Version conflicts everywhere. No single source of truth.
 ### Second Attempt: Config-Driven Release Automation
 
 I built a `/release` skill that would:
+
 1. Detect version scheme (semver vs padded)
 2. Find ALL version files automatically
 3. Analyze commits to determine bump level
@@ -123,6 +127,7 @@ git log v4.4.0..HEAD --format="%s" | \
 ```
 
 **The output:**
+
 - 20 features (→ MINOR bump)
 - 11 fixes
 - 0 breaking changes (would force MAJOR)
@@ -139,6 +144,7 @@ No changes → SKIP (don't release)
 ```
 
 **My release:**
+
 - 20 features + 11 fixes → **MINOR bump to 4.5.0**
 
 ### Phase 4: Atomic File Updates
@@ -205,6 +211,7 @@ git push origin main && git push origin v4.5.0
 ```
 
 **Rollback safety:**
+
 ```bash
 # If push fails, everything rolls back:
 git tag -d v4.5.0
@@ -246,6 +253,7 @@ gh release create v4.5.0 \
 **Before:** No validation → pushed broken releases multiple times
 
 **After:** Each phase validates before proceeding:
+
 - Working tree clean?
 - Tests pass?
 - Version conflicts resolved?
@@ -256,6 +264,7 @@ gh release create v4.5.0 \
 **Before:** If something failed mid-release → manual recovery, downtime
 
 **After:** Each phase has explicit rollback:
+
 ```bash
 # Tag failed to push?
 git tag -d v4.5.0
@@ -269,11 +278,13 @@ git push origin --delete v4.5.0
 ### 5. Semver Automation Scales
 
 **The pattern:**
+
 - Parse commits for `feat:`, `fix:`, `BREAKING:`
 - Calculate bump level automatically
 - No human decision needed
 
 **Works for:**
+
 - 10 commits or 1,000 commits
 - Solo developer or 50-person team
 - Any language, any project
@@ -326,11 +337,13 @@ The `/release` skill is part of the Claude Code Plugins marketplace:
 ```
 
 **Run a release:**
+
 ```bash
 /release
 ```
 
 **It will:**
+
 1. Analyze your commits
 2. Suggest a version bump
 3. Generate a changelog
@@ -348,6 +361,7 @@ The `/release` skill is part of the Claude Code Plugins marketplace:
 ## What's Next
 
 I'm working on:
+
 - **Config-driven releases** - `.release.yml` for team customization
 - **Multi-repo releases** - Coordinated releases across 3+ repos
 - **Deployment automation** - Auto-deploy after GitHub release
@@ -355,6 +369,4 @@ I'm working on:
 
 Production release engineering isn't glamorous, but it's the difference between shipping with confidence and hoping nothing breaks.
 
-
 **Want to see the actual release?** https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/tag/v4.5.0
-

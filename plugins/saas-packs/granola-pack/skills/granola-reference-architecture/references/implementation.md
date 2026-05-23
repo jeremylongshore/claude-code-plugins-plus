@@ -22,16 +22,20 @@
 ## Data Flow Patterns
 
 ### Pattern 1: Standard Meeting
+
 Meeting Ends -> Granola Processes (2 min) -> Zapier Trigger -> Parallel: Slack notify + Notion archive + Linear tasks
 
 ### Pattern 2: Client Meeting (external attendee detected)
+
 CRM Path: HubSpot note + Contact update + Deal activity + Follow-up task
 Plus Standard Path: Notion archive + Slack notify
 
 ### Pattern 3: Executive Meeting (VP+ attendee)
+
 High-Touch Path: Private Notion + EA notification + Action tracking + No public Slack
 
 ## Enterprise Multi-Workspace Architecture
+
 ```
 Enterprise Granola Deployment
 ├── Corporate Workspace (Executive, Leadership, Board)
@@ -41,6 +45,7 @@ Enterprise Granola Deployment
 ```
 
 ### Access Control Matrix
+
 | Workspace | Visibility | Sharing | SSO Group |
 |-----------|------------|---------|-----------|
 | Corporate | Private | Executive only | exec-team |
@@ -49,6 +54,7 @@ Enterprise Granola Deployment
 | HR | Confidential | HR only | hr-team |
 
 ### Integration Per Workspace
+
 ```yaml
 Corporate: Notion (private), Slack (#exec-team private), No CRM
 Engineering: Notion (wiki), Slack (#dev-meetings), Linear (auto-tasks), GitHub
@@ -59,6 +65,7 @@ HR: Notion (confidential), Slack (HR DMs only), Greenhouse (if recruiting)
 ## Security Architecture
 
 ### Data Classification
+
 | Data Type | Classification | Handling |
 |-----------|---------------|----------|
 | Transcripts | Confidential | Encrypted, access-controlled |
@@ -77,6 +84,7 @@ Encryption: AES-256 at rest, TLS 1.3 in transit. RBAC + SSO access control. Full
 | 50-200 | 2500-10000 | 125-500 GB | Enterprise |
 
 ### Performance Budgets
+
 | Metric | Target |
 |--------|--------|
 | Note availability | < 3 min post-meeting |
@@ -85,12 +93,14 @@ Encryption: AES-256 at rest, TLS 1.3 in transit. RBAC + SSO access control. Full
 | Export time | < 30 sec |
 
 ## Disaster Recovery
+
 - Primary: Granola cloud storage
 - Secondary: Nightly export to company storage
 - Tertiary: Weekly archive to cold storage
 - RPO: 24 hours, RTO: 4 hours
 
 ### Failover
+
 If Granola unavailable: manual notes during meeting, record with backup tool, transcribe post-meeting, upload when restored.
 
 ---

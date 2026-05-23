@@ -1,6 +1,7 @@
-# Customer.io Advanced Troubleshooting - Implementation Guide
+## Customer.io Advanced Troubleshooting - Implementation Guide
 
 ### Step 1: API Debugging
+
 ```typescript
 // lib/debug-client.ts
 import { TrackClient, RegionUS } from '@customerio/track';
@@ -101,6 +102,7 @@ export class DebugCustomerIO {
 ```
 
 ### Step 2: User Profile Investigation
+
 ```typescript
 // scripts/investigate-user.ts
 interface UserInvestigation {
@@ -191,6 +193,7 @@ async function investigateUser(userId: string): Promise<UserInvestigation> {
 ```
 
 ### Step 3: Campaign Debugging
+
 ```typescript
 // scripts/debug-campaign.ts
 interface CampaignDebug {
@@ -241,6 +244,7 @@ async function debugCampaign(campaignId: number): Promise<CampaignDebug> {
 ```
 
 ### Step 4: Webhook Debugging
+
 ```typescript
 // lib/webhook-debugger.ts
 import crypto from 'crypto';
@@ -318,6 +322,7 @@ export function debugWebhook(
 ```
 
 ### Step 5: Network Debugging
+
 ```bash
 #!/bin/bash
 # scripts/debug-network.sh
@@ -356,6 +361,7 @@ done
 ```
 
 ### Step 6: Incident Response Runbook
+
 ```markdown
 ## Customer.io Incident Response Runbook
 

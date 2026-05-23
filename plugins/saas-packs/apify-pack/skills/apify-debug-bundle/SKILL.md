@@ -189,12 +189,14 @@ done
 ## Sensitive Data Handling
 
 **Always redact before sharing:**
+
 - API tokens (`apify_api_*`)
 - Proxy passwords
 - PII (emails, names, IPs)
 - Custom environment variables
 
 **Safe to include:**
+
 - Run IDs, Actor IDs, dataset IDs
 - Error messages and stack traces
 - Run configuration (memory, timeout)

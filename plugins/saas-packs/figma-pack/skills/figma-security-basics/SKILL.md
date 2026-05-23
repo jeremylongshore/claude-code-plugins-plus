@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code
 # Figma Security Basics
 
 ## Overview
+
 Secure your Figma API integration: store tokens safely, apply least-privilege scopes, rotate credentials, and verify webhook signatures.
 
 ## Prerequisites
+
 - Figma PAT or OAuth app configured
 - Understanding of environment variables
 - `.gitignore` configured for secret files
@@ -33,6 +35,7 @@ Secure your Figma API integration: store tokens safely, apply least-privilege sc
 ## Instructions
 
 ### Step 1: Token Storage
+
 ```bash
 # .env (NEVER commit)
 FIGMA_PAT="figd_your-personal-access-token"
@@ -58,6 +61,7 @@ function getToken(): string {
 ```
 
 ### Step 2: Least-Privilege Scopes
+
 Assign the minimum scopes needed for each use case:
 
 | Use Case | Required Scopes |
@@ -73,6 +77,7 @@ Assign the minimum scopes needed for each use case:
 **Deprecated scope:** `files:read` is deprecated. Use specific scopes like `file_content:read`, `file_comments:read` instead.
 
 ### Step 3: Token Rotation
+
 ```bash
 # PATs have a maximum 90-day lifetime
 # Schedule rotation before expiry
@@ -90,6 +95,7 @@ curl -s -H "X-Figma-Token: ${NEW_TOKEN}" \
 ```
 
 ### Step 4: Webhook Passcode Verification
+
 Figma webhooks use a `passcode` field (not HMAC signatures) for verification:
 
 ```typescript
@@ -135,6 +141,7 @@ app.post('/webhooks/figma', express.json(), (req, res) => {
 ```
 
 ### Step 5: Security Checklist
+
 ```markdown
 - [ ] PAT stored in environment variable, not in code
 - [ ] `.env` files listed in `.gitignore`
@@ -148,12 +155,14 @@ app.post('/webhooks/figma', express.json(), (req, res) => {
 ```
 
 ## Output
+
 - Secure token storage configured
 - Minimum-privilege scopes applied
 - Webhook passcode verification implemented
 - Rotation schedule documented
 
 ## Error Handling
+
 | Security Issue | Detection | Mitigation |
 |----------------|-----------|------------|
 | Token in git history | `git log -p \| grep figd_` | Revoke immediately, rotate, use BFG Repo Cleaner |
@@ -162,9 +171,11 @@ app.post('/webhooks/figma', express.json(), (req, res) => {
 | Webhook spoofing | Missing passcode check | Always verify passcode before processing |
 
 ## Resources
+
 - [Figma API Scopes](https://developers.figma.com/docs/rest-api/scopes/)
 - [Figma Authentication](https://developers.figma.com/docs/rest-api/authentication/)
 - [Managing PATs](https://help.figma.com/hc/en-us/articles/8085703771159)
 
 ## Next Steps
+
 For production deployment, see `figma-prod-checklist`.

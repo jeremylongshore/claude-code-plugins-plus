@@ -10,6 +10,7 @@ canva-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Canva reliability patterns
 **Workflow:** Part of the enterprise skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

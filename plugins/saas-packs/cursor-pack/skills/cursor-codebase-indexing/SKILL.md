@@ -58,6 +58,7 @@ Your Code Files
 ### Verify Indexing Status
 
 The status bar shows:
+
 - **"Indexing..."** with progress indicator -- initial indexing in progress
 - **"Indexed"** -- indexing complete, `@Codebase` queries are available
 - No indicator -- indexing may be disabled or not started

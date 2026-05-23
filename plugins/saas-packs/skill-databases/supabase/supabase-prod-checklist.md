@@ -10,6 +10,7 @@ supabase-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Supabase production deployment checklist including pre-deployment configuration, code quality verification, infrastructure setup, and gradual rollout procedures.
 **Workflow:** Final operational skill before production. Ensures all requirements are met for go-live.
 **Relates to:** Depends on supabase-security-basics and supabase-rate-limits; leads to supabase-upgrade-migration for subsequent releases.

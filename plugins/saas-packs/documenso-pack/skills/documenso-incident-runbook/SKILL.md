@@ -83,6 +83,7 @@ docker ps --filter "name=documenso" --format "{{.Names}}: {{.Status}}" 2>/dev/nu
 **Symptoms:** High error rate, 500/502/503 from Documenso API.
 
 **Actions:**
+
 1. Check status page: https://status.documenso.com
 2. If Documenso confirms outage:
    - Enable degraded mode in your app

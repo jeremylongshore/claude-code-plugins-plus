@@ -10,6 +10,7 @@ clari-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Clari debug evidence for support
 **Workflow:** Part of the operations skill category for Clari integration.
 **Relates to:** Other clari skills in this pack.

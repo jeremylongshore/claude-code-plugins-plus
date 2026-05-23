@@ -10,6 +10,7 @@ supabase-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Supabase webhook signature validation and event handling with replay protection and idempotency.
 **Workflow:** Event handling skill. Essential for real-time integrations and external system notifications.
 **Relates to:** Follows supabase-deploy-integration; complements supabase-auth-storage-realtime-core.

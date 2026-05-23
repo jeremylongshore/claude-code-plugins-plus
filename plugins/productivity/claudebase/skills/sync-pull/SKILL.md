@@ -30,6 +30,7 @@ bash "${CLAUDE_PLUGIN_ROOT}/scripts/sync-pull.sh" [OPTIONS]
 ```
 
 **Options:**
+
 - `--profile NAME` — Pull a specific profile (default: active profile)
 - `--dry-run` — Show what would be applied without writing any files
 - `--no-backup` — Skip backup step (use with caution)
@@ -43,6 +44,7 @@ If the user specifies a different profile than their current one, this effective
 ### After pull
 
 Tell the user:
+
 - How many files were applied
 - Any validation warnings
 - That a backup was created (and where)

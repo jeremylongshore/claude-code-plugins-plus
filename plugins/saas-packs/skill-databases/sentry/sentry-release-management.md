@@ -10,6 +10,7 @@ sentry-release-management/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Manage Sentry releases and associate commits for tracking errors by version and enabling suspect commit identification.
 **Workflow:** Use during release process to create releases, associate commits, upload artifacts, and finalize releases.
 **Relates to:** Works with `sentry-ci-integration` for automation. Connects to `sentry-deploy-integration` for deployment tracking.

@@ -12,11 +12,11 @@
 
 ## 2. Scan Details
 
-*   **Target:** `[Specify the target of the scan (e.g., repository URL, file path, container image name, API endpoint). Example: Repository: github.com/example/project]`
-*   **Scan Type:** `[Specify the type of scan performed (e.g., Static Analysis, Dynamic Analysis, Dependency Scan). Example: Static Analysis]`
-*   **Scanner Version:** `[Specify the version of the Security Pro Pack plugin and the underlying scanner used. Example: Security Pro Pack - Vulnerability Scanner v1.0.0 using Semgrep v1.10.0]`
-*   **Configuration:** `[Describe any custom configurations or settings used during the scan.  If default settings were used, state that. Example: Default Semgrep ruleset was used.]`
-*   **Scan Duration:** `[Specify the total time taken to complete the scan. Example: 5 minutes 30 seconds]`
+* **Target:** `[Specify the target of the scan (e.g., repository URL, file path, container image name, API endpoint). Example: Repository: github.com/example/project]`
+* **Scan Type:** `[Specify the type of scan performed (e.g., Static Analysis, Dynamic Analysis, Dependency Scan). Example: Static Analysis]`
+* **Scanner Version:** `[Specify the version of the Security Pro Pack plugin and the underlying scanner used. Example: Security Pro Pack - Vulnerability Scanner v1.0.0 using Semgrep v1.10.0]`
+* **Configuration:** `[Describe any custom configurations or settings used during the scan.  If default settings were used, state that. Example: Default Semgrep ruleset was used.]`
+* **Scan Duration:** `[Specify the total time taken to complete the scan. Example: 5 minutes 30 seconds]`
 
 ## 3. Vulnerability Findings
 
@@ -26,62 +26,62 @@ This section details the vulnerabilities identified during the scan. Each vulner
 
 `[List all vulnerabilities classified as Critical.  For each vulnerability, provide the following information:]`
 
-*   **Vulnerability ID:** `[Unique identifier for the vulnerability. Example: CRITICAL-001]`
-*   **Description:** `[Detailed explanation of the vulnerability and its potential impact. Example: SQL Injection vulnerability in the login form allows attackers to execute arbitrary SQL commands.]`
-*   **Severity:** **Critical**
-*   **Location:** `[Precise location of the vulnerability in the code or configuration. Example: src/auth/login.php: line 42]`
-*   **Affected Component:** `[Specify which component or module is affected. Example: Authentication Module]`
-*   **Recommendation:** `[Specific steps to remediate the vulnerability. Example: Implement parameterized queries or use an ORM to prevent SQL injection.]`
-*   **Evidence:** `[Provide evidence of the vulnerability, such as code snippets, request/response examples, or screenshots. Example: Code snippet showing the vulnerable SQL query.]`
+* **Vulnerability ID:** `[Unique identifier for the vulnerability. Example: CRITICAL-001]`
+* **Description:** `[Detailed explanation of the vulnerability and its potential impact. Example: SQL Injection vulnerability in the login form allows attackers to execute arbitrary SQL commands.]`
+* **Severity:** **Critical**
+* **Location:** `[Precise location of the vulnerability in the code or configuration. Example: src/auth/login.php: line 42]`
+* **Affected Component:** `[Specify which component or module is affected. Example: Authentication Module]`
+* **Recommendation:** `[Specific steps to remediate the vulnerability. Example: Implement parameterized queries or use an ORM to prevent SQL injection.]`
+* **Evidence:** `[Provide evidence of the vulnerability, such as code snippets, request/response examples, or screenshots. Example: Code snippet showing the vulnerable SQL query.]`
 
 ### 3.2 High Vulnerabilities
 
 `[List all vulnerabilities classified as High.  For each vulnerability, provide the same information as in section 3.1.]`
 
-*   **Vulnerability ID:** `[Unique identifier for the vulnerability. Example: HIGH-002]`
-*   **Description:** `[Detailed explanation of the vulnerability and its potential impact. Example: Cross-Site Scripting (XSS) vulnerability allows attackers to inject malicious scripts into the website.]`
-*   **Severity:** **High**
-*   **Location:** `[Precise location of the vulnerability in the code or configuration. Example: public/js/comment.js: line 15]`
-*   **Affected Component:** `[Specify which component or module is affected. Example: Commenting System]`
-*   **Recommendation:** `[Specific steps to remediate the vulnerability. Example: Implement proper input validation and output encoding to prevent XSS.]`
-*   **Evidence:** `[Provide evidence of the vulnerability, such as code snippets, request/response examples, or screenshots. Example: Example of a malicious script being injected and executed.]`
+* **Vulnerability ID:** `[Unique identifier for the vulnerability. Example: HIGH-002]`
+* **Description:** `[Detailed explanation of the vulnerability and its potential impact. Example: Cross-Site Scripting (XSS) vulnerability allows attackers to inject malicious scripts into the website.]`
+* **Severity:** **High**
+* **Location:** `[Precise location of the vulnerability in the code or configuration. Example: public/js/comment.js: line 15]`
+* **Affected Component:** `[Specify which component or module is affected. Example: Commenting System]`
+* **Recommendation:** `[Specific steps to remediate the vulnerability. Example: Implement proper input validation and output encoding to prevent XSS.]`
+* **Evidence:** `[Provide evidence of the vulnerability, such as code snippets, request/response examples, or screenshots. Example: Example of a malicious script being injected and executed.]`
 
 ### 3.3 Medium Vulnerabilities
 
 `[List all vulnerabilities classified as Medium.  For each vulnerability, provide the same information as in section 3.1.]`
 
-*   **Vulnerability ID:** `[Unique identifier for the vulnerability. Example: MEDIUM-003]`
-*   **Description:** `[Detailed explanation of the vulnerability and its potential impact. Example: Insecure Direct Object Reference (IDOR) allows users to access resources belonging to other users.]`
-*   **Severity:** **Medium**
-*   **Location:** `[Precise location of the vulnerability in the code or configuration. Example: src/profile/profile.php: line 28]`
-*   **Affected Component:** `[Specify which component or module is affected. Example: User Profile Module]`
-*   **Recommendation:** `[Specific steps to remediate the vulnerability. Example: Implement proper authorization checks to ensure users can only access their own resources.]`
-*   **Evidence:** `[Provide evidence of the vulnerability, such as code snippets, request/response examples, or screenshots. Example: Example of a user accessing another user's profile.]`
+* **Vulnerability ID:** `[Unique identifier for the vulnerability. Example: MEDIUM-003]`
+* **Description:** `[Detailed explanation of the vulnerability and its potential impact. Example: Insecure Direct Object Reference (IDOR) allows users to access resources belonging to other users.]`
+* **Severity:** **Medium**
+* **Location:** `[Precise location of the vulnerability in the code or configuration. Example: src/profile/profile.php: line 28]`
+* **Affected Component:** `[Specify which component or module is affected. Example: User Profile Module]`
+* **Recommendation:** `[Specific steps to remediate the vulnerability. Example: Implement proper authorization checks to ensure users can only access their own resources.]`
+* **Evidence:** `[Provide evidence of the vulnerability, such as code snippets, request/response examples, or screenshots. Example: Example of a user accessing another user's profile.]`
 
 ### 3.4 Low Vulnerabilities
 
 `[List all vulnerabilities classified as Low.  For each vulnerability, provide the same information as in section 3.1.]`
 
-*   **Vulnerability ID:** `[Unique identifier for the vulnerability. Example: LOW-004]`
-*   **Description:** `[Detailed explanation of the vulnerability and its potential impact. Example: Information leakage through error messages.]`
-*   **Severity:** **Low**
-*   **Location:** `[Precise location of the vulnerability in the code or configuration. Example: config/database.php]`
-*   **Affected Component:** `[Specify which component or module is affected. Example: Database Configuration]`
-*   **Recommendation:** `[Specific steps to remediate the vulnerability. Example: Disable detailed error messages in production environments.]`
-*   **Evidence:** `[Provide evidence of the vulnerability, such as code snippets, request/response examples, or screenshots. Example: Example of an error message revealing sensitive information.]`
+* **Vulnerability ID:** `[Unique identifier for the vulnerability. Example: LOW-004]`
+* **Description:** `[Detailed explanation of the vulnerability and its potential impact. Example: Information leakage through error messages.]`
+* **Severity:** **Low**
+* **Location:** `[Precise location of the vulnerability in the code or configuration. Example: config/database.php]`
+* **Affected Component:** `[Specify which component or module is affected. Example: Database Configuration]`
+* **Recommendation:** `[Specific steps to remediate the vulnerability. Example: Disable detailed error messages in production environments.]`
+* **Evidence:** `[Provide evidence of the vulnerability, such as code snippets, request/response examples, or screenshots. Example: Example of an error message revealing sensitive information.]`
 
 ## 4. Compliance Checks
 
 `[If the scan included compliance checks, list the results here.  Specify the compliance standard being checked (e.g., PCI DSS, HIPAA, GDPR) and the status of each requirement.]`
 
-*   **Compliance Standard:** `[Specify the compliance standard. Example: PCI DSS v3.2.1]`
+* **Compliance Standard:** `[Specify the compliance standard. Example: PCI DSS v3.2.1]`
 
-    *   **Requirement 1.1.1:** `[Description of the requirement. Example: Establish and document security policies and operating procedures.]`
-        *   **Status:** `[Pass/Fail. Example: Pass]`
-        *   **Details:** `[Any relevant details about the compliance check. Example: Security policies and operating procedures are documented and reviewed annually.]`
-    *   **Requirement 2.2.2:** `[Description of the requirement. Example: Implement and maintain a firewall configuration to protect cardholder data.]`
-        *   **Status:** `[Pass/Fail. Example: Fail]`
-        *   **Details:** `[Any relevant details about the compliance check. Example: Firewall rules are not properly configured to restrict access to cardholder data.]`
+  * **Requirement 1.1.1:** `[Description of the requirement. Example: Establish and document security policies and operating procedures.]`
+    * **Status:** `[Pass/Fail. Example: Pass]`
+    * **Details:** `[Any relevant details about the compliance check. Example: Security policies and operating procedures are documented and reviewed annually.]`
+  * **Requirement 2.2.2:** `[Description of the requirement. Example: Implement and maintain a firewall configuration to protect cardholder data.]`
+    * **Status:** `[Pass/Fail. Example: Fail]`
+    * **Details:** `[Any relevant details about the compliance check. Example: Firewall rules are not properly configured to restrict access to cardholder data.]`
 
 ## 5. Recommendations
 
@@ -95,6 +95,6 @@ This section details the vulnerabilities identified during the scan. Each vulner
 
 `[Include any additional information or supporting documentation, such as links to relevant resources or detailed scan logs. Example: Links to relevant security advisories and documentation on vulnerability remediation.]`
 
-*   [Link to Security Advisories](`[Insert Link Here]`)
-*   [Link to Vulnerability Remediation Documentation](`[Insert Link Here]`)
-*   [Detailed Scan Logs (Attached Separately)]
+* [Link to Security Advisories](`[Insert Link Here]`)
+* [Link to Vulnerability Remediation Documentation](`[Insert Link Here]`)
+* [Detailed Scan Logs (Attached Separately)]

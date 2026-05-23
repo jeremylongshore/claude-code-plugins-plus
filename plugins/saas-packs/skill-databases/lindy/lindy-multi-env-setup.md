@@ -10,6 +10,7 @@ lindy-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Lindy multi-environment setup
 **Workflow:** Part of the enterprise skill category for Lindy integration.
 **Relates to:** Other lindy skills in this pack.

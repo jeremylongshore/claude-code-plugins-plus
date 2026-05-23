@@ -10,6 +10,7 @@ adobe-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Adobe integrations to production
 **Workflow:** Part of the cicd skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

@@ -20,6 +20,7 @@ Track and analyze content performance across all platforms to optimize your cont
 ## Purpose
 
 Make data-driven decisions by:
+
 - **Cross-platform analytics** - See all metrics in one place
 - **Pattern identification** - What content performs best
 - **Audience insights** - Who watches and engages
@@ -408,6 +409,7 @@ Works with other Creator Studio plugins:
 ## Best Practices
 
 ### Metrics to Track
+
 1. **CTR** - Are people clicking? (Target: 6%+)
 2. **Retention** - Are they watching? (Target: 60%+)
 3. **Engagement** - Are they interacting? (Target: 5%+)
@@ -415,6 +417,7 @@ Works with other Creator Studio plugins:
 5. **Revenue** - Is it financially sustainable? (Track CPM, sponsorships)
 
 ### Analysis Frequency
+
 - **Daily**: Check first 24 hours performance
 - **Weekly**: Review all content from past week
 - **Monthly**: Deep dive into trends and patterns

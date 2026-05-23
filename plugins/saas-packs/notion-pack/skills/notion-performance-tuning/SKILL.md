@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code
 # Notion Performance Tuning
 
 ## Overview
+
 Optimize Notion API performance by minimizing API calls, caching responses with TTL-based invalidation, batching block appends, parallelizing requests within rate limits, selecting only needed properties, and implementing incremental sync patterns. Target latency benchmarks: Database Query p50=150ms, Page Create p50=200ms, Search p50=300ms.
 
 ## Prerequisites
+
 - `@notionhq/client` installed (`npm install @notionhq/client`)
 - `p-queue` for rate-limited parallelism (`npm install p-queue`)
 - `lru-cache` for TTL-based caching (`npm install lru-cache`)
@@ -234,6 +236,7 @@ function getCacheStats() {
 See [parallel requests and latency monitoring](references/parallel-requests-and-monitoring.md) for `p-queue` rate-limited parallelism, latency tracking with p50/p95 benchmarks, incremental sync, and memory-efficient streaming via async generators.
 
 ## Output
+
 - Reduced API call count through property selection, filtering, and batched block appends
 - TTL-based caching with write-through invalidation for data consistency
 - Parallel requests within Notion's 3 req/sec rate limit using `p-queue`
@@ -242,6 +245,7 @@ See [parallel requests and latency monitoring](references/parallel-requests-and-
 - Memory-efficient streaming for large datasets via async generators
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Stale cache data | TTL too long for volatile data | Use shorter TTL (30s for search, 60s for queries) |
@@ -254,6 +258,7 @@ See [parallel requests and latency monitoring](references/parallel-requests-and-
 ## Examples
 
 ### Full Performance-Tuned Client
+
 ```typescript
 import { Client } from '@notionhq/client';
 import { LRUCache } from 'lru-cache';
@@ -311,6 +316,7 @@ const updates = await perf.sync('db-id-here');
 ```
 
 ### Latency Comparison Before/After
+
 ```typescript
 // Measure improvement from caching + batching
 async function benchmark(dbId: string, pageId: string) {
@@ -334,6 +340,7 @@ async function benchmark(dbId: string, pageId: string) {
 ```
 
 ## Resources
+
 - [Query a Database](https://developers.notion.com/reference/post-database-query) — filtering, sorting, pagination
 - [Append Block Children](https://developers.notion.com/reference/patch-block-children) — batch up to 100 blocks
 - [Request Limits](https://developers.notion.com/reference/request-limits) — 3 req/sec per integration
@@ -342,4 +349,5 @@ async function benchmark(dbId: string, pageId: string) {
 - [LRU Cache](https://github.com/isaacs/node-lru-cache) — TTL-based in-memory cache
 
 ## Next Steps
+
 For webhook event handling, see `notion-webhooks-events`.

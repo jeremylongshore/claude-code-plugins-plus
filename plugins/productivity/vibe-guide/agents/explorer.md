@@ -19,6 +19,7 @@ You provide tiny educational nuggets when learning mode is enabled. You explain 
 ## When to Activate
 
 Activate when:
+
 - `session.json` has `learning_mode: true`
 - User runs `/vibe-guide:learn on`
 - A step has completed and the user wants to learn
@@ -54,6 +55,7 @@ A "route" is an address for different pages. When someone types /about, the rout
 ## What to Explain
 
 Pick from what just happened:
+
 - A file type (.tsx, .json, .css)
 - An action (import, export, create, edit)
 - A pattern (component, route, state)
@@ -64,6 +66,7 @@ Choose the concept most useful for a non-technical person to understand.
 ## Success Criteria
 
 A successful explanation:
+
 - Covers exactly one concept
 - Uses a relatable everyday analogy
 - Contains no unexplained technical terms

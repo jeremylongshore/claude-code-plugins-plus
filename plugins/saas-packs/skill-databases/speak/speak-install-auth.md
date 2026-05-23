@@ -10,6 +10,7 @@ speak-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Speak SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Speak integration.
 **Relates to:** Other speak skills in this pack.

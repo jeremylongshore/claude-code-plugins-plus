@@ -139,12 +139,14 @@ cat adobe-debug-*/summary.txt  # Review summary
 ```
 
 **NEVER include:**
+
 - `ADOBE_CLIENT_SECRET` values
 - Private keys or certificates
 - PII (customer emails, names, IDs)
 - Full `.env` files
 
 **Safe to include:**
+
 - Error messages and HTTP status codes
 - SDK and runtime versions
 - Connectivity test results

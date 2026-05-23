@@ -9,6 +9,7 @@ Common issues and solutions when using the Fullstack Starter Pack.
 ### Issue: Plugins not appearing after installation
 
 **Symptoms:**
+
 - Installed pack but commands don't work
 - Agents don't activate
 - `/plugin list` doesn't show fullstack plugins
@@ -34,6 +35,7 @@ claude --version
 ### Issue: "Marketplace not found" error
 
 **Solution:**
+
 ```bash
 # Add marketplace first
 /plugin marketplace add jeremylongshore/claude-code-plugins
@@ -49,6 +51,7 @@ claude --version
 ### Issue: `/cg` command not working
 
 **Symptoms:**
+
 - Command not recognized
 - "Unknown command" error
 
@@ -70,6 +73,7 @@ claude --version
 **Cause:** Incomplete generation or interrupted process
 
 **Solution:**
+
 ```bash
 # 1. Re-run the command
 /component-generator "Button component"
@@ -88,6 +92,7 @@ claude --version
 ### Issue: React Specialist not activating
 
 **Symptoms:**
+
 - Ask about React but general Claude responds
 - Agent doesn't provide specialized advice
 
@@ -110,6 +115,7 @@ claude --version
 **Cause:** Request was too vague
 
 **Solution:**
+
 ```bash
 # Be specific about what you want
 #  BAD: "Help with database"
@@ -126,6 +132,7 @@ claude --version
 ### Issue: Docker containers won't start
 
 **Symptoms:**
+
 - `docker-compose up` fails
 - Port already in use errors
 
@@ -151,6 +158,7 @@ docker-compose up --build -d
 ### Issue: Database migrations failing
 
 **Symptoms:**
+
 - `prisma migrate dev` fails
 - "Table already exists" errors
 
@@ -178,6 +186,7 @@ psql -U postgres -c "CREATE DATABASE myapp_dev;"
 ### Issue: npm install fails in generated project
 
 **Symptoms:**
+
 - Dependency conflicts
 - Package not found errors
 
@@ -203,6 +212,7 @@ npm config get registry  # Should be https://registry.npmjs.org/
 ### Issue: TypeScript errors in generated code
 
 **Symptoms:**
+
 - Type errors in generated files
 - "Cannot find module" errors
 
@@ -252,6 +262,7 @@ npm install --save-dev @types/node @types/react
 ### Issue: Authentication not working in generated project
 
 **Symptoms:**
+
 - JWT tokens invalid
 - Login fails
 - Protected routes accessible without auth
@@ -276,6 +287,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ### Issue: Database connection fails in production
 
 **Symptoms:**
+
 - Works locally, fails in production
 - Connection timeout errors
 
@@ -302,22 +314,27 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ### Still Having Issues?
 
 **1. Check Documentation:**
+
 - `docs/INSTALLATION.md` - Installation steps
 - `docs/QUICK_START.md` - Getting started guide
 - `docs/USE_CASES.md` - Real-world examples
 
 **2. Review Generated Code:**
+
 - All generated code includes comments and examples
 - Check README files in generated projects
 
 **3. Ask Agents:**
+
 - Agents can help debug issues: "Deployment Specialist: Why is my Docker build failing?"
 
 **4. Community Support:**
+
 - Discord: https://discord.com/invite/claude-code
 - GitHub Issues: https://github.com/jeremylongshore/claude-code-plugins/issues
 
 **5. Report Bugs:**
+
 ```bash
 # Include:
 # - Claude Code version (claude --version)
@@ -329,4 +346,4 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
 ---
 
-**Most issues are resolved with reinstallation or correct environment setup.** 
+**Most issues are resolved with reinstallation or correct environment setup.**

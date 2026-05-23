@@ -3,6 +3,7 @@
 ## Detailed Output Formats
 
 ### Signal Summary Table
+
 ```
 ================================================================================
   SIGNAL SCANNER RESULTS
@@ -21,6 +22,7 @@
 ```
 
 ### Detailed Signal Output
+
 ```
 ======================================================================
   BTC-USD - STRONG_BUY

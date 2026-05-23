@@ -38,6 +38,7 @@ Quick reference for the most common SalesLoft REST API v2 errors. All errors ret
 **Causes:** Token expired, revoked, or wrong environment key.
 
 **Fix:**
+
 ```typescript
 // Check if token works
 const { data } = await api.get('/me.json').catch(err => {
@@ -78,6 +79,7 @@ curl -s -H "Authorization: Bearer $TOKEN" \
 ```
 
 **Common 422 causes:**
+
 | Field | Error | Solution |
 |-------|-------|----------|
 | `email_address` | required | Must include when creating a person |
@@ -94,6 +96,7 @@ Retry-After: 42
 ```
 
 **SalesLoft uses cost-based rate limiting:**
+
 - Default: each request costs 1 point
 - Pages 101-150: 3 points per request
 - Pages 151-250: 8 points per request

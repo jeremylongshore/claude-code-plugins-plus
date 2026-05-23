@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Production Checklist
 
 ## Overview
+
 Complete checklist for deploying CodeRabbit as a production merge gate. Covers the transition from "optional AI review" to "required status check that blocks merges." Ensures configuration is tuned, team is onboarded, and fallback procedures are documented.
 
 ## Prerequisites
+
 - CodeRabbit installed and running in non-blocking mode for 1-2 weeks
 - Team has seen CodeRabbit reviews and provided feedback
 - `.coderabbit.yaml` tuned based on pilot feedback
@@ -37,6 +39,7 @@ Complete checklist for deploying CodeRabbit as a production merge gate. Covers t
 ## Instructions
 
 ### Step 1: Pre-Launch Configuration Audit
+
 ```markdown
 # Run through each item before going live:
 
@@ -65,6 +68,7 @@ Complete checklist for deploying CodeRabbit as a production merge gate. Covers t
 ```
 
 ### Step 2: Validate Configuration
+
 ```bash
 set -euo pipefail
 echo "=== CodeRabbit Production Readiness Check ==="
@@ -108,6 +112,7 @@ fi
 ```
 
 ### Step 3: Verify Review History
+
 ```bash
 set -euo pipefail
 OWNER="${1:-your-org}"
@@ -134,6 +139,7 @@ fi
 ```
 
 ### Step 4: Team Readiness Checklist
+
 ```markdown
 ## Team Onboarding
 - [ ] Team briefed on CodeRabbit (what it does, how to interact)
@@ -156,6 +162,7 @@ fi
 ```
 
 ### Step 5: Enable as Required Check
+
 ```bash
 set -euo pipefail
 OWNER="${1:-your-org}"
@@ -179,6 +186,7 @@ echo "  gh api repos/$OWNER/$REPO/branches/main/protection --method DELETE"
 ```
 
 ### Step 6: Update .coderabbit.yaml for Production
+
 ```yaml
 # .coderabbit.yaml - Production configuration
 language: "en-US"
@@ -225,6 +233,7 @@ chat:
 ```
 
 ### Step 7: Post-Launch Monitoring
+
 ```markdown
 # First 48 hours after go-live:
 
@@ -242,6 +251,7 @@ chat:
 ```
 
 ## Output
+
 - Configuration audited and validated
 - Review history confirms adequate coverage
 - Team onboarded with quick reference guide
@@ -250,6 +260,7 @@ chat:
 - Post-launch monitoring plan in place
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | PRs stuck waiting for review | CodeRabbit outage | Check status.coderabbit.ai; use admin bypass |
@@ -259,9 +270,11 @@ chat:
 | Config not loading | YAML error | Run `@coderabbitai configuration` to diagnose |
 
 ## Resources
+
 - [CodeRabbit Configuration Reference](https://docs.coderabbit.ai/reference/configuration)
 - [GitHub Branch Protection](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository)
 - [CodeRabbit Status Page](https://status.coderabbit.ai)
 
 ## Next Steps
+
 For ongoing monitoring, see `coderabbit-observability`.

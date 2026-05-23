@@ -28,9 +28,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Enterprise RBAC
 
 ## Overview
+
 Configure enterprise-grade access control in Foundry: project roles (Viewer/Editor/Owner), organization-level groups, service user accounts for integrations, and marking-based data classification.
 
 ## Prerequisites
+
 - Foundry enrollment with admin access
 - Understanding of Foundry project structure
 - Familiarity with `palantir-security-basics`
@@ -38,6 +40,7 @@ Configure enterprise-grade access control in Foundry: project roles (Viewer/Edit
 ## Instructions
 
 ### Step 1: Project Role Hierarchy
+
 | Role | Permissions | Use Case |
 |------|------------|----------|
 | Viewer | Read datasets, view Ontology objects | Analysts, stakeholders |
@@ -45,6 +48,7 @@ Configure enterprise-grade access control in Foundry: project roles (Viewer/Edit
 | Owner | Full control, manage members, configure | Project leads, admins |
 
 ### Step 2: Create Service Users for Integrations
+
 ```text
 Developer Console > Applications > New Application:
 1. Name: "order-sync-service" (descriptive of function)
@@ -56,6 +60,7 @@ Result: client_id + client_secret (store in secrets manager)
 ```
 
 ### Step 3: Scope Matrix by Application
+
 ```python
 # Define per-application scopes
 APP_SCOPES = {
@@ -77,6 +82,7 @@ def create_client_for_app(app_name: str) -> foundry.FoundryClient:
 ```
 
 ### Step 4: Group-Based Access Control
+
 ```text
 Organization Groups (manage in Foundry Admin):
 ├── data-engineering        → Editor on pipeline projects
@@ -90,6 +96,7 @@ Never assign project roles to individual users.
 ```
 
 ### Step 5: Audit Access Patterns
+
 ```python
 def audit_service_user_access(client):
     """Check what the current service user can actually access."""
@@ -104,12 +111,14 @@ def audit_service_user_access(client):
 ```
 
 ## Output
+
 - Project roles assigned via groups (not individual users)
 - Service users with minimum viable scopes per application
 - Marking-based data classification enforced
 - Access audit capability
 
 ## Error Handling
+
 | Access Issue | Symptom | Fix |
 |-------------|---------|-----|
 | 403 on dataset read | Not a project member | Add user/group as Viewer |
@@ -118,8 +127,10 @@ def audit_service_user_access(client):
 | Service user sees everything | Over-scoped | Reduce to minimum scopes |
 
 ## Resources
+
 - [Foundry Authentication](https://www.palantir.com/docs/foundry/api/general/overview/authentication)
 - [Developer Console](https://www.palantir.com/docs/foundry/ontology-sdk/create-a-new-osdk)
 
 ## Next Steps
+
 For incident response, see `palantir-incident-runbook`.

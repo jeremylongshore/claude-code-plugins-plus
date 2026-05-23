@@ -10,6 +10,7 @@ bamboohr-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply BambooHR security best practices
 **Workflow:** Part of the operations skill category for BambooHR integration.
 **Relates to:** Other bamboohr skills in this pack.

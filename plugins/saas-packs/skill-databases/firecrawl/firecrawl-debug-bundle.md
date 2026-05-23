@@ -10,6 +10,7 @@ firecrawl-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect comprehensive diagnostic information for FireCrawl support tickets including request/response logs, configuration, and network tests.
 **Workflow:** Support preparation skill - creates complete diagnostic packages for escalation.
 **Relates to:** Follows firecrawl-common-errors when self-service fails; feeds into firecrawl-advanced-troubleshooting

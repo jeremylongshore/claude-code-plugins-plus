@@ -10,6 +10,7 @@ lindy-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Lindy local development workflow
 **Workflow:** Part of the onboarding skill category for Lindy integration.
 **Relates to:** Other lindy skills in this pack.

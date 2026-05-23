@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Observability
 
 ## Overview
+
 Set up monitoring for your Langfuse integration: Prometheus metrics for trace/generation throughput, Grafana dashboards, alert rules, and integration with Langfuse's built-in analytics dashboards and Metrics API.
 
 ## Prerequisites
+
 - Langfuse SDK integrated and producing traces
 - For custom metrics: Prometheus + Grafana (or compatible stack)
 - For Langfuse analytics: access to the Langfuse UI dashboard
@@ -46,6 +48,7 @@ Langfuse provides pre-built dashboards in the UI at `https://cloud.langfuse.com`
 - **Custom Dashboards**: Build your own with the query engine (multi-level aggregations, filters by user/model/tag)
 
 **Accessing via Metrics API:**
+
 ```typescript
 import { LangfuseClient } from "@langfuse/client";
 
@@ -266,6 +269,7 @@ groups:
 | Metrics endpoint slow | Large registry | Use summary instead of histogram for high-volume |
 
 ## Resources
+
 - [Langfuse Metrics Overview](https://langfuse.com/docs/metrics/overview)
 - [Custom Dashboards](https://langfuse.com/docs/metrics/features/custom-dashboards)
 - [Metrics API](https://langfuse.com/docs/metrics/features/metrics-api)

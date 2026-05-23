@@ -5,6 +5,7 @@ AI-powered contract review, risk analysis, document generation, and compliance a
 ## Skills
 
 ### Contract Analysis
+
 | Skill | What It Does |
 |-------|-------------|
 | `contract-review` | **Flagship** — Full review with 5 parallel agents. Contract Safety Score (0-100), clause-by-clause analysis, prioritized recommendations. |
@@ -16,6 +17,7 @@ AI-powered contract review, risk analysis, document generation, and compliance a
 | `negotiate` | Generates counter-proposals with replacement language and a negotiation email template. |
 
 ### Document Generation
+
 | Skill | What It Does |
 |-------|-------------|
 | `nda-generator` | Generates custom NDAs — mutual, one-way, employee, or vendor. |
@@ -24,6 +26,7 @@ AI-powered contract review, risk analysis, document generation, and compliance a
 | `agreement-generator` | Generates business agreements — freelancer contracts, partnerships, SOWs, MSAs, and more. |
 
 ### Compliance
+
 | Skill | What It Does |
 |-------|-------------|
 | `compliance-audit` | Gap analysis across GDPR, CCPA, ADA/WCAG, PCI-DSS, CAN-SPAM, COPPA, SOC 2. |
@@ -47,6 +50,7 @@ The `contract-review` skill spawns 5 specialized agents in parallel:
 ```
 
 Or via CLI:
+
 ```bash
 ccpi install legal-assistant
 ```

@@ -3,6 +3,7 @@
 ## Budget Management
 
 ### Per-User Budgets
+
 ```python
 class BudgetManager:
     def __init__(self):
@@ -50,6 +51,7 @@ def budget_checked_chat(user_id: str, prompt: str, model: str):
 ```
 
 ### Team Budget Dashboard
+
 ```python
 class TeamBudgetDashboard:
     def __init__(self, team_budget: float):

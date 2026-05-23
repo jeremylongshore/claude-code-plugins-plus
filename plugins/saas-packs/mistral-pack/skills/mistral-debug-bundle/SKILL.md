@@ -24,13 +24,16 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral AI Debug Bundle
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'N/A'`
 !`python3 --version 2>/dev/null || echo 'N/A'`
 
 ## Overview
+
 Collect all necessary diagnostic information for Mistral AI support tickets. Creates a redacted bundle with environment info, SDK versions, API connectivity test, available models, and recent error logs.
 
 ## Prerequisites
+
 - Mistral AI SDK installed
 - Access to application logs
 - `MISTRAL_API_KEY` set (for connectivity test)
@@ -229,6 +232,7 @@ function createDebugClient(): Mistral {
 **SAFE TO INCLUDE:** Error messages, stack traces, SDK versions, HTTP status codes, model IDs
 
 ## Output
+
 - `mistral-debug-YYYYMMDD-HHMMSS.tar.gz` containing:
   - `summary.txt` — environment, SDK versions, API status
   - `logs.txt` — recent redacted error logs
@@ -236,6 +240,7 @@ function createDebugClient(): Mistral {
   - `reproduce.sh` — minimal reproduction script
 
 ## Error Handling
+
 | Item | Purpose |
 |------|---------|
 | Environment versions | Compatibility check |
@@ -245,9 +250,11 @@ function createDebugClient(): Mistral {
 | Error logs (redacted) | Root cause analysis |
 
 ## Resources
+
 - [Mistral AI Status](https://status.mistral.ai/)
 - [Mistral AI Discord](https://discord.gg/mistralai)
 - [API Reference](https://docs.mistral.ai/api/)
 
 ## Next Steps
+
 For rate limit issues, see `mistral-rate-limits`. For common errors, see `mistral-common-errors`.

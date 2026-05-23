@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Data Handling
 
 ## Overview
+
 Manage generated image assets from Ideogram's API. Critical concern: **Ideogram image URLs expire** (approximately 1 hour). Every generation must be downloaded and persisted immediately. This skill covers metadata tracking, download pipelines, local and cloud storage, lifecycle management, and generation history for reproducibility.
 
 ## Prerequisites
+
 - `IDEOGRAM_API_KEY` configured
 - Storage solution (local filesystem, S3, or GCS)
 - Database for generation metadata (SQLite, Postgres, or JSON files)
@@ -36,6 +38,7 @@ Manage generated image assets from Ideogram's API. Critical concern: **Ideogram 
 ## Instructions
 
 ### Step 1: Generation Record Schema
+
 ```typescript
 interface GenerationRecord {
   id: string;                // Unique identifier
@@ -57,6 +60,7 @@ interface GenerationRecord {
 ```
 
 ### Step 2: Generate, Download, and Track
+
 ```typescript
 import { writeFileSync, mkdirSync, statSync } from "fs";
 import { join } from "path";
@@ -143,6 +147,7 @@ function saveRecords() {
 ```
 
 ### Step 3: Cloud Storage (S3)
+
 ```typescript
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
@@ -167,6 +172,7 @@ async function persistToS3(imageUrl: string, seed: number): Promise<string> {
 ```
 
 ### Step 4: Reproduction from Seed
+
 ```typescript
 // Reproduce an image using the stored seed and prompt
 async function reproduceImage(record: GenerationRecord) {
@@ -182,6 +188,7 @@ async function reproduceImage(record: GenerationRecord) {
 ```
 
 ### Step 5: Lifecycle Management
+
 ```typescript
 import { unlinkSync, existsSync, readdirSync, statSync } from "fs";
 
@@ -227,6 +234,7 @@ function storageReport() {
 ```
 
 ### Step 6: Search and Query
+
 ```typescript
 function findByPrompt(searchTerm: string): GenerationRecord[] {
   return records.filter(r =>
@@ -246,6 +254,7 @@ function findByTags(tags: string[]): GenerationRecord[] {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Expired URL | Downloaded too late | Always download in same function |
@@ -255,6 +264,7 @@ function findByTags(tags: string[]): GenerationRecord[] {
 | Lost seed | Not recorded | Always store seed from response |
 
 ## Output
+
 - Generation records with full metadata tracking
 - Immediate download preventing URL expiration
 - S3 cloud storage with CDN delivery
@@ -262,8 +272,10 @@ function findByTags(tags: string[]): GenerationRecord[] {
 - Lifecycle management with configurable retention
 
 ## Resources
+
 - [Ideogram API Reference](https://developer.ideogram.ai/api-reference)
 - [Ideogram Image Expiration](https://developer.ideogram.ai/ideogram-api/api-overview)
 
 ## Next Steps
+
 For access control, see `ideogram-enterprise-rbac`.

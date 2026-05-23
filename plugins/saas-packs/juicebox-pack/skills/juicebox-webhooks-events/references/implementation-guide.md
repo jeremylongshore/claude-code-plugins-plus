@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Register Webhook Endpoint
+
 ```typescript
 // First, configure in Juicebox dashboard or via API
 import { JuiceboxClient } from '@juicebox/sdk';
@@ -26,6 +27,7 @@ await client.webhooks.create({
 ```
 
 ### Step 2: Implement Webhook Handler
+
 ```typescript
 // routes/webhooks.ts
 import { Router } from 'express';
@@ -67,6 +69,7 @@ export default router;
 ```
 
 ### Step 3: Process Different Event Types
+
 ```typescript
 // services/webhook-processor.ts
 interface WebhookEvent {
@@ -141,6 +144,7 @@ async function handleQuotaWarning(data: { usage: number; limit: number }) {
 ```
 
 ### Step 4: Implement Retry Logic
+
 ```typescript
 // lib/webhook-queue.ts
 import { Queue } from 'bullmq';

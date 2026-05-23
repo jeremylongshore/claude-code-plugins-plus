@@ -10,6 +10,7 @@ procore-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Procore example
 **Workflow:** Part of the onboarding skill category for Procore integration.
 **Relates to:** Other procore skills in this pack.

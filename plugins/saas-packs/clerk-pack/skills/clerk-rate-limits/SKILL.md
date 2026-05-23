@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Rate Limits
 
 ## Overview
+
 Understand Clerk's rate limiting system and implement strategies to avoid hitting limits. Covers Backend API rate limits, retry logic, batching, caching, and monitoring.
 
 ## Prerequisites
+
 - Clerk account with API access
 - Understanding of your application's traffic patterns
 - Monitoring/logging infrastructure
@@ -34,6 +36,7 @@ Understand Clerk's rate limiting system and implement strategies to avoid hittin
 ## Instructions
 
 ### Step 1: Understand Rate Limits
+
 Clerk Backend API enforces rate limits per API key:
 
 | Plan | Rate Limit | Burst |
@@ -43,11 +46,13 @@ Clerk Backend API enforces rate limits per API key:
 | Enterprise | Custom | Custom |
 
 Rate limit headers returned on every response:
+
 - `X-RateLimit-Limit` — max requests per window
 - `X-RateLimit-Remaining` — remaining requests
 - `X-RateLimit-Reset` — seconds until window resets
 
 ### Step 2: Implement Rate Limit Handling with Retry
+
 ```typescript
 // lib/clerk-api.ts
 import { createClerkClient } from '@clerk/backend'
@@ -80,6 +85,7 @@ export async function getUser(userId: string) {
 ```
 
 ### Step 3: Batch Operations
+
 ```typescript
 // lib/clerk-batch.ts
 import { createClerkClient } from '@clerk/backend'
@@ -122,6 +128,7 @@ async function getAllUsers() {
 ```
 
 ### Step 4: Caching Strategy
+
 ```typescript
 // lib/clerk-cache.ts
 const userCache = new Map<string, { user: any; cachedAt: number }>()
@@ -147,6 +154,7 @@ export function invalidateUserCache(userId: string) {
 ```
 
 For production, use Redis instead of in-memory cache:
+
 ```typescript
 import { Redis } from '@upstash/redis'
 
@@ -164,6 +172,7 @@ export async function getCachedUserRedis(userId: string) {
 ```
 
 ### Step 5: Monitor Rate Limit Usage
+
 ```typescript
 // lib/clerk-monitor.ts
 let rateLimitHits = 0
@@ -184,12 +193,14 @@ export function trackRateLimit(response: Response) {
 ```
 
 ## Output
+
 - Retry logic with exponential backoff for 429 responses
 - Batch operations respecting rate limits
 - Multi-level caching (in-memory + Redis)
 - Rate limit monitoring with warnings
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `429 Too Many Requests` | Rate limit exceeded | Implement retry with backoff, add caching |
@@ -200,6 +211,7 @@ export function trackRateLimit(response: Response) {
 ## Examples
 
 ### Quick Rate Limit Check
+
 ```bash
 # Check current rate limit status
 curl -s -D - -H "Authorization: Bearer $CLERK_SECRET_KEY" \
@@ -207,9 +219,11 @@ curl -s -D - -H "Authorization: Bearer $CLERK_SECRET_KEY" \
 ```
 
 ## Resources
+
 - [Clerk Rate Limits](https://clerk.com/docs/backend-requests/resources/rate-limits)
 - [Backend API Best Practices](https://clerk.com/docs/backend-requests/overview)
 - [Clerk Pricing & Quotas](https://clerk.com/pricing)
 
 ## Next Steps
+
 Proceed to `clerk-security-basics` for security best practices.

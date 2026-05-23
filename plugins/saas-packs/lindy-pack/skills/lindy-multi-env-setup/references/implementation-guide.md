@@ -3,9 +3,11 @@
 # Lindy AI Multi-Environment Setup
 
 ## Overview
+
 Configure Lindy AI across development, staging, and production environments with isolated API keys, environment-specific settings, and proper secret management. Each environment gets its own credentials and configuration to prevent cross-environment data leakage.
 
 ## Prerequisites
+
 - Separate Lindy AI API keys per environment
 - Secret management solution (environment variables, Vault, or cloud secrets)
 - CI/CD pipeline with environment-aware deployment
@@ -22,6 +24,7 @@ Configure Lindy AI across development, staging, and production environments with
 ## Instructions
 
 ### Step 1: Configuration Structure
+
 ```
 config/
   lindy/
@@ -33,6 +36,7 @@ config/
 ```
 
 ### Step 2: Base Configuration
+
 ```typescript
 // config/lindy/base.ts
 export const baseConfig = {
@@ -46,6 +50,7 @@ export const baseConfig = {
 ```
 
 ### Step 3: Environment-Specific Configs
+
 ```typescript
 // config/lindy/development.ts
 import { baseConfig } from "./base";
@@ -80,6 +85,7 @@ export const productionConfig = {
 ```
 
 ### Step 4: Environment Resolver
+
 ```typescript
 // config/lindy/index.ts
 import { developmentConfig } from "./development";
@@ -114,6 +120,7 @@ export function getLindyAIConfig() {
 ```
 
 ### Step 5: Secret Management
+
 ```bash
 # Local development (.env.local - git-ignored)
 LINDY_API_KEY_DEV=your-dev-key
@@ -146,6 +153,7 @@ jobs:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Wrong environment | Missing NODE_ENV | Set environment variable in deployment |
@@ -156,6 +164,7 @@ jobs:
 ## Examples
 
 ### Quick Environment Check
+
 ```typescript
 const config = getLindyAIConfig();
 console.log(`Running in ${config.environment}`);
@@ -163,6 +172,7 @@ console.log(`Cache enabled: ${config.cache.enabled}`);
 ```
 
 ### Startup Validation
+
 ```typescript
 import { z } from "zod";
 
@@ -176,8 +186,10 @@ const config = configSchema.parse(getLindyAIConfig());
 ```
 
 ## Resources
+
 - [Lindy AI Documentation](https://docs.lindy.ai)
 - [Lindy API Reference](https://docs.lindy.ai/api)
 
 ## Next Steps
+
 For deployment, see `lindy-deploy-integration`.

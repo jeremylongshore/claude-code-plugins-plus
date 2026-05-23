@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Deploy Integration
 
 ## Overview
+
 Windsurf offers native deployment integration (starting with Netlify) that lets you deploy directly from the IDE. Combined with Cascade workflows, you can automate the entire build-test-deploy pipeline without leaving the editor.
 
 ## Prerequisites
+
 - Windsurf Pro plan or higher
 - Deployment platform account (Netlify, Vercel, or cloud provider)
 - Application ready to deploy
@@ -50,6 +52,7 @@ Windsurf has a first-party Netlify integration:
 ```
 
 For first-time setup:
+
 ```
 Cascade prompt: "Set up Netlify deployment for this Next.js project.
 Configure build command, output directory, and environment variables."
@@ -91,6 +94,7 @@ Cascade prompt: "Deploy this project to Vercel.
 ```
 
 Cascade will run:
+
 ```bash
 # Install Vercel CLI if needed
 npm i -g vercel
@@ -164,6 +168,7 @@ jobs:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Deploy fails on build | Missing dependencies | Check `npm ci` runs clean |
@@ -175,6 +180,7 @@ jobs:
 ## Examples
 
 ### Quick Deploy Commands
+
 ```
 Cascade: "Deploy to Netlify production"
 Cascade: "Deploy to Vercel with preview URL"
@@ -183,15 +189,18 @@ Cascade: "Deploy to Cloud Run with 1GB memory"
 ```
 
 ### Rollback via Cascade
+
 ```
 Cascade: "Roll back the Netlify deployment to the previous version"
 Cascade: "Revert Vercel to the last successful production deploy"
 ```
 
 ## Resources
+
 - [Windsurf + Netlify Integration](https://www.netlify.com/press/windsurf-netlify-ai-ide-native-deployment-integration/)
 - [Windsurf Workflows](https://docs.windsurf.com/windsurf/cascade/workflows)
 - [Windsurf Previews](https://docs.windsurf.com/windsurf/previews)
 
 ## Next Steps
+
 For multi-environment setup, see `windsurf-multi-env-setup`.

@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX SDK Patterns
 
 ## Overview
+
 Production-grade patterns for building robust MaintainX API integrations with proper error handling, cursor-based pagination, retry logic, and type safety.
 
 ## Prerequisites
+
 - Completed `maintainx-install-auth` setup
 - TypeScript/Node.js familiarity
 - Understanding of REST API principles
@@ -253,6 +255,7 @@ const results = await new WorkOrderQuery()
 ```
 
 ## Output
+
 - Type-safe MaintainX client with full TypeScript interfaces
 - Cursor-based pagination utility that works across all list endpoints
 - Retry logic with exponential backoff and `Retry-After` header support
@@ -260,6 +263,7 @@ const results = await new WorkOrderQuery()
 - Fluent query builder for readable work order filters
 
 ## Error Handling
+
 | Pattern | Use Case |
 |---------|----------|
 | `withRetry()` | Transient errors (429, 5xx) with exponential backoff |
@@ -268,10 +272,12 @@ const results = await new WorkOrderQuery()
 | `WorkOrderQuery` | Type-safe filtering to prevent invalid API calls |
 
 ## Resources
+
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [p-queue](https://github.com/sindresorhus/p-queue) -- Promise queue with concurrency control
 
 ## Next Steps
+
 For core workflows, see `maintainx-core-workflow-a` (Work Orders) and `maintainx-core-workflow-b` (Assets).
 
 ## Examples

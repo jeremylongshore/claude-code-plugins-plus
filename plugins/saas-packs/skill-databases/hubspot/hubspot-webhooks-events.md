@@ -10,6 +10,7 @@ hubspot-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement HubSpot webhook handling
 **Workflow:** Part of the cicd skill category for HubSpot integration.
 **Relates to:** Other hubspot skills in this pack.

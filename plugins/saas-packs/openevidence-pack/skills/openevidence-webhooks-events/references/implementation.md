@@ -1,6 +1,7 @@
 # OpenEvidence Webhooks & Events - Implementation Details
 
 ## Webhook Endpoint with Signature Verification
+
 ```typescript
 function verifySignature(req, res, next) {
   const signature = req.headers['x-openevidence-signature'];
@@ -14,9 +15,11 @@ function verifySignature(req, res, next) {
 ```
 
 ## Event Handlers
+
 Handlers for: deepconsult.started, deepconsult.progress, deepconsult.completed, deepconsult.failed, rate_limit.warning, api_key.expiring. Includes database updates, user notifications (WebSocket + email), and ops alerting.
 
 ## Webhook Registration
+
 ```typescript
 await client.webhooks.register({
   url: webhookUrl,
@@ -26,12 +29,14 @@ await client.webhooks.register({
 ```
 
 ## Idempotency Handling
+
 ```typescript
 export async function isProcessed(webhookId: string): Promise<boolean> { /* Check DB */ }
 export async function markProcessed(webhookId: string): Promise<void> { /* Store with 24h TTL */ }
 ```
 
 ## Webhook Testing
+
 ```typescript
 describe('OpenEvidence Webhooks', () => {
   it('should accept valid webhook', async () => {

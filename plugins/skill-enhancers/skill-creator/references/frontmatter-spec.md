@@ -1,6 +1,7 @@
 # Frontmatter Field Specification
 
 Complete reference for SKILL.md frontmatter fields aligned with:
+
 - AgentSkills.io open standard (required/optional fields)
 - Claude Code platform extensions (runtime features)
 
@@ -173,6 +174,7 @@ allowed-tools: "Read,Write,Bash"  # Warning in Standard, Error in Enterprise
 ```
 
 **Bash Scoping Patterns**:
+
 ```yaml
 Bash(git:*)       # All git commands
 Bash(npm:*)       # All npm commands

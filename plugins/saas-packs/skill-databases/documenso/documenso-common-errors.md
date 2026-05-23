@@ -10,6 +10,7 @@ documenso-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Documenso common errors
 **Workflow:** Part of the operations skill category for Documenso integration.
 **Relates to:** Other documenso skills in this pack.

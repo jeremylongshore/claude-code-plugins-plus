@@ -10,6 +10,7 @@ salesloft-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Salesloft debug evidence for support
 **Workflow:** Part of the operations skill category for Salesloft integration.
 **Relates to:** Other salesloft skills in this pack.

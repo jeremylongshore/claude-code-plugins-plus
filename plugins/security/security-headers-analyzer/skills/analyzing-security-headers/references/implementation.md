@@ -1,4 +1,4 @@
-# Implementation Guide
+## Implementation Guide
 
 1. Collect the target URL/domain and environment context (CDN/proxy, redirects).
 2. Fetch response headers (HTTP/HTTPS) and capture redirects/cookies.
@@ -8,6 +8,7 @@
 ### 1. Domain Input Phase
 
 Accept domain specification:
+
 - Full URL with protocol (https://example.com)
 - Domain name only (example.com - will test HTTPS first)
 - Multiple domains for batch analysis
@@ -16,6 +17,7 @@ Accept domain specification:
 ### 2. Header Fetching Phase
 
 Retrieve HTTP response headers:
+
 - Make HEAD or GET request to target
 - Capture all security-relevant headers
 - Test both HTTP and HTTPS responses
@@ -26,6 +28,7 @@ Retrieve HTTP response headers:
 Evaluate each security header against best practices:
 
 **Critical Headers**:
+
 - Strict-Transport-Security (HSTS)
 - Content-Security-Policy (CSP)
 - X-Frame-Options
@@ -33,12 +36,14 @@ Evaluate each security header against best practices:
 - Permissions-Policy
 
 **Important Headers**:
+
 - Referrer-Policy
 - Cross-Origin-Embedder-Policy (COEP)
 - Cross-Origin-Opener-Policy (COOP)
 - Cross-Origin-Resource-Policy (CORP)
 
 **Additional Checks**:
+
 - Server header information disclosure
 - X-Powered-By header exposure
 - Cookie security attributes (Secure, HttpOnly, SameSite)
@@ -46,6 +51,7 @@ Evaluate each security header against best practices:
 ### 4. Grading Phase
 
 Calculate security score:
+
 - A+ (95-100): All critical headers properly configured
 - A (85-94): Critical headers present, minor issues
 - B (75-84): Most headers present, some weaknesses
@@ -56,6 +62,7 @@ Calculate security score:
 ### 5. Report Generation Phase
 
 Create comprehensive report with:
+
 - Overall security grade and numeric score
 - Missing headers with impact assessment
 - Misconfigured headers with specific issues

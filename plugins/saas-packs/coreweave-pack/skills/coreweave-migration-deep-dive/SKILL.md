@@ -36,6 +36,7 @@ compatibility: Designed for Claude Code
 ## Migration Steps
 
 ### Phase 1: Containerize
+
 ```bash
 # If running on bare EC2/GCE, containerize first
 docker build -t inference-server:v1 .
@@ -43,15 +44,19 @@ docker push ghcr.io/myorg/inference-server:v1
 ```
 
 ### Phase 2: Adapt YAML for CoreWeave
+
 Key changes from AWS EKS / GKE:
+
 1. **Node affinity**: Use `gpu.nvidia.com/class` instead of `nvidia.com/gpu.product`
 2. **Storage**: Use CoreWeave storage classes (`shared-ssd-ord1`)
 3. **Networking**: CoreWeave provides flat networking within VPC
 
 ### Phase 3: Parallel Deploy
+
 Run both old and new infrastructure simultaneously, gradually shift traffic.
 
 ### Phase 4: Cut Over
+
 Decommission old GPU instances after validation period.
 
 ## Common Gotchas

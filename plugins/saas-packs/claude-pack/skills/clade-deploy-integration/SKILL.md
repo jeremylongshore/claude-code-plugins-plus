@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Deploy Anthropic Integration
 
 ## Overview
+
 Claude integrations are stateless API wrappers — a serverless function receives a user request, streams from the Messages API, and returns the response. No database, no connection pool, no persistent state.
 
 ## Vercel Edge Function (Recommended)
+
 ```typescript
 // app/api/chat/route.ts (Next.js App Router)
 import Anthropic from '@claude-ai/sdk';
@@ -73,6 +75,7 @@ export async function POST(req: Request) {
 ## Instructions
 
 ### Step 1: Deploy to Vercel
+
 ```bash
 # Add secret
 vercel env add ANTHROPIC_API_KEY
@@ -82,6 +85,7 @@ vercel --prod
 ```
 
 ## Fly.io (Long-Running / WebSocket)
+
 ```dockerfile
 FROM node:20-slim
 WORKDIR /app
@@ -99,6 +103,7 @@ fly deploy
 ```
 
 ## Google Cloud Run
+
 ```bash
 gcloud run deploy claude-api \
   --source . \
@@ -110,6 +115,7 @@ gcloud run deploy claude-api \
 ```
 
 ## Health Check
+
 ```typescript
 // api/health.ts
 import Anthropic from '@claude-ai/sdk';
@@ -130,6 +136,7 @@ export async function GET() {
 ```
 
 ## Environment Variables
+
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `ANTHROPIC_API_KEY` | Yes | API key from console.anthropic.com |
@@ -137,12 +144,14 @@ export async function GET() {
 | `ANTHROPIC_MAX_TOKENS` | No | Default max tokens |
 
 ## Output
+
 - Application deployed to chosen platform with streaming support
 - `ANTHROPIC_API_KEY` stored in platform secrets manager
 - Health check endpoint returning Claude connectivity status
 - Environment-specific configuration (model, max_tokens) in place
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `FUNCTION_INVOCATION_TIMEOUT` | Claude response > function timeout | Set timeout to 300s. Use streaming. |
@@ -151,16 +160,20 @@ export async function GET() {
 | CORS errors | Missing headers | Add CORS headers to API route |
 
 ## Examples
+
 See Vercel Edge Function (with SSE streaming), Fly.io Dockerfile, Cloud Run deploy script, and Health Check endpoint above.
 
 ## Resources
+
 - [Anthropic API Docs](https://docs.anthropic.com/en/api/getting-started)
 - [Vercel AI SDK](https://sdk.vercel.ai/docs) (optional higher-level wrapper)
 
 ## Next Steps
+
 See `clade-observability` for monitoring your Claude calls in production.
 
 ## Prerequisites
+
 - Completed `clade-install-auth` and `clade-prod-checklist`
 - Production Anthropic API key (separate from dev key)
 - Platform CLI installed: `vercel`, `fly`, or `gcloud`

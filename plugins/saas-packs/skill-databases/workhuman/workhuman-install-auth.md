@@ -10,6 +10,7 @@ workhuman-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Workhuman SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Workhuman integration.
 **Relates to:** Other workhuman skills in this pack.

@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code
 # Figma Advanced Troubleshooting
 
 ## Overview
+
 Deep debugging techniques for complex Figma REST API issues that resist standard error handling: intermittent failures, unexpected response shapes, rate limit edge cases, and large file timeouts.
 
 ## Prerequisites
+
 - Access to application logs
 - `curl` with verbose mode for network inspection
 - Figma API credentials for testing
@@ -34,6 +36,7 @@ Deep debugging techniques for complex Figma REST API issues that resist standard
 ## Instructions
 
 ### Step 1: Verbose Request Inspection
+
 ```bash
 # Full HTTP request/response trace for a Figma API call
 curl -v -H "X-Figma-Token: ${FIGMA_PAT}" \
@@ -58,6 +61,7 @@ Status:     %{http_code}
 ```
 
 ### Step 2: Response Shape Validation
+
 ```typescript
 // Figma API responses can be unexpectedly shaped when:
 // - File is empty or newly created
@@ -91,6 +95,7 @@ function validateFileResponse(data: any): string[] {
 ```
 
 ### Step 3: Rate Limit Edge Cases
+
 ```typescript
 // Problem: Figma rate limits are per-user, per-minute, but the exact
 // limit is not published and varies by plan tier and seat type.
@@ -127,6 +132,7 @@ async function measureRateLimit(token: string): Promise<{
 ```
 
 ### Step 4: Large File Debugging
+
 ```typescript
 // Large Figma files (1000+ components) can cause:
 // - Response timeouts (>30s)
@@ -164,6 +170,7 @@ async function fetchLargeFileSafely(fileKey: string, token: string) {
 ```
 
 ### Step 5: Support Escalation Template
+
 ```markdown
 ## Figma API Support Request
 
@@ -187,12 +194,14 @@ async function fetchLargeFileSafely(fileKey: string, token: string) {
 
 ### Request/Response (redacted)
 ```
+
 curl -v -H "X-Figma-Token: [REDACTED]" \
   "https://api.figma.com/v1/files/FILE_KEY?depth=1"
 
 HTTP/2 [status]
 x-figma-rate-limit-type: [value]
 retry-after: [value]
+
 ```
 
 ### Environment
@@ -203,6 +212,7 @@ retry-after: [value]
 ```
 
 ## Output
+
 - Verbose request/response traces captured
 - Response shape issues identified
 - Rate limit behavior measured
@@ -210,6 +220,7 @@ retry-after: [value]
 - Support ticket prepared with diagnostic data
 
 ## Error Handling
+
 | Issue | Diagnostic | Solution |
 |-------|-----------|----------|
 | Intermittent 500s | Track frequency and timing | Log every request; report pattern to Figma |
@@ -218,9 +229,11 @@ retry-after: [value]
 | Memory crash | Large file JSON | Use `depth=1` + per-page `/nodes` calls |
 
 ## Resources
+
 - [Figma Developer Forum](https://forum.figma.com/)
 - [Figma Support](https://help.figma.com/hc/en-us/requests/new)
 - [Figma Status Page](https://status.figma.com)
 
 ## Next Steps
+
 For load testing, see `figma-load-scale`.

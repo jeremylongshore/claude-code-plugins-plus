@@ -10,6 +10,7 @@ lindy-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Lindy production deployment checklist
 **Workflow:** Part of the operations skill category for Lindy integration.
 **Relates to:** Other lindy skills in this pack.

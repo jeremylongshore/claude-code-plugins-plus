@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code
 # Figma Policy & Guardrails
 
 ## Overview
+
 Automated guardrails for Figma API integrations: prevent token leaks, enforce scope minimization, validate webhook configurations, and catch common anti-patterns in CI.
 
 ## Prerequisites
+
 - ESLint or similar linter
 - CI/CD pipeline (GitHub Actions)
 - Pre-commit hooks infrastructure
@@ -33,6 +35,7 @@ Automated guardrails for Figma API integrations: prevent token leaks, enforce sc
 ## Instructions
 
 ### Step 1: Token Leak Prevention
+
 ```bash
 # .pre-commit-config.yaml -- catch Figma tokens before commit
 repos:
@@ -82,6 +85,7 @@ jobs:
 ```
 
 ### Step 2: ESLint Rules for Figma
+
 ```javascript
 // eslint-rules/no-figma-token-literal.js
 module.exports = {
@@ -115,6 +119,7 @@ module.exports = {
 ```
 
 ### Step 3: API Usage Policies
+
 ```typescript
 // Runtime guardrails for Figma API usage
 
@@ -169,6 +174,7 @@ function enforceRatePolicy() {
 ```
 
 ### Step 4: Configuration Validation
+
 ```typescript
 // Validate Figma config at startup, fail fast if misconfigured
 function validateFigmaConfig() {
@@ -213,6 +219,7 @@ validateFigmaConfig();
 ```
 
 ### Step 5: Audit Logging
+
 ```typescript
 // Log all Figma API operations for compliance
 interface FigmaAuditEntry {
@@ -236,6 +243,7 @@ function auditFigmaCall(entry: Omit<FigmaAuditEntry, 'timestamp'>) {
 ```
 
 ## Output
+
 - Pre-commit hooks catching token leaks
 - CI pipeline scanning for hardcoded credentials
 - Runtime policies enforcing performance best practices
@@ -243,6 +251,7 @@ function auditFigmaCall(entry: Omit<FigmaAuditEntry, 'timestamp'>) {
 - Audit logging for compliance
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | False positive on token scan | Test fixture contains figd_ | Exclude test fixtures directory |
@@ -251,9 +260,11 @@ function auditFigmaCall(entry: Omit<FigmaAuditEntry, 'timestamp'>) {
 | Audit log noise | Too many entries | Filter to write operations only |
 
 ## Resources
+
 - [Figma API Scopes](https://developers.figma.com/docs/rest-api/scopes/)
 - [Pre-commit Framework](https://pre-commit.com/)
 - [ESLint Custom Rules](https://eslint.org/docs/latest/extend/custom-rules)
 
 ## Next Steps
+
 For architecture blueprints, see `figma-architecture-variants`.

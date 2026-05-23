@@ -288,6 +288,7 @@ Deno.serve(async (req) => {
 ## Output
 
 After completing these steps, you will have:
+
 - Diagnostic baseline from `pg_stat_statements`, `index-usage`, and `cache-hit`
 - Targeted indexes on slow query columns, foreign keys, and common filter patterns
 - Query plans verified with `EXPLAIN ANALYZE` showing Index Scan instead of Seq Scan

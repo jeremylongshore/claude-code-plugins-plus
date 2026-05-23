@@ -10,6 +10,7 @@ figma-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Figma reliability patterns
 **Workflow:** Part of the enterprise skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

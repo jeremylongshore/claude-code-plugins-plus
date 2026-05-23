@@ -26,13 +26,16 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Install & Auth
 
 ## Current State
+
 !`npm list @deepgram/sdk 2>/dev/null || echo '@deepgram/sdk not installed'`
 !`pip show deepgram-sdk 2>/dev/null | grep Version || echo 'deepgram-sdk (Python) not installed'`
 
 ## Overview
+
 Install the Deepgram SDK and configure API key authentication. Deepgram provides speech-to-text (Nova-3, Nova-2), text-to-speech (Aura-2), and audio intelligence APIs. The JS SDK uses `createClient()` (v3/v4) or `new DeepgramClient()` (v5+).
 
 ## Prerequisites
+
 - Node.js 18+ or Python 3.10+
 - Deepgram account at [console.deepgram.com](https://console.deepgram.com)
 - API key from Console > Settings > API Keys
@@ -42,6 +45,7 @@ Install the Deepgram SDK and configure API key authentication. Deepgram provides
 ### Step 1: Install SDK
 
 **Node.js (v3/v4 — current stable):**
+
 ```bash
 npm install @deepgram/sdk
 # or
@@ -49,6 +53,7 @@ pnpm add @deepgram/sdk
 ```
 
 **Python:**
+
 ```bash
 pip install deepgram-sdk
 ```
@@ -75,6 +80,7 @@ const deepgram = createClient(process.env.DEEPGRAM_API_KEY!);
 ```
 
 **SDK v5+ uses a different constructor:**
+
 ```typescript
 import { DeepgramClient } from '@deepgram/sdk';
 const deepgram = new DeepgramClient({ apiKey: process.env.DEEPGRAM_API_KEY });
@@ -149,12 +155,14 @@ export function getDeepgramClient(): DeepgramClient {
 Create scoped keys in Console > Settings > API Keys > Create Key.
 
 ## Output
+
 - Installed `@deepgram/sdk` (Node.js) or `deepgram-sdk` (Python)
 - API key configured via environment variable or `.env`
 - Verified connection with project listing
 - Singleton client pattern for production use
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401 Unauthorized` | Invalid or expired API key | Regenerate key in Console > API Keys |
@@ -164,6 +172,7 @@ Create scoped keys in Console > Settings > API Keys > Create Key.
 | `TypeError: createClient is not a function` | SDK v5 installed | Use `new DeepgramClient()` instead |
 
 ## Resources
+
 - [Deepgram Console](https://console.deepgram.com)
 - [JavaScript SDK](https://developers.deepgram.com/docs/js-sdk)
 - [Python SDK](https://developers.deepgram.com/docs/node-sdk)
@@ -171,4 +180,5 @@ Create scoped keys in Console > Settings > API Keys > Create Key.
 - [SDK Feature Matrix](https://developers.deepgram.com/sdks/sdk-features)
 
 ## Next Steps
+
 Proceed to `deepgram-hello-world` for your first transcription.

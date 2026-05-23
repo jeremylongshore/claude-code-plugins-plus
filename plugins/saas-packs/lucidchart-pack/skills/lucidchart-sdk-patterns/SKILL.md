@@ -18,15 +18,18 @@ compatibility: Designed for Claude Code
 # Lucidchart SDK Patterns
 
 ## Overview
+
 Lucid's REST API uses OAuth 2.0 with versioned `Lucid-Api-Version` headers to manage documents, pages, shapes, data-linked fields, and collaborative comments. A structured SDK client is essential because the API requires version negotiation on every request, returns deeply nested shape tree hierarchies, and enforces document-level locking for concurrent edits. These patterns provide OAuth token lifecycle management, typed shape and document models, fluent query building for filtered shape searches, and mock factories for diagramming test scenarios.
 
 ## Prerequisites
+
 - Node.js 18+, TypeScript 5+
 - `LUCID_CLIENT_ID` and `LUCID_CLIENT_SECRET` environment variables (OAuth 2.0 app credentials)
 - `LUCID_ACCESS_TOKEN` or refresh token flow for per-user access
 - `axios` or `node-fetch` for HTTP transport
 
 ## Singleton Client
+
 ```typescript
 interface LucidConfig {
   clientId: string;
@@ -56,6 +59,7 @@ export function getLucidClient(overrides?: Partial<LucidConfig>): LucidClient {
 ```
 
 ## Error Wrapper
+
 ```typescript
 interface LucidApiError { status: number; errorCode: string; message: string; documentId?: string; }
 
@@ -81,6 +85,7 @@ async function safeLucid<T>(fn: () => Promise<T>): Promise<T> {
 ```
 
 ## Request Builder
+
 ```typescript
 class ShapeQueryBuilder {
   private params: Record<string, string> = {};
@@ -95,6 +100,7 @@ class ShapeQueryBuilder {
 ```
 
 ## Response Types
+
 ```typescript
 interface LucidDocument { id: string; title: string; editUrl: string; pageCount: number; lastModified: string; owner: string; }
 interface LucidPage { id: string; title: string; index: number; width: number; height: number; }
@@ -103,6 +109,7 @@ interface LucidComment { id: string; author: string; body: string; shapeId?: str
 ```
 
 ## Middleware Pattern
+
 ```typescript
 type Middleware = (req: RequestInit, next: () => Promise<Response>) => Promise<Response>;
 
@@ -122,6 +129,7 @@ const oauthRefreshMiddleware = (refreshToken: string): Middleware => async (req,
 ```
 
 ## Testing Utilities
+
 ```typescript
 function mockDocument(overrides?: Partial<LucidDocument>): LucidDocument {
   return { id: 'doc_abc123', title: 'Architecture Diagram', editUrl: 'https://lucid.app/documents/edit/doc_abc123', pageCount: 3, lastModified: '2025-06-01T12:00:00Z', owner: 'user@example.com', ...overrides };
@@ -135,6 +143,7 @@ function mockComment(shapeId: string): LucidComment {
 ```
 
 ## Error Handling
+
 | Pattern | When to Use | Example |
 |---------|-------------|---------|
 | Version negotiation | API returns 400 on outdated version header | Catch version mismatch, retry with server-suggested version |
@@ -144,7 +153,9 @@ function mockComment(shapeId: string): LucidComment {
 | Shape tree validation | Creating shapes with invalid parent references | Validate page and container IDs exist before shape POST |
 
 ## Resources
+
 - [Lucid API Reference](https://developer.lucid.co/reference/overview)
 
 ## Next Steps
+
 Apply in `lucidchart-core-workflow-a`.

@@ -1,6 +1,7 @@
-# Customer.io Security Basics - Implementation Guide
+## Customer.io Security Basics - Implementation Guide
 
 ### Step 1: Secure Credential Management
+
 ```typescript
 // lib/secrets.ts
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
@@ -38,6 +39,7 @@ async function getCredentialsFromAWS() {
 ```
 
 ### Step 2: PII Data Handling
+
 ```typescript
 // lib/pii-handler.ts
 import crypto from 'crypto';
@@ -84,6 +86,7 @@ const safeAttributes = sanitizeUserAttributes({
 ```
 
 ### Step 3: API Key Rotation
+
 ```typescript
 // scripts/rotate-api-key.ts
 async function rotateAPIKey(): Promise<void> {
@@ -107,6 +110,7 @@ async function rotateAPIKey(): Promise<void> {
 ```
 
 ### Step 4: Webhook Security
+
 ```typescript
 // lib/webhook-security.ts
 import crypto from 'crypto';
@@ -158,6 +162,7 @@ app.post('/webhooks/customerio',
 ```
 
 ### Step 5: Access Control
+
 ```typescript
 // lib/access-control.ts
 interface TeamMember {
@@ -203,6 +208,7 @@ function logSecurityEvent(event: {
 ```
 
 ### Step 6: Data Retention
+
 ```typescript
 // lib/data-retention.ts
 import { APIClient } from '@customerio/track';

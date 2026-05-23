@@ -17,6 +17,7 @@ PostHog is an open-source product analytics platform. This pack provides product
 ## Skills
 
 ### Getting Started (S01-S04)
+
 | Skill | What It Does |
 |-------|-------------|
 | `posthog-install-auth` | Install posthog-js/posthog-node, configure `phc_` and `phx_` API keys |
@@ -25,6 +26,7 @@ PostHog is an open-source product analytics platform. This pack provides product
 | `posthog-sdk-patterns` | Singleton client, typed events, React hooks, Next.js App Router provider, reverse proxy |
 
 ### Core Workflows (S05-S08)
+
 | Skill | What It Does |
 |-------|-------------|
 | `posthog-core-workflow-a` | Event taxonomy design, `posthog.capture`, `identify`, `group`, server-side capture, annotations API |
@@ -33,6 +35,7 @@ PostHog is an open-source product analytics platform. This pack provides product
 | `posthog-debug-bundle` | Diagnostic script: SDK versions, API connectivity, event capture test, flag evaluation test |
 
 ### Operations (S09-S12)
+
 | Skill | What It Does |
 |-------|-------------|
 | `posthog-rate-limits` | PostHog rate limit tiers (240/min analytics, unlimited capture), backoff, request queue |
@@ -41,6 +44,7 @@ PostHog is an open-source product analytics platform. This pack provides product
 | `posthog-upgrade-migration` | posthog-node v5 breaking changes (sendFeatureFlags), before_send, upgrade procedure |
 
 ### Pro Skills (P13-P18)
+
 | Skill | What It Does |
 |-------|-------------|
 | `posthog-ci-integration` | GitHub Actions with mocked unit tests, integration tests, deployment annotations |
@@ -51,6 +55,7 @@ PostHog is an open-source product analytics platform. This pack provides product
 | `posthog-reference-architecture` | File structure, event taxonomy, flag constants, analytics module, data pipeline integration |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | What It Does |
 |-------|-------------|
 | `posthog-multi-env-setup` | Separate projects per env, environment-aware SDK config, flag rollout per env |

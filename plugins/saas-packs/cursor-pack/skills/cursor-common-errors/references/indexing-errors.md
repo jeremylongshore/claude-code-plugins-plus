@@ -3,6 +3,7 @@
 ## Indexing Errors
 
 ### "Indexing Failed"
+
 ```
 Symptoms: @codebase doesn't work, search fails
 
@@ -22,6 +23,7 @@ build/
 ```
 
 ### "Indexing Stuck"
+
 ```
 Symptoms: Progress bar frozen, never completes
 

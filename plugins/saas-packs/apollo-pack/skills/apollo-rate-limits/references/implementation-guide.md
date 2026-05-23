@@ -5,6 +5,7 @@
 # Apollo Rate Limits
 
 ## Overview
+
 Implement robust rate limiting and backoff strategies for Apollo.io API to maximize throughput while avoiding 429 errors.
 
 ## Apollo Rate Limits
@@ -205,6 +206,7 @@ async function batchSearchPeople(domains: string[]): Promise<Person[]> {
 ## Usage Patterns
 
 ### Pattern 1: Simple Rate-Limited Request
+
 ```typescript
 import { withBackoff } from './backoff';
 
@@ -217,6 +219,7 @@ const people = await withBackoff(() =>
 ```
 
 ### Pattern 2: Batch Processing with Queue
+
 ```typescript
 import { apolloQueue } from './request-queue';
 
@@ -236,6 +239,7 @@ async function enrichCompanies(domains: string[]) {
 ```
 
 ### Pattern 3: Priority Queue for Interactive vs Background
+
 ```typescript
 // High priority for user-facing requests
 async function interactiveSearch(query: string) {
@@ -294,6 +298,7 @@ export const rateLimitMonitor = new RateLimitMonitor();
 ```
 
 ## Output
+
 - Rate limiter class with token bucket algorithm
 - Exponential backoff with jitter
 - Request queue with concurrency control
@@ -301,6 +306,7 @@ export const rateLimitMonitor = new RateLimitMonitor();
 - Rate limit monitoring and alerts
 
 ## Error Handling
+
 | Scenario | Strategy |
 |----------|----------|
 | 429 response | Use Retry-After header |
@@ -309,9 +315,11 @@ export const rateLimitMonitor = new RateLimitMonitor();
 | Network timeout | Exponential backoff |
 
 ## Resources
+
 - [Apollo Rate Limits](https://apolloio.github.io/apollo-api-docs/#rate-limits)
 - [p-queue Library](https://github.com/sindresorhus/p-queue)
 - [Exponential Backoff](https://cloud.google.com/storage/docs/exponential-backoff)
 
 ## Next Steps
+
 Proceed to `apollo-security-basics` for API security best practices.

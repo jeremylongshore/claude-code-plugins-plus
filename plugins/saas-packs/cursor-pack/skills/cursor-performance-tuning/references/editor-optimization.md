@@ -3,6 +3,7 @@
 ## Editor Optimization
 
 ### Reduce Visual Overhead
+
 ```json
 // settings.json
 {
@@ -25,6 +26,7 @@
 ```
 
 ### File Handling
+
 ```json
 {
   // Limit open editors
@@ -47,6 +49,7 @@
 ```
 
 ### Search Optimization
+
 ```json
 {
   "search.exclude": {

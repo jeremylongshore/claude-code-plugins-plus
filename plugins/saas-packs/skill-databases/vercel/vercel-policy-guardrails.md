@@ -10,6 +10,7 @@ vercel-policy-guardrails/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement ESLint rules, pre-commit hooks, CI policy checks, OPA policies, and runtime guardrails.
 **Workflow:** Set up during project initialization; enforced continuously through CI/CD.
 **Relates to:** Follows vercel-reliability-patterns; leads to vercel-architecture-variants

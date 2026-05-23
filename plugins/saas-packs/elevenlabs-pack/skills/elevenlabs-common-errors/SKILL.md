@@ -63,6 +63,7 @@ curl -s https://api.elevenlabs.io/v1/voices \
 #### HTTP 401 — Authentication / Quota
 
 **Error: `invalid_api_key`**
+
 ```json
 {
   "detail": {
@@ -71,8 +72,10 @@ curl -s https://api.elevenlabs.io/v1/voices \
   }
 }
 ```
+
 **Cause:** API key is missing, malformed, or revoked.
 **Fix:**
+
 ```bash
 # Verify key is set
 echo "${ELEVENLABS_API_KEY:0:8}..."
@@ -84,6 +87,7 @@ curl -s https://api.elevenlabs.io/v1/user -H "xi-api-key: ${ELEVENLABS_API_KEY}"
 ```
 
 **Error: `quota_exceeded`**
+
 ```json
 {
   "detail": {
@@ -92,6 +96,7 @@ curl -s https://api.elevenlabs.io/v1/user -H "xi-api-key: ${ELEVENLABS_API_KEY}"
   }
 }
 ```
+
 **Cause:** Monthly character limit reached for your plan.
 **Fix:** Check usage at https://elevenlabs.io/app/usage. Upgrade plan, or on Creator+ plans, enable usage-based billing in Subscription settings.
 
@@ -100,6 +105,7 @@ curl -s https://api.elevenlabs.io/v1/user -H "xi-api-key: ${ELEVENLABS_API_KEY}"
 #### HTTP 400 — Bad Request
 
 **Error: `voice_not_found`**
+
 ```json
 {
   "detail": {
@@ -108,8 +114,10 @@ curl -s https://api.elevenlabs.io/v1/user -H "xi-api-key: ${ELEVENLABS_API_KEY}"
   }
 }
 ```
+
 **Cause:** Invalid `voice_id` in request path.
 **Fix:**
+
 ```bash
 # List your available voices
 curl -s https://api.elevenlabs.io/v1/voices \
@@ -118,6 +126,7 @@ curl -s https://api.elevenlabs.io/v1/voices \
 ```
 
 **Error: `text_too_long`**
+
 ```json
 {
   "detail": {
@@ -126,8 +135,10 @@ curl -s https://api.elevenlabs.io/v1/voices \
   }
 }
 ```
+
 **Cause:** Single TTS request exceeds 5,000 characters.
 **Fix:** Split text into chunks. Use `previous_text` and `next_text` parameters to maintain prosody across chunks:
+
 ```typescript
 const audio = await client.textToSpeech.convert(voiceId, {
   text: currentChunk,
@@ -138,6 +149,7 @@ const audio = await client.textToSpeech.convert(voiceId, {
 ```
 
 **Error: `model_not_found`**
+
 ```json
 {
   "detail": {
@@ -146,6 +158,7 @@ const audio = await client.textToSpeech.convert(voiceId, {
   }
 }
 ```
+
 **Cause:** Invalid `model_id` string.
 **Fix:** Use exact model IDs: `eleven_v3`, `eleven_multilingual_v2`, `eleven_flash_v2_5`, `eleven_turbo_v2_5`, `eleven_monolingual_v1`, `eleven_english_sts_v2`.
 
@@ -154,6 +167,7 @@ const audio = await client.textToSpeech.convert(voiceId, {
 #### HTTP 429 — Rate Limited
 
 **Error: `too_many_concurrent_requests`**
+
 ```json
 {
   "detail": {
@@ -162,6 +176,7 @@ const audio = await client.textToSpeech.convert(voiceId, {
   }
 }
 ```
+
 **Cause:** Exceeded concurrent request limit for your plan.
 **Fix:** Queue requests. Concurrency limits by plan:
 
@@ -181,6 +196,7 @@ await queue.add(() => client.textToSpeech.convert(voiceId, options));
 ```
 
 **Error: `system_busy`**
+
 ```json
 {
   "detail": {
@@ -189,8 +205,10 @@ await queue.add(() => client.textToSpeech.convert(voiceId, options));
   }
 }
 ```
+
 **Cause:** ElevenLabs servers under heavy load.
 **Fix:** Retry with exponential backoff (the SDK does this automatically with `maxRetries`):
+
 ```typescript
 const client = new ElevenLabsClient({
   maxRetries: 3, // Auto-retries 429 and 5xx
@@ -202,6 +220,7 @@ const client = new ElevenLabsClient({
 #### HTTP 422 — Validation Error
 
 **Error: `invalid_voice_sample`**
+
 ```json
 {
   "detail": {
@@ -210,6 +229,7 @@ const client = new ElevenLabsClient({
   }
 }
 ```
+
 **Cause:** Voice cloning audio file is corrupt, too short, or wrong format.
 **Fix:** Ensure audio is MP3/WAV/M4A/FLAC, at least 30 seconds, clean speech without music.
 
@@ -218,11 +238,14 @@ const client = new ElevenLabsClient({
 #### WebSocket Errors
 
 **Connection fails silently:**
+
 ```
 WebSocket connection to 'wss://api.elevenlabs.io/v1/text-to-speech/...' failed
 ```
+
 **Cause:** Missing `xi_api_key` in the first WebSocket message, or using `eleven_v3` model (not supported for WebSocket).
 **Fix:**
+
 ```typescript
 ws.send(JSON.stringify({
   text: " ",

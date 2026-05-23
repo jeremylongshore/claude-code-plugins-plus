@@ -14,6 +14,7 @@ Comprehensive DeFi yield optimization across protocols with APY tracking, risk a
 When optimizing DeFi yield, implement comprehensive analysis across protocols:
 
 ### Required Parameters
+
 - **Capital**: Amount to deploy
 - **Risk Tolerance**: low, medium, high
 - **Chains**: ethereum, bsc, polygon, arbitrum, all

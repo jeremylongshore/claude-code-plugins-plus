@@ -6,6 +6,7 @@ model: sonnet
 # Firestore Setup Command
 
 Initialize Firebase Admin SDK in your project with support for:
+
 - Basic Firestore operations (CRUD, queries)
 - A2A (Agent-to-Agent) framework integration
 - MCP server communication patterns
@@ -58,6 +59,7 @@ npm install dotenv  # For environment variables
 Ask the user:
 
 **Option A: Download from Firebase Console**
+
 ```
 1. Go to https://console.firebase.google.com
 2. Select your project
@@ -67,12 +69,14 @@ Ask the user:
 ```
 
 **Option B: Use existing GCP credentials**
+
 ```bash
 # If using Google Cloud SDK
 gcloud auth application-default login
 ```
 
 **Option C: Environment variable (production)**
+
 ```bash
 # Set environment variable
 export GOOGLE_APPLICATION_CREDENTIALS="/path/to/serviceAccountKey.json"
@@ -109,6 +113,7 @@ module.exports = { admin, db };
 ```
 
 For TypeScript:
+
 ```typescript
 import * as admin from 'firebase-admin';
 
@@ -161,6 +166,7 @@ testFirestore();
 ```
 
 Run the test:
+
 ```bash
 node test-firestore.js
 ```
@@ -368,6 +374,7 @@ CLOUD_RUN_SERVICE_URL=https://your-service-abc123-uc.a.run.app
 ```
 
 Add to `.gitignore`:
+
 ```
 serviceAccountKey.json
 .env
@@ -514,19 +521,23 @@ Tell the user:
 ## Common Issues
 
 ### Issue 1: "Permission denied" errors
+
 - Check service account has Firestore permissions
 - Verify security rules allow the operation
 - Ensure GOOGLE_APPLICATION_CREDENTIALS is set correctly
 
 ### Issue 2: "Firebase app already initialized"
+
 - This is normal - only initialize once
 - Check if Firebase is initialized in multiple files
 
 ### Issue 3: "Cannot find module 'firebase-admin'"
+
 - Run `npm install firebase-admin`
 - Check package.json includes firebase-admin
 
 ### Issue 4: A2A collections not accessible
+
 - Verify service account email is whitelisted in security rules
 - Check firestore.rules includes A2A patterns
 - Test with Firebase Emulator first

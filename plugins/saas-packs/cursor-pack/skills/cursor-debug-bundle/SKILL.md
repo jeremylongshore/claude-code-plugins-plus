@@ -53,6 +53,7 @@ When AI suggestions are wrong, the cause is almost always one of these:
 **Root cause:** Model training data includes old code. No project rules specifying versions.
 
 **Fix:**
+
 ```yaml
 # .cursor/rules/stack-versions.mdc
 ---
@@ -91,6 +92,7 @@ same error handling, same response format, same validation approach.
 **Root cause:** Model confuses similar libraries or invents plausible-sounding APIs.
 
 **Fix:**
+
 1. Add `@Docs` context: `@Docs Prisma` gives the AI real API documentation
 2. Verify generated imports: run `npm run build` immediately after applying
 3. Use `@Files` to show the actual module interface: `@src/lib/database.ts`
@@ -102,6 +104,7 @@ same error handling, same response format, same validation approach.
 **Root cause:** Context window overflow -- your instructions get pushed out by file contents.
 
 **Fix:**
+
 1. Start a **new chat** (Cmd+N) -- conversation history may be using too much context
 2. Use fewer `@` references -- each consumes context budget
 3. Put instructions at the **end** of the prompt (models attend more to recent text)
@@ -114,6 +117,7 @@ same error handling, same response format, same validation approach.
 **Root cause:** Tab has limited context compared to Chat/Composer.
 
 **Fix:**
+
 1. Open related files in editor tabs (Tab reads open tabs)
 2. Add a comment above your cursor describing what you want
 3. Reject bad suggestions with `Esc` (trains the model)
@@ -157,6 +161,7 @@ Step 5: Check indexing
 `Cmd+Shift+P` > `Developer: Toggle Developer Tools`
 
 Check the Console tab for:
+
 - API request errors (red)
 - Context assembly logs
 - Extension errors
@@ -166,6 +171,7 @@ Check the Console tab for:
 Enable verbose output: `Cursor Settings` > search "log level" > set to "Debug"
 
 Logs location:
+
 - macOS: `~/Library/Application Support/Cursor/logs/`
 - Linux: `~/.config/Cursor/logs/`
 

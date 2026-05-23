@@ -10,6 +10,7 @@ exa-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Analyze, plan, and execute Exa SDK upgrades with breaking change detection and rollback procedures.
 **Workflow:** Maintenance skill for keeping SDK current - includes migration automation.
 **Relates to:** Follows exa-sdk-patterns; applies to all Exa codebases

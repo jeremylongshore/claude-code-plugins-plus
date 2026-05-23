@@ -22,13 +22,17 @@ User needs a landing page structured around product positioning, launch messagin
 
 1. **Identify product type and positioning anchor** from user request or brief
 2. **Search landing page patterns:**
+
    ```bash
    python3 -m pitch_agent.uiux search --domain landing --query "{product_type}" --limit 3
    ```
+
 3. **Search product reasoning for audience + messaging context:**
+
    ```bash
    python3 -m pitch_agent.uiux search --domain product --query "{product_type}" --limit 3
    ```
+
 4. **Layer in positioning:** CTA strategy, social proof placement, objection handling
 5. **Output** section order with conversion and messaging optimization
 

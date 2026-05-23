@@ -1,6 +1,7 @@
 # Deepgram Common Errors - Implementation Details
 
 ## Audio File Validation
+
 ```typescript
 import { readFileSync, statSync } from 'fs';
 
@@ -27,6 +28,7 @@ function validateAudioFile(filePath: string): boolean {
 ```
 
 ## Large File Splitting
+
 ```typescript
 import { exec } from 'child_process';
 import { promisify } from 'util';
@@ -42,6 +44,7 @@ async function splitAudio(inputPath: string, chunkDuration: number = 300) {
 ```
 
 ## Rate Limiter Implementation
+
 ```typescript
 class RateLimiter {
   private queue: Array<() => Promise<void>> = [];
@@ -81,6 +84,7 @@ class RateLimiter {
 ```
 
 ## WebSocket Connectivity Test
+
 ```typescript
 async function testWebSocketConnection() {
   const ws = new WebSocket('wss://api.deepgram.com/v1/listen', {
@@ -96,6 +100,7 @@ async function testWebSocketConnection() {
 ```
 
 ## Keep-Alive Implementation
+
 ```typescript
 class DeepgramWebSocket {
   private keepAliveInterval: NodeJS.Timeout | null = null;
@@ -115,6 +120,7 @@ class DeepgramWebSocket {
 ```
 
 ## Debug Transcription
+
 ```typescript
 async function debugTranscription(audioPath: string) {
   const client = createClient(process.env.DEEPGRAM_API_KEY!);

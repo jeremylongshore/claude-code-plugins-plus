@@ -10,6 +10,7 @@ algolia-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Algolia load testing and scaling
 **Workflow:** Part of the enterprise skill category for Algolia integration.
 **Relates to:** Other algolia skills in this pack.

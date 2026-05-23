@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Cohere Hello World
 
 ## Overview
+
 Three minimal working examples: Chat completion, text embedding, and search reranking. Each demonstrates a core Cohere API v2 endpoint.
 
 ## Prerequisites
+
 - Completed `cohere-install-auth` setup
 - `cohere-ai` package installed
 - `CO_API_KEY` environment variable set
@@ -156,12 +158,14 @@ for r in response.results:
 ```
 
 ## Output
+
 - Chat: Text response from Command A model
 - Embed: Float vectors (1024 dimensions for v4)
 - Rerank: Sorted documents with relevance scores (0.0-1.0)
 - Stream: Token-by-token text output via SSE
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `model is required` | Missing model param | Always pass `model` in API v2 |
@@ -170,9 +174,11 @@ for r in response.results:
 | `rate limit exceeded` | Too many trial requests | Wait 60s or upgrade key |
 
 ## Resources
+
 - [Cohere Chat API](https://docs.cohere.com/reference/chat)
 - [Cohere Embed API](https://docs.cohere.com/reference/embed)
 - [Cohere Rerank API](https://docs.cohere.com/reference/rerank)
 
 ## Next Steps
+
 Proceed to `cohere-local-dev-loop` for development workflow setup.

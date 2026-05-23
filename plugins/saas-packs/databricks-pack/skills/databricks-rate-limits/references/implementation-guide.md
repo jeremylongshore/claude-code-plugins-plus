@@ -15,6 +15,7 @@
 | Clusters | 20 creates/hour | Per workspace |
 
 ### Step 2: Implement Exponential Backoff with Jitter
+
 ```python
 import time
 import random
@@ -86,6 +87,7 @@ def with_exponential_backoff(
 ```
 
 ### Step 3: Implement Request Queue for Bulk Operations
+
 ```python
 import time
 from collections import deque
@@ -157,6 +159,7 @@ def list_clusters(w):
 ```
 
 ### Step 4: Async Batch Processing
+
 ```python
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
@@ -230,6 +233,7 @@ async def update_all_job_tags(w: WorkspaceClient, job_ids: List[int], tags: dict
 ```
 
 ### Step 5: Idempotency for Job Submissions
+
 ```python
 import hashlib
 import json
@@ -298,10 +302,10 @@ def idempotent_run_now(
     return run
 ```
 
-
 ## Complete Examples
 
 ### Bulk Cluster Operations
+
 ```python
 from databricks.sdk import WorkspaceClient
 
@@ -330,6 +334,7 @@ asyncio.run(update_all_clusters())
 ```
 
 ### Monitor Rate Limit Usage
+
 ```python
 class RateLimitMonitor:
     """Track rate limit usage across API calls."""

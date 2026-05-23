@@ -10,6 +10,7 @@ adobe-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Adobe security best practices
 **Workflow:** Part of the operations skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

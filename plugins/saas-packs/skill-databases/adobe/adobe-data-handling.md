@@ -10,6 +10,7 @@ adobe-data-handling/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Adobe data compliance
 **Workflow:** Part of the advanced skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

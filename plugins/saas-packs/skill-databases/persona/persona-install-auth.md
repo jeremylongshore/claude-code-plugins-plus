@@ -10,6 +10,7 @@ persona-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Persona SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Persona integration.
 **Relates to:** Other persona skills in this pack.

@@ -10,6 +10,7 @@ elevenlabs-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement ElevenLabs reference architecture
 **Workflow:** Part of the cicd skill category for ElevenLabs integration.
 **Relates to:** Other elevenlabs skills in this pack.

@@ -10,6 +10,7 @@ guidewire-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Guidewire primary workflow
 **Workflow:** Part of the onboarding skill category for Guidewire integration.
 **Relates to:** Other guidewire skills in this pack.

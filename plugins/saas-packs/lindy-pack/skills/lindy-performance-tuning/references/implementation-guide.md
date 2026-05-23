@@ -3,9 +3,11 @@
 # Lindy AI Performance Tuning
 
 ## Overview
+
 Optimize Lindy AI agent execution speed and reliability. Lindy agents run as multi-step automations where each step (LLM call, tool execution, API call) adds latency. A typical 5-step agent takes 10-30 seconds total. The biggest performance levers are: reducing step count (combine LLM calls), using faster tool configurations, implementing parallel step execution where possible, and caching frequently-accessed data in agent memory.
 
 ## Prerequisites
+
 - Lindy workspace with active agents
 - Access to agent configuration and run history
 - Understanding of agent step execution flow
@@ -13,6 +15,7 @@ Optimize Lindy AI agent execution speed and reliability. Lindy agents run as mul
 ## Instructions
 
 ### Step 1: Identify Slow Steps
+
 ```bash
 # Analyze step-level timing for recent agent runs
 curl "https://api.lindy.ai/v1/runs?limit=20&expand=steps" \
@@ -21,6 +24,7 @@ curl "https://api.lindy.ai/v1/runs?limit=20&expand=steps" \
 ```
 
 ### Step 2: Consolidate LLM Steps
+
 ```yaml
 # Before: 3 separate LLM calls (3 * 2-5s = 6-15s total)
 steps_before:
@@ -45,6 +49,7 @@ steps_after:
 ```
 
 ### Step 3: Cache Agent Context Data
+
 ```yaml
 # Instead of fetching reference data every run:
 # Store frequently-accessed data as agent memory
@@ -62,6 +67,7 @@ agent_memory:
 ```
 
 ### Step 4: Parallelize Independent Steps
+
 ```yaml
 # Steps that don't depend on each other should run in parallel
 parallel_execution:
@@ -81,6 +87,7 @@ parallel_execution:
 ```
 
 ### Step 5: Optimize Trigger Configuration
+
 ```yaml
 # Reduce unnecessary agent invocations
 trigger_optimization:
@@ -96,6 +103,7 @@ trigger_optimization:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Agent timeout (>60s) | Too many sequential steps | Consolidate steps, add parallel execution |
@@ -104,6 +112,7 @@ trigger_optimization:
 | High run frequency | Trigger firing too often | Add filters to trigger configuration |
 
 ## Examples
+
 ```bash
 # Benchmark: average agent run time over last 50 runs
 curl -s "https://api.lindy.ai/v1/runs?limit=50" \

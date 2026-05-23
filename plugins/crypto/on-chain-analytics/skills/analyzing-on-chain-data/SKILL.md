@@ -73,24 +73,30 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full four-step im
 ## Examples
 
 ### Daily DeFi Overview
+
 ```bash
 python onchain_analytics.py protocols --limit 20
 python onchain_analytics.py chains
 python onchain_analytics.py trends
 ```
+
 Produces a snapshot of the top 20 protocols by TVL, all chain rankings, and any protocols trending above the default threshold.
 
 ### Research a Lending Protocol
+
 ```bash
 python onchain_analytics.py protocols --category lending --sort tvl_to_mcap
 python onchain_analytics.py fees --protocol aave
 ```
+
 Ranks all lending protocols by TVL-to-market-cap ratio (identifying potentially undervalued protocols), then pulls detailed fee and revenue data for Aave.
 
 ### Find High-TVL Yield Opportunities on Ethereum
+
 ```bash
 python onchain_analytics.py yields --min-tvl 10000000 --chain ethereum --limit 50  # 10000000 = 10M limit
 ```
+
 Returns up to 50 yield pools on Ethereum with at least $10M in TVL, sorted by APY. Export with `--format csv > yields.csv` for spreadsheet analysis.
 
 ## Resources

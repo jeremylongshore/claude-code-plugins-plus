@@ -10,6 +10,7 @@ cursor-composer-workflows/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Masters Cursor Composer for multi-file AI edits including creating files, editing across codebases, feature generation, and refactoring workflows.
 
 **Workflow:** This skill activates when developers need to create or modify multiple files at once. It covers basic usage, workflow patterns (feature generation, incremental building, pattern replication), best practices, common use cases, and troubleshooting.

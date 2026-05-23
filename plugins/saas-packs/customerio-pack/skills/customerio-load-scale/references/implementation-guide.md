@@ -376,6 +376,7 @@ echo "Load test complete. Results in results.json"
 ## Capacity Planning Reference
 
 ### Rate Limits
+
 | Endpoint | Limit | Notes |
 |----------|-------|-------|
 | Track API (identify/track) | 100 req/sec | Per workspace |
@@ -383,6 +384,7 @@ echo "Load test complete. Results in results.json"
 | Webhooks (outbound) | Varies | Based on plan |
 
 ### Scaling Targets
+
 | Volume | Architecture | Notes |
 |--------|--------------|-------|
 | < 1M events/day | Single service | Direct API calls |

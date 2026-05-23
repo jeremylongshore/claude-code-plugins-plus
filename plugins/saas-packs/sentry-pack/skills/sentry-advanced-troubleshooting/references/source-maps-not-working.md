@@ -3,6 +3,7 @@
 ## Source Maps Not Working
 
 ### Verify Upload
+
 ```bash
 # Check if source maps are uploaded
 sentry-cli releases files $VERSION list
@@ -13,6 +14,7 @@ sentry-cli releases files $VERSION list
 ```
 
 ### Check URL Prefix
+
 ```typescript
 // Browser URL: https://example.com/static/js/main.js
 // Source map should be: ~/static/js/main.js.map
@@ -23,6 +25,7 @@ sentry-cli releases files $VERSION upload-sourcemaps ./dist \
 ```
 
 ### Debug Source Map Resolution
+
 ```bash
 # Validate source map
 sentry-cli sourcemaps explain $EVENT_ID
@@ -34,6 +37,7 @@ sentry-cli sourcemaps explain $EVENT_ID
 ```
 
 ### Common Source Map Issues
+
 ```yaml
 Issue: Minified stack traces
 Fix: Verify source maps uploaded with correct release

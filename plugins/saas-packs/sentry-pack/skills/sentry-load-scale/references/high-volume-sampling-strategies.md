@@ -3,6 +3,7 @@
 ## High-Volume Sampling Strategies
 
 ### Adaptive Sampling
+
 ```typescript
 import * as Sentry from '@sentry/node';
 
@@ -44,6 +45,7 @@ setInterval(() => errorCounts.clear(), WINDOW_MS);
 ```
 
 ### Tiered Transaction Sampling
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,

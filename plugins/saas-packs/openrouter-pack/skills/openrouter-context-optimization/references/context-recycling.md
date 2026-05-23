@@ -3,6 +3,7 @@
 ## Context Recycling
 
 ### Reuse Common Context
+
 ```python
 class ContextCache:
     """Cache and reuse common context patterns."""

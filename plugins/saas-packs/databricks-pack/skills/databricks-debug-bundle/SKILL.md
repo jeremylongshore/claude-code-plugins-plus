@@ -24,13 +24,16 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Debug Bundle
 
 ## Current State
+
 !`databricks --version 2>/dev/null || echo 'CLI not installed'`
 !`python3 -c "import databricks.sdk; print(f'SDK {databricks.sdk.__version__}')" 2>/dev/null || echo 'SDK not installed'`
 
 ## Overview
+
 Collect all diagnostic information needed for Databricks support tickets: environment info, cluster state, cluster events, job run details, Spark driver logs, and Delta table history. Produces a redacted tar.gz bundle safe to share with support.
 
 ## Prerequisites
+
 - Databricks CLI installed and configured
 - Access to cluster logs (admin or cluster owner)
 - Permission to access job run details
@@ -38,6 +41,7 @@ Collect all diagnostic information needed for Databricks support tickets: enviro
 ## Instructions
 
 ### Step 1: Create Debug Collection Script
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -56,6 +60,7 @@ echo "Workspace: ${DATABRICKS_HOST:-unset}" >> "$BUNDLE_DIR/summary.txt"
 ```
 
 ### Step 2: Collect Environment Info
+
 ```bash
 {
     echo ""
@@ -71,6 +76,7 @@ echo "Workspace: ${DATABRICKS_HOST:-unset}" >> "$BUNDLE_DIR/summary.txt"
 ```
 
 ### Step 3: Collect Cluster Information
+
 ```bash
 if [ -n "$CLUSTER_ID" ]; then
     echo "" >> "$BUNDLE_DIR/summary.txt"
@@ -96,6 +102,7 @@ fi
 ```
 
 ### Step 4: Collect Job Run Information
+
 ```bash
 if [ -n "$RUN_ID" ]; then
     echo "" >> "$BUNDLE_DIR/summary.txt"
@@ -123,6 +130,7 @@ fi
 ```
 
 ### Step 5: Collect Spark Driver Logs
+
 ```bash
 if [ -n "$CLUSTER_ID" ]; then
     echo "" >> "$BUNDLE_DIR/summary.txt"
@@ -144,6 +152,7 @@ fi
 ```
 
 ### Step 6: Collect Delta Table Diagnostics
+
 ```bash
 if [ -n "$TABLE_NAME" ]; then
     echo "" >> "$BUNDLE_DIR/summary.txt"
@@ -170,6 +179,7 @@ fi
 ```
 
 ### Step 7: Package Bundle (Redacted)
+
 ```bash
 # Redact sensitive data from config snapshot
 echo "" >> "$BUNDLE_DIR/summary.txt"
@@ -201,6 +211,7 @@ echo "  delta_diagnostics.txt, config-redacted.txt"
 ```
 
 ## Output
+
 - `databricks-debug-YYYYMMDD-HHMMSS.tar.gz` containing:
   - `summary.txt` — Human-readable diagnostic summary
   - `cluster_config.json` — Full cluster configuration
@@ -212,6 +223,7 @@ echo "  delta_diagnostics.txt, config-redacted.txt"
   - `config-redacted.txt` — CLI config with secrets removed
 
 ## Error Handling
+
 | Item | Included | Notes |
 |------|----------|-------|
 | Tokens/secrets | NEVER | Redacted with `***REDACTED***` |
@@ -222,6 +234,7 @@ echo "  delta_diagnostics.txt, config-redacted.txt"
 ## Examples
 
 ### Usage
+
 ```bash
 # Environment only
 bash databricks-debug-bundle.sh
@@ -237,6 +250,7 @@ bash databricks-debug-bundle.sh 0123-456789-abcde 12345 catalog.schema.table
 ```
 
 ### Submit to Support
+
 1. Generate bundle: `bash databricks-debug-bundle.sh [args]`
 2. Review `summary.txt` for sensitive data
 3. Open ticket at [help.databricks.com](https://help.databricks.com)
@@ -244,9 +258,11 @@ bash databricks-debug-bundle.sh 0123-456789-abcde 12345 catalog.schema.table
 5. Include workspace ID (found in workspace URL: `adb-<workspace-id>`)
 
 ## Resources
+
 - [Databricks Support](https://help.databricks.com)
 - [Status Page](https://status.databricks.com)
 - [Community Forum](https://community.databricks.com)
 
 ## Next Steps
+
 For rate limit issues, see `databricks-rate-limits`.

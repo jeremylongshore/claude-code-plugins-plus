@@ -10,6 +10,7 @@ lucidchart-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Lucidchart reference architecture
 **Workflow:** Part of the cicd skill category for Lucidchart integration.
 **Relates to:** Other lucidchart skills in this pack.

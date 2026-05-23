@@ -10,6 +10,7 @@ gamma-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Gamma anti-patterns
 **Workflow:** Part of the enterprise skill category for Gamma integration.
 **Relates to:** Other gamma skills in this pack.

@@ -251,6 +251,7 @@ volumes:
 ```
 
 **Cost comparison (example):**
+
 - Cloud: $49/user/month at 10 users = $490/month
 - Self-hosted: Server + DB + maintenance = ~$100-200/month
 

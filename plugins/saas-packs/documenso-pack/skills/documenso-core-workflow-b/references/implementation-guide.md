@@ -310,6 +310,7 @@ const euTemplateId = await duplicateTemplate(templateId, "NDA - EU Version");
 ## Template Workflow Patterns
 
 ### Pattern 1: Sales Contract Flow
+
 ```typescript
 // 1. Create template once
 const salesContractTemplate = await createTemplate({
@@ -338,6 +339,7 @@ async function createSalesContract(deal: DealInfo) {
 ```
 
 ### Pattern 2: Self-Service Signing
+
 ```typescript
 // Customer visits your site, fills form, and signs
 async function selfServiceSigning(customerInfo: CustomerInfo) {

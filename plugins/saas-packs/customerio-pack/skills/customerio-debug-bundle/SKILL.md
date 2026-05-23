@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Customer.io Debug Bundle
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'Node.js: not installed'`
 !`npm list customerio-node 2>/dev/null | grep customerio || echo 'customerio-node: not installed'`
 

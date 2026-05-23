@@ -75,36 +75,42 @@ Great copy doesn't just communicate; it persuades. The most effective copywritin
 ### Headlines
 
 **Reciprocity Headlines:**
+
 - "The free [resource] that [specific audience] can't stop sharing"
 - "Here's the [tool/template/guide] we wish we had when we started"
 - "[Specific deliverable] for [audience], on us"
 - "We built a free [thing] so you don't have to [painful task]"
 
 **Commitment Headlines:**
+
 - "Are you serious about [goal]? Start here."
 - "If you've ever wanted to [goal], this is your first step"
 - "Ready to [achievable action]? Let's go."
 - "Take the 5-minute [topic] assessment"
 
 **Social Proof Headlines:**
+
 - "[X,XXX] [audience] already [positive outcome]. You're next."
 - "Why [recognizable company] switched to [product]"
 - "The [industry] tool rated #1 by [audience]"
 - "Join [X,XXX] [audience] who [achieved result]"
 
 **Authority Headlines:**
+
 - "The [metric] approach backed by [years] of research"
 - "What [authority figure] recommends for [problem]"
 - "[X] years of [expertise] distilled into one [deliverable]"
 - "The method used by [credible organizations]"
 
 **Scarcity Headlines:**
+
 - "[X] spots remaining for [offer]"
 - "Last chance: [offer] closes [specific date]"
 - "Only available until [date]. Here's why."
 - "[Offer] for the first [X] to sign up"
 
 **Unity Headlines:**
+
 - "Built for [identity]. By [identity]."
 - "If you're a [identity], you already know this problem"
 - "The [product] [identity group] has been waiting for"
@@ -153,6 +159,7 @@ Great copy doesn't just communicate; it persuades. The most effective copywritin
 **After:**
 > "Pro Plan - $49/month [Most Popular - chosen by 68% of teams] [Social Proof]
 > Everything in Free, plus:
+>
 > - Unlimited projects [Scarcity removal]
 > - Priority support from our engineering team [Authority]
 > - 'Teams like yours typically see ROI within 2 weeks' [Social Proof + Authority]

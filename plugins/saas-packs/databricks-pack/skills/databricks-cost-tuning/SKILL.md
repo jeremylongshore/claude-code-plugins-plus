@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Cost Tuning
 
 ## Overview
+
 Reduce Databricks spending through cluster policies, spot instances, SQL warehouse right-sizing, and cost governance. Databricks charges per DBU (Databricks Unit) with rates varying by compute type: Jobs Compute (~$0.15/DBU), All-Purpose Compute (~$0.40/DBU), SQL Compute (~$0.22/DBU), Serverless (~$0.07/DBU). System tables (`system.billing.usage` and `system.billing.list_prices`) provide cost visibility.
 
 ## Prerequisites
+
 - Databricks Premium or Enterprise workspace
 - Access to `system.billing.usage` and `system.billing.list_prices` tables
 - Workspace admin for cluster policy creation
@@ -36,6 +38,7 @@ Reduce Databricks spending through cluster policies, spot instances, SQL warehou
 ## Instructions
 
 ### Step 1: Identify Top Cost Drivers
+
 ```sql
 -- Top 10 most expensive resources this month
 SELECT cluster_id,
@@ -63,6 +66,7 @@ ORDER BY cost_usd DESC;
 ```
 
 ### Step 2: Enforce Cluster Policies
+
 Cluster policies restrict what users can configure, preventing runaway costs.
 
 ```python
@@ -105,6 +109,7 @@ w.cluster_policies.set_permissions(
 ```
 
 ### Step 3: Spot Instances for Batch Jobs
+
 Spot instances save 60-90% on worker nodes. Always keep the driver on-demand.
 
 ```python
@@ -125,6 +130,7 @@ job_cluster_config = {
 ```
 
 ### Step 4: Right-Size SQL Warehouses
+
 ```sql
 -- Check warehouse utilization
 SELECT warehouse_id, warehouse_name,
@@ -149,6 +155,7 @@ for wh in w.warehouses.list():
 ```
 
 ### Step 5: Auto-Terminate Idle Development Clusters
+
 ```bash
 # Find and set aggressive auto-termination on dev clusters
 databricks clusters list --output JSON | \
@@ -172,6 +179,7 @@ for c in w.clusters.list():
 ```
 
 ### Step 6: Instance Pools for Faster + Cheaper Startup
+
 ```python
 # Create a pool of pre-allocated instances
 pool = w.instance_pools.create(
@@ -192,6 +200,7 @@ job_cluster = {
 ```
 
 ## Output
+
 - Cost breakdown by cluster, team, and SKU
 - Cluster policies enforcing auto-termination and instance limits
 - Spot instance config for 60-90% savings on batch workers
@@ -200,6 +209,7 @@ job_cluster = {
 - Idle cluster detection script
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Spot interruption | Cloud provider reclaiming capacity | `SPOT_WITH_FALLBACK` auto-recovers; checkpoint long jobs |
@@ -210,6 +220,7 @@ job_cluster = {
 ## Examples
 
 ### Monthly Cost Report
+
 ```sql
 SELECT date_trunc('week', usage_date) AS week,
        sku_name,
@@ -221,6 +232,7 @@ ORDER BY week, total_dbus DESC;
 ```
 
 ### Cost Savings Checklist
+
 - [ ] Auto-termination enabled on ALL interactive clusters (15-30 min)
 - [ ] Spot instances enabled for all batch job workers
 - [ ] Instance pools for frequently-used cluster configs
@@ -230,6 +242,7 @@ ORDER BY week, total_dbus DESC;
 - [ ] Weekly cost review using `system.billing.usage`
 
 ## Resources
+
 - [Cost Optimization Best Practices](https://docs.databricks.com/aws/en/lakehouse-architecture/cost-optimization/best-practices)
 - [Cluster Policies](https://docs.databricks.com/aws/en/admin/clusters/policy-definition)
 - [Billing Usage Tables](https://docs.databricks.com/aws/en/admin/system-tables/)

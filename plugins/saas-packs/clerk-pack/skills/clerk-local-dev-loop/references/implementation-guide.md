@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Configure Development Instance
+
 ```bash
 # Use development keys in .env.local
 cat > .env.local << 'EOF'
@@ -21,6 +22,7 @@ EOF
 ```
 
 ### Step 2: Set Up Test Users
+
 ```typescript
 // scripts/create-test-user.ts
 // Use Clerk Backend SDK for test user management
@@ -38,6 +40,7 @@ async function createTestUser() {
 ```
 
 ### Step 3: Configure Hot Reload
+
 ```typescript
 // next.config.js
 /** @type {import('next').NextConfig} */
@@ -57,6 +60,7 @@ module.exports = nextConfig
 ```
 
 ### Step 4: Development Scripts
+
 ```json
 {
   "scripts": {
@@ -69,6 +73,7 @@ module.exports = nextConfig
 ```
 
 ### Step 5: Mock Authentication for Tests
+
 ```typescript
 // __tests__/setup.ts
 import { vi } from 'vitest'
@@ -101,6 +106,7 @@ vi.mock('@clerk/nextjs', () => ({
 ## Examples
 
 ### Environment Switching
+
 ```typescript
 // lib/clerk.ts
 export const clerkConfig = {
@@ -116,6 +122,7 @@ if (!clerkConfig.publishableKey.startsWith('pk_')) {
 ```
 
 ### Local Webhook Testing
+
 ```bash
 # Use ngrok or similar for webhook testing
 npx ngrok http 3000

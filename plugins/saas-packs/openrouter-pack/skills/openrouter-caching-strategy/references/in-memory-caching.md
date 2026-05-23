@@ -3,6 +3,7 @@
 ## In-Memory Caching
 
 ### Simple LRU Cache
+
 ```python
 from functools import lru_cache
 import hashlib
@@ -31,6 +32,7 @@ def chat_with_cache(prompt: str, model: str = "openai/gpt-4-turbo") -> str:
 ```
 
 ### TTL Cache
+
 ```python
 import time
 from collections import OrderedDict

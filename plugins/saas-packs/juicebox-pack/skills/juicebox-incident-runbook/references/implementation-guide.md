@@ -14,6 +14,7 @@ Detailed implementation examples and code patterns.
 ## Quick Diagnostics
 
 ### Step 1: Immediate Assessment
+
 ```bash
 #!/bin/bash
 # quick-diag.sh - Run immediately when incident detected
@@ -43,6 +44,7 @@ curl -s http://localhost:9090/api/v1/query?query=rate\(juicebox_requests_total\{
 ```
 
 ### Step 2: Identify Root Cause
+
 ```markdown
 
 ## Incident Triage Decision Tree
@@ -71,6 +73,7 @@ curl -s http://localhost:9090/api/v1/query?query=rate\(juicebox_requests_total\{
 ## Response Procedures
 
 ### External Outage Response
+
 ```markdown
 
 ## When Juicebox is Down
@@ -84,17 +87,18 @@ curl -s http://localhost:9090/api/v1/query?query=rate\(juicebox_requests_total\{
    kubectl set env deployment/juicebox-integration JUICEBOX_FALLBACK=true
    ```
 
-3. **Notify Stakeholders**
+1. **Notify Stakeholders**
    - Post to #incidents channel
    - Update status page if customer-facing
 
-4. **Monitor Recovery**
+2. **Monitor Recovery**
    - Set up alert for Juicebox status change
    - Prepare to disable fallback mode
 
-5. **Post-Incident**
+3. **Post-Incident**
    - Disable fallback when Juicebox recovers
    - Document timeline and impact
+
 ```
 
 ### Auth Issues Response
@@ -112,21 +116,23 @@ curl -s http://localhost:9090/api/v1/query?query=rate\(juicebox_requests_total\{
      https://api.juicebox.ai/v1/auth/me
    ```
 
-2. **Check Key Status in Dashboard**
+1. **Check Key Status in Dashboard**
    - Log into https://app.juicebox.ai
    - Verify key is active and not revoked
 
-3. **Rotate Key if Compromised**
+2. **Rotate Key if Compromised**
    - Generate new key in dashboard
    - Update secret manager
    - Restart pods
+
    ```bash
    kubectl rollout restart deployment/juicebox-integration
    ```
 
-4. **Verify Recovery**
+3. **Verify Recovery**
    - Check health endpoint
    - Monitor error rate
+
 ```
 
 ### Rate Limit Response
@@ -140,21 +146,23 @@ curl -s http://localhost:9090/api/v1/query?query=rate\(juicebox_requests_total\{
      https://api.juicebox.ai/v1/usage
    ```
 
-2. **Immediate Mitigation**
+1. **Immediate Mitigation**
    - Enable aggressive caching
    - Reduce request rate
+
    ```bash
    kubectl set env deployment/juicebox-integration JUICEBOX_RATE_LIMIT=10
    ```
 
-3. **If Quota Exhausted**
+2. **If Quota Exhausted**
    - Contact Juicebox support for temporary increase
    - Implement request queuing
 
-4. **Long-term Fix**
+3. **Long-term Fix**
    - Review usage patterns
    - Implement better caching
    - Consider plan upgrade
+
 ```
 
 ### Timeout Response
@@ -171,18 +179,20 @@ curl -s http://localhost:9090/api/v1/query?query=rate\(juicebox_requests_total\{
    curl -v --connect-timeout 5 https://api.juicebox.ai/v1/health
    ```
 
-2. **Check Load**
+1. **Check Load**
    - Review query complexity
    - Check for unusually large requests
 
-3. **Increase Timeout**
+2. **Increase Timeout**
+
    ```bash
    kubectl set env deployment/juicebox-integration JUICEBOX_TIMEOUT=60000
    ```
 
-4. **Implement Circuit Breaker**
+3. **Implement Circuit Breaker**
    - Enable circuit breaker if repeated timeouts
    - Serve cached/fallback data
+
 ```
 
 ## Incident Communication Template

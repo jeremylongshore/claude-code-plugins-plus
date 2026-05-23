@@ -1,6 +1,7 @@
 # Security Validation Checklist (30% Weight)
 
 Sources:
+
 - [Vertex AI Security Best Practices](https://cloud.google.com/vertex-ai/docs/security)
 - [Agent Identity for Agent Engine](https://cloud.google.com/agent-builder/agent-engine/agent-identity)
 - [Managing Access for Deployed Agents](https://cloud.google.com/agent-builder/agent-engine/manage/access)
@@ -13,6 +14,7 @@ Sources:
 Agent Identity is a first-class IAM principal tied to agent lifecycle. Replaces service-account-only model for new deployments.
 
 **Check for:**
+
 - Agent Identity enabled (preferred over service accounts for new deployments)
 - Certificate-bound tokens with Context-Aware Access (CAA) + mTLS enforced
 - Credentials are un-replayable outside their Cloud Run container
@@ -27,6 +29,7 @@ Agent Identity is a first-class IAM principal tied to agent lifecycle. Replaces 
 | `roles/browser` | Basic Cloud functionalities |
 
 **Anti-patterns:**
+
 - Using `roles/aiplatform.admin` on agent identity (too broad)
 - Using `roles/aiplatform.user` when `expressUser` suffices
 - Opting out of CAA/mTLS verification
@@ -48,6 +51,7 @@ For legacy or cross-project deployments using service accounts:
 - Cross-project: `roles/iam.serviceAccountTokenCreator` granted to Vertex AI Service Agent
 
 **Least privilege custom role permissions (prediction-only agent):**
+
 ```
 aiplatform.endpoints.predict
 aiplatform.sessions.create
@@ -113,10 +117,12 @@ Source: [Memory Bank IAM Conditions](https://cloud.google.com/agent-builder/agen
 - Org-level floor settings via `roles/modelarmor.floorSettingsAdmin`
 
 **Agent permissions needed:**
+
 - `modelarmor.templates.useToSanitizeUserPrompt`
 - `modelarmor.templates.useToSanitizeModelResponse`
 
 **Key CLI commands:**
+
 ```bash
 # Create a Model Armor template
 gcloud model-armor templates create TEMPLATE_ID \

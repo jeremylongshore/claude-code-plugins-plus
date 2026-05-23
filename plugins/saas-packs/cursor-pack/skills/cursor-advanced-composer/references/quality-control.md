@@ -3,6 +3,7 @@
 ## Quality Control
 
 ### Review Workflow
+
 ```
 1. Generate with Composer
 2. Review each file before accepting
@@ -17,6 +18,7 @@
 ```
 
 ### Verification Prompts
+
 ```
 After generation:
 "Review the generated code for:
@@ -28,6 +30,7 @@ After generation:
 ```
 
 ### Testing Generated Code
+
 ```
 "Add tests for all generated code:
 - Unit tests for business logic

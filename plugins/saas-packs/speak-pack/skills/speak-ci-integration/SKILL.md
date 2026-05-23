@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Speak CI Integration
 
 ## Overview
+
 GitHub Actions pipeline for Speak integrations with mocked API tests and audio validation.
 
 ## Prerequisites
+
 - Completed `speak-install-auth` setup
 - Valid API credentials configured
 - Understanding of Speak API patterns
@@ -68,11 +70,13 @@ npm test
 ```
 
 ## Output
+
 - Speak CI Integration configured and verified
 - CI pipeline with mocked Speak API tests
 - Error handling and monitoring in place
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY |
@@ -81,11 +85,13 @@ npm test
 | Audio format error | Wrong codec | Convert to WAV 16kHz mono |
 
 ## Resources
+
 - [Speak Website](https://speak.com)
 - [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
 - [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
 
 ## Next Steps
+
 For deployment, see `speak-deploy-integration`.
 
 ## Examples

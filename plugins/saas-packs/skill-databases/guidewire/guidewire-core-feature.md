@@ -10,6 +10,7 @@ guidewire-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Guidewire core feature integration
 **Workflow:** Part of the onboarding skill category for Guidewire integration.
 **Relates to:** Other guidewire skills in this pack.

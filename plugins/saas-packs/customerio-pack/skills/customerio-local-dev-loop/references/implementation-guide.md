@@ -3,9 +3,11 @@
 # Customer.io Local Dev Loop
 
 ## Overview
+
 Set up an efficient local development workflow for Customer.io integrations with proper testing and isolation.
 
 ## Prerequisites
+
 - Customer.io SDK installed
 - Separate development workspace in Customer.io (recommended)
 - Environment variable management tool (dotenv)
@@ -13,6 +15,7 @@ Set up an efficient local development workflow for Customer.io integrations with
 ## Instructions
 
 ### Step 1: Create Environment Configuration
+
 ```bash
 # .env.development
 CUSTOMERIO_SITE_ID=dev-site-id
@@ -26,6 +29,7 @@ CUSTOMERIO_REGION=us
 ```
 
 ### Step 2: Create Dev Client Wrapper
+
 ```typescript
 // lib/customerio.ts
 import { TrackClient, RegionUS, RegionEU } from '@customerio/track';
@@ -78,6 +82,7 @@ export const cio = new CustomerIOClient();
 ```
 
 ### Step 3: Set Up Test Helpers
+
 ```typescript
 // test/helpers/customerio-mock.ts
 import { vi } from 'vitest';
@@ -115,6 +120,7 @@ describe('User Registration', () => {
 ```
 
 ### Step 4: Create Dev Scripts
+
 ```json
 {
   "scripts": {
@@ -126,12 +132,14 @@ describe('User Registration', () => {
 ```
 
 ## Output
+
 - Environment-aware Customer.io client
 - Dry-run mode for safe testing
 - Test mocks for unit testing
 - Prefixed events for development isolation
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Wrong environment | Env vars not loaded | Use dotenv or env-specific files |
@@ -139,8 +147,10 @@ describe('User Registration', () => {
 | Mock not working | Import order issue | Mock before importing client |
 
 ## Resources
+
 - [Customer.io Workspaces](https://customer.io/docs/workspaces/)
 - [Test Mode Best Practices](https://customer.io/docs/test-mode/)
 
 ## Next Steps
+
 After setting up local dev, proceed to `customerio-sdk-patterns` for production-ready patterns.

@@ -3,6 +3,7 @@
 ## Quota Management at Scale
 
 ### Budget Allocation
+
 ```typescript
 // 1M events/month budget
 // Allocation:
@@ -32,6 +33,7 @@ Sentry.init({
 ```
 
 ### Dynamic Rate Adjustment
+
 ```typescript
 // Adjust sampling based on quota usage
 async function getQuotaUsage(): Promise<number> {

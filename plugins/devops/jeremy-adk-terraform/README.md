@@ -7,6 +7,7 @@ Terraform infrastructure-as-code specialist for deploying **ADK agents to Vertex
 ## ⚠️ Important: What This Plugin Is For
 
 **✅ THIS PLUGIN IS FOR:**
+
 - **Vertex AI Agent Engine** infrastructure (fully-managed runtime)
 - **ADK agents** Terraform deployment (`google_vertex_ai_reasoning_engine`)
 - **Agent Engine features**: Code Execution Sandbox, Memory Bank, VPC-SC, IAM
@@ -14,6 +15,7 @@ Terraform infrastructure-as-code specialist for deploying **ADK agents to Vertex
 - **Production ADK deployments** with security hardening
 
 **❌ THIS PLUGIN IS NOT FOR:**
+
 - Cloud Run deployments (use `jeremy-genkit-terraform`)
 - LangChain/LlamaIndex on other platforms
 - Self-hosted agent infrastructure
@@ -24,6 +26,7 @@ Terraform infrastructure-as-code specialist for deploying **ADK agents to Vertex
 This plugin provides Terraform modules and configurations for deploying ADK agents to Vertex AI Agent Engine with production-ready infrastructure including VPC Service Controls, IAM least privilege, Code Execution Sandbox configuration, Memory Bank setup, observability dashboards, and BigQuery analytics connectors.
 
 **Key Infrastructure Components:**
+
 - `google_vertex_ai_reasoning_engine` resource for Agent Engine
 - VPC Service Controls perimeter
 - IAM roles and service accounts
@@ -43,6 +46,7 @@ This plugin provides Terraform modules and configurations for deploying ADK agen
 ### Required Tools
 
 **1. Terraform:**
+
 ```bash
 # Install Terraform 1.5+
 wget https://releases.hashicorp.com/terraform/1.6.0/terraform_1.6.0_linux_amd64.zip
@@ -54,6 +58,7 @@ terraform version  # Should show 1.5.0+
 ```
 
 **2. gcloud CLI:**
+
 ```bash
 # Install gcloud
 curl https://sdk.cloud.google.com | bash
@@ -70,6 +75,7 @@ gcloud auth application-default login
 ```
 
 **3. Terraform Google Provider:**
+
 ```hcl
 terraform {
   required_version = ">= 1.5.0"
@@ -771,38 +777,45 @@ resource "google_compute_global_forwarding_rule" "agent_lb" {
 ## Integration with Other Plugins
 
 ### jeremy-vertex-engine
+
 - Terraform provisions → Engine inspector validates
 - Infrastructure deployment → Runtime inspection
 
 ### jeremy-adk-orchestrator
+
 - Terraform creates Agent Engine resources → Orchestrator manages A2A communication
 - Infrastructure layer → Communication layer
 
 ### jeremy-vertex-validator
+
 - Terraform generates configs → Validator checks production readiness
 - Infrastructure code → Validation checks
 
 ## Use Cases
 
 ### Basic ADK Agent Deployment
+
 ```
 "Create Terraform for ADK agent with Code Execution and Memory Bank"
 "Deploy ADK agent to Agent Engine in us-central1"
 ```
 
 ### Production Infrastructure
+
 ```
 "Create production-ready Agent Engine infrastructure with VPC-SC"
 "Deploy ADK agent with observability dashboards and alerts"
 ```
 
 ### Multi-Region Deployment
+
 ```
 "Deploy ADK agent to multiple regions with global load balancer"
 "Create multi-region Agent Engine infrastructure"
 ```
 
 ### Observability Setup
+
 ```
 "Add monitoring dashboard and alerts to Agent Engine deployment"
 "Configure BigQuery analytics for agent logs"

@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Incident Runbook
 
 ## Overview
+
 Structured incident response procedures for Instantly.ai integration failures. Covers campaign pause cascades, account health crises, bounce protect triggers, webhook delivery failures, and API outages.
 
 ## Severity Levels
@@ -40,6 +41,7 @@ Structured incident response procedures for Instantly.ai integration failures. C
 ## Incident: All Campaigns in Accounts Unhealthy (-1)
 
 ### Triage
+
 ```typescript
 import { InstantlyClient } from "./src/instantly/client";
 const client = new InstantlyClient();
@@ -79,6 +81,7 @@ async function triageCampaignHealth() {
 ```
 
 ### Mitigation
+
 ```typescript
 async function mitigateBrokenAccounts() {
   const { broken, healthy } = await triageCampaignHealth();
@@ -114,6 +117,7 @@ async function mitigateBrokenAccounts() {
 ## Incident: Bounce Protect Triggered (-2)
 
 ### Triage & Response
+
 ```typescript
 async function handleBounceProtect() {
   console.log("=== P2 TRIAGE: Bounce Protect ===\n");
@@ -152,6 +156,7 @@ async function handleBounceProtect() {
 ## Incident: Webhook Delivery Failure
 
 ### Triage & Recovery
+
 ```typescript
 async function handleWebhookFailure() {
   console.log("=== P3 TRIAGE: Webhook Delivery ===\n");
@@ -194,6 +199,7 @@ async function handleWebhookFailure() {
 ## Incident: API Rate Limit Storm (429s)
 
 ### Response
+
 ```typescript
 async function handleRateLimitStorm() {
   console.log("=== P2 TRIAGE: Rate Limit Storm ===\n");
@@ -226,6 +232,7 @@ async function handleRateLimitStorm() {
 ## Incident: Warmup Degradation
 
 ### Response
+
 ```typescript
 async function handleWarmupDegradation() {
   console.log("=== P2 TRIAGE: Warmup Degradation ===\n");
@@ -266,6 +273,7 @@ async function handleWarmupDegradation() {
 ```
 
 ## Quick Diagnostic Script
+
 ```bash
 set -euo pipefail
 echo "=== Instantly Incident Diagnostic ==="
@@ -289,6 +297,7 @@ curl -s https://api.instantly.ai/api/v2/webhooks?limit=20 \
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Can't reach API during incident | Instantly outage | Check status.instantly.ai, wait |
@@ -296,9 +305,11 @@ curl -s https://api.instantly.ai/api/v2/webhooks?limit=20 \
 | Runbook script rate-limited | Too many diagnostic calls | Space out requests, use backoff |
 
 ## Resources
+
 - [Instantly Help Center](https://help.instantly.ai)
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
 - [Instantly Status Page](https://status.instantly.ai)
 
 ## Next Steps
+
 For data handling and compliance, see `instantly-data-handling`.

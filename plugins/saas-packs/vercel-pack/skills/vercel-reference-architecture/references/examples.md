@@ -1,6 +1,7 @@
-# Examples
+## Examples
 
 ### Quick Setup Script
+
 ```bash
 # Create reference structure
 mkdir -p src/vercel/{handlers} src/services/vercel src/api/vercel

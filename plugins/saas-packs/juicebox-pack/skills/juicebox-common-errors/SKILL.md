@@ -60,12 +60,15 @@ function classifyJuiceboxError(status: number, body: string): JuiceboxError {
 ## Debugging Guide
 
 ### Authentication Errors
+
 Juicebox API keys are passed via `Authorization: Bearer` header. Keys are scoped per workspace. If you receive 401, verify the key has not been rotated at app.juicebox.ai > Settings. A 403 indicates quota exhaustion, not a permissions issue -- check your plan's remaining searches.
 
 ### Rate Limit Errors
+
 The API enforces 30 requests/minute per key. Batch profile enrichment calls where possible. Use the `Retry-After` response header to determine wait time. For bulk operations, use the dataset upload endpoint instead of individual search queries.
 
 ### Validation Errors
+
 Dataset uploads require CSV format with headers matching the Juicebox schema: `name`, `title`, `company` are required columns. Optional enrichment columns include `email`, `linkedin_url`, and `location`. Files over 50MB or 100K rows are rejected -- split into chunks. Analysis queries that exceed 60 seconds timeout with 408; narrow filters by adding location, title, or company constraints to reduce result set size.
 
 ## Error Handling

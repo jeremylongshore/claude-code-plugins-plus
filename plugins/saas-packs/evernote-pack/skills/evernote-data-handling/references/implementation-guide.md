@@ -647,7 +647,6 @@ class DataExporter {
 module.exports = DataExporter;
 ```
 
-
 ## Evernote Data Model
 
 ```
@@ -661,7 +660,6 @@ User
 ├── Tags (max 100,000)
 └── Saved Searches (max 100)
 ```
-
 
 ## Data Handling Checklist
 

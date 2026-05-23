@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Data Handling
 
 ## Overview
+
 Manage code review data and sensitive patterns with CodeRabbit. Covers secret detection in PRs, sensitive file exclusion from AI review, review comment data retention, and configuring what code context gets sent to the AI engine.
 
 ## Prerequisites
+
 - CodeRabbit installed on repository
 - Understanding of sensitive file patterns
 - Repository admin access for configuration
@@ -38,6 +40,7 @@ Manage code review data and sensitive patterns with CodeRabbit. Covers secret de
 ## Instructions
 
 ### Step 1: Exclude Sensitive Files from Review
+
 ```yaml
 # .coderabbit.yaml - Data handling configuration
 reviews:
@@ -63,6 +66,7 @@ reviews:
 ```
 
 ### Step 2: Secret Detection Instructions
+
 ```yaml
 # .coderabbit.yaml - Instruct AI to flag secrets
 reviews:
@@ -89,6 +93,7 @@ reviews:
 ```
 
 ### Step 3: Review Data Scope Management
+
 ```yaml
 # Control what context CodeRabbit accesses
 reviews:
@@ -118,6 +123,7 @@ reviews:
 ```
 
 ### Step 4: Sensitive Code Pattern Detection
+
 ```yaml
 # .coderabbit.yaml - Custom pattern detection
 reviews:
@@ -149,6 +155,7 @@ reviews:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Secret in reviewed PR | Not in exclusion list | Add pattern to path_filters |
@@ -159,6 +166,7 @@ reviews:
 ## Examples
 
 ### Minimal Secure Configuration
+
 ```yaml
 # .coderabbit.yaml - Security-focused setup
 reviews:
@@ -176,15 +184,18 @@ reviews:
 ```
 
 ## Output
+
 - Sensitive files excluded from AI review via path_filters
 - Secret detection instructions configured for all code paths
 - Review scope limited to source code only (not data files)
 - Security-focused path_instructions for database, API, and auth code
 
 ## Resources
+
 - [CodeRabbit Configuration](https://docs.coderabbit.ai/reference/configuration)
 - [CodeRabbit Path Filters](https://docs.coderabbit.ai/guides/review-instructions)
 - [CodeRabbit Security](https://coderabbit.ai/security)
 
 ## Next Steps
+
 For security hardening, see `coderabbit-security-basics`.

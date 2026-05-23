@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola Performance Tuning
 
 ## Overview
+
 Optimize Granola output quality across three dimensions: audio/transcription accuracy, AI enhancement quality, and integration speed. Granola's AI (GPT-4o/Claude) produces better output when it has clean audio, well-typed notes, and structured templates.
 
 ## Prerequisites
+
 - Working Granola installation with meetings captured
 - Willingness to improve audio setup and meeting practices
 - At least 3-5 meetings captured to establish baseline quality
@@ -50,6 +52,7 @@ Granola captures system audio from your device. Transcription accuracy depends e
 | Speakerphone in room | Low | Echo and distance degrade accuracy |
 
 **Audio configuration checklist:**
+
 - [ ] Correct input device selected in System Settings > Sound > Input
 - [ ] Input volume at 75-100% (not too low, not clipping)
 - [ ] Audio enhancements disabled (Windows: right-click device > Properties > disable enhancements)
@@ -57,6 +60,7 @@ Granola captures system audio from your device. Transcription accuracy depends e
 - [ ] Bluetooth device stable (or switch to wired if experiencing drops)
 
 **Room setup:**
+
 - [ ] Minimal background noise (close doors, turn off fans)
 - [ ] Soft surfaces to reduce echo (avoid glass-walled conference rooms)
 - [ ] Mic within 12 inches of speaker(s)
@@ -81,6 +85,7 @@ These behaviors directly improve Granola's output:
 Template structure directly affects the quality of enhanced output:
 
 **High-quality template design:**
+
 ```markdown
 ## Summary
 [2-3 sentence overview of the meeting]
@@ -99,6 +104,7 @@ Template structure directly affects the quality of enhanced output:
 ```
 
 **Template optimization tips:**
+
 1. **Use 5-7 sections max** — too many sections dilute content
 2. **Include format hints** — `[Format: - [ ] @person: task]` guides the AI
 3. **Put Action Items near the end** — AI processes sequentially, actions at the end capture the full meeting
@@ -144,12 +150,14 @@ After enhancement, use Chat to improve the notes:
 | Enhancement usefulness | 4+/5 team rating | Monthly survey: "How useful are Granola notes?" |
 
 Track these monthly. If accuracy drops below target:
+
 1. Check audio setup (most common cause)
 2. Review template structure
 3. Verify meeting practices are being followed
 4. Contact Granola support for persistent issues
 
 ## Output
+
 - Audio setup optimized for maximum transcription accuracy
 - Meeting practices improving AI output quality
 - Templates structured for effective enhancement
@@ -166,9 +174,11 @@ Track these monthly. If accuracy drops below target:
 | Hallucinated decisions | AI filling template sections | Review before sharing; remove decisions that didn't happen |
 
 ## Resources
+
 - [Get the Best from Granola](https://www.granola.ai/blog/get-the-best-from-granola)
 - [How Transcription Works](https://docs.granola.ai/help-center/taking-notes/how-transcription-works)
 - [Customize Templates](https://docs.granola.ai/help-center/taking-notes/customise-notes-with-templates)
 
 ## Next Steps
+
 Proceed to `granola-cost-tuning` for cost optimization and plan selection.

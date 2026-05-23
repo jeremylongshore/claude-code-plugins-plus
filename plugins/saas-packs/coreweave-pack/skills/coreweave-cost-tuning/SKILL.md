@@ -38,12 +38,14 @@ compatibility: Designed for Claude Code
 ## Cost Optimization Strategies
 
 ### Scale-to-Zero for Dev/Staging
+
 ```yaml
 autoscaling.knative.dev/minScale: "0"
 autoscaling.knative.dev/scaleDownDelay: "5m"
 ```
 
 ### Right-Size GPU Selection
+
 ```python
 def recommend_gpu(model_size_b: float, inference_only: bool = True) -> str:
     if model_size_b <= 7:
@@ -57,7 +59,9 @@ def recommend_gpu(model_size_b: float, inference_only: bool = True) -> str:
 ```
 
 ### Quantization to Use Smaller GPUs
+
 Use AWQ or GPTQ quantization to fit larger models on smaller GPUs:
+
 ```bash
 # 70B model at 4-bit fits on single A100-80GB instead of 4x
 vllm serve meta-llama/Llama-3.1-70B-Instruct-AWQ --quantization awq

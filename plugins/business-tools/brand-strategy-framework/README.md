@@ -9,6 +9,7 @@ A systematic 7-part methodology for building brand foundations — the same proc
 ```
 
 Or via CLI:
+
 ```bash
 ccpi install brand-strategy-framework
 ```
@@ -28,6 +29,7 @@ This plugin provides a comprehensive brand strategy framework that guides users 
 ## Usage
 
 The skill auto-activates when you mention:
+
 - "create brand strategy"
 - "build brand brief"
 - "define brand positioning"

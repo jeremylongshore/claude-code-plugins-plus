@@ -1,6 +1,7 @@
 # OpenEvidence Security Basics - Implementation Details
 
 ## Secret Manager Integration (GCP)
+
 ```typescript
 export async function getOpenEvidenceCredentials() {
   const [apiKeyVersion] = await client.accessSecretVersion({ name: 'projects/my-project/secrets/openevidence-api-key/versions/latest' });
@@ -10,6 +11,7 @@ export async function getOpenEvidenceCredentials() {
 ```
 
 ## PHI Handling - Input Sanitization
+
 ```typescript
 export function sanitizeQueryForOpenEvidence(question: string, patientContext?: PatientContext): SanitizedQuery {
   let sanitized = question;
@@ -22,6 +24,7 @@ export function sanitizeQueryForOpenEvidence(question: string, patientContext?: 
 ```
 
 ## HIPAA Audit Logging
+
 ```typescript
 export class HIPAAAuditLogger {
   async logClinicalQuery(userId, userRole, queryId, success, request) {
@@ -34,9 +37,11 @@ export class HIPAAAuditLogger {
 ```
 
 ## Webhook Signature Verification
+
 Timing-safe HMAC-SHA256 signature comparison with 5-minute replay attack protection.
 
 ## Data Retention
+
 ```typescript
 const HIPAA_RETENTION = {
   auditLogs: 2190,        // 6 years
@@ -46,6 +51,7 @@ const HIPAA_RETENTION = {
 ```
 
 ## Secure Query Service
+
 ```typescript
 export async function secureClinicalQuery(question, patientContext, user, request) {
   const sanitized = sanitizeQueryForOpenEvidence(question, patientContext);

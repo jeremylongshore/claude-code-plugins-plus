@@ -1109,6 +1109,7 @@ if input("Proceed? [y/N] ").strip().lower() == "y":
 ### Logging standards
 
 Every production operation should emit structured log lines with:
+
 - `contact_id` or `list_id`
 - `action` (what was attempted)
 - `result` (`applied`, `blocked`, `orphan_removed`, `divergence_detected`)
@@ -1122,6 +1123,7 @@ All tokens in these examples use `os.environ["HUBSPOT_ACCESS_TOKEN"]` and simila
 ### Testing
 
 Before running any bulk operation against a production portal:
+
 1. Run with `dry_run=True` to see the full impact report.
 2. Verify the report against your expected counts.
 3. Run against a test portal or a small subset (10-20 contacts) first.

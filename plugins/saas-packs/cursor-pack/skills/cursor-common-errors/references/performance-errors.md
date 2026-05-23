@@ -3,6 +3,7 @@
 ## Performance Errors
 
 ### "High CPU Usage"
+
 ```
 Symptoms: Cursor uses 100% CPU, system slow
 
@@ -23,6 +24,7 @@ Settings:
 ```
 
 ### "High Memory Usage"
+
 ```
 Symptoms: Cursor using GB of RAM
 

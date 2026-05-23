@@ -26,15 +26,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Rate Limits
 
 ## Overview
+
 Handle Foundry API rate limits with exponential backoff, request queuing, and monitoring. Foundry rate limits vary by endpoint and enrollment tier.
 
 ## Prerequisites
+
 - `foundry-platform-sdk` installed
 - Understanding of HTTP 429 responses
 
 ## Instructions
 
 ### Step 1: Understand Foundry Rate Limits
+
 Foundry rate limits are per-user and per-endpoint. Key limits:
 
 | Endpoint Category | Typical Limit | Burst |
@@ -45,11 +48,13 @@ Foundry rate limits are per-user and per-endpoint. Key limits:
 | Search queries | 20 req/s | 50 |
 
 Rate limit headers returned:
+
 - `X-RateLimit-Limit` — max requests per window
 - `X-RateLimit-Remaining` — requests left in window
 - `Retry-After` — seconds to wait (on 429)
 
 ### Step 2: Implement Retry with Backoff (Python)
+
 ```python
 import time
 import random
@@ -80,6 +85,7 @@ employees = retry_foundry_call(
 ```
 
 ### Step 3: Request Queue for Batch Operations
+
 ```python
 import asyncio
 from collections import deque
@@ -113,6 +119,7 @@ def rate_limited_call(fn, *args, **kwargs):
 ```
 
 ### Step 4: Batch Operations with Rate Limiting
+
 ```python
 def batch_update_objects(client, ontology, action_type, items, batch_size=10):
     """Apply actions in rate-limited batches."""
@@ -132,11 +139,13 @@ def batch_update_objects(client, ontology, action_type, items, batch_size=10):
 ```
 
 ## Output
+
 - Automatic retry on 429/5xx with exponential backoff
 - Token bucket rate limiter for batch operations
 - Rate-limited batch processing for bulk updates
 
 ## Error Handling
+
 | HTTP Code | Meaning | Action |
 |-----------|---------|--------|
 | 429 | Rate limited | Wait `Retry-After` seconds, then retry |
@@ -145,8 +154,10 @@ def batch_update_objects(client, ontology, action_type, items, batch_size=10):
 | 400/403/404 | Client error | Do not retry — fix the request |
 
 ## Resources
+
 - [Foundry API Reference](https://www.palantir.com/docs/foundry/api/general/overview/introduction)
 - [Authentication Guide](https://www.palantir.com/docs/foundry/api/general/overview/authentication)
 
 ## Next Steps
+
 For security best practices, see `palantir-security-basics`.

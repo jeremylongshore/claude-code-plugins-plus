@@ -10,6 +10,7 @@ Implement comprehensive API response validation using JSON Schema, OpenAPI speci
 ## When to Use This Command
 
 Use `/validate-api-responses` when you need to:
+
 - Ensure API responses conform to documented schemas
 - Catch contract violations before they reach clients
 - Validate response data types, formats, and constraints
@@ -18,6 +19,7 @@ Use `/validate-api-responses` when you need to:
 - Monitor API compatibility across versions
 
 DON'T use this when:
+
 - Building prototypes without defined schemas (premature optimization)
 - Working with highly dynamic responses (consider runtime type checking instead)
 - Validating simple scalar responses (overkill for basic types)
@@ -25,6 +27,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **JSON Schema + Ajv** as the primary approach because:
+
 - Industry-standard schema format with wide ecosystem support
 - Blazing fast validation with compiled schemas (10x faster than alternatives)
 - Comprehensive format validators for dates, emails, UUIDs, etc.
@@ -32,12 +35,14 @@ This command implements **JSON Schema + Ajv** as the primary approach because:
 - Clear, actionable error messages for debugging
 
 **Alternative considered: OpenAPI/Swagger validation**
+
 - Better for full API contract validation
 - Includes request validation, not just responses
 - More complex setup and configuration
 - Recommended when using OpenAPI for documentation
 
 **Alternative considered: Joi/Yup validation**
+
 - More intuitive API for JavaScript developers
 - Better TypeScript integration
 - Limited to JavaScript ecosystem
@@ -46,6 +51,7 @@ This command implements **JSON Schema + Ajv** as the primary approach because:
 ## Prerequisites
 
 Before running this command:
+
 1. Define response schemas (JSON Schema or OpenAPI)
 2. Identify validation points (middleware, tests, runtime)
 3. Determine error handling strategy
@@ -55,23 +61,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Define Response Schemas
+
 Create JSON Schema definitions for all API responses with proper constraints.
 
 ### Step 2: Configure Validation Middleware
+
 Set up validation middleware to intercept and validate responses automatically.
 
 ### Step 3: Implement Custom Validators
+
 Add business-specific validation rules beyond structural validation.
 
 ### Step 4: Set Up Error Handling
+
 Configure how validation errors are reported to clients and logged.
 
 ### Step 5: Create Test Suites
+
 Build comprehensive test suites for schema validation and edge cases.
 
 ## Output Format
 
 The command generates:
+
 - `schemas/` - JSON Schema definitions for all endpoints
 - `validators/` - Compiled validator functions
 - `middleware/response-validator.js` - Express/Koa middleware
@@ -532,11 +544,13 @@ async function validateWithBusinessRules(req, res, next) {
 ## Configuration Options
 
 **Validation Modes**
+
 - `strict`: Reject invalid responses (production)
 - `permissive`: Log but allow invalid responses (development)
 - `monitor`: Send metrics without blocking (staging)
 
 **Performance Tuning**
+
 - `cacheSize`: Number of compiled schemas to cache (default: 100)
 - `maxDepth`: Maximum recursion depth for nested objects (default: 10)
 - `timeout`: Maximum validation time in ms (default: 1000)
@@ -544,6 +558,7 @@ async function validateWithBusinessRules(req, res, next) {
 ## Best Practices
 
 DO:
+
 - Version your schemas alongside API versions
 - Use shared schema definitions for common types
 - Validate at multiple layers (client, server, database)
@@ -552,6 +567,7 @@ DO:
 - Use semantic versioning for schema changes
 
 DON'T:
+
 - Validate responses in production synchronously (use async)
 - Include sensitive data in validation error messages
 - Use overly strict validation that breaks compatibility

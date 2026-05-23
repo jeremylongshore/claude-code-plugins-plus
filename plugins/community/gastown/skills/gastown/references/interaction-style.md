@@ -7,6 +7,7 @@
 ### When to CALL AskUserQuestion (not just show text)
 
 You MUST call the AskUserQuestion tool for:
+
 - **First contact** - Tutorial vs quick setup
 - **Execution mode** - Auto vs Approve (first time running commands)
 - **Next steps** - After completing setup, lessons, or major actions
@@ -24,6 +25,7 @@ You MUST call the AskUserQuestion tool for:
 ### More AskUserQuestion Examples
 
 **Tutorial navigation:**
+
 ```json
 {
   "questions": [{
@@ -40,6 +42,7 @@ You MUST call the AskUserQuestion tool for:
 ```
 
 **After completing setup:**
+
 ```json
 {
   "questions": [{

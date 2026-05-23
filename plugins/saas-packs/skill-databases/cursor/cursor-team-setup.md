@@ -10,6 +10,7 @@ cursor-team-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Sets up Cursor for teams and organizations including plan selection, member management, onboarding, shared configuration, and cost management.
 
 **Workflow:** This skill activates when administrators set up Cursor for teams. It covers plan comparison, initial setup, member management, team configuration, onboarding procedures, workflows, analytics, cost management, and support resources.

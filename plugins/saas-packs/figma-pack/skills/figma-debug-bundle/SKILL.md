@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code
 # Figma Debug Bundle
 
 ## Overview
+
 Collect all diagnostic data needed to troubleshoot Figma REST API issues or submit a support request. Outputs a redacted archive with connectivity tests, token validation, rate limit status, and API response samples.
 
 ## Prerequisites
+
 - `FIGMA_PAT` environment variable set
 - `curl` and `jq` available
 - A Figma file key to test against
@@ -33,6 +35,7 @@ Collect all diagnostic data needed to troubleshoot Figma REST API issues or subm
 ## Instructions
 
 ### Step 1: Create Debug Bundle Script
+
 ```bash
 #!/bin/bash
 # figma-debug-bundle.sh
@@ -101,12 +104,14 @@ echo "Bundle created: $BUNDLE_DIR.tar.gz"
 ```
 
 ### Step 2: Run the Bundle
+
 ```bash
 chmod +x figma-debug-bundle.sh
 ./figma-debug-bundle.sh
 ```
 
 ### Step 3: Review Before Sharing
+
 ```bash
 # Inspect the bundle contents
 tar -tzf figma-debug-*.tar.gz
@@ -116,12 +121,14 @@ cat figma-debug-*/summary.txt
 ```
 
 ## Output
+
 - `figma-debug-YYYYMMDD-HHMMSS.tar.gz` containing:
   - `summary.txt` -- environment, connectivity, rate limit status
   - `me-redacted.json` -- authenticated user (email redacted)
   - `file-meta.json` -- file metadata (if file key provided)
 
 ## Error Handling
+
 | Item | What It Catches | Why It Matters |
 |------|----------------|----------------|
 | `/v1/me` response code | Token validity | 403 = expired/invalid PAT |
@@ -132,21 +139,25 @@ cat figma-debug-*/summary.txt
 ## Examples
 
 ### ALWAYS REDACT Before Sharing
+
 - Personal access tokens (`figd_*`)
 - Email addresses
 - OAuth client secrets
 - File content (unless relevant to the bug)
 
 ### Safe to Include
+
 - HTTP status codes and response times
 - Error message text
 - Node IDs and file keys (not secrets)
 - Rate limit header values
 
 ## Resources
+
 - [Figma Support](https://help.figma.com/hc/en-us/requests/new)
 - [Figma Status Page](https://status.figma.com)
 - [Figma Developer Forum](https://forum.figma.com/)
 
 ## Next Steps
+
 For rate limit issues, see `figma-rate-limits`.

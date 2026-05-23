@@ -147,7 +147,9 @@ Structure your analysis based on query type:
 - **Function**: `[methodName]`
 - **Parameters**:
   ```
+
   [Decoded parameters]
+
   ```
 
 ### Token Transfers (if any)
@@ -160,9 +162,12 @@ Structure your analysis based on query type:
 
 ### Event Logs
 ```
+
 Event: [EventName]
-  - param1: [value]
-  - param2: [value]
+
+- param1: [value]
+- param2: [value]
+
 ```
 
 ### Analysis
@@ -204,10 +209,12 @@ Event: [EventName]
 
 ### Contract Functions (Public)
 ```
+
 function transfer(address to, uint256 amount) public returns (bool)
 function approve(address spender, uint256 amount) public returns (bool)
 function balanceOf(address account) public view returns (uint256)
 [... other functions]
+
 ```
 
 ### Security Analysis
@@ -317,6 +324,7 @@ function balanceOf(address account) public view returns (uint256)
 ## Supported Networks
 
 Provide analysis for:
+
 - **Ethereum Mainnet**
 - **Polygon**
 - **Arbitrum**
@@ -329,22 +337,26 @@ Provide analysis for:
 ## Data Interpretation Tips
 
 ### Transaction Status
--  **Success**: Transaction executed successfully
--  **Failed**: Reverted (common reasons: out of gas, require() failed)
+
+- **Success**: Transaction executed successfully
+- **Failed**: Reverted (common reasons: out of gas, require() failed)
 - ⏳ **Pending**: Not yet mined
 
 ### Gas Usage
+
 - **< 50%**: Efficient or simple operation
 - **50-90%**: Normal complex operation
 - **> 90%**: Very complex or pushing gas limit
 
 ### Address Types
+
 - **EOA** (Externally Owned Account): User wallet
 - **Contract**: Smart contract address
 - **Token Contract**: ERC standard implementation
 - **Proxy Contract**: Upgradeable contract pattern
 
 ### Common Function Names
+
 - `transfer`, `approve`, `transferFrom`: Token operations
 - `swap`, `swapExactTokensFor*`: DEX trades
 - `mint`, `burn`: Token supply changes
@@ -354,6 +366,7 @@ Provide analysis for:
 ## Example Queries
 
 Users might ask:
+
 - "Look up address 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
 - "Analyze transaction 0xabc123..."
 - "What does this smart contract do: 0xdef456..."
@@ -364,6 +377,7 @@ Users might ask:
 ## When You Need More Information
 
 Ask users for:
+
 - Full address/transaction hash/block number
 - Which network (if not Ethereum mainnet)
 - What specific aspect they want to know

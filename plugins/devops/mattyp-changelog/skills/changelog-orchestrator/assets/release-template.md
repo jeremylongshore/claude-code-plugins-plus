@@ -24,4 +24,3 @@ version: {{version}}
 ## Breaking Changes
 
 {{breaking}}
-

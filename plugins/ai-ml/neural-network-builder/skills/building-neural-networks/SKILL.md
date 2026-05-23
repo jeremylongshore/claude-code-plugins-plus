@@ -33,6 +33,7 @@ This skill empowers Claude to design and implement neural networks tailored to s
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Create a new neural network architecture for a specific machine learning task.
 - Modify an existing neural network's layers, parameters, or training process.
 - Design a neural network using specific layer types, such as convolutional, recurrent, or transformer layers.
@@ -44,6 +45,7 @@ This skill activates when you need to:
 User request: "Build a convolutional neural network for image classification with three convolutional layers and two fully connected layers."
 
 The skill will:
+
 1. Analyze the request and determine the required CNN architecture.
 2. Generate the configuration for the `build-nn` command, specifying the layer types, filter sizes, and activation functions.
 
@@ -52,6 +54,7 @@ The skill will:
 User request: "Define an RNN architecture for text generation with LSTM cells and an embedding layer."
 
 The skill will:
+
 1. Analyze the request and determine the required RNN architecture.
 2. Generate the configuration for the `build-nn` command, specifying the LSTM cell parameters, embedding dimension, and output layer.
 

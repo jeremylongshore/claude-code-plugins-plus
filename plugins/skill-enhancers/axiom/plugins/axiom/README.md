@@ -29,11 +29,13 @@ claude-code plugin add yourusername/Axiom
 ### 🆕 WWDC 2025 Skills
 
 #### `axiom:liquid-glass`
+
 Apple's new material design system (iOS 26+) with expert review checklist for validating implementations.
 
 **Use when**: Implementing Liquid Glass effects, reviewing UI for adoption, debugging visual artifacts, requesting expert review
 
 **Key features**:
+
 - Expert Review Checklist (7 sections)
 - Regular vs Clear variant decision criteria
 - Layered system architecture
@@ -44,11 +46,13 @@ Apple's new material design system (iOS 26+) with expert review checklist for va
 ---
 
 #### `axiom:swiftui-performance`
+
 Master the new SwiftUI Instrument in Instruments 26, eliminate long view body updates and unnecessary updates.
 
 **Use when**: App feels sluggish, animations stutter, scrolling performance issues, SwiftUI bottlenecks
 
 **Key features**:
+
 - New SwiftUI Instrument walkthrough
 - Cause & Effect Graph for data flow visualization
 - Long view body updates diagnosis
@@ -60,11 +64,13 @@ Master the new SwiftUI Instrument in Instruments 26, eliminate long view body up
 ---
 
 #### `axiom:ui-testing`
+
 Recording UI Automation (Xcode 26) with condition-based waiting patterns.
 
 **Use when**: Writing UI tests, recording interactions, flaky tests, race conditions
 
 **Key features**:
+
 - Recording UI Automation (Record → Replay → Review)
 - Condition-based waiting (eliminates sleep() timeouts)
 - Accessibility-first testing
@@ -77,11 +83,13 @@ Recording UI Automation (Xcode 26) with condition-based waiting patterns.
 ### 🔧 Debugging & Troubleshooting
 
 #### `axiom:xcode-debugging`
+
 Environment-first diagnostics for mysterious Xcode issues. Prevents 30+ minute rabbit holes.
 
 **Use when**: BUILD FAILED, simulator hangs, zombie processes, "No such module" errors, mysterious test failures
 
 **Key features**:
+
 - Mandatory environment checks
 - Quick fix workflows
 - Decision tree for diagnosing problems
@@ -92,11 +100,13 @@ Environment-first diagnostics for mysterious Xcode issues. Prevents 30+ minute r
 ---
 
 #### `axiom:memory-debugging`
+
 Systematic memory leak diagnosis with 5 patterns covering 90% of real-world issues.
 
 **Use when**: App memory grows over time, multiple instances of same class, retain cycles
 
 **Key features**:
+
 - 5 comprehensive leak patterns
 - Instruments workflow (Leaks + Allocations)
 - Reduces debugging from 2-3 hours to 15-30 min
@@ -104,6 +114,7 @@ Systematic memory leak diagnosis with 5 patterns covering 90% of real-world issu
 ---
 
 #### `axiom:build-troubleshooting`
+
 Dependency resolution for CocoaPods and Swift Package Manager conflicts.
 
 **Use when**: Dependency conflicts, "Multiple commands produce" errors, framework version mismatches
@@ -113,11 +124,13 @@ Dependency resolution for CocoaPods and Swift Package Manager conflicts.
 ### ⚡ Swift & Concurrency
 
 #### `axiom:swift-concurrency`
+
 Swift 6 strict concurrency patterns - async/await, MainActor, Sendable, actor isolation.
 
 **Use when**: Actor isolation errors, data race warnings, converting delegate callbacks to async-safe patterns
 
 **Key features**:
+
 - Copy-paste templates for common patterns
 - Decision tree for concurrency errors
 - Anti-patterns to avoid
@@ -130,11 +143,13 @@ Swift 6 strict concurrency patterns - async/await, MainActor, Sendable, actor is
 ### 💾 Persistence
 
 #### `axiom:database-migration`
+
 Safe database schema evolution for SQLite/GRDB/SwiftData. Prevents data loss.
 
 **Use when**: Adding/modifying database columns, "FOREIGN KEY constraint failed", "no such column" errors
 
 **Key features**:
+
 - Safe migration patterns (additive, idempotent, transactional)
 - Testing checklist (fresh install + migration paths)
 - Multi-layered prevention for 100k+ user apps
@@ -144,6 +159,7 @@ Safe database schema evolution for SQLite/GRDB/SwiftData. Prevents data loss.
 ---
 
 #### `axiom:sqlitedata`
+
 SQLiteData (Point-Free) patterns, batch performance, CloudKit sync.
 
 **Use when**: Working with SQLiteData @Table models, @FetchAll/@FetchOne queries, batch imports
@@ -151,6 +167,7 @@ SQLiteData (Point-Free) patterns, batch performance, CloudKit sync.
 ---
 
 #### `axiom:grdb`
+
 Raw GRDB for complex queries, ValueObservation, DatabaseMigrator patterns.
 
 **Use when**: Writing raw SQL queries, complex joins, reactive queries, dropping down from SQLiteData
@@ -158,6 +175,7 @@ Raw GRDB for complex queries, ValueObservation, DatabaseMigrator patterns.
 ---
 
 #### `axiom:swiftdata`
+
 SwiftData with iOS 26+ features, @Model definitions, Swift 6 concurrency.
 
 **Use when**: Working with SwiftData, @Query in SwiftUI, @Relationship macros, CloudKit integration
@@ -217,6 +235,7 @@ This is a preview release. Feedback welcome!
 - **Discussions**: [Share usage patterns and ask questions](https://github.com/yourusername/Axiom/discussions)
 
 Skill contributions should follow these standards:
+
 - YAML frontmatter with `name` and `description`
 - Examples before theory throughout
 - Clear "When to Use" section

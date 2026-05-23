@@ -25,17 +25,20 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Lindy SDK & Integration Patterns
 
 ## Overview
+
 Lindy is primarily a no-code platform. External integration happens through three
 channels: **Webhook triggers** (inbound), **HTTP Request actions** (outbound), and
 **Run Code actions** (inline Python/JS execution via E2B sandbox). This skill covers
 patterns for each.
 
 ## Prerequisites
+
 - Lindy account with active agents
 - Node.js 18+ or Python 3.10+ for webhook receivers
 - Completed `lindy-install-auth` setup
 
 ## Pattern 1: Webhook Trigger Integration
+
 Your application fires webhooks to wake Lindy agents:
 
 ```typescript
@@ -84,19 +87,23 @@ await lindy.trigger({ event: 'lead.created', name: 'Jane Doe', email: 'jane@co.c
 ```
 
 ## Pattern 2: HTTP Request Action (Agent Calling Your API)
+
 Configure a Lindy agent to call your API as an action step:
 
 **In Lindy Dashboard** — Add HTTP Request action:
+
 - **Method**: POST
 - **URL**: `https://api.yourapp.com/process`
 - **Headers**: `Authorization: Bearer {{your_api_key}}`, `Content-Type: application/json`
 - **Body** (AI Prompt mode):
+
   ```
   Send the processed data as JSON with fields matching the API schema.
   Include: name from {{trigger.data.name}}, analysis from previous step.
   ```
 
 **Your API endpoint** receives the call:
+
 ```typescript
 // Your API receiving Lindy agent calls
 app.post('/process', async (req, res) => {
@@ -107,10 +114,12 @@ app.post('/process', async (req, res) => {
 ```
 
 ## Pattern 3: Run Code Action (E2B Sandbox)
+
 Execute Python or JavaScript directly in Lindy workflows. Code runs in isolated
 Firecracker microVMs with ~150ms startup time.
 
 **Python example** (data transformation in a workflow):
+
 ```python
 # Run Code action — Python
 # Input variables: raw_data (string from previous step)
@@ -133,6 +142,7 @@ return json.dumps({"filtered_count": len(cleaned), "items": cleaned})
 ```
 
 **JavaScript example** (API call + processing):
+
 ```javascript
 // Run Code action — JavaScript
 // Input variables: query (string), api_key (string)
@@ -146,6 +156,7 @@ return JSON.stringify({ count: data.results.length, summary });
 ```
 
 **Run Code outputs** (available to subsequent steps):
+
 | Output | Contents |
 |--------|----------|
 | `{{run_code.result}}` | Value from `return` statement |
@@ -159,6 +170,7 @@ requests, aiohttp, beautifulsoup4, nltk, spacy, openpyxl, python-docx
 `count = int(count_str)`, `data = json.loads(json_str)`
 
 ## Pattern 4: Callback Pattern (Async Two-Way)
+
 Send a `callbackUrl` in your webhook payload. Lindy can respond back using
 the **Send POST Request to Callback** action:
 
@@ -179,6 +191,7 @@ app.post('/lindy-callback', (req, res) => {
 ```
 
 ## Pattern 5: Retry with Exponential Backoff
+
 ```typescript
 async function triggerWithRetry(
   client: LindyClient,
@@ -210,9 +223,11 @@ async function triggerWithRetry(
 | Callback | Callback URL unreachable | Ensure HTTPS endpoint is publicly accessible |
 
 ## Resources
+
 - [Calling Any API](https://www.lindy.ai/academy-lessons/calling-any-api)
 - [Run Code Documentation](https://docs.lindy.ai/skills/by-lindy/run-code)
 - [Webhooks Documentation](https://docs.lindy.ai/skills/by-lindy/webhooks)
 
 ## Next Steps
+
 Proceed to `lindy-core-workflow-a` for full agent creation workflows.

@@ -5,6 +5,7 @@ Detailed implementation reference for the speak-prod-checklist skill.
 ## Instructions
 
 ### Step 1: Pre-Deployment Configuration
+
 - [ ] Production API keys in secure vault
 - [ ] Environment variables set in deployment platform
 - [ ] API key scopes are minimal (least privilege)
@@ -13,6 +14,7 @@ Detailed implementation reference for the speak-prod-checklist skill.
 - [ ] Audio storage configured with encryption
 
 ### Step 2: Code Quality Verification
+
 - [ ] All tests passing (`npm test`)
 - [ ] No hardcoded credentials
 - [ ] Error handling covers all Speak error types
@@ -21,6 +23,7 @@ Detailed implementation reference for the speak-prod-checklist skill.
 - [ ] Audio handling follows privacy guidelines
 
 ### Step 3: Language Learning Feature Checklist
+
 - [ ] All target languages tested
 - [ ] Speech recognition works in all browsers
 - [ ] Pronunciation scoring accurate
@@ -29,6 +32,7 @@ Detailed implementation reference for the speak-prod-checklist skill.
 - [ ] Progress tracking persists correctly
 
 ### Step 4: Infrastructure Setup
+
 - [ ] Health check endpoint includes Speak connectivity
 - [ ] Monitoring/alerting configured for:
   - [ ] API latency
@@ -40,6 +44,7 @@ Detailed implementation reference for the speak-prod-checklist skill.
 - [ ] CDN configured for audio assets
 
 ### Step 5: Documentation Requirements
+
 - [ ] Incident runbook created
 - [ ] Key rotation procedure documented
 - [ ] Rollback procedure documented
@@ -93,7 +98,6 @@ kubectl rollout status deployment/speak-integration
 
 echo "=== Deployment Complete ==="
 ```
-
 
 ## Health Check Implementation
 
@@ -152,7 +156,6 @@ app.get('/health', async (req, res) => {
 });
 ```
 
-
 ## Rollback Procedure
 
 ```bash
@@ -177,7 +180,6 @@ fi
 echo "=== Rollback Complete ==="
 ```
 
-
 ## Alert Configuration
 
 | Alert | Condition | Severity |
@@ -188,7 +190,6 @@ echo "=== Rollback Complete ==="
 | High Latency | p95 > 3000ms | P2 |
 | Auth Failures | 401/403 errors > 0 | P1 |
 | Session Abandonment | Abandon rate > 20% | P3 |
-
 
 ## Production Monitoring Dashboard
 
@@ -214,10 +215,10 @@ panels:
     query: "rate(speak_lessons_completed[5m]) / rate(speak_lessons_started[5m]) * 100"
 ```
 
-
 ## Detailed Examples
 
 ### Smoke Test Suite
+
 ```typescript
 async function productionSmokeTest(): Promise<TestResults> {
   const tests = [
@@ -241,4 +242,3 @@ async function productionSmokeTest(): Promise<TestResults> {
   return results;
 }
 ```
-

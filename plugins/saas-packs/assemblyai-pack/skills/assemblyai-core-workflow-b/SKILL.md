@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code
 # AssemblyAI Core Workflow B — Streaming & LeMUR
 
 ## Overview
+
 Two advanced workflows: (1) real-time streaming transcription via WebSocket for live captioning and voice agents, and (2) LeMUR for applying LLMs to transcripts — summarization, Q&A, action items, and custom tasks.
 
 ## Prerequisites
+
 - `assemblyai` package installed (`npm install assemblyai`)
 - API key configured in `ASSEMBLYAI_API_KEY`
 - For streaming: microphone or audio stream source
@@ -244,6 +246,7 @@ console.log(response);
 ```
 
 ## Streaming Specifications
+
 | Spec | Value |
 |------|-------|
 | Audio format | 16-bit PCM, mono |
@@ -255,12 +258,14 @@ console.log(response);
 | Models | `nova-3` (default), `nova-3-pro` (highest accuracy) |
 
 ## Output
+
 - Real-time partial and final transcripts via WebSocket
 - Speaker-labeled streaming turns (nova-3-pro)
 - LeMUR summaries, Q&A responses, action items
 - Custom LLM analysis with structured output
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Session limit reached` | Too many concurrent streams | Wait or upgrade plan |
@@ -270,10 +275,12 @@ console.log(response);
 | `transcript not found` | Invalid transcript_id | Verify ID exists via `client.transcripts.get()` |
 
 ## Resources
+
 - [Streaming Speech-to-Text Guide](https://www.assemblyai.com/docs/getting-started/transcribe-streaming-audio)
 - [LeMUR Documentation](https://www.assemblyai.com/docs/lemur)
 - [LeMUR API Reference](https://www.assemblyai.com/docs/api-reference/lemur/task)
 - [Streaming API Reference](https://www.assemblyai.com/docs/api-reference/streaming)
 
 ## Next Steps
+
 For error troubleshooting, see `assemblyai-common-errors`.

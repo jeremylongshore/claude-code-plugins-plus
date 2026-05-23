@@ -10,6 +10,7 @@ assemblyai-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working AssemblyAI example
 **Workflow:** Part of the onboarding skill category for AssemblyAI integration.
 **Relates to:** Other assemblyai skills in this pack.

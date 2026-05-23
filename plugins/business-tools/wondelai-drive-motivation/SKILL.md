@@ -48,11 +48,13 @@ External rewards ("if-then" rewards: "If you do X, then you get Y"):
 | **7. Foster short-term thinking** | Optimize for reward period | Quarterly bonuses → quarterly thinking |
 
 **When extrinsic rewards DO work:**
+
 - Routine, algorithmic tasks (assembly line, data entry)
 - Tasks requiring no creativity or judgment
 - When the task is genuinely boring and no intrinsic motivation exists
 
 **When extrinsic rewards DON'T work (and hurt):**
+
 - Creative work
 - Complex problem-solving
 - Any task requiring cognitive effort
@@ -89,12 +91,14 @@ See: [references/extrinsic-rewards.md](references/extrinsic-rewards.md) for the 
 | **Features** | Feature bloat (all visible) | Show/hide features, progressive disclosure |
 
 **Autonomy audit questions:**
+
 - Can users choose WHAT to do in the product?
 - Can users choose WHEN to engage?
 - Can users choose HOW to complete tasks?
 - Can users choose their own path through the experience?
 
 **Warning signs of autonomy violation:**
+
 - "You must complete X before Y"
 - Forced tutorials with no skip option
 - Mandatory notifications
@@ -112,18 +116,21 @@ See: [references/autonomy.md](references/autonomy.md) for autonomy design patter
 **Three laws of mastery:**
 
 **Law 1: Mastery is a Mindset**
+
 - Growth mindset (Carol Dweck): Ability is developed, not fixed
 - People with growth mindset seek challenges and learn from failure
 - Fixed mindset people avoid challenges (might reveal inadequacy)
 - **Design implication:** Frame failures as learning, not judgment
 
 **Law 2: Mastery is a Pain**
+
 - Requires effort, deliberate practice, and grit
 - Flow (Csikszentmihalyi): Optimal state between boredom and anxiety
 - Challenge must match skill level — too easy = boring, too hard = anxious
 - **Design implication:** Calibrate difficulty to user's level
 
 **Law 3: Mastery is Asymptotic**
+
 - You can approach mastery but never fully arrive
 - The pursuit itself is the reward
 - **Design implication:** Always have next level, next challenge
@@ -143,6 +150,7 @@ See: [references/autonomy.md](references/autonomy.md) for autonomy design patter
 ```
 
 **Flow conditions:**
+
 - Clear goals
 - Immediate feedback
 - Challenge/skill balance
@@ -161,6 +169,7 @@ See: [references/autonomy.md](references/autonomy.md) for autonomy design patter
 | **Streaks** | Consistency tracking | Duolingo streaks (careful: can become extrinsic) |
 
 **Mastery audit questions:**
+
 - Can users see their progress over time?
 - Does the product adapt to skill level?
 - Is there immediate, meaningful feedback?
@@ -168,6 +177,7 @@ See: [references/autonomy.md](references/autonomy.md) for autonomy design patter
 - Does the challenge increase as skill increases?
 
 **Warning signs of mastery violation:**
+
 - No way to see improvement
 - Same difficulty regardless of skill
 - Delayed or absent feedback
@@ -201,12 +211,14 @@ See: [references/mastery.md](references/mastery.md) for mastery design patterns 
 | **Values** | Align product with beliefs | Ecosia: "Search the web to plant trees" |
 
 **Purpose audit questions:**
+
 - Does the user understand WHY this product/feature exists?
 - Can users see their impact on something bigger?
 - Does the product connect to values the user cares about?
 - Is there a mission beyond profit?
 
 **Purpose in product design:**
+
 - Show aggregate impact ("Together, our users have saved 1M hours")
 - Connect individual actions to collective outcomes
 - Frame features in terms of why, not just what
@@ -219,6 +231,7 @@ See: [references/purpose.md](references/purpose.md) for purpose-driven design pa
 ### Gamification Done Right vs. Wrong
 
 **Wrong gamification (extrinsic, Motivation 2.0):**
+
 - Points for every action (becomes meaningless)
 - Badges for trivial achievements
 - Leaderboards that discourage (I'll never catch up)
@@ -233,6 +246,7 @@ See: [references/purpose.md](references/purpose.md) for purpose-driven design pa
 | **Purpose** | Pointless competition | Contribute to community, personal growth |
 
 **Example: Duolingo**
+
 - **Autonomy:** Choose language, pace, topics
 - **Mastery:** Adaptive difficulty, progress tracking, skill levels
 - **Purpose:** "Learn a language to connect with people"
@@ -249,6 +263,7 @@ See: [references/purpose.md](references/purpose.md) for purpose-driven design pa
 | **Purpose** | Connect work to mission | "Here's why this matters for our customers" |
 
 **"If-then" vs. "Now that" rewards:**
+
 - **Bad:** "If you hit target, you get bonus" (if-then, creates pressure)
 - **Better:** "You hit target! Here's a bonus." (now-that, unexpected recognition)
 - **Best:** "Let's talk about what you want to work on next." (intrinsic)
@@ -256,11 +271,13 @@ See: [references/purpose.md](references/purpose.md) for purpose-driven design pa
 ### Compensation and Incentives
 
 **Pink's recommendations:**
+
 1. Pay people enough to take money off the table
 2. Then focus on autonomy, mastery, purpose
 3. Use "now-that" rewards (unexpected), not "if-then" rewards (contingent)
 
 **The baseline:**
+
 - Fair compensation eliminates distraction
 - Above-market pay signals respect
 - But beyond "enough," more money doesn't increase motivation
@@ -281,6 +298,7 @@ See: [references/applications.md](references/applications.md) for product and te
 **Goal:** Design products and teams that cultivate Type I behavior.
 
 **Type I behavior:**
+
 - Is made, not born (anyone can develop it)
 - Doesn't disdain money or recognition
 - Is a renewable resource (doesn't deplete)

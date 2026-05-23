@@ -13,6 +13,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC
 ```
 
 **Output:**
+
 ```
 BTC (Bitcoin)
 $97,234.56 USD
@@ -30,6 +31,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbols BTC,ETH,SOL,AVAX,D
 ```
 
 **Output:**
+
 ```
 ================================================================================
   CRYPTO PRICES                                           Updated: 2025-01-14 15:30:00
@@ -82,6 +84,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol ETH --format json
 ```
 
 **Output:**
+
 ```json
 {
   "prices": [
@@ -117,6 +120,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbols BTC,ETH,SOL --form
 ```
 
 **Output (prices.csv):**
+
 ```csv
 symbol,name,price,currency,change_24h,change_7d,volume_24h,market_cap,timestamp,source
 BTC,Bitcoin,97234.56,USD,2.34,8.21,28500000000,1920000000000,2025-01-14T15:30:00.000000,coingecko
@@ -135,11 +139,13 @@ python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbols BTC,ETH --format m
 ```
 
 **Output:**
+
 ```
 BTC:$97,234.56(+2.34%) | ETH:$3,456.78(+1.87%)
 ```
 
 Use in shell scripts:
+
 ```bash
 #!/bin/bash
 PRICES=$(python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbols BTC,ETH --format minimal)
@@ -159,6 +165,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --period 30d
 ```
 
 **Output:**
+
 ```
 ================================================================================
   HISTORICAL PRICES: BTC
@@ -198,6 +205,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --period 90d --
 ```
 
 **Output (btc_90d.csv):**
+
 ```csv
 date,price,volume
 2024-10-16,68234.56,18500000000
@@ -241,6 +249,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --list --query layer
 ```
 
 **Output:**
+
 ```
 ================================================================================
   SEARCH RESULTS: 'ethereum'
@@ -365,6 +374,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --verbose
 ```
 
 **Output:**
+
 ```
 [DEBUG] Checking cache for spot:btc:usd
 [DEBUG] Cache miss
@@ -387,6 +397,7 @@ Cache: 0/1 hits
 Create and use a custom watchlist:
 
 1. Edit `config/settings.yaml`:
+
 ```yaml
 watchlists:
   custom:
@@ -397,7 +408,8 @@ watchlists:
     - uniswap
 ```
 
-2. Use it:
+1. Use it:
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist custom
 ```
@@ -409,6 +421,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist custom
 ### Example 20: Handling Rate Limits
 
 When rate limited, the skill automatically:
+
 1. Uses cached data if available
 2. Falls back to yfinance if installed
 3. Shows stale data with warning
@@ -420,6 +433,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --verbose
 ```
 
 **Output with fallback:**
+
 ```
 [DEBUG] CoinGecko rate limited
 [DEBUG] Falling back to yfinance

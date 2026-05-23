@@ -75,6 +75,7 @@ node hello-apify.js
 ### Step 3: Understand the Output
 
 The Actor runs on Apify's cloud infrastructure. When it finishes:
+
 - `run.id` — unique run identifier
 - `run.status` — `SUCCEEDED`, `FAILED`, `TIMED-OUT`, or `ABORTED`
 - `run.defaultDatasetId` — ID of the dataset containing results

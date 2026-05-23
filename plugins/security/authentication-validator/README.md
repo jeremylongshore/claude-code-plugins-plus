@@ -27,6 +27,7 @@ Validate authentication implementation against security best practices and indus
 ## Validation Areas
 
 ### 1. Password Security
+
 - Minimum length (12+ characters)
 - Complexity requirements
 - Bcrypt/Argon2 hashing
@@ -35,6 +36,7 @@ Validate authentication implementation against security best practices and indus
 - Lockout policies
 
 ### 2. Session Management
+
 - Secure cookie flags
 - HttpOnly and Secure flags
 - SameSite attribute
@@ -43,6 +45,7 @@ Validate authentication implementation against security best practices and indus
 - CSRF protection
 
 ### 3. Token Security (JWT)
+
 - Strong signing algorithm (RS256, ES256)
 - Proper expiration (exp claim)
 - Audience validation (aud claim)
@@ -51,12 +54,14 @@ Validate authentication implementation against security best practices and indus
 - Refresh token security
 
 ### 4. Multi-Factor Authentication
+
 - MFA availability
 - TOTP/SMS/Email options
 - Backup codes
 - Recovery mechanisms
 
 ### 5. Account Security
+
 - Account lockout after failed attempts
 - Rate limiting
 - Brute force protection

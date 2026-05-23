@@ -10,6 +10,7 @@ lucidchart-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Lucidchart costs and usage
 **Workflow:** Part of the cicd skill category for Lucidchart integration.
 **Relates to:** Other lucidchart skills in this pack.

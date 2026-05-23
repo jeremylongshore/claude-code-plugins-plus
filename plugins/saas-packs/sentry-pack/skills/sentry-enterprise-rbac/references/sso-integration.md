@@ -3,6 +3,7 @@
 ## SSO Integration
 
 ### SAML Configuration
+
 1. Settings → Auth → Configure SAML
 2. Copy ACS URL and Entity ID to IdP
 3. Upload IdP metadata or configure manually:
@@ -11,6 +12,7 @@
    - Certificate
 
 ### SAML Attribute Mapping
+
 ```xml
 <!-- Required attributes -->
 <Attribute Name="email" />
@@ -22,6 +24,7 @@
 ```
 
 ### SCIM Provisioning
+
 ```bash
 # Enable SCIM
 # Settings → Auth → SCIM
@@ -35,6 +38,7 @@ https://sentry.io/api/0/organizations/$ORG/scim/v2/
 ```
 
 ### Auto Team Assignment
+
 ```json
 // IdP sends team membership
 {

@@ -410,6 +410,7 @@ Wire this into your API routes:
 ```
 
 **Key metrics to monitor:**
+
 - Rate limit hits (429 responses) per minute — alert if sustained above 5/min
 - Health check latency — alert if Notion `latencyMs` exceeds 2000ms
 - Auth failures (401/403) — alert immediately, means token rotation needed

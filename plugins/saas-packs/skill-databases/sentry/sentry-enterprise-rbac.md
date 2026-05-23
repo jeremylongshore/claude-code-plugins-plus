@@ -10,6 +10,7 @@ sentry-enterprise-rbac/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure enterprise role-based access control in Sentry including organization structure, team management, SSO/SAML integration, and SCIM provisioning.
 **Workflow:** Set up during enterprise onboarding or security hardening. Implements proper access control and automated user provisioning.
 **Relates to:** Works with `sentry-security-basics` for security. Connects to `sentry-policy-guardrails` for governance.

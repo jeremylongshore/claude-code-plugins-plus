@@ -37,6 +37,7 @@ Complete checklist for deploying Documenso integrations to production, covering 
 ## Production Checklist
 
 ### 1. Authentication & Secrets
+
 - [ ] Production API key generated (not staging key)
 - [ ] API key stored in secret manager (Vault, AWS Secrets Manager, not `.env`)
 - [ ] Webhook secret configured and verified
@@ -46,6 +47,7 @@ Complete checklist for deploying Documenso integrations to production, covering 
 - [ ] Self-hosted: signing certificate from trusted CA mounted
 
 ### 2. Error Handling
+
 - [ ] All API calls wrapped in try/catch with typed errors
 - [ ] Exponential backoff for 429/5xx responses
 - [ ] Circuit breaker for Documenso outages
@@ -53,6 +55,7 @@ Complete checklist for deploying Documenso integrations to production, covering 
 - [ ] Error tracking integration (Sentry, Datadog, etc.)
 
 ### 3. Performance
+
 - [ ] Singleton client pattern (not creating new client per request)
 - [ ] Templates used for repetitive document creation
 - [ ] Bulk operations use concurrency control (p-queue)
@@ -60,6 +63,7 @@ Complete checklist for deploying Documenso integrations to production, covering 
 - [ ] Document metadata cached (completed documents immutable)
 
 ### 4. Monitoring & Alerting
+
 - [ ] Health check endpoint: `GET /health/documenso`
 - [ ] API error rate alerting (> 5% for 5 minutes)
 - [ ] Latency monitoring (p95 > 5s)
@@ -67,6 +71,7 @@ Complete checklist for deploying Documenso integrations to production, covering 
 - [ ] Structured logging with sanitized PII
 
 ### 5. Webhooks
+
 - [ ] HTTPS endpoint configured (HTTP rejected by Documenso)
 - [ ] Webhook secret verification using constant-time comparison
 - [ ] Idempotent event processing (handle duplicates)
@@ -74,6 +79,7 @@ Complete checklist for deploying Documenso integrations to production, covering 
 - [ ] Dead letter queue for failed webhook processing
 
 ### 6. Data & Compliance
+
 - [ ] PII sanitized in all logs (emails, names)
 - [ ] Data retention policy implemented
 - [ ] GDPR access/erasure request process documented
@@ -81,6 +87,7 @@ Complete checklist for deploying Documenso integrations to production, covering 
 - [ ] Self-hosted: document storage strategy defined
 
 ### 7. Self-Hosted Production (if applicable)
+
 - [ ] PostgreSQL with automated backups
 - [ ] HTTPS via reverse proxy (nginx, Caddy, Traefik)
 - [ ] Signing certificate from trusted CA (not self-signed)

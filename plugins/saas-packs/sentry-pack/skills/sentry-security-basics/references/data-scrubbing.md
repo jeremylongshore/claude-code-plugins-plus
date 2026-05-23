@@ -3,12 +3,15 @@
 ## Data Scrubbing
 
 ### 1. Built-in Scrubbing (Server-Side)
+
 Enable in Sentry Dashboard:
+
 1. Project Settings > Security & Privacy
 2. Enable "Data Scrubber"
 3. Configure sensitive fields
 
 ### 2. Client-Side Scrubbing
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -41,6 +44,7 @@ Sentry.init({
 ```
 
 ### 3. Sensitive Fields Configuration
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,

@@ -326,6 +326,7 @@ When the skill activates, Claude Code runs these commands and replaces them with
 ### Manual Testing
 
 1. Install the plugin in a test project:
+
    ```bash
    claude /plugin add /path/to/your/plugin
    ```

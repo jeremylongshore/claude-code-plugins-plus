@@ -19,7 +19,9 @@ The Umami MCP is configured in `~/.claude.json` under `mcpServers.umami`. For se
 The MCP exposes 60+ tools; the data-collector uses this subset. For the full list, see https://github.com/frontedu/umami-mcp-server.
 
 #### `mcp__umami__get_websites`
+
 List all tracked websites. **Always call FIRST** before any per-site query — verifies auth and gives the canonical site IDs.
+
 ```
 Parameters:
   includeTeams: boolean (optional, default false) — include team-owned websites
@@ -27,7 +29,9 @@ Returns: { data: Array of { id, name, domain, createdAt, ... } }
 ```
 
 #### `mcp__umami__get_stats`
+
 Aggregate stats for a site over a time range, with prior-period comparison.
+
 ```
 Parameters:
   website_id: string (required) — UUID from get_websites
@@ -40,7 +44,9 @@ Returns: {
 ```
 
 #### `mcp__umami__get_active`
+
 Current real-time visitor count. No date params.
+
 ```
 Parameters:
   website_id: string (required)
@@ -48,7 +54,9 @@ Returns: { x: number (active visitor count) }
 ```
 
 #### `mcp__umami__get_metrics`
+
 Breakdown by dimension. Returns `{ x: dimension_value, y: count }` rows.
+
 ```
 Parameters:
   website_id:  string (required)
@@ -63,7 +71,9 @@ Returns: Array of { x: string, y: number }
 ```
 
 #### `mcp__umami__get_pageviews`
+
 Time-series pageview + session counts.
+
 ```
 Parameters:
   website_id: string (required)
@@ -74,7 +84,9 @@ Returns: { pageviews: Array<{x: date, y: count}>, sessions: Array<{x: date, y: c
 ```
 
 #### `mcp__umami__get_events`
+
 Custom event data (e.g. `install_click`, `cowork_download`, `search_query`).
+
 ```
 Parameters:
   website_id: string (required)
@@ -84,7 +96,9 @@ Returns: Array of event objects with timestamps
 ```
 
 #### `mcp__umami__get_realtime`
+
 Live activity feed (alternative to `get_active` for richer realtime data).
+
 ```
 Parameters:
   website_id: string (required)

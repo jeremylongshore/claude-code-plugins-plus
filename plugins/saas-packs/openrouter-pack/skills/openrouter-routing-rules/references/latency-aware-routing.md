@@ -3,6 +3,7 @@
 ## Latency-Aware Routing
 
 ### Fast Response Router
+
 ```python
 import time
 from statistics import mean

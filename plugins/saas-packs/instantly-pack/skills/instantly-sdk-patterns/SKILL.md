@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly SDK Patterns
 
 ## Overview
+
 Production-ready patterns for Instantly API v2 integrations. Instantly has no official SDK — all integrations use direct REST calls to `https://api.instantly.ai/api/v2/`. These patterns provide type safety, retry logic, pagination, and multi-tenant support.
 
 ## Prerequisites
+
 - Completed `instantly-install-auth` setup
 - Familiarity with async/await and TypeScript generics
 - Understanding of REST API pagination patterns
@@ -37,6 +39,7 @@ Production-ready patterns for Instantly API v2 integrations. Instantly has no of
 ## Instructions
 
 ### Step 1: Type-Safe Client with Error Classification
+
 ```typescript
 // src/instantly/client.ts
 import "dotenv/config";
@@ -138,6 +141,7 @@ export class InstantlyApiError extends Error {
 ```
 
 ### Step 2: TypeScript Interfaces
+
 ```typescript
 // src/instantly/types.ts
 export interface Campaign {
@@ -238,6 +242,7 @@ export interface CampaignAnalytics {
 ```
 
 ### Step 3: Retry with Exponential Backoff
+
 ```typescript
 // src/instantly/retry.ts
 export async function withRetry<T>(
@@ -266,6 +271,7 @@ const campaigns = await withRetry(() => client.getCampaigns({ limit: 50 }));
 ```
 
 ### Step 4: Cursor-Based Pagination
+
 ```typescript
 // src/instantly/paginate.ts
 export async function* paginate<T extends { id: string }>(
@@ -298,6 +304,7 @@ for await (const batch of paginate<Campaign>(client, "/campaigns")) {
 ```
 
 ### Step 5: Multi-Tenant Factory (Agency Pattern)
+
 ```typescript
 // src/instantly/factory.ts
 const clients = new Map<string, InstantlyClient>();
@@ -315,6 +322,7 @@ const clientB = getClientForWorkspace("globex", process.env.GLOBEX_API_KEY!);
 ```
 
 ### Python Client
+
 ```python
 # instantly/client.py
 import os, time, httpx
@@ -361,6 +369,7 @@ class InstantlyClient:
 ```
 
 ## Error Handling
+
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
 | Error classification | All API calls | `retryable` flag prevents retrying 400/403 errors |
@@ -369,9 +378,11 @@ class InstantlyClient:
 | Multi-tenant factory | Agency/multi-workspace | Isolated clients per workspace |
 
 ## Resources
+
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
 - [API Schemas](https://developer.instantly.ai/api/v2/schemas)
 - [OpenAPI Spec](https://developer.instantly.ai/api-reference/openapi.json)
 
 ## Next Steps
+
 Apply patterns in `instantly-core-workflow-a` for real-world campaign automation.

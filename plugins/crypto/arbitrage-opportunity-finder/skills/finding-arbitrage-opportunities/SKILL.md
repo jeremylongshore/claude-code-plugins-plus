@@ -35,41 +35,50 @@ Detect and analyze arbitrage opportunities across cryptocurrency exchanges and D
 ## Instructions
 
 1. **Quick spread scan** on a specific pair:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py scan ETH USDC
    ```
+
    Shows current prices per exchange, spread %, estimated profit after fees, and recommended action.
 
 2. **Multi-exchange comparison** across specific exchanges:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py scan ETH USDC \
      --exchanges binance,coinbase,kraken,kucoin,okx
    ```
 
 3. **DEX price comparison** across decentralized exchanges:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py scan ETH USDC --dex-only
    ```
+
    Compares Uniswap V3, SushiSwap, Curve, Balancer with gas cost estimates.
 
 4. **Triangular arbitrage discovery** within a single exchange:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py triangular binance --min-profit 0.5
    ```
 
 5. **Cross-chain opportunities** across different blockchains:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py cross-chain USDC \
      --chains ethereum,polygon,arbitrum
    ```
 
 6. **Real-time monitoring** with threshold alerts:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py monitor ETH USDC \
      --threshold 0.5 --interval 5
    ```
 
 7. **Export opportunities** for bot integration:
+
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py scan ETH USDC --output json > opportunities.json
    ```
@@ -94,11 +103,13 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for exchange fee tables a
 ## Examples
 
 **Quick ETH/USDC spread scan** - Find best buy/sell across all CEX exchanges:
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py scan ETH USDC
 ```
 
 Sample detection output:
+
 ```
   ARB OPPORTUNITY: ETH/USDC
   Buy:  Binance  @ $3,198.50  |  Sell: Coinbase @ $3,214.20
@@ -107,16 +118,19 @@ Sample detection output:
 ```
 
 **Triangular arb on Binance** - Discover circular paths with minimum 0.5% net profit:
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py triangular binance --min-profit 0.5
 ```
 
 **Cross-chain USDC opportunities** - Compare stablecoin prices across L1/L2 chains:
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py cross-chain USDC --chains ethereum,polygon,arbitrum
 ```
 
 **Calculate exact profit** - Detailed fee breakdown for a specific trade:
+
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py calc \
   --buy-exchange binance --sell-exchange coinbase --pair ETH/USDC --amount 10  # 10 = trade size in ETH

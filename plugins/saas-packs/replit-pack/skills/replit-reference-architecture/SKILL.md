@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Reference Architecture
 
 ## Overview
+
 Production architecture for applications on Replit. Covers project structure, configuration files, data layer (PostgreSQL + KV + Object Storage), authentication, deployment strategy, and the platform constraints that shape architectural decisions.
 
 ## Architecture Diagram
+
 ```
                     ┌──────────────────────────┐
                     │    Client (Browser)       │
@@ -71,6 +73,7 @@ Production architecture for applications on Replit. Covers project structure, co
 ## Instructions
 
 ### Step 1: Project Structure
+
 ```
 my-replit-app/
 ├── .replit                    # Run + deployment configuration
@@ -102,6 +105,7 @@ my-replit-app/
 ```
 
 ### Step 2: Configuration Files
+
 ```toml
 # .replit
 entrypoint = "src/index.ts"
@@ -138,6 +142,7 @@ pattern = "**/*.ts"
 ```
 
 ### Step 3: Configuration Module
+
 ```typescript
 // src/config.ts — centralized configuration with validation
 export const config = {
@@ -165,6 +170,7 @@ if (missing.length > 0 && config.isProduction) {
 ```
 
 ### Step 4: Data Layer Strategy
+
 | Storage | Use When | Limits |
 |---------|----------|--------|
 | **PostgreSQL** | Structured data, relations, queries | Plan-dependent |
@@ -194,6 +200,7 @@ export const storage = new Client();
 ```
 
 ### Step 5: Entry Point Pattern
+
 ```typescript
 // src/index.ts
 import express from 'express';
@@ -234,6 +241,7 @@ process.on('SIGTERM', async () => {
 ```
 
 ## Platform Constraints
+
 | Constraint | Impact | Mitigation |
 |-----------|--------|------------|
 | Ephemeral filesystem | Files lost on restart | Use DB or Object Storage |
@@ -243,6 +251,7 @@ process.on('SIGTERM', async () => {
 | Container restarts | State loss | External state (DB/Storage) |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Cold start slow | Heavy imports at startup | Lazy-load non-critical modules |
@@ -251,10 +260,12 @@ process.on('SIGTERM', async () => {
 | Filesystem writes lost | Ephemeral container | Use Object Storage or PostgreSQL |
 
 ## Resources
+
 - [Replit App Configuration](https://docs.replit.com/replit-app/configuration)
 - [PostgreSQL on Replit](https://docs.replit.com/cloud-services/storage-and-databases/postgresql-on-replit)
 - [Object Storage](https://docs.replit.com/cloud-services/storage-and-databases/object-storage/overview)
 - [Replit Deployments](https://docs.replit.com/hosting/deployments)
 
 ## Next Steps
+
 For deployment, see `replit-deploy-integration`. For multi-environment, see `replit-multi-env-setup`.

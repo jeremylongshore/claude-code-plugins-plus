@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vercel Performance Tuning
 
 ## Overview
+
 Optimize Vercel deployment performance across four levers: edge caching, bundle size reduction, serverless function cold start elimination, and Core Web Vitals improvement. Uses real Vercel cache headers, ISR, and Edge Functions for maximum performance.
 
 ## Prerequisites
+
 - Vercel project deployed with accessible URL
 - Access to Vercel Analytics (dashboard)
 - Bundle analyzer available (`@next/bundle-analyzer` or similar)
@@ -37,6 +39,7 @@ Optimize Vercel deployment performance across four levers: edge caching, bundle 
 ## Instructions
 
 ### Step 1: Establish Performance Baseline
+
 ```bash
 # Check deployment size and function count
 vercel inspect https://my-app.vercel.app
@@ -53,6 +56,7 @@ ANALYZE=true npx next build
 Enable Vercel Analytics in the dashboard under **Analytics** tab for ongoing monitoring.
 
 ### Step 2: Configure Edge Caching
+
 ```typescript
 // api/cached-data.ts — cache API responses at the edge
 import type { VercelRequest, VercelResponse } from '@vercel/node';
@@ -85,6 +89,7 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
 ```
 
 Cache header reference:
+
 | Header | Effect |
 |--------|--------|
 | `s-maxage=N` | Cache at Vercel edge for N seconds |
@@ -95,6 +100,7 @@ Cache header reference:
 | `no-store` | Never cache anywhere |
 
 ### Step 3: Incremental Static Regeneration (ISR)
+
 ```typescript
 // app/products/[id]/page.tsx (Next.js App Router)
 export const revalidate = 60; // Revalidate every 60 seconds
@@ -112,6 +118,7 @@ export async function generateStaticParams() {
 ```
 
 On-demand revalidation via API route:
+
 ```typescript
 // api/revalidate.ts
 import type { VercelRequest, VercelResponse } from '@vercel/node';
@@ -130,6 +137,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 ```
 
 ### Step 4: Reduce Cold Starts
+
 ```typescript
 // Lazy initialization — don't import heavy modules at top level
 // BAD: Cold start loads everything
@@ -152,6 +160,7 @@ export default async function handler(req, res) {
 ```
 
 Move latency-critical paths to Edge Functions (zero cold starts):
+
 ```typescript
 // api/fast.ts
 export const config = { runtime: 'edge' };
@@ -162,6 +171,7 @@ export default function handler(request: Request) {
 ```
 
 ### Step 5: Bundle Size Optimization
+
 ```javascript
 // next.config.js — tree-shaking and optimization
 module.exports = {
@@ -190,6 +200,7 @@ npx cost-of-modules
 ```
 
 ### Step 6: Image Optimization
+
 ```typescript
 // Use Vercel's built-in image optimization
 import Image from 'next/image';
@@ -229,6 +240,7 @@ import Image from 'next/image';
 | Bundle size (gzipped) | < 200KB JS | Bundle analyzer |
 
 ## Output
+
 - Edge caching configured with optimal cache-control headers
 - ISR or on-demand revalidation for dynamic pages
 - Cold starts eliminated via lazy initialization and Edge Functions
@@ -236,6 +248,7 @@ import Image from 'next/image';
 - Image optimization configured
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Cache not hitting | Missing `s-maxage` header | Add to response or vercel.json headers |
@@ -245,6 +258,7 @@ import Image from 'next/image';
 | Images not optimized | External domain not whitelisted | Add to `images.domains` in config |
 
 ## Resources
+
 - [Vercel Caching](https://vercel.com/docs/edge-network/caching)
 - [ISR Documentation](https://vercel.com/docs/incremental-static-regeneration)
 - [Vercel Analytics](https://vercel.com/docs/analytics)
@@ -252,4 +266,5 @@ import Image from 'next/image';
 - [Function Configuration](https://vercel.com/docs/functions/configuring-functions)
 
 ## Next Steps
+
 For cost optimization, see `vercel-cost-tuning`.

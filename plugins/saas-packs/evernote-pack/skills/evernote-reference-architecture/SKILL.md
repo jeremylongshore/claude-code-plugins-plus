@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Reference Architecture
 
 ## Overview
+
 Production-ready architecture patterns for building scalable, maintainable Evernote integrations. Covers service layer design, caching strategy, sync architecture, and deployment topology.
 
 ## Prerequisites
+
 - Understanding of microservices or modular monolith architecture
 - Cloud platform familiarity (AWS, GCP, or Azure)
 - Knowledge of message queues and caching
@@ -50,6 +52,7 @@ Infrastructure  [Redis Cache | PostgreSQL | Message Queue]
 ### Service Layer Design
 
 Separate concerns into focused services:
+
 - **NoteService**: CRUD operations, ENML formatting, tag management
 - **SearchService**: Query building, pagination, result enrichment
 - **SyncService**: Webhook handling, incremental sync, conflict resolution
@@ -87,6 +90,7 @@ Store mirrored Evernote data locally for fast reads. Key tables: `users` (token,
 For the complete architecture diagrams, service implementations, database schema, and scaling guidelines, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
+
 - Layered architecture with clear separation of concerns
 - Service registry pattern for dependency management
 - Two-level caching strategy (in-memory + Redis)
@@ -95,6 +99,7 @@ For the complete architecture diagrams, service implementations, database schema
 - Message queue integration for reliable event processing
 
 ## Error Handling
+
 | Failure Mode | Impact | Mitigation |
 |-------------|--------|------------|
 | Evernote API outage | All sync stops | Circuit breaker, serve cached data |
@@ -103,12 +108,14 @@ For the complete architecture diagrams, service implementations, database schema
 | Message queue failure | Webhook events lost | Polling fallback, periodic full sync |
 
 ## Resources
+
 - [Twelve-Factor App](https://12factor.net/)
 - [Evernote API Reference](https://dev.evernote.com/doc/reference/)
 - [Evernote Synchronization](https://dev.evernote.com/doc/articles/synchronization.php)
 - [Redis Documentation](https://redis.io/documentation)
 
 ## Next Steps
+
 For multi-environment setup, see `evernote-multi-env-setup`.
 
 ## Examples

@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Deploy Integration
 
 ## Overview
+
 Deploy ML training jobs and inference services on Vast.ai GPU cloud. Covers Docker image optimization, automated provisioning scripts, data transfer strategies, and deployment automation.
 
 ## Prerequisites
+
 - Vast.ai CLI authenticated
 - Docker image published to a registry
 - Training/inference code tested locally
@@ -144,12 +146,14 @@ CHECK
 ```
 
 ## Output
+
 - Optimized Docker image for fast Vast.ai pulls
 - Automated deployment script with GPU/price selection
 - Data transfer patterns (SCP, rsync, cloud storage)
 - Post-deploy health check verification
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Docker pull timeout | Image too large (>10GB) | Use multi-stage builds; minimize image layers |
@@ -158,10 +162,12 @@ CHECK
 | CUDA version mismatch | Image CUDA > host CUDA | Filter offers by `cuda_max_good` |
 
 ## Resources
+
 - [Vast.ai Instance Creation](https://docs.vast.ai/api-reference/instances/create-instance)
 - [Docker Best Practices](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
 
 ## Next Steps
+
 For event-driven workflows, see `vastai-webhooks-events`.
 
 ## Examples

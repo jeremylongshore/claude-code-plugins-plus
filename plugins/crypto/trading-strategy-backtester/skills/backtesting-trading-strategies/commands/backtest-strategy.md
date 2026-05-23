@@ -118,6 +118,7 @@ risk:
 ## Output
 
 Results are saved to `${CLAUDE_SKILL_DIR}/reports/`:
+
 - `*_summary.txt` -- Performance metrics table
 - `*_trades.csv` -- Trade log with entry/exit times, PnL
 - `*_equity.csv` -- Equity curve data

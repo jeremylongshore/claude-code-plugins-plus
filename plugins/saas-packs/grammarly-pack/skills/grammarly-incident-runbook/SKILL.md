@@ -59,6 +59,7 @@ curl -s -o /dev/null -w "HTTP %{http_code}\n" \
 ## Incident Playbooks
 
 ### API Outage
+
 1. Confirm with unauthenticated health check (see diagnostics)
 2. Check Grammarly status page and developer announcements
 3. Activate fallback mode — return placeholder scores to avoid blocking users
@@ -66,6 +67,7 @@ curl -s -o /dev/null -w "HTTP %{http_code}\n" \
 5. Notify downstream consumers that scores are unavailable
 
 ### Authentication Failure
+
 1. Test token validity with the account endpoint diagnostic above
 2. If 401: OAuth access token has expired — trigger token refresh flow
 3. If refresh token also fails: re-authorize via OAuth consent flow
@@ -73,6 +75,7 @@ curl -s -o /dev/null -w "HTTP %{http_code}\n" \
 5. Deploy refreshed tokens and confirm scoring requests succeed
 
 ### Data Sync Failure
+
 1. Identify if scoring results are stale or inconsistent across requests
 2. Check if Grammarly updated their scoring model (review changelog)
 3. Compare current scores against known baseline text samples

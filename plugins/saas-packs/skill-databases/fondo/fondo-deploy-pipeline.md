@@ -10,6 +10,7 @@ fondo-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Fondo integrations to production
 **Workflow:** Part of the cicd skill category for Fondo integration.
 **Relates to:** Other fondo skills in this pack.

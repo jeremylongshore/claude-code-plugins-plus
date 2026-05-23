@@ -10,6 +10,7 @@ cohere-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Cohere production deployment checklist
 **Workflow:** Part of the operations skill category for Cohere integration.
 **Relates to:** Other cohere skills in this pack.

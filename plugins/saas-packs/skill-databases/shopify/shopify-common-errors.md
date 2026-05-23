@@ -10,6 +10,7 @@ shopify-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Shopify common errors
 **Workflow:** Part of the operations skill category for Shopify integration.
 **Relates to:** Other shopify skills in this pack.

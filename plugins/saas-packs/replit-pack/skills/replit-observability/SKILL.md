@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Observability
 
 ## Overview
+
 Monitor Replit deployment health, track cold starts, measure resource usage, and set up alerting. Covers Replit's built-in monitoring, external health checking, structured logging, and integration with monitoring services.
 
 ## Prerequisites
+
 - Replit app deployed (Autoscale or Reserved VM)
 - Health endpoint implemented (`/health`)
 - External monitoring service (UptimeRobot, Better Stack, or Prometheus)
@@ -37,6 +39,7 @@ Monitor Replit deployment health, track cold starts, measure resource usage, and
 ## Instructions
 
 ### Step 1: Health Endpoint with Detailed Metrics
+
 ```typescript
 // src/routes/health.ts — comprehensive health check
 import { Router } from 'express';
@@ -98,6 +101,7 @@ export default router;
 ```
 
 ### Step 2: Structured Logging
+
 ```typescript
 // src/utils/logger.ts — structured JSON logging
 const IS_PROD = process.env.NODE_ENV === 'production';
@@ -150,6 +154,7 @@ export function requestLogger(req: any, res: any, next: any) {
 ```
 
 ### Step 3: External Uptime Monitoring
+
 Set up external monitors to detect Autoscale cold starts and outages:
 
 ```markdown
@@ -173,6 +178,7 @@ Key metrics to monitor externally:
 ```
 
 ### Step 4: Cold Start Detection
+
 ```typescript
 // Track cold starts for Autoscale deployments
 const COLD_START_THRESHOLD_MS = 5000;
@@ -194,6 +200,7 @@ app.use((req, res, next) => {
 ```
 
 ### Step 5: Alerting Rules
+
 ```typescript
 // src/utils/alerts.ts — send alerts to Slack on issues
 async function alertSlack(message: string, severity: 'info' | 'warning' | 'critical') {
@@ -247,6 +254,7 @@ setInterval(async () => {
 ```
 
 ### Step 6: Replit Dashboard Monitoring
+
 ```markdown
 Built-in monitoring in Replit:
 1. Deployment Settings > Logs: real-time stdout/stderr
@@ -262,6 +270,7 @@ Check deployment logs:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Cold starts undetected | No external monitor | Set up UptimeRobot or similar |
@@ -270,9 +279,11 @@ Check deployment logs:
 | DB pool exhaustion | Too many connections | Monitor pool.totalCount in health |
 
 ## Resources
+
 - [Monitoring Deployments](https://docs.replit.com/cloud-services/deployments/monitoring-a-deployment)
 - [Replit Status Page](https://status.replit.com)
 - [UptimeRobot](https://uptimerobot.com)
 
 ## Next Steps
+
 For incident response, see `replit-incident-runbook`.

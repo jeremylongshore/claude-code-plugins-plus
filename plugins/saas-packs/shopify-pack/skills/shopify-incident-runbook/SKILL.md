@@ -73,6 +73,7 @@ See [Error Type Actions](references/error-type-actions.md) for complete commands
 ### Step 4: Communication Templates
 
 **Internal (Slack):**
+
 ```
 INCIDENT: Shopify Integration Issue
 Severity: P[1/2/3]
@@ -85,6 +86,7 @@ Responder: @[name]
 ```
 
 **External (Merchant-facing):**
+
 ```
 We're currently experiencing issues with some Shopify-connected features.
 [Order sync / Product updates / etc.] may be delayed.

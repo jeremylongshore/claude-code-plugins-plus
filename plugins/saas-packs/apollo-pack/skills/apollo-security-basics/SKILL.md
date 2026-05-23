@@ -25,16 +25,20 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Apollo Security Basics
 
 ## Overview
+
 Security best practices for Apollo.io API integrations. Apollo API keys grant broad access to 275M+ contacts — a leaked key is a serious incident. This covers key management, PII redaction, data access controls, key rotation, and audit procedures.
 
 ## Prerequisites
+
 - Valid Apollo.io API credentials
 - Node.js 18+
 
 ## Instructions
 
 ### Step 1: Secure API Key Storage
+
 Apollo supports two key types with different risk profiles:
+
 - **Standard key**: search + enrichment only (lower risk)
 - **Master key**: full CRM access including delete (highest risk)
 
@@ -68,6 +72,7 @@ secrets/
 ```
 
 ### Step 2: PII Redaction for Logging
+
 Apollo responses contain emails, phone numbers, and LinkedIn profiles. Never log raw responses in production.
 
 ```typescript
@@ -100,6 +105,7 @@ client.interceptors.response.use((response) => {
 ```
 
 ### Step 3: Use Minimal Key Permissions
+
 ```typescript
 // src/apollo/scoped-client.ts
 // Use standard keys for read-only operations, master keys only where needed
@@ -126,6 +132,7 @@ export function createFullAccessClient() {
 ```
 
 ### Step 4: API Key Rotation Procedure
+
 ```typescript
 async function rotateApiKey() {
   // 1. Generate new key in Apollo Dashboard (Settings > Integrations > API Keys)
@@ -152,6 +159,7 @@ async function rotateApiKey() {
 ```
 
 ### Step 5: Security Audit Script
+
 ```typescript
 async function runSecurityAudit() {
   const checks: Array<{ name: string; pass: boolean; detail: string }> = [];
@@ -189,6 +197,7 @@ async function runSecurityAudit() {
 ```
 
 ## Output
+
 - Secure API key loading from env vars or GCP Secret Manager
 - PII redaction utility for emails, phones, API keys, and LinkedIn URLs
 - Scoped clients: read-only (standard key) vs full-access (master key)
@@ -196,6 +205,7 @@ async function runSecurityAudit() {
 - Automated security audit checking for hardcoded keys and header auth
 
 ## Error Handling
+
 | Issue | Mitigation |
 |-------|------------|
 | API key committed to git | Rotate immediately, revoke old key in Apollo dashboard |
@@ -204,10 +214,12 @@ async function runSecurityAudit() {
 | Master key used everywhere | Split into standard + master keys, use minimal permissions |
 
 ## Resources
+
 - [Apollo Security Practices](https://www.apollo.io/security)
 - [Create API Keys](https://docs.apollo.io/docs/create-api-key)
 - [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
 - [GCP Secret Manager](https://cloud.google.com/secret-manager/docs)
 
 ## Next Steps
+
 Proceed to `apollo-prod-checklist` for production deployment.

@@ -21,12 +21,14 @@ my-app/
 ```
 
 ### Key Characteristics
+
 - Single deployment unit
 - Synchronous Supabase calls in request path
 - In-memory caching
 - Simple error handling
 
 ### Code Pattern
+
 ```typescript
 // Direct integration in route handler
 app.post('/api/create', async (req, res) => {

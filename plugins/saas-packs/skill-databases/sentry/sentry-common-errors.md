@@ -10,6 +10,7 @@ sentry-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Troubleshoot common Sentry integration issues and fixes including events not appearing, source maps not working, and rate limiting.
 **Workflow:** Reference when encountering Sentry issues. Provides quick diagnosis and solutions for the most common problems.
 **Relates to:** Works with `sentry-debug-bundle` for complex issues. Connects to `sentry-advanced-troubleshooting` for deeper problems.

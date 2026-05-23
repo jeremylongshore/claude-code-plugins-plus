@@ -19,11 +19,13 @@ Sugar is a Claude Code plugin that brings persistent memory and autonomous devel
 ### Prerequisites
 
 1. **Install Sugar CLI** (if not already installed):
+
    ```bash
    pip install sugarai
    ```
 
 2. **Initialize in your project**:
+
    ```bash
    cd /path/to/your/project
    sugar init
@@ -34,11 +36,13 @@ Sugar is a Claude Code plugin that brings persistent memory and autonomous devel
 Install the Sugar plugin via Claude Code using one of these methods:
 
 **Option 1: Direct Repository Installation (Recommended)**
+
 ```
 /plugin install roboticforce/sugar
 ```
 
 **Option 2: Register Sugar Marketplace First**
+
 ```
 /plugin marketplace add roboticforce/sugar
 /plugin install sugar
@@ -49,16 +53,19 @@ Install the Sugar plugin via Claude Code using one of these methods:
 ### Basic Usage
 
 #### Create Tasks
+
 ```
 /sugar-task "Implement user authentication" --type feature --priority 4
 ```
 
 #### View Status
+
 ```
 /sugar-status
 ```
 
 #### Start Autonomous Mode
+
 ```
 /sugar-run --dry-run  # Test first
 /sugar-run            # Start autonomous development
@@ -85,6 +92,7 @@ Install the Sugar plugin via Claude Code using one of these methods:
 ### Automatic Task Discovery
 
 Sugar automatically discovers work from:
+
 - Error logs and crash reports
 - GitHub issues and pull requests
 - Code quality metrics and technical debt
@@ -128,6 +136,7 @@ sugar task-type add security_audit \
 ### Multi-Project Support
 
 Sugar maintains isolated instances per project:
+
 - Separate `.sugar/` directory in each project
 - Independent task queues and execution
 - No interference between projects

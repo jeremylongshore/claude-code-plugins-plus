@@ -10,6 +10,7 @@ fondo-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Fondo rate limiting and backoff
 **Workflow:** Part of the operations skill category for Fondo integration.
 **Relates to:** Other fondo skills in this pack.

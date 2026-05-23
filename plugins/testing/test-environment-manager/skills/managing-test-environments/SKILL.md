@@ -74,6 +74,7 @@ Provision, configure, and manage isolated test environments for reliable test ex
 ## Examples
 
 **Docker Compose test environment with PostgreSQL and Redis:**
+
 ```yaml
 # docker-compose.test.yml
 services:
@@ -95,6 +96,7 @@ services:
 ```
 
 **Testcontainers setup in Jest:**
+
 ```typescript
 import { PostgreSqlContainer } from '@testcontainers/postgresql';
 

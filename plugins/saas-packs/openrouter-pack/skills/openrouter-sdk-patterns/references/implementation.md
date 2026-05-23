@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD024 -->
+
 # Detailed Reference
 
 ## Overview
@@ -33,6 +35,7 @@ This skill covers proven SDK patterns including client initialization, error han
 ## Python with OpenAI SDK
 
 ### Basic Setup
+
 ```python
 from openai import OpenAI
 import os
@@ -48,6 +51,7 @@ client = OpenAI(
 ```
 
 ### Synchronous Requests
+
 ```python
 def chat(prompt: str, model: str = "openai/gpt-4-turbo") -> str:
     response = client.chat.completions.create(
@@ -58,6 +62,7 @@ def chat(prompt: str, model: str = "openai/gpt-4-turbo") -> str:
 ```
 
 ### Async Requests
+
 ```python
 from openai import AsyncOpenAI
 import asyncio
@@ -79,6 +84,7 @@ result = asyncio.run(chat_async("Hello!"))
 ```
 
 ### Streaming
+
 ```python
 def stream_chat(prompt: str, model: str = "openai/gpt-4-turbo"):
     stream = client.chat.completions.create(
@@ -100,6 +106,7 @@ def stream_chat(prompt: str, model: str = "openai/gpt-4-turbo"):
 ## TypeScript/Node.js
 
 ### Basic Setup
+
 ```typescript
 import OpenAI from 'openai';
 
@@ -114,6 +121,7 @@ const client = new OpenAI({
 ```
 
 ### Basic Request
+
 ```typescript
 async function chat(prompt: string, model = 'openai/gpt-4-turbo'): Promise<string> {
   const response = await client.chat.completions.create({
@@ -125,6 +133,7 @@ async function chat(prompt: string, model = 'openai/gpt-4-turbo'): Promise<strin
 ```
 
 ### Streaming
+
 ```typescript
 async function streamChat(prompt: string, model = 'openai/gpt-4-turbo') {
   const stream = await client.chat.completions.create({
@@ -144,6 +153,7 @@ async function streamChat(prompt: string, model = 'openai/gpt-4-turbo') {
 ```
 
 ### With Types
+
 ```typescript
 interface ChatOptions {
   model?: string;
@@ -184,6 +194,7 @@ async function chat(
 ## Wrapper Class Pattern
 
 ### Python
+
 ```python
 class OpenRouterClient:
     def __init__(
@@ -242,6 +253,7 @@ response = router.chat("Hello!")
 ```
 
 ### TypeScript
+
 ```typescript
 class OpenRouterClient {
   private client: OpenAI;
@@ -342,6 +354,7 @@ results = asyncio.run(batch_chat(prompts, "openai/gpt-4-turbo"))
 ## Output
 
 Successful execution produces:
+
 - Working OpenRouter integration
 - Verified API connectivity
 - Example responses demonstrating functionality
@@ -349,6 +362,7 @@ Successful execution produces:
 ## Error Handling
 
 Common errors and solutions:
+
 1. **401 Unauthorized**: Check API key format (must start with `sk-or-`)
 2. **429 Rate Limited**: Implement exponential backoff
 3. **500 Server Error**: Retry with backoff, check OpenRouter status page
@@ -424,6 +438,7 @@ print(f"Tokens: {result.total_tokens}, Latency: {result.latency_ms}ms")
 ## Output
 
 Successful execution produces:
+
 - Working OpenRouter integration
 - Verified API connectivity
 - Example responses demonstrating functionality
@@ -431,6 +446,7 @@ Successful execution produces:
 ## Error Handling
 
 Common errors and solutions:
+
 1. **401 Unauthorized**: Check API key format (must start with `sk-or-`)
 2. **429 Rate Limited**: Implement exponential backoff
 3. **500 Server Error**: Retry with backoff, check OpenRouter status page

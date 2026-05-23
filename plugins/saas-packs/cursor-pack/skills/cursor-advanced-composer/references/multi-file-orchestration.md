@@ -3,6 +3,7 @@
 ## Multi-File Orchestration
 
 ### Coordinated File Creation
+
 ```
 Prompt pattern:
 "Create a complete [feature] with:
@@ -17,6 +18,7 @@ Follow existing patterns in @services/userService.ts"
 ```
 
 ### Example: Feature Module
+
 ```
 "Create an order management feature:
 

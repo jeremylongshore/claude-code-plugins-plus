@@ -10,6 +10,7 @@ deepgram-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Deepgram SDK patterns
 **Workflow:** Part of the onboarding skill category for Deepgram integration.
 **Relates to:** Other deepgram skills in this pack.

@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Webhooks & Events
 
 ## Overview
+
 Handle Fireflies.ai webhook events for real-time transcript notifications. Fireflies fires a webhook when a transcript finishes processing. The payload is signed with HMAC-SHA256 for verification.
 
 ## Prerequisites
+
 - Fireflies.ai Business or Enterprise plan
 - `FIREFLIES_API_KEY` and `FIREFLIES_WEBHOOK_SECRET` in environment
 - HTTPS endpoint accessible from the internet
@@ -41,6 +43,7 @@ Fireflies currently fires one event type:
 | Transcription completed | `"Transcription completed"` | Transcript is fully processed and ready |
 
 ### Payload Format
+
 ```json
 {
   "meetingId": "ASxwZxCstx",
@@ -56,12 +59,14 @@ Fireflies currently fires one event type:
 | `clientReferenceId` | ID | Your custom ID from `uploadAudio` (null if bot-recorded) |
 
 ## Important Constraints
+
 - Webhooks fire **only for meetings you own** (organizer_email matches your account)
 - Super Admin webhooks (Enterprise only) fire for all team-owned meetings
 
 ## Instructions
 
 ### Step 1: Register Webhook in Dashboard
+
 1. Go to [app.fireflies.ai/settings](https://app.fireflies.ai/settings)
 2. Select **Developer settings** tab
 3. Enter your HTTPS webhook URL
@@ -69,6 +74,7 @@ Fireflies currently fires one event type:
 5. Save
 
 ### Step 2: Build Webhook Receiver with Signature Verification
+
 ```typescript
 import express from "express";
 import crypto from "crypto";
@@ -114,6 +120,7 @@ function verifySignature(payload: string, signature: string): boolean {
 ```
 
 ### Step 3: Fetch and Process the Transcript
+
 ```typescript
 const FIREFLIES_API = "https://api.fireflies.ai/graphql";
 
@@ -183,7 +190,9 @@ async function notifyTeam(transcript: any) {
 ```
 
 ### Step 4: Per-Upload Webhook (Alternative)
+
 Instead of dashboard-level webhook, include a webhook URL in `uploadAudio`:
+
 ```typescript
 await fetch(FIREFLIES_API, {
   method: "POST",
@@ -210,6 +219,7 @@ await fetch(FIREFLIES_API, {
 ```
 
 ### Step 5: Test Webhook
+
 ```bash
 set -euo pipefail
 # Test by uploading a short audio file
@@ -224,6 +234,7 @@ curl -s -X POST https://api.fireflies.ai/graphql \
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Webhook not firing | URL not saved in dashboard | Re-register at app.fireflies.ai/settings |
@@ -233,14 +244,17 @@ curl -s -X POST https://api.fireflies.ai/graphql \
 | `clientReferenceId` is null | Bot-recorded meeting | Only set on `uploadAudio` calls |
 
 ## Output
+
 - HTTPS webhook endpoint with HMAC-SHA256 signature verification
 - Automatic transcript fetch on completion events
 - Action item extraction and downstream routing
 - Per-upload webhook support for custom tracking
 
 ## Resources
+
 - [Fireflies Webhooks](https://docs.fireflies.ai/graphql-api/webhooks)
 - [Webhook Verification Example](https://replit.com/@firefliesai/Firefliesai-Verifying-webhook-requests)
 
 ## Next Steps
+
 For deployment setup, see `fireflies-deploy-integration`.

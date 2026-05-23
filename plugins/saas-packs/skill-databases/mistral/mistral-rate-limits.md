@@ -10,6 +10,7 @@ mistral-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Mistral AI rate limiting and backoff
 **Workflow:** Part of the operations skill category for Mistral AI integration.
 **Relates to:** Other mistral skills in this pack.

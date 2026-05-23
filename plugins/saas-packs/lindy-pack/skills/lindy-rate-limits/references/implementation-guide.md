@@ -3,9 +3,11 @@
 # Lindy Rate Limits
 
 ## Overview
+
 Rate limit management for Lindy AI agent API. Lindy's agent execution model involves orchestrating multiple service calls per request, making rate limits apply at both the API level and the agent action level.
 
 ## Prerequisites
+
 - Lindy API configured
 - Understanding of agent execution costs
 - Monitoring for action-level limits
@@ -104,6 +106,7 @@ class WebhookRateTracker:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | 429 API response | Exceeded 100 RPM | Rate limiter with backoff |
@@ -114,6 +117,7 @@ class WebhookRateTracker:
 ## Examples
 
 ### Status Dashboard
+
 ```python
 status = {
     "api_rpm_used": len(limiter.timestamps),
@@ -125,4 +129,5 @@ status = {
 ```
 
 ## Resources
+
 - [Lindy API Docs](https://docs.lindy.ai)

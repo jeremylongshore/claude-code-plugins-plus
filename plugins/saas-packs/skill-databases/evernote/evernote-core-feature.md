@@ -10,6 +10,7 @@ evernote-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Evernote core feature integration
 **Workflow:** Part of the onboarding skill category for Evernote integration.
 **Relates to:** Other evernote skills in this pack.

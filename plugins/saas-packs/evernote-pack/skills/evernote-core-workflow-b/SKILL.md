@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Core Workflow B: Search & Retrieval
 
 ## Overview
+
 Comprehensive search and retrieval workflow for Evernote, including search grammar, filters, pagination, related notes discovery, and result enrichment with notebook/tag names.
 
 ## Prerequisites
+
 - Completed `evernote-install-auth` setup
 - Understanding of Evernote search grammar
 - Valid access token configured
@@ -95,6 +97,7 @@ For the full `SearchService`, `QueryBuilder`, pagination, and enrichment impleme
 | `any:` | `any: term1 term2` | Match ANY term (default is AND) |
 
 ## Output
+
 - `SearchService` with text search, notebook search, and tag search
 - Fluent `QueryBuilder` for composing search grammar queries
 - Async generator for paginated results
@@ -102,6 +105,7 @@ For the full `SearchService`, `QueryBuilder`, pagination, and enrichment impleme
 - Enriched results with notebook and tag names
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `RATE_LIMIT_REACHED` | Too many search calls | Add delay between paginated requests |
@@ -109,12 +113,14 @@ For the full `SearchService`, `QueryBuilder`, pagination, and enrichment impleme
 | `QUOTA_REACHED` | Search quota exceeded | Reduce search frequency, cache results |
 
 ## Resources
+
 - [Search Grammar](https://dev.evernote.com/doc/articles/search_grammar.php)
 - [Search Overview](https://dev.evernote.com/doc/articles/search.php)
 - [Related Notes](https://dev.evernote.com/doc/articles/related_notes.php)
 - [API Reference](https://dev.evernote.com/doc/reference/)
 
 ## Next Steps
+
 For error handling patterns, see `evernote-common-errors`.
 
 ## Examples

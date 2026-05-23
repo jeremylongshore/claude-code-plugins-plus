@@ -10,6 +10,7 @@ navan-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Navan example
 **Workflow:** Part of the onboarding skill category for Navan integration.
 **Relates to:** Other navan skills in this pack.

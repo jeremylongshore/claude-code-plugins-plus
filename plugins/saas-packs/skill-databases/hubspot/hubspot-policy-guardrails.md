@@ -10,6 +10,7 @@ hubspot-policy-guardrails/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement HubSpot policy enforcement
 **Workflow:** Part of the advanced skill category for HubSpot integration.
 **Relates to:** Other hubspot skills in this pack.

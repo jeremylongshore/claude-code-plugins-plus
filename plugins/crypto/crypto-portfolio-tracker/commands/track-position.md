@@ -14,6 +14,7 @@ Comprehensive position tracking for cryptocurrency investments with real-time pr
 When the user wants to track a crypto position, gather the following information and implement a complete tracking system:
 
 ### Required Information
+
 - **Symbol**: The cryptocurrency ticker (BTC, ETH, SOL, etc.)
 - **Entry Price**: Purchase price per unit
 - **Quantity**: Amount purchased

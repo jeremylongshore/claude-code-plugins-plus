@@ -10,6 +10,7 @@ firecrawl-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement load testing, horizontal scaling strategies, and capacity planning for high-volume scraping operations.
 **Workflow:** Performance engineering skill - ensures scraping infrastructure can handle target throughput.
 **Relates to:** Builds on firecrawl-batch-processing; informs firecrawl-architecture-variants

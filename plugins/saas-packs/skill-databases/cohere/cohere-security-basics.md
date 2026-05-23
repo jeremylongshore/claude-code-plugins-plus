@@ -10,6 +10,7 @@ cohere-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Cohere security best practices
 **Workflow:** Part of the operations skill category for Cohere integration.
 **Relates to:** Other cohere skills in this pack.

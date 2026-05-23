@@ -10,6 +10,7 @@ abridge-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Abridge reference architecture
 **Workflow:** Part of the cicd skill category for Abridge integration.
 **Relates to:** Other abridge skills in this pack.

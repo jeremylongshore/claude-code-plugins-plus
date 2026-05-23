@@ -10,6 +10,7 @@ snowflake-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Snowflake multi-environment setup
 **Workflow:** Part of the enterprise skill category for Snowflake integration.
 **Relates to:** Other snowflake skills in this pack.

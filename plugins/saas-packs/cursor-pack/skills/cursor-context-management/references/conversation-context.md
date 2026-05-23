@@ -3,6 +3,7 @@
 ## Conversation Context
 
 ### When to Start New Chat
+
 ```
 Start new chat when:
 - Switching to unrelated topic
@@ -13,6 +14,7 @@ Start new chat when:
 ```
 
 ### Preserving Important Context
+
 ```
 If switching topics but need context:
 1. Copy important code/decisions
@@ -22,6 +24,7 @@ If switching topics but need context:
 ```
 
 ### Multi-Turn Optimization
+
 ```
 Good flow:
 Turn 1: "Create user authentication"

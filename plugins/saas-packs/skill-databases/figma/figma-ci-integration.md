@@ -10,6 +10,7 @@ figma-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Figma CI/CD integration
 **Workflow:** Part of the cicd skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

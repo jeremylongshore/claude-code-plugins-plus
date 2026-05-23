@@ -4,6 +4,7 @@
 
 Customer.io charges are based on the number of people in your workspace and message volume.
 Key cost levers:
+
 1. **Active person count** -- reduce by suppressing inactive contacts
 2. **Email/SMS volume** -- optimize send frequency and campaign targeting
 3. **API call volume** -- batch events and use efficient attribute updates

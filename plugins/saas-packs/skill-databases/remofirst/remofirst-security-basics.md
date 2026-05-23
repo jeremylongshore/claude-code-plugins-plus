@@ -10,6 +10,7 @@ remofirst-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply RemoFirst security best practices
 **Workflow:** Part of the operations skill category for RemoFirst integration.
 **Relates to:** Other remofirst skills in this pack.

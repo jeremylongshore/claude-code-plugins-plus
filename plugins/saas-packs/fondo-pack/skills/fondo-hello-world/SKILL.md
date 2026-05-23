@@ -28,6 +28,7 @@ Verify your Fondo setup is working: check that bank transactions are syncing, pa
 ### Step 1: Verify Bank Transaction Sync
 
 Navigate to Fondo Dashboard > Transactions:
+
 - Confirm recent bank transactions appear (may take 24-48h for initial sync)
 - Check that Plaid connection shows "Connected" status
 - Verify transaction dates match your bank statement
@@ -74,6 +75,7 @@ Dashboard > Payroll Integration
 ## Expected Output
 
 After 48 hours of setup:
+
 - Bank transactions auto-categorized (85%+ accuracy)
 - Payroll data synced monthly
 - R&D eligibility assessment complete

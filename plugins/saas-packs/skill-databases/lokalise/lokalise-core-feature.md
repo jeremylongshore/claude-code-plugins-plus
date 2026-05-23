@@ -10,6 +10,7 @@ lokalise-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Lokalise core feature integration
 **Workflow:** Part of the onboarding skill category for Lokalise integration.
 **Relates to:** Other lokalise skills in this pack.

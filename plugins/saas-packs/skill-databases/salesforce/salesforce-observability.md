@@ -10,6 +10,7 @@ salesforce-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Salesforce monitoring and observability
 **Workflow:** Part of the enterprise skill category for Salesforce integration.
 **Relates to:** Other salesforce skills in this pack.

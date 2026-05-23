@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Enterprise RBAC
 
 ## Overview
+
 Manage team access to Replit workspaces, deployments, and AI features. Covers the built-in role system (Admin, Manager, Editor, Viewer), custom groups (Enterprise only), SSO/SAML integration, deployment permissions, and audit logging.
 
 ## Prerequisites
+
 - Replit Teams or Enterprise plan
 - Organization Owner or Admin role
 - SSO identity provider (Enterprise only): Okta, Azure AD, Google Workspace
@@ -47,6 +49,7 @@ Manage team access to Replit workspaces, deployments, and AI features. Covers th
 ## Instructions
 
 ### Step 1: Configure Organization Roles
+
 ```markdown
 In Organization Settings > Members:
 
@@ -69,6 +72,7 @@ In Organization Settings > Members:
 ```
 
 ### Step 2: Custom Groups (Enterprise Only)
+
 ```markdown
 Enterprise plan enables custom permission groups:
 
@@ -88,6 +92,7 @@ Example groups:
 ```
 
 ### Step 3: SSO/SAML Configuration (Enterprise Only)
+
 ```markdown
 Organization Settings > Security > SSO:
 
@@ -115,6 +120,7 @@ Organization Settings > Security > SSO:
 ```
 
 ### Step 4: Deployment Permission Controls
+
 ```markdown
 Control who can deploy and where:
 
@@ -135,6 +141,7 @@ Development:
 ```
 
 ### Step 5: Audit Logging
+
 ```bash
 # View recent team activity
 curl "https://replit.com/api/v1/teams/TEAM_ID/audit-log?limit=50" \
@@ -162,6 +169,7 @@ Enterprise audit features:
 ```
 
 ### Step 6: Quarterly Access Review
+
 ```markdown
 ## Access Review Checklist (run quarterly)
 
@@ -183,6 +191,7 @@ Cost impact:
 ```
 
 ### Step 7: AI Feature Controls
+
 ```markdown
 Replit AI features (Agent, Assistant, Ghostwriter):
 
@@ -203,6 +212,7 @@ Recommendation:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Member can't deploy | Insufficient role | Promote to Manager or Admin |
@@ -212,10 +222,12 @@ Recommendation:
 | AI features disabled | Org-level toggle off | Enable in Organization Settings > AI |
 
 ## Resources
+
 - [Groups and Permissions](https://docs.replit.com/teams/identity-and-access-management/groups-and-permissions)
 - [Replit Enterprise](https://replit.com/enterprise)
 - [Replit Security](https://replit.com/products/security)
 - [Replit Pro](https://replit.com/pro)
 
 ## Next Steps
+
 For data migration patterns, see `replit-migration-deep-dive`.

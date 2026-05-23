@@ -10,6 +10,7 @@ together-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Together AI example
 **Workflow:** Part of the onboarding skill category for Together AI integration.
 **Relates to:** Other together skills in this pack.

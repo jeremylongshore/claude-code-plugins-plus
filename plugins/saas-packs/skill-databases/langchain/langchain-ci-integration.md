@@ -10,6 +10,7 @@ langchain-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure LangChain CI/CD integration
 **Workflow:** Part of the cicd skill category for LangChain integration.
 **Relates to:** Other langchain skills in this pack.

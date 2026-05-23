@@ -405,7 +405,9 @@ When creating a support ticket, include:
 
 ### Error Details
 ```
+
 [Paste error message and stack trace]
+
 ```
 
 ### Diagnostic Output
@@ -414,11 +416,14 @@ When creating a support ticket, include:
 ```
 
 ### Document IDs (if applicable)
+
 - Document ID: doc_xxx
 - Template ID: tmpl_xxx
 
 ### Request/Response (if applicable)
+
 ```
 [Paste relevant API request and response]
 ```
+
 ```

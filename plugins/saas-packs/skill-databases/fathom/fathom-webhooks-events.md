@@ -10,6 +10,7 @@ fathom-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Fathom webhook handling
 **Workflow:** Part of the cicd skill category for Fathom integration.
 **Relates to:** Other fathom skills in this pack.

@@ -10,6 +10,7 @@ apify-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Apify SDK upgrades
 **Workflow:** Part of the operations skill category for Apify integration.
 **Relates to:** Other apify skills in this pack.

@@ -10,6 +10,7 @@ vercel-deploy-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Vercel integrations to Vercel, Fly.io, and Cloud Run with proper secrets management.
 **Workflow:** Used for initial deployment and when migrating between platforms.
 **Relates to:** Follows vercel-ci-integration; complements vercel-webhooks-events for event handling

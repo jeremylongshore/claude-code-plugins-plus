@@ -13,6 +13,7 @@ Link-in-bio platform API integration for profile and link management across 25M+
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `linktree-common-errors` | Common Errors |
@@ -29,6 +30,7 @@ Link-in-bio platform API integration for profile and link management across 25M+
 | `linktree-upgrade-migration` | Upgrade Migration |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `linktree-ci-integration` | Ci Integration |

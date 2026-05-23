@@ -98,10 +98,10 @@ async function processAllFiles(app: App, files: TFile[]) {
 }
 ```
 
-
 ## Complete Examples
 
 ### File Operation Monitor
+
 ```typescript
 let readCount = 0, writeCount = 0;
 setInterval(() => {
@@ -111,7 +111,6 @@ setInterval(() => {
   readCount = 0; writeCount = 0;
 }, 1000);
 ```
-
 
 ## Obsidian Operation Limits
 

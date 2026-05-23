@@ -5,6 +5,7 @@ Multi-agent orchestration system with MCP tools and Claude Code plugin agents.
 ## Installation
 
 ### From PyPI (MCP tools)
+
 ```bash
 pip install geepers
 
@@ -14,6 +15,7 @@ pip install geepers[anthropic,openai]
 ```
 
 ### As Claude Code Plugin (agents)
+
 ```bash
 /plugin add lukeslp/geepers
 ```
@@ -68,6 +70,7 @@ Six specialized MCP servers expose tools for:
 ### Why Ollama for Geepers?
 
 **Benefits:**
+
 - **Zero Cost:** No API usage fees for 43 agents
 - **Privacy:** All 90+ MCP tools run locally
 - **Unlimited:** Run as many agent calls as needed
@@ -75,6 +78,7 @@ Six specialized MCP servers expose tools for:
 - **GDPR/HIPAA:** Compliant by default (local-only)
 
 **Recommended Models:**
+
 - **llama3.2:7b** - Best for general agents (4GB)
 - **mistral:7b** - Fast and efficient (4GB)
 - **codellama:13b** - Code-focused agents (7GB)
@@ -149,6 +153,7 @@ Annual cost: $1,032
 ```
 
 **Required API Keys:**
+
 - Anthropic Claude API: $50-100/mo
 - OpenAI GPT-4: $30-80/mo
 - xAI Grok: $20-50/mo
@@ -162,6 +167,7 @@ Annual cost: $0
 ```
 
 **Required:**
+
 - Hardware you already own
 - One-time model download (4-26GB)
 - **Total: $0/mo**
@@ -206,6 +212,7 @@ export OLLAMA_BASE_URL=http://localhost:11434
 **Scenario:** Running geepers_orchestrator_checkpoint (5 agent calls per session)
 
 #### Cloud APIs Version
+
 ```python
 # Using Anthropic Claude
 import anthropic
@@ -222,6 +229,7 @@ response = client.messages.create(
 **Annual:** **$12.00**
 
 #### Ollama Version
+
 ```python
 # Using local Ollama
 import ollama
@@ -251,21 +259,25 @@ response = ollama.chat(
 ### Agent-Specific Recommendations
 
 **Fast Agents (scout, status, snippets):**
+
 ```bash
 ollama pull llama3.2:7b  # Fast, 4GB
 ```
 
 **Code Agents (pycli, react, db, flask):**
+
 ```bash
 ollama pull codellama:13b  # Code-optimized, 7GB
 ```
 
 **Research Agents (data, citations, corpus):**
+
 ```bash
 ollama pull mixtral:8x7b  # Advanced reasoning, 26GB
 ```
 
 **Game Dev Agents (game, godot, gamedev):**
+
 ```bash
 ollama pull llama3.2:7b  # Balanced, 4GB
 ```
@@ -273,12 +285,14 @@ ollama pull llama3.2:7b  # Balanced, 4GB
 ### When to Use Cloud vs Local
 
 **Use Cloud APIs (Anthropic/OpenAI) if:**
+
 - You need latest GPT-4 Turbo or Claude Opus specifically
 - Your hardware has <8GB RAM
 - You need real-time web search results
 - Budget allows $100-230/month
 
 **Use Ollama (Local LLM) if:**
+
 - You want $1,200-2,760/year savings
 - You need privacy/compliance (HIPAA, GDPR, SOC2)
 - You have 8GB+ RAM (16GB+ recommended)

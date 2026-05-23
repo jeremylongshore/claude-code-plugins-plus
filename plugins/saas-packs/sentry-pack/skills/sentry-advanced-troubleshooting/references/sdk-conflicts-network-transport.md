@@ -167,6 +167,7 @@ echo -e "\n=== Done ==="
 ```
 
 ## Output
+
 - Root cause identified for silently dropped events (beforeSend, sampling, transport, tunnel)
 - Source map resolution verified or mismatch pinpointed with `sourcemaps explain`
 - Distributed tracing continuity confirmed across service boundaries
@@ -288,6 +289,7 @@ else:
 ```
 
 ## Resources
+
 - [Troubleshooting Guide](https://docs.sentry.io/platforms/javascript/troubleshooting/)
 - [Source Maps Troubleshooting](https://docs.sentry.io/platforms/javascript/sourcemaps/troubleshooting_js/)
 - [Source Maps Explain Command](https://docs.sentry.io/cli/sourcemaps/#explain)
@@ -297,6 +299,7 @@ else:
 - [Python SDK Troubleshooting](https://docs.sentry.io/platforms/python/troubleshooting/)
 
 ## Next Steps
+
 - **sentry-performance-tracing** — Deep dive into span instrumentation and custom transactions
 - **sentry-release-management** — Automate release tracking and source map uploads in CI
 - **sentry-ci-integration** — Wire Sentry into your CI pipeline for deploy notifications

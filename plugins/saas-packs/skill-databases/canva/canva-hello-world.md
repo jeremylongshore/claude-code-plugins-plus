@@ -10,6 +10,7 @@ canva-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Canva example
 **Workflow:** Part of the onboarding skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

@@ -19,9 +19,11 @@ compatibility: Designed for Claude Code
 # AppFolio Webhooks & Events
 
 ## Overview
+
 AppFolio Stack delivers real-time webhook notifications for property management lifecycle events including tenant onboarding, lease execution, rent payments, and maintenance workflows. Use these webhooks to sync AppFolio data with your CRM, accounting system, or custom property management dashboards without polling the API.
 
 ## Webhook Registration
+
 ```typescript
 const response = await fetch("https://api.appfolio.com/v1/webhooks", {
   method: "POST",
@@ -38,6 +40,7 @@ const response = await fetch("https://api.appfolio.com/v1/webhooks", {
 ```
 
 ## Signature Verification
+
 ```typescript
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
@@ -56,6 +59,7 @@ function verifyAppFolioSignature(req: Request, res: Response, next: NextFunction
 ```
 
 ## Event Handler
+
 ```typescript
 import express from "express";
 const app = express();
@@ -78,6 +82,7 @@ app.post("/webhooks/appfolio", express.raw({ type: "application/json" }), verify
 ```
 
 ## Event Types
+
 | Event | Payload Fields | Use Case |
 |-------|---------------|----------|
 | `tenant.created` | `tenant_id`, `property_id`, `email` | Sync new tenant to CRM |
@@ -87,6 +92,7 @@ app.post("/webhooks/appfolio", express.raw({ type: "application/json" }), verify
 | `lease.expired` | `lease_id`, `unit_id`, `vacate_date` | Trigger renewal or re-listing |
 
 ## Retry & Idempotency
+
 ```typescript
 const processed = new Set<string>();
 
@@ -102,6 +108,7 @@ async function handleIdempotent(event: { id: string; type: string; data: any }) 
 ```
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | Signature mismatch | Wrong secret or parsed body | Use `express.raw()` for verification |
@@ -110,7 +117,9 @@ async function handleIdempotent(event: { id: string; type: string; data: any }) 
 | 5xx from handler | Downstream service unavailable | Return 200 immediately, process async |
 
 ## Resources
+
 - [AppFolio Stack APIs](https://www.appfolio.com/stack/partners/api)
 
 ## Next Steps
+
 See `appfolio-security-basics`.

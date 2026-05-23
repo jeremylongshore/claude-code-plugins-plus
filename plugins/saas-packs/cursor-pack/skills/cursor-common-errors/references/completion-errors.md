@@ -3,6 +3,7 @@
 ## Completion Errors
 
 ### "Completions Not Appearing"
+
 ```
 Symptoms: No ghost text, Tab does nothing
 
@@ -21,6 +22,7 @@ Settings to verify:
 ```
 
 ### "Slow Completions"
+
 ```
 Symptoms: Long delay before suggestions appear
 
@@ -33,6 +35,7 @@ Solutions:
 ```
 
 ### "Wrong/Irrelevant Completions"
+
 ```
 Symptoms: Suggestions don't match context
 

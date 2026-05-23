@@ -58,8 +58,8 @@ This is an amazing product! I love the features and the ease of use. The custome
 
 **Analysis:**
 
-*   **Product Satisfaction:** The text clearly expresses satisfaction with the product's features and user-friendliness. Phrases like "amazing product" and "ease of use" directly relate to this topic.
-*   **Customer Support:** The text also highlights positive experiences with customer support, mentioning their helpfulness and responsiveness. The phrase "customer service was also incredibly helpful and responsive" directly supports this topic.
+* **Product Satisfaction:** The text clearly expresses satisfaction with the product's features and user-friendliness. Phrases like "amazing product" and "ease of use" directly relate to this topic.
+* **Customer Support:** The text also highlights positive experiences with customer support, mentioning their helpfulness and responsiveness. The phrase "customer service was also incredibly helpful and responsive" directly supports this topic.
 
 ## 5. Conclusion
 

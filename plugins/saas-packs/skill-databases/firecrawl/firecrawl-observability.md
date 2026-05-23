@@ -10,6 +10,7 @@ firecrawl-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up comprehensive observability with metrics collection, request tracing, and alerting for scraping pipelines.
 **Workflow:** Operations skill - enables monitoring and troubleshooting of production scraping infrastructure.
 **Relates to:** Follows firecrawl-prod-checklist; feeds into firecrawl-incident-runbook

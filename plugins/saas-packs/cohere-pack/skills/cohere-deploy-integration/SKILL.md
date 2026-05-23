@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Cohere Deploy Integration
 
 ## Overview
+
 Deploy Cohere API v2 applications to Vercel, Fly.io, and Google Cloud Run with proper secrets management and health checks.
 
 ## Prerequisites
+
 - Cohere production API key (not trial)
 - Platform CLI installed (`vercel`, `fly`, or `gcloud`)
 - Application tested locally with real API calls
@@ -46,6 +48,7 @@ vercel --prod
 ```
 
 **vercel.json:**
+
 ```json
 {
   "env": {
@@ -60,6 +63,7 @@ vercel --prod
 ```
 
 **Vercel API Route (streaming chat):**
+
 ```typescript
 // api/chat/route.ts
 import { CohereClientV2 } from 'cohere-ai';
@@ -105,6 +109,7 @@ fly deploy
 ```
 
 **fly.toml:**
+
 ```toml
 app = "my-cohere-app"
 primary_region = "iad"
@@ -150,6 +155,7 @@ gcloud run deploy $SERVICE \
 ```
 
 **Dockerfile:**
+
 ```dockerfile
 FROM node:20-slim AS builder
 WORKDIR /app
@@ -229,12 +235,14 @@ export function getCohereConfig(): CohereConfig {
 ```
 
 ## Output
+
 - Application deployed with Cohere API key in platform secret store
 - Health check endpoint verifying Cohere connectivity
 - Streaming chat endpoint for user-facing applications
 - Environment-specific model selection
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | 401 after deploy | Wrong key env var name | Verify `CO_API_KEY` is set |
@@ -243,10 +251,12 @@ export function getCohereConfig(): CohereConfig {
 | Stream breaks | Platform timeout | Use chunked transfer encoding |
 
 ## Resources
+
 - [Cohere Going Live](https://docs.cohere.com/docs/going-live)
 - [Vercel Functions](https://vercel.com/docs/functions)
 - [Fly.io App Configuration](https://fly.io/docs/reference/configuration/)
 - [Cloud Run Secrets](https://cloud.google.com/run/docs/configuring/secrets)
 
 ## Next Steps
+
 For structured output and connectors, see `cohere-webhooks-events`.

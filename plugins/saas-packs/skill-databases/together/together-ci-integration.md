@@ -10,6 +10,7 @@ together-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Together AI CI/CD integration
 **Workflow:** Part of the cicd skill category for Together AI integration.
 **Relates to:** Other together skills in this pack.

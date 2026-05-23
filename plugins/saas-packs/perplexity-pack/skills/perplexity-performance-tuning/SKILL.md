@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Performance Tuning
 
 ## Overview
+
 Optimize Perplexity Sonar API for latency, throughput, and cost. Key insight: every Perplexity call performs a live web search, so response times are inherently variable. Typical latencies: sonar 1-3s, sonar-pro 3-8s, sonar-deep-research 10-60s.
 
 ## Latency Benchmarks
@@ -38,6 +39,7 @@ Optimize Perplexity Sonar API for latency, throughput, and cost. Key insight: ev
 | `sonar-deep-research` | 10-60s | 8192 | Comprehensive reports |
 
 ## Prerequisites
+
 - Perplexity API key configured
 - Understanding of search-augmented generation latency patterns
 - Cache infrastructure (Redis or in-memory LRU)
@@ -45,6 +47,7 @@ Optimize Perplexity Sonar API for latency, throughput, and cost. Key insight: ev
 ## Instructions
 
 ### Step 1: Smart Model Routing
+
 ```typescript
 import OpenAI from "openai";
 
@@ -86,6 +89,7 @@ async function smartSearch(query: string) {
 ```
 
 ### Step 2: Query Hash Caching
+
 ```typescript
 import { LRUCache } from "lru-cache";
 import { createHash } from "crypto";
@@ -131,6 +135,7 @@ async function cachedSearch(query: string, model = "sonar") {
 ```
 
 ### Step 3: Streaming for Perceived Performance
+
 ```typescript
 async function streamSearch(
   query: string,
@@ -159,6 +164,7 @@ async function streamSearch(
 ```
 
 ### Step 4: Parallel Research with Rate Limiting
+
 ```typescript
 import PQueue from "p-queue";
 
@@ -181,6 +187,7 @@ async function parallelResearch(queries: string[]): Promise<Map<string, any>> {
 ```
 
 ### Step 5: Response Size Optimization
+
 ```typescript
 // Limit tokens to what you actually need
 async function optimizedSearch(query: string, detail: "brief" | "full" = "brief") {
@@ -201,6 +208,7 @@ async function optimizedSearch(query: string, detail: "brief" | "full" = "brief"
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Latency >10s on sonar | Complex query triggering deep search | Add `max_tokens: 512` to limit response |
@@ -209,14 +217,17 @@ async function optimizedSearch(query: string, detail: "brief" | "full" = "brief"
 | Stale cached results | TTL too long for news | Use query-type-aware TTL |
 
 ## Output
+
 - Smart model routing by query complexity
 - Query-aware caching with appropriate TTLs
 - Streaming for reduced perceived latency
 - Rate-limited parallel research
 
 ## Resources
+
 - [Perplexity Model Cards](https://docs.perplexity.ai/getting-started/models)
 - [Perplexity Pricing](https://docs.perplexity.ai/docs/getting-started/pricing)
 
 ## Next Steps
+
 For cost optimization, see `perplexity-cost-tuning`.

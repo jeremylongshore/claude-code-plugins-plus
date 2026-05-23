@@ -28,17 +28,18 @@ Automatically generates a professional conventional commit message by analyzing 
 
 ## When to Use This
 
--  You've staged changes but don't want to write commit message
--  Want to maintain conventional commit standards
--  Need to ensure commits are clear for team
--  Generating changelog from commits
--  DON'T use for merge commits (use git's default message)
+- You've staged changes but don't want to write commit message
+- Want to maintain conventional commit standards
+- Need to ensure commits are clear for team
+- Generating changelog from commits
+- DON'T use for merge commits (use git's default message)
 
 ## How It Works
 
 You are a Git commit message expert who follows conventional commit standards. When user runs `/commit-smart` or `/gc`:
 
 1. **Analyze staged changes:**
+
    ```bash
    git diff --cached --stat
    git diff --cached
@@ -71,11 +72,13 @@ You are a Git commit message expert who follows conventional commit standards. W
    - Note any side effects or caveats
 
 6. **Include footer for breaking changes:**
+
    ```
    BREAKING CHANGE: describe what breaks and migration path
    ```
 
 7. **Present the commit message:**
+
    ```
    type(scope): description
 
@@ -88,6 +91,7 @@ You are a Git commit message expert who follows conventional commit standards. W
    "Does this accurately describe your changes? Say 'yes' to commit, or tell me how to adjust it."
 
 9. **Execute commit:**
+
    ```bash
    git commit -m "[generated message]"
    ```
@@ -98,6 +102,7 @@ You are a Git commit message expert who follows conventional commit standards. W
 - **Context** (optional): If user wants to emphasize certain aspects
 
 If no changes are staged:
+
 ```
 ️ No changes staged for commit.
 Run `git add <files>` first, then try again.
@@ -126,6 +131,7 @@ Then ask: **"Commit with this message? (yes/no/edit)"**
 User: `/gc`
 
 Staged changes:
+
 ```diff
 src/api/users.js
 - const email = user.email.tolowerCase()
@@ -133,6 +139,7 @@ src/api/users.js
 ```
 
 You:
+
 ```
 fix(api): correct typo in email normalization
 
@@ -149,6 +156,7 @@ when processing user emails.
 User: `/gc`
 
 Staged changes:
+
 ```diff
 src/components/SearchBar.jsx (new file)
 src/pages/Search.jsx (modified)
@@ -156,6 +164,7 @@ src/routes.js (modified)
 ```
 
 You:
+
 ```
 feat(search): add global search functionality
 
@@ -174,6 +183,7 @@ Closes #45
 User: `/gc`
 
 Staged changes:
+
 ```diff
 src/api/auth.js
 - exports.login = async (username, password)
@@ -181,6 +191,7 @@ src/api/auth.js
 ```
 
 You:
+
 ```
 refactor(auth)!: change login to use email instead of username
 
@@ -201,12 +212,14 @@ Migration: Users can find their email in account settings.
 User: `/gc`
 
 Staged changes:
+
 ```diff
 README.md (modified - added installation section)
 docs/API.md (modified - updated endpoints)
 ```
 
 You:
+
 ```
 docs: improve installation and API documentation
 
@@ -219,6 +232,7 @@ Updated API.md with new authentication endpoints.
 ## Error Handling
 
 **If no staged changes:**
+
 ```
  No changes staged for commit.
 
@@ -231,6 +245,7 @@ Then run /commit-smart again.
 ```
 
 **If merge in progress:**
+
 ```
 ️ Merge in progress detected.
 
@@ -250,6 +265,7 @@ After generating: "This message is too generic. Can you provide more context abo
 User: "edit"
 
 You: "How would you like me to adjust the message? You can:
+
 - Change the type (feat, fix, etc.)
 - Modify the scope
 - Rewrite the description

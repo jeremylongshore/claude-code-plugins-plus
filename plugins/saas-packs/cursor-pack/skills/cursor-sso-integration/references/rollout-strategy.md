@@ -3,6 +3,7 @@
 ## Rollout Strategy
 
 ### Phased Rollout
+
 ```
 Phase 1: Admin Testing
 - Configure SSO
@@ -26,6 +27,7 @@ Phase 4: Enforcement
 ```
 
 ### Communication Template
+
 ```
 Subject: Cursor SSO Update
 

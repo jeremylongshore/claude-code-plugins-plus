@@ -10,6 +10,7 @@ deepgram-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Deepgram CI/CD integration
 **Workflow:** Part of the cicd skill category for Deepgram integration.
 **Relates to:** Other deepgram skills in this pack.

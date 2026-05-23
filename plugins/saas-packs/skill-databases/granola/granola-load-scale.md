@@ -10,6 +10,7 @@ granola-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Granola load testing and scaling
 **Workflow:** Part of the enterprise skill category for Granola integration.
 **Relates to:** Other granola skills in this pack.

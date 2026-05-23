@@ -3,6 +3,7 @@
 ## ESLint Rules
 
 ### Custom Supabase Plugin
+
 ```javascript
 // eslint-plugin-supabase/rules/no-hardcoded-keys.js
 module.exports = {
@@ -31,6 +32,7 @@ module.exports = {
 ```
 
 ### ESLint Configuration
+
 ```javascript
 // .eslintrc.js
 module.exports = {

@@ -7,6 +7,7 @@
 Semantic color palette, arrow-masking SVG technique, and grid-background aesthetic are inspired by Cocoon-AI's skill. We do not reuse source code from the upstream repo — we borrow design patterns under the MIT license and credit the originators.
 
 ### Borrowed patterns
+
 - Semantic OKLCH color palette by component role (cyan/emerald/violet/amber/rose/orange/slate)
 - SVG arrow-masking technique (opaque `#0f172a` rect → styled semi-transparent rect on top)
 - Grid-pattern background (40x40 units, stroke `#1e293b`, width `0.5`)
@@ -15,6 +16,7 @@ Semantic color palette, arrow-masking SVG technique, and grid-background aesthet
 - JetBrains Mono typography
 
 ### Original contributions (not borrowed)
+
 - DCI-grounded topology inference from package manifests, docker-compose, k8s, terraform
 - PR-diff delta view (`git diff` → before/after architecture)
 - Structural fingerprinting + drift detection

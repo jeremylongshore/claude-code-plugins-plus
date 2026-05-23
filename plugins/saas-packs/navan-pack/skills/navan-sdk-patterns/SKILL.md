@@ -295,6 +295,7 @@ class NavanAPI:
 ## Output
 
 Successful implementation produces:
+
 - A typed `NavanAPI` class with automatic token refresh and retry logic
 - Response interfaces for trips, users, and errors
 - A singleton factory for client reuse across the application

@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Performance Tuning
 
 ## Overview
+
 Optimize GPU instance selection, startup time, and training throughput on Vast.ai. Key levers: Docker image caching, GPU selection by dlperf score, data pipeline optimization, and multi-GPU scaling.
 
 ## Prerequisites
+
 - Vast.ai account with active or planned instances
 - Understanding of GPU compute bottlenecks
 - Profiling tools (nvidia-smi, torch.profiler)
@@ -144,6 +146,7 @@ ssh -p $PORT root@$HOST "torchrun --nproc_per_node=4 train.py --batch-size 128"
 | H100 SXM | 80GB | 267 | $2.50-4.00 | High-throughput training |
 
 ## Output
+
 - Performance-per-dollar offer selection
 - Optimized Docker image for fast startup
 - Data pipeline tuning (DataLoader, pin_memory, workers)
@@ -151,6 +154,7 @@ ssh -p $PORT root@$HOST "torchrun --nproc_per_node=4 train.py --batch-size 128"
 - Multi-GPU scaling with torchrun
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Low GPU utilization (<50%) | Data pipeline bottleneck | Increase `num_workers`, use `pin_memory` |
@@ -159,10 +163,12 @@ ssh -p $PORT root@$HOST "torchrun --nproc_per_node=4 train.py --batch-size 128"
 | Poor multi-GPU scaling | Communication bottleneck | Use NVLink-connected GPUs, reduce sync frequency |
 
 ## Resources
+
 - [Vast.ai Search Filtering](https://docs.vast.ai/search-and-filter-gpu-offers)
 - [PyTorch Performance Guide](https://pytorch.org/tutorials/recipes/recipes/tuning_guide.html)
 
 ## Next Steps
+
 For cost optimization, see `vastai-cost-tuning`.
 
 ## Examples

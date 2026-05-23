@@ -67,10 +67,13 @@ Capture the returned file `id` and report it to the user.
 If a file with the same name exists, determine the correct action:
 
 - **Updating an existing file?** Use version upload:
+
   ```bash
   box files:versions:upload FILE_ID /path/to/updated-file.txt
   ```
+
 - **Genuinely new file with a name collision?** Use `--name` to differentiate:
+
   ```bash
   box files:upload /path/to/file.txt --parent-id FOLDER_ID --name "file-revised.txt"
   ```

@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Structured Logging
+
 ```typescript
 // lib/logger.ts
 import pino from 'pino';
@@ -33,6 +34,7 @@ log.error({ error: err.message, code: err.code }, 'Search failed');
 ```
 
 ### Step 2: Metrics Collection
+
 ```typescript
 // lib/metrics.ts
 import { Counter, Histogram, Registry } from 'prom-client';
@@ -92,6 +94,7 @@ export function instrumentJuiceboxCall<T>(
 ```
 
 ### Step 3: Distributed Tracing
+
 ```typescript
 // lib/tracing.ts
 import { trace, SpanStatusCode } from '@opentelemetry/api';
@@ -139,6 +142,7 @@ async function searchPeople(query: string): Promise<SearchResult> {
 ```
 
 ### Step 4: Health Checks
+
 ```typescript
 // routes/health.ts
 import { Router } from 'express';
@@ -204,6 +208,7 @@ export default router;
 ```
 
 ### Step 5: Alerting Rules
+
 ```yaml
 # prometheus/alerts.yaml
 groups:

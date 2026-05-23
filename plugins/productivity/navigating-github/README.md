@@ -3,6 +3,7 @@
 **Go from zero to GitHub in minutes, then learn git through hands-on lessons on your actual project.**
 
 This skill does two things:
+
 1. **Sets you up on GitHub** — from installing the CLI to pushing your first commit
 2. **Teaches you git** — 9 progressive lessons, each one hands-on with real commands
 

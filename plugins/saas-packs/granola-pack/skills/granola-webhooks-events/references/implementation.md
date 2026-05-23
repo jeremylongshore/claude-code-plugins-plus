@@ -3,6 +3,7 @@
 ## Event Payloads
 
 ### New Note Created
+
 ```json
 {
   "event_type": "note.created",
@@ -22,6 +23,7 @@
 ```
 
 ### Note Updated
+
 ```json
 {
   "event_type": "note.updated",
@@ -80,6 +82,7 @@ def granola_webhook():
 ## Event Filtering
 
 ### Zapier Filters
+
 ```yaml
 Filter by meeting type:
   meeting_title contains "sprint" OR "planning" OR attendees count > 3
@@ -89,6 +92,7 @@ Filter by content:
 ```
 
 ### Code-Based Filtering
+
 ```javascript
 const data = inputData;
 if (!data.action_items || data.action_items.length === 0) return { skip: true };
@@ -103,19 +107,23 @@ return { process: true, ...data };
 ## Processing Patterns
 
 ### Immediate Notification
+
 Meeting Ends (T+0) -> Notes Ready (T+2 min) -> Webhook (T+2.1 min) -> Slack (T+2.2 min)
 Total latency: ~2-3 minutes
 
 ### Batch Processing
+
 Notes Created -> Queue -> Every 15 minutes: aggregate, generate digest, send single notification
 
 ### Conditional Routing
+
 - If external attendee -> CRM Update
 - If action items > 3 -> Create Project
 - If duration > 60 min -> Request Summary
 - Default -> Standard Processing
 
 ## Retry Logic
+
 ```javascript
 async function processWithRetry(data, maxRetries = 3) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -134,6 +142,7 @@ async function processWithRetry(data, maxRetries = 3) {
 ```
 
 ## Monitoring Metrics
+
 | Metric | Alert Threshold |
 |--------|-----------------|
 | Events/hour | > 100/hr |

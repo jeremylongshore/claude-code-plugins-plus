@@ -748,10 +748,12 @@ cryptsetup luksOpen /dev/sdb encrypted_volume
 mkfs.ext4 /dev/mapper/encrypted_volume
 
 # Encryption in transit (TLS 1.3 only)
+
 openssl s_server -accept 443 -cert server.crt -key server.key \
 -tls1_3 -cipher TLS_AES_256_GCM_SHA384
 
 # Access logging (required by HIPAA)
+
 tail -f /var/log/audit/audit.log | grep PHI_ACCESS</code></pre>
 
 <hr>

@@ -10,6 +10,7 @@ cursor-extension-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Integrates VS Code extensions with Cursor including compatibility assessment, installation methods, conflict resolution, and performance optimization.
 
 **Workflow:** This skill activates when developers need to manage extensions in Cursor. It covers compatibility, installation methods, essential extensions, recommended configurations, conflict management, and performance optimization.

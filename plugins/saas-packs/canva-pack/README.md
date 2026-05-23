@@ -30,6 +30,7 @@ Gives Claude Code deep knowledge of the Canva Connect API at `api.canva.com/rest
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `canva-install-auth` | OAuth 2.0 PKCE setup, token exchange, refresh, scopes |
@@ -46,6 +47,7 @@ Gives Claude Code deep knowledge of the Canva Connect API at `api.canva.com/rest
 | `canva-upgrade-migration` | API changelog tracking, brand template ID migration |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `canva-ci-integration` | GitHub Actions, MSW mocks, token refresh workflow |
@@ -56,6 +58,7 @@ Gives Claude Code deep knowledge of the Canva Connect API at `api.canva.com/rest
 | `canva-reference-architecture` | Layered project structure, service patterns |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `canva-multi-env-setup` | Per-environment OAuth integrations, secret management |
@@ -66,6 +69,7 @@ Gives Claude Code deep knowledge of the Canva Connect API at `api.canva.com/rest
 | `canva-migration-deep-dive` | Strangler fig pattern, asset migration, feature flags |
 
 ### Flagship+ Skills (X25-X30)
+
 | Skill | Description |
 |-------|-------------|
 | `canva-advanced-troubleshooting` | Layer diagnostics, export debugging, token lifecycle |

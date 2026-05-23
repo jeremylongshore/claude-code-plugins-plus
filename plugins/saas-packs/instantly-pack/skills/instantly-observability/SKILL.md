@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Observability
 
 ## Overview
+
 Build monitoring and alerting for Instantly integrations. Covers campaign health checks, account warmup monitoring, webhook delivery tracking, deliverability alerts, and performance dashboards. Uses Instantly API v2 analytics endpoints combined with webhook events for real-time awareness.
 
 ## Prerequisites
+
 - Completed `instantly-install-auth` setup
 - API key with `campaigns:read`, `accounts:read`, and `all:read` scopes
 - Notification channel (Slack, email, PagerDuty, etc.)
@@ -36,6 +38,7 @@ Build monitoring and alerting for Instantly integrations. Covers campaign health
 ## Instructions
 
 ### Step 1: Campaign Health Monitor
+
 ```typescript
 import { InstantlyClient } from "./src/instantly/client";
 
@@ -117,6 +120,7 @@ async function campaignHealthCheck(): Promise<HealthCheck[]> {
 ```
 
 ### Step 2: Account Warmup Monitor
+
 ```typescript
 async function warmupHealthCheck(): Promise<HealthCheck[]> {
   const checks: HealthCheck[] = [];
@@ -174,6 +178,7 @@ async function warmupHealthCheck(): Promise<HealthCheck[]> {
 ```
 
 ### Step 3: Webhook Delivery Monitor
+
 ```typescript
 async function webhookHealthCheck(): Promise<HealthCheck[]> {
   const checks: HealthCheck[] = [];
@@ -209,6 +214,7 @@ async function webhookHealthCheck(): Promise<HealthCheck[]> {
 ```
 
 ### Step 4: Alerting Pipeline
+
 ```typescript
 async function runHealthChecks() {
   console.log(`\n=== Instantly Health Check — ${new Date().toISOString()} ===\n`);
@@ -260,6 +266,7 @@ async function sendAlert(severity: string, checks: HealthCheck[]) {
 ```
 
 ### Step 5: Scheduled Monitoring (Cron)
+
 ```typescript
 // Run health checks on a schedule
 // Deploy as Cloud Run job, GitHub Action, or cron task
@@ -288,6 +295,7 @@ cron.schedule("*/15 * * * *", async () => {
 ```
 
 ## Dashboard Metrics Summary
+
 | Metric | Source | Alert Threshold |
 |--------|--------|----------------|
 | Campaign bounce rate | `GET /campaigns/analytics` | >5% critical |
@@ -300,6 +308,7 @@ cron.schedule("*/15 * * * *", async () => {
 | Bounce protected campaigns | `GET /campaigns` | status=-2 = critical |
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Monitor itself rate-limited | Too-frequent checks | Increase interval to 15-30 min |
@@ -307,9 +316,11 @@ cron.schedule("*/15 * * * *", async () => {
 | Stale analytics data | Instantly updates delay | Allow 1-hour data lag |
 
 ## Resources
+
 - [Instantly Analytics API](https://developer.instantly.ai/api/v2/analytics)
 - [Instantly Account API](https://developer.instantly.ai/api/v2/account)
 - [Instantly Webhook Events](https://developer.instantly.ai/api/v2/webhook)
 
 ## Next Steps
+
 For incident response, see `instantly-incident-runbook`.

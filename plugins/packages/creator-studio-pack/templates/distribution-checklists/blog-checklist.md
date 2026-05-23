@@ -22,18 +22,21 @@
 ### SEO Optimization
 
 **Title**:
+
 - [ ] **Primary keyword** at beginning
 - [ ] **Length**: 50-60 characters
 - [ ] **Compelling**: Balances SEO and clickability
 - [ ] **Format**: "How to [X] | [Benefit] | [Year/Guide]"
 
 **Meta Description**:
+
 - [ ] **Written** (155-160 characters)
 - [ ] **Includes keyword** naturally
 - [ ] **Compelling hook**: Why should they click?
 - [ ] **Call to action**: "Learn how to..."
 
 **URL Slug**:
+
 - [ ] **Keyword-rich**: /how-to-build-rest-api-nodejs
 - [ ] **Short**: 3-5 words ideal
 - [ ] **No stop words**: Remove "a", "the", "and"
@@ -41,6 +44,7 @@
 - [ ] **Lowercase** only
 
 **Keywords**:
+
 - [ ] **Primary keyword** identified (main focus)
 - [ ] **Secondary keywords** (3-5 related terms)
 - [ ] **Long-tail keywords** (specific phrases)
@@ -48,12 +52,14 @@
 - [ ] **Keywords in**: Title, H2s, first 100 words, conclusion
 
 **Internal Links**:
+
 - [ ] **3-5 internal links** to related posts
 - [ ] **Anchor text** descriptive (not "click here")
 - [ ] **Opens in same tab** (keeps users on site)
 - [ ] **Relevant**: Actually related content
 
 **External Links**:
+
 - [ ] **Authority sources** linked (documentation, research)
 - [ ] **Opens in new tab** (keeps users on your site)
 - [ ] **No broken links** (check with tool)
@@ -66,6 +72,7 @@
 ### Embed Options
 
 **Native Upload** (Best for SEO):
+
 - [ ] **Video file uploaded** directly to blog platform
 - [ ] **Thumbnail** customized
 - [ ] **Auto-play** disabled (user-friendly)
@@ -73,6 +80,7 @@
 - [ ] **Responsive**: Works on mobile
 
 **YouTube Embed** (Most Common):
+
 - [ ] **Embed code** copied from YouTube
 - [ ] **Responsive embed** (scales to container)
 - [ ] **Privacy-enhanced mode** enabled (no cookies until play)
@@ -81,6 +89,7 @@
 - [ ] **Lazy load** enabled (faster page load)
 
 **Video Placement**:
+
 - [ ] **Above the fold**: At top of post
 - [ ] **Aligned**: Centered or full-width
 - [ ] **Spacing**: Proper margins above/below
@@ -134,6 +143,7 @@ Let's dive in.
 ```
 
 For each section:
+
 - [ ] **H2 headers** with keywords
 - [ ] **Paragraphs**: 3-4 sentences max (readability)
 - [ ] **Code blocks**: Properly formatted with language specified
@@ -144,7 +154,7 @@ For each section:
 
 ### Code Blocks
 
-- [ ] **Language specified**: ```javascript, ```python, etc.
+- [ ] **Language specified**: ```javascript,```python, etc.
 - [ ] **Syntax highlighting** working
 - [ ] **Copy button** available (if platform supports)
 - [ ] **Line numbers** (optional, for longer blocks)
@@ -207,6 +217,7 @@ Key takeaways:
 ### Schema Markup (JSON-LD)
 
 **Article Schema**:
+
 ```json
 {
   "@context": "https://schema.org",
@@ -230,6 +241,7 @@ Key takeaways:
 - [ ] **Added to post** (head or footer)
 
 **VideoObject Schema** (if video is primary):
+
 ```json
 {
   "@context": "https://schema.org",
@@ -383,12 +395,14 @@ Key takeaways:
 ### Email Newsletter
 
 **Subject Line**:
+
 - [ ] **Clear benefit**: "How to [X]" or "[Number] Tips for [Y]"
 - [ ] **Length**: 50-60 characters
 - [ ] **Curiosity**: Hint at value without giving it all away
 - [ ] **Personalization**: Use first name if available
 
 **Email Body**:
+
 - [ ] **Hook**: First 2 sentences grab attention
 - [ ] **Video thumbnail**: Linked to post (visual > text)
 - [ ] **Summary**: 3-4 sentences about post
@@ -399,18 +413,21 @@ Key takeaways:
 ### Social Media
 
 **Twitter Thread**:
+
 - [ ] **Tweet 1**: Hook + post link + video thumbnail
 - [ ] **Tweet 2-5**: Key takeaways from post
 - [ ] **Tweet 6**: CTA + link again
 - [ ] **Video clip** attached (30-60 seconds)
 
 **LinkedIn Article**:
+
 - [ ] **First 2 paragraphs** from blog post
 - [ ] **Video embedded** (first 2 minutes)
 - [ ] **Link to full post** with CTA
 - [ ] **Hashtags**: 3-5 professional tags
 
 **Reddit**:
+
 - [ ] **Context paragraph** explaining why you're sharing
 - [ ] **Key points** listed (what they'll learn)
 - [ ] **Link to post** (not just video)
@@ -476,18 +493,21 @@ Key takeaways:
 ## Tools & Resources
 
 **SEO Tools**:
+
 - Google Search Console (keyword tracking)
 - Yoast SEO or Rank Math (WordPress plugins)
 - Ahrefs or SEMrush (keyword research)
 - Google PageSpeed Insights (performance)
 
 **Content Tools**:
+
 - Grammarly (grammar checking)
 - Hemingway Editor (readability)
 - Carbon (code screenshots)
 - Canva (featured images)
 
 **Analytics**:
+
 - Google Analytics (traffic analysis)
 - Hotjar (heatmaps, user behavior)
 - Social analytics (native platform tools)

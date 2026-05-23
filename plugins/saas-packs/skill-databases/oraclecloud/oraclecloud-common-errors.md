@@ -10,6 +10,7 @@ oraclecloud-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Oracle Cloud common errors
 **Workflow:** Part of the operations skill category for Oracle Cloud integration.
 **Relates to:** Other oraclecloud skills in this pack.

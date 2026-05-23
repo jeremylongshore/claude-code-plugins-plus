@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Databricks Webhooks & Events
 
 ## Overview
+
 Configure notifications and event-driven workflows for Databricks jobs. Covers notification destinations (Slack, Teams, PagerDuty, email, generic webhooks), job lifecycle events, SQL alerts with automated triggers, and system table queries for event auditing.
 
 ## Prerequisites
+
 - Databricks workspace admin access (for notification destinations)
 - Webhook endpoint URL (Slack incoming webhook, Teams connector, etc.)
 - Job permissions for notification configuration
@@ -34,6 +36,7 @@ Configure notifications and event-driven workflows for Databricks jobs. Covers n
 ## Instructions
 
 ### Step 1: Create Notification Destinations
+
 ```python
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.service.settings import (
@@ -67,6 +70,7 @@ print(f"Slack: {slack.id}, Email: {email.id}, PD: {pagerduty.id}")
 ```
 
 ### Step 2: Attach Notifications to Jobs
+
 ```python
 from databricks.sdk.service.jobs import (
     JobEmailNotifications, WebhookNotifications, Webhook,
@@ -92,6 +96,7 @@ w.jobs.update(
 ```
 
 Or declaratively in Asset Bundles:
+
 ```yaml
 # resources/jobs.yml
 resources:
@@ -105,6 +110,7 @@ resources:
 ```
 
 ### Step 3: Build Custom Webhook Handler
+
 Receive Databricks job events at your own endpoint.
 
 ```python
@@ -144,6 +150,7 @@ async def handle_event(request: Request):
 ```
 
 ### Step 4: Monitor Events via System Tables
+
 Query `system.access.audit` for event monitoring without webhooks.
 
 ```sql
@@ -168,6 +175,7 @@ ORDER BY event_time DESC;
 ```
 
 ### Step 5: SQL Alerts with Automated Triggers
+
 Create alerts that fire when query conditions are met.
 
 ```sql
@@ -199,6 +207,7 @@ alert = w.alerts.create(
 ```
 
 ### Step 6: Slack Message Formatter
+
 ```python
 def format_slack_message(payload: dict) -> dict:
     """Format Databricks job event as a rich Slack Block Kit message."""
@@ -222,6 +231,7 @@ def format_slack_message(payload: dict) -> dict:
 ```
 
 ## Output
+
 - Notification destinations registered (Slack, email, PagerDuty)
 - Job lifecycle notifications (on_start, on_success, on_failure)
 - Custom webhook handler for advanced routing
@@ -229,6 +239,7 @@ def format_slack_message(payload: dict) -> dict:
 - SQL alerts with automated triggers and destinations
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `RESOURCE_DOES_NOT_EXIST` for destination | Destination deleted or wrong workspace | `w.notification_destinations.list()` to verify |
@@ -240,16 +251,19 @@ def format_slack_message(payload: dict) -> dict:
 ## Examples
 
 ### List All Notification Destinations
+
 ```bash
 databricks notification-destinations list --output json | \
   jq '.[] | {name: .display_name, type: .destination_type, id: .id}'
 ```
 
 ## Resources
+
 - [Job Notifications](https://docs.databricks.com/aws/en/jobs/monitor)
 - [Notification Destinations](https://docs.databricks.com/aws/en/admin/notification-destinations)
 - [System Tables](https://docs.databricks.com/aws/en/admin/system-tables/)
 - [SQL Alerts](https://docs.databricks.com/aws/en/sql/user/alerts/)
 
 ## Next Steps
+
 For performance tuning, see `databricks-performance-tuning`.

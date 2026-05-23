@@ -10,6 +10,7 @@ deepgram-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Deepgram multi-environment setup
 **Workflow:** Part of the enterprise skill category for Deepgram integration.
 **Relates to:** Other deepgram skills in this pack.

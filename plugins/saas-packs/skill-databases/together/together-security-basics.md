@@ -10,6 +10,7 @@ together-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Together AI security best practices
 **Workflow:** Part of the operations skill category for Together AI integration.
 **Relates to:** Other together skills in this pack.

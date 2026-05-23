@@ -64,7 +64,7 @@ Logical constraints use reasoning to limit what is possible through exclusion.
 | **Type restriction** | Only numbers, only letters, specific format | `input type="email"`, `type="tel"`, regex patterns |
 | **Range restriction** | Minimum and maximum values | `min="0" max="100"`, date ranges, slider bounds |
 | **Length restriction** | Character count | `maxlength="280"`, with visible counter |
-| **Format restriction** | Specific pattern required | Input mask for phone: (___) ___-____ |
+| **Format restriction** | Specific pattern required | Input mask for phone: (___) _**-**__ |
 | **Enum restriction** | Only predefined options allowed | Dropdown, radio buttons, autocomplete with fixed list |
 | **Real-time validation** | Invalid input rejected as typed | Inline error showing before form submission |
 
@@ -122,11 +122,13 @@ Undo/redo does not prevent errors, but it constrains the impact of errors by mak
 ### When to Use Confirmation Dialogs
 
 Confirmation dialogs are appropriate only for:
+
 - **Irreversible** actions (delete account, send broadcast email)
 - **High-consequence** actions (charge credit card, publish to production)
 - **Unusual** actions (something the user does rarely and might have triggered accidentally)
 
 They are NOT appropriate for:
+
 - Routine actions (saving a document, closing a tab)
 - Actions that are easily reversible (moving an item, changing a setting)
 - Frequent operations (every dialog slows the user down and trains them to click "OK" without reading)

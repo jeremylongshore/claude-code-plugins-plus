@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq Core Workflow B: Audio, Vision & Speech
 
 ## Overview
+
 Beyond chat completions, Groq provides ultra-fast audio transcription (Whisper at 216x real-time), multimodal vision (Llama 4 Scout/Maverick), and text-to-speech. These endpoints use the same `groq-sdk` client.
 
 ## Prerequisites
+
 - `groq-sdk` installed, `GROQ_API_KEY` set
 - For audio: audio files in supported formats
 - For vision: image URLs or base64 images
@@ -43,6 +45,7 @@ Beyond chat completions, Groq provides ultra-fast audio transcription (Whisper a
 ## Instructions
 
 ### Step 1: Audio Transcription (Whisper)
+
 ```typescript
 import Groq from "groq-sdk";
 import fs from "fs";
@@ -76,6 +79,7 @@ async function transcribeWithTimestamps(filePath: string) {
 ```
 
 ### Step 2: Audio Translation (to English)
+
 ```typescript
 // Translate any language audio to English text
 async function translateAudio(filePath: string): Promise<string> {
@@ -89,6 +93,7 @@ async function translateAudio(filePath: string): Promise<string> {
 ```
 
 ### Step 3: Vision (Image Understanding)
+
 ```typescript
 // Analyze images with Llama 4 Scout (up to 5 images per request)
 async function analyzeImage(imageUrl: string, question: string) {
@@ -147,6 +152,7 @@ async function analyzeBase64Image(base64Data: string) {
 ```
 
 ### Step 4: Text-to-Speech
+
 ```typescript
 // Generate speech from text
 async function textToSpeech(text: string, outputPath: string) {
@@ -164,6 +170,7 @@ async function textToSpeech(text: string, outputPath: string) {
 ```
 
 ### Step 5: Python Audio Transcription
+
 ```python
 from groq import Groq
 
@@ -182,6 +189,7 @@ with open("audio.mp3", "rb") as file:
 ```
 
 ### Step 6: Model Benchmarking
+
 ```typescript
 // Compare models on same prompt for speed vs quality
 async function benchmarkModels(prompt: string) {
@@ -209,12 +217,14 @@ async function benchmarkModels(prompt: string) {
 ```
 
 ## Vision Model Limits
+
 - Maximum 5 images per request
 - Supported formats: JPEG, PNG, GIF, WebP
 - Images fetched from URL or embedded as base64
 - Vision models also support tool use, JSON mode, and streaming
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `Invalid file format` | Unsupported audio type | Convert to mp3/wav/flac first |
@@ -224,10 +234,12 @@ async function benchmarkModels(prompt: string) {
 | `429` on Whisper | Audio RPM limit hit | Queue transcription requests |
 
 ## Resources
+
 - [Groq Speech-to-Text](https://console.groq.com/docs/speech-to-text)
 - [Groq Text-to-Speech](https://console.groq.com/docs/text-to-speech)
 - [Groq Vision](https://console.groq.com/docs/vision)
 - [Groq Models](https://console.groq.com/docs/models)
 
 ## Next Steps
+
 For common errors and troubleshooting, see `groq-common-errors`.

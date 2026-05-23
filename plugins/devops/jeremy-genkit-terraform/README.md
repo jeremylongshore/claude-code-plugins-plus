@@ -23,6 +23,7 @@ Terraform infrastructure specialist for deploying Firebase Genkit applications t
 "Deploy my Genkit application to Cloud Run with Terraform"
 
 The skill auto-activates and provisions:
+
 - Cloud Run service with Genkit runtime
 - Secret Manager for API keys
 - Cloud Monitoring dashboards

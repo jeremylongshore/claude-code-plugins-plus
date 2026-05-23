@@ -113,7 +113,7 @@ The total diff across both repos: roughly 1,800 insertions. Not a single revert 
 ---
 
 **Related Posts:**
+
 - [Braves Booth -- Idle Recap, Dashboard Density, and AI Pitcher Narratives](/posts/braves-booth-dashboard-ui-refactor-ai-pitcher-narrative/)
 - [Slack Channel Security Hardening, v0.2.0, and External Contributors](/posts/slack-channel-security-hardening-v020-external-contributors/)
 - [Pregame Storylines Infinite Loading Fix](/posts/pregame-storylines-infinite-loading-fix/)
-

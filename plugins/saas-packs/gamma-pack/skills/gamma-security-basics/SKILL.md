@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Gamma Security Basics
 
 ## Overview
+
 Security best practices for Gamma API integration to protect credentials and data.
 
 ## Prerequisites
+
 - Active Gamma integration
 - Environment variable support
 - Understanding of secret management
@@ -36,6 +38,7 @@ Security best practices for Gamma API integration to protect credentials and dat
 ## Instructions
 
 ### Step 1: Secure API Key Storage
+
 ```typescript
 // NEVER do this
 const gamma = new GammaClient({
@@ -49,6 +52,7 @@ const gamma = new GammaClient({
 ```
 
 **Environment Setup:**
+
 ```bash
 # .env (add to .gitignore!)
 GAMMA_API_KEY=gamma_live_abc123...
@@ -58,6 +62,7 @@ import 'dotenv/config';
 ```
 
 ### Step 2: Key Rotation Strategy
+
 ```typescript
 // Support multiple keys for rotation
 const gamma = new GammaClient({
@@ -76,6 +81,7 @@ async function rotateApiKey() {
 ```
 
 ### Step 3: Request Signing (if supported)
+
 ```typescript
 import crypto from 'crypto';
 
@@ -104,6 +110,7 @@ function verifyWebhook(body: string, signature: string, secret: string): boolean
 ```
 
 ### Step 4: Access Control Patterns
+
 ```typescript
 // Scoped API keys (if supported)
 const readOnlyGamma = new GammaClient({
@@ -125,6 +132,7 @@ async function createPresentation(user: User, data: object) {
 ```
 
 ### Step 5: Audit Logging
+
 ```typescript
 import { GammaClient } from '@gamma/sdk';
 
@@ -158,6 +166,7 @@ function createAuditedClient(userId: string) {
 - [ ] HTTPS enforced for all calls
 
 ## Error Handling
+
 | Security Issue | Detection | Remediation |
 |----------------|-----------|-------------|
 | Exposed key | GitHub scanning | Rotate immediately |
@@ -166,6 +175,7 @@ function createAuditedClient(userId: string) {
 | Weak permissions | Access review | Apply least privilege |
 
 ## Resources
+
 - [Gamma Security Guide](https://gamma.app/docs/security)
 - [API Key Management](https://gamma.app/docs/api-keys)
 - [OWASP API Security](https://owasp.org/API-Security/)

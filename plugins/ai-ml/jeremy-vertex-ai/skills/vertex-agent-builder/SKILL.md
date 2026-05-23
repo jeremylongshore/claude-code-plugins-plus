@@ -59,10 +59,12 @@ Build and deploy production-ready agents on Vertex AI with Gemini models, retrie
 ## Examples
 
 **Example: RAG support agent**
+
 - Request: “Deploy a support bot that answers from our docs with citations.”
 - Result: ingestion plan, retrieval wiring, evaluation prompts, and a smoke test that verifies citations.
 
 **Example: Multimodal intake agent**
+
 - Request: “Build an agent that extracts structured fields from PDFs/images and routes tasks.”
 - Result: schema-first extraction prompts, tool interface contracts, and validation examples.
 

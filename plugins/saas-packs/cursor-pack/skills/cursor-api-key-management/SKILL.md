@@ -92,8 +92,8 @@ LM Studio:    http://localhost:1234/v1
 Together AI:  https://api.together.xyz/v1
 ```
 
-5. Enter API key if required by the provider
-6. The model appears in the Chat/Composer model dropdown
+1. Enter API key if required by the provider
+2. The model appears in the Chat/Composer model dropdown
 
 ## What BYOK Covers (and What It Does Not)
 
@@ -114,6 +114,7 @@ BYOK key used:                    Cursor model (always):
 ### Monitoring Usage
 
 With BYOK, you pay the provider directly. Monitor costs at:
+
 - OpenAI: [platform.openai.com/usage](https://platform.openai.com/usage)
 - Anthropic: [console.anthropic.com/settings/billing](https://console.anthropic.com/settings/billing)
 - Azure: Azure Cost Management portal
@@ -121,6 +122,7 @@ With BYOK, you pay the provider directly. Monitor costs at:
 ### Setting Spending Limits
 
 Set monthly spending limits at the provider level:
+
 - **OpenAI**: Settings > Limits > Set monthly budget
 - **Anthropic**: Settings > Limits > Set spending limit
 - **Azure**: Create budget alerts in Azure Cost Management
@@ -149,6 +151,7 @@ A typical Composer session generating multi-file code uses 5K-20K tokens.
 ### Key Storage
 
 Cursor stores API keys locally in its settings database:
+
 - macOS: `~/Library/Application Support/Cursor/`
 - Linux: `~/.config/Cursor/`
 - Windows: `%APPDATA%\Cursor\`
@@ -165,6 +168,7 @@ Keys are stored in the local Cursor configuration, not in project files. They do
 ### Team Key Management
 
 For teams using BYOK:
+
 - **Individual keys**: Each developer uses their own key. Simplest setup, hardest to audit.
 - **Shared project key**: Create a project-scoped key at the provider. Share via secure channel. Track usage per project.
 - **Azure gateway**: Route all requests through a central Azure OpenAI deployment. Full audit logging, spending controls, model governance.

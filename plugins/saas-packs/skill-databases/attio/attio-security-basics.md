@@ -10,6 +10,7 @@ attio-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Attio security best practices
 **Workflow:** Part of the operations skill category for Attio integration.
 **Relates to:** Other attio skills in this pack.

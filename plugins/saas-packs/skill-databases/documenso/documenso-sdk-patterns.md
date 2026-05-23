@@ -10,6 +10,7 @@ documenso-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Documenso SDK patterns
 **Workflow:** Part of the onboarding skill category for Documenso integration.
 **Relates to:** Other documenso skills in this pack.

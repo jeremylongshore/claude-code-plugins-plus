@@ -13,6 +13,7 @@ Microsoft Graph OneNote API for notebook, section, and page management with HTML
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `onenote-common-errors` | Common Errors |
@@ -29,6 +30,7 @@ Microsoft Graph OneNote API for notebook, section, and page management with HTML
 | `onenote-upgrade-migration` | Upgrade Migration |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `onenote-ci-integration` | Ci Integration |

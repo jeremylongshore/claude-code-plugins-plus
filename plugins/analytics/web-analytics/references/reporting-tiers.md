@@ -21,10 +21,12 @@ the output is formatted. The orchestrator (SKILL.md) uses this to route requests
 **When to use:** Quick check, "how's my traffic?", morning glance, real-time status.
 
 **Data collected per site:**
+
 1. `mcp__umami__get_stats` — aggregate (returns current period + comparison block in one call — do NOT call twice)
 2. `mcp__umami__get_active` — real-time visitor count
 
 **Output format:**
+
 ```
 ## Analytics Pulse — {date}
 
@@ -43,6 +45,7 @@ the output is formatted. The orchestrator (SKILL.md) uses this to route requests
 ```
 
 **Rules:**
+
 - No subagents — orchestrator handles inline
 - Under 15 lines
 - One signal only — the most notable change
@@ -54,12 +57,14 @@ the output is formatted. The orchestrator (SKILL.md) uses this to route requests
 **When to use:** Daily brief, "what happened this week?", stakeholder update.
 
 **Data collected per site:**
+
 1. All mini data
 2. `mcp__umami__get_metrics` metric_type=referrer — traffic sources (limit 15)
 3. `mcp__umami__get_metrics` metric_type=url — top pages (limit 20)
 4. `mcp__umami__get_pageviews` unit=day — daily time series
 
 **Agents invoked:**
+
 1. data-collector → fetches all medium data
 2. traffic-intelligence → channel/source analysis
 3. content-seo → page performance
@@ -67,6 +72,7 @@ the output is formatted. The orchestrator (SKILL.md) uses this to route requests
 5. reporting-narrative → compile final output
 
 **Output format:**
+
 ```
 ## Analytics Brief — {date_range}
 
@@ -94,6 +100,7 @@ the output is formatted. The orchestrator (SKILL.md) uses this to route requests
 ```
 
 **Rules:**
+
 - 40-60 lines
 - 3 recommendations max
 - Every number in context (vs baseline or prior period)
@@ -104,6 +111,7 @@ the output is formatted. The orchestrator (SKILL.md) uses this to route requests
 **When to use:** Weekly deep-dive, monthly review, strategy planning, investor-grade report.
 
 **Data collected per site:**
+
 1. All medium data
 2. `mcp__umami__get_metrics` metric_type=browser — technology
 3. `mcp__umami__get_metrics` metric_type=os — platforms
@@ -113,6 +121,7 @@ the output is formatted. The orchestrator (SKILL.md) uses this to route requests
 7. `mcp__umami__get_metrics` metric_type=referrer + post-filter on `utm_source` values from `site-registry.md § Redirect Domains` — redirect-domain attribution
 
 **Agents invoked:**
+
 1. data-collector → fetches ALL data types
 2. traffic-intelligence → full channel analysis + AI referral deep dive
 3. content-seo → full page analysis + content gaps
@@ -124,6 +133,7 @@ the output is formatted. The orchestrator (SKILL.md) uses this to route requests
 9. memory-agent → update rolling baselines
 
 **Output format:**
+
 ```
 ## Analytics Deep Dive — {date_range}
 
@@ -161,6 +171,7 @@ the output is formatted. The orchestrator (SKILL.md) uses this to route requests
 ```
 
 **Rules:**
+
 - 100-200 lines
 - Up to 5 strategic recommendations, prioritized
 - Verification notes included prominently
@@ -170,17 +181,20 @@ the output is formatted. The orchestrator (SKILL.md) uses this to route requests
 ## Delivery Formatting
 
 ### Console (all tiers)
+
 - Standard markdown
 - Monospace-friendly tables
 - No images or links
 
 ### Email (medium + full tiers)
+
 - Subject line: "Analytics {Tier} — {date} — {headline}"
 - Plain-text sections (no raw markdown tables — use aligned text)
 - Key metric callouts in bold
 - Limit to 5000 chars for email body
 
 ### Slack (medium + full tiers)
+
 - Slack mrkdwn format (`*bold*`, `_italic_`, `` `code` ``)
 - Respect 3000-char message limit
 - If over limit, split into 2 messages: summary + details

@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Data Handling
 
 ## Overview
+
 Manage search result data from Exa's neural search API. Covers content extraction scope control (text vs highlights vs summary), result caching with TTL, citation deduplication, token budget management for LLM context windows, and structured summary extraction.
 
 ## Prerequisites
+
 - `exa-js` SDK installed and configured
 - Optional: `lru-cache` for in-memory caching, `ioredis` for Redis
 - Understanding of Exa content options (text, highlights, summary)
@@ -37,6 +39,7 @@ Manage search result data from Exa's neural search API. Covers content extractio
 ## Instructions
 
 ### Step 1: Control Content Extraction Scope
+
 ```typescript
 import Exa from "exa-js";
 
@@ -82,6 +85,7 @@ async function searchWithSummary(query: string) {
 ```
 
 ### Step 2: Result Caching with TTL
+
 ```typescript
 import { LRUCache } from "lru-cache";
 import { createHash } from "crypto";
@@ -109,6 +113,7 @@ async function cachedSearch(query: string, options: any = {}, ttlMs?: number) {
 ```
 
 ### Step 3: Token Budget Management for RAG
+
 ```typescript
 interface ProcessedResult {
   url: string;
@@ -156,6 +161,7 @@ const { selected, tokenCount } = fitToTokenBudget(processed, 4000);
 ```
 
 ### Step 4: Citation Deduplication
+
 ```typescript
 function deduplicateResults(results: any[]): any[] {
   const seen = new Map<string, any>();
@@ -173,6 +179,7 @@ function deduplicateResults(results: any[]): any[] {
 ```
 
 ### Step 5: Structured Summary Extraction
+
 ```typescript
 // Use summary.schema for structured data extraction
 const results = await exa.searchAndContents(
@@ -194,6 +201,7 @@ for (const r of results.results) {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Large response payload | Full text for many URLs | Use highlights or limit `maxCharacters` |
@@ -205,6 +213,7 @@ for (const r of results.results) {
 ## Examples
 
 ### RAG-Optimized Search Pipeline
+
 ```typescript
 async function ragSearch(query: string, tokenBudget = 4000) {
   const results = await cachedSearch(query, {
@@ -229,8 +238,10 @@ async function ragSearch(query: string, tokenBudget = 4000) {
 ```
 
 ## Resources
+
 - [Exa Contents Retrieval](https://docs.exa.ai/reference/contents-retrieval)
 - [Exa Search Reference](https://docs.exa.ai/reference/search)
 
 ## Next Steps
+
 For rate limit handling, see `exa-rate-limits`. For cost optimization, see `exa-cost-tuning`.

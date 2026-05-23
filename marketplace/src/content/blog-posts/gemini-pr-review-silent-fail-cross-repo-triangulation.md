@@ -298,4 +298,3 @@ The contributors whose PRs sat for forty days deserved better than a green dashb
 - [Four Releases in One Day: How the claude-code-slack-channel Security Sprint Actually Shipped](/posts/ccsc-five-releases-one-day-security-sprint/) — the sibling repo whose workflow header reversed today's hypothesis.
 - [Four Primitives, Three Reviews: How a Contributor PR Reshaped a Roadmap](/posts/collaboratively-shaped-roadmap/) — earlier story on the CCP contributor pipeline this fix unblocked.
 - [AI Code Review Blind Test: Where 5 Bots Shine](/posts/ai-code-review-without-context-blind-test/) — what Gemini actually contributes once it's wired up correctly.
-

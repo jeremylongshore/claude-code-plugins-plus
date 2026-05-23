@@ -14,6 +14,7 @@ python flash_simulator.py arbitrage ETH USDC 100 \
 ```
 
 **Expected Output:**
+
 ```
 ==================== FLASH LOAN SIMULATION ====================
 
@@ -70,6 +71,7 @@ python flash_simulator.py compare ETH 100
 ```
 
 **Expected Output:**
+
 ```
 =================== PROVIDER COMPARISON ===================
 
@@ -97,6 +99,7 @@ python flash_simulator.py arbitrage ETH USDC 100 --full
 ```
 
 **Expected Output:**
+
 ```
 ==================== FLASH LOAN SIMULATION ====================
 [... strategy result ...]
@@ -174,6 +177,7 @@ python flash_simulator.py triangular ETH USDC WBTC ETH --amount 50
 ```
 
 **Expected Output:**
+
 ```
 ==================== FLASH LOAN SIMULATION ====================
 
@@ -240,6 +244,7 @@ python flash_simulator.py liquidation \
 ```
 
 **Expected Output:**
+
 ```
 ==================== FLASH LOAN SIMULATION ====================
 
@@ -296,6 +301,7 @@ python flash_simulator.py arbitrage ETH USDC 100 --full --output json > simulati
 ```
 
 **Example JSON Output:**
+
 ```json
 {
   "simulation": {
@@ -369,6 +375,7 @@ python flash_simulator.py arbitrage ETH USDC 100 \
 ```
 
 **Key Difference:**
+
 - Flash loan fee: 0.00 ETH (vs 0.09 ETH with Aave)
 - Net profit increases by ~$225
 
@@ -386,6 +393,7 @@ python flash_simulator.py arbitrage ETH USDC 100 \
 ```
 
 This adjusts:
+
 - All USD calculations use $3,500/ETH
 - Gas costs calculated at 50 gwei
 - Breakeven gas price recalculated
@@ -482,6 +490,7 @@ if __name__ == "__main__":
 ## Integration Patterns
 
 ### Batch Analysis
+
 ```bash
 # Analyze multiple pairs
 for pair in "ETH-USDC" "WBTC-ETH" "ETH-DAI"; do
@@ -491,6 +500,7 @@ done
 ```
 
 ### Pipeline Integration
+
 ```bash
 # Feed into analysis pipeline
 python flash_simulator.py arbitrage ETH USDC 100 --output json | \
@@ -498,6 +508,7 @@ python flash_simulator.py arbitrage ETH USDC 100 --output json | \
 ```
 
 ### Automated Monitoring
+
 ```bash
 # Check profitability every minute
 while true; do
@@ -523,6 +534,7 @@ All examples are for educational purposes only. Flash loan strategies involve si
 4. **Market Risk**: Prices change between simulation and execution
 
 Always:
+
 - Test on testnets first
 - Start with small amounts
 - Use MEV protection in production

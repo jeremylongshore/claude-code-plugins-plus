@@ -24,6 +24,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Reference Architecture
 
 ## Overview
+
 Production-grade architectural patterns for Linear integrations. Choose the right pattern based on team size, complexity, and real-time requirements.
 
 ## Architecture Decision Matrix
@@ -36,6 +37,7 @@ Production-grade architectural patterns for Linear integrations. Choose the righ
 | CQRS | Audit trails, complex queries | Very High | Minimal API calls | Compliance-grade tracking |
 
 ## Architecture 1: Simple Integration
+
 Direct SDK calls from your application. Best for scripts, internal tools, and prototypes.
 
 ```typescript
@@ -69,6 +71,7 @@ export async function createBugReport(teamId: string, title: string, description
 ```
 
 ## Architecture 2: Service-Oriented with Gateway
+
 Centralized Linear access through a gateway service with caching and rate limiting.
 
 ```typescript
@@ -150,6 +153,7 @@ export const gateway = new LinearGateway(process.env.LINEAR_API_KEY!);
 ```
 
 ## Architecture 3: Event-Driven
+
 Webhook-centric architecture. Minimal API calls, real-time processing.
 
 ```typescript
@@ -203,6 +207,7 @@ bus.on("*", (event) => {
 ```
 
 ## Architecture 4: CQRS with Local State
+
 Separate read and write paths. Full local state for complex queries, API for writes.
 
 ```typescript
@@ -230,6 +235,7 @@ async function getSprintVelocity(teamKey: string, sprints: number) {
 ```
 
 ## Project Structure
+
 ```
 src/
   linear/
@@ -254,6 +260,7 @@ src/
 | Schema drift | SDK version mismatch | Pin version, test upgrades in staging |
 
 ## Resources
+
 - [Linear API Best Practices](https://linear.app/developers/graphql)
 - [Event-Driven Architecture](https://martinfowler.com/articles/201701-event-driven.html)
 - [CQRS Pattern](https://martinfowler.com/bliki/CQRS.html)

@@ -24,6 +24,7 @@ compatibility: Designed for Claude Code
 Glean's enterprise search API handles search queries across multiple connectors, bulk document indexing, and connector sync throughput. Search latency compounds when querying across dozens of datasources simultaneously. Large indexing jobs (10K+ documents) require careful batching to avoid rate limits and maintain connector sync schedules. Optimizing batch sizes, caching frequent search results, and tuning connector configurations reduces search P95 latency and keeps indexing pipelines within SLA windows.
 
 ## Caching Strategy
+
 ```typescript
 const cache = new Map<string, { data: any; expiry: number }>();
 const TTL = { search: 60_000, suggestions: 30_000, datasources: 600_000 };
@@ -39,6 +40,7 @@ async function cached(key: string, ttlKey: keyof typeof TTL, fn: () => Promise<a
 ```
 
 ## Batch Operations
+
 ```typescript
 import PQueue from 'p-queue';
 const BATCH_SIZE = 100;
@@ -54,6 +56,7 @@ async function indexDocsBatched(glean: any, dsName: string, docs: any[]) {
 ```
 
 ## Connection Pooling
+
 ```typescript
 import { Agent } from 'https';
 const agent = new Agent({ keepAlive: true, maxSockets: 15, maxFreeSockets: 5, timeout: 30_000 });
@@ -61,6 +64,7 @@ const agent = new Agent({ keepAlive: true, maxSockets: 15, maxFreeSockets: 5, ti
 ```
 
 ## Rate Limit Management
+
 ```typescript
 async function withGleanRateLimit(fn: () => Promise<any>): Promise<any> {
   try { return await fn(); }
@@ -76,6 +80,7 @@ async function withGleanRateLimit(fn: () => Promise<any>): Promise<any> {
 ```
 
 ## Monitoring
+
 ```typescript
 const metrics = { searches: 0, indexOps: 0, cacheHits: 0, p95LatencyMs: 0, errors: 0 };
 const latencies: number[] = [];
@@ -88,6 +93,7 @@ function trackSearch(startMs: number, cached: boolean) {
 ```
 
 ## Performance Checklist
+
 - [ ] Batch indexing calls at 100 docs per request with 3 concurrent workers
 - [ ] Use incremental indexing for real-time updates (< 100 docs)
 - [ ] Switch to bulkindexdocuments for daily full refreshes (> 1K docs)
@@ -98,6 +104,7 @@ function trackSearch(startMs: number, cached: boolean) {
 - [ ] Enable keep-alive connections with high socket count for parallel ops
 
 ## Error Handling
+
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | Slow cross-datasource search | Too many connectors queried in parallel | Prioritize datasources, set query scope |
@@ -107,8 +114,10 @@ function trackSearch(startMs: number, cached: boolean) {
 | Missing documents in results | Incomplete metadata during indexing | Include title, body, author, and updated_at fields |
 
 ## Resources
+
 - [Glean Developer Portal](https://developers.glean.com/)
 - [Glean Indexing API Guide](https://developers.glean.com/docs/indexing)
 
 ## Next Steps
+
 See `glean-reference-architecture`.

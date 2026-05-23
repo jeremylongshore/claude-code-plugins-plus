@@ -50,12 +50,14 @@ scratch with full validation, or grade/audit existing skills with actionable fix
 ### Mode Detection
 
 Determine user intent from their prompt:
+
 - **Create mode**: "create a skill", "build a skill", "new skill" -> proceed to Step 1
 - **Validate mode**: "validate", "check", "grade", "score", "audit" -> jump to Validation Workflow
 
 ### Communicating with the User
 
 Pay attention to context cues to understand the user's technical level. Skill creator is used by people across a wide range of familiarity — from first-time coders to senior engineers. In the default case:
+
 - "evaluation" and "benchmark" are borderline but OK
 - For "JSON" and "assertion", check for cues the user knows these terms before using them without explanation
 - Briefly explain terms if in doubt
@@ -67,21 +69,25 @@ If the current conversation already contains a workflow the user wants to captur
 Ask the user with AskUserQuestion:
 
 **Skill Identity:**
+
 - Name (kebab-case, gerund preferred: `processing-pdfs`, `analyzing-data`)
 - Purpose (1-2 sentences: what it does + when to use it)
 
 **Execution Model:**
+
 - User-invocable via `/name`? Or background knowledge only?
 - Accepts arguments? (`$ARGUMENTS` substitution)
 - Needs isolated context? (`context: fork` for subagent execution)
 - Explicit-only invocation? (`disable-model-invocation: true` — prevents auto-activation, requires `/name`)
 
 **Required Tools:**
+
 - Read, Write, Edit, Glob, Grep, WebFetch, WebSearch, Task, AskUserQuestion, Skill
 - Bash must be scoped: `Bash(git:*)`, `Bash(npm:*)`, etc.
 - MCP tools: `ServerName:tool_name`
 
 **Complexity:**
+
 - Simple (SKILL.md only)
 - With scripts (automation code in `scripts/`)
 - With references (documentation in `references/`)
@@ -89,6 +95,7 @@ Ask the user with AskUserQuestion:
 - Full package (all directories)
 
 **Location:**
+
 - Global: `~/.claude/skills/<skill-name>/`
 - Project: `.claude/skills/<skill-name>/`
 
@@ -97,6 +104,7 @@ Ask the user with AskUserQuestion:
 Before writing, determine:
 
 **Degrees of Freedom:**
+
 | Level | When to Use |
 |-------|-------------|
 | High | Creative/open-ended tasks (analysis, writing) |
@@ -106,6 +114,7 @@ Before writing, determine:
 Think of it as **narrow bridge vs open field**: a deployment skill is a narrow bridge (one safe path, guard rails everywhere), while a writing skill is an open field (Claude roams freely within broad boundaries). Match constraint level to the task.
 
 **Workflow Pattern** (see `${CLAUDE_SKILL_DIR}/references/workflows.md`):
+
 - Sequential: fixed steps in order
 - Conditional: branch based on input
 - Wizard: interactive multi-step gathering
@@ -115,6 +124,7 @@ Think of it as **narrow bridge vs open field**: a deployment skill is a narrow b
 - Search-Analyze-Report: explore and summarize
 
 **Output Pattern** (see `${CLAUDE_SKILL_DIR}/references/output-patterns.md`):
+
 - Strict template (exact format)
 - Flexible template (structure with creative content)
 - Examples-driven (input/output pairs)
@@ -139,6 +149,7 @@ mkdir -p {location}/{skill-name}/evals        # for eval-driven development
 For detailed guidance on writing SKILL.md (frontmatter rules, description scoring, body guidelines, string substitutions, DCI syntax), creating supporting files, validation, testing, iteration, description optimization, and final reporting, see [Creation Guide](references/creation-guide.md).
 
 Key rules:
+
 - `version`, `author`, `license`, `tags`, `compatible-with` are TOP-LEVEL fields (not nested under `metadata:`)
 - Scope Bash: `Bash(git:*)` not bare `Bash`
 - Keep under 500 lines; offload to `references/` if longer
@@ -255,15 +266,18 @@ Output:
 ## Resources
 
 **References:** `${CLAUDE_SKILL_DIR}/references/`
+
 - `creation-guide.md` — Detailed Steps 4-10 and Validation Workflow (V1-V5)
 - `source-of-truth.md` — Canonical spec ([AgentSkills.io](https://agentskills.io/specification), [Anthropic docs](https://code.claude.com/docs/en/skills), [Lee Han Chung deep dive](https://leehanchung.github.io/blogs/2025/10/26/claude-skills-deep-dive/)) | `frontmatter-spec.md` — Field reference | `validation-rules.md` — 100-point rubric
 - `workflows.md` — Workflow patterns | `output-patterns.md` — Output formats | `schemas.md` — JSON schemas (evals, grading, benchmarks)
 - `anthropic-comparison.md` — Gap analysis | `advanced-eval-workflow.md` — Eval, iteration, optimization, platform notes
 
 **Agents** (read when spawning subagents): `${CLAUDE_SKILL_DIR}/agents/`
+
 - `grader.md` — Assertion evaluation | `comparator.md` — Blind A/B comparison | `analyzer.md` — Benchmark analysis
 
 **Scripts:** `${CLAUDE_SKILL_DIR}/scripts/`
+
 - `validate-skill.py` — 100-point rubric grading | `quick_validate.py` — Lightweight validation
 - `aggregate_benchmark.py` — Benchmark stats | `run_eval.py` — Trigger accuracy testing
 - `run_loop.py` — Description optimization loop | `improve_description.py` — LLM-powered rewriting

@@ -10,6 +10,7 @@ navan-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Navan webhook handling
 **Workflow:** Part of the cicd skill category for Navan integration.
 **Relates to:** Other navan skills in this pack.

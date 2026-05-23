@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Rate Limits
 
 ## Overview
+
 Handle Langfuse API rate limits with optimized SDK batching, exponential backoff with jitter, concurrent request limiting, and configurable sampling for ultra-high-volume workloads.
 
 ## Prerequisites
+
 - Langfuse SDK installed and configured
 - High-volume trace workload (1,000+ events/minute)
 
@@ -237,6 +239,7 @@ async function sampledOperation(name: string, fn: () => Promise<any>) {
 | Memory growth | Queue backup | Add `maxSize` to PQueue |
 
 ## Resources
+
 - [Event Queuing/Batching](https://langfuse.com/docs/observability/features/queuing-batching)
 - [Advanced SDK Configuration](https://langfuse.com/docs/observability/sdk/typescript/advanced-usage)
 - [p-queue](https://github.com/sindresorhus/p-queue)

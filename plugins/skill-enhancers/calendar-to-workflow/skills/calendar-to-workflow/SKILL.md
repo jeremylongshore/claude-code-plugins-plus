@@ -68,6 +68,7 @@ The skill produces one or more of the following depending on the request:
 **User:** "I have a sprint planning at 10am with the backend team and a design review at 2pm. Prep briefings for both."
 
 The skill will:
+
 1. Create a sprint planning briefing listing open sprint issues, velocity from the last sprint, and items ready for estimation.
 2. Create a design review briefing pulling recent UI/UX changes from git history, linking to relevant Figma or mockup files found in the repo, and summarizing outstanding design-related issues.
 3. Output both as a single Markdown document with clear section headers.
@@ -77,6 +78,7 @@ The skill will:
 **User:** "Generate standup notes for today based on yesterday's work."
 
 The skill will:
+
 1. Run `git log --since="yesterday" --oneline` to gather recent commits.
 2. Check for any open PRs with `gh pr list --author @me`.
 3. Identify any failing CI checks with `gh run list --limit 5`.
@@ -87,6 +89,7 @@ The skill will:
 **User:** "Create a Monday morning workflow that preps me for the week."
 
 The skill will generate a script that:
+
 1. Reads the week's calendar events from an ICS file.
 2. Summarizes each day's meetings with participant counts and estimated time commitment.
 3. Pulls the current sprint board status.

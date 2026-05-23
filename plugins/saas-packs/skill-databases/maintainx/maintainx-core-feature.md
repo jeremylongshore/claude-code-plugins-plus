@@ -10,6 +10,7 @@ maintainx-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement MaintainX core feature integration
 **Workflow:** Part of the onboarding skill category for MaintainX integration.
 **Relates to:** Other maintainx skills in this pack.

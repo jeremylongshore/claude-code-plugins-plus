@@ -10,6 +10,7 @@ serpapi-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working SerpApi example
 **Workflow:** Part of the onboarding skill category for SerpApi integration.
 **Relates to:** Other serpapi skills in this pack.

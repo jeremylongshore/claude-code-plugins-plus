@@ -42,6 +42,7 @@ Authorization: Bearer {token}
 ```
 
 **Key constraints:**
+
 - `limit`: max 100 per page
 - Maximum 10,000 records returned per search query (across all pages). For tables > 10K records, slice by `hs_lastmodifieddate` range (e.g., 30-day windows)
 - `after` cursor is opaque and valid for approximately 7 days. Stale cursors return `400 INVALID_OFFSET`
@@ -79,6 +80,7 @@ Authorization: Bearer {token}
 ```
 
 **Pagination contract:**
+
 - If `paging.next` is absent, this is the final page
 - The `after` value in `paging.next` is a base64-encoded offset — treat as opaque
 - Do not attempt to construct or modify cursor values
@@ -126,6 +128,7 @@ Authorization: Bearer {token}
 ```
 
 **Constraints:**
+
 - Max 100 IDs per request
 - `propertiesWithHistory` returns all historical values for those properties — can make payloads very large; use sparingly or not at all for warehouse loads
 
@@ -169,10 +172,12 @@ Authorization: Bearer {token}
 ```
 
 **When to prefer this over search:**
+
 - Initial full backfill with no date filter (avoids 10K search limit)
 - No filter criteria needed
 
 **When to use search instead:**
+
 - Incremental CDC (requires `hs_lastmodifieddate GT` filter)
 - Any filter or sort other than default object order
 
@@ -268,6 +273,7 @@ Valid `fromObjectType` / `toObjectType` values: `contacts`, `companies`, `deals`
 ```
 
 **Constraints:**
+
 - Max 100 IDs per request (not 1,000 — the v4 batch limit is 100)
 - One call per `fromObjectType`/`toObjectType` pair; you cannot batch contacts→deals and contacts→companies in one call
 
@@ -338,6 +344,7 @@ Custom association labels have category `USER_DEFINED` and typeId assigned at cr
 ### `createdate` vs `hs_createdate`
 
 HubSpot exposes two creation timestamp properties with overlapping semantics:
+
 - `hs_createdate` — the canonical system creation time; use this
 - `createdate` — legacy alias; same value on most records but can diverge on migrated data
 

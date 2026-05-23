@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code
 # Figma Install & Auth
 
 ## Overview
+
 Configure authentication for the Figma REST API. Figma supports two auth methods: Personal Access Tokens (PATs) for scripts and server-side tools, and OAuth 2.0 for apps that act on behalf of users. All requests go to `https://api.figma.com`.
 
 ## Prerequisites
+
 - Figma account (Free, Professional, or Enterprise)
 - Node.js 18+ (for JS/TS integrations)
 - A Figma file key (the string after `/design/` in a Figma URL)
@@ -34,6 +36,7 @@ Configure authentication for the Figma REST API. Figma supports two auth methods
 ## Instructions
 
 ### Step 1: Generate a Personal Access Token
+
 1. Open Figma > Settings > Account > Personal access tokens
 2. Click **Generate new token**
 3. Name the token and assign scopes:
@@ -49,10 +52,11 @@ Configure authentication for the Figma REST API. Figma supports two auth methods
 | `file_variables:write` | Write variables | Token pipeline |
 | `webhooks:write` | Manage webhooks | Event-driven automation |
 
-3. Copy the token immediately -- it is shown only once
-4. PATs expire after a maximum of 90 days
+1. Copy the token immediately -- it is shown only once
+2. PATs expire after a maximum of 90 days
 
 ### Step 2: Store Credentials Securely
+
 ```bash
 # .env (NEVER commit to git)
 FIGMA_PAT="figd_your-personal-access-token"
@@ -65,6 +69,7 @@ FIGMA_FILE_KEY="abc123XYZdefaultFileKey"
 ```
 
 ### Step 3: Verify Connection
+
 ```bash
 # Test with curl -- should return your user profile
 curl -s -H "X-Figma-Token: ${FIGMA_PAT}" \
@@ -85,6 +90,7 @@ console.log(`Authenticated as ${me.handle} (${me.email})`);
 ```
 
 ### Step 4: OAuth 2.0 (For User-Facing Apps)
+
 Use OAuth when your app needs to act on behalf of other Figma users.
 
 ```typescript
@@ -132,11 +138,13 @@ async function refreshToken(refreshToken: string): Promise<string> {
 ```
 
 ## Output
+
 - Personal access token stored in `.env`
 - Successful `GET /v1/me` returning your user handle
 - (Optional) OAuth flow with token exchange working
 
 ## Error Handling
+
 | Error | Status | Cause | Solution |
 |-------|--------|-------|----------|
 | `403 Forbidden` | 403 | Token lacks required scope | Regenerate PAT with correct scopes |
@@ -148,6 +156,7 @@ async function refreshToken(refreshToken: string): Promise<string> {
 ## Examples
 
 ### Reusable Figma Client Wrapper
+
 ```typescript
 // src/figma-client.ts
 export function figmaFetch(path: string, options: RequestInit = {}) {
@@ -169,9 +178,11 @@ const file = await figmaFetch(`/v1/files/${fileKey}`).then(r => r.json());
 ```
 
 ## Resources
+
 - [Figma REST API Authentication](https://developers.figma.com/docs/rest-api/authentication/)
 - [Manage Personal Access Tokens](https://help.figma.com/hc/en-us/articles/8085703771159)
 - [Figma API Scopes Reference](https://developers.figma.com/docs/rest-api/scopes/)
 
 ## Next Steps
+
 After successful auth, proceed to `figma-hello-world` for your first real API call.

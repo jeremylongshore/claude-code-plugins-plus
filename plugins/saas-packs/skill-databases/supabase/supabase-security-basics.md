@@ -10,6 +10,7 @@ supabase-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Supabase security best practices for secrets management, API key storage, access control, and audit logging.
 **Workflow:** Critical operational skill. Should be implemented early in development and verified before production.
 **Relates to:** Prerequisite for supabase-prod-checklist; foundation for supabase-enterprise-rbac.

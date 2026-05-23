@@ -10,6 +10,7 @@ salesforce-data-handling/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Salesforce data compliance
 **Workflow:** Part of the advanced skill category for Salesforce integration.
 **Relates to:** Other salesforce skills in this pack.

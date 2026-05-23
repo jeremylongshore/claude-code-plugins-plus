@@ -3,6 +3,7 @@
 ## Common Use Cases
 
 ### API Development
+
 ```
 "Create a REST API for product management:
 - GET/POST/PUT/DELETE /products
@@ -15,6 +16,7 @@
 ```
 
 ### Component Libraries
+
 ```
 "Create a form component library:
 - TextInput with validation
@@ -27,6 +29,7 @@
 ```
 
 ### Database Operations
+
 ```
 "Create database layer for user management:
 - Prisma schema for User model
@@ -37,6 +40,7 @@
 ```
 
 ### Refactoring
+
 ```
 "Refactor the authentication system:
 - Move from localStorage to httpOnly cookies

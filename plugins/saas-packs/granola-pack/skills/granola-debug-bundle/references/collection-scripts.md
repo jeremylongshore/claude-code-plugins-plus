@@ -1,6 +1,7 @@
 # Granola Debug Bundle Collection Scripts
 
 ## macOS System Information
+
 ```bash
 # Create debug directory
 mkdir -p ~/Desktop/granola-debug
@@ -19,6 +20,7 @@ system_profiler SPDisplaysDataType > display-info.txt
 ```
 
 ## Windows System Information
+
 ```powershell
 mkdir $env:USERPROFILE\Desktop\granola-debug
 cd $env:USERPROFILE\Desktop\granola-debug
@@ -30,6 +32,7 @@ Get-WmiObject Win32_SoundDevice | Out-File audio-devices.txt
 ## Granola Logs Collection
 
 ### macOS
+
 ```bash
 # Granola application logs
 cp -r ~/Library/Logs/Granola ./granola-logs 2>/dev/null
@@ -42,12 +45,14 @@ log show --predicate 'process == "Granola"' --last 1h > system-logs.txt 2>/dev/n
 ```
 
 ### Windows
+
 ```powershell
 Copy-Item "$env:LOCALAPPDATA\Granola\logs" -Destination ".\granola-logs" -Recurse
 Get-EventLog -LogName Application -Source "Granola" -Newest 100 | Out-File app-events.txt
 ```
 
 ## Network Diagnostics
+
 ```bash
 set -euo pipefail
 curl -s -o /dev/null -w "%{http_code}" https://api.granola.ai/health > network-test.txt
@@ -57,6 +62,7 @@ traceroute -m 10 api.granola.ai >> network-test.txt 2>&1
 ```
 
 ## Calendar Integration Status Template
+
 ```
 Calendar Integration Checklist:
 
@@ -71,6 +77,7 @@ Recent Calendar Errors:
 ```
 
 ## Audio Configuration Check Template
+
 ```
 Audio Configuration Report
 ==========================
@@ -87,6 +94,7 @@ Virtual Audio Software:
 ```
 
 ## Package and Submit
+
 ```bash
 cd ~/Desktop
 zip -r granola-debug-$(date +%Y%m%d-%H%M%S).zip granola-debug/

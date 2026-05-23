@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram SDK Patterns
 
 ## Overview
+
 Production patterns for `@deepgram/sdk` (TypeScript) and `deepgram-sdk` (Python). Covers singleton client, typed wrappers, text-to-speech with Aura, audio intelligence pipeline, error handling, and SDK v5 migration path.
 
 ## Prerequisites
+
 - `npm install @deepgram/sdk` or `pip install deepgram-sdk`
 - `DEEPGRAM_API_KEY` environment variable configured
 
@@ -246,6 +248,7 @@ await dg.speak.v1.audio.generate({ text }, options);
 ```
 
 ## Output
+
 - Singleton client pattern with environment validation
 - Text-to-speech (Aura-2) with stream-to-file
 - Audio intelligence pipeline (summary, topics, sentiment, intents)
@@ -254,6 +257,7 @@ await dg.speak.v1.audio.generate({ text }, options);
 - v5 migration reference
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401 Unauthorized` | Invalid API key | Check `DEEPGRAM_API_KEY` value |
@@ -263,6 +267,7 @@ await dg.speak.v1.audio.generate({ text }, options);
 | `summarize` returns null | Feature not enabled | Pass `summarize: 'v2'` (string, not boolean) |
 
 ## Resources
+
 - [JavaScript SDK](https://github.com/deepgram/deepgram-js-sdk)
 - [Python SDK](https://github.com/deepgram/deepgram-python-sdk)
 - [SDK Feature Matrix](https://developers.deepgram.com/sdks/sdk-features)
@@ -270,4 +275,5 @@ await dg.speak.v1.audio.generate({ text }, options);
 - [Audio Intelligence](https://developers.deepgram.com/docs/text-intelligence)
 
 ## Next Steps
+
 Proceed to `deepgram-data-handling` for transcript storage and processing patterns.

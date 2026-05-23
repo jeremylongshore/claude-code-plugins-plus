@@ -1,6 +1,7 @@
-# Examples
+## Examples
 
 ### Quick Deploy Script
+
 ```bash
 #!/bin/bash
 # Platform-agnostic deploy helper

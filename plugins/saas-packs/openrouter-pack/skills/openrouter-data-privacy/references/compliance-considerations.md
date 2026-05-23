@@ -3,6 +3,7 @@
 ## Compliance Considerations
 
 ### GDPR Compliance
+
 ```python
 class GDPRCompliance:
     """GDPR compliance helpers."""
@@ -42,6 +43,7 @@ gdpr = GDPRCompliance()
 ```
 
 ### Data Processing Agreement
+
 ```
 When using OpenRouter for business:
 

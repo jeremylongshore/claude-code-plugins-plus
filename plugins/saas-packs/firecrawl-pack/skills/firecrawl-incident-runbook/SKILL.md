@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Firecrawl Incident Runbook
 
 ## Overview
+
 Rapid incident response procedures for Firecrawl integration failures. Covers API outage triage, credential issues, credit exhaustion, crawl job failures, and webhook delivery problems.
 
 ## Severity Levels
@@ -79,6 +80,7 @@ Firecrawl API returning errors?
 ## Immediate Actions by Error Type
 
 ### 401 — Authentication Failure
+
 ```bash
 set -euo pipefail
 # Verify current key
@@ -95,6 +97,7 @@ curl -s https://api.firecrawl.dev/v1/scrape \
 ```
 
 ### 402 — Credits Exhausted
+
 ```bash
 set -euo pipefail
 # Check balance
@@ -106,6 +109,7 @@ curl -s https://api.firecrawl.dev/v1/team/credits \
 ```
 
 ### 429 — Rate Limited
+
 ```typescript
 // Enable emergency rate limiting
 const EMERGENCY_DELAY_MS = 5000; // 5s between requests
@@ -117,6 +121,7 @@ async function emergencyScrape(url: string) {
 ```
 
 ### 500/503 — Firecrawl Outage
+
 ```typescript
 // Enable graceful degradation
 async function scrapeWithFallback(url: string) {
@@ -135,6 +140,7 @@ async function scrapeWithFallback(url: string) {
 ## Communication Templates
 
 ### Internal (Slack)
+
 ```
 P[1-4] INCIDENT: Firecrawl Integration
 Status: INVESTIGATING
@@ -147,6 +153,7 @@ Next update: [time]
 ## Post-Incident
 
 ### Evidence Collection
+
 ```bash
 set -euo pipefail
 # Collect debug bundle
@@ -159,6 +166,7 @@ kubectl logs -l app=my-app --since=1h | grep -i firecrawl > incident-$(date +%Y%
 ```
 
 ### Postmortem Template
+
 ```
 ## Incident: Firecrawl [Error Type]
 Date: YYYY-MM-DD | Duration: X hours | Severity: P[1-4]
@@ -180,6 +188,7 @@ Date: YYYY-MM-DD | Duration: X hours | Severity: P[1-4]
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Can't reach Firecrawl API | Network/DNS issue | Try from different network, check DNS |
@@ -188,9 +197,11 @@ Date: YYYY-MM-DD | Duration: X hours | Severity: P[1-4]
 | Webhook endpoint unreachable | Deployment issue | Check HTTPS cert, DNS, firewall |
 
 ## Resources
+
 - [Firecrawl Dashboard](https://firecrawl.dev/app)
 - [Firecrawl Status](https://firecrawl.dev/status)
 - [GitHub Issues](https://github.com/mendableai/firecrawl/issues)
 
 ## Next Steps
+
 For data handling, see `firecrawl-data-handling`.

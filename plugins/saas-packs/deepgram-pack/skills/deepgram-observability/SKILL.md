@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Deepgram Observability
 
 ## Overview
+
 Full observability stack for Deepgram: Prometheus metrics (request counts, latency histograms, audio processed, cost tracking), OpenTelemetry distributed tracing, structured JSON logging with Pino, Grafana dashboard JSON, and AlertManager rules.
 
 ## Four Pillars
@@ -361,6 +362,7 @@ app.get('/metrics', async (req, res) => {
 ```
 
 ## Output
+
 - Prometheus metrics (6 metrics covering requests, latency, usage, cost)
 - Instrumented Deepgram client with auto-tracking
 - OpenTelemetry distributed tracing with custom spans
@@ -369,6 +371,7 @@ app.get('/metrics', async (req, res) => {
 - AlertManager rules (5 alerts)
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Metrics not appearing | Registry not exported | Check `/metrics` endpoint |
@@ -377,6 +380,7 @@ app.get('/metrics', async (req, res) => {
 | Missing traces | OTEL exporter not configured | Set `OTEL_EXPORTER_OTLP_ENDPOINT` |
 
 ## Resources
+
 - [Prometheus Client](https://github.com/siimon/prom-client)
 - [OpenTelemetry Node.js](https://opentelemetry.io/docs/languages/js/)
 - [Pino Logger](https://getpino.io/)

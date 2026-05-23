@@ -20,6 +20,7 @@ Track cryptocurrency futures, options, and perpetual swaps with funding rates, o
 ## Usage
 
 The derivatives agent automatically activates when you discuss:
+
 - Futures, options, or perpetual swaps
 - Funding rates and open interest
 - Derivatives trading strategies
@@ -45,6 +46,7 @@ Compare funding rates across Binance, Bybit, and OKX
 ## Supported Markets
 
 ### Centralized Exchanges
+
 - **Binance Futures** - Largest volume, USDT and coin-margined
 - **Bybit** - Popular perpetuals, good liquidity
 - **OKX** - Comprehensive derivatives suite
@@ -53,6 +55,7 @@ Compare funding rates across Binance, Bybit, and OKX
 - **BitMEX** - Crypto perpetuals pioneer
 
 ### Decentralized Protocols
+
 - **dYdX** - Perpetuals on Ethereum/StarkEx
 - **GMX** - Perpetuals on Arbitrum/Avalanche
 - **Synthetix** - Synthetic assets and perps
@@ -83,22 +86,26 @@ Create a `.derivatives-config.json` file:
 ## Key Metrics Explained
 
 ### Funding Rates
+
 - **Positive funding**: Longs pay shorts (bullish sentiment)
 - **Negative funding**: Shorts pay longs (bearish sentiment)
 - **Extreme rates** (>0.1% 8-hour): Contrarian opportunity
 
 ### Open Interest (OI)
+
 - **Rising OI + Rising Price**: Strong bullish trend
 - **Rising OI + Falling Price**: Strong bearish trend
 - **Falling OI + Rising Price**: Short covering
 - **Falling OI + Falling Price**: Long liquidations
 
 ### Futures Basis
+
 - **Contango** (positive): Futures > spot (normal)
 - **Backwardation** (negative): Futures < spot (high demand)
 - **Cash-and-carry**: Buy spot + sell futures
 
 ### Options Greeks
+
 - **Delta**: Price sensitivity
 - **Gamma**: Rate of delta change
 - **Vega**: Volatility sensitivity
@@ -107,18 +114,23 @@ Create a `.derivatives-config.json` file:
 ## Trading Strategies
 
 ### 1. Funding Rate Arbitrage
+
 Long spot + Short perpetual when funding > 0.1%
 
 ### 2. Basis Trading
+
 Buy spot + Sell quarterly futures when basis > 5% annualized
 
 ### 3. Liquidation Hunting
+
 Target clusters of liquidations for potential cascades
 
 ### 4. Options Volatility Trading
+
 Buy straddles when IV low, sell spreads when IV high
 
 ### 5. Options Flow Following
+
 Track smart money positioning via unusual options activity
 
 ## Data Sources
@@ -132,6 +144,7 @@ Track smart money positioning via unusual options activity
 ## Risk Management
 
 ️ **Critical Considerations**:
+
 - Derivatives use leverage - high risk of liquidation
 - Funding costs accumulate in perpetuals
 - Options can expire worthless (theta decay)
@@ -139,6 +152,7 @@ Track smart money positioning via unusual options activity
 - Volatile markets can gap through stop losses
 
 ### Best Practices
+
 1. Use appropriate position sizing
 2. Monitor liquidation prices continuously
 3. Account for funding costs
@@ -150,6 +164,7 @@ Track smart money positioning via unusual options activity
 ️ **Crypto derivatives are extremely risky instruments.**
 
 Users should:
+
 - Fully understand leverage and liquidation mechanics
 - Only trade with funds they can afford to lose
 - Use proper position sizing and risk management

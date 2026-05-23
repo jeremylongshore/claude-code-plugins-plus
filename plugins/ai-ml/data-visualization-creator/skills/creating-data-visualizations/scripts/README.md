@@ -6,6 +6,6 @@ Bundled resources for data-visualization-creator skill
 - [x] chart_generator.py: Generates the visualization code (e.g., using Matplotlib, Seaborn, Plotly) based on the selected type and data.
 - [x] data_validator.py: Validates the input data format and content to prevent errors during visualization.
 
-
 ## Auto-Generated
+
 Scripts generated on 2025-12-10 03:48:17

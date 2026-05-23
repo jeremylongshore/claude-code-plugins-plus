@@ -10,6 +10,7 @@ granola-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Granola integrations to production
 **Workflow:** Part of the cicd skill category for Granola integration.
 **Relates to:** Other granola skills in this pack.

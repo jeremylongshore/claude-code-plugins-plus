@@ -15,6 +15,7 @@ When the user requests a Make.com scenario, design a complete visual workflow wi
 ### 1. AI Email Auto-Responder
 
 **Flow:**
+
 ```
 Gmail: Watch emails
   → OpenAI: Generate response
@@ -53,6 +54,7 @@ Gmail: Watch emails
 ### 2. Lead Qualification with AI
 
 **Flow:**
+
 ```
 Webhook: Custom webhook
   → OpenAI: Score lead
@@ -78,20 +80,22 @@ Webhook: Custom webhook
    - Fallback: All other cases
 
 4A. **Slack: Create a message** (High route)
-   - Channel: #sales-leads
-   - Text: ` Hot lead: {{1.name}} from {{1.company}} - Score: {{3.score}}`
+
+- Channel: #sales-leads
+- Text: `Hot lead: {{1.name}} from {{1.company}} - Score: {{3.score}}`
 
 4B. **HubSpot: Create a deal** (High route)
-   - Deal name: `{{1.company}} - {{1.name}}`
-   - Stage: Qualification
-   - Amount: `{{1.budget}}`
 
-5. **ActiveCampaign: Add contact to list** (Medium route)
+- Deal name: `{{1.company}} - {{1.name}}`
+- Stage: Qualification
+- Amount: `{{1.budget}}`
+
+1. **ActiveCampaign: Add contact to list** (Medium route)
    - Email: `{{1.email}}`
    - List: Nurture Campaign
    - Tags: `medium-priority,{{1.role}}`
 
-6. **Airtable: Create a record** (Low route)
+2. **Airtable: Create a record** (Low route)
    - Base: Leads
    - Table: Archived
    - Fields: Map all lead data + score
@@ -99,6 +103,7 @@ Webhook: Custom webhook
 ### 3. Content Distribution Pipeline
 
 **Flow:**
+
 ```
 RSS: Read feed
   → Filter: New items only
@@ -131,18 +136,22 @@ RSS: Read feed
    - Array: `{{4.platforms}}`
 
 6A. **Twitter: Create a tweet**
-   - Text: `{{4.content}}\n\n{{4.link}}`
+
+- Text: `{{4.content}}\n\n{{4.link}}`
 
 6B. **LinkedIn: Create a post**
-   - Text: `{{4.content}}\n\n{{4.link}}`
+
+- Text: `{{4.content}}\n\n{{4.link}}`
 
 6C. **Facebook: Create a post**
-   - Message: `{{4.content}}`
-   - Link: `{{4.link}}`
+
+- Message: `{{4.content}}`
+- Link: `{{4.link}}`
 
 ### 4. Document Processing Workflow
 
 **Flow:**
+
 ```
 Google Drive: Watch files
   → Filter: PDFs only
@@ -186,11 +195,13 @@ Google Drive: Watch files
    - Body: Summary of extracted data
 
 **Error Handler on all modules:**
+
 - Slack: Send message to #errors channel
 
 ### 5. Customer Support Automation
 
 **Flow:**
+
 ```
 Zendesk: Watch tickets
   → OpenAI: Classify urgency + category
@@ -215,19 +226,21 @@ Zendesk: Watch tickets
    - Route 3: Urgency = "low"
 
 4A. **Zendesk: Update ticket** (Urgent)
-   - Priority: urgent
-   - Assignee: Senior agent ID
+
+- Priority: urgent
+- Assignee: Senior agent ID
 
 4B. **Slack: Create message** (Urgent)
-   - Channel: #support-urgent
-   - Text: ` Urgent ticket: {{1.subject}} - {{1.ticket_id}}`
 
-5. **Zendesk: Update ticket** (Normal)
+- Channel: #support-urgent
+- Text: `Urgent ticket: {{1.subject}} - {{1.ticket_id}}`
+
+1. **Zendesk: Update ticket** (Normal)
    - Priority: normal
    - Comment: `{{2.suggested_response}}`
    - Status: pending
 
-6. **Zendesk: Update ticket** (Low)
+2. **Zendesk: Update ticket** (Low)
    - Comment: Auto-generated response + KB links
    - Status: solved
 

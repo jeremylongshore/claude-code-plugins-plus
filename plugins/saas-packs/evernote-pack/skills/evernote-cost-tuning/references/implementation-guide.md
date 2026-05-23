@@ -609,7 +609,6 @@ async function generateQuotaReport(quotaService, cleanupService) {
 }
 ```
 
-
 ## Account Limits by Tier
 
 | Feature | Basic | Personal | Professional |
@@ -619,7 +618,6 @@ async function generateQuotaReport(quotaService, cleanupService) {
 | Notebooks | 250 | 1,000 | 1,000 |
 | Tags | 100,000 | 100,000 | 100,000 |
 | Saved searches | 100 | 100 | 100 |
-
 
 ## Cost Optimization Checklist
 

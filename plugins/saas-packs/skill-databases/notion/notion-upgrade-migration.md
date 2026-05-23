@@ -10,6 +10,7 @@ notion-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Notion SDK upgrades
 **Workflow:** Part of the operations skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

@@ -128,6 +128,7 @@ const v2Body = {
 ```
 
 V2 webhooks support event filtering to reduce volume:
+
 ```typescript
 await client.post("/webhooks", {
   target_url: "https://yourapp.com/webhooks/attio",

@@ -10,6 +10,7 @@ firecrawl-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply security best practices for API key management, proxy configuration, request headers, and stealth scraping techniques.
 **Workflow:** Security hardening skill - establishes secure patterns for production scraping operations.
 **Relates to:** Builds on firecrawl-install-auth; extends into firecrawl-enterprise-rbac for team scenarios

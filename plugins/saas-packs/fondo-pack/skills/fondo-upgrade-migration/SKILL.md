@@ -39,6 +39,7 @@ Migrate to Fondo from DIY bookkeeping, other accounting firms, or platforms like
 ### Step 1: Prepare Migration Data
 
 Gather from your current provider:
+
 - [ ] QuickBooks Online backup (or GL export as CSV)
 - [ ] Bank statements (last 2 years for R&D credit)
 - [ ] Payroll records (all W-2 and 1099 data)

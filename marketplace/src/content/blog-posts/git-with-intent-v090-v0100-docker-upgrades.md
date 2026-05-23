@@ -34,6 +34,7 @@ A new `GET /health/providers` endpoint exposes circuit breaker visibility, so op
 ### Step Storage in Firestore
 
 Agent run steps migrated from in-memory storage to a Firestore subcollection with cursor-based pagination. New API endpoints:
+
 - `GET /tenants/:tenantId/runs/:runId/steps` — paginated step listing
 - `GET /tenants/:tenantId/runs/:runId/steps/:stepId` — individual step detail
 
@@ -42,6 +43,7 @@ This means agent execution history survives process restarts, and operators can 
 ### Budget and Quota Endpoints
 
 Two new endpoints for cost visibility:
+
 - `GET /tenants/:tenantId/budget` — agent-queryable budget status with GCP billing alert integration
 - `GET /tenants/:tenantId/quota` — per-action rate limit status
 
@@ -50,6 +52,7 @@ The budget endpoint connects to GCP billing budget alerts via Pub/Sub notificati
 ### Harness Engineering Hooks
 
 Five new hooks for agent lifecycle management:
+
 - **Budget management** — enforce cost control per agent per run
 - **Environment onboarding** — initialize new tenant environments
 - **Loop detection** — prevent infinite agent cycles (agent A calls agent B calls agent A)
@@ -113,4 +116,3 @@ This research doesn't ship code. But before committing engineering effort to an 
 Splitting v0.9.0 and v0.10.0 into two releases was the right call. Each release had a clear narrative and a focused changelog. One combined release would have been 40+ commits with no coherent story and a review surface too large to reason about.
 
 The Dependabot Node 25 situation reinforced something I keep re-learning: automated dependency tools suggest the newest version, but production systems need the most stable version. Those are different things, and the tooling doesn't distinguish between them for you.
-

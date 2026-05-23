@@ -89,6 +89,7 @@ Automate comprehensive API endpoint testing for REST and GraphQL APIs including 
 ## Examples
 
 **Supertest REST API test suite:**
+
 ```typescript
 import request from 'supertest';
 import { app } from '../src/app';
@@ -134,6 +135,7 @@ describe('POST /api/products', () => {
 ```
 
 **GraphQL API test:**
+
 ```typescript
 it('fetches user by ID', async () => {
   const query = `query { user(id: "1") { id name email } }`;

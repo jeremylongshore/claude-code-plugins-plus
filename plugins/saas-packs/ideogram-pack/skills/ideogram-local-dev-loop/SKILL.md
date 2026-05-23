@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ideogram Local Dev Loop
 
 ## Overview
+
 Set up a fast local development workflow for Ideogram integrations. Includes a typed client wrapper, mock server for offline development (avoids burning credits), and vitest integration for automated testing.
 
 ## Prerequisites
+
 - Completed `ideogram-install-auth` setup
 - Node.js 18+ with npm/pnpm
 - `IDEOGRAM_API_KEY` environment variable set
@@ -36,6 +38,7 @@ Set up a fast local development workflow for Ideogram integrations. Includes a t
 ## Instructions
 
 ### Step 1: Create Project Structure
+
 ```
 my-ideogram-project/
 ├── src/
@@ -53,6 +56,7 @@ my-ideogram-project/
 ```
 
 ### Step 2: Install Dependencies
+
 ```bash
 set -euo pipefail
 npm install dotenv
@@ -60,6 +64,7 @@ npm install -D typescript tsx vitest @types/node
 ```
 
 ### Step 3: Type Definitions
+
 ```typescript
 // src/ideogram/types.ts
 export type StyleType = "AUTO" | "GENERAL" | "REALISTIC" | "DESIGN" | "RENDER_3D" | "ANIME";
@@ -95,6 +100,7 @@ export interface GenerateResponse {
 ```
 
 ### Step 4: Client Wrapper
+
 ```typescript
 // src/ideogram/client.ts
 import type { GenerateRequest, GenerateResponse } from "./types";
@@ -133,6 +139,7 @@ export class IdeogramError extends Error {
 ```
 
 ### Step 5: Mock Server for Offline Development
+
 ```typescript
 // src/ideogram/mock-server.ts
 import type { GenerateResponse } from "./types";
@@ -154,6 +161,7 @@ export function mockGenerate(prompt: string): GenerateResponse {
 ```
 
 ### Step 6: Vitest Tests
+
 ```typescript
 // tests/ideogram.test.ts
 import { describe, it, expect, vi } from "vitest";
@@ -205,6 +213,7 @@ describe("mockGenerate", () => {
 ```
 
 ### Step 7: Development Scripts
+
 ```json
 {
   "scripts": {
@@ -217,6 +226,7 @@ describe("mockGenerate", () => {
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Module not found | Missing dependency | Run `npm install` |
@@ -225,15 +235,18 @@ describe("mockGenerate", () => {
 | Credits burned in tests | Using real API in CI | Mock `fetch` in test files |
 
 ## Output
+
 - Typed client wrapper for Ideogram API
 - Mock server for offline development
 - Vitest test suite with fetch mocking
 - Fast iteration cycle without spending credits
 
 ## Resources
+
 - [Ideogram API Reference](https://developer.ideogram.ai/api-reference)
 - [Vitest Documentation](https://vitest.dev/)
 - [tsx Runner](https://github.com/privatenumber/tsx)
 
 ## Next Steps
+
 See `ideogram-sdk-patterns` for production-ready code patterns.

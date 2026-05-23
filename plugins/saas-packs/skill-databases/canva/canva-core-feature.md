@@ -10,6 +10,7 @@ canva-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Canva core feature integration
 **Workflow:** Part of the onboarding skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

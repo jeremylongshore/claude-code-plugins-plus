@@ -3,6 +3,7 @@
 ## Environment Setup
 
 ### Environment Variables
+
 ```bash
 # .env file
 OPENROUTER_API_KEY=sk-or-v1-...
@@ -13,6 +14,7 @@ export OPENROUTER_API_KEY="sk-or-v1-..."
 ```
 
 ### Python Setup
+
 ```python
 import os
 from openai import OpenAI
@@ -24,6 +26,7 @@ client = OpenAI(
 ```
 
 ### TypeScript/Node Setup
+
 ```typescript
 import OpenAI from 'openai';
 

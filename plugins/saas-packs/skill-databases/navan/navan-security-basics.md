@@ -10,6 +10,7 @@ navan-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Navan security best practices
 **Workflow:** Part of the operations skill category for Navan integration.
 **Relates to:** Other navan skills in this pack.

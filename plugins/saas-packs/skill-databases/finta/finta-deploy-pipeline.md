@@ -10,6 +10,7 @@ finta-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Finta integrations to production
 **Workflow:** Part of the cicd skill category for Finta integration.
 **Relates to:** Other finta skills in this pack.

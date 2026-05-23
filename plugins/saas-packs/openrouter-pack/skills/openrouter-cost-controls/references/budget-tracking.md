@@ -3,6 +3,7 @@
 ## Budget Tracking
 
 ### Real-Time Cost Tracking
+
 ```python
 import json
 from pathlib import Path

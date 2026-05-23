@@ -10,6 +10,7 @@ firecrawl-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Analyze, plan, and execute FireCrawl SDK upgrades with breaking change detection, migration scripts, and rollback procedures.
 **Workflow:** Maintenance skill - manages SDK version transitions safely in production environments.
 **Relates to:** Supports all skills by maintaining SDK currency; critical for firecrawl-reference-architecture

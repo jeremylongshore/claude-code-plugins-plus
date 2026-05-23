@@ -62,6 +62,7 @@ console.log("User identified in Customer.io");
 ```
 
 **Key rules:**
+
 - `id` (first arg) should be your immutable database ID — never use email as ID
 - `email` attribute is required if you want to send email campaigns
 - `created_at` must be Unix timestamp in **seconds** (not ms) — `Math.floor(Date.now() / 1000)`
@@ -85,6 +86,7 @@ console.log("Event tracked in Customer.io");
 ```
 
 **Key rules:**
+
 - User must be identified before tracking events (call `identify()` first)
 - Event `name` is case-sensitive and must match your campaign trigger exactly
 - Use `snake_case` for event names — `signed_up`, not `Signed Up` or `signedUp`

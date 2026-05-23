@@ -292,6 +292,7 @@ class ApiMetrics:
 ```
 
 **Alert thresholds:**
+
 - Throttle rate > 1%: investigate hotspot user or batch consolidation
 - Avg latency > 2000ms: Graph service degradation or oversized payloads
 - Single user > 300 calls/hour: likely missing cache or polling too frequently

@@ -10,6 +10,7 @@ clickup-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working ClickUp example
 **Workflow:** Part of the onboarding skill category for ClickUp integration.
 **Relates to:** Other clickup skills in this pack.

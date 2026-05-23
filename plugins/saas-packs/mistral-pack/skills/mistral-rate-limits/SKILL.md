@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral Rate Limits
 
 ## Overview
+
 Rate limit management for Mistral AI API. Mistral enforces per-workspace RPM (requests/minute) and TPM (tokens/minute) limits that vary by usage tier (Experiment free tier vs Scale pay-as-you-go). View your workspace limits at [admin.mistral.ai/plateforme/limits](https://admin.mistral.ai/plateforme/limits).
 
 ## Prerequisites
+
 - Mistral API key configured
 - Understanding of workspace tier (Experiment vs Scale)
 - Application with retry infrastructure
@@ -43,6 +45,7 @@ Limits are set at the **workspace** level, not per key. All API keys in a worksp
 | `/v1/moderations` | RPM |
 
 **Headers returned on every response:**
+
 - `x-ratelimit-limit-requests` — your RPM cap
 - `x-ratelimit-remaining-requests` — remaining RPM
 - `x-ratelimit-limit-tokens` — your TPM cap
@@ -220,6 +223,7 @@ function rateLimitStatus(limiter: MistralRateLimiter) {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `429` errors | Exceeded RPM or TPM | Use rate limiter + exponential backoff |
@@ -228,11 +232,13 @@ function rateLimitStatus(limiter: MistralRateLimiter) {
 | Spike traffic blocked | No request smoothing | Queue requests, spread over window |
 
 ## Resources
+
 - [Rate Limits & Usage Tiers](https://docs.mistral.ai/deployment/ai-studio/tier/)
 - [Pricing](https://docs.mistral.ai/deployment/laplateforme/pricing/)
 - [Batch Inference](https://docs.mistral.ai/capabilities/batch/) — 50% cheaper, no rate limits
 
 ## Output
+
 - Token-aware rate limiter with RPM + TPM tracking
 - Retry logic respecting Retry-After headers
 - Model fallback routing for throughput

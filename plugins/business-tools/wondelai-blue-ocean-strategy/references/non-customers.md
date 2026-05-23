@@ -2,8 +2,8 @@
 
 Blue oceans are built on new demand, not on stealing market share from competitors. The largest untapped opportunity for any business lies in the people who are NOT its customers. W. Chan Kim and Renee Mauborgne identified three tiers of non-customers, each representing a different distance from your current market. Understanding and converting these non-customers is how blue oceans generate explosive growth.
 
-
 ## Table of Contents
+
 1. [Why Non-Customers Matter More Than Customers](#why-non-customers-matter-more-than-customers)
 2. [The Three Tiers](#the-three-tiers)
 3. [Non-Customer Analysis Worksheet](#non-customer-analysis-worksheet)
@@ -37,6 +37,7 @@ The ocean of non-customers is almost always larger than the pool of existing cus
 **Who they are:** People sitting on the edge of your market. They use your industry's offerings minimally, out of necessity, while actively searching for something better. They are mentally one foot out the door.
 
 **Characteristics:**
+
 - They use the industry's product/service, but reluctantly
 - They are the first to leave when an alternative appears
 - Their usage is minimal: lowest tier, least frequent, smallest purchase
@@ -44,6 +45,7 @@ The ocean of non-customers is almost always larger than the pool of existing cus
 - They show declining engagement over time
 
 **How to spot them:**
+
 - Customers on the cheapest plan who never upgrade
 - Buyers who purchase only when absolutely necessary
 - Users with declining usage patterns
@@ -63,6 +65,7 @@ Tier 1 non-customers of music purchasing were people who bought one or two songs
 **Who they are:** People who have consciously evaluated your industry's offerings and rejected them. They are aware of what you offer but have decided it is not for them. They either use an alternative from a different industry or go without.
 
 **Characteristics:**
+
 - They have considered your industry and said "no"
 - They can articulate specific reasons for their refusal
 - They may have tried the industry once and not returned
@@ -70,6 +73,7 @@ Tier 1 non-customers of music purchasing were people who bought one or two songs
 - They see the industry's offerings as unacceptable, unaffordable, or irrelevant
 
 **How to spot them:**
+
 - People who tried your product/industry once and never came back
 - People who use clearly inferior alternatives for reasons they can explain
 - People who say "I looked into it, but..."
@@ -89,6 +93,7 @@ Tier 2 non-customers of stock brokerage were young people who knew about investi
 **Who they are:** People in markets distant from yours who have never considered your industry's offerings as an option. They are the furthest from your current market, and the industry has never targeted or thought about them.
 
 **Characteristics:**
+
 - They have never considered your industry as a possible solution
 - They may not even know your industry exists in the form it takes
 - Their needs are being met (or not met) by something completely different
@@ -96,6 +101,7 @@ Tier 2 non-customers of stock brokerage were young people who knew about investi
 - They represent the largest potential pool but require the biggest strategic shift to reach
 
 **How to spot them:**
+
 - Demographic groups the industry has never targeted
 - Geographic markets the industry has never entered
 - Use cases the industry has never considered

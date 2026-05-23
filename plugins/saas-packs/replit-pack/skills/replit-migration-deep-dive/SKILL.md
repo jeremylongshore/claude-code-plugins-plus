@@ -27,15 +27,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Migration Deep Dive
 
 ## Current State
+
 !`cat .replit 2>/dev/null | head -10 || echo 'No .replit found'`
 !`cat Procfile 2>/dev/null || echo 'No Procfile (not Heroku)'`
 !`cat Dockerfile 2>/dev/null | head -10 || echo 'No Dockerfile'`
 !`cat railway.json 2>/dev/null || echo 'No railway.json'`
 
 ## Overview
+
 Comprehensive guide for migrating existing applications to Replit from Heroku, Railway, Vercel, Render, or local development. Covers converting configuration files, migrating databases, adapting to Replit's Nix-based environment, and setting up Replit-native features.
 
 ## Prerequisites
+
 - Source application with working deployment
 - Access to current database for export
 - Git repository with application code
@@ -54,6 +57,7 @@ Comprehensive guide for migrating existing applications to Replit from Heroku, R
 ## Instructions
 
 ### Step 1: Import from GitHub
+
 ```markdown
 1. Go to replit.com > Create Repl > Import from GitHub
 2. Paste your repository URL
@@ -64,6 +68,7 @@ Comprehensive guide for migrating existing applications to Replit from Heroku, R
 ### Step 2: Convert from Heroku
 
 **Procfile to .replit:**
+
 ```bash
 # Heroku Procfile
 web: npm start
@@ -86,6 +91,7 @@ NODE_ENV = "production"
 ```
 
 **Heroku addons to Replit services:**
+
 | Heroku Addon | Replit Equivalent |
 |-------------|-------------------|
 | Heroku Postgres | Replit PostgreSQL (Database pane) |
@@ -96,6 +102,7 @@ NODE_ENV = "production"
 | Cloudinary | Replit Object Storage or same |
 
 **Environment variables:**
+
 ```bash
 # Export from Heroku
 heroku config -s > heroku-env.txt
@@ -107,6 +114,7 @@ heroku config -s > heroku-env.txt
 ### Step 3: Convert from Railway
 
 **railway.json to .replit:**
+
 ```json
 // railway.json
 {
@@ -131,6 +139,7 @@ deploymentTarget = "autoscale"
 ### Step 4: Convert from Docker
 
 **Dockerfile to replit.nix:**
+
 ```dockerfile
 # Dockerfile
 FROM node:20-slim
@@ -166,6 +175,7 @@ deploymentTarget = "autoscale"
 ### Step 5: Database Migration
 
 **Export from source:**
+
 ```bash
 # From Heroku Postgres
 heroku pg:backups:capture
@@ -180,6 +190,7 @@ pg_dump --format=custom DATABASE_URL > backup.dump
 ```
 
 **Import to Replit PostgreSQL:**
+
 ```bash
 # In Replit Shell, after provisioning PostgreSQL in Database pane:
 
@@ -195,6 +206,7 @@ node scripts/migrate-data.js
 ```
 
 **Migrate from non-PostgreSQL (MongoDB, etc.):**
+
 ```typescript
 // scripts/migrate-from-mongo.ts
 import { MongoClient } from 'mongodb';
@@ -233,6 +245,7 @@ migrate();
 ```
 
 ### Step 6: Post-Migration Checklist
+
 ```markdown
 ## After Migration
 
@@ -270,6 +283,7 @@ migrate();
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Missing system package | Not in replit.nix | Add to deps (e.g., pkgs.openssl) |
@@ -279,6 +293,7 @@ migrate();
 | Static files not served | Wrong public directory | Set publicDir in deployment config |
 
 ## Resources
+
 - [Import from GitHub](https://docs.replit.com/hosting/deployments/deploying-a-github-repository)
 - [Import from Bolt](https://docs.replit.com/getting-started/quickstarts/import-from-bolt)
 - [Import from Lovable](https://docs.replit.com/getting-started/quickstarts/import-from-lovable)
@@ -286,4 +301,5 @@ migrate();
 - [Replit Deployments](https://docs.replit.com/hosting/deployments)
 
 ## Next Steps
+
 For advanced troubleshooting after migration, see `replit-advanced-troubleshooting`.

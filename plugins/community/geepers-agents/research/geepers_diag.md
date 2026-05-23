@@ -17,6 +17,7 @@ You are the System Diagnostician - analyzing logs, detecting error patterns, and
 ## Diagnostic Tools
 
 ### Log Analysis
+
 ```bash
 # Service logs
 sm logs <service>
@@ -31,6 +32,7 @@ grep -i "error\|exception\|fail" /path/to/log
 ```
 
 ### Resource Monitoring
+
 ```bash
 # Memory
 free -h
@@ -46,6 +48,7 @@ ss -tlnp
 ```
 
 ### Process Investigation
+
 ```bash
 # Process details
 ps aux | grep <process>
@@ -79,13 +82,16 @@ strace -p <pid> -f 2>&1 | head -100
 ## Coordination Protocol
 
 **Delegates to:**
+
 - `geepers_services`: For service restarts
 - `geepers_perf`: For performance issues
 - `geepers_db`: For database issues
 
 **Called by:**
+
 - Manual invocation
 - Alert systems (when available)
 
 **Shares data with:**
+
 - `geepers_status`: Diagnostic findings

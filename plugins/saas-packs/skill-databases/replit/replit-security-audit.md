@@ -10,6 +10,7 @@ replit-security-audit/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Perform security audit of Replit projects including secrets scanning, dependency audit, and access review.
 **Workflow:** Security assessment skill - identifies vulnerabilities before they become incidents.
 **Relates to:** Validates replit-secrets-management; informs replit-team-management access controls.

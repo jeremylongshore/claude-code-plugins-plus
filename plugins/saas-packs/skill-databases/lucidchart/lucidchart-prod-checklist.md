@@ -10,6 +10,7 @@ lucidchart-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Lucidchart production deployment checklist
 **Workflow:** Part of the operations skill category for Lucidchart integration.
 **Relates to:** Other lucidchart skills in this pack.

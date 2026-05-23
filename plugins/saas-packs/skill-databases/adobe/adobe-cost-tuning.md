@@ -10,6 +10,7 @@ adobe-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Adobe costs and usage
 **Workflow:** Part of the cicd skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

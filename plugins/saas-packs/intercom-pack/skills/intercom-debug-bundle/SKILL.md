@@ -165,12 +165,14 @@ echo "Review for sensitive data before sharing with support."
 ## Sensitive Data Policy
 
 **ALWAYS redact before sharing:**
+
 - Access tokens and OAuth secrets
 - Webhook signing secrets
 - Email addresses and PII
 - Customer conversation content
 
 **Safe to include:**
+
 - HTTP status codes and error codes
 - `request_id` from error responses (Intercom support needs these)
 - Rate limit header values

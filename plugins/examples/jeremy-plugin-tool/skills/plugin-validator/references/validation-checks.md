@@ -3,12 +3,14 @@
 ## Validation Checks
 
 ### 1. Required Files
+
 - ✅ `.claude-plugin/plugin.json` exists
 - ✅ `README.md` exists and not empty
 - ✅ `LICENSE` file exists
 - ✅ At least one component directory (commands/, agents/, skills/, hooks/, mcp/)
 
 ### 2. Plugin.json Schema
+
 ```bash
 # Required fields:
 - name (kebab-case, lowercase, hyphens only)
@@ -25,7 +27,9 @@
 ```
 
 ### 3. Frontmatter Validation
+
 **For Commands (commands/*.md):**
+
 ```yaml
 ---
 name: command-name
@@ -35,6 +39,7 @@ model: sonnet|opus|haiku
 ```
 
 **For Agents (agents/*.md):**
+
 ```yaml
 ---
 name: agent-name
@@ -44,6 +49,7 @@ model: sonnet|opus|haiku
 ```
 
 **For Skills (skills/*/SKILL.md):**
+
 ```yaml
 ---
 name: Skill Name
@@ -53,7 +59,9 @@ allowed-tools: Tool1, Tool2, Tool3  # optional
 ```
 
 ### 4. Directory Structure
+
 Validates proper hierarchy:
+
 ```
 plugin-name/
 ├── .claude-plugin/          # Required
@@ -74,6 +82,7 @@ plugin-name/
 ```
 
 ### 5. Script Permissions
+
 ```bash
 # All .sh files must be executable
 find . -name "*.sh" ! -perm -u+x
@@ -81,6 +90,7 @@ find . -name "*.sh" ! -perm -u+x
 ```
 
 ### 6. JSON Validation
+
 ```bash
 # All JSON must be valid
 jq empty plugin.json
@@ -89,6 +99,7 @@ jq empty hooks/hooks.json
 ```
 
 ### 7. Security Scans
+
 - ❌ No hardcoded secrets (API keys, tokens, passwords)
 - ❌ No AWS keys (AKIA...)
 - ❌ No private keys (BEGIN PRIVATE KEY)
@@ -96,6 +107,7 @@ jq empty hooks/hooks.json
 - ❌ No suspicious URLs (non-HTTPS, IP addresses)
 
 ### 8. Marketplace Compliance
+
 - ✅ Plugin listed in marketplace.extended.json
 - ✅ Source path matches actual location
 - ✅ Version matches between plugin.json and catalog
@@ -103,6 +115,7 @@ jq empty hooks/hooks.json
 - ✅ No duplicate plugin names
 
 ### 9. README Requirements
+
 - ✅ Has installation instructions
 - ✅ Has usage examples
 - ✅ Has description section
@@ -110,6 +123,8 @@ jq empty hooks/hooks.json
 - ✅ No broken links
 
 ### 10. Path Variables
+
 For hooks:
+
 - ✅ Uses `${CLAUDE_PLUGIN_ROOT}` not absolute paths
 - ✅ No hardcoded /home/ or /Users/ paths

@@ -10,6 +10,7 @@ procore-reliability-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Procore reliability patterns
 **Workflow:** Part of the enterprise skill category for Procore integration.
 **Relates to:** Other procore skills in this pack.

@@ -3,6 +3,7 @@
 ## Security Audit Checklist
 
 ### Access Control Audit
+
 ```
 [ ] User accounts reviewed (quarterly)
 [ ] Inactive accounts disabled
@@ -15,6 +16,7 @@
 ```
 
 ### Data Protection Audit
+
 ```
 [ ] Privacy Mode configured appropriately
 [ ] .cursorignore covers sensitive files
@@ -26,6 +28,7 @@
 ```
 
 ### Configuration Audit
+
 ```
 [ ] .cursorrules reviewed
 [ ] Indexing exclusions verified

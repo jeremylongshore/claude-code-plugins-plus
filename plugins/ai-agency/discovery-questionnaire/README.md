@@ -35,6 +35,7 @@ Generate professional discovery questionnaires for AI agency client projects.
 ## Example Output
 
 Complete questionnaire with:
+
 - Business context questions
 - Technical requirements
 - Stakeholder mapping

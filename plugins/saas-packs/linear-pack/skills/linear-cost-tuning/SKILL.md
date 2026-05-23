@@ -23,6 +23,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear Cost Tuning
 
 ## Overview
+
 Optimize Linear API usage to stay within rate budgets and minimize infrastructure costs. Linear's API is free (no per-request billing), but rate limits (5,000 requests/hour, 250,000 complexity/hour) constrain throughput. Efficient patterns let you do more within these limits.
 
 ## Cost Factors
@@ -38,6 +39,7 @@ Optimize Linear API usage to stay within rate budgets and minimize infrastructur
 ## Instructions
 
 ### Step 1: Audit Current Usage
+
 ```typescript
 import { LinearClient } from "@linear/sdk";
 
@@ -70,6 +72,7 @@ const tracker = new UsageTracker();
 ```
 
 ### Step 2: Replace Polling with Webhooks
+
 The single biggest optimization. A polling loop checking every minute uses 1,440 requests/day. A webhook uses zero.
 
 ```typescript
@@ -95,6 +98,7 @@ app.post("/webhooks/linear", express.raw({ type: "*/*" }), (req, res) => {
 ```
 
 ### Step 3: Minimize Query Complexity
+
 ```typescript
 // BAD: ~12,500 pts — deeply nested with large page
 // issues(50) * (labels(50 default) * fields + comments(50) * user)
@@ -128,6 +132,7 @@ const issueDetail = `query($id: String!) {
 ```
 
 ### Step 4: Request Coalescing
+
 Deduplicate concurrent identical requests.
 
 ```typescript
@@ -150,6 +155,7 @@ async function getTeam(teamKey: string) {
 ```
 
 ### Step 5: Cache with Smart TTLs
+
 ```typescript
 const CACHE_TTLS = {
   teams: 600,        // 10 min — teams almost never change
@@ -164,6 +170,7 @@ const CACHE_TTLS = {
 ```
 
 ### Step 6: Filter Webhook Events
+
 Skip irrelevant events to reduce processing costs.
 
 ```typescript
@@ -188,6 +195,7 @@ async function processEvent(event: any): Promise<void> {
 ```
 
 ### Step 7: Incremental Sync Pattern
+
 ```typescript
 // Instead of fetching ALL issues every sync:
 // Sort by updatedAt, stop when you reach already-synced data
@@ -219,6 +227,7 @@ async function incrementalSync(client: LinearClient, lastSyncTime: string) {
 ```
 
 ## Optimization Checklist
+
 - [ ] Replace all polling with webhooks
 - [ ] Implement request caching (static data: 10-30 min TTL)
 - [ ] Add request coalescing for concurrent identical calls
@@ -239,6 +248,7 @@ async function incrementalSync(client: LinearClient, lastSyncTime: string) {
 | Webhook processing overload | Unfiltered events | Add type/team/field filtering |
 
 ## Resources
+
 - [Linear Rate Limiting](https://linear.app/developers/rate-limiting)
 - [Linear Best Practices](https://linear.app/developers/graphql)
 - [Webhooks](https://linear.app/developers/webhooks)

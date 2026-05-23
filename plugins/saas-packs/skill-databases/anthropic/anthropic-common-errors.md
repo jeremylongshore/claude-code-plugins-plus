@@ -10,6 +10,7 @@ anthropic-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Anthropic common errors
 **Workflow:** Part of the operations skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

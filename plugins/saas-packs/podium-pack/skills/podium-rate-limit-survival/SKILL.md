@@ -346,6 +346,7 @@ python3 scripts/bucket_simulator.py \
 ```
 
 Output:
+
 ```json
 {
   "trace_requests": 4127,

@@ -36,6 +36,7 @@ Error: health checks for machine e784... failed
 **Causes:** App not listening on correct port, slow startup, missing dependencies.
 
 **Fix:**
+
 ```bash
 # Check logs for startup errors
 fly logs -a my-app
@@ -48,6 +49,7 @@ fly ssh console -C "curl localhost:3000/health"
 
 # Increase health check grace period
 ```
+
 ```toml
 # fly.toml — give app more time to start
 [http_service.checks]
@@ -63,6 +65,7 @@ Error: failed to build: exit code 1
 ```
 
 **Fix:**
+
 ```bash
 # Test Docker build locally first
 docker build -t test .
@@ -81,6 +84,7 @@ Error: machine e784... failed to start
 ```
 
 **Fix:**
+
 ```bash
 # Check machine events
 fly machine status e784...
@@ -99,6 +103,7 @@ Error: connection refused my-api.internal:3000
 ```
 
 **Fix:**
+
 ```bash
 # Verify target app is running
 fly status -a my-api
@@ -117,6 +122,7 @@ Error: volume vol_xxx not found in region iad
 ```
 
 **Fix:**
+
 ```bash
 # Volume must be in same region as machine
 fly volumes list -a my-app  # Check region

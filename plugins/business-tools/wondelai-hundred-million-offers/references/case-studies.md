@@ -2,8 +2,8 @@
 
 Theory is only useful when applied. This reference provides detailed breakdowns of Grand Slam Offers across six different business types: SaaS, coaching/consulting, e-commerce, agency, local business, and info product. Each case study follows the same structure: context, original offer, Grand Slam redesign, and key lessons. These are composite examples drawn from common patterns in each industry, not specific company case studies.
 
-
 ## Table of Contents
+
 1. [Case Study 1: SaaS -- Project Management Tool](#case-study-1-saas-project-management-tool)
 2. [Case Study 2: Coaching/Consulting -- Business Coach](#case-study-2-coachingconsulting-business-coach)
 3. [Case Study 3: E-Commerce -- Skincare Brand](#case-study-3-e-commerce-skincare-brand)
@@ -29,6 +29,7 @@ A B2B project management SaaS serving marketing agencies. The product is solid b
 - Generic marketing: "The project management tool for teams"
 
 **Value Equation diagnosis:**
+
 - Dream Outcome: 3/10 (vague, no specific promise)
 - Perceived Likelihood: 2/10 (no proof it works better than alternatives)
 - Time Delay: 4/10 (14-day trial, but no quick win)
@@ -41,11 +42,13 @@ A B2B project management SaaS serving marketing agencies. The product is solid b
 **Target starving crowd:** Marketing agencies with 5-20 employees struggling with missed deadlines and scope creep.
 
 **Core offer ($99/month per user):**
+
 - Full platform access with agency-specific templates pre-loaded
 - Dedicated onboarding specialist who migrates data from their existing tool
 - Client-facing dashboard (clients can see progress without email check-ins)
 
 **Bonuses:**
+
 1. "The Agency Workflow Library" -- 30 pre-built project templates for common agency deliverables (SEO audit, website redesign, content calendar). $1,500 value.
 2. "The Scope Creep Eliminator" -- built-in scope tracking and auto-alerts when projects exceed agreed scope. $2,000 value.
 3. "Priority Support Fast Lane" -- responses within 2 hours, not 24. Dedicated Slack channel. $1,200/year value.
@@ -60,12 +63,14 @@ A B2B project management SaaS serving marketing agencies. The product is solid b
 ### Results and Lessons
 
 **Value Equation after redesign:**
+
 - Dream Outcome: 8/10 (specific: manage clients, hit deadlines, one dashboard)
 - Perceived Likelihood: 7/10 (onboarding specialist, pre-built templates, guarantee)
 - Time Delay: 8/10 (data migration done for them, templates pre-loaded, day-1 ready)
 - Effort & Sacrifice: 8/10 (white-glove onboarding, client onboarding kit provided)
 
 **Key lessons:**
+
 - Niching from "teams" to "marketing agencies" made the messaging 10x more relevant
 - Done-for-you migration eliminated the #1 barrier to switching
 - Pre-built templates provided an immediate "Day 1 Win"
@@ -86,6 +91,7 @@ A business coach helping service-based entrepreneurs grow from $10K to $50K mont
 - Marketing: "Grow your business with personalized coaching"
 
 **Value Equation diagnosis:**
+
 - Dream Outcome: 4/10 ("grow your business" is vague)
 - Perceived Likelihood: 5/10 (1-on-1 attention is good, but no system)
 - Time Delay: 3/10 (month-to-month with no defined endpoint)
@@ -98,11 +104,13 @@ A business coach helping service-based entrepreneurs grow from $10K to $50K mont
 **Target starving crowd:** Service-based entrepreneurs (consultants, designers, coaches) earning $8K-$15K/month, working 60+ hours, wanting to scale without hiring a large team.
 
 **Core offer ($5,000 for 120-day program):**
+
 - 12-week group coaching program (weekly 90-minute calls, max 15 participants)
 - Private community for daily support and accountability
 - Proprietary "Scale Without Staff" methodology and workbook
 
 **Bonuses:**
+
 1. "The Offer Architecture Workshop" -- 3-hour live workshop where participants build their Grand Slam Offer with real-time feedback. $2,000 value.
 2. "The $50K Sales Script Vault" -- 15 proven scripts for discovery calls, proposals, and follow-ups. $997 value.
 3. "The Pricing Power Calculator" -- spreadsheet tool that calculates their ideal price based on value delivered. $500 value.
@@ -118,6 +126,7 @@ A business coach helping service-based entrepreneurs grow from $10K to $50K mont
 ### Results and Lessons
 
 **Key lessons:**
+
 - Moving from 1-on-1 ($500/month) to group coaching ($5,000/cohort) increased revenue capacity from $4,000/month to $75,000/cohort
 - The specific outcome ($50K months) attracted the right clients and repelled tire-kickers
 - The conditional guarantee filtered for serious participants
@@ -143,11 +152,13 @@ A DTC skincare brand selling individual products ($25-$65 each). Average order v
 **Target starving crowd:** Women ages 25-40 with persistent acne or uneven skin who have tried 3+ products without lasting results.
 
 **Core offer ($149 for complete kit):**
+
 - Curated 4-product regimen (cleanser, serum, moisturizer, treatment) selected for their skin type
 - 90-day supply of all four products
 - Skincare routine card with morning and evening instructions
 
 **Bonuses:**
+
 1. "The Skin Diary" -- printable journal to track daily skin progress with photo prompts. $25 value.
 2. "The Ingredient Decoder Guide" -- PDF explaining what every ingredient does and why it's in the formula. $15 value.
 3. "Dr. [Name]'s Nutrition for Skin Health Guide" -- 20-page guide on dietary changes that accelerate skin clearing. $45 value (partner bonus with a nutritionist).
@@ -160,6 +171,7 @@ A DTC skincare brand selling individual products ($25-$65 each). Average order v
 ### Results and Lessons
 
 **Key lessons:**
+
 - Bundling 4 products into a "system" increased AOV from $38 to $149 (3.9x)
 - The 90-day supply created a built-in reorder cycle
 - Progress photo reviews created accountability and engagement
@@ -186,12 +198,14 @@ A digital marketing agency selling "social media management" at $2,000/month. Co
 **Target starving crowd:** B2B professional services firms (law firms, accounting firms, consulting firms) with $1M-$10M revenue wanting to generate leads from LinkedIn and other social channels.
 
 **Core offer ($5,000/month, 6-month minimum):**
+
 - Full social media strategy, content creation, and management
 - LinkedIn outreach campaign (personalized connection and messaging sequences)
 - Monthly lead pipeline report with attribution
 - Bi-weekly strategy calls with account manager
 
 **Bonuses:**
+
 1. "The Authority Content Library" -- 12 months of industry-specific content pillars and post templates. $3,000 value.
 2. "The LinkedIn Profile Optimization" -- complete overhaul of the founding partner's LinkedIn profile. $1,500 value.
 3. "The Competitor Intelligence Report" -- quarterly analysis of what competitors are doing on social. $2,000/year value.
@@ -204,6 +218,7 @@ A digital marketing agency selling "social media management" at $2,000/month. Co
 ### Results and Lessons
 
 **Key lessons:**
+
 - Shifting from deliverables ("3 posts/week") to outcomes ("50 qualified leads") changed the conversation entirely
 - The performance guarantee eliminated the ROI question
 - Niching to B2B professional services allowed hyper-relevant content and case studies
@@ -229,12 +244,14 @@ A personal training studio in a mid-size city. Selling individual training sessi
 **Target starving crowd:** Professionals ages 30-50 who have gained weight since their 20s, tried dieting alone, and want structured accountability without extreme measures.
 
 **Core offer ($2,997 for 90 days):**
+
 - 3x/week personal training (36 sessions)
 - Custom nutrition plan with weekly adjustments
 - Weekly body composition scans (InBody)
 - Private WhatsApp group for daily check-ins
 
 **Bonuses:**
+
 1. "The Meal Prep Masterclass" -- 2-hour Saturday workshop on prepping a week of meals in 90 minutes. $200 value.
 2. "The Home Workout Emergency Kit" -- 12 follow-along videos for when they can't make it to the gym. $150 value.
 3. "The Restaurant Survival Guide" -- how to eat out without derailing progress. $50 value.
@@ -247,6 +264,7 @@ A personal training studio in a mid-size city. Selling individual training sessi
 ### Results and Lessons
 
 **Key lessons:**
+
 - Moving from per-session pricing ($75 x 36 = $2,700) to a bundled challenge ($2,997) slightly increased revenue while dramatically increasing commitment
 - The "challenge" container word created energy and community
 - Weekly body composition scans provided data-driven motivation
@@ -273,12 +291,14 @@ An online course teaching freelance copywriters how to get clients. Current prod
 **Target starving crowd:** Aspiring freelance copywriters who have learned the craft but cannot find paying clients. They know how to write but not how to sell themselves.
 
 **Core offer ($997 one-time or 3 x $397):**
+
 - 8-module course focused exclusively on client acquisition (not copywriting skill)
 - Weekly live Q&A calls for 8 weeks
 - Private Slack community with peer accountability
 - Portfolio review by an experienced copywriter
 
 **Bonuses:**
+
 1. "The Cold Outreach Swipe File" -- 25 proven cold email templates for landing copywriting clients. $497 value.
 2. "The Pricing Calculator" -- interactive spreadsheet that calculates project rates based on client revenue impact. $200 value.
 3. "The Proposal Template Pack" -- 5 proposal templates for different project types (landing page, email sequence, ad copy, case study, website). $300 value.
@@ -292,6 +312,7 @@ An online course teaching freelance copywriters how to get clients. Current prod
 ### Results and Lessons
 
 **Key lessons:**
+
 - Narrowing the promise from "learn copywriting" to "land 5 clients" addressed the actual pain point
 - The conditional guarantee (complete modules + attend calls + send outreach) filtered for action-takers
 - The portfolio review bonus addressed the "but I don't have a portfolio" objection

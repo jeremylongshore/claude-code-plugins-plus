@@ -10,6 +10,7 @@ notion-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Notion multi-environment setup
 **Workflow:** Part of the enterprise skill category for Notion integration.
 **Relates to:** Other notion skills in this pack.

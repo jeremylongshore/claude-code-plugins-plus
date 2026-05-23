@@ -10,6 +10,7 @@ vercel-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Vercel CI/CD integration with GitHub Actions, automated testing, and release workflows.
 **Workflow:** Set up once per repository; maintains automated testing and deployment pipeline.
 **Relates to:** Supports vercel-upgrade-migration; leads to vercel-deploy-integration for platform deployment

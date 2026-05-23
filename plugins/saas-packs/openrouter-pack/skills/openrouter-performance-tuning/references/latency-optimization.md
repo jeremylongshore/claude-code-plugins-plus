@@ -3,6 +3,7 @@
 ## Latency Optimization
 
 ### Connection Pooling
+
 ```python
 import httpx
 from openai import OpenAI
@@ -25,6 +26,7 @@ client = OpenAI(
 ```
 
 ### Async for Concurrency
+
 ```python
 from openai import AsyncOpenAI
 import asyncio

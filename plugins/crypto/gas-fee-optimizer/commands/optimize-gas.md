@@ -119,12 +119,14 @@ Present analysis in this structure:
 ## Gas Calculation Formulas
 
 ### EIP-1559 (Current Ethereum)
+
 ```
 Max Fee = Base Fee + Priority Fee
 Total Cost = (Base Fee + Priority Fee) × Gas Units
 ```
 
 ### Typical Gas Limits
+
 - ETH transfer: 21,000 gas
 - ERC-20 transfer: ~65,000 gas
 - Token swap: ~150,000 gas
@@ -134,6 +136,7 @@ Total Cost = (Base Fee + Priority Fee) × Gas Units
 ## Data to Reference
 
 When providing recommendations, check:
+
 - **Etherscan Gas Tracker**: Current gas prices
 - **ETH Gas Station**: Historical patterns
 - **Blocknative**: Real-time mempool
@@ -143,6 +146,7 @@ When providing recommendations, check:
 ## Example Queries
 
 Users might ask:
+
 - "What's the current gas price?"
 - "Should I mint this NFT now or wait?"
 - "Compare gas costs: Ethereum vs Arbitrum"
@@ -152,11 +156,13 @@ Users might ask:
 ## Important Considerations
 
 ### Transaction Urgency
+
 - **Time-sensitive** (arbitrage, auctions): Pay premium
 - **Routine** (transfers, swaps): Wait for optimal times
 - **Non-urgent** (portfolio rebalancing): Be patient
 
 ### Risk Factors
+
 - Gas prices can spike unexpectedly
 - Waiting too long may miss opportunities
 - L2 bridges have their own costs
@@ -165,6 +171,7 @@ Users might ask:
 ## When to Recommend L2s
 
 Suggest Layer 2 when:
+
 - User makes frequent transactions
 - Total value justifies bridge costs
 - Supported protocols exist on L2

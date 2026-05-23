@@ -10,6 +10,7 @@ lucidchart-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Lucidchart CI/CD integration
 **Workflow:** Part of the cicd skill category for Lucidchart integration.
 **Relates to:** Other lucidchart skills in this pack.

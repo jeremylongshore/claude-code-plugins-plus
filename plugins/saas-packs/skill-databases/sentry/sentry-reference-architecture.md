@@ -10,6 +10,7 @@ sentry-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Best-practice Sentry architecture patterns for enterprise integration including project structure, configuration patterns, and distributed tracing.
 **Workflow:** Reference when designing Sentry integration architecture. Provides patterns for single applications, microservices, and multi-environment setups.
 **Relates to:** Guides implementation of many other skills. Works with `sentry-architecture-variants` for specific application types.

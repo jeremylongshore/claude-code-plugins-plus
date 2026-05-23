@@ -7,22 +7,26 @@ Install the CLI tools needed by each skill. You can install per-skill or all at 
 ## Per-Skill Install
 
 ### data-processing
+
 ```bash
 brew install jq yq gron miller xsv duckdb
 ```
 
 ### security-scanning
+
 ```bash
 brew install trivy shellcheck sops
 ```
 
 ### api-testing
+
 ```bash
 brew install hurl
 brew install projectdiscovery/tap/httpx
 ```
 
 ### web-crawling
+
 ```bash
 # Katana (Homebrew)
 brew install katana
@@ -36,6 +40,7 @@ pipx install scrapy
 ```
 
 ### web-research
+
 ```bash
 # Homebrew
 brew install yt-dlp
@@ -45,11 +50,13 @@ pipx install newspaper4k --include-deps
 ```
 
 ### python-tooling
+
 ```bash
 brew install uv ruff
 ```
 
 ### ci-automation
+
 ```bash
 brew install gh just act git-cliff restic
 gh auth login

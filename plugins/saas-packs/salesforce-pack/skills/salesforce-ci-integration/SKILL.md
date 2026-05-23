@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code
 # Salesforce CI Integration
 
 ## Overview
+
 Set up CI/CD pipelines for Salesforce using GitHub Actions with JWT-based authentication, automated Apex testing, and metadata deployment.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - Salesforce Connected App with JWT Bearer flow configured
 - RSA key pair (private key stored as GitHub Secret)
@@ -36,6 +38,7 @@ Set up CI/CD pipelines for Salesforce using GitHub Actions with JWT-based authen
 ## Instructions
 
 ### Step 1: Create GitHub Actions Workflow
+
 Create `.github/workflows/salesforce-ci.yml`:
 
 ```yaml
@@ -113,6 +116,7 @@ jobs:
 ```
 
 ### Step 2: Configure GitHub Secrets
+
 ```bash
 # JWT private key (from your RSA key pair)
 gh secret set SF_JWT_KEY < server.key
@@ -127,6 +131,7 @@ gh secret set SF_SECURITY_TOKEN --body "token"
 ```
 
 ### Step 3: Generate JWT Key Pair
+
 ```bash
 # Generate RSA key pair for JWT Bearer flow
 openssl genrsa -out server.key 2048
@@ -138,6 +143,7 @@ openssl req -new -x509 -key server.key -out server.crt -days 365 \
 ```
 
 ### Step 4: Write Integration Tests
+
 ```typescript
 import { describe, it, expect } from 'vitest';
 import jsforce from 'jsforce';
@@ -177,6 +183,7 @@ describe('Salesforce Integration', () => {
 ```
 
 ### Step 5: Metadata Deployment Pipeline
+
 ```yaml
 # Deploy on merge to main
 deploy:
@@ -205,6 +212,7 @@ deploy:
 ```
 
 ## Output
+
 - JWT-authenticated CI pipeline
 - Automated Apex test execution on PR
 - Integration tests validating jsforce operations
@@ -212,6 +220,7 @@ deploy:
 - API limit monitoring in CI
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `INVALID_GRANT` | JWT cert not uploaded or user not pre-authorized | Upload cert to Connected App; add user to pre-authorized profiles |
@@ -220,9 +229,11 @@ deploy:
 | API limit in CI | Too many test runs/day | Use sandbox instead of production for CI |
 
 ## Resources
+
 - [Salesforce CLI JWT Auth](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_jwt_flow.htm)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Apex Testing Best Practices](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_testing.htm)
 
 ## Next Steps
+
 For deployment patterns, see `salesforce-deploy-integration`.

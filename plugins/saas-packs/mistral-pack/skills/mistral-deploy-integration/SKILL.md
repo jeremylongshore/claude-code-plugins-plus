@@ -24,9 +24,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral AI Deploy Integration
 
 ## Overview
+
 Deploy Mistral AI-powered applications to production with secure API key management. Covers Vercel (Edge + Serverless), Docker, Cloud Run, and self-hosted vLLM deployments. All connect to `api.mistral.ai` or your own inference endpoint.
 
 ## Prerequisites
+
 - Mistral AI production API key
 - Platform CLI installed (vercel, docker, or gcloud)
 - Application using `@mistralai/mistralai` SDK
@@ -204,6 +206,7 @@ export async function GET() {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | API key not found | Missing env/secret | Verify secret config on platform |
@@ -212,11 +215,13 @@ export async function GET() {
 | vLLM OOM | Model too large for GPU | Use quantized model or smaller variant |
 
 ## Resources
+
 - [Mistral AI Documentation](https://docs.mistral.ai/)
 - [vLLM Deployment](https://docs.mistral.ai/deployment/self-deployment/vllm/)
 - [Cloud Deployment](https://docs.mistral.ai/deployment/ai-studio/)
 
 ## Output
+
 - Platform-specific deployment configurations
 - Secure API key management per platform
 - Streaming support for Edge/Serverless

@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq SDK Patterns
 
 ## Overview
+
 Production patterns for the `groq-sdk` package. The Groq SDK mirrors the OpenAI SDK interface (`chat.completions.create`), so patterns feel familiar but must account for Groq-specific behavior: extreme speed (500+ tok/s), aggressive rate limits on free tier, and unique response metadata like `queue_time` and `completion_time`.
 
 ## Prerequisites
+
 - `groq-sdk` installed
 - Understanding of async/await and error handling
 - Familiarity with OpenAI SDK patterns (Groq is API-compatible)
@@ -35,6 +37,7 @@ Production patterns for the `groq-sdk` package. The Groq SDK mirrors the OpenAI 
 ## Instructions
 
 ### Step 1: Typed Client Singleton
+
 ```typescript
 // src/groq/client.ts
 import Groq from "groq-sdk";
@@ -54,6 +57,7 @@ export function getGroq(): Groq {
 ```
 
 ### Step 2: Type-Safe Completion Wrapper
+
 ```typescript
 import Groq from "groq-sdk";
 import type { ChatCompletionMessageParam } from "groq-sdk/resources/chat/completions";
@@ -98,6 +102,7 @@ async function complete(
 ```
 
 ### Step 3: Streaming with Typed Events
+
 ```typescript
 async function* streamCompletion(
   messages: ChatCompletionMessageParam[],
@@ -129,6 +134,7 @@ async function printStream(prompt: string) {
 ```
 
 ### Step 4: Error Handling with Groq Error Types
+
 ```typescript
 import Groq from "groq-sdk";
 
@@ -160,6 +166,7 @@ async function safeComplete(
 ```
 
 ### Step 5: Retry with Exponential Backoff
+
 ```typescript
 async function withRetry<T>(
   operation: () => Promise<T>,
@@ -187,6 +194,7 @@ async function withRetry<T>(
 ```
 
 ### Step 6: Python Patterns
+
 ```python
 # Synchronous client
 from groq import Groq
@@ -223,6 +231,7 @@ for chunk in stream:
 ```
 
 ### Step 7: Multi-Tenant Client Factory
+
 ```typescript
 const clients = new Map<string, Groq>();
 
@@ -235,6 +244,7 @@ export function getClientForTenant(tenantId: string, apiKey: string): Groq {
 ```
 
 ## Key SDK Differences from OpenAI
+
 | Feature | OpenAI SDK | Groq SDK |
 |---------|-----------|----------|
 | Package name | `openai` | `groq-sdk` |
@@ -244,6 +254,7 @@ export function getClientForTenant(tenantId: string, apiKey: string): Groq {
 | Error types | `OpenAI.APIError` | `Groq.APIError`, `Groq.APIConnectionError` |
 
 ## Error Handling
+
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
 | `safeComplete` wrapper | All API calls | Prevents uncaught exceptions |
@@ -252,9 +263,11 @@ export function getClientForTenant(tenantId: string, apiKey: string): Groq {
 | Client singleton | App-wide usage | Single connection pool, consistent config |
 
 ## Resources
+
 - [Groq TypeScript SDK](https://github.com/groq/groq-typescript)
 - [Groq API Reference](https://console.groq.com/docs/api-reference)
 - [Groq Error Codes](https://console.groq.com/docs/errors)
 
 ## Next Steps
+
 Apply patterns in `groq-core-workflow-a` for real-world chat completions.

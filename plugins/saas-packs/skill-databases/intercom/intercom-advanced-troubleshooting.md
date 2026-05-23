@@ -10,6 +10,7 @@ intercom-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Intercom advanced debugging
 **Workflow:** Part of the enterprise skill category for Intercom integration.
 **Relates to:** Other intercom skills in this pack.

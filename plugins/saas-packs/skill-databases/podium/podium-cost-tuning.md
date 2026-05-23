@@ -10,6 +10,7 @@ podium-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Podium costs and usage
 **Workflow:** Part of the cicd skill category for Podium integration.
 **Relates to:** Other podium skills in this pack.

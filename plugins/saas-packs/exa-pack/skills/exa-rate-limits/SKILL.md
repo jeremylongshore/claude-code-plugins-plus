@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Rate Limits
 
 ## Overview
+
 Handle Exa API rate limits gracefully. Default limit is 10 QPS (queries per second) across all endpoints. Rate limit errors return HTTP 429 with a simple `{ "error": "rate limit exceeded" }` response. For higher limits, contact hello@exa.ai for Enterprise plans.
 
 ## Rate Limit Structure
@@ -38,12 +39,14 @@ Handle Exa API rate limits gracefully. Default limit is 10 QPS (queries per seco
 | Research API | Concurrent task limit | Long-running operations |
 
 ## Prerequisites
+
 - `exa-js` SDK installed
 - Understanding of async/await patterns
 
 ## Instructions
 
 ### Step 1: Exponential Backoff with Jitter
+
 ```typescript
 import Exa from "exa-js";
 
@@ -81,6 +84,7 @@ const results = await withBackoff(() =>
 ```
 
 ### Step 2: Request Queue with Concurrency Control
+
 ```typescript
 import PQueue from "p-queue";
 
@@ -105,6 +109,7 @@ async function batchSearch(queries: string[]) {
 ```
 
 ### Step 3: Adaptive Rate Limiter
+
 ```typescript
 class AdaptiveRateLimiter {
   private currentDelay = 100; // ms between requests
@@ -152,6 +157,7 @@ const results = await withBackoff(() =>
 ```
 
 ### Step 4: Batch Processing with Rate Awareness
+
 ```typescript
 async function processBatch(
   queries: string[],
@@ -184,6 +190,7 @@ async function processBatch(
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | 429 errors | Exceeding 10 QPS | Implement backoff + queue |
@@ -194,6 +201,7 @@ async function processBatch(
 ## Examples
 
 ### Simple Retry Wrapper
+
 ```typescript
 async function retrySearch(query: string, maxRetries = 3) {
   for (let i = 0; i <= maxRetries; i++) {
@@ -208,8 +216,10 @@ async function retrySearch(query: string, maxRetries = 3) {
 ```
 
 ## Resources
+
 - [Exa Rate Limits](https://docs.exa.ai/reference/rate-limits)
 - [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For security configuration, see `exa-security-basics`.

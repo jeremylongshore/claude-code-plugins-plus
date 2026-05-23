@@ -10,6 +10,7 @@ abridge-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Abridge core feature integration
 **Workflow:** Part of the onboarding skill category for Abridge integration.
 **Relates to:** Other abridge skills in this pack.

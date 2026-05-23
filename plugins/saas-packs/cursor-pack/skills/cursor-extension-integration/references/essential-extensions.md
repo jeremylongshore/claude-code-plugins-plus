@@ -3,6 +3,7 @@
 ## Essential Extensions
 
 ### Code Quality
+
 ```
 ESLint (dbaeumer.vscode-eslint)
 - Integrates ESLint into Cursor
@@ -21,6 +22,7 @@ SonarLint (sonarsource.sonarlint-vscode)
 ```
 
 ### Language Support
+
 ```
 TypeScript:
 - Built-in (no extension needed)
@@ -40,6 +42,7 @@ Java:
 ```
 
 ### Framework Extensions
+
 ```
 React/Next.js:
 - ES7+ Snippets (dsznajder.es7-react-js-snippets)
@@ -56,6 +59,7 @@ Docker:
 ```
 
 ### Git Extensions
+
 ```
 GitLens (eamodio.gitlens)
 - Inline blame

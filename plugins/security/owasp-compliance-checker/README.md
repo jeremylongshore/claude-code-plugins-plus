@@ -30,13 +30,16 @@ Comprehensive OWASP Top 10 2021 compliance checking with detailed gap analysis a
 ## OWASP Top 10 (2021)
 
 ### A01:2021 - Broken Access Control
+
 **What It Checks:**
+
 - User can access resources they shouldn't
 - Privilege escalation vulnerabilities
 - IDOR (Insecure Direct Object References)
 - Missing authorization checks
 
 **Example Vulnerability:**
+
 ```javascript
 // Vulnerable: No authorization check
 app.get('/api/user/:id/profile', (req, res) => {
@@ -55,13 +58,16 @@ app.get('/api/user/:id/profile', (req, res) => {
 ```
 
 ### A02:2021 - Cryptographic Failures
+
 **What It Checks:**
+
 - Use of weak algorithms (MD5, SHA1)
 - Unencrypted sensitive data
 - Weak TLS configuration
 - Insecure key management
 
 **Example Vulnerability:**
+
 ```javascript
 // Vulnerable: MD5 hashing
 const hash = crypto.createHash('md5').update(password).digest('hex');
@@ -71,13 +77,16 @@ const hash = await bcrypt.hash(password, 10);
 ```
 
 ### A03:2021 - Injection
+
 **What It Checks:**
+
 - SQL injection
 - Command injection
 - NoSQL injection
 - LDAP injection
 
 **Example Vulnerability:**
+
 ```javascript
 // Vulnerable: SQL injection
 const query = `SELECT * FROM users WHERE username='${username}'`;
@@ -88,13 +97,16 @@ db.query(query, [username]);
 ```
 
 ### A04:2021 - Insecure Design
+
 **What It Checks:**
+
 - Missing threat modeling
 - Insufficient security requirements
 - Lack of security patterns
 - Business logic flaws
 
 **Example Issue:**
+
 ```
 Vulnerable Design:
 - Password reset sends new password via email
@@ -108,13 +120,16 @@ Secure Design:
 ```
 
 ### A05:2021 - Security Misconfiguration
+
 **What It Checks:**
+
 - Default credentials
 - Unnecessary features enabled
 - Missing security headers
 - Verbose error messages
 
 **Example Vulnerability:**
+
 ```javascript
 // Vulnerable: Detailed errors in production
 app.use((err, req, res, next) => {
@@ -134,13 +149,16 @@ app.use((err, req, res, next) => {
 ```
 
 ### A06:2021 - Vulnerable and Outdated Components
+
 **What It Checks:**
+
 - Known CVEs in dependencies
 - Outdated frameworks
 - Unsupported libraries
 - Missing security patches
 
 **Example Finding:**
+
 ```
 Vulnerable Component:
 - lodash@4.17.19 (CVE-2020-8203)
@@ -150,13 +168,16 @@ Vulnerable Component:
 ```
 
 ### A07:2021 - Identification and Authentication Failures
+
 **What It Checks:**
+
 - Weak password policies
 - Missing MFA
 - Session management issues
 - Credential stuffing protection
 
 **Example Vulnerability:**
+
 ```javascript
 // Vulnerable: No password requirements
 if (password.length < 6) {
@@ -176,13 +197,16 @@ if (password.length < 12 ||
 ```
 
 ### A08:2021 - Software and Data Integrity Failures
+
 **What It Checks:**
+
 - Insecure deserialization
 - Missing code signing
 - Unverified updates
 - Untrusted CI/CD pipelines
 
 **Example Vulnerability:**
+
 ```javascript
 // Vulnerable: Unsafe deserialization
 const userData = JSON.parse(req.body.data);
@@ -196,13 +220,16 @@ if (typeof userData.code === 'string' && isValidCode(userData.code)) {
 ```
 
 ### A09:2021 - Security Logging and Monitoring Failures
+
 **What It Checks:**
+
 - Insufficient logging
 - Missing audit trails
 - No alerting
 - Inadequate log retention
 
 **Example Implementation:**
+
 ```javascript
 // Secure: Comprehensive logging
 logger.info('Authentication attempt', {
@@ -221,13 +248,16 @@ logger.warn('Failed login attempt', {
 ```
 
 ### A10:2021 - Server-Side Request Forgery (SSRF)
+
 **What It Checks:**
+
 - Unvalidated URL parameters
 - Missing input validation
 - Unrestricted outbound requests
 - Insufficient network segmentation
 
 **Example Vulnerability:**
+
 ```javascript
 // Vulnerable: SSRF
 app.get('/fetch', async (req, res) => {

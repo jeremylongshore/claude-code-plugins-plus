@@ -1,6 +1,7 @@
-# Examples
+## Examples
 
 ### Health Check Implementation
+
 ```typescript
 async function healthCheck(): Promise<{ status: string; vercel: any }> {
   const start = Date.now();
@@ -14,6 +15,7 @@ async function healthCheck(): Promise<{ status: string; vercel: any }> {
 ```
 
 ### Immediate Rollback
+
 ```bash
 kubectl rollout undo deployment/vercel-integration
 kubectl rollout status deployment/vercel-integration

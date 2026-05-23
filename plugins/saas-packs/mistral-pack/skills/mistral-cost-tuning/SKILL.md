@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Mistral AI Cost Tuning
 
 ## Overview
+
 Optimize Mistral AI costs through model selection, token management, caching, batch inference, and budget monitoring. Mistral offers the best price-performance in the market with models from $0.1/M tokens (Ministral/Small) to $0.5/M tokens (Large).
 
 ## Prerequisites
+
 - Access to [Mistral AI console](https://console.mistral.ai/) for usage data
 - Understanding of current usage patterns
 - Database for usage tracking (optional)
@@ -240,6 +242,7 @@ GROUP BY 1 ORDER BY 2 DESC LIMIT 10;
 | Use ministral for simple tasks | 90% vs large | Low |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Unexpected costs | Untracked usage | Implement BudgetManager |
@@ -248,11 +251,13 @@ GROUP BY 1 ORDER BY 2 DESC LIMIT 10;
 | Long responses | No maxTokens | Always set maxTokens |
 
 ## Resources
+
 - [Mistral Pricing](https://docs.mistral.ai/deployment/laplateforme/pricing/)
 - [Mistral Console](https://console.mistral.ai/)
 - [Batch Inference](https://docs.mistral.ai/capabilities/batch/)
 
 ## Output
+
 - Cost calculator with current pricing
 - Smart model router by task complexity
 - Token budget manager with alerts

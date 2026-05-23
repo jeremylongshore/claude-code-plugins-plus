@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Core Workflow B -- Search, AskFred & Analytics
 
 ## Overview
+
 Secondary workflow: search across transcripts with keyword and date filters, use AskFred AI for natural language Q&A over meetings, and aggregate meeting analytics for reporting.
 
 ## Prerequisites
+
 - Completed `fireflies-install-auth` setup
 - Familiarity with `fireflies-core-workflow-a`
 - AI credits for AskFred queries (check Fireflies dashboard)
@@ -37,6 +39,7 @@ Secondary workflow: search across transcripts with keyword and date filters, use
 ## Instructions
 
 ### Step 1: Search Transcripts by Keyword
+
 ```typescript
 const SEARCH_TRANSCRIPTS = `
   query SearchMeetings(
@@ -75,6 +78,7 @@ for (const t of results.transcripts) {
 ```
 
 ### Step 2: AskFred -- AI Q&A Over a Single Meeting
+
 ```typescript
 // Create a new AskFred thread tied to a transcript
 const CREATE_THREAD = `
@@ -103,6 +107,7 @@ console.log("Suggested follow-ups:", thread.createAskFredThread.messages[0].sugg
 ```
 
 ### Step 3: AskFred -- Continue a Conversation
+
 ```typescript
 const CONTINUE_THREAD = `
   mutation ContinueThread($thread_id: String!, $query: String!) {
@@ -123,6 +128,7 @@ console.log("Follow-up:", followUp.continueAskFredThread.answer);
 ```
 
 ### Step 4: AskFred -- Cross-Meeting Analysis
+
 ```typescript
 // Query across multiple meetings (no transcript_id = searches all)
 const crossMeeting = await firefliesQuery(CREATE_THREAD, {
@@ -134,6 +140,7 @@ const crossMeeting = await firefliesQuery(CREATE_THREAD, {
 ```
 
 ### Step 5: Meeting Analytics Aggregation
+
 ```typescript
 async function meetingAnalytics(days: number = 30) {
   const since = new Date(Date.now() - days * 86400000).toISOString();
@@ -181,6 +188,7 @@ async function meetingAnalytics(days: number = 30) {
 ```
 
 ### Step 6: List and Manage AskFred Threads
+
 ```typescript
 // List all threads
 const threads = await firefliesQuery(`{
@@ -198,9 +206,11 @@ await firefliesQuery(`
 ```
 
 ## AskFred Credits
+
 AskFred API calls consume AI credits. If you receive `require_ai_credits`, visit the Upgrade section in your Fireflies dashboard to add credits. Budget accordingly for production use.
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `require_ai_credits` | No AI credits remaining | Purchase credits in Fireflies dashboard |
@@ -209,13 +219,16 @@ AskFred API calls consume AI credits. If you receive `require_ai_credits`, visit
 | Rate limit 429 | Too many requests | Implement backoff per `fireflies-rate-limits` |
 
 ## Output
+
 - Keyword search results across transcript history
 - AskFred AI-powered Q&A threads with suggested follow-ups
 - Cross-meeting analytics report with keyword trends
 
 ## Resources
+
 - [AskFred API Overview](https://docs.fireflies.ai/askfred/overview)
 - [Transcripts Query](https://docs.fireflies.ai/graphql-api/query/transcript)
 
 ## Next Steps
+
 For common errors, see `fireflies-common-errors`.

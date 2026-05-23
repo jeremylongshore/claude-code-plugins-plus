@@ -10,6 +10,7 @@ podium-webhooks-events/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Podium webhook handling
 **Workflow:** Part of the cicd skill category for Podium integration.
 **Relates to:** Other podium skills in this pack.

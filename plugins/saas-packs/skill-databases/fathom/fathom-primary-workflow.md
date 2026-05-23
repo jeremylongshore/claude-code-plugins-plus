@@ -10,6 +10,7 @@ fathom-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Fathom primary workflow
 **Workflow:** Part of the onboarding skill category for Fathom integration.
 **Relates to:** Other fathom skills in this pack.

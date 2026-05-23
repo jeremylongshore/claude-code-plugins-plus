@@ -12,6 +12,7 @@ Implement production-grade multi-tier caching architecture for databases using R
 ## When to Use This Command
 
 Use `/caching` when you need to:
+
 - Reduce database load by caching frequently accessed data (80% hit rate)
 - Improve query response times from 50-100ms to 1-5ms
 - Handle traffic spikes without database scaling (cache absorbs load)
@@ -20,6 +21,7 @@ Use `/caching` when you need to:
 - Enable horizontal scaling with stateless application servers
 
 DON'T use this when:
+
 - Data changes frequently and cache hit rate would be <50%
 - Application has strict real-time data requirements (< 1s staleness)
 - Database is already fast enough (<10ms query latency)
@@ -30,6 +32,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **multi-tier caching with intelligent invalidation** because:
+
 - L1 in-memory cache (1-5ms) for hot data per server
 - L2 distributed Redis cache (5-10ms) shared across servers
 - Cache-aside pattern provides fallback to database on miss
@@ -37,12 +40,14 @@ This command implements **multi-tier caching with intelligent invalidation** bec
 - Write-through caching maintains consistency for critical data
 
 **Alternative considered: Read-through caching**
+
 - Simpler implementation (cache handles database queries)
 - Less control over cache population strategy
 - Not suitable when database schema differs from cached format
 - Recommended for simple key-value lookups
 
 **Alternative considered: Database query result caching (pg_stat_statements)**
+
 - Built into PostgreSQL (no external dependencies)
 - Limited to identical queries (parameter changes = cache miss)
 - Cannot cache across multiple queries
@@ -51,6 +56,7 @@ This command implements **multi-tier caching with intelligent invalidation** bec
 ## Prerequisites
 
 Before running this command:
+
 1. Redis server deployed (standalone, Sentinel, or Cluster)
 2. Understanding of cache invalidation needs (TTL vs event-driven)
 3. Monitoring for cache hit rate and memory usage
@@ -60,23 +66,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Design Cache Key Strategy
+
 Define hierarchical cache keys for easy invalidation (e.g., `user:123:profile`).
 
 ### Step 2: Implement Cache-Aside Pattern
+
 Check cache first, query database on miss, populate cache with result.
 
 ### Step 3: Configure TTL and Eviction
+
 Set appropriate TTL based on data freshness requirements and memory limits.
 
 ### Step 4: Implement Invalidation Logic
+
 Invalidate cache on data updates using event listeners or explicit invalidation.
 
 ### Step 5: Monitor Cache Performance
+
 Track hit rate, miss rate, latency, and memory usage with Prometheus/Grafana.
 
 ## Output Format
 
 The command generates:
+
 - `caching/redis_client.py` - Redis connection pool and wrapper
 - `caching/cache_decorator.py` - Python decorator for automatic caching
 - `caching/cache_invalidation.js` - Event-driven invalidation logic
@@ -701,18 +713,21 @@ if __name__ == "__main__":
 ## Configuration Options
 
 **Caching Patterns**
+
 - **Cache-aside** (lazy loading): App checks cache, queries DB on miss
 - **Read-through**: Cache handles DB queries automatically
 - **Write-through**: Updates written to cache and DB simultaneously
 - **Write-behind**: Updates written to cache, async written to DB
 
 **Eviction Policies** (Redis)
+
 - **allkeys-lru**: Evict least recently used keys (recommended for general use)
 - **volatile-lru**: Evict LRU keys with TTL set
 - **allkeys-random**: Random eviction (simple, unpredictable)
 - **volatile-ttl**: Evict keys closest to expiration
 
 **TTL Strategies**
+
 - **Hot data (user profiles)**: 30 minutes
 - **Warm data (product catalog)**: 1-2 hours
 - **Cold data (historical reports)**: 24 hours
@@ -721,6 +736,7 @@ if __name__ == "__main__":
 ## Best Practices
 
 DO:
+
 - Set appropriate TTLs based on data freshness requirements
 - Monitor cache hit rate (target: 80%+) and adjust strategy
 - Implement graceful degradation when cache is unavailable
@@ -730,6 +746,7 @@ DO:
 - Use connection pooling for Redis clients (reduce connection overhead)
 
 DON'T:
+
 - Cache data that changes frequently (< 50% hit rate)
 - Use cache for critical consistency (financial transactions, inventory)
 - Ignore cache memory limits (causes evictions and performance degradation)

@@ -3,6 +3,7 @@
 ## Effective Chat Patterns
 
 ### Code Explanation
+
 ```
 Select code → Cmd+L →
 "Explain what this code does step by step"
@@ -11,6 +12,7 @@ Select code → Cmd+L →
 ```
 
 ### Code Generation
+
 ```
 "Write a function that [description]"
 "Create a class that [description]"
@@ -18,6 +20,7 @@ Select code → Cmd+L →
 ```
 
 ### Refactoring Requests
+
 ```
 Select code → Cmd+L →
 "Refactor this to use async/await"
@@ -27,6 +30,7 @@ Select code → Cmd+L →
 ```
 
 ### Debugging
+
 ```
 "Why is this code throwing [error]?"
 "Debug this function - it returns [wrong result]"

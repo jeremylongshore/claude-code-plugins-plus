@@ -61,16 +61,18 @@ Set up Microsoft Graph API authentication for OneNote using delegated credential
 | `Notes.ReadWrite.All` | Read/write all notebooks the user can access (including shared) |
 | `Notes.Read.All` | Read all notebooks the user can access (including shared) |
 
-3. Click **Grant admin consent** if you have admin rights (otherwise users see a consent prompt on first login)
+1. Click **Grant admin consent** if you have admin rights (otherwise users see a consent prompt on first login)
 
 ### Step 3: Install SDKs
 
 **Python:**
+
 ```bash
 pip install msgraph-sdk azure-identity
 ```
 
 **TypeScript/Node:**
+
 ```bash
 npm install @microsoft/microsoft-graph-client @azure/identity @azure/msal-node
 ```
@@ -192,6 +194,7 @@ For multi-tenant apps, replace `TENANT_ID` in the authority URL with `common` or
 ## Output
 
 After completing these steps you will have:
+
 - An Azure AD application registered with correct OneNote permissions
 - Working authentication using delegated credentials (DeviceCodeCredential)
 - Token caching for persistent sessions without re-authentication
@@ -213,6 +216,7 @@ After completing these steps you will have:
 ## Examples
 
 **Quick connectivity test (Python one-liner):**
+
 ```python
 # Paste into Python REPL after setting AZURE_CLIENT_ID and AZURE_TENANT_ID
 from azure.identity import DeviceCodeCredential; from msgraph import GraphServiceClient
@@ -221,6 +225,7 @@ print(await c.me.onenote.notebooks.get())
 ```
 
 **Switching from deprecated app-only auth:**
+
 ```typescript
 // BEFORE (broken after March 2025):
 // const credential = new ClientSecretCredential(tenantId, clientId, clientSecret);

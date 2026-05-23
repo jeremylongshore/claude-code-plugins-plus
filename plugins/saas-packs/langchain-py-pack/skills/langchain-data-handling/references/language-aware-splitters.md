@@ -8,23 +8,23 @@ From `langchain_text_splitters.Language`:
 
 | Enum value | Separator priority (first = most preferred split point) |
 |---|---|
-| `Language.CPP` | `\nclass `, `\nvoid `, `\nint `, `\nfloat `, `\nif `, `\nfor `, `\nwhile `, `\nswitch `, `\ncase `, `\n\n`, `\n`, ` `, `""` |
-| `Language.GO` | `\nfunc `, `\nvar `, `\nconst `, `\ntype `, `\nif `, `\nfor `, `\nswitch `, `\ncase `, `\n\n`, `\n`, ` `, `""` |
-| `Language.JAVA` | `\nclass `, `\npublic `, `\nprotected `, `\nprivate `, `\nstatic `, `\nif `, `\nfor `, `\nwhile `, `\nswitch `, `\ncase `, `\n\n`, `\n`, ` `, `""` |
-| `Language.JS` / `Language.TS` | `\nfunction `, `\nconst `, `\nlet `, `\nvar `, `\nclass `, `\nif `, `\nfor `, `\nwhile `, `\nswitch `, `\ncase `, `\ndefault `, `\n\n`, `\n`, ` `, `""` |
-| `Language.PHP` | `\nfunction `, `\nclass `, `\nif `, `\nforeach `, `\nwhile `, `\ndo `, `\nswitch `, `\ncase `, `\n\n`, `\n`, ` `, `""` |
-| `Language.PROTO` | `\nmessage `, `\nservice `, `\nenum `, `\noption `, `\nimport `, `\nsyntax `, `\n\n`, `\n`, ` `, `""` |
-| `Language.PYTHON` | `\nclass `, `\ndef `, `\n\tdef `, `\n\n`, `\n`, ` `, `""` |
+| `Language.CPP` | `\nclass`, `\nvoid`, `\nint`, `\nfloat`, `\nif`, `\nfor`, `\nwhile`, `\nswitch`, `\ncase`, `\n\n`, `\n`, ` `, `""` |
+| `Language.GO` | `\nfunc`, `\nvar`, `\nconst`, `\ntype`, `\nif`, `\nfor`, `\nswitch`, `\ncase`, `\n\n`, `\n`, ` `, `""` |
+| `Language.JAVA` | `\nclass`, `\npublic`, `\nprotected`, `\nprivate`, `\nstatic`, `\nif`, `\nfor`, `\nwhile`, `\nswitch`, `\ncase`, `\n\n`, `\n`, ` `, `""` |
+| `Language.JS` / `Language.TS` | `\nfunction`, `\nconst`, `\nlet`, `\nvar`, `\nclass`, `\nif`, `\nfor`, `\nwhile`, `\nswitch`, `\ncase`, `\ndefault`, `\n\n`, `\n`, ` `, `""` |
+| `Language.PHP` | `\nfunction`, `\nclass`, `\nif`, `\nforeach`, `\nwhile`, `\ndo`, `\nswitch`, `\ncase`, `\n\n`, `\n`, ` `, `""` |
+| `Language.PROTO` | `\nmessage`, `\nservice`, `\nenum`, `\noption`, `\nimport`, `\nsyntax`, `\n\n`, `\n`, ` `, `""` |
+| `Language.PYTHON` | `\nclass`, `\ndef`, `\n\tdef`, `\n\n`, `\n`, ` `, `""` |
 | `Language.RST` | `\n=+\n`, `\n-+\n`, `\n\*+\n`, `\n\n.. *\n\n`, `\n\n`, `\n`, ` `, `""` |
-| `Language.RUBY` | `\ndef `, `\nclass `, `\nif `, `\nunless `, `\nwhile `, `\nfor `, `\ndo `, `\nbegin `, `\nrescue `, `\n\n`, `\n`, ` `, `""` |
-| `Language.RUST` | `\nfn `, `\nconst `, `\nlet `, `\nif `, `\nwhile `, `\nfor `, `\nloop `, `\nmatch `, `\nconst `, `\n\n`, `\n`, ` `, `""` |
-| `Language.SCALA` | `\nclass `, `\nobject `, `\ndef `, `\nval `, `\nvar `, `\nif `, `\nfor `, `\nwhile `, `\nmatch `, `\ncase `, `\n\n`, `\n`, ` `, `""` |
-| `Language.SWIFT` | `\nfunc `, `\nclass `, `\nstruct `, `\nenum `, `\nif `, `\nfor `, `\nwhile `, `\ndo `, `\nswitch `, `\ncase `, `\n\n`, `\n`, ` `, `""` |
-| `Language.MARKDOWN` | `\n#{1,6} `, ` ```\n`, `\n\*\*\*+\n`, `\n---+\n`, `\n___+\n`, `\n\n`, `\n`, ` `, `""` |
+| `Language.RUBY` | `\ndef`, `\nclass`, `\nif`, `\nunless`, `\nwhile`, `\nfor`, `\ndo`, `\nbegin`, `\nrescue`, `\n\n`, `\n`, ` `, `""` |
+| `Language.RUST` | `\nfn`, `\nconst`, `\nlet`, `\nif`, `\nwhile`, `\nfor`, `\nloop`, `\nmatch`, `\nconst`, `\n\n`, `\n`, ` `, `""` |
+| `Language.SCALA` | `\nclass`, `\nobject`, `\ndef`, `\nval`, `\nvar`, `\nif`, `\nfor`, `\nwhile`, `\nmatch`, `\ncase`, `\n\n`, `\n`, ` `, `""` |
+| `Language.SWIFT` | `\nfunc`, `\nclass`, `\nstruct`, `\nenum`, `\nif`, `\nfor`, `\nwhile`, `\ndo`, `\nswitch`, `\ncase`, `\n\n`, `\n`, ` `, `""` |
+| `Language.MARKDOWN` | `\n#{1,6}`, ` ```\n`, `\n\*\*\*+\n`, `\n---+\n`, `\n___+\n`, `\n\n`, `\n`, ` `, `""` |
 | `Language.LATEX` | `\n\\\\chapter{`, `\n\\\\section{`, `\n\\\\subsection{`, `\n\\\\subsubsection{`, `\n\\\\begin{enumerate}`, ... |
 | `Language.HTML` | `<body`, `<div`, `<p`, `<br`, `<li`, `<h1` ... `<h6`, `<span`, `<table`, `<tr`, `<td`, `<th`, `<ul`, ... |
-| `Language.SOL` | `\npragma `, `\nusing `, `\ncontract `, `\ninterface `, `\nlibrary `, `\nconstructor `, `\nfunction `, ... |
-| `Language.CSHARP` | `\ninterface `, `\nenum `, `\nimplements `, `\ndelegate `, `\nevent `, `\nclass `, `\nfunction `, ... |
+| `Language.SOL` | `\npragma`, `\nusing`, `\ncontract`, `\ninterface`, `\nlibrary`, `\nconstructor`, `\nfunction`, ... |
+| `Language.CSHARP` | `\ninterface`, `\nenum`, `\nimplements`, `\ndelegate`, `\nevent`, `\nclass`, `\nfunction`, ... |
 | `Language.COBOL` | `\nIDENTIFICATION DIVISION.`, `\nENVIRONMENT DIVISION.`, `\nDATA DIVISION.`, `\nPROCEDURE DIVISION.`, ... |
 
 ## Why Markdown Needs Its Own Variant (P13)
@@ -60,6 +60,7 @@ The `strategy="last"` argument keeps newer messages.
 With `chunk_size=200` and default separators, the splitter sees the blank line inside the code fence as a valid split point. The resulting chunks look like:
 
 **Chunk 1:**
+
 ````
 ### The `trim_messages` function
 
@@ -72,6 +73,7 @@ def trim_messages(messages, max_tokens, strategy="last"):
 ````
 
 **Chunk 2:**
+
 ````
     for msg in reversed(messages):
         total += count_tokens(msg)
@@ -112,7 +114,7 @@ py_splitter = RecursiveCharacterTextSplitter.from_language(
 )
 ```
 
-The `PYTHON` list puts `\nclass `, `\ndef `, `\n\tdef ` first. A chunk will start at a class or function boundary when possible. Imports and module docstrings end up in their own chunk — tag them with metadata (`chunk_type="imports"`) for higher-precision retrieval on "where is X imported" queries.
+The `PYTHON` list puts `\nclass`, `\ndef`, `\n\tdef` first. A chunk will start at a class or function boundary when possible. Imports and module docstrings end up in their own chunk — tag them with metadata (`chunk_type="imports"`) for higher-precision retrieval on "where is X imported" queries.
 
 ## Custom Separators (When a Language Variant Doesn't Exist)
 

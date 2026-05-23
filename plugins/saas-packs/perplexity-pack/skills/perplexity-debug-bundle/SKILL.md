@@ -24,14 +24,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Debug Bundle
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'N/A'`
 !`python3 --version 2>/dev/null || echo 'N/A'`
 !`echo "PERPLEXITY_API_KEY: ${PERPLEXITY_API_KEY:+SET (${#PERPLEXITY_API_KEY} chars)}${PERPLEXITY_API_KEY:-NOT SET}"`
 
 ## Overview
+
 Collect all diagnostic information needed to troubleshoot Perplexity Sonar API issues. Generates a redacted bundle safe for sharing with support or teammates.
 
 ## Prerequisites
+
 - `PERPLEXITY_API_KEY` environment variable
 - `curl` and `tar` available
 - Permission to collect environment info
@@ -39,6 +42,7 @@ Collect all diagnostic information needed to troubleshoot Perplexity Sonar API i
 ## Instructions
 
 ### Step 1: Create Debug Bundle Script
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -53,6 +57,7 @@ echo "" >> "$BUNDLE_DIR/summary.txt"
 ```
 
 ### Step 2: Collect Environment Info
+
 ```bash
 set -euo pipefail
 cat >> "$BUNDLE_DIR/summary.txt" << 'EOF'
@@ -68,6 +73,7 @@ echo "API Key: ${PERPLEXITY_API_KEY:+SET (prefix: ${PERPLEXITY_API_KEY:0:5}...)}
 ```
 
 ### Step 3: Test API Connectivity
+
 ```bash
 set -euo pipefail
 echo "" >> "$BUNDLE_DIR/summary.txt"
@@ -106,6 +112,7 @@ echo "" >> "$BUNDLE_DIR/summary.txt"
 ```
 
 ### Step 4: Collect Redacted Config
+
 ```bash
 set -euo pipefail
 echo "" >> "$BUNDLE_DIR/summary.txt"
@@ -121,6 +128,7 @@ fi
 ```
 
 ### Step 5: Package Bundle
+
 ```bash
 set -euo pipefail
 tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
@@ -131,16 +139,19 @@ echo "REVIEW BEFORE SHARING — verify no secrets leaked"
 ```
 
 ## Output
+
 - `perplexity-debug-YYYYMMDD-HHMMSS.tar.gz` containing:
   - `summary.txt` — Environment, SDK versions, API connectivity results
   - `api-response.json` — Raw API response (verify no sensitive query data)
   - `config-redacted.txt` — Configuration with values masked
 
 ## Sensitive Data Checklist
+
 **ALWAYS REDACT:** API keys, tokens, passwords, PII, internal URLs.
 **SAFE TO INCLUDE:** Error messages, HTTP status codes, SDK versions, latency measurements, model names.
 
 ## Error Handling
+
 | Item | Purpose | Included |
 |------|---------|----------|
 | SDK versions | Compatibility check | Yes |
@@ -150,8 +161,10 @@ echo "REVIEW BEFORE SHARING — verify no secrets leaked"
 | Model access | Key permissions | Yes |
 
 ## Resources
+
 - [Perplexity Community Forum](https://community.perplexity.ai)
 - [Perplexity API Docs](https://docs.perplexity.ai)
 
 ## Next Steps
+
 For rate limit issues, see `perplexity-rate-limits`.

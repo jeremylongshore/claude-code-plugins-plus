@@ -45,6 +45,7 @@ StatusMessage: Process exited with code 1
 **Cause:** Unhandled exception in Actor code.
 
 **Diagnosis:**
+
 ```typescript
 // Check run log via API
 const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
@@ -57,6 +58,7 @@ console.log(log);  // Full stdout/stderr output
 ```
 
 **Fix:** Read the log, find the stack trace, fix the bug. Common causes:
+
 - Missing input validation (`Actor.getInput()` returns `null`)
 - Selector returns no results (page structure changed)
 - Unhandled promise rejection
@@ -73,6 +75,7 @@ StatusMessage: Actor timed out after 3600 seconds
 **Cause:** Actor exceeded its configured timeout.
 
 **Fix:**
+
 ```typescript
 // Increase timeout when calling via client
 const run = await client.actor('user/actor').call(input, {
@@ -121,6 +124,7 @@ ApifyApiError: Authentication required (401)
 **Cause:** Invalid, expired, or missing API token.
 
 **Diagnosis:**
+
 ```bash
 # Test your token
 curl -s -H "Authorization: Bearer $APIFY_TOKEN" \
@@ -140,6 +144,7 @@ Build failed: npm ERR! code ERESOLVE
 **Cause:** Dependency conflicts in `package.json` or Dockerfile issues.
 
 **Diagnosis:**
+
 ```bash
 # Check build log on platform
 apify builds ls
@@ -162,6 +167,7 @@ ProxyError: Could not connect to proxy
 **Cause:** Proxy configuration issue or proxy credits exhausted.
 
 **Fix:**
+
 ```typescript
 // Check proxy configuration
 const proxyConfig = await Actor.createProxyConfiguration({
@@ -191,6 +197,7 @@ Error: Captcha detected on page
 **Cause:** Target website detected scraping activity.
 
 **Fix:**
+
 ```typescript
 const crawler = new PlaywrightCrawler({
   proxyConfiguration: await Actor.createProxyConfiguration({
@@ -227,6 +234,7 @@ FATAL ERROR: CALL_AND_RETRY_LAST Allocation failed — JavaScript heap out of me
 **Cause:** Actor memory allocation too low for the workload.
 
 **Fix:**
+
 ```typescript
 // Increase memory when running via API
 const run = await client.actor('user/actor').call(input, {
@@ -250,6 +258,7 @@ ApifyApiError: Payload too large (413) — max 9MB per request
 ```
 
 **Fix:**
+
 ```typescript
 // Chunk large pushes
 function chunkArray<T>(arr: T[], size: number): T[][] {

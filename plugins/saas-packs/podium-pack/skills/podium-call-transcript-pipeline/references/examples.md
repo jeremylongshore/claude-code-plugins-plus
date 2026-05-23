@@ -121,6 +121,7 @@ python3 scripts/transcript_poller.py \
 ```
 
 The poller:
+
 1. Lists conversations updated in the last 12h with a call.
 2. For each conversation without a transcript event in the inbox AND whose call ended >4h ago, fetches the transcript directly.
 3. Synthesizes a `call.transcript.completed` inbox row tagged `source=poller`.

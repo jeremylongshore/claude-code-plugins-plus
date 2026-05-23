@@ -10,6 +10,7 @@ fathom-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Fathom SDK patterns
 **Workflow:** Part of the onboarding skill category for Fathom integration.
 **Relates to:** Other fathom skills in this pack.

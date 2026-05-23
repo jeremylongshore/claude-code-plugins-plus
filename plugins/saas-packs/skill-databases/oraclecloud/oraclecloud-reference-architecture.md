@@ -10,6 +10,7 @@ oraclecloud-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Oracle Cloud reference architecture
 **Workflow:** Part of the cicd skill category for Oracle Cloud integration.
 **Relates to:** Other oraclecloud skills in this pack.

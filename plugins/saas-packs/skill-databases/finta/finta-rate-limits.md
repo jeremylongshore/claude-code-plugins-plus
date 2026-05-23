@@ -10,6 +10,7 @@ finta-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Finta rate limiting and backoff
 **Workflow:** Part of the operations skill category for Finta integration.
 **Relates to:** Other finta skills in this pack.

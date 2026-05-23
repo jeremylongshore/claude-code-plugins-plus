@@ -10,6 +10,7 @@ granola-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Granola production deployment checklist
 **Workflow:** Part of the operations skill category for Granola integration.
 **Relates to:** Other granola skills in this pack.

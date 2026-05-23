@@ -10,6 +10,7 @@ clickup-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply ClickUp advanced debugging
 **Workflow:** Part of the enterprise skill category for ClickUp integration.
 **Relates to:** Other clickup skills in this pack.

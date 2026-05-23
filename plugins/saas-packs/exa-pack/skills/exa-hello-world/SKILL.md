@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Hello World
 
 ## Overview
+
 Minimal working examples demonstrating all core Exa search operations: basic search, search with contents, find similar, and get contents. Each example is runnable standalone.
 
 ## Prerequisites
+
 - `exa-js` SDK installed (`npm install exa-js`)
 - `EXA_API_KEY` environment variable set
 - Node.js 18+ with ES module support
@@ -36,6 +38,7 @@ Minimal working examples demonstrating all core Exa search operations: basic sea
 ## Instructions
 
 ### Step 1: Basic Search (Metadata Only)
+
 ```typescript
 import Exa from "exa-js";
 
@@ -54,6 +57,7 @@ for (const r of results.results) {
 ```
 
 ### Step 2: Search with Contents
+
 ```typescript
 // searchAndContents returns text, highlights, and/or summary with each result
 const results = await exa.searchAndContents(
@@ -78,6 +82,7 @@ for (const r of results.results) {
 ```
 
 ### Step 3: Find Similar Pages
+
 ```typescript
 // findSimilar takes a URL and returns semantically similar pages
 const similar = await exa.findSimilarAndContents(
@@ -96,6 +101,7 @@ for (const r of similar.results) {
 ```
 
 ### Step 4: Get Contents for Known URLs
+
 ```typescript
 // getContents retrieves page content for specific URLs
 const contents = await exa.getContents(
@@ -114,12 +120,14 @@ for (const r of contents.results) {
 ```
 
 ## Output
+
 - Working TypeScript file with Exa client initialization
 - Search results printed to console with titles, URLs, and scores
 - Content extraction (text, highlights, summary) demonstrated
 - Similarity search results from a seed URL
 
 ## Error Handling
+
 | Error | HTTP Code | Cause | Solution |
 |-------|-----------|-------|----------|
 | `INVALID_API_KEY` | 401 | API key missing or invalid | Check `EXA_API_KEY` env var |
@@ -131,6 +139,7 @@ for (const r of contents.results) {
 ## Examples
 
 ### Complete Runnable Script
+
 ```typescript
 import Exa from "exa-js";
 
@@ -162,9 +171,11 @@ main().catch(console.error);
 ```
 
 ## Resources
+
 - [Exa Quickstart](https://docs.exa.ai/reference/quickstart)
 - [Exa Search Reference](https://docs.exa.ai/reference/search)
 - [Exa Cheat Sheet](https://docs.exa.ai/sdks/cheat-sheet)
 
 ## Next Steps
+
 Proceed to `exa-core-workflow-a` for neural search patterns or `exa-sdk-patterns` for production-ready code.

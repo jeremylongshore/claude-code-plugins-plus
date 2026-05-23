@@ -19,18 +19,21 @@ The off-the-shelf Podium UI offers manual merge only — no policy, no opt-out u
 ## Target Users
 
 ### Persona 1: Data Engineer (Dana)
+
 - **Role**: Owns the data pipeline that ingests Podium contacts into the warehouse and pushes enrichments back. Responsible for the contact corpus being internally consistent.
 - **Goals**: One canonical contact per real human; phone is always E.164; duplicate rate trends down month-over-month; dedup runs are idempotent and resumable.
 - **Pain Points**: Last quarter's dedup script ran for 4 hours, crashed at 80%, and left the corpus in an unknown half-merged state with no resume capability; spent two days reconciling manually.
 - **Technical Level**: High (SQL fluent, Python fluent, comfortable with API orchestration and state machines).
 
 ### Persona 2: Operations Manager (Mark)
+
 - **Role**: Runs the location-floor for an SMB or multi-location franchise. Reads the daily "duplicate complaints" queue — customers asking why they got the same review request twice.
 - **Goals**: Duplicate complaints drop to zero; staff stop having to ask "are you the same person who called last week?"; the marketing team's outbound list reflects unique humans, not duplicate rows.
 - **Pain Points**: Has heard "I already gave you my number" from customers four times this week; cannot explain why Sydney and Burleigh Heads each show a separate contact for the same caller.
 - **Technical Level**: Low-Medium (operates dashboards; does not write code; reads CSV exports).
 
 ### Persona 3: Compliance Officer (Casey)
+
 - **Role**: Owns TCPA, GDPR Article 21, and ACMA Spam Act compliance for marketing communications. Signs the attestation that opt-outs are honored.
 - **Goals**: Zero re-enables — once a contact opts out, that flag survives every operation (merge, restore, manual edit) for the lifetime of the data.
 - **Pain Points**: A contact opted out in March, was merged in April, and received marketing in May because the merge dropped the flag. Filed an incident, paid a fine, never wants to repeat.
@@ -39,86 +42,102 @@ The off-the-shelf Podium UI offers manual merge only — no policy, no opt-out u
 ## User Stories
 
 ### US-1: E.164 normalization (P0)
+
 **As** a data engineer,
 **I want** every phone number in the corpus normalized to E.164 with a natural key,
 **So that** `+61 412 345 678`, `0412 345 678`, `(04) 1234-5678`, and `+61412345678` all index to the same row in the duplicate detector.
 
 **Acceptance Criteria:**
+
 - Normalization uses Google's `libphonenumber` (Python: `phonenumbers`) — no hand-rolled regex
 - Invalid numbers (too short, wrong region code, parse failure) return `{valid: false, reason: ...}` and do not enter the index
 - The E.164 string IS the natural key — no additional hashing required
 - A default region (`AU`, `US`, etc.) is configurable per-tenant for parsing numbers in national format
 
 ### US-2: Duplicate cluster detection (P0)
+
 **As** a data engineer,
 **I want** clusters of contacts sharing a natural key surfaced with a confidence score,
 **So that** auto-merge happens only above the 0.80 threshold and lower-confidence clusters route to human review.
 
 **Acceptance Criteria:**
+
 - Confidence formula: 0.60 (same E.164) + 0.20 (same name) + 0.15 (same email) + 0.05 (overlapping tags)
 - Clusters with all pairwise scores ≥ 0.80 are auto-mergeable
 - Clusters between 0.60 and 0.80 surface to a human-review queue
 - The 0.60 floor is non-configurable — same phone is the required minimum signal
 
 ### US-3: Deterministic primary selection (P0)
+
 **As** a data engineer,
 **I want** the merge orchestrator to pick `primary` by a deterministic, reproducible rule,
 **So that** re-running the same dedup against the same corpus produces the same merge outcome and no field is silently discarded.
 
 **Acceptance Criteria:**
+
 - Primary selection: `max(field_count, updated_at_podium, lowest_uid_lexical)`
 - Caller cannot override the primary choice for auto-merges (override only for human-review queue)
 - The "richer record wins" rule is documented in the audit log alongside every merge
 
 ### US-4: Opt-out preservation by union (P0)
+
 **As** a compliance officer,
 **I want** the strongest opt-out flag in any cluster member to win,
 **So that** no merge ever re-enables marketing, SMS, or email on a person who explicitly opted out.
 
 **Acceptance Criteria:**
+
 - `marketing_opt_out`, `sms_opt_out`, `email_opt_out` are unioned across the cluster BEFORE the merge API call
 - After Podium's merge completes, a `PATCH /contacts/{primary_uid}` immediately overwrites the opt-out fields with the unioned values
 - The audit log records the pre-merge per-record opt-out state AND the post-merge unioned state
 - If the post-merge PATCH fails, the merge is marked `compliance_failed` and surfaces immediately to the compliance officer's queue
 
 ### US-5: Cross-location dedup (P1)
+
 **As** an operations manager,
 **I want** the same phone across two locations to surface as a single dedup candidate,
 **So that** "Sydney has a record AND Burleigh Heads has a record" stops producing two contacts for the same caller.
 
 **Acceptance Criteria:**
+
 - Cross-location scan runs AFTER per-location scans complete
 - Output is a human-review queue by default — does NOT auto-merge across locations
 - Each cross-location candidate carries both location names and the operator's last-touch evidence
 - Tenants can opt into cross-location auto-merge via a per-deployment policy flag
 
 ### US-6: Soft-delete handling (P1)
+
 **As** a data engineer,
 **I want** the pipeline to treat Podium's DELETE as soft-delete and never call hard-delete,
 **So that** customer-restored contacts simply re-enter the next dedup cycle rather than producing a "contact reappeared" support ticket.
 
 **Acceptance Criteria:**
+
 - The skill never calls hard-delete endpoints — hard delete is delegated to a separate compliance-erasure workflow
 - The audit log records every merge as `soft_delete: true, restorable: true`
 - A restored duplicate is detected and re-merged on the next run with a log entry noting the restore-then-remerge loop
 
 ### US-7: Idempotent resumable execution (P1)
+
 **As** a data engineer,
 **I want** a crash mid-run to leave clusters in a `pending` state that the next run picks up,
 **So that** a 4-hour dedup that fails at 80% does not require manual reconciliation.
 
 **Acceptance Criteria:**
+
 - Every cluster operation writes a row to `merge_state` BEFORE the API call (status=pending)
 - State transitions: `pending → merging → merged → patched`
 - Only `patched` is terminal-success
 - A resumed run queries Podium for the live state of the primary before deciding to retry vs confirm-done
 
 ### US-8: Simultaneous-merge conflict detection (P1)
+
 **As** a data engineer,
 **I want** the orchestrator to abort a merge if any duplicate has been updated since the index was built,
 **So that** a race between two operators or a manual edit during an automated run surfaces as a conflict in the audit log, not as silent data loss.
 
 **Acceptance Criteria:**
+
 - Before each merge API call, re-fetch each duplicate and compare `updated_at_podium` to the indexed value
 - A mismatch aborts the merge for this cluster, logs `conflict_detected`, and marks the cluster `re_index_required`
 - The next run rebuilds the index for the affected natural keys and re-evaluates

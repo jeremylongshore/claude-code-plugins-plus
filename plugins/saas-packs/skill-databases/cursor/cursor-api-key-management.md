@@ -10,6 +10,7 @@ cursor-api-key-management/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Manages API keys and authentication in Cursor for multiple providers (OpenAI, Anthropic, Azure, Google) including secure storage, rotation, and cost management.
 
 **Workflow:** This skill activates when developers want to use their own API keys with Cursor. It covers supported providers, configuration methods, security best practices, cost management, troubleshooting, and team key management.

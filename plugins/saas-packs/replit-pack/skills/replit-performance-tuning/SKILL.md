@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit Performance Tuning
 
 ## Overview
+
 Optimize Replit app performance across the entire lifecycle: cold start reduction, Nix environment caching, build speed, runtime memory management, and deployment configuration. Replit containers have resource limits — efficient usage is critical.
 
 ## Prerequisites
+
 - Replit app deployed or running in Workspace
 - Understanding of `.replit` and `replit.nix`
 - Access to deployment monitoring
@@ -36,6 +38,7 @@ Optimize Replit app performance across the entire lifecycle: cold start reductio
 ## Instructions
 
 ### Step 1: Reduce Cold Start Time
+
 Autoscale deployments scale to zero when idle. First request triggers a cold start (10-30s). Minimize it:
 
 ```typescript
@@ -79,6 +82,7 @@ async function warmup() {
 ```
 
 ### Step 2: Optimize Nix Environment
+
 ```nix
 # replit.nix — only include what you actually need
 
@@ -116,6 +120,7 @@ channel = "stable-24_05"
 ```
 
 ### Step 3: Optimize Build Step
+
 ```toml
 # .replit — fast production builds
 [deployment]
@@ -146,12 +151,14 @@ run = ["sh", "-c", "node dist/index.js"]
 ```
 
 Tips for faster builds:
+
 - Use `npm ci` (not `npm install`) — deterministic, faster
 - Add `--production` to skip devDependencies
 - Use TypeScript `--incremental` for rebuild caching
 - Avoid `postinstall` scripts that compile native addons
 
 ### Step 4: Memory Management
+
 Replit containers have memory limits (512 MB to 16 GiB depending on plan/tier):
 
 ```typescript
@@ -183,6 +190,7 @@ app.get('/health', (req, res) => {
 ```
 
 **Memory optimization patterns:**
+
 ```typescript
 // Stream large files instead of loading into memory
 import { createReadStream } from 'fs';
@@ -214,6 +222,7 @@ setInterval(() => {
 ```
 
 ### Step 5: Database Connection Efficiency
+
 ```typescript
 // PostgreSQL pool tuning for Replit
 const pool = new Pool({
@@ -230,6 +239,7 @@ const pool = new Pool({
 ```
 
 ### Step 6: Deployment Type Selection
+
 | Scenario | Best Type | Why |
 |----------|-----------|-----|
 | < 100 daily requests | Autoscale | Free when idle |
@@ -239,6 +249,7 @@ const pool = new Pool({
 | Cron jobs / webhooks | Reserved VM | Must be always-on |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Cold start > 15s | Heavy imports | Lazy-load, defer init |
@@ -247,10 +258,12 @@ const pool = new Pool({
 | Slow first query | DB cold connection | Pre-connect in warmup() |
 
 ## Resources
+
 - [Replit App Configuration](https://docs.replit.com/replit-app/configuration)
 - [Nix on Replit](https://docs.replit.com/programming-ide/nix-on-replit)
 - [Nix Performance](https://blog.replit.com/nix-perf-improvements)
 - [Reserved VM Deployments](https://docs.replit.com/cloud-services/deployments/reserved-vm-deployments)
 
 ## Next Steps
+
 For cost optimization, see `replit-cost-tuning`.

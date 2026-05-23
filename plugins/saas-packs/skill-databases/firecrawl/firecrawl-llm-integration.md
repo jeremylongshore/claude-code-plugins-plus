@@ -10,6 +10,7 @@ firecrawl-llm-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Integrate FireCrawl output with LLMs for RAG pipelines, content analysis, and structured data extraction.
 **Workflow:** AI integration skill - connects FireCrawl's LLM-ready output to downstream AI/ML pipelines.
 **Relates to:** Core differentiator skill - FireCrawl's primary value is LLM-ready output; enables firecrawl-architecture-variants

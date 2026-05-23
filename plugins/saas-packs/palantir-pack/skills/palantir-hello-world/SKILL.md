@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Hello World
 
 ## Overview
+
 Build a minimal working example that connects to Palantir Foundry, queries Ontology objects via the REST API, reads a dataset, and applies an action. Uses real `foundry-platform-sdk` Python API calls.
 
 ## Prerequisites
+
 - Completed `palantir-install-auth` setup
 - Valid bearer token or OAuth2 credentials
 - At least one Ontology with object types configured in your Foundry enrollment
@@ -37,6 +39,7 @@ Build a minimal working example that connects to Palantir Foundry, queries Ontol
 ## Instructions
 
 ### Step 1: List Available Ontologies
+
 ```python
 import os
 import foundry
@@ -55,6 +58,7 @@ for ont in client.ontologies.Ontology.list():
 ```
 
 ### Step 2: Query Ontology Objects
+
 ```python
 # List objects of type "Employee" from the default ontology
 # The object type api_name comes from your Ontology configuration
@@ -73,6 +77,7 @@ for obj in objects.data:
 ```
 
 ### Step 3: Get a Single Object by Primary Key
+
 ```python
 employee = client.ontologies.OntologyObject.get(
     ontology=ONTOLOGY,
@@ -83,6 +88,7 @@ print(f"Found: {employee.properties}")
 ```
 
 ### Step 4: Read a Dataset
+
 ```python
 # Read rows from a Foundry dataset (tabular)
 DATASET_RID = "ri.foundry.main.dataset.xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
@@ -101,6 +107,7 @@ print(f"Read {len(content)} bytes of data")
 ```
 
 ### Step 5: Apply an Ontology Action
+
 ```python
 # Actions modify objects — e.g., updating an employee's department
 result = client.ontologies.Action.apply(
@@ -115,6 +122,7 @@ print(f"Action result: {result.validation}")
 ```
 
 ### Step 6: Run and Verify
+
 ```bash
 set -euo pipefail
 python hello_foundry.py
@@ -125,6 +133,7 @@ python hello_foundry.py
 ```
 
 ## Output
+
 - Authenticated connection to Palantir Foundry
 - Listed ontologies and object types
 - Retrieved objects with property values
@@ -132,6 +141,7 @@ python hello_foundry.py
 - Applied an action to modify an object
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `ObjectTypeNotFound` | Wrong `api_name` | Check Ontology Manager for exact object type names |
@@ -143,6 +153,7 @@ python hello_foundry.py
 ## Examples
 
 ### Using the REST API Directly (curl)
+
 ```bash
 # List objects via REST
 curl -s -H "Authorization: Bearer $FOUNDRY_TOKEN" \
@@ -151,6 +162,7 @@ curl -s -H "Authorization: Bearer $FOUNDRY_TOKEN" \
 ```
 
 ### TypeScript OSDK Equivalent
+
 ```typescript
 import { createClient } from "@osdk/client";
 import { Employee } from "@my-app/sdk";  // generated from OSDK
@@ -163,12 +175,14 @@ employees.data.forEach(emp => console.log(emp.fullName));
 ```
 
 ## Resources
+
 - [Foundry API Introduction](https://www.palantir.com/docs/foundry/api/general/overview/introduction)
 - [Get Object API](https://www.palantir.com/docs/foundry/api/ontology-resources/objects/get-object)
 - [Python SDK PyPI](https://pypi.org/project/foundry-platform-sdk/)
 - [Code Examples](https://www.palantir.com/docs/foundry/code-examples/foundry-apis-local-environment)
 
 ## Next Steps
+
 - Set up iterative development: `palantir-local-dev-loop`
 - Build data pipelines with transforms: `palantir-core-workflow-a`
 - Query and link objects: `palantir-core-workflow-b`

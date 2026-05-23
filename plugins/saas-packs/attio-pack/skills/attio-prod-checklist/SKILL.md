@@ -45,6 +45,7 @@ Systematic checklist for launching Attio API integrations in production. Covers 
 ```
 
 **Verify:**
+
 ```bash
 # Confirm production token works
 curl -s -o /dev/null -w "%{http_code}" \
@@ -132,6 +133,7 @@ export async function GET() {
 ```
 
 **Structured logging example:**
+
 ```typescript
 function logAttioCall(
   method: string,

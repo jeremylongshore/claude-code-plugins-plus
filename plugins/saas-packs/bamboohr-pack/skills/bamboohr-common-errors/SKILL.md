@@ -75,6 +75,7 @@ curl -s -o /dev/null -w "%{http_code}" \
 ```
 
 **Common mistakes:**
+
 - Using Bearer token instead of Basic Auth
 - Putting the API key as the password instead of the username
 - Missing the `:x` password part in Basic Auth encoding
@@ -90,6 +91,7 @@ X-BambooHR-Error-Message: You do not have access to this resource
 **Cause:** The API key's user account lacks permissions for the requested endpoint or employee.
 
 **Solution:**
+
 - Verify the user's access level in BambooHR (Account > Access Levels)
 - Time-off management endpoints require manager or admin permissions
 - Compensation table access requires admin permissions
@@ -115,6 +117,7 @@ curl -s -u "${BAMBOOHR_API_KEY}:x" \
 ```
 
 **Common field name mistakes:**
+
 - `title` (wrong) vs `jobTitle` (correct)
 - `email` (wrong) vs `workEmail` (correct)
 - `name` (wrong) vs `firstName` + `lastName` (correct)
@@ -165,6 +168,7 @@ async function handleRateLimit(res: Response): Promise<void> {
 ```
 
 **Prevention:**
+
 - Batch reads using custom reports instead of individual employee GETs
 - Cache directory results (they change infrequently)
 - Use `/employees/changed/?since=...` for incremental sync instead of full pulls
@@ -176,6 +180,7 @@ async function handleRateLimit(res: Response): Promise<void> {
 **Cause:** BambooHR internal error. Usually transient.
 
 **Solution:**
+
 1. Check [BambooHR Status Page](https://status.bamboohr.com) for outages
 2. Retry with exponential backoff (see `bamboohr-rate-limits`)
 3. If persistent, collect request details for BambooHR support

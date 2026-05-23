@@ -10,6 +10,7 @@ documenso-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Documenso debug evidence for support
 **Workflow:** Part of the operations skill category for Documenso integration.
 **Relates to:** Other documenso skills in this pack.

@@ -10,6 +10,7 @@ mistral-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Mistral AI SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Mistral AI integration.
 **Relates to:** Other mistral skills in this pack.

@@ -10,6 +10,7 @@ figma-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Create a minimal working Figma example
 **Workflow:** Part of the onboarding skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

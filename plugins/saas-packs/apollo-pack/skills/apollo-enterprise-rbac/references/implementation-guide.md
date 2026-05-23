@@ -5,6 +5,7 @@
 # Apollo Enterprise RBAC
 
 ## Overview
+
 Implement role-based access control for Apollo.io integrations with granular permissions, team isolation, and audit trails.
 
 ## Role Hierarchy
@@ -476,6 +477,7 @@ router.get('/audit/access-denied',
 ```
 
 ## Output
+
 - Role-based permission system
 - Team-based access control
 - API key scoping
@@ -483,6 +485,7 @@ router.get('/audit/access-denied',
 - Admin dashboard endpoints
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | Missing permissions | Request role upgrade |
@@ -491,9 +494,11 @@ router.get('/audit/access-denied',
 | Role conflict | Higher role takes precedence |
 
 ## Resources
+
 - [RBAC Best Practices](https://auth0.com/docs/manage-users/access-control/rbac)
 - [OWASP Access Control](https://owasp.org/www-community/Access_Control)
 - [Apollo Team Permissions](https://knowledge.apollo.io/)
 
 ## Next Steps
+
 Proceed to `apollo-migration-deep-dive` for migration strategies.

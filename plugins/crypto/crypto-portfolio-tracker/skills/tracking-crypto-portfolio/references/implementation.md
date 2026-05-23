@@ -16,6 +16,7 @@ Create a portfolio file (e.g., `holdings.json`):
 ```
 
 Fields:
+
 - `coin`: Symbol (BTC, ETH, etc.) - **required**
 - `quantity`: Amount held - **required**
 - `cost_basis`: Average purchase price per coin (optional, for P&L)

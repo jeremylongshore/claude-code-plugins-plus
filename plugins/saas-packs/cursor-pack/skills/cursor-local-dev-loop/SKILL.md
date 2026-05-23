@@ -50,6 +50,7 @@ Consider: database schema, API endpoints, and frontend hooks.
 ```
 
 Chat excels at:
+
 - Architecture decisions before writing code
 - Evaluating trade-offs (SQL join table vs JSON array, REST vs GraphQL)
 - Understanding existing patterns via `@Codebase`
@@ -93,6 +94,7 @@ async toggleFavorite(userId: string, productId: string): Promise<Favorite | null
 ```
 
 **Workflow tips for Tab:**
+
 - Open related files in tabs (service, types, API route) -- Tab reads open tabs for context
 - Write type signatures first -- Tab generates better bodies when types are explicit
 - Accept partially with `Cmd+→` when the suggestion is 80% right
@@ -109,6 +111,7 @@ Select the toggleFavorite method → Cmd+K:
 ```
 
 Other common Cmd+K workflows:
+
 - `"Add JSDoc comments"` on a function
 - `"Convert to async/await"` on a Promise chain
 - `"Add null checks"` on a code block
@@ -195,6 +198,7 @@ Task switching:
 ### Keyboard-Driven Flow
 
 Minimize mouse usage:
+
 ```
 Cmd+P          →  Open any file by name
 Cmd+Shift+P    →  Run any command

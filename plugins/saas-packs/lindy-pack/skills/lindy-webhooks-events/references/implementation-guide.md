@@ -3,9 +3,11 @@
 # Lindy Webhooks & Events
 
 ## Overview
+
 Configure webhooks and event-driven integrations with Lindy AI.
 
 ## Prerequisites
+
 - Lindy account with webhook access
 - HTTPS endpoint for receiving webhooks
 - Understanding of event types
@@ -13,6 +15,7 @@ Configure webhooks and event-driven integrations with Lindy AI.
 ## Instructions
 
 ### Step 1: Register Webhook
+
 ```typescript
 import { Lindy } from '@lindy-ai/sdk';
 
@@ -36,6 +39,7 @@ async function registerWebhook() {
 ```
 
 ### Step 2: Create Webhook Handler
+
 ```typescript
 // routes/webhooks/lindy.ts
 import express from 'express';
@@ -87,6 +91,7 @@ export default router;
 ```
 
 ### Step 3: Implement Event Handlers
+
 ```typescript
 // handlers/lindy-events.ts
 
@@ -149,6 +154,7 @@ async function handleAutomationTriggered(data: any) {
 ```
 
 ### Step 4: Test Webhooks
+
 ```typescript
 // Test webhook delivery
 async function testWebhook(webhookId: string) {
@@ -180,12 +186,14 @@ async function testWebhook(webhookId: string) {
 | `agent.deleted` | Agent deleted | agentId |
 
 ## Output
+
 - Registered webhooks
 - Event handler implementation
 - Signature verification
 - Event logging
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Invalid signature | Wrong secret | Check WEBHOOK_SECRET |
@@ -195,6 +203,7 @@ async function testWebhook(webhookId: string) {
 ## Examples
 
 ### Async Processing Pattern
+
 ```typescript
 router.post('/lindy', async (req, res) => {
   // Verify signature first
@@ -212,9 +221,11 @@ router.post('/lindy', async (req, res) => {
 ```
 
 ## Resources
+
 - [Lindy Webhooks](https://docs.lindy.ai/webhooks)
 - [Event Reference](https://docs.lindy.ai/webhooks/events)
 - [Security Best Practices](https://docs.lindy.ai/webhooks/security)
 
 ## Next Steps
+
 Proceed to `lindy-performance-tuning` for optimization.

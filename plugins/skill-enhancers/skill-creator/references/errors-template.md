@@ -22,6 +22,7 @@ Standard troubleshooting reference for all marketplace skills. Every references/
 ```
 
 Categories should match the skill's domain. Examples:
+
 - For GCP skills: Authentication Errors, API Errors, Deployment Errors, Quota Errors
 - For database skills: Connection Errors, Query Errors, Permission Errors, Data Errors
 - For CI/CD skills: Build Errors, Deploy Errors, Configuration Errors, Permission Errors

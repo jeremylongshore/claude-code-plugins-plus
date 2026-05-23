@@ -3,6 +3,7 @@
 ## Cost Savings Analysis
 
 ### Cache Hit Tracking
+
 ```python
 class CacheMetrics:
     def __init__(self):

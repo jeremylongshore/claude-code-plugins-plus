@@ -23,15 +23,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # persona rate limits | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview
+
 Persona rate limits (varies by plan), backoff on 429, batch inquiry creation, queue-based processing.
 
 ## Prerequisites
+
 - Completed `persona-install-auth` setup
 - Valid Persona API key (sandbox or production)
 
 ## Instructions
 
 ### Step 1: Implementation
+
 ```python
 import os, requests
 
@@ -50,9 +53,11 @@ for inq in inquiries:
 ```
 
 ## Output
+
 - Persona rate limits (varies by plan), backoff on 429, batch inquiry creation, queue-based processing.
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Invalid API key | Check PERSONA_API_KEY |
@@ -60,8 +65,10 @@ for inq in inquiries:
 | 404 Not Found | Wrong resource ID | Verify ID format |
 
 ## Resources
+
 - [Persona API Reference](https://docs.withpersona.com/reference/introduction)
 - [Persona Documentation](https://docs.withpersona.com)
 
 ## Next Steps
+
 See related Persona skills for more workflows.

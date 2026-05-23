@@ -10,6 +10,7 @@ firecrawl-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure FireCrawl across development, staging, and production environments with credential management and environment isolation.
 **Workflow:** Enterprise configuration skill - establishes environment-aware configuration patterns.
 **Relates to:** Extends firecrawl-security-basics; foundational for firecrawl-enterprise-rbac

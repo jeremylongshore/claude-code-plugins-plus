@@ -34,6 +34,7 @@ analyze data, build regression models, and provide insights into the relationshi
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Perform regression analysis on a given dataset.
 - Predict future values based on existing data using regression models.
 - Understand the relationship between independent and dependent variables.
@@ -46,6 +47,7 @@ This skill activates when you need to:
 User request: "Can you build a regression model to predict house prices based on square footage and number of bedrooms?"
 
 The skill will:
+
 1. Analyze the provided data on house prices, square footage, and number of bedrooms.
 2. Generate a regression model (likely multiple to compare) to predict house prices.
 3. Provide performance metrics such as R-squared and RMSE.
@@ -55,6 +57,7 @@ The skill will:
 User request: "I need to analyze the sales data for the past year and identify any trends using regression analysis."
 
 The skill will:
+
 1. Analyze the provided sales data.
 2. Generate a regression model to identify trends and patterns in the sales data.
 3. Visualize the trend and report the equation and R-squared value.

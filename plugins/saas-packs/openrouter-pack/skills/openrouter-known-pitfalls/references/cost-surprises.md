@@ -3,6 +3,7 @@
 ## Cost Surprises
 
 ### No max_tokens Limit
+
 ```python
 # ❌ Risky: No response limit
 response = client.chat.completions.create(
@@ -20,6 +21,7 @@ response = client.chat.completions.create(
 ```
 
 ### Wrong Model for Task
+
 ```python
 # ❌ Expensive: Using Opus for simple tasks
 response = client.chat.completions.create(
@@ -35,6 +37,7 @@ response = client.chat.completions.create(
 ```
 
 ### Not Tracking Costs
+
 ```python
 # ❌ Problem: No cost visibility
 for prompt in prompts:

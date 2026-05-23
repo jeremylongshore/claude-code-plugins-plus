@@ -3,6 +3,7 @@
 ## Access Control
 
 ### Model Access by Role
+
 ```python
 ROLE_MODEL_ACCESS = {
     "admin": [

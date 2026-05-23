@@ -37,6 +37,7 @@ Generate your first presentation using Gamma's async Generate API. The workflow 
 ## The Generate-Poll-Retrieve Pattern
 
 All Gamma generations are asynchronous:
+
 1. **POST** `/v1.0/generations` — submit content, receive `generationId`
 2. **GET** `/v1.0/generations/{generationId}` — poll every 5s until `completed` or `failed`
 3. **Result** — `gammaUrl` (view in app) + `exportUrl` (download PDF/PPTX/PNG)

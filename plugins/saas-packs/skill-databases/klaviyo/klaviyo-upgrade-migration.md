@@ -10,6 +10,7 @@ klaviyo-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Klaviyo SDK upgrades
 **Workflow:** Part of the operations skill category for Klaviyo integration.
 **Relates to:** Other klaviyo skills in this pack.

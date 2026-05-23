@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Advanced Troubleshooting
 
 ## Overview
+
 Deep debugging for Perplexity Sonar API issues that resist standard fixes. Common hard problems: inconsistent citations between identical queries, intermittent timeouts on sonar-pro, search results not matching recency filter, and response quality degradation.
 
 ## Prerequisites
+
 - Access to production logs and metrics
 - `curl` for direct API testing
 - Understanding of Perplexity's search-augmented generation model
@@ -37,6 +39,7 @@ Deep debugging for Perplexity Sonar API issues that resist standard fixes. Commo
 ## Diagnostic Tools
 
 ### Layer-by-Layer Test
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -79,6 +82,7 @@ echo "   Tokens: $(echo $RESPONSE | jq -r '.usage.total_tokens')"
 ```
 
 ### Inconsistent Citation Investigation
+
 ```typescript
 // Same query can return different citations due to live web search
 // Run N times and compare to identify pattern vs randomness
@@ -121,6 +125,7 @@ async function citationStabilityTest(query: string, runs: number = 5) {
 ```
 
 ### Latency Profiling
+
 ```typescript
 async function profileLatency(
   queries: string[],
@@ -182,6 +187,7 @@ async function profileLatency(
 ```
 
 ### Recency Filter Validation
+
 ```typescript
 // Verify search_recency_filter is actually working
 async function testRecencyFilter() {
@@ -207,6 +213,7 @@ async function testRecencyFilter() {
 ```
 
 ## Support Escalation Template
+
 ```markdown
 ## Perplexity Support Escalation
 
@@ -232,6 +239,7 @@ async function testRecencyFilter() {
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Different citations per call | Web search is non-deterministic | Cache results; accept variability |
@@ -240,14 +248,17 @@ async function testRecencyFilter() {
 | Answer quality varies | Different web sources found | Use `search_domain_filter` for consistency |
 
 ## Output
+
 - Layer-by-layer diagnostic results
 - Citation stability analysis
 - Latency profiling by model
 - Support escalation package
 
 ## Resources
+
 - [Perplexity Community Forum](https://community.perplexity.ai)
 - [Perplexity API Documentation](https://docs.perplexity.ai)
 
 ## Next Steps
+
 For load testing, see `perplexity-load-scale`.

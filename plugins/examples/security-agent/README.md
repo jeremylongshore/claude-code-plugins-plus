@@ -11,11 +11,13 @@ A specialized security review subagent for identifying vulnerabilities and provi
 ## Usage
 
 The security reviewer agent will automatically activate when you:
+
 - Ask Claude to review code for security issues
 - Request a security audit
 - Mention security concerns in your prompt
 
 **Manual invocation**:
+
 ```
 @security-reviewer Please review this authentication code for security vulnerabilities
 ```
@@ -33,6 +35,7 @@ The security reviewer agent will automatically activate when you:
 ## Output
 
 Provides structured security findings with:
+
 - Severity ratings
 - Specific code locations
 - Impact assessment
@@ -42,6 +45,7 @@ Provides structured security findings with:
 ## Learning Objectives
 
 This plugin demonstrates:
+
 - Creating specialized subagents
 - Defining agent capabilities
 - Writing agent prompts

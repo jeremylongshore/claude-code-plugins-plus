@@ -10,6 +10,7 @@ hootsuite-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Hootsuite core feature integration
 **Workflow:** Part of the onboarding skill category for Hootsuite integration.
 **Relates to:** Other hootsuite skills in this pack.

@@ -47,6 +47,7 @@ rg "\.forEach\(\s*async" --type js -n
 ```
 
 **Why it's dangerous:**
+
 ```typescript
 // BROKEN — errors vanish, execution order is random
 items.forEach(async (item) => {
@@ -120,6 +121,7 @@ For each finding, determine if it's genuinely dangerous:
 
 **Check 1 — Is it intentional fire-and-forget?**
 Look for error handling nearby:
+
 ```typescript
 // SAFE — error is logged
 void sendAnalytics(data).catch(err => logger.error(err));
@@ -133,6 +135,7 @@ sendEmail(user);  // What if this fails?
 
 **Check 2 — Is it in an event context?**
 Event emitters and streams have their own error propagation:
+
 ```typescript
 // SAFE — event emitter pattern
 emitter.on('data', async (chunk) => { ... });  // Errors propagate via 'error' event
@@ -142,6 +145,7 @@ stream.pipe(transform).pipe(destination);  // Error propagation via stream event
 ```
 
 **Check 3 — Is the Promise.all protected?**
+
 ```typescript
 // DANGEROUS — one failure kills everything, no recovery
 const results = await Promise.all(items.map(process));

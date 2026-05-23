@@ -10,6 +10,7 @@ vercel-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Vercel SDK/CLI authentication including API key setup, environment variable configuration, and connection verification.
 **Workflow:** First skill in the onboarding sequence - sets up foundational SDK and authentication before any other Vercel operations can be performed.
 **Relates to:** Prerequisite for vercel-hello-world and all other skills; security patterns build on vercel-security-basics

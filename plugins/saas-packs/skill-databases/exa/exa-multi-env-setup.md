@@ -10,6 +10,7 @@ exa-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Exa across development, staging, and production environments with environment-specific API keys and settings.
 **Workflow:** Enterprise setup skill - establishes proper environment isolation.
 **Relates to:** Follows exa-security-basics; prerequisite for exa-enterprise-scaling

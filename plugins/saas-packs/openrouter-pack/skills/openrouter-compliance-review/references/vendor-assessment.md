@@ -3,6 +3,7 @@
 ## Vendor Assessment
 
 ### Provider Security Review
+
 ```python
 def assess_provider(model: str) -> dict:
     """Assess security posture of model provider."""

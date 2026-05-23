@@ -24,4 +24,3 @@ version: {{version}}
 ## Internal/Infra
 
 {{internal}}
-

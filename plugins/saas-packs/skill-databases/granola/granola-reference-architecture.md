@@ -10,6 +10,7 @@ granola-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Granola reference architecture
 **Workflow:** Part of the cicd skill category for Granola integration.
 **Relates to:** Other granola skills in this pack.

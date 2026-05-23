@@ -10,6 +10,7 @@ figma-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Figma multi-environment setup
 **Workflow:** Part of the enterprise skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

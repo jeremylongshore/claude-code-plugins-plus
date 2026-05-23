@@ -10,6 +10,7 @@ stackblitz-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize StackBlitz API performance
 **Workflow:** Part of the cicd skill category for StackBlitz integration.
 **Relates to:** Other stackblitz skills in this pack.

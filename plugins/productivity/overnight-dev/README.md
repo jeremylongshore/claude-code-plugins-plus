@@ -1,4 +1,6 @@
-#  Overnight Development Plugin
+<!-- markdownlint-disable MD028 -->
+
+# Overnight Development Plugin
 
 **Go to bed. Wake up to fully tested features.**
 
@@ -16,10 +18,10 @@ What if Claude could keep working while you sleep?
 
 **Overnight Development** turns Claude into an autonomous developer using Git hooks that enforce TDD:
 
--  **Git hooks block commits** until all tests pass
--  **Claude can't commit broken code** - hooks enforce quality
--  **Automatic iteration** - debug, fix, retry until green
--  **You wake up** to fully tested, production-ready features
+- **Git hooks block commits** until all tests pass
+- **Claude can't commit broken code** - hooks enforce quality
+- **Automatic iteration** - debug, fix, retry until green
+- **You wake up** to fully tested, production-ready features
 
 ---
 
@@ -43,12 +45,14 @@ That's it. Hooks are installed. Quality is enforced. Let Claude work overnight.
 ## How It Works
 
 ### Traditional Development
+
 ```
 Write code → Hope it works → Find bugs later → Repeat
  Slow, error-prone, stressful
 ```
 
 ### Overnight Development
+
 ```
 Write test → Write code → Hooks enforce tests → Commit only when green
  Fast, reliable, autonomous
@@ -57,6 +61,7 @@ Write test → Write code → Hooks enforce tests → Commit only when green
 ### The Magic: Git Hooks
 
 **Pre-commit hook:**
+
 ```bash
 # Runs before EVERY commit
 1. Lint your code
@@ -67,6 +72,7 @@ Write test → Write code → Hooks enforce tests → Commit only when green
 ```
 
 **Commit-msg hook:**
+
 ```bash
 # Ensures quality commit messages
 - Enforces conventional commits format
@@ -76,35 +82,38 @@ Write test → Write code → Hooks enforce tests → Commit only when green
 
 ### The Result
 
-Claude **can't commit** until all tests pass. So it keeps working until they do. Overnight. While you sleep. 
+Claude **can't commit** until all tests pass. So it keeps working until they do. Overnight. While you sleep.
 
 ---
 
 ## Real-World Example
 
 **9 PM:** Start overnight session
+
 ```bash
 /overnight-setup
 # Task: "Build JWT authentication with 90% test coverage"
 ```
 
 **What Claude does overnight:**
+
 1. 10:15 PM - Write failing auth tests (TDD)
 2. 10:45 PM - Implement JWT signin (tests still failing)
 3. 11:30 PM - Debug token generation (commit blocked, keeps trying)
-4. 12:15 AM - Tests passing! Commit succeeds 
+4. 12:15 AM - Tests passing! Commit succeeds
 5. 1:00 AM - Add middleware (write tests first)
 6. 2:30 AM - Integration tests (debugging edge cases)
 7. 4:00 AM - All tests green  (Coverage: 94%)
-8. 5:30 AM - Add docs, refactor, still green 
-9. 7:00 AM - Session complete 
+8. 5:30 AM - Add docs, refactor, still green
+9. 7:00 AM - Session complete
 
 **7 AM:** You wake up to:
--  47 passing tests (0 failing)
--  94% test coverage
--  Clean conventional commit history
--  Fully documented JWT authentication
--  Production-ready code
+
+- 47 passing tests (0 failing)
+- 94% test coverage
+- Clean conventional commit history
+- Fully documented JWT authentication
+- Production-ready code
 
 **Time saved:** 6-8 hours of your life
 
@@ -112,17 +121,19 @@ Claude **can't commit** until all tests pass. So it keeps working until they do.
 
 ## Features
 
-###  Test-Driven Development Enforcement
+### Test-Driven Development Enforcement
 
 Git hooks **force** TDD:
+
 - Write tests first
 - Implementation after
 - Commit only when green
 - No shortcuts, no broken code
 
-###  Autonomous Debugging
+### Autonomous Debugging
 
 When tests fail:
+
 1. Claude reads the error
 2. Analyzes the problem
 3. Forms a hypothesis
@@ -132,7 +143,7 @@ When tests fail:
 
 **You never have to intervene.** Just check progress in the morning.
 
-###  Progress Tracking
+### Progress Tracking
 
 Watch overnight sessions in real-time:
 
@@ -156,6 +167,7 @@ cat .overnight-dev-log.txt
 Works with any test framework:
 
 **Node.js:**
+
 ```json
 {
   "testCommand": "npm test",
@@ -164,6 +176,7 @@ Works with any test framework:
 ```
 
 **Python:**
+
 ```json
 {
   "testCommand": "pytest --cov=.",
@@ -173,9 +186,10 @@ Works with any test framework:
 
 **Rust, Go, PHP, Ruby** - All supported!
 
-###  Smart Agent Guidance
+### Smart Agent Guidance
 
 Includes `overnight-dev-coach` agent:
+
 - Guides you through setup
 - Plans overnight tasks
 - Debugs failing tests
@@ -215,6 +229,7 @@ Before installing, you need:
 ```
 
 This creates:
+
 - `.git/hooks/pre-commit` - Tests and linting
 - `.git/hooks/commit-msg` - Conventional commits
 - `.overnight-dev.json` - Configuration
@@ -227,6 +242,7 @@ git commit --allow-empty -m "test: verify hooks"
 ```
 
 You should see:
+
 ```
  Overnight Dev: Running pre-commit checks...
  Running linting...
@@ -257,6 +273,7 @@ Edit `.overnight-dev.json`:
 ### Starting an Overnight Session
 
 1. **Define a clear goal:**
+
    ```
    Task: Build payment integration with Stripe
    Success: All tests pass, 85%+ coverage, fully documented
@@ -278,39 +295,45 @@ Edit `.overnight-dev.json`:
    - No broken code gets committed
 
 5. **Wake up to success:**
-   - All tests passing 
-   - Features complete 
-   - Clean git history 
+   - All tests passing
+   - Features complete
+   - Clean git history
 
 ### Good Overnight Tasks
 
  **"Build user authentication with JWT (90% coverage)"**
+
 - Clear goal
 - Testable
 - Well-defined scope
 
  **"Add payment processing with Stripe integration"**
+
 - Specific feature
 - Integration tests possible
 - Success criteria clear
 
  **"Refactor database layer to use repository pattern"**
+
 - Existing tests ensure no regression
 - Clear before/after state
 
 ### Bad Overnight Tasks
 
  **"Make the app better"**
+
 - Too vague
 - No clear success criteria
 - Can't be tested
 
  **"Design the perfect UI"**
+
 - Subjective
 - Hard to test
 - Requires human judgment
 
  **"Research best practices"**
+
 - No code output
 - No tests to enforce
 - Not autonomous-friendly
@@ -340,6 +363,7 @@ Edit `.overnight-dev.json`:
 ### Platform-Specific Examples
 
 **Node.js + Jest:**
+
 ```json
 {
   "testCommand": "npm test -- --coverage --watchAll=false",
@@ -349,6 +373,7 @@ Edit `.overnight-dev.json`:
 ```
 
 **Python + pytest:**
+
 ```json
 {
   "testCommand": "pytest --cov=. --cov-report=term-missing",
@@ -358,6 +383,7 @@ Edit `.overnight-dev.json`:
 ```
 
 **Rust + cargo:**
+
 ```json
 {
   "testCommand": "cargo test",
@@ -367,6 +393,7 @@ Edit `.overnight-dev.json`:
 ```
 
 **Go + standard library:**
+
 ```json
 {
   "testCommand": "go test ./... -cover",
@@ -387,16 +414,18 @@ Edit `.overnight-dev.json`:
 
 ## Agent
 
-**overnight-dev-coach** 
+**overnight-dev-coach**
 
 Expert coach for autonomous overnight development sessions.
 
 **Activates when you:**
+
 - Mention "overnight development" or "autonomous coding"
 - Ask about TDD workflows or Git hooks
 - Need help debugging failing tests
 
 **Provides:**
+
 - Setup guidance
 - Task planning
 - Debug support
@@ -418,6 +447,7 @@ chmod +x .git/hooks/commit-msg
 ### Tests Failing Immediately
 
 Ensure you have at least 1 passing test:
+
 ```bash
 npm test  # Should see: Tests passed
 ```
@@ -425,6 +455,7 @@ npm test  # Should see: Tests passed
 ### Lint Errors Blocking Everything
 
 Enable auto-fix:
+
 ```json
 {
   "autoFix": true
@@ -432,6 +463,7 @@ Enable auto-fix:
 ```
 
 Or fix manually:
+
 ```bash
 npm run lint -- --fix
 ```
@@ -439,6 +471,7 @@ npm run lint -- --fix
 ### Commits Taking Forever
 
 Your test suite might be slow. Optimize:
+
 - Run only changed tests in CI
 - Use test parallelization
 - Mock external dependencies
@@ -450,11 +483,11 @@ Your test suite might be slow. Optimize:
 **From Intent Solutions IO's experience:**
 
 - ⏱️ **Average session:** 6-8 hours of autonomous work
--  **Output:** 500-1500 lines of fully tested code per night
--  **Success rate:** 85% of overnight tasks completed
--  **Coverage:** Consistently >90%
--  **Bug rate:** 60% lower than manual development
--  **Coffee saved:** Uncountable
+- **Output:** 500-1500 lines of fully tested code per night
+- **Success rate:** 85% of overnight tasks completed
+- **Coverage:** Consistently >90%
+- **Bug rate:** 60% lower than manual development
+- **Coffee saved:** Uncountable
 
 **What developers say:**
 
@@ -483,16 +516,18 @@ Your test suite might be slow. Optimize:
 ### Business Impact
 
 **For you:**
--  Work less (Claude works overnight)
--  Ship faster (3x productivity)
--  Higher quality (forced TDD)
--  Less stress (tests catch bugs)
+
+- Work less (Claude works overnight)
+- Ship faster (3x productivity)
+- Higher quality (forced TDD)
+- Less stress (tests catch bugs)
 
 **For your team:**
--  Consistent code quality
--  Better test coverage
--  Readable git history
--  Faster feature delivery
+
+- Consistent code quality
+- Better test coverage
+- Readable git history
+- Faster feature delivery
 
 ---
 
@@ -501,6 +536,7 @@ Your test suite might be slow. Optimize:
 ### 1. Start Small
 
 First overnight session? Pick a simple task:
+
 - Add one API endpoint
 - Write tests for existing code
 - Refactor a single module
@@ -512,6 +548,7 @@ Build confidence, then tackle bigger features.
 Configure coverage in your test framework:
 
 **Jest:**
+
 ```json
 {
   "coverageThreshold": {
@@ -529,6 +566,7 @@ Hooks can enforce these thresholds automatically.
 ### 3. Monitor in Real-Time
 
 Watch the log file during overnight sessions:
+
 ```bash
 tail -f .overnight-dev-log.txt
 ```
@@ -618,7 +656,7 @@ Strategy developed and refined through hundreds of autonomous overnight developm
 /overnight-setup
 ```
 
-**Go to bed. Wake up to fully tested features. **
+**Go to bed. Wake up to fully tested features.**
 
 ---
 

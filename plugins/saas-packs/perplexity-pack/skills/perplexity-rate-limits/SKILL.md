@@ -24,6 +24,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Rate Limits
 
 ## Overview
+
 Handle Perplexity Sonar API rate limits. Perplexity uses a leaky bucket algorithm: burst capacity is available, with tokens refilling continuously at your assigned rate. Rate limits are based on requests per minute (RPM).
 
 ## Rate Limit Tiers
@@ -37,12 +38,14 @@ Handle Perplexity Sonar API rate limits. Perplexity uses a leaky bucket algorith
 Rate limits apply per API key, not per model. Using `sonar-pro` counts against the same RPM as `sonar`.
 
 ## Prerequisites
+
 - `PERPLEXITY_API_KEY` set
 - Understanding of HTTP 429 responses
 
 ## Instructions
 
 ### Step 1: Exponential Backoff with Jitter
+
 ```typescript
 async function withExponentialBackoff<T>(
   operation: () => Promise<T>,
@@ -79,6 +82,7 @@ const result = await withExponentialBackoff(() =>
 ```
 
 ### Step 2: Queue-Based Rate Limiting
+
 ```typescript
 import PQueue from "p-queue";
 
@@ -106,6 +110,7 @@ const results = await Promise.all(queries.map((q) => queuedSearch(q)));
 ```
 
 ### Step 3: Token Bucket Implementation (No Dependencies)
+
 ```typescript
 class TokenBucket {
   private tokens: number;
@@ -157,6 +162,7 @@ async function rateLimitedSearch(query: string) {
 ```
 
 ### Step 4: Python Rate Limiting
+
 ```python
 import time, asyncio
 from collections import deque
@@ -187,6 +193,7 @@ def rate_limited_search(client, query: str, model: str = "sonar"):
 ```
 
 ## Error Handling
+
 | Signal | Meaning | Action |
 |--------|---------|--------|
 | HTTP 429 | RPM exceeded | Backoff and retry |
@@ -195,14 +202,17 @@ def rate_limited_search(client, query: str, model: str = "sonar"):
 | 429 on burst | Bucket empty | Space requests 1.2s apart |
 
 ## Output
+
 - Automatic retry with exponential backoff and jitter
 - Queue-based rate limiting for batch operations
 - Token bucket for fine-grained control
 - Python rate limiter for synchronous code
 
 ## Resources
+
 - [Perplexity Rate Limits](https://docs.perplexity.ai/guides/rate-limits)
 - [p-queue Documentation](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For security configuration, see `perplexity-security-basics`.

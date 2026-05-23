@@ -10,6 +10,7 @@ fathom-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Fathom core feature integration
 **Workflow:** Part of the onboarding skill category for Fathom integration.
 **Relates to:** Other fathom skills in this pack.

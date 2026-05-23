@@ -26,6 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Cost Tuning
 
 ## Overview
+
 Optimize Instantly.ai costs by choosing the right plan, managing email account utilization, monitoring campaign efficiency, and reducing wasted sends. Instantly's pricing is based on sending accounts and features, not per-email — so the key to cost efficiency is maximizing the value per account.
 
 ## Instantly Pricing Tiers (2026)
@@ -41,6 +42,7 @@ Optimize Instantly.ai costs by choosing the right plan, managing email account u
 ## Instructions
 
 ### Step 1: Audit Current Account Utilization
+
 ```typescript
 import { instantly } from "./src/instantly";
 
@@ -96,6 +98,7 @@ async function auditAccountUtilization() {
 ```
 
 ### Step 2: Campaign Efficiency Analysis
+
 ```typescript
 async function campaignEfficiency() {
   const campaigns = await instantly<Array<{ id: string; name: string; status: number }>>(
@@ -143,6 +146,7 @@ async function campaignEfficiency() {
 ```
 
 ### Step 3: Plan Right-Sizing
+
 ```typescript
 async function recommendPlan() {
   const accounts = await instantly<Array<{ email: string }>>(
@@ -181,6 +185,7 @@ async function recommendPlan() {
 ```
 
 ### Step 4: Cost Reduction Strategies
+
 ```typescript
 async function applyOptimizations() {
   console.log("=== Cost Optimization Actions ===\n");
@@ -223,6 +228,7 @@ async function applyOptimizations() {
 ```
 
 ## Cost Optimization Checklist
+
 - [ ] Right-sized plan for account count and feature needs
 - [ ] Underutilized accounts identified and removed
 - [ ] Duplicate leads prevented with `skip_if_in_workspace`
@@ -234,6 +240,7 @@ async function applyOptimizations() {
 - [ ] Warmup-only accounts tracked separately
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Can't access billing API | Missing workspace scope | Use dashboard instead |
@@ -241,9 +248,11 @@ async function applyOptimizations() {
 | Account count exceeds plan | Plan limits reached | Upgrade or remove accounts |
 
 ## Resources
+
 - [Instantly Pricing](https://instantly.ai/pricing)
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
 - [Workspace Billing API](https://developer.instantly.ai/api/v2/schemas)
 
 ## Next Steps
+
 For reference architecture, see `instantly-reference-architecture`.

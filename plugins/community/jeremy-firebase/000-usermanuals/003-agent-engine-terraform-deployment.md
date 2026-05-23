@@ -14,12 +14,14 @@ Deploying AI agents on **Vertex AI Agent Engine** through **Terraform** provides
 ### Vertex AI Agent Engine
 
 **Fully managed, serverless platform** for deploying and hosting AI agents. You can build agents using:
+
 - Custom Python classes following the Agent Engine template pattern
 - Agent Developer Kit (ADK)
 - LangChain
 - LlamaIndex
 
 The platform handles:
+
 - Scaling
 - Infrastructure management
 - Enterprise-grade security
@@ -28,6 +30,7 @@ The platform handles:
 ### Vertex AI Reasoning Engine Terraform Resource
 
 The [Vertex AI Reasoning Engine Terraform resource](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/vertex_ai_reasoning_engine) simplifies deploying AI agents by providing a declarative configuration interface. With Terraform, you can:
+
 - Package your agent code
 - Manage dependencies
 - Configure compute resources
@@ -686,6 +689,7 @@ resource "google_vertex_ai_reasoning_engine" "reasoning_engine" {
 ### ADK-Specific Parameters
 
 In this scenario, we have an additional parameter in the spec:
+
 - **`agent_framework = "google-adk"`**: Indicates we are deploying an ADK agent
 
 Also, we define the **supported operations** as described in the [ADK documentation](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/use/adk#supported-operations):
@@ -871,16 +875,19 @@ resource "google_vertex_ai_reasoning_engine" "reasoning_engine" {
 ### Common Issues
 
 **Pickle Serialization Errors:**
+
 - Ensure agent class is pickle-able
 - Avoid unpicklable objects in `__init__()` (connections, file handles)
 - Move initialization to `set_up()` method
 
 **Terraform Deployment Failures:**
+
 - Verify APIs are enabled (Vertex AI, Cloud Storage)
 - Check IAM permissions
 - Ensure Cloud Storage bucket exists and is accessible
 
 **Agent Query Errors:**
+
 - Verify agent deployed successfully (`terraform output`)
 - Check agent resource name format
 - Review agent logs in Cloud Console
@@ -901,11 +908,11 @@ This tutorial is relevant to:
 
 ## References
 
-* [Vertex AI Reasoning Engine Terraform Documentation](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/vertex_ai_reasoning_engine)
-* [Vertex AI Agent Engine Documentation](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview)
-* [Agent Development Kit (ADK) Documentation](https://google.github.io/adk-docs/)
-* [ADK Supported Operations](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/use/adk#supported-operations)
-* [Terraform Official Documentation](https://www.terraform.io/docs)
+- [Vertex AI Reasoning Engine Terraform Documentation](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/vertex_ai_reasoning_engine)
+- [Vertex AI Agent Engine Documentation](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview)
+- [Agent Development Kit (ADK) Documentation](https://google.github.io/adk-docs/)
+- [ADK Supported Operations](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/use/adk#supported-operations)
+- [Terraform Official Documentation](https://www.terraform.io/docs)
 
 ---
 

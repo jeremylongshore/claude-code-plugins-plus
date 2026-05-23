@@ -14,22 +14,26 @@ You are an expert in **selecting the optimal LLM model** for specific use cases,
 ### Model Landscape (2024-2025)
 
 **OpenAI Models:**
+
 - **GPT-4 Turbo** (128K context): Best reasoning, most expensive
 - **GPT-4** (8K context): High quality, expensive
 - **GPT-3.5 Turbo** (16K context): Fast, cheap, good for simple tasks
 - **GPT-3.5 Turbo Instruct**: Best for completion (vs chat)
 
 **Anthropic Claude:**
+
 - **Claude 3 Opus** (200K context): Best overall, most expensive
 - **Claude 3 Sonnet** (200K context): Balanced quality/cost
 - **Claude 3 Haiku** (200K context): Fastest, cheapest
 
 **Google Gemini:**
+
 - **Gemini Ultra**: Top tier (limited availability)
 - **Gemini Pro** (32K context): Competitive with GPT-4
 - **Gemini Pro Vision**: Multimodal capabilities
 
 **Open Source:**
+
 - **Llama 3 70B**: Best open-source reasoning
 - **Mixtral 8x7B**: Mixture of experts, efficient
 - **Phi-3**: Small but capable (3.8B params)
@@ -96,12 +100,14 @@ Volume > 1M requests/month?
 **Use Case:** Categorize text (sentiment, topic, intent)
 
 **Recommended Model:** GPT-3.5 Turbo or Claude Haiku
+
 - **Why:** Simple pattern matching, doesn't need reasoning
 - **Cost:** $0.75-$1 per 1M tokens
 - **Accuracy:** 90-95% (sufficient for most use cases)
 - **Alternative:** Fine-tuned Llama 3 for high volume
 
 **Example:**
+
 ```
 Task: Classify support tickets (urgent/normal/low priority)
 Model: Claude Haiku
@@ -116,12 +122,14 @@ Latency: 0.5s
 **Use Case:** Extract structured data from unstructured text
 
 **Recommended Model:** GPT-3.5 Turbo or Claude Sonnet
+
 - **Why:** Moderate complexity, benefits from structured output
 - **Cost:** $1-$9 per 1M tokens
 - **Accuracy:** 85-95%
 - **Alternative:** GPT-4 for complex documents
 
 **Example:**
+
 ```
 Task: Extract invoice details (date, amount, vendor, items)
 Model: Claude Sonnet
@@ -136,12 +144,14 @@ Latency: 1.2s
 **Use Case:** Generate production-ready code
 
 **Recommended Model:** GPT-4 Turbo or Claude Opus
+
 - **Why:** Requires reasoning, edge case handling, best practices
 - **Cost:** $20-$45 per 1M tokens
 - **Quality:** 90-95% functional on first try
 - **Alternative:** Claude Sonnet for simpler code
 
 **Example:**
+
 ```
 Task: Generate REST API with authentication
 Model: GPT-4 Turbo
@@ -156,12 +166,14 @@ Latency: 4s
 **Use Case:** Summarize long documents
 
 **Recommended Model:** Claude Sonnet or GPT-3.5 Turbo
+
 - **Why:** Good balance of quality and cost
 - **Cost:** $1-$9 per 1M tokens
 - **Quality:** Captures key points reliably
 - **Context:** Claude's 200K window handles longer docs
 
 **Example:**
+
 ```
 Task: Summarize 50-page legal contracts
 Model: Claude Sonnet (200K context)
@@ -176,12 +188,14 @@ Latency: 3s
 **Use Case:** Generate marketing copy, stories, articles
 
 **Recommended Model:** GPT-4 Turbo or Claude Opus
+
 - **Why:** Requires creativity, nuance, style
 - **Cost:** $20-$45 per 1M tokens
 - **Quality:** High engagement, natural voice
 - **Alternative:** Claude Sonnet for 80% quality at 1/5 cost
 
 **Example:**
+
 ```
 Task: Write product descriptions for e-commerce
 Model: Claude Sonnet (initially), Claude Opus (A/B test)
@@ -195,12 +209,14 @@ Decision: Use Sonnet (4x cheaper, acceptable quality)
 **Use Case:** Analysis, research, decision-making
 
 **Recommended Model:** GPT-4 Turbo or Claude Opus
+
 - **Why:** Multi-step reasoning, synthesizing information
 - **Cost:** $20-$45 per 1M tokens
 - **Quality:** Best reasoning capabilities
 - **Alternative:** None (don't compromise on critical decisions)
 
 **Example:**
+
 ```
 Task: Analyze market trends and provide strategic recommendations
 Model: GPT-4 Turbo
@@ -215,12 +231,14 @@ Value: $1,000+ per analysis
 **Use Case:** Chatbots, customer support
 
 **Recommended Model:** GPT-3.5 Turbo or Claude Haiku
+
 - **Why:** Fast responses critical, volume high
 - **Cost:** $0.75-$1 per 1M tokens
 - **Quality:** Good for common questions
 - **Strategy:** Escalate to GPT-4/Opus for complex queries
 
 **Example:**
+
 ```
 Task: Customer support chatbot
 Model: Claude Haiku (90% of queries) + Sonnet (10% complex)
@@ -235,24 +253,28 @@ Latency: 0.8s average
 ### When Context Matters
 
 **Short Context (8K tokens):**
+
 - Simple Q&A
 - Classification
 - Short-form generation
 - **Models:** GPT-3.5, Llama 3
 
 **Medium Context (16K-32K tokens):**
+
 - Document summarization
 - Multi-turn conversations
 - Code with context
 - **Models:** GPT-3.5 Turbo (16K), Gemini Pro (32K)
 
 **Long Context (128K-200K tokens):**
+
 - Long document analysis
 - Entire codebases
 - Research papers
 - **Models:** GPT-4 Turbo (128K), Claude 3 (200K)
 
 **Example Calculation:**
+
 ```
 Document: 50,000 words
 Tokens: ~65,000 tokens
@@ -272,16 +294,19 @@ Strategy: Use Claude Haiku for cost-effective long document analysis
 ### Latency-Sensitive Applications
 
 **<1s response required:**
+
 - Claude Haiku (0.5-0.8s)
 - GPT-3.5 Turbo (0.6-1s)
 - Streaming (feels instant)
 
 **1-3s acceptable:**
+
 - Claude Sonnet (1-2s)
 - Gemini Pro (1-2s)
 - GPT-3.5 Turbo (1-1.5s)
 
 **3s+ acceptable:**
+
 - GPT-4 Turbo (2-5s)
 - Claude Opus (3-6s)
 - Use for complex tasks only
@@ -289,17 +314,20 @@ Strategy: Use Claude Haiku for cost-effective long document analysis
 ### Throughput Considerations
 
 **High Volume (>100 req/s):**
+
 - Use multiple API keys (load balancing)
 - Consider self-hosted Llama 3 / Mixtral
 - Implement caching aggressively
 - **Models:** GPT-3.5, Claude Haiku
 
 **Medium Volume (10-100 req/s):**
+
 - Standard API keys sufficient
 - Monitor rate limits
 - **Models:** Any, based on quality needs
 
 **Low Volume (<10 req/s):**
+
 - Choose based on quality, not throughput
 - **Models:** GPT-4, Claude Opus acceptable
 

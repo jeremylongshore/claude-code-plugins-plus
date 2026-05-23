@@ -71,6 +71,7 @@ Generate structured, human-readable test reports from raw test runner output inc
 ## Examples
 
 **Markdown report structure:**
+
 ```markdown
 ## Test Results -- 2026-03-10
 
@@ -95,6 +96,7 @@ Generate structured, human-readable test reports from raw test runner output inc
 ```
 
 **GitHub Actions job summary integration:**
+
 ```bash
 cat test-report.md >> "$GITHUB_STEP_SUMMARY"
 ```

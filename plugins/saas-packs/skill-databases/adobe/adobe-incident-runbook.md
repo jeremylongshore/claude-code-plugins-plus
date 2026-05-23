@@ -10,6 +10,7 @@ adobe-incident-runbook/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Adobe incident response
 **Workflow:** Part of the advanced skill category for Adobe integration.
 **Relates to:** Other adobe skills in this pack.

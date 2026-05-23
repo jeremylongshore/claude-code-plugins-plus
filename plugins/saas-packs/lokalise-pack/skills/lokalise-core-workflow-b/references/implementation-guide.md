@@ -5,6 +5,7 @@ Detailed implementation reference for the lokalise-core-workflow-b skill.
 ## Instructions
 
 ### Step 1: Download via CLI
+
 ```bash
 # Basic download
 lokalise2 \
@@ -29,6 +30,7 @@ lokalise2 \
 ```
 
 ### Step 2: Download via SDK
+
 ```typescript
 import { LokaliseApi } from "@lokalise/node-api";
 import fs from "fs";
@@ -70,6 +72,7 @@ async function downloadTranslations(projectId: string, outputDir: string) {
 ```
 
 ### Step 3: Download Specific Languages
+
 ```typescript
 async function downloadLanguages(
   projectId: string,
@@ -96,6 +99,7 @@ async function downloadLanguages(
 ```
 
 ### Step 4: Integrate with React i18next
+
 ```typescript
 // src/i18n/loadTranslations.ts
 import i18n from "i18next";
@@ -122,6 +126,7 @@ export default i18n;
 ```
 
 ### Step 5: Generate TypeScript Types
+
 ```typescript
 // scripts/generateI18nTypes.ts
 import fs from "fs";
@@ -171,10 +176,10 @@ ${keys.map(k => `  "${k}": string;`).join("\n")}
 generateTypes("./src/locales", "./src/i18n/types.ts");
 ```
 
-
 ## Detailed Examples
 
 ### Download Options Reference
+
 ```typescript
 const downloadOptions = {
   // Format settings
@@ -200,6 +205,7 @@ const downloadOptions = {
 ```
 
 ### CI/CD Download Script
+
 ```bash
 #!/bin/bash
 # scripts/download-translations.sh
@@ -226,6 +232,7 @@ ls -la "$OUTPUT_DIR"
 ```
 
 ### Vite Plugin Integration
+
 ```typescript
 // vite.config.ts
 import { defineConfig } from "vite";
@@ -245,4 +252,3 @@ export default defineConfig({
   ],
 });
 ```
-

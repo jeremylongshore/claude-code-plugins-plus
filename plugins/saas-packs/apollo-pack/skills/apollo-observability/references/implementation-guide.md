@@ -5,6 +5,7 @@
 # Apollo Observability
 
 ## Overview
+
 Comprehensive observability setup for Apollo.io integrations including metrics, logging, tracing, and alerting.
 
 ## Metrics with Prometheus
@@ -459,6 +460,7 @@ export default router;
 ```
 
 ## Output
+
 - Prometheus metrics for all Apollo operations
 - Structured JSON logging with PII redaction
 - OpenTelemetry distributed tracing
@@ -467,6 +469,7 @@ export default router;
 - Health check endpoints
 
 ## Error Handling
+
 | Issue | Resolution |
 |-------|------------|
 | Missing metrics | Verify instrumentation |
@@ -475,10 +478,12 @@ export default router;
 | Trace gaps | Check propagation |
 
 ## Resources
+
 - [Prometheus Documentation](https://prometheus.io/docs/)
 - [OpenTelemetry](https://opentelemetry.io/)
 - [Grafana Dashboards](https://grafana.com/grafana/dashboards/)
 - [Pino Logger](https://getpino.io/)
 
 ## Next Steps
+
 Proceed to `apollo-incident-runbook` for incident response.

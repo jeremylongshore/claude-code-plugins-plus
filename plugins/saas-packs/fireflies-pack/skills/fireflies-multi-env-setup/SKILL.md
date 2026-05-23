@@ -25,6 +25,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Multi-Environment Setup
 
 ## Overview
+
 Configure Fireflies.ai with isolated API keys, webhook URLs, and settings per environment. Each environment gets its own Fireflies workspace or API key to prevent cross-environment data leakage.
 
 ## Environment Strategy
@@ -38,6 +39,7 @@ Configure Fireflies.ai with isolated API keys, webhook URLs, and settings per en
 ## Instructions
 
 ### Step 1: Environment Configuration Module
+
 ```typescript
 // config/fireflies.ts
 interface FirefliesConfig {
@@ -99,6 +101,7 @@ export function getFirefliesConfig(): FirefliesConfig {
 ```
 
 ### Step 2: Environment-Aware Client
+
 ```typescript
 // lib/fireflies-client.ts
 import { getFirefliesConfig } from "../config/fireflies";
@@ -144,6 +147,7 @@ export function createFirefliesClient() {
 ### Step 3: Secret Management by Platform
 
 **Local Development:**
+
 ```bash
 # .env.local (git-ignored)
 FIREFLIES_API_KEY_DEV=your-dev-key
@@ -151,6 +155,7 @@ FIREFLIES_WEBHOOK_SECRET_DEV=your-dev-secret-16ch
 ```
 
 **GitHub Actions:**
+
 ```yaml
 # .github/workflows/deploy.yml
 jobs:
@@ -169,6 +174,7 @@ jobs:
 ```
 
 **GCP Secret Manager:**
+
 ```bash
 set -euo pipefail
 # Store secrets
@@ -182,6 +188,7 @@ gcloud secrets add-iam-policy-binding fireflies-api-key-prod \
 ```
 
 ### Step 4: Startup Validation
+
 ```typescript
 import { z } from "zod";
 
@@ -210,7 +217,9 @@ export function validateConfig() {
 ```
 
 ### Step 5: Per-Environment Webhook Registration
+
 Each environment needs its own webhook URL registered in Fireflies:
+
 - **Dev:** Use ngrok or similar for local testing
 - **Staging:** `https://staging.yourapp.com/api/webhooks/fireflies`
 - **Production:** `https://yourapp.com/api/webhooks/fireflies`
@@ -218,6 +227,7 @@ Each environment needs its own webhook URL registered in Fireflies:
 Register each in the corresponding Fireflies workspace at app.fireflies.ai/settings > Developer settings.
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Wrong environment detected | Missing `NODE_ENV` | Set in deployment platform |
@@ -226,14 +236,17 @@ Register each in the corresponding Fireflies workspace at app.fireflies.ai/setti
 | Startup crash | Missing config | Zod validation catches at boot |
 
 ## Output
+
 - Environment-aware Fireflies configuration with type safety
 - Secret management across local, CI, and cloud platforms
 - Startup validation preventing misconfigured deployments
 - Per-environment webhook URL strategy
 
 ## Resources
+
 - [Fireflies API Docs](https://docs.fireflies.ai/)
 - [GCP Secret Manager](https://cloud.google.com/secret-manager)
 
 ## Next Steps
+
 For deployment, see `fireflies-deploy-integration`.

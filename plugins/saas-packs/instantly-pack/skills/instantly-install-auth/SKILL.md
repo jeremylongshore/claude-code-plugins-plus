@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Install & Auth
 
 ## Overview
+
 Configure Instantly.ai API v2 authentication. Instantly uses Bearer token auth with scoped API keys. There is no official SDK — all integrations use direct REST calls to `https://api.instantly.ai/api/v2/`.
 
 ## Prerequisites
+
 - Instantly.ai account on Hypergrowth plan ($97/mo) or higher (required for API v2 access)
 - Node.js 18+ or Python 3.10+
 - Access to Instantly dashboard at `https://app.instantly.ai`
@@ -36,6 +38,7 @@ Configure Instantly.ai API v2 authentication. Instantly uses Bearer token auth w
 ## Instructions
 
 ### Step 1: Generate API Key
+
 1. Log into `https://app.instantly.ai`
 2. Navigate to **Settings > Integrations > API**
 3. Click **Create New API Key**
@@ -53,6 +56,7 @@ echo "Created .env with Instantly config"
 ```
 
 Available API scopes (resource:action format):
+
 | Scope | Access |
 |-------|--------|
 | `campaigns:read` | List/get campaigns and analytics |
@@ -66,6 +70,7 @@ Available API scopes (resource:action format):
 | `all:all` | Unrestricted access (dev only) |
 
 ### Step 2: Create API Client Wrapper (TypeScript)
+
 ```typescript
 // src/instantly.ts
 import "dotenv/config";
@@ -99,6 +104,7 @@ export async function instantly<T = unknown>(
 ```
 
 ### Step 3: Create API Client Wrapper (Python)
+
 ```python
 # instantly_client.py
 import os
@@ -134,6 +140,7 @@ def instantly_post(path: str, json_data: dict = None):
 ```
 
 ### Step 4: Verify Connection
+
 ```typescript
 // verify.ts — run with: npx tsx verify.ts
 import { instantly } from "./src/instantly";
@@ -163,11 +170,13 @@ verify().catch((err) => {
 ```
 
 ## Output
+
 - `.env` file with `INSTANTLY_API_KEY` and `INSTANTLY_BASE_URL`
 - Reusable API client wrapper (`src/instantly.ts` or `instantly_client.py`)
 - Verified connection to Instantly API v2
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `401 Unauthorized` | Invalid or expired API key | Regenerate key in Settings > Integrations |
@@ -177,9 +186,11 @@ verify().catch((err) => {
 | `API key not found` | Key was revoked | Generate a new key from the dashboard |
 
 ## Resources
+
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
 - [API v1 to v2 Migration Guide](https://developer.instantly.ai/api-v1-docs)
 - [Instantly Help Center](https://help.instantly.ai)
 
 ## Next Steps
+
 After successful auth, proceed to `instantly-hello-world` for your first API call.

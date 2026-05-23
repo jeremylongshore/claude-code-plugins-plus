@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Exa Core Workflow A — Neural Search
 
 ## Overview
+
 Primary workflow for Exa: semantic web search using `search()` and `searchAndContents()`. Exa's neural search understands query meaning rather than matching keywords, making it ideal for research, RAG pipelines, and content discovery. This skill covers search types, content extraction, filtering, and categories.
 
 ## Prerequisites
+
 - `exa-js` installed and `EXA_API_KEY` configured
 - Understanding of neural vs keyword search tradeoffs
 
@@ -47,6 +49,7 @@ Primary workflow for Exa: semantic web search using `search()` and `searchAndCon
 ## Instructions
 
 ### Step 1: Basic Neural Search
+
 ```typescript
 import Exa from "exa-js";
 
@@ -68,6 +71,7 @@ for (const r of results.results) {
 ```
 
 ### Step 2: Search with Content Extraction
+
 ```typescript
 // searchAndContents returns page text, highlights, and/or summaries
 const results = await exa.searchAndContents(
@@ -96,6 +100,7 @@ for (const r of results.results) {
 ```
 
 ### Step 3: Date and Domain Filtering
+
 ```typescript
 // Filter by publication date and restrict to specific domains
 const results = await exa.searchAndContents(
@@ -116,6 +121,7 @@ const results = await exa.searchAndContents(
 ```
 
 ### Step 4: Category-Scoped Search
+
 ```typescript
 // Categories narrow results to specific content types
 // Available: company, research paper, news, tweet, personal site,
@@ -143,6 +149,7 @@ const companies = await exa.search(
 ```
 
 ### Step 5: Content Freshness with LiveCrawl
+
 ```typescript
 // Control whether Exa fetches fresh content or uses cache
 const results = await exa.searchAndContents(
@@ -159,11 +166,13 @@ const results = await exa.searchAndContents(
 ```
 
 ## Output
+
 - Ranked search results with URLs, titles, scores, and published dates
 - Optional text content, highlights, and summaries per result
 - Results filtered by date range, domains, categories, and text content
 
 ## Error Handling
+
 | Error | HTTP Code | Cause | Solution |
 |-------|-----------|-------|----------|
 | `INVALID_REQUEST_BODY` | 400 | Invalid parameter types | Check query is string, numResults is integer |
@@ -175,6 +184,7 @@ const results = await exa.searchAndContents(
 ## Examples
 
 ### RAG Context Retrieval
+
 ```typescript
 async function getRAGContext(question: string, maxResults = 5) {
   const results = await exa.searchAndContents(question, {
@@ -193,9 +203,11 @@ async function getRAGContext(question: string, maxResults = 5) {
 ```
 
 ## Resources
+
 - [Exa Search Reference](https://docs.exa.ai/reference/search)
 - [Exa Contents Retrieval](https://docs.exa.ai/reference/contents-retrieval)
 - [Exa Search Types](https://docs.exa.ai/reference/search)
 
 ## Next Steps
+
 For similarity search and advanced retrieval, see `exa-core-workflow-b`.

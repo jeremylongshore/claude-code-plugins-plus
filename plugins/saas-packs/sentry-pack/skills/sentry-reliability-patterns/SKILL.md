@@ -49,6 +49,7 @@ Wrap `Sentry.init()` in try/catch so an invalid DSN, network error, or SDK bug n
 Create `lib/sentry-safe.ts` with `initSentrySafe()` and `captureError()`. See [graceful-degradation.md](references/graceful-degradation.md) for full implementation.
 
 Key rules:
+
 - Never let `Sentry.init()` crash the process — wrap in try/catch, set `sentryAvailable = false` on failure
 - Verify client creation with `Sentry.getClient()` — invalid DSNs silently produce no client
 - Always log errors locally as baseline before attempting Sentry capture
@@ -61,6 +62,7 @@ When Sentry is unreachable, continued attempts waste resources and add latency. 
 Implement `SentryCircuitBreaker` class with closed/open/half-open states. See [circuit-breaker-pattern.md](references/circuit-breaker-pattern.md) for full implementation. Expose state via [health-checks.md](references/health-checks.md) endpoint.
 
 Key rules:
+
 - Default: 5 failures to trip open, 60-second cooldown before half-open probe
 - In open state, skip Sentry calls entirely and log to fallback
 - On half-open success, reset to closed with zero failure count
@@ -71,11 +73,13 @@ Key rules:
 Buffer events when network is unavailable and replay on reconnect. Use bounded file-based queue to survive restarts. Pair with signal handlers that flush via `Sentry.close()` before process exit.
 
 Implement three modules:
+
 - `lib/sentry-offline-queue.ts` — `enqueueEvent()` and `drainQueue()`. See [network-failure-handling.md](references/network-failure-handling.md)
 - `lib/sentry-transport.ts` — Custom transport with exponential backoff retry. See [timeout-handling.md](references/timeout-handling.md)
 - `lib/sentry-shutdown.ts` — `SIGTERM`/`SIGINT` handlers calling `Sentry.close(2000)`. See [timeout-handling.md](references/timeout-handling.md)
 
 Key rules:
+
 - Cap offline queue at 1000 events, evict oldest when full
 - Drain queue on startup and when connectivity restores
 - Call `Sentry.close(timeout)` before `process.exit()` — without it, in-flight events are silently dropped

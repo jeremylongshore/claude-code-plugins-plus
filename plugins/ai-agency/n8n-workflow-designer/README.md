@@ -6,13 +6,13 @@ Design complex n8n workflows with AI assistance - the most powerful open-source 
 
 n8n is the most powerful open-source automation platform available:
 
--  **Open Source** - Self-host for complete control, no vendor lock-in
--  **Cost Effective** - No per-execution fees, process millions for free
--  **Advanced Logic** - Loops, branching, custom JavaScript code
--  **More Powerful** - More capable than Zapier or Make.com
--  **Extensible** - Create custom nodes, integrate anything
--  **AI-Ready** - Native OpenAI, Anthropic, and LangChain integration
--  **Data Control** - Keep sensitive data on your infrastructure
+- **Open Source** - Self-host for complete control, no vendor lock-in
+- **Cost Effective** - No per-execution fees, process millions for free
+- **Advanced Logic** - Loops, branching, custom JavaScript code
+- **More Powerful** - More capable than Zapier or Make.com
+- **Extensible** - Create custom nodes, integrate anything
+- **AI-Ready** - Native OpenAI, Anthropic, and LangChain integration
+- **Data Control** - Keep sensitive data on your infrastructure
 
 ## Installation
 
@@ -108,6 +108,7 @@ volumes:
 | **8 vCPU, 16GB RAM** | 50-100 | 180K-360K | 129M-259M | Enterprise scale |
 
 **Workflow Complexity Impact:**
+
 - **Simple** (2-5 nodes, no AI): 100-200 ms per execution
 - **Medium** (10-20 nodes, basic AI): 1-2 sec per execution
 - **Complex** (30+ nodes, multiple APIs): 5-10 sec per execution
@@ -125,6 +126,7 @@ volumes:
 | **Database** | SQLite/Postgres | 50-100 MB | 5-10 GB | Regular vacuum |
 
 **Disk Space Planning:**
+
 ```bash
 # Minimal (10 workflows, 30-day retention)
 Disk: 10 GB
@@ -143,6 +145,7 @@ Disk: 200 GB + object storage for binary data
 ### n8n Cloud (Paid SaaS)
 
 **Rate Limits:**
+
 | Plan | Monthly Executions | Workflows | Support | Cost |
 |------|-------------------|-----------|---------|------|
 | **Free** | 5,000 | 5 | Community | $0 |
@@ -151,6 +154,7 @@ Disk: 200 GB + object storage for binary data
 | **Enterprise** | Custom | Unlimited | Dedicated | $500+/mo |
 
 **Registration Requirements:**
+
 - ✅ Email required
 - ✅ Payment method required (after free tier)
 - ✅ No self-hosting (cloud only)
@@ -161,6 +165,7 @@ Disk: 200 GB + object storage for binary data
 ### n8n Self-Hosted (Open Source)
 
 **"Rate Limits" (Hardware-Based):**
+
 | Resource | Constraint | Solution |
 |----------|-----------|----------|
 | **Executions** | ∞ Unlimited | Limited only by CPU/RAM |
@@ -170,6 +175,7 @@ Disk: 200 GB + object storage for binary data
 | **API Calls** | No n8n limits | Limited by integrated services |
 
 **Registration Requirements:**
+
 - ❌ No email required
 - ❌ No payment required
 - ❌ No account signup
@@ -387,12 +393,14 @@ result2 = cache.get_or_execute(
 ### Paid Approach (Cloud Automation)
 
 **Zapier Professional:**
+
 - **Cost:** $19-1,899/mo ($228-22,788/year)
 - **Executions:** 750-1M per month
 - **Workflows:** 5-50 (tier-based)
 - **Limitations:** No loops, limited custom code, no self-hosting
 
 **Make.com Professional:**
+
 - **Cost:** $9-299/mo ($108-3,588/year)
 - **Operations:** 10K-1M per month
 - **Limitations:** Cloud only, complex pricing tiers
@@ -402,16 +410,19 @@ result2 = cache.get_or_execute(
 ### Free Approach (n8n Self-Hosted)
 
 **Hardware Costs:**
+
 - **VPS (DigitalOcean/Hetzner):** $12-48/mo ($144-576/year one-time hardware)
 - **Executions:** ∞ Unlimited
 - **Workflows:** ∞ Unlimited
 - **Advantages:** Full control, custom code, loops, data privacy
 
 **Annual Savings:**
+
 - vs Zapier: $228-22,788/year → Save 88-97%
 - vs Make.com: $108-3,588/year → Save 84-96%
 
 **Cost Per Execution:**
+
 - **Zapier:** $0.0019-0.0253 per execution
 - **Make.com:** $0.0003-0.0299 per execution
 - **n8n Self-Hosted:** **$0.0000** per execution (after hardware)
@@ -518,6 +529,7 @@ volumes:
 ```
 
 **Hardware Requirements:**
+
 - **CPU:** 2 vCPU minimum
 - **RAM:** 4 GB minimum
 - **Disk:** 20 GB + growth
@@ -539,6 +551,7 @@ volumes:
 ## Features
 
 ### Workflow Design Capabilities
+
 - **Complex Branching** - Route data based on conditions
 - **Loops & Iterations** - Process batches efficiently
 - **Error Handling** - Retry logic and fallback strategies
@@ -547,6 +560,7 @@ volumes:
 - **Webhooks** - Trigger workflows from anywhere
 
 ### AI Integration
+
 - **OpenAI/GPT-4** - Native node support
 - **Anthropic Claude** - Full API integration
 - **Custom Models** - Connect any AI service
@@ -554,6 +568,7 @@ volumes:
 - **Response Parsing** - Extract structured data
 
 ### Performance Features
+
 - **Batch Processing** - Handle large datasets efficiently
 - **Parallel Execution** - Multiple branches run simultaneously
 - **Rate Limiting** - Built-in API throttling
@@ -570,6 +585,7 @@ volumes:
 ## Example Workflows
 
 ### 1. AI Email Auto-Responder
+
 ```
 Gmail Trigger → OpenAI Response → Gmail Send → Database Log
 ```
@@ -579,6 +595,7 @@ Gmail Trigger → OpenAI Response → Gmail Send → Database Log
 **Cost:** ~$0.02 per email (using GPT-4)
 
 ### 2. Content Pipeline
+
 ```
 RSS Feed → Filter → AI Enhancement → Multi-Platform Publish
 ```
@@ -588,6 +605,7 @@ RSS Feed → Filter → AI Enhancement → Multi-Platform Publish
 **Cost:** ~$0.05 per post (content generation + social media)
 
 ### 3. Lead Qualification
+
 ```
 Form Submit → Data Enrichment → AI Scoring → Route → CRM/Email
 ```
@@ -597,6 +615,7 @@ Form Submit → Data Enrichment → AI Scoring → Route → CRM/Email
 **Cost:** ~$0.01 per lead (AI scoring only)
 
 ### 4. Document Processing
+
 ```
 Email Trigger → Extract PDF → OCR → AI Analysis → Database → Notify
 ```
@@ -606,6 +625,7 @@ Email Trigger → Extract PDF → OCR → AI Analysis → Database → Notify
 **Cost:** ~$0.10 per document (OCR + AI analysis)
 
 ### 5. Customer Support Automation
+
 ```
 Ticket Created → Classify → Route → AI Draft → Human Review → Send
 ```
@@ -617,18 +637,22 @@ Ticket Created → Classify → Route → AI Draft → Human Review → Send
 ## Getting Started
 
 ### 1. Install the Plugin
+
 ```bash
 /plugin install n8n-workflow-designer
 ```
 
 ### 2. Describe Your Workflow
+
 ```
 I need a workflow that monitors my Gmail for support requests,
 uses AI to draft responses, and sends them to Slack for approval.
 ```
 
 ### 3. Get Complete Workflow
+
 The plugin generates:
+
 - Visual architecture diagram
 - Node-by-node configuration
 - Complete importable JSON
@@ -637,6 +661,7 @@ The plugin generates:
 - Cost estimates
 
 ### 4. Import to n8n
+
 1. Copy the JSON output
 2. Open your n8n instance
 3. Click "Import from JSON"
@@ -646,12 +671,14 @@ The plugin generates:
 ## n8n Setup Options
 
 ### Cloud (Easiest)
+
 - Visit [n8n.cloud](https://n8n.cloud)
 - 5-10 workflows free
 - $20/month for standard plan
 - Hosted and managed
 
 ### Self-Hosted (Most Powerful)
+
 ```bash
 # Docker Compose
 docker run -it --rm \
@@ -662,6 +689,7 @@ docker run -it --rm \
 ```
 
 **Benefits:**
+
 - Free for unlimited workflows
 - Full control over data
 - No execution limits
@@ -671,6 +699,7 @@ docker run -it --rm \
 ## Real-World Examples
 
 ### Agency Use Case: Client Onboarding
+
 ```
 Form Submit → Create Folders → Send Contracts → Schedule Kickoff → CRM Update
 ```
@@ -680,6 +709,7 @@ Form Submit → Create Folders → Send Contracts → Schedule Kickoff → CRM U
 **ROI:** After 1 client
 
 ### SaaS Use Case: User Activation
+
 ```
 New Signup → Send Welcome → Monitor Usage → Trigger Onboarding → Alert Sales
 ```
@@ -689,6 +719,7 @@ New Signup → Send Welcome → Monitor Usage → Trigger Onboarding → Alert S
 **Cost:** $0.001 per user
 
 ### E-commerce Use Case: Order Processing
+
 ```
 Order Received → Inventory Check → Payment → Fulfillment → Tracking → Follow-up
 ```
@@ -742,6 +773,7 @@ MIT - See LICENSE file
 ## Contributing
 
 Contributions welcome! Please submit PRs with:
+
 - New workflow templates
 - Integration examples
 - Performance optimizations

@@ -5,21 +5,25 @@
 ## Page: /categories/skill-enhancers (or /skill-enhancers)
 
 ### Title Tag (59 chars)
+
 ```
 Skill Enhancers - AI Automation Plugins for Claude Code Tools
 ```
 
 ### Meta Description (157 chars)
+
 ```
 Discover Skill Enhancer plugins that extend Claude's AI capabilities with automation. Convert research to GitHub issues, Slack digests, and production code.
 ```
 
 ### Canonical URL
+
 ```html
 <link rel="canonical" href="https://claudecodeplugins.io/categories/skill-enhancers" />
 ```
 
 ### Open Graph Tags
+
 ```html
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
@@ -34,6 +38,7 @@ Discover Skill Enhancer plugins that extend Claude's AI capabilities with automa
 ```
 
 ### Twitter Card Tags
+
 ```html
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
@@ -47,6 +52,7 @@ Discover Skill Enhancer plugins that extend Claude's AI capabilities with automa
 ```
 
 ### Additional Meta Tags
+
 ```html
 <!-- Additional SEO -->
 <meta name="keywords" content="Claude Skill Enhancers, AI automation plugins, Claude Code extensions, web search to GitHub, research automation, AI developer tools, Claude AI plugins, workflow automation" />
@@ -87,6 +93,7 @@ Discover Skill Enhancer plugins that extend Claude's AI capabilities with automa
 ```
 
 ### Astro Frontmatter Format
+
 ```typescript
 ---
 import Layout from '../../layouts/Layout.astro';
@@ -109,6 +116,7 @@ const seo = {
 ## Schema.org JSON-LD Markup
 
 ### CollectionPage Schema
+
 ```json
 {
   "@context": "https://schema.org",
@@ -211,6 +219,7 @@ const seo = {
 ## Primary Keywords
 
 **Target Keywords:**
+
 - Claude Skill Enhancers (Primary - Very low competition, branded)
 - AI automation plugins (Secondary - Medium competition)
 - Claude Code extensions (Secondary - Low competition)
@@ -218,6 +227,7 @@ const seo = {
 - Research automation tools (Tertiary - Medium competition)
 
 **Semantic Keywords to Include:**
+
 - Claude AI Skills
 - Workflow automation
 - Developer productivity tools
@@ -232,11 +242,13 @@ const seo = {
 ## Content Optimization
 
 ### H1 Tag (Primary Keyword)
+
 ```html
 <h1>Skill Enhancers: AI Automation Plugins for Claude Code</h1>
 ```
 
 ### Introductory Content (200-250 words)
+
 ```markdown
 # Skill Enhancers: AI Automation Plugins for Claude Code
 
@@ -275,6 +287,7 @@ required.
 ```
 
 ### H2 Section Headings
+
 ```html
 <h2>What Are Skill Enhancers? <span class="new-badge">New Category</span></h2>
 <h2>Free Skill Enhancer Plugins</h2>
@@ -286,6 +299,7 @@ required.
 ```
 
 ### Use Cases Section (SEO + User Value)
+
 ```markdown
 ## Use Cases for Skill Enhancer Automation
 
@@ -340,6 +354,7 @@ required.
 ## Internal Linking Strategy
 
 ### Links FROM Skill Enhancers Page TO:
+
 1. `/sponsor` - "Get Pro tier for premium Skill Enhancers"
 2. `/plugins/web-to-github-issue` - "Free Skill Enhancer: Web to GitHub Issue"
 3. `/getting-started` - "Install your first Skill Enhancer"
@@ -348,6 +363,7 @@ required.
 6. `/categories/ai-ml` - "Explore AI/ML plugins"
 
 ### Links TO Skill Enhancers FROM:
+
 1. Homepage - "Featured category badge: Skill Enhancers (NEW)"
 2. Sponsor page - "Pro tier includes exclusive Skill Enhancers"
 3. Plugin pages - "Part of Skill Enhancers collection"
@@ -355,6 +371,7 @@ required.
 5. Blog posts - "Learn about the new Skill Enhancers category"
 
 ### Anchor Text Variations:
+
 - "Skill Enhancers" (exact match)
 - "AI automation plugins" (partial match)
 - "Research automation tools" (semantic match)
@@ -364,21 +381,26 @@ required.
 ## Image Requirements
 
 ### Category Hero Image (1920x600px)
+
 **File:** `/public/images/skill-enhancers-hero.png`
 **Content:**
+
 - Headline: "Skill Enhancers: AI → Automation"
 - Visual: Workflow diagram (Claude Skills → Plugin → Output)
 - Badge: "5 plugins • Community + Pro + Enterprise"
 
 ### OG Image (1200x630px)
+
 **File:** `/public/images/skill-enhancers-og-image.png`
 **Content:**
+
 - Headline: "Skill Enhancers for Claude Code"
 - Subheadline: "Research → GitHub • Slack • Code • Deploy"
 - Visual: Plugin icons in flow diagram
 - Badge: "Free + Premium plugins available"
 
 ### Plugin Screenshots (Need Alt Text)
+
 ```html
 <img src="/images/web-to-github-issue-demo.png"
      alt="Web to GitHub Issue plugin converting Claude research into formatted GitHub issue with sources and action items"
@@ -406,6 +428,7 @@ required.
 ## Call-to-Action Hierarchy
 
 ### Primary CTA (Free Plugin)
+
 ```html
 <a href="/plugins/web-to-github-issue" class="cta-primary">
   Try Free: Web to GitHub Issue →
@@ -413,6 +436,7 @@ required.
 ```
 
 ### Secondary CTA (Pro Access)
+
 ```html
 <a href="/sponsor" class="cta-secondary">
   Get Pro Access - Unlock Premium Skill Enhancers →
@@ -420,6 +444,7 @@ required.
 ```
 
 ### Tertiary CTA (Custom Development)
+
 ```html
 <a href="mailto:jeremy@intentsolutions.io?subject=Custom%20Skill%20Enhancer" class="cta-tertiary">
   Enterprise: Build Custom Skill Enhancers →
@@ -429,6 +454,7 @@ required.
 ## Mobile Optimization
 
 ### Mobile-First Content Structure
+
 ```html
 <!-- Sticky category badge on mobile -->
 <div class="mobile-sticky-badge">
@@ -474,6 +500,7 @@ required.
 ## Related Searches to Target
 
 **People Also Search For:**
+
 - Claude Code automation plugins
 - GitHub automation with AI
 - AI research tools for developers
@@ -483,6 +510,7 @@ required.
 - Developer workflow automation
 
 **Question-Based Keywords:**
+
 - How to automate GitHub issues with AI?
 - What are Claude Skill Enhancers?
 - Best AI automation plugins for developers
@@ -492,12 +520,14 @@ required.
 ## Content Freshness Strategy
 
 ### Update Frequency:
+
 - **Weekly:** Add new plugin releases to list
 - **Monthly:** Update time-saved statistics from user feedback
 - **Quarterly:** Add case studies and success stories
 - **Annually:** Refresh all screenshots and workflow diagrams
 
 ### Dynamic Content Elements:
+
 ```html
 <p class="last-updated">
   Last updated: <time datetime="2025-10-16">October 16, 2025</time>
@@ -512,6 +542,7 @@ required.
 ---
 
 **Projected SEO Impact:**
+
 - New keyword rankings: 15-20 Skill Enhancer-related terms
 - Organic traffic from category page: +200 visits/month
 - Click-through rate to individual plugins: +35%

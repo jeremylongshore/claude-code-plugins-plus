@@ -1,11 +1,13 @@
 # PRD: Wallet Security Auditor
 
 ## Summary
+
 **One-liner**: Audit wallet security by analyzing approvals, permissions, and transaction patterns
 **Domain**: Cryptocurrency / Security
 **Users**: DeFi users, Traders, Security researchers
 
 ## Problem Statement
+
 Wallet security is often overlooked until funds are stolen. Users need tools to audit their token approvals, identify risky contract interactions, and detect potential security issues before they become exploits.
 
 ## User Stories

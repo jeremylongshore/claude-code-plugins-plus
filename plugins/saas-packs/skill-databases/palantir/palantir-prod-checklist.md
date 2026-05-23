@@ -10,6 +10,7 @@ palantir-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Palantir production deployment checklist
 **Workflow:** Part of the operations skill category for Palantir integration.
 **Relates to:** Other palantir skills in this pack.

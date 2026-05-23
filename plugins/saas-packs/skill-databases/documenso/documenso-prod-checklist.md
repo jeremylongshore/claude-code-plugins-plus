@@ -10,6 +10,7 @@ documenso-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Documenso production deployment checklist
 **Workflow:** Part of the operations skill category for Documenso integration.
 **Relates to:** Other documenso skills in this pack.

@@ -40,6 +40,7 @@ npm run test:coverage:ui
 ## Coverage Thresholds
 
 All thresholds **PASSING**:
+
 - ✅ Statements: 100% (threshold: 80%)
 - ✅ Branches: 98.8% (threshold: 80%)
 - ✅ Functions: 100% (threshold: 80%)
@@ -60,6 +61,7 @@ xdg-open coverage/index.html  # Linux
 ## Troubleshooting
 
 ### Tests not running?
+
 ```bash
 # Reinstall dependencies
 rm -rf node_modules package-lock.json
@@ -67,6 +69,7 @@ npm install
 ```
 
 ### Coverage files missing?
+
 ```bash
 # Clean and regenerate
 rm -rf coverage/
@@ -74,6 +77,7 @@ npm run test:coverage
 ```
 
 ### Need verbose output?
+
 ```bash
 # Run with reporter
 npm test -- --reporter=verbose
@@ -95,11 +99,13 @@ For continuous integration pipelines:
 ## Before Committing
 
 Always run:
+
 ```bash
 npm run test:coverage
 ```
 
 Ensure:
+
 - ✅ All tests pass
 - ✅ Coverage stays above 80%
 - ✅ No new uncovered code

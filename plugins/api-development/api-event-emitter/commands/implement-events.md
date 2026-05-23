@@ -10,6 +10,7 @@ Build production-grade event-driven APIs with message queues, event streaming, a
 ## Design Decisions
 
 **Why event-driven architecture:**
+
 - **Decoupling**: Services communicate without direct dependencies
 - **Scalability**: Process events asynchronously, handle traffic spikes
 - **Resilience**: Failed events can be retried, dead-letter queues prevent data loss
@@ -17,6 +18,7 @@ Build production-grade event-driven APIs with message queues, event streaming, a
 - **Flexibility**: Add new consumers without modifying publishers
 
 **Alternatives considered:**
+
 - **Synchronous REST APIs**: Simpler but couples services, no retry capability
 - **Direct database sharing**: Fastest but creates tight coupling and data ownership issues
 - **GraphQL subscriptions**: Good for client-server, less suited for service-to-service
@@ -27,6 +29,7 @@ Build production-grade event-driven APIs with message queues, event streaming, a
 ## When to Use
 
 Use event-driven architecture when:
+
 - Building microservices that need to communicate asynchronously
 - Handling high-volume, bursty workloads (user signups, order processing)
 - Implementing CQRS (Command Query Responsibility Segregation)
@@ -35,6 +38,7 @@ Use event-driven architecture when:
 - Building real-time notification systems
 
 Don't use when:
+
 - Building simple CRUD applications with low traffic
 - You need immediate, synchronous responses (use REST/GraphQL instead)
 - Team lacks experience with message queues and async patterns
@@ -507,26 +511,32 @@ class OrderSaga {
 **Common issues and solutions:**
 
 **Problem**: Events lost during broker outage
+
 - **Cause**: Publisher doesn't wait for acknowledgment
 - **Solution**: Use persistent messages, wait for broker ACK, implement transactional outbox
 
 **Problem**: Duplicate event processing
+
 - **Cause**: Subscriber crashes before ACK, message redelivered
 - **Solution**: Make handlers idempotent, store processed event IDs in DB
 
 **Problem**: Events processed out of order
+
 - **Cause**: Multiple consumers, network delays
 - **Solution**: Use Kafka partitions with same key, single consumer per partition
 
 **Problem**: Subscriber can't keep up with events
+
 - **Cause**: Handler too slow, throughput mismatch
 - **Solution**: Scale subscribers horizontally, optimize handlers, batch processing
 
 **Problem**: Dead-letter queue fills up
+
 - **Cause**: Persistent failures not monitored
 - **Solution**: Set up DLQ monitoring alerts, implement DLQ consumer for manual review
 
 **Transactional outbox pattern** (prevent lost events):
+
 ```javascript
 // Atomic database write + event publish
 async function createUserWithEvent(userData) {
@@ -614,6 +624,7 @@ const rabbitConfig = {
 ## Best Practices
 
 DO:
+
 - Design events as past-tense facts ("user.created" not "create.user")
 - Include all necessary data in events (avoid requiring additional lookups)
 - Version your events for backward compatibility
@@ -624,6 +635,7 @@ DO:
 - Log event processing with correlation IDs
 
 DON'T:
+
 - Publish events for every database change (too granular)
 - Include sensitive data without encryption (PII, secrets)
 - Make event handlers depend on synchronous responses
@@ -633,6 +645,7 @@ DON'T:
 - Skip schema validation (causes runtime errors downstream)
 
 TIPS:
+
 - Use event naming conventions: `<entity>.<action>` (user.created, order.shipped)
 - Include event metadata: ID, timestamp, version, source service
 - Start with simple pub/sub, add event sourcing/CQRS only if needed
@@ -656,6 +669,7 @@ TIPS:
 - **Persistence**: Disk writes slow down throughput, use SSDs for brokers
 
 **Optimization strategies:**
+
 ```javascript
 // Batch events for higher throughput
 const eventBatch = [];
@@ -679,6 +693,7 @@ subscriber.channel.prefetch(10); // Process 10 messages concurrently
 - **Validation**: Validate event schemas to prevent injection attacks
 
 **Security checklist:**
+
 ```javascript
 // Use TLS for RabbitMQ
 const connection = await amqp.connect('amqps://user:pass@broker:5671', {
@@ -703,24 +718,28 @@ function publishEvent(event) {
 ## Troubleshooting
 
 **Events not being consumed:**
+
 1. Check queue binding to exchange with correct routing key
 2. Verify subscriber is connected and consuming from queue
 3. Check firewall/network connectivity to broker
 4. Review broker logs for errors
 
 **High event processing lag:**
+
 1. Scale subscribers horizontally (add more consumers)
 2. Optimize event handler performance (reduce I/O, batch operations)
 3. Increase prefetch count for parallel processing
 4. Check for slow dependencies (databases, external APIs)
 
 **Events being processed multiple times:**
+
 1. Verify idempotency check is working (check event ID storage)
 2. Ensure ACK is sent after successful processing
 3. Check for subscriber crashes before ACK
 4. Review handler timeouts (increase if operations are slow)
 
 **Dead-letter queue filling up:**
+
 1. Review DLQ messages to identify common failure patterns
 2. Fix handler bugs causing persistent failures
 3. Implement DLQ replay mechanism after fixes

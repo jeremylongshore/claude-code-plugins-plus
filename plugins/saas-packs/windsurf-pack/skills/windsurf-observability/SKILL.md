@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Windsurf Observability
 
 ## Overview
+
 Monitor Windsurf AI IDE adoption, feature usage, and productivity impact across your team. Covers Admin Dashboard analytics, custom tracking via extensions, and ROI measurement.
 
 ## Prerequisites
+
 - Windsurf Teams or Enterprise plan
 - Admin dashboard access at windsurf.com/dashboard
 - Team members actively using Windsurf
@@ -201,6 +203,7 @@ Track these metrics over time in your preferred dashboard tool:
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Low acceptance rate | AI suggestions don't match project style | Update .windsurfrules with project conventions |
@@ -212,12 +215,14 @@ Track these metrics over time in your preferred dashboard tool:
 ## Examples
 
 ### Quick Adoption Check
+
 ```
 Admin Dashboard > Analytics > Overview
 Look for: active users, acceptance rate, credit usage
 ```
 
 ### Monthly Seat Optimization
+
 ```yaml
 steps:
   1. Export member usage from Admin Dashboard
@@ -228,8 +233,10 @@ steps:
 ```
 
 ## Resources
+
 - [Windsurf Admin Guide](https://docs.windsurf.com/windsurf/guide-for-admins)
 - [Windsurf Enterprise](https://windsurf.com/enterprise)
 
 ## Next Steps
+
 For incident response procedures, see `windsurf-incident-runbook`.

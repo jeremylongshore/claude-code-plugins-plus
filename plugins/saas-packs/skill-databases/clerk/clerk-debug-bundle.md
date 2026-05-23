@@ -10,6 +10,7 @@ clerk-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Clerk debug evidence for support
 **Workflow:** Part of the operations skill category for Clerk integration.
 **Relates to:** Other clerk skills in this pack.

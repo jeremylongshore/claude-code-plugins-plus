@@ -1,6 +1,7 @@
 # Deepgram Webhooks Events - Implementation Details
 
 ## TypeScript Callback Server (Express)
+
 ```typescript
 import express from 'express';
 import crypto from 'crypto';
@@ -36,6 +37,7 @@ app.post('/webhooks/deepgram', async (req, res) => {
 ```
 
 ## Async Transcription Service
+
 ```typescript
 import { createClient } from '@deepgram/sdk';
 import { v4 as uuidv4 } from 'uuid';
@@ -64,6 +66,7 @@ export class AsyncTranscriptionService {
 ```
 
 ## Callback Retry Handler
+
 ```typescript
 export class CallbackRetryHandler {
   private config: { maxRetries: number; baseDelay: number; maxDelay: number };
@@ -84,6 +87,7 @@ export class CallbackRetryHandler {
 ```
 
 ## Testing Callbacks Locally
+
 ```bash
 # Use ngrok to expose local server
 ngrok http 3000
@@ -95,6 +99,7 @@ curl -X POST https://your-ngrok-url.ngrok.io/webhooks/deepgram \
 ```
 
 ## Client SDK for Async Transcription
+
 ```typescript
 export class AsyncTranscriptionClient {
   private baseUrl: string;

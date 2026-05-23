@@ -47,6 +47,7 @@ Step-by-step procedures for responding to MaintainX integration incidents, from 
 ### RB-001: MaintainX API Unreachable
 
 **Symptoms:**
+
 - All API calls failing with network errors
 - Health check endpoint returning unhealthy
 - Timeout errors in logs
@@ -83,12 +84,14 @@ echo "5. Checking from different regions (if available)..."
 ```
 
 **Mitigation:**
+
 1. Check [MaintainX Status Page](https://status.getmaintainx.com)
 2. If MaintainX is down: Enable fallback mode / cached responses
 3. If local network: Check firewall, DNS, proxy settings
 4. Escalate to network team if needed
 
 **Resolution:**
+
 - Wait for MaintainX restoration
 - Verify connectivity restored
 - Monitor for data sync catch-up
@@ -98,6 +101,7 @@ echo "5. Checking from different regions (if available)..."
 ### RB-002: High Error Rate (>5%)
 
 **Symptoms:**
+
 - `MaintainXHighErrorRate` alert firing
 - 4xx or 5xx errors in logs
 - Failed work order operations
@@ -155,6 +159,7 @@ async function diagnoseHighErrorRate() {
 | 5xx | Enable circuit breaker |
 
 **Resolution:**
+
 - Fix underlying issue
 - Clear error state
 - Monitor for recurrence
@@ -164,6 +169,7 @@ async function diagnoseHighErrorRate() {
 ### RB-003: Webhook Processing Failures
 
 **Symptoms:**
+
 - Webhooks not being processed
 - Events missing in local system
 - `webhook_failures` metric elevated
@@ -186,12 +192,14 @@ redis-cli LRANGE maintainx:webhook:failed 0 10
 ```
 
 **Mitigation:**
+
 1. Check webhook secret is correct
 2. Verify endpoint is accessible from internet
 3. Check for queue backlog
 4. Temporarily pause webhook processing if overwhelmed
 
 **Resolution:**
+
 - Fix webhook handler
 - Replay failed webhooks
 - Verify event sync
@@ -201,6 +209,7 @@ redis-cli LRANGE maintainx:webhook:failed 0 10
 ### RB-004: Data Sync Out of Sync
 
 **Symptoms:**
+
 - Local data doesn't match MaintainX
 - Missing work orders or updates
 - Stale data being served
@@ -241,11 +250,13 @@ async function diagnoseSyncIssues() {
 ```
 
 **Mitigation:**
+
 1. Trigger full sync if data is stale
 2. Check webhook delivery
 3. Verify polling job is running
 
 **Resolution:**
+
 - Run reconciliation script
 - Fix sync process
 - Monitor for drift
@@ -255,6 +266,7 @@ async function diagnoseSyncIssues() {
 ### RB-005: Performance Degradation
 
 **Symptoms:**
+
 - `MaintainXHighLatency` alert firing
 - Slow user experience
 - Timeout errors
@@ -295,11 +307,13 @@ async function diagnosePerformance() {
 ```
 
 **Mitigation:**
+
 1. Enable aggressive caching
 2. Reduce concurrent requests
 3. Add request queuing
 
 **Resolution:**
+
 - Identify slow endpoints
 - Optimize queries
 - Scale resources if needed

@@ -10,6 +10,7 @@ oraclecloud-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Oracle Cloud security best practices
 **Workflow:** Part of the operations skill category for Oracle Cloud integration.
 **Relates to:** Other oraclecloud skills in this pack.

@@ -10,6 +10,7 @@ cursor-rules-config/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Guides configuration of .cursorrules files for project-specific AI behavior including coding standards, framework patterns, and example code.
 
 **Workflow:** This skill activates when developers want to customize AI behavior for their project. It covers file location, basic and advanced configuration, framework-specific templates (Next.js, Express, FastAPI), and verification techniques.

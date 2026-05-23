@@ -18,6 +18,7 @@ HubSpot returns these headers on **every** API response — not just 429s. Read 
 **Critical semantic distinction:** `X-HubSpot-RateLimit-Daily-Remaining` and `X-HubSpot-RateLimit-Remaining` decrement from two **independent** counters. Burning the burst window does not affect the daily counter. Exhausting the daily counter does not affect the burst window. Rate-limit logic that conflates them will misfire.
 
 **Header availability by version:**
+
 - Headers above apply to all `v3` CRM API endpoints.
 - Older v1/v2 endpoints may return `X-HubSpot-RateLimit-Secondly` (deprecated naming) instead of the interval-based headers. Use `X-HubSpot-RateLimit-Daily-Remaining` as the common denominator across versions.
 
@@ -37,6 +38,7 @@ Portal-level limits. **All apps in the same portal share the same buckets** — 
 **Auth token endpoint:** separate limit of **10 requests per 10 seconds** applied to `POST /oauth/v1/token`. This limit applies independently of the API call limits above.
 
 **Detect actual tier from response headers:**
+
 ```bash
 curl -sI "https://api.hubapi.com/crm/v3/objects/contacts?limit=1" \
   -H "Authorization: Bearer $HUBSPOT_ACCESS_TOKEN" \
@@ -217,6 +219,7 @@ For estimating quota requirements before implementing a feature:
 | OAuth token refresh | `POST /oauth/v1/token` | 1 (separate 10 req/10s limit) |
 
 **Quota estimate formula for a contact sync:**
+
 ```
 calls = ceil(total_contacts / 100)          # using batch read
 days_of_quota = 500_000 / calls

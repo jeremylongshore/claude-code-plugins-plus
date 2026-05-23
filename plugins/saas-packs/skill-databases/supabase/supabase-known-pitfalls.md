@@ -10,6 +10,7 @@ supabase-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid the top 10 Supabase anti-patterns including synchronous API calls in request path, rate limit ignoring, key leakage, missing idempotency, and more.
 **Workflow:** Final advanced skill. Used for code review and onboarding.
 **Relates to:** Culmination of all patterns; used to validate implementations against all previous skills.

@@ -27,14 +27,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # CodeRabbit Cost Tuning
 
 ## Overview
+
 Optimize CodeRabbit per-seat licensing costs by right-sizing seat allocation, focusing reviews on high-value repositories, and configuring review scope to minimize unnecessary AI processing. CodeRabbit charges per seat based on active committers who open PRs.
 
 ## Prerequisites
+
 - CodeRabbit Pro or Enterprise plan
 - GitHub/GitLab org admin access
 - Access to CodeRabbit dashboard at app.coderabbit.ai
 
 ## Pricing Model
+
 | Plan | Price | Includes |
 |------|-------|----------|
 | Free | $0 | Public repos, limited reviews |
@@ -46,7 +49,9 @@ Optimize CodeRabbit per-seat licensing costs by right-sizing seat allocation, fo
 ## Instructions
 
 ### Step 1: Audit Seat Utilization
+
 Navigate to CodeRabbit Dashboard > Organization > Seats:
+
 ```yaml
 # Example seat audit
 seat_audit:
@@ -60,13 +65,17 @@ seat_audit:
 ```
 
 ### Step 2: Set Seat Policy to Active Committers Only
+
 In CodeRabbit Dashboard > Organization > Billing:
+
 - Switch seat policy from "All org members" to "Active committers"
 - Define active as "opened a PR in the last 30 days"
 - Exclude bot accounts explicitly: `dependabot[bot]`, `renovate[bot]`, `github-actions[bot]`
 
 ### Step 3: Focus Reviews on High-Value Repos
+
 Only enable CodeRabbit on repos where AI review adds value:
+
 ```markdown
 # Enable CodeRabbit (high value):
 - backend-api         → Business logic, security-critical
@@ -86,6 +95,7 @@ Only enable CodeRabbit on repos where AI review adds value:
 ```
 
 ### Step 4: Exclude Low-Value Files from Reviews
+
 ```yaml
 # .coderabbit.yaml - Skip files that don't benefit from AI review
 reviews:
@@ -112,6 +122,7 @@ reviews:
 ```
 
 ### Step 5: Use the Right Review Profile
+
 ```yaml
 # More aggressive profile = more comments = more processing
 # But the main cost is per-seat, not per-comment
@@ -122,7 +133,9 @@ reviews:
 ```
 
 ### Step 6: Monitor Review Value
+
 Track whether CodeRabbit reviews are being acted on:
+
 ```bash
 set -euo pipefail
 ORG="${1:-your-org}"
@@ -148,6 +161,7 @@ echo "If coverage is low, check: base_branches filter, drafts setting, seat assi
 ```
 
 ### Step 7: CLI Credit Management
+
 ```markdown
 # CodeRabbit CLI charges per file reviewed (~$0.25/file)
 # Tips to reduce CLI costs:
@@ -163,6 +177,7 @@ cr review --prompt-only
 ```
 
 ## Output
+
 - Seat audit completed with wasted seats identified
 - Repository access scoped to high-value repos only
 - Path filters configured to skip low-value files
@@ -170,6 +185,7 @@ cr review --prompt-only
 - CLI usage optimized with targeted file reviews
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Seat count higher than expected | Bots counted as seats | Exclude bot accounts in dashboard |
@@ -179,9 +195,11 @@ cr review --prompt-only
 | CLI charges higher than expected | Reviewing all files | Use `cr review <specific-files>` instead |
 
 ## Resources
+
 - [CodeRabbit Pricing](https://coderabbit.ai/pricing)
 - [CodeRabbit Seat Management](https://docs.coderabbit.ai/guides/seat-management)
 - [CodeRabbit CLI Pricing](https://www.coderabbit.ai/cli)
 
 ## Next Steps
+
 For enterprise seat management and SSO, see `coderabbit-enterprise-rbac`.

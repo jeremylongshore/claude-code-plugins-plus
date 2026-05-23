@@ -5,6 +5,7 @@ Automate budget vs actual variance analysis with flagging, commentary, and execu
 ## What This Command Does
 
 Creates a comprehensive variance report with:
+
 1. **Variance Summary** - Line-by-line budget vs actual with flags
 2. **Executive Summary** - Top variances and key insights
 3. **Trend Analysis** - Multi-period variance trends (if applicable)
@@ -16,6 +17,7 @@ When the user types `/analyze-variance`, follow these steps:
 ### 1. Load Data
 
 Ask for:
+
 - Budget data (Excel file, CSV, or pasted table)
 - Actual data (same format as budget)
 - Period (month, quarter, YTD)
@@ -24,6 +26,7 @@ Ask for:
 ### 2. Calculate Variances
 
 For each line item:
+
 - Absolute Variance = Actual - Budget
 - Percentage Variance = (Actual - Budget) / Budget × 100%
 - Apply sign conventions (revenue unfavorable if below, expenses unfavorable if above)
@@ -31,6 +34,7 @@ For each line item:
 ### 3. Flag Material Items
 
 Apply flagging:
+
 - 🔴 Red: Critical variances (>10% unfavorable or >$100K)
 - ⚠️ Yellow: Warning variances (5-10% unfavorable or $50K-$100K)
 - ✅ Green: On track (within ±5% or <$50K)
@@ -38,6 +42,7 @@ Apply flagging:
 ### 4. Generate Commentary
 
 For each flagged item:
+
 - Explain what's driving the variance
 - Provide context (is this timing or structural?)
 - Recommend actions
@@ -45,6 +50,7 @@ For each flagged item:
 ### 5. Create Executive Summary
 
 Summarize:
+
 - Bottom-line performance vs budget
 - Top 5 unfavorable variances
 - Top 5 favorable variances

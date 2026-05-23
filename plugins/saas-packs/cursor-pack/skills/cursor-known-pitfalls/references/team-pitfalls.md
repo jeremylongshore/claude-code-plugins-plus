@@ -3,6 +3,7 @@
 ## Team Pitfalls
 
 ### No Shared Configuration
+
 ```
 PITFALL:
 Everyone has different .cursorrules.
@@ -16,6 +17,7 @@ SOLUTION:
 ```
 
 ### Conflicting Extensions
+
 ```
 PITFALL:
 Team members with different extensions.
@@ -29,6 +31,7 @@ SOLUTION:
 ```
 
 ### Knowledge Silos
+
 ```
 PITFALL:
 Best prompts/techniques not shared.

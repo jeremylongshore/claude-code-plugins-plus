@@ -1,6 +1,7 @@
-# Customer.io Cost Tuning - Implementation Guide
+## Customer.io Cost Tuning - Implementation Guide
 
 ### Step 1: Profile Cleanup
+
 ```typescript
 // scripts/profile-audit.ts
 import { APIClient, RegionUS } from '@customerio/track';
@@ -49,6 +50,7 @@ async function auditProfiles(): Promise<ProfileAudit> {
 ```
 
 ### Step 2: Suppress Inactive Users
+
 ```typescript
 // lib/profile-management.ts
 import { TrackClient, RegionUS } from '@customerio/track';
@@ -111,6 +113,7 @@ async function deleteUsers(
 ```
 
 ### Step 3: Event Deduplication
+
 ```typescript
 // lib/smart-tracking.ts
 import { LRUCache } from 'lru-cache';
@@ -167,6 +170,7 @@ export function shouldTrackEvent(
 ```
 
 ### Step 4: Email Cost Optimization
+
 ```typescript
 // lib/email-optimization.ts
 interface EmailOptimizationConfig {
@@ -215,6 +219,7 @@ async function shouldSendEmail(
 ```
 
 ### Step 5: Usage Monitoring Dashboard
+
 ```typescript
 // lib/usage-monitor.ts
 interface UsageMetrics {

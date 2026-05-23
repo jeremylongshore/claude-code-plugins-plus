@@ -25,6 +25,7 @@ Sentry.init({ dsn: __SENTRY_DSN__ });
 ```
 
 CI gate:
+
 ```bash
 if grep -rq "ingest\.sentry\.io" --include="*.ts" --include="*.js" src/; then
   echo "ERROR: Hardcoded DSN detected" && exit 1

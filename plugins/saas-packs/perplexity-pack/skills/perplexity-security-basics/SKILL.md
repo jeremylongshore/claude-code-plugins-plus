@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Perplexity Security Basics
 
 ## Overview
+
 Security best practices for Perplexity Sonar API. Key concerns: API key protection (keys start with `pplx-`), query sanitization (Perplexity searches the open web, so PII in queries gets sent to external sources), and response handling (citations link to third-party sites).
 
 ## Prerequisites
+
 - Perplexity API key from [perplexity.ai/settings/api](https://www.perplexity.ai/settings/api)
 - Understanding of environment variable management
 - `.gitignore` configured to exclude secret files
@@ -37,6 +39,7 @@ Security best practices for Perplexity Sonar API. Key concerns: API key protecti
 ## Instructions
 
 ### Step 1: API Key Management
+
 ```bash
 # .env (NEVER commit to git)
 PERPLEXITY_API_KEY=pplx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -64,6 +67,7 @@ validateApiKey(process.env.PERPLEXITY_API_KEY || "");
 ```
 
 ### Step 2: Query Sanitization (Critical)
+
 Perplexity sends your query to the open web for search. Any PII in the query is exposed to external search infrastructure.
 
 ```typescript
@@ -97,6 +101,7 @@ async function safeSearch(rawQuery: string) {
 ```
 
 ### Step 3: Restrict Search Domains
+
 Use `search_domain_filter` to prevent Perplexity from searching untrusted or competitor sites.
 
 ```typescript
@@ -121,6 +126,7 @@ const filteredSearch = await perplexity.chat.completions.create({
 ```
 
 ### Step 4: API Key Rotation
+
 ```bash
 set -euo pipefail
 # 1. Generate new key at perplexity.ai/settings/api
@@ -137,6 +143,7 @@ curl -s -o /dev/null -w "%{http_code}" \
 ```
 
 ### Step 5: Security Checklist
+
 - [ ] API key stored in environment variable, not code
 - [ ] `.env` files in `.gitignore`
 - [ ] Different API keys per environment (dev/staging/prod)
@@ -147,6 +154,7 @@ curl -s -o /dev/null -w "%{http_code}" \
 - [ ] Response citations validated before displaying to users
 
 ## Error Handling
+
 | Security Issue | Detection | Mitigation |
 |----------------|-----------|------------|
 | API key in git | `git log --all -S "pplx-"` | Rotate key immediately, add pre-commit hook |
@@ -155,14 +163,17 @@ curl -s -o /dev/null -w "%{http_code}" \
 | Key shared across envs | Config audit | Separate keys per environment |
 
 ## Output
+
 - Secure API key storage pattern
 - PII sanitization for search queries
 - Domain-filtered search for compliance
 - Key rotation procedure
 
 ## Resources
+
 - [Perplexity API Documentation](https://docs.perplexity.ai)
 - [Perplexity Privacy Policy](https://www.perplexity.ai/privacy)
 
 ## Next Steps
+
 For production deployment, see `perplexity-prod-checklist`.

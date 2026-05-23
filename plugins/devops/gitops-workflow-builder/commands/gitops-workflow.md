@@ -6,7 +6,6 @@ description: Build GitOps workflows with ArgoCD and Flux
 
 Build GitOps workflows with ArgoCD and Flux
 
-
 ## Key Features
 
 - Production-ready configurations

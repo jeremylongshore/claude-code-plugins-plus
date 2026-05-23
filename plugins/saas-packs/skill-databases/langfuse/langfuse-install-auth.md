@@ -10,6 +10,7 @@ langfuse-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Langfuse SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Langfuse integration.
 **Relates to:** Other langfuse skills in this pack.

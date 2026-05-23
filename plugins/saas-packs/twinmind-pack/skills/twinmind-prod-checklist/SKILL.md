@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # TwinMind Production Checklist
 
 ## Overview
+
 Comprehensive checklist for deploying TwinMind integrations to production.
 
 ## Prerequisites
+
 - Development and staging environments tested
 - API credentials for production
 - Infrastructure provisioned
@@ -350,6 +352,7 @@ verifyProduction();
 ```
 
 ## Output
+
 - Complete production checklist
 - Pre-launch verification script
 - Post-launch verification tests
@@ -365,11 +368,13 @@ verifyProduction();
 | Inadequate alerts | Delayed response | Test alert routes |
 
 ## Resources
+
 - [TwinMind Enterprise SLA](https://twinmind.com/enterprise)
 - [Production Best Practices](https://twinmind.com/docs/production)
 - [Status Page](https://status.twinmind.com)
 
 ## Next Steps
+
 For upgrading between tiers, see `twinmind-upgrade-migration`.
 
 ## Instructions

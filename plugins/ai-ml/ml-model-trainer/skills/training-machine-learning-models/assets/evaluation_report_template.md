@@ -4,25 +4,25 @@ This report summarizes the evaluation of a machine learning model trained using 
 
 ## 1. Model Information
 
-*   **Model Name:** [Insert Model Name Here, e.g., "Customer Churn Prediction v1"]
-*   **Model Type:** [Insert Model Type Here, e.g., "Logistic Regression", "Random Forest"]
-*   **Training Date:** [Insert Date of Training Here, e.g., "2023-10-27"]
-*   **Plugin Version:** [Insert Plugin Version Here, find in plugin details]
-*   **Dataset Used for Training:** [Insert Dataset Name/Description Here, e.g., "Customer Transaction Data"]
+* **Model Name:** [Insert Model Name Here, e.g., "Customer Churn Prediction v1"]
+* **Model Type:** [Insert Model Type Here, e.g., "Logistic Regression", "Random Forest"]
+* **Training Date:** [Insert Date of Training Here, e.g., "2023-10-27"]
+* **Plugin Version:** [Insert Plugin Version Here, find in plugin details]
+* **Dataset Used for Training:** [Insert Dataset Name/Description Here, e.g., "Customer Transaction Data"]
 
 ## 2. Dataset Details
 
-*   **Training Set Size:** [Insert Number of Training Samples Here, e.g., "10,000"]
-*   **Validation Set Size:** [Insert Number of Validation Samples Here, e.g., "2,000"]
-*   **Testing Set Size:** [Insert Number of Testing Samples Here, e.g., "3,000"]
-*   **Features Used:** [List the features used for training. E.g., Age, Income, Location, etc.]
-*   **Target Variable:** [Specify the target variable. E.g., Customer Churn (Yes/No)]
+* **Training Set Size:** [Insert Number of Training Samples Here, e.g., "10,000"]
+* **Validation Set Size:** [Insert Number of Validation Samples Here, e.g., "2,000"]
+* **Testing Set Size:** [Insert Number of Testing Samples Here, e.g., "3,000"]
+* **Features Used:** [List the features used for training. E.g., Age, Income, Location, etc.]
+* **Target Variable:** [Specify the target variable. E.g., Customer Churn (Yes/No)]
 
 ## 3. Training Parameters
 
-*   **Parameters:** [List of the hyper parameters used for the model. E.g., learning rate, number of estimators, etc.]
-*   **Cross-Validation Strategy:** [Describe the cross-validation strategy used (e.g., k-fold cross-validation with k=5)]
-*   **Optimization Metric:** [Specify the metric used for optimization during training (e.g., Accuracy, F1-score)]
+* **Parameters:** [List of the hyper parameters used for the model. E.g., learning rate, number of estimators, etc.]
+* **Cross-Validation Strategy:** [Describe the cross-validation strategy used (e.g., k-fold cross-validation with k=5)]
+* **Optimization Metric:** [Specify the metric used for optimization during training (e.g., Accuracy, F1-score)]
 
 ## 4. Performance Metrics
 
@@ -57,14 +57,14 @@ This report summarizes the evaluation of a machine learning model trained using 
 
 ## 5. Model Interpretation
 
-*   **Feature Importance:** [Discuss the most important features influencing the model's predictions. You can provide a ranked list of features and their importance scores.]
-*   **Insights:** [Describe any interesting insights gained from the model. For example, "Customers with high income and low usage are more likely to churn."]
+* **Feature Importance:** [Discuss the most important features influencing the model's predictions. You can provide a ranked list of features and their importance scores.]
+* **Insights:** [Describe any interesting insights gained from the model. For example, "Customers with high income and low usage are more likely to churn."]
 
 ## 6. Recommendations
 
-*   **Model Improvements:** [Suggest potential improvements to the model. For example, "Try using a different algorithm", "Add more features", "Tune hyperparameters."]
-*   **Further Analysis:** [Suggest further analysis that could be performed. For example, "Investigate the reasons for high false positive rates."]
-*   **Deployment Considerations:** [Discuss any considerations for deploying the model to production.  For example, "Monitor the model's performance over time", "Retrain the model periodically with new data."]
+* **Model Improvements:** [Suggest potential improvements to the model. For example, "Try using a different algorithm", "Add more features", "Tune hyperparameters."]
+* **Further Analysis:** [Suggest further analysis that could be performed. For example, "Investigate the reasons for high false positive rates."]
+* **Deployment Considerations:** [Discuss any considerations for deploying the model to production.  For example, "Monitor the model's performance over time", "Retrain the model periodically with new data."]
 
 ## 7. Conclusion
 
@@ -72,4 +72,4 @@ This report summarizes the evaluation of a machine learning model trained using 
 
 ## 8. Appendix (Optional)
 
-*   [Include any additional information, such as detailed code snippets, visualizations, or links to external resources.]
+* [Include any additional information, such as detailed code snippets, visualizations, or links to external resources.]

@@ -10,6 +10,7 @@ canva-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Canva production deployment checklist
 **Workflow:** Part of the operations skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

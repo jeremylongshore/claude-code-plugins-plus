@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Enterprise RBAC
 
 ## Overview
+
 Implement enterprise-grade role-based access control, organization management, and SSO with Clerk. Covers custom roles and permissions, organization lifecycle, multi-tenant access patterns, SAML/OIDC SSO, and the Backend API for programmatic role management (released Nov 2025).
 
 ## Prerequisites
+
 - Clerk Pro or Enterprise plan (Organizations + SSO require paid plan)
 - Organizations feature enabled in Clerk Dashboard > Organizations > Settings
 - Next.js 14+ with App Router (examples use `@clerk/nextjs`)
@@ -37,6 +39,7 @@ Implement enterprise-grade role-based access control, organization management, a
 ## Instructions
 
 ### Step 1: Enable Organizations and Add UI Components
+
 ```typescript
 // app/org-selector/page.tsx
 import { OrganizationSwitcher, OrganizationProfile } from '@clerk/nextjs'
@@ -59,15 +62,18 @@ export default function OrgPage() {
 ```
 
 ### Step 2: Define Custom Roles and Permissions
+
 Configure in **Clerk Dashboard > Organizations > Roles** and **Permissions**.
 
 **Default roles (built-in):**
+
 | Role | Key | Built-in Permissions |
 |------|-----|---------------------|
 | Admin | `org:admin` | Full org management (members, settings, billing) |
 | Member | `org:member` | View org, read-only access |
 
 **Custom permissions (create in Dashboard > Organizations > Permissions):**
+
 | Permission | Key | Description |
 |------------|-----|-------------|
 | Read data | `org:data:read` | View organization resources |
@@ -77,6 +83,7 @@ Configure in **Clerk Dashboard > Organizations > Roles** and **Permissions**.
 | View analytics | `org:analytics:read` | Access analytics dashboard |
 
 **Custom roles (create in Dashboard > Organizations > Roles):**
+
 | Role | Permissions | Use Case |
 |------|-------------|----------|
 | `org:manager` | `data:read`, `data:write`, `analytics:read` | Content managers |
@@ -84,6 +91,7 @@ Configure in **Clerk Dashboard > Organizations > Roles** and **Permissions**.
 | `org:billing_admin` | `data:read`, `billing:manage` | Finance team |
 
 ### Step 3: RBAC Middleware — Route Protection by Role
+
 ```typescript
 // middleware.ts
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
@@ -116,6 +124,7 @@ export default clerkMiddleware(async (auth, req) => {
 ```
 
 ### Step 4: Permission Checks in Server Components
+
 ```typescript
 // app/admin/page.tsx
 import { auth } from '@clerk/nextjs/server'
@@ -150,6 +159,7 @@ export default async function AdminPage() {
 ```
 
 ### Step 5: Permission Checks in Client Components
+
 ```typescript
 'use client'
 import { Protect, useOrganization, useAuth } from '@clerk/nextjs'
@@ -185,6 +195,7 @@ export function AdminSection() {
 ```
 
 ### Step 6: Organization Member Management via Backend API
+
 ```typescript
 // app/api/org/members/route.ts
 import { auth, clerkClient } from '@clerk/nextjs/server'
@@ -233,6 +244,7 @@ export async function POST(req: Request) {
 ```
 
 ### Step 7: Programmatic Role/Permission Management (Backend API)
+
 ```typescript
 // lib/org-roles.ts — manage roles and permissions via API (released Nov 2025)
 import { clerkClient } from '@clerk/nextjs/server'
@@ -283,6 +295,7 @@ export async function updateMemberRole(
 ```
 
 ### Step 8: SAML SSO Configuration
+
 Configure in **Clerk Dashboard > SSO Connections > Add SAML Connection**:
 
 1. **ACS URL:** `https://<your-clerk-frontend-api>.clerk.accounts.dev/v1/saml/acs`
@@ -298,6 +311,7 @@ Configure in **Clerk Dashboard > SSO Connections > Add SAML Connection**:
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `orgId` is null | No active organization | Redirect to org selector, show `<OrganizationSwitcher />` |
@@ -308,6 +322,7 @@ Configure in **Clerk Dashboard > SSO Connections > Add SAML Connection**:
 | Custom role not visible | Created via API, not Dashboard | Roles created via API are org-scoped, not instance-wide |
 
 ## Enterprise Considerations
+
 - Roles and permissions are embedded in the session JWT -- no extra network requests needed for authorization checks
 - Custom roles created in the Dashboard are instance-wide; roles created via Backend API are organization-scoped
 - For multi-tenant SaaS, combine Organizations with tenant-scoped database queries (`WHERE org_id = :orgId`)
@@ -316,10 +331,12 @@ Configure in **Clerk Dashboard > SSO Connections > Add SAML Connection**:
 - Consider the `org:sys_*` system permissions (`sys_memberships:manage`, `sys_memberships:read`, `sys_domains:manage`) for built-in org management actions
 
 ## Resources
+
 - [Organizations Overview](https://clerk.com/docs/guides/organizations/overview)
 - [Roles & Permissions](https://clerk.com/docs/guides/organizations/control-access/roles-and-permissions)
 - [Check Access](https://clerk.com/docs/guides/organizations/control-access/check-access)
 - [Roles/Permissions Backend API](https://clerk.com/changelog/2025-11-24-organization-roles-and-permission-bapi-management)
 
 ## Next Steps
+
 Proceed to `clerk-migration-deep-dive` for auth provider migration.

@@ -21,9 +21,11 @@ compatibility: Designed for Claude Code
 # Navan Webhooks & Events
 
 ## Overview
+
 Navan supports asynchronous event delivery via callback URLs registered through the REST API. Since there is no public SDK, webhook handlers receive raw HTTP POST requests with JSON payloads. This skill covers endpoint setup, payload verification, event routing, and idempotent processing for the key event types: booking lifecycle, expense workflow, and travel disruptions.
 
 ## Prerequisites
+
 - Active Navan account with API credentials (Admin > Travel admin > Settings > Integrations)
 - OAuth 2.0 access token (see `navan-install-auth`)
 - Publicly accessible HTTPS endpoint for callback URL (use ngrok for local development)
@@ -32,6 +34,7 @@ Navan supports asynchronous event delivery via callback URLs registered through 
 ## Instructions
 
 ### Step 1: Register a Webhook Callback URL
+
 ```typescript
 const response = await fetch('https://api.navan.com/v1/webhooks', {
   method: 'POST',
@@ -58,6 +61,7 @@ console.log('Webhook registered:', webhook.id);
 ```
 
 ### Step 2: Verify Payload Signatures
+
 ```typescript
 import crypto from 'node:crypto';
 
@@ -74,6 +78,7 @@ function verifySignature(payload: string, signature: string, secret: string): bo
 ```
 
 ### Step 3: Build the Webhook Handler
+
 ```typescript
 import express from 'express';
 const app = express();
@@ -117,6 +122,7 @@ app.post('/webhooks/navan', express.raw({ type: 'application/json' }), async (re
 ```
 
 ### Step 4: Handle Key Event Types
+
 ```typescript
 async function handleNewBooking(data: {
   booking_id: string;
@@ -153,9 +159,11 @@ async function handleDisruption(data: {
 ```
 
 ## Output
+
 A running webhook endpoint that receives real-time Navan events, verifies payload authenticity, deduplicates retries, and routes events to typed handler functions. The handler acknowledges receipt immediately (HTTP 200) and processes events asynchronously to avoid timeout-triggered retries.
 
 ## Error Handling
+
 | Error | Code | Solution |
 |-------|------|----------|
 | Invalid signature | 401 | Verify `NAVAN_WEBHOOK_SECRET` matches the secret used during registration |
@@ -167,12 +175,14 @@ A running webhook endpoint that receives real-time Navan events, verifies payloa
 ## Examples
 
 **List registered webhooks:**
+
 ```bash
 curl -s -H "Authorization: Bearer $NAVAN_ACCESS_TOKEN" \
   https://api.navan.com/v1/webhooks | python3 -m json.tool
 ```
 
 **Delete a webhook:**
+
 ```bash
 curl -s -X DELETE \
   -H "Authorization: Bearer $NAVAN_ACCESS_TOKEN" \
@@ -180,15 +190,18 @@ curl -s -X DELETE \
 ```
 
 **Test with ngrok for local development:**
+
 ```bash
 ngrok http 3000
 # Use the HTTPS URL as your callback URL when registering
 ```
 
 ## Resources
+
 - [Navan Help Center](https://app.navan.com/app/helpcenter) — Official documentation and support
 - [Navan Integrations](https://navan.com/integrations) — Available integration partners and setup guides
 - [Navan Security](https://navan.com/security) — Compliance certifications and data handling policies
 
 ## Next Steps
+
 After setting up webhooks, see `navan-rate-limits` to add throttling to your event processing pipeline, or `navan-security-basics` for credential rotation and SSO hardening.

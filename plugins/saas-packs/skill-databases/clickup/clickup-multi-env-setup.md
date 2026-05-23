@@ -10,6 +10,7 @@ clickup-multi-env-setup/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure ClickUp multi-environment setup
 **Workflow:** Part of the enterprise skill category for ClickUp integration.
 **Relates to:** Other clickup skills in this pack.

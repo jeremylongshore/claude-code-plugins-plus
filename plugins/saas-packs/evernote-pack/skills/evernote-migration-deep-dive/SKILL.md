@@ -24,12 +24,15 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Evernote Migration Deep Dive
 
 ## Current State
+
 !`npm list 2>/dev/null | head -5`
 
 ## Overview
+
 Comprehensive guide for migrating data to and from Evernote, including ENEX export/import, bulk API operations, format conversions (ENML to Markdown, HTML to ENML), and data integrity verification.
 
 ## Prerequisites
+
 - Understanding of Evernote data model (Notes, Notebooks, Tags, Resources)
 - Source/target system access credentials
 - Sufficient API quota for migration volume
@@ -98,6 +101,7 @@ Build a migration runner with progress tracking, checkpointing (resume from fail
 For the full migration planner, ENEX parser, format converters, migration runner, and verification tools, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
+
 - Migration assessment tool (note count, estimated time, quota needs)
 - ENEX, JSON, and Markdown exporters
 - ENML importer with format conversion
@@ -105,6 +109,7 @@ For the full migration planner, ENEX parser, format converters, migration runner
 - Post-migration verification (count comparison, content hash check)
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `QUOTA_REACHED` | Upload quota exceeded during import | Wait for quota reset or upgrade account tier |
@@ -113,6 +118,7 @@ For the full migration planner, ENEX parser, format converters, migration runner
 | Lost resources | Attachments not migrated | Verify resource hashes match after migration |
 
 ## Resources
+
 - [Evernote Export Format (ENEX)](https://dev.evernote.com/doc/articles/enex.php)
 - [ENML Reference](https://dev.evernote.com/doc/articles/enml.php)
 - [API Reference](https://dev.evernote.com/doc/reference/)

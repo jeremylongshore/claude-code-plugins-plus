@@ -25,19 +25,24 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # QuickNode Common Errors
 
 ## Overview
+
 Quick reference for the top blockchain RPC errors when using QuickNode endpoints with ethers.js or viem.
 
 ## Prerequisites
+
 - QuickNode endpoint configured
 - ethers.js or viem installed
 
 ## Instructions
 
 ### Error 1: Nonce Too Low
+
 ```
 Error: nonce has already been used (error={"code":-32000,"message":"nonce too low"})
 ```
+
 **Fix:**
+
 ```typescript
 // Get the correct nonce before sending
 const nonce = await provider.getTransactionCount(wallet.address, 'pending');
@@ -45,10 +50,13 @@ const tx = await wallet.sendTransaction({ ...txData, nonce });
 ```
 
 ### Error 2: Insufficient Funds
+
 ```
 Error: insufficient funds for intrinsic transaction cost
 ```
+
 **Fix:**
+
 ```typescript
 const balance = await provider.getBalance(wallet.address);
 const gasEstimate = await provider.estimateGas(txData);
@@ -60,10 +68,13 @@ if (balance < totalCost) {
 ```
 
 ### Error 3: Gas Estimation Failed (Call Revert)
+
 ```
 Error: execution reverted (reason="ERC20: transfer amount exceeds balance")
 ```
+
 **Fix:** The contract function would revert. Check contract requirements:
+
 ```typescript
 try {
   const gas = await contract.transfer.estimateGas(to, amount);
@@ -74,10 +85,13 @@ try {
 ```
 
 ### Error 4: Rate Limited (429)
+
 ```
 Error: 429 Too Many Requests
 ```
+
 **Fix:** Implement exponential backoff or upgrade plan:
+
 ```typescript
 async function retryRpc<T>(fn: () => Promise<T>, retries = 3): Promise<T> {
   for (let i = 0; i < retries; i++) {
@@ -95,16 +109,21 @@ async function retryRpc<T>(fn: () => Promise<T>, retries = 3): Promise<T> {
 ```
 
 ### Error 5: Method Not Found
+
 ```
 Error: Method not found — qn_getTokenMetadataByContractAddress
 ```
+
 **Fix:** This method requires an add-on. Enable it in QuickNode Dashboard > Endpoints > Add-ons.
 
 ### Error 6: WebSocket Connection Dropped
+
 ```
 Error: WebSocket connection closed unexpectedly
 ```
+
 **Fix:**
+
 ```typescript
 const wsProvider = new ethers.WebSocketProvider(process.env.QUICKNODE_WSS);
 wsProvider.websocket.on('close', () => {
@@ -114,11 +133,13 @@ wsProvider.websocket.on('close', () => {
 ```
 
 ## Output
+
 - Error identified from RPC response
 - Targeted fix applied
 - Transaction successfully sent or contract call succeeded
 
 ## Error Handling
+
 | RPC Code | Meaning | Retryable |
 |----------|---------|-----------|
 | -32000 | Nonce/gas issue | Fix and retry |
@@ -127,8 +148,10 @@ wsProvider.websocket.on('close', () => {
 | 429 | Rate limited | Yes — backoff |
 
 ## Resources
+
 - [QuickNode Ethereum API](https://www.quicknode.com/docs/ethereum)
 - [ethers.js Error Handling](https://docs.ethers.org/)
 
 ## Next Steps
+
 For debugging, see `quicknode-debug-bundle`.

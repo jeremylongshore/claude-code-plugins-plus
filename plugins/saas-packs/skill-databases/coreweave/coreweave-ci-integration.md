@@ -10,6 +10,7 @@ coreweave-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure CoreWeave CI/CD integration
 **Workflow:** Part of the cicd skill category for CoreWeave integration.
 **Relates to:** Other coreweave skills in this pack.

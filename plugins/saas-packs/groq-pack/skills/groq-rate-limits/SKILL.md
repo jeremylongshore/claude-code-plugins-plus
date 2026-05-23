@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq Rate Limits
 
 ## Overview
+
 Handle Groq rate limits using the `retry-after` header, exponential backoff, and request queuing. Groq enforces limits at the organization level with both RPM (requests/minute) and TPM (tokens/minute) constraints -- hitting either one triggers a `429`.
 
 ## Rate Limit Structure
+
 Groq rate limits vary by plan and model. Limits are applied simultaneously -- you must stay under both RPM and TPM.
 
 | Constraint | Description |
@@ -40,6 +42,7 @@ Groq rate limits vary by plan and model. Limits are applied simultaneously -- yo
 Free tier limits are significantly lower than paid tier. Check your current limits at [console.groq.com/settings/limits](https://console.groq.com/settings/limits).
 
 ## Rate Limit Response Headers
+
 When Groq responds (even on success), it includes these headers:
 
 | Header | Description |
@@ -55,6 +58,7 @@ When Groq responds (even on success), it includes these headers:
 ## Instructions
 
 ### Step 1: Parse Rate Limit Headers
+
 ```typescript
 import Groq from "groq-sdk";
 
@@ -88,6 +92,7 @@ function parseResetTime(value?: string): number {
 ```
 
 ### Step 2: Exponential Backoff with Retry-After
+
 ```typescript
 async function withRateLimitRetry<T>(
   operation: () => Promise<T>,
@@ -133,6 +138,7 @@ async function withRateLimitRetry<T>(
 ```
 
 ### Step 3: Request Queue with Concurrency Control
+
 ```typescript
 import PQueue from "p-queue";
 
@@ -157,6 +163,7 @@ async function queuedCompletion(messages: any[], model: string) {
 ```
 
 ### Step 4: Proactive Rate Limit Monitor
+
 ```typescript
 class RateLimitMonitor {
   private remaining = { requests: Infinity, tokens: Infinity };
@@ -196,6 +203,7 @@ class RateLimitMonitor {
 ```
 
 ### Step 5: Model-Aware Rate Limit Strategy
+
 ```typescript
 // Different models have different limits -- route accordingly
 async function smartModelSelect(
@@ -220,6 +228,7 @@ async function smartModelSelect(
 ```
 
 ## Error Handling
+
 | Scenario | Symptom | Solution |
 |----------|---------|----------|
 | Burst of requests | Many 429s in quick succession | Use queue with `p-queue` interval limiting |
@@ -228,9 +237,11 @@ async function smartModelSelect(
 | Multiple services sharing key | Cascading 429s | Use separate API keys per service |
 
 ## Resources
+
 - [Groq Rate Limits Documentation](https://console.groq.com/docs/rate-limits)
 - [Groq Pricing / Plans](https://groq.com/pricing)
 - [p-queue on npm](https://www.npmjs.com/package/p-queue)
 
 ## Next Steps
+
 For security configuration, see `groq-security-basics`.

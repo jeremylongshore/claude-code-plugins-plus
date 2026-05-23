@@ -10,6 +10,7 @@ figma-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Figma common errors
 **Workflow:** Part of the operations skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

@@ -10,6 +10,7 @@ langfuse-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Langfuse integrations to production
 **Workflow:** Part of the cicd skill category for Langfuse integration.
 **Relates to:** Other langfuse skills in this pack.

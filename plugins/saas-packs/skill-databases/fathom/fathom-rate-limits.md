@@ -10,6 +10,7 @@ fathom-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Fathom rate limiting and backoff
 **Workflow:** Part of the operations skill category for Fathom integration.
 **Relates to:** Other fathom skills in this pack.

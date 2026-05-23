@@ -20,6 +20,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # OpenRouter Debug Bundle
 
 ## Current State
+
 !`node --version 2>/dev/null || echo 'N/A'`
 !`python3 --version 2>/dev/null || echo 'N/A'`
 

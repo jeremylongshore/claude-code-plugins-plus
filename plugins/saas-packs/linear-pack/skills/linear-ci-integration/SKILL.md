@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Linear CI Integration
 
 ## Overview
+
 Integrate Linear into GitHub Actions CI/CD pipelines: run integration tests against the Linear API, automatically link PRs to issues, transition issue states on PR events, and create Linear issues from build failures.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
 - Linear API key stored as GitHub secret
 - npm/pnpm project with `@linear/sdk` configured
@@ -35,6 +37,7 @@ Integrate Linear into GitHub Actions CI/CD pipelines: run integration tests agai
 ## Instructions
 
 ### Step 1: Store Secrets in GitHub
+
 ```bash
 # Using GitHub CLI
 gh secret set LINEAR_API_KEY --body "lin_api_xxxxxxxxxxxx"
@@ -45,6 +48,7 @@ gh variable set LINEAR_TEAM_ID --body "team-uuid-here"
 ```
 
 ### Step 2: Integration Test Workflow
+
 ```yaml
 # .github/workflows/linear-tests.yml
 name: Linear Integration Tests
@@ -80,6 +84,7 @@ jobs:
 ```
 
 ### Step 3: Integration Test Suite
+
 ```typescript
 // tests/linear.integration.test.ts
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
@@ -141,6 +146,7 @@ describe("Linear Integration", () => {
 ```
 
 ### Step 4: PR-to-Issue Linking Workflow
+
 Automatically update Linear issues when PRs are opened, merged, or closed. Extracts issue identifiers from branch names (e.g., `feature/ENG-123-description`).
 
 ```yaml
@@ -182,6 +188,7 @@ jobs:
 ```
 
 ### Step 5: PR Sync Script
+
 ```typescript
 // scripts/sync-pr-to-linear.ts
 import { LinearClient } from "@linear/sdk";
@@ -236,6 +243,7 @@ main().catch(console.error);
 ```
 
 ### Step 6: Create Issue on CI Failure
+
 ```yaml
 # .github/workflows/issue-on-failure.yml
 name: Create Linear Issue on Failure
@@ -282,6 +290,7 @@ jobs:
 ## Examples
 
 ### PR Template for Linear Integration
+
 ```markdown
 <!-- .github/PULL_REQUEST_TEMPLATE.md -->
 ## Linear Issue
@@ -297,6 +306,7 @@ Fixes ENG-XXX
 ```
 
 ## Resources
+
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Linear GitHub Integration](https://linear.app/docs/github)
 - [Linear API Authentication](https://linear.app/developers/graphql)

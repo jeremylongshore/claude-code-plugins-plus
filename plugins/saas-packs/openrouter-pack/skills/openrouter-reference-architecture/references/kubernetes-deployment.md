@@ -3,6 +3,7 @@
 ## Kubernetes Deployment
 
 ### Deployment Manifest
+
 ```yaml
 # k8s/deployment.yaml
 apiVersion: apps/v1
@@ -66,6 +67,7 @@ spec:
 ```
 
 ### Horizontal Pod Autoscaler
+
 ```yaml
 # k8s/hpa.yaml
 apiVersion: autoscaling/v2

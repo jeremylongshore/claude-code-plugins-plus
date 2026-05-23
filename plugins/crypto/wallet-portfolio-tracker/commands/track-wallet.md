@@ -16,6 +16,7 @@ The Wallet Portfolio Tracker provides real-time visibility into cryptocurrency h
 ## Key Features
 
 ### Multi-Chain Wallet Tracking
+
 - **Ethereum (ETH)**: Native ETH, ERC-20 tokens, ERC-721/1155 NFTs
 - **Bitcoin (BTC)**: Native BTC, ordinals, inscriptions
 - **Binance Smart Chain (BSC)**: BNB, BEP-20 tokens
@@ -25,6 +26,7 @@ The Wallet Portfolio Tracker provides real-time visibility into cryptocurrency h
 - **Cross-chain aggregation**: Unified view across all networks
 
 ### Portfolio Value Calculation
+
 - **Real-time pricing**: CoinGecko API integration for 10,000+ tokens
 - **Historical price data**: Track portfolio value over time
 - **Multiple fiat currencies**: USD, EUR, GBP, JPY support
@@ -33,6 +35,7 @@ The Wallet Portfolio Tracker provides real-time visibility into cryptocurrency h
 - **Unrealized gains/losses**: Current position P&L calculation
 
 ### NFT Holdings Tracking
+
 - **Collection valuation**: Floor price, rarity scores, estimated value
 - **Marketplace integration**: OpenSea, Rarible, Magic Eden data
 - **NFT metadata**: Images, attributes, ownership history
@@ -40,6 +43,7 @@ The Wallet Portfolio Tracker provides real-time visibility into cryptocurrency h
 - **Collections categorization**: Art, gaming, metaverse, PFPs
 
 ### DeFi Position Tracking
+
 - **Lending protocols**: Aave, Compound, Maker - supplied and borrowed assets
 - **Staking positions**: ETH 2.0, validator rewards, liquid staking
 - **Liquidity pools**: Uniswap, Curve, Balancer LP token valuation
@@ -48,6 +52,7 @@ The Wallet Portfolio Tracker provides real-time visibility into cryptocurrency h
 - **Impermanent loss**: Real-time IL calculation for LP positions
 
 ### Transaction History Analysis
+
 - **Full transaction history**: All chains, all transaction types
 - **Categorization**: Transfers, swaps, DeFi interactions, NFT trades
 - **Counterparty analysis**: Identify exchanges, contracts, known entities
@@ -56,6 +61,7 @@ The Wallet Portfolio Tracker provides real-time visibility into cryptocurrency h
 - **CSV/Excel export**: Full transaction history for analysis
 
 ### Address Labeling System
+
 - **Exchange addresses**: Binance, Coinbase, Kraken auto-detection
 - **Personal wallet labels**: Custom names for your addresses
 - **Smart contract identification**: Protocol names, contract types
@@ -63,6 +69,7 @@ The Wallet Portfolio Tracker provides real-time visibility into cryptocurrency h
 - **Privacy mode**: Hide sensitive address labels in exports
 
 ### Historical Performance Charts
+
 - **Portfolio value over time**: Daily, weekly, monthly aggregation
 - **Asset allocation changes**: Track diversification over time
 - **Chain distribution trends**: See where your assets are moving
@@ -71,6 +78,7 @@ The Wallet Portfolio Tracker provides real-time visibility into cryptocurrency h
 - **ROI calculation**: Time-weighted returns, IRR
 
 ### Tax Reporting Integration
+
 - **FIFO/LIFO/HIFO**: Multiple cost basis calculation methods
 - **Capital gains reports**: Short-term and long-term gains
 - **Income tracking**: Staking rewards, airdrops, interest earned
@@ -1268,6 +1276,7 @@ pip install web3 aiohttp pandas openpyxl python-bitcoinlib solana
 ## Tax Reporting Features
 
 The tracker automatically categorizes transactions for tax purposes:
+
 - **Capital gains**: Buy/sell events with cost basis tracking
 - **Income**: Staking rewards, LP fees, airdrops
 - **Expenses**: Gas fees deductible as transaction costs

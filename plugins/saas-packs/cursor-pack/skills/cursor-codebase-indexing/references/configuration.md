@@ -3,6 +3,7 @@
 ## Configuration
 
 ### .cursorignore File
+
 ```gitignore
 # .cursorignore - at project root
 
@@ -59,6 +60,7 @@ __fixtures__/
 ```
 
 ### Selective Indexing
+
 ```gitignore
 # Index only specific directories
 *

@@ -10,6 +10,7 @@ hex-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Hex debug evidence for support
 **Workflow:** Part of the operations skill category for Hex integration.
 **Relates to:** Other hex skills in this pack.

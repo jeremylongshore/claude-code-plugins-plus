@@ -10,6 +10,7 @@ fondo-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Fondo costs and usage
 **Workflow:** Part of the cicd skill category for Fondo integration.
 **Relates to:** Other fondo skills in this pack.

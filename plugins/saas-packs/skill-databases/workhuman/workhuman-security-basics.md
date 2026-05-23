@@ -10,6 +10,7 @@ workhuman-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Workhuman security best practices
 **Workflow:** Part of the operations skill category for Workhuman integration.
 **Relates to:** Other workhuman skills in this pack.

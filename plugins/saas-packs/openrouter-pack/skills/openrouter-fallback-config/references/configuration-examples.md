@@ -3,6 +3,7 @@
 ## Configuration Examples
 
 ### YAML Configuration
+
 ```yaml
 # fallback-config.yaml
 fallback:
@@ -27,6 +28,7 @@ fallback:
 ```
 
 ### Load Configuration
+
 ```python
 import yaml
 

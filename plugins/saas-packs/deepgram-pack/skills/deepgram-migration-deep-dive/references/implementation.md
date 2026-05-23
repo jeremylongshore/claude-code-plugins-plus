@@ -1,6 +1,7 @@
 # Deepgram Migration Deep Dive - Implementation Details
 
 ## Migration Adapter Pattern
+
 ```typescript
 export interface TranscriptionResult {
   transcript: string;
@@ -19,6 +20,7 @@ export interface TranscriptionAdapter {
 ```
 
 ## Deepgram Adapter
+
 ```typescript
 import { createClient } from '@deepgram/sdk';
 
@@ -52,6 +54,7 @@ export class DeepgramAdapter implements TranscriptionAdapter {
 ```
 
 ## AWS Transcribe Adapter (for comparison)
+
 ```typescript
 import { TranscribeClient, StartTranscriptionJobCommand, GetTranscriptionJobCommand } from '@aws-sdk/client-transcribe';
 
@@ -76,6 +79,7 @@ export class AWSTranscribeAdapter implements TranscriptionAdapter {
 ```
 
 ## Migration Router
+
 ```typescript
 export class MigrationRouter {
   private deepgram: TranscriptionAdapter;
@@ -108,6 +112,7 @@ export class MigrationRouter {
 ```
 
 ## Feature Mapping
+
 ```typescript
 export const awsToDeepgram: FeatureMap[] = [
   { source: 'LanguageCode: en-US', deepgram: 'language: "en"', notes: 'ISO 639-1 codes' },
@@ -125,6 +130,7 @@ export const googleToDeepgram: FeatureMap[] = [
 ```
 
 ## Migration Validation & Rollback
+
 See the full validation script, rollback manager, and migration checklist in the detailed implementation guide.
 
 ---

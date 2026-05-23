@@ -3,12 +3,14 @@
 ## Slack Integration
 
 ### Setup
+
 1. Navigate to Granola Settings > Integrations > Slack
 2. Click "Connect Slack"
 3. Select workspace and authorize permissions (post messages, access channels, read user info)
 4. Configure default channel
 
 ### Configuration Options
+
 | Setting | Options | Recommendation |
 |---------|---------|----------------|
 | Default channel | Any channel | #meeting-notes |
@@ -18,6 +20,7 @@
 | Mention attendees | Yes/No | For important meetings |
 
 ### Message Format
+
 ```
 Meeting Notes: Sprint Planning
 January 6, 2025 | 45 minutes | 5 attendees
@@ -37,12 +40,14 @@ Action Items:
 ## Notion Integration
 
 ### Setup
+
 1. Navigate to Granola Settings > Integrations > Notion
 2. Click "Connect Notion" and select workspace
 3. Grant permissions: insert content, read pages, update pages
 4. Select target database
 
 ### Database Schema
+
 ```
 Meeting Notes Database
 ├── Title (title)
@@ -57,6 +62,7 @@ Meeting Notes Database
 ```
 
 ### Page Template
+
 ```markdown
 # {{meeting_title}}
 
@@ -85,12 +91,14 @@ Meeting Notes Database
 ## HubSpot Integration
 
 ### Setup
+
 1. Navigate to Granola Settings > Integrations > HubSpot
 2. Authorize with HubSpot account
 3. Grant permissions: read/write contacts, notes, and deals
 4. Configure contact matching
 
 ### Contact Matching Rules
+
 | Attendee Email | Action |
 |----------------|--------|
 | Exists in HubSpot | Attach note to contact |
@@ -100,6 +108,7 @@ Meeting Notes Database
 ## Zapier Integration Recipes
 
 ### Granola to Google Docs
+
 ```yaml
 Trigger: New Granola Note
 Action: Create Google Doc
@@ -109,6 +118,7 @@ Configuration:
 ```
 
 ### Granola to Asana
+
 ```yaml
 Trigger: New Granola Note
 Filter: Contains action items
@@ -120,6 +130,7 @@ Configuration:
 ```
 
 ### Granola to Airtable
+
 ```yaml
 Trigger: New Granola Note
 Action: Create Airtable Record
@@ -132,6 +143,7 @@ Configuration:
 ## Multi-Integration Workflows
 
 ### Complete Meeting Follow-up
+
 ```yaml
 1. Meeting ends in Granola
      ↓
@@ -147,6 +159,7 @@ Configuration:
 ```
 
 ### Path-Based Routing
+
 ```yaml
 Zapier Paths:
   Path A (Internal Meeting):
@@ -161,6 +174,7 @@ Filter: If attendees contain external domain → Path B, else → Path A
 ## Deployment Checklist
 
 ### Per-Integration
+
 - [ ] Test with sample meeting first
 - [ ] Verify data mapping correct
 - [ ] Confirm permissions adequate
@@ -169,6 +183,7 @@ Filter: If attendees contain external domain → Path B, else → Path A
 - [ ] Monitor first week
 
 ### Full Suite Rollout
+
 - Phase 1 (Week 1): Slack connected and tested, team notified
 - Phase 2 (Week 2): Notion connected, database template finalized
 - Phase 3 (Week 3): CRM and task management connected, full automation verified

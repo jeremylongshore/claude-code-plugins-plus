@@ -3,6 +3,7 @@
 ## Error-Specific Fallback Logic
 
 ### Conditional Fallback
+
 ```python
 from openai import RateLimitError, APIError, APIConnectionError
 

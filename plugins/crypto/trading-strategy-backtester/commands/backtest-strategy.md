@@ -13,6 +13,7 @@ Test trading strategies against historical data with performance metrics, risk a
 Implement comprehensive backtesting with:
 
 ### Parameters
+
 - **Strategy**: Type of strategy to test
 - **Symbol**: Asset or portfolio to test
 - **Period**: Historical timeframe

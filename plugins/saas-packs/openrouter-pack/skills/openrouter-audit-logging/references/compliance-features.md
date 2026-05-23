@@ -3,6 +3,7 @@
 ## Compliance Features
 
 ### Tamper Detection
+
 ```python
 import hmac
 
@@ -77,6 +78,7 @@ class TamperProofLogger:
 ```
 
 ### Export for Compliance
+
 ```python
 def export_compliance_package(
     log_dir: str,

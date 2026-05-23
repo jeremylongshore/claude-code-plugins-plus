@@ -75,6 +75,7 @@ Tab reads your comment and generates the implementation.
 Open Chat with `Cmd+L`. Try these prompts:
 
 **Ask about your code:**
+
 ```
 @src/utils.ts
 What does the formatCurrency function do? Does it handle edge cases
@@ -82,6 +83,7 @@ like negative numbers or very large values?
 ```
 
 **Generate new code:**
+
 ```
 Write a TypeScript function that converts a nested object
 to a flat key-value map with dot-separated keys.
@@ -89,6 +91,7 @@ Example: { a: { b: 1 } } → { "a.b": 1 }
 ```
 
 **Debug a concept:**
+
 ```
 Explain the difference between Promise.all() and Promise.allSettled()
 with code examples showing when to use each.
@@ -101,12 +104,14 @@ Chat responds with explanations and code snippets. Click **Apply** on any code b
 Open `src/utils.ts`. Select the `formatCurrency` function body. Press `Cmd+K`.
 
 Type your instruction:
+
 ```
 Add support for locale parameter with default 'en-US'.
 Handle NaN input by returning '$0.00'.
 ```
 
 Cursor shows the diff inline:
+
 - Green = added lines
 - Red = removed lines
 
@@ -115,6 +120,7 @@ Press `Cmd+Y` to accept, `Esc` to reject.
 ### Inline Edit Quick Tasks
 
 Select any code and press `Cmd+K` with instructions like:
+
 - `"Add TypeScript types"`
 - `"Refactor to use early returns"`
 - `"Add error handling"`

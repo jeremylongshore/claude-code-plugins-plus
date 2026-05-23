@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Performance Tuning
 
 ## Overview
+
 Optimize Instantly API v2 integrations for speed and throughput. Key areas: caching analytics data, batching lead operations, concurrent request management, efficient pagination, and connection reuse. The email listing endpoint has a strict **20 req/min** limit that requires special handling.
 
 ## Prerequisites
+
 - Completed `instantly-install-auth` setup
 - Working Instantly integration
 - Understanding of async patterns and caching strategies
@@ -37,6 +39,7 @@ Optimize Instantly API v2 integrations for speed and throughput. Key areas: cach
 ## Instructions
 
 ### Step 1: Cache Analytics Data
+
 Campaign analytics don't change every second — cache them for 5-15 minutes to avoid redundant API calls.
 
 ```typescript
@@ -84,6 +87,7 @@ async function getCachedCampaigns() {
 ```
 
 ### Step 2: Batch Lead Operations with Controlled Concurrency
+
 ```typescript
 interface BatchResult<T> {
   succeeded: T[];
@@ -147,6 +151,7 @@ async function batchAddLeads(
 ```
 
 ### Step 3: Efficient Pagination
+
 ```typescript
 // Pre-fetch next page while processing current page
 async function* prefetchPaginate<T extends { id: string }>(
@@ -190,6 +195,7 @@ for await (const batch of prefetchPaginate<Lead>("/leads/list")) {
 ```
 
 ### Step 4: Connection Reuse with Keep-Alive
+
 ```typescript
 import { Agent } from "undici";
 
@@ -220,6 +226,7 @@ async function instantlyPooled<T>(path: string, options: RequestInit = {}): Prom
 ```
 
 ### Step 5: Throttled Email Fetcher (20 req/min limit)
+
 ```typescript
 class ThrottledEmailClient {
   private timestamps: number[] = [];
@@ -253,6 +260,7 @@ class ThrottledEmailClient {
 ```
 
 ## Performance Benchmarks
+
 | Operation | Unoptimized | Optimized | Improvement |
 |-----------|------------|-----------|-------------|
 | 500 lead import | ~250s (sequential) | ~30s (5 concurrent + batch) | 8x |
@@ -261,6 +269,7 @@ class ThrottledEmailClient {
 | Lead pagination (10K leads) | ~100s (sequential) | ~50s (prefetch) | 2x |
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `429` during batch import | Too many concurrent requests | Reduce concurrency, increase delay |
@@ -269,9 +278,11 @@ class ThrottledEmailClient {
 | Memory issues | Large pagination result set | Use async generators, process in chunks |
 
 ## Resources
+
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
 - [Instantly Rate Limits](https://developer.instantly.ai/)
 - [Node.js Undici Connection Pooling](https://undici.nodejs.org/)
 
 ## Next Steps
+
 For cost optimization, see `instantly-cost-tuning`.

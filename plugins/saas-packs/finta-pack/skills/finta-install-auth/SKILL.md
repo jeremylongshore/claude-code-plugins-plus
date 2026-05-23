@@ -66,6 +66,7 @@ Finta syncs with Gmail and Outlook to automatically track investor communication
 ### Step 5: Configure Pipeline Stages
 
 Default stages (customizable):
+
 1. Researching
 2. Reaching Out
 3. Intro Meeting

@@ -1,4 +1,5 @@
 # Skill & Plugin Validation Rules
+
 Sources: [Anthropic docs](https://code.claude.com/docs/en/skills) · Intent Solutions enterprise policy
 
 Universal validation aligned with the Anthropic 2026 spec. Two tiers: Standard (Anthropic minimum) and Enterprise (our marketplace default — all fields required, zero tolerance for non-standard fields).
@@ -57,6 +58,7 @@ Body must contain all 7 sections (hard ERROR if any missing):
 ```
 
 Supporting files required (gold standard):
+
 - `PRD.md` must exist in skill root — Product Requirements Document
 - `ARD.md` must exist in skill root — Architecture Requirements Document
 - `references/` directory must exist (plural directory, NOT `reference.md` singular)
@@ -133,11 +135,13 @@ capabilities: []                  # NOTE: valid for agents ONLY, not skills
 ```
 
 **Plugin agents CANNOT use** (WARN if present):
+
 - `hooks` — plugin-level only, not agent-level
 - `mcpServers` — plugin-level only
 - `permissionMode` — standalone agent only, not plugin-scoped
 
 **Invalid for agents** (ERROR):
+
 - `expertise_level`, `activation_priority`, `color`, `activation_triggers`, `type`, `category` — invented, not Anthropic
 
 ---
@@ -237,6 +241,7 @@ Plus MCP tools in `ServerName:tool_name` format.
 | Enterprise | Error |
 
 Valid scoped patterns:
+
 ```
 Bash(git:*)
 Bash(npm:*)
@@ -284,6 +289,7 @@ Validate MCP server configuration structure.
 ### 7. Roll Up Plugin Score
 
 Plugin score = weighted average of component scores:
+
 - Skills: 50% weight
 - Agents: 20% weight
 - Commands: 15% weight
@@ -311,11 +317,13 @@ Anthropic defines 14 valid fields for agents. `name` and `description` are REQUI
 ### Context-Aware Rules
 
 **Plugin agents** (`plugins/*/agents/*.md`):
+
 - WARN if `hooks` present (hooks belong at plugin level, not agent level)
 - WARN if `mcpServers` present (plugin-level concern)
 - WARN if `permissionMode` present (standalone-only field)
 
 **Standalone agents** (`~/.claude/agents/*.md`):
+
 - All fields valid without restriction
 
 ### Invalid Agent Fields (ERROR)
@@ -409,6 +417,7 @@ The command runs at skill activation time. Output is injected verbatim into the 
 ## String Substitution Validation
 
 If SKILL.md body contains `$ARGUMENTS` or `$0`, `$1`, etc.:
+
 - `argument-hint` SHOULD be set in frontmatter (WARNING if missing)
 - Instructions SHOULD handle empty `$ARGUMENTS` case
 - `$ARGUMENTS[N]` indexing should be sequential from 0
@@ -420,12 +429,14 @@ Also recognized: `${CLAUDE_SESSION_ID}` — current session identifier (Anthropi
 ## Validation Process
 
 ### Pre-flight
+
 1. File exists and is readable
 2. YAML frontmatter parses without error
 3. Frontmatter separator (`---`) present at start and end
 4. No non-standard fields present (ERROR on any invented/deprecated field)
 
 ### Field Validation
+
 1. All 8 required fields present (enterprise) or 2 required fields (standard)
 2. Field types correct (string, array, boolean, semver)
 3. Field constraints met (kebab-case, SPDX, valid tool names)
@@ -434,6 +445,7 @@ Also recognized: `${CLAUDE_SESSION_ID}` — current session identifier (Anthropi
 6. Conditional field logic (`context` requires `agent` and vice versa)
 
 ### Body Validation
+
 1. Length within limits (301-500 = WARNING, >500 = ERROR)
 2. All 7 required sections present (enterprise) — hard ERROR if any missing
 3. No absolute paths outside code blocks
@@ -442,6 +454,7 @@ Also recognized: `${CLAUDE_SESSION_ID}` — current session identifier (Anthropi
 6. `references/` directory exists (enterprise)
 
 ### Resource Validation
+
 1. All `${CLAUDE_SKILL_DIR}/scripts/*` references exist
 2. All `${CLAUDE_SKILL_DIR}/references/*` references exist
 3. All `${CLAUDE_SKILL_DIR}/templates/*` references exist
@@ -451,6 +464,7 @@ Also recognized: `${CLAUDE_SESSION_ID}` — current session identifier (Anthropi
 7. No empty (0-byte) supporting files (stub detection)
 
 ### Report
+
 - Errors: Must fix (blocks pass)
 - Warnings: Should fix (does not block pass)
 - Info: Optional improvements (includes structural advisor suggestions)
@@ -465,21 +479,25 @@ Also recognized: `${CLAUDE_SESSION_ID}` — current session identifier (Anthropi
 INFO-level suggestions emitted after grading. Not scored — purely advisory.
 
 ### Split to Commands
+
 - **Trigger**: 3+ kebab-case `## operation-name` sections without `commands/` directory
 - **Suggestion**: Split into individual `commands/*.md` files
 - **Why**: Each operation becomes a separate slash command; skill stays lean
 
 ### Offload to References
+
 - **Trigger**: Body sections >20 lines (Output, Error Handling, Examples) without `references/`
 - **Suggestion**: Move to `references/section-name.md` with relative markdown link
 - **Why**: Reduces token footprint; Claude reads on demand
 
 ### DCI Opportunities
+
 - **Trigger**: File existence checks, git operations, or tool version detection without DCI
 - **Suggestion**: Add `` !`command` `` directives for auto-detection at activation
 - **Why**: Eliminates discovery tool calls; Claude starts with context pre-loaded
 
 ### Migrate Commands to Skills
+
 - **Trigger**: `commands/*.md` files present without corresponding `skills/` entries
 - **Suggestion**: Consider migrating to SKILL.md format for auto-activation
 - **Why**: Skills activate automatically on context; commands require explicit `/name` invocation

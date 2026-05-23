@@ -33,6 +33,7 @@ This skill empowers Claude to perform time series forecasting, providing insight
 ## When to Use This Skill
 
 This skill activates when you need to:
+
 - Forecast future sales based on past sales data.
 - Predict website traffic for the next month.
 - Analyze trends in stock prices over the past year.
@@ -44,6 +45,7 @@ This skill activates when you need to:
 User request: "Forecast sales for the next quarter based on the past 3 years of monthly sales data."
 
 The skill will:
+
 1. Analyze the historical sales data to identify trends and seasonality.
 2. Select and train a suitable forecasting model (e.g., ARIMA or Prophet).
 3. Generate a forecast of sales for the next quarter, including confidence intervals.
@@ -53,6 +55,7 @@ The skill will:
 User request: "Predict weekly website traffic for the next month based on the last 6 months of data."
 
 The skill will:
+
 1. Analyze the website traffic data to identify patterns and seasonality.
 2. Choose an appropriate time series forecasting model.
 3. Generate a forecast of weekly website traffic for the next month.

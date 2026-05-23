@@ -127,6 +127,7 @@ Agent mode activates by default in Cursor 2.0. It is best for open-ended tasks w
 ### Parallel Agents
 
 Run up to 8 agents simultaneously, each in its own Composer tab. Useful for:
+
 - Working on unrelated features in parallel
 - Exploring different implementation approaches
 - Running tests in one agent while coding in another
@@ -157,6 +158,7 @@ Before applying changes, Composer shows a complete diff for each file:
 ```
 
 **Review workflow:**
+
 1. Click each file in the Changes panel to see its diff
 2. Accept individual files or `Apply All`
 3. After applying, run your build/tests before committing
@@ -165,6 +167,7 @@ Before applying changes, Composer shows a complete diff for each file:
 ## Composer Prompting Best Practices
 
 ### Be Specific About File Structure
+
 ```
 # BAD
 Create a blog feature
@@ -178,6 +181,7 @@ Create a blog feature with these files:
 ```
 
 ### Reference Existing Patterns
+
 ```
 # BAD
 Add authentication middleware
@@ -190,6 +194,7 @@ use the same error response format, add the same type annotations.
 ```
 
 ### Incremental Over Monolithic
+
 Instead of one massive prompt, break into steps:
 
 1. "Create the Prisma models and run prisma generate"

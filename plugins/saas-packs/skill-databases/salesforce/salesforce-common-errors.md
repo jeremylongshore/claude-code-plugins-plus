@@ -10,6 +10,7 @@ salesforce-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Salesforce common errors
 **Workflow:** Part of the operations skill category for Salesforce integration.
 **Relates to:** Other salesforce skills in this pack.

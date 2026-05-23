@@ -24,15 +24,18 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Retell AI SDK Patterns
 
 ## Overview
+
 Production-ready patterns for Retell AI: client singletons, typed agent configurations, call management, and error handling.
 
 ## Prerequisites
+
 - Completed `retellai-install-auth`
 - `retell-sdk` installed
 
 ## Instructions
 
 ### Step 1: Singleton Client
+
 ```typescript
 import Retell from 'retell-sdk';
 
@@ -47,6 +50,7 @@ export function getRetellClient(): Retell {
 ```
 
 ### Step 2: Typed Agent Configuration
+
 ```typescript
 interface AgentConfig {
   name: string;
@@ -79,6 +83,7 @@ async function createAgent(config: AgentConfig) {
 ```
 
 ### Step 3: Call Manager with Retry
+
 ```typescript
 async function makeCallWithRetry(
   fromNumber: string, toNumber: string, agentId: string, maxRetries = 2
@@ -101,6 +106,7 @@ async function makeCallWithRetry(
 ```
 
 ### Step 4: Batch Call Campaign
+
 ```typescript
 async function runCallCampaign(
   numbers: string[], agentId: string, concurrency = 3, delayMs = 2000
@@ -131,12 +137,14 @@ async function runCallCampaign(
 ```
 
 ## Output
+
 - Singleton Retell client
 - Typed agent creation with LLM configuration
 - Retry logic for call creation
 - Concurrent call campaign manager
 
 ## Error Handling
+
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
 | Singleton | All SDK calls | One client instance |
@@ -145,8 +153,10 @@ async function runCallCampaign(
 | Campaign manager | Outbound calls | Rate-limited concurrency |
 
 ## Resources
+
 - [retell-sdk npm](https://www.npmjs.com/package/retell-sdk)
 - [Retell AI Documentation](https://docs.retellai.com)
 
 ## Next Steps
+
 Apply in `retellai-core-workflow-a` for agent building.

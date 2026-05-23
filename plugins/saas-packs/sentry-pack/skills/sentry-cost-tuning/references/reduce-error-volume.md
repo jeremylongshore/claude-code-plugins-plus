@@ -3,6 +3,7 @@
 ## Reduce Error Volume
 
 ### 1. Client-Side Filtering
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -30,7 +31,9 @@ Sentry.init({
 ```
 
 ### 2. Server-Side Filtering (Inbound Filters)
+
 Enable in Sentry Dashboard:
+
 1. Project Settings > Inbound Filters
 2. Enable:
    - Legacy browsers
@@ -39,6 +42,7 @@ Enable in Sentry Dashboard:
    - Filtered by IP
 
 ### 3. Rate Limits
+
 ```bash
 # Set project rate limit
 curl -X PUT \

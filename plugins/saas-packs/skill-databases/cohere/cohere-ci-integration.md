@@ -10,6 +10,7 @@ cohere-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Cohere CI/CD integration
 **Workflow:** Part of the cicd skill category for Cohere integration.
 **Relates to:** Other cohere skills in this pack.

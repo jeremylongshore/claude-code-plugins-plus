@@ -17,18 +17,21 @@ The Podium SDKs do not address any of these. Customer support handles them after
 ## Target Users
 
 ### Persona 1: Integration Engineer (Ravi)
+
 - **Role**: Builds and operates the outbound Podium API layer of a webhook-driven integration.
 - **Goals**: Zero 429-induced data loss; bursts process at 100% success rate even when 50% slower; quota consumption is observable, not discovered.
 - **Pain Points**: A 5pm review-request burst silently dropped 40% of writes last Friday and the customer noticed before he did. The retry loop he inherited from a previous engineer cascades on 429s and ate the daily quota by 11am during a Shopify flash sale.
 - **Technical Level**: High (asyncio fluent, comfortable with token-bucket math, has run production systems).
 
 ### Persona 2: Agency Operator (Mei)
+
 - **Role**: Operates a single platform service that fans out to 50+ client Podium organizations.
 - **Goals**: One client's burst cannot blow the quota for another; per-endpoint isolation is visible in dashboards; daily-quota alerts route by client.
 - **Pain Points**: A single chatty client's `conversations.write` endpoint exhausted the per-minute window and another client's `contacts.read` started 429-ing. No tooling existed to see the cross-contamination.
 - **Technical Level**: Medium-High (ops-engineer profile; reads code, prefers playbooks and dashboards).
 
 ### Persona 3: Site Reliability Engineer (Jordan)
+
 - **Role**: On-call for a Podium-integrated service. Does not own the integration code but must respond when a 429 cascade fires at 4:55pm AEST.
 - **Goals**: A runbook short enough to execute under stress; clear page tiers (warn → page → throttle); a verifiable indicator that the quota will not breach.
 - **Pain Points**: Previous cascades took 90 minutes to recover because the team had no kill-switch for the offending endpoint family.
@@ -37,65 +40,77 @@ The Podium SDKs do not address any of these. Customer support handles them after
 ## User Stories
 
 ### US-1: Token-bucket pacing (P0)
+
 **As** an integration engineer,
 **I want** outbound Podium calls paced by an in-process token bucket sized to the documented 60 req/min ceiling,
 **So that** burst traffic queues rather than 429-cascades, and no retry storm is possible by construction.
 
 **Acceptance Criteria:**
+
 - Token bucket sized at 60 req/min with configurable burst capacity (default 10)
 - Concurrent callers serialize on `bucket.acquire()` — no thundering herd
 - Bucket sleeps outside the internal lock so refill timing is correct under concurrency
 - The bucket is the *only* place rate is enforced — no `time.sleep(0.1)` sprinkles in the call sites
 
 ### US-2: `Retry-After` parsing (P0)
+
 **As** an integration engineer,
 **I want** `Retry-After` parsed correctly for both integer-seconds and HTTP-date forms,
 **So that** residual 429s back off by the server's actual hint, not a guess.
 
 **Acceptance Criteria:**
+
 - Parser accepts integer seconds (`Retry-After: 30`) and HTTP-date (`Retry-After: Wed, 09 May 2026 17:00:00 GMT`)
 - Malformed headers fall back to a safe default (60s), never crash
 - Wait is capped at 120s to prevent a misconfigured server from pinning the integration indefinitely
 
 ### US-3: Daily quota monitor (P0)
+
 **As** an SRE,
 **I want** to be paged before the 24-hour quota envelope breaches,
 **So that** I can engage throttling during business hours, not at 11pm on Friday.
 
 **Acceptance Criteria:**
+
 - Counter increments atomically per outbound call (Redis INCR or SQLite UPDATE)
 - TTL is set to UTC midnight + 1h grace on first increment of the day
 - Three severity tiers fire at 70% (warn), 85% (page), 95% (throttle)
 - Throttle tier drops the token-bucket rate by 50% automatically until UTC midnight
 
 ### US-4: Per-endpoint bucket isolation (P1)
+
 **As** an agency operator,
 **I want** separate buckets per endpoint family (conversations, contacts, reviews, locations, webhooks),
 **So that** one endpoint exhausting its slice cannot 429-cascade onto siblings.
 
 **Acceptance Criteria:**
+
 - Per-family buckets sized so sum-of-rates = 60 req/min (the documented ceiling)
 - Endpoint family extracted from the path (`/v4/conversations/...` → `conversations`)
 - Unknown families fall through to a default bucket — never to a global free-for-all
 - Per-family consumption visible in the daily-quota monitor's structured logs
 
 ### US-5: End-of-day burst smoother (P1)
+
 **As** an integration engineer for KombiLife (5pm AEST review-request cluster),
 **I want** the 80-request burst smoothed over a 120-second window,
 **So that** 100% of review requests succeed, with the trade-off being a 2-minute (instead of 30-second) processing window.
 
 **Acceptance Criteria:**
+
 - `BurstSmoother.submit_batch()` accepts a list of requests + a handler coroutine
 - Per-request delay is `max(target_window/N, 1/bucket_rate)` — bucket rate dominates on small N
 - Submits sequentially with the computed delay, awaiting the bucket each call
 - Returns the list of results in original order
 
 ### US-6: Webhook amplification admission control (P1)
+
 **As** an integration engineer,
 **I want** inbound webhooks scored by their outbound amplification factor and rejected when projected cost exceeds 5% of remaining daily budget,
 **So that** a burst of high-amplification events cannot collapse the daily quota in a single minute.
 
 **Acceptance Criteria:**
+
 - Configurable amplification factor map per inbound event type
 - Admission denies when projected cost > 5% of remaining daily quota
 - Denials log a structured event for capacity planning

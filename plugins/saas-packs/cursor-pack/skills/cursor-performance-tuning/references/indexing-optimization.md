@@ -3,6 +3,7 @@
 ## Indexing Optimization
 
 ### Aggressive Exclusions
+
 ```gitignore
 # .cursorignore
 
@@ -35,6 +36,7 @@ test/fixtures/
 ```
 
 ### Indexing Settings
+
 ```json
 {
   // Limit indexing scope

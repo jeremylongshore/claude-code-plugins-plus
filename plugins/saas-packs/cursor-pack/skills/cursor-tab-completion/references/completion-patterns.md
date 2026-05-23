@@ -3,6 +3,7 @@
 ## Completion Patterns
 
 ### Function Bodies
+
 ```python
 def fibonacci(n):
     # Tab completes the entire function
@@ -12,6 +13,7 @@ def fibonacci(n):
 ```
 
 ### Repetitive Code
+
 ```javascript
 // If you've defined similar patterns, AI continues them
 const handleNameChange = (e) => setName(e.target.value);
@@ -19,6 +21,7 @@ const handleEmailChange = │ // Completes similarly
 ```
 
 ### Test Generation
+
 ```python
 def test_calculate_total():
     # AI suggests test cases based on function signature
@@ -28,6 +31,7 @@ def test_calculate_total():
 ```
 
 ### Documentation
+
 ```python
 def complex_function(data: dict, options: Options) -> Result:
     """

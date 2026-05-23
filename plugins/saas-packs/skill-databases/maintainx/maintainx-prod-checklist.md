@@ -10,6 +10,7 @@ maintainx-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute MaintainX production deployment checklist
 **Workflow:** Part of the operations skill category for MaintainX integration.
 **Relates to:** Other maintainx skills in this pack.

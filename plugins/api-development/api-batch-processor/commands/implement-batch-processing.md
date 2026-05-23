@@ -26,6 +26,7 @@ Creates high-performance batch API processing infrastructure for handling bulk o
 ## When to Use
 
 Use this command when:
+
 - Processing thousands or millions of records in bulk operations
 - Import/export functionality requires progress feedback
 - Long-running operations exceed HTTP timeout limits
@@ -35,6 +36,7 @@ Use this command when:
 - Data migration or synchronization between systems
 
 Do NOT use this command for:
+
 - Simple CRUD operations on single records
 - Real-time operations requiring immediate responses
 - Operations that must be synchronous by nature
@@ -43,6 +45,7 @@ Do NOT use this command for:
 ## Prerequisites
 
 Before running this command, ensure:
+
 - [ ] Redis is available for job queue management
 - [ ] Database supports transactions or bulk operations
 - [ ] API rate limits and quotas are understood
@@ -52,7 +55,9 @@ Before running this command, ensure:
 ## Process
 
 ### Step 1: Analyze Batch Requirements
+
 The command examines your data processing needs:
+
 - Identifies optimal batch sizes based on memory and performance
 - Determines transaction boundaries for consistency
 - Maps data validation requirements
@@ -60,7 +65,9 @@ The command examines your data processing needs:
 - Defines retry and failure strategies
 
 ### Step 2: Implement Job Queue System
+
 Sets up Bull/BullMQ for reliable job processing:
+
 - Queue configuration with concurrency limits
 - Worker processes for parallel execution
 - Dead letter queues for failed jobs
@@ -68,7 +75,9 @@ Sets up Bull/BullMQ for reliable job processing:
 - Rate limiting to prevent overload
 
 ### Step 3: Create Batch API Endpoints
+
 Implements RESTful endpoints for batch operations:
+
 - Job submission with validation
 - Status checking and progress monitoring
 - Result retrieval with pagination
@@ -76,7 +85,9 @@ Implements RESTful endpoints for batch operations:
 - Error log access
 
 ### Step 4: Implement Processing Logic
+
 Creates efficient batch processing workflows:
+
 - Chunked processing for memory efficiency
 - Transaction management for data integrity
 - Progress reporting at configurable intervals
@@ -84,7 +95,9 @@ Creates efficient batch processing workflows:
 - Result caching for retrieval
 
 ### Step 5: Add Monitoring & Observability
+
 Integrates comprehensive monitoring:
+
 - Job metrics and performance tracking
 - Error rate monitoring and alerting
 - Queue depth and processing rate
@@ -131,6 +144,7 @@ batch-processing/
 **Scenario:** Import 100,000 users from CSV with validation and deduplication
 
 **Generated Implementation:**
+
 ```javascript
 // queues/batch-queue.js
 import Queue from 'bull';
@@ -411,6 +425,7 @@ class BatchProcessor {
 **Scenario:** Export millions of records with streaming and compression
 
 **Generated Streaming Export:**
+
 ```javascript
 // services/export-service.js
 import { Transform } from 'stream';
@@ -499,6 +514,7 @@ class ExportService {
 **Scenario:** Process API calls with rate limiting and retry logic
 
 **Generated Rate-Limited Processor:**
+
 ```javascript
 // workers/rate-limited-processor.js
 import Bottleneck from 'bottleneck';
@@ -554,23 +570,28 @@ class RateLimitedProcessor {
 ## Error Handling
 
 ### Error: Job Queue Connection Failed
+
 **Symptoms:** Jobs not processing, Redis connection errors
 **Cause:** Redis server unavailable or misconfigured
 **Solution:**
+
 ```javascript
 batchQueue.on('error', (error) => {
   console.error('Queue error:', error);
   // Implement fallback or alerting
 });
 ```
+
 **Prevention:** Implement Redis Sentinel or cluster for high availability
 
 ### Error: Memory Exhaustion
+
 **Symptoms:** Process crashes with heap out of memory
 **Cause:** Processing chunks too large for available memory
 **Solution:** Reduce chunk size and implement streaming
 
 ### Error: Transaction Deadlock
+
 **Symptoms:** Batch processing hangs or fails with deadlock errors
 **Cause:** Concurrent transactions competing for same resources
 **Solution:** Implement retry logic with exponential backoff
@@ -578,18 +599,21 @@ batchQueue.on('error', (error) => {
 ## Configuration Options
 
 ### Option: `--chunk-size`
+
 - **Purpose:** Set number of records per processing chunk
 - **Values:** 100-10000 (integer)
 - **Default:** 1000
 - **Example:** `/batch --chunk-size 500`
 
 ### Option: `--concurrency`
+
 - **Purpose:** Number of parallel workers
 - **Values:** 1-20 (integer)
 - **Default:** 5
 - **Example:** `/batch --concurrency 10`
 
 ### Option: `--retry-attempts`
+
 - **Purpose:** Number of retry attempts for failed items
 - **Values:** 0-10 (integer)
 - **Default:** 3
@@ -598,6 +622,7 @@ batchQueue.on('error', (error) => {
 ## Best Practices
 
 ✅ **DO:**
+
 - Use transactions for data consistency
 - Implement idempotent operations for retry safety
 - Monitor queue depth and processing rates
@@ -605,12 +630,14 @@ batchQueue.on('error', (error) => {
 - Implement circuit breakers for external API calls
 
 ❌ **DON'T:**
+
 - Process entire datasets in memory
 - Ignore partial failures in batch operations
 - Use synchronous processing for large batches
 - Forget to implement job cleanup policies
 
 💡 **TIPS:**
+
 - Use priority queues for time-sensitive batches
 - Implement progressive chunk sizing based on success rate
 - Cache validation results to avoid redundant checks
@@ -633,6 +660,7 @@ batchQueue.on('error', (error) => {
 ## Security Notes
 
 ⚠️ **Security Considerations:**
+
 - Validate all batch input data to prevent injection attacks
 - Implement authentication for job status endpoints
 - Sanitize error messages to avoid information leakage
@@ -642,15 +670,19 @@ batchQueue.on('error', (error) => {
 ## Troubleshooting
 
 ### Issue: Jobs stuck in queue
+
 **Solution:** Check worker processes and Redis connectivity
 
 ### Issue: Slow processing speed
+
 **Solution:** Increase chunk size and worker concurrency
 
 ### Issue: High error rates
+
 **Solution:** Review validation logic and add retry mechanisms
 
 ### Getting Help
+
 - Bull documentation: https://github.com/OptimalBits/bull
 - BullMQ guide: https://docs.bullmq.io
 - Redis Streams: https://redis.io/topics/streams

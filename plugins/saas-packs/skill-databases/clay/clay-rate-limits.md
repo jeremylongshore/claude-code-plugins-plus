@@ -10,6 +10,7 @@ clay-rate-limits/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Clay rate limiting, backoff strategies, and credit management patterns. Ensures reliable API usage while optimizing credit consumption.
 **Workflow:** Reliability pattern skill. Use when building production integrations that need to handle rate limits gracefully.
 **Relates to:** Builds on clay-enrichment-patterns; essential for clay-load-scale and high-volume operations.

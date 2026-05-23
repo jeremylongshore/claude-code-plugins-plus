@@ -24,15 +24,18 @@ compatibility: Designed for Claude Code
 # Figma Performance Tuning
 
 ## Overview
+
 Optimize Figma REST API performance. Large Figma files can return multi-megabyte JSON responses. Key strategies: fetch only what you need, cache aggressively, and batch requests.
 
 ## Prerequisites
+
 - Working Figma API integration
 - Understanding of your access patterns (which endpoints, how often)
 
 ## Instructions
 
 ### Step 1: Reduce Payload Size
+
 ```typescript
 // BAD: fetches the entire file tree (can be 10+ MB for large files)
 const file = await fetch(`https://api.figma.com/v1/files/${fileKey}`, {
@@ -57,6 +60,7 @@ const nodes = await fetch(
 ```
 
 ### Step 2: Response Caching
+
 ```typescript
 import { LRUCache } from 'lru-cache';
 
@@ -104,6 +108,7 @@ async function getCachedImageUrl(
 ```
 
 ### Step 3: Webhook-Driven Cache Invalidation
+
 ```typescript
 // Instead of polling, use webhooks to know when to re-fetch
 // See figma-webhooks-events for full webhook setup
@@ -121,6 +126,7 @@ async function handleFileUpdate(fileKey: string) {
 ```
 
 ### Step 4: Batch Node Fetches
+
 ```typescript
 // The /nodes endpoint accepts multiple IDs -- batch them
 // Max practical batch size: ~50-100 IDs per request
@@ -152,6 +158,7 @@ async function batchFetchNodes(
 ```
 
 ### Step 5: Connection Reuse
+
 ```typescript
 import { Agent } from 'undici';
 
@@ -173,6 +180,7 @@ async function optimizedFetch(path: string, token: string) {
 ```
 
 ## Output
+
 - Reduced API payload sizes with `depth` and `nodes` endpoints
 - Response caching with appropriate TTLs
 - Webhook-driven cache invalidation
@@ -180,6 +188,7 @@ async function optimizedFetch(path: string, token: string) {
 - Connection reuse for lower latency
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Stale cache | No invalidation | Use webhooks to invalidate on changes |
@@ -188,9 +197,11 @@ async function optimizedFetch(path: string, token: string) {
 | Expired image URLs | Cached URL older than 30 days | Set image cache TTL to <24h |
 
 ## Resources
+
 - [Figma File Endpoints](https://developers.figma.com/docs/rest-api/file-endpoints/)
 - [Figma Rate Limits](https://developers.figma.com/docs/rest-api/rate-limits/)
 - [lru-cache](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
+
 For cost optimization, see `figma-cost-tuning`.

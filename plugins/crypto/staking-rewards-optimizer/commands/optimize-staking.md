@@ -90,6 +90,7 @@ Present your analysis in this structure:
 ## Data Sources to Reference
 
 When making recommendations, consider data from:
+
 - DefiLlama (staking yields)
 - StakingRewards.com
 - Individual protocol documentation
@@ -107,6 +108,7 @@ When making recommendations, consider data from:
 ## Example Usage
 
 User might ask:
+
 - "What are the best staking opportunities for ETH right now?"
 - "I have 10 SOL staked at 7% APY - can I do better?"
 - "Compare liquid staking options across different chains"

@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Replit SDK Patterns
 
 ## Overview
+
 Production-ready patterns for Replit's built-in services: Key-Value Database (`@replit/database` / `replit.db`), Object Storage (`@replit/object-storage`), PostgreSQL (`DATABASE_URL`), and Auth headers. Covers singleton clients, error handling, and type-safe wrappers.
 
 ## Prerequisites
+
 - `.replit` and `replit.nix` configured (see `replit-install-auth`)
 - Familiarity with async/await patterns
 - Understanding of Replit's service model
@@ -37,6 +39,7 @@ Production-ready patterns for Replit's built-in services: Key-Value Database (`@
 ## Instructions
 
 ### Step 1: Database Client Singleton (Node.js)
+
 ```typescript
 // src/db/kv.ts — Replit Key-Value Database wrapper
 import Database from '@replit/database';
@@ -72,6 +75,7 @@ export async function kvDelete(key: string): Promise<void> {
 ```
 
 ### Step 2: Object Storage Wrapper
+
 ```typescript
 // src/storage/objects.ts — Replit App Storage (Object Storage)
 import { Client } from '@replit/object-storage';
@@ -118,6 +122,7 @@ export async function listObjects(prefix: string): Promise<string[]> {
 ```
 
 ### Step 3: PostgreSQL Connection Pool
+
 ```typescript
 // src/db/postgres.ts — Replit PostgreSQL
 import { Pool, PoolConfig } from 'pg';
@@ -170,6 +175,7 @@ export async function withTransaction<T>(
 ```
 
 ### Step 4: Auth Middleware Pattern
+
 ```typescript
 // src/middleware/auth.ts — Replit Auth header extraction
 import { Request, Response, NextFunction } from 'express';
@@ -207,6 +213,7 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
 ```
 
 ### Step 5: Python Patterns
+
 ```python
 # src/services/replit_services.py
 from replit import db
@@ -266,6 +273,7 @@ def get_replit_user(request) -> dict | None:
 ```
 
 ### Step 6: Retry with Backoff
+
 ```typescript
 // src/utils/retry.ts
 export async function withRetry<T>(
@@ -287,6 +295,7 @@ export async function withRetry<T>(
 ```
 
 ## Error Handling
+
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
 | Singleton client | All services | Avoids connection leaks |
@@ -295,10 +304,12 @@ export async function withRetry<T>(
 | Transaction helper | Multi-step writes | Atomic operations, safe rollback |
 
 ## Resources
+
 - [Replit Database](https://docs.replit.com/cloud-services/storage-and-databases/replit-database)
 - [Object Storage TS SDK](https://docs.replit.com/cloud-services/storage-and-databases/object-storage/typescript-api-reference)
 - [Object Storage Python SDK](https://docs.replit.com/reference/object-storage-python-sdk)
 - [Replit Auth](https://docs.replit.com/replit-workspace/replit-auth)
 
 ## Next Steps
+
 Apply patterns in `replit-core-workflow-a` for real-world usage.

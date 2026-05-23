@@ -13,6 +13,7 @@
 [Vast.ai](https://vast.ai) is a GPU cloud marketplace where individual hosts and data centers list GPU machines at prices 50-90% below hyperscaler providers. Common use cases: ML training, inference, rendering, and any GPU-accelerated workload where cost efficiency matters.
 
 **Key facts:**
+
 - REST API at `cloud.vast.ai/api/v0` + CLI via `pip install vastai`
 - Pricing: RTX 4090 ~$0.15-0.30/hr, A100 ~$1.00-2.00/hr, H100 ~$2.50-4.00/hr
 - Instance types: on-demand and interruptible (spot)
@@ -21,6 +22,7 @@
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `vastai-install-auth` | Install CLI, configure API key, build Python client |
@@ -37,6 +39,7 @@
 | `vastai-upgrade-migration` | CLI upgrades, CUDA migration, Docker image updates |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `vastai-ci-integration` | GitHub Actions GPU testing with budget controls |
@@ -47,6 +50,7 @@
 | `vastai-reference-architecture` | Three-tier architecture, checkpoint manager |
 
 ### Flagship Skills (F19-F24)
+
 | Skill | Description |
 |-------|-------------|
 | `vastai-multi-env-setup` | Dev/staging/prod API keys, GPU whitelists, budgets |

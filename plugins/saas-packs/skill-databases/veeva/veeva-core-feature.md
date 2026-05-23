@@ -10,6 +10,7 @@ veeva-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Veeva core feature integration
 **Workflow:** Part of the onboarding skill category for Veeva integration.
 **Relates to:** Other veeva skills in this pack.

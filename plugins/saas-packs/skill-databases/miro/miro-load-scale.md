@@ -10,6 +10,7 @@ miro-load-scale/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Miro load testing and scaling
 **Workflow:** Part of the enterprise skill category for Miro integration.
 **Relates to:** Other miro skills in this pack.

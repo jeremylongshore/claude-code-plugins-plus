@@ -10,6 +10,7 @@ maintainx-security-basics/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply MaintainX security best practices
 **Workflow:** Part of the operations skill category for MaintainX integration.
 **Relates to:** Other maintainx skills in this pack.

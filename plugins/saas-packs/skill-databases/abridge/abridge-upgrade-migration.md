@@ -10,6 +10,7 @@ abridge-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Abridge SDK upgrades
 **Workflow:** Part of the operations skill category for Abridge integration.
 **Relates to:** Other abridge skills in this pack.

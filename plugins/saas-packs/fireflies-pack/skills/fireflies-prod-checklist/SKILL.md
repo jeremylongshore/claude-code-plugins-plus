@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Fireflies.ai Production Checklist
 
 ## Overview
+
 Complete checklist for deploying Fireflies.ai integrations to production. Covers API key management, webhook setup, health checks, and monitoring.
 
 ## Prerequisites
+
 - Staging environment tested
 - Production API key from Fireflies dashboard
 - Webhook endpoint with HTTPS and signature verification
@@ -36,6 +38,7 @@ Complete checklist for deploying Fireflies.ai integrations to production. Covers
 ## Pre-Deployment Checklist
 
 ### API & Auth
+
 - [ ] Production `FIREFLIES_API_KEY` in secret manager (not env file)
 - [ ] API key has minimum required access
 - [ ] `FIREFLIES_WEBHOOK_SECRET` configured (16-32 chars)
@@ -43,6 +46,7 @@ Complete checklist for deploying Fireflies.ai integrations to production. Covers
 - [ ] Key rotation procedure documented
 
 ### Code Quality
+
 - [ ] All GraphQL queries tested against real API in staging
 - [ ] Error handling for all Fireflies error codes (`auth_failed`, `too_many_requests`, `require_ai_credits`)
 - [ ] Rate limiting with exponential backoff implemented
@@ -50,6 +54,7 @@ Complete checklist for deploying Fireflies.ai integrations to production. Covers
 - [ ] Webhook signature verification (HMAC-SHA256) enabled
 
 ### Webhook Configuration
+
 - [ ] Webhook URL registered in Fireflies dashboard (Settings > Developer settings)
 - [ ] HTTPS endpoint with valid TLS certificate
 - [ ] `x-hub-signature` header verified on every request
@@ -57,6 +62,7 @@ Complete checklist for deploying Fireflies.ai integrations to production. Covers
 - [ ] Dead-letter queue for failed webhook processing
 
 ### Health Check Endpoint
+
 ```typescript
 // /api/health
 export async function GET() {
@@ -93,6 +99,7 @@ export async function GET() {
 ```
 
 ### Monitoring & Alerting
+
 - [ ] Alert on Fireflies API errors (5xx, 401, 429)
 - [ ] Track webhook delivery latency
 - [ ] Monitor transcript processing queue depth
@@ -100,6 +107,7 @@ export async function GET() {
 - [ ] PagerDuty/Slack alert for auth failures (P1)
 
 ### Alerting Thresholds
+
 | Alert | Condition | Severity |
 |-------|-----------|----------|
 | Auth failure | Any `auth_failed` error | P1 -- API key may be revoked |
@@ -110,6 +118,7 @@ export async function GET() {
 ## Deployment Steps
 
 ### Step 1: Pre-flight
+
 ```bash
 set -euo pipefail
 # Verify staging passes
@@ -123,6 +132,7 @@ curl -s -X POST https://api.fireflies.ai/graphql \
 ```
 
 ### Step 2: Deploy
+
 ```bash
 set -euo pipefail
 # Deploy with your platform
@@ -135,6 +145,7 @@ curl -f https://production.example.com/api/health | jq .
 ```
 
 ### Step 3: Post-Deploy Verification
+
 ```bash
 set -euo pipefail
 # Verify webhook is registered
@@ -154,6 +165,7 @@ curl -s -X POST https://api.fireflies.ai/graphql \
 ```
 
 ## Rollback
+
 ```bash
 set -euo pipefail
 # Immediate rollback
@@ -164,6 +176,7 @@ curl -f https://production.example.com/api/health | jq '.checks.fireflies'
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Auth fails post-deploy | Wrong API key in production secrets | Update secret, redeploy |
@@ -172,14 +185,17 @@ curl -f https://production.example.com/api/health | jq '.checks.fireflies'
 | Missing transcripts | Bot not joining meetings | Verify calendar integration is connected |
 
 ## Output
+
 - Production deployment with verified health checks
 - Webhook endpoint receiving and verifying events
 - Monitoring and alerting configured
 - Rollback procedure tested
 
 ## Resources
+
 - [Fireflies API Docs](https://docs.fireflies.ai/)
 - [Fireflies Webhooks](https://docs.fireflies.ai/graphql-api/webhooks)
 
 ## Next Steps
+
 For version upgrades, see `fireflies-upgrade-migration`.

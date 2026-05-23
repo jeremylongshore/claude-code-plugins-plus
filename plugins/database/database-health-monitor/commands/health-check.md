@@ -12,6 +12,7 @@ Implement production-grade database health monitoring for PostgreSQL and MySQL w
 ## When to Use This Command
 
 Use `/health-check` when you need to:
+
 - Monitor database health metrics (connections, CPU, memory, disk) in real-time
 - Detect performance degradation before users report issues
 - Track query performance trends and identify slow query patterns
@@ -20,6 +21,7 @@ Use `/health-check` when you need to:
 - Generate executive health reports for stakeholders
 
 DON'T use this when:
+
 - You only need one-time health check (use manual SQL queries instead)
 - Database is development/test environment (overkill for non-production)
 - You lack monitoring infrastructure (Prometheus, Grafana, or equivalent)
@@ -29,6 +31,7 @@ DON'T use this when:
 ## Design Decisions
 
 This command implements **comprehensive continuous monitoring** because:
+
 - Real-time metrics enable proactive issue detection (fix before users notice)
 - Historical trends reveal capacity planning needs (prevent future outages)
 - Automated alerting reduces mean-time-to-resolution (MTTR) by 80%
@@ -36,12 +39,14 @@ This command implements **comprehensive continuous monitoring** because:
 - Centralized dashboards provide single-pane-of-glass visibility
 
 **Alternative considered: Cloud provider monitoring (RDS/CloudSQL)**
+
 - Lower setup overhead (managed service)
 - Vendor-specific dashboards and metrics
 - Limited customization for business-specific alerts
 - Recommended when using managed databases without custom metrics
 
 **Alternative considered: Application Performance Monitoring (APM) only**
+
 - Monitors application layer, not database internals
 - Misses database-specific issues (replication lag, vacuum bloat)
 - Cannot detect issues before they impact applications
@@ -50,6 +55,7 @@ This command implements **comprehensive continuous monitoring** because:
 ## Prerequisites
 
 Before running this command:
+
 1. Monitoring infrastructure (Prometheus + Grafana or equivalent)
 2. Database metrics exporter installed (postgres_exporter, mysqld_exporter)
 3. Alert notification channels configured (Slack, PagerDuty, email)
@@ -59,23 +65,29 @@ Before running this command:
 ## Implementation Process
 
 ### Step 1: Deploy Metrics Collector
+
 Install postgres_exporter or mysqld_exporter to expose database metrics to Prometheus.
 
 ### Step 2: Configure Prometheus Scraping
+
 Add scrape targets for database metrics with appropriate intervals (15-30 seconds).
 
 ### Step 3: Create Grafana Dashboards
+
 Import or build dashboards for connections, queries, replication, and resources.
 
 ### Step 4: Define Alert Rules
+
 Set thresholds for critical metrics: connection pool saturation, replication lag, disk usage.
 
 ### Step 5: Implement Automated Remediation
+
 Create runbooks and scripts to auto-heal common issues (kill idle connections, vacuum).
 
 ## Output Format
 
 The command generates:
+
 - `monitoring/prometheus_config.yml` - Scrape targets and alert rules
 - `monitoring/health_monitor.py` - Python health check collector
 - `monitoring/grafana_dashboard.json` - Pre-configured Grafana dashboard
@@ -828,12 +840,14 @@ groups:
 ## Configuration Options
 
 **Monitoring Intervals**
+
 - **Real-time (10-30s)**: Critical production databases
 - **Standard (1-5min)**: Most production workloads
 - **Relaxed (10-15min)**: Development/staging environments
 - **On-demand**: Manual health checks
 
 **Alert Thresholds**
+
 - **Connection pool**: 80% warning, 95% critical
 - **Replication lag**: 30s warning, 60s critical
 - **Cache hit ratio**: <95% warning, <90% critical
@@ -841,6 +855,7 @@ groups:
 - **Rollback rate**: >5% warning, >10% critical
 
 **Retention Policies**
+
 - **Raw metrics**: 15 days (high resolution)
 - **Downsampled metrics**: 90 days (5min intervals)
 - **Long-term trends**: 1 year (1hour intervals)
@@ -848,6 +863,7 @@ groups:
 ## Best Practices
 
 DO:
+
 - Enable pg_stat_statements for query-level insights
 - Set alert thresholds based on historical baseline (not arbitrary values)
 - Use dedicated monitoring user with pg_monitor role
@@ -857,6 +873,7 @@ DO:
 - Monitor the monitoring system itself (meta-monitoring)
 
 DON'T:
+
 - Query pg_stat_activity excessively (adds overhead)
 - Ignore cache hit ratio warnings (impacts performance significantly)
 - Set thresholds without understanding workload patterns

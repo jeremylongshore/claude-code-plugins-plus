@@ -19,6 +19,7 @@ Create a new user account.
 ```
 
 **Response (201):**
+
 ```json
 {
   "id": "uuid",
@@ -29,9 +30,11 @@ Create a new user account.
 ```
 
 **Errors:**
+
 - 400: Invalid request body
 - 409: Email already exists
 - 422: Validation failed
+
 ```
 
 ### Key Elements

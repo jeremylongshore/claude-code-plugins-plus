@@ -51,6 +51,7 @@ const response = await fetch(`https://platform.hootsuite.com/${API_VERSION}/mess
 ### Step 3: Social Network Changes
 
 When Hootsuite adds/removes social network support:
+
 ```typescript
 const SUPPORTED_NETWORKS = ['TWITTER', 'FACEBOOK', 'INSTAGRAM', 'LINKEDIN', 'PINTEREST', 'YOUTUBE', 'TIKTOK'] as const;
 type SocialNetwork = typeof SUPPORTED_NETWORKS[number];

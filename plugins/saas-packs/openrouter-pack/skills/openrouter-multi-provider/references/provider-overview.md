@@ -3,6 +3,7 @@
 ## Provider Overview
 
 ### Available Providers
+
 ```
 Provider        | Models                           | Strengths
 ----------------|----------------------------------|------------------
@@ -15,6 +16,7 @@ Cohere          | Command R+                       | RAG, Enterprise
 ```
 
 ### Get All Available Models
+
 ```python
 import requests
 

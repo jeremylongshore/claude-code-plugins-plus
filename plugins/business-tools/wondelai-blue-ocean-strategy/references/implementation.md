@@ -2,8 +2,8 @@
 
 Creating a blue ocean strategy is only half the challenge. Executing it requires organizational alignment, leadership that can mobilize change rapidly, and fair process that builds trust and voluntary cooperation. This reference covers the complete implementation journey from strategic decision to sustained execution, including how to protect blue oceans once created and how to renew them when they inevitably turn red.
 
-
 ## Table of Contents
+
 1. [Organizational Alignment for Blue Ocean Execution](#organizational-alignment-for-blue-ocean-execution)
 2. [Tipping Point Leadership](#tipping-point-leadership)
 3. [Fair Process](#fair-process)
@@ -153,6 +153,7 @@ Fair process is the execution mechanism that builds trust and voluntary cooperat
 **What it does NOT mean:** Consensus. Democracy. Letting everyone vote. Engagement means input and influence, not control.
 
 **How to practice engagement:**
+
 - Include front-line employees in ERRC workshops
 - Present the draft strategy and invite critique before finalizing
 - Ask "What are we missing?" and genuinely listen
@@ -163,6 +164,7 @@ Fair process is the execution mechanism that builds trust and voluntary cooperat
 **What it means:** Explain the reasoning behind strategic decisions so that everyone understands WHY, even if they disagree with WHAT.
 
 **How to practice explanation:**
+
 - Share the non-customer research that drives the strategy
 - Explain the competitive logic behind each ERRC decision
 - Be transparent about trade-offs and what is being sacrificed
@@ -173,6 +175,7 @@ Fair process is the execution mechanism that builds trust and voluntary cooperat
 **What it means:** State clearly what is expected of everyone after the decision. What are the new rules? What are the new metrics? What does success look like?
 
 **How to practice expectation clarity:**
+
 - Define new roles and responsibilities explicitly
 - Set clear milestones and deadlines
 - Communicate new performance metrics before they take effect

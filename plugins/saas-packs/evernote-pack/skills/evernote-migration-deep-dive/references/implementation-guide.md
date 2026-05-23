@@ -700,7 +700,6 @@ class MigrationRunner {
 module.exports = MigrationRunner;
 ```
 
-
 ## Migration Scenarios
 
 | Scenario | Source | Target | Complexity |
@@ -709,7 +708,6 @@ module.exports = MigrationRunner;
 | Export from Evernote | Evernote | External | Medium |
 | Evernote to Evernote | Account A | Account B | High |
 | Bulk archive | Evernote | Archive storage | Low |
-
 
 ## Migration Checklist
 
@@ -741,7 +739,6 @@ module.exports = MigrationRunner;
 - [ ] Document results
 - [ ] Clean up temporary files
 ```
-
 
 ## Support
 

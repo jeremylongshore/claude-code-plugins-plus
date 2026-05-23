@@ -10,6 +10,7 @@ miro-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Miro primary workflow
 **Workflow:** Part of the onboarding skill category for Miro integration.
 **Relates to:** Other miro skills in this pack.

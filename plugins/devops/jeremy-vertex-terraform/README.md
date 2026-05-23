@@ -7,6 +7,7 @@ Terraform infrastructure specialist for **broader Vertex AI services** including
 ## ⚠️ Important: What This Plugin Is For
 
 **✅ THIS PLUGIN IS FOR:**
+
 - **Vertex AI Model Garden** deployments (foundation models)
 - **Gemini API endpoints** (gemini-pro, gemini-2.0-flash)
 - **Vector Search** infrastructure (ScaNN-based similarity search)
@@ -17,6 +18,7 @@ Terraform infrastructure specialist for **broader Vertex AI services** including
 - **Feature Store** for ML feature management
 
 **❌ THIS PLUGIN IS NOT FOR:**
+
 - Agent Engine infrastructure (use `jeremy-adk-terraform` for ADK agents)
 - Cloud Run deployments (use `jeremy-genkit-terraform`)
 - Self-managed ML infrastructure
@@ -26,6 +28,7 @@ Terraform infrastructure specialist for **broader Vertex AI services** including
 This plugin provides Terraform modules for deploying Vertex AI services including Model Garden foundation models, Gemini API endpoints, vector search for RAG applications, ML pipelines, and production model serving infrastructure.
 
 **Key Infrastructure Components:**
+
 - `google_vertex_ai_endpoint` for model serving
 - `google_vertex_ai_deployed_model` for model versions
 - `google_vertex_ai_index` for vector search
@@ -45,6 +48,7 @@ This plugin provides Terraform modules for deploying Vertex AI services includin
 ### Required Tools
 
 **1. Terraform:**
+
 ```bash
 # Install Terraform 1.5+
 wget https://releases.hashicorp.com/terraform/1.6.0/terraform_1.6.0_linux_amd64.zip
@@ -56,6 +60,7 @@ terraform version  # Should show 1.5.0+
 ```
 
 **2. gcloud CLI:**
+
 ```bash
 # Install gcloud
 curl https://sdk.cloud.google.com | bash
@@ -69,6 +74,7 @@ gcloud auth application-default login
 ```
 
 **3. Terraform Google Provider:**
+
 ```hcl
 terraform {
   required_version = ">= 1.5.0"
@@ -838,42 +844,50 @@ curl -X POST \
 ## Integration with Other Plugins
 
 ### jeremy-adk-terraform
+
 - jeremy-adk-terraform: Agent Engine (ADK agents)
 - jeremy-vertex-terraform: Model serving & ML infrastructure (this plugin)
 
 ### jeremy-vertex-engine
+
 - Terraform provisions endpoints → Engine inspector validates (for Agent Engine only)
 
 ### jeremy-vertex-validator
+
 - Terraform provisions infrastructure → Validator checks production readiness
 
 ## Use Cases
 
 ### Gemini API Deployment
+
 ```
 "Create Terraform for Gemini 2.0 Flash endpoint"
 "Deploy Gemini Pro with auto-scaling"
 ```
 
 ### Vector Search for RAG
+
 ```
 "Set up vector search infrastructure for RAG application"
 "Deploy embeddings index with 768 dimensions"
 ```
 
 ### Custom Model Serving
+
 ```
 "Deploy custom scikit-learn model to Vertex AI"
 "Create endpoint for TensorFlow model with GPU"
 ```
 
 ### Batch Predictions
+
 ```
 "Set up batch prediction job for large dataset"
 "Deploy batch inference with T4 GPUs"
 ```
 
 ### Feature Store
+
 ```
 "Create Feature Store for user features"
 "Deploy feature serving for real-time predictions"

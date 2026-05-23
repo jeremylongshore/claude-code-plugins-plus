@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # AssemblyAI Common Errors
 
 ## Overview
+
 Quick reference for the most common AssemblyAI errors across transcription, streaming, and LeMUR APIs with real error messages and solutions.
 
 ## Prerequisites
+
 - `assemblyai` package installed
 - API key configured
 - Access to application logs or console
@@ -45,6 +47,7 @@ Status: 401
 **Cause:** API key is missing, invalid, or revoked.
 
 **Solution:**
+
 ```bash
 # Verify key is set
 echo $ASSEMBLYAI_API_KEY
@@ -66,6 +69,7 @@ curl -H "Authorization: $ASSEMBLYAI_API_KEY" \
 **Cause:** The `audio` URL is not publicly accessible, has expired, or returned non-audio content.
 
 **Solution:**
+
 ```typescript
 // Verify URL is accessible
 const response = await fetch(audioUrl, { method: 'HEAD' });
@@ -90,6 +94,7 @@ const transcript = await client.transcripts.transcribe({
 **Cause:** Corrupted file, unsupported codec, file too short (<200ms), or audio is entirely silent.
 
 **Solution:**
+
 ```bash
 # Check file with ffprobe
 ffprobe -v quiet -print_format json -show_format -show_streams input.mp3
@@ -111,6 +116,7 @@ Header: Retry-After: 30
 **Cause:** Too many concurrent requests. Free tier: 5 streams/min. Paid: 100 streams/min (auto-scales).
 
 **Solution:**
+
 ```typescript
 import { AssemblyAI } from 'assemblyai';
 
@@ -159,6 +165,7 @@ WebSocket error: 4100 Endpoint not found
 **Cause:** Invalid `transcript_ids` or total audio exceeds 100-hour limit.
 
 **Solution:**
+
 ```typescript
 // Verify transcript exists before LeMUR call
 const transcript = await client.transcripts.get(transcriptId);
@@ -190,6 +197,7 @@ for (const chunk of chunks) {
 **Cause:** Specified `language_code` is not available for the selected model.
 
 **Solution:**
+
 ```typescript
 // Use automatic language detection (recommended)
 const transcript = await client.transcripts.transcribe({
@@ -207,6 +215,7 @@ console.log('Detected language:', transcript.language_code);
 **Symptom:** Custom terms are still transcribed incorrectly despite `word_boost`.
 
 **Solution:**
+
 ```typescript
 const transcript = await client.transcripts.transcribe({
   audio: audioUrl,
@@ -235,6 +244,7 @@ node -e "console.log(process.env.ASSEMBLYAI_API_KEY ? 'SET' : 'NOT SET')"
 ```
 
 ## Error Handling
+
 | Error | HTTP Code | Retryable | Action |
 |-------|-----------|-----------|--------|
 | Auth error | 401 | No | Fix API key |
@@ -244,9 +254,11 @@ node -e "console.log(process.env.ASSEMBLYAI_API_KEY ? 'SET' : 'NOT SET')"
 | Download error | N/A | Maybe | Check audio URL accessibility |
 
 ## Resources
+
 - [AssemblyAI Status Page](https://status.assemblyai.com)
 - [AssemblyAI API Error Codes](https://www.assemblyai.com/docs/api-reference/overview)
 - [AssemblyAI Support](https://support.assemblyai.com)
 
 ## Next Steps
+
 For comprehensive debugging, see `assemblyai-debug-bundle`.

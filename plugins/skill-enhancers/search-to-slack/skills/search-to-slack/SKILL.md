@@ -72,12 +72,14 @@ The skill generates Slack-formatted content in one or more of these forms:
 **User:** "Research AI coding assistant news from this week and create a digest for #engineering."
 
 The skill will:
+
 1. Search for recent news about AI coding tools, LLM updates, and developer productivity research.
 2. Categorize findings into sections: "New Releases", "Research Papers", "Industry Analysis".
 3. Format each finding with a bold title, 1-2 sentence summary, source link, and relevance indicator.
 4. Produce a complete Slack message with a header, TL;DR section, categorized findings, and a footer with the date range and source count.
 
 Output format:
+
 ```
 *Weekly AI Coding Digest* -- March 10-17, 2026
 
@@ -100,6 +102,7 @@ _5 sources | Compiled March 17, 2026_
 **User:** "Search for critical CVEs in Node.js from the last week, format as a Slack alert for #security."
 
 The skill will:
+
 1. Search for recent Node.js CVEs and security advisories.
 2. Extract severity ratings, affected versions, and remediation steps.
 3. Format as an urgent Slack message with warning emoji, severity badges, and action items.
@@ -110,6 +113,7 @@ The skill will:
 **User:** "Research what our competitors shipped this month and create a Slack thread for #product."
 
 The skill will:
+
 1. Search for product launches, blog posts, and changelog entries from specified competitors.
 2. Create a parent message summarizing the competitive landscape.
 3. Generate individual thread replies for each competitor, covering new features, pricing changes, and strategic implications.

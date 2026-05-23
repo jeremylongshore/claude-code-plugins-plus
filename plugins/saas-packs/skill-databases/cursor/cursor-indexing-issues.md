@@ -10,6 +10,7 @@ cursor-indexing-issues/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Provides focused troubleshooting for Cursor codebase indexing problems including stuck indexing, empty search results, and performance optimization.
 
 **Workflow:** This skill activates when @codebase queries fail or indexing doesn't complete. It covers .cursorignore configuration, performance optimization, monorepo strategies, and recovery commands.

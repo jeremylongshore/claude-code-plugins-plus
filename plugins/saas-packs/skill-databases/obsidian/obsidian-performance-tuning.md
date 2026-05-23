@@ -10,6 +10,7 @@ obsidian-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Obsidian API performance
 **Workflow:** Part of the cicd skill category for Obsidian integration.
 **Relates to:** Other obsidian skills in this pack.

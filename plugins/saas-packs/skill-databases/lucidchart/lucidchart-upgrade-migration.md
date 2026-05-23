@@ -10,6 +10,7 @@ lucidchart-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute Lucidchart SDK upgrades
 **Workflow:** Part of the operations skill category for Lucidchart integration.
 **Relates to:** Other lucidchart skills in this pack.

@@ -36,6 +36,7 @@ Analyze project dependencies for known vulnerabilities, outdated packages, and l
 ## Report Output
 
 Generate comprehensive dependency report with:
+
 - Vulnerable packages with CVE details
 - Outdated packages with available versions
 - License compliance issues

@@ -10,6 +10,7 @@ bamboohr-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready BambooHR SDK patterns
 **Workflow:** Part of the onboarding skill category for BambooHR integration.
 **Relates to:** Other bamboohr skills in this pack.

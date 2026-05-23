@@ -5,6 +5,7 @@ Detailed implementation examples and code patterns.
 ## Instructions
 
 ### Step 1: Environment Configuration
+
 ```typescript
 // config/environments.ts
 interface JuiceboxEnvConfig {
@@ -56,6 +57,7 @@ export function getConfig(): JuiceboxEnvConfig {
 ```
 
 ### Step 2: Secret Management by Environment
+
 ```typescript
 // lib/secrets.ts
 import { SecretsManager } from '@aws-sdk/client-secrets-manager';
@@ -85,6 +87,7 @@ export async function getApiKey(): Promise<string> {
 ```
 
 ### Step 3: Environment-Aware Client Factory
+
 ```typescript
 // lib/client-factory.ts
 import { JuiceboxClient } from '@juicebox/sdk';
@@ -116,6 +119,7 @@ export async function getJuiceboxClient(): Promise<JuiceboxClient> {
 ```
 
 ### Step 4: Kubernetes ConfigMaps
+
 ```yaml
 # k8s/base/configmap.yaml
 apiVersion: v1
@@ -159,6 +163,7 @@ data:
 ```
 
 ### Step 5: Environment Guards
+
 ```typescript
 // lib/environment-guards.ts
 export function requireProduction(): void {

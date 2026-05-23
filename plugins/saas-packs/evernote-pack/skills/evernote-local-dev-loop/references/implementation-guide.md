@@ -340,7 +340,6 @@ async function testCreateNote() {
 testCreateNote().catch(console.error);
 ```
 
-
 ## Development Workflow
 
 ```bash
@@ -350,7 +349,6 @@ curl http://localhost:3000/dev/test
 
 npm run test:note
 ```
-
 
 ## Sandbox vs Production
 

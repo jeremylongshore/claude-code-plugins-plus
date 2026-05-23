@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Clerk Production Checklist
 
 ## Overview
+
 Complete checklist to ensure your Clerk integration is production-ready. Covers environment config, security hardening, monitoring, error handling, and compliance.
 
 ## Prerequisites
+
 - Clerk integration working in development
 - Production environment and domain configured
 - CI/CD pipeline ready
@@ -46,6 +48,7 @@ Complete checklist to ensure your Clerk integration is production-ready. Covers 
 | Sign-in/sign-up URLs configured | [ ] | Set `NEXT_PUBLIC_CLERK_SIGN_IN_URL` etc. |
 
 ### Step 2: Validation Script
+
 ```typescript
 // scripts/prod-readiness.ts
 import { createClerkClient } from '@clerk/backend'
@@ -108,6 +111,7 @@ validateProduction()
 ```
 
 Run with:
+
 ```bash
 npx tsx scripts/prod-readiness.ts
 ```
@@ -172,12 +176,14 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
 | Edge Runtime for middleware | [ ] | Faster cold starts on Vercel |
 
 ## Output
+
 - Environment configuration verified (live keys, webhook secret, domain)
 - Automated validation script (run in CI or before deploy)
 - Security, monitoring, error handling, and performance checklists
 - Global error boundary component with auth context
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Validation script fails | Test keys in production | Switch to `pk_live_` / `sk_live_` keys |
@@ -188,6 +194,7 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
 ## Examples
 
 ### CI Production Gate
+
 ```yaml
 # .github/workflows/deploy.yml — add as pre-deploy step
 - name: Clerk production readiness
@@ -199,9 +206,11 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
 ```
 
 ## Resources
+
 - [Clerk Production Checklist](https://clerk.com/docs/deployments/overview)
 - [Clerk Security Best Practices](https://clerk.com/docs/security/overview)
 - [Clerk Domain Setup](https://clerk.com/docs/deployments/set-up-your-domain)
 
 ## Next Steps
+
 Proceed to `clerk-upgrade-migration` for SDK version upgrades.

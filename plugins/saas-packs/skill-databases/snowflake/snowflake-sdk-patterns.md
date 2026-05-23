@@ -10,6 +10,7 @@ snowflake-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Snowflake SDK patterns
 **Workflow:** Part of the onboarding skill category for Snowflake integration.
 **Relates to:** Other snowflake skills in this pack.

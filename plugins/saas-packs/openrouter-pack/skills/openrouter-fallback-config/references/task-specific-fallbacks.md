@@ -3,6 +3,7 @@
 ## Task-Specific Fallbacks
 
 ### By Task Type
+
 ```python
 TASK_FALLBACKS = {
     "coding": [
@@ -44,6 +45,7 @@ def chat_for_task(prompt: str, task_type: str = "default", **kwargs):
 ```
 
 ### By Cost Tier
+
 ```python
 COST_TIERS = {
     "premium": [

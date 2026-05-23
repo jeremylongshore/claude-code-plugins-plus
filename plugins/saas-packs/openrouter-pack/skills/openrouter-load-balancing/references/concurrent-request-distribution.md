@@ -3,6 +3,7 @@
 ## Concurrent Request Distribution
 
 ### Async Load Balancer
+
 ```python
 from openai import AsyncOpenAI
 import asyncio
@@ -54,6 +55,7 @@ results = await async_balancer.batch_requests(prompts, "openai/gpt-4-turbo")
 ```
 
 ### Semaphore-Based Concurrency
+
 ```python
 class ConcurrencyLimitedBalancer:
     def __init__(self, api_keys: list, concurrent_per_key: int = 5):

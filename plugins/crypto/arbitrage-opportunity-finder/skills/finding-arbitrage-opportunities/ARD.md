@@ -69,17 +69,20 @@ This skill aggregates price data from multiple sources (CEX APIs, DEX subgraphs,
 ## Progressive Disclosure Strategy
 
 ### Level 1: Quick Scan (Default)
+
 - Single pair, top exchanges
 - Basic spread display
 - Simple profit estimate
 
 ### Level 2: Detailed Analysis (`--detailed`)
+
 - All available exchanges
 - Fee breakdown
 - Slippage estimates
 - Risk indicators
 
 ### Level 3: Full Discovery (`--full`)
+
 - Triangular path discovery
 - Cross-chain comparison
 - Historical spread context
@@ -239,16 +242,19 @@ Price Data
 ## Composability & Stacking
 
 ### Standalone Use
+
 ```bash
 python arb_finder.py scan ETH USDC --exchanges binance,coinbase,kraken
 ```
 
 ### Pipeline Integration
+
 ```bash
 python arb_finder.py scan ETH USDC --output json | jq '.opportunities[0]'
 ```
 
 ### With Flash Loan Simulator
+
 ```bash
 # Find opportunity, then simulate flash loan execution
 python arb_finder.py scan ETH USDC --output json | \
@@ -256,6 +262,7 @@ python arb_finder.py scan ETH USDC --output json | \
 ```
 
 ### Continuous Monitoring
+
 ```bash
 python arb_finder.py monitor ETH USDC --threshold 0.5 --interval 5
 ```
@@ -281,16 +288,19 @@ python arb_finder.py monitor ETH USDC --threshold 0.5 --interval 5
 ## Security & Compliance
 
 ### API Key Handling
+
 - Keys loaded from environment variables or encrypted config
 - Never logged or displayed in output
 - Rate limits respected to avoid bans
 
 ### Data Privacy
+
 - No user data collected or stored
 - Price data is public market information
 - No personally identifiable information
 
 ### Risk Warnings
+
 - All opportunities marked as estimates
 - Execution risk disclaimers
 - Educational purpose disclaimer
@@ -298,17 +308,20 @@ python arb_finder.py monitor ETH USDC --threshold 0.5 --interval 5
 ## Testing Strategy
 
 ### Unit Tests
+
 - Price normalization
 - Fee calculations
 - Spread computations
 - Path finding algorithms
 
 ### Integration Tests
+
 - API connectivity (with mocks)
 - Multi-source aggregation
 - End-to-end opportunity detection
 
 ### Manual Validation
+
 - Compare detected spreads with exchange UIs
 - Verify profit calculations with manual trades
 - Test rate limit handling

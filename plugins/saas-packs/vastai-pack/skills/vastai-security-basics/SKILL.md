@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Vast.ai Security Basics
 
 ## Overview
+
 Security best practices for Vast.ai API keys, SSH access to GPU instances, data protection on rented hardware, and credential management. Vast.ai instances run as root on shared hardware, requiring careful attention to data lifecycle.
 
 ## Prerequisites
+
 - Vast.ai account with API key
 - Understanding of SSH key management
 - Secrets manager available (optional but recommended)
@@ -107,6 +109,7 @@ def secure_cleanup(instance_id, ssh_host, ssh_port):
 - [ ] No API keys in shell history (`export` from a sourced file, not typed)
 
 ## Output
+
 - API key loaded from environment or secrets manager
 - Dedicated SSH key pair for Vast.ai instances
 - Secure cleanup before instance destruction
@@ -114,6 +117,7 @@ def secure_cleanup(instance_id, ssh_host, ssh_port):
 - Credential rotation checklist
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | API key leaked in git | Committed `.env` or key file | Rotate key immediately; add to `.gitignore` |
@@ -122,10 +126,12 @@ def secure_cleanup(instance_id, ssh_host, ssh_port):
 | Key file world-readable | Wrong permissions | `chmod 600 ~/.vast_api_key ~/.ssh/vastai_key` |
 
 ## Resources
+
 - [Vast.ai CLI Security](https://docs.vast.ai/cli/get-started)
 - [SSH Key Management](https://docs.vast.ai/api-reference/introduction)
 
 ## Next Steps
+
 For production deployment checklist, see `vastai-prod-checklist`.
 
 ## Examples

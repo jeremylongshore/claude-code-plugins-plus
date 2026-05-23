@@ -10,6 +10,7 @@ snowflake-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Snowflake core feature integration
 **Workflow:** Part of the onboarding skill category for Snowflake integration.
 **Relates to:** Other snowflake skills in this pack.

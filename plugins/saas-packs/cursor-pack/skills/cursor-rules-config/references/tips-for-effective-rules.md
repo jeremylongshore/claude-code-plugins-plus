@@ -3,6 +3,7 @@
 ## Tips for Effective Rules
 
 ### Be Specific
+
 ```yaml
 # Vague (less effective)
 rules:
@@ -17,6 +18,7 @@ rules:
 ```
 
 ### Include Examples
+
 ```yaml
 # Examples help AI understand your patterns
 error-handling-example: |
@@ -30,6 +32,7 @@ error-handling-example: |
 ```
 
 ### Reference Project Files
+
 ```yaml
 context:
   reference-files:

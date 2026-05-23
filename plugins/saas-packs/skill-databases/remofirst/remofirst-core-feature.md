@@ -10,6 +10,7 @@ remofirst-core-feature/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement RemoFirst core feature integration
 **Workflow:** Part of the onboarding skill category for RemoFirst integration.
 **Relates to:** Other remofirst skills in this pack.

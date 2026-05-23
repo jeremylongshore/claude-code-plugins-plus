@@ -10,6 +10,7 @@ veeva-observability/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Set up Veeva monitoring and observability
 **Workflow:** Part of the enterprise skill category for Veeva integration.
 **Relates to:** Other veeva skills in this pack.

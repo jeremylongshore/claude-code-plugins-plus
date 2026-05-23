@@ -271,6 +271,7 @@ for (const endpoint of endpoints) {
 ## Output
 
 Successful setup produces:
+
 - A project scaffold with proper secret isolation (.env, .gitignore)
 - Token caching that avoids redundant auth calls to production
 - Request/response logging for debugging with secret redaction

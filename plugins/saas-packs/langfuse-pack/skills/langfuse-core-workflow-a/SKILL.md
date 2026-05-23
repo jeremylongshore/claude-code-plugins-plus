@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Core Workflow A: Tracing LLM Calls
 
 ## Overview
+
 End-to-end tracing of LLM calls, chains, and agents. Covers the OpenAI drop-in wrapper, manual tracing with `startActiveObservation`, RAG pipeline instrumentation, streaming response tracking, and LangChain integration.
 
 ## Prerequisites
+
 - Completed `langfuse-install-auth` setup
 - OpenAI SDK installed (`npm install openai`)
 - For v4+: `@langfuse/openai`, `@langfuse/tracing`, `@langfuse/otel`, `@opentelemetry/sdk-node`
@@ -267,10 +269,12 @@ result = chain.invoke(
 | Flat trace (no nesting) | Missing OTel context | Ensure `NodeSDK` is started with `LangfuseSpanProcessor` |
 
 ## Resources
+
 - [OpenAI JS Integration](https://langfuse.com/integrations/model-providers/openai-js)
 - [TypeScript Instrumentation](https://langfuse.com/docs/observability/sdk/typescript/instrumentation)
 - [LangChain Integration](https://langfuse.com/integrations/frameworks/langchain)
 - [Observation Types](https://langfuse.com/docs/observability/features/observation-types)
 
 ## Next Steps
+
 For evaluation and scoring workflows, see `langfuse-core-workflow-b`.

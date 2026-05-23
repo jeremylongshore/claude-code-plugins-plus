@@ -19,14 +19,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Ramp Core Workflow B
 
 ## Overview
+
 Manage transactions and expenses: list, categorize, attach receipts, and sync to accounting.
 
 ## Prerequisites
+
 - Completed `ramp-core-workflow-a`
 
 ## Instructions
 
 ### Step 1: List Transactions with Filters
+
 ```python
 resp = requests.get(f"{BASE}/transactions", headers=headers, params={
     "start_date": "2026-01-01",
@@ -40,6 +43,7 @@ print(f"Amazon spend: ${total/100:.2f} across {len(transactions)} transactions")
 ```
 
 ### Step 2: Get Transaction Details
+
 ```python
 tx_id = transactions[0]["id"]
 detail = requests.get(f"{BASE}/transactions/{tx_id}", headers=headers)
@@ -51,6 +55,7 @@ print(f"Card: {tx['card_holder']['first_name']} — last4: {tx['card_last_four']
 ```
 
 ### Step 3: Sync to Accounting
+
 ```python
 # Fetch transactions ready for accounting sync
 sync_resp = requests.get(f"{BASE}/accounting/transactions", headers=headers, params={
@@ -75,11 +80,13 @@ requests.post(f"{BASE}/accounting/transactions/sync", headers={**headers, "Conte
 ```
 
 ## Output
+
 - Transactions filtered by date, merchant, category
 - Detailed transaction data with card holder info
 - Accounting sync with GL mapping
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Empty results | Wrong date range | Check start_date/end_date format |
@@ -87,8 +94,10 @@ requests.post(f"{BASE}/accounting/transactions/sync", headers={**headers, "Conte
 | Missing category | Uncategorized transaction | Use default GL account |
 
 ## Resources
+
 - [Ramp API Documentation](https://docs.ramp.com/)
 - [Accounting Guide](https://docs.ramp.com/developer-api/v1/guides/accounting)
 
 ## Next Steps
+
 Handle events: `ramp-webhooks-events`

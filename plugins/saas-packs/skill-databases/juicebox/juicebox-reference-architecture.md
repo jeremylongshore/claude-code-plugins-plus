@@ -10,6 +10,7 @@ juicebox-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Juicebox reference architecture
 **Workflow:** Part of the cicd skill category for Juicebox integration.
 **Relates to:** Other juicebox skills in this pack.

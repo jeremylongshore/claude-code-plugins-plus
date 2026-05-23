@@ -4,7 +4,8 @@ Professional-grade cryptocurrency portfolio tracking and analysis for Claude Cod
 
 ## Features
 
-###  Position Tracking
+### Position Tracking
+
 - **Real-time price updates** from multiple exchanges (CoinGecko, Binance, Coinbase)
 - **Comprehensive PnL calculations** with entry/exit tracking
 - **Multi-exchange support** for accurate pricing
@@ -12,7 +13,8 @@ Professional-grade cryptocurrency portfolio tracking and analysis for Claude Cod
 - **Position history** with complete audit trail
 - **Alert system** for significant price movements
 
-###  Portfolio Analysis
+### Portfolio Analysis
+
 - **Risk metrics**: Sharpe ratio, Sortino ratio, maximum drawdown
 - **Volatility analysis**: Daily, weekly, monthly, and annual
 - **Correlation matrix**: Identify over-concentrated positions
@@ -20,14 +22,16 @@ Professional-grade cryptocurrency portfolio tracking and analysis for Claude Cod
 - **Herfindahl Index**: Measure portfolio concentration
 - **Performance attribution**: Understand what's driving returns
 
-###  Rebalancing Engine
+### Rebalancing Engine
+
 - **Optimal allocation** calculations using Modern Portfolio Theory
 - **Automated rebalancing** recommendations
 - **Tax-aware** trading suggestions
 - **Cost estimation** for rebalancing actions
 - **Threshold-based** or time-based rebalancing
 
-###  Advanced Analytics
+### Advanced Analytics
+
 - **Risk-adjusted returns** optimization
 - **Diversification scoring**
 - **Market regime detection**
@@ -62,12 +66,14 @@ Professional-grade cryptocurrency portfolio tracking and analysis for Claude Cod
 **What:** 10,000+ cryptocurrencies with real-time pricing
 
 **Free Tier:**
+
 - 10-50 calls/minute (generous)
 - No API key required
 - Full price history
 - Market cap, volume, 24h changes
 
 **Setup:**
+
 ```json
 {
   "priceFeeds": {
@@ -85,12 +91,14 @@ Professional-grade cryptocurrency portfolio tracking and analysis for Claude Cod
 **What:** Real-time exchange data from world's largest crypto exchange
 
 **Free Tier:**
+
 - 1,200 requests/minute
 - No API key required for public data
 - Real-time orderbook data
 - 24h ticker statistics
 
 **Setup:**
+
 ```json
 {
   "priceFeeds": {
@@ -108,12 +116,14 @@ Professional-grade cryptocurrency portfolio tracking and analysis for Claude Cod
 **What:** Institutional-grade pricing from regulated US exchange
 
 **Free Tier:**
+
 - 10,000 requests/hour
 - No authentication for public endpoints
 - OHLCV candles
 - Real-time ticker
 
 **Setup:**
+
 ```json
 {
   "priceFeeds": {
@@ -131,6 +141,7 @@ Professional-grade cryptocurrency portfolio tracking and analysis for Claude Cod
 #### Paid Approach (Premium Tools)
 
 **Annual Subscriptions:**
+
 - CryptoCompare Pro: $79/mo → $948/year (historical data)
 - Messari Pro: $99/mo → $1,188/year (fundamentals)
 - Kaiko: $500/mo → $6,000/year (institutional data)
@@ -140,6 +151,7 @@ Professional-grade cryptocurrency portfolio tracking and analysis for Claude Cod
 #### Free Approach (This Plugin)
 
 **Annual Subscriptions:**
+
 - CoinGecko: $0
 - Binance API: $0
 - Coinbase API: $0
@@ -153,6 +165,7 @@ Professional-grade cryptocurrency portfolio tracking and analysis for Claude Cod
 #### Portfolio Value Calculation
 
 **Paid Approach (CryptoCompare Pro):**
+
 ```javascript
 // $948/year subscription
 const response = await fetch(
@@ -161,6 +174,7 @@ const response = await fetch(
 ```
 
 **Free Approach (CoinGecko - This Plugin):**
+
 ```javascript
 // $0/year - already configured
 const response = await fetch(
@@ -200,6 +214,7 @@ const response = await fetch(
 ### When Free APIs Are NOT Enough
 
 **Use paid APIs if:**
+
 - You need <100ms latency for high-frequency trading
 - You require tick-by-tick orderbook data
 - Your firm needs Bloomberg Terminal integration
@@ -380,16 +395,19 @@ CREATE TABLE alerts (
 The plugin integrates with multiple cryptocurrency data sources:
 
 ### CoinGecko API
+
 - Real-time prices for 10,000+ cryptocurrencies
 - Historical price data
 - Market cap and volume information
 
 ### Binance API
+
 - Real-time trading data
 - Order book depth
 - 24-hour statistics
 
 ### Coinbase API
+
 - Institutional-grade price feeds
 - Historical OHLCV data
 - Real-time WebSocket streams
@@ -397,7 +415,9 @@ The plugin integrates with multiple cryptocurrency data sources:
 ## Risk Metrics Explained
 
 ### Sharpe Ratio
+
 Measures risk-adjusted returns. Values:
+
 - < 0: Poor (returns below risk-free rate)
 - 0-0.5: Suboptimal
 - 0.5-1.0: Acceptable
@@ -405,19 +425,25 @@ Measures risk-adjusted returns. Values:
 - > 2.0: Excellent
 
 ### Value at Risk (VaR)
+
 Statistical measure of potential loss:
+
 - 95% VaR: Maximum loss expected 95% of the time
 - 99% VaR: Maximum loss expected 99% of the time
 
 ### Maximum Drawdown
+
 Largest peak-to-trough decline:
+
 - < 10%: Low risk
 - 10-20%: Moderate risk
 - 20-30%: Elevated risk
 - > 30%: High risk
 
 ### Herfindahl Index
+
 Measures portfolio concentration:
+
 - < 0.15: Well diversified
 - 0.15-0.25: Moderate concentration
 - > 0.25: High concentration
@@ -425,16 +451,19 @@ Measures portfolio concentration:
 ## Performance Optimization
 
 ### Caching Strategy
+
 - Price data cached for 5 minutes
 - Historical data cached for 24 hours
 - Correlation matrices cached for 1 hour
 
 ### Rate Limiting
+
 - Automatic rate limit handling
 - Exponential backoff on API errors
 - Fallback to secondary data sources
 
 ### Batch Operations
+
 - Batch price updates for efficiency
 - Grouped database writes
 - Optimized correlation calculations
@@ -442,16 +471,19 @@ Measures portfolio concentration:
 ## Security Considerations
 
 ### API Key Management
+
 - Store API keys in environment variables
 - Never commit keys to version control
 - Use read-only keys where possible
 
 ### Data Privacy
+
 - Local database storage by default
 - Optional encryption for sensitive data
 - No third-party data sharing
 
 ### Input Validation
+
 - Sanitize all user inputs
 - Validate cryptocurrency symbols
 - Check numerical bounds
@@ -461,16 +493,19 @@ Measures portfolio concentration:
 ### Common Issues
 
 **Price data not updating**
+
 - Check API key configuration
 - Verify internet connectivity
 - Check rate limits
 
 **Incorrect PnL calculations**
+
 - Verify entry prices and dates
 - Check for stock splits or airdrops
 - Ensure correct quantity tracking
 
 **High correlation warnings**
+
 - Review asset selection
 - Consider adding uncorrelated assets
 - Check time period for correlation calculation
@@ -478,16 +513,19 @@ Measures portfolio concentration:
 ## Advanced Features
 
 ### Tax Reporting
+
 - FIFO/LIFO cost basis tracking
 - Capital gains calculations
 - Export to TurboTax/CoinTracker format
 
 ### Backtesting
+
 - Test strategies on historical data
 - Monte Carlo simulations
 - Walk-forward analysis
 
 ### Automation
+
 - Automated rebalancing execution
 - Stop-loss order placement
 - DCA (Dollar Cost Averaging) scheduling
@@ -521,6 +559,7 @@ MIT License - See LICENSE file for details
 ## Changelog
 
 ### v1.0.0 (2024-10-11)
+
 - Initial release
 - Position tracking with real-time updates
 - Portfolio analysis with risk metrics

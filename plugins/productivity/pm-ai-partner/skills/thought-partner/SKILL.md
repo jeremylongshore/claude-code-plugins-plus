@@ -74,6 +74,7 @@ That's a classic build vs. improve dilemma. Before I share thoughts, let me unde
 3. What does "something new" mean in your mind — adjacent feature, new product line, or pivot?
 
 A few angles that might be relevant:
+
 - **Opportunity cost**: What are you not doing while improving vs. building?
 - **Team capacity**: Do you have the skills for both, or would new require hiring?
 - **Risk tolerance**: Improving is usually safer but may have lower upside

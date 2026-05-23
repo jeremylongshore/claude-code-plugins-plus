@@ -10,6 +10,7 @@ alchemy-common-errors/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Diagnose and fix Alchemy common errors
 **Workflow:** Part of the operations skill category for Alchemy integration.
 **Relates to:** Other alchemy skills in this pack.

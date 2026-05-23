@@ -10,6 +10,7 @@ procore-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Procore advanced debugging
 **Workflow:** Part of the enterprise skill category for Procore integration.
 **Relates to:** Other procore skills in this pack.

@@ -10,6 +10,7 @@ brightdata-deploy-pipeline/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Deploy Bright Data integrations to production
 **Workflow:** Part of the cicd skill category for Bright Data integration.
 **Relates to:** Other brightdata skills in this pack.

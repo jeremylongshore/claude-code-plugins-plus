@@ -5,6 +5,7 @@ Detailed implementation reference for the lokalise-deploy-integration skill.
 ## Vercel Deployment
 
 ### Environment Setup
+
 ```bash
 # Add Lokalise secrets to Vercel
 vercel env add LOKALISE_API_TOKEN production
@@ -21,6 +22,7 @@ vercel --prod
 ```
 
 ### vercel.json Configuration
+
 ```json
 {
   "build": {
@@ -38,6 +40,7 @@ vercel --prod
 ```
 
 ### Pre-build Translation Sync
+
 ```json
 // package.json
 {
@@ -49,10 +52,10 @@ vercel --prod
 }
 ```
 
-
 ## Netlify Deployment
 
 ### netlify.toml
+
 ```toml
 [build]
   command = "npm run build"
@@ -69,6 +72,7 @@ vercel --prod
 ```
 
 ### Netlify Build Plugin
+
 ```javascript
 // plugins/lokalise-sync/index.js
 module.exports = {
@@ -96,6 +100,7 @@ module.exports = {
 ```
 
 ### Netlify Environment Variables
+
 ```bash
 # Using Netlify CLI
 netlify env:set LOKALISE_API_TOKEN "your-token"
@@ -105,10 +110,10 @@ netlify env:set LOKALISE_PROJECT_ID "123456.abcdef"
 netlify deploy --prod
 ```
 
-
 ## Google Cloud Run
 
 ### Dockerfile
+
 ```dockerfile
 FROM node:20-slim AS builder
 
@@ -144,6 +149,7 @@ CMD ["node", "dist/index.js"]
 ```
 
 ### Cloud Run Deployment
+
 ```bash
 #!/bin/bash
 # deploy-cloud-run.sh
@@ -166,10 +172,10 @@ gcloud run deploy $SERVICE_NAME \
   --allow-unauthenticated
 ```
 
-
 ## OTA (Over-the-Air) Updates for Mobile
 
 ### Setup OTA in Lokalise
+
 ```typescript
 // Initialize OTA SDK for React Native
 import { LokaliseOta } from "@lokalise/react-native-ota";
@@ -192,7 +198,6 @@ async function initTranslations() {
   }
 }
 ```
-
 
 ## Health Check Endpoint
 
@@ -227,25 +232,28 @@ async function checkTranslations() {
 }
 ```
 
-
 ## Instructions
 
 ### Step 1: Choose Deployment Platform
+
 Select the platform that best fits your infrastructure needs.
 
 ### Step 2: Configure Secrets
+
 Store Lokalise API token securely using the platform's secrets management.
 
 ### Step 3: Set Up Pre-build Sync
+
 Configure translation download before build step.
 
 ### Step 4: Deploy and Verify
-Deploy application and verify translations are included.
 
+Deploy application and verify translations are included.
 
 ## Detailed Examples
 
 ### Quick Deploy Script
+
 ```bash
 #!/bin/bash
 # Platform-agnostic deploy helper
@@ -273,6 +281,7 @@ esac
 ```
 
 ### CDN-Cached Translations
+
 ```typescript
 // Load translations from CDN with cache
 const CACHE_TTL = 3600;  // 1 hour
@@ -292,4 +301,3 @@ async function loadTranslations(locale: string) {
   return response.json();
 }
 ```
-

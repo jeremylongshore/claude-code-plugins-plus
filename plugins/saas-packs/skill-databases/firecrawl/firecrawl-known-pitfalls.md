@@ -10,6 +10,7 @@ firecrawl-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid 10 common anti-patterns including ignoring rate limits, poor error handling, inefficient crawl patterns, and content quality issues.
 **Workflow:** Best practices skill - prevents common mistakes through pattern recognition and proactive guidance.
 **Relates to:** Synthesizes lessons from all operational skills; foundational for code review

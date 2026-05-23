@@ -6,7 +6,6 @@ description: Configure service mesh (Istio, Linkerd) for microservices
 
 Configure service mesh (Istio, Linkerd) for microservices
 
-
 ## Key Features
 
 - Production-ready configurations

@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code
 # Salesforce Observability
 
 ## Overview
+
 Instrument Salesforce integrations with API limit monitoring, SOQL performance tracking, error classification, and alerting. Uses Salesforce's built-in Limits API and EventLogFile for deep visibility.
 
 ## Prerequisites
+
 - jsforce connection configured
 - Prometheus or compatible metrics backend (optional)
 - Grafana or similar dashboarding tool (optional)
@@ -251,6 +253,7 @@ groups:
 | Data storage used | Limits API | > 90% capacity |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Limits poll failing | Token expired | Auto-refresh connection |
@@ -259,10 +262,12 @@ groups:
 | Alert storms | Threshold too low | Tune thresholds with historical data |
 
 ## Resources
+
 - [Limits REST Resource](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_limits.htm)
 - [EventLogFile](https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_eventlogfile.htm)
 - [Salesforce Status API](https://api.status.salesforce.com/)
 - [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
 
 ## Next Steps
+
 For incident response, see `salesforce-incident-runbook`.

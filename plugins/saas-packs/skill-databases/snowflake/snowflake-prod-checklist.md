@@ -10,6 +10,7 @@ snowflake-prod-checklist/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Snowflake production deployment checklist
 **Workflow:** Part of the operations skill category for Snowflake integration.
 **Relates to:** Other snowflake skills in this pack.

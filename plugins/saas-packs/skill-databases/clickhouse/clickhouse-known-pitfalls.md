@@ -10,6 +10,7 @@ clickhouse-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid ClickHouse anti-patterns
 **Workflow:** Part of the enterprise skill category for ClickHouse integration.
 **Relates to:** Other clickhouse skills in this pack.

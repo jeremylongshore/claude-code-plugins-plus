@@ -3,7 +3,9 @@ Available Checkout UI Extension components and their key props.
 ## Layout Components
 
 ### BlockStack
+
 Vertical stack with spacing control.
+
 ```tsx
 <BlockStack spacing="base" padding="base">
   <Text>Item 1</Text>
@@ -14,7 +16,9 @@ Vertical stack with spacing control.
 ```
 
 ### InlineStack
+
 Horizontal stack.
+
 ```tsx
 <InlineStack spacing="base" blockAlignment="center">
   <Icon source="truck" />
@@ -25,7 +29,9 @@ Horizontal stack.
 ```
 
 ### Grid
+
 CSS Grid layout.
+
 ```tsx
 <Grid columns={["fill", "auto"]} spacing="base">
   <View><Text>Left</Text></View>
@@ -34,7 +40,9 @@ CSS Grid layout.
 ```
 
 ### View
+
 Generic container (like a div).
+
 ```tsx
 <View padding="base" border="base" cornerRadius="base">
   <Text>Boxed content</Text>
@@ -42,7 +50,9 @@ Generic container (like a div).
 ```
 
 ### Divider
+
 Horizontal rule.
+
 ```tsx
 <Divider />
 ```
@@ -50,6 +60,7 @@ Horizontal rule.
 ## Content Components
 
 ### Text
+
 ```tsx
 <Text size="medium" emphasis="bold" appearance="subdued">
   Styled text
@@ -60,24 +71,29 @@ Horizontal rule.
 ```
 
 ### Heading
+
 ```tsx
 <Heading level={2}>Section Title</Heading>
 // level: 1 | 2 | 3
 ```
 
 ### TextBlock
+
 Multi-line text with paragraph spacing.
+
 ```tsx
 <TextBlock>Long paragraph text that wraps naturally.</TextBlock>
 ```
 
 ### Image
+
 ```tsx
 <Image source="https://cdn.shopify.com/..." accessibilityDescription="Product photo" />
 // cornerRadius, aspectRatio, fit ("cover" | "contain") available
 ```
 
 ### Icon
+
 ```tsx
 <Icon source="checkCircle" size="small" appearance="accent" />
 // Built-in sources: "arrowLeft", "arrowRight", "cart", "checkCircle", "chevronDown",
@@ -87,6 +103,7 @@ Multi-line text with paragraph spacing.
 ```
 
 ### Banner
+
 ```tsx
 <Banner status="info" title="Optional title">
   Banner content text.
@@ -98,6 +115,7 @@ Multi-line text with paragraph spacing.
 ## Form Components
 
 ### TextField
+
 ```tsx
 <TextField
   label="Delivery Note"
@@ -111,6 +129,7 @@ Multi-line text with paragraph spacing.
 ```
 
 ### Checkbox
+
 ```tsx
 <Checkbox checked={agreed} onChange={setAgreed}>
   I agree to the terms
@@ -118,6 +137,7 @@ Multi-line text with paragraph spacing.
 ```
 
 ### Select
+
 ```tsx
 <Select
   label="Gift wrap style"
@@ -132,7 +152,9 @@ Multi-line text with paragraph spacing.
 ```
 
 ### ChoiceList
+
 Radio or checkbox group.
+
 ```tsx
 <ChoiceList
   name="delivery-speed"
@@ -146,6 +168,7 @@ Radio or checkbox group.
 ```
 
 ### DatePicker
+
 ```tsx
 <DatePicker
   selected={selectedDate}
@@ -155,6 +178,7 @@ Radio or checkbox group.
 ```
 
 ### Button
+
 ```tsx
 <Button kind="secondary" onPress={handleClick} loading={isLoading}>
   Add gift wrap
@@ -166,7 +190,9 @@ Radio or checkbox group.
 ## Interactive Components
 
 ### Pressable
+
 Clickable wrapper (like a button without button styling).
+
 ```tsx
 <Pressable onPress={() => setExpanded(!expanded)}>
   <InlineStack spacing="tight">
@@ -177,7 +203,9 @@ Clickable wrapper (like a button without button styling).
 ```
 
 ### Disclosure
+
 Expandable/collapsible section.
+
 ```tsx
 <Disclosure open={isOpen} onToggle={setIsOpen}>
   <Pressable><Text>Toggle section</Text></Pressable>

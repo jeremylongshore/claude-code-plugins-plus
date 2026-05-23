@@ -13,6 +13,7 @@ Analyzing competition through the jobs lens and building differentiated position
 "Our competitors are anything a customer might hire to get their job done."
 
 This fundamental shift reveals:
+
 - Non-obvious competitors you're losing to
 - Opportunities in adjacent spaces
 - Why customers choose seemingly inferior solutions
@@ -36,6 +37,7 @@ Ask: "What else do customers hire for this job?"
 ### The Milkshake Discovery
 
 The famous milkshake study revealed:
+
 - **Assumed competitors:** Other fast food beverages, breakfast items
 - **Actual competitors:** Bananas, bagels, donuts, boredom itself
 
@@ -46,12 +48,14 @@ The job wasn't "consume breakfast"—it was "make my commute tolerable and keep 
 **Step 1:** Define the job (not the product category)
 
 **Step 2:** List everything customers currently hire:
+
 - Direct competitors (same category)
 - Indirect competitors (different category, same job)
 - Non-consumption (doing nothing)
 - DIY/workarounds (cobbling solutions together)
 
 **Step 3:** Understand why each gets hired:
+
 - What's the circumstance?
 - What dimension does it serve best? (Functional/Emotional/Social)
 - What trade-offs do customers accept?
@@ -109,6 +113,7 @@ Duolingo:
 ### Why Non-Consumption Matters
 
 The biggest competitor is often "doing nothing." People who:
+
 - Haven't realized they have the problem
 - Don't think solutions exist
 - Think solutions are too expensive/complicated
@@ -144,6 +149,7 @@ To convert non-consumers:
    - Show quick wins possible
 
 **SNHU Example:**
+
 - Traditional barrier: Campus attendance required
 - SNHU reframe: "Get a degree without putting life on hold"
 - Job focus: Career advancement, not "being a student"
@@ -158,6 +164,7 @@ Traditional pricing: Cost + margin = price
 JTBD pricing: Job value to customer = pricing ceiling
 
 **Questions to determine job value:**
+
 - What does getting this job done save/earn the customer?
 - What are they currently paying to get it done (including time)?
 - How important is this job relative to other spending?
@@ -166,6 +173,7 @@ JTBD pricing: Job value to customer = pricing ceiling
 ### Premium Pricing Justification
 
 Charge more when:
+
 - You serve job dimensions competitors ignore (especially emotional/social)
 - You reduce anxiety in high-stakes situations
 - You save significant time for time-strapped customers
@@ -191,11 +199,13 @@ Charge more when:
 Most competitors fight on functional dimensions. Differentiate on:
 
 **Emotional dimension:**
+
 - How customers feel while using the product
 - Confidence, peace of mind, delight
 - Reduced anxiety, eliminated frustration
 
 **Social dimension:**
+
 - How customers appear to others
 - Status, belonging, identity
 - What others think of their choice
@@ -212,6 +222,7 @@ Most competitors fight on functional dimensions. Differentiate on:
 ### The Differentiation Test
 
 Ask current customers:
+
 - "Why did you choose us over [alternative]?"
 - "What would you tell a friend about why they should use us?"
 - "What would you miss most if you couldn't use us anymore?"
@@ -225,6 +236,7 @@ Ask current customers:
 ### When a Competitor Launches a Feature
 
 **Don't automatically copy.** Instead ask:
+
 1. What job does this feature serve?
 2. Is that job a priority for OUR customers?
 3. Do we serve that job differently/better already?
@@ -233,6 +245,7 @@ Ask current customers:
 ### When Losing Deals to Competitors
 
 Interview lost customers:
+
 1. "What job were you trying to get done?"
 2. "What did [competitor] do better for that job?"
 3. "Was there anything we did better that wasn't enough?"
@@ -243,6 +256,7 @@ Interview lost customers:
 ### When Entering an Established Market
 
 Don't compete head-to-head. Instead:
+
 1. Find underserved customer segments (different circumstances)
 2. Find underserved job dimensions (emotional/social)
 3. Find simpler jobs that incumbents over-serve

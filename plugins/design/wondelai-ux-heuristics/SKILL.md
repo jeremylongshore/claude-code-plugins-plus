@@ -30,6 +30,7 @@ Practical usability principles for evaluating and improving user interfaces. Bas
 **Why it works:** Users are on a mission. They don't want to puzzle over labels, wonder what a link does, or decode clever marketing language. The less thinking required, the more likely they complete the task.
 
 **Key insights:**
+
 - Clever names lose to clear names every time
 - Marketing-speak creates friction; plain language removes it
 - Unfamiliar categories and labels force users to stop and interpret
@@ -47,6 +48,7 @@ Practical usability principles for evaluating and improving user interfaces. Bas
 | **Error states** | Tell users what to do next | "Check your email format" not "Validation error" |
 
 **Copy patterns:**
+
 - Self-evident labels: "Sign in", "Search", "Add to cart"
 - Action-oriented buttons: verb + noun ("Create account", "Download report")
 - Avoid jargon: "Save" not "Persist", "Remove" not "Disassociate"
@@ -63,6 +65,7 @@ See: [references/krug-principles.md](references/krug-principles.md) for full Kru
 **Why it works:** Cognitive effort per click matters more than click count. Three mindless, confident clicks are far better than one click that requires deliberation. Users abandon when they lose confidence, not when they run out of patience for clicking.
 
 **Key insights:**
+
 - Each click should be painless (fast, easy)
 - Each click should be obvious (no thinking required)
 - Each click should build confidence (users know they're on the right path)
@@ -80,6 +83,7 @@ See: [references/krug-principles.md](references/krug-principles.md) for full Kru
 | **Onboarding** | Guide with small, clear steps | Wizard with one clear action per step |
 
 **Copy patterns:**
+
 - Progress indicators: "Step 2 of 4: Shipping details"
 - Breadcrumbs: "Home > Products > Shoes > Running"
 - Confirmations at each step: "Great, your email is verified. Now let's set up your profile."
@@ -96,6 +100,7 @@ See: [references/krug-principles.md](references/krug-principles.md) for Krug's c
 **Why it works:** Users scan -- they don't read. Every unnecessary word competes with the words that matter. Removing fluff makes important content more discoverable and pages shorter.
 
 **Key insights:**
+
 - Happy-talk ("Welcome to our website!") wastes space
 - Instructions nobody reads should be removed
 - "Please" and "Kindly" and polite fluff add noise
@@ -113,6 +118,7 @@ See: [references/krug-principles.md](references/krug-principles.md) for Krug's c
 | **Onboarding** | One instruction per screen | "Choose your interests" not a wall of explanatory text |
 
 **Copy patterns:**
+
 - Before: "Please kindly note that you will need to enter your password in order to proceed to the next step."
 - After: "Enter your password to continue."
 - Before: "We've received your message and will get back to you as soon as possible."
@@ -129,6 +135,7 @@ See: [references/krug-principles.md](references/krug-principles.md) for Krug's w
 **Why it works:** Good navigation gives users constant orientation. If users can't identify where they are and what their options are, they feel lost and leave.
 
 **Key insights:**
+
 - Users must know what site they're on (brand/logo visible)
 - Users must know what page they're on (clear heading)
 - Major sections must be visible (navigation)
@@ -147,6 +154,7 @@ See: [references/krug-principles.md](references/krug-principles.md) for Krug's w
 | **Search** | Visible search on every page | Search box in header, not buried in footer |
 
 **Copy patterns:**
+
 - Page titles that match the link the user clicked
 - "You are here" indicators (highlighted nav items, bold breadcrumb)
 - Section headings that orient: "Your Account > Billing" not just "Settings"
@@ -159,33 +167,43 @@ See: [references/krug-principles.md](references/krug-principles.md) for the full
 ## Nielsen's 10 Usability Heuristics
 
 ### 1. Visibility of System Status
+
 Keep users informed about what's happening through timely feedback. Every action needs acknowledgment — progress bars for uploads, confirmations for submissions, skeleton screens for loading. Silent failures destroy trust. Copy pattern: "Saving..." → "Saved" (immediate state transitions).
 
 ### 2. Match Between System and Real World
+
 Speak users' language, not system language. Use "Sign in" not "Authenticate", "Search" not "Query." Follow real-world metaphors (trash bin, shopping cart) and natural ordering (street → city → state → zip). One term per concept, everywhere.
 
 ### 3. User Control and Freedom
+
 Provide clear "emergency exits." Undo beats "Are you sure?" dialogs every time — users click through confirmations without reading. Every flow needs cancel/exit, back buttons must never break, and soft delete with undo beats permanent deletion.
 
 ### 4. Consistency and Standards
+
 Same words, styles, and behaviors should mean the same thing throughout. Internal consistency (your app) and external consistency (platform conventions: logo top-left, search top-right). Pick one term per concept — "Projects" everywhere, never mixing with "Workspaces."
 
 ### 5. Error Prevention
+
 Prevent problems before they occur. Constrained inputs (date pickers over text fields), autocomplete, sensible defaults, and "unsaved changes" warnings. Two error types need different prevention: slips (accidental wrong action) and mistakes (wrong intention).
 
 ### 6. Recognition Rather Than Recall
+
 Minimize memory load — show options, don't require memorization. Breadcrumbs, recent searches, pre-filled fields, dropdowns with decoded values (country names, not codes). Human working memory holds ~7 items; recognition is far easier than recall.
 
 ### 7. Flexibility and Efficiency of Use
+
 Serve both novices and experts. Keyboard shortcuts, touch gestures, bulk actions, saved searches, and command palettes (Cmd+K) speed up power users. Progressive disclosure keeps it simple for beginners while experts access full power.
 
 ### 8. Aesthetic and Minimalist Design
+
 Every element must earn its place. Signal-to-noise ratio determines usability — when everything screams for attention, nothing stands out. Show what matters now, hide what doesn't. One primary CTA per page, not five competing ones.
 
 ### 9. Help Users Recognize, Diagnose, and Recover from Errors
+
 Error messages need three parts: what happened, why, and how to fix it. Plain language always ("Connection failed" not "ECONNREFUSED"), specific ("Password must be 8+ characters" not "Invalid"), never blame the user, and preserve their input.
 
 ### 10. Help and Documentation
+
 Help should be searchable, task-focused ("How to..." not technical reference), and contextual (tooltips, inline hints). Types: inline help, contextual "?" icons, searchable knowledge base, guided tours, live support.
 
 See: [references/nielsen-heuristics.md](references/nielsen-heuristics.md) for detailed examples, product applications, copy patterns, and ethical boundaries for all 10 heuristics.
@@ -250,6 +268,7 @@ Audit any interface:
 ## Heuristic Conflicts
 
 Heuristics sometimes contradict each other. When they do:
+
 - **Simplicity vs. Flexibility**: Use progressive disclosure
 - **Consistency vs. Context**: Consistent patterns, contextual prominence
 - **Efficiency vs. Error Prevention**: Prefer undo over confirmation dialogs
@@ -260,6 +279,7 @@ See: [references/heuristic-conflicts.md](references/heuristic-conflicts.md) for 
 ## Dark Patterns Recognition
 
 Dark patterns violate heuristics deliberately to manipulate users:
+
 - Forced continuity (hard to cancel)
 - Roach motel (easy in, hard out)
 - Confirmshaming (guilt-based options)

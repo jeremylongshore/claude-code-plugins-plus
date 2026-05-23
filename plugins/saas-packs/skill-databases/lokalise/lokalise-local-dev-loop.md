@@ -10,6 +10,7 @@ lokalise-local-dev-loop/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Lokalise local development workflow
 **Workflow:** Part of the onboarding skill category for Lokalise integration.
 **Relates to:** Other lokalise skills in this pack.

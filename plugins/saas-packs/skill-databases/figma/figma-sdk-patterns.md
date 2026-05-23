@@ -10,6 +10,7 @@ figma-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Figma SDK patterns
 **Workflow:** Part of the onboarding skill category for Figma integration.
 **Relates to:** Other figma skills in this pack.

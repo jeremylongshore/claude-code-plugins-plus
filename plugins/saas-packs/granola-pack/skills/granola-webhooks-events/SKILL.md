@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Granola Webhooks & Events
 
 ## Overview
+
 Granola does not expose raw webhook endpoints. All event-driven automation flows through Zapier, which provides two trigger events. This skill covers the event model, webhook payload structure, event filtering, processing patterns, and building custom event handlers.
 
 ## Prerequisites
+
 - Granola Business plan (for Zapier access)
 - Zapier account (Free for basic Zaps, Paid for multi-step)
 - Optional: custom webhook endpoint (Express.js, FastAPI, or serverless function)
@@ -64,6 +66,7 @@ When a Zapier trigger fires, Granola sends this data:
 ```
 
 **Key fields for filtering and routing:**
+
 - `attendees[].email` — detect internal vs. external meetings
 - `calendar_event_title` — match meeting type patterns
 - `note_content` — search for action items, decisions, keywords
@@ -73,22 +76,26 @@ When a Zapier trigger fires, Granola sends this data:
 Use Zapier Filter steps to route events:
 
 **Filter: Only External Meetings**
+
 ```
 Filter: attendees.email DOES NOT contain "@company.com"
 (at least one attendee has a non-company email)
 ```
 
 **Filter: Only Meetings with Action Items**
+
 ```
 Filter: note_content contains "- [ ]"
 ```
 
 **Filter: Only Sales Calls (by title keywords)**
+
 ```
 Filter: calendar_event_title contains any of: "discovery", "demo", "sales", "prospect"
 ```
 
 **Filter: Long Meetings Only (> 30 min)**
+
 ```
 Use Zapier Code step to parse calendar_event_datetime and compare to note timestamp
 ```
@@ -113,6 +120,7 @@ Action: Webhooks by Zapier — POST
 ```
 
 **Express.js handler:**
+
 ```javascript
 // webhook-handler.js
 import express from 'express';
@@ -159,6 +167,7 @@ app.listen(3000, () => console.log('Granola webhook handler running on :3000'));
 ```
 
 **Python FastAPI handler:**
+
 ```python
 from fastapi import FastAPI, Request
 import re
@@ -217,6 +226,7 @@ app.post('/webhooks/granola', async (req, res) => {
 ```
 
 ## Output
+
 - Zapier triggers configured for target folders
 - Event filtering routing meetings by type
 - Custom webhook handler processing events
@@ -233,9 +243,11 @@ app.post('/webhooks/granola', async (req, res) => {
 | Missing attendees | Calendar event has no attendee list | No fix — attendees come from calendar event data |
 
 ## Resources
+
 - [Zapier Granola Integration](https://zapier.com/apps/granola/integrations)
 - [Zapier Webhooks Documentation](https://zapier.com/help/create/code-webhooks)
 - [4 Ways to Automate Granola](https://zapier.com/blog/automate-granola/)
 
 ## Next Steps
+
 Proceed to `granola-performance-tuning` for transcription quality optimization.

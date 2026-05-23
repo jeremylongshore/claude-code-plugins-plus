@@ -10,6 +10,7 @@ anthropic-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready Anthropic SDK patterns
 **Workflow:** Part of the onboarding skill category for Anthropic integration.
 **Relates to:** Other anthropic skills in this pack.

@@ -26,9 +26,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Langfuse Core Workflow B: Evaluation, Scoring & Datasets
 
 ## Overview
+
 Implement LLM output evaluation using Langfuse scores (numeric, categorical, boolean), the experiment runner SDK for dataset-driven benchmarks, prompt management with versioned prompts, and LLM-as-a-Judge evaluation patterns.
 
 ## Prerequisites
+
 - Langfuse SDK configured with API keys
 - Traces already being collected (see `langfuse-core-workflow-a`)
 - For v4+: `@langfuse/client` installed
@@ -264,6 +266,7 @@ await langfuse.runExperiment({
 | Experiment not in UI | Run not flushed | Check `runExperiment` completed without errors |
 
 ## Resources
+
 - [Scores via API/SDK](https://langfuse.com/docs/evaluation/evaluation-methods/scores-via-sdk)
 - [Datasets & Experiments](https://langfuse.com/docs/evaluation/experiments/datasets)
 - [Experiment Runner SDK](https://langfuse.com/docs/evaluation/experiments/experiments-via-sdk)
@@ -271,4 +274,5 @@ await langfuse.runExperiment({
 - [LLM-as-a-Judge](https://langfuse.com/docs/evaluation/evaluation-methods/llm-as-a-judge)
 
 ## Next Steps
+
 For common error debugging, see `langfuse-common-errors`. For CI/CD integration of evaluations, see `langfuse-ci-integration`.

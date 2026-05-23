@@ -3,6 +3,7 @@
 ## Performance Data Missing
 
 ### Check Transaction Creation
+
 ```typescript
 // Verify transactions are being created
 const transaction = Sentry.startTransaction({
@@ -18,6 +19,7 @@ console.log('Transaction finished');
 ```
 
 ### Check Trace Sampling
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -34,6 +36,7 @@ Sentry.init({
 ```
 
 ### Verify Integration Setup
+
 ```typescript
 Sentry.init({
   dsn: process.env.SENTRY_DSN,

@@ -10,6 +10,7 @@ supabase-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Analyze, plan, and execute Supabase SDK upgrades with breaking change detection. Includes rollback procedures and deprecation handling.
 **Workflow:** Operational skill for SDK maintenance. Used when upgrading Supabase SDK versions.
 **Relates to:** Follows supabase-prod-checklist for production systems; connects to supabase-ci-integration for automated testing.

@@ -10,6 +10,7 @@ wispr-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Wispr CI/CD integration
 **Workflow:** Part of the cicd skill category for Wispr integration.
 **Relates to:** Other wispr skills in this pack.

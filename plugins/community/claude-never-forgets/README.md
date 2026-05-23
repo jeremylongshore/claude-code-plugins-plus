@@ -19,15 +19,18 @@ This plugin saves important parts of your conversations to a local file and auto
 ## How It Works
 
 **Automatic saving:**
+
 - Every user message and Claude response is saved
 - Tool rejections (when you decline a suggested action) are captured as corrections
 - Memories are stored in `.claude/memories/project_memory.json`
 
 **Automatic loading:**
+
 - When you start a new session, saved memories are loaded into context
 - Claude sees your previous preferences and decisions
 
 **Automatic cleanup:**
+
 - When memories exceed 10 entries, Claude consolidates them
 - Keeps important information (preferences, decisions, corrections)
 - Removes noise (greetings, acknowledgments)
@@ -68,6 +71,7 @@ your-project/
 ```
 
 You can:
+
 - Commit it to git to share with your team
 - Add it to .gitignore for personal preferences
 - Edit it manually if needed

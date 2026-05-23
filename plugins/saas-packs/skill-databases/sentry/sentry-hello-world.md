@@ -10,6 +10,7 @@ sentry-hello-world/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Capture your first error with Sentry and verify it appears in the dashboard to confirm the integration is working correctly.
 **Workflow:** Run immediately after `sentry-install-auth` to validate the setup. Creates test errors and messages, then guides verification in the Sentry dashboard.
 **Relates to:** Follows `sentry-install-auth` for initial setup. Precedes `sentry-local-dev-loop` for development workflow configuration.

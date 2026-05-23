@@ -13,6 +13,7 @@ Lucid REST API for programmatic diagram creation, data-linked visualizations, an
 ## Skills Included
 
 ### Standard Skills (S01-S12)
+
 | Skill | Description |
 |-------|-------------|
 | `lucidchart-common-errors` | Common Errors |
@@ -29,6 +30,7 @@ Lucid REST API for programmatic diagram creation, data-linked visualizations, an
 | `lucidchart-upgrade-migration` | Upgrade Migration |
 
 ### Pro Skills (P13-P18)
+
 | Skill | Description |
 |-------|-------------|
 | `lucidchart-ci-integration` | Ci Integration |

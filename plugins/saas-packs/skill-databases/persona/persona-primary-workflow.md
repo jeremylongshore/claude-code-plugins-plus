@@ -10,6 +10,7 @@ persona-primary-workflow/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Execute Persona primary workflow
 **Workflow:** Part of the onboarding skill category for Persona integration.
 **Relates to:** Other persona skills in this pack.

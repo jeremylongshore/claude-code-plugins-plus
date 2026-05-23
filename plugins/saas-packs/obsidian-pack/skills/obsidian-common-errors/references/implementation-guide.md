@@ -5,18 +5,21 @@
 ## Detailed Instructions
 
 ### Step 1: Open Developer Console
+
 Press `Ctrl+Shift+I` (Windows/Linux) or `Cmd+Option+I` (macOS) to open Developer Tools.
 
 ### Step 2: Identify the Error
+
 Check the Console tab for red error messages related to your plugin.
 
 ### Step 3: Match Error to Solutions Below
-Find your error type and apply the fix.
 
+Find your error type and apply the fix.
 
 ## Complete Examples
 
 ### Debug Logging Helper
+
 ```typescript
 // Add at top of main.ts for debugging
 const DEBUG = true;
@@ -33,6 +36,7 @@ debug('Processing file', file.path);
 ```
 
 ### Quick Diagnostic Commands
+
 ```typescript
 // Add debug commands during development
 this.addCommand({
@@ -57,6 +61,7 @@ this.addCommand({
 ```
 
 ### Escalation Path
+
 1. Check Developer Console for errors
 2. Collect evidence with `obsidian-debug-bundle`
 3. Search [Obsidian Forum](https://forum.obsidian.md/)

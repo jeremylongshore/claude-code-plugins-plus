@@ -10,11 +10,13 @@ Variance % = (Actual - Budget) / ABS(Budget)
 ## Favorable/Unfavorable Logic
 
 For Revenue (higher is better):
+
 ```excel
 =IF(Actual > Budget, "Favorable", "Unfavorable")
 ```
 
 For Expenses (lower is better):
+
 ```excel
 =IF(Actual < Budget, "Favorable", "Unfavorable")
 ```

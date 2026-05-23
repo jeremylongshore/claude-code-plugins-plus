@@ -10,6 +10,7 @@ customerio-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Customer.io CI/CD integration
 **Workflow:** Part of the cicd skill category for Customer.io integration.
 **Relates to:** Other customerio skills in this pack.

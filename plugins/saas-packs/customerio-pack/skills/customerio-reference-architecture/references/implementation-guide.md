@@ -1,6 +1,7 @@
-# Customer.io Reference Architecture - Implementation Guide
+## Customer.io Reference Architecture - Implementation Guide
 
 ### Step 1: Core Service Layer
+
 ```typescript
 // src/services/customerio/index.ts
 import { TrackClient, APIClient, RegionUS } from '@customerio/track';
@@ -78,6 +79,7 @@ export class CustomerIOService extends EventEmitter {
 ```
 
 ### Step 2: Event Bus Integration
+
 ```typescript
 // src/services/customerio/event-bus.ts
 import { Kafka, Producer, Consumer } from 'kafkajs';
@@ -177,6 +179,7 @@ export class CustomerIOEventBus {
 ```
 
 ### Step 3: Repository Pattern
+
 ```typescript
 // src/repositories/user-messaging.ts
 import { CustomerIOService } from '../services/customerio';
@@ -242,6 +245,7 @@ export class UserMessagingRepository {
 ```
 
 ### Step 4: Webhook Handler
+
 ```typescript
 // src/webhooks/customerio.ts
 import { Router } from 'express';
@@ -303,6 +307,7 @@ app.use('/webhooks/customerio', webhooks.getRouter());
 ```
 
 ### Step 5: Infrastructure as Code
+
 ```hcl
 # terraform/customerio.tf
 resource "google_secret_manager_secret" "customerio_site_id" {

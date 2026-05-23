@@ -22,9 +22,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Groq Migration Deep Dive
 
 ## Current State
+
 !`npm list groq-sdk openai @anthropic-ai/sdk 2>/dev/null | grep -E "groq|openai|anthropic" || echo 'No LLM SDKs found'`
 
 ## Overview
+
 Migrate to Groq from OpenAI, Anthropic, or other LLM providers. Groq's OpenAI-compatible API makes migration straightforward -- the primary changes are: different SDK import, different model IDs, and different response metadata. The reward is 10-50x faster inference.
 
 ## Migration Complexity
@@ -39,6 +41,7 @@ Migrate to Groq from OpenAI, Anthropic, or other LLM providers. Groq's OpenAI-co
 ## Instructions
 
 ### Step 1: OpenAI to Groq Migration
+
 ```typescript
 // BEFORE: OpenAI
 import OpenAI from "openai";
@@ -60,6 +63,7 @@ const result = await groq.chat.completions.create({
 ```
 
 ### Step 2: Model ID Mapping
+
 ```typescript
 // OpenAI → Groq model equivalents
 const MODEL_MAP: Record<string, string> = {
@@ -80,6 +84,7 @@ function migrateModelId(model: string): string {
 ```
 
 ### Step 3: Provider Abstraction Layer
+
 ```typescript
 // Build a provider-agnostic layer for zero-downtime migration
 interface LLMProvider {
@@ -147,6 +152,7 @@ class OpenAIProvider implements LLMProvider {
 ```
 
 ### Step 4: Feature Flag Traffic Shifting
+
 ```typescript
 // Gradually shift traffic from OpenAI to Groq
 function getProvider(): LLMProvider {
@@ -166,6 +172,7 @@ function getProvider(): LLMProvider {
 ```
 
 ### Step 5: Automated Migration Scanner
+
 ```bash
 set -euo pipefail
 echo "=== Migration Assessment ==="
@@ -190,6 +197,7 @@ grep -rn "OPENAI_API_KEY" src/ .env* --include="*.ts" --include="*.js" --include
 ```
 
 ### Step 6: Comparison Benchmark
+
 ```typescript
 // Run the same prompts through both providers to compare quality + speed
 async function migrationBenchmark(prompts: string[]) {
@@ -235,6 +243,7 @@ async function migrationBenchmark(prompts: string[]) {
 | Response usage | Standard fields | Adds `queue_time`, `completion_time`, `total_time` |
 
 ## Rollback Plan
+
 ```bash
 set -euo pipefail
 # Immediate rollback: flip feature flag
@@ -247,6 +256,7 @@ set -euo pipefail
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Quality regression | Different model strengths | Tune system prompts for Llama models |
@@ -255,10 +265,12 @@ set -euo pipefail
 | Cost increase | Different pricing structure | Route simple tasks to 8B model |
 
 ## Resources
+
 - [Groq Quickstart](https://console.groq.com/docs/quickstart)
 - [Groq Models](https://console.groq.com/docs/models)
 - [Groq API Reference](https://console.groq.com/docs/api-reference)
 - [groq-sdk npm](https://www.npmjs.com/package/groq-sdk)
 
 ## Next Steps
+
 For ongoing SDK version upgrades, see `groq-upgrade-migration`.

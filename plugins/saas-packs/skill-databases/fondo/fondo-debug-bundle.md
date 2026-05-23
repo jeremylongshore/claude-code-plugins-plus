@@ -10,6 +10,7 @@ fondo-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Fondo debug evidence for support
 **Workflow:** Part of the operations skill category for Fondo integration.
 **Relates to:** Other fondo skills in this pack.

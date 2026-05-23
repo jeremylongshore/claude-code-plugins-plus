@@ -10,6 +10,7 @@ quicknode-cost-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize QuickNode costs and usage
 **Workflow:** Part of the cicd skill category for QuickNode integration.
 **Relates to:** Other quicknode skills in this pack.

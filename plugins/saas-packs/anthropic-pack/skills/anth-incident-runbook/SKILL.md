@@ -70,6 +70,7 @@ API returning errors?
 ## Mitigation Actions
 
 ### Rate Limiting (429)
+
 ```python
 # Immediate: reduce traffic
 # 1. Enable circuit breaker
@@ -79,6 +80,7 @@ API returning errors?
 ```
 
 ### API Outage (500/529)
+
 ```python
 # Graceful degradation
 def get_response_with_fallback(prompt: str) -> str:
@@ -94,6 +96,7 @@ def get_response_with_fallback(prompt: str) -> str:
 ```
 
 ### Key Compromise
+
 ```bash
 # 1. Immediately revoke key at console.anthropic.com
 # 2. Generate new key

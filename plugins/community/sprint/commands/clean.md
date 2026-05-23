@@ -11,12 +11,14 @@ You are cleaning up old sprint directories.
 ## IMPORTANT WARNING
 
 **Sprint directories contain valuable artifacts:**
+
 - Specification files (api-contract.md, backend-specs.md, etc.)
 - Implementation reports from agents
 - Status summaries
 - Test reports
 
 **The user is responsible for:**
+
 - Creating checkpoints (git commits) before cleanup
 - Backing up important sprint data
 - Deciding which sprints to keep
@@ -30,6 +32,7 @@ ls -la .claude/sprint/
 ```
 
 Show the user:
+
 - Sprint directories found
 - Last modified dates
 - Size of each directory
@@ -39,6 +42,7 @@ Show the user:
 Ask the user which sprints to clean:
 
 **Options:**
+
 1. **Clean all** - Remove all sprint directories
 2. **Keep latest** - Remove all except the most recent sprint
 3. **Keep N latest** - Remove all except the N most recent sprints
@@ -75,22 +79,26 @@ Continue anyway? (y/N)
 Based on user choice:
 
 **Clean all:**
+
 ```bash
 rm -rf .claude/sprint/*/
 ```
 
 **Keep latest:**
+
 ```bash
 LATEST=$(ls -d .claude/sprint/*/ | sort -V | tail -1)
 find .claude/sprint/ -mindepth 1 -maxdepth 1 -type d ! -path "$LATEST" -exec rm -rf {} +
 ```
 
 **Keep N latest:**
+
 ```bash
 ls -d .claude/sprint/*/ | sort -V | head -n -[N] | xargs rm -rf
 ```
 
 **Select specific:**
+
 ```bash
 rm -rf .claude/sprint/[selected]/
 ```

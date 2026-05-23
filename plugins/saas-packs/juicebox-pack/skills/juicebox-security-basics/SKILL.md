@@ -18,9 +18,11 @@ compatibility: Designed for Claude Code
 # Juicebox Security Basics
 
 ## Overview
+
 Juicebox provides AI-powered people search and analysis, processing datasets containing professional profiles, contact enrichment data, and query results. Security concerns include API key protection, GDPR/CCPA compliance for candidate and contact data, data retention policy enforcement, and ensuring enriched contact information (emails, phone numbers) is not leaked through logs or unencrypted storage. A compromised API key grants access to people search and enrichment capabilities.
 
 ## API Key Management
+
 ```typescript
 function createJuiceboxClient(): { apiKey: string; baseUrl: string } {
   const apiKey = process.env.JUICEBOX_API_KEY;
@@ -34,6 +36,7 @@ function createJuiceboxClient(): { apiKey: string; baseUrl: string } {
 ```
 
 ## Webhook Signature Verification
+
 ```typescript
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
@@ -51,6 +54,7 @@ function verifyJuiceboxWebhook(req: Request, res: Response, next: NextFunction):
 ```
 
 ## Input Validation
+
 ```typescript
 import { z } from "zod";
 
@@ -72,6 +76,7 @@ function validateSearchQuery(data: unknown) {
 ```
 
 ## Data Protection
+
 ```typescript
 const JUICEBOX_PII_FIELDS = ["personal_email", "phone_number", "social_profiles", "home_address", "enrichment_data"];
 
@@ -85,6 +90,7 @@ function redactJuiceboxLog(record: Record<string, unknown>): Record<string, unkn
 ```
 
 ## Security Checklist
+
 - [ ] API keys stored in secrets manager, separate keys per environment
 - [ ] Enriched contact data encrypted at rest
 - [ ] GDPR consent documented for EU candidate data
@@ -95,6 +101,7 @@ function redactJuiceboxLog(record: Record<string, unknown>): Record<string, unkn
 - [ ] Pre-commit hook blocks `jb_live_*` credential patterns
 
 ## Error Handling
+
 | Vulnerability | Risk | Mitigation |
 |---|---|---|
 | Leaked API key | Unauthorized people search and enrichment | Secrets manager + key rotation |
@@ -104,8 +111,10 @@ function redactJuiceboxLog(record: Record<string, unknown>): Record<string, unkn
 | Unencrypted contact storage | Bulk PII breach from database leak | Encryption at rest + access controls |
 
 ## Resources
+
 - [Juicebox Privacy](https://juicebox.ai/privacy)
 - [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
 
 ## Next Steps
+
 See `juicebox-prod-checklist`.

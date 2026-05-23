@@ -48,6 +48,7 @@ const GOOD = new Documenso({ apiKey: process.env.DOCUMENSO_API_KEY! });
 ```
 
 **Key management rules:**
+
 - Store in `.env` (never committed) or a secrets manager (Vault, AWS Secrets Manager)
 - Use team-scoped keys for team resources, personal keys for personal documents
 - Rotate keys on employee offboarding -- revoke in dashboard immediately

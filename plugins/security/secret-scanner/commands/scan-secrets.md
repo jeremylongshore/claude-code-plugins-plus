@@ -39,6 +39,7 @@ Scan codebase for exposed secrets, API keys, passwords, tokens, and sensitive cr
 ## Report Output
 
 Generate detailed secret exposure report with:
+
 - Location of each secret (file, line number)
 - Type of secret detected
 - Severity level (Critical, High, Medium)
@@ -48,6 +49,7 @@ Generate detailed secret exposure report with:
 ## Immediate Actions
 
 For exposed secrets:
+
 1. **Rotate immediately** - Revoke and regenerate
 2. **Remove from git history** - Use git-filter-branch or BFG
 3. **Update .gitignore** - Prevent future commits

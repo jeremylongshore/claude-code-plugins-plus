@@ -10,6 +10,7 @@ flexport-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Collect Flexport debug evidence for support
 **Workflow:** Part of the operations skill category for Flexport integration.
 **Relates to:** Other flexport skills in this pack.

@@ -10,6 +10,7 @@ assemblyai-sdk-patterns/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply production-ready AssemblyAI SDK patterns
 **Workflow:** Part of the onboarding skill category for AssemblyAI integration.
 **Relates to:** Other assemblyai skills in this pack.

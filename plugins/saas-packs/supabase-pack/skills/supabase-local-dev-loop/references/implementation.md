@@ -1,6 +1,7 @@
-# Implementation Guide
+## Implementation Guide
 
 ### Step 1: Create Project Structure
+
 ```
 my-supabase-project/
 ├── src/
@@ -17,6 +18,7 @@ my-supabase-project/
 ```
 
 ### Step 2: Configure Environment
+
 ```bash
 # Copy environment template
 cp .env.example .env.local
@@ -29,6 +31,7 @@ npm run dev
 ```
 
 ### Step 3: Setup Hot Reload
+
 ```json
 {
   "scripts": {
@@ -40,6 +43,7 @@ npm run dev
 ```
 
 ### Step 4: Configure Testing
+
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
 import { SupabaseClient } from '../src/supabase/client';

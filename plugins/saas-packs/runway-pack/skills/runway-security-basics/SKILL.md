@@ -19,14 +19,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Runway Security Basics
 
 ## Overview
+
 Implementation patterns for Runway security basics — AI video generation platform.
 
 ## Prerequisites
+
 - Completed `runway-install-auth` setup
 
 ## Instructions
 
 ### Step 1: SDK Pattern
+
 ```python
 from runwayml import RunwayML
 
@@ -43,9 +46,11 @@ if result.status == 'SUCCEEDED':
 ```
 
 ## Output
+
 - Runway integration for security basics
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Invalid API key | Check RUNWAYML_API_SECRET |
@@ -53,8 +58,10 @@ if result.status == 'SUCCEEDED':
 | Task FAILED | Content policy | Adjust prompt |
 
 ## Resources
+
 - [Runway API Documentation](https://docs.dev.runwayml.com/)
 - [Python SDK](https://github.com/runwayml/sdk-python)
 
 ## Next Steps
+
 See related Runway skills for more workflows.

@@ -10,6 +10,7 @@ canva-reference-architecture/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Implement Canva reference architecture
 **Workflow:** Part of the cicd skill category for Canva integration.
 **Relates to:** Other canva skills in this pack.

@@ -14,10 +14,10 @@ Detailed implementation reference for the speak-webhooks-events skill.
 | `level.up` | User advanced a level | userId, language, newLevel |
 | `subscription.changed` | Plan changed | userId, plan, action |
 
-
 ## Webhook Endpoint Setup
 
 ### Express.js Implementation
+
 ```typescript
 import express from 'express';
 import crypto from 'crypto';
@@ -57,7 +57,6 @@ app.post('/webhooks/speak',
   }
 );
 ```
-
 
 ## Signature Verification
 
@@ -100,7 +99,6 @@ function verifySpeakSignature(
   }
 }
 ```
-
 
 ## Event Handler Pattern
 
@@ -244,7 +242,6 @@ async function handleSpeakEvent(event: SpeakEvent): Promise<void> {
 }
 ```
 
-
 ## Idempotency Handling
 
 ```typescript
@@ -264,7 +261,6 @@ async function markEventProcessed(eventId: string): Promise<void> {
   await redis.set(key, '1', 'EX', 86400 * 7);
 }
 ```
-
 
 ## Webhook Testing
 
@@ -287,7 +283,6 @@ curl -X POST http://localhost:3000/webhooks/speak \
   -d "${PAYLOAD}"
 ```
 
-
 ## Local Development with ngrok
 
 ```bash
@@ -299,4 +294,3 @@ ngrok http 3000
 
 # Test events will now hit your local server
 ```
-

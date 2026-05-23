@@ -27,9 +27,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Palantir Reference Architecture
 
 ## Overview
+
 Production-ready architecture for Foundry-integrated applications. Covers the standard data pipeline pattern (ingest > clean > model > serve), Ontology design, external API integration, and multi-repo project layout.
 
 ## Prerequisites
+
 - Foundry enrollment with project access
 - Understanding of Ontology concepts (object types, link types, actions)
 - Familiarity with `palantir-core-workflow-a` (transforms) and `palantir-core-workflow-b` (Ontology)
@@ -37,6 +39,7 @@ Production-ready architecture for Foundry-integrated applications. Covers the st
 ## Instructions
 
 ### Step 1: Data Pipeline Architecture
+
 ```
 ┌─────────────┐     ┌──────────────┐     ┌─────────────┐     ┌───────────┐
 │  Raw Layer   │────>│  Clean Layer │────>│ Model Layer │────>│ Ontology  │
@@ -48,6 +51,7 @@ Production-ready architecture for Foundry-integrated applications. Covers the st
 ```
 
 ### Step 2: Project Layout (Foundry)
+
 ```
 Foundry Project: "Customer Analytics"
 ├── Datasets/
@@ -74,6 +78,7 @@ Foundry Project: "Customer Analytics"
 ```
 
 ### Step 3: External API Integration Pattern
+
 ```python
 # External app consuming Foundry Ontology via Platform SDK
 my-external-app/
@@ -96,6 +101,7 @@ my-external-app/
 ```
 
 ### Step 4: Ontology Design Patterns
+
 | Pattern | When to Use | Example |
 |---------|-------------|---------|
 | Hub-and-spoke | Central entity with many relationships | Customer → Orders, Tickets, Payments |
@@ -104,6 +110,7 @@ my-external-app/
 | Composite actions | Multi-step mutations | `processReturn`: update order + create credit + notify |
 
 ### Step 5: Security Layers
+
 ```
 ┌──────────────────────────────────────────┐
 │ Layer 1: Network (VPN/private link)       │
@@ -119,12 +126,14 @@ my-external-app/
 ```
 
 ## Output
+
 - Standard 3-layer data pipeline (raw > clean > model)
 - Ontology design with typed objects, links, and actions
 - External app architecture with caching and webhooks
 - Security model with 5 defense layers
 
 ## Error Handling
+
 | Architecture Issue | Symptom | Fix |
 |--------------------|---------|-----|
 | Circular dependencies | Builds fail | Restructure pipeline DAG |
@@ -133,9 +142,11 @@ my-external-app/
 | No caching | API rate limits | Add TTL cache layer |
 
 ## Resources
+
 - [Foundry Documentation](https://www.palantir.com/docs/foundry)
 - [Ontology SDK Overview](https://www.palantir.com/docs/foundry/ontology-sdk/overview)
 - [Transforms Guide](https://www.palantir.com/docs/foundry/transforms-python/transforms)
 
 ## Next Steps
+
 For data handling and compliance, see `palantir-data-handling`.

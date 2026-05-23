@@ -10,6 +10,7 @@ ramp-advanced-troubleshooting/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Apply Ramp advanced debugging
 **Workflow:** Part of the enterprise skill category for Ramp integration.
 **Relates to:** Other ramp skills in this pack.

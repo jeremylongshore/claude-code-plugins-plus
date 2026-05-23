@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Speak Production Checklist
 
 ## Overview
+
 Production readiness checklist for Speak language learning integrations: auth, audio pipeline, monitoring, and compliance.
 
 ## Prerequisites
+
 - Completed `speak-install-auth` setup
 - Valid API credentials configured
 - ffmpeg installed for audio processing
@@ -33,12 +35,14 @@ Production readiness checklist for Speak language learning integrations: auth, a
 ## Instructions
 
 ### Authentication
+
 - [ ] API keys stored in secrets manager
 - [ ] Key rotation schedule established (90 days)
 - [ ] Separate keys for dev/staging/production
 - [ ] Error handling for expired keys
 
 ### Audio Pipeline
+
 - [ ] Audio preprocessor converts to WAV 16kHz mono
 - [ ] File size validation (< 25MB)
 - [ ] Duration validation (0.5s - 60s)
@@ -46,12 +50,14 @@ Production readiness checklist for Speak language learning integrations: auth, a
 - [ ] Fallback for unsupported audio formats
 
 ### Rate Limiting & Performance
+
 - [ ] Rate-limited client wrapper implemented
 - [ ] Retry logic with exponential backoff on 429
 - [ ] Request queue for batch assessments
 - [ ] Response caching where appropriate
 
 ### Monitoring & Alerting
+
 - [ ] API response time tracking
 - [ ] Error rate monitoring (target < 1%)
 - [ ] Rate limit hit tracking
@@ -59,6 +65,7 @@ Production readiness checklist for Speak language learning integrations: auth, a
 - [ ] Session completion rate tracking
 
 ### Compliance
+
 - [ ] Student data privacy policy documented
 - [ ] Audio data retention policy implemented
 - [ ] COPPA compliance verified (if applicable)
@@ -66,6 +73,7 @@ Production readiness checklist for Speak language learning integrations: auth, a
 - [ ] GDPR data processing agreement (if EU users)
 
 ### Verification Script
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -78,11 +86,13 @@ echo "Checks complete."
 ```
 
 ## Output
+
 - Checklist implementation complete
 - Speak API integration verified
 - Production-ready patterns applied
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY environment variable |
@@ -91,11 +101,13 @@ echo "Checks complete."
 | Session expired | Timeout after 30 min | Start a new conversation session |
 
 ## Resources
+
 - [Speak Website](https://speak.com)
 - [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
 - [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
 
 ## Next Steps
+
 See `speak-prod-checklist` for production readiness.
 
 ## Examples

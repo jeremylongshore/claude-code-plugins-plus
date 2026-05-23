@@ -2,8 +2,8 @@
 
 The strategy canvas is the central diagnostic and action framework of blue ocean strategy. It captures the current state of play in an industry, shows where competitors invest, and reveals opportunities to create new market space. This reference provides step-by-step instructions for creating, reading, and using strategy canvases.
 
-
 ## Table of Contents
+
 1. [What a Strategy Canvas Shows](#what-a-strategy-canvas-shows)
 2. [Step-by-Step: Creating a Strategy Canvas](#step-by-step-creating-a-strategy-canvas)
 3. [Reading the Canvas: What Curve Shapes Mean](#reading-the-canvas-what-curve-shapes-mean)
@@ -33,11 +33,13 @@ When all competitors' value curves have the same shape, the industry is a red oc
 Before listing factors, clarify what industry or category you are mapping. Be specific.
 
 **Good scope definitions:**
+
 - "Mid-range casual dining restaurants in the U.S."
 - "B2B project management software for teams of 10-50"
 - "Personal fitness solutions for women aged 30-50"
 
 **Poor scope definitions:**
+
 - "Food industry" (too broad)
 - "Software" (too broad)
 - "Our direct competitor" (too narrow)
@@ -130,6 +132,7 @@ A player scores high on some factors and low on others without a clear strategic
 One player's curve has a fundamentally different shape: low where others are high, high where others are low, and peaks on factors others do not even have. This is the signature of a blue ocean strategy.
 
 **Characteristics of a strong divergent curve:**
+
 - **Focus:** High on only 3-4 factors (not trying to be good at everything)
 - **Divergence:** Clear difference from industry norm
 - **Compelling tagline:** The strategy can be summarized in one memorable phrase
@@ -139,6 +142,7 @@ One player's curve has a fundamentally different shape: low where others are hig
 ### SaaS / Software
 
 Typical competing factors:
+
 - Price / Total cost of ownership
 - Feature depth
 - Ease of use / Time to value
@@ -153,6 +157,7 @@ Typical competing factors:
 ### Retail / E-Commerce
 
 Typical competing factors:
+
 - Price
 - Product selection breadth
 - Product quality
@@ -167,6 +172,7 @@ Typical competing factors:
 ### Professional Services
 
 Typical competing factors:
+
 - Hourly / Project rate
 - Expertise depth
 - Team size
@@ -181,6 +187,7 @@ Typical competing factors:
 ### Healthcare / Wellness
 
 Typical competing factors:
+
 - Cost to patient
 - Wait time
 - Clinical outcomes
@@ -332,6 +339,7 @@ In industries with many players, mapping every individual company creates noise.
 | 2:40-3:00 | Identify blue ocean opportunities (divergence brainstorm) | Opportunity shortlist |
 
 **Facilitation tips:**
+
 - Use silent individual brainstorming before group discussion to avoid groupthink
 - When rating, have each person write their rating on a sticky note and reveal simultaneously
 - If there is wide disagreement on a rating, discuss and use the customer-facing team's perspective as tiebreaker

@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # MaintainX Performance Tuning
 
 ## Overview
+
 Optimize MaintainX integration performance with caching, connection pooling, efficient pagination, and request deduplication.
 
 ## Prerequisites
+
 - MaintainX integration working
 - Node.js 18+
 - Redis (recommended for production caching)
@@ -240,6 +242,7 @@ async function getWorkOrder(id: number) {
 | Request dedup | N calls | 1 call | (N-1) saved |
 
 ## Output
+
 - Connection pooling with keep-alive (reuses TCP connections)
 - Multi-level cache (L1 in-memory + L2 Redis)
 - DataLoader for batching and deduplication of entity fetches
@@ -247,6 +250,7 @@ async function getWorkOrder(id: number) {
 - Request deduplication preventing redundant concurrent calls
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Stale cache data | TTL too long | Reduce TTL, invalidate on writes |
@@ -255,11 +259,13 @@ async function getWorkOrder(id: number) {
 | Connection pool exhaustion | Too many concurrent requests | Increase `maxSockets` or add queue |
 
 ## Resources
+
 - [MaintainX API Reference](https://developer.maintainx.com/reference)
 - [DataLoader](https://github.com/graphql/dataloader) -- Batching and caching utility
 - [Node.js HTTP Agent](https://nodejs.org/api/http.html#class-httpagent)
 
 ## Next Steps
+
 For cost optimization, see `maintainx-cost-tuning`.
 
 ## Examples

@@ -62,6 +62,7 @@ const bulkOperationId = response.data.bulkOperationRunQuery.bulkOperation.id;
 ```
 
 **Important**: Bulk query syntax differs from normal queries:
+
 - No `first`/`last` pagination arguments
 - No `after`/`before` cursors
 - Connections return ALL items automatically

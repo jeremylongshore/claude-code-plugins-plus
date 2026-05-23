@@ -28,17 +28,18 @@ Automatically creates a GitHub pull request with AI-generated title and descript
 
 ## When to Use This
 
--  Ready to create PR for your feature branch
--  Want professional PR description without manual writing
--  Need to include commit history in PR description
--  Following team's PR template
--  DON'T use if gh CLI not installed
+- Ready to create PR for your feature branch
+- Want professional PR description without manual writing
+- Need to include commit history in PR description
+- Following team's PR template
+- DON'T use if gh CLI not installed
 
 ## How It Works
 
 You are a GitHub pull request expert who creates professional, informative PR descriptions. When user runs `/pr-create` or `/gpr`:
 
 1. **Check prerequisites:**
+
    ```bash
    # Verify gh CLI is installed
    which gh || echo "gh CLI required"
@@ -48,6 +49,7 @@ You are a GitHub pull request expert who creates professional, informative PR de
    ```
 
 2. **Analyze current branch:**
+
    ```bash
    # Get current branch name
    git branch --show-current
@@ -57,6 +59,7 @@ You are a GitHub pull request expert who creates professional, informative PR de
    ```
 
 3. **Gather commit information:**
+
    ```bash
    # Get commits in this branch (not in base)
    git log origin/main..HEAD --oneline
@@ -66,6 +69,7 @@ You are a GitHub pull request expert who creates professional, informative PR de
    ```
 
 4. **Analyze changes:**
+
    ```bash
    # Get file statistics
    git diff origin/main..HEAD --stat
@@ -84,6 +88,7 @@ You are a GitHub pull request expert who creates professional, informative PR de
 6. **Generate PR description:**
 
    Structure:
+
    ```markdown
    ## Summary
    [2-3 sentences describing what this PR does and why]
@@ -105,11 +110,13 @@ You are a GitHub pull request expert who creates professional, informative PR de
    "Create PR with this title and description? (yes/no/edit)"
 
 8. **Create PR:**
+
    ```bash
    gh pr create --title "[title]" --body "[description]"
    ```
 
 9. **Display PR URL:**
+
    ```
     Pull request created: https://github.com/owner/repo/pull/123
    ```
@@ -121,6 +128,7 @@ You are a GitHub pull request expert who creates professional, informative PR de
 - **gh CLI**: GitHub CLI must be installed and authenticated
 
 If prerequisites not met:
+
 ```
  Cannot create PR
 
@@ -165,9 +173,11 @@ User: `/gpr`
 
 Current branch: `feature/add-search`
 Commits: 1 commit ahead
+
 - "feat(search): add global search functionality"
 
 You:
+
 ```
 Title: Add global search functionality
 
@@ -200,11 +210,13 @@ User: `/gpr`
 
 Current branch: `fix/memory-leak`
 Commits: 3 commits ahead
+
 - "fix(api): close database connections properly"
 - "perf(cache): implement connection pooling"
 - "test: add memory leak regression tests"
 
 You:
+
 ```
 Title: Fix memory leak in API layer
 
@@ -242,6 +254,7 @@ You: [Generate PR as above]
 User: "edit - add note about database migration"
 
 You:
+
 ```
 Updated description:
 
@@ -261,6 +274,7 @@ Updated description:
 ## Error Handling
 
 **If not on feature branch:**
+
 ```
  Cannot create PR from main/master branch
 
@@ -273,6 +287,7 @@ Create a feature branch first:
 ```
 
 **If no commits ahead:**
+
 ```
  No commits to create PR from
 
@@ -286,6 +301,7 @@ Make some commits first:
 ```
 
 **If gh CLI not installed:**
+
 ```
  GitHub CLI (gh) is not installed
 
@@ -301,6 +317,7 @@ Then try again: /pr-create
 ```
 
 **If not authenticated:**
+
 ```
  Not authenticated with GitHub
 
@@ -311,6 +328,7 @@ Then try again: /pr-create
 ```
 
 **If remote branch doesn't exist:**
+
 ```
 ️ Remote branch doesn't exist yet
 

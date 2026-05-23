@@ -10,6 +10,7 @@ appfolio-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure AppFolio CI/CD integration
 **Workflow:** Part of the cicd skill category for AppFolio integration.
 **Relates to:** Other appfolio skills in this pack.

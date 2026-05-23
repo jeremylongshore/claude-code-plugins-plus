@@ -18,11 +18,13 @@ compatibility: Designed for Claude Code
 # Juicebox People Search Workflow
 
 ## Overview
+
 Complete candidate sourcing: natural language search with power filters, scoring, and export to 41+ ATS systems.
 
 ## Instructions
 
 ### Step 1: Power Filter Search
+
 ```typescript
 const results = await client.search({
   query: 'backend engineer distributed systems',
@@ -38,6 +40,7 @@ const results = await client.search({
 ```
 
 ### Step 2: Score Candidates
+
 ```typescript
 function scoreCandidate(profile, targetSkills: string[]) {
   let score = 0;
@@ -55,6 +58,7 @@ const ranked = results.profiles
 ```
 
 ### Step 3: Export to ATS
+
 ```typescript
 await client.export({
   profiles: ranked.slice(0, 20).map(r => r.profile.id),
@@ -64,14 +68,17 @@ await client.export({
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Low results | Filters too strict | Relax experience or location |
 | Duplicates | Overlapping searches | Deduplicate by LinkedIn URL |
 
 ## Resources
+
 - [Search Filters](https://docs.juicebox.work/filters)
 - [ATS Integrations](https://juicebox.ai/integrations)
 
 ## Next Steps
+
 For enrichment, see `juicebox-core-workflow-b`.

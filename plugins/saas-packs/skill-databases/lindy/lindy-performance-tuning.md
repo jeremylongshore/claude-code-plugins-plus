@@ -10,6 +10,7 @@ lindy-performance-tuning/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Optimize Lindy API performance
 **Workflow:** Part of the cicd skill category for Lindy integration.
 **Relates to:** Other lindy skills in this pack.

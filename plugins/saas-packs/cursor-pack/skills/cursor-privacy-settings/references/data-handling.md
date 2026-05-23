@@ -3,6 +3,7 @@
 ## Data Handling
 
 ### What Data is Processed
+
 ```
 When Privacy Mode OFF:
 
@@ -20,6 +21,7 @@ NOT sent:
 ```
 
 ### Data Retention
+
 ```
 Cursor's data policy:
 - Code not stored long-term

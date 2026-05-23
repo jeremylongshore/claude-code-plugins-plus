@@ -19,9 +19,11 @@ Documentation for supported exchange CSV formats.
 ## Coinbase
 
 ### Export Location
+
 Reports → Tax documents → Transaction history CSV
 
 ### Expected Columns
+
 | Column | Description | Required |
 |--------|-------------|----------|
 | Timestamp | ISO 8601 format | Yes |
@@ -33,6 +35,7 @@ Reports → Tax documents → Transaction history CSV
 | Total (inclusive of fees) | Total cost/proceeds | No |
 
 ### Sample CSV
+
 ```csv
 Timestamp,Transaction Type,Asset,Quantity Transacted,Spot Price at Transaction,Fees and/or Spread,Total (inclusive of fees and/or spread)
 2024-01-15T10:30:00Z,Buy,BTC,0.5,40000,10,20010
@@ -40,6 +43,7 @@ Timestamp,Transaction Type,Asset,Quantity Transacted,Spot Price at Transaction,F
 ```
 
 ### Transaction Types
+
 - Buy
 - Sell
 - Send
@@ -57,9 +61,11 @@ Timestamp,Transaction Type,Asset,Quantity Transacted,Spot Price at Transaction,F
 ## Binance
 
 ### Export Location
+
 Orders → Trade History → Export
 
 ### Expected Columns
+
 | Column | Description | Required |
 |--------|-------------|----------|
 | Date(UTC) | DateTime format | Yes |
@@ -68,6 +74,7 @@ Orders → Trade History → Export
 | Change | Amount (positive/negative) | Yes |
 
 ### Sample CSV
+
 ```csv
 Date(UTC),Operation,Coin,Change
 2024-01-15 10:30:00,Buy,BTC,0.5
@@ -75,6 +82,7 @@ Date(UTC),Operation,Coin,Change
 ```
 
 ### Notes
+
 - **No price column**: Requires manual price lookup
 - **Change column**: Positive for buys, negative for sells
 - **Multiple operations**: May include deposits, withdrawals, dust
@@ -84,9 +92,11 @@ Date(UTC),Operation,Coin,Change
 ## Kraken
 
 ### Export Location
+
 History → Export
 
 ### Expected Columns
+
 | Column | Description | Required |
 |--------|-------------|----------|
 | time | DateTime with microseconds | Yes |
@@ -96,6 +106,7 @@ History → Export
 | fee | Transaction fee | No |
 
 ### Sample CSV
+
 ```csv
 time,type,asset,amount,fee
 2024-01-15 10:30:00.000000,buy,XXBT,0.5,0.001
@@ -103,6 +114,7 @@ time,type,asset,amount,fee
 ```
 
 ### Symbol Mappings
+
 | Kraken | Standard |
 |--------|----------|
 | XXBT | BTC |
@@ -116,9 +128,11 @@ time,type,asset,amount,fee
 ## Gemini
 
 ### Export Location
+
 Account → Transaction History → Download CSV
 
 ### Expected Columns
+
 | Column | Description | Required |
 |--------|-------------|----------|
 | Date | DateTime format | Yes |
@@ -129,6 +143,7 @@ Account → Transaction History → Download CSV
 | Fee | Transaction fee | No |
 
 ### Sample CSV
+
 ```csv
 Date,Type,Symbol,Amount,Price,Fee
 2024-01-15 10:30:00,Buy,BTCUSD,0.5,40000,10
@@ -142,6 +157,7 @@ Date,Type,Symbol,Amount,Price,Fee
 Use this format for custom CSV files or unsupported exchanges.
 
 ### Required Columns
+
 | Column | Description | Example |
 |--------|-------------|---------|
 | date | Transaction date | 2024-01-15 |
@@ -150,6 +166,7 @@ Use this format for custom CSV files or unsupported exchanges.
 | quantity | Amount | 0.5 |
 
 ### Optional Columns
+
 | Column | Description | Example |
 |--------|-------------|---------|
 | price | USD price per unit | 40000 |
@@ -158,6 +175,7 @@ Use this format for custom CSV files or unsupported exchanges.
 | notes | Description | DCA purchase |
 
 ### Sample CSV
+
 ```csv
 date,type,asset,quantity,price,fee
 2024-01-15,buy,BTC,0.5,40000,10
@@ -166,6 +184,7 @@ date,type,asset,quantity,price,fee
 ```
 
 ### Supported Date Formats
+
 - `2024-01-15` (ISO)
 - `2024-01-15T10:30:00Z` (ISO with time)
 - `01/15/2024` (US format)
@@ -173,6 +192,7 @@ date,type,asset,quantity,price,fee
 - `2024-01-15 10:30:00` (DateTime)
 
 ### Supported Transaction Types
+
 **Acquisitions**: buy, receive, deposit
 **Disposals**: sell, send, withdrawal, trade, swap, convert
 **Income**: staking, airdrop, mining, interest, reward
@@ -200,12 +220,14 @@ If your exchange isn't supported, create a generic CSV:
 ### Example Transformation
 
 **Original (Custom Exchange)**:
+
 ```csv
 Trade Date,Action,Currency,Units,Rate,Commission
 15-Jan-2024,PURCHASE,Bitcoin,0.5,40000,10
 ```
 
 **Transformed (Generic)**:
+
 ```csv
 date,type,asset,quantity,price,fee
 2024-01-15,buy,BTC,0.5,40000,10
@@ -218,29 +240,35 @@ date,type,asset,quantity,price,fee
 ### Common Issues
 
 **Wrong delimiter**:
+
 - Check if CSV uses comma, semicolon, or tab
 - Re-export with comma delimiter if needed
 
 **Encoding issues**:
+
 - Save as UTF-8
 - Remove BOM if present
 
 **Missing prices**:
+
 - Add price column manually
 - Look up historical prices on CoinGecko
 
 **Unknown transaction types**:
+
 - Check mapping in `config/settings.yaml`
 - Manually map to standard types
 
 ### Validation
 
 Test parsing with verbose mode:
+
 ```bash
 python transaction_parser.py your_export.csv --verbose
 ```
 
 This shows:
+
 - Detected exchange format
 - Parsed transaction count
 - Any skipped rows with reasons

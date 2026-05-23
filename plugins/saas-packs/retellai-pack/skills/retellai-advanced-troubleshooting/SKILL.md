@@ -19,14 +19,17 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Retell AI Advanced Troubleshooting
 
 ## Overview
+
 Implementation patterns for Retell AI advanced troubleshooting — voice agent and telephony platform.
 
 ## Prerequisites
+
 - Completed `retellai-install-auth` setup
 
 ## Instructions
 
 ### Step 1: SDK Pattern
+
 ```typescript
 import Retell from 'retell-sdk';
 const retell = new Retell({ apiKey: process.env.RETELL_API_KEY! });
@@ -36,9 +39,11 @@ console.log(`Agents: ${agents.length}`);
 ```
 
 ## Output
+
 - Retell AI integration for advanced troubleshooting
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | 401 Unauthorized | Invalid API key | Check RETELL_API_KEY |
@@ -46,8 +51,10 @@ console.log(`Agents: ${agents.length}`);
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
 ## Resources
+
 - [Retell AI Documentation](https://docs.retellai.com)
 - [retell-sdk npm](https://www.npmjs.com/package/retell-sdk)
 
 ## Next Steps
+
 See related Retell AI skills for more workflows.

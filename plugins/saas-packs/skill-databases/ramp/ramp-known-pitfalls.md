@@ -10,6 +10,7 @@ ramp-known-pitfalls/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Identify and avoid Ramp anti-patterns
 **Workflow:** Part of the enterprise skill category for Ramp integration.
 **Relates to:** Other ramp skills in this pack.

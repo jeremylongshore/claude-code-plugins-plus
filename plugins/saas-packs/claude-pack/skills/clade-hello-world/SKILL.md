@@ -25,15 +25,18 @@ compatibility: Designed for Claude Code
 # Anthropic Hello World
 
 ## Overview
+
 Send your first message to Claude and get a response using the Messages API.
 
 ## Prerequisites
+
 - Completed `clade-install-auth` setup
 - `ANTHROPIC_API_KEY` environment variable set
 
 ## Instructions
 
 ### Step 1: Basic Message
+
 ```typescript
 import Anthropic from '@claude-ai/sdk';
 
@@ -52,6 +55,7 @@ console.log(message.content[0].text);
 ```
 
 ### Step 2: Add a System Prompt
+
 ```typescript
 const message = await client.messages.create({
   model: 'claude-sonnet-4-20250514',
@@ -64,6 +68,7 @@ const message = await client.messages.create({
 ```
 
 ### Step 3: Multi-Turn Conversation
+
 ```typescript
 const message = await client.messages.create({
   model: 'claude-sonnet-4-20250514',
@@ -77,6 +82,7 @@ const message = await client.messages.create({
 ```
 
 ## Python Example
+
 ```python
 import anthropic
 
@@ -93,12 +99,14 @@ print(message.content[0].text)
 ```
 
 ## Output
+
 - `message.content[0].text` — Claude's text response
 - `message.model` — model ID used
 - `message.usage.input_tokens` / `message.usage.output_tokens` — token counts
 - `message.stop_reason` — `end_turn`, `max_tokens`, or `tool_use`
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `authentication_error` | Bad API key | Check `ANTHROPIC_API_KEY` |
@@ -106,6 +114,7 @@ print(message.content[0].text)
 | `not_found_error` | Invalid model ID | Use a valid model like `claude-sonnet-4-20250514` |
 
 ## Available Models
+
 | Model | Best For | Context | Cost (input/output per MTok) |
 |-------|----------|---------|------------------------------|
 | `claude-opus-4-20250514` | Complex reasoning | 200K | $15 / $75 |
@@ -113,11 +122,14 @@ print(message.content[0].text)
 | `claude-haiku-4-5-20251001` | Fast, cheap tasks | 200K | $0.80 / $4 |
 
 ## Examples
+
 See Step 1 (basic message), Step 2 (system prompt), and Step 3 (multi-turn) above. Python example included in its own section.
 
 ## Resources
+
 - [Messages API Reference](https://docs.anthropic.com/en/api/messages)
 - [Model Overview](https://docs.anthropic.com/en/docs/about-claude/models)
 
 ## Next Steps
+
 Proceed to `clade-model-inference` for streaming and advanced patterns.

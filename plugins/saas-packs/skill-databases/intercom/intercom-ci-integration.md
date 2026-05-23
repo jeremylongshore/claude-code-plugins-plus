@@ -10,6 +10,7 @@ intercom-ci-integration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Configure Intercom CI/CD integration
 **Workflow:** Part of the cicd skill category for Intercom integration.
 **Relates to:** Other intercom skills in this pack.

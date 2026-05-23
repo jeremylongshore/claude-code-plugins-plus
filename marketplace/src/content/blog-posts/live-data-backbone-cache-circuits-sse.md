@@ -133,4 +133,3 @@ First pitch is coming. The data backbone is ready.
 - [Zero to CI: Full-Stack Dashboard in One Session](/posts/zero-to-ci-full-stack-dashboard-one-session/) — Day one scaffold for this project
 - [Building a Deterministic DXF Comparison Engine in One Day](/posts/deterministic-dxf-comparison-engine-one-day-build/) — Same build-fast methodology, different domain
 - [Production Release Engineering v4.5.0](/posts/production-release-engineering-v450/) — Release discipline applied to the CAD agent
-

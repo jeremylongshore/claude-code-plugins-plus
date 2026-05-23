@@ -23,6 +23,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Building CI/CD Pipelines
 
 ## Current State
+
 !`ls .github/workflows/*.yml .gitlab-ci.yml Jenkinsfile .circleci/config.yml 2>/dev/null || echo 'No CI/CD config found'`
 
 ## Overview

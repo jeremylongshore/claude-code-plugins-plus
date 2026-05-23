@@ -10,6 +10,7 @@ veeva-install-auth/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Install and configure Veeva SDK/CLI authentication
 **Workflow:** Part of the onboarding skill category for Veeva integration.
 **Relates to:** Other veeva skills in this pack.

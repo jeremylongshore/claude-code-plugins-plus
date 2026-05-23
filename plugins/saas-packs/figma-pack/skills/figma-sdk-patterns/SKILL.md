@@ -23,9 +23,11 @@ compatibility: Designed for Claude Code
 # Figma SDK Patterns
 
 ## Overview
+
 Production patterns for the Figma REST API (external tools) and Plugin API (in-editor plugins). Figma has no official Node.js SDK -- you call `https://api.figma.com` directly with `fetch`. These patterns give you type safety, error handling, and reusable abstractions.
 
 ## Prerequisites
+
 - `FIGMA_PAT` environment variable set
 - TypeScript 5+ project
 - Understanding of Figma node types
@@ -33,6 +35,7 @@ Production patterns for the Figma REST API (external tools) and Plugin API (in-e
 ## Instructions
 
 ### Step 1: Typed REST API Client
+
 ```typescript
 // src/figma-client.ts
 export class FigmaClient {
@@ -104,6 +107,7 @@ export class FigmaClient {
 ```
 
 ### Step 2: Custom Error Classes
+
 ```typescript
 // src/figma-errors.ts
 export class FigmaApiError extends Error {
@@ -136,6 +140,7 @@ export class FigmaNotFoundError extends FigmaApiError {
 ```
 
 ### Step 3: Type Definitions
+
 ```typescript
 // src/figma-types.ts
 export interface FigmaNode {
@@ -183,6 +188,7 @@ interface StyleMeta { key: string; name: string; style_type: 'FILL' | 'TEXT' | '
 ```
 
 ### Step 4: Node Tree Walker
+
 ```typescript
 // Walk the Figma document tree with a visitor pattern
 function walkNodes(node: FigmaNode, visitor: (n: FigmaNode) => void) {
@@ -214,6 +220,7 @@ function findComponents(root: FigmaNode): FigmaNode[] {
 ```
 
 ### Step 5: Singleton with Retry
+
 ```typescript
 // Singleton instance with automatic retry on transient errors
 let client: FigmaClient | null = null;
@@ -246,12 +253,14 @@ export async function withRetry<T>(
 ```
 
 ## Output
+
 - Typed Figma REST API client with full error handling
 - Custom error hierarchy for rate limits, auth, not found
 - Node tree walker for extracting design data
 - Singleton pattern with retry logic
 
 ## Error Handling
+
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
 | Typed errors | `catch (e) { if (e instanceof FigmaRateLimitError) }` | Targeted recovery |
@@ -260,9 +269,11 @@ export async function withRetry<T>(
 | Singleton | Shared client across modules | Consistent config, one token |
 
 ## Resources
+
 - [Figma REST API Reference](https://developers.figma.com/docs/rest-api/)
 - [Figma REST API OpenAPI Spec](https://github.com/figma/rest-api-spec)
 - [figma-api npm package](https://www.npmjs.com/package/figma-api) (community SDK)
 
 ## Next Steps
+
 Apply patterns in `figma-core-workflow-a` for real-world file inspection.

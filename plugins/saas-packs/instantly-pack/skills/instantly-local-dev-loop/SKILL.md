@@ -25,9 +25,11 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 # Instantly Local Dev Loop
 
 ## Overview
+
 Set up a local development workflow for Instantly integrations. Instantly provides a mock server at `https://developer.instantly.ai/_mock/api/v2/` for testing without sending real emails or consuming API limits. This skill covers mock server usage, integration testing, and local webhook development.
 
 ## Prerequisites
+
 - Completed `instantly-install-auth` setup
 - Node.js 18+ with TypeScript
 - A separate Instantly API key for dev/test (recommended)
@@ -35,6 +37,7 @@ Set up a local development workflow for Instantly integrations. Instantly provid
 ## Instructions
 
 ### Step 1: Configure Dev Environment
+
 ```typescript
 // src/config.ts
 import "dotenv/config";
@@ -70,6 +73,7 @@ INSTANTLY_USE_MOCK=false
 ```
 
 ### Step 2: Build a Testable API Client
+
 ```typescript
 // src/instantly.ts
 import { getConfig } from "./config";
@@ -118,6 +122,7 @@ class InstantlyError extends Error {
 ```
 
 ### Step 3: Write Integration Tests
+
 ```typescript
 // tests/instantly.test.ts
 import { describe, it, expect, beforeAll } from "vitest";
@@ -163,6 +168,7 @@ describe("Instantly API Integration", () => {
 ```
 
 ### Step 4: Local Webhook Testing with ngrok
+
 ```bash
 set -euo pipefail
 # Start your webhook server locally
@@ -199,6 +205,7 @@ app.listen(3000, () => console.log("Webhook server on http://localhost:3000"));
 ```
 
 ### Step 5: Test Webhook Delivery
+
 ```typescript
 // After registering the webhook, test it via API
 async function testWebhook(webhookId: string) {
@@ -208,6 +215,7 @@ async function testWebhook(webhookId: string) {
 ```
 
 ## Project Structure
+
 ```
 instantly-integration/
 ├── src/
@@ -223,6 +231,7 @@ instantly-integration/
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Mock returns unexpected data | Mock schema mismatch | Check mock docs at developer.instantly.ai |
@@ -231,9 +240,11 @@ instantly-integration/
 | ngrok tunnel expired | Free tier 2-hour limit | Restart ngrok or upgrade |
 
 ## Resources
+
 - [Instantly Mock Server](https://developer.instantly.ai/_mock/api/v2/)
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
 - [ngrok Quick Start](https://ngrok.com/docs/getting-started/)
 
 ## Next Steps
+
 For production SDK patterns, see `instantly-sdk-patterns`.

@@ -10,6 +10,7 @@ bamboohr-upgrade-migration/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Plan and execute BambooHR SDK upgrades
 **Workflow:** Part of the operations skill category for BambooHR integration.
 **Relates to:** Other bamboohr skills in this pack.

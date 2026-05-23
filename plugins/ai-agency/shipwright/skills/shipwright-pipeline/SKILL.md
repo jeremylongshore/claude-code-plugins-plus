@@ -63,16 +63,19 @@ Shipwright converts a plain-English app description into a fully built, tested, 
 ## Examples
 
 **Build a SaaS dashboard:**
+
 ```
 /shipwright-build Build a real-time analytics dashboard with user auth, team workspaces, and Stripe billing. Use Next.js + Supabase.
 ```
 
 **Add features to an existing project:**
+
 ```
 /shipwright-enhance Add dark mode toggle, export-to-CSV on all tables, and email notification preferences.
 ```
 
 **Scaffold a content site:**
+
 ```
 /shipwright-build Create a developer documentation site with search, versioned docs, and a blog. Use Astro.
 ```

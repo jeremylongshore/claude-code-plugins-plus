@@ -45,6 +45,7 @@ A 4-phase workflow for establishing team identity and strategic positioning.
 ## How This Skill Works
 
 I'll guide you through each phase with:
+
 1. **Questions** to gather context
 2. **Activities** to complete
 3. **AI-assisted prompts** for each deliverable
@@ -57,9 +58,11 @@ Tell me which phase you're in (or starting fresh), and I'll help you through it.
 ## Phase 1: ABSORB (Week 1)
 
 ### Goal
+
 Understand what exists before forming opinions.
 
 ### Activities
+
 - Read all existing documentation
 - Meet with team members
 - Study handover notes
@@ -69,17 +72,20 @@ Understand what exists before forming opinions.
 
 **Prompt: Synthesize Context**
 Share your notes and I'll help you:
+
 1. Identify key themes
 2. Surface tensions or contradictions
 3. List what's still unclear
 
 **Prompt: Question Generation**
 Based on your context, I'll suggest:
+
 - Questions you should be asking
 - Who to talk to for answers
 - What documents to read next
 
 ### Phase 1 Checklist
+
 - [ ] Reading notes captured
 - [ ] Key questions documented
 - [ ] Initial mental model forming
@@ -89,9 +95,11 @@ Based on your context, I'll suggest:
 ## Phase 2: AUDIT (Week 2)
 
 ### Goal
+
 Understand what actually exists vs. what's claimed.
 
 ### Activities
+
 - Systematic codebase review
 - Map capabilities to code
 - Identify gaps
@@ -101,6 +109,7 @@ Understand what actually exists vs. what's claimed.
 
 **Prompt: Capability Mapping**
 Share your team's claimed responsibilities and I'll help build an audit template:
+
 - Capability name
 - Status (exists/partial/missing)
 - Evidence (code files/patterns)
@@ -109,12 +118,14 @@ Share your team's claimed responsibilities and I'll help build an audit template
 
 **Prompt: Codebase Exploration**
 Point me at code or systems and I'll help you understand:
+
 - What product capability it represents
 - The business logic encoded
 - Use cases supported
 - What's notably missing
 
 ### Phase 2 Checklist
+
 - [ ] Capability audit document created
 - [ ] Gap inventory prioritized
 - [ ] Reality vs. perception documented
@@ -136,9 +147,11 @@ Point me at code or systems and I'll help you understand:
 ## Phase 3: ARTICULATE (Week 3)
 
 ### Goal
+
 Define and document team identity clearly.
 
 ### Activities
+
 - Draft mission statement
 - Define responsibility boundaries
 - Create value proposition
@@ -148,12 +161,14 @@ Define and document team identity clearly.
 
 **Prompt: Mission Drafting**
 Share what you actually own vs. don't own, and I'll help draft:
+
 - Clear mission statement
 - Distinction from adjacent teams
 - Concrete, not vague language
 
 **Prompt: Charter Structure**
 I'll help structure a one-page team charter:
+
 - What we're accountable for
 - What we explicitly don't own
 - How we create value
@@ -161,12 +176,14 @@ I'll help structure a one-page team charter:
 
 **Prompt: Value Narrative**
 I'll help create communication frameworks:
+
 - One-sentence pitch
 - "Without us, [consequence]" statements
 - Boundary explanations for adjacent teams
 - Leadership-friendly framing
 
 ### Phase 3 Checklist
+
 - [ ] Team charter drafted
 - [ ] Value proposition documented
 - [ ] Boundary contract defined
@@ -207,9 +224,11 @@ With us: [what users/business gets]
 ## Phase 4: ALIGN (Week 4)
 
 ### Goal
+
 Validate and socialize the work.
 
 ### Activities
+
 - Present to manager
 - Discuss with peer PMs
 - Gather feedback
@@ -222,12 +241,14 @@ Tell me who you're presenting to and their likely concerns — I'll role-play as
 
 **Prompt: Presentation Polish**
 Share your draft charter and I'll help:
+
 - Sharpen the language
 - Anticipate objections
 - Add evidence for claims
 - Make it memorable
 
 ### Phase 4 Checklist
+
 - [ ] Manager alignment achieved
 - [ ] Peer PM feedback incorporated
 - [ ] Final documents published
@@ -262,6 +283,7 @@ By the end of this workflow, you should be able to:
 ## Getting Started
 
 Tell me:
+
 1. **What's your situation?** (New role? Inherited team? Identity crisis?)
 2. **What phase are you in?** (Or starting fresh?)
 3. **What do you have so far?** (Notes? Docs? Nothing?)

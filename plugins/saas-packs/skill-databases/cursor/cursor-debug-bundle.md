@@ -10,6 +10,7 @@ cursor-debug-bundle/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Provides debugging techniques specifically for AI suggestion quality issues in Cursor, including completion quality, chat context problems, and .cursorrules verification.
 
 **Workflow:** This skill activates when AI suggestions are wrong, irrelevant, or inconsistent. It provides checklists for diagnosing issues, techniques for improving context, and logging options for deep debugging.

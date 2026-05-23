@@ -33,6 +33,7 @@ Common mistakes and anti-patterns when using Snowflake, with real SQL examples a
 ## Pitfall #1: Leaving Warehouses Running (Cost Killer)
 
 **Anti-Pattern:**
+
 ```sql
 -- Warehouse with auto_suspend = 0 (never suspends)
 CREATE WAREHOUSE ALWAYS_ON_WH
@@ -42,6 +43,7 @@ CREATE WAREHOUSE ALWAYS_ON_WH
 ```
 
 **Fix:**
+
 ```sql
 ALTER WAREHOUSE ALWAYS_ON_WH SET
   AUTO_SUSPEND = 120,    -- Suspend after 2 min idle
@@ -58,6 +60,7 @@ WHERE auto_suspend > 600 OR auto_suspend = 0;
 ## Pitfall #2: Using ACCOUNTADMIN for Everything
 
 **Anti-Pattern:**
+
 ```sql
 -- Human users with ACCOUNTADMIN default role
 ALTER USER analyst SET DEFAULT_ROLE = 'ACCOUNTADMIN';
@@ -65,6 +68,7 @@ ALTER USER analyst SET DEFAULT_ROLE = 'ACCOUNTADMIN';
 ```
 
 **Fix:**
+
 ```sql
 -- Use least-privilege roles
 ALTER USER analyst SET DEFAULT_ROLE = 'DATA_ANALYST';
@@ -81,12 +85,14 @@ WHERE role = 'ACCOUNTADMIN' AND deleted_on IS NULL;
 ## Pitfall #3: SELECT * on Wide Tables
 
 **Anti-Pattern:**
+
 ```sql
 -- Scans ALL columns (Snowflake stores columnar — unused cols waste I/O)
 SELECT * FROM events;  -- 200 columns, only need 3
 ```
 
 **Fix:**
+
 ```sql
 -- Select only needed columns — dramatically reduces bytes scanned
 SELECT event_id, event_type, event_timestamp FROM events;
@@ -101,6 +107,7 @@ ORDER BY start_time DESC LIMIT 1;
 ## Pitfall #4: Clustering Keys on Small Tables
 
 **Anti-Pattern:**
+
 ```sql
 -- Clustering key on a 10,000 row table
 ALTER TABLE config_settings CLUSTER BY (category);
@@ -108,6 +115,7 @@ ALTER TABLE config_settings CLUSTER BY (category);
 ```
 
 **Fix:**
+
 ```sql
 -- Only cluster tables > 1TB with frequent filter queries
 -- Check table size before clustering
@@ -125,6 +133,7 @@ ALTER TABLE config_settings DROP CLUSTERING KEY;
 ## Pitfall #5: Not Using MERGE for Idempotent Loads
 
 **Anti-Pattern:**
+
 ```sql
 -- INSERT creates duplicates on retry
 INSERT INTO dim_orders SELECT * FROM staging_orders;
@@ -132,6 +141,7 @@ INSERT INTO dim_orders SELECT * FROM staging_orders;
 ```
 
 **Fix:**
+
 ```sql
 -- MERGE is idempotent — safe to retry
 MERGE INTO dim_orders AS target
@@ -150,6 +160,7 @@ VALUES (source.order_id, source.amount, CURRENT_TIMESTAMP());
 ## Pitfall #6: Ignoring Stale Streams
 
 **Anti-Pattern:**
+
 ```sql
 -- Stream goes stale when retention period is exceeded
 -- (source table changes exceed DATA_RETENTION_TIME_IN_DAYS)
@@ -157,6 +168,7 @@ VALUES (source.order_id, source.amount, CURRENT_TIMESTAMP());
 ```
 
 **Fix:**
+
 ```sql
 -- Monitor stream staleness
 SELECT stream_name, stale
@@ -179,12 +191,14 @@ CREATE ALERT stale_stream_alert
 ## Pitfall #7: Loading Many Small Files
 
 **Anti-Pattern:**
+
 ```bash
 # 100,000 small files (< 100KB each) in stage
 # Each file = separate micro-partition = metadata overhead
 ```
 
 **Fix:**
+
 ```sql
 -- Combine small files before loading
 -- Or use Snowpipe with recommended file sizes (100-250 MB)
@@ -204,12 +218,14 @@ ORDER BY file_size;
 ## Pitfall #8: No Resource Monitors
 
 **Anti-Pattern:**
+
 ```sql
 -- No resource monitors = unlimited credit consumption
 -- A runaway query or always-on warehouse can burn thousands of credits
 ```
 
 **Fix:**
+
 ```sql
 CREATE RESOURCE MONITOR monthly_budget
   WITH CREDIT_QUOTA = 2000
@@ -228,6 +244,7 @@ ALTER ACCOUNT SET RESOURCE_MONITOR = monthly_budget;
 ## Pitfall #9: Using Transient Tables for Important Data
 
 **Anti-Pattern:**
+
 ```sql
 -- Transient tables have NO Fail-safe (7 days of extra recovery)
 -- and max 1 day of Time Travel
@@ -236,6 +253,7 @@ CREATE TRANSIENT TABLE critical_orders (...);
 ```
 
 **Fix:**
+
 ```sql
 -- Use permanent tables for important data
 CREATE TABLE critical_orders (...);
@@ -250,6 +268,7 @@ CREATE TRANSIENT TABLE temp_staging_batch (...);
 ## Pitfall #10: Wrong Account Identifier Format
 
 **Anti-Pattern:**
+
 ```typescript
 // Using the full URL instead of account identifier
 const conn = snowflake.createConnection({
@@ -259,6 +278,7 @@ const conn = snowflake.createConnection({
 ```
 
 **Fix:**
+
 ```typescript
 const conn = snowflake.createConnection({
   account: 'myorg-myaccount',  // Correct: orgname-accountname format

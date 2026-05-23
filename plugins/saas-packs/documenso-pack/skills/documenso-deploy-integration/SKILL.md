@@ -113,6 +113,7 @@ volumes:
 ```
 
 **Important notes:**
+
 - Documenso container runs as non-root (UID 1001) -- ensure mounted files are readable
 - Prisma migrations run automatically on container start
 - Documents are stored in PostgreSQL by default (fine for small-to-medium deployments)

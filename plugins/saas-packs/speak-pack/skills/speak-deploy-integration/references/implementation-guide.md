@@ -5,6 +5,7 @@ Detailed implementation reference for the speak-deploy-integration skill.
 ## Vercel Deployment
 
 ### Environment Setup
+
 ```bash
 # Add Speak secrets to Vercel
 vercel secrets add speak_api_key sk_live_***
@@ -22,6 +23,7 @@ vercel --prod
 ```
 
 ### vercel.json Configuration
+
 ```json
 {
   "env": {
@@ -50,6 +52,7 @@ vercel --prod
 ```
 
 ### Next.js API Routes for Speak
+
 ```typescript
 // pages/api/speak/session.ts
 import { SpeakClient } from '@speak/language-sdk';
@@ -82,10 +85,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 }
 ```
 
-
 ## Fly.io Deployment
 
 ### fly.toml
+
 ```toml
 app = "my-speak-app"
 primary_region = "iad"
@@ -117,6 +120,7 @@ primary_region = "iad"
 ```
 
 ### Secrets Configuration
+
 ```bash
 # Set Speak secrets
 fly secrets set SPEAK_API_KEY=sk_live_***
@@ -132,6 +136,7 @@ fly deploy
 ```
 
 ### Volume for Audio Caching
+
 ```bash
 # Create volume for audio cache
 fly volumes create speak_cache --size 10 --region iad
@@ -142,10 +147,10 @@ fly volumes create speak_cache --size 10 --region iad
   destination = "/app/cache"
 ```
 
-
 ## Google Cloud Run
 
 ### Dockerfile
+
 ```dockerfile
 FROM node:20-slim
 
@@ -170,6 +175,7 @@ CMD ["npm", "start"]
 ```
 
 ### Deploy Script
+
 ```bash
 #!/bin/bash
 # deploy-cloud-run.sh
@@ -201,6 +207,7 @@ gcloud run services update $SERVICE_NAME \
 ```
 
 ### Cloud Run with WebSocket Support
+
 ```yaml
 # cloudrun.yaml (for WebSocket connections needed for real-time speech)
 apiVersion: serving.knative.dev/v1
@@ -226,7 +233,6 @@ spec:
               cpu: "2"
               memory: 2Gi
 ```
-
 
 ## Environment Configuration Pattern
 
@@ -258,7 +264,6 @@ export function getSpeakConfig(): SpeakConfig {
   };
 }
 ```
-
 
 ## Health Check Endpoint
 
@@ -302,10 +307,10 @@ export async function GET() {
 }
 ```
 
-
 ## Detailed Examples
 
 ### Quick Deploy Script
+
 ```bash
 #!/bin/bash
 # Platform-agnostic deploy helper
@@ -326,4 +331,3 @@ case "$1" in
     ;;
 esac
 ```
-

@@ -10,6 +10,7 @@ cursor-keybindings/
 ## File Descriptions
 
 ### 1. SKILL.md
+
 **Purpose:** Provides a comprehensive reference for all Cursor keyboard shortcuts including AI-specific commands, editor operations, and customization options.
 
 **Workflow:** This skill activates when users want to learn or customize keyboard shortcuts. It covers AI commands (Chat, Composer, Inline Edit, completions), standard editor shortcuts, multi-cursor operations, and Vim mode integration.

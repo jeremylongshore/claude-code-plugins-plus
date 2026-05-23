@@ -1,6 +1,7 @@
 # OpenEvidence SDK Patterns - Implementation Details
 
 ## Client Singleton with DI
+
 ```typescript
 export class OpenEvidenceClientFactory {
   private static instance: OpenEvidenceClient;
@@ -13,12 +14,14 @@ export class OpenEvidenceClientFactory {
 ```
 
 ## Typed Clinical Queries
+
 ```typescript
 export type ClinicalSpecialty = 'internal-medicine' | 'emergency-medicine' | 'cardiology' | 'oncology' | 'neurology' | 'pediatrics' | 'psychiatry' | 'surgery' | 'family-medicine' | 'pharmacology';
 export type QueryUrgency = 'stat' | 'urgent' | 'routine' | 'research';
 ```
 
 ## Query Builder Pattern
+
 ```typescript
 const query = new ClinicalQueryBuilder()
   .question('What is the recommended statin dosing for secondary prevention?')
@@ -32,6 +35,7 @@ const query = new ClinicalQueryBuilder()
 ```
 
 ## Response Transformer
+
 ```typescript
 export function transformResponse(raw: RawOpenEvidenceResponse): FormattedClinicalAnswer {
   return {
@@ -46,6 +50,7 @@ export function transformResponse(raw: RawOpenEvidenceResponse): FormattedClinic
 ```
 
 ## Caching Strategy
+
 ```typescript
 export class ClinicalQueryCache {
   private defaultTTL = 3600000; // 1 hour for clinical data
@@ -55,6 +60,7 @@ export class ClinicalQueryCache {
 ```
 
 ## Complete Service Example
+
 ```typescript
 export async function getClinicalEvidence(question: string, specialty: string): Promise<FormattedClinicalAnswer> {
   const query = new ClinicalQueryBuilder().question(question).specialty(specialty).urgency('routine').build();

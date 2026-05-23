@@ -84,6 +84,7 @@ const supabaseAdmin = createClient(
 ```
 
 **Detection:**
+
 ```bash
 # Find service_role references in client-side files
 grep -rn 'SERVICE_ROLE' --include="*.tsx" --include="*.jsx" --include="*.ts" src/ app/ components/ pages/
@@ -118,6 +119,7 @@ CREATE POLICY "patients_read_own" ON public.medical_records
 ```
 
 **Detection:**
+
 ```sql
 -- Find all tables without RLS (run in SQL Editor)
 SELECT schemaname, tablename
@@ -330,6 +332,7 @@ CREATE INDEX idx_comments_author_id ON public.comments(author_id);
 ```
 
 **Detection:**
+
 ```sql
 -- Find foreign keys without indexes
 SELECT

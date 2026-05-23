@@ -234,6 +234,7 @@ async function deleteVoice(voiceId: string) {
 | `speed` | 0.7-1.2 | Slower speech | Faster speech |
 
 **Recommended starting points:**
+
 - Narration: stability=0.5, similarity=0.75, style=0.0
 - Conversational: stability=0.4, similarity=0.6, style=0.3
 - Cloned voice: stability=0.5, similarity=0.85, style=0.0

@@ -3,6 +3,7 @@
 ## Best Practices
 
 ### Principle of Least Privilege
+
 ```yaml
 # Good: Minimal required access
 developer:
@@ -18,6 +19,7 @@ developer:
 ```
 
 ### Team Organization
+
 ```yaml
 # Organize by service ownership
 teams:
@@ -35,6 +37,7 @@ teams:
 ```
 
 ### Token Hygiene
+
 - Rotate tokens quarterly
 - Use specific scopes
 - Delete unused tokens
