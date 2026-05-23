@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/environment-config-manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Manage environment configurations and secrets across deployments",
   "keywords": [
     "config",

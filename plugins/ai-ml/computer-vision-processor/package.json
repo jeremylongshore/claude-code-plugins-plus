@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/computer-vision-processor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Computer vision image processing and analysis",
   "keywords": [
     "cv",

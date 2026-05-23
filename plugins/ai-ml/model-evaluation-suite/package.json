@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/model-evaluation-suite",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Comprehensive model evaluation with multiple metrics",
   "keywords": [
     "evaluation",

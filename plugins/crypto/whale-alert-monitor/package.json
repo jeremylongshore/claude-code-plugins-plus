@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/whale-alert-monitor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Monitor large crypto transactions and whale wallet movements in real-time",
   "keywords": [
     "whale",

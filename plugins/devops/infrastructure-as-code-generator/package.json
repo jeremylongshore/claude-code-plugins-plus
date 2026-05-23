@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/infrastructure-as-code-generator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generate Infrastructure as Code for Terraform, CloudFormation, Pulumi, and more",
   "keywords": [
     "iac",

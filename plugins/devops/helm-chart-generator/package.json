@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/helm-chart-generator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generate Helm charts for Kubernetes applications",
   "keywords": [
     "helm",

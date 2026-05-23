@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/database-deadlock-detector",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Database plugin for database-deadlock-detector",
   "keywords": [
     "database",

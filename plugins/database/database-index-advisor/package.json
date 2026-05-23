@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/database-index-advisor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Analyze query patterns and recommend optimal database indexes with impact analysis",
   "keywords": [
     "database",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/test-doubles-generator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generate mocks, stubs, spies, and fakes for unit testing with Jest, Sinon, and test frameworks",
   "keywords": [
     "testing",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/sentiment-analysis-tool",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Sentiment analysis on text data",
   "keywords": [
     "sentiment",

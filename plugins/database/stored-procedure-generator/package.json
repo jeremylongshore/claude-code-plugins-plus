@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/stored-procedure-generator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Database plugin for stored-procedure-generator",
   "keywords": [
     "database",

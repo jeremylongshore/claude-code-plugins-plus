@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/api-fuzzer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Fuzz testing for APIs with malformed inputs, edge cases, and security vulnerability detection",
   "keywords": [
     "testing",

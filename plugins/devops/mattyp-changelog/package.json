@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/mattyp-changelog",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Automate changelog generation: fetch recent changes, synthesize release notes, run quality gates, and prepare a PR.",
   "keywords": [
     "changelog",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/capacity-planning-analyzer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Analyze and plan for capacity requirements",
   "keywords": [
     "capacity-planning",

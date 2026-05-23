@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/mutation-test-runner",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Mutation testing to validate test quality by introducing code changes and verifying tests catch them",
   "keywords": [
     "testing",

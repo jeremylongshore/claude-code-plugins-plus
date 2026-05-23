@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/nft-rarity-analyzer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Analyze NFT rarity scores and valuations across collections",
   "keywords": [
     "nft",

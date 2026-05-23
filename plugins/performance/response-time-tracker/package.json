@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/response-time-tracker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Track and optimize application response times",
   "keywords": [
     "response-time",

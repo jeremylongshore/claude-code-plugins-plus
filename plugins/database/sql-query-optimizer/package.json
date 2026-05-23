@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/sql-query-optimizer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Analyze and optimize SQL queries for better performance, suggesting indexes, query rewrites, and execution plan improvements",
   "keywords": [
     "sql",

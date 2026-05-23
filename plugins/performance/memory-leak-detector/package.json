@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/memory-leak-detector",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Detect memory leaks and analyze memory usage patterns",
   "keywords": [
     "memory",

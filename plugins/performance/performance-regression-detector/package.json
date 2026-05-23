@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/performance-regression-detector",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Detect performance regressions in CI/CD pipeline",
   "keywords": [
     "regression",

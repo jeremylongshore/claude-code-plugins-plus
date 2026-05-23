@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/ansible-playbook-creator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Create Ansible playbooks for configuration management",
   "keywords": [
     "ansible",

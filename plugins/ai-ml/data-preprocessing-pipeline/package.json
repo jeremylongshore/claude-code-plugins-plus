@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/data-preprocessing-pipeline",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Automated data preprocessing and cleaning pipelines",
   "keywords": [
     "preprocessing",

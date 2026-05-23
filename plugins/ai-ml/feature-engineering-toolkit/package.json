@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/feature-engineering-toolkit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Feature creation, selection, and transformation tools",
   "keywords": [
     "features",

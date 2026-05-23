@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/api-test-automation",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Automated API endpoint testing with request generation, validation, and comprehensive test coverage",
   "keywords": [
     "testing",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/network-policy-manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Manage Kubernetes network policies and firewall rules",
   "keywords": [
     "network-policy",

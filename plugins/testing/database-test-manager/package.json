@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/database-test-manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Database testing utilities with test data setup, transaction rollback, and schema validation",
   "keywords": [
     "testing",

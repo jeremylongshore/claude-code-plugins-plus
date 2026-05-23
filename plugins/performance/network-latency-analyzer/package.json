@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/network-latency-analyzer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Analyze network latency and optimize request patterns",
   "keywords": [
     "network",

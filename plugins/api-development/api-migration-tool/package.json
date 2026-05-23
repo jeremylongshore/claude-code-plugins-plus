@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/api-migration-tool",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Migrate APIs between versions with backward compatibility",
   "keywords": [
     "migration",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/encryption-tool",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Encrypt and decrypt data with various algorithms",
   "keywords": [
     "security",
