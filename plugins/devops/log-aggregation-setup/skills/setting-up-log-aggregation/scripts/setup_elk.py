@@ -5,23 +5,17 @@ Automates the deployment and configuration of the ELK stack (Elasticsearch, Logs
 Generated: 2025-12-10 03:48:17
 """
 
-import os
 import json
 import argparse
 from pathlib import Path
+
 
 def create_project_structure(project_name: str, output_dir: str = "."):
     """Create project structure for log-aggregation-setup."""
     base_path = Path(output_dir) / project_name
 
     # Create directories
-    directories = [
-        base_path,
-        base_path / "config",
-        base_path / "data",
-        base_path / "output",
-        base_path / "logs"
-    ]
+    directories = [base_path, base_path / "config", base_path / "data", base_path / "output", base_path / "logs"]
 
     for dir_path in directories:
         dir_path.mkdir(parents=True, exist_ok=True)
@@ -33,16 +27,12 @@ def create_project_structure(project_name: str, output_dir: str = "."):
         "version": "1.0.0",
         "skill": "log-aggregation-setup",
         "category": "devops",
-        "created": time.strftime('%Y-%m-%d %H:%M:%S'),
-        "settings": {
-            "debug": False,
-            "verbose": True,
-            "max_workers": 4
-        }
+        "created": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "settings": {"debug": False, "verbose": True, "max_workers": 4},
     }
 
     config_file = base_path / "config" / "settings.json"
-    with open(config_file, 'w') as f:
+    with open(config_file, "w") as f:
         json.dump(config, f, indent=2)
     print(f"✓ Created configuration: {config_file}")
 
@@ -67,11 +57,14 @@ See skill documentation for usage instructions.
 
     return base_path
 
+
 def main():
-    parser = argparse.ArgumentParser(description="Automates the deployment and configuration of the ELK stack (Elasticsearch, Logstash, Kibana).")
-    parser.add_argument('--project', '-p', required=True, help='Project name')
-    parser.add_argument('--output', '-o', default='.', help='Output directory')
-    parser.add_argument('--config', '-c', help='Configuration file')
+    parser = argparse.ArgumentParser(
+        description="Automates the deployment and configuration of the ELK stack (Elasticsearch, Logstash, Kibana)."
+    )
+    parser.add_argument("--project", "-p", required=True, help="Project name")
+    parser.add_argument("--output", "-o", default=".", help="Output directory")
+    parser.add_argument("--config", "-c", help="Configuration file")
 
     args = parser.parse_args()
 
@@ -82,13 +75,15 @@ def main():
         # Load additional configuration
         if Path(args.config).exists():
             with open(args.config) as f:
-                extra_config = json.load(f)
+                json.load(f)
             print(f"✓ Loaded configuration from {args.config}")
 
     print(f"\n✅ Project initialized successfully at {project_path}")
     return 0
 
+
 if __name__ == "__main__":
     import sys
     import time
+
     sys.exit(main())

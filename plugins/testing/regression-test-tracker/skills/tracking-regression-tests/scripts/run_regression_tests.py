@@ -5,12 +5,11 @@ Script to execute the regression test suite and report results.
 Generated: 2025-12-10 03:48:17
 """
 
-import os
 import sys
 import json
 import argparse
 from pathlib import Path
-from datetime import datetime
+
 
 def process_file(file_path: Path) -> bool:
     """Process individual file."""
@@ -24,7 +23,7 @@ def process_file(file_path: Path) -> bool:
     # This is a template that can be customized
 
     try:
-        if file_path.suffix == '.json':
+        if file_path.suffix == ".json":
             with open(file_path) as f:
                 data = json.load(f)
             print(f"  ✓ Valid JSON with {len(data)} keys")
@@ -37,12 +36,13 @@ def process_file(file_path: Path) -> bool:
         print(f"  ✗ Error: {e}")
         return False
 
+
 def process_directory(dir_path: Path) -> int:
     """Process all files in directory."""
     processed = 0
     failed = 0
 
-    for file_path in dir_path.rglob('*'):
+    for file_path in dir_path.rglob("*"):
         if file_path.is_file():
             if process_file(file_path):
                 processed += 1
@@ -51,28 +51,27 @@ def process_directory(dir_path: Path) -> int:
 
     return processed, failed
 
+
 def main():
-    parser = argparse.ArgumentParser(
-        description="Script to execute the regression test suite and report results."
-    )
-    parser.add_argument('input', help='Input file or directory')
-    parser.add_argument('--output', '-o', help='Output directory')
-    parser.add_argument('--verbose', '-v', action='store_true', help='Verbose output')
-    parser.add_argument('--config', '-c', help='Configuration file')
+    parser = argparse.ArgumentParser(description="Script to execute the regression test suite and report results.")
+    parser.add_argument("input", help="Input file or directory")
+    parser.add_argument("--output", "-o", help="Output directory")
+    parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
+    parser.add_argument("--config", "-c", help="Configuration file")
 
     args = parser.parse_args()
 
     input_path = Path(args.input)
 
-    print(f"🚀 regression-test-tracker - run_regression_tests.sh")
-    print(f"   Category: testing")
-    print(f"   Plugin: regression-test-tracker")
+    print("🚀 regression-test-tracker - run_regression_tests.sh")
+    print("   Category: testing")
+    print("   Plugin: regression-test-tracker")
     print(f"   Input: {input_path}")
 
     if args.config:
         if Path(args.config).exists():
             with open(args.config) as f:
-                config = json.load(f)
+                json.load(f)
             print(f"   Config: {args.config}")
 
     # Process input
@@ -81,7 +80,7 @@ def main():
         result = 0 if success else 1
     elif input_path.is_dir():
         processed, failed = process_directory(input_path)
-        print(f"\n📊 SUMMARY")
+        print("\n📊 SUMMARY")
         print(f"   ✅ Processed: {processed}")
         print(f"   ❌ Failed: {failed}")
         result = 0 if failed == 0 else 1
@@ -95,6 +94,7 @@ def main():
         print("\n❌ Completed with errors")
 
     return result
+
 
 if __name__ == "__main__":
     sys.exit(main())

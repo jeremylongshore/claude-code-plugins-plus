@@ -5,12 +5,13 @@ Automates Prometheus deployment and configuration.
 Generated: 2025-12-10 03:48:17
 """
 
-import os
 import json
 import shutil
 import argparse
 from pathlib import Path
 from datetime import datetime
+from typing import Dict
+
 
 class Deployer:
     def __init__(self, source: str, target: str):
@@ -43,11 +44,11 @@ class Deployer:
                 "source": str(self.source),
                 "skill": "monitoring-stack-deployer",
                 "category": "devops",
-                "plugin": "monitoring-stack-deployer"
+                "plugin": "monitoring-stack-deployer",
             }
 
             metadata_file = self.target / ".deployment.json"
-            with open(metadata_file, 'w') as f:
+            with open(metadata_file, "w") as f:
                 json.dump(metadata, f, indent=2)
 
             print(f"✓ Target prepared: {self.target}")
@@ -60,7 +61,7 @@ class Deployer:
         """Deploy files from source to target."""
         success = True
 
-        for source_file in self.source.rglob('*'):
+        for source_file in self.source.rglob("*"):
             if source_file.is_file():
                 relative_path = source_file.relative_to(self.source)
                 target_file = self.target / relative_path
@@ -71,10 +72,7 @@ class Deployer:
                     self.deployed.append(str(relative_path))
                     print(f"  ✓ Deployed: {relative_path}")
                 except Exception as e:
-                    self.failed.append({
-                        "file": str(relative_path),
-                        "error": str(e)
-                    })
+                    self.failed.append({"file": str(relative_path), "error": str(e)})
                     print(f"  ✗ Failed: {relative_path} - {e}")
                     success = False
 
@@ -91,12 +89,12 @@ class Deployer:
             "deployed": len(self.deployed),
             "failed": len(self.failed),
             "deployed_files": self.deployed,
-            "failed_files": self.failed
+            "failed_files": self.failed,
         }
 
         # Save report
         report_file = self.target / "deployment_report.json"
-        with open(report_file, 'w') as f:
+        with open(report_file, "w") as f:
             json.dump(report, f, indent=2)
 
         return report
@@ -112,23 +110,24 @@ class Deployer:
                 print(f"  ✓ Removed: {deployed_file}")
 
         # Remove empty directories
-        for dir_path in sorted(self.target.rglob('*'), reverse=True):
+        for dir_path in sorted(self.target.rglob("*"), reverse=True):
             if dir_path.is_dir() and not any(dir_path.iterdir()):
                 dir_path.rmdir()
 
+
 def main():
     parser = argparse.ArgumentParser(description="Automates Prometheus deployment and configuration.")
-    parser.add_argument('source', help='Source directory')
-    parser.add_argument('target', help='Target deployment directory')
-    parser.add_argument('--dry-run', action='store_true', help='Simulate deployment')
-    parser.add_argument('--force', action='store_true', help='Overwrite existing files')
-    parser.add_argument('--rollback-on-error', action='store_true', help='Rollback on any error')
+    parser.add_argument("source", help="Source directory")
+    parser.add_argument("target", help="Target deployment directory")
+    parser.add_argument("--dry-run", action="store_true", help="Simulate deployment")
+    parser.add_argument("--force", action="store_true", help="Overwrite existing files")
+    parser.add_argument("--rollback-on-error", action="store_true", help="Rollback on any error")
 
     args = parser.parse_args()
 
     deployer = Deployer(args.source, args.target)
 
-    print(f"🚀 Deploying monitoring-stack-deployer...")
+    print("🚀 Deploying monitoring-stack-deployer...")
     print(f"   Source: {args.source}")
     print(f"   Target: {args.target}")
 
@@ -149,7 +148,7 @@ def main():
     # Generate report
     report = deployer.generate_report()
 
-    print(f"\n📊 DEPLOYMENT SUMMARY")
+    print("\n📊 DEPLOYMENT SUMMARY")
     print(f"   Total Files: {report['total_files']}")
     print(f"   ✅ Deployed: {report['deployed']}")
     print(f"   ❌ Failed: {report['failed']}")
@@ -158,13 +157,15 @@ def main():
         deployer.rollback()
         return 1
 
-    if report['failed'] == 0:
-        print(f"\n✅ Deployment completed successfully!")
+    if report["failed"] == 0:
+        print("\n✅ Deployment completed successfully!")
         return 0
     else:
-        print(f"\n⚠️  Deployment completed with errors")
+        print("\n⚠️  Deployment completed with errors")
         return 1
+
 
 if __name__ == "__main__":
     import sys
+
     sys.exit(main())
