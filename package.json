@@ -17,6 +17,7 @@
     "verify": "node scripts/run-verification-pipeline.mjs",
     "lint:root": "eslint .",
     "format:check": "prettier --check 'scripts/**/*.{js,mjs,cjs,ts}' '*.{js,mjs,cjs,ts,json,md,yml,yaml}' 'packages/cli/src/**/*.{ts,json}'",
+    "format": "prettier --write 'scripts/**/*.{js,mjs,cjs,ts}' '*.{js,mjs,cjs,ts,json,md,yml,yaml}' 'packages/cli/src/**/*.{ts,json}'",
     "prepare": "husky"
   },
   "keywords": [

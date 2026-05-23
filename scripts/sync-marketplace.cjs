@@ -24,10 +24,10 @@ const DISALLOWED_KEYS = new Set([
   // Marketplace-website-only display fields. Added 2026-05-07 (Phase 4 of the
   // "Use the Printing Press to Learn" plan). The website renders these from
   // marketplace.extended.json; the CLI marketplace.json never sees them.
-  'tagline',           // 6–10 word NOI-framed outcome subtitle
-  'jrig',              // { verified, layers_passed, total_layers, baseline_delta }
-  'generated',         // boolean — set by /skill-creator --forge in plugin.json AND mirrored to marketplace.extended.json
-  'author_type',       // 'human' | 'forge' — provenance flag, ditto
+  'tagline', // 6–10 word NOI-framed outcome subtitle
+  'jrig', // { verified, layers_passed, total_layers, baseline_delta }
+  'generated', // boolean — set by /skill-creator --forge in plugin.json AND mirrored to marketplace.extended.json
+  'author_type', // 'human' | 'forge' — provenance flag, ditto
 ]);
 
 if (!fs.existsSync(extendedPath)) {

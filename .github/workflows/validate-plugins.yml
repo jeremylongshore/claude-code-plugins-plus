@@ -879,3 +879,46 @@ jobs:
         # uncovered package.json has a `typecheck` script added.
         run: |
           python3 scripts/audit-typescript-coverage.py --report-only --root plugins
+
+  eslint-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - name: Install root dev dependencies
+        run: pnpm install --frozen-lockfile --filter "claude-code-plugins-monorepo"
+
+      # BLOCKING — codebase passed baseline at PR #764 (2026-05-22).
+      # No report-only crutch: external PRs that introduce eslint errors fail here.
+      - name: Run eslint
+        run: pnpm lint:root
+
+  format-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - name: Install root dev dependencies
+        run: pnpm install --frozen-lockfile --filter "claude-code-plugins-monorepo"
+
+      # BLOCKING — 5 files autofixed on PR #764 baseline (2026-05-22).
+      # No report-only crutch: external PRs with formatting drift fail here.
+      # Run `pnpm format` locally to fix before pushing.
+      - name: Check prettier formatting
+        run: pnpm format:check

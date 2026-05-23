@@ -61,10 +61,10 @@ full `.forge/` audit trail. JRig itself got real TypeScript code
   page renders `plugin.jrig?.verified` as a green "JRig-Verified · N/7
   layers" pill; (2) Freshie schema migration adds `jrig_passed`,
   `jrig_tier_blocked`, `jrig_baseline_delta` columns to `skill_compliance`
-  + new `forge_proofs` table for per-plugin verification evidence;
-  (3) new build step `enrich-jrig-data.mjs` reads `forge_proofs` via
-  sqlite3 CLI, writes `marketplace/src/data/jrig-data.json` for the
-  detail-page overlay. Build pipeline now 7 steps (added `jrig:enrich`).
+  - new `forge_proofs` table for per-plugin verification evidence;
+    (3) new build step `enrich-jrig-data.mjs` reads `forge_proofs` via
+    sqlite3 CLI, writes `marketplace/src/data/jrig-data.json` for the
+    detail-page overlay. Build pipeline now 7 steps (added `jrig:enrich`).
 - **Per-plugin `/plugins/<name>/verification` route** (#702) — 316-line
   Astro page that the JRig-Verified badge clicks through to. Two
   states: VERIFIED (shows passing-layer fraction, baseline delta, 7-layer
@@ -106,7 +106,7 @@ full `.forge/` audit trail. JRig itself got real TypeScript code
   `000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md` brought into
   alignment with the validator's actual schema 3.3.1 behavior: 8-field
   enterprise required set (`name, description, allowed-tools, version,
-  author, license, compatibility, tags`) is the IS marketplace tier
+author, license, compatibility, tags`) is the IS marketplace tier
   requirement; missing any of these = ERROR (not warning). The 3.0.0–
   3.2.0 demotion-to-polish direction was reverted in 3.3.0; the doc never
   absorbed that revert until this PR. `allowed-tools` documented to

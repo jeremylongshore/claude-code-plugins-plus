@@ -161,20 +161,31 @@ async function analyzeBundleSize() {
 
 // Mobile budget: max gzipped HTML size for /explore and /skills pages (no lazy-fetched data)
 const MOBILE_BUDGETS = {
-  exploreHtml: 250 * 1024,  // 250 KB gzipped
-  skillsHtml: 250 * 1024,   // 250 KB gzipped
+  exploreHtml: 250 * 1024, // 250 KB gzipped
+  skillsHtml: 250 * 1024, // 250 KB gzipped
 };
 
 async function checkMobileBudgets() {
   log('\n=== Mobile Performance Budget Validation ===\n', 'bold');
   log('Mobile budgets measure only the gzipped HTML for /explore and /skills.', 'blue');
-  log('Lazy-fetched data files (/data/*.json) are excluded — they load after first paint.\n', 'blue');
+  log(
+    'Lazy-fetched data files (/data/*.json) are excluded — they load after first paint.\n',
+    'blue',
+  );
 
   const violations = [];
 
   const targets = [
-    { label: '/explore', file: path.join(DIST_DIR, 'explore', 'index.html'), budget: MOBILE_BUDGETS.exploreHtml },
-    { label: '/skills', file: path.join(DIST_DIR, 'skills', 'index.html'), budget: MOBILE_BUDGETS.skillsHtml },
+    {
+      label: '/explore',
+      file: path.join(DIST_DIR, 'explore', 'index.html'),
+      budget: MOBILE_BUDGETS.exploreHtml,
+    },
+    {
+      label: '/skills',
+      file: path.join(DIST_DIR, 'skills', 'index.html'),
+      budget: MOBILE_BUDGETS.skillsHtml,
+    },
   ];
 
   for (const target of targets) {
@@ -186,11 +197,22 @@ async function checkMobileBudgets() {
     const raw = fs.statSync(target.file).size;
     if (gz <= target.budget) {
       const remaining = target.budget - gz;
-      log(`  ✓ ${target.label}: ${formatBytes(gz)} gzipped (under budget by ${formatBytes(remaining)})`, 'green');
+      log(
+        `  ✓ ${target.label}: ${formatBytes(gz)} gzipped (under budget by ${formatBytes(remaining)})`,
+        'green',
+      );
     } else {
       const overage = gz - target.budget;
-      log(`  ✗ ${target.label}: ${formatBytes(gz)} gzipped — over ${formatBytes(target.budget)} budget by ${formatBytes(overage)}`, 'red');
-      violations.push({ check: `Mobile HTML ${target.label}`, budget: formatBytes(target.budget), actual: formatBytes(gz), overage: formatBytes(overage) });
+      log(
+        `  ✗ ${target.label}: ${formatBytes(gz)} gzipped — over ${formatBytes(target.budget)} budget by ${formatBytes(overage)}`,
+        'red',
+      );
+      violations.push({
+        check: `Mobile HTML ${target.label}`,
+        budget: formatBytes(target.budget),
+        actual: formatBytes(gz),
+        overage: formatBytes(overage),
+      });
     }
   }
 

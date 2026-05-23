@@ -47,10 +47,10 @@ j-rig eval <skill-dir> --models haiku,sonnet,opus --db freshie/inventory.sqlite
 
 ## Two Catalog System — Critical
 
-| File | Purpose | Edit? |
-|---|---|---|
-| `.claude-plugin/marketplace.extended.json` | Source of truth | **Yes** |
-| `.claude-plugin/marketplace.json` | CLI-compatible, auto-generated | **Never** |
+| File                                       | Purpose                        | Edit?     |
+| ------------------------------------------ | ------------------------------ | --------- |
+| `.claude-plugin/marketplace.extended.json` | Source of truth                | **Yes**   |
+| `.claude-plugin/marketplace.json`          | CLI-compatible, auto-generated | **Never** |
 
 `pnpm run sync-marketplace` regenerates all three derived artifacts: `marketplace.json`, any missing `plugins/**/package.json` files, and the `README.md` AUTO-TOC block. The pre-commit hook runs this automatically when `marketplace.extended.json` is staged.
 

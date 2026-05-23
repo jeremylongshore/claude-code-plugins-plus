@@ -10,6 +10,7 @@ Thank you for your interest in contributing to the Claude Code Plugins marketpla
 > **→ [`000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md`](000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md)** — the **Global Master Standard for Claude Skills** (v3.6.0, schema 3.6.0).
 >
 > It documents:
+>
 > - The **8 marketplace-tier required frontmatter fields** (vs Anthropic's 2-field minimum)
 > - The **7 required body sections** (`## Overview`, `## Prerequisites`, `## Instructions`, `## Output`, `## Error Handling`, `## Examples`, `## Resources`)
 > - The **100-point rubric** the validator scores against
