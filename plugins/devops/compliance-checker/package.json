@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/compliance-checker",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Check infrastructure compliance (SOC2, HIPAA, PCI-DSS)",
   "keywords": [
     "compliance",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/docker-compose-generator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Generate Docker Compose configurations for multi-container applications with best practices",
   "keywords": [
     "docker",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/secrets-manager-integrator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Integrate with secrets managers (Vault, AWS Secrets Manager, etc)",
   "keywords": [
     "secrets",

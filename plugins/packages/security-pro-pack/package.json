@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/security-pro-pack",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Professional security tools for Claude Code: vulnerability scanning, compliance, cryptography audit, container & API security",
   "keywords": [
     "security",
