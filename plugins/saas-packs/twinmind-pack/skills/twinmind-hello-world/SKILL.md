@@ -186,7 +186,7 @@ TwinMind routes queries to optimal models:
 
 ### Quick Voice Memo
 
-```javascript
+```text
 // Perfect for capturing ideas on the go
 // 1. Click extension
 // 2. Voice memo mode

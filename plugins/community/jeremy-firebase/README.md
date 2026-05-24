@@ -182,7 +182,7 @@ exports.chat = functions.https.onCall(async (data, context) => {
 
 ### Firestore Security Rules
 
-```javascript
+```text
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -204,7 +204,7 @@ service cloud.firestore {
 
 ### Storage Security Rules
 
-```javascript
+```text
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {

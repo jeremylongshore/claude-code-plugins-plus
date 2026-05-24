@@ -76,7 +76,7 @@ service_role key: eyJhbGciOiJI...
 
 Create `.env.local` from these values (git-ignored):
 
-```bash
+```text
 # .env.local
 SUPABASE_URL=http://localhost:54321
 SUPABASE_ANON_KEY=<anon-key-from-supabase-start>
@@ -186,7 +186,7 @@ npx supabase db reset
 
 Push verified migrations to a remote Supabase project:
 
-```bash
+```text
 # Link to remote project first (one-time)
 npx supabase link --project-ref <your-project-ref>
 

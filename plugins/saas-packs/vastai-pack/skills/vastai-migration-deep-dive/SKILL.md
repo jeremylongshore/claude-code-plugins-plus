@@ -103,7 +103,7 @@ docker push ghcr.io/org/training:vastai
 
 ### Step 3: Adapt Cloud Storage Credentials
 
-```python
+```bash
 # On AWS/GCP: IAM roles provide automatic credentials
 # On Vast.ai: Pass credentials explicitly via environment variables
 

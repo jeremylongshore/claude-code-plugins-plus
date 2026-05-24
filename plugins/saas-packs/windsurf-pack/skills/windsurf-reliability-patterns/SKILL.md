@@ -217,7 +217,7 @@ git branch -d cascade/feature-name
 
 ### Recover from Bad Cascade Edit
 
-```bash
+```text
 # Option 1: Revert all changes since checkpoint
 git checkout -- .
 

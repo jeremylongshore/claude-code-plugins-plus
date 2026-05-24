@@ -853,12 +853,22 @@ jobs:
         with:
           node-version: '20'
 
-      # REPORT-ONLY-UNTIL: 2026-06-21 (skill-codeblock-syntax — bead claude-hy8p)
+      # BLOCKING — codebase passed baseline at PR #771 (2026-05-23).
+      # 5,991 of 16,298 fenced code blocks checked (only python/bash/sh/
+      # javascript get syntax-checked; typescript, json, yaml, text, etc.
+      # are skipped per scripts/lint-skill-codeblocks.py CHECKABLE set).
+      # The 97 baseline failures were all mislabeled language tags:
+      #   - 7 python blocks containing slash-commands / Datadog DSL /
+      #     JSON / ASCII trees / shell — relabeled to text/json/bash
+      #   - 24 javascript blocks containing Firestore Security Rules /
+      #     YAML / pedagogical vulnerable+secure comparisons — relabeled
+      #     to text/yaml/json
+      #   - 66 bash blocks containing CLI usage with <placeholder>
+      #     brackets ("python script.py <input>") — relabeled to text
+      #     (these are illustrative examples, not literal runnable cmds)
       - name: Lint fenced code blocks in SKILL.md / README.md
-        # REPORT-ONLY for initial rollout — flip to blocking once the
-        # cleanup pass clears existing failures across 3000+ SKILL.md files.
         run: |
-          python3 scripts/lint-skill-codeblocks.py --report-only --root plugins
+          python3 scripts/lint-skill-codeblocks.py --root plugins
 
   typescript-coverage-audit:
     runs-on: ubuntu-latest

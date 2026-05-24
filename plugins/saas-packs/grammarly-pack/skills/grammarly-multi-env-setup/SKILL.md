@@ -46,7 +46,7 @@ const grammarlyConfig = (env: string) => ({
 
 ## Environment Files
 
-```bash
+```text
 # Per-env files: .env.development, .env.staging, .env.production
 GRAMMARLY_{DEV|STG|PROD}_CLIENT_ID=<client-id>
 GRAMMARLY_{DEV|STG|PROD}_CLIENT_SECRET=<secret>

@@ -298,7 +298,7 @@ This folder is automatically added to `.gitignore`.
 
 ### Session stuck or corrupted
 
-```bash
+```text
 # Remove the .vibe folder and start fresh
 rm -rf .vibe/
 /vibe-guide:vibe <your goal>

@@ -68,7 +68,7 @@ app.get('/api/user/:id/profile', (req, res) => {
 
 **Example Vulnerability:**
 
-```javascript
+```text
 // Vulnerable: MD5 hashing
 const hash = crypto.createHash('md5').update(password).digest('hex');
 
@@ -87,7 +87,7 @@ const hash = await bcrypt.hash(password, 10);
 
 **Example Vulnerability:**
 
-```javascript
+```text
 // Vulnerable: SQL injection
 const query = `SELECT * FROM users WHERE username='${username}'`;
 
@@ -207,7 +207,7 @@ if (password.length < 12 ||
 
 **Example Vulnerability:**
 
-```javascript
+```text
 // Vulnerable: Unsafe deserialization
 const userData = JSON.parse(req.body.data);
 eval(userData.code);

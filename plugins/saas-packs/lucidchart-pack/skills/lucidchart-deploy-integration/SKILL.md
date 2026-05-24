@@ -126,7 +126,7 @@ docker run -d --name lucidchart-svc --env-file .env.production -p 3000:3000 --me
 
 ## Rollback Procedure
 
-```bash
+```text
 # List recent images
 docker images lucidchart-integration --format "{{.Tag}} {{.CreatedAt}}" | head -5
 # Roll back to previous tag

@@ -55,7 +55,7 @@ Setup > App Manager > New Connected App:
 
 ### Step 2: Credential Storage
 
-```bash
+```text
 # .env (NEVER commit to git)
 SF_LOGIN_URL=https://login.salesforce.com
 SF_USERNAME=integration-user@yourcompany.com

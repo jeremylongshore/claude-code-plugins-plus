@@ -177,7 +177,7 @@ In-Memory Storage:
 
 ### Building a Technical Knowledge Base
 
-```bash
+```text
 # Store API documentation
 store_document(title: "REST API Guide", content: "...", tags: ["api", "docs"])
 
@@ -190,7 +190,7 @@ semantic_search(query: "handle API errors", tags: ["api"])
 
 ### Research Note System
 
-```bash
+```text
 # Store research papers
 store_document(title: "Transformer Architecture", content: "...", tags: ["ml", "nlp", "research"])
 

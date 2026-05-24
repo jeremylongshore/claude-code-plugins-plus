@@ -78,7 +78,7 @@ key_file=~/.oci/oci_api_key_staging.pem
 
 Switch profiles with the `--profile` flag or `OCI_CLI_PROFILE` env var:
 
-```bash
+```text
 # CLI flag
 oci compute instance list --compartment-id <OCID> --profile dev
 

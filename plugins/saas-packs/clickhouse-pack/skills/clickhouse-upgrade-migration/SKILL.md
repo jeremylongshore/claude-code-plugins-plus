@@ -202,7 +202,7 @@ validateUpgrade();
 
 ### Step 6: Rollback Procedure
 
-```bash
+```text
 # Node.js client rollback
 npm install @clickhouse/client@<previous-version> --save-exact
 

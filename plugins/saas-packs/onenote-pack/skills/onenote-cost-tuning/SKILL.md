@@ -200,7 +200,7 @@ GET /me/onenote/sections/{id}/pages?$select=id,title,createdDateTime,lastModifie
 
 Use `$expand` to eliminate follow-up calls:
 
-```bash
+```text
 # Without $expand: 1 call for notebooks + N calls for sections = N+1 calls
 GET /me/onenote/notebooks
 GET /me/onenote/notebooks/{id1}/sections

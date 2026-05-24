@@ -40,7 +40,7 @@ Deploy Adobe-powered applications to three platforms: Vercel (serverless), Googl
 
 App Builder deploys serverless Runtime actions directly to Adobe infrastructure:
 
-```bash
+```text
 # Login to Adobe I/O CLI (requires IMS auth since AIO CLI v11)
 aio login
 
@@ -59,7 +59,7 @@ aio runtime activation list --limit 10
 aio runtime activation logs <activationId>
 ```
 
-```javascript
+```yaml
 // app.config.yaml — App Builder configuration
 application:
   actions: actions

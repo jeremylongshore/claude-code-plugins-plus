@@ -42,7 +42,7 @@ const openEvidenceConfig = (env: string) => ({
 
 ## Environment Files
 
-```bash
+```text
 # Per-env files: .env.development, .env.staging, .env.production
 OPENEVIDENCE_API_KEY_{DEV|STG|PROD}=<api-key>
 OPENEVIDENCE_BASE_URL=https://api.{dev.|staging.|""}openevidence.com/v1

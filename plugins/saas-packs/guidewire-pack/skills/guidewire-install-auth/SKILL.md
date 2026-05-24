@@ -92,7 +92,7 @@ Rotation breaks if the runtime reads the secret only at startup, or if the plain
 
 **SOPS + age (recommended for VM/container deployments).** Encrypt `secrets.prod.sops.yaml` with one or more age public keys, commit the encrypted file to git, decrypt in-process at startup and on `SIGHUP`. The repo holds an auditable history of who rotated what and when; only holders of the age private key can read plaintext. Bootstrap a repo with the same conventions used across this organization:
 
-```bash
+```text
 sops-init                                    # idempotent; writes .sops.yaml + .env.sops + scripts/sops-env
 sops [secrets.prod.sops.yaml](secrets.prod.sops.yaml)   # interactive edit; ciphertext re-written on save
 eval "$(sops -d secrets.prod.sops.yaml | sed -nE 's/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/export \1=\2/p')"

@@ -79,7 +79,7 @@ Foundry Project: "Customer Analytics"
 
 ### Step 3: External API Integration Pattern
 
-```python
+```text
 # External app consuming Foundry Ontology via Platform SDK
 my-external-app/
 ├── src/

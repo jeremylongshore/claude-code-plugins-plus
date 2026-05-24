@@ -192,7 +192,7 @@ compute.terminate_instance(instance_id=instance_id)
 
 ### Step 7: OCI CLI Equivalent
 
-```bash
+```text
 # List instances
 oci compute instance list --compartment-id <TENANCY_OCID> --output table
 

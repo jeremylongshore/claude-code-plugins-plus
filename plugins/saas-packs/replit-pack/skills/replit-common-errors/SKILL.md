@@ -61,7 +61,7 @@ Error: EADDRINUSE: address already in use :::3000
 **Cause:** Previous process still holding the port, or hardcoded port conflicts.
 **Solution:**
 
-```bash
+```text
 # Find and kill the process
 lsof -i :3000 | grep LISTEN
 kill -9 <PID>

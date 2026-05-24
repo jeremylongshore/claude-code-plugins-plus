@@ -183,7 +183,7 @@ A production-grade observability layer ships with all of the following:
 
 ### Example 1 — Datadog burn-rate monitor (SLO target 99.5%)
 
-```python
+```text
 # error_budget = 0.5%/month = ~3.6h/month
 # fast-burn: 2% budget in 1h → page
 sum:trace.http_request.errors{service:guidewire-integration}.as_count() / 

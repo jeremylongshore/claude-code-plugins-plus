@@ -308,7 +308,7 @@ export EXCHANGERATE_API_KEY="your_key_here"
 
 ### Example 1: Solo Backpacker
 
-```bash
+```text
 /travel "Thailand" --days 21 --budget 1500 --interests "beaches,temples,food"
 
 Output:
@@ -335,7 +335,7 @@ Output:
 
 ### Example 3: Family Vacation
 
-```bash
+```text
 /travel "Orlando, Florida" --days 7 --group "2 adults, 2 kids (ages 6,9)"
 
 Output:
@@ -348,7 +348,7 @@ Output:
 
 ### Example 4: Digital Nomad
 
-```bash
+```text
 /travel "Lisbon" --days 30 --work-remote
 
 Output:

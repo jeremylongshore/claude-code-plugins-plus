@@ -24,7 +24,7 @@ Or use the shortcut:
 
 ### Example Queries
 
-```bash
+```text
 # Get current best staking opportunities
 /stake What are the best staking opportunities for ETH?
 

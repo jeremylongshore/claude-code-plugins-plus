@@ -148,7 +148,7 @@ fn_rule = events_client.create_rule(
 
 List active rules and test by triggering an event:
 
-```bash
+```text
 # List event rules via CLI
 oci events rule list --compartment-id ocid1.compartment.oc1..example --all
 

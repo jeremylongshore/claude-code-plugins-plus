@@ -109,7 +109,7 @@ Use [tools reference](references/tools.md) for language-specific tool commands (
 
 After each auto-applied dimension:
 
-```bash
+```text
 # TypeScript/JavaScript
 npx tsc --noEmit 2>&1 | tail -20
 npm test 2>&1 | tail -30

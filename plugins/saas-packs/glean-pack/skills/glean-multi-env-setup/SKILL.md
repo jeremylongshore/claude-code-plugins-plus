@@ -42,7 +42,7 @@ const gleanConfig = (env: string) => ({
 
 ## Environment Files
 
-```bash
+```text
 # Per-env files: .env.development, .env.staging, .env.production
 GLEAN_API_TOKEN_{DEV|STG|PROD}=<token>
 GLEAN_BASE_URL=https://{sandbox|staging|app}.glean.com/api/v1

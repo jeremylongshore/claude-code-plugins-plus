@@ -71,7 +71,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="/path/to/serviceAccountKey.json"
 
 ### Example 1: CRUD Operations
 
-```javascript
+```text
 // Create documents
 "Create a new user document in the 'users' collection"
 
@@ -123,7 +123,7 @@ Agent:
 
 Agent generates:
 
-```javascript
+```text
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -401,7 +401,7 @@ module.exports = {
 
 ### Pattern 1: User Profiles with Privacy
 
-```javascript
+```text
 // Collection structure
 users/{userId}
   - public: { name, avatar, bio }        // Anyone can read
@@ -411,7 +411,7 @@ users/{userId}
 
 ### Pattern 2: Real-time Chat
 
-```javascript
+```text
 // Collection structure
 rooms/{roomId}
   - metadata: { name, createdAt, memberCount }
@@ -427,7 +427,7 @@ messages/{messageId}
 
 ### Pattern 3: E-commerce Orders
 
-```javascript
+```text
 // Collection structure
 orders/{orderId}
   - userId, status, total, createdAt
@@ -498,7 +498,7 @@ firebase projects:list
 
 ### Cloud Functions Integration
 
-```javascript
+```text
 // Trigger Cloud Functions from Firestore
 "Create a function that sends an email when a new user signs up"
 

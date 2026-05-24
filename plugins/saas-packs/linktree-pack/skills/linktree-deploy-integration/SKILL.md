@@ -120,7 +120,7 @@ docker run -d --name linktree-svc --env-file .env.production -p 3000:3000 linktr
 
 ## Rollback Procedure
 
-```bash
+```text
 # List recent images
 docker images linktree-integration --format "{{.Tag}} {{.CreatedAt}}" | head -5
 # Roll back to previous tag

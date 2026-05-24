@@ -50,7 +50,7 @@ const coreweaveConfig = (env: string) => ({
 
 ## Environment Files
 
-```bash
+```text
 # Per-env files: .env.development, .env.staging, .env.production
 CW_API_ENDPOINT_{DEV|STG|PROD}=https://k8s.{ord1|ord1|las1}.coreweave.com
 CW_TOKEN_{DEV|STG|PROD}=<service-account-token>

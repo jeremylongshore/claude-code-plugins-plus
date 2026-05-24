@@ -61,7 +61,7 @@ Understands query context:
 
 ### Classic SQL Injection
 
-```javascript
+```text
 // VULNERABLE
 const query = `SELECT * FROM users WHERE username='${username}'`;
 db.query(query);
@@ -77,7 +77,7 @@ db.query(query, [username]);
 
 ### Second-Order SQL Injection
 
-```javascript
+```text
 // VULNERABLE
 app.post('/register', (req, res) => {
     const username = req.body.username;
@@ -120,7 +120,7 @@ User.findAll({
 
 ### Blind SQL Injection
 
-```javascript
+```text
 // VULNERABLE
 const query = `SELECT * FROM products WHERE id=${id}`;
 const result = db.query(query);

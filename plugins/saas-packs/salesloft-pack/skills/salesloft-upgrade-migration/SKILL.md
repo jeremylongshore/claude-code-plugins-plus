@@ -110,7 +110,7 @@ const { data: imported } = await api.post('/cadence_imports.json', {
 
 ## Rollback
 
-```bash
+```text
 # Pin to previous behavior
 git checkout -b rollback/salesloft-migration
 git revert <migration-commit>

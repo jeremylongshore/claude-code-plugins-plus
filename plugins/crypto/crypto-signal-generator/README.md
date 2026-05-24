@@ -24,7 +24,7 @@ Or use the shortcut:
 
 ### Example Queries
 
-```bash
+```text
 # Basic signal generation
 /signal Generate signal for BTC/USDT
 

@@ -234,7 +234,7 @@ Simulate and analyze flash loan strategies including arbitrage, liquidations, an
 
 #### Flash Loan Arbitrage Simulation
 
-```javascript
+```text
 const { ethers } = require('ethers');
 
 // Before (Alchemy - Paid)
@@ -257,7 +257,7 @@ const profit = calculateArbitrage(uniswapPrice, sushiswapPrice);
 
 #### Aave Liquidation Simulation
 
-```javascript
+```text
 // Using free Infura RPC
 const provider = new ethers.providers.JsonRpcProvider(
   `https://mainnet.infura.io/v3/${INFURA_FREE_KEY}`  // $0 (free tier)

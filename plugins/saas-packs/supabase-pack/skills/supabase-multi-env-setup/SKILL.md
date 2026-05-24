@@ -101,7 +101,7 @@ SUPABASE_ENV=production
 
 **Link each environment to the CLI:**
 
-```bash
+```text
 # Local development
 npx supabase start
 
@@ -234,7 +234,7 @@ Promote migrations through environments (local -> staging -> production) and use
 
 **Migration promotion workflow:**
 
-```bash
+```text
 # 1. Create migration locally
 npx supabase migration new add_profiles_table
 # Edit: supabase/migrations/20260120000000_add_profiles_table.sql
@@ -261,7 +261,7 @@ npx supabase gen types typescript --local > lib/database.types.ts
 
 **Database branching for preview environments:**
 
-```bash
+```text
 # Create a branch for a feature (requires Supabase Pro plan)
 npx supabase branches create feature-user-profiles \
   --project-ref <staging-ref>

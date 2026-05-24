@@ -147,7 +147,7 @@ npx supabase gen types typescript --local > lib/database.types.ts
 
 **Apply migrations to remote environments:**
 
-```bash
+```text
 # Push to staging
 npx supabase link --project-ref <staging-ref>
 npx supabase db push
@@ -322,7 +322,7 @@ After completing this skill, you will have:
 
 **Example 1 — Complete migration workflow:**
 
-```bash
+```text
 # 1. Create migration
 npx supabase migration new add_tags_to_projects
 

@@ -163,7 +163,7 @@ breaker.fallback(() => ({
 
 ## Final Verification Script
 
-```bash
+```text
 #!/bin/bash
 set -euo pipefail
 # prod-verify.sh

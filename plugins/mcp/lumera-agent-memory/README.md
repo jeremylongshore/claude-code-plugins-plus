@@ -228,7 +228,7 @@ pytest tests/test_fts_search.py -v
 
 ## Running the MCP Server
 
-```bash
+```text
 # Direct execution
 python3 src/mcp_server.py
 

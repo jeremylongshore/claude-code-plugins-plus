@@ -357,7 +357,7 @@ docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
 
 ### Chat Interface
 
-```bash
+```text
 ollama run llama3.2
 >>> Write a Python function to sort a list
 ```

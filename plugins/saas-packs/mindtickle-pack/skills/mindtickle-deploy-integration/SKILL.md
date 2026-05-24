@@ -124,7 +124,7 @@ docker run -d --name mindtickle-svc --env-file .env.production -p 3000:3000 mind
 
 ## Rollback Procedure
 
-```bash
+```text
 # List recent images
 docker images mindtickle-integration --format "{{.Tag}} {{.CreatedAt}}" | head -5
 # Roll back to previous tag

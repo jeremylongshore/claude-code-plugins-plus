@@ -151,7 +151,7 @@ results = asyncio.run(parallel_completions(
 
 ## Connection Optimization
 
-```python
+```text
 # Reuse client instance (connection pooling)
 # BAD: creating new client per request
 for prompt in prompts:

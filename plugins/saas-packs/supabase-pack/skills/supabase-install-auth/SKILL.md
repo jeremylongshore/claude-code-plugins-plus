@@ -167,7 +167,7 @@ console.log('Supabase connected successfully')
 
 **Optional — generate TypeScript types from the database schema:**
 
-```bash
+```text
 npx supabase login
 npx supabase link --project-ref <your-project-ref>
 npx supabase gen types typescript --linked > lib/database.types.ts

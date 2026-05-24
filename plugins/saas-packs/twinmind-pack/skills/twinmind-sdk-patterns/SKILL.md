@@ -85,7 +85,7 @@ class TwinMindClient:
 
 ### Step 3: Meeting Context Integration
 
-```python
+```text
     def create_meeting_context(self, meeting_id: str, transcript: str, participants: list) -> dict:
         return self._request("POST", "/contexts/meeting", json={
             "meeting_id": meeting_id,

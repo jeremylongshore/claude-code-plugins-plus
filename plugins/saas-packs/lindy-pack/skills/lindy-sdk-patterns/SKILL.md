@@ -143,7 +143,7 @@ return json.dumps({"filtered_count": len(cleaned), "items": cleaned})
 
 **JavaScript example** (API call + processing):
 
-```javascript
+```text
 // Run Code action — JavaScript
 // Input variables: query (string), api_key (string)
 const response = await fetch(`https://api.example.com/search?q=${query}`, {

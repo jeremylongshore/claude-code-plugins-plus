@@ -1108,7 +1108,7 @@ See [OpenBB docs](https://docs.openbb.co/platform/reference) for full list.
 
 Create custom research pipelines:
 
-```python
+```text
 # Multi-stock comparison
 for ticker in ["AAPL", "MSFT", "GOOGL"]:
     /openbb-equity {ticker} --analysis=all

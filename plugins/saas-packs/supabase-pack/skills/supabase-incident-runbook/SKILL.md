@@ -304,7 +304,7 @@ async function debugRLS(table: string, userId: string) {
 
 **Edge Function log inspection:**
 
-```bash
+```text
 # View recent Edge Function logs
 npx supabase functions logs my-function --project-ref <project-ref>
 

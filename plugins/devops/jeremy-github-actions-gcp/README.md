@@ -289,7 +289,7 @@ jobs:
 
 The plugin includes a **PreToolUse** hook that validates workflow files **before** they're written:
 
-```bash
+```text
 # Automatically runs on .github/workflows/*.yml files
 
 scripts/validate-workflow.sh <workflow-file>

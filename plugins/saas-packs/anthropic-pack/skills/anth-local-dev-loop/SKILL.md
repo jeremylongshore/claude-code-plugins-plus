@@ -106,7 +106,7 @@ export function mockMessage(text: string): Message {
 
 ### Step 4: Hot-Reload Dev Script
 
-```bash
+```text
 # package.json scripts
 "scripts": {
   "dev": "tsx watch src/index.ts",

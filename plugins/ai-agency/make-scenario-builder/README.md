@@ -149,7 +149,7 @@ Action: Google Sheets Add Row (n8n)
 
 #### n8n + Ollama Version
 
-```javascript
+```text
 // n8n HTTP Request Node
 {
   "method": "POST",

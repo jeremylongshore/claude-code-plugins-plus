@@ -145,7 +145,7 @@ ClickPipes Configuration (Cloud Console):
 
 ### Step 4: HTTP Interface Bulk Insert
 
-```bash
+```text
 # Insert from CSV file via HTTP (no client needed)
 curl 'http://localhost:8123/?query=INSERT+INTO+analytics.events+FORMAT+CSVWithNames' \
   --data-binary @events.csv

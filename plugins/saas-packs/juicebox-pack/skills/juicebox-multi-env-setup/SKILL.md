@@ -42,7 +42,7 @@ const juiceboxConfig = (env: string) => ({
 
 ## Environment Files
 
-```bash
+```text
 # Per-env files: .env.development, .env.staging, .env.production
 JB_KEY_{DEV|STG|PROD}=<api-key>
 JB_WORKSPACE_{DEV|STG|PROD}=<workspace-id>

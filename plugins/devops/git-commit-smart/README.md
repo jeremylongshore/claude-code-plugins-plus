@@ -43,7 +43,7 @@ git add .
 
 ### Example Session
 
-```bash
+```text
 # Stage changes
 git add src/auth/login.js src/api/users.js
 

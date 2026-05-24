@@ -94,7 +94,7 @@ Before flagging ANY intro, follow-up, or email item as "pending" or "no reply", 
 - Alfred/Howie — scheduling assistant (alfred@hypergrowthpartners.com, alfred@hybridautopilotrun.com)
 - Giulia (giulia@growth.li, giulia@hypergrowthpartners.com)
 
-```bash
+```text
 gog --account {user.work_email} --no-input gmail thread get <threadId>
 ```
 

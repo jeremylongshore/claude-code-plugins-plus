@@ -126,7 +126,7 @@ This plugin implements three core SOPs:
 
 Required environment variables:
 
-```bash
+```text
 # Contabo API
 CONTABO_API_KEY=<your-api-key>
 

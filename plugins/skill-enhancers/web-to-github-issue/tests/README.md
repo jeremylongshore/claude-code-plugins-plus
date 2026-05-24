@@ -260,7 +260,7 @@ Tests the markdown formatter that creates formatted GitHub issue bodies.
 
 ### vitest.config.js
 
-```javascript
+```json
 {
   test: {
     globals: true,

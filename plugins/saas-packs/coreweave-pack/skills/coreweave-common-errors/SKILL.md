@@ -29,7 +29,7 @@ compatibility: Designed for Claude Code
 
 ### 1. Pod Stuck Pending -- No GPU Available
 
-```bash
+```text
 kubectl describe pod <pod-name> | grep -A5 Events
 # "0/N nodes are available: insufficient nvidia.com/gpu"
 ```
@@ -79,7 +79,7 @@ kubectl get nodes -o json | jq -r '.items[].metadata.labels["gpu.nvidia.com/clas
 
 **Fix**: Check Service and Endpoints:
 
-```bash
+```text
 kubectl get svc,endpoints <service-name>
 ```
 

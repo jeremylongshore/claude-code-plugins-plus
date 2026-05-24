@@ -50,7 +50,7 @@ git diff <base>...HEAD --stat
 
 Always merge the base branch _before_ running tests — tests must pass against the merged state, not just your branch in isolation.
 
-```bash
+```text
 git fetch origin <base> && git merge origin/<base> --no-edit
 ```
 
@@ -105,7 +105,7 @@ For each gap, generate a test. Run it. If it passes, commit it. If it fails, fix
 
 Read the full diff:
 
-```bash
+```text
 git diff origin/<base>
 ```
 
@@ -182,7 +182,7 @@ If tests fail: STOP. Fix the issue, return to Step 2.
 
 ## Step 7: Push + PR
 
-```bash
+```text
 git push -u origin <branch-name>
 ```
 

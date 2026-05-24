@@ -171,7 +171,7 @@ python -m pytest tests/ -v
 
 **Rollback procedure** (if upgrade causes issues):
 
-```bash
+```text
 # Option A: Pin to previous version
 npm install @supabase/supabase-js@<previous-version>
 pip install supabase==<previous-version>

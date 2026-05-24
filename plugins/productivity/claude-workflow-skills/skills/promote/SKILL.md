@@ -167,7 +167,7 @@ Skip this step entirely if `.claude-plugin/plugin.json` does not exist.
 
 ## Step 6: Tag and release
 
-```bash
+```text
 git tag -a v<next-version> -m "Release v<next-version>"
 git push origin v<next-version>
 gh release create v<next-version> \
@@ -190,7 +190,7 @@ gh issue close <N> --comment "Resolved in $(gh release view v<next-version> --js
 
 If a feature branch was merged in Step 3, delete it locally and remotely:
 
-```bash
+```text
 git branch -d <feature-branch>
 git push origin --delete <feature-branch>
 ```

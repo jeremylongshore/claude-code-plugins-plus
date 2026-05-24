@@ -112,7 +112,7 @@ const client = process.env.MOCK ? createMockClient() : new Anthropic();
 
 ## Python Dev Loop
 
-```bash
+```text
 pip install anthropic python-dotenv ipython
 
 # Interactive exploration

@@ -97,7 +97,7 @@ Run and manage integration test suites with automatic environment setup, databas
 
 ## Example Workflow
 
-```bash
+```text
 # 1. Plugin runs pre-flight checks
 Checking environment... 
 Database available... 

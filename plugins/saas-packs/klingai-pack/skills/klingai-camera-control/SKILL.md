@@ -29,7 +29,7 @@ Add controlled camera movements to text-to-video and image-to-video generation u
 
 ## Camera Control Parameters
 
-```python
+```json
 "camera_control": {
     "type": "simple",     # "simple" = one movement axis
     "config": {

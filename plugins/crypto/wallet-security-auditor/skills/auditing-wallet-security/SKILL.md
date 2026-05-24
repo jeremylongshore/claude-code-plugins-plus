@@ -42,7 +42,7 @@ Before using this skill, ensure you have:
 
 Scan wallet for all active ERC20 token approvals:
 
-```bash
+```text
 cd ${CLAUDE_SKILL_DIR}/scripts
 python wallet_auditor.py approvals <address> --chain <chain>
 ```
@@ -71,7 +71,7 @@ Analyzes:
 
 Get weighted security risk score (0-100, higher = safer):
 
-```bash
+```text
 python wallet_auditor.py score <address>
 python wallet_auditor.py score <address> --json  # JSON output
 ```
@@ -107,7 +107,7 @@ Detects:
 
 Get prioritized list of approvals to revoke:
 
-```bash
+```text
 python wallet_auditor.py revoke-list <address>
 ```
 

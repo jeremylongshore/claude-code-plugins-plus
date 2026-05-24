@@ -50,7 +50,7 @@ Review source files for:
 
 For shell scripts, also check:
 
-```bash
+```text
 bash -n <script.sh>   # syntax check each script
 ```
 

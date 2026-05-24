@@ -639,7 +639,7 @@ Use case: Customer feedback analysis
 
 ### Build RAG System for Legal Documents (15 minutes)
 
-```bash
+```text
 claude
 
 # 1. Design RAG architecture

@@ -38,7 +38,7 @@ Diagnose and resolve the most common Vercel errors across three layers: build pi
 
 ### Step 1: Identify the Error Layer
 
-```bash
+```text
 # Check deployment status and error details
 vercel inspect <deployment-url>
 
