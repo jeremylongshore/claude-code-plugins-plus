@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/code-cleanup",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Comprehensive codebase cleanup across 11 quality dimensions with confidence scoring and build verification gates",
   "keywords": [
     "code-quality",

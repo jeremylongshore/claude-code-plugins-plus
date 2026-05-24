@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/travel-assistant",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Intelligent travel assistant with real-time weather, currency conversion, timezone info, and AI-powered itinerary planning. Your complete travel companion.",
   "keywords": [
     "travel",

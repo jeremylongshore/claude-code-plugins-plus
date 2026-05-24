@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/jeremy-firestore",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Firestore database specialist for schema design, queries, and real-time sync",
   "keywords": [
     "firebase",

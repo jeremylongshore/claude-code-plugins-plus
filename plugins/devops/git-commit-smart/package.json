@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/git-commit-smart",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "AI-powered conventional commit message generator with smart analysis",
   "keywords": [
     "git",

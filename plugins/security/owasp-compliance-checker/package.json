@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/owasp-compliance-checker",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Check OWASP Top 10 compliance",
   "keywords": [
     "security",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/mindtickle-pack",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Claude Code skill pack for Mindtickle - 18 skills covering sales readiness, training, and revenue enablement",
   "main": "README.md",
   "type": "module",

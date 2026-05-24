@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/twinmind-pack",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Claude Code skill pack for TwinMind - 24 skills covering AI meeting assistant, transcription, and memory vault integration",
   "main": "README.md",
   "type": "module",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/openrouter-pack",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Claude Code skill pack for OpenRouter - 30 skills covering multi-model LLM gateway and API routing",
   "main": "README.md",
   "type": "module",

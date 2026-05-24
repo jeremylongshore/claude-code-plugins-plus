@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/claude-workflow-skills",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Common workflow skills for Claude Code sessions: promote changes through the full release cycle, audit Claude Code plugins/skills/agents, audit project standards compliance, analyse projects for impro",
   "keywords": [
     "workflow",
