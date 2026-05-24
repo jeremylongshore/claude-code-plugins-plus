@@ -10,6 +10,7 @@ to plain H2 — the operator can toggle blocks manually.
 > Paste in Claude Code: `/agency-os start {{TASK_ID}}`
 
 ## Description
+
 {{NOTES}}
 
 (Freeform context. What needs to be done, why, acceptance criteria. Link any docs/skills the
@@ -33,6 +34,7 @@ every kickoff brief — keep it tight.)
      loops back to To-Do with Last Done updated). -->
 
 ## Related
+
 - Corpus: [→ {{CORPUS_NAME}}]({{CORPUS_URL}})
 - General guidance: [→ Guidance]({{GUIDANCE_URL}})
 {{PARENT_LINE}}

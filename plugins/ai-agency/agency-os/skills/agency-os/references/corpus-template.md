@@ -1,12 +1,14 @@
 # {{NAME}}
 
 ## Goal
+
 {{GOAL}}
 
 (1-3 sentences. What does "done" look like for this whole corpus? Be concrete: a number, a
 state, a ship date. This is loaded into every kickoff brief for tasks under this corpus.)
 
 ## Local guidance
+
 What's distinct about this corpus that the General Guidance doesn't already cover:
 
 - Conventions specific to this work
