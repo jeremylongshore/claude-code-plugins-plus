@@ -203,4 +203,3 @@ The CI ran. All 10 gates failed. The contributor restructured the SKILL.md from 
 5. **Never extend a deadline without a written plan.** If the backlog is too large, the deadline was too aggressive; next time, choose 8–12 weeks instead. The discipline is in the deliberate choice, not in the calendar date.
 
 The system ensures that advisory gates cannot quietly rot into permanent technical debt. They expire, they get re-evaluated, or they go blocking. Technical governance becomes automatic.
-

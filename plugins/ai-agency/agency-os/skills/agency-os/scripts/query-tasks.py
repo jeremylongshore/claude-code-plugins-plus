@@ -10,6 +10,7 @@ filtered enumeration of a data source. The REST API does. We call it directly.
 Usage:
   python .claude/skills/agency-os/scripts/query-tasks.py
 """
+
 from __future__ import annotations
 
 import json
@@ -205,22 +206,24 @@ def main() -> int:
         in_batch_ids.add(page_id)
         raw_dep_ids[page_id] = dep_ids
         desc = fetch_description_preview(page_id, token)
-        tasks.append({
-            "id": page_id,
-            "url": r.get("url"),
-            "title": title,
-            "corpus": prop_select(props, "Corpus"),
-            "priority": prop_select(props, "Priority"),
-            "effort": prop_select(props, "Effort"),
-            "type": prop_select(props, "Type"),
-            "cadence": prop_select(props, "Cadence"),
-            "last_done": prop_date(props, "Last Done"),
-            "exec": exec_val,
-            "parent_task_id": parent_ids[0] if parent_ids else None,
-            "has_todo_subtasks": subtasks_count > 0,
-            "description_preview": desc,
-            "dependencies": [],  # filled below
-        })
+        tasks.append(
+            {
+                "id": page_id,
+                "url": r.get("url"),
+                "title": title,
+                "corpus": prop_select(props, "Corpus"),
+                "priority": prop_select(props, "Priority"),
+                "effort": prop_select(props, "Effort"),
+                "type": prop_select(props, "Type"),
+                "cadence": prop_select(props, "Cadence"),
+                "last_done": prop_date(props, "Last Done"),
+                "exec": exec_val,
+                "parent_task_id": parent_ids[0] if parent_ids else None,
+                "has_todo_subtasks": subtasks_count > 0,
+                "description_preview": desc,
+                "dependencies": [],  # filled below
+            }
+        )
 
     # Resolve dep statuses. Deps that share the in-batch set are "To-Do" by construction
     # (that's why they're in the sidecar). Everything else is fetched one page at a time.

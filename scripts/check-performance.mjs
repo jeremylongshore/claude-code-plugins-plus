@@ -24,9 +24,9 @@ const DIST_DIR = path.join(REPO_ROOT, 'marketplace', 'dist');
 // 'data'      — large JSON data files served as runtime-fetched static assets; not inlined HTML.
 const EXCLUDE_DIRS = ['downloads', 'data'];
 
-// Performance budgets (calibrated for 414+ plugin marketplace with 63 SaaS packs, 2026-03)
+// Performance budgets (recalibrated 2026-05-24 for 424+ plugins post-CI hardening campaign)
 const BUDGETS = {
-  totalSize: 40 * 1024 * 1024, // 40MB gzipped (414 plugins + 63 SaaS packs + 2,788 skills + dark/light theme CSS)
+  totalSize: 48 * 1024 * 1024, // 48MB gzipped — bumped from 40MB after agency-os addition + 47 .sh→.py renames + ts-coverage typecheck scripts hit exactly 40MB on PR #775's CI
   largestFile: 1024 * 1024, // 1MB gzipped (explore page lists all plugins + keyword filter + install buttons)
   buildTime: 30 * 1000, // 30 seconds (ms) — more pages = longer build
   routeCount: {
