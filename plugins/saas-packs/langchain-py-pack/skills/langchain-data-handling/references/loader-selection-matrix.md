@@ -21,7 +21,7 @@ Per-format loader reference for LangChain 1.0. Each row: preferred loader, alter
 | JSON / JSONL | `JSONLoader(jq_schema=...)` | — | Flexible field extraction via `jq` | `jq_schema` is required; typos fail silently | Free (local) |
 | S3 / GCS / Azure blob | `S3FileLoader`, `GCSFileLoader`, `AzureBlobStorageFileLoader` | — | Cloud-native; IAM-authed | Double data transfer if you then re-upload to vector store | Egress $ |
 | Google Drive | `GoogleDriveLoader` | — | OAuth-authed; mime-aware | Requires service account + shared folder | Free (API quota) |
-| YouTube transcripts | `YoutubeLoader` | `YoutubeAudioLoader` + Whisper | Fast; free when captions exist | Captions may be auto-generated (noisy); no captions → audio loader + STT $ |
+| YouTube transcripts | `YoutubeLoader` | `YoutubeAudioLoader` + Whisper | Fast; free when captions exist | Captions may be auto-generated (noisy) | no-captions falls back to audio loader + STT $ |
 
 ## Selection Rules
 

@@ -1,6 +1,6 @@
 # Mode Detection Algorithm
 
-#### Step 1: Check for explicit base mode request
+## Step 1: Check for explicit base mode request
 
 ```python
 base_mode = None
@@ -13,7 +13,7 @@ elif "adhd mode" or "neurodivergent mode" in user_message.lower():
     base_mode = "neurodivergent"
 ```
 
-#### Step 2: Check for explicit accessibility mode request
+### Step 2: Check for explicit accessibility mode request
 
 ```python
 # Detect colorblind-safe mode
@@ -31,7 +31,7 @@ if any(keyword in user_message.lower() for keyword in monochrome_keywords):
     accessibility_mode = "monochrome"
 ```
 
-#### Step 3: Check configuration file
+### Step 3: Check configuration file
 
 ```python
 if config_file_exists():
@@ -48,7 +48,7 @@ if config_file_exists():
             accessibility_mode = config.get("monochrome", False) and "monochrome"
 ```
 
-#### Step 4: Auto-detect base mode from language
+### Step 4: Auto-detect base mode from language
 
 ```python
 distress_signals = ["overwhelmed", "paralyzed", "stuck", "can't decide",
@@ -63,14 +63,14 @@ if base_mode is None:
         base_mode = "neurodivergent"
 ```
 
-#### Step 5: Default to neurodivergent base mode (inclusive)
+### Step 5: Default to neurodivergent base mode (inclusive)
 
 ```python
 if base_mode is None:
     base_mode = "neurodivergent"  # Backward compatible with v2.0
 ```
 
-#### Step 6: Apply modes
+### Step 6: Apply modes
 
 ```python
 # accessibility_mode can be None, "colorblind-safe", or "monochrome"

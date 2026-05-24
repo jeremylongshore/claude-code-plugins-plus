@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD046 -->
+
 # API Migration Guide: [API Name] - Version [Old Version] to Version [New Version]
 
 This document outlines the necessary steps to migrate your application from version [Old Version] to version [New Version] of the [API Name] API. Carefully review these instructions to ensure a smooth and successful transition.

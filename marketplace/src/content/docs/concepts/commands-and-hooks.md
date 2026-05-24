@@ -223,7 +223,7 @@ argument-hint: "<version>"
 6. Wait for CI to pass, then publish to npm
 ```
 
-#### The Analysis Command
+### The Analysis Command
 
 Gathers data and produces a report:
 

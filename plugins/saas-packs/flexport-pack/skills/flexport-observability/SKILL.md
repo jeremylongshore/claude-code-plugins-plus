@@ -127,7 +127,7 @@ groups:
 | Panel | Query | Purpose |
 |-------|-------|---------|
 | Request rate | `rate(flexport_api_requests_total[5m])` | Throughput |
-| Error rate | `rate(flexport_api_requests_total{status=~"4..|5.."}[5m])` | Reliability |
+| Error rate | `rate(flexport_api_requests_total{status=~"4..\|5.."}[5m])` | Reliability |
 | p99 latency | `histogram_quantile(0.99, rate(flexport_api_latency_seconds_bucket[5m]))` | Performance |
 | Rate limit headroom | `flexport_rate_limit_remaining` | Quota |
 

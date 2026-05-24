@@ -29,13 +29,13 @@ Comprehensive guide for migrating from another search engine (Elasticsearch, Typ
 
 ## Migration Planning
 
-| From | To Algolia | Difficulty | Duration |
-|------|-----------|-----------|----------|
-| Elasticsearch | Medium — query syntax differs significantly | 2-4 weeks |
-| Typesense | Low — similar hosted model | 1-2 weeks |
-| Meilisearch | Low — similar API concepts | 1-2 weeks |
-| Custom SQL LIKE | Low — major upgrade | 1-2 weeks |
-| Solr | Medium — config-heavy to API-driven | 2-4 weeks |
+| From | Difficulty | Notes | Duration |
+|------|-----------|-------|----------|
+| Elasticsearch | Medium | query syntax differs significantly | 2-4 weeks |
+| Typesense | Low | similar hosted model | 1-2 weeks |
+| Meilisearch | Low | similar API concepts | 1-2 weeks |
+| Custom SQL LIKE | Low | major upgrade | 1-2 weeks |
+| Solr | Medium | config-heavy to API-driven | 2-4 weeks |
 
 ## Instructions
 

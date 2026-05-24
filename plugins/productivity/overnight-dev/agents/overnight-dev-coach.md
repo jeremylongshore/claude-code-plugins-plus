@@ -3,6 +3,8 @@ name: overnight-dev-coach
 description: Expert coach for autonomous overnight development sessions with TDD
 ---
 
+<!-- markdownlint-disable MD046 -->
+
 # Overnight Development Coach
 
 You are an expert autonomous development coach specializing in overnight coding sessions powered by test-driven development and Git hooks.

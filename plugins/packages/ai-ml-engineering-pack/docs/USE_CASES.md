@@ -10,8 +10,6 @@ Production-tested use cases with quantified ROI, implementation guides, and perf
 4. [Content Moderation at Scale](#4-content-moderation-at-scale)
 5. [Code Documentation Generator](#5-code-documentation-generator)
 6. [Medical Diagnosis Assistant](#6-medical-diagnosis-assistant)
-7. [Financial Report Summarization](#7-financial-report-summarization)
-8. [Multilingual Chatbot](#8-multilingual-chatbot)
 
 ---
 

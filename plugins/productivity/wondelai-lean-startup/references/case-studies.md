@@ -4,14 +4,14 @@ These case studies illustrate how lean principles work in practice. Each follows
 
 ## Table of Contents
 
-1. [Case Study 1: Dropbox - The Smoke Test MVP](#case-study-1-dropbox-the-smoke-test-mvp)
-2. [Case Study 2: IMVU - Continuous Deployment and Learning](#case-study-2-imvu-continuous-deployment-and-learning)
-3. [Case Study 3: Zappos - The Wizard of Oz MVP](#case-study-3-zappos-the-wizard-of-oz-mvp)
-4. [Case Study 4: Groupon - The Piecemeal MVP](#case-study-4-groupon-the-piecemeal-mvp)
-5. [Case Study 5: Food on the Table - The Concierge MVP](#case-study-5-food-on-the-table-the-concierge-mvp)
-6. [Case Study 6: Aardvark - Before-Building Validation](#case-study-6-aardvark-before-building-validation)
-7. [Failure Case 1: Webvan - Scaling Without Validation](#failure-case-1-webvan-scaling-without-validation)
-8. [Failure Case 2: Segway - The Product Nobody Asked For](#failure-case-2-segway-the-product-nobody-asked-for)
+1. [Case Study 1: Dropbox - The Smoke Test MVP](#case-study-1-dropbox---the-smoke-test-mvp)
+2. [Case Study 2: IMVU - Continuous Deployment and Learning](#case-study-2-imvu---continuous-deployment-and-learning)
+3. [Case Study 3: Zappos - The Wizard of Oz MVP](#case-study-3-zappos---the-wizard-of-oz-mvp)
+4. [Case Study 4: Groupon - The Piecemeal MVP](#case-study-4-groupon---the-piecemeal-mvp)
+5. [Case Study 5: Food on the Table - The Concierge MVP](#case-study-5-food-on-the-table---the-concierge-mvp)
+6. [Case Study 6: Aardvark - Before-Building Validation](#case-study-6-aardvark---before-building-validation)
+7. [Failure Case 1: Webvan - Scaling Without Validation](#failure-case-1-webvan---scaling-without-validation)
+8. [Failure Case 2: Segway - The Product Nobody Asked For](#failure-case-2-segway---the-product-nobody-asked-for)
 9. [Cross-Cutting Patterns](#cross-cutting-patterns)
 
 ---

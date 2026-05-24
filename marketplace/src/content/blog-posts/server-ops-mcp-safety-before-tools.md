@@ -154,4 +154,3 @@ This matters more for a Model Context Protocol (MCP) server than for ordinary to
 - [Intent Catalog: Six Phases from Empty Repo to Production Control Plane](/posts/intent-catalog-six-phases-control-plane/) — the sibling shape: empty repo to working control plane in a small number of clean phases.
 - [Guidewire MCP v0.1.0: Carrier-Native Server Blueprint](/posts/guidewire-mcp-v0-1-0-foundation-ship/) — another foundation-ship MCP post, same v0.1.0 framing.
 - [A v1.0 Is a Gate, Not a Tag](/posts/v1-release-gate-conditional-go/) — release-gate discipline; the same logic that says "design the invariants first" applies to "earn the version number."
-

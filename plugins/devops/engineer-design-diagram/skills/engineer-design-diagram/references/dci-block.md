@@ -18,7 +18,7 @@ These run at skill activation, in order. Each ends with a fallback that handles 
 | 1 | `git rev-parse --show-toplevel` | ~60 B | Confirm git repo + root path |
 | 2 | `git rev-parse --short HEAD; git branch --show-current` | ~100 B | SHA + branch for fingerprint metadata |
 | 3 | `ls package.json pyproject.toml Cargo.toml go.mod requirements.txt docker-compose.yml Dockerfile` | ~200 B | Manifest presence probe |
-| 4 | `jq -r '.name,.dependencies // {} | keys[]?' package.json` | ~800 B (capped) | Node dep list for role inference |
+| 4 | `jq -r '.name,.dependencies // {} \| keys[]?' package.json` | ~800 B (capped) | Node dep list for role inference |
 | 5 | `docker compose config --services` | ~400 B | Docker service enumeration |
 | 6 | `find . -maxdepth 3 -type d -name k8s/kubernetes/manifests` | ~200 B | k8s manifest dir discovery |
 | 7 | `find . -maxdepth 3 -name '*.tf'` | ~400 B | Terraform file discovery |

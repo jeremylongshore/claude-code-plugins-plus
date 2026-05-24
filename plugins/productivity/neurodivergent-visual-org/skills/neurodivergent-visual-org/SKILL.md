@@ -159,7 +159,7 @@ Use when the user:
 
 ## Core Principles
 
-#### Always apply these neurodivergent-friendly principles:
+### Always apply these neurodivergent-friendly principles:
 
 - Use compassionate, non-judgmental language (never "just do it" or "should be easy")
 - Give realistic time estimates with buffer (use 1.5-2x what seems reasonable)
@@ -413,7 +413,7 @@ If angle brackets appear as literal text in the rendered diagram, the URL encodi
 - "Build a habit" → Flowchart (habit stacking) or User journey
 - "Plan my day" → Timeline or Gantt (time-blocked)
 
-#### Always:
+### Always:
 
 ✅ Use calming colors (forest/neutral theme)
 ✅ Limit to 3-5 chunks per section

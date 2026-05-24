@@ -293,13 +293,13 @@ Agents never manage `[iteration]` or filenames. Only the orchestrator (you) does
 1. **Return reports to architect**
    - Spawn project-architect again (resume mode) with:
 
-     ```
+     ```text
      Here are the reports from the agents you requested:
-    [all reports]
+     [all reports]
 
      Analyze these reports and decide next steps.
-
      ```
+
 2. Loop back to phase 1.
 
 # PHASE 3 - QA & UI Testing
@@ -426,11 +426,15 @@ In each architect review cycle, the architect may:
 
 After each architect review, update the iteration counter:
 
-    iteration += 1
+```text
+iteration += 1
+```
 
 If:
 
-    iteration > 5
+```text
+iteration > 5
+```
 
 Then:
 

@@ -4,9 +4,9 @@ This document provides examples of common application architectures and their co
 
 ## Table of Contents
 
-1. [Simple Web Application (Frontend + Backend + Database)](#simple-web-application)
-2. [Message Queue Application (Producer + Message Broker + Consumer)](#message-queue-application)
-3. [Microservices Architecture (API Gateway + Multiple Microservices)](#microservices-architecture)
+1. [Simple Web Application (Frontend + Backend + Database)](#1-simple-web-application-frontend--backend--database)
+2. [Message Queue Application (Producer + Message Broker + Consumer)](#2-message-queue-application-producer--message-broker--consumer)
+3. [Microservices Architecture (API Gateway + Multiple Microservices)](#3-microservices-architecture-api-gateway--multiple-microservices)
 
 ## 1. Simple Web Application (Frontend + Backend + Database)
 

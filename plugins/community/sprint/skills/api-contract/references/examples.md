@@ -191,7 +191,7 @@ Create a new user account and return authentication tokens.
 
 ---
 
-#### POST /auth/login
+### POST /auth/login
 
 Authenticate with email and password.
 

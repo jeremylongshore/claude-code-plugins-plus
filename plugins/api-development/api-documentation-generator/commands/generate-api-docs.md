@@ -4,6 +4,8 @@ description: >
   Generate comprehensive OpenAPI/Swagger documentation from existing APIs
 shortcut: apid
 ---
+
+<!-- markdownlint-disable MD046 -->
 # Generate API Documentation
 
 Automatically generate comprehensive OpenAPI 3.0 specifications with interactive documentation, automated testing, and multi-language client SDKs from your existing API codebase or by analyzing live endpoints.

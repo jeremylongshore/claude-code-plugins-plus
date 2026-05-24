@@ -239,6 +239,7 @@ Create these spec files in `.claude/sprint/[index]/` **only if they add value**:
 - Quality gates to implement
 
 Or other specs files for other agents.
+
 ---
 
 ### Phase 2: Request Implementation

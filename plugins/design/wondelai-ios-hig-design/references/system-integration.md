@@ -10,7 +10,7 @@ Siri, Shortcuts, Handoff, drag and drop, and other system-level integrations.
 4. [Drag and Drop](#drag-and-drop)
 5. [Universal Links](#universal-links)
 6. [Spotlight Search](#spotlight-search)
-7. [Focus & Notifications](#focus-notifications)
+7. [Focus & Notifications](#focus--notifications)
 8. [Quick Note Integration](#quick-note-integration)
 9. [SharePlay](#shareplay)
 10. [System Appearance](#system-appearance)

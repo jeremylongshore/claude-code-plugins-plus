@@ -110,7 +110,7 @@ Price is [above/below] key moving averages, indicating [bull/bear] market struct
 ### Support & Resistance Levels
 
 **Key Levels:**
-```
+```text
 
 Resistance 3: $[X] (Major) ████░░░░░░░░
 Resistance 2: $[Y] (Strong) ██████░░░░░░
@@ -127,31 +127,35 @@ Support 3:    $[C] (Major)  ████░░░░░░░░
 ```
 
 **Fibonacci Levels** (from recent swing):
+
 - 0.236: $[X]
 - 0.382: $[Y]
 - 0.5:   $[Z]
 - 0.618: $[A]  Golden Ratio
 - 0.786: $[B]
 
-###  TRADING RECOMMENDATION
+### TRADING RECOMMENDATION
 
 **Signal Type**: [Long/Short]
 **Setup**: [Breakout/Reversal/Trend Following/Mean Reversion]
 
 **Entry Strategy:**
+
 - **Aggressive Entry**: $[X] (current market)
 - **Conservative Entry**: $[Y] (wait for pullback/breakout)
 - **Confirmation**: [Condition that must occur]
 
 **Exit Strategy:**
--  **Take Profit 1**: $[A] ([R]% gain) - Take [X]% position off
--  **Take Profit 2**: $[B] ([S]% gain) - Take [Y]% position off
--  **Take Profit 3**: $[C] ([T]% gain) - Close remaining position
--  **Stop Loss**: $[D] ([L]% risk) - Hard stop below support
+
+- **Take Profit 1**: $[A] ([R]% gain) - Take [X]% position off
+- **Take Profit 2**: $[B] ([S]% gain) - Take [Y]% position off
+- **Take Profit 3**: $[C] ([T]% gain) - Close remaining position
+- **Stop Loss**: $[D] ([L]% risk) - Hard stop below support
 
 **Risk/Reward Ratio**: [1:2] (risking [X]% to gain [Y]%)
 
 **Position Sizing** (based on 2% risk rule):
+
 - Account size: $[Total]
 - Risk per trade: $[Risk]
 - Position size: [Units] or $[Amount]
@@ -171,11 +175,13 @@ Support 3:    $[C] (Major)  ████░░░░░░░░
 ### Risk Factors & Considerations
 
 ️ **Potential Risks:**
+
 - [Risk factor 1]
 - [Risk factor 2]
 - [Risk factor 3]
 
  **Signal Confirmation Checklist:**
+
 - [ ] Volume confirms price action
 - [ ] Multiple indicators align
 - [ ] Support/resistance levels respected
@@ -189,18 +195,22 @@ Support 3:    $[C] (Major)  ████░░░░░░░░
 **Market Phase**: [Accumulation/Markup/Distribution/Markdown]
 
 **Recent Catalysts:**
+
 - [News/event 1]
 - [News/event 2]
 
 ### Alternative Scenarios
 
 **Bullish Scenario** ([X]% probability):
+
 - Price breaks above $[Y] → Target $[Z]
 
 **Bearish Scenario** ([A]% probability):
+
 - Price breaks below $[B] → Target $[C]
 
 **Neutral Scenario** ([D]% probability):
+
 - Price consolidates between $[E] and $[F]
 
 ---
@@ -214,6 +224,7 @@ This is technical analysis for educational purposes only, NOT financial advice.
 - Only trade with capital you can afford to lose
 - Always do your own research (DYOR)
 - Consider consulting a licensed financial advisor
+
 ```
 
 ## Indicator Interpretation Guide

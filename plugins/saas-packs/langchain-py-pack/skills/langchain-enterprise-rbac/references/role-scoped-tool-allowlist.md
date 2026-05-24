@@ -47,7 +47,7 @@ The allowlist bounds *which* tools run. The denylist bounds *what arguments* tho
 
 | Tool shape | Deny pattern | Why |
 |---|---|---|
-| SQL query | `\b(DROP|TRUNCATE|ALTER)\b` case-insensitive | Writes / schema changes from a read tool |
+| SQL query | `\b(DROP\|TRUNCATE\|ALTER)\b` case-insensitive | Writes / schema changes from a read tool |
 | Shell / subprocess | `rm -rf`, `sudo`, `> /dev/`, backticks | Destructive commands |
 | HTTP fetch | `169.254.169.254`, `localhost`, `127.0.0.1`, `.internal` | Cloud metadata / SSRF |
 | File read | `../`, absolute paths outside a whitelist | Path traversal |

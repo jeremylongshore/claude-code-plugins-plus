@@ -178,7 +178,7 @@ use a `TypedDict` or a Pydantic model the UI validates against.
 | `list[AnyMessage]` (conversation history) | `add_messages` | `from langgraph.graph.message import add_messages` |
 | `list[dict]` (append-only events, approvals log) | `lambda l, r: l + r` | n/a |
 | `dict` (draft with partial edits) | `lambda l, r: {**l, **r}` | n/a |
-| `set[str]` serialized as list (tags) | `lambda l, r: sorted(set(l) | set(r))` | n/a |
+| `set[str]` serialized as list (tags) | `lambda l, r: sorted(set(l) \| set(r))` | n/a |
 | Counter / accumulator (`int`) | `lambda l, r: l + r` | n/a |
 | Scalar (latest-wins, default) | None (omit reducer) | n/a |
 

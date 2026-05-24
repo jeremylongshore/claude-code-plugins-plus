@@ -6,10 +6,10 @@ Applying the Hook Model to specific product types with appropriate customization
 
 1. [B2B SaaS Applications](#b2b-saas-applications)
 2. [E-commerce Applications](#e-commerce-applications)
-3. [Health & Fitness Applications](#health-fitness-applications)
-4. [Education & Learning Applications](#education-learning-applications)
+3. [Health & Fitness Applications](#health--fitness-applications)
+4. [Education & Learning Applications](#education--learning-applications)
 5. [Productivity Applications](#productivity-applications)
-6. [Social & Community Applications](#social-community-applications)
+6. [Social & Community Applications](#social--community-applications)
 7. [Quick Reference: Product Type Patterns](#quick-reference-product-type-patterns)
 8. [Adaptation Framework](#adaptation-framework)
 

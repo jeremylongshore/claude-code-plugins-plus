@@ -153,7 +153,7 @@ Default -2% / -5% is tuned for **deterministic-ish** evals (exact match, BLEU ag
 | Exact-match / regex | -2% | -5% |
 | BLEU / ROUGE | -3% | -7% |
 | LLM-as-judge with a strong base model | -3% | -10% |
-| LLM-as-judge with a cheap base model | skip the per-example gate; aggregate -5% only |
+| LLM-as-judge with a cheap base model | (skip per-example gate) | aggregate -5% only |
 
 Do not loosen thresholds to quiet a flaky gate — that masks regressions. Fix the underlying noise (bigger n, better judge prompt, deterministic seeds where the provider supports them).
 

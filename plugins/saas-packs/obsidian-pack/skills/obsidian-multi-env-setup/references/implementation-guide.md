@@ -75,12 +75,13 @@ export function addEnvironmentIndicator(plugin: Plugin): void {
 
 ## Frontmatter Test
 
+```yaml
 ---
-
 title: Test Note
 tags: [development, test]
 created: 2024-01-01
 ---
+```
 
 EOF
 

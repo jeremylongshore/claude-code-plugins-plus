@@ -241,7 +241,7 @@ Grain MCP is available with full transcript access. After extracting action item
 
 If a Grain meeting can't be found (e.g. recording wasn't on), fall back to Granola only + skepticism rules.
 
-#### Matching Grain to Granola meetings
+### Matching Grain to Granola meetings
 
 Match by time overlap (within 15 min of start time), not by title. Grain and Granola may name the same meeting differently. If no Grain match found within the time window, proceed without cross-check.
 

@@ -296,7 +296,7 @@ If the import fails, install `podium-call-transcript-pipeline` in the same Pytho
 | `test_chunker_idle_gap_break` | unit | A 25h idle gap forces a chunk boundary |
 | `test_chunker_4000_message_thread` | integration | Memory stays bounded; chunks are coherent; chunk IDs are deterministic |
 | `test_pii_redaction_coverage` | unit | A corpus of synthetic PII produces 100% match rate |
-| `test_pii_redacted_field_on_every_chunk` | static | `zcat ... | jq 'select(.pii_redacted == false)' | wc -l == 0` |
+| `test_pii_redacted_field_on_every_chunk` | static | `zcat ... \| jq 'select(.pii_redacted == false)' \| wc -l == 0` |
 | `test_memory_bounded_on_long_thread` | integration | Peak RSS < 200 MB on a 4000-message thread |
 | `test_watermark_partial_run_does_not_advance` | integration | An interrupted incremental run leaves the watermark at the previous value |
 | `test_chunk_id_deterministic` | unit | Two runs over identical input produce identical chunk_ids |

@@ -6,13 +6,13 @@ Each case study follows the same structure: Company and Product, Early Adopter S
 
 ## Table of Contents
 
-1. [Case Study 1: Salesforce -- CRM Becomes Cloud Computing Standard](#case-study-1-salesforce-crm-becomes-cloud-computing-standard)
-2. [Case Study 2: Documentum -- Content Management Crosses Through Vertical Focus](#case-study-2-documentum-content-management-crosses-through-vertical-focus)
-3. [Case Study 3: VMware -- Virtualization Goes Mainstream](#case-study-3-vmware-virtualization-goes-mainstream)
-4. [Case Study 4: Palm -- The PDA That Couldn't Cross](#case-study-4-palm-the-pda-that-couldnt-cross)
-5. [Case Study 5: Segway -- Stuck in the Chasm Permanently](#case-study-5-segway-stuck-in-the-chasm-permanently)
-6. [Case Study 6: Zoom -- Video Conferencing Crosses Before the Pandemic](#case-study-6-zoom-video-conferencing-crosses-before-the-pandemic)
-7. [Case Study 7: Atlassian -- Developer Tools to Enterprise Platform](#case-study-7-atlassian-developer-tools-to-enterprise-platform)
+1. [Case Study 1: Salesforce -- CRM Becomes Cloud Computing Standard](#case-study-1-salesforce----crm-becomes-cloud-computing-standard)
+2. [Case Study 2: Documentum -- Content Management Crosses Through Vertical Focus](#case-study-2-documentum----content-management-crosses-through-vertical-focus)
+3. [Case Study 3: VMware -- Virtualization Goes Mainstream](#case-study-3-vmware----virtualization-goes-mainstream)
+4. [Case Study 4: Palm -- The PDA That Couldn't Cross](#case-study-4-palm----the-pda-that-couldnt-cross)
+5. [Case Study 5: Segway -- Stuck in the Chasm Permanently](#case-study-5-segway----stuck-in-the-chasm-permanently)
+6. [Case Study 6: Zoom -- Video Conferencing Crosses Before the Pandemic](#case-study-6-zoom----video-conferencing-crosses-before-the-pandemic)
+7. [Case Study 7: Atlassian -- Developer Tools to Enterprise Platform](#case-study-7-atlassian----developer-tools-to-enterprise-platform)
 8. [Cross-Cutting Patterns of Successful Chasm Crossings](#cross-cutting-patterns-of-successful-chasm-crossings)
 9. [Warning Signs of Being Stuck in the Chasm](#warning-signs-of-being-stuck-in-the-chasm)
 

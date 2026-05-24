@@ -114,7 +114,7 @@ The rate-limit surface touches every outbound Podium call. There is no Podium en
 | Surface | Where observed | Wrapping |
 |---|---|---|
 | `429 Too Many Requests` | Any `api.podium.com/v4/*` response | `podium_call_with_retry()` parses `Retry-After`, sleeps, retries up to 4 attempts |
-| `Retry-After: <seconds|HTTP-date>` | 429 response header | `parse_retry_after()` returns seconds-to-wait, capped at 120s |
+| `Retry-After: <seconds\|HTTP-date>` | 429 response header | `parse_retry_after()` returns seconds-to-wait, capped at 120s |
 | `X-RateLimit-Remaining: <n>` (if Podium ever sends it) | Successful response header | Logged as structured field; not currently load-bearing |
 | Outbound call count | Every successful call site | `DailyQuotaMonitor.increment()` after the response; non-blocking |
 

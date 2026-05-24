@@ -99,7 +99,7 @@ For Mark's case (Australia), the following recognizers should be added beyond th
 | AU_TFN | `\b\d{3}\s?\d{3}\s?\d{2,3}\b` | 11-mod weighted checksum (8 or 9 digit) |
 | AU_MEDICARE | `\b\d{4}\s?\d{5}\s?\d\s?/?\s?\d?\b` | 11-mod weighted checksum (10 digit) |
 | AU_PHONE | `\+?61\s?\d\s?\d{4}\s?\d{4}` | Length + leading digit validation |
-| AU_POSTCODE | `\b(0[28]\d{2}|[1-9]\d{3})\b` | State-prefix range check (NSW 1000-2999, etc.) |
+| AU_POSTCODE | `\b(0[28]\d{2}\|[1-9]\d{3})\b` | State-prefix range check (NSW 1000-2999, etc.) |
 | NZ_IRD | `\b\d{2,3}-?\d{3}-?\d{3}\b` | 11-mod weighted checksum |
 | NZ_POSTCODE | `\b\d{4}\b` (context-sensitive) | Requires NZ address context |
 

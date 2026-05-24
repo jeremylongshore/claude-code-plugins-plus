@@ -18,7 +18,7 @@ middleware — this checklist is the last-mile guard before `tar.gz`.
 | OpenAI API key | `sk-proj-...`, `sk-...` | `sk-[A-Za-z0-9_-]{16,}` |
 | Anthropic API key | `sk-ant-api03-...` | `sk-ant-[A-Za-z0-9_-]{16,}` |
 | Google API key | `AIza...` | `AIza[A-Za-z0-9_-]{35}` |
-| LangSmith key | `lsv2_pt_...`, `lsv2_sk_...` | `lsv2_(pt|sk)_[A-Za-z0-9]{32,}` |
+| LangSmith key | `lsv2_pt_...`, `lsv2_sk_...` | `lsv2_(pt\|sk)_[A-Za-z0-9]{32,}` |
 | Bearer token (HTTP header) | `Authorization: Bearer <token>` | `(?i)bearer\s+[A-Za-z0-9._~+/=-]{20,}` |
 | AWS access key | `AKIA...` | `AKIA[0-9A-Z]{16}` |
 | AWS secret | 40-char base64-ish | `(?i)aws(.{0,20})?['\"][0-9a-zA-Z/+]{40}['\"]` |

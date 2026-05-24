@@ -158,7 +158,7 @@ async function validateInput(data: unknown) {
 **Recommended extraction:** Create `src/utils/validate-input.ts` with shared validation function
 **Blast radius:** 2 files to update
 
-#### Clone Set 2 — MEDIUM confidence
+### Clone Set 2 — MEDIUM confidence
 
 **Lines:** 15 near-identical | **Type:** Renamed (Type 2)
 ...
