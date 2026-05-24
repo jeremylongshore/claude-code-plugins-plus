@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/sprint",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Autonomous multi-agent development framework with spec-driven sprints and convergent iteration",
   "keywords": [
     "autonomous",

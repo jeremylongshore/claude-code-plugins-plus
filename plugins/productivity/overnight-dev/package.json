@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/overnight-dev",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Run Claude autonomously for 6-8 hours overnight using Git hooks that enforce TDD - wake up to fully tested features",
   "keywords": [
     "overnight",
