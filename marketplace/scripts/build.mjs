@@ -29,6 +29,7 @@ run('catalog:sync', 'node', ['scripts/sync-catalog.mjs']);
 run('jrig:enrich', 'node', ['scripts/enrich-jrig-data.mjs']);
 run('search:generate', 'node', ['scripts/generate-unified-search.mjs']);
 run('cowork:zips', 'node', [resolve(repoRoot, 'scripts/build-cowork-zips.mjs')]);
+run('cowork:validate', 'node', [resolve(repoRoot, 'scripts/validate-cowork-manifest.mjs')]);
 
 // Copy large data files to public/data/ so they are served as static assets at runtime.
 // Source-of-truth remains in src/data/ for build scripts; public/data/ is the runtime copy.

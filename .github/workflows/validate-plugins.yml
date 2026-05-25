@@ -680,6 +680,13 @@ jobs:
       - name: Validate Cowork Downloads
         run: node marketplace/scripts/validate-cowork-downloads.mjs
 
+      - name: Validate Cowork Manifest Drift
+        # Catalog ↔ manifest ↔ disk alignment gate. Complements
+        # validate-cowork-downloads.mjs (manifest → disk presence) by also
+        # walking disk → manifest (orphan detection) and catalog → manifest.
+        # See CLAUDE.md § "Auto-cowork contract" for the invariant.
+        run: node scripts/validate-cowork-manifest.mjs
+
       - name: Validate Cowork Security
         run: node scripts/validate-cowork-security.mjs
 

@@ -7,10 +7,20 @@
  * category bundles, a mega-zip, and a manifest.json with metadata.
  *
  * Output: marketplace/public/downloads/
- *   plugins/      - Individual plugin zips
- *   bundles/      - Category bundle zips
- *   claude-code-plugins-all.zip - Everything
- *   manifest.json - Sizes, counts, checksums
+ *   plugins/                      - Individual plugin zips
+ *   bundles/                      - Category bundle zips
+ *   claude-code-plugins-all.zip   - Mega-zip (every non-MCP plugin)
+ *   manifest.json                 - Sizes, counts, checksums
+ *
+ * Idempotency contract: this script wipes `plugins/` and `bundles/` before
+ * each run so the on-disk state after every invocation is exactly what the
+ * catalog declares — no more, no less. The drift gate
+ * `scripts/validate-cowork-manifest.mjs` enforces the same invariant in CI.
+ * See CLAUDE.md § "Auto-cowork contract".
+ *
+ * Skip rule: plugins with `category: mcp` (or path `./plugins/mcp/*`) are
+ * not zipped — MCP servers cannot be installed by Cowork users (they need
+ * a host process, not a static drop-in).
  */
 
 import {
@@ -20,6 +30,7 @@ import {
   mkdirSync,
   readFileSync,
   readdirSync,
+  rmSync,
   statSync,
   writeFileSync,
 } from 'node:fs';
@@ -248,7 +259,11 @@ async function main() {
 
   console.log(`Found ${plugins.length} plugins in catalog\n`);
 
-  // Create output directories
+  // Wipe + recreate output subdirs so the script is idempotent.
+  // Without this, zips from removed/renamed catalog entries linger on disk
+  // and drift away from the manifest (which is regenerated from the catalog).
+  rmSync(join(OUTPUT_DIR, 'plugins'), { recursive: true, force: true });
+  rmSync(join(OUTPUT_DIR, 'bundles'), { recursive: true, force: true });
   mkdirSync(join(OUTPUT_DIR, 'plugins'), { recursive: true });
   mkdirSync(join(OUTPUT_DIR, 'bundles'), { recursive: true });
 
