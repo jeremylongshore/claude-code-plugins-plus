@@ -32,6 +32,15 @@ python3 scripts/validate-skills-schema.py --verbose
 python3 scripts/validate-skills-schema.py --marketplace --verbose
 python3 scripts/validate-skills-schema.py --marketplace --populate-db freshie/inventory.sqlite
 
+# Unicode hygiene gate — Trapdoor / Trojan Source defense for SKILL.md /
+# plugin.json / agent / command files. Default mode blocks on tag chars
+# (U+E0000-E007F) + bidi overrides (CVE-2021-42574). --strict also blocks
+# on zero-width / format chars outside the BOM position.
+python3 scripts/validate-unicode-hygiene.py
+python3 scripts/validate-unicode-hygiene.py --strict           # tighter
+python3 scripts/validate-unicode-hygiene.py path/to/file.md    # one file
+python3 -m unittest tests.test_validate_unicode_hygiene -v     # regression suite
+
 # Marketplace website
 cd marketplace/ && npm run dev    # localhost:4321
 cd marketplace/ && npm run build

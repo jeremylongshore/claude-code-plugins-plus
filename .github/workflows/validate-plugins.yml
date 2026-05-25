@@ -87,6 +87,20 @@ jobs:
       - name: Validate catalog invariants (FS path = category)
         run: python3 scripts/validate-catalog-invariants.py
 
+      # Unicode-hygiene gate. Detects the supply-chain attack class
+      # schema validation cannot see: invisible tag characters
+      # (U+E0000-U+E007F, the Socket TrapDoor vector, advisory 2026-05-24),
+      # bidi overrides (Trojan Source, CVE-2021-42574), zero-width / format
+      # chars in instructional text, and mixed-script identifiers in install
+      # commands. Default mode blocks on BLOCKER only; --strict would also
+      # block on MAJOR (deferred until the one known legit-ZWS workaround in
+      # plugins/community/contributing-clanker is cleaned up separately).
+      - name: Validate Unicode hygiene (Trapdoor / Trojan Source defense)
+        run: python3 scripts/validate-unicode-hygiene.py
+
+      - name: Test Unicode hygiene validator (fixture regression)
+        run: python3 -m unittest tests.test_validate_unicode_hygiene -v
+
       # Reject PRs that reformat .claude-plugin/marketplace.extended.json beyond
       # the line budget implied by added/modified entries. Prevents prettier or
       # IDE format-on-save passes from rewriting the whole catalog and wrecking
