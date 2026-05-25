@@ -1064,7 +1064,34 @@ sources:
       - '.git/**'
       - '*.log'
 
-# Sync configuration
+  # ============================================================
+  # agentpay — Payment layer for AI agents
+  # https://github.com/M1mino/agentpay
+  # ============================================================
+
+  - name: agentpay
+    description: 'Payment layer for AI agents. Register agents, topup CREDIT balance by sending USDC on Base, pay other agents with signed EIP-191 transactions (0.5% fee), and withdraw CREDIT back to USDC (3% fee). Features: per-agent nonces for replay protection, rate limiting, audit endpoint for transparency.'
+    repo: M1mino/agentpay
+    source_path: ""
+    target_path: plugins/crypto/agentpay
+    author:
+      name: Anfisa
+      github: M1mino
+    license: MIT
+    category: crypto
+    verified: false
+    include:
+      - 'SKILL.md'
+      - 'README.md'
+    exclude:
+      - '*.py'
+      - '*.txt'
+      - 'venv/**'
+      - '.git/**'
+      - 'deploy/**'
+      - 'tests/**'
+
+# External Plugin Sync Configuration
 config:
   # Branch to sync from (default: main)
   default_branch: main
