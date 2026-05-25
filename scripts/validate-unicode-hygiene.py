@@ -52,9 +52,7 @@ Severity = Literal["BLOCKER", "MAJOR", "MINOR"]
 
 TAG_CHARS = range(0xE0000, 0xE0080)  # U+E0000-U+E007F inclusive
 
-BIDI_CONTROLS = frozenset(
-    {0x202A, 0x202B, 0x202C, 0x202D, 0x202E, 0x2066, 0x2067, 0x2068, 0x2069}
-)
+BIDI_CONTROLS = frozenset({0x202A, 0x202B, 0x202C, 0x202D, 0x202E, 0x2066, 0x2067, 0x2068, 0x2069})
 
 ZERO_WIDTH_MAJOR = frozenset({0x200B, 0x200C, 0x200D, 0x2060, 0xFEFF})
 OTHER_INVISIBLE = frozenset({0x00AD, 0x034F, 0x115F, 0x1160, 0x17B4, 0x17B5})
@@ -107,6 +105,7 @@ def iter_target_files(repo_root: pathlib.Path) -> Iterator[pathlib.Path]:
 
 # ----- findings ---------------------------------------------------------------
 
+
 @dataclass(frozen=True)
 class Finding:
     severity: Severity
@@ -147,6 +146,7 @@ def _escape_context(line: str, column: int, width: int = 32) -> str:
 
 
 # ----- pass 1: invisible / control chars --------------------------------------
+
 
 def scan_invisibles(path: pathlib.Path, text: str) -> list[Finding]:
     findings: list[Finding] = []
@@ -210,6 +210,7 @@ def scan_invisibles(path: pathlib.Path, text: str) -> list[Finding]:
 
 # ----- pass 2: mixed-script identifiers in URLs / install lines ---------------
 
+
 def _scripts_in(identifier: str) -> set[str]:
     scripts: set[str] = set()
     for ch in identifier:
@@ -256,6 +257,7 @@ def scan_homoglyphs(path: pathlib.Path, text: str) -> list[Finding]:
 
 # ----- driver -----------------------------------------------------------------
 
+
 def scan_file(path: pathlib.Path) -> list[Finding]:
     try:
         text = path.read_text(encoding="utf-8")
@@ -298,10 +300,7 @@ def main(argv: list[str]) -> int:
     minors = [f for f in all_findings if f.severity == "MINOR"]
 
     print(f"validate-unicode-hygiene: scanned {scanned} files")
-    print(
-        f"validate-unicode-hygiene: {len(blockers)} BLOCKER, "
-        f"{len(majors)} MAJOR, {len(minors)} MINOR"
-    )
+    print(f"validate-unicode-hygiene: {len(blockers)} BLOCKER, {len(majors)} MAJOR, {len(minors)} MINOR")
     for f in all_findings:
         print(f.render())
 
