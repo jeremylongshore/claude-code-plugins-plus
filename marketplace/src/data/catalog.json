@@ -1,15 +1,15 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-05-20T03:26:28.681Z",
+    "generated": "2026-05-25T17:16:04.784Z",
     "source": "marketplace.extended.json",
     "generator": "scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 428,
-    "totalSkills": 2761,
+    "totalPlugins": 431,
+    "totalSkills": 2768,
     "totalCommands": 81,
-    "pluginsWithSkills": 401,
+    "pluginsWithSkills": 404,
     "byCategory": {
       "productivity": 43,
       "security": 29,
@@ -24,7 +24,7 @@
       "packages": 1,
       "database": 31,
       "design": 8,
-      "ai-agency": 7,
+      "ai-agency": 8,
       "business-tools": 52,
       "fullstack": 1,
       "example": 3,
@@ -35,16 +35,16 @@
       "development": 1,
       "data-engineering": 2,
       "enterprise": 2,
-      "analytics": 2,
-      "saas-packs": 1
+      "analytics": 3,
+      "saas-packs": 2
     },
     "byStatus": {
-      "active": 409,
+      "active": 412,
       "maintained": 19
     },
     "featured": 7,
-    "new": 407,
-    "generatedAt": "2026-05-20T03:26:28.681Z"
+    "new": 410,
+    "generatedAt": "2026-05-25T17:16:04.784Z"
   },
   "plugins": [
     {
@@ -14583,6 +14583,115 @@
       "author": {
         "name": "Kobiton Inc.",
         "url": "https://github.com/kobiton"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "agency-os",
+      "name": "agency-os",
+      "displayName": "agency os",
+      "description": "Run your work like an AI agency, from a single Notion board. Agents discuss, plan, and execute tasks in parallel with dependency ordering and model routing.",
+      "version": "0.1.10",
+      "category": "ai-agency",
+      "keywords": [
+        "notion",
+        "task-management",
+        "ai-agency",
+        "autonomous-agent",
+        "workflow",
+        "project-management",
+        "claude-code"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install agency-os",
+      "sourcePath": "./plugins/ai-agency/agency-os",
+      "lastUpdatedEpoch": 1779729364,
+      "lastUpdatedDate": "2026-05-25T17:16:04.784Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "AutomateLab",
+        "url": "https://github.com/ratamaha-git"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "ga4-pack",
+      "name": "ga4-pack",
+      "displayName": "ga4 pack",
+      "description": "Claude Code skill pack for Google Analytics 4 — 5 starter skills covering auth (OAuth + service account), Data API v1 queries (runReport, filters, sampling), Realtime API, canonical reports (DAU/MAU/retention/top pages/funnel), and BigQuery export with event-level SQL recipes.",
+      "version": "1.0.0",
+      "category": "saas-packs",
+      "keywords": [
+        "google-analytics",
+        "ga4",
+        "analytics",
+        "data-api",
+        "bigquery",
+        "reporting",
+        "dau-mau",
+        "cohort-retention"
+      ],
+      "hasSkills": true,
+      "skillCount": 5,
+      "commandCount": 0,
+      "installCommand": "/plugin install ga4-pack",
+      "sourcePath": "./plugins/saas-packs/ga4-pack",
+      "lastUpdatedEpoch": 1779729364,
+      "lastUpdatedDate": "2026-05-25T17:16:04.784Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io",
+        "url": "https://github.com/jeremylongshore"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "web-analytics",
+      "name": "web-analytics",
+      "displayName": "web analytics",
+      "description": "Push-based web analytics intelligence team — self-hosted Umami via MCP (primary) + GA4 (fallback). 9 specialist agents fetch data, detect anomalies, analyze funnels, verify claims adversarially, and deliver narrative reports across your entire site portfolio. Three tiers: 30-second pulse, 2-min brief, 5-min full deep-dive. Console / email / Slack delivery.",
+      "version": "1.1.0",
+      "category": "analytics",
+      "keywords": [
+        "analytics",
+        "umami",
+        "ga4",
+        "traffic",
+        "mcp",
+        "self-hosted",
+        "multi-agent",
+        "push-based"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install web-analytics",
+      "sourcePath": "./plugins/analytics/web-analytics",
+      "lastUpdatedEpoch": 1779729364,
+      "lastUpdatedDate": "2026-05-25T17:16:04.784Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io",
+        "url": "https://github.com/jeremylongshore"
       },
       "type": "instruction-plugin"
     }

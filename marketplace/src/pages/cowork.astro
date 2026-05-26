@@ -432,7 +432,98 @@ const allPlugins = manifest?.plugins || [];
       white-space: nowrap;
       border: 0;
     }
+
+    /* Prereq banner — above the hero, full-bleed, amber */
+    .cowork-prereq {
+      background: #fef3c7;
+      border-top: 4px solid #f59e0b;
+      border-bottom: 1px solid #f59e0b;
+      padding: 0.9rem 1.5rem;
+      color: #78350f;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .cowork-prereq .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .cowork-prereq strong {
+      color: #78350f;
+    }
+
+    .cowork-prereq a {
+      color: #78350f;
+      font-weight: 700;
+      text-decoration: underline;
+      white-space: nowrap;
+    }
+
+    .cowork-prereq a:hover {
+      color: #92400e;
+    }
+
+    /* Official Cowork resources block */
+    .official-resources {
+      background: var(--surface-2);
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 1.75rem 2rem;
+      max-width: 1200px;
+      margin: 2rem auto;
+    }
+
+    .official-resources h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin: 0 0 0.5rem;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    .official-resources > p {
+      color: var(--brand-mid-gray, #6b7280);
+      margin: 0 0 1rem;
+      font-size: 0.95rem;
+    }
+
+    .official-resources ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .official-resources li {
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .official-resources a {
+      color: #1e40af;
+      font-weight: 600;
+      text-decoration: underline;
+    }
+
+    .official-resources a:hover {
+      color: #1e3a8a;
+    }
   </style>
+
+  <!-- Prereq banner -->
+  <section class="cowork-prereq" aria-label="Cowork prerequisites">
+    <div class="container">
+      <p>
+        <strong>Claude Cowork required.</strong>
+        These zips are for the Cowork desktop app on macOS or Windows
+        with a paid Claude plan (Pro, Max, Team, Enterprise).
+        <a href="https://claude.com/download" target="_blank" rel="noopener">
+          Get Claude &rarr;
+        </a>
+      </p>
+    </div>
+  </section>
 
   <!-- Hero -->
   <section class="cowork-hero">
@@ -542,7 +633,7 @@ const allPlugins = manifest?.plugins || [];
   <section class="cowork-section">
     <div class="setup-guide">
       <h2 class="cowork-section-title">How to Install</h2>
-      <p class="cowork-section-subtitle">Three simple steps. No terminal required.</p>
+      <p class="cowork-section-subtitle">Four steps inside the Cowork desktop app. No terminal required.</p>
 
       <div class="setup-steps">
         <div class="setup-step">
@@ -553,14 +644,49 @@ const allPlugins = manifest?.plugins || [];
         <div class="setup-step">
           <div class="step-number">2</div>
           <h4>Unzip</h4>
-          <p>Double-click the .zip file to extract it. You'll see plugin folders with skills, commands, and agents inside.</p>
+          <p>Double-click the .zip file to extract it. Keep the unzipped folder somewhere you can find it.</p>
         </div>
         <div class="setup-step">
           <div class="step-number">3</div>
-          <h4>Add to Project</h4>
-          <p>Copy the plugin folder into your project's <code>.claude/plugins/</code> directory. Claude Cowork will auto-detect it.</p>
+          <h4>Open Cowork &rarr; Customize</h4>
+          <p>In the Claude desktop app, switch to the <strong>Cowork</strong> tab, then click <strong>Customize</strong> in the left sidebar and choose <strong>Browse plugins</strong>. Use the upload-a-custom-plugin option to add your unzipped folder. See <a href="https://support.claude.com/en/articles/13837440-use-plugins-in-claude-cowork" target="_blank" rel="noopener">Use plugins in Claude Cowork</a> for the canonical walkthrough.</p>
+        </div>
+        <div class="setup-step">
+          <div class="step-number">4</div>
+          <h4>Restart if prompted</h4>
+          <p>The plugin's skills, agents, and commands appear in your Cowork workspace once installed.</p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Official Cowork resources -->
+  <section class="cowork-section">
+    <div class="official-resources">
+      <h2>Official Claude Cowork resources</h2>
+      <p>These zips are unofficial community packs. Anthropic's canonical Cowork docs and downloads live here:</p>
+      <ul>
+        <li>
+          <a href="https://claude.com/product/cowork" target="_blank" rel="noopener">Claude Cowork product page</a>
+          &mdash; what Cowork is, who it's for, pricing tiers
+        </li>
+        <li>
+          <a href="https://claude.com/plugins" target="_blank" rel="noopener">Official plugin directory</a>
+          &mdash; Anthropic-curated plugins, browseable in Cowork
+        </li>
+        <li>
+          <a href="https://claude.com/download" target="_blank" rel="noopener">Download Claude desktop</a>
+          &mdash; required to use any of these packs
+        </li>
+        <li>
+          <a href="https://support.claude.com/en/articles/13345190-get-started-with-claude-cowork" target="_blank" rel="noopener">Get started with Claude Cowork</a>
+          &mdash; Anthropic's official onboarding guide
+        </li>
+        <li>
+          <a href="https://support.claude.com/en/articles/13837440-use-plugins-in-claude-cowork" target="_blank" rel="noopener">Use plugins in Claude Cowork</a>
+          &mdash; Anthropic's canonical plugin-install walkthrough
+        </li>
+      </ul>
     </div>
   </section>
 
