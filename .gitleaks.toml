@@ -56,6 +56,15 @@ paths = [
     '''^scripts/validate-skills-schema\.py$''',
     '''^freshie/.*''',
     '''^marketplace/src/data/.*\.json$''',
+    # Runtime mirror of src/data/ — `marketplace/scripts/build.mjs` copies
+    # skills-catalog.json + unified-search-index.json into public/data/ so
+    # they're served as static assets. Same content, same allowlist scope
+    # as the source (which is already allowlisted above). Without this,
+    # gitleaks re-scans the demo Supabase JWTs and other documentation
+    # examples that live inside SKILL.md body content bundled into these
+    # generated files. SKILL.md itself is allowlisted; the bundled mirror
+    # must follow suit or every catalog regen turns CI red.
+    '''^marketplace/public/data/.*\.json$''',
     '''^marketplace/dist/.*''',
 ]
 
