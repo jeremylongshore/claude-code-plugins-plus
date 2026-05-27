@@ -2,23 +2,12 @@ name: Validate Plugins
 
 on:
   workflow_dispatch:
+  # Runs on every PR. The jobs below are listed in branch-protection's
+  # required-status set; if a path filter here skips the run, those required
+  # checks stay "Expected" forever and the PR cannot merge (the "10 Expected
+  # forever" stuck-PR class — observed on PR #778). Trade-off: 5-10 extra
+  # Actions minutes per PR that doesn't touch validator-relevant files.
   pull_request:
-    paths:
-      - 'plugins/**'
-      - '.claude-plugin/**'
-      - 'marketplace/**'
-      - 'README.md'
-      - 'scripts/**'
-      - '.claude/**'
-      - 'workspace/**'
-      - '.github/workflows/validate-plugins.yml'
-      - 'eslint.config.mjs'
-      - '.prettierrc.json'
-      - '.prettierignore'
-      - '.lintstagedrc.json'
-      - 'commitlint.config.js'
-      - '.husky/**'
-      - 'package.json'
   push:
     branches: [main]
 
