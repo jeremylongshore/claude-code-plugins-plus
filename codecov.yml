@@ -1,0 +1,127 @@
+# Codecov configuration for jeremylongshore/claude-code-plugins-plus-skills
+#
+# Repo-specific — tuned to this repo's real surface (catalog-heavy, validator-driven,
+# multi-package monorepo). Not a generic starter.
+#
+# Posture:
+# - project target: auto (no regression vs current baseline) + 2% slack
+# - patch target: 40% (anchored to what the current test surface actually delivers;
+#   raise as pytest coverage of validate-skills-schema.py and packages/cli grows)
+# - if_ci_failed: success (Codecov outage must not red-X the CI)
+# - only_pulls: true (don't gate the bot-driven push streams to main)
+# - components: 7 real packages/dirs only — no phantoms
+
+codecov:
+  require_ci_to_pass: false
+
+coverage:
+  precision: 2
+  round: down
+  range: '30...100'
+
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 2%
+        if_ci_failed: success
+        only_pulls: true
+    patch:
+      default:
+        target: 40%
+        threshold: 10%
+        if_ci_failed: success
+        only_pulls: true
+
+comment:
+  layout: 'condensed_header, diff, flags, components, files'
+  behavior: default
+  require_changes: true
+  require_base: false
+  require_head: true
+
+ignore:
+  # Documentation — never measured
+  - '**/*.md'
+  - '**/*.mdx'
+  - '000-docs/**'
+  - 'docs/**'
+
+  # Catalog data — generated or hand-edited JSON, not executable
+  - 'plugins/**/plugin.json'
+  - '.claude-plugin/**'
+  - 'marketplace/src/data/**'
+  - 'marketplace/public/data/**'
+  - 'marketplace/dist/**'
+  - 'marketplace/public/downloads/**'
+
+  # Forge audit trails (build-time only)
+  - '**/.forge/**'
+
+  # Freshie inventory CMDB artifacts
+  - 'freshie/inventory.sqlite'
+  - 'freshie/exports/**'
+  - 'freshie/archives/**'
+
+  # Test fixtures + e2e suites (measurers, not measured)
+  - 'tests/fixtures/**'
+  - 'tests/e2e/**'
+  - '**/__fixtures__/**'
+  - '**/__snapshots__/**'
+
+  # Standard build / generated / vendored
+  - '**/dist/**'
+  - '**/build/**'
+  - '**/coverage/**'
+  - '**/*.generated.*'
+  - '**/generated/**'
+  - '**/node_modules/**'
+
+flag_management:
+  default_rules:
+    carryforward: true
+
+component_management:
+  individual_components:
+    - component_id: cli
+      name: cli
+      paths:
+        - 'packages/cli/**'
+
+    - component_id: plugin-validator
+      name: plugin-validator
+      paths:
+        - 'packages/plugin-validator/**'
+
+    - component_id: analytics
+      name: analytics
+      paths:
+        - 'packages/analytics-daemon/**'
+        - 'packages/analytics-dashboard/**'
+
+    - component_id: marketplace-site
+      name: marketplace-site
+      paths:
+        - 'marketplace/src/**'
+        - 'marketplace/scripts/**'
+
+    - component_id: validators
+      name: validators
+      paths:
+        - 'scripts/validate-*.py'
+        - 'scripts/validate-*.mjs'
+        - 'scripts/check-*.py'
+        - 'scripts/check-*.mjs'
+
+    - component_id: build-pipeline
+      name: build-pipeline
+      paths:
+        - 'scripts/sync-marketplace.cjs'
+        - 'scripts/build-*.mjs'
+        - 'scripts/generate-*.mjs'
+        - 'marketplace/scripts/build.mjs'
+
+    - component_id: freshie
+      name: freshie
+      paths:
+        - 'freshie/scripts/**'
