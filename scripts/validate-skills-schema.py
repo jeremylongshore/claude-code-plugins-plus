@@ -80,8 +80,15 @@ except ImportError:
 #                       fixed `argument-hint` conditional (disable-model-invocation
 #                       doesn't affect /-menu visibility); added ${CLAUDE_EFFORT} to
 #                       YAML_VALUE_ALLOWED_VARS.
+# 3.7.0 (2026-05-28) — Claude Code v2.1.152 (released 2026-05-27) added
+#                       `disallowed-tools` to SKILL.md frontmatter. Recognized as
+#                       Anthropic-source optional field with same string|array shape
+#                       as `allowed-tools`. Per SAK plan 031 § 14.10 binding, lands
+#                       at IS marketplace tier (NOT spec-floor recognition).
+#                       Snapshot anchor: intent-eval-platform/intent-eval-lab/research/
+#                       claude-docs-spec-tree-2026-05-27.md.
 # See 000-docs/SCHEMA_CHANGELOG.md.
-SCHEMA_VERSION = "3.6.0"
+SCHEMA_VERSION = "3.7.0"
 
 # Validation tiers
 TIER_STANDARD = "standard"
@@ -253,6 +260,12 @@ SKILL_FIELDS = {
     "disable-model-invocation": {"type": "boolean", "source": "anthropic", "tier": "standard", "default": False},
     "user-invocable": {"type": "boolean", "source": "anthropic", "tier": "standard", "default": True},
     "allowed-tools": {"type": "string|array", "source": "anthropic", "tier": "standard"},
+    # disallowed-tools added in Claude Code v2.1.152 (2026-05-27 changelog).
+    # Removes tools from the model while the skill is active (security gate).
+    # Same shape as allowed-tools: string (space-separated) OR YAML list.
+    # Per SAK plan 031 § 14.10: recognized at IS marketplace tier; not added to
+    # MARKETPLACE_TRACKING_FIELDS (it's optional security polish, not required).
+    "disallowed-tools": {"type": "string|array", "source": "anthropic", "tier": "standard"},
     "model": {
         "type": "string",
         "source": "anthropic",

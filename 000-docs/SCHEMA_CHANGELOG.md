@@ -124,6 +124,55 @@ compliance are welcome; structural changes to the IS rubric are not.
 
 ---
 
+## [3.7.0] — 2026-05-28 — Recognize `disallowed-tools` (Claude Code v2.1.152, additive)
+
+Adds the `disallowed-tools` field to the schema registry. Source: Claude Code v2.1.152 changelog (released 2026-05-27) — *"Skills and slash commands can now set `disallowed-tools` in frontmatter to remove tools from the model while the skill is active."* **No validator rule changes** — `ALWAYS_REQUIRED` 8-field set is untouched; `disallowed-tools` is recognized as an Anthropic-spec optional field with the same string|array shape as `allowed-tools`.
+
+### Added — `disallowed-tools` (top-level, string or array)
+
+```yaml
+# String form (space-separated, matches allowed-tools convention):
+disallowed-tools: Bash WebFetch
+
+# Array form (YAML list):
+disallowed-tools:
+  - Bash
+  - WebFetch
+```
+
+Shape: identical to `allowed-tools` (`string|array` with the same parser). Source classified as `anthropic`; tier `standard`. Validates type only; semantics (which tools to disallow) are skill-author concern.
+
+### Tier placement (per SAK plan 031 § 14.10 binding)
+
+`disallowed-tools` is recognized but NOT added to `MARKETPLACE_TRACKING_FIELDS`. Rationale: it is optional security polish (lets a skill self-disable risky tools), not a marketplace-required tracking field. Skills are free to omit it; including it is encouraged for security-sensitive skills. The `ALWAYS_REQUIRED` 8-field IS marketplace set (`name, description, allowed-tools, version, author, license, compatibility, tags`) is untouched.
+
+Per SAK plan 031 § 14.10 (NON-NEGOTIABLES item 3: *"The IS rubric SITS ON TOP of Anthropic's spec"*): this addition lands at the IS marketplace tier in the canonical validator. Future kernel `intent-eval-core/schemas/authoring/v1/skill-frontmatter.schema.json` will mirror this placement under `$defs.openStandardCompliant` (since 2.1.152 is a Claude Code extension, not agentskills.io spec) AND `$defs.isMarketplace` (so IS-tier consumers recognize it).
+
+### Snapshot anchor
+
+The Claude Code 2.1.152 changelog entry was captured 2026-05-27 in:
+
+- `intent-eval-platform/intent-eval-lab/research/claude-docs-spec-tree-2026-05-27.md` (full 22-URL spec snapshot)
+- `000-docs/anthropic-skills-spec-snapshot.md` (local-canonical refresh due as part of this PR)
+
+### Migration
+
+None required. Existing skills that do not use `disallowed-tools` continue to validate. Skills that already shipped `disallowed-tools` (prior to validator recognition) will stop producing unknown-field warnings.
+
+### Out of scope (intentional non-goals)
+
+- Cross-field check that `disallowed-tools` ∩ `allowed-tools` is empty. (Possible follow-up; not in this patch — keeps wedge minimal per § 14.8 directive 1.)
+- Promotion to `MARKETPLACE_TRACKING_FIELDS`. (Optional security polish, not required tracking metadata.)
+- Validator-side enforcement of which tools are "safe" to disallow vs. require allowed-tools symmetry.
+
+### Plan / bead refs
+
+- Plan: `intent-eval-platform/intent-eval-lab/000-docs/031-PP-PLAN-skill-refiner-sak-amendment-v6-2026-05-28.md` § 14.8 directive 1
+- Bead: `bd_000-projects-umij` (ccp-d4-followup)
+- Parent SAK epic: `bd_000-projects-3kye`
+
+---
+
 ## [3.6.0] — 2026-05-14 — Self-declared config surface (additive, no architectural changes)
 
 Adds two optional frontmatter blocks so skills self-describe the secrets and config keys they consume. The installer / runtime helper can then prompt the user on first run instead of letting them hit a runtime error mid-task. **No validator rule changes** — `ALWAYS_REQUIRED` 8-field set is untouched.
