@@ -71,33 +71,33 @@ ccpi update                     # Pull latest versions
 
 ### 📦 Live npm Downloads
 
-Across **418 published packages** in the
+Across **425 published packages** in the 
 [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
 
-| Window        | All packages | Established (>30d) |
-| ------------- | -----------: | -----------------: |
-| Last 24 hours |          128 |                 36 |
-| Last 7 days   |        2,757 |                206 |
-| Last 30 days  |       53,237 |                990 |
+| Window | All packages | Established (>30d) |
+|--------|-------------:|-------------------:|
+| Last 24 hours | 195 | 183 |
+| Last 7 days | 2,477 | 2,379 |
+| Last 30 days | 14,130 | 11,983 |
 
 <sub>"Established" excludes packages first published within the last 30 days, so a bulk-publish event doesn't dominate the headline.</sub>
 
 **Top 10 by last 30 days:**
 
-| #   | Package                                                                                                                            | Last 30d |
-| --- | ---------------------------------------------------------------------------------------------------------------------------------- | -------: |
-| 1   | [`@intentsolutionsio/ccpi`](https://www.npmjs.com/package/@intentsolutionsio/ccpi)                                                 |      346 |
-| 2   | [`@intentsolutionsio/guidewire-pack`](https://www.npmjs.com/package/@intentsolutionsio/guidewire-pack)                             |      324 |
-| 3   | [`@intentsolutionsio/engineer-design-diagram`](https://www.npmjs.com/package/@intentsolutionsio/engineer-design-diagram)           |      242 |
-| 4   | [`@intentsolutionsio/market-price-tracker`](https://www.npmjs.com/package/@intentsolutionsio/market-price-tracker)                 |      224 |
-| 5   | [`@intentsolutionsio/excel-analyst-pro`](https://www.npmjs.com/package/@intentsolutionsio/excel-analyst-pro)                       |      189 |
-| 6   | [`@intentsolutionsio/openbb-terminal`](https://www.npmjs.com/package/@intentsolutionsio/openbb-terminal)                           |      182 |
-| 7   | [`@intentsolutionsio/options-flow-analyzer`](https://www.npmjs.com/package/@intentsolutionsio/options-flow-analyzer)               |      181 |
-| 8   | [`@intentsolutionsio/crypto-portfolio-tracker`](https://www.npmjs.com/package/@intentsolutionsio/crypto-portfolio-tracker)         |      175 |
-| 9   | [`@intentsolutionsio/nft-rarity-analyzer`](https://www.npmjs.com/package/@intentsolutionsio/nft-rarity-analyzer)                   |      174 |
-| 10  | [`@intentsolutionsio/arbitrage-opportunity-finder`](https://www.npmjs.com/package/@intentsolutionsio/arbitrage-opportunity-finder) |      167 |
+| # | Package | Last 30d |
+|---|---------|---------:|
+| 1 | [`@intentsolutionsio/ccpi`](https://www.npmjs.com/package/@intentsolutionsio/ccpi) | 519 |
+| 2 | [`@intentsolutionsio/engineer-design-diagram`](https://www.npmjs.com/package/@intentsolutionsio/engineer-design-diagram) | 290 |
+| 3 | [`@intentsolutionsio/guidewire-pack`](https://www.npmjs.com/package/@intentsolutionsio/guidewire-pack) | 263 |
+| 4 | [`@intentsolutionsio/hubspot-pack`](https://www.npmjs.com/package/@intentsolutionsio/hubspot-pack) | 201 |
+| 5 | [`@intentsolutionsio/zero-tech-debt`](https://www.npmjs.com/package/@intentsolutionsio/zero-tech-debt) | 177 |
+| 6 | [`@intentsolutionsio/validate-plugin`](https://www.npmjs.com/package/@intentsolutionsio/validate-plugin) | 170 |
+| 7 | [`@intentsolutionsio/cli-ux-tester`](https://www.npmjs.com/package/@intentsolutionsio/cli-ux-tester) | 164 |
+| 8 | [`@intentsolutionsio/tonone`](https://www.npmjs.com/package/@intentsolutionsio/tonone) | 160 |
+| 9 | [`@intentsolutionsio/claude-workflow-skills`](https://www.npmjs.com/package/@intentsolutionsio/claude-workflow-skills) | 159 |
+| 10 | [`@intentsolutionsio/contributing-clanker`](https://www.npmjs.com/package/@intentsolutionsio/contributing-clanker) | 157 |
 
-<sub>Last refreshed 2026-05-07T15:28:44.521Z.</sub>
+<sub>Last refreshed 2026-05-28T01:44:16.713Z.</sub>
 
 <!-- NPM-STATS:END -->
 
