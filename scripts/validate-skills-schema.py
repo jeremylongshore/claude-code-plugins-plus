@@ -4513,8 +4513,6 @@ def main() -> int:
             result = validate_skill(target, tier)
             if "fatal" in result:
                 if json_mode:
-                    import json as json_module
-
                     print(
                         json_module.dumps(
                             [
@@ -4534,8 +4532,6 @@ def main() -> int:
             letter = grade_info.get("grade", "F")
 
             if json_mode:
-                import json as json_module
-
                 print(
                     json_module.dumps(
                         [
