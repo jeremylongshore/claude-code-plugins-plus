@@ -50,4 +50,3 @@ The same day also fixed `stryker.config.json` → `stryker.config.js`. The audit
 Both findings share a pattern: gates that *thought* they covered their scope but didn't. The CI matrix "ran static analysis" — just not on that surface. The audit-harness "pinned the stryker config" — just didn't recognize that filename. The gaps aren't in the enforcement; they're in the scope assumptions.
 
 v1.6.0 shipped the same day. Bead cycle closed with 11 P3 deferrals and three epics resolved.
-
