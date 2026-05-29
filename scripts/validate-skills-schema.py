@@ -4496,48 +4496,82 @@ def main() -> int:
             print(f"ERROR: Expected a SKILL.md, .md file, or plugin directory: {args.path}", file=sys.stderr)
             return 1
 
-        print(f"🔍 CLAUDE CODE PLUGIN VALIDATOR v7.0 / schema {SCHEMA_VERSION} ({tier} tier)")
-        print(f"   Single-file mode: {target}")
-        print(f"{'=' * 70}\n")
+        # Single-file SKILL.md/command/agent: emit JSON when --json or
+        # --report-format=json. Phase A.0 fixture validation needs
+        # machine-parseable output for SKILL.md single-file --marketplace runs.
+        # Schema matches the multi-file --json array shape (one element here)
+        # plus full errors/warnings lists + breakdown for fixture assertions.
+        # Deep-eval JSON is gated separately below on (args.deep and args.report_format == "json").
+        json_mode = bool(args.json) or args.report_format == "json"
+
+        if not json_mode:
+            print(f"🔍 CLAUDE CODE PLUGIN VALIDATOR v7.0 / schema {SCHEMA_VERSION} ({tier} tier)")
+            print(f"   Single-file mode: {target}")
+            print(f"{'=' * 70}\n")
 
         if target.name == "SKILL.md":
             result = validate_skill(target, tier)
             if "fatal" in result:
-                print(f"❌ FATAL: {result['fatal']}")
+                if json_mode:
+                    import json as json_module
+                    print(json_module.dumps([{
+                        "path": str(target),
+                        "fatal": result["fatal"],
+                    }]))
+                else:
+                    print(f"❌ FATAL: {result['fatal']}")
                 return 1
 
             grade_info = result.get("grade", {})
             score = grade_info.get("score", 0)
             letter = grade_info.get("grade", "F")
 
-            if result["errors"]:
-                for error in result["errors"]:
-                    print(f"   ERROR: {error}")
-            if result["warnings"]:
-                for warning in result["warnings"]:
-                    print(f"   WARN: {warning}")
-            if result.get("infos"):
-                for info in result["infos"]:
-                    print(f"   INFO: {info}")
+            if json_mode:
+                import json as json_module
+                print(json_module.dumps([{
+                    "path": str(target),
+                    "tier": tier,
+                    "schema_version": SCHEMA_VERSION,
+                    "score": score,
+                    "grade": letter,
+                    "errors": result.get("errors", []),
+                    "warnings": result.get("warnings", []),
+                    "infos": result.get("infos", []),
+                    "breakdown": grade_info.get("breakdown", {}),
+                }]))
+                # Skip the terminal grade-table render below; deep-eval (if --deep)
+                # still runs and prints its own JSON via the existing block.
+                if not args.deep:
+                    return 1 if result["errors"] else 0
+            else:
+                if result["errors"]:
+                    for error in result["errors"]:
+                        print(f"   ERROR: {error}")
+                if result["warnings"]:
+                    for warning in result["warnings"]:
+                        print(f"   WARN: {warning}")
+                if result.get("infos"):
+                    for info in result["infos"]:
+                        print(f"   INFO: {info}")
 
-            # Always show grade in single-file mode
-            print(f"\n{'=' * 70}")
-            print(f"📊 GRADE: {letter} ({score}/100)")
-            print(f"{'=' * 70}")
-            breakdown = grade_info.get("breakdown", {})
-            for pillar_name, pillar_data in breakdown.items():
-                if pillar_name == "modifiers":
-                    mod_score = pillar_data.get("score", 0)
-                    print(f"  {'Modifiers':<30} {mod_score:+d}")
-                    for item_name, (pts, note) in pillar_data.get("items", {}).items():
-                        print(f"    {item_name:<28} {pts:+d} - {note}")
-                else:
-                    pil_score = pillar_data.get("score", 0)
-                    pil_max = pillar_data.get("max", 0)
-                    print(f"  {pillar_name.replace('_', ' ').title():<30} {pil_score}/{pil_max}")
-                    for item_name, (pts, note) in pillar_data.get("breakdown", {}).items():
-                        print(f"    {item_name:<28} {pts} - {note}")
-            print(f"{'=' * 70}")
+                # Always show grade in single-file mode
+                print(f"\n{'=' * 70}")
+                print(f"📊 GRADE: {letter} ({score}/100)")
+                print(f"{'=' * 70}")
+                breakdown = grade_info.get("breakdown", {})
+                for pillar_name, pillar_data in breakdown.items():
+                    if pillar_name == "modifiers":
+                        mod_score = pillar_data.get("score", 0)
+                        print(f"  {'Modifiers':<30} {mod_score:+d}")
+                        for item_name, (pts, note) in pillar_data.get("items", {}).items():
+                            print(f"    {item_name:<28} {pts:+d} - {note}")
+                    else:
+                        pil_score = pillar_data.get("score", 0)
+                        pil_max = pillar_data.get("max", 0)
+                        print(f"  {pillar_name.replace('_', ' ').title():<30} {pil_score}/{pil_max}")
+                        for item_name, (pts, note) in pillar_data.get("breakdown", {}).items():
+                            print(f"    {item_name:<28} {pts} - {note}")
+                print(f"{'=' * 70}")
 
             # Deep eval in single-file mode
             if args.deep and target.name == "SKILL.md":
