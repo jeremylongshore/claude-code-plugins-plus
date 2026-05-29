@@ -90,6 +90,15 @@ coverage/
 # doc-type for adversarial-technical decision records per Doc Filing Standard v4.3.
 # Pattern matches any *-AT-DECR-*.md at the root 000-docs/ level.
 !000-docs/*-AT-DECR-*.md
+# Partner-relationship AT-DECRs stay UNTRACKED (internal-only) per the
+# feedback_partner_decision_records_internal_only rule. ISEDC outputs naming
+# inbound prospects, partners, or candidate customers must not be filed as
+# public PRs because the diff is permanent cached GitHub history. The session
+# JSONL at ~/.claude/skills/exec-decision-council/sessions/.../session.jsonl
+# is the durable source of truth; the 000-docs/ copy is convenience-only and
+# stays local. Add each partner-named AT-DECR explicitly below as it's filed.
+000-docs/680-AT-DECR-open-accountants-partnership-council-2026-05-27.md
+000-docs/683-AT-DECR-isedc-773-funasr-alibaba-2026-05-28.md
 # Session AARs — After-Action Comprehensive Reviews per Doc Filing Standard v4.3.
 # Session logs of multi-task work sessions (what was done, what's deferred, what
 # was explicitly NOT done). No inherent secrets risk; transparency is the point.
