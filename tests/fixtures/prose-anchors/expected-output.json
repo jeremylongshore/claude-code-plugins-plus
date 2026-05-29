@@ -1,0 +1,33 @@
+{
+  "_description": "Expected check-prose-anchors.py output (--json mode) for the two fixture schemas. Run against the live 6767-h index produced by parse-prose-anchors.py. The 'parsed_at' and 'doc_sha256' fields in the parser output are not captured here — only the check results are normalized.",
+  "valid_schema": {
+    "input": "tests/fixtures/prose-anchors/valid-schema.json",
+    "expected_exit_code": 0,
+    "expected_output": {
+      "index_section_count": 21,
+      "schemas_checked": 1,
+      "citations_found": 3,
+      "broken_anchors": [],
+      "valid": true
+    }
+  },
+  "invalid_schema": {
+    "input": "tests/fixtures/prose-anchors/invalid-schema.json",
+    "expected_exit_code": 1,
+    "expected_output": {
+      "index_section_count": 21,
+      "schemas_checked": 1,
+      "citations_found": 3,
+      "broken_anchors": [
+        {
+          "schema": "tests/fixtures/prose-anchors/invalid-schema.json",
+          "json_path": "properties/version/$comment",
+          "comment": "SemVer string. This section does not exist — see 6767-h § 99.99.99 for the imaginary reference.",
+          "cited_id": "99.99.99",
+          "error": "Section '99.99.99' not found in 6767-h index"
+        }
+      ],
+      "valid": false
+    }
+  }
+}

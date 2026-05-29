@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "Authoring schema for a skill frontmatter block. see 6767-h § 3.1 for the full frontmatter specification.",
+  "title": "SkillFrontmatter",
+  "type": "object",
+  "required": ["name", "description", "allowed-tools", "version", "author", "license"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "$comment": "Kebab-case skill identifier. see 6767-h § 3.1 for naming constraints.",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "version": {
+      "type": "string",
+      "$comment": "SemVer string. Website gates require all published skills to carry a version. see 6767-h § 4.3 for the zero-warnings policy.",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    }
+  }
+}
