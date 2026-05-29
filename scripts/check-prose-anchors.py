@@ -23,8 +23,10 @@ from typing import Any
 
 _CITE_RE = re.compile(r"6767-h\s+§\s*(\d[\d.]*|[A-Z])\b")
 
+
 def _citations(text: str) -> list[str]:
     return [m.group(1).strip() for m in _CITE_RE.finditer(text)]
+
 
 def _walk(obj: Any, path: str = "") -> list[tuple[str, str]]:
     out: list[tuple[str, str]] = []
@@ -40,9 +42,11 @@ def _walk(obj: Any, path: str = "") -> list[tuple[str, str]]:
             out.extend(_walk(item, f"{path}[{i}]"))
     return out
 
+
 def _load_index(path: Path) -> dict[str, dict]:
     raw = json.loads(path.read_text(encoding="utf-8"))
     return {s["id"]: s for s in raw.get("sections", [])}
+
 
 def _index_from_doc(doc_path: Path) -> dict[str, dict]:
     spec = importlib.util.spec_from_file_location(
@@ -54,19 +58,29 @@ def _index_from_doc(doc_path: Path) -> dict[str, dict]:
     spec.loader.exec_module(mod)  # type: ignore[union-attr]
     return {s["id"]: s for s in mod.parse_sections(doc_path.read_text(encoding="utf-8"))}
 
+
 def _check_schema(path: Path, index: dict[str, dict]) -> list[dict]:
     try:
         schema = json.loads(path.read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError) as exc:
-        return [{"schema": str(path), "json_path": "<file>", "comment": "",
-                 "cited_id": "<parse-error>", "error": str(exc)}]
+        return [
+            {"schema": str(path), "json_path": "<file>", "comment": "", "cited_id": "<parse-error>", "error": str(exc)}
+        ]
     findings: list[dict] = []
     for jpath, text in _walk(schema):
         for cid in _citations(text):
             if cid not in index:
-                findings.append({"schema": str(path), "json_path": jpath, "comment": text,
-                                  "cited_id": cid, "error": f"Section '{cid}' not found in 6767-h index"})
+                findings.append(
+                    {
+                        "schema": str(path),
+                        "json_path": jpath,
+                        "comment": text,
+                        "cited_id": cid,
+                        "error": f"Section '{cid}' not found in 6767-h index",
+                    }
+                )
     return findings
+
 
 def _expand(patterns: list[str]) -> list[Path]:
     paths: list[Path] = []
@@ -78,6 +92,7 @@ def _expand(patterns: list[str]) -> list[Path]:
                 seen.add(rp)
                 paths.append(Path(p))
     return paths
+
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Check JSON Schema $comment fields for broken 6767-h citations.")
@@ -134,8 +149,11 @@ def main(argv: list[str] | None = None) -> int:
         for f in all_findings:
             print(f"  {f['schema']} @ {f['json_path']}: cited '{f['cited_id']}' — {f['error']}", file=sys.stderr)
     else:
-        print(f"OK: {cite_count} citation(s) in {len(schema_paths)} schema(s) all valid ({len(index)} sections in index).")
+        print(
+            f"OK: {cite_count} citation(s) in {len(schema_paths)} schema(s) all valid ({len(index)} sections in index)."
+        )
     return 0 if report["valid"] else 1
+
 
 if __name__ == "__main__":
     sys.exit(main())
