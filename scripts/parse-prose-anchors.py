@@ -102,7 +102,9 @@ def _repo_rel(path: Path) -> str:
     try:
         r = subprocess.run(
             ["git", "rev-parse", "--show-toplevel"],
-            capture_output=True, text=True, cwd=str(path.parent),
+            capture_output=True,
+            text=True,
+            cwd=str(path.parent),
         )
         if r.returncode == 0:
             return str(path.resolve().relative_to(Path(r.stdout.strip())))
@@ -112,10 +114,7 @@ def _repo_rel(path: Path) -> str:
 
 
 def main(argv: list[str] | None = None) -> int:
-    default = (
-        Path(__file__).parent.parent / "000-docs"
-        / "6767-h-SPEC-DR-STND-claude-code-extensions-master.md"
-    )
+    default = Path(__file__).parent.parent / "000-docs" / "6767-h-SPEC-DR-STND-claude-code-extensions-master.md"
     ap = argparse.ArgumentParser(description="Parse 6767-h spec into a section index.")
     ap.add_argument("--doc", type=Path, default=default)
     ap.add_argument("--out", type=Path, default=None)
