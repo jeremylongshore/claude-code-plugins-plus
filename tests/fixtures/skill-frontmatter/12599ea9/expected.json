@@ -1,0 +1,105 @@
+{
+  "deprecated_field_count": 0,
+  "field_completeness": 6,
+  "fixture_sha": "12599ea900d43e2e930b9a3c61c937b851cd0abe0e48091ac1150ea848cd1987",
+  "is_extras_present": 1,
+  "security_finding_count": 0,
+  "tiers": {
+    "marketplace": {
+      "findings": [
+        {
+          "message": "Missing required field: 'tags' (marketplace)",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing required field: 'compatibility' (marketplace)",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing conditional field: 'argument-hint' (relevant for this skill's configuration)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md body has 312 lines (301-500 approaching limit). Consider extracting to references/",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Glob' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Grep' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Write' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider adding 'effort': Setting effort level optimizes reasoning for this skill's complexity",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "A",
+      "pass": false,
+      "score_pct": 91
+    },
+    "standard": {
+      "findings": [
+        {
+          "message": "SKILL.md body has 312 lines (301-500 approaching limit). Consider extracting to references/",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Glob' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Grep' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Write' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "A",
+      "pass": true,
+      "score_pct": 91
+    }
+  },
+  "validator_commit": "7b9eb8f",
+  "validator_version": "3.7.0"
+}

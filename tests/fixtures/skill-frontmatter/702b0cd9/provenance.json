@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:07.775686Z",
+  "held_out": true,
+  "manifest_seed": 42,
+  "manifest_stratum": "held_out_C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/procore-pack/skills/procore-install-auth/SKILL.md",
+  "source_sha256": "702b0cd979cf91b0bf33221acfdb56ecc523b54d6cade1792780c7a5861d5d61",
+  "validator_commit": "7b9eb8f"
+}

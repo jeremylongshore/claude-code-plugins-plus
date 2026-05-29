@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:59.220515Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/groq-pack/skills/groq-observability/SKILL.md",
+  "source_sha256": "49eedc2a8f6b9a14c15877012ff3526b9c400293cafb8dd2d3ce8952ad120bfe",
+  "validator_commit": "7b9eb8f"
+}

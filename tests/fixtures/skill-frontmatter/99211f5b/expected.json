@@ -1,0 +1,125 @@
+{
+  "deprecated_field_count": 0,
+  "field_completeness": 8,
+  "fixture_sha": "99211f5bdfe67c5de809e1dda6f4d9d67cb823e1ac955596e87024dd22d1f9f8",
+  "is_extras_present": 0,
+  "security_finding_count": 0,
+  "tiers": {
+    "marketplace": {
+      "findings": [
+        {
+          "message": "Missing conditional field: 'argument-hint' (relevant for this skill's configuration)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md body has 425 lines (301-500 approaching limit). Consider extracting to references/",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 10: Consider adding error handling (set -e or || exit)",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 10: Magic number '443' - add comment explaining why",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Glob' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Grep' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Write' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## CLI Authentication Status' appears to be a stub (14 words, 0 sentence)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider adding 'model': Setting an explicit model prevents unexpected behavior when session model changes",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Consider adding 'effort': Setting effort level optimizes reasoning for this skill's complexity",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "A",
+      "pass": true,
+      "score_pct": 91
+    },
+    "standard": {
+      "findings": [
+        {
+          "message": "SKILL.md body has 425 lines (301-500 approaching limit). Consider extracting to references/",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 10: Consider adding error handling (set -e or || exit)",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 10: Magic number '443' - add comment explaining why",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Glob' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Grep' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Write' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "A",
+      "pass": true,
+      "score_pct": 91
+    }
+  },
+  "validator_commit": "7b9eb8f",
+  "validator_version": "3.7.0"
+}

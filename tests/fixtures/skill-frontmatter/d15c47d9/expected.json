@@ -1,0 +1,115 @@
+{
+  "deprecated_field_count": 0,
+  "field_completeness": 8,
+  "fixture_sha": "d15c47d9186c7d0101cc0900bb87c4c0c21d770d02aeb9e237cd5de3e3212fe5",
+  "is_extras_present": 0,
+  "security_finding_count": 0,
+  "tiers": {
+    "marketplace": {
+      "findings": [
+        {
+          "message": "Missing conditional field: 'argument-hint' (relevant for this skill's configuration)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "'description' contains reserved word: 'claude' (ok for Claude/AI context)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md body has 353 lines (301-500 approaching limit). Consider extracting to references/",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Purpose statement is 5 sentences (recommended 1-2)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Read' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Write' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider adding 'model': Setting an explicit model prevents unexpected behavior when session model changes",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Consider adding 'effort': Setting effort level optimizes reasoning for this skill's complexity",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Uses $ARGUMENTS/$N but 'argument-hint' frontmatter is missing \u2014 add argument-hint for autocomplete support (per official docs)",
+          "section": "body",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "A",
+      "pass": true,
+      "score_pct": 94
+    },
+    "standard": {
+      "findings": [
+        {
+          "message": "'description' contains reserved word: 'claude' (ok for Claude/AI context)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md body has 353 lines (301-500 approaching limit). Consider extracting to references/",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Read' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Write' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Uses $ARGUMENTS/$N but 'argument-hint' frontmatter is missing \u2014 add argument-hint for autocomplete support (per official docs)",
+          "section": "body",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "A",
+      "pass": true,
+      "score_pct": 94
+    }
+  },
+  "validator_commit": "7b9eb8f",
+  "validator_version": "3.7.0"
+}

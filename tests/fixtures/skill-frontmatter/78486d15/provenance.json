@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:05.851218Z",
+  "held_out": true,
+  "manifest_seed": 42,
+  "manifest_stratum": "held_out_B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/databricks-pack/skills/databricks-reference-architecture/SKILL.md",
+  "source_sha256": "78486d1563e4601c1ce6c9df37a288e53a99031a9b0b41c57732a903abd72865",
+  "validator_commit": "7b9eb8f"
+}

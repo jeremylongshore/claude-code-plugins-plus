@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:04.400664Z",
+  "held_out": true,
+  "manifest_seed": 42,
+  "manifest_stratum": "held_out_A",
+  "source_path": "/home/jeremy/.claude/skills/sync-testing-harness/SKILL.md",
+  "source_sha256": "7de4013366c4ddac7e4393dc10f8cda2c6a3777fa19f162a21088b24bb299806",
+  "validator_commit": "7b9eb8f"
+}

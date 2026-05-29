@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:09.015826Z",
+  "held_out": true,
+  "manifest_seed": 42,
+  "manifest_stratum": "held_out_C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/salesforce-pack/skills/salesforce-local-dev-loop/SKILL.md",
+  "source_sha256": "61a180f4ec97634deae04fbd065347c20542a1b4faab84dbc68cc86bcf177b00",
+  "validator_commit": "7b9eb8f"
+}

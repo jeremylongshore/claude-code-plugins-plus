@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:08.712019Z",
+  "held_out": true,
+  "manifest_seed": 42,
+  "manifest_stratum": "held_out_C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/wispr-pack/skills/wispr-security-basics/SKILL.md",
+  "source_sha256": "87a22514690fc45e24a36d081ad952a6ae111527b358ac4b710730051113d38e",
+  "validator_commit": "7b9eb8f"
+}

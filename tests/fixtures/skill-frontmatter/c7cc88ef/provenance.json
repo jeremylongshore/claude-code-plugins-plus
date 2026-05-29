@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:56.956329Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/linear-pack/skills/linear-deploy-integration/SKILL.md",
+  "source_sha256": "c7cc88efd2d235a9e4517f9b0a09daac6133751d2fd66da4f04e8621f02b2a1a",
+  "validator_commit": "7b9eb8f"
+}

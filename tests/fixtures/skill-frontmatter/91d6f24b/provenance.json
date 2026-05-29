@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:55.924887Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/ai-agency/tonone/skills/forge-diagnose/SKILL.md",
+  "source_sha256": "91d6f24bb7cde8b706718eab11568a701bcc78fcd25e43c56aa21653c303c71a",
+  "validator_commit": "7b9eb8f"
+}

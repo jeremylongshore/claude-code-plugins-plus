@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:02.903997Z",
+  "held_out": true,
+  "manifest_seed": 42,
+  "manifest_stratum": "held_out_A",
+  "source_path": "/home/jeremy/.claude/skills/repo-blueprint/SKILL.md",
+  "source_sha256": "9ffefb258d3fa194ecc9a37bb4cf3368d60318890f451207836e7d3aff914ac3",
+  "validator_commit": "7b9eb8f"
+}

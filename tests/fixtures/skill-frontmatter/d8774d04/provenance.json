@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:59.857580Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/runway-pack/skills/runway-prod-checklist/SKILL.md",
+  "source_sha256": "d8774d04750fc37c67eeeec6c67acfd851a6e6d04f190b02e704d445f6d9623f",
+  "validator_commit": "7b9eb8f"
+}

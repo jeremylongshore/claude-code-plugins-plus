@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:06.495568Z",
+  "held_out": true,
+  "manifest_seed": 42,
+  "manifest_stratum": "held_out_B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/devops/sugar/skills/managing-autonomous-development/SKILL.md",
+  "source_sha256": "39694061ee3bd15d841148381b2a8b0bbd184334ddfbf1cb893af0ea8c2e07c4",
+  "validator_commit": "7b9eb8f"
+}

@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:50.939666Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/performance/log-analysis-tool/skills/analyzing-logs/SKILL.md",
+  "source_sha256": "c3273e79038c391f4f52d039a2c689f18b7fdd478781736bee388c718425aed2",
+  "validator_commit": "7b9eb8f"
+}

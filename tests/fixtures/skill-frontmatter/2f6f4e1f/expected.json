@@ -1,0 +1,150 @@
+{
+  "deprecated_field_count": 0,
+  "field_completeness": 8,
+  "fixture_sha": "2f6f4e1fe48f1462ea7ad0e1f6929046fec213e85b3ced3a5230d2a3766a6066",
+  "is_extras_present": 0,
+  "security_finding_count": 0,
+  "tiers": {
+    "marketplace": {
+      "findings": [
+        {
+          "message": "Required section missing: '## Prerequisites' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Instructions' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Output' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Examples' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing conditional field: 'argument-hint' (relevant for this skill's configuration)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "'description' should include 'Use when ...' phrase for model discoverability (marketplace)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md body has 319 lines (301-500 approaching limit). Consider extracting to references/",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Instructions' looks empty/too short (marketplace quality standard)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Output' looks empty/too short (marketplace quality standard)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Examples' looks empty/too short (marketplace quality standard)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Read' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Write' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Missing references/ directory \u2014 create it for progressive disclosure",
+          "section": "supporting",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Next Steps' appears to be a stub (5 words, 1 sentence)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider adding 'model': Setting an explicit model prevents unexpected behavior when session model changes",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Consider adding 'effort': Setting effort level optimizes reasoning for this skill's complexity",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        },
+        {
+          "message": "Section '## Instrumented API Client' is 61 lines. Consider offloading to references/instrumented-api-client.md with a relative link: [details](references/instrumented-api-client.md)",
+          "section": "advisor",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "D",
+      "pass": false,
+      "score_pct": 69
+    },
+    "standard": {
+      "findings": [
+        {
+          "message": "SKILL.md body has 319 lines (301-500 approaching limit). Consider extracting to references/",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Read' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Write' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider adding 'Use when ...' phrase to description for better discoverability",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "D",
+      "pass": true,
+      "score_pct": 69
+    }
+  },
+  "validator_commit": "7b9eb8f",
+  "validator_version": "3.7.0"
+}

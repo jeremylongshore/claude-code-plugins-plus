@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:53.637788Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/productivity/000-jeremy-content-consistency-validator/skills/000-jeremy-content-consistency-validator/SKILL.md",
+  "source_sha256": "58e456aa8429827158338dcd69f4c41ad0fb4660b25fe88dd2a5d449588d0abc",
+  "validator_commit": "7b9eb8f"
+}

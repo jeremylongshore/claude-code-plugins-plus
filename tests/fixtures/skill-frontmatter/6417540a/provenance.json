@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:09.332041Z",
+  "held_out": true,
+  "manifest_seed": 42,
+  "manifest_stratum": "held_out_C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/ai-agency/tonone/skills/prism-ui/SKILL.md",
+  "source_sha256": "6417540a8171338deb6c63462e8bae503dc6f300e83c5a35e5c58099e0da973c",
+  "validator_commit": "7b9eb8f"
+}

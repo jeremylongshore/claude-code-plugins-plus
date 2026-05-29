@@ -1,0 +1,155 @@
+{
+  "deprecated_field_count": 0,
+  "field_completeness": 8,
+  "fixture_sha": "4223d9930ad0f07c1a7e44e1c1c359599d5e0183603eb203e3a1d78beb5fcfe9",
+  "is_extras_present": 0,
+  "security_finding_count": 0,
+  "tiers": {
+    "marketplace": {
+      "findings": [
+        {
+          "message": "Missing conditional field: 'argument-hint' (relevant for this skill's configuration)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md body has 338 lines (301-500 approaching limit). Consider extracting to references/",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 7: Consider adding error handling (set -e or || exit)",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 7: Magic number '2022' - add comment explaining why",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Glob' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Grep' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Read' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Write' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Missing references/ directory \u2014 create it for progressive disclosure",
+          "section": "supporting",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Next Steps' appears to be a stub (14 words, 1 sentence)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider adding 'model': Setting an explicit model prevents unexpected behavior when session model changes",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Consider adding 'effort': Setting effort level optimizes reasoning for this skill's complexity",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Uses $ARGUMENTS/$N but 'argument-hint' frontmatter is missing \u2014 add argument-hint for autocomplete support (per official docs)",
+          "section": "body",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        },
+        {
+          "message": "Section '## Examples' is 82 lines. Consider offloading to references/examples.md with a relative link: [details](references/examples.md)",
+          "section": "advisor",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "C",
+      "pass": true,
+      "score_pct": 76
+    },
+    "standard": {
+      "findings": [
+        {
+          "message": "SKILL.md body has 338 lines (301-500 approaching limit). Consider extracting to references/",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 7: Consider adding error handling (set -e or || exit)",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 7: Magic number '2022' - add comment explaining why",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Glob' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Grep' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Read' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Write' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Uses $ARGUMENTS/$N but 'argument-hint' frontmatter is missing \u2014 add argument-hint for autocomplete support (per official docs)",
+          "section": "body",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "C",
+      "pass": true,
+      "score_pct": 76
+    }
+  },
+  "validator_commit": "7b9eb8f",
+  "validator_version": "3.7.0"
+}

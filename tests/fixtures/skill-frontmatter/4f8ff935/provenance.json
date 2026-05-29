@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:58.870917Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/skill-databases/windsurf/skills/windsurf-flows-automation/SKILL.md",
+  "source_sha256": "4f8ff935f739c8a05412bb68570bbe12bb8ca7b352d5b5248eb86e268025dd8c",
+  "validator_commit": "7b9eb8f"
+}

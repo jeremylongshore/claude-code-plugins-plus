@@ -1,0 +1,220 @@
+{
+  "deprecated_field_count": 0,
+  "field_completeness": 8,
+  "fixture_sha": "805a93df9c67a1406d829c1d983f2ff288aae73d96e4b46dda39e276a55ce145",
+  "is_extras_present": 0,
+  "security_finding_count": 1,
+  "tiers": {
+    "marketplace": {
+      "findings": [
+        {
+          "message": "'description' exceeds 1024 characters",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing conditional field: 'argument-hint' (relevant for this skill's configuration)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "'description' contains reserved word: 'claude' (ok for Claude/AI context)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "Many tools permitted (8) - consider limiting for security",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md body has 480 lines (301-500 approaching limit). Consider extracting to references/",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Content is lengthy (3570 words) - consider references/ directory",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Purpose statement is 3 sentences (recommended 1-2)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Body may contain time-sensitive information (dates, versions) that could go stale",
+          "section": null,
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 8: Magic number '983' - add comment explaining why",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'AskUserQuestion' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Glob' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Grep' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Task' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Write' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "External API surface referenced (curl/fetch/MCP/OAuth/etc.) but no authentication method documented \u2014 add an Auth section or reference auth.md",
+          "section": "tier2:auth-documented",
+          "severity": "WARN"
+        },
+        {
+          "message": "Line 88 is 520 chars (recommended limit 500)",
+          "section": "line-length",
+          "severity": "WARN"
+        },
+        {
+          "message": "Line 142 is 626 chars (recommended limit 500)",
+          "section": "line-length",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider adding 'model': Setting an explicit model prevents unexpected behavior when session model changes",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Consider adding 'effort': Setting effort level optimizes reasoning for this skill's complexity",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Uses $ARGUMENTS/$N but 'argument-hint' frontmatter is missing \u2014 add argument-hint for autocomplete support (per official docs)",
+          "section": "body",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        },
+        {
+          "message": "Skill performs file reading at start \u2014 consider DCI to auto-detect at activation: `!`[ -f FILE ] && head -5 FILE || echo \"not found\"``",
+          "section": "advisor",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "B",
+      "pass": false,
+      "score_pct": 88
+    },
+    "standard": {
+      "findings": [
+        {
+          "message": "'description' exceeds 1024 characters",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "'description' contains reserved word: 'claude' (ok for Claude/AI context)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "Many tools permitted (8) - consider limiting for security",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md body has 480 lines (301-500 approaching limit). Consider extracting to references/",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Content is lengthy (3570 words) - consider references/ directory",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Body may contain time-sensitive information (dates, versions) that could go stale",
+          "section": null,
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 8: Magic number '983' - add comment explaining why",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'AskUserQuestion' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Glob' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Grep' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Task' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Write' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "External API surface referenced (curl/fetch/MCP/OAuth/etc.) but no authentication method documented \u2014 add an Auth section or reference auth.md",
+          "section": "tier2:auth-documented",
+          "severity": "WARN"
+        },
+        {
+          "message": "Uses $ARGUMENTS/$N but 'argument-hint' frontmatter is missing \u2014 add argument-hint for autocomplete support (per official docs)",
+          "section": "body",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "B",
+      "pass": false,
+      "score_pct": 88
+    }
+  },
+  "validator_commit": "7b9eb8f",
+  "validator_version": "3.7.0"
+}

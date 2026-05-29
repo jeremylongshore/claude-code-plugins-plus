@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:50.269938Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/vastai-pack/skills/vastai-webhooks-events/SKILL.md",
+  "source_sha256": "0c83aa61837a74539cf9122744c218617e9229657267d5e0dde15a0f496f0127",
+  "validator_commit": "7b9eb8f"
+}

@@ -1,0 +1,120 @@
+{
+  "deprecated_field_count": 0,
+  "field_completeness": 8,
+  "fixture_sha": "6396ad7b1a0e50f3fe3a5beb7b556b934683e279b876bf31307bf432f3b04b03",
+  "is_extras_present": 0,
+  "security_finding_count": 0,
+  "tiers": {
+    "marketplace": {
+      "findings": [
+        {
+          "message": "Missing conditional field: 'argument-hint' (relevant for this skill's configuration)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "'description' should include 'Trigger with ...' phrase for user discoverability (marketplace)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "Purpose statement is 3 sentences (recommended 1-2)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Purpose statement is long (>400 chars) - keep it crisp",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider imperative language instead of 'you should/can/will'",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Read' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "External API surface referenced (curl/fetch/MCP/OAuth/etc.) but no authentication method documented \u2014 add an Auth section or reference auth.md",
+          "section": "tier2:auth-documented",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider adding 'model': Setting an explicit model prevents unexpected behavior when session model changes",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Consider adding 'effort': Setting effort level optimizes reasoning for this skill's complexity",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Uses $ARGUMENTS/$N but 'argument-hint' frontmatter is missing \u2014 add argument-hint for autocomplete support (per official docs)",
+          "section": "body",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "A",
+      "pass": true,
+      "score_pct": 93
+    },
+    "standard": {
+      "findings": [
+        {
+          "message": "Consider imperative language instead of 'you should/can/will'",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Read' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "External API surface referenced (curl/fetch/MCP/OAuth/etc.) but no authentication method documented \u2014 add an Auth section or reference auth.md",
+          "section": "tier2:auth-documented",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider adding 'Trigger with ...' phrase to description",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Uses $ARGUMENTS/$N but 'argument-hint' frontmatter is missing \u2014 add argument-hint for autocomplete support (per official docs)",
+          "section": "body",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "A",
+      "pass": true,
+      "score_pct": 93
+    }
+  },
+  "validator_commit": "7b9eb8f",
+  "validator_version": "3.7.0"
+}

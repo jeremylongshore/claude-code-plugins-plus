@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:06.821574Z",
+  "held_out": true,
+  "manifest_seed": 42,
+  "manifest_stratum": "held_out_B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/databricks-pack/skills/databricks-cost-tuning/SKILL.md",
+  "source_sha256": "89280dde8563e2f05bf70ae3eddc0df5a2993b7d550a53e7503bdff4a704034c",
+  "validator_commit": "7b9eb8f"
+}

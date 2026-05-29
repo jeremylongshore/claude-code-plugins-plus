@@ -1,0 +1,150 @@
+{
+  "deprecated_field_count": 0,
+  "field_completeness": 8,
+  "fixture_sha": "7d20dbd793abfd6b0be9ae63beb1c6d56014282e9ff2b2b5b598fcbfddaf5194",
+  "is_extras_present": 0,
+  "security_finding_count": 0,
+  "tiers": {
+    "marketplace": {
+      "findings": [
+        {
+          "message": "Missing conditional field: 'argument-hint' (relevant for this skill's configuration)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider using action verbs (analyze, detect, forecast, etc.)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md body has 382 lines (301-500 approaching limit). Consider extracting to references/",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Purpose statement is 3 sentences (recommended 1-2)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Purpose statement is long (>400 chars) - keep it crisp",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 6: Magic number '23503' - add comment explaining why",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 6: Magic number '42501' - add comment explaining why",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 6: Magic number '42883' - add comment explaining why",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Grep' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Missing references/ directory \u2014 create it for progressive disclosure",
+          "section": "supporting",
+          "severity": "WARN"
+        },
+        {
+          "message": "Line 5 is 534 chars (recommended limit 500)",
+          "section": "line-length",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Instructions' contains stub marker (TODO/TBD/WIP/Coming soon)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider adding 'model': Setting an explicit model prevents unexpected behavior when session model changes",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Consider adding 'effort': Setting effort level optimizes reasoning for this skill's complexity",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        },
+        {
+          "message": "Section '## Examples' is 49 lines. Consider offloading to references/examples.md with a relative link: [details](references/examples.md)",
+          "section": "advisor",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "C",
+      "pass": true,
+      "score_pct": 75
+    },
+    "standard": {
+      "findings": [
+        {
+          "message": "Consider using action verbs (analyze, detect, forecast, etc.)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md body has 382 lines (301-500 approaching limit). Consider extracting to references/",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 6: Magic number '23503' - add comment explaining why",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 6: Magic number '42501' - add comment explaining why",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 6: Magic number '42883' - add comment explaining why",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Grep' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "C",
+      "pass": true,
+      "score_pct": 75
+    }
+  },
+  "validator_commit": "7b9eb8f",
+  "validator_version": "3.7.0"
+}

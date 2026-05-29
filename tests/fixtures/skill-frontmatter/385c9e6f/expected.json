@@ -1,0 +1,23 @@
+{
+  "deprecated_field_count": 0,
+  "field_completeness": 6,
+  "fixture_sha": "164f5ec2a7b25efb0ad8bad18e1de6db8fbc9cd804f2ffa8d584ad670b7c3037",
+  "is_extras_present": 1,
+  "security_finding_count": 0,
+  "tiers": {
+    "marketplace": {
+      "findings": [],
+      "grade": "F",
+      "pass": true,
+      "score_pct": 0
+    },
+    "standard": {
+      "findings": [],
+      "grade": "F",
+      "pass": true,
+      "score_pct": 0
+    }
+  },
+  "validator_commit": "7b9eb8f",
+  "validator_version": "3.7.0"
+}

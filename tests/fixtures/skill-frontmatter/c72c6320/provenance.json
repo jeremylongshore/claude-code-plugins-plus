@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:43.645545Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "A",
+  "source_path": "/home/jeremy/.claude/skills/validate-mcp/SKILL.md",
+  "source_sha256": "c72c63201ec6a8d98bb116798a7b547f25c6969d9b2ed4cc2e380f26b2b8d798",
+  "validator_commit": "7b9eb8f"
+}

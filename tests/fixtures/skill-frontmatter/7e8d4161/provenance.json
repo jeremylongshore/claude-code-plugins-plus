@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:57.569313Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/coderabbit-pack/skills/coderabbit-observability/SKILL.md",
+  "source_sha256": "7e8d4161c344ccc136e740003a706b0053bb53b60fc4f18125c11fbb48e9ed69",
+  "validator_commit": "7b9eb8f"
+}

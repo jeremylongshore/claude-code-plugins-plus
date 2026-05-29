@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:52.339279Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/langchain-py-pack/skills/langchain-prompt-engineering/SKILL.md",
+  "source_sha256": "d15c47d9186c7d0101cc0900bb87c4c0c21d770d02aeb9e237cd5de3e3212fe5",
+  "validator_commit": "7b9eb8f"
+}

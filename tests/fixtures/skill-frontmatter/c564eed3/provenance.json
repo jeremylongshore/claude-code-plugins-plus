@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:00.615997Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/ai-agency/tonone/skills/helm-plan/SKILL.md",
+  "source_sha256": "c564eed31b57493aaee05d7fbef1bbf41374e44cbf5d9d25a6b54e51622e27c1",
+  "validator_commit": "7b9eb8f"
+}

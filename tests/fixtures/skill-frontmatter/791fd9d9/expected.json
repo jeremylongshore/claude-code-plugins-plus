@@ -1,0 +1,170 @@
+{
+  "deprecated_field_count": 0,
+  "field_completeness": 7,
+  "fixture_sha": "791fd9d929e5c0ac70a844c73cc82f1a342c3ca10d7b66d7a92f91f2bfae9c1d",
+  "is_extras_present": 0,
+  "security_finding_count": 1,
+  "tiers": {
+    "marketplace": {
+      "findings": [
+        {
+          "message": "Missing required field: 'compatibility' (marketplace)",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Prerequisites' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Output' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Examples' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing conditional field: 'argument-hint' (relevant for this skill's configuration)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "'description' should include 'Use when ...' phrase for model discoverability (marketplace)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "Many tools permitted (19) - consider limiting for security",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md body has 345 lines (301-500 approaching limit). Consider extracting to references/",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Output' looks empty/too short (marketplace quality standard)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Examples' looks empty/too short (marketplace quality standard)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Body may contain time-sensitive information (dates, versions) that could go stale",
+          "section": null,
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 4: Magic number '2026' - add comment explaining why",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Glob' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Grep' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md contains placeholder text: {file}",
+          "section": "content-quality",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider adding 'model': Setting an explicit model prevents unexpected behavior when session model changes",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Consider adding 'effort': Setting effort level optimizes reasoning for this skill's complexity",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "B",
+      "pass": false,
+      "score_pct": 80
+    },
+    "standard": {
+      "findings": [
+        {
+          "message": "Many tools permitted (19) - consider limiting for security",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md body has 345 lines (301-500 approaching limit). Consider extracting to references/",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Body may contain time-sensitive information (dates, versions) that could go stale",
+          "section": null,
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 4: Magic number '2026' - add comment explaining why",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Glob' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Grep' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md contains placeholder text: {file}",
+          "section": "content-quality",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider adding 'Use when ...' phrase to description for better discoverability",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "B",
+      "pass": true,
+      "score_pct": 80
+    }
+  },
+  "validator_commit": "7b9eb8f",
+  "validator_version": "3.7.0"
+}

@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:48.560130Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "A",
+  "source_path": "/home/jeremy/.claude/skills/ui-ux-pro-max/SKILL.md",
+  "source_sha256": "b3ab45c714a7222dbf41bff153fc0570640e356ba272417d396da950a7863a78",
+  "validator_commit": "7b9eb8f"
+}

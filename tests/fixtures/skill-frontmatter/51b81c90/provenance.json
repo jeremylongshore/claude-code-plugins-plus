@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:00.947289Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/windsurf-pack/skills/windsurf-performance-tuning/SKILL.md",
+  "source_sha256": "51b81c90502c73e592c5aeeab41e92673d512cdd4c730c4769efa149a583e287",
+  "validator_commit": "7b9eb8f"
+}

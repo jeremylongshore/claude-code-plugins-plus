@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:49.633745Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/onenote-pack/skills/onenote-upgrade-migration/SKILL.md",
+  "source_sha256": "298b38e306d8ee5f363a7d0b22bd848783da43bea86600e733994740b3f0f47d",
+  "validator_commit": "7b9eb8f"
+}

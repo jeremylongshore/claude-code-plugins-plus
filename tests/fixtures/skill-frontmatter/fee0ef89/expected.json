@@ -1,0 +1,160 @@
+{
+  "deprecated_field_count": 0,
+  "field_completeness": 8,
+  "fixture_sha": "fee0ef8925c8ba761ef5362330392c278b98e1ed321577eefcfacacfd6aa224a",
+  "is_extras_present": 0,
+  "security_finding_count": 1,
+  "tiers": {
+    "marketplace": {
+      "findings": [
+        {
+          "message": "allowed-tools: unscoped 'Bash' is not allowed - use scoped Bash(git:*), Bash(npm:*), etc.",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Error Handling' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Unscoped Bash + Write/WebFetch declared without a Safety Justification section \u2014 high-risk combo. Add `## Safety Justification` explaining why.",
+          "section": "tier2:tool-safety",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing conditional field: 'argument-hint' (relevant for this skill's configuration)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "Many tools permitted (8) - consider limiting for security",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Error Handling' looks empty/too short (marketplace quality standard)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "'## Instructions' should include step-by-step steps (numbered list or Step headings) (marketplace)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 1: Consider adding error handling (set -e or || exit)",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Glob' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Grep' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Read' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Write' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Prerequisites' appears to be a stub (12 words, 0 sentence)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider adding 'model': Setting an explicit model prevents unexpected behavior when session model changes",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Consider adding 'effort': Setting effort level optimizes reasoning for this skill's complexity",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "A",
+      "pass": false,
+      "score_pct": 95
+    },
+    "standard": {
+      "findings": [
+        {
+          "message": "allowed-tools: unscoped 'Bash' - consider scoping (Bash(git:*), Bash(npm:*), etc.)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "Many tools permitted (8) - consider limiting for security",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 1: Consider adding error handling (set -e or || exit)",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Unscoped Bash + Write/WebFetch declared without a Safety Justification section \u2014 high-risk combo. Add `## Safety Justification` explaining why.",
+          "section": "tier2:tool-safety",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Glob' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Grep' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Read' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Write' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "A",
+      "pass": true,
+      "score_pct": 95
+    }
+  },
+  "validator_commit": "7b9eb8f",
+  "validator_version": "3.7.0"
+}

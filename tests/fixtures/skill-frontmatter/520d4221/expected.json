@@ -1,0 +1,285 @@
+{
+  "deprecated_field_count": 0,
+  "field_completeness": 4,
+  "fixture_sha": "520d4221ff02343eef96bc72518e9de3f224b2dffe33da53f9a374559895f552",
+  "is_extras_present": 0,
+  "security_finding_count": 1,
+  "tiers": {
+    "marketplace": {
+      "findings": [
+        {
+          "message": "Missing required field: 'tags' (marketplace)",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing required field: 'compatibility' (marketplace)",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing required field: 'author' (marketplace)",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing required field: 'version' (marketplace)",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "SKILL.md body has 1017 lines \u2014 exceeds Anthropic 500-line limit. Extract to references/",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Output' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Resources' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing conditional field: 'argument-hint' (relevant for this skill's configuration)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "Many tools permitted (23) - consider limiting for security",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "Content is lengthy (4388 words) - consider references/ directory",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Output' looks empty/too short (marketplace quality standard)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Resources' looks empty/too short (marketplace quality standard)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 2: Magic number '5667' - add comment explaining why",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 2: Magic number '5667' - add comment explaining why",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 2: Magic number '5667' - add comment explaining why",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Glob' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Task' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'WebFetch' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "External API surface referenced (curl/fetch/MCP/OAuth/etc.) but no authentication method documented \u2014 add an Auth section or reference auth.md",
+          "section": "tier2:auth-documented",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md contains placeholder text: {pkg}",
+          "section": "content-quality",
+          "severity": "WARN"
+        },
+        {
+          "message": "references/ directory is empty \u2014 add reference documents",
+          "section": "supporting",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Checklist' appears to be a stub (13 words, 1 sentence)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Findings' appears to be a stub (9 words, 0 sentence)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## CI Status' appears to be a stub (10 words, 0 sentence)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Code Snippets' appears to be a stub (4 words, 0 sentence)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Summary' has no meaningful content (0 words)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## First Impressions' has no meaningful content (0 words)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## What I Looked At' has no meaningful content (0 words)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Analysis' has no meaningful content (0 words)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Verification' has no meaningful content (0 words)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Diagrams' has no meaningful content (0 words)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Bot Review Synthesis' appears to be a stub (11 words, 1 sentence)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Combined Integration Test' contains stub marker (TODO/TBD/WIP/Coming soon)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider adding 'model': Setting an explicit model prevents unexpected behavior when session model changes",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Consider adding 'effort': Setting effort level optimizes reasoning for this skill's complexity",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Uses $ARGUMENTS/$N but 'argument-hint' frontmatter is missing \u2014 add argument-hint for autocomplete support (per official docs)",
+          "section": "body",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "D",
+      "pass": false,
+      "score_pct": 68
+    },
+    "standard": {
+      "findings": [
+        {
+          "message": "SKILL.md body has 1017 lines \u2014 exceeds Anthropic 500-line limit. Extract to references/",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Many tools permitted (23) - consider limiting for security",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "Content is lengthy (4388 words) - consider references/ directory",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 2: Magic number '5667' - add comment explaining why",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 2: Magic number '5667' - add comment explaining why",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 2: Magic number '5667' - add comment explaining why",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Glob' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Task' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'WebFetch' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "External API surface referenced (curl/fetch/MCP/OAuth/etc.) but no authentication method documented \u2014 add an Auth section or reference auth.md",
+          "section": "tier2:auth-documented",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md contains placeholder text: {pkg}",
+          "section": "content-quality",
+          "severity": "WARN"
+        },
+        {
+          "message": "Uses $ARGUMENTS/$N but 'argument-hint' frontmatter is missing \u2014 add argument-hint for autocomplete support (per official docs)",
+          "section": "body",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "D",
+      "pass": false,
+      "score_pct": 68
+    }
+  },
+  "validator_commit": "7b9eb8f",
+  "validator_version": "3.7.0"
+}

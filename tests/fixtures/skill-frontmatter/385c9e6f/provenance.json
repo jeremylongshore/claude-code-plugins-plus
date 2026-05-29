@@ -1,0 +1,11 @@
+{
+  "captured_at": "2026-05-29T01:57:03.664528Z",
+  "held_out": true,
+  "manifest_seed": 42,
+  "manifest_stratum": "held_out_A",
+  "redacted": true,
+  "redaction_note": "Slack webhook URL pattern replaced with placeholder X-chars on 2026-05-28 per GitHub push protection. Score re-computed against redacted input.md.",
+  "source_path": "/home/jeremy/.claude/skills/slack/SKILL.md",
+  "source_sha256": "385c9e6fa53f764b4fa80bbe1c691550b4daa71eb51c9cac7d8673c249dfad93",
+  "validator_commit": "7b9eb8f"
+}

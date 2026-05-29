@@ -1,0 +1,120 @@
+{
+  "deprecated_field_count": 0,
+  "field_completeness": 8,
+  "fixture_sha": "dce11c41895266153618e36eb3c4a6611359a2f1210b4ef56a20e13177568db1",
+  "is_extras_present": 0,
+  "security_finding_count": 1,
+  "tiers": {
+    "marketplace": {
+      "findings": [
+        {
+          "message": "Many tools permitted (7) - consider limiting for security",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md body has 481 lines (301-500 approaching limit). Consider extracting to references/",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Body may contain time-sensitive information (dates, versions) that could go stale",
+          "section": null,
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Grep' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md contains placeholder text: {name}",
+          "section": "content-quality",
+          "severity": "WARN"
+        },
+        {
+          "message": "Missing references/ directory \u2014 create it for progressive disclosure",
+          "section": "supporting",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider adding 'model': Setting an explicit model prevents unexpected behavior when session model changes",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Consider adding 'effort': Setting effort level optimizes reasoning for this skill's complexity",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        },
+        {
+          "message": "Section '## Schema Reminder \u2014 Frontmatter Fields' is 63 lines. Consider offloading to references/schema-reminder-\u2014-frontmatter-fields.md with a relative link: [details](references/schema-reminder-\u2014-frontmatter-fields.md)",
+          "section": "advisor",
+          "severity": "INFO"
+        },
+        {
+          "message": "Skill performs file reading at start \u2014 consider DCI to auto-detect at activation: `!`[ -f FILE ] && head -5 FILE || echo \"not found\"``",
+          "section": "advisor",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "B",
+      "pass": true,
+      "score_pct": 82
+    },
+    "standard": {
+      "findings": [
+        {
+          "message": "Many tools permitted (7) - consider limiting for security",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md body has 481 lines (301-500 approaching limit). Consider extracting to references/",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Body may contain time-sensitive information (dates, versions) that could go stale",
+          "section": null,
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Edit' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Grep' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md contains placeholder text: {name}",
+          "section": "content-quality",
+          "severity": "WARN"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "B",
+      "pass": true,
+      "score_pct": 82
+    }
+  },
+  "validator_commit": "7b9eb8f",
+  "validator_version": "3.7.0"
+}

@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:02.520569Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/canva-pack/skills/canva-load-scale/SKILL.md",
+  "source_sha256": "46c17b850632cda1e79686cf664e1b7621296b21032347b1d6c604acfda0ac1b",
+  "validator_commit": "7b9eb8f"
+}

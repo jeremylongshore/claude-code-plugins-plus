@@ -1,0 +1,195 @@
+{
+  "deprecated_field_count": 0,
+  "field_completeness": 2,
+  "fixture_sha": "b3ab45c714a7222dbf41bff153fc0570640e356ba272417d396da950a7863a78",
+  "is_extras_present": 0,
+  "security_finding_count": 0,
+  "tiers": {
+    "marketplace": {
+      "findings": [
+        {
+          "message": "Missing required field: 'author' (marketplace)",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing required field: 'allowed-tools' (marketplace)",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing required field: 'compatibility' (marketplace)",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing required field: 'tags' (marketplace)",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing required field: 'version' (marketplace)",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing required field: 'license' (marketplace)",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Overview' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Instructions' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Output' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Error Handling' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Examples' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Resources' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing conditional field: 'argument-hint' (relevant for this skill's configuration)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "'description' should include 'Use when ...' phrase for model discoverability (marketplace)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "'description' should include 'Trigger with ...' phrase for user discoverability (marketplace)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md body has 381 lines (301-500 approaching limit). Consider extracting to references/",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Instructions' looks empty/too short (marketplace quality standard)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Output' looks empty/too short (marketplace quality standard)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Error Handling' looks empty/too short (marketplace quality standard)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Examples' looks empty/too short (marketplace quality standard)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Resources' looks empty/too short (marketplace quality standard)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Purpose statement is 3 sentences (recommended 1-2)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Missing references/ directory \u2014 create it for progressive disclosure",
+          "section": "supporting",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## How to Use' appears to be a stub (9 words, 1 sentence)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider adding 'model': Setting an explicit model prevents unexpected behavior when session model changes",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Consider adding 'effort': Setting effort level optimizes reasoning for this skill's complexity",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        },
+        {
+          "message": "Section '## Quick Reference' is 55 lines. Consider offloading to references/quick-reference.md with a relative link: [details](references/quick-reference.md)",
+          "section": "advisor",
+          "severity": "INFO"
+        },
+        {
+          "message": "Section '## Search Reference' is 33 lines. Consider offloading to references/search-reference.md with a relative link: [details](references/search-reference.md)",
+          "section": "advisor",
+          "severity": "INFO"
+        },
+        {
+          "message": "Skill performs file existence check \u2014 consider DCI to auto-detect at activation: `!`[ -f FILE ] && echo \"exists\" || echo \"not found\"``",
+          "section": "advisor",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "D",
+      "pass": false,
+      "score_pct": 60
+    },
+    "standard": {
+      "findings": [
+        {
+          "message": "SKILL.md body has 381 lines (301-500 approaching limit). Consider extracting to references/",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider adding 'Use when ...' phrase to description for better discoverability",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Consider adding 'Trigger with ...' phrase to description",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "D",
+      "pass": true,
+      "score_pct": 60
+    }
+  },
+  "validator_commit": "7b9eb8f",
+  "validator_version": "3.7.0"
+}

@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:52.676416Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/twinmind-pack/skills/twinmind-local-dev-loop/SKILL.md",
+  "source_sha256": "f2a8f2e92347154c3dcc0bad945d6b3fb8c8ec40b2a7c9e7123ef94a1d7bf211",
+  "validator_commit": "7b9eb8f"
+}

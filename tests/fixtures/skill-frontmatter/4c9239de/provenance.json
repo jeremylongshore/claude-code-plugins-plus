@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:51.979353Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/maintainx-pack/skills/maintainx-core-workflow-a/SKILL.md",
+  "source_sha256": "4c9239de458dca78f24aa6087f072c66511f107df395e0e48731250eadc80ab2",
+  "validator_commit": "7b9eb8f"
+}

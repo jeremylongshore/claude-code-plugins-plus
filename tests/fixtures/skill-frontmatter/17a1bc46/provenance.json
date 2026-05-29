@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:45.010185Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "A",
+  "source_path": "/home/jeremy/.claude/skills/appaudit/SKILL.md",
+  "source_sha256": "17a1bc460229ca0418bccdc3a19a1c9295cc8e5691aeeebd775d1cd1468aef2a",
+  "validator_commit": "7b9eb8f"
+}

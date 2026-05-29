@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:04.053490Z",
+  "held_out": true,
+  "manifest_seed": 42,
+  "manifest_stratum": "held_out_A",
+  "source_path": "/home/jeremy/.claude/skills/validate-plugin/SKILL.md",
+  "source_sha256": "5563d6709ae6bbc5916dd1354a433e718e148a5ef4034a68389d86dc4abeceb6",
+  "validator_commit": "7b9eb8f"
+}

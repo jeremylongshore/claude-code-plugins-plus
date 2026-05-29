@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:54.925440Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/ai-ml/dataset-splitter/skills/splitting-datasets/SKILL.md",
+  "source_sha256": "8a7bb1a01c38988a4c4f2c9648b38344bc67d7afa6015f08aade961b900c00bb",
+  "validator_commit": "7b9eb8f"
+}

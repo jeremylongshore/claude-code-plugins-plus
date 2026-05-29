@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:56.272141Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/miro-pack/skills/miro-observability/SKILL.md",
+  "source_sha256": "2f6f4e1fe48f1462ea7ad0e1f6929046fec213e85b3ced3a5230d2a3766a6066",
+  "validator_commit": "7b9eb8f"
+}

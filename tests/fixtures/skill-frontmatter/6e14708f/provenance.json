@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:42.242156Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "A",
+  "source_path": "/home/jeremy/.claude/skills/cleanup-code/SKILL.md",
+  "source_sha256": "6e14708fc2e680121f85dfd6473abbc1c17087b4d6cca58675e68ca8de6f82a8",
+  "validator_commit": "7b9eb8f"
+}

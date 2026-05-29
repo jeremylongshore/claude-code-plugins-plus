@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:43.309658Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "A",
+  "source_path": "/home/jeremy/.claude/skills/sitrep/SKILL.md",
+  "source_sha256": "7bb51fe3f207095fd6f7d4229d76137d6c7ce029bb1427da6c6b32a804d62380",
+  "validator_commit": "7b9eb8f"
+}

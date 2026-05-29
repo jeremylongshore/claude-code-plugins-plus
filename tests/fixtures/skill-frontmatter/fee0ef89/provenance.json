@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:44.693227Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "A",
+  "source_path": "/home/jeremy/.claude/skills/repo-sweep/SKILL.md",
+  "source_sha256": "fee0ef8925c8ba761ef5362330392c278b98e1ed321577eefcfacacfd6aa224a",
+  "validator_commit": "7b9eb8f"
+}

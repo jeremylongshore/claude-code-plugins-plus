@@ -1,0 +1,170 @@
+{
+  "deprecated_field_count": 0,
+  "field_completeness": 3,
+  "fixture_sha": "a49783610153931f6dda8f67293f4231039a75f45f0beccab0066e946b908cc8",
+  "is_extras_present": 0,
+  "security_finding_count": 0,
+  "tiers": {
+    "marketplace": {
+      "findings": [
+        {
+          "message": "Missing required field: 'version' (marketplace)",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing required field: 'compatibility' (marketplace)",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing required field: 'author' (marketplace)",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing required field: 'tags' (marketplace)",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing required field: 'license' (marketplace)",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Overview' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Prerequisites' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Output' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Resources' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing conditional field: 'argument-hint' (relevant for this skill's configuration)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "'description' should include 'Use when ...' phrase for model discoverability (marketplace)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "'description' contains reserved word: 'claude' (ok for Claude/AI context)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Output' looks empty/too short (marketplace quality standard)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Examples' looks empty/too short (marketplace quality standard)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Resources' looks empty/too short (marketplace quality standard)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Missing references/ directory \u2014 create it for progressive disclosure",
+          "section": "supporting",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Executive Summary' appears to be a stub (6 words, 0 sentence)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Current State' appears to be a stub (3 words, 0 sentence)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Competitive Landscape' appears to be a stub (4 words, 0 sentence)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Gap Analysis' appears to be a stub (3 words, 0 sentence)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Recommendations: REPO' appears to be a stub (7 words, 0 sentence)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Recommendations: WEBSITE' appears to be a stub (7 words, 0 sentence)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Next Actions' appears to be a stub (8 words, 0 sentence)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider adding 'model': Setting an explicit model prevents unexpected behavior when session model changes",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Consider adding 'effort': Setting effort level optimizes reasoning for this skill's complexity",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "C",
+      "pass": false,
+      "score_pct": 71
+    },
+    "standard": {
+      "findings": [
+        {
+          "message": "'description' contains reserved word: 'claude' (ok for Claude/AI context)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider adding 'Use when ...' phrase to description for better discoverability",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "C",
+      "pass": true,
+      "score_pct": 71
+    }
+  },
+  "validator_commit": "7b9eb8f",
+  "validator_version": "3.7.0"
+}

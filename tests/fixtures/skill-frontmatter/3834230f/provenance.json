@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:46.468294Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "A",
+  "source_path": "/home/jeremy/.claude/skills/status-update-writer/SKILL.md",
+  "source_sha256": "3834230fede410bb43846e8967d5cc1047dbfd6e6720b03a9cc1b4d2e986bb7f",
+  "validator_commit": "7b9eb8f"
+}

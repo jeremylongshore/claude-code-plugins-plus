@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:56.611872Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/ai-agency/tonone/skills/volt-recon/SKILL.md",
+  "source_sha256": "e588e21c16b10cd8501233052ea33d32394fa1a137f04c78765d524f7ab3a8a7",
+  "validator_commit": "7b9eb8f"
+}

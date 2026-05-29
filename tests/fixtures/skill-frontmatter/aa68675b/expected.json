@@ -1,0 +1,195 @@
+{
+  "deprecated_field_count": 0,
+  "field_completeness": 8,
+  "fixture_sha": "aa68675baa4a11bbbbe1d58abe515a59e99ba449020c2217ad1f341a3a497c8e",
+  "is_extras_present": 1,
+  "security_finding_count": 1,
+  "tiers": {
+    "marketplace": {
+      "findings": [
+        {
+          "message": "allowed-tools: unscoped 'Bash' is not allowed - use scoped Bash(git:*), Bash(npm:*), etc.",
+          "section": "frontmatter",
+          "severity": "ERROR"
+        },
+        {
+          "message": "SKILL.md body has 1915 lines \u2014 exceeds Anthropic 500-line limit. Extract to references/",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Examples' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Required section missing: '## Resources' (marketplace tier)",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Unscoped Bash + Write/WebFetch declared without a Safety Justification section \u2014 high-risk combo. Add `## Safety Justification` explaining why.",
+          "section": "tier2:tool-safety",
+          "severity": "ERROR"
+        },
+        {
+          "message": "Missing conditional field: 'argument-hint' (relevant for this skill's configuration)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "Many tools permitted (7) - consider limiting for security",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "Content exceeds 5000 words (7698) - may overwhelm context",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Examples' looks empty/too short (marketplace quality standard)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Resources' looks empty/too short (marketplace quality standard)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "'## Instructions' should include step-by-step steps (numbered list or Step headings) (marketplace)",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 22: Consider adding error handling (set -e or || exit)",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 25: Consider adding error handling (set -e or || exit)",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Glob' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Grep' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md contains placeholder text: {version}, {repo}",
+          "section": "content-quality",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## PHASE 0: PRE-RELEASE SWEEP' contains stub marker (TODO/TBD/WIP/Coming soon)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Section '## Documentation Updates' appears to be a stub (13 words, 0 sentence)",
+          "section": "stub-section",
+          "severity": "WARN"
+        },
+        {
+          "message": "Consider adding 'effort': Setting effort level optimizes reasoning for this skill's complexity",
+          "section": "frontmatter",
+          "severity": "INFO"
+        },
+        {
+          "message": "Uses $ARGUMENTS/$N but 'argument-hint' frontmatter is missing \u2014 add argument-hint for autocomplete support (per official docs)",
+          "section": "body",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        },
+        {
+          "message": "Skill performs file reading at start \u2014 consider DCI to auto-detect at activation: `!`[ -f FILE ] && head -5 FILE || echo \"not found\"``",
+          "section": "advisor",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "B",
+      "pass": false,
+      "score_pct": 86
+    },
+    "standard": {
+      "findings": [
+        {
+          "message": "SKILL.md body has 1915 lines \u2014 exceeds Anthropic 500-line limit. Extract to references/",
+          "section": "body",
+          "severity": "ERROR"
+        },
+        {
+          "message": "allowed-tools: unscoped 'Bash' - consider scoping (Bash(git:*), Bash(npm:*), etc.)",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "Many tools permitted (7) - consider limiting for security",
+          "section": "frontmatter",
+          "severity": "WARN"
+        },
+        {
+          "message": "Content exceeds 5000 words (7698) - may overwhelm context",
+          "section": "body",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 22: Consider adding error handling (set -e or || exit)",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Code block 25: Consider adding error handling (set -e or || exit)",
+          "section": "scripts",
+          "severity": "WARN"
+        },
+        {
+          "message": "Unscoped Bash + Write/WebFetch declared without a Safety Justification section \u2014 high-risk combo. Add `## Safety Justification` explaining why.",
+          "section": "tier2:tool-safety",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Glob' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "Tool 'Grep' is declared in allowed-tools but never referenced in the skill body \u2014 over-permissive or stale declaration",
+          "section": "tier2:allowed-tools-accuracy",
+          "severity": "WARN"
+        },
+        {
+          "message": "SKILL.md contains placeholder text: {repo}, {version}",
+          "section": "content-quality",
+          "severity": "WARN"
+        },
+        {
+          "message": "Uses $ARGUMENTS/$N but 'argument-hint' frontmatter is missing \u2014 add argument-hint for autocomplete support (per official docs)",
+          "section": "body",
+          "severity": "INFO"
+        },
+        {
+          "message": "Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds",
+          "section": "tier2",
+          "severity": "INFO"
+        }
+      ],
+      "grade": "B",
+      "pass": false,
+      "score_pct": 86
+    }
+  },
+  "validator_commit": "7b9eb8f",
+  "validator_version": "3.7.0"
+}

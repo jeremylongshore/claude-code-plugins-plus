@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:45.323432Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "A",
+  "source_path": "/home/jeremy/.claude/skills/validate-agent/SKILL.md",
+  "source_sha256": "fa5147296ce11b78b20deafbf3ae6a9e47a14df7d067fb9ad5005e4c91da617b",
+  "validator_commit": "7b9eb8f"
+}

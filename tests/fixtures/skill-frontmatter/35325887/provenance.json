@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:04.785215Z",
+  "held_out": true,
+  "manifest_seed": 42,
+  "manifest_stratum": "held_out_B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/supabase-pack/skills/supabase-common-errors/SKILL.md",
+  "source_sha256": "35325887789bc23aea2b183a450c255f0ccb18b780fedeb777018f9cc3b5dd1d",
+  "validator_commit": "7b9eb8f"
+}

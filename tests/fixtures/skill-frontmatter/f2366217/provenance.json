@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:58.253953Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/veeva-pack/skills/veeva-webhooks-events/SKILL.md",
+  "source_sha256": "f2366217689ca1073c20651107fe46be8615e4918ac660d872b0861704e849c2",
+  "validator_commit": "7b9eb8f"
+}

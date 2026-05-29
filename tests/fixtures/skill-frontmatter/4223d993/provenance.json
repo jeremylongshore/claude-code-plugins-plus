@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:51.653651Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/notion-pack/skills/notion-upgrade-migration/SKILL.md",
+  "source_sha256": "4223d9930ad0f07c1a7e44e1c1c359599d5e0183603eb203e3a1d78beb5fcfe9",
+  "validator_commit": "7b9eb8f"
+}

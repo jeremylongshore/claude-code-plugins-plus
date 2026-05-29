@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:53.321044Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/examples/jeremy-plugin-tool/skills/plugin-creator/SKILL.md",
+  "source_sha256": "5d6a95a7124ec4d43030371d95ab9c5d70d08625207d852c22fd05cd342d7b39",
+  "validator_commit": "7b9eb8f"
+}

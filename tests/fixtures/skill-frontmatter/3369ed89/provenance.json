@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:48.909741Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "A",
+  "source_path": "/home/jeremy/.claude/skills/email/SKILL.md",
+  "source_sha256": "3369ed8974aacb69d07e0ada99ecf72129175ef83f95c6d637a3e1213b23f6c9",
+  "validator_commit": "7b9eb8f"
+}

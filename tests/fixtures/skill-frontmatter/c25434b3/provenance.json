@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:57.887931Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/intercom-pack/skills/intercom-debug-bundle/SKILL.md",
+  "source_sha256": "c25434b3200f97dbd98dcbcbfb4f2d52d427f9f537859f692f1453b550cacfff",
+  "validator_commit": "7b9eb8f"
+}

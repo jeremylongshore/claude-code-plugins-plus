@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:03.310024Z",
+  "held_out": true,
+  "manifest_seed": 42,
+  "manifest_stratum": "held_out_A",
+  "source_path": "/home/jeremy/.claude/skills/pr-review/SKILL.md",
+  "source_sha256": "520d4221ff02343eef96bc72518e9de3f224b2dffe33da53f9a374559895f552",
+  "validator_commit": "7b9eb8f"
+}

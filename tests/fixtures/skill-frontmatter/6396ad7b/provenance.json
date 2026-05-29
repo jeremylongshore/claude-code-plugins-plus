@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:05.533257Z",
+  "held_out": true,
+  "manifest_seed": 42,
+  "manifest_stratum": "held_out_B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/supabase-pack/skills/supabase-deploy-integration/SKILL.md",
+  "source_sha256": "6396ad7b1a0e50f3fe3a5beb7b556b934683e279b876bf31307bf432f3b04b03",
+  "validator_commit": "7b9eb8f"
+}

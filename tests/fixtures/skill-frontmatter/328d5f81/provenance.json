@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:55.608519Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/api-development/api-schema-validator/skills/validating-api-schemas/SKILL.md",
+  "source_sha256": "328d5f81eaba3e63094055f077e9b01c2fa1467a7f2a7e607566261f4eca3671",
+  "validator_commit": "7b9eb8f"
+}

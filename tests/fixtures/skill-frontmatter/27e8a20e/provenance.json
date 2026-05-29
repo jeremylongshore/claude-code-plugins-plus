@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:07.158534Z",
+  "held_out": true,
+  "manifest_seed": 42,
+  "manifest_stratum": "held_out_C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/coreweave-pack/skills/coreweave-rate-limits/SKILL.md",
+  "source_sha256": "27e8a20ef42d94ec15d23acf85ccacc56b0ebaf195279d7bf8db60610d32f886",
+  "validator_commit": "7b9eb8f"
+}

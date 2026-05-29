@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:07.470595Z",
+  "held_out": true,
+  "manifest_seed": 42,
+  "manifest_stratum": "held_out_C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/flyio-pack/skills/flyio-hello-world/SKILL.md",
+  "source_sha256": "e4e5be6d87b61c500c38087600daa7f94ad2c58f50a94373f2fb216d6d90735f",
+  "validator_commit": "7b9eb8f"
+}

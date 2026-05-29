@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:54.606197Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/firecrawl-pack/skills/firecrawl-local-dev-loop/SKILL.md",
+  "source_sha256": "d80f740a536dc3373b2cd7003879d78157990ef2cc98601ac0d51a0bc154a7d6",
+  "validator_commit": "7b9eb8f"
+}

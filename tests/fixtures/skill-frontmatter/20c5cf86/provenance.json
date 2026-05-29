@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:01.706518Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/hex-pack/skills/hex-security-basics/SKILL.md",
+  "source_sha256": "20c5cf86ce084c288298c5bed78f3c1247b313a6c0deda02f36204903981a1dd",
+  "validator_commit": "7b9eb8f"
+}

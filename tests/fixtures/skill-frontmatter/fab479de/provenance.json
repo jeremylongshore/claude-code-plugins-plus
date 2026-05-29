@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:06.171201Z",
+  "held_out": true,
+  "manifest_seed": 42,
+  "manifest_stratum": "held_out_B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/notion-pack/skills/notion-migration-deep-dive/SKILL.md",
+  "source_sha256": "fab479deb7fa0090bee3a6d752c62c20f6f84b7614aaffee969d85deefe02b45",
+  "validator_commit": "7b9eb8f"
+}

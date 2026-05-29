@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:53.965983Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/notion-pack/skills/notion-advanced-troubleshooting/SKILL.md",
+  "source_sha256": "bc56c6d11f8a7c5b80e1cfac9af4becc18ce3881661136e2796827baaeb9796a",
+  "validator_commit": "7b9eb8f"
+}

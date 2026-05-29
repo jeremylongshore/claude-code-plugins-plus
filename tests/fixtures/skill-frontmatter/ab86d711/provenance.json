@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:57:01.302240Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "C",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/openevidence-pack/skills/openevidence-ci-integration/SKILL.md",
+  "source_sha256": "ab86d71159b8b5dcb8d20b2f1bd3f4c35b9c6e917cf2ff3a417c6ee6420f5dde",
+  "validator_commit": "7b9eb8f"
+}

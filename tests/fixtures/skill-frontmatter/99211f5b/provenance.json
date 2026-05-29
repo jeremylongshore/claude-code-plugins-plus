@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:51.307172Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/sentry-pack/skills/sentry-debug-bundle/SKILL.md",
+  "source_sha256": "99211f5bdfe67c5de809e1dda6f4d9d67cb823e1ac955596e87024dd22d1f9f8",
+  "validator_commit": "7b9eb8f"
+}

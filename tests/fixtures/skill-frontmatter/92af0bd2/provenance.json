@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:50.607977Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/lokalise-pack/skills/lokalise-incident-runbook/SKILL.md",
+  "source_sha256": "92af0bd2c95fe84829bc9068b82d02d8cff621c1bd3a9ab4a20b616e1b978295",
+  "validator_commit": "7b9eb8f"
+}

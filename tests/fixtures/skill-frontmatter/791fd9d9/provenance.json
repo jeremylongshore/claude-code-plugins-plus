@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:47.512040Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "A",
+  "source_path": "/home/jeremy/.claude/skills/repo-dress/SKILL.md",
+  "source_sha256": "791fd9d929e5c0ac70a844c73cc82f1a342c3ca10d7b66d7a92f91f2bfae9c1d",
+  "validator_commit": "7b9eb8f"
+}

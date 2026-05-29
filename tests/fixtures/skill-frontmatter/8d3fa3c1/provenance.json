@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-05-29T01:56:49.958929Z",
+  "held_out": false,
+  "manifest_seed": 42,
+  "manifest_stratum": "B",
+  "source_path": "/home/jeremy/000-projects/claude-code-plugins/plugins/performance/infrastructure-metrics-collector/skills/collecting-infrastructure-metrics/SKILL.md",
+  "source_sha256": "8d3fa3c1d9a9e2bad4b48434ca32e6cc4be4048fdd6eeded90ac587342529a8c",
+  "validator_commit": "7b9eb8f"
+}
