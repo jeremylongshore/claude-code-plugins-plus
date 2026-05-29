@@ -90,6 +90,13 @@ coverage/
 # doc-type for adversarial-technical decision records per Doc Filing Standard v4.3.
 # Pattern matches any *-AT-DECR-*.md at the root 000-docs/ level.
 !000-docs/*-AT-DECR-*.md
+# Internal-only AT-DECRs — records explicitly held out of the public re-include
+# allowlist because their content is internal-only per a separate filing posture.
+# The session JSONL under ~/.claude/skills/exec-decision-council/sessions/ is the
+# durable source of truth for these records; the 000-docs copy is convenience-only
+# and stays local. Add new internal records by their filing number as filed.
+000-docs/680-AT-DECR-*.md
+000-docs/683-AT-DECR-*.md
 # Session AARs — After-Action Comprehensive Reviews per Doc Filing Standard v4.3.
 # Session logs of multi-task work sessions (what was done, what's deferred, what
 # was explicitly NOT done). No inherent secrets risk; transparency is the point.
