@@ -1,178 +1,162 @@
-# Dependencies
-node_modules/
-npm-debug.log
-yarn-error.log
-package-lock.json
-yarn.lock
 
-# OS files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# IDEs
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.project
-.classpath
-.settings/
-
-# Testing
-test-marketplace/
-tmp/
-temp/
-*.tmp
-.pytest_cache/
-__pycache__/
-*.pyc
-test-results/
-playwright-report/
-playwright/.cache/
-
-# Logs
-*.log
-logs/
-
-# Environment
-.env
-.env.local
-.env.*.local
-.mcp.json
-# Re-include MCP server configs for plugins that ship them — required for
-# Claude Code to know how to spawn the server. Without this, mirrored
-# plugins under plugins/mcp/* end up missing .mcp.json in the install
-# artifact and the MCP handshake fails (see #645).
-!plugins/mcp/*/.mcp.json
-!plugins/**/.mcp.json
-
-# Build outputs
-dist/
-build/
-*.egg-info/
-
-# Misc
-.cache/
-coverage/
-
-# Private documentation and business documents (NEVER commit)
-#
-# Two-part rule because git can't re-include files inside an excluded *directory*:
-# 1) Ignore nested 000-docs/ everywhere (e.g. plugins/saas-packs/*/000-docs/)
-#    — these are per-pack private docs, never tracked.
-#    NOTE: the pattern below uses `**/*/000-docs/` (requires at least one parent
-#    directory before `000-docs/`) so it ONLY matches nested 000-docs, not the
-#    root. The original `**/000-docs/` rule matched root too, which silently
-#    defeated every `!000-docs/...` re-include rule below. Repaired 2026-05-21.
-# 2) For ROOT-level 000-docs/, ignore at file level so we can re-include the
-#    canonical cross-repo standards via `!` rules below.
-**/*/000-docs/
-**/*/000-docs/**
-000-docs/*
-000-docs/**/*
-# EXCEPT root-level canonical cross-repo standards:
-#   v4.3 standard: 000-* prefix (current — see 000-DR-STND-document-filing-system.md)
-#   v3.x legacy:   6767-* prefix (kept tracked during transition; will deprecate)
+!/.npmrc
+!000-docs/*-AA-AACR-*.md
+!000-docs/*-AT-DECR-*.md
+!000-docs/*-RL-REPT-*.md
 !000-docs/000-*.md
 !000-docs/6767*.md
-# Spec snapshots read by JRig Tier 3A (refreshed quarterly via PR, NOT live-fetch)
-!000-docs/anthropic-skills-spec-snapshot.md
 !000-docs/agentskills-spec-snapshot.md
-# ISEDC Decision Records — the council skill's mandatory final step is /doc-filing
-# into 000-docs/; without this allowlist that step copies the file into a gitignored
-# location and the public record never exists in git. AT-DECR is the canonical 4-letter
-# doc-type for adversarial-technical decision records per Doc Filing Standard v4.3.
-# Pattern matches any *-AT-DECR-*.md at the root 000-docs/ level.
-!000-docs/*-AT-DECR-*.md
-# Internal-only AT-DECRs — records explicitly held out of the public re-include
-# allowlist because their content is internal-only per a separate filing posture.
-# The session JSONL under ~/.claude/skills/exec-decision-council/sessions/ is the
-# durable source of truth for these records; the 000-docs copy is convenience-only
-# and stays local. Add new internal records by their filing number as filed.
-000-docs/680-AT-DECR-*.md
-000-docs/683-AT-DECR-*.md
-# Session AARs — After-Action Comprehensive Reviews per Doc Filing Standard v4.3.
-# Session logs of multi-task work sessions (what was done, what's deferred, what
-# was explicitly NOT done). No inherent secrets risk; transparency is the point.
-# IMPORTANT: scrub tokens/webhooks before commit. If a session involved a leaked
-# secret in chat, redact it in the AAR (use `<REDACTED>` placeholder + flag for rotation).
-!000-docs/*-AA-AACR-*.md
-# Release Reports — /release Phase 8 AAR per Doc Filing Standard v4.3.
-# Filed once per release ceremony; references the GitHub Release + tag (already
-# public) so no secrets risk. Documents pre-release state, what was applied,
-# metrics, quality gates, beads <-> GH <-> Plane mirror, rollback procedure,
-# and lessons-learned.
-!000-docs/*-RL-REPT-*.md
-# Databricks pack research catalog — explicitly published as the public design
-# record backing the v2-rebuild community design review (GH issues #789-#795).
-# Both the issue bodies and any external reply links into this directory; the
-# files must be tracked for the cross-references to resolve. See repo
-# CLAUDE.md § "Auto-cowork contract" + Doc Filing Standard v4.3.
+!000-docs/anthropic-skills-spec-snapshot.md
+!plugins/**/.mcp.json
+!plugins/mcp/*/.mcp.json
 !plugins/saas-packs/databricks-pack/000-docs/
 !plugins/saas-packs/databricks-pack/000-docs/**
-website/
-
-# Internal planning and research documents (do not commit to public repo)
-RESEARCH-FINDINGS.md
-PLUGIN-CATEGORIZATION-MATRIX.md
-PHASED-DEVELOPMENT-PLAN.md
-TOP-TIER-PLUGIN-IDEAS.md
-EXECUTIVE-SUMMARY.md
-PHASE-1-STATUS.md
-MARKETPLACE-READY.md
-skill-name-mappings.json
-/tmp/*.md
-/tmp/*.sh
-
-# Temporary migration preservation (do not commit)
-_PRESERVE_MIGRATION/
-
-# External repositories and reference materials (do not commit)
-adk-python/
-adk-samples/
-google-adk-reference/
-marketplace/backup-*/
-
-# NPM configuration files (local overrides)
-# Root .npmrc IS tracked — it holds workspace-wide pnpm hoist patterns
-# needed for CI (bun-types resolution for vendored bun-native plugins).
-# Per-package .npmrc files remain ignored to allow per-developer overrides.
-**/.npmrc
-!/.npmrc
-
-# Workspace lab directory (safe sandbox for experiments)
-workspace/
-.venv
-.venv/
-
+#
+#    NOTE: the pattern below uses `**/*/000-docs/` (requires at least one parent
+#    canonical cross-repo standards via `!` rules below.
+#    defeated every `!000-docs/...` re-include rule below. Repaired 2026-05-21.
+#    directory before `000-docs/`) so it ONLY matches nested 000-docs, not the
+#    root. The original `**/000-docs/` rule matched root too, which silently
+#    — these are per-pack private docs, never tracked.
+#   v3.x legacy:   6767-* prefix (kept tracked during transition; will deprecate)
+#   v4.3 standard: 000-* prefix (current — see 000-DR-STND-document-filing-system.md)
+# 1) Ignore nested 000-docs/ everywhere (e.g. plugins/saas-packs/*/000-docs/)
+# 2) For ROOT-level 000-docs/, ignore at file level so we can re-include the
+# Beads / Dolt files (added by bd init)
 # Beads task management (development tooling only - never ship to production)
+# Both the issue bodies and any external reply links into this directory; the
+# Build outputs
+# CLAUDE.md § "Auto-cowork contract" + Doc Filing Standard v4.3.
+# Claude Code to know how to spawn the server. Without this, mirrored
+# Cowork download zips (generated at build time by build-cowork-zips.mjs)
+# Databricks pack research catalog — explicitly published as the public design
+# Dependencies
+# Dolt database files (added by bd init)
+# EXCEPT root-level canonical cross-repo standards:
+# Environment
+# External repositories and reference materials (do not commit)
+# Filed once per release ceremony; references the GitHub Release + tag (already
+# IDEs
+# IMPORTANT: scrub tokens/webhooks before commit. If a session involved a leaked
+# ISEDC Decision Records — the council skill's mandatory final step is /doc-filing
+# Internal planning and research documents (do not commit to public repo)
+# Internal-only AT-DECRs — records explicitly held out of the public re-include
+# Logs
+# Misc
+# NPM configuration files (local overrides)
+# OS files
+# Pattern matches any *-AT-DECR-*.md at the root 000-docs/ level.
+# Per-package .npmrc files remain ignored to allow per-developer overrides.
+# Private documentation and business documents (NEVER commit)
+# Re-include MCP server configs for plugins that ship them — required for
+# Release Reports — /release Phase 8 AAR per Doc Filing Standard v4.3.
+# Root .npmrc IS tracked — it holds workspace-wide pnpm hoist patterns
+# Session AARs — After-Action Comprehensive Reviews per Doc Filing Standard v4.3.
+# Session logs of multi-task work sessions (what was done, what's deferred, what
+# Spec snapshots read by JRig Tier 3A (refreshed quarterly via PR, NOT live-fetch)
+# Temporary migration preservation (do not commit)
+# Testing
+# The session JSONL under ~/.claude/skills/exec-decision-council/sessions/ is the
+# Two-part rule because git can't re-include files inside an excluded *directory*:
+# Workspace lab directory (safe sandbox for experiments)
+# allowlist because their content is internal-only per a separate filing posture.
+# and lessons-learned.
+# and stays local. Add new internal records by their filing number as filed.
+# artifact and the MCP handshake fails (see #645).
+# doc-type for adversarial-technical decision records per Doc Filing Standard v4.3.
+# durable source of truth for these records; the 000-docs copy is convenience-only
+# files must be tracked for the cross-references to resolve. See repo
+# into 000-docs/; without this allowlist that step copies the file into a gitignored
+# location and the public record never exists in git. AT-DECR is the canonical 4-letter
+# metrics, quality gates, beads <-> GH <-> Plane mirror, rollback procedure,
+# needed for CI (bun-types resolution for vendored bun-native plugins).
+# plugins under plugins/mcp/* end up missing .mcp.json in the install
+# public) so no secrets risk. Documents pre-release state, what was applied,
+# record backing the v2-rebuild community design review (GH issues #789-#795).
+# secret in chat, redact it in the AAR (use `<REDACTED>` placeholder + flag for rotation).
+# was explicitly NOT done). No inherent secrets risk; transparency is the point.
+**/*/000-docs/
+**/*/000-docs/**
+**/.npmrc
+**/skills/*/data/
+*.db
+*.egg-info/
+*.log
+*.pyc
+*.swo
+*.swp
+*.tmp
+*~
+.DS_Store
+.DS_Store?
+.Spotlight-V100
+.Trashes
+._*
+.beads-credential-key
 .beads/
 .beads/*.db
-.beads/*.db-wal
 .beads/*.db-shm
-.beads/daemon.*
+.beads/*.db-wal
 .beads/.local_version
-reports/
-marketplace/.firebase/
+.beads/daemon.*
+.cache/
+.classpath
+.dolt/
+.env
+.env.*.local
+.env.local
 .firebase/
-
-# Cowork download zips (generated at build time by build-cowork-zips.mjs)
+.idea/
+.lycheecache
+.lycheecache/
+.mcp.json
+.project
+.pytest_cache/
+.settings/
+.venv
+.venv/
+.vscode/
+/tmp/*.md
+/tmp/*.sh
+000-docs/*
+000-docs/**/*
+000-docs/680-AT-DECR-*.md
+000-docs/683-AT-DECR-*.md
+EXECUTIVE-SUMMARY.md
+MARKETPLACE-READY.md
+PHASE-1-STATUS.md
+PHASED-DEVELOPMENT-PLAN.md
+PLUGIN-CATEGORIZATION-MATRIX.md
+RESEARCH-FINDINGS.md
+TOP-TIER-PLUGIN-IDEAS.md
+Thumbs.db
+_PRESERVE_MIGRATION/
+__pycache__/
+adk-python/
+adk-samples/
+build/
+claudes-docs/
+coverage/
+dist/
+ehthumbs.db
+google-adk-reference/
+logs/
+marketplace/.firebase/
+marketplace/backup-*/
 marketplace/public/downloads/
 marketplace/src/data/cowork-manifest.json
-**/skills/*/data/
-
-claudes-docs/
-
-# Dolt database files (added by bd init)
-.dolt/
-*.db
-
-# Beads / Dolt files (added by bd init)
-.beads-credential-key
-.lycheecache/
+node_modules/
+npm-debug.log
+package-lock.json
+playwright-report/
+playwright/.cache/
+reports/
+skill-name-mappings.json
+temp/
+test-marketplace/
+test-results/
+tmp/
+website/
+workspace/
+yarn-error.log
+yarn.lock
