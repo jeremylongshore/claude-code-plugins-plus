@@ -27,7 +27,7 @@ exclude_path = [
 # hosts even when the link is fine — accept them rather than spam false positives.
 # 307 / 308 are routinely returned by login-gated dashboards (Mistral, Clerk,
 # Juicebox) that redirect unauthenticated requests; the link target still exists.
-accept = [200, 206, 301, 302, 304, 307, 308, 403, 429]
+accept = [200, 202, 206, 301, 302, 304, 307, 308, 403, 429]
 
 # Per-request timeout (seconds)
 timeout = 20

@@ -202,7 +202,7 @@ console.log(estimateMonthlyCost(50_000))  // "Pro tier: $825.00/mo (40,000 extra
 ## Resources
 
 - [Clerk Pricing](https://clerk.com/pricing)
-- [Clerk Usage Dashboard](https://dashboard.clerk.com)
+- Clerk Usage Dashboard
 - Clerk Fair Use Policy
 
 ## Next Steps

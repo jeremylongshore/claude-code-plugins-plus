@@ -5,7 +5,7 @@
 [![Version](https://img.shields.io/badge/version-1.0.0-brightgreen)](.claude-plugin/plugin.json)
 [![Category](https://img.shields.io/badge/category-productivity-blue)](.claude-plugin/plugin.json)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-enabled-orange?logo=sparkles)](.claude-plugin/plugin.json)
-[![Anthropic Spec](https://img.shields.io/badge/Anthropic%20Spec-v1.0%20Compliant-success?logo=checkmarx)](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md)
+[![Anthropic Spec](https://img.shields.io/badge/Anthropic%20Spec-v1.0%20Compliant-success?logo=checkmarx)]
 
 ---
 

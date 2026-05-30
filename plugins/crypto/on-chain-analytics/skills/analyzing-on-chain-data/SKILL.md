@@ -62,7 +62,7 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full four-step im
 
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `Request timeout` | DeFiLlama API slow or unreachable | Wait and retry; check https://status.llama.fi/ for outages; use cached data if available |
+| `Request timeout` | DeFiLlama API slow or unreachable | Wait and retry; check  for outages; use cached data if available |
 | `Protocol not found: invalid-name` | Protocol slug does not match DeFiLlama database | Run `python onchain_analytics.py protocols` to find the exact slug; slugs are case-sensitive |
 | `No data returned for query` | Filter too restrictive or data unavailable | Remove filters and retry; verify the category or chain exists; try a broader time range |
 | `TVL data unavailable for some protocols` | New protocols or data collection gaps | Check DeFiLlama directly; data typically appears within 24 hours of listing |
@@ -102,7 +102,7 @@ Returns up to 50 yield pools on Ethereum with at least $10M in TVL, sorted by AP
 ## Resources
 
 - [DeFiLlama API Documentation](https://defillama.com/docs/api) -- primary data source for TVL, fees, yields, and DEX volumes
-- [DeFiLlama Status Page](https://status.llama.fi/) -- check API availability and outage reports
+- DeFiLlama Status Page -- check API availability and outage reports
 - [CoinGecko API](https://www.coingecko.com/en/api/documentation) -- supplementary token price and market cap data
 - [Dune Analytics](https://dune.com/) -- custom SQL queries against on-chain data for deeper analysis
 - [The Graph](https://thegraph.com/) -- decentralized indexing protocol for querying blockchain data via GraphQL

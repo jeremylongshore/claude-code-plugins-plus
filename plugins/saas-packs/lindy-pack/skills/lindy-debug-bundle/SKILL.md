@@ -203,7 +203,7 @@ Agent not working?
 
 ## Resources
 
-- [Lindy Community](https://community.lindy.ai)
+- Lindy Community
 - [Lindy Documentation](https://docs.lindy.ai)
 - [Lindy Status](https://status.lindy.ai)
 

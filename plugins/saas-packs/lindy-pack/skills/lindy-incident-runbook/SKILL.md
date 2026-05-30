@@ -68,7 +68,7 @@ curl -s -o /dev/null -w "Webhook auth: HTTP %{http_code}\n" \
 
 ### Step 3: Check Credit Balance
 
-Log in at https://app.lindy.ai > Settings > Billing
+Log in at  > Settings > Billing
 
 - Credits at 0? Agents stop processing
 - Credits low? Non-essential agents may be paused
@@ -233,7 +233,7 @@ async function triggerLindyWithFallback(payload: any) {
 
 - [Lindy Status](https://status.lindy.ai)
 - [Lindy Support](mailto:support@lindy.ai)
-- [Lindy Community](https://community.lindy.ai)
+- Lindy Community
 
 ## Next Steps
 

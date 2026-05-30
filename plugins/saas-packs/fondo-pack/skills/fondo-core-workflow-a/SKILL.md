@@ -89,7 +89,7 @@ A: "Yes, he writes code for our product" → R&D qualified
 
 ## Resources
 
-- [Fondo Dashboard](https://app.fondo.com)
+- Fondo Dashboard
 - [Understanding Financial Statements](https://fondo.com/blog)
 
 ## Next Steps

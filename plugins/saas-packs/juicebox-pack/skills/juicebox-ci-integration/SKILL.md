@@ -132,7 +132,7 @@ describe.skipIf(!hasKey)('Juicebox Live API', () => {
 
 ## Resources
 
-- [Juicebox Documentation](https://docs.juicebox.ai/)
+- Juicebox Documentation
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 
 ## Next Steps

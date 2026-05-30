@@ -32,7 +32,7 @@ Agents consist of four components: **Prompt** (behavioral instructions),
 
 ## Prerequisites
 
-- Lindy account at https://app.lindy.ai
+- Lindy account at
 - Use case defined (support bot, email triage, data processor, etc.)
 - Required integrations identified (Slack, Gmail, Sheets, etc.)
 
@@ -51,7 +51,7 @@ Before building, document:
 
 **Option A — Natural Language (recommended)**:
 
-1. Click **New Agent** at https://app.lindy.ai
+1. Click **New Agent** at
 2. Describe your agent in plain English:
 
    ```

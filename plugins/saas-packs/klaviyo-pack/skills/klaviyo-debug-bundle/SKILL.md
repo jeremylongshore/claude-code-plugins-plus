@@ -216,7 +216,7 @@ export async function collectKlaviyoDebugInfo(): Promise<KlaviyoDebugInfo> {
 
 ## Resources
 
-- [Klaviyo Support Portal](https://support.klaviyo.com)
+- Klaviyo Support Portal
 - [Klaviyo Status Page](https://status.klaviyo.com)
 - [API Error Alerts](https://developers.klaviyo.com/en/docs/review_api_error_alerts)
 

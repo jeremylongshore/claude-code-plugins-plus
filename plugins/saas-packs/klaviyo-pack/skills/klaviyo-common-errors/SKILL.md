@@ -271,7 +271,7 @@ npm list klaviyo-api
 
 1. Collect evidence with `klaviyo-debug-bundle`
 2. Check [status.klaviyo.com](https://status.klaviyo.com)
-3. Open ticket at [Klaviyo Support](https://support.klaviyo.com) with request IDs from error responses
+3. Open ticket at Klaviyo Support with request IDs from error responses
 
 ## Resources
 

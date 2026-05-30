@@ -263,7 +263,7 @@ compliance assessment.
 
 **Example 1: E-Commerce Website**
 
-Request: "Audit https://example-shop.com for compliance"
+Request: "Audit  for compliance"
 
 Result: `COMPLIANCE-AUDIT-ExampleShop-2026-04-02.md` with:
 

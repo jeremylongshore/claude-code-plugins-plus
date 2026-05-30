@@ -59,7 +59,7 @@ Lindy AI is a no-code/low-code platform for building AI agents ("Lindies") that 
 
 | Resource | URL |
 |----------|-----|
-| Dashboard | https://app.lindy.ai |
+| Dashboard |  |
 | Documentation | https://docs.lindy.ai |
 | Academy | https://www.lindy.ai/academy-lessons/getting-started-101 |
 | Integrations | https://www.lindy.ai/integrations |

@@ -114,7 +114,7 @@ class FintaCostTracker {
 ## Resources
 
 - [Finta Pricing](https://www.trustfinta.com/pricing)
-- [Finta API Documentation](https://docs.trustfinta.com)
+- Finta API Documentation
 
 ## Next Steps
 

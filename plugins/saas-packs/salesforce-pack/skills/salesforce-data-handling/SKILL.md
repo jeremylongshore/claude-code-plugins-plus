@@ -228,7 +228,7 @@ Limitations of encrypted fields:
 - [Salesforce Data Protection & Privacy](https://help.salesforce.com/s/articleView?id=sf.data_protection_and_privacy.htm)
 - [Individual Object](https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_individual.htm)
 - [Shield Platform Encryption](https://help.salesforce.com/s/articleView?id=sf.security_pe_overview.htm)
-- [GDPR Compliance in Salesforce](https://www.salesforce.com/company/privacy/)
+- GDPR Compliance in Salesforce
 
 ## Next Steps
 

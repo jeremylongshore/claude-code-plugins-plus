@@ -101,7 +101,7 @@ MOCK_MODE=false npm run test:integration  # Test against real Fondo CSV exports
 
 ## Resources
 
-- [Fondo Dashboard](https://app.fondo.com)
+- Fondo Dashboard
 - [csv-parse docs](https://csv.js.org/parse/)
 
 ## Next Steps

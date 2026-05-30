@@ -134,7 +134,7 @@ echo "[3/4] Checking environment..."
 [ -n "$LINDY_WEBHOOK_SECRET" ] && echo "  OK: LINDY_WEBHOOK_SECRET set" || echo "  FAIL: LINDY_WEBHOOK_SECRET missing"
 
 # 4. Credit balance check
-echo "[4/4] Credit status: Check at https://app.lindy.ai/settings/billing"
+echo "[4/4] Credit status: Check at settings/billing"
 
 echo "=== Validation Complete ==="
 ```

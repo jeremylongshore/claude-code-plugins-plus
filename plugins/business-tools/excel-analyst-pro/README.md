@@ -264,7 +264,7 @@ market_cap = tesla.info["marketCap"]
 
 **Access:**
 
-- Website: [fred.stlouisfed.org](https://fred.stlouisfed.org)
+- Website: fred.stlouisfed.org
 - API: FREE (no rate limits)
 - Excel: FRED Excel Add-in (FREE)
 
@@ -461,7 +461,7 @@ Claude: [Builds complete DCF model]
 
 - **SEC EDGAR:** [sec.gov/edgar](https://www.sec.gov/edgar) (FREE)
 - **Yahoo Finance:** [finance.yahoo.com](https://finance.yahoo.com) (FREE)
-- **FRED:** [fred.stlouisfed.org](https://fred.stlouisfed.org) (FREE API key)
+- **FRED:** fred.stlouisfed.org (FREE API key)
 - **Alpha Vantage:** [alphavantage.co](https://www.alphavantage.co) (FREE API key)
 - **OpenBB:** Install openbb-terminal plugin for unified access
 

@@ -122,7 +122,7 @@ For the full CI workflow, mock client, test examples, and deployment pipeline, s
 
 - [GitHub Actions](https://docs.github.com/en/actions)
 - [Jest Documentation](https://jestjs.io/docs/getting-started)
-- [Evernote Sandbox](https://sandbox.evernote.com)
+- Evernote Sandbox
 - [GitHub Encrypted Secrets](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions)
 
 ## Next Steps

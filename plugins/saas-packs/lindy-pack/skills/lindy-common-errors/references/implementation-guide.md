@@ -36,7 +36,7 @@ Code: LINDY_AUTH_INVALID_KEY
 echo $LINDY_API_KEY
 
 # Regenerate key in dashboard
-# https://app.lindy.ai/settings/api-keys
+# settings/api-keys
 
 # Test key
 curl -H "Authorization: Bearer $LINDY_API_KEY" \
@@ -167,7 +167,7 @@ await lindy.tools.test('email');
 
 - Lindy Error Reference
 - [Status Page](https://status.lindy.ai)
-- [Support](https://support.lindy.ai)
+- Support
 
 ## Next Steps
 

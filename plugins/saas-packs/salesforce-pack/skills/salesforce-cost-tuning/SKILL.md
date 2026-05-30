@@ -179,7 +179,7 @@ If you need just data sync:
 
 ## Resources
 
-- [Salesforce Editions & Pricing](https://www.salesforce.com/editions-pricing/overview/)
+- Salesforce Editions & Pricing
 - [API Request Limits by Edition](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm)
 - [Limits REST Resource](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_limits.htm)
 

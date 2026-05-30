@@ -38,7 +38,7 @@ curl -v -X GET "https://api.lokalise.com/api2/projects" \
 
 1. Collect evidence with `lokalise-debug-bundle`
 2. Check [Lokalise Status Page](https://status.lokalise.com)
-3. Search [Lokalise Community](https://community.lokalise.com)
+3. Search Lokalise Community
 4. Contact support via [support@lokalise.com](mailto:support@lokalise.com)
 
 ## Error Handling

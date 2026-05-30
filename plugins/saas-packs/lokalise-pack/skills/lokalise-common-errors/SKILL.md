@@ -370,7 +370,7 @@ lokalise2 --debug file download \
 
 - [Lokalise API Error Codes](https://developers.lokalise.com/reference/api-errors)
 - [Lokalise Status Page](https://status.lokalise.com)
-- [Lokalise Community Forum](https://community.lokalise.com)
+- Lokalise Community Forum
 - [@lokalise/node-api Error Handling](https://github.com/lokalise/node-lokalise-api#error-handling)
 
 ## Next Steps

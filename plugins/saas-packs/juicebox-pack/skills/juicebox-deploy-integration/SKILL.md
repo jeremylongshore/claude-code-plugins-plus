@@ -122,7 +122,7 @@ docker run -d --name juicebox-integration -p 3000:3000 \
 
 ## Resources
 
-- [Juicebox API Docs](https://docs.juicebox.ai)
+- Juicebox API Docs
 
 ## Next Steps
 

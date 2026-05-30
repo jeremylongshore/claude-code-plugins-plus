@@ -170,7 +170,7 @@ echo "All checks passed. Proceeding with deployment."
 
 - Lindy Production Guide
 - SLA Information
-- [Support](https://support.lindy.ai)
+- Support
 
 ## Next Steps
 

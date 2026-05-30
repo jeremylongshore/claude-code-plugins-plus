@@ -44,13 +44,13 @@ Create per-environment config files that define the Evernote endpoint, sandbox f
 const configs = {
   development: {
     sandbox: true,
-    apiUrl: 'https://sandbox.evernote.com',
+    apiUrl: '',
     rateLimitDelayMs: 0,  // No throttle in dev
     logLevel: 'debug'
   },
   staging: {
     sandbox: true,
-    apiUrl: 'https://sandbox.evernote.com',
+    apiUrl: '',
     rateLimitDelayMs: 100,
     logLevel: 'info'
   },
@@ -131,7 +131,7 @@ For the full configuration loader, client factory, Docker setup, and CI/CD envir
 ## Resources
 
 - [12 Factor App - Config](https://12factor.net/config)
-- [Evernote Sandbox](https://sandbox.evernote.com)
+- Evernote Sandbox
 - [Docker Compose](https://docs.docker.com/compose/)
 
 ## Next Steps

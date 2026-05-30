@@ -82,7 +82,7 @@ async function getCachedExport(reportType: string, dateRange: string) {
 
 ## Resources
 
-- [Fondo Dashboard](https://app.fondo.com)
+- Fondo Dashboard
 
 ## Next Steps
 

@@ -1,4 +1,4 @@
-# <img src="./assets/logo.svg" width="35" align="center" alt="Kobiton Logo" /> Kobiton Automate
+# [Kobiton Logo] Kobiton Automate
 
 [![Discord](https://img.shields.io/discord/1486036652685267055?color=7289DA&label=Discord&logo=discord&logoColor=white)](https://discord.gg/uHvBFDZVP)
 [![Cloud](https://img.shields.io/badge/Cloud-☁️-blue)](https://kobiton.com)

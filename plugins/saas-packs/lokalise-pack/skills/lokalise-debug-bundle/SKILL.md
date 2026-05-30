@@ -238,7 +238,7 @@ node -e "const pkg = require('@lokalise/node-api/package.json'); console.log('SD
 - [Lokalise API Reference](https://developers.lokalise.com/reference)
 - [Lokalise Status Page](https://status.lokalise.com)
 - [Lokalise Support](mailto:support@lokalise.com)
-- [Community Forum](https://community.lokalise.com)
+- Community Forum
 - [Rate Limits Documentation](https://developers.lokalise.com/docs/api-rate-limits)
 
 ## Next Steps

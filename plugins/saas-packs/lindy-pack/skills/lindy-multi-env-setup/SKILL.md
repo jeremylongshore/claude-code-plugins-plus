@@ -49,7 +49,7 @@ to prevent cross-environment data leakage.
 
 ### Step 1: Create Separate Workspaces
 
-1. Log in at https://app.lindy.ai
+1. Log in at
 2. Create workspace for each environment: `[company]-dev`, `[company]-staging`, `[company]-prod`
 3. Generate separate API keys in each workspace
 4. Store each key in the appropriate secret store

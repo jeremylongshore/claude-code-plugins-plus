@@ -32,7 +32,7 @@ uses: Trigger, Agent Step (prompt + model + skills), and Action.
 
 ## Prerequisites
 
-- Lindy account at https://app.lindy.ai
+- Lindy account at
 - Slack workspace connected (or Gmail for email variant)
 - Completed `lindy-install-auth` setup
 
@@ -40,7 +40,7 @@ uses: Trigger, Agent Step (prompt + model + skills), and Action.
 
 ### Step 1: Create Agent via Dashboard
 
-1. Click **"New Agent"** at https://app.lindy.ai
+1. Click **"New Agent"** at
 2. In the prompt field ("How can I help you?"), type:
 
    ```

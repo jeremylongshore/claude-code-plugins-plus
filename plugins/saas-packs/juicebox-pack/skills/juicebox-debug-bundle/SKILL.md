@@ -106,7 +106,7 @@ checkJuicebox();
 
 ## Resources
 
-- [Juicebox Status](https://status.juicebox.ai)
+- Juicebox Status
 
 ## Next Steps
 

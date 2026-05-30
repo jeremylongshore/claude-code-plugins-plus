@@ -115,7 +115,7 @@ async function handleIdempotent(event: { id: string; type: string; data: any }) 
 
 ## Resources
 
-- [Juicebox API Docs](https://docs.juicebox.ai)
+- Juicebox API Docs
 
 ## Next Steps
 

@@ -262,7 +262,7 @@ curl -s "localhost:9090/api/v1/query?query=klaviyo_api_errors_total" > metrics-s
 ## Resources
 
 - [Klaviyo Status Page](https://status.klaviyo.com)
-- [Klaviyo Support](https://support.klaviyo.com)
+- Klaviyo Support
 - [API Error Alerts](https://developers.klaviyo.com/en/docs/review_api_error_alerts)
 
 ## Next Steps

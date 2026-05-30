@@ -184,7 +184,7 @@ Branch C: "Go down this path for all other topics"
 ## Resources
 
 - [Lindy Documentation](https://docs.lindy.ai)
-- [Lindy Community](https://community.lindy.ai)
+- Lindy Community
 - [Lindy Status](https://status.lindy.ai)
 
 ## Next Steps

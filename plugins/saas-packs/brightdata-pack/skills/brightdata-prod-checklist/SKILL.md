@@ -137,7 +137,7 @@ kubectl rollout status deployment/scraper
 
 ## Resources
 
-- [Bright Data Status](https://status.brightdata.com)
+- Bright Data Status
 - [Zone Management](https://brightdata.com/cp/zones)
 - Usage Dashboard
 

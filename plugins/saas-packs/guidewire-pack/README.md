@@ -82,7 +82,7 @@ Guidewire is the leading platform for P&C (Property & Casualty) insurance carrie
 - [Cloud API Reference (PolicyCenter)](https://docs.guidewire.com/cloud/pc/202503/apiref/)
 - [Cloud API Reference (ClaimCenter)](https://docs.guidewire.com/cloud/cc/202407/apiref/)
 - [Gosu Language](https://gosu-lang.github.io/)
-- [Guidewire Cloud Console](https://gcc.guidewire.com/)
+- Guidewire Cloud Console
 
 ## License
 

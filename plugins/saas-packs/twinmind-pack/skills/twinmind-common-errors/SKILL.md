@@ -402,15 +402,15 @@ ffprobe -v error -show_format -show_streams audio.mp3
 ## Escalation Path
 
 1. Collect evidence with `twinmind-debug-bundle`
-2. Check TwinMind status page: https://status.twinmind.com
-3. Search community forum: https://community.twinmind.com
+2. Check TwinMind status page:
+3. Search community forum:
 4. Contact support with request ID: support@twinmind.com
 
 ## Resources
 
-- [TwinMind Status Page](https://status.twinmind.com)
+- TwinMind Status Page
 - TwinMind Support
-- [TwinMind Community](https://community.twinmind.com)
+- TwinMind Community
 - Error Code Reference
 
 ## Next Steps

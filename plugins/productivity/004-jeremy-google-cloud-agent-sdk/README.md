@@ -2,7 +2,7 @@
 
 **Comprehensive Google Cloud Agent Development Kit (ADK) and Agent Starter Pack mastery for building production-grade containerized multi-agent systems.**
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue)](plugin.json)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue)]
 [![Category](https://img.shields.io/badge/category-productivity-green)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Google Cloud](https://img.shields.io/badge/Google_Cloud-Agent_SDK-4285F4?logo=google-cloud)](https://google.github.io/adk-docs/)
 

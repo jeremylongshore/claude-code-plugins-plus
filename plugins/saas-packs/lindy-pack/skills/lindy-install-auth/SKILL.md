@@ -27,12 +27,12 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 Lindy AI is a no-code/low-code AI agent platform. Agents ("Lindies") are built in the
-web dashboard at https://app.lindy.ai. External integration uses webhook endpoints,
+web dashboard at . External integration uses webhook endpoints,
 the HTTP Request action, and optional Node.js/Python SDKs for programmatic access.
 
 ## Prerequisites
 
-- Lindy account at https://app.lindy.ai (Free tier: 400 credits/month)
+- Lindy account at  (Free tier: 400 credits/month)
 - For SDK access: Node.js 18+ or Python 3.10+
 - For webhook receivers: HTTPS endpoint in your application
 
@@ -40,7 +40,7 @@ the HTTP Request action, and optional Node.js/Python SDKs for programmatic acces
 
 ### Step 1: Obtain API Key
 
-1. Log in at https://app.lindy.ai
+1. Log in at
 2. Navigate to **Settings > API Keys**
 3. Click **Generate New Key** — copy immediately (shown only once)
 4. Store securely:
@@ -147,7 +147,7 @@ Credit consumption: 1-3 credits on basic models, ~10 on large models per task.
 ## Resources
 
 - [Lindy Documentation](https://docs.lindy.ai)
-- [Lindy Dashboard](https://app.lindy.ai)
+- Lindy Dashboard
 - [Lindy Academy](https://www.lindy.ai/academy-lessons/getting-started-101)
 - [Lindy Status](https://status.lindy.ai)
 

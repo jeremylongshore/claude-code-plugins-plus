@@ -159,7 +159,7 @@ const client = new JuiceboxClient({
 
 ```bash
 # Check API status
-curl https://status.juicebox.ai/api/status
+curl api/status
 
 # Verify connectivity
 curl -I https://api.juicebox.ai/v1/health

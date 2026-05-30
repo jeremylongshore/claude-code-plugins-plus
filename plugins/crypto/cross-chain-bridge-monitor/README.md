@@ -203,7 +203,7 @@ MIT License - See LICENSE file for details
 ## Support
 
 - GitHub Issues: [Report bugs](https://github.com/jeremylongshore/claude-code-plugins/issues)
-- Documentation: [Full docs](https://docs.claude-code-plugins.com)
+- Documentation: Full docs
 
 ---
 

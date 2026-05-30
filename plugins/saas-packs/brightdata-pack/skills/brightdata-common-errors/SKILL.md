@@ -196,13 +196,13 @@ curl -H "Authorization: Bearer ${BRIGHTDATA_API_TOKEN}" \
 
 1. Collect request/response headers (including `X-Luminati-*` headers)
 2. Run `brightdata-debug-bundle` to create diagnostic package
-3. Check https://status.brightdata.com for outages
+3. Check  for outages
 4. Contact support with zone name, error headers, and timestamps
 
 ## Resources
 
 - Bright Data Error Reference
-- [Status Page](https://status.brightdata.com)
+- Status Page
 - [Support Portal](https://brightdata.com/cp/support)
 
 ## Next Steps

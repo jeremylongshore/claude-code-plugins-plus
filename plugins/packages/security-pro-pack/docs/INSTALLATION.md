@@ -409,7 +409,7 @@ After successful installation:
 **Community:**
 
 - Discord: https://discord.gg/claude-code-plugins
-- Slack: https://claude-code-plugins.slack.com
+- Slack:
 
 ---
 

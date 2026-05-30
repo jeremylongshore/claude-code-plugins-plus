@@ -74,7 +74,7 @@ userStore.getUser().then(user => {
 
 For development, use a Developer Token instead of the full OAuth flow:
 
-1. Create a sandbox account at https://sandbox.evernote.com
+1. Create a sandbox account at
 2. Get a Developer Token from api/DeveloperToken.action
 3. Use directly without OAuth:
 

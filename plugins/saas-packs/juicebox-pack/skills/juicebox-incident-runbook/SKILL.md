@@ -107,8 +107,8 @@ curl -s -w "\nHTTP %{http_code}\n" \
 
 ## Resources
 
-- [Juicebox Status](https://status.juicebox.ai)
-- [Juicebox API Docs](https://docs.juicebox.ai)
+- Juicebox Status
+- Juicebox API Docs
 
 ## Next Steps
 

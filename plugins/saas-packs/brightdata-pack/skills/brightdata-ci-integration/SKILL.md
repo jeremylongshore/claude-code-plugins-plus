@@ -176,7 +176,7 @@ describe.skipIf(!LIVE)('Bright Data Live Integration', () => {
 ## Resources
 
 - [GitHub Actions Docs](https://docs.github.com/en/actions)
-- [Bright Data Status API](https://status.brightdata.com)
+- Bright Data Status API
 
 ## Next Steps
 

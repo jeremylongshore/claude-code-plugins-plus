@@ -245,7 +245,7 @@ app.listen(3001, () => console.log('Server running on :3001'))
 - [Next.js Quickstart](https://clerk.com/docs/nextjs/getting-started/quickstart)
 - [React Quickstart](https://clerk.com/docs/quickstarts/react)
 - [Express Quickstart](https://clerk.com/docs/quickstarts/express)
-- [Clerk Dashboard](https://dashboard.clerk.com)
+- Clerk Dashboard
 
 ## Next Steps
 

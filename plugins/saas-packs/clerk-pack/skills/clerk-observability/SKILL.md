@@ -311,7 +311,7 @@ LOG_LEVEL=debug npm run dev 2>&1 | grep '"category":"auth"'
 
 ## Resources
 
-- [Clerk Dashboard Analytics](https://dashboard.clerk.com)
+- Clerk Dashboard Analytics
 - [Sentry Next.js Integration](https://docs.sentry.io/platforms/javascript/guides/nextjs/)
 - [Pino Logger](https://getpino.io/)
 

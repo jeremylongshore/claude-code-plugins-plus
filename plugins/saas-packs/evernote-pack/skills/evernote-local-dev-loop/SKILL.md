@@ -32,7 +32,7 @@ Configure an efficient local development environment for Evernote API integratio
 
 - Completed `evernote-install-auth` setup
 - Node.js 18+ or Python 3.10+
-- Evernote sandbox account at https://sandbox.evernote.com
+- Evernote sandbox account at
 
 ## Instructions
 
@@ -120,7 +120,7 @@ For the full project setup, Express server, ENML utilities, and test scripts, se
 
 ## Resources
 
-- [Sandbox Environment](https://sandbox.evernote.com)
+- Sandbox Environment
 - [Developer Tokens](https://dev.evernote.com/doc/articles/dev_tokens.php)
 - [OAuth Guide](https://dev.evernote.com/doc/articles/authentication.php)
 

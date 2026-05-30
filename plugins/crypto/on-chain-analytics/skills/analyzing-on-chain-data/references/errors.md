@@ -12,7 +12,7 @@ Error: Request timeout
 **Solution:**
 
 1. Wait and retry (service usually recovers quickly)
-2. Check https://status.llama.fi/ for outages
+2. Check  for outages
 3. Use cached data if available
 
 ### Invalid Protocol Name

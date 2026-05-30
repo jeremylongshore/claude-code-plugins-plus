@@ -25,7 +25,7 @@ echo "Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 # Check Juicebox status page
 echo ""
 echo "=== Juicebox Status ==="
-curl -s https://status.juicebox.ai/api/status | jq '.status'
+curl -s api/status | jq '.status'
 
 # Check our API health
 echo ""
@@ -79,7 +79,7 @@ curl -s http://localhost:9090/api/v1/query?query=rate\(juicebox_requests_total\{
 ## When Juicebox is Down
 
 1. **Confirm Outage**
-   - Check https://status.juicebox.ai
+   - Check
    - Verify with curl test to API
 
 2. **Enable Fallback Mode**

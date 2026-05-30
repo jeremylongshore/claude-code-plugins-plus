@@ -17,7 +17,7 @@ def validate_lindy_key() -> str:
     key = os.environ.get("LINDY_API_KEY", "")
     if not key:
         raise RuntimeError(
-            "LINDY_API_KEY not set. Generate at https://app.lindy.ai/settings/api"
+            "LINDY_API_KEY not set. Generate at settings/api"
         )
     if len(key) < 20:
         raise RuntimeError(f"LINDY_API_KEY appears truncated ({len(key)} chars)")

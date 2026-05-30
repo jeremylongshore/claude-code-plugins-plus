@@ -288,7 +288,7 @@ class MockEvernoteClient {
   }
 
   getAuthorizeUrl(oauthToken) {
-    return `https://sandbox.evernote.com/OAuth.action?oauth_token=${oauthToken}`;
+    return `OAuth.action?oauth_token=${oauthToken}`;
   }
 
   getAccessToken(oauthToken, oauthTokenSecret, oauthVerifier, callback) {
@@ -467,7 +467,6 @@ const hasCredentials = process.env.EVERNOTE_ACCESS_TOKEN;
 ### Step 6: Secrets Management
 
 ```yaml
-
 
 ```
 

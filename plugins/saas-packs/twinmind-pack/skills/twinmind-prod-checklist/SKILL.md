@@ -371,7 +371,7 @@ verifyProduction();
 
 - TwinMind Enterprise SLA
 - Production Best Practices
-- [Status Page](https://status.twinmind.com)
+- Status Page
 
 ## Next Steps
 

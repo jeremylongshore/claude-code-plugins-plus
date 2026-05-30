@@ -409,7 +409,7 @@ export async function translationHealthCheck(): Promise<{
 - [Lokalise API Rate Limits](https://developers.lokalise.com/reference/api-rate-limits)
 - [Lokalise API Error Codes](https://developers.lokalise.com/reference/errors)
 - [Lokalise Support](mailto:support@lokalise.com) — For P1 issues, also try the in-app chat
-- [Lokalise Community Forum](https://community.lokalise.com)
+- Lokalise Community Forum
 
 ## Next Steps
 

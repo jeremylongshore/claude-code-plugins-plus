@@ -176,7 +176,7 @@ function getConfigSnapshot(): ConfigSnapshot {
 async function runNetworkTests(): Promise<NetworkTest[]> {
   const endpoints = [
     'https://api.twinmind.com',
-    'https://status.twinmind.com',
+    '',
     'https://twinmind.com',
   ];
 
@@ -419,8 +419,8 @@ Always review the bundle before sharing with support.
 ## Resources
 
 - TwinMind Support
-- [TwinMind Status](https://status.twinmind.com)
-- [Community Forum](https://community.twinmind.com)
+- TwinMind Status
+- Community Forum
 
 ## Next Steps
 

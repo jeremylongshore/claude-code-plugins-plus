@@ -95,7 +95,7 @@ curl -s -o /dev/null -w "%{http_code}" \
 ## Resources
 
 - [Finta Help Center](https://www.trustfinta.com)
-- [Finta API Documentation](https://docs.trustfinta.com)
+- Finta API Documentation
 
 ## Next Steps
 

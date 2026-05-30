@@ -106,7 +106,7 @@ Level 1: On-Call Engineer (0-15 min)
 
 - **Email:** support@twinmind.com
 - **Enterprise:** enterprise-support@twinmind.com
-- **Status:** https://status.twinmind.com
+- **Status:**
 
 ## Incident Report Template
 

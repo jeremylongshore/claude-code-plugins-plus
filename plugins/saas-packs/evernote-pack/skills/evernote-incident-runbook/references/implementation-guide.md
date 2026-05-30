@@ -25,7 +25,7 @@
 
 ```bash
 curl -I https://www.evernote.com/
-curl -I https://sandbox.evernote.com/
+curl -I
 
 ```
 
@@ -331,7 +331,6 @@ async function forceResync(userId) {
 
 ```markdown
 
-
 ## [Investigating] Evernote Integration Issue
 
 **Time:** [TIMESTAMP]
@@ -346,7 +345,6 @@ We will provide updates as we learn more.
 ### User Notification
 
 ```markdown
-
 
 ## Temporary Sync Delay
 
@@ -367,7 +365,6 @@ Thank you for your patience.
 
 ```markdown
 
-
 ## [Resolved] Evernote Integration Issue
 
 **Time:** [TIMESTAMP]
@@ -386,7 +383,6 @@ We apologize for any inconvenience.
 ## Post-Incident Checklist
 
 ```markdown
-
 
 ## Post-Incident Review
 

@@ -93,7 +93,7 @@ grep -i "x-luminati\|x-brd" "$BUNDLE_DIR/proxy-headers.txt" >> "$BUNDLE_DIR/summ
 # Direct connectivity test (bypasses proxy)
 echo "--- Direct Connectivity ---" >> "$BUNDLE_DIR/summary.txt"
 curl -s -o /dev/null -w "brightdata.com: HTTP %{http_code}\n" https://brightdata.com >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "status page: HTTP %{http_code}\n" https://status.brightdata.com >> "$BUNDLE_DIR/summary.txt"
+curl -s -o /dev/null -w "status page: HTTP %{http_code}\n"  >> "$BUNDLE_DIR/summary.txt"
 
 # Port check
 echo "--- Port Connectivity ---" >> "$BUNDLE_DIR/summary.txt"
@@ -159,7 +159,7 @@ echo "REVIEW FOR SENSITIVE DATA BEFORE SHARING"
 ## Resources
 
 - [Bright Data Support Portal](https://brightdata.com/cp/support)
-- [Status Page](https://status.brightdata.com)
+- Status Page
 - Troubleshooting Guide
 
 ## Next Steps

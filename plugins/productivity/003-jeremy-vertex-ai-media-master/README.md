@@ -2,7 +2,7 @@
 
 **Comprehensive Google Vertex AI multimodal mastery for video processing, audio generation, image creation, and marketing automation.**
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue)](plugin.json)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue)]
 [![Category](https://img.shields.io/badge/category-productivity-green)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Google Cloud](https://img.shields.io/badge/Google_Cloud-Vertex_AI-4285F4?logo=google-cloud)](https://cloud.google.com/vertex-ai)
 

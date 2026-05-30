@@ -317,7 +317,7 @@ const provider = new ethers.providers.JsonRpcProvider(
 
 ### Resources
 
-- **Ankr RPCs:** [rpc.ankr.com](https://rpc.ankr.com) (FREE, no signup)
+- **Ankr RPCs:** rpc.ankr.com (FREE, no signup)
 - **Infura Free:** [infura.io/pricing](https://infura.io/pricing) (100K req/day)
 - **Chainstack Free:** [chainstack.com/pricing](https://chainstack.com/pricing) (3M req/month)
 - **Public RPCs List:** [chainlist.org](https://chainlist.org) (community endpoints)
@@ -423,7 +423,7 @@ MIT License - See LICENSE file for details
 ## Support
 
 - GitHub Issues: [Report bugs](https://github.com/jeremylongshore/claude-code-plugins/issues)
-- Documentation: [Full docs](https://docs.claude-code-plugins.com)
+- Documentation: Full docs
 
 ---
 
