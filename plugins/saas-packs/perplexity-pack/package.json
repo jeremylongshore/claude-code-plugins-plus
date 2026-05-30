@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/perplexity-pack",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Claude Code skill pack for Perplexity - 30 skills covering AI search and real-time web access",
   "main": "README.md",
   "type": "module",

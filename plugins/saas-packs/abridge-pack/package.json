@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/abridge-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Abridge - 18 skills covering clinical conversation AI and medical documentation",
   "main": "README.md",
   "type": "module",

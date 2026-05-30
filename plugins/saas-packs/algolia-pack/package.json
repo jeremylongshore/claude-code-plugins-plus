@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/algolia-pack",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Claude Code skill pack for Algolia - 24 skills covering search, recommendations, and discovery APIs",
   "main": "README.md",
   "type": "module",

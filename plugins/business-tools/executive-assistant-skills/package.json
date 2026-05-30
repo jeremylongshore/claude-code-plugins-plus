@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/executive-assistant-skills",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "AI-powered executive assistant skills that fully replace a human EA. Research meeting attendees, draft emails, create meeting briefs, and manage action items.",
   "keywords": [
     "executive-assistant",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/unit-test-generator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Automatically generate comprehensive unit tests from source code with multiple testing framework support",
   "keywords": [
     "testing",

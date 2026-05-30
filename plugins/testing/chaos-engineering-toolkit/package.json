@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/chaos-engineering-toolkit",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Chaos testing for resilience with failure injection, latency simulation, and system resilience validation",
   "keywords": [
     "testing",

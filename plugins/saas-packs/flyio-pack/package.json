@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/flyio-pack",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Claude Code skill pack for Fly.io - 18 skills covering edge deployment, container orchestration, and global app hosting",
   "main": "README.md",
   "type": "module",

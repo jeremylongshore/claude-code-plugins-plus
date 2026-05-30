@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/snapshot-test-manager",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Manage and update snapshot tests with intelligent diff analysis and selective updates",
   "keywords": [
     "testing",

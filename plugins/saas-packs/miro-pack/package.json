@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/miro-pack",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Claude Code skill pack for Miro - 24 skills covering collaborative whiteboarding, diagramming, and visual planning",
   "main": "README.md",
   "type": "module",

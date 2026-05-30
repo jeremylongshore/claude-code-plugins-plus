@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/performance-test-suite",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Load testing and performance benchmarking with metrics analysis and bottleneck identification",
   "keywords": [
     "testing",

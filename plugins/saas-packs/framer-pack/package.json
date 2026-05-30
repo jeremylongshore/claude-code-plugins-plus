@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/framer-pack",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Claude Code skill pack for Framer - 18 skills covering web design, interactive prototyping, and site publishing",
   "main": "README.md",
   "type": "module",

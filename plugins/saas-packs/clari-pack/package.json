@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/clari-pack",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Claude Code skill pack for Clari - 18 skills covering revenue operations, forecasting, and pipeline management",
   "main": "README.md",
   "type": "module",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/agency-os",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "Run your work like an AI agency, from a single Notion board. Agents discuss, plan, and execute tasks in parallel with dependency ordering and model routing.",
   "keywords": [
     "notion",

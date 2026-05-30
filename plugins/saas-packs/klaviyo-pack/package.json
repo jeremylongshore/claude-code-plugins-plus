@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/klaviyo-pack",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Claude Code skill pack for Klaviyo - 24 skills covering email marketing, customer data platform, and segmentation",
   "main": "README.md",
   "type": "module",

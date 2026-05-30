@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/security-misconfiguration-finder",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Find security misconfigurations",
   "keywords": [
     "security",

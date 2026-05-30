@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/jeremy-adk-software-engineer",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "ADK software engineer for creating production-ready agents with testing, deployment, and multi-agent orchestration",
   "keywords": [
     "adk",

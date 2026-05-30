@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/replit-pack",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Claude Code skill pack for Replit - 30 skills covering cloud development and AI coding assistant",
   "main": "README.md",
   "type": "module",

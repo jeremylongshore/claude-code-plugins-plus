@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/apple-notes-pack",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Claude Code skill pack for Apple Notes - 24 skills covering note management, organization, and Apple ecosystem integration",
   "main": "README.md",
   "type": "module",

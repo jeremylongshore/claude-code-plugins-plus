@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/granola-pack",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Claude Code skill pack for Granola - 24 skills covering AI meeting notes, transcription, and summaries",
   "main": "README.md",
   "type": "module",

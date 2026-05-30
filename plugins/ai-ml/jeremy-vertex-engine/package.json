@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/jeremy-vertex-engine",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "Vertex AI Agent Engine deployment inspector and runtime validator",
   "keywords": [
     "vertex-ai",

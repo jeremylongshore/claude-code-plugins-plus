@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/exa-pack",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Claude Code skill pack for Exa - 30 skills covering neural search and embeddings API",
   "main": "README.md",
   "type": "module",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/test-orchestrator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Orchestrate complex test workflows with dependencies, parallel execution, and smart test selection",
   "keywords": [
     "testing",

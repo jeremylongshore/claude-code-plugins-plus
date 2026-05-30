@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/alchemy-pack",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Claude Code skill pack for Alchemy - 18 skills covering blockchain development, NFT APIs, and web3 infrastructure",
   "main": "README.md",
   "type": "module",

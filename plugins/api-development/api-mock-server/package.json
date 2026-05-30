@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/api-mock-server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Create mock API servers from OpenAPI specs for testing",
   "keywords": [
     "mock",

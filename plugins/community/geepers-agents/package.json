@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/geepers-agents",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Multi-agent orchestration system with MCP tools and Claude Code plugin agents. 51 specialized agents for development workflows, code quality, deployment, research, and more.",
   "keywords": [
     "mcp",

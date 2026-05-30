@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/figma-pack",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Claude Code skill pack for Figma - 30 skills covering design APIs, plugin development, and design system management",
   "main": "README.md",
   "type": "module",
