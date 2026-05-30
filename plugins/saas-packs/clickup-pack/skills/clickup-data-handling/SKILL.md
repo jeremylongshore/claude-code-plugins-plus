@@ -205,7 +205,7 @@ async function enforceRetention(db: any) {
 ## Resources
 
 - [ClickUp Privacy Policy](https://clickup.com/privacy)
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- GDPR Developer Guide
 - [ClickUp API User Endpoint](https://developer.clickup.com/reference/getauthorizeduser)
 
 ## Next Steps

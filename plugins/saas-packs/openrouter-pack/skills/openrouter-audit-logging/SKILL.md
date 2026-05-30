@@ -222,5 +222,5 @@ FROM audit_log GROUP BY user_id ORDER BY total_cost DESC LIMIT 10;
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
-- [Generation API](https://openrouter.ai/docs/api/api-reference/generation-queries/query-a-generation) | [Auth/Key Info](https://openrouter.ai/docs/api/reference/authentication)
+- Examples | Errors
+- Generation API | [Auth/Key Info](https://openrouter.ai/docs/api/reference/authentication)

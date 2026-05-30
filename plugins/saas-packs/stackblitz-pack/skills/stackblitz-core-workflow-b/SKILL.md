@@ -106,7 +106,7 @@ sdk.openProject({
 ## Resources
 
 - [StackBlitz SDK](https://developer.stackblitz.com/platform/api/javascript-sdk)
-- [Embed URL Parameters](https://developer.stackblitz.com/platform/api/embed-url)
+- Embed URL Parameters
 - [WebContainer API](https://developer.stackblitz.com/platform/api/webcontainer-api)
 
 ## Next Steps

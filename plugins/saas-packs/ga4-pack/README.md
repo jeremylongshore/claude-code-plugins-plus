@@ -4,7 +4,7 @@
 
 **Install:** `/plugin install ga4-pack@claude-code-plugins-plus`
 
-**Links:** [Tons of Skills](https://tonsofskills.com/learn/ga4/) · [GA4 Data API v1 docs](https://developers.google.com/analytics/devguides/reporting/data/v1) · [GA4 BigQuery export](https://support.google.com/analytics/answer/9358801)
+**Links:** Tons of Skills · [GA4 Data API v1 docs](https://developers.google.com/analytics/devguides/reporting/data/v1) · [GA4 BigQuery export](https://support.google.com/analytics/answer/9358801)
 
 ---
 

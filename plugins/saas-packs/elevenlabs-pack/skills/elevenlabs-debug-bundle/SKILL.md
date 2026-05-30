@@ -244,7 +244,7 @@ console.log(JSON.stringify(report, null, 2));
 
 - [ElevenLabs Support](https://help.elevenlabs.io)
 - [ElevenLabs Status](https://status.elevenlabs.io)
-- [API Error Reference](https://elevenlabs.io/docs/developers/resources/error-messages)
+- API Error Reference
 
 ## Next Steps
 

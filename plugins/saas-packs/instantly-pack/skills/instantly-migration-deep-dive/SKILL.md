@@ -345,7 +345,7 @@ Week 4: Cutover
 ## Resources
 
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
-- [Instantly Account API](https://developer.instantly.ai/api/v2/account)
+- Instantly Account API
 - [Instantly Quick Start Guide](https://help.instantly.ai/en/articles/6451970-quick-start-guide-all-in-one)
 
 ## Next Steps

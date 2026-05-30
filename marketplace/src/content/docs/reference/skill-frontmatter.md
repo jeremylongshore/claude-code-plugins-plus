@@ -184,8 +184,8 @@ persists across plugin updates.
 For referencing supporting documentation within a skill's instructions, use relative markdown links rather than path variables. Claude follows these links with the Read tool on demand:
 
 ```markdown
-See [API Reference](reference.md) for endpoint details.
-Review [Examples](examples/sample.md) for usage patterns.
+See API Reference for endpoint details.
+Review Examples for usage patterns.
 ```
 
 Reserve `${CLAUDE_SKILL_DIR}` for bash commands and DCI expressions where Claude needs an absolute filesystem path.
@@ -315,7 +315,7 @@ You are auditing the **$1** deployment environment. Perform the following checks
 3. Check environment variable configuration for missing or placeholder values
 4. Verify that secrets are referenced from a secret store, not hardcoded
 
-Reference the [security checklist](security-checklist.md) for the complete audit criteria.
+Reference the security checklist for the complete audit criteria.
 
 Save the audit report to `${CLAUDE_PLUGIN_DATA}/audits/$1-audit-$(date +%Y%m%d).md`.
 ```
@@ -345,6 +345,6 @@ The standard tier checks structural validity (required fields present, valid too
 | `description` is a single sentence without trigger phrases | Add 2-4 specific phrases users might say to activate this skill. |
 | `allowed-tools` includes tools the skill never uses | Remove unused tools. Only list tools the skill actually needs. |
 | DCI command has no fallback | Add `\|\| echo 'fallback'` after every DCI command. |
-| Using `${CLAUDE_SKILL_DIR}` in markdown links | Use relative markdown links instead: `[file](file.md)`. |
+| Using `${CLAUDE_SKILL_DIR}` in markdown links | Use relative markdown links instead: `file`. |
 | Listing invalid tool names in `allowed-tools` | Check the [Allowed Tools Reference](/docs/reference/allowed-tools) for the canonical list. |
 | Using `argument-hint` without `$ARGUMENTS` or `$1` in the body | If you declare an argument hint, use the substitution variables in the skill body. |

@@ -330,6 +330,6 @@ curl -s -X POST "https://api.hubapi.com/crm/v3/objects/contacts/batch/read" \
 - [CRM Batch Read API](https://developers.hubspot.com/docs/reference/api/crm/objects/contacts#post-%2Fcrm%2Fv3%2Fobjects%2Fcontacts%2Fbatch%2Fread)
 - [Associations API v4](https://developers.hubspot.com/docs/guides/api/crm/associations/associations-v4)
 - [Rate Limits Reference](https://developers.hubspot.com/docs/guides/apps/api-usage/usage-details)
-- [GDPR and Marketing Emails in HubSpot](https://knowledge.hubspot.com/marketing-email/understand-gdpr-in-hubspot)
+- GDPR and Marketing Emails in HubSpot
 - [API_REFERENCE.md](references/API_REFERENCE.md) — merge endpoint shapes, search filter syntax, error codes, property uniqueness enforcement
 - [implementation-guide.md](references/implementation-guide.md) — full four-stage Python pipeline, fuzzy matching, post-merge association cleanup runbook

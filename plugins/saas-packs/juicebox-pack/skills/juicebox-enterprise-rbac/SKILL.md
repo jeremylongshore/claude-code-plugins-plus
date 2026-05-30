@@ -101,8 +101,8 @@ function logAccess(entry: JuiceboxAuditEntry): void {
 
 ## Resources
 
-- [Juicebox Enterprise](https://juicebox.ai/enterprise)
-- [Juicebox API Docs](https://docs.juicebox.ai/)
+- Juicebox Enterprise
+- Juicebox API Docs
 
 ## Next Steps
 

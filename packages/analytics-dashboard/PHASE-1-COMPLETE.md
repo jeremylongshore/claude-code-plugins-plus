@@ -351,7 +351,7 @@ The project is ready for Phase 2: Component Development and WebSocket Integratio
 ---
 
 **Handoff Notes for Phase 2 Agent:**
-- All files are in `/home/jeremy/000-projects/claude-code-plugins/packages/analytics-dashboard/`
+- All files are in `
 - The store is ready to receive events via `addEvent()`
 - Layout components provide the visual structure
 - Metric cards need data connections

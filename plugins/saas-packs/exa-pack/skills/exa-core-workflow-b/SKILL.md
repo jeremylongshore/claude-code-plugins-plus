@@ -209,7 +209,7 @@ async function enrichUrls(urls: string[]) {
 
 ## Resources
 
-- [Exa Find Similar](https://docs.exa.ai/reference/find-similar-links)
+- Exa Find Similar
 - [Exa Get Contents](https://docs.exa.ai/reference/get-contents)
 - [Exa Contents Retrieval](https://docs.exa.ai/reference/contents-retrieval)
 

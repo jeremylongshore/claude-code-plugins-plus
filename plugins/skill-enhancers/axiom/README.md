@@ -4,7 +4,7 @@ Battle-tested Claude Code skills for modern xOS (iOS, iPadOS, watchOS, tvOS) dev
 
 **13 Production-Ready TDD-Tested Skills** | **Version 0.1.6** | **Preview Release with Examples**
 
-> **Preview Release**: This is an early preview of Axiom. Feedback welcome on what's working well and what's missing. Report issues or suggestions at [GitHub Issues](https://github.com/yourusername/Axiom/issues).
+> **Preview Release**: This is an early preview of Axiom. Feedback welcome on what's working well and what's missing. Report issues or suggestions at GitHub Issues.
 
 ## What's New Recently
 
@@ -265,7 +265,7 @@ SwiftData with iOS 26+ features, @Model definitions, @Query patterns, Swift 6 co
 
 ## Documentation
 
-Full documentation available at [https://yourusername.github.io/Axiom](https://yourusername.github.io/Axiom)
+Full documentation available at
 
 Run documentation locally:
 
@@ -280,12 +280,12 @@ Visit http://localhost:5173
 
 This is a preview release. Feedback is welcome!
 
-- **Issues**: Report bugs or request features at [GitHub Issues](https://github.com/yourusername/Axiom/issues)
-- **Discussions**: Share usage patterns and ask questions at [GitHub Discussions](https://github.com/yourusername/Axiom/discussions)
+- **Issues**: Report bugs or request features at GitHub Issues
+- **Discussions**: Share usage patterns and ask questions at GitHub Discussions
 
 ## Related Resources
 
-- [Claude Code Documentation](https://docs.claude.ai/code)
+- Claude Code Documentation
 - [Apple Developer Documentation](https://developer.apple.com/)
   - [Liquid Glass Design System](https://developer.apple.com/design/human-interface-guidelines/)
   - [SwiftUI Performance](https://developer.apple.com/videos/)
@@ -306,4 +306,4 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 ## Acknowledgments
 
-Built with guidance from Apple's latest platform documentation and the iOS development community. Skills tested using the [Superpowers](https://github.com/superpowers-marketplace/superpowers) TDD framework for Claude Code skills.
+Built with guidance from Apple's latest platform documentation and the iOS development community. Skills tested using the Superpowers TDD framework for Claude Code skills.

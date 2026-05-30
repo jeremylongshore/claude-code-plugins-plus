@@ -181,7 +181,7 @@ echo "=== Verification complete ==="
 
 ## Resources
 
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- MaintainX API Reference
 - [MaintainX Status Page](https://status.getmaintainx.com)
 - [12-Factor App](https://12factor.net/)
 

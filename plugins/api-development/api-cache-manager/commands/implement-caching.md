@@ -551,7 +551,7 @@ if (!redis.isReady()) {
 ### Getting Help
 
 - Redis documentation: https://redis.io/documentation
-- CDN best practices: https://web.dev/cache-control
+- CDN best practices:
 - Cache pattern guide: https://docs.microsoft.com/azure/architecture/patterns/cache-aside
 
 ## Version History

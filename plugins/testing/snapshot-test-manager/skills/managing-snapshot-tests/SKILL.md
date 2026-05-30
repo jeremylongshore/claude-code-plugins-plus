@@ -128,5 +128,5 @@ export const test = (val: unknown) => typeof val === 'string' && val.includes('i
 - Jest snapshot testing: https://jestjs.io/docs/snapshot-testing
 - Vitest snapshots: https://vitest.dev/guide/snapshot
 - React Testing Library: https://testing-library.com/docs/react-testing-library/intro/
-- Syrupy (pytest snapshots): https://github.com/toptal/syrupy
+- Syrupy (pytest snapshots):
 - Effective Snapshot Testing: https://kentcdodds.com/blog/effective-snapshot-testing

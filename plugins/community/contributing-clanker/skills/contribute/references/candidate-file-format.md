@@ -124,7 +124,7 @@ status: submitted
 pr_number: 137
 pr_url: https://github.com/example-org/example-repo/pull/137
 branch: fix/42-null-deref
-research_path: /home/jeremy/.contribute-system/research/example-org__example-repo.md
+research_path:
 last_refreshed: 2026-04-20T14:30:00Z
 ---
 

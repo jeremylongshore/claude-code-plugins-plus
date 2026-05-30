@@ -154,6 +154,6 @@ See [Liquid Profiling](references/liquid-profiling.md) for profiler usage and co
 
 - [Shopify Theme Performance](https://shopify.dev/docs/storefronts/themes/best-practices/performance)
 - [image_url Filter Reference](https://shopify.dev/docs/api/liquid/filters/image_url)
-- [Liquid Profiler](https://shopify.dev/docs/storefronts/themes/tools/liquid-profiler)
+- Liquid Profiler
 - [Core Web Vitals for Shopify](https://shopify.dev/docs/storefronts/themes/best-practices/performance#core-web-vitals)
 - [font-display CSS Property](https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display)

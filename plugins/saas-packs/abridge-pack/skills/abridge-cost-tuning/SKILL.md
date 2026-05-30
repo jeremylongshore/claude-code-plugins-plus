@@ -216,7 +216,7 @@ function generateCostRecommendations(
 ## Resources
 
 - [Abridge Pricing](https://www.abridge.com/)
-- [Abridge ROI Studies](https://www.abridge.com/platform)
+- Abridge ROI Studies
 
 ## Next Steps
 

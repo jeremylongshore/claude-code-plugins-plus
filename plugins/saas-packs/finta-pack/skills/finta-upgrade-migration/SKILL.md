@@ -143,7 +143,7 @@ class FintaClient {
 ## Resources
 
 - [Finta Changelog](https://www.trustfinta.com/change-log)
-- [Finta API Documentation](https://www.trustfinta.com/developers)
+- Finta API Documentation
 
 ## Next Steps
 

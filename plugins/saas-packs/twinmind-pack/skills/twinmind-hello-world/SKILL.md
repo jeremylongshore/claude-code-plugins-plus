@@ -215,7 +215,7 @@ the new color palette before Thursday's review."
 
 - [TwinMind Chrome Extension Tutorial](https://twinmind.com/ce-tutorial)
 - [TwinMind Documentation](https://twinmind.com)
-- [Ear-3 Model Details](https://twinmind.com/ear-3)
+- Ear-3 Model Details
 
 ## Next Steps
 

@@ -354,7 +354,7 @@ export async function handler(req: Request) {
 - [Supabase JavaScript SDK Reference](https://supabase.com/docs/reference/javascript/introduction)
 - [PostgREST Error Codes](https://postgrest.org/en/stable/references/errors.html)
 - [PostgreSQL Error Codes](https://www.postgresql.org/docs/current/errcodes-appendix.html)
-- [Supabase Auth Error Handling](https://supabase.com/docs/reference/javascript/auth-error-codes)
+- Supabase Auth Error Handling
 - [RLS Debugging Guide](https://supabase.com/docs/guides/database/postgres/row-level-security)
 - [Supabase Realtime Troubleshooting](https://supabase.com/docs/guides/realtime/troubleshooting)
 - [Supabase Status Page](https://status.supabase.com)

@@ -117,7 +117,7 @@ IDs for subsequent update or delete operations in downstream workflows.
 
 - [Linktree API Reference](https://linktr.ee/marketplace/developer)
 - [Linktree API Status Page](https://status.linktr.ee)
-- [Linktree Developer Blog](https://linktr.ee/blog/developers)
+- Linktree Developer Blog
 
 ## Next Steps
 

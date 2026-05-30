@@ -26,7 +26,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 
 ## Overview
 
-Set up a local development workflow for Instantly integrations. Instantly provides a mock server at `https://developer.instantly.ai/_mock/api/v2/` for testing without sending real emails or consuming API limits. This skill covers mock server usage, integration testing, and local webhook development.
+Set up a local development workflow for Instantly integrations. Instantly provides a mock server at `` for testing without sending real emails or consuming API limits. This skill covers mock server usage, integration testing, and local webhook development.
 
 ## Prerequisites
 
@@ -241,7 +241,7 @@ instantly-integration/
 
 ## Resources
 
-- [Instantly Mock Server](https://developer.instantly.ai/_mock/api/v2/)
+- Instantly Mock Server
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
 - [ngrok Quick Start](https://ngrok.com/docs/getting-started/)
 

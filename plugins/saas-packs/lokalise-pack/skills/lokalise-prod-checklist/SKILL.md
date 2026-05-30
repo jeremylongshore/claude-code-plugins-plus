@@ -481,8 +481,8 @@ curl -sf "https://api.lokalise.com/api2/projects/${LOKALISE_PROJECT_ID}/language
 
 - [Lokalise Status Page](https://status.lokalise.com) — Check before any production deployment
 - [Lokalise API — Project Statistics](https://developers.lokalise.com/reference/retrieve-a-project)
-- [Lokalise OTA Documentation](https://docs.lokalise.com/en/articles/1400697-over-the-air-ota)
-- [Lokalise Team Roles](https://docs.lokalise.com/en/articles/1400870-team-roles-and-permissions)
+- Lokalise OTA Documentation
+- Lokalise Team Roles
 - [OWASP Secrets Management](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html)
 
 ## Next Steps

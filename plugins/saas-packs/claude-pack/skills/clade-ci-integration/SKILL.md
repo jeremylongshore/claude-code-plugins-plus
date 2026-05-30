@@ -143,8 +143,8 @@ See GitHub Actions YAML, Mock Strategy with Vitest, Integration Test with real A
 
 ## Resources
 
-- [GitHub Actions Secrets](https://docs.github.com/en/actions/security-for-github-actions/using-secrets-in-github-actions)
-- [Anthropic SDK](https://github.com/anthropics/claude-sdk-typescript)
+- GitHub Actions Secrets
+- Anthropic SDK
 
 ## Next Steps
 

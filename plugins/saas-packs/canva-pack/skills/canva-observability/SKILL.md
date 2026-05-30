@@ -252,7 +252,7 @@ histogram_quantile(0.95, rate(canva_export_duration_seconds_bucket[5m]))
 
 ## Resources
 
-- [Canva API Reference](https://www.canva.dev/docs/connect/api-reference/)
+- Canva API Reference
 - [Prometheus](https://prometheus.io/docs/practices/naming/)
 - [OpenTelemetry](https://opentelemetry.io/docs/)
 

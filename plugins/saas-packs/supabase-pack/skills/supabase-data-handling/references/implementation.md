@@ -211,9 +211,9 @@ await sendToUser(userExport);
 
 ## Resources
 
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- GDPR Developer Guide
 - [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [Supabase Privacy Guide](https://supabase.com/docs/privacy)
+- Supabase Privacy Guide
 
 ## Next Steps
 

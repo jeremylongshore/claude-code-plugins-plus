@@ -143,7 +143,7 @@ class MindTickleClient {
 ## Resources
 
 - [MindTickle Integrations](https://www.mindtickle.com/platform/integrations/)
-- [MindTickle API Documentation](https://developers.mindtickle.com/)
+- MindTickle API Documentation
 
 ## Next Steps
 

@@ -253,7 +253,7 @@ describe('Deepgram Integration', () => {
 
 - [Vitest Documentation](https://vitest.dev/)
 - [Deepgram Sample Audio](https://static.deepgram.com/examples/)
-- [SDK Testing Guide](https://developers.deepgram.com/docs/testing)
+- SDK Testing Guide
 
 ## Next Steps
 

@@ -20,7 +20,7 @@ That's why I've created something special...
 
 *Originally inspired by [Zach Wilson (@eczachly)'s X post](https://twitter.com/eczachly) on AI Engineering levels*
 
-## 🔥 [**Access the Complete Interactive Curriculum HERE**](https://jeremylongshore.github.io/ai-engineering-curriculum/)
+## 🔥 **Access the Complete Interactive Curriculum HERE**
 
 ## What Makes This Different From Everything Else
 
@@ -38,7 +38,7 @@ This curriculum incorporates insights from **"The AI Engineering Continuum: A Wh
 
 ## The Four-Level Mastery Path 🎯
 
-### [**Level 1: Using AI**](https://jeremylongshore.github.io/ai-engineering-curriculum/level-1.html)
+### **Level 1: Using AI**
 
 **Weeks 1-8: Master the Fundamentals That 90% Get Wrong**
 
@@ -51,7 +51,7 @@ This curriculum incorporates insights from **"The AI Engineering Continuum: A Wh
 
 **Why Level 1 Matters:** Bell Canada achieved 40% faster response times and 30% cost reduction using these exact techniques.
 
-### [**Level 2: Integrating AI**](https://jeremylongshore.github.io/ai-engineering-curriculum/level-2.html)
+### **Level 2: Integrating AI**
 
 **Weeks 9-16: Build Systems That Actually Work in Production**
 
@@ -64,7 +64,7 @@ This curriculum incorporates insights from **"The AI Engineering Continuum: A Wh
 
 **Industry Impact:** DoorDash reduced support resolution time by 60% while handling 50,000+ queries monthly using these patterns.
 
-### [**Level 3: Engineering AI Systems**](https://jeremylongshore.github.io/ai-engineering-curriculum/level-3.html)
+### **Level 3: Engineering AI Systems**
 
 **Weeks 17-24: Transform Prototypes into Bulletproof Systems**
 
@@ -77,7 +77,7 @@ This curriculum incorporates insights from **"The AI Engineering Continuum: A Wh
 
 **Enterprise Reality:** CME Group's financial coding assistant delivers 10.5 hours monthly productivity gain per developer using these techniques.
 
-### [**Level 4: Optimizing AI at Scale**](https://jeremylongshore.github.io/ai-engineering-curriculum/level-4.html)
+### **Level 4: Optimizing AI at Scale**
 
 **Weeks 25-32: Handle Millions of Users Like Spotify**
 
@@ -166,7 +166,7 @@ Based on analysis of thousands of job postings:
 
 ## Everything Is FREE and Open Source 🎁
 
-### 🌐 [Interactive Web Curriculum](https://jeremylongshore.github.io/ai-engineering-curriculum/)
+### 🌐 Interactive Web Curriculum
 
 Beautiful, responsive pages for each level with:
 
@@ -175,14 +175,14 @@ Beautiful, responsive pages for each level with:
 - Real-world case studies
 - Direct links to implementation guides
 
-### 💻 [Complete GitHub Repository](https://github.com/jeremylongshore/ai-engineering-curriculum)
+### 💻 Complete GitHub Repository
 
 - All curriculum content and code
 - Exercise templates and solutions
 - Assessment rubrics and grading guides
 - Community discussions and support
 
-### 📚 [Teaching Manual for Educators](https://jeremylongshore.github.io/ai-engineering-curriculum/teaching-manual.html)
+### 📚 Teaching Manual for Educators
 
 - Week-by-week lesson plans
 - Common challenges and solutions
@@ -220,9 +220,9 @@ This isn't a static course - it evolves with the field:
 
 ### Success Path
 
-1. 🌟 **[Star the GitHub repo](https://github.com/jeremylongshore/ai-engineering-curriculum)** to stay updated
-2. 📚 **[Start with Level 1](https://jeremylongshore.github.io/ai-engineering-curriculum/level-1.html)** - even experienced devs should review fundamentals
-3. 💬 **[Join community discussions](https://github.com/jeremylongshore/ai-engineering-curriculum/discussions)** - share progress and get help
+1. 🌟 **Star the GitHub repo** to stay updated
+2. 📚 **Start with Level 1** - even experienced devs should review fundamentals
+3. 💬 **Join community discussions** - share progress and get help
 4. 🏗️ **Build your portfolio** - each level includes a showcase project
 5. 💼 **Apply with confidence** - you'll have the exact skills employers seek
 
@@ -274,7 +274,7 @@ Each level unlocks exponentially higher compensation and more interesting proble
 
 **Ready to transform your career?**
 
-### 🚀 [Begin Your AI Engineering Journey](https://jeremylongshore.github.io/ai-engineering-curriculum/)
+### 🚀 Begin Your AI Engineering Journey
 
 ### Share the Revolution
 
@@ -287,7 +287,7 @@ Found this valuable? Help others discover it:
 
 ## Connect & Contribute 🌍
 
-- **Follow updates:** [GitHub Repository](https://github.com/jeremylongshore/ai-engineering-curriculum)
+- **Follow updates:** GitHub Repository
 - **Join discussions:** Community forums for questions and sharing
 - **Contribute:** Submit improvements via pull requests
 - **Stay connected:** [StartSITools.com](https://startsitools.com) for more AI content

@@ -133,7 +133,7 @@ describe.skipIf(!hasKubeconfig)('CoreWeave Live API', () => {
 
 ## Resources
 
-- [CoreWeave Kubernetes Docs](https://docs.coreweave.com/coreweave-kubernetes/)
+- CoreWeave Kubernetes Docs
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 
 ## Next Steps

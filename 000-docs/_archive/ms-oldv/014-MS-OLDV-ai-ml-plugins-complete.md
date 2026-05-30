@@ -1,7 +1,7 @@
 # AI/ML Data Science Plugins - COMPLETE
 
 **Date:** October 11, 2025
-**Location:** `/home/jeremy/projects/claude-code-plugins/plugins/ai-ml/`
+**Location:** `
 **Status:**  25/25 Plugins Created - MISSION COMPLETE
 
 ## Overview

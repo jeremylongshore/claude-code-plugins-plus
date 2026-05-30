@@ -441,7 +441,7 @@ MIT License - See [LICENSE](LICENSE) file
 
 - **Agent Skills Documentation:** https://docs.claude.com/en/docs/claude-code/skills
 - **Plugin Guide:** https://docs.claude.com/en/docs/claude-code/plugins
-- **Repository CLAUDE.md:** [View CLAUDE.md](../../CLAUDE.md)
+- **Repository CLAUDE.md:** View CLAUDE.md
 
 ---
 

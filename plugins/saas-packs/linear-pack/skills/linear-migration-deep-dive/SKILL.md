@@ -176,7 +176,7 @@ function convertJiraToMarkdown(text: string): string {
     .replace(/\{noformat\}([\s\S]*?)\{noformat\}/g, "```\n$1\n```")
     .replace(/^\*\s/gm, "- ")
     .replace(/^#\s/gm, "1. ")
-    .replace(/\[([^|]+)\|([^\]]+)\]/g, "[$1]($2)");
+    .replace(/\[([^|]+)\|([^\]]+)\]/g, "$1");
 }
 ```
 

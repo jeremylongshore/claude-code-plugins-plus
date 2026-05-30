@@ -74,7 +74,7 @@
 
 ```bash
 # Step 1: Navigate to plugin directory
-cd /home/jeremy/000-projects/claude-code-plugins/plugins/mcp/lumera-agent-memory
+cd
 
 # Step 2: Run all unit tests (should see 21 passed)
 python3 -m pytest tests/ -v
@@ -123,7 +123,7 @@ cat CHANGES.md
 
 <!-- Steps to revert if something goes wrong -->
 
-1. **Remove plugin directory**: `rm -rf /home/jeremy/000-projects/claude-code-plugins/plugins/mcp/lumera-agent-memory/`
+1. **Remove plugin directory**: `rm -rf
 2. **Clear test storage**: `rm -rf ~/.lumera/` (removes mock Cascade blobs and SQLite index)
 3. **Revert git changes**: `git checkout -- plugins/mcp/` (if committed)
 4. **Remove from marketplace catalog** (if added): Edit `.claude-plugin/marketplace.extended.json` and run `pnpm run sync-marketplace`
@@ -168,7 +168,7 @@ cat CHANGES.md
 
 <!-- Links/paths to key files, logs, screenshots, PDFs, etc. -->
 
-- **Plugin directory**: `/home/jeremy/000-projects/claude-code-plugins/plugins/mcp/lumera-agent-memory/`
+- **Plugin directory**: `
 - **MCP server**: `src/mcp_server.py` (362 lines)
 - **Security module**: `src/security/redact.py` (131 lines), `src/security/encrypt.py` (92 lines)
 - **Cascade module**: `src/cascade/interface.py` (46 lines), `src/cascade/mock_fs.py` (85 lines)

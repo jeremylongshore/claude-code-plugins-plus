@@ -57,5 +57,5 @@ Use this skill to quickly answer “how do I do X with Google ADK?” and to pro
 ## Resources
 
 - Full detailed guide (kept for reference): `${CLAUDE_SKILL_DIR}/references/SKILL.full.md`
-- ADK / Agent Engine docs: https://cloud.google.com/vertex-ai/docs/agent-engine
+- ADK / Agent Engine docs:
 - Canonical repo standards: `000-docs/6767-a-SPEC-DR-STND-claude-code-plugins-standard.md`

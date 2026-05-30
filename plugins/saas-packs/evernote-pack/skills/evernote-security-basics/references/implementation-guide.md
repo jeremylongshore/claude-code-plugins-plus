@@ -425,7 +425,7 @@ class SecureLogger {
       data: data ? this.sanitize(data) : undefined
     };
 
-    console[level === 'error' ? 'error' : 'log'](JSON.stringify(entry));
+    consolelevel === 'error' ? 'error' : 'log');
   }
 
   info(message, data) {
@@ -506,7 +506,6 @@ module.exports = TokenManager;
 ## Security Checklist
 
 ```markdown
-
 
 ## Pre-Production Security Checklist
 

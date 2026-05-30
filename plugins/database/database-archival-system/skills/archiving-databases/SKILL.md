@@ -121,4 +121,4 @@ Implement automated data archival pipelines that move historical records from pr
 - AWS S3 CLI: https://docs.aws.amazon.com/cli/latest/reference/s3/
 - pg_repack (online table rewrite): https://reorg.github.io/pg_repack/
 - Data retention best practices: https://www.postgresql.org/docs/current/routine-vacuuming.html
-- Parquet format: https://parquet.apache.org/documentation/latest/
+- Parquet format:

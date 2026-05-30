@@ -360,7 +360,7 @@ curl -s "https://$PROJECT_REF.supabase.co/functions/v1/my-function" \
 ## Resources
 
 - [Supabase CLI in CI/CD](https://supabase.com/docs/guides/local-development/cli/getting-started) — official setup guide
-- [Database Testing with pgTAP](https://supabase.com/docs/guides/local-development/testing) — writing and running database tests
+- Database Testing with pgTAP — writing and running database tests
 - [Managing Environments](https://supabase.com/docs/guides/deployment/managing-environments) — staging, production, preview branches
 - [Edge Functions Deployment](https://supabase.com/docs/guides/functions/deploy) — deploying Deno functions
 - [Type Generation](https://supabase.com/docs/guides/api/rest/generating-types) — keeping TypeScript types in sync

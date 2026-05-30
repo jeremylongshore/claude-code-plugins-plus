@@ -137,7 +137,7 @@ class LinktreeClient {
 ## Resources
 
 - [Linktree Developer Portal](https://linktr.ee/marketplace/developer)
-- [Linktree API Documentation](https://developers.linktr.ee/)
+- Linktree API Documentation
 
 ## Next Steps
 

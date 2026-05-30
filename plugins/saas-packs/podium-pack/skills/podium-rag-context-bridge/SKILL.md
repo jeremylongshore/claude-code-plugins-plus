@@ -202,7 +202,7 @@ REDACTION_PATTERNS = [
     # E.164-ish phone
     (re.compile(r"\+?\d[\d\s\-().]{8,}\d"), "[REDACTED:PHONE]"),
     # DOB-ish dates
-    (re.compile(r"\b(0?[1-9]|1[0-2])[/-](0?[1-9]|[12]\d|3[01])[/-](19|20)\d{2}\b"),
+    (re.compile(r"\b(0?[1-9]|1[0-2])/-/-\d{2}\b"),
         "[REDACTED:DOB]"),
 ]
 

@@ -113,7 +113,7 @@ ALTER TABLE [table] ADD COLUMN [old_col] [type];
 
 ```sql
 -- migrate:up
-CREATE INDEX CONCURRENTLY idx_[table]_[col] ON [table]([col]);
+CREATE INDEX CONCURRENTLY idx_[table]_[col] ON table;
 
 -- migrate:down
 DROP INDEX CONCURRENTLY idx_[table]_[col];

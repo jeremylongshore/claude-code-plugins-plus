@@ -129,7 +129,7 @@ async function batchAnalyzeDatasets(datasetIds: string[], query: string, batchSi
 
 ## Resources
 
-- [Juicebox API Documentation](https://docs.juicebox.ai/)
+- Juicebox API Documentation
 
 ## Next Steps
 

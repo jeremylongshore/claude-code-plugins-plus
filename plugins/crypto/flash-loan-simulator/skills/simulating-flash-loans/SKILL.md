@@ -125,6 +125,6 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for multi-provider comparison a
 
 - `${CLAUDE_SKILL_DIR}/references/implementation.md` - Provider comparison, strategy details, risk scoring, output modes
 - [Aave V3 Flash Loans](https://docs.aave.com/developers/guides/flash-loans)
-- [dYdX Flash Loans](https://docs.dydx.exchange/developers/guides/flash-loans)
-- [Balancer Flash Loans](https://docs.balancer.fi/concepts/advanced/flash-loans.html)
+- dYdX Flash Loans
+- Balancer Flash Loans
 - [Flashbots Protect](https://docs.flashbots.net/flashbots-protect/overview)

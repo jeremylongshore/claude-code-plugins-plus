@@ -79,7 +79,7 @@ The alternative — one giant PR with thirteen features interleaved — would ha
 
 ## Also Shipped
 
-**[Braves dashboard](https://github.com/jeremylongshore/braves)** got two PRs that round out the off-game experience. Baseball dashboards have a problem: what do you show when there's no game? A blank screen wastes the most valuable screen real estate in the broadcast booth.
+**Braves dashboard** got two PRs that round out the off-game experience. Baseball dashboards have a problem: what do you show when there's no game? A blank screen wastes the most valuable screen real estate in the broadcast booth.
 
 PR #24 added an idle view — what the dashboard shows when no game is live. Last game box score with full recap, upcoming game preview with a clickable card that links to the next game's detail page, and current division standings.
 

@@ -71,7 +71,7 @@ kubectl rollout undo deployment/inference
 
 ## Resources
 
-- [CoreWeave Support](https://www.coreweave.com/support)
+- CoreWeave Support
 - [CoreWeave Status](https://status.coreweave.com)
 
 ## Next Steps

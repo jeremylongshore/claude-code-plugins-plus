@@ -8,7 +8,7 @@
 ## Configuration Summary
 
 ### Astro Configuration
-**File:** `/home/jeremy/000-projects/claude-code-plugins/marketplace/astro.config.mjs`
+**File:** `
 
 ```javascript
 {
@@ -24,7 +24,7 @@
 ---
 
 ### CNAME File
-**File:** `/home/jeremy/000-projects/claude-code-plugins/marketplace/public/CNAME`
+**File:** `
 
 **Content:** `claudecodeplugins.io`
 
@@ -33,7 +33,7 @@
 ---
 
 ### GitHub Actions Workflow
-**File:** `/home/jeremy/000-projects/claude-code-plugins/.github/workflows/deploy-marketplace.yml`
+**File:** `
 
 **Trigger Conditions:**
 - Push to main branch (paths: `marketplace/**`)
@@ -56,7 +56,7 @@
 ---
 
 ### Build Output
-**Directory:** `/home/jeremy/000-projects/claude-code-plugins/marketplace/dist/`
+**Directory:** `
 
 **Contents:**
 - `index.html` - Main homepage
@@ -80,7 +80,7 @@
 ## Required Actions for Deployment
 
 ### 1. GitHub Repository Settings
-**URL:** https://github.com/jeremylongshore/claude-code-plugins/settings/pages
+**URL:**
 
 **Required Configuration:**
 - [ ] Source: **GitHub Actions** (not Deploy from a branch)
@@ -112,7 +112,7 @@ dig claudecodeplugins.io A +short
 ### 3. Trigger Deployment
 **Option A - Automatic (Recommended):**
 ```bash
-cd /home/jeremy/000-projects/claude-code-plugins
+cd
 git add .github/workflows/deploy-marketplace.yml
 git commit -m "fix: update GitHub Actions workflow to use npm instead of pnpm"
 git push origin main
@@ -178,7 +178,7 @@ After deployment completes:
 ### Build Fails
 ```bash
 # Test locally first
-cd /home/jeremy/000-projects/claude-code-plugins/marketplace
+cd
 npm run build
 
 # Check build output
@@ -199,7 +199,7 @@ dig claudecodeplugins.io A +short
 # Check worldwide DNS: https://www.whatsmydns.net/#A/claudecodeplugins.io
 
 # Verify CNAME in dist
-cat /home/jeremy/000-projects/claude-code-plugins/marketplace/dist/CNAME
+cat
 ```
 
 ---
@@ -229,11 +229,11 @@ cat /home/jeremy/000-projects/claude-code-plugins/marketplace/dist/CNAME
 ## Next Steps
 
 1. **Review the comprehensive checklist:**
-   - See `/home/jeremy/000-projects/claude-code-plugins/DEPLOYMENT_CHECKLIST.md`
+   - See `
 
 2. **Update GitHub Actions workflow:**
    ```bash
-   cd /home/jeremy/000-projects/claude-code-plugins
+   cd
    git add .github/workflows/deploy-marketplace.yml
    git commit -m "fix: update GitHub Actions workflow to use npm instead of pnpm"
    git push origin main

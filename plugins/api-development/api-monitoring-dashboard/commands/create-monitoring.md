@@ -405,7 +405,7 @@ class MetricsCollector {
         const cacheName = cache.name || 'default';
 
         try {
-          const result = await cache[method](...args);
+          const result = await cachemethod;
           const duration = (performance.now() - start) / 1000;
 
           // Record cache metrics

@@ -362,9 +362,9 @@ These documents make future development faster and onboarding easier.
 ## Code References
 
 - **Legal Pages**: [`src/app/terms/page.tsx`](https://github.com/jeremylongshore/hustle/blob/main/src/app/terms/page.tsx), [`src/app/privacy/page.tsx`](https://github.com/jeremylongshore/hustle/blob/main/src/app/privacy/page.tsx)
-- **Database Schema**: [`prisma/schema.prisma`](https://github.com/jeremylongshore/hustle/blob/main/prisma/schema.prisma)
+- **Database Schema**: `prisma/schema.prisma`
 - **Registration API**: [`src/app/api/auth/register/route.ts`](https://github.com/jeremylongshore/hustle/blob/main/src/app/api/auth/register/route.ts)
-- **Landing Page Footer**: [`src/app/page.tsx`](https://github.com/jeremylongshore/hustle/blob/main/src/app/page.tsx)
+- **Landing Page Footer**: `src/app/page.tsx`
 - **Full Release Notes**: [v00.00.01 Release](https://github.com/jeremylongshore/hustle/releases/tag/v00.00.01)
 
 ## Related Posts

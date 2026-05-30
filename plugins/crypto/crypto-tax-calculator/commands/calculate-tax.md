@@ -62,7 +62,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
 class AccountingMethod(Enum):
     """Cost basis accounting methods"""
     FIFO = "First In, First Out"
@@ -70,7 +69,6 @@ class AccountingMethod(Enum):
     HIFO = "Highest In, First Out"
     SPECIFIC_ID = "Specific Identification"
     AVERAGE_COST = "Average Cost Basis"
-
 
 class TaxJurisdiction(Enum):
     """Tax jurisdiction configurations"""
@@ -109,7 +107,6 @@ class TaxJurisdiction(Enum):
         "superficial_loss_days": 30
     }
 
-
 class TransactionType(Enum):
     """All supported transaction types"""
     BUY = "buy"
@@ -133,7 +130,6 @@ class TransactionType(Enum):
     LIQUIDATION = "liquidation"
     NFT_MINT = "nft_mint"
     NFT_SALE = "nft_sale"
-
 
 @dataclass
 class Transaction:
@@ -167,7 +163,6 @@ class Transaction:
         """Calculate fair market value"""
         if self.fair_market_value is None:
             self.fair_market_value = self.amount * self.price_usd
-
 
 @dataclass
 class TaxLot:
@@ -206,7 +201,6 @@ class TaxLot:
         proportion = amount / self.amount
         return self.cost_basis * proportion
 
-
 @dataclass
 class TaxEvent:
     """Represents a taxable event"""
@@ -232,7 +226,6 @@ class TaxEvent:
 
     # Jurisdiction specific
     jurisdiction_notes: str = ''
-
 
 class CryptoTaxCalculator:
     """Main cryptocurrency tax calculator"""
@@ -361,7 +354,7 @@ class CryptoTaxCalculator:
         if source.lower() not in importers:
             raise ValueError(f"Unsupported source: {source}")
 
-        count = importers[source.lower()](file_path)
+        count = importerssource.lower()
         logger.info(f"Imported {count} transactions")
         return count
 
@@ -1111,7 +1104,6 @@ class CryptoTaxCalculator:
             'exchange': tx.exchange,
             'wallet': tx.wallet
         }
-
 
 # Example Usage
 if __name__ == "__main__":

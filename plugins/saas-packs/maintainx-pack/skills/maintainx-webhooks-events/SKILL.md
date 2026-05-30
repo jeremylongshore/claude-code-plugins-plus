@@ -223,7 +223,7 @@ curl -X DELETE https://api.getmaintainx.com/v1/webhooks/456 \
 
 ## Resources
 
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- MaintainX API Reference
 - [ngrok Documentation](https://ngrok.com/docs)
 - [Webhook Security Best Practices](https://hookdeck.com/webhooks/guides/webhook-security-vulnerabilities-guide)
 

@@ -33,7 +33,7 @@ def update_model_references(file_path: str):
 
     for old_model, new_model in MODEL_MIGRATIONS.items():
         # Match model in strings
-        pattern = rf'["\']({re.escape(old_model)})["\']'
+        pattern = rf'"\'})["\']'
         content = re.sub(pattern, f'"{new_model}"', content)
 
     with open(file_path, 'w') as f:

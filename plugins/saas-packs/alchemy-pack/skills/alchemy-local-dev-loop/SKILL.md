@@ -152,7 +152,7 @@ describe('Mainnet Fork Tests', () => {
 
 ## Resources
 
-- [Hardhat Alchemy Guide](https://hardhat.org/hardhat-runner/docs/guides/forking-other-networks)
+- Hardhat Alchemy Guide
 - [Alchemy Sepolia Faucet](https://sepoliafaucet.com)
 - [Alchemy Docs](https://www.alchemy.com/docs)
 

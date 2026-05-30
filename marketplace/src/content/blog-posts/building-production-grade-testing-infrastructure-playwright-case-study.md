@@ -633,4 +633,4 @@ This testing infrastructure was built for the [HUSTLE survey system](https://int
 
 **View the implementation**: [GitHub Repository](https://github.com/jeremylongshore/intent-solutions-landing)
 
-**Connect on LinkedIn**: Let's discuss testing strategies for your projects - [linkedin.com/in/jeremylongshore](https://linkedin.com/in/jeremylongshore)
+**Connect on LinkedIn**: Let's discuss testing strategies for your projects - linkedin.com/in/jeremylongshore

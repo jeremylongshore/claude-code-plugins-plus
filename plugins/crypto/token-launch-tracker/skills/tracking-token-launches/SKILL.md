@@ -180,6 +180,6 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples including
 ## Resources
 
 - [Uniswap V2 Factory](https://docs.uniswap.org/contracts/v2/reference/smart-contracts/factory)
-- [PancakeSwap Factory](https://docs.pancakeswap.finance/developers/smart-contracts)
+- PancakeSwap Factory
 - [DEXScreener](https://dexscreener.com/) - Real-time pair data
 - [Etherscan API](https://docs.etherscan.io/) - Contract verification

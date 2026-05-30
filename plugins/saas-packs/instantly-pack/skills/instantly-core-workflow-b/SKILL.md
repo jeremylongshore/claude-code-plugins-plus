@@ -238,8 +238,8 @@ async function testAccountVitals(emails: string[]) {
 ## Resources
 
 - [Instantly Email Warmup](https://instantly.ai/email-warmup)
-- [Account Endpoints](https://developer.instantly.ai/api/v2/account)
-- [Analytics Endpoints](https://developer.instantly.ai/api/v2/analytics)
+- Account Endpoints
+- Analytics Endpoints
 
 ## Next Steps
 

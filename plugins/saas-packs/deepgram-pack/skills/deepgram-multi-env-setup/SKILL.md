@@ -334,6 +334,6 @@ async function validateEnvironments() {
 
 ## Resources
 
-- [Deepgram Projects](https://developers.deepgram.com/docs/projects)
-- [API Key Management](https://developers.deepgram.com/docs/api-key-management)
+- Deepgram Projects
+- API Key Management
 - [Kustomize](https://kustomize.io/)

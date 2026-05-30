@@ -83,7 +83,7 @@ probes internal services:
 | `http://metadata.google.internal/` | GCP instance metadata |
 | `http://169.254.169.254/metadata/instance?api-version=2021-02-01` | Azure instance metadata |
 | `http://127.0.0.1:6379/` | Local Redis |
-| `file:///etc/passwd` | Local filesystem |
+| ` | Local filesystem |
 | `ftp://internal-share.corp/` | Internal FTP |
 
 The defense is a Pydantic validator on every URL-accepting tool:

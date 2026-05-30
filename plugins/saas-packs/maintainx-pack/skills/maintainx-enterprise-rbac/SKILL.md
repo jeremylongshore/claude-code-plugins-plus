@@ -240,7 +240,7 @@ function logAccess(auth: AuthContext, resource: string, action: string, result: 
 
 - [MaintainX Enterprise](https://www.getmaintainx.com/enterprise)
 - [OWASP Access Control Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Access_Control_Cheat_Sheet.html)
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- MaintainX API Reference
 
 ## Next Steps
 

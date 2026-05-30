@@ -255,7 +255,7 @@ Enterprise plans support SSO (SAML 2.0) for team authentication.
 ## Resources
 
 - [API Keys Guide](https://www.algolia.com/doc/guides/security/api-keys/)
-- [Secured API Keys](https://www.algolia.com/doc/guides/security/api-keys/in-depth/secured-api-keys/)
+- Secured API Keys
 - [Team Management](https://www.algolia.com/doc/guides/security/api-keys/in-depth/api-key-restrictions/)
 - [Enterprise SSO](https://www.algolia.com/enterprise/)
 

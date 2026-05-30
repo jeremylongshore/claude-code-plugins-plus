@@ -191,7 +191,7 @@ describe('Bright Data Scraper', () => {
 
 ## Resources
 
-- [Bright Data Proxy Docs](https://docs.brightdata.com/general/account/proxy-infrastructure)
+- Bright Data Proxy Docs
 - [Vitest Documentation](https://vitest.dev/)
 - [tsx Documentation](https://github.com/esbuild-kit/tsx)
 

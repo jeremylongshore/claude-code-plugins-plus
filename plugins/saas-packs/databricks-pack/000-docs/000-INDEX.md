@@ -32,7 +32,7 @@
 | 007 | `007-AT-ADEC-databricks-v2-cto-decision.md` | Decision record: pack handling (v2.0.0 + deprecation lane), 5-skill scope, pilot, timing, demo arc |
 | 013 | `013-AT-ADEC-epic1-mcp-scope-adjustment.md` | Epic 1 scope cut: drop T4/T5/T9 (subsumed by Databricks managed SQL MCP), expand T2 (3 auth flows), add T13 (App mode) + T14 (dual-surface helpers). Grounded in 010/011/012. |
 
-**Repo-wide impact (filed at root):** Claude Code platform changelog impact lives in `/home/jeremy/000-projects/claude-code-plugins/000-docs/681-AT-ADEC-claude-code-platform-changelog-impact-2026-05-27.md` — affects validators, schema versioning, skill-creator, MCP validators, hook docs, the existing 414+ plugins, AND this databricks-pack rebuild as one downstream consumer.
+**Repo-wide impact (filed at root):** Claude Code platform changelog impact lives in ` — affects validators, schema versioning, skill-creator, MCP validators, hook docs, the existing 414+ plugins, AND this databricks-pack rebuild as one downstream consumer.
 
 ## RA — Reports & Analysis
 

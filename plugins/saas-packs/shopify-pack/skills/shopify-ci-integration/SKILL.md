@@ -88,6 +88,6 @@ See [Integration Test Structure](references/integration-test-structure.md) for t
 
 ## Resources
 
-- [Shopify CLI for CI/CD](https://shopify.dev/docs/apps/build/cli-for-apps/ci-cd)
+- Shopify CLI for CI/CD
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Shopify App Deployment](https://shopify.dev/docs/apps/build/cli-for-apps/deploy)
+- Shopify App Deployment

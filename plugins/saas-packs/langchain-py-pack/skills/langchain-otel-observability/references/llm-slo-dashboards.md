@@ -197,5 +197,5 @@ exporters can only head-sample.
 ## Sources
 
 - Google SRE Workbook: Alerting on SLOs — https://sre.google/workbook/alerting-on-slos/
-- Honeycomb query language — https://docs.honeycomb.io/reference/api/query-specification/
+- Honeycomb query language —
 - OTEL Collector tail sampling — https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/tailsamplingprocessor

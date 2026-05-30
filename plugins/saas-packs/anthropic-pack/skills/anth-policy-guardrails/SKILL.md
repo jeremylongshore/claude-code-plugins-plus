@@ -160,7 +160,7 @@ def enforce_model_policy(user_tier: str, requested_model: str) -> str:
 
 ## Resources
 
-- [Anthropic Usage Policy](https://www.anthropic.com/usage-policy)
+- Anthropic Usage Policy
 - [Prompt Engineering](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering)
 
 ## Next Steps

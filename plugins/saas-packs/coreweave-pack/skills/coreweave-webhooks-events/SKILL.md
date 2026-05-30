@@ -125,7 +125,7 @@ async function handleIdempotent(event: { id: string; type: string; data: any }) 
 
 ## Resources
 
-- [CoreWeave Kubernetes Docs](https://docs.coreweave.com/coreweave-kubernetes/)
+- CoreWeave Kubernetes Docs
 
 ## Next Steps
 

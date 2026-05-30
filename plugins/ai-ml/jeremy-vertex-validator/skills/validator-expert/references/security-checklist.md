@@ -2,7 +2,7 @@
 
 Sources:
 
-- [Vertex AI Security Best Practices](https://cloud.google.com/vertex-ai/docs/security)
+- Vertex AI Security Best Practices
 - [Agent Identity for Agent Engine](https://cloud.google.com/agent-builder/agent-engine/agent-identity)
 - [Managing Access for Deployed Agents](https://cloud.google.com/agent-builder/agent-engine/manage/access)
 - [IAM Roles for Vertex AI](https://cloud.google.com/iam/docs/roles-permissions/aiplatform)
@@ -135,7 +135,7 @@ gcloud model-armor templates sanitize-user-prompt TEMPLATE_ID \
   --user-prompt-data='{"text":"prompt text here"}'
 ```
 
-Source: [Model Armor](https://cloud.google.com/vertex-ai/docs/generative-ai/model-armor) · [Model Armor IAM](https://cloud.google.com/iam/docs/roles-permissions/modelarmor)
+Source: Model Armor · [Model Armor IAM](https://cloud.google.com/iam/docs/roles-permissions/modelarmor)
 
 ---
 

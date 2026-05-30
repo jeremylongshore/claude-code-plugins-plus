@@ -385,7 +385,7 @@ export const budgetClient = new BudgetAwareApolloClient();
 
 - [Apollo Pricing](https://www.apollo.io/pricing)
 - [Apollo Credit System](https://knowledge.apollo.io/hc/en-us/articles/4415144183053)
-- [Usage Dashboard](https://app.apollo.io/settings/billing)
+- Usage Dashboard
 
 ## Next Steps
 

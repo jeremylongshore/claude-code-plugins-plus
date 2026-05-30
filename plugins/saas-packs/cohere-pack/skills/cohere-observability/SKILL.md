@@ -201,14 +201,7 @@ function logCohereCall(
   status: 'success' | 'error',
   meta?: Record<string, unknown>
 ) {
-  logger[status === 'error' ? 'error' : 'info']({
-    service: 'cohere',
-    endpoint,
-    model,
-    durationMs,
-    status,
-    ...meta,
-  });
+  loggerstatus === 'error' ? 'error' : 'info';
 }
 
 // Combined instrumentation

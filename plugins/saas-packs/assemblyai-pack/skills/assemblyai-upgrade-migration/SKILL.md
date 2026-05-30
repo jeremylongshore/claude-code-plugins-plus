@@ -211,7 +211,7 @@ verifyUpgrade().catch(console.error);
 ## Resources
 
 - [AssemblyAI Node SDK Releases](https://github.com/AssemblyAI/assemblyai-node-sdk/releases)
-- [AssemblyAI SDK Migration Guide](https://github.com/AssemblyAI/assemblyai-node-sdk/blob/main/MIGRATION.md)
+- AssemblyAI SDK Migration Guide
 - [AssemblyAI npm Package](https://www.npmjs.com/package/assemblyai)
 
 ## Next Steps

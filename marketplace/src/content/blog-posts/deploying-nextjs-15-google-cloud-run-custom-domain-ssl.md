@@ -566,9 +566,9 @@ The full runbook and all configuration files are in the project repository. Futu
 
 ## Related Posts
 
-- [Debugging Slack Integration: From 6 Duplicate Responses to Instant Acknowledgment](https://startaitools.com/posts/debugging-slack-integration-from-six-duplicate-responses-to-instant-acknowledgment/)
-- [Building a 254-Table BigQuery Schema in 72 Hours](https://startaitools.com/posts/building-254-table-bigquery-schema-72-hours/)
-- [Building Production Testing Suite with Playwright and GitHub Actions](https://startaitools.com/posts/building-production-testing-suite-playwright-github-actions-survey-automation/)
+- Debugging Slack Integration: From 6 Duplicate Responses to Instant Acknowledgment
+- Building a 254-Table BigQuery Schema in 72 Hours
+- Building Production Testing Suite with Playwright and GitHub Actions
 
 ## Links
 

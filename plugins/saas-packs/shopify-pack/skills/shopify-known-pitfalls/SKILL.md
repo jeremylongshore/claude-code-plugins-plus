@@ -111,7 +111,7 @@ See [Pitfall Scan Script](references/pitfall-scan-script.md) for the complete sc
 
 ## Resources
 
-- [Shopify App Requirements](https://shopify.dev/docs/apps/launch/app-requirements)
+- Shopify App Requirements
 - [GraphQL Migration Guide](https://shopify.dev/docs/apps/build/graphql/migrate/learn-how)
 - [2024-10 Breaking Changes](https://shopify.dev/docs/api/release-notes/2024-10)
 - [Webhook Best Practices](https://shopify.dev/docs/apps/build/webhooks)

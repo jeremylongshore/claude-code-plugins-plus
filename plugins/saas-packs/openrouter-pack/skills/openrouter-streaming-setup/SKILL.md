@@ -237,5 +237,5 @@ async def async_stream(messages, model="openai/gpt-4o-mini", **kwargs):
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
-- [Streaming](https://openrouter.ai/docs/features/streaming) | [API Reference](https://openrouter.ai/docs/api/reference/overview)
+- Examples | Errors
+- Streaming | [API Reference](https://openrouter.ai/docs/api/reference/overview)

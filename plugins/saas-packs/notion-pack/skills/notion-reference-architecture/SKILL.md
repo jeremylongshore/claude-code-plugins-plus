@@ -416,7 +416,7 @@ See [event-driven and testing reference](references/event-driven-and-testing.md)
 - [Block Types Reference](https://developers.notion.com/reference/block) — all supported content block types
 - [Authorization Guide](https://developers.notion.com/docs/authorization) — internal integrations and OAuth
 - [Status Page](https://status.notion.so) — check for Notion service degradation
-- [API Changelog](https://developers.notion.com/changelog) — breaking changes and new features
+- API Changelog — breaking changes and new features
 
 ## Next Steps
 

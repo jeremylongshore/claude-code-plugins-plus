@@ -105,4 +105,4 @@ curl -X POST http://localhost:3000/webhooks/gdpr/data-request \
 
 - [Shopify Privacy Law Compliance](https://shopify.dev/docs/apps/build/compliance/privacy-law-compliance)
 - [GDPR Webhook Requirements](https://shopify.dev/changelog/apps-now-need-to-use-gdpr-webhooks)
-- [Data Protection Best Practices](https://shopify.dev/docs/apps/build/compliance)
+- Data Protection Best Practices

@@ -127,7 +127,7 @@ from openbb import obb
 obb.user.credentials.alpha_vantage_api_key = "YOUR_FREE_KEY"
 
 # FRED (FREE, unlimited)
-# Get free key at: https://fred.stlouisfed.org/docs/api/api_key.html
+# Get free key at: /api_key.html
 obb.user.credentials.fred_api_key = "YOUR_FREE_KEY"
 
 # Save configuration
@@ -339,7 +339,7 @@ critical_data = obb.equity.price.historical(
 
 - **Yahoo Finance:** [finance.yahoo.com](https://finance.yahoo.com) (FREE forever)
 - **Alpha Vantage:** [alphavantage.co](https://www.alphavantage.co) (FREE tier)
-- **FRED API:** [fred.stlouisfed.org/docs/api](https://fred.stlouisfed.org/docs/api) (FREE)
+- **FRED API:** fred.stlouisfed.org/docs/api (FREE)
 - **CoinGecko:** [coingecko.com/api](https://www.coingecko.com/api) (FREE tier)
 - **OpenBB Docs:** [docs.openbb.co](https://docs.openbb.co/platform)
 
@@ -1150,7 +1150,7 @@ if inflation_yoy > 4.0:
 
 - **OpenBB Platform Docs**: https://docs.openbb.co/platform
 - **API Reference**: https://docs.openbb.co/platform/reference
-- **Data Providers**: https://docs.openbb.co/platform/data_providers
+- **Data Providers**:
 - **GitHub**: https://github.com/OpenBB-finance/OpenBB
 
 ---

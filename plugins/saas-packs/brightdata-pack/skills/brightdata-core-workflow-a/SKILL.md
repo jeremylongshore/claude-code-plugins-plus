@@ -183,7 +183,7 @@ async function scrapeWithPuppeteer(url: string) {
 
 ## Resources
 
-- [Scraping Browser Docs](https://docs.brightdata.com/scraping-automation/scraping-browser/overview)
+- Scraping Browser Docs
 - [Scraping Browser Code Examples](https://docs.brightdata.com/scraping-automation/scraping-browser/code-examples)
 - [Playwright CDP Docs](https://playwright.dev/docs/api/class-browsertype#browser-type-connect-over-cdp)
 

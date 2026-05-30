@@ -244,5 +244,5 @@ def enforce_model_policy(user_tier: str, requested_model: str) -> str:
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
+- Examples | Errors
 - [Key Provisioning](https://openrouter.ai/docs/guides/overview/auth/provisioning-api-keys) | [Auth API](https://openrouter.ai/docs/api/reference/authentication)

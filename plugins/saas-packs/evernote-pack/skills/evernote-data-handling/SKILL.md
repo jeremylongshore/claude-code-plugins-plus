@@ -107,10 +107,10 @@ For the complete data schema, sync manager, ENML processor, and export implement
 
 ## Resources
 
-- [Evernote Data Model](https://dev.evernote.com/doc/articles/data_model.php)
+- Evernote Data Model
 - [ENML Reference](https://dev.evernote.com/doc/articles/enml.php)
 - [Synchronization](https://dev.evernote.com/doc/articles/synchronization.php)
-- [ENEX Export Format](https://dev.evernote.com/doc/articles/enex.php)
+- ENEX Export Format
 
 ## Next Steps
 

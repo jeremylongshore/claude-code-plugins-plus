@@ -119,7 +119,7 @@ describe.skipIf(!hasToken)('Fly.io Live API', () => {
 
 ## Resources
 
-- [Fly.io GitHub Actions](https://fly.io/docs/launch/continuous-deployment/github-actions/)
+- Fly.io GitHub Actions
 - [Fly.io Machines API](https://fly.io/docs/machines/api/)
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 

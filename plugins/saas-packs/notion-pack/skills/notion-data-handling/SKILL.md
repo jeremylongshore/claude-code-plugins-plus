@@ -442,7 +442,7 @@ def export_user_data(user_id: str, db_ids: list[str]) -> dict:
 
 ## Resources
 
-- [GDPR Developer Guide](https://gdpr.eu/developers/) — key articles for data processors
+- GDPR Developer Guide — key articles for data processors
 - [Notion Page Properties Reference](https://developers.notion.com/reference/page-property-values) — all property types
 - [Database Query with filter_properties](https://developers.notion.com/reference/post-database-query) — data minimization
 - [CCPA Overview](https://oag.ca.gov/privacy/ccpa) — California Consumer Privacy Act requirements

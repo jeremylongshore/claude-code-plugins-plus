@@ -55,7 +55,7 @@ cat > ~/test-marketplace/.claude-plugin/marketplace.json << 'EOF'
   "owner": {"name": "Test"},
   "plugins": [{
     "name": "jeremy-firebase",
-    "source": "/home/jeremy/000-projects/claude-code-plugins/plugins/community/jeremy-firebase"
+    "source": ""
   }]
 }
 EOF

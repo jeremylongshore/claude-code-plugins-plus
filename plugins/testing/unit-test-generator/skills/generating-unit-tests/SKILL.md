@@ -128,4 +128,4 @@ class TestValidateEmail:
 - pytest documentation: https://docs.pytest.org/
 - JUnit 5 User Guide: https://junit.org/junit5/docs/current/user-guide/
 - Go testing package: https://pkg.go.dev/testing
-- AAA pattern (Arrange-Act-Assert): https://automationpanda.com/2020/07/07/arrange-act-assert-pattern-for-python-unit-tests/
+- AAA pattern (Arrange-Act-Assert):

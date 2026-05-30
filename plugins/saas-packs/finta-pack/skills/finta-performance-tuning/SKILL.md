@@ -109,7 +109,7 @@ function track(startMs: number, cached: boolean, error?: boolean) {
 
 ## Resources
 
-- [Finta Developer Docs](https://www.trustfinta.com/developers)
+- Finta Developer Docs
 - [Finta Blog](https://www.trustfinta.com/blog)
 
 ## Next Steps

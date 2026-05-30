@@ -255,7 +255,7 @@ function recommendPlan(usage: {
 
 ## Resources
 
-- [Webflow Pricing](https://webflow.com/pricing)
+- Webflow Pricing
 - [Content Delivery API](https://developers.webflow.com/data/docs/working-with-the-cms/content-delivery)
 - [Rate Limits](https://developers.webflow.com/data/reference/rate-limits)
 

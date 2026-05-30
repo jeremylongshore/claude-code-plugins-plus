@@ -121,10 +121,9 @@ function log(level: LogLevel, message: string, data?: Record<string, any>) {
 
   // JSON format for machine parsing, human-readable in dev
   if (IS_PROD) {
-    console[level === 'error' ? 'error' : 'log'](JSON.stringify(entry));
+    consolelevel === 'error' ? 'error' : 'log');
   } else {
-    console[level === 'error' ? 'error' : 'log'](
-      `[${level.toUpperCase()}] ${message}`,
+    consolelevel === 'error' ? 'error' : 'log'}] ${message}`,
       data || ''
     );
   }

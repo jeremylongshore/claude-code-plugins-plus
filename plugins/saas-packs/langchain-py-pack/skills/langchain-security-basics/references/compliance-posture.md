@@ -152,5 +152,5 @@ and legal basis support it.
 - [AICPA SOC2 Trust Services Criteria](https://www.aicpa-cima.com/resources/landing/system-and-organization-controls-soc-suite-of-services)
 - [Anthropic BAA program](https://www.anthropic.com/legal/commercial-terms) (verify current links)
 - [OpenAI Enterprise DPA](https://openai.com/policies/eu-data-processing-addendum)
-- [Google Cloud Vertex AI data governance](https://cloud.google.com/vertex-ai/docs/general/data-governance)
+- Google Cloud Vertex AI data governance
 - Pack pain catalog: P27, P65

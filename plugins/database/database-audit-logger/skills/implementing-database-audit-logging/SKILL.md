@@ -149,4 +149,4 @@ Implement database audit logging to track all data modifications (INSERT, UPDATE
 - pgAudit extension: https://www.pgaudit.org/
 - MySQL audit log plugin: https://dev.mysql.com/doc/refman/8.0/en/audit-log.html
 - GDPR data processing records: https://gdpr-info.eu/art-30-gdpr/
-- SOX compliance for databases: https://www.postgresql.org/docs/current/pgaudit.html
+- SOX compliance for databases:

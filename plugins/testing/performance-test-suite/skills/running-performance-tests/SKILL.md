@@ -145,4 +145,4 @@ scenarios:
 - Locust (Python): https://docs.locust.io/
 - Apache JMeter: https://jmeter.apache.org/
 - autocannon (Node.js): https://github.com/mcollina/autocannon
-- Performance testing best practices: https://grafana.com/blog/2024/01/30/load-testing-best-practices/
+- Performance testing best practices:

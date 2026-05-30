@@ -590,7 +590,7 @@ print(routed_complete("Analyze tradeoffs between microservices and monoliths"))
 
 - [OpenRouter Documentation](https://openrouter.ai/docs)
 - [OpenRouter Models](https://openrouter.ai/models)
-- [OpenRouter API Reference](https://openrouter.ai/docs/api-reference)
+- OpenRouter API Reference
 - [OpenRouter Status](https://status.openrouter.ai)
 
 ## Output
@@ -662,7 +662,7 @@ print(routed_complete("Analyze tradeoffs between microservices and monoliths"))
 
 - [OpenRouter Documentation](https://openrouter.ai/docs)
 - [OpenRouter Models](https://openrouter.ai/models)
-- [OpenRouter API Reference](https://openrouter.ai/docs/api-reference)
+- OpenRouter API Reference
 - [OpenRouter Status](https://status.openrouter.ai)
 
 ---

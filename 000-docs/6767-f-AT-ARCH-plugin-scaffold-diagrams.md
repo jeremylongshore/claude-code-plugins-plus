@@ -71,6 +71,7 @@
     - Violation: CRITICAL ERROR (various `PLUGIN_*`, `SKILL_*` codes)
 
 **VALIDATION**:
+
 - Validator runs in ENTERPRISE MODE ONLY
 - CRITICAL/HIGH errors BLOCK PR merge
 - Deterministic error codes (6767-d schema)
@@ -83,41 +84,41 @@
 
 ### 1.1 Directory Structure Rules
 
-| Rule | Constraint | Validator Check ID |
-|------|------------|-------------------|
-| `.claude-plugin/` MUST contain ONLY `plugin.json` | Exactly 1 file | `DIR_002` |
-| Plugin root MUST be parent of all component directories | skills/, agents/, commands/, hooks/, scripts/ at root | `DIR_004` |
-| No component directories inside `.claude-plugin/` | Components NOT in `.claude-plugin/` | `DIR_005` |
+| Rule                                                    | Constraint                                            | Validator Check ID |
+| ------------------------------------------------------- | ----------------------------------------------------- | ------------------ |
+| `.claude-plugin/` MUST contain ONLY `plugin.json`       | Exactly 1 file                                        | `DIR_002`          |
+| Plugin root MUST be parent of all component directories | skills/, agents/, commands/, hooks/, scripts/ at root | `DIR_004`          |
+| No component directories inside `.claude-plugin/`       | Components NOT in `.claude-plugin/`                   | `DIR_005`          |
 
 ### 1.2 Manifest Rules (plugin.json)
 
-| Rule | Constraint | Validator Check ID |
-|------|------------|-------------------|
-| `plugin.json.name` MUST be kebab-case | Pattern: `^[a-z0-9-]+$` | `PLUGIN_003` |
-| `plugin.json.name` MUST be ≤64 characters | Max length: 64 | `PLUGIN_005` |
-| `plugin.json.name` MUST NOT contain reserved substrings | Ban: "claude", "anthropic" | `PLUGIN_006` |
-| `plugin.json.version` MUST be SemVer | Pattern: `\d+\.\d+\.\d+` (MAJOR.MINOR.PATCH) | `PLUGIN_012` |
+| Rule                                                    | Constraint                                   | Validator Check ID |
+| ------------------------------------------------------- | -------------------------------------------- | ------------------ |
+| `plugin.json.name` MUST be kebab-case                   | Pattern: `^[a-z0-9-]+$`                      | `PLUGIN_003`       |
+| `plugin.json.name` MUST be ≤64 characters               | Max length: 64                               | `PLUGIN_005`       |
+| `plugin.json.name` MUST NOT contain reserved substrings | Ban: "claude", "anthropic"                   | `PLUGIN_006`       |
+| `plugin.json.version` MUST be SemVer                    | Pattern: `\d+\.\d+\.\d+` (MAJOR.MINOR.PATCH) | `PLUGIN_012`       |
 
 ### 1.3 Documentation Rules
 
-| Rule | Constraint | Validator Check ID |
-|------|------------|-------------------|
-| Any plugin docs MUST live in `<repo>/000-docs/` | Flat directory (no subdirs) | `DOC_001` |
-| `000-docs/` filenames MUST match pattern | `NNN-CC-ABCD-short-description.ext` | `DOC_002` |
+| Rule                                            | Constraint                          | Validator Check ID |
+| ----------------------------------------------- | ----------------------------------- | ------------------ |
+| Any plugin docs MUST live in `<repo>/000-docs/` | Flat directory (no subdirs)         | `DOC_001`          |
+| `000-docs/` filenames MUST match pattern        | `NNN-CC-ABCD-short-description.ext` | `DOC_002`          |
 
 ### 1.4 Portability Rules
 
-| Rule | Constraint | Validator Check ID |
-|------|------------|-------------------|
-| Paths in manifests MUST be relative to plugin root | No absolute paths | `SEC_005` |
-| Executed scripts MUST use `${CLAUDE_PLUGIN_ROOT}` | No `/home/...` paths | `SEC_005` |
+| Rule                                               | Constraint           | Validator Check ID |
+| -------------------------------------------------- | -------------------- | ------------------ |
+| Paths in manifests MUST be relative to plugin root | No absolute paths    | `SEC_005`          |
+| Executed scripts MUST use `${CLAUDE_PLUGIN_ROOT}`  | No `/home/...` paths | `SEC_005`          |
 
 ### 1.5 Context Hygiene Rules
 
-| Rule | Constraint | Validator Check ID |
-|------|------------|-------------------|
-| Projects MUST include `.claudeignore` | File exists at plugin root | (Future: `CONTEXT_001`) |
-| `.claudeignore` SHOULD be kept updated | Exclude build artifacts, data files | (Manual review) |
+| Rule                                   | Constraint                          | Validator Check ID      |
+| -------------------------------------- | ----------------------------------- | ----------------------- |
+| Projects MUST include `.claudeignore`  | File exists at plugin root          | (Future: `CONTEXT_001`) |
+| `.claudeignore` SHOULD be kept updated | Exclude build artifacts, data files | (Manual review)         |
 
 ---
 
@@ -134,6 +135,7 @@ my-plugin/                              ← Plugin root
 ```
 
 **Validator Checks**:
+
 - `DIR_001`: `.claude-plugin/` exists
 - `DIR_002`: `.claude-plugin/` contains ONLY `plugin.json`
 - `DIR_003`: `plugin.json` exists at correct path
@@ -175,6 +177,7 @@ my-plugin/                              ← Plugin root
 ```
 
 **Validator Checks** (per component):
+
 - Skills: `SKILL_001-104` (frontmatter, body, security, naming)
 - Agents: `AGENT_001-021` (frontmatter, naming)
 - Security: `SEC_001-006` (secrets, paths, Bash scoping)
@@ -190,21 +193,21 @@ my-plugin/                              ← Plugin root
 
 **Diagram Node → Validator Mapping**:
 
-| Node | Type | Validator Checks |
-|------|------|-----------------|
-| **PLUGIN ROOT** | Directory | Plugin root exists and is accessible |
-| **.claude-plugin/** | Directory (REQUIRED) | `DIR_001`: Directory exists |
-| **plugin.json** | File (REQUIRED) | `DIR_003`: File exists at correct path<br/>`PLUGIN_001-052`: All manifest checks |
-| **NO OTHER FILES** | Forbidden Zone | `DIR_002`: ONLY plugin.json allowed in `.claude-plugin/` |
-| **skills/** | Directory (OPTIONAL) | `SKILL_001-104`: All skill checks (if present) |
-| **agents/** | Directory (OPTIONAL) | `AGENT_001-021`: All agent checks (if present) |
-| **commands/** | Directory (OPTIONAL) | (No specific checks; files are simple prompts) |
-| **hooks/** | Directory (OPTIONAL) | (Validated via hooks.json schema) |
-| **scripts/** | Directory (OPTIONAL) | `SEC_005`: No absolute paths in scripts |
-| **README.md** | File (REQUIRED) | (No validator check; documentation requirement) |
-| **.claudeignore** | File (REQUIRED) | (Future: `CONTEXT_001`) |
-| **.mcp.json** | File (OPTIONAL) | (Validated via MCP schema) |
-| **000-docs/** | Directory (OPTIONAL) | `DOC_001-006`: Doc filing compliance (if present) |
+| Node                | Type                 | Validator Checks                                                                 |
+| ------------------- | -------------------- | -------------------------------------------------------------------------------- |
+| **PLUGIN ROOT**     | Directory            | Plugin root exists and is accessible                                             |
+| **.claude-plugin/** | Directory (REQUIRED) | `DIR_001`: Directory exists                                                      |
+| **plugin.json**     | File (REQUIRED)      | `DIR_003`: File exists at correct path<br/>`PLUGIN_001-052`: All manifest checks |
+| **NO OTHER FILES**  | Forbidden Zone       | `DIR_002`: ONLY plugin.json allowed in `.claude-plugin/`                         |
+| **skills/**         | Directory (OPTIONAL) | `SKILL_001-104`: All skill checks (if present)                                   |
+| **agents/**         | Directory (OPTIONAL) | `AGENT_001-021`: All agent checks (if present)                                   |
+| **commands/**       | Directory (OPTIONAL) | (No specific checks; files are simple prompts)                                   |
+| **hooks/**          | Directory (OPTIONAL) | (Validated via hooks.json schema)                                                |
+| **scripts/**        | Directory (OPTIONAL) | `SEC_005`: No absolute paths in scripts                                          |
+| **README.md**       | File (REQUIRED)      | (No validator check; documentation requirement)                                  |
+| **.claudeignore**   | File (REQUIRED)      | (Future: `CONTEXT_001`)                                                          |
+| **.mcp.json**       | File (OPTIONAL)      | (Validated via MCP schema)                                                       |
+| **000-docs/**       | Directory (OPTIONAL) | `DOC_001-006`: Doc filing compliance (if present)                                |
 
 ### 3.2 Router → Skill → Script Control Loop
 
@@ -212,13 +215,13 @@ my-plugin/                              ← Plugin root
 
 **Diagram Step → Validator Mapping**:
 
-| Step | Validator Check | Check ID |
-|------|----------------|----------|
+| Step                     | Validator Check                            | Check ID                                         |
+| ------------------------ | ------------------------------------------ | ------------------------------------------------ |
 | **Router matches skill** | Skill name/description valid, discoverable | `SKILL_002-016` (name, description requirements) |
-| **Load SKILL.md body** | Body ≤5,000 words, ≤500 lines | `SKILL_100-102` |
-| **Read files** | No absolute paths in skill body | `SKILL_103` |
-| **Execute script** | Script path uses `${CLAUDE_PLUGIN_ROOT}` | `SEC_005` |
-| **Format output** | (No validator check; runtime behavior) | N/A |
+| **Load SKILL.md body**   | Body ≤5,000 words, ≤500 lines              | `SKILL_100-102`                                  |
+| **Read files**           | No absolute paths in skill body            | `SKILL_103`                                      |
+| **Execute script**       | Script path uses `${CLAUDE_PLUGIN_ROOT}`   | `SEC_005`                                        |
+| **Format output**        | (No validator check; runtime behavior)     | N/A                                              |
 
 ### 3.3 Path Resolution Diagram (Portable vs Broken)
 
@@ -226,12 +229,12 @@ my-plugin/                              ← Plugin root
 
 **Diagram Path → Validator Mapping**:
 
-| Path Pattern | Status | Validator Check | Check ID |
-|--------------|--------|----------------|----------|
-| `/home/jeremy/...` | ❌ FORBIDDEN | Absolute path detected | `SEC_005` |
-| `../../../...` | ❌ FORBIDDEN | Path traversal detected | `SEC_005` |
-| `${CLAUDE_PLUGIN_ROOT}/...` | ✅ ALLOWED | Portable environment variable | (Passes) |
-| `./relative/path` | ✅ ALLOWED | Relative to plugin root | (Passes) |
+| Path Pattern                | Status       | Validator Check               | Check ID  |
+| --------------------------- | ------------ | ----------------------------- | --------- |
+| `                           | ❌ FORBIDDEN | Absolute path detected        | `SEC_005` |
+| `../../../...`              | ❌ FORBIDDEN | Path traversal detected       | `SEC_005` |
+| `${CLAUDE_PLUGIN_ROOT}/...` | ✅ ALLOWED   | Portable environment variable | (Passes)  |
+| `./relative/path`           | ✅ ALLOWED   | Relative to plugin root       | (Passes)  |
 
 ---
 
@@ -241,66 +244,66 @@ my-plugin/                              ← Plugin root
 
 **Check Category**: `PLUGIN_*`
 
-| Check ID | Severity | Rule | Expected | Error Message |
-|----------|----------|------|----------|---------------|
-| `PLUGIN_001` | CRITICAL | plugin.json type is object | JSON object | "plugin.json must be a valid JSON object" |
-| `PLUGIN_002` | CRITICAL | name field present | String field "name" | "plugin.json missing required field: name" |
-| `PLUGIN_003` | CRITICAL | name pattern | `^[a-z0-9-]+$` | "name must be kebab-case (lowercase, hyphens only)" |
-| `PLUGIN_004` | CRITICAL | name min length | ≥1 character | "name must not be empty" |
-| `PLUGIN_005` | CRITICAL | name max length | ≤64 characters | "name must be ≤64 characters (found: {actual})" |
-| `PLUGIN_006` | CRITICAL | name reserved words | No "claude" or "anthropic" | "name must not contain reserved words: {words}" |
-| `PLUGIN_011` | CRITICAL | version field present | String field "version" | "plugin.json missing required field: version" |
-| `PLUGIN_012` | CRITICAL | version pattern | `^\d+\.\d+\.\d+$` | "version must be SemVer MAJOR.MINOR.PATCH (found: {actual})" |
-| `PLUGIN_021` | CRITICAL | description field present | String field "description" | "plugin.json missing required field: description" |
-| `PLUGIN_023` | HIGH | description max length | ≤1024 characters | "description must be ≤1024 characters" |
-| `PLUGIN_031` | CRITICAL | author field present | Object field "author" | "plugin.json missing required field: author" |
-| `PLUGIN_032` | CRITICAL | author.name and author.email present | Subfields exist | "author must have 'name' and 'email' fields" |
-| `PLUGIN_034` | CRITICAL | author.email format | Valid email pattern | "author.email must be valid email format" |
-| `PLUGIN_041` | CRITICAL | license field present | String field "license" | "plugin.json missing required field: license" |
-| `PLUGIN_051` | CRITICAL | keywords field present | Array field "keywords" | "plugin.json missing required field: keywords" |
-| `PLUGIN_052` | CRITICAL | keywords min items | ≥1 item in array | "keywords must have at least 1 item" |
+| Check ID     | Severity | Rule                                 | Expected                   | Error Message                                                |
+| ------------ | -------- | ------------------------------------ | -------------------------- | ------------------------------------------------------------ |
+| `PLUGIN_001` | CRITICAL | plugin.json type is object           | JSON object                | "plugin.json must be a valid JSON object"                    |
+| `PLUGIN_002` | CRITICAL | name field present                   | String field "name"        | "plugin.json missing required field: name"                   |
+| `PLUGIN_003` | CRITICAL | name pattern                         | `^[a-z0-9-]+$`             | "name must be kebab-case (lowercase, hyphens only)"          |
+| `PLUGIN_004` | CRITICAL | name min length                      | ≥1 character               | "name must not be empty"                                     |
+| `PLUGIN_005` | CRITICAL | name max length                      | ≤64 characters             | "name must be ≤64 characters (found: {actual})"              |
+| `PLUGIN_006` | CRITICAL | name reserved words                  | No "claude" or "anthropic" | "name must not contain reserved words: {words}"              |
+| `PLUGIN_011` | CRITICAL | version field present                | String field "version"     | "plugin.json missing required field: version"                |
+| `PLUGIN_012` | CRITICAL | version pattern                      | `^\d+\.\d+\.\d+$`          | "version must be SemVer MAJOR.MINOR.PATCH (found: {actual})" |
+| `PLUGIN_021` | CRITICAL | description field present            | String field "description" | "plugin.json missing required field: description"            |
+| `PLUGIN_023` | HIGH     | description max length               | ≤1024 characters           | "description must be ≤1024 characters"                       |
+| `PLUGIN_031` | CRITICAL | author field present                 | Object field "author"      | "plugin.json missing required field: author"                 |
+| `PLUGIN_032` | CRITICAL | author.name and author.email present | Subfields exist            | "author must have 'name' and 'email' fields"                 |
+| `PLUGIN_034` | CRITICAL | author.email format                  | Valid email pattern        | "author.email must be valid email format"                    |
+| `PLUGIN_041` | CRITICAL | license field present                | String field "license"     | "plugin.json missing required field: license"                |
+| `PLUGIN_051` | CRITICAL | keywords field present               | Array field "keywords"     | "plugin.json missing required field: keywords"               |
+| `PLUGIN_052` | CRITICAL | keywords min items                   | ≥1 item in array           | "keywords must have at least 1 item"                         |
 
 ### 4.2 Directory Structure Validation
 
 **Check Category**: `DIR_*`
 
-| Check ID | Severity | Rule | Expected | Error Message |
-|----------|----------|------|----------|---------------|
-| `DIR_001` | CRITICAL | .claude-plugin/ exists | Directory present | ".claude-plugin/ directory not found" |
-| `DIR_002` | CRITICAL | .claude-plugin/ contains ONLY plugin.json | Exactly 1 file | ".claude-plugin/ must contain ONLY plugin.json (found: {files})" |
-| `DIR_003` | CRITICAL | plugin.json exists | File at `.claude-plugin/plugin.json` | "plugin.json not found at .claude-plugin/plugin.json" |
-| `DIR_004` | CRITICAL | Components at plugin root | skills/, agents/, etc. at root | "Component directory {name}/ must be at plugin root, not inside .claude-plugin/" |
-| `DIR_005` | CRITICAL | No components inside .claude-plugin/ | Empty except plugin.json | "Component directory {name}/ found inside .claude-plugin/ (FORBIDDEN)" |
-| `DIR_006` | MEDIUM | No empty directories | All directories have content | "Empty directory found: {path} (remove or populate)" |
+| Check ID  | Severity | Rule                                      | Expected                             | Error Message                                                                    |
+| --------- | -------- | ----------------------------------------- | ------------------------------------ | -------------------------------------------------------------------------------- |
+| `DIR_001` | CRITICAL | .claude-plugin/ exists                    | Directory present                    | ".claude-plugin/ directory not found"                                            |
+| `DIR_002` | CRITICAL | .claude-plugin/ contains ONLY plugin.json | Exactly 1 file                       | ".claude-plugin/ must contain ONLY plugin.json (found: {files})"                 |
+| `DIR_003` | CRITICAL | plugin.json exists                        | File at `.claude-plugin/plugin.json` | "plugin.json not found at .claude-plugin/plugin.json"                            |
+| `DIR_004` | CRITICAL | Components at plugin root                 | skills/, agents/, etc. at root       | "Component directory {name}/ must be at plugin root, not inside .claude-plugin/" |
+| `DIR_005` | CRITICAL | No components inside .claude-plugin/      | Empty except plugin.json             | "Component directory {name}/ found inside .claude-plugin/ (FORBIDDEN)"           |
+| `DIR_006` | MEDIUM   | No empty directories                      | All directories have content         | "Empty directory found: {path} (remove or populate)"                             |
 
 ### 4.3 Path Validation
 
 **Check Category**: `SEC_*`
 
-| Check ID | Severity | Rule | Expected | Error Message |
-|----------|----------|------|----------|---------------|
+| Check ID  | Severity | Rule              | Expected                                  | Error Message                                                                  |
+| --------- | -------- | ----------------- | ----------------------------------------- | ------------------------------------------------------------------------------ |
 | `SEC_005` | CRITICAL | No absolute paths | Relative paths or `${CLAUDE_PLUGIN_ROOT}` | "Absolute path detected: {path} (use ${CLAUDE_PLUGIN_ROOT} or relative paths)" |
 
 ### 4.4 Document Filing Validation (if 000-docs/ present)
 
 **Check Category**: `DOC_*`
 
-| Check ID | Severity | Rule | Expected | Error Message |
-|----------|----------|------|----------|---------------|
-| `DOC_001` | CRITICAL | 000-docs/ is flat | No subdirectories | "000-docs/ must be flat (found subdirectory: {name})" |
-| `DOC_002` | CRITICAL | Filename pattern | `NNN-CC-ABCD-short-description.ext` | "Invalid filename pattern: {filename}" |
-| `DOC_003` | CRITICAL | NNN uniqueness | No duplicate NNN | "Duplicate NNN found: {nnn} (files: {files})" |
-| `DOC_004` | CRITICAL | CC code valid | From master table | "Invalid CC code: {cc}" |
-| `DOC_005` | CRITICAL | ABCD valid for CC | Correct ABCD for CC | "Invalid ABCD '{abcd}' for CC '{cc}'" |
-| `DOC_006` | HIGH | Short description format | 1-4 words, kebab-case | "Description must be 1-4 words, kebab-case" |
+| Check ID  | Severity | Rule                     | Expected                            | Error Message                                         |
+| --------- | -------- | ------------------------ | ----------------------------------- | ----------------------------------------------------- |
+| `DOC_001` | CRITICAL | 000-docs/ is flat        | No subdirectories                   | "000-docs/ must be flat (found subdirectory: {name})" |
+| `DOC_002` | CRITICAL | Filename pattern         | `NNN-CC-ABCD-short-description.ext` | "Invalid filename pattern: {filename}"                |
+| `DOC_003` | CRITICAL | NNN uniqueness           | No duplicate NNN                    | "Duplicate NNN found: {nnn} (files: {files})"         |
+| `DOC_004` | CRITICAL | CC code valid            | From master table                   | "Invalid CC code: {cc}"                               |
+| `DOC_005` | CRITICAL | ABCD valid for CC        | Correct ABCD for CC                 | "Invalid ABCD '{abcd}' for CC '{cc}'"                 |
+| `DOC_006` | HIGH     | Short description format | 1-4 words, kebab-case               | "Description must be 1-4 words, kebab-case"           |
 
 ### 4.5 CI Workflow Validation (Recommended)
 
 **Check Category**: (Future: `CI_*`)
 
-| Check | Status | Recommendation |
-|-------|--------|----------------|
-| PR workflow exists | RECOMMENDED | `.github/workflows/pr.yml` should validate on PRs |
+| Check                | Status      | Recommendation                                       |
+| -------------------- | ----------- | ---------------------------------------------------- |
+| PR workflow exists   | RECOMMENDED | `.github/workflows/pr.yml` should validate on PRs    |
 | Main workflow exists | RECOMMENDED | `.github/workflows/main.yml` should validate on main |
 
 ---
@@ -335,6 +338,7 @@ my-plugin/                              ← Plugin root
 **Validator Result**: ✅ **PASS** (all enterprise requirements met)
 
 **Passing Checks**:
+
 - ✅ `PLUGIN_003`: name is kebab-case
 - ✅ `PLUGIN_005`: name ≤64 chars (18 chars)
 - ✅ `PLUGIN_006`: no reserved words
@@ -367,7 +371,7 @@ my-plugin/                              ← Plugin root
 2. ❌ `PLUGIN_006`: name contains reserved word "claude"
    - **Expected**: No "claude" or "anthropic" in name
    - **Actual**: Starts with "Claude"
-   - **Fix**: Remove "Claude_" prefix
+   - **Fix**: Remove "Claude\_" prefix
 
 3. ❌ `PLUGIN_012`: version must be SemVer MAJOR.MINOR.PATCH
    - **Expected**: `^\d+\.\d+\.\d+$`
@@ -396,6 +400,7 @@ my-plugin/                              ← Plugin root
 ### 6.1 "Command not found" due to wrong paths
 
 **Symptom**:
+
 ```
 Error: python: command not found
 File: ${CLAUDE_PLUGIN_ROOT}/bin/server.py
@@ -404,17 +409,21 @@ File: ${CLAUDE_PLUGIN_ROOT}/bin/server.py
 **Cause**: Script path is correct but script is not executable OR dependencies not installed.
 
 **Recovery**:
+
 1. **Make script executable**:
+
    ```bash
    chmod +x bin/server.py
    ```
 
 2. **Verify shebang**:
+
    ```python
    #!/usr/bin/env python3
    ```
 
 3. **Install dependencies**:
+
    ```bash
    cd ${CLAUDE_PLUGIN_ROOT}
    pip install -r requirements.txt
@@ -433,8 +442,9 @@ File: ${CLAUDE_PLUGIN_ROOT}/bin/server.py
 ### 6.2 "Permission denied" from parent dir access
 
 **Symptom**:
+
 ```
-PermissionError: [Errno 13] Permission denied: '/home/jeremy/projects/../../etc/passwd'
+PermissionError: [Errno 13] Permission denied: ''
 ```
 
 **Cause**: Script uses path traversal (`../`) to access parent directories.
@@ -442,12 +452,15 @@ PermissionError: [Errno 13] Permission denied: '/home/jeremy/projects/../../etc/
 **Root Cause**: Violates `SEC_005` (path traversal forbidden).
 
 **Recovery**:
+
 1. **Identify violating path**:
+
    ```bash
    grep -r '\.\./\.\.' .
    ```
 
 2. **Fix paths** (use `${CLAUDE_PLUGIN_ROOT}` instead):
+
    ```python
    # ❌ BAD
    config_path = "../../config/settings.json"
@@ -474,17 +487,21 @@ PermissionError: [Errno 13] Permission denied: '/home/jeremy/projects/../../etc/
 **Cause**: Description is too generic; lacks "Use when..." clause or trigger phrases.
 
 **Example (Bad)**:
+
 ```yaml
-description: "Data processing tool"
+description: 'Data processing tool'
 ```
 
 **Why it fails**:
+
 - No "Use when..." clause
 - No trigger phrases
 - Too vague (what kind of data? what processing?)
 
 **Recovery**:
+
 1. **Add "Use when" clause**:
+
    ```yaml
    description: "Process CSV files with statistical analysis and generate reports. Use when user uploads CSV data or requests statistical summaries, trend analysis, or data visualization. Trigger with 'analyze csv', 'process data file', or 'generate statistics'."
    ```
@@ -504,6 +521,7 @@ description: "Data processing tool"
    ```
 
 **Validator Checks**:
+
 - `SKILL_015`: Must contain "Use when" (case-insensitive)
 - `SKILL_016`: Must contain trigger phrases
 
@@ -512,6 +530,7 @@ description: "Data processing tool"
 ### 6.4 "CRITICAL: .claude-plugin/ contains extra files"
 
 **Symptom**:
+
 ```
 [CRITICAL] DIR_002
   Expected: ONLY plugin.json in .claude-plugin/
@@ -522,7 +541,9 @@ description: "Data processing tool"
 **Cause**: Components or docs placed inside `.claude-plugin/` instead of plugin root.
 
 **Recovery**:
+
 1. **Move components to root**:
+
    ```bash
    # If you have skills in .claude-plugin/
    mv .claude-plugin/skills/ ./
@@ -532,6 +553,7 @@ description: "Data processing tool"
    ```
 
 2. **Remove extra files**:
+
    ```bash
    cd .claude-plugin
    ls -a
@@ -554,28 +576,28 @@ description: "Data processing tool"
 
 ### 7.1 All Check IDs by Category
 
-| Category | Check ID Range | Count | Severity Range |
-|----------|---------------|-------|----------------|
-| **Plugin Manifest** | `PLUGIN_001-052` | 15+ | CRITICAL - HIGH |
-| **Directory Structure** | `DIR_001-006` | 6 | CRITICAL - MEDIUM |
-| **Skills** | `SKILL_001-104` | 30+ | CRITICAL - MEDIUM |
-| **Agents** | `AGENT_001-021` | 6+ | CRITICAL - HIGH |
-| **Security** | `SEC_001-006` | 6 | CRITICAL |
-| **Naming** | `NAMING_001-005` | 5 | CRITICAL - HIGH |
-| **Documentation** | `DOC_001-006` | 6 | CRITICAL - HIGH |
+| Category                | Check ID Range   | Count | Severity Range    |
+| ----------------------- | ---------------- | ----- | ----------------- |
+| **Plugin Manifest**     | `PLUGIN_001-052` | 15+   | CRITICAL - HIGH   |
+| **Directory Structure** | `DIR_001-006`    | 6     | CRITICAL - MEDIUM |
+| **Skills**              | `SKILL_001-104`  | 30+   | CRITICAL - MEDIUM |
+| **Agents**              | `AGENT_001-021`  | 6+    | CRITICAL - HIGH   |
+| **Security**            | `SEC_001-006`    | 6     | CRITICAL          |
+| **Naming**              | `NAMING_001-005` | 5     | CRITICAL - HIGH   |
+| **Documentation**       | `DOC_001-006`    | 6     | CRITICAL - HIGH   |
 
 ### 7.2 Critical Path Checks (Must Pass for PR Merge)
 
-| Check ID | Rule | Impact if Failed |
-|----------|------|------------------|
-| `DIR_002` | .claude-plugin/ ONLY plugin.json | Plugin won't load |
-| `PLUGIN_003` | name kebab-case | Marketplace rejection |
-| `PLUGIN_006` | No reserved words | Marketplace rejection |
-| `PLUGIN_012` | version SemVer | Marketplace rejection |
-| `PLUGIN_032` | author complete | Marketplace rejection |
-| `SKILL_022` | allowed-tools CSV string | Skill won't authorize tools |
-| `SKILL_024` | Bash scoped | Security vulnerability |
-| `SEC_005` | No absolute paths | Portability broken |
+| Check ID     | Rule                             | Impact if Failed            |
+| ------------ | -------------------------------- | --------------------------- |
+| `DIR_002`    | .claude-plugin/ ONLY plugin.json | Plugin won't load           |
+| `PLUGIN_003` | name kebab-case                  | Marketplace rejection       |
+| `PLUGIN_006` | No reserved words                | Marketplace rejection       |
+| `PLUGIN_012` | version SemVer                   | Marketplace rejection       |
+| `PLUGIN_032` | author complete                  | Marketplace rejection       |
+| `SKILL_022`  | allowed-tools CSV string         | Skill won't authorize tools |
+| `SKILL_024`  | Bash scoped                      | Security vulnerability      |
+| `SEC_005`    | No absolute paths                | Portability broken          |
 
 ---
 

@@ -1004,8 +1004,8 @@ await breaker.execute(() =&gt; fallback());
 <p><strong>MCP SDK</strong>:</p>
 <pre><code class="language-bash">npm install @modelcontextprotocol/sdk</code></pre>
 <ul>
-<li><a href="https://spec.modelcontextprotocol.io/">MCP Specification</a></li>
-<li><a href="https://github.com/modelcontextprotocol/sdk">SDK Documentation</a></li>
+<li><a href="">MCP Specification</a></li>
+<li><a href="">SDK Documentation</a></li>
 <li><a href="https://docs.anthropic.com/claude/docs/model-context-protocol">Claude Code MCP Guide</a></li>
 </ul>
 

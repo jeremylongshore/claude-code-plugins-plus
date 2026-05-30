@@ -11,7 +11,7 @@ April 12th was a three-commit day across three repos. No new features. No archit
 
 ## The Missing Environment Variable
 
-The [braves](https://github.com/jeremylongshore/braves) broadcast dashboard uses Groq for LLM inference. Locally, everything worked. The `GROQ_API_KEY` env var was in my `.env` file, the Groq client initialized, responses came back fast. Ship it to Cloud Run. Deploy succeeds. Dashboard loads.
+The braves broadcast dashboard uses Groq for LLM inference. Locally, everything worked. The `GROQ_API_KEY` env var was in my `.env` file, the Groq client initialized, responses came back fast. Ship it to Cloud Run. Deploy succeeds. Dashboard loads.
 
 Then inference calls start falling back to Vertex AI.
 

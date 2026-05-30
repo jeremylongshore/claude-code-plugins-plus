@@ -644,7 +644,7 @@ class VersionCompatibilityTester {
 
     try {
       const response = await request(this.app)
-        [method.toLowerCase()](url)
+        method.toLowerCase()
         .send(testCase.payload || {})
         .set('Accept', `application/vnd.api.${version}+json`)
         .expect(testCase.expectedStatus || 200);

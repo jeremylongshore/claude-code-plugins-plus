@@ -108,7 +108,7 @@ class LucidchartCostMonitor {
 
 ## Resources
 
-- [Lucidchart Pricing](https://www.lucidchart.com/pages/pricing)
+- Lucidchart Pricing
 - [Lucid Developer Portal](https://developer.lucid.co/reference/overview)
 
 ## Next Steps

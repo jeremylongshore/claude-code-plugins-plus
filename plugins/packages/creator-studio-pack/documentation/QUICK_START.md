@@ -463,7 +463,7 @@ Ready for more? See:
 
 - [Complete Workflows](WORKFLOWS.md) - Advanced production flows
 - [50+ Examples](EXAMPLES.md) - Real-world use cases
-- [Integration Guide](INTEGRATION.md) - DaVinci, YouTube, Twitter APIs
+- Integration Guide - DaVinci, YouTube, Twitter APIs
 
 ---
 

@@ -10,7 +10,7 @@ This repository contains **220+ plugins** across **13 categories** for Claude Co
 ## Plugin Categories
 
 ### 1. DevOps (26 plugins)
-Location: `/home/jeremy/projects/claude-code-plugins/plugins/devops/`
+Location: `
 
 **Core Infrastructure:**
 - docker-compose-generator
@@ -53,7 +53,7 @@ Location: `/home/jeremy/projects/claude-code-plugins/plugins/devops/`
 - git-commit-smart (featured)
 
 ### 2. AI/ML Data Science (25 plugins)
-Location: `/home/jeremy/projects/claude-code-plugins/plugins/ai-ml/`
+Location: `
 
 **Model Development:**
 - ml-model-trainer
@@ -93,7 +93,7 @@ Location: `/home/jeremy/projects/claude-code-plugins/plugins/ai-ml/`
 - ai-ethics-validator
 
 ### 3. API Development (25 plugins)
-Location: `/home/jeremy/projects/claude-code-plugins/plugins/api-development/`
+Location: `
 
 **API Generation:**
 - rest-api-generator (featured)
@@ -133,7 +133,7 @@ Location: `/home/jeremy/projects/claude-code-plugins/plugins/api-development/`
 - api-migration-tool
 
 ### 4. Testing (25 plugins)
-Location: `/home/jeremy/projects/claude-code-plugins/plugins/testing/`
+Location: `
 
 **Test Types:**
 - snapshot-test-manager
@@ -159,7 +159,7 @@ Location: `/home/jeremy/projects/claude-code-plugins/plugins/testing/`
 - test-report-generator
 
 ### 5. Security (25 plugins)
-Location: `/home/jeremy/projects/claude-code-plugins/plugins/security/`
+Location: `
 
 **Vulnerability Scanning:**
 - dependency-vulnerability-scanner
@@ -184,7 +184,7 @@ Location: `/home/jeremy/projects/claude-code-plugins/plugins/security/`
 - incident-response-planner
 
 ### 6. Performance Optimization (25 plugins)
-Location: `/home/jeremy/projects/claude-code-plugins/plugins/performance/`
+Location: `
 
 **Profiling & Analysis:**
 - performance-profiler
@@ -206,7 +206,7 @@ Location: `/home/jeremy/projects/claude-code-plugins/plugins/performance/`
 - stress-test-runner
 
 ### 7. Database (25 plugins)
-Location: `/home/jeremy/projects/claude-code-plugins/plugins/database/`
+Location: `
 
 **Schema Management:**
 - migration-generator
@@ -227,7 +227,7 @@ Location: `/home/jeremy/projects/claude-code-plugins/plugins/database/`
 - slow-query-detector
 
 ### 8. Cryptography (25 plugins)
-Location: `/home/jeremy/projects/claude-code-plugins/plugins/crypto/`
+Location: `
 
 **Encryption:**
 - encryption-helper
@@ -247,7 +247,7 @@ Location: `/home/jeremy/projects/claude-code-plugins/plugins/crypto/`
 - wallet-integration-helper
 
 ### 9. Premium Plugin Packs (4 packs)
-Location: `/home/jeremy/projects/claude-code-plugins/plugins/packages/`
+Location: `
 
 **DevOps Automation Pack** (25 plugins)
 - Complete DevOps toolkit
@@ -270,7 +270,7 @@ Location: `/home/jeremy/projects/claude-code-plugins/plugins/packages/`
 - Featured
 
 ### 10. AI Agency (6 plugins)
-Location: `/home/jeremy/projects/claude-code-plugins/plugins/ai-agency/`
+Location: `
 
 - n8n-workflow-designer (featured)
 - make-scenario-builder
@@ -280,7 +280,7 @@ Location: `/home/jeremy/projects/claude-code-plugins/plugins/ai-agency/`
 - roi-calculator
 
 ### 11. MCP Servers (5 plugins)
-Location: `/home/jeremy/projects/claude-code-plugins/plugins/mcp/`
+Location: `
 
 - project-health-auditor (featured, 4 tools)
 - conversational-api-debugger (featured, 4 tools)
@@ -289,12 +289,12 @@ Location: `/home/jeremy/projects/claude-code-plugins/plugins/mcp/`
 - workflow-orchestrator (featured, 4 tools)
 
 ### 12. Productivity (1 plugin)
-Location: `/home/jeremy/projects/claude-code-plugins/plugins/productivity/`
+Location: `
 
 - overnight-dev (featured)
 
 ### 13. Examples (3 plugins)
-Location: `/home/jeremy/projects/claude-code-plugins/plugins/examples/`
+Location: `
 
 - hello-world
 - formatter
@@ -354,7 +354,7 @@ Then install any plugin:
 ## Repository Structure
 
 ```
-/home/jeremy/projects/claude-code-plugins/
+
 ├── .claude-plugin/
 │   └── marketplace.json (110 registered plugins)
 ├── plugins/

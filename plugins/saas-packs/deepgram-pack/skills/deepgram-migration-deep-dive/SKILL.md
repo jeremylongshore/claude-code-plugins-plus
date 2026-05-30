@@ -369,7 +369,7 @@ async function validateMigration(
 
 ## Resources
 
-- [Deepgram Migration Guide](https://developers.deepgram.com/docs/migration)
+- Deepgram Migration Guide
 - [Feature Comparison](https://deepgram.com/product/speech-to-text)
 - [Pricing Calculator](https://deepgram.com/pricing)
 - [Model Comparison](https://deepgram.com/learn/model-comparison-when-to-use-nova-2-vs-nova-3-for-devs)

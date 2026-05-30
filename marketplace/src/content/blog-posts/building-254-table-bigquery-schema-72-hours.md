@@ -143,13 +143,13 @@ set -e
 # Configuration
 PROJECT_ID="diagnostic-pro-start-up"
 DATASET_ID="diagnosticpro_prod"
-DATA_DIR="/home/jeremy/projects/scraper/export_gateway/cloud_ready"
+DATA_DIR=""
 
 # Parallel import function
 import_table() {
     local table_name=$1
     local data_file=$2
-    
+
     bq load \
         --source_format=NEWLINE_DELIMITED_JSON \
         --autodetect \
@@ -164,7 +164,7 @@ import_table() {
 for ndjson_file in $DATA_DIR/*.ndjson; do
     table_name=$(basename $ndjson_file .ndjson)
     import_table $table_name $ndjson_file
-    
+
     # Limit parallel jobs
     while [ $(jobs -r | wc -l) -ge 10 ]; do
         sleep 1
@@ -184,42 +184,42 @@ Each scraper is optimized for its specific data source. Here's the YouTube scrap
 ```python
 class YouTubeMassiveExtractor:
     """High-performance YouTube data extraction"""
-    
+
     def __init__(self):
         self.batch_size = 50  # YouTube API max
         self.export_gateway = Path("/scraper/export_gateway/raw")
         self.session_pool = self._create_session_pool()
-    
+
     def extract_channel_batch(self, channel_ids):
         """Extract videos from multiple channels in parallel"""
-        
+
         # Build batch request
         batch_request = self.youtube.new_batch_http_request()
-        
+
         for channel_id in channel_ids[:50]:  # API limit
             request = self.youtube.channels().list(
                 part="snippet,statistics,contentDetails",
                 id=channel_id
             )
             batch_request.add(request, callback=self._process_channel)
-        
+
         # Execute batch
         batch_request.execute()
-    
+
     def _process_channel(self, request_id, response, exception):
         """Process individual channel response"""
         if exception:
             self._handle_error(exception)
             return
-        
+
         # Extract and transform data
         channel_data = self._transform_channel_data(response)
-        
+
         # Write to export gateway
         output_file = self.export_gateway / f"youtube_{request_id}.json"
         with open(output_file, 'w') as f:
             json.dump(channel_data, f)
-        
+
         # Trigger validation pipeline
         self._notify_validation_pipeline(output_file)
 ```
@@ -231,29 +231,29 @@ Before data enters BigQuery, it passes through a rigorous validation pipeline:
 ```python
 class SchemaValidator:
     """Validates data against BigQuery schema requirements"""
-    
+
     def __init__(self, schema_rules_path):
         with open(schema_rules_path) as f:
             self.rules = json.load(f)
         self.validation_cache = {}
-    
+
     def validate_batch(self, records, table_name):
         """Validate a batch of records with sub-100ms performance"""
-        
+
         start_time = time.perf_counter()
-        
+
         # Get cached schema or load
         if table_name not in self.validation_cache:
             self.validation_cache[table_name] = self._load_schema(table_name)
-        
+
         schema = self.validation_cache[table_name]
         errors = []
         validated = []
-        
+
         # Parallel validation using numpy for numeric fields
         if self._has_numeric_fields(schema):
             numeric_valid = self._validate_numeric_batch(records, schema)
-        
+
         # String validation with compiled regex
         for idx, record in enumerate(records):
             try:
@@ -261,23 +261,23 @@ class SchemaValidator:
                 for field in schema['required_fields']:
                     if field not in record or record[field] is None:
                         raise ValueError(f"Missing required field: {field}")
-                
+
                 # Validate patterns
                 for field, pattern in schema.get('patterns', {}).items():
                     if field in record and not pattern.match(str(record[field])):
                         raise ValueError(f"Invalid format for {field}")
-                
+
                 validated.append(record)
-                
+
             except Exception as e:
                 errors.append({
                     'record_idx': idx,
                     'error': str(e),
                     'record': record
                 })
-        
+
         elapsed = (time.perf_counter() - start_time) * 1000
-        
+
         return {
             'valid': validated,
             'errors': errors,
@@ -303,27 +303,27 @@ class BigQueryDeployer:
     def __init__(self):
         self.client = bigquery.Client(project="diagnostic-pro-start-up")
         self.dataset_id = "diagnosticpro_prod"
-        self.schema_dir = Path("/home/jeremy/projects/schema/tables")
-        
+        self.schema_dir = Path("")
+
     def deploy_all_tables(self):
         """Deploy 254 tables in parallel"""
-        
+
         # Get all table definitions
         table_files = list(self.schema_dir.glob("*.json"))
         print(f"📊 Found {len(table_files)} table definitions")
-        
+
         # Deploy in parallel batches of 10
         with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
             futures = []
-            
+
             for table_file in table_files:
                 future = executor.submit(self._deploy_table, table_file)
                 futures.append((table_file.stem, future))
-            
+
             # Track progress
             completed = 0
             failed = []
-            
+
             for table_name, future in futures:
                 try:
                     result = future.result(timeout=30)
@@ -332,7 +332,7 @@ class BigQueryDeployer:
                 except Exception as e:
                     failed.append((table_name, str(e)))
                     print(f"❌ {table_name}: {e}")
-        
+
         # Summary
         print(f"\n{'='*60}")
         print(f"✅ Successfully deployed: {completed} tables")
@@ -340,19 +340,19 @@ class BigQueryDeployer:
             print(f"❌ Failed: {len(failed)} tables")
             for name, error in failed[:5]:  # Show first 5 errors
                 print(f"  - {name}: {error}")
-        
+
         return completed, failed
-    
+
     def _deploy_table(self, table_file):
         """Deploy a single table to BigQuery"""
-        
+
         # Load schema
         with open(table_file) as f:
             schema_def = json.load(f)
-        
+
         # Create table reference
         table_ref = self.client.dataset(self.dataset_id).table(table_file.stem)
-        
+
         # Build schema
         schema = []
         for field in schema_def['fields']:
@@ -362,24 +362,24 @@ class BigQueryDeployer:
                 mode=field.get('mode', 'NULLABLE'),
                 description=field.get('description', '')
             ))
-        
+
         # Create table
         table = bigquery.Table(table_ref, schema=schema)
-        
+
         # Set partitioning if specified
         if 'partitioning' in schema_def:
             table.time_partitioning = bigquery.TimePartitioning(
                 type_=bigquery.TimePartitioningType.DAY,
                 field=schema_def['partitioning']['field']
             )
-        
+
         # Set clustering if specified
         if 'clustering' in schema_def:
             table.clustering_fields = schema_def['clustering']['fields']
-        
+
         # Deploy to BigQuery
         table = self.client.create_table(table, exists_ok=True)
-        
+
         return f"Table {table.table_id} deployed successfully"
 
 if __name__ == "__main__":
@@ -421,7 +421,7 @@ Validation Latency:     < 100ms per batch
 
 ```sql
 -- Equipment Registry Stats (Real Production Data)
-SELECT 
+SELECT
   COUNT(*) as total_equipment,
   COUNT(DISTINCT primary_id_type) as id_types,
   COUNT(DISTINCT equipment_category) as categories,
@@ -435,7 +435,7 @@ FROM `diagnostic-pro-start-up.diagnosticpro_prod.universal_equipment_registry`
 -- manufacturers: 2,847
 
 -- Diagnostic Sessions Analysis
-SELECT 
+SELECT
   DATE(session_start) as session_date,
   COUNT(*) as daily_sessions,
   COUNT(DISTINCT user_id) as unique_users,
@@ -448,7 +448,7 @@ ORDER BY session_date DESC
 LIMIT 7
 
 -- YouTube Repair Videos Performance
-SELECT 
+SELECT
   channel_category,
   COUNT(*) as video_count,
   SUM(view_count) as total_views,
@@ -535,7 +535,7 @@ AS SELECT * FROM staging_table
 
 ```sql
 CREATE MATERIALIZED VIEW diagnosticpro_prod.daily_diagnostics_summary AS
-SELECT 
+SELECT
   DATE(session_start) as date,
   equipment_category,
   COUNT(*) as session_count,

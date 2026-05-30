@@ -432,7 +432,7 @@ for (const t of translators) {
 - [File Download API](https://developers.lokalise.com/reference/download-files)
 - [Translations API](https://developers.lokalise.com/reference/list-all-translations)
 - [Contributors API](https://developers.lokalise.com/reference/list-all-contributors)
-- [Export Options Reference](https://docs.lokalise.com/en/articles/1400465-exporting-translation-files)
+- Export Options Reference
 - [Bundle Structure Placeholders](https://docs.lokalise.com/en/articles/2281317-filenames)
 - [Supported File Formats](https://docs.lokalise.com/en/articles/1400492-uploading-translation-files)
 

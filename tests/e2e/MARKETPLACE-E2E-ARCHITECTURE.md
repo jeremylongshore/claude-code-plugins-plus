@@ -13,7 +13,7 @@ This document outlines the E2E test architecture for the Claude Code Plugins mar
 
 ### Existing Infrastructure
 
-**Location:** `/home/jeremy/000-projects/claude-code-plugins/`
+**Location:** `
 
 1. **Playwright Configuration** (`marketplace/playwright.config.ts`)
    - Already configured for 3 projects: chromium-desktop, webkit-mobile, chromium-mobile
@@ -50,7 +50,7 @@ This document outlines the E2E test architecture for the Claude Code Plugins mar
 ### Directory Structure
 
 ```
-/home/jeremy/000-projects/claude-code-plugins/marketplace/
+
 ├── playwright.config.ts                 # Existing config (enhance)
 ├── tests/
 │   ├── T1-homepage-search-redirect.spec.ts    # Existing
@@ -629,7 +629,7 @@ playwright-tests:
 
 ### Enhanced Playwright Config
 
-**File:** `/home/jeremy/000-projects/claude-code-plugins/marketplace/playwright.config.ts`
+**File:** `
 
 **Additions:**
 ```typescript
@@ -725,7 +725,7 @@ export default defineConfig({
 
 ### Package.json Scripts
 
-**File:** `/home/jeremy/000-projects/claude-code-plugins/marketplace/package.json`
+**File:** `
 
 **Additions:**
 ```json
@@ -855,9 +855,9 @@ export default defineConfig({
 - axe DevTools (browser extension)
 
 ### Internal References
-- Existing tests: `/home/jeremy/000-projects/claude-code-plugins/marketplace/tests/`
-- Component code: `/home/jeremy/000-projects/claude-code-plugins/marketplace/src/components/`
-- CI workflow: `/home/jeremy/000-projects/claude-code-plugins/.github/workflows/validate-plugins.yml`
+- Existing tests: `
+- Component code: `
+- CI workflow: `
 - CLAUDE.md: Project documentation and conventions
 
 ## Appendix: Example Test Files

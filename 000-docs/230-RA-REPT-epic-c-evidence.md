@@ -175,7 +175,7 @@ EPIC C is **COMPLETE** with 100% mobile test pass rate. All acceptance criteria 
 
 ## CI Verification
 
-**Latest Workflow**: https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/[PENDING]
+**Latest Workflow**:
 - Commit: 86e4d4a5
 - Status: Running
 - Expected: All checks pass ✅

@@ -71,6 +71,7 @@
     - Violation: CRITICAL ERROR (various `PLUGIN_*`, `SKILL_*` codes)
 
 **VALIDATION**:
+
 - Validator runs in ENTERPRISE MODE ONLY
 - CRITICAL/HIGH errors BLOCK PR merge
 - Deterministic error codes (6767-d schema)
@@ -84,6 +85,7 @@
 ### 1.1 Purpose
 
 This specification defines the **unified standard** for all Claude Code extension types:
+
 - **Plugins** (containers: manifest, metadata, lifecycle)
 - **Skills** (capabilities: workflows, tool authorization, context)
 - **Agents** (subagents: delegation, specialization, model selection)
@@ -96,6 +98,7 @@ This standard operates in **ENTERPRISE MODE ONLY**. There is no "Anthropic-minim
 ### 1.2 Scope
 
 **In Scope:**
+
 - Directory structure and naming conventions
 - Manifest schemas (plugin.json, SKILL.md frontmatter, agent.md, hooks.json, .mcp.json)
 - Security constraints (secrets, paths, tool scoping)
@@ -105,6 +108,7 @@ This standard operates in **ENTERPRISE MODE ONLY**. There is no "Anthropic-minim
 - Validation and CI enforcement
 
 **Out of Scope:**
+
 - Runtime execution behavior (covered by Claude Code core)
 - User interface design (covered by Claude frontend specs)
 - Third-party integrations (covered by MCP protocol spec)
@@ -115,14 +119,14 @@ This standard operates in **ENTERPRISE MODE ONLY**. There is no "Anthropic-minim
 
 ### 2.1 Extension Types
 
-| Type | Definition | Primary File | Location |
-|------|------------|--------------|----------|
-| **Plugin** | Container for skills/agents/commands/hooks/MCP servers | `plugin.json` | `.claude-plugin/plugin.json` |
-| **Skill** | Capability that teaches Claude a workflow or process | `SKILL.md` | `skills/<skill-name>/SKILL.md` |
-| **Agent** | Specialized subagent for complex, multi-step tasks | `agent.md` (frontmatter) | `agents/<agent-name>.md` |
-| **Command** | User-triggered slash command that expands to a prompt | `command.md` (optional frontmatter) | `commands/<command-name>.md` |
-| **Hook** | Event handler that runs on lifecycle events | `hooks.json` | `hooks/hooks.json` OR inline in plugin.json |
-| **MCP Server** | External tool server using Model Context Protocol | `.mcp.json` | `.mcp.json` OR inline in plugin.json |
+| Type           | Definition                                             | Primary File                        | Location                                    |
+| -------------- | ------------------------------------------------------ | ----------------------------------- | ------------------------------------------- |
+| **Plugin**     | Container for skills/agents/commands/hooks/MCP servers | `plugin.json`                       | `.claude-plugin/plugin.json`                |
+| **Skill**      | Capability that teaches Claude a workflow or process   | `SKILL.md`                          | `skills/<skill-name>/SKILL.md`              |
+| **Agent**      | Specialized subagent for complex, multi-step tasks     | `agent.md` (frontmatter)            | `agents/<agent-name>.md`                    |
+| **Command**    | User-triggered slash command that expands to a prompt  | `command.md` (optional frontmatter) | `commands/<command-name>.md`                |
+| **Hook**       | Event handler that runs on lifecycle events            | `hooks.json`                        | `hooks/hooks.json` OR inline in plugin.json |
+| **MCP Server** | External tool server using Model Context Protocol      | `.mcp.json`                         | `.mcp.json` OR inline in plugin.json        |
 
 ### 2.2 Container vs Capability
 
@@ -169,6 +173,7 @@ my-plugin/                              ← Plugin root
 ### 3.2 Critical Constraints
 
 **MUST**:
+
 - `.claude-plugin/` contains ONLY `plugin.json` (no other files)
 - Component directories (skills/, agents/, commands/, hooks/) at plugin root (NOT inside `.claude-plugin/`)
 - Only create directories you use (NO empty placeholders)
@@ -176,6 +181,7 @@ my-plugin/                              ← Plugin root
 - All paths MUST be relative or use `${CLAUDE_PLUGIN_ROOT}` / `{baseDir}`
 
 **MUST NOT**:
+
 - Place any components inside `.claude-plugin/` besides plugin.json
 - Use absolute paths (e.g., `/home/user/...`)
 - Hardcode secrets or API keys
@@ -190,22 +196,24 @@ my-plugin/                              ← Plugin root
 
 ```json
 {
-  "name": "my-plugin-name",              // REQUIRED: kebab-case, max 64 chars, ^[a-z0-9-]+$
-  "version": "1.0.0",                    // REQUIRED: SemVer (MAJOR.MINOR.PATCH)
-  "description": "...",                  // REQUIRED: brief explanation
-  "author": {                            // REQUIRED: author object
-    "name": "Developer Name",            // REQUIRED: author name
-    "email": "dev@example.com"           // REQUIRED: author email
+  "name": "my-plugin-name", // REQUIRED: kebab-case, max 64 chars, ^[a-z0-9-]+$
+  "version": "1.0.0", // REQUIRED: SemVer (MAJOR.MINOR.PATCH)
+  "description": "...", // REQUIRED: brief explanation
+  "author": {
+    // REQUIRED: author object
+    "name": "Developer Name", // REQUIRED: author name
+    "email": "dev@example.com" // REQUIRED: author email
   },
-  "license": "MIT",                      // REQUIRED: SPDX identifier
-  "keywords": ["tag1", "tag2"],          // REQUIRED: array of strings
-  "homepage": "https://...",             // OPTIONAL: documentation URL
+  "license": "MIT", // REQUIRED: SPDX identifier
+  "keywords": ["tag1", "tag2"], // REQUIRED: array of strings
+  "homepage": "https://...", // OPTIONAL: documentation URL
   "repository": "https://github.com/...", // OPTIONAL: source URL
-  "commands": "./commands/",             // OPTIONAL: path(s) to commands
-  "agents": "./agents/",                 // OPTIONAL: path(s) to agents
-  "skills": ["./skills/skill-1/"],       // OPTIONAL: array of skill paths
-  "hooks": "./hooks/hooks.json",         // OPTIONAL: path or inline config
-  "mcpServers": {                        // OPTIONAL: MCP server config
+  "commands": "./commands/", // OPTIONAL: path(s) to commands
+  "agents": "./agents/", // OPTIONAL: path(s) to agents
+  "skills": ["./skills/skill-1/"], // OPTIONAL: array of skill paths
+  "hooks": "./hooks/hooks.json", // OPTIONAL: path or inline config
+  "mcpServers": {
+    // OPTIONAL: MCP server config
     "server-name": {
       "command": "python",
       "args": ["${CLAUDE_PLUGIN_ROOT}/bin/server.py"]
@@ -216,37 +224,40 @@ my-plugin/                              ← Plugin root
 
 ### 4.2 Field Constraints (Enterprise)
 
-| Field | Type | Required | Constraints |
-|-------|------|----------|-------------|
-| `name` | string | ✅ REQUIRED | kebab-case, max 64 chars, pattern `^[a-z0-9-]+$`, no "claude" or "anthropic" |
-| `version` | string | ✅ REQUIRED | SemVer (MAJOR.MINOR.PATCH), 3 parts |
-| `description` | string | ✅ REQUIRED | Non-empty, max 1024 chars |
-| `author` | object | ✅ REQUIRED | MUST have `name` and `email` |
-| `author.name` | string | ✅ REQUIRED | Non-empty |
-| `author.email` | string | ✅ REQUIRED | Valid email format |
-| `license` | string | ✅ REQUIRED | SPDX identifier (MIT, Apache-2.0, Proprietary, etc.) |
-| `keywords` | array | ✅ REQUIRED | Array of strings, min 1 item |
-| `homepage` | string | OPTIONAL | Valid URL if present |
-| `repository` | string | OPTIONAL | Valid URL if present |
-| `commands` | string or array | OPTIONAL | Path(s) to command directories |
-| `agents` | string or array | OPTIONAL | Path(s) to agent files/directories |
-| `skills` | string or array | OPTIONAL | Path(s) to skill directories |
-| `hooks` | string or object | OPTIONAL | Path to hooks.json OR inline config |
-| `mcpServers` | object | OPTIONAL | MCP server configuration |
+| Field          | Type             | Required    | Constraints                                                                  |
+| -------------- | ---------------- | ----------- | ---------------------------------------------------------------------------- |
+| `name`         | string           | ✅ REQUIRED | kebab-case, max 64 chars, pattern `^[a-z0-9-]+$`, no "claude" or "anthropic" |
+| `version`      | string           | ✅ REQUIRED | SemVer (MAJOR.MINOR.PATCH), 3 parts                                          |
+| `description`  | string           | ✅ REQUIRED | Non-empty, max 1024 chars                                                    |
+| `author`       | object           | ✅ REQUIRED | MUST have `name` and `email`                                                 |
+| `author.name`  | string           | ✅ REQUIRED | Non-empty                                                                    |
+| `author.email` | string           | ✅ REQUIRED | Valid email format                                                           |
+| `license`      | string           | ✅ REQUIRED | SPDX identifier (MIT, Apache-2.0, Proprietary, etc.)                         |
+| `keywords`     | array            | ✅ REQUIRED | Array of strings, min 1 item                                                 |
+| `homepage`     | string           | OPTIONAL    | Valid URL if present                                                         |
+| `repository`   | string           | OPTIONAL    | Valid URL if present                                                         |
+| `commands`     | string or array  | OPTIONAL    | Path(s) to command directories                                               |
+| `agents`       | string or array  | OPTIONAL    | Path(s) to agent files/directories                                           |
+| `skills`       | string or array  | OPTIONAL    | Path(s) to skill directories                                                 |
+| `hooks`        | string or object | OPTIONAL    | Path to hooks.json OR inline config                                          |
+| `mcpServers`   | object           | OPTIONAL    | MCP server configuration                                                     |
 
 ### 4.3 Portability Rules
 
 **Environment Variable**: `${CLAUDE_PLUGIN_ROOT}`
+
 - Expands to plugin root directory at runtime
 - MUST be used for all plugin-relative paths in `plugin.json`, hooks, MCP servers
 - Example: `"${CLAUDE_PLUGIN_ROOT}/bin/server.py"`
 
 **MUST NOT**:
-- Use absolute paths (e.g., `/home/jeremy/...`)
+
+- Use absolute paths (e.g., `)
 - Use `~` or `$HOME` (not portable)
 - Use `.` or `..` for parent traversal (security risk)
 
 **MUST**:
+
 - Use `${CLAUDE_PLUGIN_ROOT}` for plugin-internal paths
 - Use relative paths within plugin root where possible
 - Validate all paths in validator
@@ -260,6 +271,7 @@ my-plugin/                              ← Plugin root
 **Location**: `skills/<skill-name>/SKILL.md`
 
 **Structure**:
+
 1. **Frontmatter** (YAML): Metadata and configuration
 2. **Body** (Markdown): Instructions, workflow, examples, error handling
 
@@ -267,67 +279,73 @@ my-plugin/                              ← Plugin root
 
 ```yaml
 ---
-name: skill-name                       # REQUIRED: kebab-case, max 64 chars, ^[a-z0-9-]+$
-description: "..."                     # REQUIRED: max 1024 chars, third-person, includes "Use when..." + triggers
-allowed-tools: "Read,Write,Grep,Glob"  # REQUIRED: CSV string (NOT YAML array)
-version: "1.0.0"                       # REQUIRED: SemVer
-author: "Name <email>"                 # REQUIRED: Name + email
-license: "MIT"                         # REQUIRED: SPDX identifier
-tags: ["tag1", "tag2"]                 # REQUIRED: array of strings
-model: "inherit"                       # OPTIONAL: model override (inherit, sonnet, opus, haiku)
-mode: false                            # OPTIONAL: categorize as mode (default false)
-disable-model-invocation: false        # OPTIONAL: hide from auto-discovery (default false)
+name: skill-name # REQUIRED: kebab-case, max 64 chars, ^[a-z0-9-]+$
+description: '...' # REQUIRED: max 1024 chars, third-person, includes "Use when..." + triggers
+allowed-tools: 'Read,Write,Grep,Glob' # REQUIRED: CSV string (NOT YAML array)
+version: '1.0.0' # REQUIRED: SemVer
+author: 'Name <email>' # REQUIRED: Name + email
+license: 'MIT' # REQUIRED: SPDX identifier
+tags: ['tag1', 'tag2'] # REQUIRED: array of strings
+model: 'inherit' # OPTIONAL: model override (inherit, sonnet, opus, haiku)
+mode: false # OPTIONAL: categorize as mode (default false)
+disable-model-invocation: false # OPTIONAL: hide from auto-discovery (default false)
 ---
 ```
 
 ### 5.3 Field Constraints (Enterprise)
 
-| Field | Type | Required | Constraints |
-|-------|------|----------|-------------|
-| `name` | string | ✅ REQUIRED | kebab-case, max 64 chars, pattern `^[a-z0-9-]+$`, no "claude" or "anthropic" |
-| `description` | string | ✅ REQUIRED | Max 1024 chars, third-person voice, MUST include "Use when..." + trigger phrases |
-| `allowed-tools` | string | ✅ REQUIRED | CSV string (comma-separated), NOT YAML array. Example: "Read,Write,Grep" |
-| `version` | string | ✅ REQUIRED | SemVer (MAJOR.MINOR.PATCH) |
-| `author` | string | ✅ REQUIRED | Format: "Name <email>" or "Name" |
-| `license` | string | ✅ REQUIRED | SPDX identifier |
-| `tags` | array | ✅ REQUIRED | Array of strings, min 1 item (marketplace discoverability) |
-| `model` | string | OPTIONAL | "inherit" (default), "sonnet", "opus", "haiku", or specific model ID |
-| `mode` | boolean | OPTIONAL | Default false. Set true for mode commands (separate UI section) |
-| `disable-model-invocation` | boolean | OPTIONAL | Default false. Set true to remove from auto-discovery |
+| Field                      | Type    | Required    | Constraints                                                                      |
+| -------------------------- | ------- | ----------- | -------------------------------------------------------------------------------- |
+| `name`                     | string  | ✅ REQUIRED | kebab-case, max 64 chars, pattern `^[a-z0-9-]+$`, no "claude" or "anthropic"     |
+| `description`              | string  | ✅ REQUIRED | Max 1024 chars, third-person voice, MUST include "Use when..." + trigger phrases |
+| `allowed-tools`            | string  | ✅ REQUIRED | CSV string (comma-separated), NOT YAML array. Example: "Read,Write,Grep"         |
+| `version`                  | string  | ✅ REQUIRED | SemVer (MAJOR.MINOR.PATCH)                                                       |
+| `author`                   | string  | ✅ REQUIRED | Format: "Name <email>" or "Name"                                                 |
+| `license`                  | string  | ✅ REQUIRED | SPDX identifier                                                                  |
+| `tags`                     | array   | ✅ REQUIRED | Array of strings, min 1 item (marketplace discoverability)                       |
+| `model`                    | string  | OPTIONAL    | "inherit" (default), "sonnet", "opus", "haiku", or specific model ID             |
+| `mode`                     | boolean | OPTIONAL    | Default false. Set true for mode commands (separate UI section)                  |
+| `disable-model-invocation` | boolean | OPTIONAL    | Default false. Set true to remove from auto-discovery                            |
 
 ### 5.4 Description Formula (REQUIRED)
 
 **Template**:
+
 ```
 [Primary capabilities]. [Secondary features]. Use when [scenarios]. Trigger with "[phrases]", "[synonyms]", or "[common-terms]".
 ```
 
 **Example (Good)**:
+
 ```yaml
 description: "Extract text and tables from PDF files, fill forms, merge documents. Use when working with PDF files or when the user mentions PDFs, forms, or document extraction. Trigger with 'process pdf', 'extract from pdf', or 'merge pdfs'."
 ```
 
 **Example (Bad)**:
+
 ```yaml
-description: "Helps with documents"  # ❌ Missing: Use when, triggers, specifics
+description: 'Helps with documents' # ❌ Missing: Use when, triggers, specifics
 ```
 
 ### 5.5 allowed-tools (CRITICAL: CSV String NOT YAML Array)
 
 **CORRECT** (CSV string):
+
 ```yaml
-allowed-tools: "Read,Write,Grep,Glob,Bash(git status:*),Bash(git diff:*)"
+allowed-tools: 'Read,Write,Grep,Glob,Bash(git status:*),Bash(git diff:*)'
 ```
 
 **WRONG** (YAML array):
+
 ```yaml
-allowed-tools:           # ❌ INVALID (will be rejected by validator)
+allowed-tools: # ❌ INVALID (will be rejected by validator)
   - Read
   - Write
   - Bash
 ```
 
 **Tool Scoping** (Enterprise Security Policy):
+
 - Prefer minimal tools: `Read,Write,Grep,Glob`
 - If Bash needed, scope it: `Bash(git:*)`, `Bash(npm:*)`, `Bash(python:*)`
 - NEVER grant unscoped `Bash` (security risk)
@@ -335,15 +353,16 @@ allowed-tools:           # ❌ INVALID (will be rejected by validator)
 
 ### 5.6 Body Constraints (Enterprise Context Hygiene)
 
-| Constraint | Limit | Rationale |
-|------------|-------|-----------|
-| **Max word count** | 5,000 words | Context window hygiene |
-| **Max line count** | 500 lines | Progressive disclosure |
-| **Max tokens** | ~7,500 tokens | LLM context budget |
-| **Path format** | `{baseDir}/...` | Portability (no absolute paths) |
-| **Reference depth** | 1 level | Prevent reference chains (SKILL.md → ref.md OK; SKILL.md → ref1.md → ref2.md NOT OK) |
+| Constraint          | Limit           | Rationale                                                                            |
+| ------------------- | --------------- | ------------------------------------------------------------------------------------ |
+| **Max word count**  | 5,000 words     | Context window hygiene                                                               |
+| **Max line count**  | 500 lines       | Progressive disclosure                                                               |
+| **Max tokens**      | ~7,500 tokens   | LLM context budget                                                                   |
+| **Path format**     | `{baseDir}/...` | Portability (no absolute paths)                                                      |
+| **Reference depth** | 1 level         | Prevent reference chains (SKILL.md → ref.md OK; SKILL.md → ref1.md → ref2.md NOT OK) |
 
 **Progressive Disclosure Pattern**:
+
 - SKILL.md contains workflow, instructions, examples
 - Heavy tables/data go in `references/` directory
 - References loaded on-demand, not always in context
@@ -370,6 +389,7 @@ allowed-tools:           # ❌ INVALID (will be rejected by validator)
 **Location**: `agents/<agent-name>.md`
 
 **Structure**:
+
 1. **Frontmatter** (YAML): Metadata and configuration
 2. **Body** (Markdown): Delegation criteria, specialization, instructions
 
@@ -377,25 +397,25 @@ allowed-tools:           # ❌ INVALID (will be rejected by validator)
 
 ```yaml
 ---
-name: agent-name                       # REQUIRED: Agent identifier
-description: "..."                     # REQUIRED: When Claude should delegate to this agent
-tools: "Read,Write,Grep,Glob"          # OPTIONAL: CSV string (inherits all if omitted)
-model: "inherit"                       # OPTIONAL: model override
-permissionMode: "auto"                 # OPTIONAL: permission mode
-skills: "skill-1,skill-2"              # OPTIONAL: comma-separated skill names to auto-load
+name: agent-name # REQUIRED: Agent identifier
+description: '...' # REQUIRED: When Claude should delegate to this agent
+tools: 'Read,Write,Grep,Glob' # OPTIONAL: CSV string (inherits all if omitted)
+model: 'inherit' # OPTIONAL: model override
+permissionMode: 'auto' # OPTIONAL: permission mode
+skills: 'skill-1,skill-2' # OPTIONAL: comma-separated skill names to auto-load
 ---
 ```
 
 ### 6.3 Field Constraints
 
-| Field | Type | Required | Constraints |
-|-------|------|----------|-------------|
-| `name` | string | ✅ REQUIRED | Agent identifier (kebab-case recommended) |
-| `description` | string | ✅ REQUIRED | When Claude should delegate (clear criteria) |
-| `tools` | string | OPTIONAL | CSV string (inherits all if omitted) |
-| `model` | string | OPTIONAL | Model override (inherit, sonnet, opus, haiku) |
-| `permissionMode` | string | OPTIONAL | Permission mode |
-| `skills` | string | OPTIONAL | Comma-separated skill names to auto-load |
+| Field            | Type   | Required    | Constraints                                   |
+| ---------------- | ------ | ----------- | --------------------------------------------- |
+| `name`           | string | ✅ REQUIRED | Agent identifier (kebab-case recommended)     |
+| `description`    | string | ✅ REQUIRED | When Claude should delegate (clear criteria)  |
+| `tools`          | string | OPTIONAL    | CSV string (inherits all if omitted)          |
+| `model`          | string | OPTIONAL    | Model override (inherit, sonnet, opus, haiku) |
+| `permissionMode` | string | OPTIONAL    | Permission mode                               |
+| `skills`         | string | OPTIONAL    | Comma-separated skill names to auto-load      |
 
 ---
 
@@ -408,6 +428,7 @@ skills: "skill-1,skill-2"              # OPTIONAL: comma-separated skill names t
 **Invocation**: User types `/<command-name>` (filename without .md)
 
 **Structure**:
+
 1. **Frontmatter** (YAML, optional): Metadata
 2. **Body** (Markdown): Prompt text that expands when command is invoked
 
@@ -415,8 +436,8 @@ skills: "skill-1,skill-2"              # OPTIONAL: comma-separated skill names t
 
 ```yaml
 ---
-description: "Brief explanation"       # OPTIONAL: What this command does
-allowed-tools: "Read,Write,Grep"       # OPTIONAL: CSV string (tool restrictions)
+description: 'Brief explanation' # OPTIONAL: What this command does
+allowed-tools: 'Read,Write,Grep' # OPTIONAL: CSV string (tool restrictions)
 ---
 ```
 
@@ -429,6 +450,7 @@ allowed-tools: "Read,Write,Grep"       # OPTIONAL: CSV string (tool restrictions
 **Location**: `hooks/hooks.json` OR inline in `plugin.json` under `"hooks"` key
 
 **Events**:
+
 - `PreToolUse` (matcher required)
 - `PostToolUse` (matcher required)
 - `PermissionRequest` (matcher required)
@@ -449,23 +471,25 @@ allowed-tools: "Read,Write,Grep"       # OPTIONAL: CSV string (tool restrictions
 
 ```json
 {
-  "continue": true,                    // Boolean: continue or block
-  "stopReason": "...",                 // Optional: reason for stopping
-  "suppressOutput": false,             // Boolean: hide output
-  "systemMessage": "...",              // String: message to LLM
-  "hookSpecificOutput": {}             // Object: event-specific fields
+  "continue": true, // Boolean: continue or block
+  "stopReason": "...", // Optional: reason for stopping
+  "suppressOutput": false, // Boolean: hide output
+  "systemMessage": "...", // String: message to LLM
+  "hookSpecificOutput": {} // Object: event-specific fields
 }
 ```
 
 ### 8.4 Security Constraints
 
 **MUST**:
+
 - Set timeouts on all hooks (prevent hangs)
 - Scope bash commands (no unrestricted bash)
 - Validate paths (prevent traversal)
 - Use `${CLAUDE_PLUGIN_ROOT}` for plugin-relative paths
 
 **MUST NOT**:
+
 - Execute arbitrary user input without sanitization
 - Allow unbounded network calls
 - Expose sensitive data in logs
@@ -479,14 +503,17 @@ allowed-tools: "Read,Write,Grep"       # OPTIONAL: CSV string (tool restrictions
 **Location**: `.mcp.json` OR inline in `plugin.json` under `"mcpServers"` key
 
 **Schema**:
+
 ```json
 {
   "server-name": {
-    "command": "python",               // Command to execute
-    "args": [                          // Arguments
+    "command": "python", // Command to execute
+    "args": [
+      // Arguments
       "${CLAUDE_PLUGIN_ROOT}/bin/server.py"
     ],
-    "env": {                           // Optional: environment variables
+    "env": {
+      // Optional: environment variables
       "API_KEY": "${MY_API_KEY}"
     }
   }
@@ -496,11 +523,13 @@ allowed-tools: "Read,Write,Grep"       # OPTIONAL: CSV string (tool restrictions
 ### 9.2 Portability Rules
 
 **MUST**:
+
 - Use `${CLAUDE_PLUGIN_ROOT}` for plugin-relative paths
 - Use environment variables for secrets (e.g., `${MY_API_KEY}`)
 - Document required environment variables in README
 
 **MUST NOT**:
+
 - Hardcode absolute paths
 - Hardcode secrets or API keys
 - Assume specific directory structure outside plugin root
@@ -512,6 +541,7 @@ allowed-tools: "Read,Write,Grep"       # OPTIONAL: CSV string (tool restrictions
 ### 10.1 Secrets and Credentials
 
 **MUST NOT**:
+
 - Hardcode API keys, tokens, passwords in code/config
 - Commit `.env` files
 - Commit credential files
@@ -519,6 +549,7 @@ allowed-tools: "Read,Write,Grep"       # OPTIONAL: CSV string (tool restrictions
 - Pass unvalidated user input to shell
 
 **MUST**:
+
 - Use environment variables for secrets
 - Add `.env` to `.gitignore`
 - Document required env vars in README (with `.env.example`)
@@ -528,21 +559,25 @@ allowed-tools: "Read,Write,Grep"       # OPTIONAL: CSV string (tool restrictions
 ### 10.2 Tool Scoping
 
 **Bash Tool Scoping** (CRITICAL):
+
 - ✅ GOOD: `Bash(git status:*)`, `Bash(npm run test:*)`, `Bash(python -m:*)`
 - ❌ BAD: `Bash` (unscoped - allows arbitrary commands)
 
 **Validator MUST**:
+
 - Flag unscoped `Bash` as CRITICAL error
 - Require explicit scoping: `Bash(command:*)` or `Bash(command subcommand:*)`
 
 ### 10.3 Path Safety
 
 **MUST NOT**:
+
 - Use absolute paths (e.g., `/home/user/...`)
 - Use `..` for parent traversal (security risk)
 - Allow user-controlled paths without validation
 
 **MUST**:
+
 - Use `${CLAUDE_PLUGIN_ROOT}` for plugin paths
 - Use `{baseDir}` for repo-relative skill references
 - Validate all paths to prevent traversal
@@ -550,15 +585,18 @@ allowed-tools: "Read,Write,Grep"       # OPTIONAL: CSV string (tool restrictions
 ### 10.4 Secret Scanning (Enterprise Validator)
 
 **Exemptions** (minimal allowlist):
+
 - `tests/fixtures/**` (explicit test data directory)
 - Files containing known test patterns: `EXAMPLE`, `DUMMY`, `test-`, etc.
 
 **Scanned Everywhere Else**:
+
 - All source code (including non-fixture test code)
 - All configuration files
 - All documentation
 
 **Detected Patterns**:
+
 - API keys (32+ char alphanumeric)
 - AWS keys (`AKIA...`)
 - SSH keys (`-----BEGIN RSA PRIVATE KEY-----`)
@@ -576,6 +614,7 @@ allowed-tools: "Read,Write,Grep"       # OPTIONAL: CSV string (tool restrictions
 **Problem**: Loading all plugin content into context wastes tokens.
 
 **Solution**:
+
 - Keep SKILL.md body ≤ 5,000 words
 - Move heavy tables/data to `references/` directory
 - Load references on-demand, not always in context
@@ -586,6 +625,7 @@ allowed-tools: "Read,Write,Grep"       # OPTIONAL: CSV string (tool restrictions
 **Purpose**: Exclude files from context to save tokens.
 
 **Example**:
+
 ```
 # Build artifacts
 *.pyc
@@ -606,12 +646,12 @@ examples/
 
 ### 11.3 Size Limits (Enterprise Quality)
 
-| Component | Limit | Enforced By |
-|-----------|-------|-------------|
-| SKILL.md body | 5,000 words / 500 lines / ~7,500 tokens | Validator (CRITICAL) |
-| Plugin description | 1,024 characters | Validator (CRITICAL) |
-| Skill description | 1,024 characters | Validator (CRITICAL) |
-| Reference docs | No hard limit (loaded on-demand) | N/A |
+| Component          | Limit                                   | Enforced By          |
+| ------------------ | --------------------------------------- | -------------------- |
+| SKILL.md body      | 5,000 words / 500 lines / ~7,500 tokens | Validator (CRITICAL) |
+| Plugin description | 1,024 characters                        | Validator (CRITICAL) |
+| Skill description  | 1,024 characters                        | Validator (CRITICAL) |
+| Reference docs     | No hard limit (loaded on-demand)        | N/A                  |
 
 ---
 
@@ -622,16 +662,19 @@ examples/
 **Goal**: Help Claude's router decide when to invoke a skill/agent.
 
 **Formula**:
+
 ```
 [Capabilities]. Use when [user scenarios]. Trigger with "[phrases]", "[synonyms]".
 ```
 
 **Good Example**:
+
 ```
 Extract text and tables from PDF files, fill forms, merge documents. Use when working with PDF files or when the user mentions PDFs, forms, or document extraction. Trigger with "process pdf", "extract from pdf", or "merge pdfs".
 ```
 
 **Bad Examples**:
+
 - "Helps with PDFs" (too vague)
 - "PDF processing tool" (no triggers, no scenarios)
 - "Extracts text..." (missing "Use when", missing triggers)
@@ -639,6 +682,7 @@ Extract text and tables from PDF files, fill forms, merge documents. Use when wo
 ### 12.2 Third-Person Voice (Required)
 
 **Descriptions MUST**:
+
 - Use third-person voice ("Extracts...", "Processes...", not "I extract...")
 - Be objective (not promotional: "amazing tool", "best solution")
 - Include concrete scenarios ("when user uploads PDF", not "when needed")
@@ -652,11 +696,13 @@ Extract text and tables from PDF files, fill forms, merge documents. Use when wo
 **Required Format**: `MAJOR.MINOR.PATCH`
 
 **Rules**:
+
 - **MAJOR**: Breaking changes (incompatible API changes)
 - **MINOR**: New features, backward-compatible
 - **PATCH**: Bug fixes, documentation
 
 **Examples**:
+
 - ✅ `1.0.0`, `2.3.1`, `0.1.0`
 - ❌ `v1.0`, `1.0`, `1` (missing parts)
 
@@ -680,15 +726,19 @@ Extract text and tables from PDF files, fill forms, merge documents. Use when wo
 ### 14.2 Required Fields Summary
 
 **Plugin**:
+
 - name, version, description, author (name + email), license, keywords
 
 **Skill**:
+
 - name, description, allowed-tools (CSV string), version, author, license, tags
 
 **Agent**:
+
 - name, description
 
 **Command**:
+
 - (No required frontmatter; body is the prompt)
 
 ---
@@ -698,12 +748,14 @@ Extract text and tables from PDF files, fill forms, merge documents. Use when wo
 ### 15.1 Validator Requirements
 
 **Every validator MUST**:
+
 - Enforce ALL enterprise requirements (no "Anthropic-min" mode)
 - Flag violations with severity: CRITICAL, HIGH, MEDIUM, LOW
 - Block CRITICAL and HIGH errors in CI
 - Report deterministic, actionable errors
 
 **Validation Categories**:
+
 1. **Manifest**: plugin.json schema, required fields, name format, version format
 2. **Directory Structure**: `.claude-plugin/` contains ONLY plugin.json, components at root
 3. **Skills**: frontmatter fields, CSV string for allowed-tools, body size limits
@@ -713,11 +765,13 @@ Extract text and tables from PDF files, fill forms, merge documents. Use when wo
 ### 15.2 CI Gates (Enterprise Policy)
 
 **PR Workflow**:
+
 - Run validator in enterprise mode
 - Block PR on CRITICAL or HIGH errors
 - Report all findings
 
 **Main Branch Workflow**:
+
 - Run comprehensive validation (enterprise mode)
 - Run security scans (secrets, dependencies)
 - Generate coverage reports
@@ -726,6 +780,7 @@ Extract text and tables from PDF files, fill forms, merge documents. Use when wo
 ### 15.3 Error Reporting Format
 
 **Required Fields**:
+
 - Severity: CRITICAL | HIGH | MEDIUM | LOW
 - File path: Exact location of violation
 - Field: Which field/rule violated
@@ -734,6 +789,7 @@ Extract text and tables from PDF files, fill forms, merge documents. Use when wo
 - Fix: How to remediate (actionable guidance)
 
 **Example**:
+
 ```
 [CRITICAL] skills/my-skill/SKILL.md
   Field: allowed-tools
@@ -767,12 +823,14 @@ This specification is maintained by **Intent Solutions** for the **Enterprise Ma
 ### 16.3 Backward Compatibility
 
 **Breaking Changes**:
+
 - Require MAJOR version bump
 - Must include migration guide
 - Old version marked DEPRECATED
 - Grace period: 1 quarter (3 months)
 
 **Non-Breaking Changes**:
+
 - New optional fields: MINOR bump
 - Clarifications: PATCH bump
 
@@ -807,6 +865,7 @@ This specification is maintained by **Intent Solutions** for the **Enterprise Ma
 ### 18.1 Minimal Plugin (Enterprise Compliant)
 
 **Directory**:
+
 ```
 my-plugin/
 ├── .claude-plugin/
@@ -815,6 +874,7 @@ my-plugin/
 ```
 
 **plugin.json**:
+
 ```json
 {
   "name": "my-plugin",
@@ -832,6 +892,7 @@ my-plugin/
 ### 18.2 Plugin with Skills (Enterprise Compliant)
 
 **Directory**:
+
 ```
 analytics-plugin/
 ├── .claude-plugin/
@@ -845,6 +906,7 @@ analytics-plugin/
 ```
 
 **skills/data-analysis/SKILL.md**:
+
 ```yaml
 ---
 name: data-analysis

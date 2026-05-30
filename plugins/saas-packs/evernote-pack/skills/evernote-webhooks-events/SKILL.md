@@ -100,7 +100,7 @@ For the full webhook server, sync manager, event handlers, and polling implement
 
 ## Resources
 
-- [Webhooks Overview](https://dev.evernote.com/doc/articles/webhooks.php)
+- Webhooks Overview
 - [Synchronization](https://dev.evernote.com/doc/articles/synchronization.php)
 - [Developer Portal](https://dev.evernote.com/)
 

@@ -196,5 +196,5 @@ for key in pool.keys:
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
-- [Rate Limits](https://openrouter.ai/docs/api/limits) | [Provider Routing](https://openrouter.ai/docs/features/provider-routing)
+- Examples | Errors
+- Rate Limits | [Provider Routing](https://openrouter.ai/docs/features/provider-routing)

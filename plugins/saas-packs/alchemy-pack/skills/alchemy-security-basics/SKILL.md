@@ -168,7 +168,7 @@ function verifyAlchemyWebhookSignature(
 
 - [Alchemy Security Best Practices](https://www.alchemy.com/docs)
 - [Ethers.js Security](https://docs.ethers.org/v6/)
-- [Web3 Security Checklist](https://www.alchemy.com/docs/reference/security)
+- Web3 Security Checklist
 
 ## Next Steps
 

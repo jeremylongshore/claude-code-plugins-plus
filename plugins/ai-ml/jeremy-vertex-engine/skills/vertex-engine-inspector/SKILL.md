@@ -87,8 +87,8 @@ See `${CLAUDE_SKILL_DIR}/references/errors.md` for additional error scenarios.
 
 ## Resources
 
-- [Vertex AI Agent Engine Documentation](https://cloud.google.com/vertex-ai/docs/agents) -- deployment and configuration
-- [A2A Protocol Specification](https://google.github.io/A2A/) -- AgentCard, Task API, protocol compliance
+- Vertex AI Agent Engine Documentation -- deployment and configuration
+- A2A Protocol Specification -- AgentCard, Task API, protocol compliance
 - [Cloud Monitoring API](https://cloud.google.com/monitoring/api/v3) -- metrics queries and dashboard configuration
 - [VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs) -- perimeter setup and access policies
-- [Model Armor](https://cloud.google.com/vertex-ai/docs/generative-ai/model-armor) -- prompt injection protection configuration
+- Model Armor -- prompt injection protection configuration

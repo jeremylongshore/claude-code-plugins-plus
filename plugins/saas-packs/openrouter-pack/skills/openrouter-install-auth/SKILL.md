@@ -171,5 +171,5 @@ keys = requests.get(
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
+- Examples | Errors
 - [OpenRouter Quickstart](https://openrouter.ai/docs/quickstart) | [Auth Docs](https://openrouter.ai/docs/api/reference/authentication) | [Key Provisioning](https://openrouter.ai/docs/guides/overview/auth/provisioning-api-keys)

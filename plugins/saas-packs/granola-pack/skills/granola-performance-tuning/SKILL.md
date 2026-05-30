@@ -176,7 +176,7 @@ Track these monthly. If accuracy drops below target:
 ## Resources
 
 - [Get the Best from Granola](https://www.granola.ai/blog/get-the-best-from-granola)
-- [How Transcription Works](https://docs.granola.ai/help-center/taking-notes/how-transcription-works)
+- How Transcription Works
 - [Customize Templates](https://docs.granola.ai/help-center/taking-notes/customise-notes-with-templates)
 
 ## Next Steps

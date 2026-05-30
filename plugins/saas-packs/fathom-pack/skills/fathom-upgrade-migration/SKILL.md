@@ -143,7 +143,7 @@ class FathomClient {
 ## Resources
 
 - [Fathom Product Updates](https://help.fathom.video/en/articles/6220097)
-- [Fathom API Documentation](https://fathom.video/api)
+- Fathom API Documentation
 
 ## Next Steps
 

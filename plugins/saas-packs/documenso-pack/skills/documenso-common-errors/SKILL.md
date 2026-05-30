@@ -211,7 +211,7 @@ curl -s -H "Authorization: Bearer $DOCUMENSO_API_KEY" \
 - [Documenso API Reference](https://openapi.documenso.com/)
 - [Status Page](https://status.documenso.com)
 - [GitHub Issues](https://github.com/documenso/documenso/issues)
-- [Documenso Discord](https://documenso.com/discord)
+- Documenso Discord
 
 ## Next Steps
 

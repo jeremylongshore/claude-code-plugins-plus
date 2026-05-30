@@ -35,7 +35,7 @@ Error: Invalid API key
 ```
 
 **Cause**: API key is incorrect or expired
-**Solution**: Verify key at https://whale-alert.io/dashboard
+**Solution**: Verify key at
 
 ### Network Timeout
 

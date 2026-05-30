@@ -338,7 +338,7 @@ i18next
   .init({
     backend: {
       // Lokalise OTA SDK endpoint
-      // See: https://docs.lokalise.com/en/articles/1400697-over-the-air-ota
+      // See:
       loadPath: `https://ota.lokalise.com/v3/public/${process.env.LOKALISE_OTA_TOKEN}/{{lng}}/{{ns}}`,
     },
     fallbackLng: 'en',
@@ -470,8 +470,8 @@ After applying this skill, the project will have:
 ## Resources
 
 - [Lokalise Node SDK Documentation](https://lokalise.github.io/node-lokalise-api/)
-- [Lokalise CLI v2 Reference](https://docs.lokalise.com/en/articles/3659951-lokalise-cli-tool)
-- [Lokalise OTA Documentation](https://docs.lokalise.com/en/articles/1400697-over-the-air-ota)
+- Lokalise CLI v2 Reference
+- Lokalise OTA Documentation
 - [i18next Documentation](https://www.i18next.com/)
 - [react-intl Documentation](https://formatjs.io/docs/react-intl/)
 - [vue-i18n Documentation](https://vue-i18n.intlify.dev/)

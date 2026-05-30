@@ -173,7 +173,7 @@ Google Drive: Watch files
    - Condition: File name contains "invoice" OR "receipt"
 
 3. **HTTP: Make a request (OCR.space)**
-   - URL: https://api.ocr.space/parse/image
+   - URL:
    - Method: POST
    - Headers: apikey: YOUR_OCR_KEY
    - Body: file: `{{1.data}}`

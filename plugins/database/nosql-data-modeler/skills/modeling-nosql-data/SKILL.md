@@ -86,6 +86,6 @@ Design data models for NoSQL databases including MongoDB (document), DynamoDB (k
 
 - MongoDB data modeling patterns: https://www.mongodb.com/docs/manual/data-modeling/
 - DynamoDB single-table design: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-modeling-nosql.html
-- Cassandra data modeling guide: https://cassandra.apache.org/doc/latest/cassandra/data_modeling/
+- Cassandra data modeling guide:
 - Redis data structures: https://redis.io/docs/data-types/
-- NoSQL design patterns catalog: https://www.mongodb.com/docs/manual/applications/data-models/
+- NoSQL design patterns catalog:

@@ -332,7 +332,7 @@ class EvernoteExporter {
       .replace(/<i[^>]*>(.*?)<\/i>/gi, '*$1*')
       .replace(/<em[^>]*>(.*?)<\/em>/gi, '*$1*')
       // Convert links
-      .replace(/<a[^>]*href="([^"]*)"[^>]*>(.*?)<\/a>/gi, '[$2]($1)')
+      .replace(/<a[^>]*href="([^"]*)"[^>]*>(.*?)<\/a>/gi, '$2')
       // Convert line breaks
       .replace(/<br\s*\/?>/gi, '\n')
       .replace(/<\/p>/gi, '\n\n')
@@ -348,7 +348,7 @@ class EvernoteExporter {
       .replace(/<en-todo\s+checked="false"\s*\/>/gi, '[ ] ')
       .replace(/<en-todo\s+checked="true"\s*\/>/gi, '[x] ')
       // Convert media references
-      .replace(/<en-media[^>]*hash="([^"]*)"[^>]*\/>/gi, '\n![attachment]($1)\n')
+      .replace(/<en-media[^>]*hash="([^"]*)"[^>]*\/>/gi, '\n!attachment\n')
       // Remove remaining tags
       .replace(/<[^>]+>/g, '')
       // Decode entities
@@ -713,7 +713,6 @@ module.exports = MigrationRunner;
 
 ```markdown
 
-
 ## Pre-Migration
 
 - [ ] Analyze source data
@@ -722,14 +721,12 @@ module.exports = MigrationRunner;
 - [ ] Test with small dataset
 - [ ] Verify API quota
 
-
 ## During Migration
 
 - [ ] Monitor progress
 - [ ] Check for errors
 - [ ] Handle rate limits
 - [ ] Log all operations
-
 
 ## Post-Migration
 

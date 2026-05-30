@@ -288,7 +288,7 @@ One command for all states reduces cognitive load
 
 ## Related Posts
 
-- [AI-Assisted Technical Writing: From Case Study to Published Portfolio in 30 Minutes](https://startaitools.com/posts/ai-assisted-technical-writing-automation-workflows/)
+- AI-Assisted Technical Writing: From Case Study to Published Portfolio in 30 Minutes
 - [Distributed Systems Architecture Patterns Cheat Sheet](https://startaitools.com/posts/distributed-systems-architecture-patterns-cheat-sheet/)
 
 ## What's Next

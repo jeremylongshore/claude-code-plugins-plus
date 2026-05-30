@@ -254,7 +254,7 @@ curl -X POST ${DEPLOY_URL}/webhooks/instantly \
 
 ## Resources
 
-- [Instantly Webhooks API](https://developer.instantly.ai/api/v2/webhook)
+- Instantly Webhooks API
 - [Cloud Run Docs](https://cloud.google.com/run/docs)
 - [Vercel Serverless Functions](https://vercel.com/docs/functions)
 

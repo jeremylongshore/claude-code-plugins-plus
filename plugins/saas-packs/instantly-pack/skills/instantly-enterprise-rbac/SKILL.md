@@ -298,7 +298,7 @@ async function changeWorkspaceOwner(newOwnerUserId: string) {
 
 ## Resources
 
-- [Instantly API Key Management](https://developer.instantly.ai/api/v2/apikey)
+- Instantly API Key Management
 - [Workspace Members API](https://developer.instantly.ai/)
 - [Custom Tags API](https://developer.instantly.ai/api/v2/schemas)
 

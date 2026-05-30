@@ -196,7 +196,7 @@ marketplace/
 ### Individual Skill Pages
 - Title: "{skill.name} - Agent Skill"
 - Description: {skill.description}
-- Canonical URL: https://claudecodeplugins.io/skills/{slug}/
+- Canonical URL:
 - JSON-LD structured data (Schema.org SoftwareSourceCode)
 - Breadcrumb navigation
 

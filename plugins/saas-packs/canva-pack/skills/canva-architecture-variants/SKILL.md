@@ -214,7 +214,7 @@ Service Layer → Microservice:
 ## Resources
 
 - [Canva Starter Kit](https://github.com/canva-sdks/canva-connect-api-starter-kit)
-- [Canva API Reference](https://www.canva.dev/docs/connect/api-reference/)
+- Canva API Reference
 - [Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)
 
 ## Next Steps

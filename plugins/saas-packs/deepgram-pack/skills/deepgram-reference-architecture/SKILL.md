@@ -326,6 +326,6 @@ class TranscriptionRouter {
 
 ## Resources
 
-- [Deepgram Architecture Guide](https://developers.deepgram.com/docs/architecture)
+- Deepgram Architecture Guide
 - [BullMQ Documentation](https://docs.bullmq.io/)
 - [WebSocket API](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)

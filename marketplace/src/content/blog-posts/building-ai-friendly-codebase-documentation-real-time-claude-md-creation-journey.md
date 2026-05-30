@@ -11,7 +11,7 @@ Have you ever wondered what happens when an AI needs to understand your codebase
 
 ## The Context: A Complex Analytics System
 
-I was working in my `/home/jeremy/analytics` directory when I ran the `/init` command in Claude Code. This command tells Claude to analyze the codebase and create a CLAUDE.md file that will help future instances work effectively with the project.
+I was working in my ` directory when I ran the `/init` command in Claude Code. This command tells Claude to analyze the codebase and create a CLAUDE.md file that will help future instances work effectively with the project.
 
 What makes this interesting is that my analytics system is genuinely complex:
 
@@ -106,7 +106,7 @@ The CLAUDE.md includes actual commands developers need:
 
 ```bash
 # Local database access
-sqlite3 /home/jeremy/analytics/databases/content_analytics.db
+sqlite3
 
 # Cloud access
 turso db shell waygate-mcp --location aws-us-east-1
@@ -192,9 +192,9 @@ That raises fascinating questions about AI self-awareness and documentation. Whe
 
 This connects to several other topics I've covered:
 
-- [When Commands Don't Work: A Debugging Journey Through Automated Content Systems](https://startaitools.com/posts/when-commands-dont-work-debugging-journey-through-automated-content-systems/) - The debugging process when complex systems interact
-- [Building a Professional Documentation Toolkit with Claude](https://startaitools.com/posts/ai-documentation-toolkit-journey/) - How AI can help create documentation frameworks
-- [Building a 254-Table BigQuery Schema in 72 Hours](https://startaitools.com/posts/building-254-table-bigquery-schema-72-hours/) - Another example of systematic database architecture
+- When Commands Don't Work: A Debugging Journey Through Automated Content Systems - The debugging process when complex systems interact
+- Building a Professional Documentation Toolkit with Claude - How AI can help create documentation frameworks
+- Building a 254-Table BigQuery Schema in 72 Hours - Another example of systematic database architecture
 
 ## Next Steps
 

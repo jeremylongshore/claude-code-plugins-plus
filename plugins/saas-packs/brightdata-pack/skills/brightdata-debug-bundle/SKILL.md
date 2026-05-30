@@ -160,7 +160,7 @@ echo "REVIEW FOR SENSITIVE DATA BEFORE SHARING"
 
 - [Bright Data Support Portal](https://brightdata.com/cp/support)
 - [Status Page](https://status.brightdata.com)
-- [Troubleshooting Guide](https://docs.brightdata.com/general/account/troubleshooting)
+- Troubleshooting Guide
 
 ## Next Steps
 

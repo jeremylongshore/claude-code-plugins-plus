@@ -184,7 +184,7 @@ def search_google(query: str, country: str = 'us'):
 
 ## Resources
 
-- [SERP API Docs](https://docs.brightdata.com/scraping-automation/serp-api/overview)
+- SERP API Docs
 - [Web Scraper API Trigger](https://docs.brightdata.com/scraping-automation/web-data-apis/web-scraper-api/trigger-a-collection)
 - [SERP API GitHub](https://github.com/luminati-io/serp-api)
 

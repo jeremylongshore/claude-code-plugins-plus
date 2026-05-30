@@ -116,4 +116,4 @@ npx playwright test --shard=1/3 --reporter=junit
 - pytest-xdist: https://pytest-xdist.readthedocs.io/
 - Playwright test sharding: https://playwright.dev/docs/test-sharding
 - GitHub Actions matrix strategy: https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
-- JUnit XML merge tools: https://github.com/imsky/junit-merge
+- JUnit XML merge tools:

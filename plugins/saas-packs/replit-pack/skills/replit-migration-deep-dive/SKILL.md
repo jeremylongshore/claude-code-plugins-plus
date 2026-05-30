@@ -298,7 +298,7 @@ migrate();
 - [Import from Bolt](https://docs.replit.com/getting-started/quickstarts/import-from-bolt)
 - [Import from Lovable](https://docs.replit.com/getting-started/quickstarts/import-from-lovable)
 - [Nix on Replit](https://docs.replit.com/programming-ide/nix-on-replit)
-- [Replit Deployments](https://docs.replit.com/hosting/deployments)
+- Replit Deployments
 
 ## Next Steps
 

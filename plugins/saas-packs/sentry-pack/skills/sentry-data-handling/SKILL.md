@@ -458,9 +458,9 @@ Sentry.withScope((scope) => {
 - [Server-Side Scrubbing](references/server-side-data-scrubbing.md) — dashboard configuration and advanced rules
 - [GDPR Compliance](references/gdpr-compliance.md) — consent handling, user deletion, and pseudonymization
 - [Error Handling Reference](references/errors.md) — common failure modes and solutions
-- [Sentry Data Privacy Docs](https://docs.sentry.io/product/data-management-settings/data-privacy/)
+- Sentry Data Privacy Docs
 - [Advanced Data Scrubbing](https://docs.sentry.io/product/data-management-settings/scrubbing/)
-- [Sentry GDPR Overview](https://sentry.io/legal/gdpr/)
+- Sentry GDPR Overview
 - [Data Processing Agreement](https://sentry.io/legal/dpa/)
 - [Sentry Security](https://sentry.io/security/)
 

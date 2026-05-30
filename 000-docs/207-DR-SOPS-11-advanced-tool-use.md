@@ -1502,7 +1502,7 @@ For complex agent systems processing large datasets across hundreds of tools, th
 ---
 
 **Related Playbooks:**
-- [Multi-Agent Rate Limits](01-multi-agent-rate-limits.md) - Coordinate tool calls across concurrent agents
-- [MCP Server Reliability](03-mcp-reliability.md) - Build self-healing tool backends
-- [Cost Attribution System](09-cost-attribution.md) - Track token usage per feature
-- [Progressive Enhancement](10-progressive-enhancement.md) - Roll out advanced features safely
+- Multi-Agent Rate Limits - Coordinate tool calls across concurrent agents
+- MCP Server Reliability - Build self-healing tool backends
+- Cost Attribution System - Track token usage per feature
+- Progressive Enhancement - Roll out advanced features safely

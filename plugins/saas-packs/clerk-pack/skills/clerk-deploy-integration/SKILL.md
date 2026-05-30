@@ -204,8 +204,8 @@ vercel env add CLERK_SECRET_KEY production                   # sk_live_...
 ## Resources
 
 - [Deploy to Vercel](https://clerk.com/docs/deployments/deploy-to-vercel)
-- [Deploy to Netlify](https://clerk.com/docs/deployments/deploy-to-netlify)
-- [Clerk Domain Configuration](https://clerk.com/docs/deployments/set-up-your-domain)
+- Deploy to Netlify
+- Clerk Domain Configuration
 
 ## Next Steps
 

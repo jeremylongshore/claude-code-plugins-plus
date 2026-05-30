@@ -184,5 +184,5 @@ def normalized_completion(messages, model, **kwargs):
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
+- Examples | Errors
 - [Supported Providers](https://openrouter.ai/models) | [Provider Routing](https://openrouter.ai/docs/features/provider-routing)

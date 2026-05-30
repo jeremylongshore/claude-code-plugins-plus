@@ -243,7 +243,7 @@ await createMonitor({
 ## Resources
 
 - [Exa Search Reference](https://docs.exa.ai/reference/search)
-- [Exa Find Similar](https://docs.exa.ai/reference/find-similar-links)
+- Exa Find Similar
 - [BullMQ Documentation](https://docs.bullmq.io/)
 
 ## Next Steps

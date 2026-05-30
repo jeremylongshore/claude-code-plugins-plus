@@ -215,7 +215,7 @@ async function runSecurityAudit() {
 
 ## Resources
 
-- [Apollo Security Practices](https://www.apollo.io/security)
+- Apollo Security Practices
 - [Create API Keys](https://docs.apollo.io/docs/create-api-key)
 - [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
 - [GCP Secret Manager](https://cloud.google.com/secret-manager/docs)

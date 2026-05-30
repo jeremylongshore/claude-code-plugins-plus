@@ -153,7 +153,7 @@ print(f"Proxy IP: {resp.json()['ip']}, Country: {resp.json()['country']}")
 ## Resources
 
 - [Bright Data Control Panel](https://brightdata.com/cp)
-- [Proxy Setup Docs](https://docs.brightdata.com/general/account/proxy-infrastructure)
+- Proxy Setup Docs
 - [SSL Certificate](https://docs.brightdata.com/general/account/ssl-certificate)
 
 ## Next Steps

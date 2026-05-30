@@ -251,7 +251,7 @@ CodeRabbit automatically reviews your PRs. No action needed on your part.
 
 - [CodeRabbit Getting Started](https://docs.coderabbit.ai/getting-started/yaml-configuration)
 - [CodeRabbit Configuration Reference](https://docs.coderabbit.ai/reference/configuration)
-- [Organization-Level Config](https://docs.coderabbit.ai/guides/organization-level-config)
+- Organization-Level Config
 
 ## Next Steps
 

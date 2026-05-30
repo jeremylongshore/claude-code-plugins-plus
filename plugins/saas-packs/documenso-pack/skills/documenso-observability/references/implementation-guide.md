@@ -273,15 +273,7 @@ export function logWebhookProcessed(
   success: boolean
 ): void {
   const level = success ? "info" : "error";
-  webhookLogger[level](
-    {
-      event,
-      documentId,
-      durationMs: duration,
-      success,
-    },
-    `Webhook ${success ? "processed" : "failed"}: ${event}`
-  );
+  webhookLoggerlevel;
 }
 ```
 

@@ -443,7 +443,7 @@ npx tsx migrate.ts --rollback --collection-id col-xxx --after 2026-03-22
 ## Resources
 
 - [CMS API Reference](https://developers.webflow.com/data/reference/cms)
-- [Bulk CMS Endpoints](https://developers.webflow.com/data/changelog/10232024)
+- Bulk CMS Endpoints
 - [Managing Collections](https://developers.webflow.com/data/docs/working-with-the-cms/manage-collections-and-items)
 - [Migrating to API v2](https://developers.webflow.com/data/docs/migrating-to-v2)
 

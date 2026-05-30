@@ -201,8 +201,8 @@ The body should be written in clear, directive markdown. Use second person ("Wri
 Skills can reference additional files that Claude will load on demand. Use standard markdown links with relative paths:
 
 ```markdown
-For API details, see [the API reference](reference.md).
-Review [the examples directory](examples/common-patterns.md) for templates.
+For API details, see the API reference.
+Review the examples directory for templates.
 ```
 
 When Claude encounters these links while executing a skill, it uses the `Read` tool to load the referenced file. This allows you to keep the main SKILL.md focused while providing deep reference material in supporting files.

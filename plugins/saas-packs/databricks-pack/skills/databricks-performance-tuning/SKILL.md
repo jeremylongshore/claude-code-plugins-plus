@@ -265,7 +265,7 @@ print(f"Before: {before:.1f}s, After: {after:.1f}s, Speedup: {before/after:.1f}x
 - [Performance Guide](https://docs.databricks.com/aws/en/delta/best-practices)
 - [Liquid Clustering](https://docs.databricks.com/aws/en/delta/clustering)
 - [OPTIMIZE](https://docs.databricks.com/aws/en/sql/language-manual/delta-optimize)
-- [AQE](https://docs.databricks.com/aws/en/sql/language-manual/sql-ref-syntax-qry-select-adaptive)
+- AQE
 
 ## Next Steps
 

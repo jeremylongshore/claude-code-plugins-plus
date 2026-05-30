@@ -51,8 +51,8 @@ Here's where it gets interesting. Let me show you what the broken slash command 
 
 ```markdown
 5. **Publish (After Approval)**
-   - Create file: `/home/jeremy/projects/blog/startaitools/content/posts/[slug].md`
-   - Run: `cd /home/jeremy/projects/blog/startaitools && hugo --gc --minify --cleanDestinationDir`
+   - Create file: `].md`
+   - Run: `cd  && hugo --gc --minify --cleanDestinationDir`
    - Verify build succeeds
    - Git commit with message: "feat: add blog post - [title]"
    - Git push to trigger Netlify deployment
@@ -76,15 +76,15 @@ Claude Code requires **explicit tool calls**. Here's the corrected version:
 
 ```markdown
 5. **Publish (After Approval)**
-   - Create file using Write tool: `/home/jeremy/projects/blog/startaitools/content/posts/[slug].md`
+   - Create file using Write tool: `].md`
    - Build production using Bash tool:
      ```bash
-     cd /home/jeremy/projects/blog/startaitools && hugo --gc --minify --cleanDestinationDir
+     cd  && hugo --gc --minify --cleanDestinationDir
      ```
    - Verify build output shows no errors
    - **CRITICAL: Execute git workflow using Bash tool:**
      ```bash
-     cd /home/jeremy/projects/blog/startaitools
+     cd
      git add content/posts/[slug].md
      git commit -m "feat: add blog post - [title]"
      git push origin main

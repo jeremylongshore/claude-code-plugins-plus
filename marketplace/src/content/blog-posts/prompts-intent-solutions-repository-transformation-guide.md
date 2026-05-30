@@ -343,14 +343,14 @@ The current architecture supports growth to **1000+ templates** through:
 
 ### Explore the Catalog
 
-🌐 **[Browse the full catalog →](https://jeremylongshore.github.io/prompts-intent-solutions/)**
+🌐 **Browse the full catalog →**
 
 ### Quick Start Templates
 
-1. **[Customer Complaint → Gold](https://github.com/jeremylongshore/prompts-intent-solutions/blob/main/prompts/business/customer-success/CS-001-complaint-to-gold.md)** - 73% success rate
-2. **[Invoice Follow-up Automation](https://github.com/jeremylongshore/prompts-intent-solutions/blob/main/prompts/business/finance/FINANCE-001-invoice-followup-automation.md)** - 94% collection rate
-3. **[LinkedIn Meeting Booker](https://github.com/jeremylongshore/prompts-intent-solutions/blob/main/prompts/business/marketing/MARKET-001-linkedin-meeting-booker.md)** - 89% response rate
-4. **[AI Assistant Setup](https://github.com/jeremylongshore/prompts-intent-solutions/blob/main/prompts/development/setup/SETUP-001-ai-assistant.md)** - Complete beginner guide
+1. **Customer Complaint → Gold** - 73% success rate
+2. **Invoice Follow-up Automation** - 94% collection rate
+3. **LinkedIn Meeting Booker** - 89% response rate
+4. **AI Assistant Setup** - Complete beginner guide
 
 ### Repository Stats
 
@@ -380,6 +380,6 @@ The **Prompts Intent Solutions** transformation proves that with systematic appr
 **🔗 Resources**
 
 - **Repository**: [prompts-intent-solutions](https://github.com/jeremylongshore/prompts-intent-solutions)
-- **Live Catalog**: [GitHub Pages Site](https://jeremylongshore.github.io/prompts-intent-solutions/)
+- **Live Catalog**: GitHub Pages Site
 - **Transformation Guide**: This comprehensive case study
-- **Claude Code Agents**: [74 Professional Configurations](https://github.com/jeremylongshore/prompts-intent-solutions/tree/main/prompts/specialized/claude-agents)
+- **Claude Code Agents**: 74 Professional Configurations

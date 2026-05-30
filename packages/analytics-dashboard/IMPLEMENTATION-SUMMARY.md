@@ -141,7 +141,7 @@ All criteria have been met:
 
 ## File Locations
 
-All files are in: `/home/jeremy/000-projects/claude-code-plugins/packages/analytics-dashboard/`
+All files are in: `
 
 ### New Files Created
 ```
@@ -174,7 +174,7 @@ IMPLEMENTATION-SUMMARY.md     ✅ This file
 
 ### 1. Start Backend Server
 ```bash
-cd /home/jeremy/000-projects/claude-code-plugins/packages/analytics-daemon
+cd
 pnpm build
 pnpm start
 ```
@@ -183,7 +183,7 @@ Expected: `Analytics server listening on ws://localhost:3456`
 
 ### 2. Start Frontend
 ```bash
-cd /home/jeremy/000-projects/claude-code-plugins/packages/analytics-dashboard
+cd
 pnpm dev
 ```
 
@@ -233,7 +233,7 @@ const MyComponent = () => {
   const events = useAnalyticsStore((state) => state.events);
   const totalCost = useAnalyticsStore((state) => state.totalCost);
   const pluginActivations = useAnalyticsStore((state) => state.pluginActivations);
-  
+
   // Use the data...
 };
 ```

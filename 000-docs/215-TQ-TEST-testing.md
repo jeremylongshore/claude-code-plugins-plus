@@ -578,7 +578,7 @@ jq empty .claude-plugin/marketplace.extended.json
 - [Docker Compose Documentation](https://docs.docker.com/compose/)
 - [Node.js Best Practices](https://nodejs.org/en/docs/)
 - [pnpm Documentation](https://pnpm.io/)
-- [CONTRIBUTING.md](./000-docs/007-DR-GUID-contributing.md) - Contribution guidelines
+- CONTRIBUTING.md - Contribution guidelines
 
 ## Support
 

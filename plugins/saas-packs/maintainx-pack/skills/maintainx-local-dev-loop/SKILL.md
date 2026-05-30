@@ -197,7 +197,7 @@ npm run repl
 
 ## Resources
 
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- MaintainX API Reference
 - [Vitest Documentation](https://vitest.dev/)
 - [tsx - TypeScript Execute](https://github.com/privatenumber/tsx)
 

@@ -186,7 +186,7 @@ exportConfiguration();
 
 #### Via Dashboard
 
-1. Log in to https://twinmind.com/settings/billing
+1. Log in to
 2. Click "Upgrade Plan"
 3. Select desired tier (Pro or Enterprise)
 4. Enter payment information
@@ -438,9 +438,9 @@ export function updateQueueForTier(tier: 'free' | 'pro' | 'enterprise') {
 
 ## Resources
 
-- [TwinMind Pricing](https://twinmind.com/pricing)
-- [Enterprise Features](https://twinmind.com/enterprise)
-- [Billing FAQ](https://twinmind.com/docs/billing)
+- TwinMind Pricing
+- Enterprise Features
+- Billing FAQ
 
 ## Next Steps
 

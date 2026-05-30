@@ -47,7 +47,7 @@ claude --dangerously-skip-permissions
 
 ```bash
 # Jeremy's directory had files owned by the wrong user
-ls -la /home/jeremy/.claude/debug/
+ls -la
 drwx------ 2 admincostplus admincostplus 12288 Oct 23 14:21 debug
 
 # This meant:
@@ -153,7 +153,7 @@ echo "   Admin user: $ADMIN_USER (uses symlinks to shared)"
 
 **For `jeremy` (master user):**
 
-- Uses real directories at `/home/jeremy/.claude`
+- Uses real directories at `
 - Full ownership and control
 - Changes sync to shared directory (manual rsync when needed)
 
@@ -196,7 +196,7 @@ Everything looked perfect. So why did Claude Code still fail for Jeremy?
 
 ```bash
 # Check Jeremy's actual .claude directory
-ls -la /home/jeremy/.claude/debug/
+ls -la
 drwx------ 2 admincostplus admincostplus 12288 Oct 23 14:21 debug
 
 # ❌ Jeremy's own directory was owned by admincostplus!
@@ -209,13 +209,13 @@ drwx------ 2 admincostplus admincostplus 12288 Oct 23 14:21 debug
 
 ```bash
 # Reclaim ownership of Jeremy's directories
-sudo chown -R jeremy:jeremy /home/jeremy/.claude
-sudo chown -R jeremy:jeremy /home/jeremy/.claude-code
-sudo chown -R jeremy:jeremy /home/jeremy/.config/claude
-sudo chown -R jeremy:jeremy /home/jeremy/.local/share/claude-code
+sudo chown -R jeremy:jeremy
+sudo chown -R jeremy:jeremy
+sudo chown -R jeremy:jeremy
+sudo chown -R jeremy:jeremy
 
 # Fix permissions
-sudo chmod 755 /home/jeremy/.claude
+sudo chmod 755
 ```
 
 **Critical lesson:** In multi-user debugging, always check ownership of the actual directories, not just the symlinks and shared locations.
@@ -265,7 +265,7 @@ sudo -iu admincostplus bash -lc 'readlink -f ~/.claude'
 
 # Test 2: Verify Jeremy uses real directories
 sudo -iu jeremy bash -lc 'readlink -f ~/.claude || echo "Real directory"'
-/home/jeremy/.claude  # ✅
+  # ✅
 
 # Test 3: Write permissions for admincostplus
 sudo -iu admincostplus bash -lc 'touch ~/.claude/test.txt && rm ~/.claude/test.txt'
@@ -366,7 +366,7 @@ During debugging, running commands as different users can leave landmines:
 
 ```bash
 # This creates files owned by admincostplus in jeremy's home
-sudo -u admincostplus touch /home/jeremy/.claude/test.txt
+sudo -u admincostplus touch
 
 # Later, jeremy can't delete or modify them
 # The solution: Always clean up after debugging
@@ -390,7 +390,7 @@ Before deploying this architecture:
 
 ## Related Reading
 
-- [Intent Solutions Portfolio 2025: Production Deployment Velocity](https://startaitools.com/posts/intent-solutions-portfolio-2025-production-deployment-velocity/) - Multi-platform production architecture patterns
+- Intent Solutions Portfolio 2025: Production Deployment Velocity - Multi-platform production architecture patterns
 - [Linux File Permissions Deep Dive](https://www.linux.com/training-tutorials/understanding-linux-file-permissions/) - Understanding chmod, chown, and permission bits
 - [Setgid Bit Explained](https://linuxconfig.org/how-to-use-special-permissions-the-setuid-setgid-and-sticky-bits) - Why the '2' in 2775 matters
 

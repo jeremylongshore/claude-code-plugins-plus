@@ -161,7 +161,7 @@ getLatestBlock().catch(console.error);
 
 ## Resources
 
-- [Alchemy SDK Reference](https://www.alchemy.com/docs/reference/sdk-getbalance)
+- Alchemy SDK Reference
 - [Alchemy NFT API](https://www.alchemy.com/docs/reference/nft-api-quickstart)
 - [Alchemy Enhanced APIs](https://www.alchemy.com/docs)
 

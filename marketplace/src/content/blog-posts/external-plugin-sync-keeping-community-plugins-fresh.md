@@ -387,9 +387,9 @@ We handle the sync, you keep coding.
 
 ## Related Posts
 
-- [AI-Assisted Technical Writing Automation Workflows](https://startaitools.com/ai-assisted-technical-writing-automation-workflows/) - Another example of automation reducing manual work
-- [Building Post-Compaction Recovery with Beads](https://startaitools.com/building-post-compaction-recovery-beads/) - How we solve context loss in AI sessions
-- [AI Dev Transformation Part 4: Dual AI Workflows](https://startaitools.com/ai-dev-transformation-part-4-dual-ai-workflows/) - Combining human and AI strengths
+- AI-Assisted Technical Writing Automation Workflows - Another example of automation reducing manual work
+- Building Post-Compaction Recovery with Beads - How we solve context loss in AI sessions
+- AI Dev Transformation Part 4: Dual AI Workflows - Combining human and AI strengths
 
 ## Resources
 

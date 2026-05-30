@@ -109,8 +109,8 @@ function track(op: 'search' | 'enrich', startMs: number, cached: boolean) {
 
 ## Resources
 
-- [Juicebox API Docs](https://docs.juicebox.work/api)
-- [Juicebox Performance Guide](https://docs.juicebox.work/performance)
+- Juicebox API Docs
+- Juicebox Performance Guide
 
 ## Next Steps
 

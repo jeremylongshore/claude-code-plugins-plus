@@ -148,7 +148,7 @@ See [Workflow Integration](references/workflow-integration.md) for the combined 
 
 ## Resources
 
-- [Shopify AI Toolkit](https://shopify.dev/docs/apps/build/ai)
+- Shopify AI Toolkit
 - [MCP Server Protocol](https://modelcontextprotocol.io/docs)
 - [Shopify Admin API Reference](https://shopify.dev/docs/api/admin-graphql)
 - [Shopify Theme Liquid Reference](https://shopify.dev/docs/api/liquid)

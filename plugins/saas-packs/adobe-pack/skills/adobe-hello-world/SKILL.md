@@ -211,7 +211,7 @@ removeBackground().catch(console.error);
 
 - [Firefly API Quickstart](https://developer.adobe.com/firefly-services/docs/firefly-api/guides/)
 - [PDF Services Node.js Quickstart](https://developer.adobe.com/document-services/docs/overview/pdf-services-api/quickstarts/nodejs/)
-- [Photoshop API Getting Started](https://developer.adobe.com/firefly-services/docs/photoshop/getting-started)
+- Photoshop API Getting Started
 
 ## Next Steps
 

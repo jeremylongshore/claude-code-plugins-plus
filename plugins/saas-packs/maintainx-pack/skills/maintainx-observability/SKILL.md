@@ -278,7 +278,7 @@ groups:
 
 ## Resources
 
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- MaintainX API Reference
 - [prom-client](https://github.com/siimon/prom-client) -- Prometheus metrics for Node.js
 - [Prometheus Alerting Rules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/)
 

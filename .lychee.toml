@@ -16,12 +16,18 @@ exclude_path = [
   ".audit-harness",
   "coverage",
   ".pnpm-store",
+  # VitePress-style site that uses its own root-relative routing
+  # (`/skills/foo`); lychee can't resolve those without the framework
+  # build step. Owned/maintained separately as a skill-enhancer.
+  "plugins/skill-enhancers/axiom/docs",
 ]
 
 # HTTP statuses to treat as success.
 # 403 / 429 are routinely returned by GitHub, Twitter/X, and other rate-limiting
 # hosts even when the link is fine — accept them rather than spam false positives.
-accept = [200, 206, 301, 302, 304, 403, 429]
+# 307 / 308 are routinely returned by login-gated dashboards (Mistral, Clerk,
+# Juicebox) that redirect unauthenticated requests; the link target still exists.
+accept = [200, 206, 301, 302, 304, 307, 308, 403, 429]
 
 # Per-request timeout (seconds)
 timeout = 20

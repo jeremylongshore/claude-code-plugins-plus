@@ -74,4 +74,4 @@ Use this skill to design and implement ADK agent code that is maintainable and s
 - Repo standards (source of truth):
   - `000-docs/6767-a-SPEC-DR-STND-claude-code-plugins-standard.md`
   - `000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md`
-- ADK / Agent Engine docs: https://cloud.google.com/vertex-ai/docs/agent-engine
+- ADK / Agent Engine docs:

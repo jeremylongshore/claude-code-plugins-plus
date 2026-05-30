@@ -75,4 +75,4 @@ Build and deploy production-ready agents on Vertex AI with Gemini models, retrie
 - Error-handling and recovery patterns: `${CLAUDE_SKILL_DIR}/references/errors.md`
 - Product / architecture context: `${CLAUDE_SKILL_DIR}/PRD.md`, `${CLAUDE_SKILL_DIR}/ARD.md`
 - Vertex AI docs: https://cloud.google.com/vertex-ai/docs
-- Agent Engine docs: https://cloud.google.com/vertex-ai/docs/agent-engine
+- Agent Engine docs:

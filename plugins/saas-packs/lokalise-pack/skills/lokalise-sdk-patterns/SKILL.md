@@ -352,7 +352,7 @@ console.log(`Download: ${bundle.bundle_url}`);
 - [Pagination Guide](https://lokalise.github.io/node-lokalise-api/api/getting-started.html)
 - [API Rate Limits](https://developers.lokalise.com/reference/api-rate-limits)
 - [API Error Codes](https://developers.lokalise.com/reference/api-errors)
-- [Branching](https://docs.lokalise.com/en/articles/3049428-branching)
+- Branching
 
 ## Next Steps
 

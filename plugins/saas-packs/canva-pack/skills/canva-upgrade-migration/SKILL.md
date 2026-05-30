@@ -172,7 +172,7 @@ async function createComment(designId: string, message: string, token: string) {
 
 - [Canva Changelog](https://www.canva.dev/docs/connect/changelog/)
 - [OpenAPI Spec](https://www.canva.dev/sources/connect/api/latest/api.yml)
-- [Canva API Reference](https://www.canva.dev/docs/connect/api-reference/)
+- Canva API Reference
 
 ## Next Steps
 

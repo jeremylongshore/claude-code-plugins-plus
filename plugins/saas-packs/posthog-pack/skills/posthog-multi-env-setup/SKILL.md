@@ -233,7 +233,7 @@ curl "https://app.posthog.com/api/projects/$POSTHOG_STAGING_PROJECT_ID/feature_f
 
 ## Resources
 
-- [PostHog Multi-Environment Feature Flags](https://posthog.com/docs/feature-flags/multi-environment-feature-flags)
+- PostHog Multi-Environment Feature Flags
 - [PostHog Next.js Integration](https://posthog.com/docs/libraries/next-js)
 - [PostHog Node.js SDK](https://posthog.com/docs/libraries/node)
 

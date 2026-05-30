@@ -191,5 +191,5 @@ for prompt in prompts:
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
-- [Models API](https://openrouter.ai/docs/api/api-reference/models/get-models) | [Streaming](https://openrouter.ai/docs/features/streaming)
+- Examples | Errors
+- [Models API](https://openrouter.ai/docs/api/api-reference/models/get-models) | Streaming

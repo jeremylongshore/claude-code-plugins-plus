@@ -188,7 +188,7 @@ openssl rand -hex 32  # NEXT_PRIVATE_ENCRYPTION_SECONDARY_KEY
 ## Resources
 
 - [OWASP API Security](https://owasp.org/www-project-api-security/)
-- [Documenso Security](https://documenso.com/security)
+- Documenso Security
 - [Webhook Verification Docs](https://docs.documenso.com/docs/developers/webhooks/verification)
 - [Self-Hosting: Signing Certificate](https://docs.documenso.com/developers/self-hosting/signing-certificate)
 

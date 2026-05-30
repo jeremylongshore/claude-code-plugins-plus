@@ -287,7 +287,7 @@ When enabled, Clay enriches incoming webhook data, sends results via HTTP API co
 ## Resources
 
 - [Clay Plans & Billing](https://university.clay.com/docs/plans-and-billing)
-- [Clay University -- Using Clay as an API](https://www.clay.com/university/guide/using-clay-as-an-api)
+- Clay University -- Using Clay as an API
 - [BullMQ Documentation](https://docs.bullmq.io/)
 
 ## Next Steps

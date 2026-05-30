@@ -388,7 +388,6 @@ class CompletionResult:
     total_tokens: int
     latency_ms: float
 
-
 class OpenRouterClient:
     def __init__(self, api_key: str | None = None, default_model: str = "openai/gpt-3.5-turbo"):
         self._client = OpenAI(
@@ -421,7 +420,6 @@ class OpenRouterClient:
                 else:
                     raise
 
-
 client = OpenRouterClient()
 result = client.complete("Summarize the water cycle.")
 print(result.content)
@@ -432,7 +430,7 @@ print(f"Tokens: {result.total_tokens}, Latency: {result.latency_ms}ms")
 
 - [OpenRouter Documentation](https://openrouter.ai/docs)
 - [OpenRouter Models](https://openrouter.ai/models)
-- [OpenRouter API Reference](https://openrouter.ai/docs/api-reference)
+- OpenRouter API Reference
 - [OpenRouter Status](https://status.openrouter.ai)
 
 ## Output
@@ -472,7 +470,6 @@ class CompletionResult:
     total_tokens: int
     latency_ms: float
 
-
 class OpenRouterClient:
     def __init__(self, api_key: str | None = None, default_model: str = "openai/gpt-3.5-turbo"):
         self._client = OpenAI(
@@ -505,7 +502,6 @@ class OpenRouterClient:
                 else:
                     raise
 
-
 client = OpenRouterClient()
 result = client.complete("Summarize the water cycle.")
 print(result.content)
@@ -516,7 +512,7 @@ print(f"Tokens: {result.total_tokens}, Latency: {result.latency_ms}ms")
 
 - [OpenRouter Documentation](https://openrouter.ai/docs)
 - [OpenRouter Models](https://openrouter.ai/models)
-- [OpenRouter API Reference](https://openrouter.ai/docs/api-reference)
+- OpenRouter API Reference
 - [OpenRouter Status](https://status.openrouter.ai)
 
 ---

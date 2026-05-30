@@ -15,19 +15,19 @@ Axiom has been successfully submitted to the major Claude Code plugin marketplac
 
 ### 1. jeremylongshore/claude-code-plugins-plus
 
-- **Issue:** https://github.com/jeremylongshore/claude-code-plugins-plus/issues/121
+- **Issue:**
 - **Status:** 🔄 Awaiting review
 - **Notes:** Most popular Claude Code marketplace with 240+ plugins
 
 ### 2. ananddtyagi/claude-code-marketplace
 
-- **Issue:** https://github.com/ananddtyagi/claude-code-marketplace/issues/15
+- **Issue:**
 - **Status:** 🔄 Awaiting review
 - **Notes:** Community-maintained marketplace
 
 ### 3. EveryInc/every-marketplace
 
-- **Issue:** https://github.com/EveryInc/compounding-engineering-plugin/issues/33
+- **Issue:**
 - **Status:** 🔄 Awaiting review
 - **Notes:** Community marketplace with focus on engineering tools
 

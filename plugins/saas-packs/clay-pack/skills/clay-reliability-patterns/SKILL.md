@@ -342,7 +342,7 @@ async function reliableEnrich(lead: Record<string, unknown>, webhookUrl: string)
 ## Resources
 
 - [Clay Community](https://community.clay.com)
-- [BullMQ Dead Letter Queue](https://docs.bullmq.io/guide/dead-letter-queue)
+- BullMQ Dead Letter Queue
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
 
 ## Next Steps

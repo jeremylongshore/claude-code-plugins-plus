@@ -229,7 +229,7 @@ class ExaRAGPipeline {
 
 - [Exa API Documentation](https://docs.exa.ai)
 - [Exa Contents Retrieval](https://docs.exa.ai/reference/contents-retrieval)
-- [Exa Find Similar](https://docs.exa.ai/reference/find-similar-links)
+- Exa Find Similar
 
 ## Next Steps
 

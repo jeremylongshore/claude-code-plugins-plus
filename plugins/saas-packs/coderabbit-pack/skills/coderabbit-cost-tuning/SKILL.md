@@ -197,7 +197,7 @@ cr review --prompt-only
 ## Resources
 
 - [CodeRabbit Pricing](https://coderabbit.ai/pricing)
-- [CodeRabbit Seat Management](https://docs.coderabbit.ai/guides/seat-management)
+- CodeRabbit Seat Management
 - [CodeRabbit CLI Pricing](https://www.coderabbit.ai/cli)
 
 ## Next Steps

@@ -209,7 +209,7 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
 
 - [Clerk Production Checklist](https://clerk.com/docs/deployments/overview)
 - [Clerk Security Best Practices](https://clerk.com/docs/security/overview)
-- [Clerk Domain Setup](https://clerk.com/docs/deployments/set-up-your-domain)
+- Clerk Domain Setup
 
 ## Next Steps
 

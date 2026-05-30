@@ -125,6 +125,6 @@ grep -c "customers/data_request\|customers/redact\|shop/redact" shopify.app.toml
 
 ## Resources
 
-- [Shopify App Store Requirements](https://shopify.dev/docs/apps/launch/app-requirements)
+- Shopify App Store Requirements
 - [ESLint Plugin Development](https://eslint.org/docs/latest/extend/plugins)
 - [git-secrets](https://github.com/awslabs/git-secrets)

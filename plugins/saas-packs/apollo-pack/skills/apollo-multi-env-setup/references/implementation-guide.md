@@ -293,7 +293,7 @@ class EnvironmentAwareApolloClient {
       const sanitized = this.config.logging.redactPII
         ? this.redactPII(meta)
         : meta;
-      console[level as 'log'](`[Apollo] ${message}`, sanitized);
+      consolelevel as 'log';
     }
   }
 

@@ -317,8 +317,8 @@ async function scanBoardForSecrets(boardId: string): Promise<SecurityAlert[]> {
 ## Resources
 
 - [Miro Privacy Policy](https://miro.com/legal/privacy-policy/)
-- [Miro Security](https://miro.com/security/)
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- Miro Security
+- GDPR Developer Guide
 - [CCPA Compliance](https://oag.ca.gov/privacy/ccpa)
 
 ## Next Steps

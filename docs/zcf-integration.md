@@ -25,11 +25,11 @@ npx zcf@latest i
 
 During ZCF installation, you'll see our servers as options:
 
-| Server | Description | Category |
-|--------|-------------|----------|
-| **Project Health Auditor** | Analyze code health, complexity, test coverage gaps | code-quality |
-| **Design to Code** | Convert Figma designs to React/Vue/Svelte components | design |
-| **Conversational API Debugger** | Debug REST APIs with OpenAPI specs and HTTP logs | api |
+| Server                          | Description                                          | Category     |
+| ------------------------------- | ---------------------------------------------------- | ------------ |
+| **Project Health Auditor**      | Analyze code health, complexity, test coverage gaps  | code-quality |
+| **Design to Code**              | Convert Figma designs to React/Vue/Svelte components | design       |
+| **Conversational API Debugger** | Debug REST APIs with OpenAPI specs and HTTP logs     | api          |
 
 ---
 
@@ -58,6 +58,7 @@ Use Claude Code's built-in commands to manage MCP servers:
 ### Recommended Workflows
 
 **For Code Review Sessions:**
+
 ```bash
 /mcp enable project-health-auditor
 /mcp disable design-to-code
@@ -65,6 +66,7 @@ Use Claude Code's built-in commands to manage MCP servers:
 ```
 
 **For API Development:**
+
 ```bash
 /mcp enable conversational-api-debugger
 /mcp disable project-health-auditor
@@ -72,6 +74,7 @@ Use Claude Code's built-in commands to manage MCP servers:
 ```
 
 **For UI Development:**
+
 ```bash
 /mcp enable design-to-code
 /mcp disable project-health-auditor
@@ -98,41 +101,48 @@ Use Claude Code's built-in commands to manage MCP servers:
 Our 7 MCP servers organized by use case:
 
 ### Code Quality
+
 - **project-health-auditor** - Analyze code health, complexity, test coverage gaps
 
 ### API Development
+
 - **conversational-api-debugger** - Debug REST APIs with OpenAPI specs
 
 ### Design & UI
+
 - **design-to-code** - Convert designs to React/Vue/Svelte components
 
 ### Knowledge Management
+
 - **domain-memory-agent** - Persist domain knowledge across sessions
 
 ### Workflow Automation
+
 - **workflow-orchestrator** - Multi-step automated workflows
 
 ### AI/ML Development
+
 - **ai-experiment-logger** - Track AI experiments, hyperparameters, results
 
 ### Memory Systems
+
 - **lumera-agent-memory** - Privacy-first agent memory with MCP
 
 ---
 
 ## BMAD Workflow Integration
 
-Our plugins are compatible with [BMAD (Breakthrough Method for Agile AI-Driven Development)](https://github.com/bmad-method) workflows.
+Our plugins are compatible with BMAD (Breakthrough Method for Agile AI-Driven Development) workflows.
 
 ### Available Workflows
 
 Located in `workflows/bmad/`:
 
-| Workflow | Agents | Duration |
-|----------|--------|----------|
-| **feature-planning** | Analyst, PM, Architect | 30-60 min |
-| **architecture-review** | Architect, Security, Reviewer | 20-40 min |
-| **full-development-cycle** | All 6 agents | 2-4 hours |
+| Workflow                   | Agents                        | Duration  |
+| -------------------------- | ----------------------------- | --------- |
+| **feature-planning**       | Analyst, PM, Architect        | 30-60 min |
+| **architecture-review**    | Architect, Security, Reviewer | 20-40 min |
+| **full-development-cycle** | All 6 agents                  | 2-4 hours |
 
 ### Using BMAD Workflows
 
@@ -152,20 +162,20 @@ cat workflows/bmad/full-development-cycle.md
 
 ### MCP Integration with BMAD Phases
 
-| Phase | Recommended MCP |
-|-------|-----------------|
-| Analysis | domain-memory-agent |
-| Planning | workflow-orchestrator |
-| Solutioning | project-health-auditor |
-| Implementation | design-to-code |
-| Testing | conversational-api-debugger |
-| Deployment | workflow-orchestrator |
+| Phase          | Recommended MCP             |
+| -------------- | --------------------------- |
+| Analysis       | domain-memory-agent         |
+| Planning       | workflow-orchestrator       |
+| Solutioning    | project-health-auditor      |
+| Implementation | design-to-code              |
+| Testing        | conversational-api-debugger |
+| Deployment     | workflow-orchestrator       |
 
 ---
 
 ## CCR (Claude Code Router) Compatibility
 
-Our MCP servers work with [CCR (Claude Code Router)](https://github.com/cognitrix/ccr) for routing requests to alternative LLM providers.
+Our MCP servers work with CCR (Claude Code Router) for routing requests to alternative LLM providers.
 
 ### Supported Configurations
 
@@ -181,6 +191,7 @@ Our MCP servers work with [CCR (Claude Code Router)](https://github.com/cognitri
 ### Using with Alternative Providers
 
 CCR can route to:
+
 - **OpenRouter** - Multiple model providers
 - **DeepSeek** - Cost-effective reasoning
 - **Ollama** - Local model inference
@@ -196,6 +207,7 @@ Our MCP tools work with any provider that supports function calling.
 Our marketplace includes ZCF configuration at the root:
 
 **config.zcf.json:**
+
 ```json
 {
   "zcf_integration": {
@@ -211,6 +223,7 @@ Our marketplace includes ZCF configuration at the root:
 ### MCP Presets
 
 **`.claude-plugin/mcp-presets.json`:**
+
 ```json
 {
   "presets": {
@@ -228,21 +241,27 @@ Our marketplace includes ZCF configuration at the root:
 ## Best Practices
 
 ### 1. Start Minimal
+
 Enable only the MCPs you need for your current task. Add more as needed.
 
 ### 2. Use Categories
+
 Group your work by MCP category (code-quality, api, design) to minimize context.
 
 ### 3. Compact Regularly
+
 Run `/compact` periodically to free context for tool schemas.
 
 ### 4. Disable Unused Servers
+
 If you haven't used an MCP in 30+ minutes, disable it:
+
 ```bash
 /mcp disable [server-name]
 ```
 
 ### 5. Combine with BMAD
+
 Use BMAD workflows to guide which MCPs to enable for each development phase.
 
 ---
@@ -290,11 +309,11 @@ npx zcf@latest i
 ## Resources
 
 - [ZCF Repository](https://github.com/UfoMiao/zcf)
-- [BMAD Method](https://github.com/bmad-method)
-- [CCR (Claude Code Router)](https://github.com/cognitrix/ccr)
+- BMAD Method
+- CCR (Claude Code Router)
 - [Claude Code Plugins Marketplace](https://claudecodeplugins.io/)
 - [MCP Registry](https://registry.modelcontextprotocol.io)
 
 ---
 
-*Part of Claude Code Plugins Marketplace - https://claudecodeplugins.io/*
+_Part of Claude Code Plugins Marketplace - https://claudecodeplugins.io/_

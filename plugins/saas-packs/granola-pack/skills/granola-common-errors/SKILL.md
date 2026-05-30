@@ -201,7 +201,7 @@ brew reinstall --cask granola
 ## Resources
 
 - [Transcription Troubleshooting](https://docs.granola.ai/help-center/troubleshooting/transcription-issues)
-- [How Transcription Works](https://docs.granola.ai/help-center/taking-notes/how-transcription-works)
+- How Transcription Works
 - [Granola Status Page](https://status.granola.ai)
 - [Granola Updates (Known Issues)](https://www.granola.ai/updates)
 

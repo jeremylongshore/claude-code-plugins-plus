@@ -325,7 +325,7 @@ actionable).
 ## Resources
 
 - [Anthropic Agent Spec](references/anthropic-agent-spec.md) — Official 16-field schema from code.claude.com/docs/en/sub-agents
-- [Agent template](${CLAUDE_SKILL_DIR}/../skill-creator/templates/agent-template.md) — Skeleton with placeholders
-- [Frontmatter spec](${CLAUDE_SKILL_DIR}/../skill-creator/references/frontmatter-spec.md) — Field reference (internal)
-- [Source of truth](${CLAUDE_SKILL_DIR}/../skill-creator/references/source-of-truth.md) — Canonical spec
-- [Validation rules](${CLAUDE_SKILL_DIR}/../skill-creator/references/validation-rules.md) — Agent validation section
+- Agent template — Skeleton with placeholders
+- Frontmatter spec — Field reference (internal)
+- Source of truth — Canonical spec
+- Validation rules — Agent validation section

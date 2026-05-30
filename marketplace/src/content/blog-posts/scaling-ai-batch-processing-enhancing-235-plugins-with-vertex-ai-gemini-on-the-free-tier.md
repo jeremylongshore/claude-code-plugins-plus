@@ -162,7 +162,7 @@ EOF
 
 **Recovery time objective:** < 30 minutes to restore complete repository from Turso.
 
-Related: [Building Production Testing Suite with Playwright](https://startaitools.com/posts/building-production-testing-suite-playwright-github-actions-survey-automation/) covers similar disaster recovery planning.
+Related: Building Production Testing Suite with Playwright covers similar disaster recovery planning.
 
 ### Phase 5: Speed Optimization Request
 
@@ -339,7 +339,7 @@ Using SQLite for enhancement tracking provided:
 - Backup-friendly (just copy the .db file)
 - No external dependencies
 
-Related: [Building 254 BigQuery Schemas in 72 Hours](https://startaitools.com/posts/building-254-table-bigquery-schema-72-hours/) shows similar database-driven automation patterns.
+Related: Building 254 BigQuery Schemas in 72 Hours shows similar database-driven automation patterns.
 
 ### 5. Smart Skipping Saves Money
 
@@ -352,7 +352,7 @@ The system automatically skips already-enhanced plugins:
 
 ## The Code
 
-Full implementation: [claude-code-plugins/scripts/overnight-plugin-enhancer.py](https://github.com/jeremylongshore/claude-code-plugins/blob/main/scripts/overnight-plugin-enhancer.py)
+Full implementation: claude-code-plugins/scripts/overnight-plugin-enhancer.py
 
 **Key files:**
 
@@ -419,9 +419,9 @@ nohup python3 -u scripts/overnight-plugin-enhancer.py >> batch.log 2>&1 &
 
 ## Related Reading
 
-- [Building AI-Friendly Codebases](https://startaitools.com/posts/building-ai-friendly-codebase-documentation-real-time-claude-md-creation-journey/) - Documentation systems for AI tools
-- [Automating Developer Workflows](https://startaitools.com/posts/debugging-claude-code-slash-commands-silent-deployment-failures/) - Building slash commands and automation
-- [Building Production Testing Suites](https://startaitools.com/posts/building-production-testing-suite-playwright-github-actions-survey-automation/) - Automated testing at scale
+- Building AI-Friendly Codebases - Documentation systems for AI tools
+- Automating Developer Workflows - Building slash commands and automation
+- Building Production Testing Suites - Automated testing at scale
 
 ## Conclusion
 

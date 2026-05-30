@@ -163,7 +163,7 @@ async function withAlchemyRetry<T>(
 
 ## Resources
 
-- [Alchemy Rate Limits](https://www.alchemy.com/docs/reference/rate-limits)
+- Alchemy Rate Limits
 - [Alchemy Compute Units](https://www.alchemy.com/docs/reference/compute-unit-costs)
 - [Bottleneck npm](https://www.npmjs.com/package/bottleneck)
 

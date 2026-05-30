@@ -124,7 +124,7 @@ export function mockSearchResponse(count = 3): SearchResponse {
 
 ## Resources
 
-- [Juicebox API Docs](https://docs.juicebox.work/sdk)
+- Juicebox API Docs
 
 ## Next Steps
 

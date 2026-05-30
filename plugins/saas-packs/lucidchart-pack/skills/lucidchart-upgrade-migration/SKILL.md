@@ -161,7 +161,7 @@ class LucidClient {
 ## Resources
 
 - [Lucid Developer Portal](https://developer.lucid.co/reference/overview)
-- [Lucid API Changelog](https://developer.lucid.co/changelog)
+- Lucid API Changelog
 
 ## Next Steps
 

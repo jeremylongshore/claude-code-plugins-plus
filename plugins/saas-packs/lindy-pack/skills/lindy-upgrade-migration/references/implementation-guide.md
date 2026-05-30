@@ -169,9 +169,9 @@ fi
 
 ## Resources
 
-- [Lindy Changelog](https://docs.lindy.ai/changelog)
-- [Migration Guide](https://docs.lindy.ai/migration)
-- [SDK Reference](https://docs.lindy.ai/sdk)
+- Lindy Changelog
+- Migration Guide
+- SDK Reference
 
 ## Next Steps
 

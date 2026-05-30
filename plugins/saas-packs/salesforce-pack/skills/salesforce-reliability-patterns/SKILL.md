@@ -251,7 +251,7 @@ class SalesforceDeadLetterQueue {
       const dlq: SfDeadLetter = JSON.parse(entry);
       try {
         const conn = await getConnection();
-        await conn.sobject(dlq.objectType)[dlq.operation](dlq.payload);
+        await conn.sobject(dlq.objectType)dlq.operation;
         processed++;
       } catch (error: any) {
         dlq.attempts++;

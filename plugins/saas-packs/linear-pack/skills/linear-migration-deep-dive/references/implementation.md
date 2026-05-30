@@ -199,8 +199,8 @@ function convertJiraToMarkdown(jiraMarkup: string | null): string {
   md = md.replace(/^\* /gm, "- ");
 
   // Links
-  md = md.replace(/\[([^\]|]+)\|([^\]]+)\]/g, "[$1]($2)");
-  md = md.replace(/\[([^\]]+)\]/g, "[$1]($1)");
+  md = md.replace(/\[([^\]|]+)\|([^\]]+)\]/g, "$1");
+  md = md.replace(/\[([^\]]+)\]/g, "$1");
 
   return md;
 }

@@ -174,5 +174,5 @@ echo "Results: $PASS passed, $FAIL failed"
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
+- Examples | Errors
 - [API Reference](https://openrouter.ai/docs/api/reference/overview) | [Status](https://status.openrouter.ai)

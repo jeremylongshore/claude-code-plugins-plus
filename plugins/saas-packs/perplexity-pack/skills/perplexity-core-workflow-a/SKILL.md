@@ -91,7 +91,7 @@ function formatAnswer(result: SearchResult): string {
 
   // Replace [1], [2] markers with markdown links
   result.citations.forEach((url, i) => {
-    formatted = formatted.replaceAll(`[${i + 1}]`, `[${i + 1}](${url})`);
+    formatted = formatted.replaceAll(`[${i + 1}]`, `${i + 1}`);
   });
 
   // Append source list

@@ -134,7 +134,7 @@ describe.skipIf(!hasKey)('Glean Live API', () => {
 ## Resources
 
 - [Glean Developer Portal](https://developers.glean.com/)
-- [Glean Indexing API](https://developers.glean.com/docs/indexing_api/overview)
+- Glean Indexing API
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 
 ## Next Steps

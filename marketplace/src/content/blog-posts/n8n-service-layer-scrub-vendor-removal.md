@@ -31,5 +31,5 @@ The lesson: vendor removal is a verb, not a typo fix. A good service-layer scrub
 
 ## Related Posts
 
-- [Claude Code + Astro: Automated Content Sync](https://startaitools.com/posts/claude-astro-content-sync/) — How to keep internal links coherent across structure changes
-- [Git Commit Hygiene: One Story Per PR](https://startaitools.com/posts/git-story-discipline/) — Why logical commits matter for narrative integrity
+- Claude Code + Astro: Automated Content Sync — How to keep internal links coherent across structure changes
+- Git Commit Hygiene: One Story Per PR — Why logical commits matter for narrative integrity

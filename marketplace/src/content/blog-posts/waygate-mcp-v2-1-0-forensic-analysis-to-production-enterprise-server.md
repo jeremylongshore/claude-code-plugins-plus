@@ -469,8 +469,8 @@ Waygate MCP v2.1.0 "Complete Arsenal" includes:
 
 This builds on our previous security work:
 
-- [When a Simple Security Audit Turns Into a 3-Hour Python Environment Battle](../security-audit-nightmare-python-environment-victory-waygate-mcp/)
-- [Building AI-Friendly Codebase Documentation](../building-ai-friendly-codebase-documentation-real-time-claude-md-creation-journey/)
+- When a Simple Security Audit Turns Into a 3-Hour Python Environment Battle
+- Building AI-Friendly Codebase Documentation
 
 ## The Complete Technical Achievement
 

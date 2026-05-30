@@ -198,7 +198,7 @@ export function createDebugClient(): Documenso {
 
 ### Step 4: Support Ticket Template
 
-When filing an issue on [GitHub](https://github.com/documenso/documenso/issues) or [Discord](https://documenso.com/discord):
+When filing an issue on [GitHub](https://github.com/documenso/documenso/issues) or Discord:
 
 ```markdown
 ## Environment
@@ -238,7 +238,7 @@ When filing an issue on [GitHub](https://github.com/documenso/documenso/issues) 
 ## Resources
 
 - [Documenso GitHub Issues](https://github.com/documenso/documenso/issues)
-- [Documenso Discord](https://documenso.com/discord)
+- Documenso Discord
 - [Status Page](https://status.documenso.com)
 - [API Reference](https://openapi.documenso.com/)
 

@@ -123,7 +123,7 @@ describe.skipIf(!hasKey)('Fathom Live API', () => {
 
 ## Resources
 
-- [Fathom API Documentation](https://fathom.video/api)
+- Fathom API Documentation
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 
 ## Next Steps

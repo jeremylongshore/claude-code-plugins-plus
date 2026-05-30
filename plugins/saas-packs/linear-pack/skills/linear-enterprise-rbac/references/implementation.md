@@ -33,7 +33,6 @@ logger = logging.getLogger(__name__)
 
 LINEAR_API_KEY = os.environ["LINEAR_API_KEY"]
 
-
 def graphql(query: str, variables: dict = None) -> dict:
     headers = {
         "Content-Type": "application/json",
@@ -55,7 +54,6 @@ def graphql(query: str, variables: dict = None) -> dict:
         raise RuntimeError(f"GraphQL errors: {result['errors']}")
     return result["data"]
 
-
 def list_workspace_members() -> list:
     query = """
     query {
@@ -68,7 +66,6 @@ def list_workspace_members() -> list:
     }
     """
     return graphql(query)["users"]["nodes"]
-
 
 def audit_member_roles() -> dict:
     """Produce a role audit report for all active workspace members."""
@@ -95,7 +92,6 @@ def audit_member_roles() -> dict:
 
     return report
 
-
 def enforce_least_privilege(allowed_admins: list) -> list:
     """Demote admins not in the allowed list. Returns list of demoted emails."""
     members = list_workspace_members()
@@ -114,7 +110,6 @@ def enforce_least_privilege(allowed_admins: list) -> list:
 
     return demoted
 
-
 def rotate_team_key_record(team: str, secret_backend: str = "github") -> None:
     """Document key rotation event -- actual rotation is manual in Linear UI."""
     entry = {
@@ -124,7 +119,6 @@ def rotate_team_key_record(team: str, secret_backend: str = "github") -> None:
         "backend": secret_backend,
     }
     logger.info("RBAC_AUDIT %s", json.dumps(entry))
-
 
 def create_audit_log_entry(event: str, actor: str, target: str, metadata: dict) -> None:
     """Write RBAC event to structured audit log."""
@@ -136,7 +130,6 @@ def create_audit_log_entry(event: str, actor: str, target: str, metadata: dict) 
         **metadata,
     }
     logger.info("RBAC_AUDIT %s", json.dumps(entry))
-
 
 def get_team_scope(team_id: str) -> dict:
     """Return members and configuration for a specific team."""
@@ -151,7 +144,6 @@ def get_team_scope(team_id: str) -> dict:
     }
     """
     return graphql(query, {"id": team_id})["team"]
-
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(message)s")
@@ -225,7 +217,7 @@ admin_group: "linear-admins"
 ## Resources
 
 - [Linear API -- Users](https://developers.linear.app/docs/graphql/working-with-the-graphql-api)
-- [Linear SAML SSO](https://linear.app/docs/saml)
+- Linear SAML SSO
 - [Linear Teams](https://linear.app/docs/teams)
 
 ---

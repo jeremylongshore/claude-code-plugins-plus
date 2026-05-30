@@ -65,7 +65,7 @@ print(answer)  # "According to [1], Node.js 22 adds..."
 # GOOD: replace markers with links
 import re
 for i, url in enumerate(citations, 1):
-    answer = answer.replace(f"[{i}]", f"[{i}]({url})")
+    answer = answer.replace(f"[{i}]", f"{i}")
 ```
 
 ### 3. Using Wrong SDK Import

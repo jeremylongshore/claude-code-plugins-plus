@@ -323,4 +323,4 @@ async function planSprint(teamKey: string, durationDays: number, issueIds: strin
 
 - [Project Model Schema](https://studio.apollographql.com/public/Linear-API/variant/current/schema/reference/objects/Project)
 - [Cycle Model Schema](https://studio.apollographql.com/public/Linear-API/variant/current/schema/reference/objects/Cycle)
-- [Linear Roadmaps Documentation](https://linear.app/docs/roadmaps)
+- Linear Roadmaps Documentation

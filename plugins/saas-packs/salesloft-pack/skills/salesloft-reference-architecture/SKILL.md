@@ -184,7 +184,7 @@ new CronJob('*/5 * * * *', async () => { // Every 5 minutes
 
 ## Resources
 
-- [SalesLoft API Reference](https://api.salesloft.com/swagger/index.html)
+- SalesLoft API Reference
 - [SalesLoft Developer Portal](https://developers.salesloft.com/)
 
 ## Next Steps

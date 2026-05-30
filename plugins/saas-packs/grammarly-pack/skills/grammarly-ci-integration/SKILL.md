@@ -134,7 +134,7 @@ describe.skipIf(!hasCredentials)('Grammarly Live API', () => {
 ## Resources
 
 - [Grammarly Developer API](https://developer.grammarly.com/)
-- [Grammarly Text API Reference](https://developer.grammarly.com/docs/api)
+- Grammarly Text API Reference
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 
 ## Next Steps

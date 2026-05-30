@@ -82,7 +82,7 @@ This worked. DNS record created. But now I need Caddy to serve it with TLS. Cadd
 
 ```
 demo.intentsolutions.io {
-  root * /home/jeremy/dental-billing-mcp/
+  root *
   file_server
 }
 ```
@@ -103,7 +103,7 @@ Time cost: ~5 minutes of waiting + re-triggering Caddy.
 
 ### Blocker 5: DNS Propagation Still Incomplete
 
-I shared the URL with stakeholders: "Visit https://demo.intentsolutions.io/dental-billing-mcp-architecture.html"
+I shared the URL with stakeholders: "Visit "
 
 They pinged back: "404 — could not be resolved."
 
@@ -117,13 +117,13 @@ Recovery: Swap to the plural form. `demos.intentsolutions.io` already existed in
 
 ```bash
 # This already existed from prior work
-ls -la /home/jeremy/demos/
+ls -la
 # -rw-r--r-- 1 jeremy jeremy ... dental-billing-mcp-architecture.html
 
 # Caddy config (already live, auto-serving)
 cat /etc/caddy/Caddyfile | grep -A 3 demos.intentsolutions.io
 # demos.intentsolutions.io {
-#   root * /home/jeremy/demos
+#   root *
 #   file_server browse
 # }
 

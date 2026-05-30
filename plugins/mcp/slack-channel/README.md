@@ -121,7 +121,7 @@ Author rules in `access.json.policy` to automate permission decisions for Claude
 - Successful approvals grant a TTL window scoped to `(rule, channel, thread)` so a chain of similar calls doesn't re-prompt.
 - Parse errors in `access.json.policy` are **fatal at boot** — policy is safety-critical, silent degradation is not offered. Missing or empty `policy` is fine (first-install path).
 
-Full schema reference: [`ACCESS.md`](ACCESS.md#policy-rules). Decision procedure: [`000-docs/policy-evaluation-flow.md`](000-docs/policy-evaluation-flow.md). Release scope and what was deliberately deferred: [`000-docs/v0.6.0-release-plan.md`](000-docs/v0.6.0-release-plan.md).
+Full schema reference: [`ACCESS.md`](ACCESS.md#policy-rules). Decision procedure: `000-docs/policy-evaluation-flow.md`. Release scope and what was deliberately deferred: `000-docs/v0.6.0-release-plan.md`.
 
 ## Access Control
 

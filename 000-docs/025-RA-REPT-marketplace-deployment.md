@@ -82,7 +82,7 @@ dist/
 ### Automatic Deployment (Recommended)
 ```bash
 # Navigate to repository
-cd /home/jeremy/000-projects/claude-code-plugins
+cd
 
 # Commit the workflow fix
 git add .github/workflows/deploy-marketplace.yml
@@ -113,7 +113,7 @@ git push origin main
 ## Required GitHub Setup
 
 ### 1. Enable GitHub Pages
-**URL:** https://github.com/jeremylongshore/claude-code-plugins/settings/pages
+**URL:**
 
 **Configuration:**
 ```
@@ -225,7 +225,7 @@ dig www.claudecodeplugins.io CNAME +short
 ### Build Fails in GitHub Actions
 ```bash
 # Test build locally first
-cd /home/jeremy/000-projects/claude-code-plugins/marketplace
+cd
 npm run build
 
 # Check for errors
@@ -242,7 +242,7 @@ npm run build
 ### Custom Domain Not Working
 ```bash
 # Verify CNAME in dist/
-cat /home/jeremy/000-projects/claude-code-plugins/marketplace/dist/CNAME
+cat
 
 # Check DNS propagation
 dig claudecodeplugins.io A +short
@@ -265,7 +265,7 @@ dig claudecodeplugins.io A +short
 
 ### Local Development
 ```bash
-cd /home/jeremy/000-projects/claude-code-plugins/marketplace
+cd
 npm install          # Install dependencies
 npm run dev          # Start dev server (localhost:4321)
 npm run build        # Build for production
@@ -274,7 +274,7 @@ npm run preview      # Preview production build
 
 ### Deployment
 ```bash
-cd /home/jeremy/000-projects/claude-code-plugins
+cd
 git add .
 git commit -m "Update marketplace: [description]"
 git push origin main  # Triggers automatic deployment
@@ -325,7 +325,7 @@ cat marketplace/dist/CNAME
 
 ### 1. Commit Workflow Fix
 ```bash
-cd /home/jeremy/000-projects/claude-code-plugins
+cd
 git add .github/workflows/deploy-marketplace.yml
 git add DEPLOYMENT_CHECKLIST.md
 git add marketplace/DEPLOYMENT_STATUS.md
@@ -335,7 +335,7 @@ git push origin main
 ```
 
 ### 2. Enable GitHub Pages
-1. Visit: https://github.com/jeremylongshore/claude-code-plugins/settings/pages
+1. Visit:
 2. Source: Select "GitHub Actions"
 3. Custom domain: Enter `claudecodeplugins.io`
 4. Enable "Enforce HTTPS"

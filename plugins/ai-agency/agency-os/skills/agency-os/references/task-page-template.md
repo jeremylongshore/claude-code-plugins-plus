@@ -35,6 +35,6 @@ every kickoff brief — keep it tight.)
 
 ## Related
 
-- Corpus: [→ {{CORPUS_NAME}}]({{CORPUS_URL}})
-- General guidance: [→ Guidance]({{GUIDANCE_URL}})
+- Corpus: → {{CORPUS_NAME}}
+- General guidance: → Guidance
 {{PARENT_LINE}}

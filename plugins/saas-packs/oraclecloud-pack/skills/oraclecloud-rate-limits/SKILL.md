@@ -266,7 +266,7 @@ print(f"SDK version: {oci.__version__}")
 
 ## Resources
 
-- [OCI API Request Limits](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apiconcepts.htm) — official rate limit documentation
+- OCI API Request Limits — official rate limit documentation
 - [Python SDK Retry Configuration](https://docs.oracle.com/en-us/iaas/tools/python/latest/) — RetryStrategyBuilder reference
 - [SDK Troubleshooting](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/sdk_troubleshooting.htm) — common SDK errors
 - [OCI Known Issues](https://docs.oracle.com/en-us/iaas/Content/knownissues.htm) — known service issues

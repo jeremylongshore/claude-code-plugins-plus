@@ -121,7 +121,7 @@ async function trackDeployment() {
     // Add deployment comment
     await client.createComment({
       issueId: issue.id,
-      body: `Deployed to **${values.env}**: [${values.url}](${values.url})\n\nCommit: \`${values.sha?.substring(0, 7)}\``,
+      body: `Deployed to **${values.env}**: ${values.url}\n\nCommit: \`${values.sha?.substring(0, 7)}\``,
     });
 
     // Auto-transition based on environment

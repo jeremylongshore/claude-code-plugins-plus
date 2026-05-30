@@ -162,7 +162,7 @@ def validate_output(response_text: str) -> str:
 
 ## Resources
 
-- [Anthropic Security Practices](https://www.anthropic.com/security)
+- Anthropic Security Practices
 - [Console Key Management](https://console.anthropic.com/settings/keys)
 - [Prompt Engineering Safety](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering)
 

@@ -93,7 +93,7 @@ curl -s -o /dev/null -w "%{http_code}" \
 ## Resources
 
 - [Lucid Developer Docs](https://developer.lucid.co/reference/overview)
-- [Lucid OAuth2 Guide](https://developer.lucid.co/guides/oauth2)
+- Lucid OAuth2 Guide
 
 ## Next Steps
 

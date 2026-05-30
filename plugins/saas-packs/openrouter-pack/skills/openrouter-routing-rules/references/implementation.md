@@ -461,7 +461,7 @@ ROUTING_RULES = [
 
 def route_request(prompt: str, user_tier: str = "paid") -> str:
     for rule in ROUTING_RULES:
-        if rule["condition"](prompt, user_tier):
+        if rule"condition":
             return rule["model"]
     return "openai/gpt-3.5-turbo"
 
@@ -484,7 +484,7 @@ print(chat("What is 2+2?"))                   # gpt-3.5-turbo (default)
 
 - [OpenRouter Documentation](https://openrouter.ai/docs)
 - [OpenRouter Models](https://openrouter.ai/models)
-- [OpenRouter API Reference](https://openrouter.ai/docs/api-reference)
+- OpenRouter API Reference
 - [OpenRouter Status](https://status.openrouter.ai)
 
 ## Output
@@ -526,7 +526,7 @@ ROUTING_RULES = [
 
 def route_request(prompt: str, user_tier: str = "paid") -> str:
     for rule in ROUTING_RULES:
-        if rule["condition"](prompt, user_tier):
+        if rule"condition":
             return rule["model"]
     return "openai/gpt-3.5-turbo"
 
@@ -549,7 +549,7 @@ print(chat("What is 2+2?"))                   # gpt-3.5-turbo (default)
 
 - [OpenRouter Documentation](https://openrouter.ai/docs)
 - [OpenRouter Models](https://openrouter.ai/models)
-- [OpenRouter API Reference](https://openrouter.ai/docs/api-reference)
+- OpenRouter API Reference
 - [OpenRouter Status](https://status.openrouter.ai)
 
 ---

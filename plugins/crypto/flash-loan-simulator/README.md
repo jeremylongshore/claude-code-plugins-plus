@@ -66,7 +66,7 @@ Simulate and analyze flash loan strategies including arbitrage, liquidations, an
 
 ```json
 {
-  "rpcEndpoint": "https://rpc.ankr.com/eth"
+  "rpcEndpoint": "eth"
 }
 ```
 
@@ -160,7 +160,7 @@ Simulate and analyze flash loan strategies including arbitrage, liquidations, an
     "gasPrice": "auto",
     "minProfitUSD": 50
   },
-  "rpcEndpoint": "https://rpc.ankr.com/eth"
+  "rpcEndpoint": "eth"
 }
 ```
 
@@ -188,10 +188,10 @@ Simulate and analyze flash loan strategies including arbitrage, liquidations, an
 ```json
 {
   "networks": {
-    "ethereum": "https://rpc.ankr.com/eth",
-    "polygon": "https://rpc.ankr.com/polygon",
-    "arbitrum": "https://rpc.ankr.com/arbitrum",
-    "optimism": "https://rpc.ankr.com/optimism"
+    "ethereum": "eth",
+    "polygon": "polygon",
+    "arbitrum": "arbitrum",
+    "optimism": "optimism"
   }
 }
 ```
@@ -244,7 +244,7 @@ const provider = new ethers.providers.JsonRpcProvider(
 
 // After (Ankr - FREE)
 const provider = new ethers.providers.JsonRpcProvider(
-  'https://rpc.ankr.com/eth'  // $0/mo
+  'eth'  // $0/mo
 );
 
 // Same simulation capability, zero cost
@@ -304,7 +304,7 @@ if (healthFactor < 1e18) {
 
 ```javascript
 const RPC_ENDPOINTS = {
-  development: 'https://rpc.ankr.com/eth',  // $0
+  development: 'eth',  // $0
   production: `https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`  // $49/mo
 };
 

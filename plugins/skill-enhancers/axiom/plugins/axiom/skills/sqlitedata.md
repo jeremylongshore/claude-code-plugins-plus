@@ -9,7 +9,7 @@ last_updated: TDD-tested with App Store migration crisis scenarios
 
 ## Overview
 
-Type-safe SQLite persistence using [SQLiteData](https://pointfreeco.github.io/sqlite-data/) ([GitHub](https://github.com/pointfreeco/sqlite-data)) by Point-Free. Built on [GRDB](https://github.com/groue/GRDB.swift), providing SwiftData-like ergonomics with CloudKit sync support.
+Type-safe SQLite persistence using SQLiteData ([GitHub](https://github.com/pointfreeco/sqlite-data)) by Point-Free. Built on [GRDB](https://github.com/groue/GRDB.swift), providing SwiftData-like ergonomics with CloudKit sync support.
 
 **Core principle:** Value types (`struct`) + `@Table` macros + static methods for type-safe database operations.
 
@@ -429,7 +429,7 @@ database.cloudKitConflictResolver = { serverRecord, clientRecord in
 }
 ```
 
-**For detailed CloudKit sync patterns:** See [SQLiteData CloudKit docs](https://pointfreeco.github.io/sqlite-data/documentation/sqlitedata/cloudkit)
+**For detailed CloudKit sync patterns:** See SQLiteData CloudKit docs
 
 ## When to Drop to GRDB
 
@@ -555,7 +555,7 @@ let count = try await Track.fetchCount(database)
 
 **SQLiteData:**
 
-- [Documentation](https://pointfreeco.github.io/sqlite-data/)
+- Documentation
 - [GitHub](https://github.com/pointfreeco/sqlite-data)
 - [Point-Free Episodes](https://www.pointfree.co) (video tutorials, subscription)
 

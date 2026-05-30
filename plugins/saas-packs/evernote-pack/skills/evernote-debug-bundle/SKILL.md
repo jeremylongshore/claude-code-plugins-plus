@@ -78,7 +78,7 @@ function instrumentNoteStore(noteStore, logger) {
       return async (...args) => {
         const start = Date.now();
         try {
-          const result = await target[prop](...args);
+          const result = await targetprop;
           logger.logRequest(prop, args, result, Date.now() - start);
           return result;
         } catch (error) {

@@ -22,4 +22,4 @@ When the Slack plugin is NOT installed:
 2. Register it in your Claude Code MCP config (separate from this plugin's `.mcp.json`)
 3. Configure Slack tokens in the bridge's `.env`
 
-See [000-docs/004-AT-REFF-slack-review-flow.md](../../000-docs/004-AT-REFF-slack-review-flow.md) for the review flow design.
+See 000-docs/004-AT-REFF-slack-review-flow.md for the review flow design.

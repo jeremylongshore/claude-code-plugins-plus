@@ -222,8 +222,8 @@ verifyMigration();
 
 - [Sentry SDK Documentation](https://docs.sentry.io/platforms/)
 - [Sentry Migration Guide](https://docs.sentry.io/product/accounts/migration/)
-- [Sentry vs Rollbar comparison](https://sentry.io/vs/rollbar/)
-- [Sentry vs Bugsnag comparison](https://sentry.io/vs/bugsnag/)
+- Sentry vs Rollbar comparison
+- Sentry vs Bugsnag comparison
 - [Source Maps Upload CLI](https://docs.sentry.io/platforms/javascript/sourcemaps/)
 - [Sentry Alert Configuration](https://docs.sentry.io/product/alerts/)
 

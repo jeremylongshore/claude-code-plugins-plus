@@ -34,7 +34,7 @@ Layer 1 fires synchronously in the hook; layers 2 and 3 use `asyncRewake` so the
 **Type:** progressive-disclosure
 **What it does:** Skills are loaded in three context-cost tiers. Tier 1 — the YAML `name` + `description` (~100 tokens) — is permanently in the system prompt for every skill the agent knows about. Tier 2 — the SKILL.md body (≤500 lines) — is read only when the description matches the user's intent. Tier 3 — `references/*.md`, `scripts/*`, `assets/*` — is read on demand, file by file, when the SKILL.md body points to it. Files never read consume zero context.
 
-**Anthropic example:** Every official skill. `anthropics/skills/skills/mcp-builder/SKILL.md` is the prototypical case: the body is a 4-phase workflow that references `reference/mcp_best_practices.md`, `reference/node_mcp_server.md`, `reference/python_mcp_server.md`, `reference/evaluation.md` with inline pointers like `"For TypeScript (recommended): [⚡ TypeScript Guide](./reference/node_mcp_server.md)"`. Claude reads only the language guide it needs. From `best-practices.md`:
+**Anthropic example:** Every official skill. `anthropics/skills/skills/mcp-builder/SKILL.md` is the prototypical case: the body is a 4-phase workflow that references `reference/mcp_best_practices.md`, `reference/node_mcp_server.md`, `reference/python_mcp_server.md`, `reference/evaluation.md` with inline pointers like `"For TypeScript (recommended): ⚡ TypeScript Guide"`. Claude reads only the language guide it needs. From `best-practices.md`:
 
 > "1. Metadata pre-loaded: At startup, the name and description from all Skills' YAML frontmatter are loaded into the system prompt. 2. Files read on-demand: Claude uses bash Read tools to access SKILL.md and other files from the filesystem when needed. 3. Scripts executed efficiently: Utility scripts can be executed via bash without loading their full contents into context. Only the script's output consumes tokens."
 
@@ -59,8 +59,8 @@ my-skill/
 [the 80% case inline]
 
 ## Advanced features
-**Form filling:** see [references/forms.md](references/forms.md)
-**API reference:** see [references/api.md](references/api.md)
+**Form filling:** see references/forms.md
+**API reference:** see references/api.md
 **Platform variants:** AWS [aws.md], GCP [gcp.md], Azure [azure.md]
 ```
 
@@ -413,7 +413,7 @@ return [findings[i] for i in survived_indices]
 
 **Anthropic example:**
 
-- `mcp-builder/SKILL.md` routes to `reference/node_mcp_server.md` *or* `reference/python_mcp_server.md` depending on the user's choice — *"For TypeScript (recommended): [⚡ TypeScript Guide](./reference/node_mcp_server.md). For Python: [🐍 Python Guide](./reference/python_mcp_server.md)."*
+- `mcp-builder/SKILL.md` routes to `reference/node_mcp_server.md` *or* `reference/python_mcp_server.md` depending on the user's choice — *"For TypeScript (recommended): ⚡ TypeScript Guide. For Python: 🐍 Python Guide."*
 - The official best-practices guide canonical example:
 
   ```text

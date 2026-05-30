@@ -299,7 +299,7 @@ async function syncContactMinimal(contactId: string) {
 
 - [Data Export API](https://developers.intercom.com/docs/references/rest-api/api.intercom.io/data-export/data_export)
 - [Contacts API](https://developers.intercom.com/docs/references/rest-api/api.intercom.io/contacts)
-- [GDPR Guide](https://gdpr.eu/developers/)
+- GDPR Guide
 - [Intercom Privacy](https://www.intercom.com/privacy)
 
 ## Next Steps

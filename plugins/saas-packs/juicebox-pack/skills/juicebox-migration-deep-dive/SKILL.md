@@ -43,7 +43,7 @@ compatibility: Designed for Claude Code
 
 ## Resources
 
-- [PeopleGPT Guide](https://docs.juicebox.work/peoplegpt)
+- PeopleGPT Guide
 
 ## Next Steps
 

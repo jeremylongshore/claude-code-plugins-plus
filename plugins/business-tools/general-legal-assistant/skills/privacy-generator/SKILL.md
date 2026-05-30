@@ -219,7 +219,7 @@ Result: `PRIVACY-POLICY-MyBlog-2026-04-02.md` detecting:
 
 ## Resources
 
-- [ICO Privacy Notice Code of Practice](https://ico.org.uk/for-organisations/guide-to-data-protection/guide-to-the-general-data-protection-regulation-gdpr/individual-rights/) — UK data protection authority
+- ICO Privacy Notice Code of Practice — UK data protection authority
 - [California Attorney General CCPA Guidance](https://oag.ca.gov/privacy/ccpa) — Official CCPA regulations
 - [FTC Data Security Guidance](https://www.ftc.gov/business-guidance/privacy-security) — Federal data protection standards
 - [GDPR Full Text (EUR-Lex)](https://eur-lex.europa.eu/eli/reg/2016/679/oj) — Official GDPR regulation

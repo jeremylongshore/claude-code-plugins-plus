@@ -232,8 +232,8 @@ export const usageTracker = new KlaviyoUsageTracker();
 ## Resources
 
 - [Klaviyo Pricing](https://www.klaviyo.com/pricing)
-- [Understanding Active Profiles](https://help.klaviyo.com/hc/en-us/articles/115005077967)
-- [Sunset Flow Best Practices](https://help.klaviyo.com/hc/en-us/articles/360002360091)
+- Understanding Active Profiles
+- Sunset Flow Best Practices
 - [Data Privacy API](https://developers.klaviyo.com/en/reference/data_privacy_api_overview)
 
 ## Next Steps

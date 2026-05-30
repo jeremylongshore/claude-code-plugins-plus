@@ -148,7 +148,7 @@ Cadence 500 Engagement:
 
 - [Email Activities](https://developers.salesloft.com/docs/api/)
 - [Call Activities](https://developers.salesloft.com/docs/api/)
-- [SalesLoft API Reference](https://api.salesloft.com/swagger/index.html)
+- SalesLoft API Reference
 
 ## Next Steps
 

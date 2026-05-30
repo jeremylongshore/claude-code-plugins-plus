@@ -49,7 +49,7 @@ Idempotent: if `notion-pointers.json` exists and every ID resolves via `notion-f
 10. **Sub-items — manual one-time toggle.** The Notion MCP doesn't expose the Sub-items setting either. On the Tasks DB, the operator must enable Sub-items and wire it to the existing `Parent Task` (parent) / `Subtasks` (children) relation. Path varies by Notion version: typically `...` menu -> "Sub-items" -> pick `Parent Task`. Once wired, every view in the Hub gets a chevron on rows with children.
 11. **Print** the Hub URL.
 
-`add-corpus "<name>"` extends the General Plan post-scaffold: appends a `Corpus` select option, creates the page, adds the filtered view, updates pointers. Print: `+ Corpus: [<name>](<url>)`.
+`add-corpus "<name>"` extends the General Plan post-scaffold: appends a `Corpus` select option, creates the page, adds the filtered view, updates pointers. Print: `+ Corpus: <name>`.
 
 ---
 
@@ -62,7 +62,7 @@ Add a row in `Suggestion` status.
 3. **Dedup check**: refuse if Title-Jaccard >= 0.8 against any row with status in `{Suggestion, Discussion, To-Do, In Progress}`.
 4. `notion-create-pages` with parent = Tasks data source. Properties: Title, Status=Suggestion, Corpus, Type, Cadence (if recurring), Effort. Page body = `task-page-template.md` rendered.
 5. If `--notes` provided, write into the Description section.
-6. Print: `+ Suggestion: [<title>](<url>)`.
+6. Print: `+ Suggestion: <title>`.
 
 ---
 
@@ -73,7 +73,7 @@ Begin clarification on a Suggestion. Flips status to Discussion and prepares the
 1. Sync preflight.
 2. Resolve `<id>` (UUID, URL, or unique Title substring against `Suggestion` rows).
 3. `notion-update-page` Status -> Discussion.
-4. **Print the discussion brief**: row properties + Description section. End with: `Ready to clarify. Ask your questions or paste new requirements; the skill will log them with /agency-os log <id> and create subtasks with /agency-os add-subtask <id>. [Open task](<task-url>)`
+4. **Print the discussion brief**: row properties + Description section. End with: `Ready to clarify. Ask your questions or paste new requirements; the skill will log them with /agency-os log <id> and create subtasks with /agency-os add-subtask <id>. Open task`
 5. The agent in this conversation now drives the clarification: it asks questions, accepts user answers, calls `log` for each round, calls `add-subtask` whenever the user's responses imply concrete new work.
 
 `discuss` does not require status to be `Suggestion` — calling it on an already-Discussion row is fine and reloads the brief.
@@ -93,7 +93,7 @@ Append a discussion entry to the task page.
    <entry>
    ```
 
-4. Print: `+ Logged: [<title>](<url>)`.
+4. Print: `+ Logged: <title>`.
 5. If the entry contains lines starting with `+` they're treated as proposed subtasks and surfaced in the output: `note: detected N proposed subtasks; create with /agency-os add-subtask <id> "<title>"`.
 
 The agent should call `log` multiple times during a discussion — once per Q/A round, or once per cohesive thought — rather than dumping a single megalogue at the end. This keeps the log queryable by date.
@@ -107,8 +107,8 @@ Create a subtask row.
 1. Sync preflight.
 2. Resolve `<parent-id>`. Refuse if parent's status is `Done` or `Killed`.
 3. `notion-create-pages` with parent = Tasks data source. Properties: Title, Status = parent's status (`Discussion` or `To-Do` typically), Corpus = parent's corpus, Parent Task = parent, Type = `one-time`, Effort from flag or default, Dependencies from `--deps` if provided (each id resolved live via Notion; refuse if any id is unknown).
-4. Append a line to the parent's Discussion log section: `### <date> — subtask added: [<title>](<url>)`.
-5. Print: `+ Subtask of <parent-title>: [<title>](<url>){  deps=N}`.
+4. Append a line to the parent's Discussion log section: `### <date> — subtask added: <title>`.
+5. Print: `+ Subtask of <parent-title>: <title>{  deps=N}`.
 
 Subtasks can have their own subtasks (nesting allowed; the skill doesn't enforce a depth limit but warns at depth >= 3).
 
@@ -154,7 +154,7 @@ Promote a task from Discussion -> To-Do, cascading active children.
 3. **Cascade**: collect every descendant with status in `{Suggestion, Discussion}`. For each, set Status -> To-Do.
 4. Set the parent's Status -> To-Do. If `--priority` provided, set on the parent only.
 5. Append a `### <date> — approved` entry to the parent's Discussion log.
-6. Print: `-> To-Do: [<title>](<url>)  (cascaded N subtasks)`.
+6. Print: `-> To-Do: <title>  (cascaded N subtasks)`.
 
 ---
 
@@ -170,7 +170,7 @@ Move To-Do -> In Progress and emit the kickoff brief.
 
    ```
    ## Task
-   [<title>](<notion-url>)  [<corpus> / <priority> / type=<type>{ cadence=<cadence>}{ last_done=<date>} / effort=<effort>]
+   <title>  [<corpus> / <priority> / type=<type>{ cadence=<cadence>}{ last_done=<date>} / effort=<effort>]
 
    ## Description
    <Description toggle body>
@@ -320,7 +320,7 @@ Every spawned agent:
 6. **Result report — required, every run, no exceptions.** The agent's final chat output MUST be a single block in this exact format. Returning nothing is not allowed — not on success, not on failure, not on a crash mid-execution. If the agent hit an unrecoverable error before it could do anything meaningful, it still emits the block with `status: failed` and describes what happened. The `status:` line in the report must agree with the final Notion status: `done` <-> Done, every other status <-> Discussion.
 
    ```
-   ### <task-id> — [<title>](<notion-url>)
+   ### <task-id> — <title>
    status:       done | blocked-operator | needs-clarification | failed
    model:        haiku | sonnet | opus
    result-link:  <url or ->
@@ -350,18 +350,18 @@ Emit the outline as plain markdown (no fenced code block, so the links are click
 **plan (`<N>` tasks, `<S>` stages):**
 
 - **stage 1** (`<K>` tasks, parallel):
-  - `[haiku]` [title](url)
-  - `[sonnet]` [title](url)
+  - `[haiku]` title
+  - `[sonnet]` title
   - ...
 - **stage 2** (`<L>` tasks, parallel, after stage 1):
-  - `[haiku]` [title](url) — deps: [dep-title](dep-url)
+  - `[haiku]` title — deps: dep-title
   - ...
 
 If any tasks were dropped for external blockers, follow with:
 
 **blocked-deps (`<B>` tasks, not dispatched):**
 
-- [title](url) — missing: [dep-title](dep-url) (or raw dep-id if unknown)
+- title — missing: dep-title (or raw dep-id if unknown)
 
 If `blocked-deps` is non-empty, also print: `note: <B> task(s) have dependencies outside this batch. Approve the missing deps or run them first, then /agency-os run again.`
 
@@ -373,7 +373,7 @@ In `--go` mode, after the outline, print a one-line marker — `dispatching stag
 
 ```
 ---
-### <task-id> — [<title>](<notion-url>)
+### <task-id> — <title>
 status:       done | blocked-operator | needs-clarification | failed
 model:        haiku | sonnet | opus
 result-link:  <url or ->
@@ -385,15 +385,15 @@ next-step:    <...>
 ---
 ```
 
-**2. Run summary** — after all per-task blocks. **Do NOT wrap the summary in a fenced code block** (```), because markdown links inside code fences render as literal text in Claude Code. Emit the summary as plain markdown so `[title](url)` links are clickable:
+**2. Run summary** — after all per-task blocks. **Do NOT wrap the summary in a fenced code block** (```), because markdown links inside code fences render as literal text in Claude Code. Emit the summary as plain markdown so `title` links are clickable:
 
 **run summary (T queued, S stages):**
 
-- ✅ done (`<N>`): [title](url), [title](url), ...
-- 🟡 needs operator (`<M>`): [title](url), ...
-- 🟡 needs clarification (`<P>`): [title](url), ...
-- 🟡 blocked-deps (`<B>`): [title](url) (dep: [dep-title](dep-url)), ...
-- ❌ failed (`<Q>`): [title](url), ...
+- ✅ done (`<N>`): title, title, ...
+- 🟡 needs operator (`<M>`): title, ...
+- 🟡 needs clarification (`<P>`): title, ...
+- 🟡 blocked-deps (`<B>`): title (dep: dep-title), ...
+- ❌ failed (`<Q>`): title, ...
 
 Omit any row whose count is 0.
 
@@ -415,7 +415,7 @@ Close a task. Branches on `Type`.
    - Status -> To-Do (loops back).
    - Last Done -> today.
    - Append `### <date>: done — <note>` to the Done log.
-5. Print: `✅ Done: [<title>](<result-link>)` (if no result-link, omit the link and print title as plain text).
+5. Print: `✅ Done: <title>` (if no result-link, omit the link and print title as plain text).
 
 ---
 
@@ -427,7 +427,7 @@ Terminal drop.
 2. Resolve `<id>` against any non-terminal row.
 3. Status -> Killed. Append `### <date>: killed — <reason>` to the Done log.
 4. **Cascade**: for every descendant in non-terminal status, also set Status -> Killed with reason `parent killed`.
-5. Print: `✗ Killed: [<title>](<url>)  ({<reason>})  (cascaded N descendants)`.
+5. Print: `✗ Killed: <title>  ({<reason>})  (cascaded N descendants)`.
 
 ---
 
@@ -438,7 +438,7 @@ Show top N (default 3) To-Do tasks. **Does not execute.**
 1. Sync preflight.
 2. Filter: `Status == "To-Do"` and (if `--corpus` given) matching corpus and **`Parent Task IS NULL`** (only top-level).
 3. Sort by Priority (1 first; unset last), then Type (recurring with overdue Last Done first), then Created ascending.
-4. Print N rows: `<idx>. [<priority>][<corpus>][<type>{<cadence>}][<effort>]  [<title>](<url>)  (/agency-os start <id>)`.
+4. Print N rows: `<idx>. [<priority>][<corpus>][<type>{<cadence>}][<effort>]  <title>  (/agency-os start <id>)`.
 
 For recurring tasks, "overdue" = `now - Last Done` exceeds the cadence interval (daily=1d, weekly=7d, biweekly=14d, monthly=30d, quarterly=90d, yearly=365d).
 
@@ -464,7 +464,7 @@ Compact health overview.
 
 Filtered listing. View in `suggestion | discussion | todo | inprogress | done | killed | recurring | all`.
 
-Output: `[Status][Type][Priority][Corpus]  [<title>](<url>)`.
+Output: `[Status][Type][Priority][Corpus]  <title>`.
 
 Subtasks are shown indented under their parent unless `--flat` is passed.
 
@@ -472,7 +472,7 @@ Subtasks are shown indented under their parent unless `--flat` is passed.
 
 ## Command: `show <id> [--section ...] [--entry <date>]`
 
-Read a task's content without mutating state. Always include a `[<title>](<url>)` link at the top of the output before showing the requested content.
+Read a task's content without mutating state. Always include a `<title>` link at the top of the output before showing the requested content.
 
 - Default: row properties + Description + subtask titles.
 - `--section description`: Description only.
@@ -484,7 +484,7 @@ Read a task's content without mutating state. Always include a `[<title>](<url>)
 
 ## Command: `update <id> ...`
 
-Mutate properties without changing status. All flags optional. Print: `✓ Updated: [<title>](<url>)`.
+Mutate properties without changing status. All flags optional. Print: `✓ Updated: <title>`.
 
 `--notes "..."` replaces the Description toggle body. To **append** without replacing, use `log` instead.
 
@@ -494,6 +494,6 @@ Mutate properties without changing status. All flags optional. Print: `✓ Updat
 
 ## Command: `move <id> --to <status>`
 
-Force-set status to any value (escape hatch). Bypasses normal flow gates. Logs a `### <date>: forced move <from> -> <to>` line to the Discussion log. Print: `-> <status>: [<title>](<url>)`.
+Force-set status to any value (escape hatch). Bypasses normal flow gates. Logs a `### <date>: forced move <from> -> <to>` line to the Discussion log. Print: `-> <status>: <title>`.
 
 ---

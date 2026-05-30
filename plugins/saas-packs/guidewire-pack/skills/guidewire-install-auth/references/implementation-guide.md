@@ -248,7 +248,7 @@ const client = new GuidewireClient(
 - [Guidewire Developer Portal](https://developer.guidewire.com/)
 - [Cloud API Authentication](https://docs.guidewire.com/education/cloud-integration-basics/latest/docs/authentication/cloud_api_auth/)
 - [Guidewire Hub Registration](https://docs.guidewire.com/cloud/pc/202503/cloudapica/cloudAPI/topics/702-AuthFlows/)
-- [Guidewire Cloud Console](https://gcc.guidewire.com/)
+- Guidewire Cloud Console
 
 ## Next Steps
 

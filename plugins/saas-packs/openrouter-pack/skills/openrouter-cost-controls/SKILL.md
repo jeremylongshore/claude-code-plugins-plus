@@ -194,5 +194,5 @@ fi
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
+- Examples | Errors
 - [Credits](https://openrouter.ai/credits) | [Key Provisioning](https://openrouter.ai/docs/guides/overview/auth/provisioning-api-keys)

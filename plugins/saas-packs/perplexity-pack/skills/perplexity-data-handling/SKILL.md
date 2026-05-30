@@ -126,7 +126,7 @@ function deduplicateCitations(citations: ValidatedCitation[]): ValidatedCitation
 function renderCitations(answer: string, citations: ValidatedCitation[]): string {
   let rendered = answer;
   for (const c of citations.filter((c) => c.valid)) {
-    rendered = rendered.replaceAll(`[${c.index}]`, `[${c.index}](${c.url})`);
+    rendered = rendered.replaceAll(`[${c.index}]`, `${c.index}`);
   }
   return rendered;
 }

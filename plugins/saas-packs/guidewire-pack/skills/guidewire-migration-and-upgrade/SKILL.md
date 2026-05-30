@@ -217,5 +217,5 @@ For deeper coverage (Migration Accelerator usage, parallel-run validation, blue-
 
 - [Guidewire Cloud Migration documentation (Migration Accelerator)](https://docs.guidewire.com/cloud/cloudcommons/latest/migration/)
 - [Guidewire release notes (per version)](https://docs.guidewire.com/cloud/pc/202503/releasenotes/)
-- [NAIC notification guidance — system migration](https://content.naic.org/cipr-topics)
+- NAIC notification guidance — system migration
 - [Martin Fowler — Strangler Fig migration pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)

@@ -845,4 +845,4 @@ tail -f /var/log/audit/audit.log | grep PHI_ACCESS
 
 **Last Updated**: 2025-12-24
 **Author**: Jeremy Longshore
-**Related Playbooks**: [Self-Hosted Stack Setup](./06-self-hosted-stack.md), [MCP Server Reliability](./03-mcp-reliability.md)
+**Related Playbooks**: Self-Hosted Stack Setup, MCP Server Reliability

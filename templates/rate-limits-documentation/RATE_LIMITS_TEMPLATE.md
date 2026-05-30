@@ -325,10 +325,10 @@ const config = DATA_SOURCES[process.env.NODE_ENV || 'development'];
 
 ## Resources
 
-- **[Service 1] API:** [[link](URL)] (FREE, [requirements])
-- **[Service 2] API:** [[link](URL)] (FREE, [requirements])
-- **[Service 3] Docs:** [[link](URL)] ([details])
-- **[Comparison/List]:** [[link](URL)] ([description])
+- **[Service 1] API:** [link] (FREE, [requirements])
+- **[Service 2] API:** [link] (FREE, [requirements])
+- **[Service 3] Docs:** [link] ([details])
+- **[Comparison/List]:** [link] ([description])
 
 ---
 

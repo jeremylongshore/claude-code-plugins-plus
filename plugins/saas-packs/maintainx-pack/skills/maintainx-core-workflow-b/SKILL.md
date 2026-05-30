@@ -182,7 +182,7 @@ console.log(`Work order #${wo.id} linked to asset ${pump.id}`);
 
 ## Resources
 
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- MaintainX API Reference
 - [Assets Help](https://help.getmaintainx.com/about-assets)
 - [Locations Help](https://help.getmaintainx.com/about-locations)
 

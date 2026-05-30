@@ -240,7 +240,7 @@ def audit_mistral_security():
 ## Resources
 
 - [Mistral Guardrails](https://docs.mistral.ai/capabilities/guardrailing/)
-- [Mistral Moderation API](https://docs.mistral.ai/api/endpoint/moderations/)
+- Mistral Moderation API
 - [OWASP LLM Top 10](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
 
 ## Output

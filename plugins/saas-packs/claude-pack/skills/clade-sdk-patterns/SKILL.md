@@ -229,8 +229,8 @@ See Client Configuration, Error Handling, Streaming Patterns, TypeScript Types, 
 
 ## Resources
 
-- [TypeScript SDK](https://github.com/anthropics/claude-sdk-typescript)
-- [Python SDK](https://github.com/anthropics/claude-sdk-python)
+- TypeScript SDK
+- Python SDK
 - [Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)
 - [Message Batches](https://docs.anthropic.com/en/api/creating-message-batches)
 

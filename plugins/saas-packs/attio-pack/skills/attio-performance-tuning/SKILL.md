@@ -288,7 +288,7 @@ const people = await timedRequest("query_people", () =>
 ## Resources
 
 - [Attio Pagination Guide](https://docs.attio.com/rest-api/guides/pagination)
-- [Attio Filtering and Sorting](https://docs.attio.com/rest-api/how-to/filtering-and-sorting)
+- Attio Filtering and Sorting
 - [Attio Rate Limiting](https://docs.attio.com/rest-api/guides/rate-limiting)
 - [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 

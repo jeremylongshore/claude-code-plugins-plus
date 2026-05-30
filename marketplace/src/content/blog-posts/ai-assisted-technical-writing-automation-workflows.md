@@ -118,7 +118,7 @@ Rather than using a single AI approach, we employed a **multi-agent verification
 
 ```bash
 # Navigate to personal blog repository
-cd /home/jeremy/projects/blog/jeremylongshore
+cd
 
 # Create new post with proper frontmatter
 cat > content/posts/diagnosticpro-case-study.md << 'EOF'

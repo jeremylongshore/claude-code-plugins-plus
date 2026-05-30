@@ -169,7 +169,7 @@ rm -rf "$BUNDLE_DIR"
 
 ## Resources
 
-- [Firecrawl Status](https://firecrawl.dev/status)
+- Firecrawl Status
 - [Firecrawl Dashboard](https://firecrawl.dev/app)
 - [GitHub Issues](https://github.com/mendableai/firecrawl/issues)
 

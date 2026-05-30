@@ -194,7 +194,7 @@ reviews:
 
 - [CodeRabbit Configuration](https://docs.coderabbit.ai/reference/configuration)
 - [CodeRabbit Path Filters](https://docs.coderabbit.ai/guides/review-instructions)
-- [CodeRabbit Security](https://coderabbit.ai/security)
+- CodeRabbit Security
 
 ## Next Steps
 

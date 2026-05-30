@@ -60,7 +60,7 @@ Procore is a construction management platform. This pack covers the **Procore RE
 - [Procore Developers](https://developers.procore.com/)
 - [REST API Reference](https://developers.procore.com/reference/rest)
 - [OAuth2 Endpoints](https://developers.procore.com/documentation/oauth-endpoints)
-- [Python SDK](https://github.com/fylein/procore-sdk-py)
+- Python SDK
 
 ## License
 

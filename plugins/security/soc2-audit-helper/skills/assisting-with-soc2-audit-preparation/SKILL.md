@@ -76,8 +76,8 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the six-phase impleme
 
 ## Resources
 
-- AICPA Trust Service Criteria (2017): https://www.aicpa.org/interestareas/frc/assuranceadvisoryservices/trustdataintegritytaskforce.html
-- SOC 2 Compliance Checklist: https://secureframe.com/hub/soc-2/checklist
+- AICPA Trust Service Criteria (2017):
+- SOC 2 Compliance Checklist:
 - CIS Controls v8: https://www.cisecurity.org/controls/
 - NIST Cybersecurity Framework: https://www.nist.gov/cyberframework
 - `${CLAUDE_SKILL_DIR}/references/readiness-by-trust-service-category.md` -- example per-criteria readiness breakdown

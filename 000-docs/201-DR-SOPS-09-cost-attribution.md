@@ -798,4 +798,4 @@ Generated: ${new Date().toISOString()}
 
 **Last Updated**: 2025-12-24
 **Author**: Jeremy Longshore
-**Related Playbooks**: [Cost Caps & Budget Management](./02-cost-caps.md), [Team Presets & Workflows](./08-team-presets.md)
+**Related Playbooks**: Cost Caps & Budget Management, Team Presets & Workflows

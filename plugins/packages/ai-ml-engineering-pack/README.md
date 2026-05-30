@@ -51,7 +51,7 @@ claude plugin install ai-ml-engineering-pack@claude-code-plugins-plus
 claude plugin list
 ```
 
-**Full installation guide:** [INSTALLATION.md](./INSTALLATION.md)
+**Full installation guide:** INSTALLATION.md
 
 ### 10-Minute Tutorial
 
@@ -79,7 +79,7 @@ claude
 "Implement PII detection and toxicity filtering for my chatbot"
 ```
 
-**Complete tutorial:** [QUICK_START.md](./QUICK_START.md)
+**Complete tutorial:** QUICK_START.md
 
 ## ROI & Value Proposition
 
@@ -96,7 +96,7 @@ Real-world results from production deployments:
 
 **Average ROI: 29,351%** | **Average payback period: 3 days**
 
-**Detailed case studies:** [USE_CASES.md](./USE_CASES.md)
+**Detailed case studies:** USE_CASES.md
 
 ## Plugin Reference
 
@@ -586,10 +586,10 @@ monitoring/
 
 ## Documentation
 
-- **[Installation Guide](./INSTALLATION.md)** - Prerequisites, setup, verification
-- **[Quick Start](./QUICK_START.md)** - 10-minute tutorial with examples
-- **[Use Cases](./USE_CASES.md)** - Real-world applications with ROI
-- **[Troubleshooting](./000-docs/157-DR-FAQS-troubleshooting.md)** - Common issues and solutions
+- **Installation Guide** - Prerequisites, setup, verification
+- **Quick Start** - 10-minute tutorial with examples
+- **Use Cases** - Real-world applications with ROI
+- **Troubleshooting** - Common issues and solutions
 
 ## Example Workflows
 
@@ -703,7 +703,7 @@ What's included:
 
 **Average payback period: 3 days**
 
-[Buy Now on Gumroad](https://gumroad.com/l/ai-ml-engineering-pack) | [Volume Licensing](mailto:[email protected])
+Buy Now on Gumroad | [Volume Licensing](mailto:[email protected])
 
 ## 🆘 Support
 
@@ -733,7 +733,7 @@ claude plugin update ai-ml-engineering-pack
 
 ## License
 
-MIT License - See [LICENSE](./000-docs/001-BL-LICN-license.txt) for details
+MIT License - See LICENSE for details
 
 **Commercial use permitted** - Use in commercial projects, redistribute, modify
 
@@ -749,9 +749,9 @@ Built with:
 
 ## Ready to Get Started?
 
-1. **[Install the pack](./INSTALLATION.md)** - 5-minute setup
-2. **[Complete Quick Start](./QUICK_START.md)** - Build your first AI feature in 10 minutes
-3. **[Explore use cases](./USE_CASES.md)** - See real-world ROI examples
+1. **Install the pack** - 5-minute setup
+2. **Complete Quick Start** - Build your first AI feature in 10 minutes
+3. **Explore use cases** - See real-world ROI examples
 4. **[Join the community](https://discord.com/invite/6PPFFzqPDZ)** - Connect with other AI/ML engineers
 
 ---

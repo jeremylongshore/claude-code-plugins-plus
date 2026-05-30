@@ -222,9 +222,9 @@ router.post('/lindy', async (req, res) => {
 
 ## Resources
 
-- [Lindy Webhooks](https://docs.lindy.ai/webhooks)
-- [Event Reference](https://docs.lindy.ai/webhooks/events)
-- [Security Best Practices](https://docs.lindy.ai/webhooks/security)
+- Lindy Webhooks
+- Event Reference
+- Security Best Practices
 
 ## Next Steps
 

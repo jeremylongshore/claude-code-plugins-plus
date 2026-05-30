@@ -197,7 +197,7 @@ async function rotateApiKey(oldKeyId: string, keyName: string): Promise<string> 
 ## Resources
 
 - [La Plateforme Console](https://console.mistral.ai/)
-- [Organizations & Workspaces](https://docs.mistral.ai/deployment/ai-studio/organization/)
+- Organizations & Workspaces
 - [Rate Limits & Tiers](https://docs.mistral.ai/deployment/ai-studio/tier/)
 
 ## Output

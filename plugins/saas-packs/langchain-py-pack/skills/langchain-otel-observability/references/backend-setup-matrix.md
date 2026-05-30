@@ -179,6 +179,6 @@ in your new backend.
 - OTEL Python SDK — https://opentelemetry.io/docs/languages/python/
 - OpenLLMetry — https://github.com/traceloop/openllmetry
 - Jaeger — https://www.jaegertracing.io/docs/1.62/
-- Honeycomb OTLP — https://docs.honeycomb.io/getting-data-in/otlp/
+- Honeycomb OTLP —
 - Grafana Tempo — https://grafana.com/docs/tempo/latest/
 - Datadog OTLP — https://docs.datadoghq.com/opentelemetry/

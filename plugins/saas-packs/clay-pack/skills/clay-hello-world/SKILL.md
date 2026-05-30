@@ -153,7 +153,7 @@ print("Record sent to Clay — check your table for enriched data.")
 ## Resources
 
 - [Clay University — Webhook Integration Guide](https://university.clay.com/docs/webhook-integration-guide)
-- [Clay University — Using Clay as an API](https://www.clay.com/university/guide/using-clay-as-an-api)
+- Clay University — Using Clay as an API
 
 ## Next Steps
 

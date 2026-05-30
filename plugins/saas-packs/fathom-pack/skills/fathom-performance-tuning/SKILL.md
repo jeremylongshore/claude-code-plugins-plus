@@ -111,7 +111,7 @@ function trackDownload(startMs: number, cached: boolean, rateLimited: boolean) {
 
 ## Resources
 
-- [Fathom API Docs](https://fathom.video/developers)
+- Fathom API Docs
 
 ## Next Steps
 

@@ -214,5 +214,5 @@ curl -s https://status.openrouter.ai/api/v2/status.json | jq '.status'
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
-- [Generation API](https://openrouter.ai/docs/api/api-reference/generation-queries/query-a-generation) | [Status](https://status.openrouter.ai)
+- Examples | Errors
+- Generation API | [Status](https://status.openrouter.ai)

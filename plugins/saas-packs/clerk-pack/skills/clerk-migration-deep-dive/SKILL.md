@@ -267,8 +267,8 @@ async function verifyMigration() {
 ## Resources
 
 - [Clerk Migration Overview](https://clerk.com/docs/deployments/migrate-overview)
-- [Migrate from Auth0](https://clerk.com/docs/deployments/migrate-from-auth0)
-- [Migrate from NextAuth](https://clerk.com/docs/deployments/migrate-from-nextauth)
+- Migrate from Auth0
+- Migrate from NextAuth
 
 ## Next Steps
 

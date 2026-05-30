@@ -144,7 +144,7 @@ async function rollbackDeployment(namespace: string, name: string): Promise<void
 ## Resources
 
 - [CoreWeave GPU Instances](https://docs.coreweave.com/docs/platform/instances/gpu-instances)
-- [CoreWeave Kubernetes Docs](https://docs.coreweave.com/docs/platform/kubernetes)
+- CoreWeave Kubernetes Docs
 - [CoreWeave Changelog](https://docs.coreweave.com/docs/release-notes)
 
 ## Next Steps

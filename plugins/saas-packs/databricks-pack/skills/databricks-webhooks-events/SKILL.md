@@ -260,7 +260,7 @@ databricks notification-destinations list --output json | \
 ## Resources
 
 - [Job Notifications](https://docs.databricks.com/aws/en/jobs/monitor)
-- [Notification Destinations](https://docs.databricks.com/aws/en/admin/notification-destinations)
+- Notification Destinations
 - [System Tables](https://docs.databricks.com/aws/en/admin/system-tables/)
 - [SQL Alerts](https://docs.databricks.com/aws/en/sql/user/alerts/)
 

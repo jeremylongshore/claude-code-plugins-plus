@@ -85,7 +85,7 @@ const redactionRules = [
   { name: 'credit_card', pattern: /\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b/g, replacement: '[CARD REDACTED]' },
   { name: 'phone', pattern: /\b(\+1[-\s]?)?\(?\d{3}\)?[-\s]?\d{3}[-\s]?\d{4}\b/g, replacement: '[PHONE REDACTED]' },
   { name: 'email', pattern: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, replacement: '[EMAIL REDACTED]' },
-  { name: 'date_of_birth', pattern: /\b(0?[1-9]|1[0-2])[\/\-](0?[1-9]|[12]\d|3[01])[\/\-](19|20)\d{2}\b/g, replacement: '[DOB REDACTED]' },
+  { name: 'date_of_birth', pattern: /\b(0?[1-9]|1[0-2])\/\-\/\-\d{2}\b/g, replacement: '[DOB REDACTED]' },
 ];
 
 export function redactPII(transcript: string) {

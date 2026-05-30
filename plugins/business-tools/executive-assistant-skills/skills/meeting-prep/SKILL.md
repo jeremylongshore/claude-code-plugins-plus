@@ -353,6 +353,6 @@ See the Steps section above (For each meeting: Steps 1 through 5) and the Cron C
 - [Google Calendar API](https://developers.google.com/calendar/api)
 - [Gmail API](https://developers.google.com/gmail/api)
 - [Granola API](https://granola.ai/docs)
-- [Grain API](https://grain.com/docs)
+- Grain API
 - [LinkedIn](https://www.linkedin.com)
 - [Crunchbase](https://www.crunchbase.com)

@@ -8,11 +8,11 @@
 
 Click "Open in Colab" badges below to run in your browser:
 
-- **[01-mental-model.ipynb](01-mental-model.ipynb)** ✅ - 5-minute introduction to the test harness pattern
-- **[02-orchestration-pattern.ipynb](02-orchestration-pattern.ipynb)** ✅ - Complete 60-min reference guide
-- **[03-architecture-deep-dive.ipynb](03-architecture-deep-dive.ipynb)** *(Coming soon)* - Architecture breakdown
-- **[04-build-your-own.ipynb](04-build-your-own.ipynb)** *(Coming soon)* - Build custom workflows
-- **[05-debugging-tips.ipynb](05-debugging-tips.ipynb)** *(Coming soon)* - Troubleshooting guide
+- **01-mental-model.ipynb** ✅ - 5-minute introduction to the test harness pattern
+- **02-orchestration-pattern.ipynb** ✅ - Complete 60-min reference guide
+- **03-architecture-deep-dive.ipynb** *(Coming soon)* - Architecture breakdown
+- **04-build-your-own.ipynb** *(Coming soon)* - Build custom workflows
+- **05-debugging-tips.ipynb** *(Coming soon)* - Troubleshooting guide
 
 ### Option 2: Local Jupyter
 

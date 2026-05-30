@@ -924,10 +924,10 @@ axios(config)
 
 ## Documentation
 
-- [Swagger UI](./index.html) - Interactive API documentation
-- [ReDoc](./redoc.html) - Alternative documentation format
-- [OpenAPI Spec](./openapi.json) - Raw OpenAPI specification
-- [Postman Collection](./collections/postman_collection.json) - Import to Postman
+- Swagger UI - Interactive API documentation
+- ReDoc - Alternative documentation format
+- OpenAPI Spec - Raw OpenAPI specification
+- Postman Collection - Import to Postman
 
 ## SDKs
 
@@ -1584,9 +1584,9 @@ func main() {{
 
 ## Documentation
 
-- [OpenAPI Specification](./openapi.json)
-- [Postman Collection](./postman_collection.json)
-- [AsyncAPI Specification](./asyncapi.yaml) (if applicable)
+- OpenAPI Specification
+- Postman Collection
+- AsyncAPI Specification (if applicable)
 
 ## Quick Start
 

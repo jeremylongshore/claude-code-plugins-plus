@@ -113,8 +113,8 @@ curl -s -o /dev/null -w "HTTP %{http_code}\n" \
 
 ## Resources
 
-- [Grammarly Developer Docs](https://developer.grammarly.com/docs)
-- [Grammarly API Support](https://developer.grammarly.com/docs/support)
+- Grammarly Developer Docs
+- Grammarly API Support
 
 ## Next Steps
 

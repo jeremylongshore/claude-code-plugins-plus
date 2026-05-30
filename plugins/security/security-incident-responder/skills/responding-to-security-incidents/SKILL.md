@@ -78,7 +78,7 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the seven-phase imple
 
 - NIST SP 800-61r2 Computer Security Incident Handling Guide: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r2.pdf
 - SANS Incident Handler's Handbook: https://www.sans.org/white-papers/33901/
-- CISA Incident Response Guide: https://www.cisa.gov/incident-response
+- CISA Incident Response Guide:
 - Volatility Framework (memory forensics): https://www.volatilityfoundation.org/
 - Autopsy (disk forensics): https://www.autopsy.com/
 - `${CLAUDE_SKILL_DIR}/references/errors.md` -- full error handling reference

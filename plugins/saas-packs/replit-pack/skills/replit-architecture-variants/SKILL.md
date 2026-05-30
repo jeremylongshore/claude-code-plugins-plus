@@ -254,7 +254,7 @@ Single-File → Modular App → Multi-Service
 
 ## Resources
 
-- [Replit Deployments](https://docs.replit.com/hosting/deployments)
+- Replit Deployments
 - [Replit Database Options](https://docs.replit.com/category/storage-and-databases)
 - [Upstash (Redis/Kafka)](https://upstash.com)
 - [Neon (PostgreSQL)](https://neon.tech)

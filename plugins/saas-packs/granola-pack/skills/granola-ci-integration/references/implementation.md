@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Update Meeting Log
         run: |
-          echo "| ${{ github.event.client_payload.date }} | ${{ github.event.client_payload.title }} | [Link](${{ github.event.client_payload.url }}) |" >> docs/meetings.md
+          echo "| ${{ github.event.client_payload.date }} | ${{ github.event.client_payload.title }} | Link |" >> docs/meetings.md
       - name: Create Issues for Actions
         uses: actions/github-script@v7
         with:

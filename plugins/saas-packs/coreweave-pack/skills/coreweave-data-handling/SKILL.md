@@ -124,7 +124,7 @@ function validateArtifact(artifact: ModelArtifact): string[] {
 
 ## Resources
 
-- [CoreWeave Storage Docs](https://docs.coreweave.com/storage)
+- CoreWeave Storage Docs
 - [Kubernetes PVC Reference](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
 
 ## Next Steps

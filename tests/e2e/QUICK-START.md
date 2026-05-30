@@ -5,7 +5,7 @@ Get your E2E test suite running in 5 minutes.
 ## TL;DR
 
 ```bash
-cd /home/jeremy/000-projects/claude-code-plugins/marketplace/
+cd
 
 # Install dependencies
 npm install -D @axe-core/playwright
@@ -81,7 +81,7 @@ npx playwright test tests/regression/conversation-view.spec.ts
 ## File Locations
 
 ```
-/home/jeremy/000-projects/claude-code-plugins/
+
 ├── tests/e2e/                                    # NEW: Design docs
 │   ├── MARKETPLACE-E2E-ARCHITECTURE.md          # Main design doc
 │   ├── IMPLEMENTATION-SUMMARY.md                # Roadmap & phases

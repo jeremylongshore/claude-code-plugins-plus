@@ -357,6 +357,6 @@ async function rotateExpiringKeys(
 
 ## Resources
 
-- [API Key Management](https://developers.deepgram.com/docs/api-key-management)
-- [Project Management](https://developers.deepgram.com/docs/projects)
+- API Key Management
+- Project Management
 - [Deepgram Enterprise](https://deepgram.com/enterprise)

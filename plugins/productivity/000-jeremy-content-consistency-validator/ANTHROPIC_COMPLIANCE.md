@@ -332,7 +332,7 @@ metadata:                                # Could add tracking
 
 **Anthropic Spec Reference:**
 
-- https://github.com/anthropics/skills/blob/main/agent_skills_spec.md
+-
 
 **Generated:** 2025-10-23
 **Last Reviewed:** 2025-10-23

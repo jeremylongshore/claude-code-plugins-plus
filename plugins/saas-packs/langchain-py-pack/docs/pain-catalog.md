@@ -1087,7 +1087,7 @@ schema support.
 
 - [LangChain 1.0 release announcement](https://blog.langchain.com/langchain-langgraph-1dot0/)
 - [LangChain Python docs](https://python.langchain.com/docs/)
-- [LangGraph concepts](https://langchain-ai.github.io/langgraph/concepts/)
+- LangGraph concepts
 - [LangGraph persistence](https://langchain-ai.github.io/langgraph/concepts/persistence/)
 - [LangGraph streaming](https://langchain-ai.github.io/langgraph/how-tos/streaming/)
 - [LangGraph HITL](https://langchain-ai.github.io/langgraph/concepts/human_in_the_loop/)

@@ -309,7 +309,7 @@ See: [Team Exercise Facilitator Guide](references/team-exercise.md)
 ## Further Reading
 
 - [Obviously Awesome by April Dunford](https://www.amazon.com/Obviously-Awesome-Product-Positioning-Customers/dp/1999023005?tag=wondelai00-20) — The definitive guide to product positioning
-- [Sales Pitch by April Dunford](https://www.amazon.com/Sales-Pitch-Compelling-Positioning-Positioning/dp/1999023048?tag=wondelai00-20) — How to translate positioning into a winning sales narrative
+- Sales Pitch by April Dunford — How to translate positioning into a winning sales narrative
 
 ## About the Author
 

@@ -272,8 +272,8 @@ describe('ComponentName', () => {
 Skills can reference additional files using relative Markdown links. Claude Code follows these links with the Read tool when it needs the content.
 
 ```markdown
-For API patterns, see [API Reference](reference.md).
-For working examples, see [Examples](examples/sample.tsx).
+For API patterns, see API Reference.
+For working examples, see Examples.
 ```
 
 ### Common Supporting Files

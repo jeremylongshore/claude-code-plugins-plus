@@ -308,6 +308,6 @@ for (const user of members.nodes) {
 ## Resources
 
 - [Linear OAuth Scopes](https://linear.app/developers/oauth-2-0-authentication)
-- [Linear SSO Guide](https://linear.app/docs/sso)
+- Linear SSO Guide
 - [SCIM Provisioning](https://linear.app/docs/scim)
 - [OAuth Actor Authorization](https://linear.app/developers/oauth-actor-authorization)

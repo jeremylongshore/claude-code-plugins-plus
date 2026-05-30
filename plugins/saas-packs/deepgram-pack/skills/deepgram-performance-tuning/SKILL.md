@@ -317,6 +317,6 @@ async function benchmark(audioUrl: string) {
 
 ## Resources
 
-- [Audio Best Practices](https://developers.deepgram.com/docs/audio-best-practices)
+- Audio Best Practices
 - [Model Options](https://developers.deepgram.com/docs/model)
 - [Concurrency Limits](https://developers.deepgram.com/docs/working-with-concurrency-rate-limits)

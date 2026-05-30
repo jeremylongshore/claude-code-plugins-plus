@@ -107,7 +107,7 @@ then exports a high-resolution PNG. Console output shows the document ID and edi
 ## Resources
 
 - [Lucidchart REST API](https://developer.lucid.co/reference/overview)
-- [Standard Import Format](https://developer.lucid.co/docs/standard-import)
+- Standard Import Format
 - [OAuth 2.0 Guide](https://developer.lucid.co/docs/authentication)
 
 ## Next Steps

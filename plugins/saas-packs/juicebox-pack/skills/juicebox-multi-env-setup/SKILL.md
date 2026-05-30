@@ -105,7 +105,7 @@ JB_EXPORT_ENABLED=true npm run deploy -- --env production
 ## Resources
 
 - [Juicebox Docs](https://docs.juicebox.work)
-- [Juicebox API Reference](https://docs.juicebox.work/api)
+- Juicebox API Reference
 
 ## Next Steps
 

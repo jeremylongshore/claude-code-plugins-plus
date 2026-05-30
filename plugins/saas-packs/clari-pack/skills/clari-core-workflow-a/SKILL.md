@@ -183,7 +183,7 @@ if __name__ == "__main__":
 ## Resources
 
 - [Clari Export API](https://developer.clari.com/documentation/external_spec)
-- [Snowflake Python Connector](https://docs.snowflake.com/en/developer-guide/python-connector)
+- Snowflake Python Connector
 
 ## Next Steps
 

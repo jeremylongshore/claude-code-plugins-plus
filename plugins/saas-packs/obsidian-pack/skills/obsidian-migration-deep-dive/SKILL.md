@@ -119,7 +119,7 @@ async function migrate() {
     }
 
     // Convert Notion links to Obsidian wikilinks
-    // Notion: [Page Title](Page%20Title%20abc123def456.md)
+    // Notion: Page Title
     // Obsidian: [[Page Title]]
     content = content.replace(
       /\[([^\]]+)\]\(([^)]+\.md)\)/g,
@@ -131,7 +131,7 @@ async function migrate() {
     );
 
     // Convert Notion image references to Obsidian
-    // Notion: ![description](Image%20Name%20abc123.png)
+    // Notion: !description
     // Obsidian: ![[image-name.png]]
     content = content.replace(
       /!\[([^\]]*)\]\(([^)]+)\)/g,
@@ -419,7 +419,7 @@ echo "Migrated $count notes from Bear"
 
 ### Step 6: Apple Notes Migration
 
-Apple Notes has no native export. Use [apple-notes-liberator](https://github.com/HamburgChimworking/apple-notes-liberator) or export via AppleScript (macOS only):
+Apple Notes has no native export. Use apple-notes-liberator or export via AppleScript (macOS only):
 
 ```bash
 # Export Apple Notes to HTML, then convert to Markdown

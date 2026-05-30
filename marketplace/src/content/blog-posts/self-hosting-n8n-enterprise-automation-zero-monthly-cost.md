@@ -200,6 +200,6 @@ Self-hosting n8n on existing infrastructure eliminated $240-600/year in SaaS cos
 - ✅ 15 production workflows migrated
 - ✅ Enterprise-grade infrastructure
 
-**Repository:** [n8n-workflows](https://github.com/jeremylongshore/n8n-workflows)
+**Repository:** n8n-workflows
 
 *Want to eliminate your SaaS costs while maintaining enterprise capabilities? Let's talk about self-hosted automation architecture for your business.*

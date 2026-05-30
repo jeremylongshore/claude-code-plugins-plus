@@ -10,7 +10,7 @@
 
 ```bash
 # 1. Build the site
-cd /home/jeremy/projects/claude-code-plugins/marketplace
+cd
 npm run build
 
 # 2. The production-ready site is in dist/
@@ -69,7 +69,7 @@ npm run build
 npm i -g vercel
 
 # Deploy
-cd /home/jeremy/projects/claude-code-plugins/marketplace
+cd
 vercel --prod
 ```
 
@@ -80,7 +80,7 @@ vercel --prod
 npm i -g netlify-cli
 
 # Deploy
-cd /home/jeremy/projects/claude-code-plugins/marketplace
+cd
 netlify deploy --prod --dir=dist
 ```
 

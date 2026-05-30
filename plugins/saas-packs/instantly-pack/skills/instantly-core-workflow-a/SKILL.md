@@ -292,7 +292,7 @@ main().catch(console.error);
 
 ## Resources
 
-- [Create Campaign API](https://developer.instantly.ai/api/v2/campaign/createcampaign)
+- Create Campaign API
 - [Campaign Schemas](https://developer.instantly.ai/api/v2/schemas)
 - [Instantly Deliverability Guide](https://help.instantly.ai/en/articles/6222396-campaign-options)
 

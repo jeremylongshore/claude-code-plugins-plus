@@ -114,7 +114,7 @@ DATABASE_URL=              # Session storage
 
 ## Resources
 
-- [Shopify App Deployment](https://shopify.dev/docs/apps/build/cli-for-apps/deploy)
+- Shopify App Deployment
 - [Vercel Remix Deployment](https://vercel.com/guides/deploying-remix-with-vercel)
 - [Fly.io Node.js](https://fly.io/docs/languages-and-frameworks/node/)
 - [Cloud Run Quickstart](https://cloud.google.com/run/docs/quickstarts)

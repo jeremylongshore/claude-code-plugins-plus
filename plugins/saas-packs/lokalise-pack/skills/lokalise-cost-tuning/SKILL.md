@@ -291,7 +291,7 @@ echo "  5. Translate similar projects sequentially to maximize TM"
 - [Lokalise Pricing Plans](https://lokalise.com/pricing)
 - [Lokalise API: Project Statistics](https://developers.lokalise.com/reference/retrieve-a-project)
 - [Translation Memory in Lokalise](https://docs.lokalise.com/en/articles/1400533-translation-memory)
-- [Lokalise Machine Translation](https://docs.lokalise.com/en/articles/1400534-machine-translation)
+- Lokalise Machine Translation
 - [Keys API: List and Filter](https://developers.lokalise.com/reference/list-all-keys)
 
 ## Next Steps

@@ -200,5 +200,5 @@ When traffic is insufficient for the desired minimum detectable effect, recommen
 ## Resources
 
 - [Evan Miller's sample size calculator](https://www.evanmiller.org/ab-testing/sample-size.html) -- minimum detectable effect planning
-- [Trustworthy Online Controlled Experiments](https://www.cambridge.org/core/books/trustworthy-online-controlled-experiments/) -- A/B testing best practices
+- Trustworthy Online Controlled Experiments -- A/B testing best practices
 - [Novelty and primacy effects](https://en.wikipedia.org/wiki/Serial-position_effect) -- why short experiments mislead

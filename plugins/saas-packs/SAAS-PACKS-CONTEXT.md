@@ -33,7 +33,7 @@ bd blocked | head -20
 
 | What | Where |
 |------|-------|
-| Full Plan | `/home/jeremy/.claude/plans/velvet-roaming-crown.md` |
+| Full Plan | ` |
 | TRACKER.csv | `plugins/saas-packs/TRACKER.csv` |
 | Beads Epic | `ccpi-saas` (master), `ccpi-saas-infra` (infrastructure) |
 | Templates | `plugins/saas-packs/_templates/` |
@@ -148,4 +148,4 @@ bd ready  # Should show only infra tasks
 ---
 
 *Last updated: 2025-12-29*
-*Full plan: /home/jeremy/.claude/plans/velvet-roaming-crown.md*
+*Full plan:

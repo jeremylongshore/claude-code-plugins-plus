@@ -100,7 +100,7 @@ function logJuiceboxEvent(event: string, data: Record<string, any>) {
 
 ## Resources
 
-- [Juicebox Dashboard](https://app.juicebox.ai/analytics)
+- Juicebox Dashboard
 
 ## Next Steps
 

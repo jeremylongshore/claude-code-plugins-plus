@@ -142,7 +142,7 @@ After your first meeting, check the **People** and **Companies** views in the si
 
 ## Resources
 
-- [How Transcription Works](https://docs.granola.ai/help-center/taking-notes/how-transcription-works)
+- How Transcription Works
 - [Customize Notes with Templates](https://docs.granola.ai/help-center/taking-notes/customise-notes-with-templates)
 - [Granola Chat & Recipes](https://www.granola.ai/blog/say-hello-to-recipes)
 - [People and Companies](https://docs.granola.ai/help-center/people-and-companies)

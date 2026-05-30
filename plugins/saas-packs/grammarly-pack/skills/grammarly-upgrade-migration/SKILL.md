@@ -151,7 +151,7 @@ class GrammarlyClient {
 ## Resources
 
 - [Grammarly Developer Portal](https://developer.grammarly.com/)
-- [Grammarly API Changelog](https://developer.grammarly.com/changelog)
+- Grammarly API Changelog
 
 ## Next Steps
 

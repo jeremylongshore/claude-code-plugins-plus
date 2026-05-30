@@ -260,7 +260,7 @@ claude plugin install ai-ml-engineering-pack@claude-code-plugins-plus
 
 ## Troubleshooting
 
-See [TROUBLESHOOTING.md](./000-docs/157-DR-FAQS-troubleshooting.md) for common issues and solutions.
+See TROUBLESHOOTING.md for common issues and solutions.
 
 ## Next Steps
 
@@ -268,7 +268,7 @@ Once installed, proceed to:
 
 1. [Quick Start Guide](./QUICK_START.md) - 10-minute walkthrough
 2. [Use Cases](./USE_CASES.md) - Real-world examples with ROI
-3. [Plugin Reference](./README.md) - Complete plugin documentation
+3. Plugin Reference - Complete plugin documentation
 
 ## Support
 

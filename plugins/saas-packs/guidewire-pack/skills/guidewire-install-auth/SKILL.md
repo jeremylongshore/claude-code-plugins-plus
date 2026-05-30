@@ -94,7 +94,7 @@ Rotation breaks if the runtime reads the secret only at startup, or if the plain
 
 ```text
 sops-init                                    # idempotent; writes .sops.yaml + .env.sops + scripts/sops-env
-sops [secrets.prod.sops.yaml](secrets.prod.sops.yaml)   # interactive edit; ciphertext re-written on save
+sops secrets.prod.sops.yaml   # interactive edit; ciphertext re-written on save
 eval "$(sops -d secrets.prod.sops.yaml | sed -nE 's/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/export \1=\2/p')"
 ```
 

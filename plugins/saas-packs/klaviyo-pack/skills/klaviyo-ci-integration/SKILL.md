@@ -208,7 +208,7 @@ describe.skipIf(SKIP)('Klaviyo Live API', () => {
 
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [GitHub Encrypted Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
-- [Vitest CI Configuration](https://vitest.dev/guide/ci.html)
+- Vitest CI Configuration
 
 ## Next Steps
 

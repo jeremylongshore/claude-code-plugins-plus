@@ -262,7 +262,7 @@ async function processEventIdempotently(event: AdobeEvent): Promise<boolean> {
 
 - [Adobe I/O Events Webhooks Guide](https://developer.adobe.com/events/docs/guides/)
 - [I/O Events Registration API](https://developer.adobe.com/events/docs/guides/api/registration-api)
-- [Signature Verification SDK](https://developer.adobe.com/events/docs/guides/sdk/sdk_signature_verification/)
+- Signature Verification SDK
 - [CC Libraries Events](https://developer.adobe.com/creative-cloud-libraries/docs/integrate/guides/configuring-events-webhooks/)
 
 ## Next Steps

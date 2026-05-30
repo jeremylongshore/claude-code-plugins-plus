@@ -199,7 +199,7 @@ Date: YYYY-MM-DD | Duration: X hours | Severity: P[1-4]
 ## Resources
 
 - [Firecrawl Dashboard](https://firecrawl.dev/app)
-- [Firecrawl Status](https://firecrawl.dev/status)
+- Firecrawl Status
 - [GitHub Issues](https://github.com/mendableai/firecrawl/issues)
 
 ## Next Steps

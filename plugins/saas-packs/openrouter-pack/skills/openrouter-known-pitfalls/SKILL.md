@@ -236,5 +236,5 @@ PITFALL_CHECKLIST = [
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
+- Examples | Errors
 - [Quickstart](https://openrouter.ai/docs/quickstart) | [API Reference](https://openrouter.ai/docs/api/reference/overview)

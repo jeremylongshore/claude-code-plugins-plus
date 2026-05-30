@@ -230,8 +230,8 @@ with brightdata_session(country='us') as s:
 
 ## Resources
 
-- [Bright Data Proxy Docs](https://docs.brightdata.com/general/account/proxy-infrastructure)
-- [Session Management](https://docs.brightdata.com/general/account/proxy-infrastructure#sessions)
+- Bright Data Proxy Docs
+- Session Management
 - [Cheerio Documentation](https://cheerio.js.org/)
 
 ## Next Steps

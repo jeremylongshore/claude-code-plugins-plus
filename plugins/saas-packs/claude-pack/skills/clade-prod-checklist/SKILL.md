@@ -100,7 +100,7 @@ Each section above is a verifiable checklist. Work through Authentication & Secu
 - [API Best Practices](https://docs.anthropic.com/en/docs/build-with-claude)
 - [Error Handling](https://docs.anthropic.com/en/api/errors)
 - [Rate Limits](https://docs.anthropic.com/en/api/rate-limits)
-- [Acceptable Use Policy](https://www.anthropic.com/policies/aup)
+- Acceptable Use Policy
 
 ## Next Steps
 

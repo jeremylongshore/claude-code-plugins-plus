@@ -284,7 +284,7 @@ groups:
 
 - [Prometheus Client](https://www.npmjs.com/package/prom-client)
 - [OpenTelemetry JS](https://opentelemetry.io/docs/languages/js/)
-- [Algolia Dashboard Analytics](https://www.algolia.com/doc/guides/getting-analytics/search-analytics/)
+- Algolia Dashboard Analytics
 - [pino Logger](https://getpino.io/)
 
 ## Next Steps

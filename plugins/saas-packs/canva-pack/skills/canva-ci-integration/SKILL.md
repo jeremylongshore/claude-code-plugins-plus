@@ -202,7 +202,7 @@ jobs:
 ## Resources
 
 - [GitHub Actions](https://docs.github.com/en/actions)
-- [Canva API Reference](https://www.canva.dev/docs/connect/api-reference/)
+- Canva API Reference
 - [MSW for API Mocking](https://mswjs.io/)
 
 ## Next Steps

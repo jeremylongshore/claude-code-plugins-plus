@@ -252,7 +252,7 @@ class RateMonitor {
 
 ## Resources
 
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- MaintainX API Reference
 - [p-queue](https://github.com/sindresorhus/p-queue) -- Promise queue with concurrency control
 - [Exponential Backoff](https://cloud.google.com/storage/docs/exponential-backoff)
 

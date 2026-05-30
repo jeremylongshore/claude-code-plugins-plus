@@ -167,8 +167,8 @@ curl -s https://api.instantly.ai/api/v2/accounts?limit=3 \
 ## Resources
 
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
-- [Campaign Endpoints](https://developer.instantly.ai/api/v2/campaign)
-- [Account Endpoints](https://developer.instantly.ai/api/v2/account)
+- Campaign Endpoints
+- Account Endpoints
 
 ## Next Steps
 

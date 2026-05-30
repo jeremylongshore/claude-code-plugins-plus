@@ -398,6 +398,6 @@ time-travel debugging recipe and the subgraph-shared-state test pattern
 - [`FakeListChatModel` API](https://python.langchain.com/api_reference/core/language_models/langchain_core.language_models.fake.FakeListChatModel.html)
 - [`vcrpy` documentation](https://vcrpy.readthedocs.io/)
 - [`pytest-recording`](https://pytest-vcr.readthedocs.io/)
-- [LangGraph `MemorySaver` + `get_state_history`](https://langchain-ai.github.io/langgraph/how-tos/time-travel/)
+- LangGraph `MemorySaver` + `get_state_history`
 - [Pytest `filterwarnings`](https://docs.pytest.org/en/stable/how-to/capture-warnings.html)
 - Pack pain catalog: `docs/pain-catalog.md` (entries P05, P43, P44, P45)

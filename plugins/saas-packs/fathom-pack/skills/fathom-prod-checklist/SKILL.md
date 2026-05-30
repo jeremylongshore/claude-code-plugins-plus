@@ -96,7 +96,7 @@ checkFathomReadiness();
 
 ## Resources
 
-- [Fathom API Docs](https://fathom.video/developers)
+- Fathom API Docs
 - [Fathom Status](https://status.fathom.video)
 
 ## Next Steps

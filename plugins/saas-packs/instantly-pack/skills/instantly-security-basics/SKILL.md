@@ -248,8 +248,8 @@ async function removeMember(memberId: string) {
 
 ## Resources
 
-- [Instantly API Key Management](https://developer.instantly.ai/api/v2/apikey)
-- [Instantly Webhook Docs](https://developer.instantly.ai/api/v2/webhook)
+- Instantly API Key Management
+- Instantly Webhook Docs
 - [Audit Logs API](https://developer.instantly.ai/)
 
 ## Next Steps

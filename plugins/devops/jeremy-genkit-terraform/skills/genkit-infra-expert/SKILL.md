@@ -52,7 +52,7 @@ Before using this skill, ensure:
 - Validation report confirming correct implementation
 - Summary of changes made and their rationale
 
-See [Terraform implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+See Terraform implementation details for output format specifications.
 
 ## Error Handling
 
@@ -64,6 +64,6 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 
 ## Resources
 
-- Genkit Deployment: https://genkit.dev/docs/deployment
+- Genkit Deployment:
 - Firebase Terraform: https://registry.terraform.io/providers/hashicorp/google/latest
 - Genkit examples in ${CLAUDE_SKILL_DIR}/genkit-examples/

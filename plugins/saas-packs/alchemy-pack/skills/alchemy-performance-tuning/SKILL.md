@@ -165,7 +165,7 @@ alchemy.ws.on('close', () => {
 ## Resources
 
 - [Alchemy Compute Units](https://www.alchemy.com/docs/reference/compute-unit-costs)
-- [Alchemy WebSockets](https://www.alchemy.com/docs/reference/sdk-websockets)
+- Alchemy WebSockets
 
 ## Next Steps
 

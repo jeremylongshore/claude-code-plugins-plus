@@ -116,7 +116,7 @@ For the full `SearchService`, `QueryBuilder`, pagination, and enrichment impleme
 
 - [Search Grammar](https://dev.evernote.com/doc/articles/search_grammar.php)
 - [Search Overview](https://dev.evernote.com/doc/articles/search.php)
-- [Related Notes](https://dev.evernote.com/doc/articles/related_notes.php)
+- Related Notes
 - [API Reference](https://dev.evernote.com/doc/reference/)
 
 ## Next Steps

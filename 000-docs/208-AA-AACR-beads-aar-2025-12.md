@@ -720,4 +720,4 @@ The claude-code-plugins project is **67% complete** and ready for final push to 
 
 **Document Created**: 2025-12-24 by Claude Code Agent
 **Last Updated**: 2025-12-24
-**File Location**: `/home/jeremy/000-projects/claude-code-plugins/000-docs/091-SR-REPT-beads-aar-2025-12-24.md`
+**File Location**: `

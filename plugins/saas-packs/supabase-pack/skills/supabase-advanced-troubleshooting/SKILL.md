@@ -453,7 +453,7 @@ async function checkSlowQueries(thresholdMs = 1000) {
 - [Supabase Performance Advisor](https://supabase.com/docs/guides/database/inspect)
 - [RLS Debugging — Supabase Docs](https://supabase.com/docs/guides/troubleshooting/rls-simplified-BJTcS8)
 - [Edge Functions Logging — Supabase Docs](https://supabase.com/docs/guides/functions/logging)
-- [Realtime Debugging — Supabase Docs](https://supabase.com/docs/guides/realtime/debugging)
+- Realtime Debugging — Supabase Docs
 - [pg_locks — PostgreSQL Docs](https://www.postgresql.org/docs/current/view-pg-locks.html)
 - [Connection Pooling with Supavisor](https://supabase.com/docs/guides/database/connecting-to-postgres#connection-pooler)
 

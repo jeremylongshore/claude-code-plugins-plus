@@ -91,7 +91,7 @@ Translated technical features into business impact:
 - **Quality:** "70-85% relevance rate vs 30% with generic sources"
 - **Intelligence:** "AI analysis with structured business insights"
 
-*Related project: [N8N Workflow Automation Enterprise Guide](../n8n-workflow-automation-enterprise-guide/) - previous workflow optimization experience*
+*Related project: N8N Workflow Automation Enterprise Guide - previous workflow optimization experience*
 
 ## Phase 3: Strategic System Enhancement
 
@@ -221,7 +221,7 @@ I implemented enterprise-standard release management:
 - Scaling limitations (enterprise architecture)
 - Knowledge transfer (comprehensive guides)
 
-*See related work: [Building Multi-Platform Developer Tools](../building-multi-platform-developer-tools/) for similar enterprise transformation projects*
+*See related work: Building Multi-Platform Developer Tools for similar enterprise transformation projects*
 
 ## Business Impact & ROI Analysis
 
@@ -284,7 +284,7 @@ I implemented enterprise-standard release management:
 - **Quality assurance** and testing protocols
 - **Risk assessment** and mitigation strategies
 
-*Additional portfolio work: [AI Development Transformation Series](../ai-dev-transformation-part-1-the-mess/) showing similar systematic approaches*
+*Additional portfolio work: AI Development Transformation Series showing similar systematic approaches*
 
 ## Methodology & Best Practices
 

@@ -224,5 +224,5 @@ data = json.loads(response.choices[0].message.content)
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
-- [Tool/Function Calling](https://openrouter.ai/docs/features/tool-calling) | [API Reference](https://openrouter.ai/docs/api/reference/overview)
+- Examples | Errors
+- Tool/Function Calling | [API Reference](https://openrouter.ai/docs/api/reference/overview)

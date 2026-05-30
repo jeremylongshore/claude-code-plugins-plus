@@ -167,4 +167,4 @@ See [B2B Checkout](references/b2b-checkout.md) for the full draft order flow, in
 - [companyCreate Mutation](https://shopify.dev/docs/api/admin-graphql/latest/mutations/companyCreate)
 - [catalogCreate Mutation](https://shopify.dev/docs/api/admin-graphql/latest/mutations/catalogCreate)
 - [priceListCreate Mutation](https://shopify.dev/docs/api/admin-graphql/latest/mutations/priceListCreate)
-- [B2B Checkout](https://shopify.dev/docs/apps/build/b2b/checkout)
+- B2B Checkout

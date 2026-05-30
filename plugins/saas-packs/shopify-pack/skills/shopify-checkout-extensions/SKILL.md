@@ -145,6 +145,6 @@ See [Bundle Optimization](references/bundle-optimization.md) for size measuremen
 ## Resources
 
 - [Checkout UI Extensions Overview](https://shopify.dev/docs/apps/build/checkout)
-- [Extension Targets Reference](https://shopify.dev/docs/api/checkout-ui-extensions/latest/extension-targets-overview)
+- Extension Targets Reference
 - [UI Component Library](https://shopify.dev/docs/api/checkout-ui-extensions/latest/components)
-- [checkout.liquid Migration Guide](https://shopify.dev/docs/apps/build/checkout/migrate-checkout-liquid)
+- checkout.liquid Migration Guide

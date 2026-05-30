@@ -415,9 +415,9 @@ brightstream/
 
 ## Related Reading
 
-- [Coasean Singularity: AI Agents and Market Transformation](https://startaitools.com/posts/coasean-singularity-ai-agents-market-transformation/) - Economic theory of AI agent markets
+- Coasean Singularity: AI Agents and Market Transformation - Economic theory of AI agent markets
 - [Scaling AI Batch Processing: 235 Plugins with Vertex AI Gemini on Free Tier](https://startaitools.com/posts/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/) - Free tier optimization techniques
-- [Waygate MCP v2.1.0: Forensic Analysis to Production Enterprise Server](https://startaitools.com/posts/waygate-mcp-v2-1-0-forensic-analysis-to-production-enterprise-server/) - Security-hardened MCP architecture
+- Waygate MCP v2.1.0: Forensic Analysis to Production Enterprise Server - Security-hardened MCP architecture
 
 ## Final Thoughts
 

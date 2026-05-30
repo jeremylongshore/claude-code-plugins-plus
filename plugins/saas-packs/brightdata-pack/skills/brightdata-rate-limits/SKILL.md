@@ -188,7 +188,7 @@ async function batchTrigger(urls: string[], batchSize = 100) {
 
 ## Resources
 
-- [Bright Data Proxy Limits](https://docs.brightdata.com/general/account/proxy-infrastructure)
+- Bright Data Proxy Limits
 - [Web Scraper API Limits](https://docs.brightdata.com/scraping-automation/web-data-apis/web-scraper-api/trigger-a-collection)
 - [p-queue Documentation](https://github.com/sindresorhus/p-queue)
 

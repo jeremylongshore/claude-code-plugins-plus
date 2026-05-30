@@ -1248,7 +1248,7 @@ func testPhotosLoadUnderStress() {
 - [UI Testing in Xcode](https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/testing_with_xcode/chapters/09-ui_testing.html)
 - [XCTWaiter](https://developer.apple.com/documentation/xctest/xctwaiter)
 - [Delivering an exceptional accessibility experience](https://developer.apple.com/documentation/accessibility/delivering_an_exceptional_accessibility_experience)
-- [Performing accessibility testing for your app](https://developer.apple.com/documentation/accessibility/performing_accessibility_testing_for_your_app)
+- Performing accessibility testing for your app
 
 **Note**: This skill focuses on reliability patterns and Recording UI Automation. For TDD workflow, see superpowers:test-driven-development.
 

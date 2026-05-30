@@ -172,5 +172,5 @@ print(f"Auto-selected: {response.model}")  # Shows which model was chosen
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
+- Examples | Errors
 - [Models Docs](https://openrouter.ai/docs/guides/overview/models) | [Models API](https://openrouter.ai/docs/api/api-reference/models/get-models) | [Model Variants](https://openrouter.ai/docs/guides/routing/model-variants/thinking)

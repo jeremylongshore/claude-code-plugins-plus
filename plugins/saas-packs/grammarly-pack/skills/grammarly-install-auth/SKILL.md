@@ -92,7 +92,7 @@ async function verify(token: string) {
 
 - [Grammarly Developer Portal](https://developer.grammarly.com/)
 - [Your First API Request](https://developer.grammarly.com/your-first-api-request.html)
-- [API Support](https://developer.grammarly.com/docs/support)
+- API Support
 
 ## Next Steps
 

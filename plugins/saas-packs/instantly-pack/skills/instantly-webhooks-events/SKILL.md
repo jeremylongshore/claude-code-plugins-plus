@@ -310,8 +310,8 @@ async function deleteWebhook(webhookId: string) {
 
 ## Resources
 
-- [Instantly Webhook API](https://developer.instantly.ai/api/v2/webhook)
-- [Instantly Webhook Events](https://developer.instantly.ai/api/v2/webhook)
+- Instantly Webhook API
+- Instantly Webhook Events
 - [Instantly Blog: Webhooks Guide](https://instantly.ai/blog/api-webhooks-custom-integrations-for-outreach/)
 
 ## Next Steps

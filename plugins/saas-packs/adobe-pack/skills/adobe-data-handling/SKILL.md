@@ -241,7 +241,7 @@ export async function submitPrivacyRequest(
 
 - [Adobe Privacy Service API](https://developer.adobe.com/experience-platform-apis/references/privacy-service/)
 - [Firefly Content Policy](https://developer.adobe.com/firefly-services/docs/firefly-api/)
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- GDPR Developer Guide
 
 ## Next Steps
 

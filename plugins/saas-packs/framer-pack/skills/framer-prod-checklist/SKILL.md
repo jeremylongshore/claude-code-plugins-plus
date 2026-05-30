@@ -71,8 +71,8 @@ Checklist for deploying Framer plugins, code components, and Server API integrat
 
 ## Resources
 
-- [Framer Publishing](https://www.framer.com/help/articles/publishing/)
-- [Custom Domains](https://www.framer.com/help/articles/custom-domain/)
+- Framer Publishing
+- Custom Domains
 
 ## Next Steps
 

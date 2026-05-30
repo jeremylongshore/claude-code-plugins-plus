@@ -165,7 +165,7 @@ Follow `shopify-prod-checklist` for the complete launch checklist including GDPR
 - [Webhook Topics](https://shopify.dev/docs/api/webhooks) -- all available event topics
 - [Access Scopes](https://shopify.dev/docs/api/usage/access-scopes) -- permission reference
 - [@shopify/shopify-api on npm](https://www.npmjs.com/package/@shopify/shopify-api) -- official Node.js SDK
-- [Shopify App Store Requirements](https://shopify.dev/docs/apps/launch/app-requirements) -- submission checklist
+- Shopify App Store Requirements -- submission checklist
 - [Shopify Status](https://www.shopifystatus.com) -- platform status page
 
 ## License

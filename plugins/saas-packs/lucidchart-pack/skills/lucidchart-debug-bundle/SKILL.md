@@ -171,7 +171,7 @@ async function checkLucidchartHealth(): Promise<{
 
 - [Lucid Developer Portal](https://developer.lucid.co/reference/overview)
 - [Lucid Status Page](https://status.lucid.co)
-- [Lucid API Changelog](https://developer.lucid.co/changelog)
+- Lucid API Changelog
 
 ## Next Steps
 

@@ -228,7 +228,7 @@ async function reconcile(client: MaintainXClient, localDb: any) {
 
 ## Resources
 
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- MaintainX API Reference
 - [BigQuery Node.js Client](https://cloud.google.com/bigquery/docs/reference/libraries)
 - [csv-parse](https://csv.js.org/parse/) -- CSV parsing for imports
 

@@ -176,7 +176,7 @@ osascript -l JavaScript -e '
 ## Resources
 
 - [AppleScript Notes Dictionary](https://www.macosxautomation.com/applescript/notes/)
-- [JXA Examples](https://jxa-examples.akjems.com/)
+- JXA Examples
 - [osascript Manual](https://ss64.com/mac/osascript.html)
 
 ## Next Steps

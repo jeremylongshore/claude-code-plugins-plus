@@ -99,4 +99,4 @@ export { runJxa, getNoteCount, createTestNote };
 ## Resources
 
 - [Mac Automation Scripting Guide](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/MacAutomationScriptingGuide/)
-- [JXA Examples](https://jxa-examples.akjems.com/)
+- JXA Examples

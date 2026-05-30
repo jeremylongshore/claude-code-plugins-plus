@@ -286,7 +286,7 @@ curl -sI -H "Authorization: Bearer $CANVA_ACCESS_TOKEN" \
 
 ## Resources
 
-- [Canva API Reference](https://www.canva.dev/docs/connect/api-reference/)
+- Canva API Reference
 - [Canva Changelog](https://www.canva.dev/docs/connect/changelog/)
 - [Canva Developer Community](https://community.canva.dev/)
 

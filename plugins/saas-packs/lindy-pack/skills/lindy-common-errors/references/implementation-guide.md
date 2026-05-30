@@ -165,7 +165,7 @@ await lindy.tools.test('email');
 
 ## Resources
 
-- [Lindy Error Reference](https://docs.lindy.ai/errors)
+- Lindy Error Reference
 - [Status Page](https://status.lindy.ai)
 - [Support](https://support.lindy.ai)
 

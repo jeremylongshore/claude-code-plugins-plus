@@ -140,8 +140,8 @@ export class AgentService {
 
 ## Resources
 
-- [Lindy SDK Patterns](https://docs.lindy.ai/patterns)
-- [TypeScript Best Practices](https://docs.lindy.ai/typescript)
+- Lindy SDK Patterns
+- TypeScript Best Practices
 
 ## Next Steps
 

@@ -877,7 +877,7 @@ TextField("Search", text: $searchText)
 
 - [SwiftUI View Fundamentals](https://developer.apple.com/documentation/swiftui)
 - [State and Data Flow](https://developer.apple.com/documentation/swiftui/state-and-data-flow)
-- [Xcode Previews](https://developer.apple.com/documentation/xcode/previews)
+- Xcode Previews
 
 **Related Axiom Skills:**
 

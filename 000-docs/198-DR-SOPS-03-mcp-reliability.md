@@ -1048,8 +1048,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 ```bash
 npm install @modelcontextprotocol/sdk
 ```
-- [MCP Specification](https://spec.modelcontextprotocol.io/)
-- [SDK Documentation](https://github.com/modelcontextprotocol/sdk)
+- MCP Specification
+- SDK Documentation
 - [Claude Code MCP Guide](https://docs.anthropic.com/claude/docs/model-context-protocol)
 
 ### Analytics & Monitoring
@@ -1118,4 +1118,4 @@ From this marketplace (258 plugins):
 
 **Last Updated**: 2025-12-24
 **Author**: Jeremy Longshore
-**Related Playbooks**: [Multi-Agent Rate Limits](./01-multi-agent-rate-limits.md), [Cost Caps & Budget Management](./02-cost-caps.md)
+**Related Playbooks**: Multi-Agent Rate Limits, Cost Caps & Budget Management

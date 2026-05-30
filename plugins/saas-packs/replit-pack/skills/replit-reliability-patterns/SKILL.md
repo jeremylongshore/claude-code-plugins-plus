@@ -323,7 +323,7 @@ app.get('/health', (req, res) => {
 
 ## Resources
 
-- [Replit Deployments](https://docs.replit.com/hosting/deployments)
+- Replit Deployments
 - [Replit KV Database](https://docs.replit.com/cloud-services/storage-and-databases/replit-database)
 - [Object Storage](https://docs.replit.com/cloud-services/storage-and-databases/object-storage/overview)
 - [Deployment Rollbacks](https://blog.replit.com/introducing-deployment-rollbacks)

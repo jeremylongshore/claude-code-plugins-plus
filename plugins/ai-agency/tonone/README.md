@@ -526,7 +526,7 @@ Every engineering agent detects your stack automatically:
 
 Everything is Markdown. Fork it, improve it, open a PR. Agents are system prompts. Skills are workflow docs. No build step.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) to get started. The highest-leverage contributions right now:
+See CONTRIBUTING.md to get started. The highest-leverage contributions right now:
 
 - **Sharpen existing skills** — better steps, sharper output formats, fewer hallucinations
 - **Build a new agent** — extend the roster with a domain not yet covered
@@ -536,14 +536,14 @@ Tests run with `uv run pytest` from any agent's `scripts/` directory.
 
 | Doc                                  | Covers                       |
 | ------------------------------------ | ---------------------------- |
-| [Architecture](docs/architecture.md) | How the plugin system works  |
-| [Skill Guide](docs/skill-guide.md)   | Writing and improving skills |
-| [Agent Guide](docs/agent-guide.md)   | Creating new agents          |
-| [Naming Guide](docs/naming-guide.md) | Agent naming conventions     |
+| Architecture | How the plugin system works  |
+| Skill Guide   | Writing and improving skills |
+| Agent Guide   | Creating new agents          |
+| Naming Guide | Agent naming conventions     |
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for full release history.
+See CHANGELOG.md for full release history.
 
 ## Shoutouts
 

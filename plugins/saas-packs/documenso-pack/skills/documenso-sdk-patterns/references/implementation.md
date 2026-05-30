@@ -23,7 +23,6 @@ from typing import Any
 DOCUMENSO_API_KEY = os.environ["DOCUMENSO_API_KEY"]
 DOCUMENSO_BASE_URL = os.environ.get("DOCUMENSO_BASE_URL", "https://app.documenso.com")
 
-
 def documenso_request(method: str, path: str, payload: dict = None) -> Any:
     headers = {
         "Authorization": f"Bearer {DOCUMENSO_API_KEY}",
@@ -49,7 +48,6 @@ def documenso_request(method: str, path: str, payload: dict = None) -> Any:
 
 ```python
 import base64
-
 
 def create_and_send_document(
     title: str,
@@ -92,7 +90,6 @@ def create_and_send_document(
     print(f"Document sent for signing")
     return result
 
-
 # Usage
 create_and_send_document(
     title="Service Agreement",
@@ -108,7 +105,6 @@ create_and_send_document(
 
 ```python
 import time
-
 
 def wait_for_completion(doc_id: str, timeout: int = 3600, interval: int = 30) -> dict:
     """Poll document status until all parties have signed or timeout."""
@@ -126,7 +122,6 @@ def wait_for_completion(doc_id: str, timeout: int = 3600, interval: int = 30) ->
         time.sleep(interval)
 
     raise TimeoutError(f"Document {doc_id} did not complete within {timeout}s")
-
 
 def get_signed_pdf(doc_id: str, output_path: str) -> None:
     """Download the completed signed document."""
@@ -185,18 +180,15 @@ import hmac
 
 WEBHOOK_SECRET = os.environ["DOCUMENSO_WEBHOOK_SECRET"]
 
-
 def verify_documenso_signature(payload: bytes, signature: str) -> bool:
     expected = hmac.new(WEBHOOK_SECRET.encode(), payload, hashlib.sha256).hexdigest()
     return hmac.compare_digest(expected, signature)
-
 
 # FastAPI example
 from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.responses import JSONResponse
 
 app = FastAPI()
-
 
 @app.post("/documenso/webhook")
 async def handle_webhook(
@@ -219,7 +211,7 @@ async def handle_webhook(
 
 ## Resources
 
-- [Documenso API Docs](https://docs.documenso.com/developers/api)
+- Documenso API Docs
 - [Documenso GitHub](https://github.com/documenso/documenso)
 - [Documenso Webhooks](https://docs.documenso.com/developers/webhooks)
 

@@ -323,8 +323,8 @@ twinmind-integration/
 
 ## Resources
 
-- [TwinMind API Documentation](https://twinmind.com/docs/api)
-- [Ear-3 Model Specification](https://twinmind.com/ear-3)
+- TwinMind API Documentation
+- Ear-3 Model Specification
 - [Zod Documentation](https://zod.dev/)
 
 ## Next Steps

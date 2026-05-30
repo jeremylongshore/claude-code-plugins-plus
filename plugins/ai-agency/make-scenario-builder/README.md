@@ -89,7 +89,7 @@ curl -fsSL https://ollama.com/install.sh | sh
 ollama pull llama3.2
 ```
 
-See [ollama-local-ai](../../../ai-ml/ollama-local-ai/) plugin for detailed setup.
+See ollama-local-ai plugin for detailed setup.
 
 #### 3. Connect Ollama to n8n
 
@@ -170,7 +170,7 @@ Action: Google Sheets Add Row (n8n)
 
 ### n8n Workflow Templates
 
-**Available in [n8n-workflow-designer](../../n8n-workflow-designer/) plugin:**
+**Available in n8n-workflow-designer plugin:**
 
 - AI email automation
 - Lead scoring & routing
@@ -207,9 +207,9 @@ Action: Google Sheets Add Row (n8n)
 ### Resources
 
 - **n8n Docs:** [docs.n8n.io](https://docs.n8n.io)
-- **Ollama Setup:** Use `/setup-ollama` command from [ollama-local-ai](../../../ai-ml/ollama-local-ai/) plugin
-- **n8n Workflows:** Install [n8n-workflow-designer](../../n8n-workflow-designer/) plugin
-- **Migration Guide:** [n8n vs Make.com](https://docs.n8n.io/integrations/make-to-n8n/)
+- **Ollama Setup:** Use `/setup-ollama` command from ollama-local-ai plugin
+- **n8n Workflows:** Install n8n-workflow-designer plugin
+- **Migration Guide:** n8n vs Make.com
 
 **Bottom Line:** If you're comfortable with Docker and want to save $468+/year, n8n + Ollama is the superior choice.
 

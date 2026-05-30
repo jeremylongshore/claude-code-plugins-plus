@@ -171,7 +171,7 @@ await client.updateWorkOrder(wo.id, {
 
 ## Resources
 
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- MaintainX API Reference
 - [Work Orders Help](https://help.getmaintainx.com/about-work-orders)
 - [Complete a Work Order](https://help.getmaintainx.com/complete-a-work-order)
 

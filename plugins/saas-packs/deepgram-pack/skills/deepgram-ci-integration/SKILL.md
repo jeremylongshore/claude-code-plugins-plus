@@ -321,5 +321,5 @@ jobs:
 ## Resources
 
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
-- [Vitest CI Configuration](https://vitest.dev/guide/ci.html)
-- [Deepgram SDK Testing](https://developers.deepgram.com/docs/testing)
+- Vitest CI Configuration
+- Deepgram SDK Testing

@@ -6,45 +6,45 @@ Comprehensive technical guides for building production-grade Claude Code plugin 
 
 ### AI Architecture & Tool Use
 
-**[11. Advanced Tool Use](./11-advanced-tool-use.md)** (~6,500 words) ⭐ NEW
+**11. Advanced Tool Use** (~6,500 words) ⭐ NEW
 Dynamic tool discovery, programmatic orchestration, and parameter guidance. Tool Search Tool (85% token reduction), Programmatic Tool Calling (37% efficiency gains), and Tool Use Examples (90% parameter accuracy). Enterprise-scale agent architecture.
 
 ### Cost Management & Optimization
 
-**[01. Multi-Agent Rate Limits](./01-multi-agent-rate-limits.md)** (~2,800 words)
+**01. Multi-Agent Rate Limits** (~2,800 words)
 Prevent API throttling in concurrent multi-agent systems. Token bucket algorithms, sliding windows, priority queues, and backpressure handling for Claude API rate limits.
 
-**[02. Cost Caps & Budget Management](./02-cost-caps.md)** (~3,200 words)
+**02. Cost Caps & Budget Management** (~3,200 words)
 Hard budget controls for AI spending. Real-time spend tracking, automatic shutoffs, team quotas, and financial safeguards to prevent runaway costs.
 
-**[09. Cost Attribution System](./09-cost-attribution.md)** (~5,500 words)
+**09. Cost Attribution System** (~5,500 words)
 Multi-dimensional cost tracking (team/project/user/workflow). Automatic tagging, chargeback models, budget enforcement, and usage analytics for AI operations.
 
 ### Infrastructure & Deployment
 
-**[03. MCP Server Reliability](./03-mcp-reliability.md)** (~3,500 words)
+**03. MCP Server Reliability** (~3,500 words)
 Self-healing MCP servers with circuit breakers, exponential backoff, health checks, and automatic recovery. Production-grade Model Context Protocol implementations.
 
-**[04. Ollama Migration Guide](./04-ollama-migration.md)** (~4,500 words)
+**04. Ollama Migration Guide** (~4,500 words)
 Switch from OpenAI/Anthropic to self-hosted LLMs. Complete migration path: local setup, prompt translation, performance benchmarks, and cost analysis.
 
-**[06. Self-Hosted Stack Setup](./06-self-hosted-stack.md)** (~5,500 words)
+**06. Self-Hosted Stack Setup** (~5,500 words)
 Full infrastructure deployment with Docker/Kubernetes. Ollama, PostgreSQL, Redis, Prometheus, Grafana, Nginx - complete production stack with monitoring and backups.
 
 ### Operations & Reliability
 
-**[05. Incident Debugging Playbook](./05-incident-debugging.md)** (~5,000 words)
+**05. Incident Debugging Playbook** (~5,000 words)
 SEV-1/2/3/4 incident response protocols. Log analysis, root cause investigation (5 Whys, Fishbone), postmortem templates, and on-call procedures.
 
-**[10. Progressive Enhancement Patterns](./10-progressive-enhancement.md)** (~5,500 words)
+**10. Progressive Enhancement Patterns** (~5,500 words)
 Safe AI feature rollout strategies. Feature flags (0% → 100%), A/B testing, canary deployments, graceful degradation, and automated rollback on failures.
 
 ### Compliance & Governance
 
-**[07. Compliance & Audit Guide](./07-compliance-audit.md)** (~6,000 words)
+**07. Compliance & Audit Guide** (~6,000 words)
 SOC 2, GDPR, HIPAA, PCI DSS implementation. Audit logging with immutable signatures, RBAC, data privacy (PII redaction), and regulatory compliance.
 
-**[08. Team Presets & Workflows](./08-team-presets.md)** (~5,000 words)
+**08. Team Presets & Workflows** (~5,000 words)
 Team standardization and collaboration. Plugin bundles, workflow templates, automated onboarding, and multi-layer configuration hierarchy (org/team/project/individual).
 
 ## 📊 Statistics
@@ -120,10 +120,10 @@ Migration path:
 
 ## 🔗 Related Resources
 
-- **[Learning Lab](../../workspace/lab/)** - Hands-on tutorials for agent workflow patterns
+- **Learning Lab** - Hands-on tutorials for agent workflow patterns
 - **[Plugin Marketplace](https://claudecodeplugins.io/)** - 258 plugins across 18 categories
-- **[MCP Plugins](../../plugins/mcp/)** - Production MCP server implementations
-- **[Templates](../../templates/)** - Starter templates for new plugins
+- **MCP Plugins** - Production MCP server implementations
+- **Templates** - Starter templates for new plugins
 
 ## 📝 Playbook Format
 

@@ -294,7 +294,7 @@ await lok.contributors().create(PROJECT_ID, [{
 - [Lokalise Contributors API](https://developers.lokalise.com/reference/list-all-contributors)
 - [Team Users API](https://developers.lokalise.com/reference/list-team-users)
 - [Contributor Groups API](https://developers.lokalise.com/reference/list-all-groups)
-- [SSO Configuration Guide](https://docs.lokalise.com/en/articles/4866048-sso-saml)
+- SSO Configuration Guide
 - [Webhook Events Reference](https://developers.lokalise.com/reference/webhook-events)
 
 ## Next Steps

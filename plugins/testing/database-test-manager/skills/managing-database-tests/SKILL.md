@@ -162,6 +162,6 @@ describe('Database Migrations', () => {
 
 - Prisma testing guide: https://www.prisma.io/docs/guides/testing
 - SQLAlchemy testing patterns: https://docs.sqlalchemy.org/en/20/orm/session_transaction.html
-- Testcontainers databases: https://testcontainers.com/modules/databases/
+- Testcontainers databases:
 - Knex migrations: https://knexjs.org/guide/migrations.html
 - PostgreSQL EXPLAIN ANALYZE: https://www.postgresql.org/docs/current/using-explain.html

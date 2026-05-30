@@ -229,7 +229,7 @@ echo "Branch protection updated: CodeRabbit review required for merge"
 ## Resources
 
 - [CodeRabbit Configuration Reference](https://docs.coderabbit.ai/reference/configuration)
-- [GitHub Branch Protection](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-a-branch-protection-rule)
+- GitHub Branch Protection
 - [GitHub Actions: Pull Request Events](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request_review)
 
 ## Next Steps

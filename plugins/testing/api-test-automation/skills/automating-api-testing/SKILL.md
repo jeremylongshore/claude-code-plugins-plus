@@ -154,6 +154,6 @@ it('fetches user by ID', async () => {
 - Supertest: https://github.com/ladjs/supertest
 - REST-assured (Java): https://rest-assured.io/
 - httpx (Python): https://www.python-httpx.org/
-- Newman (Postman CLI): https://learning.postman.com/docs/collections/using-newman-cli/
+- Newman (Postman CLI):
 - OpenAPI specification: https://spec.openapis.org/oas/v3.1.0
 - Ajv JSON Schema validator: https://ajv.js.org/

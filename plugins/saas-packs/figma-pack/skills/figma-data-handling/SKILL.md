@@ -247,7 +247,7 @@ function safeFigmaLog(label: string, data: any) {
 
 - [Figma Comments Endpoints](https://developers.figma.com/docs/rest-api/comments-endpoints/)
 - [Figma Version History](https://developers.figma.com/docs/rest-api/version-history-endpoints/)
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- GDPR Developer Guide
 
 ## Next Steps
 

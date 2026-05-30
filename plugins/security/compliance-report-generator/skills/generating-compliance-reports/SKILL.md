@@ -91,6 +91,6 @@ additional evidence or implementation before a formal SOC 2 audit.
 
 - [PCI DSS v4.0 Requirements](https://www.pcisecuritystandards.org/document_library/)
 - [HIPAA Security Rule](https://www.hhs.gov/hipaa/for-professionals/security/index.html)
-- [AICPA SOC 2 Trust Services Criteria](https://www.aicpa.org/interestareas/frc/assuranceadvisoryservices/sorhome)
+- AICPA SOC 2 Trust Services Criteria
 - [ISO 27001:2022 Controls](https://www.iso.org/standard/27001)
 - [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)

@@ -169,5 +169,5 @@ Settings in `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
 ## Resources
 
 - DeFiLlama: https://defillama.com/yields - Yield data source
-- DeFi Safety: https://defisafety.com/ - Protocol security scores
+- DeFi Safety:  - Protocol security scores
 - Impermanent Loss Calculator: Understand LP risks

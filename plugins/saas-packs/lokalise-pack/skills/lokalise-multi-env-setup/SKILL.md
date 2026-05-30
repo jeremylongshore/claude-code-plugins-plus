@@ -396,8 +396,8 @@ LOKALISE_PROJECT_ID=987654321.prod
 ## Resources
 
 - [Lokalise API — Projects](https://developers.lokalise.com/reference/list-all-projects)
-- [Lokalise Branching](https://docs.lokalise.com/en/articles/3181040-branching)
-- [Lokalise Team Permissions](https://docs.lokalise.com/en/articles/1400870-team-roles-and-permissions)
+- Lokalise Branching
+- Lokalise Team Permissions
 - [12-Factor App — Config](https://12factor.net/config)
 - [AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html)
 - [GCP Secret Manager](https://cloud.google.com/secret-manager/docs)

@@ -157,9 +157,9 @@ export BRIGHTDATA_ZONE_PASSWORD=old_password
 
 ## Resources
 
-- [Web Unlocker Migration](https://docs.brightdata.com/scraping-automation/web-unlocker/overview)
+- Web Unlocker Migration
 - [Datasets API v3](https://docs.brightdata.com/scraping-automation/web-data-apis/web-scraper-api/trigger-a-collection)
-- [Scraping Browser Setup](https://docs.brightdata.com/scraping-automation/scraping-browser/overview)
+- Scraping Browser Setup
 
 ## Next Steps
 

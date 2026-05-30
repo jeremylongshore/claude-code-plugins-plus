@@ -246,7 +246,7 @@ WHERE query_id = currentQueryId()
 
 ## Resources
 
-- [Query Optimization Guide](https://clickhouse.com/docs/guides/developer/query-optimization)
+- Query Optimization Guide
 - [Projections](https://clickhouse.com/docs/sql-reference/statements/alter/projection)
 - [Data Skipping Indexes](https://clickhouse.com/docs/engines/table-engines/mergetree-family/mergetree#table_engine-mergetree-data_skipping-indexes)
 - [MergeTree Settings](https://clickhouse.com/docs/operations/settings/merge-tree-settings)

@@ -73,7 +73,7 @@ console.log(result.results.channels[0].alternatives[0].transcript);
 const piiPatterns: Array<{ name: string; pattern: RegExp; replacement: string }> = [
   { name: 'email',    pattern: /\b[\w.-]+@[\w.-]+\.\w{2,}\b/g, replacement: '[EMAIL]' },
   { name: 'phone',    pattern: /\b(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g, replacement: '[PHONE]' },
-  { name: 'dob',      pattern: /\b(0[1-9]|1[0-2])[\/.-](0[1-9]|[12]\d|3[01])[\/.-](19|20)\d{2}\b/g, replacement: '[DOB]' },
+  { name: 'dob',      pattern: /\b(0[1-9]|1[0-2])\/.-\/.-\d{2}\b/g, replacement: '[DOB]' },
   { name: 'address',  pattern: /\b\d{1,5}\s[\w\s]+(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Boulevard|Blvd)\b/gi, replacement: '[ADDRESS]' },
 ];
 
@@ -303,6 +303,6 @@ async function processErasureRequest(userId: string, db: any, s3Client: S3Client
 ## Resources
 
 - [Deepgram Redaction](https://developers.deepgram.com/docs/redaction)
-- [Deepgram Security](https://deepgram.com/security)
-- [HIPAA Compliance](https://deepgram.com/hipaa)
-- [GDPR Guide](https://developers.deepgram.com/docs/gdpr)
+- Deepgram Security
+- HIPAA Compliance
+- GDPR Guide

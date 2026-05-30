@@ -572,7 +572,7 @@ This plugin is **immediately usable** and provides **real value** to:
 
 ## 📞 Support & Resources
 
-**Repository:** https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/excel-analyst-pro
+**Repository:**
 
 **Marketplace:** https://claudecodeplugins.io/plugins/excel-analyst-pro
 

@@ -243,7 +243,7 @@ kubectl rollout status deployment/maintainx-integration
 
 ## Resources
 
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- MaintainX API Reference
 - [Google Cloud Run Docs](https://cloud.google.com/run/docs)
 - [Kubernetes Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
 - [Docker Best Practices](https://docs.docker.com/build/building/best-practices/)

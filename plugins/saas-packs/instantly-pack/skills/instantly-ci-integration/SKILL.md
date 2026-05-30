@@ -28,7 +28,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 
 ## Overview
 
-Set up CI/CD pipelines for Instantly API v2 integrations. Covers GitHub Actions workflows for testing against the Instantly mock server, validating API key scopes, and deploying webhook receivers. Uses the mock server at `https://developer.instantly.ai/_mock/api/v2/` so CI runs don't send real emails or consume production API limits.
+Set up CI/CD pipelines for Instantly API v2 integrations. Covers GitHub Actions workflows for testing against the Instantly mock server, validating API key scopes, and deploying webhook receivers. Uses the mock server at `` so CI runs don't send real emails or consume production API limits.
 
 ## Prerequisites
 
@@ -246,7 +246,7 @@ npx vitest run --reporter=dot
 
 ## Resources
 
-- [Instantly Mock Server](https://developer.instantly.ai/_mock/api/v2/)
+- Instantly Mock Server
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
 

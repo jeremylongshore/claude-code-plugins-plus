@@ -114,7 +114,7 @@ echo "Total attachments: $(du -sh "$VAULT_PATH/attachments" 2>/dev/null | cut -f
 
 Strategies to stay under the 1 GB Sync Standard tier:
 
-- Move PDFs to a local folder outside the vault, link with `file:///` URIs
+- Move PDFs to a local folder outside the vault, link with ` URIs
 - Compress images before adding: `pngquant --quality=65-80 *.png` or ImageOptim
 - Use external image hosting (Cloudinary free tier: 25 credits/mo, ~25K transforms)
 - Exclude `.obsidian/plugins/*/data.json` — plugin caches regenerate on launch
@@ -243,7 +243,7 @@ Cost reduction strategies:
 
 - Use `publish: true` frontmatter selectively instead of publishing entire folders
 - Compress images before embedding (target < 200KB per image)
-- Use lazy-loading for heavy media: `![alt](image.png)` with external hosting
+- Use lazy-loading for heavy media: `!alt` with external hosting
 - Monitor page count — each additional page adds build time and bandwidth
 - Use Obsidian's built-in image compression in Publish settings
 

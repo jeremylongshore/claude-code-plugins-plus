@@ -242,4 +242,4 @@ For deeper coverage (Vault Agent integration, dynamic secrets, token-binding, fe
 - [OWASP A01:2021 — Broken Access Control](https://owasp.org/Top10/A01_2021-Broken_Access_Control/)
 - [OWASP A02:2021 — Cryptographic Failures](https://owasp.org/Top10/A02_2021-Cryptographic_Failures/)
 - [SOC 2 CC6.1 — Logical Access Controls](https://www.aicpa-cima.com/topic/audit-assurance/soc-for-service-organizations)
-- [NAIC Model Audit Rule (MAR)](https://content.naic.org/cipr-topics/insurance-data-security-model-law)
+- NAIC Model Audit Rule (MAR)

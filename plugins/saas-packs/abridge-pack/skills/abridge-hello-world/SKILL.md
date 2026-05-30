@@ -216,7 +216,7 @@ main().catch(console.error);
 
 - [Abridge Product Overview](https://www.abridge.com/product)
 - [Abridge AI Technology](https://www.abridge.com/ai)
-- [HL7 FHIR Clinical Notes](https://hl7.org/fhir/clinicalnotes.html)
+- HL7 FHIR Clinical Notes
 
 ## Next Steps
 

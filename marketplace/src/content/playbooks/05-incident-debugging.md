@@ -104,7 +104,7 @@ async function quickHealthCheck(): Promise<{ healthy: boolean; issues: string[] 
 
 // 1. Check Claude API connectivity
 try {
-const response = await fetch('https://api.anthropic.com/v1/messages', {
+const response = await fetch('', {
 method: 'POST',
 headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY },
 body: JSON.stringify({ model: 'claude-3-5-haiku-20241022', messages: [{ role: 'user', content: 'test' }], max_tokens: 10 })

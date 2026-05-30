@@ -503,14 +503,14 @@ async function buildEvidenceBundle() {
 
   console.log('Evidence bundle for Supabase support:');
   console.log(JSON.stringify(evidence, null, 2));
-  // Submit at: https://supabase.com/dashboard/support
+  // Submit at:
 }
 ```
 
 ## Resources
 
 - [Supabase Status Page](https://status.supabase.com)
-- [Supabase Support Portal](https://supabase.com/dashboard/support)
+- Supabase Support Portal
 - [Database Health — Supabase Docs](https://supabase.com/docs/guides/database/inspect)
 - [RLS Debugging — Supabase Docs](https://supabase.com/docs/guides/troubleshooting/rls-simplified-BJTcS8)
 - [Edge Functions Logs — Supabase Docs](https://supabase.com/docs/guides/functions/logging)

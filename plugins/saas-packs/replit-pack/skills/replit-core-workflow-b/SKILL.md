@@ -206,7 +206,7 @@ curl "https://replit.com/api/v1/teams/TEAM_ID/members" \
 
 - [Replit Teams](https://docs.replit.com/teams/identity-and-access-management/groups-and-permissions)
 - [Replit Deployments](https://docs.replit.com/cloud-services/deployments/reserved-vm-deployments)
-- [Custom Domains](https://docs.replit.com/hosting/custom-domains)
+- Custom Domains
 
 ## Next Steps
 

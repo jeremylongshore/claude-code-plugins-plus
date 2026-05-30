@@ -42,4 +42,4 @@ These permissions are required because framecraft orchestrates external command-
 ## Links
 
 - [Source Repository](https://github.com/vaddisrinivas/framecraft)
-- [License: MIT](https://github.com/vaddisrinivas/framecraft/blob/master/LICENSE)
+- License: MIT

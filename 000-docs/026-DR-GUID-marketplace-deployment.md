@@ -9,7 +9,7 @@
 
 ### Step 1: Commit Workflow Fix
 ```bash
-cd /home/jeremy/000-projects/claude-code-plugins
+cd
 git add .github/workflows/deploy-marketplace.yml
 git add DEPLOYMENT_CHECKLIST.md
 git add marketplace/DEPLOYMENT_*.md
@@ -19,7 +19,7 @@ git push origin main
 ```
 
 ### Step 2: Enable GitHub Pages
-1. Visit: https://github.com/jeremylongshore/claude-code-plugins/settings/pages
+1. Visit:
 2. Source: **GitHub Actions**
 3. Custom domain: `claudecodeplugins.io`
 4. Enable: **Enforce HTTPS**
@@ -57,7 +57,7 @@ dig claudecodeplugins.io A +short
 
 ### Local Commands
 ```bash
-cd /home/jeremy/000-projects/claude-code-plugins/marketplace
+cd
 npm run dev      # Start dev server
 npm run build    # Build for production
 npm run preview  # Preview build
@@ -65,7 +65,7 @@ npm run preview  # Preview build
 
 ### Deploy Commands
 ```bash
-cd /home/jeremy/000-projects/claude-code-plugins
+cd
 git add marketplace/
 git commit -m "Update marketplace: [description]"
 git push origin main  # Auto-deploys via GitHub Actions
@@ -74,7 +74,7 @@ git push origin main  # Auto-deploys via GitHub Actions
 ### Verification
 - **Site:** https://claudecodeplugins.io
 - **Actions:** https://github.com/jeremylongshore/claude-code-plugins/actions
-- **Settings:** https://github.com/jeremylongshore/claude-code-plugins/settings/pages
+- **Settings:**
 
 ---
 
@@ -89,7 +89,7 @@ git push origin main  # Auto-deploys via GitHub Actions
 
 ### Build failing?
 ```bash
-cd /home/jeremy/000-projects/claude-code-plugins/marketplace
+cd
 npm run build  # Test locally first
 # Fix errors, then commit and push
 ```
@@ -107,9 +107,9 @@ dig claudecodeplugins.io A +short
 ## 📚 Full Documentation
 
 For detailed guides, see:
-- **Comprehensive Checklist:** `/home/jeremy/000-projects/claude-code-plugins/DEPLOYMENT_CHECKLIST.md`
-- **Deployment Status:** `/home/jeremy/000-projects/claude-code-plugins/000-docs/024-LS-STAT-marketplace-deployment-status.md`
-- **Deployment Summary:** `/home/jeremy/000-projects/claude-code-plugins/000-docs/025-RA-REPT-marketplace-deployment.md`
+- **Comprehensive Checklist:** `
+- **Deployment Status:** `
+- **Deployment Summary:** `
 
 ---
 

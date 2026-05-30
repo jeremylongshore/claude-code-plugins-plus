@@ -192,7 +192,7 @@ cat .maintainx-sync-state.json 2>/dev/null || echo "No sync state file found"
 ## Resources
 
 - [MaintainX Status Page](https://status.getmaintainx.com)
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- MaintainX API Reference
 - [MaintainX Help Center](https://help.getmaintainx.com)
 
 ## Next Steps

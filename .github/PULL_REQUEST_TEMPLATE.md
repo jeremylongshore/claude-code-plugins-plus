@@ -1,8 +1,9 @@
 # Pull Request
 
 > 📘 **First time contributing?** Read both:
-> 1. [CONTRIBUTING.md § Before You Submit](../blob/main/CONTRIBUTING.md#before-you-submit--read-this) — the contract and the workflow
-> 2. **[Plugin & Skill Spec (v3.6.0)](../blob/main/000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md)** — the authoritative spec the validator scores against (8-field frontmatter, 7 body sections, 100-point rubric, all source-cited)
+>
+> 1. CONTRIBUTING.md § Before You Submit — the contract and the workflow
+> 2. **Plugin & Skill Spec (v3.6.0)** — the authoritative spec the validator scores against (8-field frontmatter, 7 body sections, 100-point rubric, all source-cited)
 >
 > The PR Pre-screen workflow will post a structured review with the exact
 > validator findings on every PR — reading both up front saves a round-trip.
@@ -36,9 +37,11 @@
 **Motivation:**
 
 **Related Issues:**
+
 <!-- Link to related issues: Closes #123, Fixes #456 -->
 
 ## Security
+
 - Related alerts: GHSA-/CVE-
 - Impact assessment: None / Low / Medium / High
 
@@ -50,6 +53,7 @@
 **Keywords:**
 
 **Components Included:**
+
 - [ ] Commands (how many: )
 - [ ] Agents (how many: )
 - [ ] Hooks (how many: )
@@ -57,11 +61,13 @@
 - [ ] MCP servers
 
 **Dependencies:**
+
 <!-- List any external dependencies required -->
 
 ## Checklist
 
 ### For All PRs
+
 - [ ] I have read the [CONTRIBUTING.md](../000-docs/007-DR-GUID-contributing.md) guidelines
 - [ ] My code follows the project's style and conventions
 - [ ] I have performed a self-review of my code
@@ -72,6 +78,7 @@
 - [ ] No high/critical Dependabot alerts introduced
 
 ### For Plugin Submissions/Updates
+
 - [ ] Plugin has valid `.claude-plugin/plugin.json` with all required fields
 - [ ] `plugin.json` validated with `jq empty plugin.json`
 - [ ] README.md is comprehensive with installation, usage, and examples
@@ -86,6 +93,7 @@
 - [ ] All JSON files are valid (`jq empty *.json`)
 
 ### For Marketplace Website Changes
+
 - [ ] Website builds successfully (`cd marketplace && npm run build`)
 - [ ] No broken links or missing assets
 - [ ] Mobile-responsive design verified
@@ -93,6 +101,7 @@
 - [ ] Accessibility standards followed (WCAG 2.1)
 
 ### For Documentation Changes
+
 - [ ] Spelling and grammar checked
 - [ ] Code examples tested and working
 - [ ] Links verified and not broken
@@ -104,12 +113,14 @@
 <!-- Describe how you tested your changes -->
 
 **Test Environment:**
+
 - OS:
 - Claude Code Version:
 - Python Version (if applicable):
 - Node Version (if applicable):
 
 **Test Commands Run:**
+
 ```bash
 # Example:
 /plugin install my-plugin@test
@@ -117,9 +128,11 @@
 ```
 
 **Test Results:**
+
 <!-- Paste relevant output, screenshots, or describe results -->
 
 **Edge Cases Tested:**
+
 - [ ] Works with minimal configuration
 - [ ] Handles errors gracefully
 - [ ] Works across different platforms (macOS, Linux, Windows)
@@ -153,6 +166,7 @@
 <!-- REQUIRED for all plugin submissions - see SECURITY.md -->
 
 ### Automated Security Scans
+
 - [ ] No hardcoded secrets (API keys, passwords, tokens)
 - [ ] No AWS keys, private keys, or credentials detected
 - [ ] No destructive commands (`rm -rf /`, data deletion)
@@ -163,6 +177,7 @@
 - [ ] No URL shorteners (potential phishing)
 
 ### Manual Security Review
+
 - [ ] **Prompt Injection Protection**: No hidden instructions that hijack Claude's behavior
 - [ ] **Data Privacy**: No data exfiltration to external servers (all network calls documented in README)
 - [ ] **Permission Audit**: Plugin requests minimal necessary permissions only
@@ -172,6 +187,7 @@
 - [ ] **Dependencies**: All npm dependencies reviewed (for MCP plugins)
 
 ### Testing
+
 - [ ] Tested in isolated environment before submission
 - [ ] No unexpected side effects observed
 - [ ] Graceful error handling for edge cases
@@ -199,6 +215,7 @@
 ---
 
 **By submitting this PR, I confirm:**
+
 - [ ] I have the right to submit this code under the project's license
 - [ ] I understand my contributions will be publicly available
 - [ ] I agree to the project's [Code of Conduct](../000-docs/006-BL-POLI-code-of-conduct.md) (if exists)

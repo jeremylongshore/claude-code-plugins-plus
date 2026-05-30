@@ -52,7 +52,7 @@ Before using this skill, ensure:
 - Validation report confirming correct implementation
 - Summary of changes made and their rationale
 
-See [Terraform implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+See Terraform implementation details for output format specifications.
 
 ## Error Handling
 
@@ -67,5 +67,5 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 - Vertex AI Terraform: https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/vertex_ai_endpoint
 - Vertex AI documentation: https://cloud.google.com/vertex-ai/docs
 - Model Garden: https://cloud.google.com/model-garden
-- Vector Search guide: https://cloud.google.com/vertex-ai/docs/vector-search
+- Vector Search guide:
 - Terraform examples in ${CLAUDE_SKILL_DIR}/vertex-examples/

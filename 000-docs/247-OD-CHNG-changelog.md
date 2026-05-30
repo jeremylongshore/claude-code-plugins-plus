@@ -430,7 +430,7 @@ Rate limit documentation for remaining services:
 **"Make All Plugins Free" Initiative Complete!** Comprehensive audit and update of all 259 plugins to provide $0 alternatives, saving users $40K-97K/year. Created new ollama-local-ai plugin and updated 12 plugins with 2,680+ lines of free alternative documentation.
 
 ### 🆕 New Plugins (1)
-- **[ollama-local-ai](plugins/ai-ml/ollama-local-ai/)** - Complete local LLM deployment system
+- **ollama-local-ai** - Complete local LLM deployment system
   - Step-by-step Ollama installation for macOS, Linux, Windows, Docker
   - Model recommendations by use case (coding, general, fast)
   - Zero API costs forever - replaces OpenAI, Anthropic (except Claude Code), xAI
@@ -494,10 +494,10 @@ Rate limit documentation for remaining services:
 ### 👥 Community Recognition
 **Massive thanks to our community contributors:**
 - **[@lukeslp](https://github.com/lukeslp) (Lucas Steuber)** - 🏆 **EPIC CONTRIBUTION:** Created geepers-agents with **51 specialized development agents** across 10 categories - the largest single plugin contribution in repository history! Includes orchestration system for checkpoint management, deployment validation, quality audits, fullstack development, research workflows, game development, and more. ([#159](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/159))
-- **[@beepsoft](https://github.com/beepsoft)** - Reported missing validate-format.sh script in formatter plugin, leading to comprehensive plugin enhancements ([#147](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/147), [#149](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/149))
+- **[@beepsoft](https://github.com/beepsoft)** - Reported missing validate-format.sh script in formatter plugin, leading to comprehensive plugin enhancements (#147, #149)
 
 ### 🆕 New Plugins (1)
-- **[geepers-agents](plugins/community/geepers-agents/)** - Multi-agent orchestration system with 51 specialized agents organized into 10 categories:
+- **geepers-agents** - Multi-agent orchestration system with 51 specialized agents organized into 10 categories:
   - **Master**: conductor_geepers (intelligent routing)
   - **Checkpoint**: 5 agents for session maintenance (scout, repo, status, snippets)
   - **Deploy**: 4 agents for infrastructure (validator, caddy, services)
@@ -555,7 +555,7 @@ Major infrastructure enhancements with comprehensive script implementations, Int
 
 ### 👥 Community Recognition
 **Special thanks to our community contributors:**
-- **[@beepsoft](https://github.com/beepsoft)** - Provided valuable feedback on skill implementations that inspired comprehensive quality enhancements across the entire plugin ecosystem ([#134](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/134))
+- **[@beepsoft](https://github.com/beepsoft)** - Provided valuable feedback on skill implementations that inspired comprehensive quality enhancements across the entire plugin ecosystem (#134)
 
 ### 🚀 Infrastructure Enhancements
 
@@ -640,8 +640,8 @@ New iOS development plugin, website improvements with Nixtla partnership showcas
 
 ### 👥 New Contributors
 **Welcome to our newest contributors:**
-- **[@CharlesWiltgen](https://github.com/CharlesWiltgen) (Charles Wiltgen)** - Created the Axiom iOS development plugin with 13 production-ready skills ([#121](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/121))
-- **[@clickmediapropy](https://github.com/clickmediapropy)** - Reported horizontal scrolling bug on mobile ([#120](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/120))
+- **[@CharlesWiltgen](https://github.com/CharlesWiltgen) (Charles Wiltgen)** - Created the Axiom iOS development plugin with 13 production-ready skills (#121)
+- **[@clickmediapropy](https://github.com/clickmediapropy)** - Reported horizontal scrolling bug on mobile (#120)
 
 ### 🚀 New Plugins
 - **Axiom** - Battle-tested Claude Code skills for iOS, iPadOS, watchOS, tvOS development
@@ -651,7 +651,7 @@ New iOS development plugin, website improvements with Nixtla partnership showcas
   - Reduces debugging time from 30+ min to 2-5 min
 
 ### 🐛 Bug Fixes
-- **Fixed horizontal scrolling on mobile website** ([#120](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/120))
+- **Fixed horizontal scrolling on mobile website** (#120)
   - Added `overflow-x: hidden` to prevent unwanted horizontal scroll
   - Improved mobile user experience on claudecodeplugins.io
 
@@ -701,8 +701,8 @@ Community contributions, bug fixes, and comprehensive troubleshooting documentat
   - Real-world examples from AlephAuto bugfix session
 
 ### 📚 Documentation
-- **Created [TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Comprehensive troubleshooting guide
-  - WSL2 path length issues and fixes ([#105](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/105))
+- **Created TROUBLESHOOTING.md** - Comprehensive troubleshooting guide
+  - WSL2 path length issues and fixes (#105)
   - Plugin installation and permission errors
   - MCP server build and startup issues
   - Marketplace update problems
@@ -711,11 +711,11 @@ Community contributions, bug fixes, and comprehensive troubleshooting documentat
 - All contributors thanked with personal messages and contact information
 
 ### 🐛 Issues Resolved
-- Closed [#105](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/105) - WSL2 clone checkout failure with documented workarounds
+- Closed #105 - WSL2 clone checkout failure with documented workarounds
 - Closed [#117](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/117) - JSON syntax errors fixed
 
 ### 🎊 Community Highlights
-- Created [Contributor Spotlight issue #118](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/118) for @aledlie
+- Created Contributor Spotlight issue #118 for @aledlie
 - Personal thank-you messages sent to all contributors with apologies for Thanksgiving delay
 - Contact email shared: jeremy@intentsolutions.io
 
@@ -1662,9 +1662,9 @@ Massive thanks to @jeremylongshore and the Claude Code team for this industry-le
 
 ### 📚 New Documentation (3 Major Guides)
 
-- **[SKILL_ACTIVATION_GUIDE.md](SKILL_ACTIVATION_GUIDE.md)** - Complete user guide on how skills activate with trigger phrases
-- **[SKILLS_SCHEMA_2025.md](SKILLS_SCHEMA_2025.md)** - Technical specification for 2025 schema compliance
-- **[SKILLS_QUALITY_STANDARDS.md](SKILLS_QUALITY_STANDARDS.md)** - Industry-leading quality standards and best practices (9,000+ words)
+- **SKILL_ACTIVATION_GUIDE.md** - Complete user guide on how skills activate with trigger phrases
+- **SKILLS_SCHEMA_2025.md** - Technical specification for 2025 schema compliance
+- **SKILLS_QUALITY_STANDARDS.md** - Industry-leading quality standards and best practices (9,000+ words)
 
 ### 🛠️ New Automation Tools (5 Scripts)
 
@@ -1804,11 +1804,11 @@ Created comprehensive quality framework:
 
 ### 🔗 Links
 
-- [SKILL_ACTIVATION_GUIDE.md](SKILL_ACTIVATION_GUIDE.md) - How to activate skills
-- [SKILLS_SCHEMA_2025.md](SKILLS_SCHEMA_2025.md) - 2025 schema specification
-- [SKILLS_QUALITY_STANDARDS.md](SKILLS_QUALITY_STANDARDS.md) - Quality standards
-- [Migration Script](scripts/migrate-skills-schema.py) - Auto-migration tool
-- [Validation Script](scripts/validate-skills-schema.py) - Schema validator
+- SKILL_ACTIVATION_GUIDE.md - How to activate skills
+- SKILLS_SCHEMA_2025.md - 2025 schema specification
+- SKILLS_QUALITY_STANDARDS.md - Quality standards
+- Migration Script - Auto-migration tool
+- Validation Script - Schema validator
 
 ### 🎯 Breaking Changes
 
@@ -1834,18 +1834,18 @@ Special thanks to @jeremylongshore for creating these powerful Google Cloud inte
 
 ### 🆕 New Plugins (3)
 
-- **[002-jeremy-yaml-master-agent](plugins/productivity/002-jeremy-yaml-master-agent/)** - Intelligent YAML validation, generation, and transformation agent
+- **002-jeremy-yaml-master-agent** - Intelligent YAML validation, generation, and transformation agent
   - **Category**: Productivity
   - **Agent Skills**: 1 (YAML validation and schema inference)
   - **Features**: Schema inference, linting, format conversion (YAML↔JSON), parsing validation
 
-- **[003-jeremy-vertex-ai-media-master](plugins/productivity/003-jeremy-vertex-ai-media-master/)** - Comprehensive Google Vertex AI multimodal mastery
+- **003-jeremy-vertex-ai-media-master** - Comprehensive Google Vertex AI multimodal mastery
   - **Category**: Productivity
   - **Agent Skills**: 1 (multimodal content generation)
   - **Slash Commands**: 1 (/vertex-campaign)
   - **Features**: Video processing (6+ hours), audio generation, image creation with Gemini 2.0/2.5 and Imagen 4, marketing campaign automation
 
-- **[004-jeremy-google-cloud-agent-sdk](plugins/productivity/004-jeremy-google-cloud-agent-sdk/)** - Google Cloud Agent Development Kit mastery
+- **004-jeremy-google-cloud-agent-sdk** - Google Cloud Agent Development Kit mastery
   - **Category**: Productivity
   - **Agent Skills**: 1 (agent development automation)
   - **Slash Commands**: 1 (/create-agent)
@@ -1866,9 +1866,9 @@ Special thanks to @jeremylongshore for creating these powerful Google Cloud inte
 
 ### 🔗 Links
 
-- [002-jeremy-yaml-master-agent Documentation](plugins/productivity/002-jeremy-yaml-master-agent/README.md)
-- [003-jeremy-vertex-ai-media-master Documentation](plugins/productivity/003-jeremy-vertex-ai-media-master/README.md)
-- [004-jeremy-google-cloud-agent-sdk Documentation](plugins/productivity/004-jeremy-google-cloud-agent-sdk/README.md)
+- 002-jeremy-yaml-master-agent Documentation
+- 003-jeremy-vertex-ai-media-master Documentation
+- 004-jeremy-google-cloud-agent-sdk Documentation
 
 ---
 
@@ -1884,7 +1884,7 @@ Special thanks to @jeremylongshore for building this plugin and launching a new 
 
 ### 🆕 New Plugins (1)
 
-- **[excel-analyst-pro](plugins/business-tools/excel-analyst-pro/)** - Professional financial modeling toolkit for Claude Code
+- **excel-analyst-pro** - Professional financial modeling toolkit for Claude Code
   - **Category**: Business Tools (NEW category!)
   - **Agent Skills**: 4 (DCF Modeler, LBO Modeler, Variance Analyzer, Pivot Wizard)
   - **Slash Commands**: 3 (/build-dcf, /build-lbo, /analyze-variance)
@@ -1928,7 +1928,7 @@ Special thanks to @jeremylongshore for building this plugin and launching a new 
 
 ### 🔗 Links
 
-- [Excel Analyst Pro Documentation](plugins/business-tools/excel-analyst-pro/README.md)
+- Excel Analyst Pro Documentation
 - [GitHub Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.2.4)
 
 ---
@@ -1945,7 +1945,7 @@ Special thanks to **Claude** (noreply@anthropic.com) for co-authoring this plugi
 
 ### 🆕 New Plugins (1)
 
-- **[agent-context-manager](plugins/productivity/agent-context-manager/)** - Automatically detect and load AGENTS.md files for specialized agent behaviors
+- **agent-context-manager** - Automatically detect and load AGENTS.md files for specialized agent behaviors
   - **Category**: Productivity
   - **Agent Skills**: 1 (agent-context-loader - 200+ line documentation)
   - **Slash Commands**: 1 (/sync-agent-context)
@@ -1987,9 +1987,9 @@ Special thanks to **Claude** (noreply@anthropic.com) for co-authoring this plugi
 
 ### 🔗 Links
 
-- [Full Plugin Documentation](plugins/productivity/agent-context-manager/README.md)
-- [SKILL.md](plugins/productivity/agent-context-manager/skills/agent-context-loader/SKILL.md)
-- [Slash Command Docs](plugins/productivity/agent-context-manager/commands/sync-agent-context.md)
+- Full Plugin Documentation
+- SKILL.md
+- Slash Command Docs
 - [GitHub Release](https://github.com/jeremylongshore/claude-code-plugins-plus/releases/tag/v1.2.3)
 
 ---
@@ -2044,7 +2044,7 @@ Built by @jeremylongshore with Claude Code
 - **164 SKILL.md files updated** to hyphen-case name format
 - **100% compliance** with Anthropic's official Agent Skills Spec v1.0
 - **Name format fixed**: Title Case → hyphen-case (e.g., "Creating GitHub Issues" → "creating-github-issues")
-- **Official spec reference**: https://github.com/anthropics/skills/blob/main/agent_skills_spec.md
+- **Official spec reference**:
 
 **Required Changes Per Spec:**
 - `name` field must be hyphen-case (lowercase alphanumeric + hyphen only)
@@ -2172,7 +2172,7 @@ See README for full educational guide with examples.
 
 **Technical Deep-Dives:**
 - [Scaling AI Batch Processing](https://startaitools.com/posts/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/) - Complete technical implementation
-- [Production Systems Architecture](https://jeremylongshore.com/posts/scaling-ai-systems-production-batch-processing-with-built-in-disaster-recovery/) - Systems thinking and architecture
+- Production Systems Architecture - Systems thinking and architecture
 
 **Repository Documentation:**
 - `docs/IMPLEMENTATION_GUIDE.md` - Technical architecture and rate limiting
@@ -2293,7 +2293,7 @@ Agent Skills are Claude's newest superpower - SKILL.md files that automatically 
 - ✅ **Plus**: API development, crypto, fullstack, and utility plugins
 
 **1 New Plugin Added:**
-- **[fairdb-operations-kit](plugins/devops/fairdb-operations-kit/)** - Complete PostgreSQL-as-a-Service operations with VPS provisioning, backup automation, customer onboarding, and incident response
+- **fairdb-operations-kit** - Complete PostgreSQL-as-a-Service operations with VPS provisioning, backup automation, customer onboarding, and incident response
 
 ### 🎯 Key Improvements
 
@@ -2417,16 +2417,16 @@ Special thanks to:
 
 ### 📚 Learn More
 
-- [Agent Skills Documentation](docs/agent-skills/)
+- Agent Skills Documentation
 - [Plugin Catalog](https://claudecodeplugins.io)
-- [Getting Started Guide](docs/getting-started/)
-- [Skills Generation Audit](backups/skills-audit/skills_generation.db)
+- Getting Started Guide
+- Skills Generation Audit
 
 ### 🔗 Resources
 
 - [Full Plugin List with Skills](https://claudecodeplugins.io/skills)
-- [Agent Skills Guide](docs/guides/agent-skills.md)
-- [API Reference](docs/api/)
+- Agent Skills Guide
+- API Reference
 
 ---
 
@@ -3068,7 +3068,7 @@ claude: "research PostgreSQL indexing and create a ticket"
 
 ### 🆕 New Plugins (1)
 
-- **[web-to-github-issue](plugins/skill-enhancers/web-to-github-issue/)** - First Skill Enhancer plugin
+- **web-to-github-issue** - First Skill Enhancer plugin
   - **Enhances:** `web_search` and `web_fetch` Skills
   - **Action:** Automatically creates formatted GitHub issues from research findings
   - **Features:**
@@ -3169,7 +3169,7 @@ Special recognition to:
 
 ### 🆕 New Plugins (1)
 
-- **[skills-powerkit](plugins/examples/skills-powerkit/)** - Ultimate plugin management toolkit with 5 Agent Skills:
+- **skills-powerkit** - Ultimate plugin management toolkit with 5 Agent Skills:
   - 🛠️ **Plugin Creator** - Auto-scaffolds new plugins with proper structure
   - ✅ **Plugin Validator** - Auto-validates plugin structure and compliance
   - 📦 **Marketplace Manager** - Auto-manages catalog and syncing
@@ -3280,9 +3280,9 @@ Special recognition to:
 
 ### 🔗 Links
 
-- **Skills Powerkit Plugin:** [plugins/examples/skills-powerkit/](plugins/examples/skills-powerkit/)
-- **Release Audit:** [claudes-docs/SKILLS_POWERKIT_RELEASE_AUDIT.md](claudes-docs/SKILLS_POWERKIT_RELEASE_AUDIT.md)
-- **Release Report:** [claudes-docs/SKILLS_POWERKIT_RELEASE_REPORT.md](claudes-docs/SKILLS_POWERKIT_RELEASE_REPORT.md)
+- **Skills Powerkit Plugin:** plugins/examples/skills-powerkit/
+- **Release Audit:** claudes-docs/SKILLS_POWERKIT_RELEASE_AUDIT.md
+- **Release Report:** claudes-docs/SKILLS_POWERKIT_RELEASE_REPORT.md
 - **Agent Skills Docs:** https://docs.claude.com/en/docs/claude-code/skills
 - **GitHub Release:** https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.0.40
 
@@ -3372,7 +3372,7 @@ This release resolves critical dependency management issues that prevented Depen
 
 **🚀 Marketplace Reliability Hotfix**
 
-Issue [#13](https://github.com/jeremylongshore/claude-code-plugins/issues/13) showed that our CLI marketplace import failed when extra metadata lived in `.claude-plugin/marketplace.json`. This release restores a frictionless `/plugin marketplace add` experience while keeping the website’s richer data intact.
+Issue #13 showed that our CLI marketplace import failed when extra metadata lived in `.claude-plugin/marketplace.json`. This release restores a frictionless `/plugin marketplace add` experience while keeping the website’s richer data intact.
 
 **What's New:**
 - CLI marketplace catalog is now regenerated from an extended source file, stripping unsupported keys (`featured`, `mcpTools`, `pluginCount`, `pricing`, `components`).
@@ -3717,12 +3717,12 @@ Browse 225 plugins • Install instantly • Contribute your own
 **For Plugin Users:**
 - **New feature**: User Security Guide shows how to evaluate plugins safely
 - **New feature**: Trust level badges indicate plugin safety
-- **Action**: Read [User Security Guide](./docs/USER_SECURITY_GUIDE.md) before installing new plugins
+- **Action**: Read User Security Guide before installing new plugins
 
 **For Plugin Developers:**
 - **New requirement**: All PRs must pass 4 automated security scans
 - **New requirement**: 15+ security checklist items in PR template
-- **Action**: Review [SECURITY.md](./000-docs/008-TQ-SECU-security.md) and ensure compliance
+- **Action**: Review SECURITY.md and ensure compliance
 
 **For Maintainers:**
 - **New process**: Security scanning runs on every PR automatically
@@ -3776,10 +3776,10 @@ Browse 225 plugins • Install instantly • Contribute your own
 
 ## 🚀 Quick Links
 
-- **User Security Guide**: [How to safely evaluate plugins](./docs/USER_SECURITY_GUIDE.md)
-- **Security Policy**: [Threat model & reporting](./000-docs/008-TQ-SECU-security.md)
-- **Learning Paths**: [Structured guides now at line 31](./README.md#-learning-paths)
-- **Essential Docs**: [Security is #1 priority](./README.md#-essential-documentation)
+- **User Security Guide**: How to safely evaluate plugins
+- **Security Policy**: Threat model & reporting
+- **Learning Paths**: Structured guides now at line 31
+- **Essential Docs**: Security is #1 priority
 
 ---
 
@@ -3815,14 +3815,14 @@ This release introduces a **comprehensive learning path system** - the most sign
 
 #### Main Learning Paths (3 guides)
 
-1. **[Quick Start](./docs/learning-paths/01-quick-start/)** (15 minutes)
+1. **Quick Start** (15 minutes)
    - Install marketplace and first plugin
    - Run slash commands
    - Understand plugin types
    - Try practical plugins (git-commit-smart)
    - 6,200 bytes of beginner-friendly content
 
-2. **[Plugin Creator](./docs/learning-paths/02-plugin-creator/)** (3 hours)
+2. **Plugin Creator** (3 hours)
    - Complete plugin anatomy explanation
    - Build from templates
    - Create slash commands with YAML frontmatter
@@ -3831,7 +3831,7 @@ This release introduces a **comprehensive learning path system** - the most sign
    - Test and publish workflow
    - 13,000 bytes of comprehensive guidance
 
-3. **[Advanced Developer](./docs/learning-paths/03-advanced-developer/)** (1 day)
+3. **Advanced Developer** (1 day)
    - Build production MCP servers with TypeScript
    - Understand MCP vs AI Instructions
    - Implement tools, resources, and prompts
@@ -3842,28 +3842,28 @@ This release introduces a **comprehensive learning path system** - the most sign
 
 #### Use Case Paths (4 domain guides)
 
-1. **[DevOps Engineer](./docs/learning-paths/use-cases/devops-engineer.md)** (4-6 hours)
+1. **DevOps Engineer** (4-6 hours)
    - Journey: Git → CI/CD → Docker → Kubernetes → Infrastructure
    - 25 plugins from DevOps Automation Pack
    - Real-world deployment scenarios
    - Complete DevOps workflow example
    - 7,700 bytes
 
-2. **[Security Specialist](./docs/learning-paths/use-cases/security-specialist.md)** (3-5 hours)
+2. **Security Specialist** (3-5 hours)
    - Journey: Code Scanning → OWASP → Compliance → Pentesting → Threat Modeling
    - 10 plugins from Security Pro Pack
    - Complete security audit workflow
    - GDPR/PCI compliance guides
    - 11,000 bytes
 
-3. **[AI/ML Developer](./docs/learning-paths/use-cases/ai-ml-developer.md)** (4-6 hours)
+3. **AI/ML Developer** (4-6 hours)
    - Journey: Prompts → LLM APIs → RAG Systems → Model Deploy → Production
    - 12 plugins from AI/ML Engineering Pack
    - Production AI system implementation
    - Real code for RAG pipelines, model training
    - 12,000 bytes
 
-4. **[Crypto Trader](./docs/learning-paths/use-cases/crypto-trader.md)** (3-4 hours)
+4. **Crypto Trader** (3-4 hours)
    - Journey: Portfolio → Analytics → Whale Tracking → Arbitrage → Sentiment
    - 7 featured crypto plugins
    - Automated trading system setup
@@ -4024,9 +4024,9 @@ This release introduces a **comprehensive learning path system** - the most sign
 
 ---
 
-**Full Changelog**: [v1.0.35...v1.0.36](https://github.com/jeremylongshore/claude-code-plugins/compare/v1.0.35...v1.0.36)
+**Full Changelog**: v1.0.35...v1.0.36
 
-**Download Plugin Catalog**: [plugins.json](https://github.com/jeremylongshore/claude-code-plugins/releases/download/v1.0.36/plugins.json)
+**Download Plugin Catalog**: plugins.json
 
 ---
 

@@ -1,7 +1,7 @@
 # E2E Test Architecture - Implementation Summary
 
 **Project:** Claude Code Plugins Marketplace
-**Location:** `/home/jeremy/000-projects/claude-code-plugins/`
+**Location:** `
 **Date:** 2025-12-27
 **Status:** Design Complete, Ready for Implementation
 
@@ -115,7 +115,7 @@ marketplace/
 
 ```bash
 # 1. Install dependencies
-cd /home/jeremy/000-projects/claude-code-plugins/marketplace/
+cd
 npm install -D @axe-core/playwright
 
 # 2. Create directory structure
@@ -631,10 +631,10 @@ npx playwright show-trace trace.zip
 
 ### Internal References
 
-- **Existing Config:** `/home/jeremy/000-projects/claude-code-plugins/marketplace/playwright.config.ts`
-- **Existing Tests:** `/home/jeremy/000-projects/claude-code-plugins/marketplace/tests/`
-- **CI Workflow:** `/home/jeremy/000-projects/claude-code-plugins/.github/workflows/validate-plugins.yml`
-- **Components:** `/home/jeremy/000-projects/claude-code-plugins/marketplace/src/components/`
+- **Existing Config:** `
+- **Existing Tests:** `
+- **CI Workflow:** `
+- **Components:** `
 
 ## Questions?
 

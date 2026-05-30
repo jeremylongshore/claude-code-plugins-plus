@@ -28,7 +28,7 @@ def get_storage(provider: str, **kwargs) -> VideoStorage:
     if provider not in providers:
         raise ValueError(f"Unknown provider: {provider}")
 
-    return providers[provider](**kwargs)
+    return providersprovider
 
 # Usage - easily switch providers
 storage = get_storage("s3", bucket="my-bucket")

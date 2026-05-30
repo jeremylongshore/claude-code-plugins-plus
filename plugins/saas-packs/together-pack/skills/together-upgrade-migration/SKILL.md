@@ -176,7 +176,7 @@ class TogetherClient {
 - [Together AI Docs](https://docs.together.ai/)
 - [API Reference](https://docs.together.ai/reference/chat-completions-1)
 - [Model List](https://docs.together.ai/docs/inference-models)
-- [Together Changelog](https://docs.together.ai/changelog)
+- Together Changelog
 
 ## Next Steps
 

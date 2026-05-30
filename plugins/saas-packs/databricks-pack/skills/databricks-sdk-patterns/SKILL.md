@@ -287,7 +287,7 @@ for ws in acct.workspaces.list():
 ## Resources
 
 - [Databricks SDK for Python](https://docs.databricks.com/aws/en/dev-tools/sdk-python)
-- [SDK Error Classes](https://databricks-sdk-py.readthedocs.io/en/latest/errors.html)
+- SDK Error Classes
 - [SDK GitHub](https://github.com/databricks/databricks-sdk-py)
 
 ## Next Steps

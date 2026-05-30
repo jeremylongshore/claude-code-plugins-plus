@@ -478,7 +478,7 @@ console.log('Performance stats:', monitor.getStats('getWorkOrders'));
 
 - [MaintainX API Documentation](https://maintainx.dev/)
 - [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [Node.js Performance Best Practices](https://nodejs.org/en/docs/guides/dont-block-the-event-loop)
+- Node.js Performance Best Practices
 
 ## Next Steps
 

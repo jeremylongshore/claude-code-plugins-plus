@@ -231,8 +231,8 @@ export function tenantIndex(tenantId: string, base: string): string {
 ## Resources
 
 - [algoliasearch v5 Methods](https://www.algolia.com/doc/libraries/javascript/v5/methods/search/)
-- [v4 to v5 Migration Guide](https://www.algolia.com/doc/libraries/javascript/v5/upgrade/)
-- [API Error Codes](https://www.algolia.com/doc/api-reference/api-methods/)
+- v4 to v5 Migration Guide
+- API Error Codes
 
 ## Next Steps
 

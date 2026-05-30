@@ -269,7 +269,7 @@ Always return HTTP 200 quickly from your webhook handler.
 
 ## Resources
 
-- [ElevenLabs Webhooks](https://elevenlabs.io/docs/overview/administration/webhooks)
+- ElevenLabs Webhooks
 - [ElevenLabs API Keys](https://elevenlabs.io/app/settings/api-keys)
 - [Voice Cloning Policy](https://elevenlabs.io/safety)
 

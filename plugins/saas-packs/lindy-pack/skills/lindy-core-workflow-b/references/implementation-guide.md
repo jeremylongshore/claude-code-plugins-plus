@@ -146,9 +146,9 @@ async function setupAutomations(agentId: string) {
 
 ## Resources
 
-- [Lindy Automations](https://docs.lindy.ai/automations)
-- [Cron Syntax](https://docs.lindy.ai/automations/cron)
-- [Webhook Guide](https://docs.lindy.ai/automations/webhooks)
+- Lindy Automations
+- Cron Syntax
+- Webhook Guide
 
 ## Next Steps
 

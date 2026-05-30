@@ -92,7 +92,7 @@ print(f"Connected as: {me.email}")
 
 - [Lindy Documentation](https://docs.lindy.ai)
 - [Lindy Dashboard](https://app.lindy.ai)
-- [Lindy API Reference](https://docs.lindy.ai/api)
+- Lindy API Reference
 
 ## Next Steps
 

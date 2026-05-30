@@ -192,7 +192,7 @@ async function safeRequest(fn: () => Promise<any>, retries = 3) {
 
 ## Resources
 
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- MaintainX API Reference
 - [MaintainX Status Page](https://status.getmaintainx.com)
 - [MaintainX Help Center](https://help.getmaintainx.com)
 

@@ -733,7 +733,7 @@ If you're building subscription billing with Stripe webhooks, consider whether y
 
 **Related posts:**
 
-- [Architecting Production Multi-Agent AI Platform: Technical Leadership](https://startaitools.com/posts/architecting-production-multi-agent-ai-platform-technical-leadership/)
-- [Building Production Multi-Agent AI with Vertex AI](https://startaitools.com/posts/building-production-multi-agent-ai-brightstream-vertex-ai/)
+- Architecting Production Multi-Agent AI Platform: Technical Leadership
+- Building Production Multi-Agent AI with Vertex AI
 
 *Building Hustle, a youth sports stats platform with Firebase, Stripe, and Vertex AI. Follow along as I document the technical decisions and lessons learned.*

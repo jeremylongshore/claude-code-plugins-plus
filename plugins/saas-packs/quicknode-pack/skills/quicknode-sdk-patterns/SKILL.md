@@ -123,7 +123,7 @@ async function cachedContractCall(contract: ethers.Contract, method: string, ...
   const cached = contractCache.get(key);
   if (cached) return cached;
 
-  const result = await contract[method](...args);
+  const result = await contractmethod;
   contractCache.set(key, result);
   return result;
 }

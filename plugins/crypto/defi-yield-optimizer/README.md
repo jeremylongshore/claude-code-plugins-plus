@@ -133,22 +133,22 @@ https://api.llama.fi/v2/chains
 
 ```bash
 # Ethereum Mainnet
-https://rpc.ankr.com/eth
+eth
 
 # Polygon
-https://rpc.ankr.com/polygon
+polygon
 
 # BSC
-https://rpc.ankr.com/bsc
+bsc
 
 # Arbitrum
-https://rpc.ankr.com/arbitrum
+arbitrum
 
 # Avalanche C-Chain
-https://rpc.ankr.com/avalanche
+avalanche
 
 # Fantom
-https://rpc.ankr.com/fantom
+fantom
 ```
 
 **Setup:**
@@ -157,11 +157,11 @@ https://rpc.ankr.com/fantom
 {
   "chains": {
     "ethereum": {
-      "rpc": "https://rpc.ankr.com/eth",
+      "rpc": "eth",
       "rateLimitPerSecond": 30
     },
     "polygon": {
-      "rpc": "https://rpc.ankr.com/polygon",
+      "rpc": "polygon",
       "rateLimitPerSecond": 30
     }
   }
@@ -426,7 +426,7 @@ for agent_id in range(5):
 class RPCPool:
     def __init__(self):
         self.ethereum_rpcs = [
-            'https://rpc.ankr.com/eth',
+            'eth',
             'https://ethereum.publicnode.com',
             'https://eth.llamarpc.com',
             'https://cloudflare-eth.com'
@@ -580,7 +580,7 @@ tvl_2 = cache.get_cached('aave_tvl', lambda: ...)
 ```javascript
 const DATA_SOURCES = {
   development: {
-    rpc: 'https://rpc.ankr.com/eth',           // FREE
+    rpc: 'eth',           // FREE
     tvl: 'https://api.llama.fi',              // FREE
     prices: 'https://api.coingecko.com/api/v3' // FREE
   },

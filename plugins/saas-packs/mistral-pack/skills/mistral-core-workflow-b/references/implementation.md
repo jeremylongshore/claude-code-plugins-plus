@@ -49,7 +49,7 @@ async function chatWithTools(userMessage: string): Promise<string> {
     messages.push(assistantMessage);
     if (!assistantMessage.toolCalls?.length) return assistantMessage.content ?? '';
     for (const toolCall of assistantMessage.toolCalls) {
-      const result = await toolFunctions[toolCall.function.name](JSON.parse(toolCall.function.arguments));
+      const result = await toolFunctionstoolCall.function.name);
       messages.push({ role: 'tool', name: toolCall.function.name, content: result, toolCallId: toolCall.id });
     }
   }

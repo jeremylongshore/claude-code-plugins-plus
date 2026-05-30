@@ -72,7 +72,7 @@ curl -X POST https://api.grammarly.com/ecosystem/api/v2/scores \
 
 ## Resources
 
-- [Grammarly API Support](https://developer.grammarly.com/docs/support)
+- Grammarly API Support
 
 ## Next Steps
 

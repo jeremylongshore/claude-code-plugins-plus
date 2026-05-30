@@ -110,7 +110,7 @@ MOCK_MODE=false npm run test:integration  # Integration test against real Glean 
 ## Resources
 
 - [Glean Indexing API](https://developers.glean.com/api-info/indexing/getting-started/overview)
-- [Glean Search API](https://developers.glean.com/api-info/search/getting-started/overview)
+- Glean Search API
 
 ## Next Steps
 

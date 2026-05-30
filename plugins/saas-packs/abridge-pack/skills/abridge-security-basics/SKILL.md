@@ -215,7 +215,7 @@ async function loadAbridgeSecrets(): Promise<Record<string, string>> {
 ## Resources
 
 - [HIPAA Security Rule](https://www.hhs.gov/hipaa/for-professionals/security/)
-- [Abridge Security](https://www.abridge.com/security)
+- Abridge Security
 - [SMART on FHIR Security](https://hl7.org/fhir/smart-app-launch/scopes-and-launch-context.html)
 
 ## Next Steps

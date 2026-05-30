@@ -299,4 +299,4 @@ Result: `COMPLIANCE-AUDIT-SaaSApp-2026-04-02.md` with:
 - [W3C WCAG 2.1 Guidelines](https://www.w3.org/TR/WCAG21/) — Web accessibility standards
 - [PCI Security Standards Council](https://www.pcisecuritystandards.org/) — Payment card security standards
 - [FTC COPPA Rule](https://www.ftc.gov/legal-library/browse/rules/childrens-online-privacy-protection-rule-coppa) — Children's privacy requirements
-- [AICPA SOC 2 Trust Services Criteria](https://www.aicpa.org/interestareas/frc/assuranceadvisoryservices/sorhome) — SOC 2 framework
+- AICPA SOC 2 Trust Services Criteria — SOC 2 framework

@@ -197,7 +197,7 @@ integration-crawl:
 
 ## Resources
 
-- [GitHub Actions Secrets](https://docs.github.com/en/actions/security-for-github-actions/using-secrets-in-github-actions)
+- GitHub Actions Secrets
 - [Vitest](https://vitest.dev/)
 - [Firecrawl Node SDK](https://docs.firecrawl.dev/sdks/node)
 

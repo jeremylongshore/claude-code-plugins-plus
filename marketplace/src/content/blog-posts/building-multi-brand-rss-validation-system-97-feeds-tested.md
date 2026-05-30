@@ -239,7 +239,7 @@ This was the organizational architecture challenge. I needed:
 
 ### Creating the Master Architecture
 
-**File: `/home/jeremy/projects/brainstorm/MASTER-RSS-FEEDS.md`**
+**File: `
 
 ```markdown
 # MASTER RSS FEED COLLECTION - ALL SYSTEMS
@@ -273,13 +273,13 @@ This was the organizational architecture challenge. I needed:
 **Symlink for n8n workflows:**
 
 ```bash
-ln -sf /home/jeremy/projects/brainstorm/MASTER-RSS-FEEDS.md \
-       /home/jeremy/projects/n8n-workflows/MASTER-RSS-FEEDS.md
+ln -sf  \
+
 ```
 
 ### CSV Version for Automation
 
-Created `/home/jeremy/projects/rssatoms/TIER1_BEST_FEEDS.csv`:
+Created `
 
 ```csv
 Category,Name,URL,Score,Quality Tier,Status,Posting Frequency,Tested
@@ -290,7 +290,7 @@ Tech News & Analysis,The Verge,https://www.theverge.com/rss/index.xml,95,TIER 1:
 
 Added 40 new validated feeds to existing 98, bringing total to **138 tier-1 feeds**.
 
-Pushed to GitHub: [rssatoms-tier1-feeds](https://github.com/jeremylongshore/rssatoms-tier1-feeds)
+Pushed to GitHub: rssatoms-tier1-feeds
 
 ## The Architecture: Multi-Brand Routing
 
@@ -471,7 +471,7 @@ The validation scripts should run weekly:
 
 ```bash
 # Cron job
-0 2 * * 0 /home/jeremy/projects/brainstorm/test-comprehensive-feeds.sh >> /var/log/rss-validation.log
+0 2 * * 0  >> /var/log/rss-validation.log
 ```
 
 Alert on:
@@ -518,7 +518,7 @@ The most important lesson? **When someone asks "did you test it first?" - the an
 
 Design follows validation. Architecture follows data quality. Automation follows both.
 
-**Code Repository:** [rssatoms-tier1-feeds](https://github.com/jeremylongshore/rssatoms-tier1-feeds)
+**Code Repository:** rssatoms-tier1-feeds
 
 **Final Stats:**
 

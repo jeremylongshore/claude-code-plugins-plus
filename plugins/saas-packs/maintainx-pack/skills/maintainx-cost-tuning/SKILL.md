@@ -213,7 +213,7 @@ async function deduplicatedGet(client: MaintainXClient, endpoint: string): Promi
 
 ## Resources
 
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- MaintainX API Reference
 - [MaintainX Pricing](https://www.getmaintainx.com/pricing)
 - [node-cache](https://github.com/node-cache/node-cache) -- In-memory caching for Node.js
 

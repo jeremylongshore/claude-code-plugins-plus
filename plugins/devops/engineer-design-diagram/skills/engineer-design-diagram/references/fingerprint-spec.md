@@ -28,7 +28,7 @@ One state file per active workspace, keyed by `repo.root` in the document.
   "schema_version": "1",
   "generated_at": "2026-04-19T14:05:11Z",
   "repo": {
-    "root": "/home/jeremy/000-projects/my-app",
+    "root": "",
     "git_sha": "a1b2c3d4",
     "branch": "main",
     "remote": "git@github.com:org/repo.git"

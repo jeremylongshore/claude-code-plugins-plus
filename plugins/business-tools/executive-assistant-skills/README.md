@@ -21,7 +21,7 @@ The result: a suite of 5 skills that autonomously research attendees before meet
 These skills rely on several external tools and services:
 
 - **[OpenClaw](https://openclaw.com)** — People research API used by meeting-prep to look up attendee backgrounds, company info, and social profiles.
-- **[gog CLI](https://github.com/mgonto/gog)** — Gmail on the Go, a CLI for sending and reading Gmail. Used by email-drafting and executive-digest.
+- **gog CLI** — Gmail on the Go, a CLI for sending and reading Gmail. Used by email-drafting and executive-digest.
 - **[Granola](https://granola.ai) or [Grain](https://grain.com)** — Meeting transcript sources. Action-items-todoist parses transcripts from these tools to extract tasks.
 - **[Todoist CLI](https://github.com/sachaos/todoist)** — Command-line interface for Todoist. Used by action-items-todoist and todoist-due-drafts to create and query tasks.
 

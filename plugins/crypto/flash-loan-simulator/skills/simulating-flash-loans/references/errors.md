@@ -16,7 +16,7 @@ Error: Request timed out after 30000ms
 
    ```yaml
    rpc_endpoints:
-     ethereum: "https://rpc.ankr.com/eth"      # Free, no signup
+     ethereum: "eth"      # Free, no signup
      backup: "https://eth.llamarpc.com"        # Alternative
    ```
 
@@ -315,7 +315,7 @@ pip install --upgrade web3 httpx
 # Test RPC endpoint
 curl -X POST -H "Content-Type: application/json" \
   --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' \
-  https://rpc.ankr.com/eth
+  eth
 ```
 
 ### Test Simulation Engine

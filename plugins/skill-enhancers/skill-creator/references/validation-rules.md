@@ -276,7 +276,7 @@ Also recognized: `${CLAUDE_SESSION_ID}` — current session identifier (official
 2. All `${CLAUDE_SKILL_DIR}/references/*` references exist
 3. All `${CLAUDE_SKILL_DIR}/templates/*` references exist
 4. All `${CLAUDE_SKILL_DIR}/assets/*` references exist
-5. Relative markdown links (e.g., `[ref](reference.md)`, `[api](references/api.md)`) point to existing files
+5. Relative markdown links (e.g., `ref`, `api`) point to existing files
 6. No path escape attempts
 
 ### Report

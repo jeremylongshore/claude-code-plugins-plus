@@ -259,9 +259,9 @@ app.delete('/api/assets/:id', requireAdobePermission('delete'), deleteHandler);
 
 - [Adobe Admin Console](https://adminconsole.adobe.com)
 - [User Management API](https://adobe.io/apis/experienceplatform/umapi-new.html)
-- [Adobe Admin Console Roles](https://helpx.adobe.com/enterprise/using/roles.html)
-- [Azure AD Sync Setup](https://helpx.adobe.com/enterprise/using/add-azure-sync.html)
-- [Google Workspace Sync](https://helpx.adobe.com/enterprise/using/add-google-sync.html)
+- Adobe Admin Console Roles
+- Azure AD Sync Setup
+- Google Workspace Sync
 
 ## Next Steps
 

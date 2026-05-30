@@ -468,7 +468,7 @@ sentry_sdk.init(
 - [Security & Privacy Settings](https://docs.sentry.io/security-legal-pii/scrubbing/server-side-scrubbing/)
 - [Auth Tokens](https://docs.sentry.io/api/guides/create-auth-token/)
 - [GDPR & Data Privacy](https://docs.sentry.io/security-legal-pii/security/)
-- [Security Headers (CSP)](https://docs.sentry.io/security-legal-pii/security/security-policy-reporting/)
+- Security Headers (CSP)
 
 ## Next Steps
 

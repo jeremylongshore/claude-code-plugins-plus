@@ -102,7 +102,7 @@ See Context Window Management (token counting + budget), Conversation Trimming f
 
 ## Resources
 
-- [Anthropic Privacy Policy](https://www.anthropic.com/policies/privacy)
+- Anthropic Privacy Policy
 - [Token Counting](https://docs.anthropic.com/en/api/counting-tokens)
 - [Context Window](https://docs.anthropic.com/en/docs/about-claude/models)
 

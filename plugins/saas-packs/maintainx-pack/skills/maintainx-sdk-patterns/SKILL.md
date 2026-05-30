@@ -273,7 +273,7 @@ const results = await new WorkOrderQuery()
 
 ## Resources
 
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- MaintainX API Reference
 - [p-queue](https://github.com/sindresorhus/p-queue) -- Promise queue with concurrency control
 
 ## Next Steps

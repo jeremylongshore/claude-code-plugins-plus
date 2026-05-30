@@ -325,5 +325,5 @@ grep -rn "webhooks/adobe" --include="*.ts" src/ | grep -v "digital-signature\|ve
 
 - [JWT to OAuth Migration](https://developer.adobe.com/developer-console/docs/guides/authentication/ServerToServerAuthentication/migration)
 - [Firefly Content Policy](https://developer.adobe.com/firefly-services/docs/firefly-api/)
-- [Photoshop Remove Background v2](https://developer.adobe.com/firefly-services/docs/photoshop/guides/remove_background/)
-- [I/O Events Signature Verification](https://developer.adobe.com/events/docs/guides/sdk/sdk_signature_verification/)
+- Photoshop Remove Background v2
+- I/O Events Signature Verification

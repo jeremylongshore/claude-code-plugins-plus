@@ -236,7 +236,7 @@ git revert HEAD
 - [Migration Guide](https://developers.webflow.com/data/docs/migrating-to-v2)
 - [SDK Releases](https://github.com/webflow/js-webflow-api/releases)
 - [v2 API Reference](https://developers.webflow.com/data/reference/rest-introduction)
-- [v1 Deprecation Timeline](https://developers.webflow.com/data/changelog/webflow-api-changed-endpoints)
+- v1 Deprecation Timeline
 
 ## Next Steps
 

@@ -149,7 +149,7 @@ See API Key Security (client-side vs server-side), Input Validation function, Pr
 
 - [API Key Management](https://console.anthropic.com/settings/keys)
 - [Security Best Practices](https://docs.anthropic.com/en/docs/build-with-claude/security)
-- [Data Privacy](https://www.anthropic.com/policies/privacy)
+- Data Privacy
 
 ## Next Steps
 

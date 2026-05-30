@@ -159,7 +159,7 @@ async function checkGleanHealth(): Promise<{
 
 - [Glean Developer Portal](https://developers.glean.com/)
 - [Glean Status Page](https://status.glean.com)
-- [Glean Indexing API Reference](https://developers.glean.com/indexing-api/)
+- Glean Indexing API Reference
 
 ## Next Steps
 

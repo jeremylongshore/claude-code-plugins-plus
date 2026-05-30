@@ -72,12 +72,12 @@ All reference skills are reviewed against 4 quality criteria:
 ## Related Resources
 
 - [WWDC 2025 Sessions](https://developer.apple.com/videos/wwdc2025)
-- [Claude Code Documentation](https://docs.claude.ai/code)
-- [Superpowers TDD Framework](https://github.com/superpowers-marketplace/superpowers)
+- Claude Code Documentation
+- Superpowers TDD Framework
 
 ## Contributing
 
 This is a preview release. Feedback welcome!
 
-- **Issues**: [Report bugs or request features](https://github.com/yourusername/Axiom/issues)
-- **Discussions**: [Share usage patterns and ask questions](https://github.com/yourusername/Axiom/discussions)
+- **Issues**: Report bugs or request features
+- **Discussions**: Share usage patterns and ask questions

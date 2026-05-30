@@ -22,7 +22,7 @@ Agent({
   description: "Run /agency-os <command>",
   subagent_type: "general-purpose",
   model: "sonnet",
-  prompt: "Run the agency-os skill for: /agency-os <command> <args>.\n\nUse medium reasoning effort — think through ID resolution, dedup checks, and brief assembly carefully, but don't over-deliberate on mechanical mutations.\n\nRead .claude/skills/agency-os/SKILL.md and execute that exact command end-to-end: sync preflight (call notion-fetch live — never read from any local cache file), resolve IDs against the live Notion result, mutate Notion via the Notion MCP, and return the same output format the skill specifies (the brief for `start`, the `+ Suggestion: ... -> url` line for `suggest`, etc.). All task/result links must be formatted as CommonMark markdown links — `[title](url)` — never HTML `<a>` tags and never a bare URL. Claude Code renders markdown but not HTML, so HTML anchors show up as literal text. If the command is `start`, also emit the full kickoff brief verbatim. If anything fails (sync, MCP call, ID resolution), stop and report — do not guess.\n\nYOU MUST ALWAYS PRODUCE OUTPUT. Never return silently. On success: the skill's standard output. On failure: one paragraph describing exactly what failed, what was attempted, and what state Notion was left in. Returning nothing is not an option."
+  prompt: "Run the agency-os skill for: /agency-os <command> <args>.\n\nUse medium reasoning effort — think through ID resolution, dedup checks, and brief assembly carefully, but don't over-deliberate on mechanical mutations.\n\nRead .claude/skills/agency-os/SKILL.md and execute that exact command end-to-end: sync preflight (call notion-fetch live — never read from any local cache file), resolve IDs against the live Notion result, mutate Notion via the Notion MCP, and return the same output format the skill specifies (the brief for `start`, the `+ Suggestion: ... -> url` line for `suggest`, etc.). All task/result links must be formatted as CommonMark markdown links — `title` — never HTML `<a>` tags and never a bare URL. Claude Code renders markdown but not HTML, so HTML anchors show up as literal text. If the command is `start`, also emit the full kickoff brief verbatim. If anything fails (sync, MCP call, ID resolution), stop and report — do not guess.\n\nYOU MUST ALWAYS PRODUCE OUTPUT. Never return silently. On success: the skill's standard output. On failure: one paragraph describing exactly what failed, what was attempted, and what state Notion was left in. Returning nothing is not an option."
 })
 ```
 
@@ -218,9 +218,9 @@ Done log        <- starts collapsed; only meaningful for recurring
    ### 2026-01-12: completed by agent — link <url>
 
 Related         <- starts expanded; one-line each
-   Corpus: [-> <corpus>](<corpus-url>)
-   General guidance: [-> Guidance](<guidance-url>)
-   Parent: [-> <parent-title>](<parent-url>)   <- only for subtasks
+   Corpus: -> <corpus>
+   General guidance: -> Guidance
+   Parent: -> <parent-title>   <- only for subtasks
 ```
 
 ### Corpus pages

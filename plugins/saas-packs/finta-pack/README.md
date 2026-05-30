@@ -86,7 +86,7 @@ Import your investor list via CSV or use Aurora AI to discover relevant investor
 
 - [Finta Website](https://www.trustfinta.com) -- sign up and dashboard
 - [Finta Blog](https://www.trustfinta.com/blog) -- fundraising guides and tips
-- [Finta for Founders](https://www.trustfinta.com/founders) -- founder-focused features
+- Finta for Founders -- founder-focused features
 - [Finta for Fund Managers](https://www.trustfinta.com/blog/finta-for-fund-managers-venture-capital-crm) -- LP pipeline management
 - [Finta Pricing](https://www.trustfinta.com/pricing) -- free and pro plans
 - [Finta Changelog](https://www.trustfinta.com/change-log) -- product updates

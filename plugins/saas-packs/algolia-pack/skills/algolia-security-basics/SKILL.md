@@ -166,7 +166,7 @@ async function rotateApiKey(oldKeyDescription: string) {
 ## Resources
 
 - [API Keys Guide](https://www.algolia.com/doc/guides/security/api-keys/)
-- [Secured API Keys](https://www.algolia.com/doc/guides/security/api-keys/in-depth/secured-api-keys/)
+- Secured API Keys
 - [API Key Restrictions](https://www.algolia.com/doc/guides/security/api-keys/in-depth/api-key-restrictions/)
 
 ## Next Steps

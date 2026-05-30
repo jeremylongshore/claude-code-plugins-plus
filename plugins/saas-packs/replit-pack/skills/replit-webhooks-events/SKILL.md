@@ -282,7 +282,7 @@ process.on('SIGTERM', async () => {
 
 - [Replit Extensions](https://docs.replit.com/extensions/)
 - [Replit Extensions API](https://docs.replit.com/extensions/extensions)
-- [Replit Deployments](https://docs.replit.com/hosting/deployments)
+- Replit Deployments
 - [Monitoring Deployments](https://docs.replit.com/cloud-services/deployments/monitoring-a-deployment)
 
 ## Next Steps

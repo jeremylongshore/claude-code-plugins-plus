@@ -250,7 +250,7 @@ if (result.status === "completed") {
 ## Resources
 
 - [Gamma API Reference](https://developers.gamma.app/reference/generate-a-gamma)
-- [Poll Generation Status](https://developers.gamma.app/reference/get-a-gamma-generation)
+- Poll Generation Status
 - [Bull Queue Documentation](https://github.com/OptimalBits/bull)
 
 ## Next Steps

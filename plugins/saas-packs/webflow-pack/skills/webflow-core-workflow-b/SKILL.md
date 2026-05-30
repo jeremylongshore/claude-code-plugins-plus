@@ -313,7 +313,7 @@ async function addSiteCustomCode(siteId: string) {
 ## Resources
 
 - [Sites API](https://developers.webflow.com/data/reference/sites)
-- [Pages API](https://developers.webflow.com/data/reference/pages)
+- Pages API
 - [Forms API](https://developers.webflow.com/data/reference/forms)
 - [Ecommerce Products](https://developers.webflow.com/data/reference/ecommerce/products/list)
 - [Custom Code API](https://developers.webflow.com/data/reference/custom-code)

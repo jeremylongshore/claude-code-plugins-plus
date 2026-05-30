@@ -73,5 +73,5 @@ See `${CLAUDE_SKILL_DIR}/assets/example_mlflow_workflow.yaml` for a complete wor
 - MLflow documentation: https://mlflow.org/docs/latest/index.html
 - MLflow Model Registry: https://mlflow.org/docs/latest/model-registry.html
 - DVC (Data Version Control): https://dvc.org/doc
-- Weights & Biases Model Registry: https://docs.wandb.ai/guides/model-registry
+- Weights & Biases Model Registry:
 - ML Model Cards: https://modelcards.withgoogle.com/about

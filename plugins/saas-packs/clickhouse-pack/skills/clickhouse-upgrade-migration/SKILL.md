@@ -236,7 +236,7 @@ clickhouse-client --query "RESTORE DATABASE analytics FROM Disk('backups', 'pre-
 
 - [Client Releases](https://github.com/ClickHouse/clickhouse-js/releases)
 - [Server Changelog](https://github.com/ClickHouse/ClickHouse/blob/master/CHANGELOG.md)
-- [Cloud Upgrades](https://clickhouse.com/docs/cloud/manage/upgrades)
+- Cloud Upgrades
 
 ## Next Steps
 

@@ -77,4 +77,4 @@ Build production-ready agents with Google’s Agent Development Kit (ADK): scaff
 - Worked examples (single-agent + multi-agent): `${CLAUDE_SKILL_DIR}/references/examples.md`
 - Error-handling and recovery patterns: `${CLAUDE_SKILL_DIR}/references/errors.md`
 - Product / architecture context: `${CLAUDE_SKILL_DIR}/PRD.md`, `${CLAUDE_SKILL_DIR}/ARD.md`
-- ADK / Agent Engine docs: https://cloud.google.com/vertex-ai/docs/agent-engine
+- ADK / Agent Engine docs:

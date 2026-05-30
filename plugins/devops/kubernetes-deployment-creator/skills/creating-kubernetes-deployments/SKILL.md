@@ -393,4 +393,4 @@ Deploy applications to Kubernetes with production-ready manifests.
 - Validation report confirming correct implementation
 - Summary of changes made and their rationale
 
-See [Kubernetes implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+See Kubernetes implementation details for output format specifications.

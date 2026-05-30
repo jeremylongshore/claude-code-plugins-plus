@@ -275,6 +275,6 @@ async function safeTranscribe(url: string, options: Record<string, any> = {}) {
 
 ## Resources
 
-- [Deepgram Production Guide](https://developers.deepgram.com/docs/production-guide)
+- Deepgram Production Guide
 - [Prometheus Best Practices](https://prometheus.io/docs/practices/)
-- [Deepgram SLA](https://deepgram.com/sla)
+- Deepgram SLA

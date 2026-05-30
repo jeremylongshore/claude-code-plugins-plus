@@ -165,7 +165,7 @@ def register(name: str):
 
 def get(name: str, *, tenant_id: str) -> Runnable:
     try:
-        return _BUILDERS[name](tenant_id=tenant_id)
+        return _BUILDERSname
     except KeyError:
         raise KeyError(f"No chain registered under {name!r}. Known: {list(_BUILDERS)}")
 ```
@@ -388,7 +388,7 @@ The migration is layer by layer, bottom up:
 - [LangChain 1.0 — Concepts](https://python.langchain.com/docs/concepts/)
 - [LangGraph — Persistence and checkpointers](https://langchain-ai.github.io/langgraph/concepts/persistence/)
 - [Pydantic Settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/)
-- [import-linter — Layer contracts](https://import-linter.readthedocs.io/en/stable/contract_types.html#layers)
+- import-linter — Layer contracts
 - [FastAPI — Dependency injection](https://fastapi.tiangolo.com/tutorial/dependencies/)
 - Pack pain catalog: `docs/pain-catalog.md` (entries P10, P22, P24, P28, P33)
 - Sibling skills in this pack (same `plugins/saas-packs/langchain-py-pack/skills/` directory):

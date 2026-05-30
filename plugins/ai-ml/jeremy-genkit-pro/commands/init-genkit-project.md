@@ -364,4 +364,4 @@ After initialization:
 - Genkit Documentation: https://genkit.dev/
 - Node.js Guide: https://genkit.dev/docs/get-started/
 - Python Guide: https://firebase.blog/posts/2025/04/genkit-python-go/
-- Go Guide: https://developers.googleblog.com/en/announcing-genkit-go-10/
+- Go Guide:

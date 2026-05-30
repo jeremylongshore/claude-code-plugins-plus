@@ -108,7 +108,7 @@ export async function healthCheck() {
 
 ```bash
 # Pre-flight
-curl -s https://status.brightdata.com/api/v2/status.json | python3 -c "import sys,json; s=json.load(sys.stdin); print(f'Status: {s[\"status\"][\"description\"]}')"
+curl -s api/v2/status.json | python3 -c "import sys,json; s=json.load(sys.stdin); print(f'Status: {s[\"status\"][\"description\"]}')"
 
 # Deploy with canary
 kubectl apply -f k8s/production.yaml
@@ -139,7 +139,7 @@ kubectl rollout status deployment/scraper
 
 - [Bright Data Status](https://status.brightdata.com)
 - [Zone Management](https://brightdata.com/cp/zones)
-- [Usage Dashboard](https://brightdata.com/cp/usage)
+- Usage Dashboard
 
 ## Next Steps
 

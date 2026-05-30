@@ -19,10 +19,10 @@ Complete documentation for the Fullstack Starter Pack plugin collection for Clau
 
 ## Quick Links
 
-- **[Installation Guide](INSTALLATION.md)** - Get started in 5 minutes
-- **[Quick Start Guide](QUICK_START.md)** - Build your first project
-- **[Use Cases](USE_CASES.md)** - Real-world examples and ROI
-- **[Troubleshooting](TROUBLESHOOTING.md)** - Common issues and solutions
+- **Installation Guide** - Get started in 5 minutes
+- **Quick Start Guide** - Build your first project
+- **Use Cases** - Real-world examples and ROI
+- **Troubleshooting** - Common issues and solutions
 
 ---
 
@@ -123,13 +123,13 @@ Complete documentation for the Fullstack Starter Pack plugin collection for Clau
 
 **Beginner:**
 
-1. Start with [INSTALLATION.md](INSTALLATION.md)
-2. Follow [QUICK_START.md](QUICK_START.md)
+1. Start with INSTALLATION.md
+2. Follow QUICK_START.md
 3. Generate your first project: `/project-scaffold "My App"`
 
 **Intermediate:**
 
-1. Review [USE_CASES.md](USE_CASES.md) for workflows
+1. Review USE_CASES.md for workflows
 2. Explore individual agents and commands
 3. Customize generated code for your needs
 

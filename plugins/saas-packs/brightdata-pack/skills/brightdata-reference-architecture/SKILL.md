@@ -241,9 +241,9 @@ export function startScheduler(jobs: ScrapeJob[], client: BrightDataClient) {
 ## Resources
 
 - [Bright Data Products Overview](https://brightdata.com/products)
-- [Scraping Browser](https://docs.brightdata.com/scraping-automation/scraping-browser/overview)
+- Scraping Browser
 - [Web Scraper API](https://docs.brightdata.com/scraping-automation/web-data-apis/web-scraper-api/overview)
-- [SERP API](https://docs.brightdata.com/scraping-automation/serp-api/overview)
+- SERP API
 
 ## Next Steps
 

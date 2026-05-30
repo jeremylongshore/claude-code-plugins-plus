@@ -120,7 +120,6 @@ echo "Quality checks complete"
 
 ```markdown
 
-
 ## Complete Examples
 
 ### Automated Release Script
@@ -199,7 +198,6 @@ echo "Ready to create GitHub release for v$VERSION"
 ### Step 5: Documentation Checklist
 ```markdown
 
-
 ## README.md Requirements
 
 ### Required Sections
@@ -221,12 +219,10 @@ echo "Ready to create GitHub release for v$VERSION"
 
 Brief description of what the plugin does.
 
-
 ## Features
 
 - Feature 1
 - Feature 2
-
 
 ## Installation
 
@@ -240,11 +236,9 @@ echo "Release prepared: my-plugin-${VERSION}.zip"
 
 ```markdown
 
-
 ## Usage
 
 Explain how to use the plugin.
-
 
 ## Settings
 
@@ -252,11 +246,10 @@ Explain how to use the plugin.
 |---------|-------------|---------|
 | Option 1 | What it does | value |
 
-
 ## Support
 
-- [Report issues](link)
-- [Discussions](link)
+- Report issues
+- Discussions
 ```
 
 ### Step 6: GitHub Release Preparation
@@ -276,7 +269,6 @@ cd ..
 
 cat > "release-notes-${VERSION}.md" << EOF
 
-
 ## What's New in v${VERSION}
 
 ### Features
@@ -287,7 +279,6 @@ cat > "release-notes-${VERSION}.md" << EOF
 
 ### Changes
 - Changed behavior description
-
 
 ## Community Plugin Submission
 

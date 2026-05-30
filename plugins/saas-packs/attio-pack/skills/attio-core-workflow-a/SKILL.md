@@ -218,7 +218,7 @@ await client.patch<{ data: AttioRecord }>(
 - [Attio Create Record](https://docs.attio.com/rest-api/endpoint-reference/records/create-a-record)
 - [Attio List Records](https://docs.attio.com/rest-api/endpoint-reference/records/list-records)
 - [Attio Search Records](https://docs.attio.com/rest-api/endpoint-reference/records/search-records)
-- [Attio Filtering and Sorting](https://docs.attio.com/rest-api/how-to/filtering-and-sorting)
+- Attio Filtering and Sorting
 - [Attio Attribute Types](https://docs.attio.com/docs/attribute-types/attribute-types)
 
 ## Next Steps

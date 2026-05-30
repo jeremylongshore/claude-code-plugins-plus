@@ -149,7 +149,7 @@ export function extractCitations(answer: string, citationUrls: string[]): Citati
 export function renderCitationsAsMarkdown(answer: string, citations: Citation[]): string {
   let rendered = answer;
   for (const c of citations) {
-    rendered = rendered.replaceAll(`[${c.index}]`, `[${c.index}](${c.url})`);
+    rendered = rendered.replaceAll(`[${c.index}]`, `${c.index}`);
   }
   return rendered;
 }

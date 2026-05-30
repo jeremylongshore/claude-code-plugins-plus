@@ -497,7 +497,7 @@ See [USE_CASES.md](./USE_CASES.md) for:
 
 ### Troubleshooting
 
-Having issues? See [TROUBLESHOOTING.md](./000-docs/157-DR-FAQS-troubleshooting.md) for:
+Having issues? See TROUBLESHOOTING.md for:
 
 - API key configuration
 - Rate limiting errors
@@ -506,7 +506,7 @@ Having issues? See [TROUBLESHOOTING.md](./000-docs/157-DR-FAQS-troubleshooting.m
 
 ## Get Help
 
-- **Documentation:** [README.md](./README.md)
+- **Documentation:** README.md
 - **Use Cases:** [USE_CASES.md](./USE_CASES.md)
 - **Issues:** https://github.com/jeremylongshore/claude-code-plugins/issues
 - **Email:** [email protected]

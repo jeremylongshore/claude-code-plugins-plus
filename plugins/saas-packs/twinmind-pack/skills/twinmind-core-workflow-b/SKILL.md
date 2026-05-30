@@ -62,7 +62,7 @@ Implement a `TaskIntegration` interface with `createTask()` and `updateTask()`. 
 
 Wire everything in `runFollowUpWorkflow()`: extract action items, create tasks in external system, then send or schedule follow-up email to attendees.
 
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for complete ActionItemExtractor, FollowUpAutomation, task integrations, and orchestration code.
+See detailed implementation for complete ActionItemExtractor, FollowUpAutomation, task integrations, and orchestration code.
 
 ## Output
 
@@ -97,7 +97,7 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 
 ## Resources
 
-- [TwinMind Action Items API](https://twinmind.com/docs/action-items)
+- TwinMind Action Items API
 - [Asana API](https://developers.asana.com)
 - [Linear API](https://developers.linear.app)
 

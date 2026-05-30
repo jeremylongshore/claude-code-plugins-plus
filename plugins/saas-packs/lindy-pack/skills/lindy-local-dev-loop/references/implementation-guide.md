@@ -114,8 +114,8 @@ LINDY_ENVIRONMENT=development
 
 ## Resources
 
-- [Lindy SDK Reference](https://docs.lindy.ai/sdk)
-- [TypeScript Best Practices](https://docs.lindy.ai/typescript)
+- Lindy SDK Reference
+- TypeScript Best Practices
 
 ## Next Steps
 

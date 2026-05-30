@@ -151,7 +151,7 @@ function validateWebhookSource(req: Request): boolean {
 
 ## Resources
 
-- [Bright Data Security](https://docs.brightdata.com/general/account/security)
+- Bright Data Security
 - [API Token Management](https://brightdata.com/cp/setting)
 - [Zone Management](https://brightdata.com/cp/zones)
 

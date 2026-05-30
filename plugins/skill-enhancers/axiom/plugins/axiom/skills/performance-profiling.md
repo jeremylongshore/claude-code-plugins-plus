@@ -921,7 +921,7 @@ let imageCache = NSCache<NSString, UIImage>()
 **Apple Documentation:**
 
 - [Instruments User Guide](https://help.apple.com/instruments/)
-- [Core Data Performance Tuning](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/CoreDataPerformance/)
+- Core Data Performance Tuning
 - [Energy Impact Instrument](https://developer.apple.com/library/archive/technotes/tn2224/)
 
 **Related Axiom Skills:**

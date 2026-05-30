@@ -145,7 +145,7 @@ async function refreshAccessToken(refreshToken: string) {
 - [SalesLoft API Basics](https://developers.salesloft.com/docs/platform/api-basics/)
 - [OAuth Authorization Code](https://developers.salesloft.com/docs/platform/api-basics/oauth-authentication/)
 - [OAuth Client Credentials](https://developers.salesloft.com/docs/platform/api-basics/client-creds/)
-- [API Reference (Swagger)](https://api.salesloft.com/swagger/index.html)
+- API Reference (Swagger)
 
 ## Next Steps
 

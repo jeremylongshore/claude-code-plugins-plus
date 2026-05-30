@@ -28,7 +28,7 @@ class VercelDeadLetterQueue {
     if (!entry) return false;
 
     try {
-      await vercelClient[entry.operation](entry.payload);
+      await vercelCliententry.operation;
       console.log(`DLQ: Successfully reprocessed ${entry.id}`);
       return true;
     } catch (error) {

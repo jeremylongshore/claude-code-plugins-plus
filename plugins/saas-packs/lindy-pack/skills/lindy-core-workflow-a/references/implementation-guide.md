@@ -136,9 +136,9 @@ main().catch(console.error);
 
 ## Resources
 
-- [Lindy Agent Creation](https://docs.lindy.ai/agents/create)
-- [Available Tools](https://docs.lindy.ai/tools)
-- [Model Options](https://docs.lindy.ai/models)
+- Lindy Agent Creation
+- Available Tools
+- Model Options
 
 ## Next Steps
 

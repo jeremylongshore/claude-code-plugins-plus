@@ -37,8 +37,15 @@ jobs:
           key: cache-lychee-${{ github.sha }}
           restore-keys: cache-lychee-
 
-      - name: Run lychee
-        id: lychee
+      # Two lychee invocations because the marketplace blog content uses
+      # root-relative URLs (`/posts/foo`, `/explore`) that Astro renders
+      # against https://tonsofskills.com at build time. Lychee needs --base
+      # for those to resolve as live URLs. Repo-side .md files (READMEs,
+      # 000-docs, skill bodies) don't use root-relative paths so they scan
+      # without a base.
+
+      - name: Run lychee (repo-side markdown)
+        id: lychee_repo
         uses: lycheeverse/lychee-action@v2
         with:
           args: >-
@@ -47,17 +54,34 @@ jobs:
             --no-progress
             --cache
             --max-cache-age 1d
+            --exclude-path 'marketplace/src/content'
             './**/*.md'
             './**/*.mdx'
-          # Fail PR builds; on schedule, upload report and surface failure non-fatally
           fail: ${{ github.event_name == 'pull_request' }}
-          output: ./lychee-report.md
+          output: ./lychee-repo-report.md
 
-      - name: Upload report
+      - name: Run lychee (marketplace content with site base)
+        id: lychee_marketplace
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --config .lychee.toml
+            --base https://tonsofskills.com
+            --no-progress
+            --cache
+            --max-cache-age 1d
+            'marketplace/src/content/**/*.md'
+            'marketplace/src/content/**/*.mdx'
+          fail: ${{ github.event_name == 'pull_request' }}
+          output: ./lychee-marketplace-report.md
+
+      - name: Upload reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: lychee-report-${{ github.run_id }}
-          path: ./lychee-report.md
+          name: lychee-reports-${{ github.run_id }}
+          path: |
+            ./lychee-repo-report.md
+            ./lychee-marketplace-report.md
           if-no-files-found: ignore
           retention-days: 30

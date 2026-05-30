@@ -272,7 +272,7 @@ class CanvaDeadLetterQueue {
 
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
 - [Opossum](https://nodeshift.dev/opossum/)
-- [Canva API Reference](https://www.canva.dev/docs/connect/api-reference/)
+- Canva API Reference
 
 ## Next Steps
 

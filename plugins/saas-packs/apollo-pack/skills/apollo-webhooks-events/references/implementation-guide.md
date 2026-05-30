@@ -428,7 +428,7 @@ ngrok http 3000
 ## Resources
 
 - [Apollo Webhooks Documentation](https://knowledge.apollo.io/hc/en-us/articles/4415154183053)
-- [Webhook Security Best Practices](https://hookdeck.com/webhooks/guides/webhook-security-best-practices)
+- Webhook Security Best Practices
 - [ngrok for Local Testing](https://ngrok.com/)
 
 ## Next Steps

@@ -130,7 +130,7 @@ sqlite3 enhancements.db \
 
 **Business value:** Know exactly when the system will complete, catch failures immediately, prove 100% success rate to stakeholders.
 
-Related: [Building Production CI/CD Systems](https://jeremylongshore.com/posts/building-production-ci-cd-documentation-to-deployment/) covers similar observability patterns.
+Related: Building Production CI/CD Systems covers similar observability patterns.
 
 ## Phase 3: Disaster Recovery Planning
 
@@ -317,7 +317,7 @@ Smart skipping means:
 
 **Design principle:** Every operation should be safely repeatable.
 
-Related: [Building Scalable Content Systems](https://jeremylongshore.com/posts/building-scalable-content-systems-rss-validation-architecture/) demonstrates similar fault-tolerant architecture.
+Related: Building Scalable Content Systems demonstrates similar fault-tolerant architecture.
 
 ## Technical Skills Demonstrated
 
@@ -406,6 +406,6 @@ By 2:30 AM tonight, this system will have generated 2.3MB of high-quality docume
 
 ---
 
-**Interested in AI engineering, systems architecture, or production operations?** Connect with me on [LinkedIn](https://linkedin.com/in/jeremylongshore) or check out more case studies on [my portfolio](https://jeremylongshore.com/).
+**Interested in AI engineering, systems architecture, or production operations?** Connect with me on LinkedIn or check out more case studies on [my portfolio](https://jeremylongshore.com/).
 
 **See the results:** Visit [claudecodeplugins.io](https://claudecodeplugins.io/) to explore the enhanced plugin marketplace.

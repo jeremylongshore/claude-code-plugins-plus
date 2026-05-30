@@ -354,7 +354,7 @@ async function verifyEmail(email: string) {
 
 ## Resources
 
-- [Instantly Lead API](https://developer.instantly.ai/api/v2/lead/listleads)
+- Instantly Lead API
 - [Instantly Block List API](https://developer.instantly.ai/api/v2/schemas)
 - [CAN-SPAM Requirements](https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business)
 

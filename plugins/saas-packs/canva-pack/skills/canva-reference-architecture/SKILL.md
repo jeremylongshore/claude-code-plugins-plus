@@ -220,7 +220,7 @@ export function requireCanvaAuth(tokenStore: TokenStore) {
 ## Resources
 
 - [Canva Starter Kit](https://github.com/canva-sdks/canva-connect-api-starter-kit)
-- [Canva API Reference](https://www.canva.dev/docs/connect/api-reference/)
+- Canva API Reference
 
 ## Next Steps
 

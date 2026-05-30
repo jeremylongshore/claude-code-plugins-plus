@@ -99,7 +99,7 @@ You **don't** need to replicate this — focus your guardrails on application-sp
 
 ## Usage Policies
 
-- Review [Anthropic's Acceptable Use Policy](https://www.anthropic.com/policies/aup)
+- Review Anthropic's Acceptable Use Policy
 - Don't use Claude for: weapons, CSAM, deception at scale, surveillance
 - Monitor for policy violations in your application's logs
 
@@ -115,7 +115,7 @@ See System Prompt Guardrails, Input Validation function, Output Validation funct
 
 ## Resources
 
-- [Anthropic AUP](https://www.anthropic.com/policies/aup)
+- Anthropic AUP
 - [Safety Best Practices](https://docs.anthropic.com/en/docs/build-with-claude)
 
 ## Next Steps

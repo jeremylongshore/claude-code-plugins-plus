@@ -11,12 +11,12 @@ A maintenance day across four repos — broadcast tooling, policy engine, market
 
 The broadcast dashboard spends most of a Braves off-day in "idle" mode. Over the last two weeks idle has accumulated sections that made sense once and don't anymore. Cleanup day:
 
-- **Remove Post-game Audio section** ([ad533bb](https://github.com/jeremylongshore/braves/commit/ad533bb)) — the audio embed was stale 90% of the time and the 10% it worked duplicated the on-page MLB postgame block. Gone.
-- **Remove MLB postgame block, dedupe score header** ([426afa9](https://github.com/jeremylongshore/braves/commit/426afa9)) — the idle GameStateBar was rendering a second score header under the main one. Single source of truth for score data.
-- **Restore TOP PLAYS, kill idle GameStateBar** ([36e2e57](https://github.com/jeremylongshore/braves/commit/36e2e57)) — TOP PLAYS had gotten dropped during an earlier refactor and nobody noticed. Back in, GameStateBar out. Net: fewer elements, more signal.
-- **Add Just Baseball + Braves Journal feeds, fix header placement** ([cf842d8](https://github.com/jeremylongshore/braves/commit/cf842d8)) — two new article feeds slotted into the idle layout. Just Baseball for analytical coverage, Braves Journal for beat reporting. Header placement had been drifting below the feed cards on narrow viewports; anchored to top of column.
+- **Remove Post-game Audio section** (ad533bb) — the audio embed was stale 90% of the time and the 10% it worked duplicated the on-page MLB postgame block. Gone.
+- **Remove MLB postgame block, dedupe score header** (426afa9) — the idle GameStateBar was rendering a second score header under the main one. Single source of truth for score data.
+- **Restore TOP PLAYS, kill idle GameStateBar** (36e2e57) — TOP PLAYS had gotten dropped during an earlier refactor and nobody noticed. Back in, GameStateBar out. Net: fewer elements, more signal.
+- **Add Just Baseball + Braves Journal feeds, fix header placement** (cf842d8) — two new article feeds slotted into the idle layout. Just Baseball for analytical coverage, Braves Journal for beat reporting. Header placement had been drifting below the feed cards on narrow viewports; anchored to top of column.
 
-The more interesting commit was [cfb9f28](https://github.com/jeremylongshore/braves/commit/cfb9f28) — **root and per-panel error boundaries**. A single JS exception in any panel was blanking the whole dashboard. With per-panel boundaries, a broken podcast feed stays broken in its own card while the score, live narrative, Reddit hype, and article feeds keep rendering. Error boundaries are one of those React features you skip until the first time a panel crashes during a live broadcast. Then you add them on principle.
+The more interesting commit was cfb9f28 — **root and per-panel error boundaries**. A single JS exception in any panel was blanking the whole dashboard. With per-panel boundaries, a broken podcast feed stays broken in its own card while the score, live narrative, Reddit hype, and article feeds keep rendering. Error boundaries are one of those React features you skip until the first time a panel crashes during a live broadcast. Then you add them on principle.
 
 ## claude-code-slack-channel — pairing events and duplicate-rule enforcement
 

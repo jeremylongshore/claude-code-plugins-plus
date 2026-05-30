@@ -251,7 +251,7 @@ curl -s https://api.instantly.ai/api/v2/background-jobs?limit=5 \
 
 - [Instantly Help Center](https://help.instantly.ai)
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
-- [Background Jobs API](https://developer.instantly.ai/api/v2/backgroundjob)
+- Background Jobs API
 
 ## Next Steps
 

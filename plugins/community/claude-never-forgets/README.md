@@ -2,7 +2,7 @@
 
 A Claude Code plugin that provides persistent memory across sessions and context windows.
 
-![Claude Never Forgets](claude_terminal.png)
+!Claude Never Forgets
 
 ## Why
 

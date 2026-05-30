@@ -222,7 +222,7 @@ const worker = new Worker('clay-enrichment', async (job) => {
 ## Resources
 
 - [Clay University -- HTTP API Integration](https://university.clay.com/docs/http-api-integration-overview)
-- [Clay University -- Using Clay as an API](https://www.clay.com/university/guide/using-clay-as-an-api)
+- Clay University -- Using Clay as an API
 - [BullMQ Documentation](https://docs.bullmq.io/)
 
 ## Next Steps

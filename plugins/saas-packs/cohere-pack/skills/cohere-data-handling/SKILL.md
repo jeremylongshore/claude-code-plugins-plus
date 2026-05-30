@@ -265,7 +265,7 @@ await cohere.chat({
 
 - [Cohere Safety Modes](https://docs.cohere.com/docs/safety-modes)
 - [Cohere Privacy Policy](https://cohere.com/privacy)
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- GDPR Developer Guide
 
 ## Next Steps
 

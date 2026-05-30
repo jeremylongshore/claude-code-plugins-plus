@@ -355,7 +355,7 @@ fi
 
 - [Notion SDK Releases](https://github.com/makenotion/notion-sdk-js/releases) — changelog for every `@notionhq/client` version
 - [API Versioning](https://developers.notion.com/reference/versioning) — version lifecycle and header format
-- [API Changelog](https://developers.notion.com/changelog) — new endpoints, properties, and breaking changes
+- API Changelog — new endpoints, properties, and breaking changes
 - [Python notion-client](https://pypi.org/project/notion-client/) — PyPI page with version history
 - [API Status](https://status.notion.so/) — check for ongoing incidents before debugging upgrade issues
 

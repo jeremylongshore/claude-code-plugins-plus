@@ -190,7 +190,7 @@ This project demonstrates capabilities employers value:
 ## Repository
 
 **GitHub:** https://github.com/jeremylongshore/Claude-AutoBlog-SlashCommands
-**GitHub Pages:** https://jeremylongshore.github.io/Claude-AutoBlog-SlashCommands/
+**GitHub Pages:**
 **License:** MIT
 
 ## Related Work

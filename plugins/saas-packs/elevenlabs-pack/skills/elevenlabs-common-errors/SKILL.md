@@ -277,7 +277,7 @@ ws.send(JSON.stringify({
 
 ## Resources
 
-- [ElevenLabs Error Messages](https://elevenlabs.io/docs/developers/resources/error-messages)
+- ElevenLabs Error Messages
 - [API Error 429 Help](https://help.elevenlabs.io/hc/en-us/articles/19571824571921)
 - [API Error 401 Help](https://help.elevenlabs.io/hc/en-us/articles/19572237925521)
 - [ElevenLabs Status](https://status.elevenlabs.io)

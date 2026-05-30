@@ -125,7 +125,7 @@ Also shipping: 3 new plugins (Shipwright autonomous app builder, Tweetclaw X/Twi
 
 ## Braves: Production AI Fixes
 
-The [Braves dashboard](https://github.com/jeremylongshore/braves) had three bugs that all trace to the same root cause: trusting AI output shape.
+The Braves dashboard had three bugs that all trace to the same root cause: trusting AI output shape.
 
 **Narrative truncation.** `maxOutputTokens` was set to 500. Gemini 2.5 Pro was generating narratives that hit the limit mid-sentence, producing truncated JSON. Fix: bump to 1024, plus a regex salvage function that recovers partial JSON when truncation still happens.
 

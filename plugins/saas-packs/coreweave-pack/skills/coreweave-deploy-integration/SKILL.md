@@ -137,7 +137,7 @@ kubectl rollout status deployment/inference-svc -n tenant-my-org --timeout=600s
 ## Resources
 
 - [CoreWeave CKS Docs](https://docs.coreweave.com/docs/products/cks)
-- [CoreWeave GPU Types](https://docs.coreweave.com/docs/products/compute/gpu)
+- CoreWeave GPU Types
 
 ## Next Steps
 

@@ -260,7 +260,7 @@ async function getWorkOrder(id: number) {
 
 ## Resources
 
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- MaintainX API Reference
 - [DataLoader](https://github.com/graphql/dataloader) -- Batching and caching utility
 - [Node.js HTTP Agent](https://nodejs.org/api/http.html#class-httpagent)
 

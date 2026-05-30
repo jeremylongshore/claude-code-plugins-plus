@@ -202,9 +202,9 @@ Replit Deployments support one-click rollback to any previous successful deploym
 
 ## Resources
 
-- [Replit Deployments](https://docs.replit.com/hosting/deployments)
+- Replit Deployments
 - [Deployment Rollbacks](https://blog.replit.com/introducing-deployment-rollbacks)
-- [Custom Domains](https://docs.replit.com/hosting/custom-domains)
+- Custom Domains
 - [Replit Status](https://status.replit.com)
 
 ## Next Steps

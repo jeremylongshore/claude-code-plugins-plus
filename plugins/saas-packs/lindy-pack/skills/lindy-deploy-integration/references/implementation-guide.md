@@ -133,7 +133,7 @@ echo "Deployed. Verify webhook: curl -s https://api.yourapp.com/health"
 ## Resources
 
 - [Lindy AI Documentation](https://docs.lindy.ai)
-- [Lindy API Reference](https://docs.lindy.ai/api)
+- Lindy API Reference
 
 ## Next Steps
 

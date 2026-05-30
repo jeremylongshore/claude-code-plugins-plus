@@ -334,5 +334,5 @@ That's the power of design systems: not making things look good once, but making
 
 **Related posts:**
 
-- [Automating Developer Workflows with Custom AI Commands](https://startaitools.com/posts/automating-developer-workflows-custom-ai-commands/)
-- [AI-Assisted Technical Writing Automation Workflows](https://startaitools.com/posts/ai-assisted-technical-writing-automation-workflows/)
+- Automating Developer Workflows with Custom AI Commands
+- AI-Assisted Technical Writing Automation Workflows

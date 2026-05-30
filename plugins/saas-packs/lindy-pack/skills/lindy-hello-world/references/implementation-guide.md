@@ -117,9 +117,9 @@ print(result.output)
 
 ## Resources
 
-- [Lindy Getting Started](https://docs.lindy.ai/getting-started)
-- [Lindy API Reference](https://docs.lindy.ai/api)
-- [Lindy Examples](https://docs.lindy.ai/examples)
+- Lindy Getting Started
+- Lindy API Reference
+- Lindy Examples
 
 ## Next Steps
 

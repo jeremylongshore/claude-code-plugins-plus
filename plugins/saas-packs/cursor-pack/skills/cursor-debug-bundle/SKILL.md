@@ -196,6 +196,6 @@ Logs location:
 
 ## Resources
 
-- [Cursor Forum - Troubleshooting](https://forum.cursor.com/c/help)
+- Cursor Forum - Troubleshooting
 - [Cursor GitHub Issues](https://github.com/getcursor/cursor/issues)
 - [Context Management Docs](https://docs.cursor.com/context/@-symbols/overview)

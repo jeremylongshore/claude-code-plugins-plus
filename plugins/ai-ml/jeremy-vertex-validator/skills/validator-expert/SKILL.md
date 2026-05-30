@@ -122,8 +122,8 @@ Validate production readiness of Vertex AI Agent Engine deployments by executing
 
 **Official Google Cloud documentation:**
 
-- [Vertex AI Security Best Practices](https://cloud.google.com/vertex-ai/docs/security)
+- Vertex AI Security Best Practices
 - [Cloud Monitoring Alerting](https://cloud.google.com/monitoring/alerts)
 - [VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs)
-- [Model Armor](https://cloud.google.com/vertex-ai/docs/generative-ai/model-armor)
+- Model Armor
 - [Cloud Audit Logs](https://cloud.google.com/logging/docs/audit)

@@ -380,11 +380,11 @@ exit 1
 
 ## Resources
 
-- [Lokalise CLI v2 Reference](https://docs.lokalise.com/en/articles/3659951-lokalise-cli-tool)
+- Lokalise CLI v2 Reference
 - [Lokalise API v2 — File Upload](https://developers.lokalise.com/reference/upload-a-file)
 - [Lokalise API v2 — File Download](https://developers.lokalise.com/reference/download-files)
-- [Lokalise Branching](https://docs.lokalise.com/en/articles/3181040-branching)
-- [Lokalise GitHub Integration](https://docs.lokalise.com/en/articles/3632575-github)
+- Lokalise Branching
+- Lokalise GitHub Integration
 - [Lokalise Status Page](https://status.lokalise.com)
 
 ## Next Steps

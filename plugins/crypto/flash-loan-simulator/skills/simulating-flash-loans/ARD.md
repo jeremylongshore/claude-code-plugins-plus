@@ -173,7 +173,6 @@ class FlashLoanProvider(ABC):
         """Simulate flash loan execution."""
         pass
 
-
 class AaveV3Provider(FlashLoanProvider):
     """Aave V3 flash loan provider adapter."""
 
@@ -188,7 +187,6 @@ class AaveV3Provider(FlashLoanProvider):
     def get_fee(self, asset: str, amount: Decimal) -> Decimal:
         return amount * self.FEE_RATE
 
-
 class DydxProvider(FlashLoanProvider):
     """dYdX flash loan provider adapter (0% fee)."""
 
@@ -198,7 +196,6 @@ class DydxProvider(FlashLoanProvider):
 
     def get_fee(self, asset: str, amount: Decimal) -> Decimal:
         return Decimal("0")  # dYdX has 0% flash loan fee
-
 
 class BalancerProvider(FlashLoanProvider):
     """Balancer flash loan provider adapter."""
@@ -222,7 +219,6 @@ class FlashLoanStrategy(ABC):
         """Calculate net profit after all costs."""
         pass
 
-
 class SimpleArbitrageStrategy(FlashLoanStrategy):
     """Two-DEX arbitrage: buy low, sell high."""
 
@@ -233,7 +229,6 @@ class SimpleArbitrageStrategy(FlashLoanStrategy):
         # 4. Repay loan + fee
         # 5. Keep profit
         pass
-
 
 class LiquidationStrategy(FlashLoanStrategy):
     """Liquidate undercollateralized positions."""
@@ -354,12 +349,11 @@ class SimulationError(Exception):
         self.recoverable = recoverable
         self.hint = hint
 
-
 class RPCManager:
     """RPC connection manager with automatic fallback."""
 
     PROVIDERS = [
-        "https://rpc.ankr.com/eth",
+        "eth",
         "https://eth.llamarpc.com",
         "https://ethereum.publicnode.com",
     ]

@@ -202,5 +202,5 @@ client = create_client(os.environ.get("LLM_PROVIDER", "openrouter"))
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
+- Examples | Errors
 - [OpenRouter Quickstart](https://openrouter.ai/docs/quickstart) | [API Parameters](https://openrouter.ai/docs/api/reference/parameters)

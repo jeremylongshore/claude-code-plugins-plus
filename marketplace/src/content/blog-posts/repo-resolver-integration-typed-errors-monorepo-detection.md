@@ -79,7 +79,7 @@ PR #36 is the one I expected to be small and was not. 295 insertions, 178 lines 
 - `https://user@github.com/org/repo` — HTTPS with username in userinfo
 - `git://github.com/org/repo.git` — legacy git protocol
 - `https://gitlab.self-hosted.corp/group/subgroup/repo.git` — self-hosted with nested groups
-- `file:///home/user/repos/foo` — local file remotes (yes, people do this)
+- ` — local file remotes (yes, people do this)
 
 Normalization collapses all of these to a form like `host/path`, lowercase, trailing `.git` stripped, query and fragment discarded, userinfo discarded. The tenant ID is a hash of that canonical string. Same logical repo, same tenant, regardless of how the contributor happened to clone.
 

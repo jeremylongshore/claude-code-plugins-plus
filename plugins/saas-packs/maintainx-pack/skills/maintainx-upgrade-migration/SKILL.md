@@ -62,7 +62,7 @@ function findApiCalls(dir: string): Array<{ file: string; line: number; endpoint
         const lines = content.split('\n');
         for (let i = 0; i < lines.length; i++) {
           // Match API endpoint patterns
-          const match = lines[i].match(/['"`](\/(?:workorders|assets|locations|users|teams|parts|procedures|webhooks)[^'"`]*)/);
+          const match = lines[i].match(/'"`[^'"`]*)/);
           if (match) {
             results.push({ file: full, line: i + 1, endpoint: match[1] });
           }
@@ -261,7 +261,7 @@ echo "5. Document issues for v2 retry"
 
 ## Resources
 
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- MaintainX API Reference
 - [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html) -- Incremental migration strategy
 
 ## Next Steps

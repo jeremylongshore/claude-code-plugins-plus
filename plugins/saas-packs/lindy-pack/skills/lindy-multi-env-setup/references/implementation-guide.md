@@ -188,7 +188,7 @@ const config = configSchema.parse(getLindyAIConfig());
 ## Resources
 
 - [Lindy AI Documentation](https://docs.lindy.ai)
-- [Lindy API Reference](https://docs.lindy.ai/api)
+- Lindy API Reference
 
 ## Next Steps
 

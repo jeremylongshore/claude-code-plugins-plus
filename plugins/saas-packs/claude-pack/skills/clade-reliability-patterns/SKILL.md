@@ -135,7 +135,7 @@ See Built-In SDK Retries, Model Fallback Chain, Circuit Breaker class, Graceful 
 ## Resources
 
 - [Error Types](https://docs.anthropic.com/en/api/errors)
-- [SDK Retries](https://github.com/anthropics/claude-sdk-typescript#retries)
+- SDK Retries
 
 ## Next Steps
 

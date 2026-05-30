@@ -215,4 +215,4 @@ This agent can collaborate with ADK agents for:
 - Genkit Documentation: https://genkit.dev/
 - Vertex AI Plugin: https://genkit.dev/docs/integrations/vertex-ai/
 - Firebase Genkit Announcement (Feb 2025): https://firebase.blog/posts/2025/02/announcing-genkit/
-- Genkit Go 1.0 (Sep 2025): https://developers.googleblog.com/en/announcing-genkit-go-10/
+- Genkit Go 1.0 (Sep 2025):

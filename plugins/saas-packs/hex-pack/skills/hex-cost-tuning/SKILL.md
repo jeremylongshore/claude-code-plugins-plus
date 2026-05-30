@@ -115,7 +115,7 @@ class HexCostMonitor {
 ## Resources
 
 - [Hex Pricing](https://hex.tech/pricing/)
-- [Hex API Documentation](https://learn.hex.tech/docs/develop-logic/hex-api)
+- Hex API Documentation
 
 ## Next Steps
 

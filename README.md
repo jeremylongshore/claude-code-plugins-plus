@@ -907,18 +907,18 @@ Community contributors make this marketplace better. Newest first.
 - **[@clowreed](https://github.com/clowreed) (B12.io)** — Created [b12-claude-plugin](https://tonsofskills.com/plugins/b12-claude-plugin), an official B12.io plugin with a website-generator skill that takes users from idea to production-ready website draft in one conversation. ([#307](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/307))
 - **[@duskfallcrew](https://github.com/duskfallcrew) (Duskfall Crew)** — Reported PHP webshell payloads in penetration-tester plugin README that triggered AV false positives. Drove a complete v2.0.0 rebuild with real Python security scanners. ([#300](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/300))
 - **[@rowanbrooks100](https://github.com/rowanbrooks100) (Rowan Brooks)** — Created [brand-strategy-framework](https://tonsofskills.com/plugins/brand-strategy-framework), a 7-part brand strategy methodology used by top agencies with Fortune 500 clients. ([#292](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/292))
-- **[@RichardHightower](https://github.com/RichardHightower) (Rick Hightower)** — Creator of [SkillzWave](https://skillzwave.ai/) (44,000+ agentic skills). His quality reviews exposed validation gaps and drove 4,300+ lines of fixes plus new validator checks. Author of the [Claude Code Skills Deep Dive](https://pub.spillwave.com/claude-code-skills-deep-dive-part-1-82b572ad9450) series. ([#293](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/293), [#294](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/294), [#295](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/295))
+- **[@RichardHightower](https://github.com/RichardHightower) (Rick Hightower)** — Creator of SkillzWave (44,000+ agentic skills). His quality reviews exposed validation gaps and drove 4,300+ lines of fixes plus new validator checks. Author of the [Claude Code Skills Deep Dive](https://pub.spillwave.com/claude-code-skills-deep-dive-part-1-82b572ad9450) series. ([#293](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/293), [#294](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/294), [#295](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/295))
 - **[@TomLucidor](https://github.com/TomLucidor) (Tom)** — His question about paid API requirements sparked the "Make All Plugins Free" initiative (v4.1.0) and drove 2,400+ lines of constraint documentation across 6 plugins. ([#148](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/discussions/148))
 - **[@alexfazio](https://github.com/alexfazio) (Alex Fazio)** — Production agent workflow patterns and validation techniques that inspired the Learning Lab system (v4.0.0).
 - **[@lukeslp](https://github.com/lukeslp) (Lucas Steuber)** — Created geepers-agents with 51 specialized agents for development, deployment, quality audits, research, and game development. ([#159](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/159))
 - **[@BayramAnnakov](https://github.com/bayramannakov) (Bayram Annakov)** — Created claude-reflect, a self-learning system that captures corrections and syncs them to CLAUDE.md. ([#241](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/241))
 - **[@jleonelion](https://github.com/jleonelion) (James Leone)** — Fixed bash variable scoping bug in Learning Lab scripts and improved markdown formatting. ([#239](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/239))
-- **[@CharlesWiltgen](https://github.com/CharlesWiltgen) (Charles Wiltgen)** — Created Axiom, iOS development plugin with 13 production-ready skills for Swift/Xcode. ([#121](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/121))
+- **[@CharlesWiltgen](https://github.com/CharlesWiltgen) (Charles Wiltgen)** — Created Axiom, iOS development plugin with 13 production-ready skills for Swift/Xcode. (#121)
 - **[@aledlie](https://github.com/aledlie) (Alyshia Ledlie)** — Fixed 7 critical JSON syntax errors and added production CI/CD patterns. ([#117](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/117))
 - **[@JackReis](https://github.com/JackReis) (Jack Reis)** — Contributed neurodivergent-visual-org plugin with ADHD-friendly Mermaid diagrams. ([#106](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/106))
 - **[@terrylica](https://github.com/terrylica) (Terry Li)** — Built prettier-markdown-hook with zero-config markdown formatting. ([#101](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/101))
-- **[@beepsoft](https://github.com/beepsoft)** — Quality feedback on skill implementations that drove ecosystem-wide improvements. ([#134](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/134))
-- **[@clickmediapropy](https://github.com/clickmediapropy)** — Reported mobile horizontal scrolling bug. ([#120](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/120))
+- **[@beepsoft](https://github.com/beepsoft)** — Quality feedback on skill implementations that drove ecosystem-wide improvements. (#134)
+- **[@clickmediapropy](https://github.com/clickmediapropy)** — Reported mobile horizontal scrolling bug. (#120)
 
 **Want to contribute?** See [CONTRIBUTING.md](./000-docs/007-DR-GUID-contributing.md) or reach out to **jeremy@intentsolutions.io**
 
@@ -937,7 +937,7 @@ Community contributors make this marketplace better. Newest first.
 
 - [Claude Skills Deep Dive](https://leehanchung.github.io/blogs/2025/10/26/claude-skills-deep-dive/) — Lee-Han Chung's definitive technical analysis
 - [Skills Deep Dive Series](https://pub.spillwave.com/claude-code-skills-deep-dive-part-1-82b572ad9450) — Rick Hightower's architecture-focused analysis
-- [SkillzWave](https://skillzwave.ai/) — Universal skill installer supporting 14+ coding agents
+- SkillzWave — Universal skill installer supporting 14+ coding agents
 
 ### Community
 
@@ -951,7 +951,7 @@ Community contributors make this marketplace better. Newest first.
 - [AgentSkills.io](https://agentskills.io) — Open standard for skill compatibility fields
 - [Numman Ali's Skills](https://github.com/numman-ali/n-skills) — Externally-synced community skills
 - [Prism Scanner](https://github.com/aidongise-cell/prism-scanner) — Open-source security scanner for agent skills, plugins, and MCP servers (39+ rules, AST taint tracking, A-F grading)
-- [CCHub](https://github.com/Moresl/cchub) - A desktop control panel for the Claude Code / Codex / Gemini CLI ecosystem. Manage MCP servers, config profiles, agent skills, CLAUDE.md, hooks, and workflow templates from a single Tauri app (Windows / macOS / Linux).
+- CCHub - A desktop control panel for the Claude Code / Codex / Gemini CLI ecosystem. Manage MCP servers, config profiles, agent skills, CLAUDE.md, hooks, and workflow templates from a single Tauri app (Windows / macOS / Linux).
 
 ---
 
@@ -983,7 +983,7 @@ Community contributors make this marketplace better. Newest first.
 
 **Not on GitHub Marketplace.** Claude Code plugins use a separate ecosystem with JSON-based catalogs hosted in Git repositories. This repository is a Claude Code plugin marketplace.
 
-**Free and open-source.** All plugins are MIT-licensed. No monetization mechanism exists for Claude Code plugins. See [Monetization Alternatives](docs/monetization-alternatives.md) for external revenue strategies.
+**Free and open-source.** All plugins are MIT-licensed. No monetization mechanism exists for Claude Code plugins. See Monetization Alternatives for external revenue strategies.
 
 **Production status.** Claude Code plugins launched in public beta (October 2025) and are now a stable part of the Claude Code workflow. This marketplace tracks all specification changes.
 

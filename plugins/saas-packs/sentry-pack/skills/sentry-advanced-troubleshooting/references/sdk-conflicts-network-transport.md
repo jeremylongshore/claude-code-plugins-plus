@@ -292,10 +292,10 @@ else:
 
 - [Troubleshooting Guide](https://docs.sentry.io/platforms/javascript/troubleshooting/)
 - [Source Maps Troubleshooting](https://docs.sentry.io/platforms/javascript/sourcemaps/troubleshooting_js/)
-- [Source Maps Explain Command](https://docs.sentry.io/cli/sourcemaps/#explain)
+- Source Maps Explain Command
 - [Distributed Tracing](https://docs.sentry.io/platforms/javascript/tracing/trace-propagation/)
 - [Transport Configuration](https://docs.sentry.io/platforms/javascript/configuration/transports/)
-- [OpenTelemetry Integration](https://docs.sentry.io/platforms/javascript/tracing/instrumentation/opentelemetry/)
+- OpenTelemetry Integration
 - [Python SDK Troubleshooting](https://docs.sentry.io/platforms/python/troubleshooting/)
 
 ## Next Steps

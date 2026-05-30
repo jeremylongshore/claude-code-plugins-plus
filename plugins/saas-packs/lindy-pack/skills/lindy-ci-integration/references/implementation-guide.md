@@ -192,7 +192,7 @@ jobs:
 ## Resources
 
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Lindy CI Guide](https://docs.lindy.ai/ci)
+- Lindy CI Guide
 - [Jest Configuration](https://jestjs.io/docs/configuration)
 
 ## Next Steps

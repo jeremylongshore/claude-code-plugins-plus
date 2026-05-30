@@ -478,7 +478,7 @@ Working with this skill produces:
 - [CRM Search API](https://developers.hubspot.com/docs/api/crm/search)
 - [Pipelines API](https://developers.hubspot.com/docs/api/crm/pipelines)
 - [Associations API v4](https://developers.hubspot.com/docs/api/crm/associations)
-- [Deal Properties Reference](https://knowledge.hubspot.com/deals/hubspot-crm-default-deal-properties)
-- [Workflow Enrollment History](https://knowledge.hubspot.com/workflows/review-your-workflows-performance)
+- Deal Properties Reference
+- Workflow Enrollment History
 - [API_REFERENCE.md](references/API_REFERENCE.md) — pipeline/stage endpoint shapes, deal property catalog, search filter syntax, association types
 - [implementation-guide.md](references/implementation-guide.md) — stale-deal audit script, forecast reconciliation query, loop guard deployment, cache-busting quota dashboard pattern

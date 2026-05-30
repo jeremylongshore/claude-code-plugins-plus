@@ -265,7 +265,7 @@ When you're ready to move a workflow out of the lab:
 
 **Right now:**
 ```bash
-cd /home/jeremy/000-projects/claude-code-plugins/workspace/lab/
+cd
 cat README.md
 cat GUIDE-00-START-HERE.md
 ```

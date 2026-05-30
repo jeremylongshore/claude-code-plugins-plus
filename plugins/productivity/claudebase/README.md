@@ -9,7 +9,7 @@ Your Claude Code setup is infrastructure. Agents, skills, rules, hooks, memory â
 **Claudebase syncs your entire Claude Code environment to a private GitHub repo.** Profiles let you switch between work, personal, and team configurations instantly. Secret scanning, automatic backups, and multi-machine conflict detection keep things safe.
 
 <!-- TODO: Add asciinema demo GIF here -->
-<!-- [![demo](docs/demo.gif)](#quick-start) -->
+<!-- ![demo](#quick-start) -->
 
 ## Install
 
@@ -231,7 +231,7 @@ gh auth login
 
 ## Contributing
 
-Contributions welcome. See the [Code of Conduct](CODE_OF_CONDUCT.md).
+Contributions welcome. See the Code of Conduct.
 
 ```bash
 git clone https://github.com/rohithzr/claudebase.git

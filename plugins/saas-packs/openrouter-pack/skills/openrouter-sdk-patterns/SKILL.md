@@ -270,5 +270,5 @@ def with_cost_tracking(fn: Callable) -> Callable:
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
+- Examples | Errors
 - [OpenRouter SDK](https://openrouter.ai/sdk) | [API Reference](https://openrouter.ai/docs/api/reference/overview)

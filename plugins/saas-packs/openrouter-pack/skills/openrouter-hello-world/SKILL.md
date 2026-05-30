@@ -170,5 +170,5 @@ curl -s "https://openrouter.ai/api/v1/generation?id=gen-abc123xyz" \
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
+- Examples | Errors
 - [OpenRouter Quickstart](https://openrouter.ai/docs/quickstart) | [API Reference](https://openrouter.ai/docs/api/reference/overview)

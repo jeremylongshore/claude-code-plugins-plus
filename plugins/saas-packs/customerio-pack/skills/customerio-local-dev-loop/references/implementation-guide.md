@@ -149,7 +149,7 @@ describe('User Registration', () => {
 ## Resources
 
 - [Customer.io Workspaces](https://customer.io/docs/workspaces/)
-- [Test Mode Best Practices](https://customer.io/docs/test-mode/)
+- Test Mode Best Practices
 
 ## Next Steps
 

@@ -168,8 +168,8 @@ echo "All checks passed. Proceeding with deployment."
 
 ## Resources
 
-- [Lindy Production Guide](https://docs.lindy.ai/production)
-- [SLA Information](https://lindy.ai/sla)
+- Lindy Production Guide
+- SLA Information
 - [Support](https://support.lindy.ai)
 
 ## Next Steps

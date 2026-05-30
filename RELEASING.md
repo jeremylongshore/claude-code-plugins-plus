@@ -70,12 +70,12 @@ Two ways:
 
 When `publish-changed-packages.yml` ships `@intentsolutionsio/langchain-pack@1.1.0`, here's what lands:
 
-| Artifact               | Where                                                                                                                   |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| npm tarball            | `https://www.npmjs.com/package/@intentsolutionsio/langchain-pack/v/1.1.0`                                               |
-| Annotated git tag      | `@intentsolutionsio/langchain-pack@1.1.0` (visible in `git tag --list`)                                                 |
-| GitHub Release         | https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/tag/@intentsolutionsio/langchain-pack@1.1.0 |
-| Provenance attestation | https://www.npmjs.com/package/@intentsolutionsio/langchain-pack/v/1.1.0?activeTab=provenance                            |
+| Artifact               | Where                                                                                        |
+| ---------------------- | -------------------------------------------------------------------------------------------- |
+| npm tarball            | `https://www.npmjs.com/package/@intentsolutionsio/langchain-pack/v/1.1.0`                    |
+| Annotated git tag      | `@intentsolutionsio/langchain-pack@1.1.0` (visible in `git tag --list`)                      |
+| GitHub Release         |                                                                                              |
+| Provenance attestation | https://www.npmjs.com/package/@intentsolutionsio/langchain-pack/v/1.1.0?activeTab=provenance |
 
 The GitHub Release auto-includes:
 

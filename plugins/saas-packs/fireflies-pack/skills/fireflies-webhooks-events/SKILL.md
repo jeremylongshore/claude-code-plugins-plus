@@ -253,7 +253,7 @@ curl -s -X POST https://api.fireflies.ai/graphql \
 ## Resources
 
 - [Fireflies Webhooks](https://docs.fireflies.ai/graphql-api/webhooks)
-- [Webhook Verification Example](https://replit.com/@firefliesai/Firefliesai-Verifying-webhook-requests)
+- Webhook Verification Example
 
 ## Next Steps
 

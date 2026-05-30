@@ -264,7 +264,7 @@ Development (mock)  →  Staging (real API, test data)  →  Production (live)
 
 - [Instantly Workspaces](https://developer.instantly.ai/api/v2/schemas)
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
-- [Instantly Mock Server](https://developer.instantly.ai/_mock/api/v2/)
+- Instantly Mock Server
 
 ## Next Steps
 

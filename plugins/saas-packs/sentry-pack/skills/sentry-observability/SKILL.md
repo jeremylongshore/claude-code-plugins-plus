@@ -264,7 +264,7 @@ app.post('/sentry-to-grafana', async (req, res) => {
       panelId: 1,
       time: new Date(event.datetime).getTime(),
       tags: ['sentry', event.level, event.project],
-      text: `**${event.title}**\nLevel: ${event.level}\n[View in Sentry](${event.web_url})`,
+      text: `**${event.title}**\nLevel: ${event.level}\nView in Sentry`,
     }),
   });
 

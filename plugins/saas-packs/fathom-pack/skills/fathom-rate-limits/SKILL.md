@@ -116,7 +116,7 @@ async function syncAllTranscripts(meetingIds: string[], batchSize = 10) {
 
 ## Resources
 
-- [Fathom API Documentation](https://fathom.video/developers)
+- Fathom API Documentation
 
 ## Next Steps
 

@@ -60,7 +60,6 @@ _ENV_CONFIG = {
     },
 }
 
-
 def get_lokalise_config(env: str = None) -> dict:
     """Return Lokalise config for the given (or current) environment."""
     if env is None:
@@ -75,7 +74,6 @@ def get_lokalise_config(env: str = None) -> dict:
         raise EnvironmentError(f"Missing env vars for {env}: {missing}")
 
     return {"env": env, **config}
-
 
 def lokalise_request(method: str, path: str, env: str = None, payload: dict = None) -> dict:
     config = get_lokalise_config(env)
@@ -92,7 +90,6 @@ def lokalise_request(method: str, path: str, env: str = None, payload: dict = No
     )
     with urllib.request.urlopen(req) as resp:
         return json.loads(resp.read())
-
 
 def sync_translations(source_env: str, target_env: str, dry_run: bool = True) -> dict:
     """
@@ -217,7 +214,7 @@ echo "Done."
 
 - [Lokalise API Reference](https://developers.lokalise.com/reference)
 - [Lokalise CLI](https://developers.lokalise.com/reference/lokalise-cli)
-- [Lokalise Projects](https://docs.lokalise.com/en/collections/2088122-projects)
+- Lokalise Projects
 
 ---
 *[Tons of Skills](https://tonsofskills.com) by [Intent Solutions](https://intentsolutions.io) | [jeremylongshore.com](https://jeremylongshore.com)*

@@ -832,4 +832,4 @@ class AutomatedCodeReview {
 
 **Last Updated**: 2025-12-24
 **Author**: Jeremy Longshore
-**Related Playbooks**: [Cost Caps & Budget Management](./02-cost-caps.md), [Compliance & Audit Guide](./07-compliance-audit.md)
+**Related Playbooks**: Cost Caps & Budget Management, Compliance & Audit Guide

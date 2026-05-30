@@ -132,5 +132,5 @@ See [Storefront vs Admin](references/storefront-vs-admin.md) for the detailed co
 
 - [Storefront API Reference](https://shopify.dev/docs/api/storefront)
 - [Cart API Guide](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/cart)
-- [Hydrogen Framework](https://shopify.dev/docs/storefronts/hydrogen)
+- Hydrogen Framework
 - [Storefront API Authentication](https://shopify.dev/docs/api/storefront#authentication)

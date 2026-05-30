@@ -352,7 +352,7 @@ DATABASE_URL="postgresql://postgres:password@db.abc123.supabase.co:5432/postgres
 
 - [Supabase Platform Limits & Quotas](https://supabase.com/docs/guides/platform/going-into-prod#rate-limiting)
 - [Supavisor Connection Pooling](https://supabase.com/docs/guides/database/connecting-to-postgres#connection-pooler)
-- [Auth Rate Limits Configuration](https://supabase.com/docs/guides/auth/auth-rate-limits)
+- Auth Rate Limits Configuration
 - [Edge Functions Limits](https://supabase.com/docs/guides/functions/limits)
 - [Storage Limits](https://supabase.com/docs/guides/storage#limits)
 - [@supabase/supabase-js Reference](https://supabase.com/docs/reference/javascript/introduction)

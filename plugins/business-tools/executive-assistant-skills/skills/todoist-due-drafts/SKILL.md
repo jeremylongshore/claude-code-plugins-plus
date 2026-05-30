@@ -177,4 +177,4 @@ See the Steps section above (Steps 1 through 5) for the full execution workflow.
 - [Todoist REST API](https://developer.todoist.com/rest/v2/)
 - [Gmail API](https://developers.google.com/gmail/api)
 - [Granola API](https://granola.ai/docs)
-- [Grain API](https://grain.com/docs)
+- Grain API

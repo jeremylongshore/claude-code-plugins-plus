@@ -173,7 +173,7 @@ Notion API responses change between versions. Pinning the version prevents unexp
 - [ ] `notionVersion` explicitly set in Client constructor
 - [ ] Version matches the one used during development and testing
 - [ ] Current stable version: `2022-06-28`
-- [ ] Team aware of Notion API changelog: https://developers.notion.com/changelog
+- [ ] Team aware of Notion API changelog:
 
 ```typescript
 const notion = new Client({
@@ -396,7 +396,7 @@ See [full production initialization](references/code-examples.md) for complete s
 - [Notion API Reference](https://developers.notion.com/reference/intro) — Complete endpoint documentation
 - [Notion API Best Practices](https://developers.notion.com/docs/best-practices-for-handling-api-keys) — Official key management guide
 - [Notion API Rate Limits](https://developers.notion.com/reference/request-limits) — 3 req/sec per integration
-- [Notion API Changelog](https://developers.notion.com/changelog) — Version differences and migration guides
+- Notion API Changelog — Version differences and migration guides
 - [Notion Status Page](https://status.notion.com) — Real-time API availability
 - [`@notionhq/client` on npm](https://www.npmjs.com/package/@notionhq/client) — Official SDK documentation
 - [Notion OAuth Documentation](https://developers.notion.com/docs/authorization) — Public integration auth flow

@@ -380,7 +380,7 @@ chmod +x .git/hooks/pre-commit
 
 **External Resources**:
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
-- [npm Security Best Practices](https://docs.npmjs.com/security)
+- npm Security Best Practices
 - [Semantic Versioning](https://semver.org/)
 
 **Community**:

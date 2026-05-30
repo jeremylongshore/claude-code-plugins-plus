@@ -280,4 +280,4 @@ async function checkUsage(client: ReturnType<typeof createClient>, projectId: st
 - [Concurrency Rate Limits](https://developers.deepgram.com/docs/working-with-concurrency-rate-limits)
 - [API Rate Limits](https://developers.deepgram.com/reference/api-rate-limits)
 - [Backoff Strategies](https://deepgram.com/learn/api-back-off-strategies)
-- [Usage API](https://developers.deepgram.com/reference/get-usage)
+- Usage API

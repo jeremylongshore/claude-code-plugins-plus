@@ -319,7 +319,7 @@ function slugify(text: string): string {
 
 - [CMS API Reference](https://developers.webflow.com/data/reference/cms)
 - [Managing Collections and Items](https://developers.webflow.com/data/docs/working-with-the-cms/manage-collections-and-items)
-- [Bulk CMS Endpoints](https://developers.webflow.com/data/changelog/10232024)
+- Bulk CMS Endpoints
 
 ## Next Steps
 

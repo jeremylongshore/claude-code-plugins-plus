@@ -398,7 +398,7 @@ export class TranscriptionBatcher {
 
 ## Resources
 
-- [TwinMind Rate Limits](https://twinmind.com/docs/rate-limits)
+- TwinMind Rate Limits
 - [p-queue Documentation](https://github.com/sindresorhus/p-queue)
 - [Rate Limiting Patterns](https://cloud.google.com/architecture/rate-limiting-strategies-techniques)
 

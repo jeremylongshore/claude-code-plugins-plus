@@ -99,7 +99,7 @@ Only bot user IDs explicitly listed in `allowBotIds` can deliver bot messages. E
 
 ### Audit projection (`audit`)
 
-Per-channel setting that controls whether tool-call decisions are mirrored into the Slack thread where they were issued. The **authoritative** audit record always lives in the hash-chained local journal at `~/.claude/channels/slack/audit.log` — see [`000-docs/audit-journal-architecture.md`](000-docs/audit-journal-architecture.md). The `audit` field here controls a *projection* of those journal events into Slack so operators can see what Claude is doing in the same thread they're reading.
+Per-channel setting that controls whether tool-call decisions are mirrored into the Slack thread where they were issued. The **authoritative** audit record always lives in the hash-chained local journal at `~/.claude/channels/slack/audit.log` — see `000-docs/audit-journal-architecture.md`. The `audit` field here controls a *projection* of those journal events into Slack so operators can see what Claude is doing in the same thread they're reading.
 
 Three modes:
 
@@ -202,11 +202,11 @@ Existing conversations that predate thread-scoping surface as the `default` thre
 - **Atomic writes.** Every session save is `writeFile(<path>.tmp.<pid>, {flag: 'wx', mode: 0o600})` → `chmod 0o600` → `rename`. Readers never observe a partial file; the `wx` flag makes a stale `.tmp.*` from a crashed prior writer a loud failure rather than a silent overwrite.
 - **Fail-closed loader.** `loadSession` realpaths the file before reading; any containment breach or malformed JSON throws and the supervisor Quarantines the session. No silent degradation to an empty session.
 
-Full design reference: [`000-docs/session-state-machine.md`](000-docs/session-state-machine.md).
+Full design reference: `000-docs/session-state-machine.md`.
 
 ## Policy schema (v0.5.0+)
 
-A **policy** decides whether an MCP tool call proceeds, is denied, or requires a human approver. Policies are authored as JSON and validated at load with a Zod schema. The evaluator (`evaluate()` in `policy.ts`) is pure and uses first-applicable combining — the first rule whose `match` applies wins. See [`000-docs/policy-evaluation-flow.md`](000-docs/policy-evaluation-flow.md) for the full decision procedure and worked examples.
+A **policy** decides whether an MCP tool call proceeds, is denied, or requires a human approver. Policies are authored as JSON and validated at load with a Zod schema. The evaluator (`evaluate()` in `policy.ts`) is pure and uses first-applicable combining — the first rule whose `match` applies wins. See `000-docs/policy-evaluation-flow.md` for the full decision procedure and worked examples.
 
 ### PolicyRule
 

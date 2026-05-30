@@ -76,4 +76,4 @@ Design disaster recovery (DR) plans for cloud infrastructure covering RTO/RPO re
 - AWS Disaster Recovery: https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/
 - GCP DR planning: https://cloud.google.com/architecture/dr-scenarios-planning-guide
 - Azure Business Continuity: https://learn.microsoft.com/en-us/azure/reliability/
-- DR strategy patterns: https://aws.amazon.com/blogs/architecture/disaster-recovery-dr-architecture-on-aws-part-i/
+- DR strategy patterns:

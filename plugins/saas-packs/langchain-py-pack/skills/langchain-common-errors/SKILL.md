@@ -279,6 +279,6 @@ Pair with a per-session token-budget middleware from `langchain-cost-tuning`.
 - [Triage decision tree](references/errors/triage-decision-tree.md) — ASCII flowchart + quick-match table
 - [LangChain 1.0 release notes](https://blog.langchain.com/langchain-langgraph-1dot0/)
 - [LangChain migration guide](https://python.langchain.com/docs/versions/migrating_chains/)
-- [LangGraph concepts](https://langchain-ai.github.io/langgraph/concepts/)
+- LangGraph concepts
 - [`langchain-cli` migrate command](https://python.langchain.com/docs/versions/migrating/)
 - [`create_react_agent` reference](https://langchain-ai.github.io/langgraph/reference/prebuilt/)

@@ -133,7 +133,7 @@ See [Pre-Deploy Smoke Test](references/pre-deploy-smoke-test.md) for the complet
 
 ## Resources
 
-- [Shopify App Store Review Requirements](https://shopify.dev/docs/apps/launch/app-requirements)
+- Shopify App Store Review Requirements
 - [GDPR Compliance Webhooks](https://shopify.dev/docs/apps/build/compliance/privacy-law-compliance)
 - [API Versioning](https://shopify.dev/docs/api/usage/versioning)
 - [Shopify Status Page](https://www.shopifystatus.com)

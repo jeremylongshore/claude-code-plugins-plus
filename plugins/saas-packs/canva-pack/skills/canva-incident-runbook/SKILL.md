@@ -199,7 +199,7 @@ curl "localhost:9090/api/v1/query_range?query=canva_api_errors_total&start=$(dat
 
 ## Resources
 
-- [Canva API Reference](https://www.canva.dev/docs/connect/api-reference/)
+- Canva API Reference
 - [Canva Changelog](https://www.canva.dev/docs/connect/changelog/)
 
 ## Next Steps

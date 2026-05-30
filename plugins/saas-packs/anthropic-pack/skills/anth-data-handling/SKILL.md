@@ -141,8 +141,8 @@ def audited_request(client, user_id: str, purpose: str, **kwargs):
 ## Resources
 
 - [Anthropic Privacy Policy](https://www.anthropic.com/privacy)
-- [Anthropic Security](https://www.anthropic.com/security)
-- [Usage Policy](https://www.anthropic.com/usage-policy)
+- Anthropic Security
+- Usage Policy
 
 ## Next Steps
 

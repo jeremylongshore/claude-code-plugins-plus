@@ -149,8 +149,8 @@ const username2 = `brd-customer-${ID}-zone-${ZONE}-country-us-city-newyork`;
 ## Resources
 
 - [Web Unlocker Docs](https://docs.brightdata.com/scraping-automation/web-unlocker/send-your-first-request)
-- [Web Unlocker API](https://docs.brightdata.com/scraping-automation/web-unlocker/web-unlocker-api)
-- [Geo-Targeting](https://docs.brightdata.com/general/account/proxy-infrastructure)
+- Web Unlocker API
+- Geo-Targeting
 
 ## Next Steps
 

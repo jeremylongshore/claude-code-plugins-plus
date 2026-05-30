@@ -325,7 +325,7 @@ grep -L 'matcher' src/middleware.ts 2>/dev/null && echo "  WARN: no matcher conf
 
 ## Resources
 
-- [Vercel Best Practices](https://vercel.com/docs/best-practices)
+- Vercel Best Practices
 - [Edge Runtime Limitations](https://vercel.com/docs/functions/runtimes/edge)
 - [Function Configuration](https://vercel.com/docs/functions/configuring-functions)
 - [Vercel Security](https://vercel.com/docs/security)

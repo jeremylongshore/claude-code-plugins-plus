@@ -112,7 +112,7 @@ function redactJuiceboxLog(record: Record<string, unknown>): Record<string, unkn
 
 ## Resources
 
-- [Juicebox Privacy](https://juicebox.ai/privacy)
+- Juicebox Privacy
 - [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
 
 ## Next Steps

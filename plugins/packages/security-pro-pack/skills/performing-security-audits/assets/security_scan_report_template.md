@@ -95,6 +95,6 @@ This section details the vulnerabilities identified during the scan. Each vulner
 
 `[Include any additional information or supporting documentation, such as links to relevant resources or detailed scan logs. Example: Links to relevant security advisories and documentation on vulnerability remediation.]`
 
-* [Link to Security Advisories](`[Insert Link Here]`)
-* [Link to Vulnerability Remediation Documentation](`[Insert Link Here]`)
+* Link to Security Advisories
+* Link to Vulnerability Remediation Documentation
 * [Detailed Scan Logs (Attached Separately)]

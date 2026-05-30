@@ -290,7 +290,7 @@ environment variable management.
 Skills can reference additional documentation files. Create `skills/docker-compose/reference.md` with compose file patterns, and link to it from the SKILL.md body:
 
 ```markdown
-For advanced networking patterns, see [Reference](reference.md).
+For advanced networking patterns, see Reference.
 ```
 
 Claude Code follows these relative links using the Read tool when the information is needed.

@@ -157,8 +157,8 @@ Skills are prompt engineering. The same principles that make a good system promp
 Skills can reference other markdown files in the same skill directory using relative links:
 
 ```markdown
-For the complete API reference, see [API docs](reference.md).
-For usage examples, see [examples](examples/patterns.md).
+For the complete API reference, see API docs.
+For usage examples, see examples.
 ```
 
 Claude follows these links using the `Read` tool when it needs the referenced content. This keeps your main SKILL.md focused while allowing deep-dive documentation in supporting files.
@@ -393,8 +393,8 @@ skills/pr-review/
 Reference them from SKILL.md with relative links:
 
 ```markdown
-For the full quality checklist, see [checklist](checklist.md).
-For language-specific guidance, see [TypeScript examples](examples/typescript.md).
+For the full quality checklist, see checklist.
+For language-specific guidance, see TypeScript examples.
 ```
 
 ## Common patterns

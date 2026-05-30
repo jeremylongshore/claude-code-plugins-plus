@@ -249,7 +249,7 @@ After 1 week on Granola exclusively:
 ## Resources
 
 - [Granola Setup Guide](https://docs.granola.ai/help-center/getting-started/setting-up-granola-for-the-first-time)
-- [Granola vs Otter Comparison](https://www.granola.ai/compare)
+- Granola vs Otter Comparison
 - [Granola Free Trial](https://www.granola.ai/blog/granola-free-trial-get-started)
 - [Granola for Sales Teams](https://www.granola.ai/blog/sales-ai-notetaker-integration-guide-salesforce-hubspot)
 

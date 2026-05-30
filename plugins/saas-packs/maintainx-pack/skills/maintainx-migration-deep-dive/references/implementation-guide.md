@@ -649,7 +649,7 @@ class MigrationRollback {
 
 - [MaintainX API Documentation](https://maintainx.dev/)
 - [MaintainX Import Guide](https://help.getmaintainx.com/)
-- [Data Migration Best Practices](https://martinfowler.com/articles/data-migration-patterns.html)
+- Data Migration Best Practices
 
 ## Next Steps
 

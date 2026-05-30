@@ -361,7 +361,7 @@ This skill is based on Apple's Human Interface Guidelines, the official design d
 - [SF Symbols](https://developer.apple.com/sf-symbols/) --- Apple's icon system with 5,000+ configurable symbols
 - [Apple Design Resources (Figma/Sketch)](https://developer.apple.com/design/resources/) --- Official design templates and UI kits
 - [WWDC Design Sessions](https://developer.apple.com/videos/design/) --- Video sessions covering design principles and new features
-- [*"Designed by Apple in California"*](https://www.amazon.com/Designed-Apple-California/dp/1942303118?tag=wondelai00-20) --- Photo book documenting Apple's design process and philosophy
+- *"Designed by Apple in California"* --- Photo book documenting Apple's design process and philosophy
 - [*"The Design of Everyday Things"*](https://www.amazon.com/Design-Everyday-Things-Revised-Expanded/dp/0465050654?tag=wondelai00-20) by Don Norman --- The foundational text on human-centered design that influenced Apple's approach
 - [*"Universal Principles of Design"*](https://www.amazon.com/Universal-Principles-Design-Revised-Updated/dp/1592535879?tag=wondelai00-20) by William Lidwell, Kritina Holden, and Jill Butler --- 125 design principles applicable to iOS interface design
 

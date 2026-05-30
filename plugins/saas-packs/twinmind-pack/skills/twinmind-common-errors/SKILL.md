@@ -383,7 +383,7 @@ curl --resolve api.twinmind.com:443:$(dig +short api.twinmind.com) \  # HTTPS po
 ```bash
 set -euo pipefail
 # Check TwinMind API status
-curl -s https://status.twinmind.com/api/v2/status.json | jq '.status'
+curl -s api/v2/status.json | jq '.status'
 
 # Verify API connectivity
 curl -I https://api.twinmind.com/v1/health
@@ -409,9 +409,9 @@ ffprobe -v error -show_format -show_streams audio.mp3
 ## Resources
 
 - [TwinMind Status Page](https://status.twinmind.com)
-- [TwinMind Support](https://twinmind.com/support)
+- TwinMind Support
 - [TwinMind Community](https://community.twinmind.com)
-- [Error Code Reference](https://twinmind.com/docs/errors)
+- Error Code Reference
 
 ## Next Steps
 

@@ -83,7 +83,7 @@ Released as v0.5.0.
 
 ## Braves: Persistence and Broadcast Intelligence
 
-The [Braves Booth Intelligence](https://github.com/jeremylongshore/braves) dashboard got two significant PRs.
+The Braves Booth Intelligence dashboard got two significant PRs.
 
 **PR #16 — SQLite persistence + back-of-card + on-deck lookahead.** Three features in one PR because they're all about the same thing: giving the broadcaster information without them asking for it.
 

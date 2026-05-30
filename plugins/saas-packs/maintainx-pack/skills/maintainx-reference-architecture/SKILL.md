@@ -305,9 +305,9 @@ function getClientForSite(siteId: string): MaintainXClient {
 
 ## Resources
 
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- MaintainX API Reference
 - [Google Cloud Pub/Sub](https://cloud.google.com/pubsub/docs)
-- [Event-Driven Architecture](https://martinfowler.com/articles/event-driven.html)
+- Event-Driven Architecture
 
 ## Next Steps
 

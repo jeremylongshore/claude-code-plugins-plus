@@ -103,6 +103,6 @@ if (cost) {
 ## Resources
 
 - [Shopify API Rate Limits](https://shopify.dev/docs/api/usage/rate-limits)
-- [App Billing API](https://shopify.dev/docs/apps/build/billing)
+- App Billing API
 - [Shopify Pricing](https://www.shopify.com/pricing)
 - [Shopify Plus Rate Limits](https://shopify.dev/changelog/increased-admin-api-rate-limits-for-shopify-plus)

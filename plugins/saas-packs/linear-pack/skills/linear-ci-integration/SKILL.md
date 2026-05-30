@@ -219,7 +219,7 @@ async function main() {
   // Add comment linking to PR
   await client.createComment({
     issueId: issue.id,
-    body: `PR #${values.pr} ${values.action}: [View PR](${prUrl})`,
+    body: `PR #${values.pr} ${values.action}: View PR`,
   });
 
   // Transition state based on PR action
@@ -271,7 +271,7 @@ jobs:
                 "input": {
                   "teamId": "${{ vars.LINEAR_TEAM_ID }}",
                   "title": "[CI] Build failure: ${{ github.event.workflow_run.head_branch }}",
-                  "description": "Build failed on branch `${{ github.event.workflow_run.head_branch }}`.\n\n[View run](${{ github.event.workflow_run.html_url }})",
+                  "description": "Build failed on branch `${{ github.event.workflow_run.head_branch }}`.\n\nView run",
                   "priority": 1
                 }
               }

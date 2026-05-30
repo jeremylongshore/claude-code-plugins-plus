@@ -76,7 +76,7 @@ await client.export({
 
 ## Resources
 
-- [Search Filters](https://docs.juicebox.work/filters)
+- Search Filters
 - [ATS Integrations](https://juicebox.ai/integrations)
 
 ## Next Steps

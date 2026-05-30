@@ -251,7 +251,7 @@ ALTER DATABASE PROD_DW SET DATA_RETENTION_TIME_IN_DAYS = 30;
 ## Resources
 
 - [Migration Guides](https://docs.snowflake.com/en/user-guide/data-load-overview)
-- [SQL Translation (from Redshift)](https://docs.snowflake.com/en/guides/migration/redshift)
+- SQL Translation (from Redshift)
 - [FLATTEN Function](https://docs.snowflake.com/en/sql-reference/functions/flatten)
 - [write_pandas](https://docs.snowflake.com/en/developer-guide/python-connector/python-connector-pandas)
 

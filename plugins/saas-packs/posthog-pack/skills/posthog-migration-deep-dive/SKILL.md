@@ -319,5 +319,5 @@ curl "https://app.posthog.com/api/projects/$POSTHOG_PROJECT_ID/query/" \
 
 - [PostHog Capture API](https://posthog.com/docs/api/capture)
 - [PostHog Migrate from Mixpanel](https://posthog.com/docs/migrate/mixpanel)
-- [PostHog Migrate from Amplitude](https://posthog.com/docs/migrate/amplitude)
+- PostHog Migrate from Amplitude
 - [PostHog Historical Migration](https://posthog.com/docs/migrate)

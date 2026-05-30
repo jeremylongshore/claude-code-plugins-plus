@@ -227,9 +227,9 @@ jobs:
 
 ## Resources
 
-- [Adobe I/O Events Signature Verification](https://developer.adobe.com/events/docs/guides/sdk/sdk_signature_verification/)
+- Adobe I/O Events Signature Verification
 - [OAuth Server-to-Server Guide](https://developer.adobe.com/developer-console/docs/guides/authentication/ServerToServerAuthentication/implementation)
-- [Adobe Admin Console Roles](https://helpx.adobe.com/enterprise/using/roles.html)
+- Adobe Admin Console Roles
 
 ## Next Steps
 

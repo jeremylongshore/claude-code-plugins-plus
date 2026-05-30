@@ -76,7 +76,7 @@
 | Artifact       | Status      | Details                                                                                 |
 | -------------- | ----------- | --------------------------------------------------------------------------------------- |
 | GitHub Release | ✓ Created   | https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/tag/v4.19.0 |
-| GitHub Gist    | ✓ Created   | https://gist.github.com/jeremylongshore/93ee218ead182072190157d9c7ae8d37                |
+| GitHub Gist    | ✓ Created   |                                                                                         |
 | .gist-id       | ✓ Committed | 93ee218ead182072190157d9c7ae8d37                                                        |
 
 ## Quality Gates

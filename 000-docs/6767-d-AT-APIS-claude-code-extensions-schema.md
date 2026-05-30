@@ -70,6 +70,7 @@
     - Violation: CRITICAL ERROR (various `PLUGIN_*`, `SKILL_*` codes)
 
 **VALIDATION**:
+
 - Validator runs in ENTERPRISE MODE ONLY
 - CRITICAL/HIGH errors BLOCK PR merge
 - Deterministic error codes (6767-d schema)
@@ -83,6 +84,7 @@
 This specification defines the **machine-checkable schema** for Claude Code extensions. It provides formal validation rules, data types, constraints, and error codes that validators MUST implement.
 
 **Relationship to 6767-c**:
+
 - 6767-c: Human-readable standard (policy, rationale, examples)
 - 6767-d: Machine-readable schema (types, validators, error codes)
 
@@ -99,6 +101,7 @@ All rules herein operate in **ENTERPRISE MODE ONLY**.
 ```
 
 **Rules**:
+
 - Lowercase letters (a-z)
 - Numbers (0-9)
 - Hyphens (-) allowed
@@ -110,10 +113,12 @@ All rules herein operate in **ENTERPRISE MODE ONLY**.
 ### 2.2 Reserved Word Ban
 
 **Banned Substrings** (case-insensitive):
+
 - `claude`
 - `anthropic`
 
 **Pattern** (for detection):
+
 ```regex
 (claude|anthropic)
 ```
@@ -123,11 +128,11 @@ All rules herein operate in **ENTERPRISE MODE ONLY**.
 
 ### 2.3 Max Length
 
-| Component | Max Length | Error Code | Severity |
-|-----------|------------|------------|----------|
-| Plugin name | 64 chars | `NAMING_003` | CRITICAL |
-| Skill name | 64 chars | `NAMING_004` | CRITICAL |
-| Description | 1024 chars | `NAMING_005` | HIGH |
+| Component   | Max Length | Error Code   | Severity |
+| ----------- | ---------- | ------------ | -------- |
+| Plugin name | 64 chars   | `NAMING_003` | CRITICAL |
+| Skill name  | 64 chars   | `NAMING_004` | CRITICAL |
+| Description | 1024 chars | `NAMING_005` | HIGH     |
 
 ---
 
@@ -178,28 +183,16 @@ All rules herein operate in **ENTERPRISE MODE ONLY**.
     "homepage": { "type": "string", "format": "uri" },
     "repository": { "type": "string", "format": "uri" },
     "commands": {
-      "oneOf": [
-        { "type": "string" },
-        { "type": "array", "items": { "type": "string" } }
-      ]
+      "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }]
     },
     "agents": {
-      "oneOf": [
-        { "type": "string" },
-        { "type": "array", "items": { "type": "string" } }
-      ]
+      "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }]
     },
     "skills": {
-      "oneOf": [
-        { "type": "string" },
-        { "type": "array", "items": { "type": "string" } }
-      ]
+      "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }]
     },
     "hooks": {
-      "oneOf": [
-        { "type": "string" },
-        { "type": "object" }
-      ]
+      "oneOf": [{ "type": "string" }, { "type": "object" }]
     },
     "mcpServers": {
       "type": "object",
@@ -223,62 +216,62 @@ All rules herein operate in **ENTERPRISE MODE ONLY**.
 
 #### 3.2.1 name
 
-| Rule | Value | Error Code | Severity |
-|------|-------|------------|----------|
-| Type | string | `PLUGIN_001` | CRITICAL |
-| Required | true | `PLUGIN_002` | CRITICAL |
-| Pattern | `^[a-z0-9-]+$` | `PLUGIN_003` | CRITICAL |
-| Min length | 1 | `PLUGIN_004` | CRITICAL |
-| Max length | 64 | `PLUGIN_005` | CRITICAL |
+| Rule         | Value                      | Error Code   | Severity |
+| ------------ | -------------------------- | ------------ | -------- |
+| Type         | string                     | `PLUGIN_001` | CRITICAL |
+| Required     | true                       | `PLUGIN_002` | CRITICAL |
+| Pattern      | `^[a-z0-9-]+$`             | `PLUGIN_003` | CRITICAL |
+| Min length   | 1                          | `PLUGIN_004` | CRITICAL |
+| Max length   | 64                         | `PLUGIN_005` | CRITICAL |
 | Ban reserved | No "claude" or "anthropic" | `PLUGIN_006` | CRITICAL |
 
 #### 3.2.2 version
 
-| Rule | Value | Error Code | Severity |
-|------|-------|------------|----------|
-| Type | string | `PLUGIN_010` | CRITICAL |
-| Required | true | `PLUGIN_011` | CRITICAL |
-| Pattern | `^\\d+\\.\\d+\\.\\d+$` (SemVer) | `PLUGIN_012` | CRITICAL |
+| Rule     | Value                           | Error Code   | Severity |
+| -------- | ------------------------------- | ------------ | -------- |
+| Type     | string                          | `PLUGIN_010` | CRITICAL |
+| Required | true                            | `PLUGIN_011` | CRITICAL |
+| Pattern  | `^\\d+\\.\\d+\\.\\d+$` (SemVer) | `PLUGIN_012` | CRITICAL |
 
 **Valid**: `1.0.0`, `2.3.1`, `0.1.0`
 **Invalid**: `v1.0`, `1.0`, `1` (missing parts)
 
 #### 3.2.3 description
 
-| Rule | Value | Error Code | Severity |
-|------|-------|------------|----------|
-| Type | string | `PLUGIN_020` | CRITICAL |
-| Required | true | `PLUGIN_021` | CRITICAL |
-| Min length | 1 | `PLUGIN_022` | CRITICAL |
-| Max length | 1024 | `PLUGIN_023` | HIGH |
+| Rule       | Value  | Error Code   | Severity |
+| ---------- | ------ | ------------ | -------- |
+| Type       | string | `PLUGIN_020` | CRITICAL |
+| Required   | true   | `PLUGIN_021` | CRITICAL |
+| Min length | 1      | `PLUGIN_022` | CRITICAL |
+| Max length | 1024   | `PLUGIN_023` | HIGH     |
 
 #### 3.2.4 author
 
-| Rule | Value | Error Code | Severity |
-|------|-------|------------|----------|
-| Type | object | `PLUGIN_030` | CRITICAL |
-| Required | true | `PLUGIN_031` | CRITICAL |
-| Required fields | name, email | `PLUGIN_032` | CRITICAL |
-| name type | string, min 1 char | `PLUGIN_033` | CRITICAL |
-| email type | string, valid email | `PLUGIN_034` | CRITICAL |
+| Rule            | Value               | Error Code   | Severity |
+| --------------- | ------------------- | ------------ | -------- |
+| Type            | object              | `PLUGIN_030` | CRITICAL |
+| Required        | true                | `PLUGIN_031` | CRITICAL |
+| Required fields | name, email         | `PLUGIN_032` | CRITICAL |
+| name type       | string, min 1 char  | `PLUGIN_033` | CRITICAL |
+| email type      | string, valid email | `PLUGIN_034` | CRITICAL |
 
 #### 3.2.5 license
 
-| Rule | Value | Error Code | Severity |
-|------|-------|------------|----------|
-| Type | string | `PLUGIN_040` | CRITICAL |
-| Required | true | `PLUGIN_041` | CRITICAL |
-| Min length | 1 | `PLUGIN_042` | CRITICAL |
+| Rule       | Value  | Error Code   | Severity |
+| ---------- | ------ | ------------ | -------- |
+| Type       | string | `PLUGIN_040` | CRITICAL |
+| Required   | true   | `PLUGIN_041` | CRITICAL |
+| Min length | 1      | `PLUGIN_042` | CRITICAL |
 
 **Recommended**: SPDX identifiers (MIT, Apache-2.0, Proprietary, etc.)
 
 #### 3.2.6 keywords
 
-| Rule | Value | Error Code | Severity |
-|------|-------|------------|----------|
-| Type | array of strings | `PLUGIN_050` | CRITICAL |
-| Required | true | `PLUGIN_051` | CRITICAL |
-| Min items | 1 | `PLUGIN_052` | CRITICAL |
+| Rule      | Value            | Error Code   | Severity |
+| --------- | ---------------- | ------------ | -------- |
+| Type      | array of strings | `PLUGIN_050` | CRITICAL |
+| Required  | true             | `PLUGIN_051` | CRITICAL |
+| Min items | 1                | `PLUGIN_052` | CRITICAL |
 
 ---
 
@@ -287,67 +280,71 @@ All rules herein operate in **ENTERPRISE MODE ONLY**.
 ### 4.1 Required Fields (Enterprise)
 
 ```yaml
-name: string                           # REQUIRED
-description: string                    # REQUIRED
-allowed-tools: string                  # REQUIRED (CSV, NOT array)
-version: string                        # REQUIRED
-author: string                         # REQUIRED
-license: string                        # REQUIRED
-tags: array                            # REQUIRED
+name: string # REQUIRED
+description: string # REQUIRED
+allowed-tools: string # REQUIRED (CSV, NOT array)
+version: string # REQUIRED
+author: string # REQUIRED
+license: string # REQUIRED
+tags: array # REQUIRED
 ```
 
 ### 4.2 Field Validation Rules
 
 #### 4.2.1 name
 
-| Rule | Value | Error Code | Severity |
-|------|-------|------------|----------|
-| Type | string | `SKILL_001` | CRITICAL |
-| Required | true | `SKILL_002` | CRITICAL |
-| Pattern | `^[a-z0-9-]+$` | `SKILL_003` | CRITICAL |
-| Min length | 1 | `SKILL_004` | CRITICAL |
-| Max length | 64 | `SKILL_005` | CRITICAL |
+| Rule         | Value                      | Error Code  | Severity |
+| ------------ | -------------------------- | ----------- | -------- |
+| Type         | string                     | `SKILL_001` | CRITICAL |
+| Required     | true                       | `SKILL_002` | CRITICAL |
+| Pattern      | `^[a-z0-9-]+$`             | `SKILL_003` | CRITICAL |
+| Min length   | 1                          | `SKILL_004` | CRITICAL |
+| Max length   | 64                         | `SKILL_005` | CRITICAL |
 | Ban reserved | No "claude" or "anthropic" | `SKILL_006` | CRITICAL |
 
 #### 4.2.2 description
 
-| Rule | Value | Error Code | Severity |
-|------|-------|------------|----------|
-| Type | string | `SKILL_010` | CRITICAL |
-| Required | true | `SKILL_011` | CRITICAL |
-| Min length | 1 | `SKILL_012` | CRITICAL |
-| Max length | 1024 | `SKILL_013` | HIGH |
-| Voice | Third-person | `SKILL_014` | MEDIUM |
-| MUST contain | "Use when" phrase | `SKILL_015` | HIGH |
-| MUST contain | Trigger phrases | `SKILL_016` | HIGH |
+| Rule         | Value             | Error Code  | Severity |
+| ------------ | ----------------- | ----------- | -------- |
+| Type         | string            | `SKILL_010` | CRITICAL |
+| Required     | true              | `SKILL_011` | CRITICAL |
+| Min length   | 1                 | `SKILL_012` | CRITICAL |
+| Max length   | 1024              | `SKILL_013` | HIGH     |
+| Voice        | Third-person      | `SKILL_014` | MEDIUM   |
+| MUST contain | "Use when" phrase | `SKILL_015` | HIGH     |
+| MUST contain | Trigger phrases   | `SKILL_016` | HIGH     |
 
 **Pattern for "Use when"**:
+
 ```regex
 [Uu]se\s+when
 ```
 
 #### 4.2.3 allowed-tools (CRITICAL: CSV String NOT YAML Array)
 
-| Rule | Value | Error Code | Severity |
-|------|-------|------------|----------|
-| Type | **string** (NOT array) | `SKILL_020` | CRITICAL |
-| Required | true | `SKILL_021` | CRITICAL |
-| Format | CSV (comma-separated) | `SKILL_022` | CRITICAL |
-| Min length | 1 | `SKILL_023` | CRITICAL |
+| Rule       | Value                  | Error Code  | Severity |
+| ---------- | ---------------------- | ----------- | -------- |
+| Type       | **string** (NOT array) | `SKILL_020` | CRITICAL |
+| Required   | true                   | `SKILL_021` | CRITICAL |
+| Format     | CSV (comma-separated)  | `SKILL_022` | CRITICAL |
+| Min length | 1                      | `SKILL_023` | CRITICAL |
 
 **CORRECT** (CSV string):
+
 ```yaml
-allowed-tools: "Read,Write,Grep,Glob,Bash(git:*)"
+allowed-tools: 'Read,Write,Grep,Glob,Bash(git:*)'
 ```
 
 **WRONG** (YAML array):
+
 ```yaml
-allowed-tools:              # ❌ TYPE ERROR
+allowed-tools: # ❌ TYPE ERROR
   - Read
   - Write
 ```
 
 **Validation**:
+
 ```python
 import yaml
 
@@ -370,8 +367,9 @@ if isinstance(allowed_tools, list):
 Pattern: `Bash\([^)]+\)`
 
 **Unscoped Bash** (CRITICAL error):
+
 ```yaml
-allowed-tools: "Read,Write,Bash"     # ❌ Unscoped Bash
+allowed-tools: 'Read,Write,Bash' # ❌ Unscoped Bash
 ```
 
 **Error Code**: `SKILL_024`
@@ -380,53 +378,55 @@ allowed-tools: "Read,Write,Bash"     # ❌ Unscoped Bash
 
 #### 4.2.4 version
 
-| Rule | Value | Error Code | Severity |
-|------|-------|------------|----------|
-| Type | string | `SKILL_030` | CRITICAL |
-| Required | true | `SKILL_031` | CRITICAL |
-| Pattern | `^\\d+\\.\\d+\\.\\d+$` | `SKILL_032` | CRITICAL |
+| Rule     | Value                  | Error Code  | Severity |
+| -------- | ---------------------- | ----------- | -------- |
+| Type     | string                 | `SKILL_030` | CRITICAL |
+| Required | true                   | `SKILL_031` | CRITICAL |
+| Pattern  | `^\\d+\\.\\d+\\.\\d+$` | `SKILL_032` | CRITICAL |
 
 #### 4.2.5 author
 
-| Rule | Value | Error Code | Severity |
-|------|-------|------------|----------|
-| Type | string | `SKILL_040` | CRITICAL |
-| Required | true | `SKILL_041` | CRITICAL |
-| Format | "Name <email>" or "Name" | `SKILL_042` | HIGH |
-| Min length | 1 | `SKILL_043` | CRITICAL |
+| Rule       | Value                    | Error Code  | Severity |
+| ---------- | ------------------------ | ----------- | -------- |
+| Type       | string                   | `SKILL_040` | CRITICAL |
+| Required   | true                     | `SKILL_041` | CRITICAL |
+| Format     | "Name <email>" or "Name" | `SKILL_042` | HIGH     |
+| Min length | 1                        | `SKILL_043` | CRITICAL |
 
 **Recommended Pattern**:
+
 ```regex
 ^[^<]+\s*(<[^>]+>)?$
 ```
 
 #### 4.2.6 license
 
-| Rule | Value | Error Code | Severity |
-|------|-------|------------|----------|
-| Type | string | `SKILL_050` | CRITICAL |
-| Required | true | `SKILL_051` | CRITICAL |
-| Min length | 1 | `SKILL_052` | CRITICAL |
+| Rule       | Value  | Error Code  | Severity |
+| ---------- | ------ | ----------- | -------- |
+| Type       | string | `SKILL_050` | CRITICAL |
+| Required   | true   | `SKILL_051` | CRITICAL |
+| Min length | 1      | `SKILL_052` | CRITICAL |
 
 #### 4.2.7 tags
 
-| Rule | Value | Error Code | Severity |
-|------|-------|------------|----------|
-| Type | array of strings | `SKILL_060` | CRITICAL |
-| Required | true | `SKILL_061` | CRITICAL |
-| Min items | 1 | `SKILL_062` | CRITICAL |
+| Rule      | Value            | Error Code  | Severity |
+| --------- | ---------------- | ----------- | -------- |
+| Type      | array of strings | `SKILL_060` | CRITICAL |
+| Required  | true             | `SKILL_061` | CRITICAL |
+| Min items | 1                | `SKILL_062` | CRITICAL |
 
 ### 4.3 Body Constraints
 
-| Constraint | Limit | Error Code | Severity |
-|------------|-------|------------|----------|
-| Max words | 5,000 | `SKILL_100` | HIGH |
-| Max lines | 500 | `SKILL_101` | HIGH |
-| Max tokens | ~7,500 | `SKILL_102` | MEDIUM |
-| Path format | `{baseDir}/...` (no absolute) | `SKILL_103` | CRITICAL |
-| Reference depth | 1 level | `SKILL_104` | MEDIUM |
+| Constraint      | Limit                         | Error Code  | Severity |
+| --------------- | ----------------------------- | ----------- | -------- |
+| Max words       | 5,000                         | `SKILL_100` | HIGH     |
+| Max lines       | 500                           | `SKILL_101` | HIGH     |
+| Max tokens      | ~7,500                        | `SKILL_102` | MEDIUM   |
+| Path format     | `{baseDir}/...` (no absolute) | `SKILL_103` | CRITICAL |
+| Reference depth | 1 level                       | `SKILL_104` | MEDIUM   |
 
 **Path Validation**:
+
 ```python
 import re
 
@@ -448,44 +448,44 @@ if absolute_path_pattern.search(body):
 ### 5.1 Required Fields (Enterprise)
 
 ```yaml
-name: string                           # REQUIRED
-description: string                    # REQUIRED
+name: string # REQUIRED
+description: string # REQUIRED
 ```
 
 ### 5.2 Optional Fields
 
 ```yaml
-tools: string                          # OPTIONAL (CSV string, inherits all if omitted)
-model: string                          # OPTIONAL (inherit, sonnet, opus, haiku)
-permissionMode: string                 # OPTIONAL
-skills: string                         # OPTIONAL (CSV string)
+tools: string # OPTIONAL (CSV string, inherits all if omitted)
+model: string # OPTIONAL (inherit, sonnet, opus, haiku)
+permissionMode: string # OPTIONAL
+skills: string # OPTIONAL (CSV string)
 ```
 
 ### 5.3 Field Validation Rules
 
 #### 5.3.1 name
 
-| Rule | Value | Error Code | Severity |
-|------|-------|------------|----------|
-| Type | string | `AGENT_001` | CRITICAL |
-| Required | true | `AGENT_002` | CRITICAL |
-| Min length | 1 | `AGENT_003` | CRITICAL |
+| Rule       | Value  | Error Code  | Severity |
+| ---------- | ------ | ----------- | -------- |
+| Type       | string | `AGENT_001` | CRITICAL |
+| Required   | true   | `AGENT_002` | CRITICAL |
+| Min length | 1      | `AGENT_003` | CRITICAL |
 
 #### 5.3.2 description
 
-| Rule | Value | Error Code | Severity |
-|------|-------|------------|----------|
-| Type | string | `AGENT_010` | CRITICAL |
-| Required | true | `AGENT_011` | CRITICAL |
-| Min length | 1 | `AGENT_012` | CRITICAL |
+| Rule       | Value  | Error Code  | Severity |
+| ---------- | ------ | ----------- | -------- |
+| Type       | string | `AGENT_010` | CRITICAL |
+| Required   | true   | `AGENT_011` | CRITICAL |
+| Min length | 1      | `AGENT_012` | CRITICAL |
 
 #### 5.3.3 tools (optional)
 
-| Rule | Value | Error Code | Severity |
-|------|-------|------------|----------|
-| Type | string (CSV) | `AGENT_020` | HIGH |
-| Required | false | N/A | N/A |
-| Format | CSV (comma-separated) | `AGENT_021` | HIGH |
+| Rule     | Value                 | Error Code  | Severity |
+| -------- | --------------------- | ----------- | -------- |
+| Type     | string (CSV)          | `AGENT_020` | HIGH     |
+| Required | false                 | N/A         | N/A      |
+| Format   | CSV (comma-separated) | `AGENT_021` | HIGH     |
 
 ---
 
@@ -493,14 +493,14 @@ skills: string                         # OPTIONAL (CSV string)
 
 ### 6.1 Critical Rules
 
-| Rule | Error Code | Severity |
-|------|------------|----------|
-| `.claude-plugin/` MUST exist | `DIR_001` | CRITICAL |
-| `.claude-plugin/` MUST contain ONLY `plugin.json` | `DIR_002` | CRITICAL |
-| `plugin.json` MUST exist at `.claude-plugin/plugin.json` | `DIR_003` | CRITICAL |
-| Component dirs (skills/, agents/, commands/) MUST be at plugin root | `DIR_004` | CRITICAL |
-| Component dirs MUST NOT be inside `.claude-plugin/` | `DIR_005` | CRITICAL |
-| No empty directories | `DIR_006` | MEDIUM |
+| Rule                                                                | Error Code | Severity |
+| ------------------------------------------------------------------- | ---------- | -------- |
+| `.claude-plugin/` MUST exist                                        | `DIR_001`  | CRITICAL |
+| `.claude-plugin/` MUST contain ONLY `plugin.json`                   | `DIR_002`  | CRITICAL |
+| `plugin.json` MUST exist at `.claude-plugin/plugin.json`            | `DIR_003`  | CRITICAL |
+| Component dirs (skills/, agents/, commands/) MUST be at plugin root | `DIR_004`  | CRITICAL |
+| Component dirs MUST NOT be inside `.claude-plugin/`                 | `DIR_005`  | CRITICAL |
+| No empty directories                                                | `DIR_006`  | MEDIUM   |
 
 ### 6.2 Validation Logic
 
@@ -547,8 +547,8 @@ def validate_directory_structure(plugin_root: Path):
 import re
 
 SECRET_PATTERNS = [
-    (re.compile(r'["\']?API_KEY["\']?\s*[:=]\s*["\']([A-Za-z0-9_-]{20,})'), "API key"),
-    (re.compile(r'["\']?SECRET["\']?\s*[:=]\s*["\']([A-Za-z0-9_-]{20,})'), "Secret"),
+    (re.compile(r'["\']?API_KEY["\']?\s*[:=]\s*"\''), "API key"),
+    (re.compile(r'["\']?SECRET["\']?\s*[:=]\s*"\''), "Secret"),
     (re.compile(r'sk-[A-Za-z0-9]{20,}'), "OpenAI API key"),
     (re.compile(r'AKIA[A-Z0-9]{16}'), "AWS access key"),
     (re.compile(r'-----BEGIN\s+(?:RSA\s+)?PRIVATE\s+KEY-----'), "Private key"),
@@ -558,9 +558,11 @@ SECRET_PATTERNS = [
 ### 7.2 Exemption Rules (Minimal Allowlist)
 
 **Exempt Paths**:
+
 - `tests/fixtures/**` (explicit fixtures directory only)
 
 **Exempt Content Patterns**:
+
 ```python
 TEST_FIXTURE_MARKERS = [
     'EXAMPLE',
@@ -576,14 +578,14 @@ def is_test_fixture(content: str) -> bool:
 
 ### 7.3 Security Error Codes
 
-| Error Code | Severity | Description |
-|------------|----------|-------------|
-| `SEC_001` | CRITICAL | Hardcoded API key detected |
-| `SEC_002` | CRITICAL | Hardcoded AWS key detected |
-| `SEC_003` | CRITICAL | Hardcoded SSH private key detected |
-| `SEC_004` | CRITICAL | .env file committed |
-| `SEC_005` | CRITICAL | Absolute path detected |
-| `SEC_006` | CRITICAL | Unscoped Bash tool |
+| Error Code | Severity | Description                        |
+| ---------- | -------- | ---------------------------------- |
+| `SEC_001`  | CRITICAL | Hardcoded API key detected         |
+| `SEC_002`  | CRITICAL | Hardcoded AWS key detected         |
+| `SEC_003`  | CRITICAL | Hardcoded SSH private key detected |
+| `SEC_004`  | CRITICAL | .env file committed                |
+| `SEC_005`  | CRITICAL | Absolute path detected             |
+| `SEC_006`  | CRITICAL | Unscoped Bash tool                 |
 
 ---
 
@@ -616,11 +618,11 @@ class ValidationError:
 
 ### 8.2 Exit Codes
 
-| Exit Code | Meaning | Action |
-|-----------|---------|--------|
-| `0` | All validations passed | ✅ Proceed |
-| `1` | CRITICAL or HIGH errors | ❌ Block (CI fails) |
-| `2` | MEDIUM or LOW warnings | ⚠️  Warn (can proceed, should fix) |
+| Exit Code | Meaning                 | Action                            |
+| --------- | ----------------------- | --------------------------------- |
+| `0`       | All validations passed  | ✅ Proceed                        |
+| `1`       | CRITICAL or HIGH errors | ❌ Block (CI fails)               |
+| `2`       | MEDIUM or LOW warnings  | ⚠️ Warn (can proceed, should fix) |
 
 ---
 
@@ -701,13 +703,15 @@ def validate_all(plugin_root: Path) -> Tuple[List[ValidationError], List[Validat
 
 ### 10.1 Test Fixture Allowlist
 
-**Allowed in `tests/fixtures/**`**:
+**Allowed in `tests/fixtures/**`\*\*:
+
 - Example API keys (containing "EXAMPLE")
 - Dummy credentials (containing "DUMMY")
 - Test keys (containing "test-")
 - AWS example key: `AKIAIOSFODNN7EXAMPLE`
 
 **Example**:
+
 ```python
 # tests/fixtures/test_keys.py
 EXAMPLE_API_KEY = "sk_test_1234567890abcdefghijklmnopqrs"  # ✅ Allowed (contains "test")
@@ -715,6 +719,7 @@ AWS_EXAMPLE_KEY = "AKIAIOSFODNN7EXAMPLE"                   # ✅ Allowed (known 
 ```
 
 **Real Secrets** (CRITICAL error even in tests):
+
 ```python
 # tests/test_auth.py
 API_KEY = "sk_live_abcd1234..."  # ❌ CRITICAL (real key in test file)

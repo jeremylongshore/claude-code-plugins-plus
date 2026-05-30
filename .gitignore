@@ -175,3 +175,4 @@ claudes-docs/
 
 # Beads / Dolt files (added by bd init)
 .beads-credential-key
+.lycheecache/

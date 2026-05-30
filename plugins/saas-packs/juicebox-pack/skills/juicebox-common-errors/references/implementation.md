@@ -47,17 +47,14 @@ import urllib.request
 import urllib.error
 from typing import Any
 
-
 JUICEBOX_API_KEY = os.environ["JUICEBOX_API_KEY"]
 BASE_URL = "https://api.juicebox.com/v1"
-
 
 class JuiceboxAPIError(Exception):
     def __init__(self, status_code: int, message: str, detail: dict = None):
         super().__init__(f"HTTP {status_code}: {message}")
         self.status_code = status_code
         self.detail = detail or {}
-
 
 def juicebox_request(
     method: str,
@@ -118,7 +115,6 @@ def juicebox_request(
 
     raise JuiceboxAPIError(429, "Max retries exceeded after rate limiting")
 
-
 def diagnose_connection() -> dict:
     """Run Juicebox connectivity diagnostics."""
     results = {}
@@ -138,7 +134,6 @@ def diagnose_connection() -> dict:
         results["error"] = str(e)
 
     return results
-
 
 if __name__ == "__main__":
     print(json.dumps(diagnose_connection(), indent=2))
@@ -170,7 +165,7 @@ def valid_date_range(start: datetime, end: datetime) -> bool:
 
 ## Resources
 
-- [Juicebox API Docs](https://developers.juicebox.com/docs)
+- Juicebox API Docs
 - [Juicebox Status](https://status.juicebox.com)
 
 ---

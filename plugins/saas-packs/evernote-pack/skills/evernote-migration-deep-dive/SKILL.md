@@ -119,7 +119,7 @@ For the full migration planner, ENEX parser, format converters, migration runner
 
 ## Resources
 
-- [Evernote Export Format (ENEX)](https://dev.evernote.com/doc/articles/enex.php)
+- Evernote Export Format (ENEX)
 - [ENML Reference](https://dev.evernote.com/doc/articles/enml.php)
 - [API Reference](https://dev.evernote.com/doc/reference/)
 - [Synchronization](https://dev.evernote.com/doc/articles/synchronization.php)

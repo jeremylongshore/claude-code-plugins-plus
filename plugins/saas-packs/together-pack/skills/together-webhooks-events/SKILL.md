@@ -119,7 +119,7 @@ async function handleIdempotent(event: { id: string; type: string; data: any }) 
 ## Resources
 
 - [Together AI Docs](https://docs.together.ai/)
-- [Fine-tuning Guide](https://docs.together.ai/docs/fine-tuning)
+- Fine-tuning Guide
 
 ## Next Steps
 

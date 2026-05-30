@@ -397,7 +397,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
 @dataclass
 class WhaleTransaction:
     """Represents a whale transaction with all metadata."""
@@ -424,7 +423,6 @@ class WhaleTransaction:
         d['value_native'] = str(self.value_native)
         d['value_usd'] = float(self.value_usd)
         return d
-
 
 class PriceOracle:
     """Fetch real-time cryptocurrency prices."""
@@ -476,7 +474,6 @@ class PriceOracle:
         }
         return mapping.get(f"{chain}:{symbol}", symbol.lower())
 
-
 class ExchangeWalletDatabase:
     """Known exchange wallet addresses database."""
 
@@ -508,7 +505,6 @@ class ExchangeWalletDatabase:
         """Check if address belongs to a known exchange."""
         key = f"{chain}:{address.lower()}"
         return self.exchange_wallets.get(key)
-
 
 class MarketImpactAnalyzer:
     """Analyze potential market impact of whale transactions."""
@@ -595,7 +591,6 @@ class MarketImpactAnalyzer:
                 impact = int(volume_ratio * 1000)
 
         return min(impact, 100)
-
 
 class AlertManager:
     """Handle multi-channel alerting."""
@@ -752,7 +747,7 @@ To: `{transaction.to_address}`
 Type: {transaction.transaction_type or 'Unknown'}
 {analysis.get('reasoning', '')}
 
-[View Transaction]({self._get_explorer_url(transaction)})
+View Transaction})
 """
 
         url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
@@ -800,7 +795,6 @@ Type: {transaction.transaction_type or 'Unknown'}
             'solana': f"https://solscan.io/tx/{transaction.tx_hash}"
         }
         return explorers.get(transaction.chain, "#")
-
 
 class WhaleMonitor:
     """Main whale monitoring orchestrator."""
@@ -979,7 +973,6 @@ class WhaleMonitor:
             ))
         conn.commit()
 
-
 async def main():
     """Main entry point."""
     import argparse
@@ -999,7 +992,6 @@ async def main():
 
     chains = args.chains.split(',')
     await monitor.start_monitoring(chains)
-
 
 if __name__ == '__main__':
     asyncio.run(main())

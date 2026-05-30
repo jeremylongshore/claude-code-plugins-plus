@@ -291,7 +291,7 @@ sequenceDiagram
 ### Step 1: Commit All Changes
 
 ```bash
-cd /home/jeremy/projects/claude-code-plugins
+cd
 
 # Stage all plugin files
 git add plugins/mcp/

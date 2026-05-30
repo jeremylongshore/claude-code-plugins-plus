@@ -790,4 +790,4 @@ class RolloutMonitor {
 
 **Last Updated**: 2025-12-24
 **Author**: Jeremy Longshore
-**Related Playbooks**: [Cost Caps & Budget Management](./02-cost-caps.md), [Incident Debugging Playbook](./05-incident-debugging.md)
+**Related Playbooks**: Cost Caps & Budget Management, Incident Debugging Playbook

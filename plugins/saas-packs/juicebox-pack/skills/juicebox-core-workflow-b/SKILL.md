@@ -103,7 +103,7 @@ skill-density rankings. Results can be exported as CSV for downstream reporting.
 
 ## Resources
 
-- [Juicebox API Docs](https://docs.juicebox.work/api)
+- Juicebox API Docs
 
 ## Next Steps
 

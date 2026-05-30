@@ -178,5 +178,5 @@ done
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
+- Examples | Errors
 - [Models API](https://openrouter.ai/docs/api/api-reference/models/get-models) | [Status](https://status.openrouter.ai)

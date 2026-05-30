@@ -162,7 +162,7 @@ See [`docs/USE_CASES.md`](docs/USE_CASES.md) for 7 detailed real-world scenarios
 
 ### Reference
 
-- **[Troubleshooting](docs/000-docs/157-DR-FAQS-troubleshooting.md)** - Solutions to 20 common problems
+- **Troubleshooting** - Solutions to 20 common problems
 - **Plugin Reference** - Complete command documentation (see each plugin's help)
 
 ### Support
@@ -322,7 +322,7 @@ Read [`docs/USE_CASES.md`](docs/USE_CASES.md) to see how others use it.
 
 ### 4. Get Help If Needed
 
-Check [`docs/000-docs/157-DR-FAQS-troubleshooting.md`](docs/000-docs/157-DR-FAQS-troubleshooting.md) or email support.
+Check `docs/000-docs/157-DR-FAQS-troubleshooting.md` or email support.
 
 ---
 
@@ -368,4 +368,4 @@ Start with the [Quick Start Guide](docs/QUICK_START.md) →
 
 **Need help?** Email mandy@intentsolutions.io
 
-**Have questions?** See [Troubleshooting](docs/000-docs/157-DR-FAQS-troubleshooting.md) →
+**Have questions?** See Troubleshooting →

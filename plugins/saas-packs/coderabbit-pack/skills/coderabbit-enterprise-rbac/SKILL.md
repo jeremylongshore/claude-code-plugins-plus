@@ -258,9 +258,9 @@ done
 ## Resources
 
 - [CodeRabbit Enterprise](https://coderabbit.ai/pricing)
-- [Organization Config](https://docs.coderabbit.ai/guides/organization-level-config)
-- [Seat Management](https://docs.coderabbit.ai/guides/seat-management)
-- [SOC 2 Compliance](https://coderabbit.ai/security)
+- Organization Config
+- Seat Management
+- SOC 2 Compliance
 
 ## Next Steps
 

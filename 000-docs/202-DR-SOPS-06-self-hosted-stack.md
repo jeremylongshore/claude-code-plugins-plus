@@ -1108,4 +1108,4 @@ resource "aws_instance" "ollama_server" {
 
 **Last Updated**: 2025-12-24
 **Author**: Jeremy Longshore
-**Related Playbooks**: [Ollama Migration Guide](./04-ollama-migration.md), [MCP Server Reliability](./03-mcp-reliability.md)
+**Related Playbooks**: Ollama Migration Guide, MCP Server Reliability

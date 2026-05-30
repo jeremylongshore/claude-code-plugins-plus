@@ -124,7 +124,7 @@ curl -X DELETE "https://api.getmaintainx.com/v1/workorders/12345" \
 
 ## Resources
 
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- MaintainX API Reference
 - [Work Orders Help](https://help.getmaintainx.com/about-work-orders)
 
 ## Next Steps

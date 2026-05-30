@@ -159,4 +159,4 @@ done
 - Litmus Chaos: https://litmuschaos.io/
 - Chaos Mesh (Kubernetes): https://chaos-mesh.org/
 - Pumba (Docker chaos): https://github.com/alexei-led/pumba
-- Netflix Chaos Engineering: https://netflixtechblog.com/tagged/chaos-engineering
+- Netflix Chaos Engineering:

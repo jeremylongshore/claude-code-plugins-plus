@@ -6,7 +6,7 @@
 **Created**: 2025-12-06
 **Updated**: 2026-05-14
 **Schema log**: `000-docs/SCHEMA_CHANGELOG.md`
-**Changelog**: 3.6.0 adds the self-declared config surface — `required_environment_variables` (top-level list of objects with name+prompt+help+required_for) and `metadata.intent-solutions.config` (nested list of objects with key+description+default+prompt). Installer / runtime helpers prompt the user on first run instead of letting skills throw on unset secrets. Cross-field consistency with `requires_env` (3.5.0) emits a warning when a visibility-gated var has no installer-prompt description. Full reference: `000-docs/264-DR-GUID-skill-config-pattern.md`. Prior: 3.5.0 (conditional visibility — 4 `requires_*`/`fallback_for_*` fields), 3.4.0 (progressive-disclosure catalog protocol), 3.3.2 (agent-field bug fixes), 3.3.0 (restored 8-field enterprise required set).
+**Changelog**: 3.6.0 adds the self-declared config surface — `required_environment_variables` (top-level list of objects with name+prompt+help+required*for) and `metadata.intent-solutions.config` (nested list of objects with key+description+default+prompt). Installer / runtime helpers prompt the user on first run instead of letting skills throw on unset secrets. Cross-field consistency with `requires_env` (3.5.0) emits a warning when a visibility-gated var has no installer-prompt description. Full reference: `000-docs/264-DR-GUID-skill-config-pattern.md`. Prior: 3.5.0 (conditional visibility — 4 `requires*_`/`fallback*for*_` fields), 3.4.0 (progressive-disclosure catalog protocol), 3.3.2 (agent-field bug fixes), 3.3.0 (restored 8-field enterprise required set).
 
 **Sources** (every required-field claim in this document cites one of these — verified 2026-04-28):
 
@@ -19,6 +19,7 @@
 7. [anthropics/skills Reference Implementation](https://github.com/anthropics/skills) — required: `name`, `description`
 
 **Community references** (not authoritative — included for context only):
+
 - [Lee Han Chung Deep Dive](https://leehanchung.github.io/blogs/2025/10/26/claude-skills-deep-dive/)
 
 ---
@@ -33,22 +34,22 @@ A Claude Skill is a **filesystem-based capability package** containing instructi
 
 ### Why Use Skills Instead of Ad-Hoc Prompts?
 
-| Aspect | Ad-Hoc Prompts | Skills |
-|--------|---------------|--------|
-| Reusability | One conversation | Persistent across all conversations |
-| Discovery | Manual context provision | Automatic activation based on intent |
-| Organization | Scattered knowledge | Structured packages |
-| Context Management | Full context loaded | Progressive disclosure (on-demand) |
-| Code Integration | Generated each time | Pre-written, deterministic scripts |
+| Aspect             | Ad-Hoc Prompts           | Skills                               |
+| ------------------ | ------------------------ | ------------------------------------ |
+| Reusability        | One conversation         | Persistent across all conversations  |
+| Discovery          | Manual context provision | Automatic activation based on intent |
+| Organization       | Scattered knowledge      | Structured packages                  |
+| Context Management | Full context loaded      | Progressive disclosure (on-demand)   |
+| Code Integration   | Generated each time      | Pre-written, deterministic scripts   |
 
 ### Where Skills Live
 
-| Location | Scope | Priority |
-|----------|-------|----------|
-| `~/.claude/skills/` | Personal (all projects) | 1 (lowest) |
-| `.claude/skills/` | Project-specific | 2 |
-| Plugin `skills/` directory | Plugin-bundled | 3 |
-| Built-in skills | Platform-provided | 4 (highest) |
+| Location                   | Scope                   | Priority    |
+| -------------------------- | ----------------------- | ----------- |
+| `~/.claude/skills/`        | Personal (all projects) | 1 (lowest)  |
+| `.claude/skills/`          | Project-specific        | 2           |
+| Plugin `skills/` directory | Plugin-bundled          | 3           |
+| Built-in skills            | Platform-provided       | 4 (highest) |
 
 Later sources override earlier ones when names conflict.
 
@@ -59,6 +60,7 @@ Later sources override earlier ones when names conflict.
 ### Skill = What + When + How + Allowed Tools + Optional Model Override
 
 Every skill answers:
+
 - **What**: What capability does this provide?
 - **When**: When should Claude activate it?
 - **How**: Step-by-step instructions for Claude
@@ -86,12 +88,14 @@ tools: [
 ### How Skills Are Discovered and Invoked
 
 **Model-Invoked (Automatic)**:
+
 1. At startup, Claude's system prompt includes metadata (name + description) for all skills
 2. Claude reads user request and matches intent to skill descriptions
 3. Claude invokes `Skill` tool with matching `command` parameter
 4. No algorithmic routing, embeddings, or keyword matching—**pure LLM reasoning**
 
 **User-Invoked (Manual)**:
+
 - Type `/skill-name` to explicitly invoke a skill
 - Required when `disable-model-invocation: true`
 
@@ -122,26 +126,29 @@ skill-name/
 > **Note**: Anthropic's official spec does NOT enforce folder/name matching at runtime. Claude Code will load skills regardless of folder name. However, matching names is strongly recommended for discoverability and team collaboration.
 
 **Recommended**: Use **gerund form** (verb + -ing) for clarity:
+
 - `processing-pdfs`
 - `analyzing-spreadsheets`
 - `generating-commit-messages`
 
 **Acceptable alternatives**:
+
 - Noun phrases: `pdf-processing`, `data-analysis`
 - Action-oriented: `process-pdfs`, `analyze-data`
 
 **Avoid**:
+
 - Vague names: `helper`, `utils`, `tools`
 - Generic names: `documents`, `data`, `files`
 - Reserved words: `anthropic-*`, `claude-*`
 
 ### Directory Purposes
 
-| Directory | Purpose | Loaded Into Context? | Token Cost |
-|-----------|---------|---------------------|------------|
-| `scripts/` | Executable code (deterministic operations) | No (executed via Bash) | None |
-| `references/` | Documentation (API docs, examples) | Yes (via Read tool) | High |
-| `assets/` | Templates, configs, static files | No (path reference only) | None |
+| Directory     | Purpose                                    | Loaded Into Context?     | Token Cost |
+| ------------- | ------------------------------------------ | ------------------------ | ---------- |
+| `scripts/`    | Executable code (deterministic operations) | No (executed via Bash)   | None       |
+| `references/` | Documentation (API docs, examples)         | Yes (via Read tool)      | High       |
+| `assets/`     | Templates, configs, static files           | No (path reference only) | None       |
 
 **Key Insight**: Scripts execute without loading code into context. Only script OUTPUT consumes tokens.
 
@@ -214,6 +221,7 @@ The frontmatter schema is split into three layers:
 **Required**: YES
 **Max Length**: 64 characters
 **Constraints**:
+
 - Lowercase letters, numbers, and hyphens only
 - No XML tags
 - Cannot contain reserved words: `"anthropic"`, `"claude"`
@@ -221,6 +229,7 @@ The frontmatter schema is split into three layers:
 **Purpose**: Serves as the command identifier when Claude invokes the Skill tool.
 
 **Examples**:
+
 ```yaml
 name: processing-pdfs          # Good - gerund form
 name: pdf-processing           # Good - noun phrase
@@ -234,6 +243,7 @@ name: claude-helper            # Bad - reserved word
 **Required**: YES
 **Max Length**: 1024 characters
 **Constraints**:
+
 - Must be non-empty
 - No XML tags
 - Must use **third person** voice (injected into system prompt)
@@ -241,11 +251,13 @@ name: claude-helper            # Bad - reserved word
 **Purpose**: Primary signal for Claude's skill selection. Claude uses this to decide when to activate the skill.
 
 **Formula**:
+
 ```
 [Primary capabilities]. [Secondary features]. Use when [scenarios]. Trigger with "[phrases]".
 ```
 
 **Good Examples**:
+
 ```yaml
 description: Extract text and tables from PDF files, fill forms, merge documents. Use when working with PDF files or when the user mentions PDFs, forms, or document extraction.
 
@@ -255,6 +267,7 @@ description: Analyze Polymarket prediction market contracts using TimeGPT foreca
 ```
 
 **Bad Examples**:
+
 ```yaml
 description: Helps with documents          # Too vague
 description: I can process your PDFs       # Wrong voice (first person)
@@ -271,7 +284,8 @@ description: You can use this for data     # Wrong voice (second person)
 
 **Purpose**: Pre-approves tools **scoped to skill execution only**. Tools revert to normal permissions after skill completes.
 
-**Syntax Examples** — Anthropic accepts all three forms ([code.claude.com/docs/en/skills](https://code.claude.com/docs/en/skills): *"Accepts a space-separated string or a YAML list."*):
+**Syntax Examples** — Anthropic accepts all three forms ([code.claude.com/docs/en/skills](https://code.claude.com/docs/en/skills): _"Accepts a space-separated string or a YAML list."_):
+
 ```yaml
 # Comma-separated string (legacy IS form)
 allowed-tools: "Read,Write,Glob,Grep,Edit"
@@ -296,7 +310,7 @@ allowed-tools: "Bash(npm:*),Bash(npx:*),Read,Write"
 allowed-tools: "Read,Glob,Grep"
 ```
 
-**v3.3.1 parser note**: prior to schema 3.3.1 the IS validator rejected the YAML-list form with *"must be a comma-separated string (CSV), not a YAML array"* — that was a divergence from Anthropic's documented behavior. 3.3.1 accepts all three forms; existing CSV skills still pass unchanged.
+**v3.3.1 parser note**: prior to schema 3.3.1 the IS validator rejected the YAML-list form with _"must be a comma-separated string (CSV), not a YAML array"_ — that was a divergence from Anthropic's documented behavior. 3.3.1 accepts all three forms; existing CSV skills still pass unchanged.
 
 **Security Principle**: Grant ONLY tools the skill actually requires. Over-specifying creates unnecessary attack surface.
 
@@ -311,6 +325,7 @@ allowed-tools: "Read,Glob,Grep"
 **Purpose**: Override the session model for skill execution.
 
 **Examples**:
+
 ```yaml
 model: inherit                           # Use current session model (default)
 model: opus                              # Force Opus shorthand
@@ -348,6 +363,7 @@ mode: false    # Appears in regular skills list (default)
 **Purpose**: When `true`, removes the skill from the `<available_skills>` list. Users can still invoke manually via `/skill-name`.
 
 **Use Cases**:
+
 - Dangerous operations requiring explicit user action
 - Infrastructure/deployment skills
 - Skills that should never auto-activate
@@ -361,7 +377,7 @@ disable-model-invocation: false   # Auto-discovery enabled (default)
 
 **Type**: string
 **Required**: No
-**Source**: [`code.claude.com/docs/en/skills#frontmatter-reference`](https://code.claude.com/docs/en/skills#frontmatter-reference) — *"Additional context for when Claude should invoke the skill, such as trigger phrases or example requests. Appended to `description` in the skill listing and counts toward the 1,536-character cap."*
+**Source**: [`code.claude.com/docs/en/skills#frontmatter-reference`](https://code.claude.com/docs/en/skills#frontmatter-reference) — _"Additional context for when Claude should invoke the skill, such as trigger phrases or example requests. Appended to `description` in the skill listing and counts toward the 1,536-character cap."_
 
 ```yaml
 description: Generate PDF reports from markdown.
@@ -489,7 +505,7 @@ These fields are **not** part of Anthropic's published spec — they are an Inte
 **Required**: YES at IS enterprise / marketplace tier
 
 ```yaml
-version: "1.0.0"
+version: '1.0.0'
 ```
 
 #### `author`
@@ -499,7 +515,7 @@ version: "1.0.0"
 **Format**: `Name <email>` or `Name`
 
 ```yaml
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
+author: 'Jeremy Longshore <jeremy@intentsolutions.io>'
 ```
 
 #### `license`
@@ -520,22 +536,22 @@ license: "Apache-2.0"
 **Required**: YES at IS enterprise / marketplace tier (improves marketplace discovery + categorization)
 
 ```yaml
-tags: ["security", "audit", "compliance"]
+tags: ['security', 'audit', 'compliance']
 ```
 
 #### IS Enterprise / Marketplace Required-Fields Summary
 
-| Field | Anthropic spec | AgentSkills.io spec | IS marketplace tier |
-|-------|---------------|---------------------|---------------------|
-| `name` | Required | Required | Required (error) |
-| `description` | Required | Required | Required (error) |
-| `allowed-tools` | Optional | Optional | **Required (error)** |
-| `version` | Not in spec | Optional under `metadata` | **Required (error)** |
-| `author` | Not in spec | Optional under `metadata` | **Required (error)** |
-| `license` | Not in spec | Optional | **Required (error)** |
-| `compatibility` | Not in spec | Optional (max 500 chars) | **Required (error)** |
-| `tags` | Not in spec | Not in spec | **Required (error)** |
-| `compatible-with` | Not in spec | Not in spec | **Deprecated** — migrate to `compatibility` (parsed as alias, warns) |
+| Field             | Anthropic spec | AgentSkills.io spec       | IS marketplace tier                                                  |
+| ----------------- | -------------- | ------------------------- | -------------------------------------------------------------------- |
+| `name`            | Required       | Required                  | Required (error)                                                     |
+| `description`     | Required       | Required                  | Required (error)                                                     |
+| `allowed-tools`   | Optional       | Optional                  | **Required (error)**                                                 |
+| `version`         | Not in spec    | Optional under `metadata` | **Required (error)**                                                 |
+| `author`          | Not in spec    | Optional under `metadata` | **Required (error)**                                                 |
+| `license`         | Not in spec    | Optional                  | **Required (error)**                                                 |
+| `compatibility`   | Not in spec    | Optional (max 500 chars)  | **Required (error)**                                                 |
+| `tags`            | Not in spec    | Not in spec               | **Required (error)**                                                 |
+| `compatible-with` | Not in spec    | Not in spec               | **Deprecated** — migrate to `compatibility` (parsed as alias, warns) |
 
 > Every "Required" cell in the Anthropic / AgentSkills.io columns is anchored to a specific source in the Sources block at the top of this document. The IS marketplace tier sits intentionally **on top of** the Anthropic spec floor — Anthropic's spec is permissive (only `name` + `description` required); the IS marketplace is strict (full 8-field tracking + governance metadata required). Demoting any of these eight fields back to "warn" or "polish" breaks the marketplace gate; see `000-docs/SCHEMA_CHANGELOG.md` § NON-NEGOTIABLES for the post-mortem of the 3.0.0–3.2.0 experiments that did exactly that and were reverted in 3.3.0.
 
@@ -557,13 +573,16 @@ tags: ["security", "audit", "compliance"]
 ## Prerequisites
 
 **Required**:
+
 - [Tool/API/package 1]
 - [Tool/API/package 2]
 
 **Environment Variables**:
+
 - `API_KEY_NAME`: [Description]
 
 **Optional**:
+
 - [Nice-to-have dependency]
 
 ## Instructions
@@ -579,6 +598,7 @@ tags: ["security", "audit", "compliance"]
 ## Output
 
 This skill produces:
+
 - [File/artifact 1]
 - [File/artifact 2]
 
@@ -615,33 +635,37 @@ This skill produces:
 
 ### Content Guidelines
 
-| Guideline | Requirement |
-|-----------|-------------|
-| **Size Limit** | Keep SKILL.md body under **500 lines** |
-| **Token Budget** | Target ~2,500 tokens, max 5,000 tokens |
-| **Language** | Use **imperative voice** ("Analyze data", not "You should analyze") |
-| **Paths** | Always use `{baseDir}` variable, NEVER hardcode absolute paths |
-| **Examples** | Include at least **2-3 concrete examples** with input/output |
-| **Error Handling** | Document **4+ common failures** with solutions |
-| **Voice** | Third person in descriptions, imperative in instructions |
+| Guideline          | Requirement                                                         |
+| ------------------ | ------------------------------------------------------------------- |
+| **Size Limit**     | Keep SKILL.md body under **500 lines**                              |
+| **Token Budget**   | Target ~2,500 tokens, max 5,000 tokens                              |
+| **Language**       | Use **imperative voice** ("Analyze data", not "You should analyze") |
+| **Paths**          | Always use `{baseDir}` variable, NEVER hardcode absolute paths      |
+| **Examples**       | Include at least **2-3 concrete examples** with input/output        |
+| **Error Handling** | Document **4+ common failures** with solutions                      |
+| **Voice**          | Third person in descriptions, imperative in instructions            |
 
 ### Progressive Disclosure Patterns
 
 **When SKILL.md exceeds 400 lines, split content:**
 
 **Pattern 1: High-level guide with references**
+
 ```markdown
 # PDF Processing
 
 ## Quick start
+
 [Basic instructions]
 
 ## Advanced features
-**Form filling**: See [FORMS.md](FORMS.md)
-**API reference**: See [REFERENCE.md](REFERENCE.md)
+
+**Form filling**: See FORMS.md
+**API reference**: See REFERENCE.md
 ```
 
 **Pattern 2: Domain-specific organization**
+
 ```
 bigquery-skill/
 ├── SKILL.md (overview)
@@ -652,9 +676,10 @@ bigquery-skill/
 ```
 
 **Pattern 3: Conditional details**
+
 ```markdown
 For basic edits, modify XML directly.
-**For tracked changes**: See [REDLINING.md](REDLINING.md)
+**For tracked changes**: See REDLINING.md
 ```
 
 ### Critical Rule: One-Level-Deep References
@@ -662,11 +687,13 @@ For basic edits, modify XML directly.
 **AVOID deeply nested references**. Claude may only partially read nested files.
 
 **Bad**:
+
 ```
 SKILL.md → advanced.md → details.md → actual_info.md
 ```
 
 **Good**:
+
 ```
 SKILL.md → advanced.md
 SKILL.md → reference.md
@@ -682,6 +709,7 @@ SKILL.md → examples.md
 **Principle of Least Privilege**: Grant ONLY tools the skill actually needs.
 
 **Good Examples**:
+
 ```yaml
 # Read-only audit skill
 allowed-tools: "Read,Glob,Grep"
@@ -694,6 +722,7 @@ allowed-tools: "Bash(git:*),Read,Grep"
 ```
 
 **Bad Examples**:
+
 ```yaml
 # Overly permissive - unnecessary attack surface
 allowed-tools: "Bash,Read,Write,Edit,Glob,Grep,WebSearch,Task,Agent"
@@ -705,6 +734,7 @@ allowed-tools: "Bash"
 ### When to Use `disable-model-invocation: true`
 
 Set this flag for skills that:
+
 - Perform destructive operations (delete files, drop databases)
 - Deploy to production environments
 - Access sensitive credentials
@@ -716,7 +746,7 @@ Set this flag for skills that:
 name: deploy-production
 description: Deploy application to production. Dangerous - requires explicit invocation.
 disable-model-invocation: true
-allowed-tools: "Bash(deploy:*),Read,Glob"
+allowed-tools: 'Bash(deploy:*),Read,Glob'
 ---
 ```
 
@@ -725,6 +755,7 @@ allowed-tools: "Bash(deploy:*),Read,Glob"
 **CRITICAL**: Only use Skills from trusted sources.
 
 Before using an untrusted skill:
+
 - [ ] Review all bundled files (SKILL.md, scripts, resources)
 - [ ] Check for unusual network calls
 - [ ] Inspect scripts for malicious code
@@ -732,6 +763,7 @@ Before using an untrusted skill:
 - [ ] Validate external URLs (if any)
 
 **Malicious skills could**:
+
 - Exfiltrate data via network calls
 - Access unauthorized files
 - Misuse tools (Bash for system manipulation)
@@ -743,20 +775,20 @@ Before using an untrusted skill:
 
 ### When to Inherit vs Override
 
-| Scenario | Recommendation |
-|----------|----------------|
-| Most skills | `model: inherit` or omit field |
-| Complex reasoning required | Consider `claude-opus-4-*` |
-| Fast, simple tasks | `claude-haiku-*` |
-| Balanced performance | `claude-sonnet-4-*` |
+| Scenario                   | Recommendation                 |
+| -------------------------- | ------------------------------ |
+| Most skills                | `model: inherit` or omit field |
+| Complex reasoning required | Consider `claude-opus-4-*`     |
+| Fast, simple tasks         | `claude-haiku-*`               |
+| Balanced performance       | `claude-sonnet-4-*`            |
 
 ### Trade-offs
 
-| Model | Speed | Cost | Capability |
-|-------|-------|------|------------|
-| Haiku | Fast | Low | Basic tasks |
-| Sonnet | Balanced | Medium | Most tasks |
-| Opus | Slower | High | Complex reasoning |
+| Model  | Speed    | Cost   | Capability        |
+| ------ | -------- | ------ | ----------------- |
+| Haiku  | Fast     | Low    | Basic tasks       |
+| Sonnet | Balanced | Medium | Most tasks        |
+| Opus   | Slower   | High   | Complex reasoning |
 
 ### Testing Across Models
 
@@ -820,6 +852,7 @@ MAJOR.MINOR.PATCH
 ```
 
 **Examples**:
+
 - `1.0.0` → Initial release
 - `1.1.0` → Added new workflow step
 - `1.0.1` → Fixed typo in instructions
@@ -842,8 +875,9 @@ Include version history in SKILL.md:
 When deprecating a skill:
 
 1. Add deprecation notice to description:
+
    ```yaml
-   description: "[DEPRECATED - Use new-skill instead] Original description..."
+   description: '[DEPRECATED - Use new-skill instead] Original description...'
    ```
 
 2. Set `disable-model-invocation: true` to prevent auto-activation
@@ -856,7 +890,7 @@ When deprecating a skill:
 
 ## 10. Canonical SKILL.md Template
 
-```yaml
+````yaml
 ---
 name: your-skill-name
 description: |
@@ -900,7 +934,7 @@ version: "1.0.0"
 ```bash
 # Example command if applicable
 python {baseDir}/scripts/step1.py --input data.json
-```
+````
 
 **Expected result**: [What should happen]
 
@@ -947,11 +981,13 @@ This skill produces:
 **User Request**: "[What user says]"
 
 **Input**:
+
 ```
 [Example input data]
 ```
 
 **Output**:
+
 ```
 [Expected output]
 ```
@@ -961,11 +997,13 @@ This skill produces:
 **User Request**: "[More complex request]"
 
 **Input**:
+
 ```
 [Input data]
 ```
 
 **Output**:
+
 ```
 [Expected result]
 ```
@@ -973,20 +1011,24 @@ This skill produces:
 ## Resources
 
 **Reference Documentation**:
+
 - API reference: `{baseDir}/references/API_REFERENCE.md`
 - Advanced patterns: `{baseDir}/references/ADVANCED.md`
 
 **Utility Scripts**:
+
 - Data processor: `{baseDir}/scripts/process.py`
 - Validator: `{baseDir}/scripts/validate.py`
 
 **Templates**:
+
 - Report template: `{baseDir}/assets/report_template.md`
 
 ## Version History
 
 - **v1.0.0** (YYYY-MM-DD): Initial release
-```
+
+````
 
 ---
 
@@ -1038,11 +1080,12 @@ git diff --staged
 
 # For specific PR/branch
 git diff main...feature-branch
-```
+````
 
 ### Step 2: Analyze Each Changed File
 
 For each modified file:
+
 1. Read the full file for context
 2. Identify the nature of changes (new feature, bug fix, refactor)
 3. Check for issues in each category
@@ -1055,20 +1098,25 @@ Produce review in this format:
 ## PR Review: [Brief Title]
 
 ### Summary
+
 [1-2 sentence overview of changes]
 
 ### Findings
 
 #### Critical Issues
+
 - [ ] [Issue description with file:line reference]
 
 #### Suggestions
+
 - [ ] [Improvement suggestion]
 
 #### Questions
+
 - [ ] [Clarification needed]
 
 ### Recommendation
+
 [APPROVE / REQUEST_CHANGES / COMMENT]
 ```
 
@@ -1099,24 +1147,30 @@ Produce review in this format:
 **User Request**: "Review my bug fix PR"
 
 **Output**:
+
 ```markdown
 ## PR Review: Fix null pointer in user validation
 
 ### Summary
+
 Adds null check before accessing user.email property.
 
 ### Findings
 
 #### Critical Issues
+
 - None
 
 #### Suggestions
+
 - [ ] Consider adding unit test for null user case (src/validation.ts:45)
 
 #### Questions
+
 - [ ] Should we also check for empty string?
 
 ### Recommendation
+
 APPROVE - Good defensive fix, minor test suggestion
 ```
 
@@ -1125,25 +1179,31 @@ APPROVE - Good defensive fix, minor test suggestion
 **User Request**: "Check this authentication change"
 
 **Output**:
+
 ```markdown
 ## PR Review: Update JWT token validation
 
 ### Summary
+
 Modifies token expiration handling and adds refresh token support.
 
 ### Findings
 
 #### Critical Issues
+
 - [ ] Token secret exposed in error message (src/auth.ts:78)
 - [ ] Missing rate limiting on refresh endpoint (src/routes/auth.ts:112)
 
 #### Suggestions
+
 - [ ] Add token rotation on refresh
 - [ ] Log authentication failures for monitoring
 
 ### Recommendation
+
 REQUEST_CHANGES - Security issues must be addressed
 ```
+
 ```
 
 ---
@@ -1260,3 +1320,4 @@ Run through this checklist every time you create or update a skill:
 **Schema Version**: 3.0.0 (see `000-docs/SCHEMA_CHANGELOG.md`)
 **Validator**: `scripts/validate-skills-schema.py` v7.0
 **Migration tooling**: `scripts/batch-remediate.py --migrate-compatible-with`
+```

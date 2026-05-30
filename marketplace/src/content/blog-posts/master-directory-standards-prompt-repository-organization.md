@@ -572,8 +572,8 @@ The `000-master-systems/` directory is protected. It contains the source-of-trut
 
 ## Related Resources
 
-- [AI Dev Transformation Part 2: Enterprise Library](https://startaitools.com/posts/ai-dev-transformation-part-2-enterprise-library/) - Building comprehensive prompt libraries
-- [AI-Assisted Technical Writing Automation Workflows](https://startaitools.com/posts/ai-assisted-technical-writing-automation-workflows/) - Documentation automation systems
+- AI Dev Transformation Part 2: Enterprise Library - Building comprehensive prompt libraries
+- AI-Assisted Technical Writing Automation Workflows - Documentation automation systems
 - [GitHub Repository Organization Master Standards](https://github.com/jeremylongshore/prompts-intent-solutions/blob/main/.directory-standards.md)
 
 ## Key Takeaways

@@ -10,7 +10,7 @@
 
 **Google Agent Development Kit (ADK) Plugin**
 
-- Location: `/home/jeremy/000-projects/ccpiweb/plugins/jeremy-google-adk/`
+- Location: `
 - Files Created:
   - `plugin.json` - Plugin manifest
   - `skills/adk-agent-builder/SKILL.md` - Comprehensive ADK skill (900+ lines)
@@ -22,7 +22,7 @@
 
 **Vertex AI & Gemini Integration Plugin**
 
-- Location: `/home/jeremy/000-projects/ccpiweb/plugins/jeremy-vertex-ai/`
+- Location: `
 - Files Created:
   - `plugin.json` - Plugin manifest
   - `skills/vertex-agent-builder/SKILL.md` - Complete Vertex AI skill (1200+ lines)
@@ -36,7 +36,7 @@
 
 **Firebase Genkit Multi-Model Framework Plugin**
 
-- Location: `/home/jeremy/000-projects/ccpiweb/plugins/jeremy-genkit/`
+- Location: `
 - Files Created:
   - `plugin.json` - Plugin manifest
 - Based on: https://github.com/firebase/genkit
@@ -46,7 +46,7 @@
 
 **Excel Financial Modeling Plugin**
 
-- Location: `/home/jeremy/000-projects/ccpiweb/plugins/excel-analyst-pro/`
+- Location: `
 - GitHub: https://github.com/jeremylongshore/excel-analyst-pro
 - Status: **Deployed to GitHub with v1.0.0 release**
 - Features: DCF, LBO, Variance Analysis, Pivot Tables
@@ -54,7 +54,7 @@
 ## 📂 Directory Structure Created
 
 ```
-/home/jeremy/000-projects/ccpiweb/plugins/
+
 ├── jeremy-google-adk/
 │   ├── plugin.json
 │   ├── skills/

@@ -281,7 +281,7 @@ const validated = CanvaDesignSchema.parse(await client.getDesign(id));
 
 ## Resources
 
-- [Canva API Reference](https://www.canva.dev/docs/connect/api-reference/)
+- Canva API Reference
 - [Authentication](https://www.canva.dev/docs/connect/authentication/)
 - [OpenAPI Spec](https://www.canva.dev/sources/connect/api/latest/api.yml)
 

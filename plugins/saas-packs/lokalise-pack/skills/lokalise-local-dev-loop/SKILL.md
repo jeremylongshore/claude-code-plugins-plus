@@ -417,7 +417,7 @@ echo "Setup complete. Add LOKALISE_API_TOKEN and LOKALISE_PROJECT_ID to .env.loc
 - [File Upload API](https://developers.lokalise.com/reference/upload-a-file)
 - [File Download API](https://developers.lokalise.com/reference/download-files)
 - [react-i18next Setup](https://react.i18next.com/getting-started)
-- [Vue i18n Guide](https://vue-i18n.intlify.dev/guide/)
+- Vue i18n Guide
 - [Bundle Structure Placeholders](https://docs.lokalise.com/en/articles/2281317-filenames)
 
 ## Next Steps

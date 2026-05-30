@@ -250,7 +250,7 @@ function logSpeakOperation(
     ...context,
   };
 
-  logger[level](logContext, `Speak ${operation}`);
+  loggerlevel;
 }
 
 // Usage

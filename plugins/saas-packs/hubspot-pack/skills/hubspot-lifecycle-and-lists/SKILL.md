@@ -108,7 +108,6 @@ def safe_set_lifecycle(contact_id: str, new_stage: str, token: str) -> dict:
 
     return patch_contact_lifecycle(contact_id, new_stage, token)
 
-
 def get_contact_lifecycle(contact_id: str, token: str) -> str:
     import urllib.request, json
     url = f"https://api.hubapi.com/crm/v3/objects/contacts/{contact_id}?properties=lifecyclestage"
@@ -116,7 +115,6 @@ def get_contact_lifecycle(contact_id: str, token: str) -> str:
     with urllib.request.urlopen(req) as resp:
         data = json.loads(resp.read())
     return data["properties"].get("lifecyclestage", "subscriber")
-
 
 def patch_contact_lifecycle(contact_id: str, stage: str, token: str) -> dict:
     import urllib.request, json
@@ -170,7 +168,6 @@ def snapshot_list_members(list_id: int, token: str) -> set[str]:
             break
         offset = data["vid-offset"]
     return vids
-
 
 def audit_criteria_drift(list_id: int, token: str, poll_interval_s: int = 3600):
     """
@@ -409,6 +406,6 @@ EOF
 - [Webhook Signature Validation](https://developers.hubspot.com/docs/guides/apps/webhooks/validating-requests)
 - [CRM Search API](https://developers.hubspot.com/docs/guides/api/crm/search)
 - [Batch Contact Operations](https://developers.hubspot.com/docs/guides/api/crm/objects/contacts#batch-operations)
-- [Lead Scoring in HubSpot](https://knowledge.hubspot.com/contacts/lead-scoring-set-up-a-contact-scoring-property)
+- Lead Scoring in HubSpot
 - [API_REFERENCE.md](references/API_REFERENCE.md) — lifecycle stage enum, list API endpoint shapes, webhook event schemas, filter syntax
 - [implementation-guide.md](references/implementation-guide.md) — lifecycle progression guard, dynamic list criteria builder, static list batch management, webhook handler with idempotency

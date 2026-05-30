@@ -212,7 +212,7 @@ npx tsx scripts/validate-environments.ts
 
 ## Resources
 
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- MaintainX API Reference
 - [12-Factor App: Config](https://12factor.net/config)
 - [GCP Secret Manager](https://cloud.google.com/secret-manager/docs)
 

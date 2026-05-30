@@ -184,5 +184,5 @@ def cache_key(model: str, messages: list, **params) -> str:
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
+- Examples | Errors
 - [Prompt Caching](https://openrouter.ai/docs/features/prompt-caching) | [Models API](https://openrouter.ai/docs/api/api-reference/models/get-models)

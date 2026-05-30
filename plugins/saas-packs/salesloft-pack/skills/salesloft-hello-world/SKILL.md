@@ -135,7 +135,7 @@ const { data: activities } = await api.get('/activities/emails.json', {
 ## Resources
 
 - [List People Endpoint](https://developers.salesloft.com/docs/api/people-index/)
-- [SalesLoft API Reference](https://api.salesloft.com/swagger/index.html)
+- SalesLoft API Reference
 - [Retrieving Actions, Cadences, Steps](https://developers.salesloft.com/docs/platform/api-basics/retrieving-actions-cadences-steps/)
 
 ## Next Steps

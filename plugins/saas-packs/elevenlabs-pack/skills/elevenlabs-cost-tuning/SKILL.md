@@ -132,7 +132,7 @@ export function optimizeTextForTTS(text: string): {
 
   // Remove markdown formatting that doesn't affect speech
   optimized = optimized.replace(/[*_~`#]/g, "");
-  optimized = optimized.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1"); // [link](url) → link
+  optimized = optimized.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1"); // link → link
 
   // Remove HTML tags
   optimized = optimized.replace(/<[^>]+>/g, "");

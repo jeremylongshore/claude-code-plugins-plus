@@ -198,8 +198,8 @@ async function deleteCanvaUserData(userId: string): Promise<void> {
 ## Resources
 
 - [Canva Privacy Policy](https://www.canva.com/policies/privacy-policy/)
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [Canva API Reference](https://www.canva.dev/docs/connect/api-reference/)
+- GDPR Developer Guide
+- Canva API Reference
 
 ## Next Steps
 

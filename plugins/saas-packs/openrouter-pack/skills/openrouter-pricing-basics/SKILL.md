@@ -153,5 +153,5 @@ response = client.chat.completions.create(
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
+- Examples | Errors
 - [Pricing](https://openrouter.ai/pricing) | [Credits](https://openrouter.ai/credits) | [Models API](https://openrouter.ai/docs/api/api-reference/models/get-models)

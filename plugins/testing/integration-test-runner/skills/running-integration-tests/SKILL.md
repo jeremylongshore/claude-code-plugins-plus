@@ -132,5 +132,5 @@ def test_create_user_persists_to_db(db_session):
 - Supertest: https://github.com/ladjs/supertest
 - Testcontainers: https://testcontainers.com/
 - pytest database fixtures: https://docs.pytest.org/en/stable/how-to/fixtures.html
-- Docker Compose for testing: https://docs.docker.com/compose/use-cases/#testing
+- Docker Compose for testing:
 - Integration testing strategies: https://martinfowler.com/bliki/IntegrationTest.html

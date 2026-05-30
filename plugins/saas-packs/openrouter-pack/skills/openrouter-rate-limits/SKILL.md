@@ -203,5 +203,5 @@ async def batch_with_rate_limit(prompts: list[str], model="openai/gpt-4o-mini",
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
-- [Rate Limits](https://openrouter.ai/docs/api/limits) | [Auth/Key API](https://openrouter.ai/docs/api/reference/authentication)
+- Examples | Errors
+- Rate Limits | [Auth/Key API](https://openrouter.ai/docs/api/reference/authentication)

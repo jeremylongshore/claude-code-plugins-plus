@@ -258,7 +258,7 @@ oci compute image list --compartment-id "$COMPARTMENT_OCID" \
 
 ## Resources
 
-- [OCI Migration Guide](https://docs.oracle.com/en-us/iaas/Content/Migration/home.htm) — official migration documentation
+- OCI Migration Guide — official migration documentation
 - [OCI Compute Custom Images](https://docs.oracle.com/en-us/iaas/Content/Compute/Tasks/imageimportexport.htm) — image import/export procedures
 - [OCI S3 Compatibility API](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm) — using S3-compatible tools with OCI
 - [OCI Python SDK Reference](https://docs.oracle.com/en-us/iaas/tools/python/latest/) — ComputeClient, ObjectStorageClient APIs

@@ -369,8 +369,8 @@ verifyProduction();
 
 ## Resources
 
-- [TwinMind Enterprise SLA](https://twinmind.com/enterprise)
-- [Production Best Practices](https://twinmind.com/docs/production)
+- TwinMind Enterprise SLA
+- Production Best Practices
 - [Status Page](https://status.twinmind.com)
 
 ## Next Steps

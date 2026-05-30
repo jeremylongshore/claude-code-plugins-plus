@@ -350,7 +350,7 @@ Audit any tech product go-to-market:
 This skill is based on Geoffrey Moore's Crossing the Chasm framework. For the complete methodology:
 
 - [*"Crossing the Chasm"*](https://www.amazon.com/Crossing-Chasm-3rd-Disruptive-Mainstream/dp/0062292986?tag=wondelai00-20) by Geoffrey A. Moore (3rd Edition)
-- [*"Inside the Tornado"*](https://www.amazon.com/Inside-Tornado-Strategies-Developing-Hypergrowth/dp/0887307760?tag=wondelai00-20) by Geoffrey A. Moore (sequel: managing hypergrowth)
+- *"Inside the Tornado"* by Geoffrey A. Moore (sequel: managing hypergrowth)
 
 ## About the Author
 

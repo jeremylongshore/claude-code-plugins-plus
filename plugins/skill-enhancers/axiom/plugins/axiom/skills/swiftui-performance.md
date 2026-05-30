@@ -1040,8 +1040,8 @@ Problem likely elsewhere:
 
 **Next steps**:
 
-- [Analyze hangs with Instruments](https://developer.apple.com/documentation/xcode/analyzing-hangs-in-your-app)
-- [Optimize CPU performance with Instruments](https://developer.apple.com/documentation/xcode/optimizing-your-app-s-performance)
+- Analyze hangs with Instruments
+- Optimize CPU performance with Instruments
 
 ---
 
@@ -1079,8 +1079,8 @@ Problem likely elsewhere:
 **Related Documentation**:
 
 - [Understanding hitches in your app](https://developer.apple.com/documentation/xcode/understanding-hitches-in-your-app)
-- [Analyzing hangs with Instruments](https://developer.apple.com/documentation/xcode/analyzing-hangs-in-your-app)
-- [Optimizing CPU performance with Instruments](https://developer.apple.com/documentation/xcode/optimizing-your-app-s-performance)
+- Analyzing hangs with Instruments
+- Optimizing CPU performance with Instruments
 
 **Other Skills**:
 

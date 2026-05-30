@@ -327,7 +327,7 @@ gh repo view owner/repo
 
 ## 🤝 Contributing
 
-Contributions welcome! See [CONTRIBUTING.md](../../000-docs/007-DR-GUID-contributing.md)
+Contributions welcome! See CONTRIBUTING.md
 
 ## 📄 License
 

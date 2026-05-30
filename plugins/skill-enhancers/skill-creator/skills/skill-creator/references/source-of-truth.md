@@ -364,7 +364,7 @@ Claude navigates SKILL.md and references differently than humans:
 
 - **Reads top-down on first activation** — front-load the most important instructions
 - **Searches by heading** when returning to a section — use descriptive H2/H3 headers
-- **Follows markdown links eagerly** — a `[reference](./references/foo.md)` link will trigger a Read tool call
+- **Follows markdown links eagerly** — a `reference` link will trigger a Read tool call
 - **Skips content after long code blocks** — keep code examples short, move long ones to references
 - **Loses context in long files** — the 500-line limit exists because Claude's attention degrades past it
 
@@ -459,7 +459,7 @@ Available in SKILL.md body for dynamic content:
 | `${CLAUDE_PLUGIN_ROOT}` | Hooks, plugin-level | Resolves to plugin root directory |
 | `${CLAUDE_PLUGIN_DATA}` | Persistent state | Survives updates/reinstalls (v2.1.78+) |
 
-Relative markdown links (`[API Reference](reference.md)`) work without path variables — Claude follows these with the Read tool on demand.
+Relative markdown links (`API Reference`) work without path variables — Claude follows these with the Read tool on demand.
 
 ### Usage Examples
 

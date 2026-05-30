@@ -309,7 +309,7 @@ echo "Migration $LAST marked as reverted. Write and push a compensating migratio
 - [Supabase CLI Reference](https://supabase.com/docs/reference/cli)
 - [Database Branching](https://supabase.com/docs/guides/deployment/branching)
 - [Secrets Management](https://supabase.com/docs/guides/functions/secrets)
-- [Supabase Dashboard Reports](https://supabase.com/docs/guides/platform/reports)
+- Supabase Dashboard Reports
 
 ## Next Steps
 

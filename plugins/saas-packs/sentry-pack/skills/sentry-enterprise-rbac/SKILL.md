@@ -393,12 +393,12 @@ echo "Exported $(jq length sentry-audit-q1-2026.json) audit entries"
 
 - [Organization Roles & Membership](https://docs.sentry.io/organization/membership/) — role definitions and permission matrix
 - [SSO & SAML2 Configuration](https://docs.sentry.io/organization/authentication/sso/) — identity provider setup guides
-- [SCIM Provisioning](https://docs.sentry.io/organization/authentication/sso/scim-provisioning/) — automated user lifecycle management
+- SCIM Provisioning — automated user lifecycle management
 - [Teams API Reference](https://docs.sentry.io/api/teams/) — create, list, update, delete teams
 - [Organization Members API](https://docs.sentry.io/api/organizations/list-an-organizations-members/) — member management endpoints
-- [Audit Log API](https://docs.sentry.io/api/organizations/list-audit-log-entries/) — query audit trail programmatically
+- Audit Log API — query audit trail programmatically
 - [Auth Tokens API](https://docs.sentry.io/api/auth/) — token creation and management
-- [IP Allowlisting](https://docs.sentry.io/organization/authentication/ip-ranges/) — network-level access restriction
+- IP Allowlisting — network-level access restriction
 
 ## Next Steps
 

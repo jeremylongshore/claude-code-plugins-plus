@@ -118,7 +118,7 @@ function validateProfile(p: JuiceboxProfile): string[] {
 
 ## Resources
 
-- [Juicebox Privacy Policy](https://juicebox.ai/privacy)
+- Juicebox Privacy Policy
 - [GDPR Data Subject Rights](https://gdpr.eu/tag/chapter-3/)
 
 ## Next Steps

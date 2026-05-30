@@ -26,5 +26,5 @@ What's distinct about this corpus that the General Guidance doesn't already cove
 
 ## Related
 
-- [→ Hub]({{HUB_URL}})
-- [→ General Guidance]({{GUIDANCE_URL}})
+- → Hub
+- → General Guidance

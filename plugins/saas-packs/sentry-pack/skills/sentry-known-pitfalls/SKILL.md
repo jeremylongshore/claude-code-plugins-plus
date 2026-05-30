@@ -325,7 +325,7 @@ Result: SDK used `release: "2.1.0"` while CLI used `"v2.1.0"` (Pitfall 5). Unifi
 ## Resources
 
 - [Sentry JavaScript Troubleshooting](https://docs.sentry.io/platforms/javascript/troubleshooting/)
-- [Sentry Best Practices](https://docs.sentry.io/product/issues/best-practices/)
+- Sentry Best Practices
 - [Sentry Configuration Options](https://docs.sentry.io/platforms/javascript/configuration/options/)
 - [Sentry Source Maps](https://docs.sentry.io/platforms/javascript/sourcemaps/)
 - [Sentry Quota Management](https://docs.sentry.io/pricing/quotas/)

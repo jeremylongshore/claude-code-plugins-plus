@@ -259,7 +259,7 @@ if __name__ == "__main__":
 
 - [MaintainX API Documentation](https://maintainx.dev/)
 - [MaintainX Help Center](https://help.getmaintainx.com/)
-- [Generating API Keys](https://intercom.help/maintainx/en/articles/5658848-generating-api-key-to-integrate-with-other-systems)
+- Generating API Keys
 
 ## Next Steps
 

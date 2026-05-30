@@ -78,7 +78,7 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full six-section 
 ## Resources
 
 - CIS Benchmarks: https://www.cisecurity.org/cis-benchmarks/
-- OWASP IaC Security Cheatsheet: https://cheatsheetseries.owasp.org/cheatsheets/Infrastructure_as_Code_Security_Cheatsheet.html
+- OWASP IaC Security Cheatsheet:
 - OWASP A05:2021 Security Misconfiguration: https://owasp.org/Top10/A05_2021-Security_Misconfiguration/
 - tfsec (Terraform scanner): https://github.com/aquasecurity/tfsec
 - Checkov (multi-cloud IaC scanner): https://www.checkov.io/

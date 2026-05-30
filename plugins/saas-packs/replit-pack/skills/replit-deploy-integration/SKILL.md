@@ -236,7 +236,7 @@ echo "Cold start test: wait 10 min, then curl again"
 - [Reserved VM Deployments](https://docs.replit.com/cloud-services/deployments/reserved-vm-deployments)
 - [Static Deployments](https://docs.replit.com/cloud-services/deployments/static-deployments)
 - [Deployment Rollbacks](https://blog.replit.com/introducing-deployment-rollbacks)
-- [Custom Domains](https://docs.replit.com/hosting/custom-domains)
+- Custom Domains
 - [Monitoring Deployments](https://docs.replit.com/cloud-services/deployments/monitoring-a-deployment)
 
 ## Next Steps

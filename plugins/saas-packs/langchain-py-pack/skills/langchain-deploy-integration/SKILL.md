@@ -320,7 +320,7 @@ for typed schemas, auth middleware, and raw-handler coexistence.
 
 ## Resources
 
-- [Cloud Run: Configuring services](https://cloud.google.com/run/docs/configuring/services)
+- Cloud Run: Configuring services
 - [Cloud Run: Always-on CPU (no CPU throttling)](https://cloud.google.com/run/docs/configuring/cpu-allocation)
 - [Vercel: Python runtime](https://vercel.com/docs/functions/runtimes/python)
 - [Vercel: `maxDuration` and streaming](https://vercel.com/docs/functions/configuring-functions/duration)

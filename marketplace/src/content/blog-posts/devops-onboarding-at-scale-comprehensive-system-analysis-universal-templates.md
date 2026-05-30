@@ -240,7 +240,7 @@ sed -i 's/\[ENGINEER_NAME\]/TeamMember/g' analysis-template.md
 
 ## The Template Repository
 
-I've saved both the DiagnosticPro-specific analysis and the universal template to the [prompts-intent-solutions](https://github.com/your-repo/prompts-intent-solutions) repository:
+I've saved both the DiagnosticPro-specific analysis and the universal template to the prompts-intent-solutions repository:
 
 - `diagnosticpro-comprehensive-system-analysis-prompt.md` - The complete DiagnosticPro analysis
 - `comprehensive-system-analysis-prompt-universal.md` - Universal template for any project

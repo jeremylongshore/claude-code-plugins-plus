@@ -487,10 +487,7 @@ async function fuzzFromOpenAPI(specPath) {
         const fuzzInputs = generateFuzzInputs(operation.parameters);
 
         for (const input of fuzzInputs) {
-          const response = await axios[method](
-            `${api.servers[0].url}${path}`,
-            input,
-            { validateStatus: () => true }
+          const response = await axiosmethod => true }
           );
 
           if (response.status === 500) {

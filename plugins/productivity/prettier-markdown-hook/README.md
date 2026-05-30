@@ -480,9 +480,9 @@ prettier-markdown-hook/
 
 ## Related Documentation
 
-- **ADR-0002**: [Prettier Marketplace Plugin Refactoring](https://github.com/user/repo/blob/main/docs/decisions/0002-prettier-marketplace-plugin-refactoring.md)
-- **ADR-0003**: [Prettier Marketplace Plugin Creation](https://github.com/user/repo/blob/main/docs/decisions/0003-prettier-marketplace-plugin-creation.md)
-- **Specification**: [Prettier Workspace Exclusion v2.0.0](https://github.com/user/repo/blob/main/specifications/prettier-workspace-exclusion.yaml)
+- **ADR-0002**: Prettier Marketplace Plugin Refactoring
+- **ADR-0003**: Prettier Marketplace Plugin Creation
+- **Specification**: Prettier Workspace Exclusion v2.0.0
 
 ## Contributing
 

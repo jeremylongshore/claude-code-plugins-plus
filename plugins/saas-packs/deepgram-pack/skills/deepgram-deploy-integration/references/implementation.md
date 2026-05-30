@@ -1,6 +1,6 @@
 # Deepgram Deploy Integration - Implementation Details
 
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for the complete deployment configurations.
+See detailed implementation for the complete deployment configurations.
 
 ## Dockerfile
 

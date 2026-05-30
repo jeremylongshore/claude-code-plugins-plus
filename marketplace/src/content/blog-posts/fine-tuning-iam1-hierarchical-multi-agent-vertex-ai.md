@@ -378,8 +378,8 @@ AGENT_CARD = {
 
 ## Related Posts
 
-- [Architecting Production Multi-Agent AI Platform - Technical Leadership](https://startaitools.com/posts/architecting-production-multi-agent-ai-platform-technical-leadership/)
-- [Building Production Multi-Agent AI BrightStream on Vertex AI](https://startaitools.com/posts/building-production-multi-agent-ai-brightstream-vertex-ai/)
+- Architecting Production Multi-Agent AI Platform - Technical Leadership
+- Building Production Multi-Agent AI BrightStream on Vertex AI
 
 ## Conclusion
 
@@ -398,4 +398,4 @@ The result? An agent that **knows its role**, **makes better decisions**, and **
 
 The future of AI agents isn't one super-intelligent model. It's **hierarchical teams** of specialized agents with clear roles and decision-making frameworks.
 
-**Jeremy Longshore** builds production multi-agent systems on Google Cloud. Connect on [LinkedIn](https://linkedin.com/in/jeremylongshore) or follow on [X](https://twitter.com/AsphaltCowb0y).
+**Jeremy Longshore** builds production multi-agent systems on Google Cloud. Connect on LinkedIn or follow on [X](https://twitter.com/AsphaltCowb0y).

@@ -238,5 +238,5 @@ def get_model_id(model: str) -> str:
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
+- Examples | Errors
 - [Quickstart](https://openrouter.ai/docs/quickstart) | [OpenAI Compatibility](https://openrouter.ai/docs/frameworks)

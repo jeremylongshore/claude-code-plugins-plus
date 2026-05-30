@@ -312,7 +312,7 @@ class APISecurityScanner {
       sql: ["' OR '1'='1", "admin'--", "1; DROP TABLE users--"],
       nosql: ['{"$gt": ""}', '{"$ne": null}', '{"$regex": ".*"}'],
       command: ['| ls -la', '; cat /etc/passwd', '`whoami`'],
-      xxe: ['<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/passwd">]>'],
+      xxe: ['<!DOCTYPE foo [<!ENTITY xxe SYSTEM "">]>'],
       xss: ['<script>alert(1)</script>', 'javascript:alert(1)', '<img src=x onerror=alert(1)>']
     };
 

@@ -272,7 +272,7 @@ app.get('/api/status', (req, res) => {
 
 ## Resources
 
-- [Replit Deployments](https://docs.replit.com/hosting/deployments)
+- Replit Deployments
 - [Replit Secrets](https://docs.replit.com/replit-workspace/workspace-features/secrets)
 - [Deploying from GitHub](https://docs.replit.com/hosting/deployments/deploying-a-github-repository)
 - [PostgreSQL Dev/Prod Databases](https://docs.replit.com/cloud-services/storage-and-databases/postgresql-on-replit)

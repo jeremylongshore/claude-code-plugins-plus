@@ -3,7 +3,7 @@
 **Project**: Claude Code Database Plugin Pack
 **Date**: October 11, 2025
 **Status**:  Complete and Verified
-**Location**: `/home/jeremy/projects/claude-code-plugins/plugins/database/`
+**Location**: `
 
 ---
 

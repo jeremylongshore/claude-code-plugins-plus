@@ -282,10 +282,10 @@ users = response.data  # attribute access, not dict
 
 ## Resources
 
-- [supabase-js v2 Migration Guide](https://supabase.com/docs/guides/upgrade-to-supabase-js-v2) — official step-by-step
+- supabase-js v2 Migration Guide — official step-by-step
 - [supabase-js Releases](https://github.com/supabase/supabase-js/releases) — changelog for every version
 - [Supabase CLI Releases](https://github.com/supabase/cli/releases) — CLI changelog
-- [Auth Helpers Migration](https://supabase.com/docs/guides/auth/server-side/migrating-to-ssr-package) — `@supabase/auth-helpers` → `@supabase/ssr`
+- Auth Helpers Migration — `@supabase/auth-helpers` → `@supabase/ssr`
 - [Realtime v2 Guide](https://supabase.com/docs/guides/realtime) — channel-based API reference
 - [supabase-py Releases](https://github.com/supabase-community/supabase-py/releases) — Python SDK changelog
 

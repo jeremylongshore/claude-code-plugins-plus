@@ -120,5 +120,5 @@ appId: com.example.myapp
 - Appium documentation: https://appium.io/docs/en/latest/
 - Detox (React Native): https://wix.github.io/Detox/
 - Maestro mobile testing: https://maestro.mobile.dev/
-- XCUITest: https://developer.apple.com/documentation/xctest/user-interface-tests
+- XCUITest:
 - Espresso (Android): https://developer.android.com/training/testing/espresso

@@ -288,7 +288,7 @@ async function processLargeDataset(
 ## Resources
 
 - [Rate Limits Reference](https://developers.webflow.com/data/reference/rate-limits)
-- [Bulk CMS Endpoints](https://developers.webflow.com/data/changelog/10232024)
+- Bulk CMS Endpoints
 - [p-queue Documentation](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps

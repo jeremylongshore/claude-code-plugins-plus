@@ -205,5 +205,5 @@ class PrivacyMiddleware:
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
+- Examples | Errors
 - [Privacy Policy](https://openrouter.ai/privacy) | [Provider Routing](https://openrouter.ai/docs/features/provider-routing)

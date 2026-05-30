@@ -418,7 +418,7 @@ Always review the bundle before sharing with support.
 
 ## Resources
 
-- [TwinMind Support](https://twinmind.com/support)
+- TwinMind Support
 - [TwinMind Status](https://status.twinmind.com)
 - [Community Forum](https://community.twinmind.com)
 

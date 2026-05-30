@@ -112,7 +112,7 @@ function track(op: 'query' | 'citation', startMs: number, cached: boolean) {
 ## Resources
 
 - [OpenEvidence Platform](https://www.openevidence.com)
-- [OpenEvidence API Docs](https://www.openevidence.com/developers)
+- OpenEvidence API Docs
 
 ## Next Steps
 

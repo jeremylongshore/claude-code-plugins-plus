@@ -303,9 +303,9 @@ curl -X POST http://localhost:3000/webhooks/elevenlabs \
 
 ## Resources
 
-- [ElevenLabs Webhooks Guide](https://elevenlabs.io/docs/overview/administration/webhooks)
+- ElevenLabs Webhooks Guide
 - [Post-Call Webhooks](https://elevenlabs.io/docs/agents-platform/workflows/post-call-webhooks)
-- [STT Webhooks](https://elevenlabs.io/docs/cookbooks/speech-to-text/webhooks)
+- STT Webhooks
 - [Webhook API Reference](https://elevenlabs.io/docs/api-reference/webhooks/list)
 
 ## Next Steps

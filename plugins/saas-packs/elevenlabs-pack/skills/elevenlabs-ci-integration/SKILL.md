@@ -247,7 +247,7 @@ describe.skipIf(SKIP)("ElevenLabs Integration", () => {
 ## Resources
 
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions)
-- [Vitest CI Configuration](https://vitest.dev/guide/ci.html)
+- Vitest CI Configuration
 - [ElevenLabs JS SDK](https://github.com/elevenlabs/elevenlabs-js)
 
 ## Next Steps

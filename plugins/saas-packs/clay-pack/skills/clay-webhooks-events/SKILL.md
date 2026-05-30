@@ -259,7 +259,7 @@ async function notifySlack(lead: EnrichedLead): Promise<void> {
 
 - [Clay University -- Webhook Integration Guide](https://university.clay.com/docs/webhook-integration-guide)
 - [Clay University -- HTTP API Integration](https://university.clay.com/docs/http-api-integration-overview)
-- [Clay University -- Using Clay as an API](https://www.clay.com/university/guide/using-clay-as-an-api)
+- Clay University -- Using Clay as an API
 
 ## Next Steps
 

@@ -152,8 +152,8 @@ npm install @adobe/pdfservices-node-sdk@latest \
 npm test
 
 # 5. Fix any breaking changes (check changelogs)
-# Firefly: https://developer.adobe.com/firefly-services/docs/firefly-api/guides/changelog/
-# PDF Services: https://developer.adobe.com/document-services/docs/overview/pdf-services-api/releasenotes
+# Firefly:
+# PDF Services:
 
 # 6. Commit and test in staging
 git add package.json package-lock.json
@@ -179,9 +179,9 @@ git commit -m "chore: upgrade Adobe SDKs to latest"
 ## Resources
 
 - [JWT to OAuth Migration Guide](https://developer.adobe.com/developer-console/docs/guides/authentication/ServerToServerAuthentication/migration)
-- [PDF Services Release Notes](https://developer.adobe.com/document-services/docs/overview/pdf-services-api/releasenotes)
-- [Firefly API Changelog](https://developer.adobe.com/firefly-services/docs/firefly-api/guides/changelog/)
-- [Photoshop API Migration](https://developer.adobe.com/firefly-services/docs/photoshop/guides/remove_background/)
+- PDF Services Release Notes
+- Firefly API Changelog
+- Photoshop API Migration
 
 ## Next Steps
 

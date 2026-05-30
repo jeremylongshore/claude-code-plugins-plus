@@ -304,7 +304,7 @@ grep -rn "SIGTERM" --include="*.py" --include="*.ts" --include="*.js" . 2>/dev/n
 - [Replit Docs](https://docs.replit.com)
 - [Nix on Replit](https://docs.replit.com/programming-ide/nix-on-replit)
 - [Replit Database](https://docs.replit.com/cloud-services/storage-and-databases/replit-database)
-- [Replit Deployments](https://docs.replit.com/hosting/deployments)
+- Replit Deployments
 - [Secure Vibe Coding](https://blog.replit.com/16-ways-to-vibe-code-securely)
 
 ## Next Steps

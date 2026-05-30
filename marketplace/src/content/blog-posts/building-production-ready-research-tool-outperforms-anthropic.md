@@ -221,8 +221,8 @@ Fork it. Examine it. Learn from it.
 
 ## Related Work
 
-- [Building Multi-Platform Developer Tools](https://jeremylongshore.com/posts/building-multi-platform-developer-tools/) - My approach to cross-platform development
-- [Automating Developer Workflows: Custom AI Commands](https://jeremylongshore.com/posts/automating-developer-workflows-custom-ai-commands/) - How I build development automation
+- Building Multi-Platform Developer Tools - My approach to cross-platform development
+- Automating Developer Workflows: Custom AI Commands - How I build development automation
 
 ---
 

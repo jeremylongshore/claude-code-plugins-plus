@@ -76,5 +76,5 @@ Detect discrepancies between actual cloud infrastructure state and the desired s
 
 - Terraform drift detection: https://developer.hashicorp.com/terraform/tutorials/state/resource-drift
 - CloudFormation drift detection: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/detect-drift-stack.html
-- Pulumi drift detection: https://www.pulumi.com/docs/using-pulumi/pulumi-packages/guides/drift-detection/
+- Pulumi drift detection:
 - Preventing drift: https://developer.hashicorp.com/terraform/tutorials/state/refresh

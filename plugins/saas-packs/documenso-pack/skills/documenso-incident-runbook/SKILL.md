@@ -230,7 +230,7 @@ Action Items:
 ## Resources
 
 - [Documenso Status](https://status.documenso.com)
-- [Documenso Discord](https://documenso.com/discord)
+- Documenso Discord
 - [GitHub Issues](https://github.com/documenso/documenso/issues)
 - [Self-Hosting Tips](https://docs.documenso.com/docs/self-hosting/getting-started/tips)
 

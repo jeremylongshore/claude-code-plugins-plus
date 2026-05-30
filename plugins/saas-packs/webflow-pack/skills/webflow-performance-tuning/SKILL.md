@@ -289,7 +289,7 @@ const items = await timedCall("listItemsLive", () =>
 
 - [Content Delivery API](https://developers.webflow.com/data/docs/working-with-the-cms/content-delivery)
 - [Rate Limits](https://developers.webflow.com/data/reference/rate-limits)
-- [Bulk CMS Endpoints](https://developers.webflow.com/data/changelog/10232024)
+- Bulk CMS Endpoints
 
 ## Next Steps
 

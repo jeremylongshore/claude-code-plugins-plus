@@ -10,10 +10,10 @@ function scanAuthMatrix(routeFiles) {
   const endpoints = [];
   for (const file of routeFiles) {
     const content = fs.readFileSync(file, 'utf8');
-    const routes = content.match(/app\.(get|post|put|patch|delete)\(['"]([^'"]+)['"]/gi) || [];
+    const routes = content.match(/app\.(get|post|put|patch|delete)\('"['"]/gi) || [];
 
     for (const route of routes) {
-      const [, method, path] = route.match(/app\.(\w+)\(['"]([^'"]+)/);
+      const [, method, path] = route.match(/app\.(\w+)\('"/);
       const hasAuth = content.includes('authenticateToken') || content.includes('requireAuth');
       const hasRateLimit = content.includes('rateLimiter') || content.includes('rateLimit');
 

@@ -177,7 +177,7 @@ If issues occur after deployment:
 
 - [Documenso Status](https://status.documenso.com)
 - [Self-Hosting Tips](https://docs.documenso.com/docs/self-hosting/getting-started/tips)
-- [Documenso Discord](https://documenso.com/discord)
+- Documenso Discord
 
 ## Next Steps
 

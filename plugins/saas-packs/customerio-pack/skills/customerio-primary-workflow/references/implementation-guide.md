@@ -186,7 +186,7 @@ In Customer.io Dashboard:
 
 ## Resources
 
-- [Customer.io Campaigns](https://customer.io/docs/campaigns/)
+- Customer.io Campaigns
 - [Trigger Events](https://customer.io/docs/events/)
 
 ## Next Steps

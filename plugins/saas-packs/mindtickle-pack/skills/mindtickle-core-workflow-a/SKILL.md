@@ -101,7 +101,7 @@ to sales teams with reminders, and reports completion rates and average quiz sco
 ## Resources
 
 - [MindTickle Platform Integrations](https://www.mindtickle.com/platform/integrations/)
-- [MindTickle API Reference](https://developer.mindtickle.com/docs)
+- MindTickle API Reference
 
 ## Next Steps
 

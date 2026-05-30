@@ -324,7 +324,7 @@ providers:
 
 - **Ollama Setup:** Use `/setup-ollama` command from [ollama-local-ai](../../ai-ml/ollama-local-ai/) plugin
 - **Ollama Docs:** [ollama.com/docs](https://ollama.com/docs)
-- **Geepers Docs:** [github.com/lukeslp/geepers](https://github.com/lukeslp/geepers)
+- **Geepers Docs:** github.com/lukeslp/geepers
 - **Model Library:** [ollama.com/library](https://ollama.com/library)
 
 **Bottom Line:** For 43 specialized agents running locally, Ollama saves $1,200-2,760/year with comparable performance.
@@ -379,7 +379,7 @@ Once configured, tools are available via the MCP protocol.
 
 ```bash
 # Clone and install in dev mode
-git clone https://github.com/lukeslp/geepers
+git clone
 cd geepers
 pip install -e .
 

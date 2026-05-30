@@ -362,7 +362,7 @@ Valid Plugins: 25 / 25
 ## Repository Location
 
 ```
-/home/jeremy/projects/claude-code-plugins/plugins/database/
+
 ```
 
 ## Documentation Files

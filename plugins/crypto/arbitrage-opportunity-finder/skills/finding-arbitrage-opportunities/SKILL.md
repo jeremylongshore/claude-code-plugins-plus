@@ -140,5 +140,5 @@ python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py calc \
 
 - [CoinGecko API](https://www.coingecko.com/en/api) - Free price data
 - [CCXT Library](https://github.com/ccxt/ccxt) - Unified exchange API
-- [Uniswap Subgraph](https://thegraph.com/hosted-service/subgraph/uniswap/uniswap-v3) - DEX data
+- Uniswap Subgraph - DEX data
 - `${CLAUDE_SKILL_DIR}/references/implementation.md` - Exchange fee tables, configuration, advanced arbitrage types, disclaimer

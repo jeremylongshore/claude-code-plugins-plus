@@ -2,7 +2,7 @@
 
 Generated: 2025-10-11
 Repository: `jeremylongshore/claude-code-plugins`
-Location: `/home/jeremy/projects/claude-code-plugins`
+Location: `
 
 ---
 

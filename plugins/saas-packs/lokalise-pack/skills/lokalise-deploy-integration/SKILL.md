@@ -441,9 +441,9 @@ Build with: `docker build --build-arg LOKALISE_API_TOKEN=$TOKEN --build-arg LOKA
 ## Resources
 
 - [Lokalise Files API — Download](https://developers.lokalise.com/reference/download-files)
-- [Lokalise OTA — iOS SDK](https://docs.lokalise.com/en/articles/1400660-over-the-air-sdk-for-ios-and-android)
-- [Lokalise OTA — Android SDK](https://docs.lokalise.com/en/articles/1400660-over-the-air-sdk-for-ios-and-android)
-- [Lokalise CI/CD Guide](https://docs.lokalise.com/en/articles/1400581-ci-cd-integration)
+- Lokalise OTA — iOS SDK
+- Lokalise OTA — Android SDK
+- Lokalise CI/CD Guide
 - [GitHub Actions — Repository Dispatch](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#repository_dispatch)
 
 ## Next Steps

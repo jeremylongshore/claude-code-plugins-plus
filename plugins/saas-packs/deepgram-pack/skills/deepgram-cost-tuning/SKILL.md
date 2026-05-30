@@ -334,5 +334,5 @@ function estimateJobCost(params: {
 ## Resources
 
 - [Deepgram Pricing](https://deepgram.com/pricing)
-- [Usage API](https://developers.deepgram.com/reference/get-usage)
-- [Cost Optimization Guide](https://developers.deepgram.com/docs/cost-optimization)
+- Usage API
+- Cost Optimization Guide

@@ -130,7 +130,7 @@ docker run -d --name glean-integration -p 3000:3000 \
 ## Resources
 
 - [Glean Indexing API](https://developers.glean.com/api-info/indexing/getting-started/overview)
-- [Glean Search API](https://developers.glean.com/api-info/search)
+- Glean Search API
 
 ## Next Steps
 

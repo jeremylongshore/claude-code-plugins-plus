@@ -268,5 +268,5 @@ See the Skip Conditions and Confidence Gate sections above. Low-confidence trigg
 ## Resources
 
 - [Gmail API](https://developers.google.com/gmail/api)
-- [Grain API](https://grain.com/docs)
+- Grain API
 - [Gmail Draft URL format](https://mail.google.com/mail/u/?authuser={email}#drafts)

@@ -75,7 +75,7 @@ class RateLimitedClient {
       await new Promise(r => setTimeout(r, this.minDelayMs - elapsed));
     }
     this.lastRequestTime = Date.now();
-    return withRateLimitRetry(() => this.noteStore[method](...args));
+    return withRateLimitRetry(() => this.noteStoremethod);
   }
 }
 ```
@@ -115,7 +115,7 @@ For the complete rate limiter, batch processor, monitoring dashboard, and optimi
 
 - [Rate Limits Overview](https://dev.evernote.com/doc/articles/rate_limits.php)
 - [API Best Practices](https://dev.evernote.com/doc/articles/rate_limits.php)
-- [Webhooks (reduce polling)](https://dev.evernote.com/doc/articles/webhooks.php)
+- Webhooks (reduce polling)
 
 ## Next Steps
 

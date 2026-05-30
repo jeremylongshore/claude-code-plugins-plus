@@ -317,9 +317,9 @@ cron.schedule("*/15 * * * *", async () => {
 
 ## Resources
 
-- [Instantly Analytics API](https://developer.instantly.ai/api/v2/analytics)
-- [Instantly Account API](https://developer.instantly.ai/api/v2/account)
-- [Instantly Webhook Events](https://developer.instantly.ai/api/v2/webhook)
+- Instantly Analytics API
+- Instantly Account API
+- Instantly Webhook Events
 
 ## Next Steps
 

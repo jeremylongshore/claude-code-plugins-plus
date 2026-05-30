@@ -94,7 +94,7 @@ Follow `fathom-webhooks-events` to receive real-time meeting data automatically.
 - [Fathom Quickstart](https://developers.fathom.ai/quickstart) -- getting started guide
 - [Fathom Webhooks](https://developers.fathom.ai/webhooks) -- webhook setup
 - [Fathom Help Center](https://help.fathom.video) -- troubleshooting and FAQs
-- [Fathom Integrations](https://fathom.video/integrations) -- native CRM integrations
+- Fathom Integrations -- native CRM integrations
 - [Fathom Pricing](https://fathom.video/pricing) -- free and team plans
 
 ## License

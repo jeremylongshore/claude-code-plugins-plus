@@ -326,7 +326,7 @@ export ALGOLIA_TRAFFIC_PERCENT=0
 - [Algolia Migration Guide](https://www.algolia.com/doc/guides/sending-and-managing-data/send-and-update-your-data/)
 - [replaceAllObjects](https://www.algolia.com/doc/api-reference/api-methods/replace-all-objects/)
 - [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [Elasticsearch to Algolia](https://www.algolia.com/for/elasticsearch-alternative/)
+- Elasticsearch to Algolia
 
 ## Next Steps
 

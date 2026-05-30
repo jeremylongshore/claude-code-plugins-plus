@@ -166,7 +166,7 @@ The test count for PR #54 alone — 21 tests including a full end-to-end pipelin
 
 ## Meanwhile: searchcarriers Gets Serious
 
-Parallel track: [searchcarriers](https://github.com/jeremylongshore/searchcarriers) (freight broker MCP servers) got 80 behavioral integration tests across all 5 handlers — carrier-intel, risk-engine, ops-reporter, watchdog, api-bridge. Uses `respx` to intercept HTTP at the transport layer so tests hit real handler logic without live API calls.
+Parallel track: searchcarriers (freight broker MCP servers) got 80 behavioral integration tests across all 5 handlers — carrier-intel, risk-engine, ops-reporter, watchdog, api-bridge. Uses `respx` to intercept HTTP at the transport layer so tests hit real handler logic without live API calls.
 
 The ops-reporter work exposed a classic integration bug: the real API returns `snake_case` fields, but the handlers expected `camelCase`. A field normalization layer fixes the mismatch at the boundary. Also shipped curated CSV exports (~22 columns instead of the 143-column raw dump) and PDF reports via Jinja2 + WeasyPrint.
 

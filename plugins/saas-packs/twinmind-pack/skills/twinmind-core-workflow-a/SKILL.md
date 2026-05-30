@@ -64,7 +64,7 @@ Build a `SpeakerManager` that extracts speakers from transcript segments, calcul
 
 Wire everything together in `processMeeting()`: transcribe audio, then generate summary and identify speakers in parallel, optionally produce follow-up email and meeting notes.
 
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for complete MeetingCapture, SummaryGenerator, SpeakerManager, and orchestration code.
+See detailed implementation for complete MeetingCapture, SummaryGenerator, SpeakerManager, and orchestration code.
 
 ## Output
 
@@ -102,9 +102,9 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 
 ## Resources
 
-- [TwinMind Transcription API](https://twinmind.com/docs/transcription)
-- [Ear-3 Model Details](https://twinmind.com/ear-3)
-- [Audio Format Guide](https://twinmind.com/docs/audio-formats)
+- TwinMind Transcription API
+- Ear-3 Model Details
+- Audio Format Guide
 
 ## Next Steps
 

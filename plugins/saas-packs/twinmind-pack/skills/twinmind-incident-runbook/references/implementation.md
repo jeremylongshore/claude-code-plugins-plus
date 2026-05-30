@@ -24,7 +24,7 @@ curl -s -H "Authorization: Bearer $TWINMIND_API_KEY" \
   https://api.twinmind.com/v1/health | jq
 
 # Check status page API
-curl -s https://status.twinmind.com/api/v2/status.json | jq '.status'
+curl -s api/v2/status.json | jq '.status'
 ```
 
 ### Check Our Service Health

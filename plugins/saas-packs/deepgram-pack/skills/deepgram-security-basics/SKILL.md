@@ -263,7 +263,7 @@ async function transcribeWithAudit(userId: string, url: string, ip: string) {
 
 ## Resources
 
-- [API Key Management](https://developers.deepgram.com/docs/api-key-management)
+- API Key Management
 - [PII Redaction](https://developers.deepgram.com/docs/redaction)
-- [Deepgram Security](https://deepgram.com/security)
-- [SOC 2 / HIPAA](https://deepgram.com/hipaa)
+- Deepgram Security
+- SOC 2 / HIPAA

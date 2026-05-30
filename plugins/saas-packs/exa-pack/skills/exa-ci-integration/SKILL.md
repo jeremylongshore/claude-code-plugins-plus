@@ -191,7 +191,7 @@ jobs:
 ## Resources
 
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
-- [Vitest CI Configuration](https://vitest.dev/guide/ci.html)
+- Vitest CI Configuration
 
 ## Next Steps
 

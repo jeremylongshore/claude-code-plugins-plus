@@ -211,9 +211,9 @@ await sendToUser(userExport);
 
 ## Resources
 
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- GDPR Developer Guide
 - [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [Vercel Privacy Guide](https://vercel.com/docs/privacy)
+- Vercel Privacy Guide
 
 ## Next Steps
 

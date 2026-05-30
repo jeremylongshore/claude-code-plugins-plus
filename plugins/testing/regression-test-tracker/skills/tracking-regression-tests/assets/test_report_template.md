@@ -67,7 +67,7 @@ This section provides a detailed breakdown of the results for each test within t
 * **Stack Trace:** `[Insert Stack Trace Here]`
 * **Expected Result:** User should be able to reset their password and log in with the new password.
 * **Actual Result:** Password was not updated, and user was unable to log in with the new password.
-* **Screenshots/Logs:** [Link to Screenshot](path/to/screenshot.png), [Link to Log File](path/to/log.txt)
+* **Screenshots/Logs:** Link to Screenshot, Link to Log File
 * **Priority:** Critical
 * **Assigned To:** John Doe
 * **Status:** Investigating

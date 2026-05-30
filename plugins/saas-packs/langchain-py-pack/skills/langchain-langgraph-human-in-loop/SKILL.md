@@ -349,7 +349,7 @@ template and signing-secret validation.
 ## Resources
 
 - [LangGraph: Human-in-the-loop (concepts)](https://langchain-ai.github.io/langgraph/concepts/human_in_the_loop/)
-- [LangGraph: How to add human-in-the-loop](https://langchain-ai.github.io/langgraph/how-tos/human_in_the_loop/)
+- LangGraph: How to add human-in-the-loop
 - [LangGraph: `Command` type reference](https://langchain-ai.github.io/langgraph/reference/types/#langgraph.types.Command)
 - [LangGraph: `interrupt` function reference](https://langchain-ai.github.io/langgraph/reference/types/#langgraph.types.interrupt)
 - [LangGraph: Persistence and checkpointers](https://langchain-ai.github.io/langgraph/concepts/persistence/)

@@ -811,4 +811,4 @@ Official cost tracking: [console.anthropic.com](https://console.anthropic.com/)
 
 **Last Updated**: 2025-12-24
 **Author**: Jeremy Longshore
-**Related Playbooks**: [Multi-Agent Rate Limits](./01-multi-agent-rate-limits.md), [Performance Optimization](./08-performance-optimization.md)
+**Related Playbooks**: Multi-Agent Rate Limits, Performance Optimization

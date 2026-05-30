@@ -64,7 +64,7 @@
 ### External APIs
 
 - **Frankfurter API (Currency Exchange):** https://api.frankfurter.app/
-- **Frankfurter API Date Query:** https://api.frankfurter.app/{currency_date}
+- **Frankfurter API Date Query:**
 
 ---
 
@@ -81,7 +81,7 @@
 - **Vertex AI Gemini Fine-tuning:** https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini-tuning
 - **Google GenAI SDK Documentation:** https://googleapis.github.io/python-genai/ (partially extracted)
 - **Supervised Fine-Tuning Guide:** https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini-supervised-tuning (referenced but not fully extracted)
-- **JSONL Format Requirements:** https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini-tuning-format (referenced but not fully extracted)
+- **JSONL Format Requirements:**  (referenced but not fully extracted)
 
 ---
 

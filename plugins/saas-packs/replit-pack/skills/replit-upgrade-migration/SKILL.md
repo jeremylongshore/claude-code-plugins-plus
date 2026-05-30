@@ -234,7 +234,7 @@ async function migrateToObjectStorage(prefix: string) {
 - [Replit App Configuration](https://docs.replit.com/replit-app/configuration)
 - [Nix on Replit](https://docs.replit.com/programming-ide/nix-on-replit)
 - [PostgreSQL on Replit](https://docs.replit.com/cloud-services/storage-and-databases/postgresql-on-replit)
-- [Deployment Types](https://docs.replit.com/hosting/deployments)
+- Deployment Types
 
 ## Next Steps
 

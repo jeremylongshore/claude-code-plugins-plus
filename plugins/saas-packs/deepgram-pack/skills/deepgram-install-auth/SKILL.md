@@ -176,7 +176,7 @@ Create scoped keys in Console > Settings > API Keys > Create Key.
 - [Deepgram Console](https://console.deepgram.com)
 - [JavaScript SDK](https://developers.deepgram.com/docs/js-sdk)
 - [Python SDK](https://developers.deepgram.com/docs/node-sdk)
-- [API Key Management](https://developers.deepgram.com/docs/api-key-management)
+- API Key Management
 - [SDK Feature Matrix](https://developers.deepgram.com/sdks/sdk-features)
 
 ## Next Steps

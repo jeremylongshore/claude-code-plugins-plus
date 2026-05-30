@@ -389,8 +389,8 @@ class HybridAgent(ReactAgent):
 
 ## 📞 Support
 
-- **GitHub Issues:** https://github.com/jeremylongshore/jeremy-plugins/issues
-- **Documentation:** https://claudecodeplugins.io/jeremy-plugins
+- **GitHub Issues:**
+- **Documentation:**
 - **Email:** jeremy@claudecodeplugins.io
 
 ## 📄 License

@@ -61,5 +61,5 @@ Manage Sugar's autonomous development workflows: create development tasks, check
 ## Resources
 
 - Sugar plugin documentation: https://github.com/roboticforce/sugar
-- Task automation patterns: https://roboticforce.io/docs/sugar/
-- Autonomous development best practices: https://roboticforce.io/docs/sugar/best-practices/
+- Task automation patterns:
+- Autonomous development best practices: best-practices/

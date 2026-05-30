@@ -156,4 +156,4 @@ See [TOML Config](references/toml-config.md) for the app configuration syntax.
 - [Metafield Definition API](https://shopify.dev/docs/api/admin-graphql/latest/mutations/metafieldDefinitionCreate)
 - [metafieldsSet Mutation](https://shopify.dev/docs/api/admin-graphql/latest/mutations/metafieldsSet)
 - [Metaobject API Guide](https://shopify.dev/docs/apps/build/custom-data/metaobjects)
-- [Metafield Types Reference](https://shopify.dev/docs/apps/build/custom-data/metafields/types)
+- Metafield Types Reference

@@ -298,7 +298,7 @@ async function auditLog(entry: AuditEntry): Promise<void> {
 - [Data Privacy API](https://developers.klaviyo.com/en/reference/data_privacy_api_overview)
 - [Request Profile Deletion](https://developers.klaviyo.com/en/reference/request_profile_deletion)
 - [Consent Collection Guide](https://developers.klaviyo.com/en/docs/collect_email_and_sms_consent_via_api)
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- GDPR Developer Guide
 
 ## Next Steps
 

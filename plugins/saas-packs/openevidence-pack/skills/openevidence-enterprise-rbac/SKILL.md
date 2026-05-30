@@ -103,7 +103,7 @@ function logClinicalAccess(entry: OpenEvidenceAuditEntry): void {
 ## Resources
 
 - [OpenEvidence Platform](https://www.openevidence.com)
-- [OpenEvidence for Institutions](https://www.openevidence.com/institutions)
+- OpenEvidence for Institutions
 
 ## Next Steps
 

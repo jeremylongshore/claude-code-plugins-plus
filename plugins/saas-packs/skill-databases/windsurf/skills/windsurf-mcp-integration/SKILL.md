@@ -55,4 +55,4 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 
 - [MCP Protocol Specification](https://modelcontextprotocol.io/docs)
 - [Windsurf MCP Guide](https://docs.windsurf.ai/features/mcp)
-- [MCP Server Development](https://modelcontextprotocol.io/docs/servers)
+- MCP Server Development

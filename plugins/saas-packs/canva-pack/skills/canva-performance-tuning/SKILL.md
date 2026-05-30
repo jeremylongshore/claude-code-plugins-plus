@@ -233,7 +233,7 @@ async function measuredCanvaCall<T>(
 
 ## Resources
 
-- [Canva API Reference](https://www.canva.dev/docs/connect/api-reference/)
+- Canva API Reference
 - [LRU Cache](https://github.com/isaacs/node-lru-cache)
 - [p-queue](https://github.com/sindresorhus/p-queue)
 

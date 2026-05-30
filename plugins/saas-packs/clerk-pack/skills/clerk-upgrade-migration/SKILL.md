@@ -248,7 +248,7 @@ echo "Done. Run 'npm run build' to check for remaining issues."
 ## Resources
 
 - [Clerk Changelog](https://clerk.com/changelog)
-- [Clerk Upgrade Guides](https://clerk.com/docs/upgrade-guides)
+- Clerk Upgrade Guides
 - [GitHub Releases](https://github.com/clerk/javascript/releases)
 
 ## Next Steps

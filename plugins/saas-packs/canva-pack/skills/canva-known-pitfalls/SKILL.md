@@ -229,5 +229,5 @@ if (result.status === 'failed') {
 ## Resources
 
 - [Canva Authentication](https://www.canva.dev/docs/connect/authentication/)
-- [Canva API Reference](https://www.canva.dev/docs/connect/api-reference/)
+- Canva API Reference
 - [Canva Scopes](https://www.canva.dev/docs/connect/appendix/scopes/)

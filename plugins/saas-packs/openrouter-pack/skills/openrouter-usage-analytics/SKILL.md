@@ -231,5 +231,5 @@ Top Models by Cost:
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
-- [Generation API](https://openrouter.ai/docs/api/api-reference/generation-queries/query-a-generation) | [Auth API](https://openrouter.ai/docs/api/reference/authentication)
+- Examples | Errors
+- Generation API | [Auth API](https://openrouter.ai/docs/api/reference/authentication)

@@ -39,7 +39,7 @@ npm install @claude-ai/sdk@latest
 pip install --upgrade anthropic
 
 # Check changelog for breaking changes
-# https://github.com/anthropics/claude-sdk-typescript/releases
+#
 ```
 
 ## Model Migration Checklist
@@ -99,8 +99,8 @@ See SDK Upgrade commands, grep patterns for finding model references, environmen
 
 ## Resources
 
-- [SDK Releases (TS)](https://github.com/anthropics/claude-sdk-typescript/releases)
-- [SDK Releases (Python)](https://github.com/anthropics/claude-sdk-python/releases)
+- SDK Releases (TS)
+- SDK Releases (Python)
 - [Model Deprecation Policy](https://docs.anthropic.com/en/docs/about-claude/models)
 
 ## Next Steps

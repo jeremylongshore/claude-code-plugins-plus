@@ -443,7 +443,7 @@ async function checkRetentionJobs() {
 - [Auth Admin deleteUser — Supabase Docs](https://supabase.com/docs/reference/javascript/auth-admin-deleteuser)
 - [Database Backups — Supabase Docs](https://supabase.com/docs/guides/platform/backups)
 - [pg_cron Extension — Supabase Docs](https://supabase.com/docs/guides/database/extensions/pg_cron)
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- GDPR Developer Guide
 - [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
 
 ## Next Steps

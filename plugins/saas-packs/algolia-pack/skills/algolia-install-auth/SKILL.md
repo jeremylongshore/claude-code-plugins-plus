@@ -168,7 +168,7 @@ const securedKey = client.generateSecuredApiKey({
 
 - [Algolia JavaScript v5 Client](https://www.algolia.com/doc/libraries/javascript/v5/methods/search/)
 - [API Keys Guide](https://www.algolia.com/doc/guides/security/api-keys/)
-- [Secured API Keys](https://www.algolia.com/doc/guides/security/api-keys/in-depth/secured-api-keys/)
+- Secured API Keys
 - [Algolia Dashboard](https://dashboard.algolia.com)
 
 ## Next Steps

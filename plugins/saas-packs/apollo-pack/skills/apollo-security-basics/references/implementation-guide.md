@@ -345,7 +345,7 @@ function getApiKeyForOperation(operation: string): string {
 
 ## Resources
 
-- [Apollo Security Practices](https://www.apollo.io/security)
+- Apollo Security Practices
 - [OWASP API Security](https://owasp.org/www-project-api-security/)
 - [GDPR for API Developers](https://gdpr.eu/)
 

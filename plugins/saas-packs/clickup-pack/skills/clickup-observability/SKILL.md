@@ -168,10 +168,7 @@ function logClickUpCall(data: {
   error?: string;
 }): void {
   const level = data.status >= 500 ? 'error' : data.status >= 400 ? 'warn' : 'info';
-  logger[level]({
-    service: 'clickup',
-    ...data,
-  }, `ClickUp ${data.method} ${data.path} -> ${data.status} (${data.durationMs}ms)`);
+  loggerlevel`);
 }
 ```
 

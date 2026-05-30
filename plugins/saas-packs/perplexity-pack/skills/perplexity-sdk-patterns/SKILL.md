@@ -246,7 +246,7 @@ export function formatCitationsAsMarkdown(
   let formatted = answer;
   citations.forEach((url, i) => {
     const marker = `[${i + 1}]`;
-    formatted = formatted.replaceAll(marker, `[${i + 1}](${url})`);
+    formatted = formatted.replaceAll(marker, `${i + 1}`);
   });
   return formatted;
 }

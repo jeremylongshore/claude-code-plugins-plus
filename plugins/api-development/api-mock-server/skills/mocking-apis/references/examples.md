@@ -132,7 +132,7 @@ const errorScenarios = {
 
 app.use((req, res, next) => {
   const scenario = req.query.scenario;
-  if (scenario && errorScenarios[scenario]) return errorScenarios[scenario](req, res, next);
+  if (scenario && errorScenarios[scenario]) return errorScenariosscenario;
   next();
 });
 ```

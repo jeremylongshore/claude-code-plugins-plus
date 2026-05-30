@@ -297,7 +297,7 @@ async function cleanupExpiredData() {
 
 ## Resources
 
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- GDPR Developer Guide
 - [CCPA Compliance](https://oag.ca.gov/privacy/ccpa)
 - [Webflow Forms API](https://developers.webflow.com/data/reference/forms)
 - [Webflow Orders API](https://developers.webflow.com/data/reference/ecommerce)

@@ -28,7 +28,7 @@ class SupabaseDeadLetterQueue {
     if (!entry) return false;
 
     try {
-      await supabaseClient[entry.operation](entry.payload);
+      await supabaseCliententry.operation;
       console.log(`DLQ: Successfully reprocessed ${entry.id}`);
       return true;
     } catch (error) {

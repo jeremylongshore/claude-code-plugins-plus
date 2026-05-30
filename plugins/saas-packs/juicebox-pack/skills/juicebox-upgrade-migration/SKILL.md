@@ -142,8 +142,8 @@ class JuiceboxClient {
 
 ## Resources
 
-- [Juicebox Changelog](https://docs.juicebox.work/changelog)
-- [Juicebox API Documentation](https://docs.juicebox.work/api)
+- Juicebox Changelog
+- Juicebox API Documentation
 
 ## Next Steps
 

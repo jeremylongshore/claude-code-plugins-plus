@@ -354,9 +354,9 @@ The `/release` skill is part of the Claude Code Plugins marketplace:
 
 ## Related Posts
 
-- [GitHub Release Workflow: When Yesterday's Updates Aren't Public (And How We Fixed It)](https://startaitools.com/posts/github-release-workflow-uncommitted-changes-semantic-versioning/) - Our first attempt at release automation
-- [Building External Plugin Sync: How We Keep 258 Community Plugins Fresh](https://startaitools.com/posts/external-plugin-sync-keeping-community-plugins-fresh/) - Part of what shipped in v4.5.0
-- [Debugging a Critical Marketplace Schema Validation Failure](https://startaitools.com/posts/debugging-critical-marketplace-schema-validation-failure/) - Why release validation matters
+- GitHub Release Workflow: When Yesterday's Updates Aren't Public (And How We Fixed It) - Our first attempt at release automation
+- Building External Plugin Sync: How We Keep 258 Community Plugins Fresh - Part of what shipped in v4.5.0
+- Debugging a Critical Marketplace Schema Validation Failure - Why release validation matters
 
 ## What's Next
 

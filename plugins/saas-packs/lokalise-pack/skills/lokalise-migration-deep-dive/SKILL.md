@@ -328,7 +328,7 @@ lokalise2 --token "${LOKALISE_API_TOKEN}" \
 ## Resources
 
 - [Lokalise File Upload API](https://developers.lokalise.com/reference/upload-a-file)
-- [Supported File Formats](https://docs.lokalise.com/en/articles/1400452-file-formats)
+- Supported File Formats
 - [Crowdin Export API](https://developer.crowdin.com/api/v2/#operation/api.projects.translations.builds.post)
 - [Phrase Export API](https://developers.phrase.com/api/#tag/Locales/operation/locale/download)
 - [POEditor Export API](https://poeditor.com/docs/api#projects_export)

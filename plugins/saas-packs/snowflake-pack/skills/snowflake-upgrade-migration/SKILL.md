@@ -63,7 +63,7 @@ open https://github.com/snowflakedb/snowflake-connector-nodejs/blob/master/CHANG
 open https://docs.snowflake.com/en/release-notes/clients-drivers/python-connector-2025
 
 # Check Snowflake BCR (Behavior Change Releases)
-open https://docs.snowflake.com/en/release-notes/bcr-bundles
+open
 ```
 
 ### Step 3: Upgrade on a Branch
@@ -204,7 +204,7 @@ npm ci
 
 - [Node.js Driver Releases](https://github.com/snowflakedb/snowflake-connector-nodejs/releases)
 - [Python Connector Release Notes](https://docs.snowflake.com/en/release-notes/clients-drivers/python-connector-2025)
-- [Behavior Change Bundles](https://docs.snowflake.com/en/release-notes/bcr-bundles)
+- Behavior Change Bundles
 
 ## Next Steps
 

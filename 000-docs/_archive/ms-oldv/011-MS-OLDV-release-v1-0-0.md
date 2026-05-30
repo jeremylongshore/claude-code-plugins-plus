@@ -1,4 +1,4 @@
-# Release v1.0.0 - Launch Ready! 
+# Release v1.0.0 - Launch Ready!
 
 **Date**: October 10, 2025
 **Type**: Initial Public Release
@@ -38,7 +38,7 @@
 ### Step 1: Make Scripts Executable
 
 ```bash
-cd /home/jeremy/projects/claude-code-plugins
+cd
 
 # Make validation scripts executable
 chmod +x scripts/check-frontmatter.py
@@ -239,7 +239,7 @@ gh release create v1.0.0 \
 ```bash
 gh issue create \
   --title " v1.0.0 Released - Claude Code Plugin Marketplace is Live!" \
-  --body "We're thrilled to announce the launch of the Claude Code Plugin Marketplace! 
+  --body "We're thrilled to announce the launch of the Claude Code Plugin Marketplace!
 
 ##  What's Included
 
@@ -278,9 +278,9 @@ Try it now:
 ##  Documentation
 
 - [Installation Guide](README.md)
-- [Creating Plugins](CONTRIBUTING.md)
-- [Complete Changelog](CHANGELOG.md)
-- [Release Process](.github/RELEASE_CHECKLIST.md)
+- Creating Plugins
+- Complete Changelog
+- Release Process
 
 ##  Support the Project
 
@@ -366,7 +366,7 @@ Install:
 /plugin marketplace add jeremylongshore/claude-code-plugins
 /gc
 
-1/7 
+1/7
 ```
 
 ### LinkedIn Post
@@ -419,7 +419,7 @@ AI-powered conventional commit messages. Try it:
 - Validation tools
 - Comprehensive docs
 
-First-mover advantage after the plugin announcement! 
+First-mover advantage after the plugin announcement!
 
 Repo: https://github.com/jeremylongshore/claude-code-plugins
 
@@ -443,4 +443,4 @@ You've successfully pivoted from commercial to open-source, preserved all qualit
 
 ---
 
-**Next**: Execute the commands above and watch the community grow! 
+**Next**: Execute the commands above and watch the community grow!

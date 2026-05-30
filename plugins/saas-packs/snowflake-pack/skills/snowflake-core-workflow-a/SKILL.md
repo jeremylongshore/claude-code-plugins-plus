@@ -90,12 +90,12 @@ LIST @my_s3_stage;
 
 ```bash
 # Using SnowSQL PUT command
-snowsql -c prod -q "PUT file:///tmp/data/*.csv @my_internal_stage AUTO_COMPRESS=TRUE"
+snowsql -c prod -q "PUT  @my_internal_stage AUTO_COMPRESS=TRUE"
 ```
 
 ```python
 # Using Python connector
-cursor.execute("PUT file:///tmp/data/users.csv @my_internal_stage AUTO_COMPRESS=TRUE")
+cursor.execute("PUT  @my_internal_stage AUTO_COMPRESS=TRUE")
 ```
 
 ### Step 4: Load Data with COPY INTO

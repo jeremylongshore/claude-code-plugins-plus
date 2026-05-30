@@ -241,5 +241,5 @@ The friction here is **Anthropic-side**, not Tons-of-Skills-side. The fix would 
 - [Composio: Databricks via Cowork](https://composio.dev/toolkits/databricks/framework/claude-cowork) — broker-pattern alternative (composio.dev/mcp as middleman)
 - [Claude Cowork enterprise plugins guide (ALM Corp)](https://almcorp.com/blog/claude-cowork-plugins-enterprise-guide/) — Cowork admin plugin marketplace + GitHub-source plugins
 - [Cowork connectors list (pluginsforcowork.com)](https://pluginsforcowork.com/guides/cowork-connectors/) — current 38+ built-in tile inventory
-- [Tons of Skills cowork-zip builder](file:///home/jeremy/000-projects/claude-code-plugins/scripts/build-cowork-zips.mjs) — `SKIP_CATEGORIES = ['mcp']` line 51
+- Tons of Skills cowork-zip builder — `SKIP_CATEGORIES = ['mcp']` line 51
 - [Specializing Claude Code with Skills and MCP on Databricks (David Huang, Medium)](https://medium.com/@hiydavid/specializing-claude-code-a-quick-guide-to-agent-skills-and-mcp-on-databricks-c0cfdd43637d) — practitioner walkthrough

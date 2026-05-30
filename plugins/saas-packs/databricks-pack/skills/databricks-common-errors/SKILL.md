@@ -302,7 +302,7 @@ databricks permissions get jobs --job-id $JID
 
 ## Resources
 
-- [Troubleshooting Guide](https://docs.databricks.com/aws/en/resources/troubleshooting)
+- Troubleshooting Guide
 - [Delta Lake Troubleshooting](https://docs.databricks.com/aws/en/delta/best-practices)
 - [Resource Limits](https://docs.databricks.com/aws/en/resources/limits)
 

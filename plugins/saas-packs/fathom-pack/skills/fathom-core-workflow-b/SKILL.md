@@ -91,7 +91,7 @@ CREATE TABLE fathom_meetings (
 ## Resources
 
 - [Fathom API Reference](https://developers.fathom.ai/api-reference)
-- [Fathom Integrations](https://fathom.video/integrations)
+- Fathom Integrations
 
 ## Next Steps
 

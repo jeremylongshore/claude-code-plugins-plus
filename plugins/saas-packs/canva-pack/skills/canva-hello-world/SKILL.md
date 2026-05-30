@@ -175,7 +175,7 @@ main().catch(console.error);
 
 ## Resources
 
-- [Canva Connect API Reference](https://www.canva.dev/docs/connect/api-reference/)
+- Canva Connect API Reference
 - [Designs API](https://www.canva.dev/docs/connect/api-reference/designs/)
 - [Exports API](https://www.canva.dev/docs/connect/api-reference/exports/)
 

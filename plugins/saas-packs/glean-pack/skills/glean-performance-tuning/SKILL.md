@@ -116,7 +116,7 @@ function trackSearch(startMs: number, cached: boolean) {
 ## Resources
 
 - [Glean Developer Portal](https://developers.glean.com/)
-- [Glean Indexing API Guide](https://developers.glean.com/docs/indexing)
+- Glean Indexing API Guide
 
 ## Next Steps
 

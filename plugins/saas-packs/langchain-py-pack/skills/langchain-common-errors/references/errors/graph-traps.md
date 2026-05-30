@@ -231,7 +231,7 @@ If `state.next` is empty but the state does not look complete, a router sent the
 ## Sources
 
 - Pain catalog: `docs/pain-catalog.md` (P09, P10, P16, P17, P55, P56)
-- [LangGraph concepts](https://langchain-ai.github.io/langgraph/concepts/)
+- LangGraph concepts
 - [LangGraph persistence](https://langchain-ai.github.io/langgraph/concepts/persistence/)
 - [`create_react_agent` reference](https://langchain-ai.github.io/langgraph/reference/prebuilt/)
 - [LangGraph state & reducers](https://langchain-ai.github.io/langgraph/concepts/low_level/#state)

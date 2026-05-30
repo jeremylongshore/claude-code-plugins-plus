@@ -140,7 +140,7 @@ export class EnvironmentAwareClient {
     const messageLevel = levels.indexOf(level);
 
     if (messageLevel >= configLevel) {
-      console[level as 'log'](`[Customer.io] ${message}`, data);
+      consolelevel as 'log';
     }
   }
 }

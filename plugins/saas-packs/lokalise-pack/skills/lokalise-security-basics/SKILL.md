@@ -277,7 +277,7 @@ function logTranslationChange(entry: TranslationAuditEntry): void {
 ## Resources
 
 - [Lokalise API Authentication](https://developers.lokalise.com/reference/api-authentication)
-- [Lokalise Security](https://lokalise.com/security)
+- Lokalise Security
 - [Webhook Events Reference](https://developers.lokalise.com/docs/webhook-events)
 - [OWASP Secrets Management](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html)
 

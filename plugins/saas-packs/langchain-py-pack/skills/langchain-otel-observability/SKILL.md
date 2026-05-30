@@ -299,7 +299,7 @@ section.
 - [OTEL GenAI semantic conventions](https://opentelemetry.io/docs/specs/semconv/gen-ai/)
 - [OTEL Python SDK](https://opentelemetry.io/docs/languages/python/)
 - [OpenLLMetry LangChain instrumentation](https://github.com/traceloop/openllmetry/tree/main/packages/opentelemetry-instrumentation-langchain)
-- [Honeycomb OTLP ingest](https://docs.honeycomb.io/getting-data-in/otlp/)
+- Honeycomb OTLP ingest
 - [Grafana Tempo](https://grafana.com/docs/tempo/latest/)
 - [Datadog OTLP](https://docs.datadoghq.com/opentelemetry/)
 - [Google SRE — Alerting on SLOs](https://sre.google/workbook/alerting-on-slos/)

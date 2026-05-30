@@ -20,12 +20,12 @@
 ### Path 1: Plugin Creator (Beginner → Intermediate)
 **Goal**: Create and publish your first Claude Code plugin
 
-1. [What is SKILL.md?](skills/01-what-is-skill.ipynb) - 20 min
-2. [Skill Anatomy](skills/02-skill-anatomy.ipynb) - 25 min
-3. [Build Your First Skill](skills/03-build-your-first-skill.ipynb) - 45 min
-4. [What is a Plugin?](plugins/01-what-is-plugin.ipynb) - 25 min
-5. [Plugin Structure](plugins/02-plugin-structure.ipynb) - 30 min
-6. [Build Your First Plugin](plugins/03-build-your-first-plugin.ipynb) - 45 min
+1. What is SKILL.md? - 20 min
+2. Skill Anatomy - 25 min
+3. Build Your First Skill - 45 min
+4. What is a Plugin? - 25 min
+5. Plugin Structure - 30 min
+6. Build Your First Plugin - 45 min
 
 **Time**: ~3 hours | **Output**: Production-ready plugin
 
@@ -34,11 +34,11 @@
 ### Path 2: Advanced Developer (Intermediate → Advanced)
 **Goal**: Master advanced patterns and MCP servers
 
-1. [Advanced Skill Patterns](skills/04-advanced-patterns.ipynb) - 45 min
-2. [Skill Validation](skills/05-skill-validation.ipynb) - 30 min
-3. [MCP Server Plugins](plugins/04-mcp-server-plugins.ipynb) - 60 min
-4. [Mental Model](orchestration/01-mental-model.ipynb) - 30 min
-5. [Orchestration Pattern](orchestration/02-orchestration-pattern.ipynb) - 45 min
+1. Advanced Skill Patterns - 45 min
+2. Skill Validation - 30 min
+3. MCP Server Plugins - 60 min
+4. Mental Model - 30 min
+5. Orchestration Pattern - 45 min
 
 **Time**: ~3.5 hours | **Output**: TypeScript MCP server, multi-agent orchestration
 
@@ -49,11 +49,11 @@
 
 | Need | Tutorial | Time |
 |------|----------|------|
-| Understand SKILL.md basics | [01-what-is-skill](skills/01-what-is-skill.ipynb) | 20 min |
-| Fix validation errors | [05-skill-validation](skills/05-skill-validation.ipynb) | 30 min |
-| Build instruction plugin | [03-build-your-first-plugin](plugins/03-build-your-first-plugin.ipynb) | 45 min |
-| Build MCP plugin | [04-mcp-server-plugins](plugins/04-mcp-server-plugins.ipynb) | 60 min |
-| Multi-agent patterns | [02-orchestration-pattern](orchestration/02-orchestration-pattern.ipynb) | 45 min |
+| Understand SKILL.md basics | 01-what-is-skill | 20 min |
+| Fix validation errors | 05-skill-validation | 30 min |
+| Build instruction plugin | 03-build-your-first-plugin | 45 min |
+| Build MCP plugin | 04-mcp-server-plugins | 60 min |
+| Multi-agent patterns | 02-orchestration-pattern | 45 min |
 
 ---
 
@@ -65,11 +65,11 @@ Build skills that teach Claude new workflows.
 
 | # | Title | Level | Time | Colab |
 |---|-------|-------|------|-------|
-| 01 | [What is SKILL.md?](skills/01-what-is-skill.ipynb) | Beginner | 20 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/skills/01-what-is-skill.ipynb) |
-| 02 | [Skill Anatomy](skills/02-skill-anatomy.ipynb) | Beginner | 25 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/skills/02-skill-anatomy.ipynb) |
-| 03 | [Build Your First Skill](skills/03-build-your-first-skill.ipynb) | Intermediate | 45 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/skills/03-build-your-first-skill.ipynb) |
-| 04 | [Advanced Skill Patterns](skills/04-advanced-patterns.ipynb) | Advanced | 45 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/skills/04-advanced-patterns.ipynb) |
-| 05 | [Skill Validation](skills/05-skill-validation.ipynb) | Intermediate | 30 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/skills/05-skill-validation.ipynb) |
+| 01 | What is SKILL.md? | Beginner | 20 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/skills/01-what-is-skill.ipynb) |
+| 02 | Skill Anatomy | Beginner | 25 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/skills/02-skill-anatomy.ipynb) |
+| 03 | Build Your First Skill | Intermediate | 45 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/skills/03-build-your-first-skill.ipynb) |
+| 04 | Advanced Skill Patterns | Advanced | 45 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/skills/04-advanced-patterns.ipynb) |
+| 05 | Skill Validation | Intermediate | 30 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/skills/05-skill-validation.ipynb) |
 
 **Total**: 165 minutes (2h 45m) | **Cells**: 77 interactive
 
@@ -81,10 +81,10 @@ Package skills into shareable, versioned plugins.
 
 | # | Title | Level | Time | Colab |
 |---|-------|-------|------|-------|
-| 01 | [What is a Plugin?](plugins/01-what-is-plugin.ipynb) | Beginner | 25 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/plugins/01-what-is-plugin.ipynb) |
-| 02 | [Plugin Structure](plugins/02-plugin-structure.ipynb) | Intermediate | 30 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/plugins/02-plugin-structure.ipynb) |
-| 03 | [Build Your First Plugin](plugins/03-build-your-first-plugin.ipynb) | Intermediate | 45 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/plugins/03-build-your-first-plugin.ipynb) |
-| 04 | [MCP Server Plugins](plugins/04-mcp-server-plugins.ipynb) | Advanced | 60 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/plugins/04-mcp-server-plugins.ipynb) |
+| 01 | What is a Plugin? | Beginner | 25 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/plugins/01-what-is-plugin.ipynb) |
+| 02 | Plugin Structure | Intermediate | 30 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/plugins/02-plugin-structure.ipynb) |
+| 03 | Build Your First Plugin | Intermediate | 45 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/plugins/03-build-your-first-plugin.ipynb) |
+| 04 | MCP Server Plugins | Advanced | 60 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/plugins/04-mcp-server-plugins.ipynb) |
 
 **Total**: 160 minutes (2h 40m) | **Cells**: 40 interactive
 
@@ -96,8 +96,8 @@ Master multi-agent coordination and complex workflows.
 
 | # | Title | Level | Time | Colab |
 |---|-------|-------|------|-------|
-| 01 | [Mental Model](orchestration/01-mental-model.ipynb) | Intermediate | 30 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/orchestration/01-mental-model.ipynb) |
-| 02 | [Orchestration Pattern](orchestration/02-orchestration-pattern.ipynb) | Advanced | 45 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/orchestration/02-orchestration-pattern.ipynb) |
+| 01 | Mental Model | Intermediate | 30 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/orchestration/01-mental-model.ipynb) |
+| 02 | Orchestration Pattern | Advanced | 45 min | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/orchestration/02-orchestration-pattern.ipynb) |
 
 **Total**: 75 minutes (1h 15m) | **Cells**: 37 interactive
 
@@ -109,9 +109,9 @@ Master multi-agent coordination and complex workflows.
 **You want**: Build plugins for your team
 
 **Start here**:
-1. [Build Your First Skill](skills/03-build-your-first-skill.ipynb)
-2. [Build Your First Plugin](plugins/03-build-your-first-plugin.ipynb)
-3. [Skill Validation](skills/05-skill-validation.ipynb)
+1. Build Your First Skill
+2. Build Your First Plugin
+3. Skill Validation
 
 ---
 
@@ -119,9 +119,9 @@ Master multi-agent coordination and complex workflows.
 **You want**: Automate workflows without coding
 
 **Start here**:
-1. [What is SKILL.md?](skills/01-what-is-skill.ipynb)
-2. [Skill Anatomy](skills/02-skill-anatomy.ipynb)
-3. [Build Your First Skill](skills/03-build-your-first-skill.ipynb)
+1. What is SKILL.md?
+2. Skill Anatomy
+3. Build Your First Skill
 
 ---
 
@@ -129,9 +129,9 @@ Master multi-agent coordination and complex workflows.
 **You want**: Understand standards and governance
 
 **Start here**:
-1. [Skill Validation](skills/05-skill-validation.ipynb) - Enterprise standards (6767-c)
-2. [Plugin Structure](plugins/02-plugin-structure.ipynb) - Validation and security
-3. [Advanced Skill Patterns](skills/04-advanced-patterns.ipynb) - Production patterns
+1. Skill Validation - Enterprise standards (6767-c)
+2. Plugin Structure - Validation and security
+3. Advanced Skill Patterns - Production patterns
 
 ---
 
@@ -139,9 +139,9 @@ Master multi-agent coordination and complex workflows.
 **You want**: Build MCP servers with external integrations
 
 **Start here**:
-1. [What is a Plugin?](plugins/01-what-is-plugin.ipynb) - Understand plugin types
-2. [MCP Server Plugins](plugins/04-mcp-server-plugins.ipynb) - Full TypeScript implementation
-3. [Orchestration Pattern](orchestration/02-orchestration-pattern.ipynb) - Multi-agent coordination
+1. What is a Plugin? - Understand plugin types
+2. MCP Server Plugins - Full TypeScript implementation
+3. Orchestration Pattern - Multi-agent coordination
 
 ---
 
@@ -251,7 +251,7 @@ All tutorials follow this structure:
 
 ### Examples
 - [258 Marketplace Plugins](../plugins/)
-- [241 Agent Skills](../plugins/*/skills/)
+- 241 Agent Skills
 - [MCP Server Examples](../plugins/mcp/)
 
 ### Community

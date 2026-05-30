@@ -167,7 +167,7 @@ npm test              # Verify v4 still works
 
 ## Resources
 
-- [Official v4 to v5 Migration Guide](https://www.algolia.com/doc/libraries/javascript/v5/upgrade/)
+- Official v4 to v5 Migration Guide
 - [v5 Method Reference](https://www.algolia.com/doc/libraries/javascript/v5/methods/search/)
 - [algoliasearch npm](https://www.npmjs.com/package/algoliasearch)
 

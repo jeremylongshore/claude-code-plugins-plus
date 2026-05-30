@@ -174,7 +174,7 @@ function promisifyNoteStore(noteStore) {
   for (const method of methods) {
     promisified[method] = (...args) => {
       return new Promise((resolve, reject) => {
-        noteStore[method](...args, (err, result) => {
+        noteStoremethod => {
           if (err) reject(err);
           else resolve(result);
         });
@@ -355,7 +355,7 @@ function wrapWithDeprecationWarnings(noteStore) {
               'Use Promise: noteStore.getNote(...).then(note => ...)'
             );
           }
-          return target[prop](...args);
+          return targetprop;
         };
       }
 
@@ -378,7 +378,6 @@ module.exports = { wrapWithDeprecationWarnings };
 ## Migration Checklist
 
 ```markdown
-
 
 ## SDK v2 Migration Checklist
 

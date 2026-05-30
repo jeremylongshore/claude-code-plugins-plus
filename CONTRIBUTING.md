@@ -173,9 +173,9 @@ This project follows a code of conduct to ensure a welcoming environment for all
 ## Security
 
 - Never commit secrets, API keys, or credentials. CI will reject PRs that contain them.
-- Report vulnerabilities via [GitHub Security Advisories](../../security/advisories).
+- Report vulnerabilities via GitHub Security Advisories.
 - See [SECURITY.md](SECURITY.md) for the full security policy.
 
 ---
 
-Questions? Open a [GitHub Discussion](../../discussions) or file an issue. We are glad to help.
+Questions? Open a GitHub Discussion or file an issue. We are glad to help.

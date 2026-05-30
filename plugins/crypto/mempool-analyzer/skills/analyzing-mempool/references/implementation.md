@@ -60,9 +60,9 @@ Edit `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
 
 ```yaml
 rpc_endpoints:
-  ethereum: "https://rpc.ankr.com/eth"
-  polygon: "https://rpc.ankr.com/polygon"
-  arbitrum: "https://rpc.ankr.com/arbitrum"
+  ethereum: "eth"
+  polygon: "polygon"
+  arbitrum: "arbitrum"
 
 defaults:
   chain: ethereum

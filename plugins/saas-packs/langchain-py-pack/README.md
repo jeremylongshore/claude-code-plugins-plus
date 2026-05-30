@@ -159,7 +159,7 @@ print(result["messages"][-1].content)
 
 Every skill in this pack is pinned to `langchain-core 1.0.x` / `langgraph 1.0.x`.
 If you are on 0.2.x or 0.3.x, wait for `langchain-upgrade-migration` (Epic A4)
-or consult the [legacy `langchain-pack`](../langchain-pack/) in the meantime.
+or consult the legacy `langchain-pack` in the meantime.
 
 ## License
 

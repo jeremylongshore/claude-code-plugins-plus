@@ -233,7 +233,7 @@ app.get('/admin/costs', requireAuth, (req, res) => {
 
 - [Replit Pricing](https://replit.com/pricing)
 - [Usage-Based Billing](https://docs.replit.com/billing/about-usage-based-billing)
-- [Deployment Types](https://docs.replit.com/hosting/deployments)
+- Deployment Types
 
 ## Next Steps
 

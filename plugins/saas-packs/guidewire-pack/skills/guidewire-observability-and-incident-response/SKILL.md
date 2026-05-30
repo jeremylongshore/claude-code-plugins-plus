@@ -186,7 +186,7 @@ A production-grade observability layer ships with all of the following:
 ```text
 # error_budget = 0.5%/month = ~3.6h/month
 # fast-burn: 2% budget in 1h → page
-sum:trace.http_request.errors{service:guidewire-integration}.as_count() / 
+sum:trace.http_request.errors{service:guidewire-integration}.as_count() /
 sum:trace.http_request.hits{service:guidewire-integration}.as_count() > 0.144   # 14.4x normal
 ```
 
@@ -240,7 +240,7 @@ For deeper coverage (RED method vs USE method tradeoffs, multi-tenant dashboard 
 ## Resources
 
 - [Google SRE Workbook — SLO engineering](https://sre.google/workbook/implementing-slos/)
-- [Datadog SLO documentation](https://docs.datadoghq.com/service_management/service_level_objectives/)
+- Datadog SLO documentation
 - [PagerDuty incident response guide](https://response.pagerduty.com/)
 - [Guidewire Cloud Console — tenant quotas and audit](https://gcc.guidewire.com)
 - [USE method (Brendan Gregg)](https://www.brendangregg.com/usemethod.html)

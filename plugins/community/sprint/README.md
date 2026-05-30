@@ -307,7 +307,7 @@ Sprint includes knowledge modules that Claude can load when needed:
 
 ## Documentation
 
-- [Agent Architecture](docs/AGENTS.md) - Deep dive into agent system
+- Agent Architecture - Deep dive into agent system
 
 ## License
 

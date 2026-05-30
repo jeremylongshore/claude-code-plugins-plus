@@ -324,7 +324,7 @@ curl -s "https://api.getmaintainx.com/v1/workorders?limit=100" \
 
 ## Resources
 
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- MaintainX API Reference
 - [MaintainX Import Guide](https://help.getmaintainx.com)
 - [csv-parse](https://csv.js.org/parse/) -- CSV parsing for Node.js
 

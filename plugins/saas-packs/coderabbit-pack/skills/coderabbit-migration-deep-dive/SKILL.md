@@ -276,9 +276,9 @@ echo "  - Team satisfaction: Survey developers after 2 weeks"
 
 ## Resources
 
-- [CodeRabbit vs Alternatives](https://coderabbit.ai/compare)
+- CodeRabbit vs Alternatives
 - [CodeRabbit Configuration Reference](https://docs.coderabbit.ai/reference/configuration)
-- [Migration from Codacy](https://docs.coderabbit.ai/guides/migration)
+- Migration from Codacy
 - [CodeRabbit Path Instructions](https://docs.coderabbit.ai/guides/review-instructions)
 
 ## Next Steps

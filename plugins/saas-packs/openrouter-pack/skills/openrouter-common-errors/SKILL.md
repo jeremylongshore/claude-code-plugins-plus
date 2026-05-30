@@ -193,5 +193,5 @@ def validate_before_send(model: str, messages: list, max_tokens: int = 1024):
 
 ## References
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
-- [Error Codes](https://openrouter.ai/docs/api/errors) | [Status](https://status.openrouter.ai)
+- Examples | Errors
+- Error Codes | [Status](https://status.openrouter.ai)

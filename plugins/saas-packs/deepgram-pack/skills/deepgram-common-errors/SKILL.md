@@ -206,7 +206,7 @@ async function transcribeWithRetry(
 
 ## Resources
 
-- [Deepgram Error Handling](https://developers.deepgram.com/docs/error-handling)
+- Deepgram Error Handling
 - [API Rate Limits](https://developers.deepgram.com/reference/api-rate-limits)
 - [Status Page](https://status.deepgram.com)
 - [Deepgram Community](https://github.com/orgs/deepgram/discussions)

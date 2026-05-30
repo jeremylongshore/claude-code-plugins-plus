@@ -766,4 +766,4 @@ From this marketplace (258 plugins):
 
 **Last Updated**: 2025-12-24
 **Author**: Jeremy Longshore
-**Related Playbooks**: [Cost Caps & Budget Management](./02-cost-caps.md), [MCP Server Reliability](./03-mcp-reliability.md)
+**Related Playbooks**: Cost Caps & Budget Management, MCP Server Reliability

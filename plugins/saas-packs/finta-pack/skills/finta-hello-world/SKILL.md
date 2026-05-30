@@ -102,7 +102,7 @@ Finta automatically moves investors through stages based on:
 
 ## Resources
 
-- [Finta for Founders](https://www.trustfinta.com/founders)
+- Finta for Founders
 - [Finta for Fund Managers](https://www.trustfinta.com/blog/finta-for-fund-managers-venture-capital-crm)
 
 ## Next Steps

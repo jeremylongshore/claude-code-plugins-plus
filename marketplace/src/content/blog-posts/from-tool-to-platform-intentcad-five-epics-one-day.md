@@ -125,7 +125,7 @@ Not glamorous. Absolutely necessary. A comparison engine that panics on a corrup
 
 ## Meanwhile: Braves Gets AI Narratives
 
-Parallel track: the [braves](https://github.com/jeremylongshore/braves) app (MLB game day dashboard) shipped three PRs of its own.
+Parallel track: the braves app (MLB game day dashboard) shipped three PRs of its own.
 
 PR #19 added a pre-game intelligence view. PR #20 overhauled the AI narrative system — Gemini 2.5 Pro now generates broadcast-style game narratives with full career baseball cards for each player. PR #21 fixed a timezone bug: the schedule was using UTC for date calculation, which meant after 6 PM Central the app would show tomorrow's games instead of today's. Classic off-by-one, timezone edition.
 

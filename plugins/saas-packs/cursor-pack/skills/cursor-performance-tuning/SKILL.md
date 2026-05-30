@@ -326,5 +326,5 @@ du -sh ~/Library/Application\ Support/Cursor/
 ## Resources
 
 - [VS Code Performance Tips](https://code.visualstudio.com/docs/editor/editingevolved#_performance)
-- [Cursor Forum - Performance](https://forum.cursor.com/c/help)
+- Cursor Forum - Performance
 - [Codebase Indexing](https://docs.cursor.com/context/codebase-indexing)

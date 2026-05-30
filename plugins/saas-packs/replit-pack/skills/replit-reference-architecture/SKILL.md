@@ -264,7 +264,7 @@ process.on('SIGTERM', async () => {
 - [Replit App Configuration](https://docs.replit.com/replit-app/configuration)
 - [PostgreSQL on Replit](https://docs.replit.com/cloud-services/storage-and-databases/postgresql-on-replit)
 - [Object Storage](https://docs.replit.com/cloud-services/storage-and-databases/object-storage/overview)
-- [Replit Deployments](https://docs.replit.com/hosting/deployments)
+- Replit Deployments
 
 ## Next Steps
 

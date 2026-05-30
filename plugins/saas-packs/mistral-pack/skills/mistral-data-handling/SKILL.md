@@ -262,7 +262,7 @@ def sanitize_batch_file(input_path: str, output_path: str):
 - [Mistral Data Policy](https://docs.mistral.ai/deployment/ai-studio/)
 - [Fine-Tuning Guide](https://docs.mistral.ai/capabilities/finetuning/)
 - [Batch Inference](https://docs.mistral.ai/capabilities/batch/)
-- [GDPR Compliance](https://mistral.ai/privacy/)
+- GDPR Compliance
 
 ## Output
 

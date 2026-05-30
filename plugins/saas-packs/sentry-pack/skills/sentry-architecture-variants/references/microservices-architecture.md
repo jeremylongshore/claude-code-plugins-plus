@@ -64,7 +64,7 @@ function callGrpcService(client: GrpcClient, method: string, request: any) {
 
   return Sentry.startSpan(
     { name: `grpc.${method}`, op: 'grpc.client' },
-    () => client[method](request, metadata)
+    () => clientmethod
   );
 }
 

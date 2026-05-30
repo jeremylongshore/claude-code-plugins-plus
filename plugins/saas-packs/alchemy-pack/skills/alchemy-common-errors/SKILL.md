@@ -157,7 +157,7 @@ curl -s "https://dashboard.alchemy.com/api/stats" \
 ## Resources
 
 - [Alchemy Error Codes](https://www.alchemy.com/docs/reference/error-reference)
-- [Alchemy Rate Limits](https://www.alchemy.com/docs/reference/rate-limits)
+- Alchemy Rate Limits
 - [JSON-RPC Error Codes](https://www.jsonrpc.org/specification#error_object)
 
 ## Next Steps

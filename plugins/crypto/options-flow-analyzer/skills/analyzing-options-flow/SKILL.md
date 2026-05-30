@@ -103,5 +103,5 @@ Exports the IV term structure as JSON. Flat or inverted term structures (near-te
 - [Deribit API Documentation](https://docs.deribit.com/) -- primary exchange for crypto options data, WebSocket and REST endpoints
 - [Laevitas Analytics](https://app.laevitas.ch/) -- crypto derivatives analytics dashboard with options flow visualization
 - [Greeks.live](https://www.greeks.live/) -- real-time crypto options analytics and block trade tracking
-- [Amberdata Derivatives](https://www.amberdata.io/derivatives) -- institutional-grade crypto derivatives data API
+- Amberdata Derivatives -- institutional-grade crypto derivatives data API
 - [The Block Research](https://www.theblock.co/data/crypto-markets/options) -- aggregated crypto options market data and charts

@@ -146,7 +146,7 @@ describe.skipIf(!hasToken)('Hex Live API', () => {
 
 ## Resources
 
-- [Hex API Reference](https://learn.hex.tech/docs/develop-logic/hex-api/api-reference)
+- Hex API Reference
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 
 ## Next Steps

@@ -84,6 +84,6 @@ Validate AI/ML models and datasets for bias, fairness, and ethical compliance us
 - [Fairlearn Documentation](https://fairlearn.org/) -- bias detection, mitigation algorithms, MetricFrame API
 - [AI Fairness 360 (AIF360)](https://aif360.mybluemix.net/) -- comprehensive fairness toolkit with 70+ metrics
 - [Google What-If Tool](https://pair-code.github.io/what-if-tool/) -- interactive fairness exploration
-- [EU Ethics Guidelines for Trustworthy AI](https://ec.europa.eu/digital-strategy/en/policies/expert-group-ai) -- regulatory framework
+- EU Ethics Guidelines for Trustworthy AI -- regulatory framework
 - [IEEE Ethically Aligned Design](https://ethicsinaction.ieee.org/) -- technical ethics standards
 - Impossibility theorem reference: Chouldechova (2017) on incompatibility of fairness criteria

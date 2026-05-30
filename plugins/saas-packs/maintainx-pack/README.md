@@ -96,7 +96,7 @@ curl -s "https://api.getmaintainx.com/v1/workorders?status=OPEN&limit=5" \
 
 - [MaintainX API Documentation](https://maintainx.dev/)
 - [MaintainX Help Center](https://help.getmaintainx.com/)
-- [API Key Generation](https://intercom.help/maintainx/en/articles/5658848)
+- API Key Generation
 - [Work Orders Guide](https://help.getmaintainx.com/about-work-orders)
 
 ## License

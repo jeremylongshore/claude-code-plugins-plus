@@ -234,7 +234,7 @@ async function diagnoseAgent(agentId: string) {
 
 - [Lindy Status](https://status.lindy.ai)
 - [Lindy Support](https://support.lindy.ai)
-- [API Reference](https://docs.lindy.ai/api)
+- API Reference
 
 ## Next Steps
 

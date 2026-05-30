@@ -88,7 +88,7 @@ Net gain: +75 tests
 
 ## Source Bug Found and Fixed
 
-**File**: `/home/jeremy/000-projects/prtoprompt/src/src/core/sources/local.ts`
+**File**: `
 **Function**: `parseNameStatus`
 **Bug**: The condition `if (statusChar === "R" && parts[2])` only handled renamed files. For `C100\tsrc/original.ts\tsrc/copy.ts` (copied), `parts[1]` is the source path (original), but the code fell through to `else` and returned `filename: parts[1]` (the source), not `parts[2]` (the destination).
 

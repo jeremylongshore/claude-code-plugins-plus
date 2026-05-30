@@ -180,7 +180,7 @@ Bright Data returns error details in response headers:
 
 ```bash
 # Check Bright Data status
-curl -s https://status.brightdata.com/api/v2/status.json | python3 -m json.tool
+curl -s api/v2/status.json | python3 -m json.tool
 
 # Test proxy connectivity
 curl -x "http://brd-customer-${BRIGHTDATA_CUSTOMER_ID}-zone-${BRIGHTDATA_ZONE}:${BRIGHTDATA_ZONE_PASSWORD}@brd.superproxy.io:33335" \
@@ -201,7 +201,7 @@ curl -H "Authorization: Bearer ${BRIGHTDATA_API_TOKEN}" \
 
 ## Resources
 
-- [Bright Data Error Reference](https://docs.brightdata.com/general/account/troubleshooting)
+- Bright Data Error Reference
 - [Status Page](https://status.brightdata.com)
 - [Support Portal](https://brightdata.com/cp/support)
 

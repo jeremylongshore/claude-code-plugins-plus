@@ -56,6 +56,6 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 
 ## Resources
 
-- ADK docs: https://cloud.google.com/vertex-ai/docs/agent-engine
+- ADK docs:
 - Workload Identity (CI/CD): https://cloud.google.com/iam/docs/workload-identity-federation
 - A2A / AgentCard patterns: see `000-docs/6767-a-SPEC-DR-STND-claude-code-plugins-standard.md`
