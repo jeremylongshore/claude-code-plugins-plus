@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "astro": "^5.16.9",
+    "astro": "^6.4.2",
     "@tailwindcss/vite": "^4.1.18",
     "tailwindcss": "^4.1.18"
   }

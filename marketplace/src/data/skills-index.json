@@ -1455,6 +1455,18 @@
       "fallback_for_tools": []
     },
     {
+      "slug": "analyzing-tls-config",
+      "name": "analyzing-tls-config",
+      "description": "Analyze a target's TLS configuration — negotiated protocol version, cipher suite, certificate chain, expiry, and downgrade vectors. Use when: SOC2 auditor flagged your endpoint for \"weak TLS\" but you don't know which control failed (TSC CC6.7 transmission integrity vs CC6.6 encryption) or which cipher is the problem. Threshold: any negotiated TLSv1.0 or TLSv1.1, OR a cipher with RC4 / 3DES / null / EXPORT, OR a cert with under 30 days to expiry, OR a chain that fails hostname verification. Trigger with: \"audit tls\", \"check ssl config\", \"weak tls\", \"analyze tls\".",
+      "version": "3.0.0-dev",
+      "category": "security",
+      "parentPlugin": "penetration-tester",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
       "slug": "anima-ci-integration",
       "name": "anima-ci-integration",
       "description": "'Configure CI/CD pipeline for automated Figma-to-code generation with",
@@ -3519,6 +3531,18 @@
       "fallback_for_tools": []
     },
     {
+      "slug": "auditing-cors-policy",
+      "name": "auditing-cors-policy",
+      "description": "Audit a target's CORS posture — Access-Control-Allow-Origin handling, reflected-origin bypass, credentials+wildcard mismatch, preflight OPTIONS behavior, Vary header correctness. Use when: a third-party integration is failing CORS preflight and someone proposes \"just set Allow-Origin to *\" as the fix, OR your bug-bounty inbox has a credential-reuse exploit chain. Threshold: any reflection of arbitrary Origin into Allow-Origin, Allow-Credentials:true with wildcard origin (browser-rejected combo but server config wrong), missing Vary:Origin on per-origin responses, preflight cached over 86400s, OR Allow-Origin trust of attacker- controlled subdomain pattern. Trigger with: \"audit cors\", \"check cors policy\", \"cors bypass\", \"preflight check\".",
+      "version": "3.0.0-dev",
+      "category": "security",
+      "parentPlugin": "penetration-tester",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
       "slug": "auditing-wallet-security",
       "name": "auditing-wallet-security",
       "description": "'Audit wallet security by analyzing token approvals, permissions, and",
@@ -4821,6 +4845,18 @@
       "version": "1.0.0",
       "category": "security",
       "parentPlugin": "hipaa-compliance-checker",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
+      "slug": "checking-http-security-headers",
+      "name": "checking-http-security-headers",
+      "description": "Audit a target's HTTP security headers — CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, and the Cross-Origin trio (COOP, COEP, CORP). Use when: SOC2 / PCI auditor flagged \"missing security headers\" or a Mozilla Observatory grade is below B, OR you need HSTS preload eligibility for chrome://net-internals. Threshold: any missing required header on production HTML response, HSTS max-age below 31536000s (preload requirement), CSP with 'unsafe-inline' or 'unsafe-eval', X-Frame-Options absent AND CSP frame-ancestors absent (clickjacking), Cache-Control allowing public cache on authenticated endpoint. Trigger with: \"audit security headers\", \"check csp\", \"hsts check\", \"header posture\".",
+      "version": "3.0.0-dev",
+      "category": "security",
+      "parentPlugin": "penetration-tester",
       "requires_env": [],
       "requires_tools": [],
       "fallback_for_env": [],
@@ -8751,6 +8787,18 @@
       "fallback_for_tools": []
     },
     {
+      "slug": "detecting-exposed-secrets-files",
+      "name": "detecting-exposed-secrets-files",
+      "description": "Probe a target for accidentally-served secret-bearing files in the web root — `.git/`, `.env`, `.DS_Store`, backup files, database dumps, key files, CI configs, IDE configs. Use when: post-deploy verification on a new release, or SOC2 auditor asked \"what's reachable in the web root that shouldn't be,\" or a bug-bounty report hints at a leaked file. Threshold: any of the canonical 40+ paths returns 200 OR returns a body matching the expected fingerprint of the file type (e.g., `.git/HEAD` returns content starting with `ref:` or a 40-char hex SHA). Trigger with: \"check exposed files\", \"git directory exposure\", \"env file leak\", \"backup file scan\".",
+      "version": "3.0.0-dev",
+      "category": "security",
+      "parentPlugin": "penetration-tester",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
       "slug": "detecting-infrastructure-drift",
       "name": "detecting-infrastructure-drift",
       "description": "'Execute use when detecting infrastructure drift from desired state.",
@@ -8805,6 +8853,18 @@
       "version": "1.0.0",
       "category": "security",
       "parentPlugin": "sql-injection-detector",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
+      "slug": "detecting-ssl-cert-issues",
+      "name": "detecting-ssl-cert-issues",
+      "description": "Audit a target's TLS certificate beyond protocol/expiry — chain ordering, OCSP stapling, revocation status, Certificate Transparency presence, key-usage flags, and over-broad wildcards. Use when: TLS handshake already passes (skill #1 analyzing-tls-config cleared) but you suspect the cert posture is fragile. Auditors flag this during SOC2 readiness when a renewal slipped or an intermediate was rotated. Threshold: missing OCSP stapling on production, fewer than 2 SCTs in the cert, intermediate served out of order, key usage missing digitalSignature/keyEncipherment, revoked cert presented, or wildcard scope of 2-level (e.g., *.com is rejection; *.api.example.com is fine). Trigger with: \"check cert revocation\", \"audit ocsp\", \"ct log check\", \"cert chain audit\".",
+      "version": "3.0.0-dev",
+      "category": "security",
+      "parentPlugin": "penetration-tester",
       "requires_env": [],
       "requires_tools": [],
       "fallback_for_env": [],
@@ -24375,6 +24435,18 @@
       "fallback_for_tools": []
     },
     {
+      "slug": "probing-dangerous-http-methods",
+      "name": "probing-dangerous-http-methods",
+      "description": "Probe a target for HTTP methods that should not be enabled in production — TRACE (XST attack), unrestricted PUT/DELETE, DEBUG/CONNECT, WebDAV (PROPFIND/MKCOL/COPY/MOVE), and Allow header enumeration. Use when: penetration test rules of engagement include HTTP method testing, OR a load balancer change went live and you suspect default methods were exposed. Threshold: TRACE returns 200 on any path (XST), PUT/DELETE returns anything other than 405/403/404 on a non-API endpoint, OPTIONS Allow header lists DEBUG/CONNECT/PROPFIND, or WebDAV methods succeed. Trigger with: \"audit http methods\", \"trace check\", \"options enumeration\", \"webdav probe\".",
+      "version": "3.0.0-dev",
+      "category": "security",
+      "parentPlugin": "penetration-tester",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
       "slug": "processing-api-batches",
       "name": "processing-api-batches",
       "description": "'Optimize bulk API requests with batching, throttling, and parallel execution.",
@@ -33051,8 +33123,8 @@
       "fallback_for_tools": []
     }
   ],
-  "count": 2754,
-  "generatedAt": "2026-05-25T17:16:03.767Z",
+  "count": 2760,
+  "generatedAt": "2026-05-30T04:35:54.440Z",
   "categories": [
     "ai-agency",
     "ai-ml",

@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-05-25T17:16:04.784Z",
+    "generated": "2026-05-30T04:35:55.081Z",
     "source": "marketplace.extended.json",
     "generator": "scripts/sync-catalog.mjs"
   },
   "stats": {
     "totalPlugins": 431,
-    "totalSkills": 2768,
+    "totalSkills": 2774,
     "totalCommands": 81,
     "pluginsWithSkills": 404,
     "byCategory": {
@@ -44,7 +44,7 @@
     },
     "featured": 7,
     "new": 410,
-    "generatedAt": "2026-05-25T17:16:04.784Z"
+    "generatedAt": "2026-05-30T04:35:55.081Z"
   },
   "plugins": [
     {
@@ -5866,7 +5866,7 @@
         "exploitation"
       ],
       "hasSkills": true,
-      "skillCount": 1,
+      "skillCount": 7,
       "commandCount": 0,
       "installCommand": "/plugin install penetration-tester",
       "sourcePath": "./plugins/security/penetration-tester",

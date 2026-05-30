@@ -41,19 +41,26 @@
     "pnpm": ">=9.0.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.5.2",
-    "@commitlint/config-conventional": "^20.5.0",
-    "@eslint/js": "^9.39.2",
+    "@commitlint/cli": "^20.5.3",
+    "@commitlint/config-conventional": "^20.5.3",
+    "@eslint/js": "^9.39.4",
     "@intentsolutions/audit-harness": "^0.1.0",
-    "@types/node": "^20.19.27",
+    "@types/node": "^20.19.41",
     "archiver": "^7.0.1",
-    "eslint": "^9.39.2",
+    "eslint": "^9.39.4",
     "husky": "^9.1.7",
     "js-yaml": "^4.1.1",
     "lint-staged": "^16.4.0",
-    "prettier": "^3.7.4",
-    "typescript": "^5.5.0",
-    "typescript-eslint": "^8.59.1",
-    "vitest": "^2.0.0"
+    "prettier": "^3.8.3",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.60.0",
+    "vitest": "^2.1.9"
+  },
+  "pnpm": {
+    "overrides": {
+      "esbuild": ">=0.25.0",
+      "vite": ">=6.4.2",
+      "qs": ">=6.15.2"
+    }
   }
 }
