@@ -109,6 +109,13 @@ coverage/
 # metrics, quality gates, beads <-> GH <-> Plane mirror, rollback procedure,
 # and lessons-learned.
 !000-docs/*-RL-REPT-*.md
+# Databricks pack research catalog — explicitly published as the public design
+# record backing the v2-rebuild community design review (GH issues #789-#795).
+# Both the issue bodies and any external reply links into this directory; the
+# files must be tracked for the cross-references to resolve. See repo
+# CLAUDE.md § "Auto-cowork contract" + Doc Filing Standard v4.3.
+!plugins/saas-packs/databricks-pack/000-docs/
+!plugins/saas-packs/databricks-pack/000-docs/**
 website/
 
 # Internal planning and research documents (do not commit to public repo)
