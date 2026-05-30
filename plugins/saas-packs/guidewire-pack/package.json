@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/guidewire-pack",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "Claude Code skill pack for Guidewire InsuranceSuite — 10 production-engineer skills covering Cloud API auth, SDK patterns, local dev loop, PolicyCenter and ClaimCenter workflows, security/RBAC, observability, CI/CD, event integrations, and migration/upgrade. Each skill addresses real production failure modes.",
   "main": "README.md",
   "type": "module",

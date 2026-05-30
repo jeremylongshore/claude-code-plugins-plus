@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/brightdata-pack",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Claude Code skill pack for Bright Data - 18 skills covering web data collection, proxy networks, and data pipelines",
   "main": "README.md",
   "type": "module",

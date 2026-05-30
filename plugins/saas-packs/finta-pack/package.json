@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/finta-pack",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Claude Code skill pack for Finta - 18 skills covering fundraising CRM, investor relations, and startup finance",
   "main": "README.md",
   "type": "module",
