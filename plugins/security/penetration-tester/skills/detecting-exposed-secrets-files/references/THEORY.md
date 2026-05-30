@@ -30,6 +30,7 @@ git clone https://example.com/.git/  ./reconstructed-source
 ```
 
 History reveals:
+
 - API keys in old commits (before the `.env` was added to `.gitignore`)
 - Hardcoded credentials someone removed but didn't rebase out
 - Repo URL + branch names + commit messages → understanding the
@@ -38,6 +39,7 @@ History reveals:
 - Source code (obviously) → static analysis targets
 
 Three minimal probes that confirm exposure:
+
 - `.git/HEAD` — should be a small text file starting with `ref:` or a
   40-char hex SHA
 - `.git/config` — `[remote "origin"]` block reveals the upstream
@@ -56,6 +58,7 @@ sensitive thing the application has: API keys, database connection
 strings, signing secrets, third-party credentials.
 
 A leaked `.env`:
+
 - Lets an attacker authenticate as the app to upstream services
   (Stripe, Twilio, OpenAI, etc.)
 - Reveals database credentials if `DATABASE_URL` is present
@@ -78,6 +81,7 @@ because the principle of least privilege is not the default.
 ### Private keys (`id_rsa`, `*.pem`, `*.key`)
 
 SSH private keys, TLS private keys, or signing keys. Exposure means:
+
 - An attacker can authenticate as the server to other systems (lateral
   movement)
 - An attacker can MITM TLS connections by presenting the leaked cert +
@@ -123,6 +127,7 @@ module. Common in `phpinfo.php`, `info.php`, `test.php` files left
 behind from initial server setup.
 
 Includes:
+
 - Document root path (informs directory traversal)
 - Loaded extensions (informs exploit selection)
 - Often: `SERVER` variables including request headers and cookies
@@ -133,6 +138,7 @@ Fingerprint: HTML body containing `PHP Version` heading.
 ### IDE configs (`.idea/`, `.vscode/`)
 
 Per-project IDE settings. Low severity but information disclosure:
+
 - Run configurations (database connection strings, env vars used during dev)
 - Recent file lists (informs which files the dev was working on)
 - Inspection scope (informs which directories have application code)

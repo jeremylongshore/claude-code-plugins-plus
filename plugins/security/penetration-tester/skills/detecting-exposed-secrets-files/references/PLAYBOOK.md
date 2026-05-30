@@ -67,11 +67,13 @@ Add a managed-rule-group or custom rule:
 ```
 http.request.uri.path matches "/\\.(git|env|aws|ssh|svn|hg|bzr)"
 ```
+
 Action: Block.
 
 ## Pattern 2 — Block backup / dump file extensions
 
 ### nginx
+
 ```nginx
 location ~* \.(sql|bak|dump|swp|swo|orig|backup|tar\.gz|tar\.bz2|zip|7z|rar)$ {
     deny all;
@@ -80,6 +82,7 @@ location ~* \.(sql|bak|dump|swp|swo|orig|backup|tar\.gz|tar\.bz2|zip|7z|rar)$ {
 ```
 
 ### Apache
+
 ```apache
 <FilesMatch "\.(sql|bak|dump|swp|swo|orig|backup|tar\.gz|tar\.bz2|zip|7z|rar)$">
     Require all denied
@@ -87,6 +90,7 @@ location ~* \.(sql|bak|dump|swp|swo|orig|backup|tar\.gz|tar\.bz2|zip|7z|rar)$ {
 ```
 
 ### Caddy
+
 ```caddy
 @backups path *.sql *.bak *.dump *.swp *.tar.gz *.zip
 respond @backups 404
@@ -95,6 +99,7 @@ respond @backups 404
 ## Pattern 3 — Block private key extensions
 
 ### nginx
+
 ```nginx
 location ~* \.(pem|key|p12|pfx|jks|crt|cer|csr|kdb|kbx)$ {
     deny all;
@@ -109,6 +114,7 @@ with a content-type check rather than relying on the extension.
 ## Pattern 4 — Block development metadata
 
 ### nginx
+
 ```nginx
 location ~* /(phpinfo|info|test)\.php$ {
     deny all;
@@ -151,6 +157,7 @@ needs; the runtime stage gets only the `dist/` artifact. `.git/`,
 `.env`, `node_modules/`, etc., never reach the runtime image.
 
 ### .dockerignore
+
 ```
 .git
 .env*
@@ -236,18 +243,21 @@ gets re-verified on commit).
 ## After remediation — assume compromise
 
 If `.git/` was exposed, assume:
+
 - Every credential ever committed to the repo, including ones in past
   commits that were later removed, is compromised. Rotate them all.
 - The full source code is in the attacker's hands. Treat any
   authentication / authorization logic as if it had been read.
 
 If `.env` was exposed:
+
 - Rotate every credential in the file
 - Audit logs for any API call against those credentials in the
   past window from when the deploy happened to when you rotated
 - Notify partners whose API keys you held
 
 If a backup `.sql` was exposed:
+
 - Assume the database is compromised in the state it was in when
   the backup was taken
 - Trigger your data-breach response: regulator notification,

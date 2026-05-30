@@ -52,7 +52,7 @@ that's actually the application's SPA index page catching the route.
 | Finding | Severity | Threshold | Affected control |
 |---|---|---|---|
 | `.git/HEAD` reachable + valid content | **CRITICAL** | 200 + body matches `ref:` or 40-char SHA | NIST 800-53 SC-28 |
-| `.git/config` reachable + repo URL leaked | **CRITICAL** | 200 + body matches `[remote ` | NIST 800-53 SC-28 |
+| `.git/config` reachable + repo URL leaked | **CRITICAL** | 200 + body matches `[remote` | NIST 800-53 SC-28 |
 | `.env` reachable + dotenv format | **CRITICAL** | 200 + body matches `KEY=VALUE` lines | OWASP A05:2021 |
 | `*.sql` / `*.dump` / `backup.*` reachable | **CRITICAL** | 200 + body looks like SQL or binary dump | CWE-538 |
 | `.aws/credentials` reachable | **CRITICAL** | 200 + body matches `[default]\naws_access_key_id` | CWE-200 |
