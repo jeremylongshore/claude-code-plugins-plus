@@ -43,7 +43,7 @@ jobs:
         with:
           args: >-
             --config .lychee.toml
-            --root-dir /github/workspace
+            --root-dir ${{ github.workspace }}
             --no-progress
             --cache
             --max-cache-age 1d
