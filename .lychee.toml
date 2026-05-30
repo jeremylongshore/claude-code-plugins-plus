@@ -1,0 +1,64 @@
+# lychee config — repo-side broken-link checker
+# Invoked by .github/workflows/check-links.yml on PRs touching .md files
+# and on the weekly schedule. Local: `lychee --config .lychee.toml '**/*.md'`
+
+# Skip these directories entirely
+exclude_path = [
+  "node_modules",
+  ".git",
+  "marketplace/dist",
+  "marketplace/.astro",
+  "marketplace/.cache",
+  "marketplace/public/downloads",
+  "plugins/*/dist",
+  "plugins/*/node_modules",
+  "freshie/cache",
+  ".audit-harness",
+  "coverage",
+  ".pnpm-store",
+]
+
+# HTTP statuses to treat as success.
+# 403 / 429 are routinely returned by GitHub, Twitter/X, and other rate-limiting
+# hosts even when the link is fine — accept them rather than spam false positives.
+accept = [200, 206, 301, 302, 304, 403, 429]
+
+# Per-request timeout (seconds)
+timeout = 20
+
+# Allow up to N redirects before giving up
+max_redirects = 10
+
+# Cache successful checks for a day so re-runs don't re-hit every host
+cache = true
+max_cache_age = "1d"
+
+# Be polite — don't fire 100 concurrent requests at one host
+max_concurrency = 4
+
+# Skip these URL patterns entirely
+exclude = [
+  # Local dev hosts
+  "^https?://localhost",
+  "^https?://127\\.0\\.0\\.1",
+  "^https?://\\[::1\\]",
+  # Tailnet hosts (intentsolutions VPS internal)
+  "^https?://intentsolutions(\\.|:)",
+  "^https?://167\\.86\\.106\\.29",
+  # Pure anchor links (no path component)
+  "^#",
+  # Example placeholder domains
+  "^https?://example\\.(com|org|net)",
+  "^https?://target\\.example",
+  "^https?://your-",
+  # Placeholder schemes from code samples
+  "^mailto:.*example",
+  # Known-flaky external sources we cite in references
+  # (add as discovered; document why per entry)
+]
+
+# Respect Cache-Control / 429 retry-after
+retry_wait_time = 2
+
+# User-agent so target hosts can identify us in their logs
+user_agent = "lychee/intentsolutions-claude-code-plugins-link-check"

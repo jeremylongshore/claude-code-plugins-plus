@@ -1,0 +1,73 @@
+name: Check Live Issue/PR Body Links
+
+# Audits live GitHub issue + PR bodies for broken repo-relative links.
+# Closes the gap that bit us on 2026-05-30 (issue #789 cited a gitignored
+# 000-docs/ path; lychee couldn't catch it because the broken reference
+# lived in a GitHub issue body, not a committed .md file).
+#
+# Runs weekly + on demand. Uploads the report as a build artifact.
+# Failure does not block any PR — this is a watchdog, not a gate. If
+# the report shows broken links, fix them by either publishing the
+# referenced path (gitignore re-include + commit) or by updating the
+# issue/PR body to point elsewhere.
+
+on:
+  schedule:
+    # Mondays 06:00 UTC — runs an hour after the repo-side lychee job.
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+    inputs:
+      include_closed:
+        description: 'Include closed issues + PRs in the audit'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run live-body audit
+        id: audit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set +e
+          ARGS=""
+          if [ "${{ inputs.include_closed }}" = "true" ]; then
+            ARGS="--closed"
+          fi
+          node scripts/check-issue-body-links.mjs $ARGS \
+            > issue-body-link-report.md 2> audit.stderr
+          AUDIT_EXIT=$?
+          cat audit.stderr
+          echo "audit_exit=${AUDIT_EXIT}" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue-body-link-report-${{ github.run_id }}
+          path: issue-body-link-report.md
+          retention-days: 90
+
+      - name: Surface failure to summary
+        if: steps.audit.outputs.audit_exit != '0'
+        run: |
+          {
+            echo "## Live issue/PR body link audit found broken references"
+            echo ""
+            cat issue-body-link-report.md
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,63 @@
+name: Check Markdown Links
+
+# Runs lychee against every .md file in the repo. Catches broken intra-repo
+# relative links AND broken external links. Required on PRs touching .md;
+# also runs weekly on a schedule so external-host rot gets surfaced.
+#
+# Gap this closes: prior to 2026-05-30 the repo had no broken-link checker.
+# A link in issue #789 (and later in PR #805's pre-merge body) pointed at a
+# gitignored file path; no CI gate caught it because no link checker existed.
+# This workflow + .lychee.toml at the repo root close the repo-side half of
+# that gap. The live-issue-body half is closed by check-issue-body-links.yml.
+
+on:
+  pull_request:
+    paths:
+      - '**/*.md'
+      - '.lychee.toml'
+      - '.github/workflows/check-links.yml'
+  schedule:
+    # Mondays 05:00 UTC — catch external-host rot weekly.
+    - cron: '0 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore lychee cache
+        uses: actions/cache@v4
+        with:
+          path: .lycheecache
+          key: cache-lychee-${{ github.sha }}
+          restore-keys: cache-lychee-
+
+      - name: Run lychee
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --config .lychee.toml
+            --base .
+            --no-progress
+            --cache
+            --max-cache-age 1d
+            './**/*.md'
+            './**/*.mdx'
+          # Fail PR builds; on schedule, upload report and surface failure non-fatally
+          fail: ${{ github.event_name == 'pull_request' }}
+          output: ./lychee-report.md
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lychee-report-${{ github.run_id }}
+          path: ./lychee-report.md
+          if-no-files-found: ignore
+          retention-days: 30
