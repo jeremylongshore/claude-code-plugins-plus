@@ -35,7 +35,7 @@ if str(_PLUGIN_ROOT) not in sys.path:
 
 from lib.authz_check import require_authorization  # noqa: E402
 from lib.finding import Finding, Severity  # noqa: E402
-from lib.http_client import make_session, safe_get, safe_options  # noqa: E402
+from lib.http_client import make_session, safe_options  # noqa: E402
 from lib.report import emit, exit_code  # noqa: E402
 
 SKILL_ID = "auditing-cors-policy"

@@ -29,8 +29,6 @@ References:
 from __future__ import annotations
 
 import argparse
-import socket
-import ssl
 import sys
 import urllib.parse
 from pathlib import Path
@@ -250,7 +248,7 @@ def _check_scts(chain: list[str], target: str) -> list[Finding]:
     if leaf is None:
         return []
     try:
-        from cryptography.x509 import oid, PrecertificateSignedCertificateTimestamps
+        from cryptography.x509 import oid
 
         ext = leaf.extensions.get_extension_for_oid(oid.ExtensionOID.PRECERT_SIGNED_CERTIFICATE_TIMESTAMPS)
         sct_count = len(ext.value)
