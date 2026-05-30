@@ -15,7 +15,7 @@ SKILL.md "Step 1 — Confirm Authorization" section) to ask the user
 verbatim:
 
 > "Do you have authorization to perform security testing on this target?
->  I need confirmation before proceeding."
+> I need confirmation before proceeding."
 
 If the user says no, or is unsure, Claude refuses to proceed and points
 the user at the ROE template below to obtain written authorization

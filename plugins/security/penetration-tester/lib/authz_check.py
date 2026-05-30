@@ -95,7 +95,6 @@ def require_authorization(target: str, authorized_flag: bool) -> None:
         "       Active scanning requires explicit authorization attestation.\n"
         "       Re-run with --authorized after confirming with the target owner\n"
         "       that you have written permission to test.\n"
-        "       See references/AUTHORIZATION.md for the attestation pattern.\n"
-        % target
+        "       See references/AUTHORIZATION.md for the attestation pattern.\n" % target
     )
     raise SystemExit(2)

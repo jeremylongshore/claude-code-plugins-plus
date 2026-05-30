@@ -3,6 +3,7 @@
 ## Disable TRACE
 
 ### nginx
+
 ```nginx
 server {
     listen 443 ssl http2;
@@ -20,6 +21,7 @@ The `if` directive is generally discouraged in nginx, but this is the
 canonical pattern for method filtering and is safe.
 
 ### Apache (httpd 2.4)
+
 ```apache
 TraceEnable Off
 ```
@@ -27,11 +29,13 @@ TraceEnable Off
 This is a server-global directive; place it in the main config.
 
 ### IIS
+
 1. IIS Manager → site → Request Filtering → HTTP Verbs tab.
 2. Click "Deny Verb" → enter `TRACE`.
 3. Apply.
 
 ### AWS ALB
+
 ALB doesn't expose method-level filtering directly. Use a Lambda@Edge
 function or WAF rule:
 
@@ -45,9 +49,11 @@ function or WAF rule:
 ```
 
 ### Cloudflare WAF
+
 ```
 http.request.method in {"TRACE" "CONNECT" "DEBUG" "PROPFIND" "MKCOL" "COPY" "MOVE"}
 ```
+
 Action: Block.
 
 ## Disable CONNECT
@@ -56,17 +62,22 @@ CONNECT should never be enabled on a public-facing server. If your
 audit found it enabled, the cause is one of:
 
 ### Apache with mod_proxy as forward proxy
+
 Bad:
+
 ```apache
 ProxyRequests On
 ```
+
 Fix: change to `ProxyRequests Off`. The reverse-proxy `ProxyPass` and
 `ProxyPassReverse` directives still work without it.
 
 ### nginx misconfigured as forward proxy
+
 Check for `proxy_method CONNECT` anywhere in config and remove.
 
 ### Squid or other proxy software exposed publicly
+
 Move the proxy behind authentication or behind a VPN; don't expose it
 publicly.
 
@@ -84,6 +95,7 @@ Express dev middleware exposes DEBUG only in non-production mode.
 ## Disable PUT and DELETE on non-API paths
 
 ### nginx
+
 ```nginx
 location / {
     limit_except GET POST HEAD {
@@ -98,6 +110,7 @@ location /api/ {
 ```
 
 ### Apache
+
 ```apache
 <Location />
     <LimitExcept GET POST HEAD>
@@ -111,8 +124,10 @@ location /api/ {
 ```
 
 ### Express (Node.js)
+
 By default, Express only handles routes you register. To explicitly
 block:
+
 ```js
 app.all('*', (req, res, next) => {
     const allowed = ['GET', 'POST', 'HEAD', 'OPTIONS'];
@@ -126,18 +141,22 @@ app.all('*', (req, res, next) => {
 ## Disable WebDAV
 
 ### nginx
+
 Check vhost for any `dav_methods` directive:
+
 ```nginx
 location / {
     dav_methods off;  # explicit
 }
 ```
+
 The default is `off`, but some sample configs enable it implicitly.
 
 If your nginx was compiled with `--with-http_dav_module`, recompile
 without it or move to a packaged binary that doesn't include it.
 
 ### Apache
+
 ```apache
 # Comment out or remove:
 # LoadModule dav_module modules/mod_dav.so
@@ -152,10 +171,12 @@ without it or move to a packaged binary that doesn't include it.
 ```
 
 ### IIS
+
 Server Manager → Roles & Features → uncheck "WebDAV Publishing" under
 Web Server (IIS) → Common HTTP Features. Restart IIS.
 
 Or via PowerShell:
+
 ```powershell
 Uninstall-WindowsFeature -Name Web-DAV-Publishing
 ```
@@ -166,7 +187,9 @@ The right approach is to let the framework compute Allow from
 registered routes; most modern frameworks do this by default.
 
 ### nginx custom Allow response
+
 If you need to override:
+
 ```nginx
 location /api/users {
     if ($request_method = OPTIONS) {
@@ -205,6 +228,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/skills/probing-dangerous-http-methods/scripts/prob
     --authorized \
     --min-severity medium
 ```
+
 Expected: exit 0, no MEDIUM-or-higher findings. INFO findings about
 "OPTIONS Allow discloses unused methods" may persist if your framework's
 default Allow is broad; consider customizing per the section above.

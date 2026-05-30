@@ -3,6 +3,7 @@
 ## Baseline security-header bundle (every site)
 
 ### nginx
+
 ```nginx
 server {
     listen 443 ssl http2;
@@ -37,6 +38,7 @@ The `always` flag is critical — without it nginx skips the headers on
 non-2xx responses, leaving error pages unprotected.
 
 ### Caddy
+
 ```caddy
 example.com {
     header {
@@ -52,6 +54,7 @@ example.com {
 ```
 
 ### Apache (.htaccess or vhost)
+
 ```apache
 <IfModule mod_headers.c>
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
@@ -67,6 +70,7 @@ ServerSignature Off
 ```
 
 ### Express (Node.js) via helmet
+
 ```js
 const helmet = require('helmet');
 app.use(helmet({
@@ -88,6 +92,7 @@ app.use((req, res, next) => {
 ```
 
 ### FastAPI (Python)
+
 ```python
 from starlette.middleware.base import BaseHTTPMiddleware
 
@@ -105,6 +110,7 @@ app.add_middleware(SecurityHeadersMiddleware)
 ```
 
 ### Rails
+
 ```ruby
 # config/application.rb
 config.action_dispatch.default_headers.merge!(
@@ -128,6 +134,7 @@ Rails.application.config.content_security_policy_report_only = true
 ## CSP rollout — report-only to enforce
 
 ### Step 1 — report-only with violation endpoint
+
 Use the snippets above to ship `Content-Security-Policy-Report-Only`
 with a `report-uri`. Set up the endpoint to log violations:
 
@@ -141,6 +148,7 @@ async def csp_report(request: Request):
 ```
 
 ### Step 2 — collect for 2-4 weeks
+
 Group violations by `blocked-uri` and `violated-directive`. Categorize:
 
 - Legitimate inline scripts your own code includes → migrate to
@@ -149,11 +157,13 @@ Group violations by `blocked-uri` and `violated-directive`. Categorize:
 - Genuine injection attempts → keep blocked.
 
 ### Step 3 — tighten policy and switch to enforcing
+
 ```nginx
 add_header Content-Security-Policy "default-src 'self'; script-src 'self' https://cdn.example.com; style-src 'self' 'sha256-...'; report-uri /csp-report" always;
 ```
 
 ### Step 4 — monitor for regressions
+
 Keep the report-uri. Any new violation should trigger a follow-up.
 
 ## HSTS preload submission checklist
@@ -197,5 +207,6 @@ python3 ${CLAUDE_PLUGIN_ROOT}/skills/checking-http-security-headers/scripts/chec
     --authorized \
     --min-severity medium
 ```
+
 Expected: exit 0, no MEDIUM-or-higher findings. Cross-check with Mozilla
 Observatory (https://observatory.mozilla.org/) — target grade A+.

@@ -25,9 +25,7 @@ from typing import Any
 import requests
 
 
-USER_AGENT = (
-    "penetration-tester/3.0 (+https://github.com/jeremylongshore/claude-code-plugins)"
-)
+USER_AGENT = "penetration-tester/3.0 (+https://github.com/jeremylongshore/claude-code-plugins)"
 
 
 def make_session(timeout: float = 10.0, max_redirects: int = 5) -> requests.Session:
@@ -50,9 +48,7 @@ def make_session(timeout: float = 10.0, max_redirects: int = 5) -> requests.Sess
     return sess
 
 
-def safe_get(
-    sess: requests.Session, url: str, timeout: float = 10.0, **kwargs: Any
-) -> requests.Response | None:
+def safe_get(sess: requests.Session, url: str, timeout: float = 10.0, **kwargs: Any) -> requests.Response | None:
     """GET with timeout + connection-error capture.
 
     Returns None on connection error / DNS failure / timeout. Caller can
@@ -65,9 +61,7 @@ def safe_get(
         return None
 
 
-def safe_head(
-    sess: requests.Session, url: str, timeout: float = 10.0, **kwargs: Any
-) -> requests.Response | None:
+def safe_head(sess: requests.Session, url: str, timeout: float = 10.0, **kwargs: Any) -> requests.Response | None:
     """HEAD with timeout + connection-error capture."""
     try:
         return sess.head(url, timeout=timeout, allow_redirects=True, **kwargs)
@@ -75,9 +69,7 @@ def safe_head(
         return None
 
 
-def safe_options(
-    sess: requests.Session, url: str, timeout: float = 10.0, **kwargs: Any
-) -> requests.Response | None:
+def safe_options(sess: requests.Session, url: str, timeout: float = 10.0, **kwargs: Any) -> requests.Response | None:
     """OPTIONS with timeout + connection-error capture.
 
     Used by probing-dangerous-http-methods skill to detect allowed-methods

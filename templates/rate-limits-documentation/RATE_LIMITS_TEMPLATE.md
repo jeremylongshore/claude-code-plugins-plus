@@ -12,11 +12,11 @@
 
 ### Quick Comparison
 
-| Service | Paid Alternative | FREE (This Plugin) |
-|---------|-----------------|-------------------|
-| **[Service Category]** | [Paid Service] ($XX/mo) | [Free Service]: **$0** |
-| **[Second Category]** | [Paid Service 2] ($XX/mo) | [Free Service 2]: **$0** |
-| **[Third Category]** | [Paid Service 3] ($XX/mo) | [Free Service 3]: **$0** |
+| Service                | Paid Alternative          | FREE (This Plugin)       |
+| ---------------------- | ------------------------- | ------------------------ |
+| **[Service Category]** | [Paid Service] ($XX/mo)   | [Free Service]: **$0**   |
+| **[Second Category]**  | [Paid Service 2] ($XX/mo) | [Free Service 2]: **$0** |
+| **[Third Category]**   | [Paid Service 3] ($XX/mo) | [Free Service 3]: **$0** |
 
 **Annual Savings: $X,XXX-X,XXX** using free [service type] instead of paid alternatives.
 
@@ -29,6 +29,7 @@
 **What:** [Brief description of what this service provides]
 
 **Rate Limits:**
+
 - **Requests/minute:** [X-Y] (or "Unlimited" with soft limit notes)
 - **Daily requests:** [X,XXX] or "Unlimited"
 - **Registration:** ❌ Not required / ✅ Required
@@ -36,6 +37,7 @@
 - **IP tracking:** ⚠️ [Description of tracking/bans]
 
 **API Endpoints (All FREE):**
+
 ```bash
 # [Endpoint description]
 https://api.[service].com/[path]
@@ -45,6 +47,7 @@ https://api.[service].com/[another-path]
 ```
 
 **Setup:**
+
 ```json
 {
   "dataSources": {
@@ -71,6 +74,7 @@ https://api.[service].com/[another-path]
 [Repeat structure above for each major service]
 
 **Rate Limits:**
+
 - **Requests/minute:** XX
 - **Daily requests:** X,XXX
 - **Registration:** [Yes/No with details]
@@ -81,11 +85,11 @@ https://api.[service].com/[another-path]
 
 ## Registration & Setup Requirements
 
-| Provider | Email Signup | API Key | Payment Method | IP Tracking | Notes |
-|----------|--------------|---------|----------------|-------------|-------|
-| **[Service 1]** | ❌ No | ❌ No | ❌ No | ⚠️ Soft limits | [Additional notes] |
-| **[Service 2]** | ✅ Yes | ✅ Yes | ❌ No (free tier) | ✅ Yes (X/sec) | [Setup link] |
-| **[Service 3]** | ✅ Yes | ✅ Yes | ✅ Required | ✅ Yes | [Pricing notes] |
+| Provider        | Email Signup | API Key | Payment Method    | IP Tracking    | Notes              |
+| --------------- | ------------ | ------- | ----------------- | -------------- | ------------------ |
+| **[Service 1]** | ❌ No        | ❌ No   | ❌ No             | ⚠️ Soft limits | [Additional notes] |
+| **[Service 2]** | ✅ Yes       | ✅ Yes  | ❌ No (free tier) | ✅ Yes (X/sec) | [Setup link]       |
+| **[Service 3]** | ✅ Yes       | ✅ Yes  | ✅ Required       | ✅ Yes         | [Pricing notes]    |
 
 **Best No-Signup Combo:** [Service 1] + [Service 2] = 100% free, zero registration
 
@@ -256,6 +260,7 @@ data_2 = cache.get_cached('query_key', lambda: ...)
 ```
 
 **Caching Strategy:**
+
 - **[Data Type 1]:** [X]-minute cache ([reasoning])
 - **[Data Type 2]:** [Y]-minute cache ([reasoning])
 - **[Data Type 3]:** [Z]-minute cache ([reasoning])
@@ -269,6 +274,7 @@ data_2 = cache.get_cached('query_key', lambda: ...)
 ### Paid Approach (Premium Subscriptions)
 
 **Annual Costs:**
+
 - **[Service 1]** ([use case]): $XX/mo → $XXX/year
 - **[Service 2]** ([use case]): $XX/mo → $XXX/year
 - **[Service 3]** ([use case]): $XX/mo → $XXX/year
@@ -278,6 +284,7 @@ data_2 = cache.get_cached('query_key', lambda: ...)
 ### Free Approach (This Plugin)
 
 **Annual Costs:**
+
 - **[Free Service 1]:** $0
 - **[Free Service 2]:** $0
 - **[Free Service 3]:** $0
@@ -374,6 +381,7 @@ const config = DATA_SOURCES[process.env.NODE_ENV || 'development'];
 ### Validation Checklist
 
 Before committing, verify:
+
 - [ ] All placeholders replaced with real values
 - [ ] Rate limits verified from official documentation
 - [ ] Code examples tested and working
@@ -386,6 +394,7 @@ Before committing, verify:
 ### Tom's Requirements (Discussion #148)
 
 Ensure you address these specific concerns:
+
 - ✅ **Registration requirements** - Clearly state if email/payment needed
 - ✅ **IP restrictions** - Document IP-based rate limiting or soft bans
 - ✅ **Multi-agent coordination** - Show how agents can share one IP resourcefully
@@ -398,6 +407,7 @@ Ensure you address these specific concerns:
 ## Examples of Plugins Using This Template
 
 **Best implementations:**
+
 - `plugins/ai-ml/ollama-local-ai/README.md` - Hardware-based constraints
 - `plugins/finance/openbb-terminal/README.md` - Financial API rate limits
 - `plugins/crypto/defi-yield-optimizer/README.md` - DeFi data sources

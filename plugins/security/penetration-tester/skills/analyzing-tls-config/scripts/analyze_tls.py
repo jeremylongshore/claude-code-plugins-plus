@@ -116,9 +116,7 @@ def _cert_expiry_dt(cert: dict) -> datetime.datetime | None:
         return None
     # Format: 'May 29 15:30:00 2026 GMT'
     try:
-        return datetime.datetime.strptime(not_after, "%b %d %H:%M:%S %Y %Z").replace(
-            tzinfo=datetime.timezone.utc
-        )
+        return datetime.datetime.strptime(not_after, "%b %d %H:%M:%S %Y %Z").replace(tzinfo=datetime.timezone.utc)
     except ValueError:
         return None
 
@@ -180,9 +178,7 @@ def _check_cipher(cipher: tuple, target: str) -> list[Finding]:
                     ),
                     cwe_id="CWE-327",
                     affected_control="NIST 800-52r2 §3.3.1",
-                    references=(
-                        "https://ssl-config.mozilla.org/",
-                    ),
+                    references=("https://ssl-config.mozilla.org/",),
                 )
             )
             break
@@ -344,15 +340,13 @@ def _check_hostname(cert: dict, host: str, target: str) -> list[Finding]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="TLS configuration analyzer")
     parser.add_argument("url", help="Target URL (https://...) or host[:port]")
-    parser.add_argument("--authorized", action="store_true",
-                        help="Attest authorization for non-local targets (required)")
-    parser.add_argument("--port", type=int, default=None,
-                        help="Target port (overrides URL port; default 443)")
+    parser.add_argument(
+        "--authorized", action="store_true", help="Attest authorization for non-local targets (required)"
+    )
+    parser.add_argument("--port", type=int, default=None, help="Target port (overrides URL port; default 443)")
     parser.add_argument("--output", default=None, help="Output file (default: stdout)")
     parser.add_argument("--format", choices=("json", "jsonl", "markdown"), default="markdown")
-    parser.add_argument("--min-severity",
-                        choices=("critical", "high", "medium", "low", "info"),
-                        default="info")
+    parser.add_argument("--min-severity", choices=("critical", "high", "medium", "low", "info"), default="info")
     parser.add_argument("--timeout", type=float, default=10.0)
     args = parser.parse_args(argv)
 
@@ -373,26 +367,28 @@ def main(argv: list[str] | None = None) -> int:
         trusted_cert, cipher, version, _ = _grab_cert_and_cipher(host, port, args.timeout)
     except ssl.SSLCertVerificationError as exc:
         # Chain trust failed — emit finding + fall back to untrusted handshake
-        findings.append(Finding(
-            skill_id=SKILL_ID,
-            title="Certificate chain does not validate to system trust store",
-            severity=Severity.MEDIUM,
-            target=target_display,
-            detail=(
-                f"openssl/ssl rejected the chain: {exc!s}. Common causes: "
-                "self-signed certificate, intermediate certificate missing "
-                "from the server response, or expired/revoked root in the "
-                "server's chain."
-            ),
-            remediation=(
-                "Verify the server returns the full chain (cert + all "
-                "intermediates, NOT the root). Run `openssl s_client -connect "
-                f"{target_display} -showcerts` and confirm each intermediate is "
-                "present. Reissue with a trusted CA if currently self-signed."
-            ),
-            cwe_id="CWE-295",
-            affected_control="Mozilla TLS Guidelines",
-        ))
+        findings.append(
+            Finding(
+                skill_id=SKILL_ID,
+                title="Certificate chain does not validate to system trust store",
+                severity=Severity.MEDIUM,
+                target=target_display,
+                detail=(
+                    f"openssl/ssl rejected the chain: {exc!s}. Common causes: "
+                    "self-signed certificate, intermediate certificate missing "
+                    "from the server response, or expired/revoked root in the "
+                    "server's chain."
+                ),
+                remediation=(
+                    "Verify the server returns the full chain (cert + all "
+                    "intermediates, NOT the root). Run `openssl s_client -connect "
+                    f"{target_display} -showcerts` and confirm each intermediate is "
+                    "present. Reissue with a trusted CA if currently self-signed."
+                ),
+                cwe_id="CWE-295",
+                affected_control="Mozilla TLS Guidelines",
+            )
+        )
         cert_fallback, cipher, version = _grab_untrusted_cert(host, port, args.timeout)
         trusted_cert = cert_fallback
     except (socket.error, ssl.SSLError) as exc:

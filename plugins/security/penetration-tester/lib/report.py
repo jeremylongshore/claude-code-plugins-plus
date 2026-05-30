@@ -23,9 +23,7 @@ from .finding import Finding, Severity
 
 def to_json(findings: Iterable[Finding]) -> str:
     """Pretty-printed JSON array of findings, sorted by severity desc then title."""
-    sorted_findings = sorted(
-        findings, key=lambda f: (-f.severity.numeric, f.title)
-    )
+    sorted_findings = sorted(findings, key=lambda f: (-f.severity.numeric, f.title))
     return json.dumps([f.to_dict() for f in sorted_findings], indent=2)
 
 

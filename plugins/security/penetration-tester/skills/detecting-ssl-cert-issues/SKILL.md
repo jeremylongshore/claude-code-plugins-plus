@@ -75,7 +75,7 @@ future key compromise.
 Active scan; ask the user verbatim:
 
 > "Do you have authorization to perform TLS testing on this target?
->  I need confirmation before proceeding."
+> I need confirmation before proceeding."
 
 ### Step 2 — Run the scanner
 

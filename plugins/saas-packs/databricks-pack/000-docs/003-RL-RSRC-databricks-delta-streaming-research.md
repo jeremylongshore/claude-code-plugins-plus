@@ -49,6 +49,7 @@ Engineer's gut reaction: "but my MERGEs touch different user_ids — Liquid Clus
 - https://community.databricks.com/t5/data-engineering/concurrentappendexception-liquid-clustered-table-different-row/td-p/76916
 - https://kb.databricks.com/delta/insert-operation-fails-while-trying-to-execute-multiple-concurrent-insert-or-merge-operations-to-append-data
 -
+
 **Response architecture recommendation:** **SKILL.md + references/ + Subagent.** A subagent inspects the user's MERGE SQL, identifies the clustering keys of the target table (via MCP-fetched `DESCRIBE DETAIL` or stored ref), and rewrites the predicate to include the clustering-key filters. The references/ dir holds the full "MERGE rewrite cookbook" — examples for SCD2, dedup, CDC. A pure scripts/ approach is too brittle here because the SQL surface is too varied — needs an agent rewriting the predicate, not a regex.
 
 ---

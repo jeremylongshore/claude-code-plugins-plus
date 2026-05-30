@@ -103,6 +103,7 @@ FLoC / Topics API for users.
 `Server: nginx/1.18.0` lets a scanner immediately enumerate every CVE
 affecting that nginx version. Information disclosure (CWE-200). Fix is
 trivial:
+
 - nginx: `server_tokens off;` → "nginx" without version
 - Apache: `ServerTokens Prod` → "Apache" without version
 - Caddy: doesn't disclose by default

@@ -69,26 +69,29 @@ def _probe_method(sess, method: str, url: str, timeout: float):
         return None
 
 
-def _grade_response(method: str, resp, expected_fail: set, severity: Severity, title: str,
-                    target: str, is_xst: bool = False) -> list[Finding]:
+def _grade_response(
+    method: str, resp, expected_fail: set, severity: Severity, title: str, target: str, is_xst: bool = False
+) -> list[Finding]:
     if resp is None:
         return []
     if resp.status_code in expected_fail:
         return []  # Method correctly blocked
     if resp.status_code >= 500:
-        return [Finding(
-            skill_id=SKILL_ID,
-            title=f"{method} returns {resp.status_code} (error handling concern)",
-            severity=Severity.INFO,
-            target=target,
-            detail=(
-                f"The {method} method returned {resp.status_code}. While "
-                "blocking is the intended behavior, a 500 suggests the server "
-                "tried to handle the method and crashed — better to return "
-                "405 cleanly."
-            ),
-            remediation=f"Configure the server to return 405 Method Not Allowed for {method}.",
-        )]
+        return [
+            Finding(
+                skill_id=SKILL_ID,
+                title=f"{method} returns {resp.status_code} (error handling concern)",
+                severity=Severity.INFO,
+                target=target,
+                detail=(
+                    f"The {method} method returned {resp.status_code}. While "
+                    "blocking is the intended behavior, a 500 suggests the server "
+                    "tried to handle the method and crashed — better to return "
+                    "405 cleanly."
+                ),
+                remediation=f"Configure the server to return 405 Method Not Allowed for {method}.",
+            )
+        ]
     # Status 2xx, 3xx, or 405-like — the method was handled successfully or
     # at least not cleanly rejected. This is the finding.
     detail = (
@@ -104,17 +107,19 @@ def _grade_response(method: str, resp, expected_fail: set, severity: Severity, t
                 "use TRACE-via-XHR to read HttpOnly cookies."
             )
 
-    return [Finding(
-        skill_id=SKILL_ID,
-        title=title,
-        severity=severity,
-        target=target,
-        detail=detail,
-        remediation=_remediation_for(method),
-        cwe_id=_cwe_for(method),
-        owasp_category="A05:2021",
-        evidence=(("status_code", resp.status_code), ("response_len", len(resp.content or b""))),
-    )]
+    return [
+        Finding(
+            skill_id=SKILL_ID,
+            title=title,
+            severity=severity,
+            target=target,
+            detail=detail,
+            remediation=_remediation_for(method),
+            cwe_id=_cwe_for(method),
+            owasp_category="A05:2021",
+            evidence=(("status_code", resp.status_code), ("response_len", len(resp.content or b""))),
+        )
+    ]
 
 
 def _remediation_for(method: str) -> str:
@@ -178,31 +183,35 @@ def _check_options(sess, url: str, timeout: float, target: str) -> list[Finding]
     if not allow:
         return []
     if "*" in allow:
-        return [Finding(
-            skill_id=SKILL_ID,
-            title="OPTIONS Allow header is wildcard",
-            severity=Severity.LOW,
-            target=target,
-            detail="Server advertises Allow:* — information disclosure.",
-            remediation="Configure server to return explicit allowed-method list.",
-            cwe_id="CWE-200",
-        )]
+        return [
+            Finding(
+                skill_id=SKILL_ID,
+                title="OPTIONS Allow header is wildcard",
+                severity=Severity.LOW,
+                target=target,
+                detail="Server advertises Allow:* — information disclosure.",
+                remediation="Configure server to return explicit allowed-method list.",
+                cwe_id="CWE-200",
+            )
+        ]
     methods = [m.strip().upper() for m in allow.split(",")]
     unused = [m for m in methods if m in {"DEBUG", "TRACE", "PROPFIND", "MKCOL", "COPY", "MOVE", "CONNECT"}]
     if unused:
-        return [Finding(
-            skill_id=SKILL_ID,
-            title=f"OPTIONS Allow header discloses unused methods: {', '.join(unused)}",
-            severity=Severity.LOW,
-            target=target,
-            detail=(
-                "The Allow header lists methods that are typically not used "
-                "in a modern web app. Either disable them or remove from "
-                "the Allow advertisement."
-            ),
-            remediation="See findings on individual methods for remediation steps.",
-            cwe_id="CWE-200",
-        )]
+        return [
+            Finding(
+                skill_id=SKILL_ID,
+                title=f"OPTIONS Allow header discloses unused methods: {', '.join(unused)}",
+                severity=Severity.LOW,
+                target=target,
+                detail=(
+                    "The Allow header lists methods that are typically not used "
+                    "in a modern web app. Either disable them or remove from "
+                    "the Allow advertisement."
+                ),
+                remediation="See findings on individual methods for remediation steps.",
+                cwe_id="CWE-200",
+            )
+        ]
     return []
 
 
@@ -212,12 +221,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--authorized", action="store_true")
     parser.add_argument("--output", default=None)
     parser.add_argument("--format", choices=("json", "jsonl", "markdown"), default="markdown")
-    parser.add_argument("--min-severity",
-                        choices=("critical", "high", "medium", "low", "info"),
-                        default="info")
+    parser.add_argument("--min-severity", choices=("critical", "high", "medium", "low", "info"), default="info")
     parser.add_argument("--timeout", type=float, default=10.0)
-    parser.add_argument("--is-api", action="store_true",
-                        help="Target is an API endpoint (PUT/DELETE are expected)")
+    parser.add_argument("--is-api", action="store_true", help="Target is an API endpoint (PUT/DELETE are expected)")
     args = parser.parse_args(argv)
 
     require_authorization(args.url, args.authorized)
@@ -232,10 +238,17 @@ def main(argv: list[str] | None = None) -> int:
 
     for method, expected_fail, sev, title in method_set:
         resp = _probe_method(sess, method, args.url, args.timeout)
-        findings.extend(_grade_response(
-            method, resp, expected_fail, sev, title, target,
-            is_xst=(method == "TRACE"),
-        ))
+        findings.extend(
+            _grade_response(
+                method,
+                resp,
+                expected_fail,
+                sev,
+                title,
+                target,
+                is_xst=(method == "TRACE"),
+            )
+        )
 
     findings.extend(_check_options(sess, args.url, args.timeout, target))
 

@@ -33,6 +33,7 @@ NIST to mark them obsolete:
   removes legacy options entirely, mandates forward secrecy.
 
 Primary references:
+
 - [RFC 8996 — Deprecating TLS 1.0 and TLS 1.1](https://datatracker.ietf.org/doc/html/rfc8996)
 - [NIST SP 800-52r2 §3.1](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-52r2.pdf)
 - [PCI DSS v4.0 Req 4.2.1.1](https://www.pcisecuritystandards.org/)

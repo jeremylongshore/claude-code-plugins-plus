@@ -96,6 +96,7 @@ Options:
 ```
 
 The scanner sends multiple probes per target:
+
 1. Baseline request with no Origin header
 2. Probe with safe Origin (https://allowed-origin.example.com)
 3. Probe with attacker Origin (https://attacker.example)

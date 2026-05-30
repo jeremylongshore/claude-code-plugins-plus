@@ -68,7 +68,7 @@ Specific failure thresholds, in order of severity:
 Active scan. Before invoking the scanner, ask the user verbatim:
 
 > "Do you have authorization to perform TLS testing on this target?
->  I need confirmation before proceeding."
+> I need confirmation before proceeding."
 
 If the user says yes, proceed. If unsure, ask them to obtain written
 authorization. See `references/AUTHORIZATION.md` for the attestation
