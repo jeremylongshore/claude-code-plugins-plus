@@ -183,7 +183,7 @@ export class AnalyticsAPI {
   private handleGetSession(req: Request, res: Response): void {
     try {
       const { id } = req.params;
-      const conversation = this.watcher.getConversation(id);
+      const conversation = this.watcher.getConversation(String(id));
 
       if (!conversation) {
         res.status(404).json({
@@ -426,7 +426,7 @@ export class AnalyticsAPI {
       const { type } = req.params;
       const limit = this.validateLimit(req.query.limit);
 
-      if (!['plugin', 'skill', 'mcp'].includes(type)) {
+      if (!['plugin', 'skill', 'mcp'].includes(String(type))) {
         res.status(400).json({
           error: 'Bad Request',
           message: 'Type must be one of: plugin, skill, mcp',
@@ -465,7 +465,7 @@ export class AnalyticsAPI {
       const { type } = req.params;
       const limit = this.validateLimit(req.query.limit);
 
-      if (!['plugin', 'skill', 'mcp'].includes(type)) {
+      if (!['plugin', 'skill', 'mcp'].includes(String(type))) {
         res.status(400).json({
           error: 'Bad Request',
           message: 'Type must be one of: plugin, skill, mcp',
