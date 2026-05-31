@@ -276,6 +276,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `jeremy-firestore`     | Firestore database specialist for schema design, queries, and real-time sync                                                                |
 | `sprint`               | Autonomous multi-agent development framework with spec-driven sprints. Write specs, run /sprint, and let coordinated agents (backend,…      |
 | `zai-cli`              | Z.AI vision, search, reader, and GitHub exploration via CLI and MCP. Analyze images, search the web, read pages as markdown, explore repos. |
+| `google-maps-agent-skills` | 8 skills for Google Maps lead generation — scrape businesses, extract emails, find local leads, analyze competitors, write cold outreach. `npx skills add gmapsscraper/google-maps-agent-skills/google-maps-scraper` |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
 
