@@ -66,6 +66,12 @@ paths = [
     # must follow suit or every catalog regen turns CI red.
     '''^marketplace/public/data/.*\.json$''',
     '''^marketplace/dist/.*''',
+    # The hardcoded-secrets scanner ships the canonical detector pattern
+    # library (BEGIN-PRIVATE-KEY headers, AWS AKIA prefix shapes, vendor
+    # API-key prefixes). Gitleaks's own rules flag those literal pattern
+    # strings as if they were keys. Allowlist the file so the detector
+    # library is not re-read as a leak surface.
+    '''^plugins/security/penetration-tester/skills/scanning-for-hardcoded-secrets/scripts/scan_secrets\.py$''',
 ]
 
 regexes = [
