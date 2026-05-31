@@ -67,14 +67,14 @@ test.describe('Cowork Downloads Page', () => {
       await expect(grid.first()).toBeVisible();
     });
 
-    test('should display setup guide with 3 numbered steps', async ({ page }) => {
+    test('should display setup guide with 4 numbered steps', async ({ page }) => {
       await page.goto('/cowork');
 
       const steps = page.locator('.setup-step');
-      await expect(steps).toHaveCount(3);
+      await expect(steps).toHaveCount(4);
 
       const stepNumbers = page.locator('.step-number');
-      await expect(stepNumbers).toHaveCount(3);
+      await expect(stepNumbers).toHaveCount(4);
 
       await page.screenshot({
         path: 'test-results/screenshots/T8-setup-guide.png'

@@ -60,11 +60,11 @@ test.describe('P5: Cowork Downloads', () => {
     expect(text).toContain('Showing');
   });
 
-  test('Setup guide has 3 steps', async ({ page }) => {
+  test('Setup guide has 4 steps', async ({ page }) => {
     await page.goto('/cowork');
 
     const steps = page.locator('.setup-step');
-    await expect(steps).toHaveCount(3);
+    await expect(steps).toHaveCount(4);
   });
 
   test('Category pack cards are present', async ({ page }) => {
