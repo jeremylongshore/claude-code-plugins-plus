@@ -1,20 +1,20 @@
 ---
 import PlaybookTemplate from '../../components/PlaybookTemplate.astro';
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
   const playbooks = await getCollection('playbooks');
   return playbooks.map((entry) => ({
-    params: { slug: entry.slug },
+    params: { slug: entry.id },
     props: { entry },
   }));
 }
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 const { title, description, category, wordCount } = entry.data;
 ---
 
-<PlaybookTemplate title={title} description={description} category={category} wordCount={wordCount} slug={entry.slug}>
+<PlaybookTemplate title={title} description={description} category={category} wordCount={wordCount} slug={entry.id}>
   <Content />
 </PlaybookTemplate>

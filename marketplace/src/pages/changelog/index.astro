@@ -28,7 +28,7 @@ const description = "Release notes, plugin updates, and changelog for the Claude
         "headline": post.data.title,
         "description": post.data.description,
         "datePublished": post.data.date,
-        "url": `https://tonsofskills.com/changelog/${post.slug}`
+        "url": `https://tonsofskills.com/changelog/${post.id}`
       }))
     })} />
   </Fragment>
@@ -44,7 +44,7 @@ const description = "Release notes, plugin updates, and changelog for the Claude
   <section class="posts-section">
     <div class="container">
       {posts.map((post) => (
-        <a href={`/changelog/${post.slug}`} class="post-card">
+        <a href={`/changelog/${post.id}`} class="post-card">
           <div class="post-meta">
             <time datetime={post.data.date}>
               {new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}

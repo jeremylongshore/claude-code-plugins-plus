@@ -28,7 +28,7 @@ const description = "Technical deep-dives, AI development patterns, and lessons 
         "headline": post.data.title,
         "description": post.data.description,
         "datePublished": post.data.date,
-        "url": `https://tonsofskills.com/blog/${post.slug}`
+        "url": `https://tonsofskills.com/blog/${post.id}`
       }))
     })} />
   </Fragment>
@@ -44,7 +44,7 @@ const description = "Technical deep-dives, AI development patterns, and lessons 
   <section class="posts-section">
     <div class="container">
       {posts.map((post) => (
-        <a href={`/blog/${post.slug}`} class="post-card">
+        <a href={`/blog/${post.id}`} class="post-card">
           <div class="post-meta">
             <time datetime={post.data.date}>
               {new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}

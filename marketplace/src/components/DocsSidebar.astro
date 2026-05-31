@@ -36,8 +36,8 @@ const grouped = sections.map(section => ({
             {section.docs.map(doc => (
               <li>
                 <a
-                  href={`/docs/${doc.slug}`}
-                  class:list={['sidebar-link', { active: doc.slug === currentSlug }]}
+                  href={`/docs/${doc.id}`}
+                  class:list={['sidebar-link', { active: doc.id === currentSlug }]}
                 >
                   {doc.data.title}
                 </a>

@@ -26,12 +26,12 @@ const sectionDocs = allDocs
   .filter(d => d.data.section === section)
   .sort((a, b) => a.data.order - b.data.order);
 
-const currentIndex = sectionDocs.findIndex(d => d.slug === entry.slug);
+const currentIndex = sectionDocs.findIndex(d => d.id === entry.id);
 const prevDoc = currentIndex > 0 ? sectionDocs[currentIndex - 1] : null;
 const nextDoc = currentIndex < sectionDocs.length - 1 ? sectionDocs[currentIndex + 1] : null;
 
 // Resolve related docs
-const allDocsMap = new Map(allDocs.map(d => [d.slug, d]));
+const allDocsMap = new Map(allDocs.map(d => [d.id, d]));
 const resolvedRelated = (relatedDocs || [])
   .map((slug: string) => allDocsMap.get(slug))
   .filter(Boolean);
@@ -44,9 +44,9 @@ const jsonLd = {
   description,
   author: { '@type': 'Organization', name: 'Intent Solutions', url: 'https://intentsolutions.io' },
   publisher: { '@type': 'Organization', name: 'Tons of Skills', url: 'https://tonsofskills.com' },
-  url: `https://tonsofskills.com/docs/${entry.slug}`,
+  url: `https://tonsofskills.com/docs/${entry.id}`,
   keywords: keywords?.join(', ') || '',
-  mainEntityOfPage: { '@type': 'WebPage', '@id': `https://tonsofskills.com/docs/${entry.slug}` },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': `https://tonsofskills.com/docs/${entry.id}` },
 };
 ---
 
@@ -57,7 +57,7 @@ const jsonLd = {
 
   <div class="docs-page">
     <div class="docs-container">
-      <DocsSidebar currentSlug={entry.slug} />
+      <DocsSidebar currentSlug={entry.id} />
 
       <div class="docs-main">
         <!-- Breadcrumbs -->
@@ -106,7 +106,7 @@ const jsonLd = {
             <h3 class="related-title">Related Documentation</h3>
             <div class="related-grid">
               {resolvedRelated.map((doc: any) => (
-                <a href={`/docs/${doc.slug}`} class="related-card">
+                <a href={`/docs/${doc.id}`} class="related-card">
                   <span class="related-section">{sectionLabels[doc.data.section]}</span>
                   <span class="related-name">{doc.data.title}</span>
                 </a>
@@ -118,13 +118,13 @@ const jsonLd = {
         <!-- Prev/Next Navigation -->
         <nav class="docs-nav-footer">
           {prevDoc && (
-            <a href={`/docs/${prevDoc.slug}`} class="nav-link nav-prev">
+            <a href={`/docs/${prevDoc.id}`} class="nav-link nav-prev">
               <span class="nav-label">Previous</span>
               <span class="nav-title">{prevDoc.data.title}</span>
             </a>
           )}
           {nextDoc && (
-            <a href={`/docs/${nextDoc.slug}`} class="nav-link nav-next">
+            <a href={`/docs/${nextDoc.id}`} class="nav-link nav-next">
               <span class="nav-label">Next</span>
               <span class="nav-title">{nextDoc.data.title}</span>
             </a>

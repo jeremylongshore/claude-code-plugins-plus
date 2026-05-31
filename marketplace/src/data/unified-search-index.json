@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-05-30T04:35:55.570Z",
+    "generated": "2026-05-31T18:14:55.755Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
     "totalPlugins": 431,
-    "totalSkills": 2760,
-    "totalItems": 3191,
+    "totalSkills": 2769,
+    "totalItems": 3200,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -7244,7 +7244,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 7,
+      "skillCount": 16,
       "verificationScore": 84,
       "verificationGrade": "B",
       "verificationBadge": "silver",
@@ -31496,6 +31496,27 @@
     },
     {
       "type": "skill",
+      "id": "detecting-command-injection-patterns",
+      "slug": "detecting-command-injection-patterns",
+      "name": "detecting-command-injection-patterns",
+      "description": "Scan a source tree for command-injection vulnerable patterns: shell=True calls in Python subprocess, os.system / os.popen with interpolated strings, Node child_process.exec with template literals, Ruby backticks / Kernel#system / Kernel#exec with interpolation, Go exec.Command with shell wrapping, PHP system / passthru / shell_exec / backticks with $-interpolation, Java Runtime.exec with concatenated args. Use when: pre-commit gate on code that calls out to shell utilities, audit of file-processing / archive-handling / image-conversion code, post-bug-report investigation for \"we shell out to a tool.\" Threshold: any shell-invocation API called with a string that contains a variable interpolation, OR shell=True with anything other than a fixed literal. Trigger with: \"scan command injection\", \"shell=True audit\", \"find exec calls\", \"check os.system\".",
+      "category": "security",
+      "allowedTools": [
+        "Read",
+        "Bash(python3:*)",
+        "Glob",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "3.0.0-dev",
+      "parentPlugin": {
+        "name": "penetration-tester",
+        "category": "security"
+      },
+      "searchText": "detecting-command-injection-patterns scan a source tree for command-injection vulnerable patterns: shell=true calls in python subprocess, os.system / os.popen with interpolated strings, node child_process.exec with template literals, ruby backticks / kernel#system / kernel#exec with interpolation, go exec.command with shell wrapping, php system / passthru / shell_exec / backticks with $-interpolation, java runtime.exec with concatenated args. use when: pre-commit gate on code that calls out to shell utilities, audit of file-processing / archive-handling / image-conversion code, post-bug-report investigation for \"we shell out to a tool.\" threshold: any shell-invocation api called with a string that contains a variable interpolation, or shell=true with anything other than a fixed literal. trigger with: \"scan command injection\", \"shell=true audit\", \"find exec calls\", \"check os.system\". security read bash(python3:*) glob grep "
+    },
+    {
+      "type": "skill",
       "id": "detecting-data-anomalies",
       "slug": "detecting-data-anomalies",
       "name": "detecting-data-anomalies",
@@ -31542,6 +31563,67 @@
     },
     {
       "type": "skill",
+      "id": "detecting-debug-endpoints",
+      "slug": "detecting-debug-endpoints",
+      "name": "detecting-debug-endpoints",
+      "description": "Probe a target for accidentally-public admin / debug / introspection endpoints — Spring Boot Actuator, Apache server-status, Prometheus metrics, GraphQL playground, Swagger UI, phpMyAdmin, JMX-over-HTTP (Jolokia), Elasticsearch _cat, Kibana / Grafana / Eureka / Consul panels. Use when: post-deploy verification, security audit before SOC2, inheriting a system you didn't build, or a bug bounty hints at an exposed introspection panel. Threshold: any of the canonical 40+ admin/debug paths returns 200, 302 to a login, or framework-specific JSON shape (e.g., Actuator returning a _links object, server-status HTML body containing the Apache Server Status title). Trigger with: \"check debug endpoints\", \"actuator exposure\", \"admin panel scan\", \"graphql playground check\".",
+      "category": "security",
+      "allowedTools": [
+        "Read",
+        "Bash(python3:*)",
+        "Bash(curl:*)"
+      ],
+      "compatibleWith": [],
+      "version": "3.0.0-dev",
+      "parentPlugin": {
+        "name": "penetration-tester",
+        "category": "security"
+      },
+      "searchText": "detecting-debug-endpoints probe a target for accidentally-public admin / debug / introspection endpoints — spring boot actuator, apache server-status, prometheus metrics, graphql playground, swagger ui, phpmyadmin, jmx-over-http (jolokia), elasticsearch _cat, kibana / grafana / eureka / consul panels. use when: post-deploy verification, security audit before soc2, inheriting a system you didn't build, or a bug bounty hints at an exposed introspection panel. threshold: any of the canonical 40+ admin/debug paths returns 200, 302 to a login, or framework-specific json shape (e.g., actuator returning a _links object, server-status html body containing the apache server status title). trigger with: \"check debug endpoints\", \"actuator exposure\", \"admin panel scan\", \"graphql playground check\". security read bash(python3:*) bash(curl:*) "
+    },
+    {
+      "type": "skill",
+      "id": "detecting-directory-listing",
+      "slug": "detecting-directory-listing",
+      "name": "detecting-directory-listing",
+      "description": "Probe a target for directories that return auto-generated index listings instead of denying or serving a specific file — exposes the full file tree under any reachable directory, including files the application never linked to. Use when: post-deploy verification on a static-asset host, security audit before SOC2, or following up on a finding from skill #6 (exposed-files) where a backup-file path returned 200 with HTML body instead of the expected file content (suggests autoindex serving a directory listing). Threshold: any directory-shaped path returns 200 with HTML body matching the framework-specific autoindex fingerprint (nginx fancyindex, Apache mod_autoindex Index of/, Caddy browse, Lighttpd mod_dirlisting, etc.). Trigger with: \"directory listing check\", \"autoindex detection\", \"open directory scan\".",
+      "category": "security",
+      "allowedTools": [
+        "Read",
+        "Bash(python3:*)",
+        "Bash(curl:*)"
+      ],
+      "compatibleWith": [],
+      "version": "3.0.0-dev",
+      "parentPlugin": {
+        "name": "penetration-tester",
+        "category": "security"
+      },
+      "searchText": "detecting-directory-listing probe a target for directories that return auto-generated index listings instead of denying or serving a specific file — exposes the full file tree under any reachable directory, including files the application never linked to. use when: post-deploy verification on a static-asset host, security audit before soc2, or following up on a finding from skill #6 (exposed-files) where a backup-file path returned 200 with html body instead of the expected file content (suggests autoindex serving a directory listing). threshold: any directory-shaped path returns 200 with html body matching the framework-specific autoindex fingerprint (nginx fancyindex, apache mod_autoindex index of/, caddy browse, lighttpd mod_dirlisting, etc.). trigger with: \"directory listing check\", \"autoindex detection\", \"open directory scan\". security read bash(python3:*) bash(curl:*) "
+    },
+    {
+      "type": "skill",
+      "id": "detecting-eval-exec-usage",
+      "slug": "detecting-eval-exec-usage",
+      "name": "detecting-eval-exec-usage",
+      "description": "Scan a source tree for dynamic-code-execution APIs that an attacker can hijack: Python eval / exec / compile, JavaScript eval / Function() / setTimeout(string), Ruby eval / instance_eval / class_eval, Java ScriptEngine, PHP eval / assert($str), .NET Activator.CreateInstance / Reflection.Emit with dynamic input. Use when: pre-commit gate on any application that parses user-uploaded code (rule engines, formula evaluators, plugin systems), or post-bug-report when \"we run user-supplied expressions.\" Threshold: any call to eval / exec / Function / similar where the argument is not a string literal. Trigger with: \"scan eval\", \"find dynamic exec\", \"audit eval calls\", \"code injection patterns\".",
+      "category": "security",
+      "allowedTools": [
+        "Read",
+        "Bash(python3:*)",
+        "Glob",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "3.0.0-dev",
+      "parentPlugin": {
+        "name": "penetration-tester",
+        "category": "security"
+      },
+      "searchText": "detecting-eval-exec-usage scan a source tree for dynamic-code-execution apis that an attacker can hijack: python eval / exec / compile, javascript eval / function() / settimeout(string), ruby eval / instance_eval / class_eval, java scriptengine, php eval / assert($str), .net activator.createinstance / reflection.emit with dynamic input. use when: pre-commit gate on any application that parses user-uploaded code (rule engines, formula evaluators, plugin systems), or post-bug-report when \"we run user-supplied expressions.\" threshold: any call to eval / exec / function / similar where the argument is not a string literal. trigger with: \"scan eval\", \"find dynamic exec\", \"audit eval calls\", \"code injection patterns\". security read bash(python3:*) glob grep "
+    },
+    {
+      "type": "skill",
       "id": "detecting-exposed-secrets-files",
       "slug": "detecting-exposed-secrets-files",
       "name": "detecting-exposed-secrets-files",
@@ -31584,6 +31666,27 @@
         "category": "devops"
       },
       "searchText": "detecting-infrastructure-drift 'execute use when detecting infrastructure drift from desired state. devops read write edit grep glob bash(terraform:*) bash(aws:*) bash(gcloud:*) "
+    },
+    {
+      "type": "skill",
+      "id": "detecting-insecure-deserialization",
+      "slug": "detecting-insecure-deserialization",
+      "name": "detecting-insecure-deserialization",
+      "description": "Scan a source tree for unsafe-by-default deserialization APIs: Python pickle.loads / cPickle / shelve / dill, Ruby Marshal.load / YAML.load (pre-3.1 default), Java ObjectInputStream.readObject, PHP unserialize, .NET BinaryFormatter / NetDataContractSerializer, Node.js node-serialize, JavaScript JSON.parse with reviver containing eval. Use when: pre-commit gate on services that accept binary blobs, audit of legacy job-queue code (workers deserializing tasks), post-bug-report when \"we accept user-uploaded archives.\" Threshold: any call to a known-unsafe deserialization API on data that originates from user input, network, file upload, or untrusted storage. Trigger with: \"scan deserialization\", \"pickle audit\", \"java readObject scan\", \"yaml.load check\".",
+      "category": "security",
+      "allowedTools": [
+        "Read",
+        "Bash(python3:*)",
+        "Glob",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "3.0.0-dev",
+      "parentPlugin": {
+        "name": "penetration-tester",
+        "category": "security"
+      },
+      "searchText": "detecting-insecure-deserialization scan a source tree for unsafe-by-default deserialization apis: python pickle.loads / cpickle / shelve / dill, ruby marshal.load / yaml.load (pre-3.1 default), java objectinputstream.readobject, php unserialize, .net binaryformatter / netdatacontractserializer, node.js node-serialize, javascript json.parse with reviver containing eval. use when: pre-commit gate on services that accept binary blobs, audit of legacy job-queue code (workers deserializing tasks), post-bug-report when \"we accept user-uploaded archives.\" threshold: any call to a known-unsafe deserialization api on data that originates from user input, network, file upload, or untrusted storage. trigger with: \"scan deserialization\", \"pickle audit\", \"java readobject scan\", \"yaml.load check\". security read bash(python3:*) glob grep "
     },
     {
       "type": "skill",
@@ -31657,6 +31760,27 @@
     },
     {
       "type": "skill",
+      "id": "detecting-sql-injection-patterns",
+      "slug": "detecting-sql-injection-patterns",
+      "name": "detecting-sql-injection-patterns",
+      "description": "Scan a source tree for SQL-injection vulnerable patterns: string concatenation into queries, f-string interpolation in SQL, string-format substitution into raw queries, deprecated cursor methods (cursor.execute with % formatting), Knex / Sequelize raw() with template interpolation, sequelize.query with replacements. Use when: pre-commit code review, post-feature SQL-touching release, inheriting a legacy codebase that predates ORMs, or post-bug-report investigation. Threshold: any source line where SQL keywords (SELECT / INSERT / UPDATE / DELETE / FROM / WHERE) appear in a string that's being built via concatenation, f-string, %-format, or .format() with variable input. Trigger with: \"scan for sqli\", \"sql injection patterns\", \"check raw queries\", \"audit cursor.execute\".",
+      "category": "security",
+      "allowedTools": [
+        "Read",
+        "Bash(python3:*)",
+        "Glob",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "3.0.0-dev",
+      "parentPlugin": {
+        "name": "penetration-tester",
+        "category": "security"
+      },
+      "searchText": "detecting-sql-injection-patterns scan a source tree for sql-injection vulnerable patterns: string concatenation into queries, f-string interpolation in sql, string-format substitution into raw queries, deprecated cursor methods (cursor.execute with % formatting), knex / sequelize raw() with template interpolation, sequelize.query with replacements. use when: pre-commit code review, post-feature sql-touching release, inheriting a legacy codebase that predates orms, or post-bug-report investigation. threshold: any source line where sql keywords (select / insert / update / delete / from / where) appear in a string that's being built via concatenation, f-string, %-format, or .format() with variable input. trigger with: \"scan for sqli\", \"sql injection patterns\", \"check raw queries\", \"audit cursor.execute\". security read bash(python3:*) glob grep "
+    },
+    {
+      "type": "skill",
       "id": "detecting-sql-injection-vulnerabilities",
       "slug": "detecting-sql-injection-vulnerabilities",
       "name": "detecting-sql-injection-vulnerabilities",
@@ -31698,6 +31822,27 @@
         "category": "security"
       },
       "searchText": "detecting-ssl-cert-issues audit a target's tls certificate beyond protocol/expiry — chain ordering, ocsp stapling, revocation status, certificate transparency presence, key-usage flags, and over-broad wildcards. use when: tls handshake already passes (skill #1 analyzing-tls-config cleared) but you suspect the cert posture is fragile. auditors flag this during soc2 readiness when a renewal slipped or an intermediate was rotated. threshold: missing ocsp stapling on production, fewer than 2 scts in the cert, intermediate served out of order, key usage missing digitalsignature/keyencipherment, revoked cert presented, or wildcard scope of 2-level (e.g., *.com is rejection; *.api.example.com is fine). trigger with: \"check cert revocation\", \"audit ocsp\", \"ct log check\", \"cert chain audit\". security read bash(python3:*) bash(openssl:*) "
+    },
+    {
+      "type": "skill",
+      "id": "detecting-weak-cryptography",
+      "slug": "detecting-weak-cryptography",
+      "name": "detecting-weak-cryptography",
+      "description": "Scan a source tree for weak cryptographic primitives: MD5 / SHA-1 used for security purposes, DES / 3DES / RC4 ciphers, ECB block mode, custom-built crypto (XOR loops, hand-rolled HMAC), hardcoded IVs, predictable random (Math.random / java.util.Random for crypto seeds), missing certificate verification (verify=False, rejectUnauthorized: false). Use when: pre-merge gate on crypto-touching code, audit before SOC2 / PCI assessment, post-incident review when \"we found a weakness in our token signing.\" Threshold: any call to a known-weak algorithm with non-test context, OR cert verification explicitly disabled, OR a custom crypto loop pattern. Trigger with: \"scan weak crypto\", \"find MD5 usage\", \"check ECB mode\", \"audit ssl verify\", \"weak random\".",
+      "category": "security",
+      "allowedTools": [
+        "Read",
+        "Bash(python3:*)",
+        "Glob",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "3.0.0-dev",
+      "parentPlugin": {
+        "name": "penetration-tester",
+        "category": "security"
+      },
+      "searchText": "detecting-weak-cryptography scan a source tree for weak cryptographic primitives: md5 / sha-1 used for security purposes, des / 3des / rc4 ciphers, ecb block mode, custom-built crypto (xor loops, hand-rolled hmac), hardcoded ivs, predictable random (math.random / java.util.random for crypto seeds), missing certificate verification (verify=false, rejectunauthorized: false). use when: pre-merge gate on crypto-touching code, audit before soc2 / pci assessment, post-incident review when \"we found a weakness in our token signing.\" threshold: any call to a known-weak algorithm with non-test context, or cert verification explicitly disabled, or a custom crypto loop pattern. trigger with: \"scan weak crypto\", \"find md5 usage\", \"check ecb mode\", \"audit ssl verify\", \"weak random\". security read bash(python3:*) glob grep "
     },
     {
       "type": "skill",
@@ -35214,6 +35359,26 @@
         "category": "security"
       },
       "searchText": "finding-security-misconfigurations 'configure identify security misconfigurations in infrastructure-as-code, security read write edit grep glob bash(config-scan:*) bash(iac-check:*) "
+    },
+    {
+      "type": "skill",
+      "id": "fingerprinting-server-software",
+      "slug": "fingerprinting-server-software",
+      "name": "fingerprinting-server-software",
+      "description": "Identify the server software, framework, and component versions a target is running from its HTTP response signatures — Server header, X-Powered-By, Via, X-AspNet-Version, X-Runtime, X-Drupal-Cache, X-Generator, Set-Cookie name patterns, error-page artwork, HTTP method behavior signatures. Use when: penetration test reconnaissance phase, post-deploy audit of fingerprintable exposure, or before reporting \"no obvious version disclosure\" to an auditor. Threshold: any version string in a response header (e.g., Server header with nginx/1.18.0, X-Powered-By with PHP/7.4.21, X-Generator with Drupal 9), or any framework-default Set-Cookie name (PHPSESSID, JSESSIONID, connect.sid, _csrf_token). Trigger with: \"fingerprint server\", \"version disclosure\", \"tech-stack identification\", \"what's this site running\".",
+      "category": "security",
+      "allowedTools": [
+        "Read",
+        "Bash(python3:*)",
+        "Bash(curl:*)"
+      ],
+      "compatibleWith": [],
+      "version": "3.0.0-dev",
+      "parentPlugin": {
+        "name": "penetration-tester",
+        "category": "security"
+      },
+      "searchText": "fingerprinting-server-software identify the server software, framework, and component versions a target is running from its http response signatures — server header, x-powered-by, via, x-aspnet-version, x-runtime, x-drupal-cache, x-generator, set-cookie name patterns, error-page artwork, http method behavior signatures. use when: penetration test reconnaissance phase, post-deploy audit of fingerprintable exposure, or before reporting \"no obvious version disclosure\" to an auditor. threshold: any version string in a response header (e.g., server header with nginx/1.18.0, x-powered-by with php/7.4.21, x-generator with drupal 9), or any framework-default set-cookie name (phpsessid, jsessionid, connect.sid, _csrf_token). trigger with: \"fingerprint server\", \"version disclosure\", \"tech-stack identification\", \"what's this site running\". security read bash(python3:*) bash(curl:*) "
     },
     {
       "type": "skill",
@@ -64860,6 +65025,27 @@
         "category": "security"
       },
       "searchText": "scanning-for-gdpr-compliance scan for gdpr compliance issues in data handling and privacy practices. security read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*) "
+    },
+    {
+      "type": "skill",
+      "id": "scanning-for-hardcoded-secrets",
+      "slug": "scanning-for-hardcoded-secrets",
+      "name": "scanning-for-hardcoded-secrets",
+      "description": "Scan a source-code tree for hardcoded credentials embedded in source files: AWS access keys, GitHub tokens, Stripe keys, Slack tokens, Anthropic API keys, OpenAI keys, JWT signing secrets, generic base64-encoded passwords, RSA / SSH private keys, and high-entropy string literals that pattern-match common credential shapes. Use when: pre-commit gate before pushing a feature branch, audit before SOC2, post-incident scan after a leak, or inheriting a codebase you didn't write. Threshold: any source file contains a string that matches a canonical credential regex (AWS AKIA prefix, GitHub ghp_ prefix, etc.) OR a string with Shannon entropy above 4.5 in a field context (key=, token:, secret=). Trigger with: \"scan secrets\", \"credential scan\", \"find hardcoded keys\", \"leak check\".",
+      "category": "security",
+      "allowedTools": [
+        "Read",
+        "Bash(python3:*)",
+        "Glob",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "3.0.0-dev",
+      "parentPlugin": {
+        "name": "penetration-tester",
+        "category": "security"
+      },
+      "searchText": "scanning-for-hardcoded-secrets scan a source-code tree for hardcoded credentials embedded in source files: aws access keys, github tokens, stripe keys, slack tokens, anthropic api keys, openai keys, jwt signing secrets, generic base64-encoded passwords, rsa / ssh private keys, and high-entropy string literals that pattern-match common credential shapes. use when: pre-commit gate before pushing a feature branch, audit before soc2, post-incident scan after a leak, or inheriting a codebase you didn't write. threshold: any source file contains a string that matches a canonical credential regex (aws akia prefix, github ghp_ prefix, etc.) or a string with shannon entropy above 4.5 in a field context (key=, token:, secret=). trigger with: \"scan secrets\", \"credential scan\", \"find hardcoded keys\", \"leak check\". security read bash(python3:*) glob grep "
     },
     {
       "type": "skill",
