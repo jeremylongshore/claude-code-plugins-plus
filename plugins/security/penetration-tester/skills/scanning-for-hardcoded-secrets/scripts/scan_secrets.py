@@ -82,13 +82,29 @@ PROVIDER_REGEXES = [
     ("npm access token", Severity.CRITICAL, r"\bnpm_[A-Za-z0-9]{36,}\b", "CWE-798"),
     ("PyPI API token", Severity.CRITICAL, r"\bpypi-[A-Za-z0-9_-]{50,}\b", "CWE-798"),
     ("Cloudflare API token", Severity.CRITICAL, r"\b[A-Za-z0-9_-]{40}\b(?=.*cloudflare)", "CWE-798"),
-    # Private keys
-    ("RSA private key", Severity.CRITICAL, r"-----BEGIN RSA PRIVATE KEY-----", "CWE-321"),
-    ("OpenSSH private key", Severity.CRITICAL, r"-----BEGIN OPENSSH PRIVATE KEY-----", "CWE-321"),
-    ("EC private key", Severity.CRITICAL, r"-----BEGIN EC PRIVATE KEY-----", "CWE-321"),
-    ("DSA private key", Severity.CRITICAL, r"-----BEGIN DSA PRIVATE KEY-----", "CWE-321"),
-    ("PGP private key", Severity.CRITICAL, r"-----BEGIN PGP PRIVATE KEY BLOCK-----", "CWE-321"),
-    ("Generic PEM private key", Severity.CRITICAL, r"-----BEGIN PRIVATE KEY-----", "CWE-321"),
+    # Private keys — the regex marker strings below match secret-scanner
+    # patterns by design; this is the detector library, not real keys.
+    ("RSA private key", Severity.CRITICAL, "-" * 5 + "BEGIN RSA PRIVATE KEY" + "-" * 5, "CWE-321"),  # gitleaks:allow
+    (
+        "OpenSSH private key",
+        Severity.CRITICAL,
+        "-" * 5 + "BEGIN OPENSSH PRIVATE KEY" + "-" * 5,
+        "CWE-321",
+    ),  # gitleaks:allow
+    ("EC private key", Severity.CRITICAL, "-" * 5 + "BEGIN EC PRIVATE KEY" + "-" * 5, "CWE-321"),  # gitleaks:allow
+    ("DSA private key", Severity.CRITICAL, "-" * 5 + "BEGIN DSA PRIVATE KEY" + "-" * 5, "CWE-321"),  # gitleaks:allow
+    (
+        "PGP private key",
+        Severity.CRITICAL,
+        "-" * 5 + "BEGIN PGP PRIVATE KEY BLOCK" + "-" * 5,
+        "CWE-321",
+    ),  # gitleaks:allow
+    (
+        "Generic PEM private key",
+        Severity.CRITICAL,
+        "-" * 5 + "BEGIN PRIVATE KEY" + "-" * 5,
+        "CWE-321",
+    ),  # gitleaks:allow
 ]
 
 # Context-based regex (field-name + value) — emits HIGH when value looks
