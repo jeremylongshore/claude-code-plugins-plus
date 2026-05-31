@@ -166,10 +166,8 @@ def _check_cookies(headers, target):
         for default_name, framework in DEFAULT_COOKIES.items():
             if default_name.endswith("*"):
                 if name.startswith(default_name.rstrip("*")):
-                    matched = default_name
                     break
             elif name == default_name:
-                matched = default_name
                 break
         else:
             continue
