@@ -42,8 +42,8 @@ const vendorIcon = iconMap[vendor.icon] || '\u{1F4E6}';
 <BaseLayout title={pageTitle} description={pageDescription}>
   <style>
     .pack-hero {
-      background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
-      color: white;
+      background: var(--bg); border-bottom: 1px solid var(--rule);
+      color: var(--ink);
       padding: 4rem 2rem 3rem;
     }
 
@@ -59,7 +59,7 @@ const vendorIcon = iconMap[vendor.icon] || '\u{1F4E6}';
     }
 
     .breadcrumb a {
-      color: white;
+      color: var(--ink);
       text-decoration: none;
     }
 
@@ -107,27 +107,27 @@ const vendorIcon = iconMap[vendor.icon] || '\u{1F4E6}';
     }
 
     .tier-badge.flagship-plus {
-      background: linear-gradient(135deg, #FFD700, #FFA500);
+      background: var(--signal); color: #0a0a0c;
       color: var(--brand-dark);
     }
 
     .tier-badge.flagship {
-      background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+      background: var(--panel-2); border: 1px solid var(--rule); color: var(--ink);
       color: var(--brand-dark);
     }
 
     .tier-badge.pro {
-      background: linear-gradient(135deg, #CD7F32, #8B4513);
-      color: white;
+      background: var(--panel); border: 1px solid var(--rule); color: var(--ink-2);
+      color: var(--ink);
     }
 
     .tier-badge.standard {
-      background: linear-gradient(135deg, #4A90D9, #357ABD);
-      color: white;
+      background: var(--ink-link); color: #0a0a0c;
+      color: var(--ink);
     }
 
     .install-section {
-      background: rgba(255,255,255,0.1);
+      background: var(--panel); border: 1px solid var(--rule);
       border-radius: 12px;
       padding: 1.5rem;
       margin-top: 2rem;
@@ -142,7 +142,7 @@ const vendorIcon = iconMap[vendor.icon] || '\u{1F4E6}';
     .install-command {
       font-family: monospace;
       font-size: 1rem;
-      background: rgba(0,0,0,0.3);
+      background: var(--bg); border: 1px solid var(--rule);
       padding: 0.75rem 1rem;
       border-radius: 8px;
       display: flex;

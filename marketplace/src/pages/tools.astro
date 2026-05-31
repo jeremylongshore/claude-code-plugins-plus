@@ -79,7 +79,7 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
       .hero h1 {
         font-size: 3rem;
         font-weight: 800;
-        background: linear-gradient(135deg, var(--accent) 0%, var(--blue) 100%);
+        background: var(--primary);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -117,7 +117,7 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(90deg, var(--accent), var(--blue));
+        background: var(--primary);
         opacity: 0;
         transition: opacity 0.3s;
       }
@@ -150,15 +150,15 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
       }
 
       .tool-icon.doctor {
-        background: linear-gradient(135deg, var(--accent), var(--blue));
+        background: var(--primary);
       }
 
       .tool-icon.analytics {
-        background: linear-gradient(135deg, var(--blue), var(--purple));
+        background: var(--ink-link);
       }
 
       .tool-icon.chats {
-        background: linear-gradient(135deg, var(--purple), var(--orange));
+        background: var(--alert);
       }
 
       .tool-title {
@@ -218,7 +218,7 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
       }
 
       .install-box {
-        background: #000;
+        background: var(--bg);
         border: 1px solid var(--border);
         border-radius: 8px;
         padding: 1rem;
@@ -255,7 +255,7 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
       .copy-btn.copied {
         background: var(--accent);
         border-color: var(--accent);
-        color: #000;
+        color: var(--ink);
       }
 
       .quick-start {
@@ -286,7 +286,7 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
         width: 32px;
         height: 32px;
         background: var(--accent);
-        color: #000;
+        color: var(--ink);
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -342,7 +342,7 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
 
       .btn-primary {
         background: var(--accent);
-        color: #000;
+        color: var(--ink);
       }
 
       .btn-primary:hover {
@@ -493,7 +493,7 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
             <div class="step-number">1</div>
             <div class="step-content">
               <h3>Add the Marketplace</h3>
-              <p>Open Claude Code and run: <code style="background: #000; padding: 0.2rem 0.4rem; border-radius: 4px;">{MARKETPLACE_INSTALL}</code></p>
+              <p>Open Claude Code and run: <code style="background: var(--bg); padding: 0.2rem 0.4rem; border-radius: 4px;">{MARKETPLACE_INSTALL}</code></p>
             </div>
           </div>
 
@@ -501,7 +501,7 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
             <div class="step-number">2</div>
             <div class="step-content">
               <h3>Install CLI Tools</h3>
-              <p>The <code style="background: #000; padding: 0.2rem 0.4rem; border-radius: 4px;">@claude-code-plugins/ccp</code> package is published to npm. No installation needed - just use npx!</p>
+              <p>The <code style="background: var(--bg); padding: 0.2rem 0.4rem; border-radius: 4px;">@claude-code-plugins/ccp</code> package is published to npm. No installation needed - just use npx!</p>
             </div>
           </div>
 
@@ -509,7 +509,7 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
             <div class="step-number">3</div>
             <div class="step-content">
               <h3>Run Diagnostics</h3>
-              <p>Verify your setup with: <code style="background: #000; padding: 0.2rem 0.4rem; border-radius: 4px;">npx @claude-code-plugins/ccp doctor</code></p>
+              <p>Verify your setup with: <code style="background: var(--bg); padding: 0.2rem 0.4rem; border-radius: 4px;">npx @claude-code-plugins/ccp doctor</code></p>
             </div>
           </div>
         </div>

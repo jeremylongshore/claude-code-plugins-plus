@@ -64,6 +64,13 @@ jobs:
       - name: Format check (root Prettier, reporting mode)
         run: pnpm run format:check || true
 
+      # Design-tell gate (VibeCheck 25/100 regression guard, 2026-05-31).
+      # Fails on chrome gradients, glassmorphism, purple/indigo/violet
+      # utilities, or em-dash density >12 in visible chrome.
+      # See marketplace/DESIGN.md § 8 + Changelog 2026-05-31.
+      - name: Lint design tells (VibeCheck gate)
+        run: pnpm run lint:design
+
       - name: Sync CLI marketplace catalog
         run: |
           node scripts/sync-marketplace.cjs

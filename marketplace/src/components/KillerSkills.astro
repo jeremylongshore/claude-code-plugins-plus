@@ -67,7 +67,7 @@ const isExternal = skill.link.startsWith('http');
   .killer-card {
     background: var(--surface-2);
     border: 1px solid var(--border);
-    border-radius: 14px;
+    border-radius: 2px;
     padding: 2rem;
     color: inherit;
     display: flex;
@@ -82,15 +82,15 @@ const isExternal = skill.link.startsWith('http');
     margin-top: 1.5rem;
   }
 
-  /* Always-visible 3px primary gradient top bar */
+  /* Always-visible 2px primary top rule */
   .killer-card::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+    height: 2px;
+    background: var(--primary);
   }
 
   .killer-card:hover {

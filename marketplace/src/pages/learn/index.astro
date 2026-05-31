@@ -14,7 +14,7 @@ const sortedVendors = [...vendorPacks.vendors].sort((a, b) => {
 <BaseLayout title={pageTitle} description={pageDescription}>
   <style>
     .learn-hero {
-      background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
+      background: var(--bg); border-bottom: 1px solid var(--rule);
       color: white;
       padding: 4rem 2rem 3rem;
       text-align: center;
@@ -76,22 +76,22 @@ const sortedVendors = [...vendorPacks.vendors].sort((a, b) => {
     }
 
     .tier-badge.flagship-plus {
-      background: linear-gradient(135deg, #FFD700, #FFA500);
+      background: var(--signal); color: #0a0a0c;
       color: var(--brand-dark);
     }
 
     .tier-badge.flagship {
-      background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+      background: var(--panel-2); border: 1px solid var(--rule); color: var(--ink);
       color: var(--brand-dark);
     }
 
     .tier-badge.pro {
-      background: linear-gradient(135deg, #CD7F32, #8B4513);
+      background: var(--panel); border: 1px solid var(--rule); color: var(--ink-2);
       color: white;
     }
 
     .tier-badge.standard {
-      background: linear-gradient(135deg, #4A90D9, #357ABD);
+      background: var(--ink-link); color: #0a0a0c;
       color: white;
     }
 

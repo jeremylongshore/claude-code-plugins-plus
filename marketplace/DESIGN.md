@@ -297,4 +297,14 @@ Paste that block into any prompt that asks AI to render UI for this codebase.
 
 ## Changelog
 
+- **2026-05-31** — VibeCheck audit (vibecheck.fail) returned 25/100 on the deployed site. Investigation found constitution drift: ~190 `linear-gradient` declarations and ~230 large-radius card chrome surfaces across components and pages, in direct contradiction of §1 and §8. Enforcement actions:
+  1. Border-radius scale flattened to 2 px across all tiers (`--radius-sm/md/lg/xl`). Square corners are the anti-default; pills and tags still get the small radius. Circles (`50%`) and 1 px hairlines untouched.
+  2. All chrome `linear-gradient` declarations replaced with solid tokens. Allowlist: `mask-image: linear-gradient(...)` for progressive scroll fades.
+  3. `backdrop-filter: blur()` removed from `BaseLayout` nav and elsewhere; nav now sits on solid `--bg` with `border-bottom: 1px solid var(--rule)`.
+  4. Vendor `/learn/<vendor>/` template (31 pages) had its orange-gradient hero and four metallic tier-badge gradients replaced with solid tokens.
+  5. **New CI gate**: `scripts/lint-design-tells.mjs` runs every build. Blocks on any `linear-gradient` in chrome paths, any `backdrop-blur|backdrop-filter` (except explicit `: none` resets), any `(bg|from|via|to|text|border)-(purple|indigo|violet)-N` utility, and em-dash density >12 in visible-chrome files (Hero / components / index / explore / getting-started). Run `--strict` to tighten thresholds.
+  6. Hero copy stripped of "Production-Ready / definitive / Supercharge / battle-tested" — that vocabulary is the linguistic equivalent of glassmorphism.
+
+  Rule reinforced: **Rules over boxes.** A 1 px hairline above a section heading is the canonical separator. A rounded panel is the anti-pattern, not the default. The 2026-05-06 design family was correct; the components had drifted from it.
+
 - **2026-05-06** — Constitution authored. Family locked to Data-Dense Pro. Warm-terracotta + Instrument Sans / Source Sans 3 / DM Mono retired. Token *names* preserved (downstream-compatible swap); values replaced wholesale.

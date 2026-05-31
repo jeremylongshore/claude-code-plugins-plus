@@ -201,12 +201,10 @@ const currentPath = Astro.url.pathname;
             justify-content: space-between;
             align-items: center;
             z-index: 100;
-            background: transparent;
-            border-bottom: 1px solid transparent;
-            backdrop-filter: blur(12px);
+            background: var(--bg);
+            border-bottom: 1px solid var(--rule);
             transition: background var(--duration-fast) var(--ease-out),
-                        border-color var(--duration-fast) var(--ease-out),
-                        box-shadow var(--duration-fast) var(--ease-out);
+                        border-color var(--duration-fast) var(--ease-out);
         }
 
         nav.scrolled {

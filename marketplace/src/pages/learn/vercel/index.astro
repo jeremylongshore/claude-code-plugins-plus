@@ -16,8 +16,8 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
 <BaseLayout title={pageTitle} description={pageDescription}>
   <style>
     .pack-hero {
-      background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
-      color: white;
+      background: var(--bg); border-bottom: 1px solid var(--rule);
+      color: var(--ink);
       padding: 4rem 2rem 3rem;
     }
 
@@ -33,7 +33,7 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
     }
 
     .breadcrumb a {
-      color: white;
+      color: var(--ink);
       text-decoration: none;
     }
 
@@ -52,7 +52,7 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
       width: 80px;
       height: 80px;
       border-radius: 16px;
-      background: rgba(255,255,255,0.1);
+      background: var(--panel); border: 1px solid var(--rule);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -78,13 +78,13 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
       font-size: 0.75rem;
       font-weight: 600;
       text-transform: uppercase;
-      background: linear-gradient(135deg, #FFD700, #FFA500);
+      background: var(--signal); color: #0a0a0c;
       color: var(--brand-dark);
       margin-top: 0.5rem;
     }
 
     .install-section {
-      background: rgba(255,255,255,0.1);
+      background: var(--panel); border: 1px solid var(--rule);
       border-radius: 12px;
       padding: 1.5rem;
       margin-top: 2rem;
@@ -99,7 +99,7 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
     .install-command {
       font-family: monospace;
       font-size: 1rem;
-      background: rgba(0,0,0,0.3);
+      background: var(--bg); border: 1px solid var(--rule);
       padding: 0.75rem 1rem;
       border-radius: 8px;
       display: flex;

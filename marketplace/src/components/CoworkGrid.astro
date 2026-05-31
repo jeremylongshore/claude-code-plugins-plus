@@ -73,7 +73,7 @@ const icons: Record<string, string> = {
   .cowork-card {
     background: var(--card);
     border: 2px solid var(--brand-light-gray, #e5e7eb);
-    border-radius: 12px;
+    border-radius: 2px;
     padding: 1.5rem;
     text-decoration: none;
     color: inherit;
@@ -101,7 +101,7 @@ const icons: Record<string, string> = {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 10px;
+    border-radius: 2px;
     flex-shrink: 0;
   }
 
@@ -258,7 +258,7 @@ const icons: Record<string, string> = {
 
     const toast = document.createElement('div');
     toast.textContent = 'Downloading ' + category + ' pack...';
-    toast.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#1a1a1a;color:white;padding:1rem 1.5rem;border-radius:8px;font-size:0.9rem;z-index:1000;animation:coworkFade 2.5s ease-in-out;';
+    toast.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#1a1a1a;color:white;padding:1rem 1.5rem;border-radius: 2px;font-size:0.9rem;z-index:1000;animation:coworkFade 2.5s ease-in-out;';
     document.body.appendChild(toast);
     setTimeout(function() { toast.remove(); }, 2500);
 

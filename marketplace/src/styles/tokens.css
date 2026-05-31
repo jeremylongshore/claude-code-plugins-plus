@@ -93,11 +93,13 @@
   --breakpoint-desktop: 1280px;
   --breakpoint-wide:    1536px;
 
-  /* ── Border radius scale ── */
-  --radius-sm: 6px;    /* tags, pills */
-  --radius-md: 8px;    /* compact cards */
-  --radius-lg: 12px;   /* standard cards */
-  --radius-xl: 16px;   /* featured cards, sections */
+  /* ── Border radius scale (data-dense, anti-AI-slop) ──
+     Squared corners are the anti-default. We keep small radii for
+     pills and tags only; cards are hairline-ruled rectangles. */
+  --radius-sm: 2px;    /* tags, pills */
+  --radius-md: 2px;    /* compact cards (was 8px — squared per VibeCheck) */
+  --radius-lg: 2px;    /* standard cards (was 12px) */
+  --radius-xl: 2px;    /* featured cards, sections (was 16px) */
 
   /* ── Card system (3 tiers) ── */
   --card-compact-padding: var(--space-4);

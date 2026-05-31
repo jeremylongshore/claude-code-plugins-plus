@@ -1170,13 +1170,13 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             left: 0;
             right: 0;
             height: 3px;
-            background: linear-gradient(90deg, #f97316, #fb923c);
+            background: var(--signal);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
 
         .product-card.service-card::before {
-            background: linear-gradient(90deg, var(--positive), #4ade80);
+            background: var(--positive);
         }
 
         .product-card:hover {
@@ -1271,8 +1271,8 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             text-align: center;
             text-decoration: none;
             transition: all 0.3s ease;
-            background: linear-gradient(135deg, #f97316, #ea580c);
-            color: white;
+            background: var(--signal);
+            color: #0a0a0c;
         }
 
         .product-cta:hover {
@@ -1281,7 +1281,8 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         }
 
         .product-cta.service-cta {
-            background: linear-gradient(135deg, var(--positive), #16a34a);
+            background: var(--positive);
+            color: #0a0a0c;
         }
 
         .product-cta.service-cta:hover {
@@ -1453,7 +1454,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                                 class="hero-sponsor-link hero-stats-link"
                             >
                                 <span class="hero-sponsor-text">
-                                    {p.name.replace(/^@intentsolutionsio\//, '')} — {fmtNum(p.lastMonth)}
+                                    {p.name.replace(/^@intentsolutionsio\//, '')} · {fmtNum(p.lastMonth)}
                                 </span>
                             </a>
                         ))}
@@ -1465,7 +1466,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                                 class="hero-sponsor-link hero-stats-link"
                             >
                                 <span class="hero-sponsor-text">
-                                    {p.name.replace(/^@intentsolutionsio\//, '')} — {fmtNum(p.lastMonth)}
+                                    {p.name.replace(/^@intentsolutionsio\//, '')} · {fmtNum(p.lastMonth)}
                                 </span>
                             </a>
                         ))}
@@ -1578,7 +1579,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
 
             <div style="margin-top: 1rem; padding: 1.25rem 1.5rem; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px;">
                 <p style="margin: 0 0 0.25rem; color: var(--text); font-weight: 700; font-size: 1.05rem;">Got a killer skill?</p>
-                <p style="margin: 0 0 1rem; color: var(--text-2); font-size: 0.85rem; line-height: 1.5; max-width: 520px;">Drop your repo link. We review every submission, and if your skill makes the cut, you get the full spotlight — homepage feature, Hall of Fame, and a write-up on your repo.</p>
+                <p style="margin: 0 0 1rem; color: var(--text-2); font-size: 0.85rem; line-height: 1.5; max-width: 520px;">Drop your repo link. We review every submission, and if your skill makes the cut, you get the full spotlight: homepage feature, Hall of Fame, and a write-up on your repo.</p>
                 <form data-nomination-form="killer-skills" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                     <input type="url" name="repo"
                         placeholder="https://github.com/you/your-skill"
@@ -1847,7 +1848,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             <div class="level-up-header">
                 <h2 class="level-up-title">Level Up Your Claude Code Skills</h2>
                 <p class="level-up-subtitle">
-                    Live screen-share training with Jeremy. Plugin dev, workflow optimization, production deployment, ongoing code reviews. Tell me what you're working on — I'll get back within 24 hours.
+                    Live screen-share training with Jeremy. Plugin dev, workflow optimization, production deployment, ongoing code reviews. Tell me what you're working on. I'll get back within 24 hours.
                 </p>
             </div>
 
