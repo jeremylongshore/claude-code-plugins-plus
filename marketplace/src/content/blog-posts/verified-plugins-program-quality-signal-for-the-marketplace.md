@@ -108,6 +108,6 @@ This is the difference between a marketplace and a directory. A directory lists 
 
 ## Related Posts
 
-- [Scaling AI Batch Processing with Vertex AI Gemini](/posts/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/) — Earlier infrastructure work that built the plugin catalog
-- [Production Release Engineering: Shipping v4.5.0](/posts/production-release-engineering-v450/) — Automated release workflows for the marketplace
-- [Three Projects, Two Reverts, One Day](/posts/three-projects-two-reverts-one-day/) — The previous week's marketplace work including domain migration
+- [Scaling AI Batch Processing with Vertex AI Gemini](/blog/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/) — Earlier infrastructure work that built the plugin catalog
+- [Production Release Engineering: Shipping v4.5.0](/blog/production-release-engineering-v450/) — Automated release workflows for the marketplace
+- [Three Projects, Two Reverts, One Day](/blog/three-projects-two-reverts-one-day/) — The previous week's marketplace work including domain migration

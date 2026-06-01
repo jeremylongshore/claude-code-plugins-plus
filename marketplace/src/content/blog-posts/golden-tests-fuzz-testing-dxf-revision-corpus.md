@@ -5,7 +5,7 @@ date: "2026-02-27"
 tags: ["testing", "python", "architecture", "ai-agents", "cad"]
 featured: false
 ---
-Yesterday I shipped a [deterministic DXF comparison engine](/posts/deterministic-dxf-comparison-engine-one-day-build/) — canonical models, alignment ladders, confidence scoring, the works. Four PRs, 814 tests, all green.
+Yesterday I shipped a [deterministic DXF comparison engine](/blog/deterministic-dxf-comparison-engine-one-day-build/) — canonical models, alignment ladders, confidence scoring, the works. Four PRs, 814 tests, all green.
 
 Today's question: does it actually work on drawings that aren't contrived?
 
@@ -112,6 +112,6 @@ Testing infrastructure IS the feature. The golden harness catches regressions au
 
 **Related Posts:**
 
-- [Building a Deterministic DXF Comparison Engine in One Day](/posts/deterministic-dxf-comparison-engine-one-day-build/)
-- [The Silent Killer: Bare Catch Blocks Hide Failures](/posts/silent-killer-bare-catch-blocks-hide-failures/)
-- [Python Class Identity Mismatch: A CI Debugging Guide](/posts/python-class-identity-mismatch-ci-debugging-guide/)
+- [Building a Deterministic DXF Comparison Engine in One Day](/blog/deterministic-dxf-comparison-engine-one-day-build/)
+- [The Silent Killer: Bare Catch Blocks Hide Failures](/blog/silent-killer-bare-catch-blocks-hide-failures/)
+- [Python Class Identity Mismatch: A CI Debugging Guide](/blog/python-class-identity-mismatch-ci-debugging-guide/)

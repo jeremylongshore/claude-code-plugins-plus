@@ -868,4 +868,4 @@ print(response.json()['response'])</code></pre>
 
 <p><strong>Last Updated</strong>: 2025-12-24</p>
 <p><strong>Author</strong>: Jeremy Longshore</p>
-<p><strong>Related Playbooks</strong>: <a href="./02-cost-caps.md">Cost Caps & Budget Management</a>, <a href="./03-mcp-reliability.md">MCP Server Reliability</a></p>
+<p><strong>Related Playbooks</strong>: <a href="/playbooks/02-cost-caps/">Cost Caps & Budget Management</a>, <a href="/playbooks/03-mcp-reliability/">MCP Server Reliability</a></p>

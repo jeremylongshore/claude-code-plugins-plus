@@ -182,5 +182,5 @@ Make failures loud, even when they're non-blocking. Your future self debugging a
 
 *Related posts:*
 
-- [Session Cookie Auth, Forgot-Password Timeouts, and Killing Flaky E2E Tests](/posts/session-cookies-forgot-password-flaky-e2e-tests/) — another deep-dive into Firebase auth edge cases and debugging invisible failures
-- [Waygate MCP v2.1.0: From Forensic Analysis to Production Enterprise Server](/posts/waygate-mcp-v2-1-0-forensic-analysis-to-production-enterprise-server-with-taskwarrior/) — systematic resolution of 19 critical issues through forensic analysis
+- [Session Cookie Auth, Forgot-Password Timeouts, and Killing Flaky E2E Tests](/blog/session-cookies-forgot-password-flaky-e2e-tests/) — another deep-dive into Firebase auth edge cases and debugging invisible failures
+- [Waygate MCP v2.1.0: From Forensic Analysis to Production Enterprise Server](/blog/waygate-mcp-v2-1-0-forensic-analysis-to-production-enterprise-server-with-taskwarrior/) — systematic resolution of 19 critical issues through forensic analysis

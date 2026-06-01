@@ -151,7 +151,7 @@ Also: Groq with llama-3.3-70b added as a local dev AI provider. Vertex AI Gemini
 
 ## Why This Works in One Day
 
-Same pattern as [IntentCAD's five-epic day](/posts/from-tool-to-platform-intentcad-five-epics-one-day/). Each epic builds on the contracts from the one before. The standards freeze (Epic 1) defines the schemas. The foundation (Epic 2) enforces package boundaries. Ingest adapters (Epic 5) produce the data the compiler (Epic 6) consumes. The compiler produces the knowledge the retriever (Epic 7) searches.
+Same pattern as [IntentCAD's five-epic day](/blog/from-tool-to-platform-intentcad-five-epics-one-day/). Each epic builds on the contracts from the one before. The standards freeze (Epic 1) defines the schemas. The foundation (Epic 2) enforces package boundaries. Ingest adapters (Epic 5) produce the data the compiler (Epic 6) consumes. The compiler produces the knowledge the retriever (Epic 7) searches.
 
 No epic can ship without the one before it. But each one is small enough to ship in a few hours because the contracts are already defined. You're not designing and building simultaneously. You designed everything in Epic 1, then executed six times.
 
@@ -161,6 +161,6 @@ No epic can ship without the one before it. But each one is small enough to ship
 
 *Related posts:*
 
-- [Building Post-Compaction Recovery with Beads](/posts/building-post-compaction-recovery-beads/) — the task persistence system that keeps multi-epic days recoverable
-- [From Tool to Platform: IntentCAD Five Epics One Day](/posts/from-tool-to-platform-intentcad-five-epics-one-day/) — the same contracts-then-execute pattern applied to CAD tooling
-- [Nuclear Option Day: Validator Rewrite Across 414 Plugins](/posts/nuclear-option-day-validator-rewrite-414-plugins/) — another high-output day driven by a single architectural decision
+- [Building Post-Compaction Recovery with Beads](/blog/building-post-compaction-recovery-beads/) — the task persistence system that keeps multi-epic days recoverable
+- [From Tool to Platform: IntentCAD Five Epics One Day](/blog/from-tool-to-platform-intentcad-five-epics-one-day/) — the same contracts-then-execute pattern applied to CAD tooling
+- [Nuclear Option Day: Validator Rewrite Across 414 Plugins](/blog/nuclear-option-day-validator-rewrite-414-plugins/) — another high-output day driven by a single architectural decision

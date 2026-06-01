@@ -71,7 +71,7 @@ The project went from concept to shipping in a structured, incremental build whe
 
 On the same day, claude-code-plugins v4.18.0 shipped with a different kind of improvement. The explore page got cleaned up — and "cleaned up" meant *removing* things.
 
-A few days earlier, the [Verified Plugins Program](/posts/verified-plugins-program-quality-signal-for-the-marketplace/) introduced verification badges to the marketplace. Shiny visual indicators showing which plugins had passed quality checks. Good idea in theory.
+A few days earlier, the [Verified Plugins Program](/blog/verified-plugins-program-quality-signal-for-the-marketplace/) introduced verification badges to the marketplace. Shiny visual indicators showing which plugins had passed quality checks. Good idea in theory.
 
 In practice, the badges added visual noise. Every card on the explore page now had an extra element competing for attention. The verification status wasn't adding signal — it was adding clutter. When most plugins aren't verified yet, a badge system mostly tells you what *isn't* verified, which users already assumed.
 
@@ -103,6 +103,6 @@ Both are architecture decisions. One adds a layer. The other subtracts one. Both
 
 ### Related Posts
 
-- [Verified Plugins Program: Building a Quality Signal for the Marketplace](/posts/verified-plugins-program-quality-signal-for-the-marketplace/)
-- [From Tool to Platform: IntentCAD Ships Five EPICs in One Day](/posts/from-tool-to-platform-intentcad-five-epics-one-day/)
-- [Marketplace Quality Blitz: 130 Stub Files, 4300 Warnings, Zero Excuses](/posts/marketplace-quality-blitz-130-stubs-4300-warnings/)
+- [Verified Plugins Program: Building a Quality Signal for the Marketplace](/blog/verified-plugins-program-quality-signal-for-the-marketplace/)
+- [From Tool to Platform: IntentCAD Ships Five EPICs in One Day](/blog/from-tool-to-platform-intentcad-five-epics-one-day/)
+- [Marketplace Quality Blitz: 130 Stub Files, 4300 Warnings, Zero Excuses](/blog/marketplace-quality-blitz-130-stubs-4300-warnings/)

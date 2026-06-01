@@ -79,7 +79,7 @@ The marketplace repo's `sync-external.yml` listens for `repository_dispatch` eve
 
 The x-bug-triage-plugin was the first to use this pipeline. Five skills, four agents, and an MCP server synced to the marketplace on the same commit that deployed the dispatch trigger. box-cloud-filesystem also got re-synced with its latest upstream.
 
-This closes the loop on [the external sync system](/posts/external-plugin-sync-keeping-community-plugins-fresh/) built in January. That system used a cron schedule — daily syncs at midnight. The `repository_dispatch` approach is event-driven. Push to source, marketplace updates in minutes instead of waiting for the next cron window.
+This closes the loop on [the external sync system](/blog/external-plugin-sync-keeping-community-plugins-fresh/) built in January. That system used a cron schedule — daily syncs at midnight. The `repository_dispatch` approach is event-driven. Push to source, marketplace updates in minutes instead of waiting for the next cron window.
 
 ## The Distribution Graph
 
@@ -103,6 +103,6 @@ That's the whole point of infrastructure. You pay once, then it compounds.
 
 **Related Posts:**
 
-- [Building External Plugin Sync: Keeping Community Plugins Fresh](/posts/external-plugin-sync-keeping-community-plugins-fresh/) — The January cron-based sync system that today's `repository_dispatch` replaces
-- [X Bug Triage Plugin: Zero to v0.4.3 in One Day](/posts/x-bug-triage-plugin-zero-to-v043-one-day/) — The plugin that got its first marketplace sync today
-- [Content Quality War: 7-Check Audit Across 340 Plugins](/posts/content-quality-war-7-check-audit-across-340-plugins/) — The content quality standards that the sync pipeline now enforces automatically
+- [Building External Plugin Sync: Keeping Community Plugins Fresh](/blog/external-plugin-sync-keeping-community-plugins-fresh/) — The January cron-based sync system that today's `repository_dispatch` replaces
+- [X Bug Triage Plugin: Zero to v0.4.3 in One Day](/blog/x-bug-triage-plugin-zero-to-v043-one-day/) — The plugin that got its first marketplace sync today
+- [Content Quality War: 7-Check Audit Across 340 Plugins](/blog/content-quality-war-7-check-audit-across-340-plugins/) — The content quality standards that the sync pipeline now enforces automatically

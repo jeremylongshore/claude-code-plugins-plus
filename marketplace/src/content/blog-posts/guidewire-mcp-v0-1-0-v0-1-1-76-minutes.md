@@ -87,7 +87,7 @@ A successful approved_execute pipeline run writes these six entries (in order):
 5. **execute.started** — effect about to fire
 6. **execute.completed** — effect returned a value
 
-The full schema includes additional types for failure paths (`execute.failed`, `execute.replayed`) and lifecycle events (`rollback.hint.issued`, `idempotency.pruned`) — ten in total — but these six are what a clean run leaves in the chain. (For the real-world Postgres test that uncovered role-separation bugs, see [The Two Postgres Bugs the Tests Caught](/posts/postgres-approval-sink-bugs-the-tests-caught/).)
+The full schema includes additional types for failure paths (`execute.failed`, `execute.replayed`) and lifecycle events (`rollback.hint.issued`, `idempotency.pruned`) — ten in total — but these six are what a clean run leaves in the chain. (For the real-world Postgres test that uncovered role-separation bugs, see [The Two Postgres Bugs the Tests Caught](/blog/postgres-approval-sink-bugs-the-tests-caught/).)
 
 ### Verification via read-only role
 
@@ -183,7 +183,7 @@ That's now an auto-memory feedback rule that travels with me into every Intent S
 
 ## What v0.1.0 actually contains
 
-Stat block, for the engineers who want to size the surface. For the full v0.1.0 design rationale, see [Guidewire MCP v0.1.0: Carrier-Native Server Blueprint](/posts/guidewire-mcp-v0-1-0-foundation-ship/) (shipped the same week).
+Stat block, for the engineers who want to size the surface. For the full v0.1.0 design rationale, see [Guidewire MCP v0.1.0: Carrier-Native Server Blueprint](/blog/guidewire-mcp-v0-1-0-foundation-ship/) (shipped the same week).
 
 | Metric | Value |
 |--------|-------|

@@ -644,4 +644,4 @@ pnpm start
 
 <p><strong>Last Updated</strong>: 2025-12-24</p>
 <p><strong>Author</strong>: Jeremy Longshore</p>
-<p><strong>Related Playbooks</strong>: <a href="./02-cost-caps.md">Cost Caps</a>, <a href="./05-incident-debugging.md">Incident Debugging</a></p>
+<p><strong>Related Playbooks</strong>: <a href="/playbooks/02-cost-caps/">Cost Caps</a>, <a href="/playbooks/05-incident-debugging/">Incident Debugging</a></p>

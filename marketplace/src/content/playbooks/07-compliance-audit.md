@@ -902,4 +902,4 @@ await db.conversations.delete({ id });</code></pre>
 
 <p><strong>Last Updated</strong>: 2025-12-24</p>
 <p><strong>Author</strong>: Jeremy Longshore</p>
-<p><strong>Related Playbooks</strong>: <a href="./06-self-hosted-stack.md">Self-Hosted Stack Setup</a>, <a href="./03-mcp-reliability.md">MCP Server Reliability</a></p>
+<p><strong>Related Playbooks</strong>: <a href="/playbooks/06-self-hosted-stack/">Self-Hosted Stack Setup</a>, <a href="/playbooks/03-mcp-reliability/">MCP Server Reliability</a></p>

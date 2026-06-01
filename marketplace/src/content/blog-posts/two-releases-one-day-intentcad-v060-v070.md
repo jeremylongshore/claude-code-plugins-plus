@@ -155,6 +155,6 @@ v0.8.0 planning is already laid out. IntentCAD is evolving from a CAD editing to
 
 **Related Posts:**
 
-- [Building a Deterministic DXF Comparison Engine in One Day](/posts/deterministic-dxf-comparison-engine-one-day-build/) — the foundation that made this possible
-- [Production Release Engineering: Shipping v4.5.0](/posts/production-release-engineering-v450/) — the release automation patterns behind shipping fast
-- [Engine to Product: Three Interfaces, One Codebase](/posts/engine-to-product-three-interfaces-one-codebase/) — the previous IntentCAD evolution step
+- [Building a Deterministic DXF Comparison Engine in One Day](/blog/deterministic-dxf-comparison-engine-one-day-build/) — the foundation that made this possible
+- [Production Release Engineering: Shipping v4.5.0](/blog/production-release-engineering-v450/) — the release automation patterns behind shipping fast
+- [Engine to Product: Three Interfaces, One Codebase](/blog/engine-to-product-three-interfaces-one-codebase/) — the previous IntentCAD evolution step

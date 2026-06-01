@@ -71,6 +71,6 @@ The design token system is a foundation. Dark mode, theme variants, accessibilit
 
 **Related Posts:**
 
-- [Verified Plugins Program: Building a Quality Signal for the Marketplace](/posts/verified-plugins-program-quality-signal-for-the-marketplace/)
-- [Scaling AI Batch Processing: Enhancing 235 Plugins with Vertex AI Gemini on the Free Tier](/posts/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/)
-- [Production Release Engineering: Shipping v4.5.0](/posts/production-release-engineering-v450/)
+- [Verified Plugins Program: Building a Quality Signal for the Marketplace](/blog/verified-plugins-program-quality-signal-for-the-marketplace/)
+- [Scaling AI Batch Processing: Enhancing 235 Plugins with Vertex AI Gemini on the Free Tier](/blog/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/)
+- [Production Release Engineering: Shipping v4.5.0](/blog/production-release-engineering-v450/)

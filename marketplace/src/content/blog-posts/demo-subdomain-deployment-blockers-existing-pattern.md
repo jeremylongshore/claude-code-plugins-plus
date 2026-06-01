@@ -178,6 +178,6 @@ GetTerms.io auto-updates legal docs when regulations change. We don't have to ma
 
 ## Related Posts
 
-- [Caching Strategies for Static Sites on Netlify](/posts/netlify-cache-busting/)
-- [DNS Propagation Debugging: When `dig` Lies to You](/posts/dns-propagation-debugging/)
-- [Caddy Auto-HTTPS: Let's Encrypt Provisioning at Scale](/posts/caddy-auto-https-lets-encrypt/)
+- [Caching Strategies for Static Sites on Netlify](/blog/netlify-cache-busting/)
+- [DNS Propagation Debugging: When `dig` Lies to You](/blog/dns-propagation-debugging/)
+- [Caddy Auto-HTTPS: Let's Encrypt Provisioning at Scale](/blog/caddy-auto-https-lets-encrypt/)

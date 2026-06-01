@@ -278,8 +278,8 @@ Bob's Circle of Life learning system processes this knowledge and makes it avail
 
 ## Related Posts
 
-- [Building AI-Friendly Codebase Documentation: Real-Time CLAUDE.md Creation Journey](/posts/building-ai-friendly-codebase-documentation-real-time-claude-md-creation-journey/)
-- [Building Multi-Brand RSS Validation System: 97% of 226 Feeds Tested](/posts/building-multi-brand-rss-validation-system-97-feeds-tested/)
+- [Building AI-Friendly Codebase Documentation: Real-Time CLAUDE.md Creation Journey](/blog/building-ai-friendly-codebase-documentation-real-time-claude-md-creation-journey/)
+- [Building Multi-Brand RSS Validation System: 97% of 226 Feeds Tested](/blog/building-multi-brand-rss-validation-system-97-feeds-tested/)
 
 ## Tech Stack
 

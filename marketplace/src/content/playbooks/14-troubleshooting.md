@@ -426,4 +426,4 @@ echo "=== Recent Errors ==="
 
 <p><strong>Last Updated</strong>: 2026-03-21</p>
 <p><strong>Author</strong>: Jeremy Longshore</p>
-<p><strong>Related Playbooks</strong>: <a href="./12-beginner-onboarding.md">Beginner Onboarding</a>, <a href="./05-incident-debugging.md">Incident Debugging</a></p>
+<p><strong>Related Playbooks</strong>: <a href="/playbooks/12-beginner-onboarding/">Beginner Onboarding</a>, <a href="/playbooks/05-incident-debugging/">Incident Debugging</a></p>

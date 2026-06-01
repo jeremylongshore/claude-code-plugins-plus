@@ -7,7 +7,7 @@ featured: false
 ---
 The cleanest architectural moves of the last six months didn't come from a whiteboard. They came from a partner email that essentially said: hey, remember what we actually signed.
 
-Yesterday's post was about [coherence as a deliverable](/posts/coherence-day-drift-detection-strategic-spine/) — a full audit-day where four advisor agents independently flagged the same drift in the same engagement. The drift was real, but the post stayed at the diagnostic layer. It identified the misalignment without committing to the structural change that misalignment implied. Today is the structural change.
+Yesterday's post was about [coherence as a deliverable](/blog/coherence-day-drift-detection-strategic-spine/) — a full audit-day where four advisor agents independently flagged the same drift in the same engagement. The drift was real, but the post stayed at the diagnostic layer. It identified the misalignment without committing to the structural change that misalignment implied. Today is the structural change.
 
 ## The drift
 
@@ -115,7 +115,7 @@ The same boundary discipline that partitioned content also forced a smaller sepa
 - OTel ecosystem is Go-native. Collector, Tempo, `opentelemetry-go-contrib`, and Honeycomb's Refinery proxy — all Go. The runner inherits the ecosystem instead of bridging to it.
 - Fast cold start matters when the runner is in a CLI eval loop being invoked dozens of times per session.
 - The official MCP Go SDK (`modelcontextprotocol/go-sdk`) gives clean protocol integration without me writing glue.
-- Matches the precedent set by the [j-rig-binary-eval runner](/posts/forge-dogfood-plane-plugin-grade-a-and-jrig-verified-loop/) — same operational shape, same maintenance surface for one operator.
+- Matches the precedent set by the [j-rig-binary-eval runner](/blog/forge-dogfood-plane-plugin-grade-a-and-jrig-verified-loop/) — same operational shape, same maintenance surface for one operator.
 
 The critical separation: **the runner-implementation decision is decoupled from the spec-implementation decision.** The spec is language-neutral. The matcher-map template is language-neutral. The conformance reports are language-neutral JSON.
 

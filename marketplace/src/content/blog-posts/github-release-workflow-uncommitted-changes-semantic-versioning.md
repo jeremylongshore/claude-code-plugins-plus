@@ -367,6 +367,6 @@ The best debugging often starts with the simplest question: "Is it actually comm
 
 ## Related Posts
 
-- [Debugging Claude Code Slash Commands: When Your Blog Automation Silently Fails](/posts/debugging-claude-code-slash-commands-silent-deployment-failures/) - Another git workflow debugging session
-- [When Commands Don't Work: A Debugging Journey Through Automated Content Systems](/posts/when-commands-dont-work-debugging-journey-through-automated-content-systems/) - Troubleshooting content automation
-- [Building Multi-Brand RSS Validation System: Testing 97 Feeds, Learning Hard Lessons](/posts/building-multi-brand-rss-validation-system-97-feeds-tested/) - Real-world debugging patterns
+- [Debugging Claude Code Slash Commands: When Your Blog Automation Silently Fails](/blog/debugging-claude-code-slash-commands-silent-deployment-failures/) - Another git workflow debugging session
+- [When Commands Don't Work: A Debugging Journey Through Automated Content Systems](/blog/when-commands-dont-work-debugging-journey-through-automated-content-systems/) - Troubleshooting content automation
+- [Building Multi-Brand RSS Validation System: Testing 97 Feeds, Learning Hard Lessons](/blog/building-multi-brand-rss-validation-system-97-feeds-tested/) - Real-world debugging patterns

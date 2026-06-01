@@ -118,8 +118,8 @@ Same day, part of a wider CI-hardening campaign:
 
 ## Related posts
 
-- [Self-Expiring Report-Only CI Gates](/posts/self-expiring-report-only-ci-gates/) — the `--warn-only` → `--strict` ratchet is the same advisory-to-enforced pattern, generalized.
-- [Safety Model First: 16-Tool Ops MCP in One Day](/posts/server-ops-mcp-safety-before-tools/) — designing the threat model before the surface, applied to an ops MCP server.
+- [Self-Expiring Report-Only CI Gates](/blog/self-expiring-report-only-ci-gates/) — the `--warn-only` → `--strict` ratchet is the same advisory-to-enforced pattern, generalized.
+- [Safety Model First: 16-Tool Ops MCP in One Day](/blog/server-ops-mcp-safety-before-tools/) — designing the threat model before the surface, applied to an ops MCP server.
 
 <script type="application/ld+json">
 {

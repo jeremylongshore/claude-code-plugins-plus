@@ -178,8 +178,8 @@ The n8n CLI handled workflow imports reliably. The API had validation issues wit
 
 ## Related Posts
 
-- [Waygate MCP v2.1.0: Forensic Analysis to Production Enterprise Server](/posts/waygate-mcp-v2-1-0-forensic-analysis-to-production-enterprise-server/)
-- [When Commands Don't Work: Debugging Journey Through Automated Content Systems](/posts/when-commands-dont-work-debugging-journey-through-automated-content-systems/)
+- [Waygate MCP v2.1.0: Forensic Analysis to Production Enterprise Server](/blog/waygate-mcp-v2-1-0-forensic-analysis-to-production-enterprise-server/)
+- [When Commands Don't Work: Debugging Journey Through Automated Content Systems](/blog/when-commands-dont-work-debugging-journey-through-automated-content-systems/)
 
 ## Next Steps
 

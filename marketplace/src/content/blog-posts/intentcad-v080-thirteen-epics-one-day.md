@@ -113,6 +113,6 @@ v0.8.0 is live. Fifteen PRs merged. Zero reverts.
 
 ## Related Posts
 
-- [Building a Deterministic DXF Comparison Engine in One Day](/posts/deterministic-dxf-comparison-engine-one-day-build/) — the comparison engine that the revision summary and consistency checker build on
-- [Production Release Engineering: Shipping v4.5.0](/posts/production-release-engineering-v450/) — the release automation pattern applied to a different project
-- [PDF Extraction Bugs and a 42-Commit Sweep Day](/posts/pdf-extraction-sweep-day-42-commits/) — the previous sweep day that set the stage for this EPIC push
+- [Building a Deterministic DXF Comparison Engine in One Day](/blog/deterministic-dxf-comparison-engine-one-day-build/) — the comparison engine that the revision summary and consistency checker build on
+- [Production Release Engineering: Shipping v4.5.0](/blog/production-release-engineering-v450/) — the release automation pattern applied to a different project
+- [PDF Extraction Bugs and a 42-Commit Sweep Day](/blog/pdf-extraction-sweep-day-42-commits/) — the previous sweep day that set the stage for this EPIC push

@@ -163,7 +163,7 @@ That last bullet is the one that gets quoted back the most often. The other thre
 
 ## Spec entry #3: `compatible-with` → `compatibility`
 
-The third propagation is the one that requires the most candor. The spec discipline that powered it was real, but the *trigger* was reactive, not proactive. Three days earlier on April 28, a schema-validator debacle had torn down the IS marketplace's enterprise rubric on the wrong claim that the rubric should "realign to Anthropic's permissive spec floor." The full postmortem lives at [/posts/schema-debacle-rubric-on-spec-postmortem/](/posts/schema-debacle-rubric-on-spec-postmortem/) and the upshot is documented in a NON-NEGOTIABLES section now pinned at the top of `SCHEMA_CHANGELOG.md`.
+The third propagation is the one that requires the most candor. The spec discipline that powered it was real, but the *trigger* was reactive, not proactive. Three days earlier on April 28, a schema-validator debacle had torn down the IS marketplace's enterprise rubric on the wrong claim that the rubric should "realign to Anthropic's permissive spec floor." The full postmortem lives at [/posts/schema-debacle-rubric-on-spec-postmortem/](/blog/schema-debacle-rubric-on-spec-postmortem/) and the upshot is documented in a NON-NEGOTIABLES section now pinned at the top of `SCHEMA_CHANGELOG.md`.
 
 What survived from that wrong direction was one genuinely correct rename. The [AgentSkills.io spec](https://agentskills.io/specification) — the open standard Claude Code follows — uses a free-text field called `compatibility`. The IS rubric had been using a CSV-formatted field called `compatible-with`. That divergence was a real bug, the kind that should be fixed. The validator's deprecation entry captures the rename:
 
@@ -297,6 +297,6 @@ The next entry in `~/.claude/CLAUDE.md` that needs this treatment is already lin
 
 ## Related Posts
 
-- [The Rubric Sits On Top Of The Spec: A Schema Validator Postmortem](/posts/schema-debacle-rubric-on-spec-postmortem/) — what happens when the spec layering breaks down, three days before this post's marketplace migration shipped.
-- [Forty-Four Minutes Before First Pitch: An LLM Fallback Chain and a Live Probability Gauge in One Session](/posts/broadcast-day-llm-fallback-jchads-challenge/) — the same braves-booth dashboard, two days earlier, in incident-response mode.
-- [audit-harness v0.10: Enforcement Travels With the Code](/posts/audit-harness-v010-enforcement-travels-with-code/) — the prior expression of the same mental model, applied to test enforcement infrastructure.
+- [The Rubric Sits On Top Of The Spec: A Schema Validator Postmortem](/blog/schema-debacle-rubric-on-spec-postmortem/) — what happens when the spec layering breaks down, three days before this post's marketplace migration shipped.
+- [Forty-Four Minutes Before First Pitch: An LLM Fallback Chain and a Live Probability Gauge in One Session](/blog/broadcast-day-llm-fallback-jchads-challenge/) — the same braves-booth dashboard, two days earlier, in incident-response mode.
+- [audit-harness v0.10: Enforcement Travels With the Code](/blog/audit-harness-v010-enforcement-travels-with-code/) — the prior expression of the same mental model, applied to test enforcement infrastructure.

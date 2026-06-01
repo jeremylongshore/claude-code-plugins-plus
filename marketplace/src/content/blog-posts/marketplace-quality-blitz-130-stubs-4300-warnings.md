@@ -21,7 +21,7 @@ The scale was worse than I expected. A quick audit showed 130 out of 340+ plugin
 
 Manual replacement wasn't an option. Each SKILL.md needs to describe what the skill does, how to invoke it, what parameters it accepts, and what it's good at. Writing 130 of those by hand would take a week of mind-numbing work.
 
-Instead, I used Vertex AI Gemini on the free tier — the same batch processing infrastructure I built for [enhancing 235 plugins](/posts/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/) back in October. The pipeline reads each plugin's source code, configuration, and existing metadata, then generates a substantive SKILL.md tailored to that specific plugin.
+Instead, I used Vertex AI Gemini on the free tier — the same batch processing infrastructure I built for [enhancing 235 plugins](/blog/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/) back in October. The pipeline reads each plugin's source code, configuration, and existing metadata, then generates a substantive SKILL.md tailored to that specific plugin.
 
 PR #335 landed all 130 replacements in a single commit. Every file went from boilerplate stub to domain-specific content describing real functionality.
 
@@ -46,7 +46,7 @@ This isn't glamorous work. It's the kind of cleanup that makes everything else p
 
 Which brings us to PR #328: automated plugin quality scoring.
 
-The verification pipeline evaluates every plugin against a structured rubric and assigns badge tiers. The [Verified Plugins Program](/posts/verified-plugins-program-quality-signal-for-the-marketplace/) established the rubric. This PR automates the evaluation.
+The verification pipeline evaluates every plugin against a structured rubric and assigns badge tiers. The [Verified Plugins Program](/blog/verified-plugins-program-quality-signal-for-the-marketplace/) established the rubric. This PR automates the evaluation.
 
 The pipeline handles:
 
@@ -92,6 +92,6 @@ After: every plugin has substantive documentation, the validator is actionable, 
 
 ## Related Posts
 
-- [Verified Plugins Program: Building a Quality Signal for the Marketplace](/posts/verified-plugins-program-quality-signal-for-the-marketplace/) — The rubric and badge tier system that this week's automation builds on
-- [Scaling AI Batch Processing with Vertex AI Gemini](/posts/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/) — The batch infrastructure used to replace 130 stub files
-- [Production Release Engineering: Shipping v4.5.0](/posts/production-release-engineering-v450/) — Automated release workflows for the marketplace
+- [Verified Plugins Program: Building a Quality Signal for the Marketplace](/blog/verified-plugins-program-quality-signal-for-the-marketplace/) — The rubric and badge tier system that this week's automation builds on
+- [Scaling AI Batch Processing with Vertex AI Gemini](/blog/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/) — The batch infrastructure used to replace 130 stub files
+- [Production Release Engineering: Shipping v4.5.0](/blog/production-release-engineering-v450/) — Automated release workflows for the marketplace

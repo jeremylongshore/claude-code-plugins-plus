@@ -842,4 +842,4 @@ pnpm start
 
 <p><strong>Last Updated</strong>: 2025-12-24</p>
 <p><strong>Author</strong>: Jeremy Longshore</p>
-<p><strong>Related Playbooks</strong>: <a href="./01-multi-agent-rate-limits.md">Multi-Agent Rate Limits</a>, <a href="./09-cost-attribution.md">Cost Attribution System</a></p>
+<p><strong>Related Playbooks</strong>: <a href="/playbooks/01-multi-agent-rate-limits/">Multi-Agent Rate Limits</a>, <a href="/playbooks/09-cost-attribution/">Cost Attribution System</a></p>

@@ -75,9 +75,9 @@ A 17-rule Biome expansion autofixing 295 violations is not a small change. Neith
 
 ## Related posts
 
-- [Four Releases in One Day — CCSC Security Sprint](/posts/ccsc-five-releases-one-day-security-sprint/) — the security work the harness was built to enforce
-- [Manifest System + Mutation Testing Pyramid](/posts/manifest-system-mutation-testing-pyramid/) — yesterday's mutation baseline, which audit-harness eventually owns
-- [Collaboratively Shaped Roadmap](/posts/collaboratively-shaped-roadmap/) — the planning conversation that put audit-harness on the critical path
+- [Four Releases in One Day — CCSC Security Sprint](/blog/ccsc-five-releases-one-day-security-sprint/) — the security work the harness was built to enforce
+- [Manifest System + Mutation Testing Pyramid](/blog/manifest-system-mutation-testing-pyramid/) — yesterday's mutation baseline, which audit-harness eventually owns
+- [Collaboratively Shaped Roadmap](/blog/collaboratively-shaped-roadmap/) — the planning conversation that put audit-harness on the critical path
 
 <script type="application/ld+json">
 {

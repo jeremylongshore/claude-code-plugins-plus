@@ -126,6 +126,6 @@ The dead canary is the one that sticks with me. Three days of silent failure. A 
 
 ### Related Posts
 
-- [Braves Booth v1 Release: Player Drilldown and Dashboard Polish](/posts/braves-booth-v1-release-player-drilldown/) — yesterday's v1 release with real-time broadcast dashboard
-- [Shipping a CAD Agent from Zero: DXF Parsing, Edit Engines, and LLM Planner Interfaces](/posts/building-cad-dxf-agent-from-zero-to-v010/) — the cad-dxf-agent origin story, from empty repo to v0.1.0
-- [Building Post-Compaction Recovery: Beads Issue Tracking from Scratch](/posts/building-post-compaction-recovery-beads/) — the beads system that tracks those 117 child tasks
+- [Braves Booth v1 Release: Player Drilldown and Dashboard Polish](/blog/braves-booth-v1-release-player-drilldown/) — yesterday's v1 release with real-time broadcast dashboard
+- [Shipping a CAD Agent from Zero: DXF Parsing, Edit Engines, and LLM Planner Interfaces](/blog/building-cad-dxf-agent-from-zero-to-v010/) — the cad-dxf-agent origin story, from empty repo to v0.1.0
+- [Building Post-Compaction Recovery: Beads Issue Tracking from Scratch](/blog/building-post-compaction-recovery-beads/) — the beads system that tracks those 117 child tasks

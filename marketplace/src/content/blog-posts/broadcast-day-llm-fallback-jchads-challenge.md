@@ -319,6 +319,6 @@ The deeper lesson, the one I want to hold onto: when a free tier dies 44 minutes
 
 ## Related Posts
 
-- [Four Primitives, Three Reviews: How a Contributor PR Reshaped a Roadmap](/posts/collaboratively-shaped-roadmap/) — design-rationale case study on convergent review reshaping a planned release
-- [Braves Postgame Expansion and Two AI Lessons](/posts/braves-postgame-expansion-and-two-ai-lessons/) — earlier cycle of broadcast-grade resilience work in the same booth dashboard
-- [audit-harness v0.10: Enforcement Travels With the Code](/posts/audit-harness-v010-enforcement-travels-with-code/) — the durable-fix-not-urgent-fix posture as applied to test enforcement infrastructure
+- [Four Primitives, Three Reviews: How a Contributor PR Reshaped a Roadmap](/blog/collaboratively-shaped-roadmap/) — design-rationale case study on convergent review reshaping a planned release
+- [Braves Postgame Expansion and Two AI Lessons](/blog/braves-postgame-expansion-and-two-ai-lessons/) — earlier cycle of broadcast-grade resilience work in the same booth dashboard
+- [audit-harness v0.10: Enforcement Travels With the Code](/blog/audit-harness-v010-enforcement-travels-with-code/) — the durable-fix-not-urgent-fix posture as applied to test enforcement infrastructure

@@ -392,10 +392,10 @@ pnpm run sync-marketplace && \
 git diff --exit-code .claude-plugin/marketplace.json && \
 echo "All checks passed. Ready for production."</code></pre>
 
-<p>If any check fails, fix the issue before deploying. See the <a href="./14-troubleshooting.md">Troubleshooting Guide</a> for common fixes.</p>
+<p>If any check fails, fix the issue before deploying. See the <a href="/playbooks/14-troubleshooting/">Troubleshooting Guide</a> for common fixes.</p>
 
 <hr>
 
 <p><strong>Last Updated</strong>: 2026-03-21</p>
 <p><strong>Author</strong>: Jeremy Longshore</p>
-<p><strong>Related Playbooks</strong>: <a href="./12-beginner-onboarding.md">Beginner Onboarding</a>, <a href="./14-troubleshooting.md">Troubleshooting Guide</a></p>
+<p><strong>Related Playbooks</strong>: <a href="/playbooks/12-beginner-onboarding/">Beginner Onboarding</a>, <a href="/playbooks/14-troubleshooting/">Troubleshooting Guide</a></p>

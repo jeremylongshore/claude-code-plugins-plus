@@ -371,9 +371,9 @@ These documents make future development faster and onboarding easier.
 
 If you found this journey interesting, check out these related posts:
 
-- **[When a Simple Security Audit Turns Into a 3-Hour Python Environment Battle](/posts/security-audit-nightmare-python-environment-victory-waygate-mcp/)** - Another story about infrastructure reality vs. expectations
-- **[DevOps Onboarding at Scale: Comprehensive System Analysis & Universal Templates](/posts/devops-onboarding-at-scale-comprehensive-system-analysis-universal-templates/)** - Building production-ready documentation systems
-- **[Building a 254-Table BigQuery Schema in 72 Hours](/posts/building-254-table-bigquery-schema-72-hours/)** - Large-scale database design and deployment
+- **[When a Simple Security Audit Turns Into a 3-Hour Python Environment Battle](/blog/security-audit-nightmare-python-environment-victory-waygate-mcp/)** - Another story about infrastructure reality vs. expectations
+- **[DevOps Onboarding at Scale: Comprehensive System Analysis & Universal Templates](/blog/devops-onboarding-at-scale-comprehensive-system-analysis-universal-templates/)** - Building production-ready documentation systems
+- **[Building a 254-Table BigQuery Schema in 72 Hours](/blog/building-254-table-bigquery-schema-72-hours/)** - Large-scale database design and deployment
 
 **Built with**:
 

@@ -343,8 +343,8 @@ Research & Curriculum
 
 **Live Guides:**
 
-- [Hybrid AI Stack: Reduce Costs 60-80%](/posts/hybrid-ai-stack-reduce-costs-60-80-percent-intelligent-routing/)
-- [Terraform Complete Learning Guide](/posts/terraform-complete-learning-guide-infrastructure-as-code/)
+- [Hybrid AI Stack: Reduce Costs 60-80%](/blog/hybrid-ai-stack-reduce-costs-60-80-percent-intelligent-routing/)
+- [Terraform Complete Learning Guide](/blog/terraform-complete-learning-guide-infrastructure-as-code/)
 
 **Questions or consulting**: [jeremy@intentsolutions.io](mailto:jeremy@intentsolutions.io)
 

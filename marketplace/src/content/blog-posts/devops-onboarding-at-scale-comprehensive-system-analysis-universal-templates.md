@@ -258,6 +258,6 @@ The combination of comprehensive documentation and systematic permission managem
 
 ## Related Posts
 
-- [Building AI-Friendly Codebase Documentation: A Real-Time CLAUDE.md Creation Journey](/posts/building-ai-friendly-codebase-documentation-real-time-claude-md-creation-journey/) - Deep dive into AI-assisted documentation creation
-- [Waygate MCP v2.1.0: From Forensic Analysis to Production Enterprise Server](/posts/waygate-mcp-v2-1-0-forensic-analysis-to-production-enterprise-server/) - Systematic infrastructure analysis and resolution
-- [Comprehensive Technical Guide to SSH, Debian Packages, and Grep](/posts/startai/comprehensive-technical-guide-to-ssh-debian-packages-and-grep/) - Technical reference for Linux system administration
+- [Building AI-Friendly Codebase Documentation: A Real-Time CLAUDE.md Creation Journey](/blog/building-ai-friendly-codebase-documentation-real-time-claude-md-creation-journey/) - Deep dive into AI-assisted documentation creation
+- [Waygate MCP v2.1.0: From Forensic Analysis to Production Enterprise Server](/blog/waygate-mcp-v2-1-0-forensic-analysis-to-production-enterprise-server/) - Systematic infrastructure analysis and resolution
+- [Comprehensive Technical Guide to SSH, Debian Packages, and Grep](/blog/startai/comprehensive-technical-guide-to-ssh-debian-packages-and-grep/) - Technical reference for Linux system administration

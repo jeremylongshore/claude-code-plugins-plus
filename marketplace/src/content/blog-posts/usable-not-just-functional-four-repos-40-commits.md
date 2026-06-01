@@ -105,7 +105,7 @@ The project is pre-code. All 30+ commits are governance, architecture, and plann
 
 ## X Bug Triage Plugin: Six UX Enhancements
 
-The [x-bug-triage-plugin](https://github.com/jeremylongshore/x-bug-triage-plugin) shipped v0.4.4 with six targeted UX improvements via PR #19. Yesterday was the [zero-to-v0.4.3 sprint](/posts/x-bug-triage-plugin-zero-to-v043-one-day/). Today was making it feel finished.
+The [x-bug-triage-plugin](https://github.com/jeremylongshore/x-bug-triage-plugin) shipped v0.4.4 with six targeted UX improvements via PR #19. Yesterday was the [zero-to-v0.4.3 sprint](/blog/x-bug-triage-plugin-zero-to-v043-one-day/). Today was making it feel finished.
 
 **E1: Action confirmation feedback.** All 11 review commands (approve, reject, defer, escalate, etc.) now emit a structured confirmation response. Before: the command ran silently. The user had to query the state to confirm it worked. After: immediate feedback with the action taken, the affected entity, and the new state.
 
@@ -137,6 +137,6 @@ The common thread across all of today's work: removing the gap between "this tec
 
 **Related Posts:**
 
-- [X Bug Triage Plugin: Zero to v0.4.3 in One Day](/posts/x-bug-triage-plugin-zero-to-v043-one-day/) — the bootstrap sprint this work builds on
-- [PDF Extraction Bugs, Broadcast Persistence, and a 42-Commit Sweep Day](/posts/pdf-extraction-sweep-day-42-commits/) — another heavy multi-repo day with CAD debugging
-- [Building a Deterministic DXF Comparison Engine in One Day](/posts/deterministic-dxf-comparison-engine-one-day-build/) — the original diff engine that today's MODIFIED/MOVED fix corrects
+- [X Bug Triage Plugin: Zero to v0.4.3 in One Day](/blog/x-bug-triage-plugin-zero-to-v043-one-day/) — the bootstrap sprint this work builds on
+- [PDF Extraction Bugs, Broadcast Persistence, and a 42-Commit Sweep Day](/blog/pdf-extraction-sweep-day-42-commits/) — another heavy multi-repo day with CAD debugging
+- [Building a Deterministic DXF Comparison Engine in One Day](/blog/deterministic-dxf-comparison-engine-one-day-build/) — the original diff engine that today's MODIFIED/MOVED fix corrects

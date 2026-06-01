@@ -158,6 +158,6 @@ The release gate constrained the v1.0.0 cut, not the working day. Three other re
 
 ## Related Posts
 
-- [Honest perf benchmarks for a paid-API compiler](/posts/honest-perf-benchmarks-paid-api-compiler/) — yesterday's post on the benchmark infrastructure that fed this release gate
-- [Five releases in fifteen minutes: Mandy cutover and freeze break](/posts/five-releases-fifteen-minutes-mandy-cutover-and-freeze-break/) — earlier five-releases-in-a-day pattern
-- [GitHub release workflow: uncommitted changes and semantic versioning](/posts/github-release-workflow-uncommitted-changes-semantic-versioning/) — related release-engineering theme
+- [Honest perf benchmarks for a paid-API compiler](/blog/honest-perf-benchmarks-paid-api-compiler/) — yesterday's post on the benchmark infrastructure that fed this release gate
+- [Five releases in fifteen minutes: Mandy cutover and freeze break](/blog/five-releases-fifteen-minutes-mandy-cutover-and-freeze-break/) — earlier five-releases-in-a-day pattern
+- [GitHub release workflow: uncommitted changes and semantic versioning](/blog/github-release-workflow-uncommitted-changes-semantic-versioning/) — related release-engineering theme

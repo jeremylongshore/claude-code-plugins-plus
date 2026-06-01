@@ -167,6 +167,6 @@ Twenty-five commits. Three releases. One new project. The auth injection pattern
 
 ## Related Posts
 
-- [Shipping a CAD Agent from Zero: DXF Parsing, Edit Engines, and LLM Planner Interfaces](/posts/building-cad-dxf-agent-from-zero-to-v010/) — The original cad-dxf-agent build
-- [Session Cookie Auth, Forgot-Password Timeouts, and Killing Flaky E2E Tests](/posts/session-cookies-forgot-password-flaky-e2e-tests/) — Earlier deep-dive into auth and E2E stability
-- [Golden Tests, Fuzz Testing, and a Nasty Fixture Taxonomy for DXF Revisions](/posts/golden-tests-fuzz-testing-dxf-revision-corpus/) — Testing infrastructure for the DXF comparison engine
+- [Shipping a CAD Agent from Zero: DXF Parsing, Edit Engines, and LLM Planner Interfaces](/blog/building-cad-dxf-agent-from-zero-to-v010/) — The original cad-dxf-agent build
+- [Session Cookie Auth, Forgot-Password Timeouts, and Killing Flaky E2E Tests](/blog/session-cookies-forgot-password-flaky-e2e-tests/) — Earlier deep-dive into auth and E2E stability
+- [Golden Tests, Fuzz Testing, and a Nasty Fixture Taxonomy for DXF Revisions](/blog/golden-tests-fuzz-testing-dxf-revision-corpus/) — Testing infrastructure for the DXF comparison engine

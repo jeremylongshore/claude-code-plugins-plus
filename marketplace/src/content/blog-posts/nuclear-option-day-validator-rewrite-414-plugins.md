@@ -13,7 +13,7 @@ This was the nuclear option. Rip out the old validator, replace it with one buil
 
 ## Universal Validator v5.0
 
-The validator had been patched too many times. Every quality sweep — the [7-check audit](/posts/content-quality-war-7-check-audit-across-340-plugins/), the [130-stub blitz](/posts/marketplace-quality-blitz-130-stubs-4300-warnings/), the [design tokens alignment](/posts/design-tokens-and-validator-parity-marketplace-foundations/) — added checks, adjusted thresholds, bolted on edge cases. The result was a validator that worked but couldn't be reasoned about. Nobody could tell you exactly what "valid" meant without reading 400 lines of conditional logic.
+The validator had been patched too many times. Every quality sweep — the [7-check audit](/blog/content-quality-war-7-check-audit-across-340-plugins/), the [130-stub blitz](/blog/marketplace-quality-blitz-130-stubs-4300-warnings/), the [design tokens alignment](/blog/design-tokens-and-validator-parity-marketplace-foundations/) — added checks, adjusted thresholds, bolted on edge cases. The result was a validator that worked but couldn't be reasoned about. Nobody could tell you exactly what "valid" meant without reading 400 lines of conditional logic.
 
 Anthropic published their 2026 plugin specification with 14 required fields. Not 12. Not "12 plus 2 optional that everyone treats as required." Fourteen. Defined, typed, documented.
 
@@ -65,7 +65,7 @@ While the validator was being rewritten, the catalog was growing.
 
 The marketplace catalog jumped from ~350 to 414 total plugins. 63 packs in one batch. Generated, validated against the new v5.0 schema, graded, documented.
 
-The generation pipeline is the same Vertex AI infrastructure from the [batch processing work](/posts/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/), but tuned for SaaS pack structure. Each pack gets:
+The generation pipeline is the same Vertex AI infrastructure from the [batch processing work](/blog/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/), but tuned for SaaS pack structure. Each pack gets:
 
 1. A plugin manifest with all 14 fields populated
 2. Skills targeting the SaaS product's core API surface
@@ -164,12 +164,12 @@ This wasn't 40 independent decisions. It was one decision with 40 consequences.
 
 The decision: rewrite the validator to match Anthropic's spec exactly. Everything else follows. If you have a new validator, you have to run it. If you run it, you have to fix what fails. If you're fixing things, you might as well fix everything. If you're fixing everything, you might as well generate the 63 packs you've been planning and validate them too.
 
-The nuclear option works when you've been accumulating the knowledge of what needs to change. The [content quality war](/posts/content-quality-war-7-check-audit-across-340-plugins/) built the audit tooling. The [quality blitz](/posts/marketplace-quality-blitz-130-stubs-4300-warnings/) built the batch remediation pipeline. The [design tokens work](/posts/design-tokens-and-validator-parity-marketplace-foundations/) identified the spec drift. Today was execution day. All the infrastructure was already in place. The validator rewrite was the trigger. Everything else was the blast radius.
+The nuclear option works when you've been accumulating the knowledge of what needs to change. The [content quality war](/blog/content-quality-war-7-check-audit-across-340-plugins/) built the audit tooling. The [quality blitz](/blog/marketplace-quality-blitz-130-stubs-4300-warnings/) built the batch remediation pipeline. The [design tokens work](/blog/design-tokens-and-validator-parity-marketplace-foundations/) identified the spec drift. Today was execution day. All the infrastructure was already in place. The validator rewrite was the trigger. Everything else was the blast radius.
 
 ---
 
 ## Related Posts
 
-- [Content Quality War: 7-Check Audit Across 340 Plugins](/posts/content-quality-war-7-check-audit-across-340-plugins/) — The audit tooling that made compliance remediation possible at scale
-- [Verified Plugins Program: Building a Quality Signal for the Marketplace](/posts/verified-plugins-program-quality-signal-for-the-marketplace/) — The rubric and badge tier system that the v5.0 validator now enforces
-- [Design Tokens and Validator Parity: Marketplace Foundations](/posts/design-tokens-and-validator-parity-marketplace-foundations/) — The previous validator alignment work that revealed the need for a full rewrite
+- [Content Quality War: 7-Check Audit Across 340 Plugins](/blog/content-quality-war-7-check-audit-across-340-plugins/) — The audit tooling that made compliance remediation possible at scale
+- [Verified Plugins Program: Building a Quality Signal for the Marketplace](/blog/verified-plugins-program-quality-signal-for-the-marketplace/) — The rubric and badge tier system that the v5.0 validator now enforces
+- [Design Tokens and Validator Parity: Marketplace Foundations](/blog/design-tokens-and-validator-parity-marketplace-foundations/) — The previous validator alignment work that revealed the need for a full rewrite

@@ -5,7 +5,7 @@ date: "2026-05-22"
 tags: ["mcp", "typescript", "claude-code", "devops", "architecture", "ssh", "automation"]
 featured: false
 ---
-The Intent Solutions production stack now lives on a single Contabo VPS after [a multi-week migration](/posts/propagation-day-when-the-spec-becomes-the-migration-plan/). Twenty-four containers across five stacks — Braves, Plane, Twenty, Umami, ntfy — sit behind one Caddy reverse proxy. Every day-to-day operational task touches that box: reload Caddy after a host-block edit, restart a stuck container, pull the last 200 lines of a service log, snapshot an instance before a risky change. Doing those by hand from a shell defeats the point of having Claude Code in the loop. Doing them through [a sloppy MCP server](/posts/guidewire-mcp-v0-1-0-foundation-ship/) is how you brick prod from a chat window.
+The Intent Solutions production stack now lives on a single Contabo VPS after [a multi-week migration](/blog/propagation-day-when-the-spec-becomes-the-migration-plan/). Twenty-four containers across five stacks — Braves, Plane, Twenty, Umami, ntfy — sit behind one Caddy reverse proxy. Every day-to-day operational task touches that box: reload Caddy after a host-block edit, restart a stuck container, pull the last 200 lines of a service log, snapshot an instance before a risky change. Doing those by hand from a shell defeats the point of having Claude Code in the loop. Doing them through [a sloppy MCP server](/blog/guidewire-mcp-v0-1-0-foundation-ship/) is how you brick prod from a chat window.
 
 So the question on day one wasn't "what tools do I want?" The question was "what would have to be true of those tools before I let a model fire them at a server I actually depend on?"
 
@@ -145,12 +145,12 @@ This matters more for a Model Context Protocol (MCP) server than for ordinary to
 ## Also shipped
 
 - **claude-code-plugins (PRs #762/#763/#764):** CI hardening — eslint + prettier added as blocking gates (first PR of a multi-PR cleanup), human-triggered auto-merge disabled (dependabot bumps still auto-merge), and nine historical AA-AACR audit files from December 2025 committed to the record.
-- **intentional-cognition-os:** v0.2 dogfood continued — `paraphrase_robustness` metric landed in `verify.py`, `ask-loop.py` extracted as a standalone helper with `--paraphrases`, `bank.py` schema library plus ADRs 029-032, release v1.2.5, wiki/citation resolution against the workspace cache (closes h99). Continuation of [yesterday's zero-to-five FTS fallback arc](/posts/icos-dogfood-zero-to-five-fts-fallback/).
+- **intentional-cognition-os:** v0.2 dogfood continued — `paraphrase_robustness` metric landed in `verify.py`, `ask-loop.py` extracted as a standalone helper with `--paraphrases`, `bank.py` schema library plus ADRs 029-032, release v1.2.5, wiki/citation resolution against the workspace cache (closes h99). Continuation of [yesterday's zero-to-five FTS fallback arc](/blog/icos-dogfood-zero-to-five-fts-fallback/).
 - **pipelinepilot:** Firebase Cloud Functions standardized on Gen2 Node 20 ESM (`firebase-admin` import fixed), orchestrator wrapper added with sync `query(**kwargs)` and pinned cloudpickle, Python smoke for the Vertex AI Reasoning Engine, beads tracking initialized, `.env` patterns added to `.gitignore`.
 - **hybrid-ai-stack + intent-genai-project-template:** Gemini PR-review fixups — flake8 violations cleared, three pre-existing security defects in redact/sanitize/routes closed, mypy + ruff cleanup.
 
 ## Related Posts
 
-- [Intent Catalog: Six Phases from Empty Repo to Production Control Plane](/posts/intent-catalog-six-phases-control-plane/) — the sibling shape: empty repo to working control plane in a small number of clean phases.
-- [Guidewire MCP v0.1.0: Carrier-Native Server Blueprint](/posts/guidewire-mcp-v0-1-0-foundation-ship/) — another foundation-ship MCP post, same v0.1.0 framing.
-- [A v1.0 Is a Gate, Not a Tag](/posts/v1-release-gate-conditional-go/) — release-gate discipline; the same logic that says "design the invariants first" applies to "earn the version number."
+- [Intent Catalog: Six Phases from Empty Repo to Production Control Plane](/blog/intent-catalog-six-phases-control-plane/) — the sibling shape: empty repo to working control plane in a small number of clean phases.
+- [Guidewire MCP v0.1.0: Carrier-Native Server Blueprint](/blog/guidewire-mcp-v0-1-0-foundation-ship/) — another foundation-ship MCP post, same v0.1.0 framing.
+- [A v1.0 Is a Gate, Not a Tag](/blog/v1-release-gate-conditional-go/) — release-gate discipline; the same logic that says "design the invariants first" applies to "earn the version number."

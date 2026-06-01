@@ -137,9 +137,9 @@ Every one of these is the same move: take something that was working by conventi
 
 ## Related Posts
 
-- [Twelve PRs, a Security Sprint, and a Pregame Overhaul](/posts/twelve-prs-security-sprint-pregame-overhaul/)
-- [Zero to CI: Full-Stack Dashboard, One Session](/posts/zero-to-ci-full-stack-dashboard-one-session/)
-- [Wild Deep Dive #3: Observability](/posts/wild-deep-dive-3-observability/)
+- [Twelve PRs, a Security Sprint, and a Pregame Overhaul](/blog/twelve-prs-security-sprint-pregame-overhaul/)
+- [Zero to CI: Full-Stack Dashboard, One Session](/blog/zero-to-ci-full-stack-dashboard-one-session/)
+- [Wild Deep Dive #3: Observability](/blog/wild-deep-dive-3-observability/)
 
 <script type="application/ld+json">
 {

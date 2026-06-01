@@ -924,4 +924,4 @@ tail -f /var/log/claude-code.log | \
 
 <p><strong>Last Updated</strong>: 2025-12-24</p>
 <p><strong>Author</strong>: Jeremy Longshore</p>
-<p><strong>Related Playbooks</strong>: <a href="./01-multi-agent-rate-limits.md">Multi-Agent Rate Limits</a>, <a href="./03-mcp-reliability.md">MCP Server Reliability</a></p>
+<p><strong>Related Playbooks</strong>: <a href="/playbooks/01-multi-agent-rate-limits/">Multi-Agent Rate Limits</a>, <a href="/playbooks/03-mcp-reliability/">MCP Server Reliability</a></p>

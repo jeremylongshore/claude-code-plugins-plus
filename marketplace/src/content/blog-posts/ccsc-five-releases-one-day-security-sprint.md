@@ -161,9 +161,9 @@ April 19 also cut `braves` v1.1.0 and v1.2.0 — broadcast-dashboard supplementa
 
 Read these in order if you want the full arc:
 
-- [Slack Channel Security Hardening v0.2.0 — External Contributors](/posts/slack-channel-security-hardening-v020-external-contributors/) — the v0.2.0 security pass that established the pattern this day extended
-- [E2E Tests for Slack Channel in One Day](/posts/58-e2e-tests-slack-channel-launch-one-day/) — how the test suite this sprint relied on got built
-- [Twelve PRs in a Security Sprint with Pregame Overhaul](/posts/twelve-prs-security-sprint-pregame-overhaul/) — an earlier multi-PR security batch run with the same batching discipline
+- [Slack Channel Security Hardening v0.2.0 — External Contributors](/blog/slack-channel-security-hardening-v020-external-contributors/) — the v0.2.0 security pass that established the pattern this day extended
+- [E2E Tests for Slack Channel in One Day](/blog/58-e2e-tests-slack-channel-launch-one-day/) — how the test suite this sprint relied on got built
+- [Twelve PRs in a Security Sprint with Pregame Overhaul](/blog/twelve-prs-security-sprint-pregame-overhaul/) — an earlier multi-PR security batch run with the same batching discipline
 
 <script type="application/ld+json">
 {

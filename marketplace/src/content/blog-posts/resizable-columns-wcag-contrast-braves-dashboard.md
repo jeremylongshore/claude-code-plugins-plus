@@ -64,6 +64,6 @@ That's what shipped today.
 
 ### Related Posts
 
-- [Braves Booth — Idle Recap, Dashboard Density, and AI Pitcher Narratives](/posts/braves-booth-dashboard-ui-refactor-ai-pitcher-narrative/)
-- [Braves Booth v1.0.0: Player Drill-Down, Lineup Cache Bug, and Shipping 1.0](/posts/braves-booth-v1-release-player-drilldown/)
-- [Brand Consistency, CSS Variables, and a Sponsor Page Redesign](/posts/brand-consistency-css-variables-sponsor-page-redesign/)
+- [Braves Booth — Idle Recap, Dashboard Density, and AI Pitcher Narratives](/blog/braves-booth-dashboard-ui-refactor-ai-pitcher-narrative/)
+- [Braves Booth v1.0.0: Player Drill-Down, Lineup Cache Bug, and Shipping 1.0](/blog/braves-booth-v1-release-player-drilldown/)
+- [Brand Consistency, CSS Variables, and a Sponsor Page Redesign](/blog/brand-consistency-css-variables-sponsor-page-redesign/)

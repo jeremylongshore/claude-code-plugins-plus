@@ -366,9 +366,9 @@ git add audit-reports/ && git commit -m "📋 AUDIT: [Component] assessment"
 
 For more insights on enterprise platform development:
 
-- [Enterprise Workflow Transformation: N8N Tech Intelligence Platform](/posts/enterprise-workflow-transformation-n8n-tech-intelligence-platform/) - Systematic approach to workflow automation at enterprise scale
-- [Waygate MCP v2.1.0: Forensic Analysis to Production Enterprise Server](/posts/waygate-mcp-v2-1-0-forensic-analysis-to-production-enterprise-server/) - Security-first enterprise server development with systematic testing
-- [Building AI-Friendly Codebase Documentation: Real-time CLAUDE.md Creation Journey](/posts/building-ai-friendly-codebase-documentation-real-time-claude-md-creation-journey/) - Documentation strategies for AI-assisted development workflows
+- [Enterprise Workflow Transformation: N8N Tech Intelligence Platform](/blog/enterprise-workflow-transformation-n8n-tech-intelligence-platform/) - Systematic approach to workflow automation at enterprise scale
+- [Waygate MCP v2.1.0: Forensic Analysis to Production Enterprise Server](/blog/waygate-mcp-v2-1-0-forensic-analysis-to-production-enterprise-server/) - Security-first enterprise server development with systematic testing
+- [Building AI-Friendly Codebase Documentation: Real-time CLAUDE.md Creation Journey](/blog/building-ai-friendly-codebase-documentation-real-time-claude-md-creation-journey/) - Documentation strategies for AI-assisted development workflows
 
 ## Conclusion
 

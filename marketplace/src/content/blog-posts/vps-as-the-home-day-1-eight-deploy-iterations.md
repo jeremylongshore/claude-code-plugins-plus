@@ -179,7 +179,7 @@ The discipline isn't testing as a step in the build. It's testing as the gate th
 
 While P2 and P5 were eating GitHub Actions minutes, P6 was moving in parallel via a script: `scripts/p6-install-harness.sh`. The script:
 
-1. Vendored install of `@intentsolutions/audit-harness v0.1.0` (the [enforcement-travels-with-code package](/posts/audit-harness-v010-enforcement-travels-with-code/)).
+1. Vendored install of `@intentsolutions/audit-harness v0.1.0` (the [enforcement-travels-with-code package](/blog/audit-harness-v010-enforcement-travels-with-code/)).
 2. Appended a `## Testing` section to the repo's `CLAUDE.md`.
 3. Created an auto-numbered `000-docs/` entry recording the install.
 4. Used a worktree-based install for repos with dirty trees so iteration didn't disturb in-flight work.
@@ -228,6 +228,6 @@ Day 1 ended with eight priorities open, three closed, one closed-scope-modified,
 
 ### Related Posts
 
-- [How yesterday's three multi-repo propagations set the muscle memory for today's parallel P6 push](/posts/propagation-day-when-the-spec-becomes-the-migration-plan/)
-- [Braves Booth — the application running through every smoke check in this post](/posts/braves-postgame-expansion-and-two-ai-lessons/)
-- [The audit-harness package being propagated in P6, and why enforcement has to travel with the code](/posts/audit-harness-v010-enforcement-travels-with-code/)
+- [How yesterday's three multi-repo propagations set the muscle memory for today's parallel P6 push](/blog/propagation-day-when-the-spec-becomes-the-migration-plan/)
+- [Braves Booth — the application running through every smoke check in this post](/blog/braves-postgame-expansion-and-two-ai-lessons/)
+- [The audit-harness package being propagated in P6, and why enforcement has to travel with the code](/blog/audit-harness-v010-enforcement-travels-with-code/)

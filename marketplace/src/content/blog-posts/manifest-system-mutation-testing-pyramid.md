@@ -129,9 +129,9 @@ Coverage, clean builds, and passing suites are the floor. Adversarial checks are
 
 ## Related posts
 
-- [Four Releases in One Day — CCSC Security Sprint](/posts/ccsc-five-releases-one-day-security-sprint/) — yesterday's security sprint that this day's 31-B work extended
-- [Twelve PRs Security Sprint + Pregame Overhaul](/posts/twelve-prs-security-sprint-pregame-overhaul/) — earlier ccsc security batch with the same batching discipline
-- [Collaboratively Shaped Roadmap](/posts/collaboratively-shaped-roadmap/) — where the Epic 31 plan came from
+- [Four Releases in One Day — CCSC Security Sprint](/blog/ccsc-five-releases-one-day-security-sprint/) — yesterday's security sprint that this day's 31-B work extended
+- [Twelve PRs Security Sprint + Pregame Overhaul](/blog/twelve-prs-security-sprint-pregame-overhaul/) — earlier ccsc security batch with the same batching discipline
+- [Collaboratively Shaped Roadmap](/blog/collaboratively-shaped-roadmap/) — where the Epic 31 plan came from
 
 <script type="application/ld+json">
 {

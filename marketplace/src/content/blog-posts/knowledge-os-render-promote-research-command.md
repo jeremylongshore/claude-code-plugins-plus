@@ -112,5 +112,5 @@ The test count growth is the metric I care about most. Features without tests ar
 
 **Related Posts:**
 
-- [IntentCAD v0.8.0: Thirteen Epics One Day](/posts/intentcad-v080-thirteen-epics-one-day/)
-- [Governed Knowledge: Two Releases and a Freshness Daemon](/posts/governed-knowledge-two-releases-freshness-daemon/)
+- [IntentCAD v0.8.0: Thirteen Epics One Day](/blog/intentcad-v080-thirteen-epics-one-day/)
+- [Governed Knowledge: Two Releases and a Freshness Daemon](/blog/governed-knowledge-two-releases-freshness-daemon/)

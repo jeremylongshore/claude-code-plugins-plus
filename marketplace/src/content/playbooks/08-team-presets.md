@@ -845,4 +845,4 @@ import { readFileSync, writeFileSync } from 'fs';
 
 <p><strong>Last Updated</strong>: 2025-12-24</p>
 <p><strong>Author</strong>: Jeremy Longshore</p>
-<p><strong>Related Playbooks</strong>: <a href="./02-cost-caps.md">Cost Caps & Budget Management</a>, <a href="./07-compliance-audit.md">Compliance & Audit Guide</a></p>
+<p><strong>Related Playbooks</strong>: <a href="/playbooks/02-cost-caps/">Cost Caps & Budget Management</a>, <a href="/playbooks/07-compliance-audit/">Compliance & Audit Guide</a></p>

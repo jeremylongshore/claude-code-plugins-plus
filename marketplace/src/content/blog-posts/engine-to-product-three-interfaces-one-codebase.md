@@ -184,6 +184,6 @@ A library that only you can use is a prototype. A product that a machinist can p
 
 *Related posts:*
 
-- [Building a Deterministic DXF Comparison Engine in One Day](/posts/deterministic-dxf-comparison-engine-one-day-build/) — the engine this post builds on: E1-E4 layers, 1,875 tests
-- [The Silent Killer: How Bare catch {} Blocks Hide Failures](/posts/silent-killer-bare-catch-blocks-hide-failures/) — debugging invisible frontend failures in the same codebase
-- [Python Class Identity Mismatch: The CI Bug That Broke 9 PRs](/posts/python-class-identity-mismatch-ci-debugging-guide/) — another case where identity semantics caused subtle breakage
+- [Building a Deterministic DXF Comparison Engine in One Day](/blog/deterministic-dxf-comparison-engine-one-day-build/) — the engine this post builds on: E1-E4 layers, 1,875 tests
+- [The Silent Killer: How Bare catch {} Blocks Hide Failures](/blog/silent-killer-bare-catch-blocks-hide-failures/) — debugging invisible frontend failures in the same codebase
+- [Python Class Identity Mismatch: The CI Bug That Broke 9 PRs](/blog/python-class-identity-mismatch-ci-debugging-guide/) — another case where identity semantics caused subtle breakage

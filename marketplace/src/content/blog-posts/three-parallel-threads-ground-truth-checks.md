@@ -33,6 +33,6 @@ All three hit the same wall: assumption without verification. The Crosby add cou
 
 ## Related Posts
 
-- [Intent Solutions Testing SOP](/posts/testing-sop-layer-by-layer/): The harness policy in detail
-- [Braves Booth: Real-Time Sports Data Pipeline](/posts/braves-booth-realtime-pipeline/): Full beat-reporter architecture
-- [Stale Branch Recovery: Fresh Port Strategy](/posts/fresh-branch-port-recovery/): How to handle diverged branches
+- [Intent Solutions Testing SOP](/blog/testing-sop-layer-by-layer/): The harness policy in detail
+- [Braves Booth: Real-Time Sports Data Pipeline](/blog/braves-booth-realtime-pipeline/): Full beat-reporter architecture
+- [Stale Branch Recovery: Fresh Port Strategy](/blog/fresh-branch-port-recovery/): How to handle diverged branches

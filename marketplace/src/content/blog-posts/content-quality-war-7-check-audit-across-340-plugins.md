@@ -9,7 +9,7 @@ Every plugin had content. Most of it was junk.
 
 Not missing. Not absent. Present but worthless. Boilerplate openings copy-pasted across 58 skills. Reference files that said `TODO: add examples`. Methodology guides that were empty markdown headers with no prose underneath. The files existed. The content didn't.
 
-Last week's [quality blitz](/posts/marketplace-quality-blitz-130-stubs-4300-warnings/) replaced 130 stub files and crushed 4300 validator warnings. That fixed the obvious gaps. This week I went after the subtle ones — the files that passed every existing check because they weren't empty, they were just bad.
+Last week's [quality blitz](/blog/marketplace-quality-blitz-130-stubs-4300-warnings/) replaced 130 stub files and crushed 4300 validator warnings. That fixed the obvious gaps. This week I went after the subtle ones — the files that passed every existing check because they weren't empty, they were just bad.
 
 ## The Audit Script
 
@@ -122,6 +122,6 @@ v4.19.0 shipped with all of it.
 
 ## Related Posts
 
-- [Marketplace Quality Blitz: 130 Stub Files, 4300 Warnings, Zero Excuses](/posts/marketplace-quality-blitz-130-stubs-4300-warnings/) — The previous wave of quality fixes that set up this audit
-- [Scaling AI Batch Processing with Vertex AI Gemini](/posts/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/) — The batch infrastructure behind large-scale content generation
-- [Verified Plugins Program: Building a Quality Signal for the Marketplace](/posts/verified-plugins-program-quality-signal-for-the-marketplace/) — The rubric that defines what "quality" means for plugins
+- [Marketplace Quality Blitz: 130 Stub Files, 4300 Warnings, Zero Excuses](/blog/marketplace-quality-blitz-130-stubs-4300-warnings/) — The previous wave of quality fixes that set up this audit
+- [Scaling AI Batch Processing with Vertex AI Gemini](/blog/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/) — The batch infrastructure behind large-scale content generation
+- [Verified Plugins Program: Building a Quality Signal for the Marketplace](/blog/verified-plugins-program-quality-signal-for-the-marketplace/) — The rubric that defines what "quality" means for plugins

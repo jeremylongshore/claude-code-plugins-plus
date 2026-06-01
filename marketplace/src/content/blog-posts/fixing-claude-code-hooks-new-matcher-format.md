@@ -72,5 +72,5 @@ Then update each one to the new format.
 
 ## Related
 
-- [Fixing Claude Code EACCES Multi-User Linux Permissions](/posts/fixing-claude-code-eacces-multi-user-linux-permissions/)
-- [Debugging Claude Code Slash Commands](/posts/debugging-claude-code-slash-commands-silent-deployment-failures/)
+- [Fixing Claude Code EACCES Multi-User Linux Permissions](/blog/fixing-claude-code-eacces-multi-user-linux-permissions/)
+- [Debugging Claude Code Slash Commands](/blog/debugging-claude-code-slash-commands-silent-deployment-failures/)

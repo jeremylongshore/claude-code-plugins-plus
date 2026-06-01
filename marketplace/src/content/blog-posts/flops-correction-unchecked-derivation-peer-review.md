@@ -278,9 +278,9 @@ None of this replaces careful human judgment. It makes careful human judgment sc
 
 ## Related Posts
 
-- [QCSS Research Corpus: Twenty-One Documents and a Weak Reject](/posts/qcss-research-corpus-twenty-one-documents/)
-- [Twelve PRs, a Security Sprint, and a Pregame Overhaul](/posts/twelve-prs-security-sprint-pregame-overhaul/)
-- [Wild Deep Dive #4: Tech Lead](/posts/wild-deep-dive-4-tech-lead/)
+- [QCSS Research Corpus: Twenty-One Documents and a Weak Reject](/blog/qcss-research-corpus-twenty-one-documents/)
+- [Twelve PRs, a Security Sprint, and a Pregame Overhaul](/blog/twelve-prs-security-sprint-pregame-overhaul/)
+- [Wild Deep Dive #4: Tech Lead](/blog/wild-deep-dive-4-tech-lead/)
 
 <script type="application/ld+json">
 {

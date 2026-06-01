@@ -66,7 +66,7 @@ claude</code></pre>
 
 # You should see the marketplace plugins listed with their versions</code></pre>
 
-<p><strong>Tip</strong>: If the install fails, check your internet connection and ensure you have the latest version of Claude Code. See the <a href="./14-troubleshooting.md">Troubleshooting Guide</a> for common fixes.</p>
+<p><strong>Tip</strong>: If the install fails, check your internet connection and ensure you have the latest version of Claude Code. See the <a href="/playbooks/14-troubleshooting/">Troubleshooting Guide</a> for common fixes.</p>
 
 <hr>
 
@@ -323,8 +323,8 @@ model: haiku     # Fastest, for simple lookups</code></pre>
 <h3>Next Steps</h3>
 
 <ul>
-<li>Set up <a href="./13-production-setup.md">production validation and CI/CD integration</a></li>
-<li>Learn how to <a href="./14-troubleshooting.md">troubleshoot common issues</a></li>
+<li>Set up <a href="/playbooks/13-production-setup/">production validation and CI/CD integration</a></li>
+<li>Learn how to <a href="/playbooks/14-troubleshooting/">troubleshoot common issues</a></li>
 <li>Explore the <a href="https://tonsofskills.com/skills">full skills catalog</a> for your tech stack</li>
 </ul>
 
@@ -332,4 +332,4 @@ model: haiku     # Fastest, for simple lookups</code></pre>
 
 <p><strong>Last Updated</strong>: 2026-03-21</p>
 <p><strong>Author</strong>: Jeremy Longshore</p>
-<p><strong>Related Playbooks</strong>: <a href="./13-production-setup.md">Production Setup</a>, <a href="./14-troubleshooting.md">Troubleshooting Guide</a></p>
+<p><strong>Related Playbooks</strong>: <a href="/playbooks/13-production-setup/">Production Setup</a>, <a href="/playbooks/14-troubleshooting/">Troubleshooting Guide</a></p>

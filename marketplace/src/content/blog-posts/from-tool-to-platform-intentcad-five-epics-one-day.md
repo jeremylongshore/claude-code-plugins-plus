@@ -137,7 +137,7 @@ These were scheduled workflows — daily syncs, weekly health checks, periodic b
 
 ## Also: Hustle Auth Finally Unblocked
 
-The OTel deadlock saga from the [comparison engine post](/posts/deterministic-dxf-comparison-engine-one-day-build/) finally resolved. PRs #36–#39 merged, fixing the OpenTelemetry instrumentation that was deadlocking Firebase Auth login. And the Gemini code review setup got upgraded from a custom script to the official CLI with inline PR comments.
+The OTel deadlock saga from the [comparison engine post](/blog/deterministic-dxf-comparison-engine-one-day-build/) finally resolved. PRs #36–#39 merged, fixing the OpenTelemetry instrumentation that was deadlocking Firebase Auth login. And the Gemini code review setup got upgraded from a custom script to the official CLI with inline PR comments.
 
 ## From Tool to Platform
 
@@ -153,6 +153,6 @@ Stack the contracts right and velocity compounds.
 
 *Related posts:*
 
-- [Building a Deterministic DXF Comparison Engine in One Day](/posts/deterministic-dxf-comparison-engine-one-day-build/) — the E1-E4 engine layers that IntentCAD's diff service hardens
-- [Engine to Product: Three Interfaces, One Codebase](/posts/engine-to-product-three-interfaces-one-codebase/) — the CLI, API, and frontend wizard that preceded the platform pivot
-- [PDF Extraction Sweep: Day of 42 Commits](/posts/pdf-extraction-sweep-day-42-commits/) — another high-velocity build day shipping a complete pipeline
+- [Building a Deterministic DXF Comparison Engine in One Day](/blog/deterministic-dxf-comparison-engine-one-day-build/) — the E1-E4 engine layers that IntentCAD's diff service hardens
+- [Engine to Product: Three Interfaces, One Codebase](/blog/engine-to-product-three-interfaces-one-codebase/) — the CLI, API, and frontend wizard that preceded the platform pivot
+- [PDF Extraction Sweep: Day of 42 Commits](/blog/pdf-extraction-sweep-day-42-commits/) — another high-velocity build day shipping a complete pipeline

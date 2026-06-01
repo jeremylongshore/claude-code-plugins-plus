@@ -782,4 +782,4 @@ const tagger = new CostTagger();
 
 <p><strong>Last Updated</strong>: 2025-12-24</p>
 <p><strong>Author</strong>: Jeremy Longshore</p>
-<p><strong>Related Playbooks</strong>: <a href="./02-cost-caps.md">Cost Caps & Budget Management</a>, <a href="./08-team-presets.md">Team Presets & Workflows</a></p>
+<p><strong>Related Playbooks</strong>: <a href="/playbooks/02-cost-caps/">Cost Caps & Budget Management</a>, <a href="/playbooks/08-team-presets/">Team Presets & Workflows</a></p>

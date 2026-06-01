@@ -782,4 +782,4 @@ relatedPlaybooks: ["02-cost-caps", "05-incident-debugging"]
 
 <p><strong>Last Updated</strong>: 2025-12-24</p>
 <p><strong>Author</strong>: Jeremy Longshore</p>
-<p><strong>Related Playbooks</strong>: <a href="./02-cost-caps.md">Cost Caps & Budget Management</a>, <a href="./05-incident-debugging.md">Incident Debugging Playbook</a></p>
+<p><strong>Related Playbooks</strong>: <a href="/playbooks/02-cost-caps/">Cost Caps & Budget Management</a>, <a href="/playbooks/05-incident-debugging/">Incident Debugging Playbook</a></p>

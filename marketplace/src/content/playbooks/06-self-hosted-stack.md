@@ -1116,4 +1116,4 @@ state: present</code></pre>
 
 <p><strong>Last Updated</strong>: 2025-12-24</p>
 <p><strong>Author</strong>: Jeremy Longshore</p>
-<p><strong>Related Playbooks</strong>: <a href="./04-ollama-migration.md">Ollama Migration Guide</a>, <a href="./03-mcp-reliability.md">MCP Server Reliability</a></p>
+<p><strong>Related Playbooks</strong>: <a href="/playbooks/04-ollama-migration/">Ollama Migration Guide</a>, <a href="/playbooks/03-mcp-reliability/">MCP Server Reliability</a></p>

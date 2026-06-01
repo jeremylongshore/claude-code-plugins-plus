@@ -74,6 +74,6 @@ Two repos. Three commits total. One real bug that would have bitten the broadcas
 
 ### Related Posts
 
-- [Braves Booth -- Idle Recap, Dashboard Density, and AI Pitcher Narratives](/posts/braves-booth-dashboard-ui-refactor-ai-pitcher-narrative/) -- the pregame/idle view architecture this bug lived in
-- [Braves Booth v1.0.0: Player Drill-Down, Lineup Cache Bug, and Shipping 1.0](/posts/braves-booth-v1-release-player-drilldown/) -- another cache bug caught in the same codebase
-- [Resizable Columns and WCAG Contrast Fixes on the Braves Dashboard](/posts/resizable-columns-wcag-contrast-braves-dashboard/) -- recent polish work on the same dashboard
+- [Braves Booth -- Idle Recap, Dashboard Density, and AI Pitcher Narratives](/blog/braves-booth-dashboard-ui-refactor-ai-pitcher-narrative/) -- the pregame/idle view architecture this bug lived in
+- [Braves Booth v1.0.0: Player Drill-Down, Lineup Cache Bug, and Shipping 1.0](/blog/braves-booth-v1-release-player-drilldown/) -- another cache bug caught in the same codebase
+- [Resizable Columns and WCAG Contrast Fixes on the Braves Dashboard](/blog/resizable-columns-wcag-contrast-braves-dashboard/) -- recent polish work on the same dashboard

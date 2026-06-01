@@ -147,6 +147,16 @@ exclude = [
 
   # Bare hostname placeholders from observability template code
   "^https?://(alertmanager|grafana|prometheus)(:|/|$)",
+
+  # Historical blog-post references that link-rotted. The posts are
+  # journals of what happened at the time; the dead links are part of
+  # the record. Add specifically rather than excluding all of GitHub.
+  "^https?://github\\.com/jeremylongshore/Content-Nuke-Claude/releases/tag/v2\\.1\\.0",
+  "^https?://hustle-app-zk63g3embq-uc\\.a\\.run\\.app",
+  "^https?://tonsofskills\\.com/irsb-ecosystem",
+  # GNU manual mirror is slow; routinely times out from CI runners.
+  # Documentation links, not load-bearing.
+  "^https?://www\\.gnu\\.org/software/(bash|gawk)/manual/",
 ]
 
 # Respect Cache-Control / 429 retry-after

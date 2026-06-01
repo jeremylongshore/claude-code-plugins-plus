@@ -122,6 +122,6 @@ Three projects in one day is not a flex. It's a Tuesday. The flex is having the 
 
 ## Related Posts
 
-- [Zero to CI: Full-Stack Dashboard in One Session](/posts/zero-to-ci-full-stack-dashboard-one-session/) — The day the Braves dashboard was born
-- [Production Release Engineering: Shipping v4.5.0](/posts/production-release-engineering-v450/) — Automated release workflows for the plugins marketplace
-- [Scaling AI Batch Processing with Vertex AI Gemini](/posts/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/) — Earlier plugins marketplace infrastructure work
+- [Zero to CI: Full-Stack Dashboard in One Session](/blog/zero-to-ci-full-stack-dashboard-one-session/) — The day the Braves dashboard was born
+- [Production Release Engineering: Shipping v4.5.0](/blog/production-release-engineering-v450/) — Automated release workflows for the plugins marketplace
+- [Scaling AI Batch Processing with Vertex AI Gemini](/blog/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/) — Earlier plugins marketplace infrastructure work

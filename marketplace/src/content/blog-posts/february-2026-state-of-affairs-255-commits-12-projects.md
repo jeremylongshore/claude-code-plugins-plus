@@ -17,43 +17,43 @@ Not every commit was a feature. Plenty were CI fixes, lint cleanup, documentatio
 
 Moat went from a skeleton to a functioning execution layer with HTTP proxy domain allowlists, IRSB on-chain receipt integration, a 5-rule default-deny policy engine, and 117 integration tests. The CI saga — 6 commits to fix a pytest namespace package conflict in a Python monorepo — was a reminder that getting CI green after the code works locally is its own project.
 
-**Read more:** [Building Moat: Auth, On-Chain Receipts, and 117 Integration Tests in One Week](/posts/building-moat-auth-persistence-onchain-receipts-117-tests/)
+**Read more:** [Building Moat: Auth, On-Chain Receipts, and 117 Integration Tests in One Week](/blog/building-moat-auth-persistence-onchain-receipts-117-tests/)
 
 ### Hustle — Youth Sports Platform Auth Overhaul
 
 Hustle's auth system got a complete rework. Raw ID tokens replaced with proper Firebase session cookies. A 504 timeout on forgot-password traced to dynamic imports on cold starts. And 17 commits stabilizing a Playwright E2E test suite that was failing randomly — loose URL regexes, false positive error detection, and dev server timeouts that didn't match production.
 
-**Read more:** [Session Cookie Auth, Forgot-Password Timeouts, and Killing Flaky E2E Tests](/posts/session-cookies-forgot-password-flaky-e2e-tests/)
+**Read more:** [Session Cookie Auth, Forgot-Password Timeouts, and Killing Flaky E2E Tests](/blog/session-cookies-forgot-password-flaky-e2e-tests/)
 
 ### IRSB — Monorepo v1.0.0
 
 The blockchain protocol platform consolidated into a single monorepo. Two shared packages extracted (`@irsb/kms-signer` and `@irsb/types`), all packages renamed to the `@irsb/*` scope, Envio HyperIndex integration for real-time event indexing across 8 contracts, and CI split into 4 parallel pipelines — cutting build times from 45 to 15 minutes. Plus a README overhaul positioning IRSB as "On-Chain Guardrails for AI Agents."
 
-**Read more:** [IRSB Monorepo v1.0.0: Extracting Shared Packages and Unifying a Blockchain Platform](/posts/irsb-monorepo-v1-extracting-shared-packages/)
+**Read more:** [IRSB Monorepo v1.0.0: Extracting Shared Packages and Unifying a Blockchain Platform](/blog/irsb-monorepo-v1-extracting-shared-packages/)
 
 ### git-with-intent — Two Releases in Two Days
 
 v0.9.0 (security hardening) and v0.10.0 (scale and ops maturity) shipped back-to-back. Docker images upgraded from Node 20 to 22 LTS across 7 services. Circuit breakers added for LLM providers. Step storage migrated to Firestore. The README went from 870 lines to 227 with an interactive HTML overview. Five strategic research documents explored Automaton integration.
 
-**Read more:** [git-with-intent v0.9 to v0.10: Docker Upgrades, README Rewrites, and Strategic Research](/posts/git-with-intent-v090-v0100-docker-upgrades/)
+**Read more:** [git-with-intent v0.9 to v0.10: Docker Upgrades, README Rewrites, and Strategic Research](/blog/git-with-intent-v090-v0100-docker-upgrades/)
 
 ### git-with-intent — Provider Registry Fix
 
 A mutable global registry was causing shared state corruption across tenants. The fix: instance-only storage with a lookup fallback chain. Same release added sandbox deny-by-default permissions and Zod validation for LLM response parsing in the CoderAgent.
 
-**Read more:** [Fixing Provider Registry Mutations and Sandbox Permissions in git-with-intent](/posts/fixing-provider-registry-mutations-sandbox-permissions/)
+**Read more:** [Fixing Provider Registry Mutations and Sandbox Permissions in git-with-intent](/blog/fixing-provider-registry-mutations-sandbox-permissions/)
 
 ### CAD DXF Agent — From Zero to v0.1.0
 
 Built a desktop application for a structural engineer to edit 2D DXF drawings with natural language prompts. The planner provider interface abstracts the LLM backend (mock, Gemini, proxy). A validator enforces protected layers. The edit engine applies operations to in-memory copies — original files never get modified. Shipped with 222 tests, PySide6 desktop UI with per-operation approve/reject, and CI/CD including Windows installer packaging.
 
-**Read more:** [Shipping a CAD Agent from Zero: DXF Parsing, Edit Engines, and LLM Planner Interfaces](/posts/building-cad-dxf-agent-from-zero-to-v010/)
+**Read more:** [Shipping a CAD Agent from Zero: DXF Parsing, Edit Engines, and LLM Planner Interfaces](/blog/building-cad-dxf-agent-from-zero-to-v010/)
 
 ### Perception — Dashboard Goes Live
 
 The media intelligence dashboard moved from mock data to real Firestore ingestion across 128 RSS feeds. Auto-ingestion fires on login. An interactive Topic Watchlist supports full CRUD with source search. Per-category trending scores combine relevance, recency, and Hacker News signals.
 
-**Read more:** [Perception Dashboard: Wiring Real Triggers, Topic Watchlists, and the BSL-1.1 Decision](/posts/perception-dashboard-real-triggers-topic-watchlists/)
+**Read more:** [Perception Dashboard: Wiring Real Triggers, Topic Watchlists, and the BSL-1.1 Decision](/blog/perception-dashboard-real-triggers-topic-watchlists/)
 
 ### Other Active Projects
 

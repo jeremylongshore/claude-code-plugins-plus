@@ -162,6 +162,6 @@ The marketplace didn't just get bigger. It got systematically bigger. And the ne
 
 ### Related Posts
 
-- [Content Quality War: 7-Check Audit Across 340 Plugins](/posts/content-quality-war-7-check-audit-across-340-plugins/) — the quality rubric that these packs were scored against
-- [Shipping a CAD Agent from Zero: DXF Parsing, Edit Engines, and LLM Planner Interfaces](/posts/building-cad-dxf-agent-from-zero-to-v010/) — the cad-dxf-agent origin story, from empty repo to v0.1.0
-- [Marketplace Quality Blitz: 130 Stubs, 4300 Warnings, Zero Excuses](/posts/marketplace-quality-blitz-130-stubs-4300-warnings/) — the stub replacement and validator cleanup that preceded this pack-building sprint
+- [Content Quality War: 7-Check Audit Across 340 Plugins](/blog/content-quality-war-7-check-audit-across-340-plugins/) — the quality rubric that these packs were scored against
+- [Shipping a CAD Agent from Zero: DXF Parsing, Edit Engines, and LLM Planner Interfaces](/blog/building-cad-dxf-agent-from-zero-to-v010/) — the cad-dxf-agent origin story, from empty repo to v0.1.0
+- [Marketplace Quality Blitz: 130 Stubs, 4300 Warnings, Zero Excuses](/blog/marketplace-quality-blitz-130-stubs-4300-warnings/) — the stub replacement and validator cleanup that preceded this pack-building sprint

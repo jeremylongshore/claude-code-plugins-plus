@@ -206,9 +206,9 @@ Look for any commands with git references but no "CRITICAL" markers. Those are p
 
 ## Related Posts
 
-- [Building Custom Claude Code Slash Commands: The Complete Implementation Journey](/posts/building-custom-claude-code-slash-commands-complete-journey/) - The original slash command implementation that led to this issue
-- [Enterprise Documentation Transformation - Git-Native TaskWarrior Workflows](/posts/enterprise-documentation-transformation-git-native-taskwarrior-workflows/) - How TaskWarrior enabled systematic debugging
-- [When Commands Don't Work: Debugging Journey Through Automated Content Systems](/posts/when-commands-dont-work-debugging-journey-through-automated-content-systems/) - Another automation debugging case study
+- [Building Custom Claude Code Slash Commands: The Complete Implementation Journey](/blog/building-custom-claude-code-slash-commands-complete-journey/) - The original slash command implementation that led to this issue
+- [Enterprise Documentation Transformation - Git-Native TaskWarrior Workflows](/blog/enterprise-documentation-transformation-git-native-taskwarrior-workflows/) - How TaskWarrior enabled systematic debugging
+- [When Commands Don't Work: Debugging Journey Through Automated Content Systems](/blog/when-commands-dont-work-debugging-journey-through-automated-content-systems/) - Another automation debugging case study
 
 ## Conclusion
 

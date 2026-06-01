@@ -54,9 +54,9 @@ No case study today. No big release. A policy engine got slightly more correct, 
 
 ## Related posts
 
-- [Five Releases in One Day — CCSC Security Sprint](/posts/ccsc-five-releases-one-day-security-sprint/) — three days ago, the epic this day cleans up after
-- [Audit Harness v0.1.0 — Enforcement Travels With the Code](/posts/audit-harness-v010-enforcement-travels-with-code/) — yesterday's infrastructure release
-- [Braves Postgame Expansion and Two AI Lessons](/posts/braves-postgame-expansion-and-two-ai-lessons/) — the broadcast tool whose idle state got trimmed today
+- [Five Releases in One Day — CCSC Security Sprint](/blog/ccsc-five-releases-one-day-security-sprint/) — three days ago, the epic this day cleans up after
+- [Audit Harness v0.1.0 — Enforcement Travels With the Code](/blog/audit-harness-v010-enforcement-travels-with-code/) — yesterday's infrastructure release
+- [Braves Postgame Expansion and Two AI Lessons](/blog/braves-postgame-expansion-and-two-ai-lessons/) — the broadcast tool whose idle state got trimmed today
 
 ---
 

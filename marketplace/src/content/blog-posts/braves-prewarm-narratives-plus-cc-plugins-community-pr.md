@@ -54,6 +54,6 @@ Two different repos, one theme: build the scaffolding so the next thing is easie
 
 ## Related Posts
 
-- [Collaboratively Shaped Roadmap](/posts/collaboratively-shaped-roadmap/)
-- [AI Code Review Without Context: Blind Test](/posts/ai-code-review-without-context-blind-test/)
-- [AI-Assisted Technical Writing Automation Workflows](/posts/ai-assisted-technical-writing-automation-workflows/)
+- [Collaboratively Shaped Roadmap](/blog/collaboratively-shaped-roadmap/)
+- [AI Code Review Without Context: Blind Test](/blog/ai-code-review-without-context-blind-test/)
+- [AI-Assisted Technical Writing Automation Workflows](/blog/ai-assisted-technical-writing-automation-workflows/)

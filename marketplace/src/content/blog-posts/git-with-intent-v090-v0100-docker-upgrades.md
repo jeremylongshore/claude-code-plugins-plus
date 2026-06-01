@@ -19,7 +19,7 @@ The v0.9.0 release focused on making the platform secure enough to run multi-ten
 
 **onBeforeStep hook** added pre-operation risk enforcement. Before an agent executes any step, the hook evaluates the operation against safety rules. Risky operations (large file deletions, production branch commits, elevated API calls) get blocked before they execute, not caught after the damage is done.
 
-**Provider registry fix** stopped mutable global state from leaking across tenants. Custom provider registrations now live in instance storage instead of module-level maps. This was a concurrency and test-isolation bug that affected every multi-tenant scenario. (Covered in detail in [Fixing Provider Registry Mutations and Sandbox Permissions](/posts/fixing-provider-registry-mutations-sandbox-permissions/).)
+**Provider registry fix** stopped mutable global state from leaking across tenants. Custom provider registrations now live in instance storage instead of module-level maps. This was a concurrency and test-isolation bug that affected every multi-tenant scenario. (Covered in detail in [Fixing Provider Registry Mutations and Sandbox Permissions](/blog/fixing-provider-registry-mutations-sandbox-permissions/).)
 
 ## v0.10.0: Scale and Operations Maturity
 
