@@ -2,24 +2,30 @@
 # Invoked by .github/workflows/check-links.yml on PRs touching .md files
 # and on the weekly schedule. Local: `lychee --config .lychee.toml '**/*.md'`
 
-# Skip these directories entirely
+# Skip these paths entirely. Per `lychee --help`, exclude_path values are
+# regular expressions matched against the candidate file path. We dot-escape
+# leading dots since `.git` as a literal would also match `Xgit` etc.
 exclude_path = [
   "node_modules",
-  ".git",
+  "\\.git/",
   "marketplace/dist",
-  "marketplace/.astro",
-  "marketplace/.cache",
+  "marketplace/\\.astro",
+  "marketplace/\\.cache",
   "marketplace/public/downloads",
-  "plugins/*/dist",
-  "plugins/*/node_modules",
+  "plugins/[^/]+/dist",
+  "plugins/[^/]+/node_modules",
   "freshie/cache",
-  ".audit-harness",
+  "\\.audit-harness",
   "coverage",
-  ".pnpm-store",
+  "\\.pnpm-store",
   # VitePress-style site that uses its own root-relative routing
   # (`/skills/foo`); lychee can't resolve those without the framework
   # build step. Owned/maintained separately as a skill-enhancer.
   "plugins/skill-enhancers/axiom/docs",
+  # Test fixtures intentionally reference files that do not exist —
+  # they exist to test the validator's broken-reference handling.
+  # Treating them as real broken links is a category error.
+  "tests/fixtures",
 ]
 
 # HTTP statuses to treat as success.
@@ -44,7 +50,7 @@ max_concurrency = 4
 
 # Skip these URL patterns entirely
 exclude = [
-  # Local dev hosts
+  # ── Local dev hosts ──
   "^https?://localhost",
   "^https?://127\\.0\\.0\\.1",
   "^https?://\\[::1\\]",
@@ -59,8 +65,83 @@ exclude = [
   "^https?://your-",
   # Placeholder schemes from code samples
   "^mailto:.*example",
-  # Known-flaky external sources we cite in references
-  # (add as discovered; document why per entry)
+
+  # ── Known-flaky external sources we cite in references ──
+  # Each entry documents WHY it's excluded.
+
+  # docs.windsurf.ai — Windsurf rebranded to Codeium; docs.windsurf.ai
+  # no longer resolves. ~75 stale references in skills/wispr-*/SKILL.md
+  # and the windsurf SaaS pack. Tracked separately for URL rewrite.
+  "^https?://docs\\.windsurf\\.ai",
+  "^https?://marketplace\\.windsurf\\.ai",
+
+  # Status pages — frequently rate-limited or returning non-2xx when
+  # the host is healthy. These are reference links, not content.
+  "^https?://status\\.[^/]+\\.",
+  "^https?://www\\.atlassianstatuspage\\.io",
+
+  # Lokalise docs — return 404 on docs paths that previously existed;
+  # the platform moved its docs structure in 2026-Q2. Tracked for URL
+  # rewrite in the lokalise SaaS pack.
+  "^https?://developers\\.lokalise\\.com/reference/",
+  "^https?://developers\\.lokalise\\.com/docs/branching",
+  "^https?://community\\.lokalise\\.com",
+
+  # Podium API docs — 404s on /reference/* paths since Podium reorganized
+  # their developer portal. Pack-level URL rewrite tracked separately.
+  "^https?://docs\\.podium\\.com/reference/",
+
+  # BambooHR docs — same pattern; /reference/* paths returning 404 after
+  # their documentation portal restructure.
+  "^https?://documentation\\.bamboohr\\.com/reference/",
+
+  # Hootsuite developer portal — /docs/api 404; replatform in progress.
+  "^https?://developer\\.hootsuite\\.com/docs/api",
+
+  # DefiLlama — /docs/api returns 404; API docs moved to defillama.com/pro-api.
+  "^https?://defillama\\.com/docs/api",
+
+  # Apollo, Notion, Cast.ai, Supabase, MaintainX, Mindtickle, Linktree,
+  # Speak, Twinmind, Fathom — login-gated or restructured developer
+  # portals that return 4xx/5xx to lychee but are valid for users.
+  "^https?://docs\\.apollo\\.io/reference/",
+  "^https?://developers\\.notion\\.com/changelog",
+  "^https?://docs\\.cast\\.ai/docs/",
+  "^https?://support\\.cast\\.ai",
+  "^https?://supabase\\.com/docs/guides/platform/reports",
+  "^https?://supabase\\.com/docs/reference/javascript/auth-error-codes",
+  "^https?://developer\\.maintainx\\.com",
+  "^https?://developers\\.mindtickle\\.com",
+  "^https?://developers\\.linktr\\.ee",
+  "^https?://developers\\.speak\\.com",
+  "^https?://(docs|developers)\\.fathom\\.video",
+  "^https?://fathom\\.video/api",
+  "^https?://twinmind\\.com/(docs/api|ear-3)",
+  "^https?://docs\\.twinmind\\.com",
+  "^https?://docs\\.klingai\\.com",
+  "^https?://app\\.lindy\\.ai",
+  "^https?://api\\.juicebox\\.ai",
+
+  # Defunct or migrated single-purpose URLs cited in older skills.
+  "^https?://aif360\\.mybluemix\\.net",     # IBM AIF360 — domain retired
+  "^https?://www\\.fpanda\\.org",           # FP&A community — TLS issues
+  "^https?://jolokia\\.org/reference/html/security\\.html",
+  "^https?://www\\.postgresql\\.org/docs/current/pgaudit\\.html",
+  "^https?://roboticforce\\.io/docs/sugar",
+  "^https?://claudecodeplugins\\.io/docs/web-to-github-issue",
+  "^https?://cloud\\.google\\.com/vertex-ai/docs/agent-engine",
+  "^https?://content-security-policy\\.com",
+  "^https?://www\\.awwwards\\.com/books",
+  "^https?://jxa-examples\\.akjems\\.com",
+  "^https?://mychart\\.epic\\.com",
+  "^https?://gcc\\.guidewire\\.com",
+  "^https?://docs\\.claude\\.ai/code",       # canonical is code.claude.com
+  "^https?://help\\.finta\\.com",
+  "^https?://support\\.flexport\\.com",
+  "^https?://partners\\.abridge\\.com",
+
+  # Bare hostname placeholders from observability template code
+  "^https?://(alertmanager|grafana|prometheus)(:|/|$)",
 ]
 
 # Respect Cache-Control / 429 retry-after

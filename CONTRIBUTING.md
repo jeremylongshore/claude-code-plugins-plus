@@ -101,7 +101,7 @@ Only these fields are allowed in `plugin.json`: `name`, `version`, `description`
 Best when you maintain the plugin in your own repo and want updates to flow to the marketplace automatically. **This is the recommended path for external/third-party plugins** — your repo stays the source of truth, you don't fork or vendor code here, and your latest pushes mirror to tonsofskills.com on the weekly sync.
 
 1. Make sure your plugin in your own repo has at minimum a `SKILL.md` and a `README.md` at a known path.
-2. Open a PR against this repo that adds a single entry to [`sources.yaml`](../sources.yaml) with the metadata. Example:
+2. Open a PR against this repo that adds a single entry to [`sources.yaml`](sources.yaml) with the metadata. Example:
 
    ```yaml
    - name: my-plugin
@@ -190,7 +190,7 @@ The Gemini reviewer reads from a project-specific prompt at `.gemini/commands/ge
 
 If you maintain a plugin in your own repository and want it included in the marketplace, see **Path B** under [Adding a Plugin](#adding-a-plugin) above. Quick summary:
 
-- Open a PR adding your plugin's metadata to [`sources.yaml`](../sources.yaml).
+- Open a PR adding your plugin's metadata to [`sources.yaml`](sources.yaml).
 - The weekly sync (Mondays 06:00 UTC, `.github/workflows/sync-external.yml`) pulls your latest content into `plugins/community/<name>/` and opens an automated PR.
 - For an immediate sync after your `sources.yaml` PR merges, a maintainer can trigger the workflow on demand with `gh workflow run sync-external.yml`.
 

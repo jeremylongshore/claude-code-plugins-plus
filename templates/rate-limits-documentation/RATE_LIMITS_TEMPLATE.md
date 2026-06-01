@@ -65,7 +65,7 @@ https://api.[service].com/[another-path]
 
 **Cost:** $0 ([signup requirement details])
 
-**Documentation:** [[service].com/docs]([https://service.com/docs])
+**Documentation:** `https://[service].com/docs`
 
 ---
 
