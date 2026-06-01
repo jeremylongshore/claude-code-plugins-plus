@@ -48,11 +48,13 @@ jobs:
         id: lychee_repo
         uses: lycheeverse/lychee-action@v2
         with:
-          # Pin lychee binary to a version whose exclude_path regex semantics
-          # match local dev. v0.23.0 had a regression that ignored exclude_path
-          # entries like `plugins/skill-enhancers/axiom/docs`, surfacing 50+
-          # false-positive errors. v0.24.2 re-honors them.
-          lycheeVersion: v0.24.2
+          # lycheeVersion stays on the action's default (currently v0.23.0).
+          # Attempted v0.24.2 pin to fix the exclude_path regression but the
+          # action's tarball extraction doesn't handle v0.24's restructured
+          # archive (nested binary). Workaround: pass exclude paths via CLI
+          # --exclude-path flags, which v0.23.0 honors. The .lychee.toml
+          # exclude_path is kept as the source of truth for local runs and
+          # for whichever future action version handles v0.24+ packaging.
           args: >-
             --config .lychee.toml
             --root-dir ${{ github.workspace }}
@@ -60,6 +62,19 @@ jobs:
             --cache
             --max-cache-age 1d
             --exclude-path 'marketplace/src/content'
+            --exclude-path 'plugins/skill-enhancers/axiom/docs'
+            --exclude-path 'tests/fixtures'
+            --exclude-path 'node_modules'
+            --exclude-path 'marketplace/dist'
+            --exclude-path 'marketplace/.astro'
+            --exclude-path 'marketplace/.cache'
+            --exclude-path 'marketplace/public/downloads'
+            --exclude-path 'plugins/[^/]+/dist'
+            --exclude-path 'plugins/[^/]+/node_modules'
+            --exclude-path 'freshie/cache'
+            --exclude-path '.audit-harness'
+            --exclude-path 'coverage'
+            --exclude-path '.pnpm-store'
             './**/*.md'
             './**/*.mdx'
           fail: ${{ github.event_name == 'pull_request' }}
@@ -69,7 +84,6 @@ jobs:
         id: lychee_marketplace
         uses: lycheeverse/lychee-action@v2
         with:
-          lycheeVersion: v0.24.2
           args: >-
             --config .lychee.toml
             --base https://tonsofskills.com
