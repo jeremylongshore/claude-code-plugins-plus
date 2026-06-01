@@ -159,7 +159,12 @@ exclude = [
   "^https?://www\\.gnu\\.org/software/(bash|gawk)/manual/",
 ]
 
-# Respect Cache-Control / 429 retry-after
+# Retry transient failures before giving up. GitHub Actions runners
+# routinely have momentary DNS/connection blips against perfectly healthy
+# hosts (kubernetes.io, docs.* hubs). Without retries one runner-side
+# blip = one CI failure. Three retries with 2-second backoff is cheap
+# insurance against network noise.
+max_retries = 3
 retry_wait_time = 2
 
 # User-agent so target hosts can identify us in their logs
