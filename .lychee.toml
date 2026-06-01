@@ -80,12 +80,15 @@ exclude = [
   "^https?://status\\.[^/]+\\.",
   "^https?://www\\.atlassianstatuspage\\.io",
 
-  # Lokalise docs — return 404 on docs paths that previously existed;
-  # the platform moved its docs structure in 2026-Q2. Tracked for URL
-  # rewrite in the lokalise SaaS pack.
-  "^https?://developers\\.lokalise\\.com/reference/",
-  "^https?://developers\\.lokalise\\.com/docs/branching",
+  # Lokalise docs — return 404 on /reference/* AND /docs/* paths that
+  # previously existed; the platform moved its docs structure in 2026-Q2.
+  # Tracked for URL rewrite in the lokalise SaaS pack.
+  "^https?://developers\\.lokalise\\.com/(reference|docs)/",
   "^https?://community\\.lokalise\\.com",
+
+  # Miro developer portal — /docs/* and /reference/* return 404 after
+  # 2026 portal reorganization. Tracked for URL rewrite in miro SaaS pack.
+  "^https?://developers\\.miro\\.com/(docs|reference)/",
 
   # Podium API docs — 404s on /reference/* paths since Podium reorganized
   # their developer portal. Pack-level URL rewrite tracked separately.

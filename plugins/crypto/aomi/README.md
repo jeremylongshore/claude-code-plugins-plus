@@ -9,7 +9,7 @@
 | Skill | Purpose | Risk tier | Audience |
 |-------|---------|-----------|----------|
 | [`aomi-transact`](skills/transact/SKILL.md) | Drive the Aomi CLI to chat, simulate, and sign on-chain transactions with account-abstraction-first execution. Wraps swaps, lending, bridges, staking, perps, and CEX read across 25+ apps on EVM mainnets and L2s. | **L2** (signs/broadcasts) | End-user / power-user |
-| [`aomi-build`](skills/build/SKILL.md) | Scaffold new Aomi apps and plugins from API docs, OpenAPI/Swagger specs, SDK docs, and product requirements. Generates Rust SDK crates with `lib.rs`, `client.rs`, `tool.rs`, plus tool schemas, preambles, and host-interop flows. | **L0** (scaffolds code) | Developer |
+| [`aomi-build`](https://github.com/aomi-labs/skills/tree/main/plugins/aomi/skills/build) | Scaffold new Aomi apps and plugins from API docs, OpenAPI/Swagger specs, SDK docs, and product requirements. Generates Rust SDK crates with `lib.rs`, `client.rs`, `tool.rs`, plus tool schemas, preambles, and host-interop flows. | **L0** (scaffolds code) | Developer |
 
 The two skills are different audiences and different risk profiles. Bundling means the agent loads only the skill whose description triggers match — there is no token bloat for installing both.
 
