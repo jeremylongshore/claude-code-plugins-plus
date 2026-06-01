@@ -175,6 +175,11 @@ exclude = [
   # supabase.com is referenced in many places — when it 502s from a
   # runner, the cached error multiplies. Healthy domain; runner-side issue.
   "^https?://supabase\\.com/",
+  # eslint.org, spacy.io, response.pagerduty.com — same pattern. Major
+  # reference docs that routinely time out from GH Actions runners.
+  "^https?://eslint\\.org/",
+  "^https?://spacy\\.io/",
+  "^https?://response\\.pagerduty\\.com/",
 
   # ── Blog post cross-references in marketplace/src/content/blog-posts/
   # Daily blog posts cross-link each other forward and backward. Many of
@@ -197,10 +202,10 @@ exclude = [
 # Retry transient failures before giving up. GitHub Actions runners
 # routinely have momentary DNS/connection blips against perfectly healthy
 # hosts (kubernetes.io, docs.* hubs). Without retries one runner-side
-# blip = one CI failure. Three retries with 2-second backoff is cheap
-# insurance against network noise.
-max_retries = 3
-retry_wait_time = 2
+# blip = one CI failure. 5 retries with 3s backoff (= up to 15s extra wall
+# time per failing URL) is the sweet spot we've seen actually clear flakes.
+max_retries = 5
+retry_wait_time = 3
 
 # User-agent so target hosts can identify us in their logs
 user_agent = "lychee/intentsolutions-claude-code-plugins-link-check"
