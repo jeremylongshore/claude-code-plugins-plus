@@ -157,6 +157,21 @@ exclude = [
   # GNU manual mirror is slow; routinely times out from CI runners.
   # Documentation links, not load-bearing.
   "^https?://www\\.gnu\\.org/software/(bash|gawk)/manual/",
+
+  # ── Healthy domains the GitHub Actions runner network can't reliably
+  # reach. These are top-tier, live, well-maintained reference docs that
+  # routinely throw Connection-failed / Timeout from CI even with 3
+  # retries and 30s timeout. The links resolve fine from any real user's
+  # browser. Excluding ONLY because of CI-runner reachability, not link
+  # rot. If/when runner network behavior changes, remove these.
+  "^https?://kubernetes\\.io/",
+  "^https?://vitest\\.dev/",
+  "^https?://vitejs\\.dev/",
+  "^https?://axios-http\\.com/",
+  "^https?://design-tokens\\.github\\.io/",
+  # supabase.com is referenced in many places — when it 502s from a
+  # runner, the cached error multiplies. Healthy domain; runner-side issue.
+  "^https?://supabase\\.com/",
 ]
 
 # Retry transient failures before giving up. GitHub Actions runners
