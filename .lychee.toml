@@ -35,8 +35,10 @@ exclude_path = [
 # Juicebox) that redirect unauthenticated requests; the link target still exists.
 accept = [200, 202, 206, 301, 302, 304, 307, 308, 403, 429]
 
-# Per-request timeout (seconds)
-timeout = 20
+# Per-request timeout (seconds). Bumped 20 → 30 because high-traffic
+# docs hosts (openrouter.ai/docs/*, lokalise public docs, etc.) routinely
+# take 20-25s for the first cold-cache lychee hit from a fresh CI runner.
+timeout = 30
 
 # Allow up to N redirects before giving up
 max_redirects = 10
