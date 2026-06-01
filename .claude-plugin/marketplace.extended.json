@@ -9953,6 +9953,31 @@
         "badge": "gold",
         "lastValidated": "2026-05-20T00:00:00.000Z"
       }
+    },
+    {
+      "name": "aomi",
+      "source": "./plugins/crypto/aomi",
+      "description": "Aomi for AI agents: drive natural-language EVM transactions (chat, fork-simulate, sign) and scaffold new Aomi apps from API specs. Non-custodial, account-abstraction-first. 40+ protocol apps: Polymarket, 1inch, GMX, Hyperliquid, Aave, Uniswap. Bundle ships two skills: aomi-transact and aomi-build.",
+      "version": "0.10.0",
+      "category": "crypto",
+      "keywords": [
+        "crypto",
+        "defi",
+        "web3",
+        "evm",
+        "ethereum",
+        "wallet",
+        "account-abstraction",
+        "trading",
+        "agent",
+        "mcp"
+      ],
+      "author": {
+        "name": "aomi-labs",
+        "url": "https://aomi.dev",
+        "email": "info@aomi.dev"
+      },
+      "featured": false
     }
   ]
 }
