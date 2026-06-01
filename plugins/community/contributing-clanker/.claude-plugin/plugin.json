@@ -16,30 +16,6 @@
     "github",
     "ai-slop-prevention",
     "code-review",
-    "open-source",
-    "gates",
-    "deterministic"
-  ],
-  "requires": {
-    "claude-code": ">=1.0.0"
-  },
-  "capabilities": {
-    "skills": true,
-    "agents": true,
-    "hooks": true
-  },
-  "installation": {
-    "prerequisites": [
-      "gh CLI authenticated (gh auth status)",
-      "jq on PATH"
-    ],
-    "verification": [
-      "gh auth status",
-      "command -v jq"
-    ]
-  },
-  "configuration": {
-    "runtime_dir": "~/.contribute-system",
-    "preserves_user_data_on_uninstall": true
-  }
+    "open-source"
+  ]
 }

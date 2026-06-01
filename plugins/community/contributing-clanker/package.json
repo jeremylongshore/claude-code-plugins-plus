@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/contributing-clanker",
-  "version": "0.1.3",
+  "version": "0.1.2",
   "description": "Local-only OSS contribution command center with 41 deterministic gates against AI-slop failure modes",
   "keywords": [
     "oss",
@@ -9,8 +9,6 @@
     "ai-slop-prevention",
     "code-review",
     "open-source",
-    "gates",
-    "deterministic",
     "claude-code",
     "claude-plugin",
     "tonsofskills"
@@ -33,6 +31,7 @@
   },
   "files": [
     "README.md",
+    ".claude-plugin",
     "skills",
     "hooks"
   ],

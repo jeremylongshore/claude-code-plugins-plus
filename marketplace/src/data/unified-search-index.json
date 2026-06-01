@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-05-31T18:14:55.755Z",
+    "generated": "2026-06-01T00:27:22.015Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 431,
-    "totalSkills": 2769,
-    "totalItems": 3200,
+    "totalPlugins": 432,
+    "totalSkills": 2770,
+    "totalItems": 3202,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -84,10 +84,13 @@
       "Bash(aws:s3:*)",
       "Bash(az:*)",
       "Bash(bandit:*)",
+      "Bash(base64:*)",
+      "Bash(bash:*)",
       "Bash(box:*)",
       "Bash(bq:*)",
       "Bash(brew:*)",
       "Bash(bun:*)\"",
+      "Bash(cargo:*)",
       "Bash(cat:*)",
       "Bash(chmod:*)",
       "Bash(ci:*)",
@@ -341,6 +344,7 @@
       "ai-safety",
       "ai-sdk",
       "ai-search",
+      "ai-slop-prevention",
       "ai-travel",
       "ai-tutor",
       "ai-video",
@@ -567,6 +571,7 @@
       "contract-analysis",
       "contract-testing",
       "contracts",
+      "contributions",
       "conventional-commits",
       "conversation",
       "conversation-intelligence",
@@ -1122,6 +1127,7 @@
       "orchestration",
       "organization",
       "orm",
+      "oss",
       "outbound",
       "outliers",
       "outlining",
@@ -1632,7 +1638,7 @@
     "totalHooks": 18,
     "pluginsWithAgents": 79,
     "pluginsWithHooks": 14,
-    "officialPlugins": 378,
+    "officialPlugins": 379,
     "communityPlugins": 53,
     "communityContributors": 25
   },
@@ -15684,6 +15690,36 @@
       "searchText": "web analytics push-based web analytics intelligence team — self-hosted umami via mcp (primary) + ga4 (fallback). 9 specialist agents fetch data, detect anomalies, analyze funnels, verify claims adversarially, and deliver narrative reports across your entire site portfolio. three tiers: 30-second pulse, 2-min brief, 5-min full deep-dive. console / email / slack delivery. analytics analytics umami ga4 traffic mcp self-hosted multi-agent push-based"
     },
     {
+      "type": "plugin",
+      "id": "contributing-clanker",
+      "slug": "contributing-clanker",
+      "name": "contributing-clanker",
+      "displayName": "contributing clanker",
+      "description": "Local-only OSS contribution command center with 41 deterministic gates against AI-slop failure modes. Helps maintainers triage contributor PRs, check for typical AI-generated patterns (over-engineering, false claims, fabricated tests, license violations), and approve / request-changes from a single dashboard.",
+      "category": "community",
+      "keywords": [
+        "oss",
+        "contributions",
+        "github",
+        "ai-slop-prevention",
+        "code-review",
+        "open-source"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "url": "https://github.com/jeremylongshore"
+      },
+      "authorType": "official",
+      "version": "0.1.2",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "contributing clanker local-only oss contribution command center with 41 deterministic gates against ai-slop failure modes. helps maintainers triage contributor prs, check for typical ai-generated patterns (over-engineering, false claims, fabricated tests, license violations), and approve / request-changes from a single dashboard. community oss contributions github ai-slop-prevention code-review open-source"
+    },
+    {
       "type": "skill",
       "id": "000-jeremy-content-consistency-validator",
       "slug": "000-jeremy-content-consistency-validator",
@@ -28375,6 +28411,43 @@
         "category": "business-tools"
       },
       "searchText": "contagious 'engineer word-of-mouth and virality using the stepps framework (social currency, triggers, emotion, public, practical value, stories). use when the user mentions \"go viral\", \"word of mouth\", \"shareable content\", \"social currency\", \"why people share\", \"viral loop\", \"referral program\", or \"organic growth\". also trigger when designing shareable features, crafting social media campaigns, or building products that spread through peer recommendation. covers environmental triggers and high-arousal emotional content. for sticky messaging, see made-to-stick. for persuasion tactics, see influence-psychology.' business-tools  "
+    },
+    {
+      "type": "skill",
+      "id": "contribute",
+      "slug": "contribute",
+      "name": "contribute",
+      "description": "Local-only OSS contribution command center. Auto-refreshes the user's in-flight PR and issue state on invoke so conversations start with full context — no need to brief Claude on what's in flight. Helps the user find issues to contribute to on GitHub, builds per-repo dossiers of what each upstream expects (CLA, DCO, branch convention, AI policy, draft-first, review bots, issue templates), runs deterministic gates before any external action so AI-assisted contributions don't reach maintainers as slop. State is markdown-only: candidate files at ~/.contribute-system/candidates/, repo dossiers at ~/.contribute-system/research/, append-only event log at ~/.contribute-system/log.jsonl. No database, no cloud calls. Use when the user asks about their PRs / issues / contributions, wants to find new work to take on, claim an issue, build/refresh a repo's dossier, or draft a Design Issue or PR. Trigger with \"/contribute\", \"what's my PR status\", \"find a contribution\", \"claim issue X\", \"draft a Design Issue for Y\", \"refresh dossier for Z\".",
+      "category": "community",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Glob",
+        "Grep",
+        "AskUserQuestion",
+        "Task",
+        "Bash(gh:*)",
+        "Bash(git:*)",
+        "Bash(node:*)",
+        "Bash(pnpm:*)",
+        "Bash(yarn:*)",
+        "Bash(npm:*)",
+        "Bash(cargo:*)",
+        "Bash(pytest:*)",
+        "Bash(python:*)",
+        "Bash(python3:*)",
+        "Bash(bash:*)",
+        "Bash(jq:*)",
+        "Bash(base64:*)"
+      ],
+      "compatibleWith": [],
+      "version": "\"4.0.0\"",
+      "parentPlugin": {
+        "name": "contributing-clanker",
+        "category": "community"
+      },
+      "searchText": "contribute local-only oss contribution command center. auto-refreshes the user's in-flight pr and issue state on invoke so conversations start with full context — no need to brief claude on what's in flight. helps the user find issues to contribute to on github, builds per-repo dossiers of what each upstream expects (cla, dco, branch convention, ai policy, draft-first, review bots, issue templates), runs deterministic gates before any external action so ai-assisted contributions don't reach maintainers as slop. state is markdown-only: candidate files at ~/.contribute-system/candidates/, repo dossiers at ~/.contribute-system/research/, append-only event log at ~/.contribute-system/log.jsonl. no database, no cloud calls. use when the user asks about their prs / issues / contributions, wants to find new work to take on, claim an issue, build/refresh a repo's dossier, or draft a design issue or pr. trigger with \"/contribute\", \"what's my pr status\", \"find a contribution\", \"claim issue x\", \"draft a design issue for y\", \"refresh dossier for z\". community read write edit glob grep askuserquestion task bash(gh:*) bash(git:*) bash(node:*) bash(pnpm:*) bash(yarn:*) bash(npm:*) bash(cargo:*) bash(pytest:*) bash(python:*) bash(python3:*) bash(bash:*) bash(jq:*) bash(base64:*) "
     },
     {
       "type": "skill",

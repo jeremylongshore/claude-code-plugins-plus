@@ -7047,6 +7047,18 @@
       "fallback_for_tools": []
     },
     {
+      "slug": "contribute",
+      "name": "contribute",
+      "description": "Local-only OSS contribution command center. Auto-refreshes the user's in-flight PR and issue state on invoke so conversations start with full context — no need to brief Claude on what's in flight. Helps the user find issues to contribute to on GitHub, builds per-repo dossiers of what each upstream expects (CLA, DCO, branch convention, AI policy, draft-first, review bots, issue templates), runs deterministic gates before any external action so AI-assisted contributions don't reach maintainers as slop. State is markdown-only: candidate files at ~/.contribute-system/candidates/, repo dossiers at ~/.contribute-system/research/, append-only event log at ~/.contribute-system/log.jsonl. No database, no cloud calls. Use when the user asks about their PRs / issues / contributions, wants to find new work to take on, claim an issue, build/refresh a repo's dossier, or draft a Design Issue or PR. Trigger with \"/contribute\", \"what's my PR status\", \"find a contribution\", \"claim issue X\", \"draft a Design Issue for Y\", \"refresh dossier for Z\".",
+      "version": "\"4.0.0\"",
+      "category": "community",
+      "parentPlugin": "contributing-clanker",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
       "slug": "coreweave-ci-integration",
       "name": "coreweave-ci-integration",
       "description": "'Integrate CoreWeave deployments into CI/CD pipelines with GitHub Actions.",
@@ -33231,8 +33243,8 @@
       "fallback_for_tools": []
     }
   ],
-  "count": 2769,
-  "generatedAt": "2026-05-31T18:14:54.357Z",
+  "count": 2770,
+  "generatedAt": "2026-06-01T00:27:20.257Z",
   "categories": [
     "ai-agency",
     "ai-ml",

@@ -74,6 +74,12 @@ Read the rest of this doc, then run `./scripts/quick-test.sh` locally before you
 
 ## Adding a Plugin
 
+There are two paths. Pick the one that matches how you want to maintain the plugin.
+
+### Path A — Vendor your plugin into this repo (frozen at submission)
+
+Best when you want a one-time submission and don't expect frequent updates.
+
 1. Pick a category from `plugins/` (e.g., `devops`, `productivity`, `api-development`) or propose a new one in your PR.
 2. Copy a template:
 
@@ -89,6 +95,41 @@ Read the rest of this doc, then run `./scripts/quick-test.sh` locally before you
 8. Run `./scripts/quick-test.sh` -- this must pass before opening a PR.
 
 Only these fields are allowed in `plugin.json`: `name`, `version`, `description`, `author`, `repository`, `homepage`, `license`, `keywords`. CI rejects anything else.
+
+### Path B — Auto-sync from your own repo (your repo stays source of truth)
+
+Best when you maintain the plugin in your own repo and want updates to flow to the marketplace automatically. **This is the recommended path for external/third-party plugins** — your repo stays the source of truth, you don't fork or vendor code here, and your latest pushes mirror to tonsofskills.com on the weekly sync.
+
+1. Make sure your plugin in your own repo has at minimum a `SKILL.md` and a `README.md` at a known path.
+2. Open a PR against this repo that adds a single entry to [`sources.yaml`](../sources.yaml) with the metadata. Example:
+
+   ```yaml
+   - name: my-plugin
+     description: One-line description
+     repo: yourname/your-repo
+     source_path: skills/my-plugin # path inside your repo
+     target_path: plugins/community/my-plugin
+     author:
+       name: Your Name
+       github: yourname
+       email: you@example.com
+     license: MIT
+     category: community
+     verified: true
+     include:
+       - 'SKILL.md'
+       - 'README.md'
+       - 'references/**'
+     exclude:
+       - 'node_modules/**'
+       - '.git/**'
+   ```
+
+3. After your `sources.yaml` PR merges, the next weekly sync (Mondays 06:00 UTC) pulls your latest content into `plugins/community/<name>/` and opens an automated PR. Once that PR merges, your plugin is live on the site.
+4. For an immediate first sync (instead of waiting for Monday), a maintainer can trigger the workflow manually via `gh workflow run sync-external.yml`.
+5. Every subsequent push you make to your own repo gets picked up by the next weekly sync — no further action on your end.
+
+**Do NOT edit `README.md` by hand to add your plugin.** The README category tables (between the `<!-- AUTO-TOC:START -->` and `<!-- AUTO-TOC:END -->` markers) are auto-generated from `marketplace.extended.json` — your hand-edit will be wiped on the next sync.
 
 ## Adding Skills
 
@@ -147,10 +188,11 @@ The Gemini reviewer reads from a project-specific prompt at `.gemini/commands/ge
 
 ## External Plugin Sync
 
-If you maintain a plugin in your own repository and want it included in the marketplace:
+If you maintain a plugin in your own repository and want it included in the marketplace, see **Path B** under [Adding a Plugin](#adding-a-plugin) above. Quick summary:
 
-- Request addition to `sources.yaml` by opening a PR or issue.
-- External plugins are synced daily at midnight UTC via `scripts/sync-external.mjs`.
+- Open a PR adding your plugin's metadata to [`sources.yaml`](../sources.yaml).
+- The weekly sync (Mondays 06:00 UTC, `.github/workflows/sync-external.yml`) pulls your latest content into `plugins/community/<name>/` and opens an automated PR.
+- For an immediate sync after your `sources.yaml` PR merges, a maintainer can trigger the workflow on demand with `gh workflow run sync-external.yml`.
 
 ## Recognition
 

@@ -9,7 +9,7 @@
 [![Sponsor: Kobiton](https://img.shields.io/badge/Sponsor-kobiton.com-0487D9)](https://kobiton.com)
 [![Buy me a monster](https://img.shields.io/badge/Buy%20me%20a-Monster-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/jeremylongshore)
 
-425 plugins, 2,810 skills, 200 agents, 16 community contributors — validated and ready to install.
+432 plugins, 2,769 skills, 297 agents, 30 community contributors — validated and ready to install.
 
 ```bash
 pnpm add -g @intentsolutionsio/ccpi    # Install the CLI
@@ -115,7 +115,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | 🎭  | [AI Agents & Agency](#ai-agents--agency)           |       8 |
 | 🔌  | [API Development](#api-development)                |      25 |
 | 💼  | [Business Tools](#business-tools)                  |      21 |
-| 👥  | [Community](#community)                            |      13 |
+| 👥  | [Community](#community)                            |      14 |
 | ₿   | [Crypto & Web3](#crypto--web3)                     |      26 |
 | 💾  | [Database](#database)                              |      26 |
 | 🎨  | [Design](#design)                                  |       7 |
@@ -259,7 +259,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Community
 
-👥 **13 plugins** · category slug: `community`
+👥 **14 plugins** · category slug: `community`
 
 | Plugin                 | Description                                                                                                                                 |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -267,6 +267,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `boycott-filter`       | Personal boycott list managed conversationally by your AI agent. Chrome extension warns you on pages from brands you've decided to avoid.   |
 | `claude-never-forgets` | Persistent memory plugin for Claude Code - remembers preferences, decisions, and corrections across sessions and context limits             |
 | `claude-reflect`       | Self-learning system for Claude Code that captures corrections and updates CLAUDE.md automatically                                          |
+| `contributing-clanker` | Local-only OSS contribution command center with 41 deterministic gates against AI-slop failure modes. Helps maintainers triage contributor… |
 | `fairdb-ops-manager`   | Database operations management for FairDB PostgreSQL clusters                                                                               |
 | `framecraft`           | Generate polished demo videos from a single prompt. Orchestrates Playwright, FFmpeg, and Edge TTS MCP servers to produce 1920x1080 videos…  |
 | `gastown`              | Multi-agent orchestrator for Claude Code. Track work with convoys, sling to polecats. The Cognition Engine for AI-powered software…         |

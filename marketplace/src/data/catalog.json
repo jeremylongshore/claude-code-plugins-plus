@@ -1,15 +1,15 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-05-31T18:14:55.123Z",
+    "generated": "2026-06-01T00:27:21.182Z",
     "source": "marketplace.extended.json",
     "generator": "scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 431,
-    "totalSkills": 2783,
+    "totalPlugins": 432,
+    "totalSkills": 2784,
     "totalCommands": 81,
-    "pluginsWithSkills": 404,
+    "pluginsWithSkills": 405,
     "byCategory": {
       "productivity": 43,
       "security": 29,
@@ -31,7 +31,7 @@
       "finance": 1,
       "code-quality": 4,
       "automation": 3,
-      "community": 8,
+      "community": 9,
       "development": 1,
       "data-engineering": 2,
       "enterprise": 2,
@@ -39,12 +39,12 @@
       "saas-packs": 2
     },
     "byStatus": {
-      "active": 412,
+      "active": 413,
       "maintained": 19
     },
     "featured": 7,
-    "new": 410,
-    "generatedAt": "2026-05-31T18:14:55.123Z"
+    "new": 411,
+    "generatedAt": "2026-06-01T00:27:21.182Z"
   },
   "plugins": [
     {
@@ -14691,6 +14691,40 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
+        "url": "https://github.com/jeremylongshore"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "contributing-clanker",
+      "name": "contributing-clanker",
+      "displayName": "contributing clanker",
+      "description": "Local-only OSS contribution command center with 41 deterministic gates against AI-slop failure modes. Helps maintainers triage contributor PRs, check for typical AI-generated patterns (over-engineering, false claims, fabricated tests, license violations), and approve / request-changes from a single dashboard.",
+      "version": "0.1.2",
+      "category": "community",
+      "keywords": [
+        "oss",
+        "contributions",
+        "github",
+        "ai-slop-prevention",
+        "code-review",
+        "open-source"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install contributing-clanker",
+      "sourcePath": "./plugins/community/contributing-clanker",
+      "lastUpdatedEpoch": 1780273641,
+      "lastUpdatedDate": "2026-06-01T00:27:21.182Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Jeremy Longshore",
         "url": "https://github.com/jeremylongshore"
       },
       "type": "instruction-plugin"
