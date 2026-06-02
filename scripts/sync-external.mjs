@@ -284,6 +284,67 @@ function ensurePluginJson(source) {
 }
 
 /**
+ * Ensure a README.md exists for the synced plugin. validate-plugins.yml
+ * has a job that fails with "Missing README.md in <path>" otherwise.
+ * Some upstream skill-only repos (ejentum/*) ship just SKILL.md and the
+ * sources.yaml include pattern honestly reflects that.
+ *
+ * If README.md is missing, synthesize one from sources.yaml metadata.
+ * If a SKILL.md exists at the plugin root, prefer that as the body
+ * (rendered with a minimal header so reviewers see real content).
+ *
+ * Existing README.md files (from upstream sync) are never overwritten.
+ *
+ * Returns true if a README was created, false if one already existed
+ * or dry-run mode.
+ */
+function ensureReadme(source) {
+  const readmePath = path.join(ROOT_DIR, source.target_path, 'README.md');
+
+  if (fs.existsSync(readmePath)) {
+    return false; // upstream provided one, or earlier sync wrote one
+  }
+
+  if (options.dryRun) {
+    log(`   📋 Would synthesize README.md`, colors.yellow);
+    return false;
+  }
+
+  // Try to use the upstream SKILL.md content as the README body if one
+  // is present at the plugin root. Falls back to a minimal stub.
+  const skillPath = path.join(ROOT_DIR, source.target_path, 'SKILL.md');
+  let body = '';
+  if (fs.existsSync(skillPath)) {
+    body = fs.readFileSync(skillPath, 'utf8');
+    // Strip the YAML frontmatter (lines between two `---` lines at start)
+    body = body.replace(/^---\n[\s\S]*?\n---\n+/, '');
+  } else {
+    body = source.description || `${source.name} plugin`;
+  }
+
+  const author = source.author?.name || 'External Contributor';
+  const repoLink = source.repo ? `https://github.com/${source.repo}` : null;
+
+  const readme = `# ${source.name}
+
+${source.description || ''}
+
+${body}
+
+---
+
+**Author:** ${author}${repoLink ? `  \n**Upstream:** [${source.repo}](${repoLink})` : ''}
+${source.license ? `  \n**License:** ${source.license}` : ''}
+`;
+
+  const dir = path.dirname(readmePath);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(readmePath, readme);
+  log(`   📋 Synthesized README.md (upstream had none)`, colors.green);
+  return true;
+}
+
+/**
  * Auto-generate a marketplace.extended.json catalog entry for a freshly
  * synced source. Merges sources.yaml metadata with the synced
  * .claude-plugin/plugin.json (if present) to fill in version/keywords.
@@ -467,14 +528,18 @@ async function syncSource(source, config) {
       logVerbose(`Written .source.json`);
     }
 
-    // Synthesize plugin.json if the upstream sync didn't include one
-    // (skill-only repos like skyvern / ejentum). Required so the
-    // downstream sync-marketplace pipeline (generate-plugin-package-jsons.mjs
-    // + validate-catalog-invariants.py) has a complete plugin manifest.
+    // Synthesize plugin.json + README.md if the upstream sync didn't
+    // include them (skill-only repos like skyvern / ejentum). Required so
+    // the downstream validators (generate-plugin-package-jsons.mjs,
+    // validate-catalog-invariants.py, the README-check job) all pass.
     if (!options.dryRun) {
       const pluginJsonAdded = ensurePluginJson(source);
       if (pluginJsonAdded) {
         changes.push({ path: '.claude-plugin/plugin.json', action: 'plugin-json' });
+      }
+      const readmeAdded = ensureReadme(source);
+      if (readmeAdded) {
+        changes.push({ path: 'README.md', action: 'readme' });
       }
     }
 
