@@ -1,0 +1,32 @@
+{
+  "name": "@intentsolutionsio/ejentum-anti-deception",
+  "version": "0.1.0",
+  "description": "Cognitive scaffold for validation requests, ethical reasoning, or adversarial framings. Calls harness_anti_deception on the ejentum MCP server to retrieve an integrity scaffold (deception pattern, int",
+  "keywords": [
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/community/ejentum-anti-deception"
+  },
+  "homepage": "https://tonsofskills.com/plugins/ejentum-anti-deception",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Ejentum",
+    "url": "https://github.com/ejentum",
+    "email": "info@ejentum.com"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    ".claude-plugin"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install ejentum-anti-deception\\\\n  or /plugin install ejentum-anti-deception@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

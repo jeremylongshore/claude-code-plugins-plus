@@ -1,0 +1,12 @@
+{
+  "name": "ejentum-code",
+  "version": "0.1.0",
+  "description": "Cognitive scaffold for code generation, refactoring, or architecture tasks. Calls harness_code on the ejentum MCP server to retrieve a structured scaffold (failure pattern, procedure, correct-pattern example, verification step) the agent absorbs before generating. Requires ejentum-mcp and EJENTUM_API_KEY.",
+  "author": {
+    "name": "Ejentum",
+    "url": "https://github.com/ejentum",
+    "email": "info@ejentum.com"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/ejentum/ejentum-mcp"
+}

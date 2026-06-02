@@ -1,15 +1,15 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-06-02T03:34:49.587Z",
+    "generated": "2026-06-02T03:50:28.570Z",
     "source": "marketplace.extended.json",
     "generator": "scripts/sync-catalog.mjs"
   },
   "stats": {
     "totalPlugins": 448,
-    "totalSkills": 3017,
+    "totalSkills": 3022,
     "totalCommands": 81,
-    "pluginsWithSkills": 412,
+    "pluginsWithSkills": 417,
     "byCategory": {
       "productivity": 50,
       "security": 29,
@@ -44,7 +44,7 @@
     },
     "featured": 7,
     "new": 427,
-    "generatedAt": "2026-06-02T03:34:49.587Z"
+    "generatedAt": "2026-06-02T03:50:28.570Z"
   },
   "plugins": [
     {
@@ -14917,8 +14917,8 @@
       "version": "0.1.0",
       "category": "community",
       "keywords": [],
-      "hasSkills": false,
-      "skillCount": 0,
+      "hasSkills": true,
+      "skillCount": 1,
       "commandCount": 0,
       "installCommand": "/plugin install ejentum-anti-deception",
       "sourcePath": "./plugins/community/ejentum-anti-deception",
@@ -14945,8 +14945,8 @@
       "version": "0.1.0",
       "category": "community",
       "keywords": [],
-      "hasSkills": false,
-      "skillCount": 0,
+      "hasSkills": true,
+      "skillCount": 1,
       "commandCount": 0,
       "installCommand": "/plugin install ejentum-code",
       "sourcePath": "./plugins/community/ejentum-code",
@@ -14973,8 +14973,8 @@
       "version": "0.1.0",
       "category": "community",
       "keywords": [],
-      "hasSkills": false,
-      "skillCount": 0,
+      "hasSkills": true,
+      "skillCount": 1,
       "commandCount": 0,
       "installCommand": "/plugin install ejentum-memory",
       "sourcePath": "./plugins/community/ejentum-memory",
@@ -15001,8 +15001,8 @@
       "version": "0.1.0",
       "category": "community",
       "keywords": [],
-      "hasSkills": false,
-      "skillCount": 0,
+      "hasSkills": true,
+      "skillCount": 1,
       "commandCount": 0,
       "installCommand": "/plugin install ejentum-reasoning",
       "sourcePath": "./plugins/community/ejentum-reasoning",
@@ -15164,8 +15164,8 @@
       "version": "0.1.0",
       "category": "productivity",
       "keywords": [],
-      "hasSkills": false,
-      "skillCount": 0,
+      "hasSkills": true,
+      "skillCount": 1,
       "commandCount": 0,
       "installCommand": "/plugin install skyvern",
       "sourcePath": "./plugins/productivity/skyvern",

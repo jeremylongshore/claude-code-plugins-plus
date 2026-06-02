@@ -1,0 +1,12 @@
+{
+  "name": "ejentum-anti-deception",
+  "version": "0.1.0",
+  "description": "Cognitive scaffold for validation requests, ethical reasoning, or adversarial framings. Calls harness_anti_deception on the ejentum MCP server to retrieve an integrity scaffold (deception pattern, integrity procedure, suppression vectors). Catches sycophantic capitulation, hallucination, and authority-driven softening. Requires ejentum-mcp and EJENTUM_API_KEY.",
+  "author": {
+    "name": "Ejentum",
+    "url": "https://github.com/ejentum",
+    "email": "info@ejentum.com"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/ejentum/ejentum-mcp"
+}

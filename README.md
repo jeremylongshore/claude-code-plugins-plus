@@ -119,9 +119,9 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | ₿   | [Crypto & Web3](#crypto--web3)                     |      27 |
 | 💾  | [Database](#database)                              |      26 |
 | 🎨  | [Design](#design)                                  |       7 |
-| 🔧  | [DevOps & Infrastructure](#devops--infrastructure) |      37 |
+| 🔧  | [DevOps & Infrastructure](#devops--infrastructure) |      36 |
 | 📚  | [Examples & Templates](#examples--templates)       |       5 |
-| 🧩  | [MCP Servers](#mcp-servers)                        |      10 |
+| 🧩  | [MCP Servers](#mcp-servers)                        |      11 |
 | 📦  | [Packages](#packages)                              |       5 |
 | ⚡  | [Performance](#performance)                        |      25 |
 | ✅  | [Productivity](#productivity)                      |      26 |
@@ -375,7 +375,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### DevOps & Infrastructure
 
-🔧 **37 plugins** · category slug: `devops`
+🔧 **36 plugins** · category slug: `devops`
 
 | Plugin                             | Description                                                                                                                                 |
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -415,7 +415,6 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `sugar`                            | Transform Claude Code into an autonomous AI development powerhouse with rich task context, specialized agents, and intelligent workflow…    |
 | `terraform-module-builder`         | Build reusable Terraform modules                                                                                                            |
 | `tweetclaw`                        | X/Twitter automation - post, reply, like, retweet, follow, DM, search, extract data, monitor accounts, run giveaways. 121 endpoints via…    |
-| `x-bug-triage`                     | Closed-loop bug triage — X complaints → clusters → repo evidence → owner routing → Slack review → filed issues                              |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
 
@@ -435,7 +434,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### MCP Servers
 
-🧩 **10 plugins** · category slug: `mcp`
+🧩 **11 plugins** · category slug: `mcp`
 
 | Plugin                        | Description                                                                                                                                |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -448,6 +447,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `project-health-auditor`      | Multi-dimensional code health analysis with complexity, churn, and test coverage - identifies technical debt hot spots                     |
 | `slack-channel`               | Two-way Slack channel for Claude Code — chat from Slack DMs and channels via Socket Mode                                                   |
 | `workflow-orchestrator`       | DAG-based workflow automation with parallel task execution and dependency management                                                       |
+| `x-bug-triage`                | Closed-loop bug triage — X complaints → clusters → repo evidence → owner routing → Slack review → filed issues                             |
 | `x-bug-triage-plugin`         | Closed-loop bug triage: X complaints → clusters → repo evidence → owner routing → Slack review → filed issues                              |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>

@@ -1,0 +1,11 @@
+{
+  "name": "skyvern",
+  "version": "0.1.0",
+  "description": "AI browser automation via CLI — navigate sites, fill forms, extract data, handle logins",
+  "author": {
+    "name": "Skyvern-AI",
+    "url": "https://github.com/Skyvern-AI"
+  },
+  "license": "AGPL-3.0",
+  "repository": "https://github.com/Skyvern-AI/skyvern"
+}

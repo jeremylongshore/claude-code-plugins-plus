@@ -220,6 +220,70 @@ function catalogHasEntry(pluginName) {
 }
 
 /**
+ * Derive the plugin's catalog category from the target_path's filesystem
+ * location, not from sources.yaml metadata. The catalog invariant check
+ * (validate-catalog-invariants.py) requires category to match the parent
+ * directory. e.g., target_path 'plugins/mcp/x-bug-triage' implies
+ * category='mcp' regardless of what sources.yaml claims.
+ *
+ * Falls back to sources.yaml category if the path doesn't follow the
+ * plugins/<category>/<name> convention.
+ */
+function categoryFromTargetPath(targetPath, fallback) {
+  const match = /(?:^|\/)plugins\/([^/]+)\//.exec(targetPath);
+  return match ? match[1] : fallback || 'community';
+}
+
+/**
+ * Ensure a minimal .claude-plugin/plugin.json exists for the synced
+ * plugin. Some sources.yaml entries only sync SKILL.md + references/
+ * because their upstream repo has no plugin.json (skill-only repos like
+ * skyvern, ejentum). Without a plugin.json the downstream
+ * generate-plugin-package-jsons.mjs can't produce a package.json, which
+ * trips validate-catalog-invariants.py.
+ *
+ * We synthesize a minimal plugin.json from sources.yaml metadata. The
+ * file is created ONLY if absent; existing upstream plugin.json files
+ * are not overwritten.
+ *
+ * Returns true if a plugin.json was created, false if one already existed
+ * or dry-run mode.
+ */
+function ensurePluginJson(source) {
+  const pluginJsonPath = path.join(ROOT_DIR, source.target_path, '.claude-plugin', 'plugin.json');
+
+  if (fs.existsSync(pluginJsonPath)) {
+    return false; // upstream provided one, leave it alone
+  }
+
+  if (options.dryRun) {
+    log(`   📋 Would synthesize .claude-plugin/plugin.json`, colors.yellow);
+    return false;
+  }
+
+  const minimalPlugin = {
+    name: source.name,
+    version: '0.1.0',
+    description: source.description || `${source.name} plugin`,
+    author: source.author
+      ? {
+          name: source.author.name || 'External Contributor',
+          ...(source.author.github ? { url: `https://github.com/${source.author.github}` } : {}),
+          ...(source.author.email ? { email: source.author.email } : {}),
+        }
+      : { name: 'External Contributor' },
+    ...(source.license ? { license: source.license } : {}),
+    ...(source.repo ? { repository: `https://github.com/${source.repo}` } : {}),
+  };
+
+  const dir = path.dirname(pluginJsonPath);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(pluginJsonPath, JSON.stringify(minimalPlugin, null, 2) + '\n');
+  log(`   📋 Synthesized .claude-plugin/plugin.json (upstream had none)`, colors.green);
+  return true;
+}
+
+/**
  * Auto-generate a marketplace.extended.json catalog entry for a freshly
  * synced source. Merges sources.yaml metadata with the synced
  * .claude-plugin/plugin.json (if present) to fill in version/keywords.
@@ -256,7 +320,7 @@ function ensureCatalogEntry(source) {
     source: source.target_path.startsWith('./') ? source.target_path : `./${source.target_path}`,
     description: source.description || pluginJson.description || `${source.name} plugin`,
     version: pluginJson.version || '0.1.0',
-    category: source.category || 'community',
+    category: categoryFromTargetPath(source.target_path, source.category),
   };
 
   // Keywords: prefer plugin.json, fall back to sources.yaml, else infer from category
@@ -401,6 +465,17 @@ async function syncSource(source, config) {
       };
       fs.writeFileSync(sourceJsonPath, JSON.stringify(sourceJson, null, 2));
       logVerbose(`Written .source.json`);
+    }
+
+    // Synthesize plugin.json if the upstream sync didn't include one
+    // (skill-only repos like skyvern / ejentum). Required so the
+    // downstream sync-marketplace pipeline (generate-plugin-package-jsons.mjs
+    // + validate-catalog-invariants.py) has a complete plugin manifest.
+    if (!options.dryRun) {
+      const pluginJsonAdded = ensurePluginJson(source);
+      if (pluginJsonAdded) {
+        changes.push({ path: '.claude-plugin/plugin.json', action: 'plugin-json' });
+      }
     }
 
     // Auto-register in the catalog if absent. This is the second half of

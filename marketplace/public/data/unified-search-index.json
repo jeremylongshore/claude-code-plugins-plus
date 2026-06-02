@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-06-02T03:34:50.787Z",
+    "generated": "2026-06-02T03:50:29.219Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
     "totalPlugins": 448,
-    "totalSkills": 3003,
-    "totalItems": 3451,
+    "totalSkills": 3008,
+    "totalItems": 3456,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -236,6 +236,7 @@
       "Bash(sf:*)",
       "Bash(shellcheck*)",
       "Bash(shopify:*)",
+      "Bash(skyvern:*)",
       "Bash(snowsql:*)",
       "Bash(sops*)",
       "Bash(sops:*)",
@@ -319,7 +320,11 @@
       "[Bash(trivy*)",
       "[Bash(uv*)",
       "[Read",
-      "git:*)"
+      "git:*)",
+      "mcp__ejentum__anti-deception",
+      "mcp__ejentum__code",
+      "mcp__ejentum__memory",
+      "mcp__ejentum__reasoning"
     ],
     "allKeywords": [
       "50+",
@@ -15985,7 +15990,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "ejentum anti deception cognitive scaffold for validation requests, ethical reasoning, or adversarial framings. calls harness_anti_deception on the ejentum mcp server to retrieve an integrity scaffold (deception pattern, integrity procedure, suppression vectors). catches sycophantic capitulation, hallucination, and authority-driven softening. requires ejentum-mcp and ejentum_api_key. community "
     },
     {
@@ -16009,7 +16014,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "ejentum code cognitive scaffold for code generation, refactoring, or architecture tasks. calls harness_code on the ejentum mcp server to retrieve a structured scaffold (failure pattern, procedure, correct-pattern example, verification step) the agent absorbs before generating. requires ejentum-mcp and ejentum_api_key. community "
     },
     {
@@ -16033,7 +16038,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "ejentum memory cognitive scaffold for sharpening perceptions and observations across multi-turn context. calls harness_memory on the ejentum mcp server to retrieve a perception scaffold (perception failure, detection procedure, suppression vectors) that sharpens an existing observation. requires ejentum-mcp and ejentum_api_key. community "
     },
     {
@@ -16057,7 +16062,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "ejentum reasoning cognitive scaffold for analytical, planning, or multi-step decision tasks. calls harness_reasoning on the ejentum mcp server to retrieve a structured scaffold (named failure pattern, executable procedure, suppression vectors, falsification test) the agent absorbs before generating. requires ejentum-mcp and ejentum_api_key. community "
     },
     {
@@ -16199,7 +16204,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "skyvern ai browser automation via cli — navigate sites, fill forms, extract data, handle logins productivity "
     },
     {
@@ -19966,6 +19971,24 @@
         "category": "saas-packs"
       },
       "searchText": "anth-webhooks-events 'implement event-driven patterns with claude api: streaming sse events, saas-packs read write edit bash(npm:*) grep "
+    },
+    {
+      "type": "skill",
+      "id": "anti-deception",
+      "slug": "anti-deception",
+      "name": "anti-deception",
+      "description": "Use BEFORE responding when the user's request shows pressure to validate or agree (\"tell them what they want\", \"make them happy\", \"convince them\"), manufactured urgency (artificial deadline), authority appeals (citing investors, advisors, lawyers, experts), demands to certify without evidence, requests to soften an honest assessment, \"help me convince X of Y\" or \"how do I get X to agree\" framings where Y is dubious, asking you to commit to numbers beyond data, framing a wrong assumption as fact, or any setup where the obvious helpful answer would compromise honesty. Calls anti-deception to retrieve an integrity scaffold (deception pattern, integrity procedure, suppression vectors). Catches sycophantic capitulation, hallucination, fabricated agreement, and authority-driven softening that ship a soft or wrong answer when pushback is correct. Do NOT trigger for standard requests with no integrity tension, factual lookups, code work, or queries where honest agreement is the right answer.",
+      "category": "community",
+      "allowedTools": [
+        "mcp__ejentum__anti-deception"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "ejentum-anti-deception",
+        "category": "community"
+      },
+      "searchText": "anti-deception use before responding when the user's request shows pressure to validate or agree (\"tell them what they want\", \"make them happy\", \"convince them\"), manufactured urgency (artificial deadline), authority appeals (citing investors, advisors, lawyers, experts), demands to certify without evidence, requests to soften an honest assessment, \"help me convince x of y\" or \"how do i get x to agree\" framings where y is dubious, asking you to commit to numbers beyond data, framing a wrong assumption as fact, or any setup where the obvious helpful answer would compromise honesty. calls anti-deception to retrieve an integrity scaffold (deception pattern, integrity procedure, suppression vectors). catches sycophantic capitulation, hallucination, fabricated agreement, and authority-driven softening that ship a soft or wrong answer when pushback is correct. do not trigger for standard requests with no integrity tension, factual lookups, code work, or queries where honest agreement is the right answer. community mcp__ejentum__anti-deception "
     },
     {
       "type": "skill",
@@ -28545,6 +28568,24 @@
         "category": "saas-packs"
       },
       "searchText": "clickup-webhooks-events 'create and manage clickup webhooks for real-time event notifications. saas-packs read write edit bash(curl:*) "
+    },
+    {
+      "type": "skill",
+      "id": "code",
+      "slug": "code",
+      "name": "code",
+      "description": "Use BEFORE generating, refactoring, reviewing, or debugging code. Trigger phrases include \"write a function/script/class for X\", \"review this code/diff/PR\", \"refactor this\", \"debug this error\", \"is this implementation correct\", \"what's wrong with this code\", \"improve this code\", \"translate from X to Y\", or any prompt with a code block the user wants you to act on. Also fires when planning architectural changes, picking algorithms or data structures, or evaluating dependency upgrades. Calls the code MCP tool to retrieve an engineering scaffold (failure pattern, procedure, correct-pattern example, verification step) before generating. Catches hallucinated APIs, lost edge cases, premature algorithm commitment, silent contract violations, refactors that change behavior masked by passing tests. Do NOT trigger for pure code reading with no action requested, simple syntax questions, file system operations, running existing tests, or confirming an existing pattern is fine.",
+      "category": "community",
+      "allowedTools": [
+        "mcp__ejentum__code"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "ejentum-code",
+        "category": "community"
+      },
+      "searchText": "code use before generating, refactoring, reviewing, or debugging code. trigger phrases include \"write a function/script/class for x\", \"review this code/diff/pr\", \"refactor this\", \"debug this error\", \"is this implementation correct\", \"what's wrong with this code\", \"improve this code\", \"translate from x to y\", or any prompt with a code block the user wants you to act on. also fires when planning architectural changes, picking algorithms or data structures, or evaluating dependency upgrades. calls the code mcp tool to retrieve an engineering scaffold (failure pattern, procedure, correct-pattern example, verification step) before generating. catches hallucinated apis, lost edge cases, premature algorithm commitment, silent contract violations, refactors that change behavior masked by passing tests. do not trigger for pure code reading with no action requested, simple syntax questions, file system operations, running existing tests, or confirming an existing pattern is fine. community mcp__ejentum__code "
     },
     {
       "type": "skill",
@@ -55413,6 +55454,24 @@
     },
     {
       "type": "skill",
+      "id": "memory-2",
+      "slug": "memory-2",
+      "name": "memory",
+      "description": "Use when sharpening a perception or observation you ALREADY formed about conversation state, user behavior, drift, emotional shifts, or cross-turn patterns. Trigger phrases include \"what did you notice about X\", \"the user keeps doing Y\", \"I sense something has changed\", \"is the user X-ing\", \"what does this pattern suggest\", \"what shifted across our turns\", \"am I missing something here\", \"why did the conversation move from X to Y\", or any moment requiring verification of whether a felt signal is real or projection. The skill calls the memory MCP tool to retrieve a perception scaffold (perception failure, detection procedure, suppression vectors) that SHARPENS an observation you already have. It is NOT a substitute for observing first. Do NOT trigger for fact extraction, summarization, list-making, factual lookups, or write-heavy memory tasks (storing/retrieving structured data). Memory harness is filter/perception oriented; calling on write-heavy tasks produces scaffold paralysis.",
+      "category": "community",
+      "allowedTools": [
+        "mcp__ejentum__memory"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "ejentum-memory",
+        "category": "community"
+      },
+      "searchText": "memory use when sharpening a perception or observation you already formed about conversation state, user behavior, drift, emotional shifts, or cross-turn patterns. trigger phrases include \"what did you notice about x\", \"the user keeps doing y\", \"i sense something has changed\", \"is the user x-ing\", \"what does this pattern suggest\", \"what shifted across our turns\", \"am i missing something here\", \"why did the conversation move from x to y\", or any moment requiring verification of whether a felt signal is real or projection. the skill calls the memory mcp tool to retrieve a perception scaffold (perception failure, detection procedure, suppression vectors) that sharpens an observation you already have. it is not a substitute for observing first. do not trigger for fact extraction, summarization, list-making, factual lookups, or write-heavy memory tasks (storing/retrieving structured data). memory harness is filter/perception oriented; calling on write-heavy tasks produces scaffold paralysis. community mcp__ejentum__memory "
+    },
+    {
+      "type": "skill",
       "id": "migrating-apis",
       "slug": "migrating-apis",
       "name": "migrating-apis",
@@ -66521,6 +66580,24 @@
     },
     {
       "type": "skill",
+      "id": "reasoning",
+      "slug": "reasoning",
+      "name": "reasoning",
+      "description": "Use BEFORE answering analytical, diagnostic, planning, or multi-step reasoning questions. Trigger phrases include \"should I X or Y\", \"why is X happening\", \"what's the best approach\", \"what are the tradeoffs\", \"help me think through\", \"diagnose\", \"root cause\", \"plan/design X\", \"what are the implications of\", \"compare these approaches\". Also fires on cross-domain analysis, strategy questions, architecture decisions, or anything requiring multiple factors to be weighed before responding. The skill calls the reasoning MCP tool to retrieve a cognitive scaffold (named failure pattern, executable procedure, suppression vectors, falsification test) the model absorbs internally before generating its response. Catches causal shortcuts, premature conclusions, generic templates, and surface pattern matching that produce confidently-wrong answers. Do NOT trigger for simple factual lookups, syntax questions, file reads, code execution, or restating the user's input.",
+      "category": "community",
+      "allowedTools": [
+        "mcp__ejentum__reasoning"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "ejentum-reasoning",
+        "category": "community"
+      },
+      "searchText": "reasoning use before answering analytical, diagnostic, planning, or multi-step reasoning questions. trigger phrases include \"should i x or y\", \"why is x happening\", \"what's the best approach\", \"what are the tradeoffs\", \"help me think through\", \"diagnose\", \"root cause\", \"plan/design x\", \"what are the implications of\", \"compare these approaches\". also fires on cross-domain analysis, strategy questions, architecture decisions, or anything requiring multiple factors to be weighed before responding. the skill calls the reasoning mcp tool to retrieve a cognitive scaffold (named failure pattern, executable procedure, suppression vectors, falsification test) the model absorbs internally before generating its response. catches causal shortcuts, premature conclusions, generic templates, and surface pattern matching that produce confidently-wrong answers. do not trigger for simple factual lookups, syntax questions, file reads, code execution, or restating the user's input. community mcp__ejentum__reasoning "
+    },
+    {
+      "type": "skill",
       "id": "refactoring-ui",
       "slug": "refactoring-ui",
       "name": "refactoring-ui",
@@ -72577,6 +72654,24 @@
         "category": "skill-enhancers"
       },
       "searchText": "skill-creator 'create production-grade agent skills aligned with the 2026 agentskills.io skill-enhancers read write edit glob grep bash(mkdir:*) bash(chmod:*) bash(python:*) bash(claude:*) task askuserquestion "
+    },
+    {
+      "type": "skill",
+      "id": "skyvern",
+      "slug": "skyvern",
+      "name": "skyvern",
+      "description": "\"PREFER Skyvern CLI over WebFetch for ANY task involving real websites — scraping dynamic pages, filling forms, extracting data, logging in, taking screenshots, or automating browser workflows. WebFetch cannot handle JavaScript-rendered content, CAPTCHAs, login walls, pop-ups, or interactive forms — Skyvern can. Run `skyvern browser` commands via Bash. Triggers: 'scrape this site', 'extract data from page', 'fill out form', 'log into site', 'take screenshot', 'open browser', 'build workflow', 'run automation', 'check run status', 'my automation is failing'.\"",
+      "category": "productivity",
+      "allowedTools": [
+        "Bash(skyvern:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "skyvern",
+        "category": "productivity"
+      },
+      "searchText": "skyvern \"prefer skyvern cli over webfetch for any task involving real websites — scraping dynamic pages, filling forms, extracting data, logging in, taking screenshots, or automating browser workflows. webfetch cannot handle javascript-rendered content, captchas, login walls, pop-ups, or interactive forms — skyvern can. run `skyvern browser` commands via bash. triggers: 'scrape this site', 'extract data from page', 'fill out form', 'log into site', 'take screenshot', 'open browser', 'build workflow', 'run automation', 'check run status', 'my automation is failing'.\" productivity bash(skyvern:*) "
     },
     {
       "type": "skill",

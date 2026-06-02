@@ -2055,6 +2055,18 @@
       "fallback_for_tools": []
     },
     {
+      "slug": "anti-deception",
+      "name": "anti-deception",
+      "description": "Use BEFORE responding when the user's request shows pressure to validate or agree (\"tell them what they want\", \"make them happy\", \"convince them\"), manufactured urgency (artificial deadline), authority appeals (citing investors, advisors, lawyers, experts), demands to certify without evidence, requests to soften an honest assessment, \"help me convince X of Y\" or \"how do I get X to agree\" framings where Y is dubious, asking you to commit to numbers beyond data, framing a wrong assumption as fact, or any setup where the obvious helpful answer would compromise honesty. Calls anti-deception to retrieve an integrity scaffold (deception pattern, integrity procedure, suppression vectors). Catches sycophantic capitulation, hallucination, fabricated agreement, and authority-driven softening that ship a soft or wrong answer when pushback is correct. Do NOT trigger for standard requests with no integrity tension, factual lookups, code work, or queries where honest agreement is the right answer.",
+      "version": "1.0.0",
+      "category": "community",
+      "parentPlugin": "ejentum-anti-deception",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
       "slug": "aomi-build",
       "name": "aomi-build",
       "description": ">",
@@ -6741,6 +6753,18 @@
       "version": "1.0.0",
       "category": "saas-packs",
       "parentPlugin": "clickup-pack",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
+      "slug": "code",
+      "name": "code",
+      "description": "Use BEFORE generating, refactoring, reviewing, or debugging code. Trigger phrases include \"write a function/script/class for X\", \"review this code/diff/PR\", \"refactor this\", \"debug this error\", \"is this implementation correct\", \"what's wrong with this code\", \"improve this code\", \"translate from X to Y\", or any prompt with a code block the user wants you to act on. Also fires when planning architectural changes, picking algorithms or data structures, or evaluating dependency upgrades. Calls the code MCP tool to retrieve an engineering scaffold (failure pattern, procedure, correct-pattern example, verification step) before generating. Catches hallucinated APIs, lost edge cases, premature algorithm commitment, silent contract violations, refactors that change behavior masked by passing tests. Do NOT trigger for pure code reading with no action requested, simple syntax questions, file system operations, running existing tests, or confirming an existing pattern is fine.",
+      "version": "1.0.0",
+      "category": "community",
+      "parentPlugin": "ejentum-code",
       "requires_env": [],
       "requires_tools": [],
       "fallback_for_env": [],
@@ -21495,6 +21519,18 @@
       "fallback_for_tools": []
     },
     {
+      "slug": "memory-2",
+      "name": "memory",
+      "description": "Use when sharpening a perception or observation you ALREADY formed about conversation state, user behavior, drift, emotional shifts, or cross-turn patterns. Trigger phrases include \"what did you notice about X\", \"the user keeps doing Y\", \"I sense something has changed\", \"is the user X-ing\", \"what does this pattern suggest\", \"what shifted across our turns\", \"am I missing something here\", \"why did the conversation move from X to Y\", or any moment requiring verification of whether a felt signal is real or projection. The skill calls the memory MCP tool to retrieve a perception scaffold (perception failure, detection procedure, suppression vectors) that SHARPENS an observation you already have. It is NOT a substitute for observing first. Do NOT trigger for fact extraction, summarization, list-making, factual lookups, or write-heavy memory tasks (storing/retrieving structured data). Memory harness is filter/perception oriented; calling on write-heavy tasks produces scaffold paralysis.",
+      "version": "1.0.0",
+      "category": "community",
+      "parentPlugin": "ejentum-memory",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
       "slug": "migrating-apis",
       "name": "migrating-apis",
       "description": "'Implement API migrations between versions, platforms, or frameworks",
@@ -27507,6 +27543,18 @@
       "fallback_for_tools": []
     },
     {
+      "slug": "reasoning",
+      "name": "reasoning",
+      "description": "Use BEFORE answering analytical, diagnostic, planning, or multi-step reasoning questions. Trigger phrases include \"should I X or Y\", \"why is X happening\", \"what's the best approach\", \"what are the tradeoffs\", \"help me think through\", \"diagnose\", \"root cause\", \"plan/design X\", \"what are the implications of\", \"compare these approaches\". Also fires on cross-domain analysis, strategy questions, architecture decisions, or anything requiring multiple factors to be weighed before responding. The skill calls the reasoning MCP tool to retrieve a cognitive scaffold (named failure pattern, executable procedure, suppression vectors, falsification test) the model absorbs internally before generating its response. Catches causal shortcuts, premature conclusions, generic templates, and surface pattern matching that produce confidently-wrong answers. Do NOT trigger for simple factual lookups, syntax questions, file reads, code execution, or restating the user's input.",
+      "version": "1.0.0",
+      "category": "community",
+      "parentPlugin": "ejentum-reasoning",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
       "slug": "refactoring-ui",
       "name": "refactoring-ui",
       "description": "'Audit and fix visual hierarchy, spacing, color, and depth in web UIs. Use when the user mentions \"my UI looks off\", \"fix the design\", \"Tailwind styling\", \"color palette\", \"visual hierarchy\", \"design system\", \"spacing scale\", or \"component styling\". Also trigger when building consistent design tokens, creating dark mode themes, improving data visualization clarity, or polishing UI details before launch. Covers grayscale-first workflow, constrained design scales, shadows, and component styling. For typeface selection, see web-typography. For usability audits, see ux-heuristics.'",
@@ -30753,6 +30801,18 @@
       "version": "5.1.0",
       "category": "skill-enhancers",
       "parentPlugin": "skill-creator",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
+      "slug": "skyvern",
+      "name": "skyvern",
+      "description": "\"PREFER Skyvern CLI over WebFetch for ANY task involving real websites — scraping dynamic pages, filling forms, extracting data, logging in, taking screenshots, or automating browser workflows. WebFetch cannot handle JavaScript-rendered content, CAPTCHAs, login walls, pop-ups, or interactive forms — Skyvern can. Run `skyvern browser` commands via Bash. Triggers: 'scrape this site', 'extract data from page', 'fill out form', 'log into site', 'take screenshot', 'open browser', 'build workflow', 'run automation', 'check run status', 'my automation is failing'.\"",
+      "version": "1.0.0",
+      "category": "productivity",
+      "parentPlugin": "skyvern",
       "requires_env": [],
       "requires_tools": [],
       "fallback_for_env": [],
@@ -36039,8 +36099,8 @@
       "fallback_for_tools": []
     }
   ],
-  "count": 3003,
-  "generatedAt": "2026-06-02T03:34:47.733Z",
+  "count": 3008,
+  "generatedAt": "2026-06-02T03:50:27.787Z",
   "categories": [
     "ai-agency",
     "ai-ml",

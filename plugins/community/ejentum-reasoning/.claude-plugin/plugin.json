@@ -1,0 +1,12 @@
+{
+  "name": "ejentum-reasoning",
+  "version": "0.1.0",
+  "description": "Cognitive scaffold for analytical, planning, or multi-step decision tasks. Calls harness_reasoning on the ejentum MCP server to retrieve a structured scaffold (named failure pattern, executable procedure, suppression vectors, falsification test) the agent absorbs before generating. Requires ejentum-mcp and EJENTUM_API_KEY.",
+  "author": {
+    "name": "Ejentum",
+    "url": "https://github.com/ejentum",
+    "email": "info@ejentum.com"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/ejentum/ejentum-mcp"
+}
