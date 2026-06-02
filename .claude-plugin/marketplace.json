@@ -8557,7 +8557,7 @@
       "license": "MIT"
     },
     {
-      "name": "Claudebase",
+      "name": "claudebase",
       "source": "./plugins/productivity/claudebase",
       "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
       "version": "0.2.0",

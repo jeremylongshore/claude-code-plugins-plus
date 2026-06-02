@@ -376,8 +376,13 @@ function ensureCatalogEntry(source) {
   // Build the catalog entry. Order matches the canonical layout in
   // marketplace.extended.json so the diff stays tight and check-catalog-format
   // doesn't trip.
+  // Name is normalized to lowercase: Astro emits routes at
+  // /plugins/<lowercased-name>/ and check-routes.mjs verifies exact match,
+  // so a catalog entry named 'Claudebase' would 404 at /plugins/Claudebase/.
+  // Category MUST match the target_path's parent dir per
+  // validate-catalog-invariants.py — derive from path, not sources.yaml.
   const entry = {
-    name: source.name,
+    name: source.name.toLowerCase(),
     source: source.target_path.startsWith('./') ? source.target_path : `./${source.target_path}`,
     description: source.description || pluginJson.description || `${source.name} plugin`,
     version: pluginJson.version || '0.1.0',

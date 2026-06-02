@@ -514,7 +514,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `ai-commit-gen`                            | AI-powered commit message generator - analyzes your git diff and creates conventional commit messages instantly                             |
 | `box-cloud-filesystem`                     | Transparent cloud filesystem for AI agents using Box CLI (@box/cli). Upload, download, search, share, and sync files to Box cloud storage…  |
 | `claude-workflow-skills`                   | Common Claude Code workflow skills — promote, audit-plugin, audit-standards, improve, and triage                                            |
-| `Claudebase`                               | Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles                                             |
+| `claudebase`                               | Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles                                             |
 | `cli-power-skills`                         | Agentic CLI tool skills — 7 domain-grouped skills covering 26 CLI tools                                                                     |
 | `hyperfocus`                               | ADHD-friendly output formatting for Claude Code. Restructures responses with evidence-based cognitive accessibility: chunking, visual…      |
 | `navigating-github`                        | First-time GitHub setup and interactive git learning. Walks users from zero to a working GitHub repo, then teaches git through 9 hands-on…  |
