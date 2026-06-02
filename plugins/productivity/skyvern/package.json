@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/skyvern",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "AI browser automation via CLI — navigate sites, fill forms, extract data, handle logins",
   "keywords": [
     "claude-code",
