@@ -1,0 +1,34 @@
+{
+  "name": "@intentsolutionsio/engineering-team",
+  "version": "1.8.0",
+  "description": "Engineering team — 15 agents: Apex, Forge, Relay, Spine, Flux, Warden, Vigil, Prism, Cortex, Touch, Volt, Atlas, Lens, Proof, Pave",
+  "keywords": [
+    "agents",
+    "engineering-team",
+    "bundle",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/ai-agency/tonone/bundle/engineering-team"
+  },
+  "homepage": "https://tonsofskills.com/plugins/engineering-team",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    ".claude-plugin"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install engineering-team\\\\n  or /plugin install engineering-team@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

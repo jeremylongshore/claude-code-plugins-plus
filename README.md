@@ -112,23 +112,23 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 |     | Category                                           | Plugins |
 | --- | -------------------------------------------------- | ------: |
 | 🤖  | [AI & Machine Learning](#ai--machine-learning)     |      36 |
-| 🎭  | [AI Agents & Agency](#ai-agents--agency)           |       8 |
+| 🎭  | [AI Agents & Agency](#ai-agents--agency)           |      10 |
 | 🔌  | [API Development](#api-development)                |      25 |
 | 💼  | [Business Tools](#business-tools)                  |      21 |
-| 👥  | [Community](#community)                            |      14 |
+| 👥  | [Community](#community)                            |      18 |
 | ₿   | [Crypto & Web3](#crypto--web3)                     |      27 |
 | 💾  | [Database](#database)                              |      26 |
 | 🎨  | [Design](#design)                                  |       7 |
-| 🔧  | [DevOps & Infrastructure](#devops--infrastructure) |      36 |
+| 🔧  | [DevOps & Infrastructure](#devops--infrastructure) |      37 |
 | 📚  | [Examples & Templates](#examples--templates)       |       5 |
 | 🧩  | [MCP Servers](#mcp-servers)                        |      10 |
 | 📦  | [Packages](#packages)                              |       5 |
 | ⚡  | [Performance](#performance)                        |      25 |
-| ✅  | [Productivity](#productivity)                      |      19 |
+| ✅  | [Productivity](#productivity)                      |      26 |
 | 🎁  | [SaaS Skill Packs](#saas-skill-packs)              |     106 |
 | 🔐  | [Security](#security)                              |      26 |
 | ✨  | [Skill Enhancers](#skill-enhancers)                |       9 |
-| 🧪  | [Testing](#testing)                                |      27 |
+| 🧪  | [Testing](#testing)                                |      28 |
 | 📁  | [Analytics](#analytics)                            |       1 |
 
 ### AI & Machine Learning
@@ -178,18 +178,20 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### AI Agents & Agency
 
-🎭 **8 plugins** · category slug: `ai-agency`
+🎭 **10 plugins** · category slug: `ai-agency`
 
-| Plugin                    | Description                                                                                                                                |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `agency-os`               | Run your work like an AI agency, from a single Notion board. Agents discuss, plan, and execute tasks in parallel with dependency ordering… |
-| `discovery-questionnaire` | Generate custom discovery questionnaires for AI agency prospects                                                                           |
-| `make-scenario-builder`   | Create Make.com (Integromat) scenarios with AI assistance                                                                                  |
-| `n8n-workflow-designer`   | Design complex n8n workflows with AI assistance - loops, branching, error handling                                                         |
-| `roi-calculator`          | Calculate and present ROI for AI automation projects                                                                                       |
-| `shipwright`              | Describe your app in plain English — Shipwright builds, tests, and deploys it autonomously via a 9-phase pipeline.                         |
-| `sow-generator`           | Generate professional Statements of Work for AI projects                                                                                   |
-| `zapier-zap-builder`      | Create multi-step Zapier Zaps with filters, paths, and formatters                                                                          |
+| Plugin                    | Description                                                                                                                                 |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `agency-os`               | Run your work like an AI agency, from a single Notion board. Agents discuss, plan, and execute tasks in parallel with dependency ordering…  |
+| `discovery-questionnaire` | Generate custom discovery questionnaires for AI agency prospects                                                                            |
+| `hyperflow`               | Advanced multi-agent orchestration with persistent cross-session memory, per-step multi-level review, persona stitching, and adaptive flow… |
+| `make-scenario-builder`   | Create Make.com (Integromat) scenarios with AI assistance                                                                                   |
+| `n8n-workflow-designer`   | Design complex n8n workflows with AI assistance - loops, branching, error handling                                                          |
+| `roi-calculator`          | Calculate and present ROI for AI automation projects                                                                                        |
+| `shipwright`              | Describe your app in plain English — Shipwright builds, tests, and deploys it autonomously via a 9-phase pipeline.                          |
+| `sow-generator`           | Generate professional Statements of Work for AI projects                                                                                    |
+| `tonone`                  | 23-agent engineering + product team with 125 skills for Claude Code                                                                         |
+| `zapier-zap-builder`      | Create multi-step Zapier Zaps with filters, paths, and formatters                                                                           |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
 
@@ -259,24 +261,28 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Community
 
-👥 **14 plugins** · category slug: `community`
+👥 **18 plugins** · category slug: `community`
 
-| Plugin                 | Description                                                                                                                                 |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `b12-claude-plugin`    | B12 Website Generator — an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business…    |
-| `boycott-filter`       | Personal boycott list managed conversationally by your AI agent. Chrome extension warns you on pages from brands you've decided to avoid.   |
-| `claude-never-forgets` | Persistent memory plugin for Claude Code - remembers preferences, decisions, and corrections across sessions and context limits             |
-| `claude-reflect`       | Self-learning system for Claude Code that captures corrections and updates CLAUDE.md automatically                                          |
-| `contributing-clanker` | Local-only OSS contribution command center with 41 deterministic gates against AI-slop failure modes. Helps maintainers triage contributor… |
-| `fairdb-ops-manager`   | Database operations management for FairDB PostgreSQL clusters                                                                               |
-| `framecraft`           | Generate polished demo videos from a single prompt. Orchestrates Playwright, FFmpeg, and Edge TTS MCP servers to produce 1920x1080 videos…  |
-| `gastown`              | Multi-agent orchestrator for Claude Code. Track work with convoys, sling to polecats. The Cognition Engine for AI-powered software…         |
-| `geepers`              | Multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, and more. Built… |
-| `geepers-agents`       | Multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, games, and…      |
-| `jeremy-firebase`      | Firebase platform expert for Firestore, Auth, Functions, and Vertex AI integration                                                          |
-| `jeremy-firestore`     | Firestore database specialist for schema design, queries, and real-time sync                                                                |
-| `sprint`               | Autonomous multi-agent development framework with spec-driven sprints. Write specs, run /sprint, and let coordinated agents (backend,…      |
-| `zai-cli`              | Z.AI vision, search, reader, and GitHub exploration via CLI and MCP. Analyze images, search the web, read pages as markdown, explore repos. |
+| Plugin                   | Description                                                                                                                                 |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `b12-claude-plugin`      | B12 Website Generator — an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business…    |
+| `boycott-filter`         | Personal boycott list managed conversationally by your AI agent. Chrome extension warns you on pages from brands you've decided to avoid.   |
+| `claude-never-forgets`   | Persistent memory plugin for Claude Code - remembers preferences, decisions, and corrections across sessions and context limits             |
+| `claude-reflect`         | Self-learning system for Claude Code that captures corrections and updates CLAUDE.md automatically                                          |
+| `contributing-clanker`   | Local-only OSS contribution command center with 41 deterministic gates against AI-slop failure modes. Helps maintainers triage contributor… |
+| `ejentum-anti-deception` | Cognitive scaffold for validation requests, ethical reasoning, or adversarial framings. Calls harness_anti_deception on the ejentum MCP…    |
+| `ejentum-code`           | Cognitive scaffold for code generation, refactoring, or architecture tasks. Calls harness_code on the ejentum MCP server to retrieve a…     |
+| `ejentum-memory`         | Cognitive scaffold for sharpening perceptions and observations across multi-turn context. Calls harness_memory on the ejentum MCP server…   |
+| `ejentum-reasoning`      | Cognitive scaffold for analytical, planning, or multi-step decision tasks. Calls harness_reasoning on the ejentum MCP server to retrieve a… |
+| `fairdb-ops-manager`     | Database operations management for FairDB PostgreSQL clusters                                                                               |
+| `framecraft`             | Generate polished demo videos from a single prompt. Orchestrates Playwright, FFmpeg, and Edge TTS MCP servers to produce 1920x1080 videos…  |
+| `gastown`                | Multi-agent orchestrator for Claude Code. Track work with convoys, sling to polecats. The Cognition Engine for AI-powered software…         |
+| `geepers`                | Multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, and more. Built… |
+| `geepers-agents`         | Multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, games, and…      |
+| `jeremy-firebase`        | Firebase platform expert for Firestore, Auth, Functions, and Vertex AI integration                                                          |
+| `jeremy-firestore`       | Firestore database specialist for schema design, queries, and real-time sync                                                                |
+| `sprint`                 | Autonomous multi-agent development framework with spec-driven sprints. Write specs, run /sprint, and let coordinated agents (backend,…      |
+| `zai-cli`                | Z.AI vision, search, reader, and GitHub exploration via CLI and MCP. Analyze images, search the web, read pages as markdown, explore repos. |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
 
@@ -369,7 +375,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### DevOps & Infrastructure
 
-🔧 **36 plugins** · category slug: `devops`
+🔧 **37 plugins** · category slug: `devops`
 
 | Plugin                             | Description                                                                                                                                 |
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -409,6 +415,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `sugar`                            | Transform Claude Code into an autonomous AI development powerhouse with rich task context, specialized agents, and intelligent workflow…    |
 | `terraform-module-builder`         | Build reusable Terraform modules                                                                                                            |
 | `tweetclaw`                        | X/Twitter automation - post, reply, like, retweet, follow, DM, search, extract data, monitor accounts, run giveaways. 121 endpoints via…    |
+| `x-bug-triage`                     | Closed-loop bug triage — X complaints → clusters → repo evidence → owner routing → Slack review → filed issues                              |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
 
@@ -495,7 +502,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Productivity
 
-✅ **19 plugins** · category slug: `productivity`
+✅ **26 plugins** · category slug: `productivity`
 
 | Plugin                                     | Description                                                                                                                                 |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -506,13 +513,20 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `agent-context-manager`                    | Automatically detects and loads AGENTS.md files to provide agent-specific instructions                                                      |
 | `ai-commit-gen`                            | AI-powered commit message generator - analyzes your git diff and creates conventional commit messages instantly                             |
 | `box-cloud-filesystem`                     | Transparent cloud filesystem for AI agents using Box CLI (@box/cli). Upload, download, search, share, and sync files to Box cloud storage…  |
+| `claude-workflow-skills`                   | Common Claude Code workflow skills — promote, audit-plugin, audit-standards, improve, and triage                                            |
+| `Claudebase`                               | Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles                                             |
+| `cli-power-skills`                         | Agentic CLI tool skills — 7 domain-grouped skills covering 26 CLI tools                                                                     |
 | `hyperfocus`                               | ADHD-friendly output formatting for Claude Code. Restructures responses with evidence-based cognitive accessibility: chunking, visual…      |
 | `navigating-github`                        | First-time GitHub setup and interactive git learning. Walks users from zero to a working GitHub repo, then teaches git through 9 hands-on…  |
 | `neurodivergent-visual-org`                | Create ADHD-friendly visual organizational tools (Mermaid diagrams) optimized for neurodivergent thinking patterns with accessibility modes |
+| `obsidian-project-documentation`           | Automatically documents technical projects in Obsidian vaults during Claude Code sessions                                                   |
+| `over-50s-health`                          | Evidence-based health, fitness, nutrition, and longevity guidance for adults 50+                                                            |
 | `overnight-dev`                            | Run Claude autonomously for 6-8 hours overnight using Git hooks that enforce TDD - wake up to fully tested features                         |
+| `pair-programmer`                          | Graduated assistance framework to prevent skill atrophy when coding with AI                                                                 |
 | `plane`                                    | Plane is a team behavior observatory — synthesizes Plane API data into observations about how teams actually behave under pressure (cycle…  |
 | `pm-ai-partner`                            | 12 PM-specific agent skills, 6 workflow commands, 3 automation hooks for Product Managers                                                   |
 | `prettier-markdown-hook`                   | Automatically format markdown files with prettier when Claude stops responding, with configurable organization and path exclusions          |
+| `skyvern`                                  | AI browser automation via CLI — navigate sites, fill forms, extract data, handle logins                                                     |
 | `travel-assistant`                         | Intelligent travel assistant with real-time weather, currency conversion, timezone info, and AI-powered itinerary planning. Your complete…  |
 | `vibe-guide`                               | Non-technical progress summaries for Claude Code work (hides diffs/log noise).                                                              |
 | `wondelai-design-sprint`                   | Google Ventures Design Sprint methodology. Validate product ideas in 5 days with rapid prototyping, user testing, and structured…           |
@@ -691,7 +705,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Testing
 
-🧪 **27 plugins** · category slug: `testing`
+🧪 **28 plugins** · category slug: `testing`
 
 | Plugin                         | Description                                                                                                                                |
 | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -700,6 +714,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `api-test-automation`          | Automated API endpoint testing with request generation, validation, and comprehensive test coverage                                        |
 | `browser-compatibility-tester` | Cross-browser testing with BrowserStack, Selenium Grid, and Playwright - test across Chrome, Firefox, Safari, Edge                         |
 | `chaos-engineering-toolkit`    | Chaos testing for resilience with failure injection, latency simulation, and system resilience validation                                  |
+| `cli-ux-tester`                | Expert UX evaluator for CLIs and developer APIs, rates usability across 11 criteria with parallel evaluation agents                        |
 | `code-cleanup`                 | Comprehensive codebase cleanup across 11 quality dimensions — dead code, duplication, weak types, circular deps, defensive cruft, legacy…  |
 | `contract-test-validator`      | API contract testing with Pact, OpenAPI validation, and consumer-driven contract verification                                              |
 | `database-test-manager`        | Database testing utilities with test data setup, transaction rollback, and schema validation                                               |

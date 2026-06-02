@@ -33,7 +33,6 @@ The script shows each tracked file/directory with a status:
 ### Recommendations
 
 Based on the output, suggest the appropriate action:
-
 - Local-only files → suggest `/sync-push`
 - Remote-only files → suggest `/sync-pull`
 - Modified files → suggest checking what changed, then push or pull

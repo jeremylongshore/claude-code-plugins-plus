@@ -2,14 +2,14 @@
 
 [![CI](https://github.com/rohithzr/claudebase/actions/workflows/test.yml/badge.svg)](https://github.com/rohithzr/claudebase/actions/workflows/test.yml)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.2.0-green.svg)]
+[![Version](https://img.shields.io/badge/version-0.2.0-green.svg)](CHANGELOG.md)
 
 Your Claude Code setup is infrastructure. Agents, skills, rules, hooks, memory — these accumulate over weeks of work and represent real investment. Losing them to a disk wipe, or manually recreating them on a new machine, shouldn't happen.
 
 **Claudebase syncs your entire Claude Code environment to a private GitHub repo.** Profiles let you switch between work, personal, and team configurations instantly. Secret scanning, automatic backups, and multi-machine conflict detection keep things safe.
 
 <!-- TODO: Add asciinema demo GIF here -->
-<!-- ![demo](#quick-start) -->
+<!-- [![demo](docs/demo.gif)](#quick-start) -->
 
 ## Install
 
@@ -32,7 +32,6 @@ claude plugin update claudebase@rohithzr
 claude plugin uninstall claudebase@rohithzr
 claude plugin marketplace remove rohithzr
 ```
-
 </details>
 
 ## Quick Start
@@ -118,7 +117,6 @@ Desktop:  /sync-pull && /sync-push --force
 CI Box:   /sync-pull && /sync-push --force
 Laptop:   /sync-pull              # Gets everything
 ```
-
 </details>
 
 ## What Gets Synced
@@ -182,7 +180,6 @@ Push is blocked if a different machine pushed since your last sync — pull firs
 ```
 
 Claudebase also registers two lifecycle hooks:
-
 - **SessionStart** — quiet diff check (tells you if config is out of sync)
 - **SessionEnd** — auto-pushes if `auto_push` is enabled
 
@@ -196,14 +193,12 @@ Claudebase uses `gh` for all GitHub operations — no tokens to manage, no OAuth
 <summary>Platform-specific install instructions</summary>
 
 **macOS**
-
 ```bash
 brew install gh jq git
 gh auth login
 ```
 
 **Linux (Debian/Ubuntu)**
-
 ```bash
 # GitHub CLI (https://github.com/cli/cli/blob/trunk/docs/install_linux.md)
 (type -p wget >/dev/null || sudo apt-get install wget -y) \
@@ -220,18 +215,16 @@ gh auth login
 ```
 
 **Windows** — Install [Git for Windows](https://git-scm.com/download/win) (includes Git Bash), then:
-
 ```powershell
 winget install GitHub.cli
 winget install jqlang.jq
 gh auth login
 ```
-
 </details>
 
 ## Contributing
 
-Contributions welcome. See the Code of Conduct.
+Contributions welcome. See the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ```bash
 git clone https://github.com/rohithzr/claudebase.git

@@ -23,17 +23,13 @@ Product needs a visual direction. Industry or product type is known or discovera
 
 1. **Identify product type** from user request or project context
 2. **Search product reasoning:**
-
    ```bash
    python3 -m form_agent.uiux search --domain product --query "{product_type}" --limit 3
    ```
-
 3. **Get recommended style details:**
-
    ```bash
    python3 -m form_agent.uiux search --domain style --query "{recommended_style}" --limit 3
    ```
-
 4. **Cross-reference anti-patterns** from the product search results — check the Anti_Patterns field
 5. **Output** the recommendation using the format below
 

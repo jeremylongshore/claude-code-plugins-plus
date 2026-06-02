@@ -22,17 +22,13 @@ User needs a landing page structure, section order, or conversion-optimized layo
 
 1. **Identify product type** from user request or project context
 2. **Search landing page patterns:**
-
    ```bash
    python3 -m draft_agent.uiux search --domain landing --query "{product_type}" --limit 3
    ```
-
 3. **Search product reasoning for audience + conversion context:**
-
    ```bash
    python3 -m draft_agent.uiux search --domain product --query "{product_type}" --limit 3
    ```
-
 4. **Validate each section** against the "so what?" test — every section must earn its place
 5. **Output** section order with CTA placement markers
 

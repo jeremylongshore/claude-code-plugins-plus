@@ -1,0 +1,35 @@
+{
+  "name": "@intentsolutionsio/product-team",
+  "version": "1.8.0",
+  "description": "Product team — 8 agents: Helm, Echo, Lumen, Draft, Form, Crest, Pitch, Surge",
+  "keywords": [
+    "agents",
+    "product-team",
+    "bundle",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/ai-agency/tonone/bundle/product-team"
+  },
+  "homepage": "https://tonsofskills.com/plugins/product-team",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    ".claude-plugin",
+    "agents"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install product-team\\\\n  or /plugin install product-team@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

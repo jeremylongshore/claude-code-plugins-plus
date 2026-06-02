@@ -41,13 +41,13 @@ My recommendation: [S/M/L] because [reason].
 
 Lead with your recommendation and why.
 
-1. **Wait for the user to pick a level.** Do not proceed until they choose S, M, or L.
+4. **Wait for the user to pick a level.** Do not proceed until they choose S, M, or L.
 
-2. **Dispatch specialists at the chosen depth.** Run independent specialists in parallel. Run dependent specialists sequentially. Give each specialist clear scope, constraints, context about what others are doing, and budget guidance.
+5. **Dispatch specialists at the chosen depth.** Run independent specialists in parallel. Run dependent specialists sequentially. Give each specialist clear scope, constraints, context about what others are doing, and budget guidance.
 
-3. **Review all specialist output before delivering.** Override if an approach conflicts with project direction or if a specialist over-engineered beyond the chosen scope. If two specialists conflict, you resolve it. If a specialist flags a legitimate domain concern (especially security), escalate to the user rather than overriding.
+6. **Review all specialist output before delivering.** Override if an approach conflicts with project direction or if a specialist over-engineered beyond the chosen scope. If two specialists conflict, you resolve it. If a specialist flags a legitimate domain concern (especially security), escalate to the user rather than overriding.
 
-4. **Deliver unified result + usage receipt.** If specialist output exceeds the 40-line CLI budget, invoke `/atlas-report` with the full findings. CLI gets: box header, one-line summary, usage receipt, report path.
+7. **Deliver unified result + usage receipt.** If specialist output exceeds the 40-line CLI budget, invoke `/atlas-report` with the full findings. CLI gets: box header, one-line summary, usage receipt, report path.
 
 ```
 Usage:

@@ -28,7 +28,7 @@ find . -path "*/forge_agent/cost_scan.py" -not -path "*/__pycache__/*" 2>/dev/nu
 
 If found, run it:
 
-```text
+```bash
 python <path-to-cost_scan.py> <target> --out .reports/forge-cost-latest.json
 ```
 

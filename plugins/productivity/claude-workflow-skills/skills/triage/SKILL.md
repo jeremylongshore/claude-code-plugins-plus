@@ -2,6 +2,7 @@
 name: triage
 description: Validates all open GitHub issues, closes invalid ones with documentation, flags complex ones for planning discussion, then fixes and promotes remaining issues. Use when the user says triage issues, validate issues, fix issues, or work through the backlog.
 allowed-tools: Read Glob Grep Bash Edit Write
+disable-model-invocation: true
 ---
 
 # Triage

@@ -15,7 +15,7 @@ Follow the output format defined in docs/output-kit.md — 40-line CLI max, box-
 
 ## Steps
 
-1. **Run the automated health snapshot.** From the repo root:
+0. **Run the automated health snapshot.** From the repo root:
 
 ```bash
 cd team/apex/scripts && pip install -e . --quiet && python apex_agent/apex_scan.py . --skip-health --skip-deps --out /tmp/apex-scan.json 2>/dev/null || true
@@ -36,7 +36,7 @@ git diff HEAD~10 --stat
 
 Read the key changed files to understand the shape of the work.
 
-1. **Review for cross-cutting concerns.** For each area, ask whether a specialist would flag this:
+2. **Review for cross-cutting concerns.** For each area, ask whether a specialist would flag this:
    - **Security** (Warden): Auth gaps, secrets exposure, input validation, dependency vulnerabilities
    - **Performance** (Spine): N+1 queries, missing indexes, unbounded lists, blocking calls
    - **Observability** (Vigil): Logging coverage, error tracking, health checks, alerting gaps
@@ -44,19 +44,19 @@ Read the key changed files to understand the shape of the work.
    - **Infrastructure** (Forge): Resource sizing, cost implications, networking gaps
    - **CI/CD** (Relay): Test coverage, deployment safety, rollback capability
 
-2. **Check for consistency** — do the pieces fit together? Look for:
+3. **Check for consistency** — do the pieces fit together? Look for:
    - Naming mismatches between components
    - Assumptions one component makes that another doesn't satisfy
    - Missing error handling at boundaries
    - Gaps in the request/response flow
    - Configuration that exists in one environment but not others
 
-3. **Present findings prioritized by risk.** For each issue:
+4. **Present findings prioritized by risk.** For each issue:
    - What's wrong (one sentence)
    - Which specialist should fix it
    - Estimated effort (quick fix / medium / significant)
    - Risk level (critical / moderate / minor)
 
-4. **If critical issues found, recommend blocking.** If all issues are minor, note them and give the green light. Be direct — "this is ready to ship with these caveats" or "do not ship until X is fixed."
+5. **If critical issues found, recommend blocking.** If all issues are minor, note them and give the green light. Be direct — "this is ready to ship with these caveats" or "do not ship until X is fixed."
 
-5. **Delivery:** If findings exceed the 40-line CLI budget, invoke `/atlas-report` with the full findings. The HTML report is the output. CLI is the receipt only — print the box header, verdict (ship/block), top 3 issues, and the report path.
+6. **Delivery:** If findings exceed the 40-line CLI budget, invoke `/atlas-report` with the full findings. The HTML report is the output. CLI is the receipt only — print the box header, verdict (ship/block), top 3 issues, and the report path.

@@ -46,7 +46,7 @@ X API v2 → Intake (6) → Normalize → Cluster → Repo Scan (4) → Route (5
 
 If you have the [`claude-code-slack-channel`](https://github.com/jeremylongshore/claude-code-slack-channel) plugin installed, triage results are also delivered to Slack for async team review. Slack is a peer plugin — not bundled, not required.
 
-See 000-docs/004-AT-REFF-slack-review-flow.md for the optional team workflow.
+See [000-docs/004-AT-REFF-slack-review-flow.md](000-docs/004-AT-REFF-slack-review-flow.md) for the optional team workflow.
 
 ## Project Structure
 

@@ -1,0 +1,36 @@
+{
+  "name": "@intentsolutionsio/revenue-team",
+  "version": "1.8.0",
+  "description": "Revenue team — 3 agents: Deal, Keep, Surge",
+  "keywords": [
+    "agents",
+    "revenue-team",
+    "bundle",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/ai-agency/tonone/bundle/revenue-team"
+  },
+  "homepage": "https://tonsofskills.com/plugins/revenue-team",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    ".claude-plugin",
+    "skills",
+    "agents"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install revenue-team\\\\n  or /plugin install revenue-team@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -2,6 +2,7 @@
 name: promote
 description: Runs the full release workflow for the current project. Commits any uncommitted changes, pushes to remote, creates and merges a PR if on a feature branch, determines the next semver version from conventional commits, creates an annotated git tag and GitHub release with generated notes, cleans up merged branches, and returns to a clean main. Use when the user says promote, ship, release, commit and push, tag and release, or get back to main.
 allowed-tools: Bash
+disable-model-invocation: true
 ---
 
 # Promote Changes
@@ -18,6 +19,12 @@ Recent commits since last tag:
 
 ```text
 !`git log $(git describe --tags --abbrev=0 2>/dev/null || echo "")..HEAD --oneline -10 2>/dev/null || git log --oneline -10`
+```
+
+Next version (calculated from commits above):
+
+```text
+!`(last=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0"); IFS='.' read -r ma mi pa <<< "${last#v}"; log=$(git log "${last}..HEAD" --format="%s" 2>/dev/null); if echo "$log" | grep -qE "^[a-z]+(\([^)]+\))?!:"; then echo "v$((ma+1)).0.0"; elif echo "$log" | grep -qE "^feat"; then echo "v${ma}.$((mi+1)).0"; else echo "v${ma}.${mi}.$((pa+1))"; fi)`
 ```
 
 ## Step 0: Pre-flight checks
@@ -103,7 +110,7 @@ If on a feature branch:
 
    Closes #N, Closes #N
 
-   🤖 Generated with [Claude Code](https://claude.com/claude-code)
+   🤖 Generated with [claude-workflow-skills:promote](https://github.com/ali5ter/claude-workflow-skills) on behalf of [Alister](https://github.com/ali5ter)
    EOF
    )"
    ```
@@ -128,17 +135,17 @@ If on a feature branch:
    git checkout main && git pull
    ```
 
-## Step 4: Determine next version
+## Step 4: Confirm next version
 
-Analyse the commits since the last tag shown above. Apply semver rules:
+The next version is pre-calculated in the context block above using these semver rules:
 
-- Any commit with `BREAKING CHANGE:` in the footer, or a `!` suffix on the type → **major** bump
-- Any commit beginning with `feat:` or `feat(scope):` → **minor** bump
-- All other commits (`fix:`, `docs:`, `chore:`, `refactor:`, etc.) → **patch** bump
+- Commit subject with `!:` (e.g. `feat!:`, `fix!:`) → **major** bump
+- Commit subject beginning with `feat` → **minor** bump
+- All other commits → **patch** bump
 
-If no previous tag exists, start at `v1.0.0`.
-
-Calculate `<next-version>` from the current last tag and the rule above.
+Confirm the calculated version is correct given the commit list. If no previous tag exists, use
+`v1.0.0`. Override only if the calculated version is clearly wrong (e.g. the injection returned
+an error or empty output).
 
 ## Step 5: Sync plugin manifest (if present)
 
@@ -167,7 +174,7 @@ Skip this step entirely if `.claude-plugin/plugin.json` does not exist.
 
 ## Step 6: Tag and release
 
-```text
+```bash
 git tag -a v<next-version> -m "Release v<next-version>"
 git push origin v<next-version>
 gh release create v<next-version> \
@@ -190,7 +197,7 @@ gh issue close <N> --comment "Resolved in $(gh release view v<next-version> --js
 
 If a feature branch was merged in Step 3, delete it locally and remotely:
 
-```text
+```bash
 git branch -d <feature-branch>
 git push origin --delete <feature-branch>
 ```

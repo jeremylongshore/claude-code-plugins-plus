@@ -3,7 +3,7 @@
  * External Plugin Sync Engine
  *
  * Syncs plugins from external repositories defined in sources.yaml.
- * Runs daily via GitHub Actions to keep community plugins fresh.
+ * Runs weekly via GitHub Actions to keep community plugins fresh.
  *
  * Usage:
  *   node scripts/sync-external.mjs [options]
@@ -13,17 +13,33 @@
  *   --dry-run      Show what would be synced without making changes
  *   --source=NAME  Sync only the specified source
  *   --verbose      Show detailed output
+ *
+ * 2026-06-02 rewrite (claude-5h8v):
+ *   Switched from per-file GitHub Contents-API calls to `git clone
+ *   --depth=1 --filter=blob:none --sparse`. The previous implementation
+ *   burned ~5000 API calls per run (one per file × 48 sources × references/**
+ *   glob expansion) and 403'd out partway through every time. Git protocol
+ *   has higher rate limits AND naturally handles the path filter via
+ *   sparse-checkout, so we get all of a source's files in one operation.
+ *
+ *   Also added auto-catalog-entry generation: after a sync writes new
+ *   files, if marketplace.extended.json has no entry for the plugin name,
+ *   we generate one from sources.yaml metadata + the synced plugin.json.
+ *   This closes the "filesystem synced but plugin invisible" gap that
+ *   stranded 16 plugins from the v1 sync (tracked in claude-x1el).
  */
 
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 import { fileURLToPath } from 'url';
-import https from 'https';
+import { execFileSync } from 'child_process';
 import yaml from 'js-yaml';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.resolve(__dirname, '..');
 const SOURCES_FILE = path.join(ROOT_DIR, 'sources.yaml');
+const CATALOG_FILE = path.join(ROOT_DIR, '.claude-plugin', 'marketplace.extended.json');
 
 // Parse command line arguments
 const args = process.argv.slice(2);
@@ -57,122 +73,253 @@ function logVerbose(message) {
 }
 
 /**
- * Fetch file content from GitHub API
+ * Sparse-clone a repo into a temp dir and return the local path.
+ * The clone uses --depth=1 --filter=blob:none, then sparse-checkout
+ * restricts blob materialization to the source_path subtree. Result:
+ * ONE git fetch per source, zero REST API calls.
+ *
+ * Caller must clean up the returned tmpdir.
  */
-async function fetchFromGitHub(repo, filePath, branch = 'main') {
-  const url = `https://api.github.com/repos/${repo}/contents/${filePath}?ref=${branch}`;
+function sparseCheckout(repo, sourcePath, branch = 'main') {
+  const tmpdir = fs.mkdtempSync(path.join(os.tmpdir(), `sync-${repo.replace('/', '-')}-`));
+  // Authenticated clone bumps rate limits when GITHUB_TOKEN is present.
+  // Format: https://x-access-token:TOKEN@github.com/owner/repo.git
+  const authUrl = process.env.GITHUB_TOKEN
+    ? `https://x-access-token:${process.env.GITHUB_TOKEN}@github.com/${repo}.git`
+    : `https://github.com/${repo}.git`;
 
-  return new Promise((resolve, reject) => {
-    const headers = {
-      'User-Agent': 'claude-code-plugins-sync',
-      Accept: 'application/vnd.github.v3+json',
-    };
+  // Normalize source_path: '' or '.' means "whole repo root". Anything
+  // else is treated as a path prefix. `--no-cone` mode treats patterns
+  // as gitignore-style, so `/*` matches every entry at root recursively.
+  const wholeRepo = !sourcePath || sourcePath === '.' || sourcePath === './';
+  const sparsePattern = wholeRepo ? '/*' : sourcePath;
 
-    // Add auth token if available
-    if (process.env.GITHUB_TOKEN) {
-      headers['Authorization'] = `token ${process.env.GITHUB_TOKEN}`;
+  try {
+    execFileSync(
+      'git',
+      [
+        'clone',
+        '--depth=1',
+        '--filter=blob:none',
+        '--sparse',
+        '--branch',
+        branch,
+        '--quiet',
+        authUrl,
+        tmpdir,
+      ],
+      { stdio: ['ignore', 'pipe', 'pipe'] },
+    );
+
+    execFileSync('git', ['-C', tmpdir, 'sparse-checkout', 'set', '--no-cone', sparsePattern], {
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+
+    return tmpdir;
+  } catch (err) {
+    // Best-effort cleanup if the clone half-succeeded
+    try {
+      fs.rmSync(tmpdir, { recursive: true, force: true });
+    } catch {
+      // ignore
     }
-
-    https
-      .get(url, { headers }, (res) => {
-        let data = '';
-        res.on('data', (chunk) => (data += chunk));
-        res.on('end', () => {
-          if (res.statusCode === 200) {
-            try {
-              const json = JSON.parse(data);
-              // File response — `content` may be an empty string for 0-byte
-              // files (e.g. .gitkeep, blank __init__.py) which is still a valid
-              // file we want to copy. Use type === 'file' as the truth-source.
-              if (json.type === 'file' || typeof json.content === 'string') {
-                const content = Buffer.from(json.content || '', 'base64').toString('utf8');
-                resolve({ content, sha: json.sha, path: json.path });
-              } else if (Array.isArray(json)) {
-                // Directory listing
-                resolve({ type: 'directory', files: json });
-              } else if (json.type === 'submodule' || json.type === 'symlink') {
-                // Skip submodules and symlinks — can't safely mirror these as plain files
-                resolve(null);
-              } else {
-                reject(
-                  new Error(
-                    `Unexpected response format for ${filePath} (type=${json.type ?? 'none'})`,
-                  ),
-                );
-              }
-            } catch (e) {
-              reject(new Error(`Failed to parse response: ${e.message}`));
-            }
-          } else if (res.statusCode === 404) {
-            resolve(null); // File not found
-          } else {
-            reject(new Error(`GitHub API error ${res.statusCode}: ${data}`));
-          }
-        });
-      })
-      .on('error', reject);
-  });
+    const stderr = err.stderr?.toString() || err.message;
+    throw new Error(`git sparse-clone failed for ${repo}: ${stderr.trim().split('\n').pop()}`);
+  }
 }
 
 /**
- * Recursively fetch directory contents from GitHub
+ * Walk a directory and return [{ path, content }] for every file.
+ * Paths are relative to baseDir.
  */
-async function fetchDirectory(repo, dirPath, branch = 'main') {
-  const result = await fetchFromGitHub(repo, dirPath, branch);
-
-  if (!result || result.type !== 'directory') {
-    return [];
+function walkFiles(baseDir, relPrefix = '') {
+  const out = [];
+  let entries;
+  try {
+    entries = fs.readdirSync(baseDir, { withFileTypes: true });
+  } catch {
+    return out;
   }
-
-  const files = [];
-
-  for (const item of result.files) {
-    if (item.type === 'file') {
-      const fileContent = await fetchFromGitHub(repo, item.path, branch);
-      if (fileContent) {
-        files.push({
-          path: item.path.replace(`${dirPath}/`, ''),
-          content: fileContent.content,
-          sha: fileContent.sha,
-        });
+  for (const ent of entries) {
+    if (ent.name === '.git') continue;
+    const abs = path.join(baseDir, ent.name);
+    const rel = relPrefix ? `${relPrefix}/${ent.name}` : ent.name;
+    if (ent.isDirectory()) {
+      out.push(...walkFiles(abs, rel));
+    } else if (ent.isFile()) {
+      let content;
+      try {
+        content = fs.readFileSync(abs, 'utf8');
+      } catch {
+        // Binary or unreadable; skip
+        continue;
       }
-    } else if (item.type === 'dir') {
-      const subFiles = await fetchDirectory(repo, item.path, branch);
-      files.push(
-        ...subFiles.map((f) => ({
-          ...f,
-          path: `${item.name}/${f.path}`,
-        })),
-      );
+      out.push({ path: rel, content });
     }
   }
-
-  return files;
+  return out;
 }
 
 /**
- * Check if a path matches any of the glob patterns
+ * Check if a path matches any of the glob patterns.
+ *
+ * Pattern semantics (matches sources.yaml's intent):
+ *   - Bare filename (`SKILL.md`)   → matches at any depth (treated as `**\/SKILL.md`)
+ *   - Plain dir glob (`references/**`) → matches at any depth (treated as `**\/references/**`)
+ *   - Leading `**\/` or `/`        → explicit path semantics, no auto-prefix
+ *   - `**`                          → zero or more dirs (translated to `.*`)
+ *   - `*`                           → one path segment (no `/`)
+ *   - `?`                           → single char
+ *
+ * Why the auto-prefix: sources.yaml includes typically list `SKILL.md`,
+ * `README.md`, `references/**` with the intent "any depth," but the older
+ * regex anchored at the root of source_path. Many upstream repos nest one
+ * extra layer (e.g. skills/tools/<plugin>/skills/<plugin>/SKILL.md), so
+ * the strict match dropped real files. Auto-prefixing fixes that without
+ * needing every sources.yaml entry rewritten.
  */
 function matchesPattern(filePath, patterns) {
   if (!patterns || patterns.length === 0) return true;
 
-  return patterns.some((pattern) => {
-    // Convert glob pattern to regex
-    const regex = new RegExp(
-      '^' +
-        pattern
-          .replace(/\*\*/g, '<<<DOUBLESTAR>>>')
-          .replace(/\*/g, '[^/]*')
-          .replace(/<<<DOUBLESTAR>>>/g, '.*')
-          .replace(/\?/g, '.') +
-        '$',
-    );
+  return patterns.some((rawPattern) => {
+    // Auto-prefix `**/` unless the pattern already starts with `**` or `/`
+    const pattern =
+      rawPattern.startsWith('**') || rawPattern.startsWith('/') ? rawPattern : `**/${rawPattern}`;
+
+    // Order matters: handle `?` (single-char glob) BEFORE we insert any
+    // literal `?` chars (like `(?:.*/)?`) into the regex pattern. Then
+    // substitute glob tokens left-to-right via unique placeholders so
+    // they don't overlap.
+    const escaped = pattern
+      .replace(/\?/g, '<<<Q>>>') // glob `?` placeholder (before we add literal `?`)
+      .replace(/\./g, '\\.') // escape literal dots (`.md` etc)
+      .replace(/\*\*\//g, '<<<DSS>>>') // `**/` → zero or more dirs
+      .replace(/\*\*/g, '<<<DS>>>') // bare `**` → anything
+      .replace(/\*/g, '[^/]*') // `*` → single segment
+      .replace(/<<<DSS>>>/g, '(?:.*/)?') // ← contains literal `?`, must come AFTER /\?/g
+      .replace(/<<<DS>>>/g, '.*')
+      .replace(/<<<Q>>>/g, '.');
+
+    const regex = new RegExp('^' + escaped + '$');
     return regex.test(filePath);
   });
 }
 
 /**
- * Sync a single source
+ * Read marketplace.extended.json and check whether a plugin entry
+ * already exists by name.
+ */
+function catalogHasEntry(pluginName) {
+  if (!fs.existsSync(CATALOG_FILE)) return false;
+  try {
+    const data = JSON.parse(fs.readFileSync(CATALOG_FILE, 'utf8'));
+    return (data.plugins || []).some((p) => p.name === pluginName);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Auto-generate a marketplace.extended.json catalog entry for a freshly
+ * synced source. Merges sources.yaml metadata with the synced
+ * .claude-plugin/plugin.json (if present) to fill in version/keywords.
+ *
+ * Strategy: append the new entry to the plugins array. We write with
+ * 2-space indent matching the catalog's canonical format, plus a final
+ * newline. The check-catalog-format gate budgets +80±300 lines for one
+ * added entry; a clean 20-25-line entry is well within that.
+ *
+ * Returns true if an entry was added, false if catalog already had one
+ * or if dry-run mode.
+ */
+function ensureCatalogEntry(source) {
+  if (catalogHasEntry(source.name)) {
+    return false; // already present, no action
+  }
+
+  // Pull version + license from the synced plugin.json if available.
+  const pluginJsonPath = path.join(ROOT_DIR, source.target_path, '.claude-plugin', 'plugin.json');
+  let pluginJson = {};
+  if (fs.existsSync(pluginJsonPath)) {
+    try {
+      pluginJson = JSON.parse(fs.readFileSync(pluginJsonPath, 'utf8'));
+    } catch {
+      // ignore parse errors; fall back to sources.yaml metadata
+    }
+  }
+
+  // Build the catalog entry. Order matches the canonical layout in
+  // marketplace.extended.json so the diff stays tight and check-catalog-format
+  // doesn't trip.
+  const entry = {
+    name: source.name,
+    source: source.target_path.startsWith('./') ? source.target_path : `./${source.target_path}`,
+    description: source.description || pluginJson.description || `${source.name} plugin`,
+    version: pluginJson.version || '0.1.0',
+    category: source.category || 'community',
+  };
+
+  // Keywords: prefer plugin.json, fall back to sources.yaml, else infer from category
+  if (Array.isArray(pluginJson.keywords) && pluginJson.keywords.length > 0) {
+    entry.keywords = pluginJson.keywords;
+  } else if (Array.isArray(source.keywords) && source.keywords.length > 0) {
+    entry.keywords = source.keywords;
+  }
+
+  // Author: prefer plugin.json author shape (object), fall back to sources.yaml
+  if (pluginJson.author && typeof pluginJson.author === 'object') {
+    entry.author = {
+      name: pluginJson.author.name || source.author?.name || 'External Contributor',
+      ...(pluginJson.author.url ? { url: pluginJson.author.url } : {}),
+      ...(pluginJson.author.email ? { email: pluginJson.author.email } : {}),
+    };
+  } else if (source.author) {
+    entry.author = {
+      name: source.author.name || 'External Contributor',
+      ...(source.author.github ? { url: `https://github.com/${source.author.github}` } : {}),
+      ...(source.author.email ? { email: source.author.email } : {}),
+    };
+  }
+
+  if (pluginJson.homepage) entry.homepage = pluginJson.homepage;
+  if (pluginJson.repository) entry.repository = pluginJson.repository;
+  if (pluginJson.license || source.license) {
+    entry.license = pluginJson.license || source.license;
+  }
+
+  if (options.dryRun) {
+    log(`   📋 Would add catalog entry: ${source.name}`, colors.yellow);
+    return false;
+  }
+
+  // Insert the entry. Append at the end of the plugins array, before the
+  // closing brace. We avoid full JSON.stringify of the whole file because
+  // that reformats every existing entry and trips check-catalog-format.
+  const text = fs.readFileSync(CATALOG_FILE, 'utf8');
+  const entryJson = JSON.stringify(entry, null, 2)
+    .split('\n')
+    .map((line, i) => (i === 0 ? `    ${line}` : `    ${line}`))
+    .join('\n');
+
+  // Find the last `}` immediately before `]\n}` (the plugins-array close).
+  // Replace `    }\n  ]\n}` with `    },\n    <new>\n  ]\n}`.
+  const closeMatch = text.match(/(\s*}\s*)(\n\s*]\s*\n\s*}\s*)$/);
+  if (!closeMatch) {
+    log(`   ⚠️  Could not locate catalog insertion point — skipping entry`, colors.yellow);
+    return false;
+  }
+  const before = text.slice(0, closeMatch.index);
+  const lastEntryClose = closeMatch[1];
+  const arrayClose = closeMatch[2];
+  const updated = `${before}${lastEntryClose.replace(/}(\s*)$/, '},$1')}${entryJson}${arrayClose}`;
+
+  fs.writeFileSync(CATALOG_FILE, updated);
+  log(`   📋 Added catalog entry: ${source.name}`, colors.green);
+  return true;
+}
+
+/**
+ * Sync a single source via sparse git clone.
  */
 async function syncSource(source, config) {
   log(`\n📦 Syncing: ${source.name}`, colors.cyan);
@@ -180,34 +327,36 @@ async function syncSource(source, config) {
   log(`   To:   ${source.target_path}`, colors.dim);
 
   const changes = [];
-  const branch = config.default_branch || 'main';
+  const branch = source.branch || config?.default_branch || 'main';
+  let tmpdir = null;
 
   try {
-    // Fetch source directory contents
-    const files = await fetchDirectory(source.repo, source.source_path, branch);
+    tmpdir = sparseCheckout(source.repo, source.source_path, branch);
+    logVerbose(`Sparse-cloned ${source.repo}@${branch} → ${tmpdir}`);
+
+    // Walk the sourcePath subtree (or repo root when source_path is '.' / '').
+    const wholeRepo =
+      !source.source_path || source.source_path === '.' || source.source_path === './';
+    const baseDir = wholeRepo ? tmpdir : path.join(tmpdir, source.source_path);
+    const files = walkFiles(baseDir);
 
     if (files.length === 0) {
       log(`   ⚠️  No files found at source path`, colors.yellow);
-      return { source: source.name, changes: [], error: 'No files found' };
+      return { source: source.name, changes: [], error: 'No files found at source path' };
     }
+    logVerbose(`Discovered ${files.length} files in source`);
 
-    logVerbose(`Found ${files.length} files in source`);
-
-    // Filter files based on include/exclude patterns
     const filteredFiles = files.filter((file) => {
       const included = matchesPattern(file.path, source.include);
       const excluded = matchesPattern(file.path, source.exclude);
       return included && !excluded;
     });
-
     logVerbose(`${filteredFiles.length} files after filtering`);
 
-    // Process each file
     for (const file of filteredFiles) {
       const targetPath = path.join(ROOT_DIR, source.target_path, file.path);
       const targetDir = path.dirname(targetPath);
 
-      // Check if file exists and compare
       let needsUpdate = false;
       let reason = 'new';
 
@@ -225,30 +374,25 @@ async function syncSource(source, config) {
         if (options.dryRun) {
           log(`   📝 Would ${reason === 'new' ? 'create' : 'update'}: ${file.path}`, colors.yellow);
         } else {
-          // Create directory if needed
           if (!fs.existsSync(targetDir)) {
             fs.mkdirSync(targetDir, { recursive: true });
           }
-
-          // Write file
           fs.writeFileSync(targetPath, file.content);
           log(`   ✅ ${reason === 'new' ? 'Created' : 'Updated'}: ${file.path}`, colors.green);
         }
-
         changes.push({ path: file.path, action: reason });
       } else {
         logVerbose(`Unchanged: ${file.path}`);
       }
     }
 
-    // Write .source.json with provenance info
     if (changes.length > 0 && !options.dryRun) {
       const sourceJsonPath = path.join(ROOT_DIR, source.target_path, '.source.json');
       const sourceJson = {
         synced_from: {
           repo: source.repo,
           path: source.source_path,
-          branch: branch,
+          branch,
         },
         last_sync: new Date().toISOString(),
         author: source.author,
@@ -259,6 +403,15 @@ async function syncSource(source, config) {
       logVerbose(`Written .source.json`);
     }
 
+    // Auto-register in the catalog if absent. This is the second half of
+    // the sync — without it, files land on disk but the plugin stays
+    // invisible to tonsofskills.com / ccpi CLI / search. The 16 stranded
+    // entries documented in claude-x1el all stuck here.
+    const catalogAdded = ensureCatalogEntry(source);
+    if (catalogAdded) {
+      changes.push({ path: '.claude-plugin/marketplace.extended.json', action: 'catalog' });
+    }
+
     if (changes.length === 0) {
       log(`   ✓ No changes detected`, colors.dim);
     }
@@ -267,6 +420,14 @@ async function syncSource(source, config) {
   } catch (error) {
     log(`   ❌ Error: ${error.message}`, colors.red);
     return { source: source.name, changes: [], error: error.message };
+  } finally {
+    if (tmpdir) {
+      try {
+        fs.rmSync(tmpdir, { recursive: true, force: true });
+      } catch {
+        // tmpdir cleanup is best-effort
+      }
+    }
   }
 }
 
@@ -281,7 +442,6 @@ async function main() {
     log('DRY RUN MODE - No changes will be made\n', colors.yellow);
   }
 
-  // Load sources.yaml
   if (!fs.existsSync(SOURCES_FILE)) {
     log(`❌ sources.yaml not found at ${SOURCES_FILE}`, colors.red);
     process.exit(1);
@@ -297,7 +457,6 @@ async function main() {
 
   log(`Found ${sources.length} source(s) to sync`, colors.dim);
 
-  // Filter sources if --source option provided
   const sourcesToSync = options.source ? sources.filter((s) => s.name === options.source) : sources;
 
   if (options.source && sourcesToSync.length === 0) {
@@ -305,22 +464,30 @@ async function main() {
     process.exit(1);
   }
 
-  // Sync each source
   const results = [];
   for (const source of sourcesToSync) {
     const result = await syncSource(source, config);
     results.push(result);
   }
 
-  // Summary
   log('\n' + '='.repeat(50), colors.blue);
   log('📊 Sync Summary', colors.bright + colors.blue);
 
   const totalChanges = results.reduce((acc, r) => acc + r.changes.length, 0);
+  const catalogAdds = results.reduce(
+    (acc, r) => acc + r.changes.filter((c) => c.action === 'catalog').length,
+    0,
+  );
   const errors = results.filter((r) => r.error);
 
   if (totalChanges > 0) {
     log(`✅ ${totalChanges} file(s) ${options.dryRun ? 'would be ' : ''}synced`, colors.green);
+    if (catalogAdds > 0) {
+      log(
+        `📋 ${catalogAdds} catalog entr${catalogAdds === 1 ? 'y' : 'ies'} auto-added`,
+        colors.green,
+      );
+    }
   } else {
     log('✓ All sources up to date', colors.dim);
   }
@@ -330,10 +497,10 @@ async function main() {
     errors.forEach((e) => log(`   - ${e.source}: ${e.error}`, colors.red));
   }
 
-  // Output for GitHub Actions
   if (process.env.GITHUB_OUTPUT) {
     const outputFile = process.env.GITHUB_OUTPUT;
     fs.appendFileSync(outputFile, `changes=${totalChanges}\n`);
+    fs.appendFileSync(outputFile, `catalog_adds=${catalogAdds}\n`);
     fs.appendFileSync(outputFile, `sources=${results.map((r) => r.source).join(',')}\n`);
     fs.appendFileSync(outputFile, `has_changes=${totalChanges > 0}\n`);
   }
@@ -346,7 +513,6 @@ async function main() {
   process.exit(totalFailures ? 1 : 0);
 }
 
-// Run
 main().catch((error) => {
   console.error('Fatal error:', error);
   process.exit(1);

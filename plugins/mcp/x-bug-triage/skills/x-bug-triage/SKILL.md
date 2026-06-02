@@ -54,14 +54,12 @@ Verify environment before starting:
 6. Fetch quote tweets for high-engagement posts: `mcp__triage__fetch_quote_tweets`
 
 After intake completes:
-
 1. Call `assessFreshness()` from `lib/freshness.ts` with the combined post set and the requested window boundaries. If `date_confidence` is `"low"` or `"medium"`, pass the `warning` string to the display step for rendering.
 2. Collect all `DegradationReport` objects from intake tool responses. Call `buildSourceStatusReport()` from `lib/source-status.ts` to aggregate into a `SourceStatusReport`. Pass to the display step for rendering between the header and cluster list.
 
 ### Step 2: Normalize
 
 For each ingested post:
-
 - Parse into BugCandidate (all 33 fields) using `lib/parser.ts`
 - Classify into 12 categories using `lib/classifier.ts`
 - Redact PII (6 types) using `lib/redactor.ts`
@@ -85,7 +83,6 @@ For each ingested post:
 ### Step 5: Repo Scan
 
 For each cluster (top 3 repos per cluster):
-
 - `mcp__triage__search_issues` — Match symptoms/errors
 - `mcp__triage__inspect_recent_commits` — 7-day commit window
 - `mcp__triage__inspect_code_paths` — Affected paths
@@ -94,7 +91,6 @@ For each cluster (top 3 repos per cluster):
 Assign evidence tiers (1-4) per [evidence-policy.md](references/evidence-policy.md).
 
 Load evidence tier definitions:
-
 ```
 !cat ${CLAUDE_SKILL_DIR}/references/evidence-policy.md
 ```
@@ -102,7 +98,6 @@ Load evidence tier definitions:
 ### Step 6: Route Ownership
 
 For each cluster, use strict 6-level precedence:
-
 1. `mcp__triage__lookup_service_owner`
 2. `mcp__triage__lookup_oncall`
 3. `mcp__triage__parse_codeowners`
@@ -113,7 +108,6 @@ For each cluster, use strict 6-level precedence:
 Apply routing overrides from prior runs. Flag stale signals (>30 days).
 
 Load routing precedence rules:
-
 ```
 !cat ${CLAUDE_SKILL_DIR}/references/routing-rules.md
 ```
@@ -121,13 +115,11 @@ Load routing precedence rules:
 ### Step 7: Evaluate Severity + Escalation
 
 Compute severity (low/medium/high/critical) based on:
-
 - Report velocity, data loss signals, security/privacy, auth/billing lockout
 - Cross-surface failure, enterprise impact, reproducibility quality
 - Apply severity overrides from prior runs
 
 Load escalation trigger definitions:
-
 ```
 !cat ${CLAUDE_SKILL_DIR}/references/escalation-rules.md
 ```
@@ -135,7 +127,6 @@ Load escalation trigger definitions:
 ### Step 8: Display Results
 
 Display triage results directly in the terminal as formatted markdown:
-
 - Severity icons: red_circle critical/high, yellow_circle medium, green_circle low
 - Top 5 clusters by severity (or all if <=5)
 - Per cluster: report count, severity, status, assigned team, top evidence tier
@@ -166,7 +157,6 @@ Accept review commands from the user in the terminal. Parse via `mcp__triage__pa
 After each command executes successfully, display the confirmation message from `formatActionConfirmation()` (in `mcp/triage-server/lib.ts`). This provides immediate user feedback for all review actions.
 
 Load override and memory policy when processing review commands:
-
 ```
 !cat ${CLAUDE_SKILL_DIR}/references/review-memory-policy.md
 ```
@@ -189,7 +179,6 @@ Terminal markdown summary with severity-ranked clusters, evidence tiers, team as
 ```
 
 Produces cluster summary, then user interacts:
-
 ```
 > details 1
 > file 2

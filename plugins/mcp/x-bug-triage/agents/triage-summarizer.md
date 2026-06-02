@@ -33,7 +33,6 @@ You receive from the orchestrator:
 **Detail mode**: Formatted markdown for a single cluster with full evidence and routing.
 
 **Command mode**: ParsedCommand JSON:
-
 ```json
 { "command": "file", "clusterNumber": 2, "valid": true }
 ```

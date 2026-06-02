@@ -179,27 +179,21 @@ Each skill replaces slower, less capable, or more verbose standard alternatives.
 MCP (Model Context Protocol) servers are powerful for connecting Claude to external services, but CLI skills are the better choice for local development workflows. Here's why:
 
 ### Instant execution, zero overhead
-
 CLI tools run as direct shell commands — there is no server to start, no WebSocket handshake, no JSON-RPC protocol overhead. A `jq` query executes in milliseconds. An MCP server must boot a Node.js/Python process, establish a connection, serialize the request, deserialize the response, and keep a process alive for the session. For the rapid-fire tool usage typical of data processing or CI pipelines, this overhead adds up to seconds per operation.
 
 ### Composable Unix pipelines
-
 CLI tools pipe into each other natively: `katana | httpx | jq | duckdb`. Each tool does one thing well and passes structured output to the next. MCP tools are isolated function calls — you cannot pipe the output of one MCP tool directly into another without Claude mediating every step. This means more round-trips, more tokens consumed, and more latency. A 5-stage CLI pipeline runs as a single Bash command; the equivalent MCP workflow requires 5 separate tool calls with Claude parsing and forwarding results between each.
 
 ### Full ecosystem access
-
 These skills teach Claude to use 26 battle-tested CLI tools built by dedicated communities (DuckDB, Playwright, Trivy, etc.). MCP servers typically wrap a subset of one tool's functionality behind a simplified API. For example, a Playwright MCP server might expose 10 actions; the CLI skill teaches Claude the full Playwright API including selectors, network interception, multi-browser testing, and PDF generation. You get the complete tool, not an abstraction layer's view of it.
 
 ### No process management
-
 MCP servers are long-lived processes that consume memory, can crash, need restarts, and require configuration in `claude_desktop_config.json` or `settings.json`. CLI tools are stateless — they run, produce output, and exit. No zombie processes, no port conflicts, no "MCP server disconnected" errors mid-session.
 
 ### Works everywhere, offline
-
 CLI tools work on air-gapped machines, in CI runners, inside Docker containers, and on any OS. MCP servers often depend on specific runtimes (Node.js, Python), network access for installation, and Claude Code's MCP infrastructure. A `trivy fs .` works whether Claude is involved or not — the same command runs in your CI pipeline, your pre-commit hook, or your terminal.
 
 ### Debuggable and auditable
-
 When a CLI command fails, the error message is right there in the terminal. You can copy the exact command, run it yourself, and debug it. MCP tool failures are wrapped in protocol layers — the error might be in the server code, the transport, the serialization, or the tool itself. CLI commands are also visible in shell history, making it trivial to audit what Claude did and reproduce it.
 
 ---

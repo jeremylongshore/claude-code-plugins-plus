@@ -1,0 +1,29 @@
+{
+  "name": "hyperflow",
+  "version": "4.26.1",
+  "description": "Multi-agent orchestration for AI coding tools including Codex, Claude Code, OpenCode, and Antigravity. Thinking models think, worker models execute, everything runs in parallel.",
+  "type": "module",
+  "license": "MIT",
+  "author": {
+    "name": "Mohammed Abdelhady",
+    "url": "https://github.com/Mohammed-Abdelhady"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mohammed-Abdelhady/hyperflow"
+  },
+  "keywords": [
+    "ai-coding",
+    "multi-agent",
+    "orchestration",
+    "claude-code",
+    "claude-code-plugin",
+    "codex",
+    "codex-plugin",
+    "opencode",
+    "model-routing",
+    "parallel-execution",
+    "code-review",
+    "skills"
+  ]
+}

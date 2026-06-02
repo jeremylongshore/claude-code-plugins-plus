@@ -1,0 +1,18 @@
+{
+  "name": "ai-ops-team",
+  "version": "1.8.0",
+  "description": "AI Operations Team \u2014 9 agents: Deploy, Eval, Trace, Guard, Budget, Token, Prompt, Embed, Rank",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "keywords": [
+    "agents",
+    "ai-ops-team",
+    "ai-ops",
+    "llm",
+    "bundle"
+  ]
+}

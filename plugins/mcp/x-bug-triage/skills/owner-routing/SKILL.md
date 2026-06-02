@@ -36,7 +36,6 @@ Loaded by the `owner-router` agent inside the `x-bug-triage` plugin. Walks each 
 ### Step 1: Check Overrides First
 
 For each cluster, check if a routing_override exists from a prior run:
-
 - If found: use the override (confidence 1.0, source "routing_override"), skip precedence lookup
 - Log the override application to audit
 
@@ -62,7 +61,6 @@ Multiply each result's confidence by the precedence modifier from routing_config
 ### Step 4: Detect Staleness
 
 Flag any routing signal older than the staleness threshold (default 30 days):
-
 - Mark the result as stale with the number of days
 - Reduce confidence accordingly
 - Stale signals are still usable but should be noted in output
@@ -70,7 +68,6 @@ Flag any routing signal older than the staleness threshold (default 30 days):
 ### Step 5: Build Recommendation
 
 Using `lib.buildRoutingRecommendation()`:
-
 - Rank valid results by level (lowest level = highest priority)
 - Set top_recommendation to the best result
 - If no valid results: set uncertainty=true with reason "Routing: uncertain — no routing signals available. Manual assignment required."

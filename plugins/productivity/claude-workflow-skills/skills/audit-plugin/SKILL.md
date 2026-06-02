@@ -1,10 +1,14 @@
 ---
 name: audit-plugin
 description: Performs a deep review of the Claude Code plugin, skill, or sub-agent defined in the current project against official best practices. Documents findings as GitHub issues and writes a prioritised fix plan to the project CLAUDE.md. Use when the user says audit this plugin, review this skill, check this agent, or audit addon.
-allowed-tools: Read Glob Grep Bash WebFetch
+allowed-tools: Read Glob Grep Bash WebSearch WebFetch
+disable-model-invocation: true
 ---
 
 # Audit Plugin
+
+Project: !`basename $(git rev-parse --show-toplevel 2>/dev/null) 2>/dev/null || basename $PWD`
+Branch: !`git branch --show-current 2>/dev/null || echo "unknown"`
 
 Reviews the Claude Code addon in the current project (plugin, skill, sub-agent, or a combination)
 against official Claude Code best practices. Generates actionable GitHub issues and a prioritised
@@ -36,13 +40,13 @@ Read each file found. Build a mental model of:
 
 ## Step 2: Fetch current best-practice documentation
 
-Use WebFetch to retrieve up-to-date guidance. Prioritise these sources:
+Use WebFetch to retrieve up-to-date guidance from these known URLs:
 
-- Claude Code skills reference (search for the official skills how-to page under claude.ai/docs)
-- Claude Code sub-agents reference (search for the official agents page under claude.ai/docs or
-  code.claude.com/docs)
-- Claude Code plugins overview (search for the official plugins page under claude.ai/docs)
+- Skills: `https://code.claude.com/docs/en/skills`
+- Sub-agents: `https://code.claude.com/docs/en/agents`
+- Plugins: `https://code.claude.com/docs/en/plugins`
 
+If any URL returns an error, use WebSearch to find the current equivalent under `code.claude.com`.
 Summarise the key quality criteria from each source.
 
 ## Step 3: Evaluate against best practices

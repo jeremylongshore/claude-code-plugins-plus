@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 # diff-config.sh — Compare local config against what's in the GitHub repo
 # Usage: diff-config.sh [--profile NAME] [--quiet]
-#
-# shellcheck disable=SC2088
-# Tilde-prefixed paths used as display-label arguments to compare_file are
-# intentional — the user sees the literal '~/.claude/...' string in output.
 set -euo pipefail
 source "$(dirname "$0")/common.sh"
 
@@ -22,7 +18,7 @@ done
 # Early-exit before any network/tool calls
 if [[ "$(get_state "setup_complete")" != "true" ]]; then
   $QUIET || err "Config sync not set up."
-  if $QUIET; then exit 0; else exit 1; fi
+  exit $( $QUIET && echo 0 || echo 1 )
 fi
 
 PROFILE=$(get_profile "$PROFILE")
@@ -116,7 +112,7 @@ compare_file "${PROJECT_DIR}/.claude/hooks/sounds" "${PROFILE_DIR}/hooks/sounds"
 compare_file "${PROJECT_DIR}/.claude/rules" "${PROFILE_DIR}/rules" ".claude/rules/"
 compare_file "${PROJECT_DIR}/.claude/agent-memory" "${PROFILE_DIR}/agent-memory" ".claude/agent-memory/"
 compare_file "${PROJECT_DIR}/.auto-memory" "${PROFILE_DIR}/memory" ".auto-memory/"
-compare_file "${CLAUDE_HOME}/settings.json" "${REPO_PATH}/global/settings.json" '~/.claude/settings.json'
+compare_file "${CLAUDE_HOME}/settings.json" "${REPO_PATH}/global/settings.json" "~/.claude/settings.json"
 
 TOTAL=$((LOCAL_CHANGES + MISSING_LOCAL + MISSING_REMOTE))
 

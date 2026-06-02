@@ -1,0 +1,39 @@
+{
+  "name": "hyperflow-marketplace",
+  "owner": {
+    "name": "Mohammed Abdelhady",
+    "url": "https://github.com/Mohammed-Abdelhady"
+  },
+  "metadata": {
+    "description": "Advanced multi-agent orchestration with persistent cross-session memory, per-step multi-level review, persona stitching, and adaptive flow profiles",
+    "version": "4.26.1"
+  },
+  "plugins": [
+    {
+      "name": "hyperflow",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/Mohammed-Abdelhady/hyperflow.git"
+      },
+      "description": "Fifteen specialized slash commands turn one Claude session into a structured multi-agent engineering pipeline. Thinking models orchestrate, triage, and review; worker models execute in parallel — every step is a Worker → Reviewer pair, and every non-trivial phase fans into sub-phases with their own reviewers. Auto-routing is on by default — say 'audit the diff', 'debug this test', 'large migration', or 'run a workflow' and the orchestrator routes to the right skill without the /hyperflow:* prefix. /hyperflow:workflow uses Claude Code dynamic workflows for big tasks and a portable Codex/OpenCode adapter where native workflows are unavailable; /hyperflow:spec asks the questions a senior engineer would; /hyperflow:scope decomposes into a batched task graph; /hyperflow:dispatch fans out persona-stitched workers under tiered review; /hyperflow:amplify rewrites a rough prompt into a high-quality one before you run it. 15 composable personas, 6 adaptive flow profiles, and persistent project memory compound across sessions. Works across Codex App/CLI, Claude Code, OpenCode, and Antigravity.",
+      "version": "4.26.1",
+      "author": {
+        "name": "Mohammed Abdelhady",
+        "url": "https://github.com/Mohammed-Abdelhady"
+      },
+      "keywords": [
+        "multi-agent",
+        "dynamic-workflows",
+        "workflow-chain",
+        "triageflow",
+        "personas",
+        "flow-profiles",
+        "parallel-execution",
+        "code-review",
+        "project-memory",
+        "multi-tool"
+      ],
+      "strict": true
+    }
+  ]
+}

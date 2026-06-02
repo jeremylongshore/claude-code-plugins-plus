@@ -1,12 +1,6 @@
 #!/usr/bin/env bash
 # sync-pull.sh — Pull Claude Code config from GitHub repo and apply locally
 # Usage: sync-pull.sh [--profile NAME] [--dry-run] [--no-backup]
-#
-# shellcheck disable=SC2088
-# Tilde-prefixed paths (e.g. '~/.claude/settings.json') passed as the third
-# argument to preview_file/apply_file are display labels — they show the
-# user the canonical home-relative path in terminal output, not a path to
-# expand. Quoting is intentional.
 set -euo pipefail
 source "$(dirname "$0")/common.sh"
 
@@ -133,7 +127,7 @@ if ! $DRY_RUN && ! $YES; then
   preview_file "${PROFILE_DIR}/memory" "${PROJECT_DIR}/.auto-memory" ".auto-memory/"
 
   if $INCLUDE_GLOBAL && [[ -d "${GLOBAL_DIR:-/dev/null}" ]]; then
-    preview_file "${GLOBAL_DIR}/settings.json" "${CLAUDE_HOME}/settings.json" '~/.claude/settings.json'
+    preview_file "${GLOBAL_DIR}/settings.json" "${CLAUDE_HOME}/settings.json" "~/.claude/settings.json"
   fi
 
   echo ""
@@ -261,7 +255,7 @@ fi
 if $INCLUDE_GLOBAL && [[ -d "$GLOBAL_DIR" ]]; then
   info "Applying global config..."
   apply_file "${GLOBAL_DIR}/settings.json" \
-    "${CLAUDE_HOME}/settings.json" '~/.claude/settings.json'
+    "${CLAUDE_HOME}/settings.json" "~/.claude/settings.json"
 fi
 
 # ── Update metadata ────────────────────────────────────────────────

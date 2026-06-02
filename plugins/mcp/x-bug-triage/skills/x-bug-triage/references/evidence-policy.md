@@ -10,7 +10,6 @@
 | 4 | Weak | Generalized complaint, high-level feature mention, heuristic proximity | Never presented as hard evidence |
 
 ## Rules
-
 - Tier 1 alone justifies clustering
 - Tier 2 strengthens but never silently substitutes for Tier 1
 - Tier 3 supports grouping but not routing

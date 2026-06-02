@@ -1,6 +1,6 @@
 # Tonone
 
-<img src="https://img.shields.io/badge/version-1.2.0-green" alt="version 1.2.0"> <img src="https://img.shields.io/badge/license-MIT-green" alt="license MIT"> <img src="https://img.shields.io/badge/platform-Claude%20Code-blue" alt="platform Claude Code">
+<img src="https://img.shields.io/badge/version-1.2.0-green"> <img src="https://img.shields.io/badge/license-MIT-green"> <img src="https://img.shields.io/badge/platform-Claude%20Code-blue">
 
 **Founder + Tonone = whole company.**
 
@@ -526,7 +526,7 @@ Every engineering agent detects your stack automatically:
 
 Everything is Markdown. Fork it, improve it, open a PR. Agents are system prompts. Skills are workflow docs. No build step.
 
-See CONTRIBUTING.md to get started. The highest-leverage contributions right now:
+See [CONTRIBUTING.md](CONTRIBUTING.md) to get started. The highest-leverage contributions right now:
 
 - **Sharpen existing skills** — better steps, sharper output formats, fewer hallucinations
 - **Build a new agent** — extend the roster with a domain not yet covered
@@ -536,14 +536,14 @@ Tests run with `uv run pytest` from any agent's `scripts/` directory.
 
 | Doc                                  | Covers                       |
 | ------------------------------------ | ---------------------------- |
-| Architecture | How the plugin system works  |
-| Skill Guide   | Writing and improving skills |
-| Agent Guide   | Creating new agents          |
-| Naming Guide | Agent naming conventions     |
+| [Architecture](docs/architecture.md) | How the plugin system works  |
+| [Skill Guide](docs/skill-guide.md)   | Writing and improving skills |
+| [Agent Guide](docs/agent-guide.md)   | Creating new agents          |
+| [Naming Guide](docs/naming-guide.md) | Agent naming conventions     |
 
 ## Changelog
 
-See CHANGELOG.md for full release history.
+See [CHANGELOG.md](CHANGELOG.md) for full release history.
 
 ## Shoutouts
 

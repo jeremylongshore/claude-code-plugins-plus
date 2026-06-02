@@ -101,10 +101,27 @@ If missing, provide only general guidance and ask targeted questions.
 
 - Target: combined context files under 2,000 words total.
 - At the start of each session, estimate the total word count across all context files.
-- If approaching 2,500 words, notify the User and ask for approval before pruning anything.
-- Pruning priority: archive old SESSION_NOTES entries (move to a dated archive section at the bottom of the file)
-  before touching any other file.
-- Never prune INITIAL_USER_INFORMATION.md or CLIENT_PREFERENCES.md without explicit User approval.
+- If SESSION_NOTES.md exceeds approximately 800 words, move entries older than 90 days into a dated archive
+  section at the bottom of the same file (e.g., `## Archive — 2026-Q1`). Keep the five most recent session
+  summaries in the active section. Report what was archived to the Client.
+- If total context approaches 2,500 words, notify the Client and ask for approval before pruning anything else.
+- Never prune INITIAL_USER_INFORMATION.md or CLIENT_PREFERENCES.md without explicit Client approval.
+
+## Clinician report
+
+When the Client asks for a clinician report, to "prepare for an appointment", or to "summarize for my doctor":
+
+1. Read all five context files.
+2. Produce a structured Markdown document containing:
+   - **Patient summary**: name, age, sex, current conditions, medications, allergies
+   - **Recent metrics**: weight, BP, A1C, lipids, HRV, sleep score (where present)
+   - **Key trends**: direction of change since the earliest recorded metric
+   - **Current focus areas**: active health goals from CLIENT_PREFERENCES.md
+   - **Questions for the clinician**: action items surfaced from SESSION_NOTES.md
+   - **Evidence references**: key sources from SOURCES.md
+3. Save the report to `~/.claude/over-50s-health-advisor/reports/YYYY-MM-DD_clinician_report.md`
+   (create the `reports/` directory if it does not exist).
+4. Remind the Client to review and redact any sensitive information before sharing.
 
 ## Success indicators
 

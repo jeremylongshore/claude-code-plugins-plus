@@ -2,6 +2,7 @@
 name: improve
 description: Analyses the current project across code quality, feature gaps, documentation, security, competitive landscape, and monetisation opportunities, then files prioritised GitHub issues. Use when the user says improve this, analyse this project, find improvements, or fill the backlog.
 allowed-tools: Read Glob Grep Bash WebSearch WebFetch
+disable-model-invocation: true
 ---
 
 # Improve
@@ -50,7 +51,7 @@ Review source files for:
 
 For shell scripts, also check:
 
-```text
+```bash
 bash -n <script.sh>   # syntax check each script
 ```
 

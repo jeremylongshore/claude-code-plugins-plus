@@ -29,7 +29,7 @@ If the user specified a path, use it. Otherwise use `.` (current directory).
 
 ## Step 3: Run the scan
 
-```text
+```bash
 python <path-to-scan.py> <target> --out .reports/warden-latest.json
 ```
 

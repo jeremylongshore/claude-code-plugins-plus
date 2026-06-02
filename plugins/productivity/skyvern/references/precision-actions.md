@@ -13,6 +13,5 @@ Use when element identity is deterministic and stable.
 Use selector + intent together when pages are noisy.
 
 Example:
-
 - selector narrows search to checkout form
 - intent specifies "primary Place Order button"

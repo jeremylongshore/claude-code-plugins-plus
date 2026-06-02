@@ -22,17 +22,13 @@ User needs chart type selection or visualization recommendations for analytics d
 
 1. **Identify data type and BI context** from user request (sales trends, cohort analysis, funnel, KPI comparison, etc.)
 2. **Search chart knowledge base:**
-
    ```bash
    python3 -m lens_agent.uiux search --domain chart --query "{data_type}" --limit 3
    ```
-
 3. **Search style for BI context:**
-
    ```bash
    python3 -m lens_agent.uiux search --domain style --query "{context}" --limit 2
    ```
-
 4. **Evaluate for BI requirements:** data density, drill-down capability, real-time support, library recommendation
 5. **Output** optimized for decision-making, not decoration
 

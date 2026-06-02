@@ -13,6 +13,7 @@ Claude Code session.
 | `audit-standards` | `/audit-standards` | Audit project against personal dev standards in `~/.claude/CLAUDE.md` |
 | `improve` | `/improve` | Analyse project for bugs, feature gaps, docs, security, competitive opportunities, and monetisation — file as GitHub issues |
 | `triage` | `/triage` | Validate all open issues, close invalid ones, flag complex ones for planning, fix and promote the rest |
+| `review-pr` | `/review-pr` | Review an open PR against coding standards, security, and test coverage, then post a structured review and approve or request changes |
 
 ## Installation
 
@@ -45,16 +46,21 @@ Each skill is invoked with its `/` prefix from any Claude Code session:
 /improve
 ```
 
-Skills can also trigger automatically when Claude Code detects a matching intent in the
-conversation:
+All skills have `disable-model-invocation: true` — they must be invoked explicitly via their `/`
+prefix. Claude will not fire them automatically, even if the conversation matches a trigger phrase.
+This prevents accidental side effects (commits, issue creation, PR reviews) without explicit user
+intent.
 
-| Skill | Example trigger phrases |
+Recognised trigger phrases (for reference — always invoke manually):
+
+| Skill | Trigger phrases |
 |---|---|
 | `/promote` | "ship this", "release", "get back to main", "tag and release" |
 | `/audit-plugin` | "audit this plugin", "review this skill", "check this agent" |
 | `/audit-standards` | "audit standards", "check standards compliance", "audit against settings" |
 | `/improve` | "improve this", "analyse this project", "find improvements", "fill the backlog" |
 | `/triage` | "triage issues", "validate issues", "fix issues", "work through the backlog" |
+| `/review-pr` | "review this PR", "check the PR", "look at PR #N", "review pull request" |
 
 ## Skill details
 
@@ -122,6 +128,17 @@ Works through every open GitHub issue and resolves them:
 5. Runs `/promote` to commit, tag, and release
 
 In non-interactive mode, stops after surfacing complex issues rather than waiting for input.
+
+### `/review-pr`
+
+Reviews an open pull request and posts a structured GitHub review:
+
+1. Fetches the PR diff and metadata via `gh pr diff`
+2. Evaluates correctness, coding standards, security, test coverage, documentation, and scope
+3. Drafts a structured review (must-fix findings, suggestions, positive notes, and verdict)
+4. Posts the review via `gh pr review --approve` or `gh pr review --request-changes`
+
+Defaults to the current branch's open PR; pass a PR number to review any PR.
 
 ## Architecture
 

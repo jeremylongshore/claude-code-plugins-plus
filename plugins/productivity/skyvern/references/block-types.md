@@ -29,7 +29,6 @@ Handles credential-based authentication flows. Pairs with a `credential_id` work
 Use when page transitions are asynchronous.
 
 Use conditions like:
-
 - spinner disappears
 - success banner appears
 - table row count is non-zero

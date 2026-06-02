@@ -262,7 +262,7 @@ If on Kubernetes or Cloud Run: wire `/healthz` to liveness and readiness probes.
 
 Configure environment variables for the target platform. Prefer env vars over code — lets you change targets without deploys.
 
-```text
+```bash
 # .env.production — adjust OTLP endpoint per platform
 
 # Grafana Cloud
