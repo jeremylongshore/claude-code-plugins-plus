@@ -116,7 +116,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | 🔌  | [API Development](#api-development)                |      25 |
 | 💼  | [Business Tools](#business-tools)                  |      21 |
 | 👥  | [Community](#community)                            |      14 |
-| ₿   | [Crypto & Web3](#crypto--web3)                     |      26 |
+| ₿   | [Crypto & Web3](#crypto--web3)                     |      27 |
 | 💾  | [Database](#database)                              |      26 |
 | 🎨  | [Design](#design)                                  |       7 |
 | 🔧  | [DevOps & Infrastructure](#devops--infrastructure) |      36 |
@@ -282,10 +282,11 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Crypto & Web3
 
-₿ **26 plugins** · category slug: `crypto`
+₿ **27 plugins** · category slug: `crypto`
 
 | Plugin                         | Description                                                                                                                            |
 | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `aomi`                         | Aomi for AI agents: drive natural-language EVM transactions (chat, fork-simulate, sign) and scaffold new Aomi apps from API specs.…    |
 | `arbitrage-opportunity-finder` | Find and analyze arbitrage opportunities across exchanges and DeFi protocols                                                           |
 | `blockchain-explorer-cli`      | Command-line blockchain explorer for transactions, addresses, and contracts                                                            |
 | `cross-chain-bridge-monitor`   | Monitor cross-chain bridge activity, track transfers, analyze security, and detect bridge exploits                                     |
