@@ -31,7 +31,11 @@ const BUDGETS = {
   buildTime: 30 * 1000, // 30 seconds (ms) — more pages = longer build
   routeCount: {
     min: 2800,
-    max: 4000, // 414 plugins × multiple page types + core pages + SaaS pack pages
+    max: 4500, // 448 plugins × multiple page types + core pages + SaaS pack pages.
+    // Bumped 4000 → 4500 on 2026-06-02 after the sync-external rewrite
+    // (claude-5h8v) recovered 15 previously-stranded plugins that each emit
+    // ~17 routes (SKILL.md per skill, agent .mds, plugin detail). Real
+    // content addition, not bloat — adjust again if more sources sync in.
   },
 };
 
