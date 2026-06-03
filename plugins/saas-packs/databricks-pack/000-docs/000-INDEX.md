@@ -1,8 +1,8 @@
 # 000-docs Index — databricks-pack
 
 **Filing standard:** Document Filing System v4.3
-**Last updated:** 2026-05-27 (added 010-013 — MCP landscape research + Epic 1 scope adjustment; Claude Code changelog impact moved to repo-root 000-docs as repo-wide AT-ADEC)
-**Total docs:** 13
+**Last updated:** 2026-06-03 (added 014 — cost-leak CFO output spec draft for Yipei Wei review)
+**Total docs:** 14
 
 ---
 
@@ -41,6 +41,12 @@
 | 008 | `008-RA-REVW-pack-handling-pressure-test.md` | Adversarial review of pack-handling decision — MODIFY verdict (add deprecation lane + tombstones) |
 | 009 | `009-RA-REVW-pilot-timing-pressure-test.md` | Adversarial review of pilot/timing decision — MODIFY verdict (cut scope to 3 pains, MCP first, drop opus eval) |
 
+## DR — Design Records
+
+| # | File | Description |
+|---|---|---|
+| 014 | `014-DR-DRFT-cost-leak-cfo-output-spec.md` | DRAFT: cost-leak-hunter CFO-grokkable output format spec. 4 detection categories, headline + evidence structure, rendering order, rounding rules. Pending review by @Gingiris-1031 ([#795](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/795)). Becomes binding output contract once approved. |
+
 ---
 
 ## Quick reference — doc codes used
@@ -51,3 +57,4 @@
 | RL | Research & Learning | RSRC | Research resource |
 | AT | Architecture & Technical | ADEC | Architecture decision |
 | RA | Reports & Analysis | REVW | Review / critique |
+| DR | Design Records | DRFT | Draft pending review |
