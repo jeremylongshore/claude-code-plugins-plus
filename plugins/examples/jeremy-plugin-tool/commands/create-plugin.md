@@ -183,7 +183,7 @@ Result: [expected output]
 
 ## Resources
 
-- ${CLAUDE_SKILL_DIR}/references/[reference-file.md] - [Description]
+- ./references/[reference-file.md] - [Description]
 - External link: [Resource name]
 ```
 
@@ -192,7 +192,7 @@ Result: [expected output]
 After creating all files, run:
 
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/skills/plugin-validator/scripts/validate_plugin_nixtla.py plugins/[category]/[plugin-name]/
+python3 ./skills/plugin-validator/scripts/validate_plugin_nixtla.py plugins/[category]/[plugin-name]/
 ```
 
 **Requirements for passing validation:**

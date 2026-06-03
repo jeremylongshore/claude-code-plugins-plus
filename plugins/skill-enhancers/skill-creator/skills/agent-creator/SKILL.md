@@ -126,7 +126,7 @@ All production agents should follow this body structure:
 ### Step 3: Write the Agent File
 
 Generate the agent .md using the template from
-`${CLAUDE_SKILL_DIR}/../skill-creator/templates/agent-template.md`.
+`../skill-creator/templates/agent-template.md`.
 
 **Frontmatter Rules (Anthropic 16-field schema):**
 
@@ -217,7 +217,7 @@ Run validation against the Anthropic 16-field schema:
 **Automated validation:**
 
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/../skill-creator/scripts/validate-skill.py --agents-only {plugin-dir}/
+python3 ../skill-creator/scripts/validate-skill.py --agents-only {plugin-dir}/
 ```
 
 ### Step 5: Test the Agent

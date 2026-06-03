@@ -91,7 +91,7 @@ notes: |
 ## Population at runtime
 
 ```python
-# ${CLAUDE_SKILL_DIR}/bundle_builder.py  -- conceptual, adapt to your app
+# ./bundle_builder.py  -- conceptual, adapt to your app
 import platform, sys, os, datetime, subprocess, json
 from langchain import __version__ as lc_version
 

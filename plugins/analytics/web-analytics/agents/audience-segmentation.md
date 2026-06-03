@@ -25,13 +25,13 @@ audience segments and flag churn risk in key cohorts.
 
 ### Step 1: Load Context
 
-Read the site registry at `${CLAUDE_SKILL_DIR}/references/site-registry.md` for:
+Read the site registry at `./references/site-registry.md` for:
 
 - Custom segment definitions (AI referrals, GitHub traffic, etc.)
 - Baseline visitor counts per site
 - Business goals per site
 
-Read the interpretation guide at `${CLAUDE_SKILL_DIR}/references/interpretation-guide.md` for
+Read the interpretation guide at `./references/interpretation-guide.md` for
 voice and framing.
 
 ### Step 2: Geographic Analysis

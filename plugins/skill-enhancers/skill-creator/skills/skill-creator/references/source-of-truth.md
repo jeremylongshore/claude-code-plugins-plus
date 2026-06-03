@@ -206,7 +206,7 @@ skill-name/
 │   ├── errors.md                 # Required — troubleshooting table (error | cause | fix)
 │   ├── examples.md               # Required — real usage examples with code
 │   └── implementation.md         # Required — how the skill works internally
-├── scripts/                      # If skill uses ${CLAUDE_SKILL_DIR}/scripts/
+├── scripts/                      # If skill uses ./scripts/
 ├── config/                       # If skill needs configuration templates
 ├── templates/                    # Optional — boilerplate files for generation
 └── assets/                       # Optional — static resources (images, configs)
@@ -422,7 +422,7 @@ Enterprise-grade skills should include these 7 sections:
 | **Output** | Expected deliverables | What the skill produces |
 | **Error Handling** | Failure modes and recovery | Common errors + fixes |
 | **Examples** | Concrete input/output | At least 1, ideally 2-3 |
-| **Resources** | Links to bundled files | `${CLAUDE_SKILL_DIR}/` paths |
+| **Resources** | Links to bundled files | `./` paths |
 
 ### Content Quality
 
@@ -478,8 +478,8 @@ Session tracking: ${CLAUDE_SESSION_ID}
 
 | Scenario | Method | Why |
 |----------|--------|-----|
-| Always-needed, small (<5KB) | `` !`cat ${CLAUDE_SKILL_DIR}/references/small.md` `` | Saves a Read tool call, always available |
-| Conditional (mode-dependent) | Manual `Load ${CLAUDE_SKILL_DIR}/references/...` | Only loads when the branch executes |
+| Always-needed, small (<5KB) | `` !`cat ./references/small.md` `` | Saves a Read tool call, always available |
+| Conditional (mode-dependent) | Manual `Load ./references/...` | Only loads when the branch executes |
 | Large (>5KB) | Manual load | Avoids bloating context on every activation |
 | Dynamic state (git log, env) | `` !`git log --oneline -5` `` | Fresh data at activation time |
 
@@ -587,7 +587,7 @@ Best for: dashboards, reports, documentation sites.
 
 | Anti-Pattern | Why It's Bad | Fix |
 |-------------|-------------|-----|
-| Windows-style paths | Not portable | Use `${CLAUDE_SKILL_DIR}/` or Unix paths |
+| Windows-style paths | Not portable | Use `./` or Unix paths |
 | Too many options without defaults | Analysis paralysis | Provide sensible defaults |
 | Deeply nested references (>1 level) | Loading failures | Flatten to one level |
 | Assuming tools are installed | Runtime failures | Note requirements in description or body |

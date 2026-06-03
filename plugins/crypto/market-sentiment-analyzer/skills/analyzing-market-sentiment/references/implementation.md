@@ -62,16 +62,16 @@
 
 ```bash
 # Custom weights (emphasize news)
-python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --weights "news:0.5,fng:0.3,momentum:0.2"
+python ./scripts/sentiment_analyzer.py --weights "news:0.5,fng:0.3,momentum:0.2"
 
 # Weekly sentiment comparison
-python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --period 7d --detailed
+python ./scripts/sentiment_analyzer.py --period 7d --detailed
 
 # Export for trading model
-python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --format json --output sentiment.json
+python ./scripts/sentiment_analyzer.py --format json --output sentiment.json
 
 # Bitcoin-specific detailed analysis
-python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --coin BTC --detailed
+python ./scripts/sentiment_analyzer.py --coin BTC --detailed
 ```
 
 ## Contrarian Indicator Theory

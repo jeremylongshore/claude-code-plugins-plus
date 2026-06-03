@@ -389,7 +389,7 @@ This skill does NOT:
 ### Example 1: Daily Scan
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --timeframe 24h --top 20
+python ./scripts/scanner.py --timeframe 24h --top 20
 ```
 
 Output shows top 20 gainers and losers with volume confirmation.
@@ -397,7 +397,7 @@ Output shows top 20 gainers and losers with volume confirmation.
 ### Example 2: High-Volume Movers
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --volume-spike 3x --min-volume 1000000
+python ./scripts/scanner.py --volume-spike 3x --min-volume 1000000
 ```
 
 Output shows assets with 3x+ average volume and > $1M daily volume.
@@ -405,7 +405,7 @@ Output shows assets with 3x+ average volume and > $1M daily volume.
 ### Example 3: DeFi Sector Scan
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --category defi --min-change 5
+python ./scripts/scanner.py --category defi --min-change 5
 ```
 
 Output shows DeFi tokens with > 5% change.

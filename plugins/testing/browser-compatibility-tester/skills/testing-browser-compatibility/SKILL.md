@@ -35,7 +35,7 @@ Test web applications across multiple browsers, rendering engines, and real devi
 ## Prerequisites
 
 - Playwright installed (`npx playwright install --with-deps`) and application running at a test URL
-- For cloud testing: provider credentials in environment variables (see `${CLAUDE_SKILL_DIR}/references/cloud-providers.md`)
+- For cloud testing: provider credentials in environment variables (see `./references/cloud-providers.md`)
 
 ## Instructions
 
@@ -66,7 +66,7 @@ Default mode. Zero cloud accounts needed.
 
 ### Mode 2: Cloud Real-Device Testing
 
-Applies when real physical devices, broader OS coverage, or carrier network conditions are required beyond what Playwright emulation can replicate. Read `${CLAUDE_SKILL_DIR}/references/cloud-providers.md` for full auth, API, and capabilities details.
+Applies when real physical devices, broader OS coverage, or carrier network conditions are required beyond what Playwright emulation can replicate. Read `./references/cloud-providers.md` for full auth, API, and capabilities details.
 
 **Provider selection:**
 
@@ -81,10 +81,10 @@ Never hardcode credentials. Set provider env vars (`BROWSERSTACK_USERNAME`/`ACCE
 
 1. Verify credentials are set for the chosen provider
 2. Query available devices/browsers via provider API
-3. Configure WebDriver or Appium capabilities (see `${CLAUDE_SKILL_DIR}/references/cloud-providers.md`)
+3. Configure WebDriver or Appium capabilities (see `./references/cloud-providers.md`)
 4. Execute tests against cloud grid
 5. Retrieve session artifacts (screenshots, video, logs, network HAR)
-6. Aggregate results into compatibility report (CI/CD patterns: `${CLAUDE_SKILL_DIR}/references/ci-cd-integration.md`)
+6. Aggregate results into compatibility report (CI/CD patterns: `./references/ci-cd-integration.md`)
 
 ### Browser-Specific Checks
 
@@ -92,7 +92,7 @@ Never hardcode credentials. Set provider env vars (`BROWSERSTACK_USERNAME`/`ACCE
 - **Firefox**: scrollbar styling, gap in flexbox, subpixel rendering, print stylesheets
 - **Mobile**: touch events, viewport meta, safe area insets, virtual keyboard resize
 
-Pre-built device matrices: `${CLAUDE_SKILL_DIR}/references/device-matrix.md` (top 10, mobile-first, enterprise, Kobiton real-device).
+Pre-built device matrices: `./references/device-matrix.md` (top 10, mobile-first, enterprise, Kobiton real-device).
 
 ## Examples
 

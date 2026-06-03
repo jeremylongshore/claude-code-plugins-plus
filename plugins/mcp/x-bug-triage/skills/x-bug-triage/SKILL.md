@@ -92,7 +92,7 @@ Assign evidence tiers (1-4) per [evidence-policy.md](references/evidence-policy.
 
 Load evidence tier definitions:
 ```
-!cat ${CLAUDE_SKILL_DIR}/references/evidence-policy.md
+!cat ./references/evidence-policy.md
 ```
 
 ### Step 6: Route Ownership
@@ -109,7 +109,7 @@ Apply routing overrides from prior runs. Flag stale signals (>30 days).
 
 Load routing precedence rules:
 ```
-!cat ${CLAUDE_SKILL_DIR}/references/routing-rules.md
+!cat ./references/routing-rules.md
 ```
 
 ### Step 7: Evaluate Severity + Escalation
@@ -121,7 +121,7 @@ Compute severity (low/medium/high/critical) based on:
 
 Load escalation trigger definitions:
 ```
-!cat ${CLAUDE_SKILL_DIR}/references/escalation-rules.md
+!cat ./references/escalation-rules.md
 ```
 
 ### Step 8: Display Results
@@ -158,7 +158,7 @@ After each command executes successfully, display the confirmation message from 
 
 Load override and memory policy when processing review commands:
 ```
-!cat ${CLAUDE_SKILL_DIR}/references/review-memory-policy.md
+!cat ./references/review-memory-policy.md
 ```
 
 ### Step 11: Persist Learning
@@ -198,7 +198,7 @@ Produces cluster summary, then user interacts:
 
 ## Resources
 
-**References:** `${CLAUDE_SKILL_DIR}/references/`
+**References:** `./references/`
 
 - [schemas.md](references/schemas.md) — Data model reference (BugCandidate, BugCluster, 9 DB tables)
 - [routing-rules.md](references/routing-rules.md) — 6-level routing precedence

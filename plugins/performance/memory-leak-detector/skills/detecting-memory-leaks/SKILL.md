@@ -67,7 +67,7 @@ This skill can be used in conjunction with other performance analysis tools to p
 
 ## Prerequisites
 
-- Access to application source code in ${CLAUDE_SKILL_DIR}/
+- Access to application source code in ./
 - Memory profiling tools (valgrind, heapdump, etc.)
 - Understanding of application memory architecture
 - Runtime environment for testing

@@ -70,7 +70,7 @@ This skill can be integrated with other monitoring and alerting tools to provide
 ## Prerequisites
 
 - Access to application monitoring infrastructure
-- Response time data collection in ${CLAUDE_SKILL_DIR}/metrics/response-times/
+- Response time data collection in ./metrics/response-times/
 - APM tools or custom instrumentation
 - Performance SLO definitions
 

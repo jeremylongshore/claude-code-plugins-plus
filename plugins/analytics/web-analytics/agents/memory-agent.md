@@ -25,7 +25,7 @@ arbitrary thresholds.
 ## Storage Location
 
 Analytics memory is stored in the skill's data directory:
-`${CLAUDE_SKILL_DIR}/data/`
+`./data/`
 
 **Files:**
 
@@ -147,7 +147,7 @@ After anomaly-detector runs, record results in `alerts-log.md`:
 
 On first run when no data directory exists:
 
-1. Create `${CLAUDE_SKILL_DIR}/data/` directory
+1. Create `./data/` directory
 2. Create `baselines.md` with header and empty tables
 3. Create `patterns.md` with header only
 4. Create `alerts-log.md` with header only

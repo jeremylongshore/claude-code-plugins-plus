@@ -24,10 +24,10 @@ operations vulnerable to CSRF attacks.
 
 ## Prerequisites
 
-- Access to the target codebase and configuration files in `${CLAUDE_SKILL_DIR}/`
+- Access to the target codebase and configuration files in `./`
 - Familiarity with the web framework in use (Express, Django, Rails, Spring, Laravel, etc.)
 - Standard shell utilities and Grep/Glob available for codebase scanning
-- Reference: `${CLAUDE_SKILL_DIR}/references/README.md` for CSRF protection methods, OWASP CSRF Prevention Cheat Sheet, and framework-specific API examples
+- Reference: `./references/README.md` for CSRF protection methods, OWASP CSRF Prevention Cheat Sheet, and framework-specific API examples
 
 ## Instructions
 
@@ -64,14 +64,14 @@ operations vulnerable to CSRF attacks.
 
 ### Express.js CSRF Token Validation
 
-Scan `${CLAUDE_SKILL_DIR}/src/routes/` for `router.post` and `router.put` handlers. Verify
+Scan `./src/routes/` for `router.post` and `router.put` handlers. Verify
 each includes `csurf` middleware or equivalent token validation. Flag any POST
 handler that directly processes `req.body` without `csrfProtection` middleware
 as CWE-352, severity critical for financial operations, high for other state changes.
 
 ### Django CSRF Middleware Audit
 
-Grep `${CLAUDE_SKILL_DIR}/settings.py` for `django.middleware.csrf.CsrfViewMiddleware` in
+Grep `./settings.py` for `django.middleware.csrf.CsrfViewMiddleware` in
 the `MIDDLEWARE` list. Scan views for `@csrf_exempt` decorators -- flag each
 exempted view as a potential CSRF vulnerability requiring justification. Verify
 templates include `{% csrf_token %}` in all form tags.

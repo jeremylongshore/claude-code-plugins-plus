@@ -84,4 +84,4 @@ Shipwright converts a plain-English app description into a fully built, tested, 
 
 - [Shipwright on GitHub](https://github.com/Wynelson94/shipwright)
 - [product-agent on PyPI](https://pypi.org/project/product-agent/)
-- See `${CLAUDE_SKILL_DIR}/references/examples.md` for usage examples.
+- See `./references/examples.md` for usage examples.

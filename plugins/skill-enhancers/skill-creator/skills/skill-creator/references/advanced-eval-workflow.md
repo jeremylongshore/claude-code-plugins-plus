@@ -59,7 +59,7 @@ skills (writing style, design) are better evaluated qualitatively — don't forc
 onto things that need human judgment.
 
 Update `eval_metadata.json` files and `evals/evals.json` with the assertions. See
-`${CLAUDE_SKILL_DIR}/references/schemas.md` for the full schema.
+`./references/schemas.md` for the full schema.
 
 ### Step E3: As runs complete, capture timing data
 
@@ -80,7 +80,7 @@ capture this data:
 Once all runs are done:
 
 1. **Grade each run** — spawn a grader subagent that reads
-   `${CLAUDE_SKILL_DIR}/agents/grader.md` and evaluates each assertion against the outputs.
+   `./agents/grader.md` and evaluates each assertion against the outputs.
    Save results to `grading.json` in each run directory. The grading.json expectations array
    must use fields `text`, `passed`, and `evidence` — the viewer depends on these exact field
    names. For programmatically checkable assertions, write and run a script rather than
@@ -94,17 +94,17 @@ Once all runs are done:
 
    This produces `benchmark.json` and `benchmark.md` with pass_rate, time, and tokens for
    each configuration, with mean +/- stddev and the delta. If generating benchmark.json
-   manually, see `${CLAUDE_SKILL_DIR}/references/schemas.md` for the exact schema the
+   manually, see `./references/schemas.md` for the exact schema the
    viewer expects.
 
 3. **Analyst pass** — read the benchmark data and surface patterns. See
-   `${CLAUDE_SKILL_DIR}/agents/analyzer.md` (the "Analyzing Benchmark Results" section) for
+   `./agents/analyzer.md` (the "Analyzing Benchmark Results" section) for
    what to look for — non-discriminating assertions, high-variance evals, time/token tradeoffs.
 
 4. **Launch the viewer**:
 
    ```bash
-   nohup python ${CLAUDE_SKILL_DIR}/eval-viewer/generate_review.py \
+   nohup python ./eval-viewer/generate_review.py \
      <workspace>/iteration-N \
      --skill-name "my-skill" \
      --benchmark <workspace>/iteration-N/benchmark.json \
@@ -234,7 +234,7 @@ Good: `"ok so my boss just sent me this xlsx file (its in my downloads, called s
 
 Present the eval set using the HTML template:
 
-1. Read `${CLAUDE_SKILL_DIR}/assets/eval_review.html`
+1. Read `./assets/eval_review.html`
 2. Replace placeholders: `__EVAL_DATA_PLACEHOLDER__` (JSON array, no quotes — it's a JS
    variable assignment), `__SKILL_NAME_PLACEHOLDER__`, `__SKILL_DESCRIPTION_PLACEHOLDER__`
 3. Write to `/tmp/eval_review_<skill-name>.html` and open it
@@ -281,7 +281,7 @@ Show the user before/after and report the scores.
 ## Advanced: Blind Comparison
 
 For rigorous comparison between two skill versions, use the blind comparison system. Read
-`${CLAUDE_SKILL_DIR}/agents/comparator.md` and `${CLAUDE_SKILL_DIR}/agents/analyzer.md` for
+`./agents/comparator.md` and `./agents/analyzer.md` for
 details.
 
 The basic idea: give two outputs to an independent agent without telling it which is which,

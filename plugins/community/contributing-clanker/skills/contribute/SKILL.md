@@ -171,7 +171,7 @@ fi
 ```
 
 Delegate dossier build/refresh to the **`@researcher`** subagent (defined
-at `${CLAUDE_SKILL_DIR}/agents/researcher.md`). It runs in its own context window so
+at `./agents/researcher.md`). It runs in its own context window so
 the verbose CONTRIBUTING.md fetch + depth-1 link follows stay out of your
 main conversation. It writes the dossier to disk and reports back a
 one-paragraph summary.
@@ -186,7 +186,7 @@ Find issues worth contributing to. Sources, in priority order:
 - **Existing candidates** with `status: open` or `status: shortlist` already in `~/.contribute-system/candidates/` — already discovered + vetted, ranked by `scout_score:` frontmatter field
 - **Fresh GitHub label searches** scoped to repos / languages in `~/.contribute-system/profile.md`: `gh search issues "label:'good first issue' state:open language:<lang>" --limit 50`
 
-Delegate discovery to the **`@scout`** subagent (defined at `${CLAUDE_SKILL_DIR}/agents/scout.md`). It runs in its own context window so the verbose `gh search` output stays out of your main conversation. Pass it a mode: `baseline` (full per-tier sweep), `refresh` (re-evaluate existing candidates for momentum), or an ad-hoc query like "TypeScript repos at mainstream tier with no competing PRs." Scout writes ranked candidate markdown files to `~/.contribute-system/candidates/` and appends events to `~/.contribute-system/log.jsonl`. Summarize the top picks for the user from those files; do not re-run the search yourself.
+Delegate discovery to the **`@scout`** subagent (defined at `./agents/scout.md`). It runs in its own context window so the verbose `gh search` output stays out of your main conversation. Pass it a mode: `baseline` (full per-tier sweep), `refresh` (re-evaluate existing candidates for momentum), or an ad-hoc query like "TypeScript repos at mainstream tier with no competing PRs." Scout writes ranked candidate markdown files to `~/.contribute-system/candidates/` and appends events to `~/.contribute-system/log.jsonl`. Summarize the top picks for the user from those files; do not re-run the search yourself.
 
 ### Step 2 — Qualify
 
@@ -348,11 +348,11 @@ When the user asks "what gates am I overriding most?" or "audit my contribution
 history" or "show me override frequency":
 
 ```bash
-${CLAUDE_SKILL_DIR}/scripts/audit-overrides.sh                       # all-time
-${CLAUDE_SKILL_DIR}/scripts/audit-overrides.sh --since=30             # last 30 days
-${CLAUDE_SKILL_DIR}/scripts/audit-overrides.sh --scope=org:posthog    # one org
-${CLAUDE_SKILL_DIR}/scripts/audit-overrides.sh --gate=A05             # one gate
-${CLAUDE_SKILL_DIR}/scripts/audit-overrides.sh --json                 # JSON
+./scripts/audit-overrides.sh                       # all-time
+./scripts/audit-overrides.sh --since=30             # last 30 days
+./scripts/audit-overrides.sh --scope=org:posthog    # one org
+./scripts/audit-overrides.sh --gate=A05             # one gate
+./scripts/audit-overrides.sh --json                 # JSON
 ```
 
 Output is a per-gate table with `[overrides, blocks, override_rate, top_reason]`,
@@ -392,7 +392,7 @@ User invokes `/contribute` or asks "what's in flight?"
 User asks "what should I work on next?" or "scout opportunities."
 
 1. Run Step 0 first (state summary)
-2. Delegate to `@scout` (the user-scope subagent at `${CLAUDE_SKILL_DIR}/agents/scout.md`)
+2. Delegate to `@scout` (the user-scope subagent at `./agents/scout.md`)
 3. Output Tracker / Fresh GitHub / Algora sections, top 3 highlighted
 4. Optional: per top pick, run Step 2 (Qualify) to surface CLA / competing-PR signals
 
@@ -428,8 +428,8 @@ User asks to verify a working branch.
 
 ### Bundled subagents (load with `Read agents/<name>.md`)
 
-- `@scout` (user-scope subagent at `${CLAUDE_SKILL_DIR}/agents/scout.md`) — discovery sweep, GitHub-only, ranked by star-tier brackets. Each candidate it writes carries a `research_path:` frontmatter field pointing at the matching dossier (or empty if not yet built).
-- `@researcher` (user-scope subagent at `${CLAUDE_SKILL_DIR}/agents/researcher.md`) — build / refresh the per-repo dossier at `~/.contribute-system/research/<owner>__<repo>.md`. Auto-invoked when a candidate's dossier is missing or older than 14 days.
+- `@scout` (user-scope subagent at `./agents/scout.md`) — discovery sweep, GitHub-only, ranked by star-tier brackets. Each candidate it writes carries a `research_path:` frontmatter field pointing at the matching dossier (or empty if not yet built).
+- `@researcher` (user-scope subagent at `./agents/researcher.md`) — build / refresh the per-repo dossier at `~/.contribute-system/research/<owner>__<repo>.md`. Auto-invoked when a candidate's dossier is missing or older than 14 days.
 - `agents/repo-analyzer.md` — DEPRECATED. Most of its function is now in the dossier system. Keep until Slice 3 retires it.
 - `agents/draft-writer.md` — draft a Design Issue or PR body from a working branch's diff
 - `agents/test-runner.md` — detect upstream stack and run the native test suite, log to disk

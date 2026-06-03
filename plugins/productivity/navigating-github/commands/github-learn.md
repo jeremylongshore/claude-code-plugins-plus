@@ -52,7 +52,7 @@ Only ask the comfort question via `AskUserQuestion` when signals are genuinely a
 
 ### Step 4 — Execute
 
-**Setup:** Read and follow the Setup mode instructions in `${CLAUDE_SKILL_DIR}/skills/navigating-github/SKILL.md`. Walk through each prerequisite interactively, skip completed steps. After completion, show the lesson menu.
+**Setup:** Read and follow the Setup mode instructions in `./skills/navigating-github/SKILL.md`. Walk through each prerequisite interactively, skip completed steps. After completion, show the lesson menu.
 
 **Lesson menu** (when no specific lesson requested and setup is complete):
 
@@ -76,7 +76,7 @@ Present via `AskUserQuestion`:
 > 8. GitHub Actions — write a CI workflow, watch it run
 > 9. Code Review Apps — CodeRabbit, Copilot Review, and the ecosystem
 
-**Specific lesson:** Read `${CLAUDE_SKILL_DIR}/skills/navigating-github/references/learning-curriculum.md` and execute the matching lesson. Follow do-then-explain methodology: run real commands, observe results, explain afterward. Verify understanding after each step.
+**Specific lesson:** Read `./skills/navigating-github/references/learning-curriculum.md` and execute the matching lesson. Follow do-then-explain methodology: run real commands, observe results, explain afterward. Verify understanding after each step.
 
 After each lesson, summarize what was learned and suggest the next lesson.
 

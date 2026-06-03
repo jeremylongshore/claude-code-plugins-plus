@@ -40,7 +40,7 @@ NFT rarity analysis skill that:
 ### 1. Analyze a Collection
 
 ```bash
-cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py collection boredapeyachtclub
+cd ./scripts && python3 rarity_analyzer.py collection boredapeyachtclub
 ```
 
 Options:
@@ -54,19 +54,19 @@ Options:
 ### 2. Check Specific Token
 
 ```bash
-cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py token pudgypenguins 1234  # port 1234 - example/test
+cd ./scripts && python3 rarity_analyzer.py token pudgypenguins 1234  # port 1234 - example/test
 ```
 
 ### 3. Compare Multiple Tokens
 
 ```bash
-cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py compare azuki 1234,5678,9012  # 5678: 1234: 9012 = configured value
+cd ./scripts && python3 rarity_analyzer.py compare azuki 1234,5678,9012  # 5678: 1234: 9012 = configured value
 ```
 
 ### 4. View Trait Distribution
 
 ```bash
-cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py traits doodles
+cd ./scripts && python3 rarity_analyzer.py traits doodles
 ```
 
 ### 5. Export Rankings
@@ -74,20 +74,20 @@ cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py traits doodles
 JSON:
 
 ```bash
-cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py export coolcats > rankings.json
+cd ./scripts && python3 rarity_analyzer.py export coolcats > rankings.json
 ```
 
 CSV:
 
 ```bash
-cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py export coolcats --format csv > rankings.csv
+cd ./scripts && python3 rarity_analyzer.py export coolcats --format csv > rankings.csv
 ```
 
 ### 6. Manage Cache
 
 ```bash
-cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py cache --list
-cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py cache --clear
+cd ./scripts && python3 rarity_analyzer.py cache --list
+cd ./scripts && python3 rarity_analyzer.py cache --clear
 ```
 
 ## Rarity Algorithms
@@ -116,7 +116,7 @@ Works with any ERC-721/ERC-1155 collection that has:
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for:
+See `./references/errors.md` for:
 
 - API rate limiting
 - IPFS gateway issues
@@ -125,7 +125,7 @@ See `${CLAUDE_SKILL_DIR}/references/errors.md` for:
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for:
+See `./references/examples.md` for:
 
 - Collection analysis workflows
 - Token comparison

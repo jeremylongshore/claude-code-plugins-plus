@@ -46,7 +46,7 @@ Optional for visualization: `pip install matplotlib`
 1. **Quick signal scan** across multiple assets:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --watchlist crypto_top10 --period 6m
+   python ./scripts/scanner.py --watchlist crypto_top10 --period 6m
    ```
 
    Output shows signal type (STRONG_BUY/BUY/NEUTRAL/SELL/STRONG_SELL) and confidence per asset.
@@ -54,7 +54,7 @@ Optional for visualization: `pip install matplotlib`
 2. **Detailed signal analysis** for a specific symbol:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --symbols BTC-USD --detail
+   python ./scripts/scanner.py --symbols BTC-USD --detail
    ```
 
    Shows each indicator's individual signal, value, and reasoning.
@@ -63,17 +63,17 @@ Optional for visualization: `pip install matplotlib`
 
    ```bash
    # Only buy signals with 70%+ confidence
-   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --filter buy --min-confidence 70 --rank confidence
+   python ./scripts/scanner.py --filter buy --min-confidence 70 --rank confidence
 
    # Save results to JSON
-   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --output signals.json
+   python ./scripts/scanner.py --output signals.json
    ```
 
 4. **Use predefined watchlists**:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --list-watchlists
-   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --watchlist crypto_defi
+   python ./scripts/scanner.py --list-watchlists
+   python ./scripts/scanner.py --watchlist crypto_defi
    ```
 
    Available: `crypto_top10`, `crypto_defi`, `crypto_layer2`, `stocks_tech`, `etfs_major`
@@ -86,7 +86,7 @@ The scanner produces a summary table with symbol, signal type, confidence %, pri
 
 **Confidence ranges**: 70-100% high conviction | 50-70% moderate | 30-50% weak | 0-30% avoid
 
-See `${CLAUDE_SKILL_DIR}/references/implementation.md` for full output format examples and signal type tables.
+See `./references/implementation.md` for full output format examples and signal type tables.
 
 ## Error Handling
 
@@ -96,32 +96,32 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for full output format ex
 | Insufficient data | Period too short for indicators | Use `--period 6m` minimum |
 | Rate limit exceeded | Too many rapid API calls | Add delay between scans |
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+See `./references/errors.md` for comprehensive error handling.
 
 ## Examples
 
 **Morning crypto scan** - Check all top-10 crypto assets for entry opportunities:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --watchlist crypto_top10 --period 6m
+python ./scripts/scanner.py --watchlist crypto_top10 --period 6m
 ```
 
 **Deep dive on Bitcoin** - Full indicator breakdown with risk management levels:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --symbols BTC-USD --detail
+python ./scripts/scanner.py --symbols BTC-USD --detail
 ```
 
 **Find strongest DeFi buy signals** - Filter and rank by confidence:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --watchlist crypto_defi --filter buy --rank confidence
+python ./scripts/scanner.py --watchlist crypto_defi --filter buy --rank confidence
 ```
 
 **Export results** - Save to JSON for automated pipeline or further analysis:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --watchlist crypto_top10 --output signals.json
+python ./scripts/scanner.py --watchlist crypto_top10 --output signals.json
 ```
 
 ## Resources
@@ -129,4 +129,4 @@ python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --watchlist crypto_top10 --output 
 - **yfinance** for price data
 - **pandas/numpy** for calculations
 - Compatible with trading-strategy-backtester plugin
-- `${CLAUDE_SKILL_DIR}/references/implementation.md` - Output formats, configuration, backtester integration, file reference
+- `./references/implementation.md` - Output formats, configuration, backtester integration, file reference

@@ -45,16 +45,16 @@ Implement structured API request logging with correlation IDs, performance timin
 8. Set up log rotation and retention policies: 30 days for application logs, 90 days for audit logs, with automatic compression of logs older than 7 days.
 9. Write tests verifying that PII redaction works correctly, correlation IDs propagate through nested calls, and log output matches expected JSON structure.
 
-See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementation guide.
+See `./references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `${CLAUDE_SKILL_DIR}/src/middleware/request-logger.js` - Structured request/response logging middleware
-- `${CLAUDE_SKILL_DIR}/src/middleware/correlation-id.js` - Correlation ID generation and propagation
-- `${CLAUDE_SKILL_DIR}/src/utils/pii-redactor.js` - Field-level PII redaction with configurable patterns
-- `${CLAUDE_SKILL_DIR}/src/utils/audit-logger.js` - Security audit event logger for sensitive operations
-- `${CLAUDE_SKILL_DIR}/src/config/logging.js` - Log level, format, and output destination configuration
-- `${CLAUDE_SKILL_DIR}/tests/logging/` - Logging middleware tests including PII redaction verification
+- `./src/middleware/request-logger.js` - Structured request/response logging middleware
+- `./src/middleware/correlation-id.js` - Correlation ID generation and propagation
+- `./src/utils/pii-redactor.js` - Field-level PII redaction with configurable patterns
+- `./src/utils/audit-logger.js` - Security audit event logger for sensitive operations
+- `./src/config/logging.js` - Log level, format, and output destination configuration
+- `./tests/logging/` - Logging middleware tests including PII redaction verification
 
 ## Error Handling
 
@@ -66,7 +66,7 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementati
 | Log parsing failure | Log message contains unescaped characters breaking JSON structure | Use structured logging library that handles serialization; never concatenate user input into log strings |
 | Audit log gap | Async logging dropped events during high-load period | Use synchronous logging for audit events; implement write-ahead buffer for audit trail completeness |
 
-Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patterns.
+Refer to `./references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
@@ -76,7 +76,7 @@ Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patt
 
 **Compliance audit trail**: Tag all data modification operations (POST, PUT, DELETE) with `audit: true`, capturing the authenticated user, modified resource ID, and change summary for SOC 2 compliance evidence.
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for additional examples.
+See `./references/examples.md` for additional examples.
 
 ## Resources
 

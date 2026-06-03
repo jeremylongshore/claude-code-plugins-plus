@@ -24,10 +24,10 @@ overly permissive header/method exposure.
 
 ## Prerequisites
 
-- Access to the target codebase and configuration files in `${CLAUDE_SKILL_DIR}/`
+- Access to the target codebase and configuration files in `./`
 - For live endpoint testing: WebFetch tool available and target URLs accessible
 - Familiarity with the web framework in use (Express, Django, Flask, Spring, ASP.NET, etc.)
-- Reference: `${CLAUDE_SKILL_DIR}/references/README.md` for CORS specification details, common vulnerability patterns, and example policies
+- Reference: `./references/README.md` for CORS specification details, common vulnerability patterns, and example policies
 
 ## Instructions
 
@@ -63,21 +63,21 @@ overly permissive header/method exposure.
 
 ### Express.js CORS Middleware Audit
 
-Scan `${CLAUDE_SKILL_DIR}/src/app.js` and `${CLAUDE_SKILL_DIR}/src/middleware/` for `cors()`
+Scan `./src/app.js` and `./src/middleware/` for `cors()`
 configuration. Flag `origin: true` (reflects any origin) as CWE-942, severity
 critical. Recommend replacing with an explicit allowlist:
 `origin: ['https://app.example.com', 'https://admin.example.com']`.
 
 ### Nginx CORS Header Review
 
-Grep `${CLAUDE_SKILL_DIR}/nginx/` for `add_header Access-Control-Allow-Origin`. Flag any
+Grep `./nginx/` for `add_header Access-Control-Allow-Origin`. Flag any
 `$http_origin` variable usage that reflects the origin without validation. Verify
 that `Access-Control-Allow-Credentials` is only set for origins in the allowlist
 using an `if` block or `map` directive.
 
 ### API Gateway CORS Configuration
 
-Review `${CLAUDE_SKILL_DIR}/infra/api-gateway.yaml` or equivalent IaC definitions for
+Review `./infra/api-gateway.yaml` or equivalent IaC definitions for
 CORS settings. Flag wildcard `*` in allowed origins when credentials are enabled.
 Verify that `Access-Control-Allow-Methods` is scoped to only the HTTP methods
 each endpoint actually supports.

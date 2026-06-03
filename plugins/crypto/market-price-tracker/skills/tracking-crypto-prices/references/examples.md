@@ -9,7 +9,7 @@ Comprehensive examples for the tracking-crypto-prices skill.
 The simplest use case - check the current price of Bitcoin:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC
+python ./scripts/price_tracker.py --symbol BTC
 ```
 
 **Output:**
@@ -27,7 +27,7 @@ $97,234.56 USD
 Get prices for a portfolio of assets:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbols BTC,ETH,SOL,AVAX,DOT
+python ./scripts/price_tracker.py --symbols BTC,ETH,SOL,AVAX,DOT
 ```
 
 **Output:**
@@ -59,16 +59,16 @@ Scan predefined watchlists for quick market overview:
 
 ```bash
 # Top 10 by market cap
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist top10
+python ./scripts/price_tracker.py --watchlist top10
 
 # DeFi tokens
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist defi
+python ./scripts/price_tracker.py --watchlist defi
 
 # Layer 2 solutions
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist layer2
+python ./scripts/price_tracker.py --watchlist layer2
 
 # Stablecoins
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist stablecoins
+python ./scripts/price_tracker.py --watchlist stablecoins
 ```
 
 ---
@@ -80,7 +80,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist stablecoins
 Machine-readable output for scripting:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol ETH --format json
+python ./scripts/price_tracker.py --symbol ETH --format json
 ```
 
 **Output:**
@@ -116,7 +116,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol ETH --format json
 Export prices for spreadsheet analysis:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbols BTC,ETH,SOL --format csv --output prices.csv
+python ./scripts/price_tracker.py --symbols BTC,ETH,SOL --format csv --output prices.csv
 ```
 
 **Output (prices.csv):**
@@ -135,7 +135,7 @@ SOL,Solana,142.34,USD,5.12,12.8,2100000000,61400000000,2025-01-14T15:30:00.00000
 Single-line output for shell scripts:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbols BTC,ETH --format minimal
+python ./scripts/price_tracker.py --symbols BTC,ETH --format minimal
 ```
 
 **Output:**
@@ -148,7 +148,7 @@ Use in shell scripts:
 
 ```bash
 #!/bin/bash
-PRICES=$(python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbols BTC,ETH --format minimal)
+PRICES=$(python ./scripts/price_tracker.py --symbols BTC,ETH --format minimal)
 echo "Current prices: $PRICES"
 ```
 
@@ -161,7 +161,7 @@ echo "Current prices: $PRICES"
 Get price history for the last 30 days:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --period 30d
+python ./scripts/price_tracker.py --symbol BTC --period 30d
 ```
 
 **Output:**
@@ -191,7 +191,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --period 30d
 Fetch history for a specific period:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol ETH --start 2024-01-01 --end 2024-12-31
+python ./scripts/price_tracker.py --symbol ETH --start 2024-01-01 --end 2024-12-31
 ```
 
 ---
@@ -201,7 +201,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol ETH --start 2024-01
 Export OHLCV data for analysis:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --period 90d --format csv --output btc_90d.csv
+python ./scripts/price_tracker.py --symbol BTC --period 90d --format csv --output btc_90d.csv
 ```
 
 **Output (btc_90d.csv):**
@@ -223,13 +223,13 @@ Get prices in alternative currencies:
 
 ```bash
 # Euro
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --currency EUR
+python ./scripts/price_tracker.py --symbol BTC --currency EUR
 
 # British Pound
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --currency GBP
+python ./scripts/price_tracker.py --symbol BTC --currency GBP
 
 # Japanese Yen
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --currency JPY
+python ./scripts/price_tracker.py --symbol BTC --currency JPY
 ```
 
 ---
@@ -242,10 +242,10 @@ Find available cryptocurrencies:
 
 ```bash
 # Search by name
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --list --query ethereum
+python ./scripts/price_tracker.py --list --query ethereum
 
 # Search by partial name
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --list --query layer
+python ./scripts/price_tracker.py --list --query layer
 ```
 
 **Output:**
@@ -274,7 +274,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --list --query layer
 Force fresh data fetch:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --no-cache
+python ./scripts/price_tracker.py --symbol BTC --no-cache
 ```
 
 ---
@@ -284,7 +284,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --no-cache
 Remove all cached data:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --clear-cache
+python ./scripts/price_tracker.py --clear-cache
 ```
 
 ---
@@ -321,7 +321,7 @@ Use in automated scripts:
 #!/bin/bash
 
 # Get BTC price as JSON and extract value
-BTC_PRICE=$(python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --format json | jq '.prices[0].price')
+BTC_PRICE=$(python ./scripts/price_tracker.py --symbol BTC --format json | jq '.prices[0].price')
 
 # Alert if price drops below threshold
 if (( $(echo "$BTC_PRICE < 90000" | bc -l) )); then
@@ -338,7 +338,7 @@ Automated price logging:
 ```bash
 # Add to crontab (crontab -e)
 # Log prices every 5 minutes
-*/5 * * * * python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist top10 --format csv >> /var/log/crypto_prices.csv
+*/5 * * * * python ./scripts/price_tracker.py --watchlist top10 --format csv >> /var/log/crypto_prices.csv
 ```
 
 ---
@@ -351,16 +351,16 @@ Combine spot and historical data:
 
 ```bash
 # Current price
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC
+python ./scripts/price_tracker.py --symbol BTC
 
 # 7-day trend
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --period 7d
+python ./scripts/price_tracker.py --symbol BTC --period 7d
 
 # 30-day trend
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --period 30d
+python ./scripts/price_tracker.py --symbol BTC --period 30d
 
 # Year-to-date
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --start 2025-01-01 --end $(date +%Y-%m-%d)
+python ./scripts/price_tracker.py --symbol BTC --start 2025-01-01 --end $(date +%Y-%m-%d)
 ```
 
 ---
@@ -370,7 +370,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --start 2025-01
 Debug API and cache behavior:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --verbose
+python ./scripts/price_tracker.py --symbol BTC --verbose
 ```
 
 **Output:**
@@ -411,7 +411,7 @@ watchlists:
 1. Use it:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist custom
+python ./scripts/price_tracker.py --watchlist custom
 ```
 
 ---
@@ -429,7 +429,7 @@ When rate limited, the skill automatically:
 ```bash
 # Force yfinance fallback (for testing)
 # Temporarily disable CoinGecko by rate limiting
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --verbose
+python ./scripts/price_tracker.py --symbol BTC --verbose
 ```
 
 **Output with fallback:**

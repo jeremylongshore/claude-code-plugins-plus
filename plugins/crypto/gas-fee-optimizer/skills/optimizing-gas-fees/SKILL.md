@@ -42,46 +42,46 @@ Gas fee optimization skill that:
 1. Check current gas prices (optionally for a specific chain):
 
    ```bash
-   cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py current
-   cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py current --chain polygon
+   cd ./scripts && python3 gas_optimizer.py current
+   cd ./scripts && python3 gas_optimizer.py current --chain polygon
    ```
 
 2. Estimate transaction cost for known operations or custom gas limits (available operations: `eth_transfer`, `erc20_transfer`, `erc20_approve`, `uniswap_v2_swap`, `uniswap_v3_swap`, `sushiswap_swap`, `curve_swap`, `nft_mint`, `nft_transfer`, `opensea_listing`, `aave_deposit`, `aave_withdraw`, `compound_supply`, `compound_borrow`, `bridge_deposit`):
 
    ```bash
-   cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py estimate --operation uniswap_v2_swap --all-tiers
-   cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py estimate --gas-limit 150000 --tier fast  # 150000 = configured value
+   cd ./scripts && python3 gas_optimizer.py estimate --operation uniswap_v2_swap --all-tiers
+   cd ./scripts && python3 gas_optimizer.py estimate --gas-limit 150000 --tier fast  # 150000 = configured value
    ```
 
 3. Find the optimal transaction window with lowest expected gas:
 
    ```bash
-   cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py optimal
+   cd ./scripts && python3 gas_optimizer.py optimal
    ```
 
 4. View gas patterns (hourly or daily):
 
    ```bash
-   cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py patterns
-   cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py patterns --daily
+   cd ./scripts && python3 gas_optimizer.py patterns
+   cd ./scripts && python3 gas_optimizer.py patterns --daily
    ```
 
 5. Predict future gas prices for a given hour:
 
    ```bash
-   cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py predict --time 14
+   cd ./scripts && python3 gas_optimizer.py predict --time 14
    ```
 
 6. Compare gas prices across multiple chains:
 
    ```bash
-   cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py compare
+   cd ./scripts && python3 gas_optimizer.py compare
    ```
 
 7. View base fee history for recent blocks:
 
    ```bash
-   cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py history --blocks 50
+   cd ./scripts && python3 gas_optimizer.py history --blocks 50
    ```
 
 ## Output
@@ -114,7 +114,7 @@ Gas fee optimization skill that:
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for:
+See `./references/errors.md` for:
 
 - RPC connection issues
 - API rate limiting
@@ -123,7 +123,7 @@ See `${CLAUDE_SKILL_DIR}/references/errors.md` for:
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for:
+See `./references/examples.md` for:
 
 - Quick start commands
 - Cost estimation scenarios

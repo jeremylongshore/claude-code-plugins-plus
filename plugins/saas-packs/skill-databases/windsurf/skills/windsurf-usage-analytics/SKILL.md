@@ -33,7 +33,7 @@ This skill enables comprehensive usage analytics for Windsurf deployments. It tr
 4. **Define Baselines**
 5. **Monitor and Optimize**
 
-See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed implementation guide.
+See `./references/implementation.md` for detailed implementation guide.
 
 ## Output
 
@@ -44,11 +44,11 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed implementati
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+See `./references/errors.md` for comprehensive error handling.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `./references/examples.md` for detailed examples.
 
 ## Resources
 

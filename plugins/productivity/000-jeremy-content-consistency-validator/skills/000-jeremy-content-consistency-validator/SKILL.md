@@ -109,6 +109,6 @@ The skill produces a timestamped Markdown report saved to `consistency-reports/Y
 
 ## Resources
 
-- Content source discovery logic: `${CLAUDE_SKILL_DIR}/references/how-it-works.md`
-- Trust priority and validation timing: `${CLAUDE_SKILL_DIR}/references/best-practices.md`
-- Use-case walkthroughs: `${CLAUDE_SKILL_DIR}/references/example-use-cases.md`
+- Content source discovery logic: `./references/how-it-works.md`
+- Trust priority and validation timing: `./references/best-practices.md`
+- Use-case walkthroughs: `./references/example-use-cases.md`

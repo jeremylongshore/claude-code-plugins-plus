@@ -39,39 +39,39 @@ Real-time detection of significant price movements and unusual volume patterns a
 1. **Run a default scan** for top gainers and losers (top 20 each by 24h change with volume confirmation):
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py
+   python ./scripts/scanner.py
    ```
 
 2. **Set custom thresholds** for minimum change and volume spike:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-change 10 --volume-spike 3
-   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-cap 100000000 --max-cap 1000000000  # 100000000 = $100M min cap, 1000000000 = $1B max cap
+   python ./scripts/scanner.py --min-change 10 --volume-spike 3
+   python ./scripts/scanner.py --min-cap 100000000 --max-cap 1000000000  # 100000000 = $100M min cap, 1000000000 = $1B max cap
    ```
 
 3. **Filter by category** (defi, layer2, nft, gaming, meme):
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --category defi
+   python ./scripts/scanner.py --category defi
    ```
 
 4. **Scan different timeframes** (1h, 24h, 7d):
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --timeframe 1h
+   python ./scripts/scanner.py --timeframe 1h
    ```
 
 5. **Export results** to JSON or CSV:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format json --output movers.json
-   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format csv --output movers.csv
+   python ./scripts/scanner.py --format json --output movers.json
+   python ./scripts/scanner.py --format csv --output movers.csv
    ```
 
 6. **Use named presets** for predefined threshold sets:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --preset aggressive
+   python ./scripts/scanner.py --preset aggressive
    ```
 
 ## Output
@@ -113,7 +113,7 @@ Default table shows top gainers and losers ranked by significance score (0-100),
 | `Rate limit exceeded` | Too many API calls | Wait or use cached data |
 | `Partial results` | Some assets unavailable | Normal, proceed with available data |
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+See `./references/errors.md` for comprehensive error handling.
 
 ## Examples
 
@@ -121,22 +121,22 @@ Common scanning patterns for different market analysis scenarios:
 
 ```bash
 # Daily scan - top 20 gainers/losers
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --timeframe 24h --top 20
+python ./scripts/scanner.py --timeframe 24h --top 20
 
 # Volume spike hunt (5x+ volume, $1M+ daily volume)
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --volume-spike 5 --min-volume 1000000  # 1000000 = $1M min volume
+python ./scripts/scanner.py --volume-spike 5 --min-volume 1000000  # 1000000 = $1M min volume
 
 # DeFi movers exported to CSV
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --category defi --format csv --output defi_movers.csv
+python ./scripts/scanner.py --category defi --format csv --output defi_movers.csv
 
 # High-cap gainers only (>$1B market cap)
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-cap 1000000000 --gainers-only --top 10  # 1000000000 = $1B cap
+python ./scripts/scanner.py --min-cap 1000000000 --gainers-only --top 10  # 1000000000 = $1B cap
 ```
 
 ## Resources
 
-- `${CLAUDE_SKILL_DIR}/references/implementation.md` - Configuration, presets, JSON format, scoring details
-- `${CLAUDE_SKILL_DIR}/references/errors.md` - Comprehensive error handling
-- `${CLAUDE_SKILL_DIR}/references/examples.md` - Detailed usage examples
+- `./references/implementation.md` - Configuration, presets, JSON format, scoring details
+- `./references/errors.md` - Comprehensive error handling
+- `./references/examples.md` - Detailed usage examples
 - Depends on: tracking-crypto-prices skill
 - CoinGecko API: https://www.coingecko.com/en/api

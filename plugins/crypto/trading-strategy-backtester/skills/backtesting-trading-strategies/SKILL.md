@@ -58,17 +58,17 @@ pip install ta-lib scipy scikit-learn
 
 ## Instructions
 
-1. Fetch historical data (cached to `${CLAUDE_SKILL_DIR}/data/` for reuse):
+1. Fetch historical data (cached to `./data/` for reuse):
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/fetch_data.py --symbol BTC-USD --period 2y --interval 1d
+   python ./scripts/fetch_data.py --symbol BTC-USD --period 2y --interval 1d
    ```
 
 2. Run a backtest with default or custom parameters:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/backtest.py --strategy sma_crossover --symbol BTC-USD --period 1y
-   python ${CLAUDE_SKILL_DIR}/scripts/backtest.py \
+   python ./scripts/backtest.py --strategy sma_crossover --symbol BTC-USD --period 1y
+   python ./scripts/backtest.py \
      --strategy rsi_reversal \
      --symbol ETH-USD \
      --period 1y \
@@ -76,11 +76,11 @@ pip install ta-lib scipy scikit-learn
      --params '{"period": 14, "overbought": 70, "oversold": 30}'
    ```
 
-3. Analyze results saved to `${CLAUDE_SKILL_DIR}/reports/` -- includes `*_summary.txt` (performance metrics), `*_trades.csv` (trade log), `*_equity.csv` (equity curve data), and `*_chart.png` (visual equity curve).
+3. Analyze results saved to `./reports/` -- includes `*_summary.txt` (performance metrics), `*_trades.csv` (trade log), `*_equity.csv` (equity curve data), and `*_chart.png` (visual equity curve).
 4. Optimize parameters via grid search to find the best combination:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/optimize.py \
+   python ./scripts/optimize.py \
      --strategy sma_crossover \
      --symbol BTC-USD \
      --period 1y \
@@ -152,7 +152,7 @@ pip install ta-lib scipy scikit-learn
 
 ## Configuration
 
-Create `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
+Create `./config/settings.yaml`:
 
 ```yaml
 data:
@@ -172,11 +172,11 @@ risk:
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for common issues and solutions.
+See `./references/errors.md` for common issues and solutions.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed usage examples including:
+See `./references/examples.md` for detailed usage examples including:
 
 - Multi-asset comparison
 - Walk-forward analysis

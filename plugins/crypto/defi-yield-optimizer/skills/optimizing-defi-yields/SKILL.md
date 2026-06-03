@@ -38,37 +38,37 @@ Before using this skill, ensure you have:
 1. Search for yield opportunities across all chains or filter by a specific chain:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --top 20
-   python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --chain ethereum --top 10
+   python ./scripts/yield_optimizer.py --top 20
+   python ./scripts/yield_optimizer.py --chain ethereum --top 10
    ```
 
 2. Filter by criteria -- minimum TVL (for safety), asset type, or protocol:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --min-tvl 10000000 --top 15  # 10000000 = 10M limit
-   python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --asset USDC --chain ethereum
-   python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --protocol aave,compound,curve
+   python ./scripts/yield_optimizer.py --min-tvl 10000000 --top 15  # 10000000 = 10M limit
+   python ./scripts/yield_optimizer.py --asset USDC --chain ethereum
+   python ./scripts/yield_optimizer.py --protocol aave,compound,curve
    ```
 
 3. Apply risk filters -- show only audited protocols or filter by risk level (`--risk low`, `--risk medium`, `--risk high`):
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --audited-only --min-tvl 1000000  # 1000000 = 1M limit
-   python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --risk low --min-apy 3
+   python ./scripts/yield_optimizer.py --audited-only --min-tvl 1000000  # 1000000 = 1M limit
+   python ./scripts/yield_optimizer.py --risk low --min-apy 3
    ```
 
 4. Analyze specific opportunities -- get detailed pool breakdown or compare protocols:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --pool "aave-v3-usdc-ethereum" --detailed
-   python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --compare aave,compound,spark --asset USDC
+   python ./scripts/yield_optimizer.py --pool "aave-v3-usdc-ethereum" --detailed
+   python ./scripts/yield_optimizer.py --compare aave,compound,spark --asset USDC
    ```
 
 5. Export results to JSON or CSV for further analysis:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --top 50 --format json --output yields.json
-   python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --chain ethereum --format csv --output eth_yields.csv
+   python ./scripts/yield_optimizer.py --top 50 --format json --output yields.json
+   python ./scripts/yield_optimizer.py --chain ethereum --format csv --output eth_yields.csv
    ```
 
 ## Output
@@ -119,7 +119,7 @@ Before using this skill, ensure you have:
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+See `./references/errors.md` for comprehensive error handling.
 
 Common issues:
 
@@ -129,7 +129,7 @@ Common issues:
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed usage examples.
+See `./references/examples.md` for detailed usage examples.
 
 ### Quick Examples
 
@@ -159,7 +159,7 @@ python yield_optimizer.py --top 100 --format json --output all_yields.json
 
 ## Configuration
 
-Settings in `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
+Settings in `./config/settings.yaml`:
 
 - **Default chain**: Primary chain to search
 - **Cache TTL**: How long to cache API responses

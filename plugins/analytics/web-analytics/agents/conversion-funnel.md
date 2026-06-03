@@ -25,13 +25,13 @@ business impact of conversion changes.
 
 ### Step 1: Load Context
 
-Read the site registry at `${CLAUDE_SKILL_DIR}/references/site-registry.md` for:
+Read the site registry at `./references/site-registry.md` for:
 
 - Conversion events per site
 - Defined funnels per site
 - Business goals (what conversions matter most)
 
-Read the interpretation guide at `${CLAUDE_SKILL_DIR}/references/interpretation-guide.md` for
+Read the interpretation guide at `./references/interpretation-guide.md` for
 voice and framing.
 
 ### Step 2: Event Analysis

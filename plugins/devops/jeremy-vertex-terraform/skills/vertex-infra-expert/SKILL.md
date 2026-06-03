@@ -56,11 +56,11 @@ See Terraform implementation details for output format specifications.
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+See `./references/errors.md` for comprehensive error handling.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `./references/examples.md` for detailed examples.
 
 ## Resources
 
@@ -68,4 +68,4 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 - Vertex AI documentation: https://cloud.google.com/vertex-ai/docs
 - Model Garden: https://cloud.google.com/model-garden
 - Vector Search guide:
-- Terraform examples in ${CLAUDE_SKILL_DIR}/vertex-examples/
+- Terraform examples in ./vertex-examples/

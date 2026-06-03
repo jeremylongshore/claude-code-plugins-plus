@@ -72,7 +72,7 @@ This skill can be integrated with other tools for monitoring and alerting. For e
 
 ## Prerequisites
 
-- Access to application log files in ${CLAUDE_SKILL_DIR}/logs/
+- Access to application log files in ./logs/
 - Log parsing tools (grep, awk, sed)
 - Understanding of application log format and structure
 - Read permissions for log directories

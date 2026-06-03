@@ -25,7 +25,7 @@ You NEVER interpret, analyze, or editorialize. You collect and format.
 
 ### Step 1: Resolve Sites
 
-Read the site registry at `${CLAUDE_SKILL_DIR}/references/site-registry.md` to get:
+Read the site registry at `./references/site-registry.md` to get:
 
 - Site IDs for the requested sites (or all sites if none specified)
 - Default time ranges and timezone
@@ -44,7 +44,7 @@ Convert the requested period to epoch milliseconds (ET timezone):
 
 ### Step 3: Fetch Data
 
-Use the MCP tool reference at `${CLAUDE_SKILL_DIR}/references/mcp-tool-reference.md` for
+Use the MCP tool reference at `./references/mcp-tool-reference.md` for
 exact tool signatures. Execute calls in this order:
 
 > **Tool naming:** call MCP tools by their full name `mcp__umami__<tool>`. Param keys are

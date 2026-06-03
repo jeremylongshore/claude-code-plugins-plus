@@ -23,7 +23,7 @@ you synthesize what specialists have already concluded.
 
 ## Voice and Framing
 
-Read the interpretation guide at `${CLAUDE_SKILL_DIR}/references/interpretation-guide.md` before
+Read the interpretation guide at `./references/interpretation-guide.md` before
 composing any output. Key principles:
 
 - Advisory, not diagnostic — "consider" not "you must"

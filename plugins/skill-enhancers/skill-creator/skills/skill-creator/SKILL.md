@@ -113,7 +113,7 @@ Before writing, determine:
 
 Think of it as **narrow bridge vs open field**: a deployment skill is a narrow bridge (one safe path, guard rails everywhere), while a writing skill is an open field (Claude roams freely within broad boundaries). Match constraint level to the task.
 
-**Workflow Pattern** (see `${CLAUDE_SKILL_DIR}/references/workflows.md`):
+**Workflow Pattern** (see `./references/workflows.md`):
 
 - Sequential: fixed steps in order
 - Conditional: branch based on input
@@ -123,7 +123,7 @@ Think of it as **narrow bridge vs open field**: a deployment skill is a narrow b
 - Checklist Workflow: copy-pasteable progress tracking for complex multi-step processes
 - Search-Analyze-Report: explore and summarize
 
-**Output Pattern** (see `${CLAUDE_SKILL_DIR}/references/output-patterns.md`):
+**Output Pattern** (see `./references/output-patterns.md`):
 
 - Strict template (exact format)
 - Flexible template (structure with creative content)
@@ -157,7 +157,7 @@ Key rules:
 - No XML tags in name or description (Anthropic spec prohibition)
 - No time-sensitive information; use 'old patterns' section for deprecated approaches
 - Include feedback loops for quality-critical workflows
-- Run `python3 ${CLAUDE_SKILL_DIR}/scripts/validate-skill.py --grade {skill-dir}/SKILL.md` to validate
+- Run `python3 ./scripts/validate-skill.py --grade {skill-dir}/SKILL.md` to validate
 - Create `evals/evals.json` with 3+ scenarios, iterate until all assertions pass
 
 ## Validation Workflow
@@ -165,7 +165,7 @@ Key rules:
 When the user wants to validate, grade, or audit an existing skill. For detailed steps (V1-V5), see [Creation Guide](references/creation-guide.md).
 
 1. Locate the SKILL.md (global `~/.claude/skills/` or project `.claude/skills/`)
-2. Run `python3 ${CLAUDE_SKILL_DIR}/scripts/validate-skill.py --grade {path}/SKILL.md`
+2. Run `python3 ./scripts/validate-skill.py --grade {path}/SKILL.md`
 3. Review grade against the 100-point rubric (A: 90+, B: 80-89, C: 70-79, D: 60-69, F: <60)
 4. Report results with prioritized fix recommendations
 5. Auto-fix if requested: add missing sections, fix description patterns, move nested metadata to top-level
@@ -231,7 +231,7 @@ Uses context: fork for isolated execution.
 ```
 User: Grade my skill at ~/.claude/skills/code-review/SKILL.md
 
-Runs: python3 ${CLAUDE_SKILL_DIR}/scripts/validate-skill.py --grade ~/.claude/skills/code-review/SKILL.md
+Runs: python3 ./scripts/validate-skill.py --grade ~/.claude/skills/code-review/SKILL.md
 
 Output:
   Grade: B (84/100)
@@ -258,35 +258,35 @@ Output:
 | Name exists | Directory already present | Choose different name or confirm overwrite |
 | Invalid name | Not kebab-case or >64 chars | Fix to lowercase-with-hyphens |
 | Validation fails | Missing fields or anti-patterns | Run validator, fix reported issues |
-| Resource missing | `${CLAUDE_SKILL_DIR}/` ref points to nonexistent file | Create the file or fix the reference |
+| Resource missing | `./` ref points to nonexistent file | Create the file or fix the reference |
 | Undertriggering | Description too passive | Add "Make sure to use whenever..." phrasing |
 | Eval failures | Skill not producing expected output | Iterate on instructions and re-test |
 | Low grade | Missing scored sections or fields | Add Overview, Prerequisites, Output sections |
 
 ## Resources
 
-**References:** `${CLAUDE_SKILL_DIR}/references/`
+**References:** `./references/`
 
 - `creation-guide.md` — Detailed Steps 4-10 and Validation Workflow (V1-V5)
 - `source-of-truth.md` — Canonical spec ([AgentSkills.io](https://agentskills.io/specification), [Anthropic docs](https://code.claude.com/docs/en/skills), [Lee Han Chung deep dive](https://leehanchung.github.io/blogs/2025/10/26/claude-skills-deep-dive/)) | `frontmatter-spec.md` — Field reference | `validation-rules.md` — 100-point rubric
 - `workflows.md` — Workflow patterns | `output-patterns.md` — Output formats | `schemas.md` — JSON schemas (evals, grading, benchmarks)
 - `anthropic-comparison.md` — Gap analysis | `advanced-eval-workflow.md` — Eval, iteration, optimization, platform notes
 
-**Agents** (read when spawning subagents): `${CLAUDE_SKILL_DIR}/agents/`
+**Agents** (read when spawning subagents): `./agents/`
 
 - `grader.md` — Assertion evaluation | `comparator.md` — Blind A/B comparison | `analyzer.md` — Benchmark analysis
 
-**Scripts:** `${CLAUDE_SKILL_DIR}/scripts/`
+**Scripts:** `./scripts/`
 
 - `validate-skill.py` — 100-point rubric grading | `quick_validate.py` — Lightweight validation
 - `aggregate_benchmark.py` — Benchmark stats | `run_eval.py` — Trigger accuracy testing
 - `run_loop.py` — Description optimization loop | `improve_description.py` — LLM-powered rewriting
 - `generate_report.py` — HTML reports | `package_skill.py` — .skill packaging | `utils.py` — Shared utilities
 
-**Eval Viewer:** `${CLAUDE_SKILL_DIR}/eval-viewer/` — `generate_review.py` + `viewer.html` (interactive output comparison)
-**Assets:** `${CLAUDE_SKILL_DIR}/assets/eval_review.html` (trigger eval set editor)
-**Templates:** `${CLAUDE_SKILL_DIR}/templates/skill-template.md` (SKILL.md skeleton)
+**Eval Viewer:** `./eval-viewer/` — `generate_review.py` + `viewer.html` (interactive output comparison)
+**Assets:** `./assets/eval_review.html` (trigger eval set editor)
+**Templates:** `./templates/skill-template.md` (SKILL.md skeleton)
 
 ---
 
-For advanced workflows (empirical eval, description optimization, blind comparison, packaging, platform notes), see [Creation Guide](references/creation-guide.md) and `${CLAUDE_SKILL_DIR}/references/advanced-eval-workflow.md`.
+For advanced workflows (empirical eval, description optimization, blind comparison, packaging, platform notes), see [Creation Guide](references/creation-guide.md) and `./references/advanced-eval-workflow.md`.

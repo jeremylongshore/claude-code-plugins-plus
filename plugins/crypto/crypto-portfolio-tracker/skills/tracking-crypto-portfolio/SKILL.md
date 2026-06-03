@@ -44,20 +44,20 @@ Track cryptocurrency holdings with real-time CoinGecko valuations, allocation an
 
    ```bash
    # Quick portfolio summary
-   python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json
+   python ./scripts/portfolio_tracker.py --portfolio holdings.json
 
    # Full holdings breakdown
-   python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --holdings
+   python ./scripts/portfolio_tracker.py --portfolio holdings.json --holdings
 
    # Detailed analysis with P&L and allocations
-   python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --detailed
+   python ./scripts/portfolio_tracker.py --portfolio holdings.json --detailed
    ```
 
 3. **Export results** for analysis tools or tax reporting:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --format json --output portfolio_export.json
-   python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --format csv --output portfolio.csv
+   python ./scripts/portfolio_tracker.py --portfolio holdings.json --format json --output portfolio_export.json
+   python ./scripts/portfolio_tracker.py --portfolio holdings.json --format csv --output portfolio.csv
    ```
 
 4. **Present results** to the user:
@@ -103,7 +103,7 @@ Summary showing total value, 24h/7d changes, per-asset allocation, and concentra
 | Coin not found | Unknown symbol | Check symbol spelling, use standard symbols |
 | API rate limited | Too many requests | Wait and retry, use caching |
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+See `./references/errors.md` for comprehensive error handling.
 
 ## Examples
 
@@ -111,22 +111,22 @@ Portfolio tracking workflows from quick checks to detailed analysis and export:
 
 ```bash
 # Basic portfolio check
-python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio ~/crypto/holdings.json
+python ./scripts/portfolio_tracker.py --portfolio ~/crypto/holdings.json
 
 # All holdings sorted by allocation
-python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --holdings --sort allocation
+python ./scripts/portfolio_tracker.py --portfolio holdings.json --holdings --sort allocation
 
 # Detailed analysis with custom 15% threshold
-python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --detailed --threshold 15
+python ./scripts/portfolio_tracker.py --portfolio holdings.json --detailed --threshold 15
 
 # Export for tax software
-python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --format csv --output tax_export.csv
+python ./scripts/portfolio_tracker.py --portfolio holdings.json --format csv --output tax_export.csv
 ```
 
 ## Resources
 
-- `${CLAUDE_SKILL_DIR}/references/implementation.md` - Portfolio file format, CLI options, allocation thresholds, JSON format
-- `${CLAUDE_SKILL_DIR}/references/errors.md` - Comprehensive error handling
-- `${CLAUDE_SKILL_DIR}/references/examples.md` - Detailed usage examples
+- `./references/implementation.md` - Portfolio file format, CLI options, allocation thresholds, JSON format
+- `./references/errors.md` - Comprehensive error handling
+- `./references/examples.md` - Detailed usage examples
 - CoinGecko API: https://www.coingecko.com/en/api
-- `${CLAUDE_SKILL_DIR}/config/settings.yaml` - Configuration options
+- `./config/settings.yaml` - Configuration options

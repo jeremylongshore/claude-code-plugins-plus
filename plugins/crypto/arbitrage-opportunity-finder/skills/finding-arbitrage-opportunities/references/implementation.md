@@ -23,7 +23,7 @@
 
 ## Configuration
 
-Configure price sources in `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
+Configure price sources in `./config/settings.yaml`:
 
 ```yaml
 # Primary data sources
@@ -55,7 +55,7 @@ export COINBASE_API_KEY="your-key"
 Find profitable circular paths within a single exchange:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py triangular binance --min-profit 0.5
+python ./scripts/arb_finder.py triangular binance --min-profit 0.5
 ```
 
 Example output:
@@ -73,7 +73,7 @@ Net:   +0.52%
 Compare prices across different blockchains:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py cross-chain USDC \
+python ./scripts/arb_finder.py cross-chain USDC \
   --chains ethereum,polygon,arbitrum
 ```
 
@@ -88,7 +88,7 @@ Shows:
 Continuously monitor for opportunities:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py monitor ETH USDC \
+python ./scripts/arb_finder.py monitor ETH USDC \
   --threshold 0.5 \
   --interval 5
 ```
@@ -106,7 +106,7 @@ Alert format:
 Calculate exact profit for a trade:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py calc \
+python ./scripts/arb_finder.py calc \
   --buy-exchange binance \
   --sell-exchange coinbase \
   --pair ETH/USDC \

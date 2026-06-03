@@ -3,7 +3,7 @@
 ### Phase 1: Initialize & Load Config
 
 1. Read `.changelog-config.json` from the repo root.
-2. Validate it with `${CLAUDE_SKILL_DIR}/scripts/validate_config.py`.
+2. Validate it with `./scripts/validate_config.py`.
 3. Decide date range:
    - Weekly mode: today minus 7 days → today
    - Custom mode: use provided `start_date`/`end_date`
@@ -28,13 +28,13 @@ Create a first draft that:
 
 ### Phase 4: Template Formatting + Frontmatter
 
-1. Load the configured markdown template (or fall back to `${CLAUDE_SKILL_DIR}/assets/weekly-template.md`).
-2. Render the final markdown using `${CLAUDE_SKILL_DIR}/scripts/render_template.py`.
+1. Load the configured markdown template (or fall back to `./assets/weekly-template.md`).
+2. Render the final markdown using `./scripts/render_template.py`.
 3. Ensure frontmatter contains at least `date` (ISO) and `version` (SemVer if known; otherwise `0.0.0`).
 
 ### Phase 5: Quality Gate (Deterministic + Editorial)
 
-1. Run deterministic checks using `${CLAUDE_SKILL_DIR}/scripts/quality_score.py`.
+1. Run deterministic checks using `./scripts/quality_score.py`.
 2. If score is below threshold:
    - Fix structural issues first (missing sections, broken links, invalid frontmatter)
    - Rewrite only the weakest sections (max 2 iterations)

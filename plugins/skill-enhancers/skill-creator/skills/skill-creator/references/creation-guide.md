@@ -5,9 +5,9 @@ Referred from the main SKILL.md Steps 4-10.
 
 ## Step 4: Write SKILL.md
 
-Generate the SKILL.md using the template from `${CLAUDE_SKILL_DIR}/templates/skill-template.md`.
+Generate the SKILL.md using the template from `./templates/skill-template.md`.
 
-**Frontmatter rules** (see `${CLAUDE_SKILL_DIR}/references/frontmatter-spec.md`):
+**Frontmatter rules** (see `./references/frontmatter-spec.md`):
 
 Required fields:
 
@@ -94,7 +94,7 @@ Additional guidelines:
 - Concise — Claude is smart, don't over-explain
 - Concrete examples over abstract descriptions
 - Reference supporting files with relative markdown links: `details` or `API` — Claude reads these on demand
-- Use `${CLAUDE_SKILL_DIR}/` in DCI/bash contexts only: exclamation + backtick-wrapped command, e.g. `cat ${CLAUDE_SKILL_DIR}/references/config.md`
+- Use `./` in DCI/bash contexts only: exclamation + backtick-wrapped command, e.g. `cat ./references/config.md`
 - Sections >20 lines (Output, Error Handling, Examples) → offload to `references/` with relative links
 - If skill has 3+ distinct user operations → split into individual `commands/*.md` files
 - Add DCI for common discovery: file existence checks, git status, tool version detection
@@ -112,9 +112,9 @@ Additional guidelines:
 - `${CLAUDE_SESSION_ID}` - current session ID
 - `` !`command` `` syntax — dynamic context injection (Anthropic spec feature):
   - Runs shell command at skill activation time, injects stdout into body
-  - **Use for**: always-needed, small references (<5KB) — e.g., `!`cat ${CLAUDE_SKILL_DIR}/references/config.md``
+  - **Use for**: always-needed, small references (<5KB) — e.g., `!`cat ./references/config.md``
   - **Don't use for**: large references (>5KB), conditional content, or anything that varies by mode
-  - Conditional or large references → keep manual `Load ${CLAUDE_SKILL_DIR}/references/...` instructions
+  - Conditional or large references → keep manual `Load ./references/...` instructions
 
 ## Step 5: Create Supporting Files
 
@@ -144,11 +144,11 @@ Additional guidelines:
 
 ## Step 6: Validate
 
-Run validation (see `${CLAUDE_SKILL_DIR}/references/validation-rules.md`):
+Run validation (see `./references/validation-rules.md`):
 
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/scripts/validate-skill.py {skill-dir}/SKILL.md
-python3 ${CLAUDE_SKILL_DIR}/scripts/validate-skill.py --grade {skill-dir}/SKILL.md
+python3 ./scripts/validate-skill.py {skill-dir}/SKILL.md
+python3 ./scripts/validate-skill.py --grade {skill-dir}/SKILL.md
 ```
 
 Standard tier is the default (no required fields, broad compatibility). Use `--enterprise` for full 100-point marketplace grading.
@@ -159,14 +159,14 @@ Standard tier is the default (no required fields, broad compatibility). Use `--e
 - Description: third person, what + when, keywords, length
 - Body: under 500 lines, no absolute paths, has instructions + examples
 - Tools: valid names, scoped Bash
-- Resources: all `${CLAUDE_SKILL_DIR}/` references exist
+- Resources: all `./` references exist
 - Anti-patterns: Windows paths, nested refs, hardcoded model IDs
 - Progressive disclosure: appropriate use of references/
 
 **If validation fails:** fix issues and re-run. Common fixes:
 
 - Scope Bash tools: `Bash(git:*)` not `Bash`
-- Remove absolute paths, use `${CLAUDE_SKILL_DIR}/`
+- Remove absolute paths, use `./`
 - Split long SKILL.md into references
 - Add missing sections (Overview, Prerequisites, Output)
 - Move author/version to top-level if nested in metadata
@@ -258,7 +258,7 @@ Ask for the SKILL.md path or detect from context. Common locations:
 ### Step V2: Run Validator
 
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/scripts/validate-skill.py --grade {path}/SKILL.md
+python3 ./scripts/validate-skill.py --grade {path}/SKILL.md
 ```
 
 ### Step V3: Review Grade
@@ -276,7 +276,7 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/validate-skill.py --grade {path}/SKILL.md
 
 Grade scale: A (90+), B (80-89), C (70-79), D (60-69), F (<60)
 
-See `${CLAUDE_SKILL_DIR}/references/validation-rules.md` for detailed sub-criteria.
+See `./references/validation-rules.md` for detailed sub-criteria.
 
 ### Step V4: Report Results
 
@@ -289,28 +289,28 @@ If the user says "fix it" or "auto-fix", apply the suggested improvements:
 1. Add missing sections (Overview, Prerequisites, Output)
 2. Add "Use when" / "Trigger with" to description
 3. Move author/version from metadata to top-level
-4. Fix path variables to `${CLAUDE_SKILL_DIR}/`
+4. Fix path variables to `./`
 5. Re-run grading to confirm improvement
 
 ## Running and Evaluating Test Cases
 
-For detailed empirical eval workflow (Steps E1-E5), read `${CLAUDE_SKILL_DIR}/references/advanced-eval-workflow.md`.
+For detailed empirical eval workflow (Steps E1-E5), read `./references/advanced-eval-workflow.md`.
 
-**Quick summary:** Spawn with-skill and baseline subagents in parallel -> draft assertions while running -> capture timing data from task notifications -> grade with `${CLAUDE_SKILL_DIR}/agents/grader.md` -> aggregate with `scripts/aggregate_benchmark.py` -> launch `eval-viewer/generate_review.py` for interactive human review -> read `feedback.json`.
+**Quick summary:** Spawn with-skill and baseline subagents in parallel -> draft assertions while running -> capture timing data from task notifications -> grade with `./agents/grader.md` -> aggregate with `scripts/aggregate_benchmark.py` -> launch `eval-viewer/generate_review.py` for interactive human review -> read `feedback.json`.
 
 ## Improving the Skill
 
-For iteration loop details, read `${CLAUDE_SKILL_DIR}/references/advanced-eval-workflow.md` (section "Improving the Skill").
+For iteration loop details, read `./references/advanced-eval-workflow.md` (section "Improving the Skill").
 
 **Key principles:** Generalize from feedback (don't overfit), keep prompts lean, explain the *why* behind rules (not just prescriptions), and bundle repeated helper scripts.
 
 ## Description Optimization (Automated)
 
-For the full pipeline (Steps D1-D4), read `${CLAUDE_SKILL_DIR}/references/advanced-eval-workflow.md` (section "Description Optimization"). Quick summary: generate 20 realistic trigger eval queries -> review with user via `${CLAUDE_SKILL_DIR}/assets/eval_review.html` -> run `python -m scripts.run_loop` (60/40 train/test, 3 runs/query, up to 5 iterations) -> apply `best_description`.
+For the full pipeline (Steps D1-D4), read `./references/advanced-eval-workflow.md` (section "Description Optimization"). Quick summary: generate 20 realistic trigger eval queries -> review with user via `./assets/eval_review.html` -> run `python -m scripts.run_loop` (60/40 train/test, 3 runs/query, up to 5 iterations) -> apply `best_description`.
 
 ## Advanced: Blind Comparison
 
-For A/B testing between skill versions, read `${CLAUDE_SKILL_DIR}/agents/comparator.md` and `${CLAUDE_SKILL_DIR}/agents/analyzer.md`. Optional; most users won't need it.
+For A/B testing between skill versions, read `./agents/comparator.md` and `./agents/analyzer.md`. Optional; most users won't need it.
 
 ## Packaging
 
@@ -318,7 +318,7 @@ For A/B testing between skill versions, read `${CLAUDE_SKILL_DIR}/agents/compara
 
 ## Platform-Specific Notes
 
-See `${CLAUDE_SKILL_DIR}/references/advanced-eval-workflow.md` (section "Platform-Specific Notes").
+See `./references/advanced-eval-workflow.md` (section "Platform-Specific Notes").
 
 - **Claude.ai**: No subagents — run tests yourself, skip benchmarking/description optimization.
 - **Cowork**: Full subagent workflow. Use `--static` for eval viewer. Generate viewer BEFORE self-evaluation.

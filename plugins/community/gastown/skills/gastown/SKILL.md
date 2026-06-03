@@ -52,11 +52,11 @@ The Cognition Engine. Track work with convoys; sling to agents.
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+See `./references/errors.md` for comprehensive error handling.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `./references/examples.md` for detailed examples.
 
 ## Resources
 

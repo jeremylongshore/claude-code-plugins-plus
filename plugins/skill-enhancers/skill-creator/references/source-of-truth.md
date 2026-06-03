@@ -75,7 +75,7 @@ skill-name/
 
 - **`${CLAUDE_SKILL_DIR}`** - resolves to the skill's root directory at runtime (2026 standard)
 - **`{baseDir}`** - legacy alias, still works in Claude Code
-- All internal references SHOULD use `${CLAUDE_SKILL_DIR}/` prefix
+- All internal references SHOULD use `./` prefix
 - One-level-deep file references only (no `{baseDir}/references/subdir/file.md`)
 - No absolute paths (`/home/...`, `/Users/...`, `C:\...`)
 - No path escapes (`{baseDir}/../other-skill/`)
@@ -344,8 +344,8 @@ Session tracking: ${CLAUDE_SESSION_ID}
 
 | Scenario | Method | Why |
 |----------|--------|-----|
-| Always-needed, small (<5KB) | `` !`cat ${CLAUDE_SKILL_DIR}/references/small.md` `` | Saves a Read tool call, always available |
-| Conditional (mode-dependent) | Manual `Load ${CLAUDE_SKILL_DIR}/references/...` | Only loads when the branch executes |
+| Always-needed, small (<5KB) | `` !`cat ./references/small.md` `` | Saves a Read tool call, always available |
+| Conditional (mode-dependent) | Manual `Load ./references/...` | Only loads when the branch executes |
 | Large (>5KB) | Manual load | Avoids bloating context on every activation |
 | Dynamic state (git log, env) | `` !`git log --oneline -5` `` | Fresh data at activation time |
 

@@ -67,7 +67,7 @@ mode**: pick the single tier from the user's prompt.
 > already exists at `~/.contribute-system/research/<owner>__<repo>.md`,
 > the path is recorded; otherwise it's left empty. The `/contribute`
 > SKILL.md Step 0.5 handler invokes the `@researcher` subagent
-> (`${CLAUDE_SKILL_DIR}/agents/researcher.md`, on disk at `~/.claude/skills/contribute/agents/researcher.md`) to build/refresh the dossier before
+> (`./agents/researcher.md`, on disk at `~/.claude/skills/contribute/agents/researcher.md`) to build/refresh the dossier before
 > any lifecycle transition that needs it. You don't build dossiers — you
 > just discover candidates and let the workflow trigger researcher
 > downstream. Don't pre-emptively rebuild dossiers in scout flows.

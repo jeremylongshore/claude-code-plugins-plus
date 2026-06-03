@@ -56,7 +56,7 @@ The `watch` command monitors pending transactions to a specific contract address
 
 ## Configuration
 
-Edit `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
+Edit `./config/settings.yaml`:
 
 ```yaml
 rpc_endpoints:

@@ -56,7 +56,7 @@ date,open,high,low,close,volume
 
 ## Full Configuration Reference
 
-Edit `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
+Edit `./config/settings.yaml`:
 
 ```yaml
 # API Configuration
@@ -134,11 +134,11 @@ prices = get_current_prices(["BTC", "ETH", "SOL"])
 **CLI Subprocess** (for non-Python or isolation):
 
 ```bash
-PRICES=$(python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbols BTC,ETH --format json)
+PRICES=$(python ./scripts/price_tracker.py --symbols BTC,ETH --format json)
 ```
 
 **Shared Cache** (efficient for batch):
-Multiple skills can read from `${CLAUDE_SKILL_DIR}/data/cache.json` to avoid redundant API calls.
+Multiple skills can read from `./data/cache.json` to avoid redundant API calls.
 
 ## Files
 

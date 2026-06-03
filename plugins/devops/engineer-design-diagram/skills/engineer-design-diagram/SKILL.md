@@ -125,7 +125,7 @@ If node count >50 OR the model signals layout failure (overlapping boxes, arrows
 For generate/diff/watch modes, write structural state to `${CLAUDE_PLUGIN_DATA}/arch-state.json` (or `~/.claude-state/arch-state.json` fallback if the env var is unset):
 
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/scripts/fingerprint.py write --input /tmp/graph.json
+python3 ./scripts/fingerprint.py write --input /tmp/graph.json
 ```
 
 Schema documented in [fingerprint-spec.md](references/fingerprint-spec.md). Fingerprint persists across sessions so `watch` mode can detect drift.
@@ -135,12 +135,12 @@ Schema documented in [fingerprint-spec.md](references/fingerprint-spec.md). Fing
 Run the HTML validator before presenting output:
 
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/scripts/validate_html.py $CWD/.arch/<mode>-<timestamp>.html
+python3 ./scripts/validate_html.py $CWD/.arch/<mode>-<timestamp>.html
 ```
 
 Validator confirms: ARIA labels present, reduced-motion rule exists, no unexpected external script sources beyond Google Fonts. If validation fails, iterate on the template fill — don't ship an inaccessible diagram.
 
-Open the result via `${CLAUDE_SKILL_DIR}/scripts/open_in_browser.sh` (OS-aware: `xdg-open` on Linux, `open` on macOS, `wslview` on WSL). Echo the Mermaid equivalent to the chat as a copy-pasteable text block.
+Open the result via `./scripts/open_in_browser.sh` (OS-aware: `xdg-open` on Linux, `open` on macOS, `wslview` on WSL). Echo the Mermaid equivalent to the chat as a copy-pasteable text block.
 
 ### Feedback Loop
 

@@ -70,7 +70,7 @@ This skill can be integrated with other CI/CD tools to automatically trigger reg
 
 ## Prerequisites
 
-- Historical performance baselines in ${CLAUDE_SKILL_DIR}/performance/baselines/
+- Historical performance baselines in ./performance/baselines/
 - Access to CI/CD performance metrics
 - Statistical analysis tools
 - Defined regression thresholds

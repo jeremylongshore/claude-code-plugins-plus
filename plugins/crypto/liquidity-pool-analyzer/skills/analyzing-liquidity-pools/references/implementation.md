@@ -55,7 +55,7 @@
 
 ## Configuration
 
-Settings in `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
+Settings in `./config/settings.yaml`:
 
 - **Default chain**: Primary chain to query
 - **Cache TTL**: How long to cache subgraph data

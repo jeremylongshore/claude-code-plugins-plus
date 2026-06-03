@@ -66,7 +66,7 @@ This skill can be used in conjunction with other security-related skills to prov
 
 ## Prerequisites
 
-- Access to codebase and configuration files in ${CLAUDE_SKILL_DIR}/
+- Access to codebase and configuration files in ./
 - Security scanning tools installed as needed
 - Understanding of security standards and best practices
 - Permissions for security analysis operations

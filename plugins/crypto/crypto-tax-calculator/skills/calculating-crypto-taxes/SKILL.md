@@ -43,18 +43,18 @@ Calculate cryptocurrency tax obligations from transaction history. Supports FIFO
    | Coinbase | Reports > Tax documents > Transaction history CSV |
    | Binance | Orders > Trade History > Export |
    | Kraken | History > Export |
-   | Generic | See `${CLAUDE_SKILL_DIR}/references/exchange_formats.md` for column mapping |
+   | Generic | See `./references/exchange_formats.md` for column mapping |
 
 2. **Run basic tax calculation** using FIFO (IRS default):
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions your_trades.csv --year 2025  # 2025 = tax year
+   python ./scripts/tax_calculator.py --transactions your_trades.csv --year 2025  # 2025 = tax year
    ```
 
 3. **Compare cost basis methods** to understand tax implications:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions trades.csv --compare-methods
+   python ./scripts/tax_calculator.py --transactions trades.csv --compare-methods
    ```
 
    Methods: `--method fifo` (IRS default), `--method lifo` (Last In First Out), `--method hifo` (minimize gains)
@@ -62,26 +62,26 @@ Calculate cryptocurrency tax obligations from transaction history. Supports FIFO
 4. **Generate Form 8949 report** as CSV:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions trades.csv --method fifo --year 2025 --output form_8949.csv --format csv  # 2025 = tax year
+   python ./scripts/tax_calculator.py --transactions trades.csv --method fifo --year 2025 --output form_8949.csv --format csv  # 2025 = tax year
    ```
 
 5. **Handle income events** (staking, airdrops, mining, DeFi yield):
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions all_events.csv --income-report
+   python ./scripts/tax_calculator.py --transactions all_events.csv --income-report
    ```
 
 6. **Consolidate multi-exchange data** into a unified report:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions coinbase.csv binance.csv kraken.csv --year 2025  # 2025 = tax year
+   python ./scripts/tax_calculator.py --transactions coinbase.csv binance.csv kraken.csv --year 2025  # 2025 = tax year
    ```
 
 ## Output
 
 Reports include short-term and long-term capital gains/losses broken down by transaction, with proceeds, cost basis, and gain/loss per disposal. Summary shows total proceeds, total cost basis, net capital gain, and short/long-term split. Income report lists staking, airdrop, and mining income with fair market values.
 
-See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed output format examples.
+See `./references/implementation.md` for detailed output format examples.
 
 ## Error Handling
 
@@ -122,4 +122,4 @@ python tax_calculator.py --transactions trades.csv --verbose --show-lots
 - IRS Virtual Currency Guidance: https://www.irs.gov/businesses/small-businesses-self-employed/virtual-currencies
 - Form 8949 Instructions: https://www.irs.gov/instructions/i8949
 - CoinGecko API for historical prices
-- `${CLAUDE_SKILL_DIR}/references/implementation.md` - Detailed output formats, configuration, advanced usage
+- `./references/implementation.md` - Detailed output formats, configuration, advanced usage

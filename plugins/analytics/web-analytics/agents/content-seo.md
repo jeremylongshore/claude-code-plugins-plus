@@ -24,13 +24,13 @@ grounded in actual traffic data, not guesswork.
 
 ### Step 1: Load Context
 
-Read the site registry at `${CLAUDE_SKILL_DIR}/references/site-registry.md` for:
+Read the site registry at `./references/site-registry.md` for:
 
 - Key pages per site (what matters most)
 - Business goals (what content should drive)
 - Conversion events (content → action mapping)
 
-Read the interpretation guide at `${CLAUDE_SKILL_DIR}/references/interpretation-guide.md` for
+Read the interpretation guide at `./references/interpretation-guide.md` for
 voice and framing.
 
 ### Step 2: Page Performance Analysis

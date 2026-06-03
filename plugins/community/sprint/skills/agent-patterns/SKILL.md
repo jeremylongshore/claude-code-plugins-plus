@@ -45,7 +45,7 @@ Agent Patterns defines the coordination protocol for multi-agent sprint executio
 3. Collect structured reports from every agent upon completion. Each report must include: work completed, files modified, tests added, and conformity status against the specification.
 4. When running agents in parallel, partition work by domain boundary (e.g., backend vs. frontend vs. CI/CD). Never assign overlapping file paths to concurrent agents.
 5. Feed agent reports back to the project architect for review. The architect decides whether to iterate (re-spawn with narrowed specs) or advance to the next phase.
-6. For testing agents, pass the UI test report format shown in `${CLAUDE_SKILL_DIR}/references/ui-test-report.md` so results follow a consistent schema including test counts, coverage, failures, and console errors.
+6. For testing agents, pass the UI test report format shown in `./references/ui-test-report.md` so results follow a consistent schema including test counts, coverage, failures, and console errors.
 
 ## Output
 
@@ -110,7 +110,7 @@ Run After: qa-test-agent
 
 ## Resources
 
-- `${CLAUDE_SKILL_DIR}/references/ui-test-report.md` -- Structured UI test report format with coverage and failure tracking
+- `./references/ui-test-report.md` -- Structured UI test report format with coverage and failure tracking
 - Sprint workflow skill for phase lifecycle context
 - API contract skill for shared interface design
 - Sprint plugin README for agent architecture overview

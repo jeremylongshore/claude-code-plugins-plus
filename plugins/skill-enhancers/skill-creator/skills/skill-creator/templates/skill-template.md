@@ -122,5 +122,5 @@ These patterns are deprecated but users may encounter them:
 
 ## Resources
 
-- ${CLAUDE_SKILL_DIR}/references/{{REFERENCE_1}}.md - {{REFERENCE_1_PURPOSE}}
-- ${CLAUDE_SKILL_DIR}/scripts/{{SCRIPT_1}}.py - {{SCRIPT_1_PURPOSE}}
+- ./references/{{REFERENCE_1}}.md - {{REFERENCE_1_PURPOSE}}
+- ./scripts/{{SCRIPT_1}}.py - {{SCRIPT_1_PURPOSE}}

@@ -108,7 +108,7 @@ This skill follows a pipeline pattern where market data flows through sequential
 **Command:**
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py
+python ./scripts/scanner.py
 ```
 
 **What happens:**
@@ -127,7 +127,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/scanner.py
 **Command:**
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-change 10 --volume-spike 3x --top 50
+python ./scripts/scanner.py --min-change 10 --volume-spike 3x --top 50
 ```
 
 **What happens:**
@@ -146,7 +146,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-change 10 --volume-spike 3x 
 **Command:**
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py \
+python ./scripts/scanner.py \
   --preset aggressive \
   --category defi \
   --sort-by significance \

@@ -41,7 +41,7 @@ python whale_monitor.py labels --type exchange    # List by type (exchange, fund
 
 ## Watchlist Persistence
 
-Watchlists are stored in `${CLAUDE_SKILL_DIR}/config/watchlist.json`:
+Watchlists are stored in `./config/watchlist.json`:
 
 ```json
 {

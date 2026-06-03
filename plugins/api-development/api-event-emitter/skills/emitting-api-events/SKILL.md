@@ -44,17 +44,17 @@ Build event-driven API architectures using outbound webhooks, Server-Sent Events
 7. Create a dead-letter queue for events that exhaust all delivery retry attempts, with alerting and manual replay capability.
 8. Write integration tests covering event emission, webhook delivery with signature verification, SSE stream connection with reconnection, and dead-letter queue behavior.
 
-See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementation guide.
+See `./references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `${CLAUDE_SKILL_DIR}/src/events/emitter.js` - Event emission service with outbox pattern
-- `${CLAUDE_SKILL_DIR}/src/events/schemas/` - Versioned event type schema definitions
-- `${CLAUDE_SKILL_DIR}/src/events/webhooks/` - Webhook delivery, signing, and retry logic
-- `${CLAUDE_SKILL_DIR}/src/events/sse.js` - Server-Sent Events streaming endpoint
-- `${CLAUDE_SKILL_DIR}/src/routes/webhooks.js` - Webhook subscription management API
-- `${CLAUDE_SKILL_DIR}/src/events/dead-letter.js` - Dead-letter queue handler with replay
-- `${CLAUDE_SKILL_DIR}/tests/events/` - Event emission and delivery integration tests
+- `./src/events/emitter.js` - Event emission service with outbox pattern
+- `./src/events/schemas/` - Versioned event type schema definitions
+- `./src/events/webhooks/` - Webhook delivery, signing, and retry logic
+- `./src/events/sse.js` - Server-Sent Events streaming endpoint
+- `./src/routes/webhooks.js` - Webhook subscription management API
+- `./src/events/dead-letter.js` - Dead-letter queue handler with replay
+- `./tests/events/` - Event emission and delivery integration tests
 
 ## Error Handling
 
@@ -66,7 +66,7 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementati
 | SSE connection memory leak | Server accumulates stale SSE connections without cleanup | Implement heartbeat comments (`:keepalive\n\n`) every 15 seconds; detect and close dead connections |
 | Schema version mismatch | Consumer expects v1 event format but receives v2 | Include `version` field in event envelope; support simultaneous v1/v2 delivery; deprecate old versions with notice |
 
-Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patterns.
+Refer to `./references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
@@ -76,7 +76,7 @@ Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patt
 
 **Transactional outbox**: Write the event record to an `outbox` table within the same database transaction as the API mutation, then poll the outbox table every 100ms to publish events to Kafka, ensuring at-least-once delivery.
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for additional examples.
+See `./references/examples.md` for additional examples.
 
 ## Resources
 

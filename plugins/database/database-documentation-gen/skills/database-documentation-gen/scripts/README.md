@@ -12,13 +12,13 @@ All scripts are executable Python scripts that can be run directly:
 
 ```bash
 # Initialize a new database documentation project
-python ${CLAUDE_SKILL_DIR}/scripts/init_db_docs.py --project my_database --db-type postgresql
+python ./scripts/init_db_docs.py --project my_database --db-type postgresql
 
 # Validate the configuration
-python ${CLAUDE_SKILL_DIR}/scripts/validate_config.py --config ./my_database/db_docs_config.json
+python ./scripts/validate_config.py --config ./my_database/db_docs_config.json
 
 # Generate ERD diagrams
-python ${CLAUDE_SKILL_DIR}/scripts/erd_generator.py --config ./my_database/db_docs_config.json --format all
+python ./scripts/erd_generator.py --config ./my_database/db_docs_config.json --format all
 ```
 
 ## Requirements

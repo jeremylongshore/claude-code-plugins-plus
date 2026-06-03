@@ -4,7 +4,7 @@
 
 ### 1. Authentication Bypass via SQL Injection
 
-**File**: ${CLAUDE_SKILL_DIR}/src/auth/login.py
+**File**: ./src/auth/login.py
 **Line**: 45
 **Severity**: CRITICAL (CVSS 9.8)
 
@@ -51,7 +51,7 @@ def authenticate_user(username, password):
 
 ### 2. Data Exfiltration via UNION-based SQLi
 
-**File**: ${CLAUDE_SKILL_DIR}/src/api/products.py
+**File**: ./src/api/products.py
 **Line**: 78
 **Severity**: CRITICAL (CVSS 8.6)
 

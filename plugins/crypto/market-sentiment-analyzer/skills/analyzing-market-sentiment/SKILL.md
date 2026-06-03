@@ -43,22 +43,22 @@ Cryptocurrency market sentiment analysis combining Fear & Greed Index, news keyw
 
    ```bash
    # Quick market sentiment check
-   python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py
+   python ./scripts/sentiment_analyzer.py
 
    # Coin-specific sentiment
-   python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --coin BTC
+   python ./scripts/sentiment_analyzer.py --coin BTC
 
    # Detailed breakdown with all components
-   python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --detailed
+   python ./scripts/sentiment_analyzer.py --detailed
 
    # Custom time period
-   python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --period 7d --detailed
+   python ./scripts/sentiment_analyzer.py --period 7d --detailed
    ```
 
 3. **Export results** for trading models or analysis:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --format json --output sentiment.json
+   python ./scripts/sentiment_analyzer.py --format json --output sentiment.json
    ```
 
 4. **Present results** to the user:
@@ -99,7 +99,7 @@ Composite sentiment score (0-100) with classification and weighted component bre
 | News fetch failed | Network issue | Reduces weight of news component |
 | Invalid coin | Unknown symbol | Proceeds with market-wide analysis |
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+See `./references/errors.md` for comprehensive error handling.
 
 ## Examples
 
@@ -107,26 +107,26 @@ Sentiment analysis patterns from quick checks to custom-weighted deep analysis:
 
 ```bash
 # Quick market sentiment
-python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py
+python ./scripts/sentiment_analyzer.py
 
 # Bitcoin-specific sentiment
-python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --coin BTC
+python ./scripts/sentiment_analyzer.py --coin BTC
 
 # Detailed analysis with component breakdown
-python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --detailed
+python ./scripts/sentiment_analyzer.py --detailed
 
 # Custom weights emphasizing news
-python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --weights "news:0.5,fng:0.3,momentum:0.2"
+python ./scripts/sentiment_analyzer.py --weights "news:0.5,fng:0.3,momentum:0.2"
 
 # Weekly sentiment trend
-python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --period 7d --detailed
+python ./scripts/sentiment_analyzer.py --period 7d --detailed
 ```
 
 ## Resources
 
-- `${CLAUDE_SKILL_DIR}/references/implementation.md` - CLI options, classifications, JSON format, contrarian theory
-- `${CLAUDE_SKILL_DIR}/references/errors.md` - Comprehensive error handling
-- `${CLAUDE_SKILL_DIR}/references/examples.md` - Detailed usage examples
+- `./references/implementation.md` - CLI options, classifications, JSON format, contrarian theory
+- `./references/errors.md` - Comprehensive error handling
+- `./references/examples.md` - Detailed usage examples
 - Alternative.me Fear & Greed: https://alternative.me/crypto/fear-and-greed-index/
 - CoinGecko API: https://www.coingecko.com/en/api
-- `${CLAUDE_SKILL_DIR}/config/settings.yaml` - Configuration options
+- `./config/settings.yaml` - Configuration options

@@ -37,7 +37,7 @@ Analyze staking opportunities across PoS blockchains and liquid staking protocol
 1. **Compare staking options** for a specific asset:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --asset ETH
+   python ./scripts/staking_optimizer.py --asset ETH
    ```
 
    Shows protocol name, type (native vs liquid), gross/net APY, risk score, TVL, and lock-up period.
@@ -45,7 +45,7 @@ Analyze staking opportunities across PoS blockchains and liquid staking protocol
 2. **Analyze with position size** for gas-adjusted yields:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --asset ETH --amount 10
+   python ./scripts/staking_optimizer.py --asset ETH --amount 10
    ```
 
    Calculates effective APY accounting for gas costs and projects returns at 1M, 3M, 6M, and 1Y.
@@ -53,7 +53,7 @@ Analyze staking opportunities across PoS blockchains and liquid staking protocol
 3. **Optimize existing portfolio** with current positions:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --optimize \
+   python ./scripts/staking_optimizer.py --optimize \
      --positions "10 ETH @ lido 4.0%, 100 ATOM @ native 18%, 50 DOT @ native 14%"
    ```
 
@@ -62,14 +62,14 @@ Analyze staking opportunities across PoS blockchains and liquid staking protocol
 4. **Compare protocols or run risk assessment**:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --compare --protocols lido,rocket-pool,frax-ether
-   python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --asset ETH --detailed
+   python ./scripts/staking_optimizer.py --compare --protocols lido,rocket-pool,frax-ether
+   python ./scripts/staking_optimizer.py --asset ETH --detailed
    ```
 
 5. **Export results** in JSON or CSV:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --asset ETH --format json --output staking.json
+   python ./scripts/staking_optimizer.py --asset ETH --format json --output staking.json
    ```
 
 ## Output
@@ -95,7 +95,7 @@ Comparison table ranked by risk-adjusted return (Net APY multiplied by Risk Scor
 | Rate limited | Too many API calls | Automatic retry with backoff |
 | No data found | Protocol not indexed | Falls back to known protocol list |
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+See `./references/errors.md` for comprehensive error handling.
 
 ## Examples
 
@@ -103,23 +103,23 @@ Common staking analysis workflows from single-asset comparison to full portfolio
 
 ```bash
 # Quick ETH staking comparison
-python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --asset ETH
+python ./scripts/staking_optimizer.py --asset ETH
 
 # Large position with full risk analysis
-python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --asset ETH --amount 100 --detailed
+python ./scripts/staking_optimizer.py --asset ETH --amount 100 --detailed
 
 # Multi-asset comparison exported to CSV
-python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --assets ETH,SOL,ATOM --format csv
+python ./scripts/staking_optimizer.py --assets ETH,SOL,ATOM --format csv
 
 # Portfolio optimization with current positions
-python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --optimize \
+python ./scripts/staking_optimizer.py --optimize \
   --positions "50 ETH @ lido 3.6%, 500 SOL @ marinade 7.5%"  # 500 - minimum stake amount in tokens
 ```
 
 ## Resources
 
-- `${CLAUDE_SKILL_DIR}/references/implementation.md` - Optimization reports, risk assessment details, disclaimers
-- `${CLAUDE_SKILL_DIR}/references/errors.md` - Comprehensive error handling
+- `./references/implementation.md` - Optimization reports, risk assessment details, disclaimers
+- `./references/errors.md` - Comprehensive error handling
 - DeFiLlama Yields: https://defillama.com/yields
 - StakingRewards: https://www.stakingrewards.com
 - Lido: https://lido.fi | Rocket Pool: https://rocketpool.net

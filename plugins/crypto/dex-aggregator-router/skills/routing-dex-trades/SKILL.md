@@ -36,44 +36,44 @@ Optimal trade routing across decentralized exchanges by aggregating quotes from 
 1. Install Python 3.9+ with `httpx`, `pydantic`, and `rich` packages
 2. Verify network access to aggregator APIs (1inch, Paraswap, 0x)
 3. Optionally add API keys for 1inch and 0x (higher rate limits)
-4. Copy settings: `cp ${CLAUDE_SKILL_DIR}/config/settings.yaml.example ${CLAUDE_SKILL_DIR}/config/settings.yaml`
+4. Copy settings: `cp ./config/settings.yaml.example ./config/settings.yaml`
 
 ## Instructions
 
 1. Get a quick quote for the single best price with gas cost and effective rate:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 1.0
+   python ./scripts/dex_router.py ETH USDC 1.0
    ```
 
 2. Compare all DEXs to see quotes ranked by effective rate (after gas):
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 5.0 --compare
+   python ./scripts/dex_router.py ETH USDC 5.0 --compare
    ```
 
 3. Analyze multi-hop routes to compare direct vs. multi-hop (2-3 pools) with hop-by-hop breakdown:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 10.0 --routes
+   python ./scripts/dex_router.py ETH USDC 10.0 --routes
    ```
 
 4. Split large orders ($10K+) across multiple DEXs to minimize total price impact:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 100.0 --split
+   python ./scripts/dex_router.py ETH USDC 100.0 --split
    ```
 
 5. Assess MEV risk (sandwich attack risk score: LOW/MEDIUM/HIGH) before executing:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 50.0 --mev-check
+   python ./scripts/dex_router.py ETH USDC 50.0 --mev-check
    ```
 
 6. Run full analysis combining all features for comprehensive output:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 25.0 --full --output json
+   python ./scripts/dex_router.py ETH USDC 25.0 --full --output json
    ```
 
 ## Output
@@ -84,7 +84,7 @@ Optimal trade routing across decentralized exchanges by aggregating quotes from 
 - **Split Mode**: Optimal allocation percentages with dollar savings vs. single-venue
 - **MEV Assessment**: Risk score, exposure estimate, protection recommendations
 
-See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed output examples.
+See `./references/implementation.md` for detailed output examples.
 
 ## Error Handling
 
@@ -95,33 +95,33 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed output examp
 | No Route Found | Low liquidity token | Try larger DEXs or reduce trade size |
 | Network Timeout | Aggregator down | Retry or check aggregator status page |
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+See `./references/errors.md` for comprehensive error handling.
 
 ## Examples
 
 **Compare prices for a 5 ETH swap:**
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 5.0 --compare
+python ./scripts/dex_router.py ETH USDC 5.0 --compare
 ```
 
 **Find optimal split for a large order:**
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 100.0 --split
+python ./scripts/dex_router.py ETH USDC 100.0 --split
 ```
 
 **Check MEV risk before executing:**
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 50.0 --mev-check
+python ./scripts/dex_router.py ETH USDC 50.0 --mev-check
 ```
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for multi-hop discovery and MEV-protected execution examples.
+See `./references/examples.md` for multi-hop discovery and MEV-protected execution examples.
 
 ## Resources
 
-- `${CLAUDE_SKILL_DIR}/references/implementation.md` - Trade size guide, split optimization, MEV scoring, API config
+- `./references/implementation.md` - Trade size guide, split optimization, MEV scoring, API config
 - [1inch API](https://docs.1inch.io/) - Primary aggregator
 - [Paraswap API](https://developers.paraswap.network/) - Secondary aggregator
 - [0x API](https://0x.org/docs/api) - Third aggregator

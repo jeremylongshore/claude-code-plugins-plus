@@ -80,7 +80,7 @@ Risk levels:
 
 ## API Configuration
 
-Edit `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
+Edit `./config/settings.yaml`:
 
 ```yaml
 api_keys:

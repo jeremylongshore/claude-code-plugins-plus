@@ -44,17 +44,17 @@ Build scalable WebSocket servers for real-time bidirectional communication using
 8. Configure Redis pub/sub adapter for horizontal scaling so messages broadcast from any server instance reach all connected clients across the cluster.
 9. Write connection lifecycle tests covering connect, authenticate, subscribe, message exchange, reconnect, and graceful disconnect scenarios.
 
-See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementation guide.
+See `./references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `${CLAUDE_SKILL_DIR}/src/ws/server.js` - WebSocket server setup and upgrade handling
-- `${CLAUDE_SKILL_DIR}/src/ws/handlers/` - Per-message-type handler functions
-- `${CLAUDE_SKILL_DIR}/src/ws/rooms.js` - Room/channel subscription management
-- `${CLAUDE_SKILL_DIR}/src/ws/registry.js` - Active connection tracking registry
-- `${CLAUDE_SKILL_DIR}/src/ws/heartbeat.js` - Ping/pong keepalive logic
-- `${CLAUDE_SKILL_DIR}/src/ws/adapters/redis.js` - Redis pub/sub adapter for scaling
-- `${CLAUDE_SKILL_DIR}/tests/ws/` - WebSocket connection and messaging tests
+- `./src/ws/server.js` - WebSocket server setup and upgrade handling
+- `./src/ws/handlers/` - Per-message-type handler functions
+- `./src/ws/rooms.js` - Room/channel subscription management
+- `./src/ws/registry.js` - Active connection tracking registry
+- `./src/ws/heartbeat.js` - Ping/pong keepalive logic
+- `./src/ws/adapters/redis.js` - Redis pub/sub adapter for scaling
+- `./tests/ws/` - WebSocket connection and messaging tests
 
 ## Error Handling
 
@@ -66,7 +66,7 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementati
 | Memory leak | Connection registry grows unbounded from stale entries | Implement heartbeat-based cleanup sweep every 60s; enforce max connections per server |
 | Message storm | Single client flooding messages beyond acceptable rate | Apply per-connection message rate limiting; disconnect abusive clients with 1008 |
 
-Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patterns.
+Refer to `./references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
@@ -76,7 +76,7 @@ Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patt
 
 **Collaborative editing**: Operational transformation relay server that receives edit operations from clients, transforms against concurrent operations, and broadcasts resolved changes to all document subscribers.
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for additional examples.
+See `./references/examples.md` for additional examples.
 
 ## Resources
 

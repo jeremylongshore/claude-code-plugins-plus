@@ -34,47 +34,47 @@ Simulate flash loan strategies across Aave V3, dYdX, and Balancer with profitabi
 1. Install Python 3.9+ with `web3`, `httpx`, and `rich` packages
 2. Configure RPC endpoint access (free public RPCs via https://chainlist.org work fine)
 3. Optionally add Etherscan API key for better gas estimates
-4. Set RPC in `${CLAUDE_SKILL_DIR}/config/settings.yaml` or use `ETH_RPC_URL` env var
+4. Set RPC in `./config/settings.yaml` or use `ETH_RPC_URL` env var
 
 ## Instructions
 
 1. Simulate a two-DEX arbitrage with automatic fee and gas calculation:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py arbitrage ETH USDC 100 \
+   python ./scripts/flash_simulator.py arbitrage ETH USDC 100 \
      --dex-buy uniswap --dex-sell sushiswap
    ```
 
 2. Compare flash loan providers to find the cheapest for your strategy:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py arbitrage ETH USDC 100 --compare-providers
+   python ./scripts/flash_simulator.py arbitrage ETH USDC 100 --compare-providers
    ```
 
 3. Analyze liquidation profitability on lending protocols:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py liquidation \
+   python ./scripts/flash_simulator.py liquidation \
      --protocol aave --health-factor 0.95
    ```
 
 4. Simulate triangular arbitrage with multi-hop circular paths:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py triangular \
+   python ./scripts/flash_simulator.py triangular \
      ETH USDC WBTC ETH --amount 50
    ```
 
 5. Add risk assessment (MEV competition, execution, protocol, liquidity) to any simulation:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py arbitrage ETH USDC 100 --risk-analysis
+   python ./scripts/flash_simulator.py arbitrage ETH USDC 100 --risk-analysis
    ```
 
 6. Run full analysis combining all features:
 
    ```bash
-   python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py arbitrage ETH USDC 100 \
+   python ./scripts/flash_simulator.py arbitrage ETH USDC 100 \
      --full --output json > simulation.json
    ```
 
@@ -85,7 +85,7 @@ Simulate flash loan strategies across Aave V3, dYdX, and Balancer with profitabi
 - **Comparison Mode**: All providers ranked by net profit with fee differences
 - **Risk Analysis**: Competition, execution, protocol, and liquidity scores (0-100) with viability grade (A-F)
 
-See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed output examples and risk scoring methodology.
+See `./references/implementation.md` for detailed output examples and risk scoring methodology.
 
 ## Error Handling
 
@@ -96,34 +96,34 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed output examp
 | No Profitable Route | All routes lose after costs | Try different pairs or amounts |
 | Insufficient Liquidity | Trade exceeds pool depth | Reduce amount or split across pools |
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+See `./references/errors.md` for comprehensive error handling.
 
 ## Examples
 
 **Basic arbitrage simulation:**
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py arbitrage ETH USDC 100 \
+python ./scripts/flash_simulator.py arbitrage ETH USDC 100 \
   --dex-buy uniswap --dex-sell sushiswap
 ```
 
 **Find cheapest provider:**
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py arbitrage ETH USDC 100 --compare-providers
+python ./scripts/flash_simulator.py arbitrage ETH USDC 100 --compare-providers
 ```
 
 **Liquidation opportunity scan:**
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py liquidation --protocol aave --health-factor 0.95
+python ./scripts/flash_simulator.py liquidation --protocol aave --health-factor 0.95
 ```
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for multi-provider comparison and backtesting examples.
+See `./references/examples.md` for multi-provider comparison and backtesting examples.
 
 ## Resources
 
-- `${CLAUDE_SKILL_DIR}/references/implementation.md` - Provider comparison, strategy details, risk scoring, output modes
+- `./references/implementation.md` - Provider comparison, strategy details, risk scoring, output modes
 - [Aave V3 Flash Loans](https://docs.aave.com/developers/guides/flash-loans)
 - dYdX Flash Loans
 - Balancer Flash Loans

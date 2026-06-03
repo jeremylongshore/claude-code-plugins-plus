@@ -56,16 +56,16 @@
 
 ```bash
 # Multiple filters combined
-python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py --coin ETH --category defi --period 24h --top 15
+python ./scripts/news_aggregator.py --coin ETH --category defi --period 24h --top 15
 
 # High-relevance news only
-python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py --min-score 70 --top 10
+python ./scripts/news_aggregator.py --min-score 70 --top 10
 
 # Multiple coins
-python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py --coins BTC,ETH,SOL
+python ./scripts/news_aggregator.py --coins BTC,ETH,SOL
 
 # Export to JSON file
-python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py --format json --output crypto_news.json
+python ./scripts/news_aggregator.py --format json --output crypto_news.json
 ```
 
 ---

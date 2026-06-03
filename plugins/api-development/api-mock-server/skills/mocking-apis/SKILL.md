@@ -44,17 +44,17 @@ Generate mock API servers from OpenAPI specifications that return realistic, sch
 7. Enable request recording that captures all incoming requests with timestamps and headers for later replay in contract tests.
 8. Create a startup script that launches the mock server on a configurable port with hot-reload when fixture files change.
 
-See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementation guide.
+See `./references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `${CLAUDE_SKILL_DIR}/mocks/server.js` - Mock server entry point with route registration
-- `${CLAUDE_SKILL_DIR}/mocks/fixtures/` - Per-endpoint response fixture JSON files
-- `${CLAUDE_SKILL_DIR}/mocks/generators/` - Dynamic response generators using Faker.js
-- `${CLAUDE_SKILL_DIR}/mocks/scenarios/` - Error scenario configurations (4xx, 5xx responses)
-- `${CLAUDE_SKILL_DIR}/mocks/state.js` - In-memory state store for CRUD behavior
-- `${CLAUDE_SKILL_DIR}/mocks/recordings/` - Captured request logs for contract testing
-- `${CLAUDE_SKILL_DIR}/docker-compose.mock.yml` - Docker configuration for mock server
+- `./mocks/server.js` - Mock server entry point with route registration
+- `./mocks/fixtures/` - Per-endpoint response fixture JSON files
+- `./mocks/generators/` - Dynamic response generators using Faker.js
+- `./mocks/scenarios/` - Error scenario configurations (4xx, 5xx responses)
+- `./mocks/state.js` - In-memory state store for CRUD behavior
+- `./mocks/recordings/` - Captured request logs for contract testing
+- `./docker-compose.mock.yml` - Docker configuration for mock server
 
 ## Error Handling
 
@@ -66,7 +66,7 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementati
 | Port conflict | Mock server port already in use by another dev service | Make port configurable via environment variable; default to spec-defined server URL port |
 | State leak between tests | Stateful mock retains data from previous test run | Reset in-memory state before each test suite; expose `POST /mock/reset` admin endpoint |
 
-Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patterns.
+Refer to `./references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
@@ -76,7 +76,7 @@ Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patt
 
 **Contract testing**: Record all requests to the mock server during frontend E2E tests, then replay them against the real backend to verify the mock accurately represents actual API behavior.
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for additional examples.
+See `./references/examples.md` for additional examples.
 
 ## Resources
 

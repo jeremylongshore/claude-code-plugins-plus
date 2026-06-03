@@ -25,14 +25,14 @@ referral analysis, and detecting emerging traffic patterns (especially AI referr
 
 ### Step 1: Read Context
 
-Read the site registry at `${CLAUDE_SKILL_DIR}/references/site-registry.md` for:
+Read the site registry at `./references/site-registry.md` for:
 
 - Expected traffic sources per site
 - Baseline visitor counts
 - Alert thresholds
 - Seasonal adjustments (weekend drops, holiday impacts)
 
-Read the interpretation guide at `${CLAUDE_SKILL_DIR}/references/interpretation-guide.md` for
+Read the interpretation guide at `./references/interpretation-guide.md` for
 voice and framing standards.
 
 ### Step 2: Traffic Source Analysis

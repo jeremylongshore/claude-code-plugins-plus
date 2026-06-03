@@ -51,7 +51,7 @@ Total Income:                                     $485.00
 
 ## Configuration
 
-Settings in `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
+Settings in `./config/settings.yaml`:
 
 - **Default method**: Cost basis method (fifo, lifo, hifo)
 - **Tax year start**: January 1 (US) or fiscal year

@@ -4,7 +4,7 @@
 
 ### 1. Session Fixation Vulnerability
 
-**File**: ${CLAUDE_SKILL_DIR}/src/auth/login.js
+**File**: ./src/auth/login.js
 **Line**: 45
 **Issue**: Session ID not regenerated after authentication
 **Risk**: Attacker can hijack authenticated session
@@ -34,7 +34,7 @@ function handleLogin(req, res) {
 
 ### 2. Missing HttpOnly Flag
 
-**File**: ${CLAUDE_SKILL_DIR}/config/session.js
+**File**: ./config/session.js
 **Line**: 12
 **Issue**: Session cookies accessible to JavaScript
 **Risk**: XSS attacks can steal session tokens

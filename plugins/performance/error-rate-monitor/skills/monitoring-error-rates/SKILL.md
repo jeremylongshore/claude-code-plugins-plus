@@ -71,7 +71,7 @@ This skill can be integrated with other monitoring and alerting tools, such as P
 
 - Access to application logs and metrics
 - Monitoring infrastructure (Prometheus, Grafana, or similar)
-- Read permissions for log files in ${CLAUDE_SKILL_DIR}/logs/
+- Read permissions for log files in ./logs/
 - Network access to monitoring endpoints
 
 ## Instructions

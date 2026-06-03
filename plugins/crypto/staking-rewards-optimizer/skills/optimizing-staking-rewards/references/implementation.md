@@ -74,7 +74,7 @@ Use `--protocol <name> --detailed` for full protocol analysis including:
 - Slashing incident reports
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --protocol rocket-pool --detailed
+python ./scripts/staking_optimizer.py --protocol rocket-pool --detailed
 ```
 
 ## Important Notes

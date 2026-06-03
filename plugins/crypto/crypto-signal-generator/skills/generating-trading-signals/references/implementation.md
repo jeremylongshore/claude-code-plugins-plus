@@ -67,7 +67,7 @@
 
 ## Configuration
 
-Edit `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
+Edit `./config/settings.yaml`:
 
 ```yaml
 indicators:
@@ -91,10 +91,10 @@ Test signals historically:
 
 ```bash
 # Generate signal
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --symbols BTC-USD --detail
+python ./scripts/scanner.py --symbols BTC-USD --detail
 
 # Backtest the strategy that generated the signal
-python ${CLAUDE_SKILL_DIR}/../trading-strategy-backtester/skills/backtesting-trading-strategies/scripts/backtest.py \
+python ../trading-strategy-backtester/skills/backtesting-trading-strategies/scripts/backtest.py \
   --strategy rsi_reversal --symbol BTC-USD --period 1y
 ```
 

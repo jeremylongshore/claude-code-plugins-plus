@@ -44,16 +44,16 @@ Create secure webhook receiver endpoints with HMAC signature verification, idemp
 7. Implement dead-letter handling for events that fail processing after maximum retry attempts, logging the full payload for manual inspection.
 8. Write tests that replay recorded webhook payloads with valid and tampered signatures to verify acceptance and rejection behavior.
 
-See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementation guide.
+See `./references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `${CLAUDE_SKILL_DIR}/src/webhooks/receiver.js` - Webhook endpoint with signature verification
-- `${CLAUDE_SKILL_DIR}/src/webhooks/handlers/` - Per-event-type handler functions
-- `${CLAUDE_SKILL_DIR}/src/webhooks/verify.js` - HMAC signature verification utilities
-- `${CLAUDE_SKILL_DIR}/src/webhooks/idempotency.js` - Duplicate event detection logic
-- `${CLAUDE_SKILL_DIR}/src/queues/webhook-processor.js` - Async event processing queue worker
-- `${CLAUDE_SKILL_DIR}/tests/webhooks/` - Replay tests with recorded payloads
+- `./src/webhooks/receiver.js` - Webhook endpoint with signature verification
+- `./src/webhooks/handlers/` - Per-event-type handler functions
+- `./src/webhooks/verify.js` - HMAC signature verification utilities
+- `./src/webhooks/idempotency.js` - Duplicate event detection logic
+- `./src/queues/webhook-processor.js` - Async event processing queue worker
+- `./tests/webhooks/` - Replay tests with recorded payloads
 
 ## Error Handling
 
@@ -65,7 +65,7 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementati
 | 504 Gateway Timeout | Synchronous processing exceeded provider timeout (typically 5-30s) | Move processing to async queue; respond 200 immediately upon signature verification |
 | 500 Handler Exception | Business logic threw unhandled error during processing | Catch at dispatch layer; log full error with event payload; allow provider to retry |
 
-Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patterns.
+Refer to `./references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
@@ -75,7 +75,7 @@ Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patt
 
 **Multi-provider router**: Single `/webhooks/:provider` endpoint that loads provider-specific signature verifier and event schema from a registry, supporting Stripe, GitHub, Twilio, and custom providers.
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for additional examples.
+See `./references/examples.md` for additional examples.
 
 ## Resources
 

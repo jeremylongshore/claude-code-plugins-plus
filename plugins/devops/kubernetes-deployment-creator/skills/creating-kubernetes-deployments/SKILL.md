@@ -357,7 +357,7 @@ spec:
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive troubleshooting.
+See `./references/errors.md` for comprehensive troubleshooting.
 
 | Error | Quick Fix |
 |-------|-----------|
@@ -368,14 +368,14 @@ See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive troubleshooting
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed walkthroughs.
+See `./references/examples.md` for detailed walkthroughs.
 
 ## Resources
 
 - Kubernetes documentation: https://kubernetes.io/docs/
 - kubectl reference: https://kubernetes.io/docs/reference/kubectl/
-- Templates in `${CLAUDE_SKILL_DIR}/assets/`
-- Scripts in `${CLAUDE_SKILL_DIR}/scripts/`
+- Templates in `./assets/`
+- Scripts in `./scripts/`
 
 ## Overview
 

@@ -25,13 +25,13 @@ whether it's bots. When they see a drop, you ask whether tracking broke.
 
 ### Step 1: Load Baselines
 
-Read the site registry at `${CLAUDE_SKILL_DIR}/references/site-registry.md` for:
+Read the site registry at `./references/site-registry.md` for:
 
 - Baseline daily visitors per site
 - Alert thresholds per site
 - Seasonal adjustments (weekends, holidays, announcements)
 
-Read the interpretation guide at `${CLAUDE_SKILL_DIR}/references/interpretation-guide.md` for
+Read the interpretation guide at `./references/interpretation-guide.md` for
 framing standards.
 
 ### Step 2: Statistical Baseline Comparison

@@ -569,7 +569,7 @@ This skill automatically activates when you mention:
 
 ## Prerequisites
 
-- Access to project files in ${CLAUDE_SKILL_DIR}/
+- Access to project files in ./
 - Required tools and dependencies installed
 - Understanding of skill functionality
 - Permissions for file operations

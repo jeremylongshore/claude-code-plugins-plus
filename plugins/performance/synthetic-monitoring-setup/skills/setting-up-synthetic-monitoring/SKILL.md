@@ -69,7 +69,7 @@ This skill can be integrated with other plugins for incident management and aler
 ## Prerequisites
 
 - Access to synthetic monitoring platform (Pingdom, Datadog, New Relic)
-- List of critical endpoints and user journeys in ${CLAUDE_SKILL_DIR}/monitoring/endpoints.yaml
+- List of critical endpoints and user journeys in ./monitoring/endpoints.yaml
 - Alerting infrastructure configuration
 - Geographic monitoring location requirements
 

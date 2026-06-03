@@ -121,9 +121,9 @@ The marketplace 100-point validator scores them at top-level.
 | Has examples | Warning | Should have `## Examples` or example content |
 | Instructions have steps | Warning | Should have numbered steps or `### Step N` headings |
 | Error handling | Warning | Should document error cases |
-| Resources section | Warning | Should list `${CLAUDE_SKILL_DIR}/` references if resources exist |
-| All `${CLAUDE_SKILL_DIR}/` refs exist | Error | Referenced scripts, references, templates must exist |
-| No path escapes | Error | No `${CLAUDE_SKILL_DIR}/../` |
+| Resources section | Warning | Should list `./` references if resources exist |
+| All `./` refs exist | Error | Referenced scripts, references, templates must exist |
+| No path escapes | Error | No `../` |
 | Word count | Warning | Over 5000 words suggests splitting to references |
 | Consistent terminology | Warning | No synonym rotation for key concepts |
 | Concrete examples | Warning | Examples should show input AND output, not abstract |
@@ -170,7 +170,7 @@ Bash(docker:*)
 | Anti-Pattern | Check | Level |
 |-------------|-------|-------|
 | Windows paths | `C:\` or backslash paths | Error |
-| Nested references | `${CLAUDE_SKILL_DIR}/references/sub/dir/file` | Warning |
+| Nested references | `./references/sub/dir/file` | Warning |
 | Hardcoded model IDs | `claude-*-20\d{6}` pattern | Warning |
 | Voodoo constants | Unexplained magic numbers | Info |
 | Over-verbose | >5000 words in SKILL.md | Warning |
@@ -218,7 +218,7 @@ Skills can use `` !`command` `` syntax (Anthropic spec preprocessing) to inject 
 
 | Scenario | Method |
 |----------|--------|
-| Always-needed, small references (<5KB) | `` !`cat ${CLAUDE_SKILL_DIR}/references/small.md` `` |
+| Always-needed, small references (<5KB) | `` !`cat ./references/small.md` `` |
 | Dynamic state (git log, env vars) | `` !`git log --oneline -5` `` |
 | Conditional or large references (>5KB) | Manual `Load ...` instructions |
 
@@ -272,10 +272,10 @@ Also recognized: `${CLAUDE_SESSION_ID}` — current session identifier (official
 
 ### Resource Validation
 
-1. All `${CLAUDE_SKILL_DIR}/scripts/*` references exist
-2. All `${CLAUDE_SKILL_DIR}/references/*` references exist
-3. All `${CLAUDE_SKILL_DIR}/templates/*` references exist
-4. All `${CLAUDE_SKILL_DIR}/assets/*` references exist
+1. All `./scripts/*` references exist
+2. All `./references/*` references exist
+3. All `./templates/*` references exist
+4. All `./assets/*` references exist
 5. Relative markdown links (e.g., `ref`, `api`) point to existing files
 6. No path escape attempts
 

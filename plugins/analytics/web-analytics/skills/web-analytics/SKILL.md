@@ -45,7 +45,7 @@ via console, email, or Slack.
 ## Prerequisites
 
 - Umami credentials in `~/.env` (UMAMI_PASSWORD for the admin user)
-- Sites configured in `${CLAUDE_SKILL_DIR}/references/site-registry.md`
+- Sites configured in `./references/site-registry.md`
 - For email delivery: `/email` skill working
 - For Slack delivery: `/slack` skill working
 
@@ -98,10 +98,10 @@ Examples:
 
 Read these reference files for context:
 
-1. `${CLAUDE_SKILL_DIR}/references/site-registry.md` — site config, baselines, thresholds
-2. `${CLAUDE_SKILL_DIR}/references/mcp-tool-reference.md` — MCP tool signatures
-3. `${CLAUDE_SKILL_DIR}/references/reporting-tiers.md` — output format specs (medium/full tiers)
-4. `${CLAUDE_SKILL_DIR}/references/interpretation-guide.md` — advisory voice standards
+1. `./references/site-registry.md` — site config, baselines, thresholds
+2. `./references/mcp-tool-reference.md` — MCP tool signatures
+3. `./references/reporting-tiers.md` — output format specs (medium/full tiers)
+4. `./references/interpretation-guide.md` — advisory voice standards
 
 ### Step 3: Route by Tier
 
@@ -142,8 +142,8 @@ Launch these agents using the Agent tool with subagent_type:
    - Sites: {sites from request}
    - Period: {calculated time range}
    - Data needed: stats, referrers, top pages, time series
-   - Provide the full content of `${CLAUDE_SKILL_DIR}/references/mcp-tool-reference.md`
-   - Provide the full content of `${CLAUDE_SKILL_DIR}/references/site-registry.md`
+   - Provide the full content of `./references/mcp-tool-reference.md`
+   - Provide the full content of `./references/site-registry.md`
 
 **Phase B — Parallel Analysis (after data returns):**
 2. Spawn `traffic-intelligence` agent with data-collector output
@@ -209,15 +209,15 @@ For full-tier reports, spawn the `memory-agent` to:
 
 | Agent | File | Tier | Purpose |
 |-------|------|------|---------|
-| data-collector | `${CLAUDE_SKILL_DIR}/agents/data-collector.md` | All | MCP data fetching |
-| traffic-intelligence | `${CLAUDE_SKILL_DIR}/agents/traffic-intelligence.md` | Medium+ | Source attribution |
-| content-seo | `${CLAUDE_SKILL_DIR}/agents/content-seo.md` | Medium+ | Page performance |
-| anomaly-detector | `${CLAUDE_SKILL_DIR}/agents/anomaly-detector.md` | Medium+ | Spike/drop detection |
-| conversion-funnel | `${CLAUDE_SKILL_DIR}/agents/conversion-funnel.md` | Full | Event/goal analysis |
-| audience-segmentation | `${CLAUDE_SKILL_DIR}/agents/audience-segmentation.md` | Full | Cohort analysis |
-| verification-agent | `${CLAUDE_SKILL_DIR}/agents/verification-agent.md` | Full | Output quality check |
-| reporting-narrative | `${CLAUDE_SKILL_DIR}/agents/reporting-narrative.md` | Medium+ | Narrative compilation |
-| memory-agent | `${CLAUDE_SKILL_DIR}/agents/memory-agent.md` | Full | Rolling context |
+| data-collector | `./agents/data-collector.md` | All | MCP data fetching |
+| traffic-intelligence | `./agents/traffic-intelligence.md` | Medium+ | Source attribution |
+| content-seo | `./agents/content-seo.md` | Medium+ | Page performance |
+| anomaly-detector | `./agents/anomaly-detector.md` | Medium+ | Spike/drop detection |
+| conversion-funnel | `./agents/conversion-funnel.md` | Full | Event/goal analysis |
+| audience-segmentation | `./agents/audience-segmentation.md` | Full | Cohort analysis |
+| verification-agent | `./agents/verification-agent.md` | Full | Output quality check |
+| reporting-narrative | `./agents/reporting-narrative.md` | Medium+ | Narrative compilation |
+| memory-agent | `./agents/memory-agent.md` | Full | Rolling context |
 
 ## Troubleshooting
 

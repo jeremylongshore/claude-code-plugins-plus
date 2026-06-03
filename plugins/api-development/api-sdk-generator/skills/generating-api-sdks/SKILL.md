@@ -43,16 +43,16 @@ Generate type-safe client SDKs in multiple languages (TypeScript, Python, Go, Ja
 8. Generate comprehensive JSDoc/docstring/Javadoc comments from OpenAPI `description` and `summary` fields for full IDE IntelliSense support.
 9. Create a test suite that validates SDK methods against a mock server running the OpenAPI spec, covering authentication, error handling, and pagination.
 
-See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementation guide.
+See `./references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `${CLAUDE_SKILL_DIR}/sdk/typescript/src/client.ts` - Main SDK client class with typed methods
-- `${CLAUDE_SKILL_DIR}/sdk/typescript/src/models/` - TypeScript interfaces and type definitions
-- `${CLAUDE_SKILL_DIR}/sdk/python/client.py` - Python SDK with dataclass models and async support
-- `${CLAUDE_SKILL_DIR}/sdk/go/client.go` - Go SDK with struct types and context-based methods
-- `${CLAUDE_SKILL_DIR}/sdk/*/README.md` - Per-language installation and usage documentation
-- `${CLAUDE_SKILL_DIR}/sdk/*/tests/` - SDK test suites per language
+- `./sdk/typescript/src/client.ts` - Main SDK client class with typed methods
+- `./sdk/typescript/src/models/` - TypeScript interfaces and type definitions
+- `./sdk/python/client.py` - Python SDK with dataclass models and async support
+- `./sdk/go/client.go` - Go SDK with struct types and context-based methods
+- `./sdk/*/README.md` - Per-language installation and usage documentation
+- `./sdk/*/tests/` - SDK test suites per language
 
 ## Error Handling
 
@@ -64,7 +64,7 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementati
 | Pagination exhaustion | Iterator consumes all pages without termination condition | Enforce maximum page count safety limit; detect empty result sets as termination signal |
 | Rate limit handling | SDK retry logic conflicts with application-level retry logic | Expose `retryConfig` option to disable built-in retries; emit retry events for observability |
 
-Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patterns.
+Refer to `./references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
@@ -74,7 +74,7 @@ Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patt
 
 **Multi-language CI pipeline**: On OpenAPI spec change, automatically regenerate SDKs in all target languages, run tests against a mock server, bump semantic versions, and publish to respective package registries.
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for additional examples.
+See `./references/examples.md` for additional examples.
 
 ## Resources
 

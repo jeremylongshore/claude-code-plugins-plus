@@ -74,16 +74,16 @@ By default, positions > 25% allocation are flagged:
 
 ```bash
 # Show all holdings sorted by allocation
-python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --holdings --sort allocation
+python ./scripts/portfolio_tracker.py --portfolio holdings.json --holdings --sort allocation
 
 # Detailed analysis with 15% threshold
-python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --detailed --threshold 15
+python ./scripts/portfolio_tracker.py --portfolio holdings.json --detailed --threshold 15
 
 # Export for tax software
-python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --format csv --output tax_export.csv
+python ./scripts/portfolio_tracker.py --portfolio holdings.json --format csv --output tax_export.csv
 
 # JSON export for trading bot
-python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --format json --output portfolio_data.json
+python ./scripts/portfolio_tracker.py --portfolio holdings.json --format json --output portfolio_data.json
 ```
 
 ---

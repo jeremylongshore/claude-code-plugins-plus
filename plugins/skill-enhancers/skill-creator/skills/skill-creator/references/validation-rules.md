@@ -192,8 +192,8 @@ capabilities: []                  # NOTE: valid for agents ONLY, not skills
 |-------|-------|--------|
 | 7 required sections present | Error | Overview, Prerequisites, Instructions, Output, Error Handling, Examples, Resources |
 | Instructions have numbered steps | Warning | Should have numbered steps or `### Step N` headings |
-| All `${CLAUDE_SKILL_DIR}/` refs exist | Error | Referenced scripts, references, templates must exist |
-| No path escapes | Error | No `${CLAUDE_SKILL_DIR}/../` |
+| All `./` refs exist | Error | Referenced scripts, references, templates must exist |
+| No path escapes | Error | No `../` |
 | `references/` directory exists | Error | Must use `references/` (plural directory), not `reference.md` singular |
 | Word count | Warning | Over 5000 words suggests splitting to references |
 
@@ -339,7 +339,7 @@ These are invented fields that appear in no Anthropic documentation:
 | Anti-Pattern | Check | Level |
 |-------------|-------|-------|
 | Windows paths | `C:\` or backslash paths | Error |
-| Nested references | `${CLAUDE_SKILL_DIR}/references/sub/dir/file` (more than 1 level deep) | Warning |
+| Nested references | `./references/sub/dir/file` (more than 1 level deep) | Warning |
 | Hardcoded model IDs | `claude-*-20\d{6}` pattern (use `sonnet`/`haiku`/`opus` instead) | Warning |
 | Voodoo constants | Unexplained magic numbers | Info |
 | Over-verbose | >5000 words in SKILL.md body | Warning |
@@ -396,7 +396,7 @@ Skills can use `` !`command` `` syntax (Anthropic spec preprocessing) to inject 
 
 | Scenario | Method |
 |----------|--------|
-| Always-needed, small references (<5KB) | `` !`cat ${CLAUDE_SKILL_DIR}/references/small.md` `` |
+| Always-needed, small references (<5KB) | `` !`cat ./references/small.md` `` |
 | Dynamic state (git log, env vars) | `` !`git log --oneline -5` `` |
 | Conditional or large references (>5KB) | Manual `Load ...` instructions |
 
@@ -455,10 +455,10 @@ Also recognized: `${CLAUDE_SESSION_ID}` — current session identifier (Anthropi
 
 ### Resource Validation
 
-1. All `${CLAUDE_SKILL_DIR}/scripts/*` references exist
-2. All `${CLAUDE_SKILL_DIR}/references/*` references exist
-3. All `${CLAUDE_SKILL_DIR}/templates/*` references exist
-4. All `${CLAUDE_SKILL_DIR}/assets/*` references exist
+1. All `./scripts/*` references exist
+2. All `./references/*` references exist
+3. All `./templates/*` references exist
+4. All `./assets/*` references exist
 5. Relative markdown links (e.g., `ref`) point to existing files
 6. No path escape attempts (`../`)
 7. No empty (0-byte) supporting files (stub detection)
@@ -529,7 +529,7 @@ INFO-level suggestions emitted after grading. Not scored — purely advisory.
 | 10 | Progressive disclosure used (references/ for heavy content) | Progressive Disclosure Scoring | Warning |
 | 11 | No TOC in SKILL.md body (wastes tokens) | Progressive Disclosure Scoring > Has unnecessary TOC | -1 modifier |
 | 12 | Reference files >100 lines have TOC | Progressive Disclosure Scoring > Reference files TOC | +1 modifier |
-| 13 | All `${CLAUDE_SKILL_DIR}/` references resolve to existing files | Body Validation > Enterprise Tier, Resource Validation | Error |
+| 13 | All `./` references resolve to existing files | Body Validation > Enterprise Tier, Resource Validation | Error |
 | 14 | No path escapes (`../`) | Body Validation > Enterprise Tier, Resource Validation | Error |
 | 15 | Required packages and dependencies listed | Body Validation > Standard Tier > Required packages listed | Warning |
 | 16 | 7 required body sections present (Enterprise) | Body Validation > Enterprise Tier > 7 required sections | Error |

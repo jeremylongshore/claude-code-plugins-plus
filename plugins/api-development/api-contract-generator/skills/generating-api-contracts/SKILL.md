@@ -43,16 +43,16 @@ Generate OpenAPI 3.0/3.1 specifications and consumer-driven contract tests from 
 7. Set up provider verification that replays Pact interactions against the actual API implementation, verifying the provider satisfies all consumer expectations.
 8. Generate contract artifacts: OpenAPI spec file, Postman collection, and consumer contract (Pact JSON), all versioned alongside the API source code.
 
-See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementation guide.
+See `./references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `${CLAUDE_SKILL_DIR}/openapi.yaml` - Complete OpenAPI 3.0/3.1 specification
-- `${CLAUDE_SKILL_DIR}/contracts/pact/` - Consumer-driven contract definitions (Pact JSON)
-- `${CLAUDE_SKILL_DIR}/contracts/postman/` - Generated Postman collection for API testing
-- `${CLAUDE_SKILL_DIR}/tests/contract/consumer/` - Consumer contract test implementations
-- `${CLAUDE_SKILL_DIR}/tests/contract/provider/` - Provider verification test suite
-- `${CLAUDE_SKILL_DIR}/scripts/generate-contract.sh` - Contract generation automation script
+- `./openapi.yaml` - Complete OpenAPI 3.0/3.1 specification
+- `./contracts/pact/` - Consumer-driven contract definitions (Pact JSON)
+- `./contracts/postman/` - Generated Postman collection for API testing
+- `./tests/contract/consumer/` - Consumer contract test implementations
+- `./tests/contract/provider/` - Provider verification test suite
+- `./scripts/generate-contract.sh` - Contract generation automation script
 
 ## Error Handling
 
@@ -64,7 +64,7 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementati
 | Circular schema reference | Components reference each other creating infinite recursion | Break cycles with `allOf` composition or introduce intermediate types |
 | Example/schema mismatch | Example values do not validate against their own schema | Auto-validate all examples during spec generation; reject mismatched examples |
 
-Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patterns.
+Refer to `./references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
@@ -74,7 +74,7 @@ Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patt
 
 **Design-first workflow**: Author OpenAPI spec in Stoplight Studio, generate server stubs and client SDKs from the spec, then implement business logic in the stubs -- spec stays as the single source of truth.
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for additional examples.
+See `./references/examples.md` for additional examples.
 
 ## Resources
 

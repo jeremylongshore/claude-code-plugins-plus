@@ -45,7 +45,7 @@ Higher scores indicate more significant, higher-conviction moves.
 
 ## Configuration
 
-Edit `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
+Edit `./config/settings.yaml`:
 
 ```yaml
 # Default Thresholds
@@ -85,7 +85,7 @@ categories:
 
 ## Named Presets
 
-Create presets in `${CLAUDE_SKILL_DIR}/config/presets/`:
+Create presets in `./config/presets/`:
 
 **aggressive.yaml:**
 
@@ -108,7 +108,7 @@ top_n: 10
 Use with:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --preset aggressive
+python ./scripts/scanner.py --preset aggressive
 ```
 
 ## Integration with Other Skills
@@ -119,7 +119,7 @@ This skill can be combined with other crypto skills:
 
 ```bash
 # Get movers, then generate signals for top gainers
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format json | \
+python ./scripts/scanner.py --format json | \
   python ../crypto-signal-generator/.../scanner.py --from-stdin
 ```
 

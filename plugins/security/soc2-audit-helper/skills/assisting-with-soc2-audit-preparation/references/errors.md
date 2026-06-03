@@ -3,7 +3,7 @@
 **Common Issues and Resolutions**:
 
 1. **Missing Evidence Files**
-   - Error: "Cannot locate security policy in ${CLAUDE_SKILL_DIR}/docs/"
+   - Error: "Cannot locate security policy in ./docs/"
    - Resolution: Request document locations from user
    - Fallback: Mark as evidence gap in report
 
@@ -23,7 +23,7 @@
    - Alternative: Provide manual checklist for cloud controls
 
 5. **Multiple Environments Not Distinguished**
-   - Error: "Production and dev configs mixed in ${CLAUDE_SKILL_DIR}/"
+   - Error: "Production and dev configs mixed in ./"
    - Resolution: Request environment separation or clear labeling
    - Risk: May audit wrong environment
 

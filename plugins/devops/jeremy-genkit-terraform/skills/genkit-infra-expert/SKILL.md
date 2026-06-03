@@ -56,14 +56,14 @@ See Terraform implementation details for output format specifications.
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+See `./references/errors.md` for comprehensive error handling.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `./references/examples.md` for detailed examples.
 
 ## Resources
 
 - Genkit Deployment:
 - Firebase Terraform: https://registry.terraform.io/providers/hashicorp/google/latest
-- Genkit examples in ${CLAUDE_SKILL_DIR}/genkit-examples/
+- Genkit examples in ./genkit-examples/
