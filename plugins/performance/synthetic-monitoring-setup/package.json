@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/synthetic-monitoring-setup",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Set up synthetic monitoring for proactive performance tracking",
   "keywords": [
     "synthetic-monitoring",

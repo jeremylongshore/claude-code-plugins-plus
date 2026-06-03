@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/claude-never-forgets",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Persistent memory across sessions. Learns preferences, conventions, and corrections automatically.",
   "keywords": [
     "memory",
