@@ -137,6 +137,8 @@ adk-samples/
 build/
 claudes-docs/
 coverage/
+.coverage
+.coverage.*
 dist/
 ehthumbs.db
 google-adk-reference/
