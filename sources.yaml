@@ -1145,6 +1145,35 @@ sources:
       - '.git/**'
       - '*.log'
 
+  # ============================================================
+  # RunAPI MCP Server
+  # https://github.com/runapi-ai/mcp
+  # ============================================================
+
+  - name: runapi
+    description: 130+ AI models for image, video, music, audio, and LLM generation from 18 providers. Free catalog tools for model discovery and pricing; authenticated tools for media task creation, polling, and LLM chat. Run with `npx @runapi.ai/mcp`.
+    repo: runapi-ai/mcp
+    source_path: plugin
+    target_path: plugins/mcp/runapi
+    author:
+      name: RunAPI
+      github: runapi-ai
+      email: contact@runapi.ai
+    license: MIT
+    category: mcp
+    verified: false
+    include:
+      - 'README.md'
+      - '.claude-plugin/**'
+      - 'skills/**'
+      - 'commands/**'
+      - 'agents/**'
+      - 'output-styles/**'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)
