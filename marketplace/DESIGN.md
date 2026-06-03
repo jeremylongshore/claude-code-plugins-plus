@@ -297,6 +297,12 @@ Paste that block into any prompt that asks AI to render UI for this codebase.
 
 ## Changelog
 
+- **2026-06-03** — VibeCheck PR 1 follow-up. The 2026-05-31 pass flattened radii, removed gradients/blur, and added `lint-design-tells.mjs`. This pass targets the residual AI-tell layouts on the highest-visibility page (homepage `/`):
+  1. **Rules over boxes — operative on the homepage feature list.** The 6-tile 3-column emoji-icon `.feature-card` grid (Signals 1, 6, 7 from the VibeCheck audit: card chrome + icon-in-colored-box + equal-column grid) is replaced with a numbered horizontal-rule list (`<ol class="features-list">`). Each row: mono numeric kicker (`01`–`06`), title, single-line description. No box wrappers, no decorative icons, no equal-column grid. Hairline rules carry the structure.
+  2. **Dead `--purple` token removed from `pages/tools.astro`.** The 2026-05-06 redesign left an unused `--purple: #8b5cf6` declaration. The accent palette is intentionally yellow-only (`--signal`); secondary `--blue` and `--orange` remain because they're actually referenced.
+  3. Existing `lint-design-tells.mjs` gates continue to pass (em-dash density in visible chrome: 1 / threshold 12). Mass em-dash hand-editing across `pages/` (346 raw hits) deferred — the lint's narrow scope already catches the ones that affect render.
+  4. **Follow-up PR scope:** 31 vendor `/learn/<vendor>/` templates and ~20 secondary pages still carry card-chrome wrappers. They're already gradient-stripped from the 2026-05-31 pass, so the residual is structural (not visual) and can land incrementally without breaking the visual constitution.
+
 - **2026-05-31** — VibeCheck audit (vibecheck.fail) returned 25/100 on the deployed site. Investigation found constitution drift: ~190 `linear-gradient` declarations and ~230 large-radius card chrome surfaces across components and pages, in direct contradiction of §1 and §8. Enforcement actions:
   1. Border-radius scale flattened to 2 px across all tiers (`--radius-sm/md/lg/xl`). Square corners are the anti-default; pills and tags still get the small radius. Circles (`50%`) and 1 px hairlines untouched.
   2. All chrome `linear-gradient` declarations replaced with solid tokens. Allowlist: `mask-image: linear-gradient(...)` for progressive scroll fades.

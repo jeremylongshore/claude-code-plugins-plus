@@ -536,71 +536,50 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             color: var(--text);
         }
 
-        .features-grid {
+        /* Numbered list — rules over boxes (DESIGN.md 2026-05-31 changelog).
+           Replaces the prior 3-column emoji-icon feature-card grid (Signals 1/6/7 from
+           the VibeCheck 25/100 audit). Each row separated by hairline rule; mono
+           numeric kicker; no box chrome, no decorative icons. */
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .feature-row {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: 64px 1fr;
             gap: 1.5rem;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border);
+            align-items: baseline;
         }
 
-        .feature-card {
-            padding: 2rem;
+        .feature-row:hover {
             background: var(--surface-2);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-            text-align: center;
         }
 
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: var(--primary);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform var(--duration-normal) var(--ease-out);
+        .feature-kicker {
+            font-family: var(--font-mono, 'JetBrains Mono', monospace);
+            font-size: 0.8rem;
+            color: var(--text-2);
+            letter-spacing: 0.05em;
+            font-variant-numeric: tabular-nums;
         }
 
-        .feature-card:hover {
-            transform: translateY(-6px);
-            border-color: var(--border-bright);
-            
-        }
-
-        .feature-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .feature-icon {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 44px;
-            height: 44px;
-            background: rgb(250 255 105 / 0.1);
-            border-radius: 10px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .feature-card h3 {
-            font-size: 1.3rem;
+        .feature-row h3 {
+            font-size: 1.15rem;
             font-weight: 600;
-            margin-bottom: 1rem;
+            margin: 0 0 0.35rem 0;
             color: var(--text);
         }
 
-        .feature-card p {
+        .feature-row p {
             color: var(--text-2);
-            line-height: 1.7;
+            line-height: 1.6;
             margin: 0;
+            max-width: 60ch;
         }
 
         /* Client showcase removed — sponsor now inline in hero */
@@ -1345,9 +1324,10 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                 padding: 4rem 2rem;
             }
 
-            .features-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
+            .feature-row {
+                grid-template-columns: 48px 1fr;
+                gap: 1rem;
+                padding: 1.25rem 0;
             }
 
             .install-box {
@@ -1903,38 +1883,50 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
     <section class="features" id="features">
         <h2 class="section-title">Community-driven, production-ready plugins</h2>
 
-        <div class="features-grid reveal-stagger">
-            <div class="feature-card">
-                <div class="feature-icon">🚀</div>
-                <h3>{totalPlugins} Plugins</h3>
-                <p>Browse plugins across {totalCategories} categories: DevOps, security, testing, data, AI/ML, and more.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🤖</div>
-                <h3>{totalSkills} Skills (Embedded in Plugins)</h3>
-                <p>Agent Skills embedded in {totalPlugins} plugins activate automatically based on conversation context.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">⚡</div>
-                <h3>Instant Install</h3>
-                <p>One command to add the marketplace, then install any plugin instantly. No configuration needed.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">📚</div>
-                <h3>Full Documentation</h3>
-                <p>Every plugin includes comprehensive docs, examples, and usage guides. Learn as you build.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🔄</div>
-                <h3>Regular Updates</h3>
-                <p>Active development with new plugins added weekly. Community contributions welcome.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🛡️</div>
-                <h3>Open Source</h3>
-                <p>100% open source under MIT license. Inspect, modify, and contribute to any plugin.</p>
-            </div>
-        </div>
+        <ol class="features-list reveal-stagger">
+            <li class="feature-row">
+                <span class="feature-kicker">01</span>
+                <div>
+                    <h3>{totalPlugins} Plugins</h3>
+                    <p>Browse plugins across {totalCategories} categories: DevOps, security, testing, data, AI/ML, and more.</p>
+                </div>
+            </li>
+            <li class="feature-row">
+                <span class="feature-kicker">02</span>
+                <div>
+                    <h3>{totalSkills} Skills, embedded in plugins</h3>
+                    <p>Agent Skills embedded in {totalPlugins} plugins activate automatically based on conversation context.</p>
+                </div>
+            </li>
+            <li class="feature-row">
+                <span class="feature-kicker">03</span>
+                <div>
+                    <h3>Instant install</h3>
+                    <p>One command to add the marketplace, then install any plugin instantly. No configuration needed.</p>
+                </div>
+            </li>
+            <li class="feature-row">
+                <span class="feature-kicker">04</span>
+                <div>
+                    <h3>Full documentation</h3>
+                    <p>Every plugin includes comprehensive docs, examples, and usage guides. Learn as you build.</p>
+                </div>
+            </li>
+            <li class="feature-row">
+                <span class="feature-kicker">05</span>
+                <div>
+                    <h3>Regular updates</h3>
+                    <p>Active development with new plugins added weekly. Community contributions welcome.</p>
+                </div>
+            </li>
+            <li class="feature-row">
+                <span class="feature-kicker">06</span>
+                <div>
+                    <h3>Open source</h3>
+                    <p>100% open source under MIT license. Inspect, modify, and contribute to any plugin.</p>
+                </div>
+            </li>
+        </ol>
     </section>
 
     <!-- Email Signup -->
