@@ -669,7 +669,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `input-validation-scanner`         | Scan input validation practices                                                                                                          |
 | `owasp-compliance-checker`         | Check OWASP Top 10 compliance                                                                                                            |
 | `pci-dss-validator`                | Validate PCI DSS compliance                                                                                                              |
-| `penetration-tester`               | Automated penetration testing for web applications with OWASP Top 10 coverage                                                            |
+| `penetration-tester`               | 25-skill pentest pack with engagement governance, network/code/dependency scans, OWASP Top 10 mapping, and exec-readable reporting.…     |
 | `secret-scanner`                   | Scan codebase for exposed secrets, API keys, passwords, and sensitive credentials                                                        |
 | `security-audit-reporter`          | Generate comprehensive security audit reports                                                                                            |
 | `security-headers-analyzer`        | Analyze HTTP security headers                                                                                                            |
