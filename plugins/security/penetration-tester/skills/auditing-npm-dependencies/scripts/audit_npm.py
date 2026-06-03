@@ -125,13 +125,23 @@ def _parse_v2(
         for item in via:
             if not isinstance(item, dict):
                 continue
-            for src in item.get("source", []) or []:
+            raw_source = item.get("source")
+            # npm audit v2 sometimes emits `source` as a list, sometimes as a
+            # scalar (string advisory ID or integer advisory ID). Normalize.
+            source_list: list[Any] = []
+            if isinstance(raw_source, list):
+                source_list = raw_source
+            elif raw_source is not None:
+                source_list = [raw_source]
+            for src in source_list:
                 if isinstance(src, str) and src.upper().startswith("CVE-"):
                     cve_id = cve_id or src
                 if isinstance(src, str) and src.upper().startswith("GHSA-"):
                     ghsa_id = ghsa_id or src
             cve_id = cve_id or item.get("cve") or None
-            ghsa_id = ghsa_id or item.get("ghsa") or item.get("source") or None
+            # When source is itself a GHSA string, surface it as ghsa_id.
+            source_str = raw_source if isinstance(raw_source, str) else None
+            ghsa_id = ghsa_id or item.get("ghsa") or source_str or None
             title_summary = title_summary or item.get("title")
             url = item.get("url")
             if url:
