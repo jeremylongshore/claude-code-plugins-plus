@@ -1,7 +1,7 @@
 {
   "name": "penetration-tester",
-  "version": "2.0.0",
-  "description": "Security testing toolkit with HTTP header analysis, dependency auditing, and static code scanning",
+  "version": "3.0.0",
+  "description": "25-skill pentest pack with engagement governance, network/code/dependency scans, OWASP Top 10 mapping, and exec-readable reporting. Heavy-hitter compliant; chain-of-custody attestable.",
   "author": {
     "name": "Jeremy Longshore",
     "email": "[email protected]"
@@ -13,7 +13,12 @@
     "penetration-testing",
     "pentesting",
     "owasp",
-    "exploitation",
+    "owasp-top-10",
+    "vulnerability-scanning",
+    "dependency-audit",
+    "license-compliance",
+    "engagement-governance",
+    "chain-of-custody",
     "agent-skills"
   ]
 }

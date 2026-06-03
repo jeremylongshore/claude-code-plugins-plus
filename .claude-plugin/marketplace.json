@@ -3374,15 +3374,20 @@
     {
       "name": "penetration-tester",
       "source": "./plugins/security/penetration-tester",
-      "description": "Automated penetration testing for web applications with OWASP Top 10 coverage",
-      "version": "1.0.0",
+      "description": "25-skill pentest pack with engagement governance, network/code/dependency scans, OWASP Top 10 mapping, and exec-readable reporting. Heavy-hitter compliant; chain-of-custody attestable.",
+      "version": "3.0.0",
       "category": "security",
       "keywords": [
         "security",
         "penetration-testing",
         "pentesting",
         "owasp",
-        "exploitation"
+        "owasp-top-10",
+        "vulnerability-scanning",
+        "dependency-audit",
+        "license-compliance",
+        "engagement-governance",
+        "chain-of-custody"
       ],
       "author": {
         "name": "Jeremy Longshore",
