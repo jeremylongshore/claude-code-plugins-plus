@@ -79,6 +79,25 @@ Skills trigger automatically on Databricks topics:
 - "Set up Unity Catalog permissions" -- `databricks-enterprise-rbac`
 - "Migrate from Snowflake" -- `databricks-migration-deep-dive`
 
+## Architecture
+
+### Why two MCP servers, not one
+
+The v2 rebuild ships with a deliberate split across **two** MCP servers, not a single shared one. Common question on contributor PRs — answering it once at the top so future readers don't have to re-derive it.
+
+- **Databricks managed SQL MCP** — serves `system.*` reads (cost data, query history, streaming progress). Operated by Databricks; we consume it.
+- **Custom workspace MCP** — serves cluster events, instance pools, pipeline event logs, external locations, storage credentials. Operated by this pack.
+
+The two authenticate independently. Losing access to one does not disable the other; `cost-leak-hunter` (SQL MCP) and `cluster-forensics` (workspace MCP) fail independently when their respective MCP is unavailable. Single skills can be installed without pulling in the other MCP's dependency surface.
+
+Full scope-boundary rationale — including the 8 → 6 endpoint cut and the auth-flow decisions — is in [`000-docs/013-AT-ADEC-epic1-mcp-scope-adjustment.md`](000-docs/013-AT-ADEC-epic1-mcp-scope-adjustment.md). Reference document for any "why is this skill not pulling X?" question.
+
+Thanks to [@Gingiris-1031](https://github.com/Gingiris-1031) ([#795](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/795)) for surfacing the isolation-story framing that made this section necessary.
+
+## Design Records
+
+All architecture decisions, pain research, and pressure tests for this pack live in [`000-docs/`](000-docs/). Index: [`000-INDEX.md`](000-docs/000-INDEX.md).
+
 ## License
 
 MIT
