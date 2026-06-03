@@ -61,9 +61,7 @@ SKIP_PATHS: tuple[str, ...] = (
 )
 
 # Tables that are populated by the validator tool — leave completely untouched
-VALIDATOR_TABLES: frozenset[str] = frozenset(
-    {"skill_compliance", "agent_compliance", "plugin_compliance"}
-)
+VALIDATOR_TABLES: frozenset[str] = frozenset({"skill_compliance", "agent_compliance", "plugin_compliance"})
 
 # Tables whose rows are entirely NPM-registry data — separate scan tool
 NPM_TABLES: frozenset[str] = frozenset(
@@ -211,9 +209,7 @@ def _parse_yaml_value(raw: str) -> Any:
         inner = v[1:-1]
         return [_parse_yaml_value(item) for item in inner.split(",") if item.strip()]
     # Quoted string
-    if (v.startswith('"') and v.endswith('"')) or (
-        v.startswith("'") and v.endswith("'")
-    ):
+    if (v.startswith('"') and v.endswith('"')) or (v.startswith("'") and v.endswith("'")):
         return v[1:-1]
     # Numeric
     try:
@@ -259,7 +255,7 @@ def parse_frontmatter(text: str) -> tuple[dict[str, Any], str]:
     block_type: str = ""  # '|' or '>'
     in_sequence: bool = False  # multiline block sequence
 
-    KEY_RE = re.compile(r'^([A-Za-z0-9_\-]+)\s*:\s*(.*)')
+    KEY_RE = re.compile(r"^([A-Za-z0-9_\-]+)\s*:\s*(.*)")
 
     def flush_current():
         nonlocal current_key, current_value_lines, in_block_scalar, in_sequence, block_type
@@ -271,9 +267,7 @@ def parse_frontmatter(text: str) -> tuple[dict[str, Any], str]:
         elif in_sequence:
             result[current_key] = [v.lstrip("- ").strip() for v in current_value_lines]
         else:
-            result[current_key] = _parse_yaml_value(
-                " ".join(current_value_lines).strip()
-            )
+            result[current_key] = _parse_yaml_value(" ".join(current_value_lines).strip())
         current_key = None
         current_value_lines = []
         in_block_scalar = False
@@ -332,9 +326,7 @@ def migrate_add_run_id(conn: sqlite3.Connection) -> None:
     cursor = conn.cursor()
     for table in RUN_ID_TABLES:
         # Check if table exists
-        cursor.execute(
-            "SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table,)
-        )
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table,))
         if not cursor.fetchone():
             continue
         # Check if run_id column already present
@@ -351,9 +343,7 @@ def purge_run(conn: sqlite3.Connection, run_id: int) -> None:
     """Delete all rows tagged with run_id from every target table (idempotent re-runs)."""
     cursor = conn.cursor()
     for table in RUN_ID_TABLES:
-        cursor.execute(
-            "SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table,)
-        )
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table,))
         if not cursor.fetchone():
             continue
         cursor.execute(f"PRAGMA table_info({table})")
@@ -467,10 +457,16 @@ def scan_packs_plugins_skills(
                     has_readme, has_changelog, has_package_json, category_indicator)
                    VALUES (?,?,?,?,?,?,?,?,?,?)""",
                 (
-                    run_id, pack_name, pack_rel, pack_plugin_count,
+                    run_id,
+                    pack_name,
+                    pack_rel,
+                    pack_plugin_count,
                     0,  # updated below
-                    pack_file_count, pack_has_readme, pack_has_changelog,
-                    pack_has_pkg_json, category_indicator,
+                    pack_file_count,
+                    pack_has_readme,
+                    pack_has_changelog,
+                    pack_has_pkg_json,
+                    category_indicator,
                 ),
             )
 
@@ -485,10 +481,7 @@ def scan_packs_plugins_skills(
             p_has_commands = int((plugin_dir / "commands").exists())
             p_has_agents = int((plugin_dir / "agents").exists())
             p_has_skills = int((plugin_dir / "skills").exists())
-            p_file_count = sum(
-                1 for p in plugin_dir.rglob("*")
-                if p.is_file() and not should_skip(p)
-            )
+            p_file_count = sum(1 for p in plugin_dir.rglob("*") if p.is_file() and not should_skip(p))
 
             # Plugin JSON shape
             pjson_path = plugin_dir / ".claude-plugin" / "plugin.json"
@@ -510,11 +503,7 @@ def scan_packs_plugins_skills(
             skills_dir = plugin_dir / "skills"
             if skills_dir.exists():
                 for skill_sub in sorted(skills_dir.iterdir()):
-                    if (
-                        skill_sub.is_dir()
-                        and skill_sub.name not in SKIP_DIRS
-                        and (skill_sub / "SKILL.md").exists()
-                    ):
+                    if skill_sub.is_dir() and skill_sub.name not in SKIP_DIRS and (skill_sub / "SKILL.md").exists():
                         skill_dirs.append(skill_sub)
 
             plugin_skill_count = len(skill_dirs)
@@ -527,8 +516,14 @@ def scan_packs_plugins_skills(
                         plugin_json_shape, file_count)
                        VALUES (?,?,?,?,?,?,?,?)""",
                     (
-                        run_id, plugin_name, plugin_rel, pack_name,
-                        p_has_readme, p_has_pkg_json, plugin_json_shape, p_file_count,
+                        run_id,
+                        plugin_name,
+                        plugin_rel,
+                        pack_name,
+                        p_has_readme,
+                        p_has_pkg_json,
+                        plugin_json_shape,
+                        p_file_count,
                     ),
                 )
                 conn.execute(
@@ -539,10 +534,17 @@ def scan_packs_plugins_skills(
                         has_skills_dir, file_count)
                        VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""",
                     (
-                        run_id, plugin_rel,
+                        run_id,
+                        plugin_rel,
                         rel(pjson_path) if pjson_path.exists() else "",
-                        pack_name, p_has_readme, p_has_pkg_json, p_has_mcp_json,
-                        p_has_src, p_has_commands, p_has_agents, p_has_skills,
+                        pack_name,
+                        p_has_readme,
+                        p_has_pkg_json,
+                        p_has_mcp_json,
+                        p_has_src,
+                        p_has_commands,
+                        p_has_agents,
+                        p_has_skills,
                         p_file_count,
                     ),
                 )
@@ -555,9 +557,7 @@ def scan_packs_plugins_skills(
                 s_file_count = len(s_files)
 
                 # Structure shape
-                subdirs_in_skill = sorted(
-                    d.name for d in skill_dir.iterdir() if d.is_dir()
-                )
+                subdirs_in_skill = sorted(d.name for d in skill_dir.iterdir() if d.is_dir())
                 has_skill_md = int((skill_dir / "SKILL.md").exists())
                 has_refs = int((skill_dir / "references").exists())
                 has_scripts = int((skill_dir / "scripts").exists())
@@ -577,9 +577,16 @@ def scan_packs_plugins_skills(
                             has_references, has_scripts, has_assets)
                            VALUES (?,?,?,?,?,?,?,?,?,?)""",
                         (
-                            run_id, skill_name, skill_rel, pack_name, plugin_name,
-                            structure_shape, s_file_count,
-                            has_refs, has_scripts, has_assets,
+                            run_id,
+                            skill_name,
+                            skill_rel,
+                            pack_name,
+                            plugin_name,
+                            structure_shape,
+                            s_file_count,
+                            has_refs,
+                            has_scripts,
+                            has_assets,
                         ),
                     )
 
@@ -599,10 +606,9 @@ def scan_packs_plugins_skills(
         for p in pack_dir.iterdir():
             if p.is_file():
                 files_present.append(p.name)
-        cat_indicators = [
-            child.name for child in pack_dir.iterdir()
-            if child.is_dir() and child.name not in SKIP_DIRS
-        ][:10]
+        cat_indicators = [child.name for child in pack_dir.iterdir() if child.is_dir() and child.name not in SKIP_DIRS][
+            :10
+        ]
 
         if not dry_run:
             conn.execute(
@@ -610,7 +616,8 @@ def scan_packs_plugins_skills(
                    (run_id, pack_name, files_present, category_indicators)
                    VALUES (?,?,?,?)""",
                 (
-                    run_id, pack_name,
+                    run_id,
+                    pack_name,
                     json.dumps(sorted(files_present)),
                     json.dumps(sorted(cat_indicators)),
                 ),
@@ -701,13 +708,7 @@ def scan_frontmatter(
         data_types = ",".join(
             sorted(
                 {
-                    (
-                        "int"
-                        if v.lstrip("-").isdigit()
-                        else "float"
-                        if re.match(r'^-?\d+\.\d+$', v)
-                        else "str"
-                    )
+                    ("int" if v.lstrip("-").isdigit() else "float" if re.match(r"^-?\d+\.\d+$", v) else "str")
                     for v in values
                     if v.strip()
                 }
@@ -717,8 +718,14 @@ def scan_frontmatter(
         pct = round(len(values) / total_skills * 100, 2) if total_skills else 0.0
         field_batch.append(
             (
-                run_id, field, data_types or "str", len(values), pct,
-                len(unique_vals), sample, blank_count,
+                run_id,
+                field,
+                data_types or "str",
+                len(values),
+                pct,
+                len(unique_vals),
+                sample,
+                blank_count,
             )
         )
 
@@ -732,10 +739,7 @@ def scan_frontmatter(
         )
 
     # Shapes
-    shape_batch = [
-        (run_id, keys, count, len(keys.split(",")) if keys else 0)
-        for keys, count in shape_counter.items()
-    ]
+    shape_batch = [(run_id, keys, count, len(keys.split(",")) if keys else 0) for keys, count in shape_counter.items()]
     if not dry_run and shape_batch:
         conn.executemany(
             "INSERT INTO frontmatter_shapes (run_id, keys, count, key_count) VALUES (?,?,?,?)",
@@ -754,10 +758,7 @@ def scan_plugin_frontmatter(
     dry_run: bool,
 ) -> None:
     """Populate plugin_values, plugin_fields, plugin_shapes from plugin.json files."""
-    pjson_files = [
-        p for p in (REPO_ROOT / "plugins").rglob(".claude-plugin/plugin.json")
-        if not should_skip(p)
-    ]
+    pjson_files = [p for p in (REPO_ROOT / "plugins").rglob(".claude-plugin/plugin.json") if not should_skip(p)]
     print(f"  Parsing {len(pjson_files)} plugin.json files...")
 
     field_values: dict[str, list[str]] = defaultdict(list)
@@ -791,8 +792,14 @@ def scan_plugin_frontmatter(
         pct = round(len(values) / total * 100, 2) if total else 0.0
         field_batch.append(
             (
-                run_id, field, "mixed", len(values), pct,
-                len(unique_vals), json.dumps(list(unique_vals)[:5]), blank,
+                run_id,
+                field,
+                "mixed",
+                len(values),
+                pct,
+                len(unique_vals),
+                json.dumps(list(unique_vals)[:5]),
+                blank,
             )
         )
 
@@ -805,10 +812,7 @@ def scan_plugin_frontmatter(
             field_batch,
         )
 
-    shape_batch = [
-        (run_id, keys, count, len(keys.split(",")) if keys else 0)
-        for keys, count in shape_counter.items()
-    ]
+    shape_batch = [(run_id, keys, count, len(keys.split(",")) if keys else 0) for keys, count in shape_counter.items()]
     if not dry_run and shape_batch:
         conn.executemany(
             "INSERT INTO plugin_shapes (run_id, keys, count, key_count) VALUES (?,?,?,?)",
@@ -825,21 +829,21 @@ def scan_plugin_frontmatter(
 
 
 PLACEHOLDER_PATTERNS: dict[str, re.Pattern] = {
-    "placeholder_step": re.compile(r'\bStep\s+\d+\b', re.I),
-    "placeholder_todo": re.compile(r'\bTODO\b'),
-    "placeholder_implementation": re.compile(r'\bImplementation\b', re.I),
-    "placeholder_add": re.compile(r'\bAdd\s+your\b', re.I),
-    "placeholder_your": re.compile(r'\bYour\s+\w+\s+here\b', re.I),
-    "placeholder_api_key": re.compile(r'\bYOUR_API_KEY\b|\byour_api_key\b'),
-    "placeholder_token": re.compile(r'\bYOUR_TOKEN\b|\byour_token\b'),
-    "placeholder_api_example": re.compile(r'\bapi[-_]example\b', re.I),
-    "placeholder_example": re.compile(r'\bEXAMPLE\b'),
-    "placeholder_table_error": re.compile(r'\|\s*Error\s*\|', re.I),
+    "placeholder_step": re.compile(r"\bStep\s+\d+\b", re.I),
+    "placeholder_todo": re.compile(r"\bTODO\b"),
+    "placeholder_implementation": re.compile(r"\bImplementation\b", re.I),
+    "placeholder_add": re.compile(r"\bAdd\s+your\b", re.I),
+    "placeholder_your": re.compile(r"\bYour\s+\w+\s+here\b", re.I),
+    "placeholder_api_key": re.compile(r"\bYOUR_API_KEY\b|\byour_api_key\b"),
+    "placeholder_token": re.compile(r"\bYOUR_TOKEN\b|\byour_token\b"),
+    "placeholder_api_example": re.compile(r"\bapi[-_]example\b", re.I),
+    "placeholder_example": re.compile(r"\bEXAMPLE\b"),
+    "placeholder_table_error": re.compile(r"\|\s*Error\s*\|", re.I),
 }
 
 URL_RE = re.compile(r'https?://[^\s\)>\]"\'`]+')
-IMPORT_RE = re.compile(r'^(?:import|from)\s+\S', re.M)
-CODE_BLOCK_RE = re.compile(r'```[\s\S]*?```', re.M)
+IMPORT_RE = re.compile(r"^(?:import|from)\s+\S", re.M)
+CODE_BLOCK_RE = re.compile(r"```[\s\S]*?```", re.M)
 
 
 def analyze_skill_content(text: str) -> dict[str, int]:
@@ -848,9 +852,7 @@ def analyze_skill_content(text: str) -> dict[str, int]:
     words = len(text.split())
     code_blocks = CODE_BLOCK_RE.findall(text)
     cb_count = len(code_blocks)
-    comment_only = sum(
-        1 for cb in code_blocks if cb.strip().strip("`").strip().startswith("#")
-    )
+    comment_only = sum(1 for cb in code_blocks if cb.strip().strip("`").strip().startswith("#"))
     import_cbs = sum(1 for cb in code_blocks if IMPORT_RE.search(cb))
     real_urls = URL_RE.findall(text)
     real_url_count = len(real_urls)
@@ -930,10 +932,7 @@ def scan_skill_files(
 
         # Plugin name
         try:
-            skills_idx = next(
-                i for i, p in enumerate(parts) if p == "skills"
-                and i > 1
-            )
+            skills_idx = next(i for i, p in enumerate(parts) if p == "skills" and i > 1)
             plugin_name = parts[skills_idx - 1]
         except StopIteration:
             plugin_name = "unknown"
@@ -960,9 +959,7 @@ def scan_skill_files(
             all_filenames[fname] += 1
             all_extensions[ext if ext else "(none)"] += 1
             f_rel = str(f.relative_to(skill_dir))
-            skill_file_batch.append(
-                (run_id, rel(f), fname, ext, size, skill_path, f_rel)
-            )
+            skill_file_batch.append((run_id, rel(f), fname, ext, size, skill_path, f_rel))
 
         # Content signals from SKILL.md
         skill_md_path = skill_dir / "SKILL.md"
@@ -974,9 +971,7 @@ def scan_skill_files(
             _, body = parse_frontmatter(raw)
             sigs = analyze_skill_content(body)
 
-            placeholder_total = sum(
-                v for k, v in sigs.items() if k.startswith("placeholder_")
-            )
+            placeholder_total = sum(v for k, v in sigs.items() if k.startswith("placeholder_"))
 
             agg = pack_agg[pack_name_raw]
             agg["skill_count"] += 1
@@ -990,8 +985,12 @@ def scan_skill_files(
 
             content_batch.append(
                 (
-                    run_id, skill_path, pack_name_raw, plugin_name,
-                    sigs["line_count"], sigs["word_count"],
+                    run_id,
+                    skill_path,
+                    pack_name_raw,
+                    plugin_name,
+                    sigs["line_count"],
+                    sigs["word_count"],
                     sigs["code_block_count"],
                     sigs["comment_only_code_block_count"],
                     sigs["import_code_block_count"],
@@ -1064,10 +1063,15 @@ def scan_skill_files(
                VALUES (?,?,?,?,?,?,?,?,?,?)""",
             [
                 (
-                    run_id, pack_name,
-                    agg["skill_count"], agg["total_lines"], agg["total_words"],
-                    agg["total_code_blocks"], agg["total_comment_only"],
-                    agg["total_placeholders"], agg["total_real_urls"],
+                    run_id,
+                    pack_name,
+                    agg["skill_count"],
+                    agg["total_lines"],
+                    agg["total_words"],
+                    agg["total_code_blocks"],
+                    agg["total_comment_only"],
+                    agg["total_placeholders"],
+                    agg["total_real_urls"],
                     agg["total_real_imports"],
                 )
                 for pack_name, agg in pack_agg.items()
@@ -1076,9 +1080,7 @@ def scan_skill_files(
         conn.commit()
 
     print(
-        f"  Skill files: {len(skill_file_batch)}, "
-        f"Content signals: {len(content_batch)}, "
-        f"Shapes: {len(shape_counter)}"
+        f"  Skill files: {len(skill_file_batch)}, Content signals: {len(content_batch)}, Shapes: {len(shape_counter)}"
     )
 
 
@@ -1222,9 +1224,7 @@ def scan_commands_agents(
 # Scanner — Group 4: Documentation
 # ---------------------------------------------------------------------------
 
-DOC_SKIP_PATTERNS = frozenset(
-    {"node_modules", "dist", "__pycache__", ".git", "freshie", "marketplace/src"}
-)
+DOC_SKIP_PATTERNS = frozenset({"node_modules", "dist", "__pycache__", ".git", "freshie", "marketplace/src"})
 
 
 def infer_doc_type(path: Path) -> tuple[str, str, str]:
@@ -1384,8 +1384,15 @@ def scan_scripts_ci(
             deps = ""
         script_batch.append(
             (
-                run_id, rel(sp), lang, purpose, script_type,
-                "", "", "", deps,
+                run_id,
+                rel(sp),
+                lang,
+                purpose,
+                script_type,
+                "",
+                "",
+                "",
+                deps,
             )
         )
 
@@ -1400,34 +1407,37 @@ def scan_scripts_ci(
                 continue
 
             # Simple YAML extraction for workflow name, triggers, jobs
-            name_m = re.search(r'^name\s*:\s*(.+)$', text, re.M)
+            name_m = re.search(r"^name\s*:\s*(.+)$", text, re.M)
             wf_name = name_m.group(1).strip().strip('"').strip("'") if name_m else wf.stem
 
             # Extract triggers (on: block)
-            triggers_m = re.search(r'^on\s*:\s*\n((?:  .+\n)+)', text, re.M)
+            triggers_m = re.search(r"^on\s*:\s*\n((?:  .+\n)+)", text, re.M)
             triggers = triggers_m.group(0)[:200] if triggers_m else ""
             if not triggers:
-                on_m = re.search(r'^on\s*:\s*\[(.+)\]', text, re.M)
+                on_m = re.search(r"^on\s*:\s*\[(.+)\]", text, re.M)
                 triggers = on_m.group(1) if on_m else ""
 
             # Extract job names
-            jobs_m = re.findall(r'^  ([a-zA-Z0-9_\-]+)\s*:', text, re.M)
+            jobs_m = re.findall(r"^  ([a-zA-Z0-9_\-]+)\s*:", text, re.M)
             jobs = json.dumps(jobs_m[:20])
 
             # Scripts referenced
             scripts_called = ",".join(
-                set(re.findall(r'(?:node|python3?|bash|sh)\s+([\w./\-]+\.(?:mjs|js|py|sh))', text))
+                set(re.findall(r"(?:node|python3?|bash|sh)\s+([\w./\-]+\.(?:mjs|js|py|sh))", text))
             )[:500]
 
             # Env vars
-            env_vars = ",".join(
-                set(re.findall(r'\$\{\{?\s*env\.([A-Z_]+)', text))
-            )[:500]
+            env_vars = ",".join(set(re.findall(r"\$\{\{?\s*env\.([A-Z_]+)", text)))[:500]
 
             ci_batch.append(
                 (
-                    run_id, wf.name, wf_name,
-                    triggers[:500], jobs, scripts_called, env_vars,
+                    run_id,
+                    wf.name,
+                    wf_name,
+                    triggers[:500],
+                    jobs,
+                    scripts_called,
+                    env_vars,
                 )
             )
 
@@ -1475,10 +1485,7 @@ def scan_duplicate_files(
         hash_to_paths[h].append(rel(skill_md))
 
     dupes = {h: paths for h, paths in hash_to_paths.items() if len(paths) > 1}
-    batch = [
-        (run_id, h, len(paths), json.dumps(sorted(paths)))
-        for h, paths in dupes.items()
-    ]
+    batch = [(run_id, h, len(paths), json.dumps(sorted(paths))) for h, paths in dupes.items()]
 
     if not dry_run and batch:
         conn.executemany(
@@ -1506,7 +1513,10 @@ def scan_anomalies(
         if info["skill_count"] == 0:
             batch.append(
                 (
-                    run_id, "zero-skill-pack", info["path"], 0,
+                    run_id,
+                    "zero-skill-pack",
+                    info["path"],
+                    0,
                     f"Pack '{pack_name}' has no skills",
                     "May be a template, docs-only, or transitional pack",
                 )
@@ -1538,22 +1548,24 @@ def scan_anomalies(
             continue
         batch.append(
             (
-                run_id, "plugin-no-skills-dir",
-                rel(plugin_dir), 0,
+                run_id,
+                "plugin-no-skills-dir",
+                rel(plugin_dir),
+                0,
                 f"Plugin at {rel(plugin_dir)} has no skills/ directory and no alternative layout",
                 "No commands/, hooks/, agents/, or .mcp.json detected — likely actually empty",
             )
         )
 
     # Stray .pyc files
-    pyc_files = [
-        p for p in REPO_ROOT.rglob("*.pyc")
-        if not should_skip(p)
-    ]
+    pyc_files = [p for p in REPO_ROOT.rglob("*.pyc") if not should_skip(p)]
     if pyc_files:
         batch.append(
             (
-                run_id, "stray-pyc-files", str(REPO_ROOT), len(pyc_files),
+                run_id,
+                "stray-pyc-files",
+                str(REPO_ROOT),
+                len(pyc_files),
                 f"{len(pyc_files)} .pyc files found outside __pycache__",
                 "Should be excluded by .gitignore",
             )
@@ -1573,7 +1585,9 @@ def scan_anomalies(
     if no_fm:
         batch.append(
             (
-                run_id, "skill-no-frontmatter", json.dumps(no_fm[:20]),
+                run_id,
+                "skill-no-frontmatter",
+                json.dumps(no_fm[:20]),
                 len(no_fm),
                 f"{len(no_fm)} SKILL.md files lack frontmatter",
                 "Required by spec",
@@ -1610,9 +1624,7 @@ def scan_cross_references(
                 text = wf.read_text(encoding="utf-8", errors="replace")
             except OSError:
                 continue
-            for script_match in re.finditer(
-                r'([\w./\-]+\.(?:mjs|js|py|sh))', text
-            ):
+            for script_match in re.finditer(r"([\w./\-]+\.(?:mjs|js|py|sh))", text):
                 script_path = script_match.group(1)
                 # Only include if it looks like a relative path
                 if "/" in script_path:
@@ -1636,7 +1648,7 @@ def scan_cross_references(
             text = skill_md.read_text(encoding="utf-8", errors="replace")
         except OSError:
             continue
-        for link_match in re.finditer(r'\[([^\]]+)\]\(([^)]+\.md)\)', text):
+        for link_match in re.finditer(r"\[([^\]]+)\]\(([^)]+\.md)\)", text):
             target = link_match.group(2)
             if not target.startswith("http"):
                 batch.append(
@@ -1749,9 +1761,7 @@ def scan_marketplace_catalog(
         if not isinstance(entry, dict):
             continue
         author_raw = entry.get("author", {})
-        author_str = (
-            json.dumps(author_raw) if isinstance(author_raw, dict) else str(author_raw)
-        )
+        author_str = json.dumps(author_raw) if isinstance(author_raw, dict) else str(author_raw)
         keywords_raw = entry.get("keywords", [])
         keywords_str = json.dumps(keywords_raw)
         components_raw = entry.get("components", {})
@@ -1774,9 +1784,8 @@ def scan_marketplace_catalog(
                 json.dumps(verification_raw),
                 int(bool(entry.get("featured", False))),
                 json.dumps(entry.get("mcpTools", [])),
-                entry.get("pluginCount") or (
-                    components_raw.get("skills", 0) if isinstance(components_raw, dict) else 0
-                ),
+                entry.get("pluginCount")
+                or (components_raw.get("skills", 0) if isinstance(components_raw, dict) else 0),
                 json.dumps(pricing_raw),
                 json.dumps(zcf_raw),
                 json.dumps(ext_sync_raw),
@@ -1824,9 +1833,7 @@ def scan_planned_skills(run_id: int, conn: sqlite3.Connection, dry_run: bool) ->
             # Infer skill name
             fm, _ = parse_frontmatter(text) if p.suffix == ".md" else ({}, text)
             apparent_name = fm.get("name", "") or p.stem
-            batch.append(
-                (run_id, rel(p), p.name, p.suffix, lc, wc, file_size(p), apparent_name)
-            )
+            batch.append((run_id, rel(p), p.name, p.suffix, lc, wc, file_size(p), apparent_name))
     if not dry_run and batch:
         conn.executemany(
             """INSERT INTO planned_skills
@@ -1852,9 +1859,7 @@ def scan_root_skills_files(run_id: int, conn: sqlite3.Connection, dry_run: bool)
                 text = ""
             lc = len(text.splitlines())
             wc = word_count(text)
-            batch.append(
-                (run_id, rel(p), p.name, p.suffix, lc, wc, file_size(p), p.parent.name)
-            )
+            batch.append((run_id, rel(p), p.name, p.suffix, lc, wc, file_size(p), p.parent.name))
     if not dry_run and batch:
         conn.executemany(
             """INSERT INTO root_skills_files
@@ -1894,34 +1899,31 @@ def scan_validators(run_id: int, conn: sqlite3.Connection, dry_run: bool) -> int
                 break
 
         # Detect CLI flags
-        flags = re.findall(r'--[\w-]+', text)
+        flags = re.findall(r"--[\w-]+", text)
         flags_str = ",".join(sorted(set(flags))[:20])
 
         # Detect output format
-        output_fmt = (
-            "json"
-            if "json.dumps" in text or "JSON" in text
-            else "text"
-        )
+        output_fmt = "json" if "json.dumps" in text or "JSON" in text else "text"
 
         # Detect fields read
-        fields_read = ",".join(
-            list(set(re.findall(r'["\']([a-z][a-z_\-]+)["\']', text)))[:20]
-        )
+        fields_read = ",".join(list(set(re.findall(r'["\']([a-z][a-z_\-]+)["\']', text)))[:20])
 
         batch_v.append(
             (
-                run_id, rel(vp), entity_type,
+                run_id,
+                rel(vp),
+                entity_type,
                 json.dumps([]),  # checks_json — would need deeper parsing
-                fields_read, "warn-or-fail", flags_str, output_fmt,
+                fields_read,
+                "warn-or-fail",
+                flags_str,
+                output_fmt,
             )
         )
 
         # Extract simple checks
-        for check_m in re.finditer(r'#\s*(check|rule|validate)\s*:?\s*(.+)', text, re.I):
-            batch_vc.append(
-                (run_id, rel(vp), "", check_m.group(2)[:200], "warn")
-            )
+        for check_m in re.finditer(r"#\s*(check|rule|validate)\s*:?\s*(.+)", text, re.I):
+            batch_vc.append((run_id, rel(vp), "", check_m.group(2)[:200], "warn"))
 
     if not dry_run:
         if batch_v:
@@ -1968,8 +1970,13 @@ def scan_plugin_templates(run_id: int, conn: sqlite3.Connection, dry_run: bool) 
 
             batch.append(
                 (
-                    run_id, rel(p), p.name, p.suffix,
-                    count_lines(p), file_size(p), template_type,
+                    run_id,
+                    rel(p),
+                    p.name,
+                    p.suffix,
+                    count_lines(p),
+                    file_size(p),
+                    template_type,
                 )
             )
     if not dry_run and batch:
@@ -1983,21 +1990,19 @@ def scan_plugin_templates(run_id: int, conn: sqlite3.Connection, dry_run: bool) 
     return len(batch)
 
 
-def scan_skill_database_vendors(
-    run_id: int, conn: sqlite3.Connection, dry_run: bool
-) -> int:
+def scan_skill_database_vendors(run_id: int, conn: sqlite3.Connection, dry_run: bool) -> int:
     """Detect database vendor references inside skill files."""
     vendor_patterns: dict[str, re.Pattern] = {
-        "postgresql": re.compile(r'postgresql|psycopg2|pg\b', re.I),
-        "mysql": re.compile(r'mysql|mysqlclient|PyMySQL', re.I),
-        "sqlite": re.compile(r'sqlite3|\.db\b', re.I),
-        "mongodb": re.compile(r'mongodb|pymongo|MongoClient', re.I),
-        "redis": re.compile(r'redis|RedisClient', re.I),
-        "bigquery": re.compile(r'bigquery|google\.cloud\.bigquery', re.I),
-        "firestore": re.compile(r'firestore|firebase_admin', re.I),
-        "elasticsearch": re.compile(r'elasticsearch|Elasticsearch', re.I),
-        "snowflake": re.compile(r'snowflake|snowflake-connector', re.I),
-        "duckdb": re.compile(r'duckdb', re.I),
+        "postgresql": re.compile(r"postgresql|psycopg2|pg\b", re.I),
+        "mysql": re.compile(r"mysql|mysqlclient|PyMySQL", re.I),
+        "sqlite": re.compile(r"sqlite3|\.db\b", re.I),
+        "mongodb": re.compile(r"mongodb|pymongo|MongoClient", re.I),
+        "redis": re.compile(r"redis|RedisClient", re.I),
+        "bigquery": re.compile(r"bigquery|google\.cloud\.bigquery", re.I),
+        "firestore": re.compile(r"firestore|firebase_admin", re.I),
+        "elasticsearch": re.compile(r"elasticsearch|Elasticsearch", re.I),
+        "snowflake": re.compile(r"snowflake|snowflake-connector", re.I),
+        "duckdb": re.compile(r"duckdb", re.I),
     }
     vendor_hits: dict[str, list[str]] = defaultdict(list)
     vendor_sizes: dict[str, int] = defaultdict(int)
@@ -2018,8 +2023,11 @@ def scan_skill_database_vendors(
 
     batch = [
         (
-            run_id, vendor, json.dumps(paths[:10]),
-            len(paths), vendor_sizes[vendor],
+            run_id,
+            vendor,
+            json.dumps(paths[:10]),
+            len(paths),
+            vendor_sizes[vendor],
             ",".join(vendor_exts[vendor]),
             "",
         )
@@ -2129,12 +2137,8 @@ def print_diff_report(db_path: Path) -> None:
 
     for table, label in table_labels.items():
         try:
-            r1 = conn.execute(
-                f"SELECT COUNT(*) FROM {table} WHERE run_id=1"
-            ).fetchone()[0]
-            r2 = conn.execute(
-                f"SELECT COUNT(*) FROM {table} WHERE run_id=2"
-            ).fetchone()[0]
+            r1 = conn.execute(f"SELECT COUNT(*) FROM {table} WHERE run_id=1").fetchone()[0]
+            r2 = conn.execute(f"SELECT COUNT(*) FROM {table} WHERE run_id=2").fetchone()[0]
             delta = r2 - r1
             sign = "+" if delta >= 0 else ""
             print(f"  {label:<28} {r1:>6} → {r2:>6}  ({sign}{delta})")
@@ -2159,9 +2163,7 @@ def print_run_summary(conn: sqlite3.Connection, run_id: int) -> None:
 
     for table in sorted(RUN_ID_TABLES):
         try:
-            count = conn.execute(
-                f"SELECT COUNT(*) FROM {table} WHERE run_id=?", (run_id,)
-            ).fetchone()[0]
+            count = conn.execute(f"SELECT COUNT(*) FROM {table} WHERE run_id=?", (run_id,)).fetchone()[0]
             if count > 0:
                 print(f"  {table:<40} {count:>6}")
         except sqlite3.OperationalError:
@@ -2204,9 +2206,7 @@ def run_scan(args: argparse.Namespace) -> None:
 
     # Step 3: Purge any existing rows for this run_id (idempotent)
     if not dry_run:
-        existing = conn.execute(
-            "SELECT id FROM discovery_runs WHERE id=?", (run_id,)
-        ).fetchone()
+        existing = conn.execute("SELECT id FROM discovery_runs WHERE id=?", (run_id,)).fetchone()
         if existing:
             print(f"  Purging existing run_id={run_id} rows (idempotent re-run)...")
             purge_run(conn, run_id)
@@ -2225,16 +2225,12 @@ def run_scan(args: argparse.Namespace) -> None:
 
     # Step 5: Scan packs / plugins / skills
     print("\n[Step 4] Scanning packs, plugins, skills...")
-    total_packs, total_plugins, total_skills = scan_packs_plugins_skills(
-        run_id, conn, dry_run
-    )
+    total_packs, total_plugins, total_skills = scan_packs_plugins_skills(run_id, conn, dry_run)
 
     # Build pack info for anomaly detection
     pack_info: dict[str, dict] = {}
     if not dry_run:
-        for row in conn.execute(
-            "SELECT name, path, skill_count FROM packs WHERE run_id=?", (run_id,)
-        ).fetchall():
+        for row in conn.execute("SELECT name, path, skill_count FROM packs WHERE run_id=?", (run_id,)).fetchall():
             pack_info[row["name"]] = {
                 "path": row["path"],
                 "skill_count": row["skill_count"],
@@ -2292,16 +2288,13 @@ def run_scan(args: argparse.Namespace) -> None:
 
     # Step 15: Update discovery_runs totals
     if not dry_run:
-        total_files = conn.execute(
-            "SELECT COUNT(*) FROM skill_files WHERE run_id=?", (run_id,)
-        ).fetchone()[0]
+        total_files = conn.execute("SELECT COUNT(*) FROM skill_files WHERE run_id=?", (run_id,)).fetchone()[0]
         conn.execute(
             """UPDATE discovery_runs
                SET total_packs=?, total_plugins=?, total_skills=?,
                    total_files=?, total_root_files=?
                WHERE id=?""",
-            (total_packs, total_plugins, total_skills,
-             total_files, total_root_files, run_id),
+            (total_packs, total_plugins, total_skills, total_files, total_root_files, run_id),
         )
         conn.commit()
         print(f"\n  Updated discovery_runs totals for run_id={run_id}")

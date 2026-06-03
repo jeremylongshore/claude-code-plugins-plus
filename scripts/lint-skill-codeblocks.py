@@ -169,6 +169,23 @@ def main() -> int:
     md_files = sorted(set(root.rglob("SKILL.md")) | set(root.rglob("README.md")))
     md_files = [p for p in md_files if "node_modules" not in p.parts]
 
+    # Skip upstream-synced plugin dirs. These are auto-pulled from external
+    # repos by scripts/sync-external.mjs; their bash code blocks reflect the
+    # upstream maintainer's choices and the next sync will overwrite any
+    # fixes we apply here. A `.source.json` file marks every synced plugin
+    # root (written by ensureCatalogEntry in sync-external.mjs), so the
+    # detection is robust to renames in sources.yaml without us having to
+    # hand-maintain a path list here.
+    def is_in_synced_plugin(path: Path) -> bool:
+        for ancestor in path.parents:
+            if (ancestor / ".source.json").exists():
+                return True
+            if ancestor == root:
+                break
+        return False
+
+    md_files = [p for p in md_files if not is_in_synced_plugin(p)]
+
     total_blocks = 0
     checked_blocks = 0
     failures: list[str] = []

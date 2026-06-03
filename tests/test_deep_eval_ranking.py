@@ -7,7 +7,7 @@ Uses pre-computed test data for deterministic results.
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
 from deep_eval.ranking import (
     expected_score,
@@ -95,38 +95,38 @@ class TestRoundRobin:
 
     def test_single_skill(self):
         """Single skill can't compete, gets default rating."""
-        result = run_round_robin({'skill_a': 80.0})
-        assert 'skill_a' in result
-        assert result['skill_a']['rating'] == DEFAULT_RATING
+        result = run_round_robin({"skill_a": 80.0})
+        assert "skill_a" in result
+        assert result["skill_a"]["rating"] == DEFAULT_RATING
 
     def test_two_skills(self):
-        result = run_round_robin({'a': 90.0, 'b': 60.0})
-        assert result['a']['rating'] > result['b']['rating']
-        assert result['a']['wins'] == 1
-        assert result['b']['losses'] == 1
+        result = run_round_robin({"a": 90.0, "b": 60.0})
+        assert result["a"]["rating"] > result["b"]["rating"]
+        assert result["a"]["wins"] == 1
+        assert result["b"]["losses"] == 1
 
     def test_three_skills_ordering(self):
-        result = run_round_robin({'a': 90.0, 'b': 70.0, 'c': 50.0})
+        result = run_round_robin({"a": 90.0, "b": 70.0, "c": 50.0})
         ranked = rank_skills(result)
-        assert ranked[0][0] == 'a'
-        assert ranked[-1][0] == 'c'
+        assert ranked[0][0] == "a"
+        assert ranked[-1][0] == "c"
 
     def test_tied_skills(self):
-        result = run_round_robin({'a': 75.0, 'b': 75.0})
-        assert result['a']['draws'] == 1
-        assert result['b']['draws'] == 1
-        assert abs(result['a']['rating'] - result['b']['rating']) < 0.01
+        result = run_round_robin({"a": 75.0, "b": 75.0})
+        assert result["a"]["draws"] == 1
+        assert result["b"]["draws"] == 1
+        assert abs(result["a"]["rating"] - result["b"]["rating"]) < 0.01
 
 
 class TestRankSkills:
     def test_sorts_descending(self):
         results = {
-            'a': {'rating': 1450, 'wins': 0, 'losses': 1, 'draws': 0, 'composite_score': 60},
-            'b': {'rating': 1550, 'wins': 1, 'losses': 0, 'draws': 0, 'composite_score': 90},
+            "a": {"rating": 1450, "wins": 0, "losses": 1, "draws": 0, "composite_score": 60},
+            "b": {"rating": 1550, "wins": 1, "losses": 0, "draws": 0, "composite_score": 90},
         }
         ranked = rank_skills(results)
-        assert ranked[0][0] == 'b'
-        assert ranked[1][0] == 'a'
+        assert ranked[0][0] == "b"
+        assert ranked[1][0] == "a"
 
 
 class TestRatingConfidenceInterval:
@@ -148,15 +148,15 @@ class TestRatingConfidenceInterval:
 class TestCategoryRankings:
     def test_multiple_categories(self):
         skills_by_cat = {
-            'devops': {'a': 90.0, 'b': 60.0},
-            'testing': {'c': 80.0, 'd': 70.0},
+            "devops": {"a": 90.0, "b": 60.0},
+            "testing": {"c": 80.0, "d": 70.0},
         }
         rankings = category_rankings(skills_by_cat)
-        assert 'devops' in rankings
-        assert 'testing' in rankings
-        assert rankings['devops'][0][0] == 'a'
+        assert "devops" in rankings
+        assert "testing" in rankings
+        assert rankings["devops"][0][0] == "a"
 
     def test_single_skill_category(self):
-        skills_by_cat = {'solo': {'x': 50.0}}
+        skills_by_cat = {"solo": {"x": 50.0}}
         rankings = category_rankings(skills_by_cat)
-        assert len(rankings['solo']) == 1
+        assert len(rankings["solo"]) == 1

@@ -100,6 +100,64 @@
     "000-docs/**",
     "tests/**",
     ".forge/**",
-    "**/.forge/**"
+    "**/.forge/**",
+
+    // ─── Upstream-synced plugin paths (from sources.yaml) ───
+    // These dirs are auto-synced from external repos by
+    // scripts/sync-external.mjs on the weekly cron. Their markdown
+    // style is the upstream maintainer's choice, not ours. Linting
+    // them here would force us to fix files the next sync overwrites.
+    //
+    // Keep this list in sync with sources.yaml target_path entries.
+    // Regenerate via:
+    //   python3 -c "import yaml; [print(s['target_path']+'/**') for s in yaml.safe_load(open('sources.yaml'))['sources']]"
+    "plugins/ai-agency/hyperflow/**",
+    "plugins/ai-agency/tonone/**",
+    "plugins/business-tools/wondelai-blue-ocean-strategy/**",
+    "plugins/business-tools/wondelai-contagious/**",
+    "plugins/business-tools/wondelai-cro-methodology/**",
+    "plugins/business-tools/wondelai-crossing-the-chasm/**",
+    "plugins/business-tools/wondelai-drive-motivation/**",
+    "plugins/business-tools/wondelai-hundred-million-offers/**",
+    "plugins/business-tools/wondelai-influence-psychology/**",
+    "plugins/business-tools/wondelai-jobs-to-be-done/**",
+    "plugins/business-tools/wondelai-made-to-stick/**",
+    "plugins/business-tools/wondelai-negotiation/**",
+    "plugins/business-tools/wondelai-obviously-awesome/**",
+    "plugins/business-tools/wondelai-one-page-marketing/**",
+    "plugins/business-tools/wondelai-predictable-revenue/**",
+    "plugins/business-tools/wondelai-scorecard-marketing/**",
+    "plugins/business-tools/wondelai-storybrand-messaging/**",
+    "plugins/business-tools/wondelai-traction-eos/**",
+    "plugins/community/ejentum-anti-deception/**",
+    "plugins/community/ejentum-code/**",
+    "plugins/community/ejentum-memory/**",
+    "plugins/community/ejentum-reasoning/**",
+    "plugins/community/gastown/**",
+    "plugins/community/zai-cli/**",
+    "plugins/crypto/aomi/**",
+    "plugins/design/wondelai-design-everyday-things/**",
+    "plugins/design/wondelai-hooked-ux/**",
+    "plugins/design/wondelai-ios-hig-design/**",
+    "plugins/design/wondelai-refactoring-ui/**",
+    "plugins/design/wondelai-top-design/**",
+    "plugins/design/wondelai-ux-heuristics/**",
+    "plugins/design/wondelai-web-typography/**",
+    "plugins/devops/sugar/**",
+    "plugins/mcp/pr-to-spec/**",
+    "plugins/mcp/slack-channel/**",
+    "plugins/mcp/x-bug-triage/**",
+    "plugins/productivity/box-cloud-filesystem/**",
+    "plugins/productivity/claude-workflow-skills/**",
+    "plugins/productivity/claudebase/**",
+    "plugins/productivity/cli-power-skills/**",
+    "plugins/productivity/obsidian-project-documentation/**",
+    "plugins/productivity/over-50s-health/**",
+    "plugins/productivity/pair-programmer/**",
+    "plugins/productivity/skyvern/**",
+    "plugins/productivity/wondelai-design-sprint/**",
+    "plugins/productivity/wondelai-lean-startup/**",
+    "plugins/testing/cli-ux-tester/**",
+    "plugins/testing/kobiton-automate/**"
   ]
 }

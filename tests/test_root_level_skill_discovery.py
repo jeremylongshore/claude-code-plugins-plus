@@ -17,9 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
 import importlib.util
 
-VALIDATOR_PATH = (
-    Path(__file__).resolve().parents[1] / "scripts" / "validate-skills-schema.py"
-)
+VALIDATOR_PATH = Path(__file__).resolve().parents[1] / "scripts" / "validate-skills-schema.py"
 spec = importlib.util.spec_from_file_location("validate_skills_schema", VALIDATOR_PATH)
 validator = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(validator)
@@ -44,9 +42,7 @@ def test_find_skill_files_picks_up_root_level_skill_md(tmp_path):
     results = validator.find_skill_files(tmp_path)
 
     assert expected in results, (
-        f"find_skill_files missed root-level SKILL.md.\n"
-        f"  expected: {expected}\n"
-        f"  got: {results}"
+        f"find_skill_files missed root-level SKILL.md.\n  expected: {expected}\n  got: {results}"
     )
 
 
@@ -60,12 +56,8 @@ def test_find_skill_files_dedupes_when_both_layouts_present(tmp_path):
     results = validator.find_skill_files(tmp_path)
     resolved = [p.resolve() for p in results]
 
-    assert len(resolved) == len(set(resolved)), (
-        f"find_skill_files produced duplicates: {resolved}"
-    )
-    assert len(results) == 2, (
-        f"expected 2 distinct SKILL.md files (root + nested), got {len(results)}: {results}"
-    )
+    assert len(resolved) == len(set(resolved)), f"find_skill_files produced duplicates: {resolved}"
+    assert len(results) == 2, f"expected 2 distinct SKILL.md files (root + nested), got {len(results)}: {results}"
 
 
 def test_find_skill_files_still_picks_up_legacy_nested_layout(tmp_path):

@@ -70,8 +70,24 @@ def main() -> int:
     #     packages and runtime context not declared in their parent pkg)
     #   - **/.vitepress/** (docs-site config, not part of the npm package)
     excluded_parts = {"node_modules", "assets", ".vitepress"}
+
+    # Skip upstream-synced plugin dirs. These are auto-pulled from external
+    # repos by scripts/sync-external.mjs; their tsconfig / package shape is
+    # the upstream maintainer's choice and a coverage audit against our
+    # baseline misreports their structure. A `.source.json` file marks every
+    # synced plugin root.
+    def is_in_synced_plugin(path: Path) -> bool:
+        for ancestor in path.parents:
+            if (ancestor / ".source.json").exists():
+                return True
+            if ancestor == root:
+                break
+        return False
+
     ts_files = sorted(
-        p for p in root.rglob("*.ts") if not (excluded_parts & set(p.parts)) and not p.name.endswith(".d.ts")
+        p
+        for p in root.rglob("*.ts")
+        if not (excluded_parts & set(p.parts)) and not p.name.endswith(".d.ts") and not is_in_synced_plugin(p)
     )
 
     if not ts_files:

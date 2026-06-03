@@ -99,9 +99,7 @@ def main(argv: list[str]) -> int:
         + LINES_PER_MODIFIED * len(modified) * -1  # modifications can shrink or grow
     )
     max_budget = (
-        LINES_PER_ADDED_MAX * len(added)
-        - LINES_PER_REMOVED_MIN * len(removed)
-        + LINES_PER_MODIFIED * len(modified)
+        LINES_PER_ADDED_MAX * len(added) - LINES_PER_REMOVED_MIN * len(removed) + LINES_PER_MODIFIED * len(modified)
     )
 
     if net < min_budget - TOLERANCE or net > max_budget + TOLERANCE:

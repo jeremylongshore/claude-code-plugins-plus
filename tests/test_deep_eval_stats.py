@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 # Add scripts/ to path so deep_eval is importable
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
 from deep_eval.stats import (
     wilson_score_ci,
@@ -167,31 +167,31 @@ class TestCohensKappa:
 
 class TestWeightedComposite:
     def test_empty_scores(self):
-        assert weighted_composite({}, {'a': 0.5, 'b': 0.5}) == 0.0
+        assert weighted_composite({}, {"a": 0.5, "b": 0.5}) == 0.0
 
     def test_equal_weights(self):
-        scores = {'a': 80, 'b': 60}
-        weights = {'a': 0.5, 'b': 0.5}
+        scores = {"a": 80, "b": 60}
+        weights = {"a": 0.5, "b": 0.5}
         assert weighted_composite(scores, weights) == 70.0
 
     def test_unequal_weights(self):
-        scores = {'a': 100, 'b': 0}
-        weights = {'a': 0.75, 'b': 0.25}
+        scores = {"a": 100, "b": 0}
+        weights = {"a": 0.75, "b": 0.25}
         assert weighted_composite(scores, weights) == 75.0
 
     def test_renormalization(self):
         """When a dimension is missing, weights should renormalize."""
-        scores = {'a': 80}  # b is missing
-        weights = {'a': 0.5, 'b': 0.5}
+        scores = {"a": 80}  # b is missing
+        weights = {"a": 0.5, "b": 0.5}
         # a gets all the weight (renormalized to 1.0)
         assert weighted_composite(scores, weights) == 80.0
 
     def test_clamped_to_100(self):
-        scores = {'a': 150}
-        weights = {'a': 1.0}
+        scores = {"a": 150}
+        weights = {"a": 1.0}
         assert weighted_composite(scores, weights) == 100.0
 
     def test_clamped_to_0(self):
-        scores = {'a': -50}
-        weights = {'a': 1.0}
+        scores = {"a": -50}
+        weights = {"a": 1.0}
         assert weighted_composite(scores, weights) == 0.0

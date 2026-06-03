@@ -852,9 +852,21 @@ jobs:
       - name: Run shellcheck (severity=warning) across plugins/**/*.sh
         run: |
           set -e
-          count=$(find plugins -name '*.sh' -not -path '*/node_modules/*' -type f | wc -l)
+          # Build list of .sh files to check, EXCLUDING:
+          #   - node_modules
+          #   - upstream-synced plugin dirs (any dir containing .source.json
+          #     in its plugin root — those scripts are the upstream
+          #     maintainer's responsibility, and the next weekly sync will
+          #     overwrite any fixes we apply here)
+          synced_dirs=$(find plugins -maxdepth 3 -name '.source.json' -type f -exec dirname {} \;)
+          declare -a prune_args=()
+          for d in $synced_dirs; do
+            prune_args+=(-not -path "$d/*")
+          done
+          count=$(find plugins -name '*.sh' -not -path '*/node_modules/*' "${prune_args[@]}" -type f | wc -l)
           echo "Shellchecking $count .sh files at severity=warning..."
-          find plugins -name '*.sh' -not -path '*/node_modules/*' -type f -print0 \
+          echo "Excluded $(echo "$synced_dirs" | wc -l) upstream-synced plugin dirs."
+          find plugins -name '*.sh' -not -path '*/node_modules/*' "${prune_args[@]}" -type f -print0 \
             | xargs -0 shellcheck --severity=warning --shell=bash
 
   skill-codeblock-syntax:

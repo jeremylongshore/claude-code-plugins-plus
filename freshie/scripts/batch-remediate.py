@@ -320,9 +320,7 @@ def _remove_field_lines(fm_text: str, fields: set[str]) -> tuple[str, list[str]]
     return "\n".join(result), removed
 
 
-def add_tags_to_file(
-    file_path: Path, dry_run: bool
-) -> tuple[bool, str | None]:
+def add_tags_to_file(file_path: Path, dry_run: bool) -> tuple[bool, str | None]:
     """
     Add a `tags:` line to the frontmatter of file_path if it is missing.
 
@@ -356,9 +354,7 @@ def add_tags_to_file(
     return True, None
 
 
-def add_compatible_with_to_file(
-    file_path: Path, dry_run: bool
-) -> tuple[bool, str | None]:
+def add_compatible_with_to_file(file_path: Path, dry_run: bool) -> tuple[bool, str | None]:
     """
     Add `compatible-with: claude-code` if the field is missing.
     """
@@ -386,9 +382,7 @@ def add_compatible_with_to_file(
     return True, None
 
 
-def remove_deprecated_agent_fields(
-    file_path: Path, dry_run: bool
-) -> tuple[bool, list[str], str | None]:
+def remove_deprecated_agent_fields(file_path: Path, dry_run: bool) -> tuple[bool, list[str], str | None]:
     """
     Remove deprecated fields from an agent frontmatter.
 
@@ -441,27 +435,19 @@ def _open_db() -> sqlite3.Connection | None:
 
 def get_skills_missing_tags(db: sqlite3.Connection) -> list[Path]:
     cur = db.cursor()
-    cur.execute(
-        "SELECT skill_path FROM skill_compliance "
-        "WHERE missing_fields LIKE '%tags%'"
-    )
+    cur.execute("SELECT skill_path FROM skill_compliance WHERE missing_fields LIKE '%tags%'")
     return [Path(row[0]) for row in cur.fetchall()]
 
 
 def get_skills_missing_compatible_with(db: sqlite3.Connection) -> list[Path]:
     cur = db.cursor()
-    cur.execute(
-        "SELECT skill_path FROM skill_compliance "
-        "WHERE missing_fields LIKE '%compatible-with%'"
-    )
+    cur.execute("SELECT skill_path FROM skill_compliance WHERE missing_fields LIKE '%compatible-with%'")
     return [Path(row[0]) for row in cur.fetchall()]
 
 
 def get_agents_with_invalid_fields(db: sqlite3.Connection) -> list[Path]:
     cur = db.cursor()
-    cur.execute(
-        "SELECT agent_path FROM agent_compliance WHERE has_invalid_fields = 1"
-    )
+    cur.execute("SELECT agent_path FROM agent_compliance WHERE has_invalid_fields = 1")
     return [Path(row[0]) for row in cur.fetchall()]
 
 
@@ -546,9 +532,7 @@ def _filter_by_pack(paths: list[Path], pack: str | None) -> list[Path]:
 # ---------------------------------------------------------------------------
 
 
-def run_fix_tags(
-    paths: list[Path], dry_run: bool, verbose: bool
-) -> tuple[int, int, int]:
+def run_fix_tags(paths: list[Path], dry_run: bool, verbose: bool) -> tuple[int, int, int]:
     """Returns (added, skipped, errors)."""
     added = skipped = errors = 0
     for p in paths:
@@ -573,9 +557,7 @@ def run_fix_tags(
     return added, skipped, errors
 
 
-def run_fix_compatible_with(
-    paths: list[Path], dry_run: bool, verbose: bool
-) -> tuple[int, int, int]:
+def run_fix_compatible_with(paths: list[Path], dry_run: bool, verbose: bool) -> tuple[int, int, int]:
     added = skipped = errors = 0
     for p in paths:
         if not p.exists():
@@ -598,9 +580,7 @@ def run_fix_compatible_with(
     return added, skipped, errors
 
 
-def run_fix_agents(
-    paths: list[Path], dry_run: bool, verbose: bool
-) -> tuple[int, int, int]:
+def run_fix_agents(paths: list[Path], dry_run: bool, verbose: bool) -> tuple[int, int, int]:
     removed_count = skipped = errors = 0
     for p in paths:
         if not p.exists():
@@ -699,10 +679,7 @@ def main() -> int:
     fix_agents = args.fix_agents or args.all
 
     if not (fix_tags or fix_compat or fix_agents):
-        parser.error(
-            "Specify at least one fixer: --fix-tags, --fix-compatible-with, "
-            "--fix-agents, or --all"
-        )
+        parser.error("Specify at least one fixer: --fix-tags, --fix-compatible-with, --fix-agents, or --all")
 
     mode_label = "DRY RUN (no files written)" if dry_run else "EXECUTE MODE (files will be modified)"
     print(f"\n=== BATCH REMEDIATION — {mode_label} ===\n")
