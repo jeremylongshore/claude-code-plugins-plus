@@ -12,8 +12,9 @@ description: 'Execute Databricks incident response procedures with triage, mitig
   "databricks down", "databricks on-call", "databricks emergency", "job failed".
 
   '
-allowed-tools: Read, Grep, Bash(databricks:*), Bash(curl:*)
-version: 1.0.0
+allowed-tools: Bash(databricks:*), Bash(curl:*), Bash(jq:*)
+argument-hint: '[severity] [job_id?]'
+version: 1.0.1
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -36,6 +37,22 @@ Rapid incident response for Databricks: triage script, decision tree, immediate 
 | P2 | Degraded performance | < 1 hour | Slow queries, partial failures, stale data |
 | P3 | Non-critical issues | < 4 hours | Dev cluster issues, non-critical job delays |
 | P4 | No user impact | Next business day | Monitoring gaps, cleanup needed |
+
+## Prerequisites
+
+Before this runbook runs, the responder must have:
+
+- **Databricks CLI v2** installed and on PATH (`databricks --version` returns ≥ 0.200.0). Install: `pip install databricks-cli` or `brew install databricks/tap/databricks-cli`.
+- **Authentication** to the affected workspace via one of:
+  - **PAT** (Personal Access Token) — `databricks configure --token`, paste a token from the workspace User Settings → Developer → Access Tokens page. Fastest for on-call; OK for short-lived incident sessions.
+  - **OAuth U2M** — `databricks auth login --host https://<workspace>.cloud.databricks.com` for human-in-the-loop sessions with auto-refresh.
+  - **OAuth M2M** — service principal client-credentials grant, for automated incident bots; env vars `DATABRICKS_CLIENT_ID` + `DATABRICKS_CLIENT_SECRET`.
+- **`jq`** on PATH (used to parse JSON from CLI output and status APIs). Install: `apt install jq` or `brew install jq`.
+- **`curl`** on PATH (used to hit `status.databricks.com` and internal status pages). Comes standard on every modern Linux/macOS install.
+- **Read permission** on the workspace's job runs + cluster events (granted by default to anyone with workspace access; not all workspaces enable strict RBAC). Without it the triage script returns empty `runs[]` arrays even when failures exist.
+- **Workspace URL + workspace ID** known and recorded in the incident ticket — needed for the comms templates in `## Examples`.
+
+If any of these is missing, fix it before starting triage. Running this skill without auth produces misleading output ("API: UNREACHABLE") that wastes early-incident minutes.
 
 ## Instructions
 
@@ -132,7 +149,7 @@ databricks runs get --run-id $RUN_ID | jq '{
 # Get task output for failed tasks
 databricks runs get-output --run-id $RUN_ID | jq '{
   error: .error,
-  trace: (.error_trace // "" | .[0:1000])
+  trace: (.error_trace // "" | .[0:1000])  # cap trace at 1000 chars so the postmortem payload stays under Slack's 4KB block limit and Datadog's 8KB event limit
 }'
 
 # Repair failed tasks only (skip successful ones)
@@ -178,88 +195,15 @@ databricks permissions update jobs --job-id $JOB_ID --json '{
 
 ### Step 4: Communication
 
-#### Internal (Slack)
-
-```
-:red_circle: **P1 INCIDENT: [Brief Description]**
-
-**Status:** INVESTIGATING
-**Impact:** [What data/users are affected]
-**Started:** [Time UTC]
-**Current Action:** [What you're doing now]
-**Next Update:** [+30 min]
-
-**IC:** @[your-name]
-```
-
-#### External (Status Page)
-
-```
-**Data Pipeline Delay**
-We are experiencing delays in data processing.
-Dashboard data may be up to [X] hours stale.
-Started: [Time] UTC
-Status: Actively investigating
-Next update: [Time] UTC
-```
+Post the internal Slack and external status-page updates. **Templates with cadence rules + executive-escalation form** are in [`references/communication-templates.md`](references/communication-templates.md). Copy the bracketed-field versions; consistency matters more than artistry under incident pressure.
 
 ### Step 5: Evidence Collection
 
-```bash
-#!/bin/bash
-INCIDENT_ID=$1
-RUN_ID=$2
-CLUSTER_ID=$3
+Run the evidence-collection script to bundle `run.json` + `output.json` + (if cluster-side failure) `cluster.json` + `events.json` into a tarball for the postmortem. **Script + per-artifact reference** in [`references/evidence-collection.md`](references/evidence-collection.md).
 
-mkdir -p "incident-$INCIDENT_ID"
+### Step 6: Postmortem
 
-# Collect everything
-databricks runs get --run-id $RUN_ID --output json > "incident-$INCIDENT_ID/run.json" 2>&1
-databricks runs get-output --run-id $RUN_ID --output json > "incident-$INCIDENT_ID/output.json" 2>&1
-
-if [ -n "$CLUSTER_ID" ]; then
-    databricks clusters get --cluster-id $CLUSTER_ID --output json > "incident-$INCIDENT_ID/cluster.json" 2>&1
-    databricks clusters events --cluster-id $CLUSTER_ID --limit 50 --output json > "incident-$INCIDENT_ID/events.json" 2>&1
-fi
-
-tar -czf "incident-$INCIDENT_ID.tar.gz" "incident-$INCIDENT_ID"
-echo "Evidence: incident-$INCIDENT_ID.tar.gz"
-```
-
-### Step 6: Postmortem Template
-
-```markdown
-## Incident: [Title]
-
-**Date:** YYYY-MM-DD | **Duration:** Xh Ym | **Severity:** P[1-4]
-**IC:** [Name]
-
-### Summary
-[1-2 sentences: what happened and what was the impact]
-
-### Timeline (UTC)
-| Time | Event |
-|------|-------|
-| HH:MM | Alert fired / issue detected |
-| HH:MM | Investigation started |
-| HH:MM | Root cause identified |
-| HH:MM | Mitigation applied |
-| HH:MM | Resolved |
-
-### Root Cause
-[Technical explanation]
-
-### Impact
-- Tables affected: [list]
-- Data staleness: [hours]
-- Users affected: [count/teams]
-
-### Action Items
-| Priority | Action | Owner | Due |
-|----------|--------|-------|-----|
-| P1 | [Preventive fix] | [Name] | [Date] |
-| P2 | [Monitoring gap] | [Name] | [Date] |
-```
+Fill in the postmortem template within 48 hours of resolution. Archive to your team's incident-archive at `/incidents/<YYYY-MM-DD>-<slug>.md`. **Template + blameless-doc rules** in [`references/postmortem-template.md`](references/postmortem-template.md).
 
 ## Output
 
@@ -302,4 +246,8 @@ databricks runs list --job-id $JID --active-only | jq -r '.runs[].run_id' | \
 
 ## Next Steps
 
-For data handling and compliance, see `databricks-data-handling`.
+- **For data handling + compliance** (GDPR deletion, PII masking, retention) post-incident: see `databricks-data-handling`.
+- **For root-cause analysis on cluster-side failures** (OOM, cold starts, spot interruptions): see `databricks-cluster-forensics` once that skill ships in v2.
+- **For cost-impact accounting** of the incident window (job-cluster restarts, all-purpose-cluster fallbacks during the outage): see `databricks-cost-leak-hunter` (pilot v2 skill).
+- **For permanent observability** so the next incident gets caught earlier: see `databricks-observability` for system-table alerting + Prometheus integration.
+- **Postmortem template** is `## Output` § 4 above; archive completed postmortems to the team's incident-archive tag in the workspace (`/incidents/<YYYY-MM-DD>-<slug>.md`).
