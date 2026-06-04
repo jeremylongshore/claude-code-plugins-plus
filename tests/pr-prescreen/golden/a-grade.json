@@ -1,0 +1,11 @@
+[
+  {
+    "path": "plugins/security/example/skills/clean-skill/SKILL.md",
+    "score": 95,
+    "grade": "A",
+    "errors": 0,
+    "warnings": 0,
+    "error_messages": [],
+    "warning_messages": []
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "path": "plugins/security/example/skills/over-permissive/SKILL.md",
+    "score": 65,
+    "grade": "D",
+    "errors": 2,
+    "warnings": 5,
+    "error_messages": [
+      "Required field 'allowed-tools' missing from frontmatter",
+      "'description' exceeds 1024 characters"
+    ],
+    "warning_messages": [
+      "No 'Use when' trigger phrase in description",
+      "Body has no '## Output' section",
+      "References folder absent",
+      "No 'Trigger with' phrase listed",
+      "Tags array is empty"
+    ]
+  }
+]

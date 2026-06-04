@@ -1,0 +1,6 @@
+[
+  {
+    "path": "plugins/security/example/skills/broken-yaml/SKILL.md",
+    "fatal": "YAML frontmatter parse error: expected ':' but got '-' at line 4"
+  }
+]

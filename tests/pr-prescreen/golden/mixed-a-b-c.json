@@ -1,0 +1,33 @@
+[
+  {
+    "path": "plugins/saas-packs/example-pack/skills/skill-one/SKILL.md",
+    "score": 92,
+    "grade": "A",
+    "errors": 0,
+    "warnings": 0,
+    "error_messages": [],
+    "warning_messages": []
+  },
+  {
+    "path": "plugins/saas-packs/example-pack/skills/skill-two/SKILL.md",
+    "score": 84,
+    "grade": "B",
+    "errors": 0,
+    "warnings": 1,
+    "error_messages": [],
+    "warning_messages": ["Tool 'Edit' declared but never referenced"]
+  },
+  {
+    "path": "plugins/saas-packs/example-pack/skills/skill-three/SKILL.md",
+    "score": 73,
+    "grade": "C",
+    "errors": 0,
+    "warnings": 3,
+    "error_messages": [],
+    "warning_messages": [
+      "Required section missing: '## Prerequisites'",
+      "Body lacks numbered workflow steps",
+      "References folder has only 1 file"
+    ]
+  }
+]

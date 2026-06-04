@@ -1,0 +1,16 @@
+[
+  {
+    "path": "plugins/security/example/skills/missing-prerequisites/SKILL.md",
+    "score": 75,
+    "grade": "C",
+    "errors": 0,
+    "warnings": 4,
+    "error_messages": [],
+    "warning_messages": [
+      "Required section missing: '## Prerequisites' (marketplace tier)",
+      "Tool 'Read' declared in allowed-tools but never referenced",
+      "Body lacks 'Step 1 / Step 2' numbered workflow structure",
+      "References folder has only 1 file (target: >=2 for marketplace tier)"
+    ]
+  }
+]

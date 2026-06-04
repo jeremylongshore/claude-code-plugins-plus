@@ -1,0 +1,14 @@
+[
+  {
+    "path": "plugins/security/example/skills/missing-references/SKILL.md",
+    "score": 85,
+    "grade": "B",
+    "errors": 0,
+    "warnings": 2,
+    "error_messages": [],
+    "warning_messages": [
+      "Tool 'Glob' declared in allowed-tools but never referenced in the skill body",
+      "Consider adding 'model': pin a specific model for reasoning stability"
+    ]
+  }
+]
