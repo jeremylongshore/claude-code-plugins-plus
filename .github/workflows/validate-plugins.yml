@@ -405,6 +405,20 @@ jobs:
               cd "$dir"
               tested=$((tested + 1))
 
+              # Workspace members (plugins/mcp/*, plugins/saas-packs/*-pack)
+              # get their deps from the root `pnpm install --frozen-lockfile`
+              # above. Non-workspace plugins (e.g. skill-enhancers/*) are NOT in
+              # pnpm-workspace.yaml, so the root install never populates their
+              # node_modules — `pnpm test` would otherwise resolve a tool (e.g.
+              # vitest) hoisted from the root at a DIFFERENT major than the one
+              # the plugin declares, producing spurious failures like
+              # "ReferenceError: __vite_ssr_exportName__ is not defined".
+              # Install the plugin's own declared deps in isolation first.
+              if [ "$category" != "mcp" ] && [[ "$plugin_name" != *-pack ]]; then
+                echo "  ↳ non-workspace plugin — installing its own deps (--ignore-workspace)"
+                pnpm install --ignore-workspace
+              fi
+
               if grep -q '"test:ci":' package.json; then
                 pnpm test:ci
               else
