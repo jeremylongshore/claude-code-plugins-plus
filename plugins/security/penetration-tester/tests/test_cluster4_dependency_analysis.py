@@ -88,12 +88,19 @@ class TestAuditNpm:
         assert exc.value.code == 0
 
     def test_cli_missing_path_creates_finding(self, mod, tmp_path, capsys):
-        """Non-existent target dir → INFO finding (npm absent or non-node)."""
+        """Non-existent target dir → INFO finding (npm absent or non-node).
+
+        Reviewer tightening (PR #837): the prior assertion `in (0, 2)` would
+        have masked an argparse failure (code 2) as "expected behavior."
+        Tighten to exit code 0 since the fixture passes a valid path with
+        valid args; the only legitimate exit is the clean success path.
+        """
         out = tmp_path / "out.json"
-        # Path doesn't matter — the audit_directory function handles non-Node dirs
         exit_code = mod.main([str(tmp_path), "--output", str(out), "--format", "json"])
-        # Should exit cleanly (no critical findings produced)
-        assert exit_code in (0, 2)
+        assert exit_code == 0, (
+            f"expected clean exit 0 (non-Node dir produces INFO finding only); "
+            f"got {exit_code} — likely argparse failure or unexpected error path"
+        )
         data = json.loads(out.read_text())
         assert isinstance(data, list)
 
@@ -329,3 +336,128 @@ class TestTraceVulns:
             "evidence": {},
         }
         assert mod.extract_package_name_from_finding(finding) == "lodash"
+
+    # =====================================================================
+    # build_trace_findings — the algorithmic composition the reviewer
+    # flagged as having 0% coverage. Tests cover each severity-bump branch.
+    # =====================================================================
+
+    def test_build_trace_findings_skips_info_severity(self, mod):
+        """INFO-severity audit findings should NOT become trace findings."""
+        audit = [{
+            "skill_id": "auditing-npm-dependencies",
+            "severity": "info",
+            "evidence": {"package": "lodash"},
+            "target": "test",
+            "cve_id": None,
+        }]
+        parents = {"lodash": []}
+        direct = {"lodash"}
+        out = mod.build_trace_findings(audit, parents, direct, min_depth=0)
+        # Only the leverage-report finding should be in the output (no real
+        # transitive vuln, no leverage to track) — but if INFO was incorrectly
+        # included it'd produce a non-INFO trace finding here.
+        non_info_traces = [
+            f for f in out if "transitive vuln" in f.title.lower()
+        ]
+        assert non_info_traces == []
+
+    def test_build_trace_findings_direct_dep_depth_0(self, mod):
+        """A direct-dep CVE has depth 0 — should be skipped when min_depth>0."""
+        audit = [{
+            "skill_id": "auditing-npm-dependencies",
+            "severity": "high",
+            "evidence": {"package": "lodash"},
+            "target": "test::lodash",
+            "cve_id": "CVE-2026-0001",
+        }]
+        parents = {"lodash": []}
+        direct = {"lodash"}
+        out = mod.build_trace_findings(audit, parents, direct, min_depth=1)
+        non_leverage = [f for f in out if "Direct dep" not in f.title]
+        # depth=0 (direct), min_depth=1 → no transitive trace finding
+        assert non_leverage == []
+
+    def test_build_trace_findings_deep_transitive_bumps_severity(self, mod):
+        """At depth >=3, a CRITICAL becomes HIGH/CRITICAL, and a HIGH gets
+        bumped (depth alone elevates concern about blast radius)."""
+        # qs reachable only via deep chain: express -> a -> b -> qs (depth 3)
+        audit = [{
+            "skill_id": "auditing-npm-dependencies",
+            "severity": "high",
+            "evidence": {"package": "qs"},
+            "target": "test::qs",
+            "cve_id": "CVE-2026-0002",
+        }]
+        parents = {"express": [], "a": ["express"], "b": ["a"], "qs": ["b"]}
+        direct = {"express"}
+        out = mod.build_trace_findings(audit, parents, direct, min_depth=0)
+        trace_findings = [f for f in out if "transitive vuln" in f.title.lower()]
+        assert len(trace_findings) == 1
+        # The original severity was HIGH; depth >= 3 should keep it at least HIGH.
+        assert trace_findings[0].severity.value in ("high", "critical")
+
+    def test_build_trace_findings_multi_path_bumps_severity(self, mod):
+        """A vuln reachable via >=5 paths should bump severity by one tier
+        (broad reachability = harder remediation)."""
+        # qs reachable via 5 distinct direct deps
+        audit = [{
+            "skill_id": "auditing-npm-dependencies",
+            "severity": "medium",
+            "evidence": {"package": "qs"},
+            "target": "test::qs",
+            "cve_id": "CVE-2026-0003",
+        }]
+        parents = {
+            "p1": [], "p2": [], "p3": [], "p4": [], "p5": [],
+            "qs": ["p1", "p2", "p3", "p4", "p5"],
+        }
+        direct = {"p1", "p2", "p3", "p4", "p5"}
+        out = mod.build_trace_findings(audit, parents, direct, min_depth=0)
+        trace_findings = [f for f in out if "transitive vuln" in f.title.lower()]
+        assert len(trace_findings) == 1
+        # Original severity MEDIUM; 5 paths should bump to HIGH.
+        assert trace_findings[0].severity.value == "high"
+
+    def test_build_trace_findings_leverage_report_picks_top_ancestor(self, mod):
+        """The leverage report should call out the direct ancestor for which
+        the most transitive CVEs flow through."""
+        audit = [
+            {
+                "skill_id": "auditing-npm-dependencies",
+                "severity": "high",
+                "evidence": {"package": f"vuln-{i}"},
+                "target": f"test::vuln-{i}",
+                "cve_id": f"CVE-2026-{1000+i}",
+            }
+            for i in range(3)
+        ]
+        # All 3 vulns flow through `express` (high-leverage ancestor)
+        parents = {
+            "express": [],
+            **{f"vuln-{i}": ["express"] for i in range(3)},
+        }
+        direct = {"express"}
+        out = mod.build_trace_findings(audit, parents, direct, min_depth=0)
+        leverage_findings = [
+            f for f in out if "ancestor for" in f.title.lower()
+        ]
+        assert leverage_findings
+        # The top leverage ancestor should be `express` with 3 CVE count
+        top = leverage_findings[0]
+        assert "express" in top.title
+        assert "3" in top.title  # count of 3 CVEs
+
+    def test_build_trace_findings_unmappable_package_dropped(self, mod):
+        """Audit finding with no extractable package name should be skipped."""
+        audit = [{
+            "skill_id": "x",
+            "severity": "high",
+            "evidence": {},
+            "target": "nodoublecolon",
+            "cve_id": None,
+        }]
+        out = mod.build_trace_findings(audit, {}, set(), min_depth=0)
+        # No usable package name → no trace finding produced
+        traces = [f for f in out if "transitive vuln" in f.title.lower()]
+        assert traces == []

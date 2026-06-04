@@ -287,8 +287,15 @@ class TestRecordEngagement:
         assert any("mismatch" in f.title.lower() for f in criticals)
 
     def test_main_creates_manifest_on_clean_dir(self, mod, small_engagement):
+        """Reviewer tightening (PR #837): `in (0, 1)` was vacuous — it
+        covered the entire return space of report.exit_code(). A clean
+        engagement directory should exit 0; any HIGH/CRITICAL op finding
+        would be a regression worth investigating, not a "either is fine"
+        scenario. Tighten the assertion to require exit 0."""
         exit_code = mod.main([str(small_engagement)])
-        # Should succeed and create the manifest
         manifest = small_engagement / "manifest.sha256"
         assert manifest.exists()
-        assert exit_code in (0, 1)  # may be 1 if any INFO/HIGH op finding
+        assert exit_code == 0, (
+            f"clean engagement directory should exit 0, got {exit_code} — "
+            f"a HIGH/CRITICAL op finding indicates a regression"
+        )
