@@ -333,7 +333,10 @@ jobs:
         if: matrix.test-type == 'mcp-plugins'
         uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          # astro@6.x (marketplace dep) requires Node >=22.12.0; the
+          # `pnpm build` step below builds the marketplace via astro. Node 20
+          # hard-fails with "Node.js vXX is not supported by Astro!".
+          node-version: '22'
 
       - name: Setup pnpm
         if: matrix.test-type == 'mcp-plugins'

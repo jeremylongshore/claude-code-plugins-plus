@@ -14,7 +14,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: 'pages'
   cancel-in-progress: false
 
 jobs:
@@ -27,7 +27,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          # astro@6.x requires Node >=22.12.0; the "Build with Astro" step
+          # below fails on Node 20 with "Node.js vXX is not supported by Astro!".
+          node-version: '22'
 
       - name: Enable Corepack
         run: corepack enable
