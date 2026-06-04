@@ -1,0 +1,43 @@
+name: Lint Skill Code Blocks
+
+# Per-domain split of validate-plugins.yml (PR 2 of the new-track CI overhaul).
+# Fires when the PR touches plugin-internal SKILL.md or README.md files.
+# Original skill-codeblock-syntax job in validate-plugins.yml continues to run
+# on every PR until the new split is proven green.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'plugins/**/SKILL.md'
+      - 'plugins/**/README.md'
+      - 'scripts/lint-skill-codeblocks.py'
+      - '.github/workflows/lint-skill-codeblocks.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'plugins/**/SKILL.md'
+      - 'plugins/**/README.md'
+
+jobs:
+  skill-codeblock-syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Setup Node.js (for js codeblock syntax checks)
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      # BLOCKING — codebase passed baseline at PR #771 (2026-05-23).
+      # 5,991 of 16,298 fenced code blocks checked (only python/bash/sh/
+      # javascript get syntax-checked per scripts/lint-skill-codeblocks.py).
+      - name: Lint fenced code blocks in SKILL.md / README.md
+        run: |
+          python3 scripts/lint-skill-codeblocks.py --root plugins
