@@ -30,6 +30,8 @@ on:
       - '**/*.tsx'
       - '**/*.js'
       - '**/*.jsx'
+      - '**/*.mjs'
+      - '**/*.cjs'
       - '**/tsconfig*.json'
       - '**/package.json'
 

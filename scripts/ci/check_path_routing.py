@@ -49,20 +49,27 @@ _WORKFLOWS_DIR = _REPO_ROOT / ".github" / "workflows"
 
 
 def extract_workflow_metadata(yaml_path: Path) -> dict[str, Any]:
-    """Return {name, paths} for one workflow file.
+    """Return {name, file, paths, paths_ignore, uses_paths_ignore} for one workflow.
 
-    name: the top-level `name:` value (string) or the filename stem.
-    paths: list of pull_request `paths:` globs (empty list = no filter).
+    name:               the top-level `name:` value (string) or the filename stem.
+    paths:              list of pull_request `paths:` globs (empty list = no filter).
+    paths_ignore:       list of pull_request `paths-ignore:` globs (empty list = none).
+    uses_paths_ignore:  True if the workflow uses `paths-ignore:` instead of (or
+                        in addition to) `paths:`. Routing semantics flip when
+                        paths-ignore is used (fires for everything EXCEPT matches).
     """
     text = yaml_path.read_text(encoding="utf-8")
     lines = text.splitlines()
 
     workflow_name: str | None = None
     paths: list[str] = []
+    paths_ignore: list[str] = []
 
     in_pull_request = False
     in_pr_paths = False
+    in_pr_paths_ignore = False
     pr_paths_indent: int | None = None
+    pr_paths_ignore_indent: int | None = None
 
     for line in lines:
         stripped = line.rstrip()
@@ -80,6 +87,7 @@ def extract_workflow_metadata(yaml_path: Path) -> dict[str, Any]:
         if m and len(m.group(1)) <= 2:
             in_pull_request = True
             in_pr_paths = False
+            in_pr_paths_ignore = False
             continue
 
         if in_pull_request:
@@ -89,31 +97,61 @@ def extract_workflow_metadata(yaml_path: Path) -> dict[str, Any]:
             if m and len(m.group(1)) <= 2 and m.group(2) != "pull_request":
                 in_pull_request = False
                 in_pr_paths = False
+                in_pr_paths_ignore = False
                 continue
 
             # Detect `paths:` inside pull_request
             m = re.match(r"^(\s*)paths:\s*$", stripped)
             if m:
                 in_pr_paths = True
+                in_pr_paths_ignore = False
                 pr_paths_indent = len(m.group(1))
                 continue
 
+            # Detect `paths-ignore:` inside pull_request
+            m = re.match(r"^(\s*)paths-ignore:\s*$", stripped)
+            if m:
+                in_pr_paths_ignore = True
+                in_pr_paths = False
+                pr_paths_ignore_indent = len(m.group(1))
+                continue
+
             if in_pr_paths:
-                # Continue collecting list items until we leave the indent block
                 m = re.match(r"^(\s*)-\s*(.+?)\s*$", stripped)
                 if m and pr_paths_indent is not None and len(m.group(1)) > pr_paths_indent:
                     item = m.group(2).strip('"').strip("'")
                     paths.append(item)
                     continue
                 # Non-list-item line → we've left the paths block
-                # but might still be inside pull_request
                 if stripped.lstrip() and not stripped.lstrip().startswith("-"):
                     in_pr_paths = False
 
+            if in_pr_paths_ignore:
+                m = re.match(r"^(\s*)-\s*(.+?)\s*$", stripped)
+                if (
+                    m
+                    and pr_paths_ignore_indent is not None
+                    and len(m.group(1)) > pr_paths_ignore_indent
+                ):
+                    item = m.group(2).strip('"').strip("'")
+                    paths_ignore.append(item)
+                    continue
+                if stripped.lstrip() and not stripped.lstrip().startswith("-"):
+                    in_pr_paths_ignore = False
+
+    # Try to produce a repo-relative path; if the file is outside the repo
+    # (e.g. a tmp file in tests) fall back to the absolute path.
+    try:
+        file_str = str(yaml_path.relative_to(_REPO_ROOT))
+    except ValueError:
+        file_str = str(yaml_path)
+
     return {
         "name": workflow_name or yaml_path.stem,
-        "file": str(yaml_path.relative_to(_REPO_ROOT)),
+        "file": file_str,
         "paths": paths,
+        "paths_ignore": paths_ignore,
+        "uses_paths_ignore": bool(paths_ignore),
     }
 
 
@@ -123,50 +161,89 @@ def extract_workflow_metadata(yaml_path: Path) -> dict[str, Any]:
 def path_matches_filter(path: str, glob_patterns: list[str]) -> bool:
     """GitHub paths filter behavior: a file matches if ANY pattern matches.
 
-    Uses fnmatch with GitHub's `**` extension. fnmatch's bare `*` already
-    matches across `/`, but we explicitly normalize `**/<pat>` → `*<pat>`
-    for clarity.
+    Python's fnmatch treats `*` and `**` identically (both compile to `.*`
+    and cross `/` boundaries), which handles mid-path `**` (e.g.
+    `plugins/**/SKILL.md`) correctly. The ONE gap vs GitHub's minimatch:
+    a leading `**/<x>` pattern is supposed to also match `<x>` at the
+    repo root, but fnmatch's `*` requires non-empty content followed by
+    `/`. We patch that specifically by also trying the pattern with the
+    leading `**/` stripped.
+
+    Edge cases where this approximation diverges from GitHub minimatch:
+      - Patterns starting with `!` (negation) — NOT SUPPORTED here. Use
+        paths_ignore in the workflow instead.
+      - Brace expansion `{a,b}` — NOT SUPPORTED here. List each as a
+        separate path entry.
     """
     for pattern in glob_patterns:
-        # GitHub's **/<x> matches "x at any depth"; fnmatch's * already does this.
-        # Strip the leading "**/" if present.
-        norm = pattern
-        if norm.startswith("**/"):
-            norm = norm[3:]
-        if fnmatch.fnmatch(path, norm):
-            return True
-        # Also try matching with the original pattern (fnmatch handles "**" OK
-        # in some cases via collapsed star semantics).
         if fnmatch.fnmatch(path, pattern):
             return True
+        # GitHub: `**/<x>` matches `<x>` at the repo root too. fnmatch
+        # treats `**/<x>` as requiring `<something>/<x>`, so we explicitly
+        # also try the stripped form for the root-file case.
+        if pattern.startswith("**/") and fnmatch.fnmatch(path, pattern[3:]):
+            return True
     return False
+
+
+def workflow_fires_for(
+    files: list[str],
+    paths: list[str],
+    paths_ignore: list[str],
+) -> bool:
+    """Apply GitHub's combined paths / paths-ignore semantics.
+
+    Per GitHub docs: a workflow with `paths-ignore` runs unless ALL the
+    changed files match the ignore patterns. A workflow with `paths` runs if
+    ANY file matches. When BOTH are specified, GitHub treats them as
+    independent — `paths` wins precedence in this implementation.
+
+    Empty paths AND empty paths_ignore → fires unconditionally.
+    """
+    if paths:
+        return any(path_matches_filter(f, paths) for f in files)
+    if paths_ignore:
+        # Fires if ANY file does NOT match ignore patterns
+        return any(not path_matches_filter(f, paths_ignore) for f in files)
+    return True
 
 
 # --- Routing dry-run --------------------------------------------------------
 
 
 def run_routing(changed_files: list[str]) -> dict[str, Any]:
-    """Apply each workflow's paths filter to the changed-file list."""
+    """Apply each workflow's paths / paths-ignore filter to the changed-file list."""
     workflows: list[dict[str, Any]] = []
     for wf in sorted(_WORKFLOWS_DIR.glob("*.yml")):
         workflows.append(extract_workflow_metadata(wf))
 
     result: dict[str, Any] = {
-        "_no_filter": [],   # workflows that fire on every PR
+        "_no_filter": [],   # workflows that fire on every PR (no paths / paths-ignore)
         "_changed_files": sorted(changed_files),
     }
 
     for wf in workflows:
         wf_name = wf["name"]
-        if not wf["paths"]:
+        if not wf["paths"] and not wf["paths_ignore"]:
             result["_no_filter"].append(wf_name)
             continue
-        matched = sorted([f for f in changed_files if path_matches_filter(f, wf["paths"])])
-        if matched:
-            result[wf_name] = {
-                "file": wf["file"],
-                "matched_files": matched,
-            }
+        if not workflow_fires_for(changed_files, wf["paths"], wf["paths_ignore"]):
+            continue
+        if wf["paths"]:
+            matched = sorted(
+                [f for f in changed_files if path_matches_filter(f, wf["paths"])]
+            )
+        else:
+            matched = sorted(
+                [f for f in changed_files if not path_matches_filter(f, wf["paths_ignore"])]
+            )
+        entry: dict[str, Any] = {
+            "file": wf["file"],
+            "matched_files": matched,
+        }
+        if wf["uses_paths_ignore"]:
+            entry["uses_paths_ignore"] = True
+        result[wf_name] = entry
 
     return result
 
