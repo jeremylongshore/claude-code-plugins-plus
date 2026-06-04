@@ -103,10 +103,11 @@ class TestCoordinate:
         assert result["verdict"] == "HARD_BLOCK"
         assert result["status_check"] == "failure"
 
-    def test_no_affected_skills_no_validator_calls(self):
-        """A doc-only PR (no affected_skills) should result in an empty
-        validator_results and a HARD_BLOCK (per current policy — no
-        evaluable components means we can't grade)."""
+    def test_doc_only_pr_passes_without_invoking_validator(self):
+        """Reviewer fix #840: a doc-only PR (no affected_skills/agents/mcp/
+        hooks/catalog_additions) must PASS without invoking the validator.
+        Blocking these would block every README typo fix touching a plugin
+        dir — the exact PR-class the new track was supposed to UN-stick."""
         classifier = {
             "contribution_types": ["doc"],
             "plugin_paths": [],
@@ -124,8 +125,46 @@ class TestCoordinate:
             "unknown": False,
             "unmatched": [],
         }
-        result = _coord.coordinate(classifier, validator_results=None)
-        # No skills → empty validator_results → HARD_BLOCK
+        validator_called = False
+
+        def fake_invoker(skill_paths):
+            nonlocal validator_called
+            validator_called = True
+            return []
+
+        result = _coord.coordinate(
+            classifier, validator_results=None, validator_invoker=fake_invoker
+        )
+        assert result["verdict"] == "PASS"
+        assert result["grade"] == "A"
+        assert result["status_check"] == "success"
+        assert not validator_called, "validator should not be invoked for doc-only PRs"
+
+    def test_doc_only_pr_with_hard_block_signal_still_blocks(self):
+        """Even a doc-only PR is HARD_BLOCK if a hard-block signal fires
+        (e.g. secret in diff). The doc-only fast-path doesn't bypass that."""
+        classifier = {
+            "contribution_types": ["doc"],
+            "plugin_paths": [],
+            "affected_skills": [],
+            "affected_agents": [],
+            "affected_mcp": [],
+            "affected_hooks": [],
+            "catalog_additions": [],
+            "sources_additions": [],
+            "file_categories": {"md": 1},
+            "touches_workflows": False,
+            "touches_frontend": False,
+            "touches_scripts": False,
+            "touches_tests": False,
+            "unknown": False,
+            "unmatched": [],
+        }
+        result = _coord.coordinate(
+            classifier,
+            validator_results=None,
+            hard_block_signals=["secret detected in diff"],
+        )
         assert result["verdict"] == "HARD_BLOCK"
 
     def test_validator_invoker_is_called_with_resolved_paths(self):
@@ -223,6 +262,28 @@ class TestCLI:
             "--classifier-output", str(tmp_path / "missing.json"),
         ])
         assert exit_code == 2
+
+    def test_resolve_skill_paths_rejects_traversal(self, tmp_path):
+        """Reviewer fix #840 (security): _resolve_skill_paths must reject
+        path-traversal attempts that would resolve outside the repo root."""
+        # A malicious classifier outputs a skill name with ../ traversal.
+        # The function should silently drop it (returning an empty list)
+        # rather than constructing a path outside the repo.
+        result = _coord._resolve_skill_paths(
+            affected_skills=["../../../etc"],
+            plugin_paths=["plugins/security/example"],
+        )
+        assert result == []
+
+    def test_is_within_repo_returns_false_for_traversal(self):
+        """The bounds-check helper is the linchpin of the traversal fix."""
+        from pathlib import Path as _P
+        # Construct a path that, after resolution, escapes the repo
+        bad = _coord._REPO_ROOT / "../../etc/passwd"
+        assert _coord._is_within_repo(bad) is False
+        # Sanity-check a known-good path resolves as inside
+        good = _coord._REPO_ROOT / "scripts" / "pr-prescreen" / "grade.py"
+        assert _coord._is_within_repo(good) is True
 
     def test_cli_hard_block_signal_arg(self, tmp_path):
         classifier_path = tmp_path / "classifier.json"

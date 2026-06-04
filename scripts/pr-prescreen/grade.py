@@ -55,13 +55,25 @@ def grade_to_band(grade: str) -> tuple[int, int]:
 
 
 def points_to_next_grade(score: int | float, current_grade: str) -> int:
-    """How many points are needed to escape the current grade band upward."""
-    next_grade_index = max(GRADE_ORDER.index(current_grade) - 1, 0)
-    if next_grade_index == GRADE_ORDER.index(current_grade):
+    """How many points are needed to escape the current grade band upward.
+
+    Returns 0 when the score is already at or above the next band's floor
+    (which can happen when the validator's `grade` field disagrees with its
+    `score` field). Returns 0 for grade A (already at the top).
+    """
+    cur_idx = GRADE_ORDER.index(current_grade)
+    next_idx = max(cur_idx - 1, 0)
+    if next_idx == cur_idx:
         return 0  # already at A
-    next_grade = GRADE_ORDER[next_grade_index]
+    next_grade = GRADE_ORDER[next_idx]
     next_low, _ = grade_to_band(next_grade)
-    return max(int(next_low - float(score)), 1)
+    delta = int(next_low - float(score))
+    return max(delta, 0)
+
+
+def points_to_a(score: int | float) -> int:
+    """How many points are needed to reach grade A (≥90). Returns 0 if at or above."""
+    return max(int(90 - float(score)), 0)
 
 
 # --- Per-skill delta extraction --------------------------------------------
@@ -69,12 +81,19 @@ def points_to_next_grade(score: int | float, current_grade: str) -> int:
 
 @dataclass
 class SkillFinding:
-    """One actionable delta for a specific skill on the path to A."""
+    """One actionable delta for a specific skill on the path to A.
+
+    `points_to_a` is the absolute distance to grade A (≥90), not the distance
+    to the next band. Reviewer (PR #840) flagged this — a contributor seeing
+    "+5 pts" on a C-grade skill would naturally read it as "5 to pass" when
+    they actually need 15 to reach A. We display the absolute distance.
+    """
 
     path: str
     current_score: int
     current_grade: str
-    points_to_a: int
+    points_to_a: int                # absolute distance to A (≥90)
+    points_to_next_band: int        # distance to next grade band (closer goal)
     errors: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
 
@@ -90,6 +109,7 @@ class SkillFinding:
             "current_score": self.current_score,
             "current_grade": self.current_grade,
             "points_to_a": self.points_to_a,
+            "points_to_next_band": self.points_to_next_band,
             "errors": list(self.errors),
             "warnings": list(self.warnings),
         }
@@ -117,6 +137,7 @@ def extract_skill_findings(
                     current_score=0,
                     current_grade="F",
                     points_to_a=90,
+                    points_to_next_band=10,  # F→D is +60, but next-band shorthand
                     errors=[entry["fatal"]],
                 )
             )
@@ -132,9 +153,8 @@ def extract_skill_findings(
                 path=entry.get("path", "<unknown>"),
                 current_score=score,
                 current_grade=grade,
-                points_to_a=points_to_next_grade(score, grade)
-                if grade != "A"
-                else 0,
+                points_to_a=points_to_a(score),
+                points_to_next_band=points_to_next_grade(score, grade),
                 errors=list(errors) if isinstance(errors, list) else [str(errors)],
                 warnings=list(warnings) if isinstance(warnings, list) else [str(warnings)],
             )
@@ -184,6 +204,12 @@ def compose_grade(
         }
 
     if not validator_results:
+        # Failsafe HARD_BLOCK when there are no validator results AND no
+        # hard-block signals were set. This can happen if the validator
+        # silently failed; we'd rather block + investigate than silently PASS.
+        # The doc-only-PR-should-PASS policy is implemented in coordinate()
+        # which detects that case from classifier output and skips compose_grade
+        # entirely with an explicit PASS verdict.
         return {
             "grade": "F",
             "score": 0,
@@ -217,13 +243,11 @@ def compose_grade(
             "rubric_url": _RUBRIC_URL,
         }
 
+    # Weakest-link grade: take the WORST grade (lowest rank), not the highest.
     min_score = min(scores) if scores else 0
-    lowest_grade = (
-        max(grades, key=lambda g: GRADE_RANK.get(g, 0)) if False else None
-    )
-    # Take the WORST grade (lowest in rank), not the highest
-    lowest_grade = min(grades, key=lambda g: GRADE_RANK.get(g, 0)) if grades else "F"
-    if not lowest_grade:
+    if grades:
+        lowest_grade = min(grades, key=lambda g: GRADE_RANK.get(g, 0))
+    else:
         lowest_grade = score_to_grade(min_score)
 
     deltas = [d.to_dict() for d in extract_skill_findings(validator_results)]
@@ -265,6 +289,12 @@ def compose_grade(
 
 
 _RUBRIC_URL = "https://tonsofskills.com/grading"
+
+
+def _next_grade(current: str) -> str:
+    """Return the grade-letter immediately above the current one (A→A)."""
+    idx = GRADE_ORDER.index(current.upper()) if current.upper() in GRADE_ORDER else 4
+    return GRADE_ORDER[max(idx - 1, 0)]
 
 
 def render_comment(grade_result: dict[str, Any]) -> str:
@@ -309,9 +339,20 @@ def render_comment(grade_result: dict[str, Any]) -> str:
         lines.append("### How to reach A")
         lines.append("")
         for d in deltas[:5]:
+            pts_a = d["points_to_a"]
+            pts_next = d.get("points_to_next_band", pts_a)
+            if pts_a > pts_next:
+                # Show both distances so contributors don't mistake the
+                # next-band threshold for the A threshold (reviewer fix #840).
+                distance_str = (
+                    f"+{pts_next} pts to {_next_grade(d['current_grade'])}, "
+                    f"+{pts_a} pts to A"
+                )
+            else:
+                distance_str = f"+{pts_a} pts to A"
             lines.append(
                 f"- **{d['path']}** — {d['current_grade']} "
-                f"({d['current_score']}/100, +{d['points_to_a']} pts needed)"
+                f"({d['current_score']}/100, {distance_str})"
             )
             for err in (d.get("errors") or [])[:3]:
                 lines.append(f"    - error: {err}")

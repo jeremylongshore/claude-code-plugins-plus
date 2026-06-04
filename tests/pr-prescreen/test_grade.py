@@ -96,6 +96,7 @@ def test_points_to_next_grade_b_to_a():
 
 
 def test_points_to_next_grade_c_to_b():
+    """A 75 (C) needs +5 pts to hit 80 (B low) — next BAND, not next to A."""
     assert _grade.points_to_next_grade(75, "C") == 5
 
 
@@ -111,6 +112,33 @@ def test_points_to_next_grade_a_already_top():
 def test_points_to_next_grade_at_band_low():
     """A 80 (B-low) needs +10 pts to hit 90 (A low)."""
     assert _grade.points_to_next_grade(80, "B") == 10
+
+
+def test_points_to_next_grade_score_above_band_returns_0_not_1():
+    """Reviewer fix #840: when validator's grade and score disagree (e.g.
+    grade='C' but score=85), the function used to floor at 1. Now floors at 0."""
+    assert _grade.points_to_next_grade(85, "C") == 0
+
+
+# =============================================================================
+# points_to_a (NEW — distance to A, not just next band)
+# =============================================================================
+
+
+@pytest.mark.parametrize(
+    "score, expected",
+    [
+        (95, 0),   # already A
+        (90, 0),   # at A floor
+        (85, 5),
+        (75, 15),  # the case reviewer flagged — C-grade is 15 to A, not 5
+        (65, 25),
+        (50, 40),
+        (0, 90),
+    ],
+)
+def test_points_to_a(score, expected):
+    assert _grade.points_to_a(score) == expected
 
 
 # =============================================================================
@@ -131,14 +159,19 @@ class TestExtractSkillFindings:
         f = findings[0]
         assert f.current_grade == "B"
         assert f.current_score == 85
-        assert f.points_to_a == 5  # 85 → 90
+        assert f.points_to_a == 5  # 85 → 90 (A floor)
+        assert f.points_to_next_band == 5  # B → A, same as above
         assert len(f.warnings) == 2
 
     def test_c_grade_finding(self):
+        """A C-grade skill is +5 to B (next band) and +15 to A (the bar)."""
         findings = _grade.extract_skill_findings(_load("c-grade.json"))
         assert len(findings) == 1
-        assert findings[0].current_grade == "C"
-        assert findings[0].points_to_a == 5  # 75 → 80 (C → B)
+        f = findings[0]
+        assert f.current_grade == "C"
+        assert f.current_score == 75
+        assert f.points_to_a == 15        # 75 → 90 (THE bar)
+        assert f.points_to_next_band == 5  # 75 → 80 (next band)
 
     def test_d_grade_finding_carries_errors(self):
         findings = _grade.extract_skill_findings(_load("d-grade.json"))
@@ -206,9 +239,26 @@ class TestComposeGrade:
         assert result["verdict"] == "CHANGES_REQUESTED"
 
     def test_empty_input_gives_hard_block(self):
+        """compose_grade as the failsafe layer returns HARD_BLOCK on empty
+        input. The coordinator handles the doc-only-PR-should-PASS case
+        upstream and never calls compose_grade in that scenario."""
         result = _grade.compose_grade([])
         assert result["verdict"] == "HARD_BLOCK"
         assert "no validator results" in result["hard_block_signals"][0].lower()
+
+    def test_record_with_grade_but_no_score(self):
+        """Reviewer #840: missing coverage for the all-null-scores case.
+        A record with only a grade field (no score) should still produce a
+        finding using the grade letter directly."""
+        records = [
+            {"path": "x/SKILL.md", "grade": "D", "errors": 0, "warnings": 0},
+            {"path": "y/SKILL.md", "grade": "B", "errors": 0, "warnings": 0},
+        ]
+        result = _grade.compose_grade(records)
+        assert result["grade"] == "D"  # weakest of the two
+        # Without explicit scores, min_score is 0 — band interpretation derives
+        # from the grade letter.
+        assert result["verdict"] == "CHANGES_REQUESTED"
 
     def test_hard_block_signal_forces_f_regardless_of_grades(self):
         """Even an all-A input must HARD_BLOCK if a hard-block signal is set."""

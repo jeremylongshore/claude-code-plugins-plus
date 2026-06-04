@@ -73,22 +73,43 @@ _grade = _load_grade_module()
 # --- Classifier output → evaluator dispatch ---------------------------------
 
 
+def _is_within_repo(candidate: Path) -> bool:
+    """Defense-in-depth bounds check — reject resolved paths outside the repo.
+
+    Reviewer (PR #840) flagged: `affected_skills` and `plugin_paths` come
+    from classifier output, which is derived from the PR's file diff. A
+    malicious or accidental ../-traversal entry like `affected_skills:
+    ['../../etc/passwd']` would otherwise let _resolve_skill_paths construct
+    a path outside the repo root. We resolve + check is_relative_to before
+    accepting the path.
+    """
+    try:
+        resolved = candidate.resolve()
+    except (OSError, RuntimeError):
+        return False
+    try:
+        return resolved.is_relative_to(_REPO_ROOT)
+    except AttributeError:  # pragma: no cover — pre-Python 3.9 fallback
+        return str(resolved).startswith(str(_REPO_ROOT))
+
+
 def _resolve_skill_paths(
     affected_skills: list[str], plugin_paths: list[str]
 ) -> list[Path]:
     """For each affected skill name, locate its SKILL.md within the affected
-    plugin paths. Returns absolute paths."""
+    plugin paths. Returns absolute paths CONFINED to the repo root."""
     out: list[Path] = []
     for skill_name in affected_skills:
         for plugin_path in plugin_paths:
             candidate = _REPO_ROOT / plugin_path / "skills" / skill_name / "SKILL.md"
+            if not _is_within_repo(candidate):
+                # Reject path-traversal attempts silently. Logging here would
+                # be useful in CI but log-noise everywhere else.
+                continue
             if candidate.exists():
                 out.append(candidate)
                 break
         else:
-            # Skill name didn't resolve under any affected plugin path —
-            # the classifier promises depth-4 routing so this shouldn't
-            # happen in practice, but be defensive.
             continue
     return out
 
@@ -104,8 +125,10 @@ def run_skill_validator(
     if not script.exists():
         return [{"path": str(p), "fatal": f"validator script missing at {script}"}
                 for p in skill_paths]
+    # `--` separates flags from positional args so a path like `--foo` cannot
+    # be parsed as a CLI flag by the validator (reviewer fix PR #840).
     cmd: list[str] = [
-        "python3", str(script), "--marketplace", "--json",
+        "python3", str(script), "--marketplace", "--json", "--",
         *(str(p) for p in skill_paths),
     ]
     try:
@@ -163,7 +186,50 @@ def coordinate(
         }
     """
     affected_skills = classifier_output.get("affected_skills") or []
+    affected_agents = classifier_output.get("affected_agents") or []
+    affected_mcp = classifier_output.get("affected_mcp") or []
+    affected_hooks = classifier_output.get("affected_hooks") or []
+    catalog_adds = classifier_output.get("catalog_additions") or []
     plugin_paths = classifier_output.get("plugin_paths") or []
+
+    no_evaluable_artifacts = (
+        not affected_skills
+        and not affected_agents
+        and not affected_mcp
+        and not affected_hooks
+        and not catalog_adds
+    )
+
+    # Doc-only / scripts-only / ci-only PRs have no evaluable skill artifacts.
+    # Reviewer (PR #840) correctly flagged that the prior HARD_BLOCK policy
+    # here blocked every doc fix and typo correction. Explicit PASS instead,
+    # so the prescreen never blocks a PR that has nothing the marketplace
+    # validator can grade.
+    if no_evaluable_artifacts and not hard_block_signals:
+        verdict_payload = {
+            "grade": "A",
+            "score": 100,
+            "verdict": "PASS",
+            "hard_block_signals": [],
+            "summary_line": (
+                "PASS: no skill / agent / MCP / hook / catalog-add artifacts "
+                "in scope for this PR"
+            ),
+            "deltas": [],
+            "rubric_url": "https://tonsofskills.com/grading",
+        }
+        return {
+            "classifier": classifier_output,
+            "validator_results": [],
+            "grade": "A",
+            "score": 100,
+            "verdict": "PASS",
+            "hard_block_signals": [],
+            "summary_line": verdict_payload["summary_line"],
+            "deltas": [],
+            "comment": _grade.render_comment(verdict_payload),
+            "status_check": "success",
+        }
 
     if validator_results is None:
         if affected_skills:
