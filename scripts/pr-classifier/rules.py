@@ -96,6 +96,40 @@ _CATALOG_ENTRY_OBJECT = re.compile(
 )
 
 
+def _count_unquoted_braces(text: str) -> tuple[int, int]:
+    """Count `{` and `}` in text, ignoring braces inside string literals.
+
+    Reviewer flagged (PR #838 review): naive `text.count("{")` is broken when
+    a string value contains literal braces — e.g. a `"description"` field with
+    template placeholders like `"Uses {amazing} things"` (balanced, OK) or
+    `"Uses {foo {bar} patterns"` (unbalanced, drives depth counter wrong and
+    silently drops the entire catalog entry). Walk the string char-by-char
+    with quote-state tracking so braces inside `"..."` literals don't count.
+    Honors `\"` escape so `"a\"b"` is one continuous string.
+    """
+    opens = 0
+    closes = 0
+    in_string = False
+    escape_next = False
+    for ch in text:
+        if escape_next:
+            escape_next = False
+            continue
+        if ch == "\\" and in_string:
+            escape_next = True
+            continue
+        if ch == '"':
+            in_string = not in_string
+            continue
+        if in_string:
+            continue
+        if ch == "{":
+            opens += 1
+        elif ch == "}":
+            closes += 1
+    return opens, closes
+
+
 def parse_catalog_additions_from_diff(diff_text: str) -> list[dict[str, str]]:
     """Extract added catalog entries from a unified-diff text.
 
@@ -137,14 +171,17 @@ def parse_catalog_additions_from_diff(diff_text: str) -> list[dict[str, str]]:
 
         added_content = line[1:].strip()
 
-        if "{" in added_content and not in_added_block:
+        # Count braces OUTSIDE string literals only (reviewer fix PR #838).
+        line_opens, line_closes = _count_unquoted_braces(added_content)
+
+        if line_opens > 0 and not in_added_block:
             in_added_block = True
-            open_brace_depth = added_content.count("{") - added_content.count("}")
+            open_brace_depth = line_opens - line_closes
             current = {}
             continue
 
         if in_added_block:
-            open_brace_depth += added_content.count("{") - added_content.count("}")
+            open_brace_depth += line_opens - line_closes
             for field in ("name", "source", "category", "version"):
                 m = re.match(rf'^"{field}"\s*:\s*"([^"]+)"', added_content)
                 if m:
@@ -159,12 +196,16 @@ def parse_catalog_additions_from_diff(diff_text: str) -> list[dict[str, str]]:
 
 
 def parse_sources_additions_from_diff(diff_text: str) -> list[dict[str, str]]:
-    """Extract added entries from sources.yaml diff text.
+    """Extract added entries from the ROOT-LEVEL sources.yaml diff text.
 
     Captures top-level YAML entries that look like `- name: foo` or
-    `- repo: foo/bar` additions.
+    `- repo: foo/bar` additions. Restricted to the root-level `sources.yaml`
+    to match the touch-detection rule in classify_files (reviewer fix PR #838:
+    `config/sources.yaml` or other non-root files should NOT fire sources_add).
     """
-    if "sources.yaml" not in diff_text:
+    # Match diff header that targets root-level sources.yaml — `a/sources.yaml`
+    # or `b/sources.yaml` (no intermediate directories).
+    if not re.search(r"diff --git a/sources\.yaml b/sources\.yaml", diff_text):
         return []
 
     out: list[dict[str, str]] = []
@@ -178,12 +219,14 @@ def parse_sources_additions_from_diff(diff_text: str) -> list[dict[str, str]]:
             current = {}
 
     for line in diff_text.splitlines():
-        if line.startswith("diff --git ") and "sources.yaml" in line:
-            in_sources_diff = True
-            continue
-        if line.startswith("diff --git ") and "sources.yaml" not in line:
-            in_sources_diff = False
-            flush()
+        if line.startswith("diff --git "):
+            # Strict root-level match — `a/sources.yaml b/sources.yaml`. Reject
+            # `a/config/sources.yaml` and similar non-root paths.
+            if re.search(r"a/sources\.yaml\s+b/sources\.yaml", line):
+                in_sources_diff = True
+            else:
+                in_sources_diff = False
+                flush()
             continue
         if not in_sources_diff:
             continue
@@ -248,22 +291,30 @@ def classify_files(
             contribution_types.add("plugin")
             matched = True
 
-            # depth-4 skill: plugins/<cat>/<name>/skills/<skill>/SKILL.md
+            # Skill match: <plugin-root>/skills/<skill>/SKILL.md at ANY depth.
+            # Reviewer fix PR #838: the prior depth-4-only check missed
+            # sub-vendored layouts like
+            # plugins/saas-packs/<vendor>/<sub>/skills/<x>/SKILL.md.
+            # Walk the tail of the path for the `skills/<name>/SKILL.md`
+            # signature instead of hardcoding parts[3].
             if (
-                len(path.parts) >= 6
-                and path.parts[3] == "skills"
+                len(path.parts) >= 3
                 and path.parts[-1] == "SKILL.md"
+                and len(path.parts) >= 3
+                and path.parts[-3] == "skills"
             ):
-                affected_skills.add(path.parts[4])
+                affected_skills.add(path.parts[-2])
                 contribution_types.add("skill")
 
-            # plugins/<cat>/<name>/agents/<agent>.md
+            # Agent match: <plugin-root>/agents/<agent>.md at ANY depth
+            # (same depth-flex fix as skills above).
             elif (
-                len(path.parts) == 5
-                and path.parts[3] == "agents"
+                len(path.parts) >= 2
                 and ext == "md"
+                and len(path.parts) >= 3
+                and path.parts[-2] == "agents"
             ):
-                affected_agents.add(path.parts[4].rsplit(".", 1)[0])
+                affected_agents.add(path.parts[-1].rsplit(".", 1)[0])
                 contribution_types.add("agent")
 
             # MCP — either plugins/mcp/<name>/** or .mcp.json or mcpServers
@@ -381,6 +432,10 @@ def classify_files(
         if sources_additions:
             contribution_types.add("sources_add")
 
+    # file_categories sorted for determinism — reviewer fix PR #838. Counter
+    # preserves insertion order, which depends on the input file-list ordering.
+    # to_json(..., sort_keys=True) hides this at serialization, but the
+    # in-memory dict was non-deterministic. Sort by key for both surfaces.
     return {
         "contribution_types": sorted(contribution_types),
         "plugin_paths": sorted(plugin_paths),
@@ -390,7 +445,7 @@ def classify_files(
         "affected_hooks": sorted(affected_hooks),
         "catalog_additions": catalog_additions,
         "sources_additions": sources_additions,
-        "file_categories": dict(file_categories),
+        "file_categories": dict(sorted(file_categories.items())),
         "touches_workflows": touches_workflows,
         "touches_frontend": touches_frontend,
         "touches_scripts": touches_scripts,

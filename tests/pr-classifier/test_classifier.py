@@ -393,19 +393,21 @@ class TestHistoricalPRShapes:
     def test_self_classification(self):
         """The classifier should be able to classify its own PR.
 
-        This PR creates files at:
-          - scripts/pr-classifier/__init__.py
-          - scripts/pr-classifier/rules.py
-          - scripts/pr-classifier/detect_components.py
-          - tests/pr-classifier/__init__.py
-          - tests/pr-classifier/test_classifier.py
+        Reviewer fix PR #838: original test listed only 5 of the 9 files this
+        PR adds. Expanded to the full set including the README and the
+        fixture files so the test pins what the classifier ACTUALLY sees on
+        this PR.
         """
         result = classify_files([
             "scripts/pr-classifier/__init__.py",
             "scripts/pr-classifier/rules.py",
             "scripts/pr-classifier/detect_components.py",
+            "scripts/pr-classifier/README.md",
             "tests/pr-classifier/__init__.py",
             "tests/pr-classifier/test_classifier.py",
+            "tests/pr-classifier/fixtures/pr-823.files",
+            "tests/pr-classifier/fixtures/pr-823.diff",
+            "tests/pr-classifier/fixtures/pr-823.expected.json",
         ])
         types = set(result["contribution_types"])
         assert "script" in types
@@ -493,6 +495,120 @@ def test_is_plugin_path(path, expected):
     from pathlib import PurePosixPath
     p = PurePosixPath(path) if path else PurePosixPath()
     assert _rules._is_plugin_path(p) == expected
+
+
+# =============================================================================
+# Reviewer-fix regressions (PR #838 review)
+# =============================================================================
+
+
+class TestBraceInStringCatalogParser:
+    """Reviewer flagged: unbalanced braces inside a JSON string value
+    silently drove the catalog parser's depth counter wrong and dropped
+    the entire catalog entry. The fix introduces a quote-aware brace
+    counter."""
+
+    def test_unbalanced_brace_in_string_does_not_drop_entry(self):
+        diff = (
+            'diff --git a/.claude-plugin/marketplace.extended.json '
+            'b/.claude-plugin/marketplace.extended.json\n'
+            'index 1..2 100644\n'
+            '--- a/.claude-plugin/marketplace.extended.json\n'
+            '+++ b/.claude-plugin/marketplace.extended.json\n'
+            '@@ -1,3 +1,9 @@\n'
+            '   "plugins": [\n'
+            '+    {\n'
+            '+      "name": "tricky-pack",\n'
+            '+      "source": "./plugins/example/tricky",\n'
+            '+      "description": "Uses {foo {bar} template patterns",\n'
+            '+      "category": "example"\n'
+            '+    },\n'
+            '     {\n'
+        )
+        adds = _rules.parse_catalog_additions_from_diff(diff)
+        assert len(adds) == 1, "unbalanced braces in string value should NOT drop the entry"
+        assert adds[0]["name"] == "tricky-pack"
+
+    def test_quote_aware_brace_counter(self):
+        # Inside a string: not counted
+        assert _rules._count_unquoted_braces('"foo {bar}"') == (0, 0)
+        # Outside a string: counted
+        assert _rules._count_unquoted_braces('{ "name": "x" }') == (1, 1)
+        # Mixed: only the outside-string braces count
+        assert _rules._count_unquoted_braces('{ "name": "x{y}" }') == (1, 1)
+        # Escaped quote inside string preserves string state
+        assert _rules._count_unquoted_braces('{ "n": "a\\"b{c}" }') == (1, 1)
+
+
+class TestDepthFlexibleSkillMatch:
+    """Reviewer flagged: depth-4-only skill match misses sub-vendored layouts
+    like plugins/saas-packs/<vendor>/<sub>/skills/<x>/SKILL.md."""
+
+    def test_depth_5_subvendored_skill_still_classified(self):
+        result = classify_files([
+            "plugins/saas-packs/vendor-x/sub-y/skills/my-skill/SKILL.md",
+        ])
+        assert "my-skill" in result["affected_skills"]
+        assert "skill" in result["contribution_types"]
+
+    def test_depth_4_standard_skill_still_works(self):
+        """Regression check that the standard depth-4 case still works."""
+        result = classify_files([
+            "plugins/security/example/skills/my-skill/SKILL.md",
+        ])
+        assert result["affected_skills"] == ["my-skill"]
+
+
+class TestSourcesYamlRootOnly:
+    """Reviewer flagged: sources_additions parser fired on non-root
+    sources.yaml files. Now restricted to the exact root path."""
+
+    def test_non_root_sources_yaml_does_not_fire_sources_add(self):
+        diff = (
+            "diff --git a/config/sources.yaml b/config/sources.yaml\n"
+            "index 1..2 100644\n"
+            "--- a/config/sources.yaml\n"
+            "+++ b/config/sources.yaml\n"
+            "@@ -1,1 +1,3 @@\n"
+            "+- name: should-not-be-counted\n"
+            "+  repo: foo/bar\n"
+        )
+        adds = _rules.parse_sources_additions_from_diff(diff)
+        assert adds == []
+
+    def test_root_sources_yaml_fires_sources_add(self):
+        diff = (
+            "diff --git a/sources.yaml b/sources.yaml\n"
+            "index 1..2 100644\n"
+            "--- a/sources.yaml\n"
+            "+++ b/sources.yaml\n"
+            "@@ -1,1 +1,3 @@\n"
+            "+- name: legitimate\n"
+            "+  repo: foo/bar\n"
+        )
+        adds = _rules.parse_sources_additions_from_diff(diff)
+        assert len(adds) == 1
+        assert adds[0]["name"] == "legitimate"
+
+
+class TestFileCategoriesDeterminism:
+    """Reviewer flagged: file_categories dict insertion order followed input
+    file order, breaking the deterministic-output contract. Now sorted."""
+
+    def test_file_categories_keys_sorted(self):
+        result = classify_files([
+            "scripts/z.py",   # py
+            "README.md",      # md
+            "package.json",   # json
+        ])
+        keys = list(result["file_categories"].keys())
+        assert keys == sorted(keys), f"file_categories keys not sorted: {keys}"
+
+    def test_file_categories_order_independent_of_input_order(self):
+        a = classify_files(["scripts/x.py", "README.md", "package.json"])
+        b = classify_files(["package.json", "scripts/x.py", "README.md"])
+        c = classify_files(["README.md", "package.json", "scripts/x.py"])
+        assert list(a["file_categories"].keys()) == list(b["file_categories"].keys()) == list(c["file_categories"].keys())
 
 
 # =============================================================================
