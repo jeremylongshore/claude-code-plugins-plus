@@ -1,5 +1,7 @@
 # Tons of Skills — Claude Code Plugins Marketplace
 
+> **Built for [Claude Code](https://code.claude.com/docs/en/).** Every plugin and skill in this catalog targets Anthropic's official CLI.
+
 [![Release](https://img.shields.io/badge/release-v4.33.0-green)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/tag/v4.33.0)
 [![CLI](https://img.shields.io/badge/CLI-ccpi-blueviolet?logo=npm)](https://www.npmjs.com/package/@intentsolutionsio/ccpi)
 [![Plugins](https://img.shields.io/badge/plugins-431-blue)](https://tonsofskills.com/explore)
@@ -10,6 +12,14 @@
 [![Buy me a monster](https://img.shields.io/badge/Buy%20me%20a-Monster-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/jeremylongshore)
 
 432 plugins, 2,769 skills, 297 agents, 30 community contributors — validated and ready to install.
+
+## Why this repo
+
+- **One canonical catalog** — every plugin in `marketplace.extended.json` is the same `marketplace.json` the Claude Code CLI reads. No registries to reconcile, no manual sync step.
+- **Spec-correct or it doesn't ship** — every PR runs the [Intent Solutions validator](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/tree/main/scripts) against the [AgentSkills.io](https://agentskills.io/specification) open standard plus Claude Code's [skill](https://code.claude.com/docs/en/skills) and [plugin](https://code.claude.com/docs/en/plugins) references. C-grade rejects merge.
+- **8-field marketplace frontmatter is enforced**, not aspirational — `name / description / allowed-tools / version / author / license / compatibility / tags`. The [100-point rubric](https://tonsofskills.com/grading) is public.
+- **Forge-generated and hand-authored, both first-class** — `/skill-creator --forge <api-name>` builds production-grade plugins from any REST API with an audit trail; hand-authored plugins use the same templates and validators.
+- **Production-tested patterns** — the [Learning Lab](#learning-lab), [11 production playbooks](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/wiki/Playbook-Index), and a [public wiki](#project-wiki) cover the failure modes that show up at scale (rate limits, MCP reliability, multi-agent cost caps, incident debugging).
 
 ```bash
 pnpm add -g @intentsolutionsio/ccpi    # Install the CLI
@@ -943,12 +953,57 @@ Community contributors make this marketplace better. Newest first.
 
 ## Resources
 
-### Official Anthropic
+### Built on the Anthropic stack
 
-- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code/)
-- [Agent Skills Guide](https://docs.anthropic.com/en/docs/claude-code/skills)
-- [Plugin Reference](https://docs.anthropic.com/en/docs/claude-code/plugins)
-- [Best Practices](https://www.anthropic.com/engineering/claude-code-best-practices)
+This catalog targets Claude Code as its only first-class harness. Every reference page in the SKILL.md spec, plugin structure, MCP integration, hooks, and subagents work in this repo is grounded in the deep references below — not the top-level docs.
+
+**Claude Code documentation**
+
+- [Documentation hub](https://code.claude.com/docs/en/) — landing page for every Claude Code surface
+- [Skills reference](https://code.claude.com/docs/en/skills) — frontmatter spec, dynamic-context-injection model, control-who-invokes mechanism, subagent execution semantics
+- [Plugins reference](https://code.claude.com/docs/en/plugins) — plugin.json schema, the four component types, install paths
+- [Plugin marketplaces spec](https://code.claude.com/docs/en/plugin-marketplaces) — the `marketplace.json` schema this repo publishes
+- [Subagents reference](https://code.claude.com/docs/en/sub-agents) — agent.md frontmatter, `disallowedTools` denylist, `effort` / `maxTurns` controls
+- [Hooks reference](https://code.claude.com/docs/en/hooks) — 30+ lifecycle events, PreToolUse blocking, matcher patterns
+- [MCP integration](https://code.claude.com/docs/en/mcp) — stdio / HTTP / SSE / WebSocket transports, env-var handling, server lifecycle
+- [Settings reference](https://code.claude.com/docs/en/settings) — `~/.claude/settings.json`, permission modes, attribution config
+
+**Anthropic SDKs and code**
+
+- [Claude Code CLI source](https://github.com/anthropics/claude-code) — the official CLI repo
+- [Anthropic cookbook](https://github.com/anthropics/anthropic-cookbook) — production patterns, tool-use examples, RAG recipes
+- [Anthropic Python SDK](https://github.com/anthropics/anthropic-sdk-python) — `pip install anthropic`, async + streaming + tool-use APIs
+
+**Open standards**
+
+- [AgentSkills.io specification](https://agentskills.io/specification) — the open SKILL.md standard Claude Code follows; this repo's enterprise rubric sits on top of it
+
+### Project Wiki
+
+The [GitHub wiki](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/wiki) hosts deeper reference content than this README — 50+ pages covering installation, the full SKILL.md spec, plugin structure, validation, 11 production playbooks, and the Learning Lab walkthroughs.
+
+**Getting started** — zero-to-first-plugin in under 30 minutes
+
+- [Installation](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/wiki/Installation) — CLI install + marketplace setup
+- [Your First Plugin](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/wiki/Your-First-Plugin) — build, validate, publish
+- [Your First Skill](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/wiki/Your-First-Skill) — author a SKILL.md from scratch
+
+**Reference** — the spec, frontmatter, and validation rules
+
+- [SKILL.md Specification](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/wiki/SKILL-md-Specification) — the canonical Intent Solutions skill standard
+- [Frontmatter Reference](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/wiki/Frontmatter-Reference) — every YAML field explained
+- [Validation and Grading](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/wiki/Validation-and-Grading) — the 100-point rubric + validator commands
+- [Plugin Structure](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/wiki/Plugin-Structure) — directory layout + plugin.json
+
+**Playbooks** — production patterns for operating Claude Code at scale
+
+- [Playbook Index](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/wiki/Playbook-Index) — all 11 production playbooks
+- [Multi-Agent Rate Limits](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/wiki/Playbook-01-Multi-Agent-Rate-Limits) — token-bucket + backpressure
+- [Incident Debugging](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/wiki/Playbook-05-Incident-Debugging) — SEV protocols + RCA
+
+**Labs** — interactive walkthroughs
+
+- [Learning Lab Index](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/wiki/Learning-Lab) — Skills / Plugins / Orchestration tracks
 
 ### Technical Deep Dives
 
@@ -993,6 +1048,38 @@ Community contributors make this marketplace better. Newest first.
 - [Full Index](000-docs/206-DR-SOPS-readme.md)
 
 </details>
+
+---
+
+## FAQ
+
+**What is this?** A Claude Code plugin marketplace: 432 plugins, 2,769 skills, 297 agents, all validated against the [AgentSkills.io](https://agentskills.io/specification) open standard and the [Claude Code skills](https://code.claude.com/docs/en/skills) / [plugins](https://code.claude.com/docs/en/plugins) references.
+
+**How do I install a plugin?** Use the CLI (`ccpi install <name>`) or Claude Code's built-in `/plugin marketplace add jeremylongshore/claude-code-plugins` followed by `/plugin install <name>@claude-code-plugins-plus`. The [Quick Start](#quick-start) covers both paths.
+
+**Plugin vs skill — what's the difference?** A plugin is the distribution unit (folder with `plugin.json` + components); a skill is one component type inside a plugin (a `SKILL.md` file). One plugin can ship many skills, commands, agents, hooks, and MCP servers. The [Plugin Structure wiki page](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/wiki/Plugin-Structure) is the deeper explanation.
+
+**Where do I browse the catalog?** [tonsofskills.com](https://tonsofskills.com) is the search-and-browse surface. The [`plugins/`](./plugins/) directory is the source of truth on GitHub.
+
+**Where do I get support?** Open an [issue](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues) for bugs, a [discussion](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/discussions) for ideas, or email **jeremy@intentsolutions.io**. For the underlying CLI itself, see [Anthropic's Claude Code docs](https://code.claude.com/docs/en/) first.
+
+---
+
+## Troubleshooting
+
+Common install + author paths:
+
+- **Plugin install fails or doesn't activate** — see the [Troubleshooting wiki page](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/wiki/Troubleshooting) for the common "missing required field" / "frontmatter wrong shape" / "marketplace not reachable" cases.
+- **Marketplace add fails** — verify slug with `/plugin marketplace list`; the public slug is `jeremylongshore/claude-code-plugins` (GitHub 301-redirects to the canonical `-plus-skills` repo).
+- **MCP server doesn't connect** — the [MCP-Server-Plugins wiki page](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/wiki/MCP-Server-Plugins) covers transport selection and the most common transport-mismatch errors. Anthropic's [MCP integration reference](https://code.claude.com/docs/en/mcp) is the upstream source.
+- **Validator says my skill is C-grade** — see [Validation and Grading](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/wiki/Validation-and-Grading) for the 100-point breakdown and the public [/grading rubric page](https://tonsofskills.com/grading) for worked examples.
+- **Compatibility field deprecation** — `compatible-with` was deprecated in schema 3.4.0. Migrate with `python3 scripts/batch-remediate.py --migrate-compatible-with`.
+
+---
+
+## Star history
+
+[![Star history chart](https://api.star-history.com/svg?repos=jeremylongshore/claude-code-plugins-plus-skills&type=Date)](https://star-history.com/#jeremylongshore/claude-code-plugins-plus-skills&Date)
 
 ---
 
