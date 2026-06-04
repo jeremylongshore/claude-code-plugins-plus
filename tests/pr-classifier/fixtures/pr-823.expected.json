@@ -1,0 +1,20 @@
+{
+  "affected_agents": [],
+  "affected_hooks": [],
+  "affected_mcp": [],
+  "affected_skills": ["databricks-incident-runbook"],
+  "catalog_additions": [],
+  "contribution_types": ["plugin", "skill"],
+  "file_categories": {
+    "json": 1,
+    "md": 6
+  },
+  "plugin_paths": ["plugins/saas-packs/databricks-pack"],
+  "sources_additions": [],
+  "touches_frontend": false,
+  "touches_scripts": false,
+  "touches_tests": false,
+  "touches_workflows": false,
+  "unknown": false,
+  "unmatched": []
+}

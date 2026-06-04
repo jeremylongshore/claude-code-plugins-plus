@@ -1,0 +1,599 @@
+diff --git a/plugins/saas-packs/databricks-pack/000-docs/000-INDEX.md b/plugins/saas-packs/databricks-pack/000-docs/000-INDEX.md
+index 10018395c..2fa36bab3 100644
+--- a/plugins/saas-packs/databricks-pack/000-docs/000-INDEX.md
++++ b/plugins/saas-packs/databricks-pack/000-docs/000-INDEX.md
+@@ -1,8 +1,8 @@
+ # 000-docs Index — databricks-pack
+ 
+ **Filing standard:** Document Filing System v4.3
+-**Last updated:** 2026-05-27 (added 010-013 — MCP landscape research + Epic 1 scope adjustment; Claude Code changelog impact moved to repo-root 000-docs as repo-wide AT-ADEC)
+-**Total docs:** 13
++**Last updated:** 2026-06-03 (added 014 — cost-leak CFO output spec draft for Yipei Wei review)
++**Total docs:** 14
+ 
+ ---
+ 
+@@ -41,6 +41,12 @@
+ | 008 | `008-RA-REVW-pack-handling-pressure-test.md` | Adversarial review of pack-handling decision — MODIFY verdict (add deprecation lane + tombstones) |
+ | 009 | `009-RA-REVW-pilot-timing-pressure-test.md` | Adversarial review of pilot/timing decision — MODIFY verdict (cut scope to 3 pains, MCP first, drop opus eval) |
+ 
++## DR — Design Records
++
++| # | File | Description |
++|---|---|---|
++| 014 | `014-DR-DRFT-cost-leak-cfo-output-spec.md` | DRAFT: cost-leak-hunter CFO-grokkable output format spec. 4 detection categories, headline + evidence structure, rendering order, rounding rules. Pending review by @Gingiris-1031 ([#795](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/795)). Becomes binding output contract once approved. |
++
+ ---
+ 
+ ## Quick reference — doc codes used
+@@ -51,3 +57,4 @@
+ | RL | Research & Learning | RSRC | Research resource |
+ | AT | Architecture & Technical | ADEC | Architecture decision |
+ | RA | Reports & Analysis | REVW | Review / critique |
++| DR | Design Records | DRFT | Draft pending review |
+diff --git a/plugins/saas-packs/databricks-pack/000-docs/014-DR-DRFT-cost-leak-cfo-output-spec.md b/plugins/saas-packs/databricks-pack/000-docs/014-DR-DRFT-cost-leak-cfo-output-spec.md
+new file mode 100644
+index 000000000..98c366068
+--- /dev/null
++++ b/plugins/saas-packs/databricks-pack/000-docs/014-DR-DRFT-cost-leak-cfo-output-spec.md
+@@ -0,0 +1,219 @@
++# 014-DR-DRFT — Cost-leak output spec for CFO audience (draft for @Gingiris-1031 review)
++
++> Status: **DRAFT** — pending review by Yipei Wei ([#795](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/795) thread).
++> If she signs off, this becomes the binding output contract for `databricks-cost-leak-hunter` and code shipping starts. If she doesn't, redesign before code.
++>
++> Related: [#790](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/790) (skill issue), [`007-AT-ADEC § Decision 2`](007-AT-ADEC-databricks-v2-cto-decision.md) (pilot pick rationale), [`009-RA-REVW`](009-RA-REVW-pilot-timing-pressure-test.md) (pilot timing).
++
++## The bar (Yipei's framing, verbatim)
++
++> "If a CFO can skim it in 90 seconds and say 'we're wasting $X here, fix it' without needing an engineer to translate."
++
++## The structure (Yipei's AFFiNE-derived model)
++
++> "One sentence of what this does + one visual proof it works — for a CFO audience swap the visual for a dollar number with a date range."
++
++For each detected leak category, the output is **one row** following this template:
++
++```
++$X,XXX/month wasted on N <unit>, week of <YYYY-MM-DD>, fix in Y <atomic action>.
++```
++
++Below that one row, an evidence collapse: itemized list with names + per-item dollar figure + the math. The CFO skims rows. The engineer expands evidence when they go to act.
++
++## What gets cut (cannot appear in CFO output)
++
++- Cluster topology diagrams
++- DBU efficiency ratios, utilization percentages
++- Spark UI execution plans
++- Bytes-shuffled, partition counts, Photon stats
++- Any term that requires "what's a DLT pipeline?" context
++- Skill version, runtime version, SDK version
++
++Engineers get those via a separate `--engineer` flag. CFO output is the default.
++
++## The four categories — format + worked example
++
++Each category headline is **one sentence**. CFO reads four headlines + one summary. Time-to-comprehension ≤ 90 seconds.
++
++### 1. All-purpose vs job cluster overspend
++
++**Pain source:** [`002-RL-RSRC § D07`](002-RL-RSRC-databricks-compute-pain-research.md) — production batch workloads on interactive clusters at the 2-4x DBU premium.
++
++**Headline format:**
++```
++$X,XXX/month wasted on N production jobs running on interactive clusters, week of <date>, fix in 3 clicks per job (change cluster type in Jobs UI).
++```
++
++**Worked example:**
++```
++$2,840/month wasted on 7 production jobs running on interactive clusters, week of 2026-05-26, fix in 3 clicks per job (Jobs > [job] > Compute > switch to Job cluster).
++```
++
++**Evidence block (expand for engineer use):**
++
++| Job name | Runs/week | Current DBU/run | Job-cluster DBU/run | Monthly waste |
++|---|---|---|---|---|
++| `bronze-ingest-orders` | 168 | 4.2 (all-purpose) | 1.6 (job) | $1,092 |
++| `gold-attribution-rollup` | 42 | 8.4 | 3.0 | $680 |
++| `feature-store-refresh` | 168 | 2.1 | 0.8 | $546 |
++| `mlflow-experiment-cleanup` | 7 | 12.0 | 4.5 | $315 |
++| `cdc-replication-warehouse` | 168 | 1.4 | 0.5 | $151 |
++| `ds-notebook-orchestrator` | 30 | 3.5 | 1.3 | $33 |
++| `dlt-state-snapshot` | 7 | 6.0 | 2.3 | $23 |
++
++Sum row: $2,840/month total. 7 fixable items.
++
++### 2. Instance pool `min_idle` dual-billing trap
++
++**Pain source:** [`002-RL-RSRC § D09`](002-RL-RSRC-databricks-compute-pain-research.md) — the most-cursed leak in the dataset. Databricks UI shows $0 DBU while the cloud provider bills the underlying VMs 24/7. Invisible until the cloud bill arrives.
++
++**Headline format:**
++```
++$X,XXX/month wasted on N instance pools billing cloud VMs while showing $0 DBU, week of <date>, fix in 1 click per pool (set min_idle = 0).
++```
++
++**Worked example:**
++```
++$1,920/month wasted on 3 instance pools billing cloud VMs while showing $0 DBU, week of 2026-05-26, fix in 1 click per pool (Compute > Pools > [pool] > Min idle instances = 0).
++```
++
++**Evidence block:**
++
++| Pool name | min_idle | Hours idle/week | Cloud VM rate | Monthly waste |
++|---|---|---|---|---|
++| `prod-i3-2xlarge-pool` | 4 | 168 | $0.624/hr | $1,680 |
++| `staging-r5-xlarge-pool` | 2 | 168 | $0.252/hr | $168 |
++| `dev-m5-large-pool` | 1 | 132 | $0.096/hr | $51 |
++
++Sum row: $1,899/month total. 3 fixable items. (The $1,920 in the headline rounds up to the nearest $20 for skim-readability — see "rounding rules" below.)
++
++### 3. DLT serverless misuse
++
++**Pain source:** [`003-RL-RSRC § D08, D11`](003-RL-RSRC-databricks-delta-streaming-research.md) — DLT pipelines on serverless when their usage pattern (steady, predictable, multi-hour) fits classic compute at lower cost. The serverless premium is justified for spiky/short workloads — these aren't those.
++
++**Headline format:**
++```
++$X,XXX/month wasted on N DLT pipelines on serverless that fit classic compute better, week of <date>, fix in 2 clicks per pipeline (toggle serverless off).
++```
++
++**Worked example:**
++```
++$3,400/month wasted on 4 DLT pipelines on serverless that fit classic compute better, week of 2026-05-26, fix in 2 clicks per pipeline (DLT > [pipeline] > Settings > Serverless: off).
++```
++
++**Evidence block:**
++
++| Pipeline | Runtime/week | Pattern | Serverless premium | Monthly waste |
++|---|---|---|---|---|
++| `cdc-ingestion-bronze` | 168h | Steady (24/7) | 1.7x | $1,680 |
++| `silver-dedupe-rollup` | 96h | Steady business hours | 1.7x | $1,008 |
++| `gold-attribution-streaming` | 80h | Predictable peaks | 1.5x | $560 |
++| `feature-store-stream` | 40h | Predictable | 1.5x | $152 |
++
++Sum row: $3,400/month total. 4 fixable items.
++
++**The "fits classic compute better" test:** runtime ≥ 20 hours/week AND coefficient-of-variation in hourly compute load ≤ 0.4 (i.e., not spiky). Pipelines that fail either test stay on serverless and aren't reported.
++
++### 4. Idle SQL warehouse
++
++**Pain source:** [`002-RL-RSRC § D11`](002-RL-RSRC-databricks-compute-pain-research.md) — warehouses left running with auto-stop > 10 min, racking up DBU on idle time.
++
++**Headline format:**
++```
++$X,XXX/month wasted on N SQL warehouses idle but not auto-stopped, week of <date>, fix in 2 clicks per warehouse (set auto-stop = 10 min).
++```
++
++**Worked example:**
++```
++$960/month wasted on 2 SQL warehouses idle but not auto-stopped, week of 2026-05-26, fix in 2 clicks per warehouse (SQL > Warehouses > [warehouse] > Auto stop = 10 min).
++```
++
++**Evidence block:**
++
++| Warehouse | Size | Auto-stop | Idle hours/week | DBU/hour | Monthly waste |
++|---|---|---|---|---|---|
++| `analytics-large` | Large | 60 min | 42h | $4.20 | $740 |
++| `bi-dashboards-small` | Small | None | 28h | $2.10 | $244 |
++
++Sum row: $984/month total. 2 fixable items.
++
++## The summary row (sits at top of output)
++
++**Rollup format:**
++```
++$X,XXX/month total waste across N fixable items, week of <date>, ~Z min to fix all.
++```
++
++**Worked example (using all four sections above):**
++```
++$9,120/month total waste across 16 fixable items, week of 2026-05-26, ~30 min to fix all.
++```
++
++## Rendering order in the actual skill output
++
++```
++$9,120/month total waste across 16 fixable items, week of 2026-05-26, ~30 min to fix all.
++
++  $3,400/mo — 4 DLT pipelines on serverless that fit classic compute better
++  $2,840/mo — 7 production jobs running on interactive clusters
++  $1,920/mo — 3 instance pools billing cloud VMs while showing $0 DBU
++  $  960/mo — 2 SQL warehouses idle but not auto-stopped
++
++Expand any line above for the per-item evidence + the click path to fix.
++```
++
++Headline at top (the conversion moment). Four rows sorted highest waste → lowest (the CFO reads top-down and stops where the dollars stop being interesting). Single literal instruction at the bottom (the engineer trigger).
++
++## Rounding rules
++
++- Sum rows: round to **nearest $20** for skim-readability.
++- Per-item evidence: report exact (no rounding) — engineer trusts it precisely.
++- The headline number is always the rounded sum; the evidence-block sum is exact. Footnote IF the two differ by more than $40 (rare; happens only when many items round same direction).
++
++## Date range semantics
++
++- "Week of \<date>" = the 7-day window ending the last completed calendar week (Sunday).
++- Data source: `system.billing.usage` rows for that window.
++- We never extrapolate. We never project. We report observed waste in the window — extrapolated to monthly via `× 4.33`.
++- Multi-week consistency: if the same leak appears 3+ weeks running, the next iteration of this skill (out of scope for v1) starts surfacing trend annotations. v1 ships the single-week view only.
++
++## What we are NOT shipping in v1
++
++- Trend / longitudinal analysis (≥3 week pattern detection)
++- Comparison-to-peer or industry-benchmark numbers
++- Predicted-savings simulation (changes are reported as observed waste, not projected)
++- Multi-workspace rollup (single workspace per invocation; teams with N workspaces run N times)
++- Cost attribution to teams / projects / cost-centers (Databricks tags exist; using them is its own design problem)
++
++If any of these matter to the CFO test, surface in the review and we cut differently.
++
++## Questions back at Yipei
++
++1. **Headline word count.** Each headline is ~16-22 words. AFFiNE's "one sentence" — does a 22-word sentence still pass the skim test, or does it need to be shorter? Sample shortest version of #2 above: *"$1,920/month wasted on 3 idle instance pools, week of 2026-05-26, 1 click each to fix"* — 18 words. Worth it, or does losing "dual-billing trap" lose the WHY a CFO needs?
++
++2. **Rounding readability.** Is rounding to $20 the right granularity for skim, or does $100 work better? My instinct said $20; user-testing might prefer $100 for round-number cognitive load.
++
++3. **Click count semantics.** "fix in 3 clicks" is literal-clicks-in-the-Databricks-UI. Should that be navigation-clicks only, or include the confirm-dialog click? My count includes the confirm because it's part of the fix; some readers might expect "3 navigation steps + a confirm."
++
++4. **Sort order.** Currently sorted highest waste → lowest. Alternative: sort by "easiest to fix first" (the `min_idle = 0` single-click row would lead, even though it's not the biggest dollar number). Adoption thesis: do CFOs want biggest-impact-first, or do they want fastest-quick-wins-first to build momentum?
++
++5. **Anything missing from the four categories.** These four came out of the pain research ([`002`](002-RL-RSRC-databricks-compute-pain-research.md), [`003`](003-RL-RSRC-databricks-delta-streaming-research.md)) being most-cursed AND most-detectable from `system.billing.usage` + control-plane reads. Other categories exist (DBU-per-query tuning, Photon-without-vectorized-operators, etc.) but require deeper sampling. If you've seen a fifth category that beats one of these on the 90-second test, swap recommendation welcome.
++
++## Sign-off block
++
++When this draft passes your review, mark below:
++
++- [ ] @Gingiris-1031 — headline format + structure approved
++- [ ] @Gingiris-1031 — four categories cover the right surface
++- [ ] @Gingiris-1031 — open questions answered (or accepted as-is)
++- [ ] Jeremy — code work greenlit, bead `claude-0co4` closes, skill build proceeds against this spec
++
++If you redline anywhere above, send the redline however works (here on the issue, on `claude-0co4`, voice memo). Spec becomes the binding output contract once all four boxes check.
++
++---
++
++**File status:** draft — superseded only by a successor `014-AT-ADEC-cost-leak-output-contract.md` once approved.
++**Author:** Jeremy Longshore (Intent Solutions)
++**Reviewer:** Iris Wei ([@Gingiris-1031](https://github.com/Gingiris-1031))
++**Created:** 2026-06-03
+diff --git a/plugins/saas-packs/databricks-pack/package.json b/plugins/saas-packs/databricks-pack/package.json
+index 64e92ef5d..a69a7b7d9 100644
+--- a/plugins/saas-packs/databricks-pack/package.json
++++ b/plugins/saas-packs/databricks-pack/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@intentsolutionsio/databricks-pack",
+-  "version": "1.0.5",
++  "version": "1.0.7",
+   "description": "Claude Code skill pack for Databricks - 24 skills covering lakehouse platform, Spark, and ML pipelines",
+   "main": "README.md",
+   "type": "module",
+diff --git a/plugins/saas-packs/databricks-pack/skills/databricks-incident-runbook/SKILL.md b/plugins/saas-packs/databricks-pack/skills/databricks-incident-runbook/SKILL.md
+index 20b638943..d8e7e1e60 100644
+--- a/plugins/saas-packs/databricks-pack/skills/databricks-incident-runbook/SKILL.md
++++ b/plugins/saas-packs/databricks-pack/skills/databricks-incident-runbook/SKILL.md
+@@ -12,8 +12,9 @@ description: 'Execute Databricks incident response procedures with triage, mitig
+   "databricks down", "databricks on-call", "databricks emergency", "job failed".
+ 
+   '
+-allowed-tools: Read, Grep, Bash(databricks:*), Bash(curl:*)
+-version: 1.0.0
++allowed-tools: Bash(databricks:*), Bash(curl:*), Bash(jq:*)
++argument-hint: '[severity] [job_id?]'
++version: 1.0.1
+ license: MIT
+ author: Jeremy Longshore <jeremy@intentsolutions.io>
+ tags:
+@@ -37,6 +38,22 @@ Rapid incident response for Databricks: triage script, decision tree, immediate
+ | P3 | Non-critical issues | < 4 hours | Dev cluster issues, non-critical job delays |
+ | P4 | No user impact | Next business day | Monitoring gaps, cleanup needed |
+ 
++## Prerequisites
++
++Before this runbook runs, the responder must have:
++
++- **Databricks CLI v2** installed and on PATH (`databricks --version` returns ≥ 0.200.0). Install: `pip install databricks-cli` or `brew install databricks/tap/databricks-cli`.
++- **Authentication** to the affected workspace via one of:
++  - **PAT** (Personal Access Token) — `databricks configure --token`, paste a token from the workspace User Settings → Developer → Access Tokens page. Fastest for on-call; OK for short-lived incident sessions.
++  - **OAuth U2M** — `databricks auth login --host https://<workspace>.cloud.databricks.com` for human-in-the-loop sessions with auto-refresh.
++  - **OAuth M2M** — service principal client-credentials grant, for automated incident bots; env vars `DATABRICKS_CLIENT_ID` + `DATABRICKS_CLIENT_SECRET`.
++- **`jq`** on PATH (used to parse JSON from CLI output and status APIs). Install: `apt install jq` or `brew install jq`.
++- **`curl`** on PATH (used to hit `status.databricks.com` and internal status pages). Comes standard on every modern Linux/macOS install.
++- **Read permission** on the workspace's job runs + cluster events (granted by default to anyone with workspace access; not all workspaces enable strict RBAC). Without it the triage script returns empty `runs[]` arrays even when failures exist.
++- **Workspace URL + workspace ID** known and recorded in the incident ticket — needed for the comms templates in `## Examples`.
++
++If any of these is missing, fix it before starting triage. Running this skill without auth produces misleading output ("API: UNREACHABLE") that wastes early-incident minutes.
++
+ ## Instructions
+ 
+ ### Step 1: Quick Triage (Run First)
+@@ -132,7 +149,7 @@ databricks runs get --run-id $RUN_ID | jq '{
+ # Get task output for failed tasks
+ databricks runs get-output --run-id $RUN_ID | jq '{
+   error: .error,
+-  trace: (.error_trace // "" | .[0:1000])
++  trace: (.error_trace // "" | .[0:1000])  # cap trace at 1000 chars so the postmortem payload stays under Slack's 4KB block limit and Datadog's 8KB event limit
+ }'
+ 
+ # Repair failed tasks only (skip successful ones)
+@@ -178,88 +195,15 @@ databricks permissions update jobs --job-id $JOB_ID --json '{
+ 
+ ### Step 4: Communication
+ 
+-#### Internal (Slack)
+-
+-```
+-:red_circle: **P1 INCIDENT: [Brief Description]**
+-
+-**Status:** INVESTIGATING
+-**Impact:** [What data/users are affected]
+-**Started:** [Time UTC]
+-**Current Action:** [What you're doing now]
+-**Next Update:** [+30 min]
+-
+-**IC:** @[your-name]
+-```
+-
+-#### External (Status Page)
+-
+-```
+-**Data Pipeline Delay**
+-We are experiencing delays in data processing.
+-Dashboard data may be up to [X] hours stale.
+-Started: [Time] UTC
+-Status: Actively investigating
+-Next update: [Time] UTC
+-```
++Post the internal Slack and external status-page updates. **Templates with cadence rules + executive-escalation form** are in [`references/communication-templates.md`](references/communication-templates.md). Copy the bracketed-field versions; consistency matters more than artistry under incident pressure.
+ 
+ ### Step 5: Evidence Collection
+ 
+-```bash
+-#!/bin/bash
+-INCIDENT_ID=$1
+-RUN_ID=$2
+-CLUSTER_ID=$3
+-
+-mkdir -p "incident-$INCIDENT_ID"
+-
+-# Collect everything
+-databricks runs get --run-id $RUN_ID --output json > "incident-$INCIDENT_ID/run.json" 2>&1
+-databricks runs get-output --run-id $RUN_ID --output json > "incident-$INCIDENT_ID/output.json" 2>&1
+-
+-if [ -n "$CLUSTER_ID" ]; then
+-    databricks clusters get --cluster-id $CLUSTER_ID --output json > "incident-$INCIDENT_ID/cluster.json" 2>&1
+-    databricks clusters events --cluster-id $CLUSTER_ID --limit 50 --output json > "incident-$INCIDENT_ID/events.json" 2>&1
+-fi
+-
+-tar -czf "incident-$INCIDENT_ID.tar.gz" "incident-$INCIDENT_ID"
+-echo "Evidence: incident-$INCIDENT_ID.tar.gz"
+-```
+-
+-### Step 6: Postmortem Template
+-
+-```markdown
+-## Incident: [Title]
+-
+-**Date:** YYYY-MM-DD | **Duration:** Xh Ym | **Severity:** P[1-4]
+-**IC:** [Name]
+-
+-### Summary
+-[1-2 sentences: what happened and what was the impact]
++Run the evidence-collection script to bundle `run.json` + `output.json` + (if cluster-side failure) `cluster.json` + `events.json` into a tarball for the postmortem. **Script + per-artifact reference** in [`references/evidence-collection.md`](references/evidence-collection.md).
+ 
+-### Timeline (UTC)
+-| Time | Event |
+-|------|-------|
+-| HH:MM | Alert fired / issue detected |
+-| HH:MM | Investigation started |
+-| HH:MM | Root cause identified |
+-| HH:MM | Mitigation applied |
+-| HH:MM | Resolved |
++### Step 6: Postmortem
+ 
+-### Root Cause
+-[Technical explanation]
+-
+-### Impact
+-- Tables affected: [list]
+-- Data staleness: [hours]
+-- Users affected: [count/teams]
+-
+-### Action Items
+-| Priority | Action | Owner | Due |
+-|----------|--------|-------|-----|
+-| P1 | [Preventive fix] | [Name] | [Date] |
+-| P2 | [Monitoring gap] | [Name] | [Date] |
+-```
++Fill in the postmortem template within 48 hours of resolution. Archive to your team's incident-archive at `/incidents/<YYYY-MM-DD>-<slug>.md`. **Template + blameless-doc rules** in [`references/postmortem-template.md`](references/postmortem-template.md).
+ 
+ ## Output
+ 
+@@ -302,4 +246,8 @@ databricks runs list --job-id $JID --active-only | jq -r '.runs[].run_id' | \
+ 
+ ## Next Steps
+ 
+-For data handling and compliance, see `databricks-data-handling`.
++- **For data handling + compliance** (GDPR deletion, PII masking, retention) post-incident: see `databricks-data-handling`.
++- **For root-cause analysis on cluster-side failures** (OOM, cold starts, spot interruptions): see `databricks-cluster-forensics` once that skill ships in v2.
++- **For cost-impact accounting** of the incident window (job-cluster restarts, all-purpose-cluster fallbacks during the outage): see `databricks-cost-leak-hunter` (pilot v2 skill).
++- **For permanent observability** so the next incident gets caught earlier: see `databricks-observability` for system-table alerting + Prometheus integration.
++- **Postmortem template** is `## Output` § 4 above; archive completed postmortems to the team's incident-archive tag in the workspace (`/incidents/<YYYY-MM-DD>-<slug>.md`).
+diff --git a/plugins/saas-packs/databricks-pack/skills/databricks-incident-runbook/references/communication-templates.md b/plugins/saas-packs/databricks-pack/skills/databricks-incident-runbook/references/communication-templates.md
+new file mode 100644
+index 000000000..b1c593d98
+--- /dev/null
++++ b/plugins/saas-packs/databricks-pack/skills/databricks-incident-runbook/references/communication-templates.md
+@@ -0,0 +1,50 @@
++# Communication templates
++
++Copy-paste these. Fill in the bracketed fields. Don't customize beyond the brackets unless you've run an incident before — consistency across responders matters more than artistry.
++
++## Internal — Slack
++
++```
++:red_circle: **P1 INCIDENT: [Brief Description]**
++
++**Status:** INVESTIGATING
++**Impact:** [What data/users are affected]
++**Started:** [Time UTC]
++**Current Action:** [What you're doing now]
++**Next Update:** [+30 min]
++
++**IC:** @[your-name]
++```
++
++Update cadence: every 30 minutes until resolved. If you can't update on time, post `Still investigating, next update [+30min]` — silence is worse than no-news.
++
++## External — Status page
++
++```
++**Data Pipeline Delay**
++We are experiencing delays in data processing.
++Dashboard data may be up to [X] hours stale.
++Started: [Time] UTC
++Status: Actively investigating
++Next update: [Time] UTC
++```
++
++External wording rules:
++- No internal terminology (no "cluster", "job", "DBR version", "Photon")
++- No root-cause speculation until verified — say "investigating", not "Spark OOM"
++- Cite staleness in hours, not minutes, even if it's 15 min — minutes-precision implies recovery is closer than it is
++
++## Executive escalation (when severity exceeds responder authority)
++
++```
++Subject: [P1] Databricks production data pipeline outage — [time started]
++
++[Exec name],
++
++P1 incident in progress. Production data is stale by [X hours]; impacted downstream: [list].
++Mitigation in progress; ETA to resolution [time].
++IC: [name]. Watching: #incident-databricks Slack.
++Will email next update at [time].
++```
++
++Send this only when (a) ETA exceeds 1 hour OR (b) downstream impact spans more than one team.
+diff --git a/plugins/saas-packs/databricks-pack/skills/databricks-incident-runbook/references/evidence-collection.md b/plugins/saas-packs/databricks-pack/skills/databricks-incident-runbook/references/evidence-collection.md
+new file mode 100644
+index 000000000..203010115
+--- /dev/null
++++ b/plugins/saas-packs/databricks-pack/skills/databricks-incident-runbook/references/evidence-collection.md
+@@ -0,0 +1,56 @@
++# Evidence collection script
++
++Run this as Step 5 of `databricks-incident-runbook`. Collects the four artifacts needed for any postmortem (run.json, output.json, cluster.json, events.json) and tars them into a single uploadable bundle.
++
++## Usage
++
++```bash
++./collect-evidence.sh <INCIDENT_ID> <RUN_ID> [CLUSTER_ID]
++```
++
++- `INCIDENT_ID` — your team's incident tracker ID (e.g., `INC-2026-06-03-001`)
++- `RUN_ID` — Databricks job run ID from `databricks runs list` output
++- `CLUSTER_ID` — optional; only needed when the failure was cluster-side (OOM, cold start, spot interrupt)
++
++## Script
++
++```bash
++#!/bin/bash
++set -euo pipefail
++INCIDENT_ID=$1
++RUN_ID=$2
++CLUSTER_ID=${3:-}
++
++mkdir -p "incident-$INCIDENT_ID"
++
++# Collect job-run artifacts (always)
++databricks runs get --run-id $RUN_ID --output json \
++  > "incident-$INCIDENT_ID/run.json" 2>&1
++databricks runs get-output --run-id $RUN_ID --output json \
++  > "incident-$INCIDENT_ID/output.json" 2>&1
++
++# Cluster artifacts (only if cluster ID supplied)
++if [ -n "$CLUSTER_ID" ]; then
++    databricks clusters get --cluster-id $CLUSTER_ID --output json \
++      > "incident-$INCIDENT_ID/cluster.json" 2>&1
++    databricks clusters events --cluster-id $CLUSTER_ID --limit 50 --output json \
++      > "incident-$INCIDENT_ID/events.json" 2>&1
++fi
++
++# Bundle everything
++tar -czf "incident-$INCIDENT_ID.tar.gz" "incident-$INCIDENT_ID"
++echo "Evidence: incident-$INCIDENT_ID.tar.gz"
++```
++
++## What each artifact tells you
++
++| File | Use during incident | Use in postmortem |
++|---|---|---|
++| `run.json` | Current state, start time, duration | Timeline reconstruction |
++| `output.json` | Error message + stack trace | Root-cause analysis |
++| `cluster.json` | Worker count, instance type, autoscale state at time of failure | Capacity planning insights |
++| `events.json` | Last 50 cluster-lifecycle events (start, scale, interrupt, terminate) | OOM / spot-interrupt / cold-start patterns |
++
++## Storage
++
++Upload the tarball to the incident-archive tag in your workspace at `/incidents/<INCIDENT_ID>.tar.gz`. Retain 90 days minimum for compliance audits; longer if regulated industry.
+diff --git a/plugins/saas-packs/databricks-pack/skills/databricks-incident-runbook/references/postmortem-template.md b/plugins/saas-packs/databricks-pack/skills/databricks-incident-runbook/references/postmortem-template.md
+new file mode 100644
+index 000000000..17dd13af6
+--- /dev/null
++++ b/plugins/saas-packs/databricks-pack/skills/databricks-incident-runbook/references/postmortem-template.md
+@@ -0,0 +1,54 @@
++# Postmortem template
++
++Fill in within 48 hours of incident resolution. Archive to your team's incident-archive tag at `/incidents/<YYYY-MM-DD>-<slug>.md`.
++
++## Template
++
++```markdown
++## Incident: [Title]
++
++**Date:** YYYY-MM-DD | **Duration:** Xh Ym | **Severity:** P[1-4]
++**IC:** [Name]
++
++### Summary
++[1-2 sentences: what happened and what was the impact]
++
++### Timeline (UTC)
++| Time | Event |
++|------|-------|
++| HH:MM | Alert fired / issue detected |
++| HH:MM | Investigation started |
++| HH:MM | Root cause identified |
++| HH:MM | Mitigation applied |
++| HH:MM | Resolved |
++
++### Root Cause
++[Technical explanation. Be specific — "Spark OOM" is insufficient. "Bronze ingest job's executor was sized at 8GB but processed a 12GB Parquet partition after upstream API change increased per-record payload by 50%" is sufficient.]
++
++### Impact
++- Tables affected: [list]
++- Data staleness: [hours]
++- Users affected: [count/teams]
++
++### Action Items
++| Priority | Action | Owner | Due |
++|----------|--------|-------|-----|
++| P1 | [Preventive fix — close the gap that allowed this incident] | [Name] | [Date] |
++| P2 | [Monitoring gap — alert that should have fired] | [Name] | [Date] |
++| P3 | [Process improvement — what the team could do better next time] | [Name] | [Date] |
++```
++
++## Rules of the template
++
++- **Blameless.** Document what the system allowed to happen, never what a person did wrong. If a person clicked the wrong button, the question is "why did the system let one click cause a P1?"
++- **Specific.** Vague root causes ("data quality issue") don't help anyone. Specific root causes ("UTF-8 byte-order-mark in source CSV crashed PySpark CSV reader because `mode='FAILFAST'` was set in code path A but `mode='PERMISSIVE'` in code path B") prevent repeats.
++- **Action items have owners and dates.** "Improve monitoring" is not an action item. "Add Datadog alert on `system.streaming.query_progress` p99 latency > 5s, owner @alice, due 2026-07-01" is.
++- **48-hour deadline.** Memory degrades fast. Postmortems written 2 weeks later miss 60% of the timeline details.
++- **Read in retro.** Add the link to your next sprint retro's pre-read. Action items get accountability when surfaced to the whole team, not just the IC.
++
++## What NOT to include
++
++- Stack traces longer than 20 lines (link to evidence-bundle tarball instead)
++- Internal Slack messages copy-pasted (link to thread)
++- Customer names or PII (anonymize: "Customer A reported", not "Acme Corp reported")
++- Speculation labeled as fact ("The root cause might have been..." → only write what's verified)
