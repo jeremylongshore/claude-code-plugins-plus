@@ -1,0 +1,635 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'SKILL.md Grading Rubric | Tons of Skills';
+const description =
+  'The public 100-point Intent Solutions grading rubric every plugin in this marketplace is scored against. Five categories, ±15 modifiers, A through F grade bands.';
+
+// Rubric data — kept in sync with scripts/validate-skills-schema.py.
+// The drift-detection test at tests/pr-prescreen/test_rubric_in_sync.py
+// will fail if either side changes without the other.
+const RUBRIC = [
+  {
+    id: 'progressive-disclosure',
+    name: 'Progressive Disclosure Architecture',
+    max: 30,
+    intent:
+      'Skills should load the smallest possible amount of context up front, with deeper detail layered into separate reference files. The Anthropic Claude Code reference is explicit about this — short SKILL.md, references one level deep, navigation cues that let the model skip what it does not need.',
+    rows: [
+      {
+        sub: 'Token Economy',
+        max: 10,
+        rule: '≤150 lines → 10 / ≤300 → 7 / ≤500 → 4 / >500 → 0',
+      },
+      {
+        sub: 'Layered Structure',
+        max: 10,
+        rule: 'references/ or resources/ exists with .md files. Empty dir = 3. Missing penalty scales with body length.',
+      },
+      {
+        sub: 'Reference Depth',
+        max: 5,
+        rule: 'References live one level deep. Nested subdirectories under references/ cost points (Anthropic explicitly warns against this).',
+      },
+      {
+        sub: 'Navigation Signals',
+        max: 5,
+        rule: '7+ ## section headers for a substantial skill. Short skills (≤100 lines) get full credit automatically.',
+      },
+    ],
+  },
+  {
+    id: 'ease-of-use',
+    name: 'Ease of Use',
+    max: 25,
+    intent:
+      'A skill that the model cannot find or cannot follow is unused. Discoverability via the description, complete frontmatter, and a clean step-by-step structure drive activation rates.',
+    rows: [
+      {
+        sub: 'Metadata Quality',
+        max: 10,
+        rule: 'All required fields present (name / description ≥50 chars / version / allowed-tools / author email / tags / compatibility).',
+      },
+      {
+        sub: 'Discoverability',
+        max: 6,
+        rule: 'Description contains "Use when …" + "Trigger with …" + action verbs + length in the 50–300 char trigger-match sweet spot.',
+      },
+      {
+        sub: 'Terminology Consistency',
+        max: 4,
+        rule: 'name matches folder; no mixed-case acronyms in description.',
+      },
+      {
+        sub: 'Workflow Clarity',
+        max: 5,
+        rule: 'Numbered steps + 5+ section headers. 3–4 sections is partial credit.',
+      },
+    ],
+  },
+  {
+    id: 'utility',
+    name: 'Utility',
+    max: 20,
+    intent:
+      'Skills earn their slot in the catalog by solving real problems. Overview that explains the use case, prerequisites, output contract, error handling, examples, and enough body text to be useful.',
+    rows: [
+      {
+        sub: 'Problem Solving Power',
+        max: 8,
+        rule: 'Substantial ## Overview (≥50 chars after heading) + ## Prerequisites + ## Output sections.',
+      },
+      {
+        sub: 'Degrees of Freedom',
+        max: 2,
+        rule: 'Shows configuration options + extensibility cues ("alternatively", "you can also", "customize", etc.).',
+      },
+      {
+        sub: 'Feedback Loops',
+        max: 4,
+        rule: '## Error Handling section + validation/verify/check language + troubleshooting cues.',
+      },
+      {
+        sub: 'Examples & Templates',
+        max: 3,
+        rule: '## Examples section or **Example:** labels + 2+ code blocks.',
+      },
+      {
+        sub: 'Content Density',
+        max: 3,
+        rule: '500+ words → 3 / 300+ → 2 / 150+ → 1 / <150 → 0.',
+      },
+    ],
+  },
+  {
+    id: 'spec-compliance',
+    name: 'Spec Compliance',
+    max: 15,
+    intent:
+      'The Anthropic Claude Code skill spec and AgentSkills.io open standard set hard constraints on frontmatter shape. This category enforces them.',
+    rows: [
+      {
+        sub: 'Frontmatter Validity',
+        max: 5,
+        rule: 'All ALWAYS_REQUIRED fields present (the 8-field marketplace set). 1 point off per missing required field, capped at 4.',
+      },
+      {
+        sub: 'Name Conventions',
+        max: 4,
+        rule: 'kebab-case; ≤64 chars; matches folder name.',
+      },
+      {
+        sub: 'Description Quality',
+        max: 4,
+        rule: '50–1024 chars; no first-person ("I can") or second-person ("you can / you should").',
+      },
+      {
+        sub: 'Optional Fields',
+        max: 2,
+        rule: 'If model field is set, it is one of inherit / sonnet / haiku / opus or a claude-* string.',
+      },
+      {
+        sub: 'Field Coverage',
+        max: 3,
+        rule: '80%+ of applicable SKILL_FIELDS present → 3 / 60%+ → 2 / 40%+ → 1.',
+      },
+    ],
+  },
+  {
+    id: 'writing-style',
+    name: 'Writing Style',
+    max: 10,
+    intent:
+      'Skills are instructions for a model. They read like SOP documents, not blog posts. Imperative voice, third person, concise.',
+    rows: [
+      {
+        sub: 'Voice & Tense',
+        max: 4,
+        rule: 'Numbered steps start with imperative verbs (create / use / run / configure / set / add / remove / check / verify).',
+      },
+      {
+        sub: 'Objectivity',
+        max: 3,
+        rule: 'No "you should / you can / you will" and no first-person ("I", "I\'ll", "I can") in the body.',
+      },
+      {
+        sub: 'Conciseness',
+        max: 3,
+        rule: '≤2000 words & ≤400 body lines.',
+      },
+    ],
+  },
+];
+
+const GRADE_BANDS = [
+  {
+    grade: 'A',
+    range: '90–100',
+    label: 'Production-ready',
+    blurb: 'Merges through the marketplace gate.',
+  },
+  {
+    grade: 'B',
+    range: '80–89',
+    label: 'Good, minor improvements needed',
+    blurb: 'Acceptable for hand-authored contributions; forge output aims for A.',
+  },
+  {
+    grade: 'C',
+    range: '70–79',
+    label: 'Adequate, has gaps',
+    blurb: 'Below the marketplace merge floor — PR will fail the prescreen.',
+  },
+  {
+    grade: 'D',
+    range: '60–69',
+    label: 'Needs significant work',
+    blurb: 'Hard reject. Use the rubric breakdown to target deltas.',
+  },
+  {
+    grade: 'F',
+    range: '<60',
+    label: 'Major revision required',
+    blurb: 'Probably missing required frontmatter or has structural gaps.',
+  },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="grading">
+    <div class="grading__container">
+      <section class="grading__hero">
+        <p class="grading__eyebrow">100-point rubric · public · CI-enforced</p>
+        <h1>How we grade SKILL.md</h1>
+        <p class="grading__subtitle">
+          Every plugin in this marketplace is scored against the Intent Solutions 100-point rubric.
+          The rubric lives in <a
+            href="https://github.com/jeremylongshore/claude-code-plugins-plus-skills/blob/main/scripts/validate-skills-schema.py"
+            target="_blank"
+            rel="noopener">scripts/validate-skills-schema.py</a
+          > and is grounded in the
+          <a href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener">Claude Code skills reference</a> +
+          <a href="https://agentskills.io/specification" target="_blank" rel="noopener">AgentSkills.io spec</a>. This
+          page is the public-facing translation. If you ship a PR, this is exactly how it gets graded.
+        </p>
+      </section>
+
+      <section class="grading__section">
+        <h2>Grade bands</h2>
+        <table class="grading__table">
+          <thead>
+            <tr>
+              <th>Grade</th>
+              <th>Range</th>
+              <th>Label</th>
+              <th>What it means</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              GRADE_BANDS.map((band) => (
+                <tr>
+                  <td><span class={`grading__pill grading__pill--${band.grade.toLowerCase()}`}>{band.grade}</span></td>
+                  <td>{band.range}</td>
+                  <td>{band.label}</td>
+                  <td>{band.blurb}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <p class="grading__note">
+          C-grade is the marketplace merge floor — the new-track prescreen rejects sub-A PRs by default. A 30-day
+          informational-only grace window is in effect during the prescreen rollout; afterwards the
+          <code>prescreen-grade</code> check is required at branch-protection.
+        </p>
+      </section>
+
+      <section class="grading__section">
+        <h2>The five rubric categories</h2>
+        <p>
+          Total possible: 100 points across five categories + a ±15 modifier band (bonuses for gerund-style names,
+          grep-friendly structure, exemplary examples, Resources section with external links; penalties for first/second
+          person in description, unnecessary TOCs).
+        </p>
+        {
+          RUBRIC.map((cat) => (
+            <article class="grading__cat" id={cat.id}>
+              <header class="grading__cat-head">
+                <h3>{cat.name}</h3>
+                <span class="grading__cat-max">{cat.max} pts max</span>
+              </header>
+              <p class="grading__cat-intent">{cat.intent}</p>
+              <table class="grading__table">
+                <thead>
+                  <tr>
+                    <th>Subcategory</th>
+                    <th>Max</th>
+                    <th>Rule</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cat.rows.map((row) => (
+                    <tr>
+                      <td><strong>{row.sub}</strong></td>
+                      <td>{row.max}</td>
+                      <td>{row.rule}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </article>
+          ))
+        }
+      </section>
+
+      <section class="grading__section">
+        <h2>Worked example — A-grade SKILL.md (96/100)</h2>
+        <p>
+          A short, focused skill with complete frontmatter, a tight Overview, numbered Instructions, an Output contract,
+          and one supporting reference file. Notice how every element maps to a rubric line.
+        </p>
+        <pre class="grading__code"><code>{`---
+name: ansible-playbook-creator
+description: |
+  Generate production-ready Ansible playbooks. Use when automating server
+  configuration or deployments. Trigger with "ansible playbook" or
+  "create playbook for [task]".
+allowed-tools: Read, Write, Bash(ansible:*), Glob
+version: 2.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
+compatibility: Designed for Claude Code
+tags: [devops, ansible, configuration-management]
+---
+
+# Ansible Playbook Creator
+
+## Overview
+Generates idempotent Ansible playbooks following infrastructure-as-code
+best practices. Targets RHEL, Ubuntu, and Amazon Linux 2023.
+
+## Prerequisites
+- Target host SSH access
+- Ansible 2.14+ installed locally
+- ansible-lint for the validation step
+
+## Instructions
+1. Gather target host details and the desired state spec from the user
+2. Select appropriate Ansible modules from references/module-cheatsheet.md
+3. Generate playbook with proper variable templating in vars/
+4. Validate syntax with \`ansible-lint -p\`
+5. Output the playbook with a "next steps" block
+
+## Output
+- Complete playbook YAML ready for \`ansible-playbook\` execution
+- Inline comments on any non-obvious module choice
+- A "next steps" block listing dry-run + production-run commands
+
+## Error Handling
+If ansible-lint fails, surface the rule violation verbatim and propose
+the smallest fix. Do not silently retry.
+
+## Examples
+**Example 1: Web server setup**
+Input: "Set up nginx with Let's Encrypt on Ubuntu 24.04"
+Output: playbook with system role + nginx role + certbot role.
+
+## Resources
+- references/module-cheatsheet.md — top 40 modules by frequency`}</code></pre>
+        <p class="grading__delta">
+          <strong>Why this lands at A:</strong> body is ~80 lines (Token Economy 10/10), <code>references/</code> exists
+          with content (Layered Structure 10/10), 8 H2 sections (Navigation 5/5, Workflow 5/5), description has both
+          "Use when" and "Trigger with" plus action verbs (Discoverability 6/6), all 8 required frontmatter fields
+          present (Metadata 10/10, Frontmatter Validity 5/5), imperative voice, no first/second person, ≤2000 words
+          (Writing 10/10). Modifiers: +1 grep-friendly, +1 Resources section.
+        </p>
+      </section>
+
+      <section class="grading__section">
+        <h2>Worked example — C-grade SKILL.md (74/100) and the deltas to A</h2>
+        <p>
+          A common shape we see in PRs that fail the prescreen: required fields present but description is weak, no
+          references/, body is mostly prose with few numbered steps. Each delta below is one or more rubric points.
+        </p>
+        <pre class="grading__code"><code>{`---
+name: AnsiblePlaybookGenerator   # ⚠ not kebab-case → Name Conventions -2
+description: I can generate Ansible playbooks for you.   # ⚠ first person + no "Use when" / no "Trigger with" → Discoverability -4, Desc Quality -2
+allowed-tools: "*"   # ⚠ wildcard, not scoped → ignored by rubric but Tier 2 production gate will flag
+version: 1.0.0
+author: Anon   # ⚠ no email → Metadata -1
+license: MIT
+compatibility: Designed for Claude Code
+tags: [ansible]
+---
+
+# Ansible Playbook Generator
+
+You should use this skill when you want to generate Ansible playbooks.
+It works by figuring out what you need and writing the YAML for you.
+
+The skill will create the playbook and you can then run it.
+
+You can configure it with various options.`}</code></pre>
+        <p class="grading__delta">
+          <strong>Deltas to reach A:</strong>
+        </p>
+        <ul class="grading__deltas-list">
+          <li>
+            Rename to <code>ansible-playbook-generator</code> (kebab-case + matches folder) → Name Conventions +2,
+            Terminology +2
+          </li>
+          <li>
+            Rewrite description: <code>Generate production-ready Ansible playbooks. Use when … Trigger with …</code> →
+            Discoverability +4, Description Quality +2, Metadata Quality +3
+          </li>
+          <li>
+            Scope <code>allowed-tools</code> to <code>Read, Write, Bash(ansible:*), Glob</code> — Tier 2 production gate
+            stops flagging
+          </li>
+          <li>
+            Add author email — Metadata +1
+          </li>
+          <li>
+            Add Overview, Prerequisites, numbered Instructions, Output, Error Handling, Examples, Resources sections
+            (≥7 H2s) → Workflow +5, Navigation +1, Problem Solving +8, Feedback Loops +4, Examples +3
+          </li>
+          <li>
+            Add a <code>references/</code> directory with one supporting file → Layered Structure +10
+          </li>
+          <li>
+            Rewrite body in imperative voice ("Generate playbook with …", not "You can configure it") → Voice +0 (already
+            ok), Objectivity +2
+          </li>
+        </ul>
+      </section>
+
+      <section class="grading__cta">
+        <h2>Submit a PR — graded free</h2>
+        <p>
+          Every contributor PR runs the full 100-point rubric before merge. The grade lands as a comment on the PR with
+          per-category breakdown so you can see exactly which lines are costing you points. No paywall, no waiting list.
+        </p>
+        <div class="grading__cta-buttons">
+          <a
+            href="https://github.com/jeremylongshore/claude-code-plugins-plus-skills/blob/main/000-docs/007-DR-GUID-contributing.md"
+            class="grading__btn grading__btn--primary"
+            target="_blank"
+            rel="noopener">Read CONTRIBUTING.md</a
+          >
+          <a
+            href="https://github.com/jeremylongshore/claude-code-plugins-plus-skills/blob/main/scripts/validate-skills-schema.py"
+            class="grading__btn"
+            target="_blank"
+            rel="noopener">Inspect the validator</a
+          >
+          <a
+            href="https://github.com/jeremylongshore/claude-code-plugins-plus-skills/blob/main/000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md"
+            class="grading__btn"
+            target="_blank"
+            rel="noopener">Read the full spec</a
+          >
+        </div>
+      </section>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .grading {
+    padding: 4rem 0;
+    color: var(--ink, var(--slate-100));
+  }
+  .grading__container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+  .grading__hero {
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--rule, var(--slate-700));
+    margin-bottom: 2rem;
+  }
+  .grading__eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--signal, var(--green-400));
+    margin: 0 0 0.5rem;
+  }
+  .grading__hero h1 {
+    font-size: 2.5rem;
+    line-height: 1.1;
+    margin: 0 0 1rem;
+  }
+  .grading__subtitle {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--slate-300);
+    max-width: 75ch;
+  }
+  .grading__section {
+    margin: 3rem 0;
+  }
+  .grading__section h2 {
+    font-size: 1.5rem;
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule, var(--slate-700));
+  }
+  .grading__note {
+    font-size: 0.9rem;
+    color: var(--slate-400);
+    margin-top: 0.75rem;
+  }
+  .grading__table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.95rem;
+  }
+  .grading__table th,
+  .grading__table td {
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--rule, var(--slate-700));
+    vertical-align: top;
+  }
+  .grading__table th {
+    color: var(--slate-200);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .grading__pill {
+    display: inline-block;
+    width: 1.75rem;
+    text-align: center;
+    padding: 0.15rem 0;
+    border-radius: 4px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  .grading__pill--a {
+    background: oklch(70% 0.18 145);
+    color: #000;
+  }
+  .grading__pill--b {
+    background: oklch(78% 0.14 95);
+    color: #000;
+  }
+  .grading__pill--c {
+    background: oklch(75% 0.15 60);
+    color: #000;
+  }
+  .grading__pill--d {
+    background: oklch(70% 0.18 35);
+    color: #fff;
+  }
+  .grading__pill--f {
+    background: oklch(60% 0.22 25);
+    color: #fff;
+  }
+  .grading__cat {
+    margin: 2rem 0 2.5rem;
+  }
+  .grading__cat-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .grading__cat-head h3 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+  .grading__cat-max {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    color: var(--signal, var(--green-400));
+    font-size: 0.9rem;
+  }
+  .grading__cat-intent {
+    color: var(--slate-300);
+    margin: 0 0 0.75rem;
+    line-height: 1.55;
+  }
+  .grading__code {
+    background: var(--panel, var(--slate-900));
+    border: 1px solid var(--rule, var(--slate-700));
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: var(--slate-200);
+    margin: 1rem 0;
+  }
+  .grading__code code {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    white-space: pre;
+  }
+  .grading__delta {
+    color: var(--slate-300);
+    line-height: 1.6;
+    margin: 0.5rem 0 0;
+  }
+  .grading__delta strong {
+    color: var(--ink, var(--slate-100));
+  }
+  .grading__deltas-list {
+    color: var(--slate-300);
+    line-height: 1.65;
+    padding-left: 1.25rem;
+  }
+  .grading__deltas-list li {
+    margin-bottom: 0.4rem;
+  }
+  .grading__cta {
+    margin: 4rem 0 2rem;
+    padding: 2rem 1.5rem;
+    border-top: 1px solid var(--rule, var(--slate-700));
+    border-bottom: 1px solid var(--rule, var(--slate-700));
+  }
+  .grading__cta h2 {
+    margin-top: 0;
+    border: none;
+    padding: 0;
+  }
+  .grading__cta p {
+    color: var(--slate-300);
+    max-width: 70ch;
+  }
+  .grading__cta-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+  .grading__btn {
+    display: inline-block;
+    padding: 0.55rem 1rem;
+    border: 1px solid var(--rule, var(--slate-600));
+    border-radius: 4px;
+    color: var(--ink, var(--slate-100));
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: border-color 0.15s ease;
+  }
+  .grading__btn:hover {
+    border-color: var(--signal, var(--green-400));
+  }
+  .grading__btn--primary {
+    background: var(--signal, var(--green-400));
+    color: #000;
+    border-color: var(--signal, var(--green-400));
+  }
+  code {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.9em;
+    background: var(--panel, var(--slate-900));
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+  }
+</style>
