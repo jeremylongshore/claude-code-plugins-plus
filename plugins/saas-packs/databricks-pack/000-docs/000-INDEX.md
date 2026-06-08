@@ -1,8 +1,8 @@
 # 000-docs Index — databricks-pack
 
 **Filing standard:** Document Filing System v4.3
-**Last updated:** 2026-05-27 (added 010-013 — MCP landscape research + Epic 1 scope adjustment; Claude Code changelog impact moved to repo-root 000-docs as repo-wide AT-ADEC)
-**Total docs:** 13
+**Last updated:** 2026-06-08 (added 014 CFO output sample, 015 v1.0 release checklist, 016 internal reference [local-only])
+**Total docs:** 16
 
 ---
 
@@ -41,6 +41,24 @@
 | 008 | `008-RA-REVW-pack-handling-pressure-test.md` | Adversarial review of pack-handling decision — MODIFY verdict (add deprecation lane + tombstones) |
 | 009 | `009-RA-REVW-pilot-timing-pressure-test.md` | Adversarial review of pilot/timing decision — MODIFY verdict (cut scope to 3 pains, MCP first, drop opus eval) |
 
+## DR — Deliverables & References
+
+| # | File | Description |
+|---|---|---|
+| 014 | `014-DR-REFF-databricks-cost-leak-hunter-sample-output.md` | CFO sample output for the cost-leak-hunter pilot — source-cited one-pager (live at demos.intentsolutions.io). For #790/#795 review. |
+
+## AT — Architecture & Technical (cont.)
+
+| # | File | Description |
+|---|---|---|
+| 015 | _(local-only)_ | **LOCAL-ONLY** — v1.0 release checklist (gates A–E); intentionally untracked while it references review context (not published) |
+
+## RL — Research & Learning (cont.)
+
+| # | File | Description |
+|---|---|---|
+| 016 | _(local-only)_ | **LOCAL-ONLY** — internal reference, intentionally untracked per the partner-internal policy (not published) |
+
 ---
 
 ## Quick reference — doc codes used
@@ -50,4 +68,6 @@
 | BL | Business & Legal | LICN | License |
 | RL | Research & Learning | RSRC | Research resource |
 | AT | Architecture & Technical | ADEC | Architecture decision |
+| AT | Architecture & Technical | PLAN | Plan / checklist |
 | RA | Reports & Analysis | REVW | Review / critique |
+| DR | Deliverables & References | REFF | Deliverable / reference artifact |
