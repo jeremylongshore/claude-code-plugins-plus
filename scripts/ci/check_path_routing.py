@@ -128,11 +128,7 @@ def extract_workflow_metadata(yaml_path: Path) -> dict[str, Any]:
 
             if in_pr_paths_ignore:
                 m = re.match(r"^(\s*)-\s*(.+?)\s*$", stripped)
-                if (
-                    m
-                    and pr_paths_ignore_indent is not None
-                    and len(m.group(1)) > pr_paths_ignore_indent
-                ):
+                if m and pr_paths_ignore_indent is not None and len(m.group(1)) > pr_paths_ignore_indent:
                     item = m.group(2).strip('"').strip("'")
                     paths_ignore.append(item)
                     continue
@@ -218,7 +214,7 @@ def run_routing(changed_files: list[str]) -> dict[str, Any]:
         workflows.append(extract_workflow_metadata(wf))
 
     result: dict[str, Any] = {
-        "_no_filter": [],   # workflows that fire on every PR (no paths / paths-ignore)
+        "_no_filter": [],  # workflows that fire on every PR (no paths / paths-ignore)
         "_changed_files": sorted(changed_files),
     }
 
@@ -230,13 +226,9 @@ def run_routing(changed_files: list[str]) -> dict[str, Any]:
         if not workflow_fires_for(changed_files, wf["paths"], wf["paths_ignore"]):
             continue
         if wf["paths"]:
-            matched = sorted(
-                [f for f in changed_files if path_matches_filter(f, wf["paths"])]
-            )
+            matched = sorted([f for f in changed_files if path_matches_filter(f, wf["paths"])])
         else:
-            matched = sorted(
-                [f for f in changed_files if not path_matches_filter(f, wf["paths_ignore"])]
-            )
+            matched = sorted([f for f in changed_files if not path_matches_filter(f, wf["paths_ignore"])])
         entry: dict[str, Any] = {
             "file": wf["file"],
             "matched_files": matched,
@@ -273,11 +265,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.changed_files:
-        files = [
-            l.strip()
-            for l in Path(args.changed_files).read_text(encoding="utf-8").splitlines()
-            if l.strip()
-        ]
+        files = [l.strip() for l in Path(args.changed_files).read_text(encoding="utf-8").splitlines() if l.strip()]
     elif args.stdin:
         files = [l.strip() for l in sys.stdin.read().splitlines() if l.strip()]
     else:
