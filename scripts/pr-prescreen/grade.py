@@ -92,16 +92,13 @@ class SkillFinding:
     path: str
     current_score: int
     current_grade: str
-    points_to_a: int                # absolute distance to A (≥90)
-    points_to_next_band: int        # distance to next grade band (closer goal)
+    points_to_a: int  # absolute distance to A (≥90)
+    points_to_next_band: int  # distance to next grade band (closer goal)
     errors: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
 
     def headline(self) -> str:
-        return (
-            f"{self.path}: {self.current_grade} ({self.current_score}/100), "
-            f"+{self.points_to_a} pts to A"
-        )
+        return f"{self.path}: {self.current_grade} ({self.current_score}/100), +{self.points_to_a} pts to A"
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -115,9 +112,7 @@ class SkillFinding:
         }
 
 
-def extract_skill_findings(
-    validator_results: list[dict[str, Any]]
-) -> list[SkillFinding]:
+def extract_skill_findings(validator_results: list[dict[str, Any]]) -> list[SkillFinding]:
     """Pull SkillFinding objects out of validator JSON output.
 
     Each input record is expected to follow the shape emitted by
@@ -198,8 +193,7 @@ def compose_grade(
             "verdict": "HARD_BLOCK",
             "hard_block_signals": signals,
             "deltas": [],
-            "summary_line": f"HARD_BLOCK: {signals[0]}"
-            + (f" (+{len(signals) - 1} more)" if len(signals) > 1 else ""),
+            "summary_line": f"HARD_BLOCK: {signals[0]}" + (f" (+{len(signals) - 1} more)" if len(signals) > 1 else ""),
             "rubric_url": _RUBRIC_URL,
         }
 
@@ -263,10 +257,7 @@ def compose_grade(
         )
     elif lowest_grade == "C":
         verdict = "CHANGES_REQUESTED"
-        summary = (
-            f"CHANGES_REQUESTED: {len(validator_results)} component(s), "
-            f"weakest grade C (min {min_score}/100)"
-        )
+        summary = f"CHANGES_REQUESTED: {len(validator_results)} component(s), weakest grade C (min {min_score}/100)"
     else:
         verdict = "CHANGES_REQUESTED"
         summary = (
@@ -314,7 +305,7 @@ def render_comment(grade_result: dict[str, Any]) -> str:
         lines.append("")
         lines.append("All components meet the marketplace bar. Ready to merge once required checks pass.")
     elif verdict == "HARD_BLOCK":
-        lines.append(f"## 🛑 Prescreen: HARD BLOCK")
+        lines.append("## 🛑 Prescreen: HARD BLOCK")
         lines.append("")
         lines.append(summary)
         lines.append("")
@@ -344,16 +335,10 @@ def render_comment(grade_result: dict[str, Any]) -> str:
             if pts_a > pts_next:
                 # Show both distances so contributors don't mistake the
                 # next-band threshold for the A threshold (reviewer fix #840).
-                distance_str = (
-                    f"+{pts_next} pts to {_next_grade(d['current_grade'])}, "
-                    f"+{pts_a} pts to A"
-                )
+                distance_str = f"+{pts_next} pts to {_next_grade(d['current_grade'])}, +{pts_a} pts to A"
             else:
                 distance_str = f"+{pts_a} pts to A"
-            lines.append(
-                f"- **{d['path']}** — {d['current_grade']} "
-                f"({d['current_score']}/100, {distance_str})"
-            )
+            lines.append(f"- **{d['path']}** — {d['current_grade']} ({d['current_score']}/100, {distance_str})")
             for err in (d.get("errors") or [])[:3]:
                 lines.append(f"    - error: {err}")
             for warn in (d.get("warnings") or [])[:2]:
@@ -364,9 +349,6 @@ def render_comment(grade_result: dict[str, Any]) -> str:
 
     lines.append("---")
     lines.append("")
-    lines.append(
-        f"_Public rubric:_ <{_RUBRIC_URL}> _·_ "
-        "_How submissions are graded across 200+ marketplace plugins._"
-    )
+    lines.append(f"_Public rubric:_ <{_RUBRIC_URL}> _·_ _How submissions are graded across 200+ marketplace plugins._")
 
     return "\n".join(lines)

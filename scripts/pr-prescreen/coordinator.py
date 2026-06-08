@@ -56,9 +56,7 @@ _REPO_ROOT = _SELF.parents[2]
 # Load grade.py via importlib so this works whether imported as a package
 # member or executed as a standalone script.
 def _load_grade_module() -> Any:
-    spec = importlib.util.spec_from_file_location(
-        "_pr_prescreen_grade", _SELF.parent / "grade.py"
-    )
+    spec = importlib.util.spec_from_file_location("_pr_prescreen_grade", _SELF.parent / "grade.py")
     mod = importlib.util.module_from_spec(spec)
     # dataclass uses sys.modules lookup during decoration — register the
     # module under its spec name before exec so the decorator can resolve it.
@@ -93,9 +91,7 @@ def _is_within_repo(candidate: Path) -> bool:
         return str(resolved).startswith(str(_REPO_ROOT))
 
 
-def _resolve_skill_paths(
-    affected_skills: list[str], plugin_paths: list[str]
-) -> list[Path]:
+def _resolve_skill_paths(affected_skills: list[str], plugin_paths: list[str]) -> list[Path]:
     """For each affected skill name, locate its SKILL.md within the affected
     plugin paths. Returns absolute paths CONFINED to the repo root."""
     out: list[Path] = []
@@ -114,34 +110,39 @@ def _resolve_skill_paths(
     return out
 
 
-def run_skill_validator(
-    skill_paths: list[Path], *, validator_script: Path | None = None
-) -> list[dict[str, Any]]:
+def run_skill_validator(skill_paths: list[Path], *, validator_script: Path | None = None) -> list[dict[str, Any]]:
     """Invoke validate-skills-schema.py --marketplace --json against the given
     SKILL.md paths. Returns the parsed JSON list."""
     if not skill_paths:
         return []
     script = validator_script or (_REPO_ROOT / "scripts" / "validate-skills-schema.py")
     if not script.exists():
-        return [{"path": str(p), "fatal": f"validator script missing at {script}"}
-                for p in skill_paths]
+        return [{"path": str(p), "fatal": f"validator script missing at {script}"} for p in skill_paths]
     # `--` separates flags from positional args so a path like `--foo` cannot
     # be parsed as a CLI flag by the validator (reviewer fix PR #840).
     cmd: list[str] = [
-        "python3", str(script), "--marketplace", "--json", "--",
+        "python3",
+        str(script),
+        "--marketplace",
+        "--json",
+        "--",
         *(str(p) for p in skill_paths),
     ]
     try:
         proc = subprocess.run(  # noqa: S603 — script paths controlled by repo
-            cmd, capture_output=True, text=True, timeout=120, check=False,
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=120,
+            check=False,
         )
     except (subprocess.TimeoutExpired, FileNotFoundError) as e:
-        return [{"path": str(p), "fatal": f"validator invocation failed: {e}"}
-                for p in skill_paths]
+        return [{"path": str(p), "fatal": f"validator invocation failed: {e}"} for p in skill_paths]
     if proc.returncode != 0 and not proc.stdout.strip():
-        return [{"path": str(p),
-                 "fatal": f"validator exit {proc.returncode}: {proc.stderr.strip()[:200]}"}
-                for p in skill_paths]
+        return [
+            {"path": str(p), "fatal": f"validator exit {proc.returncode}: {proc.stderr.strip()[:200]}"}
+            for p in skill_paths
+        ]
     try:
         data = json.loads(proc.stdout)
     except json.JSONDecodeError as e:
@@ -149,8 +150,7 @@ def run_skill_validator(
     if isinstance(data, dict) and "results" in data:
         data = data["results"]
     if not isinstance(data, list):
-        return [{"path": str(p), "fatal": "validator returned non-list JSON"}
-                for p in skill_paths]
+        return [{"path": str(p), "fatal": "validator returned non-list JSON"} for p in skill_paths]
     return data
 
 
@@ -193,11 +193,7 @@ def coordinate(
     plugin_paths = classifier_output.get("plugin_paths") or []
 
     no_evaluable_artifacts = (
-        not affected_skills
-        and not affected_agents
-        and not affected_mcp
-        and not affected_hooks
-        and not catalog_adds
+        not affected_skills and not affected_agents and not affected_mcp and not affected_hooks and not catalog_adds
     )
 
     # Doc-only / scripts-only / ci-only PRs have no evaluable skill artifacts.
@@ -211,10 +207,7 @@ def coordinate(
             "score": 100,
             "verdict": "PASS",
             "hard_block_signals": [],
-            "summary_line": (
-                "PASS: no skill / agent / MCP / hook / catalog-add artifacts "
-                "in scope for this PR"
-            ),
+            "summary_line": ("PASS: no skill / agent / MCP / hook / catalog-add artifacts in scope for this PR"),
             "deltas": [],
             "rubric_url": "https://tonsofskills.com/grading",
         }
@@ -238,9 +231,7 @@ def coordinate(
         else:
             validator_results = []
 
-    grade_result = _grade.compose_grade(
-        validator_results, hard_block_signals=hard_block_signals
-    )
+    grade_result = _grade.compose_grade(validator_results, hard_block_signals=hard_block_signals)
 
     comment = _grade.render_comment(grade_result)
 
@@ -316,9 +307,7 @@ def main(argv: list[str] | None = None) -> int:
     validator_results: list[dict[str, Any]] | None = None
     if args.validator_results_file:
         try:
-            validator_results = json.loads(
-                Path(args.validator_results_file).read_text(encoding="utf-8")
-            )
+            validator_results = json.loads(Path(args.validator_results_file).read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as e:
             print(f"error: --validator-results-file: {e}", file=sys.stderr)
             return 2
@@ -338,9 +327,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.verdict_output:
         # Trim noisy embedded comment from the verdict json so the file is small
         verdict = {k: v for k, v in coord.items() if k != "comment"}
-        Path(args.verdict_output).write_text(
-            json.dumps(verdict, indent=2, sort_keys=True), encoding="utf-8"
-        )
+        Path(args.verdict_output).write_text(json.dumps(verdict, indent=2, sort_keys=True), encoding="utf-8")
 
     return 0
 
