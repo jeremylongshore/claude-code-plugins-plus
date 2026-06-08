@@ -287,8 +287,8 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `fairdb-ops-manager`     | Database operations management for FairDB PostgreSQL clusters                                                                               |
 | `framecraft`             | Generate polished demo videos from a single prompt. Orchestrates Playwright, FFmpeg, and Edge TTS MCP servers to produce 1920x1080 videos…  |
 | `gastown`                | Multi-agent orchestrator for Claude Code. Track work with convoys, sling to polecats. The Cognition Engine for AI-powered software…         |
-| `geepers`                | Multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, and more. Built… |
 | `geepers-agents`         | Multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, games, and…      |
+| `geepers-agents`         | Multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, and more. Built… |
 | `jeremy-firebase`        | Firebase platform expert for Firestore, Auth, Functions, and Vertex AI integration                                                          |
 | `jeremy-firestore`       | Firestore database specialist for schema design, queries, and real-time sync                                                                |
 | `sprint`                 | Autonomous multi-agent development framework with spec-driven sprints. Write specs, run /sprint, and let coordinated agents (backend,…      |
