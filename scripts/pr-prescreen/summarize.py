@@ -1,25 +1,28 @@
-"""PR pre-screen — Groq LLM summary layer (advisory).
+"""PR pre-screen — LLM summary layer (advisory, DeepSeek by default).
 
-Reads the classifier output produced by classify.py and asks Groq for a
-≤5-line human summary. Returns the original classifier output with an
-added "summary_lines" key on success, or a "summary_lines" key set to a
+Reads the classifier output produced by classify.py and asks an
+OpenAI-compatible chat API (DeepSeek by default) for a ≤5-line human
+summary. Returns the original classifier output with an added
+"summary_lines" key on success, or a "summary_lines" key set to a
 single fallback line + an "llm_status" key indicating why the LLM call
 was skipped or failed.
 
 Constraints:
 - Single attempt. No retries. 5-second wall-clock deadline.
 - Anything other than HTTP 2xx within the deadline triggers the
-  deterministic fallback path — Groq going down NEVER blocks the
+  deterministic fallback path — the LLM going down NEVER blocks the
   workflow.
 - Prompt is fixed; the only user-controlled content is the JSON we ship
   in a fenced code block clearly demarcated from the system prompt.
 - No SDK. Plain stdlib HTTP via urllib so this runs on any GHA runner
-  without extra installs.
+  without extra installs. DeepSeek's API is OpenAI-compatible, so the
+  request/response shape is identical to any other OpenAI-style host.
 
 Env vars:
-  GROQ_API_KEY  — required for live calls. Missing → fallback.
-  GROQ_MODEL    — optional override (default: llama-3.3-70b-versatile).
-  GROQ_TIMEOUT  — optional override in seconds (default: 5).
+  DEEPSEEK_API_KEY  — required for live calls. Missing → fallback.
+  LLM_API_URL       — optional override (default: DeepSeek chat endpoint).
+  LLM_MODEL         — optional override (default: deepseek-chat).
+  LLM_TIMEOUT       — optional override in seconds (default: 5).
 """
 
 from __future__ import annotations
@@ -31,8 +34,8 @@ import urllib.error
 import urllib.request
 
 
-GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
-DEFAULT_MODEL = "llama-3.3-70b-versatile"
+DEFAULT_API_URL = "https://api.deepseek.com/chat/completions"
+DEFAULT_MODEL = "deepseek-chat"
 DEFAULT_TIMEOUT = 5.0
 
 
@@ -71,8 +74,11 @@ def _build_messages(classifier_output: dict) -> list[dict]:
     ]
 
 
-def call_groq(classifier_output: dict, *, api_key: str, model: str, timeout: float) -> str:
-    """Call Groq. Raises on any non-2xx or timeout. Returns the assistant text."""
+def call_llm(classifier_output: dict, *, api_key: str, api_url: str, model: str, timeout: float) -> str:
+    """Call the OpenAI-compatible chat API.
+
+    Raises on any non-2xx or timeout. Returns the assistant text.
+    """
     payload = {
         "model": model,
         "messages": _build_messages(classifier_output),
@@ -80,7 +86,7 @@ def call_groq(classifier_output: dict, *, api_key: str, model: str, timeout: flo
         "max_tokens": 400,
     }
     req = urllib.request.Request(
-        GROQ_URL,
+        api_url,
         data=json.dumps(payload).encode("utf-8"),
         headers={
             "Authorization": f"Bearer {api_key}",
@@ -93,11 +99,11 @@ def call_groq(classifier_output: dict, *, api_key: str, model: str, timeout: flo
     parsed = json.loads(body)
     choices = parsed.get("choices", [])
     if not choices:
-        raise RuntimeError("Groq response missing choices[]")
+        raise RuntimeError("LLM response missing choices[]")
     message = choices[0].get("message", {})
     content = message.get("content")
     if not content or not isinstance(content, str):
-        raise RuntimeError("Groq response missing content")
+        raise RuntimeError("LLM response missing content")
     return content
 
 
@@ -131,27 +137,28 @@ def normalise_summary_lines(text: str) -> str:
 def summarize(classifier_output: dict) -> dict:
     """Augment classifier output with an LLM summary or fallback explanation."""
     out = dict(classifier_output)
-    api_key = os.environ.get("GROQ_API_KEY", "").strip()
+    api_key = os.environ.get("DEEPSEEK_API_KEY", "").strip()
     if not api_key:
-        out["summary_lines"] = _fallback_summary(out, "GROQ_API_KEY not set")
+        out["summary_lines"] = _fallback_summary(out, "DEEPSEEK_API_KEY not set")
         out["llm_status"] = "skipped: no api key"
         return out
 
-    model = os.environ.get("GROQ_MODEL", DEFAULT_MODEL)
+    api_url = os.environ.get("LLM_API_URL", DEFAULT_API_URL)
+    model = os.environ.get("LLM_MODEL", DEFAULT_MODEL)
     try:
-        timeout = float(os.environ.get("GROQ_TIMEOUT", DEFAULT_TIMEOUT))
+        timeout = float(os.environ.get("LLM_TIMEOUT", DEFAULT_TIMEOUT))
     except ValueError:
         timeout = DEFAULT_TIMEOUT
 
     try:
-        raw = call_groq(out, api_key=api_key, model=model, timeout=timeout)
+        raw = call_llm(out, api_key=api_key, api_url=api_url, model=model, timeout=timeout)
     except urllib.error.HTTPError as exc:
-        out["summary_lines"] = _fallback_summary(out, f"Groq HTTP {exc.code}")
+        out["summary_lines"] = _fallback_summary(out, f"LLM HTTP {exc.code}")
         out["llm_status"] = f"failed: http {exc.code}"
         return out
     except Exception as exc:
         # Deliberately broad: the workflow contract is "NEVER block on
-        # Groq". Anything from socket errors to malformed responses to
+        # the LLM". Anything from socket errors to malformed responses to
         # unforeseen AttributeError/KeyError must degrade to the
         # deterministic fallback, not propagate and kill the workflow.
         # Also avoids the Python 3.11 TimeoutError-builtin issue on
