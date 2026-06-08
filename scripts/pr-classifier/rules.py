@@ -24,47 +24,50 @@ from typing import Any
 
 
 RULE_DESCRIPTIONS: tuple[tuple[str, str], ...] = (
-    ("skill",
-     "Matches plugins/<category>/<plugin>/skills/<skill-name>/SKILL.md "
-     "(depth-4 file under skills/). Each match adds <skill-name> to "
-     "affected_skills."),
-    ("agent",
-     "Matches plugins/<category>/<plugin>/agents/<agent>.md. Each match "
-     "adds <agent> to affected_agents."),
-    ("mcp",
-     "Matches plugins/mcp/<name>/** OR plugins/<category>/<plugin>/.mcp.json "
-     "OR plugins/<category>/<plugin>/mcpServers/**. Each match adds the "
-     "MCP server identifier to affected_mcp."),
-    ("hook",
-     "Matches plugins/<category>/<plugin>/hooks/hooks.json. Each match "
-     "adds the plugin to affected_hooks."),
-    ("plugin",
-     "ANY change inside plugins/<category>/<plugin>/ — adds the plugin path "
-     "to plugin_paths. Subset markers (skill/agent/mcp/hook) are independent."),
-    ("catalog_add",
-     "Catches additions to .claude-plugin/marketplace.extended.json that "
-     "introduce new top-level plugin entries — parsed from the diff to "
-     "capture name + source + category."),
-    ("sources_add",
-     "Catches additions to sources.yaml that introduce new entries for "
-     "external source synchronization."),
-    ("ci",
-     "Touches .github/workflows/*.yml or .github/workflows/*.yaml. Marks "
-     "touches_workflows: true."),
-    ("frontend",
-     "Touches marketplace/src/** — Astro frontend. Marks touches_frontend: true."),
-    ("script",
-     "Touches scripts/** — repo-level Python or Node scripts. Marks "
-     "touches_scripts: true."),
-    ("doc",
-     "Touches *.md or *.mdx files OUTSIDE any plugin directory (top-level "
-     "docs, contributing guides, README, etc.). Plugin-internal docs are "
-     "captured under the plugin marker, not as standalone doc."),
-    ("test",
-     "Touches tests/** or **/tests/** or test_*.py — test-only changes."),
-    ("unknown",
-     "Set to true when at least one file in the input list matched no rule. "
-     "Surfaces unrecognized patterns for ruleset extension."),
+    (
+        "skill",
+        "Matches plugins/<category>/<plugin>/skills/<skill-name>/SKILL.md "
+        "(depth-4 file under skills/). Each match adds <skill-name> to "
+        "affected_skills.",
+    ),
+    ("agent", "Matches plugins/<category>/<plugin>/agents/<agent>.md. Each match adds <agent> to affected_agents."),
+    (
+        "mcp",
+        "Matches plugins/mcp/<name>/** OR plugins/<category>/<plugin>/.mcp.json "
+        "OR plugins/<category>/<plugin>/mcpServers/**. Each match adds the "
+        "MCP server identifier to affected_mcp.",
+    ),
+    ("hook", "Matches plugins/<category>/<plugin>/hooks/hooks.json. Each match adds the plugin to affected_hooks."),
+    (
+        "plugin",
+        "ANY change inside plugins/<category>/<plugin>/ — adds the plugin path "
+        "to plugin_paths. Subset markers (skill/agent/mcp/hook) are independent.",
+    ),
+    (
+        "catalog_add",
+        "Catches additions to .claude-plugin/marketplace.extended.json that "
+        "introduce new top-level plugin entries — parsed from the diff to "
+        "capture name + source + category.",
+    ),
+    (
+        "sources_add",
+        "Catches additions to sources.yaml that introduce new entries for external source synchronization.",
+    ),
+    ("ci", "Touches .github/workflows/*.yml or .github/workflows/*.yaml. Marks touches_workflows: true."),
+    ("frontend", "Touches marketplace/src/** — Astro frontend. Marks touches_frontend: true."),
+    ("script", "Touches scripts/** — repo-level Python or Node scripts. Marks touches_scripts: true."),
+    (
+        "doc",
+        "Touches *.md or *.mdx files OUTSIDE any plugin directory (top-level "
+        "docs, contributing guides, README, etc.). Plugin-internal docs are "
+        "captured under the plugin marker, not as standalone doc.",
+    ),
+    ("test", "Touches tests/** or **/tests/** or test_*.py — test-only changes."),
+    (
+        "unknown",
+        "Set to true when at least one file in the input list matched no rule. "
+        "Surfaces unrecognized patterns for ruleset extension.",
+    ),
 )
 
 
@@ -91,9 +94,7 @@ def _file_extension(path: PurePosixPath) -> str:
 # --- Catalog diff parsing ---------------------------------------------------
 
 
-_CATALOG_ENTRY_OBJECT = re.compile(
-    r'^\+\s*\{\s*$|^\+\s*\{\s*"name"\s*:\s*"(?P<inline_name>[^"]+)"', re.M
-)
+_CATALOG_ENTRY_OBJECT = re.compile(r'^\+\s*\{\s*$|^\+\s*\{\s*"name"\s*:\s*"(?P<inline_name>[^"]+)"', re.M)
 
 
 def _count_unquoted_braces(text: str) -> tuple[int, int]:
@@ -250,9 +251,7 @@ def parse_sources_additions_from_diff(diff_text: str) -> list[dict[str, str]]:
 # --- Main classifier --------------------------------------------------------
 
 
-def classify_files(
-    files: list[str], diff_text: str | None = None
-) -> dict[str, Any]:
+def classify_files(files: list[str], diff_text: str | None = None) -> dict[str, Any]:
     """Apply the ruleset to a list of changed files.
 
     Args:
@@ -308,12 +307,7 @@ def classify_files(
 
             # Agent match: <plugin-root>/agents/<agent>.md at ANY depth
             # (same depth-flex fix as skills above).
-            elif (
-                len(path.parts) >= 2
-                and ext == "md"
-                and len(path.parts) >= 3
-                and path.parts[-2] == "agents"
-            ):
+            elif len(path.parts) >= 2 and ext == "md" and len(path.parts) >= 3 and path.parts[-2] == "agents":
                 affected_agents.add(path.parts[-1].rsplit(".", 1)[0])
                 contribution_types.add("agent")
 
@@ -324,29 +318,18 @@ def classify_files(
             elif path.name == ".mcp.json":
                 affected_mcp.add(plugin_root.split("/")[-1])
                 contribution_types.add("mcp")
-            elif (
-                len(path.parts) >= 5
-                and path.parts[3] == "mcpServers"
-            ):
+            elif len(path.parts) >= 5 and path.parts[3] == "mcpServers":
                 affected_mcp.add(plugin_root.split("/")[-1])
                 contribution_types.add("mcp")
 
             # Hooks
-            if (
-                len(path.parts) >= 5
-                and path.parts[3] == "hooks"
-                and path.name == "hooks.json"
-            ):
+            if len(path.parts) >= 5 and path.parts[3] == "hooks" and path.name == "hooks.json":
                 affected_hooks.add(plugin_root.split("/")[-1])
                 contribution_types.add("hook")
 
         # --- Non-plugin matches ---
         if path.parts and path.parts[0] == ".github":
-            if (
-                len(path.parts) >= 3
-                and path.parts[1] == "workflows"
-                and ext in ("yml", "yaml")
-            ):
+            if len(path.parts) >= 3 and path.parts[1] == "workflows" and ext in ("yml", "yaml"):
                 touches_workflows = True
                 contribution_types.add("ci")
                 matched = True
@@ -363,14 +346,7 @@ def classify_files(
             matched = True
 
         # Tests
-        if (
-            path.parts
-            and (
-                path.parts[0] == "tests"
-                or "tests" in path.parts
-                or path.name.startswith("test_")
-            )
-        ):
+        if path.parts and (path.parts[0] == "tests" or "tests" in path.parts or path.name.startswith("test_")):
             touches_tests = True
             contribution_types.add("test")
             matched = True
@@ -378,10 +354,7 @@ def classify_files(
         # Standalone docs (md/mdx outside any plugin)
         if ext in ("md", "mdx") and plugin_root is None:
             is_frontend_doc = (
-                path.parts
-                and path.parts[0] == "marketplace"
-                and len(path.parts) >= 2
-                and path.parts[1] == "src"
+                path.parts and path.parts[0] == "marketplace" and len(path.parts) >= 2 and path.parts[1] == "src"
             )
             if path.parts and path.parts[0] in ("000-docs", "docs"):
                 contribution_types.add("doc")
@@ -412,9 +385,7 @@ def classify_files(
             matched = True
 
         # sources.yaml touch
-        if path.parts == ("sources.yaml",) or (
-            len(path.parts) == 1 and path.name == "sources.yaml"
-        ):
+        if path.parts == ("sources.yaml",) or (len(path.parts) == 1 and path.name == "sources.yaml"):
             contribution_types.add("sources")
             matched = True
 
