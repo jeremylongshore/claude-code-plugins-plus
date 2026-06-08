@@ -21,7 +21,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import shutil
 import subprocess
 import sys
@@ -54,9 +53,7 @@ def _project_is_node(directory: Path) -> bool:
     return (directory / "package.json").exists()
 
 
-def _run_npm_audit(
-    directory: Path, include_dev: bool, no_cache: bool
-) -> tuple[dict[str, Any] | None, str]:
+def _run_npm_audit(directory: Path, include_dev: bool, no_cache: bool) -> tuple[dict[str, Any] | None, str]:
     """Run `npm audit --json` in directory, return (parsed_json_or_None, raw_stdout).
 
     Returns parsed dict on success, None when audit failed or output was not JSON.
@@ -96,9 +93,7 @@ def _run_npm_audit(
 # --- npm v2 schema parser (npm 7+) -------------------------------------------
 
 
-def _parse_v2(
-    data: dict[str, Any], target_label: str
-) -> list[Finding]:
+def _parse_v2(data: dict[str, Any], target_label: str) -> list[Finding]:
     """Parse npm 7+ audit output. Schema is `vulnerabilities.<pkg> → record`.
 
     Direct vs transitive distinction comes from `record.via`: if `via` contains
@@ -150,19 +145,13 @@ def _parse_v2(
         affected_range = str(record.get("range", "unknown"))
         fix_available = record.get("fixAvailable", False)
         if isinstance(fix_available, dict):
-            fix_version_str = (
-                f"{fix_available.get('name', pkg_name)}@"
-                f"{fix_available.get('version', '?')}"
-            )
+            fix_version_str = f"{fix_available.get('name', pkg_name)}@{fix_available.get('version', '?')}"
         elif fix_available is True:
             fix_version_str = "non-breaking upgrade available (npm audit fix)"
         else:
             fix_version_str = "no fix available"
 
-        title = (
-            title_summary
-            or f"npm vulnerability in {pkg_name} ({severity_str})"
-        )
+        title = title_summary or f"npm vulnerability in {pkg_name} ({severity_str})"
 
         detail_lines = [
             f"Affected package: {pkg_name}",
@@ -234,9 +223,7 @@ def _parse_v2(
 # --- npm v1 schema parser (npm 6) --------------------------------------------
 
 
-def _parse_v1(
-    data: dict[str, Any], target_label: str
-) -> list[Finding]:
+def _parse_v1(data: dict[str, Any], target_label: str) -> list[Finding]:
     """Parse npm 6 audit output. Schema is `advisories.<id> → record`."""
     findings: list[Finding] = []
     advisories: dict[str, Any] = data.get("advisories", {}) or {}
@@ -293,9 +280,7 @@ def _parse_v1(
 # --- Operational helpers -----------------------------------------------------
 
 
-def _info_finding(
-    title: str, detail: str, target: str
-) -> Finding:
+def _info_finding(title: str, detail: str, target: str) -> Finding:
     return Finding(
         skill_id=SKILL_ID,
         title=title,
@@ -308,9 +293,7 @@ def _info_finding(
     )
 
 
-def audit_directory(
-    directory: Path, include_dev: bool, no_cache: bool, json_only: bool
-) -> tuple[list[Finding], str]:
+def audit_directory(directory: Path, include_dev: bool, no_cache: bool, json_only: bool) -> tuple[list[Finding], str]:
     """Run an audit, returning (findings, raw_stdout)."""
     if not _npm_present():
         return [

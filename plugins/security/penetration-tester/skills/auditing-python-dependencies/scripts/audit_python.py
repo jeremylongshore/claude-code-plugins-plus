@@ -78,9 +78,7 @@ def detect_requirement_sources(directory: Path) -> list[Path]:
 # --- pip-audit invocation ----------------------------------------------------
 
 
-def _run_pip_audit(
-    requirement_path: Path | None, strict: bool
-) -> tuple[list[dict[str, Any]] | None, str]:
+def _run_pip_audit(requirement_path: Path | None, strict: bool) -> tuple[list[dict[str, Any]] | None, str]:
     """Run pip-audit on the given requirement file (or installed env if None).
 
     Returns (records, raw_stdout) or (None, raw_stdout) on parse failure.
@@ -89,7 +87,7 @@ def _run_pip_audit(
     if strict:
         cmd.append("--strict")
     if requirement_path is not None:
-        suffix = requirement_path.suffix.lower()
+        requirement_path.suffix.lower()
         # pip-audit's --requirement flag accepts requirements.txt; for
         # poetry.lock / Pipfile.lock / pyproject.toml, pip-audit reads them
         # via --requirement too as of v2.7+.
@@ -157,28 +155,17 @@ def _extract_cvss(vuln: dict[str, Any]) -> float | None:
     return None
 
 
-def _parse_pip_audit_records(
-    records: list[dict[str, Any]], target_label: str
-) -> list[Finding]:
+def _parse_pip_audit_records(records: list[dict[str, Any]], target_label: str) -> list[Finding]:
     findings: list[Finding] = []
     for record in records:
         pkg_name = record.get("name") or record.get("package") or "<unknown>"
         installed_version = record.get("version") or "<unknown>"
         vulns = record.get("vulns") or record.get("vulnerabilities") or []
         for vuln in vulns:
-            adv_id = (
-                vuln.get("id")
-                or vuln.get("ghsa")
-                or vuln.get("pypa_id")
-                or "ADVISORY"
-            )
+            adv_id = vuln.get("id") or vuln.get("ghsa") or vuln.get("pypa_id") or "ADVISORY"
             aliases = vuln.get("aliases") or []
             cve_id = next(
-                (
-                    a
-                    for a in aliases
-                    if isinstance(a, str) and a.upper().startswith("CVE-")
-                ),
+                (a for a in aliases if isinstance(a, str) and a.upper().startswith("CVE-")),
                 None,
             )
             fix_versions = vuln.get("fix_versions") or []
@@ -188,9 +175,7 @@ def _parse_pip_audit_records(
             if cvss_score is not None:
                 severity = Severity.from_cvss(cvss_score)
             else:
-                severity = _osv_severity_to_enum(
-                    str(vuln.get("severity_label", ""))
-                )
+                severity = _osv_severity_to_enum(str(vuln.get("severity_label", "")))
 
             title = (
                 f"{adv_id} in {pkg_name}=={installed_version}"
@@ -314,8 +299,7 @@ def _outdated_to_findings(records: list[dict[str, Any]], target_label: str) -> l
                     f"Install pip-audit (`pip install pip-audit`) and re-run for accurate CVE detection."
                 ),
                 remediation=(
-                    "Install pip-audit and re-run this skill for vulnerability data.\n"
-                    "`pip install pip-audit`"
+                    "Install pip-audit and re-run this skill for vulnerability data.\n`pip install pip-audit`"
                 ),
                 cwe_id=CWE_DEFAULT,
                 references=(
@@ -361,8 +345,7 @@ def audit_directory(
                 0,
                 _info_finding(
                     "pip-audit not installed — degraded scan",
-                    "Falling back to pip list --outdated. Install pip-audit "
-                    "for true vulnerability detection.",
+                    "Falling back to pip list --outdated. Install pip-audit for true vulnerability detection.",
                     str(directory),
                 ),
             )

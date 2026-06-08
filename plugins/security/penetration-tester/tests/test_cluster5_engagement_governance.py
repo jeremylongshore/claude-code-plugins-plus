@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import hashlib
 import importlib.util
-import json
 import os
 from pathlib import Path
 
@@ -21,9 +20,7 @@ _PACK = Path(__file__).resolve().parents[1]
 
 def _load_script(skill_dir: str, script_name: str):
     path = _PACK / "skills" / skill_dir / "scripts" / script_name
-    spec = importlib.util.spec_from_file_location(
-        f"{skill_dir}_{script_name[:-3]}", path
-    )
+    spec = importlib.util.spec_from_file_location(f"{skill_dir}_{script_name[:-3]}", path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
@@ -60,6 +57,7 @@ class TestCheckAuthorization:
 
     def test_validate_roe_missing_authorizer(self, mod, sample_roe_dict):
         from copy import deepcopy
+
         data = deepcopy(sample_roe_dict)
         data["authorizer"] = {}
         findings = mod.validate_roe(data, "test", allowed=[])
@@ -69,6 +67,7 @@ class TestCheckAuthorization:
 
     def test_validate_roe_expired_time_window(self, mod, sample_roe_dict):
         from copy import deepcopy
+
         data = deepcopy(sample_roe_dict)
         data["time_window"]["end"] = "2020-01-01T00:00:00Z"
         findings = mod.validate_roe(data, "test", allowed=[])
@@ -85,6 +84,7 @@ class TestCheckAuthorization:
 
     def test_validate_roe_empty_in_scope(self, mod, sample_roe_dict):
         from copy import deepcopy
+
         data = deepcopy(sample_roe_dict)
         data["in_scope_targets"] = []
         findings = mod.validate_roe(data, "test", allowed=[])
@@ -175,9 +175,7 @@ class TestDefineScope:
     def test_evaluate_scope_clean(self, mod):
         in_scope = [{"host": "app.example.test"}]
         out_of_scope = [{"host": "payments.example.test"}]
-        findings, normalized, allowlist = mod.evaluate_scope(
-            in_scope, out_of_scope, "test"
-        )
+        findings, normalized, allowlist = mod.evaluate_scope(in_scope, out_of_scope, "test")
         # No malformed entries, no overlap → no high/critical findings
         assert not any(f.severity.value in ("critical", "high") for f in findings)
         assert len(normalized) == 1
@@ -227,9 +225,7 @@ class TestRecordEngagement:
         assert mod._sha256_file(f) == expected
 
     def test_walk_files_finds_everything(self, mod, small_engagement):
-        files, findings = mod.walk_files(
-            small_engagement, list(mod.DEFAULT_EXCLUDES)
-        )
+        files, findings = mod.walk_files(small_engagement, list(mod.DEFAULT_EXCLUDES))
         # 3 files: roe.yaml, f1.json, r1.md
         assert len(files) == 3
 

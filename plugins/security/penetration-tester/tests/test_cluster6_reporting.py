@@ -20,9 +20,7 @@ _PACK = Path(__file__).resolve().parents[1]
 
 def _load_script(skill_dir: str, script_name: str):
     path = _PACK / "skills" / skill_dir / "scripts" / script_name
-    spec = importlib.util.spec_from_file_location(
-        f"{skill_dir}_{script_name[:-3]}", path
-    )
+    spec = importlib.util.spec_from_file_location(f"{skill_dir}_{script_name[:-3]}", path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
@@ -77,9 +75,11 @@ class TestComposeReport:
         assert "missing required fields" in err
 
     def test_render_summary_table(self, mod, sample_findings):
-        from lib.finding import Severity, from_json
+        from lib.finding import from_json
+
         findings = [from_json(r) for r in sample_findings]
         from collections import defaultdict
+
         by_sev: dict[Any, list[Any]] = defaultdict(list)
         for f in findings:
             by_sev[f.severity].append(f)
@@ -90,6 +90,7 @@ class TestComposeReport:
 
     def test_render_finding_section_has_anchor(self, mod, sample_findings):
         from lib.finding import from_json
+
         f = from_json(sample_findings[0])
         section = mod.render_finding_section(f)
         assert f.fingerprint() in section
@@ -105,7 +106,7 @@ class TestComposeReport:
         assert mod.detect_engagement_id(eng) == "no-roe-eng"
 
     def test_main_produces_report(self, mod, engagement_dir):
-        exit_code = mod.main([str(engagement_dir)])
+        mod.main([str(engagement_dir)])
         report_path = engagement_dir / "reports" / "vulnerability-report.md"
         assert report_path.exists()
         text = report_path.read_text()
@@ -203,7 +204,7 @@ class TestMapOwasp:
         assert mod.apply_override(record, override) is False
 
     def test_main_writes_enriched_and_coverage(self, mod, engagement_dir):
-        exit_code = mod.main([str(engagement_dir)])
+        mod.main([str(engagement_dir)])
         enriched = engagement_dir / "findings" / "all-with-owasp.jsonl"
         coverage = engagement_dir / "reports" / "owasp-coverage.md"
         assert enriched.exists()
@@ -280,9 +281,16 @@ class TestExecSummary:
 
     def test_pick_top_priorities_overrides_win(self, mod):
         overrides = [
-            {"title": "Manual priority", "effort": "Days", "impact": "Material",
-             "severity": "high", "skill_id": "manual", "reach": 1,
-             "owasp": "A02", "fingerprint": "abc"}
+            {
+                "title": "Manual priority",
+                "effort": "Days",
+                "impact": "Material",
+                "severity": "high",
+                "skill_id": "manual",
+                "reach": 1,
+                "owasp": "A02",
+                "fingerprint": "abc",
+            }
         ]
         priorities = mod.pick_top_priorities([], overrides=overrides)
         assert priorities[0]["title"] == "Manual priority"
@@ -301,8 +309,7 @@ class TestExecSummary:
 
     def test_estimate_impact_high_reach(self, mod):
         record = {"severity": "high", "target": "a"}
-        siblings = [record, {"severity": "high", "target": "b"},
-                    {"severity": "high", "target": "c"}]
+        siblings = [record, {"severity": "high", "target": "b"}, {"severity": "high", "target": "c"}]
         assert mod.estimate_impact(record, siblings) == "Material"
 
     def test_estimate_impact_low_default(self, mod):
@@ -323,7 +330,7 @@ class TestExecSummary:
         map_mod = _load_script("mapping-findings-to-owasp-top10", "map_owasp.py")
         map_mod.main([str(engagement_dir)])
         # Now run exec_summary
-        exit_code = mod.main([str(engagement_dir)])
+        mod.main([str(engagement_dir)])
         summary_path = engagement_dir / "reports" / "executive-summary.md"
         assert summary_path.exists()
         text = summary_path.read_text()
@@ -334,15 +341,22 @@ class TestExecSummary:
     def test_render_summary_byte_stability_modulo_timestamp(self, mod):
         """Re-rendering with the same inputs produces identical output (except timestamp)."""
         from collections import Counter
+
         counts = Counter({"high": 1})
         priorities = [
-            {"title": "x", "severity": "high", "reach": 1, "effort": "Days",
-             "impact": "Material", "owasp": "A06", "skill_id": "s", "fingerprint": "abc"}
+            {
+                "title": "x",
+                "severity": "high",
+                "reach": 1,
+                "effort": "Days",
+                "impact": "Material",
+                "owasp": "A06",
+                "skill_id": "s",
+                "fingerprint": "abc",
+            }
         ]
-        out1 = mod.render_summary([], 10, "Low", counts, priorities,
-                                   "ROE", "Coverage", "test-eng")
-        out2 = mod.render_summary([], 10, "Low", counts, priorities,
-                                   "ROE", "Coverage", "test-eng")
+        out1 = mod.render_summary([], 10, "Low", counts, priorities, "ROE", "Coverage", "test-eng")
+        out2 = mod.render_summary([], 10, "Low", counts, priorities, "ROE", "Coverage", "test-eng")
         # Strip the date line (only difference between runs)
         clean1 = "\n".join(l for l in out1.splitlines() if "Generated:" not in l)
         clean2 = "\n".join(l for l in out2.splitlines() if "Generated:" not in l)

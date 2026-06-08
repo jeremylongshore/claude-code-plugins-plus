@@ -187,9 +187,7 @@ def build_python_graph(directory: Path) -> tuple[dict[str, list[str]], list[str]
 # --- Path tracing -----------------------------------------------------------
 
 
-def trace_paths(
-    package: str, parents_map: dict[str, list[str]], direct: set[str]
-) -> list[list[str]]:
+def trace_paths(package: str, parents_map: dict[str, list[str]], direct: set[str]) -> list[list[str]]:
     """Return all paths from a direct dep to the given package.
 
     Each path is a list of package names from direct (index 0) to target (last).
@@ -339,8 +337,7 @@ def build_trace_findings(
                     f"Reachable paths: {len(paths)}\n"
                     f"Direct ancestors: {', '.join(direct_ancestors)}\n"
                     f"Original severity: {severity_str}\n"
-                    f"Path samples:\n  "
-                    + "\n  ".join(path_strs[:5])
+                    f"Path samples:\n  " + "\n  ".join(path_strs[:5])
                 ),
                 remediation=remediation,
                 cve_id=af.get("cve_id"),

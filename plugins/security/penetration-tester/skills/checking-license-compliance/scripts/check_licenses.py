@@ -74,8 +74,7 @@ PERMISSIVE = {
 DEFAULT_POLICY: dict[str, Any] = {
     "allow": list(PERMISSIVE),
     "deny": list(STRONG_COPYLEFT),
-    "review": ["MPL-2.0", "EPL-2.0", "CDDL-1.0"]
-    + list(WEAK_COPYLEFT - {"MPL-2.0", "EPL-2.0", "CDDL-1.0"}),
+    "review": ["MPL-2.0", "EPL-2.0", "CDDL-1.0"] + list(WEAK_COPYLEFT - {"MPL-2.0", "EPL-2.0", "CDDL-1.0"}),
     "project_license": None,  # auto-detected from project metadata
 }
 
@@ -160,9 +159,7 @@ def enumerate_npm_packages(directory: Path) -> list[dict[str, Any]]:
         elif isinstance(lic, dict):
             license_str = lic.get("type") or "UNKNOWN"
         elif isinstance(lic, list):
-            license_str = " OR ".join(
-                str(l.get("type") if isinstance(l, dict) else l) for l in lic
-            )
+            license_str = " OR ".join(str(l.get("type") if isinstance(l, dict) else l) for l in lic)
         else:
             license_str = "UNKNOWN"
         out.append(
@@ -206,9 +203,7 @@ def enumerate_python_packages(directory: Path) -> list[dict[str, Any]]:
     for site_pkgs in candidates:
         if not site_pkgs.is_dir():
             continue
-        for metadata_file in list(site_pkgs.glob("*.dist-info/METADATA")) + list(
-            site_pkgs.glob("*.egg-info/PKG-INFO")
-        ):
+        for metadata_file in list(site_pkgs.glob("*.dist-info/METADATA")) + list(site_pkgs.glob("*.egg-info/PKG-INFO")):
             try:
                 text = metadata_file.read_text(encoding="utf-8", errors="replace")
             except OSError:
@@ -221,7 +216,7 @@ def enumerate_python_packages(directory: Path) -> list[dict[str, Any]]:
                 text,
                 flags=re.M,
             )
-            name = (name_m.group(1).strip() if name_m else metadata_file.parent.name)
+            name = name_m.group(1).strip() if name_m else metadata_file.parent.name
             version = ver_m.group(1).strip() if ver_m else "?"
             license_str = (lic_m.group(1).strip() if lic_m else "") or (
                 ", ".join(c.strip() for c in classifier_lics) if classifier_lics else "UNKNOWN"
@@ -270,9 +265,7 @@ def classify_license(license_str: str) -> str:
     return "custom"
 
 
-def assess_package(
-    pkg: dict[str, Any], policy: dict[str, Any], project_license: str | None
-) -> Finding | None:
+def assess_package(pkg: dict[str, Any], policy: dict[str, Any], project_license: str | None) -> Finding | None:
     license_str = pkg["license"]
     family = classify_license(license_str)
 
@@ -283,13 +276,10 @@ def assess_package(
     allow = set(policy.get("allow", []))
 
     if head in deny or family == "strong_copyleft":
-        if project_license in PERMISSIVE or (
-            policy.get("project_license") in PERMISSIVE
-        ):
+        if project_license in PERMISSIVE or (policy.get("project_license") in PERMISSIVE):
             severity = Severity.CRITICAL
             title = (
-                f"Strong-copyleft license ({license_str}) in a "
-                f"{project_license or 'permissive'} project: {pkg['name']}"
+                f"Strong-copyleft license ({license_str}) in a {project_license or 'permissive'} project: {pkg['name']}"
             )
         else:
             severity = Severity.HIGH

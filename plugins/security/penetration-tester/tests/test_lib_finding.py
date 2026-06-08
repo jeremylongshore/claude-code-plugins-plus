@@ -180,10 +180,20 @@ def test_finding_to_dict_keys():
     )
     d = f.to_dict()
     expected_keys = {
-        "skill_id", "title", "severity", "target", "detail",
-        "remediation", "cvss_score", "cve_id", "cwe_id",
-        "owasp_category", "affected_control", "references",
-        "evidence", "fingerprint",
+        "skill_id",
+        "title",
+        "severity",
+        "target",
+        "detail",
+        "remediation",
+        "cvss_score",
+        "cve_id",
+        "cwe_id",
+        "owasp_category",
+        "affected_control",
+        "references",
+        "evidence",
+        "fingerprint",
     }
     assert set(d.keys()) == expected_keys
 

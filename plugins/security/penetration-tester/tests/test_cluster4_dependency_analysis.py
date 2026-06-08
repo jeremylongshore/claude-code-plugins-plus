@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import importlib.util
 import json
-import sys
 from pathlib import Path
 
 import pytest
@@ -28,9 +27,7 @@ _PACK = Path(__file__).resolve().parents[1]
 def _load_script(skill_dir: str, script_name: str):
     """Load a script as a module without polluting sys.modules globally."""
     path = _PACK / "skills" / skill_dir / "scripts" / script_name
-    spec = importlib.util.spec_from_file_location(
-        f"{skill_dir}_{script_name[:-3]}", path
-    )
+    spec = importlib.util.spec_from_file_location(f"{skill_dir}_{script_name[:-3]}", path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
@@ -261,6 +258,7 @@ class TestCheckLicenses:
         policy["project_license"] = "MIT"
         finding = mod.assess_package(pkg, policy, "MIT")
         from lib.finding import Severity
+
         assert finding is not None
         assert finding.severity == Severity.CRITICAL
 
@@ -344,33 +342,35 @@ class TestTraceVulns:
 
     def test_build_trace_findings_skips_info_severity(self, mod):
         """INFO-severity audit findings should NOT become trace findings."""
-        audit = [{
-            "skill_id": "auditing-npm-dependencies",
-            "severity": "info",
-            "evidence": {"package": "lodash"},
-            "target": "test",
-            "cve_id": None,
-        }]
+        audit = [
+            {
+                "skill_id": "auditing-npm-dependencies",
+                "severity": "info",
+                "evidence": {"package": "lodash"},
+                "target": "test",
+                "cve_id": None,
+            }
+        ]
         parents = {"lodash": []}
         direct = {"lodash"}
         out = mod.build_trace_findings(audit, parents, direct, min_depth=0)
         # Only the leverage-report finding should be in the output (no real
         # transitive vuln, no leverage to track) — but if INFO was incorrectly
         # included it'd produce a non-INFO trace finding here.
-        non_info_traces = [
-            f for f in out if "transitive vuln" in f.title.lower()
-        ]
+        non_info_traces = [f for f in out if "transitive vuln" in f.title.lower()]
         assert non_info_traces == []
 
     def test_build_trace_findings_direct_dep_depth_0(self, mod):
         """A direct-dep CVE has depth 0 — should be skipped when min_depth>0."""
-        audit = [{
-            "skill_id": "auditing-npm-dependencies",
-            "severity": "high",
-            "evidence": {"package": "lodash"},
-            "target": "test::lodash",
-            "cve_id": "CVE-2026-0001",
-        }]
+        audit = [
+            {
+                "skill_id": "auditing-npm-dependencies",
+                "severity": "high",
+                "evidence": {"package": "lodash"},
+                "target": "test::lodash",
+                "cve_id": "CVE-2026-0001",
+            }
+        ]
         parents = {"lodash": []}
         direct = {"lodash"}
         out = mod.build_trace_findings(audit, parents, direct, min_depth=1)
@@ -382,13 +382,15 @@ class TestTraceVulns:
         """At depth >=3, a CRITICAL becomes HIGH/CRITICAL, and a HIGH gets
         bumped (depth alone elevates concern about blast radius)."""
         # qs reachable only via deep chain: express -> a -> b -> qs (depth 3)
-        audit = [{
-            "skill_id": "auditing-npm-dependencies",
-            "severity": "high",
-            "evidence": {"package": "qs"},
-            "target": "test::qs",
-            "cve_id": "CVE-2026-0002",
-        }]
+        audit = [
+            {
+                "skill_id": "auditing-npm-dependencies",
+                "severity": "high",
+                "evidence": {"package": "qs"},
+                "target": "test::qs",
+                "cve_id": "CVE-2026-0002",
+            }
+        ]
         parents = {"express": [], "a": ["express"], "b": ["a"], "qs": ["b"]}
         direct = {"express"}
         out = mod.build_trace_findings(audit, parents, direct, min_depth=0)
@@ -401,15 +403,21 @@ class TestTraceVulns:
         """A vuln reachable via >=5 paths should bump severity by one tier
         (broad reachability = harder remediation)."""
         # qs reachable via 5 distinct direct deps
-        audit = [{
-            "skill_id": "auditing-npm-dependencies",
-            "severity": "medium",
-            "evidence": {"package": "qs"},
-            "target": "test::qs",
-            "cve_id": "CVE-2026-0003",
-        }]
+        audit = [
+            {
+                "skill_id": "auditing-npm-dependencies",
+                "severity": "medium",
+                "evidence": {"package": "qs"},
+                "target": "test::qs",
+                "cve_id": "CVE-2026-0003",
+            }
+        ]
         parents = {
-            "p1": [], "p2": [], "p3": [], "p4": [], "p5": [],
+            "p1": [],
+            "p2": [],
+            "p3": [],
+            "p4": [],
+            "p5": [],
             "qs": ["p1", "p2", "p3", "p4", "p5"],
         }
         direct = {"p1", "p2", "p3", "p4", "p5"}
@@ -428,7 +436,7 @@ class TestTraceVulns:
                 "severity": "high",
                 "evidence": {"package": f"vuln-{i}"},
                 "target": f"test::vuln-{i}",
-                "cve_id": f"CVE-2026-{1000+i}",
+                "cve_id": f"CVE-2026-{1000 + i}",
             }
             for i in range(3)
         ]
@@ -439,9 +447,7 @@ class TestTraceVulns:
         }
         direct = {"express"}
         out = mod.build_trace_findings(audit, parents, direct, min_depth=0)
-        leverage_findings = [
-            f for f in out if "ancestor for" in f.title.lower()
-        ]
+        leverage_findings = [f for f in out if "ancestor for" in f.title.lower()]
         assert leverage_findings
         # The top leverage ancestor should be `express` with 3 CVE count
         top = leverage_findings[0]
@@ -450,13 +456,15 @@ class TestTraceVulns:
 
     def test_build_trace_findings_unmappable_package_dropped(self, mod):
         """Audit finding with no extractable package name should be skipped."""
-        audit = [{
-            "skill_id": "x",
-            "severity": "high",
-            "evidence": {},
-            "target": "nodoublecolon",
-            "cve_id": None,
-        }]
+        audit = [
+            {
+                "skill_id": "x",
+                "severity": "high",
+                "evidence": {},
+                "target": "nodoublecolon",
+                "cve_id": None,
+            }
+        ]
         out = mod.build_trace_findings(audit, {}, set(), min_depth=0)
         # No usable package name → no trace finding produced
         traces = [f for f in out if "transitive vuln" in f.title.lower()]

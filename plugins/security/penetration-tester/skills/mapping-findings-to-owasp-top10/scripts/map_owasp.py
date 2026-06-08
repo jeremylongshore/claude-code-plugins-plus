@@ -16,7 +16,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import dataclasses
 import json
 import sys
 from collections import Counter, defaultdict
@@ -27,11 +26,12 @@ from typing import Any
 _LIB_ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(_LIB_ROOT))
 
-from lib.finding import Finding, Severity, from_json as finding_from_json  # noqa: E402
+from lib.finding import Finding, Severity  # noqa: E402
 from lib import report  # noqa: E402
 
 try:
     import yaml  # type: ignore[import-not-found]
+
     _HAS_PYYAML = True
 except ImportError:
     yaml = None
@@ -90,40 +90,40 @@ SKILL_TO_OWASP: dict[str, str] = {
 
 # CWE → OWASP A0X mapping (subset; canonical OWASP cross-walk).
 CWE_TO_OWASP = {
-    "CWE-22":   "A01",  # Path traversal
-    "CWE-23":   "A01",
-    "CWE-200":  "A01",
-    "CWE-285":  "A01",
-    "CWE-639":  "A01",
-    "CWE-26":   "A02",  # Cryptographic
-    "CWE-261":  "A02",
-    "CWE-296":  "A02",
-    "CWE-310":  "A02",
-    "CWE-319":  "A02",
-    "CWE-321":  "A02",
-    "CWE-326":  "A02",
-    "CWE-327":  "A02",
-    "CWE-352":  "A03",
-    "CWE-77":   "A03",  # Command injection
-    "CWE-78":   "A03",
-    "CWE-79":   "A03",  # XSS
-    "CWE-89":   "A03",  # SQL injection
-    "CWE-94":   "A03",
+    "CWE-22": "A01",  # Path traversal
+    "CWE-23": "A01",
+    "CWE-200": "A01",
+    "CWE-285": "A01",
+    "CWE-639": "A01",
+    "CWE-26": "A02",  # Cryptographic
+    "CWE-261": "A02",
+    "CWE-296": "A02",
+    "CWE-310": "A02",
+    "CWE-319": "A02",
+    "CWE-321": "A02",
+    "CWE-326": "A02",
+    "CWE-327": "A02",
+    "CWE-352": "A03",
+    "CWE-77": "A03",  # Command injection
+    "CWE-78": "A03",
+    "CWE-79": "A03",  # XSS
+    "CWE-89": "A03",  # SQL injection
+    "CWE-94": "A03",
     "CWE-1021": "A04",
-    "CWE-209":  "A05",  # information leak via error msg
-    "CWE-548":  "A05",  # directory listing
+    "CWE-209": "A05",  # information leak via error msg
+    "CWE-548": "A05",  # directory listing
     "CWE-1004": "A05",
     "CWE-1104": "A06",  # vulnerable third-party
     "CWE-1395": "A06",
-    "CWE-287":  "A07",  # auth
-    "CWE-306":  "A07",
-    "CWE-307":  "A07",
-    "CWE-345":  "A08",
-    "CWE-502":  "A08",  # insecure deserialization
-    "CWE-829":  "A08",
-    "CWE-117":  "A09",  # log injection
-    "CWE-778":  "A09",  # insufficient logging
-    "CWE-918":  "A10",  # SSRF
+    "CWE-287": "A07",  # auth
+    "CWE-306": "A07",
+    "CWE-307": "A07",
+    "CWE-345": "A08",
+    "CWE-502": "A08",  # insecure deserialization
+    "CWE-829": "A08",
+    "CWE-117": "A09",  # log injection
+    "CWE-778": "A09",  # insufficient logging
+    "CWE-918": "A10",  # SSRF
 }
 
 # Detail-keyword fallback rules. Tuple of (keyword, category).
@@ -165,8 +165,14 @@ DETAIL_KEYWORDS: list[tuple[str, str]] = [
 # --- Helpers ----------------------------------------------------------------
 
 
-def _f(severity: Severity, title: str, target: str, detail: str, remediation: str,
-       evidence: tuple[tuple[str, Any], ...] = ()) -> Finding:
+def _f(
+    severity: Severity,
+    title: str,
+    target: str,
+    detail: str,
+    remediation: str,
+    evidence: tuple[tuple[str, Any], ...] = (),
+) -> Finding:
     return Finding(
         skill_id=SKILL_ID,
         title=title,
@@ -249,9 +255,7 @@ def apply_override(record: dict[str, Any], override: dict[str, Any]) -> bool:
 # --- Mapping logic ----------------------------------------------------------
 
 
-def classify(
-    record: dict[str, Any], overrides: list[dict[str, Any]]
-) -> tuple[str | None, str]:
+def classify(record: dict[str, Any], overrides: list[dict[str, Any]]) -> tuple[str | None, str]:
     """Return (owasp_code, rule_that_matched). owasp_code is None if unmapped."""
     # 1. Engagement-specific overrides
     for ov in overrides:
@@ -430,8 +434,7 @@ def main(argv: list[str] | None = None) -> int:
                         Severity.INFO,
                         f"unmapped: {rec.get('title', '')[:80]}",
                         str(src),
-                        f"Skill `{rec.get('skill_id', '?')}` produced a finding "
-                        f"the rule table couldn't classify.",
+                        f"Skill `{rec.get('skill_id', '?')}` produced a finding the rule table couldn't classify.",
                         "Extend the rule table or accept as cross-cutting.",
                         evidence=(
                             ("skill", rec.get("skill_id", "")),
@@ -443,9 +446,7 @@ def main(argv: list[str] | None = None) -> int:
 
     # Write enriched output
     enrich_path = (
-        Path(args.enrich_output).resolve()
-        if args.enrich_output
-        else root / "findings" / "all-with-owasp.jsonl"
+        Path(args.enrich_output).resolve() if args.enrich_output else root / "findings" / "all-with-owasp.jsonl"
     )
     if str(enrich_path) != "/dev/null":
         try:
@@ -466,16 +467,12 @@ def main(argv: list[str] | None = None) -> int:
 
     # Coverage report
     coverage_path = (
-        Path(args.coverage_output).resolve()
-        if args.coverage_output
-        else root / "reports" / "owasp-coverage.md"
+        Path(args.coverage_output).resolve() if args.coverage_output else root / "reports" / "owasp-coverage.md"
     )
     try:
         coverage_path.parent.mkdir(parents=True, exist_ok=True)
         engagement_id = detect_engagement_id(root)
-        coverage_path.write_text(
-            render_coverage(by_cat, engagement_id, unmapped), encoding="utf-8"
-        )
+        coverage_path.write_text(render_coverage(by_cat, engagement_id, unmapped), encoding="utf-8")
         # Coverage-quality assessment
         covered_codes = sum(1 for code in OWASP_CATEGORIES if by_cat.get(code))
         if covered_codes == 10:
@@ -484,7 +481,7 @@ def main(argv: list[str] | None = None) -> int:
                     Severity.INFO,
                     "engagement covers all 10 OWASP categories",
                     str(coverage_path),
-                    f"At least one finding in each of A01-A10.",
+                    "At least one finding in each of A01-A10.",
                     "Broad-coverage engagement; report includes complete OWASP narrative.",
                     evidence=(("categories_covered", covered_codes),),
                 )
@@ -498,8 +495,7 @@ def main(argv: list[str] | None = None) -> int:
                     f"Findings landed in only {covered_codes} categories. Either the "
                     f"engagement scope was narrow OR the rule table didn't recognize "
                     f"findings that should map to additional categories.",
-                    "If scope was narrow, document in the engagement summary. "
-                    "Otherwise extend the rule table.",
+                    "If scope was narrow, document in the engagement summary. Otherwise extend the rule table.",
                     evidence=(("categories_covered", covered_codes),),
                 )
             )

@@ -43,7 +43,7 @@ def sample_roe_dict() -> dict[str, Any]:
         ],
         "time_window": {
             "start": "2026-01-01T00:00:00Z",
-            "end":   "2099-12-31T23:59:59Z",  # far future to keep test stable
+            "end": "2099-12-31T23:59:59Z",  # far future to keep test stable
         },
         "emergency_contact": {
             "name": "SOC On-Call",
@@ -135,9 +135,7 @@ def sample_findings() -> list[dict[str, Any]]:
 
 
 @pytest.fixture
-def sample_findings_jsonl(
-    tmp_path: Path, sample_findings: list[dict[str, Any]]
-) -> Path:
+def sample_findings_jsonl(tmp_path: Path, sample_findings: list[dict[str, Any]]) -> Path:
     """Write the sample findings to a JSONL file."""
     p = tmp_path / "findings.jsonl"
     with open(p, "w", encoding="utf-8") as fh:

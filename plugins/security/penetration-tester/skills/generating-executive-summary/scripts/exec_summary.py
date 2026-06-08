@@ -33,6 +33,7 @@ from lib import report  # noqa: E402
 
 try:
     import yaml  # type: ignore[import-not-found]
+
     _HAS_PYYAML = True
 except ImportError:
     yaml = None
@@ -46,8 +47,14 @@ CATEGORY = "executive-summary"
 # --- Helpers ----------------------------------------------------------------
 
 
-def _f(severity: Severity, title: str, target: str, detail: str, remediation: str,
-       evidence: tuple[tuple[str, Any], ...] = ()) -> Finding:
+def _f(
+    severity: Severity,
+    title: str,
+    target: str,
+    detail: str,
+    remediation: str,
+    evidence: tuple[tuple[str, Any], ...] = (),
+) -> Finding:
     return Finding(
         skill_id=SKILL_ID,
         title=title,
@@ -155,9 +162,7 @@ def interpret_risk(score: int) -> str:
 # --- Top-3 priorities -------------------------------------------------------
 
 
-def pick_top_priorities(
-    findings: list[dict[str, Any]], overrides: list[dict[str, Any]]
-) -> list[dict[str, Any]]:
+def pick_top_priorities(findings: list[dict[str, Any]], overrides: list[dict[str, Any]]) -> list[dict[str, Any]]:
     if overrides:
         return overrides[:3]
 
@@ -407,16 +412,8 @@ def main(argv: list[str] | None = None) -> int:
     args = _build_arg_parser().parse_args(argv)
     root = Path(args.path).resolve()
 
-    source_path = (
-        Path(args.source).resolve()
-        if args.source
-        else root / "findings" / "all-with-owasp.jsonl"
-    )
-    coverage_path = (
-        Path(args.coverage).resolve()
-        if args.coverage
-        else root / "reports" / "owasp-coverage.md"
-    )
+    source_path = Path(args.source).resolve() if args.source else root / "findings" / "all-with-owasp.jsonl"
+    coverage_path = Path(args.coverage).resolve() if args.coverage else root / "reports" / "owasp-coverage.md"
     roe_path = Path(args.roe).resolve() if args.roe else root / "roe.yaml"
 
     op_findings: list[Finding] = []
@@ -447,11 +444,7 @@ def main(argv: list[str] | None = None) -> int:
             )
         )
 
-    roe_clean = bool(
-        roe.get("authorizer")
-        and roe.get("time_window")
-        and roe.get("signature_block")
-    )
+    roe_clean = bool(roe.get("authorizer") and roe.get("time_window") and roe.get("signature_block"))
 
     counts = severity_counts(findings)
     risk = compute_risk_score(findings, roe_clean)
@@ -478,11 +471,7 @@ def main(argv: list[str] | None = None) -> int:
             )
         )
 
-    overrides = (
-        load_priority_overrides(Path(args.priority_overrides).resolve())
-        if args.priority_overrides
-        else []
-    )
+    overrides = load_priority_overrides(Path(args.priority_overrides).resolve()) if args.priority_overrides else []
     priorities = pick_top_priorities(findings, overrides)
 
     coverage_excerpt = summarize_coverage(coverage_path)
@@ -509,11 +498,7 @@ def main(argv: list[str] | None = None) -> int:
         engagement_id,
     )
 
-    out_path = (
-        Path(args.summary_output).resolve()
-        if args.summary_output
-        else root / "reports" / "executive-summary.md"
-    )
+    out_path = Path(args.summary_output).resolve() if args.summary_output else root / "reports" / "executive-summary.md"
     try:
         out_path.parent.mkdir(parents=True, exist_ok=True)
         out_path.write_text(summary_md, encoding="utf-8")
@@ -522,8 +507,7 @@ def main(argv: list[str] | None = None) -> int:
                 Severity.INFO,
                 f"executive summary written: {out_path.name}",
                 str(out_path),
-                f"Risk: {risk}/100 ({band}); priorities: {len(priorities)}; "
-                f"findings: {len(findings)}.",
+                f"Risk: {risk}/100 ({band}); priorities: {len(priorities)}; findings: {len(findings)}.",
                 "Hand off to customer for the exec-readout meeting.",
                 evidence=(
                     ("risk_score", risk),
