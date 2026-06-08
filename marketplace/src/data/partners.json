@@ -11,17 +11,6 @@
       "logoLight": "/images/partners/kobiton-light.svg",
       "logoDark": "/images/partners/kobiton-dark.svg",
       "accentColor": "#0487D9"
-    },
-    {
-      "slug": "nixtla",
-      "name": "Nixtla",
-      "url": "https://nixtla.io",
-      "wordmark": "Nixtla",
-      "tagline": "Time series forecasting & anomaly detection",
-      "logoLight": "/images/partners/nixtla-light.svg",
-      "logoDark": "/images/partners/nixtla-dark.svg",
-      "accentColor": "#000000",
-      "logoHeight": 20
     }
   ]
 }
