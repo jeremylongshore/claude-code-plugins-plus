@@ -7,7 +7,7 @@
  * WHAT THIS IS
  * ------------
  * Runs the kernel's published machine-spec — the authoring/v1 `skill-frontmatter`
- * JSON Schema from @intentsolutions/core@0.4.0 — over the SAME SKILL.md corpus the
+ * JSON Schema from @intentsolutions/core@0.4.1 — over the SAME SKILL.md corpus the
  * existing prose-spec validator (scripts/validate-skills-schema.py) already grades,
  * and reports the per-file AGREE / DISAGREE rate between the two.
  *
@@ -22,21 +22,60 @@
  *
  * The two are deliberately tier-matched: both require the 8-field marketplace set
  * {name, description, allowed-tools, version, author, license, compatibility, tags}.
- * A near-zero deviation rate is the "zero-on-corpus shadow signal" from DR-049 — it
- * means the machine-spec faithfully reproduces the prose-spec's marketplace verdict,
- * which is the precondition for any future blocking cutover (NOT this PR).
  *
- * VERDICT DEFINITION (per file)
- * -----------------------------
- *   existing-PASS  := validate-skills-schema.py --marketplace --json reports errors == 0
- *                     (a `fatal` entry counts as existing-FAIL).
- *   kernel-PASS    := ajv validate against the composed skill-frontmatter schema == true.
- *   AGREE          := existing-PASS === kernel-PASS.
- *   DISAGREE       := otherwise (the file the shadow flags as a deviation).
+ * SCOPE DISTINCTION — WHY THE RAW DEVIATION IS NOT THE CUTOVER SIGNAL
+ * ------------------------------------------------------------------
+ * The kernel `skill-frontmatter` schema is a FRONTMATTER CONTRACT only — it grades
+ * the YAML frontmatter block and nothing else. The prose-spec validator grades BOTH
+ * the frontmatter AND the markdown BODY (required `## Overview` / `## Instructions` /
+ * `## Output` / … sections at marketplace tier; body errors are prefixed `[body]`).
+ *
+ * So the RAW per-file PASS/FAIL deviation conflates two different scopes: a file with
+ * valid frontmatter but missing body sections is existing-FAIL (the prose-spec fails it
+ * on `[body]` errors) yet kernel-PASS (the frontmatter is genuinely valid). That is NOT
+ * a kernel gap — it is a SCOPE DIFFERENCE. Body-section linting is the prose-spec
+ * validator's separate concern, deliberately outside the kernel's frontmatter contract.
+ *
+ * This shadow therefore scopes the existing-validator verdict to FRONTMATTER (the
+ * kernel's actual scope) and emits BOTH numbers:
+ *
+ *   - frontmatterDeviationPct : the CUTOVER-RELEVANT signal. A file counts as a
+ *                               frontmatter deviation only when the kernel and the
+ *                               FRONTMATTER-SCOPED prose-spec verdict disagree. The
+ *                               frontmatter-scoped existing verdict is PASS iff the file
+ *                               has zero NON-`[body]` errors (i.e. every `[body]`-prefixed
+ *                               error is filtered out before counting). A near-zero value
+ *                               here is the "zero-on-corpus shadow signal" from DR-049 and
+ *                               the precondition for any future blocking cutover (NOT this PR).
+ *   - bodyScopeOnlyCount      : INFORMATIONAL. The count of files the kernel passes that
+ *                               the prose-spec validator fails on BODY sections ONLY
+ *                               (every error is `[body]`-prefixed). NOT a kernel gap — a
+ *                               scope difference. These are excluded from the frontmatter
+ *                               deviation because the kernel never claimed to lint the body.
+ *
+ * VERDICT DEFINITIONS (per file)
+ * ------------------------------
+ *   kernel-PASS        := ajv validate against the composed skill-frontmatter schema == true.
+ *   existing-PASS-raw  := validate-skills-schema.py --marketplace reports errors == 0
+ *                         (a `fatal` entry counts as existing-FAIL).
+ *   existing-PASS-fm   := the file has ZERO non-`[body]` errors (frontmatter-scoped PASS).
+ *                         Computed by fetching the file's full error STRING list (single-file
+ *                         `--marketplace --json`, which emits the strings the batch run omits)
+ *                         and filtering out every error message starting with `[body]`.
+ *   RAW DISAGREE       := existing-PASS-raw !== kernel-PASS (conflates frontmatter + body).
+ *   FRONTMATTER DISAGREE := existing-PASS-fm !== kernel-PASS (the cutover-relevant deviation;
+ *                         a remaining one here would be a REAL kernel gap to surface).
+ *   BODY-SCOPE-ONLY    := existing-FAIL-raw && kernel-PASS && every error is `[body]` (a scope
+ *                         difference, NOT a deviation).
+ *
+ * The single-file `--json` invocation emits the full `errors` array of message strings;
+ * the batch `--json` run emits only per-file error COUNTS. So the shadow runs the batch
+ * once to enumerate the corpus + raw verdict, then re-fetches error STRINGS per-file ONLY
+ * for the (small) raw-disagreement set to scope it — never for the whole corpus.
  *
  * OUTPUT
  * ------
- *   - Human summary + DISAGREE listing to stdout.
+ *   - Human summary + FRONTMATTER-DISAGREE listing + body-scope count to stdout.
  *   - Machine report JSON to scripts/.kernel-shadow/report.json (CI artifact).
  *   - GitHub Step Summary markdown when $GITHUB_STEP_SUMMARY is set.
  *
@@ -47,7 +86,7 @@
  *   and even then the calling workflow uses continue-on-error so it can NEVER fail
  *   the build. The deviation rate itself is REPORTED, never enforced.
  *
- * KERNEL PIN: @intentsolutions/core is pinned EXACTLY to 0.4.0 in package.json
+ * KERNEL PIN: @intentsolutions/core is pinned EXACTLY to 0.4.1 in package.json
  * (no ^/~). This shadow reads the schema straight out of node_modules so the
  * comparison is always against the pinned, published contract.
  *
@@ -65,7 +104,7 @@ import yaml from 'js-yaml';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, '..');
-const KERNEL_PIN = '0.4.0';
+const KERNEL_PIN = '0.4.1';
 
 const SCHEMA_DIR = join(
   REPO_ROOT,
@@ -132,17 +171,26 @@ function buildKernelValidator() {
 }
 
 /**
- * Drive the existing prose-spec validator to get its per-file MARKETPLACE verdict.
- * Returns Map<absPath, { pass: boolean, errors: number, fatal: boolean }>.
+ * Resolve the python interpreter (prefer the venv — the validator needs pyyaml) and
+ * the validator script path. Shared by the batch run and the per-file string fetch.
  */
-function loadExistingVerdicts() {
-  // Prefer the venv interpreter (the validator needs pyyaml). Fall back to python3.
+function resolvePythonContext() {
   const venvPy = join(REPO_ROOT, '.venv', 'bin', 'python3');
   const py = existsSync(venvPy) ? venvPy : 'python3';
   const script = join(REPO_ROOT, 'scripts', 'validate-skills-schema.py');
   if (!existsSync(script)) {
     die(`existing validator not found at ${script}`);
   }
+  return { py, script };
+}
+
+/**
+ * Drive the existing prose-spec validator (batch mode) to get its per-file MARKETPLACE
+ * verdict. The batch `--json` run emits per-file error COUNTS (not strings), which is all
+ * the RAW verdict needs; frontmatter scoping re-fetches strings per-file in main().
+ * Returns Map<absPath, { pass: boolean, errors: number, fatal: boolean }>.
+ */
+function loadExistingVerdicts(py, script) {
   const res = spawnSync(py, [script, '--marketplace', '--json'], {
     cwd: REPO_ROOT,
     encoding: 'utf8',
@@ -172,6 +220,60 @@ function loadExistingVerdicts() {
     }
   }
   return map;
+}
+
+const BODY_PREFIX = '[body]';
+
+/**
+ * Is every error in the list a body-section error? (`[body]`-prefixed). An empty
+ * list is vacuously body-only-FALSE in the way that matters: callers only ask this
+ * when the file is existing-FAIL, so there is at least one error.
+ */
+function allErrorsAreBodyScope(errorStrings) {
+  return errorStrings.length > 0 && errorStrings.every((e) => String(e).startsWith(BODY_PREFIX));
+}
+
+/** Count errors that are NOT body-section errors — the frontmatter-scoped error count. */
+function nonBodyErrorCount(errorStrings) {
+  return errorStrings.filter((e) => !String(e).startsWith(BODY_PREFIX)).length;
+}
+
+/**
+ * Fetch the full per-file error STRING list from the existing validator.
+ *
+ * The batch `--json` run emits only per-file error COUNTS, which cannot be scoped to
+ * frontmatter. The SINGLE-FILE `--json` invocation emits the `errors` array of message
+ * strings (each `[body]` / `[frontmatter]` / `[stub-section]` / … prefixed). We call this
+ * ONLY for the (small) raw-disagreement set, never the whole corpus, to scope it.
+ *
+ * Returns { ok: true, errors: string[] } or { ok: false, reason } on a harness hiccup
+ * (the caller degrades gracefully — an unscopable file stays a raw disagreement).
+ */
+function fetchFileErrorStrings(pyInterp, scriptPath, absPath) {
+  const res = spawnSync(pyInterp, [scriptPath, '--marketplace', '--json', absPath], {
+    cwd: REPO_ROOT,
+    encoding: 'utf8',
+    maxBuffer: 32 * 1024 * 1024,
+  });
+  if (res.error) {
+    return { ok: false, reason: `spawn failed: ${res.error.message}` };
+  }
+  let parsed;
+  try {
+    parsed = JSON.parse(res.stdout);
+  } catch {
+    return { ok: false, reason: `unparseable single-file --json (exit ${res.status})` };
+  }
+  const entry = Array.isArray(parsed) ? parsed[0] : parsed;
+  if (!entry) {
+    return { ok: false, reason: 'empty single-file --json result' };
+  }
+  if ('fatal' in entry) {
+    // A fatal file has no scopable error list — treat as not-body-only (stays a deviation).
+    return { ok: true, errors: [`[fatal] ${entry.fatal}`] };
+  }
+  const errs = Array.isArray(entry.errors) ? entry.errors.map(String) : [];
+  return { ok: true, errors: errs };
 }
 
 function parseFrontmatter(absPath) {
@@ -204,11 +306,13 @@ function relTo(absPath) {
 function main() {
   const kernelVersion = loadKernelVersion();
   const validateKernel = buildKernelValidator();
-  const existing = loadExistingVerdicts();
+  const { py, script } = resolvePythonContext();
+  const existing = loadExistingVerdicts(py, script);
 
   let total = 0;
   let agree = 0;
-  const disagreements = [];
+  // RAW disagreements (conflate frontmatter + body scope).
+  const rawDisagreements = [];
   let kernelParseFailures = 0;
 
   for (const [absPath, ex] of existing.entries()) {
@@ -237,26 +341,102 @@ function main() {
     if (ex.pass === kernelPass) {
       agree += 1;
     } else {
-      disagreements.push({
+      rawDisagreements.push({
+        absPath,
         path: relTo(absPath),
         existing: ex.pass ? 'PASS' : ex.fatal ? 'FATAL' : 'FAIL',
         existingErrorCount: ex.errors,
         kernel: kernelPass ? 'PASS' : 'FAIL',
+        kernelPass,
         kernelErrors: kernelErrors.slice(0, 6),
         direction: ex.pass ? 'existing-PASS / kernel-FAIL' : 'existing-FAIL / kernel-PASS',
       });
     }
   }
 
-  const disagree = disagreements.length;
-  const rate = total === 0 ? 0 : (disagree / total) * 100;
-  const rateStr = rate.toFixed(2);
+  // ---- RAW (scope-conflated) deviation ----
+  const rawDisagree = rawDisagreements.length;
+  const rawRate = total === 0 ? 0 : (rawDisagree / total) * 100;
+  const rawRateStr = rawRate.toFixed(2);
 
-  // Direction breakdown
-  const existingPassKernelFail = disagreements.filter(
+  // ---- FRONTMATTER-SCOPED deviation ----
+  // The kernel is a FRONTMATTER contract; the prose-spec also lints the BODY. A raw
+  // existing-FAIL / kernel-PASS file is a frontmatter deviation ONLY if the prose-spec
+  // failure is NOT body-only. Re-fetch error STRINGS per file (single-file --json) for
+  // the raw-disagreement set and filter out `[body]`-prefixed errors before counting.
+  let bodyScopeOnlyCount = 0; // kernel-PASS, existing-FAIL on BODY sections only (a scope diff, not a deviation)
+  const bodyScopeOnlyFiles = [];
+  const frontmatterDisagreements = []; // the cutover-relevant set (REAL kernel gaps if any remain)
+
+  for (const d of rawDisagreements) {
+    if (d.direction === 'existing-FAIL / kernel-PASS') {
+      // Could be a pure body-scope difference. Fetch strings to decide.
+      const fetched = fetchFileErrorStrings(py, script, d.absPath);
+      if (fetched.ok) {
+        const bodyOnly = allErrorsAreBodyScope(fetched.errors);
+        const fmErrCount = nonBodyErrorCount(fetched.errors);
+        if (bodyOnly) {
+          // Kernel passes valid frontmatter; prose-spec fails on missing body sections only.
+          // NOT a kernel gap — a scope difference. Excluded from frontmatter deviation.
+          bodyScopeOnlyCount += 1;
+          bodyScopeOnlyFiles.push({
+            path: d.path,
+            existingErrorCount: d.existingErrorCount,
+            sampleBodyErrors: fetched.errors.slice(0, 4),
+          });
+          continue;
+        }
+        // Frontmatter-scoped existing verdict is FAIL (non-body errors remain) while the
+        // kernel PASSES → a genuine frontmatter disagreement (real kernel gap to surface).
+        frontmatterDisagreements.push({
+          path: d.path,
+          existing: d.existing,
+          existingErrorCount: d.existingErrorCount,
+          existingNonBodyErrorCount: fmErrCount,
+          kernel: d.kernel,
+          sampleNonBodyErrors: fetched.errors
+            .filter((e) => !String(e).startsWith(BODY_PREFIX))
+            .slice(0, 6),
+          direction: d.direction,
+        });
+      } else {
+        // Could not scope this file — keep it as a frontmatter disagreement conservatively
+        // (do not silently absorb an unscopable file into body-scope).
+        frontmatterDisagreements.push({
+          path: d.path,
+          existing: d.existing,
+          existingErrorCount: d.existingErrorCount,
+          existingNonBodyErrorCount: null,
+          kernel: d.kernel,
+          scopeFetchError: fetched.reason,
+          direction: d.direction,
+        });
+      }
+    } else {
+      // existing-PASS / kernel-FAIL: the prose-spec passed (zero errors, so zero `[body]`
+      // errors too) but the kernel rejected the frontmatter. This is ALWAYS a frontmatter
+      // disagreement regardless of scope — the kernel is stricter on the frontmatter here.
+      frontmatterDisagreements.push({
+        path: d.path,
+        existing: d.existing,
+        existingErrorCount: d.existingErrorCount,
+        existingNonBodyErrorCount: 0,
+        kernel: d.kernel,
+        kernelErrors: d.kernelErrors,
+        direction: d.direction,
+      });
+    }
+  }
+
+  const frontmatterDisagree = frontmatterDisagreements.length;
+  const frontmatterRate = total === 0 ? 0 : (frontmatterDisagree / total) * 100;
+  const frontmatterRateStr = frontmatterRate.toFixed(2);
+
+  // Direction breakdown (raw).
+  const existingPassKernelFail = rawDisagreements.filter(
     (d) => d.direction === 'existing-PASS / kernel-FAIL',
   ).length;
-  const existingFailKernelPass = disagreements.filter(
+  const existingFailKernelPass = rawDisagreements.filter(
     (d) => d.direction === 'existing-FAIL / kernel-PASS',
   ).length;
 
@@ -268,18 +448,40 @@ function main() {
     kernelPin: KERNEL_PIN,
     comparedAgainst: 'scripts/validate-skills-schema.py --marketplace --json',
     composedSchema: COMPOSED_SCHEMA_ID,
+    scopeNote:
+      'The kernel skill-frontmatter schema is a FRONTMATTER contract; the prose-spec ' +
+      'validator lints frontmatter AND markdown body sections (errors prefixed `[body]`). ' +
+      'frontmatterDeviationPct is the cutover-relevant signal (body errors filtered out); ' +
+      'bodyScopeOnlyCount is informational (files the kernel passes that the prose-spec ' +
+      'fails on body sections ONLY — a scope difference, NOT a kernel gap).',
     totals: {
       files: total,
       agree,
-      disagree,
-      deviationRatePct: Number(rateStr),
+      // Cutover-relevant, FRONTMATTER-SCOPED signal:
+      frontmatterAgree: total - frontmatterDisagree,
+      frontmatterDisagree,
+      frontmatterDeviationPct: Number(frontmatterRateStr),
+      // Informational: scope difference, not a deviation:
+      bodyScopeOnlyCount,
+      // Raw (scope-conflated) numbers, retained for transparency:
+      rawDisagree,
+      rawDeviationRatePct: Number(rawRateStr),
       kernelUnparseableFrontmatter: kernelParseFailures,
     },
     directionBreakdown: {
       'existing-PASS / kernel-FAIL': existingPassKernelFail,
       'existing-FAIL / kernel-PASS': existingFailKernelPass,
     },
-    disagreements,
+    // The cutover-relevant deviations (real kernel gaps if non-empty):
+    frontmatterDisagreements,
+    // Informational: kernel-PASS / existing-FAIL-on-body-only files (scope difference):
+    bodyScopeOnlyFiles,
+    // Raw scope-conflated disagreements (transparency):
+    rawDisagreements: rawDisagreements.map(({ absPath, kernelPass, ...rest }) => {
+      void absPath;
+      void kernelPass;
+      return rest;
+    }),
     generatedAt: new Date().toISOString(),
   };
 
@@ -296,28 +498,55 @@ function main() {
   console.log(`  kernel        : @intentsolutions/core@${kernelVersion} (pinned ${KERNEL_PIN})`);
   console.log('  prose-spec    : validate-skills-schema.py --marketplace --json');
   console.log('  machine-spec  : authoring/v1 skill-frontmatter.schema.json (composed)');
+  console.log('  scope         : kernel = FRONTMATTER contract; prose-spec also lints BODY');
   console.log('  ───────────────────────────────────────────────────────────');
-  console.log(`  corpus files  : ${total}`);
-  console.log(`  AGREE         : ${agree}`);
-  console.log(`  DISAGREE      : ${disagree}`);
-  console.log(`  DEVIATION RATE: ${rateStr}%`);
+  console.log(`  corpus files                 : ${total}`);
+  console.log('  ── FRONTMATTER-SCOPED (the cutover-relevant signal) ──');
+  console.log(`  FRONTMATTER AGREE            : ${total - frontmatterDisagree}`);
+  console.log(`  FRONTMATTER DISAGREE         : ${frontmatterDisagree}`);
+  console.log(`  FRONTMATTER DEVIATION RATE   : ${frontmatterRateStr}%`);
+  console.log('  ── INFORMATIONAL (scope difference, NOT a kernel gap) ──');
+  console.log(`  body-scope-only (kernel-PASS / prose-spec-FAIL on body) : ${bodyScopeOnlyCount}`);
+  console.log('  ── RAW (scope-conflated — frontmatter + body together) ──');
+  console.log(`  raw DISAGREE                 : ${rawDisagree}`);
+  console.log(`  raw DEVIATION RATE           : ${rawRateStr}%`);
   console.log(`     existing-PASS / kernel-FAIL : ${existingPassKernelFail}`);
   console.log(`     existing-FAIL / kernel-PASS : ${existingFailKernelPass}`);
   console.log('  ───────────────────────────────────────────────────────────');
 
-  if (disagree > 0) {
-    const shown = disagreements.slice(0, 40);
-    console.log(`  Disagreeing files (showing ${shown.length} of ${disagree}):`);
+  if (frontmatterDisagree > 0) {
+    const shown = frontmatterDisagreements.slice(0, 40);
+    console.log(
+      `  REAL FRONTMATTER deviations — kernel gaps to surface (showing ${shown.length} of ${frontmatterDisagree}):`,
+    );
     for (const d of shown) {
-      const k0 = d.kernelErrors[0];
-      const why = k0 ? `${k0.instancePath || '/'} ${k0.message}` : '';
+      const why =
+        d.scopeFetchError != null
+          ? `(scope fetch failed: ${d.scopeFetchError})`
+          : d.direction === 'existing-PASS / kernel-FAIL'
+            ? d.kernelErrors && d.kernelErrors[0]
+              ? `${d.kernelErrors[0].instancePath || '/'} ${d.kernelErrors[0].message}`
+              : ''
+            : (d.sampleNonBodyErrors && d.sampleNonBodyErrors[0]) || '';
       console.log(`    [${d.direction}] ${d.path}  ${why}`);
     }
-    if (disagree > shown.length) {
-      console.log(`    … and ${disagree - shown.length} more (see ${relTo(outPath)})`);
+    if (frontmatterDisagree > shown.length) {
+      console.log(`    … and ${frontmatterDisagree - shown.length} more (see ${relTo(outPath)})`);
     }
   } else {
-    console.log('  Zero deviations — machine-spec reproduces the prose-spec verdict.');
+    console.log('  Zero FRONTMATTER deviations — the kernel reproduces the prose-spec');
+    console.log('  verdict on the FRONTMATTER scope it actually owns. (Any raw disagreements');
+    console.log('  are body-section-only, which the kernel deliberately does not lint.)');
+  }
+  if (bodyScopeOnlyCount > 0) {
+    const sample = bodyScopeOnlyFiles.slice(0, 5).map((f) => f.path);
+    console.log(
+      `  Note: ${bodyScopeOnlyCount} file(s) the kernel passes fail the prose-spec on BODY sections only`,
+    );
+    console.log(`        (e.g. missing ## Overview / ## Instructions) — a scope difference, not a`);
+    console.log(
+      `        kernel gap. Sample: ${sample.join(', ')}${bodyScopeOnlyCount > sample.length ? ', …' : ''}`,
+    );
   }
   console.log('═══════════════════════════════════════════════════════════════');
   console.log(`  Full machine report: ${relTo(outPath)}`);
@@ -337,31 +566,69 @@ function main() {
         'fail the build or block a PR.**',
     );
     lines.push('');
+    lines.push(
+      '**Scope:** the kernel `skill-frontmatter` schema is a **frontmatter contract**; the ' +
+        'prose-spec validator also lints the markdown **body** (`[body]`-prefixed errors). ' +
+        '`frontmatter deviation` filters out `[body]` errors and is the **cutover-relevant** ' +
+        'signal; `body-scope-only` files are a scope difference (kernel passes valid frontmatter; ' +
+        'the prose-spec fails them on missing body sections) — **not** a kernel gap.',
+    );
+    lines.push('');
     lines.push('| metric | value |');
     lines.push('| --- | --- |');
     lines.push(`| corpus files | ${total} |`);
-    lines.push(`| AGREE | ${agree} |`);
-    lines.push(`| DISAGREE | ${disagree} |`);
-    lines.push(`| **deviation rate** | **${rateStr}%** |`);
+    lines.push(`| frontmatter AGREE | ${total - frontmatterDisagree} |`);
+    lines.push(`| frontmatter DISAGREE | ${frontmatterDisagree} |`);
+    lines.push(`| **frontmatter deviation rate** | **${frontmatterRateStr}%** |`);
+    lines.push(`| body-scope-only (informational) | ${bodyScopeOnlyCount} |`);
+    lines.push(`| raw DISAGREE (scope-conflated) | ${rawDisagree} |`);
+    lines.push(`| raw deviation rate | ${rawRateStr}% |`);
     lines.push(`| existing-PASS / kernel-FAIL | ${existingPassKernelFail} |`);
     lines.push(`| existing-FAIL / kernel-PASS | ${existingFailKernelPass} |`);
     lines.push('');
-    if (disagree > 0) {
-      lines.push('<details><summary>Disagreeing files (first 40)</summary>');
+    if (frontmatterDisagree > 0) {
+      lines.push(
+        '<details><summary>REAL frontmatter deviations — kernel gaps (first 40)</summary>',
+      );
       lines.push('');
-      lines.push('| direction | file | first kernel error |');
+      lines.push('| direction | file | first non-body / kernel error |');
       lines.push('| --- | --- | --- |');
-      for (const d of disagreements.slice(0, 40)) {
-        const k0 = d.kernelErrors[0];
-        const why = k0 ? `\`${k0.instancePath || '/'}\` ${k0.message}` : '';
+      for (const d of frontmatterDisagreements.slice(0, 40)) {
+        let why;
+        if (d.scopeFetchError != null) {
+          why = `(scope fetch failed: ${d.scopeFetchError})`;
+        } else if (d.direction === 'existing-PASS / kernel-FAIL') {
+          const k0 = d.kernelErrors && d.kernelErrors[0];
+          why = k0 ? `\`${k0.instancePath || '/'}\` ${k0.message}` : '';
+        } else {
+          why = (d.sampleNonBodyErrors && d.sampleNonBodyErrors[0]) || '';
+        }
         lines.push(`| ${d.direction} | \`${d.path}\` | ${why} |`);
       }
       lines.push('');
       lines.push('</details>');
     } else {
       lines.push(
-        'Zero deviations — the machine-spec reproduces the prose-spec verdict on the corpus.',
+        'Zero **frontmatter** deviations — the kernel reproduces the prose-spec verdict on the ' +
+          'frontmatter scope it actually owns. Any raw disagreements are body-section-only, which ' +
+          'the kernel deliberately does not lint.',
       );
+    }
+    if (bodyScopeOnlyCount > 0) {
+      lines.push('');
+      lines.push(
+        `<details><summary>Body-scope-only — kernel-PASS / prose-spec-FAIL on body only (${bodyScopeOnlyCount})</summary>`,
+      );
+      lines.push('');
+      lines.push('| file | prose-spec error count | sample body errors |');
+      lines.push('| --- | --- | --- |');
+      for (const f of bodyScopeOnlyFiles.slice(0, 40)) {
+        lines.push(
+          `| \`${f.path}\` | ${f.existingErrorCount} | ${(f.sampleBodyErrors || []).join('; ')} |`,
+        );
+      }
+      lines.push('');
+      lines.push('</details>');
     }
     lines.push('');
     try {

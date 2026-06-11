@@ -26,8 +26,8 @@ importers:
         specifier: ^1.1.5
         version: 1.1.5
       '@intentsolutions/core':
-        specifier: 0.4.0
-        version: 0.4.0
+        specifier: 0.4.1
+        version: 0.4.1
       '@types/node':
         specifier: ^20.19.41
         version: 20.19.41
@@ -1754,8 +1754,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@intentsolutions/core@0.4.0':
-    resolution: {integrity: sha512-rwguEa/l7CDBvrhUskcodZfAs7k0VvkjgcYDc4lQ/L1KNYXroEvwkhYy8PNajlAg4CN6Cb0Tf9fH6jt07B5+Sw==}
+  '@intentsolutions/core@0.4.1':
+    resolution: {integrity: sha512-wfZuLlWmzJ1kuOb7MdxAcmILqzBE/6nz0qJLlCsHjD27Gdv2B+GwPloCXG7He4YKmJlmgsk2Dhfo4iXQcVo/hg==}
     engines: {node: '>=20.0.0', pnpm: '>=9.0.0'}
 
   '@isaacs/cliui@8.0.2':
@@ -6478,7 +6478,7 @@ snapshots:
 
   '@intentsolutions/audit-harness@1.1.5': {}
 
-  '@intentsolutions/core@0.4.0':
+  '@intentsolutions/core@0.4.1':
     dependencies:
       zod: 4.4.3
 
