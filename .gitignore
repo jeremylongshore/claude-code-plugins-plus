@@ -118,6 +118,10 @@
 .vscode/
 /tmp/*.md
 /tmp/*.sh
+
+# Kernel-shadow advisory validator output (generated; CI artifact, not source)
+scripts/.kernel-shadow/
+
 000-docs/*
 000-docs/**/*
 000-docs/680-AT-DECR-*.md

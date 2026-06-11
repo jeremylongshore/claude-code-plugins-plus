@@ -25,9 +25,18 @@ importers:
       '@intentsolutions/audit-harness':
         specifier: ^1.1.5
         version: 1.1.5
+      '@intentsolutions/core':
+        specifier: 0.4.0
+        version: 0.4.0
       '@types/node':
         specifier: ^20.19.41
         version: 20.19.41
+      ajv:
+        specifier: ^8.17.1
+        version: 8.20.0
+      ajv-formats:
+        specifier: ^3.0.1
+        version: 3.0.1(ajv@8.20.0)
       archiver:
         specifier: ^7.0.1
         version: 7.0.1
@@ -1744,6 +1753,10 @@ packages:
     resolution: {integrity: sha512-VbE4gPR/wtp2czWT0/Wjo5ZEtX3SRxeWMBS5nx1LhgyxdrKdZdo+deP5/km3Cl5PMyf4XbwXtVt7pDjXi0w1mQ==}
     engines: {node: '>=18'}
     hasBin: true
+
+  '@intentsolutions/core@0.4.0':
+    resolution: {integrity: sha512-rwguEa/l7CDBvrhUskcodZfAs7k0VvkjgcYDc4lQ/L1KNYXroEvwkhYy8PNajlAg4CN6Cb0Tf9fH6jt07B5+Sw==}
+    engines: {node: '>=20.0.0', pnpm: '>=9.0.0'}
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -6464,6 +6477,10 @@ snapshots:
       '@types/node': 25.9.1
 
   '@intentsolutions/audit-harness@1.1.5': {}
+
+  '@intentsolutions/core@0.4.0':
+    dependencies:
+      zod: 4.4.3
 
   '@isaacs/cliui@8.0.2':
     dependencies:

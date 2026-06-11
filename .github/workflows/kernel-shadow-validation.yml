@@ -1,0 +1,86 @@
+name: Kernel Shadow Validation (advisory)
+
+# ADVISORY / REPORT-ONLY — consumer-cutover STEP 1 for @intentsolutions/core.
+#
+# This workflow runs the kernel's published machine-spec (the authoring/v1
+# skill-frontmatter JSON Schema from @intentsolutions/core, pinned EXACTLY to
+# 0.4.0 in package.json) over the same SKILL.md corpus the existing prose-spec
+# validator (scripts/validate-skills-schema.py) grades, and reports the per-file
+# AGREE / DISAGREE deviation rate between the two (DR-049 "zero-on-corpus shadow
+# signal").
+#
+# GUARDRAILS — this workflow is INTENTIONALLY non-authoritative:
+#   * It is NOT in the branch-protection required-status set. It can never make a
+#     PR un-mergeable.
+#   * The validation step uses `continue-on-error: true`, so even a harness crash
+#     surfaces as a neutral/annotation, never a red required check.
+#   * It does NOT modify, call, or gate on the existing validator's verdict — it
+#     only READS that verdict (via --json) and compares. The existing required
+#     gate (validate-plugins.yml) and validate-skills-schema.py are untouched.
+#   * The deviation rate is REPORTED (job summary + artifact), never enforced.
+#
+# Promotion to a blocking gate is a SEPARATE, later cutover step that requires
+# the deviation rate to be understood and driven down first — NOT this PR.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/kernel-shadow-validation.mjs'
+      - 'scripts/validate-skills-schema.py'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'plugins/**/SKILL.md'
+      - 'skills/**/SKILL.md'
+      - '.github/workflows/kernel-shadow-validation.yml'
+
+# Read-only — the shadow never needs write scope.
+permissions:
+  contents: read
+
+concurrency:
+  group: kernel-shadow-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  kernel-shadow:
+    name: kernel-shadow (advisory, non-blocking)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - name: Setup Python (for the existing prose-spec validator)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install pyyaml (existing validator dependency)
+        run: python3 -m pip install --quiet pyyaml
+
+      # Installs @intentsolutions/core@0.4.0 (exact pin) + ajv + ajv-formats +
+      # js-yaml — the shadow's dependencies — from the frozen lockfile.
+      - name: Install root dev dependencies
+        run: pnpm install --frozen-lockfile --filter "claude-code-plugins-monorepo"
+
+      # The single advisory step. continue-on-error guarantees a harness failure
+      # can never turn this check red in a blocking way.
+      - name: Run kernel shadow validation (report-only)
+        id: shadow
+        continue-on-error: true
+        run: node scripts/kernel-shadow-validation.mjs
+
+      - name: Upload deviation report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kernel-shadow-deviation-report
+          path: scripts/.kernel-shadow/report.json
+          if-no-files-found: warn
