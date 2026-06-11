@@ -4,7 +4,7 @@ name: Kernel Shadow Validation (advisory)
 #
 # This workflow runs the kernel's published machine-spec (the authoring/v1
 # skill-frontmatter JSON Schema from @intentsolutions/core, pinned EXACTLY to
-# 0.4.0 in package.json) over the same SKILL.md corpus the existing prose-spec
+# 0.4.1 in package.json) over the same SKILL.md corpus the existing prose-spec
 # validator (scripts/validate-skills-schema.py) grades, and reports the per-file
 # AGREE / DISAGREE deviation rate between the two (DR-049 "zero-on-corpus shadow
 # signal").
@@ -65,7 +65,7 @@ jobs:
       - name: Install pyyaml (existing validator dependency)
         run: python3 -m pip install --quiet pyyaml
 
-      # Installs @intentsolutions/core@0.4.0 (exact pin) + ajv + ajv-formats +
+      # Installs @intentsolutions/core@0.4.1 (exact pin) + ajv + ajv-formats +
       # js-yaml — the shadow's dependencies — from the frozen lockfile.
       - name: Install root dev dependencies
         run: pnpm install --frozen-lockfile --filter "claude-code-plugins-monorepo"

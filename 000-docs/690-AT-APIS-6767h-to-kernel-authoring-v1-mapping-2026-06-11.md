@@ -10,7 +10,7 @@
 `000-docs/6767-h-SPEC-DR-STND-claude-code-extensions-master.md` (and its source
 section `6767-b §4 YAML Frontmatter Fields`) — to the **machine spec**: the
 published `skill-frontmatter` authoring contract in
-[`@intentsolutions/core@0.4.0`](https://www.npmjs.com/package/@intentsolutions/core)
+[`@intentsolutions/core@0.4.1`](https://www.npmjs.com/package/@intentsolutions/core)
 under `schemas/authoring/v1/`. This documents where prose ↔ machine agree, and
 the small set of **intentional divergences** the kernel-shadow validator
 (`scripts/kernel-shadow-validation.mjs`) surfaces on the live corpus.
@@ -27,7 +27,7 @@ the small set of **intentional divergences** the kernel-shadow validator
 
 | | Prose spec (human-authored) | Machine spec (kernel SSoT) |
 |---|---|---|
-| **Artifact** | `6767-h` master standard; source detail in `6767-b §4` | `@intentsolutions/core@0.4.0` `schemas/authoring/v1/skill-frontmatter.schema.json` |
+| **Artifact** | `6767-h` master standard; source detail in `6767-b §4` | `@intentsolutions/core@0.4.1` `schemas/authoring/v1/skill-frontmatter.schema.json` |
 | **Form** | Markdown prose + the 5,100-line `validate-skills-schema.py` that operationalizes it | JSON Schema 2020-12, pure `allOf` composition of three layers |
 | **Enforced by** | `validate-skills-schema.py` (required CI: `validate-plugins.yml`) | `kernel-shadow-validation.mjs` (advisory CI: `kernel-shadow-validation.yml`) |
 | **Required set** | IS 8-field marketplace set (`6767-b §4` NON-NEGOTIABLE) | Same 8-field set (effective-required = base ∪ overlay) |
@@ -54,7 +54,7 @@ the **IS 8-field marketplace required set** — identical to the prose-spec
 ## 2. Field-by-field bidirectional map
 
 Schema paths below are relative to
-`node_modules/@intentsolutions/core/schemas/authoring/v1/` (the pinned 0.4.0
+`node_modules/@intentsolutions/core/schemas/authoring/v1/` (the pinned 0.4.1
 package). "→" = prose citation; "⇐" = the machine layer that owns the rule.
 
 | Field | Prose spec → (`6767-h` / `6767-b`) | Machine spec ⇐ (kernel layer + constraint) | Coherent? |
@@ -163,7 +163,7 @@ per file. As of the cutover-step-1 baseline, the dominant deviation bucket is
 - Prose master spec: `000-docs/6767-h-SPEC-DR-STND-claude-code-extensions-master.md` §3
 - Prose field detail: `000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md` §4 (§4.1, §4.5, §4.6)
 - NON-NEGOTIABLES: `000-docs/SCHEMA_CHANGELOG.md`
-- Machine spec (pinned 0.4.0):
+- Machine spec (pinned 0.4.1):
   - `@intentsolutions/core/schemas/authoring/v1/skill-frontmatter.schema.json` (composition)
   - `.../upstream-base/skill-frontmatter.v1.json`
   - `.../is-overlay/skill-frontmatter.v1.json`
