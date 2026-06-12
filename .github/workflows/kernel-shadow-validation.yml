@@ -27,11 +27,14 @@ on:
   pull_request:
     paths:
       - 'scripts/kernel-shadow-validation.mjs'
+      - 'scripts/validate-mcp-config.mjs'
       - 'scripts/validate-skills-schema.py'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'plugins/**/SKILL.md'
       - 'skills/**/SKILL.md'
+      - 'plugins/**/.mcp.json'
+      - 'plugins/**/.claude-plugin/plugin.json'
       - '.github/workflows/kernel-shadow-validation.yml'
 
 # Read-only — the shadow never needs write scope.
@@ -76,6 +79,16 @@ jobs:
         id: shadow
         continue-on-error: true
         run: node scripts/kernel-shadow-validation.mjs
+
+      # ADVISORY MCP config validation against the kernel's authoring/v1
+      # mcp-config composition. Same guardrails as the shadow step above:
+      # continue-on-error, default-advisory exit 0, findings reported in the
+      # step summary — never gates. The --strict flip is a separate, later
+      # cutover step (DR-049 soak).
+      - name: Validate MCP configs against the kernel (advisory)
+        id: mcp-config
+        continue-on-error: true
+        run: node scripts/validate-mcp-config.mjs
 
       - name: Upload deviation report artifact
         if: always()
