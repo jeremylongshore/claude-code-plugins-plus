@@ -66,22 +66,30 @@ jobs:
         id: sync
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Injection hygiene: dispatch-controlled strings must reach the shell
+          # via env vars, never via direct ${{ }} interpolation inside run:.
+          # A crafted repository_dispatch client_payload.source would otherwise
+          # be expanded verbatim into the script (command execution on the
+          # runner). Env values arrive as data, not code.
+          SYNC_SOURCE: ${{ inputs.source || github.event.client_payload.source }}
         run: |
           ARGS=""
           if [ "${{ inputs.force }}" = "true" ]; then
             ARGS="$ARGS --force"
-          fi
-          # Source from workflow_dispatch input or repository_dispatch payload
-          SOURCE="${{ inputs.source || github.event.client_payload.source }}"
-          if [ -n "$SOURCE" ]; then
-            ARGS="$ARGS --source=$SOURCE"
           fi
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             ARGS="$ARGS --dry-run"
           fi
           ARGS="$ARGS --force --verbose"
 
-          node scripts/sync-external.mjs $ARGS
+          # Source from workflow_dispatch input or repository_dispatch payload.
+          # Passed as a single quoted argv entry so metacharacters / spaces in
+          # the payload stay one argument, never extra flags.
+          if [ -n "$SYNC_SOURCE" ]; then
+            node scripts/sync-external.mjs $ARGS --source="$SYNC_SOURCE"
+          else
+            node scripts/sync-external.mjs $ARGS
+          fi
 
       - name: Check for changes
         id: changes
