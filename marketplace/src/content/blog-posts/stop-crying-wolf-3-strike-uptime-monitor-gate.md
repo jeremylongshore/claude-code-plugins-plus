@@ -61,4 +61,3 @@ Phase 2–5 hardening (off-prem probe, frontend + TLS-expiry checks, final publi
 - [Self-Expiring Report-Only CI Gates: From Advisory to Enforced](/posts/self-expiring-report-only-ci-gates/)
 - [Nine Days Silent: When the Blog's Own Pipeline Stopped Publishing Itself](/posts/the-automation-that-stopped-publishing-itself/)
 - [Five Silent Failures in One Day](/posts/five-silent-failures-one-day/)
-

@@ -148,4 +148,3 @@ The semantic-flux gate cost ~$4 and saved a possible $2–5K of motivated spendi
   "keywords": "quality gates, CI gates, mutation testing, pre-registration, honest metrics, testing, ci-cd, ml-engineering, devops"
 }
 </script>
-
