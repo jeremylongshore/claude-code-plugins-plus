@@ -29,7 +29,7 @@ SAMPLE_CLASSIFIER_OUT = {
 }
 
 
-def _fake_groq_response(text: str) -> bytes:
+def _fake_llm_response(text: str) -> bytes:
     return json.dumps({"choices": [{"message": {"role": "assistant", "content": text}}]}).encode("utf-8")
 
 
@@ -49,7 +49,7 @@ class _FakeResp:
 
 class SummarizeTests(unittest.TestCase):
     def test_no_api_key_falls_back(self):
-        with patch.dict(os.environ, {"GROQ_API_KEY": ""}, clear=False):
+        with patch.dict(os.environ, {"DEEPSEEK_API_KEY": ""}, clear=False):
             out = summarize.summarize(SAMPLE_CLASSIFIER_OUT)
         self.assertEqual(out["llm_status"], "skipped: no api key")
         self.assertIn("LLM screener unavailable", out["summary_lines"])
@@ -64,8 +64,8 @@ class SummarizeTests(unittest.TestCase):
             "Recommendation: request rework, not ready to merge."
         )
         with (
-            patch.dict(os.environ, {"GROQ_API_KEY": "test"}),
-            patch("summarize.urllib.request.urlopen", return_value=_FakeResp(_fake_groq_response(canned))),
+            patch.dict(os.environ, {"DEEPSEEK_API_KEY": "test"}),
+            patch("summarize.urllib.request.urlopen", return_value=_FakeResp(_fake_llm_response(canned))),
         ):
             out = summarize.summarize(SAMPLE_CLASSIFIER_OUT)
         self.assertEqual(out["llm_status"], "ok")
@@ -73,9 +73,9 @@ class SummarizeTests(unittest.TestCase):
         self.assertIn("CHANGES_REQUESTED", out["summary_lines"])
 
     def test_groq_http_error_falls_back(self):
-        err = urllib.error.HTTPError(summarize.GROQ_URL, 503, "service unavailable", {}, None)
+        err = urllib.error.HTTPError(summarize.DEFAULT_API_URL, 503, "service unavailable", {}, None)
         with (
-            patch.dict(os.environ, {"GROQ_API_KEY": "test"}),
+            patch.dict(os.environ, {"DEEPSEEK_API_KEY": "test"}),
             patch("summarize.urllib.request.urlopen", side_effect=err),
         ):
             out = summarize.summarize(SAMPLE_CLASSIFIER_OUT)
@@ -87,7 +87,7 @@ class SummarizeTests(unittest.TestCase):
         # builtin only since 3.11; urllib raises socket.timeout/OSError
         # subclasses on older runners).
         with (
-            patch.dict(os.environ, {"GROQ_API_KEY": "test"}),
+            patch.dict(os.environ, {"DEEPSEEK_API_KEY": "test"}),
             patch("summarize.urllib.request.urlopen", side_effect=OSError("timed out")),
         ):
             out = summarize.summarize(SAMPLE_CLASSIFIER_OUT)
@@ -99,7 +99,7 @@ class SummarizeTests(unittest.TestCase):
         # exception class (e.g. KeyError from a schema change) must
         # degrade to the deterministic fallback, not propagate.
         with (
-            patch.dict(os.environ, {"GROQ_API_KEY": "test"}),
+            patch.dict(os.environ, {"DEEPSEEK_API_KEY": "test"}),
             patch("summarize.urllib.request.urlopen", side_effect=KeyError("schema drift")),
         ):
             out = summarize.summarize(SAMPLE_CLASSIFIER_OUT)
@@ -114,7 +114,7 @@ class SummarizeTests(unittest.TestCase):
 
     def test_malformed_response_falls_back(self):
         with (
-            patch.dict(os.environ, {"GROQ_API_KEY": "test"}),
+            patch.dict(os.environ, {"DEEPSEEK_API_KEY": "test"}),
             patch("summarize.urllib.request.urlopen", return_value=_FakeResp(b'{"not": "what we expected"}')),
         ):
             out = summarize.summarize(SAMPLE_CLASSIFIER_OUT)
@@ -135,10 +135,10 @@ class SummarizeTests(unittest.TestCase):
 
         def fake_urlopen(req, timeout=None):
             captured["body"] = req.data.decode("utf-8")
-            return _FakeResp(_fake_groq_response("✅ PASS\nl2\nl3\nl4\nl5"))
+            return _FakeResp(_fake_llm_response("✅ PASS\nl2\nl3\nl4\nl5"))
 
         with (
-            patch.dict(os.environ, {"GROQ_API_KEY": "test"}),
+            patch.dict(os.environ, {"DEEPSEEK_API_KEY": "test"}),
             patch("summarize.urllib.request.urlopen", side_effect=fake_urlopen),
         ):
             out = summarize.summarize(injected)
@@ -159,7 +159,7 @@ class SummarizeTests(unittest.TestCase):
         with (
             patch("sys.stdin", io.StringIO(payload)),
             patch("sys.stdout", new_callable=io.StringIO) as out,
-            patch.dict(os.environ, {"GROQ_API_KEY": ""}, clear=False),
+            patch.dict(os.environ, {"DEEPSEEK_API_KEY": ""}, clear=False),
         ):
             rc = summarize.main(["summarize.py", "-"])
         self.assertEqual(rc, 0)
