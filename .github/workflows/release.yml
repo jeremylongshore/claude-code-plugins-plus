@@ -60,7 +60,7 @@ jobs:
         id: current_version
         run: |
           VERSION=$(jq -r '.metadata.version' .claude-plugin/marketplace.json)
-          echo "current=$VERSION" >> $GITHUB_OUTPUT
+          echo "current=$VERSION" >> "$GITHUB_OUTPUT"
           echo "Current version: $VERSION"
 
       - name: Calculate new version
@@ -90,7 +90,7 @@ jobs:
           esac
 
           NEW_VERSION="$MAJOR.$MINOR.$PATCH"
-          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
           echo "New version: $NEW_VERSION"
 
       - name: Update version in marketplace.json
@@ -100,7 +100,7 @@ jobs:
           mv tmp.json .claude-plugin/marketplace.json
 
           echo "Updated marketplace.json to version $NEW_VERSION"
-          cat .claude-plugin/marketplace.json | jq '.metadata.version'
+          jq '.metadata.version' .claude-plugin/marketplace.json
 
       - name: Update version in README
         run: |
@@ -179,11 +179,13 @@ jobs:
       - name: Summary
         run: |
           NEW_VERSION="${{ steps.new_version.outputs.version }}"
-          echo "## Release v$NEW_VERSION Complete! " >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "-  Version bumped: ${{ steps.current_version.outputs.current }} → $NEW_VERSION" >> $GITHUB_STEP_SUMMARY
-          echo "-  Git tag created: v$NEW_VERSION" >> $GITHUB_STEP_SUMMARY
-          echo "-  GitHub release published" >> $GITHUB_STEP_SUMMARY
-          echo "-  Announcement issue created" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "[View Release](https://github.com/${{ github.repository }}/releases/tag/v$NEW_VERSION)" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "## Release v$NEW_VERSION Complete! "
+            echo ""
+            echo "-  Version bumped: ${{ steps.current_version.outputs.current }} → $NEW_VERSION"
+            echo "-  Git tag created: v$NEW_VERSION"
+            echo "-  GitHub release published"
+            echo "-  Announcement issue created"
+            echo ""
+            echo "[View Release](https://github.com/${{ github.repository }}/releases/tag/v$NEW_VERSION)"
+          } >> "$GITHUB_STEP_SUMMARY"
