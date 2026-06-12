@@ -7,7 +7,6 @@
 [![Plugins](https://img.shields.io/badge/plugins-431-blue)](https://tonsofskills.com/explore)
 [![Skills](https://img.shields.io/badge/skills-2%2C754-green)](https://tonsofskills.com/skills)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins-plus-skills?style=social)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills)
-[![Sponsor: Nixtla](https://img.shields.io/badge/Sponsor-nixtla.io-ff6b35)](https://nixtla.io)
 [![Sponsor: Kobiton](https://img.shields.io/badge/Sponsor-kobiton.com-0487D9)](https://kobiton.com)
 [![Buy me a monster](https://img.shields.io/badge/Buy%20me%20a-Monster-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/jeremylongshore)
 
@@ -432,13 +431,13 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 📚 **5 plugins** · category slug: `examples`
 
-| Plugin               | Description                                                                                                                              |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `formatter`          | Code formatting plugin using hooks to auto-format on save                                                                                |
-| `hello-world`        | Simple example plugin demonstrating basic slash commands                                                                                 |
-| `jeremy-plugin-tool` | Production-grade plugin creator with nixtla-validated quality standards. 4 Agent Skills automate creating, validating, auditing, and…    |
-| `pi-pathfinder`      | PI Pathfinder - Finds the path through 229 plugins. Automatically picks the best plugin for your task, extracts its skills, and applies… |
-| `security-agent`     | Security review subagent for code analysis                                                                                               |
+| Plugin               | Description                                                                                                                                |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `formatter`          | Code formatting plugin using hooks to auto-format on save                                                                                  |
+| `hello-world`        | Simple example plugin demonstrating basic slash commands                                                                                   |
+| `jeremy-plugin-tool` | Production-grade plugin creator with marketplace-validated quality standards. 4 Agent Skills automate creating, validating, auditing, and… |
+| `pi-pathfinder`      | PI Pathfinder - Finds the path through 229 plugins. Automatically picks the best plugin for your task, extracts its skills, and applies…   |
+| `security-agent`     | Security review subagent for code analysis                                                                                                 |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
 
