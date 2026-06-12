@@ -9957,7 +9957,7 @@
       "slug": "jeremy-plugin-tool",
       "name": "jeremy-plugin-tool",
       "displayName": "jeremy plugin tool",
-      "description": "Production-grade plugin creator with nixtla-validated quality standards. 4 Agent Skills automate creating, validating, auditing, and versioning plugins in the claude-code-plugins marketplace",
+      "description": "Production-grade plugin creator with marketplace-validated quality standards. 4 Agent Skills automate creating, validating, auditing, and versioning plugins in the claude-code-plugins marketplace",
       "category": "example",
       "keywords": [
         "skills",
@@ -9985,7 +9985,7 @@
       "verificationScore": 92,
       "verificationGrade": "A",
       "verificationBadge": "gold",
-      "searchText": "jeremy plugin tool production-grade plugin creator with nixtla-validated quality standards. 4 agent skills automate creating, validating, auditing, and versioning plugins in the claude-code-plugins marketplace example skills agent-skills plugin-management marketplace validation audit versioning meta-plugin repository-tools"
+      "searchText": "jeremy plugin tool production-grade plugin creator with marketplace-validated quality standards. 4 agent skills automate creating, validating, auditing, and versioning plugins in the claude-code-plugins marketplace example skills agent-skills plugin-management marketplace validation audit versioning meta-plugin repository-tools"
     },
     {
       "type": "plugin",

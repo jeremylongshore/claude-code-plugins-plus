@@ -8610,7 +8610,7 @@
       "slug": "jeremy-plugin-tool",
       "name": "jeremy-plugin-tool",
       "displayName": "jeremy plugin tool",
-      "description": "Production-grade plugin creator with nixtla-validated quality standards. 4 Agent Skills automate creating, validating, auditing, and versioning plugins in the claude-code-plugins marketplace",
+      "description": "Production-grade plugin creator with marketplace-validated quality standards. 4 Agent Skills automate creating, validating, auditing, and versioning plugins in the claude-code-plugins marketplace",
       "version": "2.0.0",
       "category": "example",
       "keywords": [
