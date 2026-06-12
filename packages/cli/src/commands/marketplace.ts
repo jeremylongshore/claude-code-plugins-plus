@@ -1,6 +1,6 @@
 import chalk from 'chalk';
-import { existsSync } from 'fs';
-import * as path from 'path';
+import { existsSync } from 'node:fs';
+import * as path from 'node:path';
 import type { ClaudePaths } from '../utils/paths.js';
 import { MARKETPLACE_REPO, MARKETPLACE_SLUG } from '../utils/constants.js';
 

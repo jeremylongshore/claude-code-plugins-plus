@@ -8,8 +8,8 @@
 
 /** @deprecated Use scripts/validate-skills-schema.py (universal validator v5.0) instead. This file is kept for ccpi backward compatibility only. */
 
-import { promises as fs } from 'fs';
-import * as path from 'path';
+import { promises as fs } from 'node:fs';
+import * as path from 'node:path';
 import * as yaml from 'yaml';
 
 // Valid tools per Claude Code spec

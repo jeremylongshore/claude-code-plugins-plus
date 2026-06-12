@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import * as fs from 'fs-extra';
-import * as path from 'path';
+import * as path from 'node:path';
 import type { ClaudePaths } from '../utils/paths.js';
 import { getMarketplaceCatalogPath, isMarketplaceInstalled } from '../utils/paths.js';
 

@@ -4,8 +4,8 @@
 
 import chalk from 'chalk';
 import ora from 'ora';
-import * as path from 'path';
-import { existsSync } from 'fs';
+import * as path from 'node:path';
+import { existsSync } from 'node:fs';
 import {
   validateAll,
   validateAllSkills,

@@ -1,11 +1,11 @@
 import chalk from 'chalk';
 import ora from 'ora';
-import * as os from 'os';
-import { promises as fs } from 'fs';
-import { existsSync } from 'fs';
+import * as os from 'node:os';
+import { promises as fs } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { detectClaudePaths, isMarketplaceInstalled, type ClaudePaths } from '../utils/paths.js';
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { exec } from 'node:child_process';
+import { promisify } from 'node:util';
 
 const execAsync = promisify(exec);
 

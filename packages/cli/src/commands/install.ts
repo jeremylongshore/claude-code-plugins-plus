@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 import ora from 'ora';
-import { promises as fs } from 'fs';
-import { existsSync } from 'fs';
-import * as path from 'path';
+import { promises as fs } from 'node:fs';
+import { existsSync } from 'node:fs';
+import * as path from 'node:path';
 import axios from 'axios';
 import type { ClaudePaths } from '../utils/paths.js';
 import type { PluginMetadata } from '../types.js';
