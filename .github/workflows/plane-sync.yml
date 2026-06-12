@@ -78,7 +78,7 @@ jobs:
             "$PLANE_HOST/api/v1/workspaces/$PLANE_WORKSPACE/projects/$PLANE_PROJECT_ID/issues/")
           while read -r CODE; do
             [ -n "$CODE" ] || continue
-            SEQ=${CODE#${PLANE_IDENTIFIER}-}
+            SEQ=${CODE#"${PLANE_IDENTIFIER}"-}
             UUID=$(echo "$ISSUES" | jq -r --arg seq "$SEQ" '.results[] | select(.sequence_id==($seq | tonumber)) | .id')
             if [ -z "$UUID" ]; then echo "::warning::$CODE not found in Plane"; continue; fi
             curl -fsSL -o /dev/null -H "X-API-Key: $PLANE_API_KEY" -H "Content-Type: application/json" \
