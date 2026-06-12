@@ -147,8 +147,8 @@ jobs:
           # This excludes nested sub-plugin manifests inside synced plugins like
           # tonone, where each skill subdirectory has its own plugin.json from
           # upstream. Those aren't separate marketplace plugins.
-          find plugins/ -maxdepth 4 -name "plugin.json" -path "*/.claude-plugin/plugin.json" | while read plugin_json; do
-            plugin=$(dirname $(dirname "$plugin_json"))
+          find plugins/ -maxdepth 4 -name "plugin.json" -path "*/.claude-plugin/plugin.json" | while read -r plugin_json; do
+            plugin=$(dirname "$(dirname "$plugin_json")")
             echo "Validating $plugin"
 
             # Check for README
@@ -159,7 +159,7 @@ jobs:
 
             # Check scripts are executable
             if [ -d "$plugin/scripts" ]; then
-              find "$plugin/scripts" -type f -name "*.sh" | while read script; do
+              find "$plugin/scripts" -type f -name "*.sh" | while read -r script; do
                 if [ ! -x "$script" ]; then
                   echo "Script not executable: $script"
                   exit 1
@@ -174,7 +174,7 @@ jobs:
           jq empty .claude-plugin/marketplace.json
 
           # Check all plugin sources exist
-          jq -r '.plugins[].source' .claude-plugin/marketplace.json | while read source; do
+          jq -r '.plugins[].source' .claude-plugin/marketplace.json | while read -r source; do
             if [[ "$source" == ./* ]]; then
               if [ ! -d "$source" ]; then
                 echo "Plugin source not found: $source"
@@ -190,6 +190,7 @@ jobs:
         # for reviewer attention. Never blocks CI — gitleaks owns blocking.
         run: |
           echo "Scanning for credential-shaped strings (informational)..."
+          # shellcheck disable=SC2016  # the grep -v '\$(' pattern is a literal regex, not an expansion
           MATCHES=$(grep -r -E "(password|secret|api_key|token)(\s*)=(\s*)['\"]" plugins/ 2>/dev/null | \
             grep -v '= "\*\*\*"' | \
             grep -v "= '\*\*\*'" | \
@@ -420,16 +421,16 @@ jobs:
               fi
 
               if grep -q '"test:ci":' package.json; then
-                pnpm test:ci
+                TEST_CMD=(pnpm test:ci)
               else
-                pnpm test -- --run
+                TEST_CMD=(pnpm test -- --run)
               fi
-              if [ $? -ne 0 ]; then
+              if "${TEST_CMD[@]}"; then
+                echo "✅ Tests passed for $category/$plugin_name"
+              else
                 fail=1
                 failed_plugins+=("$category/$plugin_name")
                 echo "::error::$category/$plugin_name tests failed"
-              else
-                echo "✅ Tests passed for $category/$plugin_name"
               fi
 
               cd - > /dev/null
@@ -478,7 +479,7 @@ jobs:
           fi
 
           # Install dependencies from plugin requirements.txt files
-          find plugins/ -name "requirements.txt" | while read req; do
+          find plugins/ -name "requirements.txt" | while read -r req; do
             echo "Installing deps from $req"
             pip install -r "$req" || true
           done
@@ -569,7 +570,7 @@ jobs:
         if: matrix.test-type == 'python-tests' && always()
         uses: codecov/codecov-action@v5
         with:
-          file: ./coverage.xml
+          files: ./coverage.xml
           flags: python
           fail_ci_if_error: false
 
@@ -750,8 +751,7 @@ jobs:
       - name: Test CLI --help
         run: |
           cd packages/cli
-          node dist/index.js --help
-          if [ $? -eq 0 ]; then
+          if node dist/index.js --help; then
             echo "✅ CLI --help works"
           else
             echo "❌ CLI --help failed"
@@ -761,8 +761,7 @@ jobs:
       - name: Test CLI --version
         run: |
           cd packages/cli
-          node dist/index.js --version
-          if [ $? -eq 0 ]; then
+          if node dist/index.js --version; then
             echo "✅ CLI --version works"
           else
             echo "❌ CLI --version failed"
@@ -772,8 +771,7 @@ jobs:
       - name: Test CLI doctor command
         run: |
           cd packages/cli
-          node dist/index.js doctor --help
-          if [ $? -eq 0 ]; then
+          if node dist/index.js doctor --help; then
             echo "✅ CLI doctor --help works"
           else
             echo "❌ CLI doctor --help failed"
@@ -783,8 +781,7 @@ jobs:
       - name: Test CLI validate command
         run: |
           cd packages/cli
-          node dist/index.js validate --help
-          if [ $? -eq 0 ]; then
+          if node dist/index.js validate --help; then
             echo "✅ CLI validate --help works"
           else
             echo "❌ CLI validate --help failed"
@@ -794,8 +791,7 @@ jobs:
       - name: Test CLI install command options
         run: |
           cd packages/cli
-          node dist/index.js install --help
-          if [ $? -eq 0 ]; then
+          if node dist/index.js install --help; then
             echo "✅ CLI install --help works"
           else
             echo "❌ CLI install --help failed"
@@ -813,10 +809,9 @@ jobs:
       - name: Test npm pack
         run: |
           cd packages/cli
-          npm pack
-          if [ $? -eq 0 ]; then
+          if npm pack; then
             echo "✅ npm pack works"
-            ls -lh *.tgz
+            ls -lh ./*.tgz
           else
             echo "❌ npm pack failed"
             exit 1

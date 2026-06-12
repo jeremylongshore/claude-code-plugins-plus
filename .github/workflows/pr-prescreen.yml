@@ -56,11 +56,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           PR_DATA=$(gh api "repos/${{ github.repository }}/pulls/${{ steps.pr.outputs.number }}")
-          echo "head_sha=$(echo "$PR_DATA" | jq -r '.head.sha')" >> "$GITHUB_OUTPUT"
-          echo "author=$(echo "$PR_DATA" | jq -r '.user.login')" >> "$GITHUB_OUTPUT"
-          echo "title<<EOF" >> "$GITHUB_OUTPUT"
-          echo "$PR_DATA" | jq -r '.title' >> "$GITHUB_OUTPUT"
-          echo "EOF" >> "$GITHUB_OUTPUT"
+          {
+            echo "head_sha=$(echo "$PR_DATA" | jq -r '.head.sha')"
+            echo "author=$(echo "$PR_DATA" | jq -r '.user.login')"
+            echo "title<<EOF"
+            echo "$PR_DATA" | jq -r '.title'
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       # Check out the BASE (main) first — we run the validator and classifier
       # FROM main, not from the PR. The PR's content is checked out into a

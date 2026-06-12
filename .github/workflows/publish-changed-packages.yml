@@ -88,8 +88,8 @@ jobs:
           PY
 
           COUNT=$(jq length /tmp/packages.json)
-          echo "count=$COUNT" >> $GITHUB_OUTPUT
-          echo "packages_json=$(jq -c . /tmp/packages.json)" >> $GITHUB_OUTPUT
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          echo "packages_json=$(jq -c . /tmp/packages.json)" >> "$GITHUB_OUTPUT"
           echo "Publish candidates: $COUNT"
           jq -r '.[] | "  \(.name)@\(.version)"' /tmp/packages.json
 
@@ -172,6 +172,7 @@ jobs:
               # Build the notes via printf to avoid multi-line YAML literal
               # block scalar issues (blank-line-then-unindented breaks YAML
               # parsing).
+              # shellcheck disable=SC2016  # backticks are literal markdown code spans
               REL_NOTES=$(printf 'Released by `publish-changed-packages.yml` on push to `main`.\n\n**npm:** https://www.npmjs.com/package/%s/v/%s\n**Source:** `%s`\n**Install:** `pnpm add %s@%s` (or `/plugin install` via Claude Code marketplace)' "$NAME" "$VERSION" "$DIR" "$NAME" "$VERSION")
               gh release create "$TAG" \
                 --title "$TAG" \

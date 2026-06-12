@@ -173,8 +173,10 @@ jobs:
 
       - name: Report
         run: |
-          echo "## CLI Test Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Cross-platform testing complete" >> $GITHUB_STEP_SUMMARY
-          echo "- Node.js testing: ${{ needs.test-cli.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Deno testing: ${{ needs.test-deno.result }}" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "## CLI Test Results"
+            echo ""
+            echo "✅ Cross-platform testing complete"
+            echo "- Node.js testing: ${{ needs.test-cli.result }}"
+            echo "- Deno testing: ${{ needs.test-deno.result }}"
+          } >> "$GITHUB_STEP_SUMMARY"

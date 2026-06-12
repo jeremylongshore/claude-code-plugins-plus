@@ -85,8 +85,7 @@ jobs:
             echo "No bumps needed."
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
-            BUMPED=$(echo "$OUTPUT" | grep -c '^bumped:' || true)
-            COUNT=$(echo "$OUTPUT" | grep -E '→' | wc -l)
+            COUNT=$(echo "$OUTPUT" | grep -cE '→' || true)
             echo "count=$COUNT" >> "$GITHUB_OUTPUT"
           fi
 
@@ -95,6 +94,8 @@ jobs:
         # `--no-verify` skips local pre-commit hooks (husky / lint-staged)
         # which can OOM on prettier across the staged set in CI. Same
         # pattern as `update-npm-stats.yml`.
+        env:
+          HEAD_REF: ${{ github.head_ref }}
         run: |
           set -euo pipefail
           git config user.name  "github-actions[bot]"
@@ -108,15 +109,17 @@ jobs:
           jeremy made me do it
           -claude"
 
-          git push origin HEAD:"${{ github.head_ref }}"
+          git push origin HEAD:"$HEAD_REF"
 
       - name: Summary
         if: always()
+        env:
+          HEAD_REF: ${{ github.head_ref }}
         run: |
           echo "## 🔢 Auto-bump on PR" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           if [ "${{ steps.bump.outputs.changed }}" = "true" ]; then
-            echo "✅ Bumped ${{ steps.bump.outputs.count }} plugin(s); commit pushed to \`${{ github.head_ref }}\`." >> "$GITHUB_STEP_SUMMARY"
+            echo "✅ Bumped ${{ steps.bump.outputs.count }} plugin(s); commit pushed to \`$HEAD_REF\`." >> "$GITHUB_STEP_SUMMARY"
           else
             echo "✓ No plugin source changes that warrant a patch bump." >> "$GITHUB_STEP_SUMMARY"
           fi

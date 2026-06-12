@@ -93,9 +93,9 @@ jobs:
           PY
 
           COUNT=$(jq length /tmp/packages.json)
-          echo "count=$COUNT" >> $GITHUB_OUTPUT
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
           # Emit as JSON string (jq -c ensures single line)
-          echo "packages_json=$(jq -c . /tmp/packages.json)" >> $GITHUB_OUTPUT
+          echo "packages_json=$(jq -c . /tmp/packages.json)" >> "$GITHUB_OUTPUT"
           echo "Found $COUNT publishable @intentsolutionsio/* packages"
           # Use jq slice instead of `| head -20` — SIGPIPE under `set -o pipefail`
           # was aborting the whole step even though the listing succeeded.

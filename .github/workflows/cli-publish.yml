@@ -96,7 +96,7 @@ jobs:
         id: version
         run: |
           VERSION=${GITHUB_REF#refs/tags/cli-v}
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "✅ Published version: $VERSION"
 
       - name: Create GitHub Release
@@ -140,15 +140,17 @@ jobs:
 
       - name: Report success
         run: |
-          echo "## 🎉 CLI Published Successfully" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Version**: ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Package**: [@claude-code-plugins/ccp](https://www.npmjs.com/package/@claude-code-plugins/ccp)" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Installation" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "npx @claude-code-plugins/ccp@${{ steps.version.outputs.version }} doctor" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "## 🎉 CLI Published Successfully"
+            echo ""
+            echo "**Version**: ${{ steps.version.outputs.version }}"
+            echo "**Package**: [@claude-code-plugins/ccp](https://www.npmjs.com/package/@claude-code-plugins/ccp)"
+            echo ""
+            echo "### Installation"
+            echo "\`\`\`bash"
+            echo "npx @claude-code-plugins/ccp@${{ steps.version.outputs.version }} doctor"
+            echo "\`\`\`"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   # Post-publish verification
   verify-publish:
@@ -169,6 +171,8 @@ jobs:
 
       - name: Report
         run: |
-          echo "## ✅ Verification Complete" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Package is live and installable from npm registry" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "## ✅ Verification Complete"
+            echo ""
+            echo "Package is live and installable from npm registry"
+          } >> "$GITHUB_STEP_SUMMARY"
