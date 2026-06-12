@@ -342,10 +342,15 @@ jobs:
           SUMMARY: ${{ steps.classify.outputs.summary }}
         run: |
           set -euo pipefail
-          if [ -z "${SLACK_WEBHOOK:-}" ]; then
-            echo "No Slack webhook configured; skipping notification."
-            exit 0
-          fi
+          # Guard against unset AND placeholder values (a secret set to "-"
+          # is non-empty but makes curl parse it as an option and exit 2).
+          case "${SLACK_WEBHOOK:-}" in
+            https://*) ;;
+            *)
+              echo "No usable Slack webhook configured; skipping notification."
+              exit 0
+              ;;
+          esac
           if [ "$VERDICT" = "PASS" ]; then
             ICON=":white_check_mark:"
             CTA="ready for editorial review"
