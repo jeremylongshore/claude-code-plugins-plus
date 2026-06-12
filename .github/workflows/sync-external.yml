@@ -67,29 +67,29 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ARGS=""
+          ARGS=()
           if [ "${{ inputs.force }}" = "true" ]; then
-            ARGS="$ARGS --force"
+            ARGS+=(--force)
           fi
           # Source from workflow_dispatch input or repository_dispatch payload
           SOURCE="${{ inputs.source || github.event.client_payload.source }}"
           if [ -n "$SOURCE" ]; then
-            ARGS="$ARGS --source=$SOURCE"
+            ARGS+=("--source=$SOURCE")
           fi
           if [ "${{ inputs.dry_run }}" = "true" ]; then
-            ARGS="$ARGS --dry-run"
+            ARGS+=(--dry-run)
           fi
-          ARGS="$ARGS --force --verbose"
+          ARGS+=(--force --verbose)
 
-          node scripts/sync-external.mjs $ARGS
+          node scripts/sync-external.mjs "${ARGS[@]}"
 
       - name: Check for changes
         id: changes
         run: |
           if [ -n "$(git status --porcelain)" ]; then
-            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
           else
-            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Sync marketplace catalog
@@ -161,10 +161,10 @@ jobs:
 
       - name: Summary
         run: |
-          echo "## 🔄 External Plugin Sync Complete" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 🔄 External Plugin Sync Complete" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
           if [ "${{ steps.changes.outputs.has_changes }}" = "true" ]; then
-            echo "✅ Changes detected and PR created" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Changes detected and PR created" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "✓ All sources are up to date" >> $GITHUB_STEP_SUMMARY
+            echo "✓ All sources are up to date" >> "$GITHUB_STEP_SUMMARY"
           fi
