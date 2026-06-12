@@ -169,7 +169,8 @@ function main() {
           source,
           projection: 'key->name',
           errors: (validate.errors || []).map(
-            (e) => `${e.instancePath || '/'} ${e.message}${e.params ? ` ${JSON.stringify(e.params)}` : ''}`,
+            (e) =>
+              `${e.instancePath || '/'} ${e.message}${e.params ? ` ${JSON.stringify(e.params)}` : ''}`,
           ),
         });
       }
@@ -185,10 +186,18 @@ function main() {
       doc = JSON.parse(readFileSync(file, 'utf8'));
     } catch (e) {
       parseFailures += 1;
-      findings.push({ file: relTo(file), server: null, source: '.mcp.json', errors: [`JSON parse error: ${e.message}`] });
+      findings.push({
+        file: relTo(file),
+        server: null,
+        source: '.mcp.json',
+        errors: [`JSON parse error: ${e.message}`],
+      });
       continue;
     }
-    const servers = doc && typeof doc === 'object' && !Array.isArray(doc) && doc.mcpServers ? doc.mcpServers : doc;
+    const servers =
+      doc && typeof doc === 'object' && !Array.isArray(doc) && doc.mcpServers
+        ? doc.mcpServers
+        : doc;
     validateServersBlock(file, servers, '.mcp.json');
   }
 
@@ -201,7 +210,12 @@ function main() {
       doc = JSON.parse(readFileSync(file, 'utf8'));
     } catch (e) {
       parseFailures += 1;
-      findings.push({ file: relTo(file), server: null, source: 'plugin.json', errors: [`JSON parse error: ${e.message}`] });
+      findings.push({
+        file: relTo(file),
+        server: null,
+        source: 'plugin.json',
+        errors: [`JSON parse error: ${e.message}`],
+      });
       continue;
     }
     if (!doc || typeof doc !== 'object' || !('mcpServers' in doc)) continue;
@@ -241,7 +255,9 @@ function main() {
     console.log('═══════════════════════════════════════════════════════════════');
     console.log(`  .mcp.json files               : ${mcpJsonFiles.length}`);
     console.log(`  plugin.json inline mcpServers : ${filesScanned - mcpJsonFiles.length}`);
-    console.log(`  string-ref mcpServers blocks  : ${stringRefBlocks} (covered via .mcp.json glob)`);
+    console.log(
+      `  string-ref mcpServers blocks  : ${stringRefBlocks} (covered via .mcp.json glob)`,
+    );
     console.log(`  server entries validated      : ${serversValidated}`);
     console.log(`  PASS                          : ${serversPassed}`);
     console.log(`  FAIL                          : ${serversValidated - serversPassed}`);
@@ -252,7 +268,8 @@ function main() {
       for (const e of f.errors.slice(0, 8)) console.log(`      ${e}`);
       if (f.errors.length > 8) console.log(`      … and ${f.errors.length - 8} more`);
     }
-    if (findings.length === 0) console.log('  No findings — corpus conforms to the kernel contract.');
+    if (findings.length === 0)
+      console.log('  No findings — corpus conforms to the kernel contract.');
     console.log('═══════════════════════════════════════════════════════════════');
     console.log(
       STRICT
