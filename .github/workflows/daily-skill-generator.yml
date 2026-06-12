@@ -16,9 +16,6 @@ jobs:
       - name: Find next plugin needing skills
         id: find
         run: |
-          # Get all plugins
-          PLUGINS=$(jq -r '.plugins[].name' .claude-plugin/marketplace.json)
-
           # Find first plugin WITHOUT agent-skills keyword
           NEXT_PLUGIN=$(jq -r '.plugins[] |
             select((.keywords[]? == "agent-skills") | not) |
@@ -35,10 +32,12 @@ jobs:
           PLUGIN_DESC=$(jq -r ".plugins[] | select(.name == \"$NEXT_PLUGIN\") | .description" .claude-plugin/marketplace.json)
           PLUGIN_CAT=$(jq -r ".plugins[] | select(.name == \"$NEXT_PLUGIN\") | .category" .claude-plugin/marketplace.json)
 
-          echo "plugin_name=$NEXT_PLUGIN" >> $GITHUB_OUTPUT
-          echo "plugin_path=$PLUGIN_PATH" >> $GITHUB_OUTPUT
-          echo "plugin_desc=$PLUGIN_DESC" >> $GITHUB_OUTPUT
-          echo "plugin_category=$PLUGIN_CAT" >> $GITHUB_OUTPUT
+          {
+            echo "plugin_name=$NEXT_PLUGIN"
+            echo "plugin_path=$PLUGIN_PATH"
+            echo "plugin_desc=$PLUGIN_DESC"
+            echo "plugin_category=$PLUGIN_CAT"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Create issue for Claude Code
         if: steps.find.outputs.plugin_name != ''
