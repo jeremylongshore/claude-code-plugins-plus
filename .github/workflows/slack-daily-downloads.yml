@@ -30,7 +30,7 @@ jobs:
         run: |
           if [ -z "${{ secrets.SLACK_OPERATION_HIRED_WEBHOOK_URL }}" ]; then
             echo "SLACK_OPERATION_HIRED_WEBHOOK_URL not set; skipping. Configure the repo secret to enable."
-            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "skip=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Build Slack payload
@@ -83,7 +83,7 @@ jobs:
             echo "payload<<EOF"
             echo "$PAYLOAD"
             echo "EOF"
-          } >> $GITHUB_OUTPUT
+          } >> "$GITHUB_OUTPUT"
 
       - name: Post to Slack
         if: steps.check.outputs.skip != 'true'
