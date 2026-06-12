@@ -604,7 +604,7 @@ Get Bitcoin's price history for the last 30 days and save to CSV
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
 | 1.0.0 | 2025-01-01 | Initial stub | Jeremy Longshore |
-| 2.0.0 | 2025-01-14 | Full PRD per nixtla standard | Jeremy Longshore |
+| 2.0.0 | 2025-01-14 | Full PRD per Intent Solutions standard | Jeremy Longshore |
 
 ---
 
@@ -618,4 +618,4 @@ Get Bitcoin's price history for the last 30 days and save to CSV
 ---
 
 **Document maintained by**: Intent Solutions
-**Standard**: Nixtla Enterprise Skill PRD Template v1.0
+**Standard**: Intent Solutions Enterprise Skill PRD Template v1.0

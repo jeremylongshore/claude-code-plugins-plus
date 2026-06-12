@@ -20,7 +20,7 @@ Skills must comply with three standards:
 
 1. **Anthropic 2025 Spec**: name, description (required)
 2. **Enterprise Standard**: allowed-tools, version, author, license (required)
-3. **Nixtla Quality Standard**: body sections (recommended but important)
+3. **Intent Solutions Quality Standard**: body sections (recommended but important)
 
 ## Required Frontmatter Fields
 

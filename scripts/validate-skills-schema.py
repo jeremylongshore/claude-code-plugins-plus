@@ -1538,10 +1538,10 @@ def find_skill_files(root: Path) -> List[Path]:
                     continue
                 results.append(p)
 
-    # Nixtla-compatible: search in 003-skills directory
-    nixtla_skills = root / "003-skills"
-    if nixtla_skills.exists():
-        for p in nixtla_skills.rglob("*/SKILL.md"):
+    # Legacy client-repo layout: search in 003-skills directory
+    legacy_skills = root / "003-skills"
+    if legacy_skills.exists():
+        for p in legacy_skills.rglob("*/SKILL.md"):
             if p.is_file():
                 parts = p.relative_to(root).parts
                 if any(part in excluded_dirs for part in parts):

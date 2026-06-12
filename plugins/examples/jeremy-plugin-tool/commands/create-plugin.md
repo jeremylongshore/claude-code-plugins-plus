@@ -1,13 +1,13 @@
 ---
 name: create-plugin
-description: Interactive plugin creator with nixtla-grade validation - guides you through...
+description: Interactive plugin creator with marketplace-grade validation - guides you through...
 shortcut: cp
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 version: 2.0.0
 ---
 # Create Plugin - Interactive Workflow
 
-You are creating a **production-grade Claude Code plugin** with nixtla-validated quality standards.
+You are creating a **production-grade Claude Code plugin** with marketplace-validated quality standards.
 
 ## Step 1: Ask User About Plugin Type
 
@@ -106,9 +106,9 @@ plugins/[category]/[plugin-name]/
 }
 ```
 
-### Generate SKILL.md (Nixtla-Compliant)
+### Generate SKILL.md (Marketplace-Compliant)
 
-**CRITICAL: All skills MUST pass nixtla validation:**
+**CRITICAL: All skills MUST pass marketplace validation:**
 
 ```markdown
 ---
@@ -187,12 +187,12 @@ Result: [expected output]
 - External link: [Resource name]
 ```
 
-## Step 5: Validate with Nixtla Validator
+## Step 5: Validate with Marketplace Validator
 
 After creating all files, run:
 
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/skills/plugin-validator/scripts/validate_plugin_nixtla.py plugins/[category]/[plugin-name]/
+python3 ${CLAUDE_SKILL_DIR}/skills/plugin-validator/scripts/validate_plugin_marketplace.py plugins/[category]/[plugin-name]/
 ```
 
 **Requirements for passing validation:**
@@ -228,7 +228,7 @@ Show user:
    - LICENSE
    [+ other files based on type]
 
-🔍 Nixtla Validation: [PASSED/FAILED with X errors]
+🔍 Marketplace Validation: [PASSED/FAILED with X errors]
 
 📦 Marketplace: [UPDATED/PENDING]
 
@@ -242,7 +242,7 @@ Next steps:
 
 ### Validation Failures
 
-If nixtla validation fails:
+If marketplace validation fails:
 
 1. Show specific errors
 2. Offer to fix automatically
@@ -270,7 +270,7 @@ If plugin name exists:
 Plugin creation succeeds when:
 
 - ✅ All files generated correctly
-- ✅ Nixtla validation passes (100% compliance)
+- ✅ Marketplace validation passes (100% compliance)
 - ✅ Marketplace entry added
 - ✅ Plugin installs successfully
 
@@ -280,7 +280,7 @@ Plugin creation succeeds when:
 
 1. Ask user what kind of plugin
 2. User describes purpose
-3. Generate with nixtla-grade validation
+3. Generate with marketplace-grade validation
 4. Validate automatically
 5. Add to marketplace
 6. Done!

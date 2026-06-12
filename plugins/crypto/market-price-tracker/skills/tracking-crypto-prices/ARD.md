@@ -802,7 +802,7 @@ api:
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
 | 1.0.0 | 2025-01-01 | Initial stub | Jeremy Longshore |
-| 2.0.0 | 2025-01-14 | Full ARD per nixtla standard | Jeremy Longshore |
+| 2.0.0 | 2025-01-14 | Full ARD per Intent Solutions standard | Jeremy Longshore |
 
 ---
 
@@ -816,4 +816,4 @@ api:
 ---
 
 **Document maintained by**: Intent Solutions
-**Standard**: Nixtla Enterprise Skill ARD Template v1.0
+**Standard**: Intent Solutions Enterprise Skill ARD Template v1.0

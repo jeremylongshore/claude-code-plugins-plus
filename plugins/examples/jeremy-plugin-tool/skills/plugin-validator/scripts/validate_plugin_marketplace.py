@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-Jeremy Plugin Tool - Nixtla-Grade Validator v2.0
+Jeremy Plugin Tool - Marketplace-Grade Validator v2.0
 
 Combines:
 - Anthropic 2025 Skills Specification (code.claude.com/docs/en/skills)
 - Intent Solutions Enterprise Standard (6767-c v3.0.0)
-- Nixtla Quality Standards (strict mode)
+- Intent Solutions Quality Standards (strict mode)
 
-Adapted from: /home/jeremy/000-projects/nixtla/004-scripts/validate_skills_v2.py
+Adapted from internal Intent Solutions client-engagement validators
 
 Usage:
-    python validate_plugin_nixtla.py [plugin_path] [--verbose|-v]
+    python validate_plugin_marketplace.py [plugin_path] [--verbose|-v]
 
 Author: Jeremy Longshore <jeremy@intentsolutions.io>
 Version: 2.0.0
@@ -63,7 +63,7 @@ OPTIONAL_FIELDS = {"model", "disable-model-invocation", "mode", "tags", "metadat
 # Deprecated fields (warn but don't error)
 DEPRECATED_FIELDS = {"when_to_use"}
 
-# Nixtla required sections (strict quality mode)
+# Intent Solutions required sections (strict quality mode)
 REQUIRED_SECTIONS = [
     "# ",  # title line
     "## Overview",
@@ -244,18 +244,18 @@ def validate_frontmatter(path: Path, fm: dict) -> Tuple[List[str], List[str]]:
             if len(desc) > 1024:
                 errors.append("[frontmatter] 'description' exceeds 1024 characters")
 
-            # Nixtla strict quality checks (ERRORS in strict mode)
+            # Intent Solutions strict quality checks (ERRORS in strict mode)
             if not RE_DESCRIPTION_USE_WHEN.search(desc):
                 errors.append(
-                    "[frontmatter] 'description' must include 'Use when ...' phrase (nixtla quality standard)"
+                    "[frontmatter] 'description' must include 'Use when ...' phrase (Intent Solutions quality standard)"
                 )
 
             if not RE_DESCRIPTION_TRIGGER_WITH.search(desc):
                 errors.append(
-                    "[frontmatter] 'description' must include 'Trigger with ...' phrase (nixtla quality standard)"
+                    "[frontmatter] 'description' must include 'Trigger with ...' phrase (Intent Solutions quality standard)"
                 )
 
-            # Voice checks (nixtla strict mode)
+            # Voice checks (Intent Solutions strict mode)
             if RE_FIRST_PERSON.search(desc):
                 errors.append(
                     "[frontmatter] 'description' must NOT use first person (I can / I will / etc.) - use third person"
@@ -327,7 +327,7 @@ def validate_frontmatter(path: Path, fm: dict) -> Tuple[List[str], List[str]]:
             if not valid:
                 errors.append(f"[frontmatter] allowed-tools: {msg}")
 
-        # Nixtla strict mode: forbid unscoped Bash
+        # Intent Solutions strict mode: forbid unscoped Bash
         if "Bash" in tools:
             errors.append(
                 "[frontmatter] allowed-tools: unscoped 'Bash' forbidden - use scoped Bash(git:*) or Bash(npm:*)"
@@ -416,7 +416,7 @@ def validate_body(path: Path, body: str) -> Tuple[List[str], List[str]]:
 
     # === LENGTH CHECKS ===
 
-    # Nixtla strict mode: 500 line limit
+    # Intent Solutions strict mode: 500 line limit
     if len(lines) > 500:
         errors.append(
             f"[body] SKILL.md body has {len(lines)} lines (max 500). Use progressive disclosure (extract to references/)"
@@ -429,11 +429,11 @@ def validate_body(path: Path, body: str) -> Tuple[List[str], List[str]]:
     elif word_count > 3500:
         warnings.append(f"[body] Content is lengthy ({word_count} words) - consider references/ directory")
 
-    # === REQUIRED SECTIONS (Nixtla strict mode) ===
+    # === REQUIRED SECTIONS (Intent Solutions strict mode) ===
 
     for sec in REQUIRED_SECTIONS:
         if sec not in body:
-            errors.append(f"[body] Required section missing: '{sec}' (nixtla quality standard)")
+            errors.append(f"[body] Required section missing: '{sec}' (Intent Solutions quality standard)")
 
     # === SECTION CONTENT VALIDATION ===
 
@@ -471,7 +471,7 @@ def validate_body(path: Path, body: str) -> Tuple[List[str], List[str]]:
         content = _section_body(section)
         content_no_code = re.sub(r"```.*?```", "", content, flags=re.DOTALL).strip()
         if len(content_no_code) < min_chars:
-            msg = f"[body] Section '{section}' looks empty/too short (nixtla standard)"
+            msg = f"[body] Section '{section}' looks empty/too short (Intent Solutions standard)"
             if level == "ERROR":
                 errors.append(msg)
             else:
@@ -621,7 +621,7 @@ def validate_skill(path: Path) -> Dict[str, Any]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Jeremy Plugin Tool - Nixtla-Grade Validator")
+    parser = argparse.ArgumentParser(description="Jeremy Plugin Tool - Marketplace-Grade Validator")
     parser.add_argument("plugin_path", nargs="?", default=".", help="Plugin directory or repository root")
     parser.add_argument("--verbose", "-v", action="store_true", help="Print per-file OK lines")
     parser.add_argument("--fail-on-warn", action="store_true", help="Treat warnings as errors")
@@ -638,8 +638,8 @@ def main() -> int:
         print("No SKILL.md files found in plugin.")
         return 0
 
-    print("🔍 JEREMY PLUGIN TOOL - NIXTLA-GRADE VALIDATOR v2.0")
-    print("   Enterprise + Nixtla Strict Quality Mode")
+    print("🔍 JEREMY PLUGIN TOOL - MARKETPLACE-GRADE VALIDATOR v2.0")
+    print("   Enterprise + Intent Solutions Strict Quality Mode")
     print(f"{'=' * 70}\n")
     print(f"Found {len(skills)} SKILL.md file(s) to validate.\n")
 
@@ -717,7 +717,7 @@ def main() -> int:
         print("\n✅ All skills fully compliant!")
         print("   - Anthropic 2025 spec ✓")
         print("   - Enterprise standard ✓")
-        print("   - Nixtla quality standards ✓")
+        print("   - Intent Solutions quality standards ✓")
         return 0
 
 

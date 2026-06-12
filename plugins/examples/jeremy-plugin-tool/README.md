@@ -1,6 +1,6 @@
 # Jeremy Plugin Tool
 
-**Production-grade plugin creator with nixtla-validated quality standards** - Includes 4 Agent Skills that automatically create, validate, audit, and version plugins for the claude-code-plugins marketplace.
+**Production-grade plugin creator with marketplace-validated quality standards** - Includes 4 Agent Skills that automatically create, validate, audit, and version plugins for the claude-code-plugins marketplace.
 
 [![Version](https://img.shields.io/badge/version-2.0.0-brightgreen)](.)
 [![Skills](https://img.shields.io/badge/skills-4-blue)](.)
