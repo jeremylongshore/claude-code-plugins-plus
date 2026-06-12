@@ -10,9 +10,10 @@ Unified validator for all Claude Code plugin content:
 Two-tier validation system (aligned with Anthropic published spec):
 - Standard (DEFAULT): Mirrors Anthropic spec exactly. Required: name + description only.
   All other fields optional. Type/value validation when fields are present.
-- Marketplace (--marketplace): IS richer-marketplace polish layer. Same hard requirements
-  as Standard, plus WARNINGS for missing recommended polish fields
-  (version, author, license, allowed-tools, compatibility, tags). 100-point rubric.
+- Marketplace (--marketplace): IS enterprise standard. All 8 ALWAYS_REQUIRED fields
+  (name, description, allowed-tools, version, author, license, compatibility, tags)
+  must be present — missing any of them is an ERROR (schema 3.3.0+; see
+  000-docs/SCHEMA_CHANGELOG.md NON-NEGOTIABLES #1-#2). 100-point rubric.
 - Deep (--deep): Intent Solutions Deep Evaluation Engine. 10 weighted dimensions.
 - Auto-detect: if CI=true or GITHUB_ACTIONS=true → marketplace by default.
 
@@ -40,10 +41,11 @@ Usage:
 
 Author: Jeremy Longshore <jeremy@intentsolutions.io>
 Version: 7.0.0
-Schema:  3.0.0  (see 000-docs/SCHEMA_CHANGELOG.md)
+Schema:  3.8.0  (see 000-docs/SCHEMA_CHANGELOG.md)
 """
 
 import argparse
+import difflib
 import json as json_module
 import os
 import re
@@ -87,8 +89,17 @@ except ImportError:
 #                       at IS marketplace tier (NOT spec-floor recognition).
 #                       Snapshot anchor: intent-eval-platform/intent-eval-lab/research/
 #                       claude-docs-spec-tree-2026-05-27.md.
+# 3.8.0 (2026-06-11) — allowed-tools entry validation made real (was
+#                       always-True with diagnostics silently dropped):
+#                       malformed entries (unbalanced parens, empty scope,
+#                       illegal tool-name characters) and unknown tool names
+#                       now surface as WARNINGS at all tiers; standard tier
+#                       now emits a missing-'name' warning (was silent);
+#                       stale "marketplace = warnings-only" docstrings
+#                       corrected. No change to ALWAYS_REQUIRED or
+#                       error-vs-warning semantics.
 # See 000-docs/SCHEMA_CHANGELOG.md.
-SCHEMA_VERSION = "3.7.0"
+SCHEMA_VERSION = "3.8.0"
 
 # Validation tiers
 TIER_STANDARD = "standard"
@@ -123,8 +134,10 @@ VALID_TOOLS = {
 # Standard tier: nothing else required. All other fields optional, validated
 # only if present. Mirrors Anthropic published spec verbatim.
 #
-# Marketplace tier: same hard requirements + WARNINGS for missing polish fields.
-# Higher rubric scores reward inclusion. No additional ERRORS beyond Standard.
+# Marketplace tier: the full IS enterprise 8-field set (ALWAYS_REQUIRED) must
+# be present — missing any of them is an ERROR (restored in schema 3.3.0; see
+# 000-docs/SCHEMA_CHANGELOG.md NON-NEGOTIABLES #1-#2). The rubric additionally
+# rewards inclusion of optional polish fields.
 STANDARD_REQUIRED = {"name", "description"}
 STANDARD_RECOMMENDED = set()  # description is now in REQUIRED at standard tier
 
@@ -137,7 +150,9 @@ MARKETPLACE_REQUIRED = {"name", "description"}
 #   - allowed-tools : security best practice (Anthropic doc itself promotes this)
 #   - tags      : discovery filtering
 #   - compatibility : runtime / environment requirements (free-text, AgentSkills.io)
-# Validator warns at marketplace tier when any are missing; never errors.
+# All six are members of ALWAYS_REQUIRED: missing any of them at marketplace
+# tier is an ERROR (SCHEMA_CHANGELOG NON-NEGOTIABLE #2). The 100-point rubric
+# additionally rewards their inclusion.
 MARKETPLACE_TRACKING_FIELDS = {"allowed-tools", "version", "author", "license", "compatibility", "tags"}
 # Back-compat alias — old name, same set.
 MARKETPLACE_RECOMMENDED = MARKETPLACE_TRACKING_FIELDS
@@ -1617,25 +1632,83 @@ def parse_allowed_tools(tools_value: Any) -> List[str]:
     return [t for t in tokens if t]
 
 
-def validate_tool_permission(tool: str) -> Tuple[bool, str]:
-    """Validate a single tool permission including wildcards like Bash(git:*)."""
-    base_tool = tool.split("(")[0].strip()
+# Well-formed base tool / server identifier (letters, digits, underscore, hyphen).
+RE_TOOL_BASE_IDENT = re.compile(r"^[A-Za-z][A-Za-z0-9_-]*$")
+# MCP tool reference: mcp__<server> or mcp__<server>__<tool> (Claude Code
+# permission-rule form; appears in the corpus, e.g. mcp__database-explorer__query_database).
+RE_MCP_TOOL_REF = re.compile(r"^mcp__[A-Za-z0-9_-]+(?:__[A-Za-z0-9_-]+)?$")
 
-    # Handle malformed scopes like "mysql:*)" - extract actual tool name
-    if ":" in base_tool:
-        base_tool = base_tool.split(":")[0].strip()
+
+def validate_tool_permission(tool: str) -> Tuple[bool, str]:
+    """Validate a single allowed-tools entry.
+
+    Entry shapes observed across the plugin corpus (surveyed 2026-06-11):
+      - Bare known tool:             Read, Write, Bash, Grep, ...
+      - Scoped, colon form:          Bash(git:*), Bash(npm:*)        (IS convention)
+      - Scoped, space form:          Bash(git add *)                 (Anthropic canonical example)
+      - MCP tool, double-underscore: mcp__server__tool
+      - Colon shorthand:             git:*, ServerName:tool_name
+
+    Returns (valid, msg):
+      - (True,  "")  — recognized and well-formed.
+      - (True,  msg) — well-formed but the base tool name is not a built-in
+                       Claude Code tool (e.g. a misspelling like 'Reads').
+                       Caller surfaces msg as a WARNING.
+      - (False, msg) — malformed entry (unbalanced parentheses, empty scope,
+                       illegal characters in the tool name). Caller surfaces
+                       msg as a WARNING at every tier: escalating malformed
+                       entries to a marketplace-tier ERROR would change
+                       error-vs-warning semantics, which is architectural per
+                       SCHEMA_CHANGELOG NON-NEGOTIABLE #7 and needs prior
+                       approval.
+
+    Note: the old `cmd:*`-format advisory was dropped — Anthropic's canonical
+    example is the space form `Bash(git add *)` (code.claude.com/docs/en/skills),
+    so a no-colon scope is spec-compliant, not suspect.
+    """
+    entry = tool.strip()
+    if not entry:
+        return False, "empty allowed-tools entry"
+
+    # Parenthesis structure: every "(" must be balanced and the scope must
+    # close at the end of the entry (catches truncations like `Bash(git add *`
+    # and stray fragments like `wc:*)` produced by splitting a parenthesized
+    # list on commas).
+    open_count = entry.count("(")
+    close_count = entry.count(")")
+    if open_count != close_count:
+        return False, f"Malformed entry (unbalanced parentheses): {tool}"
+    if open_count and not entry.endswith(")"):
+        return False, f"Malformed entry (scope must close at end of entry): {tool}"
+
+    base = entry.split("(", 1)[0].strip()
+    if open_count and not base:
+        return False, f"Malformed entry (missing tool name before scope): {tool}"
+
+    # MCP tool references are valid allowed-tools entries; no advisory.
+    if RE_MCP_TOOL_REF.match(entry):
+        return True, ""
+
+    # Colon shorthand like "git:*" or "ServerName:tool_name" — validate the
+    # segment before the colon as the base name.
+    base_tool = base.split(":")[0].strip()
+
+    if not RE_TOOL_BASE_IDENT.match(base_tool):
+        return False, f"Malformed entry (tool name must be alphanumeric/_/- ): {tool}"
+
+    if open_count:
+        inner = entry[entry.index("(") + 1 : -1].strip()
+        if not inner:
+            return False, f"Empty scope in allowed-tools entry: {tool}"
 
     if base_tool not in VALID_TOOLS:
-        # Warn instead of error for unknown patterns (may be valid Bash commands)
-        return True, f"Unknown tool pattern: {tool} (assuming Bash command)"
-
-    # Validate wildcard syntax if present - warn instead of error
-    if "(" in tool:
-        if not tool.endswith(")"):
-            return True, f"Malformed wildcard syntax: {tool}"
-        inner = tool[tool.index("(") + 1 : -1]
-        if ":" not in inner:
-            return True, f"Wildcard should use cmd:* format: {tool}"
+        suggestion = difflib.get_close_matches(base_tool, sorted(VALID_TOOLS), n=1, cutoff=0.75)
+        if suggestion:
+            return True, f"Unknown tool '{base_tool}' in entry '{tool}' — did you mean '{suggestion[0]}'?"
+        return True, (
+            f"Unknown tool '{base_tool}' in entry '{tool}' (not a built-in Claude Code tool; "
+            f"shell commands belong inside a Bash(...) scope)"
+        )
 
     return True, ""
 
@@ -1660,11 +1733,9 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
     infos: List[str] = []
 
     # === FIELD PRESENCE CHECKS (tier-aware) ===
-    # Standard tier: name + description recommended.
+    # Standard tier: name + description (STANDARD_REQUIRED per Anthropic spec).
     # Marketplace tier: full IS enterprise standard — all 8 ALWAYS_REQUIRED fields
     # must be present. Missing any of them = ERROR.
-
-    fm.get("metadata", {}) if isinstance(fm.get("metadata"), dict) else {}
 
     if tier == TIER_MARKETPLACE:
         for key in ALWAYS_REQUIRED:
@@ -1681,7 +1752,13 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
             if key not in fm:
                 infos.append(f"[frontmatter] Consider adding '{key}': {reason}")
     else:
-        # Standard tier: only description is recommended
+        # Standard tier: Anthropic spec requires name + description
+        # (STANDARD_REQUIRED). Both surface as WARNINGS at this tier — errors
+        # are reserved for the marketplace gate, and promoting these would be
+        # an error-vs-warning semantics change (architectural per
+        # SCHEMA_CHANGELOG NON-NEGOTIABLE #7, needs prior approval).
+        if "name" not in fm:
+            warnings.append("[frontmatter] Missing required field: 'name' (required by Anthropic spec)")
         if "description" not in fm:
             warnings.append("[frontmatter] Missing recommended field: 'description' (recommended by Anthropic spec)")
 
@@ -1837,7 +1914,17 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
         for tool in tools:
             valid, msg = validate_tool_permission(tool)
             if not valid:
-                errors.append(f"[frontmatter] allowed-tools: {msg}")
+                # Malformed entry (unbalanced parens, empty scope, illegal
+                # characters in the tool name). WARNING at every tier —
+                # escalating malformed entries to a marketplace-tier ERROR
+                # would change error-vs-warning semantics, which is
+                # architectural per SCHEMA_CHANGELOG NON-NEGOTIABLE #7 and
+                # needs prior written approval.
+                warnings.append(f"[frontmatter] allowed-tools: {msg}")
+            elif msg:
+                # Well-formed but unrecognized base tool name (e.g. a
+                # misspelling like 'Reads') — advisory.
+                warnings.append(f"[frontmatter] allowed-tools: {msg}")
 
         # Unscoped Bash check (tier-aware)
         if "Bash" in tools:

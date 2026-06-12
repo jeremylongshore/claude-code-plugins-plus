@@ -124,6 +124,65 @@ compliance are welcome; structural changes to the IS rubric are not.
 
 ---
 
+## [3.8.0] — 2026-06-11 — Real `allowed-tools` entry validation + standard-tier missing-`name` diagnostic (additive)
+
+Code-review fixes (findings f-ccp-validator-1..4). **No change to `ALWAYS_REQUIRED`,
+the tier model, or error-vs-warning semantics** — all new diagnostics are
+WARNING-level (NON-NEGOTIABLE #7 reserves error/warning semantic changes for
+explicitly approved architectural work).
+
+### Fixed — `validate_tool_permission` actually validates (f-ccp-validator-1)
+
+The function previously returned `True` for every entry and its diagnostic
+messages were silently dropped by the caller, so misspelled tool names
+(`Reads`), truncated wildcards (`Bash(git add *` without the closing paren),
+and stray fragments (`wc:*)`) all passed without a word. Now:
+
+- **Malformed entries** (unbalanced parentheses, scope not closing at end of
+  entry, empty scope `Bash()`, illegal characters in the tool name, empty
+  entry) → WARNING at every tier.
+- **Well-formed but unknown base tool names** (e.g. `Reads`) → WARNING with a
+  did-you-mean suggestion when a close match exists.
+- **MCP tool references** (`mcp__server__tool`) are recognized as valid.
+- The old `cmd:*`-format advisory is dropped: Anthropic's canonical example is
+  the space form `Bash(git add *)` (code.claude.com/docs/en/skills), so a
+  no-colon scope is spec-compliant, not suspect.
+
+Severity note: these are WARNINGS (not marketplace ERRORS) because the
+NON-NEGOTIABLES do not define tool-entry severity and #7 makes any
+error-vs-warning escalation an approval-gated architectural change. If a
+malformed-entry ERROR at marketplace tier is wanted, that needs explicit
+sign-off first.
+
+### Fixed — standard tier emits a missing-`name` diagnostic (f-ccp-validator-2)
+
+`STANDARD_REQUIRED = {name, description}`, but a SKILL.md with no `name` field
+produced zero frontmatter-presence diagnostics at standard tier. Now emits a
+WARNING (`Missing required field: 'name'`), parallel to the existing
+missing-`description` warning at that tier.
+
+### Fixed — stale "marketplace = warnings-only" docs (f-ccp-validator-3)
+
+The module docstring and the comment blocks around `MARKETPLACE_TRACKING_FIELDS`
+still described marketplace tier as "WARNINGS for missing polish fields … No
+additional ERRORS beyond Standard" — pre-3.3.0 wording that contradicts
+NON-NEGOTIABLES #1–#2 and the actual code (missing `ALWAYS_REQUIRED` fields
+error at marketplace tier since 3.3.0). Docstrings now state the 8-field
+ERROR behavior. The stale `Schema: 3.0.0` header line is also corrected.
+
+### Fixed — dead expression in `validate_frontmatter` (f-ccp-validator-4)
+
+Removed a discarded `fm.get("metadata", …)` expression statement (dropped
+assignment left over from a refactor; value was never used).
+
+### Migration
+
+None required. Existing skills keep validating; some now surface WARNINGS for
+malformed/unknown `allowed-tools` entries or a missing `name`. Warnings do not
+fail validation (unless `--fail-on-warn`) and do not affect rubric grades.
+
+---
+
 ## [3.7.0] — 2026-05-28 — Recognize `disallowed-tools` (Claude Code v2.1.152, additive)
 
 Adds the `disallowed-tools` field to the schema registry. Source: Claude Code v2.1.152 changelog (released 2026-05-27) — *"Skills and slash commands can now set `disallowed-tools` in frontmatter to remove tools from the model while the skill is active."* **No validator rule changes** — `ALWAYS_REQUIRED` 8-field set is untouched; `disallowed-tools` is recognized as an Anthropic-spec optional field with the same string|array shape as `allowed-tools`.
