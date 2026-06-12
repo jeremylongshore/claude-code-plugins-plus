@@ -1279,6 +1279,30 @@ sources:
       - '*.log'
       - 'scripts/**'
 
+  # ============================================================
+  # Xquik X/Twitter API Skill
+  # https://github.com/Xquik-dev/x-twitter-scraper
+  # ============================================================
+
+  - name: x-twitter-scraper
+    description: X/Twitter REST API and MCP skill for tweet search, profile data, follower exports, media downloads, monitoring, webhooks, and confirmation-gated actions.
+    repo: Xquik-dev/x-twitter-scraper
+    branch: master
+    source_path: skills/x-twitter-scraper
+    target_path: plugins/api-development/x-twitter-scraper
+    author:
+      name: Xquik
+      github: Xquik-dev
+    license: MIT
+    category: api-development
+    verified: true
+    include:
+      - 'SKILL.md'
+      - 'references/**'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 # Sync configuration
 config:
   # Branch to sync from (default: main)
