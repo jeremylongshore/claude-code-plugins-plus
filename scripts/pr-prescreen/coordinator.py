@@ -151,7 +151,9 @@ def run_skill_validator(skill_paths: list[Path], *, validator_script: Path | Non
         data = data["results"]
     if not isinstance(data, list):
         return [{"path": str(p), "fatal": "validator returned non-list JSON"} for p in skill_paths]
-    return data
+    # Drop the trailing kernel_shadow advisory element (DR-049 shadow block) —
+    # it is not a per-skill result and must not become a SkillFinding.
+    return [entry for entry in data if not (isinstance(entry, dict) and "kernel_shadow" in entry)]
 
 
 # --- Top-level coordination -------------------------------------------------

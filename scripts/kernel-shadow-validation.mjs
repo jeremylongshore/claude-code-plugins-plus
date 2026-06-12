@@ -211,6 +211,8 @@ function loadExistingVerdicts(py, script) {
   }
   const map = new Map();
   for (const entry of parsed) {
+    // Skip the trailing kernel_shadow advisory element (DR-049 shadow block).
+    if (entry.kernel_shadow || typeof entry.path !== 'string') continue;
     const abs = resolve(REPO_ROOT, entry.path);
     if ('fatal' in entry) {
       map.set(abs, { pass: false, errors: 0, fatal: true });

@@ -124,6 +124,32 @@ compliance are welcome; structural changes to the IS rubric are not.
 
 ---
 
+## [3.9.0] — 2026-06-12 — Kernel-loaded shadow comparison (advisory, additive)
+
+Consumer-cutover cleanup for the Spec Authority Kernel (DR-049 shadow soak;
+the advisory→authoritative flip is explicitly OUT of this change). **No change
+to `ALWAYS_REQUIRED`, the tier model, or error-vs-warning semantics** — the
+hand-authored 8-field set stays authoritative and is now annotated as the
+D4-preserved audit trail.
+
+- New `load_kernel_required()` helper: existence-guarded read of
+  `node_modules/@intentsolutions/core/schemas/authoring/v1/skill-frontmatter`
+  (upstream-base + is-overlay layers); derives the kernel effective required
+  set (base ∪ overlay) and combined property surface. Kernel absent → degrades
+  gracefully, never raises.
+- New `--kernel-shadow` flag: prints the comparison at startup (stderr).
+  Identical sets → NOTE; delta → WARNING listing the difference. Advisory
+  only — never affects verdicts or exit codes.
+- `--json` output now always carries a trailing `{"kernel_shadow": {...}}`
+  advisory element (both batch and single-file modes) with the required-set
+  comparison plus the `disallowed-tools` presence comparison. In-repo
+  consumers (`run-verification-pipeline.mjs`, `pr-prescreen/coordinator.py`,
+  `kernel-shadow-validation.mjs`) skip entries carrying the `kernel_shadow`
+  key.
+- `ALWAYS_REQUIRED` and the `disallowed-tools` registry entry are commented
+  as D4 hand-authored entries preserved as audit trail; the kernel shadow
+  compares at runtime.
+
 ## [3.8.0] — 2026-06-11 — Real `allowed-tools` entry validation + standard-tier missing-`name` diagnostic (additive)
 
 Code-review fixes (findings f-ccp-validator-1..4). **No change to `ALWAYS_REQUIRED`,

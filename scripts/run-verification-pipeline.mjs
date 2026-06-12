@@ -111,6 +111,8 @@ function aggregateByPlugin(skillResults) {
 
   for (const result of skillResults) {
     if (result.fatal) continue;
+    // Skip the trailing kernel_shadow advisory element (DR-049 shadow block).
+    if (result.kernel_shadow || typeof result.path !== 'string') continue;
 
     const parts = result.path.split('/');
     // Expected: plugins / category / plugin-name / skills / skill-name / SKILL.md

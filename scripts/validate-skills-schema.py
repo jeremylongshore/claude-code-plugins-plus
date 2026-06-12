@@ -99,7 +99,7 @@ except ImportError:
 #                       corrected. No change to ALWAYS_REQUIRED or
 #                       error-vs-warning semantics.
 # See 000-docs/SCHEMA_CHANGELOG.md.
-SCHEMA_VERSION = "3.8.0"
+SCHEMA_VERSION = "3.9.0"
 
 # Validation tiers
 TIER_STANDARD = "standard"
@@ -280,6 +280,7 @@ SKILL_FIELDS = {
     # Same shape as allowed-tools: string (space-separated) OR YAML list.
     # Per SAK plan 031 § 14.10: recognized at IS marketplace tier; not added to
     # MARKETPLACE_TRACKING_FIELDS (it's optional security polish, not required).
+    # D4 hand-authored entry preserved as audit trail; kernel shadow compares at runtime [11hl]
     "disallowed-tools": {"type": "string|array", "source": "anthropic", "tier": "standard"},
     "model": {
         "type": "string",
@@ -418,6 +419,7 @@ PLUGIN_JSON_FIELDS = {
 # This is the canonical IS standard, restored 2026-04-28. The brief experiment with
 # reducing this to {name, description} (schema 3.0–3.1) is reverted; the only kept
 # change is `compatible-with` → `compatibility` (free-text per agentskills.io).
+# D4 hand-authored entry preserved as audit trail; kernel shadow compares at runtime [11hl]
 ALWAYS_REQUIRED = {"name", "description", "allowed-tools", "version", "author", "license", "compatibility", "tags"}
 
 # Conditional fields: relevant when other fields are set.
@@ -445,6 +447,130 @@ FACELIFT_FIELDS = {
     "model": "Setting an explicit model prevents unexpected behavior when session model changes",
     "effort": "Setting effort level optimizes reasoning for this skill's complexity",
 }
+
+
+# === KERNEL SHADOW (DR-049 — advisory, never gating) ====================
+# The Spec Authority Kernel (@intentsolutions/core, pinned exactly in
+# package.json) publishes the machine-spec skill-frontmatter contract at
+# schemas/authoring/v1/. The effective required set is the union of the
+# upstream-base layer's `required` (agentskills.io standardFloor) and the
+# is-overlay layer's `required` (the IS marketplace promotions/inventions).
+# At runtime the validator can COMPARE that derived set against the
+# hand-authored ALWAYS_REQUIRED above (which stays AUTHORITATIVE — this is
+# a shadow, not a cutover; the flip is gated on the DR-049 soak). [11hl]
+
+_KERNEL_SCHEMA_DIR = (
+    Path(__file__).resolve().parents[1] / "node_modules" / "@intentsolutions" / "core" / "schemas" / "authoring" / "v1"
+)
+
+
+def load_kernel_required() -> Dict[str, Any]:
+    """Existence-guarded load of the kernel's skill-frontmatter contract.
+
+    Reads the composed schema's two authored layers (upstream-base +
+    is-overlay) and derives the effective required set + the combined
+    property surface. Returns a dict:
+      {"available": False, "reason": str}                       when the kernel
+                                                                 is not installed
+      {"available": True, "required": set, "properties": set,
+       "schema_dir": str}                                        on success
+    Never raises — a missing/corrupt kernel degrades to available=False.
+    """
+    composition = _KERNEL_SCHEMA_DIR / "skill-frontmatter.schema.json"
+    base = _KERNEL_SCHEMA_DIR / "upstream-base" / "skill-frontmatter.v1.json"
+    overlay = _KERNEL_SCHEMA_DIR / "is-overlay" / "skill-frontmatter.v1.json"
+    if not (composition.exists() and base.exists() and overlay.exists()):
+        return {
+            "available": False,
+            "reason": (
+                "kernel schemas not found under node_modules/@intentsolutions/core/"
+                "schemas/authoring/v1 (run pnpm install)"
+            ),
+        }
+    try:
+        base_doc = json_module.loads(base.read_text(encoding="utf-8"))
+        overlay_doc = json_module.loads(overlay.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as e:
+        return {"available": False, "reason": f"kernel schema load failed: {e}"}
+    required = set(base_doc.get("required", []) or []) | set(overlay_doc.get("required", []) or [])
+    properties = set(base_doc.get("properties", {}) or {}) | set(overlay_doc.get("properties", {}) or {})
+    return {
+        "available": True,
+        "required": required,
+        "properties": properties,
+        "schema_dir": "node_modules/@intentsolutions/core/schemas/authoring/v1",
+    }
+
+
+def kernel_shadow_report() -> Dict[str, Any]:
+    """Build the kernel-shadow comparison block (machine-readable).
+
+    Compares the kernel-derived effective required set against the
+    hand-authored ALWAYS_REQUIRED, and the kernel property surface against
+    the hand-authored `disallowed-tools` registry entry. ALWAYS_REQUIRED
+    stays authoritative; this block only surfaces drift.
+    """
+    kernel = load_kernel_required()
+    report: Dict[str, Any] = {
+        "mode": "shadow-advisory",
+        "kernel_package": "@intentsolutions/core",
+        "schema": "authoring/v1/skill-frontmatter (upstream-base + is-overlay)",
+        "available": kernel["available"],
+    }
+    if not kernel["available"]:
+        report["note"] = kernel["reason"]
+        return report
+    hand = set(ALWAYS_REQUIRED)
+    kreq = kernel["required"]
+    report["hand_authored_always_required"] = sorted(hand)
+    report["kernel_effective_required"] = sorted(kreq)
+    report["required_match"] = hand == kreq
+    report["required_only_in_hand_authored"] = sorted(hand - kreq)
+    report["required_only_in_kernel"] = sorted(kreq - hand)
+    # disallowed-tools shadow: the hand-authored SKILL_FIELDS entry is
+    # D4-preserved; report whether the kernel property surface carries it yet.
+    report["disallowed_tools"] = {
+        "in_hand_authored_registry": "disallowed-tools" in SKILL_FIELDS,
+        "in_kernel_properties": "disallowed-tools" in kernel["properties"],
+        "match": ("disallowed-tools" in SKILL_FIELDS) == ("disallowed-tools" in kernel["properties"]),
+    }
+    return report
+
+
+def print_kernel_shadow(report: Dict[str, Any]) -> None:
+    """Human-readable startup print for --kernel-shadow (advisory only)."""
+    prefix = "[kernel-shadow]"
+    if not report["available"]:
+        print(f"{prefix} NOTE: {report['note']} — shadow comparison skipped", file=sys.stderr)
+        return
+    if report["required_match"]:
+        print(
+            f"{prefix} NOTE: hand-authored ALWAYS_REQUIRED matches the kernel effective "
+            f"required set ({len(report['kernel_effective_required'])} fields)",
+            file=sys.stderr,
+        )
+    else:
+        print(
+            f"{prefix} WARNING: hand-authored ALWAYS_REQUIRED differs from the kernel "
+            f"effective required set — only-in-hand-authored: "
+            f"{report['required_only_in_hand_authored'] or 'none'}; only-in-kernel: "
+            f"{report['required_only_in_kernel'] or 'none'} "
+            f"(hand-authored set stays authoritative; surface this delta per DR-049)",
+            file=sys.stderr,
+        )
+    dt = report["disallowed_tools"]
+    if dt["match"]:
+        print(f"{prefix} NOTE: 'disallowed-tools' presence agrees between registry and kernel", file=sys.stderr)
+    else:
+        print(
+            f"{prefix} INFO: 'disallowed-tools' is in the hand-authored registry but not in the "
+            f"kernel base+overlay property surface (expected until the kernel vendors the "
+            f"2026-05-27 Claude Code field; hand-authored entry stays authoritative)"
+            if dt["in_hand_authored_registry"] and not dt["in_kernel_properties"]
+            else f"{prefix} WARNING: 'disallowed-tools' is in the kernel property surface but missing "
+            f"from the hand-authored registry — add it to SKILL_FIELDS",
+            file=sys.stderr,
+        )
 
 
 def detect_component(path: Path) -> tuple:
@@ -4523,6 +4649,15 @@ def main() -> int:
         help="Output format for --deep mode (default: terminal)",
     )
     parser.add_argument(
+        "--kernel-shadow",
+        action="store_true",
+        help=(
+            "Compare the hand-authored ALWAYS_REQUIRED set against the kernel "
+            "(@intentsolutions/core authoring/v1) effective required set at startup "
+            "(advisory; the hand-authored set stays authoritative per DR-049)"
+        ),
+    )
+    parser.add_argument(
         "path",
         nargs="?",
         default=None,
@@ -4530,6 +4665,13 @@ def main() -> int:
     )
     args, _unknown = parser.parse_known_args()
     verbose = args.verbose
+
+    # Kernel shadow (DR-049, advisory): the comparison block is always embedded
+    # in --json output; the human-readable startup print is opt-in via
+    # --kernel-shadow. Never affects exit codes or verdicts. [11hl]
+    kernel_shadow = kernel_shadow_report()
+    if args.kernel_shadow:
+        print_kernel_shadow(kernel_shadow)
 
     # Determine validation tier
     # Priority: explicit flag > auto-detect > default (standard)
@@ -4606,7 +4748,10 @@ def main() -> int:
                                 {
                                     "path": str(target),
                                     "fatal": result["fatal"],
-                                }
+                                },
+                                # Trailing advisory element; consumers skip
+                                # entries carrying the kernel_shadow key.
+                                {"kernel_shadow": kernel_shadow},
                             ]
                         )
                     )
@@ -4632,7 +4777,10 @@ def main() -> int:
                                 "warnings": result.get("warnings", []),
                                 "infos": result.get("infos", []),
                                 "breakdown": grade_info.get("breakdown", {}),
-                            }
+                            },
+                            # Trailing advisory element; consumers skip
+                            # entries carrying the kernel_shadow key.
+                            {"kernel_shadow": kernel_shadow},
                         ]
                     )
                 )
@@ -4868,9 +5016,11 @@ def main() -> int:
 
         total_description_chars += int(result.get("description_length") or 0)
 
-    # JSON output mode: emit machine-readable results and exit
+    # JSON output mode: emit machine-readable results and exit. The trailing
+    # kernel_shadow element is advisory (DR-049); consumers skip entries
+    # carrying the kernel_shadow key.
     if args.json:
-        print(json_module.dumps(json_skill_results))
+        print(json_module.dumps(json_skill_results + [{"kernel_shadow": kernel_shadow}]))
         return 0
 
     # Validate commands
