@@ -570,7 +570,7 @@ jobs:
         if: matrix.test-type == 'python-tests' && always()
         uses: codecov/codecov-action@v5
         with:
-          file: ./coverage.xml
+          files: ./coverage.xml
           flags: python
           fail_ci_if_error: false
 
