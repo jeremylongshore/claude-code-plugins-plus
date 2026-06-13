@@ -180,4 +180,3 @@ The same day, away from the gate socket:
   "keywords": ["docker", "debugging", "ai-agents", "devops", "ci-cd", "linux-capabilities", "unix-socket", "container-hardening"]
 }
 </script>
-
