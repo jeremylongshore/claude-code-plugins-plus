@@ -180,4 +180,3 @@ And don't draw the wrong conclusion about the five design subagents we declined 
   "keywords": "architecture, devops, claude-code, hugo, deployment, requirements, infrastructure decoupling, blast radius"
 }
 </script>
-
