@@ -24,6 +24,7 @@ The pre-flight normalized state by running `git checkout master`. But `master` w
 The real blockage started days earlier. The monthly retrospective cron TIMED OUT on 2026-06-01 (exit 124, wall-clock 1800 seconds). It wrote the retro file at 09:54, then died ~6 minutes later before committing and pushing. That left behind an orphan branch, `post/may-2026-monthly-retro`, gumming up every subsequent run. The monthly script had never received the pty-wrap treatment the daily script got, so the timeout log was opaque—no breadcrumbs.
 
 Forensic accounting confirmed the damage:
+
 - **Daily 7am:** FAILED 9 mornings straight (5/29 → 6/05). Pre-flight FATAL'd before the LLM ran.
 - **Monthly retro (6/01):** TIMED OUT at exactly 1800s.
 - **Monthly calibrate (6/01):** Non-zero exit, 0-byte report—AND it fired a "calibration done" notification at normal priority. False success: the monitor reported victory while producing nothing.
@@ -78,4 +79,3 @@ The real lesson: monitoring silence is worse than monitoring noise. Nine days of
 - [Five Tags, Zero Ships: How an Auto-Release Workflow Lied for a Whole Day](/posts/five-tags-zero-ships/)
 - [Five Silent Failures in One Day](/posts/five-silent-failures-one-day/)
 - [Ship Dormant, Wire Later — A Multi-Agent Slack Production Day](/posts/ship-dormant-wire-later-multi-agent-slack/)
-
