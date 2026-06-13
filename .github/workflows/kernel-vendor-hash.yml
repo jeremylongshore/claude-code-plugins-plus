@@ -1,0 +1,112 @@
+name: Kernel Vendor Version Coupling (advisory)
+
+# ADVISORY / REPORT-ONLY — the VERSION-COUPLING CONSISTENCY MODEL for
+# @intentsolutions/core (the Spec Authority Kernel). Implements plan 033 § 14.15.
+#
+# WHAT THIS CHECKS
+#   The three version identities and their ordering invariant:
+#     (V) vendored snapshot version   — .kernel-vendor/authoring/v1/index.json
+#                                        $schemaVersion, OR (today) the installed
+#                                        @intentsolutions/core pin in node_modules.
+#     (C) CCP-declared kernel          — the exact package.json pin.
+#     (K) kernel latest published      — npm @intentsolutions/core / the sibling repo.
+#   The invariant: V <= C <= K. Plus bounded staleness: the vendored snapshot may
+#   lag the kernel latest by <= 7 calendar days; beyond that, staleness is REPORTED.
+#
+# SOAK DISCIPLINE — INTENTIONALLY NON-AUTHORITATIVE
+#   The CCP kernel pin is FROZEN at 0.4.1 during the DR-049 shadow soak (matures
+#   2026-06-18). This gate is ORTHOGONAL to the advisory->blocking authority flip:
+#   it polices VERSION ORDERING + STALENESS only and must NEVER change validator
+#   authority or pressure a pin bump during the soak. Therefore:
+#     * It is NOT in the branch-protection required-status set.
+#     * The check step uses `continue-on-error: true` (advisory; exit 0 by default).
+#     * On a >7-day staleness it REPORTS (and, POST-DR-049-FLIP, would open a
+#       kernel-bump PR — that auto-PR is a DEFERRED ACTION, not wired here).
+#
+# Promotion to blocking (drop continue-on-error, run with --strict) is a SEPARATE
+# step that lands only WITH the DR-049 advisory->authoritative flip — NOT this PR.
+#
+# Beads: k8wo (kernel-vendor consistency model — version-coupling).
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/kernel-vendor-hash.mjs'
+      - 'scripts/validate-skills-schema.py'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.kernel-vendor/**'
+      - '.github/workflows/kernel-vendor-hash.yml'
+  schedule:
+    # Daily staleness sweep — catches a kernel release that ages past the 7-day
+    # bound even when no CCP PR touches the pin. Advisory: reports, never blocks.
+    - cron: '17 7 * * *'
+
+# Read-only — the advisory check never needs write scope. (The deferred auto-bump
+# PR, post-flip, would add `pull-requests: write` then.)
+permissions:
+  contents: read
+
+concurrency:
+  group: kernel-vendor-hash-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  kernel-vendor-hash:
+    name: kernel-vendor-hash (advisory, non-blocking)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      # Installs @intentsolutions/core@0.4.1 (exact pin) so the script can resolve
+      # V from node_modules in the absence of a .kernel-vendor/ snapshot.
+      - name: Install root dev dependencies
+        run: pnpm install --frozen-lockfile --filter "claude-code-plugins-monorepo"
+
+      # K (kernel latest published) is resolved from npm in CI — the read-only
+      # sibling repo is not checked out here. Pass it explicitly so C <= K and the
+      # staleness age can be evaluated. `npm view` is read-only.
+      - name: Resolve kernel latest published version
+        id: kernel
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          K="$(npm view @intentsolutions/core version 2>/dev/null || true)"
+          PUB="$(npm view @intentsolutions/core time.modified 2>/dev/null || true)"
+          echo "latest=${K}" >> "$GITHUB_OUTPUT"
+          echo "published=${PUB}" >> "$GITHUB_OUTPUT"
+          echo "resolved K=${K} published=${PUB}"
+
+      # The single advisory step. continue-on-error guarantees a harness failure
+      # (or a real ordering/staleness violation) can NEVER turn this check red in a
+      # blocking way during the soak. The script itself defaults to exit 0.
+      - name: Run kernel vendor version-coupling check (report-only)
+        id: vendor-hash
+        continue-on-error: true
+        run: |
+          ARGS=""
+          if [ -n "${{ steps.kernel.outputs.latest }}" ]; then
+            ARGS="--kernel-latest ${{ steps.kernel.outputs.latest }}"
+          fi
+          if [ -n "${{ steps.kernel.outputs.published }}" ]; then
+            ARGS="$ARGS --kernel-published ${{ steps.kernel.outputs.published }}"
+          fi
+          # shellcheck disable=SC2086
+          node scripts/kernel-vendor-hash.mjs $ARGS | tee "$GITHUB_STEP_SUMMARY" || true
+
+      - name: Upload version-coupling report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kernel-vendor-hash-report
+          path: scripts/.kernel-vendor-hash/report.json
+          if-no-files-found: warn
