@@ -3,42 +3,30 @@
 # Repo-specific — tuned to this repo's real surface (catalog-heavy, validator-driven,
 # multi-package monorepo). Not a generic starter.
 #
-# Posture:
-# - project target: auto (no regression vs current baseline) + 2% slack
-# - patch target: 40% (anchored to what the current test surface actually delivers;
-#   raise as pytest coverage of validate-skills-schema.py and packages/cli grows)
-# - if_ci_failed: success (Codecov outage must not red-X the CI)
-# - only_pulls: true (don't gate the bot-driven push streams to main)
+# Posture (PR-surface noise disabled 2026-06-12):
+# - NO Codecov PR comments (comment: false) — kills the codecov-commenter bot
+# - NO commit status checks (coverage.status: false) — codecov/project &
+#   codecov/patch no longer post; they were non-required noise on every PR
+# - NO GitHub check annotations (github_checks: false)
+# - Coverage is STILL uploaded (silent) — history + components stay on the
+#   Codecov dashboard; it just no longer clutters PR conversations.
 # - components: 7 real packages/dirs only — no phantoms
+#
+# To re-enable a gate later, restore coverage.status.project/patch and flip
+# comment/github_checks back on in the SAME PR that adds the tests to back it.
 
 codecov:
   require_ci_to_pass: false
+
+github_checks: false
+
+comment: false
 
 coverage:
   precision: 2
   round: down
   range: '30...100'
-
-  status:
-    project:
-      default:
-        target: auto
-        threshold: 2%
-        if_ci_failed: success
-        only_pulls: true
-    patch:
-      default:
-        target: 40%
-        threshold: 10%
-        if_ci_failed: success
-        only_pulls: true
-
-comment:
-  layout: 'condensed_header, diff, flags, components, files'
-  behavior: default
-  require_changes: true
-  require_base: false
-  require_head: true
+  status: false
 
 ignore:
   # Documentation — never measured
