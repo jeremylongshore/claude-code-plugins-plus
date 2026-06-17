@@ -157,4 +157,3 @@ The legacy single-key fallback stays for back-compat: an existing `TEAMKB_API_KE
 - [Green CI Proves Nothing: Why Your Tests Gate Zero Calls](/posts/when-green-ci-proves-nothing/)
 - [Honor the Gate When the Verdict Is Inconvenient](/posts/honor-the-gate-when-the-verdict-is-inconvenient/)
 - [When --cap-drop ALL Broke the Gate Socket](/posts/cap-drop-all-broke-the-gate-socket/)
-
