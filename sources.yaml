@@ -1145,6 +1145,31 @@ sources:
       - '.git/**'
       - '*.log'
 
+  # ============================================================
+  # Apple Notes (Conner K Ward)
+  # https://github.com/connerkward/mcp-apple-notes
+  # ============================================================
+
+  - name: apple-notes
+    description: Semantic search and connection-discovery across your own Apple Notes — hybrid search, Swanson-ABC bridges, entity threads, cited synthesis. On-device embeddings; macOS.
+    repo: connerkward/mcp-apple-notes
+    source_path: .
+    target_path: plugins/community/apple-notes
+    author:
+      name: Conner K Ward
+      github: connerkward
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - 'plugin.json'
+      - 'SKILL.md'
+      - 'README.md'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)
