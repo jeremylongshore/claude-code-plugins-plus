@@ -1145,6 +1145,144 @@ sources:
       - '.git/**'
       - '*.log'
 
+  # ============================================================
+  # Conner Ward (connerkward)
+  # Frontend design, lookdev, and screen-recording skills
+  # ============================================================
+
+  - name: lookdev
+    description: Human-in-the-loop web studio to tune AI-generated output by eye.
+    repo: connerkward/lookdev-studio-skill
+    source_path: .
+    target_path: plugins/community/lookdev
+    author:
+      name: Conner Ward
+      github: connerkward
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - 'SKILL.md'
+      - 'README.md'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
+  - name: deterministic-design
+    description: 'Render the UI and prove it''s balanced + usable: deterministic layout audit + vision-judged usability.'
+    repo: connerkward/deterministic-design-skill
+    source_path: .
+    target_path: plugins/community/deterministic-design
+    author:
+      name: Conner Ward
+      github: connerkward
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - 'SKILL.md'
+      - 'README.md'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
+  - name: ckw-design
+    description: 'Frontend design skill: direction, design system, visual philosophy.'
+    repo: connerkward/ckw-design-skill
+    source_path: .
+    target_path: plugins/community/ckw-design
+    author:
+      name: Conner Ward
+      github: connerkward
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - 'SKILL.md'
+      - 'README.md'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
+  - name: screenstudio-alt
+    description: 'Open-source headless Screen Studio alternative: auto-zoom, idle speed-up, vertical export.'
+    repo: connerkward/screenstudio-alternative-skill
+    source_path: .
+    target_path: plugins/community/screenstudio-alt
+    author:
+      name: Conner Ward
+      github: connerkward
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - 'SKILL.md'
+      - 'README.md'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
+  - name: web-media-getter
+    description: One query across free image/video/GIF APIs, license-tagged results.
+    repo: connerkward/web-media-getter-skill
+    source_path: .
+    target_path: plugins/community/web-media-getter
+    author:
+      name: Conner Ward
+      github: connerkward
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - 'SKILL.md'
+      - 'README.md'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
+  - name: macos-screen-recorder
+    description: macOS screen recorder with system audio via ScreenCaptureKit, CLI, no driver.
+    repo: connerkward/macos-screen-recorder-system-audio
+    source_path: .
+    target_path: plugins/community/macos-screen-recorder
+    author:
+      name: Conner Ward
+      github: connerkward
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - 'SKILL.md'
+      - 'README.md'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
+  - name: lookdev-auto
+    description: 'Automated visual tuning: a vision model rates rendered variants in a loop.'
+    repo: connerkward/lookdev-auto-skill
+    source_path: .
+    target_path: plugins/community/lookdev-auto
+    author:
+      name: Conner Ward
+      github: connerkward
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - 'SKILL.md'
+      - 'README.md'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)
