@@ -1175,6 +1175,28 @@ sources:
       - '.git/**'
       - '*.log'
 
+  - name: mengram
+    description: Persistent memory for Claude Code that survives /clear, machine switches, and team handoffs. Hosted memory backend with hybrid retrieval (vector + BM25 + RRF), Ebbinghaus temporal decay, and importance weighting. Same memory available across Claude Code, Cursor, Codex, and ChatGPT.
+    repo: alibaizhanov/mengram
+    source_path: integrations/claude-code-plugin
+    target_path: plugins/productivity/mengram
+    author:
+      name: Ali Baizhanov
+      github: alibaizhanov
+      email: ali@mengram.io
+    license: Apache-2.0
+    category: productivity
+    verified: false
+    include:
+      - '.claude-plugin/**'
+      - 'skills/**'
+      - 'hooks/**'
+      - 'README.md'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)
