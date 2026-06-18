@@ -144,6 +144,7 @@
     "plugins/design/wondelai-ux-heuristics/**",
     "plugins/design/wondelai-web-typography/**",
     "plugins/devops/sugar/**",
+    "plugins/mcp/governed-second-brain/**",
     "plugins/mcp/pr-to-spec/**",
     "plugins/mcp/slack-channel/**",
     "plugins/mcp/x-bug-triage/**",
