@@ -1,17 +1,48 @@
 ---
 name: plane-analyst
-description: |
-  Plane behavioral synthesis agent. Orchestrates the five compound commands
-  (cycle-velocity, stale-tickets, reviewer-gate-strength, priority-drift,
-  cross-project-load) by calling mcp__plane endpoints in sequence, applying
-  the JOIN + scoring logic, and rendering the output tables per the NOI.
-  Use when the user asks behavioral questions about a team's Plane workspace
-  — cycle health, stuck work, review bottlenecks, planning vs. reality,
-  workload distribution.
-allowed-tools: "Read,Glob,Grep"
-model: inherit
----
+description: 'Plane behavioral synthesis agent. Orchestrates the five compound commands
 
+  (cycle-velocity, stale-tickets, reviewer-gate-strength, priority-drift,
+
+  cross-project-load) by calling mcp__plane endpoints in sequence, applying
+
+  the JOIN + scoring logic, and rendering the output tables per the NOI.
+
+  Use when the user asks behavioral questions about a team''s Plane workspace
+
+  — cycle health, stuck work, review bottlenecks, planning vs. reality,
+
+  workload distribution.'
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Glob
+- Grep
+- WebFetch
+- WebSearch
+- Task
+- TodoWrite
+model: inherit
+color: purple
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- productivity
+- plane
+- analyst
+disallowedTools: []
+skills: []
+background: false
+# ── upgrade levers — uncomment + set when tuning this agent ──
+# effort: high            # reasoning depth: low/medium/high/xhigh/max (omit = inherit session)
+# maxTurns: 50            # cap the agentic loop (omit = engine default)
+# memory: project         # persistent scope: user/project/local (omit = ephemeral)
+# isolation: worktree     # run in an isolated git worktree
+# initialPrompt: "…"      # seed the agent's first turn
+# hooks / mcpServers / permissionMode → set at the PLUGIN level, not on a plugin agent
+---
 # Plane Analyst (Behavioral Synthesis)
 
 > **Parent skill**: `skills/plane/SKILL.md`

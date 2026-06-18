@@ -3,9 +3,24 @@ name: repo-analyzer
 description: Use this agent for one-shot repo eligibility checks (CLA / activity / competing PRs / CONTRIBUTING.md). DEPRECATED — most function moved to @researcher dossiers.
 tools: Bash, Read
 model: sonnet
+color: green
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- community
+- repo
+- analyzer
+disallowedTools: []
+skills: []
+background: false
 memory: user
+# ── upgrade levers — uncomment + set when tuning this agent ──
+# effort: high            # reasoning depth: low/medium/high/xhigh/max (omit = inherit session)
+# maxTurns: 50            # cap the agentic loop (omit = engine default)
+# isolation: worktree     # run in an isolated git worktree
+# initialPrompt: "…"      # seed the agent's first turn
+# hooks / mcpServers / permissionMode → set at the PLUGIN level, not on a plugin agent
 ---
-
 # Repo Analyzer Agent
 
 **Purpose**: Decide if a target repo / issue is worth claiming. Pulls CONTRIBUTING.md, recent maintainer activity, CLA status, competing PRs.

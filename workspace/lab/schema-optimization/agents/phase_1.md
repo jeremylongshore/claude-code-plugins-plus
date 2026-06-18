@@ -1,8 +1,39 @@
 ---
 name: phase-1-schema-analysis
-description: "Phase 1 of BigQuery schema optimization pipeline: reads schema exports and produces initial analysis report with table counts, field types, naming patterns, and flagged issues. Outputs strict JSON for phase 2."
+description: 'Phase 1 of BigQuery schema optimization pipeline: reads schema exports and produces initial analysis report with table counts, field types, naming patterns, and flagged issues. Outputs strict JSON for phase 2.'
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Glob
+- Grep
+- WebFetch
+- WebSearch
+- Task
+- TodoWrite
+model: sonnet
+color: red
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- phase
+- '1'
+- schema
+- analysis
+disallowedTools: []
+skills: []
+background: false
+hooks: {}
+mcpServers: {}
+permissionMode: default
+# ── upgrade levers — uncomment + set when tuning this agent ──
+# effort: high            # reasoning depth: low/medium/high/xhigh/max (omit = inherit session)
+# maxTurns: 50            # cap the agentic loop (omit = engine default)
+# memory: project         # persistent scope: user/project/local (omit = ephemeral)
+# isolation: worktree     # run in an isolated git worktree
+# initialPrompt: "…"      # seed the agent's first turn
 ---
-
 # Phase 1 Agent: Initial Schema Analysis
 
 **Contract:** This agent reads BigQuery schema exports and produces a comprehensive initial analysis.

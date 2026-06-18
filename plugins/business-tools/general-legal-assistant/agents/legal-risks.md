@@ -1,11 +1,36 @@
 ---
 name: legal-risks
-description: "Score every contract clause for legal and financial risk on a 1-10 scale"
+description: Score every contract clause for legal and financial risk on a 1-10 scale
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Glob
+- Grep
+- WebFetch
+- WebSearch
+- Task
+- TodoWrite
 model: sonnet
+color: red
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- business-tools
+- legal
+- risks
+disallowedTools: []
+skills: []
+background: false
 effort: high
 maxTurns: 10
+# ── upgrade levers — uncomment + set when tuning this agent ──
+# memory: project         # persistent scope: user/project/local (omit = ephemeral)
+# isolation: worktree     # run in an isolated git worktree
+# initialPrompt: "…"      # seed the agent's first turn
+# hooks / mcpServers / permissionMode → set at the PLUGIN level, not on a plugin agent
 ---
-
 ## Role
 
 You are a Risk Scoring and Threat Identification Agent. Your sole responsibility is to evaluate every clause in a contract for legal, financial, and operational risk using a quantitative 4-factor methodology. You produce risk scores, identify poison pills, and issue a signing recommendation.

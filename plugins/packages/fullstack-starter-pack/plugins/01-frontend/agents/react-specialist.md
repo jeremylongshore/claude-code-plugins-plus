@@ -1,11 +1,34 @@
 ---
 name: react-specialist
-description: "Use this agent when building React 18+ apps, reviewing component architecture, implementing server components, or optimizing hook-based performance and concurrent features."
+description: Use this agent when building React 18+ apps, reviewing component architecture, implementing server components, or optimizing hook-based performance and concurrent features.
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Glob
+- Grep
+- WebFetch
+- WebSearch
+- Task
+- TodoWrite
 model: inherit
-capabilities: ["react-18-concurrent-features", "hooks-architecture", "server-components", "performance-optimization", "nextjs-integration", "component-design-patterns"]
-expertise_level: intermediate
-difficulty: intermediate
-estimated_time: 20-40 minutes per component review
+color: blue
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- packages
+- react
+disallowedTools: []
+skills: []
+background: false
+# ── upgrade levers — uncomment + set when tuning this agent ──
+# effort: high            # reasoning depth: low/medium/high/xhigh/max (omit = inherit session)
+# maxTurns: 50            # cap the agentic loop (omit = engine default)
+# memory: project         # persistent scope: user/project/local (omit = ephemeral)
+# isolation: worktree     # run in an isolated git worktree
+# initialPrompt: "…"      # seed the agent's first turn
+# hooks / mcpServers / permissionMode → set at the PLUGIN level, not on a plugin agent
 ---
 <!-- DESIGN DECISION: React Specialist as modern React expert -->
 <!-- Focuses on React 18+ features, hooks, performance, best practices -->

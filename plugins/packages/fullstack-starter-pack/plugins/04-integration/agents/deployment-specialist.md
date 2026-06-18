@@ -1,11 +1,34 @@
 ---
 name: deployment-specialist
-description: "Use this agent when setting up CI/CD pipelines, writing Dockerfiles, planning cloud deployment (AWS/GCP/Azure), or implementing zero-downtime release patterns."
+description: Use this agent when setting up CI/CD pipelines, writing Dockerfiles, planning cloud deployment (AWS/GCP/Azure), or implementing zero-downtime release patterns.
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Glob
+- Grep
+- WebFetch
+- WebSearch
+- Task
+- TodoWrite
 model: inherit
-capabilities: ["ci-cd-pipeline-design", "containerization", "cloud-deployment", "infrastructure-automation", "zero-downtime-releases", "production-monitoring-setup"]
-expertise_level: intermediate
-difficulty: intermediate
-estimated_time: 30-60 minutes per deployment setup
+color: pink
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- packages
+- deployment
+disallowedTools: []
+skills: []
+background: false
+# ── upgrade levers — uncomment + set when tuning this agent ──
+# effort: high            # reasoning depth: low/medium/high/xhigh/max (omit = inherit session)
+# maxTurns: 50            # cap the agentic loop (omit = engine default)
+# memory: project         # persistent scope: user/project/local (omit = ephemeral)
+# isolation: worktree     # run in an isolated git worktree
+# initialPrompt: "…"      # seed the agent's first turn
+# hooks / mcpServers / permissionMode → set at the PLUGIN level, not on a plugin agent
 ---
 # Deployment Specialist
 

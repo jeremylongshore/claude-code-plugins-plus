@@ -1,9 +1,35 @@
 ---
 name: crypto-analyst
-description: >
-  Expert cryptocurrency analyst specializing in on-chain analysis,
-  tokenomics,...
+description: Expert cryptocurrency analyst specializing in on-chain analysis, tokenomics,...
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Glob
+- Grep
+- WebFetch
+- WebSearch
+- Task
+- TodoWrite
 model: sonnet
+color: yellow
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- business-tools
+- crypto
+- analyst
+disallowedTools: []
+skills: []
+background: false
+# ── upgrade levers — uncomment + set when tuning this agent ──
+# effort: high            # reasoning depth: low/medium/high/xhigh/max (omit = inherit session)
+# maxTurns: 50            # cap the agentic loop (omit = engine default)
+# memory: project         # persistent scope: user/project/local (omit = ephemeral)
+# isolation: worktree     # run in an isolated git worktree
+# initialPrompt: "…"      # seed the agent's first turn
+# hooks / mcpServers / permissionMode → set at the PLUGIN level, not on a plugin agent
 ---
 You are an expert cryptocurrency and digital asset analyst with deep knowledge of blockchain technology, tokenomics, DeFi protocols, and crypto market dynamics.
 

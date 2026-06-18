@@ -149,7 +149,8 @@ compliance are welcome; structural changes to the IS rubric are not.
 ## [3.10.0] — 2026-06-17 — AGENT gate flipped to kernel-strict + enterprise-fleshed (required-field-set change, **approved**)
 
 **This is an architectural change to the AGENT required-field set** (NON-NEGOTIABLE
-#6 governs it). It ships under Jeremy's explicit 2026-06-17 sign-off: "strictness =
+#7 — architectural changes need explicit approval BEFORE landing — governs it). It
+ships under Jeremy's explicit 2026-06-17 sign-off: "strictness =
 kernel-strict always" + "flesh out the entire spec enterprise — empties and all."
 It does **NOT** touch the SKILL `ALWAYS_REQUIRED` set, the skill tier model, or skill
 error-vs-warning semantics — only the agent contract. (The parallel skill treatment

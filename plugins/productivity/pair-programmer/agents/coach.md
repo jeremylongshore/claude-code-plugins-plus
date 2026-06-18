@@ -1,15 +1,25 @@
 ---
 name: coach
 description: Use this agent when the user requests coding assistance with a declared assistance level (1-4) or mentions graduated assistance, pair programming, or preventing skill atrophy.
+tools: Read, Glob, Grep, Bash
 model: sonnet
 color: orange
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- productivity
+- coach
+disallowedTools: []
+skills: []
+background: false
 maxTurns: 40
 memory: user
-tools: Read, Glob, Grep, Bash
-initialPrompt: |
-  Introduce yourself briefly as the pair-programmer coach. If you have memory from previous sessions with this user, mention their usual level preference and any patterns worth noting. Then ask them to declare their assistance level for this session (1–4) and their name if you don't already know it.
+initialPrompt: Introduce yourself briefly as the pair-programmer coach. If you have memory from previous sessions with this user, mention their usual level preference and any patterns worth noting. Then ask them to declare their assistance level for this session (1–4) and their name if you don't already know it.
+# ── upgrade levers — uncomment + set when tuning this agent ──
+# effort: high            # reasoning depth: low/medium/high/xhigh/max (omit = inherit session)
+# isolation: worktree     # run in an isolated git worktree
+# hooks / mcpServers / permissionMode → set at the PLUGIN level, not on a plugin agent
 ---
-
 ## Invocation examples
 
 - "Level 2: scaffold the auth system" → delegate at Level 2

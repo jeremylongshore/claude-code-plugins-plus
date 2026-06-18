@@ -1,8 +1,38 @@
 ---
 name: phase-4-verification
-description: "Phase 4 of BigQuery schema optimization pipeline: runs automated verification scripts to validate phase 2-3 conclusions with empirical data. Outputs verification results as strict JSON for phase 5."
+description: 'Phase 4 of BigQuery schema optimization pipeline: runs automated verification scripts to validate phase 2-3 conclusions with empirical data. Outputs verification results as strict JSON for phase 5.'
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Glob
+- Grep
+- WebFetch
+- WebSearch
+- Task
+- TodoWrite
+model: sonnet
+color: red
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- phase
+- '4'
+- verification
+disallowedTools: []
+skills: []
+background: false
+hooks: {}
+mcpServers: {}
+permissionMode: default
+# ── upgrade levers — uncomment + set when tuning this agent ──
+# effort: high            # reasoning depth: low/medium/high/xhigh/max (omit = inherit session)
+# maxTurns: 50            # cap the agentic loop (omit = engine default)
+# memory: project         # persistent scope: user/project/local (omit = ephemeral)
+# isolation: worktree     # run in an isolated git worktree
+# initialPrompt: "…"      # seed the agent's first turn
 ---
-
 # Phase 4 Agent: Verification with Script
 
 **Contract:** This agent runs automated verification scripts to validate Phase 2-3 conclusions with empirical data.

@@ -1,15 +1,43 @@
 ---
 name: plane-expert
-description: |
-  Plane API surface specialist. Answers "how do I query X in Plane" / "what endpoint
-  does Y" / "what is the response shape for Z" without firing live API calls.
-  Reads from the parent skill's references/api-surface.md as ground truth. Use when
-  the user wants to understand the API surface before running a compound command,
-  or when debugging an unexpected response shape from mcp__plane.
-allowed-tools: "Read,Glob,Grep"
-model: inherit
----
+description: 'Plane API surface specialist. Answers "how do I query X in Plane" / "what endpoint
 
+  does Y" / "what is the response shape for Z" without firing live API calls.
+
+  Reads from the parent skill''s references/api-surface.md as ground truth. Use when
+
+  the user wants to understand the API surface before running a compound command,
+
+  or when debugging an unexpected response shape from mcp__plane.'
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Glob
+- Grep
+- WebFetch
+- WebSearch
+- Task
+- TodoWrite
+model: inherit
+color: orange
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- productivity
+- plane
+disallowedTools: []
+skills: []
+background: false
+# ── upgrade levers — uncomment + set when tuning this agent ──
+# effort: high            # reasoning depth: low/medium/high/xhigh/max (omit = inherit session)
+# maxTurns: 50            # cap the agentic loop (omit = engine default)
+# memory: project         # persistent scope: user/project/local (omit = ephemeral)
+# isolation: worktree     # run in an isolated git worktree
+# initialPrompt: "…"      # seed the agent's first turn
+# hooks / mcpServers / permissionMode → set at the PLUGIN level, not on a plugin agent
+---
 # Plane Expert (Domain Specialist)
 
 > **Parent skill**: `skills/plane/SKILL.md`

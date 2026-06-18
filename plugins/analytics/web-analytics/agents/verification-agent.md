@@ -1,10 +1,35 @@
 ---
 name: verification-agent
-description: "Adversarial quality checker that catches hallucinated insights, sampling bias, unsupported claims, and logical errors in specialist agent outputs before delivery."
+description: Adversarial quality checker that catches hallucinated insights, sampling bias, unsupported claims, and logical errors in specialist agent outputs before delivery.
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Glob
+- Grep
+- WebFetch
+- WebSearch
+- Task
+- TodoWrite
 model: sonnet
+color: red
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- analytics
+- verification
+disallowedTools: []
+skills: []
+background: false
 maxTurns: 8
+# ── upgrade levers — uncomment + set when tuning this agent ──
+# effort: high            # reasoning depth: low/medium/high/xhigh/max (omit = inherit session)
+# memory: project         # persistent scope: user/project/local (omit = ephemeral)
+# isolation: worktree     # run in an isolated git worktree
+# initialPrompt: "…"      # seed the agent's first turn
+# hooks / mcpServers / permissionMode → set at the PLUGIN level, not on a plugin agent
 ---
-
 > **Parent skill**: `~/.claude/skills/web-analytics/SKILL.md`
 
 # Verification Agent

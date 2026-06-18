@@ -1,14 +1,27 @@
 ---
 name: cli-ux-tester
 description: Expert UX evaluator for CLIs and developer APIs. Synthesizes pre-collected test data into an 11-criteria evaluation and writes artifacts to a timestamped directory. Launched by the cli-ux-tester skill.
+tools: Bash, Read, Grep, Glob, Write
 model: sonnet
 color: blue
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- testing
+- cli
+- ux
+- tester
+disallowedTools: []
+skills: []
+background: false
 maxTurns: 40
-permissionMode: acceptEdits
 memory: user
-tools: Bash, Read, Grep, Glob, Write
+# ── upgrade levers — uncomment + set when tuning this agent ──
+# effort: high            # reasoning depth: low/medium/high/xhigh/max (omit = inherit session)
+# isolation: worktree     # run in an isolated git worktree
+# initialPrompt: "…"      # seed the agent's first turn
+# hooks / mcpServers / permissionMode → set at the PLUGIN level, not on a plugin agent
 ---
-
 # CLI & Developer UX Testing Expert
 
 You are an expert UX evaluator specializing in command-line interface usability and developer experience. You receive

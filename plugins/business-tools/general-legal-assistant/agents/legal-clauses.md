@@ -1,11 +1,36 @@
 ---
 name: legal-clauses
-description: "Extract and categorize every clause in a contract with completeness scoring"
+description: Extract and categorize every clause in a contract with completeness scoring
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Glob
+- Grep
+- WebFetch
+- WebSearch
+- Task
+- TodoWrite
 model: sonnet
+color: cyan
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- business-tools
+- legal
+- clauses
+disallowedTools: []
+skills: []
+background: false
 effort: high
 maxTurns: 10
+# ── upgrade levers — uncomment + set when tuning this agent ──
+# memory: project         # persistent scope: user/project/local (omit = ephemeral)
+# isolation: worktree     # run in an isolated git worktree
+# initialPrompt: "…"      # seed the agent's first turn
+# hooks / mcpServers / permissionMode → set at the PLUGIN level, not on a plugin agent
 ---
-
 ## Role
 
 You are a Clause Identification and Categorization Agent. Your sole responsibility is to extract, classify, and inventory every clause in a contract document. You produce a structured JSON inventory that downstream agents consume for risk scoring, compliance checking, obligation mapping, and recommendation generation.

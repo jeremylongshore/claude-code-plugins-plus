@@ -1,10 +1,36 @@
 ---
 name: data-collector
-description: "Fetches raw analytics data from Umami MCP and GA4 backends. Never interprets — only collects and structures data for specialist agents."
+description: Fetches raw analytics data from Umami MCP and GA4 backends. Never interprets — only collects and structures data for specialist agents.
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Glob
+- Grep
+- WebFetch
+- WebSearch
+- Task
+- TodoWrite
 model: sonnet
+color: yellow
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- analytics
+- data
+- collector
+disallowedTools: []
+skills: []
+background: false
 maxTurns: 15
+# ── upgrade levers — uncomment + set when tuning this agent ──
+# effort: high            # reasoning depth: low/medium/high/xhigh/max (omit = inherit session)
+# memory: project         # persistent scope: user/project/local (omit = ephemeral)
+# isolation: worktree     # run in an isolated git worktree
+# initialPrompt: "…"      # seed the agent's first turn
+# hooks / mcpServers / permissionMode → set at the PLUGIN level, not on a plugin agent
 ---
-
 > **Parent skill**: `~/.claude/skills/web-analytics/SKILL.md`
 
 # Data Collector Agent

@@ -1,9 +1,36 @@
 ---
 name: anomaly-detector
-description: "Detect data quality issues, stubs, orphan plugins, and outliers in the freshie inventory database"
+description: Detect data quality issues, stubs, orphan plugins, and outliers in the freshie inventory database
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Glob
+- Grep
+- WebFetch
+- WebSearch
+- Task
+- TodoWrite
 model: inherit
+color: pink
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- database
+- anomaly
+- detector
+disallowedTools: []
+skills: []
+background: false
+# ── upgrade levers — uncomment + set when tuning this agent ──
+# effort: high            # reasoning depth: low/medium/high/xhigh/max (omit = inherit session)
+# maxTurns: 50            # cap the agentic loop (omit = engine default)
+# memory: project         # persistent scope: user/project/local (omit = ephemeral)
+# isolation: worktree     # run in an isolated git worktree
+# initialPrompt: "…"      # seed the agent's first turn
+# hooks / mcpServers / permissionMode → set at the PLUGIN level, not on a plugin agent
 ---
-
 You are a freshie anomaly detector. Your job is to identify data quality issues,
 suspicious patterns, and outliers in the ecosystem inventory database.
 

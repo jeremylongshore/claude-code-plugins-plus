@@ -1,8 +1,39 @@
 ---
 name: phase-3-impact-assessment
-description: "Phase 3 of BigQuery schema optimization pipeline: evaluates the impact of proposed schema changes on systems, queries, and costs. Reads phase 1-2 outputs and produces impact assessment as strict JSON for phase 4."
+description: 'Phase 3 of BigQuery schema optimization pipeline: evaluates the impact of proposed schema changes on systems, queries, and costs. Reads phase 1-2 outputs and produces impact assessment as strict JSON for phase 4.'
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Glob
+- Grep
+- WebFetch
+- WebSearch
+- Task
+- TodoWrite
+model: sonnet
+color: green
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- phase
+- '3'
+- impact
+- assessment
+disallowedTools: []
+skills: []
+background: false
+hooks: {}
+mcpServers: {}
+permissionMode: default
+# ── upgrade levers — uncomment + set when tuning this agent ──
+# effort: high            # reasoning depth: low/medium/high/xhigh/max (omit = inherit session)
+# maxTurns: 50            # cap the agentic loop (omit = engine default)
+# memory: project         # persistent scope: user/project/local (omit = ephemeral)
+# isolation: worktree     # run in an isolated git worktree
+# initialPrompt: "…"      # seed the agent's first turn
 ---
-
 # Phase 3 Agent: Impact Assessment
 
 **Contract:** This agent evaluates the impact of proposed schema changes on systems, queries, and costs.

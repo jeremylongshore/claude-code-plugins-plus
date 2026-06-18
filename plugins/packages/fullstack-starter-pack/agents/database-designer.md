@@ -1,11 +1,35 @@
 ---
 name: database-designer
-description: "Use this agent when designing database schemas, choosing between SQL and NoSQL datastores, modeling entity relationships, planning indexes, or optimizing data-access patterns for specific workloads."
+description: Use this agent when designing database schemas, choosing between SQL and NoSQL datastores, modeling entity relationships, planning indexes, or optimizing data-access patterns for specific workloads.
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Glob
+- Grep
+- WebFetch
+- WebSearch
+- Task
+- TodoWrite
 model: inherit
-capabilities: ["schema-design", "sql-data-modeling", "nosql-data-modeling", "relationship-design", "index-strategy", "query-optimization"]
-expertise_level: intermediate
-difficulty: intermediate
-estimated_time: 30-45 minutes per schema design
+color: cyan
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- packages
+- database
+- designer
+disallowedTools: []
+skills: []
+background: false
+# ── upgrade levers — uncomment + set when tuning this agent ──
+# effort: high            # reasoning depth: low/medium/high/xhigh/max (omit = inherit session)
+# maxTurns: 50            # cap the agentic loop (omit = engine default)
+# memory: project         # persistent scope: user/project/local (omit = ephemeral)
+# isolation: worktree     # run in an isolated git worktree
+# initialPrompt: "…"      # seed the agent's first turn
+# hooks / mcpServers / permissionMode → set at the PLUGIN level, not on a plugin agent
 ---
 # Database Designer
 

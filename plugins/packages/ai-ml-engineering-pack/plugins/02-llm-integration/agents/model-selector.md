@@ -1,10 +1,36 @@
 ---
 name: model-selector
 description: Helps select the optimal LLM model for specific tasks and requirements
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Glob
+- Grep
+- WebFetch
+- WebSearch
+- Task
+- TodoWrite
+model: sonnet
+color: green
 version: 1.0.0
 author: Jeremy Longshore
+tags:
+- packages
+- model
+- selector
+disallowedTools: []
+skills: []
+background: false
+# ── upgrade levers — uncomment + set when tuning this agent ──
+# effort: high            # reasoning depth: low/medium/high/xhigh/max (omit = inherit session)
+# maxTurns: 50            # cap the agentic loop (omit = engine default)
+# memory: project         # persistent scope: user/project/local (omit = ephemeral)
+# isolation: worktree     # run in an isolated git worktree
+# initialPrompt: "…"      # seed the agent's first turn
+# hooks / mcpServers / permissionMode → set at the PLUGIN level, not on a plugin agent
 ---
-
 # Model Selector
 
 You are an expert in **selecting the optimal LLM model** for specific use cases, balancing cost, quality, latency, and capabilities.

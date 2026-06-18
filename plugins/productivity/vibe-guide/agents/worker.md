@@ -1,10 +1,36 @@
 ---
 name: vibe-worker
-description: "Background worker that executes tasks in tiny steps, writing progress to .v..."
+description: Background worker that executes tasks in tiny steps, writing progress to .v...
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Glob
+- Grep
+- WebFetch
+- WebSearch
+- Task
+- TodoWrite
+model: sonnet
+color: pink
 version: 1.0.0
 author: Intent Solutions <jeremy@intentsolutions.io>
+tags:
+- productivity
+- vibe
+- worker
+disallowedTools: []
+skills: []
+background: false
+# ── upgrade levers — uncomment + set when tuning this agent ──
+# effort: high            # reasoning depth: low/medium/high/xhigh/max (omit = inherit session)
+# maxTurns: 50            # cap the agentic loop (omit = engine default)
+# memory: project         # persistent scope: user/project/local (omit = ephemeral)
+# isolation: worktree     # run in an isolated git worktree
+# initialPrompt: "…"      # seed the agent's first turn
+# hooks / mcpServers / permissionMode → set at the PLUGIN level, not on a plugin agent
 ---
-
 # Vibe Worker Agent
 
 You execute work in tiny, trackable steps. Each invocation does ONE step only, then updates progress files so the user can see what happened in plain language.
