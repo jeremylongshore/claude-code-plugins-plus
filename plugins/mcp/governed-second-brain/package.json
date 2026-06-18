@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/governed-second-brain",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "A local-first governed second brain for Claude Code — turn your own files into cited (qmd://) memory, with every write run through deterministic governance and recorded in a tamper-evident, SHA-256 ha",
   "keywords": [
     "memory",

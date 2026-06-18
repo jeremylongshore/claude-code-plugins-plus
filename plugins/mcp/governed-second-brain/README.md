@@ -101,6 +101,6 @@ Apache-2.0. The umbrella and both engine repos are Apache-2.0; qmd (upstream) is
 
 <p align="center">
   Built by <a href="https://github.com/jeremylongshore">Jeremy Longshore</a> ·
-  <a href="https://intentsolutions.io">Intent Solutions</a> ·
+  <a href="https://intentsolutions.io/">Intent Solutions</a> ·
   thesis at <a href="https://github.com/intent-solutions-io/governed-second-brain">intent-solutions-io/governed-second-brain</a>
 </p>
