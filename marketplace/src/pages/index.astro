@@ -1933,19 +1933,8 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         </ol>
     </section>
 
-    <!-- Email Signup -->
-    <section class="signup-section">
-        <div class="signup-inner reveal">
-            <h2 class="section-title signup-title">Agent Skills in Your Inbox</h2>
-            <p class="signup-desc">Weekly deep-dives on agent skills, new plugin drops, and workflow tips.</p>
-            <form data-signup-form="homepage" class="signup-form">
-                <input type="email" name="email" placeholder="you@example.com" required />
-                <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;" />
-                <button type="submit">Subscribe</button>
-            </form>
-            <p class="signup-note">No spam, ever. Unsubscribe with one click.</p>
-        </div>
-    </section>
+    <!-- Newsletter signup is the site-wide footer block (BaseLayout.astro) — the
+         homepage-specific duplicate was removed to avoid two newsletter forms on one page. -->
 
     <!-- JavaScript for interactions -->
     <script is:inline>
