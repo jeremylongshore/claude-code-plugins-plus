@@ -131,10 +131,6 @@ jobs:
             - 📦 [npm Package](https://www.npmjs.com/package/@claude-code-plugins/ccp)
             - 🌐 [Website](https://tonsofskills.com)
             - 📚 [Documentation](https://github.com/jeremylongshore/claude-code-plugins/tree/main/packages/cli)
-
-            🤖 Generated with [Claude Code](https://claude.com/claude-code)
-
-            Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
           draft: false
           prerelease: false
 

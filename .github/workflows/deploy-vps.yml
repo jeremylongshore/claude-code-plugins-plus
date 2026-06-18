@@ -43,6 +43,14 @@ jobs:
       - name: Build Astro site
         run: pnpm -C marketplace build
 
+      - name: Validate plugin routes + skill→plugin links
+        # Ported from the deleted deploy-marketplace.yml so these dist checks
+        # survive on the live deploy path. (validate-playbook-routes +
+        # validate-internal-links already run on PRs via validate-plugins.yml.)
+        run: |
+          node marketplace/scripts/validate-routes.mjs
+          node marketplace/scripts/validate-links.mjs
+
       - name: Verify build artifacts
         run: |
           test -f marketplace/dist/index.html
