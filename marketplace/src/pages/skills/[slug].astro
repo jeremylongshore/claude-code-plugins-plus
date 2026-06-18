@@ -680,7 +680,7 @@ const cleanTools = (tools: string[]) =>
           {relatedSkills.map((related: any) => (
             <a href={`/skills/${related.slug}/`} class="related-skill-card">
               <h3 class="related-skill-title">{related.name}</h3>
-              <p class="related-skill-description">{related.description?.split('.')[0]}.</p>
+              <p class="related-skill-description">{typeof related.description === 'string' ? related.description.split('.')[0] + '.' : ''}</p>
               {cleanTools(related.allowedTools || []).length > 0 && (
                 <div class="related-skill-tools">
                   {cleanTools(related.allowedTools).slice(0, 3).map((tool: string) => (

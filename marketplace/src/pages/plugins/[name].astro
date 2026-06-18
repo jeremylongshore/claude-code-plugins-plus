@@ -232,7 +232,7 @@ statsItems.push({ label: 'Pricing', value: formatPricing(plugin.pricing) });
                   <a href={`/skills/${skill.slug}/`} class="gist-view-link">View full skill &rarr;</a>
                 </div>
                 <div class="gist-body">
-                  <p class="gist-description">{skill.description?.split('.')[0]}.</p>
+                  <p class="gist-description">{typeof skill.description === 'string' ? skill.description.split('.')[0] + '.' : ''}</p>
                   {cleanTools(skill.allowedTools || []).length > 0 && (
                     <div class="gist-tools">
                       {cleanTools(skill.allowedTools).map((tool: string) => (

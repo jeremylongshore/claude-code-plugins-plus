@@ -130,10 +130,10 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | 🎨  | [Design](#design)                                  |       7 |
 | 🔧  | [DevOps & Infrastructure](#devops--infrastructure) |      36 |
 | 📚  | [Examples & Templates](#examples--templates)       |       5 |
-| 🧩  | [MCP Servers](#mcp-servers)                        |      11 |
+| 🧩  | [MCP Servers](#mcp-servers)                        |      12 |
 | 📦  | [Packages](#packages)                              |       5 |
 | ⚡  | [Performance](#performance)                        |      25 |
-| ✅  | [Productivity](#productivity)                      |      26 |
+| ✅  | [Productivity](#productivity)                      |      27 |
 | 🎁  | [SaaS Skill Packs](#saas-skill-packs)              |     106 |
 | 🔐  | [Security](#security)                              |      26 |
 | ✨  | [Skill Enhancers](#skill-enhancers)                |       9 |
@@ -443,7 +443,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### MCP Servers
 
-🧩 **11 plugins** · category slug: `mcp`
+🧩 **12 plugins** · category slug: `mcp`
 
 | Plugin                        | Description                                                                                                                                |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -451,6 +451,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `conversational-api-debugger` | Debug REST API failures using OpenAPI specs and HTTP logs (HAR) - root cause analysis with cURL generation                                 |
 | `design-to-code`              | Convert Figma designs and screenshots to React/Svelte/Vue components with built-in accessibility                                           |
 | `domain-memory-agent`         | Knowledge base with TF-IDF semantic search and extractive summarization - no ML dependencies required                                      |
+| `governed-second-brain`       | Local-first governed second brain — turn your files into cited (qmd://) memory with deterministic governance and a tamper-evident,…        |
 | `lumera-agent-memory`         | Durable agent memory with Cascade object storage, client-side encryption, and local full-text search index. Persists agent context across… |
 | `pr-to-spec`                  | The flight envelope for agentic coding — convert PRs and local diffs into structured, agent-consumable specs with intent drift detection   |
 | `project-health-auditor`      | Multi-dimensional code health analysis with complexity, churn, and test coverage - identifies technical debt hot spots                     |
@@ -511,7 +512,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Productivity
 
-✅ **26 plugins** · category slug: `productivity`
+✅ **27 plugins** · category slug: `productivity`
 
 | Plugin                                     | Description                                                                                                                                 |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -523,6 +524,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `ai-commit-gen`                            | AI-powered commit message generator - analyzes your git diff and creates conventional commit messages instantly                             |
 | `box-cloud-filesystem`                     | Transparent cloud filesystem for AI agents using Box CLI (@box/cli). Upload, download, search, share, and sync files to Box cloud storage…  |
 | `claude-workflow-skills`                   | Common Claude Code workflow skills — promote, audit-plugin, audit-standards, improve, and triage                                            |
+| `claudebase`                               | Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles                                             |
 | `claudebase`                               | Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles                                             |
 | `cli-power-skills`                         | Agentic CLI tool skills — 7 domain-grouped skills covering 26 CLI tools                                                                     |
 | `hyperfocus`                               | ADHD-friendly output formatting for Claude Code. Restructures responses with evidence-based cognitive accessibility: chunking, visual…      |
