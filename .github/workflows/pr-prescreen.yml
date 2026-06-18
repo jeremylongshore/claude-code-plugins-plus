@@ -308,29 +308,14 @@ jobs:
           PY
           echo "Wrote PR comment body to /tmp/pr-comment.md"
 
-      - name: Post PR comment / review
-        # Skip entirely when the PR doesn't touch any plugins — there's
-        # nothing useful to say. Avoids comment-spam on every infra /
-        # docs / sources.yaml PR.
-        if: steps.diff.outputs.count != '0'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR_NUMBER: ${{ steps.pr.outputs.number }}
-          VERDICT: ${{ steps.classify.outputs.verdict }}
-        run: |
-          set -euo pipefail
-          if [ "$VERDICT" = "CHANGES_REQUESTED" ] || [ "$VERDICT" = "HARD_BLOCK" ]; then
-            # Structured review on the PR — visible to contributor as a review,
-            # not just a comment. The contributor is the audience here.
-            gh pr review "$PR_NUMBER" --repo "${{ github.repository }}" \
-              --request-changes \
-              --body-file /tmp/pr-comment.md
-          else
-            # PASS: regular comment so we don't approve in a way that could
-            # be confused with editorial approval.
-            gh pr comment "$PR_NUMBER" --repo "${{ github.repository }}" \
-              --body-file /tmp/pr-comment.md
-          fi
+      # NOTE (2026-06): the PR-facing review/comment was removed to stop
+      # prescreen noise on PRs (the 🛑 HARD_BLOCK wall read as "they don't
+      # know what they're doing" to contributors browsing their PRs). The
+      # grade signal still flows to Slack (next step) + the audit-log row,
+      # so prescreen stays useful without polluting the PR conversation.
+      # To restore PR posting, re-add a `gh pr comment --body-file
+      # /tmp/pr-comment.md` step here (avoid `--request-changes`, which
+      # leaves a sticky blocking review).
 
       - name: Notify Slack (PASS / HARD_BLOCK only)
         if: (steps.classify.outputs.verdict == 'PASS' || steps.classify.outputs.verdict == 'HARD_BLOCK') && steps.diff.outputs.count != '0'

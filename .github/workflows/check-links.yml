@@ -77,7 +77,11 @@ jobs:
             --exclude-path '.pnpm-store'
             './**/*.md'
             './**/*.mdx'
-          fail: ${{ github.event_name == 'pull_request' }}
+          # Never red-X a PR on link results — external-host flakiness (conn
+          # resets, rate-limits) produced ~200 false failures that read as
+          # repo noise. Link rot is surfaced by the weekly scheduled run +
+          # the report artifact instead, not by blocking contributor PRs.
+          fail: false
           output: ./lychee-repo-report.md
 
       - name: Run lychee (marketplace content with site base)
@@ -92,7 +96,8 @@ jobs:
             --max-cache-age 1d
             'marketplace/src/content/**/*.md'
             'marketplace/src/content/**/*.mdx'
-          fail: ${{ github.event_name == 'pull_request' }}
+          # See note above — never block a PR on link results.
+          fail: false
           output: ./lychee-marketplace-report.md
 
       - name: Upload reports
