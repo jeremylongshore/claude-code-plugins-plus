@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/devops-automation-pack",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "25 professional DevOps plugins for CI/CD, deployment, Docker, Kubernetes, and infrastructure automation. Save 20+ hours of manual work.",
   "keywords": [
     "devops",

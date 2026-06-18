@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/obsidian-project-documentation",
-  "version": "3.2.9",
+  "version": "3.2.10",
   "description": "Automatically documents technical projects in Obsidian vaults during Claude Code sessions",
   "keywords": [
     "obsidian",
