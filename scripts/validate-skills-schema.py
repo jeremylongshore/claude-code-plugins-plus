@@ -98,8 +98,35 @@ except ImportError:
 #                       stale "marketplace = warnings-only" docstrings
 #                       corrected. No change to ALWAYS_REQUIRED or
 #                       error-vs-warning semantics.
+# 3.10.0 (2026-06-17) — AGENT gate flipped to KERNEL-STRICT + ENTERPRISE-FLESHED
+#                       (Jeremy sign-off on the required-field-set change). Agents
+#                       are NOT tier-gated like skills. Two layers, both ERRORS at
+#                       every tier:
+#                         (a) Kernel floor (8): name, description, tools, model,
+#                             color, version, author, tags. Source of truth:
+#                             @intentsolutions/core schemas/authoring/v1/
+#                             agent-definition (upstream-base ∪ is-overlay),
+#                             consumed via load_kernel_agent_required() with an
+#                             inline AGENT_ALWAYS_REQUIRED fallback.
+#                         (b) Enterprise "flesh out the entire spec" live set on
+#                             top of the floor: + disallowedTools, skills,
+#                             background for ALL agents (=> 11 on a plugin agent),
+#                             + hooks, mcpServers, permissionMode for STANDALONE
+#                             agents (=> 14; those three are plugin-level and
+#                             runtime-ignored on a plugin agent). The five fields
+#                             with no valid empty value (effort, maxTurns, memory,
+#                             isolation, initialPrompt) are carried as a commented
+#                             "upgrade levers" body block, not parser-required.
+#                       `fable` added to the agent model enum. Banned agent fields
+#                       (capabilities, expertise_level, activation_priority,
+#                       activation_triggers, type, category + kernel
+#                       deprecationRegistry compatible-with/when_to_use) promoted
+#                       WARN → ERROR. tools accepts string|array (tolerant — no
+#                       forced re-typing). description over-length warning realigned
+#                       200 → 1536 (kernel disclosureMarkers cap). No change to the
+#                       SKILL ALWAYS_REQUIRED set or skill tier semantics.
 # See 000-docs/SCHEMA_CHANGELOG.md.
-SCHEMA_VERSION = "3.9.0"
+SCHEMA_VERSION = "3.10.0"
 
 # Validation tiers
 TIER_STANDARD = "standard"
@@ -337,12 +364,22 @@ SKILL_FIELDS = {
 }
 
 AGENT_FIELDS = {
-    "name": {"type": "string", "source": "anthropic", "required": True},
-    "description": {"type": "string", "source": "anthropic", "required": True},
-    "model": {"type": "string", "source": "anthropic", "valid": ["sonnet", "haiku", "opus", "inherit"]},
+    "name": {"type": "string", "source": "anthropic"},
+    "description": {"type": "string", "source": "anthropic"},
+    # model — documented aliases sonnet/opus/haiku/fable plus `inherit` (or a full
+    # model ID, an upstream latitude the IS contract intentionally narrows to the
+    # alias set). `fable` added 2026-06-17 to match the kernel agent-definition enum
+    # (@intentsolutions/core schemas/authoring/v1/upstream-base/agent-definition.v1.json)
+    # and code.claude.com/docs/en/sub-agents § "Choose a model".
+    "model": {"type": "string", "source": "anthropic", "valid": ["sonnet", "haiku", "opus", "fable", "inherit"]},
     "effort": {"type": "string", "source": "anthropic", "valid": ["low", "medium", "high", "xhigh", "max"]},
     "maxTurns": {"type": "integer", "source": "anthropic"},
-    "tools": {"type": "string", "source": "anthropic"},
+    # tools — the kernel narrows the wire form to a YAML array of tool identifiers,
+    # but code.claude.com/docs/en/sub-agents documents a comma-separated string and
+    # the existing public corpus uses both. Accept string|array (tolerant) so the
+    # required-presence gate does not also force a mechanical re-typing of every
+    # agent; an agent that pre-approves zero tools may declare an empty array.
+    "tools": {"type": "string|array", "source": "anthropic"},
     "disallowedTools": {"type": "array", "source": "anthropic"},
     "skills": {"type": "array", "source": "anthropic"},
     "mcpServers": {"type": "object", "source": "anthropic"},
@@ -365,27 +402,78 @@ AGENT_FIELDS = {
         "valid": ["red", "blue", "green", "yellow", "purple", "orange", "pink", "cyan"],
     },
     "initialPrompt": {"type": "string", "source": "anthropic"},
+    # === Intent Solutions enterprise tracking fields (required at every tier for agents) ===
+    # Net-new IS-required tracking trio mirrored from the kernel agent-definition
+    # is-overlay (@intentsolutions/core schemas/authoring/v1/is-overlay/agent-
+    # definition.v1.json). Registered here so they type-check and do not trip the
+    # unknown-field warning; their required-presence is enforced via
+    # AGENT_ALWAYS_REQUIRED below.
+    "version": {"type": "string", "source": "enterprise"},
+    "author": {"type": "string", "source": "enterprise"},
+    "tags": {"type": "array", "source": "enterprise"},
 }
+
+# === Kernel floor: the agent-definition required set (8 fields) ==================
+# Source of truth: @intentsolutions/core schemas/authoring/v1/
+# agent-definition.schema.json — the union of the upstream-base floor
+# [name, description] and the is-overlay required delta
+# [tools, model, color, version, author, tags]. When the kernel package is
+# installed the validator derives this floor at runtime (load_kernel_agent_required);
+# this inline mirror is the fallback for clones without the kernel vendored.
+# TODO(kernel-cutover): consume the kernel agent schema as the sole source once the
+# DR-049 consumer-cutover bead lands (epic bd_000-projects-9k5h).
+AGENT_ALWAYS_REQUIRED = {"name", "description", "tools", "model", "color", "version", "author", "tags"}
+
+# === Enterprise "flesh out the entire spec" required set (Jeremy 2026-06-17) ======
+# The IS standard requires every authored agent to carry the full SUPPORTED live
+# field surface — "empties and all" — so the upgrade levers are always visible on
+# the file. This is the IS-marketplace-strict layer sitting ON TOP of the kernel
+# floor (the same pattern skills use). Enforced as ERRORS at every tier (agents are
+# NOT tier-gated).
+#
+# Two spec realities shape the set:
+#   1. Fields whose enum/semantics have NO neutral value (effort, maxTurns, memory,
+#      isolation, initialPrompt) cannot be blanked, so they are carried as a
+#      commented "upgrade levers" block in the body template — visible, not
+#      parser-required. See AGENT_UPGRADE_LEVERS.
+#   2. hooks / mcpServers / permissionMode are configured at the PLUGIN level and
+#      ignored on a plugin agent, so they are required only on STANDALONE agents.
+#
+# Live-required for ALL agents (kernel floor ∪ these): adds the no-op-empty fields
+# disallowedTools ([]), skills ([]), background (false). => 11 fields on a plugin agent.
+AGENT_ENTERPRISE_LIVE_COMMON = {"disallowedTools", "skills", "background"}
+# Live-required for STANDALONE agents only (plugin agents don't support these):
+# hooks ({}), mcpServers ({}), permissionMode (default). => 14 fields total standalone.
+AGENT_STANDALONE_ONLY_REQUIRED = {"hooks", "mcpServers", "permissionMode"}
+# The "upgrade levers" carried as a commented block in every authored agent's body —
+# present so they're a standing menu of how to tune the agent, but not parser-required
+# (they have no valid empty value).
+AGENT_UPGRADE_LEVERS = ("effort", "maxTurns", "memory", "isolation", "initialPrompt")
 
 # Fields NOT supported in plugin agents (silently ignored by runtime)
 AGENT_PLUGIN_RESTRICTED = {"hooks", "mcpServers", "permissionMode"}
 
-# Fields that are NOT in Anthropic spec — ERROR if found
-INVALID_AGENT_FIELDS = {}  # Cleared — all non-standard fields demoted to deprecated for migration
-
-# Non-standard fields used across existing agents — WARN now, batch-fix, then promote to ERROR.
-# `color` was removed from this list 2026-05-08: it IS a documented Anthropic-spec field per
-# code.claude.com/docs/en/sub-agents (Display color for the subagent in the task list and
-# transcript. Accepts red/blue/green/yellow/purple/orange/pink/cyan). It now lives in
-# AGENT_FIELDS with the valid-color enum.
-DEPRECATED_AGENT_FIELDS = {
-    "capabilities": "Non-standard field. Not in Anthropic spec. Will be removed in future validation.",
-    "expertise_level": "Non-standard field. Not in Anthropic spec. Will be removed in future validation.",
-    "activation_priority": "Non-standard field. Not in Anthropic spec. Will be removed in future validation.",
-    "activation_triggers": "Non-standard field. Not in Anthropic spec. Will be removed in future validation.",
-    "type": "Non-standard field. Not in Anthropic spec. Will be removed in future validation.",
-    "category": "Non-standard field. Not in Anthropic spec. Will be removed in future validation.",
+# Fields that are NOT in any canonical spec — ERROR if found.
+# Promoted from DEPRECATED_AGENT_FIELDS (warn) to ERROR on 2026-06-17 as part of the
+# kernel-strict flip: the IS-invented activation/classification fields were never in
+# the Anthropic sub-agents spec nor the kernel agent-definition contract, and
+# `compatible-with` / `when_to_use` are banned by the kernel deprecationRegistry
+# universal fold (@intentsolutions/core marketplace-tier.schema.json $defs/
+# deprecationRegistry). A serious marketplace gate rejects them, not warns.
+INVALID_AGENT_FIELDS = {
+    "capabilities": "Non-standard field. Not in the Anthropic sub-agents spec nor the kernel agent-definition contract. Remove it.",
+    "expertise_level": "Non-standard field. Not in the Anthropic sub-agents spec nor the kernel agent-definition contract. Remove it.",
+    "activation_priority": "Non-standard field. Not in the Anthropic sub-agents spec nor the kernel agent-definition contract. Remove it.",
+    "activation_triggers": "Non-standard field. Not in the Anthropic sub-agents spec nor the kernel agent-definition contract. Encode triggers in `description` instead.",
+    "type": "Non-standard field. Not in the Anthropic sub-agents spec nor the kernel agent-definition contract. Remove it.",
+    "category": "Non-standard field. Not in the Anthropic sub-agents spec nor the kernel agent-definition contract. Remove it.",
+    "compatible-with": "Deprecated (kernel deprecationRegistry). Not a sub-agents field; remove it.",
+    "when_to_use": "Deprecated (kernel deprecationRegistry). For agents, fold the trigger phrasing into `description` instead.",
 }
+
+# Kept for backward compatibility (external callers / the compliance-DB rollup).
+# Empty now that every former entry is a hard error in INVALID_AGENT_FIELDS.
+DEPRECATED_AGENT_FIELDS = {}
 
 # Truly-invalid fields are now empty: `compatibility` and `metadata` are documented
 # optional fields per agentskills.io/specification. `when_to_use` and `mode` moved
@@ -500,6 +588,33 @@ def load_kernel_required() -> Dict[str, Any]:
         "properties": properties,
         "schema_dir": "node_modules/@intentsolutions/core/schemas/authoring/v1",
     }
+
+
+def load_kernel_agent_required() -> Optional[set]:
+    """Derive the effective required set for the agent-definition contract.
+
+    Reads the kernel agent-definition schema's two authored layers
+    (upstream-base + is-overlay) and returns the union of their `required`
+    arrays — the canonical 8-field agent required set. Returns None (degrade to
+    the inline AGENT_ALWAYS_REQUIRED mirror) when the kernel is not installed or
+    is unreadable. Never raises.
+
+    Authority: @intentsolutions/core schemas/authoring/v1/agent-definition.schema.json
+    (composition of upstream-base/agent-definition.v1.json + is-overlay/
+    agent-definition.v1.json). Kept aligned with the skill-frontmatter shadow
+    machinery above; agents are NOT tier-gated — this set errors at every tier.
+    """
+    base = _KERNEL_SCHEMA_DIR / "upstream-base" / "agent-definition.v1.json"
+    overlay = _KERNEL_SCHEMA_DIR / "is-overlay" / "agent-definition.v1.json"
+    if not (base.exists() and overlay.exists()):
+        return None
+    try:
+        base_doc = json_module.loads(base.read_text(encoding="utf-8"))
+        overlay_doc = json_module.loads(overlay.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    required = set(base_doc.get("required", []) or []) | set(overlay_doc.get("required", []) or [])
+    return required or None
 
 
 def kernel_shadow_report() -> Dict[str, Any]:
@@ -1542,9 +1657,19 @@ def validate_agent(path: Path) -> Dict[str, Any]:
     _, context = detect_component(path)
     is_plugin_agent = context == "plugin"
 
-    # Required fields (Anthropic spec)
-    for field_name, field_def in AGENT_FIELDS.items():
-        if field_def.get("required") and field_name not in fm:
+    # Required fields — kernel-strict + enterprise "flesh out the entire spec"
+    # (errors at every tier; agents are NOT tier-gated like skills). The kernel
+    # floor (prefer kernel-derived, else inline mirror) plus the enterprise live
+    # set: disallowedTools/skills/background for all agents, plus
+    # hooks/mcpServers/permissionMode for STANDALONE agents (those three are
+    # plugin-level and runtime-ignored on a plugin agent). The five upgrade levers
+    # (AGENT_UPGRADE_LEVERS) have no valid empty value, so they live as a commented
+    # body block and are not parser-required.
+    required_set = set(load_kernel_agent_required() or AGENT_ALWAYS_REQUIRED) | AGENT_ENTERPRISE_LIVE_COMMON
+    if not is_plugin_agent:
+        required_set |= AGENT_STANDALONE_ONLY_REQUIRED
+    for field_name in sorted(required_set):
+        if field_name not in fm:
             errors.append(f"[agent] Missing required field: {field_name}")
 
     # Validate present fields against schema
@@ -1564,6 +1689,12 @@ def validate_agent(path: Path) -> Dict[str, Any]:
                 errors.append(f"[agent] '{field_name}' must be an array, got: {type(value).__name__}")
             elif expected_type == "object" and not isinstance(value, dict):
                 errors.append(f"[agent] '{field_name}' must be an object, got: {type(value).__name__}")
+            elif expected_type and "|" in expected_type:
+                # Union type (e.g. tools: string|array). Accept any listed type.
+                _tmap = {"string": str, "array": list, "integer": int, "boolean": bool, "object": dict}
+                _allowed = tuple(_tmap[t] for t in expected_type.split("|") if t in _tmap)
+                if _allowed and not isinstance(value, _allowed):
+                    errors.append(f"[agent] '{field_name}' must be {expected_type}, got: {type(value).__name__}")
 
             # Value validation
             if "valid" in field_def and isinstance(value, str):
@@ -1595,8 +1726,11 @@ def validate_agent(path: Path) -> Dict[str, Any]:
         desc = str(fm["description"]).strip()
         if len(desc) < 20:
             errors.append("[agent] 'description' must be at least 20 characters")
-        if len(desc) > 200:
-            warnings.append("[agent] 'description' should be 200 characters or less")
+        # The A-grade bar wants a real "Use when…/Trigger with…" trigger, which
+        # makes good descriptions long. The operative cap is the kernel
+        # disclosureMarkers fold (1536); warn only above it rather than at 200.
+        if len(desc) > 1536:
+            warnings.append("[agent] 'description' should be 1536 characters or less (kernel disclosureMarkers cap)")
 
     if "maxTurns" in fm and isinstance(fm["maxTurns"], int):
         if fm["maxTurns"] < 1:
@@ -1611,6 +1745,13 @@ def validate_agent(path: Path) -> Dict[str, Any]:
         for i, skill in enumerate(fm["skills"]):
             if not isinstance(skill, str):
                 errors.append(f"[agent] 'skills[{i}]' must be a string")
+
+    # tags — required array; every entry must be a string (kernel is-overlay
+    # agent-definition: tags = array of strings).
+    if "tags" in fm and isinstance(fm["tags"], list):
+        for i, tag in enumerate(fm["tags"]):
+            if not isinstance(tag, str):
+                errors.append(f"[agent] 'tags[{i}]' must be a string")
 
     return {"errors": errors, "warnings": warnings, "type": "agent"}
 
