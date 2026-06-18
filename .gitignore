@@ -122,6 +122,9 @@
 # Kernel-shadow advisory validator output (generated; CI artifact, not source)
 scripts/.kernel-shadow/
 
+# Kernel-vendor version-coupling advisory output (generated; CI artifact, not source)
+scripts/.kernel-vendor-hash/
+
 000-docs/*
 000-docs/**/*
 000-docs/680-AT-DECR-*.md

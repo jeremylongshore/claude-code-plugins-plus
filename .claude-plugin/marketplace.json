@@ -8695,6 +8695,52 @@
       "homepage": "https://github.com/ali5ter/pair-programmer",
       "repository": "https://github.com/ali5ter/pair-programmer",
       "license": "MIT"
+    },
+    {
+      "name": "governed-second-brain",
+      "source": "./plugins/mcp/governed-second-brain",
+      "description": "Local-first governed second brain — turn your files into cited (qmd://) memory with deterministic governance and a tamper-evident, hash-chained audit trail. Install via `npx governed-second-brain init <folder>`.",
+      "version": "0.1.6",
+      "category": "mcp",
+      "keywords": [
+        "memory",
+        "knowledge",
+        "governance",
+        "qmd",
+        "brain",
+        "citations",
+        "local-first",
+        "second-brain"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "homepage": "https://github.com/jeremylongshore/governed-second-brain-plugin",
+      "repository": "https://github.com/jeremylongshore/governed-second-brain-plugin",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "claudebase",
+      "source": "./plugins/productivity/claudebase",
+      "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
+      "version": "0.2.0",
+      "category": "productivity",
+      "keywords": [
+        "github",
+        "sync",
+        "backup",
+        "config",
+        "profiles",
+        "settings"
+      ],
+      "author": {
+        "name": "Rohit Hazra",
+        "url": "https://github.com/rohithzr"
+      },
+      "homepage": "https://github.com/rohithzr/claudebase",
+      "repository": "https://github.com/rohithzr/claudebase",
+      "license": "MIT"
     }
   ]
 }

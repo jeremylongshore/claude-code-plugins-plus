@@ -1,6 +1,6 @@
 {
   "name": "draft-wireframe",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Wireframe a screen \u2014 ASCII/text by default, or hand-drawn HTML when the user says sketch/whiteboard/graph-paper. Text mode: buildable spec for Form and Prism. HTML mode: self-contained file with graph-paper background, marker headlines, sticky notes, hatched chart placeholders.",
   "author": {
     "name": "tonone-ai",
@@ -9,8 +9,5 @@
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
   "type": "skill",
-  "keywords": [
-    "draft",
-    "skill"
-  ]
+  "keywords": ["draft", "skill"]
 }

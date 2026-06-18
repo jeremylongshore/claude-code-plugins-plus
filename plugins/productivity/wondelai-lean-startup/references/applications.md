@@ -58,7 +58,6 @@ Large organizations face unique challenges when applying lean methods: bureaucra
 Create a protected environment where lean methods can operate without being crushed by corporate antibodies.
 
 **Sandbox rules:**
-
 1. Dedicated team (3-7 people), not part-time contributors
 2. Separate budget with metered funding tied to learning milestones
 3. Authority to experiment with real customers (within defined guardrails)
@@ -108,7 +107,6 @@ Lean methods apply not just to new products but to individual features within ex
 **Step 3: Set success criteria before launch**
 
 **Step 4: Measure and decide**
-
 - Feature meets criteria: roll out to all users
 - Feature partially meets criteria: iterate and retest
 - Feature misses criteria: kill it and move on
@@ -168,20 +166,17 @@ Services businesses have a unique advantage for lean: the product is delivered b
 ### Service-Specific Lean Approach
 
 **Phase 1: Define the Service MVP**
-
 - Deliver the service to 3-5 clients manually
 - Do not build a platform, booking system, or brand
 - Focus entirely on delivering value and observing the client experience
 
 **Phase 2: Systematize What Works**
-
 - Identify the parts of the service that clients value most
 - Create standard operating procedures for high-value activities
 - Eliminate or reduce low-value activities
 - Create templates and checklists
 
 **Phase 3: Scale Selectively**
-
 - Hire or contract for the highest-value, most systematized parts
 - Continue delivering high-touch, variable parts manually
 - Only build technology when manual processes become the bottleneck

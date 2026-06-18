@@ -7,7 +7,6 @@ When usability principles contradict each other—frameworks for making trade-of
 Usability heuristics are guidelines, not laws. In real design, they often pull in opposite directions. Good UX design requires recognizing these tensions and making thoughtful trade-offs.
 
 **Common tension patterns:**
-
 - Simplicity vs. Power
 - Consistency vs. Optimal for context
 - Efficiency vs. Error prevention
@@ -21,13 +20,11 @@ Usability heuristics are guidelines, not laws. In real design, they often pull i
 ### 1. Simplicity vs. Flexibility
 
 **The tension:**
-
 - "Keep it simple" (Krug, Nielsen)
 - "Support user control and freedom" (Nielsen #3)
 - "Flexibility and efficiency of use" (Nielsen #7)
 
 **Example:** Photo editing app
-
 - Simple: Few options, quick editing
 - Flexible: Many controls, professional results
 
@@ -41,7 +38,6 @@ Usability heuristics are guidelines, not laws. In real design, they often pull i
 | Time pressure | High | Low |
 
 **Design patterns:**
-
 - Progressive disclosure (simple default, power underneath)
 - Personas-based modes (Basic/Advanced)
 - Contextual features (show when relevant)
@@ -49,12 +45,10 @@ Usability heuristics are guidelines, not laws. In real design, they often pull i
 ### 2. Consistency vs. Context Optimization
 
 **The tension:**
-
 - "Consistency and standards" (Nielsen #4)
 - "Match between system and real world" (Nielsen #2)
 
 **Example:** Destructive actions
-
 - Consistent: Red "Delete" button everywhere
 - Context-optimized: Prominent delete for items that should be deleted, hidden for critical data
 
@@ -68,7 +62,6 @@ Usability heuristics are guidelines, not laws. In real design, they often pull i
 | Mental model strength | Established | Forming |
 
 **Design patterns:**
-
 - Consistent patterns, contextual prominence
 - Same actions, different emphasis
 - Gradual introduction of contextual variations
@@ -76,12 +69,10 @@ Usability heuristics are guidelines, not laws. In real design, they often pull i
 ### 3. Efficiency vs. Error Prevention
 
 **The tension:**
-
 - "Error prevention" (Nielsen #5)
 - "Flexibility and efficiency of use" (Nielsen #7)
 
 **Example:** Checkout flow
-
 - Error prevention: Confirmation at every step
 - Efficiency: One-click purchase
 
@@ -95,7 +86,6 @@ Usability heuristics are guidelines, not laws. In real design, they often pull i
 | Frequency | Rare | Very frequent |
 
 **Design patterns:**
-
 - Undo instead of confirm (efficient + safe)
 - Confidence-based friction (add steps for risky actions)
 - User-controlled safety level
@@ -103,12 +93,10 @@ Usability heuristics are guidelines, not laws. In real design, they often pull i
 ### 4. Discoverability vs. Clean Interface
 
 **The tension:**
-
 - "Recognition rather than recall" (Nielsen #6)
 - "Aesthetic and minimalist design" (Nielsen #8)
 
 **Example:** Feature-rich application
-
 - Discoverable: Show all options visibly
 - Clean: Hide features until needed
 
@@ -122,7 +110,6 @@ Usability heuristics are guidelines, not laws. In real design, they often pull i
 | Screen real estate | Generous | Limited |
 
 **Design patterns:**
-
 - Primary actions visible, secondary in menus
 - Progressive disclosure
 - Contextual menus
@@ -131,12 +118,10 @@ Usability heuristics are guidelines, not laws. In real design, they often pull i
 ### 5. Guidance vs. User Control
 
 **The tension:**
-
 - Help users avoid errors
 - Respect user autonomy
 
 **Example:** Form validation
-
 - Guidance: Prevent submission until valid
 - Control: Let users submit and see what happens
 
@@ -150,7 +135,6 @@ Usability heuristics are guidelines, not laws. In real design, they often pull i
 | User frustration with restrictions | Low | High |
 
 **Design patterns:**
-
 - Inline guidance (not blocking)
 - Warnings vs. blockers
 - "Are you sure?" rather than "You can't"
@@ -162,7 +146,6 @@ Usability heuristics are guidelines, not laws. In real design, they often pull i
 ### Step 1: Identify the Conflict
 
 Name the specific heuristics in tension:
-
 - Which principle says do A?
 - Which principle says do B?
 - Why can't we fully satisfy both?
@@ -170,7 +153,6 @@ Name the specific heuristics in tension:
 ### Step 2: Assess the Context
 
 Consider:
-
 - **User type:** Novice vs. expert
 - **Task criticality:** Browsing vs. financial transaction
 - **Frequency:** One-time vs. daily
@@ -203,7 +185,6 @@ Often, clever design satisfies both:
 ### Step 5: Test the Trade-off
 
 Validate with real users:
-
 - Does the chosen priority work for target users?
 - Are edge cases handled acceptably?
 - Do users understand why limitations exist?
@@ -217,7 +198,6 @@ Validate with real users:
 **Conflict:** Efficiency (skip it) vs. Guidance (require it)
 
 **Resolution:**
-
 - Allow skip but show value
 - Defer to contextual moments
 - Progressive onboarding during natural use
@@ -227,7 +207,6 @@ Validate with real users:
 **Conflict:** Discoverability (show all options) vs. Minimalism (hamburger menu)
 
 **Resolution:**
-
 - Bottom navigation for 3-5 key items
 - Hamburger for secondary items
 - Tab bar > hamburger for primary navigation
@@ -237,7 +216,6 @@ Validate with real users:
 **Conflict:** Error prevention (validate immediately) vs. Efficiency (let them type)
 
 **Resolution:**
-
 - Validate on blur (not on keystroke)
 - Show errors inline, not modal
 - Allow submission, show all errors
@@ -247,7 +225,6 @@ Validate with real users:
 **Conflict:** Error prevention (confirm everything) vs. Efficiency (just do it)
 
 **Resolution:**
-
 - Confirm only irreversible/high-cost actions
 - Provide undo instead of confirm
 - Use clear language about consequences
@@ -257,7 +234,6 @@ Validate with real users:
 **Conflict:** User control (let them configure) vs. Simplicity (sensible defaults)
 
 **Resolution:**
-
 - Smart defaults that work for 80%
 - Easy access to change settings
 - Don't require configuration to start

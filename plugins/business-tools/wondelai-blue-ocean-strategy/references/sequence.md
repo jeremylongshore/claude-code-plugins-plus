@@ -2,8 +2,8 @@
 
 A blue ocean idea must pass through four sequential tests before it becomes a commercially viable strategy: Buyer Utility, Strategic Price, Target Cost, and Adoption. Each test is a gate. If the idea fails at any gate, it must be reworked before proceeding. Skipping a gate or reversing the order leads to strategies that look promising on paper but fail in the market.
 
-## Table of Contents
 
+## Table of Contents
 1. [The Four-Gate Sequence](#the-four-gate-sequence)
 2. [Gate 1: Buyer Utility Map](#gate-1-buyer-utility-map)
 3. [Gate 2: Strategic Pricing](#gate-2-strategic-pricing)
@@ -72,7 +72,6 @@ Rate each cell: How well does the industry currently deliver utility here? (1 = 
 | **Environmental** | | | | | | |
 
 **How to use the map:**
-
 1. Fill in the matrix with industry-current scores (1-5)
 2. Circle all cells rated 1-2 (these are the biggest utility gaps)
 3. For each low-rated cell, ask: "What blocks utility here? What would a 5 look like?"
@@ -185,13 +184,11 @@ The first and most powerful lever. Every factor you eliminate or reduce directly
 If you cannot achieve the target cost alone, partner with others who have the capabilities or scale you lack.
 
 **When to partner:**
-
 - A capability you need would take years and significant investment to build
 - A partner already has the capability at the cost level you need
 - The partnership does not compromise the buyer utility
 
 **Examples:**
-
 - Apple partnered with music labels for iTunes (content)
 - Nespresso partnered with machine manufacturers (hardware) to focus on capsules
 - IKEA partners with low-cost manufacturers globally
@@ -245,7 +242,6 @@ Even a brilliant blue ocean strategy will fail if the organization cannot execut
 **The challenge:** Internal teams may resist the new strategy because it changes their roles, threatens their expertise, or contradicts what they believe about the business.
 
 **Common resistance patterns:**
-
 - "Our customers do not want this" (projecting existing customer needs onto non-customers)
 - "We have always done it this way" (attachment to eliminated factors)
 - "This devalues our expertise" (skills built around reduced/eliminated factors)

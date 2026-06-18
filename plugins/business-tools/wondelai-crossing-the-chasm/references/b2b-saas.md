@@ -4,8 +4,8 @@ Geoffrey Moore wrote Crossing the Chasm in 1991, when enterprise software was so
 
 This reference applies the Crossing the Chasm framework to the realities of modern B2B SaaS.
 
-## Table of Contents
 
+## Table of Contents
 1. [How SaaS Changes the Adoption Curve](#how-saas-changes-the-adoption-curve)
 2. [Product-Led Growth and the Chasm](#product-led-growth-and-the-chasm)
 3. [How Freemium Changes the Adoption Curve](#how-freemium-changes-the-adoption-curve)
@@ -110,14 +110,12 @@ When used strategically, freemium accelerates chasm crossing:
 Unlike traditional software companies that had to guess their beachhead, SaaS companies have data:
 
 **Step 1: Analyze your highest-engagement users**
-
 - Who uses the product daily?
 - Who uses the most features?
 - Who invites the most team members?
 - Who has the highest retention (12+ months)?
 
 **Step 2: Find the common attributes**
-
 - What industry are they in?
 - What company size?
 - What role/function?
@@ -125,7 +123,6 @@ Unlike traditional software companies that had to guess their beachhead, SaaS co
 - How did they discover you?
 
 **Step 3: Validate the segment**
-
 - Are these users willing to pay (or already paying)?
 - Do they talk to each other (conferences, communities, Slack groups)?
 - Can you build the whole product for them?
@@ -136,7 +133,6 @@ Unlike traditional software companies that had to guess their beachhead, SaaS co
 **Product:** Workflow automation tool
 
 **Data analysis reveals:**
-
 - Highest engagement: Marketing operations teams at B2B SaaS companies (50-500 employees)
 - Use case: Automating lead routing and campaign workflows
 - Retention: 94% annual retention in this cohort vs 72% overall
@@ -165,14 +161,12 @@ For SaaS products, the whole product increasingly means the integration and ecos
 For pragmatist SaaS buyers, integrations are not nice-to-have -- they are the primary evaluation criterion after core functionality:
 
 **The integration hierarchy for pragmatists:**
-
 1. Native integrations with their critical tools (must work out of the box)
 2. iPaaS support (Zapier, Make, Workato) for custom workflows
 3. Open API for custom development
 4. Webhook support for event-driven architectures
 
 **Beachhead-specific integration strategy:**
-
 - Identify the 3-5 tools your beachhead segment uses daily
 - Build native, maintained integrations with each
 - Create segment-specific workflow templates using these integrations
@@ -217,14 +211,12 @@ The chasm exists because pragmatists need peer references. Community is the most
 ### Building Community for Chasm Crossing
 
 **Phase 1: Seed (Pre-Chasm)**
-
 - Launch Slack/Discord community with early adopters
 - Host monthly user meetups (virtual or in-person)
 - Create a champion program for most active users
 - Share everything openly (roadmap, decisions, challenges)
 
 **Phase 2: Cultivate (During Chasm Crossing)**
-
 - Shift community content from "what's new" to "how we use it"
 - Feature pragmatist success stories, not just early adopter enthusiasm
 - Create segment-specific channels (e.g., #marketing-ops, #sales-ops)
@@ -232,7 +224,6 @@ The chasm exists because pragmatists need peer references. Community is the most
 - Encourage peer-to-peer support (pragmatists trust other pragmatists)
 
 **Phase 3: Scale (Post-Chasm)**
-
 - Launch annual user conference
 - Create certification program
 - Establish regional user groups
@@ -256,14 +247,12 @@ The chasm exists because pragmatists need peer references. Community is the most
 ### Key Transition Metrics
 
 **Signal you're approaching the chasm:**
-
 - Early adopter revenue is plateauing
 - New customers look different from existing ones
 - Sales team reports longer cycles and more objections
 - "Who else uses this?" becomes the top question
 
 **Signal you're crossing the chasm:**
-
 - Win rate in beachhead segment is improving
 - Sales cycle in beachhead is becoming predictable
 - Inbound leads from beachhead segment are increasing
@@ -271,7 +260,6 @@ The chasm exists because pragmatists need peer references. Community is the most
 - Retention in beachhead exceeds 90%
 
 **Signal you've crossed:**
-
 - Revenue growth is accelerating without proportional sales investment
 - New segments are adopting with less effort than the beachhead
 - Competitors are reacting to your position
@@ -285,7 +273,6 @@ The chasm exists because pragmatists need peer references. Community is the most
 **Beachhead:** Engineering teams at tech startups who needed a better alternative to IRC, HipChat, and email threads.
 
 **Chasm-crossing mechanics:**
-
 - PLG viral loop: every message to a non-user was an invitation
 - Team standardization happened naturally (you can't use Slack alone)
 - Enterprise features (Enterprise Grid, compliance, SSO) built specifically for pragmatist IT organizations
@@ -300,7 +287,6 @@ The chasm exists because pragmatists need peer references. Community is the most
 **Beachhead:** Product and engineering teams at startups who wanted to consolidate wikis, project management, and documentation.
 
 **Chasm-crossing mechanics:**
-
 - Template gallery let new users start with proven workflows instead of blank pages
 - Team workspace features (permissions, shared spaces) enabled organizational adoption
 - Community-created templates provided the "whole product" via user-generated content
@@ -313,7 +299,6 @@ The chasm exists because pragmatists need peer references. Community is the most
 **Beachhead:** Product design teams at tech startups who wanted browser-based collaborative design without managing Sketch files and Abstract version control.
 
 **Chasm-crossing mechanics:**
-
 - Multiplayer editing was inherently viral (invite collaborators)
 - Developers used Figma for handoff (expanded beyond designers)
 - FigJam expanded use case to whiteboarding and brainstorming
@@ -326,7 +311,6 @@ The chasm exists because pragmatists need peer references. Community is the most
 **Beachhead:** Engineering teams at fast-growing startups (50-200 employees) frustrated with Jira's complexity.
 
 **Chasm-crossing mechanics:**
-
 - Opinionated product (less configuration, more conventions) appeals to pragmatists who want structure
 - Fast performance positioned against Jira's slowness -- pragmatic, measurable benefit
 - Keyboard-first design appealed specifically to engineering teams

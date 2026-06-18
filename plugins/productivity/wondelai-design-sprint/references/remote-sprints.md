@@ -2,8 +2,8 @@
 
 Running a design sprint with a distributed team requires deliberate adaptation of every exercise. The core principles remain the same: time-box, work individually, let the Decider decide, prototype, and test. But the tools, energy management, and communication patterns must change to account for screen fatigue, time zones, and the absence of a shared physical space.
 
-## Table of Contents
 
+## Table of Contents
 1. [Tool Stack](#tool-stack)
 2. [Time Zone Considerations](#time-zone-considerations)
 3. [Adapting Each Day for Remote](#adapting-each-day-for-remote)
@@ -86,36 +86,30 @@ A fully synchronous 5-day sprint is impractical. Use compressed schedules (see b
 ### Remote Monday: Map
 
 **Sync exercises:**
-
 - Long-term goal (30 min, video call, everyone writes in Miro simultaneously)
 - Sprint questions (30 min, same format)
 - Customer journey map (45 min, Sprint Master draws in Miro while team directs)
 
 **Async exercises:**
-
 - Expert interviews can be pre-recorded on Loom (10-15 min each, team watches on their own time)
 - HMW notes: each person adds sticky notes to the Miro board asynchronously after watching expert videos
 
 **Sync decision:**
-
 - HMW voting (15 min, use Miro's built-in voting feature)
 - Target selection with Decider (15 min, video call)
 
 ### Remote Tuesday: Sketch
 
 **Sync exercises:**
-
 - Lightning Demos (45 min, each person shares screen for 3 minutes)
 
 **Async exercises:**
-
 - Notes phase (20 min, everyone reviews the Miro board on their own)
 - Ideas phase (20 min, individual work)
 - Crazy 8s (8 min, individual work, upload photos of paper sketches)
 - Solution Sketch (60-90 min, individual work)
 
 **How to handle sketches remotely:**
-
 1. Sketch on paper with a thick marker (same as in-person)
 2. Photograph each panel with a phone
 3. Upload to the designated Miro area by a set deadline
@@ -126,18 +120,15 @@ Set a firm deadline for sketch uploads. The Sprint Master confirms receipt of al
 ### Remote Wednesday: Decide
 
 **Sync exercises (these must be synchronous):**
-
 - Art Museum: everyone silently reviews sketches in Miro, placing dot stickers (20 min)
 - Speed Critique: Sprint Master shares screen and narrates each sketch (3 min per sketch)
 - Straw Poll: everyone places their vote simultaneously in Miro (5 min)
 - Supervote: Decider places their votes (5 min)
 
 **Async/sync exercises:**
-
 - Storyboard: can be done with the Sprint Master building in Miro while the team provides direction on a video call, or the Sprint Master can draft it async and get sync approval
 
 **Remote Wednesday tips:**
-
 - The Art Museum works surprisingly well in Miro: participants browse and place dots silently
 - During Speed Critique, the Sprint Master must share screen and control the zoom/navigation
 - Use a different color dot for each participant to track who voted for what
@@ -146,21 +137,18 @@ Set a firm deadline for sketch uploads. The Sprint Master confirms receipt of al
 ### Remote Thursday: Prototype
 
 **Sync exercises:**
-
 - Morning kick-off: assign roles and divide storyboard (30 min)
 - Mid-day check-in (15 min)
 - End-of-day review: walk through prototype together (30 min)
 - Trial run (30 min)
 
 **Async work:**
-
 - Building the prototype (individual or paired work in Figma)
 - Writing copy (Writer works independently, shares in Slack)
 - Gathering assets (Collector works independently)
 - Writing the interview script (Interviewer works independently)
 
 **Remote Thursday tips:**
-
 - Figma's real-time collaboration makes remote prototyping nearly as efficient as in-person
 - The Stitcher should set up the Figma file structure before the morning kick-off
 - Use a shared Slack channel for quick questions and asset sharing
@@ -169,13 +157,11 @@ Set a firm deadline for sketch uploads. The Sprint Master confirms receipt of al
 ### Remote Friday: Test
 
 **Interview options:**
-
 - Video call interview (Zoom, Google Meet) with the participant sharing their screen
 - Unmoderated testing platform (UserTesting.com, Maze) for asynchronous feedback
 - Moderated video call is strongly preferred for design sprints
 
 **Observation setup:**
-
 - All observers join a separate "observation" Zoom call
 - The Interviewer conducts the interview on the main call
 - Screen share from the Interviewer's call is piped to the observation call
@@ -183,7 +169,6 @@ Set a firm deadline for sketch uploads. The Sprint Master confirms receipt of al
 - Use a shared chat channel for observers to flag interesting moments in real time
 
 **Remote Friday tips:**
-
 - Test the video/audio setup 24 hours before the first interview
 - Send participants a test link to verify their screen sharing works
 - Have a backup plan if a participant cannot share their screen (the Interviewer controls the prototype and asks the participant to direct them)
@@ -204,7 +189,6 @@ Combine Monday and Tuesday into a single day by compressing exercises and using 
 | Day 4 (Thu) | Test and debrief |
 
 **4-day sprint trade-offs:**
-
 - Day 1 is very long and intense (8-9 hours of focused work)
 - Less time for expert interviews (use async pre-recorded format)
 - Solution sketches have less incubation time

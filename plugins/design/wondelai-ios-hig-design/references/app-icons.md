@@ -16,7 +16,6 @@
 iOS applies a **superellipse** ("squircle") mask automatically. Export icons as squares.
 
 For custom border matching the shape:
-
 - Corner radius = side length × 0.222
 - Corner smoothing = 61% (iOS preset in Figma)
 

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/pair-programmer",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Graduated assistance framework to prevent skill atrophy when coding with AI",
   "keywords": [
     "pair-programming",

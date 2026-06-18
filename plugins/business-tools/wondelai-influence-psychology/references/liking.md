@@ -37,7 +37,6 @@ This reference covers the six factors of liking, brand voice and personality gui
 | **Aesthetic** | Design for cultural context | Different visual styles for different markets |
 
 **Copywriting for similarity:**
-
 - "We built this because we had the same problem"
 - "As a [identity], you know that [shared experience]"
 - "We're founders building for founders"
@@ -58,7 +57,6 @@ This reference covers the six factors of liking, brand voice and personality gui
 | **Support** | "That's a really smart question" | Makes the user feel valued |
 
 **Rules for effective compliments:**
-
 - Tie the compliment to something the user actually did (not just flattery)
 - Be specific rather than generic ("Your project setup is really thorough" > "Great job!")
 - Don't overdo it; one well-placed compliment is more powerful than constant praise
@@ -190,7 +188,6 @@ Define three core voice attributes with descriptions:
 ### The Halo Effect in Practice
 
 When users find a product visually appealing, they automatically rate it as:
-
 - Easier to use (even when it isn't)
 - More trustworthy
 - More reliable

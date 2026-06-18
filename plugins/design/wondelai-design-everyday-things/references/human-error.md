@@ -166,7 +166,6 @@ Use confirmation dialogs sparingly and only for high-consequence, irreversible a
 ```
 
 **Good example**:
-
 ```
 We couldn't save your changes.
 Your internet connection was interrupted.
@@ -175,7 +174,6 @@ Check your connection and try again, or download a copy of your work.
 ```
 
 **Bad example**:
-
 ```
 Error 500: Internal Server Error
 ```

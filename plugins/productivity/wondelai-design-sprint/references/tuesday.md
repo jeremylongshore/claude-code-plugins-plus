@@ -180,7 +180,6 @@ This is the core of Tuesday. Four progressively focused exercises move each pers
 **Panel 1: Entry Point**
 
 What the customer sees first. Could be:
-
 - A search result
 - An email
 - A notification
@@ -192,7 +191,6 @@ Draw the screen, message, or moment. Include real text, not "lorem ipsum."
 **Panel 2: Core Interaction**
 
 The heart of your solution. Show:
-
 - What the interface looks like
 - What the customer does (clicks, types, drags)
 - What information they see
@@ -203,7 +201,6 @@ This panel often needs the most detail. Use annotations and callouts.
 **Panel 3: Outcome**
 
 The result of using your solution:
-
 - What does the customer see when they succeed?
 - How do they feel? What confirmation do they get?
 - What happens next?

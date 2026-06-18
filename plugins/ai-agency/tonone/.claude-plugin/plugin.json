@@ -1,7 +1,7 @@
 {
   "name": "tonone",
   "description": "Engineering + Product + Operations + Legal + Design + Data Science + Security Operations + Developer Experience + Infrastructure Specialist + AI Operations team \u2014 100 agents as Claude Code specialists. Infrastructure, DevOps, backend, security, ML/AI, mobile, UX, analytics, growth, revenue, content, PR, customer success, finance, people, operations, support, contracts, compliance, IP, governance, regulatory, color systems, typography, motion, accessibility, design tokens, forecasting, feature engineering, model training, drift monitoring, vector search, LLM fine-tuning, pen testing, detection engineering, incident response, zero trust, API docs, SDK design, developer onboarding, Kubernetes, Terraform, FinOps, service mesh, edge computing, caching, queuing, multi-cloud, chaos engineering, model deployment, LLM evaluation, AI observability, guardrails, prompt engineering, embeddings, ranking, and more.",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "author": {
     "name": "tonone-ai",
     "url": "https://tonone.ai"
@@ -51,11 +51,6 @@
             "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/tonone-onboard.js\"",
             "timeout": 5
-          },
-          {
-            "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/tonone-worktree-session.js\"",
-            "timeout": 5
           }
         ]
       }
@@ -92,28 +87,6 @@
         ]
       }
     ],
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/tonone-git-gate.js\"",
-            "timeout": 5
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|Write|NotebookEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/tonone-worktree-gate.js\"",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
     "Stop": [
       {
         "hooks": [
@@ -121,11 +94,6 @@
             "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/tonone-notify.js\"",
             "timeout": 5
-          },
-          {
-            "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/tonone-worktree-close.js\"",
-            "timeout": 10
           }
         ]
       }

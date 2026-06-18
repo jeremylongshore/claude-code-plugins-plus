@@ -2,8 +2,8 @@
 
 Friday is the payoff. Five customers interact with the prototype while the team watches, listens, and takes notes. By the end of the day, the team will have clear evidence of what works, what fails, and what to do next. The quality of Friday depends entirely on the quality of the interviews and the discipline of the observation.
 
-## Table of Contents
 
+## Table of Contents
 1. [Schedule Overview](#schedule-overview)
 2. [The Five-Act Interview Script](#the-five-act-interview-script)
 3. [Interviewer Techniques](#interviewer-techniques)
@@ -223,17 +223,14 @@ Answer: Yes, with minor copy improvements needed.
 Organize all observations into three columns on the whiteboard:
 
 **What Worked (keep and build on):**
-
 - List specific screens, features, or copy that received consistent positive feedback
 - Include direct quotes from participants
 
 **What Failed (fix or remove):**
-
 - List specific moments of confusion, frustration, or failure
 - Note whether the failure was universal (5/5) or partial (3/5)
 
 **Mixed Results (investigate further):**
-
 - List elements with split reactions
 - Note possible explanations for the split
 

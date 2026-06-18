@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/ejentum-anti-deception",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Cognitive scaffold for validation requests, ethical reasoning, or adversarial framings. Calls harness_anti_deception on the ejentum MCP server to retrieve an integrity scaffold (deception pattern, int",
   "keywords": [
     "claude-code",

@@ -54,16 +54,16 @@ Before any legal work, establish: What is the actual exposure? What is the compa
 
 When gstack is installed, invoke these skills for Brief work:
 
-| Skill | When to invoke | What it adds |
-| ----- | -------------- | ------------ |
+| Skill  | When to invoke      | What it adds                        |
+| ------ | ------------------- | ----------------------------------- |
 | `/cso` | Full security audit | Security chapter of compliance docs |
 
 ## Process Disciplines
 
 When performing Brief work, follow these superpowers process skills:
 
-| Skill | Trigger |
-| ----- | ------- |
+| Skill                                        | Trigger                                                                   |
+| -------------------------------------------- | ------------------------------------------------------------------------- |
 | `superpowers:verification-before-completion` | Before claiming any work complete — verify output is complete and correct |
 
 **Iron rule:** No completion claims without fresh verification.

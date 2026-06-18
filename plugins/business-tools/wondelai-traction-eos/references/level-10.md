@@ -49,7 +49,6 @@ Start with a human connection. Each person shares one piece of good news -- pers
 - The facilitator keeps it moving
 
 ### Examples of Good Segue News
-
 - "My daughter scored her first soccer goal this weekend."
 - "We just signed a deal I've been working on for three months."
 - "I finished a half marathon on Saturday."
@@ -99,7 +98,6 @@ Review the status of every quarterly Rock to ensure progress is on track.
 A Rock is on track if the owner believes, based on current progress, it will be completed by the end of the quarter. It is off track if there is meaningful risk of missing the deadline.
 
 **Rules:**
-
 - Be honest. Declaring "on track" when you know it is at risk wastes the team's time when the truth surfaces later.
 - Off track is not shameful. It is information that lets the team help.
 - If a Rock has been off track for 3+ consecutive weeks, it must be IDS'd.
@@ -171,24 +169,20 @@ Identify, Discuss, and Solve the most important issues facing the organization. 
 ### Protocol
 
 **Step 1: Build the Issues List (2 minutes)**
-
 - Ask: "Does anyone have new issues to add?"
 - Quickly capture new issues in 3-5 words each
 
 **Step 2: Prioritize (3 minutes)**
-
 - Read the full list aloud
 - Ask: "What are the top 3 issues? Which three, if solved today, would have the greatest impact?"
 - Number them 1, 2, 3
 
 **Step 3: IDS Issue #1**
-
 - **Identify:** The person who raised the issue states it clearly in one sentence. Ask: "What is the real issue here?" Dig to root cause.
 - **Discuss:** Open the floor. Relevant perspectives are shared. Facilitator stops tangents.
 - **Solve:** The team decides. Action items are created with who/what/when. The issue is resolved or escalated.
 
 **Step 4: Repeat for remaining issues**
-
 - After each issue, re-prioritize remaining issues
 - Continue until the 60 minutes are up
 - Unsolved issues carry forward to next week
@@ -228,7 +222,6 @@ Ask: "Are there any decisions or messages from this meeting that need to be comm
 
 **Step 3: Rate the Meeting (2 minutes)**
 Each person rates the meeting 1-10. Go around the table.
-
 - If the average is 8+: "Great meeting. See you next week."
 - If any rating is below 8: Ask that person: "What would have made it an 8?" Take note for next week.
 

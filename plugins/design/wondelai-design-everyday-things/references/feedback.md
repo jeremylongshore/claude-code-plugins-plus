@@ -149,7 +149,6 @@ These thresholds, established by usability research (Miller 1968, Card et al. 19
 ```
 
 **Example**:
-
 ```
 [!] We could not process your payment.
 Your card was declined by the issuing bank.

@@ -98,19 +98,16 @@ When entering the pragmatist market, you must choose a competitive frame of refe
 **Frame your product against the way the market currently solves the problem.** The "alternative" is the status quo -- spreadsheets, manual processes, legacy systems, or a combination of point tools.
 
 **When to use:**
-
 - You are creating a new product category
 - There is no direct competitor doing what you do
 - The status quo is painful and familiar to the target
 
 **Advantages:**
-
 - Easy for the buyer to understand the problem you solve
 - No direct competitor to fight
 - Large addressable market (everyone using the old way)
 
 **Disadvantages:**
-
 - Must educate on the new approach
 - No existing budget line item for your category
 - Buyers may not realize their current approach is the problem
@@ -122,19 +119,16 @@ When entering the pragmatist market, you must choose a competitive frame of refe
 **Frame your product against an established competitor in a recognized category.** You're saying "we do what they do, but better in this specific way."
 
 **When to use:**
-
 - A recognized category and competitor exist
 - The category has budget (it's in the buyer's plan)
 - You have a clear, defensible advantage over the competitor
 
 **Advantages:**
-
 - Buyer immediately understands what you do
 - Existing budget line item
 - Clear evaluation framework
 
 **Disadvantages:**
-
 - You're compared on the competitor's terms
 - Must differentiate on a dimension that matters
 - Risk of being seen as a "me too" product

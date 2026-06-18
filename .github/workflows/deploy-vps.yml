@@ -16,7 +16,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write   # required for Tailscale OIDC
+  id-token: write # required for Tailscale OIDC
 
 concurrency:
   group: deploy-vps-${{ github.repository }}
@@ -64,7 +64,7 @@ jobs:
 
   deploy:
     needs: test
-    uses: jeremylongshore/.github/.github/workflows/vps-deploy.yml@709a07fbebb1d51806e171204e63f5332abcb0da
+    uses: jeremylongshore/.github/.github/workflows/vps-deploy.yml@53d6be37d6c046818157b954acb33667ac095dd8
     with:
       variant: static
       srv-path: /srv/tonsofskills

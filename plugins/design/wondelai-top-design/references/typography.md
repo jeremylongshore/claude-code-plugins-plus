@@ -1,7 +1,6 @@
 # Typography Reference
 
 ## Table of Contents
-
 1. Font Pairing Strategies
 2. Type Scale Systems
 3. CSS Typography Techniques
@@ -13,11 +12,9 @@
 ## 1. Font Pairing Strategies
 
 ### The Contrast Principle
-
 Great pairings create tension through contrast in one dimension while maintaining harmony in others.
 
 **Contrast Dimensions:**
-
 - Weight (light vs. bold)
 - Width (condensed vs. extended)
 - Style (serif vs. sans)
@@ -27,35 +24,30 @@ Great pairings create tension through contrast in one dimension while maintainin
 ### Proven Pairings by Style
 
 **Editorial/Magazine:**
-
 ```
 Display: Freight Display / Editorial New / Canela
 Body: Söhne / Untitled Sans / Graphik
 ```
 
 **Tech/Modern:**
-
 ```
 Display: Monument Extended / ABC Favorit Extended / Druk Wide
 Body: Inter (only acceptable here) / Suisse Int'l / Neue Montreal
 ```
 
 **Luxury/Fashion:**
-
 ```
 Display: Didot / Romana / Noe Display
 Body: Apercu / Basis Grotesque / Plain
 ```
 
 **Brutalist/Raw:**
-
 ```
 Display: ABC Diatype / Neue Haas Grotesk / Helvetica Now
 Body: Same as display (mono-font strategy)
 ```
 
 **Creative/Playful:**
-
 ```
 Display: Basement Grotesque / GT Maru / Gambarino
 Body: GT Walsheim / Gilroy / Proxima Nova
@@ -64,7 +56,6 @@ Body: GT Walsheim / Gilroy / Proxima Nova
 ### Free/Google Font Alternatives
 
 **Premium Feel, Zero Cost:**
-
 ```
 Display Options:
 ├── Space Grotesk (geometric, techy)
@@ -283,7 +274,6 @@ Body Options:
 ## 4. Variable Fonts
 
 ### Benefits
-
 - Single file, multiple weights/widths
 - Fluid animations between weights
 - Smaller total file size

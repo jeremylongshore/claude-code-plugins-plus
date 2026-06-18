@@ -3,7 +3,6 @@
 Jakob Nielsen's 10 general principles for interaction design, with practical examples and common violations.
 
 ## Table of Contents
-
 1. [1. Visibility of System Status](#1-visibility-of-system-status)
 2. [2. Match Between System and Real World](#2-match-between-system-and-real-world)
 3. [3. User Control and Freedom](#3-user-control-and-freedom)
@@ -354,8 +353,8 @@ Users click through "Are you sure?" without reading. Undo lets them act confiden
 
 ### Types of Help
 
-| Type | Example | When to Use |
-|------|---------|-------------|
+| Type | When to Use |
+|------|-------------|
 | **Inline help** | Tooltips, hints | Next to complex fields |
 | **Contextual help** | "?" icons | For non-obvious features |
 | **Searchable docs** | Knowledge base | For detailed questions |

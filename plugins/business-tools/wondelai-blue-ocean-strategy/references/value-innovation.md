@@ -31,7 +31,6 @@ All three must be aligned:
 The offering must deliver a clear leap in utility that buyers immediately recognize. This is not incremental improvement. It is a qualitative shift in what the buyer experiences.
 
 **Test questions:**
-
 - Would a first-time buyer understand the value in under 30 seconds?
 - Is the utility leap obvious without explanation?
 - Does it solve a problem buyers have accepted as "just the way things are"?
@@ -41,7 +40,6 @@ The offering must deliver a clear leap in utility that buyers immediately recogn
 The price must be set to attract the mass of target buyers. Price is not based on cost-plus. It is based on what alternatives buyers currently use.
 
 **Test questions:**
-
 - Is the price within reach of the target mass market?
 - Is it priced against alternatives (not just direct competitors)?
 - Would the price point unlock demand from non-customers?
@@ -51,7 +49,6 @@ The price must be set to attract the mass of target buyers. Price is not based o
 The cost structure must allow the company to earn a healthy profit at the strategic price point. Cost is achieved through elimination and reduction, not through subsidies or scale assumptions.
 
 **Test questions:**
-
 - Can you achieve the target cost from day one (not "after scale")?
 - Does the ERRC grid eliminate enough cost to fund what you create?
 - Is the cost structure sustainable without external funding?
@@ -105,7 +102,6 @@ List all factors your industry competes on. Rate each factor (low to high) for y
 Ask: Which factors does the industry invest heavily in, but customers do not proportionally value?
 
 **Signals of over-serving:**
-
 - Customers do not use advanced features
 - Buyers choose the cheapest adequate option
 - Industry differentiators do not correlate with purchase decisions
@@ -116,7 +112,6 @@ Ask: Which factors does the industry invest heavily in, but customers do not pro
 Ask: Where do buyers experience friction, frustration, or workarounds that the industry ignores?
 
 **Discovery methods:**
-
 - Observe customers using the product (not just ask them)
 - Study complaint patterns and support tickets
 - Interview non-customers about why they refuse the industry
@@ -127,7 +122,6 @@ Ask: Where do buyers experience friction, frustration, or workarounds that the i
 Ask: How do alternative industries solve similar problems differently?
 
 **Process:**
-
 - List all alternatives buyers consider (not just competitors)
 - Study what those alternatives do better
 - Identify transferable elements
@@ -168,7 +162,6 @@ Rate each statement 1-5 (1 = strongly disagree, 5 = strongly agree):
 | 10 | Our offering is simpler than what the industry currently provides | /5 |
 
 **Scoring:**
-
 - 40-50: Strong value innovation
 - 30-39: Partial value innovation, strengthen weak areas
 - 20-29: More incremental than innovative, revisit ERRC
@@ -207,7 +200,6 @@ Value innovation requires choosing. You will deliberately not serve some existin
 **Objective:** Surface hidden assumptions that constrain strategic thinking.
 
 **Process:**
-
 1. Each team member writes down 10 things "everyone in our industry knows to be true"
 2. Combine and deduplicate the list
 3. For each assumption, ask: "What if this were not true?"
@@ -221,7 +213,6 @@ Value innovation requires choosing. You will deliberately not serve some existin
 **Objective:** Identify utility gaps through direct observation.
 
 **Process:**
-
 1. Assign team members to observe 3-5 customers using your product/service
 2. Document every moment of friction, confusion, delay, or workaround
 3. Note what customers do before and after using your product
@@ -235,7 +226,6 @@ Value innovation requires choosing. You will deliberately not serve some existin
 **Objective:** Discover value innovation opportunities by studying how alternatives solve buyer needs.
 
 **Process:**
-
 1. Define the buyer's fundamental job-to-be-done
 2. List every alternative way buyers accomplish this job (including non-consumption)
 3. For each alternative, list its advantages over your industry
@@ -249,7 +239,6 @@ Value innovation requires choosing. You will deliberately not serve some existin
 **Objective:** Understand why people refuse your industry.
 
 **Process:**
-
 1. Identify 5-10 non-customers from each of the three tiers
 2. Conduct 30-minute interviews focused on: Why don't you use [industry]? What do you do instead? What would have to change for you to consider it?
 3. Synthesize patterns across interviews
@@ -263,7 +252,6 @@ Value innovation requires choosing. You will deliberately not serve some existin
 **Objective:** Design a new value curve that breaks the value-cost trade-off.
 
 **Process:**
-
 1. Draw the current industry strategy canvas (all competitors' curves)
 2. Using insights from Exercises 1-4, propose factors to eliminate and reduce
 3. Calculate the cost savings from elimination and reduction

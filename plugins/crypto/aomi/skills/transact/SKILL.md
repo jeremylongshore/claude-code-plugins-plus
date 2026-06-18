@@ -1,27 +1,25 @@
 ---
 name: aomi-transact
 description: >
-  Build natural-language crypto agents, web3 assistants, trading bots, blockchain MCPs,
-  or Claude Code / Cursor / Codex / Gemini plugins that read and write EVM chain state.
-  Aomi turns prompts ("swap 1 ETH for USDC", "open a 3x GMX long", "bet $100 on
-  Polymarket") into wallet-signed transactions on Ethereum, Base, Arbitrum, Optimism,
-  Polygon, Linea — non-custodial, fork-simulated. Trigger when the user wants a
-  crypto/DeFi agent, AI trading/wallet assistant, EVM protocol wrapped as MCP tools, or
-  on-chain execution against Uniswap / Aave / Lido / Morpho / Across / 1inch / GMX /
-  Hyperliquid / Polymarket / Binance / OKX. Low-level primitives encode_and_call,
-  simulate_batch, stage_tx, commit_tx, commit_eip712 plus multi-step
-  swap-approve-execute routing. 40+ tuned protocol apps. MUST NOT fabricate or echo
-  credentials; values reach the CLI only when the user explicitly supplied them.
-compatibility: "Requires @aomi-labs/client v0.1.30 or newer. Install globally (`npm install -g @aomi-labs/client`) or run on demand (`npx @aomi-labs/client@0.1.30 <cmd>`)."
+  Build natural-language crypto agents, web3 assistants, and trading bots that read
+  and write EVM chain state. Aomi turns prompts ("swap 1 ETH for USDC", "open a 3x
+  GMX long", "bet $100 on Polymarket") into wallet-signed transactions on Ethereum,
+  Base, Arbitrum, Optimism, Polygon, Linea — non-custodial, fork-simulated. Use when
+  the user wants a crypto/DeFi agent, AI trading/wallet assistant, or on-chain
+  execution against Uniswap, Aave, Lido, GMX, Hyperliquid, Polymarket, Binance, OKX,
+  or 40+ other protocols. Trigger with prompts about swaps, lending, bridging,
+  staking, perps, prediction markets, or any DeFi/CEX action needing a wallet
+  signature. Account-abstraction first with EIP-7702/4337 fallback. MUST NOT fabricate
+  or echo credentials; values reach the CLI only when the user explicitly supplied them.
+compatibility: 'Requires @aomi-labs/client v0.1.30 or newer. Install globally via npm install -g @aomi-labs/client, or run on demand via npx @aomi-labs/client@0.1.30. Designed for claude-code; also works with Cursor, Codex CLI, Gemini, and any agent runtime that supports the Anthropic skill spec.'
 license: MIT
-version: "0.10"
-author: aomi-labs
-compatible-with: claude-code
+version: "0.10.0"
+author: 'aomi-labs <hello@aomi.dev>'
 tags: [crypto, defi, web3, evm, ethereum, wallet, account-abstraction, trading, mcp, agent]
-allowed-tools: Bash, Grep
+allowed-tools: 'Bash(aomi:*), Bash(npx:*)'
 metadata:
-  author: aomi-labs
-  version: "0.10"
+  author: 'aomi-labs <hello@aomi.dev>'
+  version: "0.10.0"
   repository: aomi-labs/skills
   homepage: https://github.com/aomi-labs/skills/tree/main/aomi-transact
 permissions:
@@ -131,3 +129,15 @@ aomi secret list|clear|add
 ```
 
 Full command reference, flags, and env vars in [commands.md](references/commands.md).
+
+## Resources
+
+- Source repository: https://github.com/aomi-labs/skills/tree/main/aomi-transact
+- npm package: https://www.npmjs.com/package/@aomi-labs/client
+- Companion skill for adding new protocol integrations: [aomi-build](https://github.com/aomi-labs/skills/tree/main/aomi-build)
+- Account abstraction deep-dive: [references/account-abstraction.md](references/account-abstraction.md)
+- Drain-vector catalog (security): [references/drain-vectors.md](references/drain-vectors.md)
+- End-to-end transaction examples: [references/examples.md](references/examples.md)
+- Troubleshooting playbook: [references/troubleshooting.md](references/troubleshooting.md)
+- OWASP AST03 (Over-Privileged Skills) spec: https://owasp.org/www-project-agentic-skills-top-10/ast03
+- Anthropic skill spec: https://docs.claude.com/en/docs/claude-code/skills

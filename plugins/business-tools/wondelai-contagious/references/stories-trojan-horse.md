@@ -48,7 +48,6 @@ Tom Dickson, founder of Blendtec, created a YouTube series where he blended incr
 **The story IS the product.** You cannot tell someone about "Will It Blend?" without explaining that a powerful blender destroyed an iPhone. The brand claim (extreme blending power) is the punchline of the story.
 
 **Multiple STEPPS activation:**
-
 - **Social Currency:** "Did you see them blend an iPhone?" makes the sharer seem plugged in
 - **Emotion:** Amusement (high-arousal positive) from the absurdity of blending an iPad
 - **Stories:** The narrative is irresistible and retellable in one sentence
@@ -73,7 +72,6 @@ Tom Dickson, founder of Blendtec, created a YouTube series where he blended incr
 **Why it works:** The product capability IS the story. Removing the product removes the story.
 
 **Examples:**
-
 - Blendtec blending an iPhone (extreme blending)
 - FedEx delivering a package to the top of Mount Everest (extreme delivery)
 - Gorilla Glass surviving extreme drop tests (extreme durability)
@@ -91,7 +89,6 @@ Tom Dickson, founder of Blendtec, created a YouTube series where he blended incr
 Barclay Prime, a new Philadelphia restaurant, needed buzz. In a city obsessed with cheesesteaks (typically $5-10), they created a $100 cheesesteak made with Kobe beef, lobster tail, truffles, and champagne.
 
 **Why it's a perfect story:**
-
 - The extreme price (vs. the $5 norm) creates remarkability
 - You can't retell "I had a $100 cheesesteak" without saying "at Barclay Prime"
 - It activated Social Currency (insider dining experience) + Stories (retellable narrative)
@@ -104,7 +101,6 @@ Barclay Prime, a new Philadelphia restaurant, needed buzz. In a city obsessed wi
 **Why it works:** Origin stories humanize brands. When the product was born from a genuine human struggle, the story and the brand are inseparable.
 
 **Examples:**
-
 - Sara Blakely cutting the feet off her pantyhose, leading to Spanx
 - Steve Jobs building computers in a garage
 - Airbnb founders renting air mattresses to pay rent
@@ -160,7 +156,6 @@ Barclay Prime, a new Philadelphia restaurant, needed buzz. In a city obsessed wi
 **Fix:** Simplify to one sentence. If you can't summarize the story in one sentence that includes the brand, simplify until you can.
 
 **The one-sentence test:**
-
 - "Blendtec blended an iPhone in their blender." (Pass)
 - "This restaurant in Philly sells a $100 cheesesteak." (Pass — "which restaurant?" leads to brand mention)
 - "There's this 7-minute video about a guy who travels the world and encounters various challenges and ultimately realizes that the real journey was inside him and also the airline was really great." (Fail)
@@ -232,7 +227,6 @@ Evaluate any branded story for Trojan Horse effectiveness.
 | **Escalation** | Does the story format support a series or follow-up? | |
 
 **Scoring:**
-
 - **0-20:** Weak story. Brand is easily forgotten in retelling.
 - **21-40:** Moderate story. Brand is mentioned but not essential.
 - **41-50:** Strong Trojan Horse. Brand is integral to the narrative.

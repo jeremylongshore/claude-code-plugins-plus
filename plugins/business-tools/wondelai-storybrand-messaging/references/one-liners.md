@@ -129,19 +129,15 @@ Example:
 ## Testing Your One-Liner
 
 ### The Cocktail Party Test
-
 Tell it to someone and walk away. 30 seconds later, can they tell someone else what you do?
 
 ### The "So What?" Test
-
 After reading it, does it make someone want to learn more? If the response is "okay, cool," it's too weak.
 
 ### The Specificity Test
-
 Could a competitor use the same one-liner? If yes, it's too generic.
 
 ### The Benefit Test
-
 Is the result something people actually want? "Save time" is weak. "Get your weekends back" is strong.
 
 ---

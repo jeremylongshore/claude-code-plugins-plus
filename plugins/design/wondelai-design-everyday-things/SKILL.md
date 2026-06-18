@@ -4,7 +4,7 @@ description: 'Apply foundational design principles: affordances, signifiers, con
 license: MIT
 metadata:
   author: wondelai
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Design of Everyday Things Framework
@@ -13,13 +13,11 @@ Foundational design principles for creating products that are intuitive, discove
 
 ## Core Principle
 
-**Good design is actually a lot harder to notice than poor design, in part because good designs fit our needs so well that the design is invisible.** When something works well, we take it for granted. When it fails, we blame ourselves — but the fault is almost always in the design.
-
-**The foundation:** Design must bridge the gap between what people want to do and what the product allows them to do. The best designs are discoverable (you can figure out what to do) and understandable (you can figure out what happened).
+**Good design is actually a lot harder to notice than poor design, in part because good designs fit our needs so well that the design is invisible.** When something fails, users blame themselves — but the fault is almost always in the design. Great design bridges the gap between what people want to do and what the product allows: it is discoverable (you can figure out what to do) and understandable (you can figure out what happened).
 
 ## Scoring
 
-**Goal: 10/10.** When reviewing or creating designs, rate 0-10 based on discoverability, understandability, and error prevention. A 10/10 means users can figure out what to do without instructions, understand what happened, and recover from errors easily. Always provide current score and improvements to reach 10/10.
+**Goal: 10/10.** Rate any design 0-10 on discoverability, understandability, and error prevention. A 10/10 means users figure out what to do without instructions, understand what happened, and recover from errors easily. Report the current score and the improvements needed to reach 10/10.
 
 ## The Two Gulfs
 
@@ -37,41 +35,17 @@ USER                                    PRODUCT
 
 ### Gulf of Execution
 
-**The gap between what users want to do and what the product lets them do.**
+**The gap between what users want to do and what the product lets them do.** Users ask: What can I do here? Which control do I use?
 
-**Questions users ask:**
-
-- What can I do here?
-- How do I do it?
-- Which control do I use?
-- How do I operate this control?
-
-**Bridging strategies:**
-
-- Clear signifiers showing what's possible
-- Natural mappings between controls and outcomes
-- Constraints preventing wrong actions
-- Familiar conceptual models
+**Bridge with:** clear signifiers, natural mappings, constraints, familiar conceptual models.
 
 ### Gulf of Evaluation
 
-**The gap between what the product did and what users understand happened.**
+**The gap between what the product did and what users understand happened.** Users ask: What happened? Did it work? What state is the system in?
 
-**Questions users ask:**
+**Bridge with:** immediate visible feedback, clear system-state indicators, meaningful error messages, progress indicators.
 
-- What happened?
-- Did it work?
-- Is this what I wanted?
-- What state is the system in now?
-
-**Bridging strategies:**
-
-- Immediate, visible feedback
-- Clear system state indicators
-- Meaningful error messages
-- Progress indicators
-
-**Design goal:** Make both gulfs as narrow as possible. The ideal design requires zero bridging — action and understanding are immediate.
+**Design goal:** Make both gulfs as narrow as possible — action and understanding should be immediate.
 
 See: [references/two-gulfs.md](references/two-gulfs.md) for gulf analysis exercises.
 
@@ -79,118 +53,78 @@ See: [references/two-gulfs.md](references/two-gulfs.md) for gulf analysis exerci
 
 ### 1. Discoverability
 
-**Definition:** Can users figure out what actions are possible and how to perform them?
+**Definition:** Can users figure out what actions are possible and how to perform them? Its five components — affordances, signifiers, constraints, mappings, feedback — are detailed below.
 
-**Five components of discoverability:**
-
-- Affordances
-- Signifiers
-- Constraints
-- Mappings
-- Feedback
-
-(Each detailed below)
-
-**Test:** Put a new user in front of your product. Can they figure out what to do within 10 seconds? If not, discoverability is broken.
+**Test:** Put a new user in front of your product. If they can't figure out what to do within 10 seconds, discoverability is broken.
 
 **Anti-pattern:** "The user manual explains it." If users need a manual, the design failed.
 
 ### 2. Affordances
 
-**Definition:** The relationship between the properties of an object and the capabilities of the agent (user) that determine how the object could be used.
+**Definition:** The relationship between an object's properties and a user's capabilities that determines how the object could be used.
 
-**Key insight:** Affordances exist whether or not they are perceived. A door affords pushing whether or not you know to push it. What matters is *perceived* affordance.
-
-**Types:**
+**Key insight:** Affordances exist whether or not they are perceived — what matters for design is *perceived* affordance.
 
 | Type | Definition | Example |
 |------|------------|---------|
-| **Real affordance** | Physical capability exists | A button affords pressing |
-| **Perceived affordance** | User believes capability exists | A raised area looks clickable |
-| **Hidden affordance** | Capability exists but isn't obvious | Right-click context menu |
-| **False affordance** | Appears to afford action but doesn't | A decorative element that looks clickable |
+| **Real** | Physical capability exists | A button affords pressing |
+| **Perceived** | User believes capability exists | A raised area looks clickable |
+| **Hidden** | Exists but isn't obvious | Right-click context menu |
+| **False** | Appears to afford action but doesn't | Decorative element that looks clickable |
 | **Anti-affordance** | Prevents action | A barrier that blocks movement |
 
 **Digital applications:**
 
 | Element | Affordance | How to Signal |
 |---------|------------|---------------|
-| **Button** | Affords clicking/tapping | Raised, colored, shadow, hover state |
-| **Text field** | Affords text input | Border, placeholder text, label |
-| **Link** | Affords navigation | Color, underline, cursor change |
-| **Slider** | Affords dragging | Handle, track, visual range |
-| **Scroll area** | Affords scrolling | Scroll bar, fade at edge, partial content |
+| **Button** | Clicking/tapping | Raised, colored, shadow, hover state |
+| **Text field** | Text input | Border, placeholder text, label |
+| **Scroll area** | Scrolling | Scroll bar, fade at edge, partial content |
 
-**Common failures:**
-
-- Flat design removes perceived affordances (is it a button or a label?)
-- Touch targets that are too small (fat finger problem)
-- No visual distinction between interactive and decorative elements
+**Common failures:** flat design erasing perceived affordances (button or label?), too-small touch targets, interactive and decorative elements that look identical.
 
 See: [references/affordances.md](references/affordances.md) for affordance design patterns.
 
 ### 3. Signifiers
 
-**Definition:** Signals that communicate where the action should take place.
-
-**Key insight:** Affordances determine what's possible. Signifiers communicate where and how.
-
-**If affordances are what you CAN do, signifiers show you HOW to do it.**
-
-**Types:**
+**Definition:** Signals that communicate where the action should take place. **Affordances determine what you CAN do; signifiers show you WHERE and HOW.**
 
 | Type | Definition | Example |
 |------|------------|---------|
-| **Deliberate signifier** | Designed to communicate | "Push" label on door, placeholder text |
-| **Accidental signifier** | Unintentional but informative | Worn path in grass (people walk here) |
-| **Social signifier** | Other people's behavior | Line of people indicates entrance |
+| **Deliberate** | Designed to communicate | "Push" label on door, placeholder text |
+| **Accidental** | Unintentional but informative | Worn path in grass (people walk here) |
+| **Social** | Other people's behavior | Line of people indicates entrance |
 
 **Digital signifiers:**
 
 | Signifier | What It Communicates | Example |
 |-----------|---------------------|---------|
-| **Cursor change** | This is interactive | Pointer → hand on links |
-| **Hover state** | This responds to interaction | Button color change on hover |
-| **Placeholder text** | What to type here | "Enter your email..." |
-| **Icons** | Function of the element | Magnifying glass = search |
-| **Labels** | What this control does | "Submit", "Cancel", "Next" |
-| **Color** | Status or category | Red = error, green = success |
-| **Position** | Relationship and hierarchy | Close button in top-right corner |
+| **Cursor change + hover state** | This is interactive | Pointer → hand on links; button color change |
+| **Icons + labels** | Function of the element | Magnifying glass = search; "Submit", "Cancel" |
+| **Color + position** | Status, category, hierarchy | Red = error, green = success; close button top-right |
 
-**Design rule:** When in doubt, add a signifier. It's better to over-communicate than to leave users guessing.
+**Design rule:** When in doubt, add a signifier — better to over-communicate than leave users guessing.
 
 See: [references/signifiers.md](references/signifiers.md) for signifier patterns and examples.
 
 ### 4. Mappings
 
-**Definition:** The relationship between controls and their effects.
-
-**Natural mapping:** When the spatial layout of controls matches the layout of the thing being controlled.
-
-**Examples:**
+**Definition:** The relationship between controls and their effects. **Natural mapping** means the spatial layout of controls matches the layout of what they control.
 
 | Mapping Quality | Example | Why It Works/Fails |
 |-----------------|---------|-------------------|
-| **Natural** | Steering wheel turns car direction | Direct spatial correspondence |
 | **Natural** | Volume slider (up = louder) | Matches mental model |
-| **Poor** | Light switch panel (which switch = which light?) | No spatial correspondence |
-| **Poor** | Stovetop controls in a row (which knob = which burner?) | Layout doesn't match |
+| **Poor** | Light switch panel | No spatial correspondence to lights |
+| **Poor** | Stovetop knobs in a row | Layout doesn't match burner positions |
 
-**Digital mapping principles:**
-
-- Controls should be near what they affect
-- Layout of controls should mirror layout of content
-- Direction of action should match expectation (scroll down = content moves up)
-- Grouping related controls together
-
-**Mapping techniques:**
+**Digital principles:** controls near what they affect, layout mirroring content, direction matching expectation (scroll down = content moves up), related controls grouped.
 
 | Technique | How It Works | Example |
 |-----------|-------------|---------|
 | **Proximity** | Control near target | Edit button next to content |
 | **Spatial** | Layout mirrors real world | Map controls match compass directions |
 | **Cultural** | Follows conventions | Red = stop/danger, green = go/safe |
-| **Sequential** | Follows natural order | Steps 1, 2, 3 from left to right (or top to bottom) |
+| **Sequential** | Follows natural order | Steps 1, 2, 3 left to right (or top to bottom) |
 
 See: [references/mappings.md](references/mappings.md) for mapping analysis exercises.
 
@@ -198,75 +132,47 @@ See: [references/mappings.md](references/mappings.md) for mapping analysis exerc
 
 **Definition:** Limiting the possible actions to prevent errors.
 
-**Four types of constraints:**
-
 | Type | Mechanism | Example |
 |------|-----------|---------|
-| **Physical** | Shape/size prevents wrong action | USB plug only fits one way (USB-C both ways) |
+| **Physical** | Shape/size prevents wrong action | USB plug only fits one way |
 | **Cultural** | Social norms guide behavior | Red means stop, green means go |
 | **Semantic** | Meaning restricts options | A rearview mirror only makes sense facing backward |
-| **Logical** | Logic limits choices | Only one hole left for last screw (process of elimination) |
+| **Logical** | Logic limits choices | Only one hole left for the last screw |
 
 **Digital constraints:**
 
-| Constraint Type | Implementation | Example |
-|-----------------|---------------|---------|
+| Constraint | Implementation | Example |
+|------------|---------------|---------|
 | **Input validation** | Restrict what can be entered | Date picker vs. free text |
 | **Disabled states** | Gray out unavailable options | "Submit" disabled until form valid |
-| **Progressive disclosure** | Show options only when relevant | Payment fields after selecting "Buy" |
-| **Forced sequence** | Steps must be completed in order | Wizard/stepper with locked steps |
-| **Undo/redo** | Allow reversal | Gmail "Undo send" |
+| **Forced sequence + undo** | Steps in order; allow reversal | Wizard with locked steps; Gmail "Undo send" |
 
-**The power of constraints:** Every constraint you add is one less error the user can make.
-
-**Design rule:** Make it impossible to do the wrong thing, rather than punishing users for doing the wrong thing.
+**Design rule:** Every constraint you add is one less error the user can make — make wrong actions impossible rather than punishing them.
 
 See: [references/constraints.md](references/constraints.md) for constraint design patterns.
 
 ### 6. Feedback
 
-**Definition:** Communicating the results of an action back to the user.
-
-**Feedback must be:**
-
-- **Immediate:** Within 0.1 seconds for direct manipulation
-- **Informative:** Tells user what happened and current state
-- **Appropriate:** Not too much (annoying) or too little (confusing)
-- **Non-intrusive:** Doesn't block the user's workflow
-
-**Types of feedback:**
+**Definition:** Communicating the results of an action back to the user. Feedback must be immediate (within 0.1s for direct manipulation), informative, appropriately dosed, and non-intrusive.
 
 | Type | When to Use | Example |
 |------|-------------|---------|
 | **Visual** | Most actions | Button press animation, color change, checkmark |
-| **Auditory** | Important events, confirmations | Success chime, error sound, notification |
-| **Haptic** | Touch devices, confirmation | Vibration on key press, force feedback |
+| **Auditory** | Important events, confirmations | Success chime, error sound |
+| **Haptic** | Touch devices, confirmation | Vibration on key press |
 | **Progress** | Long operations | Progress bar, spinner, skeleton screen |
 
 **Digital feedback patterns:**
 
 | Situation | Feedback Needed | Example |
 |-----------|----------------|---------|
-| **Button click** | Visual state change | Button depresses, color changes |
 | **Form submission** | Success/error message | "Saved!" toast or inline error |
 | **Loading** | Progress indicator | Spinner, skeleton screen, percentage |
 | **Error** | What went wrong + how to fix | "Invalid email. Please check format." |
-| **Hover** | Interactive element indicator | Background color change, underline |
-| **Drag** | Object follows cursor | Element moves with mouse |
 
-**Common failures:**
+**Response times:** 0.1s feels instantaneous; 1s is a noticeable delay (change cursor); 10s loses attention (show progress bar); over 10s users leave (show percentage, allow backgrounding).
 
-- No feedback at all (did my click register?)
-- Delayed feedback (makes system feel broken)
-- Unclear feedback (something happened but what?)
-- Too much feedback (every action triggers alert)
-
-**Response time guidelines:**
-
-- 0.1s: Feels instantaneous (direct manipulation)
-- 1.0s: Noticeable delay (show cursor change)
-- 10s: Attention wanders (show progress bar)
-- >10s: User leaves (show percentage, allow background)
+**Common failures:** no feedback (did my click register?), delayed feedback (feels broken), unclear feedback, alert overload.
 
 See: [references/feedback.md](references/feedback.md) for feedback design patterns.
 
@@ -274,88 +180,49 @@ See: [references/feedback.md](references/feedback.md) for feedback design patter
 
 **Definition:** The user's mental model of how a product works.
 
-**Three models:**
-
 | Model | Held By | Description |
 |-------|---------|-------------|
 | **Design model** | Designer | How the designer thinks it works |
 | **User's model** | User | How the user thinks it works |
 | **System image** | Product | What the product actually communicates |
 
-**Goal:** User's model should match the design model. The system image is the bridge.
+**Goal:** The user's model should match the design model; the system image is the only bridge. Matching models let users predict outcomes and recover from errors; mismatches breed confusion, self-blame, and support calls.
 
-**When models match:**
+**Example (thermostat):** design model — set a temperature, the system maintains it; common user model — higher setting heats faster (wrong), so users crank it to 90°F.
 
-- Users predict outcomes correctly
-- Users recover from errors easily
-- Users feel confident and in control
-
-**When models mismatch:**
-
-- Users are confused and frustrated
-- Users blame themselves
-- Users give up or call support
-
-**Example: Thermostat**
-
-- **Design model:** Set temperature, system maintains it
-- **Common user model:** Higher setting = faster heating (wrong!)
-- **Result:** Users crank thermostat to 90°F hoping for faster warmth
-
-**Building correct conceptual models:**
-
-- Use familiar metaphors (desktop, folder, trash)
-- Make system state visible
-- Provide clear feedback
-- Use consistent behavior (same action = same result)
-- Progressive disclosure (simple model first, details available)
+**Build correct models with:** familiar metaphors (desktop, trash), visible system state, clear feedback, consistent behavior, progressive disclosure.
 
 See: [references/conceptual-models.md](references/conceptual-models.md) for model design frameworks.
 
 ## Human Error
 
-**Norman's key insight: There is no such thing as "human error." There is only bad design.**
-
-**When someone makes an error, look for the design flaw, not the person's flaw.**
+**Norman's key insight: there is no such thing as "human error" — only bad design.** When someone errs, look for the design flaw, not the person's flaw.
 
 ### Types of Errors
 
-**Slips:** Correct intention, wrong action
+**Slips** — correct intention, wrong action:
 
 | Slip Type | Cause | Example | Design Fix |
 |-----------|-------|---------|------------|
 | **Action slip** | Wrong action on right target | Click "Delete" instead of "Edit" | Separate destructive actions |
 | **Memory lapse** | Forget step in sequence | Forget attachment after writing "attached" | Gmail's attachment reminder |
 | **Mode error** | Right action, wrong mode | Type in caps lock | Show mode state clearly |
-| **Capture error** | Familiar action overrides intended | Drive to old office on autopilot | Interruptions at decision points |
+| **Capture error** | Habit overrides intention | Drive to old office on autopilot | Interrupt at decision points |
 
-**Mistakes:** Wrong intention, executed correctly
+**Mistakes** — wrong intention, executed correctly:
 
 | Mistake Type | Cause | Example | Design Fix |
 |-------------|-------|---------|------------|
 | **Rule-based** | Apply wrong rule | Use formula for wrong situation | Provide context, confirm |
 | **Knowledge-based** | Incomplete/wrong mental model | Misunderstand how system works | Better conceptual model |
-| **Memory lapse** | Forget goal or plan | Forget why you opened the fridge | Provide reminders, history |
+| **Memory lapse** | Forget goal or plan | Forget why you opened the fridge | Reminders, history |
 
 ### Design for Error
 
-**Error prevention:**
-
-- Constraints that make errors impossible
-- Undo/redo for all actions
-- Confirmation for destructive actions
-- Sensible defaults
-- Forgiving input (accept variations)
-
-**Error recovery:**
-
-- Clear error messages (what happened + how to fix)
-- Don't erase user's work on error
-- Allow partial saves
-- Easy reset to known good state
+**Prevent:** constraints that make errors impossible, undo/redo everywhere, confirmation for destructive actions, sensible defaults, forgiving input.
+**Recover:** clear error messages, never erase the user's work, partial saves, easy reset to a known good state.
 
 **Error message checklist:**
-
 - [ ] Says what went wrong (in human language)
 - [ ] Says how to fix it
 - [ ] Doesn't blame the user
@@ -380,19 +247,11 @@ See: [references/human-error.md](references/human-error.md) for error prevention
    ─── Gulf of Evaluation ───
 ```
 
-**Design implications:**
-
-- Stages 1-3 (execution): Support with clear signifiers, mappings, constraints
-- Stage 4 (action): Support with good affordances
-- Stages 5-7 (evaluation): Support with clear feedback, system state
-
-**Use as evaluation tool:** Walk through each stage for any interaction. Where does the user get stuck?
+**Design implications:** support stages 1-3 with signifiers, mappings, and constraints; stage 4 with good affordances; stages 5-7 with feedback and visible state. Walk any interaction through each stage to find where users get stuck.
 
 See: [references/seven-stages.md](references/seven-stages.md) for stage-by-stage analysis.
 
 ## Human-Centered Design (HCD) Process
-
-**Norman's design process:**
 
 ```
 Observation → Idea Generation → Prototyping → Testing → (iterate)
@@ -400,33 +259,19 @@ Observation → Idea Generation → Prototyping → Testing → (iterate)
 
 ### 1. Observation
 
-- Watch real users in real contexts
-- Don't ask what they want (they don't know)
-- Look for workarounds, frustrations, adaptations
-- Focus on activities, not individual tasks
+Watch real users in real contexts. Don't ask what they want (they don't know) — look for workarounds, frustrations, and adaptations across whole activities.
 
 ### 2. Idea Generation
 
-- Generate many ideas (diverge before converge)
-- Don't criticize during ideation
-- Build on others' ideas
-- Defer judgment
+Generate many ideas before converging; defer judgment and build on others' ideas.
 
 ### 3. Prototyping
 
-- Quick, cheap, disposable
-- Test concepts, not polish
-- Paper prototypes for early ideas
-- Interactive prototypes for validation
+Quick, cheap, disposable — test concepts, not polish. Paper for early ideas, interactive for validation.
 
 ### 4. Testing
 
-- Test with real users (not designers)
-- 5 users reveal 85% of problems
-- Observe behavior, not just opinions
-- Iterate based on findings
-
-**Key principle:** The design process is iterative. You'll go through multiple cycles, each time refining the design based on what you learn.
+Test with real users, not designers: 5 users reveal 85% of problems. Observe behavior, not just opinions, then iterate.
 
 ## Common Mistakes
 
@@ -466,11 +311,11 @@ Audit any design:
 
 ## Further Reading
 
-This skill is based on Don Norman's foundational design principles. For the complete framework:
+For the complete framework:
 
 - [*"The Design of Everyday Things"*](https://www.amazon.com/Design-Everyday-Things-Revised-Expanded/dp/0465050654?tag=wondelai00-20) by Don Norman (Revised & Expanded Edition, 2013)
 - [*"Emotional Design"*](https://www.amazon.com/Emotional-Design-Love-Everyday-Things/dp/0465051367?tag=wondelai00-20) by Don Norman (design and emotion)
 
 ## About the Author
 
-**Don Norman, PhD** is co-founder of the Nielsen Norman Group and director of The Design Lab at UC San Diego. He coined the term "user experience" while at Apple in the 1990s. *The Design of Everyday Things* (originally published in 1988 as "The Psychology of Everyday Things") is considered the most influential design book ever written and is required reading in virtually every design program worldwide. Norman has served as VP of Advanced Technology at Apple and has been a professor at Northwestern, UC San Diego, and KAIST (Korea).
+**Don Norman, PhD** is co-founder of the Nielsen Norman Group, director of The Design Lab at UC San Diego, and a former VP of Advanced Technology at Apple, where he coined the term "user experience." *The Design of Everyday Things* (1988, revised 2013) is widely considered the most influential design book ever written and is required reading in design programs worldwide.

@@ -4,11 +4,11 @@
     "path": "skyvern/cli/skills/skyvern",
     "branch": "main"
   },
-  "last_sync": "2026-06-02T03:32:50.765Z",
+  "last_sync": "2026-06-17T16:28:19.891Z",
   "author": {
     "name": "Skyvern-AI",
     "github": "Skyvern-AI"
   },
   "license": "AGPL-3.0",
-  "files_synced": 8
+  "files_synced": 23
 }

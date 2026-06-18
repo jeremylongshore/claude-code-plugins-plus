@@ -5,7 +5,6 @@ Don't guess why visitors don't convert. Use these methods to discover the truth.
 ## Research Framework
 
 ### Quantitative (What is happening)
-
 - Analytics data
 - Heatmaps
 - Click tracking
@@ -13,7 +12,6 @@ Don't guess why visitors don't convert. Use these methods to discover the truth.
 - A/B test results
 
 ### Qualitative (Why it's happening)
-
 - User surveys
 - Customer interviews
 - Usability testing
@@ -27,25 +25,21 @@ Don't guess why visitors don't convert. Use these methods to discover the truth.
 ### Key Reports
 
 **Funnel Visualization**
-
 - Where do visitors drop off?
 - Which steps have highest abandonment?
 - Do patterns differ by traffic source?
 
 **Landing Page Performance**
-
 - Bounce rate by page
 - Time on page
 - Exit rate vs. bounce rate
 
 **Traffic Source Analysis**
-
 - Conversion rate by source
 - Behavior differences by channel
 - Quality vs. quantity of traffic
 
 **Device/Browser Analysis**
-
 - Mobile vs. desktop conversion
 - Browser-specific issues
 - Page speed by device
@@ -63,31 +57,26 @@ Don't guess why visitors don't convert. Use these methods to discover the truth.
 ### On-Site Surveys (Hotjar, Qualaroo)
 
 **Exit intent surveys**:
-
 - "What stopped you from [action] today?"
 - "What's the one thing we could change to make you [action]?"
 
 **Post-purchase surveys**:
-
 - "What almost stopped you from buying?"
 - "What convinced you to choose us?"
 - "How would you describe [product] to a friend?"
 
 **Browsing surveys** (trigger after X seconds):
-
 - "What brought you here today?"
 - "Is there anything you can't find?"
 
 ### Email Surveys
 
 **New customers (within 7 days)**:
-
 - "What was your biggest hesitation before buying?"
 - "What finally convinced you?"
 - "What's one thing we could improve?"
 
 **Non-converters (abandoned cart)**:
-
 - "We noticed you didn't complete your order. What stopped you?"
 - Keep it to ONE question for higher response rates
 
@@ -104,14 +93,12 @@ Don't guess why visitors don't convert. Use these methods to discover the truth.
 ### DIY Testing (5-10 users is enough)
 
 **Tasks to test**:
-
 1. Find [specific product/information]
 2. Complete [primary action]
 3. Understand [value proposition]
 4. Compare [options/plans]
 
 **What to observe**:
-
 - Where do users hesitate?
 - What do they say aloud?
 - What do they click expecting something different?
@@ -120,7 +107,6 @@ Don't guess why visitors don't convert. Use these methods to discover the truth.
 ### 5-Second Test
 
 Show page for 5 seconds, then ask:
-
 - "What is this page about?"
 - "What action should you take?"
 - "What company is this?"
@@ -130,7 +116,6 @@ Tests clarity of value proposition and hierarchy.
 ### First-Click Testing
 
 Give users a task, record where they click first:
-
 - Is it the right element?
 - Do different user types behave differently?
 
@@ -147,7 +132,6 @@ Give users a task, record where they click first:
 ### Prioritization
 
 Focus on recordings from:
-
 - High-value pages
 - High drop-off points
 - Specific user segments (buyers vs. non-buyers)
@@ -155,19 +139,16 @@ Focus on recordings from:
 ## Heatmaps
 
 ### Click Heatmaps
-
 - What gets clicked (and what doesn't)?
 - Are CTAs getting attention?
 - Are non-clickable elements being clicked?
 
 ### Scroll Heatmaps
-
 - How far do visitors scroll?
 - What percentage see key content?
 - Where do visitors stop reading?
 
 ### Move Heatmaps
-
 - Where does attention focus?
 - What gets ignored?
 
@@ -211,14 +192,12 @@ Focus on recordings from:
 ### Key Questions
 
 **Pre-purchase**:
-
 - "What triggered you to look for a solution?"
 - "What alternatives did you consider?"
 - "What almost stopped you from buying?"
 - "What convinced you to choose us?"
 
 **Post-purchase**:
-
 - "What result have you achieved?"
 - "What's been harder than expected?"
 - "What would you tell a friend about us?"

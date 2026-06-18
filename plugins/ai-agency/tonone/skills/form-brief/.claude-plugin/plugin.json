@@ -1,6 +1,6 @@
 {
   "name": "form-brief",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Translate a design brief (I-Lang or natural language) into a concrete DESIGN.md and HTML token preview \u2014 resolves palette, typography, mood, density, and constraints to specific CSS tokens.",
   "author": {
     "name": "tonone-ai",
@@ -9,10 +9,5 @@
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
   "type": "skill",
-  "keywords": [
-    "form",
-    "skill",
-    "design-system",
-    "brief"
-  ]
+  "keywords": ["form", "skill", "design-system", "brief"]
 }

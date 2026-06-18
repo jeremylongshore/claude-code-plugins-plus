@@ -2,8 +2,8 @@
 
 Applying the SB7 framework to sales calls, discovery questions, and objection handling.
 
-## Table of Contents
 
+## Table of Contents
 1. [Sales Philosophy](#sales-philosophy)
 2. [The Discovery Call Structure](#the-discovery-call-structure)
 3. [Discovery Questions Library](#discovery-questions-library)
@@ -36,7 +36,6 @@ understand your situation. What prompted you to take this call today?"
 ```
 
 **Follow-up questions:**
-
 - "How long has this been a challenge?"
 - "What have you tried so far?"
 - "What happens if nothing changes?"
@@ -44,23 +43,19 @@ understand your situation. What prompted you to take this call today?"
 ### Exploration: Understand the Job (15 min)
 
 **External problem:**
-
 - "What's the tangible problem you're trying to solve?"
 - "What does this cost you in time/money/resources?"
 
 **Internal problem:**
-
 - "How does this situation make you feel?"
 - "What's frustrating about dealing with this?"
 - "What keeps you up at night about this?"
 
 **Philosophical problem:**
-
 - "Why is it important to you to fix this?"
 - "What do you believe should be possible?"
 
 **Example:**
-
 ```
 Customer: "We're losing too many leads."
 
@@ -72,14 +67,12 @@ Philosophical: "What do you believe a good lead process should look like?"
 ### Positioning: Present as Guide (5 min)
 
 **Show empathy:**
-
 ```
 "I hear this a lot. The feeling of watching good leads slip away is
 incredibly frustrating, especially when you've worked so hard to generate them."
 ```
 
 **Establish authority:**
-
 ```
 "We've helped 200+ companies solve exactly this problem. On average,
 they see a 40% improvement in lead conversion within 90 days."
@@ -88,7 +81,6 @@ they see a 40% improvement in lead conversion within 90 days."
 ### The Plan: Show the Path (10 min)
 
 **Three-step framework:**
-
 ```
 "Here's how we typically help companies like yours:
 
@@ -105,7 +97,6 @@ It's straightforward, and we handle most of the heavy lifting."
 ### Stakes: Paint Success and Failure (5 min)
 
 **Success:**
-
 ```
 "Imagine 90 days from now: your team isn't chasing leads manually anymore.
 Every prospect gets followed up with automatically. Your conversion rate
@@ -113,7 +104,6 @@ has jumped 40%. How would that change things?"
 ```
 
 **Failure (light touch):**
-
 ```
 "On the flip side, what happens if you keep doing what you're doing?
 Where will you be in a year?"
@@ -122,7 +112,6 @@ Where will you be in a year?"
 ### Call to Action: Clear Next Step (5 min)
 
 **Direct CTA:**
-
 ```
 "Based on what you've shared, I think we can definitely help. The next
 step would be a 30-minute demo where I can show you exactly how this
@@ -130,7 +119,6 @@ would work for your team. How's Thursday at 2pm?"
 ```
 
 **Handle hesitation:**
-
 ```
 "I totally understand wanting to think about it. Would it help if I
 sent you a case study from a similar company while you consider?"
@@ -202,7 +190,6 @@ sent you a case study from a similar company while you consider?"
 "Help me understand—too expensive compared to what?"
 
 **Reframe options:**
-
 - Cost of the problem: "What's this problem costing you now?"
 - ROI focus: "If this saved you $X, would the investment make sense?"
 - Flexibility: "We have different options. What budget were you considering?"
@@ -213,7 +200,6 @@ sent you a case study from a similar company while you consider?"
 "Of course. What specifically do you need to think through?"
 
 **Reframe options:**
-
 - Identify blocker: "Is there something I didn't address that's giving you pause?"
 - Add urgency: "What would happen if you wait another quarter?"
 - Offer help: "Would it help if I sent you materials to share with your team?"
@@ -224,7 +210,6 @@ sent you a case study from a similar company while you consider?"
 "Smart. What are the most important factors in your decision?"
 
 **Reframe options:**
-
 - Differentiate on job: "Most companies focus on X. We focus on Y because..."
 - Invite comparison: "Happy to show you how we compare on those factors."
 - Ask directly: "What would make us the clear choice?"
@@ -235,7 +220,6 @@ sent you a case study from a similar company while you consider?"
 "I understand. What would make it the right time?"
 
 **Reframe options:**
-
 - Quantify delay: "What happens if you wait six months?"
 - Find trigger: "Is there an event coming up that would change timing?"
 - Stay in touch: "When should we reconnect?"
@@ -246,7 +230,6 @@ sent you a case study from a similar company while you consider?"
 "Absolutely. What do you think their main concerns will be?"
 
 **Reframe options:**
-
 - Arm them: "What information would help you make the case?"
 - Offer to join: "Would it help if I joined a call to answer questions directly?"
 - Create materials: "Can I send you a summary to share?"
@@ -296,7 +279,6 @@ if that's easier for budgeting."
 ### After Initial Call (No Decision)
 
 **Day 1:** Thank you + summary email
-
 ```
 Subject: Great talking about [their problem]
 
@@ -315,7 +297,6 @@ Let me know if you have any questions.
 ```
 
 **Day 3:** Value-add content
-
 ```
 Subject: Thought you might find this helpful
 
@@ -330,7 +311,6 @@ Happy to discuss how we could achieve something similar for you.
 ```
 
 **Day 7:** Check in
-
 ```
 Subject: Following up on [topic]
 

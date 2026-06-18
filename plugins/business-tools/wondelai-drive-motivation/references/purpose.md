@@ -177,7 +177,6 @@ Pink argues that the most motivated organizations treat profit as a necessary co
 **Mission:** "We're in business to save our home planet."
 
 **Purpose actions:**
-
 - "Don't Buy This Jacket" campaign actively discouraged consumption
 - Donates 1% of sales to environmental causes (1% for the Planet)
 - Worn Wear program repairs and resells used clothing
@@ -199,7 +198,6 @@ Pink argues that the most motivated organizations treat profit as a necessary co
 **Mission:** "Imagine a world in which every single person on the planet is given free access to the sum of all human knowledge."
 
 **Purpose mechanics:**
-
 - Entirely volunteer-written (no payment, pure purpose)
 - Transparent editing history (every contribution visible)
 - Annual donation campaigns emphasize mission, not features
@@ -212,7 +210,6 @@ Pink argues that the most motivated organizations treat profit as a necessary co
 **Mission:** Bring clean and safe drinking water to every person on the planet.
 
 **Purpose mechanics:**
-
 - 100% of public donations go to projects (operating costs funded separately)
 - GPS coordinates published for every funded well
 - Photos and completion reports for every project
@@ -225,7 +222,6 @@ Pink argues that the most motivated organizations treat profit as a necessary co
 **Mission:** Use search engine profits to plant trees.
 
 **Purpose mechanics:**
-
 - Counter shows total trees planted (200M+)
 - Personal counter shows each user's contribution
 - Financial reports published monthly

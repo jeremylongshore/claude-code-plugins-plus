@@ -74,7 +74,6 @@ Order value themes by how much they influence purchase decisions. The primary th
 ### Example: Value Theme Clustering
 
 **Raw value statements:**
-
 1. Catch and fix problems before customers notice
 2. Reduce support tickets by 40%
 3. Close books 3 days faster each quarter

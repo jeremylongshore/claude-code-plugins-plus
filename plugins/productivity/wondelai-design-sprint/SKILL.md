@@ -4,7 +4,7 @@ description: 'Run a structured 5-day process to prototype, test, and validate pr
 license: MIT
 metadata:
   author: wondelai
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Design Sprint Framework
@@ -13,13 +13,11 @@ A five-day process for answering critical business questions through design, pro
 
 ## Core Principle
 
-**Great solutions require both deep work and fast iteration.** The Design Sprint compresses months of debate, design, and testing into a single week, creating focus and urgency that eliminates endless discussion.
-
-**The foundation:** Traditional product development wastes months building the wrong thing. Design Sprints de-risk product decisions by testing with real users before writing production code.
+**Great solutions require both deep work and fast iteration.** The Design Sprint compresses months of debate, design, and testing into one week, replacing endless discussion with focus and urgency. It de-risks product decisions by testing with real users before any production code is written.
 
 ## Scoring
 
-**Goal: 10/10.** When planning or executing a Design Sprint, rate it 0-10 based on adherence to the principles below. A 10/10 means proper structure, time-boxing, prototyping, and user testing; lower scores indicate skipping steps or insufficient testing. Always provide the current score and specific improvements needed to reach 10/10.
+**Goal: 10/10.** Rate any sprint plan or execution 0-10 against the principles below: proper structure, time-boxing, prototyping, and user testing. Lower scores mean skipped steps or insufficient testing. Report the current score and the improvements needed to reach 10/10.
 
 ## The 5-Day Sprint Process
 
@@ -28,14 +26,7 @@ Monday → Tuesday → Wednesday → Thursday → Friday
   Map      Sketch     Decide      Prototype    Test
 ```
 
-**Prerequisites:**
-
-- **Big challenge:** Important problem worth a week's focus
-- **Right team:** Decision maker + 4-7 people with diverse expertise
-- **Time commitment:** 5 full days (10am-5pm), no interruptions
-- **Space:** Dedicated room with whiteboards
-
-**Sprint Master:** One person facilitates, keeps time, manages energy.
+**Prerequisites:** a big challenge worth a week's focus; the right team (Decider plus 4-7 people with diverse expertise); five full days (10am-5pm) with no interruptions; a dedicated room with whiteboards. One **Sprint Master** facilitates, keeps time, and manages energy.
 
 ## Monday: Map
 
@@ -43,118 +34,42 @@ Monday → Tuesday → Wednesday → Thursday → Friday
 
 ### Morning: Start at the End
 
-**Exercise: Long-term goal**
-
-- Write the sprint question: "What do we want to be true in 2 years?"
-- Example: "Customers use our product daily" or "We've captured 20% market share"
-
-**Exercise: Sprint questions**
-
-- List obstacles and unknowns as questions
-- Example: "Will customers trust us with payment info?" or "Can first-time users figure out the interface?"
-
-**Format:** Write on whiteboard, entire team contributes
+- **Long-term goal:** Write the optimistic answer to "What do we want to be true in 2 years?" — e.g., "Customers use our product daily."
+- **Sprint questions:** List obstacles and unknowns as questions on the whiteboard, whole team contributing — e.g., "Will customers trust us with payment info?"
 
 ### Afternoon: Map the Challenge
 
-**Exercise: Map the customer journey**
-
-1. List actors (different types of customers/users)
-2. Draw the journey from start to finish (left to right on whiteboard)
-3. Keep it simple: 5-15 steps max
-4. Example: "Hears about product → Visits site → Signs up → First use → Becomes regular user"
-
-**Exercise: Ask the Experts**
-
-- Interview team members with specialized knowledge
-- CEO, designer, engineer, customer support, sales
-- Take detailed notes on whiteboard
-- Capture "How Might We" notes (HMW)
-
-**Exercise: How Might We (HMW) notes**
-
-- Rephrase problems as opportunities
-- "Customers don't understand pricing" → HMW make pricing immediately clear?
-- Write each HMW on a sticky note
-- Vote on best HMWs, organize on map
+- **Customer journey map:** List the actors (customer types), then draw the journey left to right in 5-15 steps: "Hears about product → Visits site → Signs up → First use → Regular user."
+- **Ask the Experts:** Interview teammates with specialized knowledge (CEO, design, engineering, support, sales); capture notes on the whiteboard.
+- **How Might We (HMW):** Rephrase problems as opportunities — "Customers don't understand pricing" → "HMW make pricing immediately clear?" One per sticky note; vote and organize the best on the map.
 
 ### End of Day: Pick a Target
 
-**Exercise: Choose the target**
+Choose which customer and moment on the map to focus on — the biggest risk or opportunity (e.g., "the first 10 minutes after signup"). The **Decider** (person with authority) makes the final call.
 
-- Which part of the map (customer journey) will you focus on?
-- Where's the biggest risk or opportunity?
-- Example: "We'll focus on the first 10 minutes after signup"
-
-**Decider:** The person with authority makes the final call.
-
-**Monday output:**
-
-- Long-term goal
-- Sprint questions
-- Customer journey map
-- Expert insights
-- HMW notes organized
-- Target customer and moment
+**Monday output:** long-term goal, sprint questions, journey map, expert insights, organized HMW notes, target customer and moment.
 
 See: [references/monday.md](references/monday.md) for detailed Monday exercises and facilitation.
 
 ## Tuesday: Sketch
 
-**Goal:** Generate solutions. Each person sketches a detailed solution.
+**Goal:** Generate solutions — each person sketches a detailed solution.
 
 ### Morning: Lightning Demos
 
-**Exercise: Find inspiration**
-
-- Look at competitors and analogous products
-- 3-minute demos: "Here's what I found, here's why it's interesting"
-- Capture good ideas on whiteboard
-- Don't limit to your industry—borrow from anywhere
-
-**Exercise: Divide or swarm**
-
-- Divide: If map has multiple parts, different people tackle different sections
-- Swarm: If one critical problem, everyone tackles the same thing
-- Most sprints = swarm
+- **Find inspiration:** 3-minute demos of competitors and analogous products ("Here's what I found, here's why it's interesting"); capture good ideas on the whiteboard. Borrow from any industry.
+- **Divide or swarm:** Split the map between people if it has multiple parts; otherwise everyone tackles the same critical problem (most sprints swarm).
 
 ### Afternoon: The Four-Step Sketch
 
-**Goal:** Everyone individually sketches a detailed solution (not as a group!)
+Everyone sketches alone — **no group brainstorming**. Individual work produces better, more diverse ideas.
 
-**Step 1: Notes (20 minutes)**
+1. **Notes (20 min):** Silently walk the room reviewing the map, HMWs, and inspiration.
+2. **Ideas (20 min):** Rough doodles, mind maps, stick figures — quantity over quality.
+3. **Crazy 8s (8 min):** Fold paper into 8 panels and sketch 8 variations in 8 minutes — forces you past your first idea.
+4. **Solution Sketch (30-90 min):** A 3-panel storyboard of the customer experience (beginning, middle, end). Make it self-explanatory, give it a catchy title, and keep it **anonymous**.
 
-- Walk around room, review map, HMWs, inspiration
-- Take notes silently
-
-**Step 2: Ideas (20 minutes)**
-
-- Rough doodles, mind maps, stick figures
-- Quantity over quality
-- Still working alone
-
-**Step 3: Crazy 8s (8 minutes)**
-
-- Fold paper into 8 sections
-- Sketch 8 variations in 8 minutes (1 minute each)
-- Forces you past first idea
-- Can be 8 variations on one idea or 8 different ideas
-
-**Step 4: Solution Sketch (30-90 minutes)**
-
-- 3-panel storyboard showing customer experience
-- Step 1 → Step 2 → Step 3 (beginning, middle, end)
-- Make it self-explanatory (someone should understand without you explaining)
-- Use text, arrows, simple drawings
-- Give it a catchy title
-- **Anonymous:** Don't put your name on it
-
-**Critical:** No group brainstorming. Individual work produces better, more diverse ideas.
-
-**Tuesday output:**
-
-- Each person has a detailed solution sketch
-- Sketches are anonymous and self-explanatory
+**Tuesday output:** one detailed, anonymous, self-explanatory solution sketch per person.
 
 See: [references/tuesday.md](references/tuesday.md) for sketching templates and examples.
 
@@ -164,325 +79,112 @@ See: [references/tuesday.md](references/tuesday.md) for sketching templates and 
 
 ### Morning: Sticky Decision
 
-**Exercise: Art museum**
-
-- Tape solution sketches to wall
-- Give everyone dot stickers
-- Silently review sketches (no talking!)
-- Put dots next to interesting parts
-
-**Exercise: Heat map review**
-
-- Discuss each sketch for 3 minutes
-- Facilitator narrates: "Here they see X, then click Y..."
-- Sketcher stays silent (don't reveal yourself yet)
-- Team calls out interesting parts
-- Scribe captures standout ideas on whiteboard
-
-**Exercise: Straw poll**
-
-- Each person votes for one solution (put one large dot)
-- Explain your vote in 1 sentence
-- This is non-binding, just to see preferences
-
-**Decider:** Person with authority gets three large dots (supervote). Their decision wins.
+- **Art museum:** Tape sketches to the wall; review silently (no talking) and mark interesting parts with dot stickers.
+- **Heat map review:** Discuss each sketch for 3 minutes — the facilitator narrates while the anonymous sketcher stays silent; a scribe captures standout ideas on the whiteboard.
+- **Straw poll:** Each person votes for one solution with one sentence of rationale (non-binding).
+- **Supervote:** The Decider gets three large dots; their decision wins.
 
 ### Afternoon: Rumble or All-in-One
 
-**If multiple winners:**
+If multiple sketches win, choose: **Rumble** (competing prototypes testing different approaches) or **All-in-One** (combine the best ideas into one prototype — simpler, and what most sprints do).
 
-- **Rumble:** Competing prototypes (test different approaches)
-- **All-in-One:** Combine best ideas into one prototype
+- **Storyboard:** Draw a 10-15 panel comic of the test experience: opening scene (how the customer discovers you) → your solution in action → successful outcome. Keep it simple — stick figures, words, arrows — but get specific about the UI. Include just enough detail for Thursday's prototype.
 
-**Most sprints:** All-in-one (simpler to prototype and test)
-
-**Exercise: Storyboard**
-
-- Draw 10-15 panel storyboard (comic book style)
-- Each panel = one screen or step
-- Opening scene: How customer discovers you
-- Middle: Your solution in action
-- Ending: Successful outcome
-- Include just enough detail for Friday's prototype
-
-**Storyboard rules:**
-
-- Keep it simple
-- Use stick figures
-- Words and arrows okay
-- Get specific about UI
-- 10-15 panels max
-
-**Wednesday output:**
-
-- Winning solution(s) chosen
-- Detailed storyboard ready to prototype
+**Wednesday output:** winning solution(s) and a detailed storyboard ready to prototype.
 
 See: [references/wednesday.md](references/wednesday.md) for decision exercises and storyboard templates.
 
 ## Thursday: Prototype
 
-**Goal:** Build a realistic facade. You need something to test on Friday.
+**Goal:** Build a realistic facade in one day — you need something to test on Friday.
 
-**Prototype mindset:**
-
-- Fake it
-- Prototype only what you'll test
-- Goldilocks quality: not too high, not too low (realistic enough to get honest reactions)
-- One day only
-
-**Prototype fidelity:**
-
-- **Too low:** Sketches, wireframes (customers can't react realistically)
-- **Too high:** Working code, pixel-perfect design (wastes time)
-- **Just right:** Looks real, doesn't work real (facades, click-through, video)
+**Mindset:** Fake it; prototype only what you'll test. Aim for Goldilocks fidelity — sketches are too low for honest reactions, working code wastes time. It should look real without working for real (facades, click-throughs, video).
 
 ### Assign Roles
 
-**Makers** (2+ people):
-
-- Designer, writer, asset collector (images, icons)
-- Build the prototype
-
-**Stitcher** (1 person):
-
-- Combines pieces into final prototype
-- Usually in Keynote, Figma, or prototyping tool
-
-**Writer** (1 person):
-
-- Writes all copy
-- Headlines, button labels, descriptions
-
-**Collector** (1-2 people):
-
-- Gathers assets (photos, icons, competitor screenshots)
-- Provides raw materials
-
-**Interviewer** (1 person):
-
-- Writes interview script for Friday
-- Practices interviewing
-
-**Sprint Master:**
-
-- Helps where needed
-- Keeps energy up
+| Role | Responsibility |
+|------|----------------|
+| **Makers** (2+) | Build the prototype pieces (design, assets) |
+| **Stitcher** (1) | Combines pieces into the final prototype (Keynote, Figma) |
+| **Writer** (1) | All copy: headlines, button labels, descriptions |
+| **Collector** (1-2) | Gathers photos, icons, competitor screenshots |
+| **Interviewer** (1) | Writes and rehearses Friday's interview script |
+| **Sprint Master** | Helps where needed, keeps energy up |
 
 ### Build the Prototype
 
-**Tools:**
+**Tools:** Figma, Keynote, or PowerPoint linked slides for web/apps; video walkthrough or 3D-printed mockup for physical products; role-play video or scripted interaction for services.
 
-- **Web/App:** Figma, Keynote, PowerPoint (linked slides)
-- **Physical Product:** Video walkthrough, 3D-printed mockup
-- **Service:** Role-play video, scripted interaction
-
-**Thursday morning:**
-
-- Divide storyboard into scenes
-- Assign scenes to makers
-- Start building
-
-**Thursday afternoon:**
-
-- Stitch together
-- Review as team (does it match storyboard?)
-- Rehearse for Friday (run through entire flow)
-- Trial run (test with someone not on sprint team)
+Morning: divide the storyboard into scenes and assign them to makers. Afternoon: stitch together, review against the storyboard, rehearse the full flow, and run a trial with someone outside the sprint team.
 
 **Prototype checklist:**
-
 - [ ] Follows storyboard exactly
 - [ ] Looks real enough to get honest reactions
 - [ ] Can walk through in 5-15 minutes
 - [ ] Interviewer knows how to present it
 - [ ] Trial run completed
 
-**Thursday output:**
-
-- Realistic prototype ready to test
-- Interview script written
-- Interview room prepared
+**Thursday output:** realistic prototype, interview script, prepared interview room.
 
 See: [references/thursday.md](references/thursday.md) for prototyping tools and techniques.
 
 ## Friday: Test
 
-**Goal:** Interview 5 customers, learn what works and what doesn't.
+**Goal:** Interview 5 customers; learn what works and what doesn't.
 
 ### Setup
 
-**Interview room:**
-
-- Quiet space with table, 2 chairs
-- Laptop with prototype
-- Camera recording screen and customer face
-
-**Observation room:**
-
-- Separate room with live video feed
-- Team watches together
-- Whiteboard for notes
-
-**Roles:**
-
-- **Interviewer:** Conducts all 5 interviews
-- **Team:** Watches, takes notes
+Interview room: quiet space, laptop with the prototype, camera recording screen and customer's face. Observation room: live video feed where the whole team watches and takes notes on a whiteboard. One **Interviewer** conducts all five interviews.
 
 ### The Five-Act Interview
 
-**Act 1: Friendly Welcome (5 min)**
+About 30 minutes per customer, with 30-minute breaks between to discuss observations and adjust questions.
 
-- Greet warmly
-- Explain you're testing prototype, not them
-- Ask permission to record
-- Encourage thinking aloud
-
-**Act 2: Context Questions (5 min)**
-
-- Ask about their background
-- Example: "Tell me about how you currently handle [problem]"
-- Goal: Understand their mindset and current behavior
-
-**Act 3: Introduce the Prototype (5 min)**
-
-- Show landing page or entry point
-- "What's this? What do you think it's for?"
-- Don't explain—let them interpret
-- Note: Do they get it?
-
-**Act 4: Tasks and Nudges (15 min)**
-
-- Give open-ended task: "Go ahead and explore"
-- Follow with specific tasks from storyboard: "Try to [complete action]"
-- Use nudges when stuck: "What would you do next?" or "What's going through your mind?"
-- Don't help—watch them struggle
-- Encourage thinking aloud
-
-**Act 5: Debrief (5 min)**
-
-- "What did you think overall?"
-- "Who is this for?"
-- "What worked? What was confusing?"
-- Ask about specific parts you're uncertain about
-
-**Interview length:** ~30 minutes per customer
-
-**Between interviews:**
-
-- 30-minute break
-- Team discusses observations
-- Update questions if needed
+| Act | Time | What to Do |
+|-----|------|------------|
+| **1. Friendly welcome** | 5 min | Greet warmly; explain you're testing the prototype, not them; get recording permission; encourage thinking aloud |
+| **2. Context questions** | 5 min | "Tell me about how you currently handle [problem]" — understand mindset and current behavior |
+| **3. Introduce prototype** | 5 min | "What's this? What do you think it's for?" Don't explain — let them interpret |
+| **4. Tasks and nudges** | 15 min | Open-ended exploration, then storyboard tasks. When stuck: "What would you do next?", "What's going through your mind?" Don't help — watch them struggle |
+| **5. Debrief** | 5 min | "What did you think overall?", "Who is this for?", "What worked? What was confusing?" |
 
 ### Five Is the Magic Number
 
-**Why 5 customers?**
-
-- Patterns emerge after 3-5 people
-- Diminishing returns after 5
-- Doable in one day (5 × 1 hour = 5 hours with breaks)
-
-**Who to recruit:**
-
-- Target customers (match your personas)
-- Screener survey to qualify
-- Incentive ($100-$200 for B2B, $50-$100 for B2C)
-- Schedule 6 (expect 1 no-show)
+Patterns emerge after 3-5 people and returns diminish after 5 — and five 1-hour slots fit one day. Recruit target customers via a screener survey, offer an incentive ($100-$200 B2B, $50-$100 B2C), and schedule 6 to absorb a no-show.
 
 ### Take Notes: Pattern Recognition
 
-**While watching interviews, team captures:**
+Capture observations in a grid, one column per customer:
 
-| Column 1 | Column 2 | Column 3 | Column 4 | Column 5 |
-|----------|----------|----------|----------|----------|
-| Customer 1 notes | Customer 2 notes | Customer 3 notes | Customer 4 notes | Customer 5 notes |
+| Customer 1 | Customer 2 | Customer 3 | Customer 4 | Customer 5 |
+|------------|------------|------------|------------|------------|
+| notes | notes | notes | notes | notes |
 
-**Mark with ✓, ✗, or ~:**
-
-- ✓ Positive reaction, success
-- ✗ Negative reaction, failure
-- ~ Neutral or mixed
-
-**After all 5 interviews:**
-
-- Look for patterns (did all 5 struggle with the same thing?)
-- Count ✓ ✗ ~ per row
-- Identify what worked and what failed
+Mark each observation **✓** (positive, success), **✗** (negative, failure), or **~** (neutral/mixed). After all five interviews, count marks per row and look for patterns — did all 5 struggle with the same thing?
 
 ### End-of-Sprint Debrief
 
-**Organize findings:**
+Organize findings: **✓ what worked** (flows everyone understood, messaging that resonated), **✗ what failed** (confusing terminology, missing steps, wrong assumptions), **~ mixed** (some got it, some didn't). Then decide next steps:
 
-**✓ What worked:**
+- **Core concept validated:** build it, or run the next sprint on details
+- **Major issues:** pivot, or sprint again on the problems
+- **Total failure:** back to the drawing board — you just saved months
 
-- Features/flows that all customers understood
-- Messaging that resonated
-- Design that felt intuitive
-
-**✗ What failed:**
-
-- Confusing terminology
-- Missing steps
-- Wrong assumptions
-
-**~ Mixed results:**
-
-- Some got it, some didn't
-- Unclear if it matters
-
-**Next steps:**
-
-- **If core concept validated:** Build it (or next sprint on details)
-- **If major issues:** Pivot or next sprint to solve problems
-- **If totally failed:** Back to drawing board (but you saved months!)
-
-**Friday output:**
-
-- Interview videos
-- Pattern notes
-- Clear list of what works, what doesn't
-- Decision on next steps
+**Friday output:** interview recordings, pattern notes, a clear list of what works and what doesn't, decision on next steps.
 
 See: [references/friday.md](references/friday.md) for interview scripts and note-taking templates.
 
 ## When to Run a Design Sprint
 
-**Run a sprint when:**
+**Run when:** the decision is high-stakes, there's no time to build and test normally, the team is stuck in endless debate, multiple solutions compete, it's a new product/feature/major redesign, or you need to de-risk before investing.
 
-- High-stakes decision
-- Not enough time to build and test normally
-- Team is stuck in endless debate
-- Multiple solutions possible
-- New product, feature, or major redesign
-- Need to de-risk before investing
-
-**Don't run a sprint when:**
-
-- Problem is clear and solution is obvious
-- You just need to execute
-- Team isn't bought in
-- Can't get decision maker for full week
+**Don't run when:** the problem and solution are obvious and you just need to execute, the team isn't bought in, or you can't get the Decider for the full week.
 
 ## Variations
 
-**4-Day Sprint:**
-
-- Day 1: Map + Sketch (compressed)
-- Day 2: Decide
-- Day 3: Prototype
-- Day 4: Test
-
-**Remote Sprint:**
-
-- Use Miro/FigJam for whiteboarding
-- Zoom for meetings
-- Same schedule, digital tools
-
-**Multi-Sprint:**
-
-- Sprint 1: Broad problem, choose direction
-- Sprint 2: Deep dive on chosen solution
-- Sprint 3: Refine details
+- **4-Day Sprint:** Day 1 Map + Sketch (compressed), Day 2 Decide, Day 3 Prototype, Day 4 Test.
+- **Remote Sprint:** Same schedule with Miro/FigJam whiteboards and Zoom.
+- **Multi-Sprint:** Sprint 1 chooses direction on a broad problem, Sprint 2 deep-dives the chosen solution, Sprint 3 refines details.
 
 ## Common Mistakes
 
@@ -521,10 +223,10 @@ Audit any sprint plan:
 
 ## Further Reading
 
-This skill is based on the Design Sprint process developed at Google Ventures. For the complete methodology, exercises, and case studies:
+For the complete methodology, exercises, and case studies:
 
 - [*"Sprint: How to Solve Big Problems and Test New Ideas in Just Five Days"*](https://www.amazon.com/Sprint-Solve-Problems-Test-Ideas/dp/150112174X?tag=wondelai00-20) by Jake Knapp, John Zeratsky, Braden Kowitz
 
 ## About the Author
 
-**Jake Knapp** created the Design Sprint process while at Google, where he ran sprints on products like Gmail, Chrome, and Google X. As a design partner at Google Ventures (now GV), he refined the process by running over 100 sprints with startups in the GV portfolio. The Design Sprint is now used by teams at Google, Slack, Airbnb, LEGO, and thousands of companies worldwide. Jake is also the author of *Make Time*, a framework for focus and energy.
+**Jake Knapp** created the Design Sprint at Google, where he ran sprints on Gmail, Chrome, and Google X, then refined the process across 100+ startup sprints as a design partner at Google Ventures. The sprint is now used at Google, Slack, Airbnb, LEGO, and thousands of companies worldwide. He is also the author of *Make Time*.

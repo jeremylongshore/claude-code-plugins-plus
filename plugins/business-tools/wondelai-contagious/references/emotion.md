@@ -18,7 +18,6 @@ The critical distinction is not positive vs. negative, but high-arousal vs. low-
 Most marketers think of emotion as a simple positive/negative spectrum. They assume positive = shareable and negative = avoid. This is wrong.
 
 **Counter-intuitive truths:**
-
 - Sad content (positive intent, like charity ads) often fails to spread because sadness is low-arousal — people feel deflated and withdrawn, not activated
 - Angry content (negative valence) often spreads widely because anger is high-arousal — people feel fired up and compelled to act
 - Content that makes people feel content and satisfied generates almost no sharing — there's no urgency to act

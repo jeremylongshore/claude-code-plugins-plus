@@ -79,7 +79,6 @@ Questions for new customers (within 2 weeks):
 ### Job Completion Rate
 
 Define what "job done" means and measure:
-
 - % of sessions where job was completed
 - Time to first success (Time to Value)
 - Repeatability of "hiring" (hire frequency)
@@ -93,13 +92,11 @@ Define what "job done" means and measure:
 After launch, keep learning:
 
 **Usage data signals:**
-
 - Features used ≠ Features valued (may use out of necessity)
 - Time spent ≠ Job done (frustration can increase time)
 - Feature requests often describe solutions, not jobs
 
 **Ongoing research:**
-
 - Interview new customers within 2 weeks of purchase
 - Interview churned customers within 1 week of leaving
 - Observe actual usage (session recordings, support tickets)
@@ -121,7 +118,6 @@ After launch, keep learning:
 ### Why "Firing" Happens
 
 Customers fire products when:
-
 1. **Job changed** - Circumstances evolved (company grew, life changed)
 2. **Better "employee" appeared** - Competitor does job better
 3. **Job wasn't being done** - Product never delivered on promise

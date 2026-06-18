@@ -1,6 +1,6 @@
 {
   "name": "forge-audit",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Audit existing infrastructure for security issues, waste, and misconfigurations. Use when asked to \"audit my infra\", \"check cloud setup\", \"infra review\", \"are we wasting money\", \"security check on infra\", or \"review my terraform\".",
   "author": {
     "name": "tonone-ai",
@@ -9,8 +9,5 @@
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
   "type": "skill",
-  "keywords": [
-    "forge",
-    "skill"
-  ]
+  "keywords": ["forge", "skill"]
 }

@@ -1,0 +1,19 @@
+{
+  "name": "governed-second-brain",
+  "owner": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "plugins": [
+    {
+      "name": "governed-second-brain",
+      "source": ".",
+      "description": "A local-first governed second brain for Claude Code — turn your own files into cited (qmd://) memory, with every write run through deterministic governance and recorded in a tamper-evident, SHA-256 hash-chained audit trail. Runs in-process; no daemon, no network.",
+      "version": "0.1.6",
+      "category": "productivity",
+      "keywords": ["memory", "knowledge", "governance", "qmd", "citations", "local-first", "second-brain"],
+      "author": "Jeremy Longshore",
+      "license": "Apache-2.0"
+    }
+  ]
+}

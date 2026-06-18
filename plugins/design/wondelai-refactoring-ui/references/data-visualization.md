@@ -2,8 +2,8 @@
 
 Practical guide to designing charts, tables, and data displays that communicate clearly.
 
-## Table of Contents
 
+## Table of Contents
 1. [Chart Selection](#chart-selection)
 2. [Bar Charts](#bar-charts)
 3. [Line Charts](#line-charts)
@@ -35,7 +35,6 @@ Practical guide to designing charts, tables, and data displays that communicate 
 ### When NOT to Use a Chart
 
 Sometimes a simple number is better:
-
 - Single data point → Big number display
 - Two numbers to compare → Side-by-side with % change
 - Very few data points → Table might be clearer
@@ -149,7 +148,6 @@ Sometimes a simple number is better:
 ### Alternative: Simple Numbers
 
 Often clearer than a pie chart:
-
 ```
 ┌─────────────────────────────────┐
 │ 67% Mobile   23% Desktop   10% Tablet │
@@ -173,7 +171,6 @@ Yellow:  #eab308
 ```
 
 **Rules:**
-
 - Maximum 5-7 distinct colors
 - Avoid red/green together (colorblindness)
 - Test with colorblind simulator
@@ -203,12 +200,10 @@ Positive:  #22c55e (green)
 ### Colorblind-Safe Palettes
 
 Test your palette with:
-
 - Coblis Color Blindness Simulator
 - Chrome DevTools rendering settings
 
 **Safe combinations:**
-
 - Blue + Orange (deuteranopia safe)
 - Blue + Yellow
 - Purple + Green + Orange
@@ -227,7 +222,6 @@ Test your palette with:
 ### Table Design Principles
 
 **1. Align numbers right**
-
 ```
 Revenue
 ────────
@@ -237,7 +231,6 @@ $123,789
 ```
 
 **2. Align text left**
-
 ```
 Product Name
 ────────────
@@ -247,14 +240,12 @@ Widget Pro Max
 ```
 
 **3. Use consistent precision**
-
 ```
 ❌  $1234, $567.89, $2.5k
 ✅  $1,234.00, $567.89, $2,500.00
 ```
 
 **4. Minimize borders**
-
 ```css
 /* Light horizontal lines only */
 tr {
@@ -264,7 +255,6 @@ tr {
 ```
 
 **5. Generous padding**
-
 ```css
 td {
   padding: 12px 16px;
@@ -274,7 +264,6 @@ td {
 ### Table Patterns
 
 **Zebra striping:**
-
 ```css
 tr:nth-child(even) {
   background-color: #f9fafb;
@@ -282,7 +271,6 @@ tr:nth-child(even) {
 ```
 
 **Hover highlighting:**
-
 ```css
 tr:hover {
   background-color: #f3f4f6;
@@ -290,7 +278,6 @@ tr:hover {
 ```
 
 **Sortable columns:**
-
 ```html
 <th>
   Revenue
@@ -299,7 +286,6 @@ tr:hover {
 ```
 
 **Sticky headers:**
-
 ```css
 thead th {
   position: sticky;
@@ -380,7 +366,6 @@ thead th {
 ### Annotation Patterns
 
 **Event markers:**
-
 ```
                     ╭─── Product launch
 Revenue ──────────/│\──────────────
@@ -388,7 +373,6 @@ Revenue ──────────/│\────────────�
 ```
 
 **Threshold lines:**
-
 ```
 Revenue ──────────────────────
 - - - - - Target: $50k - - - -
@@ -396,7 +380,6 @@ Revenue ──────────────────────
 ```
 
 **Callout boxes:**
-
 ```
 ┌──────────────────────────┐
 │ 📈 Best month ever!      │
@@ -431,7 +414,6 @@ Revenue ──────────────────────
 ### Data Tables as Alternative
 
 For complex charts, provide data table version:
-
 ```html
 <details>
   <summary>View data as table</summary>

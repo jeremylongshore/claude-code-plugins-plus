@@ -9,7 +9,7 @@
 | Skill | Purpose | Risk tier | Audience |
 |-------|---------|-----------|----------|
 | [`aomi-transact`](skills/transact/SKILL.md) | Drive the Aomi CLI to chat, simulate, and sign on-chain transactions with account-abstraction-first execution. Wraps swaps, lending, bridges, staking, perps, and CEX read across 25+ apps on EVM mainnets and L2s. | **L2** (signs/broadcasts) | End-user / power-user |
-| [`aomi-build`](https://github.com/aomi-labs/skills/tree/main/plugins/aomi/skills/build) | Scaffold new Aomi apps and plugins from API docs, OpenAPI/Swagger specs, SDK docs, and product requirements. Generates Rust SDK crates with `lib.rs`, `client.rs`, `tool.rs`, plus tool schemas, preambles, and host-interop flows. | **L0** (scaffolds code) | Developer |
+| [`aomi-build`](skills/build/SKILL.md) | Scaffold new Aomi apps and plugins from API docs, OpenAPI/Swagger specs, SDK docs, and product requirements. Generates Rust SDK crates with `lib.rs`, `client.rs`, `tool.rs`, plus tool schemas, preambles, and host-interop flows. | **L0** (scaffolds code) | Developer |
 
 The two skills are different audiences and different risk profiles. Bundling means the agent loads only the skill whose description triggers match — there is no token bloat for installing both.
 
@@ -57,14 +57,12 @@ npm install -g @aomi-labs/client      # version 0.1.30 or newer
 Once installed, ask your agent in natural language. The agent picks the right skill based on the prompt:
 
 **Triggers `aomi-transact`:**
-
 - *"What's the price of ETH?"*
 - *"Swap 1 USDC for WETH on Uniswap V3, send to my wallet."*
 - *"Stake 0.01 ETH with Lido."*
 - *"Bridge 50 USDC from Ethereum to Base via CCTP."*
 
 **Triggers `aomi-build`:**
-
 - *"Use aomi-build to turn this OpenAPI spec into an Aomi app."*
 - *"Build an Aomi plugin from these REST endpoints."*
 - *"Convert this SDK README into an Aomi tool surface."*
@@ -119,7 +117,6 @@ MIT. See [LICENSE](LICENSE).
 Aomi Labs builds native harness around blockchains functioning like Claude Code on-chain. We specialize in executions against arbitrary protocol with non-custodial workflow, account abstraction, and full security with simulations. Aomi also host agentic applications deployed and owned by developers, companies, and agents. Aomi provides E2E integration with UI, Skills and SDKs.
 
 **Links:**
-
 - 🌐 Website: [aomi.dev](https://aomi.dev)
 - 🤖 Agents: [aomi.dev/agents](https://aomi.dev/agents)
 - 𝕏 Twitter: [x.com/aomi_labs](https://x.com/aomi_labs)

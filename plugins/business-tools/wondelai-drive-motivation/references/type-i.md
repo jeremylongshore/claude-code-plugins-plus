@@ -220,7 +220,6 @@ Rate yourself or team members on each dimension (1 = strongly disagree, 5 = stro
 | **Total** | **/50** |
 
 **Interpretation:**
-
 - 40-50: Strong Type I orientation
 - 25-39: Mixed; context-dependent (common and healthy)
 - 10-24: Predominantly Type X; environment may be the cause

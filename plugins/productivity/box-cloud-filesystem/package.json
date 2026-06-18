@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/box-cloud-filesystem",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Transparent cloud filesystem for AI agents using Box CLI (@box/cli). Upload, download, search, share, and sync files to Box cloud storage with operational safety guardrails.",
   "keywords": [
     "box",

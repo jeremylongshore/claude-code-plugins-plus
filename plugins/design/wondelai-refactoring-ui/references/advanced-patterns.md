@@ -3,7 +3,6 @@
 Extended reference for complex scenarios. Load only when deeper guidance needed.
 
 ## Table of Contents
-
 1. [Empty States](#empty-states)
 2. [Form Design](#form-design)
 3. [Image Treatment](#image-treatment)
@@ -19,7 +18,6 @@ Extended reference for complex scenarios. Load only when deeper guidance needed.
 Empty states are opportunities, not afterthoughts.
 
 **Good empty states include:**
-
 - Illustration or icon (not generic)
 - Clear explanation of what goes here
 - Primary action to remedy emptiness
@@ -40,7 +38,6 @@ Empty states are opportunities, not afterthoughts.
 ### Input Sizing
 
 Match input width to expected content:
-
 - Email/URL: Full width or ~400px
 - Phone: ~200px
 - ZIP code: ~100px
@@ -53,7 +50,6 @@ Match input width to expected content:
 **Never use placeholder as the only label.** Placeholders disappear on focus. Always have a visible label.
 
 Placeholders work for:
-
 - Format hints: "MM/DD/YYYY"
 - Examples: "e.g., john@example.com"
 - Optional clarification
@@ -95,7 +91,6 @@ Danger:     Red but not screaming (bg-red-600 for confirm, text-red-600 for trig
 **Problem:** Text over images is often unreadable.
 
 **Solutions:**
-
 1. Semi-transparent overlay: `bg-black/50`
 2. Gradient overlay: `bg-gradient-to-t from-black/80 to-transparent`
 3. Text shadow: `text-shadow: 0 2px 4px rgba(0,0,0,0.5)`
@@ -122,7 +117,6 @@ Danger:     Red but not screaming (bg-red-600 for confirm, text-red-600 for trig
 ### Sizing
 
 Icons should feel balanced with adjacent text:
-
 - 12-14px text: 16px icon
 - 16px text: 20px icon  
 - 18-20px text: 24px icon
@@ -158,25 +152,21 @@ Always align icon center with text baseline or center. Add consistent gap (8px t
 Every interactive element needs visible state changes:
 
 ### Hover
-
 - Subtle background change
 - Slight shadow increase
 - Color shift (darken primary by 10%)
 
 ### Active/Pressed
-
 - Darker than hover
 - Slight scale down (`scale-95`)
 - Reduce shadow
 
 ### Focus
-
 - Obvious ring (critical for accessibility)
 - Don't rely on color alone
 - `focus-visible` for keyboard-only focus
 
 ### Loading
-
 - Disable interaction
 - Show spinner or skeleton
 - Maintain layout size (prevent shift)
@@ -219,7 +209,6 @@ Use color purposefully:
 Stay consistent. Pick a system:
 
 **Sharp/Modern:**
-
 ```
 none: 0
 sm: 2px
@@ -229,7 +218,6 @@ full: 9999px (pills/circles)
 ```
 
 **Soft/Friendly:**
-
 ```
 none: 0
 sm: 4px

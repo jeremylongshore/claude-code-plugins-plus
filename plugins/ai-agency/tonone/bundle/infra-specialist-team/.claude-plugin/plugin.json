@@ -1,6 +1,6 @@
 {
   "name": "infra-specialist-team",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Infrastructure Specialist Team \u2014 10 agents: Kube, Terra, Finop, Serv, Edge, Cache, Queue, Mesh, Multi, Chaos",
   "author": {
     "name": "tonone-ai",

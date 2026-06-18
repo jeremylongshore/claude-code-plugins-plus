@@ -15,13 +15,11 @@ All purchases resolve psychological tension - the gap between current reality an
 ### Dormant vs Active Desires
 
 **Active desire:** Person is already searching for solutions
-
 - Harder to sell to (already decided, set budget)
 - Looking for established brands, social proof
 - Comparing options
 
 **Dormant desire:** Tension exists but not acted upon
-
 - Easier to influence (open to options)
 - Will buy from whoever awakened the desire
 - Open to exploring price ranges
@@ -35,21 +33,18 @@ All purchases resolve psychological tension - the gap between current reality an
 All three must be present for a sale:
 
 ### 1. Emotion
-
 - Feeling respected and understood
 - Trust established
 - Emotional payoff visualized
 - Stories with heroes, struggles, triumphs
 
 ### 2. Logic  
-
 - Clear ROI calculation
 - Cost-benefit analysis understood
 - Comparison with alternatives favorable
 - Facts, statistics, data supporting decision
 
 ### 3. Urgency
-
 - Cost of inaction is clear
 - Limited availability/time
 - Price may increase
@@ -57,7 +52,6 @@ All three must be present for a sale:
 - Opportunity may pass
 
 **A scorecard creates a loop of all three:**
-
 - Landing page: Emotional hooks + logical benefits
 - Questions: Engagement creating emotional investment
 - Results: Quantified logic + urgent next step
@@ -69,7 +63,6 @@ All three must be present for a sale:
 ### Why Scoring Works
 
 Humans have primal drives to:
-
 - **Measure** everything that can be measured
 - **Rank** themselves against standards
 - **Improve** and optimize continuously
@@ -79,7 +72,6 @@ This is evolutionary - ancestors who didn't measure and improve didn't survive.
 ### The Power of Quantification
 
 When you ask "On a scale of 1-10, how satisfied are you with [X]?":
-
 - Emotion (the dissatisfaction) meets logic (the number)
 - Below 4 = unbearable, will take action
 - 7+ = satisfactory, low motivation
@@ -98,11 +90,9 @@ Scorecard results provide the feedback loop people crave.
 ## Warming Up Leads
 
 ### Google's ZMOT (Zero Moment of Truth)
-
 People consume ~11 pieces of content before purchasing.
 
 ### Dunbar's Research
-
 Multiple quality interactions over time accelerate trust.
 
 ### Implication for Scorecards
@@ -164,19 +154,16 @@ Key data points supporting this approach:
 ## Common Psychological Mistakes
 
 ### In Questions
-
 - **Asking obvious leading questions** - Feels manipulative
 - **Too many open-ended questions** - Decision fatigue
 - **Industry jargon** - Excludes, doesn't include
 
 ### In Results
-
 - **Same content regardless of score** - Breaks personalization promise
 - **Only negative feedback** - Demotivates action
 - **No clear next step** - Momentum dies
 
 ### In Follow-up
-
 - **Generic emails** - Wastes the data collected
 - **Too aggressive** - Breaks trust built
 - **Too passive** - Misses the moment of motivation

@@ -1,5 +1,3 @@
-<!-- markdownlint-disable MD035 -->
-
 # StoryBrand Brand Script Worksheet
 
 Complete this worksheet to create your brand's core messaging. Use the answers to write all marketing materials.
@@ -32,7 +30,6 @@ They want to be seen as: _________________________________
 ## 2. Problem
 
 ### External Problem
-
 **What tangible problem do you solve?**
 _The surface-level, obvious problem._
 
@@ -41,7 +38,6 @@ External problem: _________________________________
 ```
 
 ### Internal Problem
-
 **How does that problem make them feel?**
 _Frustration, confusion, fear, embarrassment, etc._
 
@@ -50,7 +46,6 @@ They feel: _________________________________
 ```
 
 ### Philosophical Problem
-
 **Why is this wrong/unjust/unfair?**
 _The deeper "ought" statement._
 
@@ -59,7 +54,6 @@ It's wrong that: _________________________________
 ```
 
 ### Villain
-
 **What/who is the source of this problem?**
 _Personify the enemy. Give it a face._
 
@@ -72,7 +66,6 @@ The villain is: _________________________________
 ## 3. Guide (Your Brand)
 
 ### Empathy Statement
-
 **How do you show you understand their struggle?**
 _"We understand what it's like to..."_
 
@@ -81,7 +74,6 @@ We understand: _________________________________
 ```
 
 ### Authority Credentials
-
 **Why should they trust you?**
 _List 3-5 proof points: testimonials, logos, statistics, awards, experience._
 
@@ -96,7 +88,6 @@ _List 3-5 proof points: testimonials, logos, statistics, awards, experience._
 ## 4. Plan
 
 ### Process Plan
-
 **What are the 3-4 steps to work with you?**
 _Simple, numbered, action-oriented._
 
@@ -107,7 +98,6 @@ _Simple, numbered, action-oriented._
 | 3 | _________ | _________ |
 
 ### Agreement Plan (Optional)
-
 **What commitments do you make to reduce fear?**
 
 - [ ] _________________________________
@@ -119,7 +109,6 @@ _Simple, numbered, action-oriented._
 ## 5. Call to Action
 
 ### Direct CTA
-
 **What is the primary action you want them to take?**
 
 ```
@@ -128,7 +117,6 @@ Direct CTA: _________________________________
 ```
 
 ### Transitional CTA
-
 **What lower-commitment action can they take?**
 
 ```
@@ -143,33 +131,25 @@ Transitional CTA: _________________________________
 **What does life look like after working with you?**
 
 ### Status
-
 _How will others perceive them?_
-
 ```
 Others will see them as: _________________________________
 ```
 
 ### Completeness
-
 _What desire will be fulfilled?_
-
 ```
 They will finally have: _________________________________
 ```
 
 ### Self-Realization
-
 _Who will they become?_
-
 ```
 They will become: _________________________________
 ```
 
 ### Specific Outcomes
-
 _What measurable results can you promise?_
-
 - _________________________________
 - _________________________________
 - _________________________________
@@ -202,7 +182,6 @@ achieve [SOLUTION] so they can [RESULT].
 ```
 
 **Your one-liner:**
-
 ```
 _____________________________________________
 _____________________________________________

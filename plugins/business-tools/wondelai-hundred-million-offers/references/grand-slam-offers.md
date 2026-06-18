@@ -21,7 +21,6 @@ Before building solutions, you must exhaustively catalog every problem, fear, ob
 | **Internal** | What self-doubt or beliefs block them? | "I'm not technical enough," "I'm too old/young," "I don't have the right background" |
 
 **The exhaustive problem list exercise:**
-
 1. Set a 30-minute timer
 2. Write down every problem your customer faces on the path to the Dream Outcome
 3. Organize problems into the categories above
@@ -33,7 +32,6 @@ Before building solutions, you must exhaustively catalog every problem, fear, ob
 For each problem on your list, create at least one solution. A solution is a specific answer to the problem -- not a vague assurance, but a concrete deliverable.
 
 **Solution design principles:**
-
 - Each solution should be independently valuable
 - Solutions should be describable in one sentence
 - The best solutions are ones the customer could not create on their own
@@ -68,7 +66,6 @@ Every solution needs a delivery vehicle -- the format or mechanism through which
 | **Live group calls** | Medium | Medium | High | Coaching programs, masterminds |
 
 **Choosing the right delivery vehicle:**
-
 - Match the vehicle to the problem: complex problems need high-touch vehicles
 - Match the vehicle to the price point: $50 info products use courses; $50,000 services use DFY
 - Mix vehicles within a single offer: core course + live calls + templates + community
@@ -127,7 +124,6 @@ Most Grand Slam Offers benefit from 2-3 tiers. Each tier serves a different cust
 | **DFY (Done-For-You)** | Want results without effort | Everything in DWY + implementation | $10,000-$100,000+ |
 
 **Tier design principles:**
-
 - Each tier must feel complete (no one should feel cheated at any level)
 - Higher tiers add speed, ease, and personal attention -- not content
 - Price jumps between tiers should feel proportional to the value added
@@ -136,7 +132,6 @@ Most Grand Slam Offers benefit from 2-3 tiers. Each tier serves a different cust
 ### The Decoy Effect in Offer Tiers
 
 When you present three options, the middle option becomes the most popular because:
-
 - The low tier feels "too basic"
 - The high tier feels "too expensive"
 - The middle tier feels "just right"

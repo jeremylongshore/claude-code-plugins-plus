@@ -1,0 +1,589 @@
+domain: TEST_MANAGEMENT
+tools:
+  - name: saveTestCase
+    title: Save Test Case
+    description: >
+      Save (convert) a finished manual exploring session into a reusable test
+      case. Call this after a manual session is completed and the user wants to
+      persist its recorded steps as a test case for later replay. The backend
+      enforces that the session is a manual, prime-completed, revisit-eligible
+      session owned by the user. The test case is named after the source
+      session; call updateTestCase with action 'update_info' afterward to
+      rename, describe, or retag it. Returns the created test case record.
+    annotations:
+      readOnlyHint: false
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        sessionId:
+          type: integer
+          description: The manual session ID to convert into a test case
+      required:
+        - userIntent
+        - sessionId
+  - name: listTestCases
+    title: List Test Cases
+    description: >
+      List test cases in the current user's organization with optional team,
+      keyword, and platform filters. Returns test case ID, name, description,
+      platform, owner, and timestamps.
+    annotations:
+      readOnlyHint: true
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        teamId:
+          type: integer
+          description: >-
+            Optional team scope. When set, only test cases visible to the
+            caller via that team are returned (in addition to org-shared ones).
+            Omit to list every test case the caller can access in the org.
+        keyword:
+          type: string
+          description: Search by test case name, tag, or app package
+        platformName:
+          type: string
+          enum:
+            - ANDROID
+            - IOS
+          description: Filter by platform
+        page:
+          type: integer
+          description: Page number for pagination
+          default: 1
+        rowsPerPage:
+          type: integer
+          description: Rows per page (max 20)
+          default: 10
+      required:
+        - userIntent
+  - name: getTestCase
+    title: Get Test Case
+    description: >
+      Get detailed information about a specific test case including its steps,
+      tags, owner, platform, and current version. By default returns the latest
+      version; pass `version` to fetch a specific historical version.
+    annotations:
+      readOnlyHint: true
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        testCaseId:
+          type: string
+          description: The test case ID (v2 UUID)
+        version:
+          type: integer
+          description: Optional specific version code to fetch (defaults to latest)
+        includeAppData:
+          type: boolean
+          description: Include app/version metadata in the response
+          default: false
+      required:
+        - userIntent
+        - testCaseId
+  - name: updateTestCase
+    title: Update Test Case
+    description: >
+      Update a test case. Pass one or more modification entries in the
+      `modifications` array; each entry's `action` field selects which kind of
+      update to apply. Supported actions: `update_info` (rename / re-describe),
+      `modify_steps` (add/edit/remove steps via nested step actions
+      `remove`/`replace_text`/`submit_element`), `assign_to_test_suites`,
+      `unassign_from_test_suites`. Returns the updated test case (a new
+      version may be created by the backend when steps change).
+    annotations:
+      readOnlyHint: false
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        testCaseId:
+          type: string
+          description: The test case ID (v2 UUID)
+        modifications:
+          type: array
+          description: One or more modification entries to apply in order
+          items:
+            type: object
+            properties:
+              action:
+                type: string
+                enum:
+                  - update_info
+                  - modify_steps
+                  - assign_to_test_suites
+                  - unassign_from_test_suites
+                description: Which kind of modification to apply
+              name:
+                type: string
+                description: New test case name (only for action `update_info`)
+              description:
+                type: string
+                description: New test case description (only for action `update_info`)
+              test_suite_ids:
+                type: array
+                items:
+                  type: string
+                description: >-
+                  Target test suite IDs (only for `assign_to_test_suites` /
+                  `unassign_from_test_suites`)
+              test_steps:
+                type: array
+                description: >-
+                  Step-level modifications (only for action `modify_steps`).
+                  Each item has its own nested `action`: `remove`,
+                  `replace_text`, or `submit_element`.
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: Target step ID
+                    action:
+                      type: string
+                      enum:
+                        - remove
+                        - replace_text
+                        - submit_element
+                      description: Step-level action to perform
+                    value:
+                      type: string
+                      description: New text value (for `replace_text`)
+                    type:
+                      type: string
+                      description: Element type hint (for `submit_element`)
+                    xpath:
+                      type: string
+                      description: New element xpath (for `submit_element`)
+                    screen_id:
+                      type: string
+                      description: Screen ID hint (for `submit_element`)
+                  required:
+                    - id
+                    - action
+              update_tags:
+                type: boolean
+                description: >-
+                  Refresh the test case's tag set from the latest step metadata
+            required:
+              - action
+      required:
+        - userIntent
+        - testCaseId
+        - modifications
+  - name: deleteTestCase
+    title: Delete Test Case
+    description: >
+      Delete a test case. The user must own (or be an admin of) the test case.
+      Removing a test case detaches it from any test suites it belonged to;
+      historical test run sessions that referenced it are unaffected.
+    annotations:
+      readOnlyHint: false
+      destructiveHint: true
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        testCaseId:
+          type: string
+          description: The test case ID (v2 UUID) to delete
+      required:
+        - userIntent
+        - testCaseId
+  - name: createTestRun
+    title: Create Test Run
+    description: >
+      Create a new test run that executes a test suite or a list of selected
+      test case versions against the chosen devices. Provide either
+      `testSuiteId` (run an existing suite) or `testCaseSelections` (run a
+      bespoke list of test case versions). Returns the test run ID and the
+      sessions that were queued.
+    annotations:
+      readOnlyHint: false
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        name:
+          type: string
+          description: Optional name for the new test run
+        description:
+          type: string
+          description: Optional description for the new test run
+        testSelection:
+          type: object
+          description: >-
+            How to choose which test cases to run. Either provide a
+            `testSuiteId` (run a suite) or a `testCaseSelections` list (run
+            specific versions).
+          properties:
+            type:
+              type: string
+              description: Selection type identifier (e.g. `test_suite`, `test_cases`)
+            testSuiteId:
+              type: string
+              description: Run all test cases in this suite (mutually exclusive with `testCaseSelections`)
+            testCaseSelections:
+              type: array
+              items:
+                type: object
+                properties:
+                  testCaseId:
+                    type: string
+                  version:
+                    type: integer
+        deviceSelection:
+          type: object
+          description: How to choose which devices to run on
+          properties:
+            type:
+              type: string
+              description: Selection type (e.g. `device_bundle`, `specific_devices`)
+            deviceBundleId:
+              type: integer
+              description: Run on devices in the named device bundle
+            specificDevices:
+              type: array
+              items:
+                type: object
+                properties:
+                  isCloud:
+                    type: boolean
+                  deviceName:
+                    type: string
+                  platformName:
+                    type: string
+                  platformVersion:
+                    type: string
+                  udid:
+                    type: string
+        appSelections:
+          type: array
+          items:
+            type: object
+            properties:
+              appPackage:
+                type: string
+              appVersionId:
+                type: integer
+          description: App versions to install on the run devices
+        deviceAllocationStrategy:
+          type: string
+          description: How to allocate devices across the selected test cases
+      required:
+        - userIntent
+  - name: listTestRuns
+    title: List Test Runs
+    description: >
+      List test runs with optional team, keyword, and platform filters. Returns
+      test run ID, name, status, platform, and aggregated execution counts.
+    annotations:
+      readOnlyHint: true
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        teamId:
+          type: integer
+          description: >-
+            Optional team scope. When set, only test runs visible to the caller
+            via that team are returned (in addition to org-shared ones). Omit
+            to list every test run the caller can access in the org.
+        keyword:
+          type: string
+          description: Search by test run name
+        platformName:
+          type: string
+          enum:
+            - ANDROID
+            - IOS
+          description: Filter by platform
+        page:
+          type: integer
+          description: Page number for pagination
+          default: 1
+        rowsPerPage:
+          type: integer
+          description: Rows per page (max 20)
+          default: 10
+        sortBy:
+          type: string
+          description: Sort key (e.g. `createdAt`)
+        sortType:
+          type: string
+          enum:
+            - ASC
+            - DESC
+          description: Sort direction
+      required:
+        - userIntent
+  - name: getTestRun
+    title: Get Test Run
+    description: >
+      Get detailed information about a specific test run including its sessions,
+      executions, and current status.
+    annotations:
+      readOnlyHint: true
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        testRunId:
+          type: string
+          description: The test run ID
+        includeRevisitActions:
+          type: boolean
+          description: Include per-execution revisit-action details
+          default: false
+      required:
+        - userIntent
+        - testRunId
+  - name: terminateTestRun
+    title: Terminate Test Run
+    description: >
+      Terminate a running test run. Use when a test run needs to be stopped
+      before all of its executions complete naturally. Already-finished test
+      runs cannot be terminated.
+    annotations:
+      readOnlyHint: false
+      destructiveHint: true
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        testRunId:
+          type: string
+          description: The test run ID to terminate
+      required:
+        - userIntent
+        - testRunId
+  - name: listTestSuites
+    title: List Test Suites
+    description: >
+      List test suites in the current user's organization with optional team,
+      keyword and platform filters. Returns test suite ID, name, description,
+      platform, and member count.
+    annotations:
+      readOnlyHint: true
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        teamId:
+          type: integer
+          description: Filter by team ID
+        keyword:
+          type: string
+          description: Search by test suite name
+        platformName:
+          type: string
+          enum:
+            - ANDROID
+            - IOS
+          description: Filter by platform
+        page:
+          type: integer
+          description: Page number for pagination
+          default: 1
+        rowsPerPage:
+          type: integer
+          description: Rows per page (max 20)
+          default: 10
+      required:
+        - userIntent
+  - name: getTestSuite
+    title: Get Test Suite
+    description: >
+      Get detailed information about a specific test suite including its name,
+      description, platform, and the test case members (with pinned versions).
+    annotations:
+      readOnlyHint: true
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        testSuiteId:
+          type: string
+          description: The test suite ID
+        includeAppData:
+          type: boolean
+          description: Include app/version metadata for member test cases
+          default: false
+      required:
+        - userIntent
+        - testSuiteId
+  - name: createTestSuite
+    title: Create Test Suite
+    description: >
+      Create a new test suite from an existing set of test cases. All test
+      cases must already exist, must be of the chosen platform, and must be
+      visible to the calling user. Returns the new test suite record.
+    annotations:
+      readOnlyHint: false
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        teamId:
+          type: integer
+          description: Optional team ID that owns the new test suite
+        name:
+          type: string
+          description: Name for the new test suite
+        description:
+          type: string
+          description: Optional description for the new test suite
+        platformName:
+          type: string
+          enum:
+            - ANDROID
+            - IOS
+          description: Platform of the new test suite
+        testCaseIds:
+          type: array
+          items:
+            type: string
+          description: Test case IDs (v2 UUIDs) to include in the new suite
+      required:
+        - userIntent
+        - name
+        - platformName
+        - testCaseIds
+  - name: updateTestSuite
+    title: Update Test Suite
+    description: >
+      Update a test suite's metadata and/or membership. Pass `name` and/or
+      `description` to change metadata; pass `insertTestCaseIds` to add
+      members; pass `removeTestCaseIds` to drop members. At least one mutable
+      field is required.
+    annotations:
+      readOnlyHint: false
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        testSuiteId:
+          type: string
+          description: The test suite ID to update
+        name:
+          type: string
+          description: New test suite name
+        description:
+          type: string
+          description: New test suite description
+        insertTestCaseIds:
+          type: array
+          items:
+            type: string
+          description: Test case IDs (v2 UUIDs) to add to the suite
+        removeTestCaseIds:
+          type: array
+          items:
+            type: string
+          description: Test case IDs (v2 UUIDs) to remove from the suite
+      required:
+        - userIntent
+        - testSuiteId
+  - name: deleteTestSuite
+    title: Delete Test Suite
+    description: >
+      Delete a test suite. Member test cases are NOT deleted; they are merely
+      unlinked from the suite. The user must own (or be an admin of) the
+      test suite.
+    annotations:
+      readOnlyHint: false
+      destructiveHint: true
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        testSuiteId:
+          type: string
+          description: The test suite ID to delete
+      required:
+        - userIntent
+        - testSuiteId

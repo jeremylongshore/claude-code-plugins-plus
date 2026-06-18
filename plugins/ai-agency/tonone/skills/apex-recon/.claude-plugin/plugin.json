@@ -1,6 +1,6 @@
 {
   "name": "apex-recon",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Engineering lead reconnaissance \u2014 inventory the project before planning. Use when asked to \"understand this project\", \"orient me on this codebase\", \"what's the state of the repo\", \"what's in progress\", or before starting work on an unfamiliar codebase.",
   "author": {
     "name": "tonone-ai",
@@ -9,8 +9,5 @@
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
   "type": "skill",
-  "keywords": [
-    "apex",
-    "skill"
-  ]
+  "keywords": ["apex", "skill"]
 }

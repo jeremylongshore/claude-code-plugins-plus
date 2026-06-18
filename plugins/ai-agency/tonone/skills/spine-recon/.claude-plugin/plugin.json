@@ -1,6 +1,6 @@
 {
   "name": "spine-recon",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Backend reconnaissance \u2014 map all routes, middleware, models, dependencies, auth, and assess code quality for project takeover. Use when asked to \"understand this backend\", \"map the API\", or \"assess code quality\".",
   "author": {
     "name": "tonone-ai",
@@ -9,8 +9,5 @@
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
   "type": "skill",
-  "keywords": [
-    "spine",
-    "skill"
-  ]
+  "keywords": ["spine", "skill"]
 }

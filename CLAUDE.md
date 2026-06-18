@@ -128,6 +128,46 @@ Beyond the 8 required fields, schema 3.5.0+ adds optional visibility-gating fiel
 - **Defense-in-depth disallow list (3.7.0):** `disallowed-tools` — kebab-case string or YAML list of tool patterns. Removes those tools from the model while the skill is active. Parallel to (not a replacement for) `allowed-tools`. Cross-field overlap with `allowed-tools` is an ERROR (mirrors the 3.5.0 visibility-gating overlap rule). Defense-in-depth for skills that legitimately need broad `allowed-tools` but should never reach for specific high-risk operations (`rm`, `curl`, `wget`, `.env` writes). Full reference: `000-docs/681-AT-ADEC-claude-code-platform-changelog-impact.md` § Change 1.
 - **NON-NEGOTIABLE:** these are optional. `ALWAYS_REQUIRED` is still the 8-field set above. See issue #612 + `000-docs/681-AT-ADEC-claude-code-platform-changelog-impact.md` § Implementation directives before proposing any change to required fields — the 8-field set is preserved; `disallowed-tools` is additive, not required.
 
+## Validation & the kernel SSoT — CI/CD posture
+
+Two things grade frontmatter in this repo today, and the relationship between them is the load-bearing context to preserve.
+
+### The two validators
+
+- **Prose-spec validator (authoritative):** `scripts/validate-skills-schema.py`. This is the canonical gate. It runs at standard and marketplace tiers, it grades both frontmatter AND markdown body sections, and at marketplace tier a missing required field is an **ERROR** (not a warning). It is the one in the branch-protection required-status set. `ALWAYS_REQUIRED` (the IS 8-field set) is hand-authored here and stays **AUTHORITATIVE** — read `000-docs/SCHEMA_CHANGELOG.md` § NON-NEGOTIABLES before touching it. The IS rubric sits on top of Anthropic's permissive spec; the marketplace tier is intentionally strict. Do not reduce the 8-field set, do not demote marketplace errors to warnings, and do not "realign" to Anthropic's floor — any change to required-fields / tier model / error-vs-warning semantics is approval-gated per that doc.
+
+- **Kernel machine-spec (the SSoT being migrated to):** `@intentsolutions/core` — its `schemas/authoring/v1` family (byte-frozen) plus the strict fork `authoring/v2` — is the single internal source of truth for "what is a valid agent-native artifact." The kernel's `skill-frontmatter` schema encodes the **same** IS 8-field required set as a pure `allOf` of upstream-base + universal folds + the IS overlay. The plan of record is for `validate-skills-schema.py` to **consume the kernel folds** instead of its hand-rolled rule sets. That migration is in progress; the kernel pin is **exactly `0.4.1`** in `package.json` (no `^`/`~`). Contract semantics for `authoring/v1` fields are canonical in the kernel's own changelog — cite it, do not duplicate it (see `000-docs/SCHEMA_CHANGELOG.md` § "Kernel changelog citation").
+
+### Two advisory lanes (never block) running the soak
+
+Both are `continue-on-error: true`, neither is in the required-status set, and neither mutates anything:
+
+- **kernel-shadow soak** — `.github/workflows/kernel-shadow-validation.yml` + `scripts/kernel-shadow-validation.mjs`. Runs the kernel-pinned `skill-frontmatter` schema (from `@intentsolutions/core@0.4.1`) over the same SKILL.md corpus the prose-spec validator grades and logs per-file AGREE / DISAGREE deviation to `scripts/.kernel-shadow/report.json`. This is the DR-049 shadow soak (the "zero-on-corpus shadow signal"). The cutover-relevant number is the **frontmatter-scoped** deviation — a file that fails the prose-spec on missing `[body]` sections but has valid frontmatter is a scope difference, not a kernel gap, and is excluded.
+- **kernel-vendor-hash gate** — `.github/workflows/kernel-vendor-hash.yml` + `scripts/kernel-vendor-hash.mjs`. Enforces the version-coupling invariant **V ≤ C ≤ K** (vendored ≤ CCP-declared ≤ kernel-latest) plus a ≤7-day staleness bound. Soak-aware: it reads the `0.4.1` pin, polices ordering/staleness only, and must never pressure a pin bump or change validator authority.
+
+The validator itself does a kernel-loaded **shadow read** of `ALWAYS_REQUIRED` (`load_kernel_required()` / `--kernel-shadow`) — it compares the kernel's effective required set against the hand-authored one and reports drift. The hand-authored `ALWAYS_REQUIRED` stays authoritative; the shadow read is observational only.
+
+### Do-not-flip soak discipline (do not lose this)
+
+**Keep the kernel pin at exactly `0.4.1` during the soak — do NOT bump it.** Do **NOT** flip the kernel-shadow lane from advisory to authoritative (blocking) until ALL of these hold:
+
+1. ≥99.5% corpus agreement (deterministic folds must be 100%; the 0.5% band is reserved for non-deterministic surfaces only);
+2. ≥30 days of advisory soak;
+3. zero open P0 blockers;
+4. the Rekor superseding-event rollback protocol implemented and tested;
+5. governance sign-off from the CTO + CISO + VP-DevRel triple; and
+6. a ≥14-day public deprecation-window notice to affected skill authors.
+
+As of now the soak has **not** met the bar — agreement sits below 99.5%, and the open disagreements are real tool-safety / shell-substitution security cases that the prose-spec validator correctly blocks (so flipping early would weaken a real gate). Until every condition above is satisfied, validator authority stays with `validate-skills-schema.py` and both kernel lanes stay advisory. Promotion to blocking is a separate, later cutover step gated by these conditions — never a side effect of an unrelated PR.
+
+### Validator consolidation (already landed)
+
+A recent cleanup removed 74 dead duplicate `validation.sh` stubs, collapsed previously-diverged secondary validators into delegating wrappers around the canonical `validate-skills-schema.py`, and added the kernel-loaded shadow read described above. There is now one canonical validator; secondary entry points delegate to it.
+
+### auto-bump posture for contributors
+
+`.github/workflows/auto-bump-on-pr.yml` auto-bumps changed plugins' patch versions on PRs (only on `plugins/**` / `packages/**` changes). For a docs-only or otherwise non-release PR, put **`[skip auto-bump]`** in the PR title or body so the auto-bumper steps aside. Minor/major bumps stay a deliberate human choice — hand-edit the version in the same PR.
+
 ## Adding a New Plugin
 
 **Hand-authored:** copy from `templates/`, add catalog entry to `marketplace.extended.json`, run `pnpm run sync-marketplace`, validate with `--marketplace`.

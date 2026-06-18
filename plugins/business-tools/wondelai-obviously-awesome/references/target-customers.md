@@ -17,7 +17,6 @@ This distinction is critical and frequently misunderstood:
 ### The Bowling Alley Strategy
 
 Think of market adoption like bowling pins. Your best-fit customer segment is the head pin. When you knock it over convincingly, adjacent segments (the next row of pins) fall more easily because:
-
 - You have relevant case studies and social proof
 - Your product has been refined for related use cases
 - Word of mouth travels within connected communities
@@ -181,7 +180,6 @@ As you grow, you'll naturally expand beyond your best-fit segment. Understanding
 ### Ongoing Validation
 
 Revisit your best-fit customer definition every 6 months or when:
-
 - Win rates change significantly
 - Churn patterns shift
 - You launch a major new feature
@@ -191,23 +189,18 @@ Revisit your best-fit customer definition every 6 months or when:
 ## Exercise: Best-Fit Customer Definition
 
 ### Step 1: List Your Top 10 Customers
-
 Rank by a composite of retention, expansion, usage, and satisfaction.
 
 ### Step 2: Fill in the Characteristics Table
-
 For each customer, capture: industry, size, role of champion, tech stack, trigger event, previous solution, time to value, current usage level.
 
 ### Step 3: Identify Patterns
-
 Which characteristics appear in 70%+ of your top 10? Those are your best-fit criteria.
 
 ### Step 4: Write the Definition
-
 "Our best-fit customers are __________ at __________ that __________ and __________."
 
 ### Step 5: Validate
-
 - [ ] Can I build a target list from this definition? (The List Test)
 - [ ] Does 80%+ of my best customer base match this? (The Pattern Test)
 - [ ] Does less than 20% of churned customers match this? (The Negative Test)

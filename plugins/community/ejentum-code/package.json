@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/ejentum-code",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Cognitive scaffold for code generation, refactoring, or architecture tasks. Calls harness_code on the ejentum MCP server to retrieve a structured scaffold (failure pattern, procedure, correct-pattern ",
   "keywords": [
     "claude-code",

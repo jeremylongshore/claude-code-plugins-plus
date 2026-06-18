@@ -708,6 +708,36 @@ sources:
       - 'tests/**'
       - 'bun.lock'
       - '**/.gitkeep'
+
+  # ============================================================
+  # Governed Second Brain (Jeremy Longshore / Intent Solutions)
+  # https://github.com/jeremylongshore/governed-second-brain-plugin
+  # ============================================================
+
+  - name: governed-second-brain
+    description: Local-first governed second brain — turn your files into cited (qmd://) memory with deterministic governance and a tamper-evident, hash-chained audit trail. Install via `npx governed-second-brain init <folder>`.
+    repo: jeremylongshore/governed-second-brain-plugin
+    source_path: .
+    target_path: plugins/mcp/governed-second-brain
+    author:
+      name: Jeremy Longshore
+      github: jeremylongshore
+      email: jeremy@intentsolutions.io
+    license: Apache-2.0
+    category: productivity
+    verified: true
+    include:
+      - '.claude-plugin/**'
+      - '.mcp.json'
+      - 'skills/**'
+      - 'plugin-runtime/**'
+      - 'README.md'
+      - 'LICENSE'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
   - name: skyvern
     description: AI browser automation via CLI — navigate sites, fill forms, extract data, handle logins
     repo: Skyvern-AI/skyvern

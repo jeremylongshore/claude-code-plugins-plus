@@ -8,6 +8,7 @@ tools:
     annotations:
       readOnlyHint: true
       destructiveHint: false
+      openWorldHint: false
     inputSchema:
       type: object
       properties:
@@ -49,7 +50,7 @@ tools:
         limit:
           type: integer
           description: Maximum number of sessions to return
-          default: 20
+          default: 10
         offset:
           type: integer
           description: Offset for pagination
@@ -61,9 +62,11 @@ tools:
     description: >
       Get detailed information about a specific test session including commands
       executed, device info, desired capabilities, metadata, and test results.
+      `video_url` may be null; there is no separate `has_video` indicator.
     annotations:
       readOnlyHint: true
       destructiveHint: false
+      openWorldHint: false
     inputSchema:
       type: object
       properties:
@@ -83,10 +86,11 @@ tools:
     title: Get Session Artifacts
     description: >
       Get download URLs for session artifacts including video recording, device
-      logs, screenshots, and test reports.
+      logs, and test reports.
     annotations:
       readOnlyHint: true
       destructiveHint: false
+      openWorldHint: false
     inputSchema:
       type: object
       properties:
@@ -102,6 +106,49 @@ tools:
       required:
         - userIntent
         - sessionId
+  - name: getUserInputEvents
+    title: Get User Input Events
+    description: >
+      Return the touch and swipe gestures the human watching the device-only live
+      view has made on the device canvas since a given timestamp, oldest first.
+      Poll this between your scripted commands so the user can redirect you mid-run
+      — e.g. if they tap Settings, pivot your test plan to focus on Settings. The
+      user's tap also reaches the device in real time, so by the time you read
+      these gestures the device has already moved; treat them as facts about what
+      the human just did, not as actions to perform.
+    annotations:
+      readOnlyHint: true
+      destructiveHint: false
+      openWorldHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        sessionId:
+          type: integer
+          description: The session ID
+        sinceTimestamp:
+          type: integer
+          description: >-
+            Epoch milliseconds. Return only events newer than this. Pass the
+            timestamp of the last event you saw to page forward; omit to get all
+            currently buffered events.
+        limit:
+          type: integer
+          description: >-
+            Maximum number of events to return (default 50, max 200). Useful on
+            the first poll against a session where the human has been
+            interacting before you started — pages forward by re-calling with
+            the newest seen timestamp as sinceTimestamp.
+          default: 50
+      required:
+        - userIntent
+        - sessionId
   - name: terminateSession
     title: Terminate Session
     description: >
@@ -110,6 +157,8 @@ tools:
     annotations:
       readOnlyHint: false
       destructiveHint: true
+      idempotentHint: true
+      openWorldHint: false
     inputSchema:
       type: object
       properties:

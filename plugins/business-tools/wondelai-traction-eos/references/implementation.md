@@ -198,7 +198,6 @@ EOS only works if the entire leadership team is committed. Partial adoption crea
 **Step 1: Share the book.** Give every leadership team member a copy of *Traction*. Ask them to read it within two weeks.
 
 **Step 2: Discuss openly.** Schedule a 2-hour meeting to discuss:
-
 - What resonated? What did not?
 - What problems could EOS solve for us?
 - What concerns or objections do people have?
@@ -225,7 +224,6 @@ Once the leadership team has completed Focus Day, VB1, and VB2, it is time to sh
 **Attendees:** Everyone in the company
 
 **Agenda:**
-
 1. **What is EOS?** (10 min) Brief overview of the Six Key Components
 2. **Our Core Values** (15 min) Share each value with behavioral indicators and examples
 3. **Our Core Focus** (10 min) Purpose and niche
@@ -274,7 +272,6 @@ Rate each item 1-5 (1 = not started, 5 = mastered). 30 items total across all si
 | **Traction** | Rocks set and tracked, 80%+ completion, weekly Level 10s, meetings score 8+, to-do completion 90%+ |
 
 **Scoring (out of 150):**
-
 - **120-150:** EOS mastery. Fully embedded.
 - **90-119:** Strong adoption. Close remaining gaps.
 - **60-89:** Good progress. Focus on lowest-scoring areas.

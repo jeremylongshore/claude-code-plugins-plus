@@ -51,7 +51,6 @@ This is a structured process for identifying unique attributes as a team. It sho
 ### Preparation (1 Week Before)
 
 **Gather inputs:**
-
 - Competitive alternatives list (from Step 1 of the positioning process)
 - Competitor feature comparison matrix (if available)
 - Win/loss analysis summaries
@@ -62,7 +61,6 @@ This is a structured process for identifying unique attributes as a team. It sho
 
 **Pre-work for participants:**
 Ask each participant to come prepared with answers to:
-
 1. "What do our happiest customers tell us they can't get anywhere else?"
 2. "What do we build or do that competitors can't or won't copy easily?"
 3. "What did we invest heavily in that others didn't?"
@@ -74,7 +72,6 @@ Ask each participant to come prepared with answers to:
 Each participant writes attributes on sticky notes — one attribute per note. Encourage quantity over quality at this stage. Use the attribute categories table above as prompts.
 
 Facilitation tips:
-
 - Go around the room and have each person share one attribute at a time
 - Build on each other's ideas — "That reminds me, we also..."
 - No evaluation during this phase — capture everything
@@ -92,7 +89,6 @@ For each attribute, apply the Uniqueness Test:
 | Has this been true for at least 6 months (not a temporary advantage)? | Yes → Strong | No → Flag as fragile |
 
 **Process:**
-
 1. Read each attribute aloud
 2. The group debates: "Can [alternative A] claim this? What about [alternative B]?"
 3. If even one competitive alternative can make the claim, it's not unique — move it to a "table stakes" list
@@ -114,7 +110,6 @@ For each surviving attribute, document the evidence:
 Group related attributes into clusters. These clusters will become the foundation for value themes in Step 3.
 
 **Clustering guidelines:**
-
 - Look for attributes that serve the same customer need
 - Typically 3-5 clusters emerge naturally
 - Name each cluster with a phrase that captures the theme
@@ -131,7 +126,6 @@ Group related attributes into clusters. These clusters will become the foundatio
 **Phase 5: Prioritize (10 minutes)**
 
 Not all unique attributes matter equally. Rank clusters by:
-
 1. How much customers care about this (based on interview data and win/loss analysis)
 2. How defensible this advantage is (how hard it is for competitors to copy)
 3. How verifiable and provable this is (easy to demonstrate vs. hard to prove)
@@ -141,23 +135,18 @@ Not all unique attributes matter equally. Rank clusters by:
 Beyond the workshop, use these techniques to verify that attributes are genuinely unique:
 
 ### Technique 1: The Competitor Test
-
 Visit each competitive alternative's website, demo their product, or talk to their customers. Can they make the same claim? If their marketing says something similar, is the underlying reality the same?
 
 ### Technique 2: The Customer Confirmation Test
-
 Ask 5 customers: "Is [attribute] something you can get from [alternative]?" If customers say "yes" or "I'm not sure," the attribute isn't perceived as unique even if it technically is.
 
 ### Technique 3: The Time Horizon Test
-
 How long would it take a well-funded competitor to replicate this attribute?
-
 - Less than 6 months: Fragile advantage — not reliable for positioning
 - 6-18 months: Moderate advantage — position on it but watch for competitor moves
 - 18+ months or structural: Strong advantage — this is a durable differentiator
 
 ### Technique 4: The Sales Test
-
 Ask your sales team: "When we win deals, what specific capabilities do customers cite?" and "When we lose, what do they say we're missing?" The attributes that show up in wins but not losses are your strongest differentiators.
 
 ## Maintaining Your Attribute Inventory
@@ -206,7 +195,6 @@ For each of your unique attributes, score them on the following dimensions (1-5 
 | [Attribute 3] | | | | | /20 |
 
 **Scoring guide:**
-
 - **Uniqueness:** 1 = several competitors have this, 5 = absolutely no one else has this
 - **Customer Value:** 1 = nice to have, 5 = customers cite this as primary purchase reason
 - **Defensibility:** 1 = competitors could replicate in weeks, 5 = structural advantage that would take years to replicate

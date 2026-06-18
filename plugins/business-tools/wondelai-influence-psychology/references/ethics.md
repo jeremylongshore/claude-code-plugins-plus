@@ -89,7 +89,6 @@ Dark patterns that hide cancellation options, pre-checked boxes, and forced cont
 | **Negative Option Rule** | Automatic renewals and subscriptions | FTC enforcement actions |
 
 **Key FTC positions on influence tactics:**
-
 - Fake reviews and testimonials are explicitly prohibited
 - Influencer sponsorships must be clearly disclosed
 - "Dark patterns" that trick consumers are under active enforcement
@@ -106,7 +105,6 @@ Dark patterns that hide cancellation options, pre-checked boxes, and forced cont
 | **Unfair Commercial Practices Directive** | Misleading and aggressive practices | National enforcement |
 
 **Key EU positions:**
-
 - Pre-checked consent boxes are prohibited
 - Announced price reductions must reference a real prior price
 - "Dark patterns" are specifically targeted by the Digital Services Act
@@ -154,7 +152,6 @@ Growing number of jurisdictions specifically targeting manipulative design:
 Before deploying any influence tactic, complete this checklist:
 
 **Truth and Accuracy**
-
 - [ ] All claims are factually accurate and verifiable
 - [ ] Social proof numbers are real and current
 - [ ] Testimonials are from real customers with real results
@@ -163,14 +160,12 @@ Before deploying any influence tactic, complete this checklist:
 - [ ] No information is being withheld that would change the user's decision
 
 **User Benefit**
-
 - [ ] The tactic helps users discover something they would genuinely value
 - [ ] The product or service being promoted actually solves the user's problem
 - [ ] The pricing is fair relative to the value delivered
 - [ ] Users who convert will be satisfied with their decision in 30 days
 
 **User Freedom**
-
 - [ ] Users can easily ignore or dismiss the influence element
 - [ ] Cancellation is as easy as signup
 - [ ] There are no hidden fees, auto-renewals without clear disclosure, or surprise charges
@@ -178,7 +173,6 @@ Before deploying any influence tactic, complete this checklist:
 - [ ] No pre-checked boxes or assumed consent
 
 **Vulnerability Protection**
-
 - [ ] We have considered whether vulnerable populations might be disproportionately affected
 - [ ] We have age-gating or other protections for minors
 - [ ] We are not targeting users based on emotional vulnerability or financial distress

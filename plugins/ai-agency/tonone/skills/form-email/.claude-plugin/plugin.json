@@ -1,6 +1,6 @@
 {
   "name": "form-email",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "|",
   "author": {
     "name": "tonone-ai",
@@ -9,8 +9,5 @@
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
   "type": "skill",
-  "keywords": [
-    "form",
-    "skill"
-  ]
+  "keywords": ["form", "skill"]
 }

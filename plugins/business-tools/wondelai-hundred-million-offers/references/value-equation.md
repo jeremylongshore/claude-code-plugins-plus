@@ -13,14 +13,12 @@ Maximize the numerator. Minimize the denominator. The result is an offer that fe
 The Dream Outcome is the ideal end state your customer wants to achieve. It is the "what" -- the transformation, the result, the after-picture. The bigger and more desirable the Dream Outcome, the more people will pay.
 
 **Key principles:**
-
 - Dream Outcomes are emotional, not logical. People buy the feeling the outcome creates (status, freedom, security, belonging).
 - Express the Dream Outcome in the customer's language, not yours. If they say "I want more clients," don't say "we optimize your lead generation pipeline."
 - The Dream Outcome sets the ceiling for your price. A $500 outcome supports a $50 product. A $500,000 outcome supports a $50,000 product.
 - Specificity increases desire. "Lose weight" is weak. "Lose 20 pounds in 90 days and fit into your wedding dress" is powerful.
 
 **Optimization tactics:**
-
 - Interview 20 customers and write down the exact words they use to describe their ideal result
 - Quantify the outcome whenever possible (revenue, time saved, pounds lost, deals closed)
 - Connect the outcome to a deeper emotional desire (status, safety, love, freedom)
@@ -42,7 +40,6 @@ The Dream Outcome is the ideal end state your customer wants to achieve. It is t
 This lever measures how confident the prospect is that they will actually achieve the Dream Outcome if they buy. It is not about whether the product works -- it is about whether the prospect believes it will work for them specifically.
 
 **Key principles:**
-
 - Social proof is the #1 driver of Perceived Likelihood ("People like me have done this")
 - Guarantees directly increase Perceived Likelihood by reducing downside risk
 - Specificity of the system increases confidence ("Here are the exact 7 steps")
@@ -50,7 +47,6 @@ This lever measures how confident the prospect is that they will actually achiev
 - Credentials, case studies, and track record all contribute to this lever
 
 **Optimization tactics:**
-
 - Collect and prominently display testimonials from people who match your target avatar
 - Show before-and-after results with specific metrics and timelines
 - Document your process as a clear, numbered system (people trust systems more than advice)
@@ -73,7 +69,6 @@ This lever measures how confident the prospect is that they will actually achiev
 Time Delay is the gap between when the customer buys and when they experience the result. Shorter Time Delay = higher perceived value. People will pay dramatically more for speed.
 
 **Key principles:**
-
 - Time Delay includes both the time to first result (quick win) and the time to full result
 - Quick wins are disproportionately valuable -- they validate the decision and build momentum
 - "Speed to value" is a competitive advantage that justifies premium pricing
@@ -81,7 +76,6 @@ Time Delay is the gap between when the customer buys and when they experience th
 - Templates, done-for-you components, and automation all reduce Time Delay
 
 **Optimization tactics:**
-
 - Design a "Day 1 Win" -- something tangible the customer achieves immediately after purchase
 - Break the journey into milestones so progress feels continuous (not a long wait followed by a result)
 - Offer done-for-you setup, migration, or onboarding to eliminate the startup delay
@@ -104,7 +98,6 @@ Time Delay is the gap between when the customer buys and when they experience th
 Effort & Sacrifice includes everything the customer must do, endure, or give up to achieve the Dream Outcome. This includes time investment, difficulty, confusion, discomfort, social cost, identity change, and any other friction.
 
 **Key principles:**
-
 - The less effort required, the more valuable the offer (this is why "done-for-you" commands premium prices)
 - Effort includes cognitive load -- confusion and complexity are forms of effort
 - Sacrifice includes what the customer must give up (comfort, habits, time with family, identity)
@@ -112,7 +105,6 @@ Effort & Sacrifice includes everything the customer must do, endure, or give up 
 - The ideal offer eliminates effort entirely (impossible for most, but aim for it)
 
 **Optimization tactics:**
-
 - Map every step the customer takes and ask: "Can we do this for them?"
 - Replace "learn then do" with "do with guidance" or "done-for-you"
 - Provide fill-in-the-blank templates instead of blank-page exercises
@@ -146,7 +138,6 @@ Rate your offer on each lever (1-10) and calculate the composite:
 Where "inverted" means: if your Time Delay score is 8 (fast), use 8. A perfect score on all four levers yields (10 x 10) / (1 x 1) = 100. A poor score yields (2 x 2) / (8 x 8) = 0.06.
 
 **Interpretation:**
-
 - 50-100: Grand Slam Offer territory. You can charge premium prices.
 - 20-49: Strong offer. Room to optimize one or two levers.
 - 5-19: Average offer. Multiple levers need work.
@@ -193,7 +184,6 @@ Count your current proof assets: testimonials, case studies, data points, creden
 ### Exercise 5: Dream Outcome Reframe
 
 Write your Dream Outcome three ways:
-
 1. The logical version (what they get)
 2. The emotional version (how they feel)
 3. The identity version (who they become)

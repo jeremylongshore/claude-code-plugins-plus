@@ -62,7 +62,6 @@ Reward at random times regardless of actions.
 Most successful products combine multiple schedules:
 
 **Instagram example:**
-
 - Variable ratio: Likes (unknown timing/quantity)
 - Variable interval: Feed updates
 - Fixed ratio: Post completion (edit, filter, share)
@@ -86,14 +85,12 @@ Social rewards—validation, acceptance, and status from others.
 | Discord | Reactions, mentions, role upgrades | Unknown social interactions |
 
 **Design patterns:**
-
 - Show who engaged (not just numbers)
 - Notify on social validation
 - Display social proof (X people liked this)
 - Create status hierarchies (badges, levels)
 
 **Risks:**
-
 - Can create anxiety and comparison
 - Social rejection is painful
 - Metrics can become obsessive
@@ -112,7 +109,6 @@ The search for resources—information, money, or material possessions.
 | Email | Important messages | Unknown when/what arrives |
 
 **Design patterns:**
-
 - Infinite scroll (always more to discover)
 - Variable content feeds
 - Deals and limited offers
@@ -120,7 +116,6 @@ The search for resources—information, money, or material possessions.
 - Pull-to-refresh mechanism
 
 **Risks:**
-
 - Can enable compulsive checking
 - FOMO exploitation
 - Endless consumption without satisfaction
@@ -139,7 +134,6 @@ Intrinsic motivation—mastery, completion, competence, and consistency.
 | Inbox Zero | Completion satisfaction | Unknown how hard it will be |
 
 **Design patterns:**
-
 - Progress bars and levels
 - Streaks and consistency rewards
 - Achievement unlocks
@@ -147,7 +141,6 @@ Intrinsic motivation—mastery, completion, competence, and consistency.
 - "You completed X" celebrations
 
 **Risks:**
-
 - Hollow achievements feel manipulative
 - Streaks create anxiety about breaking
 - Completion focus may not equal actual value

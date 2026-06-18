@@ -2,8 +2,8 @@
 
 Practical patterns for implementing web typography in CSS.
 
-## Table of Contents
 
+## Table of Contents
 1. [@font-face Fundamentals](#font-face-fundamentals)
 2. [font-display Strategies](#font-display-strategies)
 3. [Font Loading Optimization](#font-loading-optimization)
@@ -58,7 +58,6 @@ src: url('font.woff2') format('woff2'),  /* Best compression, 97%+ support */
 ```
 
 **Skip these formats:**
-
 - TTF/OTF - Larger files, no benefit for web
 - EOT - Only needed for IE8 (likely not your audience)
 - SVG fonts - Deprecated
@@ -106,7 +105,6 @@ Controls how text renders while fonts load:
 ```
 
 **Only preload:**
-
 - Fonts visible above the fold
 - 2-3 maximum (more blocks other resources)
 - Most commonly used weights
@@ -123,13 +121,11 @@ pyftsubset font.ttf --output-file=font-subset.woff2 --flavor=woff2 \
 ```
 
 Common subsetting ranges:
-
 - `U+0000-00FF` - Basic Latin
 - `U+0100-017F` - Latin Extended-A (Western European)
 - `U+2000-206F` - General punctuation
 
 **Online tools:**
-
 - [Transfonter](https://transfonter.org/)
 - [Fonttools](https://github.com/fonttools/fonttools)
 - [Everything Fonts](https://everythingfonts.com/subsetter)

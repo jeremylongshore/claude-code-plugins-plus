@@ -91,7 +91,6 @@ Developed by Cali Ressler and Jody Thompson at Best Buy headquarters.
 **Core principle:** Employees are evaluated solely on results, not on when or where they work.
 
 **ROWE rules:**
-
 1. Every meeting is optional
 2. There are no required schedules
 3. Nobody is judged on how many hours they work
@@ -128,7 +127,6 @@ Developed by Cali Ressler and Jody Thompson at Best Buy headquarters.
 **Implementation:** Quarterly 24-hour "ShipIt" events (originally called FedEx Days). Employees form ad-hoc teams, work on anything they choose, and present results the next day. The company provides food, beverages, and celebration.
 
 **Results:**
-
 - Dozens of features shipped to customers originated from ShipIt projects
 - Employee engagement scores consistently high
 - Recruitment advantage: candidates cite ShipIt as a reason they want to work at Atlassian
@@ -141,7 +139,6 @@ Developed by Cali Ressler and Jody Thompson at Best Buy headquarters.
 **Implementation:** Gradual department-by-department rollout of ROWE. No required hours, no required presence, purely results-based evaluation.
 
 **Results:**
-
 - 35% productivity increase in ROWE departments
 - 90% reduction in voluntary turnover
 - Employees reported higher satisfaction, less stress, better work-life balance
@@ -154,7 +151,6 @@ Developed by Cali Ressler and Jody Thompson at Best Buy headquarters.
 **Implementation:** Adopted holacracy (self-management framework) in 2013. No traditional managers. Employees organized into self-governing "circles."
 
 **Results (mixed):**
-
 - Initial excitement about self-direction
 - 14% of employees left during the transition (offered buyouts)
 - Some teams thrived; others struggled without clear guidance

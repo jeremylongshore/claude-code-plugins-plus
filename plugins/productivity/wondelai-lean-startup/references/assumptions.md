@@ -41,33 +41,28 @@ Tests how new customers discover and adopt the product.
 Brainstorm every assumption your business relies on. Use these categories as prompts:
 
 **Customer assumptions:**
-
 - Our target customer is [specific persona]
 - They experience [specific problem]
 - They currently solve it by [current alternative]
 - They are dissatisfied with the current solution because [reason]
 
 **Problem assumptions:**
-
 - The problem is frequent enough to justify a solution
 - The problem is painful enough that people will pay to solve it
 - The problem is not adequately solved by existing alternatives
 
 **Solution assumptions:**
-
 - Our solution effectively addresses the problem
 - Customers can use our solution without extensive training
 - The solution is significantly better than alternatives
 
 **Business model assumptions:**
-
 - Customers will pay [price] for this solution
 - We can acquire customers for less than [amount]
 - Customer lifetime value exceeds acquisition cost
 - Our market is large enough to build a viable business
 
 **Technical assumptions:**
-
 - We can build this technology with our team
 - The technology can scale to serve our target market
 - Performance will meet customer expectations

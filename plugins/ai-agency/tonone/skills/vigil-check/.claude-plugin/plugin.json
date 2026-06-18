@@ -1,6 +1,6 @@
 {
   "name": "vigil-check",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Verify observability posture \u2014 audit monitoring coverage, find blind spots, prioritize gaps. Use when asked \"is monitoring sufficient\", \"observability review\", \"are we covered\", or \"pre-launch monitoring check\".",
   "author": {
     "name": "tonone-ai",
@@ -9,8 +9,5 @@
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
   "type": "skill",
-  "keywords": [
-    "vigil",
-    "skill"
-  ]
+  "keywords": ["vigil", "skill"]
 }

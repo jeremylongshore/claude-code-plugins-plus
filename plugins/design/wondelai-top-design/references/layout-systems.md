@@ -1,7 +1,6 @@
 # Layout Systems Reference
 
 ## Table of Contents
-
 1. Grid Frameworks
 2. Breakpoint Strategy
 3. Compositional Techniques

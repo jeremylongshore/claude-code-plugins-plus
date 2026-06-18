@@ -1,6 +1,6 @@
 {
   "name": "design-team",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Design Team \u2014 10 agents: Hue, Grid, Glyph, Move, Wire, Mark, Cut, Axe, Tone, Copy",
   "author": {
     "name": "tonone-ai",
@@ -8,10 +8,5 @@
   },
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
-  "keywords": [
-    "agents",
-    "design-team",
-    "design",
-    "bundle"
-  ]
+  "keywords": ["agents", "design-team", "design", "bundle"]
 }

@@ -19,7 +19,7 @@
  * Sibling beads add: size cap (s53.3), the `read_peer_manifests` MCP tool
  * (s53.2), and the 5-minute per-channel read cache (s53.5).
  *
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import { z } from 'zod'

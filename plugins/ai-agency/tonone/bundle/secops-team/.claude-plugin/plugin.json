@@ -1,6 +1,6 @@
 {
   "name": "secops-team",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Security Operations Team \u2014 10 agents: Red, Blue, Hunt, Patch, Chain, Sast, Siem, Resp, Zero, Phish",
   "author": {
     "name": "tonone-ai",
@@ -8,11 +8,5 @@
   },
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
-  "keywords": [
-    "agents",
-    "secops-team",
-    "security",
-    "secops",
-    "bundle"
-  ]
+  "keywords": ["agents", "secops-team", "security", "secops", "bundle"]
 }

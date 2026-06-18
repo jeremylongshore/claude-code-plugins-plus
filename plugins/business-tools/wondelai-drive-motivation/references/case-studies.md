@@ -27,7 +27,6 @@ Atlassian created "ShipIt" (originally called FedEx Days because you had to "del
 **Results:** Dozens of customer-facing features originated from ShipIt. Employee engagement consistently high, with ShipIt cited as a top cultural element. Candidates mention ShipIt as a reason they want to join. Serves as a low-cost R&D pipeline with zero bureaucracy.
 
 **Lessons:**
-
 1. **Autonomy without prizes works.** Intrinsic satisfaction of building, presenting, and potentially shipping is more motivating than cash.
 2. **Constraints enable creativity.** The 24-hour limit created urgency and flow conditions.
 3. **Regularity matters.** Quarterly events build cultural expectation without losing novelty.
@@ -54,7 +53,6 @@ Starting in the 1950s, 3M let technical employees spend 15% of work time on self
 **Results:** Post-it Notes emerged from Spencer Silver's "failed" adhesive combined with Art Fry's 15% project -- now a multi-billion dollar product line. Numerous medical and industrial innovations came from self-directed exploration. 3M sustained 30%+ revenue from new products for decades.
 
 **Lessons:**
-
 1. **Autonomy produces serendipity.** Directed R&D would never have assigned "invent a weak adhesive."
 2. **Time autonomy requires organizational patience.** 15% time produces results in years, not quarters.
 3. **Cross-pollination needs autonomy.** Silver's adhesive only became Post-it Notes because Fry had freedom to explore an unrelated application.
@@ -82,7 +80,6 @@ Starting in the 1950s, 3M let technical employees spend 15% of work time on self
 **Results:** 500M+ registered users, 30M+ daily active users, higher retention than most educational apps. Research shows effectiveness for basic proficiency. Over $500M annual revenue.
 
 **Lessons:**
-
 1. **Mastery design is the core engine.** Adaptive difficulty and immediate feedback keep learning effective.
 2. **Streaks are a double-edged sword.** They drive daily habits but risk shifting motivation from "I want to learn" to "I can't break my streak."
 3. **Extrinsic and intrinsic can coexist, carefully.** Success comes from a strong intrinsic core wrapped with extrinsic elements. The risk is the extrinsic layer overwhelming the intrinsic core.
@@ -108,7 +105,6 @@ Cali Ressler and Jody Thompson developed ROWE (Results-Only Work Environment) an
 **Results:** Productivity increased 35% across participating departments. Voluntary turnover dropped 90%. Employee satisfaction increased significantly. Reduced stress and fewer sick days. In 2013, new CEO Hubert Joly reversed ROWE, requiring return to office.
 
 **Lessons:**
-
 1. **Autonomy produces measurable results.** 35% productivity increase and 90% turnover reduction are among the most compelling data points for workplace autonomy.
 2. **ROWE requires cultural commitment.** When leadership changed, the program was reversed. Autonomy initiatives depending on a single champion are fragile.
 3. **Results measurement must precede autonomy.** ROWE only works when "results" are clearly defined. Departments with ambiguous outputs struggled.
@@ -133,7 +129,6 @@ Cali Ressler and Jody Thompson developed ROWE (Results-Only Work Environment) an
 **Results:** 60M+ articles across 300+ languages. ~300,000 monthly active editors. Accuracy rivaling traditional encyclopedias. Top-10 global website. 20+ years of operation on ~$170M annual budget.
 
 **Lessons:**
-
 1. **Purpose can replace payment entirely.** Hundreds of thousands contribute billions of hours because they believe in the mission.
 2. **Autonomy is the mechanism.** Anyone can edit anything -- no gatekeeper, no approval process.
 3. **Mission integrity matters.** Refusing advertising maintains credibility and editor trust. Ads would erode volunteer motivation.
@@ -144,7 +139,6 @@ Cali Ressler and Jody Thompson developed ROWE (Results-Only Work Environment) an
 **Organization:** Composite case based on documented patterns at multiple organizations (Sears, Yahoo, Microsoft under stack-ranking) that implemented aggressive performance-based incentives.
 
 **What They Did (Motivation 2.0 Playbook):**
-
 - Stack-ranked engineers (bottom 10% on performance improvement plans)
 - Set escalating quarterly sales targets with escalating bonuses
 - Required cross-team collaboration metrics for bonus eligibility
@@ -166,7 +160,6 @@ Cali Ressler and Jody Thompson developed ROWE (Results-Only Work Environment) an
 **Results:** Short-term revenue briefly increased. Innovation declined significantly. Collaboration decreased despite metrics. Voluntary turnover among top performers rose 25%+. Long-term revenue declined.
 
 **Lessons:**
-
 1. **Incentives that measure everything motivate nothing.** People optimize the measurement system, not the actual work.
 2. **Stack ranking destroys collaboration.** Microsoft famously abandoned it in 2013 after years of internal damage.
 3. **The best people leave first.** Top performers have the most options and the lowest tolerance for controlling environments.

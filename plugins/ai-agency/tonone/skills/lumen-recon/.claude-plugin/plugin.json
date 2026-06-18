@@ -1,6 +1,6 @@
 {
   "name": "lumen-recon",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Analytics reconnaissance \u2014 scan existing event tracking, metric definitions, dashboards, and analytics configuration to understand what is currently being measured. Use when asked to \"what are we tracking\", \"audit our analytics\", \"what metrics exist\", \"analytics inventory\", or before designing new metrics or instrumentation.",
   "author": {
     "name": "tonone-ai",
@@ -9,8 +9,5 @@
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
   "type": "skill",
-  "keywords": [
-    "lumen",
-    "skill"
-  ]
+  "keywords": ["lumen", "skill"]
 }

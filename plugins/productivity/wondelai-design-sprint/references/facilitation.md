@@ -2,8 +2,8 @@
 
 The Sprint Master makes or breaks the design sprint. This role is equal parts timekeeper, therapist, traffic cop, and energy manager. A great facilitator creates the conditions for the team's best thinking while preventing the dysfunction that derails most group work.
 
-## Table of Contents
 
+## Table of Contents
 1. [The Sprint Master Role](#the-sprint-master-role)
 2. [Time-Boxing Techniques](#time-boxing-techniques)
 3. [Energy Management](#energy-management)
@@ -32,14 +32,12 @@ The Sprint Master makes or breaks the design sprint. This role is equal parts ti
 ### Who Should Be the Sprint Master
 
 **Good candidates:**
-
 - Product manager with facilitation experience
 - Design lead who can resist designing during the sprint
 - External facilitator or consultant
 - Scrum master or agile coach
 
 **Poor candidates:**
-
 - The CEO or founder (they should be the Decider, not the facilitator)
 - Someone who has a strong opinion about the solution (they will push it)
 - The most junior person in the room (they lack the authority to enforce time)
@@ -71,13 +69,11 @@ For every exercise, announce "Two minutes remaining" when the timer hits the mar
 ### When to Extend Time
 
 Extend time only when:
-
 - The team is clearly making productive progress (not just talking)
 - The exercise output is incomplete and critical for the next step
 - The Decider explicitly asks for more time
 
 Never extend time because:
-
 - The discussion is "interesting" (interesting discussions are infinite)
 - One person is not finished (they can catch up during the break)
 - The team "wants to explore this more" (the schedule exists for a reason)
@@ -192,7 +188,6 @@ Every day between 2:00 and 3:00 PM, energy typically drops. Plan for it:
 ### When the Team Decides
 
 Dot voting and straw polls are used for:
-
 - HMW prioritization
 - Art Museum heat maps
 - Straw poll preferences
@@ -202,7 +197,6 @@ These are input for the Decider, not final decisions.
 ### When the Decider Decides
 
 The Decider has final authority on:
-
 - Long-term goal
 - Target selection
 - Supervote (which solution to prototype)
@@ -212,7 +206,6 @@ The Decider has final authority on:
 ### When the Sprint Master Decides
 
 The Sprint Master has authority over:
-
 - Time management (when to end an exercise)
 - Process (which exercise comes next)
 - Room logistics
@@ -231,7 +224,6 @@ The Sprint Master has authority over:
 ### Materials Checklist
 
 **Writing and drawing:**
-
 - [ ] Thick black markers (Sharpie or similar), 1 per person
 - [ ] Fine-tip markers for detail work, 1 per person
 - [ ] Letter-size blank paper, 50+ sheets
@@ -239,7 +231,6 @@ The Sprint Master has authority over:
 - [ ] Whiteboard eraser and spray
 
 **Sticky notes and voting:**
-
 - [ ] Standard sticky notes (3x3), 5 pads in various colors
 - [ ] Large sticky notes (5x8), 2 pads
 - [ ] Small dot stickers (1/4 inch), 100+
@@ -247,7 +238,6 @@ The Sprint Master has authority over:
 - [ ] Painter's tape for hanging sketches
 
 **Technology:**
-
 - [ ] Time Timer or visible countdown timer
 - [ ] Laptop for Thursday prototyping
 - [ ] TV or monitor for Friday interview observation
@@ -255,7 +245,6 @@ The Sprint Master has authority over:
 - [ ] Camera for recording Friday interviews
 
 **Comfort:**
-
 - [ ] Snacks: nuts, fruit, protein bars, crackers
 - [ ] Drinks: water, coffee, tea
 - [ ] Lunch plan for each day (order in or nearby restaurant with fast service)
@@ -321,7 +310,6 @@ The Sprint Master has authority over:
 ### End-of-Day Rituals
 
 End each day with:
-
 1. Sprint Master reads aloud what was accomplished
 2. Quick round: each person names one thing they are excited about
 3. Confirm tomorrow's start time

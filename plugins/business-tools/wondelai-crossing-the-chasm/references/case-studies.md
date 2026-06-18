@@ -4,15 +4,15 @@ Theory matters, but pattern recognition from real companies is what makes the fr
 
 Each case study follows the same structure: Company and Product, Early Adopter Success, The Chasm Challenge, Strategy Used, Outcome, and Key Lessons.
 
-## Table of Contents
 
-1. [Case Study 1: Salesforce -- CRM Becomes Cloud Computing Standard](#case-study-1-salesforce----crm-becomes-cloud-computing-standard)
-2. [Case Study 2: Documentum -- Content Management Crosses Through Vertical Focus](#case-study-2-documentum----content-management-crosses-through-vertical-focus)
-3. [Case Study 3: VMware -- Virtualization Goes Mainstream](#case-study-3-vmware----virtualization-goes-mainstream)
-4. [Case Study 4: Palm -- The PDA That Couldn't Cross](#case-study-4-palm----the-pda-that-couldnt-cross)
-5. [Case Study 5: Segway -- Stuck in the Chasm Permanently](#case-study-5-segway----stuck-in-the-chasm-permanently)
-6. [Case Study 6: Zoom -- Video Conferencing Crosses Before the Pandemic](#case-study-6-zoom----video-conferencing-crosses-before-the-pandemic)
-7. [Case Study 7: Atlassian -- Developer Tools to Enterprise Platform](#case-study-7-atlassian----developer-tools-to-enterprise-platform)
+## Table of Contents
+1. [Case Study 1: Salesforce -- CRM Becomes Cloud Computing Standard](#case-study-1-salesforce-crm-becomes-cloud-computing-standard)
+2. [Case Study 2: Documentum -- Content Management Crosses Through Vertical Focus](#case-study-2-documentum-content-management-crosses-through-vertical-focus)
+3. [Case Study 3: VMware -- Virtualization Goes Mainstream](#case-study-3-vmware-virtualization-goes-mainstream)
+4. [Case Study 4: Palm -- The PDA That Couldn't Cross](#case-study-4-palm-the-pda-that-couldnt-cross)
+5. [Case Study 5: Segway -- Stuck in the Chasm Permanently](#case-study-5-segway-stuck-in-the-chasm-permanently)
+6. [Case Study 6: Zoom -- Video Conferencing Crosses Before the Pandemic](#case-study-6-zoom-video-conferencing-crosses-before-the-pandemic)
+7. [Case Study 7: Atlassian -- Developer Tools to Enterprise Platform](#case-study-7-atlassian-developer-tools-to-enterprise-platform)
 8. [Cross-Cutting Patterns of Successful Chasm Crossings](#cross-cutting-patterns-of-successful-chasm-crossings)
 9. [Warning Signs of Being Stuck in the Chasm](#warning-signs-of-being-stuck-in-the-chasm)
 
@@ -27,7 +27,6 @@ Salesforce launched in 1999 as a cloud-based sales force automation tool, founde
 ### Early Adopter Success
 
 Early adopters were tech-savvy sales leaders at Silicon Valley startups who hated Siebel and ACT! for their complexity and IT overhead. They loved Salesforce because:
-
 - No software to install or maintain
 - Accessible from anywhere
 - Fast setup (days, not months)
@@ -38,7 +37,6 @@ By 2002, Salesforce had several thousand customers, almost entirely technology c
 ### The Chasm Challenge
 
 Pragmatist sales leaders at mid-market and enterprise companies were skeptical:
-
 - "Cloud" was unproven for business-critical data
 - Security concerns about storing customer data off-premise
 - Limited integrations with existing enterprise systems
@@ -51,7 +49,6 @@ Pragmatist sales leaders at mid-market and enterprise companies were skeptical:
 **Beachhead:** Inside sales teams at B2B technology companies (50-200 employees)
 
 **Whole product investments:**
-
 - Built AppExchange marketplace (2005) to fill integration gaps through partners
 - Added advanced reporting and dashboards
 - Developed offline capability
@@ -87,7 +84,6 @@ Pharmaceutical companies and financial services firms were early adopters. They 
 ### The Chasm Challenge
 
 Mainstream enterprises found Documentum:
-
 - Extremely complex to implement (6-12 month projects)
 - Expensive (hundreds of thousands in licensing plus services)
 - Required specialized system integrators
@@ -98,7 +94,6 @@ Mainstream enterprises found Documentum:
 **Beachhead:** Pharmaceutical companies managing FDA regulatory submissions
 
 **Why this worked:**
-
 - FDA had strict document management requirements (compliance mandate)
 - Non-compliance was catastrophic (drug approval delays)
 - Pharma companies talked to each other (tight community)
@@ -132,7 +127,6 @@ Development and testing teams at technology companies were early adopters. They 
 ### The Chasm Challenge
 
 Moving from developer desktops to production server infrastructure required convincing conservative IT operations teams:
-
 - "Running production workloads on virtual machines? Too risky."
 - Concerns about performance overhead
 - No support from OS vendors (Microsoft, Red Hat) for virtualized environments
@@ -145,14 +139,12 @@ Moving from developer desktops to production server infrastructure required conv
 **Beachhead:** Server consolidation for non-critical workloads at mid-market enterprises
 
 **Why this worked:**
-
 - Mid-market companies had severe server sprawl problems (expensive, wasteful)
 - Starting with non-critical workloads reduced risk perception
 - ROI was immediately measurable (fewer physical servers = lower hardware and power costs)
 - IT admins could try it without executive approval
 
 **Whole product evolution:**
-
 - VMware ESX (2001): Bare-metal hypervisor for production servers
 - VirtualCenter (2003): Centralized management for IT ops
 - VMotion (2003): Live migration -- addressed the "what if a server dies?" concern
@@ -181,7 +173,6 @@ Palm launched the PalmPilot in 1996, a handheld personal digital assistant. It w
 ### Early Adopter Success
 
 Technology enthusiasts and business executives loved the PalmPilot:
-
 - Sold 1 million units in its first 18 months
 - Created the PDA category
 - Strong developer community building applications
@@ -190,7 +181,6 @@ Technology enthusiasts and business executives loved the PalmPilot:
 ### The Chasm Challenge
 
 Palm needed to cross from tech enthusiasts and visionary executives to mainstream business users. The challenges:
-
 - No email integration (Blackberry solved this)
 - No always-on connectivity
 - Limited enterprise IT management capabilities
@@ -203,7 +193,6 @@ Palm needed to cross from tech enthusiasts and visionary executives to mainstrea
 **Failed beachhead definition:** Palm tried to be "a handheld computer for everyone" instead of picking a specific segment and building the whole product for it.
 
 **Whole product gaps:**
-
 - No push email (Blackberry delivered this)
 - No enterprise device management
 - No cellular data connectivity (until too late)
@@ -268,7 +257,6 @@ Zoom Video Communications launched in 2013 in a market already crowded with WebE
 ### Early Adopter Success
 
 Technology companies and startups adopted Zoom quickly because:
-
 - Dramatically better video and audio quality than incumbents
 - One-click join (no downloads, no plugins for attendees)
 - Free tier with generous limits
@@ -277,7 +265,6 @@ Technology companies and startups adopted Zoom quickly because:
 ### The Chasm Challenge
 
 Enterprise pragmatists were loyal to existing solutions:
-
 - WebEx was the default for many large companies
 - Microsoft was bundling Skype for Business (later Teams) with Office 365
 - IT departments had standardized on existing solutions
@@ -288,7 +275,6 @@ Enterprise pragmatists were loyal to existing solutions:
 **Beachhead:** Small and mid-market companies where individuals could adopt without IT approval
 
 **Key tactics:**
-
 - Freemium model let individuals start without procurement
 - Bottom-up adoption: one person uses it, invites others, it spreads
 - Every meeting was a demo (attendees experienced the product quality)
@@ -323,7 +309,6 @@ Small development teams at tech companies adopted Jira for its flexibility and l
 ### The Chasm Challenge
 
 Expanding from developer teams to broader enterprise adoption required:
-
 - Non-technical users finding Jira usable (historically complex UI)
 - IT and project management teams adopting alongside developers
 - Enterprise compliance, security, and administration features
@@ -334,7 +319,6 @@ Expanding from developer teams to broader enterprise adoption required:
 **Beachhead:** Software development teams at technology companies (agile project tracking)
 
 **Expansion path:**
-
 - Pin 1: Dev teams at tech startups (Jira for bug tracking)
 - Pin 2: Dev teams at mid-market tech (Jira + Confluence)
 - Pin 3: IT service management teams (Jira Service Management)
@@ -342,7 +326,6 @@ Expanding from developer teams to broader enterprise adoption required:
 - Pin 5: Enterprise-wide collaboration (Atlassian Cloud, unified platform)
 
 **Key decisions:**
-
 - Acquired Trello (2017) for mainstream, non-technical users
 - Built Atlassian Cloud to satisfy enterprise IT requirements
 - Created marketplace for partner integrations (whole product)

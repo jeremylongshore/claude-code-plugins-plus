@@ -1,6 +1,6 @@
 {
   "name": "prism-ui",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Implement a complete UI screen or feature from a Form visual spec. Use when asked to \"build a page\", \"implement this screen\", \"build the frontend for this feature\", or \"create this UI\".",
   "author": {
     "name": "tonone-ai",
@@ -9,8 +9,5 @@
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
   "type": "skill",
-  "keywords": [
-    "prism",
-    "skill"
-  ]
+  "keywords": ["prism", "skill"]
 }

@@ -3,7 +3,7 @@ name: access
 description: Manage Slack channel access control — pairing, allowlist, channel opt-in
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-license: MIT
+license: Apache-2.0
 user-invocable: true
 argument-hint: "pair <code> | policy <mode> | add <user_id> | remove <user_id> | channel <id> [opts] | status"
 allowed-tools: [Read, Write, Edit]
@@ -34,7 +34,6 @@ Manage who can reach your Claude Code session through Slack.
 Parse `$ARGUMENTS` and execute the matching subcommand:
 
 ### `pair <code>`
-
 1. Load `access.json`
 2. Find the pending entry matching `<code>` (case-insensitive)
 3. If not found or expired: show "No pending pairing with that code."
@@ -46,7 +45,6 @@ Parse `$ARGUMENTS` and execute the matching subcommand:
    - Send a confirmation message to the user in Slack (via the reply tool if the MCP server is running)
 
 ### `policy <mode>`
-
 1. Validate mode is one of: `pairing`, `allowlist`, `disabled`
 2. Update `dmPolicy` in `access.json`
 3. Save with 0o600
@@ -56,20 +54,17 @@ Parse `$ARGUMENTS` and execute the matching subcommand:
    - `disabled`: No DMs accepted
 
 ### `add <user_id>`
-
 1. Add the Slack user ID to `allowFrom` (deduplicate)
 2. Save with 0o600
 3. Show confirmation
 
 ### `remove <user_id>`
-
 1. Remove from `allowFrom`
 2. Also remove from any channel-level `allowFrom` lists
 3. Save with 0o600
 4. Show confirmation
 
 ### `channel <channel_id> [--mention] [--allow <ids>]`
-
 1. Parse options:
    - `--mention`: require @mention to trigger (default: false)
    - `--allow <id1,id2>`: restrict to specific users in that channel
@@ -78,13 +73,11 @@ Parse `$ARGUMENTS` and execute the matching subcommand:
 4. Show the channel policy
 
 ### `channel remove <channel_id>`
-
 1. Delete `channels[channel_id]`
 2. Save with 0o600
 3. Show confirmation
 
 ### `status`
-
 1. Load `access.json`
 2. Display:
    - DM policy

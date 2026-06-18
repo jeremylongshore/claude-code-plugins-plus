@@ -35,7 +35,6 @@ Complete breakdown of tactical negotiation techniques from Chris Voss's "Never S
 **Psychological trigger:** Creates familiarity and rapport; signals deep listening; prompts elaboration without direct questions.
 
 **How to use:**
-
 - Listen for the key phrase or emotion-laden words
 - Repeat them back as a gentle question
 - Wait silently for them to expand
@@ -54,7 +53,6 @@ Complete breakdown of tactical negotiation techniques from Chris Voss's "Never S
 **Psychological trigger:** Validates emotions, making them feel understood. Diffuses negative emotions by naming them; reinforces positive ones.
 
 **How to use:**
-
 - Observe their emotional state or concerns
 - Name it with a tentative label (avoid "I think you...")
 - Pause after labeling to let them confirm or clarify
@@ -75,7 +73,6 @@ Complete breakdown of tactical negotiation techniques from Chris Voss's "Never S
 **Psychological trigger:** When people feel understood, brain chemistry shifts toward trust and cooperation. Empathy short-circuits defensive reactions.
 
 **How to use:**
-
 - Before responding, ask yourself: "What is their world like right now?"
 - Articulate their situation, pressures, and fears
 - Show you understand even if you disagree
@@ -90,13 +87,11 @@ Complete breakdown of tactical negotiation techniques from Chris Voss's "Never S
 ## 4. Voice Control
 
 ### Late-Night FM DJ Voice
-
 - **When:** Critical moments, delivering key statements, de-escalating tension
 - **How:** Slow, calm, deep, downward inflection at sentence ends
 - **Effect:** Exudes confidence and calm; relaxes their brain, making them more receptive
 
 ### Positive/Playful Voice
-
 - **When:** Default mode; building rapport; most of the conversation
 - **How:** Friendly, warm, light-hearted, with a genuine smile
 - **Effect:** Signals comfort and likability; encourages cooperation
@@ -112,7 +107,6 @@ Complete breakdown of tactical negotiation techniques from Chris Voss's "Never S
 **Psychological trigger:** Apology disarms hostility; silence creates a vacuum the other person feels compelled to fill.
 
 **Sequence:**
-
 1. "I'm sorry..." (slow, sincere)
 2. Mirror or label their situation
 3. Silence (4+ seconds)
@@ -130,7 +124,6 @@ Complete breakdown of tactical negotiation techniques from Chris Voss's "Never S
 **Psychological trigger:** Naming fears and criticisms before they do removes their power. Often triggers reassurance ("Oh, I don't think that...") or at least neutralizes objections.
 
 **How to use:**
-
 1. Before the meeting, brainstorm: What negatives might they think about me/my position?
 2. Early in the conversation, acknowledge these directly
 3. Watch them relax as you've addressed the elephant in the room
@@ -147,13 +140,11 @@ Complete breakdown of tactical negotiation techniques from Chris Voss's "Never S
 **Psychological trigger:** Engages their problem-solving mind; makes them feel in control while you direct the conversation; avoids defensiveness that "Why?" creates.
 
 **Formula:**
-
 - Start with "How" or "What"
 - Make it neutral and collaborative
 - Avoid "Why" (sounds accusatory)
 
 **Power questions:**
-
 | Question | Purpose |
 |----------|---------|
 | "How am I supposed to do that?" | Pushes back without saying no |
@@ -174,7 +165,6 @@ Complete breakdown of tactical negotiation techniques from Chris Voss's "Never S
 **Psychological trigger:** Saying "No" satisfies the human need for autonomy and control. Once they've said no, they relax and engage more openly.
 
 **How to frame:**
-
 - Instead of "Do you agree?", ask "Would it be unreasonable to...?"
 - Instead of "Can we move forward?", ask "Are you against trying this?"
 
@@ -193,7 +183,6 @@ Now you have their real concern.
 **Psychological trigger:** "That's right" signals complete understanding and creates genuine rapport. It's the moment they feel truly heard.
 
 **How to earn it:**
-
 1. Listen deeply throughout the conversation
 2. Paraphrase their main points, including emotional subtext
 3. Deliver as a summary: "Let me make sure I understand..."
@@ -230,7 +219,6 @@ Now you have their real concern.
 **Psychological trigger:** Genuine agreements withstand multiple confirmations. If it falls apart on round two or three, you didn't really have a deal.
 
 **How to apply:**
-
 1. First yes: Direct agreement
 2. Second yes: Summarize and get "That's right"
 3. Third yes: Calibrated question about implementation: "How will your team handle...?"
@@ -249,7 +237,6 @@ Now you have their real concern.
 **Psychological trigger:** People hate being seen as quitters. This question triggers an instinctive "No" and forces them to re-engage and explain.
 
 **When to use:**
-
 - Unresponsive counterpart
 - Stalled negotiations
 - Ghosting behavior
@@ -267,17 +254,14 @@ Now you have their real concern.
 **The word "fair" can derail negotiations. Three scenarios:**
 
 ### Scenario 1: "We just want what's fair"
-
 - **What they mean:** Making you feel guilty; implying you've been unfair
 - **Response:** "Absolutely, I want to be fair too. Let's pause—have I done something unfair? Let's talk about it."
 
 ### Scenario 2: "This is a fair offer"
-
 - **What they mean:** Anchoring; don't ask for more
 - **Response:** Mirror: "Fair?" (silence). Then: "How did you arrive at that figure?"
 
 ### Scenario 3: Preempt it yourself
-
 - **What to say:** "My goal is for you to feel this is 100% fair. If at any point you don't, please tell me and we'll address it."
 - **Effect:** Removes "fair" as a future weapon
 
@@ -286,21 +270,17 @@ Now you have their real concern.
 ## 14. Anchoring and Loss Aversion
 
 ### Anchoring
-
 **What it is:** The first number mentioned skews all subsequent discussion.
 
 **How to use:**
-
 - If selling: Start high (higher than you expect to get)
 - If buying: Start low
 - Use ranges to anchor softly: "Similar projects run $150K-$250K" (your target is $150K)
 
 ### Loss Aversion
-
 **What it is:** People will take greater risks to avoid losses than to achieve gains.
 
 **How to use:**
-
 - Emphasize what they lose by not agreeing
 - Frame the cost of inaction, not just the benefit of action
 
@@ -308,7 +288,6 @@ Now you have their real concern.
 > "If we don't resolve this now, you'll lose three months of runway and the team's momentum."
 
 ### Deadlines
-
 - Question every deadline: "Whose deadline is it? Is it real?"
 - Don't let artificial deadlines rush you into bad deals
 - Use legitimate deadlines strategically to create urgency
@@ -357,13 +336,11 @@ Leverage is power in negotiation—often perception, not reality.
 **Assumption:** Every negotiation has approximately 3 Black Swans lurking.
 
 **Types of Black Swans:**
-
 - Secret constraints (their boss said no more than X)
 - Hidden motivations (they need this deal to save their job)
 - Unknown context (their competitor just made a move)
 
 **How to find them:**
-
 - Stay curious; ask calibrated questions
 - Use tactical empathy to make them comfortable
 - Watch for anomalies—odd reactions signal hidden factors
@@ -376,19 +353,16 @@ Leverage is power in negotiation—often perception, not reality.
 ## 18. Counterpart Styles
 
 ### Analyst
-
 - **Traits:** Methodical, data-driven, prizes accuracy, hates surprises, may seem cold
 - **Fears:** Being rushed, making errors, being unprepared
 - **Adapt:** Use data and facts, be patient, give them time to process, don't pressure with tight deadlines
 
 ### Accommodator
-
 - **Traits:** Amiable, relationship-focused, values personal connection, avoids conflict
 - **Fears:** Confrontation, damaging relationships
 - **Adapt:** Build rapport, make small talk, be friendly—but ensure you pin down specifics (they may agree too quickly just to please)
 
 ### Assertive
-
 - **Traits:** Direct, time-conscious, wants to win, speaks fast, comfortable saying no
 - **Fears:** Wasting time, being seen as weak
 - **Adapt:** Be efficient, stand your ground, acknowledge their points, frame proposals as wins for them
@@ -400,13 +374,11 @@ Leverage is power in negotiation—often perception, not reality.
 ## 19. Body Language and Tone
 
 **The 7-38-55 Rule:**
-
 - 7% of meaning: Words
 - 38% of meaning: Tone
 - 55% of meaning: Body language
 
 **What to watch:**
-
 - Incongruence between words and tone/body (signals hesitation or deception)
 - Arms crossed, leaning back (defensive)
 - Leaning in, open posture (engaged)
@@ -415,7 +387,6 @@ Leverage is power in negotiation—often perception, not reality.
 **When to observe:** Unguarded moments before/after meetings reveal true feelings.
 
 **Your own signals:**
-
 - Keep body language open (no crossed arms, no pointing)
 - Nod to show listening
 - Maintain appropriate eye contact
@@ -430,14 +401,12 @@ Leverage is power in negotiation—often perception, not reality.
 **Psychological trigger:** Silence creates a vacuum people instinctively fill—often with information, concessions, or their internal reasoning.
 
 **How to use:**
-
 - Make your statement or ask your question
 - Stop talking completely
 - Maintain calm, attentive presence
 - Resist the urge to fill the silence yourself
 
 **Effect:**
-
 - They reveal more information
 - They may negotiate against themselves
 - Your words carry more weight
@@ -457,7 +426,6 @@ Leverage is power in negotiation—often perception, not reality.
 | Shift from "I" to "we" | May be invoking higher authority to deflect |
 
 **How to use this:**
-
 - If they use "I" heavily, ask: "How does your team/leadership weigh in on this?"
 - If they use "we" heavily, they may have authority—but verify
 

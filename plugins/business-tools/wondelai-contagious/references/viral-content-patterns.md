@@ -33,7 +33,6 @@ Interactive content generates 2x more shares than static content because:
 4. **Curiosity gap.** Seeing someone else's result creates curiosity: "I need to find out mine."
 
 **Examples of high-performing interactive content:**
-
 - BuzzFeed personality quizzes ("Which [character] are you?")
 - Spotify Wrapped (personalized year-in-review)
 - HubSpot Website Grader (free analysis with shareable score)
@@ -102,35 +101,30 @@ Each platform has distinct sharing mechanics and culture that affect what conten
 ### Platform-Specific Optimization
 
 **For Twitter/X:**
-
 - Lead with the most provocative or surprising statement
 - Use threads for depth (the first tweet is the hook)
 - Include an image — tweets with images get 150% more retweets
 - Time posts for maximum initial engagement (engagement begets more engagement)
 
 **For LinkedIn:**
-
 - Open with a personal story or counter-intuitive insight
 - Use line breaks generously (the mobile reading experience demands it)
 - End with a question to drive comments (the algorithm rewards comments)
 - Avoid self-promotion in the first 3 lines — lead with value
 
 **For Instagram:**
-
 - Carousels get highest saves and shares (people swipe = algorithm boost)
 - Educational Reels outperform entertainment in most niches
 - Use Stories for raw, behind-the-scenes content — it feels more authentic
 - The first frame of a Reel must hook in under 1 second
 
 **For TikTok:**
-
 - Hook in the first 0.5 seconds — you're competing with a thumb scroll
 - Use trending sounds and formats — participation in trends amplifies reach
 - Teach something in under 60 seconds — educational content has highest share rate
 - Encourage duets and stitches — they extend your content's life
 
 **For Email Forwards:**
-
 - The subject line must work as a "forwarded to you because..." prompt
 - Include one clear, useful takeaway per email
 - Make the forwarded version self-contained (don't rely on context from previous emails)
@@ -156,7 +150,6 @@ Use this framework to evaluate any piece of content before publishing.
 | **Mobile optimization** | Does the content look and function well on mobile (where most sharing happens)? | |
 
 **Scoring:**
-
 - **0-30:** Low shareability. Content will require paid distribution to reach audiences.
 - **31-50:** Moderate shareability. Some organic spread with initial seeding.
 - **51-70:** High shareability. Strong organic spread potential.
@@ -177,7 +170,6 @@ c = conversion rate of each invitation/share
 ```
 
 **Example:**
-
 - Each user shares with 10 people (i = 10)
 - 20% of those people sign up (c = 0.20)
 - K = 10 x 0.20 = 2.0

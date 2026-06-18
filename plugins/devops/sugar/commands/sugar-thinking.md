@@ -48,7 +48,6 @@ Shows the complete thinking log with timestamped thinking blocks.
 ```
 
 Shows summary statistics including:
-
 - Total thinking blocks captured
 - Total characters
 - Average thinking block length

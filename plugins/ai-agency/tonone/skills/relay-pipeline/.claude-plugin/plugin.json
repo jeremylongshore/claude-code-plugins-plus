@@ -1,6 +1,6 @@
 {
   "name": "relay-pipeline",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Build a full CI/CD pipeline from scratch. Use when asked to \"set up CI/CD\", \"create pipeline\", or \"automate deploys\".",
   "author": {
     "name": "tonone-ai",
@@ -9,8 +9,5 @@
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
   "type": "skill",
-  "keywords": [
-    "relay",
-    "skill"
-  ]
+  "keywords": ["relay", "skill"]
 }

@@ -147,7 +147,6 @@ When users struggle with a product, the cause is often a mismatch between their 
 ### Step 2: Identify the User's Model
 
 Ask (or infer from behavior):
-
 - "What did you expect to happen?"
 - "Where did you look for this feature?"
 - "How do you think [feature X] works?"
@@ -212,7 +211,6 @@ Before performing an action, ask the user: "What do you think will happen when y
 ### Technique 3: Teaching Test
 
 Ask a user who has used the product for a week to explain it to a new user. Listen for:
-
 - Inaccurate explanations (model is wrong).
 - Missing concepts (model is incomplete).
 - Hedging ("I think it works like... but I'm not sure") (model is uncertain).

@@ -67,7 +67,6 @@ Code commit → Automated tests → Build → Staging deploy → Automated check
 ### Prerequisites for Continuous Deployment
 
 **Technical requirements:**
-
 - Automated test suite with reasonable coverage (aim for 70%+ of critical paths)
 - Automated build process
 - Automated deployment scripts
@@ -75,14 +74,12 @@ Code commit → Automated tests → Build → Staging deploy → Automated check
 - Ability to roll back quickly (under 5 minutes)
 
 **Cultural requirements:**
-
 - Team trusts the automated pipeline
 - Everyone takes responsibility for the build
 - Broken builds are fixed immediately (not "I'll fix it later")
 - Small commits are valued over large ones
 
 **Process requirements:**
-
 - Code review before merge (pull request workflow)
 - Feature flags for incomplete work
 - Trunk-based development or short-lived branches
@@ -165,7 +162,6 @@ Break every task into the smallest independently valuable unit.
 **Before:** "Build user dashboard" (2 weeks of work)
 
 **After:**
-
 1. Display user's name and avatar (2 hours)
 2. Show account creation date (1 hour)
 3. Add usage statistics section (4 hours)
@@ -242,7 +238,6 @@ This feels slower per item but is faster in total throughput and dramatically fa
 IMVU, where Eric Ries served as CTO, deployed code to production 50+ times per day. Each deploy was a tiny batch: sometimes a single line of code.
 
 **Key practices:**
-
 - Automated test suite ran on every commit
 - Immune system: automated monitoring rolled back deploys that degraded key metrics
 - Engineers deployed their own code (no separate ops team)
@@ -255,7 +250,6 @@ IMVU, where Eric Ries served as CTO, deployed code to production 50+ times per d
 Amazon decomposed its monolithic application into hundreds of independent services, each owned by a small team (the "two-pizza team" - small enough to feed with two pizzas).
 
 **Key practices:**
-
 - Each team deploys independently
 - Services communicate through well-defined APIs
 - Teams own their service end-to-end (build, deploy, monitor, support)
@@ -268,21 +262,18 @@ Amazon decomposed its monolithic application into hundreds of independent servic
 Etsy transformed from quarterly "big bang" releases to continuous deployment over several years.
 
 **Before (quarterly releases):**
-
 - 4 deploys per year
 - Each deploy was a massive batch of hundreds of changes
 - Deploys required multi-day "war rooms" to manage
 - Bugs were hard to isolate because so many changes were bundled
 
 **After (continuous deployment):**
-
 - 50+ deploys per day
 - Each deploy is a single engineer's change
 - Deploys take minutes and require no coordination
 - Bugs are immediately traceable to the single change that caused them
 
 **Key enablers:**
-
 - Feature flags (Etsy built their own system, later open-sourced)
 - Comprehensive monitoring with deploy annotations
 - "Push trains" that batch deploys automatically with individual rollback capability

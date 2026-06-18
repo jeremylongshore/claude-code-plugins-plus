@@ -1,7 +1,6 @@
 # Animation Patterns Reference
 
 ## Table of Contents
-
 1. Easing Functions
 2. Page Load Sequences
 3. Scroll-Triggered Animations

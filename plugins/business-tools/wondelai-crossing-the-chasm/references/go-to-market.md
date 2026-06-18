@@ -4,8 +4,8 @@ The go-to-market strategy that wins early adopters will fail with pragmatists. E
 
 This reference provides the complete go-to-market playbook for transitioning from early adopter sales to mainstream market penetration.
 
-## Table of Contents
 
+## Table of Contents
 1. [Distribution Strategy by Adoption Segment](#distribution-strategy-by-adoption-segment)
 2. [Sales Strategy Shift](#sales-strategy-shift)
 3. [Marketing Message Transformation](#marketing-message-transformation)
@@ -51,7 +51,6 @@ Most technology companies are structured for early adopter sales: founder-led, r
 **When:** First 10-30 customers. All early adopters or innovators.
 
 **Characteristics:**
-
 - CEO/founder runs every deal
 - Deep customization per customer
 - Relationships drive deals
@@ -65,7 +64,6 @@ Most technology companies are structured for early adopter sales: founder-led, r
 **When:** Targeting beachhead segment pragmatists. First 30-100 customers.
 
 **What must change:**
-
 - Document the sales process and train a team
 - Create standard demo scripts focused on the beachhead segment
 - Build a reference library from beachhead customers
@@ -73,7 +71,6 @@ Most technology companies are structured for early adopter sales: founder-led, r
 - Create a qualification framework (not every lead is beachhead)
 
 **The beachhead sales playbook should include:**
-
 - [ ] Ideal customer profile (ICP) for the beachhead segment
 - [ ] Discovery questions specific to the segment's pain
 - [ ] Standard demo flow showing the whole product
@@ -89,7 +86,6 @@ Most technology companies are structured for early adopter sales: founder-led, r
 **When:** Beachhead is dominated, expanding to adjacent segments.
 
 **Characteristics:**
-
 - Channel partners (VARs, consultancies, MSPs) sell and implement
 - Inside sales handles inbound and smaller deals
 - Self-service available for lower tiers
@@ -156,30 +152,25 @@ Every piece of pragmatist marketing must reduce perceived risk.
 Every case study for pragmatist buyers should follow this structure:
 
 **1. Customer Profile (1 paragraph)**
-
 - Company name, size, industry
 - Why they're relevant to the reader
 
 **2. Challenge (2-3 paragraphs)**
-
 - Specific problem, quantified
 - Impact on business (cost, time, risk)
 - What they tried before
 
 **3. Solution (2-3 paragraphs)**
-
 - Why they chose you (decision criteria)
 - Implementation process (timeline, effort)
 - Key features they use
 
 **4. Results (1-2 paragraphs with specific metrics)**
-
 - Before/after metrics
 - Quantified business impact
 - Timeline to value
 
 **5. Quote from champion**
-
 - Named individual with title
 - Specific, credible statement
 
@@ -190,21 +181,18 @@ Every case study for pragmatist buyers should follow this structure:
 Build a self-service ROI calculator for your beachhead segment:
 
 **Inputs (what the prospect provides):**
-
 - Current metric (e.g., hours spent on manual reporting per week)
 - Team size
 - Average fully loaded employee cost
 - Current tool costs (if replacing something)
 
 **Calculations (your model):**
-
 - Time saved based on customer benchmarks
 - Cost savings = time saved x employee cost
 - Additional value (risk reduction, revenue impact)
 - Net value = total savings - your product cost
 
 **Output:**
-
 - Projected annual ROI
 - Payback period in months
 - 3-year total value
@@ -216,7 +204,6 @@ Build a self-service ROI calculator for your beachhead segment:
 ### When to Use Channel Partners
 
 Channel partners become important when:
-
 - Your beachhead segment buys through consultants or integrators
 - You need local presence in geographies you don't cover
 - The whole product requires implementation services you can't scale
@@ -248,7 +235,6 @@ Channel partners become important when:
 ### Pre-Chasm Pricing (Early Adopters)
 
 **Characteristics:**
-
 - Value-based and negotiated per deal
 - Custom scoping and SOWs
 - Annual contracts with significant upfront commitment
@@ -257,7 +243,6 @@ Channel partners become important when:
 ### Chasm-Crossing Pricing (Pragmatists)
 
 **Characteristics:**
-
 - Standardized tiers (Good / Better / Best)
 - Published pricing (transparency reduces risk perception)
 - Monthly or annual options
@@ -265,7 +250,6 @@ Channel partners become important when:
 - Volume discounts for segment-specific needs
 
 **Pricing principles for pragmatists:**
-
 1. **Make it easy to say yes:** Offer a low-commitment entry point (pilot, starter tier)
 2. **Make it easy to compare:** Align your tiers with competitor pricing structures
 3. **Make ROI obvious:** Price should be obviously less than the value delivered

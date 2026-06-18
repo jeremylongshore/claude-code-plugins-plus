@@ -32,7 +32,6 @@ The prototype does not need to work. It needs to look like it works. Users will 
 ### Why Faking Works
 
 Users do not evaluate the code behind a screen. They evaluate:
-
 - Does this make sense?
 - Do I trust this?
 - Can I figure out what to do?
@@ -70,7 +69,6 @@ The prototype must sit in a narrow quality band. Too rough, and customers cannot
 **Best suited for:** Designers, front-end developers, or anyone comfortable with visual tools.
 
 **What they do:**
-
 - Take assigned storyboard frames
 - Create realistic-looking screens
 - Follow the storyboard exactly (no improvising)
@@ -83,7 +81,6 @@ The prototype must sit in a narrow quality band. Too rough, and customers cannot
 **Best suited for:** The most experienced designer or someone who knows the prototyping tool well.
 
 **What they do:**
-
 - Combine screens from Makers into one prototype
 - Add transitions and hotspots (clickable areas)
 - Ensure the flow matches the storyboard sequence
@@ -96,14 +93,12 @@ The prototype must sit in a narrow quality band. Too rough, and customers cannot
 **Best suited for:** Marketer, product manager, or anyone with strong writing skills.
 
 **What they do:**
-
 - Write headlines, subheadlines, body copy
 - Write button labels, form field labels, navigation items
 - Write error messages and confirmation messages
 - Keep copy concise and realistic
 
 **Writer's checklist:**
-
 - [ ] Every screen has a clear headline
 - [ ] Button labels describe the action ("Start free trial" not "Submit")
 - [ ] No placeholder text remains
@@ -115,7 +110,6 @@ The prototype must sit in a narrow quality band. Too rough, and customers cannot
 **Responsibility:** Gather all visual assets needed by the Makers.
 
 **What they do:**
-
 - Find stock photos (Unsplash, Pexels)
 - Collect icons (Noun Project, Feather Icons)
 - Screenshot competitor interfaces for reference
@@ -127,7 +121,6 @@ The prototype must sit in a narrow quality band. Too rough, and customers cannot
 **Responsibility:** Prepare for Friday's user interviews.
 
 **What they do (while others build):**
-
 - Write the interview script (see Friday reference)
 - Prepare context questions
 - Plan tasks for users to complete with the prototype
@@ -185,7 +178,6 @@ The prototype must sit in a narrow quality band. Too rough, and customers cannot
 ### Step 2: Build in Parallel (10:30 - 1:00)
 
 **Makers:**
-
 - Build screens for assigned frames
 - Follow the storyboard exactly
 - Use the Writer's copy as it becomes available
@@ -193,7 +185,6 @@ The prototype must sit in a narrow quality band. Too rough, and customers cannot
 - Ask the Stitcher about sizing, layout conventions, and shared elements
 
 **Stitcher:**
-
 - Set up the master file (Figma project, Keynote deck)
 - Define shared elements: header, footer, navigation, button styles
 - Begin assembling screens as Makers finish them
@@ -250,7 +241,6 @@ While the team builds, the Interviewer writes the script for Friday. The script 
 ### Task Writing Tips
 
 Good tasks are:
-
 - Open-ended: "Find a project management tool that fits your team" (not "Click the blue button")
 - Scenario-based: "Imagine you just got an email from a colleague recommending this tool"
 - Specific enough to test the sprint questions: "You have a team of 5 and a budget of $100/month"

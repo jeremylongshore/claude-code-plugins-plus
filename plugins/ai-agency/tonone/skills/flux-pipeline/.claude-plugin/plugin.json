@@ -1,6 +1,6 @@
 {
   "name": "flux-pipeline",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Build a data pipeline \u2014 ETL/ELT with extraction, transformation, loading, error handling, and scheduling. Use when asked to \"build ETL\", \"data pipeline\", \"move data from X to Y\", or \"sync data\".",
   "author": {
     "name": "tonone-ai",
@@ -9,8 +9,5 @@
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
   "type": "skill",
-  "keywords": [
-    "flux",
-    "skill"
-  ]
+  "keywords": ["flux", "skill"]
 }

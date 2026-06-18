@@ -9,7 +9,6 @@ The market category you choose is the single most powerful lever in positioning.
 **Definition:** You position your product directly within a well-established market category and compete to be the best option in that category.
 
 **When to use:**
-
 - Your product can credibly claim to be the best (or among the best) in an established category
 - The category is well-understood by buyers — they know what it is, how to evaluate options, and what to expect
 - You have attributes that make you the best choice for a meaningful segment of the category's buyers
@@ -36,7 +35,6 @@ The market category you choose is the single most powerful lever in positioning.
 | Difficult to stand out | Many products in the category may look similar to buyers |
 
 **How to win head-to-head:**
-
 1. Target the segment of the category where your unique attributes matter most
 2. Lead with differentiation — "We're [category] but unlike others, we [unique value]"
 3. Redefine evaluation criteria to favor your strengths — create comparison frameworks that highlight your unique attributes
@@ -50,7 +48,6 @@ The market category you choose is the single most powerful lever in positioning.
 **Definition:** You position your product as a specialized version of an existing category, adding a modifier that shifts evaluation criteria in your favor.
 
 **When to use:**
-
 - You have unique attributes that a specific segment of an existing category values highly
 - The existing category is well-known, but the standard options don't serve your target segment well
 - You can credibly claim to be the best in the narrower space
@@ -76,7 +73,6 @@ The market category you choose is the single most powerful lever in positioning.
 | Limits expansion | Being known as "[category] for [segment]" can make expansion harder |
 
 **How to create a strong subcategory:**
-
 1. Start with a well-known base category that your target customers understand
 2. Add a modifier that is immediately clear and meaningful — usually industry, company size, role, or use case
 3. Define 2-3 evaluation criteria specific to the subcategory that your unique attributes address
@@ -100,7 +96,6 @@ The market category you choose is the single most powerful lever in positioning.
 **Definition:** You define an entirely new market category that doesn't exist yet and position your product as the defining example.
 
 **When to use:**
-
 - Your product is genuinely different from anything that exists — it doesn't fit neatly into any existing category
 - Forcing your product into an existing category creates more confusion than clarity
 - You have the resources (time, money, talent) to educate the market on what the new category is

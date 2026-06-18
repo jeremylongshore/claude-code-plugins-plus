@@ -1,6 +1,6 @@
 {
   "name": "marketing-team",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Marketing team \u2014 3 agents: Ink, Buzz, Pitch",
   "author": {
     "name": "tonone-ai",
@@ -8,9 +8,5 @@
   },
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
-  "keywords": [
-    "agents",
-    "marketing-team",
-    "bundle"
-  ]
+  "keywords": ["agents", "marketing-team", "bundle"]
 }

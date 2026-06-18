@@ -1,0 +1,41 @@
+{
+  "name": "@intentsolutionsio/governed-second-brain",
+  "version": "0.1.6",
+  "description": "A local-first governed second brain for Claude Code — turn your own files into cited (qmd://) memory, with every write run through deterministic governance and recorded in a tamper-evident, SHA-256 ha",
+  "keywords": [
+    "memory",
+    "knowledge",
+    "governance",
+    "qmd",
+    "brain",
+    "citations",
+    "local-first",
+    "second-brain",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/mcp/governed-second-brain"
+  },
+  "homepage": "https://tonsofskills.com/plugins/governed-second-brain",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install governed-second-brain\\\\n  or /plugin install governed-second-brain@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

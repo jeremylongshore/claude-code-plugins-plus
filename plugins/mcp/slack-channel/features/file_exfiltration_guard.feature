@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: Apache-2.0
 # Feature owner: engineer. AI tooling may add glue (step definitions,
 # runners) but MUST NOT edit the scenarios below. See features/README.md.
 #

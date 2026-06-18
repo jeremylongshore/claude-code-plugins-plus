@@ -74,7 +74,6 @@ Not all segments are equally good expansion targets. Evaluate each potential "ne
 | | | | | | |
 
 **Interpretation:**
-
 - 20-25: Immediate next pin -- expand here
 - 15-19: Good candidate for pin 3-4
 - 10-14: Possible future pin, not yet
@@ -271,7 +270,6 @@ The tornado phase begins when adoption accelerates beyond your direct sales effo
 In the tornado, the market consolidates around a leader (the gorilla). The goal of the bowling pin strategy is to enter the tornado with enough momentum, references, and market share to become the gorilla. Being a "chimp" (strong #2) or "monkey" (everyone else) in the tornado is a dramatically less valuable outcome.
 
 **How bowling pins create gorilla position:**
-
 - Each dominated segment is a fortress competitors can't easily take
 - Accumulated references across multiple segments create overwhelming social proof
 - Whole product maturity from serving multiple segments creates platform strength

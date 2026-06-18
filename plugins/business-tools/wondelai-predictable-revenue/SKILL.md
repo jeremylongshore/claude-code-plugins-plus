@@ -4,151 +4,65 @@ description: 'Build a scalable outbound B2B sales process with specialized roles
 license: MIT
 metadata:
   author: wondelai
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Predictable Revenue Framework
 
-A systematic approach to building a scalable, predictable B2B sales machine. Pioneered the outbound prospecting system that helped Salesforce add $100M in recurring revenue.
+A systematic approach to building a scalable, predictable B2B sales machine — the outbound prospecting system that helped Salesforce add $100M in recurring revenue.
 
 ## Core Principle
 
-**Predictable lead generation drives predictable revenue.** The biggest mistake in sales is having the same people prospect AND close. Specialization creates a repeatable, scalable machine.
-
-**The foundation:** Cold calling is dead. Cold Calling 2.0 — mass, personalized cold emails that generate referrals to the right person — is the new outbound. Combined with sales role specialization, this creates predictable, scalable revenue.
+**Predictable lead generation drives predictable revenue.** The biggest mistake in sales is having the same people prospect AND close — specialization creates a repeatable, scalable machine. Traditional cold calling is dead; Cold Calling 2.0 (mass, personalized cold emails that generate referrals to the right person) is the new outbound.
 
 ## Scoring
 
-**Goal: 10/10.** When evaluating or building a sales process, rate 0-10 based on predictability, specialization, and process maturity. A 10/10 means clear role separation, repeatable prospecting process, and predictable pipeline generation; lower scores indicate ad-hoc sales or reliance on heroics. Always provide current score and improvements to reach 10/10.
+**Goal: 10/10.** Rate any sales process 0-10 on predictability, specialization, and process maturity: 10/10 means clear role separation, repeatable prospecting, and predictable pipeline generation; lower scores mean ad-hoc sales or reliance on heroics. Always give the current score and the specific improvements needed to reach 10/10.
 
 ## The Three Types of Leads
 
-**Not all leads are created equal. Treat them differently.**
+**Not all leads are equal — treat them differently.**
 
 | Type | Source | Conversion | Cost | Example |
 |------|--------|------------|------|---------|
-| **Seeds** | Word of mouth, referrals, organic | Highest (best quality) | Lowest (takes time) | Customer referral, NPS-driven |
-| **Nets** | Marketing campaigns, inbound | Medium | Medium | Content marketing, SEO, webinars |
-| **Spears** | Outbound prospecting | Lower (but predictable) | Higher (people-intensive) | Cold Calling 2.0, targeted outreach |
+| **Seeds** | Word of mouth, referrals, organic | Highest | Lowest (takes time) | Customer referral, NPS-driven |
+| **Nets** | Marketing campaigns, inbound | Medium | Medium | Content, SEO, webinars |
+| **Spears** | Outbound prospecting | Lower but predictable | Higher (people-intensive) | Cold Calling 2.0 |
 
-**Key insight:** Most companies over-invest in nets (marketing) and under-invest in spears (outbound). Seeds are the best but can't be manufactured quickly. A balanced mix of all three creates predictable revenue.
-
-**Revenue mix:**
-
-- **Seeds:** Invest in customer success, NPS, referral programs
-- **Nets:** Invest in content, SEO, paid acquisition
-- **Spears:** Invest in SDR team, Cold Calling 2.0
+**Key insight:** Most companies over-invest in nets and under-invest in spears; seeds are the best but can't be manufactured quickly. Invest accordingly — customer success and referral programs (seeds), content and paid acquisition (nets), SDR team (spears).
 
 See: [references/lead-types.md](references/lead-types.md) for lead source strategy and investment allocation.
 
 ## Sales Role Specialization
 
-**The #1 principle: Separate prospecting from closing.**
-
-**Traditional (broken) model:**
-
-- AEs prospect AND close
-- Result: AEs hate prospecting, pipeline is feast-or-famine
-
-**Predictable Revenue model:**
+**The #1 principle: separate prospecting from closing.** When AEs prospect and close, they hate prospecting and pipeline becomes feast-or-famine.
 
 | Role | Focus | Metrics |
 |------|-------|---------|
 | **SDR (Sales Development Rep)** | Outbound prospecting → qualified opportunities | Qualified meetings/month |
 | **MDR (Market Development Rep)** | Inbound lead qualification | Qualified leads/month |
 | **AE (Account Executive)** | Close deals | Revenue closed, win rate |
-| **CSM (Customer Success Manager)** | Retain and grow accounts | Retention rate, expansion revenue |
+| **CSM (Customer Success Manager)** | Retain and grow accounts | Retention, expansion revenue |
 
 ### SDR (Sales Development Rep)
 
-**Mission:** Generate qualified pipeline through outbound prospecting.
-
-**Focus:**
-
-- Research target accounts
-- Write personalized Cold Calling 2.0 emails
-- Get referred to the right person
-- Qualify opportunities (ANUM)
-- Pass qualified opportunities to AEs
-
-**Not their job:**
-
-- Close deals
-- Handle inbound leads
-- Manage existing customers
-
-**Metrics:**
-
-- Qualified opportunities generated per month
-- Response rate to outbound emails
-- Meetings booked per week
-- Pipeline value generated
-
-**SDR capacity:** One SDR typically generates 10-20 qualified opportunities per month.
+Generate qualified pipeline: research target accounts, send Cold Calling 2.0 emails, get referred to the right person, qualify with ANUM, pass to AEs. Not their job: closing, inbound leads, or existing customers. One SDR typically generates 10-20 qualified opportunities per month — measure opportunities, response rate, meetings booked, and pipeline value.
 
 ### AE (Account Executive)
 
-**Mission:** Close deals from qualified pipeline.
-
-**Focus:**
-
-- Run discovery calls
-- Demo and present solutions
-- Negotiate and close
-- Hand off to CSM
-
-**Not their job:**
-
-- Prospect for new leads (this is SDR's job)
-- Qualify inbound leads (this is MDR's job)
-- Manage post-sale relationships (CSM's job)
-
-**Metrics:**
-
-- Revenue closed
-- Win rate
-- Average deal size
-- Sales cycle length
+Close deals from qualified pipeline: run discovery, demo, negotiate, close, hand off to CSM. Not their job: prospecting (SDR), inbound qualification (MDR), or post-sale management (CSM). Measure revenue closed, win rate, average deal size, and sales cycle length.
 
 ### CSM (Customer Success Manager)
 
-**Mission:** Retain customers and grow accounts.
+Retain and grow accounts: onboard, drive adoption, surface expansion opportunities, prevent churn. Measure net revenue retention, churn rate, expansion revenue, and NPS/CSAT.
 
-**Focus:**
-
-- Onboard new customers
-- Drive adoption and engagement
-- Identify expansion opportunities
-- Prevent churn
-
-**Metrics:**
-
-- Net revenue retention
-- Churn rate
-- Expansion revenue
-- NPS / CSAT
-
-**The virtuous cycle:**
-
-```
-SDR generates pipeline → AE closes → CSM retains/grows → Happy customer refers (Seeds)
-```
+**The virtuous cycle:** SDR generates pipeline → AE closes → CSM retains/grows → happy customer refers (Seeds).
 
 See: [references/roles.md](references/roles.md) for role definitions, career paths, and hiring profiles.
 
 ## Cold Calling 2.0
 
-**The outbound prospecting methodology that replaces traditional cold calling.**
-
-**Why traditional cold calling fails:**
-
-- Gatekeepers block calls
-- Decision makers don't answer phones
-- 1-3% connection rate
-- Damages brand
-- Not scalable
-
-**Cold Calling 2.0 process:**
+**Outbound prospecting that replaces traditional cold calling**, which fails on every front: 1-3% connection rate, gatekeepers, brand damage, no scalability.
 
 ```
 1. Build list → 2. Send mass email → 3. Get referral → 4. Call the referral → 5. Qualify
@@ -156,38 +70,14 @@ See: [references/roles.md](references/roles.md) for role definitions, career pat
 
 ### Step 1: Build Target Account List
 
-**Ideal Customer Profile (ICP):**
-
-- Company size (employees, revenue)
-- Industry
-- Technology stack
-- Geography
-- Pain points
-
-**Build list using:**
-
-- LinkedIn Sales Navigator
-- ZoomInfo / Apollo / Clearbit
-- Company websites
-- Industry directories
-
-**Target:** 200-500 accounts per SDR per quarter
+Define your Ideal Customer Profile (company size, industry, tech stack, geography, pain points), then build the list via LinkedIn Sales Navigator, ZoomInfo/Apollo/Clearbit, or industry directories. Target 200-500 accounts per SDR per quarter.
 
 ### Step 2: The Referral Email
 
-**The core innovation:** Don't email the decision maker directly. Email above them and ask for a referral down.
-
-**Why it works:**
-
-- Senior people are helpful (they forward emails)
-- Referrals have 3-5x higher response rate
-- Creates warm introduction from within the company
-
-**The email template:**
+**The core innovation: don't email the decision maker — email above them and ask for a referral down.** Senior people forward emails, and referrals get 3-5x higher response because the introduction comes from inside the company.
 
 **Subject:** Quick question
 
-**Body:**
 > Hi [Name],
 >
 > I'm not sure if you're the right person to speak to about [specific topic] at [Company], but I was hoping you could point me to the right person.
@@ -199,76 +89,48 @@ See: [references/roles.md](references/roles.md) for role definitions, career pat
 > Thanks,
 > [Your name]
 
-**Key elements:**
-
-- Short (< 100 words)
-- No pitch, no attachments, no links
-- Asks for referral, not a meeting
-- Specific about what you do
-- Easy to forward
-
-**Response rate:** 9-15% (vs. 1-3% for traditional cold emails)
+Keep it short (<100 words), no pitch, no attachments or links; ask for a referral, not a meeting; make it easy to forward. Response rate: 9-15% vs. 1-3% for traditional cold emails.
 
 ### Step 3: Follow Up
 
-**Follow-up sequence:**
-
 | Day | Action |
 |-----|--------|
-| Day 1 | Send referral email |
-| Day 3 | Follow up if no response |
-| Day 7 | Second follow up (different angle) |
-| Day 14 | Break-up email ("Should I close your file?") |
-| Day 30 | Re-engage (new trigger event or content) |
+| 1 | Send referral email |
+| 3 | Follow up if no response |
+| 7 | Second follow-up (different angle) |
+| 14 | Break-up email ("Should I close your file?") |
+| 30 | Re-engage (new trigger event or content) |
 
-**Break-up email example:**
+Break-up emails work because people respond to losing the opportunity (scarcity):
+
 > Hi [Name],
 >
 > I haven't heard back from you. I don't want to be a pest.
 >
 > Should I close your file, or would it make sense to chat?
->
-> [Your name]
-
-**Why break-up emails work:** People respond to the threat of losing access/opportunity (scarcity principle).
 
 ### Step 4: Qualify with ANUM
-
-**ANUM qualification framework:**
 
 | Criteria | Question | Strong Signal | Weak Signal |
 |----------|----------|---------------|-------------|
 | **A**uthority | Can this person decide? | Decision maker or strong influencer | No buying power |
-| **N**eed | Do they have the problem you solve? | Active pain, looking for solutions | "Nice to have" |
-| **U**rgency | When do they need to solve it? | This quarter, budget allocated | "Someday" |
+| **N**eed | Do they have the problem you solve? | Active pain, seeking solutions | "Nice to have" |
+| **U**rgency | When must they solve it? | This quarter, budget allocated | "Someday" |
 | **M**oney | Can they afford it? | Budget exists, within range | No budget, too expensive |
 
-**Qualification call structure:**
-
-1. Build rapport (2 min)
-2. Set agenda ("I want to understand your situation and see if there's a fit")
-3. Discovery questions (10-15 min)
-4. ANUM qualification (built into discovery)
-5. Next steps (if qualified → schedule AE demo)
+Call structure: rapport (2 min) → set agenda ("understand your situation, see if there's a fit") → discovery questions with ANUM built in (10-15 min) → next steps (if qualified, schedule AE demo).
 
 ### Step 5: Hand Off to AE
 
-**The handoff must include:**
+Include account background and ICP match, contact details and role, pain points, ANUM notes, agreed next steps, and competitive intel. SDR introduces AE on a brief 3-way call or email, then drops off.
 
-- Account background and ICP match
-- Contact details and role
-- Pain points discovered
-- ANUM qualification notes
-- Agreed next steps
-- Any competitive intel
+**Ethical boundary:** Comply with spam laws (CAN-SPAM, GDPR), honor opt-outs immediately, and represent your offer honestly — referral emails work because they're genuine requests, not tricks.
 
-**Handoff meeting:** SDR introduces AE on a brief 3-way call or email, then drops off.
-
-See: [references/cold-calling-2.md](references/cold-calling-2.md) for email templates, sequences, and scripts.
+See: [references/cold-calling-2.md](references/cold-calling-2.md) for email templates, sequences, and scripts; [references/qualification.md](references/qualification.md) for ANUM discovery questions.
 
 ## Pipeline Math
 
-**The math of predictable revenue:**
+Work backward from the revenue goal:
 
 ```
 Revenue Goal ÷ Average Deal Size = Deals Needed
@@ -277,27 +139,15 @@ Opportunities Needed ÷ SDR Conversion = Prospects Needed
 Prospects Needed ÷ Response Rate = Emails Needed
 ```
 
-**Example:**
+**Example:** $1M ARR ÷ $20K deals = 50 deals; ÷ 25% win rate = 200 opportunities; at 10% response rate and 10% response-to-qualified conversion = 20,000 emails ≈ 2-3 SDRs (each sends 300-500/month).
 
-- **Revenue goal:** $1M ARR
-- **Average deal:** $20K ARR
-- **Deals needed:** 50
-- **Win rate:** 25%
-- **Opportunities needed:** 200
-- **SDR conversion:** 10% of responses become qualified
-- **Response rate:** 10% of emails get responses
-- **Emails needed:** 20,000
-- **SDRs needed:** ~2-3 (each sends 300-500 emails/month)
-
-**Capacity planning:**
-
-| Metric | Benchmark | Your Number |
-|--------|-----------|-------------|
-| Emails per SDR per day | 50-100 | |
-| Response rate | 9-15% | |
-| Qualified opportunities per SDR per month | 10-20 | |
-| AE demo-to-close rate | 20-30% | |
-| Average sales cycle | 30-90 days | |
+| Metric | Benchmark |
+|--------|-----------|
+| Emails per SDR per day | 50-100 |
+| Response rate | 9-15% |
+| Qualified opportunities per SDR per month | 10-20 |
+| AE demo-to-close rate | 20-30% |
+| Average sales cycle | 30-90 days |
 
 See: [references/pipeline-math.md](references/pipeline-math.md) for revenue modeling templates.
 
@@ -305,86 +155,40 @@ See: [references/pipeline-math.md](references/pipeline-math.md) for revenue mode
 
 ### Hiring SDRs
 
-**Ideal SDR profile:**
-
-- Coachable (most important trait)
-- Curious and intelligent
-- Strong writing skills
-- Resilient (handles rejection)
-- Organized and process-oriented
-- Not necessarily experienced
-
-**Where to hire:**
-
-- Recent graduates
-- Career changers
-- Internal transfers
-- SDR-to-AE career path candidates
-
-**SDR career path:**
-
-```
-SDR (6-18 months) → Senior SDR → AE or SDR Manager
-```
+Hire for coachability (the most important trait), curiosity, strong writing, resilience, and organization — experience is optional. Source recent graduates, career changers, and internal transfers. Career path: SDR (6-18 months) → Senior SDR → AE or SDR Manager.
 
 ### SDR Ramp Time
 
 | Phase | Timeline | Expectations |
 |-------|----------|-------------|
-| **Training** | Weeks 1-2 | Product knowledge, tools, process |
-| **Shadowing** | Weeks 3-4 | Observe experienced SDRs, practice |
-| **Ramping** | Months 2-3 | 50% of full quota |
-| **Full quota** | Month 4+ | 100% of quota |
+| Training | Weeks 1-2 | Product knowledge, tools, process |
+| Shadowing | Weeks 3-4 | Observe experienced SDRs, practice |
+| Ramping | Months 2-3 | 50% of quota |
+| Full quota | Month 4+ | 100% of quota |
 
-**Full ramp:** Expect 3-4 months to full productivity.
+Expect 3-4 months to full productivity.
 
 ### SDR Compensation
 
-**Structure:** Base salary + variable (commission on qualified opportunities)
+Base + variable, typically 60/40 or 70/30. Pay variable per qualified opportunity generated, with bonuses for opportunities that close and for exceeding quota.
 
-**Typical split:** 60/40 or 70/30 (base/variable)
-
-**Variable triggers:**
-
-- Per qualified opportunity generated
-- Bonus for opportunities that close
-- Bonus for hitting/exceeding quota
-
-See: [references/team-building.md](references/team-building.md) for hiring, onboarding, and compensation.
+See: [references/team-building.md](references/team-building.md) for hiring, onboarding, and compensation detail.
 
 ## Metrics and Dashboards
 
-**Key metrics to track:**
-
 ### Leading Indicators (Predictive)
 
-- Emails sent per SDR per day
-- Response rate
-- Meetings booked per week
-- Qualified opportunities per month
-- Pipeline value generated
+Emails sent per SDR per day, response rate, meetings booked per week, qualified opportunities per month, pipeline value generated.
 
 ### Lagging Indicators (Results)
 
-- Revenue closed
-- Win rate
-- Average deal size
-- Sales cycle length
-- Customer acquisition cost (CAC)
+Revenue closed, win rate, average deal size, sales cycle length, customer acquisition cost (CAC).
 
 ### Efficiency Metrics
 
-- Cost per qualified opportunity
-- SDR:AE ratio (typically 2-3 SDRs per AE)
-- LTV:CAC ratio (target >3:1)
-- Payback period
+Cost per qualified opportunity, SDR:AE ratio (typically 2-3 SDRs per AE), LTV:CAC (target >3:1), payback period.
 
-**Dashboard cadence:**
-
-- **Daily:** Activity metrics (emails, calls, responses)
-- **Weekly:** Pipeline metrics (opportunities, meetings)
-- **Monthly:** Revenue metrics (closed, win rate, cycle)
-- **Quarterly:** Efficiency metrics (CAC, LTV, ratios)
+**Cadence:** daily activity metrics → weekly pipeline → monthly revenue → quarterly efficiency.
 
 See: [references/metrics.md](references/metrics.md) for dashboard templates.
 
@@ -394,10 +198,10 @@ See: [references/metrics.md](references/metrics.md) for dashboard templates.
 |---------|-------------|------|
 | **AEs prospecting** | Feast-or-famine pipeline | Hire dedicated SDRs |
 | **Long, pitchy emails** | Low response rate | Short, referral-focused emails |
-| **No ICP definition** | Wasted effort on wrong accounts | Define ICP before hiring SDRs |
-| **Too few SDRs** | Can't generate enough pipeline | Pipeline math: work backward from revenue goal |
+| **No ICP definition** | Effort wasted on wrong accounts | Define ICP before hiring SDRs |
+| **Too few SDRs** | Not enough pipeline | Work backward from revenue goal |
 | **No hand-off process** | Leads fall through cracks | Standardize SDR→AE handoff |
-| **Measuring activity, not results** | Busy but not productive | Track qualified opportunities, not just emails |
+| **Measuring activity, not results** | Busy but not productive | Track qualified opportunities, not emails |
 
 ## Quick Diagnostic
 
@@ -424,11 +228,11 @@ Audit any B2B sales process:
 
 ## Further Reading
 
-This skill is based on Aaron Ross's Predictable Revenue methodology. For the complete system:
+For the complete system:
 
 - [*"Predictable Revenue"*](https://www.amazon.com/Predictable-Revenue-Business-Practices-Salesforce-com/dp/0984380213?tag=wondelai00-20) by Aaron Ross & Marylou Tyler
 - [*"From Impossible to Inevitable"*](https://www.amazon.com/Impossible-Inevitable-Hyper-Growth-Companies-Predictable/dp/1119166713?tag=wondelai00-20) by Aaron Ross & Jason Lemkin (scaling to $100M+ ARR)
 
 ## About the Author
 
-**Aaron Ross** built the outbound sales process at Salesforce.com that added $100M+ in recurring revenue. His Cold Calling 2.0 methodology became the standard for B2B outbound prospecting and is used by thousands of companies worldwide. *Predictable Revenue* is known as "The Bible of Outbound Sales" and has influenced an entire generation of SaaS sales organizations. Ross is also co-founder of Predictable Revenue Inc., which helps companies build outbound sales machines.
+**Aaron Ross** built the outbound sales process at Salesforce.com that added $100M+ in recurring revenue, and co-founded Predictable Revenue Inc. His book *Predictable Revenue* — known as "The Bible of Outbound Sales" — made Cold Calling 2.0 the standard for B2B outbound prospecting.

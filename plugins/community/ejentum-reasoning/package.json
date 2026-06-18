@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/ejentum-reasoning",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Cognitive scaffold for analytical, planning, or multi-step decision tasks. Calls harness_reasoning on the ejentum MCP server to retrieve a structured scaffold (named failure pattern, executable proced",
   "keywords": [
     "claude-code",

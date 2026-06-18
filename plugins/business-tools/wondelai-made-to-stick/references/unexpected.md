@@ -80,7 +80,6 @@ Ask a question your audience cannot immediately answer but desperately wants to.
 Ask the audience to predict an outcome before revealing it. Their commitment to their prediction makes them hungry for the answer.
 
 **Examples:**
-
 - "Before I show you the results, guess what percentage of users completed onboarding. Write it down."
 - "How long do you think it takes the average customer to see ROI with our product? Most people guess 3 months."
 - "What do you think is the number one reason deals stall in your pipeline?"
@@ -90,7 +89,6 @@ Ask the audience to predict an outcome before revealing it. Their commitment to 
 Present an unexplained phenomenon and delay the explanation.
 
 **Examples:**
-
 - "In 2019, a small SaaS company with 4 employees beat Salesforce in 3 enterprise deals. Here is how."
 - "Nordstrom once gave a customer a full refund for a set of tires. Nordstrom does not sell tires. Why would they do that?"
 - "One email subject line generated a 94% open rate. It had only two words."
@@ -100,7 +98,6 @@ Present an unexplained phenomenon and delay the explanation.
 State something your audience believes, then reveal it is wrong.
 
 **Examples:**
-
 - "You have been told content is king. It is not. Distribution is."
 - "Everyone says you need product-market fit first. The most successful founders we studied did something else."
 - "The best-performing landing page in our test had no hero image, no testimonials, and no CTA button above the fold."
@@ -210,7 +207,6 @@ The surprise must connect to your core message. If it does not, you get attentio
 ### Exercise 3: The "What If" Flip
 
 Take your core message and flip every assumption:
-
 - "Our product is fast" becomes "What if speed is the wrong metric?"
 - "We save you money" becomes "What if your biggest cost is not money but attention?"
 - "We are the market leader" becomes "What if being the leader is the problem?"

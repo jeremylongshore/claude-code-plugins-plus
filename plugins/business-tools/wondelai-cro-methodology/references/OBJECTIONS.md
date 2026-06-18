@@ -17,62 +17,50 @@ Create a two-column table:
 ### Primary Sources (Direct from visitors)
 
 **Exit surveys** (Qualaroo, Hotjar, etc.)
-
 - "What's preventing you from signing up today?"
 - "What questions do you still have?"
 - "What would make this decision easier?"
 
 **Live chat logs**
-
 - Search for patterns in "but", "however", "worried about"
 - Note recurring hesitations
 
 **Support tickets**
-
 - Pre-purchase questions reveal objections
 - "Canned responses" are goldmines of tested counter-objections
 
 **Sales call recordings**
-
 - What objections do salespeople hear repeatedly?
 - What counter-arguments work?
 
 **"Refer a friend" messages**
-
 - How do customers describe you to friends?
 - What do they emphasize? What do they downplay?
 
 ### Secondary Sources
 
 **Reviews (yours and competitors')**
-
 - Negative reviews = unaddressed objections
 - Positive reviews = effective counter-objections
 
 **Social media mentions**
-
 - Reddit, Twitter threads about your category
 - Forums where your audience discusses alternatives
 
 **Competitor analysis**
-
 - What objections do competitors address?
 - What proof do they emphasize?
 
 ## Types of Objections
 
 ### Explicit objections
-
 Easy to address—visitors state them clearly:
-
 - "Too expensive"
 - "No free trial"
 - "Requires credit card"
 
 ### Implicit objections
-
 Harder to identify—visitors won't admit them:
-
 - "I'm lazy and don't want to do the work"
 - "I'm not sure I'll follow through"
 - "This seems too good to be true"
@@ -95,7 +83,6 @@ Most products face some version of:
 ## Counter-Objection Techniques
 
 ### For Trust objections
-
 - Specific testimonials (with photos, names, results)
 - Media logos ("As seen in...")
 - Awards and certifications
@@ -104,7 +91,6 @@ Most products face some version of:
 - Money-back guarantee
 
 ### For Price objections
-
 - ROI calculators
 - Cost comparison (vs. alternatives, vs. not solving problem)
 - Payment plans
@@ -112,7 +98,6 @@ Most products face some version of:
 - Emphasize value, not features
 
 ### For Fit objections
-
 - Case studies from similar situations
 - Segmented landing pages
 - "Perfect for [specific audience]" messaging
@@ -120,14 +105,12 @@ Most products face some version of:
 - Free trial or sample
 
 ### For Timing objections
-
 - Limited-time offers (genuine scarcity only)
 - Cost of delay
 - Seasonal relevance
 - Urgency-building statistics
 
 ### For Effort objections
-
 - "Done for you" framing
 - Step-by-step breakdown
 - Time estimates ("Set up in 5 minutes")

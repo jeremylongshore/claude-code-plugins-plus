@@ -79,7 +79,6 @@ Qualified Opps per SDR per month / Opps an AE can handle per month = SDR:AE rati
 ```
 
 **Example:**
-
 - SDR generates 15 qualified opps/month
 - AE can manage 8 new opps/month (given deal complexity)
 - Ratio: 15/8 = roughly 2 SDRs per AE
@@ -118,7 +117,6 @@ Pipeline Velocity = (Number of Opportunities x Average Deal Size x Win Rate) / S
 ```
 
 **Example:**
-
 - 50 opportunities in pipeline
 - $30K average deal size
 - 25% win rate

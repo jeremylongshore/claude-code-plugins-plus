@@ -2,8 +2,8 @@
 
 Recruiting the right participants for Friday's interviews is one of the most important and most underestimated parts of the design sprint. Test with the wrong people and you get misleading feedback. Test with nobody and you wasted the week. Start recruiting at least two weeks before the sprint begins.
 
-## Table of Contents
 
+## Table of Contents
 1. [Recruitment Timeline](#recruitment-timeline)
 2. [Defining the Target Participant](#defining-the-target-participant)
 3. [Screener Survey](#screener-survey)

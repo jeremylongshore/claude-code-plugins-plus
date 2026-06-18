@@ -1,0 +1,37 @@
+{
+  "name": "governed-second-brain",
+  "version": "0.1.6",
+  "description": "A local-first governed second brain for Claude Code — turn your own files into cited (qmd://) memory, with every write run through deterministic governance and recorded in a tamper-evident, SHA-256 hash-chained audit trail. Runs in-process; no daemon, no network.",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "homepage": "https://github.com/jeremylongshore/governed-second-brain-plugin",
+  "repository": "https://github.com/jeremylongshore/governed-second-brain-plugin",
+  "license": "Apache-2.0",
+  "keywords": [
+    "memory",
+    "knowledge",
+    "governance",
+    "qmd",
+    "brain",
+    "citations",
+    "local-first",
+    "second-brain"
+  ],
+  "commands": [],
+  "mcpServers": {
+    "governed-brain": {
+      "name": "governed-brain",
+      "description": "Local in-process governed second brain — cited search plus governed capture (capture → govern → promote) with a SHA-256 hash-chained audit trail. No daemon, no network.",
+      "version": "0.1.6",
+      "enabled": true,
+      "transport": "stdio",
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/plugin-runtime/governed-brain.cjs"],
+      "env": {
+        "TEAMKB_TENANT_ID": "local"
+      }
+    }
+  }
+}

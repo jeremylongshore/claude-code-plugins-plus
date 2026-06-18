@@ -2,8 +2,8 @@
 
 Systematic methodology for discovering jobs and translating them into successful innovations.
 
-## Table of Contents
 
+## Table of Contents
 1. [Job Hunting: Finding Undiscovered Jobs](#job-hunting-finding-undiscovered-jobs)
 2. [Passive vs. Active Job Seeking](#passive-vs-active-job-seeking)
 3. [The Job Atlas](#the-job-atlas)
@@ -20,7 +20,6 @@ Systematic methodology for discovering jobs and translating them into successful
 ### Where Jobs Hide
 
 Jobs worth pursuing are often invisible because:
-
 - Customers don't articulate them (they've adapted)
 - Existing categories obscure them (you see products, not jobs)
 - Data shows behavior, not motivation
@@ -32,14 +31,12 @@ Jobs worth pursuing are often invisible because:
 **Signal:** People combine products, modify them, or create DIY solutions.
 
 **What to look for:**
-
 - Products used in unintended ways
 - Multiple products combined to complete one job
 - Time-consuming manual processes
 - Spreadsheets and duct-tape solutions
 
 **Interview questions:**
-
 - "Walk me through how you handle [situation] today"
 - "What's frustrating about your current approach?"
 - "What have you tried that didn't work?"
@@ -52,7 +49,6 @@ Jobs worth pursuing are often invisible because:
 **Signal:** People who should be using a solution but aren't.
 
 **Why people don't consume:**
-
 | Barrier | Example |
 |---------|---------|
 | Too expensive | Can't afford financial advisor |
@@ -62,13 +58,11 @@ Jobs worth pursuing are often invisible because:
 | Socially unacceptable | Embarrassed to seek help |
 
 **What to look for:**
-
 - Markets that seem "maxed out" but have huge populations not participating
 - People who have "given up" on a category
 - Simpler alternatives that attract non-users
 
 **Interview approach:**
-
 - "Have you ever considered [category]? Why or why not?"
 - "What would make you try something in this area?"
 - "What have you heard about [category] that put you off?"
@@ -80,14 +74,12 @@ Jobs worth pursuing are often invisible because:
 **Signal:** Frustration, anxiety, fear, or embarrassment around a situation.
 
 **Emotions that signal jobs:**
-
 - Frustration → Job not being done well
 - Anxiety → Risk of job failure
 - Embarrassment → Social dimension unmet
 - Overwhelm → Job too complex
 
 **Interview questions:**
-
 - "What's the hardest part about [situation]?"
 - "When do you feel frustrated with [current solution]?"
 - "Is there anything you avoid or dread?"
@@ -100,14 +92,12 @@ Jobs worth pursuing are often invisible because:
 **Signal:** Customers using your product in unexpected ways, or unexpected customer segments.
 
 **What to investigate:**
-
 - Customer segments you didn't target who are buying
 - Features used differently than intended
 - Complaints that reveal hidden jobs
 - Support tickets that reveal actual use cases
 
 **Questions to ask:**
-
 - "What made you choose us over [expected alternative]?"
 - "What were you using before? What was wrong with it?"
 - "What job are you really hiring us to do?"
@@ -143,14 +133,12 @@ First thought → Passive looking → Active search → Decision → Purchase �
 Customer is vaguely aware of a problem but not actively looking for solutions.
 
 **Characteristics:**
-
 - Haven't allocated budget
 - Haven't carved out time
 - Open to being educated
 - Easier to influence (no preconceptions)
 
 **Marketing implications:**
-
 - Content marketing to raise awareness
 - Focus on problem articulation
 - Lower competition for attention
@@ -160,14 +148,12 @@ Customer is vaguely aware of a problem but not actively looking for solutions.
 Customer is actively shopping for a solution.
 
 **Characteristics:**
-
 - Researching options
 - Set budget (often)
 - Clear criteria
 - Comparing alternatives
 
 **Marketing implications:**
-
 - More competitive
 - Focus on differentiation
 - Demonstrate superior job completion
@@ -189,7 +175,6 @@ The primary progress the customer wants to make.
 Adjacent jobs that cluster with the main job.
 
 Example (financial planning):
-
 - Main job: Retire comfortably
 - Related: Protect family if I die, fund kids' education, manage taxes
 
@@ -250,7 +235,6 @@ Don't test in a vacuum. Recreate the context where the job arises.
 **3. Test the full experience**
 
 Not just the core product—test the entire "hiring" and "using" experience:
-
 - Finding and understanding the product
 - Purchasing/signing up
 - First use
@@ -284,7 +268,6 @@ Not just the core product—test the entire "hiring" and "using" experience:
 ### The Litmus Test
 
 A good job statement should:
-
 1. Be solution-agnostic (no product names)
 2. Include circumstances
 3. Include functional, emotional, and social dimensions
@@ -298,7 +281,6 @@ A good job statement should:
 ### Step 1: Define the Job Clearly
 
 Use the job statement format:
-
 ```
 When _____________ [circumstances]
 I want to _____________ [progress]
@@ -308,7 +290,6 @@ So I can _____________ [outcome]
 ### Step 2: Map Current "Employees"
 
 What do people currently hire to do this job?
-
 - Direct competitors (same category)
 - Indirect competitors (different category, same job)
 - Non-consumption (doing nothing)
@@ -329,7 +310,6 @@ Where do current solutions fall short?
 Build experiences that address unmet dimensions.
 
 **Questions:**
-
 - How can we do the functional job faster/better/cheaper?
 - How can we make the emotional experience better?
 - How can we help with the social dimension?
@@ -337,7 +317,6 @@ Build experiences that address unmet dimensions.
 ### Step 5: Test Against the Job
 
 Return to customers:
-
 - "Does this help you make the progress you wanted?"
 - "Would you fire your current solution for this?"
 - "What's still missing?"

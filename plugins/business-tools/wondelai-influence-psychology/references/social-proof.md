@@ -21,7 +21,6 @@ This reference covers every major type of social proof, implementation strategie
 | Growth rate | "10,000 new users this month" | Landing page, signup flow |
 
 **Rules for crowd numbers:**
-
 - Use exact numbers when possible ("2,347 teams" not "thousands of teams")
 - Round up only at large scales ("2M+" is fine; "50+" when you have 52 is not)
 - Update numbers regularly; stale counts undermine trust
@@ -41,7 +40,6 @@ This reference covers every major type of social proof, implementation strategie
 | Mutual connections | "12 people in your network endorse this" | LinkedIn-style graph |
 
 **Design considerations:**
-
 - Requires access to social graph or contact data (privacy implications)
 - Most powerful type of social proof but hardest to implement
 - Even showing one known connection dramatically increases trust
@@ -62,7 +60,6 @@ This reference covers every major type of social proof, implementation strategie
 | Expert content | "Featured expert on [podcast/publication]" | Moderate |
 
 **Rules for expert proof:**
-
 - The expert must be recognized by your target audience (not just generally famous)
 - Include credentials and context ("Dr. Smith, 20 years in neuroscience")
 - Direct quotes are more powerful than paraphrased endorsements
@@ -82,7 +79,6 @@ This reference covers every major type of social proof, implementation strategie
 | Influencer partnership | "[Influencer] built their business on [product]" | More authentic than traditional celebrity |
 
 **Important caveats:**
-
 - Celebrity proof is weakest when the connection feels inauthentic
 - Micro-influencers in your niche often outperform mainstream celebrities
 - Celebrity association carries risk: scandals transfer negatively too

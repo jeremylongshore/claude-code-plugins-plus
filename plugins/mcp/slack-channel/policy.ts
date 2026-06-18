@@ -14,12 +14,14 @@
  * Deliberately narrow surface: no compound combinators, no expression DSL.
  * Three effects only; more is a footgun for shadows.
  *
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: Apache-2.0
  */
 
+import { createHash } from 'node:crypto'
 import { realpathSync } from 'node:fs'
 import { resolve, sep } from 'node:path'
 import { z } from 'zod'
+import { canonicalJson } from './journal.ts'
 
 // ---------------------------------------------------------------------------
 // MatchSpec — which tool calls a rule applies to.
@@ -44,7 +46,18 @@ import { z } from 'zod'
  *  - `argEquals`  — subset equality on validated MCP input args. Keys
  *                   are compared against the top-level input object;
  *                   every listed key must equal the listed value.
+ *  - `tier`       — provenance of the rule. Schema-only in this PR
+ *                   (ccsc-4g8): the field is parsed and stored, and
+ *                   `detectShadowing()` uses it for cross-tier
+ *                   intersection lint. `evaluate()` does NOT yet act
+ *                   on tier — that arrives in `ccsc-8pw` (combining
+ *                   algorithm: strictest-tier-wins, then first-
+ *                   applicable within tier). Default `'default'` keeps
+ *                   existing access.json files loading unchanged.
  */
+export const PolicyTier = z.enum(['default', 'workspace', 'user', 'admin'])
+export type PolicyTier = z.infer<typeof PolicyTier>
+
 export const MatchSpec = z
   .object({
     tool: z.string().min(1).optional(),
@@ -59,6 +72,7 @@ export const MatchSpec = z
       .optional(),
     actor: z.enum(['session_owner', 'claude_process']).optional(),
     argEquals: z.record(z.string(), z.unknown()).optional(),
+    tier: PolicyTier.optional(),
   })
   .refine(
     (m) =>
@@ -72,6 +86,12 @@ export const MatchSpec = z
   )
 
 export type MatchSpec = z.infer<typeof MatchSpec>
+
+/** Read the effective tier of a rule, defaulting to `'default'` when
+ *  unset. Wrapped so callers don't repeat the fallback. */
+export function effectiveTier(rule: PolicyRule): PolicyTier {
+  return rule.match.tier ?? 'default'
+}
 
 // ---------------------------------------------------------------------------
 // PolicyRule — discriminated union over the three effects.
@@ -363,6 +383,12 @@ export interface EvaluateOptions {
  *    - `deny` (rule = 'default') if `call.tool` is in requireAuthoredPolicy
  *    - `allow` (rule undefined) otherwise
  */
+/** Tier evaluation order, strictest first (ccsc-8pw). Admin wins over
+ *  User wins over Workspace wins over Default. When at least one rule
+ *  in a higher tier matches, that tier's decision is the result; lower
+ *  tiers are not consulted. */
+const TIER_PRIORITY: readonly PolicyTier[] = ['admin', 'user', 'workspace', 'default']
+
 export function evaluate(
   call: ToolCall,
   rules: readonly PolicyRule[],
@@ -372,31 +398,48 @@ export function evaluate(
   const approvals = opts.approvals ?? new Map<ApprovalKey, { ttlExpires: number }>()
   const requireAuthored = opts.requireAuthoredPolicy ?? DEFAULT_REQUIRE_AUTHORED_POLICY
 
-  for (const rule of rules) {
-    if (!matchApplies(rule.match, call)) continue
+  // Tier-aware combining algorithm (ccsc-8pw): strictest-tier-wins,
+  // then first-applicable within tier.
+  //
+  // Backward compatibility: when no rule declares a tier, every rule
+  // lives in the 'default' tier. The for-loop below walks admin → user
+  // → workspace → default; with no rules in admin/user/workspace, only
+  // default runs, and `default` walks every rule in the order the
+  // operator authored them — exactly the v0.5.x behavior. Existing
+  // tests and existing access.json files continue to behave identically.
+  //
+  // When tiers ARE used, every rule in a higher tier is considered before
+  // any rule in a lower tier. A `deny` in Admin always beats an
+  // `auto_approve` in Workspace AND an `auto_approve` in Admin always
+  // beats a `deny` in Workspace (the intentional "Admin overrides" path).
+  for (const tier of TIER_PRIORITY) {
+    for (const rule of rules) {
+      if (effectiveTier(rule) !== tier) continue
+      if (!matchApplies(rule.match, call)) continue
 
-    switch (rule.effect) {
-      case 'auto_approve':
-        return { kind: 'allow', rule: rule.id }
-      case 'deny':
-        return { kind: 'deny', rule: rule.id, reason: rule.reason }
-      case 'require_approval': {
-        const approval = approvals.get(approvalKey(rule.id, call.sessionKey))
-        if (approval && approval.ttlExpires > now) {
+      switch (rule.effect) {
+        case 'auto_approve':
           return { kind: 'allow', rule: rule.id }
-        }
-        return {
-          kind: 'require',
-          rule: rule.id,
-          approver: 'human_approver',
-          ttlMs: rule.ttlMs,
-          approvers: rule.approvers,
+        case 'deny':
+          return { kind: 'deny', rule: rule.id, reason: rule.reason }
+        case 'require_approval': {
+          const approval = approvals.get(approvalKey(rule.id, call.sessionKey))
+          if (approval && approval.ttlExpires > now) {
+            return { kind: 'allow', rule: rule.id }
+          }
+          return {
+            kind: 'require',
+            rule: rule.id,
+            approver: 'human_approver',
+            ttlMs: rule.ttlMs,
+            approvers: rule.approvers,
+          }
         }
       }
     }
   }
 
-  // No rule matched — default branch.
+  // No rule in any tier matched — default branch.
   if (requireAuthored.has(call.tool)) {
     return {
       kind: 'deny',
@@ -481,6 +524,32 @@ export function assertUniqueRuleIds(rules: readonly PolicyRule[]): void {
 }
 
 // ---------------------------------------------------------------------------
+// policyDigest() — SHA-256 attestation hash for journal v2 (ccsc-22l)
+// ---------------------------------------------------------------------------
+
+/** Compute a deterministic SHA-256 hash over the canonical JCS form
+ *  of the active PolicyRule[]. Used by the journal writer to populate
+ *  `policy_attestation.digest` on every v2 event.
+ *
+ *  Determinism contract: the same rule set (regardless of input array
+ *  order) produces the same digest. We sort by `id` before
+ *  canonicalizing so the digest depends on the rule SET, not the
+ *  AUTHORING ORDER. This matters because `evaluate()` is order-
+ *  sensitive (first-applicable) but the digest is a content fingerprint
+ *  — two operators who arrive at the same set of rules via different
+ *  edit paths should land on the same digest.
+ *
+ *  Why this lives in policy.ts rather than journal.ts: the digest is
+ *  derived from PolicyRule shapes, which are policy's domain. journal.ts
+ *  treats the digest as an opaque 64-char hex string — see the
+ *  `no-journal-imports-policy` invariant. The digest crosses the
+ *  module boundary as a primitive, not as a structured policy object. */
+export function policyDigest(rules: readonly PolicyRule[]): string {
+  const sorted = [...rules].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+  return createHash('sha256').update(canonicalJson(sorted)).digest('hex')
+}
+
+// ---------------------------------------------------------------------------
 // detectShadowing() — load-time linter per policy-evaluation-flow.md §199-230
 // ---------------------------------------------------------------------------
 
@@ -490,31 +559,83 @@ export interface ShadowWarning {
   /** The earlier rule that swallows every call the later rule would match. */
   earlier: string
   message: string
+  /** True when the two rules live in different tiers and their matches
+   *  intersect (but neither is a strict subset of the other). False or
+   *  absent for the classic within-tier subset shadow — the existing
+   *  warning shape is preserved for backward compatibility. Added in
+   *  ccsc-4g8 to surface the Workspace-`auto_approve`-overrides-Admin-
+   *  `deny` silent-footgun class that pure subset detection misses. */
+  crossTier?: boolean
 }
 
-/** Static subset-check over MatchSpec fields. A later rule is shadowed
- *  when an earlier rule's match is less-specific-or-equal on every
- *  field. Warn-not-block: the warnings go to stderr at load time so the
- *  operator can reorder or narrow. Never fail-closed — an operator who
- *  intentionally wrote an unreachable rule (e.g., as a placeholder
+/** Static check for two kinds of shadow:
+ *
+ *   1. **Within-tier subset shadow** (existing v0.5.x behavior): a
+ *      later rule's match is fully covered by an earlier rule's match.
+ *      The later rule is never reached.
+ *
+ *   2. **Cross-tier intersection shadow** (ccsc-4g8): a non-Admin
+ *      `auto_approve` rule shares any concrete tool call with an
+ *      Admin `deny` rule. Once `ccsc-8pw` lands and `evaluate()`
+ *      acts on tier precedence, the Admin deny will win — but right
+ *      now (and in any audit that compares the published policy
+ *      surface against what users see), the cross-tier intersection
+ *      is itself ambiguous: which way does the operator intend it to
+ *      resolve? Surfacing as a warning forces the question.
+ *
+ *  Warn-not-block: the warnings go to stderr at load time so the
+ *  operator can reorder or narrow. Never fail-closed — an operator
+ *  who intentionally wrote an unreachable rule (e.g., as a placeholder
  *  during a refactor) shouldn't be forced to delete it just to boot.
  */
 export function detectShadowing(rules: readonly PolicyRule[]): ShadowWarning[] {
   const warnings: ShadowWarning[] = []
+
+  // Pass 1: within-tier subset shadowing (existing behavior, unchanged).
+  // We compare against earlier rules in the same tier — different tiers
+  // resolve via strictest-tier-wins (once ccsc-8pw lands) so they cannot
+  // shadow each other in the classic first-applicable sense.
   for (let j = 1; j < rules.length; j++) {
     const later = rules[j]!
+    const laterTier = effectiveTier(later)
     for (let i = 0; i < j; i++) {
       const earlier = rules[i]!
+      if (effectiveTier(earlier) !== laterTier) continue
       if (matchSubsetOrEqual(earlier.match, later.match)) {
         warnings.push({
           later: later.id,
           earlier: earlier.id,
           message: `rule '${later.id}' is shadowed by earlier rule '${earlier.id}' — every call the later rule would match is already caught by the earlier one`,
+          crossTier: false,
         })
         break // first shadow is sufficient; don't double-report
       }
     }
   }
+
+  // Pass 2: cross-tier intersection — every non-Admin `auto_approve`
+  // checked against every Admin `deny`. Direction matters: we only
+  // surface the dangerous direction (auto_approve from a lower tier
+  // touching the same call space as a higher-tier deny). The reverse
+  // direction (an Admin auto_approve intersecting a User deny) is
+  // intended — it's the Admin tier saying "I override this deny."
+  for (const lowerRule of rules) {
+    if (lowerRule.effect !== 'auto_approve') continue
+    if (effectiveTier(lowerRule) === 'admin') continue
+    for (const adminRule of rules) {
+      if (adminRule.effect !== 'deny') continue
+      if (effectiveTier(adminRule) !== 'admin') continue
+      if (matchesIntersect(lowerRule.match, adminRule.match)) {
+        warnings.push({
+          later: lowerRule.id,
+          earlier: adminRule.id,
+          message: `cross-tier shadow: '${effectiveTier(lowerRule)}'-tier auto_approve rule '${lowerRule.id}' intersects 'admin'-tier deny rule '${adminRule.id}' — operator intent is ambiguous; resolve by narrowing match, retiering, or removing one rule`,
+          crossTier: true,
+        })
+      }
+    }
+  }
+
   return warnings
 }
 
@@ -541,6 +662,56 @@ function matchSubsetOrEqual(outer: MatchSpec, inner: MatchSpec): boolean {
     if (inner.argEquals === undefined) return false
     for (const [k, v] of Object.entries(outer.argEquals)) {
       if (!jsonEqual(inner.argEquals[k], v)) return false
+    }
+  }
+
+  return true
+}
+
+/** Do `a` and `b` describe overlapping call spaces? Returns true iff
+ *  there exists at least one concrete tool call that both matches
+ *  accept. Used by `detectShadowing()` for the cross-tier intersection
+ *  pass — a strict subset is one form of intersection, but two specs
+ *  can intersect without either being a subset (e.g., one constrains
+ *  tool+channel, the other constrains tool+actor).
+ *
+ *  Field-by-field logic:
+ *    - Exact-match fields (`tool`, `channel`, `thread_ts`, `actor`):
+ *      if both sides constrain the field, the values must be equal.
+ *      Either side leaving the field unconstrained is compatible with
+ *      anything the other side asks.
+ *    - `pathPrefix`: both unconstrained → overlap. One side
+ *      constrains, other doesn't → overlap. Both constrain → one must
+ *      be a prefix of the other (or equal).
+ *    - `argEquals`: the conjunction is the union of both keys with the
+ *      union of the value constraints. They overlap unless they
+ *      disagree on a shared key (same key, different required value).
+ *    - `tier`: intentionally excluded from intersection (tier is
+ *      provenance, not call-space identity — two rules in different
+ *      tiers CAN match the same call, that's the whole point of the
+ *      check).
+ */
+export function matchesIntersect(a: MatchSpec, b: MatchSpec): boolean {
+  if (a.tool !== undefined && b.tool !== undefined && a.tool !== b.tool) return false
+  if (a.channel !== undefined && b.channel !== undefined && a.channel !== b.channel) return false
+  if (a.thread_ts !== undefined && b.thread_ts !== undefined && a.thread_ts !== b.thread_ts) {
+    return false
+  }
+  if (a.actor !== undefined && b.actor !== undefined && a.actor !== b.actor) return false
+
+  if (a.pathPrefix !== undefined && b.pathPrefix !== undefined) {
+    if (
+      a.pathPrefix !== b.pathPrefix &&
+      !a.pathPrefix.startsWith(b.pathPrefix + sep) &&
+      !b.pathPrefix.startsWith(a.pathPrefix + sep)
+    ) {
+      return false
+    }
+  }
+
+  if (a.argEquals !== undefined && b.argEquals !== undefined) {
+    for (const [k, v] of Object.entries(a.argEquals)) {
+      if (k in b.argEquals && !jsonEqual(b.argEquals[k], v)) return false
     }
   }
 

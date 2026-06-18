@@ -31,7 +31,6 @@ Once planned in reverse, execution runs forward:
 Build the minimum artifact needed to run the experiment. This is not about building a product; it is about building a learning vehicle.
 
 **Build phase checklist:**
-
 - [ ] Hypothesis is written and visible to the team
 - [ ] Success/failure criteria are defined before building
 - [ ] The artifact is the smallest thing that can generate the needed data
@@ -43,7 +42,6 @@ Build the minimum artifact needed to run the experiment. This is not about build
 Collect quantitative and qualitative data from real customer behavior.
 
 **Measure phase checklist:**
-
 - [ ] Instrumentation is in place before launch
 - [ ] Baseline metrics are recorded
 - [ ] Data collection method can distinguish signal from noise
@@ -55,7 +53,6 @@ Collect quantitative and qualitative data from real customer behavior.
 Analyze data, draw conclusions, and decide next action.
 
 **Learn phase checklist:**
-
 - [ ] Data is reviewed against pre-set criteria (not post-hoc rationalization)
 - [ ] Team discusses what surprised them
 - [ ] Decision is made: persevere, pivot, or run another experiment
@@ -208,13 +205,11 @@ Next hypothesis: _______________
 Run multiple experiments simultaneously when they test independent assumptions. A team of 6 can often run 2-3 concurrent loops if the assumptions do not depend on each other.
 
 **When to parallelize:**
-
 - Assumptions are independent (result of one does not affect another)
 - Team has bandwidth without context-switching overhead
 - Each loop has a dedicated owner
 
 **When not to parallelize:**
-
 - Assumptions are sequential (must validate A before B makes sense)
 - Team is small (fewer than 4 people)
 - Results from one experiment change the design of another

@@ -2,8 +2,8 @@
 
 Adapting type to screens, viewports, and reading contexts.
 
-## Table of Contents
 
+## Table of Contents
 1. [Core Principle](#core-principle)
 2. [The Problem with Fixed Sizes](#the-problem-with-fixed-sizes)
 3. [Fluid Typography with clamp()](#fluid-typography-with-clamp)
@@ -67,7 +67,6 @@ body {
 ```
 
 Breakdown:
-
 - At 320px viewport: ~16px
 - At 768px viewport: ~18px
 - At 1200px+ viewport: 20px (capped)
@@ -94,19 +93,16 @@ h3 {
 ### Generating clamp() Values
 
 **Formula for calculating:**
-
 ```
 preferred = minimum + (maximum - minimum) * ((100vw - minViewport) / (maxViewport - minViewport))
 ```
 
 **Simplified approach:**
-
 1. Pick min size at min viewport (e.g., 16px at 320px)
 2. Pick max size at max viewport (e.g., 20px at 1200px)
 3. Use a clamp generator or calculate the vw coefficient
 
 **Tools:**
-
 - [Utopia.fyi](https://utopia.fyi/type/calculator/) - Type scale generator
 - [clamp() Calculator](https://min-max-calculator.9elements.com/) - Interactive calculator
 
@@ -371,13 +367,11 @@ h3 { font-size: var(--text-xl); }
 ## Tools and Resources
 
 **Fluid type calculators:**
-
 - [Utopia.fyi](https://utopia.fyi/type/calculator/)
 - [Modern Fluid Typography Editor](https://modern-fluid-typography.vercel.app/)
 - [Fluid Type Scale Calculator](https://www.fluid-type-scale.com/)
 
 **Testing:**
-
 - Browser DevTools responsive mode
 - [Responsively App](https://responsively.app/) - Multi-device preview
 - Real devices when possible

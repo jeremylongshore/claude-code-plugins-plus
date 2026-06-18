@@ -50,8 +50,8 @@ Respond terse. All security substance stays — only filler dies. Follow output-
 
 When performing Blue work, follow these superpowers process skills:
 
-| Skill | Trigger |
-| ----- | ------- |
+| Skill                                        | Trigger                                                                   |
+| -------------------------------------------- | ------------------------------------------------------------------------- |
 | `superpowers:verification-before-completion` | Before claiming any work complete — verify output is complete and correct |
 
 **Iron rule:** No completion claims without fresh verification.

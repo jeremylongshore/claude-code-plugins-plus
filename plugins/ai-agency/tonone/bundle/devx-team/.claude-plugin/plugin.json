@@ -1,6 +1,6 @@
 {
   "name": "devx-team",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Developer Experience Team \u2014 10 agents: Guide, Sample, Mock, Schema, Port, Change, Onboard, Bench, Compat, Gate",
   "author": {
     "name": "tonone-ai",
@@ -8,11 +8,5 @@
   },
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
-  "keywords": [
-    "agents",
-    "devx-team",
-    "developer-experience",
-    "devx",
-    "bundle"
-  ]
+  "keywords": ["agents", "devx-team", "developer-experience", "devx", "bundle"]
 }

@@ -9,7 +9,7 @@ The `aomi` plugin bundle ships two skills with materially different risk profile
 | Skill | Risk tier | Sandbox | Network surface | Shell surface |
 |-------|-----------|---------|-----------------|---------------|
 | [`aomi-transact`](skills/transact/SKILL.md) | **L2** (signs/broadcasts) | Forked-chain simulation gate before every signing | `api.aomi.dev` only (allowlist) | `aomi`, `npx @aomi-labs/client@0.1.30` |
-| [`aomi-build`](https://github.com/aomi-labs/skills/tree/main/plugins/aomi/skills/build) | **L1** (low — scaffolds code, no runtime side effects) | n/a (no execution; output is source code for the user to review) | none (offline) | `cargo`, `git` |
+| [`aomi-build`](skills/build/SKILL.md) | **L1** (low — scaffolds code, no runtime side effects) | n/a (no execution; output is source code for the user to review) | none (offline) | `cargo`, `git` |
 
 Both skills have full per-control walkthroughs against AST01–AST10 in their respective SECURITY.md files in this repo:
 

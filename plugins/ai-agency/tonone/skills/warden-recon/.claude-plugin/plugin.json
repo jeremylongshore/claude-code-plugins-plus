@@ -1,6 +1,6 @@
 {
   "name": "warden-recon",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Security reconnaissance \u2014 full inventory of secrets management, IAM, dependencies, auth, encryption, audit logging, and compliance gaps. Use when asked about \"security posture\", \"how secure is this\", or \"security assessment\".",
   "author": {
     "name": "tonone-ai",
@@ -9,8 +9,5 @@
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
   "type": "skill",
-  "keywords": [
-    "warden",
-    "skill"
-  ]
+  "keywords": ["warden", "skill"]
 }

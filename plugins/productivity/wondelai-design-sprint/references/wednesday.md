@@ -137,7 +137,6 @@ After the Supervote, the Sprint Master checks whether one or multiple sketches w
 Use when the Decider's supervotes landed on one sketch or on compatible elements from multiple sketches.
 
 **Process:**
-
 1. The winning sketch becomes the foundation
 2. Pull in specific elements from other sketches that got dots or team support
 3. Combine into a single concept
@@ -147,7 +146,6 @@ Use when the Decider's supervotes landed on one sketch or on compatible elements
 Use when the Decider's supervotes landed on two clearly different and incompatible approaches.
 
 **Process:**
-
 1. Prototype both approaches (usually as branded competitors: "Concept A" and "Concept B")
 2. Test both with users on Friday
 3. Each approach gets its own storyboard panel sequence
@@ -187,7 +185,6 @@ Translate the winning sketch into a step-by-step prototype blueprint. The storyb
 ### Storyboard Best Practices
 
 **Include:**
-
 - Real headlines and copy (not "text goes here")
 - Button labels
 - Key images or illustrations (described, even if rough)
@@ -195,7 +192,6 @@ Translate the winning sketch into a step-by-step prototype blueprint. The storyb
 - Error states or edge cases (if they are part of the test)
 
 **Exclude:**
-
 - Backend logic
 - Features that will not be tested
 - Multiple branching paths (pick one primary path)

@@ -8,6 +8,7 @@ tools:
     annotations:
       readOnlyHint: true
       destructiveHint: false
+      openWorldHint: false
     inputSchema:
       type: object
       properties:
@@ -46,6 +47,8 @@ tools:
     annotations:
       readOnlyHint: false
       destructiveHint: false
+      idempotentHint: false
+      openWorldHint: false
     inputSchema:
       type: object
       properties:
@@ -74,11 +77,17 @@ tools:
       Confirm a previously uploaded app so Kobiton parses the file and creates
       the app record. Call this after successfully uploading the file via PUT
       to the pre-signed URL returned by uploadAppToStore. Without this step
-      the file is orphaned in S3. Returns the appId and versionId of the
-      created app record.
+      the file is orphaned in S3. Returns the appId, versionId, and state of the
+      created app record. Parsing runs asynchronously: the app is created in
+      state PARSING, so poll getAppParsingStatus(versionId) until the state is
+      terminal (OK or a FAILURE_* value) before reserving devices or starting
+      sessions. confirmAppUpload may return appId: null for brand-new uploads -
+      use getAppParsingStatus(versionId), which resolves the real appId.
     annotations:
       readOnlyHint: false
       destructiveHint: false
+      idempotentHint: true
+      openWorldHint: false
     inputSchema:
       type: object
       properties:
@@ -98,6 +107,33 @@ tools:
         - userIntent
         - appPath
         - filename
+  - name: getAppParsingStatus
+    title: Get App Parsing Status
+    description: >
+      Check the async parse status of an uploaded app version. After
+      confirmAppUpload, the app is created with state PARSING and parsed
+      asynchronously - poll this tool by versionId until the state is terminal
+      (OK or a FAILURE_* value) before reserving devices or starting sessions.
+      Returns the resolved appId even when confirmAppUpload returned appId: null.
+    annotations:
+      readOnlyHint: true
+      destructiveHint: false
+      openWorldHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        versionId:
+          type: integer
+          description: The versionId returned by confirmAppUpload
+      required:
+        - userIntent
+        - versionId
   - name: getApp
     title: Get App
     description: >
@@ -106,6 +142,7 @@ tools:
     annotations:
       readOnlyHint: true
       destructiveHint: false
+      openWorldHint: false
     inputSchema:
       type: object
       properties:

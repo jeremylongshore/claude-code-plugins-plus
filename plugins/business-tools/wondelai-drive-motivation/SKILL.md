@@ -4,61 +4,46 @@ description: 'Design motivation systems using Autonomy, Mastery, and Purpose (AM
 license: MIT
 metadata:
   author: wondelai
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Drive Motivation Framework
 
-Framework for designing motivation systems in products, teams, and organizations based on the science of what actually motivates humans. Replaces outdated carrot-and-stick thinking with intrinsic motivation.
+Design motivation systems for products, teams, and organizations based on the science of what actually motivates humans — replacing carrot-and-stick thinking with intrinsic motivation.
 
 ## Core Principle
 
-**The secret to high performance isn't rewards and punishment — it's the deeply human need to direct our own lives, learn and create new things, and do better for ourselves and our world.**
-
-**The foundation:** For any task requiring even rudimentary cognitive effort, external rewards (bonuses, prizes, punishments) either don't work or actively make performance worse. Intrinsic motivation — Autonomy, Mastery, Purpose — drives lasting engagement.
+**The secret to high performance isn't rewards and punishment — it's the deeply human need to direct our own lives, learn and create new things, and do better for ourselves and our world.** For any task requiring even rudimentary cognitive effort, external rewards either don't work or actively worsen performance. Intrinsic motivation — Autonomy, Mastery, Purpose (AMP) — drives lasting engagement.
 
 ## Scoring
 
-**Goal: 10/10.** When evaluating motivation systems (product features, team incentives, gamification, engagement loops), rate 0-10 based on AMP principles. A 10/10 means the system supports autonomy, enables mastery, and connects to purpose; lower scores indicate reliance on extrinsic rewards or controlling behaviors. Always provide current score and improvements to reach 10/10.
+**Goal: 10/10.** Rate any motivation system (product features, team incentives, gamification, engagement loops) 0-10 against the AMP principles below. A 10/10 supports autonomy, enables mastery, and connects to purpose; lower scores indicate reliance on extrinsic rewards or controlling behaviors. Always state the current score and the specific improvements needed to reach 10/10.
 
 ## Motivation 1.0, 2.0, and 3.0
 
 | Version | Core Assumption | Approach | Era |
 |---------|----------------|----------|-----|
-| **1.0** | Humans are biological beings | Survival drives (food, shelter, safety) | Pre-industrial |
-| **2.0** | Humans respond to rewards/punishments | Carrot and stick (bonuses, penalties) | Industrial age |
+| **1.0** | Humans are biological | Survival drives | Pre-industrial |
+| **2.0** | Humans respond to rewards/punishments | Carrot and stick | Industrial age |
 | **3.0** | Humans seek autonomy, mastery, purpose | Intrinsic motivation | Knowledge economy |
 
-**The problem with Motivation 2.0 (carrot and stick):**
-
-Most organizations still run on Motivation 2.0, but it's fundamentally broken for modern work.
+Most organizations still run on Motivation 2.0 — fundamentally broken for modern cognitive work.
 
 ### The Seven Deadly Flaws of Extrinsic Rewards
 
-External rewards ("if-then" rewards: "If you do X, then you get Y"):
+"If-then" rewards ("If you do X, then you get Y"):
 
 | Flaw | Mechanism | Example |
 |------|-----------|---------|
-| **1. Extinguish intrinsic motivation** | Turns play into work | Kids who were paid to draw stopped drawing when payments stopped |
-| **2. Diminish performance** | Narrow focus, reduce creativity | Candle problem: reward group performed worse |
-| **3. Crush creativity** | Focus on reward, not exploration | Artists creating commissioned work are less creative |
-| **4. Crowd out good behavior** | Financial framing replaces moral framing | Day care late-pickup fee: lateness increased (became a "service") |
-| **5. Encourage cheating** | Goal fixation leads to shortcuts | Wells Fargo fake accounts scandal |
-| **6. Become addictive** | Need bigger rewards over time | Bonus escalation: last year's bonus = this year's expectation |
-| **7. Foster short-term thinking** | Optimize for reward period | Quarterly bonuses → quarterly thinking |
+| **1. Extinguish intrinsic motivation** | Turns play into work | Kids paid to draw stopped drawing when payments stopped |
+| **2. Diminish performance** | Narrow focus, reduce creativity | Candle problem: rewarded group performed worse |
+| **3. Crush creativity** | Reward focus replaces exploration | Commissioned art rated less creative |
+| **4. Crowd out good behavior** | Financial framing replaces moral framing | Day-care late fee: lateness increased (became a "service") |
+| **5. Encourage cheating** | Goal fixation invites shortcuts | Wells Fargo fake accounts |
+| **6. Become addictive** | Bigger rewards needed over time | Last year's bonus = this year's expectation |
+| **7. Foster short-term thinking** | Optimize for the reward period | Quarterly bonuses → quarterly thinking |
 
-**When extrinsic rewards DO work:**
-
-- Routine, algorithmic tasks (assembly line, data entry)
-- Tasks requiring no creativity or judgment
-- When the task is genuinely boring and no intrinsic motivation exists
-
-**When extrinsic rewards DON'T work (and hurt):**
-
-- Creative work
-- Complex problem-solving
-- Any task requiring cognitive effort
-- Long-term engagement
+**The boundary:** extrinsic rewards work only for routine, algorithmic tasks with no intrinsic interest. For creative work, complex problem-solving, or long-term engagement, they backfire.
 
 See: [references/extrinsic-rewards.md](references/extrinsic-rewards.md) for the science behind reward failures.
 
@@ -66,9 +51,7 @@ See: [references/extrinsic-rewards.md](references/extrinsic-rewards.md) for the 
 
 ### 1. Autonomy
 
-**Definition:** The desire to direct our own lives — to have choice over what we do, when we do it, how we do it, and who we do it with.
-
-**Autonomy ≠ independence.** Autonomy means acting with choice. You can be autonomous while being interdependent with a team.
+**Core concept:** The desire to direct our own lives — choice over what, when, how, and with whom. Autonomy ≠ independence: people can act with choice while staying interdependent with a team.
 
 **The Four T's of Autonomy:**
 
@@ -76,86 +59,32 @@ See: [references/extrinsic-rewards.md](references/extrinsic-rewards.md) for the 
 |-----------|----------|---------|
 | **Task** | What do I work on? | Google's 20% time, Atlassian ShipIt days |
 | **Time** | When do I work? | Flexible hours, no mandatory meetings |
-| **Technique** | How do I do it? | Choose your own tools, methods, approach |
-| **Team** | Who do I work with? | Self-forming teams, choose collaborators |
+| **Technique** | How do I do it? | Choose tools, methods, approach |
+| **Team** | Who do I work with? | Self-forming teams |
 
 **Product applications:**
 
 | Context | Autonomy Killer | Autonomy Enabler |
 |---------|----------------|-------------------|
-| **Onboarding** | Forced linear tutorial | Choose your own path, skip steps |
-| **Customization** | One-size-fits-all | Themes, layouts, preferences |
+| **Onboarding** | Forced linear tutorial | Choose your path, skip steps |
 | **Content** | Algorithm-only feed | User-controlled feeds, filters |
-| **Communication** | Forced notifications | Notification preferences, DND |
-| **Workflow** | Rigid process | Flexible workflow, custom automations |
-| **Features** | Feature bloat (all visible) | Show/hide features, progressive disclosure |
+| **Workflow** | Rigid process, feature bloat | Custom automations, show/hide, progressive disclosure |
 
-**Autonomy audit questions:**
-
-- Can users choose WHAT to do in the product?
-- Can users choose WHEN to engage?
-- Can users choose HOW to complete tasks?
-- Can users choose their own path through the experience?
-
-**Warning signs of autonomy violation:**
-
-- "You must complete X before Y"
-- Forced tutorials with no skip option
-- Mandatory notifications
-- No customization options
-- Rigid workflows with no flexibility
+**Autonomy audit:** can users choose WHAT to do, WHEN to engage, HOW to complete tasks, and their own path through the experience? "You must complete X before Y", unskippable tutorials, and mandatory notifications are violations.
 
 See: [references/autonomy.md](references/autonomy.md) for autonomy design patterns.
 
 ### 2. Mastery
 
-**Definition:** The desire to get better at something that matters — to continually improve and grow.
-
-**Mastery is a mindset, not a destination.** It's asymptotic — you can approach it but never fully reach it. The joy is in the pursuit.
+**Core concept:** The desire to get better at something that matters. Mastery is a mindset, not a destination — it's asymptotic, and the joy is in the pursuit.
 
 **Three laws of mastery:**
 
-**Law 1: Mastery is a Mindset**
+- **Mastery is a mindset** — ability is developed, not fixed (Dweck's growth mindset). Frame failures as learning, not judgment.
+- **Mastery is a pain** — it demands effort and deliberate practice. Flow (Csikszentmihalyi) lives between boredom and anxiety, so calibrate challenge to skill level.
+- **Mastery is asymptotic** — users never fully arrive. Always offer a next level, next challenge.
 
-- Growth mindset (Carol Dweck): Ability is developed, not fixed
-- People with growth mindset seek challenges and learn from failure
-- Fixed mindset people avoid challenges (might reveal inadequacy)
-- **Design implication:** Frame failures as learning, not judgment
-
-**Law 2: Mastery is a Pain**
-
-- Requires effort, deliberate practice, and grit
-- Flow (Csikszentmihalyi): Optimal state between boredom and anxiety
-- Challenge must match skill level — too easy = boring, too hard = anxious
-- **Design implication:** Calibrate difficulty to user's level
-
-**Law 3: Mastery is Asymptotic**
-
-- You can approach mastery but never fully arrive
-- The pursuit itself is the reward
-- **Design implication:** Always have next level, next challenge
-
-**The Flow Channel:**
-
-```
-                ANXIETY
-               /
-              /
-    FLOW ←──────────── Optimal challenge zone
-              \
-               \
-                BOREDOM
-
-    Low Skill ──────────────── High Skill
-```
-
-**Flow conditions:**
-
-- Clear goals
-- Immediate feedback
-- Challenge/skill balance
-- Sense of control
-- Deep concentration
+**Flow conditions:** clear goals, immediate feedback, challenge/skill balance, sense of control.
 
 **Product applications:**
 
@@ -163,66 +92,33 @@ See: [references/autonomy.md](references/autonomy.md) for autonomy design patter
 |---------|---------------|---------|
 | **Progress** | Visible skill development | GitHub contribution graph, Duolingo levels |
 | **Difficulty** | Adaptive challenge | Games that adjust to player skill |
-| **Feedback** | Immediate, clear signals | Real-time writing analysis (Grammarly) |
-| **Goals** | Clear, achievable milestones | LinkedIn profile strength meter |
-| **Learning** | Skill trees, structured paths | Codecademy learning paths |
-| **Streaks** | Consistency tracking | Duolingo streaks (careful: can become extrinsic) |
+| **Feedback** | Immediate, clear signals | Grammarly real-time writing analysis |
 
-**Mastery audit questions:**
-
-- Can users see their progress over time?
-- Does the product adapt to skill level?
-- Is there immediate, meaningful feedback?
-- Are there clear next steps for improvement?
-- Does the challenge increase as skill increases?
-
-**Warning signs of mastery violation:**
-
-- No way to see improvement
-- Same difficulty regardless of skill
-- Delayed or absent feedback
-- No clear path forward
-- Punishing failures instead of teaching
+**Mastery audit:** can users see progress over time, get immediate feedback, and find a clear next step? Flat difficulty and punished failure are violations.
 
 See: [references/mastery.md](references/mastery.md) for mastery design patterns and flow state principles.
 
 ### 3. Purpose
 
-**Definition:** The yearning to do what we do in the service of something larger than ourselves.
-
-**Purpose is the context for autonomy and mastery.** Without purpose, autonomy is directionless and mastery is hollow.
+**Core concept:** The yearning to act in service of something larger than ourselves. Purpose is the context for the other two pillars — without it, autonomy is directionless and mastery hollow.
 
 **Three expressions of purpose:**
 
 | Expression | How It Manifests | Example |
 |-----------|-----------------|---------|
-| **Goals** | Purpose-driven objectives | TOMS: "With every product you purchase, TOMS will help a person in need" |
+| **Goals** | Purpose-driven objectives | TOMS: every purchase helps a person in need |
 | **Words** | Language of purpose, not profit | "Associates" not "employees", "community" not "users" |
-| **Policies** | Actions that demonstrate purpose | Patagonia: "Don't Buy This Jacket" campaign |
+| **Policies** | Actions that demonstrate purpose | Patagonia: "Don't Buy This Jacket" |
 
 **Product applications:**
 
 | Context | Purpose Design | Example |
 |---------|---------------|---------|
-| **Mission** | Clear, inspiring why | "Organize the world's information" (Google) |
-| **Impact** | Show user's contribution | Wikipedia edit counter, Kiva lending impact |
-| **Community** | Connect to something bigger | Open source contribution, community goals |
-| **Transparency** | Show how product helps | Charity: Water shows exact well location |
+| **Impact** | Show the user's contribution | Wikipedia edit counter, Kiva lending impact |
+| **Community** | Connect to something bigger | Open source contributions, community goals |
 | **Values** | Align product with beliefs | Ecosia: "Search the web to plant trees" |
 
-**Purpose audit questions:**
-
-- Does the user understand WHY this product/feature exists?
-- Can users see their impact on something bigger?
-- Does the product connect to values the user cares about?
-- Is there a mission beyond profit?
-
-**Purpose in product design:**
-
-- Show aggregate impact ("Together, our users have saved 1M hours")
-- Connect individual actions to collective outcomes
-- Frame features in terms of why, not just what
-- Celebrate meaningful milestones, not vanity metrics
+**Purpose audit:** does the user know WHY this exists, see their impact on something bigger, and find alignment with their values? Show aggregate impact ("Together, our users have saved 1M hours"), connect individual actions to collective outcomes, and celebrate meaningful milestones over vanity metrics.
 
 See: [references/purpose.md](references/purpose.md) for purpose-driven design patterns.
 
@@ -230,58 +126,25 @@ See: [references/purpose.md](references/purpose.md) for purpose-driven design pa
 
 ### Gamification Done Right vs. Wrong
 
-**Wrong gamification (extrinsic, Motivation 2.0):**
-
-- Points for every action (becomes meaningless)
-- Badges for trivial achievements
-- Leaderboards that discourage (I'll never catch up)
-- Rewards that replace intrinsic motivation
-
-**Right gamification (intrinsic, Motivation 3.0):**
-
 | Principle | Bad (Extrinsic) | Good (Intrinsic) |
 |-----------|-----------------|-------------------|
-| **Autonomy** | Forced challenges, mandatory participation | Choose challenges, opt-in |
-| **Mastery** | Points for everything | Skill-based progression, meaningful milestones |
-| **Purpose** | Pointless competition | Contribute to community, personal growth |
+| **Autonomy** | Forced challenges, mandatory participation | Opt-in, chosen challenges |
+| **Mastery** | Points for everything, trivial badges | Skill-based progression, meaningful milestones |
+| **Purpose** | Pointless competition, discouraging leaderboards | Community contribution, personal growth |
 
-**Example: Duolingo**
-
-- **Autonomy:** Choose language, pace, topics
-- **Mastery:** Adaptive difficulty, progress tracking, skill levels
-- **Purpose:** "Learn a language to connect with people"
-- **Caution:** Streaks can shift from mastery (intrinsic) to loss aversion (extrinsic)
+**Example — Duolingo:** autonomy (choose language, pace, topics), mastery (adaptive difficulty, skill levels), purpose ("learn a language to connect with people"). Caution: streaks can shift from intrinsic mastery to extrinsic loss aversion.
 
 ### Team Motivation
 
-**How to apply AMP to team management:**
-
 | Principle | Manager Action | Example |
 |-----------|---------------|---------|
-| **Autonomy** | Give control over task, time, technique, team | "Here's the goal. How you get there is up to you." |
-| **Mastery** | Provide challenge, feedback, growth | Stretch assignments, mentorship, skill development budget |
+| **Autonomy** | Hand over task, time, technique, team | "Here's the goal. How you get there is up to you." |
+| **Mastery** | Provide challenge, feedback, growth | Stretch assignments, mentorship, learning budget |
 | **Purpose** | Connect work to mission | "Here's why this matters for our customers" |
-
-**"If-then" vs. "Now that" rewards:**
-
-- **Bad:** "If you hit target, you get bonus" (if-then, creates pressure)
-- **Better:** "You hit target! Here's a bonus." (now-that, unexpected recognition)
-- **Best:** "Let's talk about what you want to work on next." (intrinsic)
 
 ### Compensation and Incentives
 
-**Pink's recommendations:**
-
-1. Pay people enough to take money off the table
-2. Then focus on autonomy, mastery, purpose
-3. Use "now-that" rewards (unexpected), not "if-then" rewards (contingent)
-
-**The baseline:**
-
-- Fair compensation eliminates distraction
-- Above-market pay signals respect
-- But beyond "enough," more money doesn't increase motivation
-- Once baseline is met, AMP drives engagement
+Pay people enough to take money off the table — fair, ideally above-market — then focus on AMP; beyond "enough," more money doesn't increase motivation. Prefer "now-that" rewards (unexpected recognition after the fact: "You hit target! Here's a bonus.") over "if-then" rewards ("If you hit target, you get a bonus"), which create pressure and short-term thinking.
 
 See: [references/applications.md](references/applications.md) for product and team applications.
 
@@ -290,19 +153,10 @@ See: [references/applications.md](references/applications.md) for product and te
 | Type X (Extrinsic) | Type I (Intrinsic) |
 |--------------------|---------------------|
 | Fueled by external rewards | Fueled by autonomy, mastery, purpose |
-| Concerned with external recognition | Concerned with inherent satisfaction |
-| Short-term focused | Long-term focused |
-| Sees effort as burden | Sees effort as path to mastery |
-| Fixed mindset tendencies | Growth mindset tendencies |
+| Seeks external recognition | Seeks inherent satisfaction |
+| Short-term focus, fixed mindset | Long-term focus, growth mindset |
 
-**Goal:** Design products and teams that cultivate Type I behavior.
-
-**Type I behavior:**
-
-- Is made, not born (anyone can develop it)
-- Doesn't disdain money or recognition
-- Is a renewable resource (doesn't deplete)
-- Promotes greater physical and mental well-being
+Design products and teams that cultivate Type I behavior: it's made, not born; it doesn't disdain money or recognition; it's renewable; and it promotes well-being.
 
 ## Common Mistakes
 
@@ -310,10 +164,10 @@ See: [references/applications.md](references/applications.md) for product and te
 |---------|-------------|------|
 | **Points for everything** | Crowds out intrinsic motivation | Reserve rewards for meaningful milestones |
 | **Mandatory participation** | Kills autonomy | Make engagement opt-in |
-| **Same challenge for everyone** | No flow state (bored or anxious) | Adaptive difficulty matching |
-| **No visible progress** | Can't see mastery | Progress indicators, skill tracking |
+| **Same challenge for everyone** | No flow — boredom or anxiety | Adaptive difficulty matching |
+| **No visible progress** | Mastery is invisible | Progress indicators, skill tracking |
 | **Missing "why"** | Actions feel meaningless | Connect every feature to purpose |
-| **If-then bonuses** | Creates short-term thinking | Pay fairly, focus on AMP |
+| **If-then bonuses** | Short-term thinking, gaming | Pay fairly; use "now-that" rewards; focus on AMP |
 
 ## Quick Diagnostic
 
@@ -323,10 +177,10 @@ Audit any motivation system:
 |----------|-------|--------|
 | Can users choose what/when/how? | Autonomy violation | Add choices, flexibility, customization |
 | Can users see their progress? | No mastery signal | Add progress tracking, skill levels |
-| Is the challenge matched to skill? | Boredom or anxiety | Implement adaptive difficulty |
+| Is challenge matched to skill? | Boredom or anxiety | Implement adaptive difficulty |
 | Is there immediate feedback? | Can't improve | Add real-time response to actions |
 | Does the user know WHY this matters? | No purpose | Connect to mission, show impact |
-| Are we using "if-then" rewards? | Extrinsic motivation | Switch to "now-that" or intrinsic design |
+| Are we using "if-then" rewards? | Extrinsic crowding-out | Switch to "now-that" or intrinsic design |
 
 ## Reference Files
 
@@ -340,11 +194,11 @@ Audit any motivation system:
 
 ## Further Reading
 
-This skill is based on Daniel Pink's research on motivation science. For the complete framework:
+Based on Daniel Pink's research on motivation science:
 
 - [*"Drive: The Surprising Truth About What Motivates Us"*](https://www.amazon.com/Drive-Surprising-Truth-About-Motivates/dp/1594484805?tag=wondelai00-20) by Daniel H. Pink
 - [*"To Sell Is Human"*](https://www.amazon.com/Sell-Human-Surprising-Moving-Others/dp/1594631905?tag=wondelai00-20) by Daniel H. Pink (applying motivation to sales and persuasion)
 
 ## About the Author
 
-**Daniel H. Pink** is the author of seven books including four New York Times bestsellers. *Drive* has been translated into over 40 languages and fundamentally changed how organizations think about motivation. Pink's TED Talk on the science of motivation is one of the most-viewed of all time (45M+ views). He has advised companies, governments, and nonprofits worldwide on motivation, creativity, and human performance. Pink was previously a speechwriter for Vice President Al Gore and has written for The New York Times, Harvard Business Review, and Wired.
+**Daniel H. Pink** is the author of seven books, including four New York Times bestsellers. *Drive*, translated into 40+ languages, changed how organizations think about motivation, and his TED Talk on motivation science is among the most-viewed of all time. He was previously chief speechwriter for Vice President Al Gore.

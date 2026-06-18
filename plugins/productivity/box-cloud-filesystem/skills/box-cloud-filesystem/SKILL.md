@@ -147,7 +147,6 @@ Always report what failed and what succeeded. Never silently skip. Full error ta
 ## Examples
 
 **Back up docs to Box:**
-
 ```bash
 box folders:create 0 "my-project-docs" --json
 box files:upload docs/README.md --parent-id FOLDER_ID
@@ -155,7 +154,6 @@ box folders:share FOLDER_ID --access collaborators
 ```
 
 **Pull, analyze, push back:**
-
 ```bash
 box search "Q1 sales" --type file --json
 box files:download FILE_ID --destination /tmp/box-workspace/
@@ -164,7 +162,6 @@ box files:upload /tmp/box-workspace/summary.md --parent-id PARENT_ID
 ```
 
 **Workspace sync (with hooks):**
-
 ```bash
 ${CLAUDE_PLUGIN_ROOT}/scripts/box-init-workspace.sh FOLDER_ID /tmp/box-workspace
 # edit files normally — hooks auto-sync to Box

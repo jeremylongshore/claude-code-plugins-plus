@@ -45,7 +45,6 @@ Unexpected gifts are 2-3x more powerful than expected ones. Strategies for creat
 | Free trial with onboarding call | Very strong | Personal attention creates powerful obligation |
 
 **Best practice sequence:**
-
 1. Offer full access with zero friction (no credit card)
 2. During trial, deliver an unexpected bonus (personalized tip, extra feature)
 3. Near trial end, reference the value they received
@@ -264,3 +263,4 @@ Layer multiple small gifts over time rather than one big gift. This creates a cu
 | Day 14 | Trial ending: "We've loved having you. Here's what you'd keep..." | Natural conversion moment |
 
 By Day 14, the user has received five distinct gifts. The cumulative obligation makes the conversion ask feel like a natural continuation rather than a sales pitch.
+

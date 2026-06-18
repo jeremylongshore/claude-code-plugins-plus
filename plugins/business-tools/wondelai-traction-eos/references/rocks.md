@@ -40,7 +40,6 @@ A rock is either done or not done at the end of the quarter. No partial credit. 
 Company rocks are the 3-7 most important priorities for the entire organization. They are set by the leadership team and represent the strategic priorities that will move the company toward its 1-Year Plan and 3-Year Picture.
 
 **Characteristics:**
-
 - Owned by one leadership team member (but may involve cross-functional effort)
 - Directly tied to 1-Year Plan goals
 - Visible to the entire organization
@@ -49,7 +48,6 @@ Company rocks are the 3-7 most important priorities for the entire organization.
 ### Individual Rocks
 
 Each leadership team member also has 3-7 personal rocks. These include:
-
 - Their company rock(s) if they own any
 - Department-specific priorities
 - Personal development goals (if applicable)

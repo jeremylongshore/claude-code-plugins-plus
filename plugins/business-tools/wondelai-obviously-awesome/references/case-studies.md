@@ -9,7 +9,6 @@ These case studies illustrate how companies have used positioning to transform t
 A conversation analytics company initially positioned itself as a "call recording and transcription tool" — essentially a feature of existing sales tools. In this category, they competed directly against the recording features built into Zoom, Dialpad, and other communication platforms. The product was perceived as a nice-to-have add-on rather than a strategic investment.
 
 **Problems with old positioning:**
-
 - Compared against free built-in recording features in existing tools
 - Buyers were individual sales reps, not VP-level decision makers
 - Average deal size was small (under $5K/year)
@@ -55,7 +54,6 @@ By changing from a feature category ("call recording") to a value category ("rev
 A project management tool launched as a general-purpose platform competing with Asana, Monday.com, Trello, and dozens of others. Despite having solid features, they couldn't differentiate in a crowded market. Marketing spend was high, conversion was low, and the product was perceived as "another project management tool."
 
 **Problems with old positioning:**
-
 - Compared feature-by-feature against well-funded incumbents with larger feature sets
 - No clear answer to "why should I switch from Asana/Monday.com?"
 - Marketing message ("project management, reimagined") was generic and forgettable
@@ -102,7 +100,6 @@ A startup drowning in a crowded horizontal market found explosive growth by focu
 A database company had built a powerful document-oriented database with unique capabilities: flexible schema, built-in replication, and horizontal scaling. They positioned as a "NoSQL database" — competing head-to-head with established databases on database-specific criteria (query performance, ACID compliance, SQL compatibility).
 
 **Problems with old positioning:**
-
 - Compared against mature databases on criteria where those databases had decades of optimization
 - Buyers were DBAs who evaluated primarily on benchmark performance — not the company's strength
 - The unique flexibility and developer experience were considered "nice-to-have" rather than decision-driving
@@ -147,7 +144,6 @@ Sometimes the right category doesn't exist yet. When your product genuinely solv
 A marketing analytics company built a product that collected customer behavior data from websites, mobile apps, and servers. They positioned as a "marketing analytics" tool, competing with Google Analytics, Mixpanel, and Amplitude. Despite having a powerful data collection and integration layer, they struggled because:
 
 **Problems with old positioning:**
-
 - Google Analytics was free and "good enough" for most marketing analytics
 - Mixpanel and Amplitude were ahead on product analytics features
 - Their unique data infrastructure capabilities were invisible in the "analytics" category
@@ -192,7 +188,6 @@ When your customers value a different part of your product than the one you're m
 An independent marketing consultant offered "marketing strategy and execution services" to small and mid-size businesses. She competed with agencies, other freelancers, and in-house marketing hires. Her positioning was generic, and she was evaluated primarily on hourly rate.
 
 **Problems with old positioning:**
-
 - Compared against cheaper freelancers on platforms like Upwork and Fiverr
 - Clients didn't understand the difference between strategic and tactical marketing help
 - Hourly billing capped revenue and created misaligned incentives
@@ -236,7 +231,6 @@ Positioning applies to services as powerfully as products. By repositioning from
 An email marketing tool offered standard email campaign capabilities — templates, segmentation, A/B testing, automation. They were positioned in the "email marketing" category, competing with Mailchimp, Constant Contact, and a dozen others. Growth was stalling as email marketing became commoditized and price competition intensified.
 
 **Problems with old positioning:**
-
 - Mailchimp dominated mindshare and had a massive free tier
 - Feature parity among email tools meant no meaningful differentiation
 - Customers chose based on price, making margins razor-thin

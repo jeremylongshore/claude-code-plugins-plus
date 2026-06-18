@@ -27,17 +27,14 @@
 Lists are fundamental to iOS design. Configure each row with:
 
 **Left side** (optional):
-
 - Icon or image
 
 **Center**:
-
 - Primary text (17pt regular)
 - Secondary text (15pt or 12pt, lighter color)
 - Tertiary text (if needed)
 
 **Right side** (choose one):
-
 - Chevron (→) — navigates to detail screen
 - Text + Chevron — shows current value, tappable to change
 - Checkmark (✓) — single selection from list
@@ -49,7 +46,6 @@ Lists are fundamental to iOS design. Configure each row with:
 Most inputs are styled as list items:
 
 **Text Input**:
-
 ```
 ┌─────────────────────────────────┐
 │ Email                           │  ← Hint text disappears on typing
@@ -57,7 +53,6 @@ Most inputs are styled as list items:
 ```
 
 **Switch**:
-
 ```
 ┌─────────────────────────────────┐
 │ Notifications          [====○] │
@@ -65,7 +60,6 @@ Most inputs are styled as list items:
 ```
 
 **Date/Time Picker**:
-
 ```
 ┌─────────────────────────────────┐
 │ Date          [ Jan 15, 2025 ] │  ← Light gray button, expands inline
@@ -73,7 +67,6 @@ Most inputs are styled as list items:
 ```
 
 **Picker Screen Pattern**:
-
 - List item shows current value + chevron
 - Tapping navigates to selection screen
 - Selected option marked with checkmark
@@ -138,7 +131,6 @@ Text("Item")
 ```
 
 **Guidelines:**
-
 - Group related actions
 - Use dividers between groups
 - Destructive actions at bottom, marked red
@@ -161,7 +153,6 @@ Menu("Options") {
 ```
 
 **When to use:**
-
 - 3-6 options that don't need full screen
 - Actions that don't require additional input
 - Sorting, filtering, view options
@@ -179,7 +170,6 @@ For important decisions requiring attention:
 ```
 
 **Guidelines:**
-
 - Title is optional (use for clarity)
 - Limit to 5-6 actions
 - Cancel is always last
@@ -212,7 +202,6 @@ For important decisions requiring attention:
 ```
 
 **Guidelines:**
-
 - Title: Clear action question
 - Message: Explain consequences (brief)
 - Buttons: Specific verbs, not just "OK"
@@ -222,13 +211,11 @@ For important decisions requiring attention:
 ### Undo vs. Confirm
 
 **Prefer undo when:**
-
 - Action is recoverable
 - Speed matters
 - Confirmations would be annoying
 
 **Require confirmation when:**
-
 - Action is irreversible
 - Data/money loss possible
 - Action affects others

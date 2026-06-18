@@ -38,7 +38,6 @@ The key insight is that remarkability is not an inherent property of the product
 Ask yourself: Can a customer start a sentence with "Did you know...?" or "You won't believe this, but..." about your product? If yes, you have remarkability. If no, you need to engineer it.
 
 **Examples:**
-
 - "Did you know there's a bar you can only get into through a phone booth?" (Please Don't Tell, NYC speakeasy)
 - "Did you know Snapchat messages disappear after you read them?" (early Snapchat)
 - "Did you know this blender can blend a rake handle?" (Blendtec)
@@ -92,7 +91,6 @@ Game mechanics tap into our innate desire for achievement, status, and compariso
 Spotify Wrapped is perhaps the most successful modern example of game mechanics driving social currency. Every December, Spotify gives each user a personalized summary of their listening habits — top artists, total minutes, genres, and quirky insights.
 
 **Why it works:**
-
 - It's personalized (unique to each user)
 - It's comparative ("You listened more than 95% of users")
 - It's identity-signaling ("My top genre is indie folk" says something about who I am)
@@ -100,7 +98,6 @@ Spotify Wrapped is perhaps the most successful modern example of game mechanics 
 - It's pre-packaged for sharing (beautiful cards formatted for Instagram Stories)
 
 **Design checklist for your own "Wrapped" moment:**
-
 - [ ] Aggregate meaningful user data over a period
 - [ ] Frame data in terms of achievements and comparisons
 - [ ] Create visual share cards formatted for major platforms
@@ -169,7 +166,6 @@ Run this audit on your product or campaign:
 | **Comparison** | Can users compare themselves to others? | | |
 
 **Scoring guide:**
-
 - **0-15:** Minimal social currency. People have no reason to talk about you.
 - **16-30:** Some social currency. Occasional mentions, but not systematic.
 - **31-45:** Strong social currency. Regular word-of-mouth driven by self-enhancement.

@@ -1,6 +1,6 @@
 {
   "name": "surge-retention",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Retention diagnosis + intervention plan \u2014 analyze the retention curve, identify the primary drop-off point, and produce a specific intervention plan with expected impact. Use when asked to \"improve retention\", \"why are users churning\", \"build a retention playbook\", \"reduce churn\", \"win-back campaign\", or \"users aren't coming back\".",
   "author": {
     "name": "tonone-ai",
@@ -9,8 +9,5 @@
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
   "type": "skill",
-  "keywords": [
-    "surge",
-    "skill"
-  ]
+  "keywords": ["surge", "skill"]
 }

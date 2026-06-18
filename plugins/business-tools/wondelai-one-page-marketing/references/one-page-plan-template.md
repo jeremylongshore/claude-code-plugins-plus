@@ -2,8 +2,8 @@
 
 This reference file contains everything you need to complete your 1-Page Marketing Plan: a blank template with fill-in prompts, two fully worked examples, and a guided planning exercise.
 
-## Table of Contents
 
+## Table of Contents
 1. [The Blank Template](#the-blank-template)
 2. [Worked Example 1: B2B SaaS (Project Management Tool for Creative Agencies)](#worked-example-1-b2b-saas-project-management-tool-for-creative-agencies)
 3. [Worked Example 2: Local Service Business (Premium Residential Cleaning)](#worked-example-2-local-service-business-premium-residential-cleaning)
@@ -312,7 +312,6 @@ Use this guided exercise to complete your own 1-Page Marketing Plan. Block 2-3 h
 6. Fill in the Target Market square on your template
 
 **Prompt questions:**
-
 - "Who is my most profitable, most enjoyable-to-serve customer today?"
 - "If I could only serve one type of customer for the next 5 years, who would it be?"
 - "What specific problem keeps this person up at night?"
@@ -325,7 +324,6 @@ Use this guided exercise to complete your own 1-Page Marketing Plan. Block 2-3 h
 4. Fill in the Message square on your template
 
 **Prompt questions:**
-
 - "If a prospect asked 'Why should I choose you over [competitor]?', what would I say?"
 - "What can I promise that no competitor would dare to?"
 - "What do my best customers say about why they chose me?"
@@ -340,7 +338,6 @@ Use this guided exercise to complete your own 1-Page Marketing Plan. Block 2-3 h
 6. Fill in the Media square on your template
 
 **Prompt questions:**
-
 - "Where do my best existing customers say they found me?"
 - "Which channel can I master before adding a second?"
 - "What is the maximum I can afford to pay to acquire a customer?"
@@ -356,7 +353,6 @@ Use this guided exercise to complete your own 1-Page Marketing Plan. Block 2-3 h
 5. Fill in the Capture Leads square
 
 **Prompt questions:**
-
 - "What is one thing I could give away that would make my target market think 'I need this'?"
 - "What is the simplest, fastest thing I could create that delivers real value?"
 
@@ -369,7 +365,6 @@ Use this guided exercise to complete your own 1-Page Marketing Plan. Block 2-3 h
 5. Fill in the Nurture square
 
 **Prompt questions:**
-
 - "What does my target market need to know, believe, and feel before they are ready to buy?"
 - "What stories and proof points build the most trust?"
 
@@ -383,7 +378,6 @@ Use this guided exercise to complete your own 1-Page Marketing Plan. Block 2-3 h
 6. Fill in the Convert square
 
 **Prompt questions:**
-
 - "What is the prospect's biggest fear about buying?"
 - "What guarantee would I need to offer to eliminate that fear completely?"
 - "Am I charging enough to signal quality and sustain the business?"
@@ -399,7 +393,6 @@ Use this guided exercise to complete your own 1-Page Marketing Plan. Block 2-3 h
 5. Fill in the Experience square
 
 **Prompt questions:**
-
 - "At which point in the customer journey does the most churn happen, and what can I do about it?"
 - "What would make a customer spontaneously tell a friend about their experience?"
 
@@ -413,7 +406,6 @@ Use this guided exercise to complete your own 1-Page Marketing Plan. Block 2-3 h
 6. Fill in the Lifetime Value square
 
 **Prompt questions:**
-
 - "What additional products or services would my existing customers value?"
 - "When was the last time I raised prices? What is stopping me?"
 
@@ -427,7 +419,6 @@ Use this guided exercise to complete your own 1-Page Marketing Plan. Block 2-3 h
 6. Fill in the Referrals square
 
 **Prompt questions:**
-
 - "When are my customers happiest? That is when I should ask."
 - "Which complementary business serves my same target market?"
 - "How many referrals per month would I need to hit my growth target?"

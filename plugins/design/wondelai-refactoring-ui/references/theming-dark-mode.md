@@ -2,8 +2,8 @@
 
 Creating effective color themes and implementing dark mode correctly.
 
-## Table of Contents
 
+## Table of Contents
 1. [Dark Mode Philosophy](#dark-mode-philosophy)
 2. [Dark Mode Color Principles](#dark-mode-color-principles)
 3. [Building a Dark Mode Palette](#building-a-dark-mode-palette)
@@ -309,7 +309,6 @@ module.exports = {
 ### Syntax Highlighting
 
 Don't forget code blocks need dark mode variants:
-
 - Use dark theme variants of syntax highlighters
 - Or invert colors appropriately
 - Popular: One Dark, Dracula, Night Owl
@@ -334,13 +333,11 @@ Don't forget code blocks need dark mode variants:
 ### Contrast Ratios
 
 Same WCAG requirements apply:
-
 - Normal text: 4.5:1 minimum
 - Large text: 3:1 minimum
 - UI components: 3:1 minimum
 
 **Common dark mode fails:**
-
 - Gray text on dark background
 - Colored text on colored backgrounds
 - Disabled states too subtle

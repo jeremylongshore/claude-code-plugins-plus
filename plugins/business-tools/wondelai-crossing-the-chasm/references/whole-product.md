@@ -4,8 +4,8 @@ Pragmatist buyers do not buy products. They buy solutions to problems. The gap b
 
 This reference provides the complete whole product framework, gap analysis tools, partnership strategies, and planning templates to ensure your offering meets the pragmatist's actual buying criteria.
 
-## Table of Contents
 
+## Table of Contents
 1. [The Four Layers of the Whole Product](#the-four-layers-of-the-whole-product)
 2. [Whole Product Gap Analysis Template](#whole-product-gap-analysis-template)
 3. [Common Whole Product Gaps](#common-whole-product-gaps)
@@ -23,7 +23,6 @@ This reference provides the complete whole product framework, gap analysis tools
 What you ship out of the box. The core technology, the downloadable software, the API, the thing your engineering team built.
 
 **Characteristics:**
-
 - What appears on your product spec sheet
 - What you demo in sales calls
 - What your engineers are proud of
@@ -36,7 +35,6 @@ What you ship out of the box. The core technology, the downloadable software, th
 The minimum configuration of products and services necessary for the buyer to achieve their basic purchasing objective.
 
 **Includes:**
-
 - Core product plus essential configuration
 - Basic documentation and getting-started guides
 - Standard integrations with common tools
@@ -50,7 +48,6 @@ The minimum configuration of products and services necessary for the buyer to ac
 The product fleshed out to provide the maximum chance of achieving the buyer's purchasing objective. This is what pragmatists actually evaluate when making a buying decision.
 
 **Includes everything in Expected, plus:**
-
 - Deep integrations with the buyer's existing stack
 - Professional services for implementation and migration
 - Training programs and certification
@@ -67,7 +64,6 @@ The product fleshed out to provide the maximum chance of achieving the buyer's p
 The product's room for growth as more complementary products come to market and the product evolves.
 
 **Includes:**
-
 - Platform extensibility and custom development
 - Advanced features on the roadmap
 - Ecosystem of third-party add-ons
@@ -124,7 +120,6 @@ For each gap identified, classify the fill strategy:
 The most frequent gap. Pragmatists live in an existing ecosystem. Your product must work within it, not replace it.
 
 **Typical integration requirements:**
-
 - CRM (Salesforce, HubSpot, Dynamics)
 - ERP (SAP, Oracle, NetSuite)
 - Identity provider (Okta, Azure AD, Google Workspace)
@@ -140,7 +135,6 @@ The most frequent gap. Pragmatists live in an existing ecosystem. Your product m
 Pragmatists need their teams to be productive quickly. They don't have time to figure it out.
 
 **Minimum training whole product:**
-
 - Role-based onboarding guides (admin, end user, manager)
 - Video tutorials for common workflows
 - In-app guided tours
@@ -166,7 +160,6 @@ Pragmatists need their teams to be productive quickly. They don't have time to f
 Pragmatists are replacing something. The migration from their current solution must be low-risk and well-supported.
 
 **Migration whole product:**
-
 - Data migration tools and scripts
 - Migration planning guide with timelines
 - Parallel running support (old and new system)
@@ -238,7 +231,6 @@ Pragmatist organizations have procurement and security review processes. Missing
 **Generic product:** Send emails to a list.
 
 **Whole product for mid-market B2B pragmatists:**
-
 - Email sending with deliverability management
 - CRM integration (Salesforce native)
 - Lead scoring and routing
@@ -309,7 +301,6 @@ Not all gaps are equally important. Use this prioritization framework:
 ### Identifying Deal-Breakers
 
 After every lost deal, ask:
-
 - What was the primary reason you chose not to move forward?
 - Was there a specific capability or requirement we did not meet?
 - What would have changed your decision?

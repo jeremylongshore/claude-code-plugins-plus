@@ -60,7 +60,6 @@ Go back to the "Watering Holes" section of your Ideal Customer Avatar. Where do 
 ### Step 4: Add Channels Sequentially
 
 Once your primary channel is profitable and systematized:
-
 1. Add one complementary channel (e.g., if primary is Google Ads, add retargeting on Meta)
 2. Run it for 60 days alongside the primary
 3. Evaluate performance

@@ -9,7 +9,6 @@ Systematic approach to measuring whether your product is forming habits. Based o
 **Definition:** Users who engage frequently without external prompts.
 
 **How to identify:**
-
 1. Define your target frequency (daily, weekly, etc.)
 2. Filter users who meet that frequency
 3. Look for unprompted sessions (not from notifications/emails)
@@ -26,7 +25,6 @@ Systematic approach to measuring whether your product is forming habits. Based o
 | Streak length | Consecutive days of usage |
 
 **Cohort analysis:**
-
 - How does habit formation differ by acquisition channel?
 - By user demographics?
 - By onboarding completion?
@@ -37,7 +35,6 @@ Systematic approach to measuring whether your product is forming habits. Based o
 **Goal:** Identify the "Habit Path"—the specific sequence of actions habitual users take.
 
 **Method:**
-
 1. Map the journey of your top 5% engaged users
 2. Look for patterns in their behavior
 3. Compare to casual/churned users
@@ -55,7 +52,6 @@ Systematic approach to measuring whether your product is forming habits. Based o
 
 **The "Aha Moment":**
 Find the action that correlates with retention:
-
 - Facebook: Adding 7 friends in 10 days
 - Slack: Sending 2,000 team messages
 - Dropbox: Saving 1 file to folder
@@ -67,20 +63,17 @@ Find the action that correlates with retention:
 **Research methods:**
 
 **User interviews (qualitative):**
-
 - "Walk me through the last time you used [product]"
 - "What were you doing right before?"
 - "How were you feeling?"
 - "What would you have done if [product] didn't exist?"
 
 **Surveys (quantitative):**
-
 - "What emotion best describes when you typically use [product]?"
 - "What situation usually prompts you to open [product]?"
 - "On a scale of 1-10, how automatic is your usage?"
 
 **Behavioral data:**
-
 - Time of day patterns
 - Context signals (location, other apps)
 - Trigger-to-action time (how quickly do they respond?)
@@ -191,25 +184,21 @@ Early signals that predict habit formation:
 ### Phase-by-Phase Audit
 
 **Trigger issues:**
-
 - Are external triggers effective (CTR, open rates)?
 - Is there a clear internal trigger?
 - Are we prompting at the right time?
 
 **Action issues:**
-
 - Is the core action simple enough?
 - Are there friction points?
 - Is motivation sufficient?
 
 **Reward issues:**
-
 - Is the reward variable?
 - Does it satisfy the internal trigger?
 - Is it meaningful (not just gamification)?
 
 **Investment issues:**
-
 - Are users putting something in?
 - Does investment load the next trigger?
 - Are switching costs building?

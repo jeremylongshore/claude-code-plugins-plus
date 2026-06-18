@@ -33,12 +33,20 @@
  *     or what gets logged (Epic 30-A). Those subsystems observe session
  *     state; they never mutate it.
  *
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import type { JournalWriter } from './journal'
-import type { Session, SessionKey } from './lib'
-import { loadSession, saveSession, sessionPath } from './lib'
+import type { DeliveryObligation, InFlightTurn, Session, SessionKey } from './lib'
+import {
+  classifyDeliveryError,
+  computeBackoffMs,
+  extractSlackErrorCode,
+  listSessions,
+  loadSession,
+  saveSession,
+  sessionPath,
+} from './lib'
 
 // ---------------------------------------------------------------------------
 // Lifecycle state
@@ -66,6 +74,120 @@ import { loadSession, saveSession, sessionPath } from './lib'
  *                       §132-137.
  */
 export type SessionState = 'activating' | 'active' | 'quiescing' | 'deactivating' | 'quarantined'
+
+// ---------------------------------------------------------------------------
+// Fencing lease — crash-safe turn ownership (ccsc-o7x.1.1)
+// ---------------------------------------------------------------------------
+
+/** A fencing lease over an active session's turn. Exactly one owner holds a
+ *  live lease at a time; the monotonic `token` fences writes so a resurrected
+ *  old owner — one whose process hung past the heartbeat window, was presumed
+ *  dead, and whose turn a new owner took over — cannot clobber the new owner's
+ *  work, because its stale token no longer matches the current lease.
+ *
+ *  In-memory for ccsc-o7x.1.1: the lease lives on the active handle and the
+ *  token comes from a process-monotonic counter. Crash-durable ownership across
+ *  a process restart (so a restarted process mints a token strictly greater
+ *  than any pre-crash token) is ccsc-o7x.1.2's job; routing a lapsed lease into
+ *  the quarantine terminal is ccsc-o7x.1.3's. The on-disk session file stays
+ *  the source of truth (session-state-machine.md invariant 5) — the lease
+ *  fences writes, it does not replace the file. */
+export interface Lease {
+  /** Monotonic ownership token. Strictly increases on every acquisition, so a
+   *  newer owner always holds a higher token than any prior owner of the key. */
+  readonly token: number
+  /** Identifier of the owner that acquired this lease (the supervisor process).
+   *  Recorded for the recovery sweep's forensics (ccsc-o7x.1.2); fencing keys
+   *  on `token`, not `owner`. */
+  readonly owner: string
+  /** Epoch-ms of the most recent heartbeat. A lease whose heartbeat has not
+   *  been renewed within the TTL is *stale* — the signal its owner died. */
+  readonly heartbeatAt: number
+}
+
+/** Default lease heartbeat-lapse window: 30s. An active turn renews its lease
+ *  well within this; a gap longer than this means the owner stopped heart-
+ *  beating (crash, hang, or kill). Tunable via `SLACK_SESSION_LEASE_TTL_MS`. */
+export const DEFAULT_LEASE_TTL_MS = 30_000
+
+/** Parse `SLACK_SESSION_LEASE_TTL_MS` from an env record. Falls back to
+ *  `DEFAULT_LEASE_TTL_MS` when unset, empty, non-numeric, non-positive, or
+ *  non-finite. Pure relative to `env` (same shape as `resolveIdleMs`). */
+export function resolveLeaseTtlMs(env: Record<string, string | undefined> = process.env): number {
+  const raw = env.SLACK_SESSION_LEASE_TTL_MS
+  if (raw === undefined || raw === '') return DEFAULT_LEASE_TTL_MS
+  const parsed = Number(raw)
+  if (!Number.isFinite(parsed) || parsed <= 0) return DEFAULT_LEASE_TTL_MS
+  return Math.floor(parsed)
+}
+
+/** True when `lease`'s heartbeat has lapsed past `ttlMs` as of `now`. Pure.
+ *  Strict `>` so a heartbeat exactly `ttlMs` old is still live. */
+export function isLeaseStale(lease: Lease, now: number, ttlMs: number): boolean {
+  return now - lease.heartbeatAt > ttlMs
+}
+
+/** Default cap on send attempts per delivery obligation before the poller
+ *  dead-letters it (ccsc-o7x.2.2). Bounds retries on a persistently-failing
+ *  retryable error so it can never loop forever. */
+export const DEFAULT_MAX_DELIVERY_ATTEMPTS = 5
+
+/** Default inter-retry wait used by `drainOutbox` — a real timer. Tests inject
+ *  a recording / no-op stub so backoff is asserted without wall-clock waits. */
+const defaultDelayMs = (ms: number): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, ms))
+
+/** Return a copy of `lease` with its heartbeat advanced to `now`. Pure — the
+ *  input is never mutated; `token` and `owner` carry forward unchanged. */
+export function heartbeatLease(lease: Lease, now: number): Lease {
+  return { token: lease.token, owner: lease.owner, heartbeatAt: now }
+}
+
+/** A boot-time recovery decision for one persisted in-flight turn (ccsc-o7x.1.2). */
+export type RecoveryDecision = 'resumable' | 'orphaned'
+
+/** Classify a persisted in-flight turn during the startup sweep. A turn whose
+ *  heartbeat has lapsed past `ttlMs` as of `now` is `resumable`: its owner is
+ *  provably dead (the same lapse test the in-memory lease uses — see
+ *  `isLeaseStale`), so a new owner can safely take over and the marker is
+ *  cleared. A turn whose heartbeat is still fresh is `orphaned`: a second
+ *  *live* owner sharing the state dir cannot be ruled out, so the session is
+ *  quarantined rather than resumed — fail closed. Pure; mirrors `isLeaseStale`'s
+ *  strict `>` boundary. */
+export function classifyRecovery(turn: InFlightTurn, now: number, ttlMs: number): RecoveryDecision {
+  return now - turn.heartbeatAt > ttlMs ? 'resumable' : 'orphaned'
+}
+
+/** Outcome of one `recoverOnStartup()` sweep (ccsc-o7x.1.2). */
+export interface RecoveryReport {
+  /** Number of session files scanned. */
+  scanned: number
+  /** Keys whose lapsed in-flight turn was requeued — marker cleared, session
+   *  left clean and re-activatable by the next inbound message. */
+  requeued: SessionKey[]
+  /** Keys orphaned into quarantine — in-flight turn not provably abandoned, or
+   *  the file could not be read during the sweep. */
+  orphaned: SessionKey[]
+}
+
+/** Outcome of one `drainOutbox()` pass (ccsc-o7x.2.2). Every pending obligation
+ *  examined this pass lands in exactly one of the three result lists (or is
+ *  skipped). */
+export interface OutboxDrainReport {
+  /** Total pending obligations examined this pass. */
+  scanned: number
+  /** Obligation ids delivered successfully (state → `delivered`). */
+  delivered: string[]
+  /** Obligations dead-lettered (state → `dead`) with the recorded failure —
+   *  either a non-retryable Slack error or a retryable one that exhausted the
+   *  attempt cap. */
+  deadLettered: { id: string; error: string }[]
+  /** Obligation ids left `pending` and NOT sent this pass because the session's
+   *  fencing lease was lost/superseded before the send (a newer owner exists),
+   *  the session was unactivatable (quarantined), or persisting the resolved
+   *  state was fenced. They are retried on a later pass by the live owner. */
+  skipped: string[]
+}
 
 // ---------------------------------------------------------------------------
 // SessionHandle — in-memory wrapper around one Session file
@@ -97,6 +219,56 @@ export interface SessionHandle {
    *  mutate it in place. Produce the next version inside `update()`. */
   readonly session: Session
 
+  /** The fencing lease currently held over this session's active turn, or
+   *  `null` before activation completes. Readers must not mutate it; renew it
+   *  via `heartbeat()`. (ccsc-o7x.1.1) */
+  readonly lease: Lease | null
+
+  /** Renew the active turn's lease heartbeat. Returns `true` if `token` matches
+   *  the current lease — the heartbeat is advanced to now; `false` if the lease
+   *  was superseded by a newer owner or never acquired, meaning the caller has
+   *  been fenced and should stop writing. (ccsc-o7x.1.1) */
+  heartbeat(token: number): boolean
+
+  /** Persist an in-flight-turn marker to the session file so a crash mid-turn
+   *  leaves a recoverable trace for the boot-time sweep (ccsc-o7x.1.2). Fenced
+   *  by `token`: rejects if it is not the current lease's. The write rides the
+   *  same atomic save path as `update()`. */
+  recordTurnStart(token: number): Promise<void>
+
+  /** Clear the in-flight-turn marker on clean turn completion (ccsc-o7x.1.2).
+   *  Fenced by the current lease when one is held; a no-op persist when the
+   *  marker is already absent. */
+  recordTurnEnd(): Promise<void>
+
+  /** Record a durable "reply owed" obligation as the turn reaches its terminal
+   *  state (ccsc-o7x.2.1) — the transactional-outbox write. In ONE atomic save
+   *  it appends a fresh `pending` obligation to the session's `outbox` AND
+   *  clears the in-flight-turn marker, so "turn done, reply owed" is a single
+   *  durable fact. Must run BEFORE the Slack send is attempted; a crash after
+   *  this write but before the send leaves a pending obligation the delivery
+   *  poller (ccsc-o7x.2.2) honors. Fenced by `token` (the current lease's). The
+   *  caller supplies the message identity + content; `attempts` (0), `state`
+   *  (`pending`), and `createdAt` are stamped here. */
+  recordTerminalDelivery(
+    token: number,
+    reply: { id: string; channel: string; thread: string; payload: string },
+  ): Promise<void>
+
+  /** Batch sibling of `recordTerminalDelivery` for a chunked reply (ccsc-o7x.4):
+   *  one logical reply that spans N Slack messages. Appends ALL `replies` as
+   *  fresh `pending` obligations AND clears the in-flight-turn marker in ONE
+   *  atomic save — all-or-nothing, so a crash mid-record can never leave a
+   *  partially-recorded chunked reply (some chunks owed, the rest silently lost).
+   *  Each caller-supplied `id` must be unique (the chunk index is folded in by
+   *  the caller, e.g. `<replyId>:<i>`) so each chunk gets its own idempotency
+   *  key. Order is preserved: the obligations append in `replies` order, and the
+   *  poller drains a session's outbox in array order. Fenced by `token`. */
+  recordTerminalDeliveries(
+    token: number,
+    replies: readonly { id: string; channel: string; thread: string; payload: string }[],
+  ): Promise<void>
+
   /** Serialise an update through the per-session mutex, persist it via
    *  the atomic writer (`saveSession()`), and refresh `this.session`.
    *
@@ -110,8 +282,19 @@ export interface SessionHandle {
    *      the returned promise rejects. In-memory `session` reverts to
    *      the pre-update value; no consumer ever sees the failed draft.
    *    - While `state !== 'active'` the promise rejects without
-   *      calling `fn`. */
-  update(fn: (prev: Session) => Session): Promise<void>
+   *      calling `fn`.
+   *    - When `fenceToken` is supplied the write is *fenced*: it is rejected
+   *      (without calling `fn` or persisting) if no live lease is held, if the
+   *      token has been superseded by a newer owner, or if the lease's
+   *      heartbeat has lapsed past the TTL. Omit `fenceToken` for an unfenced
+   *      write (current default for callers that do not yet hold a lease).
+   *      (ccsc-o7x.1.1)
+   *    - A fenced rejection is treated as **lease loss**: the handle is
+   *      transitioned to `quarantined` (and removed from the supervisor's
+   *      active set) so the turn performs no further work, rather than retried.
+   *      `fenceToken` is the owner's own held lease token, so a mismatch is a
+   *      real loss, not a stray caller. (ccsc-o7x.1.3) */
+  update(fn: (prev: Session) => Session, fenceToken?: number): Promise<void>
 }
 
 // ---------------------------------------------------------------------------
@@ -240,6 +423,79 @@ export interface SessionSupervisor {
    *  unit so the server can decide tick frequency, or a test can call
    *  it directly. */
   reapIdle(): Promise<void>
+
+  /** Boot-time crash-recovery sweep (ccsc-o7x.1.2). Reads every persisted
+   *  session file; for each carrying an in-flight-turn marker, classifies it
+   *  (`classifyRecovery`) and acts:
+   *
+   *    - **resumable** (marker heartbeat lapsed past the lease TTL — owner
+   *      provably dead): clear the marker, persist the clean session so the
+   *      next inbound event re-activates it normally, and journal
+   *      `session.recovery.requeued`.
+   *    - **orphaned** (marker still fresh, or file unreadable): record the key
+   *      in the quarantine map so `activate()` rejects until a human clears it,
+   *      and journal `session.recovery.orphaned`. Fail closed — a second live
+   *      owner on the same state dir cannot be ruled out.
+   *
+   *  Also seeds the supervisor's monotonic lease-token counter above every
+   *  persisted token, so a restarted process never re-issues a token a crashed
+   *  owner already held (crash-durable monotonicity — the durable half of the
+   *  ccsc-o7x.1.1 fence).
+   *
+   *  Contract:
+   *    - Idempotent on a clean state dir (no markers) — a no-op that returns a
+   *      zero report.
+   *    - Intended to run ONCE at boot, before the socket opens, while no handle
+   *      is live. Errors on a single file do not stop the sweep.
+   *    - Returns a `RecoveryReport` for the caller / tests. */
+  recoverOnStartup(): Promise<RecoveryReport>
+
+  /** Read side of the transactional outbox (ccsc-o7x.2.1): scan every session
+   *  file and return all `pending` delivery obligations across the population.
+   *  This is the delivery poller's (ccsc-o7x.2.2) input — it consumes each
+   *  obligation, sends it, and resolves it. Best-effort: a file that cannot be
+   *  read is skipped (logged), never throwing. Reads from disk so a fresh
+   *  process after a crash sees obligations recorded by the prior one. */
+  pendingDeliveries(): Promise<DeliveryObligation[]>
+
+  /** Delivery poller (ccsc-o7x.2.2) — the consumer side of the transactional
+   *  outbox. One pass over every `pending` obligation (`pendingDeliveries()`):
+   *  for each, deliver it via `send` under the session's fencing lease, then
+   *  persist the resolved state in one fenced write. Replaces the old
+   *  stderr-and-swallow on a failed `chat.postMessage`.
+   *
+   *    - **success** → obligation `delivered`, `attempts` incremented.
+   *    - **retryable error** (rate limit, transient 5xx, network — see
+   *      `classifyDeliveryError`) → retried in-pass with exponential backoff
+   *      (`computeBackoffMs`) up to `maxAttempts`; on exhaustion it is
+   *      dead-lettered (`dead`) with the last error recorded — bounded, never
+   *      an infinite retry.
+   *    - **non-retryable error** (channel gone, bad auth, payload malformed) →
+   *      dead-lettered immediately (`dead`) with the error recorded; no retry.
+   *
+   *  Lease discipline: each obligation is delivered under the lease held over
+   *  its session. The lease is re-checked (via `heartbeat`) immediately before
+   *  every send; if it has been superseded by a newer owner the poller yields
+   *  without sending and leaves the obligation `pending` — so a stale owner can
+   *  never race a live one into a double-send. (The residual crash-window
+   *  duplicate — sent-but-not-yet-marked — is closed by the idempotency key in
+   *  ccsc-o7x.2.3; the lease covers the in-process superseded-owner race.)
+   *
+   *  This is a SEPARATE sink from the audit journal/projection: the outbox is
+   *  authoritative for *delivery*; the obligation is never written to the audit
+   *  log and the projection is never made authoritative for delivery
+   *  (audit-journal-architecture.md invariants).
+   *
+   *  `send` performs the real Slack post (injected so this stays unit-testable
+   *  and the supervisor keeps zero Slack-SDK coupling). `opts.maxAttempts`
+   *  defaults to `DEFAULT_MAX_DELIVERY_ATTEMPTS`; `opts.delayMs` defaults to a
+   *  real timer (tests inject a stub). Best-effort + never throws: a per-
+   *  obligation failure is recorded in the report and the pass continues.
+   *  Returns an `OutboxDrainReport`. */
+  drainOutbox(
+    send: (obligation: DeliveryObligation) => Promise<void>,
+    opts?: { maxAttempts?: number; delayMs?: (ms: number) => Promise<void> },
+  ): Promise<OutboxDrainReport>
 }
 
 // ---------------------------------------------------------------------------
@@ -274,6 +530,16 @@ export interface SupervisorOptions {
    *  `SLACK_SESSION_IDLE_MS` env var documented in
    *  session-state-machine.md §119. */
   idleMs?: number
+  /** Lease heartbeat-lapse window in milliseconds (ccsc-o7x.1.1). A fenced
+   *  write whose lease has not been renewed within this window is rejected.
+   *  Default: `DEFAULT_LEASE_TTL_MS` (30s). Tests pass a small value to drive
+   *  lapse detection deterministically alongside the injected `clock`. */
+  leaseTtlMs?: number
+  /** Identifier recorded as the `owner` of every lease this supervisor
+   *  acquires (ccsc-o7x.1.1). Defaults to a per-process id. Fencing keys on the
+   *  monotonic token, not the owner; this is forensic metadata for the recovery
+   *  sweep (ccsc-o7x.1.2). */
+  ownerId?: string
   /** Optional audit journal writer. When provided, the supervisor emits
    *  `session.activate`, `session.quiesce`, and `session.deactivate` events
    *  at the corresponding state transitions. Journal write failures are
@@ -334,7 +600,23 @@ export function createSessionSupervisor(opts: SupervisorOptions): SessionSupervi
   const log = opts.log ?? defaultLog
   const clock = opts.clock ?? Date.now
   const idleMs = opts.idleMs ?? DEFAULT_IDLE_MS
+  const leaseTtlMs = opts.leaseTtlMs ?? DEFAULT_LEASE_TTL_MS
+  const ownerId =
+    opts.ownerId ?? `slack-supervisor-${typeof process !== 'undefined' ? process.pid : 0}`
   const { stateRoot, journal } = opts
+
+  // Process-monotonic lease token source (ccsc-o7x.1.1). Every acquisition gets
+  // a strictly higher token than any prior one across all keys, so a superseded
+  // owner is always fenced out by token comparison. Crash-durable monotonicity
+  // across a process restart is ccsc-o7x.1.2's concern.
+  let nextLeaseToken = 0
+  const mintLeaseToken = (): number => ++nextLeaseToken
+  // Lift the counter so the next mint is strictly above `token` (ccsc-o7x.1.2).
+  // Called by the recovery sweep for every persisted token so a restarted
+  // process never re-issues a token a crashed owner already held.
+  const seedLeaseToken = (token: number): void => {
+    if (token > nextLeaseToken) nextLeaseToken = token
+  }
 
   /** Awaitable journal write for session lifecycle transitions. Never throws —
    *  a broken journal MUST NOT take down the session lifecycle path. Errors are
@@ -430,7 +712,7 @@ export function createSessionSupervisor(opts: SupervisorOptions): SessionSupervi
       await saveSession(path, session)
     }
 
-    const handle = new ConcreteHandle(key, session, path)
+    const handle = new ConcreteHandle(key, session, path, clock, leaseTtlMs)
     // Wire the quarantine callback so update()'s failure arm can record
     // the error in the supervisor's quarantined map AND remove the handle
     // from live. Without this the supervisor's two maps would be out of
@@ -447,6 +729,10 @@ export function createSessionSupervisor(opts: SupervisorOptions): SessionSupervi
       })
     }
     handle.markActive()
+    // Acquire the initial fencing lease for this active turn-owner (ccsc-o7x.1.1).
+    // Every active handle holds a lease; a future re-activation by a new owner
+    // mints a higher token, fencing the prior owner's late writes.
+    handle.acquireLease(ownerId, mintLeaseToken())
     live.set(id, handle)
 
     log('session.activate', {
@@ -676,6 +962,302 @@ export function createSessionSupervisor(opts: SupervisorOptions): SessionSupervi
         }
       }
     },
+
+    async recoverOnStartup(): Promise<RecoveryReport> {
+      const report: RecoveryReport = { scanned: 0, requeued: [], orphaned: [] }
+      const now = clock()
+
+      let summaries: ReturnType<typeof listSessions>
+      try {
+        summaries = listSessions(stateRoot)
+      } catch (err) {
+        // A missing/empty sessions dir is normal on first boot (listSessions
+        // returns []). A real read error is logged; the sweep is best-effort
+        // and must never block boot.
+        log('session.recovery_scan_error', { error: errorMessage(err) })
+        return report
+      }
+
+      for (const summary of summaries) {
+        const key: SessionKey = { channel: summary.channel, thread: summary.thread }
+        const id = keyId(key)
+        const path = sessionPath(stateRoot, key)
+        report.scanned++
+
+        let session: Session
+        try {
+          session = await loadSession(stateRoot, path)
+        } catch (err) {
+          // Unreadable / corrupt during the sweep ⇒ orphan into quarantine.
+          quarantined.set(id, err instanceof Error ? err : new Error(String(err)))
+          report.orphaned.push(key)
+          log('session.recovery', {
+            channel: key.channel,
+            thread: key.thread,
+            decision: 'orphaned',
+            reason: `unreadable: ${errorMessage(err)}`,
+          })
+          await journalWrite({
+            kind: 'session.recovery.orphaned',
+            outcome: 'n/a',
+            actor: 'system',
+            sessionKey: key,
+          })
+          continue
+        }
+
+        const turn = session.inFlightTurn
+        if (turn === undefined) continue // clean session — nothing was in flight
+
+        // Crash-durable monotonicity (ccsc-o7x.1.2): lift the token counter
+        // above the persisted token regardless of the decision below, so the
+        // next minted token can never collide with a crashed owner's.
+        seedLeaseToken(turn.token)
+
+        if (classifyRecovery(turn, now, leaseTtlMs) === 'resumable') {
+          const { inFlightTurn: _cleared, ...clean } = session
+          try {
+            await saveSession(path, clean as Session)
+          } catch (err) {
+            // Could not clear the marker ⇒ fall back to quarantine so we never
+            // leave a half-recovered session behind.
+            quarantined.set(id, err instanceof Error ? err : new Error(String(err)))
+            report.orphaned.push(key)
+            log('session.recovery', {
+              channel: key.channel,
+              thread: key.thread,
+              decision: 'orphaned',
+              reason: `requeue-write-failed: ${errorMessage(err)}`,
+            })
+            await journalWrite({
+              kind: 'session.recovery.orphaned',
+              outcome: 'n/a',
+              actor: 'system',
+              sessionKey: key,
+            })
+            continue
+          }
+          report.requeued.push(key)
+          log('session.recovery', {
+            channel: key.channel,
+            thread: key.thread,
+            decision: 'requeued',
+            staleMs: now - turn.heartbeatAt,
+          })
+          await journalWrite({
+            kind: 'session.recovery.requeued',
+            outcome: 'n/a',
+            actor: 'system',
+            sessionKey: key,
+          })
+        } else {
+          quarantined.set(
+            id,
+            new Error('recovery: in-flight turn not provably abandoned (heartbeat still fresh)'),
+          )
+          report.orphaned.push(key)
+          log('session.recovery', {
+            channel: key.channel,
+            thread: key.thread,
+            decision: 'orphaned',
+            reason: 'heartbeat-fresh',
+          })
+          await journalWrite({
+            kind: 'session.recovery.orphaned',
+            outcome: 'n/a',
+            actor: 'system',
+            sessionKey: key,
+          })
+        }
+      }
+
+      return report
+    },
+
+    async pendingDeliveries(): Promise<DeliveryObligation[]> {
+      const out: DeliveryObligation[] = []
+      let summaries: ReturnType<typeof listSessions>
+      try {
+        summaries = listSessions(stateRoot)
+      } catch (err) {
+        log('outbox.scan_error', { error: errorMessage(err) })
+        return out
+      }
+      for (const summary of summaries) {
+        const key: SessionKey = { channel: summary.channel, thread: summary.thread }
+        let session: Session
+        try {
+          session = await loadSession(stateRoot, sessionPath(stateRoot, key))
+        } catch (err) {
+          // Best-effort: an unreadable file is skipped (the recovery sweep is
+          // the path that quarantines it), never throwing here.
+          log('outbox.read_error', {
+            channel: key.channel,
+            thread: key.thread,
+            error: errorMessage(err),
+          })
+          continue
+        }
+        for (const ob of session.outbox ?? []) {
+          if (ob.state === 'pending') out.push(ob)
+        }
+      }
+      return out
+    },
+
+    async drainOutbox(
+      send: (obligation: DeliveryObligation) => Promise<void>,
+      opts?: { maxAttempts?: number; delayMs?: (ms: number) => Promise<void> },
+    ): Promise<OutboxDrainReport> {
+      const maxAttempts = opts?.maxAttempts ?? DEFAULT_MAX_DELIVERY_ATTEMPTS
+      const delayMs = opts?.delayMs ?? defaultDelayMs
+      const report: OutboxDrainReport = {
+        scanned: 0,
+        delivered: [],
+        deadLettered: [],
+        skipped: [],
+      }
+
+      const pending = await this.pendingDeliveries()
+      for (const ob of pending) {
+        report.scanned++
+        const key: SessionKey = { channel: ob.channel, thread: ob.thread }
+
+        // Activate to obtain the session's live handle + its fencing lease. A
+        // quarantined / unloadable session is skipped (recovery owns it); the
+        // obligation stays pending for a later pass.
+        let handle: SessionHandle
+        try {
+          handle = await this.activate(key)
+        } catch (err) {
+          log('outbox.activate_error', {
+            channel: key.channel,
+            thread: key.thread,
+            id: ob.id,
+            error: errorMessage(err),
+          })
+          report.skipped.push(ob.id)
+          continue
+        }
+        const lease = handle.lease
+        if (lease === null) {
+          report.skipped.push(ob.id)
+          continue
+        }
+        const token = lease.token
+
+        // In-pass retry loop with exponential backoff, bounded by maxAttempts.
+        // `attempts` starts from the obligation's persisted count so retries
+        // accumulate across passes too. `finalState === null` means we yielded
+        // on lease loss without sending — leave the obligation pending.
+        let attempts = ob.attempts
+        let finalState: 'delivered' | 'dead' | null = null
+        let lastError: string | undefined
+        for (;;) {
+          // Re-check the lease immediately before each send. `heartbeat` returns
+          // false if a newer owner superseded the token (or the handle was
+          // quarantined) — yield without sending so a stale owner never races a
+          // live one into a double-send. On success it also renews the lease,
+          // keeping it live across legitimate backoff waits.
+          if (!handle.heartbeat(token)) {
+            log('outbox.lease_lost', { channel: key.channel, thread: key.thread, id: ob.id })
+            break
+          }
+          try {
+            await send(ob)
+            attempts++
+            finalState = 'delivered'
+            break
+          } catch (err) {
+            attempts++
+            const code = extractSlackErrorCode(err)
+            lastError = code ?? errorMessage(err)
+            if (classifyDeliveryError(code) === 'non-retryable') {
+              finalState = 'dead'
+              break
+            }
+            if (attempts >= maxAttempts) {
+              // Retryable but persistently failing — dead-letter rather than
+              // loop forever.
+              finalState = 'dead'
+              break
+            }
+            await delayMs(computeBackoffMs(attempts))
+          }
+        }
+
+        if (finalState === null) {
+          report.skipped.push(ob.id)
+          continue
+        }
+
+        // Re-check the lease before committing. If it was superseded between the
+        // send and now (a newer owner exists), do NOT persist — leave the
+        // obligation pending for that owner. Crucially we skip *without* calling
+        // the fenced `update()`, because a fenced rejection would quarantine the
+        // session (the 1.3 lease-loss contract) and lock out the legitimate new
+        // owner. Benign lease loss in the poller is a yield, not a quarantine.
+        // (Any sent-but-not-committed duplicate is the idempotency key's job in
+        // ccsc-o7x.2.3.)
+        if (!handle.heartbeat(token)) {
+          log('outbox.lease_lost_pre_persist', {
+            channel: key.channel,
+            thread: key.thread,
+            id: ob.id,
+          })
+          report.skipped.push(ob.id)
+          continue
+        }
+
+        // Persist the resolved obligation state in one fenced write. The fence
+        // (same held token, just re-validated above) is belt-and-suspenders for
+        // the microtask-window race; a save failure self-quarantines the handle.
+        // Either way: record + skip, never throw.
+        const resolved = finalState
+        const resolvedAttempts = attempts
+        const resolvedError = lastError
+        try {
+          await handle.update(
+            (prev) => ({
+              ...prev,
+              outbox: (prev.outbox ?? []).map((o) =>
+                o.id === ob.id
+                  ? {
+                      ...o,
+                      attempts: resolvedAttempts,
+                      state: resolved,
+                      // Record WHY only on dead-letter — a `delivered` record needs
+                      // no outstanding error (the attempt count still signals any
+                      // transient retries it survived).
+                      ...(resolved === 'dead' && resolvedError !== undefined
+                        ? { lastError: resolvedError }
+                        : {}),
+                    }
+                  : o,
+              ),
+            }),
+            token,
+          )
+        } catch (err) {
+          log('outbox.persist_error', {
+            channel: key.channel,
+            thread: key.thread,
+            id: ob.id,
+            error: errorMessage(err),
+          })
+          report.skipped.push(ob.id)
+          continue
+        }
+
+        if (resolved === 'delivered') {
+          report.delivered.push(ob.id)
+        } else {
+          report.deadLettered.push({ id: ob.id, error: resolvedError ?? 'unknown' })
+        }
+      }
+
+      return report
+    },
   }
 }
 
@@ -746,14 +1328,134 @@ class ConcreteHandle implements SessionHandle {
    *  construction; never null after `markActive()`. */
   onQuarantine: ((err: Error) => void) | null = null
 
-  constructor(key: SessionKey, session: Session, path: string) {
+  /** The fencing lease over this handle's active turn (ccsc-o7x.1.1). Null
+   *  until the supervisor calls `acquireLease()` right after `markActive()`.
+   *  Renewed in place by `heartbeat()`; read via the public `lease` getter. */
+  private _lease: Lease | null = null
+
+  /** Wall-clock source (epoch-ms), injected by the supervisor for deterministic
+   *  lease heartbeat/lapse tests. */
+  private readonly clock: () => number
+
+  /** Lease heartbeat-lapse window (ms). A fenced write whose lease is older
+   *  than this is rejected. */
+  private readonly leaseTtlMs: number
+
+  constructor(
+    key: SessionKey,
+    session: Session,
+    path: string,
+    clock: () => number,
+    leaseTtlMs: number,
+  ) {
     this.key = key
     this.session = session
     this.path = path
+    this.clock = clock
+    this.leaseTtlMs = leaseTtlMs
   }
 
   get state(): SessionState {
     return this._state
+  }
+
+  get lease(): Lease | null {
+    return this._lease
+  }
+
+  /** Acquire a fresh fencing lease for `owner` with the supervisor-minted
+   *  monotonic `token`, heartbeat-stamped at the current clock. Supersedes any
+   *  prior lease on this handle (a higher token fences the old owner out).
+   *  Called by the supervisor immediately after `markActive()`. (ccsc-o7x.1.1) */
+  acquireLease(owner: string, token: number): Lease {
+    const lease: Lease = { token, owner, heartbeatAt: this.clock() }
+    this._lease = lease
+    return lease
+  }
+
+  /** Renew the lease heartbeat if `token` is the current owner's. Returns
+   *  `false` (no renewal) when no lease is held or the token has been
+   *  superseded — the caller has been fenced. (ccsc-o7x.1.1) */
+  heartbeat(token: number): boolean {
+    const lease = this._lease
+    if (lease === null || lease.token !== token) return false
+    this._lease = heartbeatLease(lease, this.clock())
+    return true
+  }
+
+  /** Persist an in-flight-turn marker so a crash mid-turn leaves a recoverable
+   *  trace for `recoverOnStartup` (ccsc-o7x.1.2). Fenced by `token` (must be the
+   *  current lease's) and persisted via the same atomic `update()` path. */
+  recordTurnStart(token: number): Promise<void> {
+    const lease = this._lease
+    if (lease === null || lease.token !== token) {
+      return Promise.reject(
+        new Error(`recordTurnStart: token does not match the current lease (presented ${token})`),
+      )
+    }
+    const now = this.clock()
+    const marker: InFlightTurn = { owner: lease.owner, token, startedAt: now, heartbeatAt: now }
+    return this.update((prev) => ({ ...prev, inFlightTurn: marker }), token)
+  }
+
+  /** Clear the in-flight-turn marker on clean turn completion (ccsc-o7x.1.2).
+   *  Fenced by the current lease token when one is held. A no-op persist when
+   *  the marker is already absent. */
+  recordTurnEnd(): Promise<void> {
+    const token = this._lease?.token
+    return this.update((prev) => {
+      if (prev.inFlightTurn === undefined) return prev
+      const { inFlightTurn: _cleared, ...rest } = prev
+      return rest as Session
+    }, token)
+  }
+
+  recordTerminalDelivery(
+    token: number,
+    reply: { id: string; channel: string; thread: string; payload: string },
+  ): Promise<void> {
+    const obligation: DeliveryObligation = {
+      id: reply.id,
+      channel: reply.channel,
+      thread: reply.thread,
+      payload: reply.payload,
+      attempts: 0,
+      state: 'pending',
+      createdAt: this.clock(),
+    }
+    // One atomic save: append the obligation AND clear the in-flight marker, so
+    // "turn done, reply owed" is a single durable fact. Fenced by the lease
+    // token — a turn that lost its lease must not enqueue a delivery.
+    return this.update((prev) => {
+      const { inFlightTurn: _cleared, ...rest } = prev
+      return { ...rest, outbox: [...(prev.outbox ?? []), obligation] }
+    }, token)
+  }
+
+  recordTerminalDeliveries(
+    token: number,
+    replies: readonly { id: string; channel: string; thread: string; payload: string }[],
+  ): Promise<void> {
+    const now = this.clock()
+    const obligations: DeliveryObligation[] = replies.map((reply) => ({
+      id: reply.id,
+      channel: reply.channel,
+      thread: reply.thread,
+      payload: reply.payload,
+      attempts: 0,
+      state: 'pending',
+      createdAt: now,
+    }))
+    // One atomic save appends ALL obligations AND clears the in-flight marker:
+    // a chunked reply's "turn done, N replies owed" is a single durable fact.
+    // All-or-nothing — a crash during this write leaves either zero or all N
+    // obligations, never a partial set (which would deliver some chunks and
+    // silently drop the rest). Fenced by the lease token. The obligations append
+    // in `replies` order so the poller drains them into the thread in order.
+    return this.update((prev) => {
+      const { inFlightTurn: _cleared, ...rest } = prev
+      return { ...rest, outbox: [...(prev.outbox ?? []), ...obligations] }
+    }, token)
   }
 
   /** Transition from `activating` → `active`. Called by the supervisor
@@ -778,6 +1480,19 @@ class ConcreteHandle implements SessionHandle {
    *  failures that leave the on-disk state uncertain. */
   markQuarantined(): void {
     this._state = 'quarantined'
+  }
+
+  /** Drive this handle into the quarantine terminal AND notify the supervisor
+   *  so its live + quarantined maps stay in sync — without that, a subsequent
+   *  `activate()` would hand back this now-quarantined handle from the live map
+   *  instead of rejecting (sticky-quarantine invariant). Idempotent: a no-op
+   *  once already quarantined, so it never double-fires `onQuarantine`. Shared
+   *  by the save-failure path and the lease-loss fence in `update()`
+   *  (ccsc-o7x.1.3). */
+  private quarantineSelf(err: Error): void {
+    if (this._state === 'quarantined') return
+    this._state = 'quarantined'
+    this.onQuarantine?.(err)
   }
 
   /** Begin a graceful drain. Transitions state `active` → `quiescing`
@@ -884,7 +1599,7 @@ class ConcreteHandle implements SessionHandle {
    *  Implementation mirrors the `deactivate()` save path: both use
    *  `saveSession()` (tmp + chmod + rename from lib.ts) and both
    *  transition to `quarantined` on save failure. */
-  update(fn: (prev: Session) => Session): Promise<void> {
+  update(fn: (prev: Session) => Session, fenceToken?: number): Promise<void> {
     // Capture state at enqueue time for the early-exit checks below.
     // We re-check after acquiring the mutex because state can change
     // while waiting in the queue (a concurrent quiesce, for example).
@@ -926,6 +1641,37 @@ class ConcreteHandle implements SessionHandle {
         return
       }
 
+      // Fenced write (ccsc-o7x.1.1): evaluate the lease at write time, inside
+      // the mutex, because a newer owner could have superseded the token (or it
+      // could have lapsed) while this write waited in the queue. `fn` is not
+      // called and nothing is persisted on a fenced rejection.
+      // A fenced write means the owner has LOST its lease — either a newer
+      // owner superseded its token or its heartbeat lapsed. Per ccsc-o7x.1.3
+      // this is not a transient retry: route the session through the existing
+      // quarantine terminal so it performs no further tool calls or sends and
+      // is excluded from the active set, rather than letting a possibly-
+      // split-brained turn keep acting. (The fenceToken is the owner's own
+      // held lease token, so a mismatch is a real loss, not a stray caller.)
+      if (fenceToken !== undefined) {
+        const lease = this._lease
+        if (lease === null || lease.token !== fenceToken) {
+          const err = new Error(
+            `SessionHandle.update: write fenced — lease lost (no live lease or token superseded; presented ${fenceToken}); handle quarantined`,
+          )
+          this.quarantineSelf(err)
+          reject(err)
+          return
+        }
+        if (isLeaseStale(lease, this.clock(), this.leaseTtlMs)) {
+          const err = new Error(
+            `SessionHandle.update: write fenced — lease heartbeat lapsed; handle quarantined`,
+          )
+          this.quarantineSelf(err)
+          reject(err)
+          return
+        }
+      }
+
       const prev = this.session
       const next = fn(prev)
 
@@ -938,13 +1684,8 @@ class ConcreteHandle implements SessionHandle {
         // activate() calls fail fast. In-memory session reverts to
         // `prev` (it was never reassigned). This mirrors the deactivate()
         // failure arm exactly (session-state-machine.md §132-137).
-        this._state = 'quarantined'
         const errObj = err instanceof Error ? err : new Error(String(err))
-        // Notify the supervisor so its quarantined map and live map stay
-        // in sync. Without this, a subsequent activate() would return the
-        // cached live handle (which is now quarantined) instead of
-        // rejecting — violating the sticky-quarantine invariant.
-        this.onQuarantine?.(errObj)
+        this.quarantineSelf(errObj)
         reject(
           new Error(`SessionHandle.update: save failed; handle quarantined`, {
             cause: errObj,

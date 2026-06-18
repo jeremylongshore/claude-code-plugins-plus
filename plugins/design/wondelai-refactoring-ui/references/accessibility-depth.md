@@ -2,8 +2,8 @@
 
 Comprehensive WCAG 2.1 AA compliance checklist with practical implementation guidance.
 
-## Table of Contents
 
+## Table of Contents
 1. [Accessibility Philosophy](#accessibility-philosophy)
 2. [WCAG 2.1 AA Checklist](#wcag-21-aa-checklist)
 3. [Focus Management](#focus-management)
@@ -16,7 +16,6 @@ Comprehensive WCAG 2.1 AA compliance checklist with practical implementation gui
 ## Accessibility Philosophy
 
 Accessibility isn't just compliance—it improves UX for everyone:
-
 - Keyboard navigation helps power users
 - Good contrast helps in bright sunlight
 - Clear focus states help everyone understand what's selected
@@ -54,7 +53,6 @@ Users must be able to perceive content.
 ```
 
 **Icons:**
-
 ```html
 <!-- Icon with visible text (icon is decorative) -->
 <button>
@@ -92,13 +90,11 @@ Users must be able to perceive content.
 ```
 
 **Heading hierarchy:**
-
 - One `<h1>` per page
 - Don't skip levels (h1 → h3)
 - Headings describe content structure
 
 **Form labels:**
-
 ```html
 <!-- Explicit label -->
 <label for="email">Email</label>
@@ -153,7 +149,6 @@ Users must be able to perceive content.
 ```
 
 **Text resize:**
-
 - Content must be readable at 200% zoom
 - Use relative units (rem, em) not px for text
 - Test by zooming browser to 200%
@@ -198,7 +193,6 @@ Users must be able to operate the interface.
 ```
 
 **Keyboard traps:**
-
 - Modal dialogs should trap focus inside
 - But must have a way to exit (Escape key, close button)
 
@@ -247,18 +241,15 @@ function Modal({ isOpen, onClose, children }) {
 #### 2.4 Navigable
 
 **Page titles:**
-
 - Unique, descriptive page titles
 - Format: `Page Name | Site Name`
 
 **Focus order:**
-
 - Must follow logical reading order
 - Don't use positive `tabindex` values (messes up order)
 - Only use `tabindex="0"` (make focusable) or `tabindex="-1"` (programmatically focusable)
 
 **Link purpose:**
-
 ```html
 <!-- Bad -->
 <a href="/article">Click here</a>
@@ -280,7 +271,6 @@ Users must be able to understand content and operation.
 #### 3.1 Readable
 
 **Language declaration:**
-
 ```html
 <html lang="en">
   <body>
@@ -293,12 +283,10 @@ Users must be able to understand content and operation.
 #### 3.2 Predictable
 
 **Consistent navigation:**
-
 - Same navigation in same location across pages
 - Same elements behave the same way
 
 **No unexpected changes:**
-
 - Form inputs don't auto-submit on change
 - No unexpected pop-ups
 - Focus doesn't move unexpectedly
@@ -315,7 +303,6 @@ Users must be able to understand content and operation.
 #### 3.3 Input Assistance
 
 **Error identification:**
-
 ```html
 <label for="email">Email</label>
 <input
@@ -330,7 +317,6 @@ Users must be able to understand content and operation.
 ```
 
 **Required fields:**
-
 ```html
 <label for="name">
   Name <span aria-hidden="true">*</span>
@@ -340,7 +326,6 @@ Users must be able to understand content and operation.
 ```
 
 **Error prevention for critical actions:**
-
 - Confirm destructive actions
 - Allow review before submission
 - Provide undo capability
@@ -354,13 +339,11 @@ Content must work with current and future technologies.
 #### 4.1 Compatible
 
 **Valid HTML:**
-
 - Unique IDs
 - Complete start/end tags
 - Proper nesting
 
 **ARIA usage:**
-
 ```html
 <!-- If you use ARIA, use it correctly -->
 
@@ -499,7 +482,6 @@ function showSuccess(message) {
 ### Manual Testing Required
 
 Automated tools miss ~70% of issues. Manual testing needed for:
-
 - Keyboard navigation flow
 - Screen reader experience
 - Focus management

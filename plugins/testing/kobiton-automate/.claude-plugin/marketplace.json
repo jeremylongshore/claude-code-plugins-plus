@@ -1,13 +1,46 @@
 {
   "name": "kobiton",
   "owner": {
-    "name": "Kobiton Inc."
+    "name": "Kobiton Inc.",
+    "email": "support@kobiton.com"
   },
-  "plugins": [{
-    "name": "automate",
-    "source": "./",
-    "description": "Connect to Kobiton mobile testing platform - manage devices, run automation suites, and view test results",
-    "category": "testing",
-    "tags": ["mobile", "testing", "appium", "automation", "devices", "kobiton"]
-  }]
+  "metadata": {
+    "description": "Kobiton mobile testing platform plugins for AI coding assistants",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "automate",
+      "version": "1.6.0",
+      "description": "Connect to Kobiton mobile testing platform - manage devices, run automation suites, and view test results",
+      "author": {
+        "name": "Kobiton Inc.",
+        "email": "support@kobiton.com"
+      },
+      "license": "MIT",
+      "category": "testing",
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "keywords": [
+        "mobile",
+        "test",
+        "automation",
+        "appium",
+        "mcp",
+        "devices",
+        "kobiton"
+      ],
+      "tags": [
+        "mobile",
+        "testing",
+        "appium",
+        "automation",
+        "devices",
+        "kobiton"
+      ],
+      "source": "./"
+    }
+  ]
 }

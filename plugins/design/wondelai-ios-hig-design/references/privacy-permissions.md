@@ -2,11 +2,11 @@
 
 Best practices for permission requests, privacy UI, and building user trust.
 
-## Table of Contents
 
+## Table of Contents
 1. [Permission Request Philosophy](#permission-request-philosophy)
 2. [Permission Request Timing](#permission-request-timing)
-3. [Permission Types & Best Practices](#permission-types--best-practices)
+3. [Permission Types & Best Practices](#permission-types-best-practices)
 4. [Handling Denied Permissions](#handling-denied-permissions)
 5. [Privacy UI Patterns](#privacy-ui-patterns)
 6. [App Privacy Labels](#app-privacy-labels)
@@ -58,7 +58,6 @@ Before the system dialog, show a custom screen explaining the value.
 ```
 
 **Benefits:**
-
 - Explains value before system dialog
 - "Maybe Later" doesn't trigger system denial
 - Higher acceptance rates
@@ -102,7 +101,6 @@ UNUserNotificationCenter.current().requestAuthorization(
 "[App] needs camera access to scan documents and take photos for your projects."
 
 **Best practices:**
-
 - Only request when camera feature is used
 - Offer photo library as alternative
 - Handle denial gracefully (show library option)
@@ -110,7 +108,6 @@ UNUserNotificationCenter.current().requestAuthorization(
 ### Photo Library
 
 **Access levels (iOS 14+):**
-
 - `.addOnly` - Can add photos, can't read (for saving)
 - `.readWrite` - Full access
 - Limited selection - User picks specific photos
@@ -121,7 +118,6 @@ UNUserNotificationCenter.current().requestAuthorization(
 "[App] accesses your photos to let you add images to your posts."
 
 **Best practices:**
-
 - Request `.addOnly` if you only need to save
 - Support limited photo selection (don't require full access)
 - Use PHPicker for one-time selection (no permission needed)
@@ -138,19 +134,16 @@ let picker = PHPickerViewController(configuration: config)
 ### Location
 
 **Authorization levels:**
-
 - `.whenInUse` - Only while app is active
 - `.always` - Background location access
 
 **When to request:** When location feature is needed
 
 **Usage strings needed:**
-
 - `NSLocationWhenInUseUsageDescription`
 - `NSLocationAlwaysAndWhenInUseUsageDescription` (for always)
 
 **Best practices:**
-
 - Start with "When In Use" before requesting "Always"
 - Explain why background location is needed
 - Provide value even without location
@@ -173,7 +166,6 @@ locationManager.requestAlwaysAuthorization()
 "[App] sends notifications for messages from your team and important updates."
 
 **Best practices:**
-
 - Don't request on first launch
 - Wait until user has seen value
 - Explain what notifications they'll receive
@@ -181,7 +173,6 @@ locationManager.requestAlwaysAuthorization()
 - Respect system settings
 
 **Provisional notifications (iOS 12+):**
-
 ```swift
 // Quietly delivered to Notification Center
 // User can choose to keep or turn off
@@ -198,7 +189,6 @@ UNUserNotificationCenter.current().requestAuthorization(
 "[App] accesses your contacts to help you invite friends and find people you know."
 
 **Best practices:**
-
 - Use CNContactPickerViewController when possible (no permission)
 - Only request full access when truly needed
 - Never sync contacts without explicit permission
@@ -211,7 +201,6 @@ UNUserNotificationCenter.current().requestAuthorization(
 "[App] uses your microphone to record voice messages and audio notes."
 
 **Best practices:**
-
 - Clear indicator when recording
 - Option to preview before sending
 - Explain storage/transmission of audio
@@ -221,7 +210,6 @@ UNUserNotificationCenter.current().requestAuthorization(
 **When to request:** When user enables health features
 
 **Best practices:**
-
 - Request only specific data types needed
 - Explain how data will be used
 - Provide value without health access
@@ -232,7 +220,6 @@ UNUserNotificationCenter.current().requestAuthorization(
 **When to request:** Before tracking user across apps
 
 **Required prompt:**
-
 ```swift
 ATTrackingManager.requestTrackingAuthorization { status in
     switch status {
@@ -247,7 +234,6 @@ ATTrackingManager.requestTrackingAuthorization { status in
 ```
 
 **Best practices:**
-
 - Explain value of personalized ads first
 - Don't punish users who decline
 - App must function without tracking
@@ -283,7 +269,6 @@ func openAppSettings() {
 ```
 
 **UI pattern:**
-
 ```
 ┌─────────────────────────────────────────┐
 │                                         │
@@ -387,15 +372,12 @@ Provide clear data management:
 Your App Store listing must declare:
 
 **Data Used to Track You**
-
 - Data used for advertising across apps
 
 **Data Linked to You**
-
 - Identifiable data (name, email, etc.)
 
 **Data Not Linked to You**
-
 - Anonymous analytics, crash data
 
 ### Best Practices
@@ -449,7 +431,6 @@ xcrun simctl privacy booted reset camera com.yourapp.bundleid
 ### Test All States
 
 For each permission:
-
 1. Never requested (first launch)
 2. Authorized
 3. Denied

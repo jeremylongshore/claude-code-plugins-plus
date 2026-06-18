@@ -8,10 +8,9 @@
 # trigger) re-injects that snapshot right after compaction — so the active task,
 # decisions, anti-patterns, and uncommitted-diff survive the context squeeze.
 #
-# Automatic compaction is allowed only when the transcript estimate is near the
-# configured context budget. Manual compaction always passes. If the transcript
-# or budget cannot be read, the hook stays permissive so true limit recovery is
-# never made worse.
+# Automatic compaction is allowed only after dispatch reaches its end-of-chain
+# gate and the transcript estimate is near the configured context budget.
+# Manual compaction always passes.
 #
 # Never blocks manual/unknown compaction; never fails the session. Exit 0 always.
 set -uo pipefail
@@ -53,15 +52,17 @@ done
 
 ROOT="$(dirname "$HF_DIR")"
 SNAP="$HF_DIR/.precompact.md"
+READY="$HF_DIR/.dispatch-auto-compact-ready"
 
-CONTEXT_DECISION="$(python3 - "$TRIGGER" "$TRANSCRIPT_PATH" "${HOME:-}" <<'PYEOF' 2>/dev/null || true
+CONTEXT_DECISION="$(python3 - "$TRIGGER" "$TRANSCRIPT_PATH" "${HOME:-}" "$READY" <<'PYEOF' 2>/dev/null || true
 import json
 import math
 import os
 import sys
+import time
 
-trigger, transcript_path, home = sys.argv[1:4]
-if trigger != "auto" or not transcript_path or not os.path.isfile(transcript_path):
+trigger, transcript_path, home, ready_path = sys.argv[1:5]
+if trigger != "auto":
     sys.exit(0)
 
 config_path = os.path.join(home, ".hyperflow", "config.json") if home else ""
@@ -97,6 +98,45 @@ min_percent = as_int(
     1,
     99,
 )
+ready_ttl_minutes = as_int(
+    os.environ.get("HYPERFLOW_AUTO_COMPACT_READY_TTL_MINUTES") or context_cfg.get("autoCompactReadyTtlMinutes"),
+    30,
+    1,
+    1440,
+)
+
+if not os.path.isfile(ready_path):
+    reason = (
+        "Hyperflow skipped automatic compaction: dispatch has not reached its "
+        "end-of-chain gate yet. Continue the run; dispatch marks compact "
+        "readiness only after wrap-up."
+    )
+    print(json.dumps({"decision": "block", "reason": reason}))
+    sys.exit(0)
+
+try:
+    age_seconds = time.time() - os.path.getmtime(ready_path)
+except OSError:
+    age_seconds = ready_ttl_minutes * 60 + 1
+if age_seconds > ready_ttl_minutes * 60:
+    try:
+        os.unlink(ready_path)
+    except OSError:
+        pass
+    reason = (
+        "Hyperflow skipped automatic compaction: the dispatch-end compact "
+        f"marker is older than {ready_ttl_minutes} minutes. Continue the run; "
+        "the next completed dispatch will refresh it."
+    )
+    print(json.dumps({"decision": "block", "reason": reason}))
+    sys.exit(0)
+
+if not transcript_path or not os.path.isfile(transcript_path):
+    try:
+        os.unlink(ready_path)
+    except OSError:
+        pass
+    sys.exit(0)
 
 def strings_from_message(value):
     if isinstance(value, str):
@@ -138,6 +178,11 @@ if percent < min_percent:
         f"{min_percent}% threshold. Continue the run; compact closer to the limit."
     )
     print(json.dumps({"decision": "block", "reason": reason}))
+else:
+    try:
+        os.unlink(ready_path)
+    except OSError:
+        pass
 PYEOF
 )"
 

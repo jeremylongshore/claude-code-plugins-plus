@@ -1,6 +1,6 @@
 {
   "name": "crest-recon",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Strategic context reconnaissance \u2014 read existing roadmaps, OKRs, competitive docs, and briefs to establish context before planning. Use when asked to \"understand our strategy\", \"what's the current roadmap\", \"what OKRs do we have\", \"strategic context\", or before starting any prioritization or roadmap work.",
   "author": {
     "name": "tonone-ai",
@@ -9,8 +9,5 @@
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
   "type": "skill",
-  "keywords": [
-    "crest",
-    "skill"
-  ]
+  "keywords": ["crest", "skill"]
 }

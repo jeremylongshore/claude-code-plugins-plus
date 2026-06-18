@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/cli-ux-tester",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Expert UX evaluator for command-line interfaces, CLIs, terminal tools, shell scripts, and developer APIs",
   "keywords": [
     "cli",

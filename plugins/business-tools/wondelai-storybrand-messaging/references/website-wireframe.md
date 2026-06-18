@@ -2,8 +2,8 @@
 
 Page-by-page structure for a website that converts visitors into customers using the SB7 framework.
 
-## Table of Contents
 
+## Table of Contents
 1. [Above the Fold (First Screen)](#above-the-fold-first-screen)
 2. [Stakes Section](#stakes-section)
 3. [Value Proposition Section](#value-proposition-section)
@@ -41,14 +41,12 @@ The most important real estate. Visitors decide in 5 seconds if they'll stay.
 ```
 
 ### Rules:
-
 - **Headline:** State what they want, not what you do
 - **Subhead:** Brief explanation of how
 - **CTA:** One clear action button (stands out)
 - **Image:** Show customer's aspirational identity
 
 ### Examples:
-
 - "Get Your Saturdays Back" (lawn care)
 - "Meals Your Family Will Actually Eat" (meal delivery)
 - "Retire 5 Years Earlier" (financial advisor)
@@ -93,7 +91,6 @@ What's in it for them? Benefits, not features.
 ```
 
 ### Rules:
-
 - 3-4 benefits maximum
 - Use icons for visual scanning
 - Focus on outcomes, not features
@@ -123,7 +120,6 @@ Establish empathy and authority.
 ```
 
 ### Rules:
-
 - Lead with empathy (understanding their pain)
 - Follow with authority (proof you can help)
 - Logos add instant credibility
@@ -151,7 +147,6 @@ Show them exactly how it works.
 ```
 
 ### Rules:
-
 - Exactly 3 steps (occasionally 4)
 - Use numbers or icons
 - Simple titles (2-3 words)
@@ -204,7 +199,6 @@ Social proof from real customers.
 ```
 
 ### Rules:
-
 - Photos increase trust dramatically
 - Include name and context (company, role)
 - Focus on transformation/results, not features
@@ -232,7 +226,6 @@ Capture email from visitors not ready to buy.
 ```
 
 ### Good transitional CTAs:
-
 - PDF guide
 - Checklist
 - Video series
@@ -274,7 +267,6 @@ Standard footer with extra nav and contact.
 ```
 
 ### Rules:
-
 - Include one more CTA button
 - Keep it simple
 - Don't hide important links

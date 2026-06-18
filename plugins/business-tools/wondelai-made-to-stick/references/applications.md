@@ -176,7 +176,6 @@ Email is the most competitive attention environment. Your message competes with 
 ### Email Templates
 
 **The Curiosity Gap Email:**
-
 ```
 Subject: The mistake your team is making every Monday
 
@@ -192,7 +191,6 @@ Here is the 2-minute change they made: [LINK]
 ```
 
 **The Story Email:**
-
 ```
 Subject: How [Name] saved 12 hours a week
 
@@ -210,7 +208,6 @@ Want your Fridays back? [CTA]
 ```
 
 **The Surprising Stat Email:**
-
 ```
 Subject: You are losing $4,200/month (here is the math)
 
@@ -271,7 +268,6 @@ Documentation is the most undervalued communication channel. Great documentation
 **After:**
 > **Connect Slack in 60 Seconds**
 > Want your team to get notified in Slack when a deal closes? Here is how:
->
 > 1. Click Settings (gear icon, top right)
 > 2. Click Integrations
 > 3. Find Slack and click Connect

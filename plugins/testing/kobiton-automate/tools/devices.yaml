@@ -9,6 +9,7 @@ tools:
     annotations:
       readOnlyHint: true
       destructiveHint: false
+      openWorldHint: false
     inputSchema:
       type: object
       properties:
@@ -54,11 +55,12 @@ tools:
   - name: getDeviceStatus
     title: Get Device Status
     description: >
-      Get the real-time status of a specific device including availability,
-      current session info, battery level, and connection state.
+      Get the real-time availability status of a specific device (e.g.
+      `is_booked`, `is_online`) and `deviceId`.
     annotations:
       readOnlyHint: true
       destructiveHint: false
+      openWorldHint: false
     inputSchema:
       type: object
       properties:
@@ -84,6 +86,8 @@ tools:
     annotations:
       readOnlyHint: false
       destructiveHint: false
+      idempotentHint: false
+      openWorldHint: false
     inputSchema:
       type: object
       properties:
@@ -112,6 +116,8 @@ tools:
     annotations:
       readOnlyHint: false
       destructiveHint: true
+      idempotentHint: true
+      openWorldHint: false
     inputSchema:
       type: object
       properties:

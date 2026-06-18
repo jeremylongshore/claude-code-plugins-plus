@@ -1,10 +1,22 @@
 {
   "name": "automate",
-  "version": "1.0.2",
+  "version": "1.6.0",
   "description": "Connect to Kobiton mobile testing platform - manage devices, run automation suites, and view test results",
-  "author": { "name": "Kobiton Inc." },
+  "author": {
+    "name": "Kobiton Inc.",
+    "email": "support@kobiton.com"
+  },
   "license": "MIT",
   "repository": "https://github.com/kobiton/automate",
   "homepage": "https://kobiton.com",
-  "keywords": ["mobile", "testing", "appium", "automation", "devices", "kobiton"]
+  "keywords": [
+    "mobile",
+    "test",
+    "automation",
+    "appium",
+    "mcp",
+    "devices",
+    "kobiton"
+  ],
+  "mcpServers": "./.mcp.json"
 }

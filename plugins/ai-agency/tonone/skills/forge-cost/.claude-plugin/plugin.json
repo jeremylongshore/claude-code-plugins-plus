@@ -1,6 +1,6 @@
 {
   "name": "forge-cost",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Audit cloud infrastructure costs and produce a concrete optimization plan with specific changes and estimated savings. Use when asked to \"how much is this costing\", \"reduce cloud spend\", \"cost optimization\", \"are we overpaying\", \"cloud bill\", or \"budget for this infra\".",
   "author": {
     "name": "tonone-ai",
@@ -9,8 +9,5 @@
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
   "type": "skill",
-  "keywords": [
-    "forge",
-    "skill"
-  ]
+  "keywords": ["forge", "skill"]
 }

@@ -2,16 +2,16 @@
 
 These case studies illustrate how lean principles work in practice. Each follows a consistent structure: the situation before lean methods were applied, the specific lean approach used, the experiments conducted, the results achieved, and the lessons that generalize beyond the specific company. The final section examines companies that failed by ignoring lean principles, and cross-cutting patterns that emerge across all cases.
 
-## Table of Contents
 
-1. [Case Study 1: Dropbox - The Smoke Test MVP](#case-study-1-dropbox---the-smoke-test-mvp)
-2. [Case Study 2: IMVU - Continuous Deployment and Learning](#case-study-2-imvu---continuous-deployment-and-learning)
-3. [Case Study 3: Zappos - The Wizard of Oz MVP](#case-study-3-zappos---the-wizard-of-oz-mvp)
-4. [Case Study 4: Groupon - The Piecemeal MVP](#case-study-4-groupon---the-piecemeal-mvp)
-5. [Case Study 5: Food on the Table - The Concierge MVP](#case-study-5-food-on-the-table---the-concierge-mvp)
-6. [Case Study 6: Aardvark - Before-Building Validation](#case-study-6-aardvark---before-building-validation)
-7. [Failure Case 1: Webvan - Scaling Without Validation](#failure-case-1-webvan---scaling-without-validation)
-8. [Failure Case 2: Segway - The Product Nobody Asked For](#failure-case-2-segway---the-product-nobody-asked-for)
+## Table of Contents
+1. [Case Study 1: Dropbox - The Smoke Test MVP](#case-study-1-dropbox-the-smoke-test-mvp)
+2. [Case Study 2: IMVU - Continuous Deployment and Learning](#case-study-2-imvu-continuous-deployment-and-learning)
+3. [Case Study 3: Zappos - The Wizard of Oz MVP](#case-study-3-zappos-the-wizard-of-oz-mvp)
+4. [Case Study 4: Groupon - The Piecemeal MVP](#case-study-4-groupon-the-piecemeal-mvp)
+5. [Case Study 5: Food on the Table - The Concierge MVP](#case-study-5-food-on-the-table-the-concierge-mvp)
+6. [Case Study 6: Aardvark - Before-Building Validation](#case-study-6-aardvark-before-building-validation)
+7. [Failure Case 1: Webvan - Scaling Without Validation](#failure-case-1-webvan-scaling-without-validation)
+8. [Failure Case 2: Segway - The Product Nobody Asked For](#failure-case-2-segway-the-product-nobody-asked-for)
 9. [Cross-Cutting Patterns](#cross-cutting-patterns)
 
 ---
@@ -36,7 +36,6 @@ Houston created a 3-minute screencast demonstrating how Dropbox would work. The 
 The video was posted to Hacker News with a link to a beta signup page.
 
 **Metrics and results:**
-
 - Beta waitlist went from 5,000 to 75,000 overnight
 - No paid advertising was used
 - The video validated both demand and the ability to communicate the value proposition
@@ -45,7 +44,6 @@ The video was posted to Hacker News with a link to a beta signup page.
 After launching the beta, Dropbox tested a referral program: both the referrer and the referred user received 500MB of free storage.
 
 **Metrics and results:**
-
 - Permanent 60% increase in signups
 - 35% of daily signups came through the referral program
 - Validated the viral engine of growth
@@ -123,13 +121,11 @@ Wizard of Oz MVP. The front end looked like a real e-commerce site, but the back
 Swinmurn went to local shoe stores, photographed their inventory, and posted the photos on a simple website. When a customer placed an order, he went to the store, bought the shoes at full price, and shipped them to the customer.
 
 **What this tested:**
-
 - Would people buy shoes online? (Demand)
 - Would they trust an unknown website with their credit card? (Trust)
 - Would they keep the shoes or return them at high rates? (Satisfaction)
 
 **Metrics:**
-
 - Actual purchases (not surveys, not signups, not clicks)
 - Return rates
 - Customer satisfaction (direct communication with every buyer)
@@ -168,7 +164,6 @@ The Point launched as a general collective action platform. Users could create c
 
 **Experiment 2: The WordPress Blog MVP**
 The team created a separate WordPress blog focused exclusively on daily deals. The "technology" was:
-
 - A WordPress blog (free)
 - A daily blog post describing the deal
 - A PDF coupon generated manually in FileMaker
@@ -178,7 +173,6 @@ The team created a separate WordPress blog focused exclusively on daily deals. T
 No marketplace platform. No payment processing system. No automated anything.
 
 **Metrics:**
-
 - Email list growth
 - Coupon redemption rates
 - Merchant satisfaction
@@ -213,7 +207,6 @@ Concierge MVP. Completely manual delivery of the service that the app would even
 
 **Experiment 1: One-Family Concierge**
 Rosso found a single family willing to be his first customer. Every week, he would:
-
 1. Visit the family to learn their food preferences
 2. Manually check the weekly sales at their local grocery store
 3. Create a personalized meal plan based on their preferences and the sales
@@ -223,7 +216,6 @@ Rosso found a single family willing to be his first customer. Every week, he wou
 He charged a small fee for the service.
 
 **What this tested:**
-
 - Is meal planning around store sales something families value?
 - Will they pay for it?
 - What information do families need to make this useful?
@@ -238,7 +230,6 @@ Only after serving dozens of families manually did Rosso begin automating the mo
 ### Results
 
 Food on the Table raised venture funding and grew its user base. The concierge phase generated insights that would have been impossible to gain from surveys or prototypes, including:
-
 - Families cared more about simplicity than variety
 - Store sale data freshness was critical
 - The shopping list was more valued than the meal plan itself
@@ -268,7 +259,6 @@ Wizard of Oz MVP to validate the core experience before building the technology.
 Before building any routing algorithm, the team manually performed the routing function. When a user submitted a question via instant message, a team member would read the question, determine which person in the user's network might know the answer, and manually forward the question.
 
 **What this tested:**
-
 - Would people ask questions through this channel?
 - Would people answer questions forwarded to them?
 - Was the social routing concept sound (right questions to right people)?

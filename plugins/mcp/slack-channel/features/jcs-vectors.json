@@ -1,0 +1,227 @@
+{
+  "$schema_comment": "RFC 8785 (JSON Canonicalization Scheme) interop test vectors for journal.ts canonicalJson(). Pinned in .harness-hash so any edit requires a hash re-init. Each entry has: name, input (parsed value), expected (canonical UTF-8 bytes as a string), and origin (which RFC 8785 section the case exercises). 'throws' entries assert canonicalJson rejects inputs outside our integer-only / BMP-only schema — documented narrower domain than full RFC 8785.",
+  "$ref": "https://datatracker.ietf.org/doc/html/rfc8785",
+  "supported": [
+    {
+      "name": "null literal",
+      "origin": "RFC 8785 §3.2",
+      "input": null,
+      "expected": "null"
+    },
+    {
+      "name": "boolean true",
+      "origin": "RFC 8785 §3.2",
+      "input": true,
+      "expected": "true"
+    },
+    {
+      "name": "boolean false",
+      "origin": "RFC 8785 §3.2",
+      "input": false,
+      "expected": "false"
+    },
+    {
+      "name": "empty object",
+      "origin": "RFC 8785 §3.2.3",
+      "input": {},
+      "expected": "{}"
+    },
+    {
+      "name": "empty array",
+      "origin": "RFC 8785 §3.2.5",
+      "input": [],
+      "expected": "[]"
+    },
+    {
+      "name": "integer zero",
+      "origin": "RFC 8785 §3.2.2.3",
+      "input": 0,
+      "expected": "0"
+    },
+    {
+      "name": "positive integer",
+      "origin": "RFC 8785 §3.2.2.3",
+      "input": 42,
+      "expected": "42"
+    },
+    {
+      "name": "negative integer",
+      "origin": "RFC 8785 §3.2.2.3",
+      "input": -17,
+      "expected": "-17"
+    },
+    {
+      "name": "large safe integer",
+      "origin": "RFC 8785 §3.2.2.3 — Number.MAX_SAFE_INTEGER",
+      "input": 9007199254740991,
+      "expected": "9007199254740991"
+    },
+    {
+      "name": "simple ASCII string",
+      "origin": "RFC 8785 §3.2.2.2",
+      "input": "hello",
+      "expected": "\"hello\""
+    },
+    {
+      "name": "empty string",
+      "origin": "RFC 8785 §3.2.2.2",
+      "input": "",
+      "expected": "\"\""
+    },
+    {
+      "name": "string with embedded quote",
+      "origin": "RFC 8785 §3.2.2.2 — \" must be escaped as \\\"",
+      "input": "he said \"hi\"",
+      "expected": "\"he said \\\"hi\\\"\""
+    },
+    {
+      "name": "string with backslash",
+      "origin": "RFC 8785 §3.2.2.2 — \\ must be escaped as \\\\",
+      "input": "path\\to\\file",
+      "expected": "\"path\\\\to\\\\file\""
+    },
+    {
+      "name": "string with newline",
+      "origin": "RFC 8785 §3.2.2.2 — U+000A must be escaped as \\n",
+      "input": "line1\nline2",
+      "expected": "\"line1\\nline2\""
+    },
+    {
+      "name": "string with tab",
+      "origin": "RFC 8785 §3.2.2.2 — U+0009 must be escaped as \\t",
+      "input": "a\tb",
+      "expected": "\"a\\tb\""
+    },
+    {
+      "name": "string with carriage return",
+      "origin": "RFC 8785 §3.2.2.2 — U+000D must be escaped as \\r",
+      "input": "a\rb",
+      "expected": "\"a\\rb\""
+    },
+    {
+      "name": "string with form feed",
+      "origin": "RFC 8785 §3.2.2.2 — U+000C must be escaped as \\f",
+      "input": "a\fb",
+      "expected": "\"a\\fb\""
+    },
+    {
+      "name": "string with backspace",
+      "origin": "RFC 8785 §3.2.2.2 — U+0008 must be escaped as \\b",
+      "input": "a\bb",
+      "expected": "\"a\\bb\""
+    },
+    {
+      "name": "string with NUL escaped as \\u0000",
+      "origin": "RFC 8785 §3.2.2.2 — control chars without short form use \\u00XX",
+      "input": "a\u0000b",
+      "expected": "\"a\\u0000b\""
+    },
+    {
+      "name": "string with U+001F escaped",
+      "origin": "RFC 8785 §3.2.2.2 — last control char in the \\u00XX range",
+      "input": "a\u001fb",
+      "expected": "\"a\\u001fb\""
+    },
+    {
+      "name": "BMP non-ASCII string (German umlaut)",
+      "origin": "RFC 8785 §3.2.2.2 — non-ASCII BMP chars are NOT escaped",
+      "input": "café",
+      "expected": "\"café\""
+    },
+    {
+      "name": "array order preserving",
+      "origin": "RFC 8785 §3.2.5",
+      "input": [3, 1, 2],
+      "expected": "[3,1,2]"
+    },
+    {
+      "name": "array of mixed scalars",
+      "origin": "RFC 8785 §3.2.5",
+      "input": [1, "two", null, true, false],
+      "expected": "[1,\"two\",null,true,false]"
+    },
+    {
+      "name": "object keys sorted by UTF-16 code-unit order — reverse input",
+      "origin": "RFC 8785 §3.2.3",
+      "input": { "b": 1, "a": 2 },
+      "expected": "{\"a\":2,\"b\":1}"
+    },
+    {
+      "name": "object keys sorted — three keys in arbitrary input order",
+      "origin": "RFC 8785 §3.2.3",
+      "input": { "z": 1, "a": 1, "m": 1 },
+      "expected": "{\"a\":1,\"m\":1,\"z\":1}"
+    },
+    {
+      "name": "object keys sorted — ASCII case-sensitive (uppercase before lowercase)",
+      "origin": "RFC 8785 §3.2.3 — UTF-16 code-unit order, U+0041 (A) < U+0061 (a)",
+      "input": { "a": 1, "A": 1 },
+      "expected": "{\"A\":1,\"a\":1}"
+    },
+    {
+      "name": "object keys sorted — BMP umlaut sorts after ASCII",
+      "origin": "RFC 8785 §3.2.3 — Ä is U+00C4, A is U+0041",
+      "input": { "Ä": 1, "A": 1 },
+      "expected": "{\"A\":1,\"Ä\":1}"
+    },
+    {
+      "name": "nested object — inner keys sorted independently",
+      "origin": "RFC 8785 §3.2.3",
+      "input": { "outer": { "z": 1, "a": 2 } },
+      "expected": "{\"outer\":{\"a\":2,\"z\":1}}"
+    },
+    {
+      "name": "object in array — keys sorted inside elements, array order preserved",
+      "origin": "RFC 8785 §3.2.3 + §3.2.5",
+      "input": [{ "b": 1, "a": 2 }, { "d": 3, "c": 4 }],
+      "expected": "[{\"a\":2,\"b\":1},{\"c\":4,\"d\":3}]"
+    },
+    {
+      "name": "journal event shape — typed audit-log fixture",
+      "origin": "Synthetic — exercises the actual JournalEvent shape that ccsc-22l will sign",
+      "input": {
+        "v": 1,
+        "seq": 42,
+        "ts": "2026-05-19T00:00:00.000Z",
+        "kind": "policy.allow",
+        "actor": "session_owner",
+        "body": { "tool": "Bash", "channel": "C001" },
+        "prevHash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "hash": "abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789"
+      },
+      "expected": "{\"actor\":\"session_owner\",\"body\":{\"channel\":\"C001\",\"tool\":\"Bash\"},\"hash\":\"abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789\",\"kind\":\"policy.allow\",\"prevHash\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"seq\":42,\"ts\":\"2026-05-19T00:00:00.000Z\",\"v\":1}"
+    }
+  ],
+  "throws": [
+    {
+      "name": "non-integer number (positive)",
+      "origin": "Documented narrower domain — JournalEvent schema permits only integers",
+      "input": 1.5,
+      "errorContains": "only finite integer numbers supported"
+    },
+    {
+      "name": "non-integer number (negative)",
+      "origin": "Documented narrower domain — JournalEvent schema permits only integers",
+      "input": -3.14,
+      "errorContains": "only finite integer numbers supported"
+    },
+    {
+      "name": "non-finite number — Infinity",
+      "origin": "Documented narrower domain — non-finite throws at canonicalize time",
+      "input": "__INFINITY__",
+      "errorContains": "only finite integer numbers supported"
+    },
+    {
+      "name": "non-finite number — NaN",
+      "origin": "Documented narrower domain — non-finite throws at canonicalize time",
+      "input": "__NAN__",
+      "errorContains": "only finite integer numbers supported"
+    },
+    {
+      "name": "undefined value",
+      "origin": "Documented narrower domain — undefined is not valid JournalEvent content",
+      "input": "__UNDEFINED__",
+      "errorContains": "unsupported value type"
+    }
+  ]
+}

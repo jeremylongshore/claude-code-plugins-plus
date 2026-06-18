@@ -12,7 +12,6 @@ The tab bar provides access to main app destinations.
 - **Background**: Slightly translucent with background blur ("frosted glass")
 
 **Behavior**:
-
 - Each tab remembers its navigation state
 - Tapping active tab returns to root screen of that tab
 - Tab bar hidden during modals and keyboard display
@@ -24,7 +23,6 @@ The tab bar provides access to main app destinations.
 - **Title**: Center (scrolled state) or left-aligned large title (unscrolled)
 
 **Scroll Behavior**:
-
 - Large title collapses to compact centered title on scroll
 - Search bar can move or hide on scroll
 - Smooth animated transitions between states
@@ -61,14 +59,12 @@ Use modals for focused tasks that shouldn't interrupt context completely.
 ### Search Behavior
 
 **States:**
-
 1. **Inactive:** Placeholder text, magnifying glass icon
 2. **Active/Focused:** Keyboard appears, cancel button shows
 3. **Typing:** Results update (instant or debounced)
 4. **Results:** Displayed in list below
 
 **SwiftUI implementation:**
-
 ```swift
 .searchable(
     text: $searchText,
@@ -113,7 +109,6 @@ Use modals for focused tasks that shouldn't interrupt context completely.
 ```
 
 **Behavior:**
-
 - Primary column: 320pt default width
 - Detail column: Fills remaining space
 - Collapse to single column on compact width
@@ -131,7 +126,6 @@ Use modals for focused tasks that shouldn't interrupt context completely.
 ```
 
 **SwiftUI:**
-
 ```swift
 NavigationSplitView {
     Sidebar()
@@ -151,7 +145,6 @@ NavigationSplitView {
 | Regular (iPad landscape) | Three-column available |
 
 **Best practices:**
-
 - Show placeholder in detail when nothing selected
 - Remember selection across rotation
 - Support column resizing (where appropriate)

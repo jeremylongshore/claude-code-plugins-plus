@@ -19,7 +19,6 @@ In 2007, Kit Kat was struggling. Sales had been declining. The brand needed a ne
 **What they did:** Kit Kat repositioned itself as the companion to coffee. "Have a break, have a Kit Kat" was paired with coffee in every ad, display, and message. The idea was simple: link Kit Kat to something people already do frequently — drink coffee.
 
 **Why it worked:**
-
 - Coffee is consumed 2-3 times per day by most adults
 - Coffee breaks are a social ritual (often involving conversation)
 - The physical environment of coffee (mugs, shops, machines) serves as a persistent visual trigger
@@ -89,25 +88,21 @@ Not all triggers are created equal. The frequency and strength of a trigger dete
 ### Examples by Quadrant
 
 **Gold Mine (High Frequency + Strong Association):**
-
 - Kit Kat + coffee breaks (2-3x/day, strong link)
 - Budweiser + watching sports (weekly+ for fans, strong link)
 - "That's hot" + Paris Hilton (early 2000s — phrase used constantly, strong link)
 
 **Wasted Potential (Low Frequency + Strong Association):**
-
 - Turkeys + Thanksgiving (strong link, but once a year)
 - Fireworks + 4th of July (strong, but annual)
 - Pumpkin spice + fall (strong, but seasonal)
 
 **Opportunity (High Frequency + Weak Association):**
-
 - Commute time + [unlinked product] (daily, ready to be claimed)
 - Lunch break + [unlinked product] (daily, largely unowned)
 - Waiting in line + [unlinked product] (frequent, opportunity to link)
 
 **Avoid (Low Frequency + Weak Association):**
-
 - Eclipses + [product] (extremely rare, no natural link)
 - Leap year + [product] (every 4 years, no link)
 
@@ -118,7 +113,6 @@ A systematic process for creating and reinforcing triggers.
 ### Step 1: Identify the Trigger Candidate
 
 Select an environmental cue that:
-
 - Occurs frequently (daily or more is ideal)
 - Is present in or near your product's use context
 - Is not strongly owned by a competitor
@@ -161,7 +155,6 @@ One advanced trigger strategy is linking your product to a competitor's context 
 **The principle:** If your competitor's product or brand is a frequent environmental cue, you can link your product to it. This turns competitor visibility into your word-of-mouth.
 
 **Examples:**
-
 - A challenger bank could tie its messaging to ATM fee receipts — every time a customer sees a fee, they think of the fee-free alternative
 - A meditation app could tie to the stress of checking email — "Before you open your inbox, open [app]"
 - A healthy snack brand could trigger when people see a vending machine — "Next time you see a vending machine, remember there's a better option"
@@ -199,7 +192,6 @@ One advanced trigger strategy is linking your product to a competitor's context 
 The same trigger can work differently in different contexts. Design for the specific context where you want to be top-of-mind.
 
 **Example:** "Rain" as a trigger:
-
 - For a food delivery app: Rain = don't want to go outside = order in
 - For a boot brand: Rain = need proper footwear = buy boots
 - For a streaming service: Rain = cozy inside = time to watch

@@ -54,16 +54,16 @@ Before any legal work, establish: What is the actual exposure? What is the compa
 
 When gstack is installed, invoke these skills for Terms work:
 
-| Skill | When to invoke | What it adds |
-| ----- | -------------- | ------------ |
+| Skill  | When to invoke | What it adds                                           |
+| ------ | -------------- | ------------------------------------------------------ |
 | `/cso` | Security audit | Maps to data handling and privacy control requirements |
 
 ## Process Disciplines
 
 When performing Terms work, follow these superpowers process skills:
 
-| Skill | Trigger |
-| ----- | ------- |
+| Skill                                        | Trigger                                                                   |
+| -------------------------------------------- | ------------------------------------------------------------------------- |
 | `superpowers:verification-before-completion` | Before claiming any work complete — verify output is complete and correct |
 
 **Iron rule:** No completion claims without fresh verification.

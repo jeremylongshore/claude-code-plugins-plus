@@ -4,285 +4,240 @@ description: 'Define product positioning by mapping competitive alternatives, un
 license: MIT
 metadata:
   author: wondelai
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Product Positioning Framework
 
-This skill implements the product positioning methodology from April Dunford's "Obviously Awesome." It provides a structured, repeatable process for defining how your product is the best in the world at delivering something a well-defined set of customers cares a lot about. Positioning is the foundational strategic exercise that determines how customers perceive your product, what they compare it to, and ultimately whether they buy it.
+April Dunford's "Obviously Awesome" methodology: a structured, repeatable process for defining how your product is the best in the world at delivering something a well-defined set of customers cares a lot about. Positioning determines what customers compare you to, which features they notice, and ultimately whether they buy.
 
 ## Core Principle
 
 **Positioning is not messaging. Positioning is context.**
 
-Positioning defines the context within which customers evaluate your product. It determines what category customers place you in, what alternatives they compare you against, which features they pay attention to, and how they judge your value. Get positioning right, and everything downstream — messaging, sales pitches, marketing campaigns, pricing — becomes dramatically easier. Get it wrong, and no amount of clever copywriting or advertising spend will save you. Customers who don't understand what you are will never understand why you matter.
-
-The foundation of great positioning is understanding that customers always evaluate products relative to alternatives. There is no such thing as absolute product perception. A product that seems expensive in one context seems cheap in another. A feature that seems innovative against one set of competitors seems table-stakes against another. Your job is to deliberately choose the context that makes your unique strengths obvious.
+Positioning defines the context within which customers evaluate your product -- what category they place you in, what alternatives they compare you against, and how they judge your value. Customers always evaluate relative to alternatives; there is no absolute product perception -- a product that seems expensive in one context seems cheap in another. Deliberately choose the context that makes your unique strengths obvious: get it right and messaging, sales, and pricing become dramatically easier; get it wrong and no amount of clever copywriting will save you.
 
 ## Scoring
 
-**Goal: 10/10** — Rate the positioning quality of any product on a 0-10 scale based on the following criteria:
+**Goal: 10/10.** Rate any product's positioning 0-10 using the bands below, and always state the current score with the specific improvements needed to reach 10/10.
 
 | Score | Description |
 |-------|-------------|
-| 0-2 | No clear positioning. Customers can't explain what the product is or who it's for. |
-| 3-4 | Vague positioning. Category is unclear, differentiation is weak, target customer is "everyone." |
-| 5-6 | Partial positioning. Some components are clear but others are missing or inconsistent. Team members describe the product differently. |
-| 7-8 | Strong positioning. All five components are defined. Team is aligned. Customers generally understand the value. |
-| 9-10 | Exceptional positioning. Every component reinforces the others. Customers immediately understand the product, why it's different, and why they should care. The positioning creates an "aha" moment. |
+| 0-2 | No clear positioning; customers can't explain what the product is or who it's for |
+| 3-4 | Vague: category unclear, differentiation weak, target customer is "everyone" |
+| 5-6 | Partial: some components clear, others missing; team members describe the product differently |
+| 7-8 | Strong: all five components defined, team aligned, customers generally understand the value |
+| 9-10 | Exceptional: every component reinforces the others; customers immediately get what it is, why it's different, and why they should care |
 
 ## The 10 Positioning Components
 
 | Component | Description | Example |
 |-----------|-------------|---------|
-| Competitive Alternatives | What customers would use if your product didn't exist | Spreadsheets, manual processes, hiring a consultant, doing nothing |
-| Unique Attributes | Features or capabilities only your product has | Real-time collaboration on financial models |
-| Value Themes | Benefits customers get from your unique attributes | Save 10 hours/week on financial reporting |
-| Best-Fit Customers | Characteristics of people who care most about your value | Mid-market CFOs managing 3+ business units |
-| Market Category | The market you describe yourself as part of | Financial planning and analysis (FP&A) software |
-| Relevant Trends | Market dynamics that make your positioning resonate now | Remote finance teams need real-time collaboration |
-| Positioning Statement | Internal summary of positioning for team alignment | "For mid-market CFOs, we are the FP&A platform built for real-time collaboration across distributed teams" |
-| Sales Narrative | How positioning translates into a compelling sales story | Problem → old way → new way → your solution → proof |
-| Messaging | External-facing language derived from positioning | "Financial planning that keeps up with your business" |
-| Content Strategy | How positioning guides what content to create | Thought leadership on collaborative finance, case studies from multi-unit companies |
+| Competitive Alternatives | What customers would use if you didn't exist | Spreadsheets, consultants, doing nothing |
+| Unique Attributes | Capabilities only your product has | Real-time collaboration on financial models |
+| Value Themes | Benefits customers get from unique attributes | Save 10 hours/week on financial reporting |
+| Best-Fit Customers | Who cares most about your value | Mid-market CFOs managing 3+ business units |
+| Market Category | The market you describe yourself as part of | FP&A software |
+| Relevant Trends | Dynamics that make positioning resonate now | Remote finance teams need real-time collaboration |
+| Positioning Statement | Internal one-line summary for team alignment | "For mid-market CFOs, the FP&A platform built for real-time collaboration" |
+| Sales Narrative | Positioning as a compelling sales story | Problem -> old way -> new way -> your solution -> proof |
+| Messaging | External language derived from positioning | "Financial planning that keeps up with your business" |
+| Content Strategy | What content positioning tells you to create | Thought leadership on collaborative finance |
 
 ## The 5-Step Positioning Process
 
 ### Step 1: Identify Your Competitive Alternatives
 
-**Core concept:** Start by understanding what your best customers would do if your product vanished tomorrow. These are your true competitive alternatives — not just direct competitors, but any way customers solve the problem today, including manual processes, spreadsheets, hiring someone, or simply doing nothing.
+**Core concept:** Understand what your best customers would do if your product vanished tomorrow -- not just direct competitors, but any way they solve the problem today: manual processes, spreadsheets, hiring someone, or doing nothing.
 
-**Why it works:** Customers always evaluate products relative to alternatives. If you don't understand the real alternatives, you can't understand what "differentiated" means in your customer's mind. Your positioning is only as strong as the alternatives you're positioning against.
+**Why it works:** Customers always evaluate products relative to alternatives, so "differentiated" only has meaning against the real alternatives in your customer's mind.
 
 **Key insights:**
-
-- Ask existing happy customers, not prospects — they've already chosen you and can tell you what they switched from
-- The most common competitive alternative is often not another product — it's a spreadsheet, a manual process, or the status quo
+- Ask existing happy customers, not prospects -- they can tell you what they actually switched from
+- The most common alternative is often not a product -- it's a spreadsheet, a manual process, or the status quo
 - "Do nothing" is your biggest competitor in many markets
-- Different customer segments may have different competitive alternatives
-- Group similar alternatives together (e.g., "general-purpose spreadsheets" rather than listing Excel, Google Sheets, and Numbers separately)
-- Focus on what your best-fit customers considered, not all customers
+- Group similar alternatives ("general-purpose spreadsheets" rather than Excel, Sheets, Numbers)
+- Different customer segments may have different alternatives
 
 **Product applications:**
 
 | Context | Application | Example |
 |---------|-------------|---------|
-| New product launch | Interview early adopters about what they used before | "Before us, 70% used spreadsheets, 20% used a generic PM tool, 10% hired contractors" |
-| Repositioning | Survey churned and retained customers about alternatives | Discover that retained customers compared you to consultants, not software |
-| Competitive analysis | Map alternatives by customer segment | Enterprise buyers compare to Salesforce; SMBs compare to spreadsheets |
+| New product launch | Interview early adopters on what they used before | "70% used spreadsheets, 20% a generic PM tool, 10% hired contractors" |
+| Repositioning | Survey churned and retained customers | Retained customers compared you to consultants, not software |
+| Competitive analysis | Map alternatives by segment | Enterprise compares to Salesforce; SMBs to spreadsheets |
 
 **Copy patterns:**
-
 - "Unlike [competitive alternative], [product] does [unique thing]"
 - "Stop using [painful alternative] for [job]"
 - "You've outgrown [alternative]. Here's what comes next."
 
-**Ethical boundary:** Never misrepresent competitive alternatives. Base them on actual customer research, not assumptions or wishful thinking.
+**Ethical boundary:** Base alternatives on actual customer research, never assumptions or wishful thinking.
 
-See: [Competitive Alternatives Analysis](references/competitive-alternatives.md)
+See: [Competitive Alternatives Analysis](references/competitive-alternatives.md) for interview scripts, clustering, and "do nothing" analysis.
 
 ### Step 2: Identify Your Unique Attributes
 
-**Core concept:** List every attribute — feature, capability, company characteristic, or approach — that you have and your competitive alternatives don't. These must be both unique AND true. Not "better" versions of common features, but genuinely different capabilities.
+**Core concept:** List every attribute -- feature, capability, company characteristic, or approach -- that you have and your competitive alternatives don't. They must be both unique AND true.
 
-**Why it works:** Unique attributes are the raw material of differentiation. If an attribute isn't unique, it can't differentiate you. If it isn't true, you'll lose trust. The goal is an honest inventory of what makes you objectively different.
+**Why it works:** Unique attributes are the raw material of differentiation: if it isn't unique it can't differentiate you, and if it isn't true you'll lose trust.
 
 **Key insights:**
-
-- Features are the most obvious attributes, but don't stop there — consider architecture, business model, team expertise, approach, integrations, community
-- "Better" is not unique — "10% faster" is not a unique attribute; "uses a fundamentally different algorithm that enables real-time processing" might be
-- Attributes must survive the "only we" test: "Only we [attribute]"
-- Don't confuse attributes with benefits — attributes are facts about your product; benefits are what customers get from those facts
-- Cluster related attributes into groups (these will become value themes in the next step)
-- It's okay to have attributes that matter to some segments but not others
+- Look beyond features: architecture, business model, team expertise, integrations, community
+- "Better" is not unique -- "10% faster" doesn't qualify; "a fundamentally different algorithm enabling real-time processing" might
+- Every attribute must survive the "only we" test: "Only we [attribute]"
+- Attributes are facts about your product; benefits are what customers get from them -- don't confuse the two
+- Cluster related attributes into groups (they become value themes in Step 3)
 
 **Product applications:**
 
 | Context | Application | Example |
 |---------|-------------|---------|
-| Feature launch | Assess if new feature creates a unique attribute | "We're the only project management tool with built-in time-zone-aware scheduling" |
-| Competitive response | Verify your attributes are still unique after competitor updates | Quarterly attribute audit against top 5 alternatives |
-| Acquisition | Identify which attributes of the acquired product are truly unique | "Their NLP engine processes medical terminology — no other EMR does this" |
+| Feature launch | Check if it creates a unique attribute | "The only PM tool with built-in time-zone-aware scheduling" |
+| Competitive response | Re-verify uniqueness after competitor updates | Quarterly attribute audit against top 5 alternatives |
+| Acquisition | Identify which acquired attributes are unique | "Their NLP engine processes medical terminology -- no other EMR does" |
 
 **Copy patterns:**
-
 - "The only [category] that [unique attribute]"
 - "Built from the ground up to [unique capability]"
 - "No other [category] can [unique thing] because [reason]"
 
-**Ethical boundary:** Never claim attributes that aren't genuinely unique. If a competitor also has the capability, it's table stakes, not a differentiator.
+**Ethical boundary:** Never claim attributes that aren't genuinely unique -- if a competitor has it, it's table stakes.
 
-See: [Unique Attributes Discovery](references/unique-attributes.md)
+See: [Unique Attributes Discovery](references/unique-attributes.md) for the workshop process and verification techniques.
 
 ### Step 3: Map Attributes to Customer Value
 
-**Core concept:** For each unique attribute, apply the "So what?" test repeatedly until you reach a value that customers actually care about. Then group related values into value themes — the two or three key reasons customers choose you.
+**Core concept:** For each unique attribute, apply the "So what?" test repeatedly until you reach a value customers actually care about, then group related values into two or three value themes.
 
-**Why it works:** Customers don't buy features. They buy outcomes. A unique attribute is meaningless unless you can articulate why it matters in terms the customer cares about. Value themes give your positioning narrative structure and make it memorable.
+**Why it works:** Customers buy outcomes, not features -- an attribute is meaningless until you articulate why it matters in the customer's terms. Value themes give your positioning narrative structure and make it memorable.
 
 **Key insights:**
-
-- Use the "So what?" chain: Feature → "So what?" → Advantage → "So what?" → Value
-- Example: "Real-time collaboration" → "So what?" → "Finance teams can work simultaneously" → "So what?" → "Close the books 3 days faster each quarter"
-- Value must be expressed in terms the customer uses, not your internal jargon
-- Most products have 2-4 value themes — more than that and your positioning is unfocused
-- Each value theme should be backed by proof points (case studies, data, testimonials)
-- Value themes often cluster around: saving time, saving money, reducing risk, enabling growth, or improving quality
+- The "So what?" chain: Feature -> Advantage -> Value ("Real-time collaboration" -> "finance teams work simultaneously" -> "close the books 3 days faster each quarter")
+- Express value in the customer's language, not internal jargon
+- Most products support 2-4 value themes -- more means unfocused positioning
+- Back every theme with proof points: case studies, data, testimonials
+- Themes usually cluster around saving time, saving money, reducing risk, enabling growth, or improving quality
 
 **Product applications:**
 
 | Context | Application | Example |
 |---------|-------------|---------|
-| Messaging development | Create messaging hierarchy from value themes | Primary: "Close books 3x faster." Secondary: "Eliminate version-control errors." |
-| Sales enablement | Build talk tracks around value themes | Each theme becomes a section of the sales pitch with proof points |
-| Content marketing | Create content pillars from value themes | Blog series, whitepapers, and webinars organized by value theme |
+| Messaging development | Build hierarchy from value themes | Primary: "Close books 3x faster." Secondary: "Eliminate version-control errors." |
+| Sales enablement | Talk tracks per theme | Each theme becomes a pitch section with proof points |
+| Content marketing | Content pillars from themes | Blog series, whitepapers, webinars organized by value theme |
 
 **Copy patterns:**
-
 - "[Value outcome] with [product], powered by [unique attribute]"
 - "Our customers [measurable outcome] because [unique capability]"
 - "[Number]% of customers report [value] within [timeframe]"
 
-**Ethical boundary:** Never exaggerate value claims. Back every value assertion with evidence from real customer outcomes.
+**Ethical boundary:** Back every value claim with evidence from real customer outcomes -- never exaggerate.
 
-See: [Value Mapping Framework](references/value-mapping.md)
+See: [Value Mapping Framework](references/value-mapping.md) for the "So what?" chain and proof point creation.
 
 ### Step 4: Define Your Best-Fit Target Customers
 
-**Core concept:** Identify the characteristics that make someone care the most about the value only you deliver. This is not your total addressable market — it's the tightest possible definition of who your product is perfect for right now.
+**Core concept:** Identify the characteristics that make someone care the most about the value only you deliver -- the tightest possible definition of who your product is perfect for right now, not your total addressable market.
 
-**Why it works:** Trying to position for everyone means positioning for no one. Best-fit customers are the ones who buy fastest, churn least, refer most, and expand most. When you nail positioning for them, it naturally expands outward. They're also the customers whose testimonials and case studies are most compelling.
+**Why it works:** Best-fit customers buy fastest, churn least, refer most, and expand most; nail positioning for them and it expands outward naturally. Their testimonials and case studies are also the most compelling.
 
 **Key insights:**
-
-- Best-fit characteristics must be identifiable before you talk to the customer (job title, company size, industry, tech stack — not psychographics)
-- Start with your happiest, most successful existing customers and work backward to find common characteristics
-- The ideal best-fit definition lets your sales and marketing teams identify and target these customers proactively
-- "Everyone" is never a valid target — even horizontal products have best-fit segments
-- Best-fit customers are not necessarily the biggest market — they're the most reachable, convincible, and retainable
-- Consider negative criteria too: what characteristics indicate someone is NOT a fit
+- Characteristics must be identifiable before you talk to the customer: job title, company size, industry, tech stack -- not psychographics
+- Work backward from your happiest, most successful existing customers
+- "Everyone" is never a valid target -- even horizontal products have best-fit segments
+- Best-fit is not necessarily the biggest market -- it's the most reachable, convincible, and retainable
+- Define negative criteria too: what indicates someone is NOT a fit
 
 **Product applications:**
 
 | Context | Application | Example |
 |---------|-------------|---------|
-| Go-to-market strategy | Focus launch on best-fit segment | "Launch to Series B-D SaaS companies with 50-500 employees and a dedicated RevOps person" |
-| Sales qualification | Build scoring model from best-fit criteria | Lead score: +20 for RevOps title, +15 for SaaS industry, +10 for 50-500 employees |
-| Product roadmap | Prioritize features best-fit customers request | "Our best-fit customers consistently ask for Salesforce integration — build it next" |
+| Go-to-market strategy | Launch to the best-fit segment first | "Series B-D SaaS, 50-500 employees, dedicated RevOps person" |
+| Sales qualification | Score leads on best-fit criteria | +20 RevOps title, +15 SaaS industry, +10 for 50-500 employees |
+| Product roadmap | Prioritize best-fit requests | "Best-fit customers all ask for Salesforce integration -- build it next" |
 
 **Copy patterns:**
-
 - "Built for [specific customer type] who [specific situation]"
 - "If you're a [role] at a [company type], you know [pain point]"
 - "Purpose-built for [segment], not a generic tool adapted for everyone"
 
-**Ethical boundary:** Defining best-fit customers is about focus, not exclusion. Be honest about who your product serves best without denigrating other segments.
+**Ethical boundary:** Best-fit definition is about focus, not exclusion -- never denigrate other segments.
 
-See: [Target Customer Analysis](references/target-customers.md)
+See: [Target Customer Analysis](references/target-customers.md) for actionable segmentation criteria and TAM differentiation.
 
 ### Step 5: Choose Your Market Category
 
-**Core concept:** Select the market frame of reference that makes your unique value most obvious. You have three strategic options: compete head-to-head in an existing category, create a subcategory of an existing category, or create an entirely new category.
+**Core concept:** Select the market frame of reference that makes your unique value most obvious. Three strategic options: compete head-to-head in an existing category, create a subcategory, or create a new category.
 
-**Why it works:** The market category you choose triggers a set of assumptions in the customer's mind about what your product does, who it competes with, and how it should be priced. Choosing the right category leverages these assumptions in your favor. Choosing the wrong one fights them.
+**Why it works:** The category triggers assumptions in the customer's mind about what your product does, who it competes with, and how it should be priced -- the right category leverages those assumptions in your favor; the wrong one fights them.
 
 **Key insights:**
-
-- **Head-to-head (existing category):** Best when your product can credibly claim to be the best in an established category. Customers already understand the category — you just need to prove you're the best option. Risk: you inherit all the category's assumptions and competitors.
-- **Subcategory:** Best when you have unique attributes that redefine how a portion of the existing category should be evaluated. You get the category's built-in awareness while shifting evaluation criteria. Example: "CRM for real estate" vs. just "CRM."
-- **New category:** Best when your product is genuinely different from anything that exists. Highest potential upside but requires significant investment in education. You pay an "education tax" — customers need to learn what the category is before they can evaluate you. Only viable if you have the resources and time to define the category.
-- Changing your market category changes everything: competitors, evaluation criteria, pricing expectations, and buyer expectations
-- Test your category choice by checking if prospects "get it" in the first 30 seconds of a conversation
-- You can change categories over time as you grow
+- **Head-to-head:** claim "best" in an established category customers already understand; you inherit all its assumptions and competitors
+- **Subcategory:** redefine how a slice of an existing category is evaluated ("CRM for real estate") -- built-in awareness with shifted criteria
+- **New category:** only when genuinely unlike anything existing; you pay an "education tax" teaching customers the category before they can evaluate you
+- Changing category changes everything: competitors, evaluation criteria, pricing and buyer expectations
+- Test the choice: do prospects "get it" in the first 30 seconds of a conversation?
 
 **Product applications:**
 
 | Context | Application | Example |
 |---------|-------------|---------|
-| Startup positioning | Choose initial market category | Start as "AI writing assistant" (existing) rather than "content intelligence platform" (new category) |
-| Market expansion | Shift category as product matures | Move from "email marketing tool" (existing) to "customer engagement platform" (broader category) |
-| Competitive response | Reframe category when competitors flood yours | Shift from "project management" to "product development workflow" to escape commodity comparisons |
+| Startup positioning | Choose initial category | "AI writing assistant" (existing) over "content intelligence platform" (new) |
+| Market expansion | Shift category as product matures | "Email marketing tool" -> "customer engagement platform" |
+| Competitive response | Reframe when competitors flood your category | "Project management" -> "product development workflow" |
 
 **Copy patterns:**
-
 - Existing: "The best [category] for [best-fit customers]"
-- Subcategory: "[Modifier] [category] — [category] reimagined for [specific need]"
+- Subcategory: "[Modifier] [category] -- [category] reimagined for [specific need]"
 - New category: "Introducing [new category]: [one-sentence definition]"
 
-**Ethical boundary:** Don't create a new category purely to avoid competition. Only create a new category when your product genuinely can't be understood within existing frameworks.
+**Ethical boundary:** Don't create a new category purely to avoid competition -- only when your product genuinely can't be understood within existing frameworks.
 
-See: [Market Category Strategy](references/market-category.md)
+See: [Market Category Strategy](references/market-category.md) for the decision framework and education-tax analysis.
 
 ## Market Reference Points
 
-Trends act as tailwinds for your positioning. When a relevant market trend aligns with your unique value, referencing it makes your positioning feel timely and inevitable rather than arbitrary.
+Trends act as tailwinds: a real, widely acknowledged trend that connects directly to your unique value makes positioning feel timely and inevitable rather than arbitrary. Use trends as supporting evidence, never the core of your positioning. Example: "As finance teams go remote, real-time collaboration isn't a nice-to-have -- it's essential."
 
-**How to use trends effectively:**
-
-- Trends must be real and widely acknowledged — don't fabricate or exaggerate trends
-- The trend must connect directly to your unique value, not just your category
-- Trends are supporting evidence, not the core of your positioning
-- Common powerful trends: remote/distributed work, AI/automation, data privacy regulations, sustainability, creator economy, vertical SaaS, product-led growth
-
-**Example:** If your unique attribute is real-time collaboration across time zones, the remote work trend makes your value feel urgent and timely. "As finance teams go remote, real-time collaboration isn't a nice-to-have — it's essential."
-
-**Warning signs of trend abuse:**
-
-- Your positioning only makes sense in light of the trend
-- The trend doesn't connect to any unique attribute
-- The trend is aspirational rather than actually happening
-- You're the only one who thinks the trend is real
+**Warning signs of trend abuse:** your positioning only makes sense in light of the trend; the trend connects to no unique attribute; the trend is aspirational rather than actually happening.
 
 ## The Positioning Canvas
 
-Use this template to capture your positioning decisions in one place. Every member of the team should be able to fill this out consistently.
+Capture positioning decisions in one place -- every team member should be able to fill this out consistently.
 
 | Component | Your Answer |
 |-----------|-------------|
 | **Competitive Alternatives** | What would customers use if we didn't exist? |
 | **Unique Attributes** | What do we have that alternatives don't? |
-| **Value Themes** | What value do those attributes enable for customers? |
+| **Value Themes** | What value do those attributes enable? |
 | **Best-Fit Customers** | Who cares the most about that value? |
 | **Market Category** | What market frame makes our value obvious? |
 | **Relevant Trends** | What market dynamics create urgency? |
-| **Positioning Statement** | One sentence: For [target], we are the [category] that [key value] |
+| **Positioning Statement** | For [target], we are the [category] that [key value] |
 | **Key Proof Points** | Evidence that our claims are true |
 | **Primary Message** | External headline derived from positioning |
 | **Sales Narrative** | How we tell this story in a sales conversation |
 
-See: [Positioning Canvas with Worked Examples](references/positioning-canvas.md)
+See: [Positioning Canvas with Worked Examples](references/positioning-canvas.md) for the blank template plus three fully worked examples.
 
 ## Team Positioning Exercise
 
-Effective positioning requires cross-functional alignment. The positioning exercise should include representatives from:
+Positioning requires cross-functional alignment: include founders (vision), product (unique attributes), sales (objections and alternatives), marketing (category and messaging), and customer success (best-fit evidence). Run it in three parts: pre-work gathering customer research and win/loss data (1-2 weeks before), a 2-3 hour workshop walking all five steps to consensus, and post-work documenting the canvas and aligning customer-facing materials. The most important output is alignment -- everyone describing the product the same way.
 
-- **Founders/Leadership** — vision and strategic context
-- **Product** — unique attributes and roadmap
-- **Sales** — customer objections and competitive alternatives
-- **Marketing** — messaging and market category
-- **Customer Success** — best-fit customer characteristics and value proof
-
-**Exercise overview:**
-
-1. Pre-work: Gather customer research, competitive data, and win/loss analysis (1-2 weeks before)
-2. Workshop: Walk through all 5 steps as a team, building consensus at each step (2-3 hours)
-3. Post-work: Document the positioning canvas, create messaging, and align all customer-facing materials (1-2 weeks after)
-
-The most important output is team alignment — everyone describing the product the same way.
-
-See: [Team Exercise Facilitator Guide](references/team-exercise.md)
+See: [Team Exercise Facilitator Guide](references/team-exercise.md) for a minute-by-minute agenda and remote adaptations.
 
 ## Common Mistakes
 
 | Mistake | Why It Fails | Fix |
 |---------|-------------|-----|
-| Positioning for everyone | Dilutes differentiation. No one feels the product was built for them. | Tighten best-fit customer definition to the segment that cares most. |
-| Confusing positioning with messaging | Messaging without positioning is words without strategy. It sounds good but doesn't resonate. | Do the positioning work first; derive messaging from positioning. |
-| Listing features instead of value | Customers don't buy features. They buy outcomes. Feature lists overwhelm and confuse. | Apply the "So what?" test to every feature until you reach customer value. |
-| Copying competitor positioning | If you position the same as competitors, you invite direct comparison on their terms. | Start from your unique attributes and build positioning that only you can own. |
-| Changing positioning too frequently | Confuses customers, sales team, and market. Creates perception of instability. | Commit to positioning for at least 6-12 months. Adjust messaging more frequently. |
-| Creating a new category prematurely | Pays the "education tax" without the resources to educate the market. Customers can't buy what they don't understand. | Start in an existing category or subcategory. Create a new category only when you have traction and resources. |
-| Ignoring competitive alternatives | Without understanding alternatives, you can't articulate differentiation. Your positioning exists in a vacuum. | Interview 15-20 happy customers about what they used before and what they'd switch to. |
+| Positioning for everyone | Dilutes differentiation; no one feels it was built for them | Tighten best-fit definition to the segment that cares most |
+| Confusing positioning with messaging | Words without strategy sound good but don't resonate | Do the positioning work first; derive messaging from it |
+| Listing features instead of value | Customers buy outcomes; feature lists overwhelm | Apply the "So what?" test until you reach customer value |
+| Copying competitor positioning | Invites direct comparison on their terms | Build positioning from attributes only you can own |
+| Changing positioning too frequently | Confuses customers, sales, and market | Commit for 6-12 months; adjust messaging more often |
+| Creating a new category prematurely | Pays the "education tax" without resources to educate | Start in an existing category or subcategory; create new only with traction and resources |
+| Ignoring competitive alternatives | Differentiation exists in a vacuum | Interview 15-20 happy customers about what they used before |
 
 ## Quick Diagnostic
 
@@ -292,25 +247,25 @@ See: [Team Exercise Facilitator Guide](references/team-exercise.md)
 | Do prospects understand what you do in under 30 seconds? | Category is wrong or unclear | Re-evaluate your market category choice |
 | Can you name 3 things you do that no competitor does? | Weak unique attributes | Deep-dive attribute discovery with customer input |
 | Do you know what customers would use if you didn't exist? | Unknown competitive alternatives | Interview 15-20 happy customers about alternatives |
-| Can you articulate why best-fit customers choose you over alternatives? | Value themes are unclear | Run the "So what?" mapping exercise |
-| Is your best-fit customer definition specific enough to target proactively? | Target is too broad | Analyze best customers for common actionable characteristics |
+| Can you articulate why best-fit customers choose you? | Value themes are unclear | Run the "So what?" mapping exercise |
+| Is your best-fit definition specific enough to target proactively? | Target is too broad | Analyze best customers for common actionable characteristics |
 
 ## Reference Files
 
-- [Competitive Alternatives Analysis](references/competitive-alternatives.md) — Customer interview scripts, clustering techniques, and the "do nothing" analysis for discovering true competitive alternatives
-- [Unique Attributes Discovery](references/unique-attributes.md) — Workshop process for identifying genuinely unique attributes, verification techniques, and attribute clustering
-- [Value Mapping Framework](references/value-mapping.md) — The "So what?" chain technique, value theme identification, proof point creation, and value hierarchy
-- [Target Customer Analysis](references/target-customers.md) — Best-fit customer analysis, actionable segmentation criteria, persona creation, and TAM differentiation
-- [Market Category Strategy](references/market-category.md) — Deep dive on all three category strategies, decision framework, education tax analysis, and when to change categories
+- [Competitive Alternatives Analysis](references/competitive-alternatives.md) — Customer interview scripts, clustering techniques, and the "do nothing" analysis
+- [Unique Attributes Discovery](references/unique-attributes.md) — Workshop process for identifying genuinely unique attributes, verification, and clustering
+- [Value Mapping Framework](references/value-mapping.md) — The "So what?" chain, value theme identification, proof points, and value hierarchy
+- [Target Customer Analysis](references/target-customers.md) — Best-fit analysis, actionable segmentation criteria, personas, and TAM differentiation
+- [Market Category Strategy](references/market-category.md) — All three category strategies, decision framework, education tax, when to change categories
 - [Positioning Canvas with Worked Examples](references/positioning-canvas.md) — Blank template plus three fully worked examples (B2B SaaS, consumer app, professional services)
-- [Team Exercise Facilitator Guide](references/team-exercise.md) — Full facilitator guide with minute-by-minute agenda, preparation requirements, and remote adaptations
-- [Positioning Case Studies](references/case-studies.md) — Real-world positioning examples including repositioning wins, niche discovery, and category creation
+- [Team Exercise Facilitator Guide](references/team-exercise.md) — Minute-by-minute agenda, preparation requirements, and remote adaptations
+- [Positioning Case Studies](references/case-studies.md) — Real-world examples including repositioning wins, niche discovery, and category creation
 
 ## Further Reading
 
 - [Obviously Awesome by April Dunford](https://www.amazon.com/Obviously-Awesome-Product-Positioning-Customers/dp/1999023005?tag=wondelai00-20) — The definitive guide to product positioning
-- Sales Pitch by April Dunford — How to translate positioning into a winning sales narrative
+- [Sales Pitch by April Dunford](https://www.amazon.com/Sales-Pitch-Compelling-Positioning-Positioning/dp/1999023048?tag=wondelai00-20) — How to translate positioning into a winning sales narrative
 
 ## About the Author
 
-April Dunford is a positioning consultant and author who has worked with over 200 companies on their product positioning, including Google, IBM, Postman, and Epic Games. With 25 years of experience as a VP of Marketing at a series of successful startups, she developed a repeatable methodology for product positioning that has become the industry standard. Her book "Obviously Awesome" (2019) codified this methodology and became the go-to resource for startups and growth-stage companies seeking to define or redefine their market position. Her follow-up, "Sales Pitch" (2023), extends the methodology into sales conversations. She is widely regarded as the world's foremost expert on product positioning.
+April Dunford is a positioning consultant who has worked with over 200 companies, including Google, IBM, Postman, and Epic Games, after 25 years as a startup VP of Marketing. Her book "Obviously Awesome" (2019) codified the repeatable positioning methodology that became the industry standard; the follow-up "Sales Pitch" (2023) extends it into sales conversations.

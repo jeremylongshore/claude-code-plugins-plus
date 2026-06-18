@@ -2,8 +2,8 @@
 
 Stories are the oldest technology for transferring knowledge. They predate writing, libraries, and the internet. When we hear a story, our brains simulate the experience as if it were happening to us. Neural coupling research shows that a listener's brain activity mirrors the speaker's brain activity during a well-told story. This makes stories the most powerful vehicle for making ideas stick.
 
-## Table of Contents
 
+## Table of Contents
 1. [Why Stories Work](#why-stories-work)
 2. [Three Story Plots](#three-story-plots)
 3. [Story Structure for Product Messaging](#story-structure-for-product-messaging)
@@ -49,7 +49,6 @@ Research into folk tales, urban legends, and viral narratives reveals that stick
 **When to use:** When you want your audience to take a difficult action, push through resistance, or believe that hard things are worth doing.
 
 **Examples:**
-
 - The startup that was rejected by 50 investors before finding one who believed
 - The customer who was about to cancel their contract but gave the product one more try — and it changed everything
 - The engineer who stayed up for three days straight to fix the bug before the launch
@@ -66,7 +65,6 @@ Research into folk tales, urban legends, and viral narratives reveals that stick
 **When to use:** When you want to build community, foster collaboration, or show that your product connects people.
 
 **Examples:**
-
 - The customer who used the product's collaboration feature to help a competitor (and both benefited)
 - The remote team that felt disconnected until they found a tool that recreated the feeling of being in the same room
 - The support agent who went above and beyond for a customer and turned a detractor into an advocate
@@ -83,7 +81,6 @@ Research into folk tales, urban legends, and viral narratives reveals that stick
 **When to use:** When you want to demonstrate novel thinking, encourage experimentation, or show how a new approach changes everything.
 
 **Examples:**
-
 - The team that solved a billion-dollar problem by asking a question no one had asked before
 - The customer who used the product in a way the developers never imagined
 - The company that turned a limitation into their biggest competitive advantage

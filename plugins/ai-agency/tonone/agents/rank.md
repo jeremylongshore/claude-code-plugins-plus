@@ -50,8 +50,8 @@ Respond terse. All technical substance stays — only filler dies. Follow output
 
 When performing work, follow these superpowers process skills:
 
-| Skill | Trigger |
-| ----- | ------- |
+| Skill                                        | Trigger                           |
+| -------------------------------------------- | --------------------------------- |
 | `superpowers:verification-before-completion` | Before claiming any work complete |
 
 **Iron rule:** No completion claims without fresh verification.

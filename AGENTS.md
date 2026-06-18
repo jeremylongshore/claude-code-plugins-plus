@@ -74,6 +74,31 @@ bd sync               # Sync with git
 - NEVER say "ready to push when you are" - YOU must push
 - If push fails, resolve and retry until it succeeds
 
+---
+
+## Before You Touch Validators, Schemas, or the Kernel Pin
+
+This repo is mid-migration toward a single source of truth for "what is a valid agent-native artifact." An agent working here must know the following before changing anything under `scripts/validate-*`, `package.json`'s kernel pin, or the schema docs.
+
+**The authoritative gate is `scripts/validate-skills-schema.py`.** It is the one in the branch-protection required-status set. At marketplace tier, a missing required field is an **ERROR, not a warning**. The IS 8-field `ALWAYS_REQUIRED` set is hand-authored and stays **AUTHORITATIVE**. The IS rubric sits on top of Anthropic's permissive spec — do not reduce the 8-field set, do not demote marketplace errors to warnings, do not "realign" to Anthropic's floor. Read `000-docs/SCHEMA_CHANGELOG.md` § NON-NEGOTIABLES first; any change to required-fields / tier model / error-vs-warning semantics is approval-gated there.
+
+**The kernel `@intentsolutions/core` (`schemas/authoring/v1` byte-frozen + `authoring/v2` strict fork) is the SSoT.** The validator is migrating to consume the kernel folds instead of its hand-rolled rule sets — that work is in progress and the advisory→authoritative flip has **not** happened.
+
+**Pin stays exactly `0.4.1`.** The kernel pin in `package.json` is `0.4.1` (no `^`/`~`). Do **not** bump it during the soak.
+
+**Two advisory CI lanes — they never block:**
+
+- `kernel-shadow-validation.yml` (DR-049 shadow soak) runs the kernel-pinned schema over the SKILL.md corpus and logs AGREE/DISAGREE to `scripts/.kernel-shadow/report.json`.
+- `kernel-vendor-hash.yml` enforces the V ≤ C ≤ K version-coupling invariant + a ≤7-day staleness bound.
+
+Both are `continue-on-error: true`, are not required checks, and mutate nothing. Do not treat their output as a merge blocker, and do not "fix" them by bumping the pin.
+
+**Do NOT flip the shadow lane to blocking** until ALL hold: ≥99.5% corpus agreement (deterministic folds = 100%; the 0.5% band is non-deterministic surfaces only), ≥30 days of advisory soak, zero open P0 blockers, the Rekor superseding-event rollback protocol implemented and tested, CTO + CISO + VP-DevRel governance sign-off, and a ≥14-day public deprecation-window notice to affected authors. The soak has not met this bar yet — the open disagreements are real tool-safety / shell-substitution security cases the current validator correctly blocks. Promotion to blocking is a separate, later, condition-gated step, never a side effect of an unrelated change.
+
+**`[skip auto-bump]` for non-release PRs.** `auto-bump-on-pr.yml` auto-bumps changed plugins' patch versions (only on `plugins/**` / `packages/**` changes). For a docs-only or non-release PR, put `[skip auto-bump]` in the PR title or body so the auto-bumper steps aside.
+
+---
+
 <!-- BEGIN BEADS INTEGRATION -->
 
 ## Issue Tracking with bd (beads)

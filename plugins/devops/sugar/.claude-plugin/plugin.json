@@ -1,0 +1,12 @@
+{
+  "name": "sugar",
+  "version": "0.1.0",
+  "description": "Autonomous AI Development Platform",
+  "author": {
+    "name": "Steven Leggett",
+    "url": "https://github.com/cdnsteve",
+    "email": "contact@roboticforce.io"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/roboticforce/sugar"
+}

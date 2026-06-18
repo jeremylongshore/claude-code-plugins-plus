@@ -24,7 +24,6 @@ The magnetic reason gives the offer a hook -- a reason for its existence that cr
 | **Scarcity-driven** | Tied to limited availability | "The Final Cohort Blueprint" |
 
 **Tips:**
-
 - The magnetic reason creates an implied urgency without needing a countdown timer
 - Seasonal and event-driven reasons feel natural and non-manipulative
 - Trend-driven reasons position you as forward-thinking
@@ -45,7 +44,6 @@ The avatar is who the offer is for. The more specific the avatar, the more magne
 | **Identity** | "The Multi-Passionate Female Founder" | Very Strong -- they see themselves in the name |
 
 **Tips:**
-
 - Use language your avatar uses to describe themselves
 - A name that repels the wrong people is just as valuable as one that attracts the right people
 - The avatar in the name does not have to be exhaustive -- it just needs to be enough for self-selection
@@ -67,7 +65,6 @@ The goal is the Dream Outcome expressed in concrete terms. It answers: "What wil
 | **State** | "Fully Booked" | Desired condition |
 
 **Tips:**
-
 - Use the customer's words for the goal, not industry jargon
 - Make the goal aspirational but believable
 - Specificity beats abstraction ("$10K/month" beats "financial freedom")
@@ -90,7 +87,6 @@ The time frame tells the prospect how fast they will get the result. It answers:
 | **12 months** | Year-long commitment | Mastermind groups, annual programs |
 
 **Tips:**
-
 - Shorter time frames increase urgency but must be realistic
 - The time frame should match the actual expected result timeline
 - Use the shortest honest time frame
@@ -121,7 +117,6 @@ The container word tells the prospect the format of the offer. It answers: "What
 | **Suite** | All-in-one, complete, professional | High | Software bundles, service packages |
 
 **Tips:**
-
 - The container word sets expectations for format and effort
 - "Accelerator" implies speed. "System" implies comprehensiveness. Choose based on your positioning.
 - Avoid overused container words in your industry (if everyone has a "masterclass," call yours a "system")
@@ -242,7 +237,6 @@ The container word tells the prospect the format of the offer. It answers: "What
 ### Exercise 1: MAGIC Worksheet
 
 Fill in each element for your offer:
-
 - M (Magnetic reason why): _______________
 - A (Avatar): _______________
 - G (Goal): _______________

@@ -236,12 +236,10 @@ Use this framework to evaluate the mapping quality of any control-to-outcome rel
 ### Exercise 1: Map the Controls
 
 Choose a screen in your product. Draw two sketches:
-
 1. The layout of the controls (buttons, inputs, toggles).
 2. The layout of the things they affect (content areas, settings, outputs).
 
 Draw lines connecting each control to its effect. Ask:
-
 - Do the lines cross? (If yes, the spatial mapping is poor.)
 - Are the lines short? (Short lines = good proximity.)
 - Does the spatial arrangement match? (Mirror layout = good spatial mapping.)
@@ -257,7 +255,6 @@ List every step of a user task in chronological order. Now list the controls the
 ### Exercise 4: Convention Audit
 
 For each control-to-outcome mapping in your product, classify it as:
-
 - **Spatial** (layout matches output)
 - **Cultural** (follows a known convention)
 - **Labeled** (arbitrary but clearly labeled)

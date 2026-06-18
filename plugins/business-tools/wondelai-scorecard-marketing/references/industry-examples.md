@@ -3,47 +3,40 @@
 ## Scorecard Concepts by Industry
 
 ### Business & Consulting
-
 - "Business Growth Scorecard" - Marketing, Operations, Finance, Leadership
 - "Scale Ready Assessment" - Systems, Team, Revenue, Investment Readiness  
 - "Pitch Ready Scorecard" - Deck, Financials, Team, Market, Traction
 - "Key Person of Influence Scorecard" - Pitch, Publish, Product, Profile, Partnerships
 
 ### Health & Fitness
-
 - "Sleep Quality Scorecard" - Habits, Environment, Stress, Nutrition
 - "Fitness Readiness Quiz" - Current Level, Goals, Time, Motivation
 - "Weight Loss Success Predictor" - Diet, Exercise, Mindset, Support
 - "Marathon Runner Checklist" - Training, Nutrition, Gear, Recovery
 
 ### Finance & Investments
-
 - "Investment Readiness Assessment" - Risk Profile, Goals, Timeline, Knowledge
 - "Retirement Planning Scorecard" - Savings, Income, Expenses, Goals
 - "Wealth Discovery Quiz" - Financial Situation, Money Mindset, Goals
 - "Home Buyer Readiness Quiz" - Budget, Credit, Timeline, Knowledge
 
 ### Relationships & Personal
-
 - "Relationship Health Scorecard" - Communication, Conflict, Connection, Goals
 - "Are You Ready for a Serious Relationship?" - Emotional readiness, Lifestyle, Values
 - "Parenting Style Assessment" - Discipline, Communication, Support, Balance
 - "Wheel of Life Assessment" - Career, Finance, Health, Relationships, Fun, Growth
 
 ### Technology & IT
-
 - "Cybersecurity Risk Scorecard" - Systems, Training, Policies, Response
 - "Digital Transformation Readiness" - Tech, Culture, Data, Skills
 - "IT Infrastructure Health Check" - Security, Performance, Scalability, Support
 
 ### Real Estate
-
 - "Sell Your Home Readiness Quiz" - Timing, Preparation, Pricing, Market Knowledge
 - "Property Investment Scorecard" - Budget, Knowledge, Risk, Goals
 - "First Home Buyer Checklist" - Finance, Location, Timeline, Knowledge
 
 ### Professional Services
-
 - "Marketing Effectiveness Scorecard" - Strategy, Content, Channels, Analytics
 - "Sales Excellence Assessment" - Process, Skills, Tools, Results
 - "Leadership Impact Scorecard" - Vision, Communication, Team, Results
@@ -55,19 +48,16 @@
 ### Yes/No Best Practice Questions
 
 **For Habits:**
-
 - Do you [specific behavior] at least [frequency]?
 - Have you [action] in the last [timeframe]?
 - Do you currently have a [system/process] for [goal]?
 
 **For Knowledge:**
-
 - Do you know your [specific metric]?
 - Have you researched [topic] before making a decision?
 - Are you aware of [common pitfall/opportunity]?
 
 **For Results:**
-
 - Has your [metric] improved in the last [timeframe]?
 - Have you achieved [specific milestone]?
 - Do you feel confident about your [area]?
@@ -84,7 +74,6 @@
 
 **Current Situation:**
 "Which best describes your current [area]?"
-
 - Just getting started
 - Building foundations
 - Growing steadily
@@ -93,7 +82,6 @@
 
 **Desired Outcome (90 days):**
 "What do you most want to achieve in the next 90 days?"
-
 - [Outcome A]
 - [Outcome B]
 - [Outcome C]
@@ -101,7 +89,6 @@
 
 **Main Obstacle:**
 "What's your biggest challenge with [area]?"
-
 - Lack of time
 - Lack of knowledge
 - Lack of budget
@@ -110,7 +97,6 @@
 
 **Budget/Investment Signals:**
 "What best describes your situation?"
-
 - I'm researching options (browsing)
 - I'm ready to invest in a solution (buyer)
 - I've already tried solutions that didn't work (frustrated buyer - high value)
@@ -119,22 +105,18 @@
 ### Qualifying Questions (Add to Uncategorised)
 
 **Budget indicators:**
-
 - "What have you invested in [area] in the past 12 months?"
   - Nothing / Under $500 / $500-$2000 / $2000-$10000 / Over $10000
 
 **Timeline/Urgency:**
-
 - "When do you want to start making changes?"
   - Immediately / Within 30 days / Within 3 months / Just researching
 
 **Decision authority:**
-
 - "Who else is involved in this decision?"
   - Just me / Partner/spouse / Business partner / Team/board
 
 **Company size (B2B):**
-
 - "How large is your team?"
   - Solo / 2-5 / 6-20 / 21-100 / 100+
 
@@ -267,18 +249,15 @@ It'll only take another [X] minutes, and you'll get:
 ### Follow-Up Sequence (3-email minimum)
 
 **Email 2 (Day 3): Educational + Soft CTA**
-
 - Share insight related to their lowest-scoring category
 - Link to relevant content (video, article, case study)
 - Mention offer at the end
 
 **Email 3 (Day 7): Social Proof + Stronger CTA**
-
 - Case study of someone with similar score who improved
 - Clear offer with deadline if applicable
 
 **Email 4 (Day 14): Direct Ask**
-
 - "I noticed you scored [X] in [category]"
 - "Would a quick call help?"
 - Calendar link

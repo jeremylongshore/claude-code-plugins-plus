@@ -3,7 +3,6 @@
 This collection of case studies applies Don Norman's design principles to real products, both physical and digital. Each case follows the same structure: the product, the design problem, the principle violated, a detailed analysis, the fix, and the broader lesson. These cases demonstrate that the same small set of principles explains why products are intuitive or infuriating.
 
 ## Table of Contents
-
 1. [Case Study 1: The Norman Door](#case-study-1-the-norman-door)
 2. [Case Study 2: The Thermostat Mental Model](#case-study-2-the-thermostat-mental-model)
 3. [Case Study 3: Stovetop Burner Mapping](#case-study-3-stovetop-burner-mapping)
@@ -148,7 +147,6 @@ Pilots perform the correct action for the wrong mode, or fail to notice a mode c
 Modern autopilot systems have dozens of modes: altitude hold, vertical speed, flight level change, approach, go-around, autothrottle, and many more. Mode transitions can be triggered by the pilot, by the automation, or by the system responding to conditions (e.g., reaching a target altitude).
 
 The problems are compounded:
-
 1. **Mode annunciations are small**: A tiny text label on the Primary Flight Display changes from "ALT HOLD" to "V/S" but may not attract attention.
 2. **Automation acts silently**: The system transitions modes without alerting the pilot. A critical mode change (like autothrottle disconnection) may be signaled by a brief tone that is missed in a noisy cockpit.
 3. **Model complexity**: Pilots must maintain a mental model of multiple interacting automation modes. The combinations are too numerous to track reliably.

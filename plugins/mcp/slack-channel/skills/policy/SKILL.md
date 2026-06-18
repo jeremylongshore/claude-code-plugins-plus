@@ -3,7 +3,7 @@ name: policy
 description: Author MCP tool-call policy rules without hand-editing access.json
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-license: MIT
+license: Apache-2.0
 user-invocable: true
 argument-hint: "list | lint | add <id> <effect> <json-match> [--reason \"...\"] [--ttl-ms N] [--approvers N] [--priority N] | remove <id>"
 allowed-tools: [Read, Write, Edit, "Bash(cmd:bun)", "Bash(cmd:chmod)"]
@@ -82,22 +82,18 @@ the validator script. Exit cleanly without writing if validation fails.
 4. Read `access.json`. Initialize `policy: []` if the field is missing.
 5. If an existing rule has the same `id`, stop with `Rule '<id>' already exists — use 'remove <id>' first, or pick a new id.`
 6. Build the new rule object:
-
    ```json
    { "id": "<id>", "effect": "<effect>", "match": <json-match>, "priority": <priority>, ... }
    ```
-
 7. Append the rule to `policy[]`.
 8. Write the **complete modified access.json** to a temp file `~/.claude/channels/slack/access.json.tmp`, then rename to `access.json` (atomic) and `chmod 0o600`.
 9. Validate by running `bun scripts/policy-validate.ts ~/.claude/channels/slack/access.json`. If validation fails, roll back by removing the appended rule and re-writing atomically. Report the error to the operator.
 10. On success, print:
-
     ```
     Added rule '<id>' (<effect>). Restart the server for the change to take effect:
       - Stop the running server (Ctrl-C in the terminal where it runs, or kill the PID)
       - Start it again: `bun server.ts`
     ```
-
     Hot reload is intentionally not supported — see ACCESS.md §"Where policies live".
 11. If the validator emitted shadow or footgun warnings, print them as `WARNING:` lines but do **not** roll back. Warnings are informational, not failures.
 

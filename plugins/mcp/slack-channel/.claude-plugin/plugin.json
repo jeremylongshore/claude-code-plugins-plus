@@ -7,6 +7,6 @@
     "email": "jeremy@intentsolutions.io"
   },
   "repository": "https://github.com/jeremylongshore/claude-code-slack-channel",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "keywords": ["slack", "channel", "mcp", "socket-mode", "chatops", "claude-code"]
 }

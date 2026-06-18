@@ -2,8 +2,8 @@
 
 Design guidelines for widgets, App Clips, and system extensions.
 
-## Table of Contents
 
+## Table of Contents
 1. [Widget Design](#widget-design)
 2. [Widget Configuration](#widget-configuration)
 3. [App Clips](#app-clips)
@@ -21,7 +21,6 @@ Design guidelines for widgets, App Clips, and system extensions.
 Widgets provide **glanceable information** on the Home Screen, Lock Screen, and StandBy mode. They are not mini-apps—they're windows into your app's most useful content.
 
 **Key principles:**
-
 - Show immediately useful information
 - Update content thoughtfully (not constantly)
 - Respect the user's Home Screen aesthetic
@@ -49,7 +48,6 @@ Widgets provide **glanceable information** on the Home Screen, Lock Screen, and 
 ### Widget Content Guidelines
 
 **Do:**
-
 - Show the most important information
 - Update content at meaningful intervals
 - Use the app's visual style
@@ -57,7 +55,6 @@ Widgets provide **glanceable information** on the Home Screen, Lock Screen, and 
 - Provide multiple widget types if you have different use cases
 
 **Don't:**
-
 - Cram too much information
 - Show stale data
 - Use widgets for advertising
@@ -78,7 +75,6 @@ Widgets provide **glanceable information** on the Home Screen, Lock Screen, and 
 ```
 
 **Guidelines:**
-
 - One tap target (entire widget)
 - Essential info only
 - Clear visual hierarchy
@@ -97,7 +93,6 @@ Widgets provide **glanceable information** on the Home Screen, Lock Screen, and 
 ```
 
 **Guidelines:**
-
 - Can have multiple tap targets
 - Show 2-4 pieces of information
 - Actions should be quick (open to specific view)
@@ -119,7 +114,6 @@ Widgets provide **glanceable information** on the Home Screen, Lock Screen, and 
 ```
 
 **Guidelines:**
-
 - Multiple tap targets allowed
 - Show a collection or dashboard
 - Include clear visual grouping
@@ -130,7 +124,6 @@ Widgets provide **glanceable information** on the Home Screen, Lock Screen, and 
 Lock Screen widgets have limited space and no color.
 
 **Circular:**
-
 ```
 ┌─────┐
 │ 73° │  Temperature
@@ -139,7 +132,6 @@ Lock Screen widgets have limited space and no color.
 ```
 
 **Rectangular:**
-
 ```
 ┌─────────────────────┐
 │ Next Event          │
@@ -148,7 +140,6 @@ Lock Screen widgets have limited space and no color.
 ```
 
 **Best practices:**
-
 - Design for small size
 - Use SF Symbols (render well)
 - Test in Light and Dark modes
@@ -175,7 +166,6 @@ struct ConfigurationIntent: WidgetConfigurationIntent {
 ```
 
 **Configuration UI:**
-
 - Keep options simple (few parameters)
 - Provide sensible defaults
 - Preview changes before confirming
@@ -204,7 +194,6 @@ struct MyWidget: Widget {
 App Clips are lightweight versions of your app (<10MB) for quick, focused tasks without full installation.
 
 **Invocation points:**
-
 - NFC tags
 - QR codes
 - App Clip codes
@@ -215,25 +204,21 @@ App Clips are lightweight versions of your app (<10MB) for quick, focused tasks 
 ### App Clip Design Principles
 
 **1. Focus on one task**
-
 - Rent a bike
 - Order food
 - Pay for parking
 
 **2. Minimize required information**
-
 - Only ask for what's essential
 - Use Sign in with Apple
 - Use Apple Pay
 
 **3. Fast experience**
-
 - User expects to finish in under a minute
 - No lengthy onboarding
 - Minimal UI, maximum function
 
 **4. Encourage full app download**
-
 - Show value of full app
 - Make download easy (banner)
 - Don't block functionality to force download
@@ -276,7 +261,6 @@ App Clip Codes are scannable codes that launch App Clips:
 ```
 
 **Placement guidelines:**
-
 - Clear call to action below code
 - Explain what will happen
 - Accessible height (3.5-5 feet)
@@ -305,7 +289,6 @@ App Clip Codes are scannable codes that launch App Clips:
 ```
 
 **Guidelines:**
-
 - Show preview of shared content
 - Minimal configuration options
 - Quick completion (< 10 seconds ideal)
@@ -332,7 +315,6 @@ Action extensions process content in place:
 ```
 
 **Guidelines:**
-
 - Focus on specific task
 - Return modified content to host app
 - Match system UI conventions
@@ -345,7 +327,6 @@ Action extensions process content in place:
 ### What Live Activities Are
 
 Real-time updates on Lock Screen and Dynamic Island for ongoing events:
-
 - Sports scores
 - Delivery tracking
 - Timers
@@ -354,7 +335,6 @@ Real-time updates on Lock Screen and Dynamic Island for ongoing events:
 ### Live Activity Design
 
 **Lock Screen (expanded):**
-
 ```
 ┌─────────────────────────────────────────┐
 │  [Leading]     [Center]      [Trailing] │
@@ -364,7 +344,6 @@ Real-time updates on Lock Screen and Dynamic Island for ongoing events:
 ```
 
 **Dynamic Island (compact):**
-
 ```
 ┌──────────────────────────────────────┐
 │  🏀  24 - 21  Q3                     │
@@ -372,7 +351,6 @@ Real-time updates on Lock Screen and Dynamic Island for ongoing events:
 ```
 
 **Dynamic Island (expanded):**
-
 ```
 ┌────────────────────────────────────────┐
 │  Lakers          vs          Celtics   │
@@ -385,14 +363,12 @@ Real-time updates on Lock Screen and Dynamic Island for ongoing events:
 ### Live Activity Guidelines
 
 **Do:**
-
 - Update only when meaningful changes occur
 - Design for all Dynamic Island states
 - Provide clear end states
 - Respect 8-hour maximum duration
 
 **Don't:**
-
 - Update every second (unless timer)
 - Show static content
 - Use for notifications
@@ -417,7 +393,6 @@ func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) ->
 ```
 
 **Update policies:**
-
 - `.atEnd` - Update when all entries displayed
 - `.after(date)` - Update at specific time
 - `.never` - Only update on user action

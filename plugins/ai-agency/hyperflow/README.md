@@ -45,7 +45,7 @@ Not just another orchestrator — three things set Hyperflow apart:
 - **Every step is reviewed.** Worker → Reviewer is an iron rule at every granularity, sub-phases included. No worker output ships unreviewed.
 - **Memory that's yours.** Learnings, decisions, and pitfalls persist in `.hyperflow/memory/` — plain markdown, committed with your repo, never uploaded, never mixed across projects. Hot/warm/cold tiering keeps injection cheap.
 - **Depth that adapts.** Triage classifies every task and picks a flow profile (fast → scientific), so a 5-line fix never triggers a 300k-token deep run.
-- **Compaction with a gauge.** Automatic context compaction checks estimated transcript usage first, skips early compacts, and snapshots task state only when compaction is actually useful.
+- **Compaction at the right boundary.** Automatic context compaction is held until dispatch reaches its end-of-chain gate, then checks estimated transcript usage and snapshots task state before compacting.
 
 Underneath: a structural thinking/worker model split (expensive models plan & review, fast models execute), 15 persona-stitched experts, intent auto-routing, and four auto-detected providers — all local, no daemon.
 

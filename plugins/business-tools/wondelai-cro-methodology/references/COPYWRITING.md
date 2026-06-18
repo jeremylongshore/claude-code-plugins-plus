@@ -35,21 +35,17 @@ Good: "How we increased conversions by 363%"
 ## Body Copy Principles
 
 ### Length
-
 Write as much as it takes to:
-
 - Communicate the complete sales message
 - Address all major objections
 - Provide sufficient proof
 
 Long copy works when visitors are:
-
 - Unfamiliar with product category
 - Making a high-commitment decision
 - Comparing alternatives
 
 Short copy works when:
-
 - Brand is well-known
 - Product is simple/commoditized
 - Visitors are already convinced
@@ -65,7 +61,6 @@ Weak: "Thousands of customers"
 Strong: "47,832 businesses trust us"
 
 **Write for scanners**
-
 - Subheadings that tell the story alone
 - Bold key phrases
 - Bullet points for multiple items

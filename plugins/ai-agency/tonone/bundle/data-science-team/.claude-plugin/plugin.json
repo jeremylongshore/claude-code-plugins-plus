@@ -1,6 +1,6 @@
 {
   "name": "data-science-team",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Data Science Team \u2014 10 agents: Cast, Feat, Fit, Score, Drift, Vect, Tune, Plot, Clean, Eval",
   "author": {
     "name": "tonone-ai",
@@ -8,11 +8,5 @@
   },
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
-  "keywords": [
-    "agents",
-    "data-science-team",
-    "ml",
-    "data-science",
-    "bundle"
-  ]
+  "keywords": ["agents", "data-science-team", "ml", "data-science", "bundle"]
 }

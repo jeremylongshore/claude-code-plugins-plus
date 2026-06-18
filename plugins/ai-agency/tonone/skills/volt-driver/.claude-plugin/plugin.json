@@ -1,6 +1,6 @@
 {
   "name": "volt-driver",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Build a device driver or protocol handler \u2014 I2C sensors, BLE services, MQTT clients, SPI peripherals with interrupt-driven I/O and clean HAL abstraction. Use when asked to \"write a driver\", \"I2C device\", \"BLE service\", \"MQTT client\", or \"sensor integration\".",
   "author": {
     "name": "tonone-ai",
@@ -9,8 +9,5 @@
   "repository": "https://github.com/tonone-ai/tonone",
   "license": "MIT",
   "type": "skill",
-  "keywords": [
-    "volt",
-    "skill"
-  ]
+  "keywords": ["volt", "skill"]
 }

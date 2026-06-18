@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/claudebase",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "description": "Back up and restore your entire Claude Code environment to a private GitHub repo",
   "keywords": [
     "github",
