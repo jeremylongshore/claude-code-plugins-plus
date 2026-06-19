@@ -1632,8 +1632,19 @@ def validate_plugin_json(path: Path) -> Dict[str, Any]:
 
 
 _MCP_VERB_PREFIXES = (
-    "list", "get", "create", "delete", "update", "reserve",
-    "terminate", "confirm", "upload", "fetch", "cancel", "start", "stop",
+    "list",
+    "get",
+    "create",
+    "delete",
+    "update",
+    "reserve",
+    "terminate",
+    "confirm",
+    "upload",
+    "fetch",
+    "cancel",
+    "start",
+    "stop",
 )
 # Fully-qualified MCP tool reference: mcp__<server>__<tool>
 _RE_MCP_FQ = re.compile(r"mcp__[a-zA-Z0-9]+__[a-zA-Z0-9_]+")
@@ -1706,15 +1717,21 @@ def check_agent_body_vs_allowlist(fm: Dict[str, Any], body: str) -> Tuple[List[s
     # backtick `getStaticProps` / `getServerSideProps` in a code-focused agent
     # is plain prose, not a tool call. Gating here cuts the false positives the
     # short-name heuristic is known to produce (#843 acknowledges the ambiguity).
-    short_mentions = {
-        w for w in _RE_BACKTICK_VERB.findall(body_no_fences)
-        if w.startswith(_MCP_VERB_PREFIXES) and any(c.isupper() for c in w)
-    } if (declared_mcp or fq_refs) else set()
+    short_mentions = (
+        {
+            w
+            for w in _RE_BACKTICK_VERB.findall(body_no_fences)
+            if w.startswith(_MCP_VERB_PREFIXES) and any(c.isupper() for c in w)
+        }
+        if (declared_mcp or fq_refs)
+        else set()
+    )
     for name in sorted(short_mentions):
         if name not in declared_suffixes:
             warnings.append(
                 f"[agent] body mentions `{name}` (tool-call-shaped) but no declared "
-                "mcp__*__"f"{name} matches — verify it isn't a runtime-blocked call (#843 CHECK 2)"
+                "mcp__*__"
+                f"{name} matches — verify it isn't a runtime-blocked call (#843 CHECK 2)"
             )
 
     # WARN — over-declared MCP tool never referenced in the body.

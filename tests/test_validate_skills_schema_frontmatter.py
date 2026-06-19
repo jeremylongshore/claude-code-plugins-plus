@@ -236,7 +236,7 @@ def test_843_no_mcp_anywhere_is_silent():
 
 def test_843_fenced_code_examples_do_not_trigger_errors():
     # FQ refs inside ``` fences are documentation, not invocations.
-    body = "Here is the config shape:\n\n```json\n{\"tool\": \"mcp__foo__bar\"}\n```\n"
+    body = 'Here is the config shape:\n\n```json\n{"tool": "mcp__foo__bar"}\n```\n'
     errors, _ = _body_check(["Read"], body)
     assert errors == [], errors
 
