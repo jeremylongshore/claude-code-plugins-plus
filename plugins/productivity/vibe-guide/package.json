@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/vibe-guide",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Non-technical progress summaries for Claude Code work (hides diffs/log noise).",
   "keywords": [
     "ux",

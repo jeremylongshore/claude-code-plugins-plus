@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/fairdb-ops-manager",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Comprehensive operations manager for FairDB managed PostgreSQL service - SOPs, incident response, monitoring, and automation",
   "keywords": [
     "database",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/nosql-data-modeler",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Database plugin for nosql-data-modeler",
   "keywords": [
     "database",
