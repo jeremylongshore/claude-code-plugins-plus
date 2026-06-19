@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/publishing-skills",
+  "version": "0.1.0",
+  "description": "Four composable skills that turn an AI agent into a platform-agnostic long-tail SEO publishing pipeline: topic research, drafting, SVG figures, and an editorial calendar. Ships Ghost, WordPress, and static-site adapters.",
+  "keywords": [
+    "ghost",
+    "blogging",
+    "seo",
+    "content-creation",
+    "publishing",
+    "claude-code",
+    "ai-writing",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/productivity/publishing-skills"
+  },
+  "homepage": "https://automatelab.tech/products/skills-and-plugins/publishing-skills/",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT-0",
+  "author": {
+    "name": "AutomateLab",
+    "url": "https://github.com/AutomateLab-tech"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "LICENSE"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install publishing-skills\\\\n  or /plugin install publishing-skills@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}
