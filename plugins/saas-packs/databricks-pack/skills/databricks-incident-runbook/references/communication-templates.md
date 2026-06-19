@@ -30,6 +30,7 @@ Next update: [Time] UTC
 ```
 
 External wording rules:
+
 - No internal terminology (no "cluster", "job", "DBR version", "Photon")
 - No root-cause speculation until verified — say "investigating", not "Spark OOM"
 - Cite staleness in hours, not minutes, even if it's 15 min — minutes-precision implies recovery is closer than it is
