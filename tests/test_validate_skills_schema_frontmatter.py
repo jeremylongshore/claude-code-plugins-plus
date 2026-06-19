@@ -180,3 +180,116 @@ def test_always_required_is_the_is_enterprise_8_field_set():
         "compatibility",
         "tags",
     }
+
+
+# =========================================================================
+# Issue #843 — agent body-vs-allowlist consistency checks.
+# The `tools` frontmatter is a runtime allowlist; a body that invokes an MCP
+# tool it never declares runtime-blocks every call. CHECK 1/3 = errors,
+# CHECK 2 + over-declared = warnings.
+# =========================================================================
+
+
+def _body_check(tools, body):
+    return validator.check_agent_body_vs_allowlist({"tools": tools}, body)
+
+
+def test_843_check1_fq_mcp_not_in_allowlist_is_error():
+    # Some MCP declared, but the body invokes a different (undeclared) one.
+    errors, _ = _body_check(
+        ["Read", "mcp__kobiton__getSession"],
+        "First call `mcp__kobiton__listDevices` to enumerate, then inspect.",
+    )
+    assert any("CHECK 1" in e and "mcp__kobiton__listDevices" in e for e in errors), errors
+
+
+def test_843_check3_zero_mcp_declared_with_body_ref_is_error():
+    # The highest-confidence defect: no mcp__* declared at all, body uses one.
+    errors, _ = _body_check(
+        ["Read", "Bash(node:*)"],
+        "Use `mcp__kobiton__getSession` to fetch the live session.",
+    )
+    assert any("CHECK 3" in e for e in errors), errors
+    # CHECK 1 must NOT double-fire in the zero-declared case.
+    assert not any("CHECK 1" in e for e in errors), errors
+
+
+def test_843_clean_allowlist_matches_body_no_errors():
+    errors, warnings = _body_check(
+        ["Read", "mcp__kobiton__listDevices"],
+        "Call `mcp__kobiton__listDevices` to enumerate devices.",
+    )
+    assert errors == [], errors
+    # Declared tool IS referenced -> no over-declared warning either.
+    assert not any("over-declared" in w for w in warnings), warnings
+
+
+def test_843_no_mcp_anywhere_is_silent():
+    # The common in-repo agent: no MCP tools, prose has no FQ mcp refs.
+    errors, warnings = _body_check(
+        ["Read", "Grep", "Glob"],
+        "Analyze the repository structure and report findings. Read the configs.",
+    )
+    assert errors == []
+    assert warnings == []
+
+
+def test_843_fenced_code_examples_do_not_trigger_errors():
+    # FQ refs inside ``` fences are documentation, not invocations.
+    body = "Here is the config shape:\n\n```json\n{\"tool\": \"mcp__foo__bar\"}\n```\n"
+    errors, _ = _body_check(["Read"], body)
+    assert errors == [], errors
+
+
+def test_843_overdeclared_mcp_tool_warns():
+    errors, warnings = _body_check(
+        ["Read", "mcp__kobiton__terminateSession"],
+        "Inspect the session state and summarize. No teardown here.",
+    )
+    assert errors == []
+    assert any("over-declared" in w for w in warnings), warnings
+
+
+def test_843_check2_shortname_mention_warns_not_errors():
+    # CHECK 2 only fires for MCP-oriented agents (declares an mcp tool here),
+    # so a backtick short name it never declared is flagged as a heuristic warn.
+    errors, warnings = _body_check(
+        ["Read", "mcp__kobiton__getSession"],
+        "First `getSession`, then if the device is busy call `reserveDevice` and retry.",
+    )
+    assert not any("CHECK 1" in e or "CHECK 3" in e for e in errors), errors
+    assert any("CHECK 2" in w and "reserveDevice" in w for w in warnings), warnings
+
+
+def test_843_check2_suppressed_for_non_mcp_agent():
+    # A code-focused agent with no MCP involvement: backtick `getStaticProps`
+    # is prose, not a tool call — must not warn (the known-FP guard).
+    errors, warnings = _body_check(
+        ["Read", "Grep"],
+        "Flag components using `getStaticProps` that should migrate to app router.",
+    )
+    assert errors == []
+    assert not any("CHECK 2" in w for w in warnings), warnings
+
+
+def test_843_end_to_end_validate_agent_surfaces_check3(tmp_path):
+    # Full plugin-agent fixture (all required fields present) so the only
+    # error is the #843 body-vs-allowlist one.
+    agent = tmp_path / "plugins" / "x" / "agents" / "defective.md"
+    agent.parent.mkdir(parents=True)
+    (tmp_path / "plugins" / "x" / ".claude-plugin").mkdir(parents=True)
+    (tmp_path / "plugins" / "x" / ".claude-plugin" / "plugin.json").write_text('{"name":"x"}')
+    agent.write_text(
+        "---\n"
+        "name: defective\n"
+        "description: Drives a Kobiton device session for automated UI testing flows end to end.\n"
+        "tools:\n  - Read\n  - Bash\n"
+        "model: sonnet\ncolor: blue\nversion: 1.0.0\n"
+        "author: T <t@example.com>\n"
+        "tags:\n  - testing\n  - mobile\n"
+        "disallowedTools: []\nskills: []\nbackground: false\n"
+        "---\n\n"
+        "Call `mcp__kobiton__getSession` then `mcp__kobiton__getSessionArtifacts`.\n"
+    )
+    result = validator.validate_agent(agent)
+    assert any("CHECK 3" in e for e in result["errors"]), result["errors"]

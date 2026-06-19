@@ -3,6 +3,12 @@ name: data-collector
 description: "Fetches raw analytics data from Umami MCP across all tracked sites and returns structured datasets for specialist agents — never interprets, only collects. Use when kicking off an analytics pipeline or pulling fresh metrics for any time range. Trigger with \"collect analytics data\", \"fetch site metrics\"."
 tools:
 - Read
+- mcp__umami__get_websites
+- mcp__umami__get_active
+- mcp__umami__get_stats
+- mcp__umami__get_pageviews
+- mcp__umami__get_metrics
+- mcp__umami__get_events
 model: sonnet
 color: yellow
 version: 1.0.0

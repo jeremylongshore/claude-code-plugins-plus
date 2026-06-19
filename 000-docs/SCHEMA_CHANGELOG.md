@@ -146,6 +146,45 @@ compliance are welcome; structural changes to the IS rubric are not.
 
 ---
 
+## [3.11.0] — 2026-06-18 — Agent body-vs-allowlist consistency check (additive, issue #843)
+
+**Additive MINOR — no change to any required-field set, tier model, or
+error-vs-warning semantics for those fields.** `validate_agent()` now inspects
+the agent BODY (previously it read only frontmatter) and cross-checks it against
+the `tools` allowlist, which is a runtime gate (tools not listed are blocked at
+runtime). Closes the defect class where an agent's body invokes an MCP tool it
+never declares and silently runtime-blocks every call (surfaced on
+`kobiton/automate#67` by the customer, not our validator).
+
+New checks in `check_agent_body_vs_allowlist()`:
+
+- **CHECK 1 (ERROR):** body contains a fully-qualified `mcp__<server>__<tool>`
+  that is not in the declared allowlist (partial-coverage case).
+- **CHECK 3 (ERROR):** the allowlist declares zero `mcp__*` tools but the body
+  references fully-qualified MCP tools — highest-confidence form; every call
+  would block.
+- **CHECK 2 (WARN):** body backtick-mentions a verbCamelCase short name
+  (`listDevices`, `getSession`, …) with no matching declared `mcp__*__<name>`.
+  Heuristic; gated to MCP-oriented agents only (declares an mcp tool or has a
+  FQ ref) to avoid flagging plain code prose like `getStaticProps`.
+- **WARN (over-declared):** a declared `mcp__*__<tool>` whose suffix never
+  appears in the body — privilege drift.
+
+Fenced code blocks are stripped before matching so documented examples don't
+trip the FQ checks. Errors are agent-level (agents are not tier-gated).
+
+**Corpus impact:** run against all 317 in-repo agents — caught one genuine
+pre-existing defect (`plugins/analytics/web-analytics/agents/data-collector.md`
+invoked six `mcp__umami__*` tools with only `Read` declared), fixed in the same
+change by declaring the six tools. Zero false-positive errors elsewhere.
+
+Tests: `tests/test_validate_skills_schema_frontmatter.py` (9 `843` cases —
+CHECK 1/2/3, over-declared, fenced-code exemption, non-MCP suppression, and an
+end-to-end `validate_agent` fixture). `validate-agent` skill SKILL.md updated to
+reference the validator-side check (the shell heuristic becomes a fallback).
+
+---
+
 ## [3.10.0] — 2026-06-17 — AGENT gate flipped to kernel-strict + enterprise-fleshed (required-field-set change, **approved**)
 
 **This is an architectural change to the AGENT required-field set** (NON-NEGOTIABLE
