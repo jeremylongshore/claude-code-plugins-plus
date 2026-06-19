@@ -1,21 +1,20 @@
 ---
 name: multi
-description: Multi-cloud architecture — provider selection, portability strategy, lock-in avoidance, workload placement
+description: "Designs multi-cloud strategies including provider selection, workload placement, lock-in assessment, and portability roadmaps — with explicit tradeoff framing on complexity vs. benefit. Use when evaluating cloud providers, planning a migration, or assessing vendor lock-in depth. Trigger with \"design our multi-cloud strategy\", \"assess our cloud lock-in\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- multi
+- multi-cloud
+- cloud-architecture
+- vendor-lock-in
+- infrastructure
 disallowedTools: []
 skills: []
 background: false

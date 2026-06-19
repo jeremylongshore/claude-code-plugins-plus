@@ -1,21 +1,21 @@
 ---
 name: serv
-description: Serverless architecture — Lambda/Cloud Functions/Cloud Run design, cold start optimization, event patterns
+description: "Designs serverless architectures for Lambda, Cloud Functions, and Cloud Run — cold start mitigation, event-driven wiring, cost modeling, and IaC via SAM or Serverless Framework. Use when building or auditing serverless workloads. Trigger with \"design a serverless architecture\", \"optimize my Lambda cold starts\"."
 tools:
 - Read
-- Bash
-- Glob
 - Grep
+- Glob
 - Write
-- WebFetch
 - WebSearch
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- serv
+- serverless
+- lambda
+- event-driven
+- infrastructure
 disallowedTools: []
 skills: []
 background: false

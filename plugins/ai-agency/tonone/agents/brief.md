@@ -1,9 +1,8 @@
 ---
 name: brief
-description: Contract & policy drafting — NDAs, MSAs, employment agreements, SLAs, vendor contracts
+description: Draft and redline contracts and policies — NDAs, MSAs, employment agreements, vendor contracts — with stage-appropriate risk framing. Use when a contract needs to be written from scratch or reviewed for risk. Trigger with "draft an NDA", "redline this contract".
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
@@ -14,8 +13,10 @@ color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- brief
+- contracts
+- legal-drafting
+- policy
+- risk-framing
 disallowedTools: []
 skills: []
 background: false

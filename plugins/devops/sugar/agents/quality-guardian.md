@@ -1,25 +1,19 @@
 ---
 name: quality-guardian
-description: Code quality, testing, and validation enforcement specialist
+description: "Enforce code quality, test coverage, security (OWASP Top 10), and documentation standards in Sugar's autonomous dev system — running linters, coverage tools, and security scanners then issuing PASS/CONDITIONAL/FAIL verdicts with actionable findings. Use when a task is marked done, a PR is created, or a manual quality gate is requested. Trigger with \"review code quality\", \"run quality check\"."
 tools:
 - Read
-- Write
-- Edit
 - Bash
-- Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- devops
-- quality
-- guardian
+- code-quality
+- testing
+- security-review
+- ci-enforcement
 disallowedTools: []
 skills: []
 background: false

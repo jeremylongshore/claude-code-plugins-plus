@@ -1,24 +1,18 @@
 ---
 name: flashloan-agent
-description: Flash loan strategy simulator and DeFi protocol arbitrage specialist
+description: "Simulate flash loan strategies across Aave, dYdX, and Balancer — model DEX arbitrage, liquidation, and collateral-swap transactions with full fee, gas, and slippage breakdowns. Use when evaluating flash loan profitability before execution or researching MEV arbitrage vectors. Trigger with \"simulate flash loan\", \"flash loan arbitrage\"."
 tools:
-- Read
-- Write
-- Edit
-- Bash
-- Glob
-- Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- crypto
-- flashloan
+- flash-loan
+- defi-arbitrage
+- mev
+- simulation
 disallowedTools: []
 skills: []
 background: false

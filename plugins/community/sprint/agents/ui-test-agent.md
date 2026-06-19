@@ -1,25 +1,17 @@
 ---
 name: ui-test-agent
-description: Automate critical UI testing using Chrome browser. Run smoke tests, happy...
+description: Automates end-to-end UI tests on a running frontend using Chrome browser MCP tools — executes smoke tests, happy paths, form validation, and CRUD flows, then returns a structured UI TEST REPORT. Use when validating a deployed frontend after implementation or running manual browser sessions. Trigger with "run UI tests", "test the frontend".
 tools:
 - Read
-- Write
-- Edit
-- Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: opus
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- ui
-- test
+- ui-testing
+- e2e
+- browser-automation
+- sprint-workflow
 disallowedTools: []
 skills: []
 background: false

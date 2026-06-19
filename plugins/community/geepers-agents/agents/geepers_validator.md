@@ -1,25 +1,21 @@
 ---
 name: geepers-validator
-description: Agent for comprehensive project validation - checking configurations, pat...
+description: Validates all aspects of a project before deployment — config files, paths, permissions, ports, service status, and cross-service integration — then produces a categorized report with actionable fixes. Use when preparing to deploy or debugging mysterious failures. Trigger with "validate project", "pre-deploy check".
 tools:
 - Read
-- Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
+- Write
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- validator
+- project-validation
+- pre-deploy
+- config-audit
+- devops
 disallowedTools: []
 skills: []
 background: false

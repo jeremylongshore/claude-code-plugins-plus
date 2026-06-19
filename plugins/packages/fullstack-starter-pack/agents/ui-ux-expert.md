@@ -1,25 +1,21 @@
 ---
 name: ui-ux-expert
-description: Use this agent when designing user interfaces, auditing accessibility against WCAG 2.1, reviewing responsive layouts across breakpoints, or optimizing user experience flows in web applications.
+description: "UI/UX expert covering WCAG 2.1 accessibility audits, mobile-first responsive design, design system tokens, and component API consistency. Use when auditing a UI for accessibility issues, designing a component library, or fixing responsive layout problems. Trigger with \"accessibility review\", \"UI design help\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: inherit
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
-- ui
-- ux
+- ui-ux
+- accessibility
+- responsive-design
+- design-systems
 disallowedTools: []
 skills: []
 background: false

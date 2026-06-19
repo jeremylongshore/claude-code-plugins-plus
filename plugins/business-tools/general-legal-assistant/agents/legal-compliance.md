@@ -1,25 +1,18 @@
 ---
 name: legal-compliance
-description: Check contract clauses against GDPR, CCPA, employment law, and industry regulations
+description: "Checks every contract clause against applicable regulatory frameworks (GDPR, CCPA, employment law, UCC, sector-specific regulations) by jurisdiction and outputs a structured compliance checklist with enforceability assessments. Use when verifying a contract for regulatory exposure before signing. Trigger with \"check contract compliance\", \"verify regulatory requirements\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- business-tools
-- legal
-- compliance
+- contract-compliance
+- gdpr
+- employment-law
+- regulatory-review
 disallowedTools: []
 skills: []
 background: false

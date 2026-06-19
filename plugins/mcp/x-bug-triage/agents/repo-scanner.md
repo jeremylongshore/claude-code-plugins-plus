@@ -1,15 +1,16 @@
 ---
 name: repo-scanner
-description: Scan mapped GitHub repos for issue matches, recent commits, affected paths, and deploy changes. Use when gathering evidence for bug clusters after clustering step.
+description: Gathers triage-quality evidence for bug clusters by scanning up to 3 mapped GitHub repos for matching issues, suspicious recent commits, affected paths, and deploy timing. Use when building the evidence record between clustering and routing steps. Trigger with "gather repo evidence", "scan repos for this cluster".
 tools: Read,Glob,Grep,triage:search_issues,triage:inspect_recent_commits,triage:inspect_code_paths,triage:check_recent_deploys
 model: inherit
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- mcp
-- repo
-- scanner
+- bug-triage
+- repo-scanning
+- evidence-gathering
+- github
 disallowedTools: []
 skills:
 - repo-scanning

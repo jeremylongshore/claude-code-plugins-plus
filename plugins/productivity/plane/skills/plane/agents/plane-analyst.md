@@ -1,37 +1,17 @@
 ---
 name: plane-analyst
-description: 'Plane behavioral synthesis agent. Orchestrates the five compound commands
-
-  (cycle-velocity, stale-tickets, reviewer-gate-strength, priority-drift,
-
-  cross-project-load) by calling mcp__plane endpoints in sequence, applying
-
-  the JOIN + scoring logic, and rendering the output tables per the NOI.
-
-  Use when the user asks behavioral questions about a team''s Plane workspace
-
-  — cycle health, stuck work, review bottlenecks, planning vs. reality,
-
-  workload distribution.'
+description: "Plane behavioral synthesis agent that orchestrates compound commands (cycle-velocity, stale-tickets, reviewer-gate-strength, priority-drift, cross-project-load) via mcp__plane endpoints and renders scored behavioral-signal tables. Use when you need behavioral insights about a team's Plane workspace — cycle health, stuck work, or workload distribution. Trigger with \"cycle velocity\", \"show stale tickets\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: inherit
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- productivity
 - plane
-- analyst
+- project-management
+- team-analytics
+- behavioral-insights
 disallowedTools: []
 skills: []
 background: false

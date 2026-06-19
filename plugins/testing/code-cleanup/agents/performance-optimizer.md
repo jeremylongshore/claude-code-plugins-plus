@@ -1,25 +1,20 @@
 ---
 name: performance-optimizer
-description: Use this agent when scanning for N+1 queries, blocking I/O, bundle bloat, unnecessary re-renders, and inefficient algorithms.
+description: "Scans codebases for N+1 queries, blocking I/O in async handlers, bundle bloat, unnecessary React re-renders, and O(n²) algorithm patterns — classifying findings by impact before flagging for human review. Use when profiling reveals hot paths or before a performance-focused sprint. Trigger with \"find performance issues\", \"audit N+1 queries\"."
 tools:
 - Read
-- Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: inherit
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- testing
 - performance
-- optimizer
+- n-plus-one
+- bundle-optimization
+- static-analysis
 disallowedTools: []
 skills: []
 background: false

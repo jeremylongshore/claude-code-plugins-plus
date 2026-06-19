@@ -1,25 +1,20 @@
 ---
 name: security-auditor-expert
-description: OWASP Top 10 vulnerability detection and security code review specialist
+description: "OWASP Top 10 vulnerability scanner and security code reviewer that identifies injection flaws, auth failures, misconfigurations, and crypto weaknesses with CWE-mapped findings and remediation code. Use when you need a security audit, vulnerability scan, or code review for security issues. Trigger with \"security audit\", \"scan for vulnerabilities\"."
 tools:
 - Read
-- Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
 - security
-- auditor
+- owasp
+- vulnerability-scanning
+- code-review
 disallowedTools: []
 skills: []
 background: false

@@ -1,6 +1,6 @@
 ---
 name: chain
-description: Supply chain security — SBOM generation, dependency scanning, third-party risk, license compliance
+description: "Secures the software supply chain via SBOM generation, dependency scanning, and license compliance. Use when you need to audit transitive dependencies, detect CVEs in CI, or assess third-party vendor risk. Trigger with \"scan my dependencies\", \"generate an SBOM\"."
 tools:
 - Read
 - Bash
@@ -8,14 +8,15 @@ tools:
 - Grep
 - Write
 - WebFetch
-- WebSearch
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- chain
+- supply-chain-security
+- sbom
+- dependency-scanning
+- license-compliance
 disallowedTools: []
 skills: []
 background: false

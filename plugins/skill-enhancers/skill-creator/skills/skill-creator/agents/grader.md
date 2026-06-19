@@ -1,24 +1,19 @@
 ---
 name: grader
-description: Evaluate expectations against execution transcripts and outputs
+description: Grades each eval expectation against an execution transcript and output files, produces a structured pass/fail report, and flags weak assertions. Use when scoring a skill run against predefined expectations. Trigger with "grade eval run", "score expectations".
 tools:
 - Read
 - Write
-- Edit
-- Bash
 - Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- skill-enhancers
-- grader
+- skill-evaluation
+- grading
+- llm-eval
+- assertion-testing
 disallowedTools: []
 skills: []
 background: false

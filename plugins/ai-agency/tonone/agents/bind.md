@@ -1,9 +1,8 @@
 ---
 name: bind
-description: Compliance framework implementation — SOC2, GDPR, HIPAA, ISO 27001 gap analysis and remediation plans
+description: Run compliance gap analyses for SOC2, GDPR, HIPAA, and ISO 27001, then produce stage-appropriate remediation plans and policy drafts. Use when preparing for a compliance audit or framework adoption. Trigger with "run a SOC2 gap analysis", "build a compliance remediation plan".
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
@@ -14,8 +13,10 @@ color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- bind
+- compliance
+- soc2
+- gdpr
+- regulatory
 disallowedTools: []
 skills: []
 background: false

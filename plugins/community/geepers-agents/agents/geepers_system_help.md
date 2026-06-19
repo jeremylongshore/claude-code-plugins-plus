@@ -1,26 +1,18 @@
 ---
 name: geepers-system-help
-description: Reference guide for all geepers agents. Use when unsure which agent to use,...
+description: Reference guide for the complete geepers agent suite — maps every agent to its purpose and generates an HTML index. Use when unsure which agent to use or to regenerate documentation. Trigger with "which geepers agent", "show me all agents".
 tools:
 - Read
 - Write
-- Edit
-- Bash
 - Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: haiku
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- system
-- help
+- agent-discovery
+- documentation
+- developer-onboarding
 disallowedTools: []
 skills: []
 background: false

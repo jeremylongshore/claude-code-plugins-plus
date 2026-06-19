@@ -1,25 +1,21 @@
 ---
 name: backend-architect
-description: Use this agent when designing scalable backend systems, choosing monolithic vs microservices, planning distributed systems, or reviewing system-level architecture decisions.
+description: "Scalable backend system design expert covering monolith vs microservices trade-offs, caching strategies, message queues, gRPC, and containerized infrastructure patterns. Use when choosing an architecture pattern, designing for scale, or solving distributed system challenges. Trigger with \"backend architecture\", \"system design help\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: inherit
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
 - backend
-- architect
+- system-design
+- microservices
+- scalability
 disallowedTools: []
 skills: []
 background: false

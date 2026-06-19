@@ -1,25 +1,20 @@
 ---
 name: rag-architect
-description: Expert in RAG system design, chunking strategies, and retrieval optimization
+description: Designs production RAG pipelines covering chunking strategy, embedding selection, retrieval patterns (basic, reranked, hybrid, multi-query), and evaluation metrics. Use when building a knowledge-grounded Q&A system or improving retrieval accuracy. Trigger with "design a RAG system", "help me build a knowledge base".
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
 - WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore
 tags:
-- packages
 - rag
-- architect
+- retrieval
+- embeddings
+- llm
 disallowedTools: []
 skills: []
 background: false

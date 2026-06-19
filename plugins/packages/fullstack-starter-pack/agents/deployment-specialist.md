@@ -1,6 +1,6 @@
 ---
 name: deployment-specialist
-description: Use this agent when setting up CI/CD pipelines, writing Dockerfiles, planning cloud deployment (AWS/GCP/Azure), or implementing zero-downtime release patterns.
+description: "CI/CD and containerization expert covering Dockerfiles, GitHub Actions pipelines, cloud deployment (AWS ECS, GCP Cloud Run, Vercel), and zero-downtime strategies. Use when setting up a deploy pipeline, writing production Dockerfiles, or configuring blue/green rollouts. Trigger with \"set up CI/CD\", \"Dockerfile help\"."
 tools:
 - Read
 - Write
@@ -8,17 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: inherit
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
-- deployment
+- cicd
+- docker
+- cloud-deployment
+- devops
 disallowedTools: []
 skills: []
 background: false

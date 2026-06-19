@@ -1,21 +1,21 @@
 ---
 name: deploy
-description: Model deployment and serving — inference API design, blue/green rollouts, canary releases, rollback
+description: "Designs model serving infrastructure, blue/green rollouts, and canary release plans with explicit rollback triggers. Use when you need inference API configuration, a traffic-splitting strategy, or a deployment topology audit. Trigger with \"design the model serving setup\", \"plan a canary release\"."
 tools:
 - Read
 - Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- deploy
+- model-deployment
+- mlops
+- canary-releases
+- inference-serving
 disallowedTools: []
 skills: []
 background: false

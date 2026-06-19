@@ -1,6 +1,6 @@
 ---
 name: geepers-janitor
-description: Aggressive cleanup and maintenance agent. Use when projects have accumulate...
+description: "Hunts and eliminates project cruft — auto-removes cache/build artifacts, archives unused files with a manifest, flags dead code and stale dependencies. Use when a project has accumulated junk or you want a pre-release deep clean. Trigger with \"clean up this project\", \"run the janitor\"."
 tools:
 - Read
 - Write
@@ -8,18 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- janitor
+- cleanup
+- maintenance
+- dead-code
+- project-hygiene
 disallowedTools: []
 skills: []
 background: false

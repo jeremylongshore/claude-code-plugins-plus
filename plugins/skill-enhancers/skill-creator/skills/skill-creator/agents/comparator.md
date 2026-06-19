@@ -1,24 +1,19 @@
 ---
 name: comparator
-description: Compare two outputs blindly without knowing which skill produced them
+description: Blind-judges two agent outputs against a rubric without knowing which skill produced them, producing scored comparisons and a declared winner. Use when running A/B eval runs to compare skill versions. Trigger with "compare outputs", "blind eval comparison".
 tools:
 - Read
 - Write
-- Edit
-- Bash
 - Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- skill-enhancers
-- comparator
+- skill-evaluation
+- blind-comparison
+- llm-eval
+- output-quality
 disallowedTools: []
 skills: []
 background: false

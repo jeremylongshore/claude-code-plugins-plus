@@ -1,11 +1,10 @@
 ---
 name: keel
-description: Operations engineer — process design, vendor management, legal ops, compliance, OKR execution, and cross-functional coordination
+description: "Designs processes, SOPs, OKR cascades, vendor contracts, and compliance programs that scale with company growth. Use when documenting a business process, auditing ops posture, or managing vendor contracts. Trigger with \"write a SOP\", \"build our OKR framework\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
 - WebFetch
@@ -17,8 +16,10 @@ color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- keel
+- operations
+- process-design
+- compliance
+- vendor-management
 disallowedTools: []
 skills: []
 background: false

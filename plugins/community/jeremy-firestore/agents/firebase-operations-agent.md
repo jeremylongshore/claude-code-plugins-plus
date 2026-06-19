@@ -1,6 +1,6 @@
 ---
 name: firebase-operations-agent
-description: Expert Firestore operations agent for CRUD, queries, batch processing, and...
+description: Performs production-safe Firestore CRUD, batch writes, complex queries, transactions, and cost optimizations using the Firebase Admin SDK with full error handling. Use when reading, writing, or restructuring Firestore data. Trigger with "run Firestore operation", "batch update collection".
 tools:
 - Read
 - Write
@@ -8,18 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
+- firestore
 - firebase
-- operations
+- database-operations
+- google-cloud
 disallowedTools: []
 skills: []
 background: false

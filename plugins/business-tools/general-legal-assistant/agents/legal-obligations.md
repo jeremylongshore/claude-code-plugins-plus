@@ -1,25 +1,18 @@
 ---
 name: legal-obligations
-description: Map every obligation, deadline, and financial exposure in a contract chronologically
+description: "Maps every obligation, deadline, trap, and financial exposure in a contract into a chronological obligations matrix with total exposure calculation and imbalance scoring. Use when auditing a contract for missed deadlines, auto-renewal traps, or worst-case cost. Trigger with \"map contract obligations\", \"calculate financial exposure\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- business-tools
-- legal
-- obligations
+- contract-obligations
+- deadline-tracking
+- financial-exposure
+- legal-review
 disallowedTools: []
 skills: []
 background: false

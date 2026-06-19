@@ -1,6 +1,6 @@
 ---
 name: firestore-security-agent
-description: Expert Firestore security rules generation, validation, and A2A agent access...
+description: Generates and validates production-grade Firestore security rules for user auth, role-based access, A2A service accounts, and data validation patterns, with emulator-ready unit tests. Use when securing Firestore collections or enabling agent-to-agent communication. Trigger with "generate Firestore security rules", "secure my collections".
 tools:
 - Read
 - Write
@@ -8,18 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
 - firestore
-- security
+- security-rules
+- firebase-auth
+- a2a-security
 disallowedTools: []
 skills: []
 background: false

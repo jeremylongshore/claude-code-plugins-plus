@@ -1,25 +1,20 @@
 ---
 name: llm-integration-expert
-description: Expert in LLM API integration, error handling, and production patterns
+description: Delivers production-ready LLM API integration patterns including retry/backoff, rate limiting, multi-provider fallback, streaming, and cost tracking across OpenAI, Anthropic, and Google. Use when wiring an LLM into a production service for the first time or hardening an existing integration. Trigger with "integrate an LLM API", "production LLM setup".
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
 - WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore
 tags:
-- packages
 - llm
-- integration
+- api-integration
+- production-patterns
+- error-handling
 disallowedTools: []
 skills: []
 background: false

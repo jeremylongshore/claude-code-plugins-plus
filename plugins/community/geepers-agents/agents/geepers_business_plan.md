@@ -1,26 +1,20 @@
 ---
 name: geepers-business-plan
-description: Business plan generator that creates comprehensive business models, market ...
+description: Transforms a product idea into a full business plan covering market analysis, competitive landscape, business model, GTM strategy, and financial projections. Use when validating a new idea or preparing investor documentation. Trigger with "create a business plan", "analyze market opportunity".
 tools:
 - Read
 - Write
-- Edit
-- Bash
-- Glob
-- Grep
-- WebFetch
 - WebSearch
-- Task
-- TodoWrite
+- WebFetch
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- business
-- plan
+- business-plan
+- market-analysis
+- go-to-market
+- product-strategy
 disallowedTools: []
 skills: []
 background: false

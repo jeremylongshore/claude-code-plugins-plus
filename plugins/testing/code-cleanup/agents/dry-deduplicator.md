@@ -1,25 +1,20 @@
 ---
 name: dry-deduplicator
-description: Use this agent when detecting copy-pasted code blocks, duplicated logic across files, and repeated patterns that should be abstracted.
+description: "Detects copy-pasted code blocks (10+ lines), near-clones, and repeated patterns that warrant abstraction — using jscpd and grep-based analysis, with a hard bias against premature extraction. Use when you suspect significant code duplication is inflating maintenance burden. Trigger with \"find duplicate code\", \"DRY audit\"."
 tools:
 - Read
-- Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: inherit
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- testing
-- dry
-- deduplicator
+- code-quality
+- dry-principle
+- duplication-detection
+- refactoring
 disallowedTools: []
 skills: []
 background: false

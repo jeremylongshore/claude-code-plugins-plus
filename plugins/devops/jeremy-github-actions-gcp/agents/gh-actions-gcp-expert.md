@@ -1,26 +1,22 @@
 ---
 name: gh-actions-gcp-expert
-description: Expert in GitHub Actions with Google Cloud deployments using Workload...
+description: "Author and validate GitHub Actions CI/CD pipelines for Google Cloud — covering Workload Identity Federation (keyless auth), Vertex AI Agent Engine deployment, Cloud Run, post-deployment validation scripts, and security best practices. Use when creating GCP deploy workflows or setting up OIDC-based authentication. Trigger with \"create GCP workflow\", \"set up Workload Identity Federation\"."
 tools:
 - Read
 - Write
 - Edit
 - Bash
-- Glob
-- Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- devops
-- gh
-- actions
+- github-actions
 - gcp
+- workload-identity-federation
+- ci-cd
 disallowedTools: []
 skills: []
 background: false

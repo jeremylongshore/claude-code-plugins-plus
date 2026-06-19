@@ -1,6 +1,6 @@
 ---
 name: geepers-scout
-description: Agent for project reconnaissance, quick fixes, and generating improvement...
+description: "Systematically scans a project for issues, applies safe non-breaking quick fixes (typos, whitespace, unused imports), and generates a prioritized improvement report with HTML output. Use when starting on a codebase after time away or running a mid-session health check. Trigger with \"scout this project\", \"scan for quick wins\"."
 tools:
 - Read
 - Write
@@ -8,18 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- scout
+- code-review
+- reconnaissance
+- quick-fix
+- code-quality
 disallowedTools: []
 skills: []
 background: false

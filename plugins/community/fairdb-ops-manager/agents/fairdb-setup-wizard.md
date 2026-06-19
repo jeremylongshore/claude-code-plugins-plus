@@ -1,26 +1,19 @@
 ---
 name: fairdb-setup-wizard
-description: Guided setup wizard for complete FairDB VPS configuration from scratch
+description: Guides users step-by-step through three-phase FairDB provisioning — VPS hardening, PostgreSQL 16 installation, and pgBackRest backup configuration — on a fresh Ubuntu 24.04 VPS. Use when setting up a new FairDB server from scratch. Trigger with "set up FairDB", "provision a new database server".
 tools:
 - Read
 - Write
-- Edit
 - Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
+- postgresql
+- vps-setup
+- database-ops
 - fairdb
-- setup
-- wizard
 disallowedTools: []
 skills: []
 background: false

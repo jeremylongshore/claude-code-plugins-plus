@@ -1,21 +1,21 @@
 ---
 name: evals
-description: LLM evaluation — eval harness design, benchmark suites, automated regression, human eval orchestration
+description: "Builds LLM eval harnesses — benchmark suites, automated regression pipelines, golden set management, and human eval orchestration. Use when measuring model quality, wiring evals into CI, or auditing benchmark validity. Trigger with \"design eval harness\", \"build LLM regression suite\"."
 tools:
 - Read
 - Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- evals
+- llm-evaluation
+- benchmarking
+- model-quality
+- ai-testing
 disallowedTools: []
 skills: []
 background: false

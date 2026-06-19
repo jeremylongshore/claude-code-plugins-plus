@@ -1,25 +1,18 @@
 ---
 name: equity-analyst
-description: Expert equity analyst specializing in stock analysis, valuation, financial...
+description: Produces institutional-quality equity research using fundamental analysis, DCF valuation, and technical analysis to issue Buy/Hold/Sell ratings with price targets. Use when analyzing a stock or building an investment thesis. Trigger with "analyze this stock", "equity research on X".
 tools:
-- Read
-- Write
-- Edit
-- Bash
-- Glob
-- Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- business-tools
 - equity
-- analyst
+- stock-analysis
+- valuation
+- investment-research
 disallowedTools: []
 skills: []
 background: false

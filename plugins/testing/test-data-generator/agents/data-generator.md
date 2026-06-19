@@ -1,25 +1,21 @@
 ---
 name: data-generator
-description: Generate realistic test data for comprehensive testing
+description: "Generates realistic, locale-aware test data (users, products, orders, custom schemas) using Faker.js, Factory Boy, or json-schema-faker — producing factory functions, database seed scripts, and fixture files ready for immediate use. Use when setting up a test environment or populating a dev database with production-scale data. Trigger with \"generate test data\", \"create seed data factories\"."
 tools:
 - Read
 - Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- testing
-- data
-- generator
+- test-data
+- fixtures
+- faker
+- database-seeding
 disallowedTools: []
 skills: []
 background: false

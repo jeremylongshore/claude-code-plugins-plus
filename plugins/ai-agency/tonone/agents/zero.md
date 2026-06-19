@@ -1,9 +1,8 @@
 ---
 name: zero
-description: Zero trust architecture — network segmentation, identity-based access, microsegmentation design
+description: "Designs zero trust network architectures with phased roadmaps covering identity pillars, microsegmentation, and ZTNA replacement for VPN. Use when you need a zero trust design, a network segmentation plan, or a ZT maturity assessment. Trigger with \"design my zero trust architecture\", \"audit my network for zero trust readiness\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
@@ -14,8 +13,10 @@ color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- zero
+- zero-trust
+- network-security
+- iam
+- microsegmentation
 disallowedTools: []
 skills: []
 background: false

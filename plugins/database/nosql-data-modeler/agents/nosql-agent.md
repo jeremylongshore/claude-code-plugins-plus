@@ -1,24 +1,18 @@
 ---
 name: nosql-agent
-description: Design NoSQL data models
+description: "Design efficient NoSQL data models for MongoDB, DynamoDB, and Cassandra — applying embed-vs-reference, access-pattern-first, sharding key, and index strategies. Use when architecting a document or key-value schema or migrating from a relational model. Trigger with \"design NoSQL schema\", \"model for MongoDB\"."
 tools:
 - Read
 - Write
-- Edit
-- Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- database
 - nosql
+- data-modeling
+- mongodb
+- schema-design
 disallowedTools: []
 skills: []
 background: false

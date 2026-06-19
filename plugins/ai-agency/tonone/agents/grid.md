@@ -1,21 +1,20 @@
 ---
 name: grid
-description: Layout system design — spacing scales, responsive grids, breakpoints, layout primitives
+description: "Designs spatial foundations — spacing scales, responsive grids, breakpoints, and layout primitives for design systems. Use when creating or auditing layout systems for a product. Trigger with \"design a layout system\", \"audit our grid\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
 - WebFetch
-- WebSearch
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- grid
+- design-systems
+- layout
+- responsive-design
 disallowedTools: []
 skills: []
 background: false

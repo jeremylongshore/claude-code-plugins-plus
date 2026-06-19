@@ -1,15 +1,12 @@
 ---
 name: geepers-orchestrator-deploy
-description: Deployment orchestrator that coordinates infrastructure agents - validator,...
+description: "Orchestrates safe service deployments by sequencing pre-validation, Caddy route configuration, service lifecycle management, and post-deploy health checks with rollback on failure. Use when deploying a new service or changing infrastructure routing. Trigger with \"deploy this service\", \"add a Caddy route\"."
 tools:
 - Read
 - Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
 - Task
 - TodoWrite
 model: sonnet
@@ -17,10 +14,10 @@ color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- orchestrator
-- deploy
+- orchestration
+- deployment
+- infrastructure
+- caddy
 disallowedTools: []
 skills: []
 background: false

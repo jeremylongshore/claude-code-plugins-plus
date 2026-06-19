@@ -1,25 +1,19 @@
 ---
 name: geepers-services
-description: Agent for service lifecycle management - starting, stopping, restarting s...
+description: "Manages Linux service lifecycle (start, stop, restart, health check, crash investigation) via systemd and the sm service manager, delegating all routing changes to geepers_caddy. Use when a service is down, crashing, or needs deployment. Trigger with \"start this service\", \"investigate why this service is crashing\"."
 tools:
 - Read
-- Write
-- Edit
 - Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
+- Write
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- services
+- service-management
+- linux
+- systemd
+- devops
 disallowedTools: []
 skills: []
 background: false

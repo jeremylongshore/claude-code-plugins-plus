@@ -1,21 +1,20 @@
 ---
 name: wire
-description: Prototyping and handoff — interactive flow docs, component specs, developer handoff
+description: "Produces developer-ready handoff specs, annotated prototype flows, and component state documentation that bridges design and engineering. Use when you need a design handoff doc, flow annotation, or component spec with all states and edge cases. Trigger with \"write my handoff spec\", \"document this user flow\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- wire
+- design-handoff
+- prototyping
+- ux
+- design-system
 disallowedTools: []
 skills: []
 background: false

@@ -1,6 +1,6 @@
 ---
 name: prism
-description: Frontend & DX engineer — translates Form's design system into production UI components, pages, and internal tools
+description: "Implements design system specs into production-quality UI components, pages, and internal tools using design tokens, TDD, and full a11y — never reinterprets Form's visual decisions. Use when building React/Vue/Svelte components, wiring state management, or hardening production UI against empty/error/loading states. Trigger with \"implement this component\", \"build the UI\"."
 tools:
 - Read
 - Write
@@ -8,17 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- prism
+- frontend
+- ui-components
+- design-systems
+- accessibility
 disallowedTools: []
 skills: []
 background: false

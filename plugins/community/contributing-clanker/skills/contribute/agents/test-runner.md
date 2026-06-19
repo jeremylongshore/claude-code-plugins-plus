@@ -1,15 +1,15 @@
 ---
 name: test-runner
-description: Use this agent to run an upstream repo's native test suite (pnpm/yarn/npm/pytest/cargo/sbt/composer/bundle), log to ~/.contribute-system/test-logs/. Trigger with "run tests for X" or @test-runner.
+description: Runs an upstream repo's native test suite using auto-detected stack conventions (pnpm/yarn/npm/pytest/cargo/sbt/composer/bundle) and logs structured output for gate consumption. Use when verifying a contribution locally before submitting. Trigger with "run tests for X", "verify before PR".
 tools: Bash, Read
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- test
-- runner
+- oss-contribution
+- test-execution
+- contributing-clanker
 disallowedTools: []
 skills: []
 background: false

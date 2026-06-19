@@ -1,25 +1,20 @@
 ---
 name: model-selector
-description: Helps select the optimal LLM model for specific tasks and requirements
+description: Recommends the right LLM model for any task by weighing quality, latency, cost, and context-window requirements across OpenAI, Anthropic, Google, and open-source options. Use when choosing a model for a new feature or reducing spend without sacrificing quality. Trigger with "which model should I use", "pick the best LLM for this".
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
 - WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore
 tags:
-- packages
-- model
-- selector
+- llm
+- model-selection
+- cost-optimization
+- benchmarking
 disallowedTools: []
 skills: []
 background: false

@@ -1,26 +1,20 @@
 ---
 name: async-pattern-fixer
-description: Use this agent when scanning for floating promises, async forEach antipatterns, missing await, unhandled rejections, and mixed async styles.
+description: Scans a codebase for dangerous async patterns — floating promises, async forEach, missing await, unhandled rejections, and mixed styles — with confidence scoring and remediation guidance. Never auto-applies fixes. Use when auditing Node.js or TypeScript code for async safety issues. Trigger with "find async issues", "scan for floating promises".
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
+- Bash
 model: inherit
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- testing
-- async
-- pattern
-- fixer
+- async-patterns
+- code-quality
+- javascript
+- static-analysis
 disallowedTools: []
 skills: []
 background: false

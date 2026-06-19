@@ -1,6 +1,6 @@
 ---
 name: geepers-flask
-description: Flask application specialist. Use when building, reviewing, or debugging Fl...
+description: "Flask specialist for building, reviewing, and debugging Flask apps — blueprints, app factory, extensions, error handling, deployment. Use when creating a Flask API or diagnosing Flask-specific issues. Trigger with \"build a Flask app\", \"debug my Flask routes\"."
 tools:
 - Read
 - Write
@@ -8,18 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
 - flask
+- python
+- web-framework
+- api-development
 disallowedTools: []
 skills: []
 background: false

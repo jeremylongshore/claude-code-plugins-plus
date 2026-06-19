@@ -1,21 +1,21 @@
 ---
 name: gate
-description: API quality gates — linting, style enforcement, breaking change CI, and API governance
+description: "Builds CI gates that enforce API quality before changes merge — Spectral lint rules, breaking change detection, and governance tooling for OpenAPI/GraphQL/protobuf. Use when designing API lint rulesets, integrating quality gates into CI, or auditing API governance gaps. Trigger with \"design API lint rules\", \"add API quality gate to CI\"."
 tools:
 - Read
 - Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- gate
+- api-governance
+- api-linting
+- ci-gates
+- developer-experience
 disallowedTools: []
 skills: []
 background: false

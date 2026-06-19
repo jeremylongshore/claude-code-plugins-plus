@@ -1,6 +1,6 @@
 ---
 name: geepers-fullstack-dev
-description: Full-stack development agent that generates complete, working code from PRD...
+description: "Generates complete, production-ready full-stack applications (Flask/FastAPI backend, React/vanilla JS frontend, DB schema, tests, Docker) from a PRD or spec. Use when requirements are ready and you need working code. Trigger with \"build this app\", \"implement the PRD\"."
 tools:
 - Read
 - Write
@@ -8,19 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
 - fullstack
-- dev
+- code-generation
+- flask
+- react
 disallowedTools: []
 skills: []
 background: false

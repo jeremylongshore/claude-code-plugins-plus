@@ -1,21 +1,22 @@
 ---
 name: sast
-description: Application security — SAST/DAST scanning, code security review, secure SDLC design
+description: "Integrates SAST/DAST tooling into the SDLC — Semgrep rules, CodeQL, OWASP ZAP, and secure code review covering the full OWASP Top 10. Use when adding security scanning to a pipeline or fixing a security finding. Trigger with \"set up SAST scanning\", \"fix this security finding\"."
 tools:
 - Read
 - Bash
 - Glob
 - Grep
 - Write
-- WebFetch
 - WebSearch
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
+- application-security
 - sast
+- secure-sdlc
+- code-review
 disallowedTools: []
 skills: []
 background: false

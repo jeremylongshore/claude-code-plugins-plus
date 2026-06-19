@@ -1,15 +1,16 @@
 ---
 name: bug-clusterer
-description: Parse, classify, redact PII, score reliability, and cluster bug candidates by family and signal layers. Use when processing raw X/Twitter posts into structured bug clusters.
+description: Normalizes raw X/Twitter posts into 33-field BugCandidates with PII redaction, reliability scoring, and deterministic clustering by bug family and signature. Use when processing a triage run's raw social posts into structured clusters. Trigger with "cluster these posts", "run bug clustering".
 tools: Read,Glob,Grep,triage:fetch_mentions,triage:search_recent,triage:fetch_conversation
 model: inherit
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- mcp
-- bug
-- clusterer
+- bug-triage
+- clustering
+- pii-redaction
+- social-signals
 disallowedTools: []
 skills:
 - bug-clustering

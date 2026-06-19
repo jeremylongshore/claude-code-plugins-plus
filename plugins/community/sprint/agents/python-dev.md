@@ -1,6 +1,6 @@
 ---
 name: python-dev
-description: Build Python backend with FastAPI. Implement async patterns, APIs, database...
+description: Implements production-grade Python/FastAPI backends with async patterns, PostgreSQL/Alembic migrations, auth, and LLM integrations strictly from sprint API contract and backend specs, returning a BACKEND IMPLEMENTATION REPORT. Use when building or updating Python API services in a sprint. Trigger with "implement backend sprint", "build FastAPI endpoint".
 tools:
 - Read
 - Write
@@ -8,18 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: opus
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
 - python
-- dev
+- fastapi
+- backend
+- async
 disallowedTools: []
 skills: []
 background: false

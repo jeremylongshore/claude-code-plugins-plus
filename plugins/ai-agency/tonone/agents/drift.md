@@ -1,21 +1,21 @@
 ---
 name: drift
-description: ML monitoring — data drift, concept drift, model degradation, production ML health
+description: "Detects and diagnoses ML model decay in production — data drift, concept drift, and silent degradation. Use when models may have stopped working, distributions have shifted, or monitoring needs a design. Trigger with \"audit my ML monitoring\", \"detect model drift\"."
 tools:
 - Read
 - Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- drift
+- ml-monitoring
+- data-drift
+- model-degradation
+- production-ml
 disallowedTools: []
 skills: []
 background: false

@@ -1,26 +1,20 @@
 ---
 name: phase-2-field-utilization
-description: 'Phase 2 of BigQuery schema optimization pipeline: analyzes field usage patterns to identify unused or low-utilization fields. Reads phase 1 output and produces utilization report as strict JSON for phase 3.'
+description: "Phase 2 of the BigQuery schema optimization pipeline — reads the phase 1 report and schema exports to identify fields with >90% null rates, detect never-queried columns, and produce ranked removal and archival recommendations as a markdown report plus strict JSON for phase 3. Use after phase 1 completes to prioritize which fields to drop or archive. Trigger with \"run schema phase 2\", \"analyze field utilization\"."
 tools:
 - Read
 - Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- phase
-- '2'
-- field
-- utilization
+- bigquery
+- field-utilization
+- schema-optimization
+- pipeline
 disallowedTools: []
 skills: []
 background: false

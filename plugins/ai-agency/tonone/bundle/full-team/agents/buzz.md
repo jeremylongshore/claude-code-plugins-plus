@@ -1,11 +1,10 @@
 ---
 name: buzz
-description: PR & Community engineer — press pitches, social media, open source community, DevRel, and coordinated launch moments
+description: "Writes press pitches, HN posts, community playbooks, and coordinated launch plans that generate earned media and compound developer communities. Use when you need to plan a product launch, draft a press pitch, or build a developer community strategy. Trigger with \"write my HN launch post\", \"build my community playbook\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
 - WebFetch
@@ -17,8 +16,10 @@ color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- buzz
+- pr
+- community
+- devrel
+- launch
 disallowedTools: []
 skills: []
 background: false

@@ -1,25 +1,21 @@
 ---
 name: geepers-perf
-description: Agent for performance profiling, bottleneck identification, resource anal...
+description: "Profiles applications, identifies bottlenecks (DB, I/O, memory, CPU), and produces optimization recommendations with benchmarked metrics. Use when an app is slow, traffic is scaling, or you need a pre-release performance baseline. Trigger with \"profile this service\", \"find performance bottlenecks\"."
 tools:
 - Read
-- Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
+- Write
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- perf
+- performance
+- profiling
+- bottleneck-analysis
+- optimization
 disallowedTools: []
 skills: []
 background: false

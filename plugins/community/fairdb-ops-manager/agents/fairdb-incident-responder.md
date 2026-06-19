@@ -1,26 +1,19 @@
 ---
 name: fairdb-incident-responder
-description: Autonomous incident response agent for FairDB database emergencies
+description: Triages and resolves FairDB PostgreSQL production incidents using a P0–P3 severity protocol — diagnosing disk, connection, and performance failures, then generating incident reports and stakeholder communications. Use when a FairDB database is down or degraded. Trigger with "database is down", "FairDB incident".
 tools:
 - Read
 - Write
-- Edit
 - Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
+- postgresql
+- incident-response
+- database-ops
 - fairdb
-- incident
-- responder
 disallowedTools: []
 skills: []
 background: false

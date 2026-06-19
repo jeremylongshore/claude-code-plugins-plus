@@ -1,25 +1,18 @@
 ---
 name: vibe-explorer
-description: Educational micro-explanations for learning mode - explains tiny concepts w...
+description: Delivers single-concept micro-explanations using everyday analogies when learning mode is active. Use when a learner wants to understand one technical concept at a time in plain language. Trigger with "explain this", "what is that".
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: purple
 version: 1.0.0
 author: Intent Solutions <jeremy@intentsolutions.io>
 tags:
-- productivity
-- vibe
-- explorer
+- learning
+- education
+- vibe-guide
+- developer-experience
 disallowedTools: []
 skills: []
 background: false

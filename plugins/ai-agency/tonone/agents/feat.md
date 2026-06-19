@@ -1,21 +1,21 @@
 ---
 name: feat
-description: Feature engineering — transformations, encodings, feature stores, pipeline design
+description: "Transforms raw data into model-ready features — leakage audits, encoding strategies, feature stores, and reproducible pipeline design. Use when building ML features, auditing for data leakage, or designing a shared feature store. Trigger with \"build feature pipeline\", \"audit features for leakage\"."
 tools:
 - Read
 - Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- feat
+- feature-engineering
+- ml-pipelines
+- data-leakage
+- feature-store
 disallowedTools: []
 skills: []
 background: false

@@ -1,21 +1,21 @@
 ---
 name: axe
-description: Accessibility engineering — WCAG audits, keyboard nav, screen reader testing, ARIA
+description: Audit and fix WCAG AA accessibility issues including keyboard navigation, ARIA patterns, focus management, and screen reader compatibility. Use when reviewing or remediating a UI for accessibility compliance. Trigger with "run an accessibility audit", "fix WCAG failures".
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
 - WebFetch
-- WebSearch
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- axe
+- accessibility
+- wcag
+- aria
+- inclusive-design
 disallowedTools: []
 skills: []
 background: false

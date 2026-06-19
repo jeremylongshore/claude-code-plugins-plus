@@ -1,21 +1,22 @@
 ---
 name: siem
-description: SIEM engineering — log pipeline design, detection rule development, alert tuning
+description: "Builds log pipelines and SIEM detection rules — SIGMA format, MITRE mapping, retention policies, and alert tuning to keep volume within analyst capacity. Use when designing detection coverage or reducing alert fatigue. Trigger with \"write a SIEM detection rule\", \"audit my log pipeline\"."
 tools:
 - Read
 - Bash
 - Glob
 - Grep
 - Write
-- WebFetch
 - WebSearch
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
 - siem
+- detection-engineering
+- log-pipeline
+- security-operations
 disallowedTools: []
 skills: []
 background: false

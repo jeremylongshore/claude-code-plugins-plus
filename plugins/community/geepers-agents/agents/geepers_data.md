@@ -1,25 +1,21 @@
 ---
 name: geepers-data
-description: Agent for data quality auditing, validation, enrichment, and freshness mo...
+description: Audits datasets across five quality dimensions — accuracy, completeness, consistency, timeliness, and schema validity — and flags stale or malformed records against authoritative sources. Use when updating a dataset or when data feels outdated. Trigger with "audit this dataset", "check data freshness".
 tools:
 - Read
 - Write
-- Edit
 - Bash
-- Glob
-- Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- data
+- data-quality
+- data-validation
+- enrichment
+- freshness-monitoring
 disallowedTools: []
 skills: []
 background: false

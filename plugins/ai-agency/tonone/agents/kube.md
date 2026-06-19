@@ -1,6 +1,6 @@
 ---
 name: kube
-description: Kubernetes cluster design — RBAC, networking, operators, workload configuration
+description: "Designs and audits Kubernetes cluster architectures — RBAC policies, CNI networking, workload configuration, and operators with explicit reliability tradeoffs. Use when designing a cluster, auditing RBAC, or rightsizing workloads. Trigger with \"design a Kubernetes cluster\", \"audit our RBAC\"."
 tools:
 - Read
 - Bash
@@ -8,14 +8,14 @@ tools:
 - Grep
 - Write
 - WebFetch
-- WebSearch
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- kube
+- kubernetes
+- infrastructure
+- cloud-native
 disallowedTools: []
 skills: []
 background: false

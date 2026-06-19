@@ -1,25 +1,19 @@
 ---
 name: content-seo
-description: 'Analyzes page-level performance, identifies content gaps, tracks topic clusters, and recommends content strategy. Answers: what content works, what to create next?'
+description: "Analyzes page-level traffic performance, classifies rising and declining content, identifies gaps, and recommends data-backed content strategy from Umami analytics. Use when evaluating which content drives results or deciding what to publish next. Trigger with \"analyze content performance\", \"what should I publish next\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- analytics
-- content
+- web-analytics
+- content-strategy
 - seo
+- page-performance
 disallowedTools: []
 skills: []
 background: false

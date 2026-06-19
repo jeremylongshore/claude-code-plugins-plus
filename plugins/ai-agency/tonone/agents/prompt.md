@@ -1,21 +1,20 @@
 ---
 name: prompt
-description: Prompt engineering — system prompt design, few-shot libraries, chain-of-thought patterns, prompt versioning
+description: "Designs versioned system prompts, few-shot libraries, and chain-of-thought patterns with A/B testing and regression coverage — treats prompts as production code. Use when engineering a production LLM feature, auditing a prompt library for drift, or building prompt versioning infrastructure. Trigger with \"design this system prompt\", \"audit our prompt library\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- prompt
+- prompt-engineering
+- llm
+- ai-operations
+- few-shot
 disallowedTools: []
 skills: []
 background: false

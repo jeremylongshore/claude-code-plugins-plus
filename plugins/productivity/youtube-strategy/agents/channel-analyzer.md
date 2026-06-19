@@ -1,15 +1,16 @@
 ---
 name: channel-analyzer
-description: Analyze a batch of YouTube channels for competitive intelligence. Produces structured competitive analysis per channel.
-tools: Read, Write, Bash, WebSearch, Grep
+description: Analyzes YouTube channels for competitive intelligence — engagement rates, content gaps, and steal-worthy patterns. Use when researching competitor channels or building a content strategy. Trigger with "analyze channels", "competitive channel research".
+tools: Read, Write, WebSearch, Grep
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- productivity
-- channel
-- analyzer
+- youtube
+- competitive-intelligence
+- content-strategy
+- channel-research
 disallowedTools: []
 skills: []
 background: false

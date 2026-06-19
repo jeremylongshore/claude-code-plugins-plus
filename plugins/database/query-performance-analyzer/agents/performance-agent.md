@@ -1,24 +1,19 @@
 ---
 name: performance-agent
-description: Analyze and optimize query performance
+description: "Interpret EXPLAIN plans and query execution metrics to identify bottlenecks — sequential scans, missing indexes, inefficient joins, N+1 patterns — and deliver specific index and rewrite recommendations with expected impact. Use when investigating slow queries or tuning a database under load. Trigger with \"analyze query performance\", \"review EXPLAIN plan\"."
 tools:
 - Read
 - Write
-- Edit
 - Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- database
-- performance
+- query-optimization
+- database-performance
+- explain-plan
+- indexing
 disallowedTools: []
 skills: []
 background: false

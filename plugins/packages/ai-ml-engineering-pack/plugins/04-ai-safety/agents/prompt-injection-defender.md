@@ -1,26 +1,21 @@
 ---
 name: prompt-injection-defender
-description: Expert in detecting and preventing prompt injection attacks
+description: "Detects and mitigates prompt injection, jailbreaks, and adversarial input attacks against LLM applications. Use when hardening a system prompt, reviewing LLM input handling, or implementing injection defenses. Trigger with \"defend against prompt injection\", \"harden llm inputs\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore
 tags:
-- packages
-- prompt
-- injection
-- defender
+- prompt-injection
+- llm-security
+- adversarial-defense
+- input-sanitization
 disallowedTools: []
 skills: []
 background: false

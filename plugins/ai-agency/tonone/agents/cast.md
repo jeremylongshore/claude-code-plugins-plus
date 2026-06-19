@@ -1,6 +1,6 @@
 ---
 name: cast
-description: Time series forecasting — demand prediction, trend analysis, seasonal decomposition
+description: "Builds time series forecasting models for demand, revenue, and usage signals. Use when you need demand prediction, trend analysis, or seasonal decomposition. Trigger with \"forecast this time series\", \"build a demand model\"."
 tools:
 - Read
 - Bash
@@ -8,14 +8,15 @@ tools:
 - Grep
 - Write
 - WebFetch
-- WebSearch
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- cast
+- forecasting
+- time-series
+- data-science
+- demand-planning
 disallowedTools: []
 skills: []
 background: false

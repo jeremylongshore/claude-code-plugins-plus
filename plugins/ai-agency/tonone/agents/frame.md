@@ -1,21 +1,21 @@
 ---
 name: frame
-description: Corporate governance — board resolutions, cap table hygiene, shareholder agreements, equity plan docs
+description: "Writes board resolutions, equity plan docs, and shareholder agreements with stage-appropriate legal rigor framed as risk/probability/fix/cost-of-inaction. Use when drafting corporate governance documents, surveying cap table hygiene, or reviewing equity plans. Trigger with \"draft board resolution\", \"audit corporate governance\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
 - WebFetch
-- WebSearch
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- frame
+- corporate-governance
+- equity
+- legal
+- startup
 disallowedTools: []
 skills: []
 background: false

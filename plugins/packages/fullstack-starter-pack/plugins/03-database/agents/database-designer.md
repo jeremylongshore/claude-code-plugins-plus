@@ -1,25 +1,21 @@
 ---
 name: database-designer
-description: Use this agent when designing database schemas, choosing between SQL and NoSQL datastores, modeling entity relationships, planning indexes, or optimizing data-access patterns for specific workloads.
+description: "Database schema design expert for SQL and NoSQL covering normalization, indexing strategies, migration patterns, and query optimization. Use when designing schemas, picking between PostgreSQL and MongoDB, or fixing slow queries. Trigger with \"database schema\", \"data model help\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: inherit
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
 - database
-- designer
+- schema-design
+- sql
+- nosql
 disallowedTools: []
 skills: []
 background: false

@@ -1,21 +1,21 @@
 ---
 name: queue
-description: Message queuing and streaming — Kafka, SQS, RabbitMQ design, consumer group strategy, dead letter queues
+description: "Designs message queuing and event streaming architectures (Kafka, SQS, RabbitMQ) — consumer groups, DLQs, backpressure, and exactly-once semantics. Use when designing or auditing queue infrastructure. Trigger with \"design my queue architecture\", \"audit my Kafka setup\"."
 tools:
 - Read
-- Bash
-- Glob
 - Grep
+- Glob
 - Write
-- WebFetch
 - WebSearch
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- queue
+- message-queuing
+- event-streaming
+- distributed-systems
+- infrastructure
 disallowedTools: []
 skills: []
 background: false

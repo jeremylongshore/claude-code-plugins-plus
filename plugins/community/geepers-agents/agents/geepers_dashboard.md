@@ -1,25 +1,21 @@
 ---
 name: geepers-dashboard
-description: Agent for dashboard synchronization, service persistence configuration, a...
+description: Synchronizes admin dashboards, registers new services for persistence via service_manager.py, and verifies all dashboards reflect accurate system state after reboots. Use when adding a new service or verifying the system after a restart. Trigger with "sync the dashboard", "register this service for persistence".
 tools:
 - Read
 - Write
 - Edit
 - Bash
 - Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
 - dashboard
+- service-management
+- persistence
+- infrastructure
 disallowedTools: []
 skills: []
 background: false

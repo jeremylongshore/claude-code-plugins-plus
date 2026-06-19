@@ -1,26 +1,21 @@
 ---
 name: geepers-swarm-research
-description: Multi-tier research agent that scales from quick queries to comprehensive m...
+description: "Scales research depth from Quick (3-5 sources) to Swarm (10-20 multi-domain) to Hive (25+ via 5 decomposed sub-investigations), saving APA-cited reports. Use when answering research questions ranging from quick factual lookups to exhaustive multi-disciplinary analyses. Trigger with \"research this topic\", \"do a deep dive on this\"."
 tools:
 - Read
 - Write
-- Edit
-- Bash
-- Glob
-- Grep
 - WebFetch
 - WebSearch
 - Task
-- TodoWrite
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- swarm
 - research
+- web-search
+- multi-agent
+- knowledge-synthesis
 disallowedTools: []
 skills: []
 background: false

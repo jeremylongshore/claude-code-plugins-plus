@@ -1,25 +1,20 @@
 ---
 name: geepers-deps
-description: Agent for dependency audits, security vulnerability scanning, license com...
+description: Audits project dependencies for CVEs, outdated packages, and license compatibility using pip-audit, npm audit, and pip-licenses/license-checker. Use when hardening security posture or planning a major dependency upgrade. Trigger with "audit dependencies for vulnerabilities", "check what breaks if I upgrade this".
 tools:
 - Read
 - Write
-- Edit
 - Bash
 - Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- deps
+- dependency-audit
+- security
+- license-compliance
+- supply-chain
 disallowedTools: []
 skills: []
 background: false

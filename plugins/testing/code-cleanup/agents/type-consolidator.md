@@ -1,6 +1,6 @@
 ---
 name: type-consolidator
-description: Use this agent when merging duplicate type definitions, consolidating overlapping interfaces, and leveraging Pick/Omit/Partial.
+description: "Finds duplicate and near-duplicate TypeScript type/interface definitions across a codebase, consolidates them into a shared module using Pick/Omit/Partial utility types, updates all import sites, and verifies with tsc --noEmit. Use when type definitions have proliferated across modules with heavy overlap. Trigger with \"consolidate types\", \"find duplicate interfaces\"."
 tools:
 - Read
 - Write
@@ -8,18 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: inherit
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- testing
-- type
-- consolidator
+- typescript
+- type-system
+- refactoring
+- dry-principle
 disallowedTools: []
 skills: []
 background: false

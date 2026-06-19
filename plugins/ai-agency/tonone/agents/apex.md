@@ -1,15 +1,8 @@
 ---
 name: apex
-description: Engineering lead — orchestrates the team, scopes work, controls depth and budget
+description: Engineering lead that translates product briefs into scoped work, dispatches specialists, and delivers unified output. Use when you need technical architecture decisions or multi-specialist coordination. Trigger with "scope this feature", "dispatch the engineering team".
 tools:
 - Read
-- Write
-- Edit
-- Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
 - Task
 - TodoWrite
 model: opus
@@ -17,8 +10,10 @@ color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- apex
+- engineering-lead
+- orchestration
+- architecture
+- multi-agent
 disallowedTools: []
 skills: []
 background: false

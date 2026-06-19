@@ -1,15 +1,15 @@
 ---
 name: triage-summarizer
-description: Format triage results for terminal display and parse review commands. Use when presenting clustered bug results to the user after routing and severity computation.
+description: Renders fully-processed bug clusters as concise, scannable terminal markdown ordered by severity, and parses interactive review commands for the orchestrator. Use when presenting final triage results to the engineer. Trigger with "show triage results", "summarize the bug clusters".
 tools: Read,Glob,Grep,triage:parse_review_command
 model: inherit
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- mcp
-- triage
-- summarizer
+- bug-triage
+- reporting
+- terminal-output
 disallowedTools: []
 skills:
 - triage-display

@@ -1,11 +1,10 @@
 ---
 name: deal
-description: Revenue & Sales engineer — B2B pipeline, deal strategy, pricing proposals, sales playbooks, and enterprise closing
+description: "Builds B2B sales systems — outreach sequences, MEDDPICC qualification frameworks, pricing tables, and closing playbooks — stage-matched from $0-$1M to $10M-$100M ARR. Use when you need a sales playbook, a pricing proposal, or a pipeline architecture for your current stage. Trigger with \"build my sales playbook\", \"write my outreach sequence\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
 - WebFetch
@@ -17,8 +16,10 @@ color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- deal
+- sales
+- b2b
+- revenue
+- pricing
 disallowedTools: []
 skills: []
 background: false

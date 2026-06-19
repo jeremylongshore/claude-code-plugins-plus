@@ -1,21 +1,20 @@
 ---
 name: mark
-description: Brand identity design — logo usage rules, brand guidelines, visual identity systems
+description: "Designs and stewards visual identities — logo usage rules, brand guidelines, asset libraries, and visual identity systems that stay consistent across contexts. Use when creating brand guidelines or auditing existing brand assets. Trigger with \"write brand guidelines\", \"audit our brand assets\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
 - WebFetch
-- WebSearch
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- mark
+- brand-identity
+- visual-design
+- design-systems
 disallowedTools: []
 skills: []
 background: false

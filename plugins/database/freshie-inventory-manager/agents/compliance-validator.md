@@ -1,25 +1,17 @@
 ---
 name: compliance-validator
-description: Run enterprise compliance validation against the freshie DB and produce grade summary with worst offenders
+description: "Run enterprise-tier skill compliance validation, populate the freshie SQLite database, and report grade distribution, average score, worst offenders, and B-grade upgrade candidates. Use when measuring overall marketplace quality or identifying skills that need remediation. Trigger with \"run compliance validation\", \"grade the inventory\"."
 tools:
-- Read
-- Write
-- Edit
 - Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: inherit
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- database
 - compliance
-- validator
+- skill-validation
+- inventory-management
+- grading
 disallowedTools: []
 skills: []
 background: false

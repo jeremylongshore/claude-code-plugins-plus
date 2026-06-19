@@ -1,26 +1,21 @@
 ---
 name: geepers-orchestrator-python
-description: Python project orchestrator that coordinates agents for Python development ...
+description: "Coordinates specialized sub-agents to audit, build, or refactor Python projects (Flask apps, CLI tools, libraries, scripts). Use when starting or reviewing a Python codebase and needing end-to-end coverage. Trigger with \"audit this Python project\", \"build a Python tool\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
 - Task
-- TodoWrite
+- Write
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- orchestrator
 - python
+- orchestration
+- code-review
+- project-structure
 disallowedTools: []
 skills: []
 background: false

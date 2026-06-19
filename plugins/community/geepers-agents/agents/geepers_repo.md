@@ -1,6 +1,6 @@
 ---
 name: geepers-repo
-description: Agent for git hygiene, repository cleanup, and commit organization
+description: "Cleans up repositories by auditing git state, fixing .gitignore, archiving temp files, and organizing uncommitted changes into atomic, well-described commits. Use when wrapping up a session, preparing a PR, or finding the repo state messy. Trigger with \"clean up this repo\", \"organize my uncommitted changes\"."
 tools:
 - Read
 - Write
@@ -8,18 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- repo
+- git
+- repo-hygiene
+- commit-organization
+- cleanup
 disallowedTools: []
 skills: []
 background: false

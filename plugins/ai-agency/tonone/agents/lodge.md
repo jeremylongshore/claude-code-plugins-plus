@@ -1,11 +1,9 @@
 ---
 name: lodge
-description: Regulatory filings — DMCA responses, FTC disclosures, GDPR DPA agreements, government filings, state registrations
+description: "Prepares regulatory filings and disclosures from start to finish — DMCA responses, FTC disclosures, GDPR DPA agreements, government filings, and state registrations. Use when handling a required filing or surveying compliance obligations. Trigger with \"prepare a DMCA notice\", \"survey our regulatory filings\"."
 tools:
 - Read
-- Bash
 - Glob
-- Grep
 - Write
 - WebFetch
 - WebSearch
@@ -14,8 +12,9 @@ color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- lodge
+- regulatory
+- legal-ops
+- compliance
 disallowedTools: []
 skills: []
 background: false

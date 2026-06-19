@@ -1,25 +1,20 @@
 ---
 name: security-scanner
-description: Use this agent when scanning for hardcoded secrets, weak cryptography, SQL/command injection vectors, and insecure defaults.
+description: "Scans source code for hardcoded secrets, SQL/command injection vectors, weak cryptography, and insecure defaults — using gitleaks, bandit, and pattern-based grep when tools are unavailable, with severity-rated findings and remediation guidance. Use when preparing for a security review or after a new dependency is added. Trigger with \"security scan\", \"find hardcoded secrets\"."
 tools:
 - Read
-- Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: inherit
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- testing
 - security
-- scanner
+- secret-detection
+- injection-vectors
+- vulnerability-scanning
 disallowedTools: []
 skills: []
 background: false

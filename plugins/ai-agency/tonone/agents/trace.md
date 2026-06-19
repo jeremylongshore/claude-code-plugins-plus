@@ -1,6 +1,6 @@
 ---
 name: trace
-description: LLM observability — tracing, span capture, prompt/completion logging, cost attribution, AI debugging
+description: "Instruments LLM systems with tracing, span capture, cost attribution, and debugging tooling. Use when you need to add observability to AI pipelines, debug model behavior, or audit LLM cost attribution. Trigger with \"instrument my LLM calls\", \"debug my AI system with traces\"."
 tools:
 - Read
 - Bash
@@ -8,14 +8,15 @@ tools:
 - Grep
 - Write
 - WebFetch
-- WebSearch
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- trace
+- llm-observability
+- tracing
+- ai-ops
+- cost-attribution
 disallowedTools: []
 skills: []
 background: false

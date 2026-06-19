@@ -1,6 +1,6 @@
 ---
 name: touch
-description: Mobile engineer — native iOS/Android, cross-platform, app stores, mobile performance
+description: "Full-stack mobile engineer covering iOS, Android, React Native, and Flutter — from architecture decisions to app store submission. Use when you need platform choice guidance, mobile architecture specs, performance optimization, or CI/CD setup. Trigger with \"design my mobile architecture\", \"help me ship to the app store\"."
 tools:
 - Read
 - Write
@@ -10,15 +10,15 @@ tools:
 - Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- touch
+- mobile
+- ios
+- android
+- react-native
 disallowedTools: []
 skills: []
 background: false

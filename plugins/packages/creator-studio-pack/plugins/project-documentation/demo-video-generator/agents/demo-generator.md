@@ -1,25 +1,19 @@
 ---
 name: demo-generator
-description: Create product demo videos automatically with user journey scripts and shot...
+description: "Creates product demo video scripts with user journey narratives, feature walkthroughs, shot lists, and CTA copy designed to convert viewers to users. Use when building a launch or onboarding video for a product. Trigger with \"create demo video\", \"generate product walkthrough script\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
-- demo
-- generator
+- demo-video
+- product-marketing
+- video-scripting
+- conversion
 disallowedTools: []
 skills: []
 background: false

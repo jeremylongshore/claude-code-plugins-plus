@@ -1,24 +1,18 @@
 ---
 name: mempool-agent
-description: Mempool analysis specialist for MEV detection and transaction monitoring
+description: "Analyze blockchain mempools for MEV opportunities, sandwich attack patterns, pending large transfers, and gas price optimization across Ethereum, BSC, and Arbitrum. Use when detecting front-running risk, profiling pending transactions, or researching block builder behavior. Trigger with \"analyze mempool\", \"detect MEV\"."
 tools:
-- Read
-- Write
-- Edit
-- Bash
-- Glob
-- Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- crypto
 - mempool
+- mev
+- gas-optimization
+- blockchain-monitoring
 disallowedTools: []
 skills: []
 background: false

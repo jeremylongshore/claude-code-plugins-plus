@@ -1,26 +1,21 @@
 ---
 name: geepers-system-onboard
-description: Project understanding agent for getting up to speed on unfamiliar codebases...
+description: Reads an unfamiliar codebase and produces a structured ONBOARD.md covering purpose, stack, architecture, data flow, and key files. Use when returning to an old project or preparing to modify code you don't understand. Trigger with "onboard me to this project", "explain this codebase".
 tools:
 - Read
 - Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- system
-- onboard
+- codebase-understanding
+- developer-onboarding
+- documentation
+- architecture
 disallowedTools: []
 skills: []
 background: false

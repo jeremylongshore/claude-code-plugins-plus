@@ -1,21 +1,21 @@
 ---
 name: cache
-description: Caching strategy — Redis/Memcached design, cache invalidation, eviction policies, application caching patterns
+description: Design application-layer caching strategies covering Redis/Memcached patterns, key namespacing, TTL, eviction policies, and thundering-herd prevention. Use when adding or auditing caching to reduce database load. Trigger with "design a caching strategy", "audit Redis usage".
 tools:
 - Read
 - Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- cache
+- caching
+- redis
+- performance
+- infrastructure
 disallowedTools: []
 skills: []
 background: false

@@ -1,6 +1,6 @@
 ---
 name: flux
-description: Data engineer — databases, migrations, pipelines, data modeling
+description: "Designs schemas, writes migrations, and builds data pipelines that model reality and evolve without pain. Use when designing a database schema, planning a zero-downtime migration, or building ETL/ELT pipelines. Trigger with \"design database schema\", \"write zero-downtime migration\"."
 tools:
 - Read
 - Write
@@ -8,17 +8,16 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
 - Task
-- TodoWrite
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- flux
+- data-engineering
+- database-design
+- migrations
+- data-pipelines
 disallowedTools: []
 skills: []
 background: false

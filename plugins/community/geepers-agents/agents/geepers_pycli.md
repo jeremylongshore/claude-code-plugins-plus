@@ -1,6 +1,6 @@
 ---
 name: geepers-pycli
-description: Python CLI tool specialist. Use when building command-line applications wit...
+description: "Designs and implements Python CLI tools using Click, Typer, or argparse — covering argument parsing, output formatting, exit codes, shell completion, and PyPI packaging. Use when building or improving a command-line application in Python. Trigger with \"build a Python CLI tool\", \"improve this CLI UX\"."
 tools:
 - Read
 - Write
@@ -8,18 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- pycli
+- python
+- cli
+- click
+- developer-tools
 disallowedTools: []
 skills: []
 background: false

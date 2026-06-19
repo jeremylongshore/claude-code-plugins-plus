@@ -1,24 +1,24 @@
 ---
 name: form
-description: Visual designer — brand identity, color systems, typography, UI design, and design systems
+description: "Owns the product's visual surface — brand identity, color systems, typography, SVG logos, and design token specs that bridge design to code. Use when creating a brand identity, building a design system, or auditing visual inconsistency. Trigger with \"design brand identity\", \"build design system\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
 - WebFetch
 - WebSearch
 - Task
-- TodoWrite
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- form
+- visual-design
+- brand-identity
+- design-system
+- typography
 disallowedTools: []
 skills: []
 background: false

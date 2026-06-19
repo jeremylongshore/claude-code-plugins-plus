@@ -1,25 +1,21 @@
 ---
 name: geepers-docs
-description: Documentation generator that creates user-friendly manuals, README files, a...
+description: "Generates README files, setup guides, API docs, and dependency guides from existing code. Use when a project needs end-user documentation or a fresh dev needs setup instructions. Trigger with \"document this project\", \"write the README\"."
 tools:
 - Read
 - Write
-- Edit
-- Bash
 - Glob
 - Grep
 - WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: haiku
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- docs
+- documentation
+- readme
+- code-analysis
+- technical-writing
 disallowedTools: []
 skills: []
 background: false

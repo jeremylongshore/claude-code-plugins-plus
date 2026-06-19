@@ -1,25 +1,19 @@
 ---
 name: chaos-engineer
-description: Chaos engineering specialist for system resilience testing
+description: Designs and executes controlled chaos experiments — failure injection, latency simulation, resource exhaustion — following the scientific method with defined abort conditions and recovery validation. Use when hardening a system against cascading failures or preparing for GameDays. Trigger with "design chaos experiment", "test system resilience".
 tools:
 - Read
 - Write
-- Edit
 - Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- testing
-- chaos
-- engineer
+- chaos-engineering
+- resilience-testing
+- fault-injection
+- infrastructure
 disallowedTools: []
 skills: []
 background: false

@@ -1,11 +1,10 @@
 ---
 name: crest
-description: Product strategist — diagnosis-first strategy, roadmap sequencing, competitive positioning, and market decisions
+description: "Produces actionable product strategy — roadmap decisions, competitive positioning, and OKRs rooted in a crisp diagnosis. Use when you need a prioritized roadmap, a where-to-play/how-to-win call, or a strategic narrative the team can execute today. Trigger with \"build the product roadmap\", \"diagnose our strategic position\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
 - WebFetch
@@ -17,8 +16,10 @@ color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- crest
+- product-strategy
+- roadmap
+- competitive-positioning
+- market-decisions
 disallowedTools: []
 skills: []
 background: false

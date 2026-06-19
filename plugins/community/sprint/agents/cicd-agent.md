@@ -1,6 +1,6 @@
 ---
 name: cicd-agent
-description: Set up and maintain CI/CD pipelines. Configure builds, tests, deployments,...
+description: Designs and maintains CI/CD pipelines (GitHub Actions, GitLab CI, CircleCI) including builds, tests, quality gates, secrets management, and deployment strategies, then reports conformity with sprint specs. Use when setting up or fixing CI/CD for a project. Trigger with "set up CI/CD", "fix pipeline".
 tools:
 - Read
 - Write
@@ -8,17 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
 - cicd
+- pipeline
+- devops
+- automation
 disallowedTools: []
 skills: []
 background: false

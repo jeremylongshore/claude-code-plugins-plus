@@ -1,25 +1,19 @@
 ---
 name: audience-segmentation
-description: 'Analyzes visitor cohorts, geographic distribution, device/platform mix, new vs returning patterns, and churn risk. Answers: who are best users, who are we losing?'
+description: "Analyzes visitor cohorts, geographic distribution, device/platform mix, and new-vs-returning patterns to identify best audience segments and churn risk. Use when profiling who visits your sites or spotting engagement decline in key cohorts. Trigger with \"analyze my audience\", \"who are my best visitors\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- analytics
-- audience
-- segmentation
+- web-analytics
+- audience-segmentation
+- cohort-analysis
+- umami
 disallowedTools: []
 skills: []
 background: false

@@ -1,25 +1,19 @@
 ---
 name: idea-generator
-description: Generate viral video ideas from your builds, trending topics, and audience...
+description: "Transforms technical builds and projects into ranked viral video ideas with titles, hooks, thumbnail concepts, and audience targeting. Use when deciding what to film next from your recent work. Trigger with \"generate video ideas\", \"what should I make next\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
-- idea
-- generator
+- content-ideation
+- viral-video
+- creator-strategy
+- tech-content
 disallowedTools: []
 skills: []
 background: false

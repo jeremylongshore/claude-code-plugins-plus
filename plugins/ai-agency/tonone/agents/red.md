@@ -1,21 +1,21 @@
 ---
 name: red
-description: Red team operations — penetration testing, attack simulation, vulnerability exploitation
+description: "Plans and documents red team exercises — pen test scopes, attack path documentation, CVSS-scored finding reports, and OSINT reconnaissance plans. Use when scoping a pen test or writing a security assessment. Trigger with \"plan a pen test\", \"write a red team report\"."
 tools:
 - Read
-- Bash
-- Glob
 - Grep
+- Glob
 - Write
-- WebFetch
 - WebSearch
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- red
+- penetration-testing
+- red-team
+- offensive-security
+- vulnerability-assessment
 disallowedTools: []
 skills: []
 background: false

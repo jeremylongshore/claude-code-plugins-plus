@@ -1,24 +1,21 @@
 ---
 name: atlas
-description: Knowledge engineer — architecture docs, ADRs, API specs, system diagrams, onboarding
+description: Write architecture docs, ADRs, API specs, onboarding guides, and system diagrams using the Diátaxis model. Use when the team needs durable, accurate technical documentation. Trigger with "write an ADR", "document this architecture".
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- atlas
+- documentation
+- architecture
+- adr
+- knowledge-engineering
 disallowedTools: []
 skills: []
 background: false

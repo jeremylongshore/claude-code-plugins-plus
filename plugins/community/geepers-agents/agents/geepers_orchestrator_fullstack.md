@@ -1,15 +1,12 @@
 ---
 name: geepers-orchestrator-fullstack
-description: Full-stack engineering orchestrator that coordinates backend-to-frontend de...
+description: "Coordinates the full engineering team (API design, database, React frontend, accessibility, deployment) to deliver cohesive backend-to-frontend features with enforced layer contracts. Use when building a feature that spans database, API, and UI. Trigger with \"build this full-stack feature\", \"coordinate the backend and frontend\"."
 tools:
 - Read
 - Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
 - Task
 - TodoWrite
 model: sonnet
@@ -17,10 +14,10 @@ color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- orchestrator
+- orchestration
 - fullstack
+- api-design
+- frontend-backend
 disallowedTools: []
 skills: []
 background: false

@@ -1,25 +1,21 @@
 ---
 name: website-designer
-description: Design static marketing websites for GitHub Pages. Focus on SEO, conversion...
+description: Designs conversion-focused static marketing websites from sprint specs — applies SEO best practices, clear CTAs, mobile-first responsive layouts, and WCAG accessibility, then returns a concise IMPLEMENTATION REPORT. Use when building or redesigning a product landing page or GitHub Pages site. Trigger with "design website", "build landing page".
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: opus
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- website
-- designer
+- static-site
+- marketing
+- seo
+- web-design
 disallowedTools: []
 skills: []
 background: false

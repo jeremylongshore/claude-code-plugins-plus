@@ -1,9 +1,8 @@
 ---
 name: cite
-description: Legal research — case law synthesis, statute analysis, regulatory guidance, jurisdiction comparison
+description: "Synthesizes case law, statutes, and regulatory guidance into actionable legal risk assessments sized for the company's stage. Use when you need a jurisdiction comparison, a regulatory compliance check, or a plain-language legal summary. Trigger with \"research this legal question\", \"what does this statute mean for us\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
@@ -14,8 +13,10 @@ color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- cite
+- legal-research
+- regulatory-compliance
+- risk-assessment
+- contract-law
 disallowedTools: []
 skills: []
 background: false

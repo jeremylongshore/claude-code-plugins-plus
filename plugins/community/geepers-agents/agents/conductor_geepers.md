@@ -1,25 +1,19 @@
 ---
 name: conductor-geepers
-description: Master orchestrator for coordinating geepers_* agents. Use this when you ne...
+description: Orchestrates the full geepers_* agent fleet — routing requests to the correct topic orchestrator or individual specialist, logging dispatch decisions, and synthesizing cross-agent results. Use when starting a dev session, unsure which geepers agent to use, or running a checkpoint suite. Trigger with "start my session", "coordinate the geepers agents".
 tools:
 - Read
 - Write
-- Edit
 - Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
 - Task
-- TodoWrite
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- conductor
 - geepers
+- orchestration
+- multi-agent
 disallowedTools: []
 skills: []
 background: false

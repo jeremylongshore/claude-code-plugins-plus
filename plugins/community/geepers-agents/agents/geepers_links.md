@@ -1,6 +1,6 @@
 ---
 name: geepers-links
-description: Agent for link validation, broken link detection, URL enrichment, and res...
+description: "Validates URLs, detects broken links, updates redirects to final destinations, and enriches resource collections with accurate descriptions. Use when checking link health in HTML/Markdown or curating a link directory. Trigger with \"check the links\", \"fix broken URLs\"."
 tools:
 - Read
 - Write
@@ -9,17 +9,15 @@ tools:
 - Glob
 - Grep
 - WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- links
+- link-validation
+- url-hygiene
+- content-quality
+- broken-links
 disallowedTools: []
 skills: []
 background: false

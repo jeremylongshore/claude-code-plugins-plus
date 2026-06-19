@@ -1,24 +1,21 @@
 ---
 name: surge
-description: Growth engineer — acquisition channels, activation funnels, retention playbooks, and PLG strategy
+description: "Diagnoses growth constraints and produces retention plans, PLG architectures, activation playbooks, and referral loop designs. Use when a growth lever needs to be identified and a specific artifact built, not a list of options generated. Trigger with \"diagnose our growth constraint\", \"design a PLG activation flow\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
-- Glob
 - Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- surge
+- growth
+- plg
+- activation
 disallowedTools: []
 skills: []
 background: false

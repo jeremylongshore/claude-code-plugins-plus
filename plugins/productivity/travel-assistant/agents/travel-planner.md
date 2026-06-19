@@ -1,25 +1,20 @@
 ---
 name: travel-planner
-description: Master travel orchestrator coordinating weather, budget, itinerary, and...
+description: "Master travel orchestrator that coordinates weather analysis, budget calculation, and local expertise into a day-by-day itinerary with packing list and cultural tips. Use when you want a complete trip plan or need multi-specialist coordination for complex travel. Trigger with \"plan my trip\", \"create a travel itinerary\"."
 tools:
-- Read
-- Write
-- Edit
-- Bash
-- Glob
-- Grep
-- WebFetch
 - WebSearch
+- WebFetch
+- Write
 - Task
-- TodoWrite
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- productivity
 - travel
-- planner
+- itinerary
+- trip-planning
+- orchestration
 disallowedTools: []
 skills: []
 background: false

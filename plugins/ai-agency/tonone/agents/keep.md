@@ -1,15 +1,13 @@
 ---
 name: keep
-description: Customer Success engineer — onboarding optimization, health scoring, expansion revenue, churn prevention, and NRR growth
+description: "Builds customer success systems — onboarding flows, health scoring models, expansion playbooks, and churn prevention sequences that drive NRR. Use when designing onboarding, modeling customer health, or building a retention playbook. Trigger with \"build an onboarding flow\", \"design a health scoring model\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
 - WebFetch
-- WebSearch
 - Task
 - TodoWrite
 model: sonnet
@@ -17,8 +15,10 @@ color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- keep
+- customer-success
+- retention
+- churn-prevention
+- onboarding
 disallowedTools: []
 skills: []
 background: false

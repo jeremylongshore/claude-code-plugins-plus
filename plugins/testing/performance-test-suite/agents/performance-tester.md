@@ -1,25 +1,21 @@
 ---
 name: performance-tester
-description: Specialized agent for load testing, performance benchmarking, and bottleneck...
+description: "Designs and executes load, stress, spike, and soak test scripts (k6, Locust, JMeter, Artillery) then analyzes P50/P95/P99 response times, throughput, and resource utilization to identify bottlenecks and produce actionable recommendations. Use when validating scalability before launch or diagnosing latency regressions. Trigger with \"run load test\", \"benchmark API performance\"."
 tools:
 - Read
 - Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- testing
-- performance
-- tester
+- performance-testing
+- load-testing
+- benchmarking
+- bottleneck-analysis
 disallowedTools: []
 skills: []
 background: false

@@ -1,24 +1,19 @@
 ---
 name: derivatives-agent
-description: Crypto derivatives specialist for futures, options, and perpetuals analysis
+description: "Track and analyze crypto derivatives markets — funding rates, open interest, liquidation heatmaps, implied volatility, and options flow across Binance, Bybit, Deribit, and DEX perps. Use when researching perpetual positioning, basis-trade opportunities, or options sentiment. Trigger with \"analyze derivatives\", \"funding rates\"."
 tools:
-- Read
-- Write
-- Edit
-- Bash
-- Glob
-- Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- crypto
 - derivatives
+- perpetuals
+- options
+- funding-rates
+- defi
 disallowedTools: []
 skills: []
 background: false

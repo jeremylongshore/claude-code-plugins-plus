@@ -1,26 +1,20 @@
 ---
 name: defensive-code-cleaner
-description: Use this agent when identifying unnecessary null checks, impossible error handling, redundant validation, and dead catch blocks.
+description: "Scans TypeScript/JavaScript for unnecessary null checks, impossible try/catch blocks, redundant validation, and dead catch blocks — tracing data flow to prove each defense is unneeded before flagging. Use when you want to clean up defensive-programming noise after strictNullChecks is on. Trigger with \"find unnecessary null checks\", \"audit defensive code\"."
 tools:
 - Read
-- Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: inherit
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- testing
-- defensive
-- code
-- cleaner
+- code-quality
+- defensive-programming
+- static-analysis
+- typescript
 disallowedTools: []
 skills: []
 background: false

@@ -1,6 +1,6 @@
 ---
 name: lumen
-description: Product analyst — metrics architecture, funnel analysis, A/B test design, retention, and growth measurement
+description: "Owns the measurement layer — North Star definition, input metrics trees, A/B test specs, funnel and cohort analysis that drive product decisions. Use when defining what to track, diagnosing a funnel, or designing an experiment. Trigger with \"define our North Star metric\", \"design an A/B test\"."
 tools:
 - Read
 - Write
@@ -9,16 +9,16 @@ tools:
 - Glob
 - Grep
 - WebFetch
-- WebSearch
 - Task
-- TodoWrite
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- lumen
+- product-analytics
+- metrics
+- ab-testing
+- growth
 disallowedTools: []
 skills: []
 background: false

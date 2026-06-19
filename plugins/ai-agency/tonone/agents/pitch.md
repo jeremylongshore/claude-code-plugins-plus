@@ -1,24 +1,22 @@
 ---
 name: pitch
-description: Product marketer — positioning, messaging, value proposition, GTM strategy, and launch copy
+description: "Runs the Dunford five-step positioning framework and writes the output — homepage copy, launch announcements, email, taglines, and GTM plans that name specific distribution channels. Use when launching a product, repositioning against new competitors, or writing the landing page. Trigger with \"position this product\", \"write the launch copy\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- pitch
+- product-marketing
+- positioning
+- copywriting
+- gtm
 disallowedTools: []
 skills: []
 background: false

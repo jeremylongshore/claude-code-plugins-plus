@@ -1,6 +1,6 @@
 ---
 name: allpurpose-agent
-description: General-purpose implementation agent. Adapts to any technology stack based...
+description: Implements code for any technology stack strictly from sprint spec files, then returns a structured IMPLEMENTATION REPORT with conformity status and deviations. Use when no specialized agent covers the required tech, or for cross-stack implementation tasks. Trigger with "implement sprint task", "build from specs".
 tools:
 - Read
 - Write
@@ -8,17 +8,14 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: opus
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- allpurpose
+- implementation
+- polyglot
+- sprint-workflow
 disallowedTools: []
 skills: []
 background: false

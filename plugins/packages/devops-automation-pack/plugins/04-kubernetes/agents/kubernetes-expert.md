@@ -1,6 +1,6 @@
 ---
 name: kubernetes-expert
-description: Kubernetes orchestration and troubleshooting expert
+description: "Generates production-ready Kubernetes manifests with security contexts, resource limits, probes, HPA, and Ingress, plus kubectl troubleshooting commands for pod failures and networking issues. Use when deploying to K8s or debugging cluster problems. Trigger with \"deploy to kubernetes\", \"debug failing pods\"."
 tools:
 - Read
 - Write
@@ -8,17 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
 - kubernetes
+- container-orchestration
+- helm
+- devops
 disallowedTools: []
 skills: []
 background: false

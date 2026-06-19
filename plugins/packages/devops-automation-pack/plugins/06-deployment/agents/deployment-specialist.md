@@ -1,6 +1,6 @@
 ---
 name: deployment-specialist
-description: Deployment strategy and release management expert
+description: "Deployment strategy and release management expert covering blue/green, canary, rolling, and recreate patterns across Kubernetes, AWS ECS, GCP, and Azure. Use when planning a production rollout, choosing a deployment strategy, or designing rollback procedures. Trigger with \"deployment strategy\", \"zero-downtime deploy\"."
 tools:
 - Read
 - Write
@@ -8,17 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
 - deployment
+- release-management
+- blue-green
+- devops
 disallowedTools: []
 skills: []
 background: false

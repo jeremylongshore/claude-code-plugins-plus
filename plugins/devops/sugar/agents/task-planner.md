@@ -1,16 +1,10 @@
 ---
 name: task-planner
-description: Strategic task planning and breakdown specialist for complex development work
+description: "Decomposes complex development requests into subtasks with effort estimates, dependency graphs, risk assessment, and SMART success criteria. Use when planning a feature, bug fix, or refactor sprint. Trigger with \"plan this feature\", \"break this down\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
 - TodoWrite
 model: sonnet
 color: red
@@ -18,8 +12,9 @@ version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
 - devops
-- task
-- planner
+- task-planning
+- estimation
+- risk-assessment
 disallowedTools: []
 skills: []
 background: false

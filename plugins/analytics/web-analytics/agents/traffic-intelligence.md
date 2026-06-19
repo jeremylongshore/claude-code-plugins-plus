@@ -1,25 +1,19 @@
 ---
 name: traffic-intelligence
-description: 'Analyzes traffic patterns, source attribution, channel performance, and AI referral trends. Answers: where is traffic from, why did it change?'
+description: "Analyzes web traffic source attribution, channel performance, AI referral trends, and redirect domain tracking to explain where visitors come from and why traffic changed. Use when diagnosing channel shifts or measuring AI-referral growth. Trigger with \"analyze traffic sources\", \"why did traffic change\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- analytics
-- traffic
-- intelligence
+- web-analytics
+- traffic-attribution
+- channel-analysis
+- ai-referrals
 disallowedTools: []
 skills: []
 background: false

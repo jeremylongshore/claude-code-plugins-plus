@@ -1,15 +1,15 @@
 ---
 name: repo-analyzer
-description: Use this agent for one-shot repo eligibility checks (CLA / activity / competing PRs / CONTRIBUTING.md). DEPRECATED — most function moved to @researcher dossiers.
+description: Runs one-shot repo eligibility checks — CLA status, maintainer activity, competing PRs, and CONTRIBUTING.md — and issues a claim/wait/skip verdict. Use when quickly qualifying a repo before committing research time. Trigger with "should I claim X", "qualify this issue".
 tools: Bash, Read
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- repo
-- analyzer
+- oss-contribution
+- repo-eligibility
+- contributing-clanker
 disallowedTools: []
 skills: []
 background: false

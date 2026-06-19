@@ -1,24 +1,22 @@
 ---
 name: ink
-description: Content Marketing engineer — blog strategy, SEO, thought leadership, developer content, case studies, and content calendar
+description: "Writes blog posts, topic clusters, content calendars, and case studies with SEO-first distribution plans. Use when you need compounding content strategy executed, not advised on. Trigger with \"write a blog post\", \"build a content calendar\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- ink
+- content-marketing
+- seo
+- developer-content
 disallowedTools: []
 skills: []
 background: false

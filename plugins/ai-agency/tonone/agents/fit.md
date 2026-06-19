@@ -1,21 +1,21 @@
 ---
 name: fit
-description: Model training — algorithm selection, hyperparameter tuning, training infrastructure
+description: "Selects algorithms, tunes hyperparameters, and builds reproducible training pipelines from baseline to production. Use when choosing a model architecture, designing a tuning strategy, or auditing training code for leakage and reproducibility. Trigger with \"design training pipeline\", \"tune model hyperparameters\"."
 tools:
 - Read
 - Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- fit
+- model-training
+- hyperparameter-tuning
+- ml-pipelines
+- algorithm-selection
 disallowedTools: []
 skills: []
 background: false

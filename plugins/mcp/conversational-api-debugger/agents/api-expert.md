@@ -1,24 +1,20 @@
 ---
 name: api-expert
-description: API debugging specialist - analyzes failures and suggests solutions
+description: Diagnoses REST API failures by comparing HTTP logs against OpenAPI specs, identifies root cause by status code category, and generates working cURL repro commands. Use when an API call returns unexpected errors or status codes. Trigger with "why is my API failing", "debug this API error".
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
 - WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- mcp
-- api
+- api-debugging
+- rest
+- http
+- openapi
 disallowedTools: []
 skills: []
 background: false

@@ -1,21 +1,21 @@
 ---
 name: schema
-description: API schema design — OpenAPI, GraphQL, gRPC schema quality, and design standards
+description: "Designs and reviews API schemas (OpenAPI 3.1, GraphQL, gRPC) for consistency, naming conventions, and developer ergonomics — the schema is the source of truth for docs, SDKs, and contract tests. Use when designing a new API or auditing an existing spec. Trigger with \"design this API schema\", \"review my OpenAPI spec\"."
 tools:
 - Read
-- Bash
-- Glob
 - Grep
+- Glob
 - Write
-- WebFetch
 - WebSearch
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- schema
+- api-design
+- openapi
+- graphql
+- developer-experience
 disallowedTools: []
 skills: []
 background: false

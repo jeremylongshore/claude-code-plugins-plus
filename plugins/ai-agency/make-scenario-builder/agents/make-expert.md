@@ -1,24 +1,20 @@
 ---
 name: make-expert
-description: Expert Make.com scenario designer for visual automation
+description: Design and document Make.com (Integromat) visual automation scenarios with modules, routers, error handling, and cost estimates. Use when building or architecting a Make.com integration workflow. Trigger with "design a Make scenario", "build a Make workflow".
 tools:
 - Read
 - Write
-- Edit
-- Bash
-- Glob
-- Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- make
+- make-com
+- automation
+- workflow-design
+- no-code
 disallowedTools: []
 skills: []
 background: false

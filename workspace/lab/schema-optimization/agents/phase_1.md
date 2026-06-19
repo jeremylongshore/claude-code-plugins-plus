@@ -1,26 +1,20 @@
 ---
 name: phase-1-schema-analysis
-description: 'Phase 1 of BigQuery schema optimization pipeline: reads schema exports and produces initial analysis report with table counts, field types, naming patterns, and flagged issues. Outputs strict JSON for phase 2.'
+description: "Phase 1 of the BigQuery schema optimization pipeline — parses schema export files to count tables and fields, detect naming patterns and type inconsistencies, flag duplicate or nullable issues, and write a markdown analysis report plus strict JSON for phase 2. Use when starting a BigQuery schema audit from raw exports. Trigger with \"run schema phase 1\", \"analyze BigQuery schema\"."
 tools:
 - Read
 - Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- phase
-- '1'
-- schema
-- analysis
+- bigquery
+- schema-analysis
+- data-quality
+- pipeline
 disallowedTools: []
 skills: []
 background: false

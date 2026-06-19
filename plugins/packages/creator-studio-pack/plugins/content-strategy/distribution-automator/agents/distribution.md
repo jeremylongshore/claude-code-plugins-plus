@@ -1,24 +1,19 @@
 ---
 name: distribution
-description: Automatically publish and distribute content across YouTube, TikTok,...
+description: "Plans and generates multi-platform content distribution strategies with platform-specific metadata, timing, and cross-promotion linking. Use when publishing a video across YouTube, TikTok, LinkedIn, and more. Trigger with \"distribute my content\", \"plan multi-platform release\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
-- distribution
+- content-distribution
+- multi-platform
+- social-media
+- creator-workflow
 disallowedTools: []
 skills: []
 background: false

@@ -1,16 +1,16 @@
 ---
 name: cli-ux-tester
-description: Expert UX evaluator for CLIs and developer APIs. Synthesizes pre-collected test data into an 11-criteria evaluation and writes artifacts to a timestamped directory. Launched by the cli-ux-tester skill.
+description: Evaluates CLI usability across 11 criteria — discoverability, naming, error messages, help, consistency, visual design, performance, accessibility, integration, security, and onboarding — then produces a scored report, remediation plan, metrics JSON, and regression test script. Use when auditing a CLI tool for developer experience quality. Trigger with "evaluate CLI UX", "audit developer tool usability".
 tools: Bash, Read, Grep, Glob, Write
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- testing
-- cli
-- ux
-- tester
+- cli-testing
+- developer-experience
+- ux-evaluation
+- usability
 disallowedTools: []
 skills: []
 background: false

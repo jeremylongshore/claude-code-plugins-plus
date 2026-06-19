@@ -1,11 +1,10 @@
 ---
 name: scope
-description: IP strategy — trademark clearance, patent landscape, open source license compliance, IP assignment
+description: "Clears trademarks, maps patent landscapes, and audits open source license compliance — frames every finding as risk, probability, fix, and cost of inaction. Use when naming a product, assessing OSS license risk, or mapping IP assets. Trigger with \"clear this trademark\", \"audit our open source licenses\"."
 tools:
 - Read
-- Bash
-- Glob
 - Grep
+- Glob
 - Write
 - WebFetch
 - WebSearch
@@ -14,8 +13,10 @@ color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- scope
+- intellectual-property
+- trademark
+- open-source-compliance
+- legal
 disallowedTools: []
 skills: []
 background: false

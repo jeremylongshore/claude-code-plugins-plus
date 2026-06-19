@@ -1,25 +1,18 @@
 ---
 name: legal-clauses
-description: Extract and categorize every clause in a contract with completeness scoring
+description: "Extracts, categorizes, and scores every clause in a contract document across 20 standard categories, including gap analysis, defined terms, cross-references, and completeness scoring. Use when inventorying a contract before risk review or compliance checking. Trigger with \"extract contract clauses\", \"analyze this contract\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- business-tools
-- legal
-- clauses
+- contract-analysis
+- clause-extraction
+- legal-review
+- compliance
 disallowedTools: []
 skills: []
 background: false

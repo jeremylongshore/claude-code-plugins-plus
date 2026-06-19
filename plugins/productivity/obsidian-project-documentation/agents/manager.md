@@ -1,14 +1,16 @@
 ---
 name: manager
-description: Use this agent when the user requests an action that should trigger 'documentation' behavior. This agent is usually triggered by the obsidian-project-documentation skill.
+description: "Obsidian project documentation manager that creates/updates vault notes, extracts session decisions, syncs CLAUDE.md, and manages git commit/push after each working session. Use when you want to document a project session into Obsidian, update AI context files, or capture progress. Trigger with \"document this session\", \"update project notes\"."
 tools: Read, Write, Edit, Bash, TodoWrite, AskUserQuestion, Glob, Grep
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- productivity
-- manager
+- obsidian
+- documentation
+- knowledge-management
+- project-notes
 disallowedTools: []
 skills: []
 background: true

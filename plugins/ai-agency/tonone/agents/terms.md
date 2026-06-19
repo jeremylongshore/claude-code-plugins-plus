@@ -1,21 +1,21 @@
 ---
 name: terms
-description: Privacy policy and Terms of Service — GDPR-compliant privacy notices, ToS, cookie policies, data processing agreements
+description: "Drafts GDPR-compliant privacy policies, Terms of Service, cookie notices, and DPAs sized to company stage. Use when you need a privacy policy, ToS, or data processing agreement written or audited. Trigger with \"draft my privacy policy\", \"review my terms of service\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
 - WebFetch
-- WebSearch
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- terms
+- legal
+- privacy
+- gdpr
+- compliance
 disallowedTools: []
 skills: []
 background: false

@@ -1,21 +1,20 @@
 ---
 name: glyph
-description: Typography system design — font pairing, type scale, hierarchy, readability tokens
+description: "Designs type systems — font pairing, scale, hierarchy, and readability tokens for design systems. Use when setting up or auditing typography for a product or codebase. Trigger with \"design a type system\", \"audit our typography\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
 - WebFetch
-- WebSearch
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- glyph
+- design-systems
+- typography
+- ui-design
 disallowedTools: []
 skills: []
 background: false

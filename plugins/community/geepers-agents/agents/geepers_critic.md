@@ -1,25 +1,21 @@
 ---
 name: geepers-critic
-description: UX and architecture critic that generates CRITIC.md documenting annoying de...
+description: Generates a CRITIC.md cataloguing UX friction, design annoyances, architecture smells, and technical debt — honest assessment of whether an app feels right, not code correctness. Use when a product feels off or before a refactor sprint. Trigger with "critique this app's UX", "audit the architecture".
 tools:
 - Read
 - Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
+- Bash
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- critic
+- ux-review
+- architecture-audit
+- technical-debt
+- design-critique
 disallowedTools: []
 skills: []
 background: false

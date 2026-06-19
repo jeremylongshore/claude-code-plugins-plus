@@ -1,21 +1,20 @@
 ---
 name: plot
-description: Data visualization — chart design, visualization libraries, exploratory analysis, dashboard specs
+description: "Selects chart types and encodings, designs EDA workflows, and audits existing visualizations for misleading charts, accessibility failures, and wrong library choices. Use when choosing how to visualize a dataset, building a dashboard spec, or catching bad charts in a notebook. Trigger with \"design this visualization\", \"audit our charts\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- plot
+- data-visualization
+- exploratory-data-analysis
+- dashboards
+- charting
 disallowedTools: []
 skills: []
 background: false

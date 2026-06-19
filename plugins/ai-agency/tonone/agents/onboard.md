@@ -1,21 +1,20 @@
 ---
 name: onboard
-description: Developer onboarding — quickstart design, time-to-first-call optimization, onboarding funnel audit
+description: "Designs developer onboarding experiences that get engineers to their first successful API call in under 5 minutes — quickstarts, TTFC audits, and friction analysis. Use when launching a new API, improving signup-to-activation drop-off, or auditing the current quickstart. Trigger with \"improve our developer onboarding\", \"write the quickstart\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- onboard
+- developer-onboarding
+- developer-experience
+- api-docs
+- activation
 disallowedTools: []
 skills: []
 background: false

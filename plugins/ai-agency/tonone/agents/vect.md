@@ -1,9 +1,8 @@
 ---
 name: vect
-description: Embeddings and vector search — semantic search, RAG pipelines, vector database design
+description: "Designs embedding pipelines and vector search systems for semantic search, RAG, and similarity applications. Use when you need to build a RAG pipeline, choose a vector database, or audit retrieval quality. Trigger with \"design my RAG pipeline\", \"help me choose a vector database\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
@@ -14,8 +13,10 @@ color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- vect
+- embeddings
+- vector-search
+- rag
+- semantic-search
 disallowedTools: []
 skills: []
 background: false

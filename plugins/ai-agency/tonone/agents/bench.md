@@ -1,21 +1,21 @@
 ---
 name: bench
-description: API performance benchmarking — latency profiling, throughput testing, performance regression detection
+description: Design API benchmarks, profile p50/p95/p99 latency, set up throughput tests, and detect performance regressions with k6/wrk. Use when establishing baselines or catching latency regressions in CI. Trigger with "benchmark this API", "set up a performance test".
 tools:
 - Read
 - Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- bench
+- performance
+- benchmarking
+- latency
+- load-testing
 disallowedTools: []
 skills: []
 background: false

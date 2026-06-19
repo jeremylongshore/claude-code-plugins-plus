@@ -1,24 +1,20 @@
 ---
 name: echo
-description: User researcher — interviews, personas, Jobs-to-Be-Done, and customer feedback synthesis
+description: "Synthesizes user research into actionable product signal — interviews, JTBD analysis, persona development, and feedback clustering. Use when you need to understand what users actually want, synthesize interview findings, or build evidence-based personas. Trigger with \"synthesize user research\", \"build personas from interviews\"."
 tools:
 - Read
 - Write
-- Edit
-- Bash
-- Glob
-- Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- echo
+- user-research
+- jobs-to-be-done
+- product-discovery
+- ux-research
 disallowedTools: []
 skills: []
 background: false

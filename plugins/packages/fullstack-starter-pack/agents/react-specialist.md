@@ -1,24 +1,21 @@
 ---
 name: react-specialist
-description: Use this agent when building React 18+ apps, reviewing component architecture, implementing server components, or optimizing hook-based performance and concurrent features.
+description: "React 18+ expert covering hooks, concurrent features, server components, state management (Zustand/Redux Toolkit), and performance optimization. Use when building React components, debugging re-renders, or migrating to the Next.js App Router. Trigger with \"React component help\", \"hook optimization\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: inherit
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
 - react
+- frontend
+- hooks
+- performance
 disallowedTools: []
 skills: []
 background: false

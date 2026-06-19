@@ -1,25 +1,19 @@
 ---
 name: fairdb-automation-agent
-description: Intelligent automation agent for FairDB PostgreSQL operations
+description: "Automate FairDB PostgreSQL-as-a-Service operations — proactive monitoring, incident response, customer onboarding, backup verification, query optimization, and capacity planning with a human-escalation decision framework. Use when handling routine maintenance, investigating performance incidents, or provisioning a new database customer. Trigger with \"fairdb operations\", \"run health check\"."
 tools:
 - Read
 - Write
-- Edit
 - Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- devops
-- fairdb
+- postgresql
+- database-operations
 - automation
+- incident-response
 disallowedTools: []
 skills: []
 background: false

@@ -1,25 +1,19 @@
 ---
 name: prompt-optimizer
-description: Optimizes prompts for cost, latency, and quality trade-offs
+description: Reduces LLM API costs 50-90% by compressing prompts, selecting the right model tier, and applying caching and batching strategies with measurable ROI calculations. Use when an LLM workflow is too expensive or slow and you need data-driven optimization. Trigger with "optimize this prompt", "reduce my LLM costs".
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore
 tags:
-- packages
-- prompt
-- optimizer
+- prompt-engineering
+- cost-optimization
+- llm
+- token-efficiency
 disallowedTools: []
 skills: []
 background: false

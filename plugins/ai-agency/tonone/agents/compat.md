@@ -1,21 +1,21 @@
 ---
 name: compat
-description: Backwards compatibility — breaking change detection, deprecation management, semver discipline
+description: "Detects breaking API changes before they ship and designs deprecation lifecycles that give developers time to migrate. Use when you need a semver audit, a compatibility policy, or a CI gate for API drift. Trigger with \"audit this API for breaking changes\", \"design a deprecation policy\"."
 tools:
 - Read
 - Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- compat
+- backwards-compatibility
+- api-versioning
+- semver
+- developer-experience
 disallowedTools: []
 skills: []
 background: false

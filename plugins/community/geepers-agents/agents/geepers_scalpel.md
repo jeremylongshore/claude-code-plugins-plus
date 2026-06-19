@@ -1,6 +1,6 @@
 ---
 name: geepers-scalpel
-description: Agent for precise, surgical code modifications in complex or large files
+description: "Makes minimal, surgical edits to complex or large files with zero collateral damage — mapping dependencies, preserving invariants, and verifying syntax after each atomic change. Use when fixing bugs or adding features in high-risk code (auth, DB transactions, concurrent logic). Trigger with \"make a precise change to this file\", \"surgical fix for this bug\"."
 tools:
 - Read
 - Write
@@ -8,18 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- scalpel
+- code-editing
+- surgical-precision
+- refactoring
+- bug-fix
 disallowedTools: []
 skills: []
 background: false

@@ -1,25 +1,20 @@
 ---
 name: vector-db-expert
-description: Expert in vector database selection, optimization, and production deployment
+description: Selects and configures the right vector database (Pinecone, Qdrant, Weaviate, pgvector, Milvus, ChromaDB) based on scale, budget, latency, and query patterns, with HNSW tuning and migration guidance. Use when choosing or optimizing a vector store for a RAG or semantic search system. Trigger with "which vector database should I use", "optimize my vector DB".
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
 - WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore
 tags:
-- packages
-- vector
-- db
+- vector-database
+- rag
+- semantic-search
+- embeddings
 disallowedTools: []
 skills: []
 background: false

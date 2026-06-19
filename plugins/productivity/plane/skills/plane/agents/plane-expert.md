@@ -1,32 +1,16 @@
 ---
 name: plane-expert
-description: 'Plane API surface specialist. Answers "how do I query X in Plane" / "what endpoint
-
-  does Y" / "what is the response shape for Z" without firing live API calls.
-
-  Reads from the parent skill''s references/api-surface.md as ground truth. Use when
-
-  the user wants to understand the API surface before running a compound command,
-
-  or when debugging an unexpected response shape from mcp__plane.'
+description: "Plane API surface specialist that answers endpoint discovery, response shape, and pagination questions from api-surface.md without firing live API calls — suggests compound commands when a behavioral pattern is detected. Use when you want to understand the Plane API before running a query or debug an unexpected mcp__plane response. Trigger with \"what endpoint does X\", \"response shape for get_cycle\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: inherit
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- productivity
 - plane
+- project-management
+- api-reference
 disallowedTools: []
 skills: []
 background: false

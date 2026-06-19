@@ -1,25 +1,19 @@
 ---
 name: threat-modeler
-description: Threat modeling specialist using STRIDE and attack surface analysis
+description: "Security threat modeling specialist that applies STRIDE to system architectures, identifies trust boundary risks, and produces prioritized mitigation plans with risk scores. Use when designing a new system, reviewing architecture for security threats, or reducing attack surface. Trigger with \"threat model\", \"security design review\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
-- threat
-- modeler
+- threat-modeling
+- stride
+- security-architecture
+- risk-assessment
 disallowedTools: []
 skills: []
 background: false

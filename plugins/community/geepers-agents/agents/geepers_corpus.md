@@ -1,25 +1,21 @@
 ---
 name: geepers-corpus
-description: Agent for corpus linguistics projects, language dataset management, compu...
+description: Manages corpus linguistics datasets — acquisition, annotation, data-structure validation, and UTF-8 encoding hygiene across reference, historical, and web corpora. Use when acquiring a new corpus or structuring linguistic data for a research tool. Trigger with "set up the corpus", "validate this linguistic dataset".
 tools:
 - Read
 - Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- corpus
+- corpus-linguistics
+- nlp
+- dataset-management
+- language-data
 disallowedTools: []
 skills: []
 background: false

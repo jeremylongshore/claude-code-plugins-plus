@@ -1,6 +1,6 @@
 ---
 name: legacy-code-remover
-description: Use this agent when modernizing deprecated API usage, old syntax patterns, compatibility shims, and unnecessary polyfills.
+description: "Modernizes deprecated API usage, old syntax patterns (var, prototype, XMLHttpRequest), unnecessary polyfills, and compatibility shims — always checking platform targets first to avoid over-modernizing. Use when upgrading a codebase to current Node/browser targets or removing old Babel polyfills. Trigger with \"remove legacy code\", \"modernize deprecated APIs\"."
 tools:
 - Read
 - Write
@@ -8,19 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: inherit
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- testing
-- legacy
-- code
-- remover
+- code-modernization
+- legacy-removal
+- polyfills
+- deprecated-apis
 disallowedTools: []
 skills: []
 background: false

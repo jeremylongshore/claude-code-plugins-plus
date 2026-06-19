@@ -1,15 +1,16 @@
 ---
 name: owner-router
-description: Recommend likely bug owners using strict 6-level routing precedence with staleness detection and override memory. Use when routing clustered bugs to teams after evidence gathering.
+description: Routes bug clusters to the most likely owning team using strict 6-level precedence (service owner → on-call → CODEOWNERS → recent assignees → committers → fallback) with staleness flagging and override memory. Use when assigning ownership after the repo-scanner step. Trigger with "route these bugs", "assign bug owners".
 tools: Read,Glob,Grep,triage:lookup_service_owner,triage:lookup_oncall,triage:parse_codeowners,triage:lookup_recent_assignees,triage:lookup_recent_committers
 model: inherit
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- mcp
-- owner
-- router
+- bug-triage
+- ownership-routing
+- oncall
+- codeowners
 disallowedTools: []
 skills:
 - owner-routing

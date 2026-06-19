@@ -1,25 +1,21 @@
 ---
 name: api-tester
-description: Specialized agent for automated API endpoint testing and validation
+description: Generates and executes REST and GraphQL API test suites covering happy paths, auth scenarios, edge cases, and contract validation, then reports results with coverage metrics. Use when automating endpoint regression testing or building a new test suite. Trigger with "test this API", "generate API tests".
 tools:
 - Read
 - Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- testing
-- api
-- tester
+- api-testing
+- rest
+- graphql
+- test-automation
 disallowedTools: []
 skills: []
 background: false

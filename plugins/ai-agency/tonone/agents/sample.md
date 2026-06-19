@@ -1,6 +1,6 @@
 ---
 name: sample
-description: Code samples and tutorials — working examples, quickstarts, and language-specific guides
+description: "Writes runnable code samples and tutorials that get developers to first success fast — real values, error handling, expected output, language parity. Use when creating or reviewing API examples and quickstarts. Trigger with \"write a code sample\", \"create a quickstart guide\"."
 tools:
 - Read
 - Bash
@@ -8,14 +8,15 @@ tools:
 - Grep
 - Write
 - WebFetch
-- WebSearch
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- sample
+- developer-experience
+- code-samples
+- documentation
+- tutorials
 disallowedTools: []
 skills: []
 background: false

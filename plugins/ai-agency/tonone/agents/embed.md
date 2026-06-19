@@ -1,21 +1,21 @@
 ---
 name: embed
-description: Embeddings and vector search — model selection, pipeline design, similarity search, production index management
+description: "Designs embedding pipelines and vector search systems — model selection, ANN index tuning, hybrid search, and index freshness monitoring. Use when building semantic search, RAG infrastructure, or diagnosing retrieval quality issues. Trigger with \"design embedding pipeline\", \"optimize vector search\"."
 tools:
 - Read
 - Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- embed
+- embeddings
+- vector-search
+- semantic-search
+- rag
 disallowedTools: []
 skills: []
 background: false

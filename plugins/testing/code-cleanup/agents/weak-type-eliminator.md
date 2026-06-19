@@ -1,6 +1,6 @@
 ---
 name: weak-type-eliminator
-description: Use this agent when replacing any, unknown, and overly broad generics with precise, compiler-verified types.
+description: "Replaces explicit any, implicit any, overly broad object/{} types, and unconstrained unknowns with precise compiler-verified types — inferring the correct type from usage patterns and verifying every change via tsc --noEmit. Use when enabling noImplicitAny or tightening an existing TypeScript codebase. Trigger with \"eliminate any types\", \"strengthen TypeScript types\"."
 tools:
 - Read
 - Write
@@ -8,19 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: inherit
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- testing
-- weak
-- type
-- eliminator
+- typescript
+- type-safety
+- strict-mode
+- refactoring
 disallowedTools: []
 skills: []
 background: false

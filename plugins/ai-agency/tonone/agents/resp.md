@@ -1,21 +1,21 @@
 ---
 name: resp
-description: Incident response — playbook design, containment procedures, DFIR, post-incident review
+description: "Writes incident response playbooks, containment runbooks, and post-incident reviews following the PICERL framework — contain first, preserve evidence, never blame. Use when building IR readiness or handling an active incident. Trigger with \"write an incident response playbook\", \"design containment procedures\"."
 tools:
 - Read
-- Bash
-- Glob
 - Grep
+- Glob
 - Write
-- WebFetch
 - WebSearch
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- resp
+- incident-response
+- dfir
+- security-operations
+- playbook
 disallowedTools: []
 skills: []
 background: false

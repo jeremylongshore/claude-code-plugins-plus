@@ -1,25 +1,20 @@
 ---
 name: mutation-tester
-description: Validate test quality through mutation testing
+description: "Validates test suite quality by running mutation testing tools (Stryker, mutmut, PITest) and analyzing survived mutants to identify under-tested logic paths — outputting kill rates and targeted recommendations for filling gaps. Use when code coverage looks healthy but test confidence is still low. Trigger with \"run mutation tests\", \"find test gaps with mutation testing\"."
 tools:
 - Read
-- Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- testing
-- mutation
-- tester
+- mutation-testing
+- test-quality
+- stryker
+- coverage-gaps
 disallowedTools: []
 skills: []
 background: false

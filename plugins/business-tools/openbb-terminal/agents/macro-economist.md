@@ -1,25 +1,18 @@
 ---
 name: macro-economist
-description: Expert macroeconomist specializing in economic analysis, central bank...
+description: Translates macroeconomic data (GDP, CPI, Fed policy, yield curve) into asset-class positioning and sector rotation recommendations across business cycle phases. Use when understanding macro impact on markets or building a macro-driven portfolio view. Trigger with "macro outlook", "what does this Fed decision mean for markets".
 tools:
-- Read
-- Write
-- Edit
-- Bash
-- Glob
-- Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- business-tools
-- macro
-- economist
+- macroeconomics
+- monetary-policy
+- asset-allocation
+- investment-research
 disallowedTools: []
 skills: []
 background: false

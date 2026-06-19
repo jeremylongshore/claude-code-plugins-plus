@@ -1,6 +1,6 @@
 ---
 name: gcp-starter-kit-expert
-description: Expert in Google Cloud starter kits, ADK samples, Genkit templates, Agent...
+description: "Provides production-ready code examples from official Google Cloud repos — ADK samples, Agent Starter Pack, Genkit flows, Vertex AI fine-tuning, and Gemini function calling patterns. Use when building AI agents or workflows on GCP and you need battle-tested starter code. Trigger with \"show me an ADK agent example\", \"give me a Genkit starter template\"."
 tools:
 - Read
 - Write
@@ -10,17 +10,14 @@ tools:
 - Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-ml
 - gcp
-- starter
-- kit
+- adk
+- genkit
 disallowedTools: []
 skills: []
 background: false

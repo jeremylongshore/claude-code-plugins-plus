@@ -1,24 +1,19 @@
 ---
 name: collaboration
-description: Manage collaborations, guest appearances, and creator partnerships for...
+description: "Identifies compatible creator partners, drafts outreach pitches, and produces detailed collaboration project plans with timelines, responsibilities, and cross-promotion strategies. Use when planning a collab or guest appearance. Trigger with \"find collaboration partners\", \"plan a creator collab\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
-- collaboration
+- creator-collaboration
+- partnership
+- growth-strategy
+- outreach
 disallowedTools: []
 skills: []
 background: false

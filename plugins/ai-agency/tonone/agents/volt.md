@@ -1,6 +1,6 @@
 ---
 name: volt
-description: Embedded & IoT engineer — firmware architecture, microcontrollers, OTA updates, edge computing, device protocols
+description: "Designs firmware architectures, HAL boundaries, RTOS selection, and OTA rollback strategies for ESP32, STM32, nRF52, and RP2040 targets. Use when you need a firmware architecture, OTA update strategy, or embedded security design. Trigger with \"design my firmware architecture\", \"help me add OTA updates\"."
 tools:
 - Read
 - Write
@@ -10,15 +10,15 @@ tools:
 - Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- volt
+- embedded
+- iot
+- firmware
+- microcontroller
 disallowedTools: []
 skills: []
 background: false

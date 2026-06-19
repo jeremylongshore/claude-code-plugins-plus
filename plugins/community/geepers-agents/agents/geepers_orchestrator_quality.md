@@ -1,26 +1,21 @@
 ---
 name: geepers-orchestrator-quality
-description: Quality orchestrator that coordinates audit agents - a11y, perf, api, and d...
+description: "Coordinates accessibility, performance, API design, and dependency audit agents in parallel to produce a scored quality report. Use when running a pre-release gate or investigating multi-domain quality issues. Trigger with \"run a quality audit\", \"check this app for quality issues\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
 - Task
-- TodoWrite
+- Write
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- orchestrator
-- quality
+- quality-assurance
+- orchestration
+- accessibility
+- performance
 disallowedTools: []
 skills: []
 background: false

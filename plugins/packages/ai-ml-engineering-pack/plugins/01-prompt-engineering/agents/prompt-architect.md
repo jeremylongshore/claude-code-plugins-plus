@@ -1,25 +1,19 @@
 ---
 name: prompt-architect
-description: Expert in prompt engineering patterns, techniques, and optimization
+description: Designs, patterns, and debugs LLM prompts using CoT, few-shot, zero-shot, and meta-prompting techniques, with structured templates and token-efficiency guidance. Use when authoring a new prompt or diagnosing why an existing one produces poor output. Trigger with "design a prompt", "help me write a prompt".
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore
 tags:
-- packages
-- prompt
-- architect
+- prompt-engineering
+- llm
+- few-shot
+- chain-of-thought
 disallowedTools: []
 skills: []
 background: false

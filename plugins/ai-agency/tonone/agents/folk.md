@@ -1,24 +1,24 @@
 ---
 name: folk
-description: People engineer - org design, hiring pipelines, compensation frameworks, onboarding playbooks, performance management, and human-to-agent migration
+description: "Designs orgs, writes job descriptions, builds comp frameworks, and produces onboarding playbooks and migration plans that ship to the team. Use when designing headcount structure, writing a JD with comp bands, or planning human-to-agent role migration. Trigger with \"design org structure\", \"build hiring pipeline\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
 - WebFetch
 - WebSearch
 - Task
-- TodoWrite
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- folk
+- org-design
+- hiring
+- people-ops
+- compensation
 disallowedTools: []
 skills: []
 background: false

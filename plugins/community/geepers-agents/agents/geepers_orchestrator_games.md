@@ -1,15 +1,12 @@
 ---
 name: geepers-orchestrator-games
-description: Games orchestrator that coordinates game development agents - gamedev, game...
+description: "Coordinates game development agents (design, gamification, React/web or Godot implementation) to build or enhance interactive games and gamification features. Use when creating a new game or adding achievement systems to an app. Trigger with \"build a game\", \"add gamification to this app\"."
 tools:
 - Read
 - Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
 - Task
 - TodoWrite
 model: sonnet
@@ -17,10 +14,10 @@ color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- orchestrator
-- games
+- orchestration
+- game-development
+- gamification
+- interactive-design
 disallowedTools: []
 skills: []
 background: false

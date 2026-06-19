@@ -1,25 +1,20 @@
 ---
 name: geepers-api
-description: Agent for API design review, REST compliance auditing, endpoint documenta...
+description: "Reviews APIs for REST compliance, naming consistency, OpenAPI coverage, and security posture. Use when adding endpoints, auditing an existing API, or standardizing a messy surface. Trigger with \"audit the API\", \"review endpoint design\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
+- Write
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- api
+- api-design
+- rest-compliance
+- openapi
+- security-review
 disallowedTools: []
 skills: []
 background: false

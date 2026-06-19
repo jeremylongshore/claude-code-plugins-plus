@@ -1,6 +1,6 @@
 ---
 name: warden
-description: Security engineer — IAM, secrets, threat modeling, hardening, auth, and supply chain security
+description: "Writes threat models, IAM policies, hardening specs, and auth implementation reviews sized to actual risk — not compliance theater. Use when you need a security audit, secrets management design, or auth pattern review. Trigger with \"threat model my app\", \"audit my security posture\"."
 tools:
 - Read
 - Write
@@ -10,15 +10,15 @@ tools:
 - Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- warden
+- security
+- iam
+- threat-modeling
+- auth
 disallowedTools: []
 skills: []
 background: false

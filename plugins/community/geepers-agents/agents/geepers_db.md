@@ -1,25 +1,20 @@
 ---
 name: geepers-db
-description: Agent for database optimization, query analysis, index recommendations, a...
+description: Analyzes query plans, recommends indexes, and diagnoses N+1 patterns, lock contention, and missing pagination for SQLite and PostgreSQL databases. Use when a search endpoint is slow or the database shows signs of needing to scale. Trigger with "analyze slow queries", "optimize the database".
 tools:
 - Read
 - Write
-- Edit
 - Bash
-- Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- db
+- database
+- query-optimization
+- indexing
+- performance
 disallowedTools: []
 skills: []
 background: false

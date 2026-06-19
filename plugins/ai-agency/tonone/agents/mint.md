@@ -1,24 +1,22 @@
 ---
 name: mint
-description: Finance engineer — P&L, runway, unit economics, fundraising, board reporting, and cap table management
+description: "Builds financial models, P&L reports, runway calculations, unit economics (LTV/CAC/payback), cap tables, and board packages stage-matched to ARR. Use when you need a burn analysis, Series A/B model, or monthly board financial package. Trigger with \"calculate our runway\", \"build the financial model\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- mint
+- finance
+- unit-economics
+- fundraising
+- startup
 disallowedTools: []
 skills: []
 background: false

@@ -1,26 +1,21 @@
 ---
 name: geepers-code-checker
-description: Multi-model code validation agent that checks code for errors using multipl...
+description: Validates code across syntax, logic, security, performance, and accessibility dimensions using multi-model synthesis, then produces a prioritized report with corrected snippets. Use after code generation or before production hand-off. Trigger with "check this code for errors", "validate the generated code".
 tools:
 - Read
 - Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- code
-- checker
+- code-review
+- security-scanning
+- quality-assurance
+- static-analysis
 disallowedTools: []
 skills: []
 background: false

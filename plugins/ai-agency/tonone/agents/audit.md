@@ -1,9 +1,8 @@
 ---
 name: audit
-description: Legal compliance audit — internal controls review, legal risk register, audit trail documentation
+description: Run internal legal compliance audits, build risk registers, and review legal controls framed as risk/probability/fix/cost-of-inaction. Use when assessing legal exposure or documenting audit trail. Trigger with "run a legal audit", "build a risk register".
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
@@ -14,7 +13,8 @@ color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
+- legal-compliance
+- risk-management
 - audit
 disallowedTools: []
 skills: []

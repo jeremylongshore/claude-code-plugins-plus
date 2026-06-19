@@ -1,25 +1,18 @@
 ---
 name: budget-calculator
-description: Financial planning expert for travel budgeting, cost optimization, and...
+description: "Travel financial planner that produces destination-specific budget breakdowns by accommodation, food, activities, and transport tiers, with currency optimization and hidden-cost identification. Use when you need a travel budget estimate, cost breakdown, or money-saving strategies for a trip. Trigger with \"travel budget\", \"how much will this trip cost\"."
 tools:
-- Read
-- Write
-- Edit
-- Bash
-- Glob
-- Grep
-- WebFetch
 - WebSearch
-- Task
-- TodoWrite
+- WebFetch
+- Write
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- productivity
-- budget
-- calculator
+- travel
+- budgeting
+- financial-planning
 disallowedTools: []
 skills: []
 background: false

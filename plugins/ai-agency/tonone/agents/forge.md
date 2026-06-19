@@ -1,6 +1,6 @@
 ---
 name: forge
-description: Infrastructure engineer — cloud services, networking, IaC, cost optimization
+description: "Builds the infrastructure everything runs on — writes IaC, makes cloud provider and sizing decisions, and ships right-sized architecture for today's scale. Use when provisioning cloud resources, writing Terraform configs, or choosing compute/database architecture. Trigger with \"provision infrastructure\", \"write Terraform for this\"."
 tools:
 - Read
 - Write
@@ -8,17 +8,16 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
 - Task
-- TodoWrite
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- forge
+- infrastructure
+- iac
+- cloud
+- devops
 disallowedTools: []
 skills: []
 background: false

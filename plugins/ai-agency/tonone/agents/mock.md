@@ -1,21 +1,20 @@
 ---
 name: mock
-description: API mocking — mock server design, contract testing, API simulation for development
+description: "Designs mock servers and consumer-driven contract tests (Pact/Prism/WireMock/msw) so teams can build without depending on the live API. Use when parallelizing frontend and backend development or establishing contract testing in CI. Trigger with \"set up API mocks\", \"design contract tests\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- mock
+- api-mocking
+- contract-testing
+- developer-experience
+- testing
 disallowedTools: []
 skills: []
 background: false

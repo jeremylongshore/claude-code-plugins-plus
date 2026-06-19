@@ -1,15 +1,12 @@
 ---
 name: geepers-orchestrator-product
-description: Product development orchestrator that coordinates agents for complete produ...
+description: "Runs the full product pipeline from raw idea to validated code — business plan, PRD, full-stack or cost-optimized code generation, and final code review. Use when taking an idea through to a working implementation. Trigger with \"build this product idea\", \"take this from idea to code\"."
 tools:
 - Read
 - Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
 - Task
 - TodoWrite
 model: sonnet
@@ -17,10 +14,10 @@ color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- orchestrator
-- product
+- orchestration
+- product-development
+- idea-to-code
+- pipeline
 disallowedTools: []
 skills: []
 background: false

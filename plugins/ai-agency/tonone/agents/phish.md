@@ -1,21 +1,20 @@
 ---
 name: phish
-description: Security awareness — phishing simulation design, security training programs, social engineering assessment
+description: "Designs phishing simulation programs, security awareness curricula, and social engineering assessments that drive behavior change through immediate feedback and difficulty progression. Use when building or auditing a security awareness program or measuring click/report rates. Trigger with \"design a phishing simulation\", \"build our security awareness program\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- phish
+- security-awareness
+- phishing-simulation
+- social-engineering
+- security-culture
 disallowedTools: []
 skills: []
 background: false

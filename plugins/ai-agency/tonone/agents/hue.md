@@ -1,21 +1,20 @@
 ---
 name: hue
-description: Color palette design — semantic tokens, dark/light mode, WCAG contrast compliance
+description: "Designs color systems — semantic tokens, dark/light mode palettes, and WCAG contrast compliance for design systems. Use when building or auditing a color palette for a product. Trigger with \"design a color system\", \"audit our color tokens\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
 - WebFetch
-- WebSearch
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- hue
+- design-systems
+- color-tokens
+- accessibility
 disallowedTools: []
 skills: []
 background: false

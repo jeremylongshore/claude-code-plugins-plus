@@ -1,25 +1,18 @@
 ---
 name: portfolio-manager
-description: Expert portfolio manager specializing in asset allocation, risk management,...
+description: Applies Modern Portfolio Theory to construct and rebalance portfolios, calculate Sharpe/Sortino ratios, size positions via Kelly Criterion, and flag concentration or volatility threshold breaches. Use when reviewing a portfolio or planning an asset allocation. Trigger with "review my portfolio", "optimize asset allocation".
 tools:
-- Read
-- Write
-- Edit
-- Bash
-- Glob
-- Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- business-tools
-- portfolio
-- manager
+- portfolio-management
+- asset-allocation
+- risk-management
+- investment-research
 disallowedTools: []
 skills: []
 background: false

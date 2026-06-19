@@ -1,9 +1,8 @@
 ---
 name: blue
-description: Blue team operations — SOC design, detection engineering, hardening playbooks
+description: Design MITRE ATT&CK-mapped detection rules, CIS-benchmarked hardening playbooks, and SOC triage procedures to reduce attacker dwell time. Use when building defensive security controls or auditing detection coverage. Trigger with "design detection rules", "write a hardening playbook".
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
@@ -14,8 +13,10 @@ color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- blue
+- blue-team
+- detection-engineering
+- soc
+- security-hardening
 disallowedTools: []
 skills: []
 background: false

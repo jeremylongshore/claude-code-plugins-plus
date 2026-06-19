@@ -1,25 +1,20 @@
 ---
 name: audio-mixer
-description: AI-powered audio mixing that balances voice, music, and effects...
+description: "Analyzes audio tracks and prescribes a complete mixing workflow — EQ, compression, noise reduction, sidechain ducking, and platform-specific loudness targets — for broadcast-quality results. Use when mixing tutorial or vlog audio. Trigger with \"mix my audio\", \"fix my voice track\"."
 tools:
 - Read
 - Write
 - Edit
 - Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
-- audio
-- mixer
+- audio-mixing
+- post-production
+- voice-processing
+- broadcast-quality
 disallowedTools: []
 skills: []
 background: false

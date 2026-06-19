@@ -1,25 +1,19 @@
 ---
 name: conversion-funnel
-description: 'Analyzes conversion events, goal completion, funnel drop-off, and revenue impact. Answers: where are people abandoning, what''s the revenue impact?'
+description: "Analyzes conversion events, funnel stage drop-off rates, and goal completions to quantify where visitors abandon and what the business impact is. Use when diagnosing funnel health or measuring event-driven conversions across sites. Trigger with \"analyze conversion funnel\", \"where are people dropping off\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- analytics
-- conversion
-- funnel
+- web-analytics
+- conversion-funnel
+- goal-tracking
+- umami
 disallowedTools: []
 skills: []
 background: false

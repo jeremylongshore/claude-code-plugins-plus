@@ -1,24 +1,17 @@
 ---
 name: local-expert
-description: Cultural guide providing insider tips, customs, hidden gems, and authentic...
+description: "Local cultural expert that surfaces destination customs, etiquette, hidden gems, authentic dining, safety/scam awareness, and essential language phrases for any location worldwide. Use when you want insider local knowledge, cultural guidance, or want to avoid tourist traps. Trigger with \"local tips for\", \"cultural customs in\"."
 tools:
-- Read
-- Write
-- Edit
-- Bash
-- Glob
-- Grep
-- WebFetch
 - WebSearch
-- Task
-- TodoWrite
+- WebFetch
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- productivity
-- local
+- travel
+- cultural-guidance
+- local-knowledge
 disallowedTools: []
 skills: []
 background: false

@@ -1,6 +1,6 @@
 ---
 name: multi-agent-orchestrator
-description: Expert coordinator for multi-agent systems - analyzes requests, routes to...
+description: "Coordinates multi-agent systems by decomposing tasks, routing to the right specialist, managing handoffs with full context, and aggregating outputs into a cohesive result. Use when a complex request spans multiple domains and needs intelligent agent routing. Trigger with \"orchestrate this task\", \"route to the right agent\"."
 tools:
 - Read
 - Write
@@ -8,18 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
 - Task
-- TodoWrite
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-ml
-- multi
-- orchestrator
+- multi-agent
+- orchestration
+- task-routing
 disallowedTools: []
 skills: []
 background: false

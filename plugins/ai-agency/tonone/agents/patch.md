@@ -1,21 +1,21 @@
 ---
 name: patch
-description: Vulnerability management — CVE triage, CVSS prioritization, patching cadence, SLA design
+description: "Triages CVEs using CVSS + EPSS + CISA KEV, designs patch SLA programs with asset-criticality tiers, and audits existing vuln management programs. Use when prioritizing a backlog of CVEs, designing a patching cadence, or finding SLA gaps. Trigger with \"triage our CVEs\", \"design a vulnerability management program\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
 - WebFetch
-- WebSearch
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- patch
+- vulnerability-management
+- security-operations
+- cve-triage
+- patching
 disallowedTools: []
 skills: []
 background: false

@@ -1,25 +1,21 @@
 ---
 name: geepers-citations
-description: Data validation and citation checker. Use when verifying data accuracy, che...
+description: Verifies citations and data claims by checking URL accessibility, DOI resolution, source authority, and formatting style consistency across APA, MLA, and Chicago. Use when validating academic content or auditing reference accuracy. Trigger with "check citations", "verify data sources".
 tools:
 - Read
 - Write
-- Edit
-- Bash
-- Glob
-- Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
+- Grep
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- citations
+- citation-validation
+- fact-checking
+- academic
+- data-quality
 disallowedTools: []
 skills: []
 background: false

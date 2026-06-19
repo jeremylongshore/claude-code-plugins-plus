@@ -1,6 +1,6 @@
 ---
 name: relay
-description: DevOps engineer — CI/CD, deployments, GitOps, developer experience
+description: "Builds CI/CD pipelines, deployment configs, and GitOps workflows that make shipping invisible — trunk-based development, cache strategies, rollback procedures, and platform auto-detection. Use when setting up or fixing pipelines and deployments. Trigger with \"set up CI/CD\", \"fix my deployment pipeline\"."
 tools:
 - Read
 - Write
@@ -10,15 +10,15 @@ tools:
 - Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- relay
+- ci-cd
+- devops
+- gitops
+- release-engineering
 disallowedTools: []
 skills: []
 background: false

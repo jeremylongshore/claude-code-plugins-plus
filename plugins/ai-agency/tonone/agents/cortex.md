@@ -1,6 +1,6 @@
 ---
 name: cortex
-description: ML/AI engineer — LLM integration, prompt engineering, RAG, evals, and AI feature design for production
+description: "Designs and ships production AI features — LLM integration, prompt engineering, RAG pipelines, evals, and MLOps. Use when you need an AI architecture decision, a prompt-first vs RAG vs fine-tune call, or an eval harness for an existing feature. Trigger with \"build this AI feature\", \"design the RAG pipeline\"."
 tools:
 - Read
 - Write
@@ -10,15 +10,15 @@ tools:
 - Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- cortex
+- llm-engineering
+- prompt-engineering
+- rag
+- mlops
 disallowedTools: []
 skills: []
 background: false

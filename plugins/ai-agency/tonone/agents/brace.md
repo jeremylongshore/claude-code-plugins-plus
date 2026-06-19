@@ -1,24 +1,22 @@
 ---
 name: brace
-description: Support engineer -- ticket workflow design, SLA architecture, knowledge base, escalation paths, and support operations at scale
+description: Design ticket workflows, SLA tiers, knowledge-base structures, and escalation paths for stage-appropriate support operations. Use when building or auditing a support operation from triage to Tier 3. Trigger with "design a support workflow", "build a support knowledge base".
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- brace
+- customer-support
+- sla
+- knowledge-base
+- ticket-workflow
 disallowedTools: []
 skills: []
 background: false

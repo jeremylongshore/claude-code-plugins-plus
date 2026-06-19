@@ -1,21 +1,21 @@
 ---
 name: tone
-description: Design token engineering — token architecture, theming systems, style-dictionary pipelines
+description: "Engineers design token systems — three-tier token architecture, multi-brand theming, and style-dictionary build pipelines. Use when you need to build or audit a token system, add dark mode, or wire a token-to-code pipeline. Trigger with \"design my token architecture\", \"audit my design tokens\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
 - WebFetch
-- WebSearch
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- tone
+- design-system
+- design-tokens
+- theming
+- frontend
 disallowedTools: []
 skills: []
 background: false

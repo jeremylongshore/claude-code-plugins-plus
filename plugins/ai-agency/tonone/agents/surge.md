@@ -1,24 +1,23 @@
 ---
 name: surge
-description: Growth engineer — acquisition channels, activation funnels, retention playbooks, and PLG strategy
+description: "Diagnoses growth constraints and designs compounding growth loops — retention before acquisition, PLG architecture, activation sequencing, and experiment design with kill conditions. Use when diagnosing why growth is stalling or designing a PLG motion. Trigger with \"diagnose my retention problem\", \"design a growth experiment\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- surge
+- growth-engineering
+- product-led-growth
+- retention
+- activation
 disallowedTools: []
 skills: []
 background: false

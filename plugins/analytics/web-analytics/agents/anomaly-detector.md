@@ -1,25 +1,19 @@
 ---
 name: anomaly-detector
-description: 'Detects traffic spikes, drops, bot activity, and tracking gaps. Distinguishes real problems from data artifacts. Answers: is this a real problem or a data problem?'
+description: "Detects traffic spikes, drops, bot activity, and tracking gaps in Umami analytics data, then classifies each anomaly by severity and root-cause hypothesis. Use when investigating unexpected traffic changes or data quality issues. Trigger with \"check for anomalies\", \"why did traffic drop\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- analytics
-- anomaly
-- detector
+- web-analytics
+- anomaly-detection
+- data-quality
+- umami
 disallowedTools: []
 skills: []
 background: false

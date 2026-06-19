@@ -1,25 +1,18 @@
 ---
 name: geepers-canary
-description: Early warning system that spot-checks fragile and critical systems. Like a ...
+description: Fast early-warning health checker that pings critical services, checks disk/memory, and produces an all-clear or alert report in under 60 seconds. Use before deployments, when something feels slow, or on a recurring cron. Trigger with "run canary check", "spot-check the services".
 tools:
-- Read
-- Write
-- Edit
 - Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
+- Write
 model: haiku
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- canary
+- health-check
+- monitoring
+- infrastructure
+- observability
 disallowedTools: []
 skills: []
 background: false

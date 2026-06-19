@@ -1,21 +1,21 @@
 ---
 name: finop
-description: Cloud cost optimization — FinOps practices, rightsizing, reservation strategy, cost attribution
+description: "Analyzes and optimizes cloud spend — rightsizing recommendations, reservation strategy, zombie resource elimination, and cost attribution via tagging. Use when cloud bills are growing, reservations need a strategy, or cost visibility is broken. Trigger with \"audit cloud spend\", \"design FinOps strategy\"."
 tools:
 - Read
 - Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- finop
+- finops
+- cloud-cost
+- cost-optimization
+- cloud-infrastructure
 disallowedTools: []
 skills: []
 background: false

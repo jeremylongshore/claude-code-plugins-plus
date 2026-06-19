@@ -1,25 +1,20 @@
 ---
 name: phase-5-recommendations
-description: 'Phase 5 of BigQuery schema optimization pipeline: synthesizes all phase outputs into actionable recommendations with implementation plans. Produces final recommendations report.'
+description: 'Synthesizes BigQuery schema optimization findings from all prior phases into a prioritized implementation plan with rollback procedures, timelines, and success metrics. Use when all previous phase reports are complete. Trigger with "generate recommendations", "finalize schema optimization plan".'
 tools:
 - Read
 - Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- phase
-- '5'
+- bigquery
+- schema-optimization
 - recommendations
+- implementation-planning
 disallowedTools: []
 skills: []
 background: false

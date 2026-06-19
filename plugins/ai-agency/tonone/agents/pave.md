@@ -1,6 +1,6 @@
 ---
 name: pave
-description: Platform engineer — developer experience, golden paths, service catalogs, environment management, internal tooling. Builds what removes friction for the team that exists.
+description: "Builds golden paths, service catalogs, internal CLIs, scaffolding, and local dev environments that measurably improve DORA metrics for the current team. Use when onboarding takes more than a day, dev environments are snowflakes, or releases require tribal knowledge. Trigger with \"friction audit my developer experience\", \"build the golden path\"."
 tools:
 - Read
 - Write
@@ -8,17 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- pave
+- platform-engineering
+- developer-experience
+- golden-path
+- dora-metrics
 disallowedTools: []
 skills: []
 background: false

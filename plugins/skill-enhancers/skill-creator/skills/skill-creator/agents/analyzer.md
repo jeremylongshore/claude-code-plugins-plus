@@ -1,24 +1,18 @@
 ---
 name: analyzer
-description: Analyze blind comparison results to understand why the winner won and generate improvement suggestions
+description: Post-hoc analysis agent that unblids skill comparison results, identifies why the winner outperformed, and produces ranked improvement suggestions for the losing skill. Use when you need actionable insights after a blind eval run. Trigger with "analyze comparison results", "explain why winner won".
 tools:
 - Read
 - Write
-- Edit
-- Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- skill-enhancers
-- analyzer
+- skill-evaluation
+- benchmark-analysis
+- quality-improvement
+- llm-eval
 disallowedTools: []
 skills: []
 background: false

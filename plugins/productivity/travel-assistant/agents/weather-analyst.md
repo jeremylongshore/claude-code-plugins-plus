@@ -1,25 +1,17 @@
 ---
 name: weather-analyst
-description: Weather forecasting expert analyzing patterns, seasonal trends, and travel...
+description: "Meteorological travel analyst that fetches and interprets 7–14 day forecasts, identifies seasonal patterns, flags extreme conditions, and matches weather windows to planned activities. Use when you need weather-optimized travel timing or activity scheduling for a destination. Trigger with \"weather for my trip\", \"best days for outdoor activities in\"."
 tools:
-- Read
-- Write
-- Edit
-- Bash
-- Glob
-- Grep
-- WebFetch
 - WebSearch
-- Task
-- TodoWrite
+- WebFetch
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- productivity
+- travel
 - weather
-- analyst
+- seasonal-planning
 disallowedTools: []
 skills: []
 background: false

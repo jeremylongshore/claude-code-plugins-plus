@@ -1,25 +1,21 @@
 ---
 name: project-architect
-description: Plan and coordinate sprints. Break down high-level goals into tasks for...
+description: Analyzes requirements, creates API contracts and sprint specs, coordinates implementation by issuing SPAWN REQUEST blocks to the orchestrator, and iterates through QA until finalization. Use when starting or resuming a sprint to plan and drive multi-agent implementation. Trigger with "start sprint", "plan this feature".
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: opus
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- project
-- architect
+- sprint-orchestration
+- architecture
+- planning
+- multi-agent
 disallowedTools: []
 skills: []
 background: false

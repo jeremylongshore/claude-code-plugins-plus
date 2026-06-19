@@ -1,26 +1,20 @@
 ---
 name: overnight-dev-coach
-description: Expert coach for autonomous overnight development sessions with TDD
+description: "Autonomous overnight development coach that enforces TDD, runs Git hook–gated sessions, debugs failing tests iteratively, and delivers a morning handoff report when all tests are green. Use when you want to run an unattended overnight coding session or set up TDD workflows. Trigger with \"overnight session\", \"autonomous TDD run\"."
 tools:
 - Read
 - Write
-- Edit
 - Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
 - TodoWrite
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- productivity
+- tdd
+- autonomous-dev
+- testing
 - overnight
-- dev
-- coach
 disallowedTools: []
 skills: []
 background: false

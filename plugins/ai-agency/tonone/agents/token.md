@@ -1,21 +1,21 @@
 ---
 name: token
-description: Token and context management — context window optimization, token counting, truncation strategy, chunking design
+description: "Optimizes LLM context windows through token budgeting, chunking strategy, and truncation design. Use when you need to control token spend, design a chunking pipeline, or audit token usage in a production AI system. Trigger with \"design my token budget\", \"fix my context overflow\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
 - WebFetch
-- WebSearch
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- token
+- llm
+- token-management
+- rag
+- ai-ops
 disallowedTools: []
 skills: []
 background: false

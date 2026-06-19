@@ -1,15 +1,12 @@
 ---
 name: geepers-orchestrator-checkpoint
-description: Checkpoint orchestrator that coordinates session maintenance agents - scout...
+description: "Coordinates the session-end hygiene suite — scout, repo cleanup, status logging, and snippet harvesting — to leave a codebase clean and documented between sessions. Use when wrapping up a session or reaching a milestone. Trigger with \"checkpoint\", \"I'm done for today\"."
 tools:
 - Read
 - Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
 - Task
 - TodoWrite
 model: sonnet
@@ -17,10 +14,10 @@ color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- orchestrator
-- checkpoint
+- orchestration
+- session-management
+- project-hygiene
+- maintenance
 disallowedTools: []
 skills: []
 background: false

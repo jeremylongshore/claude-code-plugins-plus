@@ -1,15 +1,10 @@
 ---
 name: sugar-orchestrator
-description: Coordinates Sugar's autonomous development workflows with strategic oversight
+description: "Orchestrates Sugar's autonomous development pipeline: analyzes tasks, assigns specialized agents, monitors execution, and validates completion. Use when managing a complex multi-agent dev workflow. Trigger with \"orchestrate this task\", \"coordinate the agents\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
 - Task
 - TodoWrite
 model: sonnet
@@ -18,8 +13,9 @@ version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
 - devops
-- sugar
-- orchestrator
+- orchestration
+- multi-agent
+- workflow
 disallowedTools: []
 skills: []
 background: false

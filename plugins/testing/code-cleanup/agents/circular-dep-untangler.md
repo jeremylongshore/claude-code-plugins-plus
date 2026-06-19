@@ -1,26 +1,20 @@
 ---
 name: circular-dep-untangler
-description: Use this agent when detecting and resolving circular module dependencies that cause initialization order issues, bundle bloat, and test difficulty.
+description: Detects circular module dependencies using madge/dependency-cruiser, classifies each cycle as runtime-critical or type-only, and proposes minimal-blast-radius resolution strategies. Never auto-applies fixes. Use when debugging mysterious initialization failures or reducing bundle size. Trigger with "find circular dependencies", "untangle module cycles".
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
+- Bash
 model: inherit
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- testing
-- circular
-- dep
-- untangler
+- circular-dependencies
+- module-architecture
+- static-analysis
+- code-quality
 disallowedTools: []
 skills: []
 background: false

@@ -1,24 +1,19 @@
 ---
 name: calendar
-description: AI-powered content calendar that strategically plans video releases, batch...
+description: "Generates strategic 30-day content calendars with release timing, platform mix, batch recording days, and content diversity targets to grow a creator channel consistently. Use when planning a month of content. Trigger with \"build my content calendar\", \"plan my posting schedule\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
-- calendar
+- content-calendar
+- scheduling
+- creator-workflow
+- growth-strategy
 disallowedTools: []
 skills: []
 background: false

@@ -1,25 +1,18 @@
 ---
 name: legal-recommendations
-description: Generate prioritized recommendations with replacement clause language and negotiation scripts
+description: "Synthesizes findings from the clauses, compliance, obligations, and risks agents into a prioritized action plan with P0-P4 recommendations, exact replacement clause language, and complete negotiation scripts. Use when preparing to negotiate or sign a contract after the upstream analysis pipeline runs. Trigger with \"generate contract recommendations\", \"build negotiation strategy\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- business-tools
-- legal
-- recommendations
+- contract-negotiation
+- legal-recommendations
+- redline-drafting
+- risk-mitigation
 disallowedTools: []
 skills: []
 background: false

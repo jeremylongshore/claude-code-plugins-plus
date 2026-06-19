@@ -1,25 +1,20 @@
 ---
 name: geepers-diag
-description: Agent for system diagnostics, error pattern detection, log analysis, and ...
+description: Performs root-cause analysis on failing services by mining logs, monitoring resource usage, correlating event timelines, and identifying patterns like OOM, connection failures, or CPU saturation. Use when a service crashes repeatedly or a health check fails. Trigger with "diagnose this crash", "find the root cause".
 tools:
 - Read
 - Write
-- Edit
 - Bash
-- Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- diag
+- diagnostics
+- log-analysis
+- root-cause-analysis
+- system-health
 disallowedTools: []
 skills: []
 background: false

@@ -1,24 +1,19 @@
 ---
 name: crypto-expert
-description: Cryptography and encryption specialist for secure data protection
+description: "Cryptography implementation specialist that reviews cipher selection, key management, hashing algorithms, and TLS config — catches ECB mode, IV reuse, weak keys, and missing AEAD with secure code examples. Use when you need crypto guidance or a cryptographic code review. Trigger with \"review my crypto\", \"how should I encrypt this\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
-- crypto
+- cryptography
+- encryption
+- key-management
+- security
 disallowedTools: []
 skills: []
 background: false

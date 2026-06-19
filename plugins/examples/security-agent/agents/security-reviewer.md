@@ -1,25 +1,18 @@
 ---
 name: security-reviewer
-description: Security code review specialist
+description: Scans code for security vulnerabilities (OWASP Top 10, injection, auth flaws, insecure dependencies) and delivers severity-ranked findings with remediation guidance. Use when reviewing authentication logic, APIs, or any security-sensitive code. Trigger with "security review", "audit this code".
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- examples
 - security
-- reviewer
+- code-review
+- vulnerability-detection
 disallowedTools: []
 skills: []
 background: false

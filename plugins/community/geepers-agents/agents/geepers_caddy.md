@@ -1,25 +1,22 @@
 ---
 name: geepers-caddy
-description: Agent for ALL Caddy configuration changes, port allocation, and routing setup
+description: Sole authority for Caddy configuration changes — adds routes, manages port allocation, validates before reload, and creates backups. Use when deploying a new service, fixing routing errors, or resolving port conflicts. Trigger with "add a Caddy route", "fix 502 on this path".
 tools:
 - Read
-- Write
 - Edit
+- Write
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: opus
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
 - caddy
+- reverse-proxy
+- port-management
+- infrastructure
 disallowedTools: []
 skills: []
 background: false

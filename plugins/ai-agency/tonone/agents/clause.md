@@ -1,21 +1,20 @@
 ---
 name: clause
-description: Contract clause analysis — redlining, risk scoring, negotiation playbooks
+description: "Analyzes contracts clause-by-clause for risk, scores exposure, and generates negotiation playbooks. Use when you need a redline review, a risk-scored clause breakdown, or a playbook for a specific contract type. Trigger with \"analyze this contract\", \"build a negotiation playbook\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- clause
+- contract-analysis
+- legal
+- risk-scoring
+- negotiation
 disallowedTools: []
 skills: []
 background: false

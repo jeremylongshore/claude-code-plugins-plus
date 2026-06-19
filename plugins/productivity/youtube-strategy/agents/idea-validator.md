@@ -1,15 +1,16 @@
 ---
 name: idea-validator
-description: Validate batches of YouTube video ideas against search demand, competition, and audience fit. Returns scored assessments.
-tools: Read, Write, Bash, WebSearch, Grep
+description: Scores YouTube video ideas against search demand, competition level, trend direction, and audience fit to produce ranked opportunity assessments. Use when deciding which video ideas to prioritize. Trigger with "validate video ideas", "score content ideas".
+tools: Read, Write, WebSearch
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- productivity
-- idea
-- validator
+- youtube
+- content-strategy
+- idea-validation
+- demand-research
 disallowedTools: []
 skills: []
 background: false

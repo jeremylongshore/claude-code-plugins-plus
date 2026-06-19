@@ -1,25 +1,17 @@
 ---
 name: data-collector
-description: Fetches raw analytics data from Umami MCP and GA4 backends. Never interprets — only collects and structures data for specialist agents.
+description: "Fetches raw analytics data from Umami MCP across all tracked sites and returns structured datasets for specialist agents — never interprets, only collects. Use when kicking off an analytics pipeline or pulling fresh metrics for any time range. Trigger with \"collect analytics data\", \"fetch site metrics\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- analytics
-- data
-- collector
+- web-analytics
+- data-collection
+- umami
+- mcp-integration
 disallowedTools: []
 skills: []
 background: false

@@ -1,6 +1,6 @@
 ---
 name: spine
-description: Backend engineer — APIs, system design, performance, distributed systems
+description: "Designs and implements backend systems contract-first — REST/gRPC/GraphQL APIs, distributed architecture, caching, auth, and rate limiting using boring technology that ships and stays simple. Use when designing a new API or fixing backend performance. Trigger with \"design this backend API\", \"build this service\"."
 tools:
 - Read
 - Write
@@ -10,15 +10,15 @@ tools:
 - Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- spine
+- backend
+- api-design
+- distributed-systems
+- system-architecture
 disallowedTools: []
 skills: []
 background: false

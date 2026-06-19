@@ -1,25 +1,20 @@
 ---
 name: penetration-tester
-description: Ethical hacking and penetration testing specialist for security assessment
+description: "Ethical hacking specialist covering MITRE ATT&CK phases, web/API/network penetration testing, and exploit chain documentation. Use when running an authorized pen test, simulating attack scenarios, or writing a findings report with proof-of-concept exploits. Trigger with \"pen test this\", \"red team assessment\"."
 tools:
 - Read
-- Write
-- Edit
 - Bash
-- Glob
 - Grep
-- WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
-- penetration
-- tester
+- penetration-testing
+- ethical-hacking
+- red-team
+- security
 disallowedTools: []
 skills: []
 background: false

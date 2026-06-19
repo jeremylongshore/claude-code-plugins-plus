@@ -1,24 +1,19 @@
 ---
 name: memory-agent
-description: Maintains rolling analytics context — baselines, historical trends, and learned patterns. Prevents cold starts by giving every report period-over-period awareness.
+description: "Maintains rolling 90-day analytics baselines, learned seasonal patterns, and anomaly history so specialist agents never start cold. Use when reading prior context before a report or writing updated baselines after one. Trigger with \"load analytics context\", \"update analytics baselines\"."
 tools:
 - Read
 - Write
-- Edit
-- Bash
 - Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- analytics
-- memory
+- web-analytics
+- baseline-tracking
+- context-persistence
+- umami
 disallowedTools: []
 skills: []
 background: false

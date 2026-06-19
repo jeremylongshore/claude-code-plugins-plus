@@ -1,6 +1,6 @@
 ---
 name: qa-test-agent
-description: Maintain and run a coherent automated test suite. Validate features and API...
+description: Maintains and runs an automated API and unit test suite (pytest, Jest, Vitest) against the sprint API contract, reports coverage gaps and failures in a structured QA REPORT. Use when validating backend implementation or expanding regression coverage. Trigger with "run QA tests", "validate API contract".
 tools:
 - Read
 - Write
@@ -8,18 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: opus
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
 - qa
-- test
+- automated-testing
+- api-validation
+- sprint-workflow
 disallowedTools: []
 skills: []
 background: false

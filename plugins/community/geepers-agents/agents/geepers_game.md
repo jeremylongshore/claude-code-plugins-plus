@@ -1,25 +1,20 @@
 ---
 name: geepers-game
-description: Agent for gamification design - reward systems, engagement loops, progres...
+description: "Applies game-design principles to non-game apps — XP systems, streaks, leaderboards, achievement badges, and feedback loops. Use when a product needs higher engagement or motivation mechanics. Trigger with \"add gamification\", \"make this more engaging\"."
 tools:
 - Read
 - Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- game
+- gamification
+- engagement
+- ux-design
+- reward-systems
 disallowedTools: []
 skills: []
 background: false

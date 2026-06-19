@@ -1,21 +1,21 @@
 ---
 name: rank
-description: AI ranking and relevance — retrieval reranking, relevance scoring, learning-to-rank, result quality evaluation
+description: "Designs retrieval reranking pipelines, relevance scoring systems, and learning-to-rank models with rigorous NDCG/MRR evaluation. Use when ranking quality is poor or a reranker is needed. Trigger with \"improve my search ranking\", \"design a reranking pipeline\"."
 tools:
 - Read
-- Bash
-- Glob
 - Grep
+- Glob
 - Write
-- WebFetch
 - WebSearch
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- rank
+- retrieval
+- ranking
+- relevance
+- ml-evaluation
 disallowedTools: []
 skills: []
 background: false

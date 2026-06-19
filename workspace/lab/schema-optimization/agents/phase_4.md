@@ -1,25 +1,21 @@
 ---
 name: phase-4-verification
-description: 'Phase 4 of BigQuery schema optimization pipeline: runs automated verification scripts to validate phase 2-3 conclusions with empirical data. Outputs verification results as strict JSON for phase 5.'
+description: 'Runs BigQuery field-utilization shell scripts to empirically validate phase 2-3 conclusions, reconciles manual vs. script findings, and writes a verification report. Use when phase 3 analysis is complete and you need script-backed evidence. Trigger with "run verification", "validate phase 3 findings".'
 tools:
 - Read
 - Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- phase
-- '4'
+- bigquery
+- schema-optimization
 - verification
+- data-analysis
 disallowedTools: []
 skills: []
 background: false

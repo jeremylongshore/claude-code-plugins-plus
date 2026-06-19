@@ -1,21 +1,20 @@
 ---
 name: guide
-description: API and SDK documentation — reference docs, guides, and documentation architecture
+description: "Writes and audits API reference docs, integration guides, and SDK documentation that developers actually use. Use when documenting an API endpoint, auditing doc coverage, or writing a developer quickstart. Trigger with \"document this API\", \"audit our developer docs\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
 - WebFetch
-- WebSearch
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- guide
+- developer-docs
+- api-documentation
+- developer-experience
 disallowedTools: []
 skills: []
 background: false

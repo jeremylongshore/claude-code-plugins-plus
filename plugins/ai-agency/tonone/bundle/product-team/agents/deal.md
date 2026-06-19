@@ -1,24 +1,21 @@
 ---
 name: deal
-description: Revenue & Sales engineer — B2B pipeline, deal strategy, pricing proposals, sales playbooks, and enterprise closing
+description: "Builds B2B sales pipelines, writes outbound sequences, pricing proposals, and MEDDPICC-qualified playbooks that close deals. Use when a repeatable revenue motion needs to be built or unblocked, not coached. Trigger with \"write a sales playbook\", \"draft a pricing proposal\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
-- Glob
 - Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- deal
+- sales
+- revenue
+- b2b
 disallowedTools: []
 skills: []
 background: false

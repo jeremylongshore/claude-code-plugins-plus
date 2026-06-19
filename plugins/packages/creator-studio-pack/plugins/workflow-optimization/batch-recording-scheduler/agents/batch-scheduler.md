@@ -1,25 +1,19 @@
 ---
 name: batch-scheduler
-description: Schedule and execute batch recording sessions to create multiple videos...
+description: "Plans efficient batch recording sessions that group multiple videos by topic, manage energy and breaks, and produce detailed run-of-show schedules to maximize output per recording day. Use when scheduling a recording block. Trigger with \"plan batch recording session\", \"schedule my recording day\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
-- batch
-- scheduler
+- batch-recording
+- creator-workflow
+- production-planning
+- time-management
 disallowedTools: []
 skills: []
 background: false

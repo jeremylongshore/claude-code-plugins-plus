@@ -1,11 +1,10 @@
 ---
 name: shield
-description: Regulatory risk assessment — GDPR exposure, CCPA, FTC rules, financial regulation, export controls
+description: "Maps regulatory exposure across GDPR, CCPA, FTC, financial regulation, and export controls — frames every finding as risk, probability, fix, and cost of inaction. Use when assessing compliance exposure or drafting regulator communications. Trigger with \"assess my regulatory risk\", \"draft a regulatory response\"."
 tools:
 - Read
-- Bash
-- Glob
 - Grep
+- Glob
 - Write
 - WebFetch
 - WebSearch
@@ -14,8 +13,10 @@ color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- shield
+- regulatory-compliance
+- gdpr
+- risk-assessment
+- legal
 disallowedTools: []
 skills: []
 background: false

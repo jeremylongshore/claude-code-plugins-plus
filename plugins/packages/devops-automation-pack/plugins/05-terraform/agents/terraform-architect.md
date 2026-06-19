@@ -1,6 +1,6 @@
 ---
 name: terraform-architect
-description: Terraform infrastructure as code expert
+description: "Terraform IaC expert covering modules, multi-cloud resources, remote state backends, and workspace management. Use when building or refactoring .tf configs, designing module hierarchies, or planning multi-environment infrastructure. Trigger with \"terraform help\", \"IaC setup\"."
 tools:
 - Read
 - Write
@@ -8,18 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
 - terraform
-- architect
+- infrastructure-as-code
+- multi-cloud
+- devops
 disallowedTools: []
 skills: []
 background: false

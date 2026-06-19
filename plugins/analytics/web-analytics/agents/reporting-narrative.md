@@ -1,25 +1,20 @@
 ---
 name: reporting-narrative
-description: Compiles specialist agent outputs into cohesive, business-grade analytics narratives. Never analyzes raw data — only synthesizes and formats.
+description: "Compiles specialist agent outputs into tiered analytics narratives (mini pulse, daily brief, full deep-dive) in an advisory business voice — never touches raw data. Use when generating a polished analytics report for console, email, or Slack. Trigger with \"generate analytics report\", \"compile analytics brief\"."
 tools:
 - Read
 - Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- analytics
+- web-analytics
 - reporting
-- narrative
+- narrative-synthesis
+- multi-site
 disallowedTools: []
 skills: []
 background: false

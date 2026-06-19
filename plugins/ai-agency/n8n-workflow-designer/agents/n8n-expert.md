@@ -1,24 +1,20 @@
 ---
 name: n8n-expert
-description: Expert n8n workflow designer specializing in complex automation
+description: Design n8n automation workflows with node configs, JavaScript code nodes, error handling, and full importable JSON exports. Use when building complex automations or self-hosted integrations. Trigger with "design an n8n workflow", "build an n8n automation".
 tools:
 - Read
 - Write
-- Edit
-- Bash
-- Glob
-- Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
 - n8n
+- automation
+- workflow-design
+- self-hosted
 disallowedTools: []
 skills: []
 background: false

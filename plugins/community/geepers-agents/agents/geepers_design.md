@@ -1,25 +1,20 @@
 ---
 name: geepers-design
-description: Agent for visual design systems, typography, layout geometry, color palet...
+description: Applies Swiss/International Style principles — grid systems, typographic scales, 8px spacing, and WCAG AA contrast — to create clean, functional interface designs and design system recommendations. Use when building a new component or auditing a page's visual consistency. Trigger with "review the design system", "design this component".
 tools:
 - Read
 - Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- design
+- design-system
+- typography
+- visual-design
+- ui-components
 disallowedTools: []
 skills: []
 background: false

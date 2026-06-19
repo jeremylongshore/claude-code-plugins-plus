@@ -1,25 +1,20 @@
 ---
 name: geepers-status
-description: Use this agent to log work accomplishments and maintain the project status ...
+description: "Logs work accomplishments by analyzing git commits and agent reports, then regenerates the HTML status dashboard and JSON data file with cross-project activity tracking. Use when ending a work session or checking recent progress across projects. Trigger with \"log today's work\", \"update the status dashboard\"."
 tools:
 - Read
 - Write
-- Edit
 - Bash
 - Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- status
+- status-tracking
+- work-logging
+- dashboard
+- productivity
 disallowedTools: []
 skills: []
 background: false

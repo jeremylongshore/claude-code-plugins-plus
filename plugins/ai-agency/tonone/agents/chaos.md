@@ -1,21 +1,20 @@
 ---
 name: chaos
-description: Chaos engineering — failure injection design, game days, resilience testing, blast radius control
+description: "Designs controlled failure experiments to expose resilience gaps before production incidents do. Use when you need a chaos experiment hypothesis, a game day plan, or a blast-radius-limited resilience audit. Trigger with \"design a chaos experiment\", \"plan a game day\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- chaos
+- chaos-engineering
+- resilience-testing
+- site-reliability
+- failure-injection
 disallowedTools: []
 skills: []
 background: false

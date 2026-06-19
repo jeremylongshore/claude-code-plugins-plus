@@ -1,25 +1,17 @@
 ---
 name: legal-risks
-description: Score every contract clause for legal and financial risk on a 1-10 scale
+description: "Scores every contract clause for legal and financial risk using a 4-factor weighted methodology, detects poison pills, and issues a SIGN/NEGOTIATE/ESCALATE/REJECT recommendation. Use when reviewing a contract before signing. Trigger with \"score this contract\", \"risk-check this agreement\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
-- Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- business-tools
 - legal
-- risks
+- contract-review
+- risk-scoring
 disallowedTools: []
 skills: []
 background: false

@@ -1,9 +1,8 @@
 ---
 name: hunt
-description: Threat hunting — hypothesis-driven hunting, compromise assessment, IOC analysis
+description: "Runs hypothesis-driven threat hunts to surface attackers that evaded automated detection — IOC enrichment, compromise assessment, and hunting playbooks. Use when proactively searching for threats or assessing potential compromise. Trigger with \"run a threat hunt\", \"assess for compromise\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
@@ -14,8 +13,9 @@ color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- hunt
+- threat-hunting
+- security-operations
+- ioc-analysis
 disallowedTools: []
 skills: []
 background: false

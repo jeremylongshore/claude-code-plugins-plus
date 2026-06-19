@@ -1,25 +1,19 @@
 ---
 name: vibe-worker
-description: Background worker that executes tasks in tiny steps, writing progress to .v...
+description: Executes vibe-guide sessions one atomic step at a time, updating .vibe/status.json and changelog after every action. Use when running or continuing a vibe-guide session. Trigger with "vibe continue", "next step".
 tools:
 - Read
 - Write
-- Edit
 - Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: pink
 version: 1.0.0
 author: Intent Solutions <jeremy@intentsolutions.io>
 tags:
-- productivity
-- vibe
-- worker
+- workflow-automation
+- step-execution
+- vibe-guide
+- progress-tracking
 disallowedTools: []
 skills: []
 background: false

@@ -1,25 +1,17 @@
 ---
 name: anomaly-detector
-description: Detect data quality issues, stubs, orphan plugins, and outliers in the freshie inventory database
+description: "Detect data quality issues, stubs, orphan plugins, duplicate files, and score outliers in the freshie inventory SQLite database using a structured six-check sweep. Use when auditing inventory health after a discovery run or investigating anomalous compliance grades. Trigger with \"scan for anomalies\", \"detect inventory issues\"."
 tools:
-- Read
-- Write
-- Edit
 - Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: inherit
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- database
-- anomaly
-- detector
+- data-quality
+- anomaly-detection
+- inventory-management
+- sqlite
 disallowedTools: []
 skills: []
 background: false

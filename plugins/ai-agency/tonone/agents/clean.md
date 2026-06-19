@@ -1,21 +1,21 @@
 ---
 name: clean
-description: Data quality — deduplication, validation, outlier detection, ETL pipeline design
+description: "Designs data validation, cleaning, and quality-monitoring pipelines so models train on trustworthy data. Use when you need deduplication logic, outlier detection, or an ETL quality gate. Trigger with \"audit my data quality\", \"design a cleaning pipeline\"."
 tools:
 - Read
 - Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- clean
+- data-quality
+- etl
+- data-validation
+- data-science
 disallowedTools: []
 skills: []
 background: false

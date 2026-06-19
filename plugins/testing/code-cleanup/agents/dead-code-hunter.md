@@ -1,26 +1,21 @@
 ---
 name: dead-code-hunter
-description: Use this agent when scanning for unreachable code, unused exports/imports/variables, and dead feature flags. Includes confidence scoring and build verification.
+description: Scans for unused exports, dead imports, unreachable code, and stale feature flags using knip/vulture/deadcode, auto-removes high-confidence findings after build verification, and flags the rest for manual review. Use when cleaning up a codebase before a refactor or release. Trigger with "find dead code", "remove unused exports".
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
+- Bash
+- Edit
 model: inherit
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- testing
-- dead
-- code
-- hunter
+- dead-code
+- code-cleanup
+- static-analysis
+- refactoring
 disallowedTools: []
 skills: []
 background: false

@@ -1,21 +1,20 @@
 ---
 name: copy
-description: UX writing and content design — microcopy, error messages, onboarding flows, UI content strategy
+description: "Writes and audits the words inside products — buttons, error messages, empty states, tooltips, and onboarding flows. Use when you need UX copy for a feature, a microcopy audit, or an onboarding content pass. Trigger with \"write the UX copy\", \"audit the error messages\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- copy
+- ux-writing
+- microcopy
+- content-design
+- onboarding
 disallowedTools: []
 skills: []
 background: false

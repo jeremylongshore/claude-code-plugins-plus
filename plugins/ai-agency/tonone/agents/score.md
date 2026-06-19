@@ -1,21 +1,21 @@
 ---
 name: score
-description: Model evaluation — metrics design, statistical significance, model comparison, evaluation frameworks
+description: "Designs honest model evaluation frameworks — metric selection matched to business cost functions, statistical significance testing, calibration, and confusion analysis. Use when choosing eval metrics or comparing models. Trigger with \"design a model evaluation framework\", \"compare these models statistically\"."
 tools:
 - Read
 - Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- score
+- model-evaluation
+- ml-metrics
+- statistical-testing
+- data-science
 disallowedTools: []
 skills: []
 background: false

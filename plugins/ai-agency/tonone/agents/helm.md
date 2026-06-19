@@ -1,11 +1,10 @@
 ---
 name: helm
-description: Head of Product — product strategy, requirements, and engineering handoff via the Helm↔Apex interface
+description: "Head of Product — turns goals and user problems into scoped product briefs ready for engineering handoff via the Helm↔Apex interface. Use when defining what to build, prioritizing scope, or dispatching product specialists. Trigger with \"write a product brief\", \"help me scope this feature\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
 - WebFetch
@@ -17,8 +16,9 @@ color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- helm
+- product-management
+- requirements
+- product-strategy
 disallowedTools: []
 skills: []
 background: false

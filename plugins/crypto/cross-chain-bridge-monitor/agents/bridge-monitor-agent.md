@@ -1,25 +1,19 @@
 ---
 name: bridge-monitor-agent
-description: Cross-chain bridge monitoring and security analysis specialist
+description: "Monitor cross-chain bridge activity, analyze security models, detect exploits, and compare route fees across Wormhole, Stargate, Hop, and canonical L2 bridges. Use when tracking a pending bridge transfer, assessing TVL risk, or investigating unusual bridge behavior. Trigger with \"monitor bridge\", \"analyze bridge security\"."
 tools:
-- Read
-- Write
-- Edit
-- Bash
-- Glob
 - Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- crypto
-- bridge
-- monitor
+- cross-chain
+- bridge-security
+- defi
+- exploit-detection
 disallowedTools: []
 skills: []
 background: false

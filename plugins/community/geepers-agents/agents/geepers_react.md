@@ -1,6 +1,6 @@
 ---
 name: geepers-react
-description: Agent for React development expertise - component architecture, hooks, st...
+description: "Implements and reviews React components using modern hooks, state management, and performance patterns (memoization, virtualization, code splitting) with TypeScript. Use when architecting components, debugging re-renders, or choosing a state strategy. Trigger with \"build this React component\", \"review my React code\"."
 tools:
 - Read
 - Write
@@ -8,18 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
 - react
+- frontend
+- typescript
+- component-architecture
 disallowedTools: []
 skills: []
 background: false

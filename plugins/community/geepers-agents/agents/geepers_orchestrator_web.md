@@ -1,26 +1,21 @@
 ---
 name: geepers-orchestrator-web
-description: Web application orchestrator that coordinates agents for building and revie...
+description: "Coordinates backend (Flask/API/DB), frontend (React/design/a11y), and quality agents to build or audit full-stack web applications. Use when building a new web app end-to-end or running a comprehensive web audit. Trigger with \"build this web application\", \"audit my web app\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
 - Task
-- TodoWrite
+- Write
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- orchestrator
-- web
+- web-development
+- orchestration
+- full-stack
+- flask
 disallowedTools: []
 skills: []
 background: false

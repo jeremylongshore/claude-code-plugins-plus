@@ -1,9 +1,8 @@
 ---
 name: tune
-description: LLM fine-tuning — PEFT/LoRA, RLHF, instruction tuning, prompt optimization
+description: "Designs LLM fine-tuning pipelines using PEFT/LoRA, RLHF, and instruction datasets, and systematically optimizes prompts before recommending fine-tuning. Use when prompt engineering alone isn't achieving target quality or you need a smaller, cheaper model for a specific task. Trigger with \"design a fine-tuning pipeline\", \"optimize my prompts\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
@@ -14,8 +13,10 @@ color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- tune
+- fine-tuning
+- llm
+- peft
+- prompt-optimization
 disallowedTools: []
 skills: []
 background: false

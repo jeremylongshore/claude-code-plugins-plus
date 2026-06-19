@@ -1,26 +1,21 @@
 ---
 name: geepers-system-diag
-description: Comprehensive dr.eamer.dev system diagnostic. Checks all services, Caddy ro...
+description: "Full-depth infrastructure health check for dr.eamer.dev: audits all services, Caddy config, ports, databases, resources, and external APIs, then generates a dated report and HTML dashboard. Use when something feels wrong or before major changes. Trigger with \"run system diagnostic\", \"full infrastructure audit\"."
 tools:
 - Read
-- Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
+- Write
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- system
-- diag
+- system-diagnostics
+- infrastructure-health
+- server-monitoring
+- devops
 disallowedTools: []
 skills: []
 background: false

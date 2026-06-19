@@ -1,25 +1,19 @@
 ---
 name: geepers-prd
-description: Product Requirements Document generator that creates detailed PRDs based on...
+description: "Transforms ideas and business plans into detailed PRDs with user personas, prioritized user stories, functional requirements, and acceptance criteria developers can build from. Use when starting a new product or feature and needing structured technical requirements. Trigger with \"write a PRD for this\", \"turn this idea into requirements\"."
 tools:
 - Read
 - Write
-- Edit
-- Bash
 - Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- prd
+- product-requirements
+- documentation
+- user-stories
+- planning
 disallowedTools: []
 skills: []
 background: false

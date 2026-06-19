@@ -1,25 +1,17 @@
 ---
 name: nextjs-diagnostics-agent
-description: (Optional, Next.js only) Monitor Next.js runtime errors and diagnostics...
+description: Monitors a running Next.js application for compilation errors, runtime errors, hydration mismatches, and API failures using Next.js DevTools MCP — runs in parallel with ui-test-agent. Use when testing a Next.js project and need server-side error visibility. Trigger with "monitor Next.js errors", "run Next.js diagnostics".
 tools:
 - Read
-- Write
-- Edit
-- Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
 - nextjs
-- diagnostics
+- runtime-diagnostics
+- error-monitoring
+- testing
 disallowedTools: []
 skills: []
 background: false

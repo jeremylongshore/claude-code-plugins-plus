@@ -1,25 +1,21 @@
 ---
 name: code-explainer
-description: Generate video scripts that explain your code for non-technical and...
+description: "Converts code implementations into full video scripts with conversational narration, timestamped shot lists, and b-roll suggestions for educational content. Use when turning code into a tutorial video. Trigger with \"explain this code for video\", \"write a code tutorial script\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
-- code
-- explainer
+- code-explainer
+- video-scripting
+- developer-education
+- content-creation
 disallowedTools: []
 skills: []
 background: false

@@ -1,6 +1,6 @@
 ---
 name: nextjs-dev
-description: Build Next.js 16 frontend. Server/Client Components, TypeScript,...
+description: Implements Next.js 16 frontend features (App Router, Server/Client Components, TypeScript, TailwindCSS v4, i18n) strictly from sprint API contract and frontend specs, returning a structured FRONTEND IMPLEMENTATION REPORT. Use when building or updating Next.js pages and components in a sprint. Trigger with "implement frontend sprint", "build Next.js feature".
 tools:
 - Read
 - Write
@@ -8,18 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: opus
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
 - nextjs
-- dev
+- react
+- typescript
+- frontend
 disallowedTools: []
 skills: []
 background: false

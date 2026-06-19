@@ -1,25 +1,17 @@
 ---
 name: discovery-scanner
-description: Run freshie discovery scans — full repo scan via rebuild-inventory.py with delta reporting against previous run
+description: "Run a full freshie ecosystem discovery scan via rebuild-inventory.py and report plugin, skill, and pack delta against the previous run stored in the SQLite inventory database. Use when refreshing the inventory after adding plugins or tracking ecosystem growth over time. Trigger with \"run discovery scan\", \"scan the inventory\"."
 tools:
-- Read
-- Write
-- Edit
 - Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: inherit
 color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- database
 - discovery
-- scanner
+- inventory-management
+- plugin-ecosystem
+- sqlite
 disallowedTools: []
 skills: []
 background: false

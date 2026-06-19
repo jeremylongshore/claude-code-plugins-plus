@@ -1,6 +1,6 @@
 ---
 name: terra
-description: Terraform and IaC — module design, state management, drift detection, and IaC best practices
+description: "Designs Terraform module structures, state management strategies, drift detection workflows, and IaC best practices. Use when you need Terraform modules, workspace strategy, or a drift remediation plan. Trigger with \"design my Terraform module\", \"audit my Terraform code\"."
 tools:
 - Read
 - Bash
@@ -8,14 +8,15 @@ tools:
 - Grep
 - Write
 - WebFetch
-- WebSearch
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- terra
+- terraform
+- infrastructure-as-code
+- devops
+- cloud
 disallowedTools: []
 skills: []
 background: false

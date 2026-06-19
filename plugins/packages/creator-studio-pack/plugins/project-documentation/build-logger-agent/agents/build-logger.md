@@ -1,6 +1,6 @@
 ---
 name: build-logger
-description: Automatically document your entire build process by analyzing git commits,...
+description: "Analyzes git commit history to produce structured build logs, flag hero moments worth filming, and generate video script outlines from real development work. Use when turning a coding session into content. Trigger with \"log my build\", \"extract content from my commits\"."
 tools:
 - Read
 - Write
@@ -8,18 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
-- build
-- logger
+- build-logging
+- git-analysis
+- content-extraction
+- developer-documentation
 disallowedTools: []
 skills: []
 background: false

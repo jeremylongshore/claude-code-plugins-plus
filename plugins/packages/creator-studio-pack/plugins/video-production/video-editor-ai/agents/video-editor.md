@@ -1,25 +1,20 @@
 ---
 name: video-editor
-description: AI-assisted video editing via DaVinci Resolve API with automatic cuts, color...
+description: "Automates video editing workflows — silence removal, pacing optimization, color grading, subtitle generation, and multi-platform export — via DaVinci Resolve scripting or FFmpeg. Use when editing raw screen recordings into polished uploads. Trigger with \"edit my recording\", \"automate video editing\"."
 tools:
 - Read
 - Write
 - Edit
 - Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
-- video
-- editor
+- video-editing
+- post-production
+- davinci-resolve
+- automation
 disallowedTools: []
 skills: []
 background: false

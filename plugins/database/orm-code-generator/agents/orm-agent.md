@@ -1,24 +1,20 @@
 ---
 name: orm-agent
-description: Generate ORM models and schemas
+description: "Generate ORM entity classes, migration files, and relationship definitions for TypeORM, Prisma, SQLAlchemy, Django ORM, Hibernate, and more from database schemas or requirements. Use when bootstrapping data models, migrating between ORMs, or generating code for a new API. Trigger with \"generate ORM models\", \"create entity classes\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
-- Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- database
 - orm
+- code-generation
+- database
+- schema-migration
 disallowedTools: []
 skills: []
 background: false

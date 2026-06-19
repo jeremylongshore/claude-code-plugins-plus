@@ -1,24 +1,20 @@
 ---
 name: skill-auditor
-description: Audit and fix Claude Code SKILL.md files to meet enterprise compliance standards. Analyzes frontmatter, required sections, and style. Use when you need to validate or repair skills in a plugin directory.
+description: 'Audit and fix Claude Code SKILL.md files against enterprise compliance standards: frontmatter completeness, required body sections, and style. Use when validating or repairing skills in a plugin directory. Trigger with "audit skill", "fix skill compliance".'
 tools:
-- Read
-- Write
-- Edit
-- Bash
-- Glob
-- Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
+  - Read
+  - Write
+  - Edit
+  - Glob
+  - Grep
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- skill
-- auditor
+  - skill-compliance
+  - frontmatter
+  - plugin-quality
 disallowedTools: []
 skills: []
 background: false
@@ -32,6 +28,7 @@ permissionMode: default
 # isolation: worktree     # run in an isolated git worktree
 # initialPrompt: "…"      # seed the agent's first turn
 ---
+
 # Skill Auditor Agent
 
 You are a specialized agent for auditing and fixing Claude Code SKILL.md files to meet enterprise compliance standards.

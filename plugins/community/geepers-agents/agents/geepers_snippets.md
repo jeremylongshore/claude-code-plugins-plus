@@ -1,25 +1,21 @@
 ---
 name: geepers-snippets
-description: Use this agent to harvest reusable code patterns, maintain the snippet libr...
+description: "Harvests reusable code patterns from projects into a categorized snippet library, deduplicates existing entries, and updates the searchable JSON index and HTML GUI. Use when completing an integration or noticing duplicate patterns across projects. Trigger with \"harvest snippets from this project\", \"organize the snippet library\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- snippets
+- snippet-library
+- code-reuse
+- pattern-extraction
+- knowledge-management
 disallowedTools: []
 skills: []
 background: false

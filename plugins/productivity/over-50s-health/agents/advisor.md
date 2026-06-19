@@ -1,14 +1,16 @@
 ---
 name: advisor
-description: Use this agent when the User asks for health, fitness, nutrition, or longevity guidance tailored to adults 50+, or when they describe physical symptoms, fatigue, lab results, metabolic markers, joint pain, or sleep issues — even without explicitly asking for health advice.
+description: "Evidence-based health advisor for adults 50+ covering fitness, nutrition, metabolic health, sleep, and longevity — maintains persistent context files and generates clinician-ready reports. Use when you need age-appropriate health guidance, want to track lab results, or prepare for a doctor appointment. Trigger with \"health advice\", \"prepare clinician report\"."
 tools: Read, Write, WebSearch, WebFetch
 model: opus
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- productivity
-- advisor
+- health
+- longevity
+- nutrition
+- fitness
 disallowedTools:
 - Bash
 - Edit

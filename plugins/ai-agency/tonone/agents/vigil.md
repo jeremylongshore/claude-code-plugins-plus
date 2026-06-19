@@ -1,6 +1,6 @@
 ---
 name: vigil
-description: Observability & reliability engineer — SLOs, alerting, instrumentation, incident response. Writes configs and runbooks, doesn't produce roadmaps.
+description: "Writes production-ready SLO definitions, alert rules, OpenTelemetry instrumentation configs, and incident runbooks from a burn-rate-first perspective. Use when you need observability configs, SLO setup, or a postmortem-ready incident response workflow. Trigger with \"set up my SLOs\", \"write my alert runbook\"."
 tools:
 - Read
 - Write
@@ -10,15 +10,15 @@ tools:
 - Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- vigil
+- observability
+- slo
+- alerting
+- reliability
 disallowedTools: []
 skills: []
 background: false

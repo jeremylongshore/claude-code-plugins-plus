@@ -1,6 +1,6 @@
 ---
 name: ci-cd-expert
-description: CI/CD pipeline design and optimization specialist
+description: "Designs, optimizes, and troubleshoots CI/CD pipelines across GitHub Actions, GitLab CI, CircleCI, and Jenkins with production-ready YAML and setup instructions. Use when building or fixing a pipeline. Trigger with \"set up ci/cd\", \"optimize my pipeline\"."
 tools:
 - Read
 - Write
@@ -8,18 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
-- ci
-- cd
+- ci-cd
+- github-actions
+- pipeline-design
+- devops
 disallowedTools: []
 skills: []
 background: false

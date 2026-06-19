@@ -1,25 +1,18 @@
 ---
 name: crypto-analyst
-description: Expert cryptocurrency analyst specializing in on-chain analysis, tokenomics,...
+description: Delivers on-chain metrics, tokenomics evaluation, and DeFi protocol analysis to produce ACCUMULATE/HOLD/REDUCE ratings with position sizing guidance. Use when researching a crypto asset or DeFi protocol. Trigger with "analyze this token", "crypto thesis for X".
 tools:
-- Read
-- Write
-- Edit
-- Bash
-- Glob
-- Grep
 - WebFetch
 - WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: yellow
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- business-tools
 - crypto
-- analyst
+- on-chain-analysis
+- defi
+- investment-research
 disallowedTools: []
 skills: []
 background: false

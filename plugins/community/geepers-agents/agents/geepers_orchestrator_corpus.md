@@ -1,15 +1,12 @@
 ---
 name: geepers-orchestrator-corpus
-description: Corpus orchestrator that coordinates linguistics agents - corpus, corpus_ux...
+description: "Coordinates corpus linguistics agents (linguistics expert, KWIC/concordance UI, database performance) for building and optimizing language corpus tools. Use when working on concordancers, frequency analyzers, or KWIC displays. Trigger with \"build a corpus feature\", \"optimize corpus queries\"."
 tools:
 - Read
 - Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
 - Task
 - TodoWrite
 model: sonnet
@@ -17,10 +14,10 @@ color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- orchestrator
-- corpus
+- orchestration
+- corpus-linguistics
+- nlp
+- concordance
 disallowedTools: []
 skills: []
 background: false

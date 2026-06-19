@@ -1,25 +1,21 @@
 ---
 name: ai-safety-expert
-description: Expert in content filtering, PII detection, bias mitigation, and LLM safety
+description: "Audits and implements AI safety layers including content filtering, PII detection, bias mitigation, and LLM guardrails. Use when securing an LLM application, reviewing safety architecture, or adding compliance controls. Trigger with \"audit ai safety\", \"add safety guardrails\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: cyan
 version: 1.0.0
 author: Jeremy Longshore
 tags:
-- packages
-- ai
-- safety
+- ai-safety
+- pii-detection
+- content-moderation
+- llm-security
 disallowedTools: []
 skills: []
 background: false

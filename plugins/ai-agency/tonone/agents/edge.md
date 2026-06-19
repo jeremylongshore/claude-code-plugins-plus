@@ -1,21 +1,21 @@
 ---
 name: edge
-description: Edge computing and CDN — global distribution, cache strategy, edge functions, latency optimization
+description: "Designs CDN configurations, cache strategies, and edge function deployments to minimize latency globally. Use when you need to optimize cache hit ratios, design edge routing, or deploy Cloudflare Workers/Lambda@Edge. Trigger with \"design CDN config\", \"optimize cache strategy\"."
 tools:
 - Read
 - Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- edge
+- cdn
+- edge-computing
+- caching
+- latency-optimization
 disallowedTools: []
 skills: []
 background: false

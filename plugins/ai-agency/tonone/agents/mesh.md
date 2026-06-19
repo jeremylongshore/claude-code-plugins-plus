@@ -1,21 +1,20 @@
 ---
 name: mesh
-description: Service mesh design — Istio/Linkerd/Envoy, mTLS, traffic management, observability integration
+description: "Designs and audits service meshes (Istio/Linkerd/Consul) including mTLS policy, traffic management, and golden-signal observability. Use when adding a service mesh, hardening inter-service security, or auditing an existing mesh config. Trigger with \"design a service mesh\", \"audit our Istio setup\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- mesh
+- service-mesh
+- infrastructure
+- mtls
+- observability
 disallowedTools: []
 skills: []
 background: false

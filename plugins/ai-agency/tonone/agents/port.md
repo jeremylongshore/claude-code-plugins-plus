@@ -1,21 +1,20 @@
 ---
 name: port
-description: SDK design — multi-language SDK architecture, idiomatic patterns, and cross-language consistency
+description: "Architects multi-language SDKs with idiomatic patterns per language, typed error handling, auto-pagination, and consistent cross-language interfaces — generated and hand-polished. Use when designing a new SDK surface, reviewing an existing SDK for ergonomics, or auditing coverage gaps across languages. Trigger with \"design the SDK architecture\", \"review this SDK\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- port
+- sdk-design
+- developer-experience
+- api-design
+- multi-language
 disallowedTools: []
 skills: []
 background: false

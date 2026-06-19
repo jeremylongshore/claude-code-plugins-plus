@@ -1,6 +1,6 @@
 ---
 name: geepers-godot
-description: Agent for Godot Engine development - GDScript, scene architecture, node p...
+description: "Godot Engine 4.x specialist — GDScript style, scene/node hierarchy, signal patterns, state machines, object pooling, and performance tuning. Use when building or debugging a Godot project. Trigger with \"help with my Godot game\", \"design this Godot scene\"."
 tools:
 - Read
 - Write
@@ -8,18 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
 - godot
+- gdscript
+- game-engine
+- game-development
 disallowedTools: []
 skills: []
 background: false

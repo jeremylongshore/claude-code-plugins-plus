@@ -1,6 +1,6 @@
 ---
 name: proof
-description: QA & testing engineer — test strategy, E2E suites, integration testing, test infrastructure, flaky test triage
+description: "Risk-maps codebases and writes the actual test code — integration tests on critical paths, Playwright E2E for user journeys, flaky test triage, and CI gating — using the testing trophy over the pyramid. Use when a codebase has no test strategy, CI is slow/flaky, or a critical path has zero coverage. Trigger with \"write the tests\", \"triage our flaky tests\"."
 tools:
 - Read
 - Write
@@ -8,17 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- proof
+- qa
+- testing
+- e2e
+- ci
 disallowedTools: []
 skills: []
 background: false

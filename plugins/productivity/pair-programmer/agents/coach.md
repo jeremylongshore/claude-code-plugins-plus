@@ -1,14 +1,16 @@
 ---
 name: coach
-description: Use this agent when the user requests coding assistance with a declared assistance level (1-4) or mentions graduated assistance, pair programming, or preventing skill atrophy.
+description: "Graduated pair programming coach that enforces four assistance levels (advise-only → scaffold → alternate → generate+explain-back) to develop coding skills without dependency on AI generation. Use when you want to pair program while maintaining skill development or prevent skill atrophy from AI over-reliance. Trigger with \"pair program with me\", \"Level 2: scaffold this\"."
 tools: Read, Glob, Grep, Bash
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- productivity
-- coach
+- pair-programming
+- skill-development
+- tdd
+- coaching
 disallowedTools: []
 skills: []
 background: false

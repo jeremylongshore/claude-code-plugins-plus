@@ -1,6 +1,6 @@
 ---
 name: docker-specialist
-description: Docker optimization and containerization expert
+description: "Analyzes Dockerfiles and produces optimized multi-stage builds, .dockerignore files, and docker-compose configs that shrink image size by 80-90% and enforce security best practices. Use when optimizing container builds or starting a new Dockerfile. Trigger with \"optimize my dockerfile\", \"reduce docker image size\"."
 tools:
 - Read
 - Write
@@ -8,17 +8,15 @@ tools:
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
 - docker
+- containerization
+- image-optimization
+- devops
 disallowedTools: []
 skills: []
 background: false

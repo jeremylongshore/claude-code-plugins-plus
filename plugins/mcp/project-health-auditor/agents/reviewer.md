@@ -1,24 +1,20 @@
 ---
 name: reviewer
-description: Code health reviewer specialist - suggests high-impact refactors based on...
+description: Scores codebase health by combining cyclomatic complexity, git churn, and test coverage metrics, then ranks refactoring candidates by business impact. Use when prioritizing technical debt or planning a refactor sprint. Trigger with "analyze code health", "what should I refactor".
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
+- Bash
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- mcp
-- reviewer
+- code-quality
+- technical-debt
+- refactoring
+- metrics
 disallowedTools: []
 skills: []
 background: false

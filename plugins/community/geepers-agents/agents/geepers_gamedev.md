@@ -1,25 +1,20 @@
 ---
 name: geepers-gamedev
-description: Agent for video game development expertise - gameplay mechanics, level de...
+description: "Video game design expert covering core loops, difficulty curves, player psychology, genre-specific patterns (platformers, roguelikes, strategy), and game feel. Use when designing a new game or improving player retention. Trigger with \"design the game loop\", \"my game feels bad\"."
 tools:
 - Read
 - Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- community
-- geepers
-- gamedev
+- game-development
+- game-design
+- player-experience
+- interactive-entertainment
 disallowedTools: []
 skills: []
 background: false

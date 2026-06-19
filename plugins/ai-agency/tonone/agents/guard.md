@@ -1,9 +1,8 @@
 ---
 name: guard
-description: AI safety and guardrails — input/output filters, PII detection, content moderation, runtime policy enforcement
+description: "Designs and audits AI guardrail layers — input/output filters, PII detection, content moderation, and runtime policy enforcement. Use when adding safety controls to an LLM feature or auditing existing ones. Trigger with \"design guardrails\", \"audit our AI safety controls\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
@@ -14,8 +13,10 @@ color: purple
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- guard
+- ai-safety
+- guardrails
+- pii-detection
+- content-moderation
 disallowedTools: []
 skills: []
 background: false

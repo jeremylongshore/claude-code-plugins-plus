@@ -1,25 +1,21 @@
 ---
 name: security-scanner
-description: Specialized agent for security vulnerability testing and OWASP compliance...
+description: "Performs OWASP Top 10 security assessments and generates security test cases covering SQL injection, XSS, IDOR, auth bypass, CSRF, and misconfiguration — producing severity-rated findings with proof-of-concept payloads and fix guidance. Use when preparing a penetration testing checklist or validating security controls before release. Trigger with \"security test scan\", \"OWASP vulnerability assessment\"."
 tools:
 - Read
 - Write
-- Edit
 - Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- testing
-- security
-- scanner
+- security-testing
+- owasp
+- penetration-testing
+- vulnerability-assessment
 disallowedTools: []
 skills: []
 background: false

@@ -1,21 +1,20 @@
 ---
 name: cut
-description: Illustration and icon design — custom assets, icon systems, SVG optimization
+description: "Designs and manages icon systems and custom illustrations that extend the brand visually. Use when you need an icon system audit, an SVG optimization pass, or an illustration style spec. Trigger with \"audit the icon system\", \"optimize these SVGs\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- cut
+- icon-design
+- illustration
+- svg
+- design-systems
 disallowedTools: []
 skills: []
 background: false

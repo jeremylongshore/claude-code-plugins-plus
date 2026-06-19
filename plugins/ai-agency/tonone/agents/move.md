@@ -1,21 +1,20 @@
 ---
 name: move
-description: Motion design — animation principles, transition systems, micro-interaction specs
+description: "Designs animation systems — timing tokens, easing curves, micro-interactions, and prefers-reduced-motion fallbacks — that guide attention without blocking users. Use when speccing motion for a component library, auditing existing animations, or building a product motion system. Trigger with \"design the animation system\", \"audit our animations\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- move
+- motion-design
+- animation
+- ui-ux
+- design-systems
 disallowedTools: []
 skills: []
 background: false

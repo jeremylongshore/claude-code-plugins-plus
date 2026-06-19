@@ -1,25 +1,19 @@
 ---
 name: compliance-checker
-description: Regulatory compliance specialist for HIPAA, PCI DSS, GDPR, and SOC 2
+description: "Regulatory compliance specialist that assesses HIPAA, PCI DSS, GDPR, and SOC 2 gaps, produces framework-specific remediation roadmaps with regulation citations and cost estimates. Use when you need a compliance assessment, audit prep, or gap analysis. Trigger with \"compliance check\", \"HIPAA gap analysis\"."
 tools:
 - Read
-- Write
-- Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: sonnet
 color: orange
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
 - compliance
-- checker
+- regulatory
+- hipaa
+- gdpr
 disallowedTools: []
 skills: []
 background: false

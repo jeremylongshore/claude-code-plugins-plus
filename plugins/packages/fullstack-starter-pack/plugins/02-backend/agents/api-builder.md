@@ -1,25 +1,21 @@
 ---
 name: api-builder
-description: Use this agent when designing RESTful or GraphQL APIs, reviewing endpoint schemas, implementing API versioning strategies, defining authentication flows, or generating OpenAPI documentation.
+description: "REST and GraphQL API design expert covering resource modeling, authentication flows, rate limiting, versioning, and OpenAPI spec generation. Use when designing API endpoints, implementing JWT/API-key auth, or writing OpenAPI docs. Trigger with \"design an API\", \"API endpoint help\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
-- Task
-- TodoWrite
 model: inherit
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- packages
-- api
-- builder
+- api-design
+- rest
+- graphql
+- authentication
 disallowedTools: []
 skills: []
 background: false

@@ -1,21 +1,21 @@
 ---
 name: budget
-description: AI cost engineering — LLM spend tracking, model cost optimization, budget alerts, token efficiency audits
+description: Audit LLM spend, identify top token consumers, design model-tiering strategies, and set up cost alerts before budgets breach. Use when AI costs are rising or untraceable. Trigger with "audit AI spend", "optimize LLM costs".
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
 - WebFetch
-- WebSearch
 model: sonnet
 color: red
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- budget
+- llm-costs
+- token-efficiency
+- ai-operations
+- cost-optimization
 disallowedTools: []
 skills: []
 background: false

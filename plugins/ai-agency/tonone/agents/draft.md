@@ -1,15 +1,12 @@
 ---
 name: draft
-description: UX designer — user flows, information architecture, wireframes, and interaction design
+description: "Owns the structural UX layer — user flows, information architecture, wireframes, and interaction patterns. Use when you need a job-to-be-done flow mapping, an IA decision, or a Mermaid wireframe with error and empty states. Trigger with \"map the user flow\", \"design the information architecture\"."
 tools:
 - Read
 - Write
 - Edit
-- Bash
 - Glob
 - Grep
-- WebFetch
-- WebSearch
 - Task
 - TodoWrite
 model: sonnet
@@ -17,8 +14,10 @@ color: cyan
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- draft
+- ux-design
+- information-architecture
+- user-flows
+- wireframing
 disallowedTools: []
 skills: []
 background: false

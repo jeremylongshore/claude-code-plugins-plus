@@ -1,6 +1,6 @@
 ---
 name: lens
-description: Data analytics & BI engineer — dashboards, metrics design, reporting, data storytelling
+description: "Turns raw data into actionable decisions — dashboards, metric definitions, SQL analytics, funnel and cohort analysis across BI platforms. Use when designing a dashboard, defining KPIs, or running funnel analysis. Trigger with \"design a dashboard\", \"analyze our funnel\"."
 tools:
 - Read
 - Write
@@ -9,16 +9,16 @@ tools:
 - Glob
 - Grep
 - WebFetch
-- WebSearch
 - Task
-- TodoWrite
 model: sonnet
 color: green
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- lens
+- analytics
+- business-intelligence
+- data-visualization
+- sql
 disallowedTools: []
 skills: []
 background: false

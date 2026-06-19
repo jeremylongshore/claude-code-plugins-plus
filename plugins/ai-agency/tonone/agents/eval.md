@@ -1,21 +1,21 @@
 ---
 name: eval
-description: Experiment design — A/B testing, statistical power, experiment tracking, causal inference
+description: "Designs statistically rigorous experiments — A/B tests, power analysis, variance reduction, and causal inference frameworks. Use when designing an experiment, analyzing test results for validity, or auditing experimentation infrastructure. Trigger with \"design A/B test\", \"review experiment methodology\"."
 tools:
 - Read
 - Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: pink
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- eval
+- ab-testing
+- experimentation
+- causal-inference
+- statistics
 disallowedTools: []
 skills: []
 background: false

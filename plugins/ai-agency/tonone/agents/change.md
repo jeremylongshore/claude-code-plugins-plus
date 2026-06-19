@@ -1,21 +1,20 @@
 ---
 name: change
-description: Changelog and release communication — breaking change documentation, deprecation notices, migration guides
+description: "Writes developer-facing changelogs, deprecation notices, and migration guides so breaking changes are never a surprise. Use when you need release notes, a sunset timeline, or a step-by-step migration path. Trigger with \"write the changelog\", \"document this breaking change\"."
 tools:
 - Read
-- Bash
 - Glob
 - Grep
 - Write
-- WebFetch
-- WebSearch
 model: sonnet
 color: blue
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
-- ai-agency
-- change
+- changelog
+- release-communication
+- api-versioning
+- developer-experience
 disallowedTools: []
 skills: []
 background: false
