@@ -36,8 +36,12 @@ jobs:
           BACKLOG: ${{ steps.state.outputs.backlog }}
         run: |
           set -euo pipefail
+          # HTML-escape the body (& first, then < >) so angle-bracket placeholders
+          # like mcp__<server>__<tool> survive Plane's HTML renderer; <pre> preserves
+          # line breaks that the old <p> collapsed.
           HTML=$(jq -n --arg body "${BODY:-<no description>}" --arg url "$GH_URL" \
-            '"<p>" + $body + "</p><hr><p>Mirrored from <a href=\"" + $url + "\">" + $url + "</a></p>"')
+            '($body | gsub("&"; "&amp;") | gsub("<"; "&lt;") | gsub(">"; "&gt;")) as $escaped
+             | "<pre>" + $escaped + "</pre><hr><p>Mirrored from <a href=\"" + $url + "\">" + $url + "</a></p>"')
           PAYLOAD=$(jq -n --arg name "$TITLE" --argjson html "$HTML" --arg state "$BACKLOG" \
             '{name:$name, description_html:$html, state:$state}')
           RESP=$(curl -fsSL -H "X-API-Key: $PLANE_API_KEY" -H "Content-Type: application/json" \
