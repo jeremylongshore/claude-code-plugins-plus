@@ -82,7 +82,7 @@
 
 import { readFileSync, existsSync, statSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, '..');
@@ -127,8 +127,11 @@ function parseArgs(argv) {
 
 /** Minimal, dependency-free semver compare. Returns -1 / 0 / 1. Pre-release tags
  *  (e.g. "1.0.0-draft") are compared core-first, then a present pre-release sorts
- *  BEFORE the same core with no pre-release, per semver §11. */
-function semverCompare(a, b) {
+ *  BEFORE the same core with no pre-release, per semver §11.
+ *
+ *  Exported so the version-ordering test corpus can exercise the SAME comparator
+ *  the CLI uses (no logic fork). See scripts/kernel-vendor-hash.test.mjs. */
+export function semverCompare(a, b) {
   const split = (v) => {
     const [core, pre = ''] = String(v).trim().replace(/^v/, '').split('-');
     const nums = core.split('.').map((n) => parseInt(n, 10) || 0);
@@ -229,20 +232,33 @@ function ageFromIso(iso) {
   return Math.floor((Date.now() - t) / MS_PER_DAY);
 }
 
-function main() {
-  const args = parseArgs(process.argv.slice(2));
+/**
+ * PURE comparator core — the V ≤ C ≤ K ordering invariant + bounded-staleness
+ * evaluation, with no filesystem / process / clock dependency. The CLI (`main`)
+ * resolves V/C/K from disk and passes them here; the version-ordering test corpus
+ * (scripts/kernel-vendor-hash.test.mjs) drives this directly with synthetic
+ * fixtures so the SAME logic is exercised end-to-end without a fork.
+ *
+ * @param {object} input
+ * @param {string|null} input.V          vendored snapshot version (semver) or null/absent
+ * @param {string|null} input.C          CCPI-declared kernel pin (semver) or null/absent
+ * @param {string|null} input.K          kernel latest published (semver) or null/absent
+ * @param {boolean}     [input.ranged]   whether C was declared with a range operator
+ * @param {number|null} [input.kernelAgeDays] kernel publish age in days, or null if unknown
+ * @param {number}      [input.stalenessLimitDays] day bound (defaults to STALENESS_LIMIT_DAYS)
+ * @returns {{ violations: string[], warnings: string[], stale: boolean }}
+ */
+export function evaluateCoupling(input) {
+  const {
+    V = null,
+    C = null,
+    K = null,
+    ranged = false,
+    kernelAgeDays = null,
+    stalenessLimitDays = STALENESS_LIMIT_DAYS,
+  } = input ?? {};
   const warnings = [];
   const violations = [];
-
-  const vendored = resolveVendored();
-  const declared = resolveDeclared();
-  const kernel = resolveKernelLatest(args);
-  // CCPI's own validator schema version — reported for context, NOT part of V≤C≤K.
-  const ccpSchemaVersion = readCcpSchemaVersion();
-
-  const V = vendored.version;
-  const C = declared.version;
-  const K = kernel.version;
 
   // --- existence guards (loud warn, never crash) -----------------------------
   if (!V) {
@@ -257,7 +273,7 @@ function main() {
       'C (CCPI-declared kernel) UNRESOLVED: package.json has no @intentsolutions/core dependency. ' +
         'V≤C and C≤K checks SKIPPED.',
     );
-  } else if (declared.ranged) {
+  } else if (ranged) {
     warnings.push(
       `C pin "${C}" uses a RANGE operator. The kernel pin must be EXACT (no ^/~) per the ` +
         'shadow-validation pin discipline. Treating the floor as C for ordering.',
@@ -282,30 +298,55 @@ function main() {
     );
   }
 
-  // --- bounded staleness ≤ 7 days --------------------------------------------
+  // --- bounded staleness ≤ N days --------------------------------------------
   let stale = false;
   if (V && K && semverCompare(V, K) < 0) {
-    // The vendored snapshot lags the latest kernel. Only a >7-day lag is reported
+    // The vendored snapshot lags the latest kernel. Only a >N-day lag is reported
     // as staleness (per § 14.15.2). Age comes from the kernel publish timestamp.
-    if (kernel.ageDays === null) {
+    if (kernelAgeDays === null) {
       warnings.push(
         `STALENESS: V (${V}) lags K (${K}) but kernel publish age is UNKNOWN ` +
           '(pass --kernel-published <ISO> for a precise age). Not firing staleness.',
       );
-    } else if (kernel.ageDays > STALENESS_LIMIT_DAYS) {
+    } else if (kernelAgeDays > stalenessLimitDays) {
       stale = true;
       violations.push(
         `STALENESS: V (${V}) lags K (${K}) and the kernel has been published for ` +
-          `${kernel.ageDays} days (> ${STALENESS_LIMIT_DAYS}-day bound). ` +
+          `${kernelAgeDays} days (> ${stalenessLimitDays}-day bound). ` +
           'DEFERRED ACTION (post-DR-049-flip): CI would open a kernel-bump PR here.',
       );
     } else {
       warnings.push(
-        `STALENESS OK: V (${V}) lags K (${K}) by ${kernel.ageDays} day(s) ` +
-          `(within the ${STALENESS_LIMIT_DAYS}-day bound).`,
+        `STALENESS OK: V (${V}) lags K (${K}) by ${kernelAgeDays} day(s) ` +
+          `(within the ${stalenessLimitDays}-day bound).`,
       );
     }
   }
+
+  return { violations, warnings, stale };
+}
+
+function main() {
+  const args = parseArgs(process.argv.slice(2));
+
+  const vendored = resolveVendored();
+  const declared = resolveDeclared();
+  const kernel = resolveKernelLatest(args);
+  // CCPI's own validator schema version — reported for context, NOT part of V≤C≤K.
+  const ccpSchemaVersion = readCcpSchemaVersion();
+
+  const V = vendored.version;
+  const C = declared.version;
+  const K = kernel.version;
+
+  const { violations, warnings, stale } = evaluateCoupling({
+    V,
+    C,
+    K,
+    ranged: declared.ranged,
+    kernelAgeDays: kernel.ageDays,
+    stalenessLimitDays: STALENESS_LIMIT_DAYS,
+  });
 
   const report = {
     schema: 'kernel-vendor-hash/v1',
@@ -391,4 +432,9 @@ function printHuman(r) {
   line('');
 }
 
-main();
+// Run main() ONLY when invoked directly as a CLI (node scripts/kernel-vendor-hash.mjs),
+// never when imported as a module (the test corpus imports evaluateCoupling +
+// semverCompare without triggering the disk-reading / process-exiting main()).
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+  main();
+}

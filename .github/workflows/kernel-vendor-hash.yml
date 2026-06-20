@@ -33,6 +33,7 @@ on:
   pull_request:
     paths:
       - 'scripts/kernel-vendor-hash.mjs'
+      - 'scripts/kernel-vendor-hash.test.mjs'
       - 'scripts/validate-skills-schema.py'
       - 'package.json'
       - 'pnpm-lock.yaml'
@@ -71,6 +72,16 @@ jobs:
       # V from node_modules in the absence of a .kernel-vendor/ snapshot.
       - name: Install root dev dependencies
         run: pnpm install --frozen-lockfile --filter "claude-code-plugins-monorepo"
+
+      # BLOCKING — the version-ordering invariant test corpus (F-MK-003). This is
+      # NOT advisory: it exercises the V <= C <= K comparator (`evaluateCoupling` +
+      # `semverCompare`) with synthetic positive/negative/staleness fixtures and the
+      # CLI advisory-vs-strict exit-code contract. Correctness of the comparator is
+      # ORTHOGONAL to the DR-049 soak (which only governs pin-bump pressure / validator
+      # authority) — a broken comparator is a real bug, so a failing corpus turns this
+      # check red. Uses node's built-in runner (zero new deps).
+      - name: Version-ordering invariant test corpus (blocking)
+        run: node --test scripts/kernel-vendor-hash.test.mjs
 
       # K (kernel latest published) is resolved from npm in CI — the read-only
       # sibling repo is not checked out here. Pass it explicitly so C <= K and the
