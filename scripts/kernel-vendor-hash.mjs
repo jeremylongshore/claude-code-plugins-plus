@@ -368,7 +368,9 @@ function printHuman(r) {
     `  V vendored snapshot     : ${r.identities.V_vendored.version ?? '(unresolved)'} ` +
       `${r.identities.V_vendored.source ? `[${r.identities.V_vendored.source}]` : ''}`,
   );
-  line(`  C CCPI-declared kernel   : ${r.identities.C_ccpDeclaredKernel.version ?? '(unresolved)'}`);
+  line(
+    `  C CCPI-declared kernel   : ${r.identities.C_ccpDeclaredKernel.version ?? '(unresolved)'}`,
+  );
   line(
     `  K kernel latest         : ${r.identities.K_kernelLatest.version ?? '(unresolved)'} ` +
       `${r.identities.K_kernelLatest.publishedAgeDays != null ? `(${r.identities.K_kernelLatest.publishedAgeDays}d old)` : ''}`,

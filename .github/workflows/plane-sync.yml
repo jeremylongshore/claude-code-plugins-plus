@@ -10,7 +10,7 @@ env:
   PLANE_HOST: https://projects.intentsolutions.io
   PLANE_WORKSPACE: internal
   PLANE_PROJECT_ID: ${{ secrets.PLANE_PROJECT_ID }}
-  PLANE_API_KEY:    ${{ secrets.PLANE_API_KEY }}
+  PLANE_API_KEY: ${{ secrets.PLANE_API_KEY }}
   PLANE_IDENTIFIER: CCPI
 
 jobs:
@@ -30,8 +30,8 @@ jobs:
 
       - name: Create matching Plane issue
         env:
-          TITLE:  ${{ github.event.issue.title }}
-          BODY:   ${{ github.event.issue.body }}
+          TITLE: ${{ github.event.issue.title }}
+          BODY: ${{ github.event.issue.body }}
           GH_URL: ${{ github.event.issue.html_url }}
           BACKLOG: ${{ steps.state.outputs.backlog }}
         run: |
@@ -58,7 +58,7 @@ jobs:
         id: parse
         env:
           TITLE: ${{ github.event.pull_request.title }}
-          BODY:  ${{ github.event.pull_request.body }}
+          BODY: ${{ github.event.pull_request.body }}
         run: |
           set -euo pipefail
           printf '%s\n%s\n' "$TITLE" "${BODY:-}" > /tmp/haystack.txt
