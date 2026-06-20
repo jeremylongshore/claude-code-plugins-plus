@@ -235,8 +235,10 @@ test('ranged pin warns but still orders on the floor', () => {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CLI exit-code contract (end-to-end subprocess) — advisory exits 0 even when the
-// ordering is violated; --strict exits 1 on a real violation. Drives the resolved
-// V/C from this repo's disk (both 0.4.1) with K injected via --kernel-latest.
+// ordering is violated; --strict exits 1 on a real violation. The resolved V/C
+// come from this repo's disk; C is read from a baseline --json run (NOT hardcoded)
+// so a routine package.json pin bump cannot break these blocking smokes. K is
+// injected via --kernel-latest to force / clear the ordering relationship.
 // ─────────────────────────────────────────────────────────────────────────────
 function runCli(args) {
   try {
@@ -247,29 +249,46 @@ function runCli(args) {
   }
 }
 
+/** Resolve the declared kernel pin (C) from a baseline advisory --json run, so the
+ *  CLI smokes track the real package.json pin instead of a hardcoded literal. */
+function resolveDeclaredC() {
+  const baseline = JSON.parse(runCli(['--json']).stdout);
+  const c = baseline.identities?.C_ccpDeclaredKernel?.version;
+  assert.ok(c, 'baseline run must resolve C (the declared @intentsolutions/core pin)');
+  return c;
+}
+
+// A K guaranteed below any real pin → forces the C > K ordering violation
+// regardless of what C is bumped to.
+const FORCED_LOW_K = '0.0.0';
+
 test('CLI advisory: a C>K ordering violation still EXITS 0 (report-only)', () => {
-  // C resolves to 0.4.1 from package.json; K=0.1.0 forces C > K.
-  const { code, stdout } = runCli(['--kernel-latest', '0.1.0', '--json']);
+  const declaredC = resolveDeclaredC();
+  const { code, stdout } = runCli(['--kernel-latest', FORCED_LOW_K, '--json']);
   assert.equal(code, 0, 'advisory mode must exit 0 regardless of violations');
   const report = JSON.parse(stdout);
+  const expected = new RegExp(
+    `C \\(${declaredC.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\) > K \\(${FORCED_LOW_K.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\)`,
+  );
   assert.ok(
-    report.violations.some((v) => /C \(0\.4\.1\) > K \(0\.1\.0\)/.test(v)),
-    'expected the C>K ordering violation to be reported',
+    report.violations.some((v) => expected.test(v)),
+    `expected the C>K ordering violation to be reported, got: ${JSON.stringify(report.violations)}`,
   );
   assert.equal(report.advisory, true);
 });
 
 test('CLI --strict: a C>K ordering violation EXITS 1', () => {
-  const { code } = runCli(['--strict', '--kernel-latest', '0.1.0']);
+  const { code } = runCli(['--strict', '--kernel-latest', FORCED_LOW_K]);
   assert.equal(code, 1, '--strict must exit non-zero on a real ordering violation');
 });
 
 test('CLI --strict: a clean ordering (C=K) EXITS 0', () => {
-  // K=0.4.1 matches the declared pin → V=C=K → no violation.
+  // K set equal to the declared pin → V=C=K → no violation, regardless of the pin.
+  const declaredC = resolveDeclaredC();
   const { code } = runCli([
     '--strict',
     '--kernel-latest',
-    '0.4.1',
+    declaredC,
     '--kernel-published',
     new Date().toISOString(),
   ]);
