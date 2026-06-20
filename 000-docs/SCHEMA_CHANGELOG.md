@@ -79,7 +79,7 @@ contracts — are **CANONICAL in the Spec Authority Kernel's changelog**:
 [`@intentsolutions/core` → `schemas/authoring/v1/CHANGELOG.md`](https://github.com/jeremylongshore/intent-eval-core/blob/main/schemas/authoring/v1/CHANGELOG.md)
 
 When an entry below concerns a kernel-tracked field, it **cites the matching
-kernel changelog entry instead of duplicating its rationale**. CCP entries stay
+kernel changelog entry instead of duplicating its rationale**. CCPI entries stay
 scoped to what changed HERE (validator behavior, tier wiring, prose-spec text);
 the "why" for contract semantics lives in the kernel entry being cited.
 
@@ -449,7 +449,7 @@ None required. Existing skills that hardcode env reads continue to work. To opt 
 - Automatic secret-value format validation (skill-specific concern)
 - Runtime config-file watcher
 
-Cross-refs: bead `claude-la6s`, GH issue `claude-code-plugins-plus-skills#713`, Plane CCP-23. Completes the self-improving-skills series: #714 (3.4.0 progressive disclosure) → #715 (3.5.0 conditional visibility) → this (3.6.0 self-declared config).
+Cross-refs: bead `claude-la6s`, GH issue `claude-code-plugins-plus-skills#713`, Plane CCPI-23. Completes the self-improving-skills series: #714 (3.4.0 progressive disclosure) → #715 (3.5.0 conditional visibility) → this (3.6.0 self-declared config).
 
 ---
 
@@ -507,7 +507,7 @@ At 2783 skills, the catalog surfaces many skills the user can never run — they
 
 None required. Existing skills continue to validate cleanly. To opt a skill in, add one or more of the four fields to its frontmatter.
 
-Cross-refs: bead `claude-22cg`, GH issue `claude-code-plugins-plus-skills#712`, Plane CCP-22. Part of the self-improving-skills series — schema 3.4.0 progressive disclosure preceded this (PR #714); 3.6.0 self-declared env vars (#713) follows.
+Cross-refs: bead `claude-22cg`, GH issue `claude-code-plugins-plus-skills#712`, Plane CCPI-22. Part of the self-improving-skills series — schema 3.4.0 progressive disclosure preceded this (PR #714); 3.6.0 self-declared env vars (#713) follows.
 
 ---
 
@@ -545,7 +545,7 @@ At 2770 skills (and growing toward 4000+ per the route-count budget) the existin
 
 None required. Existing build invocations (`node marketplace/scripts/discover-skills.mjs` with no args) continue to produce `skills-catalog.json` exactly as before, plus the new `skills-index.json` alongside.
 
-Cross-refs: bead `claude-nwdy`, GH issue `claude-code-plugins-plus-skills#711`, Plane CCP-21. Followed by the conditional-visibility (#712) and self-declared-env (#713) issues in the same schema 3.4.0 series.
+Cross-refs: bead `claude-nwdy`, GH issue `claude-code-plugins-plus-skills#711`, Plane CCPI-21. Followed by the conditional-visibility (#712) and self-declared-env (#713) issues in the same schema 3.4.0 series.
 
 ---
 

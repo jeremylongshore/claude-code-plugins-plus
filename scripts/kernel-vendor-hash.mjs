@@ -4,23 +4,23 @@
  *
  * Implements the V ≤ C ≤ K ordering invariant + bounded-staleness check from
  * plan 033 § 14.15 (intent-eval-lab/000-docs/033-PP-PLAN-skill-refiner-sak-amendment-v7).
- * Spec doc co-located in CCP: 000-docs/<NNN>-DR-STND-kernel-vendor-version-coupling.md.
+ * Spec doc co-located in CCPI: 000-docs/<NNN>-DR-STND-kernel-vendor-version-coupling.md.
  *
  * THE THREE VERSION IDENTITIES (§ 14.15.1)
  * ----------------------------------------
- *   (V) Vendored snapshot   — the kernel schema version CCP has CACHED. CCP does
+ *   (V) Vendored snapshot   — the kernel schema version CCPI has CACHED. CCPI does
  *                             NOT yet maintain a .kernel-vendor/authoring/v1/index.json
  *                             snapshot; today it "vendors" the kernel by pinning the
  *                             @intentsolutions/core PACKAGE EXACTLY in package.json and
  *                             reading schemas out of node_modules. V is therefore the
  *                             INSTALLED kernel package version (the realised pin). When
- *                             CCP next materialises a .kernel-vendor/ snapshot (spec
+ *                             CCPI next materialises a .kernel-vendor/ snapshot (spec
  *                             § "Required snapshot shape"), V reads from that index.json's
  *                             $schemaVersion instead. Either source resolves to a semver.
- *   (C) CCP-declared kernel — the kernel version CCP DECLARES it consumes. Lives in
+ *   (C) CCPI-declared kernel — the kernel version CCPI DECLARES it consumes. Lives in
  *                             package.json `dependencies["@intentsolutions/core"]` (the
  *                             exact pin) and is mirrored by KERNEL_PIN in
- *                             scripts/kernel-shadow-validation.mjs. (CCP's OWN validator
+ *                             scripts/kernel-shadow-validation.mjs. (CCPI's OWN validator
  *                             schema version — SCHEMA_VERSION in validate-skills-schema.py
  *                             — is a DIFFERENT axis and is reported for context, not
  *                             ordered: it versions the prose-spec encoding, not the kernel.)
@@ -32,11 +32,11 @@
  *
  * THE ORDERING INVARIANT (§ 14.15.1 / § 14.15.2)
  * ----------------------------------------------
- *   V ≤ C ≤ K   (semver comparison; vendored ≤ CCP-declared ≤ kernel-latest)
+ *   V ≤ C ≤ K   (semver comparison; vendored ≤ CCPI-declared ≤ kernel-latest)
  *
- *   - V ≤ C : the cached snapshot must never be AHEAD of what CCP declares it
+ *   - V ≤ C : the cached snapshot must never be AHEAD of what CCPI declares it
  *             consumes (you cannot validate against a schema newer than your pin).
- *   - C ≤ K : CCP's declared pin must never be AHEAD of the latest published
+ *   - C ≤ K : CCPI's declared pin must never be AHEAD of the latest published
  *             kernel (you cannot pin a version that does not exist yet).
  *   Equality across all three (V = C = K) is the steady state.
  *
@@ -51,7 +51,7 @@
  *
  * SOAK DISCIPLINE — ADVISORY BY DEFAULT (CRITICAL)
  * ------------------------------------------------
- *   The CCP kernel pin is DELIBERATELY FROZEN at 0.4.1 during the DR-049 shadow
+ *   The CCPI kernel pin is DELIBERATELY FROZEN at 0.4.1 during the DR-049 shadow
  *   soak (matures 2026-06-18). This check is ORTHOGONAL to the advisory→blocking
  *   authority flip — it polices VERSION ORDERING + STALENESS, never validator
  *   authority. It must NOT, by existing or being added, change any validator's
@@ -68,7 +68,7 @@
  *   Every input is optional. A missing kernel repo, missing vendored snapshot, or
  *   missing package pin produces a LOUD WARNING and a SKIPPED comparison — never a
  *   crash and (default) never a non-zero exit. The whole point is that this lands
- *   BEFORE CCP materialises a .kernel-vendor/ snapshot and tolerates its absence.
+ *   BEFORE CCPI materialises a .kernel-vendor/ snapshot and tolerates its absence.
  *
  * USAGE
  * -----
@@ -99,7 +99,7 @@ const KERNEL_REPO_PKG = resolve(
   'package.json',
 );
 
-// V source #1 (preferred once it exists): the CCP-side vendored snapshot index.
+// V source #1 (preferred once it exists): the CCPI-side vendored snapshot index.
 const VENDOR_INDEX = join(REPO_ROOT, '.kernel-vendor', 'authoring', 'v1', 'index.json');
 // V source #2 (current reality): the installed kernel package in node_modules.
 const INSTALLED_KERNEL_PKG = join(
@@ -175,7 +175,7 @@ function resolveVendored() {
   return { version: null, source: null };
 }
 
-/** Resolve C — the kernel version CCP DECLARES it consumes (the exact package.json
+/** Resolve C — the kernel version CCPI DECLARES it consumes (the exact package.json
  *  pin). Strips a leading ^/~/= since the pin is meant to be exact, but reports if
  *  a range operator was present (a soft warning, not a failure). */
 function resolveDeclared() {
@@ -237,7 +237,7 @@ function main() {
   const vendored = resolveVendored();
   const declared = resolveDeclared();
   const kernel = resolveKernelLatest(args);
-  // CCP's own validator schema version — reported for context, NOT part of V≤C≤K.
+  // CCPI's own validator schema version — reported for context, NOT part of V≤C≤K.
   const ccpSchemaVersion = readCcpSchemaVersion();
 
   const V = vendored.version;
@@ -254,7 +254,7 @@ function main() {
   }
   if (!C) {
     warnings.push(
-      'C (CCP-declared kernel) UNRESOLVED: package.json has no @intentsolutions/core dependency. ' +
+      'C (CCPI-declared kernel) UNRESOLVED: package.json has no @intentsolutions/core dependency. ' +
         'V≤C and C≤K checks SKIPPED.',
     );
   } else if (declared.ranged) {
@@ -273,12 +273,12 @@ function main() {
   // --- ordering invariant V ≤ C ≤ K ------------------------------------------
   if (V && C && semverCompare(V, C) > 0) {
     violations.push(
-      `ORDERING: V (${V}) > C (${C}) — vendored snapshot is AHEAD of the CCP-declared pin.`,
+      `ORDERING: V (${V}) > C (${C}) — vendored snapshot is AHEAD of the CCPI-declared pin.`,
     );
   }
   if (C && K && semverCompare(C, K) > 0) {
     violations.push(
-      `ORDERING: C (${C}) > K (${K}) — CCP pin is AHEAD of the latest published kernel.`,
+      `ORDERING: C (${C}) > K (${K}) — CCPI pin is AHEAD of the latest published kernel.`,
     );
   }
 
@@ -368,13 +368,13 @@ function printHuman(r) {
     `  V vendored snapshot     : ${r.identities.V_vendored.version ?? '(unresolved)'} ` +
       `${r.identities.V_vendored.source ? `[${r.identities.V_vendored.source}]` : ''}`,
   );
-  line(`  C CCP-declared kernel   : ${r.identities.C_ccpDeclaredKernel.version ?? '(unresolved)'}`);
+  line(`  C CCPI-declared kernel   : ${r.identities.C_ccpDeclaredKernel.version ?? '(unresolved)'}`);
   line(
     `  K kernel latest         : ${r.identities.K_kernelLatest.version ?? '(unresolved)'} ` +
       `${r.identities.K_kernelLatest.publishedAgeDays != null ? `(${r.identities.K_kernelLatest.publishedAgeDays}d old)` : ''}`,
   );
   line(
-    `  CCP SCHEMA_VERSION      : ${r.identities.ccpSchemaVersion.version ?? '(unknown)'} (context only)`,
+    `  CCPI SCHEMA_VERSION      : ${r.identities.ccpSchemaVersion.version ?? '(unknown)'} (context only)`,
   );
   line(`  invariant               : V <= C <= K`);
   line('');

@@ -8,13 +8,13 @@ name: Kernel Vendor Version Coupling (advisory)
 #     (V) vendored snapshot version   — .kernel-vendor/authoring/v1/index.json
 #                                        $schemaVersion, OR (today) the installed
 #                                        @intentsolutions/core pin in node_modules.
-#     (C) CCP-declared kernel          — the exact package.json pin.
+#     (C) CCPI-declared kernel          — the exact package.json pin.
 #     (K) kernel latest published      — npm @intentsolutions/core / the sibling repo.
 #   The invariant: V <= C <= K. Plus bounded staleness: the vendored snapshot may
 #   lag the kernel latest by <= 7 calendar days; beyond that, staleness is REPORTED.
 #
 # SOAK DISCIPLINE — INTENTIONALLY NON-AUTHORITATIVE
-#   The CCP kernel pin is FROZEN at 0.4.1 during the DR-049 shadow soak (matures
+#   The CCPI kernel pin is FROZEN at 0.4.1 during the DR-049 shadow soak (matures
 #   2026-06-18). This gate is ORTHOGONAL to the advisory->blocking authority flip:
 #   it polices VERSION ORDERING + STALENESS only and must NEVER change validator
 #   authority or pressure a pin bump during the soak. Therefore:
@@ -40,7 +40,7 @@ on:
       - '.github/workflows/kernel-vendor-hash.yml'
   schedule:
     # Daily staleness sweep — catches a kernel release that ages past the 7-day
-    # bound even when no CCP PR touches the pin. Advisory: reports, never blocks.
+    # bound even when no CCPI PR touches the pin. Advisory: reports, never blocks.
     - cron: '17 7 * * *'
 
 # Read-only — the advisory check never needs write scope. (The deferred auto-bump

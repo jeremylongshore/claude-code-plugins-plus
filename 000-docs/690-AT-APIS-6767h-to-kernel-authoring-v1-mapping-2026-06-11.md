@@ -15,7 +15,7 @@ under `schemas/authoring/v1/`. This documents where prose ↔ machine agree, and
 the small set of **intentional divergences** the kernel-shadow validator
 (`scripts/kernel-shadow-validation.mjs`) surfaces on the live corpus.
 
-> **Scope note (cutover step 1).** This is the first artifact of the CCP consumer
+> **Scope note (cutover step 1).** This is the first artifact of the CCPI consumer
 > cutover to the Spec Authority Kernel (SSoT). It is **documentation only** —
 > nothing in this doc changes the existing validator
 > (`scripts/validate-skills-schema.py`) or the required CI gate

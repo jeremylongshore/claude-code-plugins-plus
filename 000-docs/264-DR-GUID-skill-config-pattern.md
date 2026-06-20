@@ -144,6 +144,6 @@ For a skill that already uses `requires_env` (schema 3.5.0), adding the matching
 
 - Bead `claude-la6s`
 - GH issue `claude-code-plugins-plus-skills#713`
-- Plane CCP-23
+- Plane CCPI-23
 - Pairs with schema 3.5.0 (`requires_env` / `requires_tools` visibility gating in #712 / claude-22cg)
 - Part of the self-improving-skills series (`claude-nwdy` progressive disclosure + `claude-22cg` conditional visibility + this one)

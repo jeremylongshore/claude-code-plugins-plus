@@ -17,7 +17,7 @@ The mechanic was reproducible: a contributor opens a PR from a fork. CI runs. Th
 
 The wild ecosystem (the umbrella name for the Wild + IRSB constellation of plugins) ships its Gemini PR review via a shared workflow template. Every plugin repo inherits the same `gemini-review.yml` file, and every plugin repo points at the same shared GCP service account via Workload Identity Federation. It is the kind of design that pays off when it works — one fix, fleet-wide — and burns silently when it doesn't.
 
-The CCP marketplace repo (`claude-code-plugins-plus-skills`) inherited that template back in December 2025. Maintainer PRs got Gemini reviews. Community PRs from external forks got nothing. Five contributor PRs accumulated:
+The CCPI marketplace repo (`claude-code-plugins-plus-skills`) inherited that template back in December 2025. Maintainer PRs got Gemini reviews. Community PRs from external forks got nothing. Five contributor PRs accumulated:
 
 | PR | Author | Age | Gemini output |
 |---|---|---|---|
@@ -247,7 +247,7 @@ These are not novel ideas. They are obvious in retrospect, expensive to write in
 
 ## Also shipped
 
-**Frontmatter cleanup campaign — Phase 1 (PR #605).** The CCP marketplace had 182 frontmatter validation errors blocking `ccpi validate --strict`. Phase 1 was 5 trivial fixes — invalid `category` values on shipwright agents and one description over the 80-character limit. Merged. Phase 2A followed in two batches: PR #606 fixed the 12 fullstack-starter-pack agents missing `capabilities`, and PR #607 fixed 11 code-cleanup agents with the same issue. 23 agents cleared, 159 remaining. The campaign is tracked under issue #604 with phased rollout because most of the 159 are external contributor agents that need the contributor's approval to amend.
+**Frontmatter cleanup campaign — Phase 1 (PR #605).** The CCPI marketplace had 182 frontmatter validation errors blocking `ccpi validate --strict`. Phase 1 was 5 trivial fixes — invalid `category` values on shipwright agents and one description over the 80-character limit. Merged. Phase 2A followed in two batches: PR #606 fixed the 12 fullstack-starter-pack agents missing `capabilities`, and PR #607 fixed 11 code-cleanup agents with the same issue. 23 agents cleared, 159 remaining. The campaign is tracked under issue #604 with phased rollout because most of the 159 are external contributor agents that need the contributor's approval to amend.
 
 **`claude-code-slack-channel` v0.9.0 release.** Shipped with the lazy `allowFrom` snapshot diff design for `pairing.accepted` audit events. The skill runs outside the server process (no IPC channel exists), so the choice was between `fs.watch`, a new IPC mechanism, or diffing snapshots in the existing `getAccess()` hot path. Snapshot diff won — zero new infrastructure, zero new failure modes, and the diff cost is amortized over the existing read path. PR #150 closed the audit EventKind coverage gap from 18/19 to 19/19. After-action report at `000-docs/v0.9.0-release-aar.md`.
 
@@ -296,5 +296,5 @@ The contributors whose PRs sat for forty days deserved better than a green dashb
 ## Related posts
 
 - [Four Releases in One Day: How the claude-code-slack-channel Security Sprint Actually Shipped](/blog/ccsc-five-releases-one-day-security-sprint/) — the sibling repo whose workflow header reversed today's hypothesis.
-- [Four Primitives, Three Reviews: How a Contributor PR Reshaped a Roadmap](/blog/collaboratively-shaped-roadmap/) — earlier story on the CCP contributor pipeline this fix unblocked.
+- [Four Primitives, Three Reviews: How a Contributor PR Reshaped a Roadmap](/blog/collaboratively-shaped-roadmap/) — earlier story on the CCPI contributor pipeline this fix unblocked.
 - [AI Code Review Blind Test: Where 5 Bots Shine](/blog/ai-code-review-without-context-blind-test/) — what Gemini actually contributes once it's wired up correctly.

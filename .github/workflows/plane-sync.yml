@@ -11,7 +11,7 @@ env:
   PLANE_WORKSPACE: internal
   PLANE_PROJECT_ID: ${{ secrets.PLANE_PROJECT_ID }}
   PLANE_API_KEY:    ${{ secrets.PLANE_API_KEY }}
-  PLANE_IDENTIFIER: CCP
+  PLANE_IDENTIFIER: CCPI
 
 jobs:
   gh-issue-to-plane:
