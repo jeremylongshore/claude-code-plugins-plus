@@ -22,6 +22,13 @@ tags:
 - databricks-reference
 compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
+
+> [!WARNING]
+> **DEPRECATED — to be removed in `databricks-pack@2.0.0`.**
+>
+> This v1 skill is being **cut** in the v2 rebuild — no direct replacement. Architecture doc, not a skill — moves to shared `references/`.
+> See [the pack README → Migration: v1 → v2](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/blob/main/plugins/saas-packs/databricks-pack/README.md#migration-v1--v2) for the full map and rationale.
+
 # Databricks Reference Architecture
 
 ## Overview

@@ -5847,8 +5847,8 @@
     {
       "name": "databricks-pack",
       "source": "./plugins/saas-packs/databricks-pack",
-      "description": "Complete Databricks integration skill pack with 24 skills covering Delta Lake, MLflow, notebooks, clusters, and data engineering workflows. Flagship tier vendor pack.",
-      "version": "1.0.0",
+      "description": "DEPRECATED (v1) — these 24 documentation skills are removed in v2.0.0, which rebuilds the pack as 5 live-detection skills + a shared databricks-workspace-mcp server. See the README migration map before upgrading.",
+      "version": "1.1.0",
       "category": "saas-packs",
       "keywords": [
         "databricks",

@@ -2,6 +2,14 @@
 
 > 24 production-ready skills for the Databricks Lakehouse Platform — Unity Catalog, Delta Lake, MLflow, Spark SQL, Asset Bundles, and the full REST API.
 
+> [!WARNING]
+> **This pack is being rebuilt — `v1.x` is deprecated.** Every v1 skill below carries a
+> deprecation banner and will be **removed in `databricks-pack@2.0.0`**, which replaces the
+> 24 documentation-style skills with **5 live-detection skills + a shared
+> `databricks-workspace-mcp` server** that runs against your own workspace. If you have any
+> `databricks-*` skill in your `CLAUDE.md`, read **[Migration: v1 → v2](#migration-v1--v2)**
+> before upgrading. The v2 rebuild ships on the `databricks-pack` slug (no rename).
+
 ## Installation
 
 ```bash
@@ -93,6 +101,42 @@ The two authenticate independently. Losing access to one does not disable the ot
 Full scope-boundary rationale — including the 8 → 6 endpoint cut and the auth-flow decisions — is in [`000-docs/013-AT-ADEC-epic1-mcp-scope-adjustment.md`](000-docs/013-AT-ADEC-epic1-mcp-scope-adjustment.md). Reference document for any "why is this skill not pulling X?" question.
 
 Thanks to [@Gingiris-1031](https://github.com/Gingiris-1031) ([#795](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/795)) for surfacing the isolation-story framing that made this section necessary.
+
+## Migration: v1 → v2
+
+`databricks-pack@2.0.0` is a ground-up rebuild. The 24 v1 skills described Databricks ops;
+the 5 v2 skills **run** them — live detection against your own workspace via a shared
+`databricks-workspace-mcp` server (control plane) composed with the Databricks managed SQL
+MCP (`system.*` reads). Rationale: [`000-docs/007-AT-ADEC-databricks-v2-cto-decision.md`](000-docs/007-AT-ADEC-databricks-v2-cto-decision.md)
+and [`000-docs/013-AT-ADEC-epic1-mcp-scope-adjustment.md`](000-docs/013-AT-ADEC-epic1-mcp-scope-adjustment.md).
+
+**Timeline:** `1.1.0` (this release — deprecation banners) → `2.0.0` (5 skills + MCP, v1
+skills removed with tombstones) → `2.1.0` (tombstones cleaned up). Users on auto-update get a
+2–4 week window on `1.1.0` to read these banners before `2.0.0` lands.
+
+### Where each v1 skill goes
+
+| v1 skill | v2 destination |
+|----------|----------------|
+| `databricks-cost-tuning` | `databricks-cost-leak-hunter` |
+| `databricks-performance-tuning` | `databricks-cost-leak-hunter` + `databricks-cluster-forensics` |
+| `databricks-incident-runbook` | `databricks-cluster-forensics` + `databricks-streaming-guardian` |
+| `databricks-observability` | `databricks-streaming-guardian` |
+| `databricks-upgrade-migration` | `databricks-cluster-forensics` (DBR-upgrade triage) |
+| `databricks-debug-bundle` · `databricks-deploy-integration` · `databricks-local-dev-loop` · `databricks-ci-integration` | `databricks-bundle-medic` |
+| `databricks-migration-deep-dive` · `databricks-multi-env-setup` · `databricks-enterprise-rbac` | `databricks-uc-migration-pilot` |
+| `databricks-security-basics` | `databricks-uc-migration-pilot` + `databricks-bundle-medic` (identity/secrets) |
+| `databricks-hello-world` · `databricks-install-auth` · `databricks-sdk-patterns` · `databricks-core-workflow-a` · `databricks-core-workflow-b` · `databricks-common-errors` · `databricks-prod-checklist` · `databricks-rate-limits` · `databricks-webhooks-events` · `databricks-reference-architecture` · `databricks-data-handling` | **Cut** — no direct replacement (setup folds into the MCP `.env.sops` + each skill's `## Prerequisites`; checklists/architecture move into v2 `references/`; error catalogs ship per-skill) |
+
+### The 5 v2 skills
+
+| v2 skill | What it does (live) |
+|----------|---------------------|
+| `databricks-cost-leak-hunter` (pilot) | `$X/month wasted` audit from your own `system.billing.usage` — idle clusters, All-Purpose-vs-Jobs, instance-pool waste, DLT tier, tag-based chargeback |
+| `databricks-cluster-forensics` | Cold-start / launch-failure / Photon / DBR-upgrade triage from cluster events |
+| `databricks-streaming-guardian` | Delta + Liquid Clustering + Structured Streaming + DLT health |
+| `databricks-uc-migration-pilot` | Unity Catalog readiness + IAM/SCIM + access tracing (HMS deadline **Sept 30, 2026**) |
+| `databricks-bundle-medic` | Asset Bundles deploy diagnostics + CMK rotation + PrivateLink audit |
 
 ## Design Records
 

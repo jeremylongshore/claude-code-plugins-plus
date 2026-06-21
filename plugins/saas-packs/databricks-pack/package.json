@@ -1,7 +1,7 @@
 {
   "name": "@intentsolutionsio/databricks-pack",
-  "version": "1.0.13",
-  "description": "Claude Code skill pack for Databricks - 24 skills covering lakehouse platform, Spark, and ML pipelines",
+  "version": "1.1.0",
+  "description": "Claude Code skill pack for Databricks - 24 skills covering lakehouse platform, Spark, and ML pipelines (v1, DEPRECATED — rebuilt as 5 live-detection skills + MCP in v2.0.0)",
   "main": "README.md",
   "type": "module",
   "files": [
