@@ -125,7 +125,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | 🔌  | [API Development](#api-development)                |      25 |
 | 💼  | [Business Tools](#business-tools)                  |      21 |
 | 👥  | [Community](#community)                            |      18 |
-| ₿   | [Crypto & Web3](#crypto--web3)                     |      27 |
+| ₿   | [Crypto & Web3](#crypto--web3)                     |      28 |
 | 💾  | [Database](#database)                              |      26 |
 | 🎨  | [Design](#design)                                  |       7 |
 | 🔧  | [DevOps & Infrastructure](#devops--infrastructure) |      36 |
@@ -297,37 +297,38 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Crypto & Web3
 
-₿ **27 plugins** · category slug: `crypto`
+₿ **28 plugins** · category slug: `crypto`
 
-| Plugin                         | Description                                                                                                                            |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `aomi`                         | Aomi for AI agents: drive natural-language EVM transactions (chat, fork-simulate, sign) and scaffold new Aomi apps from API specs.…    |
-| `arbitrage-opportunity-finder` | Find and analyze arbitrage opportunities across exchanges and DeFi protocols                                                           |
-| `blockchain-explorer-cli`      | Command-line blockchain explorer for transactions, addresses, and contracts                                                            |
-| `cross-chain-bridge-monitor`   | Monitor cross-chain bridge activity, track transfers, analyze security, and detect bridge exploits                                     |
-| `crypto-derivatives-tracker`   | Track crypto futures, options, perpetual swaps with funding rates, open interest, and derivatives market analysis                      |
-| `crypto-news-aggregator`       | Aggregate and analyze crypto news from multiple sources with sentiment analysis                                                        |
-| `crypto-portfolio-tracker`     | Professional crypto portfolio tracking with real-time prices, PnL analysis, and risk metrics                                           |
-| `crypto-signal-generator`      | Generate trading signals from technical indicators and market analysis                                                                 |
-| `crypto-tax-calculator`        | Calculate crypto taxes with FIFO/LIFO methods and generate tax reports                                                                 |
-| `defi-yield-optimizer`         | Optimize DeFi yield farming strategies across protocols with APY tracking and risk assessment                                          |
-| `dex-aggregator-router`        | Find optimal DEX routes for token swaps across multiple exchanges                                                                      |
-| `flash-loan-simulator`         | Simulate and analyze flash loan strategies including arbitrage, liquidations, and collateral swaps                                     |
-| `gas-fee-optimizer`            | Optimize transaction gas fees with timing and routing recommendations                                                                  |
-| `liquidity-pool-analyzer`      | Analyze DeFi liquidity pools for impermanent loss, APY, and optimization opportunities                                                 |
-| `market-movers-scanner`        | Scan for top market movers - gainers, losers, volume spikes, and unusual activity                                                      |
-| `market-price-tracker`         | Real-time market price tracking with multi-exchange feeds and advanced alerts                                                          |
-| `market-sentiment-analyzer`    | Analyze market sentiment from social media, news, and on-chain data                                                                    |
-| `mempool-analyzer`             | Advanced mempool analysis for MEV opportunities, pending transaction monitoring, and gas price optimization                            |
-| `nft-rarity-analyzer`          | Analyze NFT rarity scores and valuations across collections                                                                            |
-| `on-chain-analytics`           | Analyze on-chain metrics including whale movements, network activity, and holder distribution                                          |
-| `options-flow-analyzer`        | Track institutional options flow, unusual activity, and smart money movements                                                          |
-| `staking-rewards-optimizer`    | Optimize staking rewards across multiple protocols and chains                                                                          |
-| `token-launch-tracker`         | Track new token launches, detect rugpulls, and analyze contract security for early-stage crypto projects                               |
-| `trading-strategy-backtester`  | Backtest trading strategies with historical data, performance metrics, and risk analysis                                               |
-| `wallet-portfolio-tracker`     | Track crypto wallets across multiple chains with portfolio analytics and transaction history                                           |
-| `wallet-security-auditor`      | Crypto wallet security auditor for reviewing wallet implementations, key management, signing flows, and common vulnerability patterns. |
-| `whale-alert-monitor`          | Monitor large crypto transactions and whale wallet movements in real-time                                                              |
+| Plugin                         | Description                                                                                                                                |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `aomi`                         | Aomi for AI agents: drive natural-language EVM transactions (chat, fork-simulate, sign) and scaffold new Aomi apps from API specs.…        |
+| `arbitrage-opportunity-finder` | Find and analyze arbitrage opportunities across exchanges and DeFi protocols                                                               |
+| `blockchain-explorer-cli`      | Command-line blockchain explorer for transactions, addresses, and contracts                                                                |
+| `cross-chain-bridge-monitor`   | Monitor cross-chain bridge activity, track transfers, analyze security, and detect bridge exploits                                         |
+| `crypto-derivatives-tracker`   | Track crypto futures, options, perpetual swaps with funding rates, open interest, and derivatives market analysis                          |
+| `crypto-news-aggregator`       | Aggregate and analyze crypto news from multiple sources with sentiment analysis                                                            |
+| `crypto-portfolio-tracker`     | Professional crypto portfolio tracking with real-time prices, PnL analysis, and risk metrics                                               |
+| `crypto-signal-generator`      | Generate trading signals from technical indicators and market analysis                                                                     |
+| `crypto-tax-calculator`        | Calculate crypto taxes with FIFO/LIFO methods and generate tax reports                                                                     |
+| `defi-yield-optimizer`         | Optimize DeFi yield farming strategies across protocols with APY tracking and risk assessment                                              |
+| `dex-aggregator-router`        | Find optimal DEX routes for token swaps across multiple exchanges                                                                          |
+| `flash-loan-simulator`         | Simulate and analyze flash loan strategies including arbitrage, liquidations, and collateral swaps                                         |
+| `gas-fee-optimizer`            | Optimize transaction gas fees with timing and routing recommendations                                                                      |
+| `liquidity-pool-analyzer`      | Analyze DeFi liquidity pools for impermanent loss, APY, and optimization opportunities                                                     |
+| `market-movers-scanner`        | Scan for top market movers - gainers, losers, volume spikes, and unusual activity                                                          |
+| `market-price-tracker`         | Real-time market price tracking with multi-exchange feeds and advanced alerts                                                              |
+| `market-sentiment-analyzer`    | Analyze market sentiment from social media, news, and on-chain data                                                                        |
+| `mempool-analyzer`             | Advanced mempool analysis for MEV opportunities, pending transaction monitoring, and gas price optimization                                |
+| `mytradeledger-skills`         | Access and manage MyTradeLedger journaled crypto trades via the REST API — ledger entries, account balances and realized P&L, CSV export,… |
+| `nft-rarity-analyzer`          | Analyze NFT rarity scores and valuations across collections                                                                                |
+| `on-chain-analytics`           | Analyze on-chain metrics including whale movements, network activity, and holder distribution                                              |
+| `options-flow-analyzer`        | Track institutional options flow, unusual activity, and smart money movements                                                              |
+| `staking-rewards-optimizer`    | Optimize staking rewards across multiple protocols and chains                                                                              |
+| `token-launch-tracker`         | Track new token launches, detect rugpulls, and analyze contract security for early-stage crypto projects                                   |
+| `trading-strategy-backtester`  | Backtest trading strategies with historical data, performance metrics, and risk analysis                                                   |
+| `wallet-portfolio-tracker`     | Track crypto wallets across multiple chains with portfolio analytics and transaction history                                               |
+| `wallet-security-auditor`      | Crypto wallet security auditor for reviewing wallet implementations, key management, signing flows, and common vulnerability patterns.     |
+| `whale-alert-monitor`          | Monitor large crypto transactions and whale wallet movements in real-time                                                                  |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
 

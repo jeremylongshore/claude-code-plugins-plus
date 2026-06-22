@@ -1,0 +1,13 @@
+{
+  "name": "mytradeledger-skills",
+  "version": "1.0.0",
+  "description": "Access and manage MyTradeLedger journaled crypto trades via the REST API — ledger entries, account balances and realized P&L, CSV export, asset registry, and metadata.",
+  "author": {
+    "name": "trpsbill",
+    "url": "https://github.com/trpsbill"
+  },
+  "repository": "https://github.com/trpsbill/skills",
+  "homepage": "https://github.com/trpsbill/skills",
+  "license": "MIT",
+  "keywords": ["crypto", "trading", "mytradeledger", "ledger", "pnl"]
+}
