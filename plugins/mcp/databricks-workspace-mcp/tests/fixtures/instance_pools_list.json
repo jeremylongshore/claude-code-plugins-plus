@@ -1,0 +1,32 @@
+{
+  "instance_pools": [
+    {
+      "instance_pool_id": "0608-pool-idle01",
+      "instance_pool_name": "warm-prod-pool",
+      "node_type_id": "i3.2xlarge",
+      "min_idle_instances": 6,
+      "max_capacity": 50,
+      "idle_instance_autotermination_minutes": 0,
+      "stats": {
+        "used_count": 1,
+        "idle_count": 6,
+        "pending_used_count": 0,
+        "pending_idle_count": 0
+      }
+    },
+    {
+      "instance_pool_id": "0608-pool-tight2",
+      "instance_pool_name": "ml-burst-pool",
+      "node_type_id": "g5.4xlarge",
+      "min_idle_instances": 0,
+      "max_capacity": 20,
+      "idle_instance_autotermination_minutes": 15,
+      "stats": {
+        "used_count": 4,
+        "idle_count": 0,
+        "pending_used_count": 1,
+        "pending_idle_count": 0
+      }
+    }
+  ]
+}

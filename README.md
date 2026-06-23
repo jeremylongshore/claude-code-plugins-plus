@@ -130,7 +130,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | 🎨  | [Design](#design)                                  |       7 |
 | 🔧  | [DevOps & Infrastructure](#devops--infrastructure) |      36 |
 | 📚  | [Examples & Templates](#examples--templates)       |       5 |
-| 🧩  | [MCP Servers](#mcp-servers)                        |      12 |
+| 🧩  | [MCP Servers](#mcp-servers)                        |      13 |
 | 📦  | [Packages](#packages)                              |       5 |
 | ⚡  | [Performance](#performance)                        |      25 |
 | ✅  | [Productivity](#productivity)                      |      27 |
@@ -443,12 +443,13 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### MCP Servers
 
-🧩 **12 plugins** · category slug: `mcp`
+🧩 **13 plugins** · category slug: `mcp`
 
 | Plugin                        | Description                                                                                                                                |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | `ai-experiment-logger`        | Track and analyze AI experiments with a web dashboard and MCP tools                                                                        |
 | `conversational-api-debugger` | Debug REST API failures using OpenAPI specs and HTTP logs (HAR) - root cause analysis with cURL generation                                 |
+| `databricks-workspace-mcp`    | MCP server for the Databricks control plane — 8 read-only tools for cluster forensics, instance pools, DLT pipeline event logs, and Unity… |
 | `design-to-code`              | Convert Figma designs and screenshots to React/Svelte/Vue components with built-in accessibility                                           |
 | `domain-memory-agent`         | Knowledge base with TF-IDF semantic search and extractive summarization - no ML dependencies required                                      |
 | `governed-second-brain`       | Local-first governed second brain — turn your files into cited (qmd://) memory with deterministic governance and a tamper-evident,…        |

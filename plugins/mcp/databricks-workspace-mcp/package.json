@@ -1,0 +1,64 @@
+{
+  "name": "@intentsolutions/databricks-workspace-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for the Databricks control plane — cluster forensics, instance pools, DLT pipeline event logs, and Unity Catalog external locations / storage credentials. The 6 endpoint families no managed Databricks MCP exposes. Pairs with the Databricks managed SQL MCP for system.* reads.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "databricks-workspace-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE",
+    ".env.example"
+  ],
+  "scripts": {
+    "build": "tsc && node -e \"import('node:fs').then(fs=>fs.chmodSync('dist/index.js',0o755))\"",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "check": "pnpm typecheck && pnpm test",
+    "prepublishOnly": "pnpm build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "databricks",
+    "lakehouse",
+    "unity-catalog",
+    "clusters",
+    "dlt",
+    "finops",
+    "claude-code"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io",
+    "url": "https://intentsolutions.io"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/mcp/databricks-workspace-mcp"
+  },
+  "homepage": "https://tonsofskills.com/learn/databricks/",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.4.3",
+    "zod-to-json-schema": "^3.25.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.19",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.7"
+  }
+}

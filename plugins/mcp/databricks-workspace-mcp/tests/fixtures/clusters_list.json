@@ -1,0 +1,46 @@
+{
+  "clusters": [
+    {
+      "cluster_id": "0608-120000-leak001",
+      "cluster_name": "analytics-adhoc-shared",
+      "state": "RUNNING",
+      "spark_version": "14.3.x-scala2.12",
+      "node_type_id": "i3.2xlarge",
+      "driver_node_type_id": "i3.2xlarge",
+      "num_workers": 8,
+      "autotermination_minutes": 0,
+      "runtime_engine": "STANDARD",
+      "cluster_source": "UI",
+      "data_security_mode": "USER_ISOLATION",
+      "creator_user_name": "analyst@example.com",
+      "start_time": 1717843200000,
+      "custom_tags": { "team": "analytics", "env": "prod" }
+    },
+    {
+      "cluster_id": "0608-120000-job0002",
+      "cluster_name": "nightly-etl",
+      "state": "TERMINATED",
+      "spark_version": "15.4.x-scala2.12",
+      "node_type_id": "m5d.xlarge",
+      "num_workers": 4,
+      "autotermination_minutes": 0,
+      "runtime_engine": "PHOTON",
+      "cluster_source": "UI",
+      "creator_user_name": "data-eng@example.com",
+      "custom_tags": { "team": "data-eng", "env": "prod", "schedule": "nightly" }
+    },
+    {
+      "cluster_id": "0608-120000-auto003",
+      "cluster_name": "ml-training-autoscale",
+      "state": "RUNNING",
+      "spark_version": "15.4.x-scala2.12",
+      "node_type_id": "g5.4xlarge",
+      "autoscale": { "min_workers": 2, "max_workers": 20 },
+      "autotermination_minutes": 30,
+      "runtime_engine": "PHOTON",
+      "cluster_source": "API",
+      "creator_user_name": "ml-platform@example.com",
+      "custom_tags": { "team": "ml", "env": "prod" }
+    }
+  ]
+}

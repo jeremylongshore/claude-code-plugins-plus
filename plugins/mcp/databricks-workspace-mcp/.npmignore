@@ -1,0 +1,11 @@
+src/
+tests/
+.claude-plugin/
+commands/
+*.tsbuildinfo
+tsconfig.json
+vitest.config.ts
+.gitignore
+.mcp.json
+server.json
+.env

@@ -1,0 +1,22 @@
+{
+  "external_locations": [
+    {
+      "name": "bronze-landing",
+      "url": "s3://acme-lake-bronze/landing/",
+      "credential_name": "lake-ingest-role",
+      "read_only": false,
+      "owner": "data-platform@example.com",
+      "isolation_mode": "ISOLATION_MODE_ISOLATED",
+      "comment": "Raw landing zone"
+    },
+    {
+      "name": "legacy-hms-warehouse",
+      "url": "s3://acme-legacy-hive/warehouse/",
+      "credential_name": "legacy-hive-role",
+      "read_only": true,
+      "owner": "data-platform@example.com",
+      "isolation_mode": "ISOLATION_MODE_OPEN",
+      "comment": "Mounted HMS warehouse pending UC migration"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "pipeline_id": "a1b2c3d4-0000-1111-2222-333344445555",
+  "name": "bronze-ingest-dlt",
+  "state": "RUNNING",
+  "spec": {
+    "id": "a1b2c3d4-0000-1111-2222-333344445555",
+    "name": "bronze-ingest-dlt",
+    "edition": "ADVANCED",
+    "channel": "CURRENT",
+    "photon": true,
+    "serverless": true,
+    "continuous": true,
+    "development": false,
+    "clusters": [{ "label": "default", "autoscale": { "min_workers": 1, "max_workers": 5, "mode": "ENHANCED" } }]
+  },
+  "latest_updates": [
+    { "update_id": "upd-9001", "state": "RUNNING", "creation_time": "2026-06-08T12:00:00Z" }
+  ]
+}

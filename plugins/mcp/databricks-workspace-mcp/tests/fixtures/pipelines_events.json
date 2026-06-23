@@ -1,0 +1,32 @@
+{
+  "events": [
+    {
+      "id": "evt-7001",
+      "timestamp": "2026-06-08T12:05:00Z",
+      "level": "INFO",
+      "event_type": "flow_progress",
+      "message": "Flow 'bronze' completed.",
+      "details": {
+        "flow_progress": {
+          "status": "COMPLETED",
+          "metrics": { "num_output_rows": 184320, "backlog_bytes": 0 },
+          "data_quality": {
+            "dropped_records": 12,
+            "expectations": [
+              { "name": "valid_id", "dataset": "bronze", "passed_records": 184308, "failed_records": 12 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "evt-7002",
+      "timestamp": "2026-06-08T12:04:30Z",
+      "level": "WARN",
+      "event_type": "flow_progress",
+      "message": "Backpressure detected on flow 'silver'.",
+      "details": { "flow_progress": { "status": "RUNNING", "metrics": { "backlog_bytes": 734003200 } } }
+    }
+  ],
+  "next_page_token": "Cller==token"
+}

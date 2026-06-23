@@ -1,0 +1,35 @@
+{
+  "events": [
+    {
+      "cluster_id": "0608-120000-leak001",
+      "timestamp": 1717843200000,
+      "type": "CREATING",
+      "details": { "reason": { "code": "USER_REQUEST" } }
+    },
+    {
+      "cluster_id": "0608-120000-leak001",
+      "timestamp": 1717843260000,
+      "type": "STARTING",
+      "details": {}
+    },
+    {
+      "cluster_id": "0608-120000-leak001",
+      "timestamp": 1717843620000,
+      "type": "INIT_SCRIPTS_STARTED",
+      "details": {}
+    },
+    {
+      "cluster_id": "0608-120000-leak001",
+      "timestamp": 1717844040000,
+      "type": "INIT_SCRIPTS_FINISHED",
+      "details": { "init_scripts_execution_duration_seconds": 420 }
+    },
+    {
+      "cluster_id": "0608-120000-leak001",
+      "timestamp": 1717844100000,
+      "type": "RUNNING",
+      "details": { "current_num_workers": 8, "target_num_workers": 8 }
+    }
+  ],
+  "total_count": 5
+}
