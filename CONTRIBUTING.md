@@ -171,13 +171,13 @@ Run `./scripts/quick-test.sh` locally to catch most issues before pushing.
 
 ### What happens when you open the PR
 
-1. GitHub runs all 15+ validators (`validate-plugins.yml`).
-2. Gemini 2.5 Pro reviews your code and posts inline comments within ~2–5 minutes.
-3. A maintainer gets a Slack ping — we'll follow up if Gemini missed something or was wrong.
-4. Push fixes; both the validators and Gemini re-run on each push.
-5. Once validators pass and Gemini has no `[Critical]` or `[High]` findings, a maintainer reviews and merges.
+1. GitHub runs all 15+ validators (`validate-plugins.yml`). **These required checks are the gate** — your PR is mergeable once they're green.
+2. An AI reviewer (**Greptile**) posts inline comments when it's active on the PR. Treat its findings like any review: address them, or reply if you think it got something wrong and a human will weigh in.
+3. A maintainer gets a Slack ping and follows up.
+4. Push fixes; the required checks re-run on each push.
+5. Once the required checks pass and any review threads are resolved, a maintainer reviews and merges.
 
-The Gemini reviewer reads from a project-specific prompt at `.gemini/commands/gemini-review.toml` — it knows the catalog system, plugin structure, SKILL.md schema, severity classifications, and anti-patterns. If you think it got something wrong, just reply to the review and a human will weigh in.
+The deterministic CI checks — not the AI reviewer — are the authoritative gate; the AI review is advisory.
 
 ## PR Process
 
