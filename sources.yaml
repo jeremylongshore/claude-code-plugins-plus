@@ -4,7 +4,8 @@
 # This allows plugin authors to maintain their plugins in their own repos
 # while we automatically mirror updates to our marketplace.
 #
-# Sync runs: Daily at midnight UTC via GitHub Actions
+# Sync runs: Weekly, Mondays 06:00 UTC via GitHub Actions (plus on-demand
+#            workflow_dispatch and repository_dispatch: external-plugin-sync)
 # Workflow: .github/workflows/sync-external.yml
 # Script: scripts/sync-external.mjs
 
@@ -731,6 +732,36 @@ sources:
       - '.mcp.json'
       - 'skills/**'
       - 'plugin-runtime/**'
+      - 'README.md'
+      - 'LICENSE'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
+  # ============================================================
+  # beads-dolt (Jeremy Longshore / Intent Solutions)
+  # https://github.com/jeremylongshore/beads-dolt
+  # ============================================================
+
+  - name: beads-dolt
+    description: Dolt/DoltHub-aware upgrade to the beads (bd) task tracker — a skill that surfaces visibility/no-remote root causes and the remote-add + push fix, five expert agents grounded in bd+Dolt internals, and a wired dolt-mcp server for SQL access to the bead graph.
+    repo: jeremylongshore/beads-dolt
+    source_path: .
+    target_path: plugins/mcp/beads-dolt
+    author:
+      name: Jeremy Longshore
+      github: jeremylongshore
+      email: jeremy@intentsolutions.io
+    license: Apache-2.0
+    category: mcp
+    verified: true
+    include:
+      - '.claude-plugin/**'
+      - '.mcp.json'
+      - 'skills/**'
+      - 'agents/**'
+      - 'scripts/**'
       - 'README.md'
       - 'LICENSE'
     exclude:
