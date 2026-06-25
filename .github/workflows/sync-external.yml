@@ -32,6 +32,15 @@ permissions:
   contents: write
   pull-requests: write
 
+# Serialize sync runs so a weekly cron + a repository_dispatch (or two
+# dispatches) never execute concurrently. Combined with the unique per-run
+# branch in the Create-PR step, this guarantees no run can clobber another's
+# in-flight work. Do NOT cancel-in-progress: a half-finished sync should
+# complete and open its PR rather than be killed mid-write.
+concurrency:
+  group: sync-external
+  cancel-in-progress: false
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -107,7 +116,13 @@ jobs:
         # creates is reviewable, so allowing lockfile updates is safe.
         run: |
           pnpm install --no-frozen-lockfile
-          node scripts/sync-marketplace.cjs
+          # Full derivation, not just the CLI catalog: `pnpm run sync-marketplace`
+          # also runs generate-plugin-package-jsons.mjs (a freshly-synced plugin
+          # needs its package.json for the catalog-invariant gate) and
+          # generate-readme-toc.mjs (the README AUTO-TOC must include the new
+          # entry or the "Verify README TOC" gate fails). Running only
+          # sync-marketplace.cjs skipped both and red-failed every new plugin.
+          pnpm run sync-marketplace
 
       - name: Create Pull Request
         if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true
@@ -123,14 +138,20 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          BRANCH="sync/external-plugins"
+          # Unique per-run branch. Fixes three bugs at once:
+          #  - no force-push of a SHARED branch, so a concurrent/later sync run
+          #    can't clobber an in-flight PR (the bug that wiped the beads-dolt PR);
+          #  - the `automation/` prefix makes auto-bump-on-pr.yml skip the PR, so
+          #    synced plugin versions no longer drift vs their catalog entry;
+          #  - a unique name can never match an OLD merged PR, so the gh-pr-view
+          #    guard below reliably opens a fresh PR instead of stranding the sync.
+          BRANCH="automation/sync-external-${{ github.run_id }}"
 
           # Configure committer identity for the automated commit
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Branch from current main, force-push (idempotent across re-runs)
-          git checkout -B "$BRANCH"
+          git switch -c "$BRANCH"
 
           # Stage everything the sync wrote, then commit WITHOUT running pre-commit
           # hooks (--no-verify). The auto-PR runs through normal CI on the PR side.
@@ -140,10 +161,11 @@ jobs:
           Automated sync from external plugin sources.
           See sources.yaml for configured sources."
 
-          git push --force-with-lease origin "$BRANCH"
+          git push origin "$BRANCH"
 
-          # Create the PR if one doesn't exist on this branch yet; otherwise the
-          # branch update above is enough — the existing PR shows the new commits.
+          # Open the PR. The per-run branch is unique, so this guard never matches
+          # a prior PR (the old reuse bug matched an already-MERGED PR on the
+          # shared branch and silently skipped creation, stranding the sync).
           if ! gh pr view "$BRANCH" --json number >/dev/null 2>&1; then
             gh pr create \
               --title "🔄 Sync external plugins" \

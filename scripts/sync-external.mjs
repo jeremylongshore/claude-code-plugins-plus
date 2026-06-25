@@ -148,13 +148,19 @@ function walkFiles(baseDir, relPrefix = '') {
       out.push(...walkFiles(abs, rel));
     } else if (ent.isFile()) {
       let content;
+      let mode;
       try {
-        content = fs.readFileSync(abs, 'utf8');
+        // Read as a Buffer (not utf8) so exact bytes survive the round-trip —
+        // utf8 re-encoding silently corrupts binaries. Capture the upstream
+        // file mode so the executable bit can be restored on write (the
+        // "Check plugin structure" gate requires scripts/*.sh to stay +x).
+        content = fs.readFileSync(abs);
+        mode = fs.statSync(abs).mode;
       } catch {
-        // Binary or unreadable; skip
+        // Unreadable; skip
         continue;
       }
-      out.push({ path: rel, content });
+      out.push({ path: rel, content, mode });
     }
   }
   return out;
@@ -441,7 +447,10 @@ function ensureCatalogEntry(source) {
   const before = text.slice(0, closeMatch.index);
   const lastEntryClose = closeMatch[1];
   const arrayClose = closeMatch[2];
-  const updated = `${before}${lastEntryClose.replace(/}(\s*)$/, '},$1')}${entryJson}${arrayClose}`;
+  // Insert a newline between the prior entry's `},` and the new entry so the
+  // seam is `},\n    {` (matching the file's canonical formatting) instead of
+  // jamming them onto one line as `},    {`, which the catalog-format gate flags.
+  const updated = `${before}${lastEntryClose.replace(/}(\s*)$/, '},')}\n${entryJson}${arrayClose}`;
 
   fs.writeFileSync(CATALOG_FILE, updated);
   log(`   📋 Added catalog entry: ${source.name}`, colors.green);
@@ -491,8 +500,11 @@ async function syncSource(source, config) {
       let reason = 'new';
 
       if (fs.existsSync(targetPath)) {
-        const existingContent = fs.readFileSync(targetPath, 'utf8');
-        if (existingContent !== file.content) {
+        // Buffer-to-Buffer compare. file.content is now a Buffer; comparing it
+        // against a utf8 string would ALWAYS be unequal, marking every synced
+        // file "modified" on every run (churning all sources + bloating diffs).
+        const existingContent = fs.readFileSync(targetPath);
+        if (!existingContent.equals(file.content)) {
           needsUpdate = true;
           reason = 'modified';
         }
@@ -508,6 +520,10 @@ async function syncSource(source, config) {
             fs.mkdirSync(targetDir, { recursive: true });
           }
           fs.writeFileSync(targetPath, file.content);
+          // Restore the upstream file mode (rwx bits) so executable scripts
+          // stay executable — git records 100755 and the structure gate passes.
+          // A non-executable upstream file (e.g. 0644 README) is preserved as-is.
+          if (typeof file.mode === 'number') fs.chmodSync(targetPath, file.mode & 0o777);
           log(`   ✅ ${reason === 'new' ? 'Created' : 'Updated'}: ${file.path}`, colors.green);
         }
         changes.push({ path: file.path, action: reason });
