@@ -47,6 +47,10 @@ const options = {
   force: args.includes('--force'),
   dryRun: args.includes('--dry-run'),
   verbose: args.includes('--verbose'),
+  // --strict: exit non-zero if ANY source errored, so a partial sync is never
+  // committed + auto-PR'd as if it were a clean full sync (the workflow runs
+  // with --strict and routes a failing run to a human).
+  strict: args.includes('--strict'),
   source: args.find((a) => a.startsWith('--source='))?.split('=')[1] || null,
 };
 
@@ -485,6 +489,18 @@ async function syncSource(source, config) {
     }
     logVerbose(`Discovered ${files.length} files in source`);
 
+    // Warn loudly on unsupported glob syntax: matchesPattern does NOT implement
+    // bash extglob ( !( ?( +( @( ) or brace expansion, so such a pattern
+    // silently matches nothing — a dead include/exclude rule. Flag it rather
+    // than let it no-op invisibly.
+    for (const pat of [...(source.include || []), ...(source.exclude || [])]) {
+      if (/[!?+@]\(|\{[^}]*,[^}]*\}/.test(pat)) {
+        log(
+          `   ⚠️  Unsupported glob (extglob/brace) — rule is a silent no-op: "${pat}"`,
+          colors.red,
+        );
+      }
+    }
     const filteredFiles = files.filter((file) => {
       const included = matchesPattern(file.path, source.include);
       const excluded = matchesPattern(file.path, source.exclude);
@@ -507,6 +523,14 @@ async function syncSource(source, config) {
         if (!existingContent.equals(file.content)) {
           needsUpdate = true;
           reason = 'modified';
+        } else if (
+          typeof file.mode === 'number' &&
+          (fs.statSync(targetPath).mode & 0o111) !== (file.mode & 0o111)
+        ) {
+          // Same content, different executable bit — self-heal a stale mode
+          // (e.g. a script previously synced 0644 while upstream is now 0755).
+          needsUpdate = true;
+          reason = 'mode';
         }
       } else {
         needsUpdate = true;
@@ -520,10 +544,13 @@ async function syncSource(source, config) {
             fs.mkdirSync(targetDir, { recursive: true });
           }
           fs.writeFileSync(targetPath, file.content);
-          // Restore the upstream file mode (rwx bits) so executable scripts
-          // stay executable — git records 100755 and the structure gate passes.
-          // A non-executable upstream file (e.g. 0644 README) is preserved as-is.
-          if (typeof file.mode === 'number') fs.chmodSync(targetPath, file.mode & 0o777);
+          // Collapse to git's two canonical modes (0755 / 0644) keyed on the
+          // upstream executable bit, so the result is stable across the runner's
+          // and a dev's umask: executable scripts stay 100755 (the structure
+          // gate requires it); everything else is 0644.
+          if (typeof file.mode === 'number') {
+            fs.chmodSync(targetPath, file.mode & 0o111 ? 0o755 : 0o644);
+          }
           log(`   ✅ ${reason === 'new' ? 'Created' : 'Updated'}: ${file.path}`, colors.green);
         }
         changes.push({ path: file.path, action: reason });
@@ -532,8 +559,38 @@ async function syncSource(source, config) {
       }
     }
 
+    // Owned-file manifest: the exact set of upstream-matched files this sync
+    // owns under target_path (NOT the synthesized README/plugin.json, which the
+    // engine generates separately). Drives the orphan prune on the next run.
+    const ownedFiles = filteredFiles.map((file) => file.path).sort();
+    const sourceJsonPath = path.join(ROOT_DIR, source.target_path, '.source.json');
+
+    // Orphan prune: delete files a PRIOR sync owned but upstream has since
+    // removed/renamed. Driven off the persisted manifest so the engine only
+    // ever deletes files IT previously authored — immune to derived-file or
+    // hand-added collisions. Skipped on the first run after this change, when
+    // the prior .source.json has no files[] manifest.
+    if (!options.dryRun && fs.existsSync(sourceJsonPath)) {
+      try {
+        const prior = JSON.parse(fs.readFileSync(sourceJsonPath, 'utf8'));
+        if (Array.isArray(prior.files)) {
+          const ownedSet = new Set(ownedFiles);
+          for (const rel of prior.files) {
+            if (ownedSet.has(rel)) continue;
+            const orphan = path.join(ROOT_DIR, source.target_path, rel);
+            if (fs.existsSync(orphan)) {
+              fs.rmSync(orphan);
+              log(`   🗑️  Deleted (upstream removed): ${rel}`, colors.yellow);
+              changes.push({ path: rel, action: 'deleted' });
+            }
+          }
+        }
+      } catch {
+        // Unreadable prior manifest — skip the prune rather than guess.
+      }
+    }
+
     if (changes.length > 0 && !options.dryRun) {
-      const sourceJsonPath = path.join(ROOT_DIR, source.target_path, '.source.json');
       const sourceJson = {
         synced_from: {
           repo: source.repo,
@@ -543,10 +600,30 @@ async function syncSource(source, config) {
         last_sync: new Date().toISOString(),
         author: source.author,
         license: source.license,
-        files_synced: changes.length,
+        files_synced: ownedFiles.length,
+        files: ownedFiles,
       };
       fs.writeFileSync(sourceJsonPath, JSON.stringify(sourceJson, null, 2));
       logVerbose(`Written .source.json`);
+
+      // Loud warning if any synced file is git-ignored: the workflow's
+      // `git add -A` would silently drop it, producing an incomplete mirror.
+      try {
+        const targets = ownedFiles.map((f) => path.join(source.target_path, f));
+        const ignored = execFileSync('git', ['-C', ROOT_DIR, 'check-ignore', ...targets], {
+          stdio: ['ignore', 'pipe', 'ignore'],
+        })
+          .toString()
+          .trim();
+        if (ignored) {
+          log(
+            `   ⚠️  GIT-IGNORED — will NOT be committed: ${ignored.split('\n').join(', ')}`,
+            colors.red,
+          );
+        }
+      } catch {
+        // git check-ignore exits 1 when nothing matches — the normal, good path.
+      }
     }
 
     // Synthesize plugin.json + README.md if the upstream sync didn't
@@ -664,14 +741,18 @@ async function main() {
     fs.appendFileSync(outputFile, `catalog_adds=${catalogAdds}\n`);
     fs.appendFileSync(outputFile, `sources=${results.map((r) => r.source).join(',')}\n`);
     fs.appendFileSync(outputFile, `has_changes=${totalChanges > 0}\n`);
+    // Surface partial-failure signal so the workflow can route a partial sync to
+    // a human instead of auto-PR'ing it as a clean full sync.
+    fs.appendFileSync(outputFile, `errors=${errors.length}\n`);
+    fs.appendFileSync(outputFile, `failed_sources=${errors.map((e) => e.source).join(',')}\n`);
   }
 
   log('\n');
-  // Exit 1 only on TOTAL failure (no source succeeded). Partial failures
-  // print warnings and are surfaced via the GitHub Actions summary, but they
-  // shouldn't block downstream steps that need to commit the partial sync.
+  // Exit non-zero on TOTAL failure (no source succeeded) always; and on ANY
+  // partial failure when --strict is set, so a partial sync is never committed
+  // and auto-PR'd as if it were a clean full sync.
   const totalFailures = errors.length === sourcesToSync.length;
-  process.exit(totalFailures ? 1 : 0);
+  process.exit(totalFailures || (options.strict && errors.length > 0) ? 1 : 0);
 }
 
 main().catch((error) => {

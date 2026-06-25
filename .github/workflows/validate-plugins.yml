@@ -1022,6 +1022,13 @@ jobs:
         with:
           node-version: '20'
 
+      # Synced-plugin lint exclusions must be present BEFORE markdownlint runs,
+      # so a new external-synced plugin fails here with an actionable "add these
+      # lines" message instead of a cryptic markdownlint error on mirrored
+      # content the next sync overwrites anyway. Also guards ruff.toml.
+      - name: Check synced-plugin lint exclusions
+        run: node scripts/check-synced-lint-exclusions.mjs
+
       # BLOCKING — codebase passed baseline at PR #772 (2026-05-23).
       # Cleanup arc: 60,000 → 80 (PR #767 bulk-fix) → 0 (this PR).
       # Final cleanup fixed:

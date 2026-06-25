@@ -54,8 +54,15 @@ function walkPluginDirs(root) {
       existsSync(join(dir, 'plugin.json'));
     if (hasPluginJson) {
       found.push(dir);
-      // Still descend — rare nested plugins exist (e.g. the historical
-      // saas-packs/skill-databases/windsurf duplicate). Exclusion list handles them.
+      // A synced plugin (.source.json marker) is a vendored upstream tree:
+      // generate exactly ONE top-level package.json for it and do NOT descend
+      // into nested upstream plugin.json files (e.g. tonone/bundle/*), which
+      // the CI structure check (find -maxdepth 4) would otherwise scaffold
+      // spurious package.jsons for.
+      if (existsSync(join(dir, '.source.json'))) return;
+      // Otherwise still descend — rare nested first-party plugins exist (e.g.
+      // the historical saas-packs/skill-databases/windsurf duplicate); the
+      // exclusion list handles them.
     }
     for (const ent of entries) {
       if (!ent.isDirectory()) continue;

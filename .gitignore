@@ -78,6 +78,10 @@
 **/*/000-docs/
 **/*/000-docs/**
 **/.npmrc
+# Intentionally-synced upstream .npmrc files (load-bearing CI inputs from the
+# external-sync pipeline). Scoped per-path so per-developer plugin .npmrc
+# overrides stay ignored. Keep in sync with sources.yaml include lists.
+!plugins/mcp/slack-channel/.npmrc
 **/skills/*/data/
 *.db
 *.egg-info/

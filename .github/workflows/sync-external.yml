@@ -109,7 +109,7 @@ jobs:
           fi
 
       - name: Sync marketplace catalog
-        if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true
+        if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true && steps.sync.outputs.errors == '0'
         # Use --no-frozen-lockfile here intentionally: the sync step above can
         # overwrite synced plugins' package.json from upstream, which legitimately
         # diverges from the committed pnpm-lock.yaml. The auto-PR this workflow
@@ -125,7 +125,7 @@ jobs:
           pnpm run sync-marketplace
 
       - name: Create Pull Request
-        if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true
+        if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true && steps.sync.outputs.errors == '0'
         # Hand-rolled commit + push + PR-create instead of peter-evans/create-pull-request.
         #
         # Why: sync diffs are large (hundreds of files / 100K+ lines from upstream
@@ -187,6 +187,20 @@ jobs:
           ---
           *This PR was automatically created by the \`Sync External Plugins\` workflow.*"
           fi
+
+      # A partial sync (one or more sources errored / found zero files) must NOT
+      # be committed and auto-PR'd as if it were a clean full sync. The commit +
+      # PR steps above are already gated on `errors == '0'`; this step makes the
+      # partial run visibly RED and names the failed sources so a human can act.
+      - name: Flag partial sync
+        if: steps.sync.outputs.errors != '0' && steps.sync.outputs.errors != ''
+        run: |
+          echo "## ⚠️ Partial external sync — needs human" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "${{ steps.sync.outputs.errors }} source(s) errored; no PR was opened." >> "$GITHUB_STEP_SUMMARY"
+          echo "Failed: ${{ steps.sync.outputs.failed_sources }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "::error::Partial external sync (${{ steps.sync.outputs.failed_sources }}) — investigate before re-running."
+          exit 1
 
       - name: Summary
         run: |

@@ -627,7 +627,6 @@ sources:
       - '.git/**'
       - '*.log'
       - 'tests/**'
-      - 'src/!(servers)/**'
       - 'dist/cli/**'
       - 'dist/action/**'
 
