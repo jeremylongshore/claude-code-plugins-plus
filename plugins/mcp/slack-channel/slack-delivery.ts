@@ -328,6 +328,88 @@ export async function deliverChunkedReplyDurably(
   return { status: 'delivered', ts: firstTs, sent: delivered }
 }
 
+// ---------------------------------------------------------------------------
+// Durable streaming reply finalize (ccsc-o7x.6 — ADR-002 addendum)
+// ---------------------------------------------------------------------------
+
+/** A streaming reply to make crash-durable. `id` is a fresh per-reply UUID (the
+ *  obligation id and thus idempotency key); `text` is the COMPLETE reply text —
+ *  the stream-finalize payload the poller redelivers on a crash, NOT a chunk. */
+export interface DurableStream {
+  id: string
+  channel: string
+  thread: string
+  text: string
+}
+
+/** Handle returned by `beginDurableStream` so the caller can resolve the
+ *  stream-finalize obligation once `streamReply` returns. Call EXACTLY ONE of
+ *  `markDelivered` (stream completed) / `markDead` (stream failed in-process).
+ *  Calling neither — the process crashed mid-stream — is the whole point: the
+ *  obligation stays `pending` and the poller redelivers. Both marks are
+ *  best-effort (a fenced mark failure leaves the poller to reconcile from disk)
+ *  and never throw. */
+export interface DurableStreamHandle {
+  markDelivered(): Promise<void>
+  markDead(reason: string): Promise<void>
+}
+
+/** Record a stream-finalize obligation BEFORE a streaming reply begins
+ *  (ccsc-o7x.6, ADR-002 addendum). Activates the `(channel, thread)` session and
+ *  appends ONE `pending` `DeliveryObligation` carrying the FULL reply text, then
+ *  returns a handle to resolve it once the stream ends:
+ *
+ *    - stream COMPLETES        → `markDelivered()` — the streamed message holds
+ *      the full content; nothing is owed;
+ *    - stream FAILS in-process → `markDead(reason)` — NOT left pending: the
+ *      poller's send does not re-run the outbound gate, and `streamReply` cannot
+ *      distinguish a gate rejection from a transient Slack error, so a
+ *      gate-rejected stream must never be auto-redelivered. The partial message
+ *      that landed is the same best-effort outcome as before;
+ *    - process CRASHES mid-stream → neither mark runs, the obligation stays
+ *      `pending`, and the boot-drain / poller redelivers the full text as a fresh
+ *      `chat.postMessage` (the partial streamed message is orphaned).
+ *
+ *  Throws `DurableUnavailableError` BEFORE recording if the session can't be
+ *  activated or holds no lease — the caller then streams best-effort, no net
+ *  (prior behavior). Mirrors `deliverReplyDurably`'s activate→lease→record
+ *  prologue; the difference is the send is the caller's progressive stream, not
+ *  an inline post, so this only records + hands back the resolve hooks. */
+export async function beginDurableStream(
+  deps: { supervisor: SessionSupervisor },
+  reply: DurableStream,
+): Promise<DurableStreamHandle> {
+  let handle: SessionHandle
+  try {
+    handle = await deps.supervisor.activate({ channel: reply.channel, thread: reply.thread })
+  } catch (err) {
+    throw new DurableUnavailableError(
+      `cannot activate session: ${err instanceof Error ? err.message : String(err)}`,
+    )
+  }
+  const lease = handle.lease
+  if (lease === null) throw new DurableUnavailableError('session holds no lease')
+  const token = lease.token
+
+  // Record the full-text obligation BEFORE the stream starts (crash-before /
+  // crash-during-stream safe).
+  await handle.recordTerminalDelivery(token, {
+    id: reply.id,
+    channel: reply.channel,
+    thread: reply.thread,
+    payload: reply.text,
+  })
+
+  return {
+    markDelivered(): Promise<void> {
+      return markObligation(handle, token, reply.id, { state: 'delivered', attempts: 1 })
+    },
+    markDead(reason: string): Promise<void> {
+      return markObligation(handle, token, reply.id, { state: 'dead', attempts: 1, lastError: reason })
+    },
+  }
+}
+
 /** Best-effort fenced patch of one obligation's state. Never throws: a fenced /
  *  save failure leaves the obligation as-is for the poller to reconcile (see
  *  `deliverReplyDurably`). */

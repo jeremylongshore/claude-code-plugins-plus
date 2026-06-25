@@ -547,6 +547,12 @@ export interface SupervisorOptions {
    *  session lifecycle (audit-journal-architecture.md invariant: broken
    *  journal MUST NOT take down the hot path). */
   journal?: JournalWriter
+  /** Global backpressure cap on concurrently-live sessions (ccsc-4e9bf). When
+   *  set, `activate()` REJECTS a NEW session once `live + in-flight` is at the
+   *  cap, so a burst (e.g. a runaway multi-agent channel) can't exhaust file
+   *  handles / memory. Reactivating an already-live session is never capped.
+   *  Absent → unlimited (default; behavior unchanged). */
+  maxConcurrentSessions?: number
 }
 
 /** Default idle threshold: 4 hours in ms. Documented in
@@ -568,6 +574,19 @@ export function resolveIdleMs(env: Record<string, string | undefined> = process.
   if (raw === undefined || raw === '') return DEFAULT_IDLE_MS
   const parsed = Number(raw)
   if (!Number.isFinite(parsed) || parsed <= 0) return DEFAULT_IDLE_MS
+  return Math.floor(parsed)
+}
+
+/** Parse `SLACK_MAX_CONCURRENT_SESSIONS` (ccsc-4e9bf) → a positive integer cap,
+ *  or `undefined` (= unlimited) when unset/empty/non-numeric/non-positive. Same
+ *  pure-relative-to-`env` contract as `resolveIdleMs`. */
+export function resolveMaxConcurrentSessions(
+  env: Record<string, string | undefined> = process.env,
+): number | undefined {
+  const raw = env.SLACK_MAX_CONCURRENT_SESSIONS
+  if (raw === undefined || raw === '') return undefined
+  const parsed = Number(raw)
+  if (!Number.isFinite(parsed) || parsed <= 0) return undefined
   return Math.floor(parsed)
 }
 
@@ -603,7 +622,7 @@ export function createSessionSupervisor(opts: SupervisorOptions): SessionSupervi
   const leaseTtlMs = opts.leaseTtlMs ?? DEFAULT_LEASE_TTL_MS
   const ownerId =
     opts.ownerId ?? `slack-supervisor-${typeof process !== 'undefined' ? process.pid : 0}`
-  const { stateRoot, journal } = opts
+  const { stateRoot, journal, maxConcurrentSessions } = opts
 
   // Process-monotonic lease token source (ccsc-o7x.1.1). Every acquisition gets
   // a strictly higher token than any prior one across all keys, so a superseded
@@ -654,10 +673,12 @@ export function createSessionSupervisor(opts: SupervisorOptions): SessionSupervi
   const activating = new Map<string, Promise<SessionHandle>>()
 
   function keyId(k: SessionKey): string {
-    // `\0` is not a legal character in a Slack channel/ts string, so it
-    // is safe as a separator. Avoids the `"C1:T1" vs "C:1T1"` collision
-    // you would get with a single-colon join.
-    return `${k.channel}\0${k.thread}`
+    // `\0` is not a legal character in a Slack channel/ts/user string, so it
+    // is safe as a separator. Avoids the `"C1:T1" vs "C:1T1"` collision you
+    // would get with a single-colon join. The trailing userId segment (empty
+    // when absent) keeps a per-user key (ccsc-kl410) from ever colliding with
+    // the shared (channel, thread) key.
+    return `${k.channel}\0${k.thread}\0${k.userId ?? ''}`
   }
 
   async function doActivate(
@@ -781,6 +802,47 @@ export function createSessionSupervisor(opts: SupervisorOptions): SessionSupervi
       const inflight = activating.get(id)
       if (inflight !== undefined) {
         return inflight
+      }
+
+      // ccsc-4e9bf — global backpressure. A genuinely NEW session is refused
+      // once live + in-flight activations are at the cap, so a runaway burst
+      // can't exhaust resources. The load-shed decision is BOTH logged (operator
+      // stderr) and journaled (audit record of the refusal, per the ccsc-4e9bf
+      // acceptance criteria). The caller (deliverEvent) logs + drops the message.
+      if (maxConcurrentSessions !== undefined) {
+        // Count DISTINCT in-progress sessions. A key whose doActivate has
+        // already resolved is briefly in BOTH `live` and `activating` (the
+        // .finally cleanup runs a microtask later), so `live.size +
+        // activating.size` would double-count it and could reject spuriously
+        // near the cap (Gemini, PR #250). Count in-flight keys not yet in
+        // `live`, plus live. `activating` is small (concurrent activations).
+        let inFlightNew = 0
+        for (const k of activating.keys()) if (!live.has(k)) inFlightNew++
+        const active = live.size + inFlightNew
+        if (active >= maxConcurrentSessions) {
+          log('session.activate_rejected', {
+            channel: key.channel,
+            thread: key.thread,
+            reason: 'max_concurrent_sessions',
+            active,
+            cap: maxConcurrentSessions,
+          })
+          // Fire-and-forget: the journal must never block the hot path (audit-
+          // journal-architecture.md invariant); journalWrite is internally
+          // resilient and swallows its own failures.
+          void journalWrite({
+            kind: 'session.activate_rejected',
+            outcome: 'deny',
+            actor: 'system',
+            sessionKey: key,
+            reason: `maxConcurrentSessions cap (${maxConcurrentSessions}) reached; active=${active}`,
+          })
+          return Promise.reject(
+            new Error(
+              `SessionSupervisor.activate: at maxConcurrentSessions cap (${maxConcurrentSessions})`,
+            ),
+          )
+        }
       }
 
       const promise = doActivate(key, initialOwnerId).finally(() => {

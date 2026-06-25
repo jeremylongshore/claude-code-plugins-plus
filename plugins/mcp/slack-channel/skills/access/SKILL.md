@@ -20,7 +20,7 @@ Manage who can reach your Claude Code session through Slack.
 /slack-channel:access policy <pairing|allowlist|disabled>   # Set DM policy
 /slack-channel:access add <slack_user_id>                   # Add user to allowlist
 /slack-channel:access remove <slack_user_id>                # Remove from allowlist
-/slack-channel:access channel <channel_id> [--mention] [--allow <user_id,...>]  # Opt in a channel
+/slack-channel:access channel <channel_id> [--ambient] [--allow <user_id,...>]  # Opt in a channel (default: mention-to-engage)
 /slack-channel:access channel remove <channel_id>           # Remove channel opt-in
 /slack-channel:access status                                # Show current config
 ```
@@ -64,13 +64,23 @@ Parse `$ARGUMENTS` and execute the matching subcommand:
 3. Save with 0o600
 4. Show confirmation
 
-### `channel <channel_id> [--mention] [--allow <ids>]`
+### `channel <channel_id> [--ambient] [--allow <ids>]`
+
+Opting a channel in chooses an **interaction mode**. There are three; pick one:
+
+| Mode | `access.json` | Behavior |
+|---|---|---|
+| **Mention-to-engage** (default) | `requireMention: true` | Humans converse freely; Claude only sees messages that `@`-mention it. Once a human mentions the bot in a thread, they keep talking in that thread without re-mentioning (thread-stickiness, `ccsc-apj.1`). **Peer agents are never sticky — they must `@`-mention every message.** |
+| **Ambient** (`--ambient`) | `requireMention: false` | Claude sees every message in the channel. Use for a dedicated bot channel where every message is for Claude. |
+| **Per-user allowlist** (`--allow`) | `allowFrom: [ids]` | Only the listed users are heard. Composes with either mode above. |
+
 1. Parse options:
-   - `--mention`: require @mention to trigger (default: false)
-   - `--allow <id1,id2>`: restrict to specific users in that channel
-2. Add/update `channels[channel_id]` in `access.json`
+   - (no flag) → **mention-to-engage**: write `requireMention: true` (the safe default — humans can chat without Claude listening to everything).
+   - `--ambient` → **ambient**: write `requireMention: false`.
+   - `--allow <id1,id2>` → also set the channel's `allowFrom` to those users (works with either mode).
+2. Add/update `channels[channel_id]` in `access.json`. **Default `requireMention: true`** unless `--ambient` is given.
 3. Save with 0o600
-4. Show the channel policy
+4. Show the channel policy and state which interaction mode is now active.
 
 ### `channel remove <channel_id>`
 1. Delete `channels[channel_id]`

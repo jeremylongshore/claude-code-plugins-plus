@@ -181,10 +181,12 @@ See [ACCESS.md](ACCESS.md) for the full schema.
 /slack-channel:access policy allowlist       # Only pre-approved users
 /slack-channel:access add U12345678          # Add a user
 /slack-channel:access remove U12345678       # Remove a user
-/slack-channel:access channel C12345678      # Opt in a channel
-/slack-channel:access channel C12345678 --mention  # Require @mention
+/slack-channel:access channel C12345678      # Opt in a channel (default: mention-to-engage)
+/slack-channel:access channel C12345678 --ambient  # Ambient: Claude hears every message
 /slack-channel:access status                 # Show current config
 ```
+
+**Interaction modes.** A newly opted-in channel defaults to **mention-to-engage** (`requireMention: true`): people converse freely and Claude only sees messages that `@`-mention it — and once a human mentions the bot in a thread, they can keep talking in that thread without re-mentioning (peer agents must `@`-mention every time). Pass `--ambient` for a dedicated bot channel where Claude hears everything, or `--allow <ids>` to restrict which humans are heard. See [ACCESS.md](ACCESS.md#interaction-modes).
 
 ### Multi-agent coordination
 
