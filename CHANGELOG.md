@@ -7,6 +7,95 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`databricks-workspace-mcp` plugin** (mcp) — a TypeScript MCP server giving
+  Claude Code typed, live access to the Databricks **control plane**: 8 read-only
+  tools across clusters (list/get/events), instance pools, DLT pipelines
+  (get/event-log), and Unity Catalog external-locations / storage-credentials —
+  the endpoint families no managed Databricks MCP exposes
+  ([#891](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/891)).
+- **`beads-dolt` plugin** (mcp) — Dolt/DoltHub-aware upgrade to the beads (bd)
+  task tracker: a diagnostic skill, five expert agents, and a wired dolt-mcp
+  server. Registered for external-repo sync
+  ([#892](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/892))
+  and vendored into the catalog
+  ([#895](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/895)).
+- **`governed-second-brain`** (mcp) — local-first governed second brain, listed
+  via `sources.yaml`
+  ([#873](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/873)).
+- **`.greptile/` advisory code-review config** — `config.json` + `rules.md` +
+  `files.json` encoding the repo's structured review invariants
+  ([#897](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/897)).
+- **Synced-plugin lint-exclusion drift gate** (`scripts/check-synced-lint-exclusions.mjs`)
+  — CI gate asserting every external-synced plugin is excluded from markdownlint
+  and ruff, failing with the exact lines to add
+  ([#898](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/898)).
+- **kernel-vendor V≤C≤K version-coupling gate** (advisory) + ordering-invariant
+  test corpus
+  ([#868](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/868),
+  [#888](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/888)),
+  and **kernel-shadow validation** (advisory soak, DR-049)
+  ([#855](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/855),
+  [#862](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/862)).
+- Marketplace **`/grading` rubric page** + drift-detection test
+  ([#847](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/847)).
+
+### Changed
+
+- **Schema 3.10.0 → 3.11.0 — kernel-strict agent gate.** Every authored agent
+  must carry the kernel-floor 8 fields + the enterprise live set (errors at every
+  tier); banned fields are errors; added a body-vs-allowlist consistency check
+  (an agent invoking an `mcp__server__tool` outside its `tools` allowlist is an
+  error). All 317 in-repo agents elevated to A-grade
+  ([#878](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/878),
+  [#881](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/881),
+  [#883](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/883),
+  [#887](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/887)).
+- **AI PR reviewer churn** — adopted Greptile (replacing CodeRabbit + Gemini),
+  then paused Greptile on its 50-review/month quota and re-enabled Gemini Code
+  Assist; CONTRIBUTING wording made tool-agnostic. The PR pre-screen LLM also
+  switched Groq → DeepSeek
+  ([#852](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/852),
+  [#893](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/893),
+  [#899](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/899)).
+- **`databricks-pack` v1.1.0 deprecation release** — deprecation banners on all 24
+  v1 skills + a v1→v2 migration map, ahead of the live-detection v2 rebuild
+  ([#889](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/889)).
+- **Branding** — purged the "CCP" acronym → "CCPI" across live surfaces
+  ([#885](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/885));
+  removed Nixtla branding from eval tools, catalog data, and sponsor surfaces
+  ([#853](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/853),
+  [#858](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/858)).
+- Re-pinned `@intentsolutions/core` to exactly `0.4.1`; the kernel `authoring/v1`
+  CHANGELOG is now canonical for kernel-tracked fields
+  ([#857](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/857),
+  [#864](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/864)).
+
+### Fixed
+
+- **External-plugin sync pipeline hardening** — a multi-agent audit found 16 bugs;
+  all fixed across two passes
+  ([#896](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/896),
+  [#898](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/898)):
+  preserve the executable bit + exact bytes (Buffer read + chmod — no more binary
+  corruption), run the full `pnpm run sync-marketplace` onboarding (package.json +
+  README TOC), a unique per-run `automation/` branch (no shared-branch clobber, no
+  auto-bump version drift, no PR-create strand), serialized concurrency, orphan
+  prune via a persisted manifest, a partial-sync gate, and catalog-seam formatting.
+- **CI / workflow hygiene** — resolved all 75 actionlint/shellcheck findings across
+  15 workflows; per-domain lint workflows + path-routing; PR-noise reduction + dead
+  workflow pruning
+  ([#839](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/839),
+  [#861](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/861),
+  [#869](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/869)).
+- **plane-sync** — HTML-escape the issue body before `description_html` injection
+  ([#882](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/882)).
+- **claude-never-forgets** — quote plugin paths to handle spaces on Windows
+  ([#880](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/880)).
+- Real `allowed-tools` validation + missing-name diagnostic in the validator
+  ([#860](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/860)).
+
 ## [4.33.0] - 2026-05-25
 
 Cowork pipeline correctness pass — the `/cowork/` page is now a
