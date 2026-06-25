@@ -21,6 +21,10 @@ name: Auto-bump changed plugin patch versions
 # discipline across 400+ plugins while keeping per-PR patch traceability.
 #
 # Skip conditions:
+#   - PR head is a FORK (`head.repo.full_name != github.repository`). Fork PRs
+#     run with a read-only token and their branch lives in the fork, so the
+#     bump's checkout+push-back cannot work — it would only red-fail an otherwise
+#     good external contribution. Skip cleanly instead (maintainer bumps at merge).
 #   - PR head branch starts with `automation/` (avoids self-bumping the
 #     automation/npm-stats and similar generated PRs).
 #   - PR title or body contains `[skip auto-bump]`.
@@ -33,7 +37,7 @@ on:
       - 'packages/**'
 
 permissions:
-  contents: write       # commit bump back to PR branch
+  contents: write # commit bump back to PR branch
   pull-requests: read
 
 concurrency:
@@ -45,6 +49,7 @@ jobs:
   bump:
     runs-on: ubuntu-latest
     if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
       !startsWith(github.head_ref, 'automation/') &&
       !contains(github.event.pull_request.title, '[skip auto-bump]') &&
       !contains(github.event.pull_request.body, '[skip auto-bump]')
