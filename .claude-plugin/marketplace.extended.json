@@ -10335,6 +10335,30 @@
       "repository": "https://github.com/jeremylongshore/claude-code-plugins",
       "license": "MIT",
       "mcpTools": 8
+    },
+    {
+      "name": "beads-dolt",
+      "source": "./plugins/mcp/beads-dolt",
+      "description": "Dolt/DoltHub-aware upgrade to the beads (bd) task tracker — a skill that surfaces visibility/no-remote root causes and the remote-add + push fix, five expert agents grounded in bd+Dolt internals, and a wired dolt-mcp server for SQL access to the bead graph.",
+      "version": "0.1.0",
+      "category": "mcp",
+      "keywords": [
+        "beads",
+        "bd",
+        "dolt",
+        "dolthub",
+        "task-tracking",
+        "mcp",
+        "version-control",
+        "sql"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "homepage": "https://github.com/jeremylongshore/beads-dolt",
+      "repository": "https://github.com/jeremylongshore/beads-dolt",
+      "license": "Apache-2.0"
     }
   ]
 }

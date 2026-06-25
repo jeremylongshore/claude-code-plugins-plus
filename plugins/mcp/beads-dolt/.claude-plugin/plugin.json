@@ -1,0 +1,24 @@
+{
+  "name": "beads-dolt",
+  "version": "0.1.0",
+  "description": "Dolt/DoltHub-aware upgrade to the beads (bd) task-tracker workflow for Claude Code. A skill that surfaces visibility/no-remote root causes and the `bd dolt remote add` + push fix, five expert agents grounded in reverse-engineered bd+Dolt internals (sync, epic audit, dependency mapping, rapid-write-race recovery), and a wired dolthub/dolt-mcp server for SQL access to the bead graph. Builds on beads (gastownhall/beads) and Dolt/DoltHub.",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io",
+    "url": "https://github.com/jeremylongshore"
+  },
+  "repository": "https://github.com/jeremylongshore/beads-dolt",
+  "homepage": "https://github.com/jeremylongshore/beads-dolt",
+  "license": "Apache-2.0",
+  "keywords": [
+    "beads",
+    "bd",
+    "dolt",
+    "dolthub",
+    "task-tracking",
+    "mcp",
+    "version-control",
+    "sql",
+    "issue-tracking"
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "name": "@intentsolutionsio/beads-dolt",
+  "version": "0.1.0",
+  "description": "Dolt/DoltHub-aware upgrade to the beads (bd) task-tracker workflow for Claude Code. A skill that surfaces visibility/no-remote root causes and the `bd dolt remote add` + push fix, five expert agents g",
+  "keywords": [
+    "beads",
+    "bd",
+    "dolt",
+    "dolthub",
+    "task-tracking",
+    "mcp",
+    "version-control",
+    "sql",
+    "issue-tracking",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/mcp/beads-dolt"
+  },
+  "homepage": "https://tonsofskills.com/plugins/beads-dolt",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io",
+    "url": "https://github.com/jeremylongshore"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "agents",
+    "scripts"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install beads-dolt\\\\n  or /plugin install beads-dolt@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}
