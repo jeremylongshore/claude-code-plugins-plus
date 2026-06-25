@@ -1,6 +1,6 @@
 # Databricks Skill Pack
 
-> 24 production-ready skills for the Databricks Lakehouse Platform — Unity Catalog, Delta Lake, MLflow, Spark SQL, Asset Bundles, and the full REST API.
+24 production-ready skills for the Databricks Lakehouse Platform — Unity Catalog, Delta Lake, MLflow, Spark SQL, Asset Bundles, and the full REST API.
 
 > [!WARNING]
 > **This pack is being rebuilt — `v1.x` is deprecated.** Every v1 skill below carries a
