@@ -195,10 +195,12 @@ jobs:
       - name: Flag partial sync
         if: steps.sync.outputs.errors != '0' && steps.sync.outputs.errors != ''
         run: |
-          echo "## ⚠️ Partial external sync — needs human" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "${{ steps.sync.outputs.errors }} source(s) errored; no PR was opened." >> "$GITHUB_STEP_SUMMARY"
-          echo "Failed: ${{ steps.sync.outputs.failed_sources }}" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "## ⚠️ Partial external sync — needs human"
+            echo ""
+            echo "${{ steps.sync.outputs.errors }} source(s) errored; no PR was opened."
+            echo "Failed: ${{ steps.sync.outputs.failed_sources }}"
+          } >> "$GITHUB_STEP_SUMMARY"
           echo "::error::Partial external sync (${{ steps.sync.outputs.failed_sources }}) — investigate before re-running."
           exit 1
 
