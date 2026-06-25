@@ -1,0 +1,32 @@
+{
+  "files": [
+    {
+      "path": "CLAUDE.md",
+      "description": "The repo's operating contract: two-catalog system, build pipeline, validator + kernel-SSoT posture, do-not-flip soak discipline, required SKILL.md frontmatter, and the canonical identifiers that must never be renamed."
+    },
+    {
+      "path": "AGENTS.md",
+      "description": "Session protocol — post-compaction recovery, end-of-session push checklist, beads workflow."
+    },
+    {
+      "path": "000-docs/SCHEMA_CHANGELOG.md",
+      "description": "The NON-NEGOTIABLES: the 8-field ALWAYS_REQUIRED set, marketplace-tier error-vs-warning semantics, and which changes are approval-gated."
+    },
+    {
+      "path": "scripts/validate-skills-schema.py",
+      "description": "The authoritative prose-spec validator — the canonical merge gate for frontmatter and markdown body sections, plus the kernel-strict agent gate."
+    },
+    {
+      "path": ".github/workflows/validate-plugins.yml",
+      "description": "The CI gate definitions: plugin structure, catalog invariants, README-TOC sync, and the lint/test matrix."
+    },
+    {
+      "path": "marketplace/DESIGN.md",
+      "description": "The marketplace design constitution — OKLCH-only colors, the Data-Dense Pro family, and explicitly rejected UI patterns."
+    },
+    {
+      "path": "000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md",
+      "description": "The IS enterprise / marketplace skills standard (v3.x) that the validator enforces."
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "strictness": 3,
+  "commentTypes": ["logic", "syntax"],
+  "triggerOnUpdates": true,
+  "fixWithAI": true,
+  "confidenceScoreSection": { "included": true },
+  "sequenceDiagramSection": { "included": true },
+  "ignorePatterns": "node_modules/\n.venv/\ndist/\nbuild/\ncoverage/\nmarketplace/dist/\nmarketplace/.astro/\nmarketplace/public/downloads/\npnpm-lock.yaml\npackage-lock.json\n*.min.js\n.claude-plugin/marketplace.json\nfreshie/inventory.sqlite",
+  "rules": [
+    {
+      "id": "no-gate-weakening",
+      "severity": "high",
+      "rule": "The required CI checks (validate, marketplace-validation, the test matrix, gitleaks/trufflehog, CodeQL, eslint/prettier/ruff/markdownlint/shellcheck, unicode-hygiene) are the deterministic merge gate. NEVER suggest lowering a threshold, skipping/deleting/weakening a test or assertion, disabling a security/policy/typecheck, or reducing a coverage/mutation/audit requirement — unless the same PR explicitly replaces it with a stronger equivalent."
+    },
+    {
+      "id": "marketplace-json-is-generated",
+      "severity": "high",
+      "scope": [".claude-plugin/marketplace.json", "**/package.json", "README.md"],
+      "rule": "`.claude-plugin/marketplace.json` is AUTO-GENERATED from `.claude-plugin/marketplace.extended.json` by `pnpm run sync-marketplace`; the same step regenerates plugin package.json files and the README AUTO-TOC block. Never hand-edit a generated file. A diff that edits marketplace.json directly (without the corresponding marketplace.extended.json change) is a bug — CI's drift gate rejects it."
+    },
+    {
+      "id": "required-fields-authoritative",
+      "severity": "high",
+      "scope": ["scripts/validate-skills-schema.py", "000-docs/SCHEMA_CHANGELOG.md"],
+      "rule": "The IS 8-field ALWAYS_REQUIRED set (name, description, allowed-tools, version, author, license, compatibility, tags) is authoritative; at marketplace tier a missing required field is an ERROR, not a warning. Do not suggest reducing the required set, demoting marketplace errors to warnings, or realigning to Anthropic's permissive floor. Changes to required-fields / tier model / error-vs-warning semantics are approval-gated (see SCHEMA_CHANGELOG NON-NEGOTIABLES)."
+    },
+    {
+      "id": "kernel-pin-frozen-during-soak",
+      "severity": "high",
+      "rule": "The `@intentsolutions/core` kernel pin is frozen at an exact version (no ^/~) during the validator-cutover soak. Do not suggest bumping it, and do not suggest flipping the kernel-shadow or kernel-vendor-hash CI lanes from advisory (continue-on-error) to blocking — that promotion is gated by a separate documented checklist, not a code change."
+    },
+    {
+      "id": "agent-vs-skill-tool-fields",
+      "severity": "medium",
+      "scope": ["plugins/**/agents/*.md", "plugins/**/skills/**/SKILL.md", "agents/*.md"],
+      "rule": "Agents use `tools` (allowlist) + `disallowedTools` (camelCase denylist); skills use `allowed-tools` (kebab allowlist) + optional `disallowed-tools` (kebab denylist). Flag camelCase `disallowedTools` on a skill or kebab `disallowed-tools` on an agent — the validator rejects the mismatch. Authored agents are kernel-strict; banned fields (capabilities, expertise_level, activation_priority, type, category, compatible-with, when_to_use) are errors. An agent body invoking an `mcp__server__tool` not in its `tools` allowlist is an error."
+    },
+    {
+      "id": "no-secrets-no-unicode-trapdoors",
+      "severity": "high",
+      "rule": "No hardcoded secrets, API keys, or tokens in any committed file — including 'for testing' (use tests/fixtures stub servers). No Unicode trapdoors: tag chars (U+E0000-E007F) or bidirectional overrides (CVE-2021-42574 Trojan Source) in SKILL.md / plugin.json / agent / command files are blocked by the unicode-hygiene gate."
+    },
+    {
+      "id": "do-not-rename-canonical-ids",
+      "severity": "high",
+      "rule": "Do not 'normalize' or rename the canonical identifiers: GitHub repo `jeremylongshore/claude-code-plugins-plus-skills`, marketplace catalog id `claude-code-plugins-plus`, or the public install slug `jeremylongshore/claude-code-plugins` (legacy, hardcoded in the CLI, hero snippet, and hundreds of READMEs — renaming is a breaking API change)."
+    },
+    {
+      "id": "marketplace-design-and-build-invariants",
+      "severity": "medium",
+      "scope": ["marketplace/**"],
+      "rule": "Marketplace CSS uses OKLCH colors only — never hex/rgb (marketplace/DESIGN.md). Reject gradients on cards, glassmorphism, drop-shadow stacks, hover:scale on whole cards. `compressHTML` stays disabled in astro.config.mjs (iOS Safari fails on lines > 5000 chars; CI-enforced). Respect the performance budgets (40MB gzipped, 1MB largest file, 2800-4000 routes)."
+    },
+    {
+      "id": "two-package-manager-policy",
+      "severity": "medium",
+      "rule": "pnpm is the package manager EVERYWHERE except marketplace/, which uses npm (CI-enforced). Flag a pnpm command added under marketplace/ or an npm command in a pnpm workspace. Runtime floor is Node >= 20 (Node 18 causes silent workspace-resolution failures)."
+    },
+    {
+      "id": "no-generated-artifacts-committed",
+      "severity": "medium",
+      "rule": "Do not commit generated artifacts: marketplace/public/downloads/ (gitignored, rebuilt in CI from the catalog), marketplace/dist/, or the derived .claude-plugin/marketplace.json. CI rebuilds these from source; committing them leaks local state to prod."
+    }
+  ]
+}
