@@ -3328,20 +3328,6 @@
       }
     },
     {
-      "name": "mytradeledger-skills",
-      "source": "./plugins/community/mytradeledger-skills",
-      "description": "Access and manage MyTradeLedger journaled crypto trades via the REST API — ledger entries, account balances and realized P&L, CSV export, asset registry, and metadata.",
-      "version": "1.0.0",
-      "category": "crypto",
-      "keywords": ["crypto", "trading", "mytradeledger", "ledger", "pnl"],
-      "author": {
-        "name": "trpsbill",
-        "email": "trpsbill@gmail.com",
-        "url": "https://github.com/trpsbill"
-      },
-      "repository": "https://github.com/trpsbill/skills"
-    },
-    {
       "name": "n8n-workflow-designer",
       "source": "./plugins/ai-agency/n8n-workflow-designer",
       "description": "Design complex n8n workflows with AI assistance - loops, branching, error handling",

@@ -1303,6 +1303,34 @@ sources:
       - 'node_modules/**'
       - '.git/**'
       - '*.log'
+
+  # ============================================================
+  # MyTradeLedger Skills (trpsbill)
+  # https://github.com/trpsbill/skills
+  # MyTradeLedger REST API skill — journaled crypto trades,
+  # account balances / realized P&L, CSV export, asset registry.
+  # ============================================================
+
+  - name: mytradeledger-skills
+    description: Access and manage MyTradeLedger journaled crypto trades via the REST API — ledger entries (CRUD + bulk-import + P&L recompute), account balances and realized P&L, CSV export, asset registry, entry metadata, and personal access token management.
+    repo: trpsbill/skills
+    source_path: .
+    target_path: plugins/community/mytradeledger-skills
+    author:
+      name: trpsbill
+      github: trpsbill
+      email: trpsbill@gmail.com
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - '.claude-plugin/plugin.json'
+      - 'skills/**'
+      - 'LICENSE'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 # Sync configuration
 config:
   # Branch to sync from (default: main)
