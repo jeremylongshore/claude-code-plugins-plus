@@ -1205,6 +1205,41 @@ sources:
       - '.git/**'
       - '*.log'
 
+  # ============================================================
+  # AutomateLab publishing-skills
+  # https://github.com/AutomateLab-tech/publishing-skills
+  # ============================================================
+
+  - name: publishing-skills
+    description: Four composable skills that turn an AI agent into a platform-agnostic long-tail SEO publishing pipeline — topic research, drafting, SVG figures, and an editorial calendar. Ships Ghost, WordPress, and static-site adapters.
+    repo: AutomateLab-tech/publishing-skills
+    source_path: .
+    target_path: plugins/productivity/publishing-skills
+    author:
+      name: AutomateLab
+      github: AutomateLab-tech
+      email: hello@automatelab.tech
+    license: MIT-0
+    category: productivity
+    verified: false
+    keywords:
+      - ghost
+      - blogging
+      - seo
+      - content-creation
+      - publishing
+      - claude-code
+      - ai-writing
+    include:
+      - 'skills/**'
+      - 'README.md'
+      - 'LICENSE'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+      - 'scripts/**'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)

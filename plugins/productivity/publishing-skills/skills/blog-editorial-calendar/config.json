@@ -1,0 +1,31 @@
+{
+  "target_platform": "ghost",
+  "author": "Editorial",
+  "cadence": {
+    "posts_per_day": 2,
+    "slots_utc": [[6, 0, 11, 59], [18, 0, 22, 59]]
+  },
+  "cluster_targets": {
+    "core-product": 0.30,
+    "integrations": 0.25,
+    "use-cases": 0.25,
+    "ecosystem": 0.20
+  },
+  "format_targets": {
+    "how-to-fix": 0.35,
+    "x-vs-y": 0.15,
+    "how-to-connect": 0.10,
+    "how-to-automate": 0.10,
+    "use-case": 0.10,
+    "listicle": 0.07,
+    "migration": 0.05,
+    "release-recap": 0.05,
+    "what-is": 0.03
+  },
+  "cluster_tag_map": {
+    "core-product": ["Product"],
+    "integrations": ["Integrations"],
+    "use-cases": ["Use Cases"],
+    "ecosystem": ["Ecosystem"]
+  }
+}

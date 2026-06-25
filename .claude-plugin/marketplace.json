@@ -8789,6 +8789,29 @@
       "homepage": "https://github.com/jeremylongshore/beads-dolt",
       "repository": "https://github.com/jeremylongshore/beads-dolt",
       "license": "Apache-2.0"
+    },
+    {
+      "name": "publishing-skills",
+      "source": "./plugins/productivity/publishing-skills",
+      "description": "Four composable skills that turn an AI agent into a platform-agnostic long-tail SEO publishing pipeline — topic research, drafting, SVG figures, and an editorial calendar. Ships Ghost, WordPress, and static-site adapters.",
+      "version": "0.1.0",
+      "category": "productivity",
+      "keywords": [
+        "ghost",
+        "blogging",
+        "seo",
+        "content-creation",
+        "publishing",
+        "claude-code",
+        "ai-writing"
+      ],
+      "author": {
+        "name": "AutomateLab",
+        "url": "https://github.com/AutomateLab-tech",
+        "email": "hello@automatelab.tech"
+      },
+      "repository": "https://github.com/AutomateLab-tech/publishing-skills",
+      "license": "MIT-0"
     }
   ]
 }
