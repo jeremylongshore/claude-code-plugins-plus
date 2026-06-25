@@ -1,19 +1,17 @@
 # Gemini Code Assist GitHub App configuration.
 # https://developers.google.com/gemini-code-assist/docs/customize-review-github
 #
-# Why this exists: every PR was getting an auto-review from gemini-code-assist[bot]
-# that duplicated coverage we already have via our own pr-prescreen workflow
-# (.github/workflows/pr-prescreen.yml) plus the required validate + marketplace-validation
-# checks. The noise overwhelmed real human-authored feedback on contributor PRs.
-#
-# This disables the auto-review and pull-request-opened summaries from the
-# Gemini Code Assist GitHub App. To re-enable, set both flags to false (default).
+# 2026-06-25: re-enabled. Greptile (the 2026-06-23 replacement) is paused after
+# exhausting its 50-review/month quota, so Gemini Code Assist is the active AI
+# reviewer again. `comment_severity_threshold: HIGH` is kept to hold down the
+# review noise that originally motivated disabling it — only HIGH-severity
+# findings are posted; the deterministic CI checks remain the merge gate.
 #
 # This is NOT the same as the run-gemini-cli action (which used to live in
 # .github/workflows/gemini-code-review.yml and was deleted in PR #721).
 
 have_fun: false
 code_review:
-  disable: true
+  disable: false
   comment_severity_threshold: HIGH
-  pull_opened_summary: false
+  pull_opened_summary: true
