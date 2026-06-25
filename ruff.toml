@@ -26,6 +26,7 @@ extend-exclude = [
   "plugins/ai-agency/tonone",
   "plugins/business-tools/wondelai-blue-ocean-strategy",
   "plugins/business-tools/wondelai-contagious",
+  "plugins/productivity/publishing-skills",
   "plugins/business-tools/wondelai-cro-methodology",
   "plugins/business-tools/wondelai-crossing-the-chasm",
   "plugins/business-tools/wondelai-drive-motivation",
