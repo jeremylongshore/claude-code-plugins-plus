@@ -116,7 +116,12 @@ report. The price-window join (usage × `list_prices.pricing.default`, matched o
 is the dollar primitive reused by every category query.
 
 ```bash
-databricks api post /api/2.0/sql/statements --json @"${CLAUDE_SKILL_DIR}/scripts/sql/spend-baseline.sql.json"
+# The CLI does NOT expand ${VARS} inside a --json @file, so inject the warehouse
+# id with jq at call time (the static template carries only wait_timeout + statement).
+databricks api post /api/2.0/sql/statements --json "$(
+  jq --arg wh "$DATABRICKS_WAREHOUSE_ID" '. + {warehouse_id: $wh}' \
+    "${CLAUDE_SKILL_DIR}/scripts/sql/spend-baseline.sql.json"
+)"
 ```
 
 The canonical CTE and full per-category SQL live in
