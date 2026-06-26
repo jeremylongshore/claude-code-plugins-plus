@@ -241,11 +241,14 @@ dollar impact, annualizes the headline and #1 line, stamps the trailing-30-day w
 end date, and renders the CFO-grokkable report.
 
 ```bash
-jq -s '.' ./leak-*.json | \
+# Per-category results and the rendered report are RUNTIME outputs — they go to
+# a working dir ($OUT), never the skill package. Steps 3–6 wrote leak-*.json here.
+OUT="${OUT:-$(pwd)/cost-leak-out}" && mkdir -p "$OUT"
+jq -s '.' "$OUT"/leak-*.json | \
   python3 "${CLAUDE_SKILL_DIR}/scripts/rank-and-report.py" \
     --monthly-spend 100000 \
     --window-end "$WINDOW_END_DATE" \
-    --out ./cost-leak-report.md
+    --out "$OUT/cost-leak-report.md"
 ```
 
 Use `Glob` to collect the per-category `leak-*.json` results, `Write` the rendered
@@ -255,7 +258,7 @@ output using the verbatim template in
 
 ## Output
 
-- **A CFO-grokkable report file** (`./cost-leak-report.md` in the working dir) leading
+- **A CFO-grokkable report file** (`$OUT/cost-leak-report.md` in the working dir) leading
   with a **split** headline that never sums confirmed and unconfirmed dollars under
   one verb — `### A $<spend>/month workspace is burning **~$<confirmed>/month**
   (confirmed), plus up to **~$<at-risk>/month** pending review` — each with its
