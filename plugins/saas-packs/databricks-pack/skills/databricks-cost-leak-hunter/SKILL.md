@@ -63,8 +63,8 @@ skill detects a missing grant upfront and reports it, rather than failing mid-fl
   - `GRANT SELECT ON TABLE system.billing.list_prices TO <principal>`
 - **Compute system schema** for config/utilization corroboration (same chain on
   `system.compute`): `system.compute.clusters`, `system.compute.node_timeline`.
-- **Databricks CLI** authenticated (`databricks auth login`, or `DATABRICKS_HOST`
-  + `DATABRICKS_TOKEN`) and `jq` for parsing JSON tool output. The dollar queries
+- **Databricks CLI** authenticated (`databricks auth login`, or `DATABRICKS_HOST` + `DATABRICKS_TOKEN`)
+  and `jq` for parsing JSON tool output. The dollar queries
   run through the CLI Statement Execution API — UC enforces the grant chain above.
 - **`DATABRICKS_WAREHOUSE_ID`** env var set to a running SQL warehouse — every
   statement-execution call (Step 1's probe included) requires it.
