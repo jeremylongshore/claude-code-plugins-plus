@@ -86,8 +86,8 @@ def build_report(categories: list[dict], monthly_spend: float | None, window_end
     # Split sum — confirmed and unconfirmed dollars are NEVER added under one verb.
     # Normalize the kind so a capitalized "Confirmed"/"At-risk" is not silently
     # dropped from its sum (which would understate the headline as ~$0/month).
-    confirmed_monthly = sum(c["monthly"] for c in ranked if norm_kind(c.get("kind")) == "confirmed")
-    unconfirmed_monthly = sum(c["monthly"] for c in ranked if norm_kind(c.get("kind")) in UNCONFIRMED)
+    confirmed_monthly = sum(c["monthly"] for c in ranked if (norm_kind(c.get("kind")) or "confirmed") == "confirmed")
+    unconfirmed_monthly = sum(c["monthly"] for c in ranked if (norm_kind(c.get("kind")) or "confirmed") in UNCONFIRMED)
     confirmed_annual = confirmed_monthly * 12.0
     unconfirmed_annual = unconfirmed_monthly * 12.0
 
