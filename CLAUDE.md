@@ -50,9 +50,22 @@ cd marketplace/ && npx playwright test
 # Single test
 cd packages/cli && pnpm test -- --grep "pattern"
 
-# JRig behavioral eval (opt-in, ~$2-5/skill)
-j-rig check <skill-dir>           # Tier 3A: deterministic (~seconds, free)
-j-rig eval <skill-dir> --models haiku,sonnet,opus --db freshie/inventory.sqlite
+# JRig behavioral eval — the published @intentsolutions/jrig-cli (bin `j-rig`),
+# pinned as a root devDep. Invoke via `pnpm exec j-rig` so it resolves the
+# repo's pinned version (node_modules/.bin/j-rig), NOT a global shim.
+pnpm exec j-rig --version         # → 0.1.0 (the real 7-layer CLI)
+pnpm exec j-rig check <skill-dir> # Tier 3A: deterministic (~seconds, free, no API key, no DB)
+
+# Real behavioral eval (opt-in, ~$2-5/skill) — needs a provider API key + the
+# native better-sqlite3 build (run `pnpm rebuild better-sqlite3` once; the build
+# script is not auto-run on install).
+DEEPSEEK_API_KEY=...  pnpm exec j-rig eval <skill-dir> \
+  --provider deepseek --models deepseek-v4-flash --db freshie/inventory.sqlite
+# DEEPSEEK_API_KEY is provisioned via SOPS (intent-eval-lab/.env.sops; see the
+# IEP umbrella CLAUDE.md credential table). `deepseek-v4-flash` is a real
+# behavioral provider — this is ground truth, replacing the prior dev/stub
+# resolution where the global `j-rig` symlink pointed at a local unbuilt CLI.
+# Other providers (haiku/sonnet/opus via Anthropic, etc.) remain available.
 ```
 
 ## Two Catalog System — Critical
@@ -162,6 +175,8 @@ The validator itself does a kernel-loaded **shadow read** of `ALWAYS_REQUIRED` (
 6. a ≥14-day public deprecation-window notice to affected skill authors.
 
 As of now the soak has **not** met the bar — agreement sits below 99.5%, and the open disagreements are real tool-safety / shell-substitution security cases that the prose-spec validator correctly blocks (so flipping early would weaken a real gate). Until every condition above is satisfied, validator authority stays with `validate-skills-schema.py` and both kernel lanes stay advisory. Promotion to blocking is a separate, later cutover step gated by these conditions — never a side effect of an unrelated PR.
+
+**Coexistence note (`@intentsolutions/jrig-cli`).** The `j-rig` behavioral-eval CLI is a root devDep pinned to `@intentsolutions/jrig-cli@0.1.0`, which depends on `@intentsolutions/core@0.9.0`. That `0.9.0` is **nested under jrig-cli's own subtree** (`node_modules/.pnpm/@intentsolutions+jrig-cli@.../node_modules/@intentsolutions/core`). The **root** `@intentsolutions/core` pin stays **exactly `0.4.1`** — the kernel-shadow + kernel-vendor lanes read the root-hoisted copy, so the soak is unaffected. Do **not** bump the root pin to satisfy jrig-cli; the two versions coexist by design. The root-pin cutover to `authoring/v2` is the separate, gated step above.
 
 ### Validator consolidation (already landed)
 
