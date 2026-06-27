@@ -36,6 +36,32 @@ import sys
 UNCONFIRMED = ("estimated", "at-risk")
 
 
+def norm_kind(val: object) -> str:
+    """Lowercase + strip a confidence tier so case/whitespace never silently
+    drops a row from a sum (e.g. "Confirmed" / " AT-RISK " -> "confirmed"/"at-risk").
+    """
+    return str(val or "").strip().lower()
+
+
+def parse_usd(val: object) -> float:
+    """Coerce a 30-day dollar figure to float, tolerating LLM-formatted currency.
+
+    LLMs frequently emit strings like "$1,200.50" or "1,200" instead of a bare
+    number; a raw float() on those raises ValueError and crashes the report.
+    Strip currency symbols and thousands separators, then fall back to 0.0 on
+    anything still non-numeric.
+    """
+    if val is None:
+        return 0.0
+    if isinstance(val, (int, float)):
+        return float(val)
+    cleaned = str(val).replace("$", "").replace(",", "").strip()
+    try:
+        return float(cleaned) if cleaned else 0.0
+    except ValueError:
+        return 0.0
+
+
 def to_monthly(waste_30d: float) -> float:
     """30-day window -> calendar-month figure (365/12 days per month)."""
     return waste_30d * (365.0 / 12.0) / 30.0
@@ -53,13 +79,15 @@ def fmt_money_k(n: float) -> str:
 
 def build_report(categories: list[dict], monthly_spend: float | None, window_end: str | None) -> str:
     ranked = sorted(
-        ({**c, "monthly": to_monthly(float(c.get("waste_30d_usd") or 0))} for c in categories),
+        ({**c, "monthly": to_monthly(parse_usd(c.get("waste_30d_usd")))} for c in categories),
         key=lambda c: c["monthly"],
         reverse=True,
     )
     # Split sum — confirmed and unconfirmed dollars are NEVER added under one verb.
-    confirmed_monthly = sum(c["monthly"] for c in ranked if c.get("kind") == "confirmed")
-    unconfirmed_monthly = sum(c["monthly"] for c in ranked if c.get("kind") in UNCONFIRMED)
+    # Normalize the kind so a capitalized "Confirmed"/"At-risk" is not silently
+    # dropped from its sum (which would understate the headline as ~$0/month).
+    confirmed_monthly = sum(c["monthly"] for c in ranked if norm_kind(c.get("kind")) == "confirmed")
+    unconfirmed_monthly = sum(c["monthly"] for c in ranked if norm_kind(c.get("kind")) in UNCONFIRMED)
     confirmed_annual = confirmed_monthly * 12.0
     unconfirmed_annual = unconfirmed_monthly * 12.0
 
@@ -86,7 +114,8 @@ def build_report(categories: list[dict], monthly_spend: float | None, window_end
     lines.append("| # | Where it's leaking | $/month | Confidence | The fix |")
     lines.append("|---|---|--:|---|---|")
     for i, c in enumerate(ranked, start=1):
-        confidence = str(c.get("kind", "confirmed")).capitalize()
+        # Normalize first so "AT-RISK"/"At-Risk" render as the spec form "At-risk".
+        confidence = (norm_kind(c.get("kind")) or "confirmed").capitalize()
         lines.append(
             f"| {i} | **{c.get('category', '?')}** — {c.get('root_cause', '')} "
             f"| **{fmt_money_full(c['monthly'])}** | {confidence} | {c.get('fix', '')} |"
@@ -95,7 +124,8 @@ def build_report(categories: list[dict], monthly_spend: float | None, window_end
 
     if ranked:
         top = ranked[0]
-        top_kind = str(top.get("kind", "confirmed"))
+        # Lowercase per the CFO template's callout form, e.g. "(confirmed)".
+        top_kind = norm_kind(top.get("kind")) or "confirmed"
         top_annual = top["monthly"] * 12.0
         lines.append(
             f"**The #1 line alone — {(top.get('category') or '?').lower()} "
@@ -123,12 +153,25 @@ def main() -> int:
     args = ap.parse_args()
 
     if args.infile == "-":
+        # Default is stdin; if it's an interactive terminal with nothing piped,
+        # sys.stdin.read() would block forever and hang automated pipelines.
+        # Fail fast with a usage message instead.
+        if sys.stdin.isatty():
+            print("error: no input data provided on stdin (pipe JSON in, or pass --in <file>)", file=sys.stderr)
+            ap.print_help(sys.stderr)
+            return 1
         raw = sys.stdin.read()
     else:
-        with open(args.infile) as fh:
+        with open(args.infile, encoding="utf-8") as fh:
             raw = fh.read()
 
-    data = json.loads(raw)
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        detail = "empty input" if not raw.strip() else str(exc)
+        print(f"error: could not parse input as JSON ({detail})", file=sys.stderr)
+        return 1
+
     if isinstance(data, list):
         categories = data
     elif isinstance(data, dict):
@@ -141,7 +184,7 @@ def main() -> int:
         return 1
 
     report = build_report(categories, args.monthly_spend, args.window_end)
-    with open(args.outfile, "w") as fh:
+    with open(args.outfile, "w", encoding="utf-8") as fh:
         fh.write(report)
     print(f"wrote {args.outfile} ({len(categories)} categories ranked)")
     return 0
