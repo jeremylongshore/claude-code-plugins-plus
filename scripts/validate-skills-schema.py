@@ -125,8 +125,20 @@ except ImportError:
 #                       forced re-typing). description over-length warning realigned
 #                       200 → 1536 (kernel disclosureMarkers cap). No change to the
 #                       SKILL ALWAYS_REQUIRED set or skill tier semantics.
+# 3.12.0 (2026-06-28) — plugin.json manifest brought up to the current Anthropic
+#                       GA spec (code.claude.com/docs/en/plugins-reference). Added
+#                       7 GA fields + 1 experimental object to PLUGIN_JSON_FIELDS:
+#                       displayName, defaultEnabled (boolean), dependencies,
+#                       userConfig, channels, $schema, experimental. Without these
+#                       the validator hard-rejected valid current plugins as
+#                       "Unknown field … not in Anthropic spec." TYPE_MAP gained
+#                       `boolean` (for defaultEnabled). Spec-compliance fix
+#                       (NON-NEGOTIABLE #6: adding missing documented fields).
+#                       Unknown-field error-vs-warning semantics UNCHANGED — that
+#                       flip is NON-NEGOTIABLE #7 (needs sign-off) and is tracked
+#                       separately. No change to any required-fields set or tier.
 # See 000-docs/SCHEMA_CHANGELOG.md.
-SCHEMA_VERSION = "3.11.0"
+SCHEMA_VERSION = "3.12.0"
 
 # Validation tiers
 TIER_STANDARD = "standard"
@@ -482,8 +494,16 @@ DEPRECATED_AGENT_FIELDS = {}
 # our own pace via batch-remediate.py --migrate-compatible-with.
 INVALID_SKILL_FIELDS = {}
 
+# plugin.json (.claude-plugin/plugin.json) — the Anthropic plugin manifest.
+# Source of truth: https://code.claude.com/docs/en/plugins-reference
+#   § "Plugin manifest schema". `name` is the only required field; everything
+# else is optional. Kept in sync with upstream GA fields — see SCHEMA_CHANGELOG
+# 3.12.0 (the manifest gained displayName/defaultEnabled/dependencies/userConfig/
+# channels/$schema/experimental as GA; this allowlist had only the pre-GA 15).
 PLUGIN_JSON_FIELDS = {
+    # — Metadata —
     "name": {"type": "string", "required": True},
+    "displayName": {"type": "string"},  # GA (Claude Code v2.1.143+) — human-readable picker name
     "version": {"type": "string"},
     "description": {"type": "string"},
     "author": {"type": "object"},
@@ -491,6 +511,8 @@ PLUGIN_JSON_FIELDS = {
     "repository": {"type": "string"},
     "license": {"type": "string"},
     "keywords": {"type": "array"},
+    "$schema": {"type": "string"},  # GA — JSON Schema URL for editor autocomplete (ignored at load)
+    # — Component paths —
     "commands": {"type": "string|array"},
     "agents": {"type": "string|array"},
     "skills": {"type": "string|array"},
@@ -498,6 +520,13 @@ PLUGIN_JSON_FIELDS = {
     "mcpServers": {"type": "string|array|object"},
     "outputStyles": {"type": "string|array"},
     "lspServers": {"type": "string|array|object"},
+    # — Behavior / config (GA) —
+    "defaultEnabled": {"type": "boolean"},  # GA (v2.1.154+) — enabled by default absent a user preference
+    "userConfig": {"type": "object"},  # GA — user-configurable values prompted at enable time
+    "channels": {"type": "array"},  # GA — message-channel declarations bound to MCP servers
+    "dependencies": {"type": "array"},  # GA — required plugins w/ optional semver constraints
+    # — Experimental (schema may change between releases): experimental.{themes,monitors} —
+    "experimental": {"type": "object"},
 }
 
 # Intent Solutions enterprise / marketplace standard: 8 required fields.
@@ -1617,7 +1646,7 @@ def validate_plugin_json(path: Path) -> Dict[str, Any]:
         if key not in valid_fields:
             errors.append(f"Unknown field: '{key}' — not in Anthropic spec")
 
-    TYPE_MAP = {"string": str, "object": dict, "array": list}
+    TYPE_MAP = {"string": str, "object": dict, "array": list, "boolean": bool}
     for key, value in pj.items():
         if key in PLUGIN_JSON_FIELDS:
             expected = PLUGIN_JSON_FIELDS[key].get("type", "")

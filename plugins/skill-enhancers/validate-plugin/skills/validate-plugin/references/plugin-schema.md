@@ -24,10 +24,11 @@ Example:
 
 ## 2. Metadata Fields (Optional)
 
-Seven optional fields provide discovery, attribution, and versioning metadata.
+Nine optional fields provide discovery, attribution, versioning, and editor-tooling metadata.
 
 | Field | Type | Constraints | Description |
 |-------|------|-------------|-------------|
+| `displayName` | string | — | **GA (Claude Code v2.1.143+).** Human-readable name shown in the `/plugin` picker and UI surfaces; falls back to `name` when omitted. Not used for namespacing or lookup. |
 | `version` | string | Semver format `X.Y.Z` (e.g., `"1.0.0"`, `"2.3.1"`) | Plugin version. Pre-release and build metadata segments are valid semver but discouraged. |
 | `description` | string | Non-empty when present | Human-readable summary of what the plugin does. Used by CLI search and marketplace listings. |
 | `author` | string \| object | Object form: `{name: string, email?: string, url?: string}` | Plugin author. String form (e.g., `"Jane Doe <jane@example.com>"`) and object form are both valid. |
@@ -35,8 +36,9 @@ Seven optional fields provide discovery, attribution, and versioning metadata.
 | `repository` | string | Valid URL | Link to the plugin's source code repository. |
 | `license` | string | SPDX identifier (e.g., `"MIT"`, `"Apache-2.0"`, `"Proprietary"`) | License governing plugin use. |
 | `keywords` | array | Array of non-empty strings | Discovery keywords for CLI search and marketplace indexing. |
+| `$schema` | string | URL | **GA.** JSON Schema URL for editor autocomplete/validation. Ignored by Claude Code at load time. |
 
-**Enterprise recommendation:** Our CI policy recommends all seven metadata fields for published plugins. The validator grades completeness accordingly.
+**Enterprise recommendation:** Our CI policy recommends the seven core metadata fields (`version`, `description`, `author`, `homepage`, `repository`, `license`, `keywords`) for published plugins. The validator grades completeness accordingly. `displayName` and `$schema` are accepted but not graded.
 
 ---
 
@@ -76,27 +78,54 @@ When component path fields are omitted, Claude auto-discovers components using t
 
 ---
 
-## 4. Complete Field Reference (All 15 Fields)
+## 3.5 Behavior & Config Fields (Optional, GA)
+
+Four GA fields control plugin enablement, configuration, channels, and dependencies.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `defaultEnabled` | boolean | **GA (Claude Code v2.1.154+).** Whether the plugin starts enabled when the user has set no preference. Defaults to `true`. |
+| `userConfig` | object | **GA.** User-configurable values prompted at enable time (keys become `${user_config.KEY}` substitution variables). Each entry supports `type` (string/number/boolean/directory/file), `title`, `description`, `sensitive`, `required`, `default`, `multiple`, `min`/`max`. |
+| `channels` | array | **GA.** Message-channel declarations (Telegram/Slack/Discord style); each binds to an MCP server the plugin provides (`server` key) with optional per-channel `userConfig`. |
+| `dependencies` | array | **GA.** Other plugins this plugin requires, with optional semver constraints (e.g. `[{ "name": "secrets-vault", "version": "~2.1.0" }]`). |
+
+### Experimental components (schema may change between releases)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `experimental.themes` | string \| array | Color theme files/directories (replaces default `themes/`). |
+| `experimental.monitors` | string \| array | Background Monitor-tool configurations that start when the plugin is active. |
+
+---
+
+## 4. Complete Field Reference (All 22 Fields)
 
 | # | Field | Required | Type | Category |
 |---|-------|----------|------|----------|
 | 1 | `name` | Yes | string | Identity |
-| 2 | `version` | No | string | Metadata |
-| 3 | `description` | No | string | Metadata |
-| 4 | `author` | No | string \| object | Metadata |
-| 5 | `homepage` | No | string | Metadata |
-| 6 | `repository` | No | string | Metadata |
-| 7 | `license` | No | string | Metadata |
-| 8 | `keywords` | No | array | Metadata |
-| 9 | `commands` | No | string \| array | Component Path |
-| 10 | `agents` | No | string \| array | Component Path |
-| 11 | `skills` | No | string \| array | Component Path |
-| 12 | `hooks` | No | string \| array \| object | Component Path |
-| 13 | `mcpServers` | No | string \| array \| object | Component Path |
-| 14 | `outputStyles` | No | string \| array | Component Path |
-| 15 | `lspServers` | No | string \| array \| object | Component Path |
+| 2 | `displayName` | No | string | Metadata (GA) |
+| 3 | `version` | No | string | Metadata |
+| 4 | `description` | No | string | Metadata |
+| 5 | `author` | No | string \| object | Metadata |
+| 6 | `homepage` | No | string | Metadata |
+| 7 | `repository` | No | string | Metadata |
+| 8 | `license` | No | string | Metadata |
+| 9 | `keywords` | No | array | Metadata |
+| 10 | `$schema` | No | string | Metadata (GA) |
+| 11 | `commands` | No | string \| array | Component Path |
+| 12 | `agents` | No | string \| array | Component Path |
+| 13 | `skills` | No | string \| array | Component Path |
+| 14 | `hooks` | No | string \| array \| object | Component Path |
+| 15 | `mcpServers` | No | string \| array \| object | Component Path |
+| 16 | `outputStyles` | No | string \| array | Component Path |
+| 17 | `lspServers` | No | string \| array \| object | Component Path |
+| 18 | `defaultEnabled` | No | boolean | Behavior (GA) |
+| 19 | `userConfig` | No | object | Config (GA) |
+| 20 | `channels` | No | array | Config (GA) |
+| 21 | `dependencies` | No | array | Config (GA) |
+| 22 | `experimental` | No | object | Experimental |
 
-**Anthropic spec floor**: only the 15 fields above are part of Anthropic's published `plugin.json` spec. Two additional fields are valid as Intent Solutions extensions and are documented in section 2.5: `generated` (boolean) and `author_type` (`"human"` | `"forge"`). Both are forge-provenance flags set by `/skill-creator --forge`.
+**Anthropic spec**: all 22 fields above are part of Anthropic's published `plugin.json` spec (`experimental.*` is GA-experimental — valid, but its sub-schema may change between releases). Source of truth: [code.claude.com/docs/en/plugins-reference](https://code.claude.com/docs/en/plugins-reference) § "Plugin manifest schema". Two additional fields are valid as Intent Solutions extensions and are documented in section 2.5: `generated` (boolean) and `author_type` (`"human"` | `"forge"`).
 
 ---
 
@@ -130,11 +159,13 @@ Notes:
 
 ## 6. Invalid Fields (Not in Anthropic Spec)
 
-These fields are **not** part of the official Anthropic spec and will be rejected by CI:
+These fields are **not** part of the official Anthropic spec and are flagged by CI:
+
+> Note: `displayName` was previously listed here as invalid. It is now a **GA**
+> manifest field (Claude Code v2.1.143+) and is accepted — see sections 2 and 4.
 
 | Invalid Field | Reason | Correct Alternative |
 |---------------|--------|---------------------|
-| `displayName` | Not in spec | Use `name` |
 | `category` | Marketplace-only metadata | Not stored in plugin.json |
 | `tags` | Marketplace-only metadata | Use `keywords` in plugin.json |
 | `requires` | Not in spec | No equivalent — document in README |
@@ -148,7 +179,7 @@ These fields are **not** part of the official Anthropic spec and will be rejecte
 
 ### Structural rules
 
-- The 15 Anthropic spec fields (section 4) and the 2 IS-extension fields (section 2.5) are accepted. Other unknown fields are flagged but not currently rejected by CI — see `.github/workflows/validate-plugins.yml` for the current enforced gate (JSON validity + README existence + script executability + source path existence).
+- The 22 Anthropic spec fields (section 4) and the 2 IS-extension fields (section 2.5) are accepted. Other unknown fields are flagged — see `.github/workflows/validate-plugins.yml` for the current enforced gate (JSON validity + README existence + script executability + source path existence).
 - `plugin.json` must be valid JSON (no trailing commas, no comments).
 - File must be located at `.claude-plugin/plugin.json` relative to plugin root.
 

@@ -146,6 +146,45 @@ compliance are welcome; structural changes to the IS rubric are not.
 
 ---
 
+## [3.12.0] — 2026-06-28 — plugin.json manifest brought up to current Anthropic GA spec (additive)
+
+**Additive MINOR — no change to any required-field set, tier model, or
+error-vs-warning semantics.** `PLUGIN_JSON_FIELDS` (the `.claude-plugin/plugin.json`
+manifest allowlist) had only the pre-GA 15 fields. The Anthropic plugin manifest
+has since gained several **GA** fields; the validator was therefore hard-rejecting
+valid, current Anthropic plugins with `Unknown field: '<x>' — not in Anthropic
+spec` (an ERROR), which is no longer true for these fields.
+
+Added to `PLUGIN_JSON_FIELDS` (all optional; `name` remains the only required
+field, unchanged):
+
+| Field | Type | Status | Note |
+|---|---|---|---|
+| `displayName` | string | GA (Claude Code v2.1.143+) | human-readable name in the `/plugin` picker |
+| `defaultEnabled` | boolean | GA (v2.1.154+) | enabled by default absent a user preference |
+| `dependencies` | array | GA | required plugins w/ optional semver constraints |
+| `userConfig` | object | GA | user-configurable values prompted at enable time |
+| `channels` | array | GA | message-channel declarations bound to MCP servers |
+| `$schema` | string | GA (metadata only) | JSON Schema URL; ignored at load time |
+| `experimental` | object | experimental | holds `experimental.themes` / `experimental.monitors` |
+
+`TYPE_MAP` in `validate_plugin_json()` gained `boolean` (for `defaultEnabled`).
+
+**Source of truth verified against** [code.claude.com/docs/en/plugins-reference](https://code.claude.com/docs/en/plugins-reference)
+§ "Plugin manifest schema". Spec-compliance fix under **NON-NEGOTIABLE #6**
+("adding missing documented fields" — explicitly autonomous-OK).
+
+**Explicitly NOT changed here (NON-NEGOTIABLE #7 — needs sign-off):** the
+unknown-field handling for *genuinely* unknown fields remains an ERROR. Anthropic's
+own `claude plugin validate` treats unrecognized fields as **warnings** (errors
+only under `--strict`); aligning the IS validator to that warn-not-error policy is
+an error-vs-warning-semantics change and is **deferred pending explicit approval**.
+Adding the GA fields above already removes the false rejection of valid current
+plugins (those fields are no longer "unknown"); the remaining decision only
+affects typos / other-ecosystem metadata.
+
+---
+
 ## [3.11.0] — 2026-06-18 — Agent body-vs-allowlist consistency check (additive, issue #843)
 
 **Additive MINOR — no change to any required-field set, tier model, or
