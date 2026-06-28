@@ -84,7 +84,7 @@ This repo is mid-migration toward a single source of truth for "what is a valid 
 
 **The kernel `@intentsolutions/core` (`schemas/authoring/v1` byte-frozen + `authoring/v2` strict fork) is the SSoT.** The validator is migrating to consume the kernel folds instead of its hand-rolled rule sets — that work is in progress and the advisory→authoritative flip has **not** happened.
 
-**Pin stays exactly `0.4.1`.** The kernel pin in `package.json` is `0.4.1` (no `^`/`~`). Do **not** bump it during the soak.
+**Pin tracks the latest published kernel — exactly `0.9.0` (no `^`/`~`).** The `authoring/v1` family is byte-frozen across kernel versions, so the pin bump is a governance/coupling update, not an authority change. Keep it EXACT (no `^`/`~`); bump it deliberately when the kernel publishes a new latest, in a dedicated coupling PR. The advisory→authoritative flip is a SEPARATE, gated step — bumping the pin must never flip it.
 
 **Two advisory CI lanes — they never block:**
 

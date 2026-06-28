@@ -43,6 +43,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Kernel coupling — declared `@intentsolutions/core` pin `0.4.1` → `0.9.0`.**
+  Bumped the exact (no `^`/`~`) `C` (CCPI-declared kernel) in `package.json` to the
+  latest published kernel, re-vendored `V` (the installed snapshot in
+  `node_modules`) via `pnpm install`, and re-mirrored the `KERNEL_PIN` literal in
+  `scripts/kernel-shadow-validation.mjs`. The `authoring/v1` schema family is
+  byte-frozen across kernel versions, so the shadow lane reads an identical
+  frontmatter contract and the V≤C≤K coupling is consistent at `V=C=K=0.9.0`. This
+  is a governance/coupling update only — both kernel lanes stay **advisory**; the
+  advisory→authoritative flip remains a separate, gated step.
 - **Schema 3.10.0 → 3.11.0 — kernel-strict agent gate.** Every authored agent
   must carry the kernel-floor 8 fields + the enterprise live set (errors at every
   tier); banned fields are errors; added a body-vs-allowlist consistency check

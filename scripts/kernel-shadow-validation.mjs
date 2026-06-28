@@ -7,7 +7,7 @@
  * WHAT THIS IS
  * ------------
  * Runs the kernel's published machine-spec — the authoring/v1 `skill-frontmatter`
- * JSON Schema from @intentsolutions/core@0.4.1 — over the SAME SKILL.md corpus the
+ * JSON Schema from @intentsolutions/core@0.9.0 — over the SAME SKILL.md corpus the
  * existing prose-spec validator (scripts/validate-skills-schema.py) already grades,
  * and reports the per-file AGREE / DISAGREE rate between the two.
  *
@@ -86,7 +86,7 @@
  *   and even then the calling workflow uses continue-on-error so it can NEVER fail
  *   the build. The deviation rate itself is REPORTED, never enforced.
  *
- * KERNEL PIN: @intentsolutions/core is pinned EXACTLY to 0.4.1 in package.json
+ * KERNEL PIN: @intentsolutions/core is pinned EXACTLY to 0.9.0 in package.json
  * (no ^/~). This shadow reads the schema straight out of node_modules so the
  * comparison is always against the pinned, published contract.
  *
@@ -104,7 +104,7 @@ import yaml from 'js-yaml';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, '..');
-const KERNEL_PIN = '0.4.1';
+const KERNEL_PIN = '0.9.0';
 
 const SCHEMA_DIR = join(
   REPO_ROOT,

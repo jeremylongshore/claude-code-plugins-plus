@@ -51,11 +51,11 @@
  *
  * SOAK DISCIPLINE — ADVISORY BY DEFAULT (CRITICAL)
  * ------------------------------------------------
- *   The CCPI kernel pin is DELIBERATELY FROZEN at 0.4.1 during the DR-049 shadow
- *   soak (matures 2026-06-18). This check is ORTHOGONAL to the advisory→blocking
- *   authority flip — it polices VERSION ORDERING + STALENESS, never validator
- *   authority. It must NOT, by existing or being added, change any validator's
- *   authority and it must NOT pressure a pin bump during the soak.
+ *   The CCPI kernel pin tracks the latest published kernel (currently 0.9.0). This
+ *   check is ORTHOGONAL to the advisory→blocking authority flip — it polices
+ *   VERSION ORDERING + STALENESS, never validator authority. It must NOT, by
+ *   existing or being added, change any validator's authority and it must NOT
+ *   pressure a pin bump on its own.
  *
  *   Therefore: ADVISORY by default — it REPORTS and EXITS 0 even when the
  *   ordering is violated or the snapshot is stale. `--strict` flips it to exit
@@ -363,7 +363,7 @@ function main() {
     violations,
     warnings,
     advisory: !args.strict,
-    soak: 'DR-049 shadow soak — kernel pin frozen at 0.4.1 until 2026-06-18; this check stays ADVISORY.',
+    soak: 'DR-049 shadow soak — kernel pin tracks latest published (0.9.0); this check stays ADVISORY.',
   };
 
   // Persist a CI artifact alongside the shadow report.

@@ -26,8 +26,8 @@ importers:
         specifier: ^1.1.5
         version: 1.1.5
       '@intentsolutions/core':
-        specifier: 0.4.1
-        version: 0.4.1
+        specifier: 0.9.0
+        version: 0.9.0
       '@intentsolutions/jrig-cli':
         specifier: 0.1.0
         version: 0.1.0(bun-types@1.3.11)
@@ -1782,10 +1782,6 @@ packages:
     resolution: {integrity: sha512-VbE4gPR/wtp2czWT0/Wjo5ZEtX3SRxeWMBS5nx1LhgyxdrKdZdo+deP5/km3Cl5PMyf4XbwXtVt7pDjXi0w1mQ==}
     engines: {node: '>=18'}
     hasBin: true
-
-  '@intentsolutions/core@0.4.1':
-    resolution: {integrity: sha512-wfZuLlWmzJ1kuOb7MdxAcmILqzBE/6nz0qJLlCsHjD27Gdv2B+GwPloCXG7He4YKmJlmgsk2Dhfo4iXQcVo/hg==}
-    engines: {node: '>=20.0.0', pnpm: '>=9.0.0'}
 
   '@intentsolutions/core@0.9.0':
     resolution: {integrity: sha512-XGF3rR/FFgRz1qkiXMEXLijmPX3/9layH9e2wqykMitkl2gX/JREpS6ilRXB1tVnkdcHnDdfAxWstpW/UoGKsA==}
@@ -6783,10 +6779,6 @@ snapshots:
       '@types/node': 25.9.1
 
   '@intentsolutions/audit-harness@1.1.5': {}
-
-  '@intentsolutions/core@0.4.1':
-    dependencies:
-      zod: 4.4.3
 
   '@intentsolutions/core@0.9.0':
     dependencies:
