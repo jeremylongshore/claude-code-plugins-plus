@@ -101,3 +101,37 @@ def test_wrong_type_is_always_an_error_even_without_strict(tmp_path):
     # Anthropic fails wrong-type fields regardless of --strict; so do we.
     result = _validate(tmp_path, {"name": "demo", "keywords": "should-be-an-array"})
     assert any("keywords" in e for e in result["errors"]), result
+
+
+# --- L2 consumer-cutover (schema 3.14.0): kernel plugin-manifest drift gate ---
+
+
+def test_kernel_plugin_shadow_is_in_sync():
+    """PLUGIN_JSON_FIELDS must match the kernel's current (authoring/v2)
+    plugin-manifest field surface. If this fails with `stale=[...]`, the kernel
+    captured an upstream field CCPI hasn't adopted — add it to PLUGIN_JSON_FIELDS.
+    Skips only if the kernel isn't installed (needs @intentsolutions/core>=0.9.0).
+    """
+    pj = validator.kernel_shadow_report().get("plugin_manifest", {})
+    if not pj.get("available"):
+        import pytest
+
+        pytest.skip(f"kernel plugin-manifest v2 unavailable: {pj.get('note')}")
+    assert pj["fields_match"], (
+        f"PLUGIN_JSON_FIELDS drifted from kernel v2 plugin-manifest — "
+        f"stale (missing): {pj['stale_missing_from_hand_authored']}, "
+        f"extra: {pj['only_in_hand_authored']}"
+    )
+
+
+def test_kernel_plugin_surface_carries_the_ga_fields():
+    """Sanity: the kernel surface we gate against is the CURRENT one (v2), i.e.
+    it actually contains the GA fields — guards against silently gating against
+    the stale v1 fold."""
+    pj = validator.load_kernel_plugin_fields()
+    if not pj.get("available"):
+        import pytest
+
+        pytest.skip(f"kernel plugin-manifest v2 unavailable: {pj.get('reason')}")
+    for ga in ("displayName", "defaultEnabled", "userConfig", "channels", "dependencies", "experimental"):
+        assert ga in pj["properties"], f"kernel v2 surface missing GA field {ga!r}"
