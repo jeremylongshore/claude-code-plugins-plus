@@ -1585,7 +1585,9 @@ def validate_command(path: Path) -> Dict[str, Any]:
 
 # === AGENT VALIDATION ===
 
-VALID_EFFORT_LEVELS = ["low", "medium", "high", "max"]
+# Mirror of AGENT_FIELDS["effort"]["valid"] (the live check). Kept in sync with the
+# Anthropic effort enum — `xhigh` was added (code.claude.com/docs/en/sub-agents).
+VALID_EFFORT_LEVELS = ["low", "medium", "high", "xhigh", "max"]
 
 
 def find_agent_files(root: Path) -> List[Path]:
