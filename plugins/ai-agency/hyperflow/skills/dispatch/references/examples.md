@@ -27,9 +27,7 @@ Final integration review skipped — all batches PASSed first try
 [Wrap-up inline — §12.1: delete task file · append memory · chore(memory): commit]
 
 ── Hyperflow Usage ──────────────────────
-Thinking (Opus 4.8)     1 agent    14.2k tokens  (1 batch reviewer)
-Worker   (Sonnet 4.6)   2 agents   38.0k tokens  (1 implementer + 1 writer)
-Total                   3 agents   52.2k tokens
+3 agents   52.2k tokens  (1 implementer + 1 writer + 1 batch reviewer)
 ─────────────────────────────────────────
 
 ? End-of-chain gates
@@ -90,9 +88,7 @@ Layer 5 gates
 [Wrap-up inline — §12.1: delete task file · synthesize multi-batch learnings via Writer · chore(memory): commit]
 
 ── Hyperflow Usage ──────────────────────
-Thinking (Opus 4.8)     4 agents   58.8k tokens  (3 batch reviewers + 1 final)
-Worker   (Sonnet 4.6)  11 agents  210.0k tokens  (includes re-dispatch + wrap-up Writer)
-Total                  15 agents  268.8k tokens
+15 agents  268.8k tokens  (includes re-dispatch + wrap-up Writer + 3 batch reviewers + 1 final)
 ─────────────────────────────────────────
 ```
 
@@ -131,9 +127,9 @@ Implementer — updating analytics config
 
 ## Resources
 
-- [DOCTRINE.md](references/DOCTRINE.md) — orchestration rules (especially #8 structural gates, #12 per-step agents).
-- [worker-prompt.md](references/worker-prompt.md) — Sonnet implementer/searcher/writer template.
-- [reviewer-prompt.md](references/reviewer-prompt.md) — Opus reviewer template (per-sub-task fallback).
-- [reviewer-prompt-batched.md](../../hyperflow/reviewer-prompt-batched.md) — Opus batched reviewer template (P2).
-- [latency-patterns.md](../spec/references/latency-patterns.md) — P1–P5 latency patterns; P2 dispatch win ~75% reviewer-phase latency.
+- [DOCTRINE.md](../../hyperflow/DOCTRINE.md) — orchestration rules (especially #8 structural gates, #12 per-step agents).
+- [worker-prompt.md](references/worker-prompt.md) — implementer/searcher/writer template.
+- [reviewer-prompt.md](references/reviewer-prompt.md) — reviewer template (per-sub-task fallback).
+- [reviewer-prompt-batched.md](../../hyperflow/reviewer-prompt-batched.md) — batched reviewer template (P2).
+- [latency-patterns.md](../hyperflow/latency-patterns.md) — P1–P5 latency patterns; P2 dispatch win ~75% reviewer-phase latency.
 - [review-levels.md](references/review-levels.md) — L1-L5 checklist.

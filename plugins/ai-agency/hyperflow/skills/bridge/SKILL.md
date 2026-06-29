@@ -1,7 +1,7 @@
 ---
 name: bridge
 description: |
-  Use when the user wants hyperflow's behavioral rules to apply outside the terminal CLI — in Claude Code Desktop, claude.ai web, or IDE extensions that don't load CLI plugins. Writes a managed doctrine block into the project's CLAUDE.md so autonomy + intent-routing + commit cadence + tier split + file-first rules carry over. Lossy (no slash commands, no actual skill dispatch) but useful.
+  Use when the user wants hyperflow's behavioral rules to apply outside the terminal CLI — in Claude Code Desktop, claude.ai web, or IDE extensions that don't load CLI plugins. Writes a managed doctrine block into the project's CLAUDE.md so autonomy + intent-routing + commit cadence + role separation + file-first rules carry over. Lossy (no slash commands, no actual skill dispatch) but useful.
   Trigger with /hyperflow:bridge, "make hyperflow work in desktop", "make hyperflow work in claude.ai", "embed hyperflow doctrine in CLAUDE.md", "portable hyperflow rules".
 allowed-tools: Read, Write, Edit, Bash(cat:*), Bash(ls:*), Bash(date:*)
 argument-hint: "<generate|refresh|remove|status>"
@@ -53,7 +53,7 @@ A fenced block in the project's `./CLAUDE.md` (at the repo root, where Claude Co
 # Hyperflow Doctrine (Portable Subset)
 
 <the full template body — autonomy, intent-routing, commit cadence,
- tier split, file-first artefacts, no AI attribution, security
+ role separation, file-first artefacts, no AI attribution, security
  blocklists, what's missing vs CLI>
 
 <!-- hyperflow:doctrine:end -->
@@ -79,7 +79,7 @@ The fenced markers (`hyperflow:doctrine:start` / `hyperflow:doctrine:end`) let `
 | Autonomy rules (no confirmations, minimal output, no hedging) | yes | **yes** |
 | Intent-based routing (audit/debug/fix/brainstorm verbs) | yes | **yes (described in CLAUDE.md as rules for the orchestrator to follow)** |
 | Per-task commit cadence | yes | **yes** |
-| Tier split (per-batch Sonnet, final Opus) | yes | **yes** |
+| Role separation (workers execute, reviewers review) | yes | **yes** |
 | File-first artefacts under `.hyperflow/` | yes | **yes** |
 | Binary-gate rule (no recommendation on yes/no) | yes | **yes** |
 | No-AI-attribution rule | yes | **yes** |
@@ -87,7 +87,7 @@ The fenced markers (`hyperflow:doctrine:start` / `hyperflow:doctrine:end`) let `
 | `/hyperflow:*` slash commands | yes | no — surfaces without the plugin can't dispatch named skills |
 | Chain-mode Step-0 auto/manual question | yes | no — defaults to auto-style chain in CLAUDE.md mode |
 | Operational pre-elections (commit/branch/push at scope Step 2.6) | yes | no — defaults applied per CLAUDE.md guidance |
-| Per-step Worker → Reviewer dispatch templates from `worker-prompt.md` / `reviewer-prompt.md` | yes | partial — tier-split rule preserves the spirit; exact prompts not embedded (would bloat CLAUDE.md) |
+| Per-step Worker → Reviewer dispatch templates from `worker-prompt.md` / `reviewer-prompt.md` | yes | partial — the role-separation rule preserves the spirit; exact prompts not embedded (would bloat CLAUDE.md) |
 | Background agents, sticky mode, status skill, cache skill | yes | no — these need their own slash command surfaces |
 | Adaptive flow profiles (`fast` / `standard` / `deep`) | yes | no — orchestrator infers from message complexity |
 
@@ -112,7 +112,7 @@ Surfaces that load CLAUDE.md (Desktop, claude.ai web, IDE extensions that talk t
   · Autonomy rules
   · Intent-based routing (audit/debug/fix/brainstorm/scope/deploy verbs)
   · Per-task commit cadence
-  · Tier split (per-batch Sonnet, final Opus)
+  · Role separation (workers execute, reviewers review)
   · File-first artefacts under .hyperflow/
   · No AI attribution
   · Security blocklists
@@ -214,7 +214,7 @@ Surfaces that load CLAUDE.md (Desktop, claude.ai web, IDE extensions that talk t
   · Autonomy rules
   · Intent-based routing (audit/debug/fix/brainstorm/scope/deploy verbs)
   · Per-task commit cadence
-  · Tier split (per-batch Sonnet, final Opus)
+  · Role separation (workers execute, reviewers review)
   · File-first artefacts under .hyperflow/
   · No AI attribution
   · Security blocklists

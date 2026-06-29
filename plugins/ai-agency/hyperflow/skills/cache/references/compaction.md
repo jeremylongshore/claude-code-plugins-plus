@@ -81,7 +81,7 @@ Future-dated entries (date > today) fall into the `≤ 7 days` bucket by definit
 
 The Dedup Reviewer is not a function — it is a prompt-level pattern reused from the existing memory-write pipeline (compare with `skills/audit/SKILL.md`, where the same agent pattern appears for memory dedup checks).
 
-The compact subcommand handler dispatches a thinking-tier Reviewer with instructions to perform two header-based checks:
+The compact subcommand handler dispatches a Reviewer with instructions to perform two header-based checks:
 
 1. **Source-side stub-line match** — for each candidate stub the Stub formatter produced, search the source file for an existing stub whose date + title + tags already match. Reject duplicates.
 2. **Archive-side header match** — for each candidate archive block, search `archive/YYYY-MM.md` (for that block's calendar month) for an existing header with the same date + title + tags. Reject duplicates.

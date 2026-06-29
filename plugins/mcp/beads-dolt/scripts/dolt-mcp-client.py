@@ -22,7 +22,6 @@ Connection defaults come from env when flags are omitted:
   DOLT_HOST (127.0.0.1), DOLT_PORT, DOLT_USER (root), DOLT_DATABASE, DOLT_PASSWORD ('')
 Exit codes: 0 ok · 2 bad usage · 3 binary missing · 4 connection/tool error · 5 timeout
 """
-
 import argparse
 import json
 import os
@@ -44,11 +43,8 @@ def main():
     ap.add_argument("--port", default=os.environ.get("DOLT_PORT"))
     ap.add_argument("--user", default=os.environ.get("DOLT_USER", "root"))
     ap.add_argument("--database", default=os.environ.get("DOLT_DATABASE", "information_schema"))
-    ap.add_argument(
-        "--branch",
-        default=os.environ.get("DOLT_BRANCH", "main"),
-        help="working branch (the dolt-mcp query/exec tools require it; default main)",
-    )
+    ap.add_argument("--branch", default=os.environ.get("DOLT_BRANCH", "main"),
+                    help="working branch (the dolt-mcp query/exec tools require it; default main)")
     ap.add_argument("--password", default=os.environ.get("DOLT_PASSWORD", ""))
     ap.add_argument("--timeout", type=float, default=25.0, help="seconds")
     ap.add_argument("tool", help="MCP tool name, e.g. query, exec, list_databases, list_dolt_commits")
@@ -59,10 +55,8 @@ def main():
         eprint("error: --port (or DOLT_PORT) is required")
         return 2
     if not shutil.which(BIN):
-        eprint(
-            f"error: '{BIN}' not found on PATH. Install: "
-            "go install github.com/dolthub/dolt-mcp/mcp/cmd/dolt-mcp-server@latest"
-        )
+        eprint(f"error: '{BIN}' not found on PATH. Install: "
+               "go install github.com/dolthub/dolt-mcp/mcp/cmd/dolt-mcp-server@latest")
         return 3
 
     # Build tool arguments
@@ -82,42 +76,25 @@ def main():
         if args.tool == "list_dolt_commits":
             tool_args["working_branch"] = args.branch
 
-    cmd = [
-        BIN,
-        "--stdio",
-        "--dolt",
-        "--host",
-        args.host,
-        "--port",
-        str(args.port),
-        "--user",
-        args.user,
-        "--database",
-        args.database,
-    ]
+    cmd = [BIN, "--stdio", "--dolt",
+           "--host", args.host, "--port", str(args.port),
+           "--user", args.user, "--database", args.database]
     env = dict(os.environ)
     if args.password:
         env["DOLT_PASSWORD"] = args.password
 
     requests = [
-        {
-            "jsonrpc": "2.0",
-            "id": 1,
-            "method": "initialize",
-            "params": {
-                "protocolVersion": "2024-11-05",
-                "capabilities": {},
-                "clientInfo": {"name": "dolt-mcp-client", "version": "0.1"},
-            },
-        },
+        {"jsonrpc": "2.0", "id": 1, "method": "initialize",
+         "params": {"protocolVersion": "2024-11-05", "capabilities": {},
+                    "clientInfo": {"name": "dolt-mcp-client", "version": "0.1"}}},
         {"jsonrpc": "2.0", "method": "notifications/initialized"},
-        {"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": {"name": args.tool, "arguments": tool_args}},
+        {"jsonrpc": "2.0", "id": 2, "method": "tools/call",
+         "params": {"name": args.tool, "arguments": tool_args}},
     ]
 
     try:
-        proc = subprocess.Popen(
-            cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env
-        )
+        proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE, text=True, env=env)
     except OSError as e:
         eprint(f"error: failed to spawn {BIN}: {e}")
         return 3

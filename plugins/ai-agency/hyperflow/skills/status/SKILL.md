@@ -30,10 +30,26 @@ The skill has two sections:
 | Profile | `.hyperflow/profile.md` file modification time | `(missing)` |
 | Memory | Line count of `.hyperflow/memory/index.md` minus header rows | `(none)` |
 | Active tasks | Files matching `.hyperflow/tasks/*.md` | `(none)` |
+| Active features | Folders matching `.hyperflow/features/*/feature.md` | `(none)` |
+
+### Active features (multi-phase work)
+
+For every `.hyperflow/features/*/feature.md` (see [feature-phases.md](../hyperflow/feature-phases.md)), parse its
+`## Status` block and the phase roster, then for each `phase-<n>-*/phase.md` show the phase status + Progress bar:
+
+```
+── Feature: checkout-redesign ──  (2 / 3 phases)
+  ✓ phase-1-data-layer   completed
+  ▸ phase-2-api          in_progress  ████░░░░  2/5 tasks · running: T3-handlers
+    phase-3-ui           pending      depends on phase-2
+```
+
+The per-phase bar uses the same parsing as the per-task-file section below (each `phase.md` carries the same
+`## Status` block shape). Omit this section when no `.hyperflow/features/*/` exist.
 
 ### In-flight work (per task file)
 
-For every `.hyperflow/tasks/*.md`, parse its `## Status` block (written by `/hyperflow:scope` at creation and updated by `/hyperflow:dispatch` after each sub-task PASS — see scope/SKILL.md Step 4):
+For every `.hyperflow/tasks/*.md`, parse its `## Status` block (written by `/hyperflow:plan` at creation and updated by `/hyperflow:dispatch` after each sub-task PASS — see plan/SKILL.md Step 10):
 
 | Field | Source | Behaviour |
 |-------|--------|----------|
@@ -292,4 +308,4 @@ Active tasks  (none)
 ## Resources
 
 - [output-style.md](references/output-style.md) — em-dash style, no decorative chars, plain status words.
-- [DOCTRINE.md](references/DOCTRINE.md) — orchestration rules (status is exempt from per-step agent dispatch).
+- [DOCTRINE.md](../hyperflow/DOCTRINE.md) — orchestration rules (status is exempt from per-step agent dispatch).

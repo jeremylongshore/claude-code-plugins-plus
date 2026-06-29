@@ -1,6 +1,6 @@
 # Batched Reviewer Prompt Template
 
-Use this template when dispatching a single Opus reviewer to evaluate N sibling worker outputs in one call (Pattern P2 — batched single-pass review). Collapses N sequential reviewer round-trips into one without changing the tier mix or the review floor.
+Use this template when dispatching a single Reviewer to evaluate N sibling worker outputs in one call (Pattern P2 — batched single-pass review). Collapses N sequential reviewer round-trips into one without changing the review floor.
 
 ## When to Use vs. When to Fall Back
 
@@ -24,6 +24,8 @@ Same scale as per-sub-task review — but applied to the batch as a whole. The r
 Apply ONLY the levels specified in the dispatch's review-level cap (e.g., `L1-L2` means run L1 and L2; do NOT silently escalate to L3 unless the cap says so). The cap is set by upstream triage via the dispatch flow profile and the triage `security`/`integration_risk` flags. Workers cannot request escalation; only triage classification can elevate the cap.
 
 If you encounter something that would warrant escalation beyond the cap — for example, spotting a security concern during an L1-L2 review — surface it as an `[Important]` note in the relevant sibling's finding block for the orchestrator to consider, but do not fail the verdict on it. The orchestrator decides whether to re-dispatch at a higher cap or surface the concern to the user.
+
+If a finding needs a peer domain's judgment before you can rule on it, hold that sibling's verdict and emit `CONSULT: <peer> — <question>` (any specialist in `agents/`); the orchestrator brokers the answer and re-dispatches you to finish. See DOCTRINE rule 19 / [consultation.md](consultation.md).
 
 ## Template
 
@@ -111,7 +113,7 @@ GLOBAL VERDICT: NEEDS_FIX
 
 A single `SECURITY_VIOLATION` in any sibling stops the entire batch. The orchestrator does not re-dispatch failed siblings — it escalates to the user.
 
-On `NEEDS_FIX`: the orchestrator re-dispatches only the failed siblings (not all N). The passing siblings' outputs are accepted as-is. A single Opus re-review of just the fixed siblings follows (not another full batched pass unless the fix affects shared interfaces).
+On `NEEDS_FIX`: the orchestrator re-dispatches only the failed siblings (not all N). The passing siblings' outputs are accepted as-is. A single Reviewer re-review of just the fixed siblings follows (not another full batched pass unless the fix affects shared interfaces).
 
 ## Dispatch Example
 
@@ -120,7 +122,6 @@ Five design sections (Architecture, Data flow, Key decisions, Edge cases, File s
 ```
 Agent({
   description: "Batched review — 5 spec design sections (medium, L1–L3)",
-  model: "opus",
   prompt: `## Batched review scope
 Siblings: §1 Architecture, §2 Data flow, §3 Key decisions, §4 Edge cases, §5 File structure
 Shared input: Chosen approach — "Event-sourced task store with Redis fan-out"

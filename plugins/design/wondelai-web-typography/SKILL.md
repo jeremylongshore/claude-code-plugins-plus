@@ -1,10 +1,10 @@
 ---
 name: web-typography
-description: 'Select, pair, and implement typefaces for web projects. Use when the user mentions "font pairing", "which typeface", "line height", "responsive typography", "web font loading", "type hierarchy", "variable fonts", "FOUT/FOIT", or "typographic scale". Also trigger when choosing between system fonts and web fonts, optimizing font loading performance, or designing readable long-form content layouts. Covers readability evaluation, CSS implementation, and performance optimization. For overall UI design systems, see refactoring-ui. For dramatic typographic experiences, see top-design.'
+description: 'Select, pair, and implement typefaces for web projects. Use when the user mentions "font pairing", "which typeface", "line height", "responsive typography", "web font loading", "type hierarchy", "variable fonts", "FOUT/FOIT", "typographic scale", "choose a font", "improve readability", or "the text is hard to read". Also trigger when choosing between system fonts and web fonts, optimizing font-loading performance, or designing readable long-form content. Covers readability evaluation, CSS implementation, and performance optimization. For overall UI design systems, see refactoring-ui. For dramatic typographic experiences, see top-design.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.3.0"
+  version: "1.4.0"
 ---
 
 # Web Typography

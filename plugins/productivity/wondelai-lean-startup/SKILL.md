@@ -1,10 +1,10 @@
 ---
 name: lean-startup
-description: 'Design MVPs, validated learning experiments, and pivot-or-persevere decisions using Build-Measure-Learn. Use when the user mentions "MVP scope", "validated learning", "pivot or persevere", "vanity metrics", "test assumptions", "innovation accounting", "build-measure-learn", or "minimum viable experiment". Also trigger when deciding what to include in a first version, measuring startup progress, or evaluating whether to change direction on a product bet. Covers innovation accounting and actionable metrics. For 5-day prototype testing, see design-sprint. For customer motivation analysis, see jobs-to-be-done.'
+description: 'Design MVPs, validated learning experiments, and pivot-or-persevere decisions using Build-Measure-Learn. Use when the user mentions "MVP scope", "validated learning", "pivot or persevere", "vanity metrics", "test assumptions", "innovation accounting", "build-measure-learn", "minimum viable experiment", "should we pivot", "test a business idea cheaply", or "build the smallest version first". Also trigger when deciding what to include in a first version, measuring startup progress, or evaluating whether to change direction on a product bet. Covers innovation accounting and actionable metrics. For 5-day prototype testing, see design-sprint. For customer motivation analysis, see jobs-to-be-done.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Lean Startup Methodology

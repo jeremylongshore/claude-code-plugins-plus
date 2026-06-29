@@ -1,10 +1,10 @@
 ---
 name: crossing-the-chasm
-description: 'Navigate the technology adoption lifecycle from early adopters to mainstream market. Use when the user mentions "crossing the chasm", "beachhead segment", "whole product", "early adopters vs. mainstream", "tech go-to-market", "bowling pin strategy", "technology adoption lifecycle", or "pragmatist buyers". Also trigger when a startup has early traction but struggles to grow beyond initial users, or when planning go-to-market for technical products. Covers D-Day analogy, bowling-pin strategy, and positioning against incumbents. For product positioning, see obviously-awesome. For new market creation, see blue-ocean-strategy.'
+description: 'Navigate the technology adoption lifecycle from early adopters to mainstream market. Use when the user mentions "crossing the chasm", "beachhead segment", "whole product", "early adopters vs mainstream", "tech go-to-market", "bowling pin strategy", "technology adoption lifecycle", "pragmatist buyers", "growth stalled after early adopters", "cant get mainstream customers", or "our go-to-market plan". Also trigger when a startup has early traction but cant grow beyond initial users, or when planning go-to-market for a technical product. Covers the D-Day analogy, bowling-pin strategy, and positioning against incumbents. For product positioning, see obviously-awesome. For new market creation, see blue-ocean-strategy.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Crossing the Chasm Framework

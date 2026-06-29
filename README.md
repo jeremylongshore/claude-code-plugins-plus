@@ -133,7 +133,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | 🧩  | [MCP Servers](#mcp-servers)                        |      14 |
 | 📦  | [Packages](#packages)                              |       5 |
 | ⚡  | [Performance](#performance)                        |      25 |
-| ✅  | [Productivity](#productivity)                      |      28 |
+| ✅  | [Productivity](#productivity)                      |      29 |
 | 🎁  | [SaaS Skill Packs](#saas-skill-packs)              |     106 |
 | 🔐  | [Security](#security)                              |      26 |
 | ✨  | [Skill Enhancers](#skill-enhancers)                |       9 |
@@ -514,7 +514,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Productivity
 
-✅ **28 plugins** · category slug: `productivity`
+✅ **29 plugins** · category slug: `productivity`
 
 | Plugin                                     | Description                                                                                                                                 |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -526,6 +526,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `ai-commit-gen`                            | AI-powered commit message generator - analyzes your git diff and creates conventional commit messages instantly                             |
 | `box-cloud-filesystem`                     | Transparent cloud filesystem for AI agents using Box CLI (@box/cli). Upload, download, search, share, and sync files to Box cloud storage…  |
 | `claude-workflow-skills`                   | Common Claude Code workflow skills — promote, audit-plugin, audit-standards, improve, and triage                                            |
+| `claudebase`                               | Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles                                             |
 | `claudebase`                               | Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles                                             |
 | `claudebase`                               | Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles                                             |
 | `cli-power-skills`                         | Agentic CLI tool skills — 7 domain-grouped skills covering 26 CLI tools                                                                     |

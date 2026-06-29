@@ -42,7 +42,7 @@ This skill diagnoses both, applies the fixes, and routes deeper work to five bun
 - For DoltHub: a dolt creds keypair authorized on your DoltHub account, and the **DoltHub database must already exist** (create it in the DoltHub UI — the push does **not** auto-create it).
 - For the SQL-capable agents: the dolt-mcp-server binary on PATH (go install github.com/dolthub/dolt-mcp/mcp/cmd/dolt-mcp-server@latest). The plugin's .mcp.json wires it.
 
-## Authentication
+### Authentication
 
 DoltHub pushes authenticate with a dolt creds keypair tied to your account (run dolt login once to create and authorize it), or with the DOLT_REMOTE_USER and DOLT_REMOTE_PASSWORD environment variables. The dolt-mcp connection uses DOLT_USER and DOLT_PASSWORD (bd's local server is unauthenticated by default — user root, empty password).
 
@@ -70,7 +70,6 @@ bd dolt push --remote origin
 - The push is **history-preserving** — it transfers the full Dolt commit history, not a snapshot. (Flat-file dolt table import would lose history; do not use it for an existing bd database.)
 - A PermissionDenied that reaches "Uploading…" first means **the creds work but the DoltHub repo doesn't exist yet** — create it, then re-push.
 - Verify without cloning, via DoltHub's SQL API:
-
   ```bash
   curl -s "https://www.dolthub.com/api/v1alpha1/ORG/REPO/main?q=SELECT%20COUNT(*)%20FROM%20issues"
   ```

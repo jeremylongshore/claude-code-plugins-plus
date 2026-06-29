@@ -1,10 +1,10 @@
 ---
 name: one-page-marketing
-description: 'Build a complete marketing plan covering the full customer journey from stranger to raving fan. Use when the user mentions "marketing plan", "target market", "USP", "lead nurture", "customer lifetime value", "referral program", "marketing strategy", or "PVP Index". Also trigger when building a marketing plan from scratch, choosing acquisition channels, or designing end-to-end customer lifecycle campaigns. Covers the PVP Index, channel selection, and advocacy systems. For brand messaging, see storybrand-messaging. For conversion optimization, see cro-methodology.'
+description: 'Build a complete marketing plan covering the full customer journey from stranger to raving fan. Use when the user mentions "marketing plan", "target market", "USP", "lead nurture", "customer lifetime value", "marketing strategy", "PVP Index", "how do I market my business", "get more customers", "where do I find customers", or "I dont know where to start with marketing". Also trigger when building a marketing plan from scratch, choosing acquisition channels, or designing end-to-end customer-lifecycle campaigns. Covers the PVP Index, channel selection, and advocacy systems. For brand messaging, see storybrand-messaging. For conversion optimization, see cro-methodology.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # The 1-Page Marketing Plan Framework

@@ -1,10 +1,10 @@
 ---
 name: design-everyday-things
-description: 'Apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. Use when the user mentions "why is this confusing", "affordance", "error prevention", "discoverability", "human-centered design", "fault tolerance", "mental model", "mapping", or "seven stages of action". Also trigger when diagnosing why users make mistakes, reducing product complexity, or improving error messages and feedback systems. Covers the gulfs of execution and evaluation. For usability scoring, see ux-heuristics. For iOS-specific patterns, see ios-hig-design.'
+description: 'Apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. Use when the user mentions "why is this confusing", "affordance", "error prevention", "discoverability", "human-centered design", "mental model", "mapping", "seven stages of action", "users keep making mistakes", "this is unintuitive", or "people cant figure out how to use it". Also trigger when diagnosing why users err, reducing product complexity, or improving error messages and feedback. Covers the gulfs of execution and evaluation. For usability scoring, see ux-heuristics. For iOS-specific patterns, see ios-hig-design.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Design of Everyday Things Framework

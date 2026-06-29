@@ -1,10 +1,10 @@
 ---
 name: influence-psychology
-description: 'Apply the six principles of ethical persuasion (reciprocity, commitment, social proof, authority, liking, scarcity) to product design, copy, and sales. Use when the user mentions "social proof", "persuasive copy", "why users dont convert", "ethical persuasion", "reciprocity", "scarcity tactics", or "commitment and consistency". Also trigger when designing testimonial sections, crafting urgency messaging, or improving trust signals on landing pages. For deal negotiation tactics, see negotiation. For viral word-of-mouth, see contagious.'
+description: 'Apply the six principles of ethical persuasion (reciprocity, commitment, social proof, authority, liking, scarcity) to product design, copy, and sales. Use when the user mentions "social proof", "persuasive copy", "why users dont convert", "ethical persuasion", "reciprocity", "scarcity tactics", "commitment and consistency", "make my copy more persuasive", "increase trust", or "get more people to say yes". Also trigger when designing testimonial sections, crafting urgency messaging, or improving trust signals on landing pages. Covers the principles, when each applies, and ethical limits. For deal negotiation tactics, see negotiation. For viral word-of-mouth, see contagious.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Influence Psychology Framework

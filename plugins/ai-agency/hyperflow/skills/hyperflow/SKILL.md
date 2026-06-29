@@ -22,9 +22,7 @@ Codex loads Hyperflow as skills, not as native Claude-style slash commands. Trea
 
 | User says | Run |
 |---|---|
-| `/hyperflow:amplify`, `hyperflow amplify`, `use hyperflow amplify` | `amplify` |
-| `/hyperflow:spec`, `hyperflow spec`, `design with hyperflow` | `spec` |
-| `/hyperflow:scope`, `hyperflow scope`, `decompose with hyperflow` | `scope` |
+| `/hyperflow:plan`, `hyperflow plan`, `design with hyperflow`, `decompose with hyperflow` | `plan` |
 | `/hyperflow:dispatch`, `hyperflow dispatch`, `run the hyperflow plan` | `dispatch` |
 | `/hyperflow:workflow`, `hyperflow workflow`, `run a workflow` | `workflow` |
 | `/hyperflow:trace`, `hyperflow trace`, `debug with hyperflow` | `trace` |
@@ -47,8 +45,7 @@ When Codex exposes multi-agent tools, map Hyperflow agent dispatches to Codex su
 - Hyperflow `Agent` worker/searcher/writer calls map to Codex worker or explorer subagents.
 - If the callable tool is named `multi_agent_v1.spawn_agent`, use `agent_type: worker` for implementer/writer execution and `agent_type: explorer` for search/codebase-research tasks, then collect results before review.
 - Spawn independent sibling workers together when the runtime supports parallel subagent calls.
-- Worker roles use `gpt-5.4` with `low` reasoning in fast mode when model overrides are available and Hyperflow Codex defaults are active.
-- Thinking roles stay in the foreground on `gpt-5.5` with task-adaptive reasoning: `low` for trivial docs/config checks, `medium` for normal planning/review, and `high` for debugging, architecture, security, or final integration review.
+- Every agent runs on the current session model — do not switch models per role. Match reasoning effort to task complexity: `low` for trivial docs/config checks, `medium` for normal planning/review, `high` for debugging, architecture, security, or final integration review.
 - Never request or default to `xhigh`.
 
 When Codex does not expose subagent tools in the current session, use the single-agent port above: execute worker/reviewer phases inline with clear labels and continue.
@@ -57,11 +54,9 @@ For `/hyperflow:workflow`, use the Codex portable workflow adapter instead of fa
 
 Codex also may not expose Claude Code's `Skill` handoff tool. Treat every Hyperflow handoff as an inline auto-chain:
 
-- `amplify` handoff continues into `spec` after the required handoff gate.
-- `spec` continues into `scope` after the approved spec.
-- `scope` continues into `dispatch` after writing the task file.
+- `plan` runs amplify → design → decompose inline, then **stops at its build-location gate** (always asked). It never auto-implements: on "this session" it continues into `dispatch` inline; on "another session" it writes a handoff package; on "stop" it keeps the plan.
 - `dispatch` offers `audit` and `deploy` structural gates, then runs the selected follow-up inline.
-- `audit` fix gates continue into `scope` with the generated audit-fix spec.
+- `audit` fix gates continue into `plan` with the generated audit-fix task (which then stops at its own build-location gate).
 
 Do not stop with "Skill tool unavailable" in Codex. Auto-chain is a behavior contract, not a host API requirement.
 
@@ -79,11 +74,10 @@ Hyperflow Question
 
 Use this fallback for every required clarification or structural gate: Amplify handoff, Spec chain mode, Spec brainstorming questions, Scope ambiguity questions, Dispatch audit/deploy gates, Audit fix gate, Deploy commit-inclusion and push gates, and any security/irreversibility escalation. It is still banned to ask invented confirmation questions such as "should I proceed?".
 
-## Codex Model Policy
+## Codex Reasoning Policy
 
-- Thinking roles use `gpt-5.5`.
-- Worker roles use `gpt-5.4` in fast mode.
-- Resolve thinking reasoning by task/profile: `low` for trivial docs/config checks, `medium` for normal planning/review, and `high` for debugging, architecture, security, and final integration.
+- Every agent runs on the current session model — there is no per-role model selection.
+- Resolve reasoning effort by task/profile: `low` for trivial docs/config checks, `medium` for normal planning/review, and `high` for debugging, architecture, security, and final integration.
 - Never default Codex reasoning to `xhigh`.
 
 ## Core Rules

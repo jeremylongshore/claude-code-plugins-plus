@@ -1,10 +1,10 @@
 ---
 name: hundred-million-offers
-description: 'Create irresistible offers using the Value Equation, bonus stacking, risk-reversing guarantees, and ethical scarcity. Use when the user mentions "pricing strategy", "irresistible offer", "bonuses and guarantees", "value-to-price ratio", "offer naming", "grand slam offer", "guarantee strategy", or "premium pricing justification". Also trigger when packaging products for higher perceived value, designing money-back guarantees, or structuring pricing tiers to maximize conversions. Covers the MAGIC naming formula and starving-crowd targeting. For product positioning, see obviously-awesome. For outbound sales, see predictable-revenue.'
+description: 'Create irresistible offers using the Value Equation, bonus stacking, risk-reversing guarantees, and ethical scarcity. Use when the user mentions "irresistible offer", "bonuses and guarantees", "value-to-price ratio", "offer naming", "grand slam offer", "guarantee strategy", "premium pricing justification", "make my offer more compelling", "what bonuses should I add", "stop discounting", or "people say its too expensive". Also trigger when packaging a product for higher perceived value, designing a money-back guarantee, or structuring tiers to maximize conversions. Covers the MAGIC naming formula and starving-crowd targeting. For product positioning, see obviously-awesome. For outbound sales, see predictable-revenue.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Grand Slam Offer Creation Framework

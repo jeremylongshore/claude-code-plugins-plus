@@ -1,10 +1,10 @@
 ---
 name: cro-methodology
-description: 'Audit websites and landing pages for conversion issues and design evidence-based A/B tests. Use when the user mentions "landing page isnt converting", "conversion rate", "A/B test", "why visitors leave", "objection handling", "bounce rate", "split testing", or "conversion funnel". Also trigger when diagnosing why signups are low, designing experiment hypotheses, or auditing checkout flows for friction points. Covers funnel mapping, persuasion assets, and objection/counter-objection frameworks. For overall marketing strategy, see one-page-marketing. For usability issues, see ux-heuristics.'
+description: 'Audit websites and landing pages for conversion issues and design evidence-based A/B tests. Use when the user mentions "landing page isnt converting", "conversion rate", "A/B test", "why visitors leave", "objection handling", "bounce rate", "split testing", "conversion funnel", "increase signups", "people add to cart but dont buy", or "improve conversions". Also trigger when diagnosing why signups are low, designing experiment hypotheses, or auditing checkout flows for friction points. Covers funnel mapping, persuasion assets, and objection/counter-objection frameworks. For overall marketing strategy, see one-page-marketing. For usability issues, see ux-heuristics.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.3.0"
+  version: "1.4.0"
 ---
 
 # CRO Methodology

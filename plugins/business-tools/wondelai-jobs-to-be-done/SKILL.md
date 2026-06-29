@@ -1,10 +1,10 @@
 ---
 name: jobs-to-be-done
-description: 'Discover what customers truly need by analyzing the "job" they hire your product to do. Use when the user mentions "customer discovery", "why customers churn", "what job does this solve", "competing against luck", "product-market fit", "switching behavior", "milkshake moment", or "functional vs emotional jobs". Also trigger when investigating why users choose competitors, designing features around real customer needs, or reframing product value propositions. Covers JTBD interviews, competition analysis, and jobs-oriented roadmaps. For product positioning, see obviously-awesome. For rapid validation, see design-sprint.'
+description: 'Discover what customers truly need by analyzing the "job" they hire your product to do. Use when the user mentions "customer discovery", "why customers churn", "what job does this solve", "competing against luck", "product-market fit", "switching behavior", "milkshake moment", "functional vs emotional jobs", "why do customers actually buy", or "understand what customers really need". Also trigger when investigating why users choose competitors, designing features around real customer needs, or reframing a value proposition. Covers JTBD interviews, competition analysis, and jobs-oriented roadmaps. For product positioning, see obviously-awesome. For rapid validation, see design-sprint.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.3.0"
+  version: "1.4.0"
 ---
 
 # Jobs to Be Done Framework

@@ -1,10 +1,10 @@
 ---
 name: made-to-stick
-description: 'Craft messages that are understood, remembered, and drive action using the SUCCESs checklist (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Use when the user mentions "make it memorable", "sticky messaging", "tagline", "value proposition", "why the message isnt landing", "knowledge curse", "surprise gap", or "concrete language". Also trigger when writing pitch decks, simplifying complex product explanations, or making presentations more compelling and memorable. For narrative brand frameworks, see storybrand-messaging. For viral sharing, see contagious.'
+description: 'Craft messages that are understood, remembered, and drive action using the SUCCESs checklist (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Use when the user mentions "make it memorable", "sticky messaging", "tagline", "value proposition", "why the message isnt landing", "knowledge curse", "concrete language", "people forget our message", "make this stick", or "no one remembers our pitch". Also trigger when writing a pitch deck, simplifying a complex product explanation, or making a presentation more compelling and memorable. Covers the six SUCCESs traits and the curse of knowledge. For narrative brand frameworks, see storybrand-messaging. For viral sharing, see contagious.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Made to Stick Framework

@@ -1,10 +1,10 @@
 ---
 name: obviously-awesome
-description: 'Define product positioning by mapping competitive alternatives, unique attributes, and best-fit customers to the right market category. Use when the user mentions "positioning", "competitive alternatives", "how to position", "market category", "why customers dont get it", "positioning canvas", "repositioning", or "category creation". Also trigger when launching a new product, entering a crowded market, or diagnosing why prospects dont understand the products value. Covers positioning canvas and team workshops. For customer jobs analysis, see jobs-to-be-done. For go-to-market, see crossing-the-chasm.'
+description: 'Define product positioning by mapping competitive alternatives, unique attributes, and best-fit customers to the right market category. Use when the user mentions "positioning", "competitive alternatives", "how to position", "market category", "why customers dont get it", "positioning canvas", "repositioning", "category creation", "prospects dont understand what we do", "what category are we in", or "how do we explain what we do". Also trigger when launching a new product, entering a crowded market, or diagnosing why prospects dont grasp the product''s value. Covers the positioning canvas and team workshops. For customer jobs analysis, see jobs-to-be-done. For go-to-market, see crossing-the-chasm.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Product Positioning Framework

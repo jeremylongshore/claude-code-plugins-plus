@@ -1,6 +1,6 @@
 # Worker Prompt Template
 
-Use this template when dispatching Sonnet workers via the Agent tool.
+Use this template when dispatching workers via the Agent tool.
 
 ## Template
 
@@ -18,7 +18,7 @@ Use this template when dispatching Sonnet workers via the Agent tool.
 [Injected from .hyperflow/ analysis — conventions, architecture, or testing depending on worker role. Omit section if no project analysis exists.]
 
 ## Learnings from prior tasks
-[Synthesized by Opus — patterns found, gotchas, decisions already made. Omit section if first task.]
+[Synthesized from prior batches — patterns found, gotchas, decisions already made. Omit section if first task.]
 
 ## Constraints
 - Only modify files listed in scope
@@ -43,7 +43,6 @@ Return:
 ```
 Agent({
   description: "Implement user avatar component",
-  model: "sonnet",
   prompt: `## Task
 Create a UserAvatar component that displays user initials with a colored background.
 

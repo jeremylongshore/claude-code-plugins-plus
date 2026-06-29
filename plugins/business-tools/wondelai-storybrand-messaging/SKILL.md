@@ -1,10 +1,10 @@
 ---
 name: storybrand-messaging
-description: 'Clarify brand messaging using narrative structure that positions the customer as hero. Use when the user mentions "brand message", "website copy", "elevator pitch", "one-liner", "messaging isnt resonating", "brand script", "StoryBrand framework", or "customer as hero". Also trigger when rewriting homepage copy, crafting email nurture sequences, or creating consistent messaging across sales collateral and marketing materials. Covers landing page copy, marketing collateral, and consistent communication. For memorable messaging, see made-to-stick. For product positioning, see obviously-awesome.'
+description: 'Clarify brand messaging using narrative structure that positions the customer as hero. Use when the user mentions "brand message", "website copy", "elevator pitch", "one-liner", "messaging isnt resonating", "brand script", "StoryBrand framework", "customer as hero", "rewrite my homepage", "clarify my message", or "my website copy is confusing". Also trigger when rewriting homepage copy, crafting email nurture sequences, or creating consistent messaging across sales and marketing collateral. Covers landing page copy, marketing collateral, and consistent communication. For memorable messaging, see made-to-stick. For product positioning, see obviously-awesome.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.3.0"
+  version: "1.4.0"
 ---
 
 # StoryBrand Messaging Framework

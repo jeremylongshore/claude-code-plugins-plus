@@ -4,12 +4,33 @@
     "path": ".",
     "branch": "main"
   },
-  "last_sync": "2026-06-24T00:00:00.000Z",
+  "last_sync": "2026-06-29T07:42:48.490Z",
   "author": {
     "name": "Jeremy Longshore",
     "github": "jeremylongshore",
     "email": "jeremy@intentsolutions.io"
   },
   "license": "Apache-2.0",
-  "files_synced": 19
+  "files_synced": 19,
+  "files": [
+    ".claude-plugin/marketplace.json",
+    ".claude-plugin/plugin.json",
+    ".mcp.json",
+    "LICENSE",
+    "README.md",
+    "agents/bead-dependency-mapper.md",
+    "agents/bead-epic-auditor.md",
+    "agents/bead-recovery-specialist.md",
+    "agents/beads-guru.md",
+    "agents/dolt-sync-advisor.md",
+    "scripts/dep-graph.sh",
+    "scripts/dolt-idle-reaper.sh",
+    "scripts/dolt-mcp-client.py",
+    "scripts/dolt-push-dolthub.sh",
+    "scripts/epic-closure-audit.sh",
+    "scripts/server-health.sh",
+    "skills/beads-dolt/SKILL.md",
+    "skills/beads-dolt/eval.yaml",
+    "skills/beads-dolt/references/beads-dolt-internals.md"
+  ]
 }

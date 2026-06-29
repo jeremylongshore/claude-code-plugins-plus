@@ -1,6 +1,16 @@
 # Task Tracking
 
-Persist active task state across sessions as individual files in `.hyperflow/tasks/`. One file per task. Created AFTER research, BEFORE implementation. Dynamic — updated throughout execution. Deleted on completion.
+Persist active task state across sessions as individual files in `.hyperflow/tasks/`. One roster file per task (`<slug>.md`). Created AFTER research, BEFORE implementation. Dynamic — updated throughout execution. Deleted on completion.
+
+> **Briefs sidecar.** The roster `<slug>.md` stays terse; the full, build-ready implementation brief for each
+> non-trivial sub-task lives next to it in `.hyperflow/tasks/<slug>/T<id>.md` (authored by `/hyperflow:plan` Step 9c,
+> format in [artefact-format.md](artefact-format.md)). `dispatch` loads each brief verbatim. When the task completes,
+> delete the `<slug>/` brief dir alongside `<slug>.md` (or let auto-archive move both).
+
+> **Two modes.** This flat one-file-per-task model is used for **single-phase work**. Work large enough to split
+> into **≥ 2 sequential phases** uses the **feature/phase folder structure** instead — a `.hyperflow/features/<slug>/`
+> tree whose phase sub-folders each encapsulate their own `tasks/`, design, research, and decisions. See
+> [feature-phases.md](feature-phases.md). The Planner (scope Step 3) picks the mode during decomposition.
 
 ## Task File Format
 
@@ -77,15 +87,15 @@ Pattern: `<verb>-<short-description>.md` in kebab-case.
 ```
 User request
     |
-[Opus] RESEARCH — dispatch searchers to explore code
+RESEARCH — dispatch searchers to explore code
     |
-[Opus] PLAN — decompose based on research findings
+PLAN — decompose based on research findings
     |
-[Opus] CREATE task files (comprehensive, with research findings)
+CREATE task files (comprehensive, with research findings)
     |
-[Opus] Dispatch workers
+Dispatch workers
     |
-[Opus] UPDATE task files dynamically:
+UPDATE task files dynamically:
     |   - Check off completed sub-tasks
     |   - Add new sub-tasks discovered during work
     |   - Remove sub-tasks that are unnecessary
@@ -93,7 +103,7 @@ User request
     |   - Append to Progress with timestamps
     |   - Add Learnings as discoveries happen
     |
-[Opus] Review → APPROVED → DELETE task file
+Review → APPROVED → DELETE task file
     |         → NEEDS_FIX → update task file, re-dispatch
 ```
 

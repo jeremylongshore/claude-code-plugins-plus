@@ -1,10 +1,10 @@
 ---
 name: predictable-revenue
-description: 'Build a scalable outbound B2B sales process with specialized roles (SDR, AE, CSM). Use when the user mentions "outbound sales", "Cold Calling 2.0", "prospecting emails", "sales pipeline", "SDR process", "B2B SaaS sales", "sales development", or "pipeline velocity". Also trigger when setting up a sales team from scratch, designing cold email sequences, or building qualification frameworks to improve close rates. Covers lead generation, qualification frameworks, and separating prospecting from closing. For offer design, see hundred-million-offers. For persuasion science, see influence-psychology.'
+description: 'Build a scalable outbound B2B sales process with specialized roles (SDR, AE, CSM). Use when the user mentions "outbound sales", "Cold Calling 2.0", "prospecting emails", "sales pipeline", "SDR process", "B2B SaaS sales", "sales development", "pipeline velocity", "build an outbound sales team", "fill my sales pipeline", or "cold outreach that actually works". Also trigger when setting up a sales team from scratch, designing cold-email sequences, or building qualification frameworks to improve close rates. Covers lead generation, qualification frameworks, and separating prospecting from closing. For offer design, see hundred-million-offers. For persuasion science, see influence-psychology.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Predictable Revenue Framework

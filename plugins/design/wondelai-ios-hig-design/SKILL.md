@@ -1,10 +1,10 @@
 ---
 name: ios-hig-design
-description: 'Design native iOS interfaces following Apple Human Interface Guidelines. Use when the user mentions "iPhone app", "iPad layout", "SwiftUI", "UIKit", "Dynamic Island", "safe areas", "HIG compliance", "SF Symbols", "haptic feedback", or "iOS accessibility". Also trigger when building tab bars, navigation stacks, sheets, or modals for iOS, implementing dark mode, or adapting layouts for different screen sizes. Covers navigation patterns, accessibility, SF Symbols, and platform conventions. For general UI polish, see refactoring-ui. For affordance design, see design-everyday-things.'
+description: 'Design native iOS interfaces following Apple Human Interface Guidelines. Use when the user mentions "iPhone app", "iPad layout", "SwiftUI", "UIKit", "Dynamic Island", "safe areas", "HIG compliance", "SF Symbols", "haptic feedback", "iOS accessibility", "make my app feel native", or "follow Apple design guidelines". Also trigger when building tab bars, navigation stacks, sheets, or modals for iOS, implementing dark mode, or adapting layouts across screen sizes. Covers navigation patterns, accessibility, SF Symbols, and platform conventions. For general UI polish, see refactoring-ui. For affordance design, see design-everyday-things.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.3.0"
+  version: "1.4.0"
 ---
 
 # iOS Human Interface Guidelines Design Skill

@@ -6,15 +6,17 @@ Applies to every planning artefact the orchestrator produces. **All artefacts li
 
 | Artefact | Path | Written by |
 |---|---|---|
-| Task decomposition | `.hyperflow/tasks/<slug>.md` | `scope` Step 4 |
+| Task decomposition (single-phase) | `.hyperflow/tasks/<slug>.md` | `scope` Step 4 |
+| Feature (multi-phase) | `.hyperflow/features/<slug>/feature.md` + `phase-<n>-<name>/` folders | `scope` Step 4 — see [feature-phases.md](feature-phases.md) |
 | Spec (final) | `.hyperflow/specs/<slug>.md` | `spec` Step 8 |
 | Spec (in-progress draft) | `.hyperflow/specs/<slug>.draft.md` | `spec` Step 7 progressive |
+| Design system (living) | `.hyperflow/design/system.md` | `design` Step 2 · `designer` agent |
 | Audit findings | `.hyperflow/audits/<YYYY-MM-DD-HHmm>-<scope>.md` | `audit` Step 5 |
 | Audit-fix spec | `.hyperflow/specs/audit-<YYYY-MM-DD>-<slug>.md` | `audit` Step 6 fix-gate |
 | Project memory | `.hyperflow/memory/<category>.md` | `scope` Step 6 · `cache` CRUD |
 | Layer-0 analysis | `.hyperflow/profile.md`, `architecture.md`, etc. | `scaffold` |
 
-The `docs/` folder is reserved for polished end-user / contributor documentation (installation guide, provider setup, model-routing reference). Never put a working spec or task plan there.
+The `docs/` folder is reserved for polished end-user / contributor documentation (installation guide, provider setup). Never put a working spec or task plan there.
 
 ## Core conventions
 
@@ -40,7 +42,8 @@ A markdown table that summarises the artefact's current state. The user reads th
 | Branch     | `feat/<slug>`                                    |
 | Commits    | 7 since main · per-task cadence                  |
 | Wall-clock | 12m elapsed · ETA ~8m                            |
-| Tokens     | thinking 145k · worker 220k · total 365k         |
+| Tokens     | 30 agents · ~365k total                          |
+| Specialists| `api-reviewer, security-reviewer · debugger`     |
 ```
 
 Field rules:
@@ -49,6 +52,7 @@ Field rules:
 - **Progress** — only on task files; spec files use `Section 4 / 5 approved` style; audit files omit the row (use Verdict instead — see audit additions below)
 - **Branch / Commits** — only on task files (omit rows on spec/audit files)
 - **Wall-clock / Tokens** — only when live (omit rows on completed-and-archived files; or replace with totals + `· final`)
+- **Specialists** — the Brain-decided responsible specialist agents ([`../../agents/README.md`](../../agents/README.md)) for this artefact; present on spec + task files so `dispatch`/`audit` inherit the roster (omit only when none apply)
 - Progress-bar string goes in backticks so the box-drawing characters render as inline code and don't trigger markdown italics on `*` or emphasis on `_`
 - Always exactly two columns (Field / Value). Markdown auto-pads to the widest cell — no character counting required
 
@@ -76,16 +80,35 @@ Use `↓` for sequential, ` · ` (space-dot-space) for parallel siblings on one 
 
 ## Per-task / per-section line format
 
-Each sub-task or section gets one checkbox line + one indented detail line. No multi-paragraph descriptions in task files (those go in the spec).
+The `<slug>.md` task file is a terse **roster**: each sub-task or section gets one checkbox line + one indented detail line. No multi-paragraph descriptions in the *roster* file — the full implementation detail lives in the per-sub-task **brief file** (below), and design detail in the spec.
 
 ```
 - [x] T1 — Writer · Author compaction protocol reference
-       Read: spec, cache/SKILL.md · Create: skills/cache/references/compaction.md · Complexity: medium
+       Read: spec, cache/SKILL.md · Create: skills/cache/references/compaction.md · Complexity: medium · Specialist: searcher · Brief: <slug>/T1.md
 - [ ] T2 — Implementer · Add memory.compactionThreshold to config/schema.json
-       Modify: config/schema.json · Complexity: low
+       Modify: config/schema.json · Complexity: low · Specialist: backend-reviewer
 ```
 
-The detail line is two spaces indented + the file path(s) + complexity. Long task descriptions move to the spec file.
+The detail line is two spaces indented + the file path(s) + complexity + the responsible specialist, and — for non-trivial sub-tasks — a `Brief: <slug>/T<id>.md` pointer to the full brief. **Trivial** sub-tasks (1 file ∧ ~≤10 LOC ∧ obvious — a typo, a single config flag) carry NO brief pointer and get only this terse line; don't over-document a typo.
+
+## Per-sub-task brief file (`.hyperflow/tasks/<slug>/T<id>.md`)
+
+`/hyperflow:plan` authors a full, self-contained implementation brief per **non-trivial** sub-task so the build runs faithfully on a cheaper model (or a second handoff session) — the strong planning model pays the authoring cost once; dispatch transcribes. The brief is the [`worker-prompt.md`](worker-prompt.md) body, written at plan time:
+
+```
+## Task          — one verb-led objective
+## Why           — 1-3 sentences; what changes for the user/system
+## Scope         — IN: what this brief owns · OUT: what siblings own / is deferred
+## Files in scope — Read / Modify / Create, each with the EXACT change described (spec-level prose, no code skeletons)
+## Acceptance criteria — concrete shape-level PASS checks the Reviewer verifies
+## Test cases    — the realistic domain set (no formulaic placeholders) + ≥1 end-to-end / integration scenario
+                   (real inputs → real expected outcome; name the tool — Playwright / Maestro / supertest / …),
+                   or an explicit `E2E: N/A — <why>`
+## Related context — file:line patterns to mirror, related sibling sub-task IDs
+## Gotchas       — convention traps, edge cases, irreversible steps
+```
+
+Spec-level prose only — describe the change, the implementer writes the code. The brief is the **contract**: the per-batch Reviewer PASS/NEEDS_FIX against its Acceptance criteria + Test cases (including the E2E case). In `feature` mode the same brief content lives in each `phase-<n>-<name>/tasks/T<id>.md`.
 
 ## Scope-at-a-glance table
 
@@ -123,9 +146,9 @@ The `Skipped` section is mandatory when the spec lists files that the Planner co
 ## Cost table
 
 ```
-| Tier      | Agents | Tokens   |
+| Role      | Agents | Tokens   |
 |-----------|-------:|---------:|
-| Thinking  |     16 |     ~80k |
+| Reviewer  |     16 |     ~80k |
 | Worker    |     14 |    ~140k |
 | **Total** | **30** | **~220k**|
 ```
@@ -139,6 +162,8 @@ Spec files add three extra sections beyond the task-file template:
 1. **TL;DR** — first H2 under the status block. 2–3 sentences in plain English. What the feature does + the single most important design decision.
 2. **Components** — bullet list of named components (compact subcommand handler, Compaction Writer, etc.) with one-line role. Lets the Planner cross-reference Section 1 names without re-reading the architecture prose.
 3. **Trade-offs accepted / rejected** — explicit list at the end of `## 3. Key decisions`. What the design said no to and why. Most useful section for future implementers and audit reviewers.
+
+When the [`architect`](../../agents/architect.md) agent authored the design (architect-typed / high-complexity / multi-subsystem work), `## 1. Architecture` embeds a Mermaid component/container graph and `## 2. Data flow` embeds a Mermaid data-flow diagram — the diagram precedes the implementation. These are fenced ` ```mermaid ` blocks (not the plain-Unicode dependency diagram above, which stays ASCII); the Step 8 final-spec Reviewer checks both graphs are present.
 
 ## Audit file additions
 
@@ -176,7 +201,7 @@ The orchestrator's chat output during artefact creation should be the *index poi
 
 - **One short status box** when the artefact is written (or finalized). Includes: file path, line count, lifecycle phase.
 - **No file content** echoed into chat. Even for review summaries — the file is the source of truth.
-- **Hand-off lines** are one sentence: `Plan ready — .hyperflow/tasks/<slug>.md (5 batches · 15 sub-tasks). Auto-chaining to /hyperflow:dispatch...`
+- **Hand-off lines** are one sentence followed by the build-location gate: `Plan ready — .hyperflow/tasks/<slug>.md (5 batches · 15 sub-tasks). Where should this be built?`
 - **Gate prompts** reference the file: `Design draft ready at .hyperflow/specs/<slug>.draft.md — review the file, then approve or revise.`
 
 Chat scrolls; files persist. Long-form goes to files.

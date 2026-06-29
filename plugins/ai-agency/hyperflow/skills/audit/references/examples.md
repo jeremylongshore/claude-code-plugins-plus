@@ -19,7 +19,7 @@ Verdict: NEEDS_FIX
 [Suggestions]
 - src/auth/types.ts:5 — TokenClaims interface could be a discriminated union for refresh vs access tokens.
 ───────────────────────────────────────
-Agents: 1 searcher (sonnet) · 1 reviewer (opus)
+Agents: 2 total · ~Xk tokens
 
 ?  Audit found 3 issues — apply fixes?
    Fix all (Recommended)   — Critical + Important + Suggestions
@@ -53,8 +53,8 @@ Audit clean — no fixes needed.
 
 ## Resources
 
-- [DOCTRINE.md](references/DOCTRINE.md) — orchestration rules (especially #8 structural gates, #12 per-step agents).
+- [DOCTRINE.md](../../hyperflow/DOCTRINE.md) — orchestration rules (especially #8 structural gates, #12 per-step agents).
 - [review-levels.md](references/review-levels.md) — full checklist for L1-L5.
-- [reviewer-prompt.md](references/reviewer-prompt.md) — Opus reviewer template.
+- [reviewer-prompt.md](references/reviewer-prompt.md) — reviewer template.
 - [security.md](references/security.md) — security scan policy (mandatory at L3+).
 - [memory-system.md](references/memory-system.md) — how patterns are persisted.

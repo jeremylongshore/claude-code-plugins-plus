@@ -38,7 +38,7 @@ Files in `.hyperflow/memory/` that have a defined producer, consumer, and inject
 
 Always loaded at session start alongside other hot-tier entries. Every worker prompt receives it regardless of task tags.
 
-- **Producer:** audit Step 4d dispatches a Writer that reads the existing file, extracts up to 3 new entries from `[Critical]` and `[Important]` findings, and appends or increments frequency counters. The Step 4d Sonnet Reviewer validates dedup and frequency accuracy before the write lands.
+- **Producer:** audit Step 4d dispatches a Writer that reads the existing file, extracts up to 3 new entries from `[Critical]` and `[Important]` findings, and appends or increments frequency counters. The Step 4d Reviewer validates dedup and frequency accuracy before the write lands.
 - **Consumer:** injected into every worker prompt under `## Known anti-patterns` at session start. Workers use it to avoid repeating mistakes that prior audits flagged.
 - **Format:**
   ```markdown

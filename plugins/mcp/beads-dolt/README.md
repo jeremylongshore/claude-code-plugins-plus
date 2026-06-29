@@ -24,7 +24,6 @@ This plugin builds on, and credits, two open-source projects:
 
 - [`bd`](https://github.com/gastownhall/beads) ≥ 1.0.4 with a Dolt-backed workspace.
 - The Dolt MCP server binary on `PATH`. Install it one of these ways:
-
   ```bash
   go install github.com/dolthub/dolt-mcp/mcp/cmd/dolt-mcp-server@latest   # native (Go)
   # or

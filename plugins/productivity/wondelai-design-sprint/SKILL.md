@@ -1,10 +1,10 @@
 ---
 name: design-sprint
-description: 'Run a structured 5-day process to prototype, test, and validate product ideas with real users. Use when the user mentions "design sprint", "validate in a week", "rapid prototype", "test with users", "de-risk before building", "GV sprint", "prototype testing", or "design workshop". Also trigger when a team needs to make a critical product decision quickly, resolve stakeholder disagreements, or test risky ideas before investing in development. Covers mapping, sketching, deciding, prototyping, and testing. For ongoing experimentation, see lean-startup. For customer job analysis, see jobs-to-be-done.'
+description: 'Run a structured 5-day process to prototype, test, and validate product ideas with real users. Use when the user mentions "design sprint", "validate in a week", "rapid prototype", "test with users", "de-risk before building", "GV sprint", "prototype testing", "design workshop", "should we build this", "validate an idea fast", or "test before we build". Also trigger when a team must make a critical product decision quickly, resolve stakeholder disagreements, or test a risky idea before investing in development. Covers mapping, sketching, deciding, prototyping, and testing. For ongoing experimentation, see lean-startup. For customer job analysis, see jobs-to-be-done.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Design Sprint Framework

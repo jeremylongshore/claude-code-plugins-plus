@@ -1,10 +1,10 @@
 ---
 name: traction-eos
-description: 'Implement the Entrepreneurial Operating System (EOS) to align vision and execution across a company. Use when the user mentions "EOS", "V/TO", "quarterly rocks", "Level 10 meetings", "accountability chart", "IDS process", "Entrepreneurial Operating System", or "business operating system". Also trigger when a growing company needs meeting structure, goal-setting frameworks, or a systematic approach to solving recurring organizational issues. Covers the six EOS components: Vision, People, Data, Issues, Process, Traction. For team motivation design, see drive-motivation. For lean experimentation, see lean-startup.'
+description: 'Implement the Entrepreneurial Operating System (EOS) to align vision and execution across a company. Use when the user mentions "EOS", "V/TO", "quarterly rocks", "Level 10 meetings", "accountability chart", "IDS process", "Entrepreneurial Operating System", "business operating system", "my company feels chaotic", "we keep having the same problems", or "get the whole team aligned". Also trigger when a growing company needs meeting structure, goal-setting frameworks, or a systematic way to solve recurring organizational issues. Covers the six EOS components: Vision, People, Data, Issues, Process, Traction. For team motivation design, see drive-motivation. For lean experimentation, see lean-startup.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Entrepreneurial Operating System (EOS)
