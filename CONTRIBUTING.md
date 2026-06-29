@@ -94,7 +94,7 @@ Best when you want a one-time submission and don't expect frequent updates.
 7. Run `pnpm run sync-marketplace` to regenerate the CLI-compatible catalog.
 8. Run `./scripts/quick-test.sh` -- this must pass before opening a PR.
 
-Only these fields are allowed in `plugin.json`: `name`, `version`, `description`, `author`, `repository`, `homepage`, `license`, `keywords`. CI rejects anything else.
+`plugin.json` recognizes Anthropic's GA manifest fields — `name` (the only strictly required one), `version`, `description`, `author`, `repository`, `homepage`, `license`, `keywords`, plus newer GA fields like `displayName`, `dependencies`, `userConfig`, `channels`, and `$schema`, and the component-declaration keys (`commands`, `agents`, `skills`, `hooks`, `mcpServers`, …). Unrecognized fields **warn** by default — matching Anthropic's own `claude plugin validate` — and are promoted to errors only under the validator's `--strict` flag; a field with the wrong type, or a missing `name`, always fails. See `000-docs/SCHEMA_CHANGELOG.md` (schema 3.12.0 / 3.13.0).
 
 ### Path B — Auto-sync from your own repo (your repo stays source of truth)
 
