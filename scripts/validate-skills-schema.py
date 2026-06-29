@@ -134,11 +134,21 @@ except ImportError:
 #                       "Unknown field … not in Anthropic spec." TYPE_MAP gained
 #                       `boolean` (for defaultEnabled). Spec-compliance fix
 #                       (NON-NEGOTIABLE #6: adding missing documented fields).
-#                       Unknown-field error-vs-warning semantics UNCHANGED — that
-#                       flip is NON-NEGOTIABLE #7 (needs sign-off) and is tracked
-#                       separately. No change to any required-fields set or tier.
+#                       Unknown-field error-vs-warning semantics UNCHANGED in
+#                       3.12.0 — that flip is NON-NEGOTIABLE #7 (needs sign-off),
+#                       landed in 3.13.0. No change to any required-fields set/tier.
+# 3.13.0 (2026-06-28) — plugin.json UNRECOGNIZED fields: ERROR -> WARNING by
+#                       default; new --strict flag promotes them back to errors
+#                       (mirrors `claude plugin validate --strict`). Wrong-type
+#                       fields + missing required 'name' stay errors. Now
+#                       consistent with the SKILL.md + agent validators, which
+#                       already warn (never error) on unknown fields. Adds a
+#                       difflib "did you mean" near-miss hint. NON-NEGOTIABLE #7
+#                       error-vs-warning change — APPROVED by Jeremy Longshore
+#                       2026-06-28 (sign-off recorded in the PR thread). No change
+#                       to any required-fields set or tier semantics.
 # See 000-docs/SCHEMA_CHANGELOG.md.
-SCHEMA_VERSION = "3.12.0"
+SCHEMA_VERSION = "3.13.0"
 
 # Validation tiers
 TIER_STANDARD = "standard"
@@ -1625,8 +1635,22 @@ def find_plugin_json_files(root: Path) -> List[Path]:
     return results
 
 
-def validate_plugin_json(path: Path) -> Dict[str, Any]:
-    """Validate a single plugin.json file (standalone, for batch mode)."""
+def validate_plugin_json(path: Path, strict: bool = False) -> Dict[str, Any]:
+    """Validate a single plugin.json file (standalone, for batch mode).
+
+    Unrecognized top-level fields are reported as WARNINGS by default and only
+    become errors under ``strict=True`` (the ``--strict`` flag). This mirrors
+    Anthropic's own ``claude plugin validate``, which "reports unrecognized
+    fields as warnings, not errors … a plugin with only unrecognized-field
+    warnings still passes validation and loads at runtime" (plugins-reference
+    § "Unrecognized fields"), and is consistent with how this validator already
+    treats unknown SKILL.md and agent fields (warn, never error). A wrong-TYPE
+    field and a missing required ``name`` stay hard errors at every level —
+    Anthropic fails those too.
+
+    NON-NEGOTIABLE #7 error-vs-warning change, approved by Jeremy Longshore
+    2026-06-28 (see SCHEMA_CHANGELOG 3.13.0 + the sign-off in the PR thread).
+    """
     errors: List[str] = []
     warnings: List[str] = []
 
@@ -1644,7 +1668,15 @@ def validate_plugin_json(path: Path) -> Dict[str, Any]:
     valid_fields = set(PLUGIN_JSON_FIELDS.keys())
     for key in pj:
         if key not in valid_fields:
-            errors.append(f"Unknown field: '{key}' — not in Anthropic spec")
+            # Anthropic suggests the likely intended name when a field is a
+            # near-miss of a recognized one; mirror that.
+            near = difflib.get_close_matches(key, valid_fields, n=1, cutoff=0.8)
+            hint = f" (did you mean '{near[0]}'?)" if near else ""
+            msg = (
+                f"Unrecognized field: '{key}' — not in the Anthropic plugin "
+                f"manifest spec; ignored at load{hint}"
+            )
+            (errors if strict else warnings).append(msg)
 
     TYPE_MAP = {"string": str, "object": dict, "array": list, "boolean": bool}
     for key, value in pj.items():
@@ -4138,9 +4170,14 @@ def validate_skill(path: Path, tier: str = TIER_STANDARD) -> Dict[str, Any]:
     }
 
 
-def validate_plugin(plugin_dir: Path, tier: str = TIER_STANDARD) -> Dict[str, Any]:
+def validate_plugin(
+    plugin_dir: Path, tier: str = TIER_STANDARD, strict: bool = False
+) -> Dict[str, Any]:
     """Validate a plugin as a complete unit.
     Walks all components and rolls up scores.
+
+    `strict` promotes plugin.json unrecognized-field warnings to errors
+    (the `--strict` flag); see validate_plugin_json.
     """
     errors: List[str] = []
     warnings: List[str] = []
@@ -4150,7 +4187,7 @@ def validate_plugin(plugin_dir: Path, tier: str = TIER_STANDARD) -> Dict[str, An
 
     # 1. Validate plugin.json — delegate to validate_plugin_json to avoid duplicating logic
     if plugin_json_path.exists():
-        pj_result = validate_plugin_json(plugin_json_path)
+        pj_result = validate_plugin_json(plugin_json_path, strict=strict)
         for err in pj_result["errors"]:
             errors.append(f"[plugin.json] {err}")
         for warn in pj_result["warnings"]:
@@ -4951,6 +4988,15 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--strict",
+        action="store_true",
+        help=(
+            "Promote plugin.json unrecognized-field WARNINGS to errors "
+            "(mirrors `claude plugin validate --strict`). Wrong-type fields and "
+            "a missing required 'name' are errors regardless of this flag."
+        ),
+    )
+    parser.add_argument(
         "path",
         nargs="?",
         default=None,
@@ -4997,7 +5043,7 @@ def main() -> int:
             return 1
         if target.is_dir():
             # Plugin directory mode
-            result = validate_plugin(target, tier)
+            result = validate_plugin(target, tier, strict=args.strict)
             print(f"🔍 CLAUDE CODE PLUGIN VALIDATOR v7.0 / schema {SCHEMA_VERSION} ({tier} tier)")
             print(f"   Plugin mode: {target}")
             print(f"{'=' * 70}\n")
@@ -5384,7 +5430,7 @@ def main() -> int:
         print(f"\nFound {len(plugin_jsons)} plugin.json files")
     for pj_file in plugin_jsons:
         rel = pj_file.relative_to(repo_root)
-        result = validate_plugin_json(pj_file)
+        result = validate_plugin_json(pj_file, strict=args.strict)
 
         if result["errors"]:
             print(f"❌ {rel} (plugin.json):")

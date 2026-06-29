@@ -35,10 +35,10 @@ GA_FIELDS = (
 )
 
 
-def _validate(tmp_path: Path, manifest: dict):
+def _validate(tmp_path: Path, manifest: dict, strict: bool = False):
     pj = tmp_path / "plugin.json"
     pj.write_text(json.dumps(manifest), encoding="utf-8")
-    return validator.validate_plugin_json(pj)
+    return validator.validate_plugin_json(pj, strict=strict)
 
 
 def test_ga_fields_are_in_the_allowlist():
@@ -79,9 +79,25 @@ def test_name_is_still_the_only_required_field(tmp_path):
     assert any("name" in e.lower() for e in result["errors"]), result
 
 
-def test_genuinely_unknown_field_still_flagged(tmp_path):
-    # NON-NEGOTIABLE #7 unchanged: a non-spec field is still reported (as today,
-    # an error). This test pins that the GA additions did NOT silently widen the
-    # allowlist to accept arbitrary keys.
+def test_unknown_field_is_a_warning_not_an_error_by_default(tmp_path):
+    # SCHEMA 3.13.0 (NON-NEGOTIABLE #7, approved): unrecognized fields warn,
+    # matching `claude plugin validate`. A plugin with only such warnings passes.
     result = _validate(tmp_path, {"name": "demo", "totallyMadeUpField": 1})
+    assert result["errors"] == [], result["errors"]
+    assert any("totallyMadeUpField" in w for w in result["warnings"]), result
+
+
+def test_unknown_field_becomes_error_under_strict(tmp_path):
+    result = _validate(tmp_path, {"name": "demo", "totallyMadeUpField": 1}, strict=True)
     assert any("totallyMadeUpField" in e for e in result["errors"]), result
+
+
+def test_near_miss_field_gets_a_did_you_mean_hint(tmp_path):
+    result = _validate(tmp_path, {"name": "demo", "displayNam": "Typo"})
+    assert any("did you mean 'displayName'" in w for w in result["warnings"]), result
+
+
+def test_wrong_type_is_always_an_error_even_without_strict(tmp_path):
+    # Anthropic fails wrong-type fields regardless of --strict; so do we.
+    result = _validate(tmp_path, {"name": "demo", "keywords": "should-be-an-array"})
+    assert any("keywords" in e for e in result["errors"]), result

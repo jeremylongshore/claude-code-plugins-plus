@@ -159,7 +159,12 @@ Notes:
 
 ## 6. Invalid Fields (Not in Anthropic Spec)
 
-These fields are **not** part of the official Anthropic spec and are flagged by CI:
+These fields are **not** part of the official Anthropic spec. They are reported as
+**warnings** (not errors) by `validate_plugin_json`, matching Anthropic's own
+`claude plugin validate` — a plugin with only unrecognized-field warnings still
+passes and loads at runtime. Pass **`--strict`** to promote these warnings to
+errors in CI. A field whose **type** is wrong (e.g. `keywords` as a string) is
+always an error, `--strict` or not.
 
 > Note: `displayName` was previously listed here as invalid. It is now a **GA**
 > manifest field (Claude Code v2.1.143+) and is accepted — see sections 2 and 4.
@@ -179,7 +184,7 @@ These fields are **not** part of the official Anthropic spec and are flagged by 
 
 ### Structural rules
 
-- The 22 Anthropic spec fields (section 4) and the 2 IS-extension fields (section 2.5) are accepted. Other unknown fields are flagged — see `.github/workflows/validate-plugins.yml` for the current enforced gate (JSON validity + README existence + script executability + source path existence).
+- The 22 Anthropic spec fields (section 4) and the 2 IS-extension fields (section 2.5) are accepted. Other unrecognized fields produce **warnings** (errors only under `--strict`), matching `claude plugin validate`; a wrong-**type** field is always an error. See `.github/workflows/validate-plugins.yml` for the current enforced gate (JSON validity + README existence + script executability + source path existence).
 - `plugin.json` must be valid JSON (no trailing commas, no comments).
 - File must be located at `.claude-plugin/plugin.json` relative to plugin root.
 

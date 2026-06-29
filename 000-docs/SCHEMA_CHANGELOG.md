@@ -146,6 +146,42 @@ compliance are welcome; structural changes to the IS rubric are not.
 
 ---
 
+## [3.13.0] — 2026-06-28 — plugin.json unrecognized-field handling: error → warning, + `--strict` (NON-NEGOTIABLE #7, **approved**)
+
+**Error-vs-warning semantics change — NON-NEGOTIABLE #7. APPROVED by Jeremy
+Longshore 2026-06-28** (sign-off recorded in the PR thread before landing).
+
+`validate_plugin_json()` previously appended every unrecognized top-level
+plugin.json field as an **ERROR** (`Unknown field … not in Anthropic spec`).
+That hard-rejected valid current Anthropic plugins and diverged from the platform
+in two ways:
+
+1. **Anthropic's own `claude plugin validate` reports unrecognized fields as
+   warnings, not errors** — "a plugin with only unrecognized-field warnings still
+   passes validation and loads at runtime" (plugins-reference § "Unrecognized
+   fields", verified live 2026-06-28). Only `--strict` promotes them to errors;
+   wrong-*type* fields still fail.
+2. **This validator already warns (never errors) on unknown SKILL.md fields
+   (`validate_frontmatter`, "UNKNOWN FIELDS") and unknown agent fields
+   (`validate_agent`).** The plugin.json path erroring was the lone outlier.
+
+Changes:
+
+- Unrecognized plugin.json field → **WARNING** by default (was ERROR).
+- New **`--strict`** CLI flag promotes those warnings back to errors (mirrors
+  `claude plugin validate --strict`); thread through `validate_plugin` /
+  `validate_plugin_json`. CI may opt in to catch typos before publishing.
+- Wrong-**type** field and missing required **`name`** stay hard errors at every
+  level — Anthropic fails those too.
+- Adds a `difflib` near-miss "did you mean '<field>'?" hint, matching Anthropic's
+  typo suggestion.
+
+**Unchanged:** every required-fields set (SKILL `ALWAYS_REQUIRED`, agent floor),
+tier model, and the missing-required-field-is-an-ERROR rule (NON-NEGOTIABLES
+#1, #2). This change is strictly about *unrecognized* fields, not *required* ones.
+
+---
+
 ## [3.12.0] — 2026-06-28 — plugin.json manifest brought up to current Anthropic GA spec (additive)
 
 **Additive MINOR — no change to any required-field set, tier model, or
