@@ -142,7 +142,9 @@ load_config() {
     fi
 
     # Combine default + custom exclusions (additive pattern)
-    ALL_EXCLUDES=("${DEFAULT_EXCLUDES[@]}" "${EXCLUDE_PATHS[@]}")
+    # Use conditional expansion to avoid unbound variable error on bash 3.2 (macOS default)
+    # when EXCLUDE_PATHS is empty and set -u is active.
+    ALL_EXCLUDES=("${DEFAULT_EXCLUDES[@]}" "${EXCLUDE_PATHS[@]+"${EXCLUDE_PATHS[@]}"}")
 }
 
 # ============================================================================
