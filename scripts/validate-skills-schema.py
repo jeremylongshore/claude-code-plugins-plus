@@ -147,8 +147,21 @@ except ImportError:
 #                       error-vs-warning change — APPROVED by Jeremy Longshore
 #                       2026-06-28 (sign-off recorded in the PR thread). No change
 #                       to any required-fields set or tier semantics.
+# 3.14.0 (2026-06-28) — L2 consumer-cutover (692-AA-AACR § 0.5): PLUGIN_JSON_FIELDS
+#                       is now drift-gated against the kernel's CURRENT (authoring/v2)
+#                       plugin-manifest field surface via load_kernel_plugin_fields()
+#                       + a `plugin_manifest` block in kernel_shadow_report() — so the
+#                       next upstream plugin-manifest field the kernel captures is
+#                       CAUGHT in the kernel-shadow CI lane instead of needing a
+#                       hand-patch (the failure mode that produced 3.12.0). The shadow
+#                       immediately surfaced one drift — the kernel sanctions a
+#                       `metadata` plugin.json field (authoring/v2 is-overlay) CCPI
+#                       lacked — now adopted into PLUGIN_JSON_FIELDS (fields match).
+#                       Advisory (PLUGIN_JSON_FIELDS stays authoritative until the
+#                       DR-049 flip). Reads authoring/V2 (v1 plugin-manifest is stale);
+#                       needs @intentsolutions/core>=0.9.0.
 # See 000-docs/SCHEMA_CHANGELOG.md.
-SCHEMA_VERSION = "3.13.0"
+SCHEMA_VERSION = "3.14.0"
 
 # Validation tiers
 TIER_STANDARD = "standard"
@@ -522,6 +535,9 @@ PLUGIN_JSON_FIELDS = {
     "license": {"type": "string"},
     "keywords": {"type": "array"},
     "$schema": {"type": "string"},  # GA — JSON Schema URL for editor autocomplete (ignored at load)
+    "metadata": {
+        "type": "object"
+    },  # IS-overlay extension (kernel authoring/v2 plugin-manifest is-overlay) — adopted via the L2 kernel shadow (692-AA-AACR)
     # — Component paths —
     "commands": {"type": "string|array"},
     "agents": {"type": "string|array"},
@@ -656,6 +672,50 @@ def load_kernel_agent_required() -> Optional[set]:
     return required or None
 
 
+# L2 consumer-cutover (692-AA-AACR § 0.5). The plugin-manifest contract is read
+# from authoring/V2, not v1: the v1 fold is an early minimal capture (~10 metadata
+# fields), while v2 is the current deep-capture carrying the full GA surface
+# (displayName/defaultEnabled/dependencies/userConfig/channels/$schema/experimental
+# + all component-path fields). Pinning the plugin shadow to v2 is the
+# "promote authoring/v2 canonical" path; needs @intentsolutions/core>=0.9.0.
+_KERNEL_SCHEMA_DIR_V2 = (
+    Path(__file__).resolve().parents[1] / "node_modules" / "@intentsolutions" / "core" / "schemas" / "authoring" / "v2"
+)
+
+
+def load_kernel_plugin_fields() -> Dict[str, Any]:
+    """Existence-guarded load of the kernel's CURRENT (v2) plugin-manifest field
+    surface — the upstream-base ∪ is-overlay property sets. Returns:
+      {"available": False, "reason": str}                       kernel/v2 absent
+      {"available": True, "properties": set, "required": set, "schema_dir": str}
+    Never raises — a missing/corrupt kernel degrades to available=False.
+    """
+    base = _KERNEL_SCHEMA_DIR_V2 / "upstream-base" / "plugin-manifest.v2.json"
+    overlay = _KERNEL_SCHEMA_DIR_V2 / "is-overlay" / "plugin-manifest.v2.json"
+    if not base.exists():
+        return {
+            "available": False,
+            "reason": (
+                "kernel plugin-manifest v2 schema not found under node_modules/"
+                "@intentsolutions/core/schemas/authoring/v2 — run pnpm install "
+                "(needs @intentsolutions/core>=0.9.0; the v1 plugin-manifest fold is stale)"
+            ),
+        }
+    try:
+        base_doc = json_module.loads(base.read_text(encoding="utf-8"))
+        overlay_doc = json_module.loads(overlay.read_text(encoding="utf-8")) if overlay.exists() else {}
+    except (OSError, ValueError) as e:
+        return {"available": False, "reason": f"kernel plugin-manifest schema load failed: {e}"}
+    properties = set(base_doc.get("properties", {}) or {}) | set(overlay_doc.get("properties", {}) or {})
+    required = set(base_doc.get("required", []) or []) | set(overlay_doc.get("required", []) or [])
+    return {
+        "available": True,
+        "properties": properties,
+        "required": required,
+        "schema_dir": "node_modules/@intentsolutions/core/schemas/authoring/v2",
+    }
+
+
 def kernel_shadow_report() -> Dict[str, Any]:
     """Build the kernel-shadow comparison block (machine-readable).
 
@@ -688,6 +748,29 @@ def kernel_shadow_report() -> Dict[str, Any]:
         "in_kernel_properties": "disallowed-tools" in kernel["properties"],
         "match": ("disallowed-tools" in SKILL_FIELDS) == ("disallowed-tools" in kernel["properties"]),
     }
+    # L2 consumer-cutover (692-AA-AACR § 0.5): shadow the hand-maintained
+    # PLUGIN_JSON_FIELDS against the kernel's CURRENT (v2) plugin-manifest field
+    # surface, so the next upstream plugin-manifest field the kernel captures is
+    # CAUGHT here instead of needing a hand-patch (the exact failure mode that
+    # produced schema 3.12.0). Advisory — PLUGIN_JSON_FIELDS stays authoritative
+    # until the DR-049 flip; this only surfaces drift. `stale_missing_from_hand_authored`
+    # is the load-bearing signal: a kernel field we lack means we've gone stale.
+    pj_kernel = load_kernel_plugin_fields()
+    plugin_block: Dict[str, Any] = {
+        "schema": "authoring/v2/plugin-manifest (upstream-base + is-overlay)",
+        "available": pj_kernel["available"],
+    }
+    if pj_kernel["available"]:
+        hand_pj = set(PLUGIN_JSON_FIELDS.keys())
+        kpj = pj_kernel["properties"]
+        plugin_block["hand_authored_fields"] = sorted(hand_pj)
+        plugin_block["kernel_fields"] = sorted(kpj)
+        plugin_block["fields_match"] = hand_pj == kpj
+        plugin_block["stale_missing_from_hand_authored"] = sorted(kpj - hand_pj)
+        plugin_block["only_in_hand_authored"] = sorted(hand_pj - kpj)
+    else:
+        plugin_block["note"] = pj_kernel["reason"]
+    report["plugin_manifest"] = plugin_block
     return report
 
 
@@ -725,6 +808,35 @@ def print_kernel_shadow(report: Dict[str, Any]) -> None:
             f"from the hand-authored registry — add it to SKILL_FIELDS",
             file=sys.stderr,
         )
+    # L2 plugin-manifest shadow (692-AA-AACR § 0.5).
+    pj = report.get("plugin_manifest", {})
+    if not pj.get("available"):
+        print(
+            f"{prefix} NOTE: plugin-manifest shadow skipped — {pj.get('note', 'kernel v2 unavailable')}",
+            file=sys.stderr,
+        )
+    elif pj.get("fields_match"):
+        print(
+            f"{prefix} NOTE: PLUGIN_JSON_FIELDS matches the kernel v2 plugin-manifest "
+            f"surface ({len(pj.get('kernel_fields', []))} fields) — plugin.json validator is current",
+            file=sys.stderr,
+        )
+    else:
+        stale = pj.get("stale_missing_from_hand_authored") or []
+        extra = pj.get("only_in_hand_authored") or []
+        if stale:
+            print(
+                f"{prefix} WARNING: PLUGIN_JSON_FIELDS is STALE vs the kernel v2 plugin-manifest "
+                f"surface — missing {stale}. The kernel captured these upstream fields; add them "
+                f"to PLUGIN_JSON_FIELDS (this is the drift that used to require a hand-patch).",
+                file=sys.stderr,
+            )
+        if extra:
+            print(
+                f"{prefix} INFO: PLUGIN_JSON_FIELDS carries fields not in the kernel v2 surface: "
+                f"{extra} (IS extensions or ahead-of-kernel — expected for e.g. 'metadata')",
+                file=sys.stderr,
+            )
 
 
 def detect_component(path: Path) -> tuple:
@@ -1674,10 +1786,7 @@ def validate_plugin_json(path: Path, strict: bool = False) -> Dict[str, Any]:
             # near-miss of a recognized one; mirror that.
             near = difflib.get_close_matches(key, valid_fields, n=1, cutoff=0.8)
             hint = f" (did you mean '{near[0]}'?)" if near else ""
-            msg = (
-                f"Unrecognized field: '{key}' — not in the Anthropic plugin "
-                f"manifest spec; ignored at load{hint}"
-            )
+            msg = f"Unrecognized field: '{key}' — not in the Anthropic plugin manifest spec; ignored at load{hint}"
             (errors if strict else warnings).append(msg)
 
     TYPE_MAP = {"string": str, "object": dict, "array": list, "boolean": bool}
@@ -4172,9 +4281,7 @@ def validate_skill(path: Path, tier: str = TIER_STANDARD) -> Dict[str, Any]:
     }
 
 
-def validate_plugin(
-    plugin_dir: Path, tier: str = TIER_STANDARD, strict: bool = False
-) -> Dict[str, Any]:
+def validate_plugin(plugin_dir: Path, tier: str = TIER_STANDARD, strict: bool = False) -> Dict[str, Any]:
     """Validate a plugin as a complete unit.
     Walks all components and rolls up scores.
 

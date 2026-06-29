@@ -146,6 +146,32 @@ compliance are welcome; structural changes to the IS rubric are not.
 
 ---
 
+## [3.14.0] — 2026-06-28 — L2 consumer-cutover: plugin.json drift-gated against the kernel (additive, advisory)
+
+**Additive MINOR — no change to any required-field set, tier model, or
+error-vs-warning semantics.** Closes the second half of the auto-currency loop
+(692-AA-AACR § 0.5): `PLUGIN_JSON_FIELDS` was hand-maintained with **no** comparison
+to the kernel, so when upstream gained GA fields the validator silently went stale
+and needed a hand-patch (the 3.12.0 event).
+
+- New `load_kernel_plugin_fields()` reads the kernel's **current** plugin-manifest
+  field surface from `@intentsolutions/core` `authoring/**v2**`
+  (`upstream-base ∪ is-overlay`). v2, not v1 — the v1 plugin-manifest fold is an
+  early ~10-field capture; v2 carries the full GA surface. Needs core `>=0.9.0`.
+- `kernel_shadow_report()` gains a `plugin_manifest` block comparing
+  `PLUGIN_JSON_FIELDS` against that surface; `print_kernel_shadow()` warns when CCPI
+  is **stale** (a kernel field we lack). The existing `kernel-shadow-validation.yml`
+  CI lane now surfaces plugin-manifest drift automatically — no more hand-patch.
+- The shadow immediately caught one drift: the kernel sanctions a `metadata`
+  plugin.json field (authoring/v2 is-overlay) that CCPI lacked — **adopted** into
+  `PLUGIN_JSON_FIELDS` (now `fields_match: true`).
+
+**Advisory** (`PLUGIN_JSON_FIELDS` stays authoritative until the DR-049 flip), so no
+NON-NEGOTIABLE is touched — same posture as the existing skill-frontmatter + agent
+kernel shadows.
+
+---
+
 ## [3.13.0] — 2026-06-28 — plugin.json unrecognized-field handling: error → warning, + `--strict` (NON-NEGOTIABLE #7, **approved**)
 
 **Error-vs-warning semantics change — NON-NEGOTIABLE #7. APPROVED by Jeremy
