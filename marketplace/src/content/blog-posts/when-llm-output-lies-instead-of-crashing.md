@@ -59,4 +59,3 @@ Also shipped: version-coupling hygiene across `@intentsolutions/core`. Adopted `
 - [The LLM Should Never Do the Math](/posts/llm-never-does-the-math/) — The SQL-first architecture that backs this fix.
 - [CodeQL Caught the Race I Dismissed](/posts/codeql-caught-the-race-i-dismissed/) — Another review tool catching a bug the author had waved off; same shape as Gemini catching the silent lie.
 - [MCP Server Auth: The API Is the Real Boundary](/posts/the-api-is-the-real-boundary/) — The boundary-discipline theme, one layer down the stack.
-
