@@ -98,6 +98,7 @@ This is *good* and necessary. It proves the wiring: condition → action → sid
 Here's the subtle part. The engine's 301 mutants didn't even *survive*—they came back as **no-coverage**. At baseline time, Stryker found no co-located unit test pinning `engine.ts`, so it never ran those mutants against an assertion at all. The E2E suite executes the engine, but it asserts through the storage layer on the final state—which is exactly why the documented next step is a co-located `engine.test.ts`, not more end-to-end tests.
 
 The other three files show the milder failure mode—a mutant that *is* covered but still survives. When a test executes a mutated line yet only checks the outcome, the mutant lives. Take a condition in the engine:
+
 ```typescript
 // Original
 if (email.subject.includes(rule.condition.value)) {
@@ -149,4 +150,3 @@ Coverage measures attendance. Mutation testing measures whether anyone was payin
   }
 }
 </script>
-
