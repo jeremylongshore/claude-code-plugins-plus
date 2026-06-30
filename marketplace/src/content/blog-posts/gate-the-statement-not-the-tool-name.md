@@ -140,4 +140,3 @@ So gate the statement. Enumerate the safe verbs, default-deny everything you can
   }
 }
 </script>
-
