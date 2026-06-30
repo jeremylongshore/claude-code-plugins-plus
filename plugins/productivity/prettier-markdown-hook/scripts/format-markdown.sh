@@ -171,7 +171,7 @@ is_excluded_workspace() {
     fi
 
     # Check against configured organization exclusions
-    for org in "${EXCLUDE_ORGS[@]}"; do
+    for org in ${EXCLUDE_ORGS[@]+"${EXCLUDE_ORGS[@]}"}; do
         if [[ "$remote_url" =~ github\.com[:/]$org/ ]]; then
             log_info "Workspace excluded: $org matches $remote_url"
             return 0  # EXCLUDED
