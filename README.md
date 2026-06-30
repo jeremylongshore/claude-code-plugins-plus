@@ -130,7 +130,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | 🎨  | [Design](#design)                                  |       7 |
 | 🔧  | [DevOps & Infrastructure](#devops--infrastructure) |      36 |
 | 📚  | [Examples & Templates](#examples--templates)       |       5 |
-| 🧩  | [MCP Servers](#mcp-servers)                        |      14 |
+| 🧩  | [MCP Servers](#mcp-servers)                        |      15 |
 | 📦  | [Packages](#packages)                              |       5 |
 | ⚡  | [Performance](#performance)                        |      25 |
 | ✅  | [Productivity](#productivity)                      |      28 |
@@ -443,24 +443,25 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### MCP Servers
 
-🧩 **14 plugins** · category slug: `mcp`
+🧩 **15 plugins** · category slug: `mcp`
 
-| Plugin                        | Description                                                                                                                                |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `ai-experiment-logger`        | Track and analyze AI experiments with a web dashboard and MCP tools                                                                        |
-| `beads-dolt`                  | Dolt/DoltHub-aware upgrade to the beads (bd) task tracker — a skill that surfaces visibility/no-remote root causes and the remote-add +…   |
-| `conversational-api-debugger` | Debug REST API failures using OpenAPI specs and HTTP logs (HAR) - root cause analysis with cURL generation                                 |
-| `databricks-workspace-mcp`    | MCP server for the Databricks control plane — 8 read-only tools for cluster forensics, instance pools, DLT pipeline event logs, and Unity… |
-| `design-to-code`              | Convert Figma designs and screenshots to React/Svelte/Vue components with built-in accessibility                                           |
-| `domain-memory-agent`         | Knowledge base with TF-IDF semantic search and extractive summarization - no ML dependencies required                                      |
-| `governed-second-brain`       | Local-first governed second brain — turn your files into cited (qmd://) memory with deterministic governance and a tamper-evident,…        |
-| `lumera-agent-memory`         | Durable agent memory with Cascade object storage, client-side encryption, and local full-text search index. Persists agent context across… |
-| `pr-to-spec`                  | The flight envelope for agentic coding — convert PRs and local diffs into structured, agent-consumable specs with intent drift detection   |
-| `project-health-auditor`      | Multi-dimensional code health analysis with complexity, churn, and test coverage - identifies technical debt hot spots                     |
-| `slack-channel`               | Two-way Slack channel for Claude Code — chat from Slack DMs and channels via Socket Mode                                                   |
-| `workflow-orchestrator`       | DAG-based workflow automation with parallel task execution and dependency management                                                       |
-| `x-bug-triage`                | Closed-loop bug triage — X complaints → clusters → repo evidence → owner routing → Slack review → filed issues                             |
-| `x-bug-triage-plugin`         | Closed-loop bug triage: X complaints → clusters → repo evidence → owner routing → Slack review → filed issues                              |
+| Plugin                        | Description                                                                                                                                 |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ai-experiment-logger`        | Track and analyze AI experiments with a web dashboard and MCP tools                                                                         |
+| `beads-dolt`                  | ⚠️ Renamed to dolt-mcp-vcs. Deprecated alias — kept so existing `beads-dolt` installs keep resolving; please install dolt-mcp-vcs instead.… |
+| `conversational-api-debugger` | Debug REST API failures using OpenAPI specs and HTTP logs (HAR) - root cause analysis with cURL generation                                  |
+| `databricks-workspace-mcp`    | MCP server for the Databricks control plane — 8 read-only tools for cluster forensics, instance pools, DLT pipeline event logs, and Unity…  |
+| `design-to-code`              | Convert Figma designs and screenshots to React/Svelte/Vue components with built-in accessibility                                            |
+| `dolt-mcp-vcs`                | Dolt/DoltHub version-control toolkit for Claude Code, via the dolthub/dolt-mcp server — a VC-surface skill + expert agents over a Dolt…     |
+| `domain-memory-agent`         | Knowledge base with TF-IDF semantic search and extractive summarization - no ML dependencies required                                       |
+| `governed-second-brain`       | Local-first governed second brain — turn your files into cited (qmd://) memory with deterministic governance and a tamper-evident,…         |
+| `lumera-agent-memory`         | Durable agent memory with Cascade object storage, client-side encryption, and local full-text search index. Persists agent context across…  |
+| `pr-to-spec`                  | The flight envelope for agentic coding — convert PRs and local diffs into structured, agent-consumable specs with intent drift detection    |
+| `project-health-auditor`      | Multi-dimensional code health analysis with complexity, churn, and test coverage - identifies technical debt hot spots                      |
+| `slack-channel`               | Two-way Slack channel for Claude Code — chat from Slack DMs and channels via Socket Mode                                                    |
+| `workflow-orchestrator`       | DAG-based workflow automation with parallel task execution and dependency management                                                        |
+| `x-bug-triage`                | Closed-loop bug triage — X complaints → clusters → repo evidence → owner routing → Slack review → filed issues                              |
+| `x-bug-triage-plugin`         | Closed-loop bug triage: X complaints → clusters → repo evidence → owner routing → Slack review → filed issues                               |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
 

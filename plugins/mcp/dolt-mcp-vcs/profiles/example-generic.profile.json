@@ -1,0 +1,12 @@
+{
+  "$comment": "Schema profile #2 — a THROWAWAY non-beads schema whose only purpose is to prove the use-case-adapter seam (the panel's schema-profile MAJOR): the generic SQL builder must produce correct queries against DIFFERENT table/column/value names with zero code change. Deliberately renames everything beads names (issues->work_items, id->item_id, status->state, closed->done, epic->group).",
+  "name": "example-generic",
+  "tables": { "issues": "work_items", "dependencies": "links" },
+  "columns": { "id": "item_id", "status": "state", "type": "link_kind", "issue_type": "item_kind" },
+  "encodings": {
+    "parent-child": { "child": "from_item", "parent": "to_item", "value": "contains" },
+    "blocks": { "blocked": "from_item", "blocker": "to_item", "value": "needs" }
+  },
+  "closed-value": "done",
+  "epic-value": "group"
+}

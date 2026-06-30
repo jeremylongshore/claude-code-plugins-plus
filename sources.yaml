@@ -739,15 +739,17 @@ sources:
       - '*.log'
 
   # ============================================================
-  # beads-dolt (Jeremy Longshore / Intent Solutions)
-  # https://github.com/jeremylongshore/beads-dolt
+  # dolt-mcp-vcs (Jeremy Longshore / Intent Solutions)
+  # https://github.com/jeremylongshore/dolt-mcp-vcs
+  # (formerly beads-dolt — the beads-dolt install slug is kept as a
+  #  deprecated alias in marketplace.extended.json so old installs resolve)
   # ============================================================
 
-  - name: beads-dolt
-    description: Dolt/DoltHub-aware upgrade to the beads (bd) task tracker — a skill that surfaces visibility/no-remote root causes and the remote-add + push fix, five expert agents grounded in bd+Dolt internals, and a wired dolt-mcp server for SQL access to the bead graph.
-    repo: jeremylongshore/beads-dolt
+  - name: dolt-mcp-vcs
+    description: Dolt/DoltHub version-control toolkit for Claude Code, via the dolthub/dolt-mcp server — a VC-surface skill + expert agents over a Dolt backend, with a verb-class mutation gate that keeps destructive ops recommend-only. Ships the beads (bd) task-tracker as use-case adapter #1. Formerly beads-dolt.
+    repo: jeremylongshore/dolt-mcp-vcs
     source_path: .
-    target_path: plugins/mcp/beads-dolt
+    target_path: plugins/mcp/dolt-mcp-vcs
     author:
       name: Jeremy Longshore
       github: jeremylongshore
@@ -761,6 +763,8 @@ sources:
       - 'skills/**'
       - 'agents/**'
       - 'scripts/**'
+      - 'profiles/**'
+      - 'connection.descriptor.json'
       - 'README.md'
       - 'LICENSE'
     exclude:

@@ -1,0 +1,39 @@
+{
+  "name": "dolt-mcp-vcs",
+  "owner": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io",
+    "url": "https://github.com/jeremylongshore"
+  },
+  "metadata": {
+    "description": "Dolt/DoltHub version-control toolkit for Claude Code — a VC-surface skill, expert agents, and a wired dolt-mcp server. Ships the beads (bd) adapter today. Formerly beads-dolt.",
+    "version": "0.1.0",
+    "homepage": "https://github.com/jeremylongshore/dolt-mcp-vcs",
+    "lastUpdated": "2026-06-29"
+  },
+  "plugins": [
+    {
+      "name": "dolt-mcp-vcs",
+      "source": ".",
+      "description": "Dolt/DoltHub version-control toolkit for Claude Code, via the dolthub/dolt-mcp server — a VC-surface skill + expert agents over a Dolt backend, with a verb-class mutation gate that keeps destructive ops recommend-only. Ships the beads (bd) task-tracker as use-case adapter #1. Formerly beads-dolt.",
+      "version": "0.1.0",
+      "category": "dev-tools",
+      "keywords": [
+        "dolt-mcp-vcs",
+        "dolt",
+        "dolthub",
+        "dolt-mcp",
+        "version-control",
+        "vcs",
+        "mcp",
+        "sql",
+        "beads",
+        "bd"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      }
+    }
+  ]
+}

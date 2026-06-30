@@ -1,0 +1,46 @@
+{
+  "synced_from": {
+    "repo": "jeremylongshore/dolt-mcp-vcs",
+    "path": ".",
+    "branch": "main"
+  },
+  "last_sync": "2026-06-30T00:53:08.663Z",
+  "author": {
+    "name": "Jeremy Longshore",
+    "github": "jeremylongshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "license": "Apache-2.0",
+  "files_synced": 29,
+  "files": [
+    ".claude-plugin/marketplace.json",
+    ".claude-plugin/plugin.json",
+    ".mcp.json",
+    "LICENSE",
+    "README.md",
+    "agents/bead-dependency-mapper.md",
+    "agents/bead-epic-auditor.md",
+    "agents/bead-recovery-specialist.md",
+    "agents/beads-guru.md",
+    "agents/dolt-sync-advisor.md",
+    "connection.descriptor.json",
+    "profiles/beads.profile.json",
+    "profiles/example-generic.profile.json",
+    "scripts/check-agent-safety.sh",
+    "scripts/dep-graph.sh",
+    "scripts/descriptor-to-mcp-args.py",
+    "scripts/dolt-idle-reaper.sh",
+    "scripts/dolt-mcp-client.py",
+    "scripts/dolt-push-dolthub.sh",
+    "scripts/epic-closure-audit.sh",
+    "scripts/profile_sql.py",
+    "scripts/resolve-creds-ref.py",
+    "scripts/server-health.sh",
+    "scripts/sql_classifier.py",
+    "skills/dolt-mcp-vcs/SKILL.md",
+    "skills/dolt-mcp-vcs/eval.yaml",
+    "skills/dolt-mcp-vcs/references/connection-descriptor-and-profiles.md",
+    "skills/dolt-mcp-vcs/references/dolt-internals.md",
+    "skills/dolt-mcp-vcs/safety-eval.yaml"
+  ]
+}

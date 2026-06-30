@@ -1,0 +1,12 @@
+{
+  "$comment": "Schema profile #1 — beads (use-case adapter #1). The named encoding + value vocabulary the generic VC-surface agents/scripts read as INPUT instead of hardcoding. See skills/dolt-mcp-vcs/references/connection-descriptor-and-profiles.md.",
+  "name": "beads",
+  "tables": { "issues": "issues", "dependencies": "dependencies" },
+  "columns": { "id": "id", "status": "status", "type": "type", "issue_type": "issue_type" },
+  "encodings": {
+    "parent-child": { "child": "issue_id", "parent": "depends_on_id" },
+    "blocks": { "blocked": "issue_id", "blocker": "depends_on_id" }
+  },
+  "closed-value": "closed",
+  "epic-value": "epic"
+}

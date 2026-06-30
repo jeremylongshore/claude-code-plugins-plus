@@ -1,0 +1,8 @@
+{
+  "$comment": "The connection descriptor (blueprint §2). ONE committed descriptor per workspace is the home for flavor/endpoint/database/creds-ref/maturity. `flavor` selects the wire dialect; `maturity` drives the §3 mutation gate (alpha/experimental => read-only). `creds-ref` is a POINTER (env:/sops:PATH#KEY/pass:PATH), never a literal secret — resolved fail-closed by scripts/resolve-creds-ref.py. Transform to .mcp.json args with scripts/descriptor-to-mcp-args.py. See skills/dolt-mcp-vcs/references/connection-descriptor-and-profiles.md.",
+  "flavor": "dolt",
+  "endpoint": "127.0.0.1:3308",
+  "database": "beads",
+  "creds-ref": "env:DOLT_PASSWORD",
+  "maturity": "ga"
+}

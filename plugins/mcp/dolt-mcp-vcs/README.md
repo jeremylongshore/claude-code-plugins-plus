@@ -1,17 +1,19 @@
-# beads-dolt
+# dolt-mcp-vcs
 
-A Dolt/DoltHub-aware Claude Code plugin for the [beads](https://github.com/gastownhall/beads) (`bd`) task tracker.
+A Dolt/DoltHub version-control toolkit for Claude Code, built on the [`dolthub/dolt-mcp`](https://github.com/dolthub/dolt-mcp) server.
+
+> **Formerly `beads-dolt`** — same plugin, renamed to its Dolt-first identity. The rename is **non-breaking**: the GitHub repo URL redirects, the `beads-dolt` marketplace install slug still resolves (a deprecated catalog alias), and `/beads-dolt` is still an accepted trigger. Today the toolkit ships the **beads (`bd`) task-tracker as use-case adapter #1**; it is evolving into a dialect-invariant version-control core (branch / merge / diff / log / `AS OF` / data-PR) with thin maturity-gated flavor adapters (Dolt · Doltgres · DoltLite · DumboDB).
 
 It packages, in one plugin:
 
-- **A skill** (`/beads-dolt`) — the beads workflow upgraded to understand bd's Dolt backend: it surfaces the common "my beads aren't visible in DoltHub" root cause (no remote configured), the `bd dolt remote add` + push fix, the JSONL throttle/export model, and the rapid-write-race safe pattern — and dispatches the agents below.
-- **Five expert agents** — grounded in a reverse-engineered, source-cited reference of bd's Dolt internals (`references/beads-dolt-internals.md`):
+- **A skill** (`/dolt-mcp-vcs`, also `/beads-dolt`) — the beads workflow over bd's Dolt backend: it surfaces the common "my beads aren't visible in DoltHub" root cause (no remote configured), the `bd dolt remote add` + push fix, the JSONL throttle/export model, and the rapid-write-race safe pattern — and dispatches the agents below. A **verb-class mutation gate** keeps destructive ops (push / merge / `reset --hard` / branch-delete) recommend-only.
+- **Expert agents** — grounded in a live-fetched (never frozen) reference of bd's Dolt internals (`references/dolt-internals.md`):
   - `dolt-sync-advisor` — DoltHub remotes, `bd dolt push`/`pull`, backup vs push, federation, drift.
   - `bead-epic-auditor` — subtree/epic-closure audits (which epics have all children closed).
   - `bead-dependency-mapper` — dependency graphs, cycles, critical path (SQL via the Dolt MCP).
   - `bead-recovery-specialist` — rapid-write-race recovery, embedded↔server mode migration, dolt-server incidents.
   - `beads-guru` — general bd/Dolt expertise and the three-layer mirror discipline.
-- **A wired Dolt MCP server** (`.mcp.json`) — the official [`dolthub/dolt-mcp`](https://github.com/dolthub/dolt-mcp) server (45 tools) fronting your local `dolt sql-server` over the MySQL protocol, so the SQL-capable agents can query the bead graph directly.
+- **A wired Dolt MCP server** (`.mcp.json`) — the official [`dolthub/dolt-mcp`](https://github.com/dolthub/dolt-mcp) server (it exposes a ~40-tool version-control surface — fetch the exact list live, never freeze it) fronting your local `dolt sql-server` over the MySQL protocol. The plugin wires only the tools its agents actually use, least-privilege.
 
 ## Built on
 
@@ -23,14 +25,17 @@ This plugin builds on, and credits, two open-source projects:
 ## Prerequisites
 
 - [`bd`](https://github.com/gastownhall/beads) ≥ 1.0.4 with a Dolt-backed workspace.
-- The Dolt MCP server binary on `PATH`. Install it one of these ways:
-
+- The Dolt MCP server binary on `PATH`, **pinned** (the plugin's correctness rests on
+  this binary, so it is version-pinned — never `@latest`). Install it one of these ways:
   ```bash
-  go install github.com/dolthub/dolt-mcp/mcp/cmd/dolt-mcp-server@latest   # native (Go)
+  go install github.com/dolthub/dolt-mcp/mcp/cmd/dolt-mcp-server@v0.3.6   # native (Go)
   # or
-  docker pull dolthub/dolt-mcp:latest                                      # container
-  # or grab a release binary from https://github.com/dolthub/dolt-mcp/releases
+  docker pull dolthub/dolt-mcp:v0.3.6                                      # container
+  # or grab the v0.3.6 release binary from https://github.com/dolthub/dolt-mcp/releases
   ```
+  Pinned module `github.com/dolthub/dolt-mcp v0.3.6` verifies against the Go checksum
+  database as `h1:uwjh1zf0er51VBT6uY3tI7JLj5pYxWyk9uB6CYQOhfU=`. A version bump is
+  proposed by the `dolt-watch` routine and reviewed — it is never auto-trusted.
 
 ## Configuration
 

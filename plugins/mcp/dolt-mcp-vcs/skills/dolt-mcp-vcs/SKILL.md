@@ -1,5 +1,5 @@
 ---
-name: beads-dolt
+name: dolt-mcp-vcs
 description: |
   Dolt and DoltHub-aware workflow for the beads (bd) task tracker. Diagnoses why
   bead work is not visible on DoltHub (no Dolt remote configured), applies the bd
@@ -8,9 +8,10 @@ description: |
   sync, epic-closure audits, dependency mapping, and recovery. Use when beads are
   not showing in DoltHub, pushing beads to DoltHub, configuring bd dolt remotes,
   taming dolt server sprawl, auditing bead epics, mapping bead dependencies, or
-  recovering from a bd or Dolt incident. Trigger with "/beads-dolt", "my beads
-  aren't showing in DoltHub", "push beads to dolthub", or "audit my bead epics".
-allowed-tools: "Read, Task, Bash(bd:*), Bash(dolt:*), Bash(curl:*)"
+  recovering from a bd or Dolt incident. Trigger with "/dolt-mcp-vcs", "/beads-dolt"
+  (the former name, still accepted), "my beads aren't showing in DoltHub", "push
+  beads to dolthub", or "audit my bead epics".
+allowed-tools: "Read, Task, Bash(bd dolt show:*), Bash(bd dolt remote list:*), Bash(bd config get:*), Bash(curl:*)"
 version: 0.1.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: Apache-2.0
@@ -21,7 +22,12 @@ metadata:
   category: productivity
 ---
 
-# beads-dolt
+# dolt-mcp-vcs
+
+> Formerly **`beads-dolt`** — same plugin, renamed to its Dolt-first identity. The `beads-dolt`
+> install slug still resolves (a deprecated catalog alias), and `/beads-dolt` is still an accepted
+> trigger, so existing installs keep working. Today this skill is the beads (bd) adapter; it is
+> evolving into a dialect-invariant version-control surface with beads as use-case adapter #1.
 
 The Dolt and DoltHub-aware layer for the [beads](https://github.com/gastownhall/beads) (bd) task tracker. It composes with — does not replace — the global beads skill: that skill runs the bead work cycle; this one handles the Dolt backend, DoltHub visibility, and the bd plus Dolt failure modes.
 
@@ -32,7 +38,7 @@ bd stores every issue in a version-controlled [Dolt](https://github.com/dolthub/
 1. **"My beads aren't showing in DoltHub."** The overwhelmingly common cause is that the workspace's Dolt repo has **no remote configured** — so nothing is ever pushed. A file-protocol or GitHub backup does **not** make beads appear on DoltHub; only a Dolt remote plus a push does.
 2. **JSONL appears stale after rapid writes.** This is the export *throttle*, not data loss. As of bd 1.0.4 the historical rapid-write race (failure mode 6) is fixed at the SQL-transaction level; the database is always correct, only the issues.jsonl file can lag.
 
-This skill diagnoses both, applies the fixes, and routes deeper work to five bundled agents. **It keeps no frozen copy of bd/Dolt internals** — a baked snapshot goes stale the moment upstream ships a release. Verify version-specific behavior **live** (`bd --help`, `bd <cmd> --help`, `bd dolt show`) and consult the official upstream docs; [references/beads-dolt-internals.md](references/beads-dolt-internals.md) is only the directory of those authoritative sources. The installed binary wins on any conflict. The agents are built to fetch the current truth in their own context and report it back, so answers track the installed version rather than a guess.
+This skill diagnoses both, applies the fixes, and routes deeper work to five bundled agents. **It keeps no frozen copy of bd/Dolt internals** — a baked snapshot goes stale the moment upstream ships a release. Verify version-specific behavior **live** (`bd --help`, `bd <cmd> --help`, `bd dolt show`) and consult the official upstream docs; [references/dolt-internals.md](references/dolt-internals.md) is only the directory of those authoritative sources. The installed binary wins on any conflict. The agents are built to fetch the current truth in their own context and report it back, so answers track the installed version rather than a guess.
 
 **The fix for invisible-on-DoltHub, up front (don't stop at diagnosis):** the cause is almost always no remote, and the fix is two commands — `bd dolt remote add origin https://doltremoteapi.dolthub.com/ORG/REPO` then `bd dolt push --remote origin`. The DoltHub database must already exist (the push does NOT create it). Always carry the user all the way to these commands, not just the `bd dolt remote list` diagnostic.
 
@@ -40,9 +46,9 @@ This skill diagnoses both, applies the fixes, and routes deeper work to five bun
 
 - bd >= 1.0.4 with a Dolt-backed workspace (bd dolt show succeeds).
 - For DoltHub: a dolt creds keypair authorized on your DoltHub account, and the **DoltHub database must already exist** (create it in the DoltHub UI — the push does **not** auto-create it).
-- For the SQL-capable agents: the dolt-mcp-server binary on PATH (go install github.com/dolthub/dolt-mcp/mcp/cmd/dolt-mcp-server@latest). The plugin's .mcp.json wires it.
+- For the SQL-capable agents: the dolt-mcp-server binary on PATH, **pinned** (go install github.com/dolthub/dolt-mcp/mcp/cmd/dolt-mcp-server@v0.3.6 — never @latest; the plugin's correctness rests on this binary). The plugin's .mcp.json wires it.
 
-## Authentication
+### Authentication
 
 DoltHub pushes authenticate with a dolt creds keypair tied to your account (run dolt login once to create and authorize it), or with the DOLT_REMOTE_USER and DOLT_REMOTE_PASSWORD environment variables. The dolt-mcp connection uses DOLT_USER and DOLT_PASSWORD (bd's local server is unauthenticated by default — user root, empty password).
 
@@ -70,7 +76,6 @@ bd dolt push --remote origin
 - The push is **history-preserving** — it transfers the full Dolt commit history, not a snapshot. (Flat-file dolt table import would lose history; do not use it for an existing bd database.)
 - A PermissionDenied that reaches "Uploading…" first means **the creds work but the DoltHub repo doesn't exist yet** — create it, then re-push.
 - Verify without cloning, via DoltHub's SQL API:
-
   ```bash
   curl -s "https://www.dolthub.com/api/v1alpha1/ORG/REPO/main?q=SELECT%20COUNT(*)%20FROM%20issues"
   ```
@@ -87,11 +92,11 @@ export.interval defaults to **60s**: writes inside that window hit the database 
 bd config set export.interval 1s
 ```
 
-As of recent bd the rapid-write race is reported fixed at the transaction level (verify with `bd version` + the upstream CHANGELOG) — so you do *not* need bd export between writes for database integrity; only batch plus flush if you need byte-fresh JSONL each step. Confirm current throttle/export behavior with `bd config --help` + `bd dolt --help`; [references/beads-dolt-internals.md](references/beads-dolt-internals.md) lists the authoritative sources.
+As of recent bd the rapid-write race is reported fixed at the transaction level (verify with `bd version` + the upstream CHANGELOG) — so you do *not* need bd export between writes for database integrity; only batch plus flush if you need byte-fresh JSONL each step. Confirm current throttle/export behavior with `bd config --help` + `bd dolt --help`; [references/dolt-internals.md](references/dolt-internals.md) lists the authoritative sources.
 
 ### Step 5: Dispatch the right agent
 
-Use the Task tool to dispatch the matching agent. Each fetches current bd/Dolt facts live in its own context (per the authority order in references/beads-dolt-internals.md) rather than reciting a snapshot.
+Use the Task tool to dispatch the matching agent. Each fetches current bd/Dolt facts live in its own context (per the authority order in references/dolt-internals.md) rather than reciting a snapshot.
 
 | Situation | Agent |
 |---|---|
@@ -132,5 +137,5 @@ Dispatch dolt-sync-advisor; it reaps idle servers with scripts/dolt-idle-reaper.
 
 ## Resources
 
-- [references/beads-dolt-internals.md](references/beads-dolt-internals.md) — the directory of authoritative *live* sources (the installed `bd --help`, official upstream beads/Dolt docs, the Dolt MCP repo). The agents fetch current facts from these in their own context; the plugin freezes no internals snapshot.
+- [references/dolt-internals.md](references/dolt-internals.md) — the directory of authoritative *live* sources (the installed `bd --help`, official upstream beads/Dolt docs, the Dolt MCP repo). The agents fetch current facts from these in their own context; the plugin freezes no internals snapshot.
 - Upstreams: [beads](https://github.com/gastownhall/beads), [Dolt](https://github.com/dolthub/dolt) and [DoltHub](https://www.dolthub.com), [dolt-mcp](https://github.com/dolthub/dolt-mcp).
