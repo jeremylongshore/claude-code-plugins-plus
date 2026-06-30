@@ -953,6 +953,42 @@ sources:
   # Add more external sources below
   # ============================================================
 
+  - name: hermes-tweet
+    description: Hermes Agent X/Twitter research, monitoring, drafts, exports, and approved actions
+    repo: Xquik-dev/hermes-tweet
+    source_path: .
+    target_path: plugins/community/hermes-tweet
+    author:
+      name: Xquik
+      github: Xquik-dev
+    license: MIT
+    category: community
+    verified: true
+    include:
+      - '.claude-plugin/**'
+      - 'assets/**'
+      - 'docs/**'
+      - 'hermes_tweet/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'README.md'
+      - 'LICENSE'
+      - 'MANIFEST.in'
+      - 'plugin.yaml'
+      - 'pyproject.toml'
+      - 'skill.json'
+    exclude:
+      - '.git/**'
+      - '.pytest_cache/**'
+      - '.ruff_cache/**'
+      - '.tmp*/**'
+      - '.venv/**'
+      - '__pycache__/**'
+      - '*.egg-info/**'
+      - '*.log'
+      - 'dist/**'
+      - 'uv.lock'
+
   # Example: Sawyer Hood's dev-browser
   # - name: dev-browser
   #   description: Browser automation for Claude Code
