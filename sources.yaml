@@ -969,8 +969,6 @@ sources:
       - 'assets/**'
       - 'docs/**'
       - 'hermes_tweet/**'
-      - 'scripts/**'
-      - 'tests/**'
       - 'README.md'
       - 'LICENSE'
       - 'plugin.yaml'
