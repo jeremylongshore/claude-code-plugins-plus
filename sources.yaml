@@ -973,7 +973,6 @@ sources:
       - 'tests/**'
       - 'README.md'
       - 'LICENSE'
-      - 'MANIFEST.in'
       - 'plugin.yaml'
       - 'pyproject.toml'
       - 'skill.json'
