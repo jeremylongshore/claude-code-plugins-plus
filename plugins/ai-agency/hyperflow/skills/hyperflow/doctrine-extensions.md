@@ -8,17 +8,16 @@ DOCTRINE.md keeps the always-loaded core (Layer 1 Autonomy, Layer 2 Model Routin
 
 ## Layer 0: Project Analysis
 
-On session start, the **thinking model decides** whether analysis is needed. See [project-analysis.md](project-analysis.md) for file specs and staleness mapping.
+On session start, the orchestrator decides whether analysis is needed. See [project-analysis.md](project-analysis.md) for file specs and staleness mapping.
 
 ### Session start flow
 
 1. **Version check** — fetch latest tag from GitHub (`gh api repos/Mohammed-Abdelhady/hyperflow/tags --jq '.[0].name'`). Compare against installed version. If newer exists, print: `Hyperflow update available — vX.Y.Z → vX.Y.Z (run: claude plugin update hyperflow@hyperflow-marketplace)`
-2. **Print active models** — read version from `VERSION` file (same directory as SKILL.md), then print:
+2. **Print version** — read version from `VERSION` file (same directory as SKILL.md), then print:
    ```
    Hyperflow v<version>
-     Thinking: <resolved-thinking-model>  ·  Worker: <resolved-worker-model>
    ```
-3. **Smart analysis decision** — the thinking model evaluates before dispatching anything:
+3. **Smart analysis decision** — the orchestrator evaluates before dispatching anything:
 
    ```
    .hyperflow/ exists at project root?
@@ -51,7 +50,7 @@ On session start, the **thinking model decides** whether analysis is needed. See
    **CRITICAL RULES:**
    - Do NOT dispatch searcher agents if all checksums are fresh. Read cached `.hyperflow/` files directly.
    - Do NOT regenerate analysis files that aren't affected by the stale config. Use the staleness mapping.
-   - The thinking model makes this decision — never delegate staleness evaluation to a worker.
+   - The orchestrator makes this decision — never delegate staleness evaluation to a worker.
    - New config files appearing (not in `.checksums`) trigger refresh of their mapped analysis files only.
    - Config files being deleted (in `.checksums` but missing on disk) trigger refresh of their mapped analysis files.
 
@@ -81,7 +80,7 @@ Triage is the FIRST step on every new user request. A cheap thinking call classi
 
 See [task-triage.md](task-triage.md) for the full prompt template, JSON schema, field definitions, and worked examples.
 
-**Classifier tier:** Classifier defaults to Haiku 4.5 — triage is structured classification, not deep reasoning. Fallback chain on malformed JSON output: retry once at Haiku → fall back to Sonnet → use safe defaults. NEVER escalate to Opus on fallback — keep cost low on this critical-path call.
+**Classifier:** Triage is structured classification, not deep reasoning. Fallback chain on malformed JSON output: retry once → use safe defaults.
 
 **Hard rule:** triage output is the contract for all downstream layers. If no triage was performed, the orchestrator is operating wrong.
 
@@ -120,7 +119,7 @@ Automated checks after every worker review. See [quality-gates.md](quality-gates
 **Per-task:** lint + typecheck + tests (affected files only)
 **Final review:** full lint + typecheck + build + full test suite
 
-Gate fails → worker fixes → re-run. Max 3 retries before escalating to Opus worker.
+Gate fails → worker fixes → re-run. Max 3 retries before escalating to a standalone review worker.
 
 ---
 
@@ -144,7 +143,7 @@ Controls: `hyperflow: memory off` / `hyperflow: memory show <tag>` / `hyperflow:
 
 Pre-built decomposition patterns. See [task-templates.md](task-templates.md) for all templates.
 
-Opus auto-selects: CRUD Feature, API Endpoint, UI Component, Database Migration, Refactor, Bug Fix. Templates are adapted to context — not rigid steps.
+The orchestrator auto-selects: CRUD Feature, API Endpoint, UI Component, Database Migration, Refactor, Bug Fix. Templates are adapted to context — not rigid steps.
 
 ---
 

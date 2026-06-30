@@ -1,10 +1,10 @@
 ---
 name: traction-eos
-description: 'Implement the Entrepreneurial Operating System (EOS) to align vision and execution across a company. Use when the user mentions "EOS", "V/TO", "quarterly rocks", "Level 10 meetings", "accountability chart", "IDS process", "Entrepreneurial Operating System", or "business operating system". Also trigger when a growing company needs meeting structure, goal-setting frameworks, or a systematic approach to solving recurring organizational issues. Covers the six EOS components: Vision, People, Data, Issues, Process, Traction. For team motivation design, see drive-motivation. For lean experimentation, see lean-startup.'
+description: 'Implement the Entrepreneurial Operating System (EOS) to align vision and execution across a company. Use when the user mentions "EOS", "Entrepreneurial Operating System", "V/TO", "quarterly rocks", "Level 10 meetings", "accountability chart", "IDS process", "my company feels chaotic", "we keep having the same problems", or "get the whole team aligned". Also trigger when a growing company needs meeting structure, goal-setting frameworks, or a systematic way to solve recurring organizational issues. Covers the six EOS components: Vision, People, Data, Issues, Process, Traction. For team motivation design, see drive-motivation. For lean experimentation, see lean-startup.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.4.1"
 ---
 
 # Entrepreneurial Operating System (EOS)
@@ -17,15 +17,13 @@ A complete system for running a business with six key components. Designed for e
 
 ## Scoring
 
-**Goal: 10/10.** Rate any business 0-10 on EOS component strength: a 10/10 means all six components are strong, meetings are productive, and quarterly rocks are consistently achieved. Always state the current score and the improvements needed to reach 10/10.
+**Goal: 10/10.** Score the business by how many of the six Quick Diagnostic rows pass (each component is either in place or not), mapped to the bands below. Bands: **9-10** = all six diagnostic rows pass and rocks consistently hit 80%+ completion; **7-8** = five rows pass, one component weak; **5-6** = three to four rows pass; **3-4** = one to two rows pass; **<=2** = no operating rhythm in place. Always state the current score, the failing diagnostic rows, and the next action for each.
 
 ## The Six Key Components
 
 ```
 Vision → People → Data → Issues → Process → Traction
 ```
-
-Every business is built on these six components. EOS strengthens all six.
 
 ### 1. Vision Component
 
@@ -48,7 +46,7 @@ Every business is built on these six components. EOS strengthens all six.
 
 **Key insight:** If the leadership team can't agree on the V/TO, you have a bigger problem — alignment comes first.
 
-See: [references/vto.md](references/vto.md) for V/TO templates and exercises.
+See [references/vto.md](references/vto.md) when filling in the V/TO — the eight-question template and the off-site exercise sequence.
 
 ### 2. People Component
 
@@ -78,7 +76,7 @@ Visionary ←→ Integrator
 - Wrong person, right seat → coach or exit (hardest call)
 - Wrong person, wrong seat → exit immediately
 
-See: [references/people.md](references/people.md) for accountability chart and People Analyzer templates.
+See [references/people.md](references/people.md) when building the accountability chart or running People Analyzer — templates plus GWC scoring guidance.
 
 ### 3. Data Component
 
@@ -102,7 +100,7 @@ See: [references/people.md](references/people.md) for accountability chart and P
 
 **Metric selection:** If you had to go on vacation for 4 weeks, what 5-15 numbers would tell you how the business is doing?
 
-See: [references/data.md](references/data.md) for scorecard templates and metric selection.
+See [references/data.md](references/data.md) when building the scorecard — templates plus how to pick leading-indicator metrics.
 
 ### 4. Issues Component
 
@@ -126,7 +124,7 @@ See: [references/data.md](references/data.md) for scorecard templates and metric
 
 **Common IDS failures:** discussing symptoms instead of root cause, rehashing the same issue weekly, ending without clear action items.
 
-See: [references/issues.md](references/issues.md) for IDS facilitation guides.
+See [references/issues.md](references/issues.md) when facilitating IDS — a Five Whys worked example and tangent-control tactics.
 
 ### 5. Process Component
 
@@ -146,9 +144,9 @@ See: [references/issues.md](references/issues.md) for IDS facilitation guides.
 5. Follow up (3 touches in 7 days)
 6. Close or disqualify
 
-**Followed By All (FBA):** Document it, train on it, measure compliance, update quarterly — a documented process nobody follows is shelf-ware.
+**Followed By All (FBA):** Document it, train on it, measure compliance, update quarterly.
 
-See: [references/process.md](references/process.md) for process documentation templates.
+See [references/process.md](references/process.md) when documenting a core process — full templates and a worked HR/sales/ops example.
 
 ### 6. Traction Component
 
@@ -169,7 +167,7 @@ The 3-7 most important things to accomplish in the next 90 days. Ninety days is 
 
 **Rock scoring:** Done = checked off (no partial credit); not done = carried forward or dropped. Target 80%+ completion. Beware rocks that are just "business as usual" — they don't move the needle.
 
-See: [references/rocks.md](references/rocks.md) for rock-setting exercises.
+See [references/rocks.md](references/rocks.md) when setting quarterly rocks — the binary done-test, the nine-row mistakes table, and a mid-quarter check-in.
 
 #### Level 10 Meeting (Weekly Leadership Meeting)
 
@@ -192,7 +190,7 @@ See: [references/rocks.md](references/rocks.md) for rock-setting exercises.
 - Rate the meeting 1-10 at the end (hence "Level 10"); below 8 means discuss what to improve
 - To-dos are 7-day action items with an owner; done = 100% complete; target 90%+ completion
 
-See: [references/level-10.md](references/level-10.md) for meeting facilitation guides.
+See [references/level-10.md](references/level-10.md) when running or fixing a Level 10 — facilitation script and how to interpret the meeting rating.
 
 ## EOS Implementation Timeline
 
@@ -208,7 +206,7 @@ Typical rollout: 2 years to full implementation.
 
 **Self-implementation** (read the book, follow the tools — free, slower) vs. **EOS Implementer** (certified facilitator — faster, expensive).
 
-See: [references/implementation.md](references/implementation.md) for the rollout guide.
+See [references/implementation.md](references/implementation.md) when planning the rollout — phase-by-phase sequencing and the self-vs-Implementer decision. For examples of how real companies sequenced it, see [references/case-studies.md](references/case-studies.md).
 
 ## Organizational Checkup
 
@@ -230,11 +228,11 @@ Rate the company 1-5 on each statement:
 | Mistake | Why It Fails | Fix |
 |---------|-------------|------|
 | **Skipping Level 10s** | Weekly rhythm lost, issues pile up | Protect the meeting, never cancel |
-| **Too many rocks** | No focus, nothing gets done | Max 7 company rocks, 3-7 per person |
-| **Vague rocks** | Can't tell if done | SMART rocks with clear criteria |
 | **No scorecard** | Managing by gut, constant surprises | Choose 5-15 weekly numbers |
 | **Wrong people kept** | Drags the entire team down | People Analyzer, make the tough calls |
 | **V/TO not shared** | Team doesn't know the vision | Share with the entire company |
+
+For rock-specific mistakes (too many, too vague, business-as-usual, mid-quarter changes), see [references/rocks.md](references/rocks.md) — full nine-row table with fixes.
 
 ## Quick Diagnostic
 
@@ -246,18 +244,6 @@ Rate the company 1-5 on each statement:
 | Issues solved permanently? | Same problems repeat | IDS in Level 10s |
 | Core processes documented? | Inconsistency | Document the top 5 processes |
 | 90-day priorities set and tracked? | No traction | Set quarterly rocks |
-
-## Reference Files
-
-- [vto.md](references/vto.md): Vision/Traction Organizer templates, eight questions
-- [people.md](references/people.md): Accountability chart, People Analyzer, GWC
-- [data.md](references/data.md): Scorecard templates, metric selection
-- [issues.md](references/issues.md): IDS process, facilitation, issue types
-- [process.md](references/process.md): Core process documentation templates
-- [rocks.md](references/rocks.md): Rock-setting exercises, SMART rocks
-- [level-10.md](references/level-10.md): Meeting agenda, facilitation, rating
-- [implementation.md](references/implementation.md): EOS rollout timeline, self-implementation guide
-- [case-studies.md](references/case-studies.md): Companies that implemented EOS successfully
 
 ## Further Reading
 

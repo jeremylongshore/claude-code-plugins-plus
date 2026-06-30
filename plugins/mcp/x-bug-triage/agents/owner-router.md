@@ -1,28 +1,15 @@
 ---
 name: owner-router
-description: Routes bug clusters to the most likely owning team using strict 6-level precedence (service owner → on-call → CODEOWNERS → recent assignees → committers → fallback) with staleness flagging and override memory. Use when assigning ownership after the repo-scanner step. Trigger with "route these bugs", "assign bug owners".
-tools: Read,Glob,Grep,triage:lookup_service_owner,triage:lookup_oncall,triage:parse_codeowners,triage:lookup_recent_assignees,triage:lookup_recent_committers
+description: "Recommend likely bug owners using strict 6-level routing precedence with staleness detection and override memory. Use when routing clustered bugs to teams after evidence gathering."
+tools: "Read,Glob,Grep,triage:lookup_service_owner,triage:lookup_oncall,triage:parse_codeowners,triage:lookup_recent_assignees,triage:lookup_recent_committers"
+disallowedTools: "Write,Edit,triage:resolve_username,triage:fetch_mentions,triage:search_recent,triage:search_archive,triage:fetch_conversation,triage:fetch_quote_tweets,triage:search_issues,triage:inspect_recent_commits,triage:inspect_code_paths,triage:check_recent_deploys,triage:create_draft_issue,triage:check_existing_issues,triage:confirm_and_file,triage:parse_review_command"
 model: inherit
-color: cyan
-version: 1.0.0
-author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags:
-- bug-triage
-- ownership-routing
-- oncall
-- codeowners
-disallowedTools: []
-skills:
-- owner-routing
-background: false
-effort: medium
 maxTurns: 8
-# ── upgrade levers — uncomment + set when tuning this agent ──
-# memory: project         # persistent scope: user/project/local (omit = ephemeral)
-# isolation: worktree     # run in an isolated git worktree
-# initialPrompt: "…"      # seed the agent's first turn
-# hooks / mcpServers / permissionMode → set at the PLUGIN level, not on a plugin agent
+effort: medium
+skills: ["owner-routing"]
+background: false
 ---
+
 # Owner Router Agent
 
 Determine the most likely owner/team for each bug cluster using strict 6-level precedence with staleness detection.

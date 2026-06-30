@@ -10409,6 +10409,85 @@
       "homepage": "https://github.com/jeremylongshore/dolt-mcp-vcs",
       "repository": "https://github.com/jeremylongshore/dolt-mcp-vcs",
       "license": "Apache-2.0"
+    },
+    {
+      "name": "claudebase",
+      "source": "./plugins/productivity/claudebase",
+      "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
+      "version": "0.2.0",
+      "category": "productivity",
+      "keywords": [
+        "github",
+        "sync",
+        "backup",
+        "config",
+        "profiles",
+        "settings"
+      ],
+      "author": {
+        "name": "Rohit Hazra",
+        "url": "https://github.com/rohithzr"
+      },
+      "homepage": "https://github.com/rohithzr/claudebase",
+      "repository": "https://github.com/rohithzr/claudebase",
+      "license": "MIT"
+    },
+    {
+      "name": "hermes-tweet",
+      "source": "./plugins/community/hermes-tweet",
+      "description": "Hermes Agent X/Twitter research, monitoring, drafts, exports, and approved actions",
+      "version": "0.1.6",
+      "category": "community",
+      "keywords": [
+        "hermes-agent",
+        "hermes-plugin",
+        "xquik",
+        "twitter",
+        "x",
+        "social-media",
+        "automation"
+      ],
+      "author": {
+        "name": "Xquik",
+        "url": "https://github.com/Xquik-dev"
+      },
+      "homepage": "https://github.com/Xquik-dev/hermes-tweet#readme",
+      "repository": "https://github.com/Xquik-dev/hermes-tweet",
+      "license": "MIT"
+    },
+    {
+      "name": "x-twitter-scraper",
+      "source": "./plugins/api-development/x-twitter-scraper",
+      "description": "X/Twitter REST API and MCP skill for tweet search, profile data, follower exports, media downloads, monitoring, webhooks, and confirmation-gated actions.",
+      "version": "0.1.0",
+      "category": "api-development",
+      "author": {
+        "name": "Xquik",
+        "url": "https://github.com/Xquik-dev"
+      },
+      "repository": "https://github.com/Xquik-dev/x-twitter-scraper",
+      "license": "MIT"
+    },
+    {
+      "name": "mytradeledger-skills",
+      "source": "./plugins/community/mytradeledger-skills",
+      "description": "Access and manage MyTradeLedger journaled crypto trades via the REST API — ledger entries (CRUD + bulk-import + P&L recompute), account balances and realized P&L, CSV export, asset registry, entry metadata, and personal access token management.",
+      "version": "1.0.0",
+      "category": "community",
+      "keywords": [
+        "crypto",
+        "trading",
+        "mytradeledger",
+        "ledger",
+        "pnl"
+      ],
+      "author": {
+        "name": "trpsbill",
+        "url": "https://github.com/trpsbill"
+      },
+      "homepage": "https://github.com/trpsbill/skills",
+      "repository": "https://github.com/trpsbill/skills",
+      "license": "MIT"
     }
   ]
 }

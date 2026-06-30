@@ -1,10 +1,10 @@
 # Reviewer Prompt Template
 
-Use this template when dispatching Opus reviewers via the Agent tool. Review depth scales by task complexity.
+Use this template when dispatching Reviewers via the Agent tool. Review depth scales by task complexity.
 
 ## Complexity Classification
 
-Opus determines complexity BEFORE dispatching the reviewer:
+The orchestrator determines complexity BEFORE dispatching the Reviewer:
 
 - **Simple** (levels 1-2): Single file, rename, config, one-line fix
 - **Medium** (levels 1-3): 2-3 files, modifies existing functionality, touches shared code
@@ -71,12 +71,15 @@ VERDICT: APPROVED | NEEDS_FIX | SECURITY_VIOLATION
 ```
 ```
 
+If a finding needs a peer domain's judgment before you can rule on it, hold the verdict and emit
+`CONSULT: <peer> — <question>` instead (you may consult any specialist in `agents/`). The Team Lead brokers the
+answer and re-dispatches you to finish the review. See DOCTRINE rule 19 / [consultation.md](consultation.md).
+
 ## Dispatch Example
 
 ```
 Agent({
   description: "Review auth middleware (complex)",
-  model: "opus",
   prompt: `## Review scope
 Files: src/middleware/auth.ts, src/middleware/auth.test.ts, src/types/auth.ts, src/types/session.ts
 Task: Create JWT auth middleware with refresh logic

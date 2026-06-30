@@ -1,10 +1,10 @@
 ---
 name: ux-heuristics
-description: 'Evaluate and improve interface usability using heuristic analysis. Use when the user mentions "usability audit", "UX review", "users are confused", "heuristic evaluation", "form usability", "navigation problems", "Nielsen heuristics", "cognitive walkthrough", or "usability testing". Also trigger when reviewing a design for usability issues, improving form completion rates, or evaluating information architecture and navigation. Covers Nielsens 10 heuristics, severity ratings, and information architecture. For visual design fixes, see refactoring-ui. For conversion-focused audits, see cro-methodology.'
+description: 'Evaluate and improve interface usability using heuristic analysis. Use when the user mentions "usability audit", "users are confused", "form usability", "navigation problems", "Nielsen heuristics", "cognitive walkthrough", or "is this easy to use". Also trigger when reviewing a design for usability issues, improving form-completion rates, or evaluating information architecture and navigation. Covers Krug''s laws, Nielsen''s 10 heuristics, severity ratings, dark-pattern recognition, and accessibility. For visual design fixes, see refactoring-ui. For conversion-focused audits, see cro-methodology.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.4.0"
+  version: "1.6.0"
 ---
 
 # UX Heuristics Framework
@@ -13,13 +13,15 @@ Practical usability principles for evaluating and improving user interfaces. Use
 
 ## Core Principle
 
-**"Don't Make Me Think"** — every page should be self-evident. If something requires thinking, it's a usability problem. Users have limited patience and cognitive bandwidth, so design for scanning, satisficing, and muddling through — because that's what users actually do.
+**"Don't Make Me Think"** — every page should be self-evident. If something requires thinking, it's a usability problem. Users have limited patience and cognitive bandwidth, so design for the scanning, satisficing, and muddling-through behavior described above.
 
 ## Scoring
 
-**Goal: 10/10.** Rate any interface 0-10 against the principles below. Always state the current score and the specific improvements needed to reach 10/10.
+**Goal: 10/10.** Audit the interface, rate every issue on the severity scale below, then score the interface from its Quick Diagnostic results: start at 10 and subtract per failed diagnostic row, weighted by the worst severity it triggers (catastrophic/major rows cost ~2, minor/cosmetic ~1). Bands: **9-10** = no severity-3+ issues and ≤1 failed diagnostic row; **6-8** = some major issues or several failed rows; **3-5** = a catastrophic issue or many failed rows; **≤2** = core tasks blocked. Always state the current score, the highest-severity issues, and the specific fixes needed to reach 10/10.
 
-## Krug's Three Laws of Usability
+## Krug's Usability Principles
+
+Laws 1-3 are Krug's Three Laws of Usability; #4, the Trunk Test, is his navigation orientation check.
 
 ### 1. Don't Make Me Think
 
@@ -48,7 +50,7 @@ Practical usability principles for evaluating and improving user interfaces. Use
 
 **Ethical boundary:** Clarity should serve users — never use plain language as a veneer to hide unfavorable terms.
 
-See: [references/krug-principles.md](references/krug-principles.md) for full Krug methodology, scanning behavior, and the click philosophy.
+See: [references/krug-principles.md](references/krug-principles.md) when you need the full Krug method — scanning/satisficing/muddling psychology, the goodwill reservoir, homepage and tagline guidance, and the $0 usability-testing protocol (how many users, the test script).
 
 ### 2. It Doesn't Matter How Many Clicks
 
@@ -80,8 +82,6 @@ See: [references/krug-principles.md](references/krug-principles.md) for full Kru
 
 **Core concept:** Remove half the words on each page, then half of what's left. Brevity makes useful content prominent and respects the user's time.
 
-**Why it works:** Users scan — every unnecessary word competes with the words that matter.
-
 **Key insights:**
 - Happy-talk ("Welcome to our website!") wastes space
 - Instructions nobody reads should be removed
@@ -104,30 +104,15 @@ See: [references/krug-principles.md](references/krug-principles.md) for full Kru
 
 ### 4. The Trunk Test
 
-**Core concept:** Drop a user on any random page (like being released from a car trunk at a random spot) — they should instantly answer: What site is this? What page? What are the major sections? What are my options? Where am I in the hierarchy? Where's search?
+**Core concept:** Drop a user on any random page (like being released from a car trunk at a random spot) — they should instantly answer six orientation questions: What site is this? What page? What are the major sections? What are my options here? Where am I in the hierarchy? Where's search?
 
 **Why it works:** Good navigation gives constant orientation. Users who can't tell where they are feel lost and leave.
 
-**Key insights:**
-- Site ID (logo) and page name must be visible at all times
-- Major sections and local options must be evident
-- Breadcrumbs show position in the hierarchy
-- Search must be findable on every page
+Apply it as the navigation check: page titles must match the link the user clicked, a "you are here" indicator (highlighted nav item, bold breadcrumb) must be present, and section headings must orient ("Your Account > Billing" not just "Settings").
 
-**Product applications:**
+**Ethical boundary:** Navigation labels must honestly represent site structure — never use misleading labels to funnel users into marketing pages.
 
-| Context | Application | Example |
-|---------|-------------|---------|
-| **Global nav** | Persistent site ID and sections | Logo top-left, main nav always visible |
-| **Page headers** | Clear, descriptive titles | "Running Shoes - Men's" not just "Products" |
-| **Breadcrumbs** | Hierarchy on all inner pages | "Home > Products > Shoes > Running" |
-
-**Copy patterns:**
-- Page titles that match the link the user clicked
-- "You are here" indicators (highlighted nav item, bold breadcrumb)
-- Section headings that orient: "Your Account > Billing" not just "Settings"
-
-**Ethical boundary:** Navigation should honestly represent site structure — never use misleading labels to funnel users into marketing pages.
+See: [references/krug-principles.md](references/krug-principles.md) when running the Trunk Test or designing navigation — it maps each of the six questions to the page element that answers it, plus breadcrumb and permanent-navigation rules.
 
 ## Nielsen's 10 Usability Heuristics
 
@@ -161,7 +146,7 @@ Error messages need three parts: what happened, why, and how to fix it. Plain la
 ### 10. Help and Documentation
 Help should be searchable, task-focused ("How to..." not technical reference), and contextual (tooltips, inline hints, guided tours).
 
-See: [references/nielsen-heuristics.md](references/nielsen-heuristics.md) for detailed examples, product applications, copy patterns, and ethical boundaries for all 10 heuristics.
+See: [references/nielsen-heuristics.md](references/nielsen-heuristics.md) when auditing against a specific heuristic — it expands each of the 10 into good-implementation / common-violation / severity tables with copy patterns and ethical boundaries.
 
 ## Severity Rating Scale
 
@@ -176,6 +161,8 @@ Rate each issue found in an audit:
 | **4** | Catastrophic | Prevents task completion | Fix immediately |
 
 Weigh three factors: **frequency** (how often it occurs), **impact** (how severe when it occurs), **persistence** (one-time or ongoing).
+
+See: [references/audit-template.md](references/audit-template.md) when running a full heuristic evaluation — a structured per-screen template that captures issues, severity, and recommended fixes in a consistent format.
 
 ## Common Mistakes
 
@@ -196,6 +183,8 @@ Weigh three factors: **frequency** (how often it occurs), **impact** (how severe
 | **Low contrast text** | Unreadable for many users | WCAG AA minimum (4.5:1 contrast) |
 | **Inconsistent nav location** | Users can't find navigation | Fixed position, same place on every page |
 | **Broken back button** | Violates the browser contract | Never hijack or break browser history |
+
+See: [references/wcag-checklist.md](references/wcag-checklist.md) when auditing accessibility (contrast, keyboard, screen-reader, focus) — a complete WCAG 2.1 AA checklist with testing tools. See [references/cultural-ux.md](references/cultural-ux.md) when designing for global audiences — RTL layouts, color meanings, form/name/date conventions, and localization pitfalls.
 
 ## Quick Diagnostic
 
@@ -220,13 +209,13 @@ Heuristics sometimes contradict each other. When they do:
 - **Efficiency vs. Error Prevention**: prefer undo over confirmation dialogs
 - **Discoverability vs. Minimalism**: primary actions visible, secondary hidden
 
-See: [references/heuristic-conflicts.md](references/heuristic-conflicts.md) for resolution frameworks.
+See: [references/heuristic-conflicts.md](references/heuristic-conflicts.md) when two heuristics pull in opposite directions and the four rules above don't settle it — resolution frameworks with worked trade-off examples.
 
 ## Dark Patterns Recognition
 
 Dark patterns violate heuristics deliberately to manipulate users: forced continuity (hard to cancel), roach motel (easy in, hard out), confirmshaming (guilt-based options), hidden costs (surprise fees at checkout).
 
-See: [references/dark-patterns.md](references/dark-patterns.md) for the complete taxonomy and ethical alternatives.
+See: [references/dark-patterns.md](references/dark-patterns.md) when you suspect a design manipulates rather than serves users — the complete taxonomy, ethical alternatives, and relevant regulations.
 
 ## When to Use Each Method
 
@@ -236,16 +225,6 @@ See: [references/dark-patterns.md](references/dark-patterns.md) for the complete
 | User testing | After heuristic fixes | 2-4 hours | Real behavior |
 | A/B testing | When optimizing | Days-weeks | Statistical validation |
 | Analytics review | Ongoing | 30 min | Patterns and problems |
-
-## Reference Files
-
-- [krug-principles.md](references/krug-principles.md): Full Krug methodology, scanning behavior, navigation clarity
-- [nielsen-heuristics.md](references/nielsen-heuristics.md): Detailed heuristic explanations with examples
-- [audit-template.md](references/audit-template.md): Structured heuristic evaluation template
-- [dark-patterns.md](references/dark-patterns.md): Categories, examples, ethical alternatives, regulations
-- [wcag-checklist.md](references/wcag-checklist.md): Complete WCAG 2.1 AA checklist, testing tools
-- [cultural-ux.md](references/cultural-ux.md): RTL, color meanings, form conventions, localization
-- [heuristic-conflicts.md](references/heuristic-conflicts.md): When heuristics contradict, resolution frameworks
 
 ## Further Reading
 

@@ -13,7 +13,7 @@ tags: [setup, initialization, project-analysis]
 
 # Scaffold
 
-One-shot project setup. Analyzes the codebase, builds the `.hyperflow/` cache, seeds the memory skeleton, and optionally installs detection shims for other AI tools. Does not start the spec → scope → dispatch chain — invoke `/hyperflow:spec` (or `/hyperflow:scope`) when you're ready for that.
+One-shot project setup. Analyzes the codebase, builds the `.hyperflow/` cache, seeds the memory skeleton, and optionally installs detection shims for other AI tools. Does not start the plan → dispatch chain — invoke `/hyperflow:plan` when you're ready for that.
 
 ## Step 1 — Analysis Cache
 
@@ -37,6 +37,7 @@ Compute SHA256 of tracked config files, compare against `.hyperflow/.checksums`.
 
 **After analysis:**
 - Write `.hyperflow/.checksums` (SHA256 of `package.json`, `tsconfig.json`, eslint/biome config, etc.)
+- Write `.hyperflow/.version` (the current plugin version from `skills/hyperflow/VERSION`) so the cache is stamped current. The session-start migrator (`scripts/migrate-cache.py`) reads this marker on later sessions and brings an older cache forward when the plugin version moves — a missing/older marker triggers an idempotent, additive migration (new memory files, refreshed doctrine copy).
 - Append to `.gitignore` if `.hyperflow/` is not already excluded
 
 ## Step 2 — Memory Skeleton
@@ -108,15 +109,15 @@ Pass --thorough to /hyperflow:dispatch to fall back to the full inlined template
 
 ## Hand-off
 
-This skill **does not** auto-chain. Init is project setup, not feature work. When the user wants to start a feature, they invoke `/hyperflow:spec` (for ambiguous scope) or `/hyperflow:scope` (for clear specs).
+This skill **does not** auto-chain. Init is project setup, not feature work. When the user wants to start a feature, they invoke `/hyperflow:plan`.
 
 ## Doctrine
 
-Full rules in [DOCTRINE.md](references/DOCTRINE.md). Output style in [output-style.md](references/output-style.md).
+Full rules in [DOCTRINE.md](../hyperflow/DOCTRINE.md). Output style in [output-style.md](references/output-style.md).
 
 ## Overview
 
-`/hyperflow:scaffold` is one-shot project setup. It analyzes the codebase via 6 parallel Sonnet searchers, builds the `.hyperflow/` cache (profile, architecture, conventions, dependencies, testing, git-workflow), seeds the memory skeleton, and optionally writes detection shims (CLAUDE.md for Claude Code, AGENTS.md for OpenCode). Does not start the spec → scope → dispatch chain — invoke `/hyperflow:spec` (ambiguous scope) or `/hyperflow:scope` (clear spec) when ready.
+`/hyperflow:scaffold` is one-shot project setup. It analyzes the codebase via 6 parallel searchers, builds the `.hyperflow/` cache (profile, architecture, conventions, dependencies, testing, git-workflow), seeds the memory skeleton, and optionally writes detection shims (CLAUDE.md for Claude Code, AGENTS.md for OpenCode). Does not start the plan → dispatch chain — invoke `/hyperflow:plan` when ready.
 
 ## Prerequisites
 
@@ -211,5 +212,5 @@ No files written.
 ## Resources
 
 - [project-analysis.md](references/project-analysis.md) — what each generated file captures.
-- [DOCTRINE.md](references/DOCTRINE.md) — orchestration rules (Layer 0 project analysis).
+- [DOCTRINE.md](../hyperflow/DOCTRINE.md) — orchestration rules (Layer 0 project analysis).
 - [output-style.md](references/output-style.md) — summary block formatting.

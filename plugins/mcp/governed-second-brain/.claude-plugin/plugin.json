@@ -1,7 +1,7 @@
 {
   "name": "governed-second-brain",
-  "version": "0.1.6",
-  "description": "A local-first governed second brain for Claude Code — turn your own files into cited (qmd://) memory, with every write run through deterministic governance and recorded in a tamper-evident, SHA-256 hash-chained audit trail. Runs in-process; no daemon, no network.",
+  "version": "1.0.0",
+  "description": "A governed second brain for Claude Code — ONE plugin, two modes. Local (default): turn your own files into cited (qmd://) memory, every write run through deterministic governance and a tamper-evident SHA-256 hash-chained audit trail, in-process, no daemon, no network. Team (set TEAMKB_API_URL): query your team's single governed brain over the tailnet with a per-user token. Same /brain and /brain-save skills in both modes.",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"
@@ -23,14 +23,15 @@
   "mcpServers": {
     "governed-brain": {
       "name": "governed-brain",
-      "description": "Local in-process governed second brain — cited search plus governed capture (capture → govern → promote) with a SHA-256 hash-chained audit trail. No daemon, no network.",
-      "version": "0.1.6",
+      "description": "Governed second brain — ONE plugin, two modes. Local (default): an in-process governed brain over your own files (~/.teamkb) — cited search plus governed capture → govern → promote with a SHA-256 hash-chained audit trail, no daemon, no network. Team (set TEAMKB_API_URL): a remote proxy to your team's single governed brain over the tailnet, with a per-user token. Mode is auto-detected from TEAMKB_API_URL.",
+      "version": "1.0.0",
       "enabled": true,
       "transport": "stdio",
       "command": "node",
       "args": ["${CLAUDE_PLUGIN_ROOT}/plugin-runtime/governed-brain.cjs"],
       "env": {
-        "TEAMKB_TENANT_ID": "local"
+        "TEAMKB_API_URL": "${TEAMKB_API_URL}",
+        "TEAMKB_API_TOKEN": "${TEAMKB_API_TOKEN}"
       }
     }
   }

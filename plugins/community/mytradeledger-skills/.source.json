@@ -1,0 +1,24 @@
+{
+  "synced_from": {
+    "repo": "trpsbill/skills",
+    "path": ".",
+    "branch": "main"
+  },
+  "last_sync": "2026-06-30T23:20:07.215Z",
+  "author": {
+    "name": "trpsbill",
+    "github": "trpsbill",
+    "email": "trpsbill@gmail.com"
+  },
+  "license": "MIT",
+  "files_synced": 7,
+  "files": [
+    ".claude-plugin/plugin.json",
+    "LICENSE",
+    "skills/mytradeledger/.env.sample",
+    "skills/mytradeledger/LICENSE.txt",
+    "skills/mytradeledger/README.md",
+    "skills/mytradeledger/SKILL.md",
+    "skills/mytradeledger/scripts/mtl.py"
+  ]
+}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc" viewBox="0 0 128 128">
+  <title id="title">Hermes Tweet</title>
+  <desc id="desc">Hermes Tweet plugin icon</desc>
+  <rect width="128" height="128" rx="24" fill="#111827"/>
+  <path d="M32 38h64v12H70v50H58V50H32z" fill="#F9FAFB"/>
+  <path d="M34 82c13-2 24-8 32-17 9-10 19-16 30-19v14c-9 3-17 8-24 16-10 11-23 18-38 20z" fill="#38BDF8"/>
+</svg>

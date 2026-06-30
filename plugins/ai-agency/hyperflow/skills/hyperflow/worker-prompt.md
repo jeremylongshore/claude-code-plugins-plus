@@ -1,6 +1,8 @@
 # Worker Prompt Template
 
-Use this template when dispatching Sonnet workers via the Agent tool. **Every section below is mandatory** — the Team Lead must fill each one before dispatch. A sparse / vague brief is a doctrine violation: the worker will fill the gaps with assumptions, and the per-batch Reviewer can't catch what wasn't asked for. Detail floor exists so the worker executes the right work, not a plausible-looking nearby alternative.
+Use this template when dispatching workers via the Agent tool. **Every section below is mandatory** — the Team Lead must fill each one before dispatch. A sparse / vague brief is a doctrine violation: the worker will fill the gaps with assumptions, and the per-batch Reviewer can't catch what wasn't asked for. Detail floor exists so the worker executes the right work, not a plausible-looking nearby alternative.
+
+**Authored at plan time by default.** For non-trivial sub-tasks, `/hyperflow:plan` writes this entire body into a brief file `.hyperflow/tasks/<slug>/T<id>.md` (or `phase-*/tasks/T<id>.md` in feature mode). At dispatch, the Composer **loads that brief verbatim** and only appends Project Context + learnings + the specialist output-contract — it does not re-derive Task/Scope/Acceptance/Test-cases. This is what lets the build run faithfully on a cheaper model or a second session. The Composer authors inline (the old path) only when no brief file exists (a trivial sub-task or a legacy terse task file).
 
 ## Template
 
@@ -31,7 +33,7 @@ Use this template when dispatching Sonnet workers via the Agent tool. **Every se
 
 **Quality bar — every test case must demonstrate real domain understanding of THIS task. Formulaic placeholders are a doctrine violation.**
 
-The Thinking Lead writes test cases by thinking through:
+The orchestrator writes test cases by thinking through:
 
 1. **Domain logic** — what does this feature actually do in the user's world? What are the real inputs users provide (not toy examples)? What does success look like in production?
 2. **Domain edge cases** — boundary conditions specific to this surface. For a search bar: empty query, only-whitespace, single character, very long query (>1000 chars), special chars (`<`, `&`, `'`), Unicode (emoji, CJK, combining marks), RTL strings, no results, results truncated, debounce timing. For an auth flow: missing token, expired token, malformed token, token for deleted user, simultaneous logins from two devices, refresh during request. For a money calculation: zero, negative, rounding boundaries (.005 banker's rounding), currency-specific decimals (JPY has 0, KWD has 3), overflow at large values.
@@ -48,6 +50,8 @@ The Thinking Lead writes test cases by thinking through:
 [For non-code tasks (docs/configs/refactors), test cases become verification commands with expected results, e.g. `grep -c '<pattern>' <file>` → expect 3; `python3 -m json.tool < <file>` → exit 0; `grep -r '<old-API>' src/` → no results.]
 
 **Minimum coverage:** 3 test cases as a floor, but **3 is rarely enough for a non-trivial task**. Aim for the realistic set: every domain edge case the Worker should handle + the integration failure modes the feature can hit. The UserAvatar example in this template has 10 cases for a single component because that's what the actual surface needs; an auth-middleware brief would need 15+. Quality > arbitrary count.
+
+**End-to-end / integration case (required).** Beyond unit/domain cases, every brief carries **≥1 end-to-end or integration scenario** — the full user-facing or cross-module flow with real inputs → real expected outcome, not a mocked unit slice. Name the tool where one applies: Playwright / Cypress (web UI), Maestro / Detox / XCUITest / Espresso (mobile), supertest / HTTP round-trip (API), a real DB transaction (data layer). Example: "submit the login form with valid creds → redirected to `/dashboard`, `session` cookie set, `GET /api/me` returns the user." Omit only with an explicit `E2E: N/A — <why>` (e.g. a pure type-only refactor).
 
 **Omit ONLY when the task is genuinely test-impossible** (a one-line README typo fix, a CI-config formatting change) — and explicitly state `Test cases: N/A — <why>` so the omission is deliberate, not sloppy.
 
@@ -85,7 +89,7 @@ Project Context (load on demand):
 Workers in lean mode read these files via the `Read` tool when (and only when) their task actually needs the information. No quality regression — same content, lazy access. Saves ~2k tokens × N parallel workers per batch because the bundle isn't re-injected into every worker prompt.]
 
 ## Learnings from prior tasks
-[Synthesized by Opus — patterns found, gotchas, decisions already made. Omit section if first task.]
+[Synthesized by the orchestrator — patterns found, gotchas, decisions already made. Omit section if first task.]
 
 ## Constraints
 - Only modify files listed in scope
@@ -100,6 +104,7 @@ Workers in lean mode read these files via the `Read` tool when (and only when) t
 - Do NOT hardcode secrets, API keys, passwords, or connection strings
 - If a task requires a blocked file: STOP and report "BLOCKED: [reason]"
 - If the task brief is bigger than the Planner estimated (the file is much larger than expected, the refactor touches more callers than expected, the test scope has cascading dependencies, etc.): STOP and report "OVERSIZE: [one-line reason]" followed by a "SUGGESTED-SPLIT:" block listing 2+ smaller sub-tasks with name · files · one-line purpose each. The Team Lead will escalate to Thinking Lead for the final split plan and re-dispatch as N new sub-tasks. Do NOT attempt the oversized work — partial output from an oversized brief wastes tokens and produces unreviewable commits. See DOCTRINE Layer 3 oversize-split rule.
+- If you need a decision outside your own lane (a design-system token, a motion call, a schema choice, an architecture boundary, etc.): STOP and report "CONSULT: <peer> — <one-line question>" optionally followed by a "CONSULT-CONTEXT:" block (≤5 lines). You may consult any specialist in `agents/`; most relevant here: {{CONSULT_PEER_HINT}}. The Team Lead dispatches the peer and re-dispatches you with the answer injected. Do NOT guess across a domain boundary. See DOCTRINE rule 19 / consultation.md.
 
 ## Output format
 Return ONE of (no preamble, no postamble, no extra commentary — see Constraints "Token economy"):
@@ -117,6 +122,13 @@ Return ONE of (no preamble, no postamble, no extra commentary — see Constraint
     - <sub-task C name> · <files C> · <one-line purpose>
   ```
 
+- **Consult escape hatch** — when you need a peer's decision outside your lane:
+  ```
+  CONSULT: <peer-agent> — <one-line question>
+  CONSULT-CONTEXT:
+    <≤5 lines: the file / decision / constraint the peer needs>
+  ```
+
 - **Blocked** — when a security blocklist hits: `BLOCKED: <reason>`
 ```
 
@@ -125,7 +137,6 @@ Return ONE of (no preamble, no postamble, no extra commentary — see Constraint
 ```
 Agent({
   description: "T3 Implementer · UserAvatar component",
-  model: "sonnet",
   prompt: `## Task
 Add a UserAvatar component that displays user initials over a deterministic colored background.
 

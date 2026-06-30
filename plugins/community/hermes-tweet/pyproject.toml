@@ -1,0 +1,132 @@
+[build-system]
+requires = ["setuptools>=82.0.1", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hermes-tweet"
+version = "0.1.6"
+description = "Native Hermes Agent plugin for X/Twitter automation through Xquik"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{ name = "Xquik" }]
+dependencies = [
+  "httpx>=0.28.1,<0.29",
+]
+keywords = [
+  "agent-skill",
+  "agent-tools",
+  "ai-agent",
+  "automation",
+  "hermes-agent",
+  "hermes-plugin",
+  "mcp",
+  "social-media",
+  "tweet",
+  "twitter",
+  "twitter-api",
+  "twitter-automation",
+  "x",
+  "x-api",
+  "x-automation",
+  "x-twitter",
+  "xquik",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Plugins",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Communications",
+  "Topic :: Internet",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.optional-dependencies]
+dev = [
+  "bandit[toml]>=1.9.4",
+  "basedpyright>=1.39.9",
+  "build>=1.5.0",
+  "pip>=26.1.2",
+  "pip-audit>=2.10.1",
+  "PyYAML>=6.0.3",
+  "pytest>=9.1.1",
+  "pytest-cov>=7.1.0",
+  "ruff>=0.15.20",
+  "twine>=6.2.0",
+  "types-PyYAML>=6.0.12.20260518",
+]
+
+[project.urls]
+Homepage = "https://github.com/Xquik-dev/hermes-tweet#readme"
+Documentation = "https://github.com/Xquik-dev/hermes-tweet#readme"
+Repository = "https://github.com/Xquik-dev/hermes-tweet"
+Issues = "https://github.com/Xquik-dev/hermes-tweet/issues"
+ClawHub = "https://clawhub.ai/skills/hermes-tweet"
+DeepWiki = "https://deepwiki.com/Xquik-dev/hermes-tweet"
+piwheels = "https://piwheels.org/project/hermes-tweet/"
+"Xquik Platform" = "https://xquik.com"
+
+[project.entry-points."hermes_agent.plugins"]
+hermes-tweet = "hermes_tweet"
+
+[tool.setuptools]
+packages = ["hermes_tweet", "hermes_tweet.skills"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+hermes_tweet = [
+  "plugin.yaml",
+  "catalog_data.json",
+  "skills/hermes-tweet/SKILL.md",
+]
+
+[tool.ruff]
+line-length = 100
+src = ["hermes_tweet", "scripts", "tests"]
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  "ANN401",
+  "BLE001",
+  "COM812",
+  "D100",
+  "D101",
+  "D102",
+  "D103",
+  "D104",
+  "D203",
+  "D213",
+  "ISC001",
+  "N999",
+  "TRY300",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["D105", "D107", "EM101", "PLR2004", "S101", "TRY003"]
+"scripts/**/*.py" = ["T201"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["hermes_tweet"]
+
+[tool.basedpyright]
+include = ["hermes_tweet", "scripts", "tests"]
+pythonVersion = "3.11"
+typeCheckingMode = "strict"
+
+[tool.coverage.run]
+source = ["hermes_tweet", "tests"]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+skip_covered = true
+
+[tool.bandit]
+exclude_dirs = ["tests"]
+skips = []

@@ -1,0 +1,11 @@
+{
+  "name": "x-twitter-scraper",
+  "version": "0.1.0",
+  "description": "X/Twitter REST API and MCP skill for tweet search, profile data, follower exports, media downloads, monitoring, webhooks, and confirmation-gated actions.",
+  "author": {
+    "name": "Xquik",
+    "url": "https://github.com/Xquik-dev"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/Xquik-dev/x-twitter-scraper"
+}

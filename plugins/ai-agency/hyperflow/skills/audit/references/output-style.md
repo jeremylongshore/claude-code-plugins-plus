@@ -23,10 +23,9 @@ The only exception: code blocks may contain whatever the user's code contains. B
 
 ```
 Hyperflow v1.12.1
-Thinking: Opus 4.8  ·  Worker: Sonnet 4.6
 ```
 
-Two lines. Version on first. Models indented on second, separated by a middle dot.
+One line. Version only.
 
 ## 2. Update Notification
 
@@ -72,14 +71,14 @@ Every agent dispatch gets a label **before** the Agent tool call. Format:
 <Role> — <short lowercase description>
 ```
 
-**Thinking-tier roles** (Reviewer, Debugger) wrap the role in `**bold**`:
+**Decision roles** (Reviewer, Debugger) wrap the role in `**bold**`:
 
 ```
 **Reviewer** — reviewing auth middleware output
 **Debugger** — investigating test failure in auth.test.ts
 ```
 
-**Worker-tier roles** (Implementer, Searcher, Writer) stay plain:
+**Worker roles** (Implementer, Searcher, Writer) stay plain:
 
 ```
 Implementer — creating auth middleware
@@ -162,8 +161,8 @@ Printed after every completed task. The summary now surfaces `Wall-clock` and `C
 Triage                          1 agent     1.8k tokens
 Spec depth: standard            1 agent     3.2k tokens
 Profile: deep                   —           —
-Thinking  (Opus 4.8  )          4 agents   52.1k tokens
-Worker    (Sonnet 4.6)          8 agents  186.0k tokens
+Reviewers                       4 agents   52.1k tokens
+Workers                         8 agents  186.0k tokens
 Wall-clock                      3m 47s
 Cumulative                      14m 22s    (ratio 0.26 — parallel)
 Escalations                     0
@@ -175,20 +174,19 @@ Total                          14 agents  243.1k tokens
 
 Backwards-compat: the older shorter form (no Wall-clock / Cumulative rows) is still acceptable for tasks with a single batch or a single agent — there's nothing to parallelise. For tasks with 2+ batches OR 2+ parallel-eligible workers, the two rows MUST appear.
 
-Older example (single-batch task, single tier shown):
+Older example (single-batch task):
 
 ```
 ── Usage ─────────────────────────────────────────
-Thinking  (Opus 4.8  )   3 agents    48.1k tokens
-Worker    (Sonnet 4.6)   8 agents   186.0k tokens
+Reviewers                3 agents    48.1k tokens
+Workers                  8 agents   186.0k tokens
 Total                   11 agents   234.1k tokens
 ──────────────────────────────────────────────────
 ```
 
 Rules:
 - Top/bottom rules — `──` repeated to ~50 chars
-- Model names in parens, padded to 10 chars
-- Agent counts right-aligned in 3-char column
+- Role labels left-aligned, counts right-aligned in 3-char column
 - Token counts right-aligned in 7-char column, formatted as `Xk` or `X.Xk`
 - Breakdown after tokens (optional): `(3 reviewers: 38.4k · 1 final: 13.7k)` — middle dots between items
 
@@ -258,4 +256,4 @@ BLOCKED — worker attempted to read .env
 3. **One blank line** between different output sections (e.g., between agent labels and gates).
 4. **No trailing summaries.** The usage block IS the summary. Don't add "Done! I completed X."
 5. **No decorative chars.** Em-dash for separators, middle dots for inline lists. Never `⚡`, `✓`, `✗`, `▸`, `→`, etc.
-6. **Bold for thinking-tier.** Only `**Reviewer**` and `**Debugger**` are bolded. Workers stay plain.
+6. **Bold for decision roles.** Only `**Reviewer**` and `**Debugger**` are bolded. Workers stay plain.
