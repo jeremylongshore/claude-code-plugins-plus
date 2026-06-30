@@ -35,17 +35,17 @@ Or use Claude's built-in command:
 
 <!-- KILLER-SKILL:START — do not edit; run `node scripts/render-spotlight.mjs` -->
 
-> **Killer Skill of the Week** — [kobiton-automate](https://tonsofskills.com/plugins/kobiton-automate) by [Kobiton Inc.](https://github.com/kobiton)
+> **Killer Skill of the Week** — [databricks-pack](https://tonsofskills.com/plugins/databricks-pack) by [Jeremy Longshore](https://github.com/jeremylongshore)
 >
-> **Real mobile devices on demand — no emulators, no flaky CI**
+> **Find the ~$27K/month leaking out of a $100K Databricks workspace — from the billing table, not a guess**
 >
-> Kobiton's automate plugin gives Claude Code, Cursor, Codex, and Gemini CLI direct access to the Kobiton real-device cloud via remote MCP. 12 tools across three surfaces — Devices (list / reserve / status / terminate), Sessions (list / get / artifacts / terminate), and Apps (upload / confirm / list / get) — plus 3 specialist agents for device picking, Appium capability reconciliation, and session triage. One install, real iOS + Android hardware, no emulator drift.
+> The databricks-cost-leak-hunter skill audits a workspace for real-dollar cost leaks and emits a CFO-grokkable, dollar-ranked FinOps report. Every confirmed figure is computed from the customer's own system.billing.usage joined to list_prices — never an estimate. Four named leaks — idle clusters that never auto-terminate, scheduled jobs on All-Purpose compute (2–3× overpay), overprovisioned clusters, and the Photon premium paid without the speedup — each tagged confirmed / estimated / at-risk so a CFO never confuses billed waste with modeled savings. A deterministic Python ranker does the arithmetic (the LLM never eyeballs a number), and the databricks-workspace-mcp control plane turns each leak into a single-config-change fix. One of 24 skills in the Databricks pack.
 >
-> _"Mobile testing that runs where the bugs actually live — on the device, not the simulator."_ — Kobiton Inc.
+> _"A $100K/month Databricks workspace is likely burning ~$27,000/month — and every line is one config change."_ — Jeremy Longshore
 >
-> Grade: A | Week of May 20, 2026 (W21) | [Browse on Marketplace](https://tonsofskills.com/plugins/kobiton-automate)
+> Grade: A | Week of June 30, 2026 (W27) | [Browse on Marketplace](https://tonsofskills.com/plugins/databricks-pack)
 >
-> Previous picks: [skyvern](https://github.com/Skyvern-AI/skyvern), [code-cleanup](https://tonsofskills.com/plugins/code-cleanup), [web-analytics](https://tonsofskills.com/plugins/web-analytics), [token-optimizer](https://github.com/alexgreensh/token-optimizer), [executive-assistant-skills](https://tonsofskills.com/plugins/executive-assistant-skills), [skill-creator](https://tonsofskills.com/plugins/skill-creator), [cursor-pack](https://tonsofskills.com/plugins/cursor-pack), [crypto-portfolio-tracker](https://tonsofskills.com/plugins/crypto-portfolio-tracker). See all at [tonsofskills.com](https://tonsofskills.com).
+> Previous picks: [kobiton-automate](https://tonsofskills.com/plugins/kobiton-automate), [skyvern](https://github.com/Skyvern-AI/skyvern), [code-cleanup](https://tonsofskills.com/plugins/code-cleanup), [web-analytics](https://tonsofskills.com/plugins/web-analytics), [token-optimizer](https://github.com/alexgreensh/token-optimizer), [executive-assistant-skills](https://tonsofskills.com/plugins/executive-assistant-skills), [skill-creator](https://tonsofskills.com/plugins/skill-creator), [cursor-pack](https://tonsofskills.com/plugins/cursor-pack), [crypto-portfolio-tracker](https://tonsofskills.com/plugins/crypto-portfolio-tracker). See all at [tonsofskills.com](https://tonsofskills.com).
 
 <!-- KILLER-SKILL:END -->
 

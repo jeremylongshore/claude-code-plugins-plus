@@ -1,7 +1,17 @@
 {
   "title": "Jeremy's Stash",
-  "subtitle": "Standalone plugins I built and maintain. Each has its own repo you can clone directly.",
+  "subtitle": "Plugins and packs I built and maintain — my own picks. Most ship as a standalone repo you can clone directly.",
   "items": [
+    {
+      "name": "Databricks Cost Leak Hunter",
+      "slug": "databricks-pack",
+      "description": "Audits a Databricks workspace for real-dollar cost leaks — idle clusters, jobs on the wrong compute, overprovisioning, the Photon premium — and emits a CFO-grokkable, dollar-ranked FinOps report. Every confirmed figure comes from the customer's own system.billing.usage, never an estimate. The headline skill of the 24-skill Databricks pack.",
+      "repoUrl": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/tree/main/plugins/saas-packs/databricks-pack",
+      "pluginLink": "/plugins/databricks-pack",
+      "tags": ["databricks", "finops", "cost", "saas"],
+      "grade": "A",
+      "new": true
+    },
     {
       "name": "Box Cloud Filesystem",
       "slug": "box-cloud-filesystem",
@@ -10,11 +20,11 @@
       "pluginLink": "/plugins/box-cloud-filesystem",
       "tags": ["cloud-storage", "hooks", "sync"],
       "grade": "A",
-      "new": true
+      "new": false
     }
   ],
   "meta": {
-    "lastUpdated": "2026-03-17",
+    "lastUpdated": "2026-06-30",
     "curatedBy": "Jeremy Longshore"
   }
 }

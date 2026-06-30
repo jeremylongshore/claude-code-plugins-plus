@@ -1,19 +1,32 @@
 {
-  "week": "2026-W21",
+  "week": "2026-W27",
   "title": "Killer Skill of the Week",
   "spotlight": {
-    "pluginSlug": "kobiton-automate",
-    "headline": "Real mobile devices on demand — no emulators, no flaky CI",
-    "whyKiller": "Kobiton's automate plugin gives Claude Code, Cursor, Codex, and Gemini CLI direct access to the Kobiton real-device cloud via remote MCP. 12 tools across three surfaces — Devices (list / reserve / status / terminate), Sessions (list / get / artifacts / terminate), and Apps (upload / confirm / list / get) — plus 3 specialist agents for device picking, Appium capability reconciliation, and session triage. One install, real iOS + Android hardware, no emulator drift.",
-    "author": "Kobiton Inc.",
-    "authorGithub": "kobiton",
+    "pluginSlug": "databricks-pack",
+    "headline": "Find the ~$27K/month leaking out of a $100K Databricks workspace — from the billing table, not a guess",
+    "whyKiller": "The databricks-cost-leak-hunter skill audits a workspace for real-dollar cost leaks and emits a CFO-grokkable, dollar-ranked FinOps report. Every confirmed figure is computed from the customer's own system.billing.usage joined to list_prices — never an estimate. Four named leaks — idle clusters that never auto-terminate, scheduled jobs on All-Purpose compute (2–3× overpay), overprovisioned clusters, and the Photon premium paid without the speedup — each tagged confirmed / estimated / at-risk so a CFO never confuses billed waste with modeled savings. A deterministic Python ranker does the arithmetic (the LLM never eyeballs a number), and the databricks-workspace-mcp control plane turns each leak into a single-config-change fix. One of 24 skills in the Databricks pack.",
+    "author": "Jeremy Longshore",
+    "authorGithub": "jeremylongshore",
     "grade": "A",
-    "skillCount": 1,
-    "category": "testing",
-    "link": "/plugins/kobiton-automate",
-    "quote": "Mobile testing that runs where the bugs actually live — on the device, not the simulator."
+    "skillCount": 24,
+    "category": "saas-packs",
+    "link": "/plugins/databricks-pack",
+    "quote": "A $100K/month Databricks workspace is likely burning ~$27,000/month — and every line is one config change."
   },
   "hallOfFame": [
+    {
+      "week": "2026-W21",
+      "pluginSlug": "kobiton-automate",
+      "headline": "Real mobile devices on demand — no emulators, no flaky CI",
+      "whyKiller": "Kobiton's automate plugin gives Claude Code, Cursor, Codex, and Gemini CLI direct access to the Kobiton real-device cloud via remote MCP. 12 tools across three surfaces — Devices (list / reserve / status / terminate), Sessions (list / get / artifacts / terminate), and Apps (upload / confirm / list / get) — plus 3 specialist agents for device picking, Appium capability reconciliation, and session triage. One install, real iOS + Android hardware, no emulator drift.",
+      "author": "Kobiton Inc.",
+      "authorGithub": "kobiton",
+      "grade": "A",
+      "skillCount": 1,
+      "category": "testing",
+      "link": "/plugins/kobiton-automate",
+      "quote": "Mobile testing that runs where the bugs actually live — on the device, not the simulator."
+    },
     {
       "week": "2026-W18",
       "pluginSlug": "skyvern",
@@ -113,8 +126,8 @@
     }
   ],
   "meta": {
-    "version": "2.4.0",
-    "lastUpdated": "2026-05-20",
+    "version": "2.5.0",
+    "lastUpdated": "2026-06-30",
     "curatedBy": "Jeremy Longshore"
   }
 }
