@@ -956,6 +956,7 @@ sources:
   - name: hermes-tweet
     description: Hermes Agent X/Twitter research, monitoring, drafts, exports, and approved actions
     repo: Xquik-dev/hermes-tweet
+    branch: master
     source_path: .
     target_path: plugins/community/hermes-tweet
     author:
@@ -969,6 +970,7 @@ sources:
       - 'assets/**'
       - 'docs/**'
       - 'hermes_tweet/**'
+      - 'skills/**'
       - 'README.md'
       - 'LICENSE'
       - 'plugin.yaml'
