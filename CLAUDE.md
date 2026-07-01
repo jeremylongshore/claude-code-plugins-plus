@@ -12,6 +12,16 @@ Tons of Skills — Claude Code plugins marketplace. Live at https://tonsofskills
 
 **Session protocol lives in `AGENTS.md`** — post-compaction recovery, end-of-session push checklist, and beads workflow. Read it before starting work.
 
+## Cross-session coordination — another Claude session may be in this repo
+
+This repo is frequently worked in **parallel** with the `intent-eval-platform` umbrella session (that platform's CCPI validator + jrig-cli + kernel reach into this repo). Sessions are separate processes that share only the filesystem, so stay in sync via the shared surfaces:
+
+- **Read + append the shared journal** on cross-repo work: `~/000-projects/CROSS-SESSION-LOG.md` (append a dated line: what / branch or PR# / status).
+- **Durable cross-cutting tasks:** umbrella beads `~/000-projects/.beads/`, label `cross-session` (`bd list --label cross-session`).
+- **Guard the working tree:** this repo has ONE checkout; a concurrent session can `git checkout`/`reset` it out from under you and **wipe UNCOMMITTED work** (happened 2026-07-01). Commit early, or do multi-step file work in a `git worktree`.
+
+Full protocol (loaded by every session under `/home/jeremy`): `/home/jeremy/CLAUDE.md` § "Cross-session coordination".
+
 ## Essential Commands
 
 ```bash
