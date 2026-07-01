@@ -111,6 +111,7 @@
     // Keep this list in sync with sources.yaml target_path entries.
     // Regenerate via:
     //   python3 -c "import yaml; [print(s['target_path']+'/**') for s in yaml.safe_load(open('sources.yaml'))['sources']]"
+    // >>> BEGIN sync-lint-ignores (managed by scripts/sync-lint-ignores.mjs — run it; do not hand-edit) <<<
     "plugins/ai-agency/hyperflow/**",
     "plugins/ai-agency/tonone/**",
     "plugins/business-tools/wondelai-blue-ocean-strategy/**",
@@ -161,6 +162,7 @@
     "plugins/productivity/wondelai-design-sprint/**",
     "plugins/productivity/wondelai-lean-startup/**",
     "plugins/testing/cli-ux-tester/**",
-    "plugins/testing/kobiton-automate/**"
+    "plugins/testing/kobiton-automate/**",
+    // >>> END sync-lint-ignores <<<
   ]
 }

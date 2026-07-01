@@ -21,12 +21,12 @@ extend-exclude = [
   # >>> synced-plugin paths (mirror of .markdownlint-cli2.jsonc ignores).
   # External upstream code is not held to this repo's ruff style.
   # Keep in lockstep with sources.yaml / .source.json — CI gate:
-  # scripts/check-synced-lint-exclusions.mjs (run via pnpm verify).
+  # scripts/sync-lint-ignores.mjs (run via pnpm verify).
+  # >>> BEGIN sync-lint-ignores (managed by scripts/sync-lint-ignores.mjs — run it; do not hand-edit) <<<
   "plugins/ai-agency/hyperflow",
   "plugins/ai-agency/tonone",
   "plugins/business-tools/wondelai-blue-ocean-strategy",
   "plugins/business-tools/wondelai-contagious",
-  "plugins/productivity/publishing-skills",
   "plugins/business-tools/wondelai-cro-methodology",
   "plugins/business-tools/wondelai-crossing-the-chasm",
   "plugins/business-tools/wondelai-drive-motivation",
@@ -68,11 +68,13 @@ extend-exclude = [
   "plugins/productivity/obsidian-project-documentation",
   "plugins/productivity/over-50s-health",
   "plugins/productivity/pair-programmer",
+  "plugins/productivity/publishing-skills",
   "plugins/productivity/skyvern",
   "plugins/productivity/wondelai-design-sprint",
   "plugins/productivity/wondelai-lean-startup",
   "plugins/testing/cli-ux-tester",
   "plugins/testing/kobiton-automate",
+  # >>> END sync-lint-ignores <<<
   # <<< synced-plugin paths
 ]
 [lint]

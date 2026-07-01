@@ -99,6 +99,18 @@ jobs:
 
           node scripts/sync-external.mjs "${ARGS[@]}"
 
+      # A freshly-synced source drops a new plugin dir with a .source.json
+      # marker; its mirrored markdown/python must be excluded from this repo's
+      # lint gates or the very next CI run red-fails on content we don't own.
+      # Run the generator in WRITE mode here — right after the sync writes files
+      # and BEFORE the change-detection / commit steps below — so the new
+      # exclusion self-registers in .markdownlint-cli2.jsonc + ruff.toml and
+      # rides along in the same auto-PR. (Skipped on dry-run and on a partial
+      # sync, matching the commit/PR gating downstream.)
+      - name: Sync lint-ignore exclusions
+        if: inputs.dry_run != true && steps.sync.outputs.errors == '0'
+        run: node scripts/sync-lint-ignores.mjs
+
       - name: Check for changes
         id: changes
         run: |
