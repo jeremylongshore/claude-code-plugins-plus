@@ -42,6 +42,22 @@ const dbPath = path.join(repoRoot, 'freshie', 'inventory.sqlite');
 const outPath = path.join(__dirname, '..', 'src', 'data', 'jrig-data.json');
 
 /**
+ * Emit a loud, CI-visible warning. In GitHub Actions this renders as a
+ * `::warning::` annotation on the run summary (not just buried in the step
+ * log); locally it prints a plain `[enrich-jrig] WARNING:` line. Used instead
+ * of a silent `console.log` in every degradation path: writing `{}` silently
+ * blanks every "JRig-Verified" badge with no signal that the data source is
+ * missing or empty.
+ */
+function warn(message) {
+  const rel = path.relative(repoRoot, outPath);
+  if (process.env.GITHUB_ACTIONS === 'true') {
+    console.log(`::warning file=${rel}::${message}`);
+  }
+  console.warn(`[enrich-jrig] WARNING: ${message}`);
+}
+
+/**
  * Run a SQL query via the `sqlite3` CLI. We avoid the better-sqlite3
  * native module to keep this script dependency-free — the marketplace
  * build already has 6 sequential steps and we'd rather not add a
@@ -84,13 +100,20 @@ function main() {
   const data = {};
 
   if (!fs.existsSync(dbPath)) {
-    console.log(`[enrich-jrig] Freshie DB not found at ${dbPath} — writing empty map`);
+    warn(
+      `Freshie DB not found at ${path.relative(repoRoot, dbPath)} — every ` +
+        `JRig-Verified badge will render "pending". Writing empty map.`,
+    );
     fs.writeFileSync(outPath, JSON.stringify(data, null, 2) + '\n');
     return;
   }
 
   if (!tableExists(dbPath, 'forge_proofs')) {
-    console.log('[enrich-jrig] forge_proofs table not yet created — writing empty map');
+    warn(
+      'forge_proofs table not present in the Freshie DB — no JRig behavioral ' +
+        'evals have been persisted. Every JRig-Verified badge will render ' +
+        '"pending". Writing empty map.',
+    );
     fs.writeFileSync(outPath, JSON.stringify(data, null, 2) + '\n');
     return;
   }
@@ -116,7 +139,7 @@ function main() {
   );
 
   if (!Array.isArray(rows)) {
-    console.warn('[enrich-jrig] query returned non-array — writing empty map');
+    warn('forge_proofs query returned a non-array result (sqlite3 read failed) — writing empty map.');
     fs.writeFileSync(outPath, JSON.stringify(data, null, 2) + '\n');
     return;
   }
@@ -135,6 +158,16 @@ function main() {
   fs.writeFileSync(outPath, JSON.stringify(data, null, 2) + '\n');
 
   const verifiedCount = Object.keys(data).length;
+  if (verifiedCount === 0) {
+    warn(
+      'forge_proofs exists but has zero passing tier3-jrig rows — no plugin ' +
+        'has a completed 7-layer behavioral eval yet, so every JRig-Verified ' +
+        'badge renders "pending". Populate a row with: `j-rig eval <plugin> ' +
+        '--models haiku,sonnet,opus --db freshie/inventory.sqlite` (once the ' +
+        'eval→forge_proofs write path lands).',
+    );
+    return;
+  }
   console.log(
     `[enrich-jrig] Wrote ${verifiedCount} JRig-verified plugin entries → ${path.relative(repoRoot, outPath)}`,
   );
