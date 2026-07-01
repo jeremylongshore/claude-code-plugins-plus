@@ -294,32 +294,58 @@ REQUIRED_SECTIONS = RECOMMENDED_SECTIONS
 # NON-NEGOTIABLES.
 SECTION_SYNONYMS = {
     "## Overview": [
-        "## Summary", "## About", "## Description", "## What it does",
-        "## Introduction", "## Capabilities", "## Purpose",
+        "## Summary",
+        "## About",
+        "## Description",
+        "## What it does",
+        "## Introduction",
+        "## Capabilities",
+        "## Purpose",
     ],
     "## Prerequisites": [
-        "## Requirements", "## Setup", "## Dependencies",
-        "## Before you begin", "## Installation",
+        "## Requirements",
+        "## Setup",
+        "## Dependencies",
+        "## Before you begin",
+        "## Installation",
     ],
     "## Instructions": [
-        "## Usage", "## How to use", "## How it works", "## Steps",
-        "## Workflow", "## Guide", "## Getting started",
+        "## Usage",
+        "## How to use",
+        "## How it works",
+        "## Steps",
+        "## Workflow",
+        "## Guide",
+        "## Getting started",
     ],
     "## Output": [
-        "## Outputs", "## Returns", "## Results", "## Output format",
+        "## Outputs",
+        "## Returns",
+        "## Results",
+        "## Output format",
         "## Response",
     ],
     "## Error Handling": [
-        "## Errors", "## Troubleshooting", "## Failure modes",
-        "## Edge cases", "## Limitations",
+        "## Errors",
+        "## Troubleshooting",
+        "## Failure modes",
+        "## Edge cases",
+        "## Limitations",
     ],
     "## Examples": [
-        "## Example", "## Sample", "## Samples", "## Usage examples",
+        "## Example",
+        "## Sample",
+        "## Samples",
+        "## Usage examples",
         "## Example usage",
     ],
     "## Resources": [
-        "## References", "## See also", "## Links", "## Further reading",
-        "## Related", "## Additional resources",
+        "## References",
+        "## See also",
+        "## Links",
+        "## Further reading",
+        "## Related",
+        "## Additional resources",
     ],
 }
 
@@ -2974,9 +3000,7 @@ def validate_body(
             elif resolve_present_heading(sec) is None:
                 syns = ", ".join(SECTION_SYNONYMS.get(sec, []))
                 hint = f" (or an equivalent heading: {syns})" if syns else ""
-                errors.append(
-                    f"[body] Required section missing: '{sec}'{hint} (marketplace tier)"
-                )
+                errors.append(f"[body] Required section missing: '{sec}'{hint} (marketplace tier)")
 
     # === LEE HAN CHUNG: SECTION CONTENT MUST BE NON-EMPTY ===
 
