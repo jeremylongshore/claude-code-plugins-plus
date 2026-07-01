@@ -105,6 +105,22 @@ Performance budgets (CI-enforced): 40 MB total gzipped, 1 MB largest file, < 30s
 
 **Don't wire cowork build into `sync-marketplace`.** `sync-marketplace` is the fast (<2s) per-commit hook; `cowork:zips` is the slow (~30s) per-build step. They run on different cadences by design.
 
+## External Plugin Sync (mirror-by-default)
+
+Adopted model: **mirror by default · upstream improvements · never clobber.** Decision record: `000-docs/694-AT-DECR-external-sync-mirror-by-default-model.md`; pipeline audit + hardening: `000-docs/691-AT-AUDT-sync-external-pipeline-audit-and-hardening.md`.
+
+**Scale first — external is a minority augment, not the core.** 454 plugins total, but only ~51 are externally synced (48 third-party sources + 6 of Jeremy's own repos). The other ~403 (89%) are in-repo Intent Solutions work. The sync is a curated side-channel, not the marketplace — treat external contributors as a respected minority augment, never the center of gravity.
+
+**How sync works.** `sources.yaml` registers each external source. `.github/workflows/sync-external.yml` runs weekly (Mondays 06:00 UTC) and on demand (`workflow_dispatch` / `repository_dispatch`), invoking `scripts/sync-external.mjs` to mirror a source's files into `plugins/` and open an automated PR. A human reviews every auto-PR — historically ~1 in 10 sync PRs merges. The contributor's own repo is the source of truth; we do NOT locally edit a pure-mirror plugin.
+
+**Mirror vs curate.** Default is a pure mirror — the upstream repo governs, and improvements flow by upstreaming (see below), so the mirror becomes A-grade naturally with nothing to revert. Only when we deliberately harden a plugin past its upstream do we mark it `curated:` and freeze it.
+
+**Never-clobber guard (`curated:` freeze).** A source with `curated: true` in `sources.yaml` is FROZEN: `sync-external.mjs` logs `Curated — mirror frozen`, writes no files (no clone, no overwrite, no orphan-prune), and only keeps the catalog entry current — so even a `--force` sync can never revert our edits. `tonone` and `hyperflow` carry `curated: true` today (we A-graded their agents; upstreaming is planned). This guard exists because a prior `--force` run reverted ~100 A-graded agents back to 3-field upstream stubs — the ~18.9k-line deletion that motivated the whole model. Note `curated:` (we hardened it locally) and `verified:` (a maintainer vetted quality/trust) are orthogonal: tonone/hyperflow are `curated: true` but `verified: false`, an honest state and exactly why the two flags are separate.
+
+**Pileup auto-close (≤1 open sync PR).** `sync-external.yml` runs a "Close superseded sync PRs" step before Create-PR: it closes older open `automation/sync-external-*` PRs (with `--delete-branch`), keeping at most one open sync PR. The safe unique-per-run-branch model (from the 691 audit, which fixed an earlier shared-branch clobber) is preserved — this only prunes the pileup that model produced.
+
+**How we upstream respectfully.** Want a plugin at our A-grade bar? We bring THEIR plugin to standard on THEIR repo: a friendly issue first ("we featured your plugin and hardened its frontmatter to our A-grade bar — would you be open to a PR upstreaming it?"), then a PR the contributor owns and merges. No surprise PRs; credit preserved; they decide. Once merged upstream, the mirror is A-grade naturally and `curated:` can be dropped. **Any contributor-facing post (issue or PR body) gets Jeremy's wording sign-off BEFORE posting.**
+
 ## Plugin Structure
 
 **AI instruction plugins** (`plugins/[category]/[name]/`): `.claude-plugin/plugin.json` + `README.md` + optional `commands/*.md`, `agents/*.md`, `skills/[name]/SKILL.md`.

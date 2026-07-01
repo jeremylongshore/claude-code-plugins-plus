@@ -8839,6 +8839,42 @@
       "homepage": "https://github.com/jeremylongshore/dolt-mcp-vcs",
       "repository": "https://github.com/jeremylongshore/dolt-mcp-vcs",
       "license": "Apache-2.0"
+    },
+    {
+      "name": "hermes-tweet",
+      "source": "./plugins/community/hermes-tweet",
+      "description": "Hermes Agent X/Twitter research, monitoring, drafts, exports, and approved actions",
+      "version": "0.1.6",
+      "category": "community",
+      "keywords": [
+        "hermes-agent",
+        "hermes-plugin",
+        "xquik",
+        "twitter",
+        "x",
+        "social-media",
+        "automation"
+      ],
+      "author": {
+        "name": "Xquik",
+        "url": "https://github.com/Xquik-dev"
+      },
+      "homepage": "https://github.com/Xquik-dev/hermes-tweet#readme",
+      "repository": "https://github.com/Xquik-dev/hermes-tweet",
+      "license": "MIT"
+    },
+    {
+      "name": "x-twitter-scraper",
+      "source": "./plugins/api-development/x-twitter-scraper",
+      "description": "X/Twitter REST API and MCP skill for tweet search, profile data, follower exports, media downloads, monitoring, webhooks, and confirmation-gated actions.",
+      "version": "0.1.0",
+      "category": "api-development",
+      "author": {
+        "name": "Xquik",
+        "url": "https://github.com/Xquik-dev"
+      },
+      "repository": "https://github.com/Xquik-dev/x-twitter-scraper",
+      "license": "MIT"
     }
   ]
 }

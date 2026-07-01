@@ -113,6 +113,8 @@
     //   python3 -c "import yaml; [print(s['target_path']+'/**') for s in yaml.safe_load(open('sources.yaml'))['sources']]"
     "plugins/ai-agency/hyperflow/**",
     "plugins/ai-agency/tonone/**",
+    "plugins/api-development/x-twitter-scraper/**",
+    "plugins/community/hermes-tweet/**",
     "plugins/business-tools/wondelai-blue-ocean-strategy/**",
     "plugins/business-tools/wondelai-contagious/**",
     "plugins/business-tools/wondelai-cro-methodology/**",

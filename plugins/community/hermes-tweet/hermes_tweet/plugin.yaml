@@ -1,0 +1,16 @@
+name: hermes-tweet
+version: 0.1.6
+description: "Native Hermes Agent plugin for X/Twitter automation through Xquik"
+author: Xquik
+requires_env:
+  - name: XQUIK_API_KEY
+    description: "Xquik API key. Create one in the Xquik dashboard."
+    url: "https://dashboard.xquik.com"
+    secret: true
+optional_env:
+  - XQUIK_BASE_URL
+  - HERMES_TWEET_ENABLE_ACTIONS
+provides_tools:
+  - tweet_explore
+  - tweet_read
+  - tweet_action

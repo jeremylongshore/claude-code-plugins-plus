@@ -24,6 +24,8 @@ extend-exclude = [
   # scripts/check-synced-lint-exclusions.mjs (run via pnpm verify).
   "plugins/ai-agency/hyperflow",
   "plugins/ai-agency/tonone",
+  "plugins/api-development/x-twitter-scraper",
+  "plugins/community/hermes-tweet",
   "plugins/business-tools/wondelai-blue-ocean-strategy",
   "plugins/business-tools/wondelai-contagious",
   "plugins/productivity/publishing-skills",

@@ -1,0 +1,39 @@
+{
+  "name": "hermes-tweet",
+  "version": "0.1.6",
+  "description": "Hermes Agent X/Twitter plugin for Xquik automation",
+  "author": "Xquik",
+  "tags": [
+    "hermes-agent",
+    "hermes-plugin",
+    "xquik",
+    "twitter",
+    "x",
+    "social-media",
+    "automation"
+  ],
+  "dependencies": [],
+  "conflicts": [],
+  "install": {
+    "openclaw": "hermes plugins install Xquik-dev/hermes-tweet --enable"
+  },
+  "keywords": [
+    "agent-skill",
+    "hermes-agent",
+    "hermes-plugin",
+    "xquik",
+    "twitter",
+    "twitter-api",
+    "twitter-automation",
+    "x",
+    "x-api",
+    "x-automation",
+    "x-twitter",
+    "social-media",
+    "automation",
+    "agent-tools",
+    "mcp"
+  ],
+  "homepage": "https://github.com/Xquik-dev/hermes-tweet#readme",
+  "repository": "https://github.com/Xquik-dev/hermes-tweet"
+}

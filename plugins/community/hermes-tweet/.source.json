@@ -1,0 +1,44 @@
+{
+  "synced_from": {
+    "repo": "Xquik-dev/hermes-tweet",
+    "path": ".",
+    "branch": "master"
+  },
+  "last_sync": "2026-07-01T06:18:48.278Z",
+  "author": {
+    "name": "Xquik",
+    "github": "Xquik-dev"
+  },
+  "license": "MIT",
+  "files_synced": 28,
+  "files": [
+    ".claude-plugin/plugin.json",
+    "LICENSE",
+    "README.md",
+    "assets/icon.svg",
+    "docs/CONTEXT7.md",
+    "docs/ECOSYSTEM.md",
+    "docs/GITHUB_METADATA.md",
+    "docs/HERMES_SURFACES.md",
+    "docs/INTEGRATION_PATTERNS.md",
+    "docs/MERGE_ENABLEMENT.md",
+    "docs/OBSERVABILITY.md",
+    "docs/PUBLICATION_CHECKLIST.md",
+    "docs/SUBMISSION_READINESS.md",
+    "hermes_tweet/__init__.py",
+    "hermes_tweet/catalog.py",
+    "hermes_tweet/catalog_data.json",
+    "hermes_tweet/client.py",
+    "hermes_tweet/plugin.yaml",
+    "hermes_tweet/schemas.py",
+    "hermes_tweet/skills/__init__.py",
+    "hermes_tweet/skills/hermes-tweet/SKILL.md",
+    "hermes_tweet/skills/hermes-tweet/skill-card.md",
+    "hermes_tweet/tools.py",
+    "plugin.yaml",
+    "pyproject.toml",
+    "skill.json",
+    "skills/hermes-tweet/SKILL.md",
+    "skills/hermes-tweet/skill-card.md"
+  ]
+}

@@ -98,7 +98,14 @@ Only these fields are allowed in `plugin.json`: `name`, `version`, `description`
 
 ### Path B — Auto-sync from your own repo (your repo stays source of truth)
 
-Best when you maintain the plugin in your own repo and want updates to flow to the marketplace automatically. **This is the recommended path for external/third-party plugins** — your repo stays the source of truth, you don't fork or vendor code here, and your latest pushes mirror to tonsofskills.com on the weekly sync.
+Best when you maintain the plugin in your own repo and want updates to flow to the marketplace automatically. **This is the recommended path for external/third-party plugins.** Here's our end of the deal, in plain terms:
+
+- **Your repo stays the source of truth.** You keep authoring and maintaining your plugin wherever you already do. You don't fork, vendor, or hand-manage a copy here.
+- **We mirror — we don't edit.** By default the sync only _copies_ the files you list into `plugins/<category>/<name>/`. We do not locally rewrite, restructure, or "improve" your content behind your back. Your latest pushes flow to tonsofskills.com on the weekly sync.
+- **We never silently overwrite you.** The sync opens an automated PR that a human reviews before anything lands. If anything ever would touch content you curate, the mirror is _frozen_ for your source and skipped entirely (see `curated:` below) — a forced or off-cycle sync cannot revert your work.
+- **If we want your plugin at our A-grade bar, we ask first.** Our marketplace holds an enterprise-grade standard (full frontmatter, tested code, real docs). If we'd like your plugin to meet it, we don't quietly patch our mirror and let it drift from yours. We open a friendly **issue on your repo** first ("we featured your plugin and would love to bring its frontmatter to our A-grade bar — open to a PR?"), and if you're up for it we send a **PR that you own and merge** upstream. Once it's merged in your repo, the mirror reflects it naturally. You keep control; your credit is preserved; you decide.
+
+**Steps:**
 
 1. Make sure your plugin in your own repo has at minimum a `SKILL.md` and a `README.md` at a known path.
 2. Open a PR against this repo that adds a single entry to [`sources.yaml`](sources.yaml) with the metadata. Example:
@@ -125,9 +132,16 @@ Best when you maintain the plugin in your own repo and want updates to flow to t
        - '.git/**'
    ```
 
-3. After your `sources.yaml` PR merges, the next weekly sync (Mondays 06:00 UTC) pulls your latest content into `plugins/community/<name>/` and opens an automated PR. Once that PR merges, your plugin is live on the site.
+3. After your `sources.yaml` PR merges, the next weekly sync (Mondays 06:00 UTC) pulls your latest content into `plugins/<category>/<name>/` and opens an automated PR. Once that PR merges, your plugin is live on the site.
 4. For an immediate first sync (instead of waiting for Monday), a maintainer can trigger the workflow manually via `gh workflow run sync-external.yml`.
 5. Every subsequent push you make to your own repo gets picked up by the next weekly sync — no further action on your end.
+
+**What `verified:` and `curated:` mean for you as an author.** These two flags are separate and independent:
+
+- **`verified:`** — a maintainer has vetted your source for quality and trust. This is about the source, not about touching your files.
+- **`curated:`** — set only after we've asked you and hardened a local copy of your plugin past what's currently upstream. When `curated: true`, the sync **freezes your mirror**: it does no clone, no overwrite, and no orphan-prune for your source — it only keeps your catalog entry current. This is the guard that guarantees a `--force` or off-schedule sync can never revert curated content. It's an interim state; the intent is always to upstream those improvements back to you (via the issue-then-PR flow above) so your repo and the mirror converge and the freeze is no longer needed.
+
+They're orthogonal on purpose — a plugin can be `curated: true` (we locally hardened it, pending an upstream PR to you) while still `verified: false`, which is an honest way to say "we improved it but haven't formally vetted the source yet."
 
 **Do NOT edit `README.md` by hand to add your plugin.** The README category tables (between the `<!-- AUTO-TOC:START -->` and `<!-- AUTO-TOC:END -->` markers) are auto-generated from `marketplace.extended.json` — your hand-edit will be wiped on the next sync.
 
@@ -191,8 +205,10 @@ The deterministic CI checks — not the AI reviewer — are the authoritative ga
 If you maintain a plugin in your own repository and want it included in the marketplace, see **Path B** under [Adding a Plugin](#adding-a-plugin) above. Quick summary:
 
 - Open a PR adding your plugin's metadata to [`sources.yaml`](sources.yaml).
-- The weekly sync (Mondays 06:00 UTC, `.github/workflows/sync-external.yml`) pulls your latest content into `plugins/community/<name>/` and opens an automated PR.
+- The weekly sync (Mondays 06:00 UTC, `.github/workflows/sync-external.yml`) pulls your latest content into `plugins/<category>/<name>/` and opens an automated PR that a human reviews before it lands.
 - For an immediate sync after your `sources.yaml` PR merges, a maintainer can trigger the workflow on demand with `gh workflow run sync-external.yml`.
+
+**The contract in one line:** your repo is the source of truth, we mirror your files rather than edit them, we never silently overwrite content you curate (a `curated: true` source is frozen and skipped by the sync), and if we'd like your plugin at our A-grade bar we ask first via a friendly issue and then a PR you own and merge upstream.
 
 ## Recognition
 

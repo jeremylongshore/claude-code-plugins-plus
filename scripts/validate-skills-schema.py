@@ -160,8 +160,25 @@ except ImportError:
 #                       Advisory (PLUGIN_JSON_FIELDS stays authoritative until the
 #                       DR-049 flip). Reads authoring/V2 (v1 plugin-manifest is stale);
 #                       needs @intentsolutions/core>=0.9.0.
+# 3.15.0 (2026-07-01) — iel-62j validator FAIRNESS: the enterprise (marketplace)
+#                       body-section checks now credit equivalent, well-understood
+#                       heading names (e.g. `## Usage`≈`## Instructions`,
+#                       `## Summary`/`## Capabilities`≈`## Overview`,
+#                       `## Returns`≈`## Output`, `## Troubleshooting`≈`## Error
+#                       Handling`, `## References`≈`## Resources`) so an external
+#                       contributor is not failed for standard-but-non-IS section
+#                       wording. RECOMMENDED_SECTIONS was never a published standard
+#                       (see the note there); requiring the EXACT IS wording was
+#                       off-spec. Presence + non-empty-content + step-by-step checks
+#                       all resolve synonyms via SECTION_SYNONYMS /
+#                       resolve_present_heading(). NOT a semantics change: an error
+#                       still fires when NEITHER the canonical section NOR any
+#                       synonym is present; tiers, ALWAYS_REQUIRED, and the
+#                       frontmatter `capabilities` BAN (NON-NEGOTIABLE) are all
+#                       unchanged — only `## Capabilities` as a *heading* is credited
+#                       as an Overview synonym.
 # See 000-docs/SCHEMA_CHANGELOG.md.
-SCHEMA_VERSION = "3.14.0"
+SCHEMA_VERSION = "3.15.0"
 
 # Validation tiers
 TIER_STANDARD = "standard"
@@ -266,6 +283,45 @@ RECOMMENDED_SECTIONS = [
 # Backward compat aliases
 ENTERPRISE_SECTIONS = RECOMMENDED_SECTIONS
 REQUIRED_SECTIONS = RECOMMENDED_SECTIONS
+
+# iel-62j — validator fairness. The RECOMMENDED_SECTIONS names above are Intent
+# Solutions conventions, NOT a published standard (see the note there). External
+# contributors routinely use equivalent, well-understood headings; failing them
+# for the exact IS wording is unfair and off-spec. The enterprise (marketplace)
+# section checks credit any of these synonyms as satisfying the corresponding
+# canonical section. This credits `## Capabilities` as a *heading* only — the
+# frontmatter `capabilities` field stays banned per SCHEMA_CHANGELOG
+# NON-NEGOTIABLES.
+SECTION_SYNONYMS = {
+    "## Overview": [
+        "## Summary", "## About", "## Description", "## What it does",
+        "## Introduction", "## Capabilities", "## Purpose",
+    ],
+    "## Prerequisites": [
+        "## Requirements", "## Setup", "## Dependencies",
+        "## Before you begin", "## Installation",
+    ],
+    "## Instructions": [
+        "## Usage", "## How to use", "## How it works", "## Steps",
+        "## Workflow", "## Guide", "## Getting started",
+    ],
+    "## Output": [
+        "## Outputs", "## Returns", "## Results", "## Output format",
+        "## Response",
+    ],
+    "## Error Handling": [
+        "## Errors", "## Troubleshooting", "## Failure modes",
+        "## Edge cases", "## Limitations",
+    ],
+    "## Examples": [
+        "## Example", "## Sample", "## Samples", "## Usage examples",
+        "## Example usage",
+    ],
+    "## Resources": [
+        "## References", "## See also", "## Links", "## Further reading",
+        "## Related", "## Additional resources",
+    ],
+}
 
 # Regex patterns
 RE_FRONTMATTER = re.compile(r"^---\s*\n(.*?)\n---\s*\n(.*)$", re.DOTALL)
@@ -2900,14 +2956,27 @@ def validate_body(
                 return True
         return False
 
+    def resolve_present_heading(canonical: str) -> Optional[str]:
+        # iel-62j fairness: return whichever heading is actually present for a
+        # canonical section — the canonical form OR any accepted synonym — so an
+        # external contributor's equivalent wording (e.g. '## Usage' for
+        # '## Instructions') satisfies presence + content checks. None if absent.
+        for h in [canonical, *SECTION_SYNONYMS.get(canonical, [])]:
+            if has_heading_line(body, h):
+                return h
+        return None
+
     if tier == TIER_ENTERPRISE:
         for sec in RECOMMENDED_SECTIONS:
             if sec == "# ":
                 if not has_markdown_h1(body):
                     errors.append(f"[body] Required section missing: '{sec}' (marketplace tier)")
-            else:
-                if not has_heading_line(body, sec):
-                    errors.append(f"[body] Required section missing: '{sec}' (marketplace tier)")
+            elif resolve_present_heading(sec) is None:
+                syns = ", ".join(SECTION_SYNONYMS.get(sec, []))
+                hint = f" (or an equivalent heading: {syns})" if syns else ""
+                errors.append(
+                    f"[body] Required section missing: '{sec}'{hint} (marketplace tier)"
+                )
 
     # === LEE HAN CHUNG: SECTION CONTENT MUST BE NON-EMPTY ===
 
@@ -2956,7 +3025,8 @@ def validate_body(
             ("## Examples", 20, "WARN"),
             ("## Resources", 20, "WARN"),
         ]:
-            content = _section_body(section)
+            present_section = resolve_present_heading(section)
+            content = _section_body(present_section) if present_section else ""
             # Ignore empty sections that only contain code fences/whitespace
             content_no_code = re.sub(r"```.*?```", "", content, flags=re.DOTALL).strip()
             if len(content_no_code) < min_chars:
@@ -2968,7 +3038,8 @@ def validate_body(
 
         # === LEE HAN CHUNG: INSTRUCTIONS MUST BE STEP-BY-STEP ===
 
-        instructions = _section_body("## Instructions")
+        present_instr = resolve_present_heading("## Instructions")
+        instructions = _section_body(present_instr) if present_instr else ""
         if instructions:
             has_numbered = bool(re.search(r"(?m)^\s*1\.\s+\S+", instructions))
             has_step_heading = bool(re.search(r"(?mi)^\s*#{2,6}\s*step\s*\d+", instructions))

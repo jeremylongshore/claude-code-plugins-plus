@@ -469,6 +469,34 @@ async function syncSource(source, config) {
   log(`   From: ${source.repo}/${source.source_path}`, colors.dim);
   log(`   To:   ${source.target_path}`, colors.dim);
 
+  // Curated freeze — mirror-by-default · never clobber (see 000-docs AT-DECR,
+  // "mirror-by-default external-plugin sync model"). A source we have locally
+  // hardened past its upstream (e.g. tonone / hyperflow, whose agents we A-graded
+  // to marketplace frontmatter) must NEVER be force-reverted to upstream stubs
+  // behind our back. When `curated: true` in sources.yaml we freeze the mirror
+  // write entirely — no clone, no overwrite, no orphan prune — and only keep the
+  // catalog entry current. The standing model is to push our improvement UPSTREAM
+  // (a friendly issue → a PR the contributor owns and merges); once it lands at
+  // the source the plugin is A-grade upstream and `curated:` can be removed to
+  // resume normal mirroring. To deliberately re-baseline a curated plugin, drop
+  // `curated:` first — the freeze is intentional and applies even to an explicit
+  // `--source=<name>` run.
+  if (source.curated === true) {
+    log(
+      `   🔒 Curated — mirror frozen; --force will NOT revert local edits. Upstream improvements instead.`,
+      colors.yellow,
+    );
+    const catalogAdded = ensureCatalogEntry(source);
+    return {
+      source: source.name,
+      changes: catalogAdded
+        ? [{ path: '.claude-plugin/marketplace.extended.json', action: 'catalog' }]
+        : [],
+      error: null,
+      curated: true,
+    };
+  }
+
   const changes = [];
   const branch = source.branch || config?.default_branch || 'main';
   let tmpdir = null;

@@ -99,6 +99,22 @@ Both are `continue-on-error: true`, are not required checks, and mutate nothing.
 
 ---
 
+## External Plugin Sync — mirror, don't curate
+
+Roughly 51 of the 454 plugins here are externally synced (48 third-party sources + 6 of Jeremy's own repos); the other ~89% are in-repo Intent Solutions work. External contributors are a curated **minority augment**, not the core — the sync is a side-channel. The adopted model is **mirror by default · upstream improvements · never clobber**. An agent working under `plugins/` on a synced source, in `sources.yaml`, or on `scripts/sync-external.mjs` / `.github/workflows/sync-external.yml` must know the following.
+
+**A sync PR is mirror OUTPUT of a contributor's repo — do NOT hand-curate mirrored files.** For a normal (non-curated) source the contributor's own repo is the source of truth. `scripts/sync-external.mjs` mirrors its files into `plugins/` and `sync-external.yml` opens an automated PR for a human to review (historically ~1 of 10 sync PRs merges). If a mirrored plugin should meet our A-grade bar, **upstream the improvement** — open a friendly issue, then a PR, on the CONTRIBUTOR'S OWN repo. Once merged upstream, the mirror becomes A-grade naturally and the sync never reverts anything. Do NOT hold a divergent, clobber-prone local copy by editing the mirrored files in place.
+
+**NEVER remove a `curated: true` flag or edit a curated plugin's files to "improve" them.** A source marked `curated: true` in `sources.yaml` is **frozen**: the sync skips it entirely (no clone, no overwrite, no orphan-prune) and only keeps its catalog entry current, so even a `--force` sync cannot revert our edits. `tonone` and `hyperflow` carry `curated: true` today (we hardened their agents to A-grade; upstreaming is planned). Removing the flag or hand-editing a curated plugin's files reintroduces the exact clobber this guard exists to stop — a prior `--force` run reverted ~100 A-graded agents to 3-field upstream stubs (the ~18.9k-line deletion that started this). Note `curated:` and `verified:` are **orthogonal**: `verified:` means a maintainer vetted the source's trust/quality; `curated:` means we locally hardened the plugin past upstream and the sync must not overwrite it. `tonone`/`hyperflow` are `curated: true` but `verified: false` — an honest, intended state.
+
+**The sync keeps at most ONE open sync PR by design — do not reopen closed sync PRs.** `sync-external.yml` runs a "Close superseded sync PRs" step before Create-PR that closes older open `automation/sync-external-*` PRs (with `--delete-branch`). This prunes the pileup; it preserves the safe unique-per-run-branch model. A closed sync PR was superseded on purpose — the next scheduled or dispatched run reproduces the current mirror. Do not reopen one to "recover" it.
+
+**Any issue / PR / comment on a CONTRIBUTOR'S repo is drafted and shown to Jeremy for wording sign-off BEFORE posting.** Curated and long-time contributors are handled respectfully — a friendly ISSUE first ("we featured your plugin and hardened its frontmatter to our A-grade bar — would you be open to a PR upstreaming it?"), THEN a PR they own and merge. No surprise PRs; credit preserved; they decide. Keep the tone peer/contribute-back, never extractive or entitled.
+
+The decision record for this model is `000-docs/694-AT-DECR`; the earlier shared-branch clobber fix (the safe unique-per-run-branch model this step builds on) is `000-docs/691-AT-AUDT-sync-external-pipeline-audit-and-hardening.md`.
+
+---
+
 <!-- BEGIN BEADS INTEGRATION -->
 
 ## Issue Tracking with bd (beads)

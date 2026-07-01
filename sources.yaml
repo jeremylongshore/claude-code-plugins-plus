@@ -8,6 +8,26 @@
 #            workflow_dispatch and repository_dispatch: external-plugin-sync)
 # Workflow: .github/workflows/sync-external.yml
 # Script: scripts/sync-external.mjs
+#
+# Per-source fields:
+#   name / description         Catalog display name and one-line summary.
+#   repo                       Contributor's GitHub repo (owner/name) — their source of truth.
+#   source_path / target_path  Where the plugin lives upstream vs. where we mirror it into plugins/.
+#   author / license / category  Attribution and catalog placement (credit is always preserved).
+#   include / exclude          Glob lists selecting which files the mirror copies.
+#
+# Two flags drive the mirror-vs-curate contract — they are ORTHOGONAL:
+#   verified: true   A maintainer vetted this source's quality and trust.
+#   curated:  true   We locally hardened this plugin past its upstream (e.g. A-graded its
+#                    agents). curated:true FREEZES the mirror — the sync skips clone + write
+#                    entirely (no orphan-prune) and only keeps the catalog entry current, so
+#                    even a --force sync never reverts our edits. Held by tonone + hyperflow
+#                    today. The standing model is to upstream the improvement via a friendly
+#                    issue-then-PR the contributor owns, then drop curated: once merged upstream.
+#
+#   Orthogonal by design: curated:true + verified:false is a valid, honest state (we hardened
+#   the plugin locally but haven't yet vetted the upstream source), which is exactly why the
+#   two flags are separate — see tonone + hyperflow.
 
 sources:
   # ============================================================
@@ -875,6 +895,13 @@ sources:
     license: MIT
     category: ai-agency
     verified: false
+    # curated: this plugin is locally hardened past its upstream — its ~100 agents
+    # were brought to A-grade marketplace frontmatter here. `curated: true` FREEZES
+    # the mirror: a --force sync will NOT revert our edits (without this, every sync
+    # reverted the agents to 3-field upstream stubs). Standing model is to upstream
+    # the improvement (a friendly issue → a PR the author owns), then drop `curated:`
+    # to resume normal mirroring. See the sources.yaml schema note + 000-docs AT-DECR.
+    curated: true
     include:
       - '.claude-plugin/**'
       - 'agents/**'
@@ -910,6 +937,7 @@ sources:
     license: MIT
     category: ai-agency
     verified: false
+    curated: true  # locally A-graded — mirror frozen (never --force-reverted); upstream the fix instead. See tonone above + 000-docs AT-DECR.
     include:
       - '.claude-plugin/**'
       - 'skills/**'

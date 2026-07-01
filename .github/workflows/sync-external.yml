@@ -124,6 +124,33 @@ jobs:
           # sync-marketplace.cjs skipped both and red-failed every new plugin.
           pnpm run sync-marketplace
 
+      - name: Close superseded sync PRs
+        # Keep at most ONE open sync PR. Each run opens a fresh unique per-run
+        # branch (automation/sync-external-<run_id>); this run's mirror is a full
+        # re-sync of current upstream, so ANY older still-open sync PR is
+        # redundant. Close them (and delete their branch) BEFORE opening this
+        # run's PR, so the backlog can never stack again. Nothing unique is lost:
+        # a sync PR is regenerated wholesale each run. Gated identically to the
+        # Create-PR step below so we only supersede when a replacement is actually
+        # being opened. Preserves the safe per-run-branch model (which fixed the
+        # earlier shared-branch clobber, 000-docs/691-AT-AUDT); this step only
+        # prunes the pileup that model produced. See 000-docs AT-DECR
+        # (mirror-by-default external-plugin sync model).
+        if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true && steps.sync.outputs.errors == '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh pr list --state open --json number,headRefName \
+            --jq '.[] | select(.headRefName | startswith("automation/sync-external-")) | .number' \
+          | while read -r num; do
+              [ -z "$num" ] && continue
+              echo "Closing superseded sync PR #$num"
+              gh pr close "$num" \
+                --comment "Superseded by a newer external-plugin sync run — each run mirrors the full current upstream, so this PR is redundant. Closing to keep at most one open sync PR (automated by \`sync-external.yml\`)." \
+                --delete-branch || true
+            done
+
       - name: Create Pull Request
         if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true && steps.sync.outputs.errors == '0'
         # Hand-rolled commit + push + PR-create instead of peter-evans/create-pull-request.

@@ -122,9 +122,9 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | --- | -------------------------------------------------- | ------: |
 | 🤖  | [AI & Machine Learning](#ai--machine-learning)     |      36 |
 | 🎭  | [AI Agents & Agency](#ai-agents--agency)           |      10 |
-| 🔌  | [API Development](#api-development)                |      25 |
+| 🔌  | [API Development](#api-development)                |      26 |
 | 💼  | [Business Tools](#business-tools)                  |      21 |
-| 👥  | [Community](#community)                            |      18 |
+| 👥  | [Community](#community)                            |      19 |
 | ₿   | [Crypto & Web3](#crypto--web3)                     |      27 |
 | 💾  | [Database](#database)                              |      26 |
 | 🎨  | [Design](#design)                                  |       7 |
@@ -206,35 +206,36 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### API Development
 
-🔌 **25 plugins** · category slug: `api-development`
+🔌 **26 plugins** · category slug: `api-development`
 
-| Plugin                        | Description                                                                           |
-| ----------------------------- | ------------------------------------------------------------------------------------- |
-| `api-authentication-builder`  | Build authentication systems with JWT, OAuth2, and API keys                           |
-| `api-batch-processor`         | Implement batch API operations with bulk processing and job queues                    |
-| `api-cache-manager`           | Implement caching strategies with Redis, CDN, and HTTP headers                        |
-| `api-contract-generator`      | Generate API contracts for consumer-driven contract testing                           |
-| `api-documentation-generator` | Generate comprehensive API documentation from OpenAPI/Swagger specs                   |
-| `api-error-handler`           | Implement standardized error handling with proper HTTP status codes                   |
-| `api-event-emitter`           | Implement event-driven APIs with message queues and event streaming                   |
-| `api-gateway-builder`         | Build API gateway with routing, authentication, and rate limiting                     |
-| `api-load-tester`             | Load test APIs with k6, Gatling, or Artillery                                         |
-| `api-migration-tool`          | Migrate APIs between versions with backward compatibility                             |
-| `api-mock-server`             | Create mock API servers from OpenAPI specs for testing                                |
-| `api-monitoring-dashboard`    | Create monitoring dashboards for API health, metrics, and alerts                      |
-| `api-rate-limiter`            | Implement rate limiting with token bucket, sliding window, and Redis                  |
-| `api-request-logger`          | Log API requests with structured logging and correlation IDs                          |
-| `api-response-validator`      | Validate API responses against schemas and contracts                                  |
-| `api-schema-validator`        | Validate API schemas with JSON Schema, Joi, Yup, or Zod                               |
-| `api-sdk-generator`           | Generate client SDKs from OpenAPI specs for multiple languages                        |
-| `api-security-scanner`        | Scan APIs for security vulnerabilities and OWASP API Top 10                           |
-| `api-throttling-manager`      | Manage API throttling with dynamic rate limits and quota management                   |
-| `api-versioning-manager`      | Manage API versions with migration strategies and backward compatibility              |
-| `graphql-server-builder`      | Build GraphQL servers with schema-first design, resolvers, and subscriptions          |
-| `grpc-service-generator`      | Generate gRPC services with Protocol Buffers and streaming support                    |
-| `rest-api-generator`          | Generate RESTful APIs from schemas with proper routing, validation, and documentation |
-| `webhook-handler-creator`     | Create secure webhook endpoints with signature verification and retry logic           |
-| `websocket-server-builder`    | Build WebSocket servers for real-time bidirectional communication                     |
+| Plugin                        | Description                                                                                                                    |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `api-authentication-builder`  | Build authentication systems with JWT, OAuth2, and API keys                                                                    |
+| `api-batch-processor`         | Implement batch API operations with bulk processing and job queues                                                             |
+| `api-cache-manager`           | Implement caching strategies with Redis, CDN, and HTTP headers                                                                 |
+| `api-contract-generator`      | Generate API contracts for consumer-driven contract testing                                                                    |
+| `api-documentation-generator` | Generate comprehensive API documentation from OpenAPI/Swagger specs                                                            |
+| `api-error-handler`           | Implement standardized error handling with proper HTTP status codes                                                            |
+| `api-event-emitter`           | Implement event-driven APIs with message queues and event streaming                                                            |
+| `api-gateway-builder`         | Build API gateway with routing, authentication, and rate limiting                                                              |
+| `api-load-tester`             | Load test APIs with k6, Gatling, or Artillery                                                                                  |
+| `api-migration-tool`          | Migrate APIs between versions with backward compatibility                                                                      |
+| `api-mock-server`             | Create mock API servers from OpenAPI specs for testing                                                                         |
+| `api-monitoring-dashboard`    | Create monitoring dashboards for API health, metrics, and alerts                                                               |
+| `api-rate-limiter`            | Implement rate limiting with token bucket, sliding window, and Redis                                                           |
+| `api-request-logger`          | Log API requests with structured logging and correlation IDs                                                                   |
+| `api-response-validator`      | Validate API responses against schemas and contracts                                                                           |
+| `api-schema-validator`        | Validate API schemas with JSON Schema, Joi, Yup, or Zod                                                                        |
+| `api-sdk-generator`           | Generate client SDKs from OpenAPI specs for multiple languages                                                                 |
+| `api-security-scanner`        | Scan APIs for security vulnerabilities and OWASP API Top 10                                                                    |
+| `api-throttling-manager`      | Manage API throttling with dynamic rate limits and quota management                                                            |
+| `api-versioning-manager`      | Manage API versions with migration strategies and backward compatibility                                                       |
+| `graphql-server-builder`      | Build GraphQL servers with schema-first design, resolvers, and subscriptions                                                   |
+| `grpc-service-generator`      | Generate gRPC services with Protocol Buffers and streaming support                                                             |
+| `rest-api-generator`          | Generate RESTful APIs from schemas with proper routing, validation, and documentation                                          |
+| `webhook-handler-creator`     | Create secure webhook endpoints with signature verification and retry logic                                                    |
+| `websocket-server-builder`    | Build WebSocket servers for real-time bidirectional communication                                                              |
+| `x-twitter-scraper`           | X/Twitter REST API and MCP skill for tweet search, profile data, follower exports, media downloads, monitoring, webhooks, and… |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
 
@@ -270,7 +271,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Community
 
-👥 **18 plugins** · category slug: `community`
+👥 **19 plugins** · category slug: `community`
 
 | Plugin                   | Description                                                                                                                                 |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -288,6 +289,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `gastown`                | Multi-agent orchestrator for Claude Code. Track work with convoys, sling to polecats. The Cognition Engine for AI-powered software…         |
 | `geepers-agents`         | Multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, games, and…      |
 | `geepers-agents`         | Multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, and more. Built… |
+| `hermes-tweet`           | Hermes Agent X/Twitter research, monitoring, drafts, exports, and approved actions                                                          |
 | `jeremy-firebase`        | Firebase platform expert for Firestore, Auth, Functions, and Vertex AI integration                                                          |
 | `jeremy-firestore`       | Firestore database specialist for schema design, queries, and real-time sync                                                                |
 | `sprint`                 | Autonomous multi-agent development framework with spec-driven sprints. Write specs, run /sprint, and let coordinated agents (backend,…      |
