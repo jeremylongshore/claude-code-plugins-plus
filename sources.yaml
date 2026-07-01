@@ -937,7 +937,7 @@ sources:
     license: MIT
     category: ai-agency
     verified: false
-    curated: true  # locally A-graded — mirror frozen (never --force-reverted); upstream the fix instead. See tonone above + 000-docs AT-DECR.
+    curated: true # locally A-graded — mirror frozen (never --force-reverted); upstream the fix instead. See tonone above + 000-docs AT-DECR.
     include:
       - '.claude-plugin/**'
       - 'skills/**'
