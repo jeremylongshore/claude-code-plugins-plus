@@ -88,7 +88,12 @@ const TARGETS = [
 function rebuild(target) {
   const abs = path.join(ROOT, target.file);
   const original = fs.readFileSync(abs, 'utf8');
-  const lines = original.split('\n');
+  // Preserve the file's existing line ending. A CRLF checkout (Windows, or
+  // git core.autocrlf=true) would otherwise leave a trailing \r on every line
+  // after split('\n'), so the sentinel lookup below would never match and the
+  // generator would wrongly report a missing sentinel.
+  const eol = original.includes('\r\n') ? '\r\n' : '\n';
+  const lines = original.split(eol);
 
   const beginIdx = lines.indexOf(target.begin);
   const endIdx = lines.indexOf(target.end);
@@ -109,7 +114,7 @@ function rebuild(target) {
   const after = lines.slice(endIdx); // from the END sentinel onward
   const rendered = syncedDirs.map(target.render);
 
-  const rebuilt = [...before, ...rendered, ...after].join('\n');
+  const rebuilt = [...before, ...rendered, ...after].join(eol);
 
   // Current entries inside the managed block, for drift reporting.
   const currentEntries = lines.slice(beginIdx + 1, endIdx);
