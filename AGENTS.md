@@ -35,6 +35,18 @@ bd ready
 
 ---
 
+## Cross-session coordination
+
+This repo is often worked in **two Claude sessions at once** — one here, and one in the `intent-eval-platform` umbrella (that platform's CCPI validator, `jrig-cli`, and kernel reach into this repo). The two sessions are separate processes that share only the filesystem, so stay in sync on the shared surfaces:
+
+- **Shared journal — read on start, append on any cross-repo work.** `~/000-projects/CROSS-SESSION-LOG.md` (untracked, newest-first). One pipe line per action: `YYYY-MM-DD HH:MM UTC | repo/session | what | branch or PR# | status`. Append a line *before AND after* touching anything the other session may also be in.
+- **Beads split rule — this is how cross-cutting work stays visible.** Marketplace-only work → **this repo's own beads** (`bd ready`, prefix `claude-code-plugins-*`). **Platform-touching / cross-cutting work → the UMBRELLA beads**, so the `intent-eval-platform` session sees it: `bd -C ~/000-projects ready` and `bd -C ~/000-projects create … --label cross-session` (view with `bd -C ~/000-projects list --label cross-session`) — **plus** a journal line. The two beads workspaces are separate dolt DBs; a cross-cutting task filed only in this repo's local beads is **invisible** to the umbrella session.
+- **Working-tree hazard — commit early or use a worktree.** This repo has ONE working tree; a concurrent session's `git checkout`/`reset` can wipe your **uncommitted** work (happened 2026-07-01). Commit early, or do multi-step file work in a `git worktree`.
+
+Full protocol (loaded by every session on this box): `/home/jeremy/CLAUDE.md` § "Cross-session coordination".
+
+---
+
 ## Quick Reference
 
 ```bash

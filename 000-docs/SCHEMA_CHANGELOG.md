@@ -146,6 +146,37 @@ compliance are welcome; structural changes to the IS rubric are not.
 
 ---
 
+## [3.15.0] — 2026-07-01 — Enterprise body-section checks credit equivalent heading names (iel-62j fairness, additive)
+
+**Additive MINOR — no change to `ALWAYS_REQUIRED`, the tier model, or
+error-vs-warning semantics.** The enterprise (marketplace) body-section checks
+now credit equivalent, well-understood heading names, so an external contributor
+is **not** failed for standard-but-non-IS section wording (`iel-62j`):
+
+- Synonyms credited: `## Usage` ≈ `## Instructions`; `## Summary` /
+  `## Capabilities` ≈ `## Overview`; `## Returns` ≈ `## Output`;
+  `## Troubleshooting` ≈ `## Error Handling`; `## References` ≈ `## Resources`.
+  Resolution runs through `SECTION_SYNONYMS` / `resolve_present_heading()`, so
+  the presence, non-empty-content, and step-by-step checks all honor the
+  synonyms uniformly.
+- `RECOMMENDED_SECTIONS` was never a published standard (see the note there);
+  requiring the EXACT IS wording was off-spec. This corrects that.
+- **Not a semantics change.** An error still fires when NEITHER the canonical
+  section NOR any synonym is present. Tiers, `ALWAYS_REQUIRED`, and the
+  frontmatter `capabilities` **BAN** (NON-NEGOTIABLE) are all unchanged — only
+  `## Capabilities` **as a heading** is credited as an `Overview` synonym, which
+  is distinct from the still-banned frontmatter `capabilities` field.
+
+**Version-number provenance (kills the label collision).** `3.15.0` here is the
+validator's `SCHEMA_VERSION` constant (`scripts/validate-skills-schema.py`) — the
+skills-spec schema line this changelog tracks, bumped by the `iel-62j` fairness
+change. It shipped in the same PR window as the mirror-by-default external-sync
+work (`000-docs/694-AT-DECR`, PR #932), but that sync/manifest machinery versions
+on a **separate** axis; the `3.15.0` label refers **only** to the validator
+schema, not to any sync-manifest or plugin version.
+
+---
+
 ## [3.14.0] — 2026-06-28 — L2 consumer-cutover: plugin.json drift-gated against the kernel (additive, advisory)
 
 **Additive MINOR — no change to any required-field set, tier model, or

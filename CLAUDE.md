@@ -63,7 +63,7 @@ cd packages/cli && pnpm test -- --grep "pattern"
 # JRig behavioral eval — the published @intentsolutions/jrig-cli (bin `j-rig`),
 # pinned as a root devDep. Invoke via `pnpm exec j-rig` so it resolves the
 # repo's pinned version (node_modules/.bin/j-rig), NOT a global shim.
-pnpm exec j-rig --version         # → 0.1.1 (the real 7-layer CLI)
+pnpm exec j-rig --version         # → 0.1.2 (the real 7-layer CLI)
 pnpm exec j-rig check <skill-dir> # Tier 3A: deterministic (~seconds, free, no API key, no DB)
 
 # Real behavioral eval (opt-in, ~$2-5/skill) — needs a provider API key + the
@@ -202,7 +202,7 @@ The validator itself does a kernel-loaded **shadow read** of `ALWAYS_REQUIRED` (
 
 As of now the soak has **not** met the bar — agreement sits below 99.5%, and the open disagreements are real tool-safety / shell-substitution security cases that the prose-spec validator correctly blocks (so flipping early would weaken a real gate). Until every condition above is satisfied, validator authority stays with `validate-skills-schema.py` and both kernel lanes stay advisory. Promotion to blocking is a separate, later cutover step gated by these conditions — never a side effect of an unrelated PR.
 
-**Alignment note (`@intentsolutions/jrig-cli`).** The `j-rig` behavioral-eval CLI is a root devDep pinned to **exactly `@intentsolutions/jrig-cli@0.1.1`**, which depends on **`@intentsolutions/core@0.9.0` (exact)** — the same version the **root** `@intentsolutions/core` pin carries — so they resolve to one shared root-hoisted copy and the kernel-shadow + kernel-vendor lanes read it directly. (The bump from `0.1.0` → `0.1.1` also picked up the per-test-case `criteria_ids` scoping fix [jrig #162], so `pnpm exec j-rig eval` no longer applies every criterion to every test case — the prior `0.1.0` lacked it. A transitive dep, `@intentsolutions/refiner-core@0.2.0`, still peer-wants `core@^0.8.0`; pnpm surfaces that as a non-fatal warning until refiner-core widens its peer range.) The pin bump is a coupling update only; the authority flip and the root-pin cutover to `authoring/v2` remain the separate, gated steps above.
+**Alignment note (`@intentsolutions/jrig-cli`).** The `j-rig` behavioral-eval CLI is a root devDep pinned to **exactly `@intentsolutions/jrig-cli@0.1.2`**, which depends on **`@intentsolutions/core@0.9.0` (exact)** — the same version the **root** `@intentsolutions/core` pin carries — so they resolve to one shared root-hoisted copy and the kernel-shadow + kernel-vendor lanes read it directly. (The `0.1.2` cut carries the eval→Evidence-Bundle bridge `j-rig eval --emit-bundle` [jrig #172], a functional-exec `max_tokens` / length-truncation fix [jrig #173], `j-rig scaffold-spec` from a `SKILL.md` [jrig #174], and a judge-verdict recovery from truncated / fenced JSON that had inflated NO-SHIP [jrig #175]; it also retains the per-test-case `criteria_ids` scoping fix [jrig #162], so `pnpm exec j-rig eval` scopes each criterion to its own test case. A transitive dep, `@intentsolutions/refiner-core@0.2.0`, still peer-wants `core@^0.8.0`; pnpm surfaces that as a non-fatal warning until refiner-core widens its peer range.) The pin bump is a coupling update only; the authority flip and the root-pin cutover to `authoring/v2` remain the separate, gated steps above.
 
 ### Validator consolidation (already landed)
 
