@@ -28,6 +28,8 @@ compatibility: Designed for Claude Code
 ---
 # Deploy Notion-Integrated Applications
 
+## Overview
+
 Ship Node.js apps that talk to the Notion API to Vercel, Railway, or Fly.io. This skill covers environment variable management, the Notion client singleton pattern for serverless, rate limit handling at 3 req/sec, health check endpoints that verify Notion connectivity, and caching strategies to reduce API calls.
 
 ## Prerequisites
@@ -329,85 +331,7 @@ curl https://my-notion-service.fly.dev/health
 
 ### Step 3 — Monitor Notion API Errors in Production
 
-Set up structured error logging so you can track Notion-specific failures in your monitoring tool (Sentry, Datadog, or platform logs).
-
-```typescript
-// src/notion-error-handler.ts — structured error reporting
-import { isNotionClientError, APIErrorCode, ClientErrorCode } from '@notionhq/client';
-
-interface NotionErrorReport {
-  source: 'notion_api';
-  code: string;
-  status: number;
-  message: string;
-  retryable: boolean;
-  action: string;
-}
-
-export function classifyNotionError(error: unknown): NotionErrorReport {
-  if (!isNotionClientError(error)) {
-    return {
-      source: 'notion_api',
-      code: 'unknown',
-      status: 500,
-      message: error instanceof Error ? error.message : String(error),
-      retryable: false,
-      action: 'investigate — non-Notion error in API path',
-    };
-  }
-
-  const report: NotionErrorReport = {
-    source: 'notion_api',
-    code: error.code,
-    status: error.status,
-    message: error.message,
-    retryable: false,
-    action: '',
-  };
-
-  switch (error.code) {
-    case APIErrorCode.RateLimited:
-      report.retryable = true;
-      report.action = 'back off — increase cache TTL or reduce polling frequency';
-      break;
-    case APIErrorCode.Unauthorized:
-      report.retryable = false;
-      report.action = 'rotate NOTION_TOKEN — token expired or was revoked';
-      break;
-    case APIErrorCode.ObjectNotFound:
-      report.retryable = false;
-      report.action = 'check integration permissions — page/database not shared with integration';
-      break;
-    case APIErrorCode.InternalServerError:
-    case APIErrorCode.ServiceUnavailable:
-      report.retryable = true;
-      report.action = 'retry with exponential backoff — Notion is having issues';
-      break;
-    case APIErrorCode.ValidationError:
-      report.retryable = false;
-      report.action = 'fix request payload — check filter syntax and property names';
-      break;
-    default:
-      report.action = 'check Notion API status page and SDK changelog';
-  }
-
-  return report;
-}
-
-export function logNotionError(error: unknown, context: Record<string, string> = {}): void {
-  const report = classifyNotionError(error);
-  console.error(JSON.stringify({ ...report, ...context, timestamp: new Date().toISOString() }));
-}
-```
-
-Wire this into your API routes:
-
-```typescript
-} catch (error) {
-  logNotionError(error, { route: '/api/notion/query', databaseId });
-  // ... return error response
-}
-```
+Set up structured error logging so you can track Notion-specific failures in your monitoring tool (Sentry, Datadog, or platform logs). The full `classifyNotionError` / `logNotionError` module — which maps every `@notionhq/client` error code to a retryability flag and an operator action, plus the API-route wiring — lives in [production error monitoring](references/production-error-monitoring.md). Copy it to `src/notion-error-handler.ts` and call `logNotionError(error, context)` from every catch block that touches the Notion API.
 
 **Key metrics to monitor:**
 

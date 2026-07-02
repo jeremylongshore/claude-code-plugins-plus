@@ -17,7 +17,7 @@ description: 'Design and implement a production-ready Notion integration archite
   architecture", "notion service pattern".
 
   '
-allowed-tools: Read, Write, Edit, Bash, Glob, Grep
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -403,6 +403,14 @@ After applying this architecture you will have:
 | `502/503 server errors` | Notion service degradation | Check https://status.notion.so; the retry wrapper auto-recovers with backoff |
 | Stale cache data | Cache TTL too long for write-heavy workloads | Invalidate on writes (shown in `NotionService.createTask`); reduce TTL for volatile databases |
 | Polling misses changes | Poll interval too wide or clock skew | Use 10s intervals; store `last_edited_time` from the most recent page, not system clock |
+
+## Safety Justification
+
+This skill scaffolds a multi-file TypeScript project, so it needs `Write`/`Edit` alongside shell access — a combination that warrants explicit scoping:
+
+- **Bash is scoped, not blanket.** Only `Bash(npm:*)` (install `@notionhq/client`, run `npm test`) and `Bash(npx:*)` (run TypeScript tooling like `npx tsc`/`npx vitest`) are granted — no arbitrary subprocesses, no `curl`-pipe-shell surface.
+- **Write/Edit scope is the project source tree.** The skill creates files only under the layout shown in Step 1 (`src/notion/`, `src/repositories/`, `src/services/`, `src/cache/`, `tests/`); it never writes credentials or touches files outside the project.
+- **No secret handling.** `NOTION_TOKEN` is read from the environment by the generated code at runtime; the skill never echoes, fabricates, or persists token values.
 
 ## Examples
 

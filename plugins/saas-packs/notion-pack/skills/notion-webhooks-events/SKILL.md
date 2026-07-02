@@ -441,6 +441,56 @@ See [scheduled polling and examples](references/scheduled-polling-and-examples.m
 | Content changes not detected | `last_edited_time` only covers properties | Use `blocks.children.list` fingerprinting for page body changes |
 | `databases.query` filter ignored | Wrong filter structure | Use `{ timestamp: 'last_edited_time', last_edited_time: { after: isoString } }` — not a property filter |
 
+## Examples
+
+### Minimal Webhook Receiver (verification + fetch on change)
+
+```typescript
+import express from 'express';
+import { Client } from '@notionhq/client';
+
+const notion = new Client({ auth: process.env.NOTION_TOKEN });
+const app = express();
+app.use(express.json());
+
+app.post('/webhooks/notion', async (req, res) => {
+  // Registration handshake: echo the challenge back
+  if (req.body.type === 'url_verification') {
+    return res.status(200).json({ challenge: req.body.challenge });
+  }
+  res.status(200).json({ ok: true }); // ack fast, process async
+
+  // Webhooks carry no payload — fetch the changed resource
+  if (req.body.type === 'page.properties_updated') {
+    const page = await notion.pages.retrieve({ page_id: req.body.data.id });
+    console.log('Page changed:', 'url' in page ? page.url : page.id);
+  }
+});
+
+app.listen(3000);
+```
+
+### One-Database Change Watcher (polling)
+
+```typescript
+import { Client } from '@notionhq/client';
+
+const notion = new Client({ auth: process.env.NOTION_TOKEN });
+let since = new Date().toISOString();
+
+setInterval(async () => {
+  const response = await notion.databases.query({
+    database_id: process.env.NOTION_DATABASE_ID!,
+    filter: { timestamp: 'last_edited_time', last_edited_time: { after: since } },
+    sorts: [{ timestamp: 'last_edited_time', direction: 'descending' }],
+  });
+  if (response.results.length > 0) {
+    since = (response.results[0] as any).last_edited_time;
+    console.log(`${response.results.length} row(s) changed since last poll`);
+  }
+}, 60_000); // 60s interval respects the 3 req/s rate limit
+```
+
 ## Resources
 
 - [Notion API Search endpoint](https://developers.notion.com/reference/post-search)

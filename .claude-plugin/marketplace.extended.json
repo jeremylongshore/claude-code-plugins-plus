@@ -9028,7 +9028,7 @@
       "name": "notion-pack",
       "source": "./plugins/saas-packs/notion-pack",
       "description": "Claude Code skill pack for Notion (30 skills)",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "category": "saas-packs",
       "keywords": ["notion", "saas", "sdk", "integration"],
       "author": {
