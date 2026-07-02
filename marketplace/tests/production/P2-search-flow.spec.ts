@@ -49,8 +49,11 @@ test.describe('P2: Search Flow', () => {
     const searchInput = page.locator('.hero-search-input').first();
     await searchInput.fill('prettier');
 
-    // Should have at least one result card visible
-    const resultCards = page.locator('a[href*="/plugins/"], a[href*="/skills/"]');
+    // Should have at least one result card visible — scoped to the results
+    // grid so the (mobile-hidden) header nav links can never satisfy this
+    const resultCards = page
+      .locator('#results-grid')
+      .locator('a[href*="/plugins/"], a[href*="/skills/"]');
     await expect(resultCards.first()).toBeVisible({ timeout: 10_000 });
     await expect.poll(() => resultCards.count(), { timeout: 10_000 }).toBeGreaterThan(0);
 
@@ -65,7 +68,11 @@ test.describe('P2: Search Flow', () => {
     const searchInput = page.locator('.hero-search-input').first();
     await searchInput.fill('genkit');
 
-    const resultCards = page.locator('a[href*="/plugins/"], a[href*="/skills/"], a[href*="/cowork"]');
+    // Scoped to the results grid so the (mobile-hidden) header nav /cowork
+    // link can never satisfy this
+    const resultCards = page
+      .locator('#results-grid')
+      .locator('a[href*="/plugins/"], a[href*="/skills/"], a[href*="/cowork"]');
     await expect(resultCards.first()).toBeVisible({ timeout: 10_000 });
     await expect.poll(() => resultCards.count(), { timeout: 10_000 }).toBeGreaterThan(0);
 
@@ -92,7 +99,12 @@ test.describe('P2: Search Flow', () => {
     const searchInput = page.locator('.hero-search-input').first();
     await searchInput.fill('security');
 
-    const firstResult = page.locator('a[href*="/plugins/"], a[href*="/skills/"], a[href*="/cowork"]').first();
+    // Scoped to the results grid so the (mobile-hidden) header nav /cowork
+    // link can never satisfy this
+    const firstResult = page
+      .locator('#results-grid')
+      .locator('a[href*="/plugins/"], a[href*="/skills/"], a[href*="/cowork"]')
+      .first();
     await expect(firstResult).toBeVisible({ timeout: 10_000 });
 
     // Secondary signal: the client-side render updated the results counter
