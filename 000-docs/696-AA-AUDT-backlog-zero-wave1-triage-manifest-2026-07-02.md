@@ -119,3 +119,17 @@ catalog/README/tracker sync — closing two Wave 0 carve-outs.
 | `claude-zp07` | done-drift | PR #609 'Add MseeP.ai badge' CLOSED (not merged) 2026-05-02T04:27:27Z — dispositioned in the claude-tcss batch cleanup. |
 
 _Generated from the Wave 1 snapshot + consolidated verdicts; 83 beads._
+
+## Post-close verification (addendum, 2026-07-02)
+
+- **Full-set check:** 83/83 closed, verified per-bead against the re-exported
+  `issues.jsonl`. 79 closed clean in dependency order; 4 obsolete Databricks v1
+  beads required `--force` past dependency links to still-open v1 scaffold beads
+  (the links belong to the retired v1 plan; the reserved v2 builds carry the
+  surviving scope — noted verbatim in each close reason).
+- **Stratified sample audit:** 20 sampled (12 done-drift / 8 obsolete, random):
+  20/20 PASS on status + manifest citation + evidence-string integrity.
+- **Database effect:** claude-code-plugins open count 230 → 152 (83 manifest
+  closes + 2 executed carve-outs via PR #940, +7 restructure epics). Survivors:
+  112 still-valid beads under plain-English epics, 20 needs-human/decision-
+  contingent beads (digest #941), 4 reserved Databricks builds, the program epics.
