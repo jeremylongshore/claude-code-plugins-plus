@@ -7,7 +7,7 @@ Deep-dive reference for the `figma-enterprise-rbac` skill — extracted from the
 async function getLocalVariables(fileKey: string, token: string) {
   const res = await fetch(
     `https://api.figma.com/v1/files/${fileKey}/variables/local`,
-    { headers: { 'X-Figma-Token': token } }
+    { headers: { Authorization: `Bearer ${token}` } }
   );
   if (res.status === 403) {
     throw new Error('Variables API requires Figma Enterprise plan');
@@ -20,7 +20,7 @@ async function getLocalVariables(fileKey: string, token: string) {
 async function getPublishedVariables(fileKey: string, token: string) {
   const res = await fetch(
     `https://api.figma.com/v1/files/${fileKey}/variables/published`,
-    { headers: { 'X-Figma-Token': token } }
+    { headers: { Authorization: `Bearer ${token}` } }
   );
   return res.json();
   // Published variables have a subscribed_id that changes each publish
@@ -37,7 +37,7 @@ async function updateVariables(
     {
       method: 'POST',
       headers: {
-        'X-Figma-Token': token,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(changes),

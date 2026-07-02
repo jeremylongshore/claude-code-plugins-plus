@@ -18,7 +18,7 @@ app.get('/auth/figma/callback', async (req, res) => {
 
     // Get user info with the new token
     const userRes = await fetch('https://api.figma.com/v1/me', {
-      headers: { 'X-Figma-Token': tokens.access_token },
+      headers: { Authorization: `Bearer ${tokens.access_token}` },
     });
     const user = await userRes.json();
 

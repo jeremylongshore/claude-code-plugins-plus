@@ -14,7 +14,7 @@ async function requireFigmaAccess(fileKey: string) {
     // Check if user's token can access this file
     const check = await fetch(
       `https://api.figma.com/v1/files/${fileKey}?depth=1`,
-      { headers: { 'X-Figma-Token': userToken } }
+      { headers: { Authorization: `Bearer ${userToken}` } }
     );
 
     if (check.status === 403) {

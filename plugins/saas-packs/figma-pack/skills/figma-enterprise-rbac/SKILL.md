@@ -117,7 +117,7 @@ app.get('/auth/figma/callback', async (req, res) => {
 
     // Get user info with the new token
     const userRes = await fetch('https://api.figma.com/v1/me', {
-      headers: { 'X-Figma-Token': tokens.access_token },
+      headers: { Authorization: `Bearer ${tokens.access_token}` },
     });
     const user = await userRes.json();
 
@@ -143,7 +143,7 @@ app.get('/auth/figma/callback', async (req, res) => {
 async function getTeamProjects(teamId: string, token: string) {
   const res = await fetch(
     `https://api.figma.com/v1/teams/${teamId}/projects`,
-    { headers: { 'X-Figma-Token': token } }
+    { headers: { Authorization: `Bearer ${token}` } }
   );
   return res.json(); // { projects: [{ id, name }] }
 }
@@ -152,7 +152,7 @@ async function getTeamProjects(teamId: string, token: string) {
 async function getProjectFiles(projectId: string, token: string) {
   const res = await fetch(
     `https://api.figma.com/v1/projects/${projectId}/files`,
-    { headers: { 'X-Figma-Token': token } }
+    { headers: { Authorization: `Bearer ${token}` } }
   );
   return res.json(); // { files: [{ key, name, thumbnail_url, last_modified }] }
 }
@@ -161,7 +161,7 @@ async function getProjectFiles(projectId: string, token: string) {
 async function getTeamComponents(teamId: string, token: string) {
   const res = await fetch(
     `https://api.figma.com/v1/teams/${teamId}/components`,
-    { headers: { 'X-Figma-Token': token } }
+    { headers: { Authorization: `Bearer ${token}` } }
   );
   return res.json();
   // { meta: { components: [{ key, file_key, node_id, name, description }] } }
@@ -171,7 +171,7 @@ async function getTeamComponents(teamId: string, token: string) {
 async function getTeamStyles(teamId: string, token: string) {
   const res = await fetch(
     `https://api.figma.com/v1/teams/${teamId}/styles`,
-    { headers: { 'X-Figma-Token': token } }
+    { headers: { Authorization: `Bearer ${token}` } }
   );
   return res.json();
   // { meta: { styles: [{ key, file_key, node_id, name, style_type }] } }
@@ -185,7 +185,7 @@ async function getTeamStyles(teamId: string, token: string) {
 async function getLocalVariables(fileKey: string, token: string) {
   const res = await fetch(
     `https://api.figma.com/v1/files/${fileKey}/variables/local`,
-    { headers: { 'X-Figma-Token': token } }
+    { headers: { Authorization: `Bearer ${token}` } }
   );
   if (res.status === 403) {
     throw new Error('Variables API requires Figma Enterprise plan');
@@ -198,7 +198,7 @@ async function getLocalVariables(fileKey: string, token: string) {
 async function getPublishedVariables(fileKey: string, token: string) {
   const res = await fetch(
     `https://api.figma.com/v1/files/${fileKey}/variables/published`,
-    { headers: { 'X-Figma-Token': token } }
+    { headers: { Authorization: `Bearer ${token}` } }
   );
   return res.json();
   // Published variables have a subscribed_id that changes each publish
@@ -215,7 +215,7 @@ async function updateVariables(
     {
       method: 'POST',
       headers: {
-        'X-Figma-Token': token,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(changes),
@@ -239,7 +239,7 @@ async function requireFigmaAccess(fileKey: string) {
     // Check if user's token can access this file
     const check = await fetch(
       `https://api.figma.com/v1/files/${fileKey}?depth=1`,
-      { headers: { 'X-Figma-Token': userToken } }
+      { headers: { Authorization: `Bearer ${userToken}` } }
     );
 
     if (check.status === 403) {

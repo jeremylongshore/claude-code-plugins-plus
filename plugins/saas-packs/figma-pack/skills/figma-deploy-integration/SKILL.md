@@ -56,7 +56,10 @@ export async function POST(req: NextRequest) {
   // Verify passcode
   const expected = process.env.FIGMA_WEBHOOK_PASSCODE!;
   const received = payload.passcode || '';
-  if (!crypto.timingSafeEqual(Buffer.from(received), Buffer.from(expected))) {
+  const a = Buffer.from(received);
+  const b = Buffer.from(expected);
+  // timingSafeEqual throws on length mismatch — guard first
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
     return NextResponse.json({ error: 'Invalid passcode' }, { status: 401 });
   }
 

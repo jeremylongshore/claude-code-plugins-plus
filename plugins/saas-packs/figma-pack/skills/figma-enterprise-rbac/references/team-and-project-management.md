@@ -7,7 +7,7 @@ Deep-dive reference for the `figma-enterprise-rbac` skill — extracted from the
 async function getTeamProjects(teamId: string, token: string) {
   const res = await fetch(
     `https://api.figma.com/v1/teams/${teamId}/projects`,
-    { headers: { 'X-Figma-Token': token } }
+    { headers: { Authorization: `Bearer ${token}` } }
   );
   return res.json(); // { projects: [{ id, name }] }
 }
@@ -16,7 +16,7 @@ async function getTeamProjects(teamId: string, token: string) {
 async function getProjectFiles(projectId: string, token: string) {
   const res = await fetch(
     `https://api.figma.com/v1/projects/${projectId}/files`,
-    { headers: { 'X-Figma-Token': token } }
+    { headers: { Authorization: `Bearer ${token}` } }
   );
   return res.json(); // { files: [{ key, name, thumbnail_url, last_modified }] }
 }
@@ -25,7 +25,7 @@ async function getProjectFiles(projectId: string, token: string) {
 async function getTeamComponents(teamId: string, token: string) {
   const res = await fetch(
     `https://api.figma.com/v1/teams/${teamId}/components`,
-    { headers: { 'X-Figma-Token': token } }
+    { headers: { Authorization: `Bearer ${token}` } }
   );
   return res.json();
   // { meta: { components: [{ key, file_key, node_id, name, description }] } }
@@ -35,7 +35,7 @@ async function getTeamComponents(teamId: string, token: string) {
 async function getTeamStyles(teamId: string, token: string) {
   const res = await fetch(
     `https://api.figma.com/v1/teams/${teamId}/styles`,
-    { headers: { 'X-Figma-Token': token } }
+    { headers: { Authorization: `Bearer ${token}` } }
   );
   return res.json();
   // { meta: { styles: [{ key, file_key, node_id, name, style_type }] } }
