@@ -107,18 +107,18 @@ const { items } = Astro.props;
   }
 
   .faq-trigger:hover {
-    color: var(--primary, var(--brand-orange));
+    color: var(--primary);
   }
 
   .faq-trigger:focus-visible {
-    outline: 2px solid var(--primary, var(--brand-orange));
+    outline: 2px solid var(--primary);
     outline-offset: -2px;
     border-radius: var(--radius-sm);
   }
 
   .faq-trigger[aria-expanded="true"] {
-    border-left-color: var(--primary, var(--brand-orange));
-    color: var(--primary, var(--brand-orange));
+    border-left-color: var(--primary);
+    color: var(--primary);
   }
 
   .faq-chevron {
@@ -129,7 +129,7 @@ const { items } = Astro.props;
 
   .faq-trigger[aria-expanded="true"] .faq-chevron {
     transform: rotate(90deg);
-    color: var(--primary, var(--brand-orange));
+    color: var(--primary);
   }
 
   .faq-question {
@@ -176,7 +176,7 @@ const { items } = Astro.props;
   }
 
   .faq-answer-inner :global(a) {
-    color: var(--primary, var(--brand-orange));
+    color: var(--primary);
     text-decoration: underline;
   }
 </style>

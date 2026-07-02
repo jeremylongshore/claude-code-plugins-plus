@@ -92,7 +92,7 @@ const { installCommand, pluginName, repositoryUrl } = Astro.props;
     align-items: center;
     gap: 0.5rem;
     padding: 0.7rem 1.5rem;
-    background: var(--primary, var(--brand-orange));
+    background: var(--primary);
     color: #0a0a0c;
     border: none;
     border-radius: var(--radius-md);
@@ -104,7 +104,7 @@ const { installCommand, pluginName, repositoryUrl } = Astro.props;
   }
 
   .detail-cta__primary:hover {
-    background: var(--primary-dark, var(--brand-orange-dark));
+    background: var(--primary-dark, var(--primary-dark));
     transform: translateY(-1px);
   }
 
@@ -129,8 +129,8 @@ const { installCommand, pluginName, repositoryUrl } = Astro.props;
   }
 
   .detail-cta__secondary:hover {
-    border-color: var(--primary, var(--brand-orange));
-    color: var(--primary, var(--brand-orange));
+    border-color: var(--primary);
+    color: var(--primary);
   }
 
   @media (max-width: 480px) {

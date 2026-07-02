@@ -135,7 +135,7 @@ const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentInde
       transition: color var(--transition-fast, 150ms ease);
     }
 
-    .breadcrumbs a:hover { color: var(--primary, var(--brand-orange)); }
+    .breadcrumbs a:hover { color: var(--primary); }
     .breadcrumb-separator { color: var(--text-3, var(--brand-mid-gray)); }
     .breadcrumb-current { color: var(--text, var(--brand-dark)); }
 
@@ -144,7 +144,7 @@ const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentInde
     .category-badge {
       display: inline-block;
       background: var(--primary-tint, rgba(217, 119, 87, 0.1));
-      color: var(--primary, var(--brand-orange));
+      color: var(--primary);
       padding: 0.375rem 0.75rem;
       border-radius: 0.375rem;
       font-size: 0.75rem;
@@ -215,14 +215,14 @@ const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentInde
     }
 
     .toc-nav a:hover {
-      color: var(--primary, var(--brand-orange));
-      border-left-color: var(--primary, var(--brand-orange));
+      color: var(--primary);
+      border-left-color: var(--primary);
       background: var(--primary-tint, rgba(217, 119, 87, 0.05));
     }
 
     .toc-nav a.active {
-      color: var(--primary, var(--brand-orange));
-      border-left-color: var(--primary, var(--brand-orange));
+      color: var(--primary);
+      border-left-color: var(--primary);
       font-weight: 600;
     }
 
@@ -265,11 +265,11 @@ const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentInde
     }
 
     .playbook-content :global(a) {
-      color: var(--primary, var(--brand-orange));
+      color: var(--primary);
       text-decoration: underline;
       text-underline-offset: 2px;
     }
-    .playbook-content :global(a:hover) { color: var(--primary-dark, var(--brand-orange-dark)); }
+    .playbook-content :global(a:hover) { color: var(--primary-dark, var(--primary-dark)); }
 
     .playbook-content :global(ul),
     .playbook-content :global(ol) { margin-bottom: 1.25rem; padding-left: 1.5rem; }
@@ -333,7 +333,7 @@ const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentInde
     }
 
     .playbook-content :global(blockquote) {
-      border-left: 4px solid var(--primary, var(--brand-orange));
+      border-left: 4px solid var(--primary);
       background: var(--primary-tint, rgba(217, 119, 87, 0.05));
       padding: 1rem 1.5rem;
       margin: 1.5rem 0;
@@ -374,7 +374,7 @@ const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentInde
     }
 
     .nav-link:hover {
-      border-color: var(--primary, var(--brand-orange));
+      border-color: var(--primary);
       
       transform: translateY(-2px);
     }
@@ -403,12 +403,12 @@ const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentInde
     }
 
     .back-link {
-      color: var(--primary, var(--brand-orange));
+      color: var(--primary);
       font-weight: 600;
       transition: color var(--transition-fast, 150ms ease);
     }
 
-    .back-link:hover { color: var(--primary-dark, var(--brand-orange-light)); }
+    .back-link:hover { color: var(--primary-dark, var(--primary-light)); }
 
     /* Responsive */
     @media (max-width: 1024px) {
