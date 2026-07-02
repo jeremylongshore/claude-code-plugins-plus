@@ -50,9 +50,8 @@ Users often overpay for gas or have transactions stuck due to poor fee estimatio
 
 | API | Purpose | Auth |
 |-----|---------|------|
-| Ethereum RPC | Real-time gas prices | RPC URL |
-| Etherscan Gas Tracker | Gas oracle | API key (free) |
-| Blocknative | Gas predictions | API key (free tier) |
+| Ethereum RPC (`eth_feeHistory`) | Real-time gas prices, base-fee history fallback | RPC URL (Alchemy/Infura or public endpoint, no key required) |
+| Etherscan Gas Oracle | Gas oracle (primary) | `ETHERSCAN_API_KEY` (free key, 5 calls/sec) |
 | CoinGecko | ETH/MATIC price for USD conversion | No auth |
 
 ## Success Metrics

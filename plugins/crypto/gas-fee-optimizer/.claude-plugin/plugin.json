@@ -1,6 +1,6 @@
 {
   "name": "gas-fee-optimizer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Optimize transaction gas fees with timing and routing recommendations",
   "author": {
     "name": "Claude Code Plugins",

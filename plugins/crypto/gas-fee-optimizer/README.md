@@ -111,9 +111,9 @@ Or use the shortcut:
 
 Analysis references:
 
-- Etherscan Gas Tracker
+- Etherscan Gas Oracle (primary — free API key)
 - ETH Gas Station
-- Blocknative (mempool data)
+- Alchemy/Infura `eth_feeHistory` (no-key RPC fallback)
 - L2Fees.info
 - Gas Now
 

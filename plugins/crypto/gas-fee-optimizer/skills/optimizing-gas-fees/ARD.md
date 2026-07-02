@@ -19,7 +19,7 @@ Data Collection → Analysis → Recommendation → Display
 ```
 Input: User request (current gas, optimal time, estimate for operation)
           ↓
-Fetch: Multiple gas oracles (RPC, Etherscan, Blocknative)
+Fetch: Multiple gas oracles (Etherscan Gas Oracle, RPC eth_feeHistory)
           ↓
 Aggregate: Combine sources, calculate percentiles
           ↓
@@ -57,15 +57,39 @@ skills/optimizing-gas-fees/
 - **Method**: `eth_gasPrice`, `eth_feeHistory`
 - **Data**: Current gas price, base fee history
 
-### Etherscan Gas Tracker
+### Etherscan Gas Oracle (Primary)
 
-- **Endpoint**: `https://api.etherscan.io/api?module=gastracker`
-- **Data**: Safe/Proposed/Fast gas prices
+- **Endpoint**: `https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=<ETHERSCAN_API_KEY>`
+- **Auth**: free API key via the `ETHERSCAN_API_KEY` environment variable
+- **Rate limit**: 5 calls/sec on the free tier — cache responses (see Performance Considerations)
+- **Data**: `SafeGasPrice` / `ProposeGasPrice` / `FastGasPrice` (gwei, returned as strings in `result`), plus `suggestBaseFee`
 
-### Blocknative (Optional)
+Example `result` payload:
 
-- **Endpoint**: `https://api.blocknative.com/gasprices/blockprices`
-- **Data**: Confidence-based predictions
+```json
+{
+  "LastBlock": "19640000",
+  "SafeGasPrice": "12",
+  "ProposeGasPrice": "13",
+  "FastGasPrice": "15",
+  "suggestBaseFee": "11.85"
+}
+```
+
+Map the three price points to tiers: Safe → slow, Propose → standard, Fast → fast; derive
+the instant tier locally from fee-history percentiles.
+
+### RPC `eth_feeHistory` (No-Key Fallback)
+
+- **Endpoint**: any Ethereum JSON-RPC provider (Alchemy, Infura, or a public RPC URL)
+- **Auth**: none beyond the RPC URL itself
+- **Data**: recent base fees + priority-fee reward percentiles; compute slow/standard/fast/instant tiers locally from the percentile spread
+
+> **Migration note (2026-06-19)**: the third-party mempool gas-prediction API this
+> plugin previously documented shut down on 2026-06-19 and was removed as a data
+> source. Its confidence-based next-block predictions have no direct equivalent above —
+> tiers are approximated from Etherscan's three price points and `eth_feeHistory`
+> reward percentiles instead.
 
 ## Component Design
 

@@ -2606,7 +2606,7 @@
       "name": "gas-fee-optimizer",
       "source": "./plugins/crypto/gas-fee-optimizer",
       "description": "Optimize transaction gas fees with timing and routing recommendations",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "category": "crypto",
       "keywords": ["gas", "fees", "ethereum", "optimization", "transaction", "l2"],
       "author": {

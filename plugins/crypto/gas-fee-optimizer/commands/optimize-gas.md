@@ -137,9 +137,9 @@ Total Cost = (Base Fee + Priority Fee) × Gas Units
 
 When providing recommendations, check:
 
-- **Etherscan Gas Tracker**: Current gas prices
+- **Etherscan Gas Oracle**: Current gas prices (SafeGasPrice/ProposeGasPrice/FastGasPrice; free API key, 5 calls/sec)
 - **ETH Gas Station**: Historical patterns
-- **Blocknative**: Real-time mempool
+- **Alchemy/Infura `eth_feeHistory`**: Base-fee history and priority-fee percentiles (no API key required)
 - **L2Fees.info**: Layer 2 comparison
 - **Gas Now**: Timing predictions
 
