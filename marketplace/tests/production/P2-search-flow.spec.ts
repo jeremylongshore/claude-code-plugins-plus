@@ -1,8 +1,21 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
 /**
  * P2: Search Flow — Tests search from homepage through explore page results
  */
+
+/**
+ * The explore page loads fuse.js from jsdelivr (top-level ESM import) and
+ * fetches the ~2.9MB /data/unified-search-index.json before any result can
+ * render (measured 1.4–3.5s against production). When the index is ready the
+ * page sets #results-grid aria-busy="false" and removes #explore-loading —
+ * wait on that deterministic signal instead of sleeping.
+ */
+async function waitForSearchIndex(page: Page): Promise<void> {
+  await page.locator('#results-grid[aria-busy="false"]').waitFor({ timeout: 20_000 });
+}
+
+const RESULTS_INFO_PATTERN = /Showing \d+ of \d+/;
 
 test.describe('P2: Search Flow', () => {
   test('Homepage search redirects to /explore on click', async ({ page }) => {
@@ -31,59 +44,67 @@ test.describe('P2: Search Flow', () => {
 
   test('Search returns results for known plugin', async ({ page }) => {
     await page.goto('/explore');
+    await waitForSearchIndex(page);
 
     const searchInput = page.locator('.hero-search-input').first();
     await searchInput.fill('prettier');
-    await page.waitForTimeout(600);
 
     // Should have at least one result card visible
     const resultCards = page.locator('a[href*="/plugins/"], a[href*="/skills/"]');
-    const count = await resultCards.count();
-    expect(count).toBeGreaterThan(0);
+    await expect(resultCards.first()).toBeVisible({ timeout: 10_000 });
+    await expect.poll(() => resultCards.count(), { timeout: 10_000 }).toBeGreaterThan(0);
+
+    // Secondary signal: the client-side render updated the results counter
+    await expect(page.locator('#results-info')).toHaveText(RESULTS_INFO_PATTERN);
   });
 
   test('Search returns results for known skill', async ({ page }) => {
     await page.goto('/explore');
+    await waitForSearchIndex(page);
 
     const searchInput = page.locator('.hero-search-input').first();
     await searchInput.fill('genkit');
-    await page.waitForTimeout(600);
 
     const resultCards = page.locator('a[href*="/plugins/"], a[href*="/skills/"], a[href*="/cowork"]');
-    const count = await resultCards.count();
-    expect(count).toBeGreaterThan(0);
+    await expect(resultCards.first()).toBeVisible({ timeout: 10_000 });
+    await expect.poll(() => resultCards.count(), { timeout: 10_000 }).toBeGreaterThan(0);
+
+    // Secondary signal: the client-side render updated the results counter
+    await expect(page.locator('#results-info')).toHaveText(RESULTS_INFO_PATTERN);
   });
 
   test('Empty search query shows no-results state gracefully', async ({ page }) => {
     await page.goto('/explore');
+    await waitForSearchIndex(page);
 
     const searchInput = page.locator('.hero-search-input').first();
     await searchInput.fill('xyznonexistent999zzz');
-    await page.waitForTimeout(600);
 
-    // Page should not crash
+    // Page should not crash — the results counter still renders
+    await expect(page.locator('#results-info')).toHaveText(RESULTS_INFO_PATTERN);
     await expect(page).toHaveTitle(/Explore/);
   });
 
   test('Search results link to valid pages', async ({ page }) => {
     await page.goto('/explore');
+    await waitForSearchIndex(page);
 
     const searchInput = page.locator('.hero-search-input').first();
     await searchInput.fill('security');
-    await page.waitForTimeout(600);
 
     const firstResult = page.locator('a[href*="/plugins/"], a[href*="/skills/"], a[href*="/cowork"]').first();
-    const isVisible = await firstResult.isVisible().catch(() => false);
+    await expect(firstResult).toBeVisible({ timeout: 10_000 });
 
-    if (isVisible) {
-      const href = await firstResult.getAttribute('href');
-      expect(href).toBeTruthy();
+    // Secondary signal: the client-side render updated the results counter
+    await expect(page.locator('#results-info')).toHaveText(RESULTS_INFO_PATTERN);
 
-      await firstResult.click();
-      const response = await page.waitForLoadState('networkidle');
-      // Should land on a valid page (not 404)
-      const title = await page.title();
-      expect(title).not.toContain('404');
-    }
+    const href = await firstResult.getAttribute('href');
+    expect(href).toBeTruthy();
+
+    await firstResult.click();
+    await page.waitForLoadState('networkidle');
+    // Should land on a valid page (not 404)
+    const title = await page.title();
+    expect(title).not.toContain('404');
   });
 });

@@ -53,11 +53,12 @@ test.describe('P5: Cowork Downloads', () => {
     }
 
     await searchInput.fill('security');
-    await page.waitForTimeout(400);
 
+    // The count label reads "Showing all N plugins" until the filter runs,
+    // then "Showing X of N plugins" — assert the filtered form with a
+    // retrying web-first assertion instead of a fixed sleep.
     const countLabel = page.locator('#plugin-count');
-    const text = await countLabel.textContent();
-    expect(text).toContain('Showing');
+    await expect(countLabel).toContainText(/Showing \d+ of \d+ plugins/);
   });
 
   test('Setup guide has 4 steps', async ({ page }) => {
