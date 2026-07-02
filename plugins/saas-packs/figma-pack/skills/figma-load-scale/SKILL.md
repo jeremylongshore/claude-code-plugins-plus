@@ -238,6 +238,24 @@ const figmaQueue = new PQueue({
 | k6 connection errors | Too many parallel VUs | Reduce `preAllocatedVUs` |
 | Results vary between runs | Leaky bucket state | Wait 5min between test runs |
 
+## Examples
+
+Run the Step 1 k6 script against a staging file and read the two numbers that matter:
+
+```bash
+k6 run --vus 5 --duration 2m figma-load-test.js
+```
+
+```text
+http_req_duration..............: avg=412ms p(95)=890ms
+http_req_failed................: 2.1%  (all 429 — rate limit ceiling found)
+figma_rate_limited.............: 27    ✗ first 429 at ~55 req/min sustained
+```
+
+That output feeds Step 3 capacity planning directly: at ~55 req/min per token before 429s, a 10,000-file nightly sync needs batching via `/nodes?ids=` (Step 4) or multiple OAuth users — not more concurrency.
+
+Record results in the benchmark template: `references/benchmark-report-template.md`.
+
 ## Resources
 
 - [k6 Documentation](https://grafana.com/docs/k6/)

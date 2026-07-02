@@ -246,6 +246,30 @@ async function figmaHealthCheck(): Promise<{
 | Missing rate limit headers | Not all endpoints return them | Handle null values gracefully |
 | Metrics not scraping | Wrong port or path | Verify Prometheus scrape config |
 
+## Examples
+
+Scrape the instrumented client's metrics (Step 2) and confirm request tracking works:
+
+```bash
+curl -s localhost:9090/metrics | /usr/bin/grep figma_
+```
+
+```text
+figma_api_requests_total{endpoint="/v1/files",status="200"} 1042
+figma_api_requests_total{endpoint="/v1/files",status="429"} 3
+figma_api_request_duration_seconds_bucket{le="0.5"} 981
+figma_rate_limit_remaining 118
+```
+
+Fire the health check with dependency detail (Step 4):
+
+```bash
+curl -s localhost:3000/health | jq '{status, figma: .checks.figma_api}'
+# {"status": "ok", "figma": {"reachable": true, "latency_ms": 212}}
+```
+
+Alert thresholds (429 rate, p95 latency) are in `references/alert-rules.md`.
+
 ## Resources
 
 - [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)

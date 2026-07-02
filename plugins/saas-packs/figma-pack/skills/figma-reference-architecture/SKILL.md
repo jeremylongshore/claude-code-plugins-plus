@@ -196,6 +196,30 @@ export const config = {
 | Webhook | Duplicate events | Idempotency via event timestamp |
 | Export | Image render null | Skip node, log warning |
 
+## Examples
+
+Scaffold the Step 1 project structure and trace one request through the layers (Step 2 data flow):
+
+```text
+src/
+├── client/figma-client.ts      # typed REST client (retry + rate-limit aware)
+├── services/token-sync.ts      # orchestration: fetch → transform → emit
+├── webhooks/receiver.ts        # V2 webhook endpoint (passcode-verified)
+├── cache/file-cache.ts         # version-keyed response cache
+└── config/index.ts             # env-validated configuration
+```
+
+A `LIBRARY_PUBLISH` webhook arriving becomes, in order:
+
+```text
+receiver.ts   verify passcode → enqueue {file_key}
+token-sync.ts fetch /v1/files/{key}/styles → resolve nodes → transform
+file-cache.ts invalidate stale entry (keyed by file version)
+emit          write tokens.json → open PR via CI
+```
+
+Component contracts and the config schema: `references/key-components.md`, `references/configuration.md`.
+
 ## Resources
 
 - [Figma REST API](https://developers.figma.com/docs/rest-api/)

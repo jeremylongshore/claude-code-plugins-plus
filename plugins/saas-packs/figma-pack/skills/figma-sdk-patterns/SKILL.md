@@ -268,6 +268,33 @@ export async function withRetry<T>(
 | Retry wrapper | Transient 429/5xx errors | Automatic recovery |
 | Singleton | Shared client across modules | Consistent config, one token |
 
+## Examples
+
+Use the typed client (Step 1) with the custom error classes (Step 2) — call sites stay clean:
+
+```typescript
+import { FigmaClient, FigmaRateLimitError, FigmaAuthError } from './figma';
+
+const figma = new FigmaClient(process.env.FIGMA_PAT!);
+
+try {
+  const file = await figma.getFile(process.env.FIGMA_FILE_KEY!, { depth: 1 });
+  console.log(`${file.name} — ${file.document.children.length} pages`);
+} catch (err) {
+  if (err instanceof FigmaRateLimitError) scheduleRetry(err.retryAfterSeconds);
+  else if (err instanceof FigmaAuthError) alertOps('figma token invalid');
+  else throw err;
+}
+```
+
+Count every TEXT node with the tree walker (Step 4) instead of hand-rolled recursion:
+
+```typescript
+const textCount = walkNodes(file.document, (n) => n.type === 'TEXT').length;
+```
+
+Full type definitions and the retry-wrapped singleton: `references/type-definitions.md`, `references/singleton-with-retry.md`.
+
 ## Resources
 
 - [Figma REST API Reference](https://developers.figma.com/docs/rest-api/)

@@ -209,6 +209,26 @@ with our Figma integration. Cached data is being served.
 | Fallback data stale | Last cache too old | Set up regular cache refresh |
 | Alert not firing | Missing metrics | Verify Prometheus scrape config |
 
+## Examples
+
+Triage "the design token sync is failing" in under a minute (Step 1):
+
+```bash
+# Is it us or Figma? Probe auth, then a known-good file with minimal payload
+curl -s -o /dev/null -w '%{http_code}\n' -H "X-Figma-Token: ${FIGMA_PAT}" https://api.figma.com/v1/me
+curl -s -o /dev/null -w '%{http_code}\n' -H "X-Figma-Token: ${FIGMA_PAT}" \
+  "https://api.figma.com/v1/files/${FIGMA_FILE_KEY}?depth=1"
+```
+
+| `/v1/me` | file probe | Read as |
+|----------|-----------|---------|
+| 200 | 200 | Our pipeline bug — not an API incident |
+| 200 | 403/404 | File access changed — check sharing/scopes |
+| 401 | any | Token revoked or expired — rotate now |
+| 429 / 5xx | 429 / 5xx | Figma-side — mitigate per Step 3, check status.figma.com |
+
+Decision tree and mitigation actions: `references/decision-tree.md`, `references/immediate-mitigation.md`; postmortem scaffold: `references/postmortem-template.md`.
+
 ## Resources
 
 - [Figma Status Page](https://status.figma.com)

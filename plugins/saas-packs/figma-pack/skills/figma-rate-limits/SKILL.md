@@ -207,6 +207,32 @@ async function batchFetchNodes(
 | `low` rate limit type | `X-Figma-Rate-Limit-Type: low` | Consider upgrading Figma plan |
 | Batch too large | 400 Bad Request | Reduce batch size to 50 IDs |
 
+## Examples
+
+Reproduce a 429 and read the headers that drive every pattern in this skill (Step 1):
+
+```bash
+for i in $(seq 1 60); do
+  curl -s -o /dev/null -D - -H "X-Figma-Token: ${FIGMA_PAT}" \
+    "https://api.figma.com/v1/files/${FIGMA_FILE_KEY}?depth=1" | /usr/bin/grep -iE '^(HTTP|retry-after)'
+done | sort | uniq -c
+```
+
+```text
+  54 HTTP/2 200
+   6 HTTP/2 429
+   6 retry-after: 30
+```
+
+Collapse N per-node calls into one batched request (Step 5) — the single biggest budget win:
+
+```bash
+curl -s -H "X-Figma-Token: ${FIGMA_PAT}" \
+  "https://api.figma.com/v1/files/${FIGMA_FILE_KEY}/nodes?ids=1:2,1:5,1:9,2:14" | jq '.nodes | keys'
+```
+
+Backoff implementation and the queue: `references/implement-exponential-backoff.md`, `references/request-queue-with-concurrency-control.md`.
+
 ## Resources
 
 - [Figma Rate Limits Documentation](https://developers.figma.com/docs/rest-api/rate-limits/)

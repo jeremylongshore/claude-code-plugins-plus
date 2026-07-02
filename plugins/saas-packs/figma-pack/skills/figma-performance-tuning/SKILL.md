@@ -196,6 +196,32 @@ async function optimizedFetch(path: string, token: string) {
 | Slow image exports | Large batch, high scale | Reduce scale; batch in groups of 50 |
 | Expired image URLs | Cached URL older than 30 days | Set image cache TTL to <24h |
 
+## Examples
+
+Measure the win from payload reduction (Step 1) on a real design-system file:
+
+```bash
+for url in "files/${FIGMA_FILE_KEY}" "files/${FIGMA_FILE_KEY}?depth=1"; do
+  curl -s -o /dev/null -w "%{size_download}B  %{time_total}s  ${url}\n" \
+    -H "X-Figma-Token: ${FIGMA_PAT}" "https://api.figma.com/v1/${url}"
+done
+```
+
+```text
+41520883B  6.180s  files/AbC123        ← full tree
+38412B     0.310s  files/AbC123?depth=1 ← 1000x smaller, 20x faster
+```
+
+Confirm the version-keyed cache (Step 2) short-circuits repeat fetches:
+
+```text
+GET file AbC123  cache MISS  (version 1234567890) → fetched, cached
+GET file AbC123  cache HIT   (version unchanged) → 0 API calls
+webhook FILE_UPDATE AbC123 → invalidated → next GET refetches
+```
+
+Batching and connection reuse details: `references/batch-node-fetches.md`, `references/connection-reuse.md`.
+
 ## Resources
 
 - [Figma File Endpoints](https://developers.figma.com/docs/rest-api/file-endpoints/)

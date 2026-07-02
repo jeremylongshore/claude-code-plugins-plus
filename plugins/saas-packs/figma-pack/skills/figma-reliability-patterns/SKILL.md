@@ -264,6 +264,27 @@ async function conditionalFigmaCall<T>(
 | Retry loops | Not respecting Retry-After | Always use the header value |
 | Timeout too short | Large file responses | Increase timeout for `/v1/files` calls |
 
+## Examples
+
+Watch the circuit breaker (Step 1) do its job during a Figma incident:
+
+```text
+12:04:11 figma request failed (503) — failure 1/5
+12:04:13 figma request failed (503) — failure 5/5 → circuit OPEN for 30s
+12:04:14 request short-circuited; serving cached tokens (age 8m) via fallback
+12:04:44 circuit HALF-OPEN — probe /v1/me → 200 → circuit CLOSED
+```
+
+Confirm retry honors `Retry-After` instead of hammering (Step 3):
+
+```text
+GET /v1/files/abc → 429 (Retry-After: 32)
+sleeping 32s (server-directed, overrides backoff schedule)
+GET /v1/files/abc → 200 (attempt 2)
+```
+
+The cached-fallback contract (what staleness is acceptable per consumer) is in `references/cached-fallback.md`; composition of all five patterns: `references/health-aware-request-routing.md`.
+
 ## Resources
 
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)

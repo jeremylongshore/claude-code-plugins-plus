@@ -267,6 +267,26 @@ async function requireFigmaAccess(fileKey: string) {
 | 403 on Variables API | Not Enterprise plan | Use styles API instead (available on all plans) |
 | Team components empty | No published components | Publish components in Figma first |
 
+## Examples
+
+Complete the OAuth flow locally and inspect the granted user (Steps 1-2):
+
+```bash
+# After the callback exchanges the code (POST /v1/oauth/token):
+curl -s -H "Authorization: Bearer ${FIGMA_OAUTH_TOKEN}" https://api.figma.com/v1/me \
+  | jq '{handle, email}'
+# {"handle": "ops-bot", "email": "design-infra@example.com"}
+```
+
+List a project's files as that user — RBAC means you only see what the user can (Step 3):
+
+```bash
+curl -s -H "Authorization: Bearer ${FIGMA_OAUTH_TOKEN}" \
+  "https://api.figma.com/v1/projects/${PROJECT_ID}/files" | jq '.files[].name'
+```
+
+A 403 here is working access control, not a bug — route it through the Step 5 middleware. Variables API (Enterprise-only) usage: `references/variables-api-enterprise-only.md`.
+
 ## Resources
 
 - [Figma OAuth 2.0](https://developers.figma.com/docs/rest-api/authentication/)

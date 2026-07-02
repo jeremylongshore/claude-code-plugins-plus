@@ -172,6 +172,30 @@ async function deleteAllCachedData() {
 | Staging webhook pointing to prod | Wrong endpoint URL | Verify webhook endpoint per env |
 | Config not loading | Missing NODE_ENV | Set NODE_ENV in deployment config |
 
+## Examples
+
+Point the same integration at a staging file locally and the production file in CI using the Step 2 config loader:
+
+```bash
+# .env.development
+FIGMA_ENV=development
+FIGMA_FILE_KEY=stgAbC123fileKey
+FIGMA_WEBHOOK_ENDPOINT=https://dev.example.com/figma/webhook
+
+# CI (production) — secrets injected, never committed
+FIGMA_ENV=production
+FIGMA_FILE_KEY=prodXyZ789fileKey
+```
+
+Verify the guard refuses a cross-environment mistake before any API call is made:
+
+```bash
+FIGMA_ENV=production FIGMA_FILE_KEY=stgAbC123fileKey node sync-tokens.js
+# Error: production run pointed at a non-production file key — aborting
+```
+
+Environment strategy and per-env webhook registration (`POST /v2/webhooks` per environment): `references/configuration-by-environment.md` and `references/environment-guards.md`.
+
 ## Resources
 
 - [Figma Authentication](https://developers.figma.com/docs/rest-api/authentication/)

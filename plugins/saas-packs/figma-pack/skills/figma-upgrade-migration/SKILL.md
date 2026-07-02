@@ -168,6 +168,30 @@ function auditFigmaIntegration(codebasePaths: string[]) {
 | OAuth flow broken | Publishing flow not completed | Complete app publishing in dashboard |
 | Token format mismatch | Old token type | Generate new PAT with `figd_` prefix |
 
+## Examples
+
+Find every deprecated `files:read` scope reference before Figma sunsets it (Step 1 + Step 4 audit):
+
+```bash
+/usr/bin/grep -rn "files:read" --include='*.{ts,js,json,yml}' . | /usr/bin/grep -v node_modules
+```
+
+```text
+src/auth/oauth.ts:12:  scope: 'files:read',        ← replace with file_content:read
+config/figma-app.json:8: "scopes": ["files:read"]  ← update in the Figma app config too
+```
+
+Migrate a V1 webhook to V2 and confirm the new shape (Step 2):
+
+```bash
+curl -s -X POST https://api.figma.com/v2/webhooks \
+  -H "X-Figma-Token: ${FIGMA_PAT}" -H 'Content-Type: application/json' \
+  -d '{"event_type":"FILE_UPDATE","team_id":"'"${FIGMA_TEAM_ID}"'","endpoint":"https://example.com/figma/webhook","passcode":"'"${WEBHOOK_PASSCODE}"'"}' \
+  | jq '{id, event_type, status}'
+```
+
+Full deprecation table and OAuth publishing steps: `references/scope-migration-files-read-deprecation.md`, `references/oauth-app-publishing-flow.md`.
+
 ## Resources
 
 - [Figma REST API Changelog](https://developers.figma.com/docs/rest-api/changelog/)

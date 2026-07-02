@@ -271,6 +271,25 @@ async function validateMigration(
 | Missing node data | Node deleted between fetch and read | Re-fetch with error handling |
 | Large file timeout | File >100MB | Use `/nodes` endpoint for specific pages |
 
+## Examples
+
+Dry-run a styles→variables migration and review the mapping before writing (Steps 2-3):
+
+```bash
+node migrate.js --source ${SOURCE_FILE_KEY} --target ${TARGET_FILE_KEY} --dry-run
+```
+
+```text
+48 styles found in source (32 FILL, 12 TEXT, 4 EFFECT)
+32 FILL styles → color variables in collection "Primitives"
+  Color/Brand/Primary  → color/brand/primary  #4F46E5
+  Color/Neutral/100    → color/neutral/100    #F5F5F5
+2 styles skipped: gradient fills (no variable equivalent) — kept as styles
+DRY RUN — no POST to /v1/files/{key}/variables performed
+```
+
+Then re-run without `--dry-run` to write via the Variables API and validate with Step 5 (`GET /v1/files/{key}/variables/local` count check). Transform rules: `references/transform-and-map-to-target.md`.
+
 ## Resources
 
 - [Figma Variables API](https://developers.figma.com/docs/rest-api/variables-endpoints/)

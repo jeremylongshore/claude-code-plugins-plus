@@ -243,6 +243,27 @@ function safeFigmaLog(label: string, data: any) {
 | PII in logs | Missing redaction | Apply `safeFigmaLog` wrapper |
 | Stale image URLs | URLs older than 30 days | Re-export images; do not cache URLs long-term |
 
+## Examples
+
+Pull the latest comments as Markdown and post a reaction (Step 1 Comments API):
+
+```bash
+curl -s -H "X-Figma-Token: ${FIGMA_PAT}" \
+  "https://api.figma.com/v1/files/${FIGMA_FILE_KEY}/comments?as_md=true" \
+  | jq -r '.comments[0] | "\(.user.handle): \(.message)"'
+# mia.designer: Updated the button radius to 8px — ready for review
+```
+
+Walk version history with pagination (Step 2):
+
+```bash
+curl -s -H "X-Figma-Token: ${FIGMA_PAT}" \
+  "https://api.figma.com/v1/files/${FIGMA_FILE_KEY}/versions" \
+  | jq '{versions: [.versions[] | {id, created_at, label}], next: .pagination.next_page}'
+```
+
+PII rules for what you may persist from these payloads (user handles, avatars, emails): `references/user-data-and-privacy.md` and `references/safe-logging.md`.
+
 ## Resources
 
 - [Figma Comments Endpoints](https://developers.figma.com/docs/rest-api/comments-endpoints/)

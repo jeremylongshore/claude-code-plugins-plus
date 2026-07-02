@@ -170,6 +170,26 @@ app.post('/webhooks/figma', express.json(), (req, res) => {
 | Over-scoped token | Audit in Figma Settings | Regenerate with minimum scopes |
 | Webhook spoofing | Missing passcode check | Always verify passcode before processing |
 
+## Examples
+
+Verify a token is valid and see who it acts as, without exposing it in shell history (Step 1 storage + `/v1/me` probe):
+
+```bash
+FIGMA_PAT=$(security find-generic-password -s figma-pat -w 2>/dev/null || pass show figma/pat)
+curl -s -H "X-Figma-Token: ${FIGMA_PAT}" https://api.figma.com/v1/me | jq '{id, email, handle}'
+```
+
+Reject a forged webhook delivery (Step 4 passcode verification):
+
+```bash
+curl -s -X POST localhost:3000/figma/webhook \
+  -H 'Content-Type: application/json' \
+  -d '{"event_type":"FILE_UPDATE","passcode":"wrong"}'
+# 401 {"error":"invalid passcode"}
+```
+
+Rotation runbook and the full checklist: `references/token-rotation.md`, `references/security-checklist.md`.
+
 ## Resources
 
 - [Figma API Scopes](https://developers.figma.com/docs/rest-api/scopes/)

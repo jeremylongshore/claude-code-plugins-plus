@@ -164,6 +164,19 @@ echo "FIGMA_FILE_KEY: ${FIGMA_FILE_KEY:-NOT SET}"
 - Applied targeted fix
 - Verified resolution with diagnostic commands
 
+## Error Handling
+
+When the diagnostic itself fails, work outside-in before re-consulting the catalog:
+
+| Symptom | Cause | Solution |
+|---------|-------|----------|
+| Every call returns 401, even `/v1/me` | Token revoked, expired, or wrong header (`Authorization` vs `X-Figma-Token`) | Regenerate the PAT; PATs use `X-Figma-Token`, OAuth uses `Authorization: Bearer` |
+| Diagnostic script (Step 4) hangs | No timeout on the probe requests | Add `--max-time 15` to curl / `AbortSignal.timeout()` in fetch |
+| Error not in the catalog | New API behavior or plugin-API error mistaken for REST | Check Step 3 (plugin errors) and status.figma.com before filing |
+| Fix applied but error persists | Cached 4xx response or stale token in another env | Bust caches; verify which env's token the failing process actually loaded |
+
+Full per-error diagnosis flow: `references/diagnose-specific-errors.md`; automated probe: `references/quick-diagnostic-script.md`.
+
 ## Examples
 
 ### Error Wrapper with Actionable Messages

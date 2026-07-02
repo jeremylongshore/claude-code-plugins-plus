@@ -192,6 +192,24 @@ app.post('/webhooks/figma', (req, res) => {
 });
 ```
 
+## Output
+
+- A pitfall-by-pitfall review of your integration, each with detection command and fix
+- The Quick Reference table (below in this skill) mapping all 10 pitfalls to detection signals
+- Concrete code corrections: `?depth=1`/`/nodes?ids=` fetches, `Retry-After` handling, env-var PATs, `file_content:read` scope, x255 color conversion, null-render filtering, webhook subscriptions with passcode verification
+
+## Error Handling
+
+| Symptom | Pitfall | Fix |
+|---------|---------|-----|
+| Responses > 1 MB, slow syncs, memory spikes | #1 full-tree fetches | `?depth=1` or `/nodes?ids=` (`references/pitfall-1-fetching-full-file-trees.md`) |
+| Bursts of 429s under load | #2 ignoring rate-limit headers | Honor `Retry-After`, batch requests (`references/pitfall-2-ignoring-rate-limit-headers.md`) |
+| Images break ~30 days after export | #3 cached export URLs | Re-export on demand or cache with short TTL |
+| `figd_...` in source control | #4 hardcoded PATs | Move to `process.env.FIGMA_PAT`, rotate the leaked token immediately |
+| Colors render wrong in generated CSS | #6 color format | Multiply Figma's 0-1 floats by 255 |
+| `TypeError` reading image URL | #7 null renders | Filter null entries from `/v1/images` responses |
+| Webhook events processed from unknown senders | #10 no passcode check | Verify `passcode` on every delivery (`references/pitfall-10-webhook-without-passcode-verification.md`)
+
 ## Quick Reference
 
 | # | Pitfall | Detection | Fix |
@@ -206,6 +224,32 @@ app.post('/webhooks/figma', (req, res) => {
 | 8 | Polling loop | High API call volume | Use Webhooks V2 |
 | 9 | SVG with scale | Scale parameter ignored | SVG is always 1x |
 | 10 | No webhook verification | Security vulnerability | Verify passcode |
+
+## Examples
+
+Audit an existing integration for the two highest-impact pitfalls in one pass:
+
+```bash
+# Pitfall 4: hardcoded PATs anywhere in the repo
+/usr/bin/grep -rn "figd_" --include='*.*' . | /usr/bin/grep -v node_modules
+
+# Pitfall 1: full-tree fetches (no depth/nodes constraint)
+/usr/bin/grep -rn "api.figma.com/v1/files/" --include='*.{ts,js}' . \
+  | /usr/bin/grep -v -e 'depth=' -e '/nodes'
+```
+
+Fix a color-conversion bug (Pitfall 6) — before/after:
+
+```typescript
+// Before: {"r":0.31,"g":0.27,"b":0.9} rendered as rgb(0,0,1)
+const css = `rgb(${fill.color.r}, ${fill.color.g}, ${fill.color.b})`;
+
+// After
+const to255 = (v: number) => Math.round(v * 255);
+const css = `rgb(${to255(fill.color.r)}, ${to255(fill.color.g)}, ${to255(fill.color.b)})`;
+```
+
+Every pitfall has a dedicated deep-dive under `references/` (e.g. `references/pitfall-8-polling-instead-of-webhooks.md`).
 
 ## Resources
 

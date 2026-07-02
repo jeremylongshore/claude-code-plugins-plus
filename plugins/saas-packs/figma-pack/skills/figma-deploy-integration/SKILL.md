@@ -191,6 +191,33 @@ export async function healthHandler(req: Request): Promise<Response> {
 | Cold start latency | Serverless cold boot | Use Fly.io `min_machines_running: 1` or Cloud Run min instances |
 | Health check fails | PAT expired | Rotate token via platform secret management |
 
+## Examples
+
+Deploy the webhook receiver to Vercel (Step 1) and verify end-to-end:
+
+```bash
+vercel deploy --prod
+curl -s -X POST https://figma-hooks.example.vercel.app/api/figma/webhook \
+  -H 'Content-Type: application/json' \
+  -d '{"event_type":"PING","passcode":"'"${WEBHOOK_PASSCODE}"'"}'
+# 200 {"ok":true}
+```
+
+Then point Figma at it and watch a real event arrive:
+
+```text
+POST /api/figma/webhook  200  event=FILE_UPDATE file=AbC123 triggered_by=mia.designer
+```
+
+Probe the deployed health endpoint (Step 4) — it checks Figma reachability, not just process-up:
+
+```bash
+curl -s https://figma-hooks.example.vercel.app/api/health | jq .
+# {"status":"ok","figma_api":"reachable","uptime_s":86400}
+```
+
+Cloud Run and Fly.io equivalents: `references/google-cloud-run-design-token-api.md`, `references/fly-io-persistent-webhook-service.md`.
+
 ## Resources
 
 - [Vercel Serverless Functions](https://vercel.com/docs/functions)

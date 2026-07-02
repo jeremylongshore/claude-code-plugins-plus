@@ -259,6 +259,26 @@ function auditFigmaCall(entry: Omit<FigmaAuditEntry, 'timestamp'>) {
 | Startup validation fails | Missing env vars | Check deployment config |
 | Audit log noise | Too many entries | Filter to write operations only |
 
+## Examples
+
+Catch a hardcoded Figma PAT before it reaches a commit (Step 1 pre-commit hook):
+
+```bash
+echo 'const PAT = "figd_AbCdEf123456789";' > leak.ts
+git add leak.ts && git commit -m "test"
+# pre-commit: BLOCKED — figd_ token detected in leak.ts
+```
+
+Lint a violation of the API usage policy (Step 2 ESLint rule flags full-file fetches):
+
+```text
+src/sync.ts
+  14:3  error  Figma file fetch without depth parameter — use ?depth=1
+                or /nodes?ids=... (figma/no-unbounded-file-fetch)
+```
+
+Policy rule catalog and the audit-log event shape: `references/api-usage-policies.md` and `references/audit-logging.md`.
+
 ## Resources
 
 - [Figma API Scopes](https://developers.figma.com/docs/rest-api/scopes/)

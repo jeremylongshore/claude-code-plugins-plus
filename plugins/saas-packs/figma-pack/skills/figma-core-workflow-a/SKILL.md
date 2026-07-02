@@ -189,6 +189,35 @@ for (const [id, variable] of Object.entries(vars.meta.variables)) {
 | 403 on variables endpoint | Not Enterprise plan | Use styles endpoint instead |
 | Color looks wrong | Forgot 0-1 to 0-255 conversion | Multiply by 255 before hex |
 
+## Examples
+
+Extract every fill color used by published styles and emit CSS custom properties:
+
+```bash
+# 1. List published styles, 2. resolve their node values (see Steps 1-2)
+curl -s -H "X-Figma-Token: ${FIGMA_PAT}" \
+  "https://api.figma.com/v1/files/${FIGMA_FILE_KEY}/styles" \
+  | jq -r '.meta.styles[] | select(.style_type == "FILL") | "\(.node_id)\t\(.name)"'
+```
+
+```text
+1:5   Color/Brand/Primary
+1:6   Color/Brand/Secondary
+1:9   Color/Neutral/100
+```
+
+Feed those node IDs to `/v1/files/:key/nodes?ids=...` and run the Step 4 generator to produce:
+
+```css
+:root {
+  --color-brand-primary: #4f46e5;
+  --color-brand-secondary: #22d3ee;
+  --color-neutral-100: #f5f5f5;
+}
+```
+
+Full token-extraction walkthrough: `references/extract-typography-tokens.md` and `references/generate-css-custom-properties.md`.
+
 ## Resources
 
 - [Figma File Endpoints](https://developers.figma.com/docs/rest-api/file-endpoints/)

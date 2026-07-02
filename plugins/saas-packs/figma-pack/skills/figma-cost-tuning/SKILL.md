@@ -198,6 +198,27 @@ function getMonthlyReport(logs: ApiCallLog[]) {
 | High bandwidth costs | Fetching full file trees | Use `depth=1` and `/nodes` endpoint |
 | Polling waste | No webhooks configured | Set up FILE_UPDATE webhook |
 
+## Examples
+
+Find your most expensive call pattern with the Step 2 usage tracker, then apply the Step 3 fix:
+
+```text
+Top API consumers (last 24h)
+  /v1/files/{key}          1,847 calls   ← full-tree fetches from the preview service
+  /v1/files/{key}/nodes      312 calls
+  /v1/images/{key}           119 calls
+```
+
+```bash
+# Before: full tree (~4 MB, counts hard against the budget)
+curl -s -H "X-Figma-Token: ${FIGMA_PAT}" "https://api.figma.com/v1/files/${FIGMA_FILE_KEY}"
+
+# After: shallow fetch (~40 KB) — same top-level structure the preview needs
+curl -s -H "X-Figma-Token: ${FIGMA_PAT}" "https://api.figma.com/v1/files/${FIGMA_FILE_KEY}?depth=1"
+```
+
+That single change cut the daily call payload ~99% for the hot path. Plan-tier limits and the dashboard query: `references/understand-plan-based-rate-limits.md`, `references/usage-dashboard-query.md`.
+
 ## Resources
 
 - [Figma Pricing Plans](https://www.figma.com/pricing/)

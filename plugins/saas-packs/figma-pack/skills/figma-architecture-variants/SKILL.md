@@ -228,6 +228,24 @@ Figma Plugin ← In-editor design linting and data population
 | Plugin sandbox limits | Heavy computation | Offload to REST API via fetch in UI iframe |
 | Wrong variant choice | Over-engineering | Start with CLI, add webhook when needed |
 
+## Examples
+
+Pick a variant with the Step 2 decision matrix — two common calls:
+
+- **Nightly design-token sync into a repo** → Variant A (CLI script in CI). No server to run; rate limits are a non-issue at one run per day.
+- **Slack notification within seconds of a library publish** → Variant B (webhook service subscribed to `LIBRARY_PUBLISH`). Polling would burn the rate budget; a plugin can't run headless.
+
+Smoke-test the Variant B receiver locally before registering the webhook:
+
+```bash
+curl -s -X POST localhost:3000/figma/webhook \
+  -H 'Content-Type: application/json' \
+  -d '{"event_type":"PING","passcode":"test-passcode"}'
+# 200 {"ok":true}
+```
+
+Per-variant scaffolds: `references/variant-a-cli-script-simplest.md`, `references/variant-b-webhook-service-event-driven.md`, `references/variant-c-figma-plugin-in-editor.md`.
+
 ## Resources
 
 - [Figma REST API](https://developers.figma.com/docs/rest-api/)

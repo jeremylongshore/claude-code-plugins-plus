@@ -175,6 +175,28 @@ gh variable set FIGMA_ICON_FRAME_ID --body "123:456"
 | Rate limited in CI | Concurrent workflows | Add concurrency group to workflow |
 | Stale cache | Node modules cached | Clear with `actions/cache` invalidation |
 
+## Examples
+
+Trigger the Step 1 token-sync workflow manually and verify it opens a PR only when tokens changed:
+
+```bash
+gh workflow run figma-token-sync.yml
+gh run watch && gh pr list --label design-tokens
+```
+
+```text
+#142  chore(tokens): sync design tokens from Figma  design-tokens  open
+```
+
+The diff shows exactly what changed in the design file:
+
+```diff
+- "color-brand-primary": "#4338ca",
++ "color-brand-primary": "#4f46e5",
+```
+
+No-change runs exit green without a PR (idempotent by design). Asset export on PR and the validation gate: `references/asset-export-on-pr.md`, `references/design-system-validation.md`.
+
 ## Resources
 
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)

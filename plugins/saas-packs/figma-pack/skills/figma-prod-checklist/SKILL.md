@@ -149,6 +149,26 @@ echo "=== Pre-flight complete ==="
 | High Latency | P95 > 5000ms | P2 | Check Figma status; add caching |
 | API Down | 5xx errors > 10/min | P1 | Enable fallback; check status.figma.com |
 
+## Examples
+
+Run the Step 7 pre-flight before the go-live cut:
+
+```bash
+./scripts/figma-preflight.sh
+```
+
+```text
+✓ FIGMA_PAT present, not in repo (gitleaks clean)
+✓ /v1/me → 200 (token valid, acting as design-infra@example.com)
+✓ File probe ?depth=1 → 200 in 240ms
+✓ 429 handler: Retry-After honored (simulated)
+✓ Webhook passcode verification: forged POST → 401
+✗ Alerting: no alert rule for figma_api_requests_total{status="429"}
+1 failure — fix before ship
+```
+
+Each line maps to a checklist step in this skill (auth → errors → rate limits → monitoring → data → webhooks). A red pre-flight is the checklist telling you which section to reopen — here, Step 4 (`references/monitoring-health.md`).
+
 ## Resources
 
 - [Figma Status Page](https://status.figma.com)

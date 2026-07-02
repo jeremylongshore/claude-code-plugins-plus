@@ -7277,7 +7277,7 @@
       "name": "figma-pack",
       "source": "./plugins/saas-packs/figma-pack",
       "description": "Claude Code skill pack for Figma (30 skills)",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "saas-packs",
       "keywords": [
         "figma",

@@ -228,6 +228,33 @@ retry-after: [value]
 | Null image renders | Validate node visibility | Check node opacity and visibility in Figma |
 | Memory crash | Large file JSON | Use `depth=1` + per-page `/nodes` calls |
 
+## Examples
+
+A sync that "randomly fails" — verbose inspection (Step 1) shows it's not random:
+
+```bash
+curl -sv -H "X-Figma-Token: ${FIGMA_PAT}" \
+  "https://api.figma.com/v1/files/${FIGMA_FILE_KEY}?depth=1" 2>&1 \
+  | /usr/bin/grep -E '^< (HTTP|retry-after|x-)'
+```
+
+```text
+< HTTP/2 429
+< retry-after: 47
+```
+
+The failures cluster at the top of each hour — a cron thundering herd, not flakiness. Fix per Step 3 (jitter + honor `Retry-After`).
+
+A "works for small files, breaks for the design system" report is usually payload size — Step 4:
+
+```bash
+curl -s -o /dev/null -w '%{size_download}\n' -H "X-Figma-Token: ${FIGMA_PAT}" \
+  "https://api.figma.com/v1/files/${FIGMA_FILE_KEY}"
+# 48731210   ← 48 MB full tree; switch to ?depth=1 + /nodes?ids=
+```
+
+Escalation packet for Figma support: `references/support-escalation-template.md`.
+
 ## Resources
 
 - [Figma Developer Forum](https://forum.figma.com/)
